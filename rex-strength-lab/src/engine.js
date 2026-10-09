@@ -229,14 +229,20 @@
     const dt = tEst / 1500;
     let xA = 0, xB = 0, vA = 0, vB = 0, t = 0, workA = 0, workB = 0, vBmax = 0, steps = 0;
     while (xA + xB < d && steps < 600000) {
-      // solve for the new relative speed S in [0, vmax] by bisection, to adjacent doubles
-      let lo = 0, hi = vmax;
-      for (let i = 0; i < 200; i++) {
-        const S = 0.5 * (lo + hi);
+      // solve g(S) = s2(S) - S = 0 for the new relative speed S in [0, vmax]. g falls with S, so
+      // keep a bracket and step by Illinois false position, bisecting every 8th step and after
+      // the 8th (g can jump where his feet start to slide), to adjacent doubles.
+      const g = (S) => { const F = force(S); return stepV(vA, F, RAof(F), cA, mA, aFree, dt) + stepV(vB, F, RB, cB, mB, bFree, dt) - S; };
+      let lo = 0, hi = vmax, glo = g(0), ghi = g(vmax), side = 0;
+      if (!(ghi < 0)) lo = vmax;
+      else if (glo > 0) for (let i = 1; i <= 200; i++) {
+        let S = (i > 8 || i % 8 === 0) ? 0.5 * (lo + hi) : (lo * ghi - hi * glo) / (ghi - glo);
+        if (!(S > lo && S < hi)) S = 0.5 * (lo + hi);
         if (S <= lo || S >= hi) break;
-        const F = force(S);
-        const s2 = stepV(vA, F, RAof(F), cA, mA, aFree, dt) + stepV(vB, F, RB, cB, mB, bFree, dt);
-        if (s2 > S) lo = S; else hi = S;
+        const gs = g(S);
+        if (gs >= 0) { lo = S; glo = gs; if (side === 1) ghi *= 0.5; side = 1; }
+        else { hi = S; ghi = gs; if (side === -1) glo *= 0.5; side = -1; }
+        if (gs === 0 || hi - lo <= 4e-16 * hi) break;
       }
       const F = force(lo);
       const nvA = stepV(vA, F, RAof(F), cA, mA, aFree, dt), nvB = stepV(vB, F, RB, cB, mB, bFree, dt);
@@ -672,7 +678,7 @@
     let heldBack = false;
     const Rlim = anc.R * (1 - 1e-9);
     let Fused = F;
-    if (isFinite(F) && F > Rlim && Rlim > RB) {
+    if ((isFinite(F) || ctx.mode === 'real') && F > Rlim && Rlim > RB) {
       // real muscle: also try caps a little past the slip point (force falls with speed anyway)
       const caps = ctx.mode === 'real' ? [1, 1.25, 1.6, 2, 3, 5, 10] : [1];
       for (const f of caps) {
@@ -696,17 +702,23 @@
     const L = obj.L || Math.cbrt(6 * obj.m / (Math.PI * (obj.rho || 1000)));
     const crater = flight.vImpact >= 2000 ? craterDiameter({ L, v: flight.vImpact, rhoI: obj.rho || 1000, rhoT: ctx.surface.rho || 2000, angleDeg: flight.impactAngleDeg, E: Eimp }) : { D: 0 };
     const contact = hands * body.palmArea;
-    const Nfeet = isFinite(Fused) ? anc.N(Fused) : (Math.sin(th) > 1e-12 ? Infinity : anc.N(0));
+    // Load on his feet: the mean push over the stroke (impulse / time). In comic mode this equals
+    // the constant push; real muscle reaches its isometric peak only for an instant.
+    const Fload = !push.stalled && push.t > 0 && isFinite(push.pB) ? Math.min(Fused, push.pB / push.t + RB) : Fused;
+    const Nfeet = isFinite(Fload) ? anc.N(Fload) : (Math.sin(th) > 1e-12 ? Infinity : anc.N(0));
+    // Peak force on his palms: the push he actually uses plus holding the load up.
+    const handF = isFinite(Fused) ? Math.hypot(Fused, perp) : Fdrive;
     return Object.assign(out, {
       canMove: !push.stalled && v > 0,
       push, v, mach: v / K.a0, Eobj, heldBack,
       recoilV, recoilE,
-      gripRatio: obj.crush ? Fdrive / contact / obj.crush : 0,
-      plateNeeded: obj.crush ? Fdrive / obj.crush : 0,
+      gripRatio: obj.crush ? handF / contact / obj.crush : 0,
+      plateNeeded: obj.crush ? handF / obj.crush : 0,
       sinkRatio: isFinite(anc.Nmax) ? Nfeet / anc.Nmax : 0,
       flight, Eimpact: Eimp,
       crater: crater.D, craterExtrapolated: !!crater.extrapolated,
       planetScale: Eimp >= K.EARTH_BIND || crater.D > K.R_E,
+      craterBeyondFit: crater.D > 3e5,
       quake: seismicMagnitude(Eimp),
     });
   }
@@ -736,7 +748,7 @@
     // ground's inertia pushes back and the jump grows again. Rex can push with any force up to
     // his strength and picks the best (in real muscle, by capping his force).
     let heldBack = false;
-    if (!ctx.groundHolds && isFinite(F) && F > RB) {
+    if (!ctx.groundHolds && (isFinite(F) || ctx.mode === 'real') && F > RB) {
       const tries = ctx.mode === 'real' ? [1 - 1e-9, 1.5, 2, 3, 5, 10, 30, 100] : [1 - 1e-9];
       for (const f of tries) {
         const Fc = RB * f;
@@ -795,6 +807,7 @@
       F, push, E, vFoot, footMach: vFoot / K.a0, vBody, bodyFlight, holeDepth, bolted,
       crater: crater.D, craterExtrapolated: !!crater.extrapolated, footShare: share,
       planetScale: E >= K.EARTH_BIND || crater.D > K.R_E,
+      craterBeyondFit: crater.D > 3e5,
       quake: seismicMagnitude(E), disrupts: E >= K.EARTH_BIND,
       tnt: E / K.TNT_J_per_kg,
     };

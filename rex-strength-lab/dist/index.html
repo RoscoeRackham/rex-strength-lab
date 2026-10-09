@@ -102,6 +102,7 @@ details.setup[open] summary::after { content: "–"; }
 @media (min-width: 640px) { .tabs { display: flex; flex-wrap: wrap; } }
 .tab { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 9px 14px; cursor: pointer; font-family: var(--font-display); font-weight: 800; font-size: 1.15rem; letter-spacing: 0.03em; text-transform: uppercase; }
 .tab[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: #000; }
+@media (max-width: 359px) { #tabs .tab { padding-left: 4px; padding-right: 4px; font-size: 1rem; } }
 .bay { margin-top: 12px; display: flex; flex-direction: column; gap: 16px; }
 .bay-controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
 .bay-controls .field { margin-top: 0; flex: 1 1 220px; min-width: 0; }
@@ -138,7 +139,8 @@ section.block > .intro { max-width: 68ch; color: var(--ink-2); }
 .ladder-wrap svg .mk { cursor: pointer; }
 .ladder-wrap svg text { paint-order: stroke; stroke: var(--bg); stroke-width: 3px; stroke-linejoin: round; }
 .ladder-wrap svg .mk:focus { outline: none; }
-.ladder-wrap svg .mk:focus .ring, .ladder-wrap svg .mk:hover .ring { stroke: var(--ink); }
+.ladder-wrap svg .mk:focus-visible .hit { stroke: var(--accent); stroke-width: 2px; }
+.ladder-wrap svg .mk:focus-visible .ring, .ladder-wrap svg .mk:hover .ring { stroke: var(--ink); }
 .never { font-size: 0.9rem; color: var(--ink-2); }
 .never li { margin-top: 2px; }
 .tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--surface); padding: 8px 10px; border-radius: 8px; font-size: 0.85rem; max-width: 260px; z-index: 3; box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
@@ -514,14 +516,20 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const dt = tEst / 1500;
     let xA = 0, xB = 0, vA = 0, vB = 0, t = 0, workA = 0, workB = 0, vBmax = 0, steps = 0;
     while (xA + xB < d && steps < 600000) {
-      // solve for the new relative speed S in [0, vmax] by bisection, to adjacent doubles
-      let lo = 0, hi = vmax;
-      for (let i = 0; i < 200; i++) {
-        const S = 0.5 * (lo + hi);
+      // solve g(S) = s2(S) - S = 0 for the new relative speed S in [0, vmax]. g falls with S, so
+      // keep a bracket and step by Illinois false position, bisecting every 8th step and after
+      // the 8th (g can jump where his feet start to slide), to adjacent doubles.
+      const g = (S) => { const F = force(S); return stepV(vA, F, RAof(F), cA, mA, aFree, dt) + stepV(vB, F, RB, cB, mB, bFree, dt) - S; };
+      let lo = 0, hi = vmax, glo = g(0), ghi = g(vmax), side = 0;
+      if (!(ghi < 0)) lo = vmax;
+      else if (glo > 0) for (let i = 1; i <= 200; i++) {
+        let S = (i > 8 || i % 8 === 0) ? 0.5 * (lo + hi) : (lo * ghi - hi * glo) / (ghi - glo);
+        if (!(S > lo && S < hi)) S = 0.5 * (lo + hi);
         if (S <= lo || S >= hi) break;
-        const F = force(S);
-        const s2 = stepV(vA, F, RAof(F), cA, mA, aFree, dt) + stepV(vB, F, RB, cB, mB, bFree, dt);
-        if (s2 > S) lo = S; else hi = S;
+        const gs = g(S);
+        if (gs >= 0) { lo = S; glo = gs; if (side === 1) ghi *= 0.5; side = 1; }
+        else { hi = S; ghi = gs; if (side === -1) glo *= 0.5; side = -1; }
+        if (gs === 0 || hi - lo <= 4e-16 * hi) break;
       }
       const F = force(lo);
       const nvA = stepV(vA, F, RAof(F), cA, mA, aFree, dt), nvB = stepV(vB, F, RB, cB, mB, bFree, dt);
@@ -957,7 +965,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     let heldBack = false;
     const Rlim = anc.R * (1 - 1e-9);
     let Fused = F;
-    if (isFinite(F) && F > Rlim && Rlim > RB) {
+    if ((isFinite(F) || ctx.mode === 'real') && F > Rlim && Rlim > RB) {
       // real muscle: also try caps a little past the slip point (force falls with speed anyway)
       const caps = ctx.mode === 'real' ? [1, 1.25, 1.6, 2, 3, 5, 10] : [1];
       for (const f of caps) {
@@ -981,17 +989,23 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const L = obj.L || Math.cbrt(6 * obj.m / (Math.PI * (obj.rho || 1000)));
     const crater = flight.vImpact >= 2000 ? craterDiameter({ L, v: flight.vImpact, rhoI: obj.rho || 1000, rhoT: ctx.surface.rho || 2000, angleDeg: flight.impactAngleDeg, E: Eimp }) : { D: 0 };
     const contact = hands * body.palmArea;
-    const Nfeet = isFinite(Fused) ? anc.N(Fused) : (Math.sin(th) > 1e-12 ? Infinity : anc.N(0));
+    // Load on his feet: the mean push over the stroke (impulse / time). In comic mode this equals
+    // the constant push; real muscle reaches its isometric peak only for an instant.
+    const Fload = !push.stalled && push.t > 0 && isFinite(push.pB) ? Math.min(Fused, push.pB / push.t + RB) : Fused;
+    const Nfeet = isFinite(Fload) ? anc.N(Fload) : (Math.sin(th) > 1e-12 ? Infinity : anc.N(0));
+    // Peak force on his palms: the push he actually uses plus holding the load up.
+    const handF = isFinite(Fused) ? Math.hypot(Fused, perp) : Fdrive;
     return Object.assign(out, {
       canMove: !push.stalled && v > 0,
       push, v, mach: v / K.a0, Eobj, heldBack,
       recoilV, recoilE,
-      gripRatio: obj.crush ? Fdrive / contact / obj.crush : 0,
-      plateNeeded: obj.crush ? Fdrive / obj.crush : 0,
+      gripRatio: obj.crush ? handF / contact / obj.crush : 0,
+      plateNeeded: obj.crush ? handF / obj.crush : 0,
       sinkRatio: isFinite(anc.Nmax) ? Nfeet / anc.Nmax : 0,
       flight, Eimpact: Eimp,
       crater: crater.D, craterExtrapolated: !!crater.extrapolated,
       planetScale: Eimp >= K.EARTH_BIND || crater.D > K.R_E,
+      craterBeyondFit: crater.D > 3e5,
       quake: seismicMagnitude(Eimp),
     });
   }
@@ -1021,7 +1035,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     // ground's inertia pushes back and the jump grows again. Rex can push with any force up to
     // his strength and picks the best (in real muscle, by capping his force).
     let heldBack = false;
-    if (!ctx.groundHolds && isFinite(F) && F > RB) {
+    if (!ctx.groundHolds && (isFinite(F) || ctx.mode === 'real') && F > RB) {
       const tries = ctx.mode === 'real' ? [1 - 1e-9, 1.5, 2, 3, 5, 10, 30, 100] : [1 - 1e-9];
       for (const f of tries) {
         const Fc = RB * f;
@@ -1080,6 +1094,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       F, push, E, vFoot, footMach: vFoot / K.a0, vBody, bodyFlight, holeDepth, bolted,
       crater: crater.D, craterExtrapolated: !!crater.extrapolated, footShare: share,
       planetScale: E >= K.EARTH_BIND || crater.D > K.R_E,
+      craterBeyondFit: crater.D > 3e5,
       quake: seismicMagnitude(E), disrupts: E >= K.EARTH_BIND,
       tnt: E / K.TNT_J_per_kg,
     };
@@ -1288,17 +1303,17 @@ window.DINO_DATA = {
    "id": "secretwars",
    "chip": "Hulk, Secret Wars",
    "label": "Hulk holds a mountain range",
-   "who": "Secret Wars #4 (1984): 150 billion tons",
+   "who": "Secret Wars #4 (1984): 150 billion tons, per press accounts",
    "liftKg": 136077711000000.0,
-   "note": "Quoted from Reed Richards in press accounts; the panel itself was not seen."
+   "note": "Quoted from Reed Richards; the panel itself was not seen."
   },
   {
    "id": "allstar",
    "chip": "All-Star Superman",
    "label": "All-Star Superman",
-   "who": "All-Star Superman #1 (2005): 200 quintillion tons",
+   "who": "All-Star Superman #1 (2005): 200 quintillion tons, per reviews",
    "liftKg": 1.81436948e+23,
-   "note": "Issue and exact wording rest on reviews; it may be a force rather than a literal object."
+   "note": "The issue and exact wording are unconfirmed; it may be a force rather than a literal object."
   },
   {
    "id": "earth",
@@ -1828,7 +1843,7 @@ window.DINO_DATA = {
    "rho": 3000,
    "noThrow": true,
    "noPull": true,
-   "liftNote": "The comic never says what the load is. It is about 2.5 times the Moon’s mass (3% of Earth’s), so treat it as a force equivalent."
+   "liftNote": "None of the accounts we found say what the load is. It is about 2.5 times the Moon’s mass (3% of Earth’s), so treat it as a force equivalent."
   }
  ],
  "energyRefs": [
@@ -1998,7 +2013,8 @@ window.DINO_DATA = {
     "liftKg": 511,
     "action": "lift",
     "obj": "bar511"
-   }
+   },
+   "also": []
   },
   {
    "group": "human",
@@ -2014,7 +2030,8 @@ window.DINO_DATA = {
     "liftKg": 2422.18,
     "action": "lift",
     "obj": "backlift"
-   }
+   },
+   "also": []
   },
   {
    "group": "human",
@@ -2026,7 +2043,8 @@ window.DINO_DATA = {
     "url": "https://www.starkcenter.org/igh/igh-v7/igh-v7-n1/igh0701e.pdf",
     "title": "Source"
    },
-   "run": null
+   "run": null,
+   "also": []
   },
   {
    "group": "human",
@@ -2042,7 +2060,8 @@ window.DINO_DATA = {
     "liftKg": 511,
     "action": "pull",
     "obj": "cc177"
-   }
+   },
+   "also": []
   },
   {
    "group": "human",
@@ -2059,7 +2078,8 @@ window.DINO_DATA = {
     "action": "throw",
     "obj": "shot",
     "angle": 37
-   }
+   },
+   "also": []
   },
   {
    "group": "human",
@@ -2076,7 +2096,8 @@ window.DINO_DATA = {
     "action": "throw",
     "obj": "baseball",
     "angle": 2
-   }
+   },
+   "also": []
   },
   {
    "group": "human",
@@ -2091,13 +2112,14 @@ window.DINO_DATA = {
    "run": {
     "liftKg": 511,
     "action": "sprint"
-   }
+   },
+   "also": []
   },
   {
    "group": "comic",
    "title": "Hurdle a twenty-story building",
    "who": "Action Comics #1 · 1938",
-   "claim": "“Leap 1/8th of a mile; hurdle a twenty-story building… raise tremendous weights.” Runs the jump at the strength it needs (20 stories ≈ 60 m).",
+   "claim": "“Leap 1/8th of a mile; hurdle a twenty-story building… raise tremendous weights.” Switches to Comic book mode and runs the jump at the strength it needs (20 stories ≈ 60 m). A 2 m Rex on real muscle tops out near 7 m.",
    "status": "canon_stated",
    "source": {
     "url": "https://be-api.us.archive.org/fts/v1/search?q=%22leap+1%2F8th+of+a+mile%22&size=5",
@@ -2107,7 +2129,8 @@ window.DINO_DATA = {
     "solve": "jump60",
     "mode": "comic",
     "action": "jump"
-   }
+   },
+   "also": []
   },
   {
    "group": "comic",
@@ -2123,7 +2146,8 @@ window.DINO_DATA = {
     "liftKg": 1429,
     "action": "lift",
     "obj": "desoto"
-   }
+   },
+   "also": []
   },
   {
    "group": "comic",
@@ -2140,7 +2164,8 @@ window.DINO_DATA = {
     "action": "throw",
     "obj": "shot",
     "angle": 37
-   }
+   },
+   "also": []
   },
   {
    "group": "comic",
@@ -2157,7 +2182,8 @@ window.DINO_DATA = {
     "action": "throw",
     "obj": "car",
     "angle": 45
-   }
+   },
+   "also": []
   },
   {
    "group": "comic",
@@ -2174,7 +2200,8 @@ window.DINO_DATA = {
     "action": "throw",
     "obj": "tank",
     "angle": 30
-   }
+   },
+   "also": []
   },
   {
    "group": "comic",
@@ -2190,7 +2217,8 @@ window.DINO_DATA = {
     "liftKg": 300000.0,
     "action": "lift",
     "obj": "b777"
-   }
+   },
+   "also": []
   },
   {
    "group": "comic",
@@ -2206,7 +2234,8 @@ window.DINO_DATA = {
     "liftKg": 136077711000000.0,
     "action": "lift",
     "obj": "range150"
-   }
+   },
+   "also": []
   },
   {
    "group": "comic",
@@ -2222,7 +2251,8 @@ window.DINO_DATA = {
     "liftKg": 1.81436948e+23,
     "action": "lift",
     "obj": "allstar"
-   }
+   },
+   "also": []
   },
   {
    "group": "comic",
@@ -2238,7 +2268,8 @@ window.DINO_DATA = {
     "liftKg": 5.9724e+24,
     "action": "lift",
     "obj": "earth"
-   }
+   },
+   "also": []
   },
   {
    "group": "comic",
@@ -2253,7 +2284,8 @@ window.DINO_DATA = {
    "run": {
     "liftKg": Infinity,
     "action": "punch"
-   }
+   },
+   "also": []
   },
   {
    "group": "comic",
@@ -2265,7 +2297,8 @@ window.DINO_DATA = {
     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-MarvelTeam-Up-TheOfficialMarvelIndextoMarvelTeam-Up02+AND+%28%22only+shaken%22+OR+%22embellished+in+the+telling%22%29&size=5",
     "title": "Source"
    },
-   "run": null
+   "run": null,
+   "also": []
   },
   {
    "group": "myth",
@@ -2282,7 +2315,8 @@ window.DINO_DATA = {
     "action": "throw",
     "obj": "ruyi",
     "angle": 40
-   }
+   },
+   "also": []
   },
   {
    "group": "myth",
@@ -2298,7 +2332,8 @@ window.DINO_DATA = {
     "liftKg": 5100000000000000000,
     "action": "lift",
     "obj": "sky"
-   }
+   },
+   "also": []
   },
   {
    "group": "myth",
@@ -2310,7 +2345,8 @@ window.DINO_DATA = {
     "url": "https://mythopedia.com/library/prose-edda-brodeur-1916/gylfaginning/",
     "title": "Source"
    },
-   "run": null
+   "run": null,
+   "also": []
   },
   {
    "group": "myth",
@@ -2322,7 +2358,8 @@ window.DINO_DATA = {
     "url": "https://www.biblegateway.com/passage/?search=Judges+16%3A1-31&version=KJV",
     "title": "Source"
    },
-   "run": null
+   "run": null,
+   "also": []
   },
   {
    "group": "myth",
@@ -2332,15 +2369,21 @@ window.DINO_DATA = {
    "status": "not_quantified",
    "source": {
     "url": "https://cts.perseids.org/read/latinLit/phi1002/phi001/perseus-eng2/1.9.5-1.10.3",
-    "title": "Source"
+    "title": "Quintilian"
    },
-   "run": null
+   "run": null,
+   "also": [
+    {
+     "url": "https://cts.perseids.org/read/greekLit/tlg0008/tlg001/perseus-eng2/10.0-10.19",
+     "title": "Athenaeus"
+    }
+   ]
   }
  ],
  "assumptions": [
   {
    "t": "Strength means force",
-   "d": "The dial sets the heaviest weight Rex can hold up. That times g is his maximum force. Every other move uses a set share of it, except the jump, which drives with 1.4× because the legs push his own body as well (a lifting record counts only the bar)."
+   "d": "The dial sets the heaviest weight Rex can hold up. That times g is his maximum force. Each move drives with a set share of it, and the shares differ between the two muscle models (Show the math gives each one). With real muscle the share is the most the limb can push from a standstill, falling as the limb speeds up; the legs get up to 1.4× because they also carry his body (a lifting record counts only the bar). Comic mode keeps one smaller share per move at every speed, fitted so both modes match record athletes (66% for the jump)."
   },
   {
    "t": "Only Rex is indestructible",
@@ -2360,7 +2403,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Pushes are one-dimensional",
-   "d": "A throw, punch or jump is a straight push over a fixed stroke (1.6 m shove, 2.2 m overarm throw, 0.7 m punch, 0.5 m leg drive). Heavy throws hold the object up against gravity as well as pushing it."
+   "d": "A throw, punch or jump is a straight push over a fixed stroke (1.6 m shove, 2.2 m overarm throw, 0.7 m punch, 0.5 m leg drive, 0.6 m stomp, 0.5 m clap; all at 2 m, scaling with height). Heavy throws hold the object up against gravity as well as pushing it."
   },
   {
    "t": "Relativity is built in",
@@ -2368,11 +2411,11 @@ window.DINO_DATA = {
   },
   {
    "t": "Air",
-   "d": "Exponential atmosphere, drag coefficient that rises past the sound barrier, no lift, no wind, non-rotating round Earth; above 150 km the arc is solved exactly. Heating is reported with an equilibrium-air estimate, not modelled: real thrown objects would melt or burn at the speeds shown."
+   "d": "Exponential atmosphere, drag coefficient that rises past the sound barrier, no lift, no wind, non-rotating round Earth; above 150 km the arc is solved exactly as an Earth-only Kepler arc (no Moon or Sun pull, so arcs past the Moon’s orbit are rough). Heating is reported with an equilibrium-air estimate, not modelled: real thrown objects would melt or burn at the speeds shown."
   },
   {
    "t": "Ground",
-   "d": "Typical ultimate bearing capacities for a foot-sized load. Real soils, pavement and slabs run from about half to three times these values; jointed or weathered granite can be about 17× weaker than the intact rock used here. Sand and gravel get stronger under wider feet. A fast-moving foot also has to shove the ground’s mass aside (resistance ρv² per unit area), which is why a hard enough push still launches him off soft ground and why stomp holes stay shallow."
+   "d": "Typical ultimate bearing capacities for a foot-sized load. Real soils, pavement and slabs run from about half to three times these values; lake ice is set at the bottom of its 5–25 MPa crushing strength (colder, faster-loaded ice is up to 5× stronger), and a floating sheet can snap in bending under far less total load, which is not modelled; jointed or weathered granite can be about 17× weaker than the intact rock used here. Sand and gravel get stronger under wider feet. A fast-moving foot also has to shove the ground’s mass aside (resistance ρv² per unit area), which is why a hard enough push still launches him off soft ground and why stomp holes stay shallow."
   },
   {
    "t": "Blasts and craters are upper bounds; quakes are a middle estimate",
@@ -2470,7 +2513,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Strength: Hulk holds a mountain range",
-   "value": "150 billion tons",
+   "value": "150 billion tons, per press accounts",
    "status": "reported",
    "sources": [
     {
@@ -2486,7 +2529,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Strength: All-Star Superman",
-   "value": "200 quintillion tons",
+   "value": "200 quintillion tons, per reviews",
    "status": "reported",
    "sources": [
     {
@@ -4208,7 +4251,14 @@ window.DINO_DATA = {
   },
   {
    "label": "Muscle model (fitted, not measured)",
-   "value": "Unloaded limb speed at 2 m (scales with height): shove throw 35 m/s, overarm whip 84.6, punch and clap 17, leg drive 12, stomp 16. Share of full strength: shove 52% per hand, whip/punch/clap 30%, stomp 50%, legs 140% (they also carry his body weight).",
+   "value": "Unloaded limb speed at 2 m (scales with height): shove throw 35 m/s, overarm whip 84.6, punch and clap 17, leg drive 12, stomp 16. Real muscle, share of full strength from a standstill: shove 52% per hand, whip/punch/clap 30%, stomp 50%, legs 140% (they also carry his body weight). Comic book, fixed shares fitted so both modes match record athletes: shove 17% per hand, whip 7%, punch 6%, clap 7%, stomp 13%, legs 66%.",
+   "status": "estimate",
+   "sources": [],
+   "note": null
+  },
+  {
+   "label": "Body shape and air (assumed)",
+   "value": "At 2 m (areas scale with height², lengths with height): drag Cd 1.0; frontal area 0.8 m² when sprinting, 0.3 m² head-first when jumping or launched by a stomp; claw dig area 0.2 m² when braced (a quarter of that per stride when sprinting); release height 0.9 × height; each sprint stride puts about 2.5× his weight on one foot. Overarm whip: effective mass at the hand 0.3% of body mass, fitted with the whip speed to the 47.3 m/s pitch; that is smaller than Dempster’s hand alone (0.6%) and is not a measured segment.",
    "status": "estimate",
    "sources": [],
    "note": null
@@ -4349,14 +4399,14 @@ window.DINO_DATA = {
       if (k === 'class') n.className = v; else if (k === 'text') n.textContent = v;
       else if (k.startsWith('on')) n.addEventListener(k.slice(2), v); else n.setAttribute(k, v === true ? '' : v);
     }
-    for (const kid of kids.flat()) if (kid != null && kid !== false) n.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+    for (const kid of kids.flat(Infinity)) if (kid != null && kid !== false) n.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
     return n;
   };
   const SVGNS = 'http://www.w3.org/2000/svg';
   const sv = (tag, attrs, ...kids) => {
     const n = document.createElementNS(SVGNS, tag);
     if (attrs) for (const [k, v] of Object.entries(attrs)) if (v != null) n.setAttribute(k, v);
-    for (const kid of kids.flat()) if (kid != null) n.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+    for (const kid of kids.flat(Infinity)) if (kid != null) n.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
     return n;
   };
 
@@ -4517,7 +4567,8 @@ window.DINO_DATA = {
     return s;
   }
   // keep numbers and their units on one line
-  const nb = (t) => String(t).replace(/(\d) (?=[A-Za-zµ°%×])/g, '$1\u00a0');
+  // keep short number + unit pairs together; longer pairs (years, long numbers) may wrap at the space
+  const nb = (t) => String(t).replace(/([\d.,]*\d) ([A-Za-zµ°%×]\S*)/g, (m, n, u) => n + (n.length + u.length < 10 ? '\u00a0' : ' ') + u);
   const tile = (k, v, s) => el('div', { class: 'tile' }, el('div', { class: 'k', text: k }), el('div', { class: 'v', text: nb(v) }), s ? el('div', { class: 's', text: nb(s) }) : null);
   const tiles = (...ts) => el('div', { class: 'tiles' }, ts.filter(Boolean));
   const happens = (items) => el('ul', { class: 'happens' }, items.filter(Boolean).slice(0, 5).map((t) => el('li', { text: nb(t) })));
@@ -4569,7 +4620,13 @@ window.DINO_DATA = {
         update();
       } }, t.chip));
     }
-    $('#strength').addEventListener('input', (e) => { state.inf = false; state.logKg = Number(e.target.value); update(); });
+    let strengthFrame = 0;
+    $('#strength').addEventListener('input', (e) => {
+      state.inf = false; state.logKg = Number(e.target.value);
+      renderDial();
+      if (strengthFrame) return;   // one bay render per frame while dragging
+      strengthFrame = requestAnimationFrame(() => { strengthFrame = 0; save(); renderBay(true); scheduleLadder(); });
+    });
     $('#mode-comic').onclick = () => { state.mode = 'comic'; update(); };
     $('#mode-real').onclick = () => { state.mode = 'real'; update(); };
     const sel = $('#surface');
@@ -4619,7 +4676,7 @@ window.DINO_DATA = {
 
   // ---------------------------------------------------------------- charts
   // Charts are drawn at the bay's real pixel width so text stays at its set size on phones.
-  const chartW = () => Math.max(300, Math.min(760, ($('#bay') && $('#bay').clientWidth) || 640));
+  const chartW = () => Math.max(240, Math.min(760, ($('#bay') && $('#bay').clientWidth) || 640));
   function logMeter(label, ratio) {
     // Ratio of demand to capacity on a log scale from 1/100 to 10^12.
     const w = chartW(), h = 58, pad = 10;
@@ -4638,13 +4695,16 @@ window.DINO_DATA = {
     return el('div', {}, lab, el('div', { class: 'viz' }, svg));
   }
 
-  function trajectoryChart(path, ghost, label, apexH) {
-    const w = chartW(), h = w < 480 ? 220 : 260, padL = 58, padR = 16, padT = 16, padB = 34;
+  function trajectoryChart(path, ghost, label, apexH, endNote) {
+    const w = chartW(), h = w < 480 ? 220 : 260, padR = 16, padT = 16, padB = 34;
     let maxX = 0, maxY = 0;
     for (const p of path.concat(ghost || [])) { maxX = Math.max(maxX, p[0]); maxY = Math.max(maxY, p[1]); }
-    maxX = maxX || 1; maxY = maxY || 1;
+    maxY = maxY || 1; maxX = Math.max(maxX, maxY / 20) || 1;
     const nice = (v) => { const e = Math.pow(10, Math.floor(Math.log10(v))); const m = v / e; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * e; };
     const X = nice(maxX * 1.02), Y = nice(maxY * 1.05);
+    const axisLbl = (v) => (v === 0 ? '0' : fmtDist(v));
+    // room for the widest y label (11px mono is about 6.6 px a character)
+    const padL = Math.max(40, Math.ceil(Math.max(...[0, 1, 2, 3, 4].map((i) => axisLbl(Y * i / 4).length)) * 6.6) + 12);
     const sx = (x) => padL + x / X * (w - padL - padR), sy = (y) => h - padB - y / Y * (h - padT - padB);
     const svg = sv('svg', { viewBox: `0 0 ${w} ${h}`, role: 'img', 'aria-label': label });
     const nT = w < 480 ? 2 : 4;
@@ -4652,22 +4712,28 @@ window.DINO_DATA = {
       const yy = Y * i / 4, xx = X * i / 4;
       if (i % (4 / nT) !== 0) { svg.append(sv('line', { x1: padL, x2: w - padR, y1: sy(yy), y2: sy(yy), class: 'axis' })); continue; }
       svg.append(sv('line', { x1: padL, x2: w - padR, y1: sy(yy), y2: sy(yy), class: 'axis' }));
-      svg.append(sv('text', { x: padL - 6, y: sy(yy) + 4, 'text-anchor': 'end' }, fmtDist(yy)));
-      svg.append(sv('text', { x: sx(xx), y: h - padB + 18, 'text-anchor': i === 0 ? 'start' : (i === 4 ? 'end' : 'middle') }, fmtDist(xx)));
+      svg.append(sv('text', { x: padL - 6, y: sy(yy) + 4, 'text-anchor': 'end' }, axisLbl(yy)));
+      svg.append(sv('text', { x: sx(xx), y: h - padB + 18, 'text-anchor': i === 0 ? 'start' : (i === 4 ? 'end' : 'middle') }, axisLbl(xx)));
     }
     const toD = (pts) => pts.map((p, i) => (i ? 'L' : 'M') + sx(p[0]).toFixed(1) + ' ' + sy(p[1]).toFixed(1)).join(' ');
     if (ghost && ghost.length > 1) svg.append(sv('path', { d: toD(ghost), fill: 'none', stroke: 'var(--ink-3)', 'stroke-width': 1.5, 'stroke-dasharray': '6 4' }));
     svg.append(sv('path', { d: toD(path), fill: 'none', stroke: 'var(--accent)', 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }));
     const last = path[path.length - 1];
     svg.append(sv('circle', { cx: sx(last[0]), cy: sy(last[1]), r: 5, fill: 'var(--accent)', stroke: 'var(--surface)', 'stroke-width': 2 }));
-    let apex = path[0];
-    for (const p of path) if (p[1] > apex[1]) apex = p;
-    svg.append(sv('circle', { cx: sx(apex[0]), cy: sy(apex[1]), r: 4, fill: 'var(--accent)', stroke: 'var(--surface)', 'stroke-width': 2 }));
-    svg.append(sv('text', { x: Math.min(sx(apex[0]) + 8, w - padR - 4), y: Math.max(sy(apex[1]) - 8, padT + 10), 'text-anchor': sx(apex[0]) > w - 150 ? 'end' : 'start', class: 'lbl-strong' }, 'top ' + fmtDist(apexH != null ? apexH : apex[1])));
+    if (endNote) {
+      // it never comes down inside the chart: label where the drawn path ends, not a peak
+      svg.append(sv('text', { x: sx(last[0]) + (sx(last[0]) > w - 150 ? -8 : 8), y: Math.max(sy(last[1]) - 8, padT + 10), 'text-anchor': sx(last[0]) > w - 150 ? 'end' : 'start', class: 'lbl-strong' }, endNote));
+    } else {
+      let apex = path[0];
+      for (const p of path) if (p[1] > apex[1]) apex = p;
+      svg.append(sv('circle', { cx: sx(apex[0]), cy: sy(apex[1]), r: 4, fill: 'var(--accent)', stroke: 'var(--surface)', 'stroke-width': 2 }));
+      svg.append(sv('text', { x: Math.min(sx(apex[0]) + 8, w - padR - 4), y: Math.max(sy(apex[1]) - 8, padT + 10), 'text-anchor': sx(apex[0]) > w - 150 ? 'end' : 'start', class: 'lbl-strong' }, 'top ' + fmtDist(apexH != null ? apexH : apex[1])));
+    }
     const legend = el('div', { class: 'ladder-legend' },
       el('span', {}, el('i', { style: 'background:var(--accent);border-radius:0;height:2px;width:16px' }), 'With air drag'),
       ghost && ghost.length > 1 ? el('span', {}, el('i', { style: 'border-top:2px dashed var(--ink-3);background:none;border-radius:0;height:0;width:16px' }), 'If there were no air') : null);
-    return el('div', {}, legend, el('div', { class: 'viz' }, svg));
+    const cap = endNote ? el('p', { class: 'muted', style: 'font-size:.85rem;margin-top:4px', text: 'Drawn up to 150 km, the top of the atmosphere. Past that it follows its drag-free path away from Earth.' }) : null;
+    return el('div', {}, legend, el('div', { class: 'viz' }, svg), cap);
   }
 
   function logBars(title, rows, unitFmt, opts) {
@@ -4678,7 +4744,7 @@ window.DINO_DATA = {
     const longest = Math.max(...rows.map((r) => String(r.label).length));
     const w = chartW(), padR = 84, padT = 10;
     const want = o.padL || Math.round(longest * 6.8 + 14);
-    const stack = want > w * 0.45;
+    const stack = want > w * 0.45 || w < 480;
     const rowH = stack ? 42 : 30, padL = stack ? 4 : want;
     const h = padT + rows.length * rowH + 26;
     const vals = finite.map((r) => r.value);
@@ -4689,7 +4755,8 @@ window.DINO_DATA = {
     const x = (v) => padL + (Math.log10(Math.max(v, Math.pow(10, lo))) - lo) / (hi - lo) * (w - padL - padR);
     const valText = (r) => r.value > 0 ? (r.text || (isFinite(r.value) ? unitFmt(r.value) : '∞')) : (r.zeroText || 'none');
     const svg = sv('svg', { viewBox: `0 0 ${w} ${h}`, role: 'img', 'aria-label': title + ': ' + rows.map((r) => r.label + ' ' + valText(r)).join('; ') });
-    const maxTicks = Math.max(2, Math.floor((w - padL - padR) / 78));
+    const tickW = 6.6 * Math.max(...Array.from({ length: hi - lo + 1 }, (_, i) => unitFmt(Math.pow(10, lo + i)).length)) + 10;
+    const maxTicks = Math.max(1, Math.floor((w - padL - padR) / tickW));
     const step = Math.max(1, Math.ceil((hi - lo) / maxTicks));
     for (let e = lo; e <= hi; e += step) {
       svg.append(sv('line', { x1: x(Math.pow(10, e)), x2: x(Math.pow(10, e)), y1: padT, y2: h - 22, class: 'axis' }));
@@ -4749,7 +4816,15 @@ window.DINO_DATA = {
   }
   function capital(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
   const speedOnly = (v) => fmtSpeed(v).split(' · ')[0];
-  const shareText = (key) => sig(100 * (state.mode === 'real' ? P.MUSCLE[key].forceFrac : P.MUSCLE[key].comicFrac), 2) + '%';
+  const shareText = (key, mode) => sig(100 * ((mode || state.mode) === 'real' ? P.MUSCLE[key].forceFrac : P.MUSCLE[key].comicFrac), 2) + '%';
+  // Comic mode uses the real-muscle result when that does better (slow, heavy pushes).
+  const basisChip = (r) => (state.mode === 'comic' && r.basis === 'real' ? status('info', 'Comic mode: real muscle does better here, so this uses it') : null);
+  // Tiles: a speed within 0.1% of light is shown as such, with the gap in the sub line.
+  const speedTile = (k, v, sub) => {
+    const b = v / K.c;
+    if (isFinite(v) && b > 0.999 && v < K.c * (1 - 1e-12)) return tile(k, '≈ light speed', 'short of it by 1 part in ' + sci(1 / (1 - b), 2));
+    return tile(k, speedOnly(v), sub);
+  };
 
   function bayLift(c) {
     const o = objById(state.obj);
@@ -4764,7 +4839,7 @@ window.DINO_DATA = {
     else v = 'Rex lifts it clean.' + (r.strengthMargin > 20 ? ' It feels like nothing.' : '');
     out.push(verdict(v));
     out.push(el('div', { class: 'status-row' },
-      r.canLift ? status('good', 'Strength: ' + fmtRatio(r.strengthMargin) + ' what’s needed') : status('bad', 'Strength: ' + sig(r.strengthMargin * 100, 2) + '% of what’s needed'),
+      r.canLift ? status('good', 'Strength: ' + fmtRatio(r.strengthMargin) + ' what’s needed') : status('bad', 'Strength: ' + (r.strengthMargin >= 0.99 ? sig(Math.min(r.strengthMargin * 100, 99.9), 3) : sig(r.strengthMargin * 100, 2)) + '% of what’s needed'),
       r.canLift ? groundStatus(c, r.groundRatio) : null,
       o.crush && r.canLift ? (r.gripRatio > 1 ? status('bad', 'Grip: crushes the ' + o.short) : status('good', 'Grip: object holds')) : null,
       r.canLift ? null : status('info', 'Below: what would happen if he could')));
@@ -4797,20 +4872,30 @@ window.DINO_DATA = {
     const out = [];
     out.push(el('div', { class: 'bay-controls' }, objectPicker((x) => !x.noThrow), angleControl()));
     const key = r.style === 'whip' ? 'throwWhip' : 'throwPush';
+    const mode = r.basis || state.mode;
     if (!r.canHold || !r.canMove) {
-      out.push(verdict(!r.canHold ? 'Rex can’t throw it. He can’t even hold it up.' : 'Rex can hold it, but can’t throw it at any angle: his throwing push (' + fmtSI(r.Fdrive, 'N') + ') is less than its weight (' + fmtSI(r.needed, 'N') + ').'));
+      // Comic mode falls back to real muscle when that is stronger, so advise from the better of the two.
+      const rReal = state.mode === 'comic' ? P.throwObject(Object.assign({}, c, { mode: 'real', record: true }), o, state.angle) : r;
+      const Fbest = Math.max(r.Fdrive, rReal.Fdrive);
+      const close = Math.abs(r.Fdrive / r.needed - 1) < 0.05 || Math.abs(Fbest / r.needed - 1) < 0.05, nd = close ? 4 : 3;
+      const handsText = (r.hands > 1 ? 'his throwing hands and forearms' : 'his throwing hand and forearm');
+      out.push(verdict(!r.canHold ? 'Rex can’t throw it. He can’t even hold it up.' : 'Rex can hold it, but can’t throw it at any angle: his throwing push (' + fmtSI(r.Fdrive, 'N', nd) + ') is less than the weight of the ' + o.short + ' plus ' + handsText + ' (' + fmtSI(r.needed, 'N', nd) + ').'));
       out.push(tiles(
-        tile('Weight to hold up', fmtSI(o.m * g, 'N'), fmtMass(o.m)),
-        tile('His full strength', fmtSI(c.F, 'N'), ''),
-        r.canHold ? tile('His throwing push', fmtSI(r.Fdrive, 'N'), shareText(key) + ' of full strength per hand, ' + r.hands + ' hand' + (r.hands > 1 ? 's' : '')) : null));
+        tile('Weight to hold up', fmtSI(r.needed, 'N', nd), fmtMass(o.m) + ' ' + o.short + ' + ' + fmtMass(r.armMass) + ' of ' + (r.hands > 1 ? 'hands and forearms' : 'hand and forearm')),
+        tile('His full strength', fmtSI(c.F, 'N', nd), ''),
+        r.canHold ? tile('His throwing push', fmtSI(r.Fdrive, 'N', nd), shareText(key, mode) + ' of full strength per hand, ' + r.hands + ' hand' + (r.hands > 1 ? 's' : '')) : null));
+      const need = r.needed / Math.max(Fbest, 1e-9);
       out.push(happens([
-        state.mode === 'real' ? 'A fast throw can’t use full strength: muscles deliver much less force while moving quickly than while holding still.' : 'A throw uses a fixed share of his strength, the share that matches real throwers at record-human strength.',
-        'Try a lighter object, or about ' + fmtRatio(r.needed / Math.max(r.Fdrive, 1e-9)) + ' more strength.',
+        !r.canHold ? 'To throw it he first has to hold it up: the ' + o.short + ' plus ' + handsText + ' weigh ' + fmtSI(r.needed, 'N') + ', more than his full strength.'
+          : (mode === 'real' ? 'A fast throw can’t use full strength: muscles deliver much less force while moving quickly than while holding still.' : 'A throw uses a fixed share of his strength, the share that matches real throwers at record-human strength.'),
+        r.canHold && state.mode === 'comic' && rReal.Fdrive > r.Fdrive * 1.01 ? 'Comic mode switches to real muscle when that does better. Real muscle pushes hardest from a standstill: ' + shareText(key, 'real') + ' of full strength per hand, ' + fmtSI(rReal.Fdrive, 'N', nd) + ' here, against the ' + fmtSI(r.needed, 'N', nd) + ' needed.' : null,
+        'Try a lighter object, or ' + (need < 2 ? 'about ' + sig((need - 1) * 100, 2) + '% more strength.' : 'about ' + fmtRatio(need) + ' the strength he has.'),
       ]));
       return out;
     }
     const f = r.flight;
     const straightUp = state.angle >= 90;   // range at 90° is round-off, not a distance
+    const pastMoon = !f.relativistic && !f.escaped && !f.orbit && f.apex > 3.844e8;
     const vac = f.relativistic ? null : P.fly({ v0: r.v, thetaDeg: state.angle, h0: c.body.releaseHeight, m: o.m, A: o.area, Cd: 0, record: true });
     let v;
     if (f.relativistic) v = 'The ' + o.short + ' leaves at ' + fmtSpeed(r.v) + '. It never lands: the air in front of it turns into a fireball.';
@@ -4821,8 +4906,10 @@ window.DINO_DATA = {
     else if (straightUp) v = 'The ' + o.short + ' goes ' + fmtDist(f.apex) + ' straight up and comes back down on Rex ' + fmtTime(f.time) + ' later.';
     else v = 'The ' + o.short + ' flies ' + fmtDist(f.range) + '.';
     if (r.recoilV > 1) v += ' Rex gets shoved backward at ' + speedOnly(r.recoilV) + '.';
+    if (pastMoon) v += ' Its arc goes past the Moon’s orbit (384,400 km). The sim counts only Earth’s pull; the Moon and Sun would bend an arc this long, so where it lands is rough.';
     out.push(verdict(v));
     const chips = [];
+    if (basisChip(r)) chips.push(basisChip(r));
     chips.push(status(r.v >= K.a0 ? 'warn' : 'good', 'Launch: ' + speedOnly(r.v) + (r.v >= K.a0 && r.v < 0.01 * K.c ? ' (' + fmtMach(r.v) + ')' : '')));
     if (r.anchor.R !== Infinity) chips.push(r.recoilV > 0.01 ? status('bad', 'Footing: feet slide, he recoils') : status('good', 'Footing holds'));
     if (r.sinkRatio > 1) chips.push(status('bad', 'Ground gives way under his feet'));
@@ -4837,17 +4924,19 @@ window.DINO_DATA = {
     else if (straightUp) distTile = tile('Height', fmtDist(f.apex), 'straight up and back · ' + fmtTime(f.time));
     else distTile = tile('Distance', fmtDist(f.range), 'top ' + fmtDist(f.apex) + ' · ' + fmtTime(f.time));
     out.push(tiles(
-      tile('Launch speed', speedOnly(r.v), [fmtMach(r.v), r.v < 0.01 * K.c ? big(r.v * 3.6, 3) + ' km/h' : ''].filter(Boolean).join(' · ')),
+      speedTile('Launch speed', r.v, [fmtMach(r.v), r.v < 0.01 * K.c ? big(r.v * 3.6, 3) + ' km/h' : ''].filter(Boolean).join(' · ')),
       tile('Energy in the ' + o.short, fmtSI(r.Eobj, 'J'), fmtTNT(r.Eobj)),
       distTile,
       f.landed && !f.relativistic ? tile('Lands at', speedOnly(f.vImpact), fmtTNT(r.Eimpact) + ' on impact') : null,
-      tile('His recoil', r.recoilV > 0.01 ? speedOnly(r.recoilV) : 'none', r.anchor.R !== Infinity ? 'footing gives at ' + fmtSI(r.anchor.R, 'N') : (state.anchor === 'bolted' ? 'bolted down' : 'push aimed so steeply down his feet can’t slide'))));
-    if (!f.relativistic && f.path && f.path.length > 1) {
+      (r.recoilV > 0.01 ? speedTile : tile)('His recoil', r.recoilV > 0.01 ? r.recoilV : 'none', r.anchor.R !== Infinity ? 'footing gives at ' + fmtSI(r.anchor.R, 'N') : (state.anchor === 'bolted' ? 'bolted down' : 'push aimed so steeply down his feet can’t slide'))));
+    if (!f.relativistic && f.path && f.path.length > 1 && !straightUp) {
       const ghost = vac && vac.landed && vac.path && vac.range < 40 * Math.max(f.range, 1) ? vac.path : null;
-      out.push(trajectoryChart(f.path, ghost, 'Flight path of the ' + o.short, f.apex));
+      const endNote = (f.landed || f.timedOut) ? null : (f.orbit ? 'in orbit →' : 'leaves Earth →');
+      out.push(trajectoryChart(f.path, ghost, 'Flight path of the ' + o.short, f.apex, endNote));
     }
     const items = [];
     if (r.heldBack) items.push('Pushing with everything would make his feet slide and waste the throw, so he holds back to what his footing can take (' + fmtSI(r.anchor.R, 'N') + ').');
+    if (r.basis === 'real' && state.mode === 'comic') items.push('Comic mode’s fixed ' + shareText(key, 'comic') + ' share of strength would throw this slower than real muscle does at this load, so the result shown is real muscle’s.');
     if (r.anchor.R !== Infinity && r.recoilV > 0.01) items.push('Newton’s third law: the ' + o.short + ' pushes back on Rex exactly as hard as he pushes it. His footing can only resist ' + fmtSI(r.anchor.R, 'N') + ', so he flies backward at ' + speedOnly(r.recoilV) + '.' + (r.recoilE > r.Eobj ? ' He ends up with more of the energy than the ' + o.short + ' does.' : '') + (state.anchor === 'friction' ? ' To stay put he needs to dig in: try “Claws dug in” or “Bolted to the planet” under Settings.' : ''));
     if (r.sinkRatio > 1) items.push('The throw also drives his feet down: the ground under him is carrying ' + fmtRatio(r.sinkRatio) + ' its limit, so he sinks while he throws.');
     if (vac && !f.relativistic) {
@@ -4880,7 +4969,7 @@ window.DINO_DATA = {
     if (r.gripRatio > 1) items.push(isFinite(r.gripRatio) ? 'The force on his palms is ' + fmtRatio(r.gripRatio) + ' what the ' + o.short + ' can take. Without a pushing plate of ' + fmtArea(r.plateNeeded) + ', his hands go through it and only part of it gets thrown.' : 'The force on his palms is unbounded, so no plate is big enough: his hands go through the ' + o.short + ' and only part of it gets thrown.');
     if (f.leavesHill) items.push('Its arc tops out beyond about 1.5 million km, Earth’s Hill sphere. Out there the Sun’s pull wins, so it drifts off into its own orbit around the Sun.');
     else if (f.escaped) items.push('It leaves the atmosphere faster than escape velocity (11.2 km/s at the surface), so gravity never brings it back.');
-    if (f.landed && r.Eimpact > 4.184e9) items.push('Impact: ' + fmtTNT(r.Eimpact) + (r.planetScale ? '. That is planet-scale: crater scaling no longer applies' : (r.crater > 0 ? ', crater up to ' + fmtDist(r.crater) + ' across (impact scaling; rock and concrete make smaller craters)' : '')) + (r.quake > 2 && !r.planetScale ? ', felt like a magnitude ' + sig(r.quake, 2) + ' quake' : '') + '.');
+    if (f.landed && r.Eimpact > 4.184e9) items.push('Impact: ' + fmtTNT(r.Eimpact) + (r.planetScale ? '. That is planet-scale: crater scaling no longer applies' : (r.crater > 0 ? ', crater up to ' + fmtDist(r.crater) + ' across' + (r.craterBeyondFit ? ' (far past the few-hundred-km range the scaling is fitted to; rough size only)' : ' (impact scaling; rock and concrete make smaller craters)') : '')) + (r.quake > 2 && !r.planetScale ? ', felt like a magnitude ' + sig(r.quake, 2) + ' quake' : '') + '.');
     out.push(happens(items));
     const human = D.tiers.find((t) => t.id === 'human');
     const calBody = Math.abs(state.H - 2) < 1e-9 && Math.abs(state.m - 180) < 1e-6;
@@ -4893,11 +4982,12 @@ window.DINO_DATA = {
       out.push(callout('Reality check for the default 2 m, 180 kg Rex at record-human strength (both muscle settings are tuned to match these): ' + rows.join(' | ')));
     }
     out.push(math([
-      'Drive: ' + fmtSI(r.Fdrive, 'N') + ' (' + shareText(key) + ' of full strength per hand' + (state.mode === 'real' ? ', falling with speed per the Hill curve' : ', constant') + ') over a ' + sig(r.style === 'whip' ? c.body.strokes.whip : c.body.strokes.throw, 2) + ' m ' + (r.style === 'whip' ? 'overarm whip' : 'shove') + ' with ' + r.hands + ' hand' + (r.hands > 1 ? 's' : '') + '; holding it up against gravity leaves ' + fmtSI(r.F, 'N') + ' along the throw.',
-      'Rex and the ' + o.short + ' get equal and opposite momentum while the push lasts; his footing absorbs up to ' + fmtSI(r.anchor.R, 'N') + '.',
+      'Drive: ' + fmtSI(r.Fdrive, 'N') + ' (' + shareText(key, mode) + ' of full strength per hand' + (r.hands * (mode === 'real' ? P.MUSCLE[key].forceFrac : P.MUSCLE[key].comicFrac) > 1 ? ', capped at his full strength' : '') + (mode === 'real' ? ', falling with speed per the Hill curve' : ', constant') + (r.heldBack ? '; he holds back to ' + fmtSI(r.anchor.R, 'N') + ' so his feet don’t slide' : '') + ') over a ' + sig(r.style === 'whip' ? c.body.strokes.whip : c.body.strokes.throw, 2) + ' m ' + (r.style === 'whip' ? 'overarm whip' : 'shove') + ' with ' + r.hands + ' hand' + (r.hands > 1 ? 's' : '') + '; holding it up against gravity leaves ' + fmtSI(r.F, 'N') + ' along the throw.',
+      'Rex and the ' + o.short + ' get equal and opposite momentum while the push lasts; ' + (isFinite(r.anchor.R) ? 'his footing absorbs up to ' + fmtSI(r.anchor.R, 'N') : 'his footing never gives (' + (state.anchor === 'bolted' ? 'bolted to the planet' : 'push aimed so steeply down his feet can’t slide') + ')') + '.',
       'Speeds use relativistic momentum: v = p c² / √(m²c⁴ + p²c²).',
-      'Flight: RK4 over a round Earth, exponential atmosphere (ρ₀ = 1.225 kg/m³, H = 8.4 km), drag ½ρv²·Cd·A with Cd ' + o.Cd + ' below Mach 0.8 and ' + o.CdSup + ' above Mach 1.2, A = ' + sig(o.area, 2) + ' m². Above 150 km the arc is solved exactly (Kepler).',
+      'Flight: RK4 over a round Earth, exponential atmosphere (ρ₀ = 1.225 kg/m³, H = 8.4 km), drag ½ρv²·Cd·A with Cd ' + o.Cd + ' below Mach 0.8 and ' + o.CdSup + ' above Mach 1.2, A = ' + sig(o.area, 2) + ' m². Above 150 km the arc is solved exactly as an Earth-only Kepler arc (no Moon or Sun pull).',
       r.crater ? 'Crater: Collins, Melosh & Marcus (2005) gravity-regime scaling.' : null,
+      r.basis === 'real' && state.mode === 'comic' ? 'Comic mode’s fixed ' + shareText(key, 'comic') + ' share would throw this slower than real muscle, so the real-muscle result is shown (comic mode never does worse than real muscle).' : null,
     ]));
     return out;
   }
@@ -4906,28 +4996,34 @@ window.DINO_DATA = {
 
   function bayJump(c) {
     const r = P.jump(c);
+    const mode = r.basis || state.mode;
     const f = r.flight;
     const RB = r.groundLimitForce;
     const rFree = !c.groundHolds && (r.groundFails || r.heldBack) ? P.jump(Object.assign({}, c, { groundHolds: true })) : null;
+    // holding back only matters if rigid ground would have sent him noticeably higher
+    const groundBinds = r.heldBack && rFree && rFree.v > 1.01 * r.v;
     const out = [];
     const up = r.v > 0 && !r.relativistic;
     let v;
     if (!(r.v > 0)) v = 'Rex can’t get off the ground.';
-    else if (r.relativistic) v = 'Rex leaves at ' + fmtSpeed(r.v) + '. The ground under him turns to plasma.';
+    else if (r.relativistic) v = 'Rex leaves at ' + fmtSpeed(r.v) + (c.groundHolds ? '.' : (r.groundDisrupts ? '. His push-off puts more energy into the ground than it takes to blow Earth apart.' : '. The ground under him turns to plasma.'));
     else if (f.leavesHill) v = 'Rex jumps past 1.5 million km, where the Sun’s pull beats Earth’s, and doesn’t come back.';
     else if (f.escaped) v = 'Rex jumps clean off the planet.';
     else if (f.timedOut) v = 'Rex is still going up after ' + fmtTime(f.time) + ', ' + fmtDist(f.apex) + ' high.';
     else v = 'Rex jumps ' + fmtDist(f.apex) + ' high' + (r.groundFails ? (r.Eground >= 1e6 ? ' and leaves two craters behind.' : ' and leaves two deep footprints.') : '.');
+    if (up && f.landed && f.apex > 3.844e8) v += ' His arc goes past the Moon’s orbit (384,400 km). The sim counts only Earth’s pull; the Moon and Sun would bend an arc this long, so where it lands is rough.';
     out.push(verdict(v));
     let gchip;
     if (c.groundHolds) gchip = status('info', 'Ground: comic, never breaks');
-    else if (r.heldBack) gchip = status('warn', 'Ground at its limit: he holds back');
+    else if (groundBinds) gchip = status('warn', 'Ground at its limit: he holds back');
+    else if (r.heldBack) gchip = status('good', 'Ground holds: he keeps under its limit');
+    else if (r.groundDisrupts) gchip = status('bad', 'Earth blown apart');
     else if (r.groundFails) gchip = status('bad', 'Ground gives: feet sink ' + fmtDist(r.sink));
     else gchip = status('good', r.F > RB ? 'Ground holds: his feet barely dent it' : 'Ground holds (' + sig(100 * r.F / RB, 2) + '% of limit)');
-    out.push(el('div', { class: 'status-row' }, gchip, r.v >= K.a0 && !r.relativistic ? status('warn', 'Sonic boom at takeoff') : null));
+    out.push(el('div', { class: 'status-row' }, basisChip(r), gchip, r.v >= K.a0 && !r.relativistic ? status('warn', 'Sonic boom at takeoff') : null));
     const ref = heightRefs().filter((h) => h.m <= f.apex).pop();
     out.push(tiles(
-      tile('Takeoff speed', speedOnly(r.v), fmtMach(r.v)),
+      speedTile('Takeoff speed', r.v, fmtMach(r.v)),
       up ? tile('Peak height', f.escaped ? 'Escapes Earth' : fmtDist(f.apex), ref ? 'higher than: ' + ref.label : '') : null,
       up && f.landed ? tile('Hang time', fmtTime(f.time), '') : null,
       r.groundFails ? tile('Energy into the ground', fmtSI(r.Eground, 'J'), r.groundDisrupts ? 'enough to blow Earth apart' : fmtTNT(r.Eground)) : null,
@@ -4939,14 +5035,15 @@ window.DINO_DATA = {
       out.push(logBars('Jump height vs landmarks', rows, fmtDist));
     }
     const items = [];
-    if (r.heldBack) items.push('The ground is the limit. On ' + c.surface.short + ' his feet can push off with at most ' + fmtSI(RB, 'N') + ' before it gives, so he holds back to that: pushing a bit harder only sinks his feet and wastes the stroke.' + (rFree && !rFree.flight.escaped ? ' Rigid ground would send him ' + fmtDist(rFree.flight.apex) + '.' : ''));
+    if (groundBinds) items.push('The ground is the limit. On ' + c.surface.short + ' his feet can push off with at most ' + fmtSI(RB, 'N') + ' before it gives, so he holds back to that: pushing a bit harder only sinks his feet and wastes the stroke.' + (rFree && !rFree.flight.escaped && !rFree.flight.relativistic ? ' Rigid ground would send him ' + fmtDist(rFree.flight.apex) + '.' : ''));
+    else if (r.heldBack) items.push('On ' + c.surface.short + ' his feet can push off with at most ' + fmtSI(RB, 'N') + ' before it gives, so he keeps his push under that. Here it costs him nothing: rigid ground would give the same jump.');
     if (r.groundFails) {
       const vf = r.footSpeed;
       const inertial = (c.surface.rho || 2000) * vf * vf > RB / (2 * c.body.footArea);
-      items.push('His feet punch ' + fmtDist(r.sink) + ' into the ground at up to ' + (vf >= 0.01 * K.c ? fmtSpeed(vf) : speedOnly(vf)) + '. ' + (inertial ? 'That fast, the ground resists mostly through its own inertia: it has to be shoved out of the way, so he can still push off it, the way a hard slap on water stings. ' : '') + 'The ground takes ' + fmtTNT(r.Eground) + (r.groundDisrupts ? ', more than it takes to blow Earth apart.' : (isFinite(r.groundQuake) && r.groundQuake > 2 ? ' (a magnitude ' + sig(r.groundQuake, 2) + ' quake).' : '.')));
+      items.push('His feet punch ' + fmtDist(r.sink) + ' into the ground at up to ' + (vf >= 0.01 * K.c ? fmtSpeed(vf) : speedOnly(vf)) + '. ' + (inertial ? 'That fast, the ground resists mostly through its own inertia: it has to be shoved out of the way, so he can still push off it, the way a hard slap on water stings. ' : '') + 'The ground takes ' + fmtTNT(r.Eground) + (r.groundDisrupts ? ', more than it takes to blow Earth apart.' : (isFinite(r.groundQuake) && r.groundQuake > 2 ? ' (a magnitude ' + sig(r.groundQuake, 2) + ' quake).' : '.')) + (!r.heldBack && rFree && rFree.v > 1.01 * r.v && up ? ' Rigid ground would send him ' + (rFree.flight.escaped || rFree.flight.relativistic ? 'off the planet.' : fmtDist(rFree.flight.apex) + ' high.') : ''));
     }
     if (!c.groundHolds && !r.groundFails && !r.heldBack && r.v > 0) items.push('The ground held. On ' + c.surface.short + ' it gives at ' + fmtSI(RB, 'N') + ' of push.');
-    if (state.mode === 'real') items.push('Real muscle caps his leg speed, so the jump tops out near ' + speedOnly(P.MUSCLE.jump.vmax * c.body.s) + ' of takeoff speed however strong he gets.');
+    if (mode === 'real') items.push('Real muscle caps his leg speed, so the jump tops out near ' + speedOnly(P.MUSCLE.jump.vmax * c.body.s) + ' of takeoff speed however strong he gets.');
     if (up && f.landed && f.apex > 50) items.push(isFinite(r.vacuumApex) ? 'Air drag eats the jump: with no air he would reach ' + fmtDist(r.vacuumApex) + '.' : 'With no air this takeoff would carry him off the planet. The air stops him.');
     if (up && f.landed && f.apex > 20) {
       const q = f.vImpact / r.vTerminal, vt = speedOnly(r.vTerminal);
@@ -4958,7 +5055,7 @@ window.DINO_DATA = {
     if (f.maxStagT > 1200 && !r.relativistic) items.push('He leaves with a shock wave, and the air at his head heats to about ' + fmtTemp(f.maxStagT) + '. He doesn’t care. Windows nearby would.');
     out.push(happens(items));
     out.push(math([
-      'Legs push his body (' + sig(c.body.m - c.body.feetMass, 3) + ' kg) up and his feet (' + sig(c.body.feetMass, 2) + ' kg) down with ' + fmtSI(r.F, 'N') + (state.mode === 'real' ? ' at most (1.4× the dial: the legs also carry his body weight)' : '') + ' over ' + sig(c.body.strokes.leg, 2) + ' m.',
+      'Legs push his body (' + sig(c.body.m - c.body.feetMass, 3) + ' kg) up and his feet (' + sig(c.body.feetMass, 2) + ' kg) down with ' + fmtSI(r.F, 'N') + (mode === 'real' ? ' at most (' + shareText('jump', 'real') + ' of the dial’s force: the legs also carry his body weight), falling with speed per the Hill curve' : ' (' + shareText('jump', 'comic') + ' of the dial’s force, constant)') + ' over ' + sig(c.body.strokes.leg, 2) + ' m.' + (r.basis === 'real' && state.mode === 'comic' ? ' Comic mode’s fixed share would jump lower here, so the real-muscle result is shown.' : ''),
       'Gravity holds the body back. The ground holds the feet with its bearing strength (' + fmtSI(RB, 'N') + ' for both feet) plus an inertial term ρv²A once they move.',
       'At full extension the legs lock: takeoff momentum = body momentum − feet momentum.',
       'Flight integrated with drag (Cd 1.0, ' + sig(c.body.topArea, 2) + ' m² head-first); no-air height from energy conservation in Earth’s 1/r² gravity.',
@@ -4975,30 +5072,32 @@ window.DINO_DATA = {
     if (bf.relativistic) v += ' It also fires him upward at ' + fmtSpeed(r.vBody) + '.';
     out.push(verdict(v));
     out.push(el('div', { class: 'status-row' },
+      basisChip(r),
       quakeChip(r.E, r.quake),
       r.footMach >= 1 && r.vFoot < 0.01 * K.c ? status('warn', 'Foot breaks the sound barrier') : null,
       r.vBody > 2 ? status('bad', 'Recoil launches him') : r.vBody > 0.5 ? status('warn', 'Recoil hops him ' + fmtDist(bf.apex) + ' up') : status('good', 'He stays put')));
     let holeTile;
     if (r.disrupts) holeTile = tile('Crater', 'none: Earth breaks up', 'more than Earth’s binding energy');
     else if (r.planetScale) holeTile = tile('Crater', 'planet-scale', 'crater scaling stops working');
-    else if (r.crater > 0) holeTile = tile('Crater', 'up to ' + fmtDist(r.crater) + ' wide', r.craterExtrapolated ? 'extrapolated: same energy at 20 km/s' : 'impact scaling, upper bound');
+    else if (r.crater > 0) holeTile = tile('Crater', 'up to ' + fmtDist(r.crater) + ' wide', r.craterBeyondFit ? 'far past the fitted range (a few hundred km): rough size only' : (r.craterExtrapolated ? 'extrapolated: same energy at 20 km/s' : 'impact scaling, upper bound'));
     else holeTile = tile('Hole under his foot', c.groundHolds ? 'none (comic ground)' : (r.holeDepth < 0.01 ? 'barely a dent' : fmtDist(r.holeDepth) + ' deep'), '');
     out.push(tiles(
       tile('Energy into the ground', fmtSI(r.E, 'J'), fmtTNT(r.E)),
       tile('Compared with', compareEnergy(r.E), ''),
-      tile('Foot speed at impact', speedOnly(r.vFoot), fmtMach(r.vFoot)),
+      speedTile('Foot speed at impact', r.vFoot, fmtMach(r.vFoot)),
       holeTile,
-      tile(r.vBody > 2 ? 'He gets launched' : 'Recoil hop', r.vBody > 0.5 ? (bf.relativistic ? fmtSpeed(r.vBody) : (bf.escaped ? 'Escapes Earth' : fmtDist(bf.apex) + ' up')) : 'none', r.vBody > 0.5 && !bf.relativistic ? speedOnly(r.vBody) : '')));
+      bf.relativistic ? speedTile('He gets launched', r.vBody, '') : tile(r.vBody > 2 ? 'He gets launched' : 'Recoil hop', r.vBody > 0.5 ? (bf.escaped ? 'Escapes Earth' : fmtDist(bf.apex) + ' up') : 'none', r.vBody > 0.5 ? speedOnly(r.vBody) : '')));
     out.push(blastBlock(r.E, 'ground-level'));
     const items = [];
     if (r.bolted) items.push('Newton’s third law again: driving the foot down pushes the rest of him up just as hard, but he is bolted to the planet, so the bolts take that push and the foot gets all the energy.');
     else {
       const pct = 100 * r.footShare;
-      items.push('Newton’s third law again: driving the foot down pushes the rest of him up just as hard. Only his own weight holds him down, so ' + (state.mode === 'real' ? 'with real muscle the recoil never gets beyond a small hop.' : 'at high strength the stomp throws Rex into the sky.') + (pct >= 99.5 ? ' Here his weight holds him down and the foot takes all of the energy.' : ' Here the foot takes ' + sig(pct, 2) + '% of the energy and his body the rest.'));
+      items.push('Newton’s third law again: driving the foot down pushes the rest of him up just as hard. Only his own weight holds him down, so ' + ((r.basis || state.mode) === 'real' ? 'with real muscle the recoil never gets beyond a small hop.' : 'at high strength the stomp throws Rex into the sky.') + (pct >= 99.5 ? ' Here his weight holds him down and the foot takes all of the energy.' : ' Here the foot takes ' + sig(pct, 2) + '% of the energy and his body the rest.'));
     }
     if (r.disrupts) items.push('That is more energy than it takes to blow Earth apart (its gravitational binding energy, 2.5 × 10³² J). A quake magnitude stops meaning anything.');
     else if (r.quake > 2) items.push('Quake magnitude assumes 1 part in 10,000 of the energy becomes ground shaking, the value impact studies use. The real share ranges 10⁻⁵ to 10⁻³, so read it as give or take about ⅔ of a magnitude.');
     if (r.planetScale && !r.disrupts) items.push('Crater scaling is fitted to craters up to a few hundred km on flat ground. Here it would predict one wider than Earth’s radius, so the honest answer is that the stomp melts and resurfaces much of the planet, not a crater of a definite size.');
+    else if (r.craterBeyondFit && !r.disrupts) items.push('Crater scaling is fitted to craters up to a few hundred km on flat ground. This one would be about ' + fmtDist(r.crater) + ' across on a curved planet, so read it as a rough basin size, not a definite crater.');
     else if (r.crater > 0 && !r.disrupts) items.push('Above about 2 km/s the foot doesn’t dig a hole: it makes an impact crater. The size uses asteroid-impact scaling, which overstates small craters in rock or concrete by a few times.');
     else if (!c.groundHolds && r.holeDepth >= 0.01) items.push('The ground resists the foot with its strength plus its inertia (it must be shoved aside), so the foot stops after about ' + fmtDist(r.holeDepth) + '.');
     out.push(happens(items));
@@ -5020,10 +5119,11 @@ window.DINO_DATA = {
     if (r.recoilE > 0.5 * r.E) v += ' The punch throws Rex backward harder than it throws his fist.';
     out.push(verdict(v));
     out.push(el('div', { class: 'status-row' },
-      r.mach >= 1 ? status('warn', 'Sonic boom from the fist') : status('good', 'Subsonic'),
+      basisChip(r),
+      r.vFist >= 0.01 * K.c ? status('bad', 'Fireball at the fist') : r.mach >= 1 ? status('warn', 'Sonic boom from the fist') : status('good', 'Subsonic'),
       r.recoilV > 0.01 ? status('warn', 'Body lurches back ' + fmtDist(r.lurch)) : status('good', 'Body stays planted')));
     out.push(tiles(
-      tile('Fist speed', speedOnly(r.vFist), fmtMach(r.vFist)),
+      speedTile('Fist speed', r.vFist, fmtMach(r.vFist)),
       tile('Energy in the punch', fmtSI(r.E, 'J'), fmtTNT(r.E)),
       tile('Compared with', compareEnergy(r.E), ''),
       r.recoilE > 0.01 * r.E ? tile('His own recoil', fmtSI(r.recoilE, 'J'), sig(100 * r.recoilE / r.E, 2) + '% of the total') : null,
@@ -5033,10 +5133,10 @@ window.DINO_DATA = {
     items.push('A punch into empty air does no work on anything but the air. Everything the arm put in, the fist’s energy plus his own recoil, is released when the arm stops.');
     if (r.recoilE > 0.5 * r.E) items.push('His footing can only hold ' + fmtSI(r.anchor.R, 'N') + '. Past that, the fist and Rex push apart like two skaters, and at extreme strength the light fist can’t go faster than light, so his own body takes most of the energy.');
     if (r.mach >= 1 && r.vFist < 0.01 * K.c) items.push('Past Mach 1 the fist drags a shock wave, like a bullet. Bystanders get the bang even if he misses.');
-    if (r.vFist >= 0.01 * K.c) items.push('At this speed the air ahead of the fist is shock-heated into plasma and the energy comes out as a blast at his knuckles. (Air only starts to fuse much closer to light speed: xkcd’s “Relativistic Baseball” is pitched at 90% of it.)');
-    if (state.mode === 'real') items.push('Real muscle caps fist speed near ' + speedOnly(P.MUSCLE.punch.vmax * c.body.s) + ' however strong he is. Strength buys force on contact, not speed in the air.');
+    if (r.vFist >= 0.01 * K.c) items.push('At this speed the air ahead of the fist is shock-heated into plasma and the energy comes out as a blast at his knuckles.' + (r.vFist < 0.5 * K.c ? ' (Air only starts to fuse much closer to light speed: xkcd’s “Relativistic Baseball” is pitched at 90% of it.)' : ' This close to light speed, air nuclei start to fuse too, as in xkcd’s “Relativistic Baseball”.'));
+    if ((r.basis || state.mode) === 'real') items.push('Real muscle caps fist speed near ' + speedOnly(P.MUSCLE.punch.vmax * c.body.s) + ' however strong he is. Strength buys force on contact, not speed in the air.');
     out.push(happens(items));
-    out.push(math(['Arm drives fist + forearm (' + sig(c.body.handEff, 2) + ' kg) with ' + fmtSI(r.F, 'N') + ' over ' + sig(c.body.strokes.punch, 2) + ' m; his footing holds up to ' + fmtSI(r.anchor.R, 'N') + '.', 'Blast radii: Kinney & Graham (1985) free-air overpressure curve, 1 kg TNT = 4.184 MJ.']));
+    out.push(math(['Arm drives fist + forearm (' + sig(c.body.handEff, 2) + ' kg) with ' + fmtSI(r.F, 'N') + ' over ' + sig(c.body.strokes.punch, 2) + ' m; ' + (isFinite(r.anchor.R) ? 'his footing holds up to ' + fmtSI(r.anchor.R, 'N') : 'he is bolted to the planet, so his footing never gives') + '.', 'Blast radii: Kinney & Graham (1985) free-air overpressure curve, 1 kg TNT = 4.184 MJ.']));
     return out;
   }
 
@@ -5044,16 +5144,16 @@ window.DINO_DATA = {
     const r = P.clap(c);
     const out = [];
     out.push(verdict(r.vHand >= 0.01 * K.c ? 'The clap releases ' + fmtTNT(r.E) + ' between his palms.' : 'His hands meet at ' + speedOnly(r.vHand) + ' and release ' + fmtTNT(r.E) + '.'));
-    out.push(el('div', { class: 'status-row' }, r.mach >= 1 ? status('warn', 'Hands break the sound barrier') : status('good', 'Subsonic hands'), status('info', 'Recoil cancels: left and right push equally')));
+    out.push(el('div', { class: 'status-row' }, r.vHand >= 0.01 * K.c ? status('bad', 'Fireball between his hands') : r.mach >= 1 ? status('warn', 'Hands break the sound barrier') : status('good', 'Subsonic hands'), status('info', 'Recoil cancels: left and right push equally'), basisChip(r)));
     out.push(tiles(
-      tile('Hand speed', speedOnly(r.vHand), fmtMach(r.vHand)),
+      speedTile('Hand speed', r.vHand, fmtMach(r.vHand)),
       tile('Energy released', fmtSI(r.E, 'J'), fmtTNT(r.E)),
       tile('Compared with', compareEnergy(r.E), '')));
     out.push(blastBlock(r.E, 'between his hands'));
     out.push(happens([
       'The clap is the one move with no recoil problem: both arms push on his chest equally and opposite, so he stays put however strong he is.',
       'That makes a comic “thunderclap” fair physics: two hands’ worth of energy, released in a small space.',
-      state.mode === 'real' ? 'In real-muscle mode the hands cap near ' + speedOnly(P.MUSCLE.clap.vmax * c.body.s) + ', so a clap stays a clap.' : null,
+      (r.basis || state.mode) === 'real' ? 'In real-muscle mode the hands cap near ' + speedOnly(P.MUSCLE.clap.vmax * c.body.s) + ', so a clap stays a clap.' : null,
     ]));
     out.push(math(['Each arm drives a hand + forearm (' + sig(c.body.handEff, 2) + ' kg) with ' + fmtSI(r.F, 'N') + ' over ' + sig(c.body.strokes.clap, 2) + ' m.', 'Energy released = both hands’ kinetic energy (they stop dead).']));
     return out;
@@ -5078,7 +5178,7 @@ window.DINO_DATA = {
     out.push(tiles(
       tile('Acceleration', sig(r.accelG, 2) + ' g', fmtSI(r.thrust, 'N') + ' of push-off'),
       tile('0 to 100 km/h', isFinite(r.t100) ? fmtTime(r.t100) : 'never', isFinite(r.t100) ? '' : 'top speed is below 100 km/h'),
-      tile('Top speed', r.relativistic ? fmtSpeed(r.vTop) : speedOnly(r.vTop), fmtMach(r.vTop)),
+      speedTile('Top speed', r.vTop, fmtMach(r.vTop)),
       r.relativistic ? null : tile('Power fighting air', fmtSI(r.dragPower, 'W'), big(r.airPerSecond, 3) + ' kg of air shoved aside per second')));
     const refs = D.speeds.map((s) => ({ label: s.label, value: s.v }));
     refs.push({ label: 'Rex', value: r.vTop, highlight: true });
@@ -5235,7 +5335,7 @@ window.DINO_DATA = {
     if (!th) computeThresholds(key);
     const W = Math.max(300, Math.min(wrap.clientWidth || 640, 900));
     const pxDec = W < 520 ? 26 : 22;
-    const padT = 24, padB = 24;
+    const padT = 40, padB = 24;
     const H = padT + (LMAX - LMIN) * pxDec + padB;
     const axisX = Math.round(W / 2);
     const y = (lg) => padT + (LMAX - Math.min(LMAX, Math.max(LMIN, lg))) * pxDec;
@@ -5268,7 +5368,7 @@ window.DINO_DATA = {
       for (const it of items) { it.h = 16 + 14 * it.lines.length; it.ty = Math.max(y(it.lg), prev + prevH); prev = it.ty; prevH = it.h; }
       const bottom = padT + (LMAX - LMIN) * pxDec + 10;
       const over = prev + prevH - 16 - bottom;
-      if (over > 0) { let next = Infinity; for (let i = items.length - 1; i >= 0; i--) { const it = items[i]; it.ty = Math.min(it.ty - over, next - it.h); next = it.ty; } }
+      if (over > 0) { let next = bottom + 16; for (let i = items.length - 1; i >= 0; i--) { const it = items[i]; it.ty = Math.min(it.ty, next - it.h); next = it.ty; } }
     };
     place(tierItems); place(thItems);
     const tip = el('div', { class: 'tip', hidden: true });
@@ -5280,26 +5380,32 @@ window.DINO_DATA = {
       const left = it.side === 'L';
       const lx = left ? axisX - 26 : axisX + 26;
       const g2 = sv('g', { class: 'mk', 'data-key': it.key, tabindex: '0', role: 'button', 'aria-label': it.text + ', ' + it.sub + '. Set strength here.' });
-      g2.append(sv('path', { d: `M${axisX} ${yy} L${left ? axisX - 14 : axisX + 14} ${yy} L${lx} ${it.ty}`, fill: 'none', stroke: 'var(--ink-3)', 'stroke-width': 1, 'stroke-opacity': 0.6, 'pointer-events': 'none' }));
+      g2.append(sv('path', { d: `M${axisX} ${yy} L${left ? axisX - 14 : axisX + 14} ${yy} L${lx} ${it.ty}`, fill: 'none', stroke: 'var(--ink-3)', 'stroke-width': 1, 'pointer-events': 'none' }));
       g2.append(sv('circle', { class: 'ring', cx: axisX, cy: yy, r: 5, fill: it.color, stroke: 'var(--surface)', 'stroke-width': 2, 'pointer-events': 'none' }));
       it.lines.forEach((ln, i) => g2.append(sv('text', { x: lx + (left ? -4 : 4), y: it.ty + 1 + 14 * i, 'text-anchor': left ? 'end' : 'start', class: 'lbl-strong', style: 'font-family:var(--font-body);font-size:12.5px' }, ln)));
       g2.append(sv('text', { x: lx + (left ? -4 : 4), y: it.ty + 14 * it.lines.length, 'text-anchor': left ? 'end' : 'start' }, it.sub));
-      g2.append(sv('rect', { x: left ? 0 : axisX + 9, y: it.ty - 13, width: axisX - 9, height: it.h - 2, fill: 'transparent' }));
+      g2.append(sv('rect', { class: 'hit', rx: 4, x: left ? 1 : axisX + 9, y: it.ty - 13, width: axisX - 10, height: it.h - 2, fill: 'transparent' }));
+      // dot hit target: its own half of the axis band, split at the midpoint to the nearest dot on the same side
+      {
+        const ys = (left ? tierItems : thItems).map((o) => y(o.lg)).sort((a, b) => a - b), k = ys.indexOf(yy);
+        const top = Math.max(yy - 9, k > 0 ? (ys[k - 1] + yy) / 2 : -Infinity), bot = Math.min(yy + 9, k < ys.length - 1 ? (yy + ys[k + 1]) / 2 : Infinity);
+        if (bot > top) g2.append(sv('rect', { x: left ? axisX - 9 : axisX, y: top, width: 9, height: bot - top, fill: 'transparent' }));
+      }
       const show = () => {
         tip.replaceChildren(el('b', { text: it.text }), el('span', { text: it.detail }));
         tip.hidden = false;
         const rect = wrap.getBoundingClientRect();
         const tw = Math.min(260, rect.width - 20);
         tip.style.left = (left ? 8 : rect.width - tw - 8) + 'px';
-        const scale = wrap.querySelector('svg').getBoundingClientRect().height / (H + 30);
-        let top = it.ty * scale + 22;
-        if (top + 90 > rect.height) top = Math.max(0, it.ty * scale - 100);
+        const gr = g2.getBoundingClientRect(), th2 = tip.offsetHeight;
+        let top = gr.bottom - rect.top + 6;                                           // below the whole marker
+        if (top + th2 > rect.height) top = Math.max(0, gr.top - rect.top - 6 - th2);  // else above it
         tip.style.top = top + 'px';
       };
       g2.addEventListener('pointerenter', show); g2.addEventListener('focus', show);
       g2.addEventListener('pointerleave', () => { tip.hidden = true; }); g2.addEventListener('blur', () => { tip.hidden = true; });
       g2.addEventListener('click', it.set);
-      g2.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); it.set(); } });
+      g2.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); it.set(); } else if (e.key === 'Escape') tip.hidden = true; });
       svg.append(g2);
     };
     tierItems.forEach(draw); thItems.forEach(draw);
@@ -5340,6 +5446,7 @@ window.DINO_DATA = {
           el('div', { class: 'row' },
             el('span', { class: 'badge ' + f.status, text: statusLabel }),
             f.source ? el('a', { href: f.source.url, target: '_blank', rel: 'noopener', text: f.source.title || 'source' }) : null,
+            (f.also || []).map((a) => el('a', { href: a.url, target: '_blank', rel: 'noopener', text: a.title })),
             f.run ? el('button', { type: 'button', class: 'run', onclick: () => runFeat(f) }, 'Simulate') : null)));
       }
       box.append(el('div', {}, el('h3', { text: gname, style: 'margin-bottom:8px' }), grid));
@@ -5372,7 +5479,7 @@ window.DINO_DATA = {
         el('td', {}, s.label, s.note ? el('div', { class: 'muted', style: 'font-size:.8rem;margin-top:2px', text: s.note }) : null),
         el('td', { class: 'num', text: s.value }),
         el('td', {}, el('span', { class: 'badge ' + s.status, text: STATUS_LABEL[s.status] || s.status })),
-        el('td', {}, (s.sources || []).map((u, i) => [i ? ' · ' : null, el('a', { href: u.url, target: '_blank', rel: 'noopener', text: u.title || new URL(u.url).hostname })]))));
+        el('td', {}, (s.sources || []).flatMap((u, i) => [i ? ' · ' : null, el('a', { href: u.url, target: '_blank', rel: 'noopener', text: u.title || new URL(u.url).hostname })]))));
     }
   }
 

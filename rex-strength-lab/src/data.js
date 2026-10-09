@@ -50,17 +50,17 @@ window.DINO_DATA = {
    "id": "secretwars",
    "chip": "Hulk, Secret Wars",
    "label": "Hulk holds a mountain range",
-   "who": "Secret Wars #4 (1984): 150 billion tons",
+   "who": "Secret Wars #4 (1984): 150 billion tons, per press accounts",
    "liftKg": 136077711000000.0,
-   "note": "Quoted from Reed Richards in press accounts; the panel itself was not seen."
+   "note": "Quoted from Reed Richards; the panel itself was not seen."
   },
   {
    "id": "allstar",
    "chip": "All-Star Superman",
    "label": "All-Star Superman",
-   "who": "All-Star Superman #1 (2005): 200 quintillion tons",
+   "who": "All-Star Superman #1 (2005): 200 quintillion tons, per reviews",
    "liftKg": 1.81436948e+23,
-   "note": "Issue and exact wording rest on reviews; it may be a force rather than a literal object."
+   "note": "The issue and exact wording are unconfirmed; it may be a force rather than a literal object."
   },
   {
    "id": "earth",
@@ -590,7 +590,7 @@ window.DINO_DATA = {
    "rho": 3000,
    "noThrow": true,
    "noPull": true,
-   "liftNote": "The comic never says what the load is. It is about 2.5 times the Moon’s mass (3% of Earth’s), so treat it as a force equivalent."
+   "liftNote": "None of the accounts we found say what the load is. It is about 2.5 times the Moon’s mass (3% of Earth’s), so treat it as a force equivalent."
   }
  ],
  "energyRefs": [
@@ -760,7 +760,8 @@ window.DINO_DATA = {
     "liftKg": 511,
     "action": "lift",
     "obj": "bar511"
-   }
+   },
+   "also": []
   },
   {
    "group": "human",
@@ -776,7 +777,8 @@ window.DINO_DATA = {
     "liftKg": 2422.18,
     "action": "lift",
     "obj": "backlift"
-   }
+   },
+   "also": []
   },
   {
    "group": "human",
@@ -788,7 +790,8 @@ window.DINO_DATA = {
     "url": "https://www.starkcenter.org/igh/igh-v7/igh-v7-n1/igh0701e.pdf",
     "title": "Source"
    },
-   "run": null
+   "run": null,
+   "also": []
   },
   {
    "group": "human",
@@ -804,7 +807,8 @@ window.DINO_DATA = {
     "liftKg": 511,
     "action": "pull",
     "obj": "cc177"
-   }
+   },
+   "also": []
   },
   {
    "group": "human",
@@ -821,7 +825,8 @@ window.DINO_DATA = {
     "action": "throw",
     "obj": "shot",
     "angle": 37
-   }
+   },
+   "also": []
   },
   {
    "group": "human",
@@ -838,7 +843,8 @@ window.DINO_DATA = {
     "action": "throw",
     "obj": "baseball",
     "angle": 2
-   }
+   },
+   "also": []
   },
   {
    "group": "human",
@@ -853,13 +859,14 @@ window.DINO_DATA = {
    "run": {
     "liftKg": 511,
     "action": "sprint"
-   }
+   },
+   "also": []
   },
   {
    "group": "comic",
    "title": "Hurdle a twenty-story building",
    "who": "Action Comics #1 · 1938",
-   "claim": "“Leap 1/8th of a mile; hurdle a twenty-story building… raise tremendous weights.” Runs the jump at the strength it needs (20 stories ≈ 60 m).",
+   "claim": "“Leap 1/8th of a mile; hurdle a twenty-story building… raise tremendous weights.” Switches to Comic book mode and runs the jump at the strength it needs (20 stories ≈ 60 m). A 2 m Rex on real muscle tops out near 7 m.",
    "status": "canon_stated",
    "source": {
     "url": "https://be-api.us.archive.org/fts/v1/search?q=%22leap+1%2F8th+of+a+mile%22&size=5",
@@ -869,7 +876,8 @@ window.DINO_DATA = {
     "solve": "jump60",
     "mode": "comic",
     "action": "jump"
-   }
+   },
+   "also": []
   },
   {
    "group": "comic",
@@ -885,7 +893,8 @@ window.DINO_DATA = {
     "liftKg": 1429,
     "action": "lift",
     "obj": "desoto"
-   }
+   },
+   "also": []
   },
   {
    "group": "comic",
@@ -902,7 +911,8 @@ window.DINO_DATA = {
     "action": "throw",
     "obj": "shot",
     "angle": 37
-   }
+   },
+   "also": []
   },
   {
    "group": "comic",
@@ -919,7 +929,8 @@ window.DINO_DATA = {
     "action": "throw",
     "obj": "car",
     "angle": 45
-   }
+   },
+   "also": []
   },
   {
    "group": "comic",
@@ -936,7 +947,8 @@ window.DINO_DATA = {
     "action": "throw",
     "obj": "tank",
     "angle": 30
-   }
+   },
+   "also": []
   },
   {
    "group": "comic",
@@ -952,7 +964,8 @@ window.DINO_DATA = {
     "liftKg": 300000.0,
     "action": "lift",
     "obj": "b777"
-   }
+   },
+   "also": []
   },
   {
    "group": "comic",
@@ -968,7 +981,8 @@ window.DINO_DATA = {
     "liftKg": 136077711000000.0,
     "action": "lift",
     "obj": "range150"
-   }
+   },
+   "also": []
   },
   {
    "group": "comic",
@@ -984,7 +998,8 @@ window.DINO_DATA = {
     "liftKg": 1.81436948e+23,
     "action": "lift",
     "obj": "allstar"
-   }
+   },
+   "also": []
   },
   {
    "group": "comic",
@@ -1000,7 +1015,8 @@ window.DINO_DATA = {
     "liftKg": 5.9724e+24,
     "action": "lift",
     "obj": "earth"
-   }
+   },
+   "also": []
   },
   {
    "group": "comic",
@@ -1015,7 +1031,8 @@ window.DINO_DATA = {
    "run": {
     "liftKg": Infinity,
     "action": "punch"
-   }
+   },
+   "also": []
   },
   {
    "group": "comic",
@@ -1027,7 +1044,8 @@ window.DINO_DATA = {
     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-MarvelTeam-Up-TheOfficialMarvelIndextoMarvelTeam-Up02+AND+%28%22only+shaken%22+OR+%22embellished+in+the+telling%22%29&size=5",
     "title": "Source"
    },
-   "run": null
+   "run": null,
+   "also": []
   },
   {
    "group": "myth",
@@ -1044,7 +1062,8 @@ window.DINO_DATA = {
     "action": "throw",
     "obj": "ruyi",
     "angle": 40
-   }
+   },
+   "also": []
   },
   {
    "group": "myth",
@@ -1060,7 +1079,8 @@ window.DINO_DATA = {
     "liftKg": 5100000000000000000,
     "action": "lift",
     "obj": "sky"
-   }
+   },
+   "also": []
   },
   {
    "group": "myth",
@@ -1072,7 +1092,8 @@ window.DINO_DATA = {
     "url": "https://mythopedia.com/library/prose-edda-brodeur-1916/gylfaginning/",
     "title": "Source"
    },
-   "run": null
+   "run": null,
+   "also": []
   },
   {
    "group": "myth",
@@ -1084,7 +1105,8 @@ window.DINO_DATA = {
     "url": "https://www.biblegateway.com/passage/?search=Judges+16%3A1-31&version=KJV",
     "title": "Source"
    },
-   "run": null
+   "run": null,
+   "also": []
   },
   {
    "group": "myth",
@@ -1094,15 +1116,21 @@ window.DINO_DATA = {
    "status": "not_quantified",
    "source": {
     "url": "https://cts.perseids.org/read/latinLit/phi1002/phi001/perseus-eng2/1.9.5-1.10.3",
-    "title": "Source"
+    "title": "Quintilian"
    },
-   "run": null
+   "run": null,
+   "also": [
+    {
+     "url": "https://cts.perseids.org/read/greekLit/tlg0008/tlg001/perseus-eng2/10.0-10.19",
+     "title": "Athenaeus"
+    }
+   ]
   }
  ],
  "assumptions": [
   {
    "t": "Strength means force",
-   "d": "The dial sets the heaviest weight Rex can hold up. That times g is his maximum force. Every other move uses a set share of it, except the jump, which drives with 1.4× because the legs push his own body as well (a lifting record counts only the bar)."
+   "d": "The dial sets the heaviest weight Rex can hold up. That times g is his maximum force. Each move drives with a set share of it, and the shares differ between the two muscle models (Show the math gives each one). With real muscle the share is the most the limb can push from a standstill, falling as the limb speeds up; the legs get up to 1.4× because they also carry his body (a lifting record counts only the bar). Comic mode keeps one smaller share per move at every speed, fitted so both modes match record athletes (66% for the jump)."
   },
   {
    "t": "Only Rex is indestructible",
@@ -1122,7 +1150,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Pushes are one-dimensional",
-   "d": "A throw, punch or jump is a straight push over a fixed stroke (1.6 m shove, 2.2 m overarm throw, 0.7 m punch, 0.5 m leg drive). Heavy throws hold the object up against gravity as well as pushing it."
+   "d": "A throw, punch or jump is a straight push over a fixed stroke (1.6 m shove, 2.2 m overarm throw, 0.7 m punch, 0.5 m leg drive, 0.6 m stomp, 0.5 m clap; all at 2 m, scaling with height). Heavy throws hold the object up against gravity as well as pushing it."
   },
   {
    "t": "Relativity is built in",
@@ -1130,11 +1158,11 @@ window.DINO_DATA = {
   },
   {
    "t": "Air",
-   "d": "Exponential atmosphere, drag coefficient that rises past the sound barrier, no lift, no wind, non-rotating round Earth; above 150 km the arc is solved exactly. Heating is reported with an equilibrium-air estimate, not modelled: real thrown objects would melt or burn at the speeds shown."
+   "d": "Exponential atmosphere, drag coefficient that rises past the sound barrier, no lift, no wind, non-rotating round Earth; above 150 km the arc is solved exactly as an Earth-only Kepler arc (no Moon or Sun pull, so arcs past the Moon’s orbit are rough). Heating is reported with an equilibrium-air estimate, not modelled: real thrown objects would melt or burn at the speeds shown."
   },
   {
    "t": "Ground",
-   "d": "Typical ultimate bearing capacities for a foot-sized load. Real soils, pavement and slabs run from about half to three times these values; jointed or weathered granite can be about 17× weaker than the intact rock used here. Sand and gravel get stronger under wider feet. A fast-moving foot also has to shove the ground’s mass aside (resistance ρv² per unit area), which is why a hard enough push still launches him off soft ground and why stomp holes stay shallow."
+   "d": "Typical ultimate bearing capacities for a foot-sized load. Real soils, pavement and slabs run from about half to three times these values; lake ice is set at the bottom of its 5–25 MPa crushing strength (colder, faster-loaded ice is up to 5× stronger), and a floating sheet can snap in bending under far less total load, which is not modelled; jointed or weathered granite can be about 17× weaker than the intact rock used here. Sand and gravel get stronger under wider feet. A fast-moving foot also has to shove the ground’s mass aside (resistance ρv² per unit area), which is why a hard enough push still launches him off soft ground and why stomp holes stay shallow."
   },
   {
    "t": "Blasts and craters are upper bounds; quakes are a middle estimate",
@@ -1232,7 +1260,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Strength: Hulk holds a mountain range",
-   "value": "150 billion tons",
+   "value": "150 billion tons, per press accounts",
    "status": "reported",
    "sources": [
     {
@@ -1248,7 +1276,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Strength: All-Star Superman",
-   "value": "200 quintillion tons",
+   "value": "200 quintillion tons, per reviews",
    "status": "reported",
    "sources": [
     {
@@ -2970,7 +2998,14 @@ window.DINO_DATA = {
   },
   {
    "label": "Muscle model (fitted, not measured)",
-   "value": "Unloaded limb speed at 2 m (scales with height): shove throw 35 m/s, overarm whip 84.6, punch and clap 17, leg drive 12, stomp 16. Share of full strength: shove 52% per hand, whip/punch/clap 30%, stomp 50%, legs 140% (they also carry his body weight).",
+   "value": "Unloaded limb speed at 2 m (scales with height): shove throw 35 m/s, overarm whip 84.6, punch and clap 17, leg drive 12, stomp 16. Real muscle, share of full strength from a standstill: shove 52% per hand, whip/punch/clap 30%, stomp 50%, legs 140% (they also carry his body weight). Comic book, fixed shares fitted so both modes match record athletes: shove 17% per hand, whip 7%, punch 6%, clap 7%, stomp 13%, legs 66%.",
+   "status": "estimate",
+   "sources": [],
+   "note": null
+  },
+  {
+   "label": "Body shape and air (assumed)",
+   "value": "At 2 m (areas scale with height², lengths with height): drag Cd 1.0; frontal area 0.8 m² when sprinting, 0.3 m² head-first when jumping or launched by a stomp; claw dig area 0.2 m² when braced (a quarter of that per stride when sprinting); release height 0.9 × height; each sprint stride puts about 2.5× his weight on one foot. Overarm whip: effective mass at the hand 0.3% of body mass, fitted with the whip speed to the 47.3 m/s pitch; that is smaller than Dempster’s hand alone (0.6%) and is not a measured segment.",
    "status": "estimate",
    "sources": [],
    "note": null

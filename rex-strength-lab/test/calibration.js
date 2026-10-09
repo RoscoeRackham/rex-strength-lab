@@ -102,6 +102,29 @@ check('stagnation T at 11 km/s (K, equilibrium)', P.stagnationT(11000), 16602, 1
   if (bad.length) { fails++; console.log('FAIL throw/jump monotone in strength (3% tolerance):\n  ' + bad.slice(0, 8).join('\n  ')); }
   else console.log('ok   throw/jump monotone in strength (3% tolerance)');
 }
+// Real muscle at unbounded strength matches the top of the dial (it converges; the hold-back still runs).
+{
+  const car = D.objects.find((o) => o.id === 'car'), tank = D.objects.find((o) => o.id === 'tank');
+  const bad = [];
+  for (const sid of ['sand', 'gravel', 'softclay', 'ice', 'concrete', 'granite']) for (const anchor of ['friction', 'braced']) {
+    const s = D.surfaces.find((x) => x.id === sid); if (!s) continue;
+    const base = { mode: 'real', body, surface: s, groundHolds: false, anchor };
+    const top = Object.assign({}, base, { F: 1e34 * g }), inf = Object.assign({}, base, { F: Infinity });
+    for (const [name, fn] of [['car 45', (c) => P.throwObject(c, car, 45).v], ['tank 30', (c) => P.throwObject(c, tank, 30).v], ['jump', (c) => P.jump(c).v]]) {
+      const a = fn(top), b = fn(inf);
+      if (!(Math.abs(a - b) <= 1e-6 * Math.max(a, 1e-9))) bad.push(sid + ' ' + anchor + ' ' + name + ': 10^34 kg ' + a.toPrecision(6) + ' vs inf ' + b.toPrecision(6));
+    }
+  }
+  if (bad.length) { fails++; console.log('FAIL real muscle at infinite strength = top of dial:\n  ' + bad.slice(0, 8).join('\n  ')); }
+  else console.log('ok   real muscle at infinite strength = top of dial');
+}
+// The comic shares quoted in the sources table match the fitted values.
+{
+  const quoted = { throwPush: 17, throwWhip: 7, punch: 6, clap: 7, stomp: 13, jump: 66 };
+  const off = Object.entries(quoted).filter(([k, v]) => Math.round(P.MUSCLE[k].comicFrac * 100) !== v).map(([k, v]) => k + ' quoted ' + v + '%, fitted ' + (P.MUSCLE[k].comicFrac * 100).toFixed(2) + '%');
+  if (off.length) { fails++; console.log('FAIL comic shares in build-data.py are stale: ' + off.join('; ')); }
+  else console.log('ok   comic shares quoted in the sources table match the fit');
+}
 // Comic mode is never weaker than real muscle.
 {
   let bad = 0;

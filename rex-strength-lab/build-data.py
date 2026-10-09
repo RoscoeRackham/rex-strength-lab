@@ -68,10 +68,10 @@ tiers = [
          note='Raised to 20 tons in a 2007 profile.', keys=['spider_man_handbook_1986']),
     dict(id='hulk', chip='Hulk & Thor', lift='press', label='Hulk & Thor (Class 100)', who='Official Handbook (1986): “in excess of 100 tons”', liftKg=100 * ST,
          note='A floor, not a ceiling: Class 100 has no upper limit. Thor doubles it with his belt.', keys=['hulk_handbook_1986_enraged', 'thor_handbook_1986']),
-    dict(id='secretwars', chip='Hulk, Secret Wars', label='Hulk holds a mountain range', who='Secret Wars #4 (1984): 150 billion tons', liftKg=150e9 * ST,
-         note='Quoted from Reed Richards in press accounts; the panel itself was not seen.', keys=['secret_wars_4_hulk_mountain']),
-    dict(id='allstar', chip='All-Star Superman', label='All-Star Superman', who='All-Star Superman #1 (2005): 200 quintillion tons', liftKg=200e18 * ST,
-         note='Issue and exact wording rest on reviews; it may be a force rather than a literal object.', keys=['all_star_superman_200_quintillion']),
+    dict(id='secretwars', chip='Hulk, Secret Wars', label='Hulk holds a mountain range', who='Secret Wars #4 (1984): 150 billion tons, per press accounts', liftKg=150e9 * ST,
+         note='Quoted from Reed Richards; the panel itself was not seen.', keys=['secret_wars_4_hulk_mountain']),
+    dict(id='allstar', chip='All-Star Superman', label='All-Star Superman', who='All-Star Superman #1 (2005): 200 quintillion tons, per reviews', liftKg=200e18 * ST,
+         note='The issue and exact wording are unconfirmed; it may be a force rather than a literal object.', keys=['all_star_superman_200_quintillion']),
     dict(id='earth', chip='Superman benches Earth', label='Superman benches Earth', who='Superman vol. 3 #13 (2012): Earth’s weight, per a review', liftKg=fact('earth_mass_reference')['value_si'],
          note='“Weight of a planet” has no real meaning; read here as Earth’s mass at 1 g.', keys=['superman_v3_13_earth_bench', 'earth_mass_reference']),
     dict(id='inf', chip='∞', label='Infinite', who='No limit at all', liftKg=float('inf'), note='', keys=[]),
@@ -177,7 +177,7 @@ objects = [
     obj('sky', 'The sky, as Atlas holds it (our reading: the whole atmosphere)', 'sky', 'From the feats', fact('atm_total_mass')['value_si'], 5.1e14, TUMBLE, noThrow=True, noPull=True, keys=['atm_total_mass', 'atlas_holds_heavens'],
         liftNote='Our reading of Atlas’s “heavens”: the whole atmosphere, 5.1 × 10¹⁸ kg. The ground already carries that weight every day, as air pressure.'),
     obj('allstar', 'All-Star Superman’s load (200 quintillion tons)', 'load', 'From the feats', 200e18 * ST, 1e8, TUMBLE, crush=100e6, rho=3000, noThrow=True, noPull=True, keys=['all_star_superman_200_quintillion'],
-        liftNote='The comic never says what the load is. It is about 2.5 times the Moon’s mass (3% of Earth’s), so treat it as a force equivalent.'),
+        liftNote='None of the accounts we found say what the load is. It is about 2.5 times the Moon’s mass (3% of Earth’s), so treat it as a force equivalent.'),
 ]
 for o in objects:
     k = o.pop('_keys')
@@ -253,19 +253,21 @@ row('Quake magnitude', 'log₁₀ E = 1.5 M + 4.8, seismic efficiency 10⁻⁴',
 row('Crater size', 'Collins, Melosh & Marcus (2005): final = 1.25 × transient below 3.2 km, complex-crater eq. 27 above (held at 3.2 km across the switch); above 20 km/s, a same-energy, same-density impactor at 20 km/s. Gravity-regime scaling: an upper bound for small craters in rock or concrete.', ['crater_collins_transient_diameter', 'crater_collins_simple_final_diameter'])
 row('Air heating', 'Below 1 km/s: T₀ = T (1 + 0.2 M²). Above: equilibrium-air table computed for this sim at sea-level stagnation pressure (ρ₀v², about 1,500 atm at 11 km/s), dissociation and ionization included, radiation ignored, so an upper bound. Check: the same solver at ~0.9 atm gives ~11,700 K for Anderson’s Apollo case (11 km/s at 53 km; textbook ~11,600 K). At sea-level pressure dissociation is held back, so the table gives ~16,400 K at 11 km/s.', ['aero_stagnation_temperature_formula', 'aero_real_gas_validity_caution', 'aero_shuttle_shock_layer_air_temperature'], st='estimate',
     extra_sources=[{'url': 'https://doi.org/10.2514/4.861956', 'title': 'Anderson, Hypersonic and High-Temperature Gas Dynamics, 2nd ed. (AIAA, 2006)'}])
-row('Muscle model (fitted, not measured)', 'Unloaded limb speed at 2 m (scales with height): shove throw 35 m/s, overarm whip 84.6, punch and clap 17, leg drive 12, stomp 16. Share of full strength: shove 52% per hand, whip/punch/clap 30%, stomp 50%, legs 140% (they also carry his body weight).', [], st='estimate')
+row('Muscle model (fitted, not measured)', 'Unloaded limb speed at 2 m (scales with height): shove throw 35 m/s, overarm whip 84.6, punch and clap 17, leg drive 12, stomp 16. Real muscle, share of full strength from a standstill: shove 52% per hand, whip/punch/clap 30%, stomp 50%, legs 140% (they also carry his body weight). Comic book, fixed shares fitted so both modes match record athletes: shove 17% per hand, whip 7%, punch 6%, clap 7%, stomp 13%, legs 66%.', [], st='estimate')
+row('Body shape and air (assumed)', 'At 2 m (areas scale with height², lengths with height): drag Cd 1.0; frontal area 0.8 m² when sprinting, 0.3 m² head-first when jumping or launched by a stomp; claw dig area 0.2 m² when braced (a quarter of that per stride when sprinting); release height 0.9 × height; each sprint stride puts about 2.5× his weight on one foot. Overarm whip: effective mass at the hand 0.3% of body mass, fitted with the whip speed to the 47.3 m/s pitch; that is smaller than Dempster’s hand alone (0.6%) and is not a measured segment.', [], st='estimate')
 row('Ground resisting a fast foot', 'Bearing strength plus inertia: R = A (q + ρ v²) (Poncelet form; Forrestal & Luk 1992 cavity expansion)', [], st='estimate', extra_sources=[{'url': 'https://scholar.google.com/scholar?q=Forrestal+Luk+1992+%22Penetration+into+soil+targets%22', 'title': 'Forrestal & Luk (1992), Int. J. Impact Eng. 12(3):427–444'}])
 row('Granular ground strength grows with foot width', 'q_ult ∝ B for sand and gravel (Terzaghi ½γBN_γ term); research value is for a 0.1 m² footing', ['ground_loose_sand_ultimate_bearing_small_footing'], st='estimate')
 
 # ----------------------------------------------------------------------------- feats
 
 
-def feat(group, title, who, claim, keys, run=None, st=None):
+def feat(group, title, who, claim, keys, run=None, st=None, src_title='Source', also=None):
     k = keys[0] if keys else None
     s = st or (status(*keys) if keys else 'estimate')
     first = fact(k)['sources'][0] if k else None
     return dict(group=group, title=title, who=who, claim=claim, status=s,
-                source={'url': first['url'], 'title': 'Source'} if first else None, run=run)
+                source={'url': first['url'], 'title': src_title} if first else None, run=run,
+                also=[{'url': fact(k2)['sources'][0]['url'], 'title': t} for k2, t in (also or [])])
 
 
 feats = [
@@ -282,7 +284,7 @@ feats = [
          run=dict(liftKg=511, action='throw', obj='baseball', angle=2)),
     feat('human', 'Top speed 12.42 m/s', 'Usain Bolt · Berlin, 2009', 'Average over his fastest 20 m in the 9.58 s world record.', ['bolt_peak_running_speed'],
          run=dict(liftKg=511, action='sprint')),
-    feat('comic', 'Hurdle a twenty-story building', 'Action Comics #1 · 1938', '“Leap 1/8th of a mile; hurdle a twenty-story building… raise tremendous weights.” Runs the jump at the strength it needs (20 stories ≈ 60 m).', ['action_comics_1_leap'],
+    feat('comic', 'Hurdle a twenty-story building', 'Action Comics #1 · 1938', '“Leap 1/8th of a mile; hurdle a twenty-story building… raise tremendous weights.” Switches to Comic book mode and runs the jump at the strength it needs (20 stories ≈ 60 m). A 2 m Rex on real muscle tops out near 7 m.', ['action_comics_1_leap'],
          run=dict(solve='jump60', mode='comic', action='jump')),
     feat('comic', 'The car on the cover', 'Action Comics #1 · 1938', 'Probably a 1937 DeSoto, about 1.43 t. The car’s identity is disputed and the comic gives no weight.', ['action_comics_1_cover_car_mass'],
          run=dict(liftKg=1429, action='lift', obj='desoto')),
@@ -309,7 +311,8 @@ feats = [
          run=dict(liftKg=fact('atm_total_mass')['value_si'], action='lift', obj='sky')),
     feat('myth', 'Thor and the giant’s cat', 'Prose Edda, Gylfaginning', 'He lifts it until one paw leaves the floor. The cat was the World Serpent, long enough to circle the Earth.', ['thor_utgarda_loki_cat']),
     feat('myth', 'Samson brings down the temple', 'Judges 16', '“He bowed himself with all his might.” About 3,000 people were on the roof. No forces are given.', ['samson_temple_pillars', 'samson_temple_roof_occupants']),
-    feat('myth', 'Milo of Croton carries a bull', 'Quintilian, Institutio Oratoria 1.9.5 · c. AD 95', 'He carried a calf every day until it was a grown bull. Athenaeus instead has him shoulder a four-year-old bull round the course at Olympia, then eat it in a day. No weight is recorded.', ['milo_of_croton_calf_training', 'milo_of_croton_bull']),
+    feat('myth', 'Milo of Croton carries a bull', 'Quintilian, Institutio Oratoria 1.9.5 · c. AD 95', 'He carried a calf every day until it was a grown bull. Athenaeus instead has him shoulder a four-year-old bull round the course at Olympia, then eat it in a day. No weight is recorded.', ['milo_of_croton_calf_training', 'milo_of_croton_bull'],
+         src_title='Quintilian', also=[('milo_of_croton_bull', 'Athenaeus')]),
 ]
 
 static = json.loads(subprocess.check_output(['node', '-e', 'process.stdout.write(JSON.stringify(require("./src/static-data.js")))'], cwd=HERE))
