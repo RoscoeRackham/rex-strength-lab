@@ -26,6 +26,7 @@
     TNT_J_per_kg: 4.184e6,   // 1 kg TNT = 4.184 MJ (convention)
     seismicEff: 1e-4,        // share of impact energy radiated as seismic waves (Collins et al. 2005)
     EARTH_BIND: 2.49e32,     // Earth's gravitational binding energy, J (PREM)
+    R_HILL: 1.5e9,           // Earth's Hill radius, m: beyond it the Sun's pull beats Earth's
     PONCELET_K: 1.0,         // inertial resistance coefficient for a blunt foot driven into ground
   };
   const V_ESC = Math.sqrt(2 * K.GM / K.R_E);
@@ -137,15 +138,19 @@
     return (1 - u) / (1 + u / k);
   }
 
+  // RA may be a number or a function of the current push force (sliding friction grows with
+  // the push's downward component once his feet go).
   function pushApart(o) {
-    const RA = o.RA == null ? 0 : o.RA;
+    const RAf = typeof o.RA === 'function' ? o.RA : null;
     const RB = o.RB == null ? 0 : o.RB;
     const cA = o.cA || 0, cB = o.cB || 0;
-    if (o.mode === 'real') return pushApartHill(o, RA, RB, cA, cB);
+    if (o.mode === 'real') return pushApartHill(o, RAf, RB, cA, cB);
     const { F, d, mA, mB } = o;
-    const aMoves = isFinite(RA) && F > RA, bMoves = isFinite(RB) && F > RB;
+    const RA = RAf ? RAf(F) : (o.RA == null ? 0 : o.RA);
+    const RAstatic = RAf ? RAf(0) : RA;            // the most the footing holds before it slips
+    const aMoves = isFinite(RA) && F > RAstatic, bMoves = isFinite(RB) && F > RB;
     if (!aMoves && !bMoves) {
-      return { t: Infinity, stalled: true, xA: 0, xB: 0, pA: 0, pB: 0, vA: 0, vB: 0, EA: 0, EB: 0, work: 0 };
+      return { t: Infinity, stalled: true, xA: 0, xB: 0, pA: 0, pB: 0, vA: 0, vB: 0, vBmax: 0, EA: 0, EB: 0, work: 0, lossA: 0, lossB: 0 };
     }
     if (!isFinite(F)) {
       const both = aMoves && bMoves;
@@ -153,24 +158,24 @@
         t: both ? d / (2 * K.c) : d / K.c, stalled: false,
         xA: aMoves ? (both ? d / 2 : d) : 0, xB: bMoves ? (both ? d / 2 : d) : 0,
         pA: aMoves ? Infinity : 0, pB: bMoves ? Infinity : 0,
-        vA: aMoves ? K.c : 0, vB: bMoves ? K.c : 0,
+        vA: aMoves ? K.c : 0, vB: bMoves ? K.c : 0, vBmax: bMoves ? K.c : 0,
         EA: aMoves ? Infinity : 0, EB: bMoves ? Infinity : 0, work: Infinity,
         lossA: aMoves && cA > 0 ? Infinity : 0, lossB: bMoves && cB > 0 ? Infinity : 0,
       };
     }
-    // Side kinematics: either constant net force (relativistic) or terminal speed in drag.
     const side = (moves, f, m, c) => {
       if (!moves) return { x: () => 0, p: () => 0, v: () => 0 };
       if (c > 0) {
-        // Ground drag stops meaning anything long before light speed; cap the feet at 1% of c.
-        const vt = Math.min(0.01 * K.c, Math.sqrt(f / c));
-        const pt = m * vt;
-        return { x: (t) => vt * t, p: () => pt, v: () => vt, drag: true };
+        // Terminal speed where the push balances the ground's ram pressure c (gamma v)^2,
+        // reached at once (light feet in heavy ground). gamma * v = sqrt(f / c) exactly.
+        const u = Math.sqrt(f / c);
+        const vt = u / Math.sqrt(1 + (u / K.c) * (u / K.c));
+        return { x: (t) => vt * t, p: () => m * u, v: () => vt, drag: true };
       }
       return { x: (t) => xOfT(f, m, t), p: (t) => f * t, v: (t) => momentumToV(f * t, m) };
     };
-    const fA = aMoves ? F - RA : 0, fB = bMoves ? F - RB : 0;
-    const A = side(aMoves, fA, mA, cA), B = side(bMoves, fB, mB, cB);
+    const fA = aMoves ? Math.max(0, F - RA) : 0, fB = bMoves ? F - RB : 0;
+    const A = side(aMoves && fA > 0, fA, mA, cA), B = side(bMoves, fB, mB, cB);
     const S = (t) => A.x(t) + B.x(t);
     let hi = 1e-30;
     while (S(hi) < d) hi *= 2;
@@ -183,30 +188,33 @@
     const t = hi;
     const pA = A.p(t), pB = B.p(t);
     const xA = A.x(t), xB = B.x(t);
+    const EA = momentumToKE(pA, mA), EB = momentumToKE(pB, mB);
     return {
       t, stalled: false, xA, xB, pA, pB,
-      vA: A.v(t), vB: B.v(t),
-      EA: momentumToKE(pA, mA), EB: momentumToKE(pB, mB),
-      work: F * (xA + xB),
+      vA: A.v(t), vB: B.v(t), vBmax: B.v(t),
+      EA, EB, work: F * (xA + xB),
       // energy the resistance on each side soaked up (ground heating, friction)
-      lossA: aMoves ? Math.max(0, F * xA - momentumToKE(pA, mA)) : 0,
-      lossB: bMoves ? Math.max(0, F * xB - momentumToKE(pB, mB)) : 0,
+      lossA: Math.max(0, F * xA - EA), lossB: Math.max(0, F * xB - EB),
     };
   }
 
-  function pushApartHill(o, RA, RB, cA, cB) {
+  function pushApartHill(o, RAf, RB, cA, cB) {
     const { d, mA, mB } = o;
     const vmax = o.vmax;
     const k = o.k || MUSCLE.k;
-    const aFree = isFinite(RA), bFree = isFinite(RB);
-    const F0raw = o.F;
-    if ((!aFree || !(F0raw > RA)) && (!bFree || !(F0raw > RB))) {
-      return { t: Infinity, stalled: true, xA: 0, xB: 0, pA: 0, pB: 0, vA: 0, vB: 0, EA: 0, EB: 0, work: 0, lossA: 0, lossB: 0 };
+    const RA0 = RAf ? RAf(0) : (o.RA == null ? 0 : o.RA);
+    const RAof = RAf || (() => RA0);
+    const aFree = isFinite(RA0), bFree = isFinite(RB);
+    const Fcap = o.Fcap == null ? Infinity : o.Fcap;
+    const F0raw = Math.min(o.F, Number.MAX_VALUE);
+    const Fmax = Math.min(F0raw, Fcap);
+    if ((!aFree || !(Fmax > RA0)) && (!bFree || !(Fmax > RB))) {
+      return { t: Infinity, stalled: true, xA: 0, xB: 0, pA: 0, pB: 0, vA: 0, vB: 0, vBmax: 0, EA: 0, EB: 0, work: 0, lossA: 0, lossB: 0 };
     }
-    // Results converge as F0 grows (error ~ inertialScale / F0), so clamp to keep numbers finite.
-    const inertialScale = Math.max(mA, mB) * vmax * vmax / d + (aFree ? RA : 0) + (bFree ? RB : 0);
-    const F0 = Math.min(F0raw, 1e9 * inertialScale);
-    // Implicit step: new speeds v' = max(0, v + dt (F - R - c v'^2) / m), with F = F0 Hill(sum v' / vmax).
+    // Beyond ~1e6x the inertial force the result has converged; clamping keeps the numbers finite.
+    const F0 = Math.min(F0raw, (aFree ? RA0 : 0) + (bFree ? RB : 0) + 1e6 * Math.max(mA, mB) * vmax * vmax / d);
+    const force = (S) => Math.min(Fcap, F0 * hill(S / vmax, k));
+    // Implicit step: v' = max(0, v + dt (F - R - c v'^2) / m), with F = F0 Hill(sum v' / vmax).
     const stepV = (v, F, R, c, m, free, dt) => {
       if (!free) return 0;
       if (v <= 0 && F <= R) return 0;
@@ -215,37 +223,38 @@
       const a = c * dt / m;
       return a > 0 ? (2 * b) / (1 + Math.sqrt(1 + 4 * a * b)) : b;
     };
-    const fA0 = aFree ? Math.max(0, F0 - RA) : 0, fB0 = bFree ? Math.max(0, F0 - RB) : 0;
+    const fA0 = aFree ? Math.max(0, Fmax - RA0) : 0, fB0 = bFree ? Math.max(0, Fmax - RB) : 0;
     const tComic = Math.sqrt(2 * d / ((fA0 / mA) + (fB0 / mB)));
     const tEst = Math.max(tComic, d / vmax);
     const dt = tEst / 1500;
-    let xA = 0, xB = 0, vA = 0, vB = 0, t = 0, work = 0, steps = 0;
+    let xA = 0, xB = 0, vA = 0, vB = 0, t = 0, workA = 0, workB = 0, vBmax = 0, steps = 0;
     while (xA + xB < d && steps < 600000) {
-      // solve for the new relative speed S in [0, vmax] by bisection
+      // solve for the new relative speed S in [0, vmax] by bisection, to adjacent doubles
       let lo = 0, hi = vmax;
-      for (let i = 0; i < 40; i++) {
+      for (let i = 0; i < 200; i++) {
         const S = 0.5 * (lo + hi);
-        const F = F0 * hill(S / vmax, k);
-        const s2 = stepV(vA, F, RA, cA, mA, aFree, dt) + stepV(vB, F, RB, cB, mB, bFree, dt);
+        if (S <= lo || S >= hi) break;
+        const F = force(S);
+        const s2 = stepV(vA, F, RAof(F), cA, mA, aFree, dt) + stepV(vB, F, RB, cB, mB, bFree, dt);
         if (s2 > S) lo = S; else hi = S;
       }
-      const F = F0 * hill(0.5 * (lo + hi) / vmax, k);
-      const nvA = stepV(vA, F, RA, cA, mA, aFree, dt), nvB = stepV(vB, F, RB, cB, mB, bFree, dt);
+      const F = force(lo);
+      const nvA = stepV(vA, F, RAof(F), cA, mA, aFree, dt), nvB = stepV(vB, F, RB, cB, mB, bFree, dt);
       const dxA = 0.5 * (vA + nvA) * dt, dxB = 0.5 * (vB + nvB) * dt;
       let frac = 1;
       if (xA + xB + dxA + dxB > d) frac = (d - xA - xB) / (dxA + dxB);
       xA += dxA * frac; xB += dxB * frac;
-      work += F * (dxA + dxB) * frac;
+      workA += F * dxA * frac; workB += F * dxB * frac;
       vA = vA + (nvA - vA) * frac; vB = vB + (nvB - vB) * frac;
+      if (vB > vBmax) vBmax = vB;
       t += dt * frac; steps++;
       if (nvA === 0 && nvB === 0 && steps > 3) break;
     }
     const stalled = xA + xB < d * 0.999;
     const EA = 0.5 * mA * vA * vA, EB = 0.5 * mB * vB * vB;
     return {
-      t, stalled, xA, xB, vA, vB, pA: mA * vA, pB: mB * vB, EA, EB, work,
-      lossA: Math.max(0, work * (xA / Math.max(xA + xB, 1e-300)) - EA),
-      lossB: Math.max(0, work * (xB / Math.max(xA + xB, 1e-300)) - EB),
+      t, stalled, xA, xB, vA, vB, vBmax, pA: mA * vA, pB: mB * vB, EA, EB, work: workA + workB,
+      lossA: Math.max(0, workA - EA), lossB: Math.max(0, workB - EB),
     };
   }
 
@@ -257,6 +266,8 @@
   //   normal load N(F) = mA g + F sin + mB g cos^2,   needed grip H(F) = F cos - mB g sin cos.
   // The ground supplies N up to Nmax (bearing) and grip up to mu*min(N, Nmax) + claw shear.
   // A failing bearing makes him sink but does not free him along the push line.
+  // Rslide(F): once his feet go, sliding friction still grows with the load; the footing then
+  // resists F minus cos(theta) times the unbalanced horizontal force.
   function anchorCapacity(o) {
     const { body, surface } = o;
     const theta = o.theta || 0;
@@ -265,9 +276,9 @@
     const mB = o.mB || 0;
     const qult = qultFor(surface, body.footB);
     const Nmax = o.groundHolds ? Infinity : qult * 2 * body.footArea;
-    const N = (F) => mA * K.g + F * Math.sin(theta) + mB * K.g * Math.cos(theta) ** 2;
-    if (anchor === 'bolted') return { R: Infinity, limit: 'bolted', Nmax, N };
     const sin = Math.sin(theta), cos = Math.cos(theta);
+    const N = (F) => mA * K.g + (F > 0 ? F * sin : 0) + mB * K.g * cos * cos;
+    if (anchor === 'bolted') return { R: Infinity, Rslide: () => Infinity, limit: 'bolted', Nmax, N };
     const mu = surface.mu;
     const dig = anchor === 'braced' ? surface.shear * body.digArea : 0;
     let R1 = Infinity, R2 = Infinity;
@@ -275,7 +286,12 @@
     if (isFinite(Nmax) && cos > 1e-9) R2 = (mu * Nmax + dig) / cos + mB * K.g * sin;
     const R = Math.min(R1, R2);
     const limit = R === Infinity ? 'none' : (anchor === 'braced' ? 'shear' : 'friction');
-    return { R, limit, Nmax, N, normalCapped: R2 < R1 };
+    const Rslide = (F) => {
+      if (!(F > R) || !isFinite(F) || !isFinite(R)) return R;
+      const Hnet = F * cos - mB * K.g * sin * cos - mu * Math.min(N(F), Nmax) - dig;
+      return F - cos * Math.max(0, Hnet);
+    };
+    return { R, Rslide, limit, Nmax, N, normalCapped: R2 < R1 };
   }
 
   // ---------------------------------------------------------------------------
@@ -285,8 +301,10 @@
 
   // Stagnation temperature of sea-level air at speed v. Below 1 km/s the ideal-gas formula;
   // above, an equilibrium-air table (dissociation and ionization soak up energy) computed for
-  // this project at sea-level stagnation pressure; it matches Anderson's 11 km/s textbook case
-  // to about 2%. Radiative losses are ignored, so it is an upper bound.
+  // this project at sea-level stagnation pressure (rho0 v^2, ~1,500 atm at 11 km/s). The same
+  // solver reproduces Anderson's Apollo case (11 km/s at ~0.9 atm, ~11,600 K) to about 2%; at
+  // sea-level pressure dissociation is held back, so it gives ~16,400 K. Radiation is ignored,
+  // so it is an upper bound.
   const STAG_EQ = [[1000, 767], [1500, 1309], [2000, 2004], [3000, 3614], [4000, 5166], [5000, 7011], [7000, 9836],
     [10000, 14060], [15000, 27313], [20000, 40530], [30000, 74044], [50000, 136822], [80000, 2.296e5],
     [120000, 5.68e5], [200000, 1.137e6], [400000, 5.854e6], [1e6, 4.136e7], [3e6, 3.77e8]];
@@ -352,7 +370,7 @@
     const apex = (f0 < Math.PI && f1 > Math.PI) ? ra : Math.max(r, rStop);
     return {
       x: rStop * rx, y: rStop * ry, vx: vr1 * rx + vt1 * tx, vy: vr1 * ry + vt1 * ty,
-      dt, dPhi: s * df, apexR: apex, hAbs,
+      dt, dPhi: s * df, apexR: apex, hAbs, p, e, f0,
     };
   }
 
@@ -388,6 +406,7 @@
       const c = conicTo(x, y, vx, vy, R);
       if (c.radial) return fly(Object.assign({}, o, { Cd: 1e-30, CdSup: 1e-30, _noVac: true }));
       if (c.escaped) { out.escaped = true; return out; }
+      if ((c.orbit ? c.ra : c.apexR) > K.R_HILL) { out.escaped = true; out.leavesHill = true; out.apex = (c.orbit ? c.ra : c.apexR) - R; return out; }
       if (c.orbit) { out.orbit = true; out.apex = c.ra - R; return out; }
       out.apex = c.apexR - R;
       out.time = c.dt; out.range = R * Math.abs(c.dPhi); out.landed = true;
@@ -417,6 +436,7 @@
     while (true) {
       if (steps >= 3000000 || t > tMax) { out.timedOut = true; break; }
       const r = Math.hypot(x, y);
+      if (r > K.R_HILL) { out.escaped = true; out.leavesHill = true; break; }
       const v = Math.hypot(vx, vy);
       const hNow = r - R;
       // Leave the atmosphere: jump along the drag-free arc to where it comes back down.
@@ -424,16 +444,17 @@
         const c = conicTo(x, y, vx, vy, R + SPACE);
         if (c.radial) { o = Object.assign({}, o, { _noVac: true }); continue; }
         if (c.escaped) { out.escaped = true; break; }
+        if ((c.orbit ? c.ra : c.apexR) > K.R_HILL) { out.escaped = true; out.leavesHill = true; out.apex = Math.max(out.apex, (c.orbit ? c.ra : c.apexR) - R); break; }
         if (c.orbit) { out.orbit = true; out.apex = Math.max(out.apex, c.ra - R); break; }
         out.apex = Math.max(out.apex, c.apexR - R);
         if (path) {
           // a few points along the arc for the chart
-          const segs = 24;
+          const segs = 48;
           for (let i = 1; i <= segs; i++) {
             const fr = i / segs;
             const phi = ang + c.dPhi * fr;
-            const hh = (out.apex - hNow) * Math.sin(Math.PI * fr) + hNow + (SPACE - hNow) * fr;
-            path.push([R * Math.abs(phi), Math.max(0, hh)]);
+            const hh = c.p / (1 + c.e * Math.cos(c.f0 + Math.abs(c.dPhi) * fr)) - R;
+            path.push([R * Math.abs(phi), Math.max(0, hh), true]);   // true: keep when thinning
           }
         }
         x = c.x; y = c.y; vx = c.vx; vy = c.vy; t += c.dt; ang += c.dPhi;
@@ -490,7 +511,7 @@
     out.maxStagT = stagnationT(out.maxMach * K.a0);
     if (path) {
       const stride = Math.max(1, Math.ceil(path.length / 400));
-      out.path = path.filter((_, i) => i % stride === 0 || i === path.length - 1);
+      out.path = path.filter((pt, i) => pt[2] || i % stride === 0 || i === path.length - 1);
     }
     return out;
   }
@@ -505,7 +526,7 @@
 
   // Crater diameter: Collins, Melosh & Marcus (2005) transient crater (gravity regime),
   // x1.25 for simple craters or eq. 27 for complex ones. Impact speeds above 20 km/s (the
-  // fit's range) are mapped to a stony impactor of the same energy at 20 km/s.
+  // fit's range) are mapped to an impactor of the same energy and density at 20 km/s.
   // In rock and concrete, small craters are strength-limited and a few times smaller,
   // so treat this as an upper bound.
   function craterDiameter(o) {
@@ -516,15 +537,16 @@
     if (!(v > 0)) return { D: 0, extrapolated };
     if (!isFinite(E)) return { D: Infinity, extrapolated: true };
     if (v > 20000) {
-      const vEq = 20000, rhoEq = 3000;
+      const vEq = 20000;
       const mEq = 2 * E / (vEq * vEq);
-      L = Math.cbrt(6 * mEq / (Math.PI * rhoEq));
-      v = vEq; rhoI = rhoEq; extrapolated = true;
+      L = Math.cbrt(6 * mEq / (Math.PI * rhoI));
+      v = vEq; extrapolated = true;
     }
     const Dtc = 1.161 * Math.pow(rhoI / rhoT, 1 / 3) * Math.pow(L, 0.78) * Math.pow(v, 0.44) *
       Math.pow(K.g, -0.22) * Math.pow(Math.max(Math.sin(th), 1e-3), 1 / 3);
     const Dc = 3200;
-    const D = 1.25 * Dtc <= Dc ? 1.25 * Dtc : 1.17 * Math.pow(Dtc, 1.13) / Math.pow(Dc, 0.13);
+    // held at 3.2 km across the simple-to-complex switch so size never falls as energy rises
+    const D = 1.25 * Dtc <= Dc ? 1.25 * Dtc : Math.max(Dc, 1.17 * Math.pow(Dtc, 1.13) / Math.pow(Dc, 0.13));
     return { D, extrapolated };
   }
 
@@ -577,6 +599,18 @@
   function actionForce(ctx, key) {
     return ctx.F * (ctx.mode === 'real' ? MUSCLE[key].forceFrac : MUSCLE[key].comicFrac);
   }
+  // Comic mode is never weaker than real muscle. Its fixed share of strength is tuned to fast
+  // moves at record strength, so for slow heavy loads (or below record strength) real muscle can
+  // do better; then the real result is used. Real muscle can't beat its own speed cap, so the
+  // real run is skipped once the comic result is past it.
+  function comicAtLeastReal(ctx, run, metric, cap) {
+    const c = run(ctx);
+    if (ctx.mode !== 'comic' || ctx.noBlend) return c;
+    const mc = metric(c);
+    if (mc >= cap) return c;
+    const r = run(Object.assign({}, ctx, { mode: 'real' }));
+    return metric(r) > mc ? Object.assign(r, { basis: 'real' }) : c;
+  }
 
   function lift(ctx, obj) {
     const { body, surface } = ctx;
@@ -592,7 +626,7 @@
     if (surface.granular) { const B = Math.cbrt(N * surface.Bref / surface.qult); footAreaNeeded = B * B; }
     else footAreaNeeded = N / surface.qult;
     return {
-      canLift: ctx.F >= W,
+      canLift: ctx.F >= W * (1 - 1e-9),
       strengthMargin: ctx.F / W,
       weight: W,
       pressure, qult,
@@ -605,34 +639,56 @@
     };
   }
 
-  function throwObject(ctx, obj, thetaDeg) {
+  function throwStyle(obj) {
+    const style = obj.m <= 1 ? 'whip' : 'push';
+    return { style, key: style === 'whip' ? 'throwWhip' : 'throwPush', hands: obj.m > 20 ? 2 : 1 };
+  }
+
+  function throwOnce(ctx, obj, thetaDeg) {
     const { body } = ctx;
     const th = thetaDeg * Math.PI / 180;
     // Light objects get an overarm whip; heavier ones a shove, two-handed above 20 kg.
-    const style = obj.m <= 1 ? 'whip' : 'push';
-    const hands = obj.m > 20 ? 2 : 1;
-    const key = style === 'whip' ? 'throwWhip' : 'throwPush';
+    const { style, key, hands } = throwStyle(obj);
     const d = style === 'whip' ? body.strokes.whip : body.strokes.throw;
     const armMass = hands * (style === 'whip' ? body.whipEff : body.handEff);
     const mB = obj.m + armMass;
     const mA = body.m - armMass;
-    const canHold = ctx.F >= obj.m * K.g;
+    const canHold = ctx.F >= mB * K.g * (1 - 1e-9);
     const Fdrive = Math.min(ctx.F, actionForce(ctx, key) * hands);
     // The arms also hold the load up at right angles to the push: only the rest drives it.
     const perp = mB * K.g * Math.cos(th);
     const F = isFinite(Fdrive) ? Math.sqrt(Math.max(0, Fdrive * Fdrive - perp * perp)) : Infinity;
     const RB = mB * K.g * Math.sin(th);
     const anc = anchorCapacity({ body, surface: ctx.surface, theta: th, anchor: ctx.anchor, groundHolds: ctx.groundHolds, mA, mB });
-    const out = { F, Fdrive, style, hands, canHold, anchor: anc, mB, armMass };
+    const out = { F, Fdrive, style, hands, canHold, anchor: anc, mB, armMass, needed: mB * K.g };
     if (!canHold || !(F > RB)) {
-      return Object.assign(out, { canMove: false, v: 0, Eobj: 0, recoilV: 0, recoilE: 0, push: null, flight: null, needed: Math.hypot(RB, perp) });
+      return Object.assign(out, { canMove: false, v: 0, Eobj: 0, recoilV: 0, recoilE: 0, push: null, flight: null });
     }
-    const push = pushApart({ F, d, mA, mB, RA: anc.R, RB, mode: ctx.mode, vmax: sizeVmax(key, body) });
-    const pObj = push.pB * obj.m / mB;              // object and hand share one velocity
+    const vmax = sizeVmax(key, body);
+    let push = pushApart({ F, d, mA, mB, RA: anc.Rslide, RB, mode: ctx.mode, vmax });
+    // Pushing past what his footing holds gives much of the stroke to his own slide when the
+    // load outweighs him. He can always push less hard, so he also tries pushing only as hard
+    // as his footing allows and keeps whichever throws the object faster.
+    let heldBack = false;
+    const Rlim = anc.R * (1 - 1e-9);
+    let Fused = F;
+    if (isFinite(F) && F > Rlim && Rlim > RB) {
+      // real muscle: also try caps a little past the slip point (force falls with speed anyway)
+      const caps = ctx.mode === 'real' ? [1, 1.25, 1.6, 2, 3, 5, 10] : [1];
+      for (const f of caps) {
+        const Fc = Rlim * f;
+        if (!(Fc < F)) continue;
+        const held = pushApart(ctx.mode === 'real'
+          ? { F, Fcap: Fc, d, mA, mB, RA: anc.Rslide, RB, mode: 'real', vmax }
+          : { F: Fc, d, mA, mB, RA: anc.Rslide, RB, mode: 'comic' });
+        if (held.pB > push.pB) { push = held; heldBack = f === 1; Fused = Fc; }
+      }
+    }
+    const pObj = push.pB === Infinity ? Infinity : push.pB * obj.m / mB;   // object and hand share one velocity
     const v = push.vB;
     const Eobj = momentumToKE(pObj, obj.m);
     // The follow-through stops the arm inside him, so his final recoil carries pA - pArm.
-    const pRecoil = Math.max(0, push.pA - push.pB * armMass / mB);
+    const pRecoil = push.pA === Infinity ? Infinity : Math.max(0, push.pA - push.pB * armMass / mB);
     const recoilV = momentumToV(pRecoil, body.m);
     const recoilE = momentumToKE(pRecoil, body.m);
     const flight = fly({ v0: v, thetaDeg, h0: body.releaseHeight, m: obj.m, A: obj.area, Cd: obj.Cd, CdSup: obj.CdSup, record: !!ctx.record });
@@ -640,22 +696,26 @@
     const L = obj.L || Math.cbrt(6 * obj.m / (Math.PI * (obj.rho || 1000)));
     const crater = flight.vImpact >= 2000 ? craterDiameter({ L, v: flight.vImpact, rhoI: obj.rho || 1000, rhoT: ctx.surface.rho || 2000, angleDeg: flight.impactAngleDeg, E: Eimp }) : { D: 0 };
     const contact = hands * body.palmArea;
-    const Fe = Math.min(F, anc.R);
-    const Nfeet = isFinite(Fe) ? anc.N(Fe) : (Math.sin(th) > 1e-12 ? Infinity : anc.N(0));
+    const Nfeet = isFinite(Fused) ? anc.N(Fused) : (Math.sin(th) > 1e-12 ? Infinity : anc.N(0));
     return Object.assign(out, {
       canMove: !push.stalled && v > 0,
-      push, v, mach: v / K.a0, Eobj,
+      push, v, mach: v / K.a0, Eobj, heldBack,
       recoilV, recoilE,
       gripRatio: obj.crush ? Fdrive / contact / obj.crush : 0,
       plateNeeded: obj.crush ? Fdrive / obj.crush : 0,
       sinkRatio: isFinite(anc.Nmax) ? Nfeet / anc.Nmax : 0,
       flight, Eimpact: Eimp,
       crater: crater.D, craterExtrapolated: !!crater.extrapolated,
+      planetScale: Eimp >= K.EARTH_BIND || crater.D > K.R_E,
       quake: seismicMagnitude(Eimp),
     });
   }
+  function throwObject(ctx, obj, thetaDeg) {
+    const { key } = throwStyle(obj);
+    return comicAtLeastReal(ctx, (c) => throwOnce(c, obj, thetaDeg), (r) => (r.canMove ? r.v : 0), sizeVmax(key, ctx.body));
+  }
 
-  function jump(ctx) {
+  function jumpOnce(ctx) {
     const { body, surface } = ctx;
     const d = body.strokes.leg;
     const F = actionForce(ctx, 'jump');
@@ -665,45 +725,56 @@
     const A2 = 2 * body.footArea;
     const RB = ctx.groundHolds ? Infinity : qultFor(surface, body.footB) * A2;
     const cB = ctx.groundHolds ? 0 : K.PONCELET_K * (surface.rho || 2000) * A2;
-    const run = (Fj) => {
-      const pu = pushApart({ F: Fj, d, mA, mB, RA, RB, cB, mode: ctx.mode, vmax: sizeVmax('jump', body) });
+    const vmax = sizeVmax('jump', body);
+    const run = (Fj, Fcap) => {
+      const pu = pushApart({ F: Fj, Fcap, d, mA, mB, RA, RB, cB, mode: ctx.mode, vmax });
       // Legs lock at full extension: the feet's downward momentum cancels part of the body's.
-      return { push: pu, p: Math.max(0, pu.pA - pu.pB) };
+      return { push: pu, p: Math.max(0, pu.pA - pu.pB), cap: Fcap == null ? Fj : Fcap };
     };
     let best = run(F);
     // Pushing just past the ground's limit wastes stroke sinking the feet; much harder, the
-    // ground's inertia pushes back and the jump grows again. Rex picks whichever is better.
+    // ground's inertia pushes back and the jump grows again. Rex can push with any force up to
+    // his strength and picks the best (in real muscle, by capping his force).
     let heldBack = false;
-    if (!ctx.groundHolds && F > RB) {
-      const atLimit = run(RB * (1 - 1e-9));
-      if (atLimit.p > best.p) { best = atLimit; heldBack = true; }
+    if (!ctx.groundHolds && isFinite(F) && F > RB) {
+      const tries = ctx.mode === 'real' ? [1 - 1e-9, 1.5, 2, 3, 5, 10, 30, 100] : [1 - 1e-9];
+      for (const f of tries) {
+        const Fc = RB * f;
+        if (!(Fc < F)) continue;
+        const r = ctx.mode === 'real' ? run(F, Fc) : run(Fc);
+        if (r.p > best.p) { best = r; heldBack = f < 1; }
+      }
     }
     const push = best.push;
-    // At unbounded strength the momentum bookkeeping is infinity minus infinity: he simply
-    // leaves at light speed, and on breakable ground the ground takes unbounded energy too.
-    const p = isFinite(F) ? best.p : Infinity;
+    // Comic mode at unbounded strength: infinity minus infinity, so he simply leaves at light
+    // speed. Real muscle converges to a finite push at any strength.
+    const finiteRun = isFinite(F) || ctx.mode === 'real';
+    const p = finiteRun ? best.p : Infinity;
     const v = momentumToV(p, body.m);
     const flight = fly({ v0: v, thetaDeg: 90, h0: 0, m: body.m, A: body.topArea, Cd: body.Cd, CdSup: 1.75 });
     const vTerm = Math.sqrt(2 * body.m * K.g / (K.rho0 * body.Cd * body.topArea));
-    const groundFails = !ctx.groundHolds && F > RB && !heldBack;
-    const Eground = groundFails ? (isFinite(F) ? push.lossB + push.EB : Infinity) : 0;
+    const groundFails = !ctx.groundHolds && push.xB > 1e-3;
+    const Eground = groundFails ? (finiteRun ? push.lossB + push.EB : Infinity) : 0;
     return {
       F, push, v, mach: v / K.a0, flight, vacuumApex: vacuumApex(v, 0),
-      sink: push.xB, groundFails, heldBack, groundLimitForce: RB,
+      sink: push.xB, footSpeed: push.vBmax || push.vB, groundFails, heldBack, groundLimitForce: RB,
+      overLimit: !ctx.groundHolds && F > RB,
       vTerminal: vTerm,
       Ebody: momentumToKE(p, body.m),
-      Eground, groundQuake: seismicMagnitude(Eground),
+      Eground, groundQuake: seismicMagnitude(Eground), groundDisrupts: Eground >= K.EARTH_BIND,
       relativistic: v > 0.01 * K.c,
     };
   }
+  function jump(ctx) { return comicAtLeastReal(ctx, jumpOnce, (r) => r.v, sizeVmax('jump', ctx.body)); }
 
-  function stomp(ctx) {
+  function stompOnce(ctx) {
     const { body, surface } = ctx;
     const d = body.strokes.stomp;
     const F = actionForce(ctx, 'stomp');
     const mB = body.legEff;
     const mA = body.m - mB;
-    const push = pushApart({ F, d, mA, mB, RA: mA * K.g, RB: 0, mode: ctx.mode, vmax: sizeVmax('stomp', body) });
+    const bolted = ctx.anchor === 'bolted';
+    const push = pushApart({ F, d, mA, mB, RA: bolted ? Infinity : mA * K.g, RB: 0, mode: ctx.mode, vmax: sizeVmax('stomp', body) });
     const E = push.EB;
     const vFoot = push.vB;
     const vBody = momentumToV(push.pA, body.m);
@@ -711,22 +782,26 @@
     const qult = qultFor(surface, body.footB);
     const rhoT = surface.rho || 2000;
     let holeDepth = 0, crater = { D: 0 };
-    if (vFoot >= 2000 || !isFinite(E)) {
+    if (ctx.groundHolds) {
+      // Comic ground never breaks: no hole and no crater (energy, quake and blast still apply).
+    } else if (vFoot >= 2000 || !isFinite(E)) {
       const L = Math.cbrt(6 * mB / (Math.PI * 1000));
       crater = craterDiameter({ L, v: vFoot, rhoI: 1000, rhoT, angleDeg: 90, E });
-    } else if (!ctx.groundHolds) {
+    } else {
       holeDepth = penetrationDepth(mB, body.footArea, vFoot, qult, rhoT);
     }
     const share = !isFinite(push.EA + push.EB) ? 0.5 : ((push.EA + push.EB) > 0 ? push.EB / (push.EA + push.EB) : 1);
     return {
-      F, push, E, vFoot, footMach: vFoot / K.a0, vBody, bodyFlight, holeDepth,
+      F, push, E, vFoot, footMach: vFoot / K.a0, vBody, bodyFlight, holeDepth, bolted,
       crater: crater.D, craterExtrapolated: !!crater.extrapolated, footShare: share,
+      planetScale: E >= K.EARTH_BIND || crater.D > K.R_E,
       quake: seismicMagnitude(E), disrupts: E >= K.EARTH_BIND,
       tnt: E / K.TNT_J_per_kg,
     };
   }
+  function stomp(ctx) { return comicAtLeastReal(ctx, stompOnce, (r) => r.vFoot, sizeVmax('stomp', ctx.body)); }
 
-  function punch(ctx) {
+  function punchOnce(ctx) {
     const { body } = ctx;
     const d = body.strokes.punch;
     const F = actionForce(ctx, 'punch');
@@ -743,8 +818,9 @@
       stagT: stagnationT(push.vB), stagTIdeal: stagnationTIdeal(push.vB),
     };
   }
+  function punch(ctx) { return comicAtLeastReal(ctx, punchOnce, (r) => r.vFist, sizeVmax('punch', ctx.body)); }
 
-  function clap(ctx) {
+  function clapOnce(ctx) {
     const { body } = ctx;
     const d = body.strokes.clap;
     const F = actionForce(ctx, 'clap');
@@ -753,12 +829,13 @@
     const E = 2 * push.EB;
     return { F, push, vHand: push.vB, mach: push.vB / K.a0, E, tnt: E / K.TNT_J_per_kg };
   }
+  function clap(ctx) { return comicAtLeastReal(ctx, clapOnce, (r) => r.vHand, sizeVmax('clap', ctx.body)); }
 
   function sprint(ctx) {
     const { body, surface } = ctx;
     const W = body.m * K.g;
     if (!(ctx.F > W)) {
-      return { thrust: 0, limit: 'too weak to stand', accel: 0, accelG: 0, vTop: 0, topLimit: 'body weight', mach: 0, t100: Infinity, dragPower: 0, airPerSecond: 0, stagT: K.T0, relativistic: false, cantStand: true };
+      return { thrust: 0, limit: 'too weak to sprint', accel: 0, accelG: 0, vTop: 0, topLimit: 'body weight', mach: 0, t100: Infinity, dragPower: 0, airPerSecond: 0, stagT: K.T0, relativistic: false, cantStand: true };
     }
     let thrust;
     let limit;
@@ -788,7 +865,8 @@
     if (ctx.mode === 'real') legCap = Math.min(legCap, MUSCLE.run.cap * body.s);
     if (legCap < vTop) { vTop = legCap; topLimit = 'leg speed'; }
     const accel = thrust / body.m;
-    const t100 = isFinite(accel) ? (vTop > 27.78 ? 27.78 / accel : Infinity) : 0;
+    // constant push against drag growing with v^2: t = (vDrag / a) atanh(v / vDrag)
+    const t100 = isFinite(accel) ? (vTop > 27.78 ? (vDrag / accel) * Math.atanh(27.78 / vDrag) : Infinity) : 0;
     const vCl = Math.min(vTop, 0.01 * K.c);
     const dragPower = 0.5 * K.rho0 * body.Cd * body.frontArea * Math.pow(vCl, 3);
     return {
@@ -806,10 +884,13 @@
     const anc = anchorCapacity({ body, surface, theta: 0, anchor: ctx.anchor, groundHolds: ctx.groundHolds });
     const usable = Math.min(ctx.F, anc.R);
     const net = usable - resist;
-    const accel = net > 0 ? net / (obj.m + body.m) : 0;
+    const M = obj.m + body.m;
+    const accel = net > 0 ? net / M : 0;
+    // Time to cover 10 m from rest under constant force, relativistically exact.
+    const t10m = net > 0 ? Math.sqrt(2 * 10 / accel + (10 / K.c) ** 2) : Infinity;
     return {
       resist, crr, rolling: obj.crr != null, anchor: anc, usable,
-      canMove: net > 0, accel, t10m: net > 0 ? Math.sqrt(2 * 10 / accel) : Infinity,
+      canMove: net > 0, accel, t10m, vEnd: net > 0 ? momentumToV(net * t10m, M) : 0,
       limitedBy: ctx.F < resist ? 'strength' : (anc.R < resist ? anc.limit : null),
     };
   }
@@ -835,14 +916,14 @@
   function calibrateComic() {
     const body = makeBody({});
     const surface = { qult: 1e9, mu: 0.8, shear: 1e7, rho: 2400 };
-    const base = { F: CAL_LIFT_KG * K.g, body, surface, groundHolds: true, anchor: 'bolted' };
+    const base = { F: CAL_LIFT_KG * K.g, body, surface, groundHolds: true, anchor: 'bolted', noBlend: true };
     const cases = {
-      throwPush: (c) => throwObject(c, CAL_SHOT, 37).v,
-      throwWhip: (c) => throwObject(c, CAL_BALL, 0).v,
-      punch: (c) => punch(c).vFist,
-      clap: (c) => clap(c).vHand,
-      jump: (c) => jump(c).v,
-      stomp: (c) => stomp(c).vFoot,
+      throwPush: (c) => throwOnce(c, CAL_SHOT, 37).v,
+      throwWhip: (c) => throwOnce(c, CAL_BALL, 0).v,
+      punch: (c) => punchOnce(c).vFist,
+      clap: (c) => clapOnce(c).vHand,
+      jump: (c) => jumpOnce(c).v,
+      stomp: (c) => stompOnce(c).vFoot,
     };
     for (const [key, fn] of Object.entries(cases)) {
       const target = fn(Object.assign({}, base, { mode: 'real' }));
@@ -864,5 +945,6 @@
     rhoAt, stagnationT, stagnationTIdeal, cdAt, conicTo, fly, vacuumApex, craterDiameter, seismicMagnitude,
     kgRatio, overpressureAt, blastRadius, penetrationDepth,
     lift, throwObject, jump, stomp, punch, clap, sprint, pull, threshold, calibrateComic,
+    throwOnce, jumpOnce, stompOnce, punchOnce, clapOnce,
   };
 });

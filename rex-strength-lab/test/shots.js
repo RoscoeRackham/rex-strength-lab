@@ -14,7 +14,7 @@ const fs = require('fs'), path = require('path');
     page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') errs.push(m.text()); });
     page.on('pageerror', (e) => errs.push('PAGEERROR ' + e.message));
     await page.goto('file://' + prev);
-    await page.waitForTimeout(800);
+    await page.waitForTimeout(4000);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     console.log(`${w}x${h} ${scheme}: overflow=${overflow}px errors=${JSON.stringify(errs.slice(0, 5))}`);
     if (!only) await page.screenshot({ path: path.join(out, `full-${w}.png`), fullPage: true });

@@ -10,14 +10,16 @@
   --surface-2: #dfe3d5;
   --ink: #161911;
   --ink-2: #444a3a;
-  --ink-3: #686f5b;
+  --ink-3: #626954;
   --line: #c9cebd;
   --accent: #b5650a;
   --accent-ink: #7d4303;
   --accent-wash: rgba(181, 101, 10, 0.12);
   --olive: #4f5e22;
-  --good: #0ca30c;
+  --good: #0b7a0b;
   --warn: #c98500;
+  --good-ink: #0a7a0a;
+  --warn-ink: #8a5c00;
   --serious: #ec835a;
   --bad: #d03b3b;
   --font-display: 'Big Shoulders Display', 'Arial Narrow', 'Roboto Condensed', sans-serif;
@@ -29,14 +31,14 @@
   :root:not([data-theme="light"]) {
     --bg: #11130d; --surface: #1a1d14; --surface-2: #252a1d; --ink: #eef0e6; --ink-2: #c0c6b0; --ink-3: #939a80;
     --line: #363c2b; --accent: #f0a23a; --accent-ink: #f7c27a; --accent-wash: rgba(240, 162, 58, 0.14); --olive: #a9be6b;
-    --good: #3fbf4f; --warn: #fab219; --serious: #ec835a; --bad: #e66767;
+    --good: #3fbf4f; --warn: #fab219; --serious: #ec835a; --bad: #e66767; --good-ink: #3fbf4f; --warn-ink: #fab219;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #11130d; --surface: #1a1d14; --surface-2: #252a1d; --ink: #eef0e6; --ink-2: #c0c6b0; --ink-3: #939a80;
   --line: #363c2b; --accent: #f0a23a; --accent-ink: #f7c27a; --accent-wash: rgba(240, 162, 58, 0.14); --olive: #a9be6b;
-  --good: #3fbf4f; --warn: #fab219; --serious: #ec835a; --bad: #e66767;
+  --good: #3fbf4f; --warn: #fab219; --serious: #ec835a; --bad: #e66767; --good-ink: #3fbf4f; --warn-ink: #fab219;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -88,7 +90,8 @@ select { width: 100%; padding: 9px 10px; border: 1px solid var(--line); border-r
 .check { display: flex; gap: 10px; align-items: flex-start; margin-top: 12px; font-size: 0.92rem; cursor: pointer; }
 .check input { margin-top: 4px; width: 18px; height: 18px; accent-color: var(--accent); flex: none; }
 details.setup { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px; }
-details.setup summary { cursor: pointer; font-weight: 700; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+details.setup summary { cursor: pointer; font-weight: 700; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+details.setup summary::-webkit-details-marker { display: none; }
 details.setup summary::after { content: "+"; font-family: var(--font-mono); color: var(--ink-3); }
 details.setup[open] summary::after { content: "–"; }
 .inline-num { display: flex; gap: 8px; align-items: center; }
@@ -98,7 +101,7 @@ details.setup[open] summary::after { content: "–"; }
 .tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
 @media (min-width: 640px) { .tabs { display: flex; flex-wrap: wrap; } }
 .tab { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 9px 14px; cursor: pointer; font-family: var(--font-display); font-weight: 800; font-size: 1.15rem; letter-spacing: 0.03em; text-transform: uppercase; }
-.tab[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: #1b1306; }
+.tab[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: #000; }
 .bay { margin-top: 12px; display: flex; flex-direction: column; gap: 16px; }
 .bay-controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
 .bay-controls .field { margin-top: 0; flex: 1 1 220px; min-width: 0; }
@@ -109,8 +112,8 @@ details.setup[open] summary::after { content: "–"; }
 .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
 .tile { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; min-width: 0; background: var(--surface); }
 .tile .k { font-size: 0.78rem; color: var(--ink-3); }
-.tile .v { font-weight: 700; font-size: 1.25rem; line-height: 1.2; overflow-wrap: anywhere; }
-.tile .s { font-size: 0.82rem; color: var(--ink-2); font-family: var(--font-mono); overflow-wrap: anywhere; }
+.tile .v { font-weight: 700; font-size: 1.25rem; line-height: 1.2; overflow-wrap: break-word; }
+.tile .s { font-size: 0.82rem; color: var(--ink-2); font-family: var(--font-mono); overflow-wrap: break-word; }
 .happens { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; max-width: 70ch; }
 .happens li::marker { color: var(--accent); }
 .viz { width: 100%; overflow-x: auto; }
@@ -131,7 +134,7 @@ section.block > .intro { max-width: 68ch; color: var(--ink-2); }
 .ladder-legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 0.85rem; color: var(--ink-2); }
 .ladder-legend span { display: inline-flex; gap: 6px; align-items: center; }
 .ladder-legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-.ladder-wrap { position: relative; }
+.ladder-wrap { position: relative; overflow: visible; }
 .ladder-wrap svg .mk { cursor: pointer; }
 .ladder-wrap svg text { paint-order: stroke; stroke: var(--bg); stroke-width: 3px; stroke-linejoin: round; }
 .ladder-wrap svg .mk:focus { outline: none; }
@@ -150,12 +153,13 @@ section.block > .intro { max-width: 68ch; color: var(--ink-2); }
 .feat .c { font-size: 0.92rem; color: var(--ink-2); }
 .feat .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: auto; padding-top: 6px; flex-wrap: wrap; }
 .badge { font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; border-radius: 4px; padding: 2px 6px; border: 1px solid currentColor; }
-.badge.verified { color: var(--good); }
-.badge.disputed, .badge.claimed { color: var(--warn); }
+.badge.verified { color: var(--good-ink); }
+.badge.disputed, .badge.claimed { color: var(--warn-ink); }
 .badge.canon_stated { color: var(--olive); }
-.badge.not_quantified, .badge.estimate { color: var(--ink-3); }
+.badge.not_quantified, .badge.estimate, .badge.reported { color: var(--ink-3); }
 .run { border: 1px solid var(--ink); background: var(--ink); color: var(--surface); border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: 0.88rem; }
-.run:hover { background: var(--accent); border-color: var(--accent); color: #1b1306; }
+.run:hover { background: var(--accent); border-color: var(--accent); color: #000; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* Sources */
 .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
@@ -170,7 +174,7 @@ details.src-details > summary { cursor: pointer; font-weight: 700; padding: 10px
 .assume div { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 0.92rem; }
 .assume b { display: block; margin-bottom: 2px; }
 footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 1px solid var(--line); padding-top: 14px; }
-@media (prefers-reduced-motion: no-preference) { .verdict, .tiles { animation: rise 0.25s ease-out; } @keyframes rise { from { opacity: 0.4; transform: translateY(3px); } to { opacity: 1; transform: none; } } }
+@media (prefers-reduced-motion: no-preference) { #bay.enter .verdict, #bay.enter .tiles { animation: rise 0.25s ease-out; } @keyframes rise { from { opacity: 0.4; transform: translateY(3px); } to { opacity: 1; transform: none; } } }
 </style>
 
 <div class="wrap">
@@ -180,40 +184,39 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       <div class="eyebrow">Indestructible · never tires · still obeys Newton</div>
       <h1 id="title-name">Rex Super-Strength Lab</h1>
       <p class="lede">Turn Rex’s strength from <strong>world-record human</strong> to <strong>effectively infinite</strong> and watch what the physics does. Strength is the easy part. <strong>The ground, the object, and his own body weight</strong> are what give out.</p>
-      <div class="start"><span><b>1</b> Set his strength</span><span>→</span><span><b>2</b> Pick a feat</span><span>→</span><span><b>3</b> Read what breaks</span></div>
+      <div class="start"><span><b>1</b> Set his strength</span><span>→</span><span><b>2</b> Pick a move</span><span>→</span><span><b>3</b> Read what breaks</span></div>
     </div>
   </header>
 
   <div class="rig">
     <aside class="panel panel-controls" aria-label="Strength and setup">
       <div class="eyebrow">Strength dial</div>
-      <div class="dial-read" aria-live="polite">
+      <div class="dial-read">
         <div class="big" id="dial-big">Lifts 511 kg</div>
         <div class="force" id="dial-force">5.01 kN of force</div>
         <div class="who" id="dial-who"></div>
       </div>
       <label for="strength" class="eyebrow" style="position:absolute;left:-9999px">Strength, log scale</label>
       <input type="range" id="strength" min="1" max="34" step="0.01" value="2.708">
-      <div class="scale-ends"><span>10 kg</span><span>10³⁴ kg (heavier than 10,000 Suns)</span></div>
+      <div class="scale-ends"><span>10 kg</span><span>10³⁴ kg (about 5,000 Suns)</span></div>
       <div class="chips" id="tier-chips" role="group" aria-label="Strength presets"></div>
 
-      <div class="field">
-        <span class="lbl" id="mode-lbl">Muscle physics</span>
-        <div class="seg" role="group" aria-labelledby="mode-lbl">
-          <button type="button" id="mode-comic" aria-pressed="true">Comic book</button>
-          <button type="button" id="mode-real" aria-pressed="false">Real muscle</button>
-        </div>
-        <span class="hint" id="mode-hint"></span>
-      </div>
-
-      <div class="field">
-        <label for="surface">Ground under his feet</label>
-        <select id="surface"></select>
-      </div>
-      <label class="check"><input type="checkbox" id="ground-holds"><span><b>Comic ground</b> — the floor never breaks</span></label>
-
       <details class="setup" id="setup">
-        <summary>Body &amp; footing</summary>
+        <summary><span>Settings</span> <span class="muted" id="setup-sum" style="font-weight:400;font-size:.85rem"></span></summary>
+        <div class="field">
+          <span class="lbl" id="mode-lbl">Muscle physics</span>
+          <div class="seg" role="group" aria-labelledby="mode-lbl">
+            <button type="button" id="mode-comic" aria-pressed="true">Comic book</button>
+            <button type="button" id="mode-real" aria-pressed="false">Real muscle</button>
+          </div>
+          <span class="hint" id="mode-hint"></span>
+        </div>
+
+        <div class="field">
+          <label for="surface">Ground under his feet</label>
+          <select id="surface"></select>
+        </div>
+        <label class="check"><input type="checkbox" id="ground-holds"><span><b>Comic ground</b> — the floor never breaks</span></label>
         <div class="field">
           <span class="lbl" id="size-lbl">Size</span>
           <div class="chips" id="size-chips" role="group" aria-labelledby="size-lbl"></div>
@@ -239,16 +242,17 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     </aside>
 
     <main class="panel" aria-label="Test bay">
-      <div class="tabs" role="tablist" id="tabs"></div>
-      <div class="bay" id="bay"></div>
+      <div class="tabs" role="tablist" id="tabs" aria-label="Moves"></div>
+      <div class="bay" id="bay" role="tabpanel" tabindex="-1"></div>
+      <div id="bay-live" class="sr-only" aria-live="polite"></div>
     </main>
   </div>
 
   <section class="block" id="ladder">
     <div class="eyebrow">The strength ladder</div>
     <h2>Who sits where, and what each step does</h2>
-    <p class="intro">Left: famous strength levels. Right: the strength at which an everyday move turns into something else, computed live for his current size, ground and muscle setting. Tap any marker to jump there.</p>
-    <div class="ladder-legend"><span><i style="background:var(--olive)"></i>Strength level (who)</span><span><i style="background:var(--accent)"></i>Threshold (what happens)</span><span><i style="background:var(--ink);border-radius:0;height:2px;width:14px"></i>His current setting</span></div>
+    <p class="intro">Left: famous strength levels. Right: the strength at which an everyday move turns into something else, computed live for his current size, ground and muscle setting. Tap any marker to jump there. Marvel handbook levels are overhead presses, and a press record is under half a deadlift record (231 vs 511 kg), so Captain America sits below the deadlift record here even though his press is 1.6× the real one.</p>
+    <div class="ladder-legend"><span><i style="background:var(--olive)"></i>Strength level (who)</span><span><i style="background:var(--accent)"></i>Threshold (what happens)</span><span><i style="background:var(--ink);border-radius:0;height:3px;width:16px"></i>▸ His current setting (∞ sits above the top)</span></div>
     <div class="ladder-wrap viz" id="ladder-viz"></div>
     <div id="ladder-never" class="never"></div>
   </section>
@@ -256,7 +260,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   <section class="block" id="feats">
     <div class="eyebrow">Famous feats</div>
     <h2>Run the record books</h2>
-    <p class="intro">Each card names its source and how solid it is. <b>Verified</b> means a sanctioned record. <b>Canon</b> means the number is printed in the story. <b>Claimed</b> or <b>disputed</b> means nobody can check it. <b>Not quantified</b> means the story shows the feat but never gives a number.</p>
+    <p class="intro">Each card names its source and how solid it is. <b>Verified</b> means an official record or published measurement, checked against the source. <b>Canon</b> means the number is printed in the story and was checked in the text. <b>Reported</b> means press or reviews say the story prints it, but the page itself wasn’t seen. <b>Claimed</b> or <b>disputed</b> means it can’t be checked or is contested. <b>Estimate</b> means the source gives no usable number, so the figure is our own reading. <b>Not quantified</b> means the story shows the feat but never gives a number.</p>
     <div class="feat-groups" id="feat-groups"></div>
   </section>
 
@@ -313,6 +317,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   function sig(x, n) {
     if (!isFinite(x)) return x < 0 ? '−∞' : '∞';
     if (x === 0) return '0';
+    if (Math.abs(x) < 1e-4) return sci(x, n);
     const d = Math.floor(Math.log10(Math.abs(x)));
     const p = Math.pow(10, n - 1 - d);
     const r = Math.round(x * p) / p;
@@ -331,8 +336,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   function big(x, n) {
     if (!isFinite(x)) return '∞';
     if (Math.abs(x) >= 1e27) return sci(x, n || 2);
+    x = Number(x.toPrecision(n || 3));
     for (const [v, name] of NAMES) if (Math.abs(x) >= v) return sig(x / v, n || 3) + ' ' + name;
-    if (Math.abs(x) >= 1000) return Math.round(x).toLocaleString('en-US');
     return sig(x, n || 3);
   }
   function fmtMass(kg) {
@@ -350,8 +355,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     return sig(x, n || 3) + ' ' + unit;
   }
   function fmtTNT(J) {
-    if (!isFinite(J)) return '∞';
-    const kg = J / K.TNT_J_per_kg;
+    if (!isFinite(J)) return 'unbounded energy';
+    const kg = Number((J / K.TNT_J_per_kg).toPrecision(2));
     if (kg < 0.001) return sig(kg * 1e6, 2) + ' mg TNT';
     if (kg < 1) return sig(kg * 1000, 2) + ' g TNT';
     if (kg < 1000) return sig(kg, 2) + ' kg TNT';
@@ -379,7 +384,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (!isFinite(v) || v >= K.c * (1 - 1e-12)) return 'light speed (to the last digit)';
     if (v >= 0.01 * K.c) {
       const b = v / K.c;
-      if (b > 0.999) return sig(b * 100, 8).replace(/0+$/, '') + '% of light speed';
+      if (b > 0.999) {
+        const dec = Math.max(1, Math.ceil(-Math.log10(1 - b)) - 1);
+        return (b * 100).toFixed(dec).replace(/0+$/, '').replace(/\.$/, '') + '% of light speed';
+      }
       return sig(b * 100, 3) + '% of light speed';
     }
     const kmh = v * 3.6;
@@ -416,8 +424,22 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   const DEFAULTS = { logKg: Math.log10(100 * 907.18474), inf: false, mode: 'comic', surface: 'concrete', groundHolds: false, anchor: 'friction', H: 2, m: 180, action: 'throw', obj: 'car', angle: 45 };
   let state = Object.assign({}, DEFAULTS);
   try { const saved = JSON.parse(localStorage.getItem('rex-lab-v1') || 'null'); if (saved) state = Object.assign(state, saved); } catch (e) { /* storage unavailable */ }
-  if (!D.surfaces.some((s) => s.id === state.surface)) state.surface = DEFAULTS.surface;
-  if (!D.objects.some((o) => o.id === state.obj)) state.obj = DEFAULTS.obj;
+  {
+    const num = (lo, hi) => (v) => typeof v === 'number' && isFinite(v) && v >= lo && v <= hi;
+    const VALID = {
+      logKg: num(1, 34), H: num(0.1, 500), m: (v) => typeof v === 'number' && isFinite(v) && v > 0, angle: num(0, 90),
+      inf: (v) => typeof v === 'boolean', groundHolds: (v) => typeof v === 'boolean',
+      mode: (v) => v === 'comic' || v === 'real',
+      anchor: (v) => v === 'friction' || v === 'braced' || v === 'bolted',
+      action: (v) => ['lift', 'throw', 'jump', 'stomp', 'punch', 'clap', 'sprint', 'pull'].includes(v),
+      surface: (v) => D.surfaces.some((x) => x.id === v),
+      obj: (v) => D.objects.some((x) => x.id === v),
+    };
+    for (const [k, ok] of Object.entries(VALID)) if (!ok(state[k])) state[k] = DEFAULTS[k];
+    for (const k of Object.keys(state)) if (!(k in DEFAULTS)) delete state[k];
+  }
+  // nudge up so 10^log10(kg) never lands a hair below kg
+  const setKg = (kg) => { state.inf = false; state.logKg = Math.log10(kg) + 1e-12; };
   const save = () => { try { localStorage.setItem('rex-lab-v1', JSON.stringify(state)); } catch (e) { /* ignore */ } };
 
   const name = () => 'Rex';
@@ -434,7 +456,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
 
   // ---------------------------------------------------------------- status chips
   const ICON = {
-    good: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="var(--good)"/><path d="M4.5 8.2l2.2 2.2 4.8-4.8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    good: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="var(--good)"/><path d="M4.5 8.2l2.2 2.2 4.8-4.8" stroke="var(--surface)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     warn: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5l7 13H1z" fill="var(--warn)"/><path d="M8 6v4" stroke="#1b1306" stroke-width="2" stroke-linecap="round"/><circle cx="8" cy="12.3" r="1.1" fill="#1b1306"/></svg>',
     bad: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="var(--bad)"/><path d="M5.3 5.3l5.4 5.4M10.7 5.3l-5.4 5.4" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>',
     info: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="var(--ink-3)"/><path d="M8 7.2v4.3" stroke="var(--surface)" stroke-width="2" stroke-linecap="round"/><circle cx="8" cy="4.7" r="1.1" fill="var(--surface)"/></svg>',
@@ -445,12 +467,15 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     s.append(document.createTextNode(label));
     return s;
   }
-  const tile = (k, v, s) => el('div', { class: 'tile' }, el('div', { class: 'k', text: k }), el('div', { class: 'v', text: v }), s ? el('div', { class: 's', text: s }) : null);
+  // keep numbers and their units on one line
+  const nb = (t) => String(t).replace(/(\d) (?=[A-Za-zµ°%×])/g, '$1\u00a0');
+  const tile = (k, v, s) => el('div', { class: 'tile' }, el('div', { class: 'k', text: k }), el('div', { class: 'v', text: nb(v) }), s ? el('div', { class: 's', text: nb(s) }) : null);
   const tiles = (...ts) => el('div', { class: 'tiles' }, ts.filter(Boolean));
-  const happens = (items) => el('ul', { class: 'happens' }, items.filter(Boolean).slice(0, 5).map((t) => el('li', { text: t })));
-  const math = (lines) => { const d = el('details', { class: 'math' }, el('summary', { text: 'Show the math' })); d.append(el('div', { class: 'eq', text: lines.filter(Boolean).join('\n') })); return d; };
-  const verdict = (t) => el('p', { class: 'verdict', text: t });
-  const callout = (t) => el('p', { class: 'callout', text: t });
+  const happens = (items) => el('ul', { class: 'happens' }, items.filter(Boolean).slice(0, 5).map((t) => el('li', { text: nb(t) })));
+  let mathOpen = false;
+  const math = (lines) => { const d = el('details', { class: 'math' }, el('summary', { text: 'Show the math' })); d.append(el('div', { class: 'eq', text: lines.filter(Boolean).join('\n') })); d.open = mathOpen; d.addEventListener('toggle', () => { mathOpen = d.open; }); return d; };
+  const verdict = (t) => el('p', { class: 'verdict', text: nb(t) });
+  const callout = (t) => el('p', { class: 'callout', text: nb(t) });
 
   // ---------------------------------------------------------------- dial
   function tierNear() {
@@ -483,13 +508,15 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     $('#height').value = state.H;
     $('#mass').value = Math.round(state.m * 100) / 100;
     for (const b of document.querySelectorAll('#size-chips .chip')) b.setAttribute('aria-pressed', String(Math.abs(Number(b.dataset.h) - state.H) < 1e-9));
+    const surf = D.surfaces.find((x) => x.id === state.surface);
+    $('#setup-sum').textContent = [state.mode === 'real' ? 'Real muscle' : 'Comic book', state.groundHolds ? 'comic ground' : surf.name.replace(/ \(.*\)$/, ''), { friction: 'standing', braced: 'claws dug in', bolted: 'bolted' }[state.anchor], sig(state.H, 3) + ' m'].join(' · ');
   }
 
   function buildControls() {
     const chips = $('#tier-chips');
     for (const t of D.tiers.filter((x) => x.chip)) {
       chips.append(el('button', { type: 'button', class: 'chip', 'data-id': t.id, 'aria-pressed': 'false', title: t.who || '', onclick: () => {
-        if (!isFinite(t.liftKg)) state.inf = true; else { state.inf = false; state.logKg = Math.log10(t.liftKg); }
+        if (!isFinite(t.liftKg)) state.inf = true; else setKg(t.liftKg);
         update();
       } }, t.chip));
     }
@@ -507,12 +534,14 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     $('#mass').onchange = (e) => { const m = Number(e.target.value); if (m > 0) state.m = m; update(); };
     const tabs = $('#tabs');
     for (const a of ACTIONS) {
-      tabs.append(el('button', { type: 'button', class: 'tab', role: 'tab', id: 'tab-' + a.id, 'aria-selected': 'false', 'aria-controls': 'bay', onclick: () => { state.action = a.id; update(); } }, a.label));
+      tabs.append(el('button', { type: 'button', class: 'tab', role: 'tab', id: 'tab-' + a.id, 'aria-selected': 'false', 'aria-controls': 'bay', tabindex: '-1', onclick: () => { state.action = a.id; update(); } }, a.label));
     }
     tabs.addEventListener('keydown', (e) => {
-      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-      const i = ACTIONS.findIndex((a) => a.id === state.action);
-      const j = (i + (e.key === 'ArrowRight' ? 1 : -1) + ACTIONS.length) % ACTIONS.length;
+      const step = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+      if (step === undefined && e.key !== 'Home' && e.key !== 'End') return;
+      e.preventDefault();
+      const i = ACTIONS.findIndex((a) => a.id === state.action), n = ACTIONS.length;
+      const j = e.key === 'Home' ? 0 : e.key === 'End' ? n - 1 : (i + step + n) % n;
       state.action = ACTIONS[j].id; update(); $('#tab-' + state.action).focus();
     });
   }
@@ -560,7 +589,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     return el('div', {}, lab, el('div', { class: 'viz' }, svg));
   }
 
-  function trajectoryChart(path, ghost, label) {
+  function trajectoryChart(path, ghost, label, apexH) {
     const w = chartW(), h = w < 480 ? 220 : 260, padL = 58, padR = 16, padT = 16, padB = 34;
     let maxX = 0, maxY = 0;
     for (const p of path.concat(ghost || [])) { maxX = Math.max(maxX, p[0]); maxY = Math.max(maxY, p[1]); }
@@ -569,32 +598,39 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const X = nice(maxX * 1.02), Y = nice(maxY * 1.05);
     const sx = (x) => padL + x / X * (w - padL - padR), sy = (y) => h - padB - y / Y * (h - padT - padB);
     const svg = sv('svg', { viewBox: `0 0 ${w} ${h}`, role: 'img', 'aria-label': label });
+    const nT = w < 480 ? 2 : 4;
     for (let i = 0; i <= 4; i++) {
       const yy = Y * i / 4, xx = X * i / 4;
+      if (i % (4 / nT) !== 0) { svg.append(sv('line', { x1: padL, x2: w - padR, y1: sy(yy), y2: sy(yy), class: 'axis' })); continue; }
       svg.append(sv('line', { x1: padL, x2: w - padR, y1: sy(yy), y2: sy(yy), class: 'axis' }));
       svg.append(sv('text', { x: padL - 6, y: sy(yy) + 4, 'text-anchor': 'end' }, fmtDist(yy)));
       svg.append(sv('text', { x: sx(xx), y: h - padB + 18, 'text-anchor': i === 0 ? 'start' : (i === 4 ? 'end' : 'middle') }, fmtDist(xx)));
     }
     const toD = (pts) => pts.map((p, i) => (i ? 'L' : 'M') + sx(p[0]).toFixed(1) + ' ' + sy(p[1]).toFixed(1)).join(' ');
-    if (ghost && ghost.length > 1) svg.append(sv('path', { d: toD(ghost), fill: 'none', stroke: 'var(--ink-3)', 'stroke-width': 1.5, 'stroke-opacity': 0.55 }));
+    if (ghost && ghost.length > 1) svg.append(sv('path', { d: toD(ghost), fill: 'none', stroke: 'var(--ink-3)', 'stroke-width': 1.5, 'stroke-dasharray': '6 4' }));
     svg.append(sv('path', { d: toD(path), fill: 'none', stroke: 'var(--accent)', 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }));
     const last = path[path.length - 1];
     svg.append(sv('circle', { cx: sx(last[0]), cy: sy(last[1]), r: 5, fill: 'var(--accent)', stroke: 'var(--surface)', 'stroke-width': 2 }));
     let apex = path[0];
     for (const p of path) if (p[1] > apex[1]) apex = p;
     svg.append(sv('circle', { cx: sx(apex[0]), cy: sy(apex[1]), r: 4, fill: 'var(--accent)', stroke: 'var(--surface)', 'stroke-width': 2 }));
-    svg.append(sv('text', { x: Math.min(sx(apex[0]) + 8, w - padR - 4), y: Math.max(sy(apex[1]) - 8, padT + 10), 'text-anchor': sx(apex[0]) > w - 150 ? 'end' : 'start', class: 'lbl-strong' }, 'top ' + fmtDist(apex[1])));
+    svg.append(sv('text', { x: Math.min(sx(apex[0]) + 8, w - padR - 4), y: Math.max(sy(apex[1]) - 8, padT + 10), 'text-anchor': sx(apex[0]) > w - 150 ? 'end' : 'start', class: 'lbl-strong' }, 'top ' + fmtDist(apexH != null ? apexH : apex[1])));
     const legend = el('div', { class: 'ladder-legend' },
       el('span', {}, el('i', { style: 'background:var(--accent);border-radius:0;height:2px;width:16px' }), 'With air drag'),
-      ghost && ghost.length > 1 ? el('span', {}, el('i', { style: 'background:var(--ink-3);opacity:.6;border-radius:0;height:2px;width:16px' }), 'If there were no air') : null);
+      ghost && ghost.length > 1 ? el('span', {}, el('i', { style: 'border-top:2px dashed var(--ink-3);background:none;border-radius:0;height:0;width:16px' }), 'If there were no air') : null);
     return el('div', {}, legend, el('div', { class: 'viz' }, svg));
   }
 
   function logBars(title, rows, unitFmt, opts) {
-    // rows: [{label, value, highlight}] ; horizontal bars on a log axis
+    // rows: [{label, value, highlight, text, zeroText}] ; horizontal bars on a log axis.
+    // On narrow screens, long labels sit on their own line above each bar.
     const o = opts || {};
     const finite = rows.filter((r) => r.value > 0 && isFinite(r.value));
-    const w = chartW(), rowH = 30, padL = Math.min(o.padL || 170, Math.round(w * 0.36)), padR = 84, padT = 10;
+    const longest = Math.max(...rows.map((r) => String(r.label).length));
+    const w = chartW(), padR = 84, padT = 10;
+    const want = o.padL || Math.round(longest * 6.8 + 14);
+    const stack = want > w * 0.45;
+    const rowH = stack ? 42 : 30, padL = stack ? 4 : want;
     const h = padT + rows.length * rowH + 26;
     const vals = finite.map((r) => r.value);
     let lo = Math.floor(Math.log10(Math.min(...vals, o.min || Infinity)));
@@ -602,26 +638,29 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (!isFinite(lo)) lo = 0; if (!isFinite(hi) || hi <= lo) hi = lo + 1;
     lo = Math.max(lo, hi - 14);
     const x = (v) => padL + (Math.log10(Math.max(v, Math.pow(10, lo))) - lo) / (hi - lo) * (w - padL - padR);
-    const svg = sv('svg', { viewBox: `0 0 ${w} ${h}`, role: 'img', 'aria-label': title });
+    const valText = (r) => r.value > 0 ? (r.text || (isFinite(r.value) ? unitFmt(r.value) : '∞')) : (r.zeroText || 'none');
+    const svg = sv('svg', { viewBox: `0 0 ${w} ${h}`, role: 'img', 'aria-label': title + ': ' + rows.map((r) => r.label + ' ' + valText(r)).join('; ') });
     const maxTicks = Math.max(2, Math.floor((w - padL - padR) / 78));
     const step = Math.max(1, Math.ceil((hi - lo) / maxTicks));
     for (let e = lo; e <= hi; e += step) {
       svg.append(sv('line', { x1: x(Math.pow(10, e)), x2: x(Math.pow(10, e)), y1: padT, y2: h - 22, class: 'axis' }));
-      svg.append(sv('text', { x: x(Math.pow(10, e)), y: h - 6, 'text-anchor': 'middle' }, unitFmt(Math.pow(10, e))));
+      svg.append(sv('text', { x: x(Math.pow(10, e)), y: h - 6, 'text-anchor': e === lo && stack ? 'start' : 'middle' }, unitFmt(Math.pow(10, e))));
     }
     rows.forEach((r, i) => {
-      const y = padT + i * rowH + 6;
-      svg.append(sv('text', { x: padL - 8, y: y + 12, 'text-anchor': 'end', class: r.highlight ? 'lbl-strong' : null }, r.label));
+      const y = padT + i * rowH + (stack ? 18 : 6);
+      if (stack) svg.append(sv('text', { x: padL, y: y - 5, class: r.highlight ? 'lbl-strong' : null }, r.label));
+      else svg.append(sv('text', { x: padL - 8, y: y + 12, 'text-anchor': 'end', class: r.highlight ? 'lbl-strong' : null }, r.label));
       if (r.value > 0) {
         const xv = isFinite(r.value) ? x(r.value) : w - padR;
         svg.append(sv('rect', { x: padL, y, width: Math.max(4, xv - padL), height: 16, rx: 4, fill: r.highlight ? 'var(--accent)' : 'var(--olive)', 'fill-opacity': r.highlight ? 1 : 0.75 }));
-        svg.append(sv('text', { x: Math.min(xv + 6, w - padR + 6), y: y + 12, class: 'lbl-strong' }, r.text || (isFinite(r.value) ? unitFmt(r.value) : '∞')));
+        svg.append(sv('text', { x: Math.min(xv + 6, w - padR + 6), y: y + 12, class: 'lbl-strong' }, valText(r)));
       } else {
-        svg.append(sv('text', { x: padL, y: y + 12 }, r.zeroText || 'none'));
+        svg.append(sv('text', { x: padL, y: y + 12 }, valText(r)));
       }
     });
     return el('div', { class: 'viz' }, svg);
   }
+
 
   function blastBlock(E, where) {
     const cap = Math.PI * K.R_E;
@@ -669,7 +708,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const out = [];
     out.push(el('div', { class: 'bay-controls' }, objectPicker()));
     let v;
-    if (!r.canLift) v = 'Rex can’t budge it. It needs ' + fmtRatio(1 / r.strengthMargin) + ' more strength.';
+    if (!r.canLift) { const need = 1 / r.strengthMargin; v = 'Rex can’t budge it. It needs ' + (need < 2 ? sig((need - 1) * 100, 2) + '% more strength.' : fmtRatio(need) + ' the strength he has.'); }
     else if (r.groundRatio > 1 && r.gripRatio > 1) v = 'Rex has the strength. The ground and the ' + o.short + ' don’t.';
     else if (r.groundRatio > 1) v = 'Rex can lift it, but sinks into the ground doing it.';
     else if (r.gripRatio > 1) v = 'Rex can lift it, but his hands punch through it.';
@@ -710,24 +749,27 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     out.push(el('div', { class: 'bay-controls' }, objectPicker((x) => !x.noThrow), angleControl()));
     const key = r.style === 'whip' ? 'throwWhip' : 'throwPush';
     if (!r.canHold || !r.canMove) {
-      out.push(verdict(!r.canHold ? 'Rex can’t throw it. He can’t even hold it up.' : 'Rex can hold it, but can’t throw it at this angle.'));
+      out.push(verdict(!r.canHold ? 'Rex can’t throw it. He can’t even hold it up.' : 'Rex can hold it, but can’t throw it at any angle: his throwing push (' + fmtSI(r.Fdrive, 'N') + ') is less than its weight (' + fmtSI(r.needed, 'N') + ').'));
       out.push(tiles(
         tile('Weight to hold up', fmtSI(o.m * g, 'N'), fmtMass(o.m)),
         tile('His full strength', fmtSI(c.F, 'N'), ''),
         r.canHold ? tile('His throwing push', fmtSI(r.Fdrive, 'N'), shareText(key) + ' of full strength per hand, ' + r.hands + ' hand' + (r.hands > 1 ? 's' : '')) : null));
       out.push(happens([
         state.mode === 'real' ? 'A fast throw can’t use full strength: muscles deliver much less force while moving quickly than while holding still.' : 'A throw uses a fixed share of his strength, the share that matches real throwers at record-human strength.',
-        'Try a flatter angle, a lighter object, or more strength.',
+        'Try a lighter object, or about ' + fmtRatio(r.needed / Math.max(r.Fdrive, 1e-9)) + ' more strength.',
       ]));
       return out;
     }
     const f = r.flight;
+    const straightUp = state.angle >= 90;   // range at 90° is round-off, not a distance
     const vac = f.relativistic ? null : P.fly({ v0: r.v, thetaDeg: state.angle, h0: c.body.releaseHeight, m: o.m, A: o.area, Cd: 0, record: true });
     let v;
     if (f.relativistic) v = 'The ' + o.short + ' leaves at ' + fmtSpeed(r.v) + '. It never lands: the air in front of it turns into a fireball.';
+    else if (f.leavesHill) v = 'The ' + o.short + ' climbs past 1.5 million km, where the Sun’s pull beats Earth’s, and doesn’t fall back.';
     else if (f.escaped) v = 'The ' + o.short + ' leaves Earth for good.';
     else if (f.orbit) v = 'The ' + o.short + ' goes into orbit.';
     else if (f.timedOut) v = 'The ' + o.short + ' is still in flight after ' + fmtTime(f.time) + ', ' + fmtDist(f.apex) + ' up.';
+    else if (straightUp) v = 'The ' + o.short + ' goes ' + fmtDist(f.apex) + ' straight up and comes back down on Rex ' + fmtTime(f.time) + ' later.';
     else v = 'The ' + o.short + ' flies ' + fmtDist(f.range) + '.';
     if (r.recoilV > 1) v += ' Rex gets shoved backward at ' + speedOnly(r.recoilV) + '.';
     out.push(verdict(v));
@@ -740,26 +782,33 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     out.push(el('div', { class: 'status-row' }, chips));
     let distTile;
     if (f.relativistic) distTile = null;
-    else if (f.escaped) distTile = tile('Distance', 'Escapes Earth', '');
+    else if (f.escaped) distTile = tile('Distance', f.leavesHill ? 'Leaves Earth’s pull' : 'Escapes Earth', '');
     else if (f.orbit) distTile = tile('Distance', 'Orbits Earth', 'never comes down (no air up there)');
     else if (f.timedOut) distTile = tile('Distance', 'Still flying', fmtDist(f.apex) + ' up after ' + fmtTime(f.time));
+    else if (straightUp) distTile = tile('Height', fmtDist(f.apex), 'straight up and back · ' + fmtTime(f.time));
     else distTile = tile('Distance', fmtDist(f.range), 'top ' + fmtDist(f.apex) + ' · ' + fmtTime(f.time));
     out.push(tiles(
       tile('Launch speed', speedOnly(r.v), [fmtMach(r.v), r.v < 0.01 * K.c ? big(r.v * 3.6, 3) + ' km/h' : ''].filter(Boolean).join(' · ')),
       tile('Energy in the ' + o.short, fmtSI(r.Eobj, 'J'), fmtTNT(r.Eobj)),
       distTile,
       f.landed && !f.relativistic ? tile('Lands at', speedOnly(f.vImpact), fmtTNT(r.Eimpact) + ' on impact') : null,
-      tile('His recoil', r.recoilV > 0.01 ? speedOnly(r.recoilV) : 'none', r.anchor.R === Infinity ? 'bolted down' : 'footing gives at ' + fmtSI(r.anchor.R, 'N'))));
+      tile('His recoil', r.recoilV > 0.01 ? speedOnly(r.recoilV) : 'none', r.anchor.R !== Infinity ? 'footing gives at ' + fmtSI(r.anchor.R, 'N') : (state.anchor === 'bolted' ? 'bolted down' : 'push aimed so steeply down his feet can’t slide'))));
     if (!f.relativistic && f.path && f.path.length > 1) {
       const ghost = vac && vac.landed && vac.path && vac.range < 40 * Math.max(f.range, 1) ? vac.path : null;
-      out.push(trajectoryChart(f.path, ghost, 'Flight path of the ' + o.short));
+      out.push(trajectoryChart(f.path, ghost, 'Flight path of the ' + o.short, f.apex));
     }
     const items = [];
-    if (r.anchor.R !== Infinity && r.recoilV > 0.01) items.push('Newton’s third law: the ' + o.short + ' pushes back on Rex exactly as hard as he pushes it. His footing can only resist ' + fmtSI(r.anchor.R, 'N') + ', so he flies backward at ' + speedOnly(r.recoilV) + '.' + (r.recoilE > r.Eobj ? ' He ends up with more of the energy than the ' + o.short + ' does.' : '') + (state.anchor === 'friction' ? ' To stay put he needs to dig in: try “Claws dug in” or “Bolted to the planet” under Body & footing.' : ''));
+    if (r.heldBack) items.push('Pushing with everything would make his feet slide and waste the throw, so he holds back to what his footing can take (' + fmtSI(r.anchor.R, 'N') + ').');
+    if (r.anchor.R !== Infinity && r.recoilV > 0.01) items.push('Newton’s third law: the ' + o.short + ' pushes back on Rex exactly as hard as he pushes it. His footing can only resist ' + fmtSI(r.anchor.R, 'N') + ', so he flies backward at ' + speedOnly(r.recoilV) + '.' + (r.recoilE > r.Eobj ? ' He ends up with more of the energy than the ' + o.short + ' does.' : '') + (state.anchor === 'friction' ? ' To stay put he needs to dig in: try “Claws dug in” or “Bolted to the planet” under Settings.' : ''));
     if (r.sinkRatio > 1) items.push('The throw also drives his feet down: the ground under him is carrying ' + fmtRatio(r.sinkRatio) + ' its limit, so he sinks while he throws.');
     if (vac && !f.relativistic) {
       if (vac.escaped && !f.escaped) items.push('Air is what brings it down. With no air, this launch would have escaped Earth.');
       else if (vac.orbit && !f.orbit) items.push('Air is what brings it down. With no air, this launch would have gone into orbit.');
+      else if (straightUp && vac.landed && f.landed && vac.apex > 0) {
+        const hr = f.apex / vac.apex;
+        if (hr < 0.5) items.push('Air is the real limit: with no air it would have gone ' + fmtDist(vac.apex) + ' up.');
+        else if (hr < 0.95) items.push('Air drag costs it ' + sig(100 * (1 - hr), 2) + '% of its height.');
+      }
       else if (vac.landed && f.landed && vac.range > 0) {
         const ratio = f.range / vac.range;
         if (ratio < 0.5) items.push('Air is the real limit on range: with no air it would have gone ' + fmtDist(vac.range) + '. At launch speed, drag cuts its speed by 63% every ' + fmtDist(f.eFold) + '.');
@@ -767,18 +816,32 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       }
     }
     if (f.maxStagT > 1200 && !f.relativistic) items.push('At Mach ' + sig(f.maxMach, 2) + ', air piling up at the front heats to about ' + fmtTemp(f.maxStagT) + ' (equilibrium air; the textbook ideal-gas formula would say ' + fmtTemp(P.stagnationTIdeal(f.maxMach * K.a0)) + '). Only Rex is indestructible. The ' + o.short + ' would melt or burn away, and the sim does not model that.');
-    if (f.relativistic) items.push('Past about 1% of light speed the air ahead can’t get out of the way. It is shock-heated into plasma, the ' + o.short + ' vaporizes, and its energy, ' + fmtTNT(r.Eobj) + ', comes out as a fireball within a few hundred metres of Rex’s hand. (Air only starts to fuse much closer to light speed: xkcd’s “Relativistic Baseball” is pitched at 90% of it.)');
-    if (r.gripRatio > 1) items.push('The force on his palms is ' + fmtRatio(r.gripRatio) + ' what the ' + o.short + ' can take. Without a pushing plate of ' + fmtArea(r.plateNeeded) + ', his hands go through it and only part of it gets thrown.');
-    if (f.escaped) items.push('It leaves the atmosphere faster than escape velocity (11.2 km/s at the surface), so gravity never brings it back.');
-    if (f.landed && r.Eimpact > 4.184e9) items.push('Impact: ' + fmtTNT(r.Eimpact) + (r.crater > 0 ? ', crater up to ' + fmtDist(r.crater) + ' across (impact scaling; rock and concrete make smaller craters)' : '') + (r.quake > 2 ? ', felt like a magnitude ' + sig(r.quake, 2) + ' quake' : '') + '.');
+    if (f.relativistic) {
+      let where;
+      if (!isFinite(r.Eobj)) where = 'The energy is unbounded, so no finite blast radius applies.';
+      else {
+        const sweep = o.m / (K.rho0 * o.area);   // path over which it sweeps up its own mass of air
+        const column = K.rho0 * K.Hs / Math.max(Math.sin(state.angle * Math.PI / 180), 0.03);
+        where = o.m / o.area > column
+          ? 'It outweighs all the air in its way, so it punches out through the atmosphere glowing, taking much of its energy (' + fmtTNT(r.Eobj) + ') with it.'
+          : 'Its energy, ' + fmtTNT(r.Eobj) + ', comes out as a fireball over roughly the first ' + fmtDist(sweep) + ' of its path, about where it has swept up its own mass of air.';
+      }
+      items.push('Past about 1% of light speed the air ahead can’t get out of the way: it is shock-heated into plasma and the ' + o.short + ' vaporizes. ' + where + (r.v < 0.5 * K.c ? ' (Air only starts to fuse much closer to light speed: xkcd’s “Relativistic Baseball” is pitched at 90% of it.)' : ' This close to light speed, air nuclei start to fuse too, as in xkcd’s “Relativistic Baseball”.'));
+    }
+    if (r.gripRatio > 1) items.push(isFinite(r.gripRatio) ? 'The force on his palms is ' + fmtRatio(r.gripRatio) + ' what the ' + o.short + ' can take. Without a pushing plate of ' + fmtArea(r.plateNeeded) + ', his hands go through it and only part of it gets thrown.' : 'The force on his palms is unbounded, so no plate is big enough: his hands go through the ' + o.short + ' and only part of it gets thrown.');
+    if (f.leavesHill) items.push('Its arc tops out beyond about 1.5 million km, Earth’s Hill sphere. Out there the Sun’s pull wins, so it drifts off into its own orbit around the Sun.');
+    else if (f.escaped) items.push('It leaves the atmosphere faster than escape velocity (11.2 km/s at the surface), so gravity never brings it back.');
+    if (f.landed && r.Eimpact > 4.184e9) items.push('Impact: ' + fmtTNT(r.Eimpact) + (r.planetScale ? '. That is planet-scale: crater scaling no longer applies' : (r.crater > 0 ? ', crater up to ' + fmtDist(r.crater) + ' across (impact scaling; rock and concrete make smaller craters)' : '')) + (r.quake > 2 && !r.planetScale ? ', felt like a magnitude ' + sig(r.quake, 2) + ' quake' : '') + '.');
     out.push(happens(items));
     const human = D.tiers.find((t) => t.id === 'human');
-    if (D.calibration && !state.inf && Math.abs(state.logKg - Math.log10(human.liftKg)) < 0.01) {
+    const calBody = Math.abs(state.H - 2) < 1e-9 && Math.abs(state.m - 180) < 1e-6;
+    if (D.calibration && calBody && !state.inf && Math.abs(state.logKg - Math.log10(human.liftKg)) < 0.01) {
       const rows = D.calibration.map((k) => {
         const rr = P.throwObject(ctx(), objById(k.obj), k.angle);
-        return k.label + ': record ' + k.recordText + ' · sim ' + (k.metric === 'range' ? fmtDist(rr.flight.range) : speedOnly(rr.v));
+        const sim = k.metric === 'range' ? (rr.flight ? fmtDist(rr.flight.range) : 'can’t throw it') : speedOnly(rr.v);
+        return k.label + ': record ' + k.recordText + ' · sim ' + sim;
       });
-      out.push(callout('Reality check at record-human strength (both muscle settings are tuned to match these): ' + rows.join(' | ')));
+      out.push(callout('Reality check for the default 2 m, 180 kg Rex at record-human strength (both muscle settings are tuned to match these): ' + rows.join(' | ')));
     }
     out.push(math([
       'Drive: ' + fmtSI(r.Fdrive, 'N') + ' (' + shareText(key) + ' of full strength per hand' + (state.mode === 'real' ? ', falling with speed per the Hill curve' : ', constant') + ') over a ' + sig(r.style === 'whip' ? c.body.strokes.whip : c.body.strokes.throw, 2) + ' m ' + (r.style === 'whip' ? 'overarm whip' : 'shove') + ' with ' + r.hands + ' hand' + (r.hands > 1 ? 's' : '') + '; holding it up against gravity leaves ' + fmtSI(r.F, 'N') + ' along the throw.',
@@ -798,26 +861,29 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const RB = r.groundLimitForce;
     const rFree = !c.groundHolds && (r.groundFails || r.heldBack) ? P.jump(Object.assign({}, c, { groundHolds: true })) : null;
     const out = [];
+    const up = r.v > 0 && !r.relativistic;
     let v;
     if (!(r.v > 0)) v = 'Rex can’t get off the ground.';
     else if (r.relativistic) v = 'Rex leaves at ' + fmtSpeed(r.v) + '. The ground under him turns to plasma.';
+    else if (f.leavesHill) v = 'Rex jumps past 1.5 million km, where the Sun’s pull beats Earth’s, and doesn’t come back.';
     else if (f.escaped) v = 'Rex jumps clean off the planet.';
-    else v = 'Rex jumps ' + fmtDist(f.apex) + ' high' + (r.groundFails ? ' and leaves two craters behind.' : '.');
+    else if (f.timedOut) v = 'Rex is still going up after ' + fmtTime(f.time) + ', ' + fmtDist(f.apex) + ' high.';
+    else v = 'Rex jumps ' + fmtDist(f.apex) + ' high' + (r.groundFails ? (r.Eground >= 1e6 ? ' and leaves two craters behind.' : ' and leaves two deep footprints.') : '.');
     out.push(verdict(v));
     let gchip;
     if (c.groundHolds) gchip = status('info', 'Ground: comic, never breaks');
     else if (r.heldBack) gchip = status('warn', 'Ground at its limit: he holds back');
-    else if (r.groundFails) gchip = status('bad', 'Ground fails: his feet blast into it');
-    else gchip = status('good', 'Ground holds (' + sig(100 * r.F / RB, 2) + '% of limit)');
+    else if (r.groundFails) gchip = status('bad', 'Ground gives: feet sink ' + fmtDist(r.sink));
+    else gchip = status('good', r.F > RB ? 'Ground holds: his feet barely dent it' : 'Ground holds (' + sig(100 * r.F / RB, 2) + '% of limit)');
     out.push(el('div', { class: 'status-row' }, gchip, r.v >= K.a0 && !r.relativistic ? status('warn', 'Sonic boom at takeoff') : null));
     const ref = heightRefs().filter((h) => h.m <= f.apex).pop();
     out.push(tiles(
       tile('Takeoff speed', speedOnly(r.v), fmtMach(r.v)),
-      r.relativistic ? null : tile('Peak height', f.escaped ? 'Escapes Earth' : fmtDist(f.apex), ref ? 'clears the ' + ref.label.replace(/^The /, '') : ''),
-      r.relativistic || f.escaped ? null : tile('Hang time', fmtTime(f.time), ''),
-      r.groundFails ? tile('Energy into the ground', fmtSI(r.Eground, 'J'), fmtTNT(r.Eground)) : null,
-      r.relativistic || f.escaped ? null : tile('Comes back down at', speedOnly(f.vImpact), 'terminal speed ' + speedOnly(r.vTerminal))));
-    if (!r.relativistic && !f.escaped && f.apex > 0.01) {
+      up ? tile('Peak height', f.escaped ? 'Escapes Earth' : fmtDist(f.apex), ref ? 'higher than: ' + ref.label : '') : null,
+      up && f.landed ? tile('Hang time', fmtTime(f.time), '') : null,
+      r.groundFails ? tile('Energy into the ground', fmtSI(r.Eground, 'J'), r.groundDisrupts ? 'enough to blow Earth apart' : fmtTNT(r.Eground)) : null,
+      up && f.landed ? tile('Comes back down at', speedOnly(f.vImpact), 'sea-level terminal speed ' + speedOnly(r.vTerminal)) : null));
+    if (up && f.landed && f.apex > 0.01) {
       const rows = heightRefs().filter((h) => h.m < f.apex * 30 && h.m > f.apex / 300).map((h) => ({ label: h.label, value: h.m }));
       rows.push({ label: 'Rex’s jump', value: f.apex, highlight: true });
       rows.sort((a, b) => a.value - b.value);
@@ -825,15 +891,25 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     }
     const items = [];
     if (r.heldBack) items.push('The ground is the limit. On ' + c.surface.short + ' his feet can push off with at most ' + fmtSI(RB, 'N') + ' before it gives, so he holds back to that: pushing a bit harder only sinks his feet and wastes the stroke.' + (rFree && !rFree.flight.escaped ? ' Rigid ground would send him ' + fmtDist(rFree.flight.apex) + '.' : ''));
-    if (r.groundFails) items.push('His feet punch into the ground at ' + speedOnly(r.push.vB) + '. That fast, the ground resists mostly through its own inertia: it has to be shoved out of the way, so he can still push off it, the way a hard slap on water stings. The ground takes ' + fmtTNT(r.Eground) + (r.groundQuake > 2 ? ' (a magnitude ' + sig(r.groundQuake, 2) + ' quake)' : '') + '.');
+    if (r.groundFails) {
+      const vf = r.footSpeed;
+      const inertial = (c.surface.rho || 2000) * vf * vf > RB / (2 * c.body.footArea);
+      items.push('His feet punch ' + fmtDist(r.sink) + ' into the ground at up to ' + (vf >= 0.01 * K.c ? fmtSpeed(vf) : speedOnly(vf)) + '. ' + (inertial ? 'That fast, the ground resists mostly through its own inertia: it has to be shoved out of the way, so he can still push off it, the way a hard slap on water stings. ' : '') + 'The ground takes ' + fmtTNT(r.Eground) + (r.groundDisrupts ? ', more than it takes to blow Earth apart.' : (isFinite(r.groundQuake) && r.groundQuake > 2 ? ' (a magnitude ' + sig(r.groundQuake, 2) + ' quake).' : '.')));
+    }
     if (!c.groundHolds && !r.groundFails && !r.heldBack && r.v > 0) items.push('The ground held. On ' + c.surface.short + ' it gives at ' + fmtSI(RB, 'N') + ' of push.');
     if (state.mode === 'real') items.push('Real muscle caps his leg speed, so the jump tops out near ' + speedOnly(P.MUSCLE.jump.vmax * c.body.s) + ' of takeoff speed however strong he gets.');
-    if (!r.relativistic && !f.escaped && f.apex > 50) items.push(isFinite(r.vacuumApex) ? 'Air drag eats the jump: with no air he would reach ' + fmtDist(r.vacuumApex) + '.' : 'With no air this takeoff would carry him off the planet. The air stops him.');
-    if (!r.relativistic && !f.escaped && f.apex > 20) items.push('He comes back down at ' + speedOnly(f.vImpact) + ', near terminal speed for a head-first fall (' + speedOnly(r.vTerminal) + '). Indestructible, so the landing is the ground’s problem.');
+    if (up && f.landed && f.apex > 50) items.push(isFinite(r.vacuumApex) ? 'Air drag eats the jump: with no air he would reach ' + fmtDist(r.vacuumApex) + '.' : 'With no air this takeoff would carry him off the planet. The air stops him.');
+    if (up && f.landed && f.apex > 20) {
+      const q = f.vImpact / r.vTerminal, vt = speedOnly(r.vTerminal);
+      const how = q < 0.8 ? ', below terminal speed for a head-first fall (' + vt + '): the fall is too short to reach it.'
+        : q > 1.2 ? ', faster than sea-level terminal speed for a head-first fall (' + vt + '): he speeds up in the thin air high up, and the thick air near the ground can’t slow him in time.'
+        : ', near terminal speed for a head-first fall (' + vt + ').';
+      items.push('He comes back down at ' + speedOnly(f.vImpact) + how + ' Indestructible, so the landing is the ground’s problem.');
+    }
     if (f.maxStagT > 1200 && !r.relativistic) items.push('He leaves with a shock wave, and the air at his head heats to about ' + fmtTemp(f.maxStagT) + '. He doesn’t care. Windows nearby would.');
     out.push(happens(items));
     out.push(math([
-      'Legs push his body (' + sig(c.body.m - c.body.feetMass, 3) + ' kg) up and his feet (' + sig(c.body.feetMass, 2) + ' kg) down with ' + fmtSI(r.F, 'N') + ' over ' + sig(c.body.strokes.leg, 2) + ' m.',
+      'Legs push his body (' + sig(c.body.m - c.body.feetMass, 3) + ' kg) up and his feet (' + sig(c.body.feetMass, 2) + ' kg) down with ' + fmtSI(r.F, 'N') + (state.mode === 'real' ? ' at most (1.4× the dial: the legs also carry his body weight)' : '') + ' over ' + sig(c.body.strokes.leg, 2) + ' m.',
       'Gravity holds the body back. The ground holds the feet with its bearing strength (' + fmtSI(RB, 'N') + ' for both feet) plus an inertial term ρv²A once they move.',
       'At full extension the legs lock: takeoff momentum = body momentum − feet momentum.',
       'Flight integrated with drag (Cd 1.0, ' + sig(c.body.topArea, 2) + ' m² head-first); no-air height from energy conservation in Earth’s 1/r² gravity.',
@@ -852,28 +928,35 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     out.push(el('div', { class: 'status-row' },
       quakeChip(r.E, r.quake),
       r.footMach >= 1 && r.vFoot < 0.01 * K.c ? status('warn', 'Foot breaks the sound barrier') : null,
-      r.vBody > 2 ? status('bad', 'Recoil launches him') : status('good', 'He stays put')));
+      r.vBody > 2 ? status('bad', 'Recoil launches him') : r.vBody > 0.5 ? status('warn', 'Recoil hops him ' + fmtDist(bf.apex) + ' up') : status('good', 'He stays put')));
     let holeTile;
-    if (r.crater > 0) holeTile = tile('Crater', isFinite(r.crater) ? 'up to ' + fmtDist(r.crater) + ' wide' : '∞', 'impact scaling, upper bound');
+    if (r.disrupts) holeTile = tile('Crater', 'none: Earth breaks up', 'more than Earth’s binding energy');
+    else if (r.planetScale) holeTile = tile('Crater', 'planet-scale', 'crater scaling stops working');
+    else if (r.crater > 0) holeTile = tile('Crater', 'up to ' + fmtDist(r.crater) + ' wide', r.craterExtrapolated ? 'extrapolated: same energy at 20 km/s' : 'impact scaling, upper bound');
     else holeTile = tile('Hole under his foot', c.groundHolds ? 'none (comic ground)' : (r.holeDepth < 0.01 ? 'barely a dent' : fmtDist(r.holeDepth) + ' deep'), '');
     out.push(tiles(
       tile('Energy into the ground', fmtSI(r.E, 'J'), fmtTNT(r.E)),
       tile('Compared with', compareEnergy(r.E), ''),
       tile('Foot speed at impact', speedOnly(r.vFoot), fmtMach(r.vFoot)),
       holeTile,
-      tile('He gets launched', r.vBody > 0.5 ? (bf.relativistic ? fmtSpeed(r.vBody) : (bf.escaped ? 'Escapes Earth' : fmtDist(bf.apex) + ' up')) : 'no', r.vBody > 0.5 ? speedOnly(r.vBody) : '')));
+      tile(r.vBody > 2 ? 'He gets launched' : 'Recoil hop', r.vBody > 0.5 ? (bf.relativistic ? fmtSpeed(r.vBody) : (bf.escaped ? 'Escapes Earth' : fmtDist(bf.apex) + ' up')) : 'none', r.vBody > 0.5 && !bf.relativistic ? speedOnly(r.vBody) : '')));
     out.push(blastBlock(r.E, 'ground-level'));
     const items = [];
-    items.push('Newton’s third law again: driving the foot down pushes the rest of him up just as hard. Only his own weight holds him down, so at high strength the stomp throws Rex into the sky. Here the foot takes ' + sig(100 * r.footShare, 2) + '% of the energy and his body the rest.');
+    if (r.bolted) items.push('Newton’s third law again: driving the foot down pushes the rest of him up just as hard, but he is bolted to the planet, so the bolts take that push and the foot gets all the energy.');
+    else {
+      const pct = 100 * r.footShare;
+      items.push('Newton’s third law again: driving the foot down pushes the rest of him up just as hard. Only his own weight holds him down, so ' + (state.mode === 'real' ? 'with real muscle the recoil never gets beyond a small hop.' : 'at high strength the stomp throws Rex into the sky.') + (pct >= 99.5 ? ' Here his weight holds him down and the foot takes all of the energy.' : ' Here the foot takes ' + sig(pct, 2) + '% of the energy and his body the rest.'));
+    }
     if (r.disrupts) items.push('That is more energy than it takes to blow Earth apart (its gravitational binding energy, 2.5 × 10³² J). A quake magnitude stops meaning anything.');
-    else if (r.quake > 2) items.push('Quake magnitude assumes 1 part in 10,000 of the energy becomes ground shaking, the value impact studies use. The real share ranges 10⁻⁵ to 10⁻³, so read it as ±1 magnitude.');
-    if (r.crater > 0) items.push('Above about 2 km/s the foot doesn’t dig a hole: it makes an impact crater. The size uses asteroid-impact scaling, which overstates small craters in rock or concrete by a few times.');
+    else if (r.quake > 2) items.push('Quake magnitude assumes 1 part in 10,000 of the energy becomes ground shaking, the value impact studies use. The real share ranges 10⁻⁵ to 10⁻³, so read it as give or take about ⅔ of a magnitude.');
+    if (r.planetScale && !r.disrupts) items.push('Crater scaling is fitted to craters up to a few hundred km on flat ground. Here it would predict one wider than Earth’s radius, so the honest answer is that the stomp melts and resurfaces much of the planet, not a crater of a definite size.');
+    else if (r.crater > 0 && !r.disrupts) items.push('Above about 2 km/s the foot doesn’t dig a hole: it makes an impact crater. The size uses asteroid-impact scaling, which overstates small craters in rock or concrete by a few times.');
     else if (!c.groundHolds && r.holeDepth >= 0.01) items.push('The ground resists the foot with its strength plus its inertia (it must be shoved aside), so the foot stops after about ' + fmtDist(r.holeDepth) + '.');
     out.push(happens(items));
     out.push(math([
-      'Leg pushes foot+shank (' + sig(c.body.legEff, 2) + ' kg) down and body (' + sig(c.body.m - c.body.legEff, 3) + ' kg) up with ' + fmtSI(r.F, 'N') + ' over ' + sig(c.body.strokes.stomp, 2) + ' m.',
-      'Equal momenta; energies split by mass (relativistically at extreme strength).',
-      'Hole: m v dv/dx = −A (q + ρ v²) → depth = m/(2ρA) · ln(1 + ρv²/q).',
+      r.bolted ? 'Leg pushes foot+shank (' + sig(c.body.legEff, 2) + ' kg) down against his bolted body with ' + fmtSI(r.F, 'N') + ' over ' + sig(c.body.strokes.stomp, 2) + ' m; all the work goes to the foot.' : 'Leg pushes foot+shank (' + sig(c.body.legEff, 2) + ' kg) down and body (' + sig(c.body.m - c.body.legEff, 3) + ' kg) up with ' + fmtSI(r.F, 'N') + ' over ' + sig(c.body.strokes.stomp, 2) + ' m.',
+      r.bolted ? null : 'Equal momenta; energies split by mass (relativistically at extreme strength).',
+      c.groundHolds ? null : 'Hole: m v dv/dx = −A (q + ρ v²) → depth = m/(2ρA) · ln(1 + ρv²/q).',
       'Quake: M = (log₁₀(10⁻⁴ × E) − 4.8) / 1.5 (Gutenberg–Richter energy relation).',
     ]));
     return out;
@@ -931,12 +1014,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const r = P.sprint(c);
     const out = [];
     if (r.cantStand) {
-      out.push(verdict('Rex can’t even stand up. His strength is less than his own weight.'));
-      out.push(happens(['Running needs legs that can hold the body up and then some: at top speed each foot strike carries about 2 to 2.5 times body weight.']));
+      out.push(verdict('Rex is too weak to sprint. His strength is only ' + sig(c.F / (c.body.m * g), 2) + '× his own weight.'));
+      out.push(happens(['Sprinting drives his whole body off the ground every stride: at top speed each foot strike carries about 2 to 2.5 times body weight, and in this sim his speed grows with the force he has beyond his own weight. Here there is none to spare. Lifting (the other tabs) is different: like a lifting record, the dial counts only what he holds on top of his own weight.']));
       return out;
     }
     let v = 'Top speed: ' + (r.relativistic ? fmtSpeed(r.vTop) : speedOnly(r.vTop)) + '.';
-    if (r.limit === 'friction' && !r.relativistic && r.vTop > 27.78) v += ' Same 0–100 km/h as a sports car, however strong he is.';
+    if (r.limit === 'friction' && !r.relativistic && r.vTop > 27.78) v += ' 0–100 km/h in ' + fmtTime(r.t100) + (r.t100 <= 6 ? ', sports-car pace,' : '') + ' however strong he is.';
     out.push(verdict(v));
     const limitText = { strength: 'his strength', friction: 'friction', shear: 'ground shear (claws dug in)', 'soft ground': 'soft ground (each stride sinks)' }[r.limit] || r.limit;
     out.push(el('div', { class: 'status-row' },
@@ -971,7 +1054,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const out = [];
     out.push(el('div', { class: 'bay-controls' }, objectPicker((x) => !x.noPull)));
     let v;
-    if (r.canMove) v = 'Rex drags it 10 m in ' + fmtTime(r.t10m) + '.';
+    if (r.canMove) v = 'Rex drags it 10 m in ' + fmtTime(r.t10m) + (r.vEnd >= 0.01 * K.c ? ', reaching ' + fmtSpeed(r.vEnd) + ' (light speed is the limit).' : '.');
     else if (r.limitedBy === 'strength') v = 'Rex isn’t strong enough to start it moving.';
     else v = 'Rex is strong enough, but his feet slide before it moves.';
     out.push(verdict(v));
@@ -989,103 +1072,180 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (o.crrNote) items.push(o.crrNote);
     items.push('Record pullers lean into a harness with the rope angled down to the load, which presses them into the ground and raises their grip. The sim pulls level, so it is a little pessimistic.');
     out.push(happens(items));
-    out.push(math(['Resistance = ' + (r.rolling ? 'Crr' : 'μ_slide') + ' × m g = ' + r.crr + ' × ' + fmtMass(o.m) + ' × 9.81 = ' + fmtSI(r.resist, 'N'), 'Footing (just standing) = μ × his weight = ' + sig(c.surface.mu, 2) + ' × ' + sig(c.body.m, 3) + ' kg × 9.81' + (state.anchor === 'braced' ? ' + shear × claw area' : '')]));
+    const a = r.anchor, claws = state.anchor === 'braced';
+    const footing = state.anchor === 'bolted' ? 'Footing (bolted to the planet): unlimited, a comic anchor'
+      : 'Footing (' + (claws ? 'claws dug in' : 'just standing') + ') = μ × ' + (a.normalCapped ? 'the most the ground can bear' : 'his weight') + (claws ? ' + shear × claw area' : '') + ' = ' + sig(c.surface.mu, 2) + ' × ' + (a.normalCapped ? fmtSI(a.Nmax, 'N') : sig(c.body.m, 3) + ' kg × 9.81') + (claws ? ' + ' + fmtSI(c.surface.shear, 'Pa') + ' × ' + sig(c.body.digArea, 3) + ' m²' : '') + ' = ' + fmtSI(a.R, 'N');
+    out.push(math(['Resistance = ' + (r.rolling ? 'Crr' : 'μ_slide') + ' × m g = ' + r.crr + ' × ' + fmtMass(o.m) + ' × 9.81 = ' + fmtSI(r.resist, 'N'), footing, 'Time for 10 m from rest under constant force, relativistic: t = √(2x/a + (x/c)²).']));
     return out;
   }
 
   const BAYS = { lift: bayLift, throw: bayThrow, jump: bayJump, stomp: bayStomp, punch: bayPunch, clap: bayClap, sprint: baySprint, pull: bayPull };
 
-  function renderBay() {
-    for (const a of ACTIONS) $('#tab-' + a.id).setAttribute('aria-selected', String(a.id === state.action));
+  let lastBayAction = null, liveTimer = null;
+  function renderBay(keepControls) {
+    for (const a of ACTIONS) {
+      const tb = $('#tab-' + a.id);
+      tb.setAttribute('aria-selected', String(a.id === state.action));
+      tb.setAttribute('tabindex', a.id === state.action ? '0' : '-1');
+    }
     const bay = $('#bay');
+    bay.setAttribute('aria-labelledby', 'tab-' + state.action);
+    bay.classList.toggle('enter', lastBayAction !== state.action);
+    lastBayAction = state.action;
     const focusId = document.activeElement && bay.contains(document.activeElement) ? document.activeElement.id : null;
     let parts;
     try { parts = BAYS[state.action](ctx()); }
     catch (e) { parts = [callout('Calculation failed: ' + e.message)]; console.error(e); }
-    bay.replaceChildren(...parts);
-    if (focusId && document.getElementById(focusId)) document.getElementById(focusId).focus();
+    // Keep the live controls in place during a slider drag; replacing them ends the drag.
+    const old = keepControls ? bay.querySelector(':scope > .bay-controls') : null;
+    if (old && parts[0] && parts[0].classList && parts[0].classList.contains('bay-controls')) {
+      while (old.nextSibling) old.nextSibling.remove();
+      old.after(...parts.slice(1));
+    } else {
+      bay.replaceChildren(...parts);
+      if (focusId && document.getElementById(focusId)) document.getElementById(focusId).focus();
+    }
+    const vd = bay.querySelector('.verdict');
+    clearTimeout(liveTimer);
+    liveTimer = setTimeout(() => { $('#bay-live').textContent = vd ? vd.textContent : ''; }, 600);
   }
   let bayTimer = null;
-  function scheduleBay() { clearTimeout(bayTimer); bayTimer = setTimeout(() => { save(); renderBay(); }, 30); }
+  function scheduleBay() { clearTimeout(bayTimer); bayTimer = setTimeout(() => { save(); renderBay(true); }, 30); }
 
   // ---------------------------------------------------------------- ladder
   const LMIN = 1, LMAX = 34;
-  let thCache = { key: null, list: null };
-  function thresholds() {
-    const key = JSON.stringify([state.mode, state.H, state.m, state.surface, state.anchor, state.groundHolds]);
-    if (thCache.key === key) return thCache.list;
+  const thCache = new Map();
+  let thJob = null;
+  const thKey = () => JSON.stringify([state.mode, state.H, state.m, state.surface, state.anchor, state.groundHolds]);
+  function thresholdDefs() {
     const base = ctx();
     const at = (kg, extra) => Object.assign({}, base, { F: kg * g }, extra || {});
     const car = objById('car');
-    const th = (pred) => P.threshold(pred, Math.pow(10, LMIN), Math.pow(10, LMAX));
     const W = (id) => D.overpressure.find((o) => o.id === id);
     const E = (id) => D.energyRefs.find((e) => e.id === id).J;
     const jumpPred = (extra) => (kg) => { const j = P.jump(at(kg, extra)); return j.v > 0 && (j.relativistic || j.flight.apex >= 93 || j.flight.escaped); };
-    const list = [
-      { id: 'boom', text: 'Fist breaks the sound barrier', kg: th((kg) => P.punch(at(kg)).vFist >= K.a0) },
-      { id: 'windows', text: 'Clap breaks windows 10 m away', kg: th((kg) => P.blastRadius(P.clap(at(kg)).E, W('windows').Pa) >= 10) },
-      { id: 'carmach3', text: 'Thrown car leaves at Mach 3', kg: th((kg) => P.throwObject(at(kg), car, 45).v >= 3 * K.a0) },
-      { id: 'jumpliberty', text: 'Jump clears the Statue of Liberty', kg: th(jumpPred()) },
-      { id: 'quake3', text: 'Stomp felt as a magnitude 3 quake', kg: th((kg) => P.stomp(at(kg)).quake >= 3) },
-      { id: 'hiro', text: 'Punch carries a Hiroshima bomb', kg: th((kg) => P.punch(at(kg)).E >= E('hiroshima')) },
-      { id: 'quake7', text: 'Stomp = magnitude 7 quake', kg: th((kg) => P.stomp(at(kg)).quake >= 7) },
-      { id: 'tsar', text: 'Clap = Tsar Bomba', kg: th((kg) => P.clap(at(kg)).E >= E('tsar')) },
-      { id: 'chix', text: 'Punch out-hits the dinosaur-killer impact', kg: th((kg) => P.punch(at(kg)).E >= E('chicxulub')) },
-      { id: 'earth', text: 'Punch could blow Earth apart', kg: th((kg) => P.punch(at(kg)).E >= E('earthbind')) },
+    return [
+      { id: 'boom', text: 'Fist breaks the sound barrier', pred: (kg) => P.punch(at(kg)).vFist >= K.a0 },
+      { id: 'windows', text: 'Clap breaks windows 10 m away', pred: (kg) => P.blastRadius(P.clap(at(kg)).E, W('windows').Pa) >= 10 },
+      { id: 'carmach3', text: 'Thrown car leaves at Mach 3', pred: (kg) => P.throwObject(at(kg), car, 45).v >= 3 * K.a0 },
+      { id: 'jumpliberty', text: 'Jump clears the Statue of Liberty', pred: jumpPred(), rigid: state.groundHolds ? null : jumpPred({ groundHolds: true }) },
+      { id: 'quake3', text: 'Stomp felt as a magnitude 3 quake', pred: (kg) => P.stomp(at(kg)).quake >= 3 },
+      { id: 'hiro', text: 'Punch carries a Hiroshima bomb', pred: (kg) => P.punch(at(kg)).E >= E('hiroshima') },
+      { id: 'quake7', text: 'Stomp = magnitude 7 quake', pred: (kg) => P.stomp(at(kg)).quake >= 7 },
+      { id: 'tsar', text: 'Clap = Tsar Bomba', pred: (kg) => P.clap(at(kg)).E >= E('tsar') },
+      { id: 'chix', text: 'Punch out-hits the dinosaur-killer impact', pred: (kg) => P.punch(at(kg)).E >= E('chicxulub') },
+      { id: 'earth', text: 'Punch could blow Earth apart', pred: (kg) => P.punch(at(kg)).E >= E('earthbind') },
     ];
-    const jl = list.find((t) => t.id === 'jumpliberty');
-    if (!isFinite(jl.kg) && !state.groundHolds) jl.withRigid = th(jumpPred({ groundHolds: true }));
-    thCache = { key, list };
-    return list;
+  }
+  // Bisects each threshold in small time slices (about 25 ms) so the page stays responsive.
+  // A newer settings change cancels the run.
+  function computeThresholds(key) {
+    if (thCache.has(key) || thJob === key) return;
+    thJob = key;
+    const defs = thresholdDefs();
+    const list = [];
+    const L0 = Math.pow(10, LMIN), L1 = Math.pow(10, LMAX);
+    let i = 0, phase = 'start', lo, hi, pred, cur;
+    const step = () => {
+      if (thJob !== key) return;
+      const t0 = performance.now();
+      while (performance.now() - t0 < 25) {
+        if (i >= defs.length) { thCache.set(key, list); thJob = null; if (thKey() === key) renderLadder(); return; }
+        const d = defs[i];
+        if (phase === 'start') { cur = { id: d.id, text: d.text }; pred = d.pred; lo = L0; hi = L1; phase = 'ends'; continue; }
+        if (phase === 'ends' || phase === 'endsRigid') {
+          const rigid = phase === 'endsRigid';
+          let res = null;
+          if (pred(lo)) res = lo; else if (!pred(hi)) res = Infinity;
+          if (res !== null) { if (rigid) cur.withRigid = res; else cur.kg = res; phase = 'done'; }
+          else phase = rigid ? 'bisectRigid' : 'bisect';
+          continue;
+        }
+        if (phase === 'bisect' || phase === 'bisectRigid') {
+          if (hi / lo < 1 + 1e-4) { if (phase === 'bisectRigid') cur.withRigid = hi; else cur.kg = hi; phase = 'done'; continue; }
+          const mid = Math.sqrt(lo * hi);
+          if (pred(mid)) hi = mid; else lo = mid;
+          continue;
+        }
+        if (phase === 'done') {
+          if (!isFinite(cur.kg) && d.rigid && cur.withRigid === undefined) { pred = d.rigid; lo = L0; hi = L1; phase = 'endsRigid'; continue; }
+          list.push(cur); i++; phase = 'start';
+        }
+      }
+      setTimeout(step, 0);
+    };
+    setTimeout(step, 0);
   }
   let ladderTimer = null;
   function scheduleLadder() { clearTimeout(ladderTimer); ladderTimer = setTimeout(renderLadder, 120); }
   function renderLadder() {
     const wrap = $('#ladder-viz');
-    const W = Math.max(320, Math.min(wrap.clientWidth || 640, 900));
+    const fk = wrap.contains(document.activeElement) ? document.activeElement.getAttribute('data-key') : null;
+    const key = thKey();
+    const th = thCache.get(key) || null;
+    if (!th) computeThresholds(key);
+    const W = Math.max(300, Math.min(wrap.clientWidth || 640, 900));
     const pxDec = W < 520 ? 26 : 22;
     const padT = 24, padB = 24;
     const H = padT + (LMAX - LMIN) * pxDec + padB;
     const axisX = Math.round(W / 2);
     const y = (lg) => padT + (LMAX - Math.min(LMAX, Math.max(LMIN, lg))) * pxDec;
-    const svg = sv('svg', { viewBox: `0 0 ${W} ${H + 30}`, role: 'img', 'aria-label': 'Strength ladder from 10 kg to 10^34 kg lift' });
-    svg.append(sv('line', { x1: axisX, x2: axisX, y1: padT, y2: padT + (LMAX - LMIN) * pxDec, stroke: 'var(--line)', 'stroke-width': 2 }));
+    const svg = sv('svg', { viewBox: `0 0 ${W} ${H + 30}`, role: 'group', 'aria-label': 'Strength ladder from 10 kg to 10^34 kg lift' });
+    svg.append(sv('line', { x1: axisX, x2: axisX, y1: padT, y2: padT + (LMAX - LMIN) * pxDec, stroke: 'var(--ink-3)', 'stroke-width': 1.5 }));
     for (let e = LMIN; e <= LMAX; e++) {
       const yy = y(e);
       svg.append(sv('line', { x1: axisX - (e % 3 === 0 ? 6 : 3), x2: axisX + (e % 3 === 0 ? 6 : 3), y1: yy, y2: yy, stroke: 'var(--ink-3)', 'stroke-width': 1 }));
     }
-    const tierItems = D.tiers.filter((t) => isFinite(t.liftKg)).map((t) => ({ lg: Math.log10(t.liftKg), text: t.chip || t.label, sub: fmtMass(t.liftKg), detail: (t.who ? t.who + '. ' : '') + (t.note || ''), side: 'L', color: 'var(--olive)', set: () => { state.inf = false; state.logKg = Math.log10(t.liftKg); update(); } }));
-    const th = thresholds();
-    const thItems = th.filter((t) => isFinite(t.kg)).map((t) => ({ lg: Math.log10(t.kg), text: t.text, sub: fmtMass(t.kg), detail: 'Needs a lift strength of ' + fmtMass(t.kg) + ' at the current size, ground and muscle settings.', side: 'R', color: 'var(--accent)', set: () => { state.inf = false; state.logKg = Math.min(LMAX, Math.log10(t.kg) + 0.0005); update(); } }));
-    const place = (items, minGap) => {
-      items.sort((a, b) => b.lg - a.lg);
-      let prev = -Infinity;
-      for (const it of items) { it.ty = Math.max(y(it.lg), prev + minGap); prev = it.ty; }
-      const over = prev - (padT + (LMAX - LMIN) * pxDec + 10);
-      if (over > 0) { let next = Infinity; for (let i = items.length - 1; i >= 0; i--) { const it = items[i]; it.ty = Math.min(it.ty - over, next - minGap); next = it.ty; } }
+    const tierItems = D.tiers.filter((t) => isFinite(t.liftKg)).map((t) => ({ key: 'L:' + t.id, lg: Math.log10(t.liftKg), text: t.chip || t.label, sub: fmtMass(t.liftKg) + (t.lift ? ' · ' + t.lift : ''), detail: (t.who ? t.who + '. ' : '') + (t.note || ''), side: 'L', color: 'var(--olive)', set: () => { setKg(t.liftKg); update(); } }));
+    const thItems = (th || []).filter((t) => isFinite(t.kg)).map((t) => ({ key: 'R:' + t.id, lg: Math.log10(t.kg), text: t.text, sub: fmtMass(t.kg), detail: 'Needs a lift strength of ' + fmtMass(t.kg) + ' at the current size, ground and muscle settings.', side: 'R', color: 'var(--accent)', set: () => { state.inf = false; state.logKg = Math.min(LMAX, Math.log10(t.kg) + 0.0005); update(); } }));
+    // wrap labels to the space on their side of the axis
+    const wrapLbl = (it) => {
+      const room = (it.side === 'L' ? axisX - 30 : W - axisX - 30) - 4;
+      const max = Math.max(8, Math.floor(room / 6.6));
+      it.lines = [];
+      let rest = it.text;
+      while (rest.length > max) {
+        let cut = rest.lastIndexOf(' ', max);
+        if (cut <= 0) cut = max;
+        it.lines.push(rest.slice(0, cut));
+        rest = rest.slice(cut).trim();
+      }
+      it.lines.push(rest);
     };
-    place(tierItems, 30); place(thItems, 30);
+    tierItems.forEach(wrapLbl); thItems.forEach(wrapLbl);
+    const place = (items) => {
+      items.sort((a, b) => b.lg - a.lg);
+      let prev = -Infinity, prevH = 0;
+      for (const it of items) { it.h = 16 + 14 * it.lines.length; it.ty = Math.max(y(it.lg), prev + prevH); prev = it.ty; prevH = it.h; }
+      const bottom = padT + (LMAX - LMIN) * pxDec + 10;
+      const over = prev + prevH - 16 - bottom;
+      if (over > 0) { let next = Infinity; for (let i = items.length - 1; i >= 0; i--) { const it = items[i]; it.ty = Math.min(it.ty - over, next - it.h); next = it.ty; } }
+    };
+    place(tierItems); place(thItems);
     const tip = el('div', { class: 'tip', hidden: true });
+    // current setting: a rule across the axis band only, labelled at the axis
     const cy = state.inf ? padT - 12 : y(state.logKg);
-    svg.append(sv('line', { x1: 0, x2: W, y1: cy, y2: cy, stroke: 'var(--ink)', 'stroke-width': 1.5, 'stroke-opacity': 0.55 }));
-    svg.append(sv('text', { x: W - 2, y: cy - 5, 'text-anchor': 'end', class: 'lbl-strong' }, state.inf ? 'now: ∞' : 'now'));
+    svg.append(sv('line', { x1: axisX - 22, x2: axisX + 22, y1: cy, y2: cy, stroke: 'var(--ink)', 'stroke-width': 2.5 }));
     const draw = (it) => {
       const yy = y(it.lg);
       const left = it.side === 'L';
       const lx = left ? axisX - 26 : axisX + 26;
-      const g2 = sv('g', { class: 'mk', tabindex: '0', role: 'button', 'aria-label': it.text + ', ' + it.sub + '. Set strength here.' });
-      g2.append(sv('path', { d: `M${axisX} ${yy} L${left ? axisX - 14 : axisX + 14} ${yy} L${lx} ${it.ty}`, fill: 'none', stroke: 'var(--line)', 'stroke-width': 1 }));
-      g2.append(sv('circle', { class: 'ring', cx: axisX, cy: yy, r: 5, fill: it.color, stroke: 'var(--surface)', 'stroke-width': 2 }));
-      g2.append(sv('text', { x: lx + (left ? -4 : 4), y: it.ty + 1, 'text-anchor': left ? 'end' : 'start', class: 'lbl-strong', style: 'font-family:var(--font-body);font-size:12.5px' }, it.text));
-      g2.append(sv('text', { x: lx + (left ? -4 : 4), y: it.ty + 14, 'text-anchor': left ? 'end' : 'start' }, it.sub));
-      g2.append(sv('rect', { x: left ? 0 : axisX, y: it.ty - 14, width: axisX, height: 32, fill: 'transparent' }));
+      const g2 = sv('g', { class: 'mk', 'data-key': it.key, tabindex: '0', role: 'button', 'aria-label': it.text + ', ' + it.sub + '. Set strength here.' });
+      g2.append(sv('path', { d: `M${axisX} ${yy} L${left ? axisX - 14 : axisX + 14} ${yy} L${lx} ${it.ty}`, fill: 'none', stroke: 'var(--ink-3)', 'stroke-width': 1, 'stroke-opacity': 0.6, 'pointer-events': 'none' }));
+      g2.append(sv('circle', { class: 'ring', cx: axisX, cy: yy, r: 5, fill: it.color, stroke: 'var(--surface)', 'stroke-width': 2, 'pointer-events': 'none' }));
+      it.lines.forEach((ln, i) => g2.append(sv('text', { x: lx + (left ? -4 : 4), y: it.ty + 1 + 14 * i, 'text-anchor': left ? 'end' : 'start', class: 'lbl-strong', style: 'font-family:var(--font-body);font-size:12.5px' }, ln)));
+      g2.append(sv('text', { x: lx + (left ? -4 : 4), y: it.ty + 14 * it.lines.length, 'text-anchor': left ? 'end' : 'start' }, it.sub));
+      g2.append(sv('rect', { x: left ? 0 : axisX + 9, y: it.ty - 13, width: axisX - 9, height: it.h - 2, fill: 'transparent' }));
       const show = () => {
         tip.replaceChildren(el('b', { text: it.text }), el('span', { text: it.detail }));
         tip.hidden = false;
         const rect = wrap.getBoundingClientRect();
         const tw = Math.min(260, rect.width - 20);
         tip.style.left = (left ? 8 : rect.width - tw - 8) + 'px';
-        tip.style.top = (it.ty / (H + 30) * wrap.querySelector('svg').getBoundingClientRect().height + 22) + 'px';
+        const scale = wrap.querySelector('svg').getBoundingClientRect().height / (H + 30);
+        let top = it.ty * scale + 22;
+        if (top + 90 > rect.height) top = Math.max(0, it.ty * scale - 100);
+        tip.style.top = top + 'px';
       };
       g2.addEventListener('pointerenter', show); g2.addEventListener('focus', show);
       g2.addEventListener('pointerleave', () => { tip.hidden = true; }); g2.addEventListener('blur', () => { tip.hidden = true; });
@@ -1094,12 +1254,15 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       svg.append(g2);
     };
     tierItems.forEach(draw); thItems.forEach(draw);
+    svg.append(sv('path', { d: `M${axisX - 30} ${cy - 6} L${axisX - 22} ${cy} L${axisX - 30} ${cy + 6} Z`, fill: 'var(--ink)', 'pointer-events': 'none' }));
     svg.append(sv('text', { x: axisX, y: H + 18, 'text-anchor': 'middle' }, '10 kg'));
     svg.append(sv('text', { x: axisX, y: 12, 'text-anchor': 'middle' }, '10³⁴ kg lift'));
     wrap.replaceChildren(svg, tip);
-    const never = th.filter((t) => !isFinite(t.kg));
+    if (fk) { const n = wrap.querySelector('[data-key="' + fk + '"]'); if (n) n.focus(); }
     const nv = $('#ladder-never');
     nv.replaceChildren();
+    if (!th) { nv.append(el('p', { class: 'muted', text: 'Working out the thresholds for these settings…' })); return; }
+    const never = th.filter((t) => !isFinite(t.kg));
     if (never.length) {
       nv.append(el('p', { text: 'Never happens at the current settings, even at 10³⁴ kg:' }));
       nv.append(el('ul', {}, never.map((t) => {
@@ -1111,6 +1274,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   }
 
   // ---------------------------------------------------------------- feats
+  const STATUS_LABEL = { verified: 'Verified', disputed: 'Disputed', claimed: 'Claimed', canon_stated: 'Canon', reported: 'Reported', not_quantified: 'Not quantified', estimate: 'Estimate' };
   function renderFeats() {
     const groups = [['human', 'Real humans'], ['comic', 'Comics and anime'], ['myth', 'Myth and legend']];
     const box = $('#feat-groups');
@@ -1119,7 +1283,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       if (!feats.length) continue;
       const grid = el('div', { class: 'feat-grid' });
       for (const f of feats) {
-        const statusLabel = { verified: 'Verified', disputed: 'Disputed', claimed: 'Claimed', canon_stated: 'Canon', not_quantified: 'Not quantified', estimate: 'Estimate' }[f.status] || f.status;
+        const statusLabel = STATUS_LABEL[f.status] || f.status;
         grid.append(el('article', { class: 'feat' },
           el('div', { class: 't', text: f.title }),
           el('div', { class: 'w', text: f.who }),
@@ -1134,13 +1298,13 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   }
   function runFeat(f) {
     const r = f.run;
-    if (r.liftKg === Infinity) state.inf = true; else if (r.liftKg) { state.inf = false; state.logKg = Math.log10(r.liftKg); }
+    if (r.mode) state.mode = r.mode;
+    if (r.liftKg === Infinity) state.inf = true; else if (r.liftKg) setKg(r.liftKg);
     if (r.solve === 'jump60') {
       const base = ctx();
       const kg = P.threshold((F) => { const j = P.jump(Object.assign({}, base, { F })); return j.v > 0 && (j.flight.apex >= 60 || j.flight.escaped || j.flight.relativistic); }, 10 * g, 1e45) / g;
       if (isFinite(kg)) { state.inf = false; state.logKg = Math.min(LMAX, Math.log10(kg) + 0.0005); }
     }
-    if (r.mode) state.mode = r.mode;
     if (r.action) state.action = r.action;
     if (r.obj) state.obj = r.obj;
     if (r.angle != null) state.angle = r.angle;
@@ -1158,7 +1322,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       tb.append(el('tr', {},
         el('td', {}, s.label, s.note ? el('div', { class: 'muted', style: 'font-size:.8rem;margin-top:2px', text: s.note }) : null),
         el('td', { class: 'num', text: s.value }),
-        el('td', {}, el('span', { class: 'badge ' + s.status, text: s.status.replace('_', ' ') })),
+        el('td', {}, el('span', { class: 'badge ' + s.status, text: STATUS_LABEL[s.status] || s.status })),
         el('td', {}, (s.sources || []).map((u, i) => [i ? ' · ' : null, el('a', { href: u.url, target: '_blank', rel: 'noopener', text: u.title || new URL(u.url).hostname })]))));
     }
   }
@@ -1166,10 +1330,20 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   // ---------------------------------------------------------------- main
   function update() { save(); renderDial(); renderBay(); scheduleLadder(); }
   buildControls();
+  try { if (matchMedia('(min-width: 920px)').matches) $('#setup').open = true; } catch (e) { /* ignore */ }
   renderFeats();
   renderModel();
   update();
   let rw = null;
-  window.addEventListener('resize', () => { clearTimeout(rw); rw = setTimeout(renderLadder, 150); });
+  let lastChartW = chartW();
+  window.addEventListener('resize', () => {
+    clearTimeout(rw);
+    rw = setTimeout(() => {
+      renderLadder();
+      if (chartW() === lastChartW) return;   // height-only resizes (phone URL bar) change nothing
+      lastChartW = chartW();
+      renderBay();
+    }, 150);
+  });
 })();
 </script>

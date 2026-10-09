@@ -4,6 +4,7 @@ window.DINO_DATA = {
   {
    "id": "cap",
    "chip": null,
+   "lift": "press",
    "label": "Captain America",
    "who": "Official Handbook (1986): presses 800 lb",
    "liftKg": 362.873896,
@@ -12,14 +13,16 @@ window.DINO_DATA = {
   {
    "id": "human",
    "chip": "Strongest human",
+   "lift": "deadlift",
    "label": "Strongest human",
    "who": "Raúl Flores, 511 kg deadlift, Sept 2026",
    "liftKg": 511,
-   "note": "Suit and straps allowed. Heaviest without a suit: 474.5 kg (Björnsson, 2019)."
+   "note": "Suit and straps allowed. Without a suit: 492.5 kg in raw powerlifting (Engelbrecht, 2026, sumo, no straps); 474.5 kg in strongman (Björnsson, 2019)."
   },
   {
    "id": "backlift",
    "chip": null,
+   "lift": "back lift",
    "label": "Back-lift record",
    "who": "Gregg Ernst, 2,422 kg, 1993",
    "liftKg": 2422.18,
@@ -28,6 +31,7 @@ window.DINO_DATA = {
   {
    "id": "spidey",
    "chip": "Spider-Man",
+   "lift": "press",
    "label": "Spider-Man",
    "who": "Official Handbook (1986): ~10 tons",
    "liftKg": 9071.8474,
@@ -36,6 +40,7 @@ window.DINO_DATA = {
   {
    "id": "hulk",
    "chip": "Hulk & Thor",
+   "lift": "press",
    "label": "Hulk & Thor (Class 100)",
    "who": "Official Handbook (1986): “in excess of 100 tons”",
    "liftKg": 90718.474,
@@ -61,7 +66,7 @@ window.DINO_DATA = {
    "id": "earth",
    "chip": "Superman benches Earth",
    "label": "Superman benches Earth",
-   "who": "Superman vol. 3 #13 (2012): “the weight of the planet”",
+   "who": "Superman vol. 3 #13 (2012): Earth’s weight, per a review",
    "liftKg": 5.9724e+24,
    "note": "“Weight of a planet” has no real meaning; read here as Earth’s mass at 1 g."
   },
@@ -585,13 +590,13 @@ window.DINO_DATA = {
    "rho": 3000,
    "noThrow": true,
    "noPull": true,
-   "liftNote": "The comic never says what the load is. It is 30 times the Moon’s mass, so treat it as a force equivalent."
+   "liftNote": "The comic never says what the load is. It is about 2.5 times the Moon’s mass (3% of Earth’s), so treat it as a force equivalent."
   }
  ],
  "energyRefs": [
   {
    "id": "pitch",
-   "short": "the fastest pitch ever thrown",
+   "short": "the fastest pitch on record",
    "J": 162.51850108385
   },
   {
@@ -668,7 +673,7 @@ window.DINO_DATA = {
   },
   {
    "id": "lethal",
-   "label": "Half of people killed",
+   "label": "Pressure kills half",
    "Pa": 427000
   }
  ],
@@ -745,7 +750,7 @@ window.DINO_DATA = {
    "group": "human",
    "title": "511 kg deadlift",
    "who": "Raúl “Tyzon” Flores · Birmingham, 5 Sep 2026",
-   "claim": "Heaviest deadlift ever, in a deadlift suit with straps. Without a suit, the record is 474.5 kg.",
+   "claim": "Heaviest deadlift ever, in a deadlift suit with straps. Without a suit: 492.5 kg in raw powerlifting (2026), 474.5 kg in strongman (2019).",
    "status": "verified",
    "source": {
     "url": "https://fitnessvolt.com/raul-flores-history-deadlift-world-record/",
@@ -862,6 +867,7 @@ window.DINO_DATA = {
    },
    "run": {
     "solve": "jump60",
+    "mode": "comic",
     "action": "jump"
    }
   },
@@ -903,7 +909,7 @@ window.DINO_DATA = {
    "title": "Spider-Man lifts 10 tons",
    "who": "Official Handbook of the Marvel Universe · 1986",
    "claim": "Raised to 20 tons in 2007. Handbook tons are read here as US short tons.",
-   "status": "estimate",
+   "status": "canon_stated",
    "source": {
     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-OfficialHandbookoftheMarvelUniversev212+AND+%28%22Spider-Man+possesses+superhuman+strength%22+AND+tons%29&size=5",
     "title": "Source"
@@ -943,7 +949,7 @@ window.DINO_DATA = {
     "title": "Source"
    },
    "run": {
-    "liftKg": 90718.474,
+    "liftKg": 300000.0,
     "action": "lift",
     "obj": "b777"
    }
@@ -953,7 +959,7 @@ window.DINO_DATA = {
    "title": "Hulk holds up a mountain range",
    "who": "Secret Wars #4 · 1984",
    "claim": "150 billion tons, per Reed Richards in press accounts of the issue.",
-   "status": "canon_stated",
+   "status": "reported",
    "source": {
     "url": "https://screenrant.com/hulk-heaviest-think-lifted-marvel/",
     "title": "Source"
@@ -968,8 +974,8 @@ window.DINO_DATA = {
    "group": "comic",
    "title": "200 quintillion tons",
    "who": "All-Star Superman #1 · 2005",
-   "claim": "“Three times more than before.” Issue and exact wording come from reviews.",
-   "status": "canon_stated",
+   "claim": "Three times his earlier limit, per a review. Issue and exact wording come from reviews.",
+   "status": "reported",
    "source": {
     "url": "https://www.looper.com/1943648/how-strong-superman-powers-explained",
     "title": "Source"
@@ -984,8 +990,8 @@ window.DINO_DATA = {
    "group": "comic",
    "title": "Bench-pressing the planet",
    "who": "Superman vol. 3 #13 · 2012",
-   "claim": "A machine exerts “the weight of the planet” for him to bench.",
-   "status": "canon_stated",
+   "claim": "A machine lets him bench the weight of the planet, per a review (PopMatters); the comic’s exact wording is unverified.",
+   "status": "reported",
    "source": {
     "url": "https://www.popmatters.com/164846-this-direction-home-superman-13-2495802120.html",
     "title": "Source"
@@ -1000,7 +1006,7 @@ window.DINO_DATA = {
    "group": "comic",
    "title": "Saitama’s Serious Punch",
    "who": "One-Punch Man · 2015",
-   "claim": "Clears the sky over the planet. No number is ever given; fan estimates are not canon.",
+   "claim": "Defeats Boros with one punch. No number is ever given; fan estimates are not canon.",
    "status": "not_quantified",
    "source": {
     "url": "https://en.wikipedia.org/wiki/Saitama_(One-Punch_Man)",
@@ -1083,11 +1089,11 @@ window.DINO_DATA = {
   {
    "group": "myth",
    "title": "Milo of Croton carries a bull",
-   "who": "Greek legend",
-   "claim": "He carried a calf every day until it was a grown bull. No weight is recorded.",
+   "who": "Quintilian, Institutio Oratoria 1.9.5 · c. AD 95",
+   "claim": "He carried a calf every day until it was a grown bull. Athenaeus instead has him shoulder a four-year-old bull round the course at Olympia, then eat it in a day. No weight is recorded.",
    "status": "not_quantified",
    "source": {
-    "url": "https://cts.perseids.org/read/greekLit/tlg0008/tlg001/perseus-eng2/10.0-10.19",
+    "url": "https://cts.perseids.org/read/latinLit/phi1002/phi001/perseus-eng2/1.9.5-1.10.3",
     "title": "Source"
    },
    "run": null
@@ -1096,7 +1102,7 @@ window.DINO_DATA = {
  "assumptions": [
   {
    "t": "Strength means force",
-   "d": "The dial sets the heaviest weight Rex can hold up. That times g is his maximum force. Every other move uses a share of it."
+   "d": "The dial sets the heaviest weight Rex can hold up. That times g is his maximum force. Every other move uses a set share of it, except the jump, which drives with 1.4× because the legs push his own body as well (a lifting record counts only the bar)."
   },
   {
    "t": "Only Rex is indestructible",
@@ -1108,7 +1114,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Two muscle models, one calibration",
-   "d": "At record-human strength (511 kg deadlift) both reproduce the shot put record (23.56 m), the fastest pitch (47.3 m/s), elite punch speed (~10 m/s) and Bolt’s top speed. Real muscle follows the Hill force–velocity curve (a/F₀ = 0.25), so limb speed tops out. Comic mode keeps the same share of strength at any speed, so speed grows with the square root of strength."
+   "d": "At record-human strength (511 kg deadlift) the default 2 m Rex reproduces the shot put record (23.56 m), the fastest pitch (47.3 m/s) and Bolt’s top speed in both modes, and throws a 10.4 m/s punch, inside the 6.6–12.5 m/s peak fist speeds measured in boxers. Real muscle follows the Hill force–velocity curve (a/F₀ = 0.25, the usual single-muscle value; whole limbs measure flatter), so limb speed tops out. Comic mode keeps the same share of strength at any speed, so speed grows with the square root of strength; where real muscle would do better (slow, heavy loads), comic mode uses that instead."
   },
   {
    "t": "Size",
@@ -1128,11 +1134,11 @@ window.DINO_DATA = {
   },
   {
    "t": "Ground",
-   "d": "Typical ultimate bearing capacities; real sites vary by 2–3×. Sand and gravel get stronger under wider feet. A fast-moving foot also has to shove the ground’s mass aside (resistance ρv² per unit area), which is why a hard enough push still launches him off soft ground and why stomp holes stay shallow."
+   "d": "Typical ultimate bearing capacities for a foot-sized load. Real soils, pavement and slabs run from about half to three times these values; jointed or weathered granite can be about 17× weaker than the intact rock used here. Sand and gravel get stronger under wider feet. A fast-moving foot also has to shove the ground’s mass aside (resistance ρv² per unit area), which is why a hard enough push still launches him off soft ground and why stomp holes stay shallow."
   },
   {
-   "t": "Blasts, quakes and craters are upper bounds",
-   "d": "Blast radii use the Kinney–Graham curve for TNT, as if all the energy became a blast. Quake magnitudes assume 1 part in 10,000 of the energy becomes shaking (real range 10⁻⁵ to 10⁻³: read ±1 magnitude). Craters use asteroid-impact scaling, which overstates small craters in rock or concrete."
+   "t": "Blasts and craters are upper bounds; quakes are a middle estimate",
+   "d": "Blast radii use the Kinney–Graham curve for TNT, as if all the energy became a blast; injury and death levels count the pressure wave alone. Quake magnitudes assume 1 part in 10,000 of the energy becomes shaking, the usual impact-study value (real range 10⁻⁵ to 10⁻³, so give or take about ⅔ of a magnitude). Craters use asteroid-impact scaling, which overstates small craters in rock or concrete."
   },
   {
    "t": "Rex’s body",
@@ -1227,7 +1233,7 @@ window.DINO_DATA = {
   {
    "label": "Strength: Hulk holds a mountain range",
    "value": "150 billion tons",
-   "status": "canon_stated",
+   "status": "reported",
    "sources": [
     {
      "url": "https://screenrant.com/hulk-heaviest-think-lifted-marvel/",
@@ -1243,7 +1249,7 @@ window.DINO_DATA = {
   {
    "label": "Strength: All-Star Superman",
    "value": "200 quintillion tons",
-   "status": "canon_stated",
+   "status": "reported",
    "sources": [
     {
      "url": "https://www.looper.com/1943648/how-strong-superman-powers-explained",
@@ -1258,8 +1264,8 @@ window.DINO_DATA = {
   },
   {
    "label": "Strength: Superman benches Earth",
-   "value": "“the weight of the planet”",
-   "status": "canon_stated",
+   "value": "Earth’s weight, per a review",
+   "status": "reported",
    "sources": [
     {
      "url": "https://www.popmatters.com/164846-this-direction-home-superman-13-2495802120.html",
@@ -1272,6 +1278,66 @@ window.DINO_DATA = {
     {
      "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
      "title": "NASA NSSDC Moon Fact Sheet (Earth column)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Log press world record (Captain America comparison)",
+   "value": "231 kg (509.26 lb)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.guinnessworldrecords.com/world-records/760344-heaviest-log-lift-male",
+     "title": "Guinness World Records: Heaviest log lift (male)"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/The_World_Log_Lift_Championships",
+     "title": "Wikipedia: The World Log Lift Championships"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Deadlift without a suit: raw powerlifting",
+   "value": "492.5 kg (1,085.8 lb)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.openpowerlifting.org/u/coltonengelbrecht",
+     "title": "OpenPowerlifting: Colton Engelbrecht"
+    },
+    {
+     "url": "https://fitnessvolt.com/colton-engelbrecht-all-time-heaviest-raw-total-2026-nikolai-kagansky-memorial-cup/",
+     "title": "FitnessVolt: Engelbrecht all-time raw total at 2026 Kagansky Cup"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Deadlift without a suit: strongman (elephant bar)",
+   "value": "474.5 kg (1,046 lb)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/Elephant_bar",
+     "title": "Wikipedia: Elephant bar"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/Progression_of_the_deadlift_world_record",
+     "title": "Wikipedia: Progression of the deadlift world record"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Strength: Spider-Man, later profile",
+   "value": "'Now capable of lifting 20 tons under optimal conditions'",
+   "status": "canon_stated",
+   "sources": [
+    {
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-AmazingSpider-Man-AmazingSpider-Man544+AND+%28%22capable+of+lifting%22%29&size=5",
+     "title": "Internet Archive scan labelled Amazing Spider-Man #544, full-text search"
     }
    ],
    "note": null
@@ -2291,7 +2357,7 @@ window.DINO_DATA = {
   {
    "label": "Mass: Secret Wars mountain range (150 billion tons)",
    "value": "150 billion tons ('at least' / 'over' in press accounts)",
-   "status": "canon_stated",
+   "status": "reported",
    "sources": [
     {
      "url": "https://screenrant.com/hulk-heaviest-think-lifted-marvel/",
@@ -2326,7 +2392,7 @@ window.DINO_DATA = {
   {
    "label": "Mass: All-Star Superman’s load (200 quintillion tons)",
    "value": "200 quintillion tons (2e20 tons), 'three times more than before'; verb varies by source (push / hold up / lift)",
-   "status": "canon_stated",
+   "status": "reported",
    "sources": [
     {
      "url": "https://www.looper.com/1943648/how-strong-superman-powers-explained",
@@ -2623,7 +2689,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Blast: Half of people killed",
+   "label": "Blast: Pressure kills half",
    "value": "427 kPa",
    "status": "verified",
    "sources": [
@@ -2703,7 +2769,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Elite punch fist speed",
+   "label": "Boxer punch fist speed (lab-measured)",
    "value": "Peak about 6.6-12.5 m/s; best group-mean peak 11.95 m/s (amateur lead hook)",
    "status": "verified",
    "sources": [
@@ -2714,6 +2780,10 @@ window.DINO_DATA = {
     {
      "url": "https://knowledge.lancashire.ac.uk/3757/1/piorkowski-et-al-2011-punch-kinematics.pdf",
      "title": "Piorkowski, Lees & Barton 2011, Single maximal versus combination punch kinematics (accepted manuscript)"
+    },
+    {
+     "title": "Stanley et al. 2018, IJPAS 18(5):835-854",
+     "url": "https://ideas.repec.org/a/taf/rpanxx/v18y2018i5p835-854.html"
     }
    ],
    "note": null
@@ -2864,7 +2934,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Crater size",
-   "value": "Collins, Melosh & Marcus (2005), final = 1.25 × transient",
+   "value": "Collins, Melosh & Marcus (2005): final = 1.25 × transient below 3.2 km, complex-crater eq. 27 above (held at 3.2 km across the switch); above 20 km/s, a same-energy, same-density impactor at 20 km/s. Gravity-regime scaling: an upper bound for small craters in rock or concrete.",
    "status": "verified",
    "sources": [
     {
@@ -2876,7 +2946,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Air heating",
-   "value": "Below 1 km/s: T₀ = T (1 + 0.2 M²). Above: equilibrium-air table computed for this sim (dissociation and ionization included; matches Anderson’s 11 km/s textbook case within ~2%; radiation ignored, so an upper bound)",
+   "value": "Below 1 km/s: T₀ = T (1 + 0.2 M²). Above: equilibrium-air table computed for this sim at sea-level stagnation pressure (ρ₀v², about 1,500 atm at 11 km/s), dissociation and ionization included, radiation ignored, so an upper bound. Check: the same solver at ~0.9 atm gives ~11,700 K for Anderson’s Apollo case (11 km/s at 53 km; textbook ~11,600 K). At sea-level pressure dissociation is held back, so the table gives ~16,400 K at 11 km/s.",
    "status": "estimate",
    "sources": [
     {
@@ -2890,8 +2960,19 @@ window.DINO_DATA = {
     {
      "url": "http://s3.amazonaws.com/akamai.netstorage/anon.nasa-global/CAIB/CAIB_lowres_full.pdf",
      "title": "CAIB Report Vol. I, section 3.6"
+    },
+    {
+     "url": "https://doi.org/10.2514/4.861956",
+     "title": "Anderson, Hypersonic and High-Temperature Gas Dynamics, 2nd ed. (AIAA, 2006)"
     }
    ],
+   "note": null
+  },
+  {
+   "label": "Muscle model (fitted, not measured)",
+   "value": "Unloaded limb speed at 2 m (scales with height): shove throw 35 m/s, overarm whip 84.6, punch and clap 17, leg drive 12, stomp 16. Share of full strength: shove 52% per hand, whip/punch/clap 30%, stomp 50%, legs 140% (they also carry his body weight).",
+   "status": "estimate",
+   "sources": [],
    "note": null
   },
   {
