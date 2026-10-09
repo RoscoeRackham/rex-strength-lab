@@ -1,0 +1,1785 @@
+{
+ "facts": [
+  {
+   "key": "grip_contact_area_assumption",
+   "category": "assumption",
+   "label": "Hand-sized contact patch used for single-point grip stress checks",
+   "value_si": 0.01,
+   "low_si": 0.005,
+   "high_si": 0.02,
+   "unit_si": "m^2",
+   "display": "~0.01 m^2 (palm), ~0.02 m^2 with fingers",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://www.health.mn.gov/communities/ep/surge/burn/tbsa.html",
+     "title": "Minnesota Dept of Health - TBSA palmar method (palm incl. fingers = 1% TBSA)"
+    },
+    {
+     "url": "https://acnpsearch.tweb-dev.unibo.it/singlejournalindex/9432305",
+     "title": "Nagel & Schunk 1997, hand-area rule in children (0.94% / 0.52% TBSA; index page returned 403 to both verifiers)"
+    },
+    {
+     "url": "https://www.cdc.gov/nchs/fastats/body-measurements.htm",
+     "title": "CDC FastStats - US adult male height/weight used for BSA"
+    }
+   ],
+   "notes": "Sim assumption. Mosteller BSA for the CDC average US man (1.750 m, 90.26 kg) = sqrt(175.0 x 90.26 / 3600) = 2.09 m^2 (both verifiers reproduced this). MDH: palm including fingers = 1% TBSA, so ~0.021 m^2. Palm only (~0.5% TBSA) = ~0.0105 m^2; the 0.52% / 0.94% split is from Nagel & Schunk 1997, which neither verifier could open. EDITOR: the researcher also cited a 2018 critique (Liu et al.) calling the rule unreliable; no URL was given and it is not verified, so it is not relied on here. Treat as order-of-magnitude. Every 'grip stress at 1 g' figure in this dataset = m x 9.80665 / 0.01 m^2, assuming the load spreads evenly; real contact is smaller, so real stress is higher. Multiply by (a/g + 1) for an upward lift at acceleration a.",
+   "who_when": "Sim assumption; MDH current guidance; Nagel & Schunk 1997"
+  },
+  {
+   "key": "baseball_mass",
+   "category": "object_mass",
+   "label": "Baseball (MLB Official Baseball Rules 3.01)",
+   "value_si": 0.14529,
+   "low_si": 0.14175,
+   "high_si": 0.14883,
+   "unit_si": "kg",
+   "display": "5 to 5.25 oz (141.7 to 148.8 g)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.umpirebible.com/OBR16/3.0.htm",
+     "title": "UmpireBible reproduction of Official Baseball Rules 3.01 The Ball"
+    },
+    {
+     "url": "https://baseballrulesacademy.com/official-rule/mlb/3-01-the-ball/",
+     "title": "Baseball Rules Academy - 3.01 The Ball"
+    }
+   ],
+   "notes": "Rule text: 'not less than five nor more than 5-1/4 ounces avoirdupois', circumference 'not less than nine nor more than 9-1/4 inches' (diameter 72.8 to 74.8 mm). Construction: yarn wound around a small cork/rubber core, covered by two strips of white horsehide or cowhide. Grip material: leather cover over wound yarn; crush/compressive strength not quantified (no source found). Structural note: the ball fits in the hand; grip stress at 1 g is ~142 Pa, trivial; it survives any lift. Deformation threshold at extreme throw accelerations not quantified. Drag: cd_baseball_subsonic, then cd_sphere_mach_fit above ~M 0.7. Area: baseball_cross_section_area. Both verifiers confirmed.",
+   "who_when": "MLB Official Baseball Rules (renumbered 1.09 to 3.01 in 2015), current edition"
+  },
+  {
+   "key": "baseball_cross_section_area",
+   "category": "object_area",
+   "label": "Baseball cross-sectional area",
+   "value_si": 0.004275,
+   "low_si": 0.004159,
+   "high_si": 0.004393,
+   "unit_si": "m^2",
+   "display": "~42.7 cm^2",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.umpirebible.com/OBR16/3.0.htm",
+     "title": "Official Baseball Rules 3.01 (circumference limits)"
+    }
+   ],
+   "notes": "Derived: d = C/pi from C = 9 to 9.25 in (72.77 to 74.79 mm), A = pi d^2/4. A sphere presents the same area from every direction, so tumbling does not matter.",
+   "who_when": "Derived from OBR 3.01"
+  },
+  {
+   "key": "shot_put_men_mass",
+   "category": "object_mass",
+   "label": "Men's senior shot put (World Athletics)",
+   "value_si": 7.26,
+   "low_si": 7.26,
+   "high_si": 7.285,
+   "unit_si": "kg",
+   "display": "7.260 kg minimum (competition implements reportedly 7.265 to 7.285 kg)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.athleticsdirect.co.uk/throwing-weight-rules-shot-puts",
+     "title": "Athletics Direct - throwing weight rules (senior men 7.26 kg, 110-130 mm)"
+    },
+    {
+     "url": "https://kotobank.jp/word/%E7%A0%B2%E4%B8%B8%E6%8A%95%E3%81%92-131862",
+     "title": "Kotobank encyclopedia - shot put (7.260 kg, 110-130 mm)"
+    },
+    {
+     "url": "https://roma2024.eu/en/?p=11191",
+     "title": "Roma 2024 - shot specification (7.260 kg; solid iron, brass or metal not softer than brass)"
+    },
+    {
+     "url": "https://moodle.upm.es/en-abierto/pluginfile.php/799/mod_label/intro/7_SHOT_PUT.pdf",
+     "title": "UPM course PDF - 7.265-7.285 kg competition range (now returns 404; not re-read)"
+    }
+   ],
+   "notes": "7.260 kg minimum and 110 to 130 mm diameter confirmed by three independent secondary sources. The official World Athletics C2.1 Technical Rules PDF was not read. EDITOR: the 7.265 to 7.285 kg competition-implement range (high_si) comes only from the UPM PDF, which now returns 404 and neither verifier could re-read; treat high_si as unconfirmed. Material: solid iron, brass or any metal not softer than brass, or a shell of such metal filled with dense material. If cast iron: grey cast iron compressive strength ~750 MPa (mat_grey_cast_iron). Structural note: grip stress at 1 g ~7.1 kPa. Derived crush limit: 750 MPa x 0.01 m^2 / 7.26 kg = ~1.0e6 m/s^2 (~1e5 g), assuming even contact. Drag: sphere, cd_sphere_mach_fit (~0.46 subsonic). Area: shot_put_cross_section_area.",
+   "who_when": "World Athletics Technical Rules, current; secondary sources accessed 2026-10"
+  },
+  {
+   "key": "shot_put_cross_section_area",
+   "category": "object_area",
+   "label": "Men's shot cross-sectional area",
+   "value_si": 0.01131,
+   "low_si": 0.009503,
+   "high_si": 0.01327,
+   "unit_si": "m^2",
+   "display": "95 to 133 cm^2",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.athleticsdirect.co.uk/throwing-weight-rules-shot-puts",
+     "title": "Athletics Direct (diameter 110-130 mm)"
+    }
+   ],
+   "notes": "Derived: pi d^2/4 for d = 110 / 120 / 130 mm. Central value uses 120 mm.",
+   "who_when": "Derived"
+  },
+  {
+   "key": "bowling_ball_max_mass",
+   "category": "object_mass",
+   "label": "Max-weight ten-pin bowling ball (USBC)",
+   "value_si": 7.2575,
+   "low_si": 7.2575,
+   "high_si": 7.2575,
+   "unit_si": "kg",
+   "display": "16 lb maximum (7.257 kg)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/Bowling_ball",
+     "title": "Wikipedia - Bowling ball (USBC specs: <=16 lb, 8.500-8.595 in)"
+    },
+    {
+     "url": "https://www.bostonglobe.com/metro/regionals/north/2014/05/03/candlepin-tenpin/5Yrq85NQs2FkAlZ3w1AO0N/story.html",
+     "title": "Boston Globe 2014 citing USBC limits"
+    }
+   ],
+   "notes": "Two independent secondary sources agree; the USBC specification PDF was not read. 16 lb = 7.25748 kg. Diameter 8.500 to 8.595 in (215.9 to 218.3 mm). Static side/top weight limits are 3 oz (rule change effective 1 Aug 2020, per Wikipedia). Coverstock: polyester, urethane or reactive resin over a dense core; coverstock and core strength not quantified. Structural note: grip stress at 1 g ~7.1 kPa, trivial; survives any lift. Drag: sphere, cd_sphere_mach_fit.",
+   "who_when": "USBC equipment specifications, current"
+  },
+  {
+   "key": "bowling_ball_cross_section_area",
+   "category": "object_area",
+   "label": "Bowling ball cross-sectional area",
+   "value_si": 0.03702,
+   "low_si": 0.03661,
+   "high_si": 0.03743,
+   "unit_si": "m^2",
+   "display": "~370 cm^2",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/Bowling_ball",
+     "title": "Wikipedia - Bowling ball (USBC diameter limits)"
+    }
+   ],
+   "notes": "Derived: pi d^2/4, d = 215.9 to 218.3 mm (midpoint 217.1 mm).",
+   "who_when": "Derived"
+  },
+  {
+   "key": "human_us_adult_male_mass",
+   "category": "object_mass",
+   "label": "Average US adult man (age 20+)",
+   "value_si": 90.26,
+   "unit_si": "kg",
+   "display": "199.0 lb (90.3 kg); height 68.9 in (1.750 m)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.cdc.gov/nchs/fastats/body-measurements.htm",
+     "title": "CDC NCHS FastStats - Body Measurements"
+    }
+   ],
+   "notes": "Measured mean, NHANES Aug 2021 to Aug 2023 (Anthropometric Reference Data tables 4, 8, 12); page last reviewed 26 Jun 2025. Waist 40.6 in. Grip material: clothing and skin over soft tissue and bone; cortical bone compressive strength ~170 to 205 MPa (mat_cortical_bone); soft-tissue crush tolerance not quantified. Structural note: grip stress at 1 g ~88 kPa. A person can be held by one hand at 1 g, but at high lift/throw accelerations the stress on gripped tissue multiplies (x10 at ~9 g); injury thresholds not quantified. Drag: cd_bluff_body_tumbling_subsonic. Area: human_projected_area.",
+   "who_when": "CDC/NCHS, survey Aug 2021-Aug 2023; page reviewed 2025-06-26"
+  },
+  {
+   "key": "human_us_adult_female_mass",
+   "category": "object_mass",
+   "label": "Average US adult woman (age 20+)",
+   "value_si": 77.93,
+   "unit_si": "kg",
+   "display": "171.8 lb (77.9 kg); height 63.5 in (1.613 m)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.cdc.gov/nchs/fastats/body-measurements.htm",
+     "title": "CDC NCHS FastStats - Body Measurements"
+    }
+   ],
+   "notes": "NHANES Aug 2021 to Aug 2023, excludes pregnant women. Waist 38.5 in. Grip stress at 1 g ~76 kPa.",
+   "who_when": "CDC/NCHS, survey Aug 2021-Aug 2023"
+  },
+  {
+   "key": "human_global_adult_mean_mass",
+   "category": "object_mass",
+   "label": "Global average adult body mass (2005 data)",
+   "value_si": 62,
+   "unit_si": "kg",
+   "display": "~62 kg",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3408371/",
+     "title": "Walpole et al. 2012, The weight of nations, BMC Public Health 12:439 (full text, PMC)"
+    },
+    {
+     "url": "https://www.ausfoodnews.com.au/?p=10469",
+     "title": "News write-up reporting the 62 kg average"
+    }
+   ],
+   "notes": "EDITOR: upgraded from claimed to verified. Both verifiers independently found the figure in the paper's full text: 'Average body mass globally was 62 kg', with the World row of the table at 4,630 million adults and 62 kg. Total adult biomass ~287 million tonnes (abstract), consistent with 4.63e9 x 62 kg. The openphilanthropy PDF link the researcher used now redirects and returns 403, so it was replaced with the PMC copy. Use this for a 'world-average person' and the CDC values for US adults.",
+   "who_when": "Walpole et al., BMC Public Health, June 2012 (2005 data)"
+  },
+  {
+   "key": "human_projected_area",
+   "category": "object_area",
+   "label": "Adult human projected area (thrown, tumbling; box model)",
+   "value_si": 0.67,
+   "low_si": 0.11,
+   "high_si": 0.91,
+   "unit_si": "m^2",
+   "display": "orientation mean ~0.67 m^2 (head-on ~0.11, front ~0.79, max oblique ~0.91)",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://www.cdc.gov/nchs/fastats/body-measurements.htm",
+     "title": "CDC height used for box model"
+    }
+   ],
+   "notes": "Estimate. Bounding box 1.75 m height x 0.45 m shoulder width x 0.25 m depth (width and depth are unsourced assumptions). Faces: head-on 0.11, side 0.44, front 0.79 m^2. value_si = orientation average (Cauchy: mean projection of a convex body = surface area / 4, which for a box is (LW+LH+WH)/2 = 0.67 m^2). EDITOR: range convention made consistent across all box-modelled objects: low_si = smallest face silhouette, high_si = maximum box projection sqrt(A1^2+A2^2+A3^2) (oblique view), which exceeds the largest face. A real body fills much less of its box, so treat these as upper-leaning. No measured human projected-area source found.",
+   "who_when": "Derived for this sim"
+  },
+  {
+   "key": "steinway_model_d_mass",
+   "category": "object_mass",
+   "label": "Steinway Model D concert grand piano",
+   "value_si": 482.6,
+   "low_si": 449.06,
+   "high_si": 500,
+   "unit_si": "kg",
+   "display": "1,064 lb / 483 kg (steinway.com); Steinway UK: '990 pounds (480 kg)' and '500 KG'",
+   "status": "disputed",
+   "sources": [
+    {
+     "url": "https://www.steinway.com/pianos/steinway/grand/model-d",
+     "title": "Steinway & Sons (steinway.com) - Model D: Net Weight 1,064 lbs (483 kg); 274 cm x 156 cm"
+    },
+    {
+     "url": "https://steinway.co.uk/?p=1831",
+     "title": "Steinway & Sons UK - Model D (990 pounds (480 kg); header 500 KG)"
+    },
+    {
+     "url": "https://www.lindebladpiano.com/pianos/steinway/d/ebony",
+     "title": "Lindeblad Piano - Model D specs (990 lb)"
+    }
+   ],
+   "notes": "EDITOR: added the manufacturer's main site, fetched 2026-10-09, which lists 'Net Weight: 1,064 lbs (483 kg)' (1,064 lb = 482.6 kg); used as the central value. Steinway's own pages still disagree: Steinway UK's spec section says '990 pounds (480 kg)' (990 lb is actually 449.06 kg) and its header says 500 kg; a dealer lists 990 lb. Range 449 to 500 kg; status stays disputed. Dimensions: length 8 ft 11-3/4 in (2.74 m), width 61-3/4 in (1.56 m; UK header says 157 cm); height not listed by Steinway (~1.0 m assumed, unsourced). Rim: single bent rim of hard rock maple; plate: cast grey iron. Grip material: maple rim. Compression parallel to grain ~54 MPa, perpendicular to grain 4.1 to 10.1 MPa (mat_hard_maple). Structural note: grip stress at 1 g ~0.44 to 0.49 MPa, about 10x below even the perpendicular-to-grain value, so the gripped spot holds; but legs, lyre, case joints and the string-tensioned plate are not designed for single-point lifting (not quantified) and would fail first. Drag: cd_bluff_body_tumbling_subsonic.",
+   "who_when": "steinway.com and steinway.co.uk product pages, accessed 2026-10"
+  },
+  {
+   "key": "steinway_model_d_projected_area",
+   "category": "object_area",
+   "label": "Steinway Model D projected area (tumbling; box model)",
+   "value_si": 4.3,
+   "low_si": 1.57,
+   "high_si": 5.33,
+   "unit_si": "m^2",
+   "display": "orientation mean ~4.3 m^2 (end 1.57, side 2.74, top 4.30, max oblique 5.33)",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://www.steinway.com/pianos/steinway/grand/model-d",
+     "title": "Steinway - Model D length 274 cm, width 156 cm"
+    }
+   ],
+   "notes": "Bounding box 2.74 x 1.5685 x 1.0 m (height assumed). Faces: end 1.57, side 2.74, top 4.30 m^2; orientation mean (LW+LH+WH)/2 = 4.30 m^2. EDITOR: high_si changed from 4.3 (which was the mean) to the box's maximum oblique projection, 5.33 m^2, per verifier 2 and the dataset-wide convention (low = smallest face, high = max projection). The curved case makes real values somewhat lower.",
+   "who_when": "Derived"
+  },
+  {
+   "key": "motorcycle_typical_mass",
+   "category": "object_mass",
+   "label": "Typical motorcycle (mid-size reference: Yamaha MT-07)",
+   "value_si": 182.8,
+   "low_si": 101.6,
+   "high_si": 380.1,
+   "unit_si": "kg",
+   "display": "403 lb wet (183 kg); range 224 lb (Honda Grom) to 838 lb (H-D CVO Street Glide)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://yamahamotorsports.com/models/mt-07/specs",
+     "title": "Yamaha MT-07 specs (403 lb wet; page now shows MY2026, same figure)"
+    },
+    {
+     "url": "https://hondanews.com/en-US/releases/release-e0c816b4a481bcc6ec2e6d1411020b0c-2025-honda-grom-specifications",
+     "title": "Honda 2025 Grom specifications (curb 224/227 lb)"
+    },
+    {
+     "url": "https://www.motorcycle.com/specs/harley-davidson/touring/2025/street-glide/base/detail.html",
+     "title": "Motorcycle.com 2025 Street Glide (811 lb / 368 kg wet)"
+    },
+    {
+     "url": "https://asset.moto.it/pricelist/moto/8b38120063a92ad46a6abd140b682ecd/scheda-tecnica-eng.pdf",
+     "title": "H-D MY2025 CVO Street Glide spec sheet (838 lb / 380 kg running order)"
+    }
+   ],
+   "notes": "'Typical' is a definitional pick, not a statistical average. MT-07: 403 lb wet (fluids and full tank) = 182.8 kg; 81.3 x 30.7 x 43.7 in (2.065 x 0.780 x 1.110 m). Low: Honda Grom 224/227 lb curb (101.6/103.0 kg), 69.2 x 28.6 x 40.0 in. High: CVO Street Glide 838 lb running order (380.1 kg); standard 2025 Street Glide 811 lb wet (368 kg), 2.41 x 0.975 x 1.35 m. EDITOR: fixed the CVO PDF URL (a stray trailing brace broke it; both verifiers flagged this). Grip material: steel or aluminium frame; MT-07 frame material not listed on Yamaha's page. Structural note: grip stress at 1 g ~0.18 MPa; lifting by the main frame is fine, but bolt-on parts (bars, pegs, fairings, mirrors) would bend or snap (not quantified). Drag: cd_bluff_body_tumbling_subsonic.",
+   "who_when": "MY2025-2026 manufacturer specs, accessed 2026-10"
+  },
+  {
+   "key": "motorcycle_projected_area",
+   "category": "object_area",
+   "label": "Motorcycle projected area (MT-07 bounding box)",
+   "value_si": 2.38,
+   "low_si": 0.87,
+   "high_si": 2.93,
+   "unit_si": "m^2",
+   "display": "orientation mean ~2.4 m^2 (front 0.87, side 2.29, max oblique 2.93; bounding box)",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://yamahamotorsports.com/models/mt-07/specs",
+     "title": "Yamaha MT-07 dimensions 81.3 x 30.7 x 43.7 in"
+    }
+   ],
+   "notes": "Box 2.065 x 0.780 x 1.110 m: front 0.87, side 2.29, top 1.61, mean 2.38 m^2, max oblique 2.93 m^2 (EDITOR: high_si changed from the mean to the max projection for consistency). A motorcycle fills only part of its bounding box, so these are upper bounds.",
+   "who_when": "Derived"
+  },
+  {
+   "key": "toyota_corolla_curb_mass",
+   "category": "object_mass",
+   "label": "Toyota Corolla sedan curb mass (2026 MY)",
+   "value_si": 1340.4,
+   "low_si": 1340.4,
+   "high_si": 1428.8,
+   "unit_si": "kg",
+   "display": "2,955 lb (LE) to 3,150 lb (XSE)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.kbb.com/toyota/corolla/2026/specs",
+     "title": "Kelley Blue Book - 2026 Corolla specs (LE 2,955 lb; SE 3,110; XSE 3,150)"
+    },
+    {
+     "url": "https://www.iseecars.com/car/2026-toyota-corolla-specs",
+     "title": "iSeeCars - 2026 Corolla specs (LE 2,955 lb; GVWR 3,925 lb)"
+    }
+   ],
+   "notes": "KBB and iSeeCars agree (both verifiers confirmed). EDITOR: the Auto123 source (2,965 lb outlier) now returns 404 and was dropped. toyota.com was not reached. Dimensions: length 182.3 in (4.630 m), width 70.1 in (1.781 m; one verifier reports KBB labels this 'with mirrors', not resolved), height 56.5 in (1.435 m, dealer listings, unverified), wheelbase 106.3 in. Grip material: mostly mild/drawing-quality sheet steel panels (DC04-class yield 140 to 210 MPa, mat_dc04_mild_steel) plus higher-strength steels in pillars and sills (not quantified). Structural note: grip stress at 1 g ~1.3 MPa, ~1% of sheet yield in pure bearing, but thin panels work only as part of the welded shell; a hand grip on a door or fender pulls the panel out of plane and dents or tears it (not quantified). Grip a sill, pillar or suspension mount to lift intact. Drag: cd_bluff_body_tumbling_subsonic for a tumbling car.",
+   "who_when": "2026 model year, specs accessed 2026-10"
+  },
+  {
+   "key": "toyota_corolla_projected_area",
+   "category": "object_area",
+   "label": "Corolla projected area (bounding box)",
+   "value_si": 8.72,
+   "low_si": 2.56,
+   "high_si": 10.89,
+   "unit_si": "m^2",
+   "display": "orientation mean ~8.7 m^2 (front 2.56, side 6.64, top 8.25, max oblique 10.9)",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://www.kbb.com/toyota/corolla/2026/specs",
+     "title": "KBB 2026 Corolla dimensions"
+    }
+   ],
+   "notes": "Box 4.630 x 1.781 x 1.435 m (height unverified). Front 2.56 (real frontal area smaller because of rounding; not sourced), side 6.64, top 8.25, mean 8.72, max oblique 10.89 m^2 (EDITOR: high_si changed from the mean to the max projection).",
+   "who_when": "Derived"
+  },
+  {
+   "key": "ford_f150_curb_mass",
+   "category": "object_mass",
+   "label": "Ford F-150 curb mass (2025-26, gas)",
+   "value_si": 2241.2,
+   "low_si": 1991.7,
+   "high_si": 2659.4,
+   "unit_si": "kg",
+   "display": "~4,391 to 5,863 lb gas (1,992 to 2,659 kg); reference 4,941 lb (4x4 SuperCrew 5.5 ft)",
+   "status": "claimed",
+   "sources": [
+    {
+     "url": "https://www.iseecars.com/car/2025-ford-f__150-specs",
+     "title": "iSeeCars - 2025 F-150 specs (4x2 XL Regular Cab 6.5 ft 4,391 lb; 4x4 SuperCrew 5.5 ft 4,941 lb; Raptor 5,863 lb)"
+    },
+    {
+     "url": "https://www.autopadre.com/vehicle-weight/ford-f-150/2025-lightning-lariat-supercrew-5-5-box-68530",
+     "title": "Autopadre - F-150 weights (2026: 4,391-5,863 lb; Lightning Lariat 6,893 lb)"
+    },
+    {
+     "url": "https://www.iseecars.com/car/2025-ford-f__150-dimensions",
+     "title": "iSeeCars - 2025 F-150 dimensions (L 231.7, H 77.2 in)"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/Ford_F-Series_(fourteenth_generation)",
+     "title": "Wikipedia - F-150 14th gen (width standard 79.9 in, Raptor 86.6 in)"
+    }
+   ],
+   "notes": "EDITOR: low bound corrected (both verifiers agree): the lightest 2025-26 F-150 in the cited iSeeCars table is the 4x2 XL Regular Cab 6.5 ft box at 4,391 lb (1,991.7 kg), not 4,679 lb. Reference: 4x4 SuperCrew 5.5 ft box at 4,941 lb (iSeeCars lists this weight for XL/STX/XLT trims). Heaviest gas: Raptor 5,863 lb. Lightning EV 6,893 lb (3,127 kg). Both Auto123 URLs now return 404 and were dropped. Third-party databases only; Ford's spec PDF not reached. Dimensions (SuperCrew 5.5 ft, 4x4): L 231.7 in (5.885 m), H 77.2 in (1.961 m), W 79.9 in (2.029 m) standard / 86.6 in Raptor (Wikipedia infobox; EDITOR fetched to settle verifier disagreement; iSeeCars' 95.7 in evidently includes mirrors). Grip material: aluminium-alloy body on a steel ladder frame; grades not verified. Structural note: grip stress at 1 g ~2.0 to 2.7 MPa; gripping a frame rail lifts the truck intact, gripping body panels tears them off their mounts. Drag: cd_bluff_body_tumbling_subsonic.",
+   "who_when": "2025-2026 model years, accessed 2026-10"
+  },
+  {
+   "key": "ford_f150_projected_area",
+   "category": "object_area",
+   "label": "F-150 SuperCrew projected area (bounding box)",
+   "value_si": 13.73,
+   "low_si": 3.98,
+   "high_si": 17.08,
+   "unit_si": "m^2",
+   "display": "orientation mean ~13.7 m^2 (front 3.98, side 11.5, top 11.9, max oblique 17.1)",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://www.iseecars.com/car/2025-ford-f__150-dimensions",
+     "title": "iSeeCars - 2025 F-150 dimensions"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/Ford_F-Series_(fourteenth_generation)",
+     "title": "Wikipedia - width 79.9 in"
+    }
+   ],
+   "notes": "Box 5.885 x 2.029 x 1.961 m (all three dimensions now sourced). Front 3.98, side 11.54, top 11.94, mean 13.73, max oblique 17.08 m^2 (EDITOR: high_si changed from the mean to the max projection).",
+   "who_when": "Derived"
+  },
+  {
+   "key": "school_bus_type_c_curb_mass",
+   "category": "object_mass",
+   "label": "Full-size Type C (conventional) school bus, empty",
+   "value_si": 9525.4,
+   "low_si": 8164.7,
+   "high_si": 11339.8,
+   "unit_si": "kg",
+   "display": "~21,000 lb (range ~18,000 to 25,000 lb)",
+   "status": "claimed",
+   "sources": [
+    {
+     "url": "https://www.gadoe.org:443/Finance-and-Business-Operations/Pupil-Transportation/Documents/Curb%20Weight%20Maximum%20II.pdf",
+     "title": "Georgia DOE - Maximum estimated curb weights, buses built 2008-2015 (now returns 404; seen only via search index)"
+    },
+    {
+     "url": "https://www.gadoe.org:443/Finance-and-Business-Operations/Pupil-Transportation/Documents/Bridge%20Weight%20Rating%20Compliance%20Procedures%20-%20Web.pdf",
+     "title": "Georgia DOE bridge compliance memo (21,000 lb Blue Bird 72-capacity example; now 404)"
+    },
+    {
+     "url": "https://thomasbuiltbuses.com/content/uploads/2017/09/specsheet-c2-school-winter-2017.pdf",
+     "title": "Thomas Built C2 spec sheet (GVWR up to 33,000 lb; wheelbases 158-279 in)"
+    },
+    {
+     "url": "https://www.busesforsale.com/knowledge-center/blog/understanding-school-bus-weight-limits-regulations",
+     "title": "BusesForSale - weight guide (Type C ~18,000-25,000 lb; 403 to verifiers)"
+    }
+   ],
+   "notes": "EDITOR: neither verifier could see the 21,000 lb anchor or the 18,000 to 25,000 lb range (GaDOE PDFs 404, BusesForSale 403); the researcher saw the GaDOE figure only through a search index. Status kept at claimed, weakly supported. Manufacturers do not publish a standard curb weight. The 21,000 lb is reportedly GaDOE's manufacturer-supplied maximum estimated curb weight for a Blue Bird Type C 71/72-passenger bus. Do not confuse with GVWR (Thomas C2 GVWR up to 33,000 lb, 14,969 kg, confirmed). Dimensions: width 96 in (2.438 m; not readable in the spec-sheet text layer), length ~36 ft (10.97 m) assumed for a 72-passenger body (wheelbase 158 to 279 in confirmed), height ~122 to 128 in (unverified). Grip material: steel body skin and steel chassis rails (rail strength not quantified). Structural note: grip stress at 1 g ~9.3 MPa; lift by the chassis frame; a grip on the body skin tears it out; a 10 m vehicle held at one end puts a large bending moment on the frame (not quantified). Drag: cd_bluff_body_tumbling_subsonic.",
+   "who_when": "GaDOE table for 2008-2015 buses; secondary guides"
+  },
+  {
+   "key": "school_bus_projected_area",
+   "category": "object_area",
+   "label": "Type C school bus projected area (bounding box)",
+   "value_si": 34.8,
+   "low_si": 7.8,
+   "high_si": 44.8,
+   "unit_si": "m^2",
+   "display": "orientation mean ~35 m^2 (front 7.8, side 35.1, top 26.7, max oblique 44.8)",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://thomasbuiltbuses.com/content/uploads/2017/09/specsheet-c2-school-winter-2017.pdf",
+     "title": "Thomas C2 spec sheet"
+    }
+   ],
+   "notes": "Box 10.97 x 2.438 x 3.2 m (length and height assumed, width not confirmed from text). Front 7.80, side 35.10, top 26.74, mean 34.83, max oblique 44.82 m^2 (EDITOR: high_si changed to the max projection).",
+   "who_when": "Derived"
+  },
+  {
+   "key": "semi_truck_80000lb_mass",
+   "category": "object_mass",
+   "label": "US tractor-semitrailer at federal 80,000 lb gross limit",
+   "value_si": 36287.39,
+   "unit_si": "kg",
+   "display": "80,000 lb = 36,287 kg (exact conversion)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.law.cornell.edu/cfr/text/23/658.17",
+     "title": "23 CFR 658.17 - Weight (80,000 lb max GVW on Interstate System)"
+    },
+    {
+     "url": "https://www.law.cornell.edu/cfr/text/23/658.15",
+     "title": "23 CFR 658.15 - Width (102 in)"
+    }
+   ],
+   "notes": "Axle limits: 20,000 lb single, 34,000 lb tandem, plus the Bridge Formula. Width: 'No State shall impose a width limitation of more or less than 102 inches' (2.59 m). EDITOR: replaced the federal-regs.com width link (403 to verifiers) with the Cornell LII text, fetched 2026-10-09. Height is state-set (often 13.5 to 14 ft; not verified); 53 ft trailers are common (length rule not verified). Grip material: heat-treated steel frame rails, ~110 to 120 ksi yield (mat_truck_frame_rail). Structural note: grip stress at 1 g ~35.6 MPa, below rail yield in pure bearing; but the rig is two vehicles joined only at the fifth-wheel kingpin, so a single-point lift on the tractor leaves the trailer hanging from a coupling not designed for that, and cargo is secured only for road loads (failure not quantified). Drag: cd_bluff_body_tumbling_subsonic.",
+   "who_when": "Federal regulation, current eCFR"
+  },
+  {
+   "key": "semi_truck_projected_area",
+   "category": "object_area",
+   "label": "Tractor-semitrailer projected area (bounding box)",
+   "value_si": 78.8,
+   "low_si": 10.7,
+   "high_si": 107,
+   "unit_si": "m^2",
+   "display": "orientation mean ~79 m^2 (front 10.7, side 90.1, top 56.7, max oblique 107)",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://www.law.cornell.edu/cfr/text/23/658.15",
+     "title": "23 CFR 658.15 width (102 in)"
+    }
+   ],
+   "notes": "Box 21.9 m (~72 ft overall, assumed) x 2.591 m x 4.115 m (13.5 ft, assumed). Front 10.66, side 90.12, top 56.74, mean 78.76, max oblique 107.0 m^2 (EDITOR: high_si changed to the max projection).",
+   "who_when": "Derived"
+  },
+  {
+   "key": "abrams_m1a2_sepv3_mass",
+   "category": "object_mass",
+   "label": "M1A2 SEPv3 Abrams tank",
+   "value_si": 66768.8,
+   "low_si": 66768.8,
+   "high_si": 70760.4,
+   "unit_si": "kg",
+   "display": "73.6 short tons (66.8 t); 'pushing 76 to 78 tons combat loaded' per GDLS (ton type unstated)",
+   "status": "claimed",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/M1_Abrams",
+     "title": "Wikipedia - M1 Abrams (SEPv3 73.6 short tons, citing ASA(ALT) 2018 Weapon Systems Handbook)"
+    },
+    {
+     "url": "https://www.army.mil/article/214509/2018_weapon_systems_handbook",
+     "title": "Army - 2018 Weapon Systems Handbook announcement (does not itself give the figure; handbook not opened)"
+    },
+    {
+     "url": "https://breakingdefense.com/2023/09/americas-next-tank-army-greenlights-more-aggressive-m1-abrams-upgrade/",
+     "title": "Breaking Defense 2023 - GDLS's Scott Taylor: SEPv3 'pushing 76 to 78 tons combat loaded'"
+    }
+   ],
+   "notes": "73.6 short tons x 907.18474 = 66,769 kg. Primary handbook not opened. high_si assumes the GDLS quote means short tons (78 st = 70,760 kg); the quote does not specify. SEPv2 for comparison: 71.2 short tons (64.6 t). Dimensions: length 9.77 m gun forward, 7.93 m hull; width 3.66 m; height 2.44 m. Grip material: composite armour (including depleted-uranium layers on M1A2) over steel; RHA hardness classes 260 to 470 HB (mat_rha). Structural note: grip stress at 1 g ~65 MPa, well under armour-steel strength; the welded hull is a stiff box, so a hull lift should hold; tracks, road wheels and external stowage would hang or tear off. Drag: cd_bluff_body_tumbling_subsonic.",
+   "who_when": "ASA(ALT) 2018 handbook via Wikipedia; Breaking Defense Sept 2023"
+  },
+  {
+   "key": "abrams_projected_area",
+   "category": "object_area",
+   "label": "Abrams projected area (hull bounding box)",
+   "value_si": 28.7,
+   "low_si": 8.93,
+   "high_si": 36,
+   "unit_si": "m^2",
+   "display": "orientation mean ~28.7 m^2 (front 8.9, side 19.4, top 29.0, max oblique 36.0)",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/M1_Abrams",
+     "title": "Wikipedia - M1 Abrams dimensions"
+    }
+   ],
+   "notes": "Box 7.93 x 3.66 x 2.44 m (hull length; overall height; gun excluded). Front 8.93, side 19.35, top 29.02, mean 28.65, max oblique 36.0 m^2 (EDITOR: high_si changed from the top face to the max projection).",
+   "who_when": "Derived"
+  },
+  {
+   "key": "blue_whale_typical_mass",
+   "category": "object_mass",
+   "label": "Adult blue whale, typical",
+   "value_si": 100000,
+   "low_si": 72000,
+   "high_si": 135000,
+   "unit_si": "kg",
+   "display": "~72 to 135 t (Northern Hemisphere means ~100 t male, ~112 t female)",
+   "status": "claimed",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/Blue_whale",
+     "title": "Wikipedia - Blue whale (72-135 t typical, citing Jefferson; NH means citing Lockyer 1976)"
+    },
+    {
+     "url": "https://www.fisheries.noaa.gov/species/blue-whale",
+     "title": "NOAA Fisheries - Blue whale"
+    },
+    {
+     "url": "https://pmel.noaa.gov/acoustics/whales/whale-biology-blue.html",
+     "title": "NOAA PMEL - blue whale biology (avg 26 m, up to 136 t)"
+    }
+   ],
+   "notes": "Most whale masses come from length regressions or piecemeal weighing (Lockyer 1976). NOAA Fisheries: North Atlantic/North Pacific animals reach ~90 ft (27 m) and over 100,000 lb; Antarctic animals ~110 ft (33.5 m) and over 330,000 lb (149.7 t). Typical length ~26 m (NOAA PMEL). Grip material: skin and blubber over muscle; tissue strength not quantified. Structural note: grip stress at 1 g ~98 MPa, about half of cortical bone compressive strength and far above any plausible soft-tissue strength; a hand would sink into the animal rather than lift it. Out of water a whale's body is not built to carry its own weight from one point (not quantified). Drag: Cd strongly orientation-dependent; use ~1.0 for a tumbling body (estimate).",
+   "who_when": "NOAA Fisheries/PMEL (current); Lockyer 1976; Jefferson et al."
+  },
+  {
+   "key": "blue_whale_largest_recorded_mass",
+   "category": "object_mass",
+   "label": "Heaviest weighed blue whale (1947 record)",
+   "value_si": 190000,
+   "low_si": 190000,
+   "high_si": 199000,
+   "unit_si": "kg",
+   "display": "190 t (418,878 lb), 27.6 m female, Southern Ocean, 20 Mar 1947",
+   "status": "claimed",
+   "sources": [
+    {
+     "url": "https://www.guinnessworldrecords.com/world-records/757349-heaviest-animal-ever",
+     "title": "Guinness World Records - Heaviest animal ever"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/Blue_whale",
+     "title": "Wikipedia - Blue whale (190 t; estimates up to 199 t; Motani & Pyenson 2024; Paul & Larramendi 2025)"
+    }
+   ],
+   "notes": "Guinness: 190 tonnes (418,878 lb), 27.6 m female, Southern Ocean, 20 March 1947. Wikipedia cites estimates up to 199 t for the same animal. EDITOR corrections (settled by fetching Wikipedia): (1) Wikipedia gives the record length as 33.6 m without naming a place or year, so the researcher's 'Grytviken 1909, 33.57 m' attribution is unverified and removed; that longest animal was never weighed. (2) Paul & Larramendi (2025) were mischaracterized: Wikipedia says they 'estimated that blue whales could exceed 200 t ... but likely not by as much as Motani and Pyenson documented', not a ceiling near 200 t. Motani & Pyenson (2024) modelled ~252 to 273 t for a 33 m whale. Treat anything above 190 to 199 t as model estimates, not records. Grip stress at 1 g ~186 MPa. Area: blue_whale_projected_area.",
+   "who_when": "Whale taken 1947; Guinness listing; Wikipedia accessed 2026-10"
+  },
+  {
+   "key": "blue_whale_projected_area",
+   "category": "object_area",
+   "label": "Blue whale projected area (prolate-spheroid model)",
+   "value_si": 44,
+   "low_si": 6.4,
+   "high_si": 77.6,
+   "unit_si": "m^2",
+   "display": "~6 (nose-on) to ~56-78 m^2 (broadside); mean ~44 (25 m, 110 t)",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://pmel.noaa.gov/acoustics/whales/whale-biology-blue.html",
+     "title": "NOAA PMEL - typical length 26 m"
+    }
+   ],
+   "notes": "Estimate. Prolate spheroid with volume = mass / 1025 kg/m^3 (density assumed near seawater). 25 m, 110 t: max diameter ~2.86 m, nose-on 6.44, broadside 56.2, orientation mean (S/4) 44.4 m^2. 27.6 m, 190 t: diameter ~3.58 m, nose-on 10.1, broadside 77.6, mean 61.4 m^2. For a prolate spheroid the broadside view is the maximum projection. Both verifiers reproduced the numbers. Real whales are fuller forward and taper aft; girth not measured.",
+   "who_when": "Derived"
+  },
+  {
+   "key": "emd_sd70ace_mass",
+   "category": "object_mass",
+   "label": "EMD SD70ACe diesel-electric locomotive",
+   "value_si": 185065.7,
+   "low_si": 185065.7,
+   "high_si": 194137.5,
+   "unit_si": "kg",
+   "display": "408,000 lb (185 t); related Tier 4 SD70AH(T4C) ballasted to 428,000 lb",
+   "status": "claimed",
+   "sources": [
+    {
+     "url": "https://american-rails.com/sd70ace.html",
+     "title": "American-Rails - SD70ACe data sheet (408,000 lb; 74 ft 3 in; 4,300 hp)"
+    },
+    {
+     "url": "https://www.thedieselshop.us/Data%20EMD%20SD70ACe.HTML",
+     "title": "The Diesel Shop - SD70ACe data"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/EMD_SD70_series",
+     "title": "Wikipedia - EMD SD70 series (UP SD70AH(T4C) ballasted to 428,000 lb rather than 420,000 lb)"
+    }
+   ],
+   "notes": "Two fan/industry data sheets give 408,000 lb (185,066 kg); Progress Rail's North American spec sheet not opened. EDITOR (both verifiers): high_si 428,000 lb (194,138 kg) belongs to Union Pacific's SD70AH(T4C), a Tier 4 derivative, not an SD70ACe 'ballasted variant'; Wikipedia also gives its standard configuration as 420,000 lb (190,509 kg). Kept only as an indication of how heavy ballasted members of this family get; locomotive mass depends on ballast option. Dimensions: 74 ft 3 in long (22.63 m), 10 ft 3 in cab width (3.124 m), 15 ft 11 in height (4.851 m). Starting tractive effort 191,000 lbf at 35% adhesion; 157,000 lbf continuous. Grip material: steel underframe and couplers; underframe grade and coupler strength not quantified. Structural note: grip stress at 1 g ~181 MPa, below but near ASTM A36 minimum yield (36 ksi = 248 MPa, mat_astm_a36; actual underframe steel unknown). Sheet-metal carbody parts would tear; grip the frame or coupler. Drag: cd_bluff_body_tumbling_subsonic.",
+   "who_when": "Fan/industry data sheets; accessed 2026-10"
+  },
+  {
+   "key": "emd_sd70ace_projected_area",
+   "category": "object_area",
+   "label": "SD70ACe projected area (bounding box)",
+   "value_si": 97.8,
+   "low_si": 15.2,
+   "high_si": 131.4,
+   "unit_si": "m^2",
+   "display": "orientation mean ~98 m^2 (end 15.2, side 110, top 70.7, max oblique 131)",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://american-rails.com/sd70ace.html",
+     "title": "American-Rails SD70ACe dimensions"
+    }
+   ],
+   "notes": "Box 22.63 x 3.124 x 4.851 m. End 15.15, side 109.8, top 70.7, mean 97.8, max oblique 131.4 m^2 (EDITOR: high_si changed from the side face to the max projection).",
+   "who_when": "Derived"
+  },
+  {
+   "key": "boeing_747_400_oew",
+   "category": "object_mass",
+   "label": "Boeing 747-400 operating empty weight",
+   "value_si": 178755.3,
+   "low_si": 172365.1,
+   "high_si": 184660.6,
+   "unit_si": "kg",
+   "display": "394,088 lb typical (range 380,000 to 407,107 lb)",
+   "status": "claimed",
+   "sources": [
+    {
+     "url": "https://aircraft-commerce.com/wp-content/uploads/aircraft-commerce-docs/Aircraft%20guides/747-400/ISSUE%2051-747-400%20SPECS.pdf",
+     "title": "Aircraft Commerce Issue 51 (Apr/May 2007) - 747-400 specs (OEW 394,088 lb no tare; typical OEWs 380,000-407,107 lb)"
+    },
+    {
+     "url": "https://aerocorner.com/blog/how-much-fuel-does-a-747-hold/",
+     "title": "AeroCorner - 747-400 OEW 394,660 lb"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/Boeing_747-400",
+     "title": "Wikipedia - 747-400 comparison table (PW: 404,600 lb)"
+    }
+   ],
+   "notes": "OEW varies with engines (PW4000, CF6-80C2 or RB211-524G/H) and airline fit-out; Wikipedia's 404,600 lb (PW) lies inside the range. Boeing's airport planning document was bot-blocked. Dimensions per secondary sources (not verified this pass): length 231 ft 10 in (70.66 m), span 211 ft 5 in (64.44 m), tail height 63 ft 8 in (19.41 m). Grip material: aluminium fuselage skin; 2024-T3 is a typical fuselage-skin alloy (mat_al_2024_t3, ~345 MPa bare typical yield), but the 747's actual skin alloy, cladding and thickness were not verified. Structural note: grip stress at 1 g ~175 MPa at OEW, about half of bare 2024-T3 yield in pure bearing; the skin is a thin shell riveted to frames and stringers, so a hand grip tears it from the frames long before bearing yield (not quantified). Only landing-gear attachments and the wing box are built to carry the aircraft's weight at a few points. Drag: no sourced Cd for a tumbling airliner; projected area not quantified (see gaps).",
+   "who_when": "Aircraft Commerce guide (Boeing data), 2007; accessed 2026-10"
+  },
+  {
+   "key": "boeing_747_400_mtow",
+   "category": "object_mass",
+   "label": "Boeing 747-400 maximum takeoff weight",
+   "value_si": 396893.3,
+   "low_si": 362873.9,
+   "high_si": 412769.1,
+   "unit_si": "kg",
+   "display": "875,000 lb (lower certified option 800,000 lb; 747-400ER 910,000 lb)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://aircraft-commerce.com/wp-content/uploads/aircraft-commerce-docs/Aircraft%20guides/747-400/ISSUE%2051-747-400%20SPECS.pdf",
+     "title": "Aircraft Commerce Issue 51 - 747-400 (MTOW 800,000/875,000 lb; ER 910,000 lb)"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/Boeing_747-400",
+     "title": "Wikipedia - 747-400 (875,000 lb MTOW; ER 910,000 lb)"
+    }
+   ],
+   "notes": "Standard MTOW started at 870,000 lb and was raised to 875,000 lb in late 1993 (Aircraft Commerce). EDITOR: fuel note corrected; the cited Aircraft Commerce table gives usable fuel 53,765 / 57,065 US gal (without / with the 3,300 USG tail tank); the earlier '53,985 US gal' came from AeroCorner and does not match. Wikipedia lists 57,285 US gal. At MTOW, grip stress at 1 g ~389 MPa, above bare 2024-T3 typical yield (~345 MPa) even in perfect bearing: a single-point skin grip fails.",
+   "who_when": "Boeing data via Aircraft Commerce (2007) and Wikipedia"
+  },
+  {
+   "key": "airbus_a380_mtow",
+   "category": "object_mass",
+   "label": "Airbus A380 maximum takeoff weight",
+   "value_si": 575000,
+   "low_si": 560000,
+   "high_si": 575000,
+   "unit_si": "kg",
+   "display": "575 t (lower weight variant 560 t)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.airbus.com/sites/g/files/jlcbta136/files/2022-01/EN-Airbus-A380-Facts-and-Figures-January-2022.pdf",
+     "title": "Airbus - A380 Facts and Figures, January 2022"
+    }
+   ],
+   "notes": "Airbus: MTOW 560 / 575 t, MLW 386 / 394 t, MZFW 361 / 369 t. Length 72.7 m, span 79.8 m, height 24.1 m, fuselage diameter 7.1 m, wing reference area 845 m^2, wheelbase 31.9 m. 'The maximum design load on the 6-wheel body gear is 260 tonnes' (confirmed by verifier 2). Grip material: aluminium-alloy skin; GLARE fibre-metal laminate is commonly reported for the upper fuselage but was not verified. Structural note: grip stress at 1 g ~564 MPa, above the yield of common aerospace aluminium skin alloys; a hand grip punches or tears through. Lift only at landing-gear or wing-box structure. Drag: no sourced Cd for a tumbling airliner.",
+   "who_when": "Airbus, Jan 2022 (figures at end Dec 2021)"
+  },
+  {
+   "key": "airbus_a380_reference_areas",
+   "category": "object_area",
+   "label": "A380 reference areas (wing planform; fuselage nose-on)",
+   "value_si": 845,
+   "low_si": 39.6,
+   "high_si": 845,
+   "unit_si": "m^2",
+   "display": "wing ref. area 845 m^2; fuselage circle ~39.6 m^2",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://www.airbus.com/sites/g/files/jlcbta136/files/2022-01/EN-Airbus-A380-Facts-and-Figures-January-2022.pdf",
+     "title": "Airbus A380 facts (wing area 845 m^2; fuselage diameter 7.1 m)"
+    }
+   ],
+   "notes": "845 m^2 is Airbus's wing reference area (verified). 39.6 m^2 = pi (7.1/2)^2, fuselage alone, nose-on. Using wing planform as a stand-in for a tumbling projected area is a modelling choice, not a sourced value; a full orientation-averaged area (fuselage, wings, tail, engines) was not computed. Use 845 m^2 as the order of magnitude for a tumbling A380, with cd_bluff_body_tumbling_subsonic as an unsourced default.",
+   "who_when": "Derived from Airbus figures"
+  },
+  {
+   "key": "space_shuttle_stack_liftoff_mass",
+   "category": "object_mass",
+   "label": "Space Shuttle full stack at liftoff (orbiter + ET + 2 SRBs)",
+   "value_si": 2041165.7,
+   "low_si": 2030000,
+   "high_si": 2041165.7,
+   "unit_si": "kg",
+   "display": "~4.5 million lb (~2,041 t) per NASA; Wikipedia 2,030 t",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www3.nasa.gov/centers/kennedy/pdf/566306main_shuttle-era-facts.pdf",
+     "title": "NASA KSC - Space Shuttle Era Facts (gross liftoff weight, system stack: 4.5 million pounds)"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/Space_Shuttle",
+     "title": "Wikipedia - Space Shuttle (2,030,000 kg / 4,480,000 lb; 56 m stack)"
+    },
+    {
+     "url": "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/Space_Shuttle/Shuttle_technical_facts",
+     "title": "ESA - Shuttle technical facts (2000 t; returned 403 to verifiers and editor)"
+    }
+   ],
+   "notes": "NASA: 'Gross liftoff weight* (system stack) 4.5 million pounds ... weight will vary depending on payloads and onboard consumables'. 4.5e6 lb = 2,041,166 kg. EDITOR: low_si changed from ESA's 2,000 t (ESA page returned 403 to both verifiers and to the editor, so not confirmed) to Wikipedia's 2,030,000 kg, which a verifier read. Stack height 184 ft (56.1 m); orbiter length 122 ft, wingspan 78 ft (23.8 m). External tank 27.6 ft (8.41 m) diameter x 154 ft (46.9 m) per NASA SLWT fact sheet. SRB ~3.7 m wide (Wikipedia). Grip material: ET is aluminium-lithium 2195 under spray-on foam; NASA says 2195 is '30 percent stronger and 5 percent less dense' than 2219 (EDITOR: corrected from ~29%); absolute 2195 yield not quantified. Structural note: grip stress at 1 g ~2.0 GPa, beyond any material in the stack; a hand-sized grip punches through and the thin-walled tank ruptures. Drag: not quantified for the tumbling stack.",
+   "who_when": "NASA KSC fact sheet (2011-2012 editions)"
+  },
+  {
+   "key": "space_shuttle_stack_frontal_area",
+   "category": "object_area",
+   "label": "Shuttle stack nose-on frontal area (ET + SRBs only)",
+   "value_si": 77.2,
+   "low_si": 55.5,
+   "unit_si": "m^2",
+   "display": "~55.5 m^2 (ET) to ~77 m^2 (ET + SRBs, orbiter excluded)",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://www.nasa.gov/sites/default/files/113020main_shuttle_lightweight.pdf",
+     "title": "NASA - Super Lightweight External Tank fact sheet (27.6 ft wide)"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/Space_Shuttle",
+     "title": "Wikipedia - SRB 3.7 m wide"
+    }
+   ],
+   "notes": "ET circle pi (8.41/2)^2 = 55.5 m^2, plus 2 SRB circles at 3.71 m diameter (Wikipedia gives 3.7 m) = 21.6 m^2, total 77.2 m^2. The orbiter's frontal contribution is excluded, so this is a lower bound for the full stack nose-on. Broadside area not quantified; no high_si.",
+   "who_when": "Derived"
+  },
+  {
+   "key": "statue_of_liberty_copper_mass",
+   "category": "object_mass",
+   "label": "Statue of Liberty copper skin",
+   "value_si": 79832.3,
+   "low_si": 28122.7,
+   "high_si": 90718.5,
+   "unit_si": "kg",
+   "display": "176,000 lb (current NPS page); other sources 62,000 lb or 200,000 lb",
+   "status": "disputed",
+   "sources": [
+    {
+     "url": "https://www.nps.gov/stli/learn/historyculture/statue-statistics.htm",
+     "title": "NPS - Statue Statistics (current): copper 176,000 lbs; framework 440,000 lbs; foundation 54,000,000 lbs"
+    },
+    {
+     "url": "https://npshistory.com/handbooks/historical/11/hh11k1.htm",
+     "title": "NPS Handbook (2000 online ed.): copper 200,000 lb; steel 250,000 lb; total 450,000 lb"
+    },
+    {
+     "url": "https://archive.copper.org/consumers/arts/2008/february/",
+     "title": "Copper Development Association 2008 (62,000 lb attributed to NPS; CDA estimate 179,000 lb; returned 401 to verifiers)"
+    },
+    {
+     "url": "https://www.teachushistory.org/node/401",
+     "title": "1880s Bartholdi souvenir book: total 440,000 lb, of which 176,000 lb copper"
+    }
+   ],
+   "notes": "Official NPS materials disagree. 176,000 lb (current NPS page; also the 1880s Bartholdi souvenir) is the central value. 200,000 lb (NPS 2000 handbook; Wikipedia citing Sutherland) is high. The 62,000 lb low value and CDA's 179,000 lb estimate come from the CDA page, which neither verifier could reopen (401), so the low bound is unconfirmed. Copper sheet 3/32 in (2.38 mm) thick (NPS). Grip material: copper sheet; actual temper not found, so annealed copper (~69 MPa yield, mat_copper_annealed) is a lower-end proxy. Structural note: grip stress at 1 g for the whole statue (~204 t) is ~200 MPa, ~3x annealed copper yield: the thin skin crushes and tears. Only the internal iron/steel pylon and armature, anchored into the pedestal, can carry the load, and the statue must be detached from its anchorage first.",
+   "who_when": "NPS page current (accessed 2026-10); NPS handbook 2000; Bartholdi souvenir 1880s"
+  },
+  {
+   "key": "statue_of_liberty_framework_mass",
+   "category": "object_mass",
+   "label": "Statue of Liberty internal iron/steel framework",
+   "value_si": 113398.1,
+   "low_si": 113398.1,
+   "high_si": 199580.6,
+   "unit_si": "kg",
+   "display": "250,000 lb (NPS 2000 handbook); 264,000 lb implied by 1880s souvenir; current NPS page labels 440,000 lb 'framework'",
+   "status": "disputed",
+   "sources": [
+    {
+     "url": "https://npshistory.com/handbooks/historical/11/hh11k1.htm",
+     "title": "NPS Handbook (2000): steel 250,000 lb"
+    },
+    {
+     "url": "https://www.teachushistory.org/node/401",
+     "title": "Bartholdi souvenir: 440,000 lb total, 176,000 lb copper, remainder wrought iron (=264,000 lb)"
+    },
+    {
+     "url": "https://www.nps.gov/stli/learn/historyculture/statue-statistics.htm",
+     "title": "NPS current: 'Weight of framework: 440,000 lbs'"
+    }
+   ],
+   "notes": "250,000 lb = 113,398 kg; 264,000 lb = 119,748 kg; 440,000 lb = 199,581 kg. The current NPS page's 440,000 lb 'framework' equals the 1880s source's figure for the whole statue, so it is probably a labeling error (editor's inference, judged well supported by both verifiers). The engine should prefer ~113 to 120 t; high_si is retained only to expose the conflict. Original armature was puddled/wrought iron; the 1980s restoration replaced many armature bars (details not verified).",
+   "who_when": "See sources"
+  },
+  {
+   "key": "statue_of_liberty_total_mass",
+   "category": "object_mass",
+   "label": "Statue of Liberty total (copper + framework, excl. pedestal)",
+   "value_si": 204116.6,
+   "low_si": 199580.6,
+   "high_si": 204116.6,
+   "unit_si": "kg",
+   "display": "440,000 to 450,000 lb (~200 to 204 t); statue only, excluding pedestal and foundation",
+   "status": "disputed",
+   "sources": [
+    {
+     "url": "https://npshistory.com/handbooks/historical/11/hh11k1.htm",
+     "title": "NPS Handbook (2000): total 450,000 lb (225 tons)"
+    },
+    {
+     "url": "https://www.teachushistory.org/node/401",
+     "title": "Bartholdi souvenir: total 440,000 lb"
+    },
+    {
+     "url": "https://www.nps.gov/stli/learn/historyculture/statue-statistics.htm",
+     "title": "NPS current statistics (no total; 176,000 + 440,000 labels)"
+    }
+   ],
+   "notes": "EDITOR: high_si corrected from 279,413 kg to 204,117 kg (verifier 2; verifier 1 did not object). 616,000 lb (279 t) was the researcher's own sum of the current NPS page's 'copper' and 'framework' lines; no source states it and it probably double counts. It is kept here only as a flagged artifact. Sourced totals: 440,000 lb (1880s souvenir) and 450,000 lb (NPS 2000 handbook). Excludes the pedestal and the 54,000,000 lb (24,494 t) concrete foundation. NPS dimensions: heel to top of head 111 ft 1 in (33.86 m); top of base to torch 151 ft 1 in (46.05 m); ground to torch 305 ft 1 in (92.99 m); waist width 35 ft (10.67 m). Area: statue_of_liberty_projected_area.",
+   "who_when": "See sources"
+  },
+  {
+   "key": "statue_of_liberty_projected_area",
+   "category": "object_area",
+   "label": "Statue of Liberty projected area (rough)",
+   "value_si": 491,
+   "unit_si": "m^2",
+   "display": "~490 m^2 (base-to-torch x waist-width rectangle)",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://www.nps.gov/stli/learn/historyculture/statue-statistics.htm",
+     "title": "NPS statue dimensions"
+    }
+   ],
+   "notes": "Rectangle 46.05 m (top of base to torch) x 10.67 m (waist width) = 491 m^2. EDITOR: no longer called an upper bound; verifier 2 notes the tablet and drapery may extend beyond waist width, while the head and arm are narrower. Treat as a rough order-of-magnitude silhouette. Statue depth not quantified. Drag: cd_bluff_body_tumbling_subsonic.",
+   "who_when": "Derived"
+  },
+  {
+   "key": "eiffel_tower_iron_mass",
+   "category": "object_mass",
+   "label": "Eiffel Tower metal (puddled iron) structure",
+   "value_si": 7300000,
+   "unit_si": "kg",
+   "display": "7,300 tonnes",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/Eiffel_Tower",
+     "title": "Wikipedia - Eiffel Tower ('The puddle iron (wrought iron) of the Eiffel Tower weighs 7,300 tonnes'; 330 m; 125 m square base)"
+    },
+    {
+     "url": "https://www.lego.com/cdn/cs/set/assets/bltab6941ae7803cfea/21019_EiffelTower_A4_ENUS_v2_2_2.pdf",
+     "title": "LEGO 21019 fact sheet: 8,047 tons (7,300 metric tons) iron; 11,133 tons (10,100 metric tons) total"
+    },
+    {
+     "url": "https://sete.toureiffel.paris/sites/default/files/2018-07/Press_Release__SETE_-.pdf",
+     "title": "SETE (tower operator) press release - key figures (403 to all; seen only via search index)"
+    }
+   ],
+   "notes": "Metric tonnes; '8,047 tons' is the same mass in US short tons. The operator's own page returned 403 to everyone, so confirmation rests on Wikipedia and the LEGO sheet. An 1889 pamphlet figure of ~7,531 t is unverified. Height 330 m and base 125 m per side (Wikipedia, per verifier 1; LEGO sheet gives 324 m including mast). Grip material: puddled (wrought) iron lattice; no measured yield for the tower's own iron found (proxy mat_puddled_iron, 285 to 390 MPa tensile, hardness-derived, American iron). Structural note: grip stress at 1 g for the whole tower (10,100 t) is ~9.9 GPa, ~25 to 35x the iron's strength; a single-member grip rips that member out. The tower stands on four legs on masonry foundations and must be separated from them.",
+   "who_when": "Wikipedia and LEGO fact sheet; SETE key figures (2018)"
+  },
+  {
+   "key": "eiffel_tower_total_mass",
+   "category": "object_mass",
+   "label": "Eiffel Tower total mass (incl. non-metal parts)",
+   "value_si": 10100000,
+   "unit_si": "kg",
+   "display": "10,100 tonnes",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/Eiffel_Tower",
+     "title": "Wikipedia - total weight approximately 10,100 tonnes"
+    },
+    {
+     "url": "https://www.lego.com/cdn/cs/set/assets/bltab6941ae7803cfea/21019_EiffelTower_A4_ENUS_v2_2_2.pdf",
+     "title": "LEGO 21019 fact sheet"
+    },
+    {
+     "url": "https://sete.toureiffel.paris/sites/default/files/2018-07/Press_Release__SETE_-.pdf",
+     "title": "SETE press release (403)"
+    }
+   ],
+   "notes": "Wikipedia: 'total weight to approximately 10,100 tonnes' and '60 tons of paint every 7 years'. Projected area not quantified (open lattice; solidity ratio not found).",
+   "who_when": "Wikipedia; LEGO fact sheet; SETE key figures"
+  },
+  {
+   "key": "rms_titanic_displacement_mass",
+   "category": "object_mass",
+   "label": "RMS Titanic displacement at load draught",
+   "value_si": 53149414,
+   "unit_si": "kg",
+   "display": "52,310 long tons at 34 ft 7 in draught (= 53,149 t)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://titanicinternationalsociety.org/wp-content/uploads/2020/02/titanic-fact-sheet.pdf",
+     "title": "Titanic International Society fact sheet (displacement 52,310 tons; 882 ft 9 in; beam 92 ft 6 in; GRT 46,329)"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/Olympic-class_ocean_liner",
+     "title": "Wikipedia - Olympic-class ocean liner ('displacing 52,310 long tons (53,150 t)'; draught 34 ft 7 in)"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/Titanic",
+     "title": "Wikipedia - Titanic (renders the figure as '52,310 tonnes'; draught 34 ft 7 in)"
+    },
+    {
+     "url": "https://www.encyclopedia-titanica.org/the-66000-ton-myth.html",
+     "title": "Encyclopedia Titanica - The 66,000 ton myth (403 to all; body not read)"
+    }
+   ],
+   "notes": "EDITOR, settling the unit dispute (verifier 1 proposed a tonne-reading low bound; verifier 2 confirmed long tons): the Wikipedia Olympic-class article, fetched 2026-10-09, states 'displacing 52,310 long tons (53,150 t)', and 1912 British practice used the 2,240 lb long ton. Wikipedia's Titanic article writes '52,310 tonnes', which is treated as a conversion slip (it would be 1.6% lower, 52,310,000 kg). Value = 52,310 x 1016.0469 = 53,149,414 kg. The '66,000 ton' figure is labelled a myth in the title of an Encyclopedia Titanica article whose body nobody could open (403). Gross register tonnage 46,329 (EDITOR: corrected from 46,328) is a volume measure, not mass. Dimensions: length 882 ft 9 in (269.06 m), beam 92 ft 6 in (28.19 m), draught 34 ft 7 in (10.54 m), waterline to boat deck 60 ft 6 in (18.44 m). Grip material: riveted mild-steel hull plate (~193 MPa yield, claimed, mat_titanic_hull_steel). Structural note: grip stress at 1 g ~52 GPa; even a perfect grip tears out the plate. A ship is designed for distributed buoyancy; out of water a single-point lift breaks the hull girder. Drag: cd_bluff_body_tumbling_subsonic.",
+   "who_when": "Harland & Wolff data, 1912; sources accessed 2026-10"
+  },
+  {
+   "key": "rms_titanic_projected_area",
+   "category": "object_area",
+   "label": "Titanic projected area (hull bounding box)",
+   "value_si": 8100,
+   "low_si": 817,
+   "high_si": 10910,
+   "unit_si": "m^2",
+   "display": "~820 (bow-on) to ~10,900 m^2 (max oblique); tumbling mean ~8,100 m^2",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://titanicinternationalsociety.org/wp-content/uploads/2020/02/titanic-fact-sheet.pdf",
+     "title": "Titanic fact sheet dimensions"
+    }
+   ],
+   "notes": "Box 269.06 x 28.19 x 28.98 m (keel to boat deck = draught 10.54 + 18.44 m; funnels excluded). Bow-on 817, side 7,797, top 7,585, orientation mean 8,100, max oblique sqrt(sum of face areas squared) = 10,910 m^2. EDITOR: high_si corrected from 7,800 (which put value_si above high_si) to the max projection; both verifiers agreed.",
+   "who_when": "Derived"
+  },
+  {
+   "key": "nimitz_full_load_displacement_mass",
+   "category": "object_mass",
+   "label": "Nimitz-class carrier full-load displacement",
+   "value_si": 103941608,
+   "low_si": 101604700,
+   "high_si": 106278516,
+   "unit_si": "kg",
+   "display": "100,000 to 104,600 long tons (101.6 to 106.3 million kg)",
+   "status": "claimed",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/Nimitz-class_aircraft_carrier",
+     "title": "Wikipedia - Nimitz class (100,000-104,600 long tons full load; cites Polmar 2004)"
+    },
+    {
+     "url": "https://www.navy.mil/Resources/Fact-Files/Display-FactFiles/Article/2169795/aircraft-carriers-cvn/",
+     "title": "US Navy fact file - Aircraft Carriers CVN (403 to all; not read)"
+    }
+   ],
+   "notes": "Long tons; value is the midpoint and mass varies by hull (later ships heavier). Dimensions (Wikipedia): length 332.8 m overall (317.0 m waterline), beam 76.8 m overall (flight deck) and 40.8 m waterline, draft 11.3 m navigational (12.5 m limit). Grip material: high-strength hull steel. EDITOR: HY-80 (552 MPa minimum yield, mat_hy80) is an assumption; Wikipedia names HSLA-100 for ships starting with John C. Stennis and does not mention HY-80 for these carriers. HSLA-100's ~690 MPa minimum is by designation only, not verified. Structural note: grip stress at 1 g ~1.0e11 Pa, ~150 to 200x hull-steel yield; a single-point grip tears out plate, and lifting from water snaps the hull girder.",
+   "who_when": "Polmar 2004 via Wikipedia"
+  },
+  {
+   "key": "nimitz_projected_area",
+   "category": "object_area",
+   "label": "Nimitz-class projected area (rough box range)",
+   "value_si": 15700,
+   "low_si": 1224,
+   "high_si": 27540,
+   "unit_si": "m^2",
+   "display": "~1,200 (bow-on, hull) to ~27,500 m^2 (max oblique, flight-deck box); mean ~12,400 to 18,900, central ~15,700",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/Nimitz-class_aircraft_carrier",
+     "title": "Wikipedia - Nimitz dimensions (332.8 m; beam 76.8 m overall, 40.8 m waterline)"
+    }
+   ],
+   "notes": "EDITOR, settling the verifier disagreement: verifier 1 replaced the waterline-beam box with a full flight-deck-beam box; verifier 2 kept the waterline box but noted it understates the top view. Neither box is right: the hull is 40.8 m wide but the flight deck overhangs to 76.8 m. Both boxes use 332.8 m length and an assumed 30 m keel-to-flight-deck height (unverified). Waterline-beam box: bow 1,224, side 9,984, top 13,578, mean 12,393 m^2. Flight-deck box: bow 2,304, side 9,984, top 25,559, mean 18,924, max oblique 27,540 m^2. value_si = ~15,700 m^2, the midpoint of the two means; low = hull bow-on; high = max oblique of the flight-deck box. Island excluded. The flight-deck area itself was not found in a readable source.",
+   "who_when": "Derived"
+  },
+  {
+   "key": "empire_state_building_mass",
+   "category": "object_mass",
+   "label": "Empire State Building total mass (owner's figure)",
+   "value_si": 331122430,
+   "low_si": 331122430,
+   "high_si": 370857155,
+   "unit_si": "kg",
+   "display": "'365,000 tons' (US short tons assumed = 331,000 t; long tons would be 371,000 t)",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://esbnyc.com/sites/default/files/esb_fact_sheet_final.pdf",
+     "title": "Empire State Building official fact sheet ('The building weighs 365,000 tons, and its volume is 37 million cubic feet')"
+    },
+    {
+     "url": "https://www.enr.com/articles/60722-the-race-into-the-sky-that-built-the-empire-state-building",
+     "title": "ENR archive - 57,000 tons of structural steel"
+    }
+   ],
+   "notes": "Method and uncertainty: the owner states the figure without method, ton type, or scope (foundations, fit-out, contents). Short tons assumed for a US source: 331,122 t; long tons would give 370,857 t. Sanity check: 37 million ft^3 (1.048e6 m^3) gives mean density ~316 kg/m^3, plausible for a steel-frame tower that is mostly air. Exterior: 200,000 ft^3 of Indiana limestone and granite, 10 million bricks, 730 tons of aluminium and stainless steel. Height 1,454 ft (443.2 m) to antenna tip. Lot 79,288 ft^2. Grip material: Indiana limestone facade (ASTM C568 minimum 4,000 psi = 27.6 MPa, mat_indiana_limestone) anchored to a steel frame. Structural note: grip stress at 1 g ~3.2e11 Pa, ~10,000x limestone strength; the building sits on foundations to bedrock and must be cut free before any lift. Projected area not quantified (tower widths above setbacks not found).",
+   "who_when": "ESB fact sheet (current); ENR archive"
+  },
+  {
+   "key": "great_pyramid_mass",
+   "category": "object_mass",
+   "label": "Great Pyramid of Giza mass",
+   "value_si": 6000000000,
+   "low_si": 5500000000,
+   "high_si": 7000000000,
+   "unit_si": "kg",
+   "display": "~6 million tonnes (range ~5.5 to 7 Mt)",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/Great_Pyramid_of_Giza",
+     "title": "Wikipedia - Great Pyramid (2.3 million blocks, 6 million tonnes; 5.5 Mt limestone, 8,000 t granite, 500,000 t mortar; base 230.3 m)"
+    },
+    {
+     "url": "https://www.soest.hawaii.edu/martel/Courses/GG454/Lec_03_2018.pptx.pdf",
+     "title": "U. Hawaii GG454 rock-properties lecture (limestone dry density 2.67-2.72 g/cm^3)"
+    }
+   ],
+   "notes": "No direct measurement exists. Literature figure ~6 Mt (5.5 Mt limestone + 0.5 Mt mortar + 8,000 t granite). Low: limestone alone, 5.5 Mt. High (derived): the ideal envelope 230.3^2 x 146.6 / 3 = 2.59e6 m^3 at 2.67 to 2.72 t/m^3 = 6.92 to 7.05 Mt if solid limestone; the real figure is lower because the envelope includes a natural bedrock core and voids. Block counts disputed (2.3 to ~4 million). Base 230.3 m per side; height 146.6 m originally, 138.5 m now. Grip material: limestone blocks set in mortar (UCS 6 to 245 MPa, mat_limestone_generic). Structural note: grip stress at 1 g ~5.9e12 Pa; the pyramid is a pile of separate blocks, so a grip pulls out one block and the rest stays.",
+   "who_when": "Literature estimates; accessed 2026-10"
+  },
+  {
+   "key": "great_pyramid_projected_area",
+   "category": "object_area",
+   "label": "Great Pyramid projected area",
+   "value_si": 34725,
+   "low_si": 16881,
+   "high_si": 53038,
+   "unit_si": "m^2",
+   "display": "~16,900 (face-on) to 53,000 m^2 (top); orientation mean ~34,700 m^2",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/Great_Pyramid_of_Giza",
+     "title": "Wikipedia - base 230.3 m, original height 146.6 m"
+    }
+   ],
+   "notes": "Ideal square pyramid at original height. Slant height 186.4 m; total surface 138,901 m^2. Orientation mean = S/4 (Cauchy, convex body) = 34,725 m^2. Face-on silhouette 0.5 x 230.3 x 146.6 = 16,881 m^2; top-down 53,038 m^2.",
+   "who_when": "Derived"
+  },
+  {
+   "key": "mount_everest_mass",
+   "category": "object_mass",
+   "label": "Mount Everest mass (definition-dependent estimate)",
+   "value_si": 370000000000000,
+   "low_si": 160000000000000,
+   "high_si": 1400000000000000,
+   "unit_si": "kg",
+   "display": "~4e14 kg (range ~1.6e14 to 1.4e15 kg depending on where the mountain 'ends')",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://thehimalayantimes.com/nepal/everest-2-0-worlds-tallest-peaks-revised-height-revealed-stands-at-8848-86m/",
+     "title": "Himalayan Times - joint China-Nepal height 8,848.86 m (Dec 2020)"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/Mount_Everest",
+     "title": "Wikipedia - Mount Everest geology (Qomolangma Formation, Ordovician limestone, summit to Yellow Band ~8,600 m)"
+    },
+    {
+     "url": "https://all-geo.org/metageologist/2012/06/the-geology-of-mount-everest/",
+     "title": "Metageologist - The Geology of Mount Everest (summit limestone; Yellow Band marble)"
+    },
+    {
+     "url": "https://www.soest.hawaii.edu/martel/Courses/GG454/Lec_03_2018.pptx.pdf",
+     "title": "U. Hawaii rock-properties lecture (densities, UCS)"
+    },
+    {
+     "url": "https://mounteverest.info/?p=4587",
+     "title": "Popular page: '350 trillion pounds or 175,000,000,000 tons', attributed to The Cold Wire"
+    }
+   ],
+   "notes": "Own calculation; no peer-reviewed or survey-agency mass estimate found. Method: right circular cone V = pi r^2 h / 3 at 2,700 kg/m^3 (2,600 to 2,800 changes results ~4%). Summit 8,848.86 m. Central: base plane ~5,200 m (roughly base-camp elevation; unverified), h = 3.65 km, r = 6 km: 138 km^3, 3.7e14 kg. Low: r = 4 km: 61 km^3, 1.65e14 kg. High: base ~4,000 m valley floors, h = 4.85 km, r = 10 km: 508 km^3, 1.4e15 kg. Summit pyramid only above ~7,000 m (h 1.85 km, r 2 km): ~2e13 kg. Rock below the chosen base plane, including the crustal root, is excluded by definition. EDITOR citation fixes (both verifiers): (1) the popular page actually says '350 trillion pounds or 175,000,000,000 tons' and ~175 trillion kg, attributed to The Cold Wire with no method; it is internally inconsistent (350e12 lb = 1.59e14 kg); the earlier '357 trillion lb / 1.62e14 kg' wording was wrong. (2) Qomolangma Formation, Ordovician limestone, from the summit to the top of the Yellow Band at ~8,600 m: sourced to Wikipedia, not Metageologist (which says summit limestone and Yellow Band marble). Lower: schists and gneisses. UCS: limestone 6 to 245, marble 55 to 274, schist 25 to 62, gneiss 50 to 230 MPa. Structural note: grip stress at 1 g ~3.6e17 Pa; 'lifting' Everest means quarrying it free of the crust; model as excavation, not a grip.",
+   "who_when": "Height: China-Nepal joint survey, 8 Dec 2020; mass derived 2026-10"
+  },
+  {
+   "key": "mount_everest_projected_area",
+   "category": "object_area",
+   "label": "Everest cone-model projected areas",
+   "value_si": 21900000,
+   "low_si": 14600000,
+   "high_si": 113000000,
+   "unit_si": "m^2",
+   "display": "side ~2.2e7 m^2; footprint ~1.1e8 m^2 (r = 6 km cone)",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://thehimalayantimes.com/nepal/everest-2-0-worlds-tallest-peaks-revised-height-revealed-stands-at-8848-86m/",
+     "title": "Summit height 8,848.86 m"
+    }
+   ],
+   "notes": "Central cone (r = 6 km, h = 3.65 km): side silhouette r x h = 2.19e7 m^2; footprint pi r^2 = 1.13e8 m^2 (high_si). low_si = side silhouette for r = 4 km. Air drag is irrelevant at this scale compared with the mass.",
+   "who_when": "Derived"
+  },
+  {
+   "key": "cumulus_cloud_water_mass",
+   "category": "object_mass",
+   "label": "Typical (1 km^3) cumulus cloud - liquid water only",
+   "value_si": 500000,
+   "unit_si": "kg",
+   "display": "~500,000 kg (~1.1 million lb) of droplets",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://www.usgs.gov/special-topics/water-science-school/science/how-much-does-a-cloud-weigh",
+     "title": "USGS Water Science School - How much does a cloud weigh?"
+    }
+   ],
+   "notes": "USGS illustration: 1 km^3 = 1e9 m^3 x ~0.5 g/m^3 liquid water content = 5e8 g = ~500,000 kg (~1.1 million lb). Droplets only. USGS takes the 0.5 g/m^3 from ScienceAlert and gives no range, so this is a single illustrative value. EDITOR: the EarthDate page was dropped as a second source; it states the density as '0.5 g/cc' and '5 grams per cubic centimeter', which are wrong units for its own 500,000 kg result, so it does not independently support the figure. The air in the same volume is roughly 1e9 kg at ~1 kg/m^3 (rough, unsourced). No structural strength: a 'grab' just pushes air and droplets aside; model as moving air, not a rigid body. Cross-section: cloud_cross_section_area.",
+   "who_when": "USGS Water Science School (current)"
+  },
+  {
+   "key": "cloud_cross_section_area",
+   "category": "object_area",
+   "label": "1 km x 1 km cumulus cross-section",
+   "value_si": 1000000,
+   "unit_si": "m^2",
+   "display": "~1e6 m^2",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://www.usgs.gov/special-topics/water-science-school/science/how-much-does-a-cloud-weigh",
+     "title": "USGS 1 km cube cloud"
+    }
+   ],
+   "notes": "Follows from the USGS 1 km cube illustration.",
+   "who_when": "Derived"
+  },
+  {
+   "key": "moon_mass",
+   "category": "object_mass",
+   "label": "Moon",
+   "value_si": 7.346e+22,
+   "unit_si": "kg",
+   "display": "7.346e22 kg",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+     "title": "NASA NSSDCA Moon Fact Sheet (updated 11 Jan 2024)"
+    }
+   ],
+   "notes": "Volumetric mean radius 1,737.4 km; mean density 3,344 kg/m^3; GM 4,902.8 km^3/s^2 (listed as 0.00490 x 10^6 km^3/s^2). Orbit semimajor axis 384,400 km (EDITOR: the sheet lists this as semimajor axis, not a separate 'mean distance'). Not a grip object: any hand-sized contact craters the surface. Model as force over a large area or as a gravitational problem. Cross-section: moon_cross_section_area.",
+   "who_when": "NASA NSSDCA, 2024-01-11"
+  },
+  {
+   "key": "moon_cross_section_area",
+   "category": "object_area",
+   "label": "Moon cross-sectional area",
+   "value_si": 9483000000000,
+   "unit_si": "m^2",
+   "display": "9.48e12 m^2",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+     "title": "NASA Moon Fact Sheet (radius)"
+    }
+   ],
+   "notes": "pi r^2 with r = 1,737.4 km.",
+   "who_when": "Derived"
+  },
+  {
+   "key": "earth_mass",
+   "category": "object_mass",
+   "label": "Earth",
+   "value_si": 5.9722e+24,
+   "unit_si": "kg",
+   "display": "5.9722e24 kg",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+     "title": "NASA NSSDCA Earth Fact Sheet (updated 15 Nov 2024)"
+    }
+   ],
+   "notes": "Volumetric mean radius 6,371.0 km; equatorial 6,378.137 km; mean density 5,513 kg/m^3; GM 3.9860e14 m^3/s^2. EDITOR: NASA's own Moon and Sun sheets list Earth as 5.9724e24 kg and 5,514 kg/m^3 in their comparison columns, a 0.003% inconsistency within NASA's sheets. 'Lifting the Earth' has no meaning without an external support; pushing on it moves the pusher. Model momentum exchange, not a lift.",
+   "who_when": "NASA NSSDCA, 2024-11-15"
+  },
+  {
+   "key": "earth_cross_section_area",
+   "category": "object_area",
+   "label": "Earth cross-sectional area",
+   "value_si": 127520000000000,
+   "unit_si": "m^2",
+   "display": "1.275e14 m^2",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+     "title": "NASA Earth Fact Sheet (radius)"
+    }
+   ],
+   "notes": "pi r^2 with mean radius 6,371.0 km.",
+   "who_when": "Derived"
+  },
+  {
+   "key": "sun_mass",
+   "category": "object_mass",
+   "label": "Sun",
+   "value_si": 1.9884e+30,
+   "unit_si": "kg",
+   "display": "1.9884e30 kg",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html",
+     "title": "NASA NSSDCA Sun Fact Sheet (updated 9 May 2024)"
+    }
+   ],
+   "notes": "Listed as 1,988,400 x 10^24 kg. Volumetric mean radius 695,700 km; mean density 1,408 kg/m^3; GM 1.32712e20 m^3/s^2. Plasma with no solid surface: nothing to grip.",
+   "who_when": "NASA NSSDCA, 2024-05-09"
+  },
+  {
+   "key": "sun_cross_section_area",
+   "category": "object_area",
+   "label": "Sun cross-sectional area",
+   "value_si": 1520500000000000000,
+   "unit_si": "m^2",
+   "display": "1.52e18 m^2",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html",
+     "title": "NASA Sun Fact Sheet (radius)"
+    }
+   ],
+   "notes": "pi r^2 with r = 695,700 km.",
+   "who_when": "Derived"
+  },
+  {
+   "key": "cd_sphere_mach_fit",
+   "category": "drag_coefficient",
+   "label": "Sphere drag coefficient vs Mach (empirical fit)",
+   "value_si": 0.46,
+   "low_si": 0.424,
+   "high_si": 1,
+   "unit_si": "1",
+   "display": "~0.46 subsonic, rising to ~1.0 near M 1.7, settling at 0.92 hypersonic",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://ntrs.nasa.gov/api/citations/20110016614/downloads/20110016614.pdf",
+     "title": "Carter, Jandir & Kress - Constraining the Drag Coefficients of Meteors in Dark Flight (NASA NTRS)"
+    },
+    {
+     "url": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/shape-effects-on-drag/",
+     "title": "NASA Glenn - Shape effects on drag (sphere 0.07-0.5)"
+    }
+   ],
+   "notes": "Fit to sphere data from Mach 0 to 10. Cd(M) = 0.45 M^2 + 0.424 for 0 <= M <= 0.722 (pieces join at 0.659). For M > 0.722: Cd(M) = 2.1 exp(-1.2(M+0.35)) - 8.9 exp(-2.2(M+0.35)) + 0.92. Samples (both verifiers recomputed): M 0.3 = 0.464, M 0.9 = 0.820, M 1.0 = 0.879, peak ~1.00 at M ~1.7, M 3 = 0.952, M >= 5 ~0.92. Paper quotes 0.46 at low speed. The fit ignores the Reynolds-number drag crisis: a smooth sphere above Re ~3e5 can drop to ~0.1 to 0.2 (NASA Glenn gives 0.07 to 0.5). Use for the shot, bowling ball, and compact rounded objects.",
+   "who_when": "Carter et al. (NASA NTRS 20110016614)"
+  },
+  {
+   "key": "cd_cube_mach_fit",
+   "category": "drag_coefficient",
+   "label": "Cube drag coefficient vs Mach (tumbling compact bluff body)",
+   "value_si": 1.09,
+   "low_si": 1.04,
+   "high_si": 1.83,
+   "unit_si": "1",
+   "display": "~1.04-1.09 subsonic, peak ~1.83 at M 1.15, 1.67 hypersonic",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://ntrs.nasa.gov/api/citations/20110016614/downloads/20110016614.pdf",
+     "title": "Carter, Jandir & Kress - meteor drag (cube data to Mach 3)"
+    }
+   ],
+   "notes": "Cd(M) = 0.60 M^2 + 1.04 for 0 <= M <= 1.150. For M > 1.150: Cd(M) = 2.1 exp(-1.16(M+0.35)) - 6.5 exp(-2.23(M+0.35)) + 1.67. The pieces do not join exactly at M 1.15 (1.8335 vs 1.8094); the engine should blend or clamp. Paper quotes 1.09 at low speed and a hypersonic plateau of 1.67. EDITOR: cube data were measured only to Mach 3, so the 1.67 plateau above that is the fit's extrapolation. Default for tumbling vehicles, pianos, tanks and buildings, with area = orientation-averaged projected area.",
+   "who_when": "Carter et al. (NASA NTRS 20110016614)"
+  },
+  {
+   "key": "cd_baseball_subsonic",
+   "category": "drag_coefficient",
+   "label": "Baseball drag coefficient (game speeds)",
+   "value_si": 0.35,
+   "low_si": 0.3,
+   "high_si": 0.6,
+   "unit_si": "1",
+   "display": "~0.35 in play (wind-tunnel 0.3 to 0.6)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://mdpi-res.com/d_attachment/applsci/applsci-12-01416/article_deploy/applsci-12-01416.pdf",
+     "title": "Smith & Sciacchitano 2022, Baseball Drag Measurements in Free Flight, Applied Sciences 12:1416"
+    },
+    {
+     "url": "https://arxiv.org/pdf/0712.0380",
+     "title": "Meyer & Bohn - Influence of a humidor on the aerodynamics of baseballs"
+    }
+   ],
+   "notes": "EDITOR: upgraded from claimed to verified. Both verifiers read the paper: non-spinning MLB ball wind-tunnel values 'as low as Cd = 0.3 ... as high as Cd = 0.6'; 'baseball drag in play is likely closer to Cd = 0.35'; the paper's own free-flight measurements averaged 0.348 non-spinning and 0.358 spinning. It is an original measurement paper, not a review. Seams trigger an early drag crisis; Cd depends on speed and spin. Above ~M 0.7 switch to cd_sphere_mach_fit (supersonic sphere ~0.9 to 1.0).",
+   "who_when": "Smith & Sciacchitano, 2022"
+  },
+  {
+   "key": "cd_flat_plate_broadside",
+   "category": "drag_coefficient",
+   "label": "Flat plate broadside (upper bound for flat objects)",
+   "value_si": 1.28,
+   "unit_si": "1",
+   "display": "1.28",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/shape-effects-on-drag/",
+     "title": "NASA Glenn - Shape effects on drag (flat plate 1.28; wedge prism 1.14; sphere 0.07-0.5; bullet 0.295; airfoil 0.045)"
+    }
+   ],
+   "notes": "Use for broadside slabs (piano lid, car roof-first, a wall). NASA's 1.14 'prism' is a wedge prism with the wedge facing downstream. A tumbling subsonic bluff body sits ~1.0 to 1.3, between the cube and flat-plate values.",
+   "who_when": "NASA Glenn Beginner's Guide (current)"
+  },
+  {
+   "key": "cd_bluff_body_tumbling_subsonic",
+   "category": "drag_coefficient",
+   "label": "Generic tumbling bluff body (vehicles, people, furniture)",
+   "value_si": 1.1,
+   "low_si": 1,
+   "high_si": 1.3,
+   "unit_si": "1",
+   "display": "~1.0 to 1.3 subsonic; ~1.7 to 1.8 supersonic",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://ntrs.nasa.gov/api/citations/20110016614/downloads/20110016614.pdf",
+     "title": "Carter et al. cube data"
+    },
+    {
+     "url": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/shape-effects-on-drag/",
+     "title": "NASA Glenn flat plate 1.28"
+    }
+   ],
+   "notes": "Engineering bracket between the cube (1.04 to 1.09) and a broadside flat plate (1.28). Pair with the orientation-averaged area. Supersonic: use cd_cube_mach_fit (1.67 to 1.83). No sourced Cd exists here for tumbling airliners, launch stacks, lattice towers or whales; this bracket is the unsourced default for them.",
+   "who_when": "Derived"
+  },
+  {
+   "key": "mat_dc04_mild_steel",
+   "category": "material_strength",
+   "label": "Automotive mild/drawing-quality sheet steel (EN 10130 DC04) yield",
+   "value_si": 175000000,
+   "low_si": 140000000,
+   "high_si": 210000000,
+   "unit_si": "Pa",
+   "display": "yield 140 to 210 MPa; UTS 270 to 350 MPa",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://roymech.org/Useful_Tables/Matter/Steel_Data/Steel-10130.html",
+     "title": "Roymech - EN 10130 cold-rolled steels (DC04 Re 140/210 MPa, Rm 270/350 MPa)"
+    },
+    {
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6947421/table/materials-12-04037-t001",
+     "title": "Materials 2019 - measured DC04 yield ~176-193 MPa (blocked to verifiers; not re-read)"
+    }
+   ],
+   "notes": "Band midpoint. The measured-values table was not re-read by either verifier. Car bodies also use HSLA and AHSS and press-hardened steels in pillars; not quantified. For thin sheet, panel buckling and tearing govern failure, not bulk yield.",
+   "who_when": "EN 10130 via Roymech; measured 2019"
+  },
+  {
+   "key": "mat_al_2024_t3",
+   "category": "material_strength",
+   "label": "Aluminium 2024-T3 (bare) tensile yield, typical supplier value",
+   "value_si": 344700000,
+   "unit_si": "Pa",
+   "display": "yield 50 ksi (345 MPa); UTS 70 ksi (483 MPa)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://alcobrametals.com/product/032-2024t3-alclad-alum-sheet/",
+     "title": "Alcobra Metals 2024-T3 sheet (yield 50,000 / UTS 70,000 psi; AMS 4037)"
+    },
+    {
+     "url": "https://www.onlinemetals.com/en/buy/aluminum/0-032-aluminum-sheet-2024-t3-clad/pid/8073",
+     "title": "OnlineMetals 2024-T3 clad sheet (yield 50 ksi, UTS 70 ksi, shear 41 ksi; 403 to verifiers)"
+    }
+   ],
+   "notes": "Supplier reference values ('not for design'). EDITOR: the identical low/high was removed because it overstated precision. Verifier 2 notes AMS 4037 is the bare-sheet spec, so these are bare-alloy typical values; Alclad (clad) fuselage skin and design-allowable minimums are lower and were not quantified. The 41 ksi shear figure was not re-verified. Which alloy a specific airliner's skin uses was not verified; treat as representative.",
+   "who_when": "Supplier data, accessed 2026-10"
+  },
+  {
+   "key": "mat_grey_cast_iron",
+   "category": "material_strength",
+   "label": "Grey cast iron (ASTM grade 30) compressive strength",
+   "value_si": 750000000,
+   "unit_si": "Pa",
+   "display": "compressive ~750 MPa; tensile 207 MPa min (A48 class 30) / ~240 MPa typical",
+   "status": "claimed",
+   "sources": [
+    {
+     "url": "https://www.makeitfrom.com/material-properties/ASTM-Grade-30-or-200-ISO-200-EN-JL-1030-F12101-Grey-Cast-Iron",
+     "title": "MakeItFrom - ASTM grade 30 grey cast iron (compressive 750 MPa, UTS 240 MPa, density 7.5 g/cm^3)"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/Gray_iron",
+     "title": "Wikipedia - Gray iron (ASTM A48 classes by tensile strength)"
+    }
+   ],
+   "notes": "A48 specifies only tensile strength (class number = ksi). Compressive strength is typically 3 to 4x tensile. Brittle in tension. Relevant to cast-iron shot puts and the Steinway plate.",
+   "who_when": "Database values, accessed 2026-10"
+  },
+  {
+   "key": "mat_copper_annealed",
+   "category": "material_strength",
+   "label": "Annealed copper (C11000, O temper) yield",
+   "value_si": 69000000,
+   "low_si": 33300000,
+   "high_si": 76000000,
+   "unit_si": "Pa",
+   "display": "yield ~69 MPa (33 to 76 MPa by source); UTS ~220 MPa",
+   "status": "claimed",
+   "sources": [
+    {
+     "url": "https://www.makeitfrom.com/material-properties/Annealed-OS050-C11000-Copper",
+     "title": "MakeItFrom - annealed OS050 C11000 (yield 69 MPa, UTS 220 MPa)"
+    },
+    {
+     "url": "https://dcc-lho.ligo.org/public/0121/D1500228/001/copper%20strength%20hardening.pdf",
+     "title": "LIGO memo quoting copper.org (~76 MPa) and MatWeb (33.3 MPa) annealed yield"
+    }
+   ],
+   "notes": "The Statue of Liberty skin is 3/32 in hammered copper sheet; its actual temper and work-hardening were not found, so this annealed value is a lower-end proxy.",
+   "who_when": "Database values"
+  },
+  {
+   "key": "mat_hard_maple",
+   "category": "material_strength",
+   "label": "Hard maple compression parallel to grain (12% MC)",
+   "value_si": 54000000,
+   "unit_si": "Pa",
+   "display": "7,830 psi (54.0 MPa) parallel; 1,470 psi (10.1 MPa) perpendicular, at 12% MC",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.hardwoodinfo.com/wp-content/uploads/professional/species-guide/Species_Guide_Stength_Mech_Properties.pdf",
+     "title": "AHEC/Hardwood species guide - strength & mechanical properties (hard maple, Green-12%)"
+    }
+   ],
+   "notes": "EDITOR: upgraded from claimed to verified. Both verifiers extracted the table: hard maple compression parallel to grain '3,270-7,830' psi over 'Green-12%', so 7,830 psi = 54.0 MPa is the 12% value. Same row: compression perpendicular to grain 600 to 1,470 psi (4.1 to 10.1 MPa). A dry piano rim corresponds to the 12% values. A side grip on a bent rim loads it largely perpendicular to grain, so use ~10 MPa there (still ~20x the Steinway's 1 g grip stress). The USDA Wood Handbook table could not be reached (502) for a third cross-check.",
+   "who_when": "AHEC hardwood species guide"
+  },
+  {
+   "key": "mat_cortical_bone",
+   "category": "material_strength",
+   "label": "Human cortical bone ultimate compressive strength",
+   "value_si": 205000000,
+   "low_si": 170000000,
+   "high_si": 205000000,
+   "unit_si": "Pa",
+   "display": "~170 to 205 MPa compression (tension ~104 to 135 MPa)",
+   "status": "claimed",
+   "sources": [
+    {
+     "url": "https://jeo-esska.springeropen.com/articles/10.1186/s40634-017-0098-0/tables/2",
+     "title": "J Exp Orthop table reproducing Reilly & Burstein 1975 means (login redirect; not readable)"
+    },
+    {
+     "url": "https://repository.lboro.ac.uk/articles/Variability_and_anisotropy_of_mechanical_behavior_of_cortical_bone_in_tension_and_compression/9569954/files/17203202.pdf",
+     "title": "Loughborough - cortical bone variability in tension/compression (not readable)"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/Bone",
+     "title": "Wikipedia - Bone (compressive ~170 MPa; tensile 104-121 MPa)"
+    }
+   ],
+   "notes": "EDITOR: neither verifier could read the 205 MPa (compression) / 135 MPa (tension) Reilly & Burstein 1975 femur means; they remain a claimed secondary citation. Per verifier 1, the range now runs from Wikipedia's generic bone compressive strength (~170 MPa) to 205 MPa, and the tensile figure (previously stored as low_si, which mixed two different quantities) moved to the notes: tension ~104 to 121 MPa (Wikipedia) to 135 MPa (claimed). Soft-tissue crush and tear tolerance for gripping a person is not quantified.",
+   "who_when": "Reilly & Burstein 1975 via secondary; Wikipedia"
+  },
+  {
+   "key": "mat_granite_ucs",
+   "category": "material_strength",
+   "label": "Granite unconfined compressive strength",
+   "value_si": 187500000,
+   "low_si": 100000000,
+   "high_si": 275000000,
+   "unit_si": "Pa",
+   "display": "~100 to 275 MPa (some datasets to 900 MPa); tensile 15 to 35 MPa",
+   "status": "claimed",
+   "sources": [
+    {
+     "url": "https://ns1.engineersedge.com/civil_engineering/rock_engineering_properties_16321.htm",
+     "title": "Engineers Edge - rock engineering properties (granite 100-275 MPa)"
+    },
+    {
+     "url": "https://www.soest.hawaii.edu/martel/Courses/GG454/Lec_03_2018.pptx.pdf",
+     "title": "U. Hawaii GG454 lecture (granite 100-900 / tension 15-35 MPa)"
+    }
+   ],
+   "notes": "Value is the 100 to 275 midpoint. Tensile strength only 15 to 35 MPa, so blocks crack in bending long before crushing.",
+   "who_when": "Reference tables"
+  },
+  {
+   "key": "mat_limestone_generic",
+   "category": "material_strength",
+   "label": "Limestone unconfined compressive strength (generic)",
+   "value_si": 89000000,
+   "low_si": 6000000,
+   "high_si": 245000000,
+   "unit_si": "Pa",
+   "display": "6 to 245 MPa (peer-reviewed sample set 38-140 MPa)",
+   "status": "claimed",
+   "sources": [
+    {
+     "url": "https://www.soest.hawaii.edu/martel/Courses/GG454/Lec_03_2018.pptx.pdf",
+     "title": "U. Hawaii GG454 (limestone 6-245 / tension 5-25 MPa; density 2.67-2.72 g/cm^3)"
+    },
+    {
+     "url": "https://research.itu.edu.tr/en/publications/strength-deformation-and-cracking-characteristics-of-limestones/",
+     "title": "ITU - Strength, deformation and cracking characteristics of limestones (38-140 MPa)"
+    }
+   ],
+   "notes": "Value is the midpoint of the 38 to 140 MPa study range (a chosen central value). Full range spans 40x. Relevant to the Great Pyramid and Everest's summit limestone. Other Everest rocks (same lecture): marble 55 to 274, schist 25 to 62, gneiss 50 to 230 MPa.",
+   "who_when": "Reference tables"
+  },
+  {
+   "key": "mat_indiana_limestone",
+   "category": "material_strength",
+   "label": "Indiana limestone compressive strength (ESB facade stone)",
+   "value_si": 27600000,
+   "low_si": 27600000,
+   "high_si": 48300000,
+   "unit_si": "Pa",
+   "display": "4,000 psi minimum (27.6 MPa); tests typically 7,000+ psi (48 MPa)",
+   "status": "claimed",
+   "sources": [
+    {
+     "url": "https://www.aiafla.org/upload_documents/VentilatedFacadesPart3.pdf",
+     "title": "AIA Florida 'Designing with Indiana Limestone' (C-568 min 4000 psi; test data 7000+ psi)"
+    },
+    {
+     "url": "https://legacy.igws.indiana.edu/MineralResources/Limestone",
+     "title": "Indiana Geological & Water Survey - Indiana limestone (503 to verifiers)"
+    },
+    {
+     "url": "https://iliai.com/?p=2328",
+     "title": "Indiana Limestone Institute - use and overuse of testing (now redirects)"
+    }
+   ],
+   "notes": "ASTM C568 minimum (tested per ASTM C170). Verifier 1 read both figures in the AIA deck; verifier 2 could not open any source. The 700 psi modulus-of-rupture minimum (ILI handbook) was not re-verified.",
+   "who_when": "ASTM C568 via AIA Florida presentation"
+  },
+  {
+   "key": "mat_titanic_hull_steel",
+   "category": "material_strength",
+   "label": "Titanic hull plate steel yield (tested 1990s)",
+   "value_si": 193100000,
+   "unit_si": "Pa",
+   "display": "yield ~193 MPa; UTS ~417 MPa",
+   "status": "claimed",
+   "sources": [
+    {
+     "url": "https://www.tms.org/pubs/journals/JOM/9801/Felkins-9801.html",
+     "title": "Felkins, Leighly & Jankovic, JOM 50(1):12-18, 1998 (403 to all)"
+    },
+    {
+     "url": "https://www.unioviedo.es/sid-met-mat/PUBLICACIONES-SIDMETMAT/EL%20TAMANO%20DE%20GRANO%20FERRITICO%20UN%20FACTOR%20IGNORADO%20DE%20HECHO%20EN%20EL%20ANALISIS%20DEL%20FALLO%20EN%20EL%20HUNDIMIENTO%20DE%20UN%20FAMOSO%20BARCO%20DYNA%20174.pdf",
+     "title": "U. Oviedo paper citing Leighly (now 404/HTML)"
+    }
+   ],
+   "notes": "EDITOR: neither verifier could open the primary or the cited secondary, so 193.1 MPa yield and 417.1 MPa UTS rest only on the researcher's earlier reading of the secondary. A summary of the JOM paper reportedly says the steel's strength resembled ASTM A36 but its ductile-brittle transition temperature was much higher (32 C vs -27 C); not re-verified.",
+   "who_when": "Felkins et al. 1998 via secondary"
+  },
+  {
+   "key": "mat_hy80",
+   "category": "material_strength",
+   "label": "HY-80 naval steel minimum yield",
+   "value_si": 551600000,
+   "low_si": 551600000,
+   "high_si": 689500000,
+   "unit_si": "Pa",
+   "display": "80 ksi (552 MPa) minimum; specified range 80-100 ksi to 3/4 in, 80-99.5 ksi above",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.aasteel.com/hy-80-100/",
+     "title": "AA Steel - HY-80/100 (yield 80/100 ksi to 3/4 in; 80/99.5 ksi over 3/4 in)"
+    },
+    {
+     "url": "https://generalstaff.org/BBOW/NAV/MIL-S-16216K.PDF",
+     "title": "MIL-S-16216K(SH) 1987 - HY-80/HY-100 plate (403 to verifiers)"
+    }
+   ],
+   "notes": "EDITOR: high_si raised from 686 MPa (99.5 ksi, plate over 3/4 in) to 689.5 MPa (100 ksi, plate up to 3/4 in), per both verifiers. Applicability to Nimitz hulls is not established: Wikipedia names HSLA-100 from John C. Stennis onward and does not mention HY-80 for carriers.",
+   "who_when": "MIL-S-16216K, 1987, via supplier"
+  },
+  {
+   "key": "mat_truck_frame_rail",
+   "category": "material_strength",
+   "label": "Class 8 truck heat-treated frame rail yield",
+   "value_si": 827400000,
+   "low_si": 758400000,
+   "high_si": 827400000,
+   "unit_si": "Pa",
+   "display": "120,000 psi (827 MPa) common; 110,000 psi (758 MPa) older/other rails",
+   "status": "claimed",
+   "sources": [
+    {
+     "url": "https://lawinsider.com/clause/frame",
+     "title": "Contract clause - heat-treated alloy steel frame rails 120,000 psi yield"
+    },
+    {
+     "url": "https://www.bidnetdirect.com/public/supplier/solicitations/statewide/22397406652/abstract",
+     "title": "Procurement spec - 10-5/8 in rail, 120,000 psi yield (403 to verifiers)"
+    },
+    {
+     "url": "https://www.oemoffhighway.com/drivetrains/hardware/article/12158450/lightweight-materials-for-heavy-trucks",
+     "title": "OEM Off-Highway - heavy truck frames (403 to verifiers)"
+    }
+   ],
+   "notes": "Verifier 1 confirmed 120 ksi in a contract clause; the 110 ksi low bound was not seen by either verifier and is unconfirmed. Varies by OEM and rail section.",
+   "who_when": "Procurement specs, accessed 2026-10"
+  },
+  {
+   "key": "mat_rha",
+   "category": "material_strength",
+   "label": "Rolled homogeneous armour (MIL-DTL-12560) - hardness-derived tensile strength",
+   "value_si": 1000000000,
+   "low_si": 900000000,
+   "high_si": 1620000000,
+   "unit_si": "Pa",
+   "display": "hardness 260-470 HB by class; derived UTS ~0.9 to 1.6 GPa",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/Rolled_homogeneous_armour",
+     "title": "Wikipedia - RHA (MIL-DTL-12560 classes 260-310 to 420-470 HB; typical 302-400)"
+    },
+    {
+     "url": "https://apps.dtic.mil/sti/pdfs/ADA392414.pdf",
+     "title": "ARL report - Johnson-Cook parameters for RHA (yield value not extracted)"
+    }
+   ],
+   "notes": "Only hardness found; no yield value. Tensile strength estimated with the common empirical steel conversion UTS (MPa) ~3.45 x HB (not from these sources): 260 HB ~0.9 GPa, 470 HB ~1.6 GPa, ~300 HB ~1.04 GPa (central). The Abrams' outer armour is composite, so this applies only to its steel structure.",
+   "who_when": "Derived from hardness classes"
+  },
+  {
+   "key": "mat_puddled_iron",
+   "category": "material_strength",
+   "label": "19th-c. puddled/wrought iron tensile strength (Eiffel-era proxy)",
+   "value_si": 324000000,
+   "low_si": 285000000,
+   "high_si": 390000000,
+   "unit_si": "Pa",
+   "display": "~285 to 390 MPa (hardness-derived, Arequipa bridge); review average ~324 MPa (not re-read)",
+   "status": "claimed",
+   "sources": [
+    {
+     "url": "https://www.scielo.br/j/remi/a/Sck59bPDbHFKtZ5GSHg8cBr/?lang=en",
+     "title": "REM Int. Eng. J. 2020 - Simon Bolivar iron bridge, Arequipa (hardness-derived tensile 285 to 390 MPa)"
+    },
+    {
+     "url": "https://mrforum.com/wp-content/uploads/open_access/9781644900215/11.pdf",
+     "title": "Wrought iron review (average tensile ~324 MPa; 403 to verifiers)"
+    }
+   ],
+   "notes": "EDITOR caveats added (verifier 1): the bridge is only 'supposedly designed by Gustave Eiffel' and its iron came from the Phoenix Iron Company of Philadelphia, so this is American iron, not the tower's French puddled iron. The authors say hardness-based estimates likely overstate true strength because slag inclusions are ignored (table extremes 284 to 392 MPa; beam mean 329, column mean 335). No yield value reported. The 324 MPa review average was not re-read. Wrought iron's slag makes it weaker and more variable than steel.",
+   "who_when": "2020 study; review"
+  },
+  {
+   "key": "mat_astm_a36",
+   "category": "material_strength",
+   "label": "ASTM A36 structural steel minimum yield",
+   "value_si": 248200000,
+   "low_si": 220600000,
+   "high_si": 248200000,
+   "unit_si": "Pa",
+   "display": "36 ksi (248 MPa, often rounded to 250) minimum yield; 32 ksi (221 MPa) for plate over 8 in; UTS 58-80 ksi (400-550 MPa)",
+   "status": "claimed",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/A36_steel",
+     "title": "Wikipedia - A36 steel (min yield 36 ksi / 250 MPa; 32 ksi above 8 in; UTS 58-80 ksi)"
+    }
+   ],
+   "notes": "EDITOR: new entry, added because a verifier noted the SD70ACe note relied on an A36 figure with no material entry. Wikipedia (fetched 2026-10-09): minimum yield 36 ksi for plates, bars and shapes under 8 in thick, 32 ksi for thicker plate; UTS 58 to 80 ksi. 36 ksi = 248.2 MPa exactly (Wikipedia rounds to 250). Generic ordinary structural steel reference; the actual underframe steel of any specific vehicle was not identified. Single secondary source, so claimed.",
+   "who_when": "ASTM A36 via Wikipedia, accessed 2026-10"
+  }
+ ],
+ "gaps": [
+  "EDITOR: the shared web-search budget ran out at the start of this editing pass, so all settling was done with direct page fetches. Items needing a search engine were left in gaps rather than filled.",
+  "Primary documents still unread (bot-blocked, offline, or image-only): World Athletics C2.1 (shot), USBC spec PDF (bowling), toyota.com and Ford spec PDFs, Boeing 747-400 airport planning doc, navy.mil CVN fact file (403), SETE/toureiffel.paris (403), Encyclopedia Titanica (403), JOM Felkins 1998 (403), ASM MatWeb (503), Georgia DOE curb-weight PDFs (404), ESA Shuttle facts (403), USDA Wood Handbook ch. 5 (502), UPM shot-put PDF (404).",
+  "School bus Type C curb weight: neither verifier could see the 21,000 lb anchor or the 18,000-25,000 lb range. No manufacturer curb weight located. Bus length, height and width are assumed or unconfirmed.",
+  "Steinway Model D: Steinway's own sites give 1,064 lb (483 kg, steinway.com), 990 lb labelled '480 kg', and 500 kg (steinway.co.uk). Unresolved; case height not published.",
+  "Statue of Liberty: copper (62,000 / 176,000 / 200,000 lb) and framework (250,000 / 264,000 / 440,000 lb) figures conflict across NPS documents. The 62,000 lb CDA attribution could not be reopened (401). Statue depth not quantified.",
+  "M1A2 SEPv3: Army handbook not opened. The GDLS 'combat loaded 76-78 tons' quote does not specify the ton type.",
+  "Empire State Building: '365,000 tons' has no stated method, ton type or scope. Projected area not quantified (tower widths above setbacks not found).",
+  "Boeing 747-400: no projected-area entry. Wing area and fuselage width were not found in a readable source; the Wikipedia 747/747-400 spec tables could not be extracted. Length, span and height are secondary and unverified.",
+  "Eiffel Tower: projected area and drag not quantified (lattice solidity ratio not found).",
+  "Nimitz class: flight-deck plan area and keel-to-flight-deck height not found in readable sources; the projected area is a range between two bounding boxes with an assumed 30 m height. HSLA-100 strength (hull steel from Stennis onward) not verified.",
+  "Mount Everest: no peer-reviewed or agency mass estimate. The mass is the editor's and researcher's cone model, and the base-camp elevation defining the base plane is unverified. The popular '350 trillion lb / 175 trillion kg' figure (The Cold Wire) is internally inconsistent and has no method.",
+  "Cumulus cloud: only the USGS single illustrative value (0.5 g/m^3, 1 km^3). No sourced range for liquid water content or cloud size.",
+  "Material strengths not quantified: baseball leather/yarn, bowling-ball coverstock/core, human soft tissue, blue whale skin/blubber, Al-Li 2195 (NASA gives only '30 percent stronger' than 2219), Alclad 2024-T3 and design-allowable minimums, A380 skin/GLARE, RHA yield (hardness only), the Eiffel Tower's own iron, SD70ACe underframe/couplers, MT-07 frame, F-150 body alloy and frame steel, school-bus frame rails, ESB steel frame, HSLA-100.",
+  "Unverified material values that rest on a single reading: cortical bone 205/135 MPa (Reilly & Burstein, unreadable to both verifiers), Titanic hull steel 193/417 MPa (sources unreadable), truck frame rail 110 ksi low bound, DC04 measured values (PMC table blocked), 2024-T3 shear 41 ksi.",
+  "Geometry assumptions feeding area estimates: Steinway height (1.0 m), Corolla height (56.5 in, dealer listings; KBB width label ambiguous), semi overall length (21.9 m) and height (13.5 ft), Type C bus length and height, Nimitz height (30 m), human box width and depth, blue whale girth (spheroid model).",
+  "Shot put: the 7.265-7.285 kg competition-implement range (high_si) is unconfirmed; the source PDF now returns 404.",
+  "Grip-area assumption: Nagel & Schunk 1997 split (0.52% / 0.94%) not independently checked; the 'Liu et al. 2018' critique has no URL and is unverified.",
+  "Drag: no sourced Cd for tumbling airliners, launch stacks, lattice towers or whale bodies (the 1.0-1.3 bluff-body bracket is an unsourced default). No steady-orientation streamlined Cd ranges (e.g., car nose-first, whale head-first). Space Shuttle broadside area not quantified.",
+  "Typical motorcycle (MT-07) is a definitional pick; no registration-weighted average motorcycle mass found.",
+  "Blue whale: masses above the 190-199 t weighed record are model estimates (Motani & Pyenson 2024, ~252-273 t for 33 m; Paul & Larramendi 2025, likely somewhat over 200 t). The 33.6 m record length's location and year are unverified.",
+  "SD70ACe: only the 408,000 lb configuration is sourced for this model. The 428,000 lb high bound is the related SD70AH(T4C); ballast options for SD70ACe orders are not sourced."
+ ]
+}

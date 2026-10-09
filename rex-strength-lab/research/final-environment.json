@@ -1,0 +1,1878 @@
+{
+ "facts": [
+  {
+   "key": "ground_loose_sand_ultimate_bearing_small_footing",
+   "category": "ground_loose_dry_sand",
+   "label": "Loose dry sand: ultimate bearing capacity, 0.1 m^2 square foot at the surface",
+   "status": "estimate",
+   "value_si": 37000,
+   "unit_si": "Pa",
+   "low_si": 22000,
+   "high_si": 73000,
+   "display": "~37 kPa (range ~22-73 kPa) at first failure; rises as the foot sinks",
+   "sources": [
+    {
+     "title": "USACE EM 1110-1-1905 Bearing Capacity of Soils (1992), Tables 3-1, 4-1, 4-2, 4-4",
+     "url": "https://www.tugraz.at/fileadmin/user_upload/Institute/IAG/Files/18_Bearing_Capacity_of_Soils-USACE.pdf"
+    }
+   ],
+   "notes": "My calculation, not a published value; both verifiers reproduced the arithmetic and table inputs. Terzaghi surface footing (Df=0), c'=0: q_ult = 0.5*gamma*B*N_gamma*zeta_gamma, with B = sqrt(0.1 m^2) = 0.316 m and the square-footing factor zeta_gamma = 0.8 (EM 1110-1-1905 Table 4-2). Inputs: gamma = 14-16 kN/m^3 and phi' = 28-34 deg, so Terzaghi N_gamma = 15.7-36.0 (Table 4-1). Central case phi' = 30 deg, gamma = 15 kN/m^3 (37.4 kPa). Low end: Vesic N_gamma = 16.72 at 28 deg with the 0.6 shape factor and gamma 14 (22.2 kPa). High end: 34 deg, gamma 16 (72.9 kPa). Editor caveat (from verifier): EM 1110-1-1905 states that local shear 'occurs in loose sands'; a textbook local-shear reduction (not in this EM, not verified here) could put first-failure capacity below the 22 kPa low end. For cohesionless soil q_ult grows roughly linearly with foot width B. Once the foot sinks, a surcharge term gamma*D*N_q is added: at 0.1 m embedment and 30 deg this is ~34 kPa with Terzaghi N_q = 22.46, ~43 kPa with Vesic N_q plus shape factor. A stomp sinks until capacity matches the load.",
+   "who_when": "Derived 2026-10 from USACE EM 1110-1-1905 (30 Oct 1992)"
+  },
+  {
+   "key": "ground_loose_sand_presumptive_allowable",
+   "category": "ground_loose_dry_sand",
+   "label": "Loose sand: presumptive ALLOWABLE bearing pressure (code/manual values)",
+   "status": "verified",
+   "value_si": 143640,
+   "unit_si": "Pa",
+   "low_si": 95760,
+   "high_si": 143640,
+   "display": "NAVFAC/USACE loose coarse-medium sand 3 ksf (143.6 kPa); IBC Class 4 sand 2,000 psf (95.8 kPa)",
+   "sources": [
+    {
+     "title": "USACE EM 1110-1-1905, Table 4-8 (data from Dept. of the Navy 1982, DM-7)",
+     "url": "https://www.tugraz.at/fileadmin/user_upload/Institute/IAG/Files/18_Bearing_Capacity_of_Soils-USACE.pdf"
+    },
+    {
+     "title": "IBC/CBC Table 1806.2 Presumptive Load-Bearing Values (reproduction)",
+     "url": "https://gocodebook.com/library/us/ca/ca-building-code/chapter-18-soils-and-foundations/section-1806-presumptive-load-bearing-values-of-soils"
+    }
+   ],
+   "notes": "ALLOWABLE values, not ultimate: they include a safety factor and settlement limits and assume ordinary embedded footings. EM 1110-1-1905: 'For footings of width B < 3 ft ... the allowable bearing pressures is B times 1/3 of qna'. A 0.1 m^2 square foot is 1.037 ft wide, factor ~0.346, giving ~50 kPa for loose sand. The IBC table does not separate sand by density. Units: 1 ksf = 47,880 Pa; 1 psf = 47.88 Pa. Both verifiers confirmed.",
+   "who_when": "Dept. of the Navy 1982 via USACE 1992; ICC IBC (current editions)"
+  },
+  {
+   "key": "ground_loose_sand_friction_angle",
+   "category": "ground_loose_dry_sand",
+   "label": "Loose sand: effective friction angle (shear strength tau = sigma' tan phi', c' = 0)",
+   "status": "verified",
+   "value_si": 0.5236,
+   "unit_si": "rad",
+   "low_si": 0.4887,
+   "high_si": 0.6109,
+   "display": "phi' ~ 30 deg (28-35 deg); tan phi' ~ 0.53-0.70",
+   "sources": [
+    {
+     "title": "USACE EM 1110-1-1905, Table 3-1b (Meyerhof 1974; Peck, Hanson & Thornburn 1974)",
+     "url": "https://www.tugraz.at/fileadmin/user_upload/Institute/IAG/Files/18_Bearing_Capacity_of_Soils-USACE.pdf"
+    }
+   ],
+   "notes": "Table 3-1b gives loose sand (Dr 20-40%, N60 4-10) as 29-30 deg (Peck, Hanson & Thornburn) or 30-35 deg (Meyerhof). Very loose is below 29-30 deg. Dry sand has no cohesion, so its shear strength depends on stress: tau = sigma' * tan(phi'); it cannot be given as a single Pa value. The 28 deg low bound is slightly below the tabulated loose band, covering very loose sand.",
+   "who_when": "USACE 1992 compiling Meyerhof 1974 and PHT 1974"
+  },
+  {
+   "key": "ground_loose_sand_claw_traction_coefficient",
+   "category": "ground_loose_dry_sand",
+   "label": "Loose dry sand: effective traction coefficient for a clawed, scaly foot",
+   "status": "estimate",
+   "value_si": 0.58,
+   "unit_si": "1",
+   "low_si": 0.5,
+   "high_si": 0.7,
+   "display": "~0.58 (0.5-0.7)",
+   "sources": [
+    {
+     "title": "Basis: friction angle from USACE EM 1110-1-1905 Table 3-1b",
+     "url": "https://www.tugraz.at/fileadmin/user_upload/Institute/IAG/Files/18_Bearing_Capacity_of_Soils-USACE.pdf"
+    },
+    {
+     "title": "Concept only: Dai, Gorb & Schwarz (2002) Roughness-dependent friction force of the tarsal claw system in the beetle Pachnoda marginata, J Exp Biol 205:2479-2488",
+     "url": "https://doi.org/10.1242/jeb.205.16.2479"
+    }
+   ],
+   "notes": "Estimate; no measured keratin-claw-on-sand data found. Reasoning: claws penetrate and interlock with the sand, so slip happens by shearing the sand under the foot rather than by keratin sliding on grains; the limit is then about mu_eff ~ tan(phi') = 0.53-0.62 for phi' = 28-32 deg. Dai et al. (2002, beetle claws) report that when surface roughness/particle size is much larger than the claw tip the claw interlocks mechanically, and when it is comparable or smaller, contact friction governs; this supports the concept only, not the number. Passive resistance in front of buried toes and claws can add somewhat. A very hard push excavates the sand instead of moving the dinosaur.",
+   "who_when": "Estimate, 2026-10"
+  },
+  {
+   "key": "ground_dense_sand_gravel_ultimate_bearing_small_footing",
+   "category": "ground_dense_sand_gravel",
+   "label": "Dense sand / gravel: ultimate bearing capacity, 0.1 m^2 square foot at the surface",
+   "status": "estimate",
+   "value_si": 241000,
+   "unit_si": "Pa",
+   "low_si": 118000,
+   "high_si": 650000,
+   "display": "~240 kPa (range ~120-650 kPa)",
+   "sources": [
+    {
+     "title": "USACE EM 1110-1-1905, Tables 3-1, 4-1, 4-2",
+     "url": "https://www.tugraz.at/fileadmin/user_upload/Institute/IAG/Files/18_Bearing_Capacity_of_Soils-USACE.pdf"
+    }
+   ],
+   "notes": "My calculation; both verifiers reproduced it. Terzaghi surface square footing: q_ult = 0.5*gamma*B*N_gamma*0.8 with B = 0.316 m. Low: phi' = 36 deg, gamma = 18 kN/m^3 (N_gamma = 52.0) -> 118 kPa. Central: phi' = 40 deg, gamma = 19 kN/m^3 (N_gamma = 100.4) -> 241 kPa. High: very dense gravel, phi' = 44 deg, gamma = 20 kN/m^3 (N_gamma = 257) -> 650 kPa. Editor caveat (from verifier): high-phi N_gamma values are known to overestimate capacity for small footings (scale effect), so the high end is optimistic. The result is very sensitive to phi' and grows linearly with foot width. Any embedment adds the gamma*D*N_q term, which is large (N_q = 81.27 at 40 deg).",
+   "who_when": "Derived 2026-10 from USACE 1992"
+  },
+  {
+   "key": "ground_dense_sand_gravel_presumptive_allowable",
+   "category": "ground_dense_sand_gravel",
+   "label": "Dense sand / gravel: presumptive ALLOWABLE bearing pressure",
+   "status": "verified",
+   "value_si": 383040,
+   "unit_si": "Pa",
+   "low_si": 143640,
+   "high_si": 670320,
+   "display": "NAVFAC/USACE: very compact coarse-medium sand 8 ksf (383 kPa); very compact gravel 14 ksf (670 kPa). IBC Class 3 sandy gravel 3,000 psf (143.6 kPa)",
+   "sources": [
+    {
+     "title": "USACE EM 1110-1-1905, Table 4-8 (Dept. of the Navy 1982)",
+     "url": "https://www.tugraz.at/fileadmin/user_upload/Institute/IAG/Files/18_Bearing_Capacity_of_Soils-USACE.pdf"
+    },
+    {
+     "title": "IBC/CBC Table 1806.2 (reproduction)",
+     "url": "https://gocodebook.com/library/us/ca/ca-building-code/chapter-18-soils-and-foundations/section-1806-presumptive-load-bearing-values-of-soils"
+    }
+   ],
+   "notes": "ALLOWABLE values. NAVFAC/USACE gravel entries: 6 ksf loose, 10 ksf medium-compact, 14 ksf very compact. Coarse-medium sand: 3, 6 and 8 ksf. For footings under 3 ft wide, multiply by B(ft)/3, about 0.35 for a 0.1 m^2 foot.",
+   "who_when": "Dept. of the Navy 1982 via USACE 1992; ICC IBC"
+  },
+  {
+   "key": "ground_dense_sand_gravel_friction_angle",
+   "category": "ground_dense_sand_gravel",
+   "label": "Dense sand / gravel: effective friction angle (tau = sigma' tan phi')",
+   "status": "verified",
+   "value_si": 0.6981,
+   "unit_si": "rad",
+   "low_si": 0.6283,
+   "high_si": 0.7854,
+   "display": "phi' ~ 40 deg (36-45 deg); tan phi' ~ 0.73-1.0",
+   "sources": [
+    {
+     "title": "USACE EM 1110-1-1905, Table 3-1a (Schmertmann 1978) and 3-1b",
+     "url": "https://www.tugraz.at/fileadmin/user_upload/Institute/IAG/Files/18_Bearing_Capacity_of_Soils-USACE.pdf"
+    }
+   ],
+   "notes": "Dense sand (Dr 60-80%, N60 30-50) is 38-41 deg (Meyerhof 1974), 36-41 deg (Peck, Hanson & Thornburn) or 40-45 deg (Meyerhof cone correlation). Very dense is above 41 deg. Coarse well-graded material at Dr 80-100% reaches 44-46 deg (Table 3-1a). c' = 0.",
+   "who_when": "USACE 1992"
+  },
+  {
+   "key": "ground_dense_sand_gravel_claw_traction_coefficient",
+   "category": "ground_dense_sand_gravel",
+   "label": "Dense sand / gravel: effective traction coefficient for a clawed foot",
+   "status": "estimate",
+   "value_si": 0.84,
+   "unit_si": "1",
+   "low_si": 0.7,
+   "high_si": 1,
+   "display": "~0.84 (0.7-1.0)",
+   "sources": [
+    {
+     "title": "Basis: friction angles from USACE EM 1110-1-1905 Table 3-1",
+     "url": "https://www.tugraz.at/fileadmin/user_upload/Institute/IAG/Files/18_Bearing_Capacity_of_Soils-USACE.pdf"
+    }
+   ],
+   "notes": "Estimate; no measured data. Same reasoning as loose sand: claws engage the granular layer, so the limit is about tan(phi') = 0.73-1.0 for 36-45 deg. On a hard, unpenetrated gravel surface, keratin-on-stone friction would apply instead (see granite).",
+   "who_when": "Estimate, 2026-10"
+  },
+  {
+   "key": "ground_soft_clay_undrained_shear_strength",
+   "category": "ground_soft_clay",
+   "label": "Soft clay: undrained shear strength s_u",
+   "status": "verified",
+   "value_si": 20000,
+   "unit_si": "Pa",
+   "low_si": 12500,
+   "high_si": 40000,
+   "display": "s_u ~ 12.5-25 kPa (US consistency scale 'soft') or 20-40 kPa (BS 5930 'soft' per BGS table; ISO 14688-2 'low')",
+   "sources": [
+    {
+     "title": "BGS OR/15/065 Appendix 2: strength and consistency terms (BS 5930; BGS cites BSI 2015)",
+     "url": "https://earthwise.bgs.ac.uk/index.php/OR/15/065_Appendix_2_-_Strength,_consistency_and_density_classification_terms_and_descriptions"
+    },
+    {
+     "title": "Geocentrix: ISO 14688-2 undrained shear strength classes",
+     "url": "https://www.geocentrix.co.uk/help/content/references/iso14688/undrained_shear_strength_of_fine_soils.htm"
+    },
+    {
+     "title": "Groundhog docs: BS 5930:2015 and 'ASTM D-2488' strength bands",
+     "url": "https://groundhog.readthedocs.io/en/dev/site_investigation/categories.html"
+    }
+   ],
+   "notes": "BGS lists BS 5930 'Soft' as UCS 0.04-0.08 MPa, i.e. s_u = UCS/2 = 20-40 kPa. Editor fix: the researcher labelled this 'BS 5930:1999'; the BGS page cites BSI 2015, so the edition label was removed. ISO 14688-2 and BS 5930:2015 call 20-40 kPa 'low'. The US-style scale (labelled ASTM D-2488 in the groundhog docs, a secondary software-library source) puts 'soft' at 12.5-25 kPa. The central 20 kPa is a choice. Use undrained strength for rapid stomps. Very soft clay is below 12.5-20 kPa.",
+   "who_when": "BS 5930 / ISO 14688-2 / US consistency scale"
+  },
+  {
+   "key": "ground_soft_clay_ultimate_bearing_small_footing",
+   "category": "ground_soft_clay",
+   "label": "Soft clay: ultimate (undrained) bearing capacity, square foot at the surface",
+   "status": "estimate",
+   "value_si": 128600,
+   "unit_si": "Pa",
+   "low_si": 77000,
+   "high_si": 296000,
+   "display": "q_ult ~ 6.2-7.4 x s_u ~ 129 kPa (77-296 kPa)",
+   "sources": [
+    {
+     "title": "USACE EM 1110-1-1905 Tables 4-1, 4-2, 4-4 (Nc = 5.14 Prandtl / 5.7 Terzaghi; Terzaghi square factor 1.3)",
+     "url": "https://www.tugraz.at/fileadmin/user_upload/Institute/IAG/Files/18_Bearing_Capacity_of_Soils-USACE.pdf"
+    },
+    {
+     "title": "USACE EM 1110-1-2908 Rock Foundations, Table 6-1 (Sowers 1979 shape corrections: square 1.25, circular 1.2)",
+     "url": "https://www.cedengineering.com/userfiles/Rock%20Foundations-R1.pdf"
+    }
+   ],
+   "notes": "phi = 0 analysis: q_ult = N_c * shape * s_u (+ gamma*D). The factor ranges from 5.14 x 1.2 = 6.17 to Terzaghi's 5.7 x 1.3 = 7.41. Central uses 5.14 x 1.25 = 6.43 with s_u = 20 kPa. Undrained capacity does NOT depend on foot size, unlike sand. Low: 6.17 x 12.5 kPa. High: 7.41 x 40 kPa. The Sowers shape factors come from the rock-foundation manual and are borrowed here (general values).",
+   "who_when": "Derived 2026-10"
+  },
+  {
+   "key": "ground_soft_clay_presumptive_allowable",
+   "category": "ground_soft_clay",
+   "label": "Soft clay: presumptive ALLOWABLE bearing pressure",
+   "status": "verified",
+   "value_si": 47880,
+   "unit_si": "Pa",
+   "low_si": 47880,
+   "high_si": 71820,
+   "display": "NAVFAC/USACE soft inorganic clay 1 ksf (47.9 kPa); IBC Class 5 clay/silt 1,500 psf (71.8 kPa, any consistency)",
+   "sources": [
+    {
+     "title": "USACE EM 1110-1-1905 Table 4-8",
+     "url": "https://www.tugraz.at/fileadmin/user_upload/Institute/IAG/Files/18_Bearing_Capacity_of_Soils-USACE.pdf"
+    },
+    {
+     "title": "IBC/CBC Section 1806.2 and Table 1806.2 (reproduction)",
+     "url": "https://gocodebook.com/library/us/ca/ca-building-code/chapter-18-soils-and-foundations/section-1806-presumptive-load-bearing-values-of-soils"
+    }
+   ],
+   "notes": "ALLOWABLE values. The IBC table does not separate clay by consistency. Editor check (one verifier could not confirm the exclusion wording): IBC 1806.2 states 'Mud, organic silt and organic clays (OL, OH), peat (Pt) and undocumented fill shall not be assumed to have a presumptive load-bearing capacity unless data to substantiate the use of such a value are submitted.'",
+   "who_when": "Dept. of the Navy 1982 via USACE 1992; ICC IBC"
+  },
+  {
+   "key": "ground_soft_clay_traction",
+   "category": "ground_soft_clay",
+   "label": "Soft clay: traction for a clawed foot",
+   "status": "estimate",
+   "value_si": 0.25,
+   "unit_si": "1",
+   "low_si": 0.1,
+   "high_si": 0.4,
+   "display": "effective mu ~0.1-0.4; or traction cap ~ s_u x contact area (1.25-4 kN per 0.1 m^2 foot)",
+   "sources": [
+    {
+     "title": "Basis: s_u bands (BGS / ISO 14688-2)",
+     "url": "https://earthwise.bgs.ac.uk/index.php/OR/15/065_Appendix_2_-_Strength,_consistency_and_density_classification_terms_and_descriptions"
+    }
+   ],
+   "notes": "Estimate; no measured data. Under rapid (undrained) loading, the horizontal force the ground can resist at the sole is about s_u x A and does NOT grow with the normal load. For s_u = 12.5-40 kPa and A = 0.1 m^2 that is 1.25-4 kN, plus passive resistance on buried claws and toes. The engine should cap traction at min(mu*N, s_u*A + passive). The mu range is unsourced and covers a wet, smeared clay surface.",
+   "who_when": "Estimate, 2026-10"
+  },
+  {
+   "key": "ground_stiff_clay_undrained_shear_strength",
+   "category": "ground_stiff_clay",
+   "label": "Stiff clay: undrained shear strength s_u",
+   "status": "verified",
+   "value_si": 75000,
+   "unit_si": "Pa",
+   "low_si": 50000,
+   "high_si": 150000,
+   "display": "s_u ~ 50-100 kPa (US scale 'stiff') or 75-150 kPa (BS 5930 'stiff' per BGS table; ISO 'high')",
+   "sources": [
+    {
+     "title": "BGS OR/15/065 Appendix 2 (BS 5930: Stiff = UCS 0.15-0.3 MPa)",
+     "url": "https://earthwise.bgs.ac.uk/index.php/OR/15/065_Appendix_2_-_Strength,_consistency_and_density_classification_terms_and_descriptions"
+    },
+    {
+     "title": "Geocentrix: ISO 14688-2",
+     "url": "https://www.geocentrix.co.uk/help/content/references/iso14688/undrained_shear_strength_of_fine_soils.htm"
+    },
+    {
+     "title": "Groundhog docs: strength bands",
+     "url": "https://groundhog.readthedocs.io/en/dev/site_investigation/categories.html"
+    }
+   ],
+   "notes": "The central 75 kPa (where the two schemes meet) is a choice. 'Very stiff' is 100-200 kPa (US scale) or 150-300 kPa (BS, UCS 0.3-0.6 MPa).",
+   "who_when": "BS 5930 / ISO 14688-2 / US consistency scale"
+  },
+  {
+   "key": "ground_stiff_clay_ultimate_bearing_small_footing",
+   "category": "ground_stiff_clay",
+   "label": "Stiff clay: ultimate (undrained) bearing capacity, square foot at the surface",
+   "status": "estimate",
+   "value_si": 482000,
+   "unit_si": "Pa",
+   "low_si": 308000,
+   "high_si": 1110000,
+   "display": "~6.4 x s_u ~ 480 kPa (310 kPa-1.1 MPa)",
+   "sources": [
+    {
+     "title": "USACE EM 1110-1-1905 Tables 4-1, 4-2, 4-4",
+     "url": "https://www.tugraz.at/fileadmin/user_upload/Institute/IAG/Files/18_Bearing_Capacity_of_Soils-USACE.pdf"
+    },
+    {
+     "title": "USACE EM 1110-1-2908 Table 6-1",
+     "url": "https://www.cedengineering.com/userfiles/Rock%20Foundations-R1.pdf"
+    }
+   ],
+   "notes": "Same method as soft clay: 6.43 x 75 kPa central, 6.17 x 50 kPa low, 7.41 x 150 kPa high. Fissured stiff clays can be weaker in the field.",
+   "who_when": "Derived 2026-10"
+  },
+  {
+   "key": "ground_stiff_clay_presumptive_allowable",
+   "category": "ground_stiff_clay",
+   "label": "Stiff clay: presumptive ALLOWABLE bearing pressure",
+   "status": "verified",
+   "value_si": 191520,
+   "unit_si": "Pa",
+   "low_si": 71820,
+   "high_si": 383040,
+   "display": "NAVFAC/USACE medium-to-stiff clay 4 ksf (191.5 kPa); very stiff-to-hard 8 ksf (383 kPa); IBC Class 5 1,500 psf (71.8 kPa)",
+   "sources": [
+    {
+     "title": "USACE EM 1110-1-1905 Table 4-8",
+     "url": "https://www.tugraz.at/fileadmin/user_upload/Institute/IAG/Files/18_Bearing_Capacity_of_Soils-USACE.pdf"
+    },
+    {
+     "title": "IBC/CBC Table 1806.2",
+     "url": "https://gocodebook.com/library/us/ca/ca-building-code/chapter-18-soils-and-foundations/section-1806-presumptive-load-bearing-values-of-soils"
+    }
+   ],
+   "notes": "ALLOWABLE values.",
+   "who_when": "Dept. of the Navy 1982 via USACE 1992; ICC IBC"
+  },
+  {
+   "key": "ground_stiff_clay_traction",
+   "category": "ground_stiff_clay",
+   "label": "Stiff clay: effective traction coefficient for a clawed foot",
+   "status": "estimate",
+   "value_si": 0.45,
+   "unit_si": "1",
+   "low_si": 0.3,
+   "high_si": 0.6,
+   "display": "~0.3-0.6, capped near s_u x A (5-15 kN per 0.1 m^2) plus claw passive resistance",
+   "sources": [
+    {
+     "title": "Basis: s_u bands (BGS)",
+     "url": "https://earthwise.bgs.ac.uk/index.php/OR/15/065_Appendix_2_-_Strength,_consistency_and_density_classification_terms_and_descriptions"
+    }
+   ],
+   "notes": "Estimate; no measured data. Same undrained traction-cap logic as soft clay (s_u x A = 5-15 kN for s_u 50-150 kPa).",
+   "who_when": "Estimate, 2026-10"
+  },
+  {
+   "key": "ground_asphalt_allowable_contact_pressure_aviation",
+   "category": "ground_asphalt",
+   "label": "Rated airfield pavement (flexible or rigid): allowable tyre-pressure categories (ICAO/FAA)",
+   "status": "verified",
+   "value_si": 1750000,
+   "unit_si": "Pa",
+   "low_si": 500000,
+   "display": "W unlimited; X <= 1.75 MPa (254 psi); Y <= 1.25 MPa (181 psi); Z <= 0.50 MPa (73 psi)",
+   "sources": [
+    {
+     "title": "Fiji CAA AIC 04/25 (ICAO ACR-PCR tyre pressure codes)",
+     "url": "https://caaf.org.fj/wp-content/uploads/2025/03/AIC-04-25-CHANGES-TO-PAVEMENT-STRENGTH-CLASSIFICATION-SYSTEM.pdf"
+    },
+    {
+     "title": "Iowa DOT PCR report 2024 (FAA AC 150/5335-5D codes)",
+     "url": "https://ia.iowadot.gov/aviation/pavementmanagement/airport-details/docs/pcr-reports/fort-dodge-pcr-report-2024.pdf"
+    }
+   ],
+   "notes": "Editor fix: label broadened because both verifiers note these codes apply to rated airfield pavements generally (rigid R and flexible F), not only asphalt. These are serviceability limits for repeated aircraft tyre loads, not the ultimate capacity under a single static punch. Ordinary roads are not rated this way. Code W has no limit, so no high_si. value_si is the X limit.",
+   "who_when": "ICAO ACR-PCR / FAA AC 150/5335-5D"
+  },
+  {
+   "key": "ground_asphalt_ultimate_bearing_small_punch",
+   "category": "ground_asphalt",
+   "label": "Asphalt pavement on compacted base: ultimate bearing under a 0.1 m^2 foot",
+   "status": "estimate",
+   "value_si": 2500000,
+   "unit_si": "Pa",
+   "low_si": 1000000,
+   "high_si": 5000000,
+   "display": "~1-5 MPa (order-of-magnitude estimate)",
+   "sources": [
+    {
+     "title": "Context only: tyre-pressure categories (Fiji CAA AIC 04/25)",
+     "url": "https://caaf.org.fj/wp-content/uploads/2025/03/AIC-04-25-CHANGES-TO-PAVEMENT-STRENGTH-CLASSIFICATION-SYSTEM.pdf"
+    }
+   ],
+   "notes": "Order-of-magnitude estimate only; no published ultimate static punch capacity found. Reasoning: high-category airfield pavements carry tyre pressures up to 1.75 MPa in repeated service, so the single-load ultimate is plausibly higher. The asphalt and base spread the load onto the subgrade, which ultimately governs. Asphalt is viscoelastic: much weaker when hot and under sustained load (rutting) than when cold and under rapid load. Very uncertain.",
+   "who_when": "Estimate, 2026-10"
+  },
+  {
+   "key": "ground_asphalt_claw_traction_coefficient",
+   "category": "ground_asphalt",
+   "label": "Asphalt: friction coefficient, keratin scales/claws",
+   "status": "estimate",
+   "value_si": 0.7,
+   "unit_si": "1",
+   "low_si": 0.5,
+   "high_si": 0.9,
+   "display": "~0.7 (0.5-0.9) dry",
+   "sources": [
+    {
+     "title": "Concept only: Dai, Gorb & Schwarz (2002) Roughness-dependent friction force of the tarsal claw system, J Exp Biol 205:2479-2488 (no keratin-on-asphalt numbers)",
+     "url": "https://doi.org/10.1242/jeb.205.16.2479"
+    }
+   ],
+   "notes": "Estimate; no measured data. Editor fix: the researcher's placeholder citation (xkcd What If #1) was removed because both verifiers flagged it as unrelated; it is replaced by a source that supports only the mechanism. Dai et al. report claws interlock mechanically when surface roughness is much larger than the claw tip diameter, and contact friction governs when roughness is comparable or smaller. Reasoning: dry asphalt's coarse macrotexture lets claw tips catch on aggregate, giving roughly rubber-like grip. Wet surfaces lower. Under very high force claws plough the binder and the limit becomes asphalt shear failure, for which no value was found.",
+   "who_when": "Estimate, 2026-10"
+  },
+  {
+   "key": "ground_concrete_slab_fc",
+   "category": "ground_concrete_slab",
+   "label": "Concrete slab-on-grade: specified (minimum) compressive strength f'c",
+   "status": "verified",
+   "value_si": 24130000,
+   "unit_si": "Pa",
+   "low_si": 17240000,
+   "high_si": 27580000,
+   "display": "Minimums: 17.2 MPa (2,500 psi) interior slabs; 20.7-24.1 MPa (3,000-3,500 psi) garage slabs in moderate/severe weathering; 27.6 MPa (4,000 psi) steel-troweled garage option",
+   "sources": [
+    {
+     "title": "Minnesota Rules 1309.0402 (IRC Table R402.2 as amended), 2019 version",
+     "url": "https://www.revisor.mn.gov/rules/1309.0402/version/2019-11-13%2011:38:17+00:00"
+    }
+   ],
+   "notes": "Residential MINIMUM specified 28-day strengths (IRC Table R402.2 as adopted in Minnesota, 2019 version; the current text was not checked). Editor note (from verifier): value_si 24.13 MPa is the severe-weathering garage minimum, not a measured 'typical' slab; in-place strength usually exceeds the specified minimum. Footnote f allows reduced air on steel-troweled garage floors only if f'c >= 4,000 psi. Industrial floors commonly specify more, but no industrial value was verified, so high_si stops at 4,000 psi. 1 psi = 6,894.757 Pa.",
+   "who_when": "IRC R402.2 (MN-amended, 2019)"
+  },
+  {
+   "key": "ground_concrete_bearing_strength_aci",
+   "category": "ground_concrete_slab",
+   "label": "Concrete local bearing (crushing) strength per ACI 318 (nominal)",
+   "status": "verified",
+   "value_si": 41000000,
+   "unit_si": "Pa",
+   "low_si": 14650000,
+   "high_si": 46900000,
+   "display": "B_n = 0.85 f'c A1 sqrt(A2/A1), sqrt(A2/A1) <= 2 (max 1.7 f'c); design phi = 0.65",
+   "sources": [
+    {
+     "title": "University lecture on footing design citing ACI 318 (former section 10.14) bearing check, with worked example",
+     "url": "https://www.uomus.edu.iq/img/lectures21/MUCLecture_2022_8556371.pdf"
+    }
+   ],
+   "notes": "Verifiers disagreed on the cap. Editor settled it by extracting the lecture text: its general paragraph says 'The ratio A2/A1 < 2', but its worked example states 'ACI Code Section 10.14 indicates that the bearing strength should be at least 0.85 phi f'c A1 sqrt(A2/A1) with a limit of sqrt(A2/A1) <= 2', computes sqrt(A2/A1) = 6.28 > 2, 'Take sqrt(A2/A1) = 2', and uses the factor 2. So the earlier sentence is a slip and the cap is sqrt(A2/A1) <= 2 (max 1.7 f'c). Caveat: this is a secondary source and the ACI code text itself was not opened. A1 is the loaded area and A2 the geometrically similar supporting area; a foot on a large slab gets the full factor 2. Value: 1.7 x 24.13 MPa = 41.0 MPa (nominal, before phi). Low: 0.85 x 17.24 MPa (no confinement benefit). High: 1.7 x 27.58 MPa. Real crushing under a confined punch can be higher. In practice a slab-on-grade punches through or cracks in flexure long before the surface crushes (see next entries).",
+   "who_when": "ACI 318 bearing provisions (via lecture)"
+  },
+  {
+   "key": "ground_concrete_punching_shear_stress_aci",
+   "category": "ground_concrete_slab",
+   "label": "Concrete two-way (punching) shear stress capacity, ACI 318 (reinforced slabs)",
+   "status": "verified",
+   "value_si": 1620000,
+   "unit_si": "Pa",
+   "low_si": 1370000,
+   "high_si": 1730000,
+   "display": "v_c = 4 lambda sqrt(f'c) psi = 0.33 lambda sqrt(f'c) MPa (smallest of three ACI expressions); critical perimeter b0 at d/2 from the loaded area",
+   "sources": [
+    {
+     "title": "StructurePoint: GammaF in two-way slab punching shear (ACI 318-14, 22.6.4.1)",
+     "url": "https://structurepoint.org/publication/pdf/The%20Role%20of%20GammaF%20in%20Two-way%20Slab%20Punching%20Shear%20Calculations%20in%20ACI%20318.pdf"
+    },
+    {
+     "title": "University lecture (SI form Vc = 0.33 sqrt(f'c) b0 d for punching)",
+     "url": "https://www.uomus.edu.iq/img/lectures21/MUCLecture_2022_8556371.pdf"
+    }
+   ],
+   "notes": "v_c = min(4, 2 + 4/beta, alpha_s*d/b0 + 2) x lambda*sqrt(f'c) psi (ACI 318-14). Values for f'c = 17.24-27.58 MPa (central 24.13 MPa). Currency: ACI 318-19 adds a size-effect factor lambda_s to two-way shear; both verifiers recall it equals 1 for d up to about 10 in (250 mm), which would leave slab-scale values unchanged, but this was NOT verified. This is for structural two-way slabs; plain slabs-on-ground are designed differently (see next entry).",
+   "who_when": "ACI 318-14 two-way shear provisions"
+  },
+  {
+   "key": "ground_concrete_slab_on_grade_punch_through_estimate",
+   "category": "ground_concrete_slab",
+   "label": "Slab-on-grade: average foot pressure to punch through (0.1 m^2 foot)",
+   "status": "estimate",
+   "value_si": 2500000,
+   "unit_si": "Pa",
+   "low_si": 1500000,
+   "high_si": 7200000,
+   "display": "~2.5 MPa for a 100 mm residential slab (~1.5 MPa if plain-concrete shear limits apply) up to ~7.2 MPa for a 200 mm, 27.6 MPa slab",
+   "sources": [
+    {
+     "title": "Formula basis: ACI 318 two-way shear (StructurePoint)",
+     "url": "https://structurepoint.org/publication/pdf/The%20Role%20of%20GammaF%20in%20Two-way%20Slab%20Punching%20Shear%20Calculations%20in%20ACI%20318.pdf"
+    },
+    {
+     "title": "f'c range: Minnesota Rules 1309.0402 (IRC R402.2)",
+     "url": "https://www.revisor.mn.gov/rules/1309.0402/version/2019-11-13%2011:38:17+00:00"
+    }
+   ],
+   "notes": "Calculation, not a published value: V = k*sqrt(f'c)*b0*h, b0 = 4(B + h), B = 0.316 m, pressure = V/0.1 m^2. Verifiers split (arithmetic confirmed vs. method questioned); editor revised the range rather than the method. Central: 100 mm slab, f'c 20.68 MPa, k = 4 sqrt(psi) (0.33 sqrt(MPa)) -> V ~ 251 kN, 2.5 MPa (17.24 MPa gives 230 kN, 2.3 MPa). Low (new): the same 100 mm slab at 17.24 MPa with k = 2.66 sqrt(psi), the ACI plain-concrete two-way limit as both verifiers recall it (NOT verified) -> 153 kN, 1.5 MPa; this also roughly covers the overstatement from using full thickness h as effective depth d. High (revised): the researcher's 8 MPa used f'c = 34.5 MPa, above the verified f'c range, so it is recomputed at 27.58 MPa: 200 mm slab -> 720 kN, 7.2 MPa (150 mm -> 488 kN, 4.9 MPa). Caveats: ACI 318 is a structural-slab code and slabs-on-ground are normally designed to other guidance (ACI 360, not checked); subgrade reaction inside the perimeter raises capacity; flexural cracking may come first; after cracking the slab acts as broken plates on the subgrade.",
+   "who_when": "Estimate, 2026-10 (revised by editor)"
+  },
+  {
+   "key": "ground_concrete_claw_traction_coefficient",
+   "category": "ground_concrete_slab",
+   "label": "Concrete: friction coefficient, keratin scales/claws",
+   "status": "estimate",
+   "value_si": 0.6,
+   "unit_si": "1",
+   "low_si": 0.4,
+   "high_si": 0.8,
+   "display": "~0.6 (0.4 smooth/troweled to 0.8 broom-finished)",
+   "sources": [
+    {
+     "title": "Context only: IBC Table 1806.2 friction coefficients (concrete footing on soil/rock, not keratin)",
+     "url": "https://gocodebook.com/library/us/ca/ca-building-code/chapter-18-soils-and-foundations/section-1806-presumptive-load-bearing-values-of-soils"
+    },
+    {
+     "title": "Concept only: Dai, Gorb & Schwarz (2002), claw interlocking vs surface roughness",
+     "url": "https://doi.org/10.1242/jeb.205.16.2479"
+    }
+   ],
+   "notes": "Estimate; no measured data. Keratin cannot penetrate concrete, so this is surface friction plus claw tips catching on texture. Steel-troweled slabs at the low end, broom-finished at the high end.",
+   "who_when": "Estimate, 2026-10"
+  },
+  {
+   "key": "ground_granite_ucs",
+   "category": "ground_granite_bedrock",
+   "label": "Intact granite: uniaxial compressive strength (UCS)",
+   "status": "verified",
+   "value_si": 200000000,
+   "unit_si": "Pa",
+   "low_si": 100000000,
+   "high_si": 300000000,
+   "display": "~100-250+ MPa; granite is listed among ISRM/Hoek R6 'extremely strong' (>250 MPa) examples",
+   "sources": [
+    {
+     "title": "Hoek, Practical Rock Engineering, Ch. 11, Table 2 (field estimates of UCS)",
+     "url": "https://www.rocscience.com/assets/resources/learning/hoek/Practical-Rock-Engineering-Chapter-11-Rock-Mass-Properties.pdf"
+    },
+    {
+     "title": "BGS OR/15/065 Appendix 2 (rock strength classes)",
+     "url": "https://earthwise.bgs.ac.uk/index.php/OR/15/065_Appendix_2_-_Strength,_consistency_and_density_classification_terms_and_descriptions"
+    },
+    {
+     "title": "Wikipedia: Granite ('compressive strength usually lies above 200 MPa')",
+     "url": "https://en.wikipedia.org/wiki/Granite"
+    }
+   ],
+   "notes": "Hoek Table 2: R5 Very strong 100-250 MPa (examples include granodiorite and gneiss); R6 Extremely strong >250 MPa (examples: 'Fresh basalt, chert, diabase, gneiss, granite, quartzite'). Editor fix: 'fresh' modifies basalt in Hoek's list, not granite, so the display no longer says 'fresh granite'. Hoek gives m_i = 32 +/- 3 for granite. Wikipedia says granite UCS usually exceeds 200 MPa, so the 200 MPa central value is conservative. Weathered granite is far weaker. The 100 MPa low and 300 MPa high are choices; 300 MPa is not a hard ceiling.",
+   "who_when": "Hoek (Practical Rock Engineering); Brown 1981 grades"
+  },
+  {
+   "key": "ground_granite_bearing_confinement_factor",
+   "category": "ground_granite_bedrock",
+   "label": "Rock under a small punch: ultimate bearing / UCS (confinement factor)",
+   "status": "estimate",
+   "value_si": 8.5,
+   "unit_si": "1",
+   "low_si": 1,
+   "high_si": 13.8,
+   "display": "q_ult ~ (N_phi + 1) x UCS (strip) x 1.25 (square); N_phi = tan^2(45 + phi/2) -> ~8.5-14 for intact rock; lower bound ~1 x UCS",
+   "sources": [
+    {
+     "title": "USACE EM 1110-1-2908 Rock Foundations (1994), Eqs 6-2, 6-4, 6-5, 6-7 and Table 6-1",
+     "url": "https://www.cedengineering.com/userfiles/Rock%20Foundations-R1.pdf"
+    }
+   ],
+   "notes": "Derived from EM 1110-1-2908 equations (both verifiers confirmed the equations and algebra): local-shear q_ult = c*N_c (+ 0.5*gamma*B*N_gamma), N_c = 2*N_phi^0.5*(N_phi + 1). Intact-rock lower-bound cohesion c = q_u/(2*tan(45 + phi/2)) (Eq 6-7a, s = 1). Together: q_ult ~ q_u*(N_phi + 1) for a strip, x1.25 for a square (Sowers). For an ASSUMED intact friction angle phi = 45-55 deg (unsourced), N_phi = 5.83-10.06, factor 6.8-11.1 (strip) or 8.5-13.8 (square). Poorly confined, jointed rock columns fail near unconfined strength (Eq 6-5: 2c*tan(45 + phi/2) = q_u), so the factor drops toward 1. The q_ult = q_u(N_phi + 1) attribution to Goodman (1989) was not checked.",
+   "who_when": "Estimate built on USACE EM 1110-1-2908 (30 Nov 1994)"
+  },
+  {
+   "key": "ground_granite_ultimate_bearing_small_punch",
+   "category": "ground_granite_bedrock",
+   "label": "Intact granite: ultimate bearing under a 0.1 m^2 foot",
+   "status": "estimate",
+   "value_si": 1700000000,
+   "unit_si": "Pa",
+   "low_si": 100000000,
+   "high_si": 4100000000,
+   "display": "~1.7 GPa (0.1-4 GPa)",
+   "sources": [
+    {
+     "title": "USACE EM 1110-1-2908",
+     "url": "https://www.cedengineering.com/userfiles/Rock%20Foundations-R1.pdf"
+    },
+    {
+     "title": "Hoek Ch. 11",
+     "url": "https://www.rocscience.com/assets/resources/learning/hoek/Practical-Rock-Engineering-Chapter-11-Rock-Mass-Properties.pdf"
+    }
+   ],
+   "notes": "UCS x confinement factor: 200 MPa x 8.5 = 1.7 GPa. Low: jointed or weathered rock at about its UCS (100 MPa x 1). High: 300 MPa x 13.8 = 4.14 GPa. Uncertainty is dominated by the assumed friction angle and by jointing; real outcrops are jointed and joints often govern.",
+   "who_when": "Estimate, 2026-10"
+  },
+  {
+   "key": "ground_granite_presumptive_allowable",
+   "category": "ground_granite_bedrock",
+   "label": "Crystalline bedrock (granite): presumptive ALLOWABLE bearing",
+   "status": "verified",
+   "value_si": 7660800,
+   "unit_si": "Pa",
+   "low_si": 574560,
+   "high_si": 7660800,
+   "display": "NAVFAC/USACE massive crystalline rock, hard sound: 160 ksf (7.66 MPa); IBC Class 1 crystalline bedrock 12,000 psf (575 kPa)",
+   "sources": [
+    {
+     "title": "USACE EM 1110-1-1905 Table 4-8",
+     "url": "https://www.tugraz.at/fileadmin/user_upload/Institute/IAG/Files/18_Bearing_Capacity_of_Soils-USACE.pdf"
+    },
+    {
+     "title": "IBC/CBC Table 1806.2",
+     "url": "https://gocodebook.com/library/us/ca/ca-building-code/chapter-18-soils-and-foundations/section-1806-presumptive-load-bearing-values-of-soils"
+    }
+   ],
+   "notes": "ALLOWABLE values. These sit roughly 200-3,000 times below the estimated ultimate for an intact punch because they cover jointing, settlement and safety factors.",
+   "who_when": "Dept. of the Navy 1982 via USACE 1992; ICC IBC"
+  },
+  {
+   "key": "ground_granite_intact_cohesion_estimate",
+   "category": "ground_granite_bedrock",
+   "label": "Intact granite: Mohr-Coulomb cohesion (shear strength intercept)",
+   "status": "estimate",
+   "value_si": 36000000,
+   "unit_si": "Pa",
+   "low_si": 16000000,
+   "high_si": 62000000,
+   "display": "c ~ q_u / (2 tan(45 + phi/2)) ~ 0.16-0.21 x UCS ~ 36 MPa",
+   "sources": [
+    {
+     "title": "USACE EM 1110-1-2908 Eq 6-7a",
+     "url": "https://www.cedengineering.com/userfiles/Rock%20Foundations-R1.pdf"
+    }
+   ],
+   "notes": "Computed for UCS = 100-300 MPa and assumed phi = 45-55 deg: 16 MPa (100 MPa, 55 deg), 36 MPa (200 MPa, 50 deg), 62 MPa (300 MPa, 45 deg). Shear strength is tau = c + sigma*tan(phi).",
+   "who_when": "Estimate, 2026-10"
+  },
+  {
+   "key": "ground_granite_claw_traction_coefficient",
+   "category": "ground_granite_bedrock",
+   "label": "Granite: friction coefficient, keratin scales/claws",
+   "status": "estimate",
+   "value_si": 0.5,
+   "unit_si": "1",
+   "low_si": 0.3,
+   "high_si": 0.7,
+   "display": "~0.5 (0.3 polished to 0.7 rough outcrop)",
+   "sources": [
+    {
+     "title": "Context only: IBC Table 1806.2 (crystalline bedrock sliding coefficient 0.70 for concrete footings)",
+     "url": "https://gocodebook.com/library/us/ca/ca-building-code/chapter-18-soils-and-foundations/section-1806-presumptive-load-bearing-values-of-soils"
+    },
+    {
+     "title": "Concept only: Dai, Gorb & Schwarz (2002), claw interlocking vs surface roughness",
+     "url": "https://doi.org/10.1242/jeb.205.16.2479"
+    }
+   ],
+   "notes": "Estimate; no measured data. Keratin is far softer than quartz and feldspar, so claws cannot bite into intact granite; grip comes from surface roughness only (claw catching on asperities larger than the claw tip).",
+   "who_when": "Estimate, 2026-10"
+  },
+  {
+   "key": "ground_ibc_sliding_coefficients",
+   "category": "ground_general",
+   "label": "IBC lateral sliding resistance (concrete footing on soil/rock), for context",
+   "status": "verified",
+   "low_si": 0.25,
+   "high_si": 0.7,
+   "unit_si": "1",
+   "display": "Crystalline bedrock 0.70; sedimentary rock 0.35; sandy gravel 0.35; sand/silty sand 0.25; clay: cohesion 130 psf (6.22 kPa) x contact area",
+   "sources": [
+    {
+     "title": "IBC/CBC Table 1806.2 and footnotes",
+     "url": "https://gocodebook.com/library/us/ca/ca-building-code/chapter-18-soils-and-foundations/section-1806-presumptive-load-bearing-values-of-soils"
+    }
+   ],
+   "notes": "Design (allowable) values for concrete footings, not keratin. Footnote a: coefficient multiplies the dead load. Footnote b: cohesion multiplies contact area, limited by section 1806.3.2 (clay sliding resistance capped at one-half the dead load).",
+   "who_when": "ICC IBC"
+  },
+  {
+   "key": "ground_steel_a36_yield",
+   "category": "ground_steel_plate",
+   "label": "Structural steel plate ASTM A36: minimum yield strength",
+   "status": "verified",
+   "value_si": 250000000,
+   "unit_si": "Pa",
+   "low_si": 220000000,
+   "high_si": 250000000,
+   "display": "36 ksi (248-250 MPa); 32 ksi (220 MPa) for plates thicker than 8 in",
+   "sources": [
+    {
+     "title": "Wikipedia: A36 steel (citing AISC Steel Construction Manual)",
+     "url": "https://en.wikipedia.org/wiki/A36_steel"
+    }
+   ],
+   "notes": "Secondary source; ASTM and AISC pages were blocked (403). 36 ksi converts to 248.2 MPa; ASTM A36M uses 250 MPa. Higher-strength plate such as A572 Gr 50 (345 MPa) is common but was not verified here.",
+   "who_when": "AISC Manual 8th ed. via Wikipedia"
+  },
+  {
+   "key": "ground_steel_a36_tensile",
+   "category": "ground_steel_plate",
+   "label": "ASTM A36: ultimate tensile strength",
+   "status": "verified",
+   "value_si": 400000000,
+   "unit_si": "Pa",
+   "low_si": 400000000,
+   "high_si": 550000000,
+   "display": "58-80 ksi (400-550 MPa)",
+   "sources": [
+    {
+     "title": "Wikipedia: A36 steel",
+     "url": "https://en.wikipedia.org/wiki/A36_steel"
+    }
+   ],
+   "notes": "Secondary source (citing the AISC Manual).",
+   "who_when": "AISC Manual via Wikipedia"
+  },
+  {
+   "key": "ground_steel_indentation_pressure",
+   "category": "ground_steel_plate",
+   "label": "Steel plate: mean pressure for full plastic indentation by a rigid punch",
+   "status": "estimate",
+   "value_si": 750000000,
+   "unit_si": "Pa",
+   "display": "H ~ C x yield, C ~ 3 for metals -> ~0.75 GPa for A36",
+   "sources": [
+    {
+     "title": "Wikipedia: Indentation hardness (constraint factor C ~ 3 for metals; cites Fischer-Cripps 2007)",
+     "url": "https://en.wikipedia.org/wiki/Indentation_hardness"
+    }
+   ],
+   "notes": "Hardness H = C*sigma_y, with C about 3 for high E/sigma_y materials (metals) and about 1.5 for glasses. Work hardening raises the flow stress as the dent deepens. A thin plate on a soft support fails by plate bending or punch-out before full indentation; the punch-out limit is roughly shear strength (next entry) x perimeter x thickness.",
+   "who_when": "Estimate from Fischer-Cripps 2007 via Wikipedia"
+  },
+  {
+   "key": "ground_steel_shear_yield",
+   "category": "ground_steel_plate",
+   "label": "A36: shear yield strength (von Mises)",
+   "status": "estimate",
+   "value_si": 144000000,
+   "unit_si": "Pa",
+   "display": "tau_y = F_y / sqrt(3) ~ 144 MPa",
+   "sources": [
+    {
+     "title": "Derived from A36 yield (Wikipedia: A36 steel)",
+     "url": "https://en.wikipedia.org/wiki/A36_steel"
+    }
+   ],
+   "notes": "Derived with the von Mises criterion (250/sqrt(3) = 144.3 MPa). The AISC design convention of 0.6 F_y (about 150 MPa) was not verified.",
+   "who_when": "Derived 2026-10"
+  },
+  {
+   "key": "ground_steel_claw_traction_coefficient",
+   "category": "ground_steel_plate",
+   "label": "Steel plate: friction coefficient, keratin scales/claws",
+   "status": "estimate",
+   "value_si": 0.3,
+   "unit_si": "1",
+   "low_si": 0.2,
+   "high_si": 0.4,
+   "display": "~0.3 (0.2-0.4) dry",
+   "sources": [
+    {
+     "title": "Concept only: Dai, Gorb & Schwarz (2002) Roughness-dependent friction force of the tarsal claw system, J Exp Biol 205:2479-2488 (no keratin-on-steel numbers)",
+     "url": "https://doi.org/10.1242/jeb.205.16.2479"
+    }
+   ],
+   "notes": "Estimate; no measured data. Editor fix: the researcher's placeholder citation (A36 steel page, no friction data) was removed per both verifiers and replaced by a source supporting only the mechanism: on surfaces whose roughness is comparable to or smaller than the claw tip, claws cannot interlock and contact friction governs. Smooth, hard steel gives keratin claws no purchase. Lower on oily or wet plate; higher on diamond-tread plate.",
+   "who_when": "Estimate, 2026-10"
+  },
+  {
+   "key": "ground_freshwater_ice_compressive_strength",
+   "category": "ground_ice",
+   "label": "Freshwater ice: compressive strength",
+   "status": "verified",
+   "value_si": 10000000,
+   "unit_si": "Pa",
+   "low_si": 5000000,
+   "high_si": 25000000,
+   "display": "5-25 MPa (at -10 to -20 deg C)",
+   "sources": [
+    {
+     "title": "Petrovic, J.J. (2003) Review: Mechanical properties of ice and snow, J. Materials Science 38:1-6 (abstract)",
+     "url": "https://link.springer.com/article/10.1023/A:1021134128038"
+    },
+    {
+     "title": "Wikipedia: Compressive strength (table citing Petrovic 2003: ice 5-25 MPa)",
+     "url": "https://en.wikipedia.org/wiki/Compressive_strength"
+    }
+   ],
+   "notes": "Abstract: 'the compressive strength varies from 5-25 MPa over the temperature range -10C to -20C'; it rises as temperature falls and strain rate increases. The 10 MPa central value is a choice. A floating ice sheet fails in flexure at far lower loads than this crushing strength.",
+   "who_when": "Petrovic 2003"
+  },
+  {
+   "key": "ground_freshwater_ice_tensile_strength",
+   "category": "ground_ice",
+   "label": "Freshwater ice: tensile strength",
+   "status": "verified",
+   "value_si": 1500000,
+   "unit_si": "Pa",
+   "low_si": 700000,
+   "high_si": 3100000,
+   "display": "0.7-3.1 MPa",
+   "sources": [
+    {
+     "title": "Petrovic 2003, J. Materials Science 38:1-6 (abstract)",
+     "url": "https://link.springer.com/article/10.1023/A:1021134128038"
+    }
+   ],
+   "notes": "Verifiers disagreed (one quoted the abstract, the other could not load it). Editor re-fetched the Springer abstract: 'The tensile strength of ice varies from 0.7-3.1 MPa' and 'The fracture toughness of ice is in the range of 50-150 kPa m1/2'. The abstract also says tensile strength is relatively insensitive to temperature and strain rate (unlike compressive). The 1.5 MPa central value is a choice.",
+   "who_when": "Petrovic 2003"
+  },
+  {
+   "key": "ground_sea_ice_compressive_strength",
+   "category": "ground_ice",
+   "label": "Sea ice: compressive strength",
+   "status": "not_quantified",
+   "unit_si": "Pa",
+   "display": "not verified",
+   "sources": [
+    {
+     "title": "Timco & Weeks (2010) A review of the engineering properties of sea ice, Cold Regions Sci. Tech. 60(2):107-129 (closed access)",
+     "url": "https://doi.org/10.1016/j.coldregions.2009.10.003"
+    }
+   ],
+   "notes": "No number given. The authoritative review is closed access (researcher, both verifiers, and editor all failed to retrieve text; ScienceDirect returned 403). Wikipedia's Sea ice article cites the same review for 'mechanical strength' but gives no value. Sea ice is weaker than freshwater ice because of brine pockets, with strength depending on brine volume, temperature and strain rate, but no figure was verified. Do not substitute the freshwater figure without flagging it.",
+   "who_when": "n/a"
+  },
+  {
+   "key": "ground_ice_claw_traction_coefficient",
+   "category": "ground_ice",
+   "label": "Ice: traction coefficient for a clawed foot",
+   "status": "estimate",
+   "value_si": 0.05,
+   "unit_si": "1",
+   "low_si": 0.02,
+   "high_si": 0.5,
+   "display": "~0.02-0.1 sliding on smooth ice; up to ~0.5 if claws bite",
+   "sources": [
+    {
+     "title": "Basis: ice strength from Petrovic 2003",
+     "url": "https://link.springer.com/article/10.1023/A:1021134128038"
+    }
+   ],
+   "notes": "Estimate; no measured data. Smooth wet ice is very slippery. An indestructible dinosaur's claw tips easily exceed ice crushing strength (5-25 MPa), so they would dig in; traction then becomes ice fracture or shear around the claws and is much higher, but no number was found for that mode.",
+   "who_when": "Estimate, 2026-10"
+  },
+  {
+   "key": "atm_isa_sea_level_pressure",
+   "category": "atmosphere",
+   "label": "ISA sea-level pressure",
+   "status": "verified",
+   "value_si": 101325,
+   "unit_si": "Pa",
+   "display": "101,325 Pa (1 atm, exact)",
+   "sources": [
+    {
+     "title": "NIST SP 811 Appendix B.9 (atmosphere, standard = 1.01325E+05 Pa)",
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9"
+    },
+    {
+     "title": "Wikipedia: International Standard Atmosphere (ICAO Doc 7488)",
+     "url": "https://en.wikipedia.org/wiki/International_Standard_Atmosphere"
+    }
+   ],
+   "notes": "The NASA Earth Fact Sheet's 1014 mb is an observed mean surface pressure, not the ISA value.",
+   "who_when": "ICAO ISA"
+  },
+  {
+   "key": "atm_isa_sea_level_temperature",
+   "category": "atmosphere",
+   "label": "ISA sea-level temperature",
+   "status": "verified",
+   "value_si": 288.15,
+   "unit_si": "K",
+   "display": "288.15 K (15 deg C)",
+   "sources": [
+    {
+     "title": "Wikipedia: International Standard Atmosphere (ICAO Doc 7488-CD, 3rd ed. 1993)",
+     "url": "https://en.wikipedia.org/wiki/International_Standard_Atmosphere"
+    }
+   ],
+   "notes": "Tropospheric lapse rate 6.5 K per km of geopotential altitude, reaching 216.65 K at 11 km. NASA fact sheet average 288 K is consistent.",
+   "who_when": "ICAO 1993"
+  },
+  {
+   "key": "atm_isa_sea_level_density",
+   "category": "atmosphere",
+   "label": "ISA sea-level air density",
+   "status": "verified",
+   "value_si": 1.225,
+   "unit_si": "kg/m^3",
+   "display": "1.2250 kg/m^3",
+   "sources": [
+    {
+     "title": "Wikipedia: International Standard Atmosphere",
+     "url": "https://en.wikipedia.org/wiki/International_Standard_Atmosphere"
+    }
+   ],
+   "notes": "Cross-check: p/(R*T) = 101325/(287.05287 x 288.15) = 1.2250. ISA density at 11 km is 0.3639 kg/m^3.",
+   "who_when": "ICAO ISA"
+  },
+  {
+   "key": "atm_isa_speed_of_sound",
+   "category": "atmosphere",
+   "label": "ISA sea-level speed of sound",
+   "status": "verified",
+   "value_si": 340.294,
+   "unit_si": "m/s",
+   "display": "340.29 m/s",
+   "sources": [
+    {
+     "title": "NASA Glenn BGH: Speed of Sound (a^2 = gamma R T)",
+     "url": "https://www.grc.nasa.gov/www/BGH/sound.html"
+    },
+    {
+     "title": "Wikipedia: ISA (R = 287.0528 J/(kg K), T0 = 288.15 K)",
+     "url": "https://en.wikipedia.org/wiki/International_Standard_Atmosphere"
+    }
+   ],
+   "notes": "Computed as sqrt(1.4 x 287.05287 x 288.15) = 340.294 m/s, the standard ISA value. Wikipedia's Speed of sound table gives 340.27 m/s at 15 C (slightly different gas constants).",
+   "who_when": "Derived from ISA"
+  },
+  {
+   "key": "atm_ratio_specific_heats_air",
+   "category": "atmosphere",
+   "label": "Ratio of specific heats for air (standard conditions)",
+   "status": "verified",
+   "value_si": 1.4,
+   "unit_si": "1",
+   "display": "gamma = 1.4",
+   "sources": [
+    {
+     "title": "NASA Glenn: Specific Heats",
+     "url": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/specific-heats-cp-and-cv-1/"
+    },
+    {
+     "title": "NASA Glenn BGH: Calorically imperfect gas",
+     "url": "https://www.grc.nasa.gov/www/BGH/realspec.html"
+    }
+   ],
+   "notes": "NASA: 'For air, gamma = 1.4 for standard day conditions.' Constant only while air is calorically perfect (below about Mach 3); gamma falls at high temperature as N2/O2 vibrational modes are excited.",
+   "who_when": "NASA GRC"
+  },
+  {
+   "key": "atm_specific_gas_constant_dry_air",
+   "category": "atmosphere",
+   "label": "Specific gas constant, dry air (ISA)",
+   "status": "verified",
+   "value_si": 287.0528,
+   "unit_si": "J/(kg*K)",
+   "display": "287.0528 J/(kg K)",
+   "sources": [
+    {
+     "title": "Wikipedia: International Standard Atmosphere",
+     "url": "https://en.wikipedia.org/wiki/International_Standard_Atmosphere"
+    }
+   ],
+   "notes": "Consistent with the ISA sea-level p, T and density above.",
+   "who_when": "ICAO ISA"
+  },
+  {
+   "key": "atm_pressure_scale_height_sea_level",
+   "category": "atmosphere",
+   "label": "Pressure scale height at sea level (RT/g)",
+   "status": "verified",
+   "value_si": 8434.5,
+   "unit_si": "m",
+   "display": "8.43 km (NASA fact sheet nominal: 8.5 km)",
+   "sources": [
+    {
+     "title": "NASA Earth Fact Sheet (scale height 8.5 km)",
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"
+    }
+   ],
+   "notes": "Computed as 287.05287 x 288.15 / 9.80665.",
+   "who_when": "Derived; NASA NSSDC"
+  },
+  {
+   "key": "atm_density_scale_height_lower",
+   "category": "atmosphere",
+   "label": "Density scale height, lower atmosphere (exponential-fit parameter)",
+   "status": "estimate",
+   "value_si": 9200,
+   "unit_si": "m",
+   "low_si": 8430,
+   "high_si": 10420,
+   "display": "~9.2 km fit over 0-10 km (local value at sea level 10.4 km; isothermal/pressure value 8.4-8.5 km)",
+   "sources": [
+    {
+     "title": "NASA Earth Fact Sheet",
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"
+    },
+    {
+     "title": "Wikipedia: ISA (lapse rate, layer constants)",
+     "url": "https://en.wikipedia.org/wiki/International_Standard_Atmosphere"
+    }
+   ],
+   "notes": "Derived from the ISA troposphere (6.5 K/km lapse rate); both verifiers reproduced it. Local density scale height at sea level R*T/(g - R*L) = 10.42 km. ISA rho(10 km)/rho(0) = 0.4127/1.225 gives effective H = 9.19 km over 0-10 km (9.06 km over 0-11 km). Isothermal H = R*T/g = 8.43 km. Choose based on the altitude band simulated.",
+   "who_when": "Derived 2026-10"
+  },
+  {
+   "key": "atm_column_mass_per_m2",
+   "category": "atmosphere",
+   "label": "Mass of the atmospheric column per square metre",
+   "status": "verified",
+   "value_si": 10332.3,
+   "unit_si": "kg/m^2",
+   "display": "p0/g0 = 10,332 kg/m^2",
+   "sources": [
+    {
+     "title": "NIST (p0 = 101325 Pa)",
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9"
+    },
+    {
+     "title": "NASA Earth Fact Sheet (total atmosphere mass 5.1e18 kg)",
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"
+    }
+   ],
+   "notes": "Computed as 101325 / 9.80665. Cross-check: 5.1e18 kg / 5.1e14 m^2 ~ 1.0e4 kg/m^2.",
+   "who_when": "Derived"
+  },
+  {
+   "key": "atm_total_mass",
+   "category": "atmosphere",
+   "label": "Total mass of Earth's atmosphere",
+   "status": "verified",
+   "value_si": 5100000000000000000,
+   "unit_si": "kg",
+   "display": "5.1 x 10^18 kg",
+   "sources": [
+    {
+     "title": "NASA Earth Fact Sheet",
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"
+    }
+   ],
+   "notes": "Bonus value, not requested.",
+   "who_when": "NASA NSSDC"
+  },
+  {
+   "key": "earth_standard_gravity",
+   "category": "earth",
+   "label": "Standard acceleration of gravity g_n",
+   "status": "verified",
+   "value_si": 9.80665,
+   "unit_si": "m/s^2",
+   "display": "9.80665 m/s^2 (exact)",
+   "sources": [
+    {
+     "title": "NIST CODATA 2022: standard acceleration of gravity",
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?gn"
+    }
+   ],
+   "notes": "Conventional exact value. Actual mean surface gravity is 9.820 m/s^2 (NASA fact sheet).",
+   "who_when": "CODATA 2022"
+  },
+  {
+   "key": "earth_mean_radius",
+   "category": "earth",
+   "label": "Earth volumetric mean radius",
+   "status": "verified",
+   "value_si": 6371000,
+   "unit_si": "m",
+   "display": "6371.000 km (equatorial 6378.137 km)",
+   "sources": [
+    {
+     "title": "NASA Earth Fact Sheet",
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"
+    }
+   ],
+   "notes": "The IUGG mean radius R1 = 6371.0088 km was not verified here.",
+   "who_when": "NASA NSSDC"
+  },
+  {
+   "key": "earth_gm",
+   "category": "earth",
+   "label": "Earth gravitational parameter GM",
+   "status": "verified",
+   "value_si": 398600400000000,
+   "unit_si": "m^3/s^2",
+   "display": "3.986004 x 10^14 m^3/s^2 (IAU nominal)",
+   "sources": [
+    {
+     "title": "IAU 2015 Resolution B3 (arXiv:1510.07674)",
+     "url": "https://arxiv.org/abs/1510.07674"
+    },
+    {
+     "title": "NASA Earth Fact Sheet (0.39860 x 10^6 km^3/s^2)",
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"
+    }
+   ],
+   "notes": "Input for escape and orbital speeds.",
+   "who_when": "IAU 2015"
+  },
+  {
+   "key": "earth_escape_velocity_surface",
+   "category": "earth",
+   "label": "Escape velocity at Earth's surface",
+   "status": "verified",
+   "value_si": 11186,
+   "unit_si": "m/s",
+   "display": "11.186 km/s",
+   "sources": [
+    {
+     "title": "NASA Earth Fact Sheet",
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"
+    }
+   ],
+   "notes": "Cross-check: sqrt(2GM/R) with R = 6371.0 km gives 11,186.1 m/s. Ignores air drag (overwhelming near sea level at these speeds) and Earth's rotation.",
+   "who_when": "NASA NSSDC"
+  },
+  {
+   "key": "earth_circular_orbit_velocity_surface",
+   "category": "earth",
+   "label": "Circular orbital velocity at Earth's surface (no atmosphere)",
+   "status": "verified",
+   "value_si": 7909.8,
+   "unit_si": "m/s",
+   "display": "~7.91 km/s (7.905 km/s at equatorial radius)",
+   "sources": [
+    {
+     "title": "Computed from NASA/IAU GM and radius",
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"
+    }
+   ],
+   "notes": "Computed as sqrt(3.986004e14 / 6.371e6); not stated directly by a source but both verifiers reproduced it. An eastward equatorial throw gains up to ~465 m/s from rotation (2 pi x 6,378,137 m / 86,164 s = 465.1 m/s). Drag ignored.",
+   "who_when": "Derived"
+  },
+  {
+   "key": "energy_tnt_equivalent_per_tonne",
+   "category": "energy_reference",
+   "label": "TNT equivalent: energy per ton of TNT",
+   "status": "verified",
+   "value_si": 4184000000,
+   "unit_si": "J",
+   "display": "1 ton TNT = 4.184 x 10^9 J (exact by convention); 1 kt = 4.184e12 J; 1 Mt = 4.184e15 J",
+   "sources": [
+    {
+     "title": "NIST SP 811 Appendix B.9: ton of TNT (energy equivalent) = 4.184E+09 J",
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9"
+    }
+   ],
+   "notes": "Conventional definition (10^9 thermochemical calories), so the short/long/metric 'ton' question does not arise for TNT-equivalent yields. Equivalently 4.184e6 J per kg TNT. Use exactly 4.184e9 J.",
+   "who_when": "NIST SP 811"
+  },
+  {
+   "key": "energy_m67_grenade_explosive_mass",
+   "category": "energy_reference",
+   "label": "M67 fragmentation grenade: explosive filler mass",
+   "status": "verified",
+   "value_si": 0.18427,
+   "unit_si": "kg",
+   "display": "6.5 oz Composition B (0.184 kg); total weight 16.0 oz (0.454 kg)",
+   "sources": [
+    {
+     "title": "US Army TC 3-23.30 Grenades and Pyrotechnic Signals, Fig. 3-15 (C1, 1 Feb 2023)",
+     "url": "https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN37340-TC_3-23.30-001-WEB-3.pdf"
+    }
+   ],
+   "notes": "6.5 avoirdupois oz = 0.18427 kg of Composition B, not TNT. See energy_comp_b_re_factor and energy_m67_tnt_equivalent_estimate for a flagged TNT conversion. Wikipedia lists total weight as 14 oz (not checked); the Army manual says 16.0 oz.",
+   "who_when": "US Army 2021/2023"
+  },
+  {
+   "key": "energy_comp_b_re_factor",
+   "category": "energy_reference",
+   "label": "Composition B: relative effectiveness (RE) factor vs TNT",
+   "status": "claimed",
+   "value_si": 1.33,
+   "unit_si": "1",
+   "display": "RE ~1.33 (Comp B 63% RDX / 36% TNT / 1% wax; density 1.72 g/cm^3; detonation velocity 7,840 m/s)",
+   "sources": [
+    {
+     "title": "Wikipedia: Relative effectiveness factor (table tagged 'citation needed')",
+     "url": "https://en.wikipedia.org/wiki/Relative_effectiveness_factor"
+    }
+   ],
+   "notes": "Added by editor to fill a verifier-listed gap. Single secondary source whose table carries a [citation needed] tag, hence 'claimed'. The same page warns 'Calculating a single RE factor for an explosive is, however, impossible. It depends on the specific case or use', and that the table 'should be taken as an example and not as a precise source of data'. Pressure- and impulse-based equivalences differ; treat as approximate.",
+   "who_when": "Wikipedia, accessed 2026-10"
+  },
+  {
+   "key": "energy_m67_tnt_equivalent_estimate",
+   "category": "energy_reference",
+   "label": "M67 grenade: approximate TNT-equivalent energy",
+   "status": "estimate",
+   "value_si": 1025000,
+   "unit_si": "J",
+   "low_si": 771000,
+   "high_si": 1025000,
+   "display": "~0.25 kg TNT equivalent ~ 1.0 MJ (0.77 MJ if the filler is counted 1:1 as TNT)",
+   "sources": [
+    {
+     "title": "Filler mass: US Army TC 3-23.30 Fig. 3-15",
+     "url": "https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN37340-TC_3-23.30-001-WEB-3.pdf"
+    },
+    {
+     "title": "RE factor 1.33 (claimed): Wikipedia Relative effectiveness factor",
+     "url": "https://en.wikipedia.org/wiki/Relative_effectiveness_factor"
+    },
+    {
+     "title": "TNT energy convention: NIST SP 811 B.9",
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9"
+    }
+   ],
+   "notes": "Editor calculation: 0.18427 kg x 1.33 = 0.245 kg TNT eq x 4.184e6 J/kg = 1.03e6 J. Low end treats the filler 1:1 as TNT (0.18427 x 4.184e6 = 7.71e5 J). The RE factor is only 'claimed', so this inherits that uncertainty. For blast formulas use W = 0.18-0.25 kg TNT.",
+   "who_when": "Derived 2026-10"
+  },
+  {
+   "key": "energy_moab_yield",
+   "category": "energy_reference",
+   "label": "GBU-43/B MOAB: blast yield",
+   "status": "claimed",
+   "value_si": 46024000000,
+   "unit_si": "J",
+   "display": "~11 tons TNT equivalent = 4.6 x 10^10 J (unsourced claim); fill ~8,500 kg H-6",
+   "sources": [
+    {
+     "title": "Wikipedia: GBU-43/B MOAB (infobox '11 tons TNT (46 GJ)'; no inline citation for yield)",
+     "url": "https://en.wikipedia.org/wiki/GBU-43/B_MOAB"
+    },
+    {
+     "title": "TNT energy convention: NIST SP 811 B.9",
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9"
+    }
+   ],
+   "notes": "Both verifiers agree the researcher's 'short vs metric ton' range was an artifact: a TNT-equivalent yield uses the ton of TNT as a defined energy unit (4.184e9 J), and Wikipedia's own 46 GJ = 11 x 4.184 GJ. So 11 t TNT = 4.6024e10 J; low/high removed. No primary or official source for the 11-ton figure was found (GlobalSecurity returned HTTP 402). Fill 18,739 lb (8,500 kg) of H-6, a TNT-based aluminized explosive; the consistency of fill mass with ~11 t TNT eq is reasoning, not sourced.",
+   "who_when": "Wikipedia, accessed 2026-10"
+  },
+  {
+   "key": "energy_hiroshima_yield",
+   "category": "energy_reference",
+   "label": "Hiroshima (Little Boy) yield",
+   "status": "claimed",
+   "value_si": 62760000000000,
+   "unit_si": "J",
+   "low_si": 50210000000000,
+   "high_si": 75310000000000,
+   "display": "15 kt +/- 20% (12-18 kt) = 6.3 x 10^13 J",
+   "sources": [
+    {
+     "title": "Wikipedia: Little Boy (citing Malik 1985, Los Alamos LA-8819, p. 1)",
+     "url": "https://en.wikipedia.org/wiki/Little_Boy"
+    },
+    {
+     "title": "Nuclear Weapon Archive: Little Boy ('Yield: 15 - 16 Kt')",
+     "url": "http://nuclearweaponarchive.org/Usa/Med/Lbfm.html"
+    }
+   ],
+   "notes": "Malik (1985) best estimate 15 kt with 20% uncertainty, via Wikipedia; the LANL report itself was not opened (request form / connection reset). Earlier Penney estimate 12 +/- 1 kt. Nuclear Weapon Archive independently gives 15-16 kt, and the Wikipedia infobox now shows 13-16 kt; both fall inside 12-18 kt. A verifier recalls the DS02 dosimetry re-evaluation used ~16 kt; not verified.",
+   "who_when": "Malik (LANL) 1985"
+  },
+  {
+   "key": "energy_castle_bravo_yield",
+   "category": "energy_reference",
+   "label": "Castle Bravo yield (1 Mar 1954 local)",
+   "status": "claimed",
+   "value_si": 62760000000000000,
+   "unit_si": "J",
+   "display": "15 Mt = 6.3 x 10^16 J (predicted 6 Mt, range 4-8, per NWA; Wikipedia says 5 Mt predicted)",
+   "sources": [
+    {
+     "title": "Nuclear Weapon Archive: Operation Castle",
+     "url": "http://nuclearweaponarchive.org/Usa/Tests/Castle.html"
+    },
+    {
+     "title": "Wikipedia: Castle Bravo",
+     "url": "https://en.wikipedia.org/wiki/Castle_Bravo"
+    }
+   ],
+   "notes": "15 Mt confirmed by both NWA and Wikipedia; NWA lists 10 Mt (66.7%) fission. Sources disagree on the predicted yield (NWA 6 Mt, range 4-8; Wikipedia 5 Mt); this does not affect the 15 Mt actual. Date is 1 March local (28 Feb GMT). The official DOE/NV-209 test list was not retrieved (old URL 404; nnss.gov path also 404), so status stays 'claimed'.",
+   "who_when": "NWA (Sublette); Wikipedia"
+  },
+  {
+   "key": "energy_tsar_bomba_yield",
+   "category": "energy_reference",
+   "label": "Tsar Bomba yield (30 Oct 1961)",
+   "status": "disputed",
+   "value_si": 209200000000000000,
+   "unit_si": "J",
+   "low_si": 209200000000000000,
+   "high_si": 242700000000000000,
+   "display": "50 Mt official (2.09 x 10^17 J); US 1961 estimate 57 Mt; Wikipedia 50-58 Mt",
+   "sources": [
+    {
+     "title": "Nuclear Weapon Archive: Tsar Bomba ('Was it 50 Megatons or 57?')",
+     "url": "http://www.nuclearweaponarchive.org/Russia/TsarBomba.html"
+    },
+    {
+     "title": "Wikipedia: Tsar Bomba",
+     "url": "https://en.wikipedia.org/wiki/Tsar_Bomba"
+    }
+   ],
+   "notes": "Russian sources since 1991 use 50 Mt; the US estimated 57 Mt shortly after the test; Wikipedia gives 50-58 Mt (attributing 58 Mt to bhangmeter data). About 1.5 Mt fission (97% fusion). Use 50 Mt as the value and 58 Mt as the high end.",
+   "who_when": "Soviet/Russian 1991 disclosure; US 1961 estimate"
+  },
+  {
+   "key": "energy_tunguska_1908",
+   "category": "energy_reference",
+   "label": "Tunguska airburst energy (1908)",
+   "status": "disputed",
+   "value_si": 41840000000000000,
+   "unit_si": "J",
+   "low_si": 12550000000000000,
+   "high_si": 125500000000000000,
+   "display": "~3-30 Mt; Sandia 2007: 3-5 Mt; older estimates 10-20 Mt",
+   "sources": [
+    {
+     "title": "Sandia National Laboratories news release, 17 Dec 2007 (Boslough)",
+     "url": "https://newsreleases.sandia.gov/releases/2007/asteroid.html"
+    },
+    {
+     "title": "Wikipedia: Tunguska event (3-30 Mt range; 10-15 Mt often cited)",
+     "url": "https://en.wikipedia.org/wiki/Tunguska_event"
+    }
+   ],
+   "notes": "Sandia: 'what scientists had thought to be an explosion between 10 and 20 megatons was more likely only three to five megatons.' Wikipedia: estimates 3-30 Mt; a 2019 paper ~20-30 Mt. The 10 Mt value_si is a conventional midpoint chosen by the researcher, not a consensus figure.",
+   "who_when": "Various; Sandia 2007"
+  },
+  {
+   "key": "energy_krakatoa_1883",
+   "category": "energy_reference",
+   "label": "1883 Krakatoa eruption energy",
+   "status": "claimed",
+   "value_si": 836800000000000000,
+   "unit_si": "J",
+   "display": "~200 Mt TNT (8.4 x 10^17 J); VEI 6; no sourced range",
+   "sources": [
+    {
+     "title": "Wikipedia: 1883 eruption of Krakatoa (citing Australian Bureau of Meteorology 2012, archived)",
+     "url": "https://en.wikipedia.org/wiki/1883_eruption_of_Krakatoa"
+    },
+    {
+     "title": "Wikipedia: Krakatoa (citing Breining 2007, Super Volcano, Voyageur Press, p. 256)",
+     "url": "https://en.wikipedia.org/wiki/Krakatoa"
+    }
+   ],
+   "notes": "Single point estimate only. Editor found the main Krakatoa article repeats 'equivalent to 200 megatons of TNT (840 PJ)', citing a popular-science book (Breining 2007), so there are now two weak, non-primary citations for the same figure and still no range. Volcanic 'energy' figures mix thermal and explosive energy; do not treat as a blast yield.",
+   "who_when": "BoM / Breining via Wikipedia"
+  },
+  {
+   "key": "energy_chicxulub_impact",
+   "category": "energy_reference",
+   "label": "Chicxulub impactor kinetic energy",
+   "status": "disputed",
+   "unit_si": "J",
+   "low_si": 1e+23,
+   "high_si": 5.8e+25,
+   "display": "~10^23 to ~10^24 J in most published estimates; up to 5.8 x 10^25 J in one arXiv preprint (Durand-Manterola & Cordero-Tercero 2014)",
+   "sources": [
+    {
+     "title": "Wikipedia: Chicxulub crater (literature range ~1e23 J, Morgan et al. 2022, Richards et al. 2015, Kring 2007, Bralower et al. 1998; 1e24 J, Pope et al. 1997)",
+     "url": "https://en.wikipedia.org/wiki/Chicxulub_crater"
+    },
+    {
+     "title": "Durand-Manterola & Cordero-Tercero (2014) Assessments of the energy, mass and size of the Chicxulub impactor, arXiv:1403.6391",
+     "url": "https://arxiv.org/abs/1403.6391"
+    }
+   ],
+   "notes": "Both verifiers corrected this entry. The researcher's 1.3e24-5.8e25 J is accurately quoted from the preprint, but (1) the arXiv page shows no journal reference, so 'peer-reviewed' was unsupported, and (2) it is the high end of the literature (and favors a comet). Wikipedia summarizes published estimates as ~1e23 J to 1e24 J, with that preprint up to 1e25 J. A 10 km impactor at 20 km/s also gives ~1e23 J. Status changed verified -> disputed; low_si lowered to 1e23 J. No single value_si given. The underlying papers (Morgan 2022 etc.) were seen only through Wikipedia.",
+   "who_when": "Various; corrected 2026-10"
+  },
+  {
+   "key": "energy_sun_luminosity",
+   "category": "energy_reference",
+   "label": "Nominal solar luminosity",
+   "status": "verified",
+   "value_si": 3.828e+26,
+   "unit_si": "W",
+   "display": "3.828 x 10^26 W",
+   "sources": [
+    {
+     "title": "IAU 2015 Resolution B3 (arXiv:1510.07674)",
+     "url": "https://arxiv.org/abs/1510.07674"
+    }
+   ],
+   "notes": "Nominal solar radius 6.957e8 m (same resolution).",
+   "who_when": "IAU 2015"
+  },
+  {
+   "key": "energy_earth_gravitational_binding",
+   "category": "energy_reference",
+   "label": "Earth gravitational binding energy",
+   "status": "claimed",
+   "value_si": 2.49e+32,
+   "unit_si": "J",
+   "low_si": 2.24e+32,
+   "high_si": 2.49e+32,
+   "display": "~2.49 x 10^32 J (PREM density); 2.24 x 10^32 J for uniform density",
+   "sources": [
+    {
+     "title": "Wikipedia: Gravitational binding energy (PREM-based value; formula U = 3GM^2/(5R))",
+     "url": "https://en.wikipedia.org/wiki/Gravitational_binding_energy"
+    }
+   ],
+   "notes": "Uniform-sphere value computed (and reproduced by a verifier): 3GM^2/(5R) with M = 5.972e24 kg, R = 6.371e6 m gives 2.24e32 J. The 2.49e32 J PREM value is quoted by Wikipedia, which cites only the PREM model (Dziewonski & Anderson 1981); the integral was not reproduced. Plausible because a centrally condensed Earth must exceed the uniform value.",
+   "who_when": "Wikipedia (derived from PREM 1981)"
+  },
+  {
+   "key": "energy_xkcd_relativistic_baseball",
+   "category": "energy_reference",
+   "label": "xkcd What If #1 'Relativistic Baseball' (0.9c pitch): kinetic energy",
+   "status": "estimate",
+   "value_si": 16865000000000000,
+   "unit_si": "J",
+   "low_si": 16487000000000000,
+   "high_si": 17311000000000000,
+   "display": "~1.7 x 10^16 J (~4.0 Mt TNT); the article itself states no energy figure",
+   "sources": [
+    {
+     "title": "xkcd What If? #1 Relativistic Baseball",
+     "url": "https://what-if.xkcd.com/1/"
+    },
+    {
+     "title": "Wikipedia: Baseball (ball) (5 to 5.25 oz per MLB rules)",
+     "url": "https://en.wikipedia.org/wiki/Baseball_(ball)"
+    }
+   ],
+   "notes": "The web article gives NO energy number; it says about 70 ns to reach the plate and 'Everything within roughly a mile of the park is leveled'. Calculation: KE = (gamma - 1)mc^2, gamma = 1/sqrt(1 - 0.81) = 2.2942, m = 0.145 kg -> 1.6865e16 J (4.03 Mt). Editor refined the range to the exact rule limits 5 oz (141.75 g) and 5.25 oz (148.83 g): 1.6487e16-1.7311e16 J (previously 1.652e16-1.733e16 from rounded grams). The book version was not checked.",
+   "who_when": "Munroe 2012 (scenario); energy derived 2026-10"
+  },
+  {
+   "key": "seismic_gutenberg_richter_energy_magnitude",
+   "category": "seismic",
+   "label": "Gutenberg-Richter energy-magnitude relation",
+   "status": "verified",
+   "unit_si": "J",
+   "display": "log10 E_s = 1.5 M_S + 4.8 (E_s in J)  ==  log10 E_s = 1.5 M_S + 11.8 (E_s in erg)",
+   "sources": [
+    {
+     "title": "Wikipedia: Moment magnitude scale (states log10 Es ~ 4.8 + 1.5 MS in joules; erg form via Kanamori 1977)",
+     "url": "https://en.wikipedia.org/wiki/Moment_magnitude_scale"
+    },
+    {
+     "title": "Collins, Melosh & Marcus (2005) Meteoritics & Planetary Science 40(6):817-840, Eq. 40* ('classic Gutenberg-Richter magnitude energy relation', citing Melosh 1989 p. 67)",
+     "url": "https://impact.ese.ic.ac.uk/static/effects.pdf"
+    }
+   ],
+   "notes": "Collins et al. never print the relation explicitly; it is consistent with their Eq. 40*: inserting E_s = 1e-4 x E gives M = 0.667 log10 E - 5.87. Wikipedia states the joule form explicitly. M here is specifically the surface-wave magnitude M_S. Each magnitude unit is ~31.6x in energy. Original Gutenberg & Richter (1956, Annali di Geofisica 9:1-15) not opened. USGS gives a different relation (log E = 5.24 + 1.44 Mw, units not stated, not opened); do not mix the two.",
+   "who_when": "Gutenberg & Richter 1956 (via Collins et al. 2005; Kanamori 1977)"
+  },
+  {
+   "key": "seismic_collins_impact_magnitude",
+   "category": "seismic",
+   "label": "Impact seismic magnitude (Earth Impact Effects Program)",
+   "status": "verified",
+   "unit_si": "1",
+   "display": "M = 0.67 log10 E - 5.87 (E = impactor kinetic energy in J; includes seismic efficiency 1e-4)",
+   "sources": [
+    {
+     "title": "Collins et al. 2005, Eq. 40*",
+     "url": "https://impact.ese.ic.ac.uk/static/effects.pdf"
+    }
+   ],
+   "notes": "Collins also gives distance-dependent effective magnitudes (Eq. 41a-c), e.g. M_eff = M - 0.0238 r_km for r < 60 km.",
+   "who_when": "Collins, Melosh & Marcus 2005"
+  },
+  {
+   "key": "seismic_efficiency_impact",
+   "category": "seismic",
+   "label": "Seismic efficiency of impacts (fraction of KE radiated as seismic waves)",
+   "status": "verified",
+   "value_si": 0.0001,
+   "unit_si": "1",
+   "low_si": 1e-05,
+   "high_si": 0.001,
+   "display": "1 x 10^-4 (literature range 10^-5 to 10^-3)",
+   "sources": [
+    {
+     "title": "Collins et al. 2005 (citing Schultz & Gault 1975)",
+     "url": "https://impact.ese.ic.ac.uk/static/effects.pdf"
+    }
+   ],
+   "notes": "'the most commonly accepted figure based on experimental data (Schultz and Gault 1975), with a range between 10-5-10-3'. Applying it to stomps and punches is an extrapolation.",
+   "who_when": "Collins et al. 2005; Schultz & Gault 1975"
+  },
+  {
+   "key": "blast_kinney_graham_peak_overpressure",
+   "category": "blast",
+   "label": "Kinney & Graham (1985) peak overpressure vs scaled distance",
+   "status": "verified",
+   "unit_si": "1",
+   "display": "dP/P_a = 808[1 + (Z/4.5)^2] / { sqrt(1 + (Z/0.048)^2) * sqrt(1 + (Z/0.32)^2) * sqrt(1 + (Z/1.35)^2) },  Z = f_d R / W^(1/3)  [R in m, W in kg TNT, Z in m/kg^(1/3)]",
+   "sources": [
+    {
+     "title": "McFadden, Brown, Vida & Spurny (2021) Fireball characteristics derivable from acoustic data, J. Atmos. Solar-Terr. Phys. (doi:10.1016/j.jastp.2021.105587); arXiv:2102.06574, Eqs 11-13",
+     "url": "https://arxiv.org/abs/2102.06574"
+    },
+    {
+     "title": "McFadden, Brown & Vida (2024) arXiv:2408.04078, Eqs 4-5",
+     "url": "https://arxiv.org/abs/2408.04078"
+    },
+    {
+     "title": "Kinney & Graham (1985) Explosive Shocks in Air, 2nd ed., Springer (original; not opened)",
+     "url": "https://doi.org/10.1007/978-3-642-86682-1"
+    }
+   ],
+   "notes": "Ratio is relative to ambient pressure P_a; absolute dP = P_a x ratio. Fit for a spherical free-air chemical (TNT) explosion. Editor confirmed the McFadden 2021 paper was accepted to JASTP (arXiv comment and related DOI), so the citation is peer-reviewed. Units: McFadden writes Z = f_d R/(W/W0)^(1/3) with W in J and W0 = 1 kt; both verifiers found the classic constants only reproduce standard free-air values with Z in m/kg^(1/3) and W in kg TNT, so the engine must use kg TNT. Sanity values: ratio ~9.95 at Z = 1 (~1 MPa) and ~0.0985 at Z = 10 (~10 kPa); a verifier's Brode-fit comparison gives ~8.3 and ~0.099. McFadden notes 1 kt nuclear corresponds to ~0.5 kt chemical HE for blast. NOT verified: K&G's stated Z validity limits and the usual surface-burst reflection factor (~1.8-2 x W).",
+   "who_when": "Kinney & Graham 1985 via McFadden et al. 2021"
+  },
+  {
+   "key": "blast_kinney_graham_transmission_factor",
+   "category": "blast",
+   "label": "K&G atmospheric transmission (ambient scaling) factor f_d",
+   "status": "verified",
+   "unit_si": "1",
+   "display": "f_d = (P/P0)^(1/3) (T0/T)^(1/3)  (path-averaged form: f_d = [1/(h2 - h1)] * Integral[(P/P0)^(1/3) (T0/T)^(1/3) dh]); P0 = 101325 Pa, T0 = 288 K",
+   "sources": [
+    {
+     "title": "McFadden et al. 2021, Eq. 13",
+     "url": "https://arxiv.org/abs/2102.06574"
+    }
+   ],
+   "notes": "Use with Z = f_d R / W^(1/3). In thin air f_d < 1, so the same charge gives a smaller scaled distance, but the overpressure ratio multiplies the lower ambient P_a.",
+   "who_when": "Kinney & Graham 1985 via McFadden 2021"
+  },
+  {
+   "key": "blast_collins_surface_burst_overpressure",
+   "category": "blast",
+   "label": "Collins et al. surface-burst peak overpressure fit (1 kt scaled)",
+   "status": "verified",
+   "unit_si": "Pa",
+   "display": "p = (p_x r_x / (4 r1)) * (1 + 3 (r_x/r1)^1.3), p_x = 75,000 Pa, r_x = 290 m, r1 = r / E_kt^(1/3)",
+   "sources": [
+    {
+     "title": "Collins et al. 2005, Eqs 54* and 57* (fit to Glasstone & Dolan 1977 Fig. 3.66)",
+     "url": "https://impact.ese.ic.ac.uk/static/effects.pdf"
+    }
+   ],
+   "notes": "Alternative to K&G for large (nuclear- or impact-scale) surface bursts, cube-root scaled with yield in kt. Collins: agrees with Zahnle and Toon over 1-10,000 Mt; above that 'probably overestimates the blast wave effects by a factor of 2-5'. A later Collins et al. (2017) airblast revision exists per a verifier but was not checked.",
+   "who_when": "Collins et al. 2005"
+  },
+  {
+   "key": "blast_collins_peak_wind_speed",
+   "category": "blast",
+   "label": "Peak wind speed behind the shock (Hugoniot)",
+   "status": "verified",
+   "unit_si": "m/s",
+   "display": "u = (5p / (7 P0)) * c0 / sqrt(1 + 6p/(7 P0)), P0 = 1e5 Pa, c0 ~ 330 m/s",
+   "sources": [
+    {
+     "title": "Collins et al. 2005, Eq. 59* (from Glasstone & Dolan 1977 p. 97)",
+     "url": "https://impact.ese.ic.ac.uk/static/effects.pdf"
+    }
+   ],
+   "notes": "Glasstone & Dolan via Collins: above 40 m/s about 30% of trees are blown down; above 62 m/s up to 90%.",
+   "who_when": "Glasstone & Dolan 1977 via Collins 2005"
+  },
+  {
+   "key": "blast_window_breakage",
+   "category": "blast",
+   "label": "Overpressure: typical glass window breakage",
+   "status": "verified",
+   "value_si": 6895,
+   "unit_si": "Pa",
+   "low_si": 3447,
+   "high_si": 6895,
+   "display": "0.5-1.0 psi (3.4-6.9 kPa) side-on: windows usually shatter (Collins rounds 1 psi to 6,900 Pa)",
+   "sources": [
+    {
+     "title": "Glasstone & Dolan (1977) The Effects of Nuclear Weapons, Table 5.145",
+     "url": "https://www.fourmilab.ch/etexts/www/effects/eonw_5.pdf"
+    },
+    {
+     "title": "Collins et al. 2005, Table 4 (6,900 Pa: glass windows shatter)",
+     "url": "https://impact.ese.ic.ac.uk/static/effects.pdf"
+    }
+   ],
+   "notes": "Both verifiers flagged value_si (6,900) > high_si (6,895). Editor set value_si = high_si = 6,895 Pa (exactly 1.0 psi, Glasstone's figure); Collins' 6,900 is a rounding of the same number. Glasstone Table 5.145: 'Glass windows, large and small | Shattering usually, occasional frame failure | 0.5-1.0' psi. These are side-on pressures for panels facing the burst; Glasstone notes that for panels oriented so there are no reflected pressures, the side-on pressures must be doubled. Occasional breakage occurs at lower pressures, but no figure was verified.",
+   "who_when": "Glasstone & Dolan 1977"
+  },
+  {
+   "key": "blast_eardrum_rupture_threshold",
+   "category": "blast",
+   "label": "Overpressure: eardrum rupture threshold",
+   "status": "verified",
+   "value_si": 34474,
+   "unit_si": "Pa",
+   "display": "5 psi (34.5 kPa)",
+   "sources": [
+    {
+     "title": "Glasstone & Dolan 1977, Table 12.38",
+     "url": "https://www.fourmilab.ch/etexts/www/effects/eonw_12.pdf"
+    },
+    {
+     "title": "NASA Dryden Fact Sheet FS-2003-11-016: Sonic Booms (eardrum damage at 720 psf)",
+     "url": "https://www.nasa.gov/wp-content/uploads/2021/09/120274main_fs-016-dfrc.pdf"
+    }
+   ],
+   "notes": "Effective peak overpressure (Glasstone section 12.32, not simply side-on) for fast-rising, long-duration (>=0.1 s) pulses. Ruptures recorded from 5 up to 40-50 psi. Thresholds rise for the millisecond pulses of small charges.",
+   "who_when": "Glasstone & Dolan 1977"
+  },
+  {
+   "key": "blast_eardrum_rupture_50pct",
+   "category": "blast",
+   "label": "Overpressure: 50% eardrum rupture",
+   "status": "verified",
+   "value_si": 120700,
+   "unit_si": "Pa",
+   "low_si": 103421,
+   "high_si": 241316,
+   "display": "15-20 psi (103-138 kPa) for people over 20; 30-35 psi (207-241 kPa) for people under 20",
+   "sources": [
+    {
+     "title": "Glasstone & Dolan 1977, Table 12.38",
+     "url": "https://www.fourmilab.ch/etexts/www/effects/eonw_12.pdf"
+    }
+   ],
+   "notes": "value_si 120.7 kPa is the midpoint of the adult band (17.5 psi), a choice, not a tabulated number. The range spans both age bands. Long-duration pulses.",
+   "who_when": "Glasstone & Dolan 1977"
+  },
+  {
+   "key": "blast_lung_damage_threshold",
+   "category": "blast",
+   "label": "Overpressure: lung damage threshold",
+   "status": "verified",
+   "value_si": 82737,
+   "unit_si": "Pa",
+   "low_si": 55158,
+   "high_si": 103421,
+   "display": "12 (8-15) psi = 83 (55-103) kPa; severe 25 (20-30) psi = 172 (138-207) kPa",
+   "sources": [
+    {
+     "title": "Glasstone & Dolan 1977, Table 12.38",
+     "url": "https://www.fourmilab.ch/etexts/www/effects/eonw_12.pdf"
+    },
+    {
+     "title": "NASA FS-2003-11-016 (lung damage at 2160 psf = 15 psi)",
+     "url": "https://www.nasa.gov/wp-content/uploads/2021/09/120274main_fs-016-dfrc.pdf"
+    }
+   ],
+   "notes": "Extrapolated from animal data to a 70 kg man. Fast-rising, long-duration pulse.",
+   "who_when": "Glasstone & Dolan 1977"
+  },
+  {
+   "key": "blast_lethality_threshold",
+   "category": "blast",
+   "label": "Overpressure: lethality (direct blast) threshold / 50% / ~100%",
+   "status": "verified",
+   "value_si": 427475,
+   "unit_si": "Pa",
+   "low_si": 275790,
+   "high_si": 634318,
+   "display": "threshold 40 (30-50) psi = 276 kPa; 50% 62 (50-75) psi = 427 kPa; ~100% 92 (75-115) psi = 634 kPa",
+   "sources": [
+    {
+     "title": "Glasstone & Dolan 1977, Table 12.38",
+     "url": "https://www.fourmilab.ch/etexts/www/effects/eonw_12.pdf"
+    }
+   ],
+   "notes": "value_si is the 50% level; low_si is the threshold and high_si the ~100% level (dose-response points, not uncertainty bounds). Primary blast only; debris and whole-body displacement kill at far lower pressures.",
+   "who_when": "Glasstone & Dolan 1977"
+  },
+  {
+   "key": "blast_residential_collapse",
+   "category": "blast",
+   "label": "Overpressure: wood-frame house almost complete collapse",
+   "status": "verified",
+   "value_si": 26800,
+   "unit_si": "Pa",
+   "display": "26.8 kPa (~3.9 psi) near-complete collapse (22.9 kPa: interior partitions blown down, roof severely damaged)",
+   "sources": [
+    {
+     "title": "Collins et al. 2005, Table 4 (data from Glasstone & Dolan 1977)",
+     "url": "https://impact.ese.ic.ac.uk/static/effects.pdf"
+    }
+   ],
+   "notes": "Editor fix: low_si/high_si removed because, as a verifier noted, 22.9 kPa is a lesser damage state (partitions and roof), not a lower bound on collapse. Derived from 1 kt (nuclear, long-duration) blast; short-duration blasts from small charges need higher peak pressure for the same damage.",
+   "who_when": "Glasstone & Dolan 1977 via Collins 2005"
+  },
+  {
+   "key": "blast_multistory_wall_bearing_collapse",
+   "category": "blast",
+   "label": "Overpressure: multistory wall-bearing (brick) building collapse",
+   "status": "verified",
+   "value_si": 42600,
+   "unit_si": "Pa",
+   "display": "42.6 kPa collapse (38.5 kPa: severe cracking, interior partitions blown down)",
+   "sources": [
+    {
+     "title": "Collins et al. 2005, Table 4",
+     "url": "https://impact.ese.ic.ac.uk/static/effects.pdf"
+    }
+   ],
+   "notes": "Editor fix: range fields removed for the same reason as the wood-frame entry (38.5 kPa is a different damage state). Long-duration (1 kt-scaled) loading.",
+   "who_when": "Glasstone & Dolan 1977 via Collins 2005"
+  },
+  {
+   "key": "blast_steel_frame_building_incipient_collapse",
+   "category": "blast",
+   "label": "Overpressure: multistory steel-framed office building, extreme distortion / incipient collapse",
+   "status": "verified",
+   "value_si": 273000,
+   "unit_si": "Pa",
+   "display": "273 kPa",
+   "sources": [
+    {
+     "title": "Collins et al. 2005, Table 4",
+     "url": "https://impact.ese.ic.ac.uk/static/effects.pdf"
+    }
+   ],
+   "notes": "Other Table 4 entries: highway truss bridges collapse 121 kPa; highway girder bridges collapse 379 kPa; cars and trucks overturned 297 kPa; vehicles grossly distorted 426 kPa.",
+   "who_when": "Glasstone & Dolan 1977 via Collins 2005"
+  },
+  {
+   "key": "blast_reinforced_concrete_severe_damage",
+   "category": "blast",
+   "label": "Overpressure: reinforced-concrete building severe damage",
+   "status": "not_quantified",
+   "unit_si": "Pa",
+   "display": "not extracted",
+   "sources": [
+    {
+     "title": "Glasstone & Dolan 1977, Table 5.139a and Fig. 5.140, section 5.143",
+     "url": "https://www.fourmilab.ch/etexts/www/effects/eonw_5.pdf"
+    }
+   ],
+   "notes": "Table 5.139a describes severe damage to multistory RC buildings (Types 1 and 2: 'Walls shattered, severe frame distortion, incipient collapse'), but gives distances only via the Fig. 5.140 nomograph (yield vs range), not pressures; converting would need a separate pressure-distance curve, so no number is given. Editor tried the OTA 1979 'Effects of Nuclear War' report as an alternative (FAS mirror returned an empty page; Princeton mirror 403). Related verified points: blast-resistant RC building light damage at 10 psi (separate entry) and steel-frame office incipient collapse at 273 kPa.",
+   "who_when": "n/a"
+  },
+  {
+   "key": "blast_blast_resistant_rc_light_damage",
+   "category": "blast",
+   "label": "Overpressure: blast-resistant reinforced-concrete building (Glasstone Type 1), light damage",
+   "status": "verified",
+   "value_si": 68948,
+   "unit_si": "Pa",
+   "display": "10 psi (68.9 kPa): some cracking of concrete walls and frame, for an RC building designed for 30 psi",
+   "sources": [
+    {
+     "title": "Glasstone & Dolan 1977, section 5.143 and Table 5.139a",
+     "url": "https://www.fourmilab.ch/etexts/www/effects/eonw_5.pdf"
+    }
+   ],
+   "notes": "Added by editor (both verifiers confirmed the quote). Glasstone 5.143: 'For the blast-resistant structure (Type I) described in Table 5.139a, a peak overpressure of 10 pounds per square inch should be used to estimate the distance for light damage.' Type 1 is a multistory RC building with RC walls, no windows, designed for 30 psi Mach-region pressure from 1 MT; light damage = 'Some cracking of concrete walls and frame'. This is NOT the requested severe-damage threshold for ordinary RC buildings, which remains unquantified.",
+   "who_when": "Glasstone & Dolan 1977"
+  },
+  {
+   "key": "blast_sonic_boom_concorde",
+   "category": "blast",
+   "label": "Typical sonic boom overpressure: Concorde",
+   "status": "verified",
+   "value_si": 92.9,
+   "unit_si": "Pa",
+   "display": "1.94 psf (92.9 Pa) at Mach 2, 52,000 ft",
+   "sources": [
+    {
+     "title": "NASA Dryden Fact Sheet FS-2003-11-016: Sonic Booms",
+     "url": "https://www.nasa.gov/wp-content/uploads/2021/09/120274main_fs-016-dfrc.pdf"
+    }
+   ],
+   "notes": "Same sheet: SR-71 0.9 psf (43 Pa); F-104 0.8 psf (38 Pa); Space Shuttle landing approach 1.25 psf (60 Pa). Rare minor damage at 2-5 psf (96-239 Pa). Structures in good condition undamaged up to 11 psf (527 Pa). People have experienced 20-144 psf (0.96-6.9 kPa) without injury.",
+   "who_when": "NASA DFRC 2003"
+  },
+  {
+   "key": "crater_collins_transient_diameter",
+   "category": "cratering",
+   "label": "Transient crater diameter (Collins, Melosh & Marcus 2005)",
+   "status": "verified",
+   "unit_si": "m",
+   "display": "D_tc = 1.161 (rho_i/rho_t)^(1/3) L^0.78 v_i^0.44 g^-0.22 (sin theta)^(1/3)",
+   "sources": [
+    {
+     "title": "Collins et al. 2005, Eq. 21*",
+     "url": "https://impact.ese.ic.ac.uk/static/effects.pdf"
+    }
+   ],
+   "notes": "SI: D_tc in m at the pre-impact surface; rho_i, rho_t impactor and target densities (kg/m^3); L impactor diameter at the surface (m); v_i impact speed at the surface (m/s); g = 9.81 m/s^2; theta impact angle from horizontal. Use 1.365 instead of 1.161 for water targets. Constants uncertain within 0.8-1.5. Program target densities 2500 (sedimentary) and 2750 (crystalline) kg/m^3. Valid in the GRAVITY regime for solid rock, 'all terrestrial impacts larger than a couple of hundred meters in diameter'; NOT for small, strength-dominated craters, so do not use for a punch or stomp crater without a strength-regime scaling. Transient depth d_tc = D_tc/(2*sqrt(2)) (Eq. 25*).",
+   "who_when": "Collins, Melosh & Marcus 2005"
+  },
+  {
+   "key": "crater_collins_simple_final_diameter",
+   "category": "cratering",
+   "label": "Simple crater final rim-to-rim diameter",
+   "status": "verified",
+   "unit_si": "m",
+   "display": "D_fr ~ 1.25 D_tc  (simple craters: D_tc <= 2.56 km)",
+   "sources": [
+    {
+     "title": "Collins et al. 2005, Eq. 22*",
+     "url": "https://impact.ese.ic.ac.uk/static/effects.pdf"
+    }
+   ],
+   "notes": "Complex craters (D_tc > 2.56 km): D_fr = 1.17 D_tc^1.13 / D_c^0.13 (km), D_c = 3.2 km (Eq. 27*, McKinnon & Schenk 1985 form). Breccia lens volume V_br ~ 0.032 D_fr^3 (Eq. 23*).",
+   "who_when": "Collins et al. 2005"
+  },
+  {
+   "key": "aero_stagnation_temperature_formula",
+   "category": "aerothermal",
+   "label": "Stagnation (total) temperature, calorically perfect gas",
+   "status": "verified",
+   "unit_si": "K",
+   "display": "T0 = T [1 + (gamma - 1)/2 * M^2], gamma = 1.4",
+   "sources": [
+    {
+     "title": "NASA Glenn BGH: Stagnation Temperature - Real Gas Effects",
+     "url": "https://www.grc.nasa.gov/www/BGH/stagtmp.html"
+    }
+   ],
+   "notes": "Isentropic total-temperature relation. Total temperature does not change across a shock, so it equals the stagnation-point temperature (perfect gas).",
+   "who_when": "NASA GRC"
+  },
+  {
+   "key": "aero_real_gas_validity_caution",
+   "category": "aerothermal",
+   "label": "Validity limit of the perfect-gas stagnation formula",
+   "status": "verified",
+   "unit_si": "1",
+   "display": "Diverges from about Mach 3 (vibrational excitation); at higher Mach O2/N2 dissociate and then ionize, so T0 is greatly over-predicted at hypersonic (> ~Mach 5) speeds",
+   "sources": [
+    {
+     "title": "NASA Glenn BGH: Stagnation Temperature - Real Gas Effects",
+     "url": "https://www.grc.nasa.gov/www/BGH/stagtmp.html"
+    },
+    {
+     "title": "NASA Glenn BGH: Real gas effects",
+     "url": "https://www.grc.nasa.gov/www/BGH/realgas.html"
+    },
+    {
+     "title": "CAIB Report Vol. I (2003), section 3.6",
+     "url": "http://s3.amazonaws.com/akamai.netstorage/anon.nasa-global/CAIB/CAIB_lowres_full.pdf"
+    },
+    {
+     "title": "Wikipedia: Hypersonic speed (hypersonic regime conventionally > Mach 5)",
+     "url": "https://en.wikipedia.org/wiki/Hypersonic_speed"
+    }
+   ],
+   "notes": "NASA: 'beginning around Mach 3, real gas effects become increasingly important with increasing Mach number'; NASA gives a variable-gamma correction (theta = 5500 deg R, NACA Report 1135). Illustration (calculation, reproduced by a verifier): at Mach 25 and T = 216.65 K the perfect-gas formula gives ~27,300 K, whereas CAIB says dissociated air at the Shuttle leading edge reaches ~10,000 deg F (~5,800 K). Wikipedia supports the conventional 'hypersonic > Mach 5' boundary. Dissociation onset temperatures for O2/N2 were NOT verified; Wikipedia's ~2000 K figure for nitrogen is tagged [citation needed] and was not used. Above about Mach 5-6 the engine should use a real-gas model or cap temperatures.",
+   "who_when": "NASA GRC; CAIB 2003"
+  },
+  {
+   "key": "aero_shuttle_peak_surface_temperature",
+   "category": "aerothermal",
+   "label": "Space Shuttle reentry: nose cap / wing leading edge temperature",
+   "status": "verified",
+   "value_si": 1922,
+   "unit_si": "K",
+   "low_si": 1811,
+   "high_si": 1922,
+   "display": "2,800-3,000 deg F (1,811-1,922 K); other wing/fuselage areas up to 2,300 deg F (1,533 K)",
+   "sources": [
+    {
+     "title": "Columbia Accident Investigation Board Report, Vol. I (2003), Ch. 1 and section 3.6",
+     "url": "http://s3.amazonaws.com/akamai.netstorage/anon.nasa-global/CAIB/CAIB_lowres_full.pdf"
+    }
+   ],
+   "notes": "CAIB: 'The nose and leading edges of the wings are exposed to superheated air temperatures of 2,800 to 3,000 degrees Fahrenheit, depending upon re-entry profile.' Wing leading edge temperatures normally reached nearly 3,000 deg F. K = (F - 32) x 5/9 + 273.15.",
+   "who_when": "CAIB 2003"
+  },
+  {
+   "key": "aero_shuttle_shock_layer_air_temperature",
+   "category": "aerothermal",
+   "label": "Space Shuttle reentry: air temperature near the leading edge (shock layer)",
+   "status": "verified",
+   "value_si": 5811,
+   "unit_si": "K",
+   "display": "~10,000 deg F (~5,800 K), dissociated air",
+   "sources": [
+    {
+     "title": "CAIB Report Vol. I, section 3.6",
+     "url": "http://s3.amazonaws.com/akamai.netstorage/anon.nasa-global/CAIB/CAIB_lowres_full.pdf"
+    }
+   ],
+   "notes": "CAIB: 'The air immediately around the leading edge surface can reach 10,000 degrees Fahrenheit; however, the boundary layer shields the Orbiter so that the actual temperature is only approximately 3,000 degrees Fahrenheit at the leading edge.' A real-world cap for comparison with the perfect-gas formula.",
+   "who_when": "CAIB 2003"
+  }
+ ],
+ "gaps": [
+  "Editing-pass limitation: the shared web-search budget for this run was exhausted before the editor's first search, so the editor could only fetch URLs already known (Springer abstract, IBC page, lecture PDF, Glasstone PDFs, a few Wikipedia pages). Items below might be closable with a follow-up search session.",
+  "Sea ice compressive strength: still no value. Timco & Weeks (2010) is closed access (ScienceDirect 403, no abstract retrievable); Wikipedia's Sea ice article cites it without a number.",
+  "Reinforced-concrete building SEVERE-damage overpressure (request F): not quantified. Glasstone gives it only as distances in the Fig. 5.140 nomograph; the OTA 1979 'Effects of Nuclear War' report (likely tabulated alternative) could not be fetched (FAS mirror empty, Princeton mirror 403). Only the 10 psi light-damage figure for Glasstone's blast-resistant Type 1 building was added.",
+  "Kinney & Graham (1985): stated validity range of scaled distance Z and the standard surface-burst reflection multiplier (~1.8-2 x W) not verified; the book was not opened.",
+  "Krakatoa 1883: no sourced energy RANGE; only the single ~200 Mt figure via Wikipedia (citing a removed BoM page and a 2007 popular book).",
+  "GBU-43 MOAB yield: no primary/official source; only an uncited Wikipedia infobox.",
+  "Shear strength in Pa for asphalt concrete and for freshwater/sea ice (requested per surface in A): not found. Asphalt ultimate punch capacity (1-5 MPa) is an order-of-magnitude estimate.",
+  "Keratin claw/scale friction on every surface: no measured data; all traction coefficients are reasoned estimates. Dai, Gorb & Schwarz (2002, beetle claws) is cited for the interlocking-vs-roughness mechanism only.",
+  "ACI 318 primary code text not opened: the bearing cap sqrt(A2/A1) <= 2 is confirmed only by a university lecture's worked example; the ACI 318-19 two-way shear size-effect factor lambda_s, the plain-concrete two-way shear limit (~2.66 sqrt(f'c) psi, used for the slab punch-through low bound), and ACI 360 slab-on-ground methods were not verified.",
+  "Composition B TNT equivalence: only Wikipedia's RE factor table (1.33, tagged 'citation needed'); the M67 TNT-equivalent energy (~1.0 MJ) is therefore an estimate.",
+  "Dissociation onset temperatures for O2 and N2 (commonly quoted ~2,000-2,500 K and ~4,000 K at 1 atm) not verified; Wikipedia's ~2000 K for nitrogen is citation-needed and was not used.",
+  "Hiroshima primary source (Malik 1985, LA-8819) not opened; the DS02 re-evaluation (~16 kt) not verified. Castle Bravo official DOE/NV-209 list not retrieved (404 at old and nnss.gov paths).",
+  "Chicxulub mainstream estimates (~1e23-1e24 J; Morgan 2022, Richards 2015, Kring 2007, Pope 1997) seen only via Wikipedia's summary; the papers were not opened.",
+  "Earth gravitational binding energy: PREM-based 2.49e32 J not reproduced (Wikipedia only).",
+  "Collins et al. (2017) revised airblast model not checked; the 2005 fits are used.",
+  "Intact granite friction angle (45-55 deg) used for the rock bearing confinement factor and cohesion is an unsourced assumption; Goodman (1989) attribution and the Carter & Kulhawy Hoek-Brown bearing formula not verified.",
+  "A36 steel properties and indentation constraint factor from secondary sources (Wikipedia citing AISC Manual and Fischer-Cripps 2007); AISC 0.6 Fy shear convention not verified.",
+  "IUGG mean Earth radius R1 = 6371.0088 km not verified; NASA 6371.000 km used.",
+  "ISA values from Wikipedia's summary of ICAO Doc 7488 (document itself not opened), cross-checked for internal consistency with NIST pressure and the ideal-gas law.",
+  "Clay strength bands: 'ASTM D-2488' kPa bands come from a software library's documentation (secondary); BS 5930 via BGS and ISO 14688-2 via Geocentrix (secondary). Concrete f'c minimums from the 2019 Minnesota-amended IRC table; current IRC text not checked."
+ ]
+}

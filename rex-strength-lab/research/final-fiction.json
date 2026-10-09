@@ -1,0 +1,1286 @@
+{
+ "facts": [
+  {
+   "key": "marvel_handbook_ton_unit",
+   "category": "marvel_handbook_scale",
+   "label": "Which 'ton' the Marvel handbooks use",
+   "status": "estimate",
+   "value_si": 907.18474,
+   "low_si": 907.18474,
+   "high_si": 1016.047,
+   "unit_si": "kg per handbook 'ton'",
+   "display": "Not defined in the handbooks; the US short ton (2,000 lb) is the likely reading",
+   "who_when": "OHOTMU Deluxe Edition (1985-88), Master Edition (1990-93), 2004-era power grid",
+   "notes": "No handbook text searched defines 'ton'. The scales mix pounds and tons in US customary units: Master Edition #8 has 'Peak human (able to lift double one's own body weight to 800 pound range)' and 'Enhanced human (able to lift in the 800 pound to 2 ton range)', and the 2004 grid has 'Superhuman: 800 lbs-25 ton range'. So the short ton (907.18474 kg) is the natural reading, but it is an inference. Both verifiers agree. high_si is the long ton, given as a bound. All handbook conversions in this dataset use the short ton. Also relevant to the engine: handbook strength figures are overhead presses (see ohotmu_lift_definition_overhead_press).",
+   "sources": [
+    {
+     "title": "Internet Archive scan, OHOTMU Master Edition #8 (1991), full-text search",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-MarvelHandbook008+AND+%28%22able+to+lift%22+AND+STRENGTH%29&size=5"
+    },
+    {
+     "title": "Internet Archive scan, OHOTMU: Hulk 2004, power grid key",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-OfficialHandbookoftheMarvelUniverse-Hulk2004+AND+%28%22body+weight%22+OR+Incalculable%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "ohotmu_lift_definition_overhead_press",
+   "category": "marvel_handbook_scale",
+   "label": "What a handbook 'lift' means: overhead press",
+   "status": "canon_stated",
+   "unit_si": "definition (no value)",
+   "display": "STRENGTH: 'Ability to lift weight above one's head with arms fully extended'; Deluxe entries say 'lift (press)'",
+   "who_when": "OHOTMU Master Edition #8 (1991) strength key; Deluxe Edition (1985-88) entries",
+   "notes": "Added from the verifiers. The Master Edition key defines STRENGTH as lifting weight above the head with arms fully extended. The Deluxe Edition entries consistently say 'lift (press)'. So every handbook tonnage is a static overhead-press capacity under Earth gravity: force = mass x 9.80665 m/s^2. It is not a throw, a punch or a dynamic impulse.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, Master Edition #8 strength key (overhead definition)",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-MarvelHandbook008%20AND%20%28%22Below%20normal%22%20OR%20%22Subnormal%22%20OR%20%22unable%20to%20lift%22%29&size=5"
+    },
+    {
+     "title": "Internet Archive scan, OHOTMU Deluxe #12 ('lift (press)' wording)",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-OfficialHandbookoftheMarvelUniversev212+AND+%28%22Spider-Man+possesses+superhuman+strength%22+AND+tons%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "ohotmu_deluxe_class100_definition",
+   "category": "marvel_handbook_scale",
+   "label": "Deluxe Edition meaning of 'Class 100'",
+   "status": "canon_stated",
+   "value_si": 90718.474,
+   "low_si": 90718.474,
+   "unit_si": "kg",
+   "display": "Class 100 = 'able to routinely lift 100+ tons' (a lower bound with no top)",
+   "who_when": "OHOTMU Deluxe Edition #1 (Marvel, cover date Dec 1985)",
+   "notes": "Two passages in Deluxe #1 define it. The Abomination entry: 'approximately 100 tons. He is not on the \"Class 100\" strength level since he cannot routinely lift (press) in excess of 100 tons'. The Absorbing Man's strength 'can increase to the Class 100 range (able to routinely lift 100+ tons)'. So in 1985-88 'Class 100' is open-ended: any capacity above 100 tons. Value is 100 short tons. The Master Edition later redefined Class 100 as 90-100 tons (see ohotmu_master_class100), and 2004-era entries again use 'Class 100 ... in excess of 100 tons'. Read through Internet Archive OCR snippets. Both verifiers confirmed.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, OHOTMU Deluxe Edition #1, full-text search",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-OfficialHandbookoftheMarvelUniversev201+AND+%28%22routinely+lift%22%29&size=5"
+    },
+    {
+     "title": "Wikipedia: Official Handbook of the Marvel Universe (Deluxe issue dates)",
+     "url": "https://en.wikipedia.org/wiki/Official_Handbook_of_the_Marvel_Universe"
+    }
+   ]
+  },
+  {
+   "key": "ohotmu_master_bodyweight_tiers",
+   "category": "marvel_handbook_scale",
+   "label": "Master Edition strength scale: Below normal, Normal, Athlete, Peak human",
+   "status": "canon_stated",
+   "value_si": 362.873896,
+   "high_si": 362.873896,
+   "unit_si": "kg",
+   "display": "Below normal = cannot lift own body weight; Normal = own body weight; Athlete = 1x-2x body weight; Peak human = 2x body weight up to 800 lb",
+   "who_when": "OHOTMU Master Edition #8 (indicia 'Vol. 3, No. 8, 1991'; cover date July 1991)",
+   "notes": "Verbatim key: 'Below normal (cannot lift one's own body weight) / Normal (able to lift one's own body weight) / Athlete (able to lift from one's own body weight up to double one's own body weight) / Peak human (able to lift double one's own body weight to 800 pound range)'. The verifiers supplied the 'Below normal' tier the researcher left out. value_si is the 800 lb top of Peak human. The lower tiers depend on the character's body mass, which the sim must supply. The scan's indicia identify it as Master Edition Vol. 3 No. 8, 1991. The researcher's claim that the same text is in the 2024 Omnibus was not checked and has been dropped.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, Master Edition #8 strength key",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-MarvelHandbook008+AND+%28%22able+to+lift%22+AND+STRENGTH%29&size=5"
+    },
+    {
+     "title": "Internet Archive scan, Master Edition #8 ('Below normal' tier)",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-MarvelHandbook008%20AND%20%28%22Below%20normal%22%20OR%20%22Subnormal%22%20OR%20%22unable%20to%20lift%22%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "ohotmu_master_enhanced_human",
+   "category": "marvel_handbook_scale",
+   "label": "Master Edition scale: Enhanced human",
+   "status": "canon_stated",
+   "value_si": 1814.36948,
+   "low_si": 362.873896,
+   "high_si": 1814.36948,
+   "unit_si": "kg",
+   "display": "800 lb to 2 tons",
+   "who_when": "OHOTMU Master Edition #8 (1991)",
+   "notes": "'Enhanced human (able to lift in the 800 pound to 2 ton range)'. Assumes short tons. Both verifiers confirmed.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, Master Edition strength key",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-MarvelHandbook008+AND+%28%22Enhanced+human%22%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "ohotmu_master_class10",
+   "category": "marvel_handbook_scale",
+   "label": "Master Edition scale: Superhuman Class 10",
+   "status": "canon_stated",
+   "value_si": 9071.8474,
+   "low_si": 1814.36948,
+   "high_si": 9071.8474,
+   "unit_si": "kg",
+   "display": "2 to 10 tons",
+   "who_when": "OHOTMU Master Edition #8 (1991)",
+   "notes": "'Superhuman Class 10 (able to lift in the 2 to 10 ton range)'. Assumes short tons.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, Master Edition strength key",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-MarvelHandbook008+AND+%28%22Class+10%22+AND+%22ton+range%22%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "ohotmu_master_class25",
+   "category": "marvel_handbook_scale",
+   "label": "Master Edition scale: Superhuman Class 25",
+   "status": "canon_stated",
+   "value_si": 22679.6185,
+   "low_si": 9071.8474,
+   "high_si": 22679.6185,
+   "unit_si": "kg",
+   "display": "10 to 25 tons",
+   "who_when": "OHOTMU Master Edition #8 (1991)",
+   "notes": "'Superhuman Class 25 (able to lift in the 10 to 25 ton range)'. Assumes short tons.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, Master Edition strength key",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-MarvelHandbook008+AND+%28%22Class+25%22+OR+%22Class+50%22%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "ohotmu_master_class50",
+   "category": "marvel_handbook_scale",
+   "label": "Master Edition scale: Superhuman Class 50",
+   "status": "canon_stated",
+   "value_si": 45359.237,
+   "low_si": 22679.6185,
+   "high_si": 45359.237,
+   "unit_si": "kg",
+   "display": "25 to 50 tons",
+   "who_when": "OHOTMU Master Edition #8 (1991)",
+   "notes": "'Superhuman Class 50 (able to lift in the 25 to 50 ton range)'. Assumes short tons.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, Master Edition strength key",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-MarvelHandbook008+AND+%28%22Class+25%22+OR+%22Class+50%22%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "ohotmu_master_class75",
+   "category": "marvel_handbook_scale",
+   "label": "Master Edition scale: Superhuman Class 75",
+   "status": "canon_stated",
+   "value_si": 68038.8555,
+   "low_si": 45359.237,
+   "high_si": 68038.8555,
+   "unit_si": "kg",
+   "display": "50 to 75 tons",
+   "who_when": "OHOTMU Master Edition #8 (1991)",
+   "notes": "'Superhuman Class 75 (able to lift in the 50 to 75 ton range)'. Assumes short tons.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, Master Edition strength key",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-MarvelHandbook008+AND+%28%22Class+75%22%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "ohotmu_master_class90",
+   "category": "marvel_handbook_scale",
+   "label": "Master Edition scale: Superhuman Class 90",
+   "status": "canon_stated",
+   "value_si": 81646.6266,
+   "low_si": 68038.8555,
+   "high_si": 81646.6266,
+   "unit_si": "kg",
+   "display": "75 to 90 tons",
+   "who_when": "OHOTMU Master Edition #8 (1991)",
+   "notes": "'Superhuman Class 90 (able to lift in the 75 to 90 ton range)'. Assumes short tons.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, Master Edition strength key",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-MarvelHandbook008+AND+%28%22Class+10%22+AND+%22ton+range%22%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "ohotmu_master_class100",
+   "category": "marvel_handbook_scale",
+   "label": "Master Edition scale: Superhuman Class 100",
+   "status": "canon_stated",
+   "value_si": 90718.474,
+   "low_si": 81646.6266,
+   "high_si": 90718.474,
+   "unit_si": "kg",
+   "display": "90 to 100 tons (narrower than the Deluxe Edition's open-ended '100+')",
+   "who_when": "OHOTMU Master Edition #8 (1991)",
+   "notes": "'Superhuman Class 100 (able to lift in the 90 to 100 ton range)', followed directly by 'Incalculable (able to lift in excess of 100 tons)'. In this edition anything above 100 tons is a separate tier. Do not merge this with the Deluxe (1985-88) or 2004-era meaning of 'Class 100' (over 100 tons). Assumes short tons.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, Master Edition strength key",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-MarvelHandbook008+AND+%28%22Class+10%22+AND+%22ton+range%22%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "ohotmu_master_incalculable",
+   "category": "marvel_handbook_scale",
+   "label": "Master Edition scale: Incalculable",
+   "status": "canon_stated",
+   "value_si": 90718.474,
+   "low_si": 90718.474,
+   "unit_si": "kg",
+   "display": "In excess of 100 tons (no upper bound)",
+   "who_when": "OHOTMU Master Edition #8 (1991)",
+   "notes": "'Incalculable (able to lift in excess of 100 tons)'. value_si is the lower bound only. One sheet in this issue reads 'Intelligence: Above normal Strength: Incalculable Speed: Supersonic Flight speed: Warp speed'. It is probably Gladiator II's (see gladiator_handbook_master_1991_inferred), but the OCR snippet does not show the name.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, Master Edition strength key",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-MarvelHandbook008+AND+%28%22Class+10%22+AND+%22ton+range%22%29&size=5"
+    },
+    {
+     "title": "Internet Archive scan, Master Edition #8 'Strength: Incalculable' sheet",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-MarvelHandbook008%20AND%20%28%22Strength%3A%20Incalculable%22%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "ohotmu_2004_grid_level3_peak",
+   "category": "marvel_handbook_scale",
+   "label": "2004-era power grid Strength 1-3 (relative to body weight)",
+   "status": "canon_stated",
+   "unit_si": "multiple of body weight",
+   "display": "1 Weak: cannot lift own body weight; 2 Normal: own body weight; 3 Peak human: twice own body weight",
+   "who_when": "OHOTMU: Hulk 2004 (Marvel, 2004) power grid key; same grid in the other 2004-05 one-shots",
+   "notes": "Key, read through noisy OCR: 'STRENGTH: Ability to lift weight / 1 Weak: cannot lift own body weight / 2 Normal: able to lift own body weight / 3 Peak human: able to lift twice own body weight'. No fixed mass, so the sim needs the character's body mass. The claim that the same grid appears in the other 2004-05 one-shots was not separately verified.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, OHOTMU Hulk 2004, full-text search",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-OfficialHandbookoftheMarvelUniverse-Hulk2004+AND+%28%22body+weight%22+OR+Incalculable%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "ohotmu_2004_grid_level4",
+   "category": "marvel_handbook_scale",
+   "label": "2004-era power grid Strength 4",
+   "status": "canon_stated",
+   "value_si": 22679.6185,
+   "low_si": 362.873896,
+   "high_si": 22679.6185,
+   "unit_si": "kg",
+   "display": "Superhuman: 800 lbs - 25 tons",
+   "who_when": "OHOTMU: Hulk 2004",
+   "notes": "'4 Superhuman: 800 lbs-25 ton range'. Assumes short tons.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, OHOTMU Hulk 2004",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-OfficialHandbookoftheMarvelUniverse-Hulk2004+AND+%28%22body+weight%22+OR+Incalculable%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "ohotmu_2004_grid_level5",
+   "category": "marvel_handbook_scale",
+   "label": "2004-era power grid Strength 5",
+   "status": "canon_stated",
+   "value_si": 68038.8555,
+   "low_si": 22679.6185,
+   "high_si": 68038.8555,
+   "unit_si": "kg",
+   "display": "Superhuman: 25-75 tons",
+   "who_when": "OHOTMU: Hulk 2004",
+   "notes": "'5 Superhuman: 25-75 ton range' (the OCR reads 'Ion' for 'ton'). Assumes short tons.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, OHOTMU Hulk 2004",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-OfficialHandbookoftheMarvelUniverse-Hulk2004+AND+%28Incalculable%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "ohotmu_2004_grid_level6",
+   "category": "marvel_handbook_scale",
+   "label": "2004-era power grid Strength 6",
+   "status": "canon_stated",
+   "value_si": 90718.474,
+   "low_si": 68038.8555,
+   "high_si": 90718.474,
+   "unit_si": "kg",
+   "display": "Superhuman: 75-100 tons",
+   "who_when": "OHOTMU: Hulk 2004",
+   "notes": "'6 Superhuman 75-100 ton range'. Assumes short tons.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, OHOTMU Hulk 2004",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-OfficialHandbookoftheMarvelUniverse-Hulk2004+AND+%28Incalculable%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "ohotmu_2004_grid_level7",
+   "category": "marvel_handbook_scale",
+   "label": "2004-era power grid Strength 7 (Incalculable)",
+   "status": "canon_stated",
+   "value_si": 90718.474,
+   "low_si": 90718.474,
+   "unit_si": "kg",
+   "display": "Incalculable: in excess of 100 tons",
+   "who_when": "OHOTMU: Hulk 2004",
+   "notes": "'7 Incalculable: In excess of 100 tons'. Lower bound only. Which characters' grids show a 7 was not confirmed.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, OHOTMU Hulk 2004",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-OfficialHandbookoftheMarvelUniverse-Hulk2004+AND+%28Incalculable%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "captain_america_handbook_strength",
+   "category": "marvel_handbook_character",
+   "label": "Captain America: handbook lift",
+   "status": "canon_stated",
+   "value_si": 362.873896,
+   "high_si": 362.873896,
+   "unit_si": "kg",
+   "display": "'He can lift (press) a maximum of 800 pounds' (Deluxe #2, 1986); 'as strong as a human can be'",
+   "who_when": "OHOTMU Deluxe Edition #2 (cover date Jan 1986); OHOTMU A-Z hardcover vol. 2 (2008)",
+   "notes": "Corrected (both verifiers agreed). The researcher marked this not_quantified, but the Deluxe #2 strength paragraph continues: 'While not superhuman, he is as strong as a human can be. He can lift (press) a maximum of 800 pounds with...' (OCR 'iltl' = 'lift'; the snippet cuts off after 'with'). 800 lb = 362.873896 kg, a maximum overhead press. I re-ran the search and the phrase 'maximum of 800 pounds' is present. The 2008 A-Z HC text says 'Captain America is the most perfect human specimen in existence' with no number, and lists him at 6'2\", 240 lb (108.86 kg). The researcher's statement that '800 lb' did not appear in handbook text was wrong.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, OHOTMU Deluxe #2 ('maximum of 800 pounds')",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-OfficialHandbookoftheMarvelUniversev202%20AND%20%28%22maximum%20of%20800%22%20OR%20%22800%20pounds%22%20OR%20%22800%20lbs%22%29&size=5"
+    },
+    {
+     "title": "Internet Archive scan, OHOTMU 2008 A-Z HC (Captain America, 240 lbs)",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Aofficialhandbook0000unse_i8k4%20AND%20%28%22Captain%20America%22%20AND%20%22240%20lbs%22%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "spider_man_handbook_1986",
+   "category": "marvel_handbook_character",
+   "label": "Spider-Man: handbook lift (Deluxe, unchanged in 2004)",
+   "status": "canon_stated",
+   "value_si": 9071.8474,
+   "low_si": 9071.8474,
+   "high_si": 10160.469,
+   "unit_si": "kg",
+   "display": "Approximately 10 tons",
+   "who_when": "OHOTMU Deluxe Edition #12 (Nov 1986); repeated in OHOTMU: Spider-Man 2004",
+   "notes": "Deluxe #12 and the 2004 Spider-Man handbook both say: 'Spider-Man possesses superhuman strength enabling him to lift (press) approximately 10 tons.' The range runs from short to long ton. The 2004 entry lists him at 5'10\", 165 lb (74.84 kg).",
+   "sources": [
+    {
+     "title": "Internet Archive scan, OHOTMU Deluxe #12",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-OfficialHandbookoftheMarvelUniversev212+AND+%28%22Spider-Man+possesses+superhuman+strength%22+AND+tons%29&size=5"
+    },
+    {
+     "title": "Internet Archive scan, OHOTMU Spider-Man 2004",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-OfficialHandbookoftheMarvelUniverse-Spider-Man2004+AND+%28%22Spider-Man+possesses+superhuman+strength%22%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "spider_man_profile_2007_20_tons",
+   "category": "marvel_handbook_character",
+   "label": "Spider-Man: raised to 20 tons after 'The Other'",
+   "status": "canon_stated",
+   "value_si": 18143.6948,
+   "low_si": 18143.6948,
+   "high_si": 20320.938,
+   "unit_si": "kg",
+   "display": "'Now capable of lifting 20 tons under optimal conditions'",
+   "who_when": "Marvel handbook-format profile, c. 2007; first publication cannot be verified",
+   "notes": "Verbatim OCR: 'Spider-Man possesses superhuman strength (now capable of lifting 20 tons under optimal conditions), reflexes...', following a mention of 'an additional alteration after his recent rebirth' (the 2005-06 'The Other' storyline). It was found as appended handbook-format back matter in an Internet Archive scan labelled Amazing Spider-Man #544 (2007). Which handbook or one-shot first printed it cannot be verified. It is a later handbook-format value doubling the 1986/2004 figure of 10 tons.",
+   "sources": [
+    {
+     "title": "Internet Archive scan labelled Amazing Spider-Man #544, full-text search",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-AmazingSpider-Man-AmazingSpider-Man544+AND+%28%22capable+of+lifting%22%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "wolverine_handbook_strength",
+   "category": "marvel_handbook_character",
+   "label": "Wolverine: handbook strength level",
+   "status": "not_quantified",
+   "unit_si": "kg",
+   "display": "Normal human strength of a man who exercises intensively; no tonnage",
+   "who_when": "OHOTMU: X-Men 2004",
+   "notes": "2004: 'Wolverine possesses the normal human strength of a man of his apparent age, height, and build who engages in intensive regular exercise.' No number. Neither the 1987 Deluxe #14 entry ('Unicorn' to 'Wolverine', Jan 1987) nor the researcher's Essential Wolverine reprint claim was confirmed, so the reprint mention has been removed.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, OHOTMU X-Men 2004",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-OfficialHandbookoftheMarvelUniverse-X-Men2004+AND+%28%22intensive+regular+exercise%22+AND+Wolverine%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "luke_cage_handbook_1986",
+   "category": "marvel_handbook_character",
+   "label": "Luke Cage (as Power Man): handbook lift, 1986",
+   "status": "canon_stated",
+   "value_si": 2721.5542,
+   "low_si": 2721.5542,
+   "high_si": 3048.141,
+   "unit_si": "kg",
+   "display": "Approximately 3 tons",
+   "who_when": "OHOTMU Deluxe Edition #10 (Sept 1986), 'Power Man' entry",
+   "notes": "'Power Man possesses superhuman strength enabling him to lift (press) approximately 3 tons under optimal conditions' (OCR 'lilt' = 'lift'). The entry lists Height 6'6\", Weight 425 lb (192.78 kg). Range is short to long ton.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, OHOTMU Deluxe #10",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-OfficialHandbookoftheMarvelUniversev210+AND+%28%22lilt+%28press%29+approximately%22%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "luke_cage_handbook_2007",
+   "category": "marvel_handbook_character",
+   "label": "Luke Cage: later handbook rating",
+   "status": "canon_stated",
+   "value_si": 22679.6185,
+   "low_si": 22679.6185,
+   "unit_si": "kg",
+   "display": "'Roughly Class 25 or greater'",
+   "who_when": "Civil War: Battle Damage Report (Marvel, 2007)",
+   "notes": "'Cage possesses superhuman strength which has fluctuated over the years but now appears to be roughly Class 25 or greater.' Lower bound only. Looper says this book gives '50 tons', which conflicts with the primary text. Both verifiers treat Looper's figure as wrong.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, Civil War: Battle Damage Report",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-CivilWar-CivilWarBattleDamageReport+AND+%28%22roughly+Class%22%29&size=5"
+    },
+    {
+     "title": "Looper (conflicting secondary claim of 50 tons)",
+     "url": "https://www.looper.com/632413/strongest-superheroes-in-history-ranked/"
+    }
+   ]
+  },
+  {
+   "key": "colossus_handbook_1986",
+   "category": "marvel_handbook_character",
+   "label": "Colossus (armored form): handbook lift, 1986",
+   "status": "canon_stated",
+   "value_si": 63502.9318,
+   "low_si": 63502.9318,
+   "unit_si": "kg",
+   "display": "At least 70 tons",
+   "who_when": "OHOTMU Deluxe Edition #3 (Feb 1986)",
+   "notes": "'As Colossus he can lift (press) at least 70 tons under optimal conditions. It is believed that since he is still a teenager, his strength as Colossus has not yet reached [its peak]'. A verifier confirmed the full sentence. Lower bound only.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, OHOTMU Deluxe #3",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-OfficialHandbookoftheMarvelUniversev203%20AND%20%28%22not%20yet%20reached%22%20OR%20%22teenager%22%20OR%20%2270%20tons%22%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "colossus_handbook_master_1991",
+   "category": "marvel_handbook_character",
+   "label": "Colossus: Master Edition rating, 1991",
+   "status": "canon_stated",
+   "value_si": 90718.474,
+   "low_si": 81646.6266,
+   "high_si": 90718.474,
+   "unit_si": "kg",
+   "display": "'Strength: Athlete, (transformed) Superhuman Class 100', i.e. 90-100 tons on this edition's scale",
+   "who_when": "OHOTMU Master Edition #8 (indicia 1991; cover date July 1991)",
+   "notes": "New entry, filling a gap both verifiers raised. I ran the full-text search myself, and the scan's OCR has the Colossus sheet: 'Height: 6'6\", (transformed) 7'5\" Weight: 250 lbs., (transformed) 500 lbs.' and 'Strength: Athlete, (transformed) Superhuman Class 100', with the same sheet text reading 'while in this transformed state, Colossus also does not breathe'. The name and the stat line come from co-occurring OCR fragments, but the '(transformed)' stat format is unique to this sheet. On the Master Edition key Class 100 means 90-100 tons (short tons assumed). His body mass: 250 lb (113.40 kg) normal, 500 lb (226.80 kg) transformed.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, Master Edition #8 ('(transformed)' stat lines)",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-MarvelHandbook008%20AND%20%28%22%28transformed%29%22%20OR%20%22granting%20him%20superhuman%20strength%22%29&size=5"
+    },
+    {
+     "title": "Internet Archive scan, Master Edition #8 strength key",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-MarvelHandbook008+AND+%28%22Class+10%22+AND+%22ton+range%22%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "colossus_handbook_2008_a_z",
+   "category": "marvel_handbook_character",
+   "label": "Colossus: 2008 A-Z handbook rating",
+   "status": "canon_stated",
+   "value_si": 90718.474,
+   "low_si": 90718.474,
+   "unit_si": "kg",
+   "display": "'Superhuman strength (Class 100)', over 100 tons with no stated top; not 'exactly 100 tons'",
+   "who_when": "Official Handbook of the Marvel Universe A to Z hardcover vol. 2, 'Blackwulf to Crimson Dynamo' (Marvel, 2008)",
+   "notes": "Replaces the researcher's colossus_handbook_2008_claim. The verifiers disagreed: one found the primary text, the other left it as a Looper claim. I re-ran the full-text search on the Internet Archive copy of the 2008 HC and the text is there (scan page 250): 'organic, steel-like substance analogous to osmium and to carbon steel that grants him superhuman strength (Class 100) and a high degree of imperviousness to injury' (OCR 'catijon' = 'carbon'). IA metadata lists v. 2 as 'Blackwulf to Crimson Dynamo', which contains Colossus. Looper's 'exactly 100 tons' misreads 'Class 100'. In 2004-era usage Class 100 means 'in excess of 100 tons' (Hulk 2004: 'Superhuman Class 100 strength, enabling him to lift (press) in excess of 100 tons'), so 90,718.474 kg is a lower bound. The Master Edition meaning (90-100 tons) is different.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, OHOTMU A-Z HC 2008, Colossus entry",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Aofficialhandbook0000unse_i8k4%20AND%20%28osmium%20OR%20%22imperviousness%22%29&size=5"
+    },
+    {
+     "title": "Internet Archive: OHOTMU (2008) lending copy (volume listing)",
+     "url": "https://archive.org/details/officialhandbook0000unse_i8k4"
+    },
+    {
+     "title": "Looper (misreads it as 'exactly 100 tons')",
+     "url": "https://www.looper.com/632413/strongest-superheroes-in-history-ranked/"
+    }
+   ]
+  },
+  {
+   "key": "she_hulk_handbook_1986",
+   "category": "marvel_handbook_character",
+   "label": "She-Hulk: handbook lift, 1986",
+   "status": "canon_stated",
+   "value_si": 68038.8555,
+   "low_si": 68038.8555,
+   "unit_si": "kg",
+   "display": "At least 75 tons",
+   "who_when": "OHOTMU Deluxe Edition #11 (Oct 1986)",
+   "notes": "'In superhuman form the She-Hulk possesses superhuman strength and can lift (press) at least 75 tons. She is continuing to train to lift even [more]'. Lower bound only. No later handbook change was confirmed; the 2004 Avengers entry searched has no tonnage line.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, OHOTMU Deluxe #11",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-OfficialHandbookoftheMarvelUniversev211%20AND%20%28%22at%20least%2075%22%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "thing_handbook_1986",
+   "category": "marvel_handbook_character",
+   "label": "The Thing: handbook lift, 1986",
+   "status": "canon_stated",
+   "value_si": 77110.7029,
+   "low_si": 77110.7029,
+   "high_si": 86363.987,
+   "unit_si": "kg",
+   "display": "85 tons",
+   "who_when": "OHOTMU Deluxe Edition #13 (Dec 1986)",
+   "notes": "'The Thing possesses superhuman strength, enabling him to lift (press) 85 tons. The Thing's strength grew considerably over [the years]...' Range is short to long ton. Another, female entry in the same issue also gives 'approximately 85 tons', so do not mix them up. No later handbook change was confirmed.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, OHOTMU Deluxe #13",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-OfficialHandbookoftheMarvelUniversev213+AND+%2885%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "hulk_handbook_1986_enraged",
+   "category": "marvel_handbook_character",
+   "label": "Hulk (enraged): handbook lift, 1986 and 2004",
+   "status": "canon_stated",
+   "value_si": 90718.474,
+   "low_si": 90718.474,
+   "unit_si": "kg",
+   "display": "Class 100: 'in excess of 100 tons', only when enraged",
+   "who_when": "OHOTMU Deluxe Edition #5 (Apr 1986); OHOTMU: Hulk 2004",
+   "notes": "Deluxe #5: 'The Hulk possesses superhuman strength of the Class 100 level, enabling him to lift (press) in excess of 100 tons. The Hulk only attains this strength level when he is enraged'. Lower bound with no top. Hulk 2004: 'Superhuman Class 100 strength, enabling him to lift (press) in excess of 100 tons. His strength increases in direct proportion [to his rage]...'. One verifier cautions that the 2004 snippet context is unclear about which incarnation a related rage phrase refers to.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, OHOTMU Deluxe #5",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-OfficialHandbookoftheMarvelUniversev205+AND+%28%22The+Hulk+only+attains%22+AND+enraged+AND+calm%29&size=5"
+    },
+    {
+     "title": "Internet Archive scan, OHOTMU Hulk 2004",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-OfficialHandbookoftheMarvelUniverse-Hulk2004+AND+%28%22in+excess+of+100+tons%22%29&size=3"
+    }
+   ]
+  },
+  {
+   "key": "hulk_handbook_1986_calm",
+   "category": "marvel_handbook_character",
+   "label": "Hulk (calm): handbook lift, 1986",
+   "status": "canon_stated",
+   "value_si": 63502.9318,
+   "unit_si": "kg",
+   "display": "'Perhaps in the 70 ton range'",
+   "who_when": "OHOTMU Deluxe Edition #5 (Apr 1986)",
+   "notes": "'In a totally calm state his functional strength is significantly less, perhaps in the 70 ton range'. The wording is hedged. 70 short tons.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, OHOTMU Deluxe #5",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-OfficialHandbookoftheMarvelUniversev205+AND+%28%22The+Hulk+only+attains%22+AND+enraged+AND+calm%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "hulk_handbook_master_edition",
+   "category": "marvel_handbook_character",
+   "label": "Hulk: Master Edition ratings by incarnation",
+   "status": "canon_stated",
+   "value_si": 90718.474,
+   "low_si": 68038.8555,
+   "high_si": 90718.474,
+   "unit_si": "kg",
+   "display": "Grey: Class 75, potentially Class 100; green and merged 'new' Hulk: Class 100 (on this scale, 90-100 tons)",
+   "who_when": "OHOTMU Master Edition #8 (indicia 'Vol. 3, No. 8, 1991'; cover date July 1991)",
+   "notes": "'Strength: Normal (as Banner), Superhuman Class 75, potentially Superhuman Class 100 (as grey Hulk), Superhuman Class 100 (as green Hulk), Superhuman Class 100 (as new Hulk)'. The issue number the researcher could not verify is settled by the scan's indicia. Wikipedia lists Hulk among the #8 sheets. On the Master Edition key Class 100 means 90-100 tons, so this edition rates Hulk below its own 'Incalculable' tier, an apparent step down from 1986's 'in excess of 100 tons'. low_si is the bottom of the grey Hulk's Class 75 band (50-75 tons), whose top is 68,038.86 kg.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, Master Edition #8 Hulk sheet",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-MarvelHandbook008+AND+%28%22Class+75%22%29&size=5"
+    },
+    {
+     "title": "Internet Archive scan, Master Edition #8 indicia",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-MarvelHandbook008%20AND%20%28%221991%22%20OR%20%22Master%20Edition%22%29&size=5"
+    },
+    {
+     "title": "Wikipedia: Official Handbook of the Marvel Universe (Master Edition contents)",
+     "url": "https://en.wikipedia.org/wiki/Official_Handbook_of_the_Marvel_Universe"
+    }
+   ]
+  },
+  {
+   "key": "thor_handbook_1986",
+   "category": "marvel_handbook_character",
+   "label": "Thor: handbook lift, 1986",
+   "status": "canon_stated",
+   "value_si": 90718.474,
+   "low_si": 90718.474,
+   "unit_si": "kg",
+   "display": "Class 100: over 100 tons; doubled by his belt of strength",
+   "who_when": "OHOTMU Deluxe Edition #13 (Dec 1986)",
+   "notes": "'Thor possesses Class 100 strength, enabling him to lift (press) over 100 tons. Thor's strength is doubled when he wears his [enchanted belt of strength]'. The same entry says 'the average Asgardian male can lift about 30 tons' (27,215.5422 kg). Lower bound only. 'At least 200 tons with the belt' (181,436.948 kg) is my arithmetic, not a stated figure. No Master Edition or 2004 rating was confirmed.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, OHOTMU Deluxe #13",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-OfficialHandbookoftheMarvelUniversev213%20AND%20%28%22over%20100%20tons%22%20OR%20%22Asgardian%20male%22%20OR%20%22belt%20of%20strength%22%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "hercules_handbook_1986",
+   "category": "marvel_handbook_character",
+   "label": "Hercules: handbook lift, 1986",
+   "status": "canon_stated",
+   "value_si": 90718.474,
+   "low_si": 90718.474,
+   "unit_si": "kg",
+   "display": "Class 100: over 100 tons",
+   "who_when": "OHOTMU Deluxe Edition #5 (Apr 1986)",
+   "notes": "'Hercules is of \"Class 100\" strength, able to lift (press) over 100 tons. (The average male Olympian god is capable of lifting about 25 tons.)' Both verifiers recovered the comparison figure: 25 short tons = 22,679.6185 kg. The entry lists his weight as 325 lb (147.42 kg). Lower bound only. No Master Edition or 2004 rating was confirmed.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, OHOTMU Deluxe #5 (Hercules and Olympian average)",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-OfficialHandbookoftheMarvelUniversev205+AND+%28%22Olympian+god%22+OR+%22average+male%22%29&size=3"
+    },
+    {
+     "title": "Internet Archive scan, OHOTMU Deluxe #5 (Hercules strength level)",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-OfficialHandbookoftheMarvelUniversev205+AND+%28%22Strength+level%3A+Hercules%22%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "gladiator_handbook_1986",
+   "category": "marvel_handbook_character",
+   "label": "Gladiator (Shi'ar Praetor): handbook lift, 1986",
+   "status": "canon_stated",
+   "value_si": 90718.474,
+   "low_si": 90718.474,
+   "unit_si": "kg",
+   "display": "Class 100: over 100 tons; 'uppermost limit... unknown'",
+   "who_when": "OHOTMU Deluxe Edition #5 (Apr 1986)",
+   "notes": "'Gladiator possesses Class 100 strength, enabling him to lift (press) over 100 tons. The uppermost limit of Gladiator's strength is unknown.' He can also 'boost his strength enough to lift (press) beyond what others in the Class 100 strength category can lift.' No upper number. The researcher's name 'Kallark' is not in the 1986 text; Master Edition #8 (1991) gives his real name as 'Unrevealed'.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, OHOTMU Deluxe #5 (uppermost limit)",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-OfficialHandbookoftheMarvelUniversev205%20AND%20%28%22capable%20of%20lifting%20about%22%20OR%20%22uppermost%20limit%22%29&size=5"
+    },
+    {
+     "title": "Internet Archive scan, OHOTMU Deluxe #5 (beyond Class 100)",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-OfficialHandbookoftheMarvelUniversev205+AND+%28%22beyond+what+others%22+OR+%22Gladiator+possesses%22%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "gladiator_handbook_master_1991_inferred",
+   "category": "marvel_handbook_character",
+   "label": "Gladiator II: probable Master Edition rating, 1991",
+   "status": "claimed",
+   "value_si": 90718.474,
+   "low_si": 90718.474,
+   "unit_si": "kg",
+   "display": "Probably 'Strength: Incalculable' (over 100 tons); the name link is inferred",
+   "who_when": "OHOTMU Master Edition #8 (1991)",
+   "notes": "Cannot verify by name. I ran the full-text search myself. The issue has a 'GLADIATOR II' sheet ('Real name: Unrevealed', 'Praetor (leader) of the Shi'ar Imperial Guard', height 6'8\", weight 410 lb). The same scan has a sheet reading 'Intelligence: Above normal Strength: Incalculable Speed: Supersonic Flight speed: Warp speed', but the OCR snippet does not show the name. The issue's other sheets (Attuma, Blacklash, Captain Ultra, Colossus, Devil Dinosaur, Dragon Man, Elektra, Hulk, Jackal, Kang, Lamprey, Machete, Makkari, Manslaughter and others) make warp-speed flight plus incalculable strength fit only Gladiator, but that is my inference. If correct, this is the Master Edition's top tier, above Hulk's Class 100 (90-100 tons) in the same issue.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, Master Edition #8 (Gladiator II sheet and 'Strength: Incalculable')",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-MarvelHandbook008%20AND%20%28Gladiator%20AND%20Incalculable%29&size=5"
+    },
+    {
+     "title": "Internet Archive scan, Master Edition #8 'Warp speed' / Imperial Guard",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-MarvelHandbook008%20AND%20%28%22Warp%20speed%22%20OR%20%22Imperial%20Guard%22%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "sentry_handbook_2007",
+   "category": "marvel_handbook_character",
+   "label": "Sentry: handbook rating",
+   "status": "canon_stated",
+   "value_si": 90718.474,
+   "low_si": 90718.474,
+   "unit_si": "kg",
+   "display": "'Superhuman Class 100 strength'",
+   "who_when": "Civil War: Battle Damage Report (Marvel, 2007)",
+   "notes": "'Empowered directly by solar radiation, Sentry possesses superhuman Class 100 strength, speed, intelligence...' The earlier All-New OHOTMU A to Z #9 (2006) says only 'The Sentry possesses remarkable levels of superhuman strength, speed, and intelligence', with no class or tonnage. Lower bound only, reading Class 100 in its 2004-era sense of 'in excess of 100 tons'.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, Civil War: Battle Damage Report",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-CivilWar-CivilWarBattleDamageReport+AND+%28%22Sentry+possesses%22%29&size=5"
+    },
+    {
+     "title": "Internet Archive scan, All-New OHOTMU A to Z #9",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-OfficialHandbooktotheMarvelUniverse-All-NewOfficialHandbookoftheMarvelUniverseAtoZ09+AND+%28%22remarkable+levels+of+superhuman+strength%22%29&size=5"
+    }
+   ]
+  },
+  {
+   "key": "secret_wars_4_hulk_mountain",
+   "category": "canon_feat_stated",
+   "label": "Secret Wars #4: Hulk holds up a mountain range",
+   "status": "canon_stated",
+   "value_si": 136077711000000,
+   "low_si": 136077711000000,
+   "high_si": 152407036320000,
+   "unit_si": "kg",
+   "display": "150 billion tons ('at least' / 'over' in press accounts)",
+   "who_when": "Marvel Super Heroes Secret Wars #4 (Marvel, cover date Aug 1984; series May 1984 - Apr 1985), written by Jim Shooter",
+   "notes": "Molecule Man drops a mountain range on the heroes and Hulk holds it overhead. Screen Rant (Peters, 2026): 'According to Reed Richards, the Hulk carried at least 150 billion tons'. Screen Rant (Godino, 2020): 'is said to weigh over 150 billion tons and span over two miles', naming no speaker. canon_stated rests on this press attribution; the exact wording, speaker and page cannot be verified (no scan or transcript seen). The researcher's 'collector listing' had no URL and has been dropped. Range is short to long ton; metric would be 1.5e14 kg. Static load at g = 9.80665 m/s^2: about 1.334e15 N with short tons.",
+   "sources": [
+    {
+     "title": "Screen Rant: Heaviest thing Hulk has lifted (M. Peters, Apr 25, 2026)",
+     "url": "https://screenrant.com/hulk-heaviest-think-lifted-marvel/"
+    },
+    {
+     "title": "Screen Rant: The Hulk Has Lifted BILLIONS of Tons (E. Godino, May 31, 2020)",
+     "url": "https://screenrant.com/hulk-strength-maximum-weight/"
+    },
+    {
+     "title": "Wikipedia: Secret Wars (series dates)",
+     "url": "https://en.wikipedia.org/wiki/Secret_Wars"
+    }
+   ]
+  },
+  {
+   "key": "all_star_superman_200_quintillion",
+   "category": "canon_feat_stated",
+   "label": "All-Star Superman: strength test after the sun-dive",
+   "status": "canon_stated",
+   "value_si": 1.81436948e+23,
+   "low_si": 1.81436948e+23,
+   "high_si": 2.0320938176e+23,
+   "unit_si": "kg",
+   "display": "200 quintillion tons (2e20 tons), 'three times more than before'; verb varies by source (push / hold up / lift)",
+   "who_when": "All-Star Superman #1 (DC; first issue released Nov 2005), Grant Morrison and Frank Quitely; the brief's '#3' appears wrong",
+   "notes": "The figure is consistent across Looper ('holds up a weight of 200 quintillion tons with one hand behind his back') and Screen Rant ('lifts 200 quintillion tons with one hand'), neither naming the issue. Placement in #1 rests on one issue review: 'Superman is able to push 200 quintillion tons. That's three times more than before (!) and counting!' Issue #3 is the Samson/Atlas issue. A fan caption reads 'the equivalent of 200 quintillion tons', so it may be a force equivalent rather than a literal mass; treat it as a force. Exact panel wording, page, tester and cover date (Jan 2006) cannot be verified. Wikipedia confirms only that the first issue was released in November 2005. Range is short to long ton. As a force at g = 9.80665: about 1.779e24 N with short tons.",
+   "sources": [
+    {
+     "title": "Looper: How Strong Is Superman? (J. H. Kantor, updated Aug 24, 2026)",
+     "url": "https://www.looper.com/1943648/how-strong-superman-powers-explained"
+    },
+    {
+     "title": "Issue #1 review placing the test in #1",
+     "url": "https://tomwritesaboutstuff.com/loneliness-and-cheeseburgers/all-star-superman-issue-001/"
+    },
+    {
+     "title": "Screen Rant: Superman's most powerful feat (N. Ayala, Apr 26, 2026)",
+     "url": "https://screenrant.com/how-much-can-superman-lift-dc-canon/"
+    },
+    {
+     "title": "Wikipedia: All-Star Superman (release date of #1)",
+     "url": "https://en.wikipedia.org/wiki/All-Star_Superman"
+    }
+   ]
+  },
+  {
+   "key": "all_star_superman_pre_boost_derived",
+   "category": "canon_feat_stated",
+   "label": "All-Star Superman: implied strength before the boost (derived)",
+   "status": "estimate",
+   "value_si": 6.0478982667e+22,
+   "low_si": 4.5359237e+22,
+   "high_si": 6.0478982667e+22,
+   "unit_si": "kg",
+   "display": "About 50-67 quintillion short tons (derived; depends on reading 'three times more' as 3x or 4x)",
+   "who_when": "Derived from the All-Star Superman #1 '200 quintillion ... three times more than before' remark (as reported)",
+   "notes": "Not a number in the comic. The verifiers differed on status; I set it to estimate because it is our arithmetic, not a stated or sourced figure. Reading 'three times more than before' as 3x gives 2e20 / 3 = 6.667e19 short tons = 6.0479e22 kg (fan sites repeat '66.67 quintillion'). Reading it as 4x gives 5e19 short tons = 4.5359e22 kg. The 'three times' wording comes from a secondary review; the comic's own wording is unverified.",
+   "sources": [
+    {
+     "title": "Issue #1 review ('three times more than before')",
+     "url": "https://tomwritesaboutstuff.com/loneliness-and-cheeseburgers/all-star-superman-issue-001/"
+    }
+   ]
+  },
+  {
+   "key": "superman_v3_13_earth_bench",
+   "category": "canon_feat_stated",
+   "label": "Superman vol. 3 #13: bench-presses the weight of the Earth",
+   "status": "canon_stated",
+   "value_si": 5.9724e+24,
+   "low_si": 5.9724e+24,
+   "high_si": 6e+24,
+   "unit_si": "kg",
+   "display": "'The weight of the planet' (about 6e24 kg), reportedly for five days",
+   "who_when": "Superman vol. 3 #13 (DC New 52; cover date Dec 2012 per its Oct 29, 2012 review date, not independently verified), Scott Lobdell and Kenneth Rocafort",
+   "notes": "PopMatters' review (Jay Mattson, Oct 29, 2012): Dr. Veritas 'has a lab with a machine that can exert the weight of the planet for Superman to bench-press'. Screen Rant adds 'five consecutive days', a 'STAR Labs machine' and 'approximately six sextillion metric tonnes'. That last phrase may be Screen Rant's own gloss, and the five days and STAR Labs details are Screen Rant only. The researcher's claim that the machine is in 'the Block' near Earth's core had no source and has been removed. value_si is NASA's Earth mass; high_si is the 6e24 kg round figure. 'Weight of the Earth' is physically ambiguous. Read as Earth's mass under 1 g: F = 5.857e25 N.",
+   "sources": [
+    {
+     "title": "PopMatters: This Direction Home: Superman #13",
+     "url": "https://www.popmatters.com/164846-this-direction-home-superman-13-2495802120.html"
+    },
+    {
+     "title": "Screen Rant: Superman's most powerful feat (N. Ayala, Apr 26, 2026)",
+     "url": "https://screenrant.com/how-much-can-superman-lift-dc-canon/"
+    },
+    {
+     "title": "NASA NSSDC Moon Fact Sheet (Earth mass column)",
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html"
+    }
+   ]
+  },
+  {
+   "key": "earth_mass_reference",
+   "category": "reference_mass",
+   "label": "Earth mass (reference)",
+   "status": "verified",
+   "value_si": 5.9724e+24,
+   "unit_si": "kg",
+   "display": "5.9724 x 10^24 kg",
+   "who_when": "NASA NSSDC fact sheet",
+   "notes": "Reference for Earth-moving feats. Both verifiers confirmed.",
+   "sources": [
+    {
+     "title": "NASA NSSDC Moon Fact Sheet (Earth column)",
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html"
+    }
+   ]
+  },
+  {
+   "key": "moon_mass_reference",
+   "category": "reference_mass",
+   "label": "Moon mass (reference)",
+   "status": "verified",
+   "value_si": 7.346e+22,
+   "unit_si": "kg",
+   "display": "0.07346 x 10^24 kg",
+   "who_when": "NASA NSSDC fact sheet",
+   "notes": "Reference for the Superman IV Moon push. Both verifiers confirmed.",
+   "sources": [
+    {
+     "title": "NASA NSSDC Moon Fact Sheet",
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html"
+    }
+   ]
+  },
+  {
+   "key": "superman_iv_moves_moon",
+   "category": "depicted_feat",
+   "label": "Superman IV: pushes the Moon to cause an eclipse",
+   "status": "not_quantified",
+   "unit_si": "kg",
+   "display": "Moves the Moon; no number given (use moon_mass_reference, 7.346e22 kg)",
+   "who_when": "Superman IV: The Quest for Peace (film, 1987)",
+   "notes": "Wikipedia plot: 'Superman frees himself and creates a solar eclipse by moving the Moon out of orbit, depriving Nuclear Man of sunlight.' The film gives no mass, force or displacement.",
+   "sources": [
+    {
+     "title": "Wikipedia: Superman IV: The Quest for Peace",
+     "url": "https://en.wikipedia.org/wiki/Superman_IV:_The_Quest_for_Peace"
+    }
+   ]
+  },
+  {
+   "key": "hercules_tows_manhattan",
+   "category": "depicted_feat",
+   "label": "Hercules 'tows Manhattan' (and the later retcon)",
+   "status": "not_quantified",
+   "unit_si": "kg",
+   "display": "No tonnage stated; later retconned as only steadying the island",
+   "who_when": "Marvel Team-Up #28 'The City Stealers!' (cover date Dec 1974 per the researcher, not re-verified); retcon in Incredible Hulk #241, summarized in The Official Marvel Index to Marvel Team-Up #2",
+   "notes": "The Official Marvel Index to Marvel Team-Up #2 (verified): 'This story was embellished in the telling by Hercules. In actuality, as noted in HULK #241, Manhattan was not moved from its foundations but only shaken, and Hercules did not actually move it back but only helped keep it from being [moved]...' The MTU #28 plot details (a nuclear submarine towing the island 'with massive chains') come from a blog that both verifiers found blocked (HTTP 403), so they are unverified. No mass is stated anywhere found. Any Manhattan mass would be the sim's own estimate.",
+   "sources": [
+    {
+     "title": "Internet Archive scan, Official Marvel Index to Marvel Team-Up #2",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=identifier%3Acc-MARVELMAIN-MarvelTeam-Up-TheOfficialMarvelIndextoMarvelTeam-Up02+AND+%28%22only+shaken%22+OR+%22embellished+in+the+telling%22%29&size=5"
+    },
+    {
+     "title": "Earth's Mightiest blog: Marvel Team-Up #28 (1974) (could not be re-checked)",
+     "url": "https://earthsmightiestblog.com/marvel-team-28-1974/"
+    }
+   ]
+  },
+  {
+   "key": "superman_220_million_h_bombs",
+   "category": "canon_feat_stated",
+   "label": "Superman #220: 'more force than a million H-bombs'",
+   "status": "claimed",
+   "unit_si": "J",
+   "display": "'Stand back, Flash ... I must exert more force than a million H-bombs!' (no yield given)",
+   "who_when": "Superman #220 (DC); Looper's chronology implies 1969, not verified",
+   "notes": "Looper quotes the line and says Superman slams into the ground to push Earth away from a 'planet-rending force'. It places the issue two years after Superboy #140 (1967), implying 1969. No scan, index or second source was found, so this cannot be verified. It cannot be converted to SI because no H-bomb yield is given, and 'force' is used loosely (H-bomb comparisons are energies). No value_si.",
+   "sources": [
+    {
+     "title": "Looper: How Strong Is Superman? (J. H. Kantor)",
+     "url": "https://www.looper.com/1943648/how-strong-superman-powers-explained"
+    }
+   ]
+  },
+  {
+   "key": "hulk_antarctica_claim",
+   "category": "canon_feat_stated",
+   "label": "Hulk lifts Antarctica (press estimate)",
+   "status": "claimed",
+   "value_si": 27215542200000000000,
+   "unit_si": "kg",
+   "display": "'At least 30 quadrillion U.S. tons' (Screen Rant's figure)",
+   "who_when": "Screen Rant ties the feat to 'Hulk: Smash Everything'; issue and year not given",
+   "notes": "Screen Rant states the number as its own conclusion, not as the comic's text; whether the comic states it cannot be verified. 3e16 short tons = 2.72155422e19 kg. Treat it as a press estimate, not canon.",
+   "sources": [
+    {
+     "title": "Screen Rant: Heaviest thing Hulk has lifted (M. Peters, Apr 25, 2026)",
+     "url": "https://screenrant.com/hulk-heaviest-think-lifted-marvel/"
+    }
+   ]
+  },
+  {
+   "key": "action_comics_1_leap",
+   "category": "canon_feat_stated",
+   "label": "Action Comics #1: stated leaping ability",
+   "status": "canon_stated",
+   "value_si": 201.168,
+   "unit_si": "m",
+   "display": "'Leap 1/8th of a mile; hurdle a twenty-story building ... raise tremendous weights ... run faster than an express train'",
+   "who_when": "Action Comics #1 (Detective Comics Inc., cover date June 1938, on sale Apr 18, 1938)",
+   "notes": "Origin caption: Clark Kent 'could easily: leap 1/8th of a mile; hurdle a twenty-story building ... raise tremendous weights ... run faster than an express train ... and that nothing less than a bursting shell could penetrate his skin!' Correction: the researcher wrote 'outrun an express train'. One verifier flagged it, and I confirmed 'run faster than an express train' in several reproductions of the caption on the Internet Archive (a 1938 Superman #1 scan, and reprint and editorial pages). Per a verifier, the full-text hits are mostly comic scans and reprint pages, not 'scholarly books'. 1/8 international mile = 201.168 m, assumed horizontal. The building height and 'tremendous weights' have no numbers.",
+   "sources": [
+    {
+     "title": "Internet Archive full-text search: 'leap 1/8th of a mile'",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=%22leap+1%2F8th+of+a+mile%22&size=5"
+    },
+    {
+     "title": "Internet Archive full-text search: 'faster than an express train' + 'twenty-story building'",
+     "url": "https://be-api.us.archive.org/fts/v1/search?q=%22faster%20than%20an%20express%20train%22%20AND%20%22twenty-story%20building%22&size=6"
+    },
+    {
+     "title": "Wikipedia: Action Comics 1",
+     "url": "https://en.wikipedia.org/wiki/Action_Comics_1"
+    }
+   ]
+  },
+  {
+   "key": "action_comics_1_cover_car_mass",
+   "category": "depicted_feat",
+   "label": "Action Comics #1 cover: mass of the car Superman lifts",
+   "status": "estimate",
+   "value_si": 1428.8159655,
+   "low_si": 1378.9208048,
+   "high_si": 1605.7169898,
+   "unit_si": "kg",
+   "display": "About 1.38-1.61 t if it is a 1937 DeSoto S-3 (touring sedan 3,150 lb = 1.43 t); the car's identity is disputed (Plymouth, Ford and Hudson also proposed)",
+   "who_when": "Cover of Action Comics #1 (June 1938), art by Joe Shuster",
+   "notes": "Corrected per both verifiers. The comic states no mass and does not identify the car. Jalopnik (J. Torchinsky, 2013) first called it 'quite definitively, a 1937 DeSoto', but its update raises a 1937 Plymouth and a possible 1937 Ford and concludes 'this may not be so settled after all'. Bleeding Cool also mentions a 1937 Plymouth and Brad Ricca's 1937 Hudson. CBR: 'likely a 1937 Chrysler DeSoto or Plymouth'. The statement that the cover car's wheel wells and headlights differ from the interior-panel car comes from DC's legal brief (advocacy), not a 1938 DC letter. Conceptcarz lists DeSoto S-3 weights of 3,040 lb (general), 3,150 lb (Touring Sedan) and 3,540 lb (LWB Limousine), giving 1,378.92, 1,428.82 and 1,605.72 kg. The range covers only DeSoto S-3 bodies, not the Ford or Hudson alternatives. The researcher's unverified Plymouth P4 weight has been dropped.",
+   "sources": [
+    {
+     "title": "Jalopnik: What car is Superman trashing on the Action Comics No. 1 cover?",
+     "url": "https://www.jalopnik.com/what-car-is-superman-trashing-on-the-action-comics-no-509461042/"
+    },
+    {
+     "title": "Bleeding Cool: The car on the cover of Action Comics #1 might be a 1937 DeSoto",
+     "url": "https://bleedingcool.com/comics/recent-updates/now-you-know-the-car-on-the-cover-of-action-comics-1-is-a-1937-desoto-but-thats-just-part-of-the-story/"
+    },
+    {
+     "title": "CBR: Action Comics #1's iconic cover now official continuity",
+     "url": "https://www.cbr.com/action-comics-superman-car-official-continuity/"
+    },
+    {
+     "title": "Conceptcarz: 1937 DeSoto Series S-3 specifications",
+     "url": "https://www.conceptcarz.com/s27619/desoto-series-s-3.aspx"
+    }
+   ]
+  },
+  {
+   "key": "superman_returns_airliner_catch",
+   "category": "depicted_feat",
+   "label": "Superman Returns: stops a falling airliner (a Boeing 777)",
+   "status": "not_quantified",
+   "unit_si": "kg",
+   "display": "No number in the film; the aircraft is a Boeing 777 (see boeing_777_200_mass_reference)",
+   "who_when": "Superman Returns (film, Warner Bros., 2006)",
+   "notes": "The verifiers disagreed on whether the source names the aircraft. I fetched the Wikipedia article. The plot section says only 'airliner' ('piggy-back mounting on an airliner'; 'stopping the plane from crashing into a baseball field'), but the production section says the film 'required a scene of Superman safely delivering a Boeing 777 in a baseball park'. So the 777 identification is sourced. The variant, loading and mass are never stated. The researcher's 'burned tail' detail was unverified and has been removed. The 777 masses are moved to a separate reference fact so this feat carries no implied canon value.",
+   "sources": [
+    {
+     "title": "Wikipedia: Superman Returns (plot and production)",
+     "url": "https://en.wikipedia.org/wiki/Superman_Returns"
+    }
+   ]
+  },
+  {
+   "key": "boeing_777_200_mass_reference",
+   "category": "reference_mass",
+   "label": "Boeing 777-200 / -200ER masses (reference for the Superman Returns catch)",
+   "status": "verified",
+   "value_si": 135850,
+   "low_si": 135850,
+   "high_si": 297550,
+   "unit_si": "kg",
+   "display": "777-200 empty 135.85 t; 777-200 max takeoff 247.2 t; 777-200ER max takeoff 297.55 t",
+   "who_when": "Wikipedia, Boeing 777 specifications table",
+   "notes": "From the specs table: 777-200 OEW 299,550 lb (135,850 kg); 777-200 MTOW 545,000 lb (247,200 kg); 777-200ER MTOW 656,000 lb (297,550 kg). value_si is the empty weight; the range runs from empty -200 to max-takeoff -200ER. These are real-world reference masses, not values from the film. Both verifiers confirmed the numbers.",
+   "sources": [
+    {
+     "title": "Wikipedia: Boeing 777 (specifications)",
+     "url": "https://en.wikipedia.org/wiki/Boeing_777"
+    }
+   ]
+  },
+  {
+   "key": "superman_returns_kryptonite_island",
+   "category": "depicted_feat",
+   "label": "Superman Returns: lifts Luthor's kryptonite landmass into space",
+   "status": "not_quantified",
+   "unit_si": "kg",
+   "display": "Shown, never quantified",
+   "who_when": "Superman Returns (film, 2006)",
+   "notes": "Wikipedia: 'Superman regains his strength and lifts the landmass' and 'pushes the landmass with the crystals into space.' Screen Rant calls it 'an entire continent composed of Kryptonite-laced landmass'. The film gives no mass or size.",
+   "sources": [
+    {
+     "title": "Wikipedia: Superman Returns",
+     "url": "https://en.wikipedia.org/wiki/Superman_Returns"
+    },
+    {
+     "title": "Screen Rant: Superman's most powerful feat",
+     "url": "https://screenrant.com/how-much-can-superman-lift-dc-canon/"
+    }
+   ]
+  },
+  {
+   "key": "saitama_serious_punch",
+   "category": "depicted_feat",
+   "label": "One-Punch Man: Saitama's 'Serious Punch' against Boros",
+   "status": "not_quantified",
+   "unit_si": "J",
+   "display": "No stated energy, force or speed",
+   "who_when": "One-Punch Man, Dark Matter Thieves arc; anime S1E12 'The Strongest Hero' (aired Dec 21, 2015)",
+   "notes": "Wikipedia: 'one of the only times he has used his \"serious punch\", defeating the world-conquering leader of the aliens, Lord Boros'. His abilities are described as 'limitless' and 'magnified to an immeasurable degree'. No canon number exists. Fan energy figures (e.g. VS Battles) are not sources.",
+   "sources": [
+    {
+     "title": "Wikipedia: Saitama (One-Punch Man)",
+     "url": "https://en.wikipedia.org/wiki/Saitama_(One-Punch_Man)"
+    },
+    {
+     "title": "Wikipedia: List of One-Punch Man episodes",
+     "url": "https://en.wikipedia.org/wiki/List_of_One-Punch_Man_episodes"
+    }
+   ]
+  },
+  {
+   "key": "atlas_holds_heavens",
+   "category": "myth_legend",
+   "label": "Atlas holds up the heavens",
+   "status": "not_quantified",
+   "unit_si": "kg",
+   "display": "No quantity; 'upholds the wide heaven with unwearying head and arms'",
+   "who_when": "Hesiod, Theogony c. 517-519 and 746-748 (c. 700 BC; Evelyn-White translation)",
+   "notes": "'And Atlas through hard constraint upholds the wide heaven with unwearying head and arms, standing at the borders of the earth before the clear-voiced Hesperides' (between Perseus line markers 515 and 520; Theoi cites the passage from 507 ff). Later (Theoi cites 744 ff): 'the son of Iapetus stands immovably upholding the wide heaven upon his head and unwearying hands'. The heavens have no mass in the myth.",
+   "sources": [
+    {
+     "title": "Perseus: Hesiod, Theogony (Evelyn-White)",
+     "url": "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.01.0130%3Acard%3D507"
+    },
+    {
+     "title": "Theoi: Atlas",
+     "url": "https://www.theoi.com/Titan/TitanAtlas.html"
+    }
+   ]
+  },
+  {
+   "key": "heracles_holds_sky",
+   "category": "myth_legend",
+   "label": "Heracles takes the sky from Atlas",
+   "status": "not_quantified",
+   "unit_si": "kg",
+   "display": "No quantity",
+   "who_when": "Apollodorus, Bibliotheca 2.5.11 (= 2.119-120), 1st-2nd c. AD",
+   "notes": "Theoi, quoting Apollodorus 2.119-120: Heracles 'remembered Prometheus' advise and took over the sphere', and later 'asked Atlas to take the sky while he put a cushion on his head'. Theoi does not name the translator for this passage, so the researcher's 'Aldrich' attribution is unconfirmed and has been removed. No mass is given. Neither the researcher nor the verifiers found any Heracles feat with a stated quantity.",
+   "sources": [
+    {
+     "title": "Theoi: Atlas (quoting Apollodorus)",
+     "url": "https://www.theoi.com/Titan/TitanAtlas.html"
+    }
+   ]
+  },
+  {
+   "key": "thor_utgarda_loki_cat",
+   "category": "myth_legend",
+   "label": "Thor tries to lift Utgarda-Loki's cat (the Midgard Serpent)",
+   "status": "not_quantified",
+   "unit_si": "kg",
+   "display": "Lifted it until one paw left the floor; the cat was the World Serpent",
+   "who_when": "Snorri Sturluson, Prose Edda (13th c.), Gylfaginning ch. XLVI (attempt) and XLVII (explanation) in Brodeur's 1916 translation",
+   "notes": "Ch. XLVI: 'then the cat lifted up one foot, and Thor got this game no further advanced.' Ch. XLVII, Utgarda-Loki: 'That cat was not as it appeared to thee: it was the Midgard Serpent, which lies about all the land, and scarcely does its length suffice to encompass the earth with head and tail. So high didst thou stretch up thine arms that it was then but a little way more to heaven.' Chapter numbers follow Brodeur; other translations number differently. The researcher's 'c. 1220' rests on general scholarship (Wikipedia says only 13th century). No mass is given; a serpent long enough to circle the earth is the only scale cue.",
+   "sources": [
+    {
+     "title": "Mythopedia: Prose Edda, Brodeur 1916, Gylfaginning",
+     "url": "https://mythopedia.com/library/prose-edda-brodeur-1916/gylfaginning/"
+    },
+    {
+     "title": "Wikipedia: Gylfaginning",
+     "url": "https://en.wikipedia.org/wiki/Gylfaginning"
+    }
+   ]
+  },
+  {
+   "key": "samson_temple_pillars",
+   "category": "myth_legend",
+   "label": "Samson pulls down the temple of Dagon",
+   "status": "not_quantified",
+   "unit_si": "N",
+   "display": "No force or mass; 'bowed himself with all his might'",
+   "who_when": "Judges 16:25-30 (KJV)",
+   "notes": "16:25 'they set him between the pillars'; 16:26 'the pillars whereupon the house standeth, that I may lean upon them'; 16:29 'Samson took hold of the two middle pillars upon which the house stood'; 16:30 'And he bowed himself with all his might'. No pillar dimensions or masses. The one stated number is the roof count (samson_temple_roof_occupants).",
+   "sources": [
+    {
+     "title": "Bible Gateway: Judges 16 (KJV)",
+     "url": "https://www.biblegateway.com/passage/?search=Judges+16%3A1-31&version=KJV"
+    }
+   ]
+  },
+  {
+   "key": "samson_temple_roof_occupants",
+   "category": "myth_legend",
+   "label": "Samson: number of people on the temple roof",
+   "status": "canon_stated",
+   "value_si": 3000,
+   "unit_si": "1 (count of people)",
+   "display": "'About three thousand men and women' on the roof",
+   "who_when": "Judges 16:27 (KJV)",
+   "notes": "Verbatim: 'there were upon the roof about three thousand men and women, that beheld while Samson made sport'. It is a count, not a mass. A roof load needs an assumed per-person mass, which this source does not give.",
+   "sources": [
+    {
+     "title": "Bible Gateway: Judges 16 (KJV)",
+     "url": "https://www.biblegateway.com/passage/?search=Judges+16%3A1-31&version=KJV"
+    }
+   ]
+  },
+  {
+   "key": "samson_gates_of_gaza",
+   "category": "myth_legend",
+   "label": "Samson carries off the gates of Gaza",
+   "status": "not_quantified",
+   "unit_si": "kg",
+   "display": "Doors, two posts and bar carried to a hilltop 'before Hebron'",
+   "who_when": "Judges 16:3 (KJV)",
+   "notes": "Samson 'took the doors of the gate of the city, and the two posts, and went away with them, bar and all, and put them upon his shoulders, and carried them up to the top of an hill that is before Hebron.' No mass or distance is given.",
+   "sources": [
+    {
+     "title": "Bible Gateway: Judges 16 (KJV)",
+     "url": "https://www.biblegateway.com/passage/?search=Judges+16%3A1-31&version=KJV"
+    }
+   ]
+  },
+  {
+   "key": "ruyi_jingu_bang_mass",
+   "category": "myth_legend",
+   "label": "Sun Wukong's staff (Ruyi Jingu Bang): stated weight",
+   "status": "canon_stated",
+   "value_si": 7965,
+   "low_si": 6750,
+   "high_si": 8057.016,
+   "unit_si": "kg",
+   "display": "13,500 jin, about 7.97 t at the Ming jin of 590 g",
+   "who_when": "Journey to the West, chapter 3 (Ming dynasty novel, 16th c.)",
+   "notes": "Chapter 3 inscription: '\u5982\u610f\u91d1\u7b8d\u68d2\uff0c\u91cd\u4e00\u842c\u4e09\u5343\u4e94\u767e\u65a4' (Compliant Golden-Hooped Rod, weight 13,500 jin). It is repeated as '\u5982\u610f\u91d1\u7b8d\u68d2\uff0c\u4e00\u842c\u4e09\u5343\u4e94\u767e\u65a4'. I confirmed both in the Wikisource raw text. The staff is called both '\u5929\u6cb3\u5b9a\u5e95\u7684\u795e\u73cd\u9435' and '\u5929\u6cb3\u5b9a\u5e95\u795e\u73cd\u9435'. Conversion: Wikipedia, citing Elvin (2004), gives the Ming jin as 590 g, so 13,500 x 0.590 = 7,965 kg (Wikipedia rounds to 7,960 kg / 17,550 lb). low_si uses the modern 500 g market jin (6,750 kg) and high_si the 1915 Republic jin of 596.816 g (8,057.016 kg). Both are anachronistic for a Ming text; the 590 g value is the defensible one. A further alternative: the Song/Yuan jin listed at 633 g would give 8,545.5 kg. Anthony Yu's English translation says 'pounds', which understates the mass. Length is a separate fact (ruyi_jingu_bang_length).",
+   "sources": [
+    {
+     "title": "Wikisource: \u897f\u904a\u8a18 \u7b2c003\u56de (Chinese text)",
+     "url": "https://zh.wikisource.org/wiki/\u897f\u904a\u8a18/\u7b2c003\u56de"
+    },
+    {
+     "title": "Wikipedia: Ruyi Jingu Bang",
+     "url": "https://en.wikipedia.org/wiki/Ruyi_Jingu_Bang"
+    },
+    {
+     "title": "Wikipedia: Chinese units of measurement (jin by dynasty)",
+     "url": "https://en.wikipedia.org/wiki/Chinese_units_of_measurement"
+    }
+   ]
+  },
+  {
+   "key": "ruyi_jingu_bang_length",
+   "category": "myth_legend",
+   "label": "Sun Wukong's staff: stated length (at rest in the sea-palace)",
+   "status": "canon_stated",
+   "value_si": 6.016,
+   "low_si": 6.016,
+   "high_si": 6.38,
+   "unit_si": "m",
+   "display": "'More than two zhang long' (\u4e8c\u4e08\u6709\u9918\u9577), i.e. more than about 6.0-6.4 m; 'about as thick as a dou measure' (\u6597\u4f86\u7c97)",
+   "who_when": "Journey to the West, chapter 3 (Ming dynasty novel, 16th c.)",
+   "notes": "New entry (a verifier noted the conversion was possible). Text: '\u7d04\u6709\u6597\u4f86\u7c97\uff0c\u4e8c\u4e08\u6709\u9918\u9577' (about as thick as a dou measure, more than two zhang long), confirmed in the Wikisource raw text. 1 zhang = 10 chi, and Wikipedia's table gives the Ming chi as 0.3008-0.3190 m, so 2 zhang = 6.016-6.380 m. The text says 'more than', so this is a lower bound whose own value is uncertain within that range. The staff changes size at will, so this is its size when found. The thickness cannot be converted: a dou (\u6597) is a volume measure, and 'as thick as a dou' is a visual comparison. Combined with the 590 g jin mass (7,965 kg), the implied density is not stated in the text and would be the sim's own derivation.",
+   "sources": [
+    {
+     "title": "Wikisource: \u897f\u904a\u8a18 \u7b2c003\u56de (Chinese text)",
+     "url": "https://zh.wikisource.org/wiki/\u897f\u904a\u8a18/\u7b2c003\u56de"
+    },
+    {
+     "title": "Wikipedia: Chinese units of measurement (Ming chi 0.3008-0.3190 m)",
+     "url": "https://en.wikipedia.org/wiki/Chinese_units_of_measurement"
+    }
+   ]
+  },
+  {
+   "key": "milo_of_croton_bull",
+   "category": "myth_legend",
+   "label": "Milo of Croton carries a four-year-old bull around the course at Olympia",
+   "status": "not_quantified",
+   "unit_si": "kg",
+   "display": "No mass stated",
+   "who_when": "Athenaeus, Deipnosophistae 10.412e-f (c. AD 200), citing Theodorus of Hierapolis; Yonge translation 1854",
+   "notes": "Yonge: 'And once at Olympia he took a four year old bull on his shoulders, and carried it all round the course; and after that he killed it and cut it up, and ate it all up by himself in one day.' Athenaeus also gives variants: Phylarchus has it eaten before an altar, and the Dorieus epigram calls it 'a heifer four years old'. Wikipedia gives Milo fl. 540-511 BC and calls the animal a 'four-year-old cow'. The legend was written down about 700 years later. No ancient mass is given, and no sourced live-weight estimate for an archaic Greek four-year-old bovine was found. 10.412e-f is the standard Stephanus citation; the Perseids page uses Yonge page markers (p. 650).",
+   "sources": [
+    {
+     "title": "Perseids: Athenaeus Book 10 (Yonge)",
+     "url": "https://cts.perseids.org/read/greekLit/tlg0008/tlg001/perseus-eng2/10.0-10.19"
+    },
+    {
+     "title": "Wikipedia: Milo of Croton",
+     "url": "https://en.wikipedia.org/wiki/Milo_of_Croton"
+    }
+   ]
+  },
+  {
+   "key": "milo_of_croton_calf_training",
+   "category": "myth_legend",
+   "label": "Milo's progressive-overload calf story",
+   "status": "not_quantified",
+   "unit_si": "kg",
+   "display": "Carried a calf daily until it was a bull",
+   "who_when": "Quintilian, Institutio Oratoria 1.9.5 (c. AD 95), Butler translation",
+   "notes": "'Milo, having accustomed himself to carrying a calf every day, ended by carrying it when grown to a bull.' The Perseids segment spans 1.9.5-1.10.3; 1.9.5 is the conventional citation and is not visually marked on the page. No masses or times are given.",
+   "sources": [
+    {
+     "title": "Perseids: Quintilian, Institutio Oratoria 1.9.5ff",
+     "url": "https://cts.perseids.org/read/latinLit/phi1002/phi001/perseus-eng2/1.9.5-1.10.3"
+    }
+   ]
+  }
+ ],
+ "gaps": [
+  "Process limit: the shared web-search budget for this run ran out during final editing. I settled the disagreements with direct fetches of cited pages (Wikipedia, Wikisource) and Internet Archive full-text queries run before the limit was reported. No further web searches were possible, so the items below stay open.",
+  "Marvel handbooks never define 'ton' in the text searched. The short ton is an inference (status estimate).",
+  "Master Edition (1990-93) and 2004-era ratings were not confirmed for Captain America, Spider-Man, Wolverine, Luke Cage, She-Hulk, The Thing, Thor or Hercules. Only Hulk and Colossus (Master Edition #8, 1991) are confirmed. Gladiator II's 'Incalculable' is inferred, not tied to his name in the OCR.",
+  "Which characters a 2004+ power grid rates Strength 7 (Incalculable) was not confirmed.",
+  "No later handbook value was found for The Thing (85 tons in 1986) or She-Hulk (75+ tons in 1986).",
+  "The first publication of the c. 2007 'Spider-Man ... now capable of lifting 20 tons' handbook text is unidentified (found appended to a scan labelled ASM #544).",
+  "The Deluxe Edition 'Strength Level chart' that Deluxe #20 (Feb 1988) refers to was not located.",
+  "Wolverine's 1987 Deluxe #14 entry was not directly confirmed.",
+  "Sentry's earliest handbook profile (before the 2006 A to Z #9) was not checked.",
+  "Secret Wars #4 (1984): the exact wording, speaker (Reed Richards per Screen Rant) and page/panel of '150 billion tons' are unverified against a scan. canon_stated rests on press attribution.",
+  "All-Star Superman: the page/panel, exact wording (push / hold / 'equivalent of'), tester and cover date of the 200-quintillion-ton test are unverified. Placement in #1 rests on one review; Wikipedia confirms only a November 2005 release for #1.",
+  "Superman vol. 3 #13 (2012): the exact dialogue is unverified, 'six sextillion metric tonnes' may be Screen Rant's gloss, and the 'five days' and STAR Labs details are Screen Rant only. The researcher's unsourced 'the Block' location was removed.",
+  "Superman #220 'more force than a million H-bombs': year (Looper implies 1969), page and wording unverified. Looper is the only source.",
+  "Thor vs. the Midgard Serpent in Marvel comics (e.g. Thor #380, 1987): no in-universe stated mass or force found, so no sourced entry could be made.",
+  "Superman moving the Earth or Moon in DC comics (e.g. pre-Crisis planet-towing): no stated figure found. Only the Superman IV film (no number) is covered.",
+  "Marvel Team-Up #28 (Hercules and Manhattan): plot details and the Dec 1974 cover date are unverified (the source blog returned 403). No mass is stated.",
+  "Milo of Croton: no sourced live-mass estimate for an archaic Greek four-year-old bull or cow.",
+  "Ruyi Jingu Bang thickness ('as thick as a dou measure') cannot be converted, since a dou is a volume unit. Only length and mass are given in SI.",
+  "Action Comics #1 car: the identification is disputed (DeSoto, Plymouth, Ford, Hudson). The mass range covers DeSoto S-3 bodies only, and no sourced curb weights were gathered for the alternatives.",
+  "Hulk 'Antarctica, at least 30 quadrillion U.S. tons': Screen Rant's own estimate; issue and year of 'Hulk: Smash Everything' not identified.",
+  "Heracles: no myth source gives a quantified strength feat."
+ ]
+}

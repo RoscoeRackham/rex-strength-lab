@@ -1,0 +1,1175 @@
+<title>Rex Super-Strength Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Big+Shoulders+Display:wght@600;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a load-test rig. Strength dial and setup on the left (top on phones), the test bay with results on the right. */
+:root {
+  --bg: #e9ece2;
+  --surface: #f6f7f1;
+  --surface-2: #dfe3d5;
+  --ink: #161911;
+  --ink-2: #444a3a;
+  --ink-3: #686f5b;
+  --line: #c9cebd;
+  --accent: #b5650a;
+  --accent-ink: #7d4303;
+  --accent-wash: rgba(181, 101, 10, 0.12);
+  --olive: #4f5e22;
+  --good: #0ca30c;
+  --warn: #c98500;
+  --serious: #ec835a;
+  --bad: #d03b3b;
+  --font-display: 'Big Shoulders Display', 'Arial Narrow', 'Roboto Condensed', sans-serif;
+  --font-body: 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --r: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11130d; --surface: #1a1d14; --surface-2: #252a1d; --ink: #eef0e6; --ink-2: #c0c6b0; --ink-3: #939a80;
+    --line: #363c2b; --accent: #f0a23a; --accent-ink: #f7c27a; --accent-wash: rgba(240, 162, 58, 0.14); --olive: #a9be6b;
+    --good: #3fbf4f; --warn: #fab219; --serious: #ec835a; --bad: #e66767;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11130d; --surface: #1a1d14; --surface-2: #252a1d; --ink: #eef0e6; --ink-2: #c0c6b0; --ink-3: #939a80;
+  --line: #363c2b; --accent: #f0a23a; --accent-ink: #f7c27a; --accent-wash: rgba(240, 162, 58, 0.14); --olive: #a9be6b;
+  --good: #3fbf4f; --warn: #fab219; --serious: #ec835a; --bad: #e66767;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.5; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 64px; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 800; letter-spacing: 0.01em; line-height: 1.05; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2.4rem, 7vw, 4.2rem); text-transform: uppercase; }
+h2 { font-size: clamp(1.7rem, 4vw, 2.3rem); text-transform: uppercase; }
+h3 { font-size: 1.35rem; }
+p { margin: 0; }
+a { color: var(--accent-ink); }
+.mono { font-family: var(--font-mono); }
+.eyebrow { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+.muted { color: var(--ink-3); }
+button, select, input { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* Hero */
+.hero { display: grid; grid-template-columns: auto 1fr; gap: 20px; align-items: center; padding-bottom: 20px; border-bottom: 2px solid var(--ink); }
+.hero img { width: clamp(96px, 20vw, 168px); aspect-ratio: 432 / 558; object-fit: cover; border-radius: var(--r); display: block; max-width: 100%; background: var(--surface-2); }
+.hero .lede { font-size: clamp(1.05rem, 2.4vw, 1.3rem); max-width: 40ch; margin-top: 10px; color: var(--ink-2); }
+.hero .lede strong { color: var(--ink); }
+.start { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-3); }
+.start b { color: var(--ink); font-weight: 500; }
+
+/* Main grid */
+.rig { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; margin-top: 20px; }
+@media (min-width: 920px) { .rig { grid-template-columns: 340px minmax(0, 1fr); align-items: start; } .panel-controls { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); } }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; min-width: 0; }
+
+/* Strength dial */
+.dial-read { display: flex; flex-direction: column; gap: 2px; }
+.dial-read .big { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.2rem, 6vw, 2.9rem); line-height: 1; color: var(--ink); overflow-wrap: anywhere; }
+.dial-read .force { font-family: var(--font-mono); font-size: 0.85rem; color: var(--ink-2); }
+.dial-read .who { font-size: 0.92rem; color: var(--ink-2); min-height: 1.5em; }
+input[type=range] { width: 100%; accent-color: var(--accent); margin: 14px 0 6px; height: 28px; }
+.scale-ends { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-3); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 11px; font-size: 0.85rem; cursor: pointer; line-height: 1.2; }
+.chip:hover { border-color: var(--ink-3); }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+.seg { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; margin-top: 6px; }
+.seg button { border: 0; background: transparent; padding: 9px 8px; cursor: pointer; font-size: 0.9rem; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+.field { display: flex; flex-direction: column; gap: 4px; margin-top: 14px; }
+.field label, .field .lbl { font-size: 0.8rem; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); }
+.field .hint { font-size: 0.85rem; color: var(--ink-3); }
+select { width: 100%; padding: 9px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.check { display: flex; gap: 10px; align-items: flex-start; margin-top: 12px; font-size: 0.92rem; cursor: pointer; }
+.check input { margin-top: 4px; width: 18px; height: 18px; accent-color: var(--accent); flex: none; }
+details.setup { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px; }
+details.setup summary { cursor: pointer; font-weight: 700; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+details.setup summary::after { content: "+"; font-family: var(--font-mono); color: var(--ink-3); }
+details.setup[open] summary::after { content: "–"; }
+.inline-num { display: flex; gap: 8px; align-items: center; }
+.inline-num input { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+
+/* Tabs */
+.tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+@media (min-width: 640px) { .tabs { display: flex; flex-wrap: wrap; } }
+.tab { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 9px 14px; cursor: pointer; font-family: var(--font-display); font-weight: 800; font-size: 1.15rem; letter-spacing: 0.03em; text-transform: uppercase; }
+.tab[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: #1b1306; }
+.bay { margin-top: 12px; display: flex; flex-direction: column; gap: 16px; }
+.bay-controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+.bay-controls .field { margin-top: 0; flex: 1 1 220px; min-width: 0; }
+.verdict { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.5rem, 3.6vw, 2.1rem); line-height: 1.08; text-wrap: balance; }
+.status-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.status { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line); border-radius: 999px; padding: 4px 11px 4px 8px; font-size: 0.86rem; background: var(--surface); }
+.status svg { width: 16px; height: 16px; flex: none; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.tile { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; min-width: 0; background: var(--surface); }
+.tile .k { font-size: 0.78rem; color: var(--ink-3); }
+.tile .v { font-weight: 700; font-size: 1.25rem; line-height: 1.2; overflow-wrap: anywhere; }
+.tile .s { font-size: 0.82rem; color: var(--ink-2); font-family: var(--font-mono); overflow-wrap: anywhere; }
+.happens { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; max-width: 70ch; }
+.happens li::marker { color: var(--accent); }
+.viz { width: 100%; overflow-x: auto; }
+.viz svg { display: block; width: 100%; height: auto; }
+.viz text { fill: var(--ink-2); font-family: var(--font-mono); font-size: 11px; }
+.viz .axis { stroke: var(--line); stroke-width: 1; }
+.viz .lbl-strong { fill: var(--ink); font-weight: 500; }
+details.math { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: var(--surface); }
+details.math summary { cursor: pointer; font-weight: 700; }
+details.math .eq { font-family: var(--font-mono); font-size: 0.85rem; color: var(--ink-2); white-space: pre-wrap; overflow-wrap: anywhere; margin-top: 8px; line-height: 1.55; }
+.callout { border-left: 3px solid var(--accent); background: var(--accent-wash); padding: 10px 12px; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
+
+/* Sections */
+section.block { margin-top: 44px; display: flex; flex-direction: column; gap: 14px; }
+section.block > .intro { max-width: 68ch; color: var(--ink-2); }
+
+/* Ladder */
+.ladder-legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 0.85rem; color: var(--ink-2); }
+.ladder-legend span { display: inline-flex; gap: 6px; align-items: center; }
+.ladder-legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.ladder-wrap { position: relative; }
+.ladder-wrap svg .mk { cursor: pointer; }
+.ladder-wrap svg text { paint-order: stroke; stroke: var(--bg); stroke-width: 3px; stroke-linejoin: round; }
+.ladder-wrap svg .mk:focus { outline: none; }
+.ladder-wrap svg .mk:focus .ring, .ladder-wrap svg .mk:hover .ring { stroke: var(--ink); }
+.never { font-size: 0.9rem; color: var(--ink-2); }
+.never li { margin-top: 2px; }
+.tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--surface); padding: 8px 10px; border-radius: 8px; font-size: 0.85rem; max-width: 260px; z-index: 3; box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
+.tip b { display: block; font-size: 0.95rem; }
+
+/* Feats */
+.feat-groups { display: flex; flex-direction: column; gap: 22px; }
+.feat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+.feat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.feat .t { font-weight: 700; line-height: 1.25; }
+.feat .w { font-size: 0.85rem; color: var(--ink-3); }
+.feat .c { font-size: 0.92rem; color: var(--ink-2); }
+.feat .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: auto; padding-top: 6px; flex-wrap: wrap; }
+.badge { font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; border-radius: 4px; padding: 2px 6px; border: 1px solid currentColor; }
+.badge.verified { color: var(--good); }
+.badge.disputed, .badge.claimed { color: var(--warn); }
+.badge.canon_stated { color: var(--olive); }
+.badge.not_quantified, .badge.estimate { color: var(--ink-3); }
+.run { border: 1px solid var(--ink); background: var(--ink); color: var(--surface); border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: 0.88rem; }
+.run:hover { background: var(--accent); border-color: var(--accent); color: #1b1306; }
+
+/* Sources */
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); font-weight: 500; }
+td.num { font-variant-numeric: tabular-nums; font-family: var(--font-mono); font-size: 0.82rem; overflow-wrap: anywhere; }
+table { table-layout: fixed; min-width: 640px; }
+td a { overflow-wrap: anywhere; }
+details.src-details > summary { cursor: pointer; font-weight: 700; padding: 10px 0; }
+.assume { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; }
+.assume div { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 0.92rem; }
+.assume b { display: block; margin-bottom: 2px; }
+footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 1px solid var(--line); padding-top: 14px; }
+@media (prefers-reduced-motion: no-preference) { .verdict, .tiles { animation: rise 0.25s ease-out; } @keyframes rise { from { opacity: 0.4; transform: translateY(3px); } to { opacity: 1; transform: none; } } }
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <img src="__DINO_IMG__" alt="Rex: a plush olive-green kaiju with orange-tipped spines, black tank top and studded cargo pants, flexing huge arms.">
+    <div>
+      <div class="eyebrow">Indestructible · never tires · still obeys Newton</div>
+      <h1 id="title-name">Rex Super-Strength Lab</h1>
+      <p class="lede">Turn Rex’s strength from <strong>world-record human</strong> to <strong>effectively infinite</strong> and watch what the physics does. Strength is the easy part. <strong>The ground, the object, and his own body weight</strong> are what give out.</p>
+      <div class="start"><span><b>1</b> Set his strength</span><span>→</span><span><b>2</b> Pick a feat</span><span>→</span><span><b>3</b> Read what breaks</span></div>
+    </div>
+  </header>
+
+  <div class="rig">
+    <aside class="panel panel-controls" aria-label="Strength and setup">
+      <div class="eyebrow">Strength dial</div>
+      <div class="dial-read" aria-live="polite">
+        <div class="big" id="dial-big">Lifts 511 kg</div>
+        <div class="force" id="dial-force">5.01 kN of force</div>
+        <div class="who" id="dial-who"></div>
+      </div>
+      <label for="strength" class="eyebrow" style="position:absolute;left:-9999px">Strength, log scale</label>
+      <input type="range" id="strength" min="1" max="34" step="0.01" value="2.708">
+      <div class="scale-ends"><span>10 kg</span><span>10³⁴ kg (heavier than 10,000 Suns)</span></div>
+      <div class="chips" id="tier-chips" role="group" aria-label="Strength presets"></div>
+
+      <div class="field">
+        <span class="lbl" id="mode-lbl">Muscle physics</span>
+        <div class="seg" role="group" aria-labelledby="mode-lbl">
+          <button type="button" id="mode-comic" aria-pressed="true">Comic book</button>
+          <button type="button" id="mode-real" aria-pressed="false">Real muscle</button>
+        </div>
+        <span class="hint" id="mode-hint"></span>
+      </div>
+
+      <div class="field">
+        <label for="surface">Ground under his feet</label>
+        <select id="surface"></select>
+      </div>
+      <label class="check"><input type="checkbox" id="ground-holds"><span><b>Comic ground</b> — the floor never breaks</span></label>
+
+      <details class="setup" id="setup">
+        <summary>Body &amp; footing</summary>
+        <div class="field">
+          <span class="lbl" id="size-lbl">Size</span>
+          <div class="chips" id="size-chips" role="group" aria-labelledby="size-lbl"></div>
+        </div>
+        <div class="field">
+          <label for="height">Height (m)</label>
+          <div class="inline-num"><input id="height" type="number" min="0.1" max="500" step="0.1" value="2"></div>
+        </div>
+        <div class="field">
+          <label for="mass">Mass (kg)</label>
+          <div class="inline-num"><input id="mass" type="number" min="0.1" step="1" value="180"></div>
+          <span class="hint">Changing height rescales mass (same density). Edit mass after.</span>
+        </div>
+        <div class="field">
+          <label for="anchor">How he holds his ground</label>
+          <select id="anchor">
+            <option value="friction">Just standing (friction only)</option>
+            <option value="braced">Claws dug in (ground shear)</option>
+            <option value="bolted">Bolted to the planet (comic)</option>
+          </select>
+        </div>
+      </details>
+    </aside>
+
+    <main class="panel" aria-label="Test bay">
+      <div class="tabs" role="tablist" id="tabs"></div>
+      <div class="bay" id="bay"></div>
+    </main>
+  </div>
+
+  <section class="block" id="ladder">
+    <div class="eyebrow">The strength ladder</div>
+    <h2>Who sits where, and what each step does</h2>
+    <p class="intro">Left: famous strength levels. Right: the strength at which an everyday move turns into something else, computed live for his current size, ground and muscle setting. Tap any marker to jump there.</p>
+    <div class="ladder-legend"><span><i style="background:var(--olive)"></i>Strength level (who)</span><span><i style="background:var(--accent)"></i>Threshold (what happens)</span><span><i style="background:var(--ink);border-radius:0;height:2px;width:14px"></i>His current setting</span></div>
+    <div class="ladder-wrap viz" id="ladder-viz"></div>
+    <div id="ladder-never" class="never"></div>
+  </section>
+
+  <section class="block" id="feats">
+    <div class="eyebrow">Famous feats</div>
+    <h2>Run the record books</h2>
+    <p class="intro">Each card names its source and how solid it is. <b>Verified</b> means a sanctioned record. <b>Canon</b> means the number is printed in the story. <b>Claimed</b> or <b>disputed</b> means nobody can check it. <b>Not quantified</b> means the story shows the feat but never gives a number.</p>
+    <div class="feat-groups" id="feat-groups"></div>
+  </section>
+
+  <section class="block" id="model">
+    <div class="eyebrow">How the sim works</div>
+    <h2>Assumptions and limits</h2>
+    <div class="assume" id="assume"></div>
+  </section>
+
+  <section class="block" id="sources">
+    <div class="eyebrow">Data</div>
+    <h2>Sources</h2>
+    <p class="intro">Every number the sim uses, with its status. Estimates are labelled as estimates.</p>
+    <details class="src-details" id="src-details"><summary id="src-summary">Show every sourced number</summary>
+    <div class="table-wrap"><table id="src-table"><colgroup><col style="width:30%"><col style="width:32%"><col style="width:11%"><col style="width:27%"></colgroup><thead><tr><th>Item</th><th>Value</th><th>Status</th><th>Source</th></tr></thead><tbody></tbody></table></div>
+    </details>
+  </section>
+
+  <footer>Physics engine and data checked against the cited sources; fictional figures are only as solid as their printed source. Your settings are remembered in this browser only.</footer>
+</div>
+
+<script>
+/*__ENGINE__*/
+</script>
+<script>
+/*__DATA__*/
+</script>
+<script>
+(function () {
+  'use strict';
+  const P = window.DinoPhys, D = window.DINO_DATA, K = P.K, g = K.g;
+  const $ = (s, r) => (r || document).querySelector(s);
+  const el = (tag, attrs, ...kids) => {
+    const n = document.createElement(tag);
+    if (attrs) for (const [k, v] of Object.entries(attrs)) {
+      if (v == null || v === false) continue;
+      if (k === 'class') n.className = v; else if (k === 'text') n.textContent = v;
+      else if (k.startsWith('on')) n.addEventListener(k.slice(2), v); else n.setAttribute(k, v === true ? '' : v);
+    }
+    for (const kid of kids.flat()) if (kid != null && kid !== false) n.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+    return n;
+  };
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  const sv = (tag, attrs, ...kids) => {
+    const n = document.createElementNS(SVGNS, tag);
+    if (attrs) for (const [k, v] of Object.entries(attrs)) if (v != null) n.setAttribute(k, v);
+    for (const kid of kids.flat()) if (kid != null) n.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+    return n;
+  };
+
+  // ---------------------------------------------------------------- formatting
+  const SUP = { '-': '⁻', 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹' };
+  const sup = (n) => String(n).split('').map((c) => SUP[c] || c).join('');
+  function sig(x, n) {
+    if (!isFinite(x)) return x < 0 ? '−∞' : '∞';
+    if (x === 0) return '0';
+    const d = Math.floor(Math.log10(Math.abs(x)));
+    const p = Math.pow(10, n - 1 - d);
+    const r = Math.round(x * p) / p;
+    return r.toLocaleString('en-US', { maximumFractionDigits: Math.max(0, n - 1 - d) });
+  }
+  function sci(x, n) {
+    if (!isFinite(x)) return '∞';
+    if (x === 0) return '0';
+    let e = Math.floor(Math.log10(Math.abs(x)));
+    let m = x / Math.pow(10, e);
+    let ms = sig(m, n || 2);
+    if (Number(ms) >= 10) { e += 1; ms = sig(x / Math.pow(10, e), n || 2); }
+    return (ms === '1' ? '' : ms + ' × ') + '10' + sup(e);
+  }
+  const NAMES = [[1e24, 'septillion'], [1e21, 'sextillion'], [1e18, 'quintillion'], [1e15, 'quadrillion'], [1e12, 'trillion'], [1e9, 'billion'], [1e6, 'million']];
+  function big(x, n) {
+    if (!isFinite(x)) return '∞';
+    if (Math.abs(x) >= 1e27) return sci(x, n || 2);
+    for (const [v, name] of NAMES) if (Math.abs(x) >= v) return sig(x / v, n || 3) + ' ' + name;
+    if (Math.abs(x) >= 1000) return Math.round(x).toLocaleString('en-US');
+    return sig(x, n || 3);
+  }
+  function fmtMass(kg) {
+    if (!isFinite(kg)) return '∞';
+    if (kg < 1) return sig(kg * 1000, 3) + ' g';
+    if (kg < 1000) return sig(kg, 3) + ' kg';
+    return big(kg / 1000) + ' t';
+  }
+  function fmtSI(x, unit, n) {
+    if (!isFinite(x)) return '∞ ' + unit;
+    const pre = [[1e18, 'E'], [1e15, 'P'], [1e12, 'T'], [1e9, 'G'], [1e6, 'M'], [1e3, 'k']];
+    if (Math.abs(x) >= 1e21) return sci(x, n || 2) + ' ' + unit;
+    for (const [v, p] of pre) if (Math.abs(x) >= v) return sig(x / v, n || 3) + ' ' + p + unit;
+    if (Math.abs(x) < 1 && x !== 0) return sig(x, n || 2) + ' ' + unit;
+    return sig(x, n || 3) + ' ' + unit;
+  }
+  function fmtTNT(J) {
+    if (!isFinite(J)) return '∞';
+    const kg = J / K.TNT_J_per_kg;
+    if (kg < 0.001) return sig(kg * 1e6, 2) + ' mg TNT';
+    if (kg < 1) return sig(kg * 1000, 2) + ' g TNT';
+    if (kg < 1000) return sig(kg, 2) + ' kg TNT';
+    const t = kg / 1000;
+    if (t < 1000) return sig(t, 2) + ' t TNT';
+    if (t < 1e6) return sig(t / 1e3, 2) + ' kt TNT';
+    if (t < 1e9) return sig(t / 1e6, 2) + ' Mt TNT';
+    if (t < 1e12) return sig(t / 1e9, 2) + ' Gt TNT';
+    return sci(t, 2) + ' t TNT';
+  }
+  function compareEnergy(J) {
+    if (!isFinite(J)) return 'more than any finite amount';
+    const refs = D.energyRefs.slice().sort((a, b) => a.J - b.J);
+    let best = null;
+    for (const r of refs) if (r.J <= J) best = r;
+    if (!best) {
+      const r = refs[0];
+      return sig(J / r.J * 100, 2) + '% of ' + r.short;
+    }
+    const ratio = J / best.J;
+    if (ratio < 1.5) return '≈ ' + best.short;
+    return big(ratio, 2) + '× ' + best.short;
+  }
+  function fmtSpeed(v) {
+    if (!isFinite(v) || v >= K.c * (1 - 1e-12)) return 'light speed (to the last digit)';
+    if (v >= 0.01 * K.c) {
+      const b = v / K.c;
+      if (b > 0.999) return sig(b * 100, 8).replace(/0+$/, '') + '% of light speed';
+      return sig(b * 100, 3) + '% of light speed';
+    }
+    const kmh = v * 3.6;
+    let s = sig(v, 3) + ' m/s · ' + big(kmh, 3) + ' km/h';
+    return s;
+  }
+  function fmtMach(v) { return v >= 0.01 * K.c ? '' : (v >= K.a0 * 0.9 ? 'Mach ' + sig(v / K.a0, 2) : ''); }
+  function fmtDist(m) {
+    if (!isFinite(m)) return '∞';
+    if (m < 0.01) return sig(m * 1000, 2) + ' mm';
+    if (m < 1) return sig(m * 100, 2) + ' cm';
+    if (m < 1000) return sig(m, 3) + ' m';
+    if (m < 1e9) return big(m / 1000, 3) + ' km';
+    return sci(m / 1000, 2) + ' km';
+  }
+  function fmtTime(s) {
+    if (!isFinite(s)) return '∞';
+    if (s < 1e-6) return sig(s * 1e9, 2) + ' ns';
+    if (s < 1e-3) return sig(s * 1e6, 2) + ' µs';
+    if (s < 1) return sig(s * 1000, 2) + ' ms';
+    if (s < 120) return sig(s, 3) + ' s';
+    if (s < 7200) return sig(s / 60, 3) + ' min';
+    if (s < 172800) return sig(s / 3600, 3) + ' h';
+    return sig(s / 86400, 3) + ' days';
+  }
+  function fmtRatio(r) { return r >= 1000 ? big(r, 2) + '×' : sig(r, 2) + '×'; }
+  function fmtArea(a) {
+    if (!isFinite(a)) return '∞';
+    const side = Math.sqrt(a);
+    return fmtDist(side) + ' × ' + fmtDist(side);
+  }
+
+  // ---------------------------------------------------------------- state
+  const DEFAULTS = { logKg: Math.log10(100 * 907.18474), inf: false, mode: 'comic', surface: 'concrete', groundHolds: false, anchor: 'friction', H: 2, m: 180, action: 'throw', obj: 'car', angle: 45 };
+  let state = Object.assign({}, DEFAULTS);
+  try { const saved = JSON.parse(localStorage.getItem('rex-lab-v1') || 'null'); if (saved) state = Object.assign(state, saved); } catch (e) { /* storage unavailable */ }
+  if (!D.surfaces.some((s) => s.id === state.surface)) state.surface = DEFAULTS.surface;
+  if (!D.objects.some((o) => o.id === state.obj)) state.obj = DEFAULTS.obj;
+  const save = () => { try { localStorage.setItem('rex-lab-v1', JSON.stringify(state)); } catch (e) { /* ignore */ } };
+
+  const name = () => 'Rex';
+  const nameObj = () => 'Rex';
+  const nameIs = () => 'Rex';
+
+  function ctx(overrides) {
+    const body = P.makeBody({ H: state.H, m: state.m });
+    const surface = D.surfaces.find((s) => s.id === state.surface);
+    const c = { F: state.inf ? Infinity : Math.pow(10, state.logKg) * g, mode: state.mode, body, surface, groundHolds: state.groundHolds, anchor: state.anchor };
+    return Object.assign(c, overrides || {});
+  }
+  const objById = (id) => D.objects.find((o) => o.id === id);
+
+  // ---------------------------------------------------------------- status chips
+  const ICON = {
+    good: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="var(--good)"/><path d="M4.5 8.2l2.2 2.2 4.8-4.8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    warn: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5l7 13H1z" fill="var(--warn)"/><path d="M8 6v4" stroke="#1b1306" stroke-width="2" stroke-linecap="round"/><circle cx="8" cy="12.3" r="1.1" fill="#1b1306"/></svg>',
+    bad: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="var(--bad)"/><path d="M5.3 5.3l5.4 5.4M10.7 5.3l-5.4 5.4" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>',
+    info: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="var(--ink-3)"/><path d="M8 7.2v4.3" stroke="var(--surface)" stroke-width="2" stroke-linecap="round"/><circle cx="8" cy="4.7" r="1.1" fill="var(--surface)"/></svg>',
+  };
+  function status(kind, label) {
+    const s = el('span', { class: 'status' });
+    s.innerHTML = ICON[kind];
+    s.append(document.createTextNode(label));
+    return s;
+  }
+  const tile = (k, v, s) => el('div', { class: 'tile' }, el('div', { class: 'k', text: k }), el('div', { class: 'v', text: v }), s ? el('div', { class: 's', text: s }) : null);
+  const tiles = (...ts) => el('div', { class: 'tiles' }, ts.filter(Boolean));
+  const happens = (items) => el('ul', { class: 'happens' }, items.filter(Boolean).slice(0, 5).map((t) => el('li', { text: t })));
+  const math = (lines) => { const d = el('details', { class: 'math' }, el('summary', { text: 'Show the math' })); d.append(el('div', { class: 'eq', text: lines.filter(Boolean).join('\n') })); return d; };
+  const verdict = (t) => el('p', { class: 'verdict', text: t });
+  const callout = (t) => el('p', { class: 'callout', text: t });
+
+  // ---------------------------------------------------------------- dial
+  function tierNear() {
+    if (state.inf) return D.tiers.find((t) => !isFinite(t.liftKg));
+    const kg = Math.pow(10, state.logKg);
+    return D.tiers.find((t) => isFinite(t.liftKg) && Math.abs(Math.log10(t.liftKg) - state.logKg) < 0.004);
+  }
+  function renderDial() {
+    const kg = Math.pow(10, state.logKg);
+    const slider = $('#strength');
+    slider.value = state.logKg;
+    slider.setAttribute('aria-valuetext', state.inf ? 'Infinite' : 'Lifts ' + fmtMass(kg));
+    $('#dial-big').textContent = state.inf ? 'Infinite' : 'Lifts ' + fmtMass(kg);
+    $('#dial-force').textContent = state.inf ? 'unbounded force' : fmtSI(kg * g, 'N') + ' of force (' + (kg * g / (state.m * g) >= 10 ? big(kg / state.m, 3) + '× his body weight' : sig(kg / state.m, 2) + '× his body weight') + ')';
+    const t = tierNear();
+    const human = D.tiers.find((x) => x.id === 'human');
+    $('#dial-who').textContent = t ? t.label + (t.who ? ' · ' + t.who : '') : (human && !state.inf ? '≈ ' + big(kg / human.liftKg, 3) + '× the strongest human' : '');
+    for (const b of document.querySelectorAll('#tier-chips .chip')) {
+      const tt = D.tiers.find((x) => x.id === b.dataset.id);
+      b.setAttribute('aria-pressed', String(t === tt));
+    }
+    $('#mode-comic').setAttribute('aria-pressed', String(state.mode === 'comic'));
+    $('#mode-real').setAttribute('aria-pressed', String(state.mode === 'real'));
+    $('#mode-hint').textContent = state.mode === 'comic'
+      ? 'Each move uses a fixed share of his strength at any speed, set to match real athletes at record-human strength. Above that, speed keeps growing with the square root of strength.'
+      : 'Muscles lose force as they speed up (Hill force–velocity curve). Matches real athletes at record-human strength; above that, more strength buys force, not speed.';
+    $('#surface').value = state.surface;
+    $('#ground-holds').checked = state.groundHolds;
+    $('#anchor').value = state.anchor;
+    $('#height').value = state.H;
+    $('#mass').value = Math.round(state.m * 100) / 100;
+    for (const b of document.querySelectorAll('#size-chips .chip')) b.setAttribute('aria-pressed', String(Math.abs(Number(b.dataset.h) - state.H) < 1e-9));
+  }
+
+  function buildControls() {
+    const chips = $('#tier-chips');
+    for (const t of D.tiers.filter((x) => x.chip)) {
+      chips.append(el('button', { type: 'button', class: 'chip', 'data-id': t.id, 'aria-pressed': 'false', title: t.who || '', onclick: () => {
+        if (!isFinite(t.liftKg)) state.inf = true; else { state.inf = false; state.logKg = Math.log10(t.liftKg); }
+        update();
+      } }, t.chip));
+    }
+    $('#strength').addEventListener('input', (e) => { state.inf = false; state.logKg = Number(e.target.value); update(); });
+    $('#mode-comic').onclick = () => { state.mode = 'comic'; update(); };
+    $('#mode-real').onclick = () => { state.mode = 'real'; update(); };
+    const sel = $('#surface');
+    for (const s of D.surfaces) sel.append(el('option', { value: s.id, text: s.name }));
+    sel.onchange = (e) => { state.surface = e.target.value; update(); };
+    $('#ground-holds').onchange = (e) => { state.groundHolds = e.target.checked; update(); };
+    $('#anchor').onchange = (e) => { state.anchor = e.target.value; update(); };
+    const sizes = [{ h: 0.4, label: 'Plush (40 cm)' }, { h: 2, label: 'Dino (2 m)' }, { h: 50, label: 'Kaiju (50 m)' }];
+    for (const s of sizes) $('#size-chips').append(el('button', { type: 'button', class: 'chip', 'data-h': s.h, onclick: () => { state.H = s.h; state.m = 180 * Math.pow(s.h / 2, 3); update(); } }, s.label));
+    $('#height').onchange = (e) => { const h = Math.min(500, Math.max(0.1, Number(e.target.value) || 2)); state.H = h; state.m = 180 * Math.pow(h / 2, 3); update(); };
+    $('#mass').onchange = (e) => { const m = Number(e.target.value); if (m > 0) state.m = m; update(); };
+    const tabs = $('#tabs');
+    for (const a of ACTIONS) {
+      tabs.append(el('button', { type: 'button', class: 'tab', role: 'tab', id: 'tab-' + a.id, 'aria-selected': 'false', 'aria-controls': 'bay', onclick: () => { state.action = a.id; update(); } }, a.label));
+    }
+    tabs.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      const i = ACTIONS.findIndex((a) => a.id === state.action);
+      const j = (i + (e.key === 'ArrowRight' ? 1 : -1) + ACTIONS.length) % ACTIONS.length;
+      state.action = ACTIONS[j].id; update(); $('#tab-' + state.action).focus();
+    });
+  }
+
+  // ---------------------------------------------------------------- object picker
+  function objectPicker(filter) {
+    const f = el('div', { class: 'field' }, el('label', { for: 'obj', text: 'Object' }));
+    const s = el('select', { id: 'obj' });
+    const list = D.objects.filter(filter || (() => true));
+    if (!list.some((o) => o.id === state.obj)) state.obj = list[0].id;
+    const groups = [];
+    for (const o of list) { let gp = groups.find((x) => x.name === o.group); if (!gp) { gp = { name: o.group, items: [] }; groups.push(gp); } gp.items.push(o); }
+    for (const gp of groups) s.append(el('optgroup', { label: gp.name }, gp.items.map((o) => el('option', { value: o.id, text: o.name + ' · ' + fmtMass(o.m) }))));
+    s.value = state.obj;
+    s.onchange = (e) => { state.obj = e.target.value; update(); };
+    f.append(s);
+    return f;
+  }
+  function angleControl() {
+    const f = el('div', { class: 'field' }, el('label', { for: 'angle', text: 'Launch angle: ' + state.angle + '°' }));
+    const r = el('input', { id: 'angle', type: 'range', min: '0', max: '90', step: '1', value: String(state.angle) });
+    r.oninput = (e) => { state.angle = Number(e.target.value); f.querySelector('label').textContent = 'Launch angle: ' + state.angle + '°'; scheduleBay(); };
+    f.append(r);
+    return f;
+  }
+
+  // ---------------------------------------------------------------- charts
+  // Charts are drawn at the bay's real pixel width so text stays at its set size on phones.
+  const chartW = () => Math.max(300, Math.min(760, ($('#bay') && $('#bay').clientWidth) || 640));
+  function logMeter(label, ratio) {
+    // Ratio of demand to capacity on a log scale from 1/100 to 10^12.
+    const w = chartW(), h = 58, pad = 10;
+    const lo = -2, hi = 12;
+    const x = (r) => pad + (Math.min(hi, Math.max(lo, Math.log10(Math.max(r, 1e-12)))) - lo) / (hi - lo) * (w - 2 * pad);
+    const svg = sv('svg', { viewBox: `0 0 ${w} 44`, role: 'img', 'aria-label': label + ': ' + fmtRatio(ratio) + ' of capacity' });
+    svg.append(sv('rect', { x: pad, y: 8, width: w - 2 * pad, height: 10, rx: 5, fill: 'var(--surface-2)' }));
+    const xr = x(ratio);
+    const x1 = x(1);
+    svg.append(sv('rect', { x: pad, y: 8, width: Math.max(4, xr - pad), height: 10, rx: 5, fill: ratio > 1 ? 'var(--bad)' : 'var(--good)' }));
+    svg.append(sv('line', { x1, x2: x1, y1: 2, y2: 24, stroke: 'var(--ink)', 'stroke-width': 2 }));
+    svg.append(sv('text', { x: x1, y: 38, 'text-anchor': 'middle' }, 'limit'));
+    svg.append(sv('text', { x: w - pad, y: 38, 'text-anchor': 'end' }, '10¹²×'));
+    svg.append(sv('text', { x: pad, y: 38, 'text-anchor': 'start' }, '1%'));
+    const lab = el('div', { class: 'muted', style: 'font-size:.85rem' }, label + ': ', el('b', { style: 'color:var(--ink)', text: ratio > 1 ? fmtRatio(ratio) + ' the limit' : (ratio > 0 ? sig(ratio * 100, 2) + '% of the limit' : 'n/a') }));
+    return el('div', {}, lab, el('div', { class: 'viz' }, svg));
+  }
+
+  function trajectoryChart(path, ghost, label) {
+    const w = chartW(), h = w < 480 ? 220 : 260, padL = 58, padR = 16, padT = 16, padB = 34;
+    let maxX = 0, maxY = 0;
+    for (const p of path.concat(ghost || [])) { maxX = Math.max(maxX, p[0]); maxY = Math.max(maxY, p[1]); }
+    maxX = maxX || 1; maxY = maxY || 1;
+    const nice = (v) => { const e = Math.pow(10, Math.floor(Math.log10(v))); const m = v / e; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * e; };
+    const X = nice(maxX * 1.02), Y = nice(maxY * 1.05);
+    const sx = (x) => padL + x / X * (w - padL - padR), sy = (y) => h - padB - y / Y * (h - padT - padB);
+    const svg = sv('svg', { viewBox: `0 0 ${w} ${h}`, role: 'img', 'aria-label': label });
+    for (let i = 0; i <= 4; i++) {
+      const yy = Y * i / 4, xx = X * i / 4;
+      svg.append(sv('line', { x1: padL, x2: w - padR, y1: sy(yy), y2: sy(yy), class: 'axis' }));
+      svg.append(sv('text', { x: padL - 6, y: sy(yy) + 4, 'text-anchor': 'end' }, fmtDist(yy)));
+      svg.append(sv('text', { x: sx(xx), y: h - padB + 18, 'text-anchor': i === 0 ? 'start' : (i === 4 ? 'end' : 'middle') }, fmtDist(xx)));
+    }
+    const toD = (pts) => pts.map((p, i) => (i ? 'L' : 'M') + sx(p[0]).toFixed(1) + ' ' + sy(p[1]).toFixed(1)).join(' ');
+    if (ghost && ghost.length > 1) svg.append(sv('path', { d: toD(ghost), fill: 'none', stroke: 'var(--ink-3)', 'stroke-width': 1.5, 'stroke-opacity': 0.55 }));
+    svg.append(sv('path', { d: toD(path), fill: 'none', stroke: 'var(--accent)', 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }));
+    const last = path[path.length - 1];
+    svg.append(sv('circle', { cx: sx(last[0]), cy: sy(last[1]), r: 5, fill: 'var(--accent)', stroke: 'var(--surface)', 'stroke-width': 2 }));
+    let apex = path[0];
+    for (const p of path) if (p[1] > apex[1]) apex = p;
+    svg.append(sv('circle', { cx: sx(apex[0]), cy: sy(apex[1]), r: 4, fill: 'var(--accent)', stroke: 'var(--surface)', 'stroke-width': 2 }));
+    svg.append(sv('text', { x: Math.min(sx(apex[0]) + 8, w - padR - 4), y: Math.max(sy(apex[1]) - 8, padT + 10), 'text-anchor': sx(apex[0]) > w - 150 ? 'end' : 'start', class: 'lbl-strong' }, 'top ' + fmtDist(apex[1])));
+    const legend = el('div', { class: 'ladder-legend' },
+      el('span', {}, el('i', { style: 'background:var(--accent);border-radius:0;height:2px;width:16px' }), 'With air drag'),
+      ghost && ghost.length > 1 ? el('span', {}, el('i', { style: 'background:var(--ink-3);opacity:.6;border-radius:0;height:2px;width:16px' }), 'If there were no air') : null);
+    return el('div', {}, legend, el('div', { class: 'viz' }, svg));
+  }
+
+  function logBars(title, rows, unitFmt, opts) {
+    // rows: [{label, value, highlight}] ; horizontal bars on a log axis
+    const o = opts || {};
+    const finite = rows.filter((r) => r.value > 0 && isFinite(r.value));
+    const w = chartW(), rowH = 30, padL = Math.min(o.padL || 170, Math.round(w * 0.36)), padR = 84, padT = 10;
+    const h = padT + rows.length * rowH + 26;
+    const vals = finite.map((r) => r.value);
+    let lo = Math.floor(Math.log10(Math.min(...vals, o.min || Infinity)));
+    let hi = Math.ceil(Math.log10(Math.max(...vals, o.max || 0)));
+    if (!isFinite(lo)) lo = 0; if (!isFinite(hi) || hi <= lo) hi = lo + 1;
+    lo = Math.max(lo, hi - 14);
+    const x = (v) => padL + (Math.log10(Math.max(v, Math.pow(10, lo))) - lo) / (hi - lo) * (w - padL - padR);
+    const svg = sv('svg', { viewBox: `0 0 ${w} ${h}`, role: 'img', 'aria-label': title });
+    const maxTicks = Math.max(2, Math.floor((w - padL - padR) / 78));
+    const step = Math.max(1, Math.ceil((hi - lo) / maxTicks));
+    for (let e = lo; e <= hi; e += step) {
+      svg.append(sv('line', { x1: x(Math.pow(10, e)), x2: x(Math.pow(10, e)), y1: padT, y2: h - 22, class: 'axis' }));
+      svg.append(sv('text', { x: x(Math.pow(10, e)), y: h - 6, 'text-anchor': 'middle' }, unitFmt(Math.pow(10, e))));
+    }
+    rows.forEach((r, i) => {
+      const y = padT + i * rowH + 6;
+      svg.append(sv('text', { x: padL - 8, y: y + 12, 'text-anchor': 'end', class: r.highlight ? 'lbl-strong' : null }, r.label));
+      if (r.value > 0) {
+        const xv = isFinite(r.value) ? x(r.value) : w - padR;
+        svg.append(sv('rect', { x: padL, y, width: Math.max(4, xv - padL), height: 16, rx: 4, fill: r.highlight ? 'var(--accent)' : 'var(--olive)', 'fill-opacity': r.highlight ? 1 : 0.75 }));
+        svg.append(sv('text', { x: Math.min(xv + 6, w - padR + 6), y: y + 12, class: 'lbl-strong' }, r.text || (isFinite(r.value) ? unitFmt(r.value) : '∞')));
+      } else {
+        svg.append(sv('text', { x: padL, y: y + 12 }, r.zeroText || 'none'));
+      }
+    });
+    return el('div', { class: 'viz' }, svg);
+  }
+
+  function blastBlock(E, where) {
+    const cap = Math.PI * K.R_E;
+    const rows = D.overpressure.map((t) => {
+      const r = P.blastRadius(E, t.Pa);
+      return { label: t.label, value: Math.min(r, cap), text: r > cap ? 'whole planet' : null };
+    });
+    if (!rows.some((r) => r.value > 0.05)) return callout('Too little energy to hurt anyone through air pressure, even at arm’s length.');
+    const far = rows.some((r) => r.value > 3 * K.Hs);
+    return el('div', {},
+      el('p', { class: 'muted', style: 'font-size:.88rem;margin-bottom:4px', text: 'Damage radius if all of that energy went into the air as a blast (' + where + '). Upper bound: real moves couple far less energy into air than explosives do.' + (far ? ' Radii past about 25 km are outside what the free-air blast formula covers; the atmosphere is only about 8 km thick.' : '') }),
+      logBars('Blast radius by damage level', rows.map((r) => Object.assign(r, { zeroText: 'under 5 cm' })), fmtDist, { min: 0.1 }));
+  }
+  const fmtTemp = (T) => big(T - 273.15, 2) + ' °C';
+  function quakeChip(E, mag) {
+    if (E >= K.EARTH_BIND) return status('bad', 'Earth blown apart');
+    if (mag > 2) return status(mag > 5 ? 'bad' : 'warn', 'Quake: magnitude ' + sig(mag, 2));
+    return status('good', 'No noticeable quake');
+  }
+
+  // ---------------------------------------------------------------- actions
+  const ACTIONS = [
+    { id: 'lift', label: 'Lift' },
+    { id: 'throw', label: 'Throw' },
+    { id: 'jump', label: 'Jump' },
+    { id: 'stomp', label: 'Stomp' },
+    { id: 'punch', label: 'Punch' },
+    { id: 'clap', label: 'Clap' },
+    { id: 'sprint', label: 'Sprint' },
+    { id: 'pull', label: 'Pull' },
+  ];
+
+  function groundStatus(c, ratio) {
+    if (c.groundHolds) return status('info', 'Ground: comic, never breaks');
+    if (ratio <= 1) return status('good', 'Ground holds (' + sig(ratio * 100, 2) + '% of limit)');
+    return status('bad', 'Ground fails: ' + fmtRatio(ratio) + ' its limit');
+  }
+  function capital(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  const speedOnly = (v) => fmtSpeed(v).split(' · ')[0];
+  const shareText = (key) => sig(100 * (state.mode === 'real' ? P.MUSCLE[key].forceFrac : P.MUSCLE[key].comicFrac), 2) + '%';
+
+  function bayLift(c) {
+    const o = objById(state.obj);
+    const r = P.lift(c, o);
+    const out = [];
+    out.push(el('div', { class: 'bay-controls' }, objectPicker()));
+    let v;
+    if (!r.canLift) v = 'Rex can’t budge it. It needs ' + fmtRatio(1 / r.strengthMargin) + ' more strength.';
+    else if (r.groundRatio > 1 && r.gripRatio > 1) v = 'Rex has the strength. The ground and the ' + o.short + ' don’t.';
+    else if (r.groundRatio > 1) v = 'Rex can lift it, but sinks into the ground doing it.';
+    else if (r.gripRatio > 1) v = 'Rex can lift it, but his hands punch through it.';
+    else v = 'Rex lifts it clean.' + (r.strengthMargin > 20 ? ' It feels like nothing.' : '');
+    out.push(verdict(v));
+    out.push(el('div', { class: 'status-row' },
+      r.canLift ? status('good', 'Strength: ' + fmtRatio(r.strengthMargin) + ' what’s needed') : status('bad', 'Strength: ' + sig(r.strengthMargin * 100, 2) + '% of what’s needed'),
+      r.canLift ? groundStatus(c, r.groundRatio) : null,
+      o.crush && r.canLift ? (r.gripRatio > 1 ? status('bad', 'Grip: crushes the ' + o.short) : status('good', 'Grip: object holds')) : null,
+      r.canLift ? null : status('info', 'Below: what would happen if he could')));
+    out.push(tiles(
+      tile('Weight in his hands', fmtSI(r.weight, 'N'), fmtMass(o.m)),
+      tile('Pressure under his feet', fmtSI(r.pressure, 'Pa'), c.groundHolds ? 'comic ground' : 'limit ' + fmtSI(r.qult, 'Pa')),
+      tile('Footing needed to not sink', c.groundHolds ? 'n/a' : fmtArea(r.footAreaNeeded), c.groundHolds ? '' : 'a square plate this size'),
+      o.crush ? tile('Grip plate to not crush it', fmtArea(r.plateNeeded), 'vs. his two palms, ' + fmtArea(2 * c.body.palmArea)) : null));
+    if (!c.groundHolds) out.push(logMeter('Ground: pressure vs. what ' + c.surface.short + ' can take', r.groundRatio));
+    if (o.crush) out.push(logMeter('Object: hand pressure vs. what the ' + o.short + ' can take', r.gripRatio));
+    const items = [];
+    if (r.standRatio > 1) items.push('At this size Rex already sinks just standing here: his own weight is ' + fmtRatio(r.standRatio) + ' what the ground can carry.');
+    if (r.canLift && r.groundRatio > 1) items.push('The ground fails first. Every newton he lifts goes straight down through his feet. Rex keeps sinking until he reaches something stronger, unless he stands on a plate ' + fmtArea(r.footAreaNeeded) + '.');
+    if (r.canLift && r.gripRatio > 1) items.push('His palms press ' + fmtSI(r.gripPressure, 'Pa') + ' into the ' + o.short + ', which gives way at about ' + fmtSI(o.crush, 'Pa') + '. To lift it in one piece he needs to spread the load over ' + fmtArea(r.plateNeeded) + '.');
+    if (o.liftNote) items.push(o.liftNote);
+    items.push('Once he can lift it, more strength fixes nothing: ground and grip failures depend only on the object’s weight.');
+    out.push(happens(items));
+    out.push(math([
+      'Weight W = m·g = ' + fmtMass(o.m) + ' × 9.81 m/s² = ' + fmtSI(r.weight, 'N'),
+      'Foot pressure = (m_Rex + m) g / (2 feet × ' + sig(c.body.footArea, 2) + ' m²) = ' + fmtSI(r.pressure, 'Pa'),
+      c.groundHolds ? null : 'Ground limit (ultimate bearing) for ' + c.surface.short + ' ≈ ' + fmtSI(r.qult, 'Pa') + (c.surface.granular ? ' at his foot width; sand and gravel get stronger under wider footings' : '') + ' → ratio ' + fmtRatio(r.groundRatio),
+      o.crush ? 'Grip pressure = W / (2 palms × ' + sig(c.body.palmArea, 2) + ' m²) = ' + fmtSI(r.gripPressure, 'Pa') + ' vs ' + fmtSI(o.crush, 'Pa') + ' (estimate)' : null,
+    ]));
+    return out;
+  }
+
+  function bayThrow(c) {
+    const o = objById(state.obj);
+    const r = P.throwObject(Object.assign({}, c, { record: true }), o, state.angle);
+    const out = [];
+    out.push(el('div', { class: 'bay-controls' }, objectPicker((x) => !x.noThrow), angleControl()));
+    const key = r.style === 'whip' ? 'throwWhip' : 'throwPush';
+    if (!r.canHold || !r.canMove) {
+      out.push(verdict(!r.canHold ? 'Rex can’t throw it. He can’t even hold it up.' : 'Rex can hold it, but can’t throw it at this angle.'));
+      out.push(tiles(
+        tile('Weight to hold up', fmtSI(o.m * g, 'N'), fmtMass(o.m)),
+        tile('His full strength', fmtSI(c.F, 'N'), ''),
+        r.canHold ? tile('His throwing push', fmtSI(r.Fdrive, 'N'), shareText(key) + ' of full strength per hand, ' + r.hands + ' hand' + (r.hands > 1 ? 's' : '')) : null));
+      out.push(happens([
+        state.mode === 'real' ? 'A fast throw can’t use full strength: muscles deliver much less force while moving quickly than while holding still.' : 'A throw uses a fixed share of his strength, the share that matches real throwers at record-human strength.',
+        'Try a flatter angle, a lighter object, or more strength.',
+      ]));
+      return out;
+    }
+    const f = r.flight;
+    const vac = f.relativistic ? null : P.fly({ v0: r.v, thetaDeg: state.angle, h0: c.body.releaseHeight, m: o.m, A: o.area, Cd: 0, record: true });
+    let v;
+    if (f.relativistic) v = 'The ' + o.short + ' leaves at ' + fmtSpeed(r.v) + '. It never lands: the air in front of it turns into a fireball.';
+    else if (f.escaped) v = 'The ' + o.short + ' leaves Earth for good.';
+    else if (f.orbit) v = 'The ' + o.short + ' goes into orbit.';
+    else if (f.timedOut) v = 'The ' + o.short + ' is still in flight after ' + fmtTime(f.time) + ', ' + fmtDist(f.apex) + ' up.';
+    else v = 'The ' + o.short + ' flies ' + fmtDist(f.range) + '.';
+    if (r.recoilV > 1) v += ' Rex gets shoved backward at ' + speedOnly(r.recoilV) + '.';
+    out.push(verdict(v));
+    const chips = [];
+    chips.push(status(r.v >= K.a0 ? 'warn' : 'good', 'Launch: ' + speedOnly(r.v) + (r.v >= K.a0 && r.v < 0.01 * K.c ? ' (' + fmtMach(r.v) + ')' : '')));
+    if (r.anchor.R !== Infinity) chips.push(r.recoilV > 0.01 ? status('bad', 'Footing: feet slide, he recoils') : status('good', 'Footing holds'));
+    if (r.sinkRatio > 1) chips.push(status('bad', 'Ground gives way under his feet'));
+    if (o.crush) chips.push(r.gripRatio > 1 ? status('bad', 'Grip: hands punch into it') : status('good', 'Grip: object holds'));
+    if (f.maxStagT > 1200 && !f.relativistic) chips.push(status('warn', 'Air heating: ' + fmtTemp(f.maxStagT) + ' at the nose'));
+    out.push(el('div', { class: 'status-row' }, chips));
+    let distTile;
+    if (f.relativistic) distTile = null;
+    else if (f.escaped) distTile = tile('Distance', 'Escapes Earth', '');
+    else if (f.orbit) distTile = tile('Distance', 'Orbits Earth', 'never comes down (no air up there)');
+    else if (f.timedOut) distTile = tile('Distance', 'Still flying', fmtDist(f.apex) + ' up after ' + fmtTime(f.time));
+    else distTile = tile('Distance', fmtDist(f.range), 'top ' + fmtDist(f.apex) + ' · ' + fmtTime(f.time));
+    out.push(tiles(
+      tile('Launch speed', speedOnly(r.v), [fmtMach(r.v), r.v < 0.01 * K.c ? big(r.v * 3.6, 3) + ' km/h' : ''].filter(Boolean).join(' · ')),
+      tile('Energy in the ' + o.short, fmtSI(r.Eobj, 'J'), fmtTNT(r.Eobj)),
+      distTile,
+      f.landed && !f.relativistic ? tile('Lands at', speedOnly(f.vImpact), fmtTNT(r.Eimpact) + ' on impact') : null,
+      tile('His recoil', r.recoilV > 0.01 ? speedOnly(r.recoilV) : 'none', r.anchor.R === Infinity ? 'bolted down' : 'footing gives at ' + fmtSI(r.anchor.R, 'N'))));
+    if (!f.relativistic && f.path && f.path.length > 1) {
+      const ghost = vac && vac.landed && vac.path && vac.range < 40 * Math.max(f.range, 1) ? vac.path : null;
+      out.push(trajectoryChart(f.path, ghost, 'Flight path of the ' + o.short));
+    }
+    const items = [];
+    if (r.anchor.R !== Infinity && r.recoilV > 0.01) items.push('Newton’s third law: the ' + o.short + ' pushes back on Rex exactly as hard as he pushes it. His footing can only resist ' + fmtSI(r.anchor.R, 'N') + ', so he flies backward at ' + speedOnly(r.recoilV) + '.' + (r.recoilE > r.Eobj ? ' He ends up with more of the energy than the ' + o.short + ' does.' : '') + (state.anchor === 'friction' ? ' To stay put he needs to dig in: try “Claws dug in” or “Bolted to the planet” under Body & footing.' : ''));
+    if (r.sinkRatio > 1) items.push('The throw also drives his feet down: the ground under him is carrying ' + fmtRatio(r.sinkRatio) + ' its limit, so he sinks while he throws.');
+    if (vac && !f.relativistic) {
+      if (vac.escaped && !f.escaped) items.push('Air is what brings it down. With no air, this launch would have escaped Earth.');
+      else if (vac.orbit && !f.orbit) items.push('Air is what brings it down. With no air, this launch would have gone into orbit.');
+      else if (vac.landed && f.landed && vac.range > 0) {
+        const ratio = f.range / vac.range;
+        if (ratio < 0.5) items.push('Air is the real limit on range: with no air it would have gone ' + fmtDist(vac.range) + '. At launch speed, drag cuts its speed by 63% every ' + fmtDist(f.eFold) + '.');
+        else if (ratio < 0.95) items.push('Air drag costs it ' + sig(100 * (1 - ratio), 2) + '% of its range.');
+      }
+    }
+    if (f.maxStagT > 1200 && !f.relativistic) items.push('At Mach ' + sig(f.maxMach, 2) + ', air piling up at the front heats to about ' + fmtTemp(f.maxStagT) + ' (equilibrium air; the textbook ideal-gas formula would say ' + fmtTemp(P.stagnationTIdeal(f.maxMach * K.a0)) + '). Only Rex is indestructible. The ' + o.short + ' would melt or burn away, and the sim does not model that.');
+    if (f.relativistic) items.push('Past about 1% of light speed the air ahead can’t get out of the way. It is shock-heated into plasma, the ' + o.short + ' vaporizes, and its energy, ' + fmtTNT(r.Eobj) + ', comes out as a fireball within a few hundred metres of Rex’s hand. (Air only starts to fuse much closer to light speed: xkcd’s “Relativistic Baseball” is pitched at 90% of it.)');
+    if (r.gripRatio > 1) items.push('The force on his palms is ' + fmtRatio(r.gripRatio) + ' what the ' + o.short + ' can take. Without a pushing plate of ' + fmtArea(r.plateNeeded) + ', his hands go through it and only part of it gets thrown.');
+    if (f.escaped) items.push('It leaves the atmosphere faster than escape velocity (11.2 km/s at the surface), so gravity never brings it back.');
+    if (f.landed && r.Eimpact > 4.184e9) items.push('Impact: ' + fmtTNT(r.Eimpact) + (r.crater > 0 ? ', crater up to ' + fmtDist(r.crater) + ' across (impact scaling; rock and concrete make smaller craters)' : '') + (r.quake > 2 ? ', felt like a magnitude ' + sig(r.quake, 2) + ' quake' : '') + '.');
+    out.push(happens(items));
+    const human = D.tiers.find((t) => t.id === 'human');
+    if (D.calibration && !state.inf && Math.abs(state.logKg - Math.log10(human.liftKg)) < 0.01) {
+      const rows = D.calibration.map((k) => {
+        const rr = P.throwObject(ctx(), objById(k.obj), k.angle);
+        return k.label + ': record ' + k.recordText + ' · sim ' + (k.metric === 'range' ? fmtDist(rr.flight.range) : speedOnly(rr.v));
+      });
+      out.push(callout('Reality check at record-human strength (both muscle settings are tuned to match these): ' + rows.join(' | ')));
+    }
+    out.push(math([
+      'Drive: ' + fmtSI(r.Fdrive, 'N') + ' (' + shareText(key) + ' of full strength per hand' + (state.mode === 'real' ? ', falling with speed per the Hill curve' : ', constant') + ') over a ' + sig(r.style === 'whip' ? c.body.strokes.whip : c.body.strokes.throw, 2) + ' m ' + (r.style === 'whip' ? 'overarm whip' : 'shove') + ' with ' + r.hands + ' hand' + (r.hands > 1 ? 's' : '') + '; holding it up against gravity leaves ' + fmtSI(r.F, 'N') + ' along the throw.',
+      'Rex and the ' + o.short + ' get equal and opposite momentum while the push lasts; his footing absorbs up to ' + fmtSI(r.anchor.R, 'N') + '.',
+      'Speeds use relativistic momentum: v = p c² / √(m²c⁴ + p²c²).',
+      'Flight: RK4 over a round Earth, exponential atmosphere (ρ₀ = 1.225 kg/m³, H = 8.4 km), drag ½ρv²·Cd·A with Cd ' + o.Cd + ' below Mach 0.8 and ' + o.CdSup + ' above Mach 1.2, A = ' + sig(o.area, 2) + ' m². Above 150 km the arc is solved exactly (Kepler).',
+      r.crater ? 'Crater: Collins, Melosh & Marcus (2005) gravity-regime scaling.' : null,
+    ]));
+    return out;
+  }
+
+  function heightRefs() { return D.heights.slice().sort((a, b) => a.m - b.m); }
+
+  function bayJump(c) {
+    const r = P.jump(c);
+    const f = r.flight;
+    const RB = r.groundLimitForce;
+    const rFree = !c.groundHolds && (r.groundFails || r.heldBack) ? P.jump(Object.assign({}, c, { groundHolds: true })) : null;
+    const out = [];
+    let v;
+    if (!(r.v > 0)) v = 'Rex can’t get off the ground.';
+    else if (r.relativistic) v = 'Rex leaves at ' + fmtSpeed(r.v) + '. The ground under him turns to plasma.';
+    else if (f.escaped) v = 'Rex jumps clean off the planet.';
+    else v = 'Rex jumps ' + fmtDist(f.apex) + ' high' + (r.groundFails ? ' and leaves two craters behind.' : '.');
+    out.push(verdict(v));
+    let gchip;
+    if (c.groundHolds) gchip = status('info', 'Ground: comic, never breaks');
+    else if (r.heldBack) gchip = status('warn', 'Ground at its limit: he holds back');
+    else if (r.groundFails) gchip = status('bad', 'Ground fails: his feet blast into it');
+    else gchip = status('good', 'Ground holds (' + sig(100 * r.F / RB, 2) + '% of limit)');
+    out.push(el('div', { class: 'status-row' }, gchip, r.v >= K.a0 && !r.relativistic ? status('warn', 'Sonic boom at takeoff') : null));
+    const ref = heightRefs().filter((h) => h.m <= f.apex).pop();
+    out.push(tiles(
+      tile('Takeoff speed', speedOnly(r.v), fmtMach(r.v)),
+      r.relativistic ? null : tile('Peak height', f.escaped ? 'Escapes Earth' : fmtDist(f.apex), ref ? 'clears the ' + ref.label.replace(/^The /, '') : ''),
+      r.relativistic || f.escaped ? null : tile('Hang time', fmtTime(f.time), ''),
+      r.groundFails ? tile('Energy into the ground', fmtSI(r.Eground, 'J'), fmtTNT(r.Eground)) : null,
+      r.relativistic || f.escaped ? null : tile('Comes back down at', speedOnly(f.vImpact), 'terminal speed ' + speedOnly(r.vTerminal))));
+    if (!r.relativistic && !f.escaped && f.apex > 0.01) {
+      const rows = heightRefs().filter((h) => h.m < f.apex * 30 && h.m > f.apex / 300).map((h) => ({ label: h.label, value: h.m }));
+      rows.push({ label: 'Rex’s jump', value: f.apex, highlight: true });
+      rows.sort((a, b) => a.value - b.value);
+      out.push(logBars('Jump height vs landmarks', rows, fmtDist));
+    }
+    const items = [];
+    if (r.heldBack) items.push('The ground is the limit. On ' + c.surface.short + ' his feet can push off with at most ' + fmtSI(RB, 'N') + ' before it gives, so he holds back to that: pushing a bit harder only sinks his feet and wastes the stroke.' + (rFree && !rFree.flight.escaped ? ' Rigid ground would send him ' + fmtDist(rFree.flight.apex) + '.' : ''));
+    if (r.groundFails) items.push('His feet punch into the ground at ' + speedOnly(r.push.vB) + '. That fast, the ground resists mostly through its own inertia: it has to be shoved out of the way, so he can still push off it, the way a hard slap on water stings. The ground takes ' + fmtTNT(r.Eground) + (r.groundQuake > 2 ? ' (a magnitude ' + sig(r.groundQuake, 2) + ' quake)' : '') + '.');
+    if (!c.groundHolds && !r.groundFails && !r.heldBack && r.v > 0) items.push('The ground held. On ' + c.surface.short + ' it gives at ' + fmtSI(RB, 'N') + ' of push.');
+    if (state.mode === 'real') items.push('Real muscle caps his leg speed, so the jump tops out near ' + speedOnly(P.MUSCLE.jump.vmax * c.body.s) + ' of takeoff speed however strong he gets.');
+    if (!r.relativistic && !f.escaped && f.apex > 50) items.push(isFinite(r.vacuumApex) ? 'Air drag eats the jump: with no air he would reach ' + fmtDist(r.vacuumApex) + '.' : 'With no air this takeoff would carry him off the planet. The air stops him.');
+    if (!r.relativistic && !f.escaped && f.apex > 20) items.push('He comes back down at ' + speedOnly(f.vImpact) + ', near terminal speed for a head-first fall (' + speedOnly(r.vTerminal) + '). Indestructible, so the landing is the ground’s problem.');
+    if (f.maxStagT > 1200 && !r.relativistic) items.push('He leaves with a shock wave, and the air at his head heats to about ' + fmtTemp(f.maxStagT) + '. He doesn’t care. Windows nearby would.');
+    out.push(happens(items));
+    out.push(math([
+      'Legs push his body (' + sig(c.body.m - c.body.feetMass, 3) + ' kg) up and his feet (' + sig(c.body.feetMass, 2) + ' kg) down with ' + fmtSI(r.F, 'N') + ' over ' + sig(c.body.strokes.leg, 2) + ' m.',
+      'Gravity holds the body back. The ground holds the feet with its bearing strength (' + fmtSI(RB, 'N') + ' for both feet) plus an inertial term ρv²A once they move.',
+      'At full extension the legs lock: takeoff momentum = body momentum − feet momentum.',
+      'Flight integrated with drag (Cd 1.0, ' + sig(c.body.topArea, 2) + ' m² head-first); no-air height from energy conservation in Earth’s 1/r² gravity.',
+    ]));
+    return out;
+  }
+
+  function bayStomp(c) {
+    const r = P.stomp(c);
+    const out = [];
+    const bf = r.bodyFlight;
+    let v = 'His stomp lands with ' + fmtTNT(r.E) + '.';
+    if (r.vBody > 2 && !bf.relativistic) v += ' It also launches him ' + (bf.escaped ? 'off the planet' : fmtDist(bf.apex) + ' into the air') + '.';
+    if (bf.relativistic) v += ' It also fires him upward at ' + fmtSpeed(r.vBody) + '.';
+    out.push(verdict(v));
+    out.push(el('div', { class: 'status-row' },
+      quakeChip(r.E, r.quake),
+      r.footMach >= 1 && r.vFoot < 0.01 * K.c ? status('warn', 'Foot breaks the sound barrier') : null,
+      r.vBody > 2 ? status('bad', 'Recoil launches him') : status('good', 'He stays put')));
+    let holeTile;
+    if (r.crater > 0) holeTile = tile('Crater', isFinite(r.crater) ? 'up to ' + fmtDist(r.crater) + ' wide' : '∞', 'impact scaling, upper bound');
+    else holeTile = tile('Hole under his foot', c.groundHolds ? 'none (comic ground)' : (r.holeDepth < 0.01 ? 'barely a dent' : fmtDist(r.holeDepth) + ' deep'), '');
+    out.push(tiles(
+      tile('Energy into the ground', fmtSI(r.E, 'J'), fmtTNT(r.E)),
+      tile('Compared with', compareEnergy(r.E), ''),
+      tile('Foot speed at impact', speedOnly(r.vFoot), fmtMach(r.vFoot)),
+      holeTile,
+      tile('He gets launched', r.vBody > 0.5 ? (bf.relativistic ? fmtSpeed(r.vBody) : (bf.escaped ? 'Escapes Earth' : fmtDist(bf.apex) + ' up')) : 'no', r.vBody > 0.5 ? speedOnly(r.vBody) : '')));
+    out.push(blastBlock(r.E, 'ground-level'));
+    const items = [];
+    items.push('Newton’s third law again: driving the foot down pushes the rest of him up just as hard. Only his own weight holds him down, so at high strength the stomp throws Rex into the sky. Here the foot takes ' + sig(100 * r.footShare, 2) + '% of the energy and his body the rest.');
+    if (r.disrupts) items.push('That is more energy than it takes to blow Earth apart (its gravitational binding energy, 2.5 × 10³² J). A quake magnitude stops meaning anything.');
+    else if (r.quake > 2) items.push('Quake magnitude assumes 1 part in 10,000 of the energy becomes ground shaking, the value impact studies use. The real share ranges 10⁻⁵ to 10⁻³, so read it as ±1 magnitude.');
+    if (r.crater > 0) items.push('Above about 2 km/s the foot doesn’t dig a hole: it makes an impact crater. The size uses asteroid-impact scaling, which overstates small craters in rock or concrete by a few times.');
+    else if (!c.groundHolds && r.holeDepth >= 0.01) items.push('The ground resists the foot with its strength plus its inertia (it must be shoved aside), so the foot stops after about ' + fmtDist(r.holeDepth) + '.');
+    out.push(happens(items));
+    out.push(math([
+      'Leg pushes foot+shank (' + sig(c.body.legEff, 2) + ' kg) down and body (' + sig(c.body.m - c.body.legEff, 3) + ' kg) up with ' + fmtSI(r.F, 'N') + ' over ' + sig(c.body.strokes.stomp, 2) + ' m.',
+      'Equal momenta; energies split by mass (relativistically at extreme strength).',
+      'Hole: m v dv/dx = −A (q + ρ v²) → depth = m/(2ρA) · ln(1 + ρv²/q).',
+      'Quake: M = (log₁₀(10⁻⁴ × E) − 4.8) / 1.5 (Gutenberg–Richter energy relation).',
+    ]));
+    return out;
+  }
+
+  function bayPunch(c) {
+    const r = P.punch(c);
+    const out = [];
+    let v = 'His fist reaches ' + speedOnly(r.vFist) + '.';
+    if (r.vFist >= 0.01 * K.c) v = 'His fist moves at ' + fmtSpeed(r.vFist) + '. Every punch is a fireball.';
+    else if (r.mach >= 1) v += ' Every punch cracks like a whip, only louder.';
+    if (r.recoilE > 0.5 * r.E) v += ' The punch throws Rex backward harder than it throws his fist.';
+    out.push(verdict(v));
+    out.push(el('div', { class: 'status-row' },
+      r.mach >= 1 ? status('warn', 'Sonic boom from the fist') : status('good', 'Subsonic'),
+      r.recoilV > 0.01 ? status('warn', 'Body lurches back ' + fmtDist(r.lurch)) : status('good', 'Body stays planted')));
+    out.push(tiles(
+      tile('Fist speed', speedOnly(r.vFist), fmtMach(r.vFist)),
+      tile('Energy in the punch', fmtSI(r.E, 'J'), fmtTNT(r.E)),
+      tile('Compared with', compareEnergy(r.E), ''),
+      r.recoilE > 0.01 * r.E ? tile('His own recoil', fmtSI(r.recoilE, 'J'), sig(100 * r.recoilE / r.E, 2) + '% of the total') : null,
+      r.vFist < 0.01 * K.c && r.vFist > 1000 ? tile('Air at the knuckles', fmtTemp(r.stagT), 'equilibrium air (ideal-gas formula: ' + fmtTemp(r.stagTIdeal) + ')') : null));
+    out.push(blastBlock(r.E, 'at his fist'));
+    const items = [];
+    items.push('A punch into empty air does no work on anything but the air. Everything the arm put in, the fist’s energy plus his own recoil, is released when the arm stops.');
+    if (r.recoilE > 0.5 * r.E) items.push('His footing can only hold ' + fmtSI(r.anchor.R, 'N') + '. Past that, the fist and Rex push apart like two skaters, and at extreme strength the light fist can’t go faster than light, so his own body takes most of the energy.');
+    if (r.mach >= 1 && r.vFist < 0.01 * K.c) items.push('Past Mach 1 the fist drags a shock wave, like a bullet. Bystanders get the bang even if he misses.');
+    if (r.vFist >= 0.01 * K.c) items.push('At this speed the air ahead of the fist is shock-heated into plasma and the energy comes out as a blast at his knuckles. (Air only starts to fuse much closer to light speed: xkcd’s “Relativistic Baseball” is pitched at 90% of it.)');
+    if (state.mode === 'real') items.push('Real muscle caps fist speed near ' + speedOnly(P.MUSCLE.punch.vmax * c.body.s) + ' however strong he is. Strength buys force on contact, not speed in the air.');
+    out.push(happens(items));
+    out.push(math(['Arm drives fist + forearm (' + sig(c.body.handEff, 2) + ' kg) with ' + fmtSI(r.F, 'N') + ' over ' + sig(c.body.strokes.punch, 2) + ' m; his footing holds up to ' + fmtSI(r.anchor.R, 'N') + '.', 'Blast radii: Kinney & Graham (1985) free-air overpressure curve, 1 kg TNT = 4.184 MJ.']));
+    return out;
+  }
+
+  function bayClap(c) {
+    const r = P.clap(c);
+    const out = [];
+    out.push(verdict(r.vHand >= 0.01 * K.c ? 'The clap releases ' + fmtTNT(r.E) + ' between his palms.' : 'His hands meet at ' + speedOnly(r.vHand) + ' and release ' + fmtTNT(r.E) + '.'));
+    out.push(el('div', { class: 'status-row' }, r.mach >= 1 ? status('warn', 'Hands break the sound barrier') : status('good', 'Subsonic hands'), status('info', 'Recoil cancels: left and right push equally')));
+    out.push(tiles(
+      tile('Hand speed', speedOnly(r.vHand), fmtMach(r.vHand)),
+      tile('Energy released', fmtSI(r.E, 'J'), fmtTNT(r.E)),
+      tile('Compared with', compareEnergy(r.E), '')));
+    out.push(blastBlock(r.E, 'between his hands'));
+    out.push(happens([
+      'The clap is the one move with no recoil problem: both arms push on his chest equally and opposite, so he stays put however strong he is.',
+      'That makes a comic “thunderclap” fair physics: two hands’ worth of energy, released in a small space.',
+      state.mode === 'real' ? 'In real-muscle mode the hands cap near ' + speedOnly(P.MUSCLE.clap.vmax * c.body.s) + ', so a clap stays a clap.' : null,
+    ]));
+    out.push(math(['Each arm drives a hand + forearm (' + sig(c.body.handEff, 2) + ' kg) with ' + fmtSI(r.F, 'N') + ' over ' + sig(c.body.strokes.clap, 2) + ' m.', 'Energy released = both hands’ kinetic energy (they stop dead).']));
+    return out;
+  }
+
+  function baySprint(c) {
+    const r = P.sprint(c);
+    const out = [];
+    if (r.cantStand) {
+      out.push(verdict('Rex can’t even stand up. His strength is less than his own weight.'));
+      out.push(happens(['Running needs legs that can hold the body up and then some: at top speed each foot strike carries about 2 to 2.5 times body weight.']));
+      return out;
+    }
+    let v = 'Top speed: ' + (r.relativistic ? fmtSpeed(r.vTop) : speedOnly(r.vTop)) + '.';
+    if (r.limit === 'friction' && !r.relativistic && r.vTop > 27.78) v += ' Same 0–100 km/h as a sports car, however strong he is.';
+    out.push(verdict(v));
+    const limitText = { strength: 'his strength', friction: 'friction', shear: 'ground shear (claws dug in)', 'soft ground': 'soft ground (each stride sinks)' }[r.limit] || r.limit;
+    out.push(el('div', { class: 'status-row' },
+      status('info', 'Push-off limited by ' + limitText),
+      status('info', 'Top speed limited by ' + r.topLimit),
+      r.mach >= 1 && !r.relativistic ? status('warn', 'Constant sonic boom') : null));
+    out.push(tiles(
+      tile('Acceleration', sig(r.accelG, 2) + ' g', fmtSI(r.thrust, 'N') + ' of push-off'),
+      tile('0 to 100 km/h', isFinite(r.t100) ? fmtTime(r.t100) : 'never', isFinite(r.t100) ? '' : 'top speed is below 100 km/h'),
+      tile('Top speed', r.relativistic ? fmtSpeed(r.vTop) : speedOnly(r.vTop), fmtMach(r.vTop)),
+      r.relativistic ? null : tile('Power fighting air', fmtSI(r.dragPower, 'W'), big(r.airPerSecond, 3) + ' kg of air shoved aside per second')));
+    const refs = D.speeds.map((s) => ({ label: s.label, value: s.v }));
+    refs.push({ label: 'Rex', value: r.vTop, highlight: true });
+    refs.sort((a, b) => a.value - b.value);
+    out.push(logBars('Top speed vs reference speeds', refs, (x) => big(x, 2) + ' m/s'));
+    const items = [];
+    if (r.limit === 'friction') items.push('Running is pushing backward on the ground. The ground only grips as hard as he presses down, and averaged over a stride he presses down with just his weight (' + fmtSI(c.body.m * g, 'N') + '). Friction caps his push at ' + fmtSI(r.thrust, 'N') + ', about ' + sig(r.accelG, 2) + ' g. More strength just makes him bounce higher.');
+    if (r.limit === 'strength') items.push('He isn’t strong enough yet to use all the grip on offer, so strength sets his push-off: ' + fmtSI(r.thrust, 'N') + '.');
+    if (r.limit === 'shear') items.push('Claws dug in let him push against the ground’s shear strength instead of friction. He tears up the surface every stride.');
+    if (r.limit === 'soft ground') items.push('Each stride puts about 2.5 times his weight on one foot, more than ' + c.surface.short + ' can carry, so every step sinks and his push-off is capped.');
+    if (r.topLimit === 'air drag' && !r.relativistic) items.push('At top speed all of his push goes into shoving air out of the way.');
+    if (r.topLimit === 'leg speed') items.push(state.mode === 'real' ? 'Real-muscle mode caps leg speed at ' + speedOnly(P.MUSCLE.run.cap * c.body.s) + ', the top of the 35–40 mph limit projected from Weyand et al. (2010), scaled for his size.' : 'His legs set the top speed: Bolt’s 12.4 m/s at record-human strength, growing with the square root of extra strength.');
+    if (r.mach >= 1 && !r.relativistic) items.push('Above Mach 1 he drags a shock wave down the street: a continuous sonic boom, close enough to break windows. The sim does not estimate its strength at street level.');
+    out.push(happens(items));
+    out.push(math(['Push-off = min(strength, μ × his weight' + (state.anchor === 'braced' ? ' + shear × claw area' : '') + ')', 'Top speed where drag = push-off: v = √(2F / (ρ Cd A)), A = ' + sig(c.body.frontArea, 2) + ' m², unless his legs cap it first.']));
+    return out;
+  }
+
+  function bayPull(c) {
+    const o = objById(state.obj);
+    const r = P.pull(c, o);
+    const out = [];
+    out.push(el('div', { class: 'bay-controls' }, objectPicker((x) => !x.noPull)));
+    let v;
+    if (r.canMove) v = 'Rex drags it 10 m in ' + fmtTime(r.t10m) + '.';
+    else if (r.limitedBy === 'strength') v = 'Rex isn’t strong enough to start it moving.';
+    else v = 'Rex is strong enough, but his feet slide before it moves.';
+    out.push(verdict(v));
+    out.push(el('div', { class: 'status-row' },
+      c.F >= r.resist ? status('good', 'Strength enough') : status('bad', 'Too weak'),
+      r.anchor.R >= r.resist ? status('good', 'Footing holds') : status('bad', 'Footing fails (' + r.anchor.limit + ')'),
+      r.rolling ? (o.crrStatus === 'estimate' ? status('warn', 'Rolling resistance: rough estimate') : status('info', 'Rolls on wheels')) : status('info', 'Slides (no wheels)')));
+    out.push(logBars('Forces', [
+      { label: 'Needed to keep it moving', value: r.resist },
+      { label: 'His footing can hold', value: r.anchor.R },
+      { label: 'His strength', value: c.F, highlight: true },
+    ], (x) => fmtSI(x, 'N'), { padL: 190 }));
+    const items = [];
+    items.push('Pulling needs two things: enough strength, and enough grip on the ground not to get dragged instead.' + (r.anchor.R < r.resist ? ' Here grip runs out first: he can only hold ' + fmtSI(r.anchor.R, 'N') + ' before his feet slide.' : ''));
+    if (o.crrNote) items.push(o.crrNote);
+    items.push('Record pullers lean into a harness with the rope angled down to the load, which presses them into the ground and raises their grip. The sim pulls level, so it is a little pessimistic.');
+    out.push(happens(items));
+    out.push(math(['Resistance = ' + (r.rolling ? 'Crr' : 'μ_slide') + ' × m g = ' + r.crr + ' × ' + fmtMass(o.m) + ' × 9.81 = ' + fmtSI(r.resist, 'N'), 'Footing (just standing) = μ × his weight = ' + sig(c.surface.mu, 2) + ' × ' + sig(c.body.m, 3) + ' kg × 9.81' + (state.anchor === 'braced' ? ' + shear × claw area' : '')]));
+    return out;
+  }
+
+  const BAYS = { lift: bayLift, throw: bayThrow, jump: bayJump, stomp: bayStomp, punch: bayPunch, clap: bayClap, sprint: baySprint, pull: bayPull };
+
+  function renderBay() {
+    for (const a of ACTIONS) $('#tab-' + a.id).setAttribute('aria-selected', String(a.id === state.action));
+    const bay = $('#bay');
+    const focusId = document.activeElement && bay.contains(document.activeElement) ? document.activeElement.id : null;
+    let parts;
+    try { parts = BAYS[state.action](ctx()); }
+    catch (e) { parts = [callout('Calculation failed: ' + e.message)]; console.error(e); }
+    bay.replaceChildren(...parts);
+    if (focusId && document.getElementById(focusId)) document.getElementById(focusId).focus();
+  }
+  let bayTimer = null;
+  function scheduleBay() { clearTimeout(bayTimer); bayTimer = setTimeout(() => { save(); renderBay(); }, 30); }
+
+  // ---------------------------------------------------------------- ladder
+  const LMIN = 1, LMAX = 34;
+  let thCache = { key: null, list: null };
+  function thresholds() {
+    const key = JSON.stringify([state.mode, state.H, state.m, state.surface, state.anchor, state.groundHolds]);
+    if (thCache.key === key) return thCache.list;
+    const base = ctx();
+    const at = (kg, extra) => Object.assign({}, base, { F: kg * g }, extra || {});
+    const car = objById('car');
+    const th = (pred) => P.threshold(pred, Math.pow(10, LMIN), Math.pow(10, LMAX));
+    const W = (id) => D.overpressure.find((o) => o.id === id);
+    const E = (id) => D.energyRefs.find((e) => e.id === id).J;
+    const jumpPred = (extra) => (kg) => { const j = P.jump(at(kg, extra)); return j.v > 0 && (j.relativistic || j.flight.apex >= 93 || j.flight.escaped); };
+    const list = [
+      { id: 'boom', text: 'Fist breaks the sound barrier', kg: th((kg) => P.punch(at(kg)).vFist >= K.a0) },
+      { id: 'windows', text: 'Clap breaks windows 10 m away', kg: th((kg) => P.blastRadius(P.clap(at(kg)).E, W('windows').Pa) >= 10) },
+      { id: 'carmach3', text: 'Thrown car leaves at Mach 3', kg: th((kg) => P.throwObject(at(kg), car, 45).v >= 3 * K.a0) },
+      { id: 'jumpliberty', text: 'Jump clears the Statue of Liberty', kg: th(jumpPred()) },
+      { id: 'quake3', text: 'Stomp felt as a magnitude 3 quake', kg: th((kg) => P.stomp(at(kg)).quake >= 3) },
+      { id: 'hiro', text: 'Punch carries a Hiroshima bomb', kg: th((kg) => P.punch(at(kg)).E >= E('hiroshima')) },
+      { id: 'quake7', text: 'Stomp = magnitude 7 quake', kg: th((kg) => P.stomp(at(kg)).quake >= 7) },
+      { id: 'tsar', text: 'Clap = Tsar Bomba', kg: th((kg) => P.clap(at(kg)).E >= E('tsar')) },
+      { id: 'chix', text: 'Punch out-hits the dinosaur-killer impact', kg: th((kg) => P.punch(at(kg)).E >= E('chicxulub')) },
+      { id: 'earth', text: 'Punch could blow Earth apart', kg: th((kg) => P.punch(at(kg)).E >= E('earthbind')) },
+    ];
+    const jl = list.find((t) => t.id === 'jumpliberty');
+    if (!isFinite(jl.kg) && !state.groundHolds) jl.withRigid = th(jumpPred({ groundHolds: true }));
+    thCache = { key, list };
+    return list;
+  }
+  let ladderTimer = null;
+  function scheduleLadder() { clearTimeout(ladderTimer); ladderTimer = setTimeout(renderLadder, 120); }
+  function renderLadder() {
+    const wrap = $('#ladder-viz');
+    const W = Math.max(320, Math.min(wrap.clientWidth || 640, 900));
+    const pxDec = W < 520 ? 26 : 22;
+    const padT = 24, padB = 24;
+    const H = padT + (LMAX - LMIN) * pxDec + padB;
+    const axisX = Math.round(W / 2);
+    const y = (lg) => padT + (LMAX - Math.min(LMAX, Math.max(LMIN, lg))) * pxDec;
+    const svg = sv('svg', { viewBox: `0 0 ${W} ${H + 30}`, role: 'img', 'aria-label': 'Strength ladder from 10 kg to 10^34 kg lift' });
+    svg.append(sv('line', { x1: axisX, x2: axisX, y1: padT, y2: padT + (LMAX - LMIN) * pxDec, stroke: 'var(--line)', 'stroke-width': 2 }));
+    for (let e = LMIN; e <= LMAX; e++) {
+      const yy = y(e);
+      svg.append(sv('line', { x1: axisX - (e % 3 === 0 ? 6 : 3), x2: axisX + (e % 3 === 0 ? 6 : 3), y1: yy, y2: yy, stroke: 'var(--ink-3)', 'stroke-width': 1 }));
+    }
+    const tierItems = D.tiers.filter((t) => isFinite(t.liftKg)).map((t) => ({ lg: Math.log10(t.liftKg), text: t.chip || t.label, sub: fmtMass(t.liftKg), detail: (t.who ? t.who + '. ' : '') + (t.note || ''), side: 'L', color: 'var(--olive)', set: () => { state.inf = false; state.logKg = Math.log10(t.liftKg); update(); } }));
+    const th = thresholds();
+    const thItems = th.filter((t) => isFinite(t.kg)).map((t) => ({ lg: Math.log10(t.kg), text: t.text, sub: fmtMass(t.kg), detail: 'Needs a lift strength of ' + fmtMass(t.kg) + ' at the current size, ground and muscle settings.', side: 'R', color: 'var(--accent)', set: () => { state.inf = false; state.logKg = Math.min(LMAX, Math.log10(t.kg) + 0.0005); update(); } }));
+    const place = (items, minGap) => {
+      items.sort((a, b) => b.lg - a.lg);
+      let prev = -Infinity;
+      for (const it of items) { it.ty = Math.max(y(it.lg), prev + minGap); prev = it.ty; }
+      const over = prev - (padT + (LMAX - LMIN) * pxDec + 10);
+      if (over > 0) { let next = Infinity; for (let i = items.length - 1; i >= 0; i--) { const it = items[i]; it.ty = Math.min(it.ty - over, next - minGap); next = it.ty; } }
+    };
+    place(tierItems, 30); place(thItems, 30);
+    const tip = el('div', { class: 'tip', hidden: true });
+    const cy = state.inf ? padT - 12 : y(state.logKg);
+    svg.append(sv('line', { x1: 0, x2: W, y1: cy, y2: cy, stroke: 'var(--ink)', 'stroke-width': 1.5, 'stroke-opacity': 0.55 }));
+    svg.append(sv('text', { x: W - 2, y: cy - 5, 'text-anchor': 'end', class: 'lbl-strong' }, state.inf ? 'now: ∞' : 'now'));
+    const draw = (it) => {
+      const yy = y(it.lg);
+      const left = it.side === 'L';
+      const lx = left ? axisX - 26 : axisX + 26;
+      const g2 = sv('g', { class: 'mk', tabindex: '0', role: 'button', 'aria-label': it.text + ', ' + it.sub + '. Set strength here.' });
+      g2.append(sv('path', { d: `M${axisX} ${yy} L${left ? axisX - 14 : axisX + 14} ${yy} L${lx} ${it.ty}`, fill: 'none', stroke: 'var(--line)', 'stroke-width': 1 }));
+      g2.append(sv('circle', { class: 'ring', cx: axisX, cy: yy, r: 5, fill: it.color, stroke: 'var(--surface)', 'stroke-width': 2 }));
+      g2.append(sv('text', { x: lx + (left ? -4 : 4), y: it.ty + 1, 'text-anchor': left ? 'end' : 'start', class: 'lbl-strong', style: 'font-family:var(--font-body);font-size:12.5px' }, it.text));
+      g2.append(sv('text', { x: lx + (left ? -4 : 4), y: it.ty + 14, 'text-anchor': left ? 'end' : 'start' }, it.sub));
+      g2.append(sv('rect', { x: left ? 0 : axisX, y: it.ty - 14, width: axisX, height: 32, fill: 'transparent' }));
+      const show = () => {
+        tip.replaceChildren(el('b', { text: it.text }), el('span', { text: it.detail }));
+        tip.hidden = false;
+        const rect = wrap.getBoundingClientRect();
+        const tw = Math.min(260, rect.width - 20);
+        tip.style.left = (left ? 8 : rect.width - tw - 8) + 'px';
+        tip.style.top = (it.ty / (H + 30) * wrap.querySelector('svg').getBoundingClientRect().height + 22) + 'px';
+      };
+      g2.addEventListener('pointerenter', show); g2.addEventListener('focus', show);
+      g2.addEventListener('pointerleave', () => { tip.hidden = true; }); g2.addEventListener('blur', () => { tip.hidden = true; });
+      g2.addEventListener('click', it.set);
+      g2.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); it.set(); } });
+      svg.append(g2);
+    };
+    tierItems.forEach(draw); thItems.forEach(draw);
+    svg.append(sv('text', { x: axisX, y: H + 18, 'text-anchor': 'middle' }, '10 kg'));
+    svg.append(sv('text', { x: axisX, y: 12, 'text-anchor': 'middle' }, '10³⁴ kg lift'));
+    wrap.replaceChildren(svg, tip);
+    const never = th.filter((t) => !isFinite(t.kg));
+    const nv = $('#ladder-never');
+    nv.replaceChildren();
+    if (never.length) {
+      nv.append(el('p', { text: 'Never happens at the current settings, even at 10³⁴ kg:' }));
+      nv.append(el('ul', {}, never.map((t) => {
+        let why = state.mode === 'real' ? ' (real muscle caps the speed)' : '';
+        if (t.id === 'jumpliberty' && isFinite(t.withRigid || Infinity)) why = ' (the ground gives way first; Comic ground or bedrock fixes it)';
+        return el('li', { text: t.text + why });
+      })));
+    }
+  }
+
+  // ---------------------------------------------------------------- feats
+  function renderFeats() {
+    const groups = [['human', 'Real humans'], ['comic', 'Comics and anime'], ['myth', 'Myth and legend']];
+    const box = $('#feat-groups');
+    for (const [gid, gname] of groups) {
+      const feats = D.feats.filter((f) => f.group === gid);
+      if (!feats.length) continue;
+      const grid = el('div', { class: 'feat-grid' });
+      for (const f of feats) {
+        const statusLabel = { verified: 'Verified', disputed: 'Disputed', claimed: 'Claimed', canon_stated: 'Canon', not_quantified: 'Not quantified', estimate: 'Estimate' }[f.status] || f.status;
+        grid.append(el('article', { class: 'feat' },
+          el('div', { class: 't', text: f.title }),
+          el('div', { class: 'w', text: f.who }),
+          el('div', { class: 'c', text: f.claim }),
+          el('div', { class: 'row' },
+            el('span', { class: 'badge ' + f.status, text: statusLabel }),
+            f.source ? el('a', { href: f.source.url, target: '_blank', rel: 'noopener', text: f.source.title || 'source' }) : null,
+            f.run ? el('button', { type: 'button', class: 'run', onclick: () => runFeat(f) }, 'Simulate') : null)));
+      }
+      box.append(el('div', {}, el('h3', { text: gname, style: 'margin-bottom:8px' }), grid));
+    }
+  }
+  function runFeat(f) {
+    const r = f.run;
+    if (r.liftKg === Infinity) state.inf = true; else if (r.liftKg) { state.inf = false; state.logKg = Math.log10(r.liftKg); }
+    if (r.solve === 'jump60') {
+      const base = ctx();
+      const kg = P.threshold((F) => { const j = P.jump(Object.assign({}, base, { F })); return j.v > 0 && (j.flight.apex >= 60 || j.flight.escaped || j.flight.relativistic); }, 10 * g, 1e45) / g;
+      if (isFinite(kg)) { state.inf = false; state.logKg = Math.min(LMAX, Math.log10(kg) + 0.0005); }
+    }
+    if (r.mode) state.mode = r.mode;
+    if (r.action) state.action = r.action;
+    if (r.obj) state.obj = r.obj;
+    if (r.angle != null) state.angle = r.angle;
+    update();
+    document.querySelector('.rig').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+  }
+
+  // ---------------------------------------------------------------- model + sources
+  function renderModel() {
+    const box = $('#assume');
+    for (const a of D.assumptions) box.append(el('div', {}, el('b', { text: a.t }), a.d));
+    const tb = $('#src-table tbody');
+    $('#src-summary').textContent = 'Show all ' + D.sourceRows.length + ' sourced numbers';
+    for (const s of D.sourceRows) {
+      tb.append(el('tr', {},
+        el('td', {}, s.label, s.note ? el('div', { class: 'muted', style: 'font-size:.8rem;margin-top:2px', text: s.note }) : null),
+        el('td', { class: 'num', text: s.value }),
+        el('td', {}, el('span', { class: 'badge ' + s.status, text: s.status.replace('_', ' ') })),
+        el('td', {}, (s.sources || []).map((u, i) => [i ? ' · ' : null, el('a', { href: u.url, target: '_blank', rel: 'noopener', text: u.title || new URL(u.url).hostname })]))));
+    }
+  }
+
+  // ---------------------------------------------------------------- main
+  function update() { save(); renderDial(); renderBay(); scheduleLadder(); }
+  buildControls();
+  renderFeats();
+  renderModel();
+  update();
+  let rw = null;
+  window.addEventListener('resize', () => { clearTimeout(rw); rw = setTimeout(renderLadder, 150); });
+})();
+</script>
