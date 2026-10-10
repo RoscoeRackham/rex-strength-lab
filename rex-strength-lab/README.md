@@ -60,7 +60,7 @@ The usual run is `python3 build-data.py && node build.js && node test/shots.js &
 - Density and Rex + Ollie: four design critiques (density, contests, collide, catch), each checked against its sources and an independent re-calculation, then applied (`duo-design-critiques.json`).
 - Round 4: a four-lens audit of the new features confirmed 54 findings (`round4.json`). All were fixed in serial batches and re-verified on the final build; the leftovers and side effects from that round were fixed and verified too (`round4-fixes.json`).
 - The 10 ft body estimate: three independent methods and a checker (`body-estimate-from-picture.json`).
-- Final checks on this build: `test/calibration.js` all 117 checks pass. The round-4 fixers also ran `test/sweep.js` (5,184 setting combinations, no problems) and a browser sweep of 1,512 page states (no broken text or errors) before the last wording fixes.
+- Final checks on this build: `test/calibration.js` all 117 checks pass; `test/sweep.js` 5,184 setting combinations with no problems (about 5 min); a browser sweep of 1,512 page states across every tab with no broken text, slow renders or page errors.
 
 ## Known limits
 
