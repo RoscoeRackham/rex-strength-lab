@@ -1,0 +1,1429 @@
+<title>Build Calculator</title>
+<style>
+:root {
+  /* Layout: a tailor's measurement sheet. Inputs sit in a narrow card on the left (on top on phones);
+     results read down a ruled sheet on the right. A tape measure runs across the masthead, and the
+     girth comparison is drawn as tape strips on one shared scale. */
+  --paper: #EEF0EC;
+  --sheet: #FAFAF7;
+  --ink: #15181C;
+  --ink-2: #4A525A;
+  --ink-3: #5F6770;
+  --rule: #C5CAC4;
+  --rule-2: #E0E3DE;
+  --fill: #E7EAE5;
+  --tape: #EDBE2E;
+  --tape-2: #F5DA82;
+  --tape-ink: #231D07;
+  --chalk: #1F4FA6;
+  --alarm: #B0321D;
+  --alarm-bg: #F6E2DC;
+  --font-display: "Big Shoulders Display", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --font-body: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --step--1: 0.8125rem;
+  --step-0: 0.9375rem;
+  --step-1: 1.125rem;
+  --step-2: 1.5rem;
+  --step-3: 2.25rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #101215; --sheet: #171A1E; --ink: #E7E9E4; --ink-2: #B2B8BE; --ink-3: #868E96;
+    --rule: #3A4047; --rule-2: #272B31; --fill: #22262B; --tape: #DDB02C; --tape-2: #46390F;
+    --tape-ink: #1B1604; --chalk: #94B5FF; --alarm: #FF8C75; --alarm-bg: #3A1C16;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #101215; --sheet: #171A1E; --ink: #E7E9E4; --ink-2: #B2B8BE; --ink-3: #868E96;
+  --rule: #3A4047; --rule-2: #272B31; --fill: #22262B; --tape: #DDB02C; --tape-2: #46390F;
+  --tape-ink: #1B1604; --chalk: #94B5FF; --alarm: #FF8C75; --alarm-bg: #3A1C16;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: var(--step-0); line-height: 1.5; -webkit-text-size-adjust: 100%; }
+h1, h2, h3, h4 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: var(--chalk); text-underline-offset: 2px; }
+a:hover { text-decoration-thickness: 2px; }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--chalk); outline-offset: 2px; }
+.num, .tnum { font-variant-numeric: tabular-nums; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- masthead ---------- */
+.tape {
+  position: relative; height: 34px; overflow: hidden;
+  background-color: var(--tape);
+  background-image:
+    linear-gradient(90deg, var(--tape-ink) 1px, transparent 1px),
+    linear-gradient(90deg, var(--tape-ink) 1px, transparent 1px),
+    linear-gradient(90deg, var(--tape-ink) 1.5px, transparent 1.5px);
+  background-size: 6px 7px, 30px 11px, 60px 17px;
+  background-repeat: repeat-x;
+  box-shadow: inset 0 -1px 0 rgba(0,0,0,.18);
+}
+.tape span { position: absolute; top: 17px; font: 500 10px/1 var(--font-mono); color: var(--tape-ink); padding-left: 3px; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-inline: 16px; padding-block: 0 56px; }
+.mast { display: grid; gap: 10px; padding-block: 22px 26px; }
+.mast h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.6rem, 8vw, 4.4rem); line-height: .92; letter-spacing: .01em; text-transform: uppercase; }
+.lede { max-width: 62ch; color: var(--ink-2); font-size: var(--step-1); line-height: 1.45; }
+.spec { font: 400 var(--step--1)/1.4 var(--font-mono); color: var(--ink-3); letter-spacing: .02em; }
+
+/* ---------- layout ---------- */
+.layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+@media (min-width: 980px) {
+  .layout { grid-template-columns: 300px minmax(0, 1fr); gap: 28px; align-items: start; }
+  .panel.stick { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); }
+}
+
+/* ---------- input panel ---------- */
+.panel { background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; padding: 18px 16px 20px; display: grid; gap: 18px; min-width: 0; }
+.field { display: grid; gap: 6px; min-width: 0; border: 0; padding: 0; margin: 0; }
+.label, .field > label, legend { font: 500 11px/1.2 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); padding: 0; }
+.opt { text-transform: none; letter-spacing: 0; color: var(--ink-3); font-weight: 400; }
+input[type="text"], input[type="search"], input[inputmode], select {
+  width: 100%; min-width: 0; height: 40px; padding: 0 10px; border: 1px solid var(--rule); border-radius: 3px;
+  background: var(--paper); color: var(--ink); font-variant-numeric: tabular-nums; font-size: 16px;
+}
+select { padding-right: 28px; }
+input:focus, select:focus { border-color: var(--ink-2); }
+input::placeholder { color: var(--ink-3); opacity: 1; }
+input[aria-invalid="true"] { border-color: var(--alarm); }
+.row { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.row input { flex: 1 1 0; }
+.unit { font: 500 12px var(--font-mono); color: var(--ink-3); flex: none; min-width: 1.6em; }
+.hint { font-size: var(--step--1); color: var(--ink-2); line-height: 1.45; }
+.hint.err { color: var(--alarm); }
+.linkbtn { background: none; border: 0; padding: 0; color: var(--chalk); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; font-size: inherit; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--rule); border-radius: 3px; overflow: hidden; }
+.seg button { height: 36px; border: 0; background: var(--paper); color: var(--ink-2); cursor: pointer; font-weight: 500; }
+.seg button + button { border-left: 1px solid var(--rule); }
+.seg button[aria-checked="true"] { background: var(--ink); color: var(--sheet); }
+.choice { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 8px; align-items: start; font-size: var(--step--1); color: var(--ink-2); cursor: pointer; }
+.choice input { margin: 3px 0 0; accent-color: var(--ink); }
+.choice b { color: var(--ink); font-weight: 600; display: block; font-size: var(--step-0); }
+.choices { display: grid; gap: 10px; }
+.opts summary { cursor: pointer; list-style: none; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; }
+.opts summary::-webkit-details-marker { display: none; }
+.opts summary::before { content: "+"; font: 600 13px/1 var(--font-mono); color: var(--ink-2); width: 10px; }
+.opts[open] summary::before { content: "\2212"; }
+.opts-body { display: grid; gap: 18px; margin-top: 12px; }
+
+/* ---------- result sheet ---------- */
+.sheet { background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; min-width: 0; }
+.sheet > section, .sheet > header { padding: 20px 16px; border-top: 1px solid var(--rule-2); min-width: 0; }
+.sheet > header { border-top: 0; }
+@media (min-width: 640px) { .sheet > section, .sheet > header { padding: 24px 28px; } }
+.eyebrow { font: 500 11px/1.2 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.build-head { display: grid; gap: 8px; }
+.build-head h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.9rem, 5vw, 2.6rem); line-height: 1; letter-spacing: .005em; }
+.build-head .desc { color: var(--ink-2); max-width: 70ch; }
+.flags { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.flag { font: 500 11px/1 var(--font-mono); letter-spacing: .05em; text-transform: uppercase; padding: 5px 7px 4px; border-radius: 2px; border: 1.5px solid var(--ink-3); color: var(--ink-2); }
+.flag.alarm { border-color: var(--alarm); color: var(--alarm); background: var(--alarm-bg); }
+h3 { font-family: var(--font-display); font-weight: 800; font-size: var(--step-2); line-height: 1.05; text-transform: uppercase; letter-spacing: .02em; }
+.sec-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 20px; margin-bottom: 14px; }
+.sec-lede { color: var(--ink-2); font-size: var(--step--1); max-width: 68ch; }
+
+/* status chips: certainty encoded as line style, like a pattern-drafting legend */
+.chip { display: inline-block; font: 500 10.5px/1 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; padding: 4px 6px 3px; border-radius: 2px; border: 1.5px solid var(--ink); color: var(--ink); white-space: nowrap; vertical-align: middle; }
+.chip.measured { background: var(--ink); color: var(--sheet); }
+.chip.official { border-style: double; border-width: 3.5px; padding: 2.5px 5px 1.5px; }
+.chip.reported { border-style: dashed; }
+.chip.derived { border-style: dotted; border-width: 2px; padding: 3.5px 5.5px 2.5px; }
+.chip.estimate { border-style: dotted; border-width: 2px; padding: 3.5px 5.5px 2.5px; background: repeating-linear-gradient(135deg, var(--rule) 0 1.5px, transparent 1.5px 5px); }
+.chip.unknown { border-color: var(--rule); color: var(--ink-3); font-style: italic; }
+.chip.input { border-color: var(--chalk); color: var(--chalk); }
+.chip.beyond { border-color: var(--alarm); color: var(--alarm); background: var(--alarm-bg); }
+.legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--ink-2); }
+.legend li { display: flex; align-items: center; gap: 6px; }
+
+/* ---------- readout ---------- */
+.readout { display: grid; gap: 20px; }
+@media (min-width: 760px) { .readout { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 28px; } }
+.k { font: 500 11px/1.2 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.big { font-family: var(--font-display); font-weight: 800; font-size: clamp(4rem, 15vw, 6.4rem); line-height: .9; letter-spacing: -.005em; margin-top: 6px; font-variant-numeric: tabular-nums; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.big .u { font-size: .38em; font-weight: 600; color: var(--ink-2); letter-spacing: .04em; }
+.wsub { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.wnotes { margin-top: 10px; display: grid; gap: 4px; font-size: var(--step--1); color: var(--ink-2); max-width: 60ch; }
+.wnotes .alt { color: var(--ink); }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin: 0; border-top: 1px solid var(--rule); align-self: start; }
+.stats > div { padding: 12px 10px 12px 0; border-bottom: 1px solid var(--rule-2); display: grid; gap: 4px; align-content: start; min-width: 0; }
+.stats > div:nth-child(odd) { border-right: 1px solid var(--rule-2); }
+.stats > div:nth-child(even) { padding-left: 14px; }
+.stats dt { font: 500 11px/1.2 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.stats dd { margin: 0; }
+.stats .v { font-family: var(--font-display); font-weight: 700; font-size: 1.9rem; line-height: 1; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.stats .v small { font-family: var(--font-body); font-weight: 500; font-size: 13px; color: var(--ink-2); margin-left: 4px; }
+.stats .s { font-size: 12px; color: var(--ink-2); line-height: 1.35; }
+.stats .blk { display: block; margin-top: 5px; }
+
+/* FFMI scale */
+.ffmi { margin-top: 20px; display: grid; gap: 8px; }
+.scale { position: relative; height: 80px; margin-inline: 4px; }
+.scale .bar { position: absolute; left: 0; right: 0; top: 34px; height: 10px; background: var(--fill); border: 1px solid var(--rule); border-radius: 2px; }
+.scale .tick { position: absolute; top: 26px; width: 0; height: 26px; border-left: 1.5px solid var(--ink-2); }
+.scale .tick.soft { border-left-style: dashed; border-left-color: var(--ink); }
+.scale .tl { position: absolute; top: 55px; transform: translateX(-50%); font: 500 10.5px/1.1 var(--font-mono); color: var(--ink-2); white-space: nowrap; text-align: center; }
+.scale .tl.top { top: 0; }
+.scale .me { position: absolute; top: 30px; width: 14px; height: 18px; margin-left: -7px; background: var(--tape); border: 1.5px solid var(--tape-ink); border-radius: 2px; }
+.scale .me.off-hi::after { content: "\2192"; position: absolute; left: 16px; top: -1px; font: 600 12px/1 var(--font-mono); color: var(--ink); }
+.scale .me.off-lo::after { content: "\2190"; position: absolute; right: 16px; top: -1px; font: 600 12px/1 var(--font-mono); color: var(--ink); }
+.scale .tl small { font-size: 9.5px; color: var(--ink-2); }
+.ffmi-note { font-size: var(--step--1); color: var(--ink-2); max-width: 74ch; }
+
+/* ---------- tailor's chart ---------- */
+.chart-grid { display: grid; gap: 18px; }
+@media (min-width: 760px) { .chart-grid { grid-template-columns: 250px minmax(0, 1fr); gap: 26px; align-items: start; } }
+.figure { margin: 0; display: grid; gap: 8px; justify-items: center; }
+.figure svg { width: 100%; max-width: 250px; height: auto; display: block; }
+@media (max-width: 759px) { .figure svg { max-width: 230px; } }
+.figure figcaption { font-size: 12px; color: var(--ink-3); max-width: 34ch; text-align: center; }
+.body-fill { fill: var(--fill); stroke: var(--ink-3); stroke-width: 1.2; }
+.ring-front { fill: none; stroke: var(--ink); stroke-width: 1.6; }
+.ring-back { fill: none; stroke: var(--ink); stroke-width: 1; stroke-dasharray: 2.5 2.5; opacity: .7; }
+.ring.on .ring-front { stroke: var(--tape); stroke-width: 3.4; }
+.ring.on .ring-back { stroke: var(--tape); stroke-width: 2; opacity: 1; }
+.lead { stroke: var(--ink-3); stroke-width: .8; fill: none; }
+.mk circle { fill: var(--sheet); stroke: var(--ink); stroke-width: 1.2; }
+.mk text { font: 600 10px var(--font-mono); fill: var(--ink); text-anchor: middle; dominant-baseline: central; }
+.ring.on .mk circle { fill: var(--tape); stroke: var(--tape-ink); }
+.ring.on .mk text { fill: var(--tape-ink); }
+.vt-tape { fill: var(--tape); }
+.vt-tick { stroke: var(--tape-ink); stroke-width: .9; }
+.vt-lab { font: 500 8px var(--font-mono); fill: var(--tape-ink); }
+.vt-top { font: 600 10px var(--font-mono); fill: var(--ink); }
+.vt-guide { stroke: var(--ink-3); stroke-width: .8; stroke-dasharray: 2 3; }
+.floor { stroke: var(--ink-3); stroke-width: 1; }
+
+.girths { list-style: none; margin: 0; padding: 0; border-top: 1.5px solid var(--ink); }
+.g { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 2px 12px; padding: 12px 4px 12px 0; border-bottom: 1px solid var(--rule-2); cursor: default; outline: none; }
+.g.on { background: linear-gradient(90deg, var(--tape-2), transparent 70%); }
+.g .n { font: 600 11px/1 var(--font-mono); width: 22px; height: 22px; border: 1.2px solid var(--ink); border-radius: 50%; display: grid; place-items: center; margin-top: 2px; }
+.g.on .n { background: var(--tape); border-color: var(--tape-ink); color: var(--tape-ink); }
+.g .site b { display: block; font-weight: 600; }
+.g .site small { display: block; color: var(--ink-3); font-size: 12px; line-height: 1.35; }
+.g .val { text-align: right; font-variant-numeric: tabular-nums; }
+.g .v1 { display: block; font-family: var(--font-display); font-weight: 700; font-size: 1.7rem; line-height: 1; }
+.g .v1.unk { font-family: var(--font-body); font-weight: 400; font-style: italic; font-size: 1rem; color: var(--ink-3); }
+.g .v2 { display: block; font-size: 12px; color: var(--ink-3); margin-top: 3px; }
+.g.on .site small, .g.on .v2, .g.on .v1.unk { color: var(--ink-2); }
+.g .meta { grid-column: 2 / 4; display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin-top: 6px; }
+.g .basis { grid-column: 2 / 4; font-size: 12.5px; color: var(--ink-2); line-height: 1.45; max-width: 72ch; }
+.g .basis .src { color: var(--ink); }
+
+/* ---------- comparison ---------- */
+.cmp { display: grid; gap: 4px; }
+.cmp-axis, .cmp-row { display: grid; grid-template-columns: 92px minmax(0, 1fr) 58px; gap: 10px; align-items: center; }
+@media (max-width: 420px) { .cmp-axis, .cmp-row { grid-template-columns: 74px minmax(0, 1fr) 50px; gap: 8px; } }
+.cmp-axis .track { height: 20px; }
+.cmp-axis .ax { position: absolute; top: 0; transform: translateX(-50%); font: 500 10.5px/1 var(--font-mono); color: var(--ink-3); white-space: nowrap; }
+.cmp-axis .ax::after { content: ""; position: absolute; left: 50%; top: 13px; height: 6px; border-left: 1px solid var(--ink-3); }
+.cmp-axis .ax.first { transform: none; }
+.cmp-axis .ax.first::after { left: 0; }
+.cmp-axis .ax.last { transform: translateX(-100%); }
+.cmp-axis .ax.last::after { left: 100%; }
+.cmp-row { padding-block: 6px; border-top: 1px solid var(--rule-2); }
+.cmp-row.on { background: linear-gradient(90deg, var(--tape-2), transparent 60%); }
+.cmp-row .nm { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.track { position: relative; height: 26px; }
+.track .grid { position: absolute; top: 0; bottom: 0; border-left: 1px dashed var(--rule-2); }
+.strip { position: absolute; left: 0; top: 4px; height: 18px; border-radius: 1px; background-color: var(--tape);
+  background-image: linear-gradient(90deg, var(--tape-ink) 1px, transparent 1px), linear-gradient(90deg, var(--tape-ink) 1.2px, transparent 1.2px), none;
+  background-repeat: repeat-x, repeat-x, repeat; box-shadow: inset 0 0 0 1px rgba(0,0,0,.18); }
+.strip.est { background-image: linear-gradient(90deg, var(--tape-ink) 1px, transparent 1px), linear-gradient(90deg, var(--tape-ink) 1.2px, transparent 1.2px), repeating-linear-gradient(135deg, rgba(0,0,0,.3) 0 1.5px, transparent 1.5px 6px); }
+.cmp-key i.sw { width: 24px; height: 12px; background-color: var(--tape); box-shadow: inset 0 0 0 1px rgba(0,0,0,.25);
+  background-image: linear-gradient(90deg, var(--tape-ink) 1px, transparent 1px); background-size: 6px 5px; background-repeat: repeat-x; }
+.cmp-key i.sw.est { background-image: linear-gradient(90deg, var(--tape-ink) 1px, transparent 1px), repeating-linear-gradient(135deg, rgba(0,0,0,.3) 0 1.5px, transparent 1.5px 6px); background-size: 6px 5px, auto; background-repeat: repeat-x, repeat; }
+.refmark { position: absolute; top: 0; bottom: 0; width: 0; border-left: 2.5px solid var(--ink); }
+.refmark.w { border-left: 2px dashed var(--ink-2); }
+.track .unk { position: absolute; left: 0; top: 3px; z-index: 2; padding: 1px 6px 1px 0; background: var(--sheet); font-size: 12px; font-style: italic; color: var(--ink-2); line-height: 1.4; }
+.cmp-row .ratio { font: 500 12px var(--font-mono); text-align: right; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.cmp-key { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 12px; font-size: 12px; color: var(--ink-2); }
+.cmp-key span { display: inline-flex; align-items: center; gap: 6px; }
+.cmp-key i { display: inline-block; width: 22px; height: 12px; }
+.cmp-key i.ref { width: 0; height: 14px; border-left: 2.5px solid var(--ink); }
+.cmp-key i.refw { width: 0; height: 14px; border-left: 2px dashed var(--ink-2); }
+
+/* ---------- notes ---------- */
+.notes-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; max-width: 76ch; }
+.notes-list li { padding-left: 16px; position: relative; color: var(--ink-2); font-size: 14px; }
+.notes-list li::before { content: ""; position: absolute; left: 0; top: .62em; width: 8px; border-top: 1.5px solid var(--ink-3); }
+.notes-list b { color: var(--ink); font-weight: 600; }
+
+/* ---------- reverse ---------- */
+.rev-fill { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.btn { height: 36px; padding: 0 12px; border: 1px solid var(--ink); background: var(--sheet); color: var(--ink); border-radius: 3px; cursor: pointer; font-weight: 500; font-size: 14px; }
+.btn:hover { background: var(--fill); }
+.rev-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 12px; margin-top: 14px; }
+@media (min-width: 640px) { .rev-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.rev-grid .wide { grid-column: span 2; }
+.rev-out { display: grid; gap: 14px; margin-top: 20px; }
+.rcards { display: grid; gap: 12px; }
+@media (min-width: 640px) { .rcards { grid-template-columns: 1fr 1fr; } }
+.rcard { border: 1px solid var(--rule); border-radius: 3px; padding: 14px; display: grid; gap: 4px; align-content: start; min-width: 0; }
+.rcard .mid { font-family: var(--font-display); font-weight: 800; font-size: 2.6rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.rcard .mid small { font-size: .45em; font-weight: 600; color: var(--ink-2); margin-left: 4px; }
+.rcard p { font-size: 13px; color: var(--ink-2); }
+.rcard p.mid { color: var(--ink); font-size: 2.6rem; }
+.agree { display: grid; gap: 10px; }
+.nline { position: relative; height: 66px; margin-inline: 8px; }
+.nline .base { position: absolute; left: 0; right: 0; top: 33px; border-top: 1px solid var(--rule); }
+.nline .band { position: absolute; height: 8px; border-radius: 4px; opacity: .9; }
+.nline .band.a { top: 18px; background: var(--ink-3); }
+.nline .band.b { top: 40px; background: var(--tape); border: 1px solid var(--tape-ink); }
+.nline .dot { position: absolute; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; border: 2px solid var(--sheet); }
+.nline .dot.a { top: 16px; background: var(--ink); }
+.nline .dot.b { top: 38px; background: var(--tape-ink); }
+.nline .lab { position: absolute; font: 600 10.5px/1 var(--font-mono); white-space: nowrap; transform: translateX(-50%); }
+.nline .lab.a { top: 2px; } .nline .lab.b { top: 54px; }
+.nline .stated { position: absolute; top: 10px; height: 46px; border-left: 2px dashed var(--chalk); }
+.nline .stated span { position: absolute; left: 4px; top: -2px; font: 600 10.5px/1 var(--font-mono); color: var(--chalk); white-space: nowrap; }
+.verdict { font-size: 14px; }
+.warns { list-style: none; margin: 0; padding: 12px 14px; display: grid; gap: 6px; border: 1.5px solid var(--alarm); background: var(--alarm-bg); border-radius: 3px; font-size: 13.5px; }
+.warns li::before { content: "\25B2  "; color: var(--alarm); font-size: 10px; }
+.small { font-size: 12.5px; color: var(--ink-2); max-width: 76ch; }
+
+/* ---------- method + sources ---------- */
+.method-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; max-width: 74ch; }
+.method-list li { padding-left: 16px; position: relative; font-size: 14px; color: var(--ink-2); }
+.method-list li::before { content: ""; position: absolute; left: 0; top: .62em; width: 8px; border-top: 1.5px solid var(--ink-3); }
+.method-list b { color: var(--ink); font-weight: 600; }
+.formula { font-family: var(--font-mono); font-size: 13px; color: var(--ink); white-space: nowrap; }
+.src-group + .src-group { margin-top: 22px; }
+.src-group h4 { font: 500 11px/1.2 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 8px; }
+.facts { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.fact { padding: 10px 0; border-top: 1px solid var(--rule-2); display: grid; gap: 5px; min-width: 0; }
+.fact .ft { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; }
+.fact .ft b { font-weight: 600; font-size: 14px; }
+.fact .use { font-size: 12px; color: var(--ink-3); }
+.fact ul { margin: 0; padding-left: 18px; font-size: 13px; overflow-wrap: anywhere; }
+.fact details { font-size: 12.5px; color: var(--ink-2); }
+.fact summary { cursor: pointer; color: var(--ink-3); font-size: 12px; }
+.fact details p { margin-top: 6px; max-width: 80ch; }
+.foot { margin-top: 18px; font-size: 12px; color: var(--ink-3); max-width: 80ch; }
+@media (prefers-reduced-motion: no-preference) {
+  .strip, .me { transition: width .25s ease, left .25s ease; }
+}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+
+<div class="tape" id="mastTape" aria-hidden="true"></div>
+<div class="wrap">
+  <header class="mast">
+    <h1>Build Calculator</h1>
+    <p class="lede">Pick a build and a height. You get the weight and seven tape girths. Each number says what it is: measured, official, reported, derived or estimate. Where no source exists, the page says unknown.</p>
+    <p class="spec" id="spec"></p>
+  </header>
+
+  <div class="layout">
+    <aside class="panel" aria-label="Inputs">
+      <div class="field">
+        <label for="buildSearch">Build</label>
+        <input id="buildSearch" type="search" placeholder="Search builds" autocomplete="off" spellcheck="false" aria-describedby="buildCount">
+        <label class="sr" for="buildSelect">Choose a build</label>
+        <select id="buildSelect"></select>
+        <p class="hint" id="buildCount"></p>
+      </div>
+
+      <div class="field">
+        <span class="label" id="unitsLabel">Units</span>
+        <div class="seg" role="radiogroup" aria-labelledby="unitsLabel">
+          <button type="button" role="radio" id="uImp" data-units="imperial" aria-checked="true" tabindex="0">Imperial</button>
+          <button type="button" role="radio" id="uMet" data-units="metric" aria-checked="false" tabindex="-1">Metric</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="hFt" id="hLabel">Height</label>
+        <div class="row" id="hImp">
+          <input id="hFt" inputmode="numeric" aria-label="Height, feet" aria-describedby="hHint"><span class="unit">ft</span>
+          <input id="hIn" inputmode="decimal" aria-label="Height, inches" aria-describedby="hHint"><span class="unit">in</span>
+        </div>
+        <div class="row" id="hMet" hidden>
+          <input id="hCm" inputmode="decimal" aria-label="Height, centimetres" aria-describedby="hHint"><span class="unit">cm</span>
+        </div>
+        <p class="hint" id="hHint"></p>
+      </div>
+
+      <div class="field">
+        <label for="wIn">Weight <span class="opt">optional</span></label>
+        <div class="row"><input id="wIn" inputmode="decimal" aria-describedby="wHint"><span class="unit" id="wUnit">lb</span></div>
+        <p class="hint" id="wHint"></p>
+      </div>
+
+      <div class="field">
+        <label for="bfIn">Body fat</label>
+        <div class="row"><input id="bfIn" inputmode="decimal" aria-describedby="bfHint"><span class="unit">%</span></div>
+        <p class="hint" id="bfHint"></p>
+      </div>
+
+      <details class="opts" id="opts">
+      <summary><span class="label">Model options</span> <span class="hint" id="optsSum"></span></summary>
+      <div class="opts-body">
+      <fieldset class="field">
+        <legend>Girth scaling</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="mode" id="modeGeo" value="geometric" checked><span><b>Same shape</b>Girths grow with height. With a set weight, they follow &radic;(W/H).</span></label>
+          <label class="choice"><input type="radio" name="mode" id="modeAnsur" value="ansur"><span><b>Average soldier</b>How girths differ between US Army soldiers (ANSUR II, which has no body-fat data). Roughly 60-70% of the weight difference between people is fat (estimate, Forbes/Hall 2007, from data on women). Results are estimates.</span></label>
+        </div>
+      </fieldset>
+
+      <label class="choice"><input type="checkbox" id="showBeyond" checked><span><b>Show girths beyond human data</b>Above BMI 43.45, or below 1.28 m or above 2.19 m tall, nobody in these data has measured girths. Off: those girths read unknown.</span></label>
+      </div>
+      </details>
+    </aside>
+
+    <main class="sheet" id="sheet">
+      <header class="build-head">
+        <p class="eyebrow" id="bGroup"></p>
+        <h2 id="bName"></h2>
+        <p class="desc" id="bDesc"></p>
+        <ul class="flags" id="bFlags"></ul>
+      </header>
+
+      <section aria-labelledby="wLabel">
+        <div class="readout">
+          <div>
+            <p class="k" id="wLabel">Weight</p>
+            <p class="big"><span id="wBig"></span><span class="u" id="wBigU"></span></p>
+            <div class="wsub"><span id="wOther"></span><span id="wChip"></span></div>
+            <div class="wnotes" id="wNotes"></div>
+          </div>
+          <dl class="stats" id="stats"></dl>
+        </div>
+        <div class="ffmi">
+          <p class="k">FFMI at this height, kg/m&sup2; (fat-free mass &divide; height&sup2;, not height-adjusted)</p>
+          <div class="scale" id="ffmiScale"></div>
+          <p class="ffmi-note" id="ffmiNote"></p>
+        </div>
+      </section>
+
+      <section aria-labelledby="chartTitle">
+        <div class="sec-head">
+          <h3 id="chartTitle">Tailor's chart</h3>
+          <ul class="legend" id="legend"></ul>
+        </div>
+        <div class="chart-grid">
+          <figure class="figure">
+            <svg id="body" viewBox="0 0 320 480" role="img" focusable="false" tabindex="-1" aria-labelledby="bodyTitle"><title id="bodyTitle">Where each girth is taken</title></svg>
+            <figcaption id="figCap">Front view, drawn to ANSUR II average landmark heights. ANSUR holds the flexed arm forward; it is drawn to the side here so the tape shows.</figcaption>
+          </figure>
+          <ol class="girths" id="girths"></ol>
+        </div>
+      </section>
+
+      <section aria-labelledby="cmpTitle">
+        <div class="sec-head">
+          <h3 id="cmpTitle">Against the average man</h3>
+        </div>
+        <p class="sec-lede">One scale for all seven girths, starting at zero. The tape strip is this build; its ticks follow the scale above. The solid line is the ANSUR II 50th percentile man (US Army, measured 2010-2012).</p>
+        <div class="cmp" id="cmp" style="margin-top:14px"></div>
+        <div class="cmp-key" id="cmpKey"></div>
+      </section>
+
+      <section aria-labelledby="notesTitle">
+        <div class="sec-head"><h3 id="notesTitle">About this build</h3></div>
+        <ul class="notes-list" id="bNotes"></ul>
+      </section>
+
+      <section id="reverse" aria-labelledby="revTitle">
+        <div class="sec-head"><h3 id="revTitle">Reverse: weight from a tape</h3></div>
+        <p class="sec-lede">Type a height and seven girths. The page estimates weight two ways and shows how far apart they are. Use ANSUR landmarks: waist at the navel, arm flexed at the biceps peak, thigh at the top.</p>
+        <div class="rev-fill" style="margin-top:14px">
+          <button type="button" class="btn" id="revFromBuild">Use this build</button>
+          <button type="button" class="btn" id="revAnsurM">ANSUR II median man</button>
+          <button type="button" class="btn" id="revAnsurF">ANSUR II median woman</button>
+        </div>
+        <p class="hint" id="revSource"></p>
+        <div class="rev-grid" id="revGrid">
+          <div class="field wide">
+            <span class="label" id="revSexLabel">Equations for</span>
+            <div class="seg" role="radiogroup" aria-labelledby="revSexLabel">
+              <button type="button" role="radio" id="revM" data-sex="M" aria-checked="true" tabindex="0">Men</button>
+              <button type="button" role="radio" id="revF" data-sex="F" aria-checked="false" tabindex="-1">Women</button>
+            </div>
+          </div>
+          <div class="field wide">
+            <label for="rhFt">Height</label>
+            <div class="row" id="rhImp"><input id="rhFt" inputmode="numeric" aria-label="Height, feet" aria-describedby="rhHint"><span class="unit">ft</span><input id="rhIn" inputmode="decimal" aria-label="Height, inches" aria-describedby="rhHint"><span class="unit">in</span></div>
+            <div class="row" id="rhMet" hidden><input id="rhCm" inputmode="decimal" aria-label="Height, centimetres" aria-describedby="rhHint"><span class="unit">cm</span></div>
+            <p class="hint" id="rhHint" hidden></p>
+          </div>
+          <div id="revGirthFields" style="display:contents"></div>
+          <div class="field">
+            <label for="rBf">Body fat <span class="opt">optional</span></label>
+            <div class="row"><input id="rBf" inputmode="decimal" aria-describedby="rBfHint"><span class="unit">%</span></div>
+            <p class="hint" id="rBfHint" hidden></p>
+          </div>
+          <div class="field">
+            <label for="rRef">ANSUR fat <span class="opt">assumed</span></label>
+            <div class="row"><input id="rRef" inputmode="decimal" aria-describedby="rRefHint"><span class="unit">%</span></div>
+            <p class="hint" id="rRefHint" hidden></p>
+          </div>
+        </div>
+        <p class="small" id="revRefNote" style="margin-top:10px"></p>
+        <div class="rev-out" id="revOut"></div>
+      </section>
+
+      <section aria-labelledby="methodTitle">
+        <div class="sec-head"><h3 id="methodTitle">How the numbers are made</h3></div>
+        <ul class="method-list">
+          <li><b>Same shape.</b> At a new height H, weight is <span class="formula">W = W&#8320;(H/H&#8320;)&sup3;</span> and each girth is <span class="formula">G = G&#8320;(H/H&#8320;)</span>. If you set a weight, girths follow <span class="formula">G = G&#8320;&radic;((W/H)/(W&#8320;/H&#8320;))</span>. That keeps the shape of each cross-section.</li>
+          <li><b>Why this law.</b> In ANSUR II men the chest follows it almost exactly (exponent 1.02 on &radic;(W/H)). Between soldiers the waist grows faster (1.44), and the calf (0.84), forearm (0.76) and neck (0.70) grow slower. ANSUR II has no body-fat data. By Forbes's relation (Hall 2007), roughly 60-70% of the weight difference between people is fat (estimate, from data on women). So those per-girth exponents describe soldiers who differ mostly in fat. The page offers them only as the "Average soldier" mode.</li>
+          <li><b>How good it is.</b> On ANSUR II men the law's scatter (1 SD) is 3.0% for the chest and 5.7% for the waist. At a fixed BMI it is accurate to about 1% for height changes of 10% or less. From 1.8 to 2.2 m the error grows to about 2.7% (waist) and 3.5% (neck).</li>
+          <li><b>Height cubed is a scaled copy.</b> Real adults of different heights differ more like height squared (exponents 1.8-2.3). So the page also shows the same-BMI weight when you change height.</li>
+          <li><b>Missing girths</b> come from a template build that has them: same sex, similar body type, closest weight for its height. They are scaled the same way and labelled derived, with the template named.</li>
+          <li><b>Beyond human data.</b> The highest BMI of anyone with measured girths here is 43.45 (an ANSUR II man). Above it, girths are model estimates with no human check. The same holds for heights more than 10% outside the ANSUR II range of 1.41-1.99 m (below 1.28 m or above 2.19 m), because the scaling law is checked only for height changes of about 10%. The largest flexed arm in ANSUR II is 49.0 cm.</li>
+          <li><b>FFMI</b> is fat-free mass over height squared. The scale plots it at the build's own height. For men between 1.55 and 2.05 m the page also gives Kouri's normalised value, FFMI + 6.1 &times; (1.80 m &minus; height); the abstract prints 6.3, and the difference is at most 0.05 units in that range. Kouri's sample was men, so women get no normalised value. Each line on the scale says its basis: median lines are unadjusted; the Kouri and Trexler lines are height-adjusted values converted back to this height (Trexler used its own slope, 2.943).</li>
+          <li><b>Reverse mode.</b> Estimate A is the ANSUR II log-linear regression on height and the seven girths (men: RMSE 1.63 kg, 1.91%; women: 1.50 kg, 2.19%). Estimate B sums stacked circular frustums built from the same inputs, times a calibration constant of about 1053 kg/m&sup3; (error SD 2.31% men, 2.78% women). B can be adjusted for body fat with Siri densities (fat 0.900, fat-free 1.100 g/cm&sup3;). ANSUR II has no body-fat data, so the reference fat for that adjustment is an assumption.</li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="srcTitle">
+        <div class="sec-head"><h3 id="srcTitle">Sources for this build</h3></div>
+        <div id="sources"></div>
+        <p class="foot" id="foot"></p>
+      </section>
+    </main>
+  </div>
+</div>
+
+<!--@DATA-->
+<!--@CALC-->
+<script>
+(function () {
+  'use strict';
+  var BC = window.BuildCalc, DATA = window.BUILD_DATA;
+  var M = BC.create(DATA);
+  var SITES = BC.SITES, fmt = BC.fmt, IN = BC.IN, LB = BC.LB, isNum = BC.isNum;
+  var F = DATA.facts;
+  var $ = function (id) { return document.getElementById(id); };
+
+  // lc: the name inside running text and lists (no commas, so a list reads as seven items).
+  var SITE = {
+    chest:      { n: 1, label: 'Chest', lc: 'chest', short: 'Fullest part, quiet breathing' },
+    waist:      { n: 2, label: 'Waist', lc: 'waist', short: 'At the navel, relaxed' },
+    arm_flexed: { n: 3, label: 'Flexed upper arm', lc: 'flexed upper arm', short: 'Biceps peak, elbow at 90°, full effort', cmp: 'Upper arm' },
+    forearm:    { n: 4, label: 'Forearm', lc: 'forearm', short: 'Elbow crease, fist clenched' },
+    thigh:      { n: 5, label: 'Thigh', lc: 'thigh', short: 'Top of the thigh, at the buttock crease' },
+    calf:       { n: 6, label: 'Calf', lc: 'calf', short: 'Largest part' },
+    neck:       { n: 7, label: 'Neck', lc: 'neck', short: "Lower edge of the Adam's apple" }
+  };
+  var STATUS_TEXT = {
+    measured: 'Taken with a tape, scale or scanner, or a statistic of such measurements.',
+    official: 'Printed by the publisher, a licensed book, or an official results record.',
+    reported: 'Stated by a magazine, fan site, the athlete or a secondary source.',
+    derived: 'Calculated from other numbers.',
+    estimate: 'Modelled or assumed.',
+    unknown: 'No source.',
+    input: 'You typed it.'
+  };
+  var DEFAULT_BUILD = 'ronnie_coleman';
+
+  // ---------- storage (convenience only) ----------
+  function load(k) { try { return window.localStorage.getItem(k); } catch (e) { return null; } }
+  function save(k, v) { try { window.localStorage.setItem(k, v); } catch (e) { /* ignore */ } }
+
+  var state = {
+    buildId: M.byId[load('bc.build')] ? load('bc.build') : DEFAULT_BUILD,
+    units: load('bc.units') === 'metric' ? 'metric' : 'imperial',
+    heightM: null, weightKg: null, bodyFatPct: null,
+    mode: 'geometric', showBeyond: true, active: null
+  };
+  var rev = { synced: true, source: 'build', sex: 'M', heightM: null, girths: {}, bf: null, ref: 20, refTouched: false, err: { h: false, bf: false, ref: false, girths: [] } };
+  var last = null;
+
+  // ---------- helpers ----------
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function chip(status, text) { return '<span class="chip ' + esc(status) + '" title="' + esc(STATUS_TEXT[status] || '') + '">' + esc(text || status) + '</span>'; }
+  function other(u) { return u === 'metric' ? 'imperial' : 'metric'; }
+  function bname(id) { return M.templateName(id); }
+  function parseNum(s) { s = String(s || '').trim().replace(',', '.'); if (s === '') return null; var v = Number(s); return isFinite(v) ? v : NaN; }
+  function sentence(s) { s = String(s || '').trim(); if (!s) return ''; s = s.charAt(0).toUpperCase() + s.slice(1); return /[.!?]$/.test(s) ? s : s + '.'; }
+  /**
+   * Escape data text and typeset its ASCII math the way the rest of the page does:
+   * sqrt( becomes a root sign, ' x ' and '*' a times sign, ^2 ^3 m3 superscripts,
+   * W^p becomes W<sup>p</sup>, and G_ref a subscript.
+   */
+  function rich(s) {
+    var t = esc(s);
+    t = t.replace(/ x /g, ' \u00d7 ').replace(/(\w|\))\*(\w|\()/g, '$1 \u00d7 $2');
+    t = t.replace(/\bsqrt\(/g, '\u221a(');
+    t = t.replace(/\b(m|cm)(\^?)3\b/g, function (m0, u) { return u + '\u00b3'; }).replace(/\b(m|cm)\^2\b/g, '$1\u00b2');
+    t = t.replace(/\^3/g, '\u00b3').replace(/\^2/g, '\u00b2');
+    t = t.replace(/\^\((-?[\w.]+)\)|\^(-?[\w.]+)/g, function (m0, a, b) { return '<sup>' + (a || b) + '</sup>'; });
+    t = t.replace(/\b([A-Z])_ref\b/g, '$1<sub>ref</sub>');
+    t = t.replace(/ \+\/- /g, ' \u00b1 ').replace(/&gt;=/g, '\u2265').replace(/&lt;=/g, '\u2264');
+    return t;
+  }
+  function richSentence(s) { return rich(sentence(s)); }
+  function lbRange(r, u) { return fmt.massRange(r, u); }
+  function lenRange(r, u) { return fmt.lenRange(r, u); }
+  /** An SD with its unit, in the display units: kind 'm' (height), 'kg' (weight) or 'pct' (body fat). */
+  function sdText(sd, kind, u) {
+    if (!isNum(sd)) return '';
+    if (kind === 'm') return 'SD ' + (u === 'metric' ? fmt.num(sd * 100, 1) + ' cm' : fmt.num(sd / IN, 1) + ' in');
+    if (kind === 'kg') return 'SD ' + fmt.mass(sd, u);
+    return 'SD ' + fmt.num(sd, 1) + ' percentage points';
+  }
+  function withSd(text, sd, kind, u) {
+    var t = String(text || '').trim(), sdt = sdText(sd, kind, u);
+    return sdt ? (t ? t + ' (' + sdt + ')' : sdt) : t;
+  }
+  /** Limits a typed height must meet, stated the same way in each unit system. */
+  var H_LIMITS = {
+    imperial: { min: 12 * IN, max: (32 * 12 + 9) * IN, text: 'Enter a height between 1 ft and 32 ft 9 in.' },
+    metric: { min: 0.30, max: 10, text: 'Enter a height between 30 and 1,000 cm.' }
+  };
+  var W_LIMITS = {
+    imperial: { max: 2200000 * LB, text: 'Enter a positive weight up to 2,200,000 lb, or leave it empty.' },
+    metric: { max: 1000000, text: 'Enter a positive weight up to 1,000,000 kg, or leave it empty.' }
+  };
+  var BF_LIMITS = { min: 2, max: 60, text: 'Enter a body fat between 2 and 60%, or leave it empty.' };
+
+  // ---------- masthead tape ----------
+  function drawTape() {
+    var el = $('mastTape'), w = el.clientWidth, html = '';
+    for (var i = 1; i * 60 < w; i++) html += '<span style="left:' + (i * 60) + 'px">' + i + '</span>';
+    el.innerHTML = html;
+  }
+
+  // ---------- build picker ----------
+  // The search only filters the list. The build changes when the user picks an option (or presses
+  // Enter in the search box for the first match). The current build stays in the list, so the
+  // select always shows the build the sheet shows.
+  var firstMatch = null;
+  function fillSelect(filter) {
+    var q = (filter || '').trim().toLowerCase();
+    var sel = $('buildSelect'), html = '', n = 0, hasCurrent = false;
+    firstMatch = null;
+    M.groups().forEach(function (g) {
+      var items = g.builds.filter(function (b) { return !q || (b.name + ' ' + b.group + ' ' + b.id).toLowerCase().indexOf(q) >= 0; });
+      if (!items.length) return;
+      html += '<optgroup label="' + esc(g.name) + '">';
+      items.forEach(function (b) {
+        n++; if (!firstMatch) firstMatch = b.id; if (b.id === state.buildId) hasCurrent = true;
+        html += '<option value="' + esc(b.id) + '">' + esc(b.name) + '</option>';
+      });
+      html += '</optgroup>';
+    });
+    if (!hasCurrent) html = '<optgroup label="Showing now"><option value="' + esc(state.buildId) + '">' + esc(M.byId[state.buildId].name) + '</option></optgroup>' + html;
+    sel.innerHTML = html;
+    sel.value = state.buildId;
+    var total = DATA.builds.length;
+    $('buildCount').textContent = !q ? total + ' builds in ' + DATA.groups.length + ' groups.'
+      : n ? n + ' of ' + total + ' builds match. Pick one from the list, or press Enter for the first (' + M.byId[firstMatch].name + ').'
+      : 'No build matches. Clear the search to see all ' + total + '.';
+  }
+
+  // Typed height, weight and body fat are kept when the build changes; each has its own reset.
+  function setBuild(id) {
+    if (!M.byId[id] || id === state.buildId) return;
+    state.buildId = id;
+    save('bc.build', id);
+    rev.synced = true; rev.source = 'build';
+    fillSelect($('buildSearch').value);
+    fillMainFields();
+    render();
+  }
+
+  // ---------- main fields ----------
+  function setHeightFields(prefix, m) {
+    var p = fmt.heightParts(m);
+    $(prefix + 'Ft').value = p.ft; $(prefix + 'In').value = String(p.inch);
+    $(prefix + 'Cm').value = (Math.round(m * 1000) / 10).toString();
+  }
+  function fillMainFields() {
+    var b = M.byId[state.buildId];
+    var H = isNum(state.heightM) ? state.heightM : b.height_m.value;
+    setHeightFields('h', H);
+    $('wIn').value = isNum(state.weightKg) ? fmt.massField(state.weightKg, state.units) : '';
+    $('bfIn').value = isNum(state.bodyFatPct) ? String(state.bodyFatPct) : '';
+    ['hFt', 'hIn', 'hCm', 'wIn', 'bfIn'].forEach(function (id) { $(id).removeAttribute('aria-invalid'); });
+    clearErrs();
+  }
+  function showUnits() {
+    var imp = state.units === 'imperial';
+    setRadio('uImp', 'uMet', imp);
+    $('hImp').hidden = !imp; $('hMet').hidden = imp; $('rhImp').hidden = !imp; $('rhMet').hidden = imp;
+    $('hLabel').setAttribute('for', imp ? 'hFt' : 'hCm');
+    $('wUnit').textContent = imp ? 'lb' : 'kg';
+  }
+  function readHeight(prefix) {
+    var v;
+    if (state.units === 'imperial') {
+      var ft = parseNum($(prefix + 'Ft').value), inch = parseNum($(prefix + 'In').value);
+      if (ft === null && inch === null) return null;
+      ft = ft || 0; inch = inch || 0;
+      if (isNaN(ft) || isNaN(inch) || ft < 0 || inch < 0) return NaN;
+      v = (ft * 12 + inch) * IN;
+    } else {
+      var cm = parseNum($(prefix + 'Cm').value);
+      if (cm === null) return null;
+      if (isNaN(cm)) return NaN;
+      v = cm / 100;
+    }
+    var lim = H_LIMITS[state.units];
+    return v >= lim.min - 1e-9 && v <= lim.max + 1e-9 ? v : NaN;
+  }
+  /** Two-button radio group: the checked one is the single tab stop (roving tabindex). */
+  function setRadio(idA, idB, aChecked) {
+    $(idA).setAttribute('aria-checked', aChecked); $(idB).setAttribute('aria-checked', !aChecked);
+    $(idA).tabIndex = aChecked ? 0 : -1; $(idB).tabIndex = aChecked ? -1 : 0;
+  }
+
+  /** Why this result is beyond human girth data, in one or two plain sentences. */
+  function beyondWhy(r) {
+    var u = state.units, t = [];
+    if (r.beyondBmi) t.push('BMI ' + fmt.bmi(r.bmiGirth) + ' is above ' + fmt.num(r.bmiMax, 2) + ', the highest BMI of anyone with measured girths here.');
+    if (r.beyondHeight) t.push('Height ' + fmt.height(r.height.value, u) + ' is ' + (r.beyondHeight === 'high' ? 'above ' + fmt.height(r.heightRange.max, u) : 'below ' + fmt.height(r.heightRange.min, u)) +
+      ', more than 10% outside the heights of measured people (ANSUR II, ' + fmt.height(r.heightRange.dataMin, u) + ' to ' + fmt.height(r.heightRange.dataMax, u) + '). The scaling law is checked only for height changes of about 10%.');
+    return t.join(' ');
+  }
+
+  // ---------- render: header ----------
+  function renderHead(r) {
+    var b = r.build;
+    $('bGroup').textContent = b.group + (b.group === 'Rex and Ollie' ? (b.sex === 'F' ? ' · female' : b.sex === 'M' ? ' · male' : '') : (b.sex === 'F' ? ' · woman' : b.sex === 'M' ? ' · man' : ' · sex not stated'));
+    $('bName').textContent = b.name;
+    $('bDesc').textContent = b.description || '';
+    var fl = [];
+    if (r.beyond) fl.push('<li class="flag alarm" title="' + esc(beyondWhy(r)) + '">Beyond human girth data</li>');
+    if (b.template && b.template.outside_template_range) fl.push('<li class="flag">Template is a different weight for height</li>');
+    if (b.weight_kg.disputed || b.height_m.disputed) fl.push('<li class="flag">Sources disagree</li>');
+    if (b.drug_status) fl.push('<li class="flag">Drug testing: ' + esc(b.drug_status.charAt(0).toLowerCase() + b.drug_status.slice(1).replace(/\.$/, '')) + '</li>');
+    $('bFlags').innerHTML = fl.join('');
+  }
+
+  // ---------- render: weight and stats ----------
+  function renderReadout(r) {
+    var u = state.units, b = r.build, w = r.weight;
+    $('wBig').textContent = fmt.massNum(w.value, u);
+    $('wBigU').textContent = u === 'metric' ? 'kg' : 'lb';
+    $('wOther').textContent = fmt.mass(w.value, other(u));
+    $('wChip').innerHTML = chip(w.status, w.status === 'input' ? 'your input' : w.status);
+    var notes = [];
+    if (w.basis === 'reference') {
+      notes.push('<p>' + richSentence(withSd(b.weight_kg.basis, b.weight_kg.sd_kg, 'kg', u)) + (b.weight_kg.value_basis ? ' ' + richSentence(b.weight_kg.value_basis) : '') + '</p>');
+      if (w.range) notes.push('<p>Range in the sources: ' + esc(lbRange(w.range, u)) + '.</p>');
+    } else if (w.basis === 'scaled') {
+      notes.push('<p>Scaled from ' + esc(fmt.mass(w.ref, u)) + ' (' + esc(w.refStatus) + ') at ' + esc(fmt.height(r.height.ref, u)) + '. Weight grows with height cubed: same shape, bigger.' +
+        (w.status === 'estimate' ? ' The starting weight is an estimate, so this is too.' : '') + '</p>');
+      if (w.range) notes.push('<p>The source range scales to ' + esc(lbRange(w.range, u)) + '.</p>');
+      notes.push('<p class="alt">At the same BMI instead (weight with height squared): <b class="tnum">' + esc(fmt.mass(w.sameBmi, u)) + '</b>.</p>');
+    } else {
+      notes.push('<p>Your weight. The build\'s own is ' + esc(fmt.mass(w.ref * Math.pow(r.height.value / r.height.ref, 3), u)) + ' at this height. Girths follow &radic;(W/H).</p>');
+    }
+    if (r.beyondHeight) notes.push('<p><b>Beyond human data.</b> ' + esc(beyondWhy({ beyondHeight: r.beyondHeight, height: r.height, heightRange: r.heightRange })) + ' Scaled girths here are rough estimates.</p>');
+    $('wNotes').innerHTML = notes.join('');
+
+    var bf = r.bodyFat, ff = r.ffmi;
+    var normTxt = isNum(ff.norm) ? 'Normalised to 1.80 m: ' + fmt.num(ff.norm, 1)
+      : ff.normReason === 'height' ? 'Normalised: unknown at this height (checked for ' + fmt.height(ff.normRange[0], u) + ' to ' + fmt.height(ff.normRange[1], u) + ')'
+      : ff.normReason === 'women' ? 'Not normalised: the adjustment is from men'
+      : 'Not normalised';
+    var stats = [
+      ['Height', '<span class="v">' + esc(fmt.height(r.height.value, u)) + '</span>', chip(r.height.status, r.height.status === 'input' ? 'your input' : r.height.status) + (r.height.atRef ? '' : ' <span class="s blk">Reference ' + esc(fmt.height(r.height.ref, u)) + '</span>')],
+      ['BMI', '<span class="v">' + fmt.bmi(r.bmi.value) + '</span>', chip(r.bmi.status) + (r.beyondBmi ? ' <span class="s blk">Highest with measured girths: ' + fmt.num(r.bmiMax, 2) + '</span>' : '')],
+      ['Body fat', '<span class="v">' + fmt.num(bf.value, 1) + '<small>%</small></span>', chip(bf.status, bf.status === 'input' ? 'your input' : bf.status === 'estimate' ? 'assumed' : bf.status)],
+      ['FFMI', '<span class="v">' + fmt.num(ff.value, 1) + '</span>', chip(ff.status) + ' <span class="s blk">' + esc(normTxt) + '</span>']
+    ];
+    $('stats').innerHTML = stats.map(function (s) { return '<div><dt>' + s[0] + '</dt><dd>' + s[1] + '</dd><dd class="s">' + s[2] + '</dd></div>'; }).join('');
+    renderFfmi(r);
+  }
+
+  // Each reference line on the FFMI scale, with its own basis. The model gives each line's
+  // position at this build's height (calc.js refLines); labels print the published value.
+  var FFMI_REFS = {
+    schutz_m: { t: 'median', top: false, basis: 'unadjusted', title: 'Median FFMI, Swiss men 18-34 (Schutz 2002, BIA). Unadjusted, drawn as printed.' },
+    kouri: { t: 'Kouri', top: true, soft: true, basis: '1.80 m adj.', title: 'Highest normalised FFMI among 74 non-users (Kouri 1995). A sample maximum, not a hard limit. Kouri adjusted to 1.80 m with 6.1 per metre; the line is moved to this height.' },
+    trexler_p975: { t: 'P97.5', top: false, basis: '1.80 m adj.', title: '97.5th percentile, 235 college football players (Trexler 2017, DXA). Trexler adjusted to 1.80 m with its own slope, 2.943 per metre; the line is moved to this height.' },
+    trexler_max: { t: 'max', top: true, basis: '1.80 m adj.', title: 'Highest of 235 college football players (Trexler 2017, DXA). Trexler adjusted to 1.80 m with its own slope, 2.943 per metre; the line is moved to this height.' },
+    schutz_f: { t: 'median', top: true, basis: 'unadjusted', title: 'Median FFMI, Swiss women 18-34 (Schutz 2002, BIA). Unadjusted, drawn as printed.' },
+    blue_max: { t: 'max', top: true, basis: 'unadjusted', title: 'Highest of 266 female college athletes (Blue 2019, DXA). Unadjusted, drawn as printed.' }
+  };
+  function renderFfmi(r) {
+    var ff = r.ffmi, u = state.units, lo = 12, hi = 40;
+    var x = function (v) { return (100 * (v - lo) / (hi - lo)); };
+    var html = '<div class="bar"></div>';
+    ff.refLines.forEach(function (ln) {
+      var d = FFMI_REFS[ln.id], printed = isNum(ln.printed) ? ln.printed : ln.v;
+      var label = (d.t === 'Kouri' ? 'Kouri ' + fmt.num(printed, 1) : fmt.num(printed, 1) + ' ' + d.t);
+      var title = d.title + (isNum(ln.printed) ? ' At ' + fmt.height(r.height.value, u) + ' it equals ' + fmt.num(ln.v, 1) + ' plain FFMI.' : '');
+      html += '<div class="tick' + (d.soft ? ' soft' : '') + '" style="left:' + x(ln.v) + '%" title="' + esc(title) + '"></div>' +
+        '<div class="tl' + (d.top ? ' top' : '') + '" style="left:' + x(ln.v) + '%" title="' + esc(title) + '">' + esc(label) + '<br><small>' + esc(d.basis) + '</small></div>';
+    });
+    var v = ff.value, cls = v > hi ? ' off-hi' : v < lo ? ' off-lo' : '';
+    var pos = Math.max(lo, Math.min(hi, v));
+    html += '<div class="me' + cls + '" style="left:' + x(pos) + '%" title="This build: ' + fmt.num(v, 1) + ' at this height"></div>';
+    html += '<div class="tl" style="left:0%;transform:none">' + (v < lo ? '&lt;' : '') + lo + '</div><div class="tl" style="left:100%;transform:translateX(-100%)">' + hi + (v > hi ? '+' : '') + '</div>';
+    $('ffmiScale').innerHTML = html;
+
+    var bfTxt = r.bodyFat.status === 'estimate' ? ' at an assumed ' + fmt.num(r.bodyFat.value, 0) + '% body fat' : ' at ' + fmt.num(r.bodyFat.value, 1) + '% body fat (' + (r.bodyFat.status === 'input' ? 'your input' : r.bodyFat.status) + ')';
+    var t = 'This build: <b class="tnum">' + fmt.num(v, 1) + '</b> at this height,' + bfTxt + (cls ? ' (off this scale)' : '') + '. ';
+    if (isNum(ff.norm)) t += 'Normalised to 1.80 m (Kouri): <b class="tnum">' + fmt.num(ff.norm, 1) + '</b>. ';
+    if (r.build.girth_basis_weight_kg) t += 'It uses the body without the adamantium. ';
+    var inRange = r.height.value >= ff.normRange[0] && r.height.value <= ff.normRange[1];
+    if (!ff.ref.applies) {
+      t += ff.normReason === 'height'
+        ? 'Kouri\'s height adjustment is checked only between ' + esc(fmt.height(ff.normRange[0], u)) + ' and ' + esc(fmt.height(ff.normRange[1], u)) + ', so this height has no normalised FFMI and no Kouri comparison.'
+        : esc(ff.ref.reason);
+      if (!r.human) t += ' FFMI is shown only as arithmetic.';
+      if (r.human && r.sex === 'F') t += ' For scale: female college athletes ranged 13.3-25.5 (Blue 2019, DXA, n = 266). The median line is Swiss women aged 18-34 (Schutz 2002). Both lines are unadjusted, like the marker.';
+      if (r.human && r.sex === 'M') t += ' Only the unadjusted median line is drawn.';
+    } else {
+      t += 'The dashed line is Kouri 1995: 25.0 is the highest normalised FFMI among 74 men who said they had never used steroids (urine-tested; body fat by skinfolds). It is the sample maximum, not a hard physiological limit. The authors called the findings preliminary. Presumed-natural pre-steroid Mr. America winners in the same paper reached 28.0 (Helms); their mean of 25.4 is an estimate (reported heights and weights, assumed 5% fat). ';
+      t += 'Height-adjusted lines (Kouri, Trexler) are moved to this height so they share the marker\'s basis; the median line is unadjusted. ';
+      var be = ff.ref.breakEvenBf;
+      var beTxt = be <= 0 ? 'It stays at or below 25.0 even at 0% body fat.' : 'It exceeds 25.0 only if body fat is below ' + fmt.num(be, 1) + '%.';
+      if (ff.ref.verdict === 'unknown') t += 'Body fat is not known for this build, so there is no verdict. ' + beTxt;
+      else t += (ff.ref.verdict === 'above' ? 'At this body fat the build is above that sample maximum. ' : 'At this body fat the build is at or below it. ') + beTxt;
+      t += ' A high FFMI is not proof of muscle: it also occurs in obesity.';
+    }
+    if (r.human && !inRange) t += ' Plain FFMI grows with height for the same shape, so far outside ' + esc(fmt.height(ff.normRange[0], u)) + ' to ' + esc(fmt.height(ff.normRange[1], u)) + ' it does not compare well with these lines.';
+    $('ffmiNote').innerHTML = t;
+  }
+
+  // ---------- render: tailor's chart ----------
+  function basisHtml(g, r) {
+    var u = state.units, parts = [];
+    var e = g.entry || {};
+    if (g.hidden) {
+      parts.push('Beyond human data, so shown as unknown. ' + esc(beyondWhy(r)) + ' Turn on "Show girths beyond human data" to see the model value.');
+      return parts.join(' ');
+    }
+    if (g.kind === 'own') {
+      if (g.scaled) parts.push('Scaled from the ' + esc(g.refStatus) + ' ' + esc(fmt.len(g.refValue, u)) + ' at ' + esc(fmt.height(r.height.ref, u)) + (r.mode === 'ansur' ? ' with ANSUR II average-soldier exponents.' : '.'));
+      if (e.derived_from === 'picture') parts.push('Derived from the picture: ' + richSentence(e.definition));
+      if (e.value_basis) parts.push(richSentence(e.value_basis));
+      if (g.range) parts.push('Range ' + esc(lenRange(g.range, u)) + '.');
+      if (e.derived_from !== 'picture') {
+        if (e.definition_differs_from_ansur === true) parts.push('<span class="src">Different definition:</span> ' + richSentence(e.definition));
+        else if (e.definition_differs_from_ansur === 'unknown') parts.push('<span class="src">Method not stated:</span> ' + richSentence(e.definition));
+      }
+      if (e.includes_clothing) parts.push('Includes clothing: ' + richSentence(e.clothing_note));
+    } else if (g.kind === 'template') {
+      if (g.chain[0] === 'ansur_predictor') {
+        parts.push('<span class="src">Derived from the ANSUR II average-shape formula</span> for this height and weight (girth = A &middot; W<sup>p</sup> &middot; H<sup>q</sup>).');
+      } else {
+        var t = '<span class="src">Derived from ' + esc(bname(g.chain[0])) + '</span>';
+        if (g.chain.length > 1) t += ', which takes it from ' + esc(g.chain.slice(1).map(bname).join(', then '));
+        t += g.method === 'isometric' ? ', scaled by height only.' : ', scaled to this weight and height.';
+        parts.push(t);
+        if (g.ownerStatus) parts.push('The original value is ' + esc(g.ownerStatus) + (e.definition_differs_from_ansur === 'unknown' ? ' (method not stated)' : '') + '.');
+        if (g.range) parts.push('Range ' + esc(lenRange(g.range, u)) + '.');
+      }
+      if (g.scaled) parts.push('Then scaled to ' + esc(fmt.height(r.height.value, u)) + (r.mode === 'ansur' ? ' with average-soldier exponents.' : '.'));
+    }
+    if (g.beyond) parts.push('<span class="src">Beyond human data:</span> ' + esc(beyondWhy(r)) + ' Treat it as a rough model figure.');
+    return parts.join(' ');
+  }
+
+  function renderChart(r) {
+    var u = state.units;
+    var used = {};
+    var html = SITES.map(function (s) {
+      var g = r.girths[s], meta = SITE[s];
+      used[g.status] = true;
+      var def = DATA.girth_sites[s].ansur_definition;
+      var v1 = isNum(g.value) ? '<span class="v1">' + esc(fmt.len(g.value, u)) + '</span><span class="v2">' + esc(fmt.len(g.value, other(u))) + '</span>' : '<span class="v1 unk">unknown</span>';
+      var chips = chip(g.status, g.status === 'derived' && g.entry && g.entry.derived_from === 'picture' && !g.scaled ? 'derived, picture' : g.status);
+      if (g.beyond && !g.hidden) chips += ' ' + chip('beyond', 'beyond human data');
+      if (g.kind === 'template') chips += ' <span class="hint">template</span>';
+      return '<li class="g' + (state.active === s ? ' on' : '') + '" data-site="' + s + '" tabindex="0">' +
+        '<span class="n">' + meta.n + '</span>' +
+        '<div class="site"><b>' + esc(meta.label) + '</b><small title="' + esc(def) + '">' + esc(meta.short) + '</small></div>' +
+        '<div class="val">' + v1 + '</div>' +
+        '<div class="meta">' + chips + '</div>' +
+        '<p class="basis">' + basisHtml(g, r) + '</p></li>';
+    }).join('');
+    $('girths').innerHTML = html;
+    var order = ['measured', 'official', 'reported', 'derived', 'estimate', 'unknown'];
+    $('legend').innerHTML = order.map(function (s) { return '<li>' + chip(s) + '<span class="sr"> ' + esc(STATUS_TEXT[s]) + '</span></li>'; }).join('');
+  }
+
+  // ---------- body diagram ----------
+  var RINGS = {
+    neck:       { cx: 140, cy: 86,  rx: 13, ry: 3.5, mx: 176, my: 68,  lx: 153, ly: 86 },
+    chest:      { cx: 140, cy: 137, rx: 45, ry: 5,   mx: 206, my: 162, lx: 185, ly: 139 },
+    waist:      { cx: 140, cy: 196, rx: 37, ry: 5,   mx: 206, my: 202, lx: 177, ly: 197 },
+    arm_flexed: { cx: 232, cy: 112, rx: 5,  ry: 27,  mx: 216, my: 66,  lx: 229, ly: 86, vert: true },
+    forearm:    { cx: 267, cy: 104, rx: 17, ry: 4,   mx: 304, my: 104, lx: 284, ly: 104 },
+    thigh:      { cx: 162, cy: 266, rx: 22.5, ry: 4.5, mx: 210, my: 266, lx: 185, ly: 266 },
+    calf:       { cx: 117, cy: 372, rx: 18.5, ry: 4,   mx: 74,  my: 380, lx: 99,  ly: 373 }
+  };
+  // Left half of the body outline (viewer's left), from the neck down the outside and back up the inside leg.
+  var HALF = 'M129,70 Q128,82 127,92 Q118,100 98,105 Q86,108 84,120 Q88,132 95,142 Q96,170 104,196 Q99,222 97,244 Q92,282 101,318 Q105,334 102,346 Q95,372 104,404 Q108,430 110,444 L101,451 Q97,459 106,460 L133,460 L133,448 Q134,430 132,410 Q137,380 133,350 Q131,338 134,320 Q139,290 140,262';
+  function mirror(path) {
+    return path.replace(/(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/g, function (m, x, y) { return (280 - Number(x)) + ',' + y; });
+  }
+  function bodyPath() {
+    // left half forward, right half (mirrored) backward, joined at the crotch and the neck
+    var right = mirror(HALF);
+    // reverse the mirrored path by rebuilding it from its points in the opposite direction
+    var pts = [];
+    right.replace(/([MLQ])([^MLQ]+)/g, function (m, cmd, args) { pts.push({ c: cmd, a: args.trim().split(/\s+/) }); return m; });
+    var rev = 'L' + pts[pts.length - 1].a[pts[pts.length - 1].a.length - 1];
+    for (var i = pts.length - 1; i > 0; i--) {
+      var seg = pts[i], prevEnd = pts[i - 1].a[pts[i - 1].a.length - 1];
+      rev += seg.c === 'Q' ? ' Q' + seg.a[0] + ' ' + prevEnd : ' L' + prevEnd;
+    }
+    return HALF + ' ' + rev + ' Z';
+  }
+  var BODY_D = null;
+  var HANG_ARM = 'M99,105 Q82,105 78,124 Q73,150 74,190 Q72,222 75,248 Q68,262 71,280 Q78,291 86,280 Q88,266 85,248 Q89,220 88,192 Q90,166 96,146 Z';
+  var FLEX_ARM = 'M181,105 Q198,98 210,101 Q230,80 250,97 Q247,80 252,62 Q245,49 252,38 Q264,28 278,36 Q287,48 279,60 Q289,96 277,128 Q266,141 248,138 Q228,142 210,140 Q198,140 189,136 Z';
+
+  function ringSvg(s, R, on) {
+    var front, back;
+    if (R.vert) {
+      front = 'M' + R.cx + ',' + (R.cy - R.ry) + ' A' + R.rx + ' ' + R.ry + ' 0 0 1 ' + R.cx + ',' + (R.cy + R.ry);
+      back = 'M' + R.cx + ',' + (R.cy - R.ry) + ' A' + R.rx + ' ' + R.ry + ' 0 0 0 ' + R.cx + ',' + (R.cy + R.ry);
+    } else {
+      front = 'M' + (R.cx - R.rx) + ',' + R.cy + ' A' + R.rx + ' ' + R.ry + ' 0 0 0 ' + (R.cx + R.rx) + ',' + R.cy;
+      back = 'M' + (R.cx - R.rx) + ',' + R.cy + ' A' + R.rx + ' ' + R.ry + ' 0 0 1 ' + (R.cx + R.rx) + ',' + R.cy;
+    }
+    return '<g class="ring' + (on ? ' on' : '') + '" data-site="' + s + '">' +
+      '<path class="ring-back" d="' + back + '"/><path class="ring-front" d="' + front + '"/>' +
+      '<path class="lead" d="M' + R.lx + ',' + R.ly + ' L' + R.mx + ',' + R.my + '"/>' +
+      '<g class="mk"><circle cx="' + R.mx + '" cy="' + R.my + '" r="8.5"/><text x="' + R.mx + '" y="' + (R.my + 0.5) + '">' + SITE[s].n + '</text></g>' +
+      '<title>' + esc(SITE[s].label + ': ' + DATA.girth_sites[s].ansur_definition) + '</title></g>';
+  }
+
+  function tapeScale(H, u) {
+    var opts = u === 'metric'
+      ? [[0.05, 0.01], [0.1, 0.02], [0.2, 0.05], [0.5, 0.1], [1, 0.2], [2, 0.5], [5, 1]]
+      : [[3, 1], [6, 1], [12, 1], [24, 3], [60, 12], [120, 12]].map(function (p) { return [p[0] * IN, p[1] * IN]; });
+    var pick = opts[opts.length - 1];
+    for (var i = 0; i < opts.length; i++) { if (H / opts[i][0] <= 6 + 1e-9) { pick = opts[i]; break; } }
+    var major = pick[0], minor = pick[1];
+    var mid = Math.abs((major / 2) / minor - Math.round((major / 2) / minor)) < 1e-6;
+    var label = u === 'metric'
+      ? function (v) { return major >= 1 ? Math.round(v) + 'm' : String(Math.round(v * 100)); }
+      : function (v) { var inch = Math.round(v / IN), ft = Math.floor(inch / 12), rest = inch - ft * 12; return ft ? ft + "'" + (rest ? rest + '"' : '') : rest + '"'; };
+    if (H > 2.6 && u !== 'metric' && minor < 3 * IN) minor = 3 * IN;
+    return { major: major, minor: minor, mid: mid, label: label };
+  }
+
+  function renderBody(r) {
+    if (!BODY_D) BODY_D = bodyPath();
+    var u = state.units, H = r.height.value;
+    var top = 20, floor = 460, span = floor - top;
+    var y = function (v) { return floor - span * v / H; };
+    var t = '';
+    // vertical tape on the left: 0 at the floor, the build's height at the top of the head
+    t += '<rect class="vt-tape" x="4" y="' + top + '" width="20" height="' + span + '"/>';
+    // Labelled (major) step chosen from the height: the smallest step that gives at most 6 labels.
+    // Minor ticks divide it evenly. Metric labels in cm below 1 m steps, in m above; imperial in ft and in.
+    var tape = tapeScale(H, u);
+    var step = tape.minor, major = tape.major, lab = tape.label;
+    var n = Math.floor(H / step + 1e-9);
+    for (var i = 1; i <= n; i++) {
+      var v = i * step, yy = y(v);
+      var isMajor = Math.abs(v / major - Math.round(v / major)) < 1e-6;
+      var isMid = !isMajor && tape.mid && Math.abs(v / (major / 2) - Math.round(v / (major / 2))) < 1e-6;
+      var len = isMajor ? 11 : isMid ? 7 : 4;
+      t += '<line class="vt-tick" x1="4" x2="' + (4 + len) + '" y1="' + yy.toFixed(1) + '" y2="' + yy.toFixed(1) + '"/>';
+      if (isMajor && yy > top + 12) t += '<text class="vt-lab" x="' + (lab(v).length > 3 ? 5 : u === 'metric' ? 9 : 12) + '" y="' + (yy + 9).toFixed(1) + '">' + lab(v) + '</text>';
+    }
+    t += '<line class="vt-guide" x1="24" x2="118" y1="' + top + '" y2="' + top + '"/>';
+    t += '<text class="vt-top" x="4" y="13">' + esc(fmt.height(H, u)) + '</text>';
+    t += '<line class="floor" x1="0" x2="320" y1="' + floor + '" y2="' + floor + '"/>';
+    // figure
+    t += '<ellipse class="body-fill" cx="140" cy="46" rx="19" ry="26"/>';
+    t += '<path class="body-fill" d="' + BODY_D + '"/>';
+    t += '<path class="body-fill" d="' + HANG_ARM + '"/>';
+    t += '<path class="body-fill" d="' + FLEX_ARM + '"/>';
+    SITES.forEach(function (s) { t += ringSvg(s, RINGS[s], state.active === s); });
+    $('figCap').textContent = r.human
+      ? 'Front view, drawn to ANSUR II average landmark heights. The tape on the left reads this build\'s height. ANSUR holds the flexed arm forward; it is drawn to the side here so the tape shows.'
+      : 'A human figure, as a guide to the sites only. Rex and Ollie\'s girths were read from their own picture, at the levels given in each note.';
+    var svg = $('body');
+    svg.innerHTML = '<title id="bodyTitle">Where each girth is taken. Height ' + esc(fmt.height(H, u)) + '.</title>' + t;
+  }
+
+  // ---------- comparison bars ----------
+  function niceStep(max, target) {
+    var raw = max / target, p = Math.pow(10, Math.floor(Math.log(raw) / Math.LN10)), f = raw / p;
+    return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p;
+  }
+  function renderCompare(r) {
+    var u = state.units, toU = function (m) { return u === 'metric' ? m * 100 : m / IN; };
+    var ref = M.byId.ansur2_m_p50, refW = M.byId.ansur2_f_p50, isF = r.sex === 'F' && r.human;
+    var max = 0;
+    SITES.forEach(function (s) {
+      var g = r.girths[s];
+      if (isNum(g.value)) max = Math.max(max, toU(g.value));
+      max = Math.max(max, toU(ref.girths[s].value_m));
+      if (isF) max = Math.max(max, toU(refW.girths[s].value_m));
+    });
+    var step = niceStep(max, 5), axisMax = Math.ceil(max / step - 1e-9) * step;
+    var pct = function (v) { return (100 * v / axisMax); };
+    var ax = '';
+    for (var v = 0; v <= axisMax + 1e-9; v += step) ax += '<span class="ax' + (v === 0 ? ' first' : v + step > axisMax + 1e-9 ? ' last' : '') + '" style="left:' + pct(v) + '%">' + fmt.num(v, 0) + '</span>';
+    var minor = [1, 2, 5, 10, 20, 50, 100].filter(function (m) { return axisMax / m <= 60; })[0] || 100;
+    var major = minor === 2 ? 10 : minor * 5;
+    var ticks = function (val) {
+      return 'background-size:' + (100 * minor / val).toFixed(4) + '% 5px,' + (100 * major / val).toFixed(4) + '% 10px' + ',auto';
+    };
+    var grid = '';
+    for (var gv = step; gv < axisMax - 1e-9; gv += step) grid += '<span class="grid" style="left:' + pct(gv) + '%"></span>';
+    var html = '<div class="cmp-axis" aria-hidden="true"><span class="k">' + (u === 'metric' ? 'cm' : 'inches') + '</span><div class="track">' + ax + '</div><span class="k" style="text-align:right">vs avg</span></div>';
+    SITES.forEach(function (s) {
+      var g = r.girths[s], rv = toU(ref.girths[s].value_m);
+      var bar = isNum(g.value) ? '<span class="strip' + (g.status === 'estimate' ? ' est' : '') + '" style="width:' + pct(toU(g.value)) + '%;' + ticks(toU(g.value)) + '"></span>' : '<span class="unk">unknown</span>';
+      var title = SITE[s].label + ': ' + fmt.len(g.value, u) + ' (' + g.status + '); average man ' + fmt.len(ref.girths[s].value_m, u) + (isF ? '; average woman ' + fmt.len(refW.girths[s].value_m, u) : '');
+      html += '<div class="cmp-row' + (state.active === s ? ' on' : '') + '" data-site="' + s + '" title="' + esc(title) + '">' +
+        '<span class="nm">' + esc(SITE[s].cmp || SITE[s].label) + '</span>' +
+        '<div class="track">' + grid + bar + '<span class="refmark" style="left:' + pct(rv) + '%"></span>' + (isF ? '<span class="refmark w" style="left:' + pct(toU(refW.girths[s].value_m)) + '%"></span>' : '') + '</div>' +
+        '<span class="ratio">' + (isNum(g.value) ? fmt.num(g.value / ref.girths[s].value_m, 2) + '×' : '-') + '</span></div>';
+    });
+    html += '<p class="small" style="margin-top:6px">Ticks every ' + minor + ' ' + (u === 'metric' ? 'cm' : 'in') + ', long ticks every ' + major + '.</p>';
+    $('cmp').innerHTML = html;
+    $('cmpKey').innerHTML = '<span><i class="sw"></i>This build</span>' +
+      '<span><i class="sw est"></i>Estimate</span>' +
+      '<span><i class="ref"></i>ANSUR II 50th percentile man</span>' + (isF ? '<span><i class="refw"></i>ANSUR II 50th percentile woman</span>' : '') +
+      '<span>Ratio: this build &divide; average man</span>';
+  }
+
+  // ---------- notes ----------
+  /** True when the label already prints this value (same unit, same number at display precision). */
+  function labelHas(label, val) {
+    var unit = / lb$/.test(val) ? /\b(lb|lbs|pounds)\b/ : / kg$/.test(val) ? /\bkg\b/ : / cm$/.test(val) ? /\bcm\b/ : null;
+    if (!unit || !unit.test(label)) return false;
+    var want = (val.replace(/,/g, '').match(/\d+(\.\d+)?/g) || []).map(Number);
+    var have = (label.replace(/,/g, '').match(/\d+(\.\d+)?/g) || []).map(Number);
+    return want.length > 0 && want.every(function (w) { return have.some(function (h) { return Math.abs(h - w) <= 0.5; }); });
+  }
+  var METHOD_NAME = { geometric: 'same shape, girths with √(W/H)', isometric: 'height only', ansur_predictor: 'ANSUR II average-shape formula' };
+  function renderNotes(r) {
+    var b = r.build, u = state.units, li = [];
+    function add(label, text) { if (text) li.push('<li>' + (label ? '<b>' + esc(label) + '.</b> ' : '') + text + '</li>'); }
+    add('Height', esc(fmt.height(b.height_m.value, u)) + ' ' + chip(b.height_m.status) + ' ' + richSentence(withSd(b.height_m.basis, b.height_m.sd_m, 'm', u)) + (b.height_m.range ? ' Range ' + esc(fmt.height(b.height_m.range[0], u)) + ' to ' + esc(fmt.height(b.height_m.range[1], u)) + '.' : '') + (b.height_m.value_basis ? ' ' + richSentence(b.height_m.value_basis) : ''));
+    add('Weight', esc(fmt.mass(b.weight_kg.value, u)) + ' ' + chip(b.weight_kg.status) + ' ' + richSentence(withSd(b.weight_kg.basis, b.weight_kg.sd_kg, 'kg', u)) + (b.weight_kg.value_basis ? ' ' + richSentence(b.weight_kg.value_basis) : ''));
+    // Other figures: always with the value in the current units, unless the label already prints it.
+    (b.height_m.other || []).concat(b.weight_kg.other || []).forEach(function (o) {
+      if (o.label === 'mean' && isNum(o.value)) return;
+      var isH = b.height_m.other && b.height_m.other.indexOf(o) >= 0;
+      var val = isH ? fmt.height(o.value, u) : Array.isArray(o.value) ? lbRange(o.value, u) : fmt.mass(o.value, u);
+      var bits = [];
+      if (!labelHas(o.label, val)) bits.push(val);
+      if (isNum(o.sd_kg)) bits.push(sdText(o.sd_kg, 'kg', u));
+      add('Other figure', rich(o.label) + (bits.length ? ' (' + esc(bits.join('; ')) + ')' : '') + ' ' + chip(o.status || 'reported'));
+    });
+    var bf = b.body_fat_pct || {};
+    if (isNum(bf.value)) add('Body fat', esc(fmt.num(bf.value, 1)) + '% ' + chip(bf.status) + ' ' + richSentence(withSd(bf.method, bf.sd_pct, 'pct', u)));
+    else add('Body fat', 'Unknown in the sources.' + (bf.note ? ' ' + richSentence(bf.note) : '') + ' The FFMI above uses ' + (isNum(state.bodyFatPct) ? 'your ' + esc(state.bodyFatPct) + '%.' : 'an assumed 15%.'));
+    if (b.template) add('Template', richSentence(b.template.reason) + ' Template: ' + esc(bname(b.template.build_id)) + ', scaled by ' + esc(METHOD_NAME[b.template.method] || b.template.method) + '.' + (b.template.outside_template_range ? ' Its weight for height (W/H&sup3;) differs from the template\'s by more than 10% (' + fmt.num(b.template.pi_build_kg_m3, 1) + ' vs ' + fmt.num(b.template.pi_template_kg_m3, 1) + ' kg/m&sup3;).' : ''));
+    if (b.flags && b.flags.note) add('Flag', rich(b.flags.note) + (b.flags.beyond_human_girth_data ? (state.showBeyond ? ' Turn off "Show girths beyond human data" to see unknown instead.' : ' They read unknown now. Turn on "Show girths beyond human data" to see them.') : ''));
+    (b.editions || []).forEach(function (e) { add('Edition', rich(e.label) + ': ' + esc(fmt.height(e.height_m, u)) + ', ' + esc(fmt.mass(e.weight_kg, u)) + ' ' + chip(e.status.indexOf('official') === 0 ? 'official' : 'reported', e.status)); });
+    (b.variants || []).forEach(function (v) { add('Other form', esc(v.name) + ': ' + esc(fmt.height(v.height_m, u)) + ', ' + esc(fmt.mass(v.weight_kg, u)) + ' ' + chip(v.status) + (v.note ? ' ' + richSentence(v.note) : '')); });
+    Object.keys(b.extra_girths || {}).forEach(function (k) {
+      var g = b.extra_girths[k];
+      add('Extra girth', (k === 'arm_relaxed' ? 'Relaxed upper arm' : esc(k.replace(/_/g, ' '))) + ': ' + esc(fmt.len(g.value_m, u)) + ' ' + chip(g.status) + ' ' + richSentence(g.definition));
+    });
+    if (b.clothing) add('Clothing', richSentence(b.clothing));
+    if (b.tail) add('Tail', richSentence(b.tail.note));
+    if (b.volume_m3) add('Volume', esc(fmt.num(b.volume_m3.value, 2)) + ' m&sup3; ' + chip(b.volume_m3.status) + ' ' + richSentence(b.volume_m3.note || ''));
+    if (b.density_kg_m3) add('Density', esc(fmt.num(b.density_kg_m3.value, 0)) + ' kg/m&sup3; (' + b.density_kg_m3.range.map(function (x) { return fmt.num(x, 0); }).join('-') + ') ' + chip(b.density_kg_m3.status) + ' ' + richSentence(b.density_kg_m3.note || ''));
+    (b.notes || []).forEach(function (n) { add('', richSentence(n)); });
+    if (b.girth_basis_weight_kg) add('', 'Girths and FFMI use the ' + esc(fmt.mass(b.girth_basis_weight_kg, u)) + ' body at the reference height. The rest of the weight adds no girth.');
+    $('bNotes').innerHTML = li.join('');
+  }
+
+  // ---------- reverse mode ----------
+  function buildRevFields() {
+    $('revGirthFields').innerHTML = SITES.map(function (s) {
+      return '<div class="field"><label for="rg_' + s + '">' + SITE[s].n + ' ' + esc(SITE[s].cmp || SITE[s].label) + '</label>' +
+        '<div class="row"><input id="rg_' + s + '" inputmode="decimal" data-site="' + s + '"><span class="unit rgu">in</span></div></div>';
+    }).join('');
+  }
+  function fillRevFromResult(r) {
+    rev.sex = r.sex; rev.heightM = r.height.value; rev.girths = {};
+    SITES.forEach(function (s) { rev.girths[s] = r.girths[s].value; });
+    rev.bf = isNum(r.bodyFat.dataValue) ? r.bodyFat.dataValue : (r.bodyFat.status === 'input' ? r.bodyFat.value : null);
+    if (!rev.refTouched) rev.ref = rev.sex === 'F' ? null : 20;
+    rev.source = 'build';
+  }
+  function fillRevFromAnsur(id) {
+    var b = M.byId[id];
+    rev.synced = false; rev.source = id;
+    rev.sex = b.sex; rev.heightM = b.height_m.value; rev.girths = {};
+    SITES.forEach(function (s) { rev.girths[s] = b.girths[s].value_m; });
+    rev.bf = null;
+    if (!rev.refTouched) rev.ref = rev.sex === 'F' ? null : 20;
+  }
+  function setHint(id, text) { var el = $(id); el.hidden = !text; el.className = 'hint' + (text ? ' err' : ''); el.textContent = text || ''; }
+  function writeRevFields() {
+    var u = state.units;
+    setRadio('revM', 'revF', rev.sex !== 'F');
+    if (isNum(rev.heightM)) setHeightFields('rh', rev.heightM); else { $('rhFt').value = ''; $('rhIn').value = ''; $('rhCm').value = ''; }
+    SITES.forEach(function (s) { $('rg_' + s).value = isNum(rev.girths[s]) ? fmt.lenField(rev.girths[s], u) : ''; $('rg_' + s).removeAttribute('aria-invalid'); });
+    Array.prototype.forEach.call(document.querySelectorAll('.rgu'), function (el) { el.textContent = u === 'metric' ? 'cm' : 'in'; });
+    $('rBf').value = isNum(rev.bf) ? String(rev.bf) : '';
+    $('rRef').value = isNum(rev.ref) ? String(rev.ref) : '';
+    ['rhFt', 'rhIn', 'rhCm', 'rBf', 'rRef'].forEach(function (id) { $(id).removeAttribute('aria-invalid'); });
+    rev.err = { h: false, bf: false, ref: false, girths: [] };
+    setHint('rhHint', ''); setHint('rBfHint', ''); setHint('rRefHint', '');
+  }
+  function readRevFields() {
+    var u = state.units;
+    var h = readHeight('rh');
+    var hBad = isNaN(h);
+    ['rhFt', 'rhIn', 'rhCm'].forEach(function (id) { $(id).setAttribute('aria-invalid', hBad ? 'true' : 'false'); });
+    rev.heightM = isNum(h) ? h : null;
+    rev.err = { h: hBad, bf: false, ref: false, girths: [] };
+    SITES.forEach(function (s) {
+      var v = parseNum($('rg_' + s).value);
+      var ok = v === null || (isNum(v) && v > 0);
+      $('rg_' + s).setAttribute('aria-invalid', ok ? 'false' : 'true');
+      if (!ok) rev.err.girths.push(s);
+      rev.girths[s] = isNum(v) && v > 0 ? (u === 'metric' ? v / 100 : v * IN) : null;
+    });
+    // Body fat and the assumed ANSUR reference use the same range as the main panel: 2-60%.
+    var bf = parseNum($('rBf').value), ref = parseNum($('rRef').value);
+    var bfOk = bf === null || (isNum(bf) && bf >= BF_LIMITS.min && bf <= BF_LIMITS.max);
+    var refOk = ref === null || (isNum(ref) && ref >= BF_LIMITS.min && ref <= BF_LIMITS.max);
+    $('rBf').setAttribute('aria-invalid', bfOk ? 'false' : 'true');
+    $('rRef').setAttribute('aria-invalid', refOk ? 'false' : 'true');
+    rev.err.bf = !bfOk; rev.err.ref = !refOk;
+    rev.bf = bfOk && bf !== null ? bf : null;
+    rev.ref = refOk && ref !== null ? ref : null;
+    setHint('rhHint', hBad ? H_LIMITS[u].text : '');
+    setHint('rBfHint', bfOk ? '' : BF_LIMITS.text);
+    setHint('rRefHint', refOk ? '' : 'Enter a reference body fat between 2 and 60%, or leave it empty.');
+  }
+  function renderReverse() {
+    var u = state.units, b = M.byId[state.buildId], err = rev.err || { girths: [] };
+    var srcTxt = rev.source === 'build' && rev.synced ? 'Filled from ' + b.name + ' at ' + fmt.height(rev.heightM, u) + '. It follows the build until you edit a field.'
+      : rev.source === 'build' ? 'Filled from ' + b.name + '.'
+      : rev.source === 'ansur2_m_p50' ? 'Filled with the ANSUR II 50th percentile man (each value its own median).'
+      : rev.source === 'ansur2_f_p50' ? 'Filled with the ANSUR II 50th percentile woman (each value its own median).'
+      : 'Your own numbers.';
+    $('revSource').textContent = srcTxt;
+    $('revRefNote').textContent = rev.sex === 'F'
+      ? 'ANSUR II has no body-fat data. No reference fat exists here for women, so estimate B is not adjusted for body fat unless you type a reference.'
+      : 'ANSUR II has no body-fat data. The 20% default for men is an assumption with no source. Estimate B is adjusted only when both body fat and this reference are set.';
+
+    var res = M.reverse({ sex: rev.sex, heightM: rev.heightM, girths: rev.girths, bodyFatPct: rev.bf, refFatPct: rev.ref });
+    var out = '';
+    if (!res.regression) {
+      // Say what each missing or bad field needs.
+      var msgs = [];
+      if (err.h) msgs.push(H_LIMITS[u].text);
+      else if (res.missing.indexOf('height') >= 0) msgs.push('Enter a height.');
+      var bad = err.girths || [];
+      var empty = res.missing.filter(function (s) { return s !== 'height' && bad.indexOf(s) < 0; });
+      if (empty.length) msgs.push('Enter the missing girth' + (empty.length > 1 ? 's' : '') + ': ' + empty.map(function (s) { return SITE[s].lc; }).join(', ') + '.');
+      if (bad.length) msgs.push('Girths must be positive numbers: ' + bad.map(function (s) { return SITE[s].lc; }).join(', ') + '.');
+      out = '<p class="hint err">' + esc(msgs.join(' ')) + ' Both estimates need a height and all seven girths.</p>';
+      $('revOut').innerHTML = out; return;
+    }
+    var A = res.regression, B = res.frustum, sdA = A.value * A.rmsePct / 100, sdB = B.value * B.sdPct / 100;
+    var who = res.sex === 'F' ? 'women' : 'men';
+    var unitTxt = u === 'metric' ? 'kg' : 'lb';
+    var sign = function (kg) { return (kg > 0 ? '+' : '') + fmt.mass(kg, u); };
+    var bNote = err.bf ? 'The body fat you typed is outside 2-60%, so it was not used and no density adjustment was made.'
+      : err.ref ? 'The reference body fat you typed is outside 2-60%, so no density adjustment was made.'
+      : B.densityNote;
+    out += '<div class="rcards">' +
+      '<div class="rcard"><p class="k">A &middot; Girth regression</p><p class="mid tnum">' + esc(fmt.massNum(A.value, u)) + '<small>' + unitTxt + '</small></p>' +
+      '<p class="tnum">&plusmn; ' + esc(fmt.mass(sdA, u)) + ' (1 SD, ' + fmt.num(A.rmsePct, 2) + '% on ANSUR II ' + who + '). On those soldiers, 90% were within ' + esc(sign(A.resid90[0])) + ' to ' + esc(sign(A.resid90[1])) + ' of this fit.</p>' +
+      '<p>' + chip('estimate') + ' ANSUR II log-linear fit on height and the seven girths.</p></div>' +
+      '<div class="rcard"><p class="k">B &middot; Volume &times; density</p><p class="mid tnum">' + esc(fmt.massNum(B.value, u)) + '<small>' + unitTxt + '</small></p>' +
+      '<p class="tnum">&plusmn; ' + esc(fmt.mass(sdB, u)) + ' (1 SD, ' + fmt.num(B.sdPct, 2) + '%; 95% within ' + fmt.num(B.p95Pct, 1) + '%, on ANSUR II ' + who + '). Volume ' + fmt.num(B.volumeM3 * 1000, 1) + ' L &times; ' + fmt.num(B.k, 1) + ' kg/m&sup3;' + (B.densityFactor !== 1 ? ' &times; ' + B.densityFactor.toFixed(3) : '') + '.</p>' +
+      '<p>' + chip('estimate') + ' ' + rich(bNote) + '</p></div></div>';
+
+    // number line
+    var stated = null;
+    if (rev.source === 'build' && rev.synced && last) stated = { v: last.weight.value, st: last.weight.status };
+    var lo = Math.min(A.value - 2 * sdA, B.value - 2 * sdB, stated ? stated.v : Infinity);
+    var hi = Math.max(A.value + 2 * sdA, B.value + 2 * sdB, stated ? stated.v : -Infinity);
+    var pad = (hi - lo) * 0.08; lo -= pad; hi += pad;
+    var X = function (v) { return (100 * (v - lo) / (hi - lo)); };
+    var nl = '<div class="nline" aria-hidden="true"><div class="base"></div>' +
+      '<div class="band a" style="left:' + X(A.value - sdA) + '%;width:' + (X(A.value + sdA) - X(A.value - sdA)) + '%"></div>' +
+      '<div class="band b" style="left:' + X(B.value - sdB) + '%;width:' + (X(B.value + sdB) - X(B.value - sdB)) + '%"></div>' +
+      '<div class="dot a" style="left:' + X(A.value) + '%"></div><div class="dot b" style="left:' + X(B.value) + '%"></div>' +
+      '<div class="lab a" style="left:' + Math.min(92, Math.max(8, X(A.value))) + '%">A ' + esc(fmt.mass(A.value, u)) + '</div>' +
+      '<div class="lab b" style="left:' + Math.min(92, Math.max(8, X(B.value))) + '%">B ' + esc(fmt.mass(B.value, u)) + '</div>' +
+      (stated ? '<div class="stated" style="left:' + X(stated.v) + '%"><span' + (X(stated.v) > 60 ? ' style="left:auto;right:4px"' : '') + '>build</span></div>' : '') +
+      '</div>';
+    var ag = res.agreement;
+    var verdict = ag.verdict === 'within1' ? 'They agree within one combined SD' : ag.verdict === 'within2' ? 'They agree within two combined SDs' : 'They disagree by more than two combined SDs';
+    var agTxt = '<p class="verdict">A and B differ by <b class="tnum">' + esc(fmt.mass(Math.abs(ag.diffKg), u)) + '</b> (' + fmt.num(Math.abs(ag.diffPct), 1) + '%). ' + verdict + ' (' + fmt.num(ag.combinedSdPct, 1) + '%, from errors on ANSUR II soldiers).' +
+      (stated ? ' The build\'s own weight is ' + esc(fmt.mass(stated.v, u)) + ' (' + esc(stated.st) + ').' : '') + '</p>';
+    var circ = rev.source === 'build' && rev.synced && SITES.some(function (s) { return last && last.girths[s].kind === 'template'; });
+    if (circ) agTxt += '<p class="small">Some of these girths were filled from a template using this build\'s weight, so a match with the build\'s weight is partly circular.</p>';
+    out += '<div class="agree">' + nl + agTxt + '</div>';
+
+    if (res.warnings.length) {
+      out += '<ul class="warns">' + res.warnings.map(function (w) {
+        var name = w.site === 'height' ? 'Height' : w.site === 'bmi' ? 'BMI from estimate A' : w.site === 'weight' ? 'Estimate A' : SITE[w.site].label;
+        var val = w.site === 'height' ? fmt.height(w.value, u) : w.site === 'bmi' ? fmt.bmi(w.value) : w.site === 'weight' ? fmt.mass(w.value, u) : fmt.len(w.value, u);
+        var lim = w.site === 'height' ? fmt.height(w.limit, u) : w.site === 'bmi' ? fmt.num(w.limit, 2) : w.site === 'weight' ? fmt.mass(w.limit, u) : fmt.len(w.limit, u);
+        return '<li>' + esc(name) + ' ' + esc(val) + ' is ' + (w.kind === 'above' ? 'above the largest' : 'below the smallest') + ' in ANSUR II ' + esc(w.who) + ' (' + esc(lim) + ').</li>';
+      }).join('') + '<li>Outside the ANSUR II range both estimates are extrapolations. The error figures above come from soldiers inside it; the real error here is unknown and probably larger.</li></ul>';
+    }
+    $('revOut').innerHTML = out;
+  }
+
+  // ---------- sources ----------
+  function linkHtml(s) {
+    if (s.url) return '<li><a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(s.title) + '</a></li>';
+    return '<li>' + esc(s.title) + ' <span class="hint">(project working file, not online)</span></li>';
+  }
+  function renderSources(r) {
+    var b = r.build, html = '';
+    // Height and weight citations
+    var seen = {}, cites = [];
+    (b.height_m.cite || []).concat(b.weight_kg.cite || []).forEach(function (c) { var k = c.url || c.file || c.title; if (!seen[k]) { seen[k] = 1; cites.push(c); } });
+    if (cites.length) html += '<div class="src-group"><h4>Height and weight</h4><ul class="facts"><li class="fact"><ul>' + cites.map(linkHtml).join('') + '</ul></li></ul></div>';
+
+    // Facts behind this build's numbers, with what each was used for
+    var uses = {};
+    function use(k, what) { if (!k || !F[k]) return; (uses[k] = uses[k] || []); if (uses[k].indexOf(what) < 0) uses[k].push(what); }
+    (b.height_m.source_keys || []).forEach(function (k) { use(k, 'height'); });
+    (b.weight_kg.source_keys || []).forEach(function (k) { use(k, 'weight'); });
+    ((b.body_fat_pct || {}).source_keys || []).forEach(function (k) { use(k, 'body fat'); });
+    SITES.forEach(function (s) {
+      var g = r.girths[s], nm = SITE[s].lc;
+      if (g.entry && g.entry.source_keys) g.entry.source_keys.forEach(function (k) { use(k, nm + (g.kind === 'template' ? ' (template)' : '')); });
+      if (g.predictorFact) use(g.predictorFact, nm + ' (template)');
+    });
+    if (b.template) use('build_templates_rule', 'template choice');
+    var buildKeys = Object.keys(uses);
+    var sx = r.sex === 'F' ? 'female' : 'male';
+    var model = [
+      ['ansur2_girth_scaling_' + sx, 'girth scaling law'],
+      ['ansur_geometric_law_test', 'error of the scaling law'],
+      ['ansur_girth_allometry', 'average-soldier mode'],
+      ['ansur2_dataset', 'average man comparison'],
+      ['kouri1995_ffmi_natural_limit', 'FFMI reference'],
+      ['kouri1995_normalization_constant', 'FFMI height adjustment'],
+      ['ffmi_athletes', 'FFMI scale'],
+      ['ffmi_population_norms', 'FFMI scale'],
+      ['ffmi_obesity_caveat', 'FFMI caveat'],
+      ['ansur2_weight_regression_' + (rev.sex === 'F' ? 'female' : 'male'), 'reverse estimate A'],
+      ['ansur_frustum_volume_model', 'reverse estimate B'],
+      ['siri_equation', 'reverse density'],
+      ['density_from_fat_table', 'reverse density']
+    ];
+    var modelKeys = [];
+    model.forEach(function (m) { if (F[m[0]] && buildKeys.indexOf(m[0]) < 0) { use(m[0], m[1]); if (modelKeys.indexOf(m[0]) < 0) modelKeys.push(m[0]); } });
+
+    function factHtml(k) {
+      var f = F[k], srcs = f.sources || [];
+      return '<li class="fact"><div class="ft">' + chip(f.status === 'disputed' ? 'reported' : f.status, f.status) + '<b>' + rich(f.label) + '</b></div>' +
+        '<span class="use">Used for: ' + esc(uses[k].join('; ')) + '</span>' +
+        (srcs.length ? '<ul>' + srcs.map(linkHtml).join('') + '</ul>' : '') +
+        (f.notes ? '<details><summary>Research notes and fact-check</summary><p>' + rich(f.notes) + '</p>' + (f.verify && f.verify.applied && f.verify.applied.length ? '<p>Corrections made after fact-checking: ' + rich(f.verify.applied.join(' ')) + '</p>' : '') + '</details>' : '') +
+        '</li>';
+    }
+    if (buildKeys.length) html += '<div class="src-group"><h4>Facts behind this build</h4><ul class="facts">' + buildKeys.map(factHtml).join('') + '</ul></div>';
+    html += '<div class="src-group"><h4>Model and references</h4><ul class="facts">' + modelKeys.map(factHtml).join('') + '</ul></div>';
+    $('sources').innerHTML = html;
+  }
+
+  // ---------- main render ----------
+  // Read only the field the user changed. Re-reading the rounded height fields on every input
+  // would replace the reference height with its rounded display value.
+  function readMain(sourceId) {
+    var errs = state.errs || (state.errs = { h: false, w: false, bf: false });
+    var u = state.units;
+    if (sourceId === 'hFt' || sourceId === 'hIn' || sourceId === 'hCm') {
+      var h = readHeight('h');
+      var bad = isNaN(h);
+      ['hFt', 'hIn', 'hCm'].forEach(function (id) { $(id).setAttribute('aria-invalid', bad ? 'true' : 'false'); });
+      errs.h = bad;
+      if (!bad) {
+        var H0 = M.byId[state.buildId].height_m.value;
+        // Within display rounding of the reference (0.05 in or 0.05 cm): keep the reference itself.
+        var tol = u === 'metric' ? 0.0005 : 0.05 * IN;
+        state.heightM = h === null || Math.abs(h - H0) <= tol + 1e-9 ? null : h;
+      }
+    } else if (sourceId === 'wIn') {
+      var w = parseNum($('wIn').value);
+      var wkg = isNum(w) ? (u === 'metric' ? w : w * LB) : w;
+      var wBad = w !== null && !(isNum(wkg) && wkg > 0 && wkg <= W_LIMITS[u].max * (1 + 1e-9));
+      $('wIn').setAttribute('aria-invalid', wBad ? 'true' : 'false');
+      errs.w = wBad;
+      if (!wBad) state.weightKg = w === null ? null : wkg;
+    } else if (sourceId === 'bfIn') {
+      var bf = parseNum($('bfIn').value);
+      var bfBad = bf !== null && !(isNum(bf) && bf >= BF_LIMITS.min && bf <= BF_LIMITS.max);
+      $('bfIn').setAttribute('aria-invalid', bfBad ? 'true' : 'false');
+      errs.bf = bfBad;
+      if (!bfBad) state.bodyFatPct = bf;
+    }
+    return errs;
+  }
+  function clearErrs() { state.errs = { h: false, w: false, bf: false }; }
+
+  function renderHints(r, errs) {
+    var u = state.units, b = r.build;
+    errs = errs || {};
+    var hRef = fmt.height(b.height_m.value, u) + ' (' + b.height_m.status + ')';
+    $('hHint').className = 'hint' + (errs.h ? ' err' : '');
+    $('hHint').innerHTML = errs.h ? esc(H_LIMITS[u].text)
+      : r.height.atRef ? 'The build\'s own height: ' + esc(hRef) + '.'
+      : 'Reference: ' + esc(hRef) + '. <button type="button" class="linkbtn" id="hReset">Reset</button>';
+    var auto = isNum(state.weightKg) ? fmt.massField(r.weight.ref * Math.pow(r.height.value / r.height.ref, 3), u) : fmt.massField(r.weight.value, u);
+    $('wIn').placeholder = 'auto: ' + auto;
+    $('wHint').className = 'hint' + (errs.w ? ' err' : '');
+    $('wHint').innerHTML = errs.w ? esc(W_LIMITS[u].text)
+      : isNum(state.weightKg) ? 'Your weight. Girths follow &radic;(W/H). <button type="button" class="linkbtn" id="wReset">Clear</button>'
+      : 'Empty: the build\'s weight, scaled with height.';
+    var bfd = b.body_fat_pct || {};
+    $('bfIn').placeholder = isNum(bfd.value) ? String(bfd.value) : '15';
+    $('bfHint').className = 'hint' + (errs.bf ? ' err' : '');
+    $('bfHint').innerHTML = errs.bf ? esc(BF_LIMITS.text)
+      : isNum(state.bodyFatPct) ? 'Your input. <button type="button" class="linkbtn" id="bfReset">Use default</button>'
+      : isNum(bfd.value) ? 'Empty: ' + esc(fmt.num(bfd.value, 1)) + '% from the data (' + esc(bfd.status) + (bfd.method || isNum(bfd.sd_pct) ? '; ' + rich(withSd(bfd.method, bfd.sd_pct, 'pct', u)) : '') + ').'
+      : 'Not known for this build. Empty: 15% is assumed (estimate).';
+  }
+
+  function renderOptsSummary() {
+    $('optsSum').textContent = (state.mode === 'ansur' ? 'Average soldier' : 'Same shape') + ' \u00b7 ' + (state.showBeyond ? 'showing' : 'hiding') + ' girths beyond human data';
+  }
+
+  function render(errs) {
+    errs = errs || state.errs;
+    renderOptsSummary();
+    var r = M.compute({ buildId: state.buildId, heightM: state.heightM, weightKg: state.weightKg, bodyFatPct: state.bodyFatPct, mode: state.mode, showBeyond: state.showBeyond });
+    last = r;
+    renderHead(r);
+    renderReadout(r);
+    renderHints(r, errs);
+    renderChart(r);
+    renderBody(r);
+    renderCompare(r);
+    renderNotes(r);
+    if (rev.synced) { fillRevFromResult(r); writeRevFields(); }
+    renderReverse();
+    renderSources(r);
+  }
+
+  function setActive(site) {
+    if (state.active === site) return;
+    state.active = site;
+    Array.prototype.forEach.call(document.querySelectorAll('[data-site]'), function (el) {
+      if (el.tagName === 'INPUT') return;
+      el.classList.toggle('on', el.getAttribute('data-site') === site);
+    });
+  }
+
+  // ---------- events ----------
+  // The input panel sticks beside the sheet only when all of it fits in the window;
+  // otherwise it scrolls with the page, so nothing is hidden behind an inner scroll.
+  function updateStick() {
+    var p = document.querySelector('.panel');
+    var fits = window.innerWidth >= 980 && p.offsetHeight <= window.innerHeight - 32;
+    p.classList.toggle('stick', fits);
+  }
+
+  // Radio groups made of two buttons: one tab stop; arrow keys, Home and End move and select.
+  function wireRadioGroup(group) {
+    var btns = Array.prototype.slice.call(group.querySelectorAll('[role="radio"]'));
+    btns.forEach(function (btn, i) {
+      btn.addEventListener('keydown', function (ev) {
+        var k = ev.key, j = null;
+        if (k === 'ArrowRight' || k === 'ArrowDown') j = (i + 1) % btns.length;
+        else if (k === 'ArrowLeft' || k === 'ArrowUp') j = (i - 1 + btns.length) % btns.length;
+        else if (k === 'Home') j = 0;
+        else if (k === 'End') j = btns.length - 1;
+        if (j === null) return;
+        ev.preventDefault();
+        btns[j].focus();
+        btns[j].click();
+      });
+    });
+  }
+
+  function init() {
+    $('spec').textContent = DATA.builds.length + ' builds · ' + Object.keys(DATA.facts).length + ' sourced facts · data compiled ' + DATA.meta.compiled;
+    $('foot').textContent = 'Every number on this page comes from data/builds.json (compiled ' + DATA.meta.compiled + ') or from the formulas above. ' +
+      'The data file stores everything in SI units (metres and kilograms, girths in metres); the page converts for display, with 1 in = 2.54 cm and 1 lb = 0.45359237 kg.';
+    buildRevFields();
+    drawTape();
+    showUnits();
+    fillSelect('');
+    $('buildSelect').value = state.buildId;
+    fillMainFields();
+    render();
+    updateStick();
+
+    window.addEventListener('resize', function () { drawTape(); updateStick(); });
+    $('opts').addEventListener('toggle', updateStick);
+    if (window.ResizeObserver) new ResizeObserver(updateStick).observe(document.querySelector('.panel'));
+    $('buildSearch').addEventListener('input', function () { fillSelect(this.value); });
+    $('buildSearch').addEventListener('keydown', function (ev) {
+      if (ev.key === 'Enter' && this.value.trim() && firstMatch) { ev.preventDefault(); setBuild(firstMatch); }
+    });
+    $('buildSelect').addEventListener('change', function () { setBuild(this.value); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-units]'), function (btn) {
+      btn.addEventListener('click', function () {
+        if (state.units === btn.getAttribute('data-units')) return;
+        state.units = btn.getAttribute('data-units'); save('bc.units', state.units);
+        showUnits(); fillMainFields(); writeRevFields(); render();
+      });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[role="radiogroup"]'), wireRadioGroup);
+    ['hFt', 'hIn', 'hCm', 'wIn', 'bfIn'].forEach(function (id) {
+      $(id).addEventListener('input', function () { render(readMain(id)); });
+    });
+    document.addEventListener('click', function (ev) {
+      var t = ev.target;
+      if (t.id === 'hReset') { state.heightM = null; fillMainFields(); render(); }
+      if (t.id === 'wReset') { state.weightKg = null; fillMainFields(); render(); }
+      if (t.id === 'bfReset') { state.bodyFatPct = null; fillMainFields(); render(); }
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('input[name="mode"]'), function (el) {
+      el.addEventListener('change', function () { state.mode = this.value; render(); });
+    });
+    $('showBeyond').addEventListener('change', function () { state.showBeyond = this.checked; render(); });
+
+    // linked highlighting between the chart, the figure and the bars
+    var linked = ['girths', 'body', 'cmp'].map($);
+    var inLinked = function (node) { return !!node && linked.some(function (el) { return el.contains(node); }); };
+    linked.forEach(function (el) {
+      el.addEventListener('mouseover', function (ev) { var n = ev.target.closest('[data-site]'); if (n) setActive(n.getAttribute('data-site')); });
+      el.addEventListener('mouseleave', function (ev) {
+        if (inLinked(ev.relatedTarget)) return;
+        var f = inLinked(document.activeElement) && document.activeElement.closest('[data-site]');
+        setActive(f ? f.getAttribute('data-site') : null);
+      });
+      el.addEventListener('focusin', function (ev) { var n = ev.target.closest('[data-site]'); if (n) setActive(n.getAttribute('data-site')); });
+      el.addEventListener('focusout', function (ev) { if (!inLinked(ev.relatedTarget)) setActive(null); });
+      el.addEventListener('click', function (ev) { var n = ev.target.closest('[data-site]'); if (n) setActive(n.getAttribute('data-site')); });
+    });
+
+    // reverse
+    $('revFromBuild').addEventListener('click', function () { rev.synced = true; rev.source = 'build'; render(); });
+    $('revAnsurM').addEventListener('click', function () { fillRevFromAnsur('ansur2_m_p50'); writeRevFields(); renderReverse(); renderSources(last); });
+    $('revAnsurF').addEventListener('click', function () { fillRevFromAnsur('ansur2_f_p50'); writeRevFields(); renderReverse(); renderSources(last); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-sex]'), function (btn) {
+      btn.addEventListener('click', function () {
+        if (rev.sex === btn.getAttribute('data-sex')) return;
+        rev.sex = btn.getAttribute('data-sex'); rev.synced = false; rev.source = 'custom';
+        if (!rev.refTouched) { rev.ref = rev.sex === 'F' ? null : 20; $('rRef').value = isNum(rev.ref) ? String(rev.ref) : ''; }
+        setRadio('revM', 'revF', rev.sex !== 'F');
+        renderReverse(); renderSources(last);
+      });
+    });
+    $('revGrid').addEventListener('input', function (ev) {
+      if (ev.target.id === 'rRef') rev.refTouched = true;
+      rev.synced = false; rev.source = 'custom';
+      readRevFields(); renderReverse();
+    });
+  }
+
+  init();
+})();
+</script>
