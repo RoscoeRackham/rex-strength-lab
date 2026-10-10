@@ -1,0 +1,1098 @@
+{
+ "facts": [
+  {
+   "key": "aw_waf_table_dimensions",
+   "label": "World Armwrestling Federation regulation table: dimensions and construction",
+   "status": "verified",
+   "value_si": 1.016,
+   "unit_si": "m",
+   "display": "Stand-up table 101.6 cm (40 in) from floor to top; top 91.4 cm across × 66.0 cm deep; elbow pads 17.8 cm square, 5.1 cm thick, set 5.1 cm from their edge; touch (pin) pads 25.4 × 10.2 cm; hand pegs 2.5 cm across, 15.2 cm high; top normally 1.9 cm (3/4 in) plywood; frame of steel tubing no wider than 5.1 cm",
+   "sources": [
+    {
+     "title": "WAF: Armwrestling Table (official rules page)",
+     "url": "https://www.waf-armwrestling.com/armwrestling-rules/armwrestling-table/"
+    }
+   ],
+   "notes": "Confirmed on the WAF page (fetched). The sit-down table is 71.1 cm. The page gives no centre-to-centre spacing for the elbow pads (see aw_elbow_pad_spacing). Equipment makers quote 104 cm; the WAF page says 101.6 cm.",
+   "category": "Arm wrestling and wrestling"
+  },
+  {
+   "key": "aw_elbow_pad_spacing",
+   "label": "Distance between elbow-pad centres on a WAF table",
+   "status": "estimate",
+   "value_si": 0.38,
+   "unit_si": "m",
+   "display": "~38 cm (computed from the WAF dimensions)",
+   "sources": [
+    {
+     "title": "WAF: Armwrestling Table",
+     "url": "https://www.waf-armwrestling.com/armwrestling-rules/armwrestling-table/"
+    }
+   ],
+   "notes": "My arithmetic, not a published value: 66.0 cm depth − 2 × (5.1 cm edge gap + 17.8/2 cm half-pad) = 38.0 cm. Assumes the 5.1 cm is measured to the pad's outer edge. Used only to place the bodies across the table.",
+   "category": "Arm wrestling and wrestling"
+  },
+  {
+   "key": "aw_pin_and_elbow_foul_rules",
+   "label": "Arm wrestling: what counts as a pin, and the elbow foul",
+   "status": "verified",
+   "display": "Pin: the fingers or wrist go below the pin line (touching the pin pad is not required). Fouls include the elbow losing contact with the pad (up, or off the front, back or sides). Any two fouls lose the match.",
+   "sources": [
+    {
+     "title": "Canadian Armwrestling Federation: Rules (summarized), Sept 2023",
+     "url": "https://cawf.ca/rulessummarized"
+    }
+   ],
+   "notes": "Confirmed on the CAWF page (fetched). The page does not say whether it follows WAF wording word for word. The WAF rulebook PDFs (armsport.sk mirrors) were blocked, so the WAF text itself was not seen.",
+   "category": "Arm wrestling and wrestling"
+  },
+  {
+   "key": "aw_humeral_fracture_series_ogawa_1997",
+   "label": "Humeral shaft fractures from arm wrestling: 30-case series",
+   "status": "verified",
+   "value_si": 30,
+   "unit_si": "cases",
+   "display": "30 humeral shaft fractures from arm wrestling (28 men, 2 women; age 15-60, mean 30): all spiral; 23% with a medial butterfly fragment, 23% with radial nerve palsy; all happened while full force was being exerted",
+   "sources": [
+    {
+     "title": "Ogawa K, Ui M. Humeral shaft fracture sustained during arm wrestling: report on 30 cases and review of the literature. J Trauma 1997;42(2):243-6 (PubMed 9042875)",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/9042875/"
+    }
+   ],
+   "notes": "Abstract confirmed through NCBI E-utilities (efetch, PMID 9042875), because the PubMed page needs cookies. The authors attribute the fractures to the shoulder internal rotators switching suddenly from maximal concentric to eccentric contraction, which produces an intense rotational force. Context only: Rex and Ollie are indestructible.",
+   "category": "Arm wrestling and wrestling"
+  },
+  {
+   "key": "aw_humeral_torque_pitchers_sabick_2004",
+   "label": "Peak torque about the humerus's long axis in professional pitchers",
+   "status": "verified",
+   "value_si": 92,
+   "unit_si": "N m",
+   "low_si": 76,
+   "high_si": 108,
+   "display": "92 ± 16 N·m (25 professional pitchers in games), averaging 48% of the humerus's theoretical torsional strength",
+   "sources": [
+    {
+     "title": "Sabick MB et al. Humeral torque in professional baseball pitchers. Am J Sports Med 2004;32(4):892-8 (PubMed 15150034)",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/15150034/"
+    },
+    {
+     "title": "Boise State ScholarWorks record of the same paper",
+     "url": "https://scholarworks.boisestate.edu/mecheng_facpubs/27/"
+    }
+   ],
+   "notes": "Abstract confirmed on both pages. low/high are mean ± 1 SD.",
+   "category": "Arm wrestling and wrestling"
+  },
+  {
+   "key": "aw_humerus_torsional_strength",
+   "label": "Twist that breaks a human upper-arm bone (humerus)",
+   "status": "estimate",
+   "value_si": 190,
+   "unit_si": "N m",
+   "low_si": 25,
+   "high_si": 190,
+   "display": "~190 N·m theoretical for a healthy adult humerus; drilled cadaver humeri failed at 25-31 N·m",
+   "sources": [
+    {
+     "title": "Sabick et al. 2004 (92 N·m = 48% of theoretical strength)",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/15150034/"
+    },
+    {
+     "title": "Dini AA et al. 2021, Arthroscopy, Sports Medicine, and Rehabilitation: humeri with tenodesis drill holes failed at 31.35 and 25.08 N·m (PubMed; PMC7879170)",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/33615250/"
+    }
+   ],
+   "notes": "192 N·m is arithmetic (92 / 0.48), a theoretical value for healthy bone, not a measured failure. The only measured failures here are Dini et al.: 31.35 N·m (suprapectoral holes) and 25.08 N·m (subpectoral). In the 31 N·m group 6 of 8 specimens broke in the shaft, away from the hole, so about 30 N·m is close to what those cadaver bones actually took. The page shows both numbers. A textbook figure of 60 N·m (Kane & Sternheim) could not be fetched (403) and is not used.",
+   "category": "Arm wrestling and wrestling"
+  },
+  {
+   "key": "aw_internal_rotation_torque_lo_2013",
+   "label": "Shoulder internal-rotation torque in arm-wrestling position (ordinary young men)",
+   "status": "verified",
+   "value_si": 79.55,
+   "unit_si": "N m",
+   "low_si": 66.32,
+   "high_si": 86.02,
+   "display": "Winners 79.6 ± 19.3 N·m concentric and 86.0 ± 21.3 N·m eccentric at 45°/s; losers 66.3 ± 11.5 and 71.2 ± 14.6 N·m (30 men, 66 kg, 1.74 m; Biodex)",
+   "sources": [
+    {
+     "title": "Lo K-C, Wu H-W, Hong M-K, Wang L-H. Armwrestling exercise and shoulder internal rotation strength. ISBS 2013 proceedings",
+     "url": "https://ojs.ub.uni-konstanz.de/cpa/article/view/5698"
+    }
+   ],
+   "notes": "Read in the full PDF (Table 1). Elbow at 90° in the arm-wrestling start position; the body was not strapped down. These are untrained university volunteers, not elite athletes.",
+   "category": "Arm wrestling and wrestling"
+  },
+  {
+   "key": "aw_elite_hook_force_kamayev_2024",
+   "label": "Hand force of elite arm wrestlers in a hook-pull test",
+   "status": "verified",
+   "value_si": 818.9,
+   "unit_si": "N",
+   "low_si": 459,
+   "high_si": 818.9,
+   "display": "Up to 83.5 kgf (819 N), right arm, a 90 kg multiple world champion; 75.6 kgf (741 N) for a 136 kg champion; 46.8-49.4 kgf for a 62 kg champion",
+   "sources": [
+    {
+     "title": "Kamayev O et al. Features of the manifestation of strength and speed-strength abilities of elite armwrestlers of different weight categories. Slobozhanskyi Herald of Science and Sport 2024;28(2) (Table 1)",
+     "url": "https://shssjournal.com/index.php/journal/article/view/153"
+    }
+   ],
+   "notes": "Read in the PDF (https://shssjournal.com/index.php/journal/article/download/153/41/349). Measured with a Kern FL1K strain-gauge dynamometer on an armwrestling table. The 'hook' pulls a handle toward the chest, so it is not the pure sideways twist of a match. Used only to bound the arm-force share.",
+   "category": "Arm wrestling and wrestling"
+  },
+  {
+   "key": "aw_force_share",
+   "label": "Arm-wrestling force at the hand as a share of full strength",
+   "status": "estimate",
+   "value_si": 0.25,
+   "unit_si": "1",
+   "low_si": 0.1,
+   "high_si": 0.4,
+   "display": "25% of full strength (plausible 10–40%), sideways at the clasped hands, both muscle models",
+   "sources": [
+    {
+     "title": "Sabick et al. 2004 (humerus theoretical strength)",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/15150034/"
+    },
+    {
+     "title": "Lo et al. 2013 (ordinary men's internal-rotation torque)",
+     "url": "https://ojs.ub.uni-konstanz.de/cpa/article/view/5698"
+    },
+    {
+     "title": "Kamayev et al. 2024 (elite hook force)",
+     "url": "https://shssjournal.com/index.php/journal/article/view/153"
+    }
+   ],
+   "notes": "Estimate. A share of full strength has to come from the same person, and no study found reports arm-wrestling (or shoulder internal-rotation) force together with a whole-body lift for the same subjects. Lo et al.'s ordinary men make about 200–240 N at the hand; an untrained man's deadlift is roughly 1–2× body mass, about 650–1,300 N (an assumption), which gives roughly 0.15–0.37. The sim uses 0.25 and the page says the range is 10–40%. One share serves both modes because the contest is mostly isometric, so comic mode is never weaker than real.",
+   "category": "Arm wrestling and wrestling"
+  },
+  {
+   "key": "anthro_forearm_center_of_grip_ansur2",
+   "label": "Elbow-to-grip length (US Army men, ANSUR II)",
+   "status": "verified",
+   "value_si": 0.349,
+   "unit_si": "m",
+   "low_si": 0.331,
+   "high_si": 0.367,
+   "display": "Forearm-center of grip length 34.90 cm (SD 1.80) for men whose mean stature is 175.62 cm, i.e. 0.199 of height",
+   "sources": [
+    {
+     "title": "Gordon CC et al. 2012 Anthropometric Survey of U.S. Army Personnel: Methods and Summary Statistics, NATICK/TR-15/007 (2014), dimension 37 and 75",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+    }
+   ],
+   "notes": "Measured horizontally from the olecranon (back of the elbow) to the centre of a gripped 1-1/4 in dowel, elbow at 90°. low/high are ±1 SD. 34.90/175.62 = 0.1987 (my arithmetic).",
+   "category": "Arm wrestling and wrestling"
+  },
+  {
+   "key": "anthro_radiale_stylion_ansur2",
+   "label": "Forearm length, elbow to wrist (US Army men, ANSUR II)",
+   "status": "verified",
+   "value_si": 0.2679,
+   "unit_si": "m",
+   "display": "Radiale-stylion length 26.79 cm (SD 1.54), i.e. 0.1525 of the 175.62 cm mean stature",
+   "sources": [
+    {
+     "title": "Gordon CC et al. NATICK/TR-15/007 (2014), dimension 67",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+    }
+   ],
+   "notes": "Used as the elbow-wrist length for the Dempster/Winter forearm+hand inertia.",
+   "category": "Arm wrestling and wrestling"
+  },
+  {
+   "key": "anthro_forearm_hand_inertia",
+   "label": "Forearm + hand segment: mass, centre of mass, radius of gyration",
+   "status": "verified",
+   "value_si": 0.022,
+   "unit_si": "1",
+   "display": "2.2% of body mass; centre of mass 0.682, radius of gyration about the elbow 0.827 of the elbow-wrist length",
+   "sources": [
+    {
+     "title": "BMClab (M. Duarte): Dempster body-segment parameters as adapted by Winter (2009), data table",
+     "url": "https://raw.githubusercontent.com/BMClab/BMC/master/data/BSP_DempsterWinter.txt"
+    },
+    {
+     "title": "BMClab notebook: Body segment parameters",
+     "url": "https://nbviewer.jupyter.org/github/demotu/BMC/blob/master/notebooks/BodySegmentParameters.ipynb"
+    }
+   ],
+   "notes": "Row 'Forearm hand, EJC-STYL: 0.022, 0.682, 0.318, 0.468, 0.827, 0.565'. This is a university lab's reproduction of Winter (2009) Table 4.1; it was not checked against the printed book. Consistent with the project's verified Dempster fractions (forearm 1.6% + hand 0.6%).",
+   "category": "Arm wrestling and wrestling"
+  },
+  {
+   "key": "aw_lever_and_effective_mass",
+   "label": "Arm-wrestling lever and forearm effective mass",
+   "status": "estimate",
+   "value_si": 0.19,
+   "unit_si": "1 (× height)",
+   "display": "Lever from the humerus axis to the grip = 0.19 × height (0.58 m for the default 10 ft Rex and Ollie). Each forearm + hand acts like 0.97% of its owner's body mass at the grip.",
+   "sources": [
+    {
+     "title": "ANSUR II NATICK/TR-15/007",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+    },
+    {
+     "title": "BMClab Dempster/Winter table",
+     "url": "https://raw.githubusercontent.com/BMClab/BMC/master/data/BSP_DempsterWinter.txt"
+    }
+   ],
+   "notes": "Lever: ANSUR's 0.199 H is measured from the back of the elbow; the bone's long axis sits about 1-2 cm in front of that, so 0.19 H is used. Effective mass: 0.022 × (0.827 × 0.1525 / 0.19)^2 = 0.009693 of body mass. The upper arm spinning about its own axis would add under 10%; it is ignored. Human proportions are applied to Rex and Ollie, as the project already does for segment masses.",
+   "category": "Arm wrestling and wrestling"
+  },
+  {
+   "key": "table_ps2_panel_requirements",
+   "label": "Minimum strength of a 19 mm structural floor panel (US PS 2-18)",
+   "status": "verified",
+   "value_si": 2450,
+   "unit_si": "N",
+   "display": "Single Floor 24 o.c. panels: ultimate concentrated static load at least 2.45 kN (550 lbf); impact test 102 N·m (75 lbf·ft), after which the panel must still carry 1.78 kN (400 lbf)",
+   "sources": [
+    {
+     "title": "NIST Voluntary Product Standard PS 2-18, Performance Standard for Wood Structural Panels, Table 2",
+     "url": "https://www.nist.gov/document/ps2-18finalapr2019dfareviewedpdf"
+    }
+   ],
+   "notes": "Read in Table 2 and Section 7.1 (ASTM E661: a 76 mm disc at mid-span, 610 mm span). These are minimums for a pass, not typical failure loads.",
+   "category": "Arm wrestling and wrestling"
+  },
+  {
+   "key": "table_elbow_capacity",
+   "label": "Downward load a regulation table takes under one elbow pad",
+   "status": "estimate",
+   "value_si": 10000,
+   "unit_si": "N",
+   "low_si": 2500,
+   "high_si": 50000,
+   "display": "~10 kN (2.5-50 kN) at regulation size; scaled with table size squared",
+   "sources": [
+    {
+     "title": "NIST PS 2-18 Table 2",
+     "url": "https://www.nist.gov/document/ps2-18finalapr2019dfareviewedpdf"
+    },
+    {
+     "title": "WAF table construction",
+     "url": "https://www.waf-armwrestling.com/armwrestling-rules/armwrestling-table/"
+    }
+   ],
+   "notes": "Estimate of the table's vertical capacity. PS 2 guarantees at least 2.45 kN for a 19 mm panel under a 76 mm disc at mid-span; elbow pads sit over the steel frame and spread the load, so the real capacity should be several times higher. The contest's sideways push goes through the pegs and pads instead: see table_lateral_capacity.",
+   "category": "Arm wrestling and wrestling"
+  },
+  {
+   "key": "table_lateral_capacity",
+   "label": "Arm-wrestling table: sideways capacity of pegs and elbow pads",
+   "status": "estimate",
+   "value_si": 5000,
+   "unit_si": "N",
+   "low_si": 3400,
+   "high_si": 8700,
+   "display": "~5 kN sideways at regulation size (a few kN per side), scaled with table size squared",
+   "sources": [
+    {
+     "title": "WAF table construction (25 mm pegs, pads on two 6 mm bolts)",
+     "url": "https://www.waf-armwrestling.com/armwrestling-rules/armwrestling-table/"
+    }
+   ],
+   "notes": "Estimate from review: a 25 mm steel peg gripped 7.5 cm up yields at about 3.4 kN (25 × 3 mm tube) to 5.1–8.7 kN (solid bar, yield to plastic), plus pad-bolt bearing in plywood of perhaps 1–2 kN per bolt. Past this the table stops carrying the push and only their feet hold.",
+   "category": "Arm wrestling and wrestling"
+  },
+  {
+   "key": "table_slam_rating",
+   "label": "Slam energy the table top is built to survive",
+   "status": "estimate",
+   "value_si": 102,
+   "unit_si": "J",
+   "display": "~100 J at regulation size (the PS 2 impact test); scaled with table size cubed",
+   "sources": [
+    {
+     "title": "NIST PS 2-18 Table 2, note (b)",
+     "url": "https://www.nist.gov/document/ps2-18finalapr2019dfareviewedpdf"
+    }
+   ],
+   "notes": "Estimate. A pin slam up to this energy: table holds. Up to 10×: may crack the top. Over 10×: goes through the table. The 10× cut-off is a judgment call.",
+   "category": "Arm wrestling and wrestling"
+  },
+  {
+   "key": "sumo_ring_diameter",
+   "label": "Sumo ring (dohyō) inner circle",
+   "status": "verified",
+   "value_si": 4.55,
+   "unit_si": "m",
+   "display": "Bouts are confined to an inner circle a little over 4.55 m across (platform 6.7 m square, 60 cm high)",
+   "sources": [
+    {
+     "title": "Japan Sumo Association: Sumo introduction (English PDF)",
+     "url": "https://www.sumo.or.jp/pdf/en/sumo_introduction.pdf"
+    }
+   ],
+   "notes": "Confirmed in the PDF text. The sim uses 4.55 m at the default 2 m size and scales it with the pair's mean height.",
+   "category": "Arm wrestling and wrestling"
+  },
+  {
+   "key": "codata_G",
+   "label": "Newtonian constant of gravitation",
+   "status": "verified",
+   "value_si": 6.6743e-11,
+   "unit_si": "m^3 kg^-1 s^-2",
+   "low_si": 6.67415e-11,
+   "high_si": 6.67445e-11,
+   "display": "6.674 30(15) × 10⁻¹¹ m³ kg⁻¹ s⁻² (CODATA 2022)",
+   "sources": [
+    {
+     "title": "NIST CODATA: Newtonian constant of gravitation",
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?bg"
+    }
+   ],
+   "notes": "Probably also supplied by the density area; use one shared K.G.",
+   "category": "Arm wrestling and wrestling"
+  },
+  {
+   "key": "newton_impact_depth",
+   "label": "Newton's impact-depth approximation",
+   "status": "verified",
+   "display": "D ≈ L × ρ_impactor / ρ_target; valid when friction is negligible and the impact is slower than sound in the target",
+   "sources": [
+    {
+     "title": "Wikipedia: Impact depth",
+     "url": "https://en.wikipedia.org/wiki/Impact_depth"
+    }
+   ],
+   "notes": "Wikipedia's rule (citing Gamow 1961) holds only when friction can be ignored and the impact is slower than sound in the target. The contest no longer prints a Newton depth: a partner too dense for the ground falls through it (Weight tab), and on comic ground nothing penetrates.",
+   "category": "Arm wrestling and wrestling"
+  },
+  {
+   "key": "ollie_footing_assumption",
+   "label": "Ollie's grip on the ground (boots, no claws)",
+   "status": "estimate",
+   "display": "Same traction as Rex's feet on each surface. 'Dug in' for Ollie means boots kicked into footholds, given the same buried area as Rex's claws (0.2 × (height / 2 m)² m²: 0.46 m² at the default 10 ft).",
+   "sources": [],
+   "notes": "A plain assumption with no source: no canon says how Ollie's boots grip, and no footwear slip-resistance study was checked. Ollie gets exactly Rex's traction values on each surface.",
+   "category": "Arm wrestling and wrestling"
+  },
+  {
+   "key": "ground_tear_around_anchor",
+   "label": "Force at which the ground around a bolted stance tears out",
+   "status": "estimate",
+   "display": "Ground shear strength × buried area (0.46 m² for the default 10 ft Rex and Ollie): concrete 697 kN, granite 16.7 MN, loose sand 465 N",
+   "sources": [
+    {
+     "title": "Project fact ground_concrete_punching_shear_stress_aci (ACI 318-14 punching shear, 1.62 MPa), via StructurePoint",
+     "url": "https://structurepoint.org/publication/pdf/The%20Role%20of%20GammaF%20in%20Two-way%20Slab%20Punching%20Shear%20Calculations%20in%20ACI%20318.pdf"
+    }
+   ],
+   "notes": "Estimate that reuses the engine's dug-in limit: ground shear strength × buried area. The concrete value traces to the project's ACI punching-shear fact; the granite value (36 MPa) is the project's own rock estimate. Real tensile strengths can differ from these shear values by up to about 3× either way (unsourced). Bolts never give; only the surface layer around them breaks.",
+   "category": "Arm wrestling and wrestling"
+  },
+  {
+   "key": "duo_gravity_distances",
+   "label": "Centre-to-centre distances used for their mutual gravity",
+   "status": "estimate",
+   "display": "Touching: two balls of their volume (1.69 m for the default 10 ft pair). Across the table: 0.66 m table depth (scaled) + 0.25 × mean height (1.91 m). One held overhead: 0.65 × lifter's height + 0.1 × partner's height (2.29 m). During a lift from beside him, the pull peaks at 0.385 G m₁ m₂ / d², with d the touching distance; the Lift tile shows the larger of that and the overhead pull.",
+   "sources": [
+    {
+     "title": "WAF table depth",
+     "url": "https://www.waf-armwrestling.com/armwrestling-rules/armwrestling-table/"
+    }
+   ],
+   "notes": "Estimates. Treating tall bodies as balls changes the force at contact by about 1.2× (cylinders as line masses) to 1.5× (box bodies chest to chest), per a numerical check during review; the 'within about 2×' caveat holds. Path peak (our derivation): a partner lifted straight up from beside the lifter, horizontal offset x (taken as the touching distance), feels the vertical-path pull G m₁ m₂ y / (x² + y²)^1.5 against the lift. Its maximum, at y = x/√2, is (2/(3√3)) G m₁ m₂ / x² = 0.3849 G m₁ m₂ / x². Which of the two is larger depends on body shape and size, so the sim uses the larger and the Lift tile says which.",
+   "category": "Arm wrestling and wrestling"
+  },
+  {
+   "key": "catch_anthro_ansur2_reach_chest",
+   "category": "Game of catch",
+   "label": "US Army men (ANSUR II): thumbtip reach, chest depth and stature, means",
+   "status": "verified",
+   "value_si": 0.8119,
+   "unit_si": "m",
+   "display": "Thumbtip reach 81.19 cm (SD 4.37), chest depth 25.38 cm (SD 2.62), stature 175.62 cm (SD 6.86); 4,082 men",
+   "sources": [
+    {
+     "title": "Gordon et al. (2014), 2012 Anthropometric Survey of U.S. Army Personnel: Methods and Summary Statistics, NATICK/TR-15/007: (80) Thumbtip Reach pp. 203-204, (25) Chest Depth pp. 93-94, (75) Stature pp. 193-194",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+    }
+   ],
+   "notes": "Thumbtip reach is the horizontal distance from a back wall (shoulders against it) to the tip of the thumb, with the arm stretched forward. Chest depth is the front-to-back depth at nipple level. Read from the PDF's summary tables (male columns)."
+  },
+  {
+   "key": "catch_stroke_fraction",
+   "category": "Game of catch",
+   "label": "Catch stroke: how far his hands give while stopping the object",
+   "status": "estimate",
+   "value_si": 0.3,
+   "unit_si": "x height",
+   "low_si": 0.3,
+   "high_si": 0.318,
+   "display": "0.30 × height (91 cm for the default 10 ft Rex or Ollie)",
+   "sources": [
+    {
+     "title": "ANSUR II (Gordon et al. 2014), thumbtip reach and chest depth",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+    },
+    {
+     "title": "Lacquaniti & Maioli (1989), J Neurosci 9:134-148: hand and arm motion when catching dropped balls (full text not fetched; numbers not used)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6570012/"
+    }
+   ],
+   "notes": "Our estimate of the arm's travel from full reach to the chest: (81.19 − 25.38) / 175.62 = 0.318 of a man's height, rounded down to 0.30 to leave room for the object. Rex and Ollie are assumed to have human-proportioned arms. It is not the softest possible catch: bending the knees, turning or stepping back would lengthen the give, and none of that is modelled. Because the hands start at rest, a light object first collides with them (see catch_hand_first_contact)."
+  },
+  {
+   "key": "catch_eccentric_force_ratio",
+   "category": "Game of catch",
+   "label": "Muscle force while being stretched (eccentric) compared with holding still (isometric)",
+   "status": "verified",
+   "value_si": 1.2,
+   "unit_si": "ratio",
+   "low_si": 1.2,
+   "high_si": 1.8,
+   "display": "Plateau near 1.8× maximum isometric force in isolated muscle; about 1.2× in living people",
+   "sources": [
+    {
+     "title": "Franchi, Reeves & Narici (2017), Skeletal Muscle Remodeling in Response to Eccentric vs. Concentric Loading, Front. Physiol. 8:447",
+     "url": "https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2017.00447/full"
+    }
+   ],
+   "notes": "Quoted: the force 'rises until it reaches a plateau at a value close to 1.8 times the maximum isometric force' (in vitro); in vivo 'about 1.2 times the maximum isometric force'. The sim caps catching force at full strength (1.0×) in both muscle modes, so it slightly understates how hard a real-muscle catch can be."
+  },
+  {
+   "key": "catch_force_cap_model",
+   "category": "Game of catch",
+   "label": "Most force he can stop an object with",
+   "status": "estimate",
+   "value_si": 1,
+   "unit_si": "x dial strength",
+   "display": "His full strength (the dial), same as holding a weight",
+   "sources": [
+    {
+     "title": "Franchi et al. (2017) on eccentric force",
+     "url": "https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2017.00447/full"
+    }
+   ],
+   "notes": "Modelling choice. Catching is resisting a load, like holding one, so the cap is the dial value (two arms, 2 × 52.3% in the throw model, capped at 100%). The eccentric bonus (about 1.2× in living people) is left out."
+  },
+  {
+   "key": "sutton_graves_air",
+   "category": "Game of catch",
+   "label": "Sutton–Graves stagnation-point convective heating, Earth air",
+   "status": "verified",
+   "value_si": 0.00017415,
+   "unit_si": "kg^0.5/m (q in W/m^2 = k sqrt(rho/r_n) v^3)",
+   "display": "q = 1.74 × 10⁻⁴ √(ρ/rₙ) v³ W/m²; original form q = K √(pₛ/rₙ)(hₛ − h_w), K = 0.1113 kg s⁻¹ m⁻³ᐟ² atm⁻¹ᐟ² for air",
+   "sources": [
+    {
+     "title": "Sutton & Graves (1971), A General Stagnation-Point Convective-Heating Equation for Arbitrary Gas Mixtures, NASA TR R-376 (Table II, air: K = 0.1113)",
+     "url": "https://ntrs.nasa.gov/api/citations/19720003329/downloads/19720003329.pdf"
+    },
+    {
+     "title": "Wikipedia: Planar reentry equations (k = 1.74153 × 10⁻⁴ for Earth, W/m²)",
+     "url": "https://en.wikipedia.org/wiki/Planar_reentry_equations"
+    }
+   ],
+   "notes": "Fitted for enthalpies of 2.3-116.2 MJ/kg (about 2.1-15 km/s), pressures of 0.001-100 atm and wall temperatures of 300 and 1,111 K, with radiation neglected (all stated in the report). Converting K with pₛ ≈ ρv² and hₛ ≈ v²/2 gives 0.1113 / (2 √101,325) = 1.748 × 10⁻⁴, within 0.4% of the 1.7415 × 10⁻⁴ used here. At sea level the stagnation pressure passes 100 atm at √(100 × 101,325 / 1.225) = 2,876 m/s, so heating above that is an extrapolation and the page flags it."
+  },
+  {
+   "key": "shock_layer_radiation_onset",
+   "category": "Game of catch",
+   "label": "When glowing shock-layer air starts adding heat (radiation)",
+   "status": "verified",
+   "value_si": 8000,
+   "unit_si": "m/s",
+   "low_si": 8000,
+   "high_si": 15000,
+   "display": "No single onset speed. Sutton & Hartung's tables run from 30 km up to 84 km. At 30 km, the lowest altitude they cover, glowing-air radiation on a nose of 1 m or more matches or beats flow heating from about 8 km/s, and at 36 km it is still about 30× flow heating at 10 km/s on a 10 m nose. For Apollo-sized noses at high altitude it is secondary at lunar return (~11 km/s) and over half the heat load at 15 km/s",
+   "sources": [
+    {
+     "title": "Sutton & Hartung (1990), Equilibrium Radiative Heating Tables for Earth Entry, NASA TM-102652, Table 1, p. 5",
+     "url": "https://ntrs.nasa.gov/api/citations/19900014359/downloads/19900014359.pdf"
+    },
+    {
+     "title": "NASA TM X-58091 (1972), Radiative Heating to the Apollo Command Module",
+     "url": "https://ntrs.nasa.gov/api/citations/19720017314/downloads/19720017314.pdf"
+    },
+    {
+     "title": "Cornette & Sullivan (1971), NASA TN D-6265",
+     "url": "https://ntrs.nasa.gov/api/citations/19710018541/downloads/19710018541.pdf"
+    }
+   ],
+   "notes": "Sutton & Hartung Table 1 (30 km, 0.0184 kg/m³): 76.85 MW/m² at 8 km/s for a 10 m nose, about 20× Sutton–Graves convection; 386 MW/m² at 10 km/s (52×). Table 2 (36 km): 147 MW/m² at 10 km/s for a 10 m nose, about 31× Sutton–Graves (4.7 MW/m²). The tables cover 30–84 km, so they say nothing directly about lower, denser air. The sim shows heat as a range: flow heating alone up to flow heating plus a blackbody ceiling σ(T_stag⁴ − T₀⁴), counted only below 30 km, where the air is densest. Above 30 km it leaves radiation out (a blackbody would overstate thin air), so the top end runs low on flights that spend long above 30 km. Neither end is an upper or lower bound in a strict sense."
+  },
+  {
+   "key": "baseball_terminal_speed_adair",
+   "category": "Game of catch",
+   "label": "Baseball: speed at which drag equals its weight (terminal speed)",
+   "status": "verified",
+   "value_si": 42,
+   "unit_si": "m/s",
+   "display": "About 95 mph (42 m/s)",
+   "sources": [
+    {
+     "title": "Adair (1995), The physics of baseball, Physics Today 48(5): 26-31, p. 28",
+     "url": "https://aip.brightspotcdn.com/PTO.v48.i5.26_1.online.pdf"
+    }
+   ],
+   "notes": "Quoted: 'at about 95 mph (42 m/s), the drag force is equal to the force of gravity.' The sim's baseball (Cd 0.35, 42.7 cm²) gives √(2mg/(ρ Cd A)) = 39.5 m/s, 6% lower, and its long throws come down at 38-39 m/s. This is a check, not an input."
+  },
+  {
+   "key": "baseball_bat_collision_force",
+   "category": "Game of catch",
+   "label": "Peak squeeze on a baseball in a home-run bat collision",
+   "status": "verified",
+   "value_si": 40000,
+   "unit_si": "N",
+   "display": "About 9,000 lb (40,000 N); collision about 1 ms, most momentum transfer in 0.6 ms",
+   "sources": [
+    {
+     "title": "Adair (1995), The physics of baseball, Physics Today 48(5), p. 31",
+     "url": "https://aip.brightspotcdn.com/PTO.v48.i5.26_1.online.pdf"
+    }
+   ],
+   "notes": "Baseballs survive this, so it is a known-safe level, not a breaking strength. The object data has no crush figure for the baseball. The page compares the catch force with this number and makes no claim above it."
+  },
+  {
+   "key": "iron_melting_heats",
+   "category": "Game of catch",
+   "label": "Iron: melting point, heat of fusion, heat capacity",
+   "status": "verified",
+   "value_si": 1811,
+   "unit_si": "K",
+   "display": "Melts at 1,538 °C; heat of fusion 13.81 kJ/mol (247 kJ/kg); molar heat capacity 25.10 J/(mol·K) (0.449 kJ/kg·K)",
+   "sources": [
+    {
+     "title": "Wikipedia: Iron (infobox)",
+     "url": "https://en.wikipedia.org/wiki/Iron"
+    }
+   ],
+   "notes": "Per-kg values use 55.845 g/mol. Steels melt a little lower (roughly 1,400-1,500 °C). Damage threshold for 'steel' objects."
+  },
+  {
+   "key": "aluminium_melting_heats",
+   "category": "Game of catch",
+   "label": "Aluminium: melting point, heat of fusion, heat capacity",
+   "status": "verified",
+   "value_si": 933.47,
+   "unit_si": "K",
+   "display": "Melts at 660.32 °C; heat of fusion 10.71 kJ/mol (397 kJ/kg); 24.20 J/(mol·K) (0.897 kJ/kg·K)",
+   "sources": [
+    {
+     "title": "Wikipedia: Aluminium (infobox)",
+     "url": "https://en.wikipedia.org/wiki/Aluminium"
+    }
+   ],
+   "notes": "Damage threshold for aircraft and the shuttle stack. Alloys melt somewhat lower."
+  },
+  {
+   "key": "copper_melting_heats",
+   "category": "Game of catch",
+   "label": "Copper: melting point, heat of fusion, heat capacity",
+   "status": "verified",
+   "value_si": 1357.77,
+   "unit_si": "K",
+   "display": "Melts at 1,084.62 °C; heat of fusion 13.26 kJ/mol (209 kJ/kg); 24.44 J/(mol·K) (0.385 kJ/kg·K)",
+   "sources": [
+    {
+     "title": "Wikipedia: Copper (infobox)",
+     "url": "https://en.wikipedia.org/wiki/Copper"
+    }
+   ],
+   "notes": "Damage threshold for the Statue of Liberty (copper skin)."
+  },
+  {
+   "key": "wood_char_base_temperature",
+   "category": "Game of catch",
+   "label": "Wood: temperature at the base of the char layer",
+   "status": "verified",
+   "value_si": 573,
+   "unit_si": "K",
+   "display": "Generally taken to be 300 °C (550 °F ≈ 288 °C)",
+   "sources": [
+    {
+     "title": "White & Dietenberger (2010), Fire Safety of Wood Construction, Wood Handbook ch. 18, USDA FPL-GTR-190",
+     "url": "https://research.fs.usda.gov/download/treesearch/37415.pdf"
+    }
+   ],
+   "notes": "Quoted: 'The temperature at the base of the char layer is generally taken to be 300 °C or 550 °F (288 °C).' Used for every 'organic' object (piano wood; we assume the same for the baseball's leather and yarn and the bowling ball's resin, which we did not source separately)."
+  },
+  {
+   "key": "limestone_calcination",
+   "category": "Game of catch",
+   "label": "Limestone breaks down to quicklime",
+   "status": "verified",
+   "value_si": 1098,
+   "unit_si": "K",
+   "display": "Above 825 °C",
+   "sources": [
+    {
+     "title": "Wikipedia: Calcium oxide",
+     "url": "https://en.wikipedia.org/wiki/Calcium_oxide"
+    }
+   ],
+   "notes": "Quoted: 'This is accomplished by heating the material to above 825 °C.' Damage threshold for the pyramid and the Empire State Building's limestone facade."
+  },
+  {
+   "key": "heat_to_melt_per_kg",
+   "category": "Game of catch",
+   "label": "Heat needed to melt or char 1 kg of an object's skin",
+   "status": "estimate",
+   "value_si": 1000000,
+   "unit_si": "J/kg",
+   "low_si": 620000,
+   "high_si": 2500000,
+   "display": "Per material: iron 0.93, aluminium 0.98, copper 0.62 MJ/kg; wood, leather or plastic ~1 MJ/kg (rough); limestone ~2.5 MJ/kg",
+   "sources": [
+    {
+     "title": "Wikipedia: Iron",
+     "url": "https://en.wikipedia.org/wiki/Iron"
+    },
+    {
+     "title": "Wikipedia: Aluminium",
+     "url": "https://en.wikipedia.org/wiki/Aluminium"
+    },
+    {
+     "title": "Wikipedia: Calcium carbonate (calcination 178 kJ/mol)",
+     "url": "https://en.wikipedia.org/wiki/Calcium_carbonate"
+    }
+   ],
+   "notes": "Our estimate. Heating from 15 °C to melting plus the heat of fusion: iron 0.449 × 1,523 + 247 = 931 kJ/kg; aluminium 0.897 × 645 + 397 = 976 kJ/kg; copper 0.385 × 1,070 + 209 = 620 kJ/kg. Limestone: calcining takes 178 kJ/mol = 1.78 MJ/kg plus about 0.7 MJ/kg to heat it to ~825 °C, roughly 2.5 MJ/kg. The organic value is a rough placeholder. Used only for the rough 'share it could melt' range."
+  },
+  {
+   "key": "heat_to_vaporise_per_kg",
+   "category": "Game of catch",
+   "label": "Heat needed to boil 1 kg of an object away",
+   "status": "estimate",
+   "value_si": 8600000,
+   "unit_si": "J/kg",
+   "low_si": 2600000,
+   "high_si": 13100000,
+   "display": "From room temperature, heat to boiling, melt and boil: iron about 8.6 MJ/kg, aluminium about 13 MJ/kg, copper about 5.9 MJ/kg; rough stand-ins: water's 2.6 MJ/kg for wood, leather or plastic, forsterite rock's 8.4 MJ/kg for stone",
+   "sources": [
+    {
+     "title": "Fegley & Schaefer (2012), Chemistry of the Earth's Earliest Atmosphere, Treatise on Geochemistry ch. 13.3, pp. 18-20 (JANAF data): iron 483 kJ/mol, forsterite 1,186 kJ/mol from 298 K to boiling",
+     "url": "https://arxiv.org/abs/1210.0270"
+    },
+    {
+     "title": "Wikipedia: Aluminium (infobox: boils at 2,470 °C; heat of vaporization 284 kJ/mol; heat of fusion 10.71 kJ/mol; 24.20 J/(mol·K))",
+     "url": "https://en.wikipedia.org/wiki/Aluminium"
+    },
+    {
+     "title": "Wikipedia: Copper (infobox: boils at 2,562 °C; heat of vaporization 300.4 kJ/mol; heat of fusion 13.26 kJ/mol; 24.44 J/(mol·K))",
+     "url": "https://en.wikipedia.org/wiki/Copper"
+    },
+    {
+     "title": "Wikipedia: Water (heat of vaporization 2,257 J/g; about 4.2 J/(g·K))",
+     "url": "https://en.wikipedia.org/wiki/Water"
+    }
+   ],
+   "notes": "Iron: 483 kJ/mol / 55.845 g/mol = 8.65 MJ/kg (heating 58.6 + melting 13.8 + heating the melt 61.0 + boiling 349.6 kJ/mol, JANAF via Fegley & Schaefer). Aluminium, our estimate from its infobox values with the solid heat capacity throughout: 24.20 J/(mol·K) × 2,455 K + 10.71 + 284 kJ/mol = 354 kJ/mol = 13.1 MJ/kg. Copper likewise: 24.44 × 2,547 K + 13.26 + 300.4 kJ/mol = 376 kJ/mol = 5.9 MJ/kg. Organics have no single boiling point; water's 4.2 × 85 K + 2,257 J/g ≈ 2.6 MJ/kg stands in. Stone: limestone first gives off CO₂ and the lime left boils near 2,850 °C; forsterite's 1,186 kJ/mol / 140.7 g/mol = 8.4 MJ/kg stands in for rock. Used only for the rough 'enough to boil it away N× over' line in the Game of catch."
+  },
+  {
+   "key": "newton_impact_depth_air",
+   "category": "Game of catch",
+   "label": "Newton's impact-depth rule, used for how far a relativistic object gets through air",
+   "status": "estimate",
+   "display": "D ≈ L × ρ_object / ρ_target: it stops after pushing aside its own mass of target. In air: sweep = m / (ρ₀ A) (baseball 27.8 m, car 126 m, shot 524 m, tank 1.9 km, pyramid 141 km)",
+   "sources": [
+    {
+     "title": "Wikipedia: Impact depth",
+     "url": "https://en.wikipedia.org/wiki/Impact_depth"
+    }
+   ],
+   "notes": "The rule rests only on momentum conservation and is stated for speeds high enough to ignore friction but below the target's speed of sound. At 1% of light speed and above we are far outside that, so the sweep length is an order-of-magnitude scale for where most of the energy goes into the air. The existing Throw tab already uses the same length."
+  },
+  {
+   "key": "air_column_mass",
+   "category": "Game of catch",
+   "label": "Mass of air above each square metre at sea level",
+   "status": "verified",
+   "value_si": 10332,
+   "unit_si": "kg/m^2",
+   "display": "About 1.03 kg per cm² (10.3 t per m²); the engine uses p₀/g = 10,332 kg/m²",
+   "sources": [
+    {
+     "title": "Wikipedia: Atmospheric pressure",
+     "url": "https://en.wikipedia.org/wiki/Atmospheric_pressure"
+    }
+   ],
+   "notes": "An object with less mass per frontal area (m/A) than about this, divided by the sine of its climb angle, can't punch through the atmosphere at any survivable speed. That is why a thrown car or baseball has a hard range limit set by air."
+  },
+  {
+   "key": "relativistic_arrival_classes",
+   "category": "Game of catch",
+   "label": "What reaches the catcher above 1% of light speed",
+   "status": "estimate",
+   "display": "Snowplow with relativity: it keeps its momentum while the air it sweeps turns its energy into heat. Half its energy is heat after sweeping 1 + (γ − 1)/4 times its own mass of air. Closer than 1% of that: it reaches him as a white-hot front of plasma and debris with almost all its momentum (no hand catch). Within it: he is inside the fireball. Beyond: the fireball keeps rushing toward him. Either way nearly all its energy is freed near him",
+   "sources": [
+    {
+     "title": "Wikipedia: Impact depth",
+     "url": "https://en.wikipedia.org/wiki/Impact_depth"
+    }
+   ],
+   "notes": "Our derivation from energy and momentum conservation for an object sweeping up air at rest: with x = swept air mass / m, heat = 2E x / (√((1+x)² + 2(γ−1)x) + 1 + x), which reduces to E x/(1+x) at low speed. The heat made on the way rides inside the lump, so when it reaches him nothing is left behind in the gap. Stopping it there frees E minus the motion left afterwards: p²/2M_Earth if he is bolted (tiny), or p²/2(M + m) if he is free, and he and the lump then ride on and turn that to heat within about one sweep of the pair. The blast therefore uses nearly all of E at every distance. The object keeps its momentum, not its solidity: even 'arrives' makes enough heat on the way to boil it many times over, so the page never offers a hand catch above 1% of c. The 'before' blast is an order of magnitude and probably low, because the fireball keeps moving toward him."
+  },
+  {
+   "key": "earth_radius_rotation",
+   "category": "Game of catch",
+   "label": "Earth's mean radius and rotation (for the far-side distance and the spin caveat)",
+   "status": "verified",
+   "value_si": 6371000,
+   "unit_si": "m",
+   "display": "Volumetric mean radius 6,371.000 km (so the far side of the planet is π × 6,371 = 20,015 km away along the surface); sidereal rotation 23.9345 h; equator moves at 465.1 m/s",
+   "sources": [
+    {
+     "title": "NASA NSSDC Earth Fact Sheet",
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"
+    },
+    {
+     "title": "Wikipedia: Earth's rotation (465.10 m/s at the equator)",
+     "url": "https://en.wikipedia.org/wiki/Earth%27s_rotation"
+    }
+   ],
+   "notes": "The sim's Earth doesn't spin. In a 79-minute antipode throw the ground at the equator moves 465.1 × 4,715 s = 2,190 km, so a real long throw would have to lead Ollie by up to about that much."
+  },
+  {
+   "key": "collide_paradox_premises",
+   "label": "Unstoppable force vs immovable object: why the paradox has no answer",
+   "status": "verified",
+   "display": "The paradox 'rests on two incompatible premises—that there can exist simultaneously such things as unstoppable forces and immovable objects'; both are implicitly assumed to be indestructible",
+   "sources": [
+    {
+     "title": "Wikipedia: Irresistible force paradox (cites Mike Alder 2004, 'Newton's Flaming Laser Sword', Philosophy Now 46: 29-33)",
+     "url": "https://en.wikipedia.org/wiki/Irresistible_force_paradox"
+    }
+   ],
+   "notes": "Quoted from the raw article text (fetched 2026-10-09): 'The paradox arises because it rests on two incompatible premises—that there can exist simultaneously such things as unstoppable forces and immovable objects.' Also: 'The immovable object and the unstoppable force are both implicitly assumed to be indestructible, or else the question would have a trivial resolution.' The article carries a 'more citations needed' banner. Its one source (Alder 2004) was not opened. The physics reading the page uses is our own standard argument, not quoted from a source: an unstoppable force needs unbounded momentum, an immovable object needs unbounded inertia, and momentum conservation would need ∞/∞.",
+   "category": "Unstoppable force vs immovable object"
+  },
+  {
+   "key": "collide_no_rigid_bodies",
+   "label": "No perfectly rigid bodies in relativity; the stiffest possible material has sound speed c",
+   "status": "verified",
+   "display": "Truly rigid solids are incompatible with relativity, because no influence can travel through a body faster than light. A relativistic 'rigid' body is one whose sound speed equals c.",
+   "sources": [
+    {
+     "title": "Natário (2020) Rigid elastic solids in relativity, Class. Quantum Grav. (doi 10.1088/1361-6382/abbd10); arXiv:1912.08221, Introduction",
+     "url": "https://arxiv.org/abs/1912.08221"
+    },
+    {
+     "title": "Wikipedia: Born rigidity (Definition section)",
+     "url": "https://en.wikipedia.org/wiki/Born_rigidity"
+    }
+   ],
+   "notes": "Natário, Introduction: 'truly rigid solids are incompatible with Einstein's relativity, since no influence can propagate on any given medium faster than the speed of light' and 'the speeds of sound cannot be greater than the speed of light, and so a relativistic rigid body should be defined as one where this maximum limit is attained.' Wikipedia: 'A body that could maintain its own rigidity would violate special relativity, as its speed of sound would be infinite.' Used for the light-speed ceiling on the contact force: the hit can't be shorter than a light signal's crossing of the smaller body.",
+   "category": "Unstoppable force vs immovable object"
+  },
+  {
+   "key": "collide_sound_speed_upper_bound",
+   "label": "Upper bound on the speed of sound in atom-built (condensed) matter",
+   "status": "verified",
+   "value_si": 36100,
+   "unit_si": "m/s",
+   "display": "v_u = α (m_e / 2m_p)^½ c ≈ 36.1 km/s, about twice the speed of sound in diamond",
+   "sources": [
+    {
+     "title": "Trachenko, Monserrat, Pickard & Brazhkin (2020) Speed of sound from fundamental physical constants, Science Advances 6, eabc8662; arXiv:2004.04818",
+     "url": "https://arxiv.org/abs/2004.04818"
+    }
+   ],
+   "notes": "Abstract: the combination of α and m_p/m_e 'provides the upper bound for the speed of sound in condensed phases'. Eq. (9) in the PDF: v_u ≈ 36,100 m/s. Text: 'vu is about twice as large as v in diamond'. Recomputed with CODATA constants: 36,100.8 m/s. It applies to ordinary matter made of atoms, not neutron-star matter. Used for the 'as stiff as any real material' force: F = p*/(L/36.1 km/s), shown only while the closing speed is below 36.1 km/s.",
+   "category": "Unstoppable force vs immovable object"
+  },
+  {
+   "key": "collide_granite_tensile_strength",
+   "label": "Granite: tensile strength (rock pulled apart)",
+   "status": "verified",
+   "value_si": 8380000,
+   "unit_si": "Pa",
+   "low_si": 5880000,
+   "high_si": 10880000,
+   "display": "8.38 ± 2.5 MPa (Malsburg granite, quasi-static Brazilian test). Fast loading raises it 1.5-5×. Rock's tensile strength is typically about 1/10 of its compressive strength.",
+   "sources": [
+    {
+     "title": "Padmanabha, Schäfer, Rae & Kenkmann (2021) Dynamic split tensile strength of basalt, granite, marble and sandstone, arXiv:2110.10072, Table 1",
+     "url": "https://arxiv.org/abs/2110.10072"
+    },
+    {
+     "title": "Hoek, Practical Rock Engineering, Ch. 11 (Rock mass properties), Eq. 15 and the m_i table",
+     "url": "https://www.rocscience.com/assets/resources/learning/hoek/Practical-Rock-Engineering-Chapter-11-Rock-Mass-Properties.pdf"
+    }
+   ],
+   "notes": "Padmanabha et al. Table 1: granite (MaGr) tensile strength 8.38 ± 2.5 MPa, density 2.62 g/cm³. Text: 'Rocks are generally weak in tension, where the uniaxial tensile strength is typically 1/10th of the uniaxial compressive strength' and 'the dynamic tensile strength of the rocks is higher than the quasi-static tensile strength (1.5 to 5 times)'. Cross-check with Hoek Eq. 15, σ_t = s σ_ci / m_b; for intact rock s = 1 and m_b = m_i = 32 ± 3 for granite. With the project's 200 MPa UCS that gives about 6.3 MPa, inside the measured range. The Brazilian test is indirect, and the low and high values are the paper's ±. A hit loads the rock in milliseconds, so the quasi-static value overstates cracking by up to √5 ≈ 2.2× in radius.",
+   "category": "Unstoppable force vs immovable object"
+  },
+  {
+   "key": "collide_crust_thickness",
+   "label": "Continental crust: average thickness",
+   "status": "verified",
+   "value_si": 41100,
+   "unit_si": "m",
+   "display": "41.1 km (weighted global average for continental crust)",
+   "sources": [
+    {
+     "title": "Christensen & Mooney (1995) Seismic velocity structure and composition of the continental crust: a global view, J. Geophys. Res. (USGS publication page)",
+     "url": "https://www.usgs.gov/publications/seismic-velocity-structure-and-composition-continental-crust-a-global-view"
+    }
+   ],
+   "notes": "USGS page: 'The weighted average crustal thickness based on these values is 41.1 km.' Continental crust only; oceanic crust is much thinner (not verified here). Used only as the depth past which the rock-cracking estimate stops: deeper rock is squeezed by the weight above and gets much stronger.",
+   "category": "Unstoppable force vs immovable object"
+  },
+  {
+   "key": "collide_earth_inertia_rotation",
+   "label": "Earth: mass, moment of inertia factor, sidereal rotation, mean radius",
+   "status": "verified",
+   "value_si": 5.9722e+24,
+   "unit_si": "kg",
+   "display": "M = 5.9722 × 10^24 kg; I/(MR²) = 0.3308; sidereal rotation 23.9345 h; mean radius 6,371.000 km",
+   "sources": [
+    {
+     "title": "NASA NSSDCA Earth Fact Sheet",
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"
+    }
+   ],
+   "notes": "All four read from the fact sheet on 2026-10-09. The engine already has M_E = 5.9722e24 and R_E = 6.371e6. Moment of inertia I = 0.3308 M R² = 8.019 × 10^37 kg m². Used for Earth's speed change (Δv = p/(M_E + m)) and the length-of-day change for a set-speed hit along the equator (ΔT = T² p / (2π × 0.3308 × M_E × R_E)).",
+   "category": "Unstoppable force vs immovable object"
+  },
+  {
+   "key": "collide_restitution_definition",
+   "label": "Coefficient of restitution: the two bounds",
+   "status": "verified",
+   "display": "e = 1 is a perfectly elastic collision (no kinetic energy lost); e = 0 is perfectly inelastic (the bodies don't rebound and end up stuck together). Most real collisions fall between.",
+   "sources": [
+    {
+     "title": "Wikipedia: Coefficient of restitution",
+     "url": "https://en.wikipedia.org/wiki/Coefficient_of_restitution"
+    }
+   ],
+   "notes": "Quote: 'In most real-world collisions, the coefficient of restitution is between 0 and 1, where 1 represents a perfectly elastic collision (in which the objects rebound with no loss of kinetic energy but in the opposite directions) and 0 a perfectly inelastic collision (in which the objects do not rebound at all, and end up coalescing).' The page shows both bounds. Below 1% of light speed, the energy freed at restitution e is (1 − e²) times the splat value (standard result, not quoted).",
+   "category": "Unstoppable force vs immovable object"
+  },
+  {
+   "key": "collide_people_restitution",
+   "label": "People colliding: measured coefficient of restitution",
+   "status": "reported",
+   "value_si": 0.3,
+   "unit_si": "1",
+   "low_si": 0.1,
+   "high_si": 0.5,
+   "display": "0.1-0.5, measured by swinging harnessed people into each other (pendulum test)",
+   "sources": [
+    {
+     "title": "Alonso-Marroquin, Lozano, Ramírez-Gómez & Busch (2014) Simulation of counter flow pedestrian dynamics using spheropolygons, Phys. Rev. E 90, 063305; arXiv:1310.8482",
+     "url": "https://arxiv.org/abs/1310.8482"
+    }
+   ],
+   "notes": "Text: 'a pendulum test was conducted ... collisions between pedestrians suspended by ropes by harnesses in a rock climbing venue. By measuring the velocities before and after impact ... we obtained coefficients of restitution within the range 0.1–0.5.' The paper uses 0.3 in the text and 0.4 in Table 1. It is an informal test described in one paragraph, hence 'reported'. Used only to say soft bodies sit near the splat end: e = 0.1–0.5 means the splat-to-bounce range covers it.",
+   "category": "Unstoppable force vs immovable object"
+  },
+  {
+   "key": "collide_collision_formulas",
+   "label": "Collision formulas: inelastic energy loss, invariant mass, elastic reversal in the centre-of-momentum frame, rapidity",
+   "status": "verified",
+   "display": "Inelastic loss ΔKE = ½ μ u_rel² (μ = m₁m₂/(m₁+m₂)); invariant mass M² = (E₁+E₂)² − |p₁+p₂|² (c = 1); in an elastic hit each body's momentum reverses in the centre-of-momentum frame; rapidities add along a line",
+   "sources": [
+    {
+     "title": "Wikipedia: Inelastic collision",
+     "url": "https://en.wikipedia.org/wiki/Inelastic_collision"
+    },
+    {
+     "title": "Wikipedia: Invariant mass (two-particle collision)",
+     "url": "https://en.wikipedia.org/wiki/Invariant_mass"
+    },
+    {
+     "title": "Wikipedia: Elastic collision (one-dimensional relativistic)",
+     "url": "https://en.wikipedia.org/wiki/Elastic_collision"
+    },
+    {
+     "title": "Wikipedia: Rapidity",
+     "url": "https://en.wikipedia.org/wiki/Rapidity"
+    }
+   ],
+   "notes": "Inelastic collision: 'ΔKE = ½ μ u²_rel' and 'The reduction of total kinetic energy is equal to the total kinetic energy before the collision in a center of momentum frame'. Elastic collision: 'Relative to the center of momentum frame, the momentum of each colliding body does not change magnitude after collision, but reverses its direction'. Rapidity: β = tanh w, additive. Checked in our code: energy and momentum are conserved to about 1e-15 at 0.5c, 0.999999c and a 180 kg : 7.4 × 10^16 kg mass ratio. The cancellation-free form Q = 2 m_T K_A / (M + m_A + m_T) is our algebra from M² − (m_A + m_T)² = 2 m_T K_A / c².",
+   "category": "Unstoppable force vs immovable object"
+  },
+  {
+   "key": "collide_universe_age",
+   "label": "Age of the universe (for 'Earth would take N × the age of the universe to move 1 mm')",
+   "status": "verified",
+   "value_si": 435080000000000000,
+   "unit_si": "s",
+   "display": "13.787 ± 0.020 billion years",
+   "sources": [
+    {
+     "title": "Planck Collaboration (2020) Planck 2018 results VI: Cosmological parameters, arXiv:1807.06209, Table 2",
+     "url": "https://arxiv.org/abs/1807.06209"
+    }
+   ],
+   "notes": "Table 2, combined TT,TE,EE+lowE+lensing+BAO column: Age 13.787 ± 0.020 Gyr. Converted with 1 yr = 3.15576 × 10^7 s.",
+   "category": "Unstoppable force vs immovable object"
+  },
+  {
+   "key": "collide_squash_estimate",
+   "label": "How far a plush body squashes in a hit (soft end of the contact force)",
+   "status": "estimate",
+   "value_si": 0.29,
+   "unit_si": "m",
+   "display": "Each body squashes by a quarter of the smaller body's mean thickness (volume ÷ facing area): 0.29 m in all between the default 10 ft bodies (thickness 0.58 m)",
+   "sources": [],
+   "notes": "Not measured; nobody knows the stiffness of an indestructible plush. A choice: each body squashes by a quarter of the smaller body's mean thickness (volume ÷ facing area; the picture estimate gives 0.52–0.56 m for Rex and Ollie), so a 2 m Ollie hitting a 50 m Rex makes a local dent. A fixed fractional squash at every speed is not any real material (it makes the force grow as v²), so the page also shows the light-speed ceiling as the stiff end. It changes only the force and the contact time, never momentum or energy.",
+   "category": "Unstoppable force vs immovable object"
+  },
+  {
+   "key": "collide_runup_estimate",
+   "label": "Starting distance for the charge (used only for gravity on the way in and the air swept up)",
+   "status": "estimate",
+   "value_si": 20,
+   "unit_si": "m",
+   "display": "Run-up of 10 body heights (30.5 m at the default 10 ft); the charge speed is what his sprint reaches in that distance",
+   "sources": [],
+   "notes": "A choice. The sprint model (constant thrust against air drag) gives v(x) = v_top·√(1 − e^(−2kx/m)), about 14.9 m/s after 20 m from rest for the default bodies; reaching 95% of top speed takes about 430 m. For super-dense bodies the run-up also sets the gravitational infall energy G m₁m₂(1/d − 1/d₀); doubling it changes that by under 4%.",
+   "category": "Unstoppable force vs immovable object"
+  },
+  {
+   "key": "collide_rock_failure_radius",
+   "label": "How far rock fails around a bolt carrying force C",
+   "status": "estimate",
+   "display": "One held anchor: r ≈ √(C/(2πσ)) (peak-stress version √(3C/(2πσ))). Two opposed anchors a distance d apart: r ≈ (C·d/(2πσ))^(1/3) once r > d",
+   "sources": [
+    {
+     "title": "Padmanabha et al. 2021 (tensile strength used)",
+     "url": "https://arxiv.org/abs/2110.10072"
+    },
+    {
+     "title": "Hoek, Practical Rock Engineering Ch. 11 (UCS context)",
+     "url": "https://www.rocscience.com/assets/resources/learning/hoek/Practical-Rock-Engineering-Chapter-11-Rock-Mass-Properties.pdf"
+    }
+   ],
+   "notes": "Our geometry, not a published formula. A force C spread over a buried half-sphere averages C/(2πr²); the exact point-load fields (Boussinesq/Cerruti, ν = ½) peak 3× higher along the load line, which roughly cancels the dynamic-strength overstatement. In the Push the two anchors load the ground in opposite directions: a force dipole whose stress falls as C·d/(2πr³) beyond their spacing, so the failure radius grows only as the cube root of the force. Intact granite assumed (tensile 8.38 MPa, crushing 200 MPa); jointed rock is far weaker.",
+   "category": "Unstoppable force vs immovable object"
+  },
+  {
+   "key": "collide_rock_wave_speed_estimate",
+   "label": "Stress-wave speed in rock (whether the rock under his bolts can respond during a very fast hit)",
+   "status": "estimate",
+   "value_si": 5000,
+   "unit_si": "m/s",
+   "low_si": 3710,
+   "high_si": 6100,
+   "display": "About 5 km/s, our pick. Granite's measured bar-wave speed is 3.71 ± 0.16 km/s; pressure (P) waves in granite near the surface run 3.7–6.1 km/s",
+   "sources": [
+    {
+     "title": "Padmanabha, Schäfer, Rae & Kenkmann (2021) Dynamic split tensile strength of basalt, granite, marble and sandstone, arXiv:2110.10072, Table 1",
+     "url": "https://arxiv.org/abs/2110.10072"
+    },
+    {
+     "title": "Birch (1960) The velocity of compressional waves in rocks to 10 kilobars, Part 1, J. Geophys. Res. 65(4), 1083–1102 (granite rows at 10 bar, as transcribed in Wikipedia: Birch's law)",
+     "url": "https://doi.org/10.1029/JZ065i004p01083"
+    }
+   ],
+   "notes": "Padmanabha et al. Table 1: granite (MaGr) elastic wave speed 3.71 ± 0.16 km/s, c = √(E/ρ) (a bar wave, the slowest). Birch (1960) table, granites at 10 bar (near-surface, cracks open): 3.7 to 6.1 km/s; at 500 bar 5.4 to 6.3 km/s. 5 km/s is a choice inside that range, not a measurement. It sets the 'too fast for the bolts to help' gate, which scales as the wave speed cubed, so the choice matters only near the threshold; at relativistic speeds the result holds by orders of magnitude.",
+   "category": "Unstoppable force vs immovable object"
+  },
+  {
+   "key": "collide_planet_halves_pull",
+   "label": "Pull holding Earth's two halves together (planet-scale marker)",
+   "status": "estimate",
+   "value_si": 1.0997e+25,
+   "unit_si": "N",
+   "display": "About 1.1 × 10^25 N (3GM²/(16R²) for a uniform-density Earth)",
+   "sources": [
+    {
+     "title": "NASA Earth Fact Sheet (M, R)",
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"
+    }
+   ],
+   "notes": "Our derivation: inside a uniform ball the force on the upper half is 3GM²/(16R²) = 1.0997 × 10^25 N. It is only a size comparison. In the Push the anchor forces are equal and opposite and 2 m apart, so the planet as a whole feels no net force; the rock fails locally instead. 'The planet comes apart' is judged by energy against Earth's binding energy (about 2.5 × 10^32 J), not by this force.",
+   "category": "Unstoppable force vs immovable object"
+  },
+  {
+   "key": "collide_anchor_spacing_estimate",
+   "label": "Distance between the two partners' anchors in a push",
+   "status": "estimate",
+   "value_si": 2,
+   "unit_si": "m",
+   "display": "One mean body height (3.05 m at the default 10 ft)",
+   "sources": [],
+   "notes": "Leaning into each other chest to chest, their feet end up about a body height apart. Used only to decide when the cracked zones around the two anchors meet (r_t ≥ spacing/2).",
+   "category": "Unstoppable force vs immovable object"
+  },
+  {
+   "key": "collide_relativistic_sprint_estimate",
+   "label": "Relativistic reading of the sprint's drag-limited top speed",
+   "status": "estimate",
+   "display": "Drag ½ρC_dA(γv)²: the engine's drag balance √(2F/(ρC_dA)) is read as the proper speed γv, not v",
+   "sources": [],
+   "notes": "In the runner's frame, air comes at him with density γρ and momentum γρv per unit volume. The momentum flux, and so the drag, grows as γ²v². This matches ½ρC_dAv² below 1% of light speed, so nothing changes there. Above it, momentum is m·u with u = min(√(2·thrust/(ρ₀C_dA)), leg cap), computed before the engine caps speed at c. That keeps a finite strength from giving infinite momentum. Rough: real relativistic drag on a body in air isn't modelled anywhere in the sim.",
+   "category": "Unstoppable force vs immovable object"
+  },
+  {
+   "key": "catch_hand_first_contact",
+   "label": "Catch: first contact with the catcher's hands",
+   "status": "estimate",
+   "value_si": 0.044,
+   "unit_si": "x body mass",
+   "display": "Both hands and forearms, 4.4% of body mass (119 kg at 2,700 kg), start at rest; palm and object squash 1–2.5% of his height (3–7.6 cm at 10 ft)",
+   "sources": [
+    {
+     "title": "Dempster segment masses (hand 0.6%, forearm 1.6%), as used for Rex's body",
+     "url": "https://apps.dtic.mil/sti/citations/AD0074470"
+    }
+   ],
+   "notes": "Our model. The object and his hands stick together; the energy that costs, ½ m m_h v²/(m + m_h), goes into squashing palm and object by 2–5 cm (an estimate, scaled with his height), and his arms then stop what's left over 0.3 × his height. A springy contact peaks at about twice its mean force. For anything lighter than his hands most of the energy goes into this first contact, so a fastball baseball is squeezed far harder than Adair's 40 kN home-run hit.",
+   "category": "Game of catch"
+  },
+  {
+   "key": "catch_breakup_ram_pressure",
+   "label": "Break-up in flight when air pressure beats its strength",
+   "status": "estimate",
+   "display": "An object tears apart once ρv² on its front exceeds its strength. Only the solid metal objects (shot put, deadlift bar, Ruyi staff) have a whole-object strength; for the rest the sim uses its grip limit, a local value, so the check errs toward survival",
+   "sources": [
+    {
+     "title": "Collins, Melosh & Marcus (2005), Earth Impact Effects Program, Meteoritics & Planetary Science 40:817",
+     "url": "https://doi.org/10.1111/j.1945-5100.2005.tb00157.x"
+    }
+   ],
+   "notes": "Collins et al. use this stagnation-pressure rule for meteoroids breaking up in the atmosphere, with the body's own strength. The object list has no whole-object strengths, only grip limits (the local pressure a hand can apply before the structure gives way). For solid metal objects (shot put, deadlift bar, Ruyi staff) that is the material's strength all through, so it fits. For hollow structures such as cars, ships and buildings it is a rough local value; the whole structure gives way well below it, so the sim's break-up, launch and wreckage checks err toward the object surviving, and the page says so. Objects without a listed strength (baseball, bowling ball) are not checked.",
+   "category": "Game of catch"
+  },
+  {
+   "key": "rex_ollie_picture_build",
+   "label": "Body volume, mass, facing area and foot soles, measured from their reference picture",
+   "status": "estimate",
+   "value_si": 2700,
+   "unit_si": "kg",
+   "low_si": 2300,
+   "high_si": 3000,
+   "display": "Rex at 10 ft (3.048 m): 2.55 m³, about 2,700 kg (plausibly 2,300–3,000 kg); facing area 4.4 m² with his tail trailing (4.9 m² as drawn, tail out to the side); one paw’s sole 0.31 m². Ollie: 3.06 m to his horn tips (the same 10 ft within measuring error), 2.53 m³, about 2,700 kg; facing area 4.5 m²; one boot’s sole 0.15 m². Both at 1,060 kg/m³.",
+   "sources": [
+    {
+     "title": "Gordon et al. (2014), 2012 Anthropometric Survey of U.S. Army Personnel (ANSUR II): Methods and Summary Statistics, NATICK/TR-15/007 (depth-to-width ratios of each body slice)",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+    },
+    {
+     "title": "Fry, Cisar & Housh (1987), A comparison of anthropometric equations for estimating body density in male competitive body builders, J Applied Sport Science Research 1(4):61–65 (abstract, BISp)",
+     "url": "https://www.bisp-surf.de/Record/PU198802031700"
+    }
+   ],
+   "notes": "Our own measurement of the picture of the two of them (assets/duo.jpg), not a published figure. Scale: Rex is 10 ft by his owner's ruling, crest tip to floor 790 px, so 3.858 mm per pixel; Ollie uses the same scale and measures 794 px (3.06 m) to his horn tips. Each body was cut into 1-pixel slices, each slice an ellipse whose front-to-back depth is its visible width times a depth ratio from US Army body measurements (ANSUR II, 400 men: waist 0.80, hips 0.81; chest 1.05 against the width between the arms), with limbs rotated to slice across their axis. Only one arm of each is fully visible, so both arms are sized from that one. Rex's tail adds the part hidden behind his hips (a frustum 0.55 to 0.46 m across, 0.95 m long) and a correction for being farther from the camera; feet are wedges. Totals: Rex 2.55 m³, Ollie 2.53 m³. Three independent methods (slices, zone ellipses, segment shapes) agreed within 3% after each one's errors were corrected (2.52–2.60 m³ for Rex). Density 1,060 kg/m³: lean bodybuilders measure 1,081 kg/m³ with lung air removed (density_bodybuilders_fry1987), less about 2% for air in the lungs and gut (1,020–1,080 depending on how lung size scales). A 60,000-draw Monte Carlo over depth ratios, arm reading, tail, feet, scale, mask edges, a ±8% model-form factor and density gives 2,370–2,940 kg (95%) for Rex; the range is widened to 2,300–3,000 kg because depth errors may be shared across the whole figure. Bird- or dinosaur-style air sacs could make Rex about 7% lighter. Sim builds: volume 0.08995 × height³, facing area 0.4736 (Rex) and 0.4844 (Ollie) × height², one sole 0.03337 (Rex) and 0.01615 (Ollie) × height². Checks: about 6.8× an average man scaled to 10 ft and 4× a 135 kg pro bodybuilder scaled the same way; mean thickness (volume / facing area) is 0.52–0.56 m, about 2.2× a man scaled to 3 m, matching their 2.2–2.4× width.",
+   "category": "Rex and Ollie"
+  },
+  {
+   "key": "density_bodybuilders_fry1987",
+   "label": "Body density of competitive male bodybuilders (underwater weighing)",
+   "status": "verified",
+   "value_si": 1081.2,
+   "unit_si": "kg/m^3",
+   "low_si": 1071.3,
+   "high_si": 1091.1,
+   "display": "1.0812 ± 0.0099 g/mL (12 men, 81.2 ± 14.0 kg, 8.5 ± 3.9% body fat), with residual lung air removed",
+   "sources": [
+    {
+     "title": "Fry, Cisar & Housh (1987), A comparison of anthropometric equations for estimating body density in male competitive body builders, J Applied Sport Science Research 1(4):61–65 (abstract, BISp)",
+     "url": "https://www.bisp-surf.de/Record/PU198802031700"
+    }
+   ],
+   "notes": "Read from the abstract (BISp record PU198802031700, fetched 2026-10-10): 12 competitive male bodybuilders aged 24.0 ± 3.0 years, body weight 81.24 ± 13.96 kg, body density 1.0812 ± 0.0099 g/ml by underwater weighing corrected for residual lung volume, relative fat 8.48 ± 3.90%, measured one to two days before competition. The study compared 20 skinfold equations with that criterion. A living body is a little less dense because of the air in its lungs and gut; the sim's 1,060 kg/m³ for Rex and Ollie takes about 2% off for that (see rex_ollie_picture_build).",
+   "category": "Rex and Ollie"
+  }
+ ],
+ "gaps": []
+}

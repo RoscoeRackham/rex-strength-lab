@@ -1,39 +1,72 @@
 # Rex Super-Strength Lab
 
-A physics simulator for Rex, an indestructible, tireless plush dinosaur. Set his strength anywhere from the world-record human (511 kg deadlift) to infinite, then lift, throw, jump, stomp, punch, clap, sprint or pull and see what the physics does to him, the object and the ground.
+A physics simulator for Rex, an indestructible, tireless dinosaur, and his boyfriend Ollie, a bull-man who is just as strong and just as indestructible. Set the strength anywhere from the world-record human (511 kg deadlift) to infinite. On his own, Rex can lift, throw, jump, stomp, punch, clap, sprint or pull, or just stand there at any density (the Weight tab). With Ollie he can arm-wrestle, wrestle, play catch, or test the unstoppable force against the immovable object. Each tab shows what the physics does to the two of them, the object, the ground and the air. Every number on the page is either sourced or labelled an estimate.
 
 Live page: https://claude.ai/artifact/YFpbHtX8tM2Qwffd6znbZP (private until shared)
+
+## The default bodies
+
+Rex is 10 ft (3.048 m) tall by his owner's ruling. Ollie measures 3.06 m to his horn tips, which is 10 ft within measuring error. Each one's mass, about 2,700 kg (plausibly 2,300–3,000 kg), comes from their reference picture (`assets/duo.jpg`):
+
+- Scale: Rex is 790 px from crest tip to floor, so each pixel is 3.86 mm.
+- Volume: each body is cut into 1-pixel slices, and each slice is treated as an ellipse. Its front-to-back depth is its visible width times a depth ratio taken from US Army body measurements (ANSUR II). Limbs are sliced across their own axis. Only one arm of each is fully visible, so both arms are sized from that one. Rex's tail includes the part hidden behind his hips. Rex comes out at 2.55 m³ and Ollie at 2.53 m³. Three independent methods agreed within 3% once each one's errors were corrected.
+- Density: 1,060 kg/m³. Lean bodybuilders measure 1,081 kg/m³ with lung air removed (Fry, Cisar & Housh 1987); about 2% comes off for the air in the lungs and gut.
+- From the same picture: facing area 4.4 m² for Rex (tail trailing) and 4.5 m² for Ollie, and one foot's sole 0.31 m² (Rex's paws) and 0.15 m² (Ollie's boots).
+
+In the engine these are the `rex` and `ollie` builds (`BUILDS` and `DEFAULT_BODIES` in `src/engine.js`): volume 0.08995 × height³, with areas scaling as height². The method, the checks and the range are in `research/final-duo.json` (`rex_ollie_picture_build`, `density_bodybuilders_fry1987`).
+
+The strength dial is calibrated on a separate, human-sized body: 2 m, 180 kg, 1,000 kg/m³. At record-human strength it reproduces the shot put, pitching and sprint records in both muscle models. You can pick it from the **Calibration body (2 m, 180 kg)** chip under Size. The real-human feats (deadlift, shot put, Bolt's sprint, and so on) run on it when you press Simulate, because at those strengths the 10 ft, 2,700 kg Rex can't get up. The density chips include **His build (default)** at 1,060 kg/m³ and **Water** (1,000 kg/m³, fresh water at 4 °C, the calibration body's density).
+
+## Art on the page
+
+All images are in `assets/` and are inlined into the page by `build.js`:
+
+- `dino.jpg`: the header picture of Rex.
+- `duo.jpg`: Ollie and Rex side by side. It sits in the Ollie settings, and the body estimate above is measured from it.
+- `face-rex.jpg` and `face-ollie.jpg`: the faces on the fighter cards of the two-player tabs.
+- `art-rig.jpg`: Rex holding a giant dumbbell in a test rig, on the Lift tab. It has a chip that sets the dial to the rig's live load.
+- `art-arm.jpg`: the arm-wrestling grip, on the Arm tab.
+- `art-unstoppable.jpg`: Rex's take on the unstoppable force, on the Collide tab.
 
 ## Build
 
 ```
-python3 build-data.py   # research/final-*.json + src/static-data.js -> src/data.js
-node build.js           # inline engine, data and image -> dist/index.html
+python3 build-data.py   # research/final-*.json + src/static-data.js -> src/data.js (about 1 s)
+node build.js           # inline engine, data and images -> dist/index.html (about 1 s)
 ```
 
 ## Test
 
 ```
-node test/calibration.js   # record-human calibration, monotonicity, infinite-strength limits, flight, blast, quake checks (~1 min)
-node test/sweep.js         # every move across 5,184 setting combinations; flags NaN/negatives (~9 min)
-node test/shots.js         # headless Chromium screenshots at 1280 px and 390 px (needs Playwright)
+node test/shots.js         # writes dist/preview.html; Chromium screenshots at 1280 px light and 390 px dark, checks overflow and console errors (needs Playwright, about 17 s)
+node test/calibration.js   # calibration, physics invariants and the regressions from each review round (about 80 s; ends "all checks passed")
+node test/sweep.js         # every solo move across 5,184 setting combinations; flags NaN and negative outputs (about 5 min)
 ```
+
+The usual run is `python3 build-data.py && node build.js && node test/shots.js && node test/calibration.js`, about 100 s in all.
 
 ## Files
 
-- `src/engine.js`: the physics. Two-body push (relativistic constant force, or Hill force-velocity with an implicit integrator), footing and ground limits, drag flight over a round Earth with Kepler arcs above 150 km, Kinney-Graham blast, Gutenberg-Richter quakes, Collins et al. craters, equilibrium-air heating.
+- `src/engine.js`: the physics. Bodies and builds; two-body push (relativistic constant force, or Hill force-velocity with an implicit integrator); footing and ground limits; drag flight over a round Earth with Kepler arcs above 150 km; the Weight tab's self-gravity, PREM fall through the Earth and settling; arm wrestling, wrestling, the game of catch and the collide test; Kinney-Graham blast, Gutenberg-Richter quakes and Collins et al. craters.
 - `src/app.html`: the page. Every sentence a reader sees is generated in the `bay*` functions from engine numbers.
-- `research/final-*.json`: the sourced facts behind every number (humans, fiction, objects, environment), each researched and then checked by two independent verifiers.
+- `src/static-data.js`: the assumption cards and the height references.
+- `research/final-*.json`: the sourced facts behind every number (humans, fiction, objects, environment, density, duo). Each fact carries its status, sources and notes.
 - `build-data.py`: picks the facts the page uses and writes `src/data.js` with status and sources.
+- `research/reviews/`: the review records (see Review history).
 
 ## Review history
 
-The physics and page went through three adversarial review rounds (engine, claims, data, UX). Round 3 checked the 77 confirmed round-2 findings against the build (66 held) and found about 35 smaller issues, mostly side effects of the fixes. All of those are addressed in the current build. The reports are in `research/reviews/round1.json` to `round3.json` (each finding with its repro, the verifier's verdict and the suggested fix); the tests above cover the regressions they found.
+- Rounds 1-3 (solo moves): three adversarial review rounds over engine, claims, data and UX. Reports: `research/reviews/round1.json` to `round3.json`.
+- Density and Rex + Ollie: four design critiques (density, contests, collide, catch), each checked against its sources and an independent re-calculation, then applied (`duo-design-critiques.json`).
+- Round 4: a four-lens audit of the new features confirmed 54 findings (`round4.json`). All were fixed in serial batches and re-verified on the final build; the leftovers and side effects from that round were fixed and verified too (`round4-fixes.json`).
+- The 10 ft body estimate: three independent methods and a checker (`body-estimate-from-picture.json`).
+- Final checks on this build: `test/calibration.js` all 117 checks pass. The round-4 fixers also ran `test/sweep.js` (5,184 setting combinations, no problems) and a browser sweep of 1,512 page states (no broken text or errors) before the last wording fixes.
 
 ## Known limits
 
-- Real-muscle speeds follow the Hill curve with a single-muscle shape factor; whole limbs are flatter, so real-muscle results are a model, not a measurement.
+- Real-muscle speeds follow the Hill curve with a single-muscle shape factor. Whole limbs are flatter, so real-muscle results are a model, not a measurement.
+- The body mass is an estimate from one picture (2,300–3,000 kg). Dinosaur-style air sacs could make Rex about 7% lighter.
 - Ground is a bearing-capacity-plus-inertia model. It does not model ice sheets snapping in bending, layered soils, or ejecta.
 - Crater sizes past a few hundred km and anything near Earth's binding energy are rough or flagged as planet-scale.
 - Flight counts only Earth's gravity; arcs past the Moon's orbit are flagged as rough.
-
+- In the game of catch, the arm stroke has a set time only when it is forced (he slides or needs at least half his strength). Otherwise he can bring the catch in as slowly as he likes, and the round trip counts only the throws and flights.

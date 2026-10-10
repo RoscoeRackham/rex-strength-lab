@@ -11,7 +11,7 @@ import subprocess
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FACTS = {}
-for topic in ['humans', 'fiction', 'objects', 'environment']:
+for topic in ['humans', 'fiction', 'objects', 'environment', 'density', 'duo']:
     for f in json.load(open(os.path.join(HERE, 'research', f'final-{topic}.json')))['facts']:
         FACTS[f['key']] = f
 
@@ -133,7 +133,7 @@ def obj(id, name, short, group, m, area, cd, crush=None, rho=None, L=None, crr=N
 
 objects = [
     obj('baseball', 'Baseball', 'baseball', 'Everyday', 0.1453, 0.00427, (0.35, 0.92), rho=680, keys=['baseball_mass', 'baseball_cross_section_area', 'cd_baseball_subsonic']),
-    obj('shot', 'Shot put (men’s, 7.26 kg)', 'shot', 'Everyday', 7.26, 0.0113, SPHERE, crush=750e6, rho=8000, keys=['shot_put_men_mass', 'shot_put_cross_section_area', 'mat_grey_cast_iron']),
+    obj('shot', 'Shot put (men’s, 7.26 kg)', 'shot', 'Everyday', 7.26, 0.0113, SPHERE, crush=750e6, crushWhole=True, rho=8000, keys=['shot_put_men_mass', 'shot_put_cross_section_area', 'mat_grey_cast_iron']),
     obj('bowling', 'Bowling ball (16 lb)', 'bowling ball', 'Everyday', 7.257, 0.037, SPHERE, rho=1340, keys=['bowling_ball_max_mass', 'bowling_ball_cross_section_area']),
     obj('piano', 'Steinway Model D grand piano', 'piano', 'Everyday', 480, 4.3, TUMBLE, crush=10e6, rho=110, keys=['steinway_model_d_mass', 'steinway_model_d_projected_area', 'mat_hard_maple']),
     obj('motorcycle', 'Motorcycle', 'motorcycle', 'Vehicles', 183, 2.4, TUMBLE, crush=3e6, rho=100, crr=0.012, keys=['motorcycle_typical_mass', 'motorcycle_projected_area']),
@@ -168,10 +168,10 @@ objects = [
     obj('sun', 'The Sun', 'Sun', 'Space', fact('sun_mass')['value_si'], 1.52e18, SPHERE, rho=1408, noPull=True, noThrow=True, keys=['sun_mass'],
         liftNote='A ball of plasma with no surface to grip. Treated as if it sat on a scale in 1 g.'),
     # feat-specific
-    obj('bar511', 'Record deadlift bar (511 kg)', 'bar', 'From the feats', 511, 0.5, TUMBLE, crush=250e6, rho=1000, keys=['strongman_deadlift_wr', 'mat_astm_a36']),
+    obj('bar511', 'Record deadlift bar (511 kg)', 'bar', 'From the feats', 511, 0.5, TUMBLE, crush=250e6, crushWhole=True, rho=1000, keys=['strongman_deadlift_wr', 'mat_astm_a36']),
     obj('backlift', 'Back-lift platform with two cars (2,422 kg)', 'platform', 'From the feats', 2422.18, 10, TUMBLE, crush=3e6, rho=100, noThrow=True, noPull=True, keys=['back_lift_record_ernst']),
     obj('desoto', '1937 DeSoto (Action Comics #1 cover car)', 'car', 'From the feats', 1429, 8.5, TUMBLE, crush=3e6, rho=110, crr=0.012, keys=['action_comics_1_cover_car_mass']),
-    obj('ruyi', 'Ruyi Jingu Bang, Sun Wukong’s staff', 'staff', 'From the feats', 7965, 1.5, TUMBLE, crush=250e6, rho=7800, keys=['ruyi_jingu_bang_mass', 'ruyi_jingu_bang_length']),
+    obj('ruyi', 'Ruyi Jingu Bang, Sun Wukong’s staff', 'staff', 'From the feats', 7965, 1.5, TUMBLE, crush=250e6, crushWhole=True, rho=7800, keys=['ruyi_jingu_bang_mass', 'ruyi_jingu_bang_length']),
     obj('range150', 'Secret Wars mountain range (150 billion tons)', 'mountain range', 'From the feats', 150e9 * ST, 1e7, TUMBLE, crush=100e6, rho=2700, noThrow=True, noPull=True, keys=['secret_wars_4_hulk_mountain'],
         liftNote='Like Everest, a real mountain range is part of the crust, not a loose object. The comic gives the number; physics gives the problem below.'),
     obj('sky', 'The sky, as Atlas holds it (our reading: the whole atmosphere)', 'sky', 'From the feats', fact('atm_total_mass')['value_si'], 5.1e14, TUMBLE, noThrow=True, noPull=True, keys=['atm_total_mass', 'atlas_holds_heavens'],
@@ -186,7 +186,9 @@ for o in objects:
     if o.get('crush'):
         mk = [x for x in k if x.startswith('mat_')]
         row('Grip limit (estimate): ' + o['name'], '%s MPa' % ('{:g}'.format(o['crush'] / 1e6)), mk or [], st='estimate',
-            note='Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength.')
+            note='Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength.'
+            + (' Solid metal all through, so the Game of catch also uses it as the strength of the whole object.' if o.get('crushWhole') else
+               ' The Game of catch also checks it against air pressure and stopping force spread over the whole object; the whole structure gives way well below this local value, so those checks err toward it surviving.'))
 row('Thrown-object drag coefficient', 'Spheres 0.46 below Mach 0.8 → 0.92 above Mach 1.2; tumbling bluff bodies 1.15 → 1.75', ['cd_sphere_mach_fit', 'cd_bluff_body_tumbling_subsonic', 'cd_cube_mach_fit'])
 row('Thrown-object area', 'Orientation-averaged projected area (a tumbling object shows all sides)', ['toyota_corolla_projected_area'], st='estimate')
 row('Rolling resistance (cars, trucks, trains)', 'cars 0.012 · trucks/buses 0.007–0.008 · locomotive on rail 0.0015', [], st='estimate', extra_sources=[WIKI_RR])
@@ -253,8 +255,8 @@ row('Quake magnitude', 'log₁₀ E = 1.5 M + 4.8, seismic efficiency 10⁻⁴',
 row('Crater size', 'Collins, Melosh & Marcus (2005): final = 1.25 × transient below 3.2 km, complex-crater eq. 27 above (held at 3.2 km across the switch); above 20 km/s, a same-energy, same-density impactor at 20 km/s. Gravity-regime scaling: an upper bound for small craters in rock or concrete.', ['crater_collins_transient_diameter', 'crater_collins_simple_final_diameter'])
 row('Air heating', 'Below 1 km/s: T₀ = T (1 + 0.2 M²). Above: equilibrium-air table computed for this sim at sea-level stagnation pressure (ρ₀v², about 1,500 atm at 11 km/s), dissociation and ionization included, radiation ignored, so an upper bound. Check: the same solver at ~0.9 atm gives ~11,700 K for Anderson’s Apollo case (11 km/s at 53 km; textbook ~11,600 K). At sea-level pressure dissociation is held back, so the table gives ~16,400 K at 11 km/s.', ['aero_stagnation_temperature_formula', 'aero_real_gas_validity_caution', 'aero_shuttle_shock_layer_air_temperature'], st='estimate',
     extra_sources=[{'url': 'https://doi.org/10.2514/4.861956', 'title': 'Anderson, Hypersonic and High-Temperature Gas Dynamics, 2nd ed. (AIAA, 2006)'}])
-row('Muscle model (fitted, not measured)', 'Unloaded limb speed at 2 m (scales with height): shove throw 35 m/s, overarm whip 84.6, punch and clap 17, leg drive 12, stomp 16. Real muscle, share of full strength from a standstill: shove 52% per hand, whip/punch/clap 30%, stomp 50%, legs 140% (they also carry his body weight). Comic book, fixed shares fitted so both modes match record athletes: shove 17% per hand, whip 7%, punch 6%, clap 7%, stomp 13%, legs 66%.', [], st='estimate')
-row('Body shape and air (assumed)', 'At 2 m (areas scale with height², lengths with height): drag Cd 1.0; frontal area 0.8 m² when sprinting, 0.3 m² head-first when jumping or launched by a stomp; claw dig area 0.2 m² when braced (a quarter of that per stride when sprinting); release height 0.9 × height; each sprint stride puts about 2.5× his weight on one foot. Overarm whip: effective mass at the hand 0.3% of body mass, fitted with the whip speed to the 47.3 m/s pitch; that is smaller than Dempster’s hand alone (0.6%) and is not a measured segment.', [], st='estimate')
+row('Muscle model (fitted, not measured)', 'Unloaded limb speed at the 2 m calibration size (scales with height, so 1.5× at the default 10 ft): shove throw 35 m/s, overarm whip 84.6, punch and clap 17, leg drive 12, stomp 16. Real muscle, share of full strength from a standstill: shove 52% per hand, whip/punch/clap 30%, stomp 50%, legs 140% (they also carry his body weight). Comic book, fixed shares fitted so both modes match record athletes: shove 17% per hand, whip 7%, punch 6%, clap 7%, stomp 13%, legs 66%.', [], st='estimate')
+row('Body shape and air (assumed)', 'Areas scale with height², lengths with height. Drag Cd 1.0. Facing area from the build: 4.4 m² for the default 10 ft Rex (tail trailing), 4.5 m² for Ollie, 0.8 m² for the 2 m calibration body. Head-first when jumping or launched by a stomp: 0.3 m² at 2 m (0.7 m² at 10 ft). Claw dig area when braced: 0.2 m² at 2 m, 0.46 m² at 10 ft (a quarter of that per stride when sprinting). Release height 0.9 × height; each sprint stride puts about 2.5× his weight on one foot. Overarm whip: effective mass at the hand 0.3% of body mass, fitted with the whip speed to the 47.3 m/s pitch; that is smaller than Dempster’s hand alone (0.6%) and is not a measured segment.', [], st='estimate')
 row('Ground resisting a fast foot', 'Bearing strength plus inertia: R = A (q + ρ v²) (Poncelet form; Forrestal & Luk 1992 cavity expansion)', [], st='estimate', extra_sources=[{'url': 'https://scholar.google.com/scholar?q=Forrestal+Luk+1992+%22Penetration+into+soil+targets%22', 'title': 'Forrestal & Luk (1992), Int. J. Impact Eng. 12(3):427–444'}])
 row('Granular ground strength grows with foot width', 'q_ult ∝ B for sand and gravel (Terzaghi ½γBN_γ term); research value is for a 0.1 m² footing', ['ground_loose_sand_ultimate_bearing_small_footing'], st='estimate')
 
@@ -284,7 +286,7 @@ feats = [
          run=dict(liftKg=511, action='throw', obj='baseball', angle=2)),
     feat('human', 'Top speed 12.42 m/s', 'Usain Bolt · Berlin, 2009', 'Average over his fastest 20 m in the 9.58 s world record.', ['bolt_peak_running_speed'],
          run=dict(liftKg=511, action='sprint')),
-    feat('comic', 'Hurdle a twenty-story building', 'Action Comics #1 · 1938', '“Leap 1/8th of a mile; hurdle a twenty-story building… raise tremendous weights.” Switches to Comic book mode and runs the jump at the strength it needs (20 stories ≈ 60 m). A 2 m Rex on real muscle tops out near 7 m.', ['action_comics_1_leap'],
+    feat('comic', 'Hurdle a twenty-story building', 'Action Comics #1 · 1938', '“Leap 1/8th of a mile; hurdle a twenty-story building… raise tremendous weights.” Switches to Comic book mode and runs the jump at the strength it needs (20 stories ≈ 60 m). The default 10 ft Rex on real muscle tops out near 16 m (the 2 m calibration body near 7 m).', ['action_comics_1_leap'],
          run=dict(solve='jump60', mode='comic', action='jump')),
     feat('comic', 'The car on the cover', 'Action Comics #1 · 1938', 'Probably a 1937 DeSoto, about 1.43 t. The car’s identity is disputed and the comic gives no weight.', ['action_comics_1_cover_car_mass'],
          run=dict(liftKg=1429, action='lift', obj='desoto')),
@@ -315,6 +317,16 @@ feats = [
          src_title='Quintilian', also=[('milo_of_croton_bull', 'Athenaeus')]),
 ]
 
+# Feats by human-sized people run on the 2 m, 180 kg calibration body: at those strengths the default
+# 10 ft, 2,700 kg Rex is too heavy to get up, so the result would say nothing about the feat.
+HUMAN_SIZED = {'511 kg deadlift', '2,422 kg back lift', 'Pulled a 188.83 t C-17', 'Shot put, 23.56 m', 'Fastest pitch, 105.8 mph',
+               'Top speed 12.42 m/s', 'The car on the cover', 'Captain America presses 800 lb'}
+for f in feats:
+    if f['title'] in HUMAN_SIZED:
+        assert f['run'], f['title']
+        f['run']['cal'] = True
+assert sum(1 for f in feats if f['run'] and f['run'].get('cal')) == len(HUMAN_SIZED)
+
 static = json.loads(subprocess.check_output(['node', '-e', 'process.stdout.write(JSON.stringify(require("./src/static-data.js")))'], cwd=HERE))
 heights = [{'label': h.get('short', h['label']), 'm': h['m']} for h in static['heights']]
 for h in static['heights']:
@@ -323,9 +335,45 @@ for h in static['heights']:
 for t in tiers:
     t.pop('keys')
 
+# ----------------------------------------------------------------------------- density and mass references
+densities = [
+    dict(id='plush', chip='Plush', short='plush stuffing', rho=30, keys=['density_plush_stuffing_estimate'],
+         note='Our estimate for a stuffed toy: no measured value found. Loose fibrefill batts are 6–21 kg/m³.'),
+    dict(id='water', chip='Water', short='water', rho=1000, keys=['density_water_4c'], note='Fresh water at 4 °C: 1,000 kg/m³. The 2 m, 180 kg calibration body has this density.'),
+    dict(id='build', chip='His build (default)', short='his build', rho=1060, keys=['rex_ollie_picture_build', 'density_bodybuilders_fry1987'],
+         note='The default Rex and Ollie: 10 ft, about 2,700 kg, measured from their picture. 1,060 kg/m³: lean bodybuilders (1,081 kg/m³ with lung air removed; Fry, Cisar & Housh 1987) less some air in the lungs.'),
+    dict(id='human', chip=None, short='a human body', rho=fact('density_human_body_measured')['value_si'], keys=['density_human_body_measured'], note=None),
+    dict(id='steel', chip='Steel', short='steel', rho=fact('density_structural_steel')['value_si'], keys=['density_structural_steel'], note=None),
+    dict(id='osmium', chip='Osmium', short='osmium', rho=fact('density_osmium')['value_si'], keys=['density_osmium'], note='The densest element at everyday pressure.'),
+    dict(id='whitedwarf', chip='White dwarf', short='white-dwarf matter', rho=fact('density_white_dwarf_sirius_b_mean')['value_si'], keys=['density_white_dwarf_sirius_b_mean'], note='Sirius B’s average density.'),
+    dict(id='nucleus', chip=None, short='an atomic nucleus', rho=fact('nuclear_saturation_density')['value_si'], keys=['nuclear_saturation_density'], note=None),
+    dict(id='neutronstar', chip='Neutron star', short='a neutron star', rho=fact('density_neutron_star_mean')['value_si'], keys=['density_neutron_star_mean'], note='A typical neutron star’s average density.'),
+]
+# the default build's density is the engine's (BUILDS.rex.rho and BUILDS.ollie.rho in src/engine.js)
+assert subprocess.check_output(['node', '-e', 'const P=require("./src/engine.js");process.stdout.write(String([P.BUILDS.rex.rho,P.BUILDS.ollie.rho]))'], cwd=HERE).decode() == '1060,1060'
+for d in densities:
+    row('Density: ' + (d['short'] + ' (the default Rex and Ollie)' if d['id'] == 'build' else d['short']), '{:,.0f} kg/m³'.format(d['rho']) if d['rho'] < 1e6 else '{:.3g} kg/m³'.format(d['rho']).replace('e+', ' × 10^'), d['keys'])
+    d.pop('keys')
+massRefs = [
+    dict(label='Deimos (moon of Mars)', short='Deimos', m=fact('deimos_mass')['value_si']),
+    dict(label='Phobos (moon of Mars)', short='Phobos', m=fact('phobos_mass')['value_si']),
+]
+row('Mass: Phobos and Deimos', '1.06 × 10^16 kg and 1.44 × 10^15 kg', ['phobos_mass', 'deimos_mass'])
+
+# Every other fact behind the Weight tab and the two-player tests gets its own row, labelled by area.
+USED_ABOVE = {d for d in ['density_plush_stuffing_estimate', 'density_water_4c', 'density_bodybuilders_fry1987', 'density_human_body_measured', 'density_structural_steel', 'density_osmium',
+                          'density_white_dwarf_sirius_b_mean', 'nuclear_saturation_density', 'density_neutron_star_mean', 'phobos_mass', 'deimos_mass']}
+for topic, prefix in [('density', 'Weight'), ('duo', None)]:
+    for f in json.load(open(os.path.join(HERE, 'research', f'final-{topic}.json')))['facts']:
+        if f['key'] in USED_ABOVE:
+            continue
+        label = (prefix or f.get('category', 'Rex and Ollie')) + ': ' + f['label'][0].lower() + f['label'][1:] if f['label'] else f['key']
+        # the vaporisation row draws on more than two sources (one per material): show them all
+        row(label, f['display'], [f['key']], note=None, extra_sources=[{'url': x['url'], 'title': x.get('title') or ''} for x in f['sources'][2:]] if f['key'] in ('heat_to_vaporise_per_kg',) else None)
+
 data = dict(tiers=tiers, surfaces=[{k: v for k, v in s.items() if not k.startswith('k_')} for s in surfaces], objects=objects,
             energyRefs=energy, overpressure=overpressure, heights=heights, speeds=speeds, calibration=calibration,
-            feats=feats, assumptions=static['assumptions'], sourceRows=rows)
+            feats=feats, assumptions=static['assumptions'], sourceRows=rows, densities=densities, massRefs=massRefs)
 
 
 def js(v):

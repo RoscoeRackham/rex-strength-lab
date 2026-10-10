@@ -1,0 +1,629 @@
+{
+ "facts": [
+  {
+   "key": "density_plush_stuffing_estimate",
+   "label": "Plush toy stuffing (packed polyester fiberfill): density",
+   "status": "estimate",
+   "value_si": 30,
+   "unit_si": "kg/m^3",
+   "low_si": 10,
+   "high_si": 60,
+   "display": "~30 kg/m³ (estimate). Loose fiberfill batts measure 5.6–9.6 kg/m³; one commercial batting about 21 kg/m³.",
+   "sources": [
+    {
+     "title": "US Patent 4,395,455 (DuPont, 1983): Polyester fiberfill batting having improved thermal insulating properties",
+     "url": "https://patents.google.com/patent/US4395455A/en"
+    }
+   ],
+   "notes": "No measured density for stuffed-toy filling was found; only retail listings and vendor blogs turned up. The DuPont patent gives fiberfill batting layers of 0.35–0.60 lb/ft³ (0.0056–0.0096 g/cm³), describes denser fiberfill as 1.0 lb/ft³ (0.016 g/cm³) or more, and gives commercial 'Sontique' batting as about 1.3 lb/ft³ (0.021 g/cm³). A stuffed toy is packed firmer than loose batting, so the sim uses 30 kg/m³. That is our estimate, plausibly 15–60. It ignores the fabric skin. At 2 m it gives 5.4 kg.",
+   "category": "density"
+  },
+  {
+   "key": "density_human_body_measured",
+   "label": "Whole human body density (young adults, hydrostatic weighing)",
+   "status": "verified",
+   "value_si": 1060,
+   "unit_si": "kg/m^3",
+   "low_si": 1047.5,
+   "high_si": 1072.7,
+   "display": "1.048–1.073 g/mL (women ~1.05, men ~1.07)",
+   "sources": [
+    {
+     "title": "Tesch, Papadopoulos, Dolgener & Tinsley (2022), New Equations for Hydrostatic Weighing without Head Submersion, J Funct Morphol Kinesiol 7(3):70, Table 2",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9506326/"
+    }
+   ],
+   "notes": "Criterion head-under hydrostatic weighing of 90 + 45 adults aged 18–36. Males 1.0727 ± 0.0102 and 1.0662 ± 0.0187 g/mL; females 1.0528 ± 0.0134 and 1.0475 ± 0.0157 g/mL. These values have residual lung air removed; with full lungs a person floats. 1,060 is the midpoint. The sim's default Rex and Ollie are also 1,060 kg/m³, but from a different route: lean bodybuilders less some lung air (density_bodybuilders_fry1987); the 2 m, 180 kg calibration body is 1,000 kg/m³.",
+   "category": "density"
+  },
+  {
+   "key": "density_water_4c",
+   "label": "Density of fresh water at 4 °C",
+   "status": "verified",
+   "value_si": 999.84,
+   "unit_si": "kg/m^3",
+   "low_si": 996.69,
+   "high_si": 1000,
+   "display": "0.9998395 g/mL at 4 °C (USGS table rounds to 1.00000)",
+   "sources": [
+    {
+     "title": "USGS Water Science School: Water Density",
+     "url": "https://www.usgs.gov/water-science-school/science/water-density"
+    }
+   ],
+   "notes": "The USGS table also lists 0.99802 at 21 °C and 0.99669 at 26.7 °C. The sim's Water chip uses 1,000 kg/m³. The 2 m, 180 kg calibration body has that density (BASE_V = 0.18 m³ in engine.js); the default Rex and Ollie are 1,060 kg/m³.",
+   "category": "density"
+  },
+  {
+   "key": "density_structural_steel",
+   "label": "Density of structural steel",
+   "status": "verified",
+   "value_si": 7850,
+   "unit_si": "kg/m^3",
+   "low_si": 7850,
+   "high_si": 8005,
+   "display": "7,850 kg/m³ (490 lb/ft³); Eurocode unit weight 77.0–78.5 kN/m³",
+   "sources": [
+    {
+     "title": "Eurocode Applied: steel design properties (EN 1991-1-1 Table A.4; ρ ≈ 7850 kg/m³)",
+     "url": "https://cdn.eurocodeapplied.com/design/en1993/steel-design-properties"
+    },
+    {
+     "title": "Iowa DOT IM 569, Computing structural steel weight (mass): 'Steel 490 lb./ft.3 (7850 kg/m3)'",
+     "url": "https://ia.iowadot.gov/erl/archiveapril2015/IM/content/569.htm"
+    }
+   ],
+   "notes": "Divided by g, the 77.0–78.5 kN/m³ unit weight is 7,852–8,005 kg/m³. 7,850 matches the steel-deck surface already in data.js. A 2 m steel Rex weighs 1,413 kg.",
+   "category": "density"
+  },
+  {
+   "key": "density_osmium",
+   "label": "Density of osmium, the densest element, at 20 °C",
+   "status": "verified",
+   "value_si": 22587,
+   "unit_si": "kg/m^3",
+   "low_si": 22578,
+   "high_si": 22596,
+   "display": "22.587 g/cm³ (iridium 22.562), 20 °C",
+   "sources": [
+    {
+     "title": "Girolami (2012), Osmium weighs in, Nature Chemistry 4:954, doi:10.1038/nchem.1479",
+     "url": "https://www.nature.com/articles/nchem.1479"
+    },
+    {
+     "title": "Author PDF of the same essay",
+     "url": "https://girolami-group.chemistry.illinois.edu/publications/publications/Nature%20Chem.%202012,%204,%20954.pdf"
+    }
+   ],
+   "notes": "Quote: 'the current values, 22.587 (Os) and 22.562 (Ir) g cm–3 at 20 °C differ by only 0.1%.' The essay describes osmium as the densest known metal. A search snippet gave ±0.009 g/cm³ from a 2007 Platinum Metals Review article that was not opened. The sim uses this as the densest matter that exists at everyday pressure. A 2 m osmium Rex weighs 4,066 kg.",
+   "category": "density"
+  },
+  {
+   "key": "sirius_b_mass_radius",
+   "label": "Sirius B (white dwarf): mass and radius",
+   "status": "verified",
+   "value_si": 2.0222e+30,
+   "unit_si": "kg",
+   "low_si": 1.9725e+30,
+   "high_si": 2.0719e+30,
+   "display": "1.017 ± 0.025 M☉; radius 0.803 ± 0.011 R☉/100 (0.808 with the Gaia DR2 parallax)",
+   "sources": [
+    {
+     "title": "Joyce, Barstow, Casewell et al. (2018), The gravitational redshift of Sirius B, MNRAS 481:2361 (arXiv:1809.01240)",
+     "url": "https://arxiv.org/abs/1809.01240"
+    },
+    {
+     "title": "ESA/Hubble heic0516: 98% of the Sun's mass, 12,000 km diameter",
+     "url": "https://esahubble.org/news/heic0516/"
+    }
+   ],
+   "notes": "The mass comes from the measured gravitational redshift (80.65 ± 0.77 km/s) and the known radius. The radius 0.803 ± 0.011 R☉/100 is from the paper's text. M☉ = 1.9884 × 10³⁰ kg is the project's sun_mass fact; R☉ = 6.957 × 10⁸ m is the IAU nominal value.",
+   "category": "density"
+  },
+  {
+   "key": "density_white_dwarf_sirius_b_mean",
+   "label": "White-dwarf matter: Sirius B average density (computed)",
+   "status": "estimate",
+   "value_si": 2770000000,
+   "unit_si": "kg/m^3",
+   "low_si": 2590000000,
+   "high_si": 2960000000,
+   "display": "~2.8 × 10⁹ kg/m³ (2.8 tonnes per cm³), Sirius B's average",
+   "sources": [
+    {
+     "title": "Joyce et al. (2018), MNRAS 481:2361",
+     "url": "https://arxiv.org/abs/1809.01240"
+    },
+    {
+     "title": "ESA/Hubble heic0516",
+     "url": "https://esahubble.org/news/heic0516/"
+    }
+   ],
+   "notes": "Our calculation: 1.017 × 1.9884e30 kg divided by (4/3)π(0.00803 × 6.957e8 m)³ gives 2.77e9 kg/m³. The paper's ±1σ in mass and radius gives 2.59e9–2.96e9; the Gaia radius gives 2.72e9. ESA's rounded press-release figures come from an older mass and are not used for the range. A white dwarf's centre is denser than its average.",
+   "category": "density"
+  },
+  {
+   "key": "neutron_star_typical",
+   "label": "Typical neutron star: mass, radius, central density",
+   "status": "verified",
+   "display": "~1.5 M☉, radius ~12 km, central density up to 5–10 × n₀ (n₀ ≈ 0.16 fm⁻³)",
+   "sources": [
+    {
+     "title": "Lattimer & Prakash (2004), The Physics of Neutron Stars, Science 304:536 (arXiv:astro-ph/0405262)",
+     "url": "https://arxiv.org/abs/astro-ph/0405262"
+    }
+   ],
+   "notes": "Quote: 'a mass M on the order of 1.5 solar masses, a radius R of ~12 km, and a central density nc as high as 5 to 10 times the nuclear equilibrium density n0 ≃ 0.16 fm−3'.",
+   "category": "density"
+  },
+  {
+   "key": "density_neutron_star_mean",
+   "label": "Neutron star: average density (computed)",
+   "status": "estimate",
+   "value_si": 412000000000000000,
+   "unit_si": "kg/m^3",
+   "low_si": 300000000000000000,
+   "high_si": 710000000000000000,
+   "display": "~4.1 × 10¹⁷ kg/m³ (about 400 million tonnes per cm³); ~1.5 × an atomic nucleus",
+   "sources": [
+    {
+     "title": "Lattimer & Prakash (2004), Science 304:536",
+     "url": "https://arxiv.org/abs/astro-ph/0405262"
+    }
+   ],
+   "notes": "Our calculation: 1.5 × 1.9884e30 kg divided by (4/3)π(12,000 m)³ gives 4.12e17. The range covers 1.4 M☉ in 13 km (3.0e17) up to 2.0 M☉ in 11 km (7.1e17). A 2 m neutron-star Rex weighs 7.42 × 10¹⁶ kg, about 7.0 Phobos masses.",
+   "category": "density"
+  },
+  {
+   "key": "nuclear_saturation_density",
+   "label": "Nuclear saturation density (inside an atomic nucleus)",
+   "status": "verified",
+   "value_si": 270000000000000000,
+   "unit_si": "kg/m^3",
+   "display": "ρ₀ = 2.7 × 10¹⁴ g/cm³ (n₀ = 0.16 fm⁻³)",
+   "sources": [
+    {
+     "title": "Hebeler, Lattimer, Pethick & Schwenk (2010), Constraints on neutron star radii based on chiral effective field theory interactions, PRL 105:161102 (arXiv:1007.1746)",
+     "url": "https://arxiv.org/abs/1007.1746"
+    },
+    {
+     "title": "Lattimer & Prakash (2004)",
+     "url": "https://arxiv.org/abs/astro-ph/0405262"
+    }
+   ],
+   "notes": "Hebeler et al. give 'saturation density ρ0 = 2.7 × 10^14 g cm−3', defined as nucleon mass × baryon density. Check: 0.16 fm⁻³ × 1.675e-27 kg = 2.68e17 kg/m³. The sim uses it as a comparison row. The neutron-matter caveat appears from 10¹⁷ kg/m³ and states the pressure and energy figures at this density only (Hebeler et al. give them at ρ₀); above about 10 ρ₀ (2.7 × 10¹⁸ kg/m³, past the densest neutron-star cores) the page says he is denser than any known matter instead.",
+   "category": "density"
+  },
+  {
+   "key": "neutron_drip_density",
+   "label": "Neutron drip density and the base of a neutron star’s crust",
+   "status": "verified",
+   "value_si": 400000000000000.0,
+   "unit_si": "kg/m^3",
+   "low_si": 400000000000000.0,
+   "high_si": 1e+17,
+   "display": "Neutron drip ρ_ND ≈ 4 × 10¹¹ g/cm³ (4 × 10¹⁴ kg/m³); the inner crust, nuclei in a sea of free neutrons, runs from there to about ρ₀/3 ≈ 10¹⁴ g/cm³ (10¹⁷ kg/m³)",
+   "sources": [
+    {
+     "title": "Chamel & Haensel (2008), Physics of Neutron Star Crusts, Living Reviews in Relativity 11:10, sections 1, 2.1 and 3",
+     "url": "https://doi.org/10.12942/lrr-2008-10"
+    },
+    {
+     "title": "Same paper, full text on PubMed Central (PMC5255077)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5255077/"
+    }
+   ],
+   "notes": "Read in the full text (PMC5255077, fetched 2026-10-10). Section 2.1: a neutron gas is present at densities greater than the neutron drip density ρND ≈ 4 × 10^11 g cm−3. Section 3: the inner crust extends from ρND ≃ 4 × 10^11 g cm−3 to ∼ ρ0/3 ≃ 10^14 g cm−3 and 'is characterized by the presence of free neutrons'; section 3.2 notes a rough estimate of 2 × 10^11, about half the value from complete calculations. Introduction: 'somewhat above 10^14 g cm−3 nuclei can no longer exist', and matter becomes a nearly pure neutron-matter plasma. The sim: below 4 × 10^14 kg/m³ squeezed matter is held up by its electrons (white-dwarf matter); from there to 10^17 kg/m³ it is neutron-rich nuclei in a sea of free neutrons; from 10^17 kg/m³ the neutron-matter caveat applies.",
+   "category": "density"
+  },
+  {
+   "key": "neutron_matter_energy_per_particle",
+   "label": "Energy stored in pure neutron matter at saturation density",
+   "status": "verified",
+   "value_si": 1559200000000000,
+   "unit_si": "J/kg",
+   "low_si": 1350000000000000,
+   "high_si": 1770000000000000,
+   "display": "16.3 ± 2.2 MeV per neutron (≈ 1.56 × 10¹⁵ J/kg ≈ 370 kt TNT per kg)",
+   "sources": [
+    {
+     "title": "Hebeler et al. (2010), PRL 105:161102",
+     "url": "https://arxiv.org/abs/1007.1746"
+    }
+   ],
+   "notes": "Quote: 'The inclusion of 3N forces leads to En(ρ0)/N = 16.3 ± 2.2 MeV'. With nucleon-nucleon forces only it is 10.4 MeV. The J/kg conversion is ours: 16.3 MeV × 1.602e-13 J/MeV / 1.6749e-27 kg. This is energy relative to free neutrons at rest, so it is released if the matter expands freely. Later beta decays and nuclear reactions add more. Treat it as a lower estimate for denser-than-ρ₀ matter.",
+   "category": "density"
+  },
+  {
+   "key": "neutron_star_matter_pressure_saturation",
+   "label": "Pressure of neutron-star matter at saturation density",
+   "status": "verified",
+   "value_si": 2.8e+32,
+   "unit_si": "Pa",
+   "low_si": 2.24e+32,
+   "high_si": 3.36e+32,
+   "display": "P(ρ₀) = 1.4–2.1 MeV fm⁻³ ≈ 2.2–3.4 × 10³² Pa (about 3 × 10²⁷ atmospheres)",
+   "sources": [
+    {
+     "title": "Hebeler et al. (2010), PRL 105:161102",
+     "url": "https://arxiv.org/abs/1007.1746"
+    }
+   ],
+   "notes": "Quote: 'for the values of the pressure we find, P(ρ0) = 1.4 − 2.1 MeV fm−3'. The conversion uses 1 MeV/fm³ = 1.602e32 Pa. This is the pressure that only a neutron star's gravity holds in. In the sim, Rex's indestructibility holds it.",
+   "category": "density"
+  },
+  {
+   "key": "neutron_star_matter_decompression",
+   "label": "What freed neutron-star matter does",
+   "status": "verified",
+   "display": "It expands, forms neutron-rich nuclear clusters, loses neutrons, then beta-decays toward r-process nuclei",
+   "sources": [
+    {
+     "title": "Lattimer, Mackie, Ravenhall & Schramm (1977), The decompression of cold neutron star matter, ApJ 213:225",
+     "url": "https://inspirehep.net/files/b46a0e2d39730f7ee382f8edaa0ac6c5"
+    }
+   ],
+   "notes": "Abstract: 'as the density falls below nuclear density, nuclear clusters are formed ... these nuclei lose neutrons to the external sea of neutrons ... when the β-decay time scale becomes shorter than the expansion time scale, β-decays take place'. The paper's motivating case is tidal disruption by a black hole. It does not give an explosion energy; the sim's energy figure comes from Hebeler et al. 2010.",
+   "category": "density"
+  },
+  {
+   "key": "gravitational_constant",
+   "label": "Newtonian constant of gravitation",
+   "status": "verified",
+   "value_si": 6.6743e-11,
+   "unit_si": "m^3 kg^-1 s^-2",
+   "display": "6.674 30(15) × 10⁻¹¹ m³ kg⁻¹ s⁻² (CODATA 2022)",
+   "sources": [
+    {
+     "title": "NIST CODATA: Newtonian constant of gravitation",
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?bg"
+    }
+   ],
+   "notes": "Used for Rex's and Ollie's own gravity. Earth itself keeps the engine's GM = 3.986004418e14.",
+   "category": "density"
+  },
+  {
+   "key": "schwarzschild_radius",
+   "label": "Schwarzschild radius (event-horizon radius of a non-spinning black hole)",
+   "status": "verified",
+   "display": "r_s = 2GM/c²; Earth's would be about 9 mm, the Sun's about 3.0 km",
+   "sources": [
+    {
+     "title": "Wikipedia: Schwarzschild radius",
+     "url": "https://en.wikipedia.org/wiki/Schwarzschild_radius"
+    }
+   ],
+   "notes": "Check: 2 × 3.986e14 / c² = 8.87 mm for Earth. The sim calls Rex a black hole when r_s ≥ the radius of a ball with his volume.",
+   "category": "density"
+  },
+  {
+   "key": "buchdahl_bound",
+   "label": "Buchdahl's limit: how compact a static body can be",
+   "status": "verified",
+   "display": "2GM/(Rc²) ≤ 8/9, so R ≥ 9/8 of the Schwarzschild radius (isotropic pressure, density not rising outward)",
+   "sources": [
+    {
+     "title": "Andréasson (2008), Sharp bounds on 2m/r of general spherically symmetric static objects, J. Diff. Eq. 245:2243 (arXiv:gr-qc/0702137)",
+     "url": "https://arxiv.org/abs/gr-qc/0702137"
+    },
+    {
+     "title": "Buchdahl (1959), General Relativistic Fluid Spheres, Phys. Rev. 116:1027",
+     "url": "https://link.aps.org/doi/10.1103/PhysRev.116.1027"
+    }
+   ],
+   "notes": "Andréasson's abstract: 'In 1959 Buchdahl obtained the inequality 2M/R ≤ 8/9 under the assumptions that the energy density is non-increasing outwards and that the pressure is isotropic.' The APS page itself was not readable. Andréasson shows the bound loosens toward 1 for materials allowed stronger stresses, which is how an indestructible Rex can get closer.",
+   "category": "density"
+  },
+  {
+   "key": "density_black_hole_rex_2m",
+   "label": "Density at which Rex is a black hole (computed)",
+   "status": "estimate",
+   "value_si": 1.3102e+27,
+   "unit_si": "kg/m^3",
+   "display": "3c²/(8πGR²) = 2.24 × 10²⁶ kg/m³ for the default 10 ft Rex (mass 5.7 × 10²⁶ kg = 96 Earths); 1.31 × 10²⁷ kg/m³ for the 2 m calibration body; scales as 1/height²",
+   "sources": [
+    {
+     "title": "Wikipedia: Schwarzschild radius",
+     "url": "https://en.wikipedia.org/wiki/Schwarzschild_radius"
+    },
+    {
+     "title": "NIST CODATA G",
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?bg"
+    }
+   ],
+   "notes": "Computed, not sourced. R = (3 × 0.18/4π)^⅓ = 0.350263 m; setting r_s = R gives m = Rc²/2G = 2.358e26 kg. Other sizes: 0.4 m plush 3.28e28 kg/m³ (7.9 Earths); 50 m kaiju 2.10e24 kg/m³ (987 Earths). Buchdahl's limit is reached at 8/9 of this mass, 2.10e26 kg at 2 m.",
+   "category": "density"
+  },
+  {
+   "key": "phobos_mass",
+   "label": "Mass of Phobos",
+   "status": "verified",
+   "value_si": 10618000000000000,
+   "unit_si": "kg",
+   "display": "1.06 × 10¹⁶ kg (GM 0.0007087 ± 0.0000006 km³/s²)",
+   "sources": [
+    {
+     "title": "JPL Solar System Dynamics: Planetary satellite physical parameters",
+     "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+    },
+    {
+     "title": "NASA NSSDC Mars Fact Sheet (Phobos 10.6 × 10¹⁵ kg)",
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html"
+    }
+   ],
+   "notes": "Mass = GM/G = 7.087e5 / 6.6743e-11 = 1.062e16 kg. The JPL GM comes from the MAR097 ephemeris; the NSSDC table (updated 19 May 2025) agrees at 10.6e15.",
+   "category": "density"
+  },
+  {
+   "key": "deimos_mass",
+   "label": "Mass of Deimos",
+   "status": "verified",
+   "value_si": 1441000000000000,
+   "unit_si": "kg",
+   "display": "1.44 × 10¹⁵ kg (GM 0.0000962 ± 0.0000028 km³/s²)",
+   "sources": [
+    {
+     "title": "JPL Solar System Dynamics: Planetary satellite physical parameters",
+     "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+    }
+   ],
+   "notes": "9.62e4 / 6.6743e-11 = 1.441e15 kg. The NSSDC Mars fact sheet still lists an older 2.4e15 kg; the JPL value is newer and used here.",
+   "category": "density"
+  },
+  {
+   "key": "prem_density_polynomials",
+   "label": "PREM density profile of the Earth (polynomials in x = r/6371 km)",
+   "status": "verified",
+   "display": "Inner core 13.0885 − 8.8381x²; outer core 12.5815 − 1.2638x − 3.6426x² − 5.5281x³; lower mantle 7.9565 − 6.4761x + 5.5283x² − 3.0807x³; then 5.3197 − 1.4836x (5701–5771 km), 11.2494 − 8.0298x (to 5971), 7.1089 − 3.8045x (to 6151), 2.6910 + 0.6924x (to 6346.6), 2.900 (to 6356), 2.600 (to 6368), ocean 1.020 (g/cm³)",
+   "sources": [
+    {
+     "title": "Dziewonski & Anderson (1981), Preliminary reference Earth model, PEPI 25:297 (doi:10.1016/0031-9201(81)90046-7)",
+     "url": "https://doi.org/10.1016/0031-9201(81)90046-7"
+    },
+    {
+     "title": "GENIE PREM implementation (code listing of the PREM density polynomials)",
+     "url": "https://hep.ph.liv.ac.uk/~costasa/genie_doxygen/master/html/namespacegenie_1_1utils_1_1prem.html"
+    }
+   ],
+   "notes": "The coefficients were read from the GENIE code listing; the original paper is paywalled. They were checked by integrating them: mass 5.976e24 kg, g = 10.68 m/s² at the core-mantle boundary, 4.40 at the inner-core boundary, central pressure 364 GPa, and Earth's binding energy 2.490e32 J. All agree with the published PREM values (next fact) to 0.1%. The sim replaces the 3 km ocean layer with 2,600 kg/m³ crust because Rex starts on land.",
+   "category": "density"
+  },
+  {
+   "key": "prem_checkpoints",
+   "label": "PREM values used to check the integration",
+   "status": "verified",
+   "display": "Central pressure 363.852 GPa; inner/outer core boundary g 4.4002 m/s²; core–mantle boundary g 10.6823 m/s²; surface g 9.8156 m/s²; outer core liquid, inner core solid",
+   "sources": [
+    {
+     "title": "Rodríguez-Mozos & Moya (2022), Internal structure and magnetic moment of rocky planets, A&A, Table 1 'Earth physical characteristics according to PREM' (arXiv:2203.01065)",
+     "url": "https://arxiv.org/abs/2203.01065"
+    }
+   ],
+   "notes": "The same paper's text: 'the outer core is dominated by liquid Fe ... and the inner core, which is composed by crystalline solid Fe'. The sim therefore gives the outer core no strength.",
+   "category": "density"
+  },
+  {
+   "key": "gravity_tunnel_time",
+   "label": "Fall time straight through the Earth (gravity tunnel)",
+   "status": "verified",
+   "value_si": 2280,
+   "unit_si": "s",
+   "display": "38 minutes along a diameter with the real (seismic) density profile; 42 minutes for a uniform Earth",
+   "sources": [
+    {
+     "title": "Klotz (2015), The gravity tunnel in a non-uniform Earth, Am. J. Phys. 83:231 (arXiv:1308.1342)",
+     "url": "https://arxiv.org/abs/1308.1342"
+    }
+   ],
+   "notes": "Abstract: 'The time taken to fall along the diameter is found to be 38 rather than 42 minutes.' Our PREM integration gives 38 min 10 s (2,290 s) and a top speed of 9,916 m/s at the centre. The uniform-Earth value is 42.17 min.",
+   "category": "density"
+  },
+  {
+   "key": "earth_sidereal_rotation",
+   "label": "Earth's sidereal rotation period",
+   "status": "verified",
+   "value_si": 86164.2,
+   "unit_si": "s",
+   "display": "23.9345 h, so Ω = 7.2921 × 10⁻⁵ rad/s",
+   "sources": [
+    {
+     "title": "NASA NSSDC Earth Fact Sheet",
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"
+    }
+   ],
+   "notes": "Ω = 2π/(23.9345 × 3600). Anderson's Theory of the Earth, Table A-5, gives 7.2921 × 10⁻⁵ rad/s.",
+   "category": "density"
+  },
+  {
+   "key": "energy_earth_binding_prem_computed",
+   "label": "Earth's gravitational binding energy, integrated from PREM (check)",
+   "status": "estimate",
+   "value_si": 2.4904e+32,
+   "unit_si": "J",
+   "display": "2.49 × 10³² J (our integral of G M(r) dm / r over PREM)",
+   "sources": [
+    {
+     "title": "Dziewonski & Anderson (1981) via GENIE coefficients",
+     "url": "https://hep.ph.liv.ac.uk/~costasa/genie_doxygen/master/html/namespacegenie_1_1utils_1_1prem.html"
+    }
+   ],
+   "notes": "This reproduces the 2.49e32 J that data.js holds as 'claimed' (energy_earth_gravitational_binding). That row could cite this computation as an independent check.",
+   "category": "density"
+  },
+  {
+   "key": "walking_running_peak_vertical_force",
+   "label": "Peak vertical ground force in walking and running",
+   "status": "verified",
+   "value_si": 1.2,
+   "unit_si": "body weights",
+   "low_si": 1,
+   "high_si": 1.5,
+   "display": "Walking 1.0–1.5 × body weight (rising with speed); running 2.0–2.9 ×",
+   "sources": [
+    {
+     "title": "Nilsson & Thorstensson (1989), Ground reaction forces at different speeds of human walking and running, Acta Physiol Scand 136:217 (PubMed 2782094)",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/2782094/"
+    }
+   ],
+   "notes": "Abstract, read through the Europe PMC API: 'The peak amplitude of the vertical reaction force in walking and running increased with speed from approximately 1.0 to 1.5 b.w. and 2.0 to 2.9 b.w. respectively' (12 men, 1.0–3.0 m/s walking). The sim uses 1.2 for walking, which is our choice for normal pace.",
+   "category": "density"
+  },
+  {
+   "key": "bearing_factor_nq",
+   "label": "Bearing capacity factor N_q (depth term) for sand and gravel",
+   "status": "verified",
+   "value_si": 18.4,
+   "low_si": 18.4,
+   "high_si": 64.19,
+   "display": "N_q = 18.40 at φ = 30° (loose sand), 64.19 at φ = 40° (dense sand and gravel)",
+   "sources": [
+    {
+     "title": "USACE EM 1110-1-1905 Bearing Capacity of Soils (1992), Table 4-4 (Meyerhof, Hansen, Vesic factors)",
+     "url": "https://www.tugraz.at/fileadmin/user_upload/Institute/IAG/Files/18_Bearing_Capacity_of_Soils-USACE.pdf"
+    }
+   ],
+   "notes": "Same source and friction angles as the project's sand and gravel bearing facts. In the sim the soil above a sinking foot adds γ·D·N_q of strength. Shape and depth factors are left out, which slightly overstates the sinking.",
+   "category": "density"
+  },
+  {
+   "key": "atmosphere_retention_rule",
+   "label": "Rule of thumb for keeping an atmosphere",
+   "status": "verified",
+   "value_si": 6,
+   "display": "A gas evaporates if v_rms > v_esc/6, so a body keeps it if v_esc > 6 v_rms",
+   "sources": [
+    {
+     "title": "SFU PHYS 390 Lecture 9, Planetary atmospheres (text: Carroll & Ostlie ch. 18.3, 21.5)",
+     "url": "https://www.sfu.ca/~boal/390lecs/390lec9.pdf"
+    }
+   ],
+   "notes": "Quote: 'It is found that vrms > vesc/6 is good enough for the atmosphere to evaporate.' Other teaching sources use 6× the mean speed, or a stricter 10× for billions of years; those were seen only in search snippets. It is a rule of thumb. Air at 288.15 K: v_rms = √(3 × 287.05 × 288.15) = 498 m/s, so the threshold is 2,989 m/s.",
+   "category": "density"
+  },
+  {
+   "key": "bondi_radius_and_rate",
+   "label": "Bondi accretion: radius and rate",
+   "status": "verified",
+   "display": "r_B = GM/c_s²; Ṁ = 4πλG²M²ρ∞/c∞³ with λ = 0.625 for air-like gas (γ = 1.4)",
+   "sources": [
+    {
+     "title": "Edgar (2004), A review of Bondi–Hoyle–Lyttleton accretion, New Astron. Rev. 48:843 (arXiv:astro-ph/0406166), eqs. 30–32",
+     "url": "https://arxiv.org/abs/astro-ph/0406166"
+    },
+    {
+     "title": "λ(γ = 1.4) = 0.625 tabulated in arXiv:1908.07356",
+     "url": "https://arxiv.org/abs/1908.07356"
+    }
+   ],
+   "notes": "Bondi's steady solution for γ = 1.4 has λ = 0.625, so Ṁ = 2.5πG²M²ρ/c³; the isothermal value is 2.24× higher. Only feedback (heating, radiation) makes real rates lower, so the sim calls the rate rough, not an upper bound. An indestructible Rex is not a true sink: the gas piles up on him.",
+   "category": "density"
+  },
+  {
+   "key": "iau_nominal_solar_radius",
+   "label": "Nominal solar radius",
+   "status": "verified",
+   "value_si": 695700000,
+   "unit_si": "m",
+   "display": "1 R☉ = 6.957 × 10⁸ m",
+   "sources": [
+    {
+     "title": "IAU 2015 Resolution B3 (arXiv:1510.07674)",
+     "url": "https://arxiv.org/abs/1510.07674"
+    }
+   ],
+   "notes": "Used to turn Sirius B's radius into metres.",
+   "category": "density"
+  },
+  {
+   "key": "stevenson_core_probe",
+   "label": "Stevenson's proposal: sinking a probe to Earth's core in molten iron",
+   "status": "verified",
+   "display": "10⁸–10¹⁰ kg of molten iron; about a week to reach the core",
+   "sources": [
+    {
+     "title": "Stevenson (2003), Mission to Earth's core: a modest proposal, Nature 423:239 (Caltech record)",
+     "url": "https://authors.library.caltech.edu/39229"
+    }
+   ],
+   "notes": "Comparison only. Stevenson's mass sinks by cracking the rock open (molten iron in a crack), which is a different mechanism from Rex shoving rock aside. A 10⁸ kg Rex in the sim takes about 2.8 hours to stick at the inner core.",
+   "category": "density"
+  },
+  {
+   "key": "earth_surface_heat_flow",
+   "label": "Earth's total surface heat flow",
+   "status": "verified",
+   "value_si": 47000000000000,
+   "unit_si": "W",
+   "low_si": 45000000000000,
+   "high_si": 49000000000000,
+   "display": "47 ± 2 TW",
+   "sources": [
+    {
+     "title": "Davies & Davies (2010), Earth's surface heat flux, Solid Earth 1:5",
+     "url": "https://se.copernicus.org/articles/1/5/2010/"
+    }
+   ],
+   "notes": "Comparison for the average heat a settling neutron-star Rex dumps into the planet: at 2 m, about 3.6e24 J over ~2,200 years, about 50 TW (the sim's central estimate; the settling time spans about 1,400 to 29,000 years).",
+   "category": "density"
+  },
+  {
+   "key": "deep_rock_strength_assumption",
+   "label": "Strength of rock against a body pushed through it, at any depth (sim assumption)",
+   "status": "estimate",
+   "value_si": 1700000000,
+   "unit_si": "Pa",
+   "low_si": 100000000,
+   "high_si": 4100000000,
+   "display": "1.7 GPa in all solid layers (crust, mantle, inner core); 0 in the liquid outer core",
+   "sources": [
+    {
+     "title": "Project fact ground_granite_ultimate_bearing_small_punch (USACE EM 1110-1-2908; Hoek)",
+     "url": "https://www.cedengineering.com/userfiles/Rock%20Foundations-R1.pdf"
+    },
+    {
+     "title": "Rodríguez-Mozos & Moya (2022): liquid outer core, solid inner core",
+     "url": "https://arxiv.org/abs/2203.01065"
+    }
+   ],
+   "notes": "Our assumption. The surface granite bearing value is reused everywhere because no measurement exists for rock resisting a body at these depths and speeds. Deep rock is hotter (weaker) and far more confined (stronger). Across 0.1–4.1 GPa the fall-through threshold at 2 m moves from about 3.1e6 to 1.25e8 kg (his weight less the buoyancy of the crust). For a 2 m white-dwarf Rex the stop point moves from about 10 km from the centre (weak rock: he swings through the centre first and stops on a later pass) to 646 km (strong rock). The settling times on the page show the spread from rock strength, the drag coefficient and his own gravity's drag on the rock together (fast end: 4.1 GPa, drag coefficient 2, rock sound speed 3.2 km/s; slow end: 0.1 GPa, 0.5, no gravitational drag).",
+   "category": "density"
+  },
+  {
+   "key": "gravitational_drag_ostriker",
+   "label": "Gravitational drag (dynamical friction) on a body moving through a gas",
+   "status": "verified",
+   "display": "F = I × 4π(GM)²ρ/V² with M = V/cₛ: I = ½ ln[(1+M)/(1−M)] − M below sound speed (→ M³/3 when slow); I = ½ ln(1 − 1/M²) + ln(Vt/r_min) above it",
+   "sources": [
+    {
+     "title": "Ostriker (1999), Dynamical Friction in a Gaseous Medium, ApJ 513:252 (arXiv:astro-ph/9810324)",
+     "url": "https://arxiv.org/abs/astro-ph/9810324"
+    }
+   ],
+   "notes": "Abstract: 'The dynamical drag force has the form Fdf = −I × 4π(GMp)²ρ0/V² ... its limits are I → M³/3 for M << 1 and I → ln(Vt/rmin) for M >> 1.' The subsonic and supersonic I are the paper's eqs. 14 and 15 (read from the arXiv PDF). The paper is for a uniform gas; the sim uses it for rock as a rough estimate, with ln(Vt/r_min) set to 5 (our estimate, 3–10). At the masses on the page the late, slow swings dominate the settling time, so that choice changes little; the rock sound speed matters more (next fact).",
+   "category": "density"
+  },
+  {
+   "key": "rock_sound_speed_prem",
+   "label": "Speed of sound in the Earth's solid layers, for the gravitational-drag term",
+   "status": "estimate",
+   "value_si": 6000,
+   "unit_si": "m/s",
+   "low_si": 3200,
+   "high_si": 13700,
+   "display": "Sim: 6 km/s (estimate). PREM: S waves 3.2–7.3 km/s, P waves 5.8–13.7 km/s in solid layers (inner core: S 3.5–3.7, P 11.0–11.3 km/s)",
+   "sources": [
+    {
+     "title": "Dziewonski & Anderson (1981), Preliminary reference Earth model, PEPI 25:297 (doi:10.1016/0031-9201(81)90046-7)",
+     "url": "https://doi.org/10.1016/0031-9201(81)90046-7"
+    },
+    {
+     "title": "ObsPy TauP model file prem.nd (PREM velocity table)",
+     "url": "https://github.com/obspy/obspy/blob/master/obspy/taup/data/prem.nd"
+    }
+   ],
+   "notes": "Ostriker's formula needs one sound speed; rock carries both P and S waves, and a gas has neither, so 6 km/s is our pick inside the PREM range, not a measurement. The ranges were read from ObsPy's prem.nd table (isotropic PREM). The page's settling and turn-back ranges use 3.2 km/s (the slowest PREM wave speed in solid rock, which gives the most drag) at the fast end and no gravitational drag at the slow end. For a 2 m neutron-star Rex, 3.5 / 6 / 9 / 13.7 km/s give about 750 / 2,200 / 3,550 / 4,400 years to settle.",
+   "category": "density"
+  }
+ ],
+ "gaps": []
+}

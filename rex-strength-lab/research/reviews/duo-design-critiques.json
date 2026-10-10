@@ -1,0 +1,1216 @@
+{
+ "density": {
+  "fact_checks": [
+   {
+    "key": "density_plush_stuffing_estimate",
+    "ok": true,
+    "issue": "Patent numbers confirmed on the page: layers of 0.35–0.60 lb/ft³ (0.0056–0.0096 g/cm³), denser fiberfill 'of 1.0 lb./ft.3 (0.016 g./cm.3) or more', and commercial 'Sontique' batting at about 1.3 lb/ft³ (0.021 g/cm³). The estimate label is honest. Two small problems. The 5.6–9.6 kg/m³ figure is for the layers inside DuPont's multilayer insulating structure, not for 'loose batts' in general. low_si (10) also contradicts the note's 'plausibly 15–60'.",
+    "corrected_value": "value 30 (estimate); low_si 15, high_si 60, to match the notes"
+   },
+   {
+    "key": "density_human_body_measured",
+    "ok": true,
+    "issue": "Confirmed through the Europe PMC full text; the PMC page itself is behind a reCAPTCHA. Table 2 gives males 1.0727 ± 0.0102 and 1.0662 ± 0.0187, and females 1.0528 ± 0.0134 and 1.0475 ± 0.0157 g/mL. n = 44+21 men and 46+24 women, aged 18–36. low_si and high_si are group means, not the spread across people, so say 'group means'. 'With full lungs a person floats' is not in the source: remove it or source it.",
+    "better_source": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC9506326/fullTextXML (machine-readable copy of the same paper)"
+   },
+   {
+    "key": "density_water_4c",
+    "ok": true,
+    "issue": "Confirmed: 0.9998395 g/mL at 4.0 °C. The table lists 1.00000 at 39.2 °F/4.0 °C, 0.99802 at 21 °C and 0.99669 at 26.7 °C."
+   },
+   {
+    "key": "density_structural_steel",
+    "ok": true,
+    "issue": "Confirmed: Eurocode Applied gives ρ ≈ 7850 kg/m³ and EN 1991-1-1 Table A.4 gives 77.0–78.5 kN/m³. Iowa DOT IM 569 gives 'Steel 490 lb./ft.3 (7850 kg/m3)'. high_si 8005 is an artefact: 78.5 kN/m³ is 7,850 kg/m³ × 10 m/s², a rounded load value rather than a heavier steel.",
+    "corrected_value": "low_si 7850, high_si 7850 (or about 7,850 ± 1%)"
+   },
+   {
+    "key": "density_osmium",
+    "ok": true,
+    "issue": "Confirmed quote: 'the current values, 22.587 (Os) and 22.562 (Ir) g cm–3 at 20 °C differ by only 0.1%'. The essay calls osmium the 'densest known metal'. The low_si/high_si of ±9 kg/m³ come from a Platinum Metals Review snippet that was never opened, so they are unsupported: open that source or drop the range."
+   },
+   {
+    "key": "sirius_b_mass_radius",
+    "ok": true,
+    "issue": "Confirmed in the arXiv PDF: 80.65 ± 0.77 km/s gives 1.017 ± 0.025 M☉; radius 0.803 ± 0.011 R☉/100, or 0.808 ± 0.011 with the Gaia DR2 parallax. ESA heic0516 confirms '98 percent' and 'a diameter of 12,000 kilometres'."
+   },
+   {
+    "key": "density_white_dwarf_sirius_b_mean",
+    "ok": false,
+    "issue": "The central value is right (recomputed 2.769e9 kg/m³). The range is wrong. The paper's ±1σ in mass and radius gives 2.59e9–2.96e9, and the Gaia radius gives 2.72e9. ESA's press-release figures (98%, 12,000 km) are rounded and come from the older 2005 mass, so 2.15e9 is not a meaningful lower bound, and high_si 2.8e9 sits below the 1σ upper end.",
+    "corrected_value": "value 2.77e9; low_si 2.59e9; high_si 2.96e9"
+   },
+   {
+    "key": "neutron_star_typical",
+    "ok": true,
+    "issue": "Confirmed verbatim in Lattimer & Prakash (2004): 'a mass M on the order of 1.5 solar masses, a radius R of ~12 km, and a central density nc as high as 5 to 10 times the nuclear equilibrium density n0 ≃ 0.16 fm−3'."
+   },
+   {
+    "key": "density_neutron_star_mean",
+    "ok": true,
+    "issue": "Recomputed: 4.121e17 (1.5 M☉, 12 km), 3.02e17 (1.4 M☉, 13 km) and 7.13e17 (2.0 M☉, 11 km). The estimate label is correct."
+   },
+   {
+    "key": "nuclear_saturation_density",
+    "ok": true,
+    "issue": "Confirmed: 'saturation density ρ0 = 2.7 × 10^14 g cm−3', and 0.16 fm⁻³ × m_n = 2.68e17 kg/m³."
+   },
+   {
+    "key": "neutron_matter_energy_per_particle",
+    "ok": true,
+    "issue": "Confirmed: 'En(ρ0)/N = 16.3 ± 2.2 MeV', and 10.4 MeV with NN forces only. 1.5592e15 J/kg is 372.7 kt TNT per kg. This is pure neutron matter at ρ0. The page applies it from 1e17 kg/m³ (0.37 ρ0) upward, where the energy per particle is well below 16 MeV, so 'at least 16 MeV per neutron' is not a lower bound between 1e17 and 2.7e17. Set the caveat threshold to ρ ≥ ρ0, or word it differently below ρ0."
+   },
+   {
+    "key": "neutron_star_matter_pressure_saturation",
+    "ok": true,
+    "issue": "Confirmed: 'P(ρ0) = 1.4 − 2.1 MeV fm−3', which is 2.24–3.36e32 Pa. The neutron-star preset is 1.53 ρ0, where the pressure is higher, so the page's 'about 3 × 10³² Pa' should read 'at least ~3 × 10³² Pa'."
+   },
+   {
+    "key": "neutron_star_matter_decompression",
+    "ok": true,
+    "issue": "Abstract confirmed: clusters form below nuclear density, nuclei lose neutrons to the neutron sea, then β-decay. The paper does not say 'violently'. That word comes from the Hebeler pressure and energy, so do not attribute it to Lattimer et al. 1977."
+   },
+   {
+    "key": "gravitational_constant",
+    "ok": true,
+    "issue": "Confirmed: 6.674 30(15) × 10⁻¹¹ (2022 CODATA). K.G × K.M_E = 3.98602e14 agrees with K.GM to 4e-6."
+   },
+   {
+    "key": "schwarzschild_radius",
+    "ok": true,
+    "issue": "Confirmed on Wikipedia: r_s = 2GM/c², Sun about 3.0 km, Earth about 9 mm. The owner prefers primary or authoritative sources; a GR text confirms r = 2GM (G = c = 1) as the horizon.",
+    "better_source": "Carroll, Lecture Notes on General Relativity, ch. 7 (arXiv:gr-qc/9712019) https://arxiv.org/abs/gr-qc/9712019"
+   },
+   {
+    "key": "buchdahl_bound",
+    "ok": true,
+    "issue": "The abstract quote is confirmed. The same abstract shows that any matter with p ≥ 0 that satisfies the dominant energy condition (Ω = 3) obeys 2M/R ≤ 48/49, not 8/9. The page text built on this fact, 'ordinary matter can't even hold its shape once it's within 9/8 of that radius', therefore overstates it (see physics issues)."
+   },
+   {
+    "key": "density_black_hole_rex_2m",
+    "ok": true,
+    "issue": "Recomputed: 1.3102e27 kg/m³; m = 2.3583e26 kg = 39.49 M_E. The other sizes are also right: 0.4 m gives 3.275e28 (7.90 M_E), 50 m gives 2.096e24 (987 M_E), 0.1 m gives 5.24e29. The Buchdahl mass is 2.096e26. It is correctly labelled as computed. The ball-equivalent caveat ('Thorne's hoop conjecture') has no source; cite Thorne (1972) or drop the name."
+   },
+   {
+    "key": "phobos_mass",
+    "ok": true,
+    "issue": "Confirmed: JPL GM 0.0007087 ± 0.0000006 km³/s² (MAR097), giving 1.0618e16 kg. The NSSDC Mars sheet (last updated 19 May 2025) lists 10.6 × 10¹⁵ kg."
+   },
+   {
+    "key": "deimos_mass",
+    "ok": true,
+    "issue": "Confirmed: JPL GM 0.0000962 ± 0.0000028 km³/s², giving 1.441e15 kg. NSSDC still lists 2.4 × 10¹⁵ kg."
+   },
+   {
+    "key": "prem_density_polynomials",
+    "ok": true,
+    "issue": "The coefficients match the GENIE PREM.cxx listing line by line. An independent numerical integration (prem_check.js) reproduces g(3480 km) = 10.683, g(1221.5 km) = 4.401 and a central pressure of 363.9–364.1 GPa. GENIE is a secondary code listing, so 'verified' rests on the reproduced checkpoints; say so in the notes.",
+    "better_source": "Dziewonski & Anderson (1981) Table 1 via https://doi.org/10.1016/0031-9201(81)90046-7 (paywalled); the checkpoint paper below is the open cross-check"
+   },
+   {
+    "key": "prem_checkpoints",
+    "ok": true,
+    "issue": "Confirmed in Table 1 of arXiv:2203.01065: 363.852 GPa, 4.4002, 10.6823 and 9.8156 m/s², and mass 5.974e24. The text says the inner core is 'composed by crystalline solid Fe'."
+   },
+   {
+    "key": "gravity_tunnel_time",
+    "ok": true,
+    "issue": "Confirmed: 'The time taken to fall along the diameter is found to be 38 rather than 42 minutes.' Independent integration gives 38.17 min and 9,916 m/s, and an independent 3-D run from the pole gives 2,291 s."
+   },
+   {
+    "key": "earth_sidereal_rotation",
+    "ok": true,
+    "issue": "Confirmed: 'Sidereal rotation period (hrs) 23.9345' (NSSDC, updated 15 Nov 2024). The Anderson Table A-5 citation in the notes was not checked."
+   },
+   {
+    "key": "energy_earth_binding_prem_computed",
+    "ok": true,
+    "issue": "Reproduced independently: 2.4904e32 J with the ocean replaced by crust, and 2.4889e32 J with PREM's ocean. The estimate (computed) label is fine."
+   },
+   {
+    "key": "walking_running_peak_vertical_force",
+    "ok": true,
+    "issue": "Abstract confirmed through the Europe PMC API (PubMed blocks scripts): walking about 1.0–1.5 b.w. and running 2.0–2.9 b.w. These are single-foot force-plate peaks, which matters for how the rule is applied (see physics issues). The value 1.2 is a choice, which the notes say."
+   },
+   {
+    "key": "bearing_factor_nq",
+    "ok": true,
+    "issue": "Confirmed in USACE EM 1110-1-1905 Table 4-4: φ 30° gives Nq 18.40 and φ 40° gives 64.19."
+   },
+   {
+    "key": "atmosphere_retention_rule",
+    "ok": true,
+    "issue": "Confirmed (SFU PHYS 390 Lecture 9, eq. 9.4): 'vrms > vesc/6 is good enough for the atmosphere to evaporate'. The lecture applies it with exobase temperatures (Earth ~1000 K), not surface temperature. The page qualifies it as 'out in space at room temperature', which is acceptable."
+   },
+   {
+    "key": "bondi_radius_and_rate",
+    "ok": false,
+    "issue": "Edgar's eqs. 30–31 and the quote are confirmed. Eq. 30 uses c_s at r_B, and Edgar adds that Shima et al. recommend twice eq. 31 (eq. 32). Calling the 2πG²M²ρ/c³ rate an 'upper bound' is wrong. Bondi's own steady solution for γ = 1.4 has λ = 0.625, so Ṁ = 4πλG²M²ρ/c³ = 2.5πG²M²ρ/c³, 1.25× higher; the isothermal value λ = e^1.5/4 = 1.12 is 2.24× higher. Only feedback (heating and radiation) makes the real rate lower. An indestructible Rex is also not a sink: gas piles up on him.",
+    "corrected_value": "Ṁ ≈ 2.5π G²M²ρ∞/c∞³ for γ = 1.4 (λ = 0.625); label it 'rough, without feedback', not 'upper bound'",
+    "better_source": "Bondi (1952) MNRAS 112:195; λ(γ = 1.4) = 0.625 is also tabulated in arXiv:1908.07356 and the isothermal e^1.5/4 in arXiv:1707.00741"
+   },
+   {
+    "key": "iau_nominal_solar_radius",
+    "ok": true,
+    "issue": "Confirmed: '1R⊙N = 6.957 × 10^8 m'."
+   },
+   {
+    "key": "stevenson_core_probe",
+    "ok": true,
+    "issue": "Confirmed (Caltech abstract): 'about a week to reach the core, and the minimum mass of molten iron required would be 10^8–10^10 kg'."
+   },
+   {
+    "key": "earth_surface_heat_flow",
+    "ok": true,
+    "issue": "Confirmed: 'Our final preferred estimate is 47±2 TW'."
+   },
+   {
+    "key": "deep_rock_strength_assumption",
+    "ok": false,
+    "issue": "Labelled correctly as an estimate, but the sensitivity note is mislabelled and incomplete. The 2,200–29,000 year spread for a neutron-star Rex comes from σ 0.1–4.1 GPa and k 0.5–2 together; σ alone gives 3,130–20,600 years (reproduced). Both figures ignore his own gravity's drag on the rock, which pushes the low end below 2,000 years (see physics issues). The fall-through threshold itself moves from 3.1e6 kg (0.1 GPa) to 1.25e8 kg (4.1 GPa) at 2 m. The white-dwarf stop radius moves from 7 km to 615 km (reproduced). 'Only bodies within a few times the threshold depend on this number' understates that.",
+    "corrected_value": "Settling for a neutron-star Rex is about 1,500–30,000 years across σ, k and gravitational drag; the white-dwarf stop point is anywhere from about 7 to 615 km from the centre"
+   },
+   {
+    "key": "energy_chicxulub_impact (energyRefs 'chicxulub' = 4.2e23 J used in '8.7 × Chicxulub')",
+    "ok": false,
+    "issue": "The project's own fact is 'disputed' with no value_si and a range of 1e23–5.8e25 J. A precise multiple such as '8.7 × the Chicxulub value' therefore overstates certainty.",
+    "corrected_value": "State it as 'roughly 4–40 times the dinosaur-killing impact (whose energy estimates vary ~10×)', or compare to Earth's binding energy instead"
+   }
+  ],
+  "physics_issues": [
+   {
+    "severity": "critical",
+    "issue": "The model leaves out his own gravity acting on the rock he moves through: gravitational drag (dynamical friction) and Bondi–Hoyle–Lyttleton accretion. Drag in fallThrough/settle is A_b(σ + kρv²) with A_b = 0.3 m², which does not depend on mass, so the settling time grows in proportion to m. Gravitational drag scales as m², and for dense Rex it dominates. The accretion radius 2Gm/v² at 10 km/s is 0.099 m for a neutron-star Rex (R = 0.35 m), 1.33 m at 1e18 kg and 133 m at 1e20 kg. The design's edge-case claims '1e18 kg settles in ~66,000 years; 1e20 kg in 6.6 million' (which the current engine shows) are wrong by orders of magnitude and get the trend backwards. For the neutron-star preset the effect is comparable to the modelled drag: 0.06–1.8× on the first trip.",
+    "fix": "Add a gravitational-drag term to both fallThrough and settle, e.g. F = 4πG²m²ρ I(M)/v² (Ostriker 1999 form, c_s from PREM or ~8 km/s, lnΛ ≈ 3–10), or at minimum a BHL term πr_A²ρv² with r_A = 2Gm/(v² + c_s²). Above ~1e17 kg (where r_A ≳ R) stop quoting settle() and say 'his gravity dominates the rock around him; the sim only estimates this'. Widen the neutron-star text to 'turns back a few metres (roughly 3–9 m) short' and 'settles in roughly 1,500–30,000 years'.",
+    "evidence": "/tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/duo/density-check/calc/gravdrag2.js. Neutron star: first-trip ratio 0.06–1.8, short-fall 3.4–9.1 m, settling 1,580–4,050 yr. 1e18 kg: ratio 10–330, settling 300–2,700 yr (design 66,300). 1e20 kg: ratio 1e5–3e6, settling 4–41 yr (design 6.6 million). Engine check (engine_check.js): weight() returns 66,334 yr at 1e18, 6.63e6 at 1e20 and 6.6e7 at 1e21."
+   },
+   {
+    "severity": "major",
+    "issue": "The far-turnaround detection (algorithm steps 6f and 6g) misfires just above the fall-through threshold. The friction impulse resets u to 0, so v_r flips sign by numerical noise. The code then records an 'innermost point' and a 'far turnaround' seconds after the start, and weight() hands off to settle(). For m within ~0.4% above threshold (any height), the page would say he 'coasts to a stop 88–161 m under the far side's surface' 19–34 s later, 20,015 km west of the antipode, with dLon = −180°.",
+    "fix": "Accept a far turnaround only after a real pass: minR < 0.5 R_E or angular travel > 90°, and v_r crossing zero with hysteresis (|v_r| > 1 m/s on both sides). Otherwise keep integrating to 'stuck'. Add a regression test at m = 5.201e7 and 5.21e7 kg (2 m).",
+    "evidence": "scan2.js against the current engine: 3 bad masses per 1.002 step, the largest at 1.004 × threshold, at H = 0.5, 2, 10 and 50 m. edge.js: m = 5.201e7 gives firstPass {t: 19 s, depthShort: 88 m, dLonDeg: −180, westKm: 20015} and settle.rStop = 1,221.5 km."
+   },
+   {
+    "severity": "major",
+    "issue": "The energy shown for planet regimes uses eLow = G m M_E / R_E, labelled 'roughly' and 'order of magnitude'. For the black-hole regime, Earth's matter falls through the horizon. Accretion can release up to ~6% of M_E c² (~3e40 J), or very little if the flow is spherical and advective, so 1.5e34 J could be wrong by up to ~6 orders of magnitude. For 'earthFalls', matter near him is compressed far below R_E, so G m M_E / R_E is a floor, not a typical value.",
+    "fix": "For blackHole, show no single 'Energy released' number. Say 'at least ~G m M_E/R_E; possibly far more; not modelled'. For earthFalls and reshapes, label eLow as 'at least'.",
+    "evidence": "G m M_E/R ≈ 2.7e41 J if all of Earth reached his 0.35 m radius (black-hole Rex), against eLow 1.48e34 J."
+   },
+   {
+    "severity": "major",
+    "issue": "Verdict suffix 'Anything within {dBeat} falls onto him' overstates. Inside d_beat his pull only beats Earth's in magnitude. The ground and anchored things do not fall onto him (rock is crushed only within r_crush ≈ 8 m). Loose things on the ground slide toward him even beyond d_beat, out to √(Gm/(μg)) (917 m at μ 0.6 for a neutron-star Rex).",
+    "fix": "Use 'Within {dBeat} his pull is stronger than Earth's: loose things (soil, water, people) within about {√(Gm/(μg))} slide or fall toward him.' The bedrock does not move unless it is within rCrush.",
+    "evidence": "Neutron star: dBeat 710.4 m, slip distance 917 m (μ 0.6), rCrush 7.86 m."
+   },
+   {
+    "severity": "major",
+    "issue": "Tidal text 'Within {tidal1g} ... by more than 1 g, enough to stretch them' misleads. A 1 g head-to-feet difference puts about m Δa/8 ≈ 100 N (~10 kg) of tension through an 80 kg person's middle, less than hanging from a bar.",
+    "fix": "Report the stretch as a force, e.g. 'at 10 m the pull difference is 1,800 g, a tension of ~180 kN through their middle, enough to tear a person apart', and use 1 g only as 'noticeable'. Or pick a damage threshold, with a source or a clear estimate label.",
+    "evidence": "Tension at the middle of a uniform rod = mΔa/8 (derived). Neutron star at 10 m: Δa = 1,847 g gives 1.8e5 N for 80 kg."
+   },
+   {
+    "severity": "major",
+    "issue": "B7 says 'General relativity says ordinary matter can't even hold its shape once it's within 9/8 of that radius'. Buchdahl's bound holds only for isotropic pressure and density not rising outward. Andréasson (the cited source) shows that any matter satisfying the dominant energy condition can reach 2M/R = 48/49.",
+    "fix": "Use 'A ball of ordinary fluid can't support itself inside 9/8 of that radius (Buchdahl's limit); even the stiffest matter relativity allows can't get closer than 49/48 (Andréasson 2008). Only his indestructibility keeps him in one piece up to the horizon.'",
+    "evidence": "The Andréasson abstract (fetched) gives sup 2m/r ≤ ((1+2Ω)²−1)/(1+2Ω)², with Ω = 3 under the dominant energy condition."
+   },
+   {
+    "severity": "major",
+    "issue": "Fall-through and stopping results are stated with false precision, given the rock-strength guess. 'No rock can hold him' is categorical, but with the cited 4.1 GPa upper value rock holds up to 1.25e8 kg (2 m). A 1e8 kg Rex does not sink at all at 4.1 GPa. The white-dwarf stop point is quoted as '216 km', yet σ = 0.1–4.1 GPa gives 7–615 km and 1.7–2.4 h.",
+    "fix": "Hedge every σ-dependent output. Say 'No rock can hold him' only above σ_high·A_b/g; between σ_low and σ_high say 'Most rock can't hold him'. Give the stop radius as 'about 200 km from the centre (anywhere from near the centre to ~600 km, depending on rock strength)'. Do the same for the 1.56e7 kg 'punches into granite' threshold.",
+    "evidence": "wd.js (independent integrator): white dwarf at σ 1.7 GPa gives 216.9 km, 1.889 h, 1,977 m/s and 19.7 km east (matches the design); σ 0.1 GPa gives 7.4 km and 2.43 h; σ 4.1 GPa gives 615 km and 1.74 h. 1e8 kg at 4.1 GPa is held at the surface."
+   },
+   {
+    "severity": "major",
+    "issue": "The walk and run rules are inconsistent with each other and with the cited data. Walk compares 1.2 W on ONE leg (single-foot force-plate peaks, Nilsson & Thorstensson) with the TWO-leg jump force 1.4F. Run uses F > W, although the source gives 2.0–2.9 b.w. per stance and the project's own sprint() assumes 2.5 W per foot. At F = 1.01 W the chips would say 'Can walk and run' while the bullet text cites 1.2× per step.",
+    "fix": "State the per-leg basis explicitly. Either one leg gives 0.7F and near-straight legs are taken as ~2× stronger (explain this), or use one consistent rule: walk 1.4F ≥ 1.2W, run 1.4F ≥ 2.5W (the sprint's own per-stance load), with a note that standing straight-legged needs little muscle.",
+    "evidence": "engine moveCheck: walk = 1.4F ≥ 1.2W, run = F > W. sprint() comment: 'each stance briefly carries about 2.5x body weight on one foot'."
+   },
+   {
+    "severity": "major",
+    "issue": "'Matter denser than osmium exists in nature only inside stars' (static-data.js card and B6) is unsourced and probably false just above osmium's density. Giant-planet cores and brown dwarfs are not stars, and textbook Jupiter models give a central density of about 31 g/cm³.",
+    "fix": "Use 'Nothing this dense exists at everyday pressure; it is found only under enormous pressure, deep inside giant planets, stars and dead stars.' Or source the specific claim.",
+    "evidence": "Search result: LibreTexts Astronomy 'Interior of Jupiter' gives a central density of about 31 g/cm³ (a model value; not used as a fact here, only to show the claim is unsafe)."
+   },
+   {
+    "severity": "minor",
+    "issue": "The documented self-gravity threshold for the move hooks is off by 10×. G m/(0.5H)² ≥ 1e-3 g gives m ≥ 1.469e8 kg at 2 m, not 1.47e7. The engine's selfGravityOn is correct.",
+    "fix": "Correct E20 to m ≥ 1.47e8 kg (ρ ≥ 8.2e8 kg/m³ at 2 m).",
+    "evidence": "basic.py: 1e-3 × 9.80665 / 6.6743e-11 = 1.4693e8. engine_check.js: selfGravityOn is false at 1.4e8 and true at 1.5e8."
+   },
+   {
+    "severity": "minor",
+    "issue": "The Bondi rate is called an 'upper bound', but Bondi's own γ = 1.4 solution is 25% higher (λ = 0.625). More important, an indestructible Rex is not a sink: infalling air piles up as a hot, dense layer (scale height ~cm at 4e7 m/s²), so steady Bondi inflow continues only as fast as that layer cools. The 7,460 K 'upper bound' uses a sea-level stagnation table; near him the pressure is far higher, which suppresses dissociation, so it is not clearly an upper bound either.",
+    "fix": "Use 2.5πG²M²ρ/c³ (or keep 2π and say 'rough'). Add: 'He can't swallow the air, so it piles up on him; the inflow only continues as fast as that hot layer loses heat.' Call the temperature 'rough' rather than 'an upper bound'."
+   },
+   {
+    "severity": "minor",
+    "issue": "Body-stage sinking text always says 'up to his hips', but the body stage covers 0.45H to H. Example: m = 17,860 kg on loose sand gives sink 1.80 m (stage 'body') and the verdict 'sinks in up to his hips (1.8 m)'; 12,000 kg gives 1.14 m.",
+    "fix": "Map sink/H to a body level: ≤0.5 hips, ≤0.7 chest, ≤0.85 shoulders, ≤1 up to his head.",
+    "evidence": "hips.js: groundUnderWeight(17,860 kg, sand) gives sinks/body/1.80."
+   },
+   {
+    "severity": "minor",
+    "issue": "Planet-regime text is muddled for 'reshapes' (5.97e21 kg ≤ m < M_E). B8 says 'Earth falls onto him in about {tff}', which is false below M_E. rCrush uses surface granite (2,700 kg/m³, 1.7 GPa) even though he is at the centre, where the ambient pressure is 364 GPa and the inner core is 13,000 kg/m³. For the black hole, 'Earth falls in within tff' is wrong: matter collapses onto and around a 0.35 m horizon in ~tff, but swallowing it is far slower.",
+    "fix": "For reshapes, say 'He sinks to the centre; his gravity squeezes the core around him far beyond what rock can bear.' Drop tff there. For the black hole, say 'Earth collapses onto it within about {tff}; how fast the hole swallows it is not modelled.'"
+   },
+   {
+    "severity": "minor",
+    "issue": "The 'outOfSight' text says 'Soil can't stop him ... sinks to bedrock' and 'Soil layers are usually metres to tens of metres thick'. The thickness claim is unsourced; sedimentary fill can be kilometres deep. The design's own N_q model gives a finite stopping depth (e.g. 2,264 m for 2e7 kg in sand).",
+    "fix": "Use 'He sinks out of sight, down until deeper, stronger ground or bedrock stops him; the sim can't know how deep that is.' Source any thickness figure, or drop it."
+   },
+   {
+    "severity": "minor",
+    "issue": "Energy comparisons overstate certainty or flatter the effect. '8.7 × Chicxulub' uses a value the project marks disputed. 'On average about half of the 47 TW' hides that the first swings deposit ~567 Mt every 38 min (~1,000 TW) deep in the planet, and that the heat would not reach the surface for a very long time.",
+    "fix": "Compare to Earth's binding energy or give a range for Chicxulub. Add 'early swings dump about one 570-megaton blast's worth every 38 minutes'."
+   },
+   {
+    "severity": "minor",
+    "issue": "The throw self-gravity details are loose. (a) The real-muscle note 'nothing he throws escapes him' must be conditional: at 2 m an 84.6 m/s whip escapes from r0 = 0.5 m when m < 2.7e13 kg. (b) 'Falls back onto him' ignores Earth's gravity beyond d_beat: if 1/r_max = 1/r0 − v²/(2Gm) puts r_max > d_beat, the object lands on the ground near him instead. (c) The lift adds the self-pull collinearly (overhead), but the throw hold check adds it at right angles (hypot); use one geometry.",
+    "fix": "Show the real-muscle note only when escapeNeeded > the cap. Add the r_max check. Use one geometry in both moves."
+   },
+   {
+    "severity": "minor",
+    "issue": "Hand-held self-pull caveat '±50%' is optimistic. For objects touching a dense limb, the nearest body part dominates: a neutron-star hand and forearm of 0.022 m = 1.6e15 kg pulls with ~1e7 m/s² at 0.1 m, the same order as the whole-body point-mass value.",
+    "fix": "Use 'rough, perhaps a factor of 2–3, for things touching him'."
+   },
+   {
+    "severity": "minor",
+    "issue": "'Loose surface rock (σ = UCS 200 MPa)' is mislabelled. UCS is the unconfined strength of intact rock, not of loose rock.",
+    "fix": "Use 'unconfined surface rock (200 MPa)'."
+   },
+   {
+    "severity": "minor",
+    "issue": "The model uses inconsistent surface gravity: groundUnderWeight uses K.g = 9.80665, fallThrough uses premG(R_E) = 9.8203 with rotation. No contradiction was found (the 3-D threshold is the stricter one), but a few-tenths-of-a-percent mass window is classified twice with different g.",
+    "fix": "Use the same g, including the 0.0339 m/s² centrifugal term at the equator, in both, or document it."
+   },
+   {
+    "severity": "minor",
+    "issue": "At plush density, air buoyancy (ρ_air/ρ = 4%) is ignored in W.",
+    "fix": "Use W = (m − ρ_air V) g, or note it."
+   }
+  ],
+  "missing": [
+   "His gravity's drag and accretion on rock during the fall (see the critical issue). The fall/settle model needs either that term or a mass cap (~1e17 kg at 2 m) with an honest 'not modelled' message above it.",
+   "A decompression caveat for white-dwarf (and generally above-osmium) matter, not only neutron matter. Sirius-B-density matter has an electron degeneracy pressure of ~1.3e22 Pa and ~8e12 J/kg of kinetic energy (≈1.9 kt TNT/kg), about 3.9e21 J for the white-dwarf Rex. This is our estimate from Chandrasekhar's equation of state (hips.js); it needs a textbook source before use.",
+   "Seismic and surface effects of each pass through the Earth. Use the existing seismicMagnitude and K.seismicEff on the ~2.4e18 J per pass, plus the melt or vapour channel (~2e11 J per metre of path), the entry hole, and the far-side exit 'a few metres down'.",
+   "Effects on his surroundings with Comic ground at high density. Loose soil, water and air within √(Gm/(μg)) slump toward him (917 m for the neutron-star preset). Say whether Comic ground also protects the rock within rCrush, or only the floor under his feet.",
+   "Atmosphere depletion and move gating below 1e-3 M_E. For example, at 1e21 kg (2 m) the Bondi rate (8.7e14 kg/s, rough) would swallow the 5.1e18 kg atmosphere within ~2 hours, yet the moves are still computed. Gate on rB, rCrush or atmosphere-loss time as well as M_RESHAPE.",
+   "Ollie in the duo tests: per-body groundUnderWeight, fallThrough and planet checks (a dense Ollie beside a normal Rex falls through on his own). Combined-mass checks (mA + mB against M_RESHAPE and M_E, and a combined horizon check when they touch). His own Weight readout, not only mutual gravity.",
+   "A visible uncertainty control or range for deep-rock strength (open question 1). Most σ-dependent outputs need ranges, not single values.",
+   "A regression test for the spurious-turnaround bug, and a tighter first-trip tolerance (see test corrections).",
+   "Sources for the hoop conjecture (Thorne 1972) and for the Bondi λ(γ) eigenvalue if the formula is kept. A source for any soil-thickness claim.",
+   "Buoyancy in air and water at plush density (floats in water at 30 kg/m³; 4% lighter in air)."
+  ],
+  "test_corrections": [
+   {
+    "name": "Neutron-star Rex: first trip through the Earth",
+    "problem": "The depthShort tolerance of 2.5–4.5 m is too loose to catch step-size error. The current engine (3 s steps) returns 2.78 m, while converged runs give 3.22–3.25 m (independent RK4 at dt 0.1–0.5 s; fall3d.js) and the orbit average gives 3.26 m. t = 2,293.4 s, dLon −7.277°, 809.1 km, minR 298.7 km, vMax 9,910 m/s and latitude 45° (−7.275°, −44.98°, 211.1 km) all reproduce.",
+    "corrected_expected": "depthShort 3.0–3.5 m (k = 1, no gravitational drag); with gravitational drag added, roughly 3.4–9 m"
+   },
+   {
+    "name": "NEW: Near-threshold spurious turnaround",
+    "problem": "Not covered. The current engine returns a bogus firstPass (t = 19–34 s, depthShort 88–161 m, dLon −180°) for m ≤ 1.004 × threshold at any height.",
+    "corrected_expected": "m = 5.201e7 and 5.21e7 kg at 2 m: stuck in the inner core near 1,217 km after ~10+ h (or stillSinking), never a firstPass. Assert firstPass.t > 1,500 s and |dLon| < 90° whenever firstPass is set."
+   },
+   {
+    "name": "Self-gravity hook threshold (E20)",
+    "problem": "The design text says m ≥ 1.47e7 kg at 2 m, but the formula gives 1.469e8.",
+    "corrected_expected": "selfGravityOn false at 1.4e8 kg and true at 1.5e8 kg (2 m)"
+   },
+   {
+    "name": "Edge cases: settling at 1e18 and 1e20 kg",
+    "problem": "'~66,000 years' and '6.6 million years' ignore gravitational drag, which is 10–3e6× the modelled drag at these masses.",
+    "corrected_expected": "Either 'not modelled above ~1e17 kg', or with an Ostriker-type term roughly 300–2,700 years at 1e18 kg and 4–40 years at 1e20 kg (order of magnitude)"
+   },
+   {
+    "name": "Neutron-star Rex settles",
+    "problem": "The numbers reproduce (4,919 yr, 9.39e7 half-trips, rStop 1.879 mm, 2.37e18 J, 3.646e24 J), but the stated sensitivity mixes σ and k and leaves out gravitational drag.",
+    "corrected_expected": "σ alone 3,130–20,600 yr; σ and k 2,235–29,060 yr; with gravitational drag the low end ≈ 1,600 yr"
+   },
+   {
+    "name": "White-dwarf Rex sinks and sticks",
+    "problem": "The values reproduce independently (216.9 km, 1.889 h, 1,977 m/s, 19.7 km east, 2.447e16 J), but the test should also pin the σ sensitivity so the page cannot quote 216 km as a fact.",
+    "corrected_expected": "σ 0.1 GPa gives ~7 km and 2.4 h; σ 4.1 GPa gives ~615 km and 1.74 h"
+   },
+   {
+    "name": "Sinking a little (two-stage)",
+    "problem": "The values reproduce, but there is no test for body-stage depths above hip height, where the wording is wrong.",
+    "corrected_expected": "Add m = 17,860 kg on loose sand: sinks, stage body, sink 1.80 m; the page says 'up to his neck/shoulders', not 'hips'"
+   },
+   {
+    "name": "Preset masses / Sirius B density range",
+    "problem": "Masses reproduce exactly. The white-dwarf density range in the fact is wrong (see fact check).",
+    "corrected_expected": "ρ_WD 2.77e9 (1σ range 2.59e9–2.96e9)"
+   },
+   {
+    "name": "Throwing out of his own gravity",
+    "problem": "Reproduces within tolerance (engine: v 11,614.6, vOut 10,728.5, escapeNeeded 4,449.6, threshold 1.468e21 kg). Add the real-muscle boundary so the 'nothing escapes' note is conditional.",
+    "corrected_expected": "Real-muscle whip (84.6 m/s at 2 m) escapes from r0 = 0.5 m only if m < 2.7e13 kg"
+   }
+  ],
+  "verdict": "The arithmetic and most sources hold up. I fetched all the cited pages and confirmed the numbers. Tesch and Nilsson came through Europe PMC because PMC and PubMed block scripts. I recomputed every test value independently: preset masses, black-hole densities, self-gravity, Bondi, tidal, mutual gravity, catch and the throw-escape values. I re-integrated PREM separately (38.17 min, 9,916 m/s, 363.9 GPa, 2.490e32 J). A separate 3-D integrator reproduces the neutron-star first trip (2,293 s, 3.2 m short, −7.28°) and the white-dwarf and near-threshold stops. The orbit-averaged settling (4,919 yr) also reproduces.\n\nThe design cannot ship as written. Fix these before building:\n(1) Critical: the fall and settling model ignores his own gravity's drag on the rock, which scales as m². That makes the quoted 66,000-year (1e18 kg) and 6.6-million-year (1e20 kg) settling times wrong by orders of magnitude, and it widens the neutron-star numbers to about 3–9 m short and 1,500–30,000 years.\n(2) A turnaround-detection bug in the specified algorithm, present in the current engine, shows nonsense ('88 m short of the far side after 19 s, 20,015 km west') just above the fall-through threshold.\n(3) Black-hole and Earth-collapse energies are shown as 'roughly' G m M_E/R_E when that is only a floor.\n\nThe page text also overstates in several places: 'anything within 710 m falls onto him', '1 g tidal is enough to stretch them', the Buchdahl wording, 'denser than osmium only inside stars', single-number stop points that depend on the rock-strength guess, inconsistent walk and run rules, 'up to his hips' at any depth, and Bondi 'upper bound'. Add the white-dwarf decompression caveat, seismic effects of each pass, Comic-ground surroundings effects, and per-body checks for Ollie."
+ },
+ "contest": {
+  "fact_checks": [
+   {
+    "key": "aw_waf_table_dimensions",
+    "ok": true,
+    "issue": "Confirmed on the WAF page (fetched): 71.1 / 101.6 cm heights; top 91.4 × 66.0 cm; elbow pads 17.8 cm square and 5.1 cm thick, set 5.1 cm from their edge; touch pads 25.4 cm long × 10.2 cm high; pegs 2.5 cm across and 15.2 cm high; 3/4 in plywood; steel ≤ 5.1 cm. The same page has load-path facts the design leaves out. The elbow pads sit on a 3.2 mm steel plate held by two 6 mm (1/4 in) × 44 mm bolts. The pegs sit midway along each side edge, 1 in in. Sit-down tables 'should be secured to a platform or floor'. Riser platforms exist for short competitors. The 'equipment makers quote 104 cm' aside has no source."
+   },
+   {
+    "key": "aw_elbow_pad_spacing",
+    "ok": true,
+    "issue": "Arithmetic is right: 66.04 − 2 × (5.08 + 8.89) = 38.1 cm, given the stated assumption. Not a WAF value, so it is correctly labelled an estimate. WAF also says the pads overlap by half a pad to the right of centre (right-arm table), so the elbows are offset about 8.9 cm sideways. That is worth noting if the elbow positions are drawn."
+   },
+   {
+    "key": "aw_pin_and_elbow_foul_rules",
+    "ok": true,
+    "issue": "Pin wording, the elbow foul and 'any two fouls' are all confirmed on cawf.ca/rulessummarized. The same page carries rules the design must use and does not. 'When you get to the table you must: 1) Grab the peg at the side'. Letting go of the peg is a warning. And 'Foot rule: you may wrap your legs around the table legs or lift both feet off the floor'. A competitor can therefore be fully anchored to the table, which contradicts the design's premise that foot friction limits the arm-wrestling force (see physics issue 1).",
+    "better_source": "https://cawf.ca/rulessummarized (add the peg and foot rules as a fact)"
+   },
+   {
+    "key": "aw_humeral_fracture_series_ogawa_1997",
+    "ok": true,
+    "issue": "Confirmed in the PubMed abstract (efetch 9042875): 30 cases, 28 men and 2 women, age 15-60 (mean 30), all spiral, 23% butterfly fragment, 23% radial nerve palsy, all at full force. The mechanism is the internal rotators switching from concentric to eccentric. That supports modelling eccentric (yielding) strength in the losing arm (physics issue 9)."
+   },
+   {
+    "key": "aw_humeral_torque_pitchers_sabick_2004",
+    "ok": true,
+    "issue": "Confirmed in the PubMed abstract and on the Boise State page: 92 ± 16 N·m, 25 professional pitchers, 'averaged 48% of the theoretical torsional strength'. It is an average of per-pitcher ratios, so 92/0.48 is only approximate."
+   },
+   {
+    "key": "aw_humerus_torsional_strength",
+    "ok": false,
+    "issue": "The numbers are right, but the cited DOAJ URL returned 403 when fetched, and the framing misleads. Dini et al. are confirmed via PubMed: 31.35 N·m (suprapectoral holes) and 25.08 N·m (subpectoral). However, in the 31 N·m group 6 of 8 specimens broke in the shaft, away from the hole. So about 30 N·m is close to what those cadaver bones actually took, not just a stress-raiser artifact. The page tile '× what breaks a human humerus (~190 N·m)' overstates: 190 is a theoretical value for healthy bone, while the only measured failures cited are 6 times lower.",
+    "corrected_value": "~190 N·m theoretical for healthy bone (Sabick, 92/0.48); measured cadaver failures 25-31 N·m (Dini 2021, most in the shaft). Show both on the page.",
+    "better_source": "https://pubmed.ncbi.nlm.nih.gov/33615250/ (PMC7879170)"
+   },
+   {
+    "key": "aw_internal_rotation_torque_lo_2013",
+    "ok": true,
+    "issue": "Confirmed in Table 1 of the full PDF (https://ojs.ub.uni-konstanz.de/cpa/article/download/5698/5188). Winners CON 45°/s 79.55 ± 19.28, ECC 86.02 ± 21.32; losers 66.32 ± 11.54, 71.17 ± 14.60 N·m; 30 men, 173.8 cm, 66.3 kg; not strapped. low_si/high_si mix the loser-concentric and winner-eccentric means, so they are a span of group means, not a range; say so. Eccentric is about 8% above concentric, and the design's Hill model ignores that."
+   },
+   {
+    "key": "aw_elite_hook_force_kamayev_2024",
+    "ok": true,
+    "issue": "Confirmed in Table 1 of the PDF. Hook: 49.4/46.8 kgf (62 kg athlete), 72.2/83.5 kgf (90 kg), 70.7/75.6 kgf (136 kg). The Kern FL1K dynamometer is rated to 1,000 N, so 819 N is near the top of its range. The 'bending the hand' exercise reached 84.2 kgf, which is higher than the hook, but it is a different movement."
+   },
+   {
+    "key": "aw_force_share",
+    "ok": false,
+    "issue": "Correctly labelled an estimate, but the reasoning is unsound. Both bounds divide one group's arm force by a different person's lift. The low bound uses untrained 66 kg men's torque (240 N at the hand) over the 511 kg record deadlift. The high bound uses a 90 kg champion's hook over the same record lift. A 'share of full strength' must come from the same person. Lo's subjects make 200-240 N at the hand; an untrained man's deadlift is roughly 1-2× body mass, about 650-1,300 N (my assumption, not sourced here). That gives a same-person share of roughly 0.15-0.37, not 0.05. The mid value is anchored on bone failure, which presumes that record humans' full effort reaches the breaking torque. Ogawa shows fractures are rare events, not the norm at full effort.",
+    "corrected_value": "Range should be roughly 0.1-0.4 (estimate) until a same-person source is found; show the range on the page.",
+    "better_source": "Need a study reporting both arm-wrestling (or shoulder internal-rotation) force and a whole-body lift for the same subjects"
+   },
+   {
+    "key": "anthro_forearm_center_of_grip_ansur2",
+    "ok": true,
+    "issue": "Confirmed in the ANSUR II TR-15/007 PDF: dimension 37, men's mean 34.90 cm, SD 1.80; stature (dimension 75) 175.62 cm. Measured with the upper arm hanging at the side and the elbow at 90°, horizontally from the olecranon to the dowel centre."
+   },
+   {
+    "key": "anthro_radiale_stylion_ansur2",
+    "ok": true,
+    "issue": "Confirmed: dimension 67, men's mean 26.79 cm, SD 1.54."
+   },
+   {
+    "key": "anthro_forearm_hand_inertia",
+    "ok": true,
+    "issue": "Confirmed in the BMClab file: 'Forearm hand EJC-STYL 0.022 0.682 0.318 0.468 0.827 0.565'. Matches Winter's table."
+   },
+   {
+    "key": "aw_lever_and_effective_mass",
+    "ok": true,
+    "issue": "Arithmetic reproduced: 0.022 × (0.827 × 0.1525 / 0.19)² = 0.0096932. The 0.19 H lever (0.199 H less about 1-2 cm from the olecranon to the joint axis) is a reasonable estimate."
+   },
+   {
+    "key": "table_ps2_panel_requirements",
+    "ok": true,
+    "issue": "The numbers are confirmed in PS 2-18 Table 2 (Single Floor 24: 2.45 kN static, 1.78 kN after impact, 102 N·m impact; note b) and Section 7.1 (30 in shot-bag drop). Two over-specifications. PS 2 rates panels by span (24 in joist spacing), not by thickness, so '19 mm panel' is an inference. And '76 mm disc' does not appear in PS 2 (it is from ASTM E661, which is not cited).",
+    "corrected_value": "Label as 'a floor panel rated for 24-inch joist spacing (Single Floor 24)'"
+   },
+   {
+    "key": "table_elbow_capacity",
+    "ok": false,
+    "issue": "Fine as a vertical-load estimate, but it is the wrong limit for the contest. The table's job in arm wrestling is to carry the sideways push between the two competitors: through the pegs, the elbow pads (two 6 mm bolts each, per WAF) and the frame. No lateral capacity is estimated, and no steel strength is used, although the brief asks for 'wood/steel strength as estimates'.",
+    "corrected_value": "Add a lateral table capacity. My rough estimate: a 25 mm steel peg gripped 7.5 cm up yields at about 3.4 kN (25 × 3 mm tube) to 5.1-8.7 kN (solid A36 bar, yield to plastic), plus pad-bolt bearing in plywood of perhaps 1-2 kN per bolt. That is a few kN per side."
+   },
+   {
+    "key": "table_slam_rating",
+    "ok": true,
+    "issue": "Acceptable as a labelled estimate with the 10× cut-off flagged as judgment. Note it on the page: the PS 2 test is a 30 lb shot bag dropped 30 in onto a panel spanning joists, not a hand slamming a padded touch pad near the frame."
+   },
+   {
+    "key": "sumo_ring_diameter",
+    "ok": true,
+    "issue": "Confirmed in the JSA PDF: 'an inner circle a little over 4.55 m in diameter'; dohyō 6.7 m square and 60 cm high."
+   },
+   {
+    "key": "codata_G",
+    "ok": true,
+    "issue": "Confirmed on NIST: 6.674 30(15) × 10⁻¹¹, CODATA 2022. engine.js already has K.G = 6.6743e-11, so reuse it."
+   },
+   {
+    "key": "newton_impact_depth",
+    "ok": false,
+    "issue": "Wikipedia does state D ≈ L ρi/ρm and 'valid only if the velocity is high enough to ignore friction, but lower than the speed of sound in the target'. The design's use is outside that regime. T-5 is a 3.8 km/s impact into concrete (about its sound speed) at a density ratio of 1.7e14, and gives 1.2e14 m, about 10 million Earth diameters. The test also runs on comic ground, where the ground never breaks. Wikipedia is also a secondary source (it cites Gamow 1961 and Principia).",
+    "corrected_value": "Do not print a Newton depth. A neutron-star-dense partner cannot rest on any ground (the engine's groundUnderWeight gives 'fallsThrough'), so defer to the Weight tab's fallThrough result; on comic ground, no penetration.",
+    "better_source": "engine.js groundUnderWeight/fallThrough (density area); for the rule itself, Gamow, Biography of Physics (1961)"
+   },
+   {
+    "key": "ollie_footing_assumption",
+    "ok": false,
+    "issue": "The only cited URL is the USACE soil bearing-capacity manual. It says nothing about rubber soles or boots. The note's claim that rubber soles grip 'in roughly the same range as the sim's claw values' has no source. Either present it as a plain assumption with no source attached, or cite a footwear slip-resistance study for dry concrete and for ice."
+   },
+   {
+    "key": "ground_tear_around_anchor",
+    "ok": false,
+    "issue": "Cites the USACE soil manual, which does not give the concrete (1.5 MPa) or granite (36 MPa) shear values. The concrete value traces to the project's own ACI punching-shear fact (ground_concrete_punching_shear_stress_aci, 1.62 MPa), so cite that. The tensile strengths in the notes (concrete 2-3 MPa, granite 5-25 MPa) have no source. The arithmetic is right: 300 kN, 7.2 MN, 200 N."
+   },
+   {
+    "key": "duo_gravity_distances",
+    "ok": false,
+    "issue": "Minor. 'Two touching 2 m cylinders pull roughly 1.4× harder than the equal-volume balls' does not reproduce. My numerical check (contest-check/shapes2.js, closed-form prism field checked against brute-force quadrature) gives: cylinders as line masses 1.22×; box bodies chest to chest (0.20 × 0.45 × 2 m) 1.54×; square columns 1.40×. The 'within about a factor of 2' caveat holds.",
+    "corrected_value": "1.2× (cylinders) to 1.5× (chest-to-chest box bodies)"
+   }
+  ],
+  "physics_issues": [
+   {
+    "severity": "critical",
+    "issue": "Arm wrestling ignores the table, the main load path. The design says the hand push 'goes through each body into his feet', so A = min(arm, foot friction), giving a 1,059 N dead heat for the Hulk pair. But the rules require each competitor to grip the table peg, and allow wrapping the legs around the table legs or lifting both feet. The elbow sits on a pad bolted to the table, and sit-down tables are fixed to the floor. Both competitors are anchored to the same table, so the hand-to-hand force is internal to the people-plus-table system: the table carries it, and the floor carries nothing. The real weakest link is the table's lateral strength (peg bending, pad bolts in 19 mm plywood, frame), not foot friction. So at Hulk strength the honest result is that the table is torn apart first. On comic ground, where the design itself says 'the table never breaks', strength alone should decide. Instead the engine still caps the push at foot friction.",
+    "evidence": "cawf.ca/rulessummarized: '1) Grab the peg at the side', 'Foot rule: you may wrap your legs around the table legs or lift both feet off the floor'. WAF page: pads bolted to the top; seat and table 'secured to a platform or floor'. Engine run (contest-check/engine-run.js): Hulk vs record human on comic ground, standing → pin with A_R = 1,059.12 N and dA = 507.9 N, although the table is declared unbreakable.",
+    "fix": "Give each side a table term: A_i = min(P_i, R_feet_i + R_table_i). R_table_i = peg capacity + elbow-pad friction (μ_pad × elbow load) + table-leg grip. Give the table a lateral strength T_lat: about 3-9 kN per peg for a 25 mm steel peg gripped 7.5 cm up (A36 yield 250 MPa; estimate), plus pad bolts. If the contact force would exceed T_lat, the verdict is 'the table breaks first'; then rerun feet-only as a 'standing arm wrestle'. On comic ground R_table = ∞, so A_i = P_i and strength decides. Rewrite verdicts 7 and 9 and happens-bullets (a), (b) and (g) to match."
+   },
+   {
+    "severity": "major",
+    "issue": "'Strength stops mattering; the heavier or better-anchored one wins' is false once the push can tilt. A push angled up at φ adds C sinφ to the pusher's normal force and removes it from the opponent's. On μ = 0.6 the pusher becomes self-locking at φ ≥ 59°, and the opponent then slides at only about 1,029 N. Any wrestler whose strength exceeds his partner's weight can win by getting under him, which is the Lift move done gradually. For the default Hulk pair (889 kN vs a 1,765 N weight), both can, so the bout goes to whoever gets lower first, and this model cannot decide that. W-3's claim 'heavier body wins regardless of strength' only holds for a level push.",
+    "evidence": "anchorCapacity already handles θ. contest-check/fixes.js: self-locking angle 59.04°, opponent slides at C = 1,029.3 N.",
+    "fix": "Keep the level-push result but label it: 'Pushing straight across: …'. Add: 'Each is strong enough to lift the other (needs [W]), so a real bout goes to whoever gets lower first, which the sim can't model.' When only one side has F > the partner's weight, give him the win via an angled push, computed with anchorCapacity(θ) for both sides."
+   },
+   {
+    "severity": "major",
+    "issue": "Toppling comes before sliding for an upright body. Pushed at chest or shoulder height (1.2-1.3 m), a 180 kg body with a 0.3-0.5 m stance tips at about 220-340 N, well under the 1,059 N friction the verdicts quote. The friction limit is reached only if he leans into the push. This affects the no-table arm-wrestle fallback and the shoving match.",
+    "evidence": "contest-check/fixes.js: W b/2 / h = 220.6 N (h 1.2 m, stance 0.3 m) to 339.5 N (h 1.3 m, stance 0.5 m).",
+    "fix": "Say on the page that footing values assume he leans into the push so the line of force passes through his feet. List toppling as not modelled in the verdict chip, not only in the assumptions card."
+   },
+   {
+    "severity": "major",
+    "issue": "The unstoppable force vs immovable object case (named in the owner's request) is scoped too narrowly. The design returns 'undefined' only when both are infinite and both bolted. But an infinite push between two bolted bodies is ∞ push against ∞ hold whatever the partner's strength. The pushing match then reports contact = ∞ and a tear ratio of ∞, or NaN on comic ground, which the bay turns into 'They press with ∞ N … which holds'. An infinitely strong bolted shover pushing a bolted partner returns stalled: 'can't beat [B]'s footing (∞)'.",
+    "evidence": "engine-run.js: pushMatch(∞ bolted, Hulk bolted) → bothBolted, contact Infinity, tear Infinity (NaN on comic ground). shove(∞ bolted, bolted) → stalled true. app.html line 1617 prints the number.",
+    "fix": "Define undefined as: any infinite push whose both ends are held infinitely (both bolted, or bolted plus comic-ground anchoring that never gives). Apply it in pushMatch bothBolted when either F is ∞, in shove when F_s = ∞ and RA = RB = ∞, and wherever a ratio is ∞/∞. Use the verdict 'Unstoppable force meets immovable object … no answer.'"
+   },
+   {
+    "severity": "major",
+    "issue": "The arm-force share (0.11) is calibrated against the wrong person. The low bound (0.05) and high bound (0.16) divide one group's arm force by the 511 kg record holder's deadlift. Within one person, Lo's untrained 66 kg men (200-240 N at the hand) would come out at roughly 0.15-0.37 of a 1-2× body-weight deadlift (assumed). The share sets every torque, pin time and slam energy, and decides when footing or the table becomes the limit.",
+    "evidence": "Lo 2013 Table 1 (subjects 66.3 kg); design notes: 240/5,011 = 0.05 and 819/5,011 = 0.16.",
+    "fix": "Base the share on same-person data (arm force and lift measured in the same subjects), or show the 0.1-0.4 range on the page and in the math block. Drop the 'bone failure at full effort' anchor, or present it only as an upper bound."
+   },
+   {
+    "severity": "major",
+    "issue": "The throw-partner gravity escape test is wrong at extreme density. vEsc = √(2G(m_A + m_B)/d) includes the partner's own mass. If the thrower is bolted to the planet, he cannot fall toward the partner, so the partner only has to climb out of the thrower's own pull: about 1.3e-4 m/s for a 180 kg Rex, versus 2,531 m/s in T-5. When m_B ≫ m_A and the thrower is not bolted, the verdict 'Their gravity pulls [B] straight back to [A]' points the wrong way: the light thrower is the one dragged to the heavy partner.",
+    "evidence": "engine-run.js: a free 180 kg Rex (strength 1e21 kg) throws a 7.2e16 kg Ollie → fallsBack true, so the page would say Ollie falls back to Rex; actually Rex is pulled at about 2e6 m/s² toward Ollie.",
+    "fix": "Bolted thrower: vEsc = √(2G m_A/d). Free thrower: compare the relative speed (v_B + recoil) with √(2G(m_A+m_B)/d), and word the outcome by mass ratio ('[A] is pulled after [B]' when m_B > m_A)."
+   },
+   {
+    "severity": "major",
+    "issue": "Lifting a dense partner uses mutual gravity at the overhead endpoint (1.5 m) only. The partner starts beside the lifter, near contact, and must be raised past positions where the downward part of their mutual pull is larger. For a path at the contact offset (0.70 m), the peak downward pull is 0.385 G m²/x² = 2.71e23 N, 1.76 times the overhead value. At a 0.5 m offset it is 3.5 times. L-5's 6.38× margin is overstated, and the dial threshold is about 2.8e22 kg, not 1.5e22.",
+    "evidence": "contest-check/indep.js and fixes.js: peak vertical pull 2.7137e23 N at y = 0.495 m for x = 0.7005 m.",
+    "fix": "need = m_B g + max over the lift path of the vertical part of G m_A m_B / d², with the horizontal offset at least d_contact: about 0.385 G m_A m_B / d_contact². Keep d_over only for holding him overhead."
+   },
+   {
+    "severity": "minor",
+    "issue": "After a shove, the shover's slide uses friction for his body minus his arms (172.08 kg, 1,012.5 N) while his whole 180 kg body slides. The arms are back inside him after the follow-through. This puts the shover's slide about 3% too long.",
+    "evidence": "W-1: 142.71 m (design) vs 138.29 m with full-body friction. SH-5: 227.6 m vs 221.8 m (contest-check/fixes.js).",
+    "fix": "Compute slideA with footingOf(cA) (full mass), not footingOf(cA, mA)."
+   },
+   {
+    "severity": "minor",
+    "issue": "The losing arm is lengthening (eccentric), but Hill(u ≤ 0) = 1 gives it no extra strength. Lo's data show eccentric about 8% above concentric (86.0 vs 79.6 N·m), and Ogawa's fracture mechanism is exactly the switch to eccentric. In real mode, an arm within about 8% of its opponent's force should stall rather than lose.",
+    "evidence": "Lo 2013 Table 1; Ogawa abstract.",
+    "fix": "In real mode let the loser resist with up to about 1.08 × P_l (or a Hill eccentric branch), producing a stall band. Otherwise state it as ignored on the page."
+   },
+   {
+    "severity": "minor",
+    "issue": "Real-mode arm speed reuses the punch's 17 m/s top hand speed for shoulder internal rotation without saying so. It is an assumption, not a measured arm-wrestling value.",
+    "evidence": "E7: vmax = MUSCLE.punch.vmax × s_w.",
+    "fix": "Label it in the math block and the assumptions card ('borrowed from the punch')."
+   },
+   {
+    "severity": "minor",
+    "issue": "E7's closed form t = (Mc/ΔA)√((1+ε)² − 1) loses almost all its digits at everyday speeds (ε ≈ 1e-15). Computed naively it gave AW-4 t = 0.0868 s instead of 0.0906 s, a 4% error. The design's 'below 1% of c use Newton' guard avoids this but must not be dropped.",
+    "evidence": "contest-check/indep.js pinComic output vs tNewton.",
+    "fix": "Use t = (Mc/ΔA)√(ε(2+ε)) or the engine's xOfT/pushApart, which are stable."
+   },
+   {
+    "severity": "minor",
+    "issue": "The weak-body hold H = min(F, R) does not match the both-bolted rule. There, contact = max(F): once the weaker man's arms fold, the push goes straight through his body. With the engine's stand rule (1.4F ≥ W), on any surface with μ < 0.714 a body that can stand always has F > R. So the 'muscles give before his feet' branch only ever fires for a body that cannot stand (W-7).",
+    "evidence": "contest-check/fixes.js: stand needs F ≥ 1,260.9 N; concrete R = 1,059.1 N.",
+    "fix": "If the body cannot stand, its hold is whole-body sliding friction μ m g and the bay says he is down. Keep min(F, R) only where μ > 1/1.4 (gravel)."
+   },
+   {
+    "severity": "minor",
+    "issue": "Separation thresholds disagree. pulledTogether and gravityLock compare gravity with the shove drive (0.336 F in comic mode), while G-2's text says pulling apart needs a dial of 7.2e22 kg (full F). The edge-case text says 'strength less than its own weight cannot stand', but the engine's moveCheck uses 1.4F ≥ W.",
+    "fix": "Use one threshold (full-strength static push to hold apart; shove drive only for the Shove move) and quote moveCheck's rule."
+   },
+   {
+    "severity": "minor",
+    "issue": "Slides use static friction μ throughout. Sliding friction is lower, so slide distances are underestimates. The clasped hands can also slip apart before a pin (CAWF 'slip-out' rule, then straps), which is not modelled.",
+    "fix": "Say 'at least' for slide distances, or apply a kinetic factor. Mention grip slip-outs as not modelled."
+   }
+  ],
+  "missing": [
+   "The table as a load path: peg grip (required by the rules), elbow-pad friction and its two 6 mm bolts, legs wrapped around the table legs (allowed), and a lateral table strength from steel and plywood estimates (the brief asks for steel strength; none is used). Add a 'table breaks first' outcome and a standing, no-table fallback where the feet limit.",
+   "Push direction in the shoving match: the vertical part of the push, getting lower, and the fact that a wrestler strong enough to lift his partner can unload his feet. The level-push dead heat needs that qualifier.",
+   "Toppling and leaning: an upright body tips at about 220-340 N, far below its foot friction.",
+   "The losing arm's eccentric (yielding) strength (Lo: +8%; Ogawa's fracture mechanism) and the stall band it creates.",
+   "Same-person evidence for the arm-force share, and the share's range shown on the page.",
+   "Unstoppable force vs immovable object for the case the owner named: one infinitely strong side against an infinitely held (bolted) partner. The current scope covers only both-infinite-and-both-bolted.",
+   "The peak mutual gravity along the lift path, not just at the overhead endpoint.",
+   "A mass-aware, bolting-aware gravity escape test for throws, with the correct direction when the partner outweighs the thrower.",
+   "For neutron-star partners, deferring to the density area's fall-through result instead of Newton's depth; no penetration on comic ground.",
+   "Sources for Ollie's boot traction and for ground tear-out strengths (both currently cite a soil bearing-capacity manual that does not contain them).",
+   "A working URL for Dini 2021 (PubMed 33615250 / PMC7879170), since DOAJ returns 403.",
+   "Grip slip-out and kinetic (sliding) friction in slides.",
+   "The measured cadaver humerus failure torque (25-31 N·m) shown alongside the theoretical 190 N·m in the torque tile."
+  ],
+  "test_corrections": [
+   {
+    "name": "W-1 shoving match, default pair",
+    "problem": "Rex's (the shover's) slide uses friction for 172.08 kg (his body minus his arms) instead of his whole 180 kg body.",
+    "corrected_expected": "slides 138.26 m (Ollie) and 138.29 m (Rex); speeds 49.263 / 49.271 m/s unchanged"
+   },
+   {
+    "name": "SH-5 shoving a bolted partner",
+    "problem": "Same slide-mass slip as W-1.",
+    "corrected_expected": "Rex recoils at 71.19 m/s and slides 221.8 m (not 227.6 m)"
+   },
+   {
+    "name": "W-7 weak Rex gives way before his feet do",
+    "problem": "At 100 kg strength (980.7 N) Rex cannot stand: the engine needs 1.4F ≥ W, i.e. 1,373 N vs 1,765 N. On concrete (μ 0.6 < 1/1.4), any body that can stand has F > R, so this branch cannot occur for a standing body.",
+    "corrected_expected": "Use gravel (μ 0.84) and Rex 140 kg (1,372.93 N; can stand, cannot walk). Ollie drives 1,482.77 N; net 109.83 N; a = 0.30510 m/s²; t = 3.8618 s; v = 1.178 m/s. Or keep concrete and expect a 'Rex can't stand' flag."
+   },
+   {
+    "name": "L-5/6 lifting a neutron-star partner",
+    "problem": "'need' uses gravity at the overhead endpoint only; the pull is larger partway up a lift that starts beside him.",
+    "corrected_expected": "need ≈ 2.7138e23 N (peak along a path at the 0.7005 m contact offset); 1e23 kg can (3.61×); 1e22 kg cannot (0.361×); threshold ≈ 2.77e22 kg"
+   },
+   {
+    "name": "T-5 throwing a neutron-star Ollie",
+    "problem": "The inputs specify comic ground, yet the expected output has penetrates true with a 1.17e14 m Newton depth. The escape test uses Ollie's own mass although Rex is bolted.",
+    "corrected_expected": "No penetration or crater on comic ground (on real ground: defer to Weight's fall-through, no Newton depth). Escape check from Rex's mass alone: vEsc = 1.27e-4 m/s, so fallsBack is false."
+   },
+   {
+    "name": "AW-1 / AW-11 / AW-4 under the table load-path fix",
+    "problem": "The expected values follow the design's feet-only model, which the rules contradict. With comic ground the table is declared unbreakable but still does not carry the push.",
+    "corrected_expected": "Comic ground, default Hulk pair: stalemate at 97,860.9 N each. Comic ground, Hulk vs record human, standing: Rex pins with dA = 97,309.6 N (t = 6.543 ms, v = 182.46 m/s, E = 58,084 J). Real ground, Hulk pair: 'table breaks first' (a few kN, estimate), then a feet-only stalemate at 1,059.12 N. AW-4: the table breaks, then the same feet-only pin (dA 507.886 N, t 90.567 ms)."
+   },
+   {
+    "name": "New test: infinite bolted Rex vs bolted Hulk Ollie, shoving match and shove",
+    "problem": "The engine returns contact = ∞ with tear ∞ (NaN on comic ground) and 'stalled' for the shove. This is the unstoppable-force/immovable-object case.",
+    "corrected_expected": "outcome 'undefined' for both pushMatch and shove; no force or tear number shown"
+   },
+   {
+    "name": "New test: free 180 kg Rex (1e21 kg strength) throws a 7.2e16 kg Ollie",
+    "problem": "The engine sets fallsBack true, and the bay would say Ollie is pulled back to Rex.",
+    "corrected_expected": "Verdict says Rex is pulled after Ollie (Rex is 4e14× lighter); no 'falls back' wording"
+   },
+   {
+    "name": "duo_gravity_distances note",
+    "problem": "'two touching 2 m cylinders pull roughly 1.4× harder'",
+    "corrected_expected": "about 1.2× for cylinders (line-mass approximation); 1.4-1.5× for box-shaped bodies"
+   }
+  ],
+  "verdict": "Needs revision before build. Most sources check out. I fetched every one and confirmed the numbers: WAF table page, CAWF rules, Ogawa and Sabick (PubMed E-utilities and Boise State), Lo 2013 Table 1, Kamayev 2024 Table 1, ANSUR II dimensions 37/67/75, BMClab Dempster/Winter, PS 2-18 Table 2, the JSA sumo PDF, CODATA G, and Dini 2021 (via PubMed, since DOAJ returns 403). My independent scripts reproduce almost every test: pin times, the Hill terminal speed, fall-together (analytic and numerical agree at 0.3903 ms and 3,475.9 m/s), the walk-outs and the gravity values. The exceptions are listed in the test corrections. The central arm-wrestling premise is wrong, and the design's own cited rules page shows it: competitors must grip the table peg and may lift both feet or wrap the table legs. So the push between their hands is carried by the table, not their feet. Foot friction (the '1,059 N dead heat') is the wrong limit; the table's lateral strength is. On comic ground (table unbreakable), strength should decide. The headline 'strength stops mattering; the heavier one wins' also ignores angled pushes and lifting (self-locking at 59°) and toppling (about 220-340 N), so it overstates certainty. Other major problems:\n- The 0.11 arm share is calibrated by dividing one person's arm force by another person's deadlift.\n- The 'unstoppable force vs immovable object' case only catches both-infinite-and-both-bolted, so a one-sided infinite push against a bolted partner prints '∞ N … holds' or 'stalled'.\n- Throw-partner gravity escape ignores bolting and can point the wrong way.\n- Dense-partner lifts check gravity only at the overhead endpoint.\n- Newton impact depth is applied far outside its validity, even on comic ground.\n- Two facts (Ollie's boots, ground tear-out) cite a soil-bearing manual that does not contain their values.\n\nMinor issues are a 3% slide-mass slip, the missing eccentric strength in the losing arm, the unlabelled 17 m/s arm speed, and an unstable closed form. The engine.js duo code now being written (lines ~1240-1400) copies the design and shows the same behaviour in my runs. Scripts are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/duo/contest-check/ (indep.js, engine-run.js, fixes.js, shapes2.js), with fetched sources under its dl/ folder."
+ },
+ "collide": {
+  "fact_checks": [
+   {
+    "key": "collide_paradox_premises",
+    "ok": true,
+    "issue": "Both quotes confirmed verbatim in the raw article (fetched 2026-10-09). The article carries a 'More citations needed' banner (Feb 2010). I opened its only source, Alder 2004, which supports the gist: 'language was bigger than the universe ... it was possible to talk about things in the same sentence which could not both be found in the real world', and 'Either the object would move or it wouldn't, which would tell us only that either the hitherto immovable object was not in fact immovable, or that the hitherto irresistible force was in fact resistible.' Cite Alder directly, with Wikipedia as secondary. Neither source calls this 'the standard resolution', so the page's 'That is the standard resolution of the paradox' overclaims. Say 'the usual answer' and attribute it.",
+    "better_source": "Mike Alder (2004) 'Newton's Flaming Laser Sword', Philosophy Now 46: https://philosophynow.org/issues/46/Newtons_Flaming_Laser_Sword"
+   },
+   {
+    "key": "collide_no_rigid_bodies",
+    "ok": true,
+    "issue": "Confirmed. Natário arXiv:1912.08221 Introduction: 'truly rigid solids are incompatible with Einstein's relativity, since no influence can propagate on any given medium faster than the speed of light' and '...a relativistic rigid body should be defined as one where this maximum limit is attained.' The DOI 10.1088/1361-6382/abbd10 matches the arXiv record. Wikipedia Born rigidity, Definition section: 'A body that could maintain its own rigidity would violate special relativity, as its speed of sound would be infinite.' The sources support 'no rigid bodies'. They do not support the design's F_c formula or the phrase 'hard ceiling'. That formula is the design's own average-force estimate and depends on the assumed depth L."
+   },
+   {
+    "key": "collide_sound_speed_upper_bound",
+    "ok": true,
+    "issue": "The number and quotes are confirmed. The abstract says the combination 'provides the upper bound for the speed of sound in condensed phases'. Eq. (9) gives 'vu = α ... c ≈ 36,100', and the text says 'vu is about twice as large as v in diamond'. Recomputed with CODATA 2022: 36,100.8 m/s. A caveat is missing from the fact and the page: the authors' own calculation for atomic hydrogen 'starts increasing above vu only above very high pressure of about 600 GPa', and the bound 'does not account for the enthalpic contribution'. It is an approximate bound for ordinary matter at modest pressure. The page text 'Real matter can't carry sound faster than 36.1 km/s' overstates it, and so does the chart label 'As stiff as any real material' once Rex or Ollie is set to white-dwarf or neutron-star density in the same tab."
+   },
+   {
+    "key": "collide_granite_tensile_strength",
+    "ok": true,
+    "issue": "Confirmed. Table 1 gives Granite (MaGr) tensile strength 8.38 ± 2.5 MPa and density 2.62 ± 0.01 g/cm³. The text says 'typically 1/10th of the uniaxial compressive strength' and that dynamic strength is 'higher than the quasi-static tensile strength (1.5 to 5 times)', at strain rates up to about 27/s only. Hoek Ch. 11 Eq. 15 (σt = sσci/mb) and granite mi = 32 ± 3 are also confirmed, so 200/32 = 6.25 MPa. The same Table 1 gives granite's elastic wave speed as 3.71 km/s. Use it for the missing check of contact time against stress-wave travel (see physics issues)."
+   },
+   {
+    "key": "collide_crust_thickness",
+    "ok": true,
+    "issue": "Confirmed on the USGS publication page (fetched through WebFetch; curl got a CloudFront 403): 'The weighted average crustal thickness based on these values is 41.1 km.' Christensen & Mooney 1995, JGR Solid Earth."
+   },
+   {
+    "key": "collide_earth_inertia_rotation",
+    "ok": true,
+    "issue": "Confirmed on the NSSDCA Earth fact sheet: Mass 5.9722 × 10^24 kg, Moment of inertia (I/MR²) 0.3308, Sidereal rotation period 23.9345 h, Volumetric mean radius 6371.000 km. I = 8.019 × 10^37 kg m² recomputed. Minor point: 0.3308 is the mean moment with the mean radius. Strictly, day length uses the polar C/(Ma²) = 0.3307 with the equatorial radius. The difference is under 0.3%, so no change is needed."
+   },
+   {
+    "key": "collide_restitution_definition",
+    "ok": true,
+    "issue": "Quote confirmed in the article's lead. The (1 − e²) × splat energy result is correct for 1-D Newtonian hits (KE loss = ½μv²(1 − e²))."
+   },
+   {
+    "key": "collide_people_restitution",
+    "ok": true,
+    "issue": "Confirmed (arXiv:1310.8482): '...collisions between pedestrians suspended by ropes by harnesses in a rock climbing venue ... we obtained coefficients of restitution within the range 0.1–0.5.' The text uses ε = 0.3 and Table 1 lists 0.4, as the design notes. 'reported' is the right status. The page sentence should add 'in one small, informal test' so it doesn't read as a measured property of soft bodies."
+   },
+   {
+    "key": "collide_collision_formulas",
+    "ok": true,
+    "issue": "All Wikipedia quotes confirmed (ΔKE = ½μu²_rel; M² = (E1+E2)² − |p1+p2|²; 'momentum of each colliding body does not change magnitude after collision, but reverses its direction'; rapidity is additive). I checked the physics independently with Lorentz velocity transforms at 60 digits (no rapidities): all headOn test values reproduce, with momentum and energy conserved to 1e-59. The design's own claimed precision (1e-15) also holds. The Particle Data Group (PDG) kinematics review is a more authoritative source for the lab-frame formulas: Eq. 49.3 Ecm = (m1² + m2² + 2E1lab m2)^½, Eq. 49.4 βcm = plab/(E1lab + m2), Eq. 49.6 pcm = plab·m2/Ecm. It also covers rapidity's additive shift under boosts. The 'cancellation-free' Q form is correct algebra.",
+    "better_source": "Particle Data Group, Review of Particle Physics, ch. 49 'Kinematics', Eqs. 49.3–49.6: https://pdg.lbl.gov/2024/reviews/rpp2024-rev-kinematics.pdf"
+   },
+   {
+    "key": "collide_universe_age",
+    "ok": true,
+    "issue": "Confirmed in Table 2, last column (TT,TE,EE+lowE+lensing+BAO): Age 13.787 ± 0.020 Gyr. 4.3508 × 10^17 s is correct."
+   },
+   {
+    "key": "collide_squash_estimate",
+    "ok": false,
+    "issue": "Correctly labelled an estimate, but (1) the reasoning states unsourced 'facts' (a hugged plush toy squashes by a quarter of its thickness or more; 'so does a person's chest in a hard frontal hit'). (2) A fixed fractional squash at every speed is not any material. It makes F = Q/s grow as v², so a 1 m/s bump squashes 35 cm and an 11 km/s hit acts nearly rigid. A spring of fixed stiffness gives F ∝ v; a constant crush strength gives a fixed F. (3) The 'does he hold?' verdict depends on this number. Example: claws in granite hold below 58.8 m/s on the plush splat, but a 'stiffest real material' pair at the same speed hits with 3.9 × 10^8 N, far above the 8.9 × 10^5 N hold. Fix: source the chest comparison or drop it, pick a stiffness-based model capped at full squash, and report held/moved as a range when the two ends disagree.",
+    "corrected_value": "Keep it as an estimate; remove the unsourced comparisons or source them",
+    "better_source": "Candidate, not verified by me: thoracic compression tolerance about 35% of chest depth, Viano & Lau (1988) J. Biomech. 21(5):387-399"
+   },
+   {
+    "key": "collide_runup_estimate",
+    "ok": false,
+    "issue": "The 20 m start doesn't match the sprint speed used. The engine's own model (constant friction thrust 1,059 N against ½ρCdA v² drag, 180 kg) gives v(x) = vTop·√(1 − exp(−2kx/m)): only 14.93 m/s after 20 m from rest. It takes 305 m to reach 90% of top speed and 428 m to reach 95%. The headline '46.5 m/s, 97 kJ, 43 m' therefore needs a run-up of several hundred metres. The fact note ('it matters only for super-dense bodies') is wrong: d0 also sets the sprint speed if the sprint starts there. The '<4%' gravity sensitivity is right (doubling d0 changes energy by 1.8%).",
+    "corrected_value": "Either v(20 m) = 14.93 m/s (K = 20,070 J at default), or state 'after a long run-up (about 430 m to reach 95% of top speed)' and keep d0 = 20 m only for the gravity and air terms"
+   },
+   {
+    "key": "collide_rock_failure_radius",
+    "ok": false,
+    "issue": "Three problems. (1) The exact point-load fields are not 'order 1' different: for ν = ½, Boussinesq and Cerruti give a radial stress of 3C·cosθ/(2πr²), a peak 3× the average, so the radius is √3 = 1.7× larger along the load line. That roughly cancels the √5 dynamic-strength overstatement and should be stated. (2) In the Push, the two anchors push the ground in opposite directions 2 m apart: a force dipole. Beyond the spacing the stress falls as C·d/(2πr³), so r ≈ (C·d/(2πσ))^(1/3). S14 (dial 1e16 kg) gives 1.55 km, not 43 km, so 'beyond the crust' is wrong. At S6, 1,305 km replaces 1.05 × 10^6 km. (3) The quasi-static field needs the load to last longer than r/c (granite wave speed 3.7–5.5 km/s). For bolted charges above about 1–2 km/s the computed rT exceeds the distance a stress wave travels during the hit; at 0.9c the wave reaches 10 μm while rT = 1,065 km. That regime calls for a crater or impact model, not a static radius.",
+    "corrected_value": "Single held anchor, long loads: r ≈ √(C/(2πσ)) (peak-stress version √(3C/(2πσ))). Pair of opposed anchors, r > d: r ≈ (C·d/(2πσ))^(1/3). Flag the result invalid when r > c_rock·τ."
+   },
+   {
+    "key": "collide_planet_halves_pull",
+    "ok": false,
+    "issue": "The number is right: 3GM²/(16R²) = 1.09967 × 10^25 N, the standard uniform-sphere result. Its use is wrong. In the Push the anchor forces are equal and opposite and 2 m apart, so the planet as a whole feels zero net force and a dipole stress field that dies off in about 1/r³. Nothing at planet scale is pulled apart: the rock fails locally and the bolts plough apart ('rockGives'). In a held charge a net point force accelerates Earth and punches through rock locally; it doesn't split the planet in half. Replace 'the planet itself would come apart' with an energy criterion (released energy vs K.EARTH_BIND = 2.49 × 10^32 J), or with 'far more than rock anywhere can carry; the bolts plough through the crust'.",
+    "corrected_value": "Keep 1.10 × 10^25 N only as a size comparison, or drop it; use energy ≥ 2.49 × 10^32 J for 'the planet comes apart'"
+   },
+   {
+    "key": "collide_anchor_spacing_estimate",
+    "ok": true,
+    "issue": "A reasonable, labelled choice. Under the dipole correction it also sets the far-field stress, so it matters more than the note says."
+   },
+   {
+    "key": "collide_relativistic_sprint_estimate",
+    "ok": true,
+    "issue": "The γ² momentum-flux argument checks out: T^xx = γ²ρ0v² in the runner's frame, and longitudinal force on a body momentarily at rest is frame-invariant. Problems: (1) reading the comic leg cap as proper speed γv is arbitrary, so say so on the page, not only in the fact. (2) The Sprint tab still shows vTop capped at c ('light speed, to the last digit') while Collide uses γβ = 22.8 (0.99904c) for the same sprint (C18), so two tabs disagree. Apply uTop in sprint() for both. (3) With a set speed (no thrust), the same drag over 20 m exceeds the charger's whole kinetic energy above γβ ≈ 18 (air/KE = 5.5 at γβ = 100, 545 at 10^4)."
+   },
+   {
+    "key": "energy_chicxulub_impact (reused in C13)",
+    "ok": false,
+    "issue": "The project's own fact has status 'disputed', with most estimates around 10^23–10^24 J. The design's C13 says '1.2× the dinosaur-killing asteroid (4.2e23 J)', presenting one point value as definite. compareEnergy would print '≈ the dinosaur-killing asteroid' because the ratio is under 1.5. The design text and test should match that, with the range.",
+    "corrected_value": "'within the published range for the dinosaur-killing impact (about 10^23–10^24 J)'"
+   },
+   {
+    "key": "ground_granite_ucs (reused as ROCK_C)",
+    "ok": true,
+    "issue": "Existing fact, not re-audited in depth. Hoek Ch. 11 Table 2 lists granite among the R6 'extremely strong' (>250 MPa) examples, so 200 MPa sits low. That is conservative for crushing radius, and the change would be small (rC ∝ σ^-½)."
+   }
+  ],
+  "physics_issues": [
+   {
+    "severity": "major",
+    "issue": "The sprint charge speed assumes an unlimited run-up, but the design starts the partners 20 m apart.",
+    "evidence": "Engine model, thrust 1,059.12 N and drag 0.49 v²: v(20 m) = 14.93 m/s, v(305 m) = 41.8 m/s (90%), v(428 m) = 44.2 m/s (95%). The default verdict says 'Ollie hits Rex at 46.5 m/s', while the 'what happens' bullets say 'Starting 20 m apart' and 'His last 20 m of run-up'. Kinetic energy at contact is overstated about 9.7× if the 20 m start is taken literally.",
+    "fix": "Compute the contact speed from the run-up distance, v = vTop·√(1 − e^(−2kx/m)) (a real-muscle leg cap still applies). Or make the run-up an explicit, labelled long distance (for example 'after a 430 m run-up, 95% of top speed') and keep d0 = 20 m only for the gravity and air terms. Update the summary, C1–C4, C15, C16 and the page text."
+   },
+   {
+    "severity": "major",
+    "issue": "The 'held' verdict for a bolted holder treats Earth as a rigid backstop during the hit. That breaks the design's own 'no rigid bodies' principle at high speed, and the static rock-cracking radius is used far outside its regime.",
+    "evidence": "C8 (0.9c into bolted Rex): contact time 1.86 ns, so a P-wave in granite travels 1.0 × 10^-5 m during the hit. The rock that can respond is about 10^-11 kg, yet the page says 'Rex doesn't budge' and 'granite pulls apart within 1,065 km'. For plush contact times, the rock mass reachable during the hit drops below Ollie's 180 kg at about 12 km/s, and rT exceeds the stress-wave reach from about 1–2 km/s (5 km/s: rT 11 m vs reach 0.77 m). At contact the hit behaves as a free hit (Q = 9.17 × 10^18 J, the C7 value). Ollie and Rex then move at 0.627c, and the bolts and rock must stop them later, releasing the other 1.18 × 10^19 J in the ground.",
+    "fix": "Add a regime test. If c_rock·τ < rT, or if the rock mass within c_rock·τ is below the charger's mass, treat the contact as a free hit plus a second 'the bolts stop them' energy release (total = K_A), and model the ground damage as a near-surface burst or impact crater (reuse craterDiameter with that energy) instead of a static radius. Never print 'doesn't budge' in this regime. Earth's final Δv is still p/M_E."
+   },
+   {
+    "severity": "major",
+    "issue": "The two opposite anchors in a bolted Push form a force dipole, not a single point load. 'Beyond the crust' and 'the planet itself would come apart' are wrong for the Push, and planet-splitting is misapplied to the Charge as well.",
+    "evidence": "S14 (dial 1e16 kg): single-anchor rT = 43,157 m (flagged beyondCrust), dipole estimate (C·d/(2πσ))^(1/3) = 1,550 m. S6: the planet flag is set, but the net force on Earth is zero. Total momentum and force are internal; the rock fails locally and the anchors plough apart, which is the design's own 'rockGives' outcome.",
+    "fix": "In standoff, use r = √(C/(2πσ)) only out to r ≈ d_sep, and the dipole form beyond it. Drop the F_HALVES 'planet comes apart' line. For the Charge, compare energy with K.EARTH_BIND for planet-scale claims."
+   },
+   {
+    "severity": "major",
+    "issue": "The 'does he hold?' test uses the splat force even when the reader selects the bounce, whose peak force is twice as large. The page can show a held bounce its own spring model says would not hold.",
+    "evidence": "C3 (claws in granite): H = 889,644 N, splat F_held = 462,823 N (held), bounce peak 2Q/s = 925,646 N > H. With 'Perfect bounce' selected the page still says 'Rex doesn't budge; Ollie bounces straight back at 42.4 m/s'. Claws-in-granite Rex stops holding above 58.8 m/s for the splat and above 41.6 m/s for the bounce.",
+    "fix": "Compute F_held separately for each bound (splat Q/s, bounce 2Q/s) and decide 'held' for the bound shown. Add C3-bounce to the tests: expect 'moved' (partly held)."
+   },
+   {
+    "severity": "major",
+    "issue": "Held or moved depends on the unsourced squash estimate, but the status chip and verdict state it as fact. The fixed-fraction squash also scales unphysically with speed.",
+    "evidence": "C3 'Rex holds: 889,644 N vs a 462,823 N hit' is held only at the plush end. The 'as stiff as any real material' force for the same hit is 3.94 × 10^8 N, about 440× the hold. With s fixed at 0.35 m, F ∝ v², so a 1 m/s tap is modelled as a 35 cm squash.",
+    "fix": "Use a stiffness-based squash (s = √(2Q/k), capped at full squash) or a stated crush strength. Evaluate the held test at both ends and, when they disagree, word it as 'Holds if they're as squishy as plush; a stiffer pair would knock him loose.' Fix the caveat's self-contradiction ('who moves do not depend on it, except the does-he-hold test')."
+   },
+   {
+    "severity": "major",
+    "issue": "The 'unstoppable' verdicts contradict momentum conservation (C17) and the design's own Push 'rockGives' rule (C9).",
+    "evidence": "C17: Ollie (∞ strength, bolted) gets his momentum by pushing on the same planet Rex is bolted to. Total momentum is identically zero, so on comic ground everyone ends at rest together. Yet the verdict template says 'Y, and the planet he's bolted to, is knocked away at light speed', and tile 5 prints 'Earth knocked away at light speed', while the edge-case text says to print no Earth number (app.html:2042, 2084). C9 (real ground): the rock flags say planet = true, but the verdict says the whole planet goes to light speed. In the Push the same infinite load on real ground gives 'rockGives'. Relativity also forbids a planet-sized body responding rigidly.",
+    "fix": "Unlimited momentum from a run-up on the same planet into a bolted holder: 'Unbounded energy at the hit; Ollie got it by pushing on the same planet, so the planet gets it straight back: no net motion' (comic ground). On real ground: 'the rock gives: Rex is torn loose with a plug of rock at just under light speed.' Only set-speed momentum from outside moves Rex plus the comic planet."
+   },
+   {
+    "severity": "major",
+    "issue": "Toppling is missing. A standing holder hit at chest height tips over long before his footing slides, so 'friction or claws hold' verdicts for standing holders ignore the governing failure mode.",
+    "evidence": "Overturning about the heels: W·0.15 m / 1.3 m ≈ 204 N tips a 180 kg standing Rex, against 1,059 N of friction. For C3 the claws resist 462,823 N sideways, but the overturning moment (about 6 × 10^5 N·m) needs an uplift (pull-out) capacity at the toes that the model doesn't have. Assumptions only mention 'spin' and 'glancing blows'.",
+    "fix": "Add a tipping check (F·h_hit vs W·foot lever plus a claw pull-out capacity, which needs a source or a labelled estimate). If it tips, say 'knocked off his feet' and fall back to lying friction. At minimum, state on the page that toppling is ignored."
+   },
+   {
+    "severity": "major",
+    "issue": "Hypersonic air heating is missing between about 1 km/s and 1% of light speed. The 'Escape speed 11.2 km/s' preset gets only a 'Sonic boom' chip.",
+    "evidence": "The engine's stagnationT gives 16,927 K at 11.2 km/s and 7,858 K at 5.6 km/s (the splat pair in C19 then slides 3.3 km at that speed). The design shows 'Fireball' only at ≥ 1% c (3,000 km/s).",
+    "fix": "Reuse stagnationT for the charge speed and for post-hit speeds. Show 'Air ahead of him heats to X' (warn at about 1,500 K, 'fireball' from a few km/s), matching the Sprint and Throw tabs."
+   },
+   {
+    "severity": "major",
+    "issue": "At relativistic or very fast speeds the environment gets all of the kinetic energy, not just the splat Q, but blastBlock is fed only Q.",
+    "evidence": "C7: Q = 9.17 × 10^18 J at the hit, but the pair keeps 1.18 × 10^19 J and moves at 0.627c. It sweeps its own mass of air within m/(ρ0·A) ≈ 367 m, so the full 2.09 × 10^19 J (5.0 Gt) is dumped locally. The bounce case leaves Rex at 0.9c, likewise.",
+    "fix": "For v ≥ 1% c (and at hypersonic speeds after the hit) report the total local energy release = K_A plus the run-up air energy, with the blast and quake from that total. Keep Q as 'at the moment of contact'."
+   },
+   {
+    "severity": "major",
+    "issue": "For set speeds, the run-up air-heating estimate can exceed the charger's entire kinetic energy, and the set speed ignores air drag on the way in.",
+    "evidence": "air/K_A = 0.13 at γβ = 1, 0.18 at 0.9c, 1.04 at γβ = 18, 5.5 at γβ = 100 (8.8 × 10^21 J vs 1.6 × 10^21 J), 545 at γβ = 10^4. The page would say 'his last 20 m alone dumps X into the air' with X larger than the hit itself.",
+    "fix": "Define the set speed as 'speed at contact' and say he must have started faster. Cap or flag the air term when it exceeds K_A ('the air would stop him first: he can't arrive at this speed through air'). Note that at these energies air nuclei punch into him rather than pile up, so the estimate is order-of-magnitude only."
+   },
+   {
+    "severity": "major",
+    "issue": "The page invents claws for Ollie. The brief says he has laced boots and no visible claws, and no other canon may be invented.",
+    "evidence": "Verdict template '{Y}'s {claws | footing} take most of it' and the why-text 'friction and his claws hold' (implemented at app.html:2049 and 2101) apply to Ollie when he is the holder with anchor 'braced'. The Wrestle tab already uses 'boots' for Ollie (app.html:1686). His dig-in area reuses Rex's 0.2 m² claw area, which is unsourced for boots.",
+    "fix": "Use 'boots dug in' for Ollie everywhere. Label his dig-in capacity as an estimate borrowed from Rex's claw model."
+   },
+   {
+    "severity": "minor",
+    "issue": "Wording overstates certainty in several places.",
+    "evidence": "'hard ceiling 1.8 × 10^12 N' / 'caps the force at' (the bound is an average over the hit, depends on the assumed depth L, uses the charger's β* even when the target is the smaller, faster body, and differs by about 2× between frames at relativistic speed). 'Real matter can't carry sound faster than 36.1 km/s' (see fact). 'That is the standard resolution of the paradox'. 'knocked away at light speed' and 'Light speed (unlimited momentum)' (massive bodies only approach c). 'Overall, nothing moves' (Earth's velocity returns to zero, but it is displaced by about 6 × 10^-22 m). 'a quarter of his depth' (it is the smaller body's depth). Strings at app.html:2042, 2084, 2103, 2104, 2109, 2113, 2121.",
+    "fix": "Use 'limits the average force to about', 'ordinary solids and liquids at everyday pressures', 'the usual answer, as Alder (2004) puts it', 'just under light speed (the limit as momentum grows without bound)', 'Earth ends up exactly as still as it started', and 'a quarter of the smaller body's depth'."
+   },
+   {
+    "severity": "minor",
+    "issue": "The Push 'paradox' for two bolted partners on unbreakable ground is presented as having no answer, but Newtonian mechanics gives one: balanced internal forces move nothing.",
+    "evidence": "S7: both partners and the comic planet form one closed system. A bolt is a constraint that supplies whatever reaction is needed, so the accelerations are zero and only the force between them is unbounded. The 'no answer' belongs to the verbal definitions, not to the mechanics.",
+    "fix": "'Nothing moves: the push stays inside one unbreakable system (Ollie, Rex and the planet), and no internal push can move it. The force between them has no upper limit. Whether that counts as the force being stopped is a question about words, which is the paradox.'"
+   },
+   {
+    "severity": "minor",
+    "issue": "The 'infinite mass' toggle silently ignores gravity, and a body with unlimited mass would be a black hole.",
+    "evidence": "colImm bypasses isBlackHole and all gravity terms.",
+    "fix": "Label it 'infinite inertia, gravity ignored (a real infinite mass would be a black hole)'. In the four-case text, add that in real physics neither premise can exist (unlimited momentum needs unlimited energy)."
+   },
+   {
+    "severity": "minor",
+    "issue": "Buoyancy and the zero-footing slide are inconsistent.",
+    "evidence": "The edge-case text says that for densities at or below air, footing is 0 and the slide is ∞, but the reference code computes friction from m·g with no buoyancy (0.5 kg/m³ Rex: H = 0.53 N). With R = 0, drag alone slows him by a factor e every m/k = 0.37 m at 0.18 kg, so 'coasts until something stops him' is wrong.",
+    "fix": "Use the density design's buoyant weight in holdOf and anchorCapacity. When R = 0, report the distance to slow to walking pace from drag, x = (m/k)·ln(V/1 m/s), instead of ∞."
+   },
+   {
+    "severity": "minor",
+    "issue": "Kinney–Graham blast radii are shown for slow plush splats that make no blast wave.",
+    "evidence": "Default: 97 kJ released over 15 ms, while sound crosses 5.1 m in that time and the blast radii are 0.4–3.8 m. The page would list 'eardrums start to burst: 1.3 m' for a 46 m/s plush collision, labelled only 'upper bound'.",
+    "fix": "Show blastBlock only when the energy is released faster than sound crosses the blast radius (τ·a0 < R). Otherwise say 'a loud thump: the energy goes into heating and squashing them, not into a blast'."
+   },
+   {
+    "severity": "minor",
+    "issue": "Sprint speeds disagree between tabs.",
+    "evidence": "The Sprint tab reports vTop capped at c; Collide uses uTop (γβ = 22.8, 0.99904c, for C18).",
+    "fix": "Put the relativistic reading into sprint() itself so every tab shows the same speed."
+   },
+   {
+    "severity": "minor",
+    "issue": "The relativistic gravity gate is stated slightly wrong.",
+    "evidence": "At the planet-scale gate (5.97 × 10^21 kg, r = 0.35 m), GM/(rc²) = 1.3 × 10^-5, not '< 1e-5'.",
+    "fix": "Say '~1e-5'."
+   },
+   {
+    "severity": "minor",
+    "issue": "In a sliding push the contact force is not H_B.",
+    "evidence": "forceWins sets C = H_B, but while the pair accelerates C = H_B + m_B·(D_A − H_B)/(m_A + m_B).",
+    "fix": "Use the accelerating value, or say 'at the start'."
+   }
+  ],
+  "missing": [
+   "Toppling and overturning of a standing holder hit at chest height (about 204 N tips a 180 kg Rex vs 1,059 N friction), plus a claw or boot pull-out capacity for the overturning moment.",
+   "Speed actually reached over the stated run-up (v(20 m) = 14.93 m/s at default), or an explicit long run-up distance on the page.",
+   "Hypersonic air heating (stagnationT) for charge speeds and post-hit speeds between about 1 km/s and 1% c.",
+   "Total local energy release at relativistic or hypersonic speeds: whatever keeps moving after the hit dumps its energy into the air within about m/(ρ0 A) (about 370 m), so the blast and quake should use K_A plus the run-up air energy, not only Q.",
+   "Regime check for bolted holders: contact time vs stress-wave travel in rock (granite 3.7–5.5 km/s), and rock mass reachable vs charger mass. Above about 1–2 km/s use a crater or near-surface-burst model, and above about 12 km/s (plush) treat the contact as a free hit.",
+   "Force-dipole stress field for two bolted pushers; drop the F_HALVES 'planet comes apart' line in favour of an energy criterion against K.EARTH_BIND.",
+   "Held test evaluated for the bounce bound (2Q/s), and a held-verdict range across stiffness (plush to stiffest material).",
+   "A stiffness model for the squash that scales sensibly with speed, or a stated crush strength, with its basis shown on the page.",
+   "Ground excavation under a held, bolted holder when Q is large (energy released about 1 m above ground acts like a near-surface burst).",
+   "Buoyant weight for bodies at or below air density; drag-only slowing distance when footing is zero.",
+   "What the charger does after a splat (keeps driving or goes limp), stated, since it changes how far they slide.",
+   "Air drag on the approach for set speeds: define 'set speed' as speed at contact, and say when air would stop him first.",
+   "Where the heat goes in indestructible plush bodies (temperature or 'they glow' at relativistic Q).",
+   "A bolted holder's own strength (keeping his posture with bolted feet) is ignored; state it.",
+   "Ollie-specific wording and footing: boots, not claws; his dig-in area is an estimate borrowed from Rex.",
+   "Gravity of the 'truly immovable' infinite mass (a black hole) is ignored; state it.",
+   "Light-speed bound for unequal bodies should use each body's own centre-of-momentum speed and depth (the larger stop time), not the charger's β* with the smaller depth."
+  ],
+  "test_corrections": [
+   {
+    "name": "headOn: 0.5c into twice the mass (relativistic, unequal)",
+    "problem": "The expected values are right; the reasoning text is wrong. M² = 32,400 + 129,600 + 2 × 360 × 207.846 = 311,649, so M = 558.255 kg, not '568.47'. 567.85 is E_tot/c².",
+    "corrected_expected": "Q = (558.255 − 540)c² = 1.64072e18 J; V = 0.183013c; vA = −0.177219c; vT = 0.354163c (reproduced independently with Lorentz transforms)"
+   },
+   {
+    "name": "C1 default charge: Ollie sprints into standing Rex",
+    "problem": "Numbers reproduce exactly (v 46.4916, F 278,223 N, τ 15.068 ms, V 23.2015, Q 97,451 J, xB 0.1748 m, slide 43.112, moved 43.286, F_c 1.7907e12 N, F_m 2.156e8 N). But they assume an unlimited run-up, while the design starts 20 m apart. If the 20 m start is used for the sprint, the expected contact speed changes.",
+    "corrected_expected": "Keep as is only if the page states a long run-up (about 430 m to 95% of top speed). With a 20 m start: v0 = 14.933 m/s and K_A = 20,070 J; recompute the splat, slide and forces from that."
+   },
+   {
+    "name": "C3 claws in granite hold",
+    "problem": "'held' is correct only for the splat bound. With bounce selected, the spring peak 2Q/s = 925,646 N exceeds H = 889,644 N.",
+    "corrected_expected": "Splat: held (F_held 462,823 N ≤ 889,644 N). Bounce: not held, partial footing, Rex knocked back. Add an assertion that held_bounce = false."
+   },
+   {
+    "name": "C8 set speed 0.9c into bolted Rex",
+    "problem": "Wrong regime. The contact lasts 1.86 ns; a stress wave in rock travels 1.0e-5 m in that time, so Earth can't back Rex during the hit, and the static rT = 1,065 km is meaningless.",
+    "corrected_expected": "At contact: the free-hit value Q_contact = 9.16899e18 J (as C7). The bolts then stop the pair, releasing the other 1.17674e19 J at the ground; total 2.09364e19 J (5.00 Gt TNT) and quake upper bound 7.01 unchanged. Earth Δv = 1.8656e-14 m/s and day change 1.046e-11 s unchanged. No static rock radius: flag 'dynamic: crater or near-surface burst' instead, and the verdict must not say 'doesn't budge'."
+   },
+   {
+    "name": "C9/C10 light speed: unstoppable vs paradox",
+    "problem": "C9 on real ground prints Earth moving at light speed while its own rock flags say planet = true. That contradicts the Push's 'rockGives' rule for the same unlimited load on real rock.",
+    "corrected_expected": "C9, real ground: outcome 'unstoppable' with rock gives (Rex torn loose with a plug of rock at just under light speed); no 'Earth at light speed' tile. C9 with comic ground: Rex plus planet at just under light speed, with the caveat that no real planet responds rigidly. C10: 'paradox', unchanged."
+   },
+   {
+    "name": "C16/C17 infinite strength",
+    "problem": "In C17 Ollie's unlimited momentum comes from pushing on the same planet Rex is bolted to. The closed system's total momentum is exactly zero, so the planet cannot end up 'knocked away at light speed' (the current verdict and tile 5), and 'Earth net = undefined' is also not the physics answer.",
+    "corrected_expected": "C17 comic ground: unbounded energy freed; Ollie, Rex and the planet end at rest together (net Earth motion 0). Real ground: rock gives. No Earth light-speed tile in either case."
+   },
+   {
+    "name": "C13 both neutron-star dense (comic ground), set 1 m/s",
+    "problem": "'1.20× the 4.2e23 J dinosaur-killing asteroid' presents a disputed fact as one value, and compareEnergy prints '≈' for ratios under 1.5.",
+    "corrected_expected": "Q = 5.0563e23 J; page text 'about the energy of the dinosaur-killing impact (published estimates 10^23–10^24 J)'."
+   },
+   {
+    "name": "C23/C24 gates",
+    "problem": "The expectation is ambiguous. At 1.31e27 kg/m³ (m = 2.358e26 kg) isBlackHole is false, because the threshold at 2 m is 1.31016e27 kg/m³, so the result is planetScale.",
+    "corrected_expected": "C23 at 1.31e27 → {planetScale}; add C23b at 2e27 kg/m³ → {blackHole}; C24 (1e22 kg) → {planetScale}"
+   },
+   {
+    "name": "S5/S14/S6 rock thresholds",
+    "problem": "Single-anchor stress is used for two opposite anchors 2 m apart (a force dipole), and F_HALVES is misapplied.",
+    "corrected_expected": "S5 (1e10): crackThrough true (rT 43 m near-field, dipole 15.5 m). S14 (1e16): dipole rT ≈ 1,550 m, so beyondCrust = false. S6 (5.97e24 dial): no 'planet comes apart'; outcome 'rock gives' (bolts plough apart), with dipole rT ≈ 1.3e6 m reported as beyond the crust."
+   },
+   {
+    "name": "S7-S10 infinite strength in the push",
+    "problem": "S7 (both ∞, both bolted, comic ground) is labelled 'paradox (contact NaN)', but the mechanics are defined: the internal forces balance and nothing moves.",
+    "corrected_expected": "S7: nothing moves; force between them unbounded (show '∞', not 'undefined'), with the text explaining the paradox is about definitions. S8 rockGives, S9 stalemate 1,059.12 N, S10 forceWins: unchanged."
+   },
+   {
+    "name": "C7 set speed 0.9c into standing Rex",
+    "problem": "The air run-up (3.75e18 J) is 18% of the charger's kinetic energy, so a 'set speed' can't be held constant through 20 m of air. Blast output uses only Q, although all of K_A ends up local.",
+    "corrected_expected": "Q_contact = 9.16899e18 J; total local release = K_A = 2.09364e19 J plus run-up air about 3.75e18 J. Label the set speed 'at contact'."
+   },
+   {
+    "name": "Set speed γβ ≥ 18 (new)",
+    "problem": "Untested: the air estimate exceeds the charger's whole kinetic energy (γβ = 100: air 8.81e21 J vs K_A 1.60e21 J).",
+    "corrected_expected": "Assert airRunUp is capped at K_A or flagged 'air would stop him first'; no page text may say the last 20 m dumps more energy than he has."
+   },
+   {
+    "name": "Render sweep",
+    "problem": "It doesn't catch the honesty problems found here.",
+    "corrected_expected": "Also assert: no 'claws' text when Ollie is the holder or pusher; no 'at light speed' without 'just under' or limit wording for massive bodies; no 'planet itself would come apart' in Push mode; a 'Sonic boom' chip never appears above about 2 km/s without an air-heating chip; no 'doesn't budge' when contact time × rock wave speed < rT."
+   }
+  ],
+  "verdict": "The core momentum and energy model is correct, but several outcomes and page claims are wrong and need fixing before this ships. I reimplemented headOn independently with Lorentz velocity transforms at 60-digit precision. Every head-on and collide test value reproduces, and energy and momentum are conserved. Of the 17 sources, all check out except two (fetched 2026-10-09). The squash estimate rests on unsourced comparisons. The 20 m start doesn't fit the sprint speed used. The rock-cracking estimate and the planet-halves marker are used outside their valid range. The reused dinosaur-impact energy is a disputed value shown as a single number.\n\nThe main problems:\n1. The default headline speed of 46.5 m/s needs a run-up of about 430 m. Starting 20 m apart, the engine's own model gives 14.9 m/s.\n2. A bolted holder 'held' at relativistic or hypersonic speed is wrong: Earth can't respond within a nanosecond hit, and the static rock radius (1,065 km at 0.9c) is meaningless there.\n3. The two bolted pushers' forces cancel at a distance and die off quickly, so 'beyond the crust' and 'the planet itself would come apart' are false.\n4. The 'does he hold?' test ignores the bounce's doubled peak force (C3 flips) and depends on the unsourced squash, which grows unrealistically stiff with speed.\n5. The 'unstoppable' verdicts break momentum conservation (C17) and contradict the Push's 'rock gives' rule (C9).\n6. Missing effects: toppling, hypersonic air heating, energy dumped locally after very fast hits, and the run-up air estimate exceeding the charger's whole energy at high set speeds.\n7. Ollie is given claws.\n8. Several phrases overstate certainty: 'hard ceiling', 'real matter can't…', 'the standard resolution', 'at light speed', 'nothing moves'.\n\napp.html already contains this text (around lines 1963–2125), so the fixes need to go there as well as into the design. Scripts and outputs are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/duo/collide-check/: indep.py and indep.out (independent recomputation), probe.js and probe.out (failure scenarios), and dl/ (the downloaded sources)."
+ },
+ "catch": {
+  "fact_checks": [
+   {
+    "key": "catch_anthro_ansur2_reach_chest",
+    "ok": true,
+    "issue": "Confirmed in the fetched PDF. Male means: thumbtip reach 81.19 cm (SD 4.37), p. 203-204; chest depth 25.38 cm (SD 2.62), p. 93-94; stature 175.62 cm (SD 6.86), p. 193-194; n = 4,082. Thumbtip reach is measured from the back wall (buttocks and shoulders against it, fingers curled into a fist), and chest depth runs from the chest point to the back. So reach minus chest depth is a fair distance from the chest to the thumb tip."
+   },
+   {
+    "key": "catch_stroke_fraction",
+    "ok": false,
+    "issue": "The arithmetic is right ((81.19-25.38)/175.62 = 0.3178), and the value is correctly called an estimate. The notes have three problems. (1) 'Real catchers with mitts stop a ball in a few centimetres' is unsourced but reads as fact. (2) '0.3 x height is the softest catch a body this size could make' is wrong: bending the knees, turning the trunk or stepping back all lengthen the give. (3) 'We found no measured study' overlooks Lacquaniti & Maioli (1989, J. Neurosci. 9:134-148), which recorded hand and arm motion when catching dropped balls of different masses and heights. Its full text was blocked (403) for me, so I could not confirm any numbers from it. Most important: the hands start at rest at full reach. A soft 0.6 m give therefore applies only to momentum left after the first-contact collision with the hands' own mass (see physics issues).",
+    "corrected_value": "0.30 x height as an estimate of the arm's travel from full reach to the chest. Drop the 'softest possible' claim. Mark the mitt figure as an estimate or source it.",
+    "better_source": "Lacquaniti F, Maioli C (1989) The role of preparation in tuning anticipatory and reflex responses during catching, J Neurosci 9(1):134-148, https://pmc.ncbi.nlm.nih.gov/articles/PMC6570012/ (check the full text for measured hand displacement)"
+   },
+   {
+    "key": "catch_eccentric_force_ratio",
+    "ok": true,
+    "issue": "Both quotes confirmed word for word on the Frontiers page: in vitro, a plateau 'close to 1.8 times the maximum isometric force'; in vivo, 'about 1.2 times'."
+   },
+   {
+    "key": "catch_force_cap_model",
+    "ok": true,
+    "issue": "Correctly labelled a modelling choice. Capping at 1.0 x the dial in comic mode is consistent with comicAtLeastReal: the comic throwPush share is 0.168 per hand, the real share is 2 x 0.523, capped at 1. The note does not mention that the arms' own mass and the limb speed cap (real mode: push vmax 35 m/s, whip 84.6 m/s at 2 m) limit how fast the hands can give."
+   },
+   {
+    "key": "sutton_graves_air",
+    "ok": true,
+    "issue": "Confirmed. Table II gives K = 0.1113 for air (average correlation error 3.3%, maximum 9.8%). Tested ranges: enthalpy 2.3-116.2 MJ/kg, pressure 0.001-100 atm, wall temperatures 300 and 1,111 K, radiation neglected. Wikipedia gives k = 1.74153e-4. My conversion gives 1.748e-4. Not flagged in the design: the lower enthalpy bound (2.3 MJ/kg, about 2.14 km/s) means every heat load below about 2.1 km/s is also an extrapolation. At sea level, the formula is inside its tested range only between about 2.1 and 2.9 km/s."
+   },
+   {
+    "key": "shock_layer_radiation_onset",
+    "ok": false,
+    "issue": "The quotes are accurate: TM X-58091 says radiation is negligible at orbital speed and secondary at lunar return; TN D-6265 says it rises rapidly above 12 km/s and is over half the heat load at 15 km/s. But these are high-altitude entry conditions for an Apollo-sized nose. Used as a universal 'starts adding heat' speed of 11 km/s, the figure is mislabelled. Sutton & Hartung (1990), Table 1 (30 km altitude, density 0.0184 kg/m3), report radiative heating of 76.85 MW/m2 at 8 km/s for a 10 m nose radius, about 20 times Sutton-Graves convection (3.8 MW/m2). At 10 km/s and 10 m it is 386 MW/m2 (52 times); at 10 km/s and 1 m it is 151 MW/m2 (6.4 times). The sim's objects fly at sea level with nose radii up to 105 m.",
+    "corrected_value": "No single onset speed. For nose radii of 1 m or more in air at 30 km altitude or below, radiation matches or exceeds convection from about 8 km/s and probably lower. It is capped by the shock layer's blackbody flux, about 2e9 W/m2 at 9.8 km/s at sea level (sigma x (13,700 K)^4).",
+    "better_source": "Sutton K, Hartung LC (1990) Equilibrium Radiative Heating Tables for Earth Entry, NASA TM-102652, Table 1, p. 5: https://ntrs.nasa.gov/api/citations/19900014359/downloads/19900014359.pdf"
+   },
+   {
+    "key": "baseball_terminal_speed_adair",
+    "ok": false,
+    "issue": "The quote and value are confirmed: 'at about 95 mph (42 m/s), the drag force is equal to the force of gravity'. But it is on journal page 28 (PDF page 3, footer '28 MAY 1995 PHYSICS TODAY'), not p. 27.",
+    "corrected_value": "42 m/s; Adair (1995) Physics Today 48(5), p. 28",
+    "better_source": "https://aip.brightspotcdn.com/PTO.v48.i5.26_1.online.pdf (p. 28)"
+   },
+   {
+    "key": "baseball_bat_collision_force",
+    "ok": true,
+    "issue": "Confirmed on p. 31: 'the force increases to about 9000 lbs (40 000 N) as the ball is compressed', total collision about 1 ms, most momentum transfer in about 0.6 ms. The number is right, but the design misuses it: the stroke model ignores the first-contact impact, so the 0.86x comparison is not valid (see physics issues)."
+   },
+   {
+    "key": "iron_melting_heats",
+    "ok": true,
+    "issue": "Confirmed in the infobox: 1,811 K (1,538 °C), heat of fusion 13.81 kJ/mol, 25.10 J/(mol·K) (449.458 J/kg·K)."
+   },
+   {
+    "key": "aluminium_melting_heats",
+    "ok": true,
+    "issue": "Confirmed: 933.47 K (660.32 °C), 10.71 kJ/mol, 24.20 J/(mol·K). Mapping caveat: the 'shuttle stack' is not just aluminium. Its orbiter is covered in reentry tiles and its booster casings are steel, so a 660 °C 'melt' threshold misdescribes it."
+   },
+   {
+    "key": "copper_melting_heats",
+    "ok": true,
+    "issue": "Confirmed: 1,357.77 K (1,084.62 °C), 13.26 kJ/mol, 24.440 J/(mol·K)."
+   },
+   {
+    "key": "wood_char_base_temperature",
+    "ok": true,
+    "issue": "Confirmed: 'The temperature at the base of the char layer is generally taken to be 300 °C or 550 °F (288 °C).' Applying it to leather, yarn and bowling-ball resin is unsourced, as the note says."
+   },
+   {
+    "key": "limestone_calcination",
+    "ok": true,
+    "issue": "Confirmed on the Calcium oxide page: 'heating the material to above 825 °C'. The Calcium carbonate page says 'above 840 °C' for the same process, so show 825-840 °C."
+   },
+   {
+    "key": "heat_to_melt_per_kg",
+    "ok": false,
+    "issue": "The metal arithmetic checks out (iron 931, aluminium 976, copper 621 kJ/kg). But the stated range of 0.5-1.4 MJ/kg leaves out stone, which the sim maps to this value. Calcining limestone takes 178 kJ/mol (Wikipedia, Calcium carbonate) = 1.78 MJ/kg, plus about 0.7 MJ/kg to heat it to about 825 °C: roughly 2.5 MJ/kg. The label 'upper bound' on the resulting melt share also fails once shock-layer radiation matters, because radiation adds heat the sim leaves out.",
+    "corrected_value": "About 0.6-1.0 MJ/kg for the metals; about 2.5 MJ/kg for limestone (range 0.5-2.5 MJ/kg)",
+    "better_source": "https://en.wikipedia.org/wiki/Calcium_carbonate (reaction enthalpy 178 kJ/mol)"
+   },
+   {
+    "key": "newton_impact_depth_air",
+    "ok": true,
+    "issue": "The rule and its limits are confirmed on the page: it is based only on momentum conservation and holds when friction can be ignored and the speed is below the target's sound speed. The sweep lengths check out (baseball 27.78 m, car 125.7 m, shot 524.5 m, tank 1,899 m, pyramid 141.2 km). It is correctly labelled an estimate. Missing caveat: well above 1% of c (gamma much greater than 1) the classical rule fails. A relativistic snowplow keeps its momentum while its energy grows by mu c^2, so it slows only after sweeping roughly gamma x m of air."
+   },
+   {
+    "key": "air_column_mass",
+    "ok": true,
+    "issue": "Confirmed: 'a column of air with a cross-sectional area of 1 square centimeter ... has a mass of about 1.03 kilogram'. p0/g = 10,332 kg/m2."
+   },
+   {
+    "key": "relativistic_arrival_classes",
+    "ok": false,
+    "issue": "'D < 1% of sweep: arrives nearly whole' is not supported, even as an estimate. The energy dumped in the air is E x D/sweep = 1/2 mu v^2, where mu is the mass of air swept. For a pyramid flying 10 m at exactly 1% of c, that is 1.9e18 J, 32 times the pyramid's own vaporisation energy at about 1e7 J/kg. For T13b (gamma about 9,800), the relativistic snowplow gives heat of about 0.55 mc^2 (2.9e26 J, about 4.9e9 times its vaporisation energy) in those 10 m. The object keeps its momentum, not its solidity. For gamma much greater than 1 the classical sweep length also misplaces where it stops. The 'before' class treats the blast as stationary at the sweep distance, though by the design's own momentum argument the lump still moves at v/(1+x), which is hypersonic for x up to about v/a0.",
+    "corrected_value": "Say 'arrives with almost all its momentum, as a white-hot front of plasma and debris'. Never offer a hand catch for this class. For gamma much greater than 1, use the relativistic snowplow (keep p, add mu c^2 to E, heat = Mc^2 - (m + mu)c^2)."
+   },
+   {
+    "key": "earth_radius_rotation",
+    "ok": true,
+    "issue": "Confirmed: NSSDC volumetric mean radius 6,371.000 km, sidereal rotation 23.9345 h; Wikipedia 465.10 m/s (from the WGS84 equatorial radius). pi x 6,371 = 20,015 km; 465.1 x 4,715 s = 2,193 km. Caveat: the ball also carries the thrower's rotational velocity, so 'lead the catcher by up to ~2,200 km' is an order of magnitude, not a computed correction."
+   }
+  ],
+  "physics_issues": [
+   {
+    "severity": "critical",
+    "issue": "The catch ignores the mass of the catcher's own hands, so the soft 0.6 m catch cannot happen for anything lighter than his hands. The design assumes the ball slows evenly over 0.6 m from first touch. But the hands start at rest at full reach, and the engine's own hand-plus-forearm mass is 2 x 0.022 M = 7.9 kg. A 0.1453 kg ball hitting them is a collision: 98.2% of its energy (88% even with the 1.1 kg whip-effective hand mass) goes into the first few centimetres of palm and ball squash, not the 0.6 m give. Ollie cannot pre-move his hands either: at full strength, getting 7.9 kg of hands to 533 m/s takes 4.7 ms and 1.26 m, more than the whole stroke. In real-muscle mode the limb speed cap (35-85 m/s) forbids it outright.",
+    "evidence": "probe_d.js. T4 (533 m/s): 20,278 J goes into the first contact; the mean force over a 1-5 cm give is 0.4-2.0 MN, against the stroke model's 34.4 kN. Scaling Adair's 40 kN home-run collision (about 500 J in the centre-of-mass frame) as a linear spring gives about 254 kN, at least 6x the home-run squeeze, not 0.86x. T3 lob: 6.7 of 6.8 J goes into first contact; the mean force over 1-5 cm is 134-668 N, against 11.3 N.",
+    "fix": "Model the catch as two steps. (1) A perfectly inelastic first contact of m with the hand mass m_h = 2 x handEff (or 2 x whipEff as a lower bound). Its energy, 1/2 mu v^2 with mu = m m_h/(m + m_h), is absorbed over a palm-plus-object give delta, labelled an estimate (for example 2-5 cm for a plush palm). (2) The stroke then stops m + m_h, starting from v m/(m + m_h). Report the peak contact force, and base the baseball and grip checks on it. Use the stroke-only formula only when m is much larger than m_h. Otherwise say the hands sting rather than give."
+   },
+   {
+    "severity": "critical",
+    "issue": "The verdict says 'caught' and the chip says 'Clean catch' for objects that heat, air pressure or the catch itself has already destroyed. 'Clean' looks only at Ollie's strength. Heat 'destroyed' (melt share 50% or more), air ram pressure above the object's crush strength in flight, and a catch force that exceeds the crush strength even spread over the object's whole front all still give 'caught'. Below 1% of c, this contradicts the design's own fireball logic.",
+    "evidence": "probe_c.js at a 1e12 kg dial, bolted, 100 m fastball: all 23 throwable objects come out 'caught'. Every one except the baseball and bowling ball needs a palm plate larger than its own front (by 5.7x to 2.8e5x). Baseball, shot, bowling ball, piano, motorcycle and bar are 'destroyed' by heat, yet caught. The car's ram pressure is 3,198x its crush strength at launch. probe_a.js: a baseball at a 1e11 kg dial is 'caught' with a melt share of 110 (heat enough to melt it 110 times over). T15 pyramid: ram pressure rho v^2 = 1.18e8 Pa is 3.9x its 30 MPa crush strength at launch and 2.2x at arrival. Stopping force over its whole front is 7.7e12 Pa (2.6e5x crush). The 'plate' is 94 km square for a pyramid about 230 m across. At default settings, the motorcycle fastball is also 'caught' while the palms punch in.",
+    "fix": "Add a survival gate before the verdict. (a) Break-up in flight when rho(h) v^2 exceeds the crush strength: Collins et al. (2005) use exactly this stagnation-pressure break-up rule, and the engine already cites that paper. (b) Heat 'destroyed' switches to the plasma/sweep wording, as at 1% of c and above. (c) If F/A_front exceeds the crush strength, no plate saves it, and the verdict says Ollie stops the wreckage. Rename 'Clean catch' to 'His arms can stop it' and never show it alongside 'Hands punch into it'."
+   },
+   {
+    "severity": "major",
+    "issue": "The above-1%-of-c classes contradict the design's own momentum (snowplow) picture. 'Arrives nearly whole', and the clean relativistic catch, ignore the heat dumped in the gap. 'Before' treats the blast as a fixed point explosion at the sweep distance, though the plasma lump keeps rushing toward Ollie. The classical sweep length is also wrong when gamma is much greater than 1.",
+    "evidence": "probe_b.js and probe_e.js, T13b: gamma = 9,788, p = 1.76e22 kg·m/s. The 10 m of air takes 2.9e26 J of heat (relativistic snowplow, 0.55 mc^2), about 4.9e9 times the pyramid's vaporisation energy. The palms would press 2.9e32 Pa against a crush strength of 3e7 Pa, yet the design says clean (8.80e30 N needed against 9.81e30 N). At x sweeps the lump moves at v/(1+x), still about 30 km/s at x = 100 for a 1%-of-c throw.",
+    "fix": "For 'arrives', say 'reaches him carrying almost all its momentum, as a white-hot front of plasma and debris' and drop the hand catch (keep only the momentum push and recoil). For 'before', say the fireball keeps moving toward him and the overpressure is an order of magnitude (probably low). For gamma much greater than 1, compute heat and stopping distance with the relativistic snowplow (keep p, E += mu c^2)."
+   },
+   {
+    "severity": "major",
+    "issue": "When Ollie's feet slip, the catch uses his footing's static limit R, but the engine's own throw uses sliding friction Rslide(F), which grows as the object pushes him down. The model also stays one-dimensional along a tilted line. It never sends the object's downward momentum into the ground or turns it into extra friction.",
+    "evidence": "probe_a.js and probe_e.js. T5 (car lob, 10 m, 46°): with Rslide, F = 69,761 N (design 50,734) and slide = 0.59 m (design 1.27 m). A 2-D impulse check gives the pair 1.54 m/s of horizontal speed after the catch, against the design's 3.52 m/s. T17 (car, 30 m): with Rslide, F = 196,371 N (design 91,774) and slide = 1.22 m (design 4.56 m).",
+    "fix": "Solve F_B with RA = anc.Rslide(F) (bisection, as in probe_a.js), or split the motion into horizontal and vertical parts with friction = mu x the normal impulse, including m v sin(angle). Use the subsonic Cd for walking-speed slides."
+   },
+   {
+    "severity": "major",
+    "issue": "Drag is ignored on the straight-line flights between dense partners, and the test for when that matters is wrong. Comparing path length with 0.2 x the e-fold length misses that the 'gentle' margin over the gravity hump is only about 98 J/kg, while sea-level drag at km/s speeds removes hundreds of kJ/kg.",
+    "evidence": "probe_wells.js, integrating d(v^2)/dx = -2 dPhi/dx - (rho cd A/m) v^2 along the line. T9: launched at 4,315 m/s, the ball falls back at x = 5.8 m after losing 2.6e5 J/kg to drag; the least launch that reaches him is 4,389 m/s. T12: falls back at 3.6 m; needs 4,155 m/s and arrives at about 1,790 m/s. T10: arrives at 2,178 m/s, not 2,243. The path (7.87 m) is under the flag threshold (12.1 m), so dragIgnored stays false.",
+    "fix": "Integrate drag along the 1-D path, which is cheap (4,000 steps is enough), and bisect for the launch speed. Flag drag when the drag energy exceeds about 1% of the launch energy, not by path length."
+   },
+   {
+    "severity": "major",
+    "issue": "Shock-layer radiation is flagged only above 11 km/s. For big objects in dense air it dominates far earlier, so heat verdicts for large hypersonic objects ('skin', small melt shares) are unsupported. The page and the assumptions call the melt share a 'rough upper bound', which is false when a heat source is left out.",
+    "evidence": "Sutton & Hartung (1990) Table 1, 30 km altitude: radiative heating is 20x Sutton-Graves convection at 8 km/s for a 10 m nose and 52x at 10 km/s. T15 launches at sea level at 9.8 km/s with a 105 m nose. Convection is 1.77e7 W/m2, while the shock layer's blackbody flux is about 2.0e9 W/m2 (about 110x). The 'skin, 0.075%' verdict could really be several percent ('loses').",
+    "fix": "Bound radiative flux by sigma T_stag^4 (the engine already has stagnationT) or use the Sutton-Hartung tables. Show heat as a range (convection only to convection plus radiation). Flag radiation from about 8 km/s, or whenever the nose radius exceeds about 1 m in air below 30 km. Never call the result an upper bound when radiation is possible."
+   },
+   {
+    "severity": "major",
+    "issue": "The page text states a false equation and an inverted comparison. Happens item 3 prints '½mv²/d = {F}', but when Ollie slips, F is the slip formula, not ½mv²/d, and for a dense catcher it uses v_eff. The design's sentence 'A real catcher's mitt gives a few centimetres, so his hands feel {stroke/0.05}× more' gets the comparison backwards: a 60 cm give means 12 times less force than a 5 cm mitt. It is also unsourced.",
+    "evidence": "T5: the page would read '½mv²/d = 50.7 kN', while ½mv²/d = 105.9 kN. app.html line 1863 prints k.F after the ½mv²/d label.",
+    "fix": "Print ½mv²/d only when he doesn't slip. Otherwise write 'his feet slide, so the force is lower: {F}'. Rewrite or cut the mitt sentence, and if kept, label it an estimate."
+   },
+   {
+    "severity": "major",
+    "issue": "The geometry for a dense catcher doesn't match the anatomy the page describes, and it differs from the normal-flight endpoint. The text says his hands give 'from full reach to his chest', but the wells put his chest at heldRadius = 0.5H + L/2 (1.03 m from his centre) and full reach at 1.63 m. Scaled from ANSUR to 2 m, the chest front sits about 0.15 m in front of his centre-line (or on his equal-volume sphere at 0.35 m), with full reach about 0.78 m. Normal flights are aimed at D (his centre), but the wells stop at D - 1.63 m.",
+    "evidence": "T10 with r_held = 0.38 m and r_meet = 0.98 m: inStroke energy is 7.97e6 J/kg (design 1.77e6) and the pull on the held ball is 3.4e7 m/s2 (design 4.7e6). Gravity scales as 1/r^2, so the point-mass geometry, not the physics, sets these numbers.",
+    "fix": "Define the reach geometry once: chest at max(eqRadius, 0.07H) + L/2, hands meeting it 0.3H further out. Use it for the flight endpoint (D - reach) and for the wells, or state on the page that 'his hands meet it 1.6 m in front of his centre'."
+   },
+   {
+    "severity": "major",
+    "issue": "Nothing in this area covers the environment, though that is what the owner asked for. Drag energy is dumped into the air within a few km of each partner, the bow shock and sonic boom reach the catcher, and the catch energy has to go somewhere. None of it is reported.",
+    "evidence": "T15: drag takes 1.28e17 J (30.5 Mt TNT) out of the pyramid between launch and arrival, much of it in dense air near Rex and Ollie, and the catch puts 1.6e17 J (38.4 Mt) into Ollie's arms. A baseball at a 1e11 kg dial loses about 26% of 3.2e10 J (about 2 t TNT) to the air in the 10 m between them, yet the page only says it was caught.",
+    "fix": "Report the drag energy lost in the lowest few km at each end. Reuse blastBlock on it (as an upper bound) and give the sonic-boom overpressure at the catcher. Express the catch energy in TNT and say it ends up as heat in his indestructible arms."
+   },
+   {
+    "severity": "major",
+    "issue": "Object size is ignored. The flight is a point mass that stops at the catcher's hand height, so a 230 m pyramid, a 330 m tower or a 270 m ship is 'caught at 1.8 m' by a 2 m Ollie. Its lower half would hit the ground, or him, first.",
+    "evidence": "T15 and the probe_c.js sweep: pyramid, esb, eiffel, titanic and nimitz all come out 'caught' at hand height.",
+    "fix": "When the object's size exceeds about the catcher's height (or twice his hand height), switch the verdict to 'it lands on and around him; he can stop only the part that hits his hands', and drop the grip and plate wording."
+   },
+   {
+    "severity": "minor",
+    "issue": "Gravity is left out during the catch stroke and in the load on the feet. The stopping force along the path should be m v^2/(2d) + m g sin(angle), with m g cos(angle) at right angles. anchorCapacity's N(F) assumes F already includes the object's weight along the line. For the partner toss, Ollie's weight is missing from Rex's foot load.",
+    "evidence": "probe_a.js. T3 hand force: 12.4 N, not 11.33 (+9.5%). Car lob: +9,450 N along the line. Partner toss foot load: 0.1207 of the limit, not 0.1129 (hand force 25,392 N, not 23,627). Hard toss: 1.4254, not 1.4176.",
+    "fix": "Use v_eff^2 += 2 g d sin(angle), hold = |m a + m g| as a vector, and pass the full line force to N(F)."
+   },
+   {
+    "severity": "minor",
+    "issue": "For a dense catcher, the 'gentle lob' speed is set to sqrt(gD) by fiat, though the least speed that works is zero: let go and the ball falls to him. Also unchecked: the catcher's pull on the ball while it is still in the thrower's hand, and on the thrower's hand itself.",
+    "evidence": "probe_d.js: released from rest, the ball arrives at 2,243 m/s, the same as from the '9.9 m/s lob'. A neutron-star Ollie 9.5 m away pulls the ball in Rex's hand with 7,969 N (5,600x its weight) and Rex's 4 kg hand-and-forearm with 217 kN.",
+    "fix": "With no gravity hump, set v_L = 0 and say 'Rex just lets go'. Add the partner's pull to the thrower's hold check."
+   },
+   {
+    "severity": "minor",
+    "issue": "When the wells don't dominate but are still large, the flight is treated as an ordinary Earth arc with the well energies added on, though over the last dBeat metres the catcher's pull is stronger than Earth's.",
+    "evidence": "A neutron-star Ollie 1 km away has dBeat = 710 m, so his pull beats g over the last 71% of the path, and the arrival angle, time and heat from the Earth-only arc are wrong.",
+    "fix": "Flag 'rough' when max(dBeatT, dBeatC) > 0.1 D, or integrate the 2-D flight including both point masses."
+   },
+   {
+    "severity": "minor",
+    "issue": "Heating flags are incomplete and some wording overreaches. The extrapolation flag ignores the low-enthalpy end (below about 2.1 km/s, under 2.3 MJ/kg). The 'skin' sentence claims a cause the sim doesn't model ('only in the air {time}: its surface suffers while the inside stays cool'; there is no heat-conduction model, and for T15 the time is 79 minutes). The 'shuttle stack' threshold is aluminium's 660 °C, though its orbiter has reentry tiles.",
+    "evidence": "T4 at 629 m/s and the 1e6 kg dial at 2.09 km/s are below the Sutton-Graves enthalpy range. T15's 'skin' text would say 'it's only in the air 1 h 19 min'.",
+    "fix": "Set extrapolated = true below 2,145 m/s as well. Replace the skin sentence with 'the heat reaching it could melt under 1% of it (rough)'. Note the shuttle's tiles or give it a mixed material."
+   },
+   {
+    "severity": "minor",
+    "issue": "Missing or misleading results. The port's 'no-arc' result has no outputs entry or page text in the design. A fastball whose range is capped by air, not strength, is called 'too-weak' ('Rex can't throw the car that far'). The no-air comparison 'it would be 45° at √(gD)' is wrong when release and catch heights differ.",
+    "evidence": "probe_c.js at a 1e15 kg dial, 10,000 km fastball: the car, bus and others come out 'too-weak' at 1e15 kg of strength. T18-type unequal heights make the 45° text wrong.",
+    "fix": "Add 'no-arc' to the design. When the farthest range at the speed cap is below D, use the 'unreachable' (air wall) wording. Use v^2 = g(Δh + sqrt(D^2 + Δh^2)) and θ = 45° + ½ atan(Δh/D) for the no-air comparison."
+   },
+   {
+    "severity": "minor",
+    "issue": "The round trip leaves out the throwing stroke time, and the after-catch slide uses the supersonic Cd at walking speed.",
+    "evidence": "T5: k uses CdSup 1.75 instead of Cd 1.15 at 3.5 m/s.",
+    "fix": "Add push.t for each throw; use cdAt(Cd, CdSup, u/a0)."
+   },
+   {
+    "severity": "minor",
+    "issue": "The summary misattributes the catch: 'A 2 m, 180 kg Rex catching his own 629 m/s fastball'.",
+    "evidence": "In T4 Ollie catches Rex's fastball.",
+    "fix": "'Ollie catching Rex's 629 m/s fastball'."
+   }
+  ],
+  "missing": [
+   "The first-contact collision between the object and the catcher's hands (2 x handEff = 7.9 kg at default size) and a labelled palm-give estimate. Without it, every light-object catch force and the baseball's 'survives' result are wrong.",
+   "A survival gate before 'caught': break-up in flight when rho v^2 exceeds the crush strength (the Collins et al. 2005 rule, already cited by the engine); heat 'destroyed' treated with the plasma/sweep wording even below 1% of c; and a stopping force that crushes the object even spread over its whole front.",
+   "Environmental effects (the owner's actual request): drag energy dumped into the air near the thrower and the catcher, run through blastBlock; sonic boom and bow-shock overpressure at the catcher; where the catch energy goes, in TNT.",
+   "The object's size compared with the catcher: objects taller or longer than him can't be caught at hand height.",
+   "Shock-layer radiation for large nose radii in dense air below 11 km/s (Sutton & Hartung 1990 tables, or a blackbody cap at sigma T_stag^4), with heat shown as a range rather than an 'upper bound'.",
+   "Drag along the dense-partner straight-line flights, and trajectory bending by a partner's pull when it is comparable to Earth's over part of the path.",
+   "One consistent reach geometry (chest and full-reach distances from his centre) used for both the flight endpoint and the gravity wells.",
+   "Gravity during the catch stroke, and the partner's weight on the thrower's feet in the toss.",
+   "Sliding friction that grows with the load (anc.Rslide) and a 2-D momentum split, so the object's downward momentum goes into the ground.",
+   "In real-muscle mode, the limb top speed limiting how fast the hands can give, and the eccentric bonus (about 1.2x) as an option.",
+   "Page text and outputs for the 'no-arc' result; 'unreachable' wording when air, not strength, limits a fastball.",
+   "The catcher's gravitational pull on the ball and on the thrower's hand before release.",
+   "A computed correction for Earth's rotation, or a clear note that the long-throw lead is order-of-magnitude only.",
+   "The throwing stroke time in the round-trip total."
+  ],
+  "test_corrections": [
+   {
+    "name": "T3 Gentle lob of a baseball, 10 m, default bodies",
+    "problem": "Launch 10.16 m/s at 45.1°, flight 1.446 s and arrival 9.674 m/s at 46.4° all reproduce in my independent integrator (indep_fly.py). The 11.33 N 'catch force' leaves out gravity along the path and the first-contact impact with Ollie's 7.9 kg of hands, which absorbs 98% of the ball's 6.8 J.",
+    "corrected_expected": "Stroke force including gravity: 12.4 N. First-contact impact: 6.7 J absorbed, mean force about 134-668 N for a 1-5 cm palm give (an estimate). Test both, or state the matched-hands assumption."
+   },
+   {
+    "name": "T4 Fastball baseball, 10 m",
+    "problem": "Speeds reproduce independently (629.14 to 533.14 m/s at 10 m). The '0.860x home-run squeeze; survives' result follows only from ignoring the first-contact collision with the hands: 98% of the ball's 20.6 kJ goes into the contact.",
+    "corrected_expected": "Peak squeeze at least about 2.5e5 N (about 6x Adair's 40 kN, linear-spring scaling); mean force 0.4-2.0 MN for a 1-5 cm give. Result: the ball probably bursts, so 'beyond what the sim can say', not 'survives'. The slide of about 0.015 m is unchanged."
+   },
+   {
+    "name": "T5 Gentle lob of a car, 10 m: Ollie slides",
+    "problem": "Computed with static R = 43,330 N instead of the engine's sliding friction Rslide(F), and with gravity along the path left out.",
+    "corrected_expected": "With Rslide: F = 69,760 N (plus 9,450 N of the car's weight along the line, giving about 79 kN at the hands) and slide = 0.59 m. A 2-D impulse estimate gives pair horizontal speed 1.54 m/s (design 3.52 m/s)."
+   },
+   {
+    "name": "T9 Neutron-star Rex must give the ball escape speed",
+    "problem": "Drag is ignored over the 7.9 m path. With sea-level drag, a 4,315 m/s launch falls back 5.8 m from Rex after losing 2.6e5 J/kg (the margin over the hump is 98 J/kg).",
+    "corrected_expected": "Barrier 9.308e6 J/kg (unchanged). Least launch with drag is about 4,389 m/s, and the ball arrives at about 0 m/s (it barely reaches). Or keep 4,315 m/s with dragIgnored = true and a visible 'drag would stop it' warning."
+   },
+   {
+    "name": "T10 A neutron-star Ollie pulls in a gentle lob",
+    "problem": "Drag is ignored, and the '10 m/s lob' is arbitrary: released from rest, the ball also arrives at 2,243 m/s. The catch force uses the 1.03 m and 1.63 m radii, which don't match the 'reach to chest' anatomy.",
+    "corrected_expected": "Arrival with drag: about 2,178 m/s, giving catch force 0.1453 x (2,178^2 + 2 x 1.769e6)/1.2, about 9.97e5 N. Least launch speed: 0 ('Rex just lets go')."
+   },
+   {
+    "name": "T12 Two neutron-star partners: over the hump between them",
+    "problem": "With drag, a 4,109 m/s launch falls back 3.6 m from Rex.",
+    "corrected_expected": "Least launch with sea-level drag is about 4,155 m/s; it arrives at about 1,790 m/s."
+   },
+   {
+    "name": "T13b A relativistic pyramid arrives nearly whole",
+    "problem": "Gamma is about 9,788. The 10 m of air turns about 2.9e26 J (0.55 mc^2) into heat, about 4.9e9 times the pyramid's vaporisation energy. The palms would press 2.9e32 Pa against a crush strength of 3e7 Pa. 'Clean catch' is not physical.",
+    "corrected_expected": "Kind 'arrives' with momentum p = 1.76e22 kg·m/s as a plasma and debris front. No hand catch: the result should be the momentum push (bolted means Earth recoils at 2.9e-3 m/s), with the energy dumped in the gap reported. The sweep of 141.15 km is unchanged, though for gamma much greater than 1 the stopping length grows by about gamma."
+   },
+   {
+    "name": "T14 Rex tosses Ollie 10 m up and catches him",
+    "problem": "Speed, time and force reproduce independently (12.8335 m/s, 2.5846 s, 23,627 N). The foot load leaves out Ollie's own weight while Rex holds him.",
+    "corrected_expected": "Hand force 25,392 N; sink ratio (1,765 + 1,765 + 23,627)/225,000 = 0.121."
+   },
+   {
+    "name": "T14b Full-strength toss of Ollie sinks Rex into the slab",
+    "problem": "Ollie's weight is left out of the foot load.",
+    "corrected_expected": "Apex 163.3 m and return speed 46.0 m/s reproduce; sink ratio 1.425 (not 1.418)."
+   },
+   {
+    "name": "T15 A game of catch across the planet",
+    "problem": "Speed (9,797.9 m/s at 20.8°), time (78.59 min) and catch force (2.675e17 N) reproduce. But the ram pressure at launch (1.18e8 Pa) is 3.9x the pyramid's crush strength, so it breaks up in the air. The catch force over its whole front is 2.6e5x crush, and radiation (up to about 110x convection at launch) makes 'skin 0.075%' unsupported. 'Caught' is not a valid result.",
+    "corrected_expected": "Result: breaks up in flight (or 'stopped as rubble'). Heat: 0.075% (convection only) to several percent with radiation, flagged as beyond the formula's range. Report about 30 Mt TNT of drag energy dumped in the air and 38 Mt into Ollie's arms."
+   },
+   {
+    "name": "T17 Heavy object: the gentle lob is out of reach but a full-strength throw works",
+    "problem": "The aim (47.90°, 18.22 m/s, arrival 16.41 m/s) reproduces, but the force and slide use static R.",
+    "corrected_expected": "With Rslide: F about 196,000 N (plus about 10,200 N of weight along the line) and slide about 1.2 m (design 9.18e4 N and 4.56 m)."
+   },
+   {
+    "name": "T18 Unequal sizes: kaiju thrower aims down",
+    "problem": "The aim reproduces (-23.35°, 2,977.6 m/s, arrival 493 m/s), but the 'clean catch' of a 0.145 kg ball at 493 m/s faces the same first-contact problem as T4.",
+    "corrected_expected": "Keep the aim checks. Replace 'clean' with the first-contact impact check (peak force several times the 40 kN home-run squeeze)."
+   }
+  ],
+  "verdict": "The design is not ready to ship. It's careful and mostly well sourced, and much of its arithmetic holds up. I fetched all 16 cited sources: 13 facts are confirmed as stated, and 5 need correcting.\n\n**Sources needing correction:**\n- **Adair's 42 m/s quote** is on journal page 28, not 27.\n- **The 11 km/s radiation threshold** comes from high-altitude entry data and is mislabelled as a general onset speed. Sutton & Hartung (1990) show radiation 20 to 50 times convection at 8 to 10 km/s for a 10 m nose at 30 km altitude.\n- **The 1 MJ/kg melting-heat range** leaves out limestone, which needs about 2.5 MJ/kg.\n- **'Arrives nearly whole'** above 1% of light speed is not supported.\n- **The catch-stroke notes** contain unsourced claims and a wrong \"softest possible catch\" claim.\n\n**Tests that reproduce independently:** T1, T3 kinematics, T4 speeds, T6 (470.6 m at 25°), T7, T14 and T14b reproduce in my own integrator. T9 to T12 are analytically correct on their own assumptions, and T8, T11, T13, T16, T17 (aim) and T18 (aim) match the engine.\n\n**Critical physics problems:**\n1. **Hand inertia is ignored.** For anything lighter than Ollie's hands (7.9 kg), about 98% of the ball's energy goes into a first-contact collision. That makes T4's \"0.86 times a home-run hit's squeeze, the ball survives\" wrong: it is at least about 6 times, and the ball probably bursts.\n2. **\"Caught\" and \"Clean catch\" are shown for objects that are already destroyed.** This includes objects burned up by heat, crushed by air ram pressure (the T15 pyramid at 3.9 times its crush strength), or needing a palm plate up to 280,000 times their own frontal area.\n\n**Major problems:**\n- The relativistic \"arrives\" and \"before\" classes ignore the energy dumped in the gap (T13b) and the fireball's forward momentum.\n- When Ollie's feet slip, the catch uses static footing instead of the engine's own sliding friction: T5 force is about 40% low and the slide about 2 times too long; T17 force is about 2 times low and the slide 3.7 times too long.\n- Drag is ignored on the dense-partner straight-line flights: the T9 and T12 launch speeds actually fall back short.\n- Radiation is left out for big objects in dense air, so the heat \"upper bound\" is not one.\n- The page prints \"½mv²/d\" even when Ollie slips, and the design's mitt comparison is backwards.\n- The dense-catcher geometry (\"from full reach to his chest\") doesn't match the radii used.\n- There are no environmental effects at all, which is what the owner asked for. T15 alone dumps about 30 Mt of drag energy into the air and puts 38 Mt into Ollie's arms.\n- Object size is ignored: a 230 m pyramid is \"caught\" at 1.8 m hand height.\n\n**Fixes before shipping:**\n- Model the first-contact collision with the hands.\n- Add a survival gate before any \"caught\" verdict.\n- Use sliding friction for the slide.\n- Integrate drag along the dense-partner flights.\n- Show heat as a range that includes radiation.\n- Report the effects on the surroundings.\n- Fix the page text.\n\n**Files are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/duo/catch-check/:**\n- indep_fly.py (independent flight integrator)\n- probe_a.js (gravity in the catch, slide friction, toss foot load)\n- probe_wells.js (drag on dense-partner flights)\n- probe_b.js (near-light-speed regime, T13b, T15)\n- probe_c.js (sweep of all objects)\n- probe_d.js (T16 to T18, hand inertia)\n- probe_e.js (T17 slide, relativistic heat, baseball range)\n- dl/ (fetched sources)\n\nSources used beyond the design's own: [Sutton & Hartung 1990, NASA TM-102652](https://ntrs.nasa.gov/api/citations/19900014359/downloads/19900014359.pdf), [Wikipedia: Calcium carbonate](https://en.wikipedia.org/wiki/Calcium_carbonate), [Lacquaniti & Maioli 1989 (PMC6570012)](https://pmc.ncbi.nlm.nih.gov/articles/PMC6570012/) (full text blocked; numbers not confirmed), [Tauber & Sutton 1991 record](https://ntrs.nasa.gov/citations/19910048758)."
+ }
+}

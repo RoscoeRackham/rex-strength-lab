@@ -188,7 +188,8 @@ window.DINO_DATA = {
    "Cd": 0.46,
    "CdSup": 0.92,
    "crush": 750000000.0,
-   "rho": 8000
+   "rho": 8000,
+   "crushWhole": true
   },
   {
    "id": "bowling",
@@ -508,7 +509,8 @@ window.DINO_DATA = {
    "Cd": 1.15,
    "CdSup": 1.75,
    "crush": 250000000.0,
-   "rho": 1000
+   "rho": 1000,
+   "crushWhole": true
   },
   {
    "id": "backlift",
@@ -547,7 +549,8 @@ window.DINO_DATA = {
    "Cd": 1.15,
    "CdSup": 1.75,
    "crush": 250000000.0,
-   "rho": 7800
+   "rho": 7800,
+   "crushWhole": true
   },
   {
    "id": "range150",
@@ -759,7 +762,8 @@ window.DINO_DATA = {
    "run": {
     "liftKg": 511,
     "action": "lift",
-    "obj": "bar511"
+    "obj": "bar511",
+    "cal": true
    },
    "also": []
   },
@@ -776,7 +780,8 @@ window.DINO_DATA = {
    "run": {
     "liftKg": 2422.18,
     "action": "lift",
-    "obj": "backlift"
+    "obj": "backlift",
+    "cal": true
    },
    "also": []
   },
@@ -806,7 +811,8 @@ window.DINO_DATA = {
    "run": {
     "liftKg": 511,
     "action": "pull",
-    "obj": "cc177"
+    "obj": "cc177",
+    "cal": true
    },
    "also": []
   },
@@ -824,7 +830,8 @@ window.DINO_DATA = {
     "liftKg": 511,
     "action": "throw",
     "obj": "shot",
-    "angle": 37
+    "angle": 37,
+    "cal": true
    },
    "also": []
   },
@@ -842,7 +849,8 @@ window.DINO_DATA = {
     "liftKg": 511,
     "action": "throw",
     "obj": "baseball",
-    "angle": 2
+    "angle": 2,
+    "cal": true
    },
    "also": []
   },
@@ -858,7 +866,8 @@ window.DINO_DATA = {
    },
    "run": {
     "liftKg": 511,
-    "action": "sprint"
+    "action": "sprint",
+    "cal": true
    },
    "also": []
   },
@@ -866,7 +875,7 @@ window.DINO_DATA = {
    "group": "comic",
    "title": "Hurdle a twenty-story building",
    "who": "Action Comics #1 · 1938",
-   "claim": "“Leap 1/8th of a mile; hurdle a twenty-story building… raise tremendous weights.” Switches to Comic book mode and runs the jump at the strength it needs (20 stories ≈ 60 m). A 2 m Rex on real muscle tops out near 7 m.",
+   "claim": "“Leap 1/8th of a mile; hurdle a twenty-story building… raise tremendous weights.” Switches to Comic book mode and runs the jump at the strength it needs (20 stories ≈ 60 m). The default 10 ft Rex on real muscle tops out near 16 m (the 2 m calibration body near 7 m).",
    "status": "canon_stated",
    "source": {
     "url": "https://be-api.us.archive.org/fts/v1/search?q=%22leap+1%2F8th+of+a+mile%22&size=5",
@@ -892,7 +901,8 @@ window.DINO_DATA = {
    "run": {
     "liftKg": 1429,
     "action": "lift",
-    "obj": "desoto"
+    "obj": "desoto",
+    "cal": true
    },
    "also": []
   },
@@ -910,7 +920,8 @@ window.DINO_DATA = {
     "liftKg": 362.873896,
     "action": "throw",
     "obj": "shot",
-    "angle": 37
+    "angle": 37,
+    "cal": true
    },
    "also": []
   },
@@ -1142,7 +1153,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Two muscle models, one calibration",
-   "d": "At record-human strength (511 kg deadlift) the default 2 m Rex reproduces the shot put record (23.56 m), the fastest pitch (47.3 m/s) and Bolt’s top speed in both modes, and throws a 10.4 m/s punch, inside the 6.6–12.5 m/s peak fist speeds measured in boxers. Real muscle follows the Hill force–velocity curve (a/F₀ = 0.25, the usual single-muscle value; whole limbs measure flatter), so limb speed tops out. Comic mode keeps the same share of strength at any speed, so speed grows with the square root of strength; where real muscle would do better (slow, heavy loads), comic mode uses that instead."
+   "d": "The calibration uses the 2 m, 180 kg calibration body (the Calibration body chip under Size), not the default 10 ft Rex. At record-human strength (511 kg deadlift) it reproduces the shot put record (23.56 m), the fastest pitch (47.3 m/s) and Bolt’s top speed in both modes, and throws a 10.4 m/s punch, inside the 6.6–12.5 m/s peak fist speeds measured in boxers. Real muscle follows the Hill force–velocity curve (a/F₀ = 0.25, the usual single-muscle value; whole limbs measure flatter), so limb speed tops out. Comic mode keeps the same share of strength at any speed, so speed grows with the square root of strength; where real muscle would do better (slow, heavy loads), comic mode uses that instead."
   },
   {
    "t": "Size",
@@ -1150,7 +1161,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Pushes are one-dimensional",
-   "d": "A throw, punch or jump is a straight push over a fixed stroke (1.6 m shove, 2.2 m overarm throw, 0.7 m punch, 0.5 m leg drive, 0.6 m stomp, 0.5 m clap; all at 2 m, scaling with height). Heavy throws hold the object up against gravity as well as pushing it."
+   "d": "A throw, punch or jump is a straight push over a fixed stroke, a set share of his height: 0.8× for a shove, 1.1× for an overarm throw, 0.35× for a punch, 0.25× for the leg drive, 0.3× for a stomp and 0.25× for a clap. At the default 10 ft that is 2.4 m, 3.4 m, 1.1 m, 76 cm, 91 cm and 76 cm. Heavy throws hold the object up against gravity as well as pushing it."
   },
   {
    "t": "Relativity is built in",
@@ -1169,8 +1180,32 @@ window.DINO_DATA = {
    "d": "Blast radii use the Kinney–Graham curve for TNT, as if all the energy became a blast; injury and death levels count the pressure wave alone. Quake magnitudes assume 1 part in 10,000 of the energy becomes shaking, the usual impact-study value (real range 10⁻⁵ to 10⁻³, so give or take about ⅔ of a magnitude). Craters use asteroid-impact scaling, which overstates small craters in rock or concrete."
   },
   {
+   "t": "Density and weight",
+   "d": "Density sets his mass at his size. His volume is measured from his picture: 2.55 m³ at 10 ft, scaling with height cubed (the 2 m calibration body has 0.18 m³). Heavier limbs need more strength to move, so every move uses his mass. Both legs together push up to 1.4× the dial’s force. Standing up needs that to beat his weight. Walking needs it to beat about 1.2× his weight, the load on one leg per step (a rough rule: one near-straight leg is taken to match both legs’ squat push). Running uses the Sprint tab’s rough rule: strength above his weight. Nothing denser than osmium exists at everyday pressure; it is found only under enormous pressure, deep inside giant planets, stars and dead stars. In the sim his indestructibility holds it together."
+  },
+  {
+   "t": "His own gravity",
+   "d": "Treated as a ball of his volume (about 85 cm radius at 10 ft) and as a point mass beyond that, so numbers within about his own height of him are rough (perhaps a factor of 2–3 for things touching him). Air falling in uses Bondi’s estimate, rough and without the heating that would slow it. Holding an atmosphere uses the rule of thumb that escape speed must beat 6× the gas molecules’ typical speed. Past 1/1,000 of the Earth’s mass his pull reshapes the planet and the moves are not modelled; past the Earth’s mass the planet falls onto him; when his mass fits inside 2GM/c² he is a black hole."
+  },
+  {
+   "t": "Sinking and falling through the Earth",
+   "d": "Soil gets stronger with depth. Bedrock is set at 1.7 GPa everywhere down to the core (a rough estimate; real rock runs 0.1–4 GPa), except the liquid outer core, which has none. Rock also has to be shoved aside (ρv²). The Earth’s insides follow PREM, with its 3 km ocean replaced by crust. His own gravity also drags the rock around him (Ostriker’s formula for a gas, a rough stand-in for rock, with a sound speed of 6 km/s; real rock carries waves at 3.2–13.7 km/s). The Earth’s spin is included; tides, the Earth’s flattening and the channel of melted rock he leaves are not. Settling over many trips is averaged. The page shows the spread from strong rock with the most drag (3.2 km/s sound speed) to weak rock with no gravitational drag."
+  },
+  {
+   "t": "Rex and Ollie",
+   "d": "Ollie is as strong, tough and big as Rex unless his own settings say otherwise: by default 10 ft and about 2,700 kg, measured from the same picture. He wears boots, so his boots get the same grip as Rex’s feet; “dug in” for him means boots kicked into footholds. Nothing else about him is invented. The push between them is the same both ways. When they shove or wrestle, it goes through each body to his feet, so neither can use more force than his feet hold. Arm wrestling uses 25% of each one’s strength at the hands (an estimate; plausibly 10–40%). A regulation table, scaled to their size, carries the push between them until its pegs and pads tear out (about 5 kN at regulation size, an estimate). After that only their feet hold. Standing up, an arm folds only if the other presses harder than it; if not, the loser’s feet slide and he is dragged. A shove uses the throw’s two-handed push; afterwards they slide upright, where real bodies would tumble. Their own gravity is G m₁ m₂ / d², good to about a factor of 2 for tall bodies close together."
+  },
+  {
+   "t": "Game of catch",
+   "d": "Each throw is aimed: the gentle lob is the slowest throw that reaches the catcher’s hands, the fastball his hardest along the flattest path. His hands wait at full reach, so a light object first collides with his hands and forearms (4.4% of his mass) and spends most of its energy squashing his palms and itself by 1–2.5% of his height (3–7.6 cm at 10 ft, an estimate). That first contact is the catch, over in milliseconds. His arms then bring hands and object to rest over 0.3 × his height (full reach to chest, from US Army body measurements), with the least force that works. With strength to spare he can take as long as he likes over that, so the round trip counts only the throws and the flights; when he slides or needs at least half his strength, the stroke takes a set time and is counted. His strength caps the arm force and his footing decides whether he slides; sliding friction grows with the load. The thrower recoils just as on the Throw tab. Before anything counts as caught it has to arrive whole: his throwing push spread over its cross-section must not crush it, air pressure must not tear it apart (ρv² above its strength, the rule meteor models use), air heating must not burn it up, it must not be bigger than the catcher, and the hardest push of the catch, first hit included, must not crush it. Only the shot put, deadlift bar and Ruyi staff have a whole-object strength; for the rest the sim uses its grip limit, a local value, so these checks err toward it surviving. Air heating uses NASA’s stagnation-point formula, shown as a range up to a blackbody ceiling for glowing air below 30 km; both ends are rough. Above 1% of light speed a snowplow model with relativity keeps the momentum and turns swept air into heat that rides along with it; stopping it at the catcher frees nearly all its energy where he stands. Dense partners are points with their mass at the centre, and drag is included on the straight line between them. The Earth doesn’t spin here, and there is no ball spin or wind."
+  },
+  {
+   "t": "Unstoppable force vs immovable object",
+   "d": "Momentum and energy are exact, relativity included. Two bounds bracket every hit: a splat (no bounce; the lost energy comes out as heat, sound and blast) and a perfect bounce. How hard they hit depends on how squishy they are, which nobody knows for an indestructible plush: the sim lets each squash by a quarter of the smaller body’s thickness (volume ÷ facing area), and also shows the most any body could do, because relativity forbids perfectly rigid bodies. Bolts never fail, but the granite around them does: it pulls apart at about 8 MPa and crushes at 200 MPa. Hits are straight and head-on: spin, glancing blows, horns and the air during the hit are ignored."
+  },
+  {
    "t": "Rex’s body",
-   "d": "2 m and 180 kg by default. Segment masses from Dempster’s tables (hand 0.6%, forearm 1.6%, foot 1.45%, shank 4.65% of body mass). Foot contact 450 cm² each and palm 150 cm² are assumptions for a big three-toed dinosaur."
+   "d": "By default {DEFAULT_BODY}: 10 ft tall by his owner’s ruling, and about 2,700 kg (plausibly 2,300–3,000 kg) measured from his picture. The picture is sliced into thin ovals whose depth comes from US Army body measurements, giving 2.55 m³; at 1,060 kg/m³, the density of a lean bodybuilder less some lung air, that is 2,700 kg (an estimate). Ollie measures the same 10 ft to his horn tips and the same mass. The picture also gives the area each one shows the air (4.4 m² for Rex with his tail trailing, 4.5 m² for Ollie) and the sole of each foot ({DEFAULT_FOOT} for each of Rex’s paws, 0.15 m² for each of Ollie’s boots). The calibration body (the Calibration body chip) is 2 m and 180 kg, with 450 cm² per foot. Segment masses from Dempster’s tables (hand 0.6%, forearm 1.6%, foot 1.45%, shank 4.65% of body mass). The palm is 150 cm² at 2 m (about 350 cm² at 10 ft). All areas scale with height squared. The calibration foot and the palm are assumptions."
   }
  ],
  "sourceRows": [
@@ -1696,7 +1731,7 @@ window.DINO_DATA = {
      "title": "Wikipedia - Gray iron (ASTM A48 classes by tensile strength)"
     }
    ],
-   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength."
+   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. Solid metal all through, so the Game of catch also uses it as the strength of the whole object."
   },
   {
    "label": "Mass: Bowling ball (16 lb)",
@@ -1740,7 +1775,7 @@ window.DINO_DATA = {
      "title": "AHEC/Hardwood species guide - strength & mechanical properties (hard maple, Green-12%)"
     }
    ],
-   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength."
+   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. The Game of catch also checks it against air pressure and stopping force spread over the whole object; the whole structure gives way well below this local value, so those checks err toward it surviving."
   },
   {
    "label": "Mass: Motorcycle",
@@ -1763,7 +1798,7 @@ window.DINO_DATA = {
    "value": "3 MPa",
    "status": "estimate",
    "sources": [],
-   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength."
+   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. The Game of catch also checks it against air pressure and stopping force spread over the whole object; the whole structure gives way well below this local value, so those checks err toward it surviving."
   },
   {
    "label": "Mass: Toyota Corolla",
@@ -1795,7 +1830,7 @@ window.DINO_DATA = {
      "title": "Materials 2019 - measured DC04 yield ~176-193 MPa (blocked to verifiers; not re-read)"
     }
    ],
-   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength."
+   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. The Game of catch also checks it against air pressure and stopping force spread over the whole object; the whole structure gives way well below this local value, so those checks err toward it surviving."
   },
   {
    "label": "Mass: Ford F-150 pickup",
@@ -1818,7 +1853,7 @@ window.DINO_DATA = {
    "value": "3 MPa",
    "status": "estimate",
    "sources": [],
-   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength."
+   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. The Game of catch also checks it against air pressure and stopping force spread over the whole object; the whole structure gives way well below this local value, so those checks err toward it surviving."
   },
   {
    "label": "Mass: School bus (Type C)",
@@ -1841,7 +1876,7 @@ window.DINO_DATA = {
    "value": "3 MPa",
    "status": "estimate",
    "sources": [],
-   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength."
+   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. The Game of catch also checks it against air pressure and stopping force spread over the whole object; the whole structure gives way well below this local value, so those checks err toward it surviving."
   },
   {
    "label": "Mass: Semi truck, fully loaded",
@@ -1873,7 +1908,7 @@ window.DINO_DATA = {
      "title": "Procurement spec - 10-5/8 in rail, 120,000 psi yield (403 to verifiers)"
     }
    ],
-   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength."
+   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. The Game of catch also checks it against air pressure and stopping force spread over the whole object; the whole structure gives way well below this local value, so those checks err toward it surviving."
   },
   {
    "label": "Mass: M1A2 Abrams tank",
@@ -1905,7 +1940,7 @@ window.DINO_DATA = {
      "title": "ARL report - Johnson-Cook parameters for RHA (yield value not extracted)"
     }
    ],
-   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength."
+   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. The Game of catch also checks it against air pressure and stopping force spread over the whole object; the whole structure gives way well below this local value, so those checks err toward it surviving."
   },
   {
    "label": "Mass: Freight locomotive (EMD SD70ACe)",
@@ -1928,7 +1963,7 @@ window.DINO_DATA = {
    "value": "20 MPa",
    "status": "estimate",
    "sources": [],
-   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength."
+   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. The Game of catch also checks it against air pressure and stopping force spread over the whole object; the whole structure gives way well below this local value, so those checks err toward it surviving."
   },
   {
    "label": "Mass: C-17 Globemaster (Kevin Fast’s pull)",
@@ -1960,7 +1995,7 @@ window.DINO_DATA = {
      "title": "OnlineMetals 2024-T3 clad sheet (yield 50 ksi, UTS 70 ksi, shear 41 ksi; 403 to verifiers)"
     }
    ],
-   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength."
+   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. The Game of catch also checks it against air pressure and stopping force spread over the whole object; the whole structure gives way well below this local value, so those checks err toward it surviving."
   },
   {
    "label": "Mass: Boeing 777-200 at max takeoff",
@@ -1988,7 +2023,7 @@ window.DINO_DATA = {
      "title": "OnlineMetals 2024-T3 clad sheet (yield 50 ksi, UTS 70 ksi, shear 41 ksi; 403 to verifiers)"
     }
    ],
-   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength."
+   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. The Game of catch also checks it against air pressure and stopping force spread over the whole object; the whole structure gives way well below this local value, so those checks err toward it surviving."
   },
   {
    "label": "Mass: Space Shuttle, full stack at liftoff",
@@ -2011,7 +2046,7 @@ window.DINO_DATA = {
    "value": "1 MPa",
    "status": "estimate",
    "sources": [],
-   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength."
+   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. The Game of catch also checks it against air pressure and stopping force spread over the whole object; the whole structure gives way well below this local value, so those checks err toward it surviving."
   },
   {
    "label": "Mass: Statue of Liberty (statue only)",
@@ -2043,7 +2078,7 @@ window.DINO_DATA = {
      "title": "LIGO memo quoting copper.org (~76 MPa) and MatWeb (33.3 MPa) annealed yield"
     }
    ],
-   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength."
+   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. The Game of catch also checks it against air pressure and stopping force spread over the whole object; the whole structure gives way well below this local value, so those checks err toward it surviving."
   },
   {
    "label": "Mass: Eiffel Tower",
@@ -2075,7 +2110,7 @@ window.DINO_DATA = {
      "title": "Wrought iron review (average tensile ~324 MPa; 403 to verifiers)"
     }
    ],
-   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength."
+   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. The Game of catch also checks it against air pressure and stopping force spread over the whole object; the whole structure gives way well below this local value, so those checks err toward it surviving."
   },
   {
    "label": "Mass: RMS Titanic",
@@ -2107,7 +2142,7 @@ window.DINO_DATA = {
      "title": "U. Oviedo paper citing Leighly (now 404/HTML)"
     }
    ],
-   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength."
+   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. The Game of catch also checks it against air pressure and stopping force spread over the whole object; the whole structure gives way well below this local value, so those checks err toward it surviving."
   },
   {
    "label": "Mass: Nimitz-class aircraft carrier",
@@ -2139,7 +2174,7 @@ window.DINO_DATA = {
      "title": "MIL-S-16216K(SH) 1987 - HY-80/HY-100 plate (403 to verifiers)"
     }
    ],
-   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength."
+   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. The Game of catch also checks it against air pressure and stopping force spread over the whole object; the whole structure gives way well below this local value, so those checks err toward it surviving."
   },
   {
    "label": "Mass: Empire State Building",
@@ -2171,7 +2206,7 @@ window.DINO_DATA = {
      "title": "Indiana Geological & Water Survey - Indiana limestone (503 to verifiers)"
     }
    ],
-   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength."
+   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. The Game of catch also checks it against air pressure and stopping force spread over the whole object; the whole structure gives way well below this local value, so those checks err toward it surviving."
   },
   {
    "label": "Mass: Great Pyramid of Giza",
@@ -2203,7 +2238,7 @@ window.DINO_DATA = {
      "title": "ITU - Strength, deformation and cracking characteristics of limestones (38-140 MPa)"
     }
    ],
-   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength."
+   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. The Game of catch also checks it against air pressure and stopping force spread over the whole object; the whole structure gives way well below this local value, so those checks err toward it surviving."
   },
   {
    "label": "Mass: Mount Everest",
@@ -2235,7 +2270,7 @@ window.DINO_DATA = {
      "title": "U. Hawaii GG454 lecture (granite 100-900 / tension 15-35 MPa)"
     }
    ],
-   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength."
+   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. The Game of catch also checks it against air pressure and stopping force spread over the whole object; the whole structure gives way well below this local value, so those checks err toward it surviving."
   },
   {
    "label": "Mass: A cumulus cloud",
@@ -2311,7 +2346,7 @@ window.DINO_DATA = {
      "title": "Wikipedia - A36 steel (min yield 36 ksi / 250 MPa; 32 ksi above 8 in; UTS 58-80 ksi)"
     }
    ],
-   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength."
+   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. Solid metal all through, so the Game of catch also uses it as the strength of the whole object."
   },
   {
    "label": "Mass: Back-lift platform with two cars (2,422 kg)",
@@ -2334,7 +2369,7 @@ window.DINO_DATA = {
    "value": "3 MPa",
    "status": "estimate",
    "sources": [],
-   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength."
+   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. The Game of catch also checks it against air pressure and stopping force spread over the whole object; the whole structure gives way well below this local value, so those checks err toward it surviving."
   },
   {
    "label": "Mass: 1937 DeSoto (Action Comics #1 cover car)",
@@ -2357,7 +2392,7 @@ window.DINO_DATA = {
    "value": "3 MPa",
    "status": "estimate",
    "sources": [],
-   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength."
+   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. The Game of catch also checks it against air pressure and stopping force spread over the whole object; the whole structure gives way well below this local value, so those checks err toward it surviving."
   },
   {
    "label": "Mass: Ruyi Jingu Bang, Sun Wukong’s staff",
@@ -2380,7 +2415,7 @@ window.DINO_DATA = {
    "value": "250 MPa",
    "status": "estimate",
    "sources": [],
-   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength."
+   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. Solid metal all through, so the Game of catch also uses it as the strength of the whole object."
   },
   {
    "label": "Mass: Secret Wars mountain range (150 billion tons)",
@@ -2403,7 +2438,7 @@ window.DINO_DATA = {
    "value": "100 MPa",
    "status": "estimate",
    "sources": [],
-   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength."
+   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. The Game of catch also checks it against air pressure and stopping force spread over the whole object; the whole structure gives way well below this local value, so those checks err toward it surviving."
   },
   {
    "label": "Mass: The sky, as Atlas holds it (our reading: the whole atmosphere)",
@@ -2438,7 +2473,7 @@ window.DINO_DATA = {
    "value": "100 MPa",
    "status": "estimate",
    "sources": [],
-   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength."
+   "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. The Game of catch also checks it against air pressure and stopping force spread over the whole object; the whole structure gives way well below this local value, so those checks err toward it surviving."
   },
   {
    "label": "Thrown-object drag coefficient",
@@ -2998,14 +3033,14 @@ window.DINO_DATA = {
   },
   {
    "label": "Muscle model (fitted, not measured)",
-   "value": "Unloaded limb speed at 2 m (scales with height): shove throw 35 m/s, overarm whip 84.6, punch and clap 17, leg drive 12, stomp 16. Real muscle, share of full strength from a standstill: shove 52% per hand, whip/punch/clap 30%, stomp 50%, legs 140% (they also carry his body weight). Comic book, fixed shares fitted so both modes match record athletes: shove 17% per hand, whip 7%, punch 6%, clap 7%, stomp 13%, legs 66%.",
+   "value": "Unloaded limb speed at the 2 m calibration size (scales with height, so 1.5× at the default 10 ft): shove throw 35 m/s, overarm whip 84.6, punch and clap 17, leg drive 12, stomp 16. Real muscle, share of full strength from a standstill: shove 52% per hand, whip/punch/clap 30%, stomp 50%, legs 140% (they also carry his body weight). Comic book, fixed shares fitted so both modes match record athletes: shove 17% per hand, whip 7%, punch 6%, clap 7%, stomp 13%, legs 66%.",
    "status": "estimate",
    "sources": [],
    "note": null
   },
   {
    "label": "Body shape and air (assumed)",
-   "value": "At 2 m (areas scale with height², lengths with height): drag Cd 1.0; frontal area 0.8 m² when sprinting, 0.3 m² head-first when jumping or launched by a stomp; claw dig area 0.2 m² when braced (a quarter of that per stride when sprinting); release height 0.9 × height; each sprint stride puts about 2.5× his weight on one foot. Overarm whip: effective mass at the hand 0.3% of body mass, fitted with the whip speed to the 47.3 m/s pitch; that is smaller than Dempster’s hand alone (0.6%) and is not a measured segment.",
+   "value": "Areas scale with height², lengths with height. Drag Cd 1.0. Facing area from the build: 4.4 m² for the default 10 ft Rex (tail trailing), 4.5 m² for Ollie, 0.8 m² for the 2 m calibration body. Head-first when jumping or launched by a stomp: 0.3 m² at 2 m (0.7 m² at 10 ft). Claw dig area when braced: 0.2 m² at 2 m, 0.46 m² at 10 ft (a quarter of that per stride when sprinting). Release height 0.9 × height; each sprint stride puts about 2.5× his weight on one foot. Overarm whip: effective mass at the hand 0.3% of body mass, fitted with the whip speed to the 47.3 m/s pitch; that is smaller than Dempster’s hand alone (0.6%) and is not a measured segment.",
    "status": "estimate",
    "sources": [],
    "note": null
@@ -3129,6 +3164,1358 @@ window.DINO_DATA = {
     }
    ],
    "note": null
+  },
+  {
+   "label": "Density: plush stuffing",
+   "value": "30 kg/m³",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://patents.google.com/patent/US4395455A/en",
+     "title": "US Patent 4,395,455 (DuPont, 1983): Polyester fiberfill batting having improved thermal insulating properties"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Density: water",
+   "value": "1,000 kg/m³",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.usgs.gov/water-science-school/science/water-density",
+     "title": "USGS Water Science School: Water Density"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Density: his build (the default Rex and Ollie)",
+   "value": "1,060 kg/m³",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf",
+     "title": "Gordon et al. (2014), 2012 Anthropometric Survey of U.S. Army Personnel (ANSUR II): Methods and Summary Statistics, NATICK/TR-15/007 (depth-to-width ratios of each body slice)"
+    },
+    {
+     "url": "https://www.bisp-surf.de/Record/PU198802031700",
+     "title": "Fry, Cisar & Housh (1987), A comparison of anthropometric equations for estimating body density in male competitive body builders, J Applied Sport Science Research 1(4):61–65 (abstract, BISp)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Density: a human body",
+   "value": "1,060 kg/m³",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9506326/",
+     "title": "Tesch, Papadopoulos, Dolgener & Tinsley (2022), New Equations for Hydrostatic Weighing without Head Submersion, J Funct Morphol Kinesiol 7(3):70, Table 2"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Density: steel",
+   "value": "7,850 kg/m³",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://cdn.eurocodeapplied.com/design/en1993/steel-design-properties",
+     "title": "Eurocode Applied: steel design properties (EN 1991-1-1 Table A.4; ρ ≈ 7850 kg/m³)"
+    },
+    {
+     "url": "https://ia.iowadot.gov/erl/archiveapril2015/IM/content/569.htm",
+     "title": "Iowa DOT IM 569, Computing structural steel weight (mass): 'Steel 490 lb./ft.3 (7850 kg/m3)'"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Density: osmium",
+   "value": "22,587 kg/m³",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.nature.com/articles/nchem.1479",
+     "title": "Girolami (2012), Osmium weighs in, Nature Chemistry 4:954, doi:10.1038/nchem.1479"
+    },
+    {
+     "url": "https://girolami-group.chemistry.illinois.edu/publications/publications/Nature%20Chem.%202012,%204,%20954.pdf",
+     "title": "Author PDF of the same essay"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Density: white-dwarf matter",
+   "value": "2.77 × 10^09 kg/m³",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/1809.01240",
+     "title": "Joyce et al. (2018), MNRAS 481:2361"
+    },
+    {
+     "url": "https://esahubble.org/news/heic0516/",
+     "title": "ESA/Hubble heic0516"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Density: an atomic nucleus",
+   "value": "2.7 × 10^17 kg/m³",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/1007.1746",
+     "title": "Hebeler, Lattimer, Pethick & Schwenk (2010), Constraints on neutron star radii based on chiral effective field theory interactions, PRL 105:161102 (arXiv:1007.1746)"
+    },
+    {
+     "url": "https://arxiv.org/abs/astro-ph/0405262",
+     "title": "Lattimer & Prakash (2004)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Density: a neutron star",
+   "value": "4.12 × 10^17 kg/m³",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/astro-ph/0405262",
+     "title": "Lattimer & Prakash (2004), Science 304:536"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Mass: Phobos and Deimos",
+   "value": "1.06 × 10^16 kg and 1.44 × 10^15 kg",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://ssd.jpl.nasa.gov/sats/phys_par/",
+     "title": "JPL Solar System Dynamics: Planetary satellite physical parameters"
+    },
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html",
+     "title": "NASA NSSDC Mars Fact Sheet (Phobos 10.6 × 10¹⁵ kg)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Weight: sirius B (white dwarf): mass and radius",
+   "value": "1.017 ± 0.025 M☉; radius 0.803 ± 0.011 R☉/100 (0.808 with the Gaia DR2 parallax)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/1809.01240",
+     "title": "Joyce, Barstow, Casewell et al. (2018), The gravitational redshift of Sirius B, MNRAS 481:2361 (arXiv:1809.01240)"
+    },
+    {
+     "url": "https://esahubble.org/news/heic0516/",
+     "title": "ESA/Hubble heic0516: 98% of the Sun's mass, 12,000 km diameter"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Weight: typical neutron star: mass, radius, central density",
+   "value": "~1.5 M☉, radius ~12 km, central density up to 5–10 × n₀ (n₀ ≈ 0.16 fm⁻³)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/astro-ph/0405262",
+     "title": "Lattimer & Prakash (2004), The Physics of Neutron Stars, Science 304:536 (arXiv:astro-ph/0405262)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Weight: neutron drip density and the base of a neutron star’s crust",
+   "value": "Neutron drip ρ_ND ≈ 4 × 10¹¹ g/cm³ (4 × 10¹⁴ kg/m³); the inner crust, nuclei in a sea of free neutrons, runs from there to about ρ₀/3 ≈ 10¹⁴ g/cm³ (10¹⁷ kg/m³)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://doi.org/10.12942/lrr-2008-10",
+     "title": "Chamel & Haensel (2008), Physics of Neutron Star Crusts, Living Reviews in Relativity 11:10, sections 1, 2.1 and 3"
+    },
+    {
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5255077/",
+     "title": "Same paper, full text on PubMed Central (PMC5255077)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Weight: energy stored in pure neutron matter at saturation density",
+   "value": "16.3 ± 2.2 MeV per neutron (≈ 1.56 × 10¹⁵ J/kg ≈ 370 kt TNT per kg)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/1007.1746",
+     "title": "Hebeler et al. (2010), PRL 105:161102"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Weight: pressure of neutron-star matter at saturation density",
+   "value": "P(ρ₀) = 1.4–2.1 MeV fm⁻³ ≈ 2.2–3.4 × 10³² Pa (about 3 × 10²⁷ atmospheres)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/1007.1746",
+     "title": "Hebeler et al. (2010), PRL 105:161102"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Weight: what freed neutron-star matter does",
+   "value": "It expands, forms neutron-rich nuclear clusters, loses neutrons, then beta-decays toward r-process nuclei",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://inspirehep.net/files/b46a0e2d39730f7ee382f8edaa0ac6c5",
+     "title": "Lattimer, Mackie, Ravenhall & Schramm (1977), The decompression of cold neutron star matter, ApJ 213:225"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Weight: newtonian constant of gravitation",
+   "value": "6.674 30(15) × 10⁻¹¹ m³ kg⁻¹ s⁻² (CODATA 2022)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?bg",
+     "title": "NIST CODATA: Newtonian constant of gravitation"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Weight: schwarzschild radius (event-horizon radius of a non-spinning black hole)",
+   "value": "r_s = 2GM/c²; Earth's would be about 9 mm, the Sun's about 3.0 km",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/Schwarzschild_radius",
+     "title": "Wikipedia: Schwarzschild radius"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Weight: buchdahl's limit: how compact a static body can be",
+   "value": "2GM/(Rc²) ≤ 8/9, so R ≥ 9/8 of the Schwarzschild radius (isotropic pressure, density not rising outward)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/gr-qc/0702137",
+     "title": "Andréasson (2008), Sharp bounds on 2m/r of general spherically symmetric static objects, J. Diff. Eq. 245:2243 (arXiv:gr-qc/0702137)"
+    },
+    {
+     "url": "https://link.aps.org/doi/10.1103/PhysRev.116.1027",
+     "title": "Buchdahl (1959), General Relativistic Fluid Spheres, Phys. Rev. 116:1027"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Weight: density at which Rex is a black hole (computed)",
+   "value": "3c²/(8πGR²) = 2.24 × 10²⁶ kg/m³ for the default 10 ft Rex (mass 5.7 × 10²⁶ kg = 96 Earths); 1.31 × 10²⁷ kg/m³ for the 2 m calibration body; scales as 1/height²",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/Schwarzschild_radius",
+     "title": "Wikipedia: Schwarzschild radius"
+    },
+    {
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?bg",
+     "title": "NIST CODATA G"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Weight: pREM density profile of the Earth (polynomials in x = r/6371 km)",
+   "value": "Inner core 13.0885 − 8.8381x²; outer core 12.5815 − 1.2638x − 3.6426x² − 5.5281x³; lower mantle 7.9565 − 6.4761x + 5.5283x² − 3.0807x³; then 5.3197 − 1.4836x (5701–5771 km), 11.2494 − 8.0298x (to 5971), 7.1089 − 3.8045x (to 6151), 2.6910 + 0.6924x (to 6346.6), 2.900 (to 6356), 2.600 (to 6368), ocean 1.020 (g/cm³)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://doi.org/10.1016/0031-9201(81)90046-7",
+     "title": "Dziewonski & Anderson (1981), Preliminary reference Earth model, PEPI 25:297 (doi:10.1016/0031-9201(81)90046-7)"
+    },
+    {
+     "url": "https://hep.ph.liv.ac.uk/~costasa/genie_doxygen/master/html/namespacegenie_1_1utils_1_1prem.html",
+     "title": "GENIE PREM implementation (code listing of the PREM density polynomials)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Weight: pREM values used to check the integration",
+   "value": "Central pressure 363.852 GPa; inner/outer core boundary g 4.4002 m/s²; core–mantle boundary g 10.6823 m/s²; surface g 9.8156 m/s²; outer core liquid, inner core solid",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/2203.01065",
+     "title": "Rodríguez-Mozos & Moya (2022), Internal structure and magnetic moment of rocky planets, A&A, Table 1 'Earth physical characteristics according to PREM' (arXiv:2203.01065)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Weight: fall time straight through the Earth (gravity tunnel)",
+   "value": "38 minutes along a diameter with the real (seismic) density profile; 42 minutes for a uniform Earth",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/1308.1342",
+     "title": "Klotz (2015), The gravity tunnel in a non-uniform Earth, Am. J. Phys. 83:231 (arXiv:1308.1342)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Weight: earth's sidereal rotation period",
+   "value": "23.9345 h, so Ω = 7.2921 × 10⁻⁵ rad/s",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+     "title": "NASA NSSDC Earth Fact Sheet"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Weight: earth's gravitational binding energy, integrated from PREM (check)",
+   "value": "2.49 × 10³² J (our integral of G M(r) dm / r over PREM)",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://hep.ph.liv.ac.uk/~costasa/genie_doxygen/master/html/namespacegenie_1_1utils_1_1prem.html",
+     "title": "Dziewonski & Anderson (1981) via GENIE coefficients"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Weight: peak vertical ground force in walking and running",
+   "value": "Walking 1.0–1.5 × body weight (rising with speed); running 2.0–2.9 ×",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://pubmed.ncbi.nlm.nih.gov/2782094/",
+     "title": "Nilsson & Thorstensson (1989), Ground reaction forces at different speeds of human walking and running, Acta Physiol Scand 136:217 (PubMed 2782094)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Weight: bearing capacity factor N_q (depth term) for sand and gravel",
+   "value": "N_q = 18.40 at φ = 30° (loose sand), 64.19 at φ = 40° (dense sand and gravel)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.tugraz.at/fileadmin/user_upload/Institute/IAG/Files/18_Bearing_Capacity_of_Soils-USACE.pdf",
+     "title": "USACE EM 1110-1-1905 Bearing Capacity of Soils (1992), Table 4-4 (Meyerhof, Hansen, Vesic factors)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Weight: rule of thumb for keeping an atmosphere",
+   "value": "A gas evaporates if v_rms > v_esc/6, so a body keeps it if v_esc > 6 v_rms",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.sfu.ca/~boal/390lecs/390lec9.pdf",
+     "title": "SFU PHYS 390 Lecture 9, Planetary atmospheres (text: Carroll & Ostlie ch. 18.3, 21.5)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Weight: bondi accretion: radius and rate",
+   "value": "r_B = GM/c_s²; Ṁ = 4πλG²M²ρ∞/c∞³ with λ = 0.625 for air-like gas (γ = 1.4)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/astro-ph/0406166",
+     "title": "Edgar (2004), A review of Bondi–Hoyle–Lyttleton accretion, New Astron. Rev. 48:843 (arXiv:astro-ph/0406166), eqs. 30–32"
+    },
+    {
+     "url": "https://arxiv.org/abs/1908.07356",
+     "title": "λ(γ = 1.4) = 0.625 tabulated in arXiv:1908.07356"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Weight: nominal solar radius",
+   "value": "1 R☉ = 6.957 × 10⁸ m",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/1510.07674",
+     "title": "IAU 2015 Resolution B3 (arXiv:1510.07674)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Weight: stevenson's proposal: sinking a probe to Earth's core in molten iron",
+   "value": "10⁸–10¹⁰ kg of molten iron; about a week to reach the core",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://authors.library.caltech.edu/39229",
+     "title": "Stevenson (2003), Mission to Earth's core: a modest proposal, Nature 423:239 (Caltech record)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Weight: earth's total surface heat flow",
+   "value": "47 ± 2 TW",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://se.copernicus.org/articles/1/5/2010/",
+     "title": "Davies & Davies (2010), Earth's surface heat flux, Solid Earth 1:5"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Weight: strength of rock against a body pushed through it, at any depth (sim assumption)",
+   "value": "1.7 GPa in all solid layers (crust, mantle, inner core); 0 in the liquid outer core",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://www.cedengineering.com/userfiles/Rock%20Foundations-R1.pdf",
+     "title": "Project fact ground_granite_ultimate_bearing_small_punch (USACE EM 1110-1-2908; Hoek)"
+    },
+    {
+     "url": "https://arxiv.org/abs/2203.01065",
+     "title": "Rodríguez-Mozos & Moya (2022): liquid outer core, solid inner core"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Weight: gravitational drag (dynamical friction) on a body moving through a gas",
+   "value": "F = I × 4π(GM)²ρ/V² with M = V/cₛ: I = ½ ln[(1+M)/(1−M)] − M below sound speed (→ M³/3 when slow); I = ½ ln(1 − 1/M²) + ln(Vt/r_min) above it",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/astro-ph/9810324",
+     "title": "Ostriker (1999), Dynamical Friction in a Gaseous Medium, ApJ 513:252 (arXiv:astro-ph/9810324)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Weight: speed of sound in the Earth's solid layers, for the gravitational-drag term",
+   "value": "Sim: 6 km/s (estimate). PREM: S waves 3.2–7.3 km/s, P waves 5.8–13.7 km/s in solid layers (inner core: S 3.5–3.7, P 11.0–11.3 km/s)",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://doi.org/10.1016/0031-9201(81)90046-7",
+     "title": "Dziewonski & Anderson (1981), Preliminary reference Earth model, PEPI 25:297 (doi:10.1016/0031-9201(81)90046-7)"
+    },
+    {
+     "url": "https://github.com/obspy/obspy/blob/master/obspy/taup/data/prem.nd",
+     "title": "ObsPy TauP model file prem.nd (PREM velocity table)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Arm wrestling and wrestling: world Armwrestling Federation regulation table: dimensions and construction",
+   "value": "Stand-up table 101.6 cm (40 in) from floor to top; top 91.4 cm across × 66.0 cm deep; elbow pads 17.8 cm square, 5.1 cm thick, set 5.1 cm from their edge; touch (pin) pads 25.4 × 10.2 cm; hand pegs 2.5 cm across, 15.2 cm high; top normally 1.9 cm (3/4 in) plywood; frame of steel tubing no wider than 5.1 cm",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.waf-armwrestling.com/armwrestling-rules/armwrestling-table/",
+     "title": "WAF: Armwrestling Table (official rules page)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Arm wrestling and wrestling: distance between elbow-pad centres on a WAF table",
+   "value": "~38 cm (computed from the WAF dimensions)",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://www.waf-armwrestling.com/armwrestling-rules/armwrestling-table/",
+     "title": "WAF: Armwrestling Table"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Arm wrestling and wrestling: arm wrestling: what counts as a pin, and the elbow foul",
+   "value": "Pin: the fingers or wrist go below the pin line (touching the pin pad is not required). Fouls include the elbow losing contact with the pad (up, or off the front, back or sides). Any two fouls lose the match.",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://cawf.ca/rulessummarized",
+     "title": "Canadian Armwrestling Federation: Rules (summarized), Sept 2023"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Arm wrestling and wrestling: humeral shaft fractures from arm wrestling: 30-case series",
+   "value": "30 humeral shaft fractures from arm wrestling (28 men, 2 women; age 15-60, mean 30): all spiral; 23% with a medial butterfly fragment, 23% with radial nerve palsy; all happened while full force was being exerted",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://pubmed.ncbi.nlm.nih.gov/9042875/",
+     "title": "Ogawa K, Ui M. Humeral shaft fracture sustained during arm wrestling: report on 30 cases and review of the literature. J Trauma 1997;42(2):243-6 (PubMed 9042875)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Arm wrestling and wrestling: peak torque about the humerus's long axis in professional pitchers",
+   "value": "92 ± 16 N·m (25 professional pitchers in games), averaging 48% of the humerus's theoretical torsional strength",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://pubmed.ncbi.nlm.nih.gov/15150034/",
+     "title": "Sabick MB et al. Humeral torque in professional baseball pitchers. Am J Sports Med 2004;32(4):892-8 (PubMed 15150034)"
+    },
+    {
+     "url": "https://scholarworks.boisestate.edu/mecheng_facpubs/27/",
+     "title": "Boise State ScholarWorks record of the same paper"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Arm wrestling and wrestling: twist that breaks a human upper-arm bone (humerus)",
+   "value": "~190 N·m theoretical for a healthy adult humerus; drilled cadaver humeri failed at 25-31 N·m",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://pubmed.ncbi.nlm.nih.gov/15150034/",
+     "title": "Sabick et al. 2004 (92 N·m = 48% of theoretical strength)"
+    },
+    {
+     "url": "https://pubmed.ncbi.nlm.nih.gov/33615250/",
+     "title": "Dini AA et al. 2021, Arthroscopy, Sports Medicine, and Rehabilitation: humeri with tenodesis drill holes failed at 31.35 and 25.08 N·m (PubMed; PMC7879170)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Arm wrestling and wrestling: shoulder internal-rotation torque in arm-wrestling position (ordinary young men)",
+   "value": "Winners 79.6 ± 19.3 N·m concentric and 86.0 ± 21.3 N·m eccentric at 45°/s; losers 66.3 ± 11.5 and 71.2 ± 14.6 N·m (30 men, 66 kg, 1.74 m; Biodex)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://ojs.ub.uni-konstanz.de/cpa/article/view/5698",
+     "title": "Lo K-C, Wu H-W, Hong M-K, Wang L-H. Armwrestling exercise and shoulder internal rotation strength. ISBS 2013 proceedings"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Arm wrestling and wrestling: hand force of elite arm wrestlers in a hook-pull test",
+   "value": "Up to 83.5 kgf (819 N), right arm, a 90 kg multiple world champion; 75.6 kgf (741 N) for a 136 kg champion; 46.8-49.4 kgf for a 62 kg champion",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://shssjournal.com/index.php/journal/article/view/153",
+     "title": "Kamayev O et al. Features of the manifestation of strength and speed-strength abilities of elite armwrestlers of different weight categories. Slobozhanskyi Herald of Science and Sport 2024;28(2) (Table 1)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Arm wrestling and wrestling: arm-wrestling force at the hand as a share of full strength",
+   "value": "25% of full strength (plausible 10–40%), sideways at the clasped hands, both muscle models",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://pubmed.ncbi.nlm.nih.gov/15150034/",
+     "title": "Sabick et al. 2004 (humerus theoretical strength)"
+    },
+    {
+     "url": "https://ojs.ub.uni-konstanz.de/cpa/article/view/5698",
+     "title": "Lo et al. 2013 (ordinary men's internal-rotation torque)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Arm wrestling and wrestling: elbow-to-grip length (US Army men, ANSUR II)",
+   "value": "Forearm-center of grip length 34.90 cm (SD 1.80) for men whose mean stature is 175.62 cm, i.e. 0.199 of height",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf",
+     "title": "Gordon CC et al. 2012 Anthropometric Survey of U.S. Army Personnel: Methods and Summary Statistics, NATICK/TR-15/007 (2014), dimension 37 and 75"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Arm wrestling and wrestling: forearm length, elbow to wrist (US Army men, ANSUR II)",
+   "value": "Radiale-stylion length 26.79 cm (SD 1.54), i.e. 0.1525 of the 175.62 cm mean stature",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf",
+     "title": "Gordon CC et al. NATICK/TR-15/007 (2014), dimension 67"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Arm wrestling and wrestling: forearm + hand segment: mass, centre of mass, radius of gyration",
+   "value": "2.2% of body mass; centre of mass 0.682, radius of gyration about the elbow 0.827 of the elbow-wrist length",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://raw.githubusercontent.com/BMClab/BMC/master/data/BSP_DempsterWinter.txt",
+     "title": "BMClab (M. Duarte): Dempster body-segment parameters as adapted by Winter (2009), data table"
+    },
+    {
+     "url": "https://nbviewer.jupyter.org/github/demotu/BMC/blob/master/notebooks/BodySegmentParameters.ipynb",
+     "title": "BMClab notebook: Body segment parameters"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Arm wrestling and wrestling: arm-wrestling lever and forearm effective mass",
+   "value": "Lever from the humerus axis to the grip = 0.19 × height (0.58 m for the default 10 ft Rex and Ollie). Each forearm + hand acts like 0.97% of its owner's body mass at the grip.",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf",
+     "title": "ANSUR II NATICK/TR-15/007"
+    },
+    {
+     "url": "https://raw.githubusercontent.com/BMClab/BMC/master/data/BSP_DempsterWinter.txt",
+     "title": "BMClab Dempster/Winter table"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Arm wrestling and wrestling: minimum strength of a 19 mm structural floor panel (US PS 2-18)",
+   "value": "Single Floor 24 o.c. panels: ultimate concentrated static load at least 2.45 kN (550 lbf); impact test 102 N·m (75 lbf·ft), after which the panel must still carry 1.78 kN (400 lbf)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.nist.gov/document/ps2-18finalapr2019dfareviewedpdf",
+     "title": "NIST Voluntary Product Standard PS 2-18, Performance Standard for Wood Structural Panels, Table 2"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Arm wrestling and wrestling: downward load a regulation table takes under one elbow pad",
+   "value": "~10 kN (2.5-50 kN) at regulation size; scaled with table size squared",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://www.nist.gov/document/ps2-18finalapr2019dfareviewedpdf",
+     "title": "NIST PS 2-18 Table 2"
+    },
+    {
+     "url": "https://www.waf-armwrestling.com/armwrestling-rules/armwrestling-table/",
+     "title": "WAF table construction"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Arm wrestling and wrestling: arm-wrestling table: sideways capacity of pegs and elbow pads",
+   "value": "~5 kN sideways at regulation size (a few kN per side), scaled with table size squared",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://www.waf-armwrestling.com/armwrestling-rules/armwrestling-table/",
+     "title": "WAF table construction (25 mm pegs, pads on two 6 mm bolts)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Arm wrestling and wrestling: slam energy the table top is built to survive",
+   "value": "~100 J at regulation size (the PS 2 impact test); scaled with table size cubed",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://www.nist.gov/document/ps2-18finalapr2019dfareviewedpdf",
+     "title": "NIST PS 2-18 Table 2, note (b)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Arm wrestling and wrestling: sumo ring (dohyō) inner circle",
+   "value": "Bouts are confined to an inner circle a little over 4.55 m across (platform 6.7 m square, 60 cm high)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.sumo.or.jp/pdf/en/sumo_introduction.pdf",
+     "title": "Japan Sumo Association: Sumo introduction (English PDF)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Arm wrestling and wrestling: newtonian constant of gravitation",
+   "value": "6.674 30(15) × 10⁻¹¹ m³ kg⁻¹ s⁻² (CODATA 2022)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?bg",
+     "title": "NIST CODATA: Newtonian constant of gravitation"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Arm wrestling and wrestling: newton's impact-depth approximation",
+   "value": "D ≈ L × ρ_impactor / ρ_target; valid when friction is negligible and the impact is slower than sound in the target",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/Impact_depth",
+     "title": "Wikipedia: Impact depth"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Arm wrestling and wrestling: ollie's grip on the ground (boots, no claws)",
+   "value": "Same traction as Rex's feet on each surface. 'Dug in' for Ollie means boots kicked into footholds, given the same buried area as Rex's claws (0.2 × (height / 2 m)² m²: 0.46 m² at the default 10 ft).",
+   "status": "estimate",
+   "sources": [],
+   "note": null
+  },
+  {
+   "label": "Arm wrestling and wrestling: force at which the ground around a bolted stance tears out",
+   "value": "Ground shear strength × buried area (0.46 m² for the default 10 ft Rex and Ollie): concrete 697 kN, granite 16.7 MN, loose sand 465 N",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://structurepoint.org/publication/pdf/The%20Role%20of%20GammaF%20in%20Two-way%20Slab%20Punching%20Shear%20Calculations%20in%20ACI%20318.pdf",
+     "title": "Project fact ground_concrete_punching_shear_stress_aci (ACI 318-14 punching shear, 1.62 MPa), via StructurePoint"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Arm wrestling and wrestling: centre-to-centre distances used for their mutual gravity",
+   "value": "Touching: two balls of their volume (1.69 m for the default 10 ft pair). Across the table: 0.66 m table depth (scaled) + 0.25 × mean height (1.91 m). One held overhead: 0.65 × lifter's height + 0.1 × partner's height (2.29 m). During a lift from beside him, the pull peaks at 0.385 G m₁ m₂ / d², with d the touching distance; the Lift tile shows the larger of that and the overhead pull.",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://www.waf-armwrestling.com/armwrestling-rules/armwrestling-table/",
+     "title": "WAF table depth"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Game of catch: uS Army men (ANSUR II): thumbtip reach, chest depth and stature, means",
+   "value": "Thumbtip reach 81.19 cm (SD 4.37), chest depth 25.38 cm (SD 2.62), stature 175.62 cm (SD 6.86); 4,082 men",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf",
+     "title": "Gordon et al. (2014), 2012 Anthropometric Survey of U.S. Army Personnel: Methods and Summary Statistics, NATICK/TR-15/007: (80) Thumbtip Reach pp. 203-204, (25) Chest Depth pp. 93-94, (75) Stature pp. 193-194"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Game of catch: catch stroke: how far his hands give while stopping the object",
+   "value": "0.30 × height (91 cm for the default 10 ft Rex or Ollie)",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf",
+     "title": "ANSUR II (Gordon et al. 2014), thumbtip reach and chest depth"
+    },
+    {
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6570012/",
+     "title": "Lacquaniti & Maioli (1989), J Neurosci 9:134-148: hand and arm motion when catching dropped balls (full text not fetched; numbers not used)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Game of catch: muscle force while being stretched (eccentric) compared with holding still (isometric)",
+   "value": "Plateau near 1.8× maximum isometric force in isolated muscle; about 1.2× in living people",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2017.00447/full",
+     "title": "Franchi, Reeves & Narici (2017), Skeletal Muscle Remodeling in Response to Eccentric vs. Concentric Loading, Front. Physiol. 8:447"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Game of catch: most force he can stop an object with",
+   "value": "His full strength (the dial), same as holding a weight",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2017.00447/full",
+     "title": "Franchi et al. (2017) on eccentric force"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Game of catch: sutton–Graves stagnation-point convective heating, Earth air",
+   "value": "q = 1.74 × 10⁻⁴ √(ρ/rₙ) v³ W/m²; original form q = K √(pₛ/rₙ)(hₛ − h_w), K = 0.1113 kg s⁻¹ m⁻³ᐟ² atm⁻¹ᐟ² for air",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://ntrs.nasa.gov/api/citations/19720003329/downloads/19720003329.pdf",
+     "title": "Sutton & Graves (1971), A General Stagnation-Point Convective-Heating Equation for Arbitrary Gas Mixtures, NASA TR R-376 (Table II, air: K = 0.1113)"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/Planar_reentry_equations",
+     "title": "Wikipedia: Planar reentry equations (k = 1.74153 × 10⁻⁴ for Earth, W/m²)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Game of catch: when glowing shock-layer air starts adding heat (radiation)",
+   "value": "No single onset speed. Sutton & Hartung's tables run from 30 km up to 84 km. At 30 km, the lowest altitude they cover, glowing-air radiation on a nose of 1 m or more matches or beats flow heating from about 8 km/s, and at 36 km it is still about 30× flow heating at 10 km/s on a 10 m nose. For Apollo-sized noses at high altitude it is secondary at lunar return (~11 km/s) and over half the heat load at 15 km/s",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://ntrs.nasa.gov/api/citations/19900014359/downloads/19900014359.pdf",
+     "title": "Sutton & Hartung (1990), Equilibrium Radiative Heating Tables for Earth Entry, NASA TM-102652, Table 1, p. 5"
+    },
+    {
+     "url": "https://ntrs.nasa.gov/api/citations/19720017314/downloads/19720017314.pdf",
+     "title": "NASA TM X-58091 (1972), Radiative Heating to the Apollo Command Module"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Game of catch: baseball: speed at which drag equals its weight (terminal speed)",
+   "value": "About 95 mph (42 m/s)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://aip.brightspotcdn.com/PTO.v48.i5.26_1.online.pdf",
+     "title": "Adair (1995), The physics of baseball, Physics Today 48(5): 26-31, p. 28"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Game of catch: peak squeeze on a baseball in a home-run bat collision",
+   "value": "About 9,000 lb (40,000 N); collision about 1 ms, most momentum transfer in 0.6 ms",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://aip.brightspotcdn.com/PTO.v48.i5.26_1.online.pdf",
+     "title": "Adair (1995), The physics of baseball, Physics Today 48(5), p. 31"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Game of catch: iron: melting point, heat of fusion, heat capacity",
+   "value": "Melts at 1,538 °C; heat of fusion 13.81 kJ/mol (247 kJ/kg); molar heat capacity 25.10 J/(mol·K) (0.449 kJ/kg·K)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/Iron",
+     "title": "Wikipedia: Iron (infobox)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Game of catch: aluminium: melting point, heat of fusion, heat capacity",
+   "value": "Melts at 660.32 °C; heat of fusion 10.71 kJ/mol (397 kJ/kg); 24.20 J/(mol·K) (0.897 kJ/kg·K)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/Aluminium",
+     "title": "Wikipedia: Aluminium (infobox)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Game of catch: copper: melting point, heat of fusion, heat capacity",
+   "value": "Melts at 1,084.62 °C; heat of fusion 13.26 kJ/mol (209 kJ/kg); 24.44 J/(mol·K) (0.385 kJ/kg·K)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/Copper",
+     "title": "Wikipedia: Copper (infobox)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Game of catch: wood: temperature at the base of the char layer",
+   "value": "Generally taken to be 300 °C (550 °F ≈ 288 °C)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://research.fs.usda.gov/download/treesearch/37415.pdf",
+     "title": "White & Dietenberger (2010), Fire Safety of Wood Construction, Wood Handbook ch. 18, USDA FPL-GTR-190"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Game of catch: limestone breaks down to quicklime",
+   "value": "Above 825 °C",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/Calcium_oxide",
+     "title": "Wikipedia: Calcium oxide"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Game of catch: heat needed to melt or char 1 kg of an object's skin",
+   "value": "Per material: iron 0.93, aluminium 0.98, copper 0.62 MJ/kg; wood, leather or plastic ~1 MJ/kg (rough); limestone ~2.5 MJ/kg",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/Iron",
+     "title": "Wikipedia: Iron"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/Aluminium",
+     "title": "Wikipedia: Aluminium"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Game of catch: heat needed to boil 1 kg of an object away",
+   "value": "From room temperature, heat to boiling, melt and boil: iron about 8.6 MJ/kg, aluminium about 13 MJ/kg, copper about 5.9 MJ/kg; rough stand-ins: water's 2.6 MJ/kg for wood, leather or plastic, forsterite rock's 8.4 MJ/kg for stone",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/1210.0270",
+     "title": "Fegley & Schaefer (2012), Chemistry of the Earth's Earliest Atmosphere, Treatise on Geochemistry ch. 13.3, pp. 18-20 (JANAF data): iron 483 kJ/mol, forsterite 1,186 kJ/mol from 298 K to boiling"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/Aluminium",
+     "title": "Wikipedia: Aluminium (infobox: boils at 2,470 °C; heat of vaporization 284 kJ/mol; heat of fusion 10.71 kJ/mol; 24.20 J/(mol·K))"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/Copper",
+     "title": "Wikipedia: Copper (infobox: boils at 2,562 °C; heat of vaporization 300.4 kJ/mol; heat of fusion 13.26 kJ/mol; 24.44 J/(mol·K))"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/Water",
+     "title": "Wikipedia: Water (heat of vaporization 2,257 J/g; about 4.2 J/(g·K))"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Game of catch: newton's impact-depth rule, used for how far a relativistic object gets through air",
+   "value": "D ≈ L × ρ_object / ρ_target: it stops after pushing aside its own mass of target. In air: sweep = m / (ρ₀ A) (baseball 27.8 m, car 126 m, shot 524 m, tank 1.9 km, pyramid 141 km)",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/Impact_depth",
+     "title": "Wikipedia: Impact depth"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Game of catch: mass of air above each square metre at sea level",
+   "value": "About 1.03 kg per cm² (10.3 t per m²); the engine uses p₀/g = 10,332 kg/m²",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/Atmospheric_pressure",
+     "title": "Wikipedia: Atmospheric pressure"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Game of catch: what reaches the catcher above 1% of light speed",
+   "value": "Snowplow with relativity: it keeps its momentum while the air it sweeps turns its energy into heat. Half its energy is heat after sweeping 1 + (γ − 1)/4 times its own mass of air. Closer than 1% of that: it reaches him as a white-hot front of plasma and debris with almost all its momentum (no hand catch). Within it: he is inside the fireball. Beyond: the fireball keeps rushing toward him. Either way nearly all its energy is freed near him",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/Impact_depth",
+     "title": "Wikipedia: Impact depth"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Game of catch: earth's mean radius and rotation (for the far-side distance and the spin caveat)",
+   "value": "Volumetric mean radius 6,371.000 km (so the far side of the planet is π × 6,371 = 20,015 km away along the surface); sidereal rotation 23.9345 h; equator moves at 465.1 m/s",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+     "title": "NASA NSSDC Earth Fact Sheet"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/Earth%27s_rotation",
+     "title": "Wikipedia: Earth's rotation (465.10 m/s at the equator)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Unstoppable force vs immovable object: unstoppable force vs immovable object: why the paradox has no answer",
+   "value": "The paradox 'rests on two incompatible premises—that there can exist simultaneously such things as unstoppable forces and immovable objects'; both are implicitly assumed to be indestructible",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/Irresistible_force_paradox",
+     "title": "Wikipedia: Irresistible force paradox (cites Mike Alder 2004, 'Newton's Flaming Laser Sword', Philosophy Now 46: 29-33)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Unstoppable force vs immovable object: no perfectly rigid bodies in relativity; the stiffest possible material has sound speed c",
+   "value": "Truly rigid solids are incompatible with relativity, because no influence can travel through a body faster than light. A relativistic 'rigid' body is one whose sound speed equals c.",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/1912.08221",
+     "title": "Natário (2020) Rigid elastic solids in relativity, Class. Quantum Grav. (doi 10.1088/1361-6382/abbd10); arXiv:1912.08221, Introduction"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/Born_rigidity",
+     "title": "Wikipedia: Born rigidity (Definition section)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Unstoppable force vs immovable object: upper bound on the speed of sound in atom-built (condensed) matter",
+   "value": "v_u = α (m_e / 2m_p)^½ c ≈ 36.1 km/s, about twice the speed of sound in diamond",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/2004.04818",
+     "title": "Trachenko, Monserrat, Pickard & Brazhkin (2020) Speed of sound from fundamental physical constants, Science Advances 6, eabc8662; arXiv:2004.04818"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Unstoppable force vs immovable object: granite: tensile strength (rock pulled apart)",
+   "value": "8.38 ± 2.5 MPa (Malsburg granite, quasi-static Brazilian test). Fast loading raises it 1.5-5×. Rock's tensile strength is typically about 1/10 of its compressive strength.",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/2110.10072",
+     "title": "Padmanabha, Schäfer, Rae & Kenkmann (2021) Dynamic split tensile strength of basalt, granite, marble and sandstone, arXiv:2110.10072, Table 1"
+    },
+    {
+     "url": "https://www.rocscience.com/assets/resources/learning/hoek/Practical-Rock-Engineering-Chapter-11-Rock-Mass-Properties.pdf",
+     "title": "Hoek, Practical Rock Engineering, Ch. 11 (Rock mass properties), Eq. 15 and the m_i table"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Unstoppable force vs immovable object: continental crust: average thickness",
+   "value": "41.1 km (weighted global average for continental crust)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.usgs.gov/publications/seismic-velocity-structure-and-composition-continental-crust-a-global-view",
+     "title": "Christensen & Mooney (1995) Seismic velocity structure and composition of the continental crust: a global view, J. Geophys. Res. (USGS publication page)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Unstoppable force vs immovable object: earth: mass, moment of inertia factor, sidereal rotation, mean radius",
+   "value": "M = 5.9722 × 10^24 kg; I/(MR²) = 0.3308; sidereal rotation 23.9345 h; mean radius 6,371.000 km",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+     "title": "NASA NSSDCA Earth Fact Sheet"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Unstoppable force vs immovable object: coefficient of restitution: the two bounds",
+   "value": "e = 1 is a perfectly elastic collision (no kinetic energy lost); e = 0 is perfectly inelastic (the bodies don't rebound and end up stuck together). Most real collisions fall between.",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/Coefficient_of_restitution",
+     "title": "Wikipedia: Coefficient of restitution"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Unstoppable force vs immovable object: people colliding: measured coefficient of restitution",
+   "value": "0.1-0.5, measured by swinging harnessed people into each other (pendulum test)",
+   "status": "reported",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/1310.8482",
+     "title": "Alonso-Marroquin, Lozano, Ramírez-Gómez & Busch (2014) Simulation of counter flow pedestrian dynamics using spheropolygons, Phys. Rev. E 90, 063305; arXiv:1310.8482"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Unstoppable force vs immovable object: collision formulas: inelastic energy loss, invariant mass, elastic reversal in the centre-of-momentum frame, rapidity",
+   "value": "Inelastic loss ΔKE = ½ μ u_rel² (μ = m₁m₂/(m₁+m₂)); invariant mass M² = (E₁+E₂)² − |p₁+p₂|² (c = 1); in an elastic hit each body's momentum reverses in the centre-of-momentum frame; rapidities add along a line",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://en.wikipedia.org/wiki/Inelastic_collision",
+     "title": "Wikipedia: Inelastic collision"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/Invariant_mass",
+     "title": "Wikipedia: Invariant mass (two-particle collision)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Unstoppable force vs immovable object: age of the universe (for 'Earth would take N × the age of the universe to move 1 mm')",
+   "value": "13.787 ± 0.020 billion years",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/1807.06209",
+     "title": "Planck Collaboration (2020) Planck 2018 results VI: Cosmological parameters, arXiv:1807.06209, Table 2"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Unstoppable force vs immovable object: how far a plush body squashes in a hit (soft end of the contact force)",
+   "value": "Each body squashes by a quarter of the smaller body's mean thickness (volume ÷ facing area): 0.29 m in all between the default 10 ft bodies (thickness 0.58 m)",
+   "status": "estimate",
+   "sources": [],
+   "note": null
+  },
+  {
+   "label": "Unstoppable force vs immovable object: starting distance for the charge (used only for gravity on the way in and the air swept up)",
+   "value": "Run-up of 10 body heights (30.5 m at the default 10 ft); the charge speed is what his sprint reaches in that distance",
+   "status": "estimate",
+   "sources": [],
+   "note": null
+  },
+  {
+   "label": "Unstoppable force vs immovable object: how far rock fails around a bolt carrying force C",
+   "value": "One held anchor: r ≈ √(C/(2πσ)) (peak-stress version √(3C/(2πσ))). Two opposed anchors a distance d apart: r ≈ (C·d/(2πσ))^(1/3) once r > d",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/2110.10072",
+     "title": "Padmanabha et al. 2021 (tensile strength used)"
+    },
+    {
+     "url": "https://www.rocscience.com/assets/resources/learning/hoek/Practical-Rock-Engineering-Chapter-11-Rock-Mass-Properties.pdf",
+     "title": "Hoek, Practical Rock Engineering Ch. 11 (UCS context)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Unstoppable force vs immovable object: stress-wave speed in rock (whether the rock under his bolts can respond during a very fast hit)",
+   "value": "About 5 km/s, our pick. Granite's measured bar-wave speed is 3.71 ± 0.16 km/s; pressure (P) waves in granite near the surface run 3.7–6.1 km/s",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/2110.10072",
+     "title": "Padmanabha, Schäfer, Rae & Kenkmann (2021) Dynamic split tensile strength of basalt, granite, marble and sandstone, arXiv:2110.10072, Table 1"
+    },
+    {
+     "url": "https://doi.org/10.1029/JZ065i004p01083",
+     "title": "Birch (1960) The velocity of compressional waves in rocks to 10 kilobars, Part 1, J. Geophys. Res. 65(4), 1083–1102 (granite rows at 10 bar, as transcribed in Wikipedia: Birch's law)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Unstoppable force vs immovable object: pull holding Earth's two halves together (planet-scale marker)",
+   "value": "About 1.1 × 10^25 N (3GM²/(16R²) for a uniform-density Earth)",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+     "title": "NASA Earth Fact Sheet (M, R)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Unstoppable force vs immovable object: distance between the two partners' anchors in a push",
+   "value": "One mean body height (3.05 m at the default 10 ft)",
+   "status": "estimate",
+   "sources": [],
+   "note": null
+  },
+  {
+   "label": "Unstoppable force vs immovable object: relativistic reading of the sprint's drag-limited top speed",
+   "value": "Drag ½ρC_dA(γv)²: the engine's drag balance √(2F/(ρC_dA)) is read as the proper speed γv, not v",
+   "status": "estimate",
+   "sources": [],
+   "note": null
+  },
+  {
+   "label": "Game of catch: catch: first contact with the catcher's hands",
+   "value": "Both hands and forearms, 4.4% of body mass (119 kg at 2,700 kg), start at rest; palm and object squash 1–2.5% of his height (3–7.6 cm at 10 ft)",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://apps.dtic.mil/sti/citations/AD0074470",
+     "title": "Dempster segment masses (hand 0.6%, forearm 1.6%), as used for Rex's body"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Game of catch: break-up in flight when air pressure beats its strength",
+   "value": "An object tears apart once ρv² on its front exceeds its strength. Only the solid metal objects (shot put, deadlift bar, Ruyi staff) have a whole-object strength; for the rest the sim uses its grip limit, a local value, so the check errs toward survival",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://doi.org/10.1111/j.1945-5100.2005.tb00157.x",
+     "title": "Collins, Melosh & Marcus (2005), Earth Impact Effects Program, Meteoritics & Planetary Science 40:817"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Rex and Ollie: body volume, mass, facing area and foot soles, measured from their reference picture",
+   "value": "Rex at 10 ft (3.048 m): 2.55 m³, about 2,700 kg (plausibly 2,300–3,000 kg); facing area 4.4 m² with his tail trailing (4.9 m² as drawn, tail out to the side); one paw’s sole 0.31 m². Ollie: 3.06 m to his horn tips (the same 10 ft within measuring error), 2.53 m³, about 2,700 kg; facing area 4.5 m²; one boot’s sole 0.15 m². Both at 1,060 kg/m³.",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf",
+     "title": "Gordon et al. (2014), 2012 Anthropometric Survey of U.S. Army Personnel (ANSUR II): Methods and Summary Statistics, NATICK/TR-15/007 (depth-to-width ratios of each body slice)"
+    },
+    {
+     "url": "https://www.bisp-surf.de/Record/PU198802031700",
+     "title": "Fry, Cisar & Housh (1987), A comparison of anthropometric equations for estimating body density in male competitive body builders, J Applied Sport Science Research 1(4):61–65 (abstract, BISp)"
+    }
+   ],
+   "note": null
+  }
+ ],
+ "densities": [
+  {
+   "id": "plush",
+   "chip": "Plush",
+   "short": "plush stuffing",
+   "rho": 30,
+   "note": "Our estimate for a stuffed toy: no measured value found. Loose fibrefill batts are 6–21 kg/m³."
+  },
+  {
+   "id": "water",
+   "chip": "Water",
+   "short": "water",
+   "rho": 1000,
+   "note": "Fresh water at 4 °C: 1,000 kg/m³. The 2 m, 180 kg calibration body has this density."
+  },
+  {
+   "id": "build",
+   "chip": "His build (default)",
+   "short": "his build",
+   "rho": 1060,
+   "note": "The default Rex and Ollie: 10 ft, about 2,700 kg, measured from their picture. 1,060 kg/m³: lean bodybuilders (1,081 kg/m³ with lung air removed; Fry, Cisar & Housh 1987) less some air in the lungs."
+  },
+  {
+   "id": "human",
+   "chip": null,
+   "short": "a human body",
+   "rho": 1060,
+   "note": null
+  },
+  {
+   "id": "steel",
+   "chip": "Steel",
+   "short": "steel",
+   "rho": 7850,
+   "note": null
+  },
+  {
+   "id": "osmium",
+   "chip": "Osmium",
+   "short": "osmium",
+   "rho": 22587,
+   "note": "The densest element at everyday pressure."
+  },
+  {
+   "id": "whitedwarf",
+   "chip": "White dwarf",
+   "short": "white-dwarf matter",
+   "rho": 2770000000,
+   "note": "Sirius B’s average density."
+  },
+  {
+   "id": "nucleus",
+   "chip": null,
+   "short": "an atomic nucleus",
+   "rho": 270000000000000000,
+   "note": null
+  },
+  {
+   "id": "neutronstar",
+   "chip": "Neutron star",
+   "short": "a neutron star",
+   "rho": 412000000000000000,
+   "note": "A typical neutron star’s average density."
+  }
+ ],
+ "massRefs": [
+  {
+   "label": "Deimos (moon of Mars)",
+   "short": "Deimos",
+   "m": 1441000000000000
+  },
+  {
+   "label": "Phobos (moon of Mars)",
+   "short": "Phobos",
+   "m": 10618000000000000
   }
  ]
 };
