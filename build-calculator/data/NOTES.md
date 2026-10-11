@@ -221,7 +221,7 @@ Girths filled from a template are derived. W/H^3 in kg/m^3.
 | US men 20 and over, median (NHANES 2015-2018) | 16.2 | US Army men, 50th percentile (ANSUR II) | ansur_predictor | - | - |
 | US women 20 and over, median (NHANES 2015-2018) | 17.4 | US Army women, 50th percentile (ANSUR II) | ansur_predictor | - | - |
 | British natural PRO bodybuilders, men (Chappell 2019, n=8) | 14.8 | Steve Reeves (Mr. America 1947) | geometric | 15.2 | - |
-| Gym athletes who never used steroids (Kouri 1995, n=74) | 14.1 | Steve Reeves (Mr. America 1947) | geometric | 15.2 | - |
+| Men who never used steroids (Kouri 1995, n=74) | 14.1 | Steve Reeves (Mr. America 1947) | geometric | 15.2 | - |
 | Ronnie Coleman (8x Mr. Olympia) | 22.9 | Mr. America winners 1938-1954, mean of program figures | geometric | 16.4 | outside template range |
 | Arnold Schwarzenegger (7x Mr. Olympia) | 16.1 | Mr. America winners 1938-1954, mean of program figures | geometric | 16.4 | - |
 | Dorian Yates (6x Mr. Olympia) | 21.2 | Mr. America winners 1938-1954, mean of program figures | geometric | 16.4 | outside template range |

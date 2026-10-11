@@ -1,0 +1,421 @@
+Project: "Build Comparison", a chart that ranks male body builds by "muscle level" irrespective of height, from ordinary men through the limits of human possibility to the monstrous (comic characters, and two original 3 m characters, Rex and Ollie). Read /home/user/rex-strength-lab/build-comparison/BRIEF.md first (10 minutes): it states the decisions already made and the problems to solve.
+The working score is FFMI after rescaling the body to 1.80 m at the same shape: S = 1.8 * FFM / H^3 (FFM = fat-free mass in kg, H = height in m), shown beside plain FFMI = FFM / H^2. A rough first pass gives: US Army median man about 24, Ronnie Coleman about 35-39, Eddie Hall about 38, the heaviest comic characters 57-81, Rex about 141 (tail excluded, height to crest). A solid ball of muscle as tall as the figure scores about 924.
+The sister project /home/user/rex-strength-lab/build-calculator/ already holds 55 builds and 139 verified facts in data/builds.json (read its "facts" keys and labels before you start; do NOT re-research a fact that already exists there unless the brief needs a number it lacks, and say so when you rely on an existing key). ANSUR II CSVs are in /home/user/rex-strength-lab/build-calculator/data/ansur2/ (ANSUR_II_MALE_Public.csv, 4,082 men; values in mm and kg x10? check: weightkg is in tenths of kg, lengths in mm).
+The owner is a professional critic: factual accuracy and honest labelling come first. Say "unknown" rather than invent; a number is "sourced" only if you fetched the page or PDF and saw the number there; give the exact URL you fetched (DOI landing pages, PubMed, PMC, publisher PDFs). Prefer primary or authoritative sources (journals, textbooks, government surveys, standards bodies, publisher handbooks); use fan sites or magazines only when nothing better exists, and label them so. Quote the exact sentence or table cell behind each number in notes.
+Load web tools with ToolSearch query "select:WebSearch,WebFetch". Write raw downloads and scripts under /tmp/claude-0/-home-user-rex-strength-lab/9b81b796-3162-56bd-85b7-22e02b6583e2/scratchpad/research/<topic>/ (create it). Do not edit anything under /home/user/rex-strength-lab.
+For each fact give: key (snake_case), label, status (measured | official | reported | derived | estimate | disputed), values (a JSON object as a string, SI units plus the original units), sources (title + URL actually fetched), and notes (what exactly the source says, its sample, caveats, how good the evidence is).
+
+You are a skeptical fact-checker for the topic "comics". Below are the researcher's facts and recommendations. Re-fetch the cited URLs for every fact the chart is likely to lean on (at least 12 fetches; all of them if there are fewer) and check each value, quotation and status against what the source actually says; recompute every derived number you can (re-run computations on the ANSUR II CSV where relevant). Mark ok=false with a correction for anything wrong, mislabelled (for example a fan wiki or a magazine marked official or measured; a sample maximum called a limit; a secondary summary presented as the primary paper), or unsupported. Also judge the recommendations: anything that overstates the evidence? List important missing items.
+
+RESEARCH:
+{
+ "summary": "Official Marvel sources describe the body makeup of several characters, and the chart can use some of it. Nothing gives a body-fat percentage or a tissue density in kg/m3. Key findings:\n\n(1) Asgardian density is official. The Official Handbook of the Marvel Universe, Deluxe Edition (1985-86), as reprinted in the 2006 Essential volume 1, says: \"Asgardian flesh and bone is about three times denser than similar human tissue, contributing to the gods' superhuman strength and weight.\" The 1987 trade paperback vol 4 and The Definitive Thor (Panini, 2011) have the same wording. DK's Marvel Encyclopedia (2014 and 2019) says \"Their skin and bones are three times as dense as those of a human ... due to their density, weigh far more than humans of comparable size.\" Thor's 640 lb divided by 3 is about 97 kg (213 lb), which puts his score at an ordinary level (S about 20-22, against 60-67 as listed).\n\n(2) Wolverine's adamantium is official: Marvel.com says it \"adds an extra 105 pounds to his frame—or 47.6 kilograms\" (300 lb with it, 195 lb without). I found no handbook figure, and \"nearly 100 pounds\" appears only in fan-wiki text.\n\n(3) Colossus, armoured: the handbook calls the substance \"of unknown composition but ... analogous to osmium and to carbon steel\" and says he gains \"additional mass from an unknown, perhaps extradimensional source\". His body is not tissue, so he is not comparable.\n\n(4) The Thing: the official wording is a rock-like or rocky skin, hide or exterior (\"supple\"). Nothing gives its mass.\n\n(5) Hulk and Abomination: the handbook says gamma radiation \"fortified his cellular structure and added, from some as yet unknown source, over 800 pounds of bone marrow and tissue\" (Hulk) or \"bone marrow and muscle tissue\" (Abomination). So the added mass is officially tissue.\n\n(6) Luke Cage: \"very dense muscle and bone tissue, and steel-hard skin\" (DK 2019) and \"Superdense Body Mass\" (Marvel.com), with no factor.\n\n(7) Kingpin: \"His great bulk does not consist of fat but of muscles ... as in a sumo wrestler\" (handbook), and \"Most of Fisk's bulk is actually muscle, not fat\" (Marvel.com). The \"9 pounds of fat\" figure is fan-wiki only.\n\n(8) For Superman, Batman, Darkseid, Doomsday and Bane, the DC sources (two DK books) say nothing about density or composition. Bane's Venom is described as a super-steroid. Density claims for Superman, Darkseid and Doomsday, and Black Panther's \"denser tissue\", come only from fan wikis.\n\n(9) Body-fat percentage: none in any Marvel or DC source searched, as expected. The only statements are in words: Kingpin, and Angel's \"body is virtually devoid of fat\".",
+ "facts": [
+  {
+   "key": "asgardian_tissue_density_ohotmu",
+   "label": "Asgardian gods: flesh and bone about three times as dense as human tissue (Official Handbook of the Marvel Universe)",
+   "status": "official",
+   "values": "{\"density_ratio_vs_human_tissue\": 3, \"qualifier\": \"about\", \"tissues_named\": \"flesh and bone\", \"density_kg_m3\": null, \"editions_seen\": [\"OHOTMU Deluxe Edition #1-7 (1985-86) as reprinted in Essential OHOTMU Deluxe Edition vol 1 (Marvel 2006, ISBN 0785119345)\", \"OHOTMU trade paperback vol 4 (Marvel 1987, ISBN 0871352117)\", \"The Definitive Thor (Panini UK 2011, ISBN 9781846534812)\", \"The Definitive Thor Reloaded (Panini UK 2013)\"]}",
+   "sources": [
+    {
+     "title": "Archive.org full-text search, Essential OHOTMU Deluxe vol 1 (2006): 'Asgardian flesh' phrases",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=identifier%3Aofficialhandbook0001unse+AND+%28%22Asgardian+flesh%22+OR+%22male+Asgardian%22+OR+%22average+Asgardian%22+OR+%22Asgardian+female%22+OR+%22lift+about+30+tons%22+OR+%22Asgardian+god%22%29"
+    },
+    {
+     "title": "Archive.org full-text search, Essential OHOTMU Deluxe vol 1 (2006): 'denser than similar human tissue'",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=identifier%3Aofficialhandbook0001unse+AND+%28%22denser+than+similar+human+tissue%22+OR+%22superhuman+weight%22+OR+%22superhuman+strength+and+weight%22%29"
+    },
+    {
+     "title": "Archive.org full-text search, OHOTMU 1987 TPB vol 4: same phrases",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=identifier%3Aofficialhandbook04grue+AND+%28%22denser+than+similar+human+tissue%22+OR+%22superhuman+weight%22+OR+%22superhuman+strength+and+weight%22%29"
+    },
+    {
+     "title": "Archive.org full-text search, all texts: 'denser than similar human tissue' (finds 2006 vol 1, 1987 vol 4, Definitive Thor 2011)",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=%22denser+than+similar+human+tissue%22"
+    },
+    {
+     "title": "Archive.org full-text search, all texts: 'times the density' AND Asgardian (Definitive Thor Reloaded 2013)",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=%22times+the+density%22+AND+Asgardian"
+    },
+    {
+     "title": "Archive.org full-text search, Essential OHOTMU Deluxe vol 1: dense/denser/density (Asgard matter)",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=identifier%3Aofficialhandbook0001unse+AND+%28%22denser%22+OR+%22dense%22+OR+%22density%22%29"
+    },
+    {
+     "title": "Archive.org metadata: Essential OHOTMU Deluxe vol 1 (2006), 'Collects OHOTMU Deluxe (First 3rd)' #1-7",
+     "url": "https://archive.org/metadata/officialhandbook0001unse/metadata"
+    },
+    {
+     "title": "Archive.org metadata: OHOTMU vol 4 (1987, Gruenwald)",
+     "url": "https://archive.org/metadata/officialhandbook04grue/metadata"
+    },
+    {
+     "title": "Marvel Database (fan wiki) Asgardians wikitext via API",
+     "url": "https://marvel.fandom.com/api.php?action=parse&page=Asgardians&prop=wikitext&format=json&redirects=1"
+    }
+   ],
+   "notes": "Exact OCR snippets from archive.org full-text search; these are lending-library scans, so only about 100 characters around each hit can be seen. Essential OHOTMU Deluxe vol 1 (2006): 'immortal like the Olympian gods), aging at an extraordinarily slow. rate upon reaching adult- hood. Asgardian flesh and bone is about three times denser than similar human...'. Same volume: 'times denser than similar human tissue, contributing to the gods' superhuman Strength and weight. An male'. Other entries in the same volume: '(Asgardian flesh and bone is about three times denser than similar human tissue, contributing to the Asgar- dians' superhuman strength and weight.) His Asgardian metabolism gives him super- human endurance', and 'injury (Asgardian flesh and bone is about 3 times denser than Earthly flesh and bone, accounting for Asgardians'...'. The 1987 vol 4 reads: 'and bone is about 3 times denser than similar human tissue, contributing to the Asgardians superhuman strength and weight.)'. The Definitive Thor Reloaded (2013): 'flesh, bone, and muscle possess about three times the density of the tissue of a human body.' The same 2006 volume's Asgard entry says 'common matter is considerably denser on an average. Con- sequently a chair made of Asgardian...' and 'water, flesh, bone, steel - all mat- . ter is denser and thus more durable'. Wording varies between 'three times denser' and '3 times as dense', so read it as a factor of about 3, not 4. Not confirmed: the issue number and page of each entry. The group entry sits in the part reprinting Deluxe #1-7, probably #1 (the A entries), unverified. No handbook gives a density in kg/m3. The fan wiki cites Thor & Hercules: Encyclopaedia Mythologica (2009) for 'skin, muscle, and bone tissues ... about three times as dense'; I did not fetch that book, so status reported. The fan-wiki infobox also gives an Asgardian 'AvgWeight 450 lbs', uncited (reported). Archive.org also holds unauthorised digital comic uploads that repeat this wording; I deliberately did not cite them."
+  },
+  {
+   "key": "asgardian_tissue_density_dk",
+   "label": "DK Marvel Encyclopedia: Asgardians' skin and bones three times as dense as a human's",
+   "status": "official",
+   "values": "{\"density_ratio_vs_human\": 3, \"tissues_named\": \"skin and bones\", \"editions\": [\"DK Marvel Encyclopedia New Edition (2019)\", \"DK Marvel Encyclopedia (2014)\"]}",
+   "sources": [
+    {
+     "title": "DK Marvel Encyclopedia New Edition (2019), archive.org OCR text",
+     "url": "https://archive.org/download/marvel-encyclopedia-new-edition_202312/Marvel%20Encyclopedia%20New%20Edition_djvu.txt"
+    },
+    {
+     "title": "Archive.org full-text search: 'flesh and bone' AND Asgardian AND 'dense' (finds DK 2014 and DK 2019 copies)",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=%22flesh+and+bone%22+AND+Asgardian+AND+%22dense%22"
+    },
+    {
+     "title": "Marvel.com Thor (Thor Odinson) In Comics (no density statement)",
+     "url": "https://www.marvel.com/characters/thor-thor-odinson/in-comics"
+    }
+   ],
+   "notes": "DK 2019 OCR, 'THE ASGARDIANS' feature (around line 27252): 'Their skin and bones are three times as dense as those of a human and they are almost invulnerable to physical attack. They possess great strength (most are able to lift 30 tons) and, due to their density, weigh far more than humans of comparable size.' A caption in the Enchantress entry reads: 'Asgardian body three times denser and heavier than that of a normal human being.' DK 2014 (snippet, marvelencycloped0000unse_v4p7): 'Their skin and bones are three times as dense as that of a human and are invulnerable, to a degree'. DK names skin and bones only; OHOTMU says flesh and bone. DK's Thor factfile has no density statement: 'HEIGHT 6ft6 in WEIGHT 640 lbs ... Enhanced strength, near invulnerability, longevity, and vast magical abilities provided by the Odinforce'. Marvel.com's Thor page (fetched 2026-10-11) has none either; it gives only 'Thor: 640 lbs., Donald Blake: 150 lbs.' The OCR has page-layout noise; the quoted sentences are contiguous in the OCR."
+  },
+  {
+   "key": "thor_density_adjusted_mass",
+   "label": "Thor: official weight converted to human-tissue-equivalent mass (official weight divided by 3)",
+   "status": "derived",
+   "values": "{\"height_m\": 1.981, \"listed_mass_kg\": 290.3, \"listed_lb\": 640, \"density_factor\": 3, \"human_equiv_mass_kg\": 96.8, \"human_equiv_lb\": 213, \"S_listed_fat0\": 67.2, \"S_listed_fat10\": 60.5, \"S_listed_fat15\": 57.1, \"S_equiv_fat0\": 22.4, \"S_equiv_fat10\": 20.2, \"S_equiv_fat15\": 19.0, \"FFMI_equiv_fat0\": 24.7, \"FFMI_equiv_fat10\": 22.2, \"blake_isometric_6ft6_lb\": 217}",
+   "sources": [
+    {
+     "title": "Marvel.com Thor (Thor Odinson) In Comics (640 lb, 6 ft 6 in)",
+     "url": "https://www.marvel.com/characters/thor-thor-odinson/in-comics"
+    },
+    {
+     "title": "Archive.org full-text search, Essential OHOTMU Deluxe vol 1: 'denser than similar human tissue'",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=identifier%3Aofficialhandbook0001unse+AND+%28%22denser+than+similar+human+tissue%22+OR+%22superhuman+weight%22+OR+%22superhuman+strength+and+weight%22%29"
+    }
+   ],
+   "notes": "Method: a body of the same size and shape made of ordinary tissue would weigh the listed mass divided by the density ratio: 290.3 / 3 = 96.8 kg (213 lb). S = 1.8 x FFM / H^3 and FFMI = FFM / H^2 at assumed fat of 0, 10 and 15% (body fat is unknown). Assumes all tissue is 3x as dense, following OHOTMU's 'flesh and bone'. If only skin and bone are denser (DK's wording), the correction is smaller. I have not computed that case, because it needs tissue mass fractions not researched here. A numerical observation only, which Marvel does not state: 213 lb is close to Donald Blake's 150 lb scaled isometrically to 6 ft 6 in (217 lb, existing key plausibility_metrics). Relies on existing builds.json keys thor (height and weight) and plausibility_metrics. Rounded to what the inputs support: 'about three times' carries perhaps one significant figure, so the 97 kg value is about plus or minus a third."
+  },
+  {
+   "key": "thing_rocky_hide",
+   "label": "The Thing: official sources describe a rock-like hide or exterior, not a body of rock; no mass split given",
+   "status": "official",
+   "values": "{\"hide_mass_kg\": null, \"hide_density_kg_m3\": null, \"listed_height_m\": 1.829, \"listed_mass_kg\": 226.8, \"S_listed_fat0\": 66.7, \"S_listed_fat10\": 60.1, \"S_listed_fat15\": 56.7}",
+   "sources": [
+    {
+     "title": "Marvel.com The Thing (Benjamin Grimm) In Comics",
+     "url": "https://www.marvel.com/characters/the-thing-benjamin-grimm/in-comics"
+    },
+    {
+     "title": "Marvel.com guide: The Thing's Transformations",
+     "url": "https://www.marvel.com/comics/guides/2507/the_things_transformations"
+    },
+    {
+     "title": "DK Marvel Encyclopedia New Edition (2019), archive.org OCR text",
+     "url": "https://archive.org/download/marvel-encyclopedia-new-edition_202312/Marvel%20Encyclopedia%20New%20Edition_djvu.txt"
+    },
+    {
+     "title": "Marvel Database (fan wiki) Benjamin Grimm (Earth-616) wikitext via API",
+     "url": "https://marvel.fandom.com/api.php?action=parse&page=Benjamin_Grimm_(Earth-616)&prop=wikitext&format=json&redirects=1"
+    }
+   ],
+   "notes": "Marvel.com: 'his rock-like skin has only been known to be pierced by extraterrestrial weaponry or sorcerous means, and while uncomfortable-looking is actually supple and allows him a wealth of movement.' Also: 'Grimm's outward form mutates over his years as the Thing, changing from a lumpy hide to what appears to be individual rocks linked together'. The Marvel.com guide: 'From his original human form to his rocky exterior and beyond'. DK 2019: 'Ben's skin turned orange and rocky, and his strength grew'; powers 'Superhuman strength, endurance, and durability. He can lift 85 tons'. Official wording therefore names the skin, hide or exterior. Fan wiki (reported; these sentences cite no source): 'Body is covered with an orange, flexible, rock-like hide'; 'The mutagenic process caused his overall musculature, bone structure, internal organ composition, soft tissue structure, and skin to also greatly increase in toughness and density'; 'The rock-like composition of the Thing's body renders him highly resistant to physical injury.' I could not reach the OHOTMU Thing entry text: the Deluxe Thing entry is not in the searchable volumes, and full-text search for 'rocklike hide' found only Sanderson's Marvel Universe (1998), 'enormous strength and a nearly impenetrable, rocklike hide'. No source gives the hide's thickness, density or mass. Listed weight and height come from the existing key thing."
+  },
+  {
+   "key": "colossus_armored_composition",
+   "label": "Colossus, armoured: whole body converted to an organic steel-like substance; the extra mass comes from an 'unknown, perhaps extradimensional source'",
+   "status": "official",
+   "values": "{\"human_height_m\": 1.981, \"human_mass_kg\": 113.4, \"armored_height_m\": 2.261, \"armored_mass_kg\": 226.8, \"added_mass_kg\": 113.4, \"added_mass_lb\": 250, \"stated_analogues\": [\"osmium\", \"carbon steel\"], \"S_human_fat10\": 23.6, \"S_armored_fat10_if_tissue\": 31.8}",
+   "sources": [
+    {
+     "title": "Marvel.com Colossus (Piotr Rasputin)",
+     "url": "https://www.marvel.com/characters/colossus-piotr-rasputin"
+    },
+    {
+     "title": "Archive.org full-text search, Essential OHOTMU Deluxe vol 1: Colossus armored form",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=identifier%3Aofficialhandbook0001unse+AND+%28%22to+armored+form+and+back%22+OR+%22converts+his+body%22+OR+%22organic+steel%22+OR+%22armored+form%22+OR+%22steel-like%22%29"
+    },
+    {
+     "title": "Archive.org full-text search, Essential OHOTMU Deluxe vol 1: Colossus composition and added mass",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=identifier%3Aofficialhandbook0001unse+AND+%28%22unknown+composition%22+OR+%22osmium%22+OR+%22carbon+steel%22+OR+%22remains+unknown%22+OR+%22additional+mass+from%22%29"
+    },
+    {
+     "title": "DK Marvel Encyclopedia New Edition (2019), archive.org OCR text",
+     "url": "https://archive.org/download/marvel-encyclopedia-new-edition_202312/Marvel%20Encyclopedia%20New%20Edition_djvu.txt"
+    }
+   ],
+   "notes": "Marvel.com (re-fetched 2026-10-11): 'Colossus can convert the tissue of his entire body into an organic, steel-like substance analogous to osmium and to carbon steel...'. Also: 'Colossus cannot become partially or selectively armored; his body is either entirely converted, or not at all. Even his eyes become steel-like'. OHOTMU Deluxe (Essential vol 1, OCR snippets): 'convert the tissue of his entire body into an organic steel-like substance, granting him superhuman strength'; 'steel\" is of unknown composition but appears to be analogous to osmium and to carbon steel'; 'by which Colossus trans- forms himself to armored form and back (in- cluding his gain of additional mass from an unknown, perhaps _ extradimensional source) remains unknown.' The opening words of the last sentence are cut off in the snippet. DK 2019: 'Mutant ability to change his body's tissue into an organic, steel-like material.' The existing key colossus_density_check (estimate) shows the problem: at an isometrically scaled volume, the stated 500 lb implies a mean density of only about 1,350-1,480 kg/m3, far from steel, so the official mass and the official material do not fit together. The human form (6 ft 6 in, 250 lb) is ordinary tissue. Relies on existing keys colossus and colossus_density_check. The S values are derived from the official figures at an assumed 10% fat."
+  },
+  {
+   "key": "wolverine_adamantium_mass",
+   "label": "Wolverine: adamantium adds 105 lb (47.6 kg); 300 lb with it, 195 lb without (Marvel.com)",
+   "status": "official",
+   "values": "{\"height_m\": 1.6, \"adamantium_added_kg\": 47.6, \"adamantium_added_lb\": 105, \"with_kg\": 136.1, \"without_kg\": 88.5, \"adamantium_share_of_300lb\": 0.35, \"overstatement_factor_if_300lb_used\": 1.54, \"S_without_fat0\": 38.9, \"S_without_fat10\": 35.0, \"S_without_fat15\": 33.0, \"S_with_fat10\": 53.8, \"fan_story_figure_lb\": \"nearly 100 (reported)\"}",
+   "sources": [
+    {
+     "title": "Marvel.com Wolverine (Logan/James Howlett) In Comics",
+     "url": "https://www.marvel.com/characters/wolverine-james-howlett/in-comics"
+    },
+    {
+     "title": "DK Marvel Encyclopedia New Edition (2019), archive.org OCR text",
+     "url": "https://archive.org/download/marvel-encyclopedia-new-edition_202312/Marvel%20Encyclopedia%20New%20Edition_djvu.txt"
+    },
+    {
+     "title": "Marvel Database (fan wiki) James Howlett (Earth-616) wikitext via API",
+     "url": "https://marvel.fandom.com/api.php?action=parse&page=James_Howlett_(Earth-616)&prop=wikitext&format=json&redirects=1"
+    }
+   ],
+   "notes": "Marvel.com (re-fetched 2026-10-11): 'his skeleton is coated in the near-indestructible steel alloy known as adamantium. This alloy adds an extra 105 pounds to his frame—or 47.6 kilograms in Wolverine's native metric system.' Stats read 'HEIGHT 5'3\" WEIGHT 300 lbs., Without Adamantium skeleton: 195 lbs.' (300 - 195 = 105, consistent). The adamantium coats the bone rather than replacing it, so the 195 lb still contains his skeleton. DK 2019: 'HEIGHT 5 ft3in WEIGHT 195 lbs', with 'His skeleton has been laced with the unbreakable metal Adamantium' and no qualifier. Fan wiki: '195 lbs (without Adamantium skeleton); 300 lbs (with Adamantium skeleton)', and 'the addition of nearly 100 pounds of Adamantium to his body reduced his buoyancy', citing Wolverine: Weapon X #5 (story text, not seen; reported). Full-text search found no OHOTMU adamantium mass ('pounds of adamantium' returned only fan fiction). Relies on existing key wolverine. S values are derived at assumed fat levels."
+  },
+  {
+   "key": "hulk_added_mass_composition",
+   "label": "Hulk: handbook says gamma radiation added 'over 800 pounds of bone marrow and tissue' from an unknown source",
+   "status": "official",
+   "values": "{\"added_mass_lb_stated\": \"over 800\", \"banner_lb\": 128, \"hulk_lb_dk2019\": 1040, \"hulk_lb_marvelcom\": 1150, \"difference_lb_dk2019\": 912, \"difference_lb_marvelcom\": 1022, \"density_factor\": null}",
+   "sources": [
+    {
+     "title": "Archive.org full-text search, Essential OHOTMU Deluxe vol 1: 'fortified his cellular' / 'bone marrow and tissue'",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=identifier%3Aofficialhandbook0001unse+AND+%28%22mass+fortifies%22+OR+%22fortifies+all%22+OR+%22bone+marrow+and+tissue%22+OR+%22Previously%2C+this%22+OR+%22fortified+his+cellular%22%29"
+    },
+    {
+     "title": "Archive.org full-text search, Essential OHOTMU Deluxe vol 1: 'mutation was not a stable'",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=identifier%3Aofficialhandbook0001unse+AND+%28%22requires+the+rapid%22+OR+%22involves+the+rapid%22+OR+%22necessitates+the+rapid%22+OR+%22mutation+was+not+a+stable%22+OR+%22not+a+stable%22+OR+%227+feet%22+OR+%22Hulk%27s+height%22%29"
+    },
+    {
+     "title": "Marvel.com Hulk (Bruce Banner) In Comics",
+     "url": "https://www.marvel.com/characters/hulk-bruce-banner/in-comics"
+    },
+    {
+     "title": "Marvel Database (fan wiki) Bruce Banner (Earth-616) wikitext via API",
+     "url": "https://marvel.fandom.com/api.php?action=parse&page=Bruce_Banner_(Earth-616)&prop=wikitext&format=json&redirects=1"
+    }
+   ],
+   "notes": "OHOTMU Deluxe as reprinted in Essential vol 1 (2006), OCR snippets: 'radiation that mutated the Hulk's body fortified his cellular structure and added, from some as yet un-' ... 'source, over 800 pounds of bone marrow and tissue to his body. Previously, this mutation was not a stable one. The Hulk would periodically revert'. Another snippet: 'o the human form of Bruce Banner, losing the extra mass and energy to the same as yet unknown source'. The fan wiki cites 'Official Handbook of the Marvel Universe Vol 2 5' (Deluxe #5) and paraphrases it as 'bone marrow and muscle tissue'; the Hulk wording I saw is 'bone marrow and tissue'. The separate snippet 'requires the rapid acquisition of bodily mass to maintain his proportionate shape ... presumably derives from an extra-dimensional source' belongs to a growth-power entry (probably Giant-Man), not the Hulk, and is not used here. Marvel.com: 'nearly impenetrable skin'. DK 2019 Hulk factfile has no composition statement. No source gives a density factor, and no source gives a separate composition for the grey (Joe Fixit) or merged forms. Those forms' stats come from the existing keys hulk_grey_joe_fixit (fan-wiki only) and hulk_merged_marvelcom. 'Fortified cellular structure' could imply denser tissue, but nothing quantifies it."
+  },
+  {
+   "key": "abomination_added_mass_composition",
+   "label": "Abomination: handbook says gamma radiation added 'over 800 pounds of bone marrow and muscle tissue'",
+   "status": "official",
+   "values": "{\"added_mass_lb_stated\": \"over 800\", \"blonsky_lb\": 180, \"abomination_lb\": 980, \"difference_lb\": 800, \"density_factor\": null, \"S_listed_fat10\": 85.8}",
+   "sources": [
+    {
+     "title": "Archive.org full-text search, Essential OHOTMU Deluxe vol 1: Abomination added tissue",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=identifier%3Aofficialhandbook0001unse+AND+%28%22bone+marrow+and+muscle%22+OR+%22pounds+of+bone+marrow%22+OR+%22Abomination%27s+trans%22+OR+%22Abomination%E2%80%99s+trans%22+OR+%22Abomination%27s+body%22%29"
+    },
+    {
+     "title": "Marvel.com Abomination",
+     "url": "https://www.marvel.com/characters/abomination"
+    },
+    {
+     "title": "Marvel Database (fan wiki) Emil Blonsky (Earth-616) wikitext via API",
+     "url": "https://marvel.fandom.com/api.php?action=parse&page=Emil_Blonsky_(Earth-616)&prop=wikitext&format=json&redirects=1"
+    }
+   ],
+   "notes": "OHOTMU Deluxe as reprinted in Essential vol 1 (2006), OCR snippets: 'The gamma radiation that mutated the Abomination's body fortified his cellular structure and added' ... 'as yet un- known source, over 800 pounds of bone marrow and muscle tissue to his body. Un- like the Hulk's, the Abomination's trans- formation has proved stable'. Marvel.com: 'Abomination: 980 lbs., Blonsky: 180 lbs.' (difference 800 lb, consistent). DK 2019 mentions 'tough skin'. No density factor anywhere. Relies on existing key abomination for height and weight. The S value is derived at an assumed 10% fat."
+  },
+  {
+   "key": "luke_cage_dense_tissue",
+   "label": "Luke Cage: official sources say 'very dense muscle and bone tissue' and 'Superdense Body Mass', with no factor",
+   "status": "official",
+   "values": "{\"density_factor\": null, \"height_m\": 1.981, \"listed_mass_kg\": 192.8, \"S_listed_fat0\": 44.6, \"S_listed_fat10\": 40.2}",
+   "sources": [
+    {
+     "title": "Marvel.com Luke Cage In Comics",
+     "url": "https://www.marvel.com/characters/luke-cage/in-comics"
+    },
+    {
+     "title": "DK Marvel Encyclopedia New Edition (2019), archive.org OCR text",
+     "url": "https://archive.org/download/marvel-encyclopedia-new-edition_202312/Marvel%20Encyclopedia%20New%20Edition_djvu.txt"
+    },
+    {
+     "title": "Archive.org full-text search: 'steel-hard skin' (DK 2014 and 2019 copies)",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=%22steel-hard+skin%22"
+    },
+    {
+     "title": "Marvel Database (fan wiki) Lucas Cage (Carl_Lucas_(Earth-616)) wikitext via API",
+     "url": "https://marvel.fandom.com/api.php?action=parse&page=Carl_Lucas_(Earth-616)&prop=wikitext&format=json&redirects=1"
+    }
+   ],
+   "notes": "Marvel.com powers list: 'Bulletproof Skin, ... Superdense Body Mass'. Text: 'His skin also proved to be impervious to bullets, thanks to the incredibly dense muscle tissues created by the experiment.' DK 2019 (OCR, layout-garbled, reassembled): 'Cage possesses superhuman strength, very dense muscle and bone tissue, and steel-hard skin. He recovers three times faster from injury than a normal person'. A clean copy of the same DK text appears in the full-text search snippet. Fan wiki (reported): 'Luke Cage's body is as hard as titanium steel' (citing Hero for Hire #1) and 'His muscles and bones tissue are super-dense' (citing OHOTMU A to Z vol 2; not seen). No source gives how much denser."
+  },
+  {
+   "key": "kingpin_bulk_not_fat",
+   "label": "Kingpin: official sources say his bulk is muscle, not fat; the '9 pounds of fat' figure is fan-wiki only",
+   "status": "official",
+   "values": "{\"height_m\": 2.007, \"listed_mass_kg\": 204.1, \"fan_fat_lb\": 9, \"fan_fat_pct_of_450lb\": 2.0, \"ffm_kg_if_9lb_fat\": 200.0, \"FFMI_if_9lb_fat\": 49.7, \"S_if_9lb_fat\": 44.6, \"S_fat15\": 38.7, \"press_lb_ohotmu\": 650}",
+   "sources": [
+    {
+     "title": "Marvel.com Kingpin (Wilson Fisk) In Comics",
+     "url": "https://www.marvel.com/characters/kingpin/in-comics"
+    },
+    {
+     "title": "Archive.org full-text search, Essential OHOTMU Deluxe vol 1: Kingpin bulk",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=identifier%3Aofficialhandbook0001unse+AND+%28%22great+bulk%22+OR+%22does+not+consist%22+OR+%22developed+to+enormous%22+OR+%22sumo%22%29"
+    },
+    {
+     "title": "Archive.org full-text search, Essential OHOTMU Deluxe vol 1: fat phrases",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=identifier%3Aofficialhandbook0001unse+AND+%28%22body+fat%22+OR+%22not+fat%22+OR+%22of+fat%22+OR+%22is+fat%22+OR+%22fatty%22%29"
+    },
+    {
+     "title": "Marvel Database (fan wiki) Wilson Fisk (Earth-616) wikitext via API",
+     "url": "https://marvel.fandom.com/api.php?action=parse&page=Wilson_Fisk_(Earth-616)&prop=wikitext&format=json&redirects=1"
+    }
+   ],
+   "notes": "Marvel.com: 'Most of Fisk's bulk is actually muscle, not fat; his enormous size is comparable to that of a sumo wrestler.' OHOTMU Deluxe (Essential vol 1), two overlapping OCR snippets: 'powers. His great bulk does not consist of fat but of muscles that have been developed to enormous size, as' and 'as in a sumo wrestler. The Kingpin can lift (press) approximately 650 pounds.' Fan wiki: 'Fisk is composed almost entirely of muscle that has been developed to enormous size, much like a sumo wrestler, and he possesses peak human strength with only the bare 9 pounds actually being fat.' That sentence carries no citation; the existing key kingpin records it as attributed to OHOTMU: Daredevil 2004. Full-text search for Kingpin with '9 pounds' found nothing, so status reported. Derived: 9 lb is 2.0% of 450 lb, below the 5.8-10.7% near-contest range for male bodybuilders in the existing key bauer2023_bodyfat_ranges_review. 'Most of the bulk is muscle' only bounds fat below about 50% (existing key kingpin). Relies on existing keys kingpin and bauer2023_bodyfat_ranges_review."
+  },
+  {
+   "key": "juggernaut_composition",
+   "label": "Juggernaut: mystical, not material; helmet and skullcap of 'unknown mystical metal'; no source says whether the listed weight includes them",
+   "status": "official",
+   "values": "{\"armor_or_helmet_mass_kg\": null, \"weight_includes_armor\": \"not stated\", \"listed_ohotmu_lb\": 900, \"listed_ohotmu_kg\": 408.2, \"density_factor\": null}",
+   "sources": [
+    {
+     "title": "Archive.org full-text search, Essential OHOTMU Deluxe vol 1: Juggernaut helmet, skullcap, Cyttorak",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=identifier%3Aofficialhandbook0001unse+AND+%28%22Juggernaut%27s+helmet%22+OR+%22Juggernaut%E2%80%99s+helmet%22+OR+%22Juggernaut%27s+armor%22+OR+%22Juggernaut%E2%80%99s+armor%22+OR+%22Juggernaut%27s+body%22+OR+%22Juggernaut%E2%80%99s+body%22+OR+%22skullcap%22+OR+%22Cyttorak%22%29"
+    },
+    {
+     "title": "Archive.org full-text search, Essential OHOTMU Deluxe vol 1: Juggernaut height/weight",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=identifier%3Aofficialhandbook0001unse+AND+%28%22Juggernaut+wears%22+OR+%22wears+armor%22+OR+%22his+armor%22+AND+%22Juggernaut%22+OR+%22%28with+armor%29%22+OR+%22without+armor%22+OR+%22Weight%3A+900%22%29"
+    },
+    {
+     "title": "Marvel.com Juggernaut (Cain Marko)",
+     "url": "https://www.marvel.com/characters/juggernaut-cain-marko"
+    },
+    {
+     "title": "DK Marvel Encyclopedia New Edition (2019), archive.org OCR text",
+     "url": "https://archive.org/download/marvel-encyclopedia-new-edition_202312/Marvel%20Encyclopedia%20New%20Edition_djvu.txt"
+    },
+    {
+     "title": "Marvel Database (fan wiki) Cain Marko (Earth-616) wikitext via API",
+     "url": "https://marvel.fandom.com/api.php?action=parse&page=Cain_Marko_(Earth-616)&prop=wikitext&format=json&redirects=1"
+    }
+   ],
+   "notes": "OHOTMU Deluxe (Essential vol 1), OCR snippets: 'the mystical energy of Cyttorak gives the Juggernaut an extraordinary de- gree of resistance to all forms of injury'; 'Without his helmet and skullcap, both con- structed of an unknown mystical metal'; 'constructed a skullcap from scraps of the metal he used to construct the helmet'; 'Height: 6 10 Weight: 900 lbs.' (OCR read 6' 10\" as '6° 10°'). The weight line also confirms that the 900 lb in the existing key juggernaut is a handbook value, not only DK's. DK 2019: 'Virtually invulnerable, with impenetrable force-field. His helmet'. Marvel.com's crowd-sourced page (9'5\", 1,900 lbs) says nothing about composition. No source says whether the listed weight includes the helmet or armour, and none gives a density. Fan wiki (reported): his current armour 'is actually stored inside of his body' (citing X-Men Unlimited Infinity Comic #18)."
+  },
+  {
+   "key": "bane_venom_weight",
+   "label": "Bane: Venom, a 'super-steroid', adds weight (350 lb, 425 lb with Venom); no composition given",
+   "status": "official",
+   "values": "{\"height_m\": 2.032, \"base_kg\": 158.8, \"with_venom_kg\": 192.8, \"venom_added_lb\": 75, \"venom_added_kg\": 34.0}",
+   "sources": [
+    {
+     "title": "DK DC Comics Encyclopedia New Edition (2021), archive.org OCR text",
+     "url": "https://archive.org/download/dc-comics-encyclopedia-new-edition/DC%20Comics%20Encyclopedia%2C%20New%20Edition_djvu.txt"
+    }
+   ],
+   "notes": "DK 2021 OCR: 'HEIGHT 6ft 8in WEIGHT 350 lbs (425 lbs with Venom)'; 'POWERS/ABILITIES Enhanced strength, weight, durability, and endurance due to use of a super-steroid called Venom'; 'The super-steroid Venom is fed into Bane's bloodstream via tubes. The Venom temporarily gives the villain superhuman strength, speed, and endurance.' Nothing says what the added 75 lb is made of. Relies on existing key bane."
+  },
+  {
+   "key": "dc_density_claims_fan_only",
+   "label": "DC (Superman, Batman, Darkseid, Doomsday, Bane): no official density or composition statements found; density claims are fan-wiki only",
+   "status": "reported",
+   "values": "{\"official_density_statements_found\": 0, \"dk_books_searched\": [\"DK DC Comics Encyclopedia New Edition 2021\", \"DK DC Comics Ultimate Character Guide New Edition 2019\"], \"fan_claims\": {\"superman\": \"dense cellular/molecular structure\", \"darkseid\": \"can manipulate his size, density and mass\", \"doomsday\": \"extremely dense muscles; bone protrusions\"}}",
+   "sources": [
+    {
+     "title": "DK DC Comics Encyclopedia New Edition (2021), archive.org OCR text",
+     "url": "https://archive.org/download/dc-comics-encyclopedia-new-edition/DC%20Comics%20Encyclopedia%2C%20New%20Edition_djvu.txt"
+    },
+    {
+     "title": "DK DC Comics Ultimate Character Guide New Edition (2019), archive.org OCR text",
+     "url": "https://archive.org/download/dc-comics-ultimate-character-guide-new-edition/DC%20Comics%20Ultimate%20Character%20Guide%2C%20New%20Edition_djvu.txt"
+    },
+    {
+     "title": "DC Database (fan wiki) Kal-El (New Earth) wikitext via API",
+     "url": "https://dc.fandom.com/api.php?action=parse&page=Kal-El_(New_Earth)&prop=wikitext&format=json&redirects=1"
+    },
+    {
+     "title": "DC Database (fan wiki) Kal-El (Prime Earth) wikitext via API",
+     "url": "https://dc.fandom.com/api.php?action=parse&page=Kal-El_(Prime_Earth)&prop=wikitext&format=json&redirects=1"
+    },
+    {
+     "title": "DC Database (fan wiki) Uxas (New Earth) wikitext via API",
+     "url": "https://dc.fandom.com/api.php?action=parse&page=Uxas_(New_Earth)&prop=wikitext&format=json&redirects=1"
+    },
+    {
+     "title": "DC Database (fan wiki) Doomsday (New Earth) wikitext via API",
+     "url": "https://dc.fandom.com/api.php?action=parse&page=Doomsday_(New_Earth)&prop=wikitext&format=json&redirects=1"
+    }
+   ],
+   "notes": "Grep of both DK DC OCR texts for dense/denser/density/'body fat' found hits only for other characters (Atom Smasher, Thunder, a cold villain's 'super-dense blocks of ice'). DK factfile powers: Superman 'Super-strength; super-speed; flight; invulnerability; numerous sense-based abilities; accelerated healing ... all fueled by exposure to solar energy from a yellow sun'. Darkseid: 'Formidable intellect, godlike strength and endurance; eyes fire target-seeking Omega Beams'. Doomsday: 'Overwhelming strength, regeneration, invulnerability, able to learn and adapt after its own death.' DC.com gives no stats (existing key dc_com_no_stats). Fan-wiki claims (reported, mostly uncited): Superman (New Earth) 'Superman's cellular structure is much more dense, resilient and biologically more effective than human tissue'; Prime Earth 'Due to the interaction of his dense molecular structure and supercharged bio-electric aura'. Darkseid (New Earth): 'Darkseid can easily manipulate his size, density and mass just by thinking'. Doomsday (New Earth): 'Due to his extremely dense muscles and strength in his legs, Doomsday can leaps miles at a time' and 'Doomsday possesses extremely sharp bone protrusions'. DC's own Who's Who (1985-87, 1990-92) was not found on archive.org."
+  },
+  {
+   "key": "peak_human_characters_composition",
+   "label": "Captain America, Black Panther, Batman: described as peak human; the only density claim (Black Panther) is fan-wiki-reported",
+   "status": "reported",
+   "values": "{\"official_density_statements_found\": 0, \"fan_claim_black_panther\": \"skin, muscle, and bone tissues much denser and harder than normal humans (no factor)\"}",
+   "sources": [
+    {
+     "title": "Marvel.com Captain America (Steve Rogers) In Comics",
+     "url": "https://www.marvel.com/characters/captain-america-steve-rogers/in-comics"
+    },
+    {
+     "title": "Marvel.com Black Panther (T'Challa) In Comics",
+     "url": "https://www.marvel.com/characters/black-panther-t-challa/in-comics"
+    },
+    {
+     "title": "Marvel Database (fan wiki) T'Challa (Earth-616) wikitext via API",
+     "url": "https://marvel.fandom.com/api.php?action=parse&page=T%27Challa_(Earth-616)&prop=wikitext&format=json&redirects=1"
+    },
+    {
+     "title": "DK DC Comics Encyclopedia New Edition (2021), archive.org OCR text",
+     "url": "https://archive.org/download/dc-comics-encyclopedia-new-edition/DC%20Comics%20Encyclopedia%2C%20New%20Edition_djvu.txt"
+    }
+   ],
+   "notes": "Marvel.com, Captain America: 'Professor Abraham Erskine ... whisked him into Project Rebirth, the professor's bold experiment in enhancing the human body to its peak powers' and 'Now muscular and tall ... the former ninety-eight-pound weakling'. Marvel.com, Black Panther: no composition statement (weight 200 lbs). DK 2019: no density statement for either; the DK density grep hit only Arkon, Atalanta, Luke Cage, the Asgardians, Enchantress and Penance. Fan wiki, Black Panther (reported, not verified): 'T'Challa's skin, muscle, and bone tissues are augmented to levels that are much denser and harder than normal humans', citing OHOTMU Master Edition #9, which I could not see; no factor given. Batman: DK lists no powers implying non-human tissue. Weights come from the existing keys captain_america (disputed, 220-240 lb), black_panther and batman."
+  },
+  {
+   "key": "comic_body_fat_official",
+   "label": "Body fat of comic characters: no Marvel or DC source gives a percentage; official statements are qualitative only",
+   "status": "official",
+   "values": "{\"official_bodyfat_percent_found\": null, \"qualitative_statements\": {\"kingpin\": \"bulk does not consist of fat (OHOTMU); most bulk is muscle, not fat (Marvel.com)\", \"angel_warren_worthington\": \"body is virtually devoid of fat (OHOTMU), not on the chart\"}, \"fan_only_figure\": \"Kingpin 9 lb fat (about 2.0% of 450 lb, derived)\"}",
+   "sources": [
+    {
+     "title": "Archive.org full-text search: 'body is virtually devoid of fat'",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=%22body+is+virtually+devoid+of+fat%22"
+    },
+    {
+     "title": "Archive.org full-text search, Essential OHOTMU Deluxe vol 1: fat phrases",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=identifier%3Aofficialhandbook0001unse+AND+%28%22body+fat%22+OR+%22not+fat%22+OR+%22of+fat%22+OR+%22is+fat%22+OR+%22fatty%22%29"
+    },
+    {
+     "title": "DK Marvel Encyclopedia New Edition (2019), archive.org OCR text",
+     "url": "https://archive.org/download/marvel-encyclopedia-new-edition_202312/Marvel%20Encyclopedia%20New%20Edition_djvu.txt"
+    },
+    {
+     "title": "DK DC Comics Encyclopedia New Edition (2021), archive.org OCR text",
+     "url": "https://archive.org/download/dc-comics-encyclopedia-new-edition/DC%20Comics%20Encyclopedia%2C%20New%20Edition_djvu.txt"
+    },
+    {
+     "title": "Marvel.com Kingpin (Wilson Fisk) In Comics",
+     "url": "https://www.marvel.com/characters/kingpin/in-comics"
+    }
+   ],
+   "notes": "Searched for 'body fat', '% fat', 'fat' and 'percent' in: DK Marvel 2019, DK DC 2021 and DK DC guide 2019 OCR texts; the 11 Marvel.com character pages fetched on 2026-10-11; and the Essential OHOTMU Deluxe vol 1 (2006) via full-text search. No percentage anywhere. Qualitative hits in OHOTMU Deluxe vol 1: Kingpin, 'His great bulk does not consist of fat but of muscles'; Angel, 'are hollow like those of a bird; his body is virtually devoid of fat; he possesses greater proportionate muscle mass' (the bird-bones wording identifies Angel; the snippet does not name him); a winged horse, 'normal horse of his size would. His body is virtually devoid of fat'; and the Blob, 'imbed themselves in his layers of fat tissue'. Of the chart's characters, only the Kingpin has an official fat statement. 'None found' covers only the sources listed; the 2004-2010 handbooks were not searchable."
+  },
+  {
+   "key": "comic_score_treatment",
+   "label": "Recommended treatment of each comic character's muscle score (comparable, overstated, or not comparable)",
+   "status": "estimate",
+   "values": "{\"thor\": {\"class\": \"overstated\", \"factor\": 3, \"basis\": \"official OHOTMU and DK density statements\", \"plot_mass_kg\": 96.8}, \"asgardians_general\": {\"class\": \"overstated\", \"factor\": 3}, \"thing\": {\"class\": \"overstated\", \"factor\": null, \"basis\": \"rock-like hide, no mass split\"}, \"colossus_armored\": {\"class\": \"not_comparable\", \"basis\": \"body converted to steel-like substance; extra mass from unknown source\"}, \"colossus_human\": {\"class\": \"comparable\"}, \"wolverine\": {\"class\": \"comparable_after_subtraction\", \"subtract_kg\": 47.6, \"plot_mass_kg\": 88.5, \"factor_if_300lb\": 1.54}, \"hulk_savage\": {\"class\": \"comparable\", \"caveat\": \"fortified cellular structure, no factor\"}, \"hulk_grey\": {\"class\": \"comparable\", \"caveat\": \"stats fan-only\"}, \"hulk_merged\": {\"class\": \"comparable\"}, \"juggernaut\": {\"class\": \"comparable_with_caveat\", \"caveat\": \"weight may include helmet/armour; mystical\"}, \"darkseid\": {\"class\": \"comparable_by_default\", \"caveat\": \"no official composition information\"}, \"doomsday\": {\"class\": \"comparable_by_default\", \"caveat\": \"bone protrusions; fan claims of dense muscle; official stats disputed\"}, \"abomination\": {\"class\": \"comparable\"}, \"luke_cage\": {\"class\": \"overstated\", \"factor\": null, \"basis\": \"official dense muscle and bone tissue\"}, \"kingpin\": {\"class\": \"comparable\", \"fat_note\": \"official: bulk not fat; 9 lb fan-only\"}, \"bane\": {\"class\": \"comparable\"}, \"superman\": {\"class\": \"comparable\"}, \"black_panther\": {\"class\": \"comparable\"}, \"captain_america\": {\"class\": \"comparable\"}, \"batman\": {\"class\": \"comparable\"}}",
+   "sources": [
+    {
+     "title": "Marvel.com Thor (Thor Odinson) In Comics",
+     "url": "https://www.marvel.com/characters/thor-thor-odinson/in-comics"
+    },
+    {
+     "title": "Marvel.com Wolverine (Logan/James Howlett) In Comics",
+     "url": "https://www.marvel.com/characters/wolverine-james-howlett/in-comics"
+    },
+    {
+     "title": "Marvel.com Colossus (Piotr Rasputin)",
+     "url": "https://www.marvel.com/characters/colossus-piotr-rasputin"
+    },
+    {
+     "title": "Archive.org full-text search, Essential OHOTMU Deluxe vol 1: 'denser than similar human tissue'",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=identifier%3Aofficialhandbook0001unse+AND+%28%22denser+than+similar+human+tissue%22+OR+%22superhuman+weight%22+OR+%22superhuman+strength+and+weight%22%29"
+    }
+   ],
+   "notes": "These are my recommendations, built on the facts above; they are not official.\n- Comparable means the listed mass is described as ordinary tissue, or nothing official says otherwise.\n- Overstated means official text says part of the mass is not ordinary tissue, or the tissue is denser, so the score built from listed mass is too high. A factor is given only where a source gives a figure.\n- Not comparable means the body is not tissue at all.\nBy character:\n- Thor and Asgardians: divide by about 3.\n- Wolverine: subtract the official 105 lb.\n- Colossus, armoured: steel-like body.\n- The Thing and Luke Cage: overstated by an unknown amount.\n- Hulk and Abomination: the handbook calls the added mass bone marrow and (muscle) tissue.\n- Juggernaut: no source says whether the 900 lb includes his helmet and armour.\n- Darkseid and Doomsday: comparable only because nothing official says otherwise.\n- Superman, Batman, Captain America and Black Panther: human-plausible, and no official density statement exists."
+  }
+ ],
+ "recommendations": "1. Thor and any Asgardian: mark overstated. Plot the main marker at the human-tissue-equivalent mass, 290.3/3 = 96.8 kg (213 lb). That gives S about 20-22 and plain FFMI about 22-25 at 0-10% fat. Show the as-listed point (S about 57-67) as a faint ghost, joined by a line. Label: \"Official handbooks: Asgardian flesh and bone is about three times as dense as human tissue\". Note that DK's wording names only skin and bones, which would mean a smaller correction. Say \"about\": the factor is a round handbook number.\n\n2. Wolverine: score him at 195 lb (88.5 kg): S about 33-39, FFMI about 29-35 at 0-15% fat. Note that Marvel.com says adamantium \"adds an extra 105 pounds\" (47.6 kg). The 300 lb figure would overstate his score 1.54 times.\n\n3. Colossus: chart his human form (6 ft 6 in, 250 lb; S about 24 at 10% fat) as comparable. Show the armoured form as not comparable: greyed or off-scale, with no score. Officially his body becomes a steel-like substance \"analogous to osmium and to carbon steel\", and its extra mass comes \"from an unknown, perhaps extradimensional source\". The stated 500 lb also cannot be steel at that size (existing key colossus_density_check).\n\n4. The Thing and Luke Cage: plot their listed values with an \"overstated, amount unknown\" mark, such as a hatched or open marker with an arrow pointing down. The Thing's official hide is rock-like. Cage's official tissue is \"very dense muscle and bone\". Do not invent a correction.\n\n5. Hulk (savage, grey, merged) and Abomination: comparable. The official handbook says the added mass is \"bone marrow and tissue\" (Hulk) or \"bone marrow and muscle tissue\" (Abomination). Caveat: \"fortified cellular structure\", with no density factor given. Keep the grey Hulk's stats labelled fan-reported, as builds.json already does.\n\n6. Juggernaut: comparable, with a caveat note: mystical; his helmet and armour may be in the 900 lb, but no source says so.\n\n7. Darkseid and Doomsday: comparable by default, labelled \"no official information on what the mass is made of\". Fan-wiki density claims are shown only as reported.\n\n8. Kingpin: comparable. Quote the official \"bulk does not consist of fat\". Show the fat range down to about 2% (the fan-wiki-only 9 lb), labelled reported, and note that this is below lean contest bodybuilders. Bane, Superman, Black Panther, Captain America and Batman: comparable, using the existing weights; Bane at 350 lb, with 425 lb (Venom) as a variant.\n\n9. On the page, say plainly that no Marvel or DC source gives any character's body-fat percentage. All comic scores therefore use assumed fat and are estimates.\n\n10. In each comic tooltip, give the official composition quote and its status (official or reported), with its source, so readers can see why a point was moved or flagged.",
+ "gaps": "1. Partial handbook text only. The OHOTMU volumes on archive.org are lending-library scans. I could read only the full-text search snippets (about 100 OCR characters each), and the search-inside page (inside.php) returned 403. So:\n   - issue numbers and pages are unconfirmed (for example, the Asgardians group entry is probably Deluxe #1);\n   - some sentences are joined from overlapping snippets, and their opening words are missing in places (Colossus's \"The means by which\").\n\n2. Entries I could not see at all:\n   - the OHOTMU Thing, Wolverine, Luke Cage and individual Thor entries;\n   - OHOTMU: Daredevil 2004 (the source of the fan-wiki Kingpin \"9 pounds of fat\");\n   - OHOTMU Master Edition #9 (the fan-wiki Black Panther \"denser tissue\");\n   - Thor & Hercules: Encyclopaedia Mythologica 2009;\n   - the OHOTMU A to Z (2008-10) volumes for these characters.\n\n3. Numbers no source gives:\n   - Wolverine's adamantium mass appears only on Marvel.com (105 lb / 47.6 kg); no handbook figure turned up, and \"nearly 100 pounds\" is fan-wiki text;\n   - no source states a tissue density in kg/m3, the Thing's hide mass, the mass of Juggernaut's helmet or armour, or the mass of Doomsday's bone spurs.\n\n4. DC sources: DC's own Who's Who (1985-87, 1990-92) was not found. DC coverage rests on two DK books plus fan wikis.\n\n5. Marvel.com access: WebFetch returned 403 for Marvel.com. The pages were fetched with curl and a browser user agent on 2026-10-11 (raw copies in scratchpad/research/comic-composition/raw/).\n\n6. Not used as sources: archive.org also holds unauthorised digital comic uploads (for example the Marvel Masterworks Thor digital upload and the \"Kileko-Empire\" collections) that repeat the handbook wording; I deliberately did not cite them.\n\n7. Unresolved Thor ambiguity: OHOTMU says \"flesh and bone\" (whole body) and DK says \"skin and bones\". If only skin and bone are denser, the correction is smaller. That case was not computed, because it needs tissue mass fractions that were outside this topic.\n\n8. Existing keys relied on, not re-researched (heights, weights and existing notes): thor, wolverine, colossus, colossus_density_check, kingpin, bane, juggernaut, hulk_savage, hulk_grey_joe_fixit, hulk_merged_marvelcom, abomination, luke_cage, captain_america, black_panther, batman, superman, darkseid, doomsday, dc_com_no_stats, plausibility_metrics, bauer2023_bodyfat_ranges_review."
+}

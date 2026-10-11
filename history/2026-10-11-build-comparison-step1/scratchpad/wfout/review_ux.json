@@ -1,0 +1,175 @@
+{
+ "findings": [
+  {
+   "id": "L1",
+   "severity": "major",
+   "title": "Focus ring on all six segmented buttons is clipped to a 2 px sliver by the container's overflow:hidden",
+   "location": "build-comparison/src/app.html:55 (:focus-visible outline 2px, offset 2px) and :113 (.seg { ... overflow: hidden }); affects #hSame #hReal #vFront #vSide #zAll #zHum",
+   "evidence": "Keyboard Tab to each button at 390 px, light and dark. The script segfocus.js confirms :focus-visible matches and the outline is solid 2px, but .seg has overflow:hidden. Only the part of the ring that falls inside the neighbouring button survives: a single vertical 2 px line at the seam between the two buttons, which looks like the divider. When 'Real heights' has focus, the line sits inside the pressed 'Same height' button. Screenshots: scratchpad/review1/r-segfocus-combined.png and r-segfocus-{light,dark}-{hSame,hReal,vFront}.png.",
+   "expected": "WCAG 2.4.7: the focused control must have a visible focus indicator. These are the page's main controls (Figures, View, Scale), so a keyboard user cannot tell which one is focused.",
+   "fix": "Draw the ring inside the button: `.seg button:focus-visible { outline-offset: -3px; }`. Or remove overflow:hidden from .seg and round the first and last buttons instead."
+  },
+  {
+   "id": "L2",
+   "severity": "major",
+   "title": "From 720 to about 819 px wide, every open drawer's girth table runs past the drawer and the page scrolls sideways",
+   "location": "build-comparison/src/app.html:189 (.drawer becomes 280px | 1fr at min-width 720), :198 (.facts > div 150px | 1fr), :63 (.chip white-space:nowrap), :207 (.gt td.num nowrap)",
+   "evidence": "drawer768.js opens all 49 drawers. With the task skeleton: at 720 px, 49/49 drawers cause horizontal page scroll (the table overflows the drawer by up to 82 px); at 768 px, 47/49 (scrollWidth 778 > 768). With a host-like skeleton (body margin 0): 49/49 at 720 px and 29/49 at 768 px (up to 18 px). At 820 px and above, 0/49. In the screenshot, the MEASURED chips stick out past the drawer border to the viewport edge: scratchpad/review1/l-drawer-768-host.png and l-drawer-768-task.png. test/shots.js opens drawers only at 390 px, so it never sees this, even though the README says it fails on sideways scroll.",
+   "expected": "No horizontal page scroll at tablet portrait widths (768 px is the iPad mini and iPad portrait width). This is the same no-sideways-scroll rule shots.js enforces at 390 and 1280 px.",
+   "fix": "Keep the drawer stacked below 900 px: change `@media (min-width: 720px) { .drawer {...} }` to min-width 900px. Or stack `.facts > div` to one column below 960 px. Also add a 768 px drawer sweep to test/shots.js."
+  },
+  {
+   "id": "L3",
+   "severity": "major",
+   "title": "Lineup cells' accessible names drop the visible warnings (not comparable, may be overstated, composition unknown, beyond human data)",
+   "location": "build-comparison/src/app.html:827 (figureCell aria-label) and :1251 (forest row aria-label omits 'beyond human data')",
+   "evidence": "aria.js reads each cell's name and Playwright's accessibility snapshot. Colossus (armoured): the name is 'Colossus (armoured), score 28\u201333, estimate. Open details', but the visible chips say 'not comparable' and the flag says 'Steel body, not muscle'. Thor: the name has no 'may be overstated' or 'beyond human data', both of which are shown as chips. Same for the Thing ('composition unknown'), Luke Cage, Rex and Darkseid ('beyond human data'). The a11y tree exposes only {role:button, name:<aria-label>}, because a button's children are presentational. The forest rows add the comparability word but never 'beyond human data'.",
+   "expected": "The owner's standard is honest labelling first. A screen-reader user should hear the same warnings a sighted reader sees on the plate.",
+   "fix": "Build the label from flagsOf(e): `e.short + ', score ' + scr(...) + ', ' + st + fl.chips text + (e.setting.flag ? ': ' + e.setting.flag : '') + '. Open details'`. Add 'beyond human data' to the forest row label when beyond(e) is true."
+  },
+  {
+   "id": "L4",
+   "severity": "minor",
+   "title": "Close-up forest axis: 'Kouri 25' and '\u2190 real men end here' print on top of each other",
+   "location": "build-comparison/src/app.html:1218-1221 (renderForest end/Kouri label placement)",
+   "evidence": "With 'Close-up, 12 to 45' selected, fpbg.js reports overlaps of 40 px at 360 px, 29 px at 390 px and 41 px at 768 px. The two labels render as 'Kour\u2190ireal5 men end here': scratchpad/review1/t-closeup-axis-360.png and s-closeup-360.png. Cause: when the left-anchored 'no real man past here \u2192' doesn't fit, the code switches to a right-anchored label that extends left from endPx\u22124. The Kouri check still tests `kPx + 30 < endPx - 4`, which is the edge of the label that was not drawn.",
+   "expected": "Axis labels that don't overlap. Both are reference marks the reader needs.",
+   "fix": "Compute the left edge of the label actually drawn: `var endL = fits ? endPx + 4 : endPx - 4 - altMsg.length * 6.8;`. Show Kouri only if `kPx + 30 < endL` or `kPx - 30 > (fits ? endPx + 4 + msgW : endPx - 4)`. Otherwise drop it or move it to a second line."
+  },
+  {
+   "id": "L5",
+   "severity": "minor",
+   "title": "On phones, a background rule runs through every forest value (blue 924 line, or the red real-men line in close-up)",
+   "location": "build-comparison/src/app.html:269 (.fp-bg { left:0; right:0 } at max-width 719px) with :1228-1230 (rule lines in fp-bg)",
+   "evidence": "fpbg.js measures where the background rules fall against the .vl value cells. At 360 and 390 px on the whole scale, the 924 line crosses 59 of the 62 value cells. In close-up, the red 'no real man past here' line crosses 59 of them (plus 2 for the Kouri line). The line falls between or through the digits ('13\u201317', '19\u201322'), which reads like a strike-through: scratchpad/review1/t-closeup-axis-360.png and g-axis-edge-390.png. There are none at 768 or 1280 px.",
+   "expected": "Values readable without a rule drawn through them.",
+   "fix": "Below 720 px, give the value cell its own ground: `.fp-row .vl { position: relative; z-index: 1; background: var(--sheet); padding-left: 4px; }`. Or limit the .fp-bg lines to the track line."
+  },
+  {
+   "id": "L6",
+   "severity": "minor",
+   "title": "The Thing's plate (and Superman's) is clipped by the next cell on 375\u2013390 px phones",
+   "location": "build-comparison/src/app.html:153 (.plate grid with an implicit auto column) and :165 (.plate .chip white-space:normal, but long words can't break)",
+   "evidence": "plates.js measures plate content against its cell. At 390 px with a host-like skeleton (cells 89.5 px wide), the Thing's plate content extends 5.4 px past the cell and Thor's cell paints over it. At 375 px and with the task skeleton (85.5 px cells), the Thing overflows by 9.4 px and Superman by 2 px, under the Mr America cell. The word 'COMPOSITION' in the chip (11 characters at 11 px mono with .06em spacing, about 80 px, plus 11 px of padding and border) is wider than the 79.5 px plate. It widens the plate's grid column, so every line in the plate is laid out too wide and then cut off. Visible: 'COMPOSITION' loses its right edge, '59 at 12% fa', 'Rock-like skin o', 'unstated weigh': scratchpad/review1/h-thing-host.png and e-thor-row-light.png.",
+   "expected": "Plate text and warning chips shown whole. 'Composition unknown' is the warning itself.",
+   "fix": "`.plate { grid-template-columns: minmax(0, 1fr); } .plate .chip { overflow-wrap: anywhere; }`. Or shorten the chip text on phones."
+  },
+  {
+   "id": "L7",
+   "severity": "minor",
+   "title": "Glance cluster label says 'Every real man / Real men 19\u201345', but the page says no real man scores above 42",
+   "location": "build-comparison/src/app.html:1154-1157 (drawGlance: firstGap = GAPS[0].from, used as the real men's top)",
+   "evidence": "vals.js: the cluster reads 'Every real man 19\u201345' (desktop) and 'Real men 19\u201345' (phone). HUMAN_TOP is 41.5, the rule reads 'No real man on this chart scores above 42', and the first gap's verdict says 'no real man on this chart scores above 42'. The 45 is GAPS[0].from = 44.56: the top of Kingpin's range, and Kingpin is a comic character. The design spec gives this cluster as 13\u201342 (research/reviews/design.md, Glance tape table). First-screen screenshot: scratchpad/review1/m-390-light.png.",
+   "expected": "The real-men cluster should end at the highest real man, 42, the same number as the rule and the gap verdict.",
+   "fix": "`cl = [{ ..., range: sc(lowest) + '\u2013' + sc(HUMAN_TOP), a: lowest, b: HUMAN_TOP }]`."
+  },
+  {
+   "id": "L8",
+   "severity": "minor",
+   "title": "Tapping the 924 ring (or anywhere to its right) on either tape jumps to 'Empty to the end', never to the meatball",
+   "location": "build-comparison/src/app.html:1182-1186 (stopAt: ties go to the first stop because of the strict '<')",
+   "evidence": "tapejump.js taps the glance tape and the locator at scores 924 and 990, at 390 px (touch) and 1280 px (mouse). Every tap lands on #empty-3, the 'Score 220 to 924' stop, with the locator reading 'now: empty 220 to 924'. The gap (lo 216, hi 924.1) and the meatball (924.1\u2013924.1) both have distance 0 at 924, or the same distance above it, and `d < best.d` keeps the first. The cluster button 'End of scale 924' does reach #meatball (clusters.js).",
+   "expected": "The glance caption says 'Tap a stretch to jump to it'. The ring marks the meatball, so tapping it should go to the meatball stop.",
+   "fix": "In stopAt, use `d <= best.d`, so the later point stop wins ties. Or return the meat stop when `score >= MEAT / 1.05`."
+  },
+  {
+   "id": "L9",
+   "severity": "minor",
+   "title": "The hidden drawer renders as an empty bordered box at the bottom of the page unless the host injects a [hidden] rule",
+   "location": "build-comparison/src/app.html:188 (.drawer { display: grid } overrides the UA's [hidden]{display:none}) and :533; masked by test/shots.js:29 (its skeleton adds [hidden]{display:none!important})",
+   "evidence": "With the skeleton this review was told to use (no [hidden] rule), matrix.js reports at every width and theme: drawer hidden=true, computed display 'grid', a 36 px tall box (44 px at 720 px and up) after the footer. The screenshot shows an empty sheet-coloured box with a 3 px chalk-blue top border below the colophon: scratchpad/review1/f-bottom-light.png. renderStops and placeDrawer always move the drawer to the end of the body while it is closed.",
+   "expected": "A closed drawer takes no space and shows nothing, whatever CSS the host adds.",
+   "fix": "Add `[hidden] { display: none !important; }` (or `.drawer[hidden] { display: none; }`) to the page CSS. Drop the rule from shots.js's skeleton so the test sees the page as it is."
+  },
+  {
+   "id": "L10",
+   "severity": "minor",
+   "title": "Several data marks are below 3:1 against their backgrounds (group fills, forest bars, tape ticks, limit-card figures)",
+   "location": "build-comparison/src/app.html:18 and :32/:44 (group tokens), :19/:33 (--g-geom), :1246 (forest bars, no outline), :1127 (tape ticks), :1291 (.geo limit figures, no outline)",
+   "evidence": "contrast.js computes WCAG ratios from the tokens. Light: --g-natural #CFA23A is 1.73:1 on --wall (figure head, hands and feet have no edge, as the key says), 2.02:1 as tape ticks on --paper and 2.23:1 as forest bars on --sheet. --g-every is 2.70:1 on --wall. --g-geom #A4A7B3 is 1.75:1 on --wall, and the limit-card figures are fill only with no outline except the blue 'hot' part (scratchpad/review1/e-limits-light.png). Dark: --g-strong #7A4536 is 1.91:1 on --wall, 2.37:1 as ticks on --paper and 2.19:1 as forest bars on --sheet (scratchpad/review1/o-forest-dark.png, o-figs-combined.png). Dark --g-geom is 2.99:1. Text tokens all pass: the lowest is --ink-3 on --wall at 4.46, used only for the 22 px bold gap label, which counts as large text.",
+   "expected": "WCAG 1.4.11: graphical objects needed to read the chart need 3:1 against adjacent colours. Here the forest bars are the only mark of each range, and the limit figures are the content of that section.",
+   "fix": "Give forest bars and tape ticks a 1 px --ink-3 edge, and the .geo limit figures an --ink-3 outline. Or recolour: light --g-natural about #97720F (3.2:1 on wall, 4.2:1 on sheet), light --g-every about #6B7387 (3.5:1), dark --g-strong about #B06A52 (3.5:1 on wall). Then recheck the pairs between groups."
+  },
+  {
+   "id": "L11",
+   "severity": "minor",
+   "title": "Forest axis '1,000' label hangs half off the tape and crosses the card border on phones",
+   "location": "build-comparison/src/app.html:1216 (tp b labels always centred with translateX(-50%)) and :237",
+   "evidence": "axisedge.js: the '1,000' label spans 336.5\u2013369.5 px against an axis track ending at 353 px and a forest card whose right border is at 366 px (390 px viewport). At 360 px it spans 306.5\u2013339.5 against a border at 336. Half the label sits on the card's padding and its last digit crosses the border: scratchpad/review1/g-axis-edge-390.png. The glance and locator tapes already anchor end labels inside the tape (line 1138); the forest axis doesn't.",
+   "expected": "End labels kept inside the tape, as on the other two tapes.",
+   "fix": "In renderForest, use translateX(-100%) for a label at P \u2265 100 \u2212 its width share, and translateX(0) at P = 0, as drawTape does."
+  },
+  {
+   "id": "L12",
+   "severity": "minor",
+   "title": "Closing a drawer opened from the forest plot returns focus to the lineup cell, about 7,500 px from where the reader was",
+   "location": "build-comparison/src/app.html:994-1007 (openDrawer/closeDrawer remember no opener) and :1272",
+   "evidence": "keyboard.js at 390\u00d7844: focus the forest row 'Eddie Hall' at scrollY 12,268 and press Enter. The page jumps to scrollY 5,992 and focus moves to the drawer heading. Press Escape: focus lands on the Eddie Hall figure in the lineup, scrollY 4,698. The forest row is never focused again, so a keyboard user has to tab back through about 60 controls.",
+   "expected": "Disclosure or dialog practice: on close, focus goes back to the control that opened the drawer.",
+   "fix": "Store the opener in openDrawer (`state.opener = document.activeElement`). In closeDrawer, focus `state.opener` if it is still in the DOM, otherwise the cell."
+  },
+  {
+   "id": "L13",
+   "severity": "minor",
+   "title": "A focused figure cell's focus ring is painted over on its right side by the next cell",
+   "location": "build-comparison/src/app.html:146 (.figs column-gap: 0) with :55 (outline-offset 2px) and :149 (.fig)",
+   "evidence": "Tab, then Shift+Tab, onto the second cell of a row at 390 px. The outline shows on the left, top and bottom, but the right side, which lies inside the neighbour's area, is covered by the neighbour's background and SVG: scratchpad/review1/k-fig-focus-390.png.",
+   "expected": "A complete focus indicator on the 49 main interactive cells.",
+   "fix": "`.fig:focus-visible { outline-offset: -3px; }` or `.fig:focus-visible { position: relative; z-index: 1; }`."
+  },
+  {
+   "id": "L14",
+   "severity": "minor",
+   "title": "Phone first screen: no figure, the first silhouette is 1.7 screens down and Rex 10.4 screens; this contradicts the design spec",
+   "location": "build-comparison/src/app.html:384-423 (masthead, controls and lineup intro before the first stop); research/reviews/design.md 'Phone (390)' section",
+   "evidence": "firstscreen.js with a host-like skeleton, 390\u00d7844: lede 119\u2013291, spec line 305\u2013357, glance 372, jump row 554, controls 629, lineup heading 740, locator 980, first stop tag 1,084, first figure 1,410 (1.7 screens), Rex's figure 8,768 (10.4 screens), page 24,662 px. At 360\u00d7740: first figure 1,542 (2.1 screens), Rex 9,999 (13.5 screens). The spec says 'The first frame (844 px) reaches the stop 1 tag and verdict, and the tops of the first figures sit near 780\u2013840 px' and estimates the phone page at 17,000\u201318,000 px. Judgement for a reader with ADHD: the first screen does say what the page is and gives Rex's and Ollie's numbers as links (good). But it is all text: a 7-line lede with 5 numbers and 2 chips, a 3-line mono formula that repeats the lede, and a 4-line caption, with no figure at all. The obvious first tap is '160' or 'Rex, Ollie'. Screenshots: scratchpad/review1/p-first-screen-390.png, m-390-light.png, crop-390-second-screen.png.",
+   "expected": "What the spec promises: the start of the lineup within the first phone screen, or a figure there as the hook.",
+   "fix": "Below 720 px, hide #spec (it repeats the lede and the score card). Move the Figures and View controls below the first stop, or into the locator line. Fold the lineup .sub and edge strip into the key. Or add a strip of three figures (median soldier, Coleman, Rex) under the lede."
+  },
+  {
+   "id": "L15",
+   "severity": "minor",
+   "title": "Example picker: ArrowDown opens a file dialog; after cancelling, the select says 'Choose a sheet\u2026' over the still-loaded soldier results and can't reopen",
+   "location": "build-comparison/src/app.html:475-476 and :1538-1541 (a change on the select clicks the hidden file input)",
+   "evidence": "picker.js: focusing #tExample and pressing ArrowDown (a keyboard user browsing the options) fires change, so a file chooser opens at once. With the dialog dismissed, the select value is 'file', but #sheetName still reads '1566 \u00d7 812 px' and the soldier results stay on screen. Picking the already-selected option fires no change event in a real browser, so the dialog can only be reopened by selecting the soldier first, which re-measures. (Playwright's selectOption always fires change, so it can't show the last step.)",
+   "expected": "The control shows which sheet is loaded and can always open the file dialog.",
+   "fix": "Use a separate 'Choose a sheet\u2026' button, or a <label for=file> styled as a button, next to the select. Or reset the select to 'soldier' when no file was loaded (the input's 'cancel' event, or on window focus)."
+  },
+  {
+   "id": "L16",
+   "severity": "minor",
+   "title": "The gap tiles draw the hands-to-face band as a closed box at the stretch ends, though the band runs past them",
+   "location": "build-comparison/src/app.html:918-922 (drawGapTiles: rect stroked on all four sides after clamping to the stretch)",
+   "evidence": "In the 88-to-130 tile, the 86\u2013230 band is drawn as a rectangle with chalk borders exactly at 88 and 130. In the 220-to-924 tile its left border sits at 220. The verdict text says 'across this stretch and beyond' and 'reaching into the bottom of this stretch': scratchpad/review1/e-gap-empty-2-light.png and e-gap-empty-3-dark.png. The forest plot marks the same kind of clipping with a chevron.",
+   "expected": "A band that continues past a tile edge should not show a closed edge there.",
+   "fix": "Stroke only the sides that are real ends (L.range[0] \u2265 g.from, or L.range[1] \u2264 top), or add an open-ended arrow like the forest's chevron."
+  },
+  {
+   "id": "L17",
+   "severity": "minor",
+   "title": "README counts disagree with the page and the tests (113 facts, 23 checks)",
+   "location": "build-comparison/README.md:25 and :52",
+   "evidence": "README: 'The page's Sources section lists the 113 research facts' and 'node test/test.js \u2026 (23 checks)'. The built page lists 133 facts (srcs.js: topic counts 16+33+25+18+19+20+1+1; build.js prints '133 facts'), and test/test.js prints '24 passed, 0 failed'.",
+   "expected": "Project documentation that matches what is built.",
+   "fix": "Change the numbers to 133 and 24, or remove the counts."
+  }
+ ],
+ "verified_ok": [
+  "Build and tests: node build.js leaves dist/index.html unchanged (git clean). node test/test.js: 24 passed. node test/shots.js: exit 0, no problems reported (with its own skeleton).",
+  "No horizontal page scroll with the drawer closed at 360x740, 390x844, 768x1024 and 1280x900, in light, dark, data-theme=dark (OS light) and data-theme=light (OS dark): scrollWidth equals innerWidth in all 16 cases (matrix.js).",
+  "No visible text under 11 CSS px at any of the four widths, both themes; chips, tape labels, cluster buttons and plate lines are 11 px or larger.",
+  "Text-token contrast passes 4.5:1 in both themes (ink-2 and ink-3 on paper, sheet and floor; chalk on wall, paper, sheet and the chalk band; alarm on wall, floor, sheet, alarm-bg and paper; tape-ink on tape; chip.fail; pressed buttons). The one lower pair, ink-3 on wall at 4.46:1, is used only for the 22 px bold gap label, which counts as large text.",
+  "Theme switching: prefers-color-scheme dark, data-theme=dark under OS light, and data-theme=light under OS dark all apply the right token set (body, wall and hatch-pattern fills checked), and color-scheme is set to dark where it should be.",
+  "No overlaps among the glance tape labels, locator tape labels or cluster buttons, and none of them leaves its host, at all four widths. No overlaps among gap-tile posts, marks, end labels and the 'No builds here' label at 360, 390, 768 and 1280 px.",
+  "No figure SVG is clipped by its viewBox in any mode (same or real heights, front or side), including Rex's crest and Ollie's horns.",
+  "Every drawer at 360 px stays inside its box, with no sideways scroll. Tool tables (score card, fat card, results) fit their wrappers at 360 and 768 px. The tool viewer's gutter labels don't overlap at any width.",
+  "Drawer focus: Enter on a cell opens the drawer and focuses #drawerH; Escape closes it and returns focus to the cell. After every one of the 49 opens at 390x844, 1280x900 and 1280x720, the Close button is on screen and not under the sticky locator (checked with elementFromPoint).",
+  "Sticky locator: 56 px tall against a 60 px scroll-padding-top, so stops reached by jumps land at top=60, just below it. The forest's sticky axis (55 px) does not overlap the locator.",
+  "Keyboard reach: every interactive element except the two tapes is reachable in order (lede links, cluster buttons, jump links, controls, the Full key link, 49 figure cells, 'How this is worked out', key summary, zoom buttons, forest row buttons, tool fields). The tapes are click-only, as designed, and the jump row and cluster buttons are the keyboard route. Shift+Tab through the lineup never leaves focus under the locator.",
+  "Tapping either tape at scores 14, 30, 40, 43, 50, 60, 70, 100, 150, 300 and 600 lands on the right stop, and the locator reads that stop (390 px with touch, 1280 px with mouse). Each cluster button jumps to its stop (under25, giants, rex-and-ollie, meatball).",
+  "With localStorage throwing SecurityError, the page loads with no errors, all 49 figures and 62 forest rows, the duo.jpg test passes, and the controls still work. With storage available, View and Scale survive a reload.",
+  "Every control visibly changes the page: Real heights redraws the cells, gap tiles and meatball with 1, 2 and 3 m lines and adds its note; Side redraws the figures and adds its note; Close-up remaps the forest axis to 12\u201345 with 'off this scale' labels.",
+  "Gap stop tags and titles match model.gaps (45\u201362 'Nothing comparable' with the Thing and Thor, 88\u2013130 'Empty', 220\u2013924 'Empty to the end'), and the rule 'No real man on this chart scores above 42' matches HUMAN_TOP = 41.5.",
+  "The meatball's formula line reads 924, '900 to 950 at 10 to 5% fat', with cylinder about 1,400 and cube about 1,800; checked with 1.8\u00d71060\u00d7\u03c0/6\u00d70.925 = 924.1, and 0.9 and 0.95 fat-free fractions."
+ ]
+}

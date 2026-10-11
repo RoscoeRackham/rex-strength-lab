@@ -1,0 +1,13 @@
+const BCD = '/home/user/rex-strength-lab/build-comparison';
+const Fig = require(BCD + '/src/figure.js'), M = require(BCD + '/src/measure.js');
+const BC = require('/home/user/rex-strength-lab/build-calculator/src/calc.js');
+const calc = BC.create(require('/home/user/rex-strength-lab/build-calculator/data/builds.json'));
+const T = require(BCD + '/data/outline.json');
+const r = calc.compute({ buildId: 'ansur2_m_p50', heightM: 1.8 }), g = {}; for (const s of BC.SITES) g[s] = r.girths[s].value;
+const fig = Fig.human(T, 1.8, g, {}, { buttockFit: BC.FRUSTUM.M.buttock, armDeg: 35 });
+const y = fig.dims.levels;
+const img = Fig.renderSheet({ front: fig.front, side: fig.side }, 1.8, { shoulder: y.acromion, chest: y.chest, waist: y.waist, crotch: y.crotch, knee: y.knee }, { figurePx: 2000 });
+let t = Date.now(); M.segment(img, { refine: 0 }); const s0 = Date.now() - t;
+t = Date.now(); M.segment(img); const s2 = Date.now() - t;
+t = Date.now(); const res = M.measureSheet(img, { heightM: 1.8, heightRef: 'top' }); const all = Date.now() - t;
+console.log('sheet', img.width + 'x' + img.height, '| segment no refine', s0, 'ms | segment (2 refine passes)', s2, 'ms | measureSheet total', all, 'ms');

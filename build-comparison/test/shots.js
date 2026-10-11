@@ -128,6 +128,8 @@ function report(where, a) {
         .catch(() => problems.push(`${w} ${scheme}: the measuring tool did not finish`));
       const font = await p.evaluate(() => document.fonts.check('800 40px "Big Shoulders Display"'));
       if (!font) problems.push(`${w} ${scheme}: display font not loaded`);
+      // The measurement ran in the Web Worker, not on the page (the page falls back silently).
+      if ((await p.evaluate(() => window.__bc.measuredIn)) !== 'worker') problems.push(`${w} ${scheme}: the measuring tool did not run in its worker`);
       const val = await p.evaluate(() => document.getElementById('validation').textContent);
       if (!/\bpass\b/i.test(val)) problems.push(`${w} ${scheme}: duo.jpg validation did not pass: ${val}`);
       geometry(`${w} ${scheme}`, await p.evaluate(marks));
@@ -222,6 +224,25 @@ async function sweep(p) {
   await p.fill('#tH', '1.80');
   await p.click('#measureBtn');
   await p.waitForFunction(() => document.querySelectorAll('#results tr').length > 5 && !/Measuring/.test(document.getElementById('toolStatus').textContent), null, { timeout: 30000 }).catch(() => problems.push('tool: re-measure did not finish'));
+  // Tapping just left of the 924 ring goes to the meatball, on both tapes.
+  for (const tape of ['glance', 'locTape']) {
+    await p.evaluate(() => window.scrollTo(0, 0));
+    if (tape === 'locTape') await p.evaluate(() => document.getElementById('under25').scrollIntoView());
+    const box = await p.evaluate((id) => { const h = document.getElementById(id), r = h.getBoundingClientRect(); return { x: r.left + h._X(window.__bc.MEAT) - 3, y: r.top + r.height / 2 }; }, tape);
+    await p.mouse.click(box.x, box.y);
+    await p.waitForTimeout(150);
+    const top = await p.evaluate(() => Math.abs(document.getElementById('meatball').getBoundingClientRect().top) < 80);
+    if (!top) problems.push(`tape ${tape}: a tap on the 924 ring did not go to the meatball`);
+  }
+  await p.evaluate(() => document.getElementById('tool').scrollIntoView());
+  // Fields edited while a measurement runs: the results say they are for the old fields.
+  await p.click('#measureBtn');
+  await p.fill('#tH', '2.00');
+  await p.waitForFunction(() => !document.getElementById('measureBtn').disabled, null, { timeout: 30000 });
+  if (!/changed/.test(await p.evaluate(() => document.getElementById('toolStatus').textContent))) problems.push('tool: fields edited during a measurement were not flagged');
+  await p.fill('#tH', '1.80');
+  await p.click('#measureBtn');
+  await p.waitForFunction(() => !document.getElementById('measureBtn').disabled && document.querySelectorAll('#results tr').length > 5, null, { timeout: 30000 });
   // Fields changed after measuring: the copy waits for a new measurement.
   await p.fill('#tH', '2.00');
   await p.click('#copyBtn');
@@ -240,15 +261,15 @@ async function sweep(p) {
   await p.selectOption('#tShape', 'ronnie_coleman');
   await p.fill('#tTarget', '300');
   await p.click('#targetBtn');
-  await p.waitForFunction(() => /measures/.test(document.getElementById('targetStatus').textContent), null, { timeout: 60000 }).catch(() => problems.push('tool: target outline did not finish'));
-  const t300 = Number(((await p.evaluate(() => document.getElementById('targetStatus').textContent)).match(/measures ([\d.,]+)/) || [])[1]);
+  await p.waitForFunction(() => /as drawn/.test(document.getElementById('targetStatus').textContent), null, { timeout: 60000 }).catch(() => problems.push('tool: target outline did not finish'));
+  const t300 = Number(((await p.evaluate(() => document.getElementById('targetStatus').textContent)).match(/scores ([\d.,]+) as drawn/) || [])[1]);
   if (!(Math.abs(t300 / 300 - 1) < 0.01)) problems.push('tool: target outline for 300 on Coleman measures ' + t300);
   await p.selectOption('#tShape', 'ansur2_m_p50');
   await p.fill('#tTarget', '60');
   await p.click('#targetBtn');
-  await p.waitForFunction(() => /measures/.test(document.getElementById('targetStatus').textContent), null, { timeout: 30000 }).catch(() => problems.push('tool: target outline did not finish'));
+  await p.waitForFunction(() => /as drawn/.test(document.getElementById('targetStatus').textContent), null, { timeout: 30000 }).catch(() => problems.push('tool: target outline did not finish'));
   const ts = await p.evaluate(() => document.getElementById('targetStatus').textContent);
-  const got = Number((ts.match(/measures ([\d.,]+)/) || [])[1]);
+  const got = Number((ts.match(/scores ([\d.,]+) as drawn/) || [])[1]);
   if (!(Math.abs(got / 60 - 1) < 0.03)) problems.push('tool: target outline for 60 measures ' + got);
   await p.fill('#tTarget', '5');
   await p.click('#targetBtn');

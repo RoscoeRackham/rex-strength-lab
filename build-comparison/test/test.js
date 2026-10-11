@@ -69,12 +69,12 @@ test('every build scores without NaN, with its central value inside its range', 
 test('Rex and Ollie: height to the top of the skull, tails out, 7.5% fat (5-10%)', () => {
   const rex = model.evaluate('rex'), ollie = model.evaluate('ollie');
   near(rex.height.value, 2.92, 1e-9); near(ollie.height.value, 2.91, 1e-9);
-  near(rex.mass.value, 2700 - 306, 1e-9); near(ollie.mass.value, 2700 - 11, 1e-9);
+  near(rex.mass.value, 2700 - 307, 1e-9); near(ollie.mass.value, 2700 - 11, 1e-9);
   assert.deepStrictEqual([rex.bodyFat.lo, rex.bodyFat.value, rex.bodyFat.hi], [5, 7.5, 10]);
-  near(rex.score.value, 1.8 * 2394 * 0.925 / Math.pow(2.92, 3), 1e-9);
+  near(rex.score.value, 1.8 * 2393 * 0.925 / Math.pow(2.92, 3), 1e-9);
   // the range covers mass 2,300-3,000 kg, skull height and body fat together
-  near(rex.score.lo, 1.8 * (2300 - 306) * 0.9 / Math.pow(2.95, 3), 1e-9);
-  near(rex.score.hi, 1.8 * (3000 - 306) * 0.95 / Math.pow(2.90, 3), 1e-9);
+  near(rex.score.lo, 1.8 * (2300 - 307) * 0.9 / Math.pow(2.95, 3), 1e-9);
+  near(rex.score.hi, 1.8 * (3000 - 307) * 0.95 / Math.pow(2.90, 3), 1e-9);
 });
 
 test('comic editions are not mixed into a range; Wolverine is scored without adamantium', () => {
@@ -318,22 +318,36 @@ test('data/limits.json is what tools/compute_limits.js computes (run it after ch
   assert.deepStrictEqual(require('../data/limits.json'), limitsRun);
 });
 
-test("each headline limit's score is the measuring tool's reading of that drawn shape, not a scaling rule", () => {
-  const { measureViews } = require('../tools/export_targets.js');
+test("each limit's score is its drawn shape's volume (head and body by the tool, arms as limbs), not a scaling rule", () => {
+  const { drawnVolume, leanScore } = require('../tools/export_targets.js');
   const L = settings.limits, main = limitsRun.templates.find((t) => t.id === L.main_template);
   const r = calc.compute({ buildId: L.main_template, heightM: 1.8 }), g = {};
   for (const s of BC.SITES) g[s] = r.girths[s].value;
   const base = Fig.human(outline, 1.8, g, {}, { buttockFit: BC.FRUSTUM.M.buttock, armDeg: 35 });
-  const y = base.dims.levels, levels = { shoulder: y.acromion, chest: y.chest, waist: y.waist, crotch: y.crotch, knee: y.knee };
-  for (const k of ['arms', 'thighs']) {
+  for (const k of ['arms', 'thighs', 'face']) {
     const f = main[k].f, mk = (deg) => Fig.human(outline, 1.8, g, {}, { buttockFit: BC.FRUSTUM.M.buttock, widthScale: f, legAxis: base.dims.legAxis, armDeg: deg });
-    const fig = mk(Math.max(35, Fig.armRestAngle(mk) + 2));
-    const m = measureViews({ front: fig.front, side: fig.side }, 1.8, levels, 600).res;
-    assert.ok(m.ok, k + ': the limit shape passes the tool\'s checks');
-    near(m.score.value / main[k].score, 1, 0.03, k + ' limit score vs a fresh measurement at another resolution:');
+    const deg = Math.min(88, Math.max(35, Fig.armRestAngle(mk) + 2)), fig = mk(deg);
+    near(leanScore(drawnVolume(fig, 1.8, deg, 600), 1.8) / main[k].score, 1, 0.02, k + ' limit score vs a fresh reading at another resolution:');
     // The head, hands, feet and joints are not widened, so the drawn shape grows more slowly than f^2.
     assert.ok(main[k].score < main.score_at_f1 * f * f, k + ' grows more slowly than f^2');
   }
+  // The arms as limbs match the measuring tool where it follows them: the tool reads a little high
+  // (it counts each arm at torso depth where it meets the shoulder), never low.
+  const fig1 = Fig.human(outline, 1.8, g, {}, { buttockFit: BC.FRUSTUM.M.buttock, armDeg: 35 });
+  const { measureViews, levelsOf } = require('../tools/export_targets.js');
+  const tool = measureViews({ front: fig1.front, side: fig1.side }, 1.8, levelsOf(fig1), 800).res;
+  const ratio = tool.volume_m3.value / drawnVolume(fig1, 1.8, 35, 800);
+  assert.ok(ratio > 1 && ratio < 1.08, 'tool / drawn volume at 35 degrees: ' + ratio.toFixed(3));
+});
+
+test('the steep face model is derived from its fact: k where bend falls to the limit, on the drawn arm and forearm girths', () => {
+  const sf = settings.limits.face.steep_fit, F = require('../data/facts.json').facts[sf.fact].values;
+  assert.strictEqual(sf.c, F.c_active); assert.strictEqual(sf.p, F.p_fitted_to_bmi_groups_active); assert.strictEqual(sf.reference_girth_sum_m, F.reference_girth_sum_m);
+  const k = Math.pow(Math.tan(40 * Math.PI / 180) / sf.c, 1 / sf.p);
+  near(k, 1.785, 0.002, 'k at 100 degrees:');
+  const r = calc.compute({ buildId: 'ansur2_m_p50', heightM: 1.8 });
+  const face = limitsRun.items.find((i) => i.id === 'face');
+  near(face.models.steep_width_factor, k * sf.reference_girth_sum_m / (r.girths.arm_flexed.value + r.girths.forearm.value), 1e-3);
 });
 
 test("the chart's own figures: arms drawn past their rest angle clear the body, and the tests match the stored flags", () => {
@@ -346,7 +360,10 @@ test("the chart's own figures: arms drawn past their rest angle clear the body, 
     const drawn = Math.max(20, c.rest_deg + 2);
     assert.ok(Fig.armClearAt(mk(drawn), drawn), id + ' arms clear at the drawn angle, ' + drawn + ' degrees');
     if (c.rest_deg > 0) assert.ok(!Fig.armClearAt(mk(c.rest_deg - 2), c.rest_deg - 2), id + ' arms pass through the body just inside the rest angle');
-    assert.strictEqual(c.arms, c.rest_deg >= L.arms.angle_deg, id + ' arms flag');
+    const fig = mk(c.drawn_arm_deg), crease = limitsRun.elbow_crease_fraction_of_upper_arm * fig.dims.armStations.Lu;
+    assert.strictEqual(c.arms, Fig.armRestAngle(mk) >= L.arms.angle_deg, id + ' arms flag');
+    assert.strictEqual(c.thighs, Fig.thighContact(fig) >= L.thighs.fraction, id + ' thighs flag');
+    assert.strictEqual(c.face, Fig.elbowFlexion(fig, crease) < L.face.max_flexion_deg, id + ' face flag');
   }
   // Ronnie Coleman's own outline already meets the arms and thighs tests; the median soldier's meets neither.
   assert.ok(limitsRun.chart_figures.ronnie_coleman.arms && limitsRun.chart_figures.ronnie_coleman.thighs);
@@ -355,15 +372,47 @@ test("the chart's own figures: arms drawn past their rest angle clear the body, 
   assert.ok(arms.met_by.includes('ronnie_coleman') && !arms.met_by.includes('ansur2_m_p50'));
 });
 
-test('the target solver converges, and says when no passing sheet reaches the target', () => {
-  const { measureTemplate, scoreOrNaN } = require('../tools/export_targets.js');
-  const at = (f) => scoreOrNaN(measureTemplate('ansur2_m_p50', 1.8, f, 300).res);
-  for (const t of [20, 217, 900]) { const s = Fig.solveTarget(at, t); assert.ok(s.f > 0, 'reaches ' + t); near(s.score / t, 1, 0.003, 'target ' + t + ':'); }
-  const low = Fig.solveTarget(at, 5);
-  assert.strictEqual(low.f, null); assert.ok(low.bestScore > 5, 'reports how low it gets');
+test('the target solver converges on drawn scores, and says when it cannot', () => {
+  const { templateScore } = require('../tools/export_targets.js');
+  const at = (id) => (f) => templateScore(id, 1.8, f, 300);
+  for (const [id, t] of [['ansur2_m_p50', 20], ['ansur2_m_p50', 217], ['ansur2_m_p50', 900], ['ansur2_m_p5', 15], ['ronnie_coleman', 300]]) {
+    const s = Fig.solveTarget(at(id), t); assert.ok(s.f > 0, id + ' reaches ' + t); near(s.score / t, 1, 0.003, id + ' target ' + t + ':');
+  }
+  // Out of reach: says so, with how far it got.
+  const far = Fig.solveTarget(at('ansur2_m_p50'), 2000, 3);
+  assert.strictEqual(far.f, null); assert.strictEqual(far.reason, 'range'); assert.ok(far.bestScore < 2000);
+  // A score that jumps across the target is reported as a gap, never as a hit.
+  const jump = Fig.solveTarget((f) => (f < 2 ? 50 * f : 150 * f), 120);
+  assert.strictEqual(jump.f, null); assert.strictEqual(jump.reason, 'gap'); assert.ok(jump.bestScore < 120 && jump.nextScore > 120);
+  // A failing sheet inside the bracket is not taken for one above the target.
+  const holey = Fig.solveTarget((f) => (f > 1.3 && f < 1.5 ? NaN : 30 * f * f), 60);
+  assert.ok(holey.f == null || Math.abs(holey.score / 60 - 1) <= 0.003, JSON.stringify(holey));
   // A plain function: false position closes in fast.
   let n = 0; const sq = Fig.solveTarget((f) => { n++; return 27 * Math.pow(f, 1.9); }, 300);
   near(sq.score / 300, 1, 0.002); assert.ok(n <= 12, n + ' evaluations');
+});
+
+test('the measuring tool follows arms held far out, with no jump in the score as they rise', () => {
+  const { measureTemplate } = require('../tools/export_targets.js');
+  let last = null;
+  for (const f of [1.70, 1.72, 1.74, 1.745, 1.75, 1.76, 1.78, 1.80]) {
+    const r = measureTemplate('ansur2_m_p50', 1.8, f, 600).res;
+    assert.ok(r.landmarks.arms.every(Boolean), 'both arms followed at f ' + f);
+    if (last) assert.ok(Math.abs(r.score.value / last - 1) < 0.03, 'no jump at f ' + f + ': ' + last.toFixed(1) + ' to ' + r.score.value.toFixed(1));
+    last = r.score.value;
+  }
+  // Arms that cannot hang clear (level, at 88 degrees) are refused, not counted as torso.
+  const lvl = measureTemplate('ansur2_m_p50', 1.8, 2.6, 600).res;
+  assert.ok(!lvl.ok && lvl.checks.some((c) => /arms followed/.test(c.name) && !c.ok), 'level arms refused');
+});
+
+test('front and back views that mirror each other pass the landmark check (flat profiles included)', () => {
+  const { measureTemplate } = require('../tools/export_targets.js');
+  for (const [id, f] of [['ansur2_m_largest_arm', 1.05], ['ansur2_m_p95', 1.4], ['ansur2_m_p5', 0.79], ['ansur2_m_p50', 1]]) {
+    const r = measureTemplate(id, 1.8, f, 1000).res;
+    const c = r.checks.find((x) => /front and back landmarks/.test(x.name));
+    assert.ok(c && c.ok, id + ' f ' + f + ': ' + (c ? c.detail : 'no back-view check'));
+  }
 });
 
 console.log('\n' + passed + ' passed, ' + failed + ' failed');

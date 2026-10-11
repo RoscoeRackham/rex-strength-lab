@@ -70,6 +70,13 @@ const out = html
     script(['..', 'build-calculator', 'src', 'calc.js']), script(['src', 'model.js']), script(['src', 'figure.js']), script(['src', 'measure.js'], 'measureSrc'),
   ].join('\n'));
 
+// Every inline script must parse: a syntax error would leave the page blank, with nothing at build time.
+const vm = require('vm');
+out.replace(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g, (m, code, at) => {
+  try { new vm.Script(code); } catch (e) { throw new Error('inline script at character ' + at + ' does not parse: ' + e.message); }
+  return m;
+});
+
 fs.mkdirSync(path.join(root, 'dist'), { recursive: true });
 fs.writeFileSync(path.join(root, 'dist', 'index.html'), out);
 console.log('dist/index.html ' + (out.length / 1024).toFixed(0) + ' KB (' + Object.keys(comparison.builds).length + ' builds on the chart, ' + Object.keys(factsSlim).length + ' facts' + (limits ? ', ' + limits.items.length + ' limits' : ', no limits yet') + ')');

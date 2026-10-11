@@ -511,8 +511,8 @@
    "exclude_mass": [
     {
      "name": "tail",
-     "mass_kg": 306,
-     "basis": "Picture measurement: tail 0.289 m^3 at 1,060 kg/m^3 (visible part plus the hidden base): 306 kg"
+     "mass_kg": 307,
+     "basis": "Picture measurement: tail 0.2894 m^3 at 1,060 kg/m^3 (visible part plus the hidden base; history/scratchpad/mass/checker/results_checker.json): 307 kg"
     }
    ],
    "mass_note": "His 2,700 kg was measured over his tank top and cargo pants; Step 2 measures him from his turnaround.",
@@ -652,7 +652,7 @@
   "geometry": "Geometry"
  },
  "ignores": [
-  "<b>Shape.</b> The score assumes a body grows at the same shape. On average, taller men carry less fat-free mass per height cubed (across adults it grows about as height squared), so the score rates them a little lower; whether real bodies differ in shape or this is partly a statistical artefact is disputed (Burton 2010). giants and monsters would need thicker bones and different proportions (Galileo and Haldane made this point).",
+  "<b>Shape.</b> The score assumes a body grows at the same shape. On average, taller men carry less fat-free mass per height cubed (across adults it grows about as height squared), so the score rates them a little lower; whether real bodies differ in shape or this is partly a statistical artefact is disputed (Burton 2010). Giants and monsters would need thicker bones and different proportions (Galileo and Haldane made this point).",
   "<b>Body fat.</b> Most builds have no measured body fat, so most scores rest on an assumed range for their group. The ranges are shown on every bar.",
   "<b>What the mass is.</b> Fat-free mass includes bone, organs and water, not only muscle. Comic weights are as published; where the art or the publisher says the body is rock, steel or denser than human tissue, the score is flagged.",
   "<b>Rex and Ollie.</b> Their mass (about 2,700 kg each) was measured from one front-view picture over their clothes, with assumed depth and density; their skull heights are read off the same picture. Both are estimates until Step 2 measures them from their turnarounds.",
@@ -715,11 +715,16 @@
     "tiny": "face",
     "definition": "The forearm meets the upper arm before the elbow bends 100°, so even with the wrist fully bent the fingertips cannot reach the mouth (that needs about 99° here, 123° with a straight wrist). Where that happens depends on a model no study has tested above ordinary girths: contact geometry alone (set so the median soldier bends a normal 145°) puts it near the top of the band; elbow bend falling as fast as it does across body-fat groups puts it near the bottom."
    },
-   "pessimistic_girth_factor": 1.786,
-   "headline": false
+   "headline": false,
+   "steep_fit": {
+    "c": 0.3153,
+    "p": 1.69,
+    "reference_girth_sum_m": 0.614,
+    "fact": "elbow_flexion_vs_girth_wedge_model"
+   }
   },
-  "verdict": "Three limits come from the drawn body itself. Widen the average soldier at fixed bones and the arms are forced out first, the thighs close next, and the hands lose the face last. The chart's own drawings of the biggest bodybuilders already meet the first two.",
-  "method": "Each template is drawn at 1.80 m and widened at fixed bones: every width and depth of the trunk and limbs times the same factor, while the joints, head, hands and feet stay as they are. At the factor where the limit is reached, the measuring tool reads that drawn shape's score at 1,060 kg/m³ and 7.5% fat. The headline is the median soldier's shape; the band runs across six templates, from the 5th-percentile soldier to Ronnie Coleman's shape. The same three tests are run on every figure on the chart, drawn at its own height and girths.",
+  "verdict": "Three limits come from the drawn body itself. Widen the average soldier at fixed bones and the arms are forced out first, the thighs close next, and the hands lose the face last. Drawn from their girths, the chart's biggest bodybuilders are already past the first two.",
+  "method": "Each template is drawn at 1.80 m and widened at fixed bones: every width and depth of the trunk and limbs times the same factor, while the joints, head, hands and feet stay as they are. At the factor where the limit is reached, the drawn shape is scored at 1,060 kg/m³ and 7.5% fat: the measuring tool reads the head and body from the front and side views, and the arms, which stand far out at these widths, are added as round limbs. The headline is the median soldier's shape; the band runs across six templates, from the 5th-percentile soldier to Ronnie Coleman's shape. Every figure on the chart is drawn and scored the same way, so the page can say which are already past each limit.",
   "notes": [
    "No study gives these limits. Each threshold is an estimate built from sourced pieces: what stops a joint (soft tissue meeting soft tissue), how far ordinary men can move, and how far daily tasks need. The sources are listed under “Where the body stops working” below.",
    "This is flat, front-view geometry on drawn templates. Real soft tissue squashes, arms can sit a little in front of the body, and shoulders shrug, so each limit is a band, not a line.",

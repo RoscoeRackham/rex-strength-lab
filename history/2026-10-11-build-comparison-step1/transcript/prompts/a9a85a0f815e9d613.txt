@@ -1,0 +1,351 @@
+Project: "Build Comparison", a chart that ranks male body builds by "muscle level" irrespective of height, from ordinary men through the limits of human possibility to the monstrous (comic characters, and two original 3 m characters, Rex and Ollie). Read /home/user/rex-strength-lab/build-comparison/BRIEF.md first (10 minutes): it states the decisions already made and the problems to solve.
+The working score is FFMI after rescaling the body to 1.80 m at the same shape: S = 1.8 * FFM / H^3 (FFM = fat-free mass in kg, H = height in m), shown beside plain FFMI = FFM / H^2. A rough first pass gives: US Army median man about 24, Ronnie Coleman about 35-39, Eddie Hall about 38, the heaviest comic characters 57-81, Rex about 141 (tail excluded, height to crest). A solid ball of muscle as tall as the figure scores about 924.
+The sister project /home/user/rex-strength-lab/build-calculator/ already holds 55 builds and 139 verified facts in data/builds.json (read its "facts" keys and labels before you start; do NOT re-research a fact that already exists there unless the brief needs a number it lacks, and say so when you rely on an existing key). ANSUR II CSVs are in /home/user/rex-strength-lab/build-calculator/data/ansur2/ (ANSUR_II_MALE_Public.csv, 4,082 men; values in mm and kg x10? check: weightkg is in tenths of kg, lengths in mm).
+The owner is a professional critic: factual accuracy and honest labelling come first. Say "unknown" rather than invent; a number is "sourced" only if you fetched the page or PDF and saw the number there; give the exact URL you fetched (DOI landing pages, PubMed, PMC, publisher PDFs). Prefer primary or authoritative sources (journals, textbooks, government surveys, standards bodies, publisher handbooks); use fan sites or magazines only when nothing better exists, and label them so. Quote the exact sentence or table cell behind each number in notes.
+Load web tools with ToolSearch query "select:WebSearch,WebFetch". Write raw downloads and scripts under /tmp/claude-0/-home-user-rex-strength-lab/9b81b796-3162-56bd-85b7-22e02b6583e2/scratchpad/research/<topic>/ (create it). Do not edit anything under /home/user/rex-strength-lab.
+For each fact give: key (snake_case), label, status (measured | official | reported | derived | estimate | disputed), values (a JSON object as a string, SI units plus the original units), sources (title + URL actually fetched), and notes (what exactly the source says, its sample, caveats, how good the evidence is).
+
+You are a skeptical fact-checker for the topic "index". Below are the researcher's facts and recommendations. Re-fetch the cited URLs for every fact the chart is likely to lean on (at least 12 fetches; all of them if there are fewer) and check each value, quotation and status against what the source actually says; recompute every derived number you can (re-run computations on the ANSUR II CSV where relevant). Mark ok=false with a correction for anything wrong, mislabelled (for example a fan wiki or a magazine marked official or measured; a sample maximum called a limit; a secondary summary presented as the primary paper), or unsupported. Also judge the recommendations: anything that overstates the evidence? List important missing items.
+
+RESEARCH:
+{
+ "summary": "Topic: a muscle index that does not depend on size. I fetched 20 sources: Europe PMC abstract records, full texts of Heymsfield 2007, Peterson 2017 and Burton 2018 from PMC, Haldane's essay, Galileo via a UVa lecture page, plus Harper's archive metadata. I also ran derived checks on the ANSUR II men's CSV.\n\nWhat the sources say:\n- **FFMI.** VanItallie 1990 defines FFMI as FFM (kg) / height (m)^2.\n- **Kouri.** The Kouri 1995 abstract, re-fetched today, prints \"6.3 x (1.80 m - height) to normalize these values to the height of a 1.8-m man\". The 6.3 vs 6.1 question is already recorded as disputed in builds.json (kouri1995_normalization_constant, ffmi_height_correction).\n- **Same shape means mass goes with height cubed.** This is stated plainly by:\n  - Burton 2010 (Med Hypotheses): \"perfect isometry or geometric similarity requires that body mass varies with height cubed\".\n  - Burton 2018 (Children, open access): bodies of different sizes but identical density and proportions have mass proportional to height^3, and \"The BMIs of these isometric individuals would inevitably increase with height\".\n  - Haldane (Harper's, March 1926): a giant ten times as high, wide and thick weighs a thousand times as much.\n  - Fowler's UVa lecture: doubling every dimension raises weight eightfold; 100 times larger means a million times the muscle.\n- **Weight over height cubed already exists.** The Rohrer / tri-ponderal index (W/H^3) is in peer-reviewed use (Peterson 2017 JAMA Pediatr; Burton 2018). Burton 2007 calls mass/height^3 \"an index of body build that is independent of scale and statistics\".\n- **No published FFM / height^3 index.** I found none for adult men. Wells & Cole 2002 found FFM best adjusted by height^2 in 69 eight-year-olds. One 2018 paper uses fat mass / height^3, which is fat, not fat-free mass.\n- **Real tall men are not scaled-up short men.** Heymsfield 2007 full text: FFM scales with H^1.86 ± 0.10 in 581 men (DXA), and skeletal muscle with H^1.98 ± 0.27 in 178 men (MRI). This is why plain FFMI is roughly flat with height among humans. A body scaled up at the same shape gains FFM with H^3, so its plain FFMI grows in proportion to H.\n- **Big bodies change shape too.** Galileo, Haldane, McMahon 1973 and Biewener 2005 all say real bodies change proportions as size grows.\n\nDerived checks (my own arithmetic):\n- At 1.80 m, 1.8·FFM/H^3 equals plain FFMI exactly.\n- For the same shape at 3.048 m, plain FFMI is 1.693 times larger and the rescaled index is unchanged. Rex's plain FFMI of 269 becomes 159 (tail included).\n- Kouri's correction applied at 3.048 m gives about 261, not 159, so it fails there.\n- In ANSUR II men, BMI is flat with height, but 1.8·W/H^3 falls as 1/H. The tallest tenth (median 1.870 m) scores about 12% below the shortest tenth (median 1.647 m) at the same median BMI.\n- The meatball check reproduces 924 (899–949 for 5–10% fat).\n\nRecommendation: keep S = 1.8 × FFM / H^3, with its limits stated.",
+ "facts": [
+  {
+   "key": "ffmi_definition_vanitallie1990",
+   "label": "FFMI definition: fat-free mass over height squared (VanItallie et al. 1990)",
+   "status": "reported",
+   "values": "{\"formula\": \"FFMI = FFM_kg / H_m^2\", \"units\": \"kg/m^2\", \"companion_index\": \"BFMI = body fat mass_kg / H_m^2\", \"reference_sample_men_n\": 124, \"minnesota_semistarvation_men_n\": 32, \"pem_detected_after_12wk\": \"27 of 32\"}",
+   "sources": [
+    {
+     "title": "VanItallie TB, Yang MU, Heymsfield SB, Funk RC, Boileau RA. Height-normalized indices of the body's fat-free mass and fat mass: potentially useful indicators of nutritional status. Am J Clin Nutr 1990;52:953-959. doi:10.1093/ajcn/52.6.953 (Europe PMC abstract record, PMID 2239792)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:2239792%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Abstract, verbatim: 'we propose use of height-normalized indices, namely, a FFM index [FFM (kg)/height (m)2, or FFMI] and a BFM index [BFM (kg)/height (m)2, or BFMI]. We calculated these indices in a reference population of 124 healthy young men and in 32 nonobese young men (from the Minnesota Study)'. The stated purpose is clinical: telling malnourished tall patients from well-nourished short ones. The abstract gives no reason for choosing height^2 over another power. The full text (OUP/Elsevier) was not reachable; only the abstract was read. Heymsfield 2007 later wrote that its results 'provide support for the suggestion of Van Itallie et al to normalize fat and FFM for height 2' (see heymsfield2007_ffm_height_power_fulltext). Existing builds.json key ffmi_definition_kouri_limit already has FFMI = FFM/H^2 from Kouri; this adds the original source."
+  },
+  {
+   "key": "kouri1995_normalisation_reference",
+   "label": "Kouri 1995 normalises FFMI to the height of a 1.80 m man (formula as printed in the abstract)",
+   "status": "reported",
+   "values": "{\"ffmi_formula\": \"FFM_kg x H_m^-2\", \"normalised_formula\": \"FFMI + 6.3 x (1.80 - H_m)\", \"c_printed_in_abstract\": 6.3, \"c_common_use\": 6.1, \"reference_height_m\": 1.8, \"n_athletes\": 157, \"n_users\": 83, \"n_nonusers\": 74}",
+   "sources": [
+    {
+     "title": "Kouri EM, Pope HG, Katz DL, Oliva P. Fat-free mass index in users and nonusers of anabolic-androgenic steroids. Clin J Sport Med 1995;5:223-228 (Europe PMC abstract record, PMID 7496846), re-fetched 2026-10-11",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:7496846%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Abstract, verbatim: 'FFMI is defined by the formula (fat-free body mass in kg) x (height in meters)-2. We then added a slight correction of 6.3 x (1.80 m - height) to normalize these values to the height of a 1.8-m man.' This relies on and agrees with existing keys kouri1995_normalization_constant and ffmi_height_correction (status disputed: the abstract prints 6.3, while Trexler 2017 and most calculators use 6.1; at most 0.05 FFMI units apart between 1.55 and 2.05 m). The full text is not open access (Europe PMC: no PDF, not OA), so the athletes' height range and how the slope was fitted are unknown. The 1.80 m reference height is the reason the rescaled index uses the constant 1.8: at 1.80 m it then equals both plain and Kouri-normalised FFMI."
+  },
+  {
+   "key": "geometric_similarity_mass_cubed",
+   "label": "At the same shape and density, mass (and muscle mass) scales with height cubed and areas with height squared",
+   "status": "reported",
+   "values": "{\"mass_exponent_same_shape\": 3, \"area_exponent_same_shape\": 2, \"haldane_example\": {\"height_factor\": 10, \"width_factor\": 10, \"thickness_factor\": 10, \"weight_factor\": 1000, \"bone_cross_section_factor\": 100, \"giant_height_ft\": 60, \"giant_height_m\": 18.3, \"giant_weight_tons\": [80, 90]}, \"fowler_examples\": {\"double_all_dimensions_weight_factor\": 8, \"rope_strength_factor\": 4, \"flea_100x_muscle_factor\": 1000000}}",
+   "sources": [
+    {
+     "title": "Burton RF. Human allometry: adult bodies are more nearly geometrically similar than regression analysis has suggested. Med Hypotheses 2010;74:15-17 (Europe PMC abstract, PMID 19726135)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:19726135%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Burton R. The Sitting-Height Index of Build, (Body Mass)/(Sitting Height)^3, as an Improvement on the Body Mass Index for Children, Adolescents and Young Adults. Children (Basel) 2018;5(2):30 (PMC full text, CC BY)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5835999/"
+    },
+    {
+     "title": "Haldane JBS. On Being the Right Size (transcription from 'On Being the Right Size and Other Essays', OUP 1985; marxists.org)",
+     "url": "https://www.marxists.org/archive/haldane/works/1920s/right-size.htm"
+    },
+    {
+     "title": "Harper's Magazine archive page: 'On being the right size', J.B.S. Haldane, March 1926 (publication date only; text not on the fetched page)",
+     "url": "https://harpers.org/archive/1926/03/on-being-the-right-size/"
+    },
+    {
+     "title": "Fowler M. Scaling: Why Giants Don't Exist. University of Virginia lecture notes (teaching source)",
+     "url": "https://galileoandeinstein.phys.virginia.edu/lectures/scaling.html"
+    }
+   ],
+   "notes": "Quotes:\n- Burton 2010 abstract: 'As he [Quetelet] realised, perfect isometry or geometric similarity requires that body mass varies with height cubed'.\n- Burton 2018 full text: 'consider first a hypothetical set of individuals of different sizes but identical density and bodily proportions. Their masses must vary in proportion to both (sitting height)3 and height3 ... The BMIs of these isometric individuals would inevitably increase with height.'\n- Haldane: 'These monsters were not only ten times as high as Christian, but ten times as wide and ten times as thick, so that their total weight was a thousand times his, or about eighty to ninety tons. Unfortunately the cross sections of their bones were only a hundred times those of Christian'.\n- Fowler: 'its height, length and breadth will all be doubled, so its volume -- and hence its weight -- will increase eightfold'; and 'a giant flea is one hundred times larger in all dimensions, so its weight is up by a factor of a million. Its amount of muscle is also up by a factor of a million'.\nEvidence quality: this is geometry, not a measurement, so the statement is exact for a true scaled copy. Burton 2010 and 2018 are peer-reviewed. Haldane is a classic popular essay. The marxists.org transcription dates the essay 1928 (from the OUP 1985 collection), but the Harper's archive page metadata gives datePublished 1926-03-01. Fowler is university lecture notes. Schmidt-Nielsen 1984 (Cambridge UP) could not be read. The 60 ft = 18.3 m conversion is mine."
+  },
+  {
+   "key": "size_change_changes_form",
+   "label": "Real bodies are not scaled copies across large size changes (Galileo, Haldane, McMahon, Biewener)",
+   "status": "reported",
+   "values": "{\"mcmahon1973_elastic_similarity\": \"length proportional to diameter^(2/3)\", \"biewener2005_skeletal_scaling_mammals_birds\": \"l proportional to d^0.89 (isometry d^1.0; elastic similarity d^0.67; stress similarity d^0.5)\", \"biewener2005_size_range_constant_stress_kg\": [0.04, 300], \"galileo_giant_height_factor\": 10}",
+   "sources": [
+    {
+     "title": "Galileo, Two New Sciences, First Day (Crew & de Salvio translation), reproduced by M. Fowler, University of Virginia",
+     "url": "https://galileoandeinstein.phys.virginia.edu/tns1.htm"
+    },
+    {
+     "title": "Haldane JBS. On Being the Right Size (marxists.org transcription)",
+     "url": "https://www.marxists.org/archive/haldane/works/1920s/right-size.htm"
+    },
+    {
+     "title": "McMahon T. Size and shape in biology. Science 1973;179:1201-1204 (Europe PMC abstract, PMID 4689015)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:4689015%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Biewener AA. Biomechanical consequences of scaling. J Exp Biol 2005;208:1665-1676 (Europe PMC abstract, PMID 15855398)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:15855398%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Quotes:\n- Galileo (Salviati): 'nature cannot produce a horse as large as twenty ordinary horses or a giant ten times taller than an ordinary man unless by miracle or by greatly altering the proportions of his limbs and especially of his bones'.\n- Haldane: 'For every type of animal there is a most convenient size, and a large change in size inevitably carries with it a change of form.'\n- McMahon abstract: elastic-stability arguments 'require that living organisms adopt forms whereby lengths increase as the (2/3) power of diameter'. It adds that Hill 'was forced to use an oversimplified \"geometric similarity\" hypothesis'.\n- Biewener abstract: 'Although area:volume scaling predicts that stresses will increase with size, interspecific comparisons of mammals and birds show that skeletal allometry is modest, with most groups scaling (l ~ d^0.89) closer to geometric similarity (isometry: l ~ d^1.0) than to elastic similarity (l ~ d^0.67)'. It also says posture changes keep stresses fairly constant 'across a size range 0.04-300 kg. Above this size, extremely large mammals exhibit more pronounced skeletal allometry and reduced locomotor ability.'\nRelevance: the height-cubed index measures shape (bulk for height) exactly. It says nothing about whether a 3 m, 2,700 kg body of that shape could carry itself. Rex and Ollie are indestructible by canon, so the page should say this and not imply real-world feasibility. Galileo's publication year is not on the fetched page."
+  },
+  {
+   "key": "rohrer_tri_ponderal_index",
+   "label": "Rohrer / ponderal / tri-ponderal mass index: body mass over height cubed (kg/m^3)",
+   "status": "reported",
+   "values": "{\"formula\": \"W_kg / H_m^3\", \"units\": \"kg/m^3\", \"rohrer_year_reported\": 1921, \"peterson2017_n\": 2285, \"peterson2017_ages_y\": [8, 29], \"peterson2017_R2_pctfat_boys_TMI_vs_BMI\": [0.64, 0.38], \"peterson2017_R2_pctfat_girls_TMI_vs_BMI\": [0.72, 0.66], \"peterson2017_misclassification_TMI_pct\": 8.4, \"peterson2017_misclassification_BMIz_pct\": 19.4}",
+   "sources": [
+    {
+     "title": "Peterson CM et al. Tri-Ponderal Mass Index vs Body Mass Index in Estimating Body Fat During Adolescence. JAMA Pediatr 2017;171:629-636 (PMC full text)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5710345/"
+    },
+    {
+     "title": "Peterson 2017 (Europe PMC abstract, PMID 28505241)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:28505241%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Burton R. Children (Basel) 2018;5(2):30 (PMC full text; defines the Rohrer index)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5835999/"
+    },
+    {
+     "title": "Burton RF. Why is the body mass index calculated as mass/height2, not as mass/height3? Ann Hum Biol 2007;34:656-663 (Europe PMC abstract, PMID 18092209)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:18092209%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Wikipedia: Corpulence index (wikitext; tertiary source, used only for the Rohrer 1921 citation)",
+     "url": "https://en.wikipedia.org/w/index.php?title=Corpulence_index&action=raw"
+    }
+   ],
+   "notes": "Quotes:\n- Peterson 2017 full text: 'the tri-ponderal mass index (TMI = mass divided by height cubed [kilograms divided by meters cubed]), which is based on the ponderal index and the Rohrer Index (see eAppendix 1 in the Supplement for a historical overview)'.\n- Peterson abstract: 'percent body fat scales to height with an exponent closer to 3'.\n- Burton 2018: 'the Rohrer index, (body mass)/height 3'.\n- Burton 2007 abstract: 'Mass/height(3) is an index of body build that is independent of scale and statistics.'\nThe Rohrer 1921 citation (Rohrer F. Der Index der Körperfülle als Maß des Ernährungszustandes. Münch Med Wochenschr 1921;68:580-582) comes only from Wikipedia. The primary was not fetched, and the Peterson supplement with the history was blocked by a PMC download challenge. Treat the year as reported, not verified. The name 'ponderal index' is also used for H / W^(1/3) (Wikipedia notes this), so the page should give the formula, not just the name.\nThese indices use total mass and were validated for fatness in children and adolescents, not for muscularity in adults. They are precedent for dividing by height cubed, not validation of a fat-free version."
+  },
+  {
+   "key": "ffm_over_height_cubed_literature",
+   "label": "Published fat-free mass over height cubed index: none found; in children FFM is best adjusted by height squared",
+   "status": "reported",
+   "values": "{\"published_ffm_over_h3_index_found\": false, \"wells_cole2002_n\": 69, \"wells_cole2002_age_y\": 8, \"wells_cole2002_optimal_FFM_power\": 2, \"wells_cole2002_optimal_FM_power\": 6, \"ramirez_velez2018_fat_mass_over_h3_used\": true, \"ramirez_velez2018_n\": 4673}",
+   "sources": [
+    {
+     "title": "Wells JC, Cole TJ, ALSPAC study team. Adjustment of fat-free mass and fat mass for height in children aged 8 y. Int J Obes 2002;26:947-952 (Europe PMC abstract, PMID 12080448)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:12080448%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Ramírez-Vélez R et al. Tri-Ponderal Mass Index vs. Fat Mass/Height^3 as a Screening Tool for Metabolic Syndrome Prediction in Colombian Children and Young People. Nutrients 2018;10:412 (Europe PMC abstract, PMID 29584641)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:29584641%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Wells & Cole 2002 abstract: 'FFM was optimally adjusted for height by calculating FFM/HT(2). FM was optimally adjusted by calculating FM/HT(6).' The method used deuterium dilution, and the power p was chosen to remove the index's correlation with height. Ramírez-Vélez 2018 used 'fat mass (kg)/height (m³)', which is fat, not fat-free mass, and is a metabolic-syndrome screen.\nSearch done: Europe PMC abstract searches for 'fat-free mass' with 'height3' or 'height cubed', 'lean mass' with 'height cubed', 'FFM/height3' and 'lean mass index' with 'height3' returned 0 hits. 'fat-free mass' with 'height(3)' returned 6 hits, none defining an FFM/H^3 index.\nConclusion: 1.8 x FFM/H^3 is a derived construct of this project (the fat-free analogue of the Rohrer index, scaled to Kouri's 1.80 m). It must not be presented as a published index. The task brief's guess that Wells & Cole support a height-cubed FFM index is wrong: they found height squared for FFM."
+  },
+  {
+   "key": "heymsfield2007_ffm_height_power_fulltext",
+   "label": "Adult FFM and skeletal muscle scale with height to a power of about 2, not 3 (Heymsfield 2007, full-text numbers)",
+   "status": "measured",
+   "values": "{\"FFM_power_men_NY2\": 1.86, \"FFM_power_men_NY2_see\": 0.1, \"n_men_NY2\": 581, \"FFM_power_women_NY2\": 2.05, \"FFM_power_women_NY2_see\": 0.09, \"n_women_NY2\": 765, \"SM_power_men_NY1\": 1.98, \"SM_power_men_NY1_see\": 0.27, \"n_men_NY1\": 178, \"ATFM_power_men_NY1\": 2.09, \"ATFM_power_men_NY1_see\": 0.19, \"weight_power_men_NY1_NY2\": [1.78, 1.86], \"bone_mineral_power_men_NY2\": 2.31, \"BMI_inclusion_kg_m2\": [18.5, 35], \"mean_age_men_NY2_y\": 44.8}",
+   "sources": [
+    {
+     "title": "Heymsfield SB, Gallagher D, Mayer L, Beetsch J, Pietrobelli A. Scaling of human body composition to stature: new insights into body mass index. Am J Clin Nutr 2007;86:82-91 (PMC author manuscript, full text)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2729090/"
+    },
+    {
+     "title": "Same paper, Europe PMC abstract (PMID 17616766)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:17616766%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Full text, verbatim:\n- 'The similar compartment, FFM, scaled to height with respective powers of 1.86 ± 0.10 and 2.05 ± 0.09 in the NY-2 men and women. ... none of the β values differed significantly from 2.0.'\n- 'Skeletal muscle mass scaled to height with powers of 1.98 ± 0.27 and 2.08 ± 0.20 in the NY-1 men and women'.\n- Conclusions: 'weight, skeletal muscle, adipose tissue, ATFM, and FFM all scale to height with powers of 2 as the nearest whole integer. These observations indicate that corresponding height-normalized indexes are also independent of height'.\nTable 1: NY-1 has 178 men and 233 women (MRI plus DXA); NY-2 has 581 men and 765 women (DXA only).\nThis extends existing key heymsfield_2007_scaling, which has the abstract only, with the men's numbers. Caveats: general-population adults with BMI 18.5-35 and mean age about 45-50, not athletes; log-log least-squares regression (see height_exponent_regression_vs_isometry for why that may understate a structural exponent).\nThis is why plain FFMI is roughly height-independent among ordinary adults. FFM/H^1.86 vs FFM/H^2 differ by only (H/1.8)^0.14, under 2% across 1.65-1.95 m."
+  },
+  {
+   "key": "tall_men_not_scaled_copies",
+   "label": "Taller adults are relatively slimmer: girths and leg cross-sections grow less than in proportion to height",
+   "status": "measured",
+   "values": "{\"burton2012_n_men\": 155, \"burton2012_n_women\": 162, \"burton2012_leg_CSA_vs_leg_length\": \"negative, P = 0.00006-0.027 (after allowing for upper-body mass)\", \"heymsfield2011_waist_power_men\": 0.76, \"heymsfield2011_hip_power_men\": 0.45, \"same_shape_girth_power\": 1}",
+   "sources": [
+    {
+     "title": "Burton RF, Nevill AM, Stewart AD, Daniell N, Olds T. A negative relationship between leg length and leg cross-sectional areas in adults. Am J Hum Biol 2012;24:562-564 (Europe PMC abstract, PMID 22411043)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:22411043%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Heymsfield SB, Heo M, Pietrobelli A. Are adult body circumferences associated with height? Am J Clin Nutr 2011;93:302-7 (existing builds.json key heymsfield_2011_circumferences)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:21123461%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Burton 2012 abstract: 'volumes and leg CSAs were obtained by 3D scanning for 155 men and 162 women. ... With allowance made for positive correlations with upper body mass, leg CSAs showed a negative correlation with leg length (P = 0.00006-0.027).' The waist and hip powers come from existing key heymsfield_2011_circumferences (NHANES III; adjusted for age and race, not for weight). That key was not re-fetched; I rely on it. A scaled copy would have girth power 1. Consequence: real tall men are not scaled-up short men, so any height-cubed index will rate ordinary tall men as less bulky than ordinary short men (quantified in ansur_height_cubed_index_vs_height)."
+  },
+  {
+   "key": "height_exponent_regression_vs_isometry",
+   "label": "Is the human mass-height exponent really about 2, or nearer 3? (regression vs Burton's isometry hypothesis)",
+   "status": "disputed",
+   "values": "{\"regression_b_whole_body_published_range\": [1.0, 2.5], \"benn_p_adult_range\": [1.1, 2.5], \"burton_hypothesised_true_exponent\": 3, \"heymsfield2007_FFM_power_men\": 1.86, \"ansur2_men_ols_p\": 1.999, \"ansur2_men_rma_p\": 4.24}",
+   "sources": [
+    {
+     "title": "Burton RF. Human allometry: adult bodies are more nearly geometrically similar than regression analysis has suggested. Med Hypotheses 2010;74:15-17 (Europe PMC abstract, PMID 19726135)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:19726135%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Burton RF. Ann Hum Biol 2007;34:656-663 (Europe PMC abstract, PMID 18092209)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:18092209%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Heymsfield 2007 full text (PMC2729090)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2729090/"
+    }
+   ],
+   "notes": "Burton 2010 abstract:\n- 'Values of b estimated by regression must usually underestimate the true functional values, doing so especially when mass and height are poorly correlated.'\n- Published b 'for the whole body (which range between 1.0 and 2.5)'.\n- 'Monte Carlo modelling has shown that the results obtained for total body mass are compatible with a true height exponent of three.'\nBurton 2007 abstract: 'In adult populations mass must vary more nearly with height(3) than with height(2), although ... conventional statistical techniques suggest otherwise'.\nAgainst this, Heymsfield 2007 finds FFM powers near 2 in large samples, and Burton 2012 (tall_men_not_scaled_copies) itself finds legs relatively thinner in long-legged people.\nThe ANSUR OLS (2.0) vs RMA (4.24) exponents come from existing key ansur_mass_height_exponent; that key already says neither should be used as the exponent for 'the same build at another height'. Burton 2010 is a Medical Hypotheses paper: argument plus modelling, no new measurements.\nStatus disputed: the structural exponent for real humans is unsettled. This matters only for how the index treats ordinary tall vs short men. It does not affect the exact statement that a true scaled copy has mass proportional to H^3."
+  },
+  {
+   "key": "allometric_normalisation_practice",
+   "label": "Sport science normalises for body size with theoretical geometric-similarity exponents (allometric scaling)",
+   "status": "reported",
+   "values": "{\"jaric2002_force_exponent_on_mass\": 0.67, \"jaric2002_torque_exponent_on_mass\": 1.0, \"nevill1992_vo2max_power_ratio_units\": \"ml kg^-2/3 min^-1\", \"geometric_similarity_area_vs_mass\": \"m^(2/3)\"}",
+   "sources": [
+    {
+     "title": "Jaric S, Mirkov D, Markovic G. Normalizing physical performance tests for body size: a proposal for standardization. J Strength Cond Res 2005;19:467-474 (Europe PMC abstract, PMID 15903392)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:15903392%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Jaric S. Muscle strength testing: use of normalisation for body size. Sports Med 2002;32:615-631 (Europe PMC abstract, PMID 12141882)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:12141882%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Nevill AM, Ramsbottom R, Williams C. Scaling physiological measurements for individuals of different body size. Eur J Appl Physiol 1992;65:110-117 (Europe PMC abstract, PMID 1396632)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:1396632%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Jaric 2005 abstract: 'we propose (a) using an allometric normalization based on theoretical models that presume geometric similarity'. Jaric 2002 abstract: 'The allometric parameter should be either b = 0.67 for muscle force ... or b = 1 for muscle torque'. Nevill 1992 abstract: 'the best method of scaling maximum oxygen uptake, peak and mean power output, required these variables to be divided by body mass, recorded in the units kg 2/3'.\nThe exponent 0.67 = 2/3 is the geometric-similarity exponent (area over volume). That derivation is mine; the Jaric 2002 abstract does not spell it out.\nRelevance: when bodies differ in size, the field's recommended practice is to divide by the size power implied by geometric similarity, not by a ratio picked for convenience. For mass against height that power is 3. These papers normalise performance, not body composition, and cover human ranges only."
+  },
+  {
+   "key": "ansur_height_cubed_index_vs_height",
+   "label": "ANSUR II men: BMI is flat with height, but weight over height cubed (x1.8) falls as 1/height",
+   "status": "derived",
+   "values": "{\"n\": 4082, \"stature_range_m\": [1.491, 1.993], \"loglog_slope_BMI_vs_H\": -0.001, \"loglog_slope_1p8W_over_H3_vs_H\": -1.001, \"r_1p8W_over_H3_vs_lnH\": -0.259, \"shortest_decile\": {\"median_H_m\": 1.647, \"median_BMI\": 27.25, \"median_1p8W_over_H3\": 29.92}, \"middle_decile\": {\"median_H_m\": 1.755, \"median_BMI\": 27.4, \"median_1p8W_over_H3\": 28.07}, \"tallest_decile\": {\"median_H_m\": 1.87, \"median_BMI\": 27.28, \"median_1p8W_over_H3\": 26.18}, \"tallest_vs_shortest_ratio\": 0.875}",
+   "sources": [
+    {
+     "title": "ANSUR II male public data (local copy build-calculator/data/ansur2/ANSUR_II_MALE_Public.csv; published at the Penn State OpenLab mirror cited by existing key ansur_mass_height_exponent)",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+    }
+   ],
+   "notes": "Script: scratchpad/research/size_index/scripts/ansur_index_vs_height.py. Inputs: stature in mm / 1000, and weightkg in tenths of kg / 10. Deciles are by stature (sorted, bands 0-10%, 45-55% and 90-100%). I used the repo's local CSV and did not re-download it; existing key ansur_mass_height_exponent records the download and the same OLS exponent of 1.999.\nANSUR has no body-fat measurement, so this uses total weight, not FFM. It shows the direction and size of the bias, not FFM values. With Heymsfield's FFM power of 1.86 (± 0.10), the expected ratio of S between a 1.95 m and a 1.65 m man of typical build is (1.95/1.65)^(1.86-3), about 0.83 (0.81-0.84).\nReading: among ordinary soldiers of the same BMI, the tallest tenth score about 12% lower on a height-cubed index than the shortest tenth. That is a known bias of the rescaled index for real humans, and the page should state it. US Army sample, 2010-12; not representative of the population."
+  },
+  {
+   "key": "rescaled_ffmi_identity_at_180",
+   "label": "Rescaled FFMI S = 1.8 x FFM / H^3 equals plain FFMI at exactly 1.80 m",
+   "status": "derived",
+   "values": "{\"formula_S\": \"S = 1.8 x FFM_kg / H_m^3\", \"equivalent\": \"S = FFMI x (1.8 / H_m)\", \"units\": \"kg/m^2 (1.8 m x kg/m^3)\", \"check_H_m\": 1.8, \"check_FFM_kg\": [61.2, 81.0, 120.0], \"check_FFMI\": [18.89, 25.0, 37.04], \"check_S\": [18.89, 25.0, 37.04], \"max_abs_difference\": 7e-15}",
+   "sources": [
+    {
+     "title": "Kouri 1995 abstract (reference height 1.80 m)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:7496846%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "VanItallie 1990 abstract (FFMI definition)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:2239792%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Algebra: at H = 1.8, S = 1.8 x FFM / 1.8^3 = FFM / 1.8^2 = FFMI. Script check: scratchpad/research/size_index/scripts/derived.py (the difference is floating-point rounding only).\nMeaning: S is the plain FFMI the same body would have if all its lengths were scaled to 1.80 m, keeping its shape and density. At 1.80 m it also equals Kouri's normalised FFMI, since Kouri's correction is zero there. So Kouri's 25.0 non-user maximum (existing key kouri1995_ffmi_natural_limit) can be drawn on the S axis at 25 without conversion, as a line from a human sample, not a ceiling. Equivalently, S = 1.8 m x (fat-free Rohrer index in kg/m^3)."
+  },
+  {
+   "key": "same_shape_scaled_to_3048",
+   "label": "The same shape scaled from 1.80 m to 3.048 m: plain FFMI rises 1.69 times, the rescaled index does not change",
+   "status": "derived",
+   "values": "{\"height_ratio_k\": 1.6933, \"FFM_multiplier_k3\": 4.855, \"plain_FFMI_multiplier_k\": 1.6933, \"S_multiplier\": 1.0, \"example_FFMI25_at_1p80\": {\"FFM_kg\": 81.0, \"FFM_kg_at_3p048\": 393.3, \"plain_FFMI_at_3p048\": 42.3, \"S\": 25.0}, \"rex_plain_FFMI_at_3p048_from_brief\": 269, \"rex_S_tail_included\": 158.9}",
+   "sources": [
+    {
+     "title": "Burton 2018 (isometric individuals: mass proportional to height^3; BMI rises with height)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5835999/"
+    },
+    {
+     "title": "Burton 2010 (geometric similarity requires mass proportional to height cubed)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:19726135%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "k = 3.048 / 1.8 = 1.6933. A scaled copy has FFM multiplied by k^3 = 4.855, so plain FFMI = FFM/H^2 is multiplied by k^3 / k^2 = k = 1.693, while S = 1.8 x FFM/H^3 is multiplied by k^3 / k^3 = 1. The 269 plain FFMI for Rex at 7.5% fat (tail included, height to crest 3.048 m) comes from the brief, not recomputed here. 269 / 1.6933 = 158.9, matching the brief's 'about 159'. General rule: for any body, plain FFMI = S x H / 1.8."
+  },
+  {
+   "key": "kouri_correction_beyond_human_heights",
+   "label": "Kouri's linear height correction fails far outside human heights (Rex: 261 vs 159)",
+   "status": "derived",
+   "values": "{\"kouri_correction_at_3p048_c6p1\": -7.61, \"kouri_correction_at_3p048_c6p3\": -7.86, \"rex_kouri_normalised_c6p1\": 261.4, \"rex_kouri_normalised_c6p3\": 261.1, \"rex_S\": 158.9, \"same_shape_slope_per_m_at_FFMI\": {\"20\": 11.1, \"25\": 13.9, \"30\": 16.7}, \"kouri_6p3_as_fraction_of_same_shape_slope\": {\"20\": 0.57, \"25\": 0.45, \"30\": 0.38}, \"implied_FFM_height_power\": {\"FFMI20\": 2.57, \"FFMI25\": 2.45, \"FFMI30\": 2.38}, \"calc_js_norm_range_m\": [1.55, 2.05]}",
+   "sources": [
+    {
+     "title": "Kouri 1995 abstract (correction 6.3 x (1.80 - height))",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:7496846%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Arithmetic in scratchpad/research/size_index/scripts/derived.py.\n- Kouri adds a fixed c x (1.80 - H). At 3.048 m that is -7.6 (c = 6.1) or -7.9 (c = 6.3), so Rex's plain 269 becomes about 261. The same-shape rescaling gives 159.\n- For a same-shape body, FFMI(H) = S x H / 1.8, so near 1.80 m the exact same-shape correction has slope FFMI/1.8 per metre: 13.9 at FFMI 25.\n- Kouri's 6.3 is about 45% of that slope at FFMI 25. This is equivalent to assuming FFM proportional to H^2.45 (agrees with existing key ffmi_height_correction).\n- Because the correction is a constant slope, not a ratio, it cannot scale with the size of the body. It was fitted on human athletes only (height range not in the abstract; full text unavailable).\nThe Build Calculator's calc.js already applies Kouri only between 1.55 and 2.05 m (FFMI_NORM_RANGE) with c = 6.1. The chart should not use Kouri for comic characters beyond that range, nor for Rex or Ollie."
+  },
+  {
+   "key": "rescaled_vs_kouri_human_heights",
+   "label": "Within human heights, the rescaled index and Kouri's normalised FFMI differ by up to about 2.5 units (at plain FFMI 25)",
+   "status": "derived",
+   "values": "{\"plain_FFMI\": 25, \"rows\": [{\"H_m\": 1.55, \"kouri_c6p1\": 26.52, \"S\": 29.03}, {\"H_m\": 1.6, \"kouri_c6p1\": 26.22, \"S\": 28.12}, {\"H_m\": 1.7, \"kouri_c6p1\": 25.61, \"S\": 26.47}, {\"H_m\": 1.8, \"kouri_c6p1\": 25.0, \"S\": 25.0}, {\"H_m\": 1.9, \"kouri_c6p1\": 24.39, \"S\": 23.68}, {\"H_m\": 2.0, \"kouri_c6p1\": 23.78, \"S\": 22.5}, {\"H_m\": 2.05, \"kouri_c6p1\": 23.48, \"S\": 21.95}], \"max_gap_1p70_to_1p90\": 0.86, \"gap_at_1p55\": 2.51, \"gap_at_2p05\": -1.53}",
+   "sources": [
+    {
+     "title": "Kouri 1995 abstract (correction formula)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:7496846%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Computed for a man with plain FFMI 25 at each height (scripts/derived.py). Kouri values with c = 6.3 differ from c = 6.1 by 0.05 or less. Within 1.70-1.90 m the two agree within 0.9 units. At 1.55 m S is 2.5 units higher, and at 2.05 m it is 1.5 units lower.\nThe direction matches the ANSUR finding: S favours short men and penalises tall men relative to the human-fitted correction. This is because Kouri's correction implies FFM proportional to H^2.45 and S assumes H^3.\nExample with existing builds: a 1.91 m strongman or a 1.73 m bodybuilder will sit about 1 unit apart on the two scales. Show both for human builds so readers can see the gap."
+  },
+  {
+   "key": "rescaled_index_height_sensitivity",
+   "label": "The rescaled index falls with height cubed: each 1% of height is about 3% of score",
+   "status": "derived",
+   "values": "{\"S_factor_if_H_plus_1pct\": 0.9706, \"S_factor_if_H_minus_1pct\": 1.0306, \"approx_rule\": \"dS/S = -3 dH/H\"}",
+   "sources": [
+    {
+     "title": "Burton 2010 (mass proportional to height cubed at the same shape)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:19726135%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "S proportional to H^-3 at fixed FFM: 1/1.01^3 = 0.9706 and 1/0.99^3 = 1.0306. This is why the brief requires height to the top of the skull, not to Rex's crest or Ollie's horn tips. Example from existing key rex_ollie_picture_mass: Ollie is 3.063 m to his horn tips and 2.982 m to his skull top. That is a 2.7% height difference, so his S is 8.3% higher with the skull-top height ((3.063/2.982)^3 = 1.083). For real people, a 1 cm error in a reported height at 1.80 m (0.56%) moves S by about 1.7%."
+  },
+  {
+   "key": "meatball_score_check",
+   "label": "Upper bound: a solid ball of tissue as tall as the figure scores about 924 at 7.5% fat (899-949 for 5-10%)",
+   "status": "derived",
+   "values": "{\"formula\": \"S = 1.8 x rho x (pi/6) x (1 - f)\", \"rho_kg_m3\": 1060, \"f\": 0.075, \"S\": 924.1, \"S_f0p05\": 949.1, \"S_f0p10\": 899.1, \"S_if_rho_1081_no_lung_gas\": 942.4, \"plain_FFMI_meatball_at_1p8\": 924.1, \"plain_FFMI_meatball_at_3p048\": 1564.8}",
+   "sources": [
+    {
+     "title": "Existing builds.json key rex_ollie_picture_mass (whole-body density 1,060 kg/m^3 = 1,081 x 0.98 lung gas)",
+     "url": "https://www.bisp-surf.de/Record/PU198802031700"
+    },
+    {
+     "title": "Existing builds.json key muscle_tissue_density (Ward & Lieber 2005: conventional 1,059.7 kg/m^3)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:16154420%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "A ball of diameter H has volume (pi/6) H^3, so FFM = rho x (pi/6) H^3 x (1 - f) and S = 1.8 x rho x (pi/6) x (1 - f), whatever H is. 1.8 x 1060 x 0.5236 x 0.925 = 924.1, matching the brief.\nThe 1,060 kg/m^3 is the whole-body density used for Rex and Ollie, including about 2% lung gas (existing key rex_ollie_picture_mass; I did not re-fetch its sources). With lung-free tissue at 1,081 kg/m^3, S would be about 942. Use the same density as the duo so the top of the scale and the duo stay comparable.\nAt 3.048 m the same ball has plain FFMI 1,565. That is the plain-FFMI ceiling the page must not mix with S. This is geometry with an assumed density, not a physiological limit."
+  },
+  {
+   "key": "recommended_size_independent_index",
+   "label": "Recommendation: keep S = 1.8 x FFM / H^3 ('FFMI at 1.80 m, same shape'); no better-sourced alternative found",
+   "status": "derived",
+   "values": "{\"recommended\": \"S = 1.8 x FFM_kg / H_m^3\", \"name_on_page\": \"FFMI rescaled to 1.80 m (same shape)\", \"show_beside\": [\"plain FFMI at real height\", \"Kouri-normalised FFMI (humans 1.55-2.05 m only)\"], \"rejected\": {\"plain_FFMI\": \"rises with height for a scaled copy (x1.69 at 3.048 m)\", \"kouri_normalised\": \"linear, fitted to human athletes; 261 vs 159 for Rex\", \"benn_type_fitted_p\": \"p depends on population and statistics (1.1-2.5 adults; ANSUR OLS 2.0 vs RMA 4.2); undefined for non-humans\"}, \"known_bias_humans\": \"tall men score lower: tallest ANSUR decile about 12% below shortest at equal BMI\"}",
+   "sources": [
+    {
+     "title": "Burton 2007 (mass/height^3 independent of scale)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:18092209%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Burton 2018 full text (isometric individuals)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5835999/"
+    },
+    {
+     "title": "Jaric 2005 (allometric normalisation based on geometric similarity)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:15903392%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Kouri 1995 abstract (1.80 m reference)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:7496846%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Heymsfield 2007 full text (FFM ~ H^1.86 in men)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2729090/"
+    }
+   ],
+   "notes": "Why this index:\n- The height-cubed exponent is the only one that follows from geometry: constant for a scaled copy (Burton 2007, 2010, 2018; Haldane; Fowler).\n- Allometric normalisation based on geometric similarity is the recommended practice when sizes differ (Jaric 2005).\n- Weight/H^3 is an established index (Rohrer, tri-ponderal; Peterson 2017).\n- The constant 1.8 m is Kouri's reference height, so S equals plain and Kouri-normalised FFMI at 1.80 m. That lets readers use the familiar FFMI landmarks (Schutz median 18.9, Kouri 25) on the S axis.\nWhere S stops being valid, or misleads:\n1. Real tall men are not scaled copies. FFM goes roughly with H^1.86 to 2 (Heymsfield 2007), so S rates ordinary tall men lower and short men higher (ANSUR: about 12% between the tallest and shortest tenths). Kouri-normalised FFMI is the better human comparison between 1.55 and 2.05 m.\n2. S is not a published FFM index (none found). Kouri's 25 is a sample maximum in normalised FFMI, which equals S only at 1.80 m. At other human heights the two differ by up to about 2.5 units.\n3. S measures bulk for height (shape), not strength or physiology. It says nothing about whether a 3 m body of that shape could stand or move (Galileo, Haldane, Biewener).\n4. S is very sensitive to the height used (3% per 1%) and to the assumed density and body fat.\n5. Every S above the human data (about 40) is an extrapolation of geometry, not of any fitted human relation."
+  }
+ ],
+ "recommendations": "1. **Main axis.** Use S = 1.8 × FFM / H³ (H to the skull top) and label it \"FFMI rescaled to 1.80 m (same shape)\". Show the formula and one sentence of explanation: it is the plain FFMI the same body would have if shrunk or enlarged to 1.80 m at the same shape. Do not call it a published index (no FFM/H³ index was found). Call it this project's fat-free version of the Rohrer / tri-ponderal index (weight/height³), scaled to Kouri's 1.80 m. Cite Burton 2007, 2010 and 2018, Peterson 2017, Jaric 2005 and Kouri 1995.\n\n2. **Beside it, show plain FFMI at the real height**, and note that plain FFMI = S × H / 1.8. For the duo, also show the scaled-copy example: same shape at 3.048 m means plain FFMI is 1.69 times larger.\n\n3. **Human builds from 1.55 to 2.05 m.** Also show Kouri-normalised FFMI (calc.js already does this with c = 6.1) and say why S differs from it: up to +2.5 at 1.55 m and −1.5 at 2.05 m for plain FFMI 25.\n   - State the known bias: real tall men are not scaled copies (Heymsfield 2007: FFM proportional to H^1.86 in 581 men; Burton 2012), so S rates tall men lower. In ANSUR II the tallest tenth score about 12% below the shortest tenth at the same BMI.\n   - Never apply Kouri outside 1.55–2.05 m. For Rex it gives 261 against S of 159.\n\n4. **Reference lines.** Draw Kouri's 25 and Schutz's median of 18.9 on the S axis as values at 1.80 m. Call the 25 a sample maximum, not a ceiling. Mark everything above the human data (about 40) as \"extrapolation: geometry only\".\n\n5. **Explain what S does not measure:** strength, physiology, or whether a body that size could stand. Quote Galileo or Haldane briefly: a giant needs different proportions.\n\n6. **Height and fat sensitivity.** Show that 1% of height moves S by about 3%, and show the S range across the plausible body-fat range.\n\n7. **Meatball top.** Keep 924, computed with 1,060 kg/m³ (the duo's whole-body density, lungs included). Show 899–949 for 5–10% fat, and note it would be about 942 with lung-free tissue density. It is geometry, not physiology.\n\n8. **Existing builds.json keys to reuse rather than re-research:**\n   - kouri1995_normalization_constant\n   - ffmi_height_correction\n   - kouri1995_ffmi_natural_limit\n   - heymsfield_2007_scaling (add the full-text numbers from heymsfield2007_ffm_height_power_fulltext)\n   - heymsfield_2011_circumferences\n   - benn_index_exponent_debate\n   - ansur_mass_height_exponent\n   - action_toy_allometry_precedent (Pope 1999 scaled figures to 1.78 m by classical allometry: a precedent for rescaling to a reference height)\n   - ffmi_population_norms\n   - rex_ollie_picture_mass\n   - muscle_tissue_density\n\n9. **Number format.** Show S to one decimal for humans and as whole numbers above about 100. Avoid \"≈\" for big gaps.",
+ "gaps": "- **Kouri 1995 full text** is not open access. The 6.3 vs 6.1 constant is unresolved (already marked disputed in builds.json). I also could not find how the slope was fitted or the athletes' height range.\n- **VanItallie 1990 full text** was not reachable (DOI redirects to Elsevier). I used the abstract only, which gives the definition but no reason for choosing height squared.\n- **Rohrer 1921 primary** was not fetched. The citation (Münch Med Wochenschr 68:580-582) comes from Wikipedia only. The Peterson 2017 supplement with the history was blocked by a PMC download challenge.\n- **Schmidt-Nielsen 1984** (Cambridge UP book) was not accessible.\n- **Galileo** is quoted from Michael Fowler's UVa reproduction of the Crew & de Salvio translation. The publication year is not on the fetched page, and the \"sesquialteral\" surface-volume passage was not located.\n- **Haldane's essay** was read in a marxists.org transcription from the OUP 1985 collection, which says 1928. The Harper's archive page confirms March 1926 publication (metadata only; no text on the page).\n- **McMahon 1973 and Biewener 2005**: abstracts only.\n- **No FFM/H³ index found.** Europe PMC abstract searches found no published fat-free-mass-over-height-cubed index in adults. Wells & Cole 2002 found FFM/H² best in 8-year-olds, contrary to the task's suggestion.\n- **No data on how FFM scales with height among very muscular men,** apart from the exponent of about 2.45 implied by Kouri's correction. Trexler's slope is not significant (existing key).\n- **Heymsfield 2007 samples** are general adults with BMI 18.5–35, not athletes.\n- **ANSUR II has no body-fat measurement,** so the tall-man bias was shown with total weight, not FFM.\n- **No allometry paper recommends an index for comparing muscularity across bodies of very different heights.** The recommendation of H³ rests on geometry plus sport-science practice (normalising by geometric similarity), not on a validated muscularity index.\n- **Not checked by me:** Rex's plain FFMI of 269 and the 7.5% fat inputs were taken from the brief. Existing keys I relied on (heymsfield_2011_circumferences, rex_ollie_picture_mass sources) were not re-fetched."
+}

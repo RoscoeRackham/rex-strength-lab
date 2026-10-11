@@ -83,13 +83,14 @@ SNIP_PATH = os.path.join(ROOT, 'research', 'archive_snippets.json')
 SNIP = load(SNIP_PATH)['searches'] if os.path.exists(SNIP_PATH) else {}
 # Which highlighted passage supports each fact (the searches also hit other characters).
 QUOTE_PICK = {
-    'asgardian_tissue_density_ohotmu': r'Asgardian flesh and bone|flesh and bone is about (three|3) times',
-    'thor_density_adjusted_mass': r'flesh and bone is about (three|3) times denser',
-    'comic_score_treatment': r'flesh and bone is about (three|3) times denser',
+    'asgardian_tissue_density_ohotmu': r'Asgardian flesh and bone|bone is about (three|3) times denser|matter is (considerably )?denser',
+    'thor_density_adjusted_mass': r'bone is about (three|3) times denser',
+    'comic_score_treatment': r'bone is about (three|3) times denser',
     'colossus_armored_composition': r'organic steel|unknown composition|additional mass',
     'hulk_added_mass_composition': r'Hulk.s body fortified|bone marrow and tissue to his body|mutation was not a stable',
-    'abomination_added_mass_composition': r'Abomination.s body fortified|pounds of bone marrow and muscle',
-    'luke_cage_dense_tissue': r'bone tissue, and steel-hard skin',
+    'abomination_added_mass_composition': r'pounds of bone marrow and muscle',
+    # Luke Cage: the DK OCR line runs two columns together, so no quote is shown (its OCR text is linked).
+    'luke_cage_dense_tissue': None,
     'kingpin_bulk_not_fat': r'great bulk does not consist|sumo wrestler',
     'juggernaut_composition': r'helmet and skullcap|Weight: 900',
     'comic_body_fat_official': r'virtually devoid of fat|great bulk does not consist',
@@ -113,7 +114,7 @@ for k, f in facts.items():
         if API not in src.get('url', ''):
             continue
         res = SNIP.get(src['url'], {})
-        pick = re.compile(QUOTE_PICK.get(k, r'.'), re.I)
+        pick = re.compile(QUOTE_PICK.get(k, r'.') or r'(?!x)x', re.I)
         quote = None
         for h in res.get('hits', []):
             if h['identifier'] not in OFFICIAL_ITEMS:

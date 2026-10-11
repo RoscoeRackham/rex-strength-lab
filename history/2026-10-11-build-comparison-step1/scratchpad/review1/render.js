@@ -1,0 +1,23 @@
+const fs=require('fs'), path=require('path');
+const {chromium}=require('/opt/node22/lib/node_modules/playwright');
+const S=__dirname;
+(async()=>{
+ const page=fs.readFileSync(''+(process.env.DIST||'/home/user/rex-strength-lab/build-comparison/dist/index.html')+'','utf8');
+ const html='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body>'+page+'</body></html>';
+ fs.writeFileSync(path.join(S,'page.html'),html);
+ const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome'});
+ const p=await b.newPage({viewport:{width:1280,height:900}});
+ const errs=[]; p.on('console',m=>{if(m.type()==='error')errs.push(m.text())}); p.on('pageerror',e=>errs.push(String(e)));
+ await p.route(/fonts\.(googleapis|gstatic)/, r=>r.abort());
+ await p.goto('file://'+path.join(S,'page.html'));
+ await p.waitForTimeout(2500);
+ await p.evaluate(()=>document.querySelectorAll('details').forEach(d=>d.open=true));
+ const text=await p.evaluate(()=>document.body.innerText);
+ fs.writeFileSync(path.join(S,'page.txt'),text);
+ const links=await p.evaluate(()=>[...document.querySelectorAll('a[href]')].map(a=>({t:a.textContent.trim(),u:a.href, sec:(a.closest('section')||{}).id||''})));
+ fs.writeFileSync(path.join(S,'links.json'),JSON.stringify(links,null,1));
+ const bc=await p.evaluate(()=>{const b=window.__bc; return {LIST:b.LIST.map(e=>({id:e.id,short:e.short,group:e.group,score:e.score,plain:e.plain,h:e.height,m:e.mass,bf:e.bodyFat,comparable:e.comparable})),GAPS:b.GAPS,HUMAN_TOP:b.HUMAN_TOP,MEAT:b.MEAT}});
+ fs.writeFileSync(path.join(S,'bc.json'),JSON.stringify(bc,null,1));
+ console.log('errors',errs);
+ await b.close();
+})();

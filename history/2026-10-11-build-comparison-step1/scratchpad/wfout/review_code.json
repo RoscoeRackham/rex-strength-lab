@@ -1,0 +1,145 @@
+{
+ "findings": [
+  {
+   "id": "F1",
+   "severity": "major",
+   "title": "Limit scores are S(f=1) x f^2, not the widened shape read with the measuring tool as the page says; the hands-to-face band is about 30% too high",
+   "location": "build-comparison/tools/compute_limits.js:8 and :62 (score: round(S1 * f * f, 2)), :72 (faceLow); data/settings.json limits.method and face.definition ('near 220'); data/limits.json",
+   "evidence": "settings.limits.method (shown on the page): \"...until the limit is reached, and that shape's score is read with the measuring tool at 1,060 kg/m\u00b3 and 7.5% fat.\" The code measures only the f=1 shape, then multiplies by f^2 (comment: 'every width and depth scales by f'). Figure.human does not scale that way. Head, hand and foot sizes and the biacromial width stay fixed, and once the widened thighs cross the midline they are clipped there (Math.max(0, p[0])), as are arms that merge into the torso. Script scratchpad/review1/f2.js and an inline loop ran measureTemplate(id, 1.8, f, 800) on each limit shape. Median soldier: arms 42.4 -> measured 41.7 (-1.6%); thighs 48.9 -> 47.4 (-3.1%); face 217.1 -> 152.0 (-30.0%). Face for each template: p5 203.3 -> 142.6; p95 233.3 -> 162.7; Reeves 190.2 -> 136.2; Coleman 206.1 -> 151.1; largest arm 180.6 -> 132.1. Pessimistic bound (f 1.786): 86.1 -> 77.8. Thighs, Reeves: 53.2 -> 49.4 (-7.1%). So the published face band of 86-233 ('near 220' in the page text, '86 to 230' in the README) should be about 78-163. The shape at f=2.837 passes all of the tool's checks (scratchpad/review1/face-limit-shape.png). The test 'widening every run by f multiplies the measured volume by f^2' checks M.scaleRuns on a mask, not Figure.human's widthScale, so nothing tests the assumption compute_limits relies on.",
+   "expected": "Each limit's score should be what the widened shape measures (the stated method). At the face limit the tool finds no arms and counts arm pixels at torso depth, so 152 is if anything an overestimate; the f^2 value of 217 is not that shape's score under any reading.",
+   "fix": "In run(), set row[k].score = measureTemplate(id, H, f, 800).res.score.value (and do the same for faceLow) instead of S1*f*f. Regenerate limits.json. Replace the typed 'near 220' and 'near 90' in settings face.definition with values filled from limits.json. Add a test that each limits.json score is within 1% of measureTemplate at its f."
+  },
+  {
+   "id": "F2",
+   "severity": "major",
+   "title": "A sheet with front and back views but no side view passes every check, and the back view is used as the side depth (score +29%)",
+   "location": "build-comparison/src/measure.js:696-699 (views.length !== order.length is only a warning; V assigned by position)",
+   "evidence": "scratchpad/review1/frontback.js renders the median soldier as front + back (no side) and as front + side + back. Node: 'front+side+back sheet: ok true volume 0.088 score 26.6 chest 107.7 cm' vs 'front+back sheet: ok true volume 0.113 score 34.2 chest 115.1 cm | errors: [] | view warning: Found 2 views; expected 3'. Loaded through the page's file input (odd_ui.js front-back-only): every check shows PASS, the view captions read 'FRONT \u00b7 602 PX / SIDE \u00b7 602 PX' (the 'side' is the back view), and the result is 'Score 34 31\u201337'. The 'treat these numbers as rejected' banner does not appear; the only sign is a NOTE.",
+   "expected": "Front-and-back turnarounds are a common layout. The tool should refuse to measure depth from a view that is not a side view. Here the volume is 28% too high and the copy button exports it as a passing build.",
+   "fix": "In measureSheet, set out.ok = false when views.length < order.length (or when V.side is missing by name). Also add a plausibility check: the side view's depth at the chest row should be clearly less than the front torso width (for example side/front < 0.9 at the chest and waist); otherwise reject with 'the view taken as the side looks like a front or back view'."
+  },
+  {
+   "id": "F3",
+   "severity": "major",
+   "title": "Typed skull rows are not validated: a typo gives all-PASS results of 23,800,000 kg, or negative heights and girths; the overlay never shows the skull row",
+   "location": "build-comparison/src/measure.js:709-722 (topOf, hpx, mPerPx), :760 (out.landmarks has no skull); src/app.html:1391 (reads res.landmarks.skull, never set), :1409 (rows only filtered for > 0)",
+   "evidence": "On ok-sheet.png (a 602 px median soldier, ground row 649), set via scratchpad/review1/odd_ui.js. Skull rows '640': every check PASS, no rejection banner, 'Volume 22,425.244 m\u00b3 ... Mass 23,800,000 kg ... Score 6,800,000 ... Thigh 3,827.2 cm ... Crotch height 50.94 m'. Skull rows '5000': 'PASS View heights agree within 2%. Front -4350 px, side -4350 px, back -4350 px', 'NOTE The figure is -4350 px tall', 'Thigh -8.8 cm -7.9\u2013-9.7 cm', 'Crotch height -0.12 m', 'Score 0'. drawSheet draws its blue line at res.landmarks.skull if present, else F.top. measureSheet never sets landmarks.skull, so the typed row is never drawn and the user cannot see the mistake.",
+   "expected": "A skull row must lie in the top part of its view, above the neck and below the figure's top pixel minus a sane crest or horn allowance. Otherwise the sheet should be rejected with a clear message, never scored.",
+   "fix": "In measureSheet, for each typed row, require V[name].y0 <= row < V[name].y0 + 0.15 * (V[name].y1 - V[name].y0); otherwise set out.ok = false with 'Skull row N for the <view> view is outside the head'. Set out.landmarks.skull = topOf('front') and label the gutter line 'skull' when ref is 'skull'."
+  },
+  {
+   "id": "F4",
+   "severity": "major",
+   "title": "The target outline misses its target across much of the advertised 15-900 range (up to -34%); the copied JSON pairs target 900 with an outline that measures 590",
+   "location": "build-comparison/src/app.html:1499 ('15 to 900'), :1513-1517 (one f^2 correction, then the final drawing with no re-check); test/shots.js only tests a target of 60",
+   "evidence": "scratchpad/review1/target.js drives #tShape, #tTarget and #targetBtn in the page. Median soldier: 200 -> 'measures 190 (target 200)', 300 -> 290, 700 -> 640, 900 -> 760. Ronnie Coleman: 200 -> 190, 300 -> 270 (-10%), 400 -> 330, 500 -> 390, 700 -> 500, 900 -> 590 (-34%). 5th percentile: 150 -> 140, 900 -> 810. The cause is that the score is not proportional to f^2 once arms and thighs merge (same cause as F1), and the code makes only one correction step. scratchpad/review1/target_node.js iterates at the final 1,000 px with a secant step and converges: median soldier 200 at f 3.193 -> 200.0 (the page uses f 3.060 -> 187.9); Coleman 300 at f 3.331 -> 300.7; Coleman 900 at f 13.70 -> 900.0. The status line does report the miss.",
+   "expected": "The BRIEF asks for 'the outline for any target score' as control images for gap fillers, mostly in the 88-130 and 220-924 gaps. The outline should measure within about 1-2% of the target, or the page should refuse.",
+   "fix": "Replace the two fixed steps with a loop at the final figurePx: secant on log(score) against log(f), at most 8 iterations, stopping within 1%. If it does not converge or f exceeds a sane cap, set targetStatus to say so and do not fill the copy JSON. Extend shots.js to check a high target (for example 300 on Coleman)."
+  },
+  {
+   "id": "F5",
+   "severity": "major",
+   "title": "Measuring a sheet at the spec's minimum size freezes the page for 12 s (25 s at 3,000 px)",
+   "location": "build-comparison/src/measure.js:241 (two refineMask passes over the whole image), :252-300 (refineMask: full-image pushPull, eight morph passes, two components passes); src/app.html:1416 (runs on the main thread)",
+   "evidence": "scratchpad/review1/perf.js in Chromium. Median-soldier sheet with a 2,000 px figure (the sheet spec's minimum; 4,476 x 2,320 px): measureSheet 12,221 ms. 3,000 px figure (6,714 x 3,480): 24,585 ms. Node profile (prof.js), 4,479 x 2,320: 'segment no refine 1529 ms | segment (2 refine passes) 10540 ms', so about 9 s is the refinement. pushPull alone allocates Float32Array(w*h*3), about 125 MB at this size and about 280 MB at 3,000 px, before the pyramid; a phone tab risks running out of memory. For comparison, the page's own 700 px example measures in 1.4 s.",
+   "expected": "Under about 2 s for a spec sheet, or at least off the main thread with progress shown. The tool exists for Step 2 sheets of 2,000 px or more.",
+   "fix": "Run measureSheet in a Web Worker (the code is plain JS with no DOM). Limit refineMask to the views' bounding boxes plus a margin, or to the 4 px edge band. Alternatively, segment a copy downscaled to about 1,000 px figure height and refine edges at full resolution."
+  },
+  {
+   "id": "F6",
+   "severity": "major",
+   "title": "CI never checks data/limits.json values or data/facts.json, so stale generated data passes, including after edits to the shared builds.json",
+   "location": ".github/workflows/test.yml:37 (git diff covers only rex-strength-lab/src/data.js and */dist/index.html); test/test.js:111-119 (limits test compares text fields only); tools/compile_facts.py is never run in CI",
+   "evidence": "All five generated files did reproduce byte-for-byte from their tools at HEAD. But in a copy (scratchpad/review1/copy2), I changed settings limits arms.angle_deg 30->40 and face.max_flexion_deg 100->110 without regenerating: the test's limits assertion passes, and node build.js gives a dist identical to the committed one (settings.limits is replaced by limits.json in the build). Regenerating gives arms 52.0 (committed 42.42) and face 164.6 (committed 217.14). Lowering Coleman's thigh girth 10% in build-calculator/data/builds.json (a shared file the collaborator edits) changes the bands: arms 34.95-43.09 vs committed 36.51-43.09, thighs 48.91-53.2 vs 42.38-53.2. CI still passes. Dropping one entry from research/corrections.json changes compile_facts.py's output ('133 facts, 37 corrections applied'), but CI never runs it and the dist built from the stale facts.json matches the committed one. limits.json depends on builds.json, calc.js, figure.js, measure.js, outline.json and settings.json; no test regenerates it.",
+   "expected": "The README's table lists limits.json and facts.json as generated by their tools, and the test name says limits.json 'is regenerated, never edited'. CI should fail when either does not match its sources, as it does for dist.",
+   "fix": "In test.yml, before the Build Comparison build: 'python tools/compile_facts.py && node tools/compute_limits.js'. Add build-comparison/data/limits.json and build-comparison/data/facts.json to the git diff --exit-code pathspec. Or in test.js, deepStrictEqual require('../tools/compute_limits.js').run() against the committed file (about 13 s)."
+  },
+  {
+   "id": "F7",
+   "severity": "minor",
+   "title": "Tests do not test what their names say: the arms-limit test exercises a function the limits never use, and two published limit functions have no tests",
+   "location": "build-comparison/test/test.js:268-280 (Fig.armBoneClearance), :171 ('side views facing right'), :244 ('tail over the back view')",
+   "evidence": "The test 'limits: wider at fixed bones, the thighs touch further down and the arms are pushed out' calls Fig.armBoneClearance. grep shows compute_limits.js uses Fig.armRestAngle for the published arms limit and Fig.elbowFlexion for the face limit, and neither appears anywhere in test/. The test asserts armBoneClearance(base) === 0 ('an ordinary man can let his arms hang'), while the function the page uses gives arm_rest_angle_at_f1_deg 7.7 for the median soldier and 39.4 for Coleman (over the 30\u00b0 threshold) in limits.json. The 'facing right' test only asserts the source facing is 'left' and that a tail exists; traced output does face right (tail mean x -1.03 m for Rex, -0.85 for Ollie), but nothing checks it. The turnaround test asserts !ok and a resolution warning, not which check fails.",
+   "expected": "Each named behaviour should be asserted, and the functions that produce published numbers should have direct tests.",
+   "fix": "Test armRestAngle (monotone in f; median soldier < 30\u00b0 at f=1) and elbowFlexion (the calibrated crease gives 145\u00b0 at f=1, falling with f), or delete armBoneClearance and armClearance if unused. Assert the mean x of the traced side tail < 0. Assert the expected failing check names for each turnaround."
+  },
+  {
+   "id": "F8",
+   "severity": "minor",
+   "title": "Copy as a build uses the height field's current value, not the one measured: a mismatched or null height",
+   "location": "build-comparison/src/app.html:1455 (height_m: { value: num('tH') }), and no input listeners on #tH, #tRho, #tBf or #tArmK",
+   "evidence": "scratchpad/review1/copy_stale.js measures the example at 1.80, then edits #tH without measuring and clicks Copy. 'field 3.00 -> copied height_m.value 3 | weight_kg 90 | notes score 25.7 (23.9-27.5)' (mass and score are for 1.80 m; at 3.00 m the same picture is 90 x (3/1.8)^3 = 417 kg). 'field abc -> copied height_m.value null | weight_kg 90'. The results table also keeps showing the old numbers.",
+   "expected": "The exported build should be internally consistent: the height, mass, girths and score from one measurement.",
+   "fix": "Store the inputs used (H, density, body fat, arm k, skull rows) in tool.res when measuring and read them in resultEntry. Clear tool.res and the results table on any input event in the tool's fields."
+  },
+  {
+   "id": "F9",
+   "severity": "minor",
+   "title": "Unseparable sheets fail with a misleading 'Found 0/1 view(s)' message (alpha ignored, low contrast, no margin)",
+   "location": "build-comparison/src/app.html:1478-1489 (getImageData without compositing; transparent pixels read as black); src/measure.js:121-145 (background from edge columns), :695",
+   "evidence": "Through the page's file input (odd_ui.js, sheets from make_odd.js). Black figure on a transparent background (the 'solid silhouette layer or mask' the sheet spec asks for): 'No result: Found 0 view(s); a sheet needs a front and a side view'. Grey 120 figure on grey 150: the same message. Figures touching the left and right edges: 'Found 1 view(s)'. White or skin figures on transparent backgrounds measure correctly. Tiny images (1x1, 2x2, 3x3, 20x20, 4000x40), one view only and noise also fail cleanly with no NaN or hang.",
+   "expected": "A clear reason: the transparent background was read as black, the figure does not differ from the background, or the figure touches the sheet edge so the background cannot be sampled.",
+   "fix": "In loadFile, fill the canvas white before drawImage, or, when any alpha < 255, build the mask from alpha. In measureSheet, when 0 views are found, say 'no figure separated from the background (needs a colour or darkness difference)'. Warn when the edge columns used for the background contain figure-coloured pixels."
+  },
+  {
+   "id": "F10",
+   "severity": "minor",
+   "title": "On load, the tool's automatic runs block the main thread (a 2 s long task on desktop; about 14 s at 4x CPU throttle)",
+   "location": "build-comparison/src/app.html:1554-1566 (measure(), setTimeout(drawTarget, 400), duo.jpg validation, all at init)",
+   "evidence": "fcp.js at 1280 px: first contentful paint 184 ms, then long tasks of 631 ms, 2,030 ms and 885 ms. throttle.js (390 px, Emulation.setCPUThrottlingRate 4): 'load event 4369 ms; tool example + validation + target done 15029 ms; long tasks >200 ms [[601,1358],[2069,2270],[4365,6331],[10908,4064]]'. Taps and scrolling queue during these runs. Individual runs at desktop speed: example measurement 1,383 ms, target outline 844 ms (100) to 1,892 ms (900).",
+   "expected": "The lineup should be interactive within about 2 s on a phone. The example measurement, validation and target outline are not needed until the tool section is reached.",
+   "fix": "Start measure(), drawTarget() and the duo validation when the tool section scrolls into view (IntersectionObserver), or run them in a Web Worker (see F5)."
+  },
+  {
+   "id": "F11",
+   "severity": "minor",
+   "title": "tools/export_targets.js draws target sheets with arms at 20\u00b0, not the spec's 30-40\u00b0, so the CLI and the page give different outlines for the same target",
+   "location": "build-comparison/tools/export_targets.js:31 (Fig.human without armDeg, so the default 20\u00b0), :46 (solve caps f at 6)",
+   "evidence": "The header says the sheet is 'drawn as a model sheet to the spec', and the BRIEF's spec is 'A-pose, arms about 30\u201340\u00b0 out'. The page's target outline uses armDeg 35. 'node tools/export_targets.js --score 100 --build ansur2_m_p50 --px 2000' took 59.6 s and gave 'widths x 2.139'; the page gives x 2.05 for the same target. In the exported sheet the arms are fused into the torso (scratchpad/review1/targets/small.png). armdeg.js: the same shape at f 2.139 measures 99.9 with 20\u00b0 arms (no arm detected on either side) and 107.9 with 35\u00b0 arms. The CLI prints only checks ('ok' for all four), not the tool's warnings. solve() searches f only up to 6, so high targets cannot be reached (the page needed f 7.17 for 900 and still fell short).",
+   "expected": "Step 2 control images should follow the sheet spec, and the CLI and page should agree for one target.",
+   "fix": "Pass armDeg: 35 in templateViews (keep compute_limits on its own setting, or pass it explicitly), raise solve's upper bound or bracket adaptively, and print res.warnings with the checks."
+  },
+  {
+   "id": "F12",
+   "severity": "minor",
+   "title": "The shots.js NaN/undefined audit never sees text inside closed <details> (65% of the page text)",
+   "location": "build-comparison/test/shots.js:53 (document.body.innerText)",
+   "evidence": "details.js: 10 closed <details> (the full key, Sheet layout, all eight Sources topics). innerText length is 27,222 characters before opening them and 78,324 after. No bad values are there now, but a NaN in a fact summary, the key or the sheet-layout hints would pass the test.",
+   "expected": "The audit that 'fails on NaN/undefined/Infinity in text' should cover all rendered text.",
+   "fix": "In audit(), open every details element (or use textContent of non-script nodes) before matching, then restore."
+  },
+  {
+   "id": "F13",
+   "severity": "minor",
+   "title": "The skull-row hint says 'front, side, back' but rows are assigned in the selected view order",
+   "location": "build-comparison/src/app.html:493 (hint), :1411 (order.forEach -> skull[v] = rows[i])",
+   "evidence": "The hint reads 'Pixel rows, front, side, back: e.g. 52, 57, 52'. With 'Views, left to right' set to 'front, back, side' (Rex's turnaround layout), typing per the hint '52, 57, 52' assigns back=57 and side=52. Node on rex-turnaround.png: correct rows give 'front 710 px, back 712 px, side 705 px'; hint-following rows give 'front 710 px, back 707 px, side 710 px'.",
+   "expected": "The hint should match the code.",
+   "fix": "Change the hint to 'Pixel rows, in the order of the views left to right', or map typed rows to front, side, back explicitly regardless of the layout."
+  },
+  {
+   "id": "F14",
+   "severity": "minor",
+   "title": "README counts are stale (checks, facts, corrections)",
+   "location": "build-comparison/README.md:25, :52, :62",
+   "evidence": "README: 'node test/test.js ... (23 checks)', 'lists the 113 research facts', '26 corrections applied'. Actual: test.js prints '24 passed'; facts.json has 133 facts, and the page's Sources topics sum to 133 (16+33+25+18+19+20+1+1); compile_facts.py prints '133 facts, 38 corrections applied', and research/corrections.json has 38 entries.",
+   "expected": "The documented numbers should match the data.",
+   "fix": "Update to 24 checks, 133 facts and 38 corrections, or drop the counts."
+  }
+ ],
+ "verified_ok": [
+  "Every committed generated file reproduces byte-for-byte from its tool, run in a clean git-archive copy (scratchpad/review1/copy): data/outline.json (derive_outline.js), data/duo-outlines.json (trace_turnarounds.js), data/limits.json (compute_limits.js), data/facts.json (compile_facts.py: 133 facts, 38 corrections) and dist/index.html (build.js).",
+  "CI rebuilds dist and diff-checks it: the pathspec '*/dist/index.html' matches build-comparison/dist/index.html; CI runs test.js, duo.js and shots.js for Build Comparison.",
+  "test/test.js passes 24/24 (44 s). test/duo.js passes: Rex 2.553 m^3 inside 2.52-2.60, each part within 5%, five threshold variants within 2%. test/shots.js reports no problems.",
+  "The Build Calculator still passes: test/test.js 22/22 and test/shots.js with no problems.",
+  "The page (slimmed builds.json, browser) and Node (full builds.json) give identical score, lo and hi for all 49 builds, and identical gaps (44.6-62.5, 87.7-125.8, 216.2-924.1). Facts that build.js strips (the RANGE_FACT keys) are only read by calc.js's reverse mode, which this page never calls.",
+  "No XSS path found: file names go in via textContent and into the JSON copy only; checks, warnings and errors pass through esc(); source URLs are filtered to http(s) and escaped; localStorage prefs are whitelisted; tool inputs are parsed with Number(); tOrder and tShape are fixed selects.",
+  "measure.js handles tiny images (1x1, 2x2, 3x3, 20x20, 4000x40), a single view, an 800x800 noise image, a sheet cropped tight at top and bottom, and white or skin figures on transparent backgrounds without NaN, Infinity, exceptions or hangs; a simple-shape fuzz (rectangles, ellipses, a T shape, a floating head, an inverted triangle) gave no non-finite numbers.",
+  "The real turnarounds loaded through the page are rejected with named failed checks and the 'treat these numbers as rejected' banner (Rex: knee and side neck; Ollie: armpit and crotch front vs back).",
+  "Arm volume per row, pi/4 x wd^2 x k x cos(theta), integrates to pi/4 x w_perp^2 x k x L for a tilted round arm, which is correct.",
+  "model.js: score, ffmi, plainFromScore, ballScore (924.1 at 1,060 kg/m^3 and 7.5% fat; 899 to 949 for 10 to 5%); the Army one-site equation reproduces 17.48%; gaps() takes the highest top below and the lowest bottom above, so no comparable range enters a gap.",
+  "Traced side views of Rex and Ollie face right after the flip: tail mean x is -1.03 m and -0.85 m.",
+  "Bad tool inputs are flagged rather than computed: height -3, target 5, an empty height after loading a file, a non-image file (onerror message).",
+  "Time to first render is fine: first contentful paint about 0.2 s, DOMContentLoaded 1.1 to 3.1 s at desktop speed; the target outline takes 0.8 to 1.9 s, the example measurement 1.4 s, and the duo.jpg validation runs live and passes."
+ ]
+}

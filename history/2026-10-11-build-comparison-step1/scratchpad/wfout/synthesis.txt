@@ -1,0 +1,817 @@
+['chosen_style', 'style_alternatives', 'tokens', 'fonts', 'layout', 'chart_spec', 'figure_spec', 'controls', 'tool_ui', 'copy', 'grafted', 'open_questions']
+===== chosen_style 1658
+Studio lineup on a tailor's sheet. This is the lineup proposal's style A, kept because the current build already uses it, with its group palette re-stepped and every accent given one job.
+
+- **The lineups.** Every lineup stands against the turnarounds' blue-grey studio wall, ruled at ANSUR II landmark heights, on a light floor that carries each build's plate.
+- **The page around them** is the Build Calculator's measurement sheet: the same paper, ink, yellow tape, chalk blue, fonts (Big Shoulders Display, Public Sans, IBM Plex Mono) and status chips. The two pages read as one family.
+- **Figures.** Flat fills, one per group, from the art. The ink edge alone says where each part of an outline came from.
+- **One job per accent colour:**
+  - Yellow tape is the scale: the log tapes and the score tags on each stretch.
+  - Chalk blue is geometry: the skull-top line, the functional limits, the meatball and template outlines.
+  - Alarm red is a warning: not comparable, may be overstated, beyond human data, FAIL.
+  - Ink is data and anchors: edges, Kouri's 25, text.
+- **No dashes on any drawing.** Dashed borders mean "reported" on the house chips, so figures, walls and limit marks use only solid, dotted and dash-dot lines.
+- **Palette fix.** The current fills failed the all-pairs colour-blind check: Rex and Ollie's maroon against the strongmen's umber scored ΔE 4.5, and 12.0 for normal vision. That pair could not be told apart in a legend or in a mixed lineup. Two fills move:
+  - Rex and Ollie: Ollie's maroon briefs, moved toward plum.
+  - Comic characters: the navy briefs, lifted a little.
+
+  Validated numbers are under style_alternatives.
+===== style_alternatives 3215
+Three styles were considered.
+
+**1. Studio lineup (picked).**
+- The wall is the turnarounds' own backdrop (#888898, lightened), so traced figures and figures drawn from data stand in one world.
+- Each group's fill comes from the art:
+
+  | Group | Fill | Taken from |
+  |---|---|---|
+  | Everyday men | slate | the studio |
+  | Natural athletes | crest gold | Rex's crest glint |
+  | Bodybuilders | rust | Ollie's skin |
+  | Strongmen and lifters | umber | Rex's scales |
+  | Comic characters | navy | Rex's briefs |
+  | Rex and Ollie | plum | Ollie's maroon briefs, shifted |
+
+- It keeps the sister page's fonts, chips and tape.
+- It is already built, so the rework is small.
+
+**2. Umber print (the reader proposal's style C).**
+- Every figure gets the same umber fill. Group shows only as a floor tile and a swatch by the name.
+- It is the strictest reading of "builds differ only in their outline marking", and its edges read best.
+- Rejected as the default: a skimming reader can no longer see at a glance that every giant is a comic character, or that Superman stands among ordinary men.
+- Kept as the fallback if review finds group colour competes with the edges. To switch, set every --g-* fill to #4A3324 (light) or #C9A27E (dark) and keep the swatches.
+
+**3. Dark single-accent looks.** These are the instrument's brass dial, the lineup's night gallery and the reader's cyanotype sheet: an umber or navy ground with gold or white engraving.
+- They are dramatic and close to Rex's palette.
+- Rejected because they drift into the templated near-black-plus-one-accent look. Their pale tints fail colour-blind and normal-vision separation, and they break the tie with the daylight Build Calculator.
+
+**Also looked at, not shortlisted:**
+- The instrument's "studio plate": same family, but its slide-rule hero carried two scales, six lanes and three bracket rows, which is too dense for the reader.
+- "Turnaround grey" (the chart on #888898): white 11 px text at about 3:1, and no light or dark theming.
+
+**Validator record.** dataviz scripts/validate_palette.js, all pairs:
+
+| Theme | Surfaces | Worst colour-blind ΔE | Normal-vision floor | Result |
+|---|---|---|---|---|
+| Light | wall #DADCE4, sheet #F8F8FA | 11.7 (deutan, plum against umber) | 15.7 | PASS |
+| Dark | wall #262833, sheet #1B1D23 | 13.5 (protan, plum against blue) | 15.0 | PASS |
+
+Some checks fail on purpose:
+- **Lightness band:** light umber (L 0.37); dark slate, gold and umber.
+- **Chroma floor:** slate, the neutral reference group, and umber.
+- **Contrast WARN:** gold at 1.7–2.2:1 in light, umber at 1.9–2.2:1 in dark.
+
+What covers them: every figure has an ink edge, every plate and every bar row carries a text name, and fill colour never carries meaning alone.
+
+Text tokens were checked for WCAG contrast. Everything is 4.5:1 or better, on paper, sheet, wall and floor in both themes; the lowest is dark --ink-3 on the dark floor, at 4.9:1.
+
+The palette search script is at /tmp/claude-0/-home-user-rex-strength-lab/9b81b796-3162-56bd-85b7-22e02b6583e2/scratchpad/design/final/search.mjs, and the contrast check at /tmp/claude-0/-home-user-rex-strength-lab/9b81b796-3162-56bd-85b7-22e02b6583e2/scratchpad/design/final/contrast.py.
+===== tokens 5493
+```css
+:root {
+  /* surfaces */
+  --paper:#ECEDF1; --sheet:#F8F8FA; --wall:#DADCE4; --wall-line:#C2C5D1; --floor:#F1F1F4; --floor-edge:#A9ADBB;
+  /* text and rules */
+  --ink:#15181F; --ink-2:#464C5A; --ink-3:#5C6270; --rule:#C4C7D0; --rule-2:#E0E2E8;
+  /* accents, one job each */
+  --tape:#EDBE2E; --tape-ink:#231D07;                                        /* scale */
+  --chalk:#1F4FA6; --chalk-bg:#E3E9F5; --chalk-band:rgba(31,79,166,.10);     /* geometry */
+  --alarm:#B0321D; --alarm-bg:#F6E2DC;                                       /* warnings */
+  --void:#9EA2B0; --void-bg:#E6E7EC;                                         /* empty stretches and not-comparable hatch */
+  /* group fills (validated, all pairs) */
+  --g-every:#7D8599; --g-natural:#CFA23A; --g-bb:#B9592A; --g-strong:#5A3624; --g-comic:#3A55B0; --g-duo:#8A2F6E;
+  --g-geom:#A4A7B3;                                                          /* geometry fill: meatball, limit templates */
+  /* drawing */
+  --edge-w:3.8px;                                                            /* stroke under the fill: 1.9 px shows */
+  --dot:0.1 6.4; --dashdot:8 6.4 0.1 6.4;                                    /* stroke-dasharray, round caps */
+  /* type */
+  --font-display:"Big Shoulders Display","Arial Narrow","Roboto Condensed",sans-serif;
+  --font-body:"Public Sans","Helvetica Neue",Arial,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --fs-11:0.6875rem; --fs-12:0.75rem; --fs-13:0.8125rem; --fs-14:0.875rem; --fs-15:0.9375rem;
+  --fs-17:1.0625rem; --fs-18:1.125rem; --fs-22:1.375rem; --fs-24:1.5rem;
+  --fs-stop:clamp(1.625rem,4.2vw,1.875rem); --fs-h1:clamp(2.6rem,8vw,4.4rem);
+  --radius:3px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:#14151A; --sheet:#1B1D23; --wall:#262833; --wall-line:#373A49; --floor:#30323D; --floor-edge:#555A6B;
+    --ink:#E8E9EE; --ink-2:#B4B8C3; --ink-3:#9CA1AF; --rule:#3A3E4A; --rule-2:#272A33;
+    --tape:#DDB02C; --tape-ink:#1B1604;
+    --chalk:#94B5FF; --chalk-bg:#22304F; --chalk-band:rgba(148,181,255,.12);
+    --alarm:#FF8C75; --alarm-bg:#3A1C16;
+    --void:#5A5E6E; --void-bg:#23252D;
+    --g-every:#9AB4D0; --g-natural:#E8C25A; --g-bb:#D9763F; --g-strong:#7A4536; --g-comic:#6680E0; --g-duo:#B85C8C;
+    --g-geom:#6E7080;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper:#14151A; --sheet:#1B1D23; --wall:#262833; --wall-line:#373A49; --floor:#30323D; --floor-edge:#555A6B;
+  --ink:#E8E9EE; --ink-2:#B4B8C3; --ink-3:#9CA1AF; --rule:#3A3E4A; --rule-2:#272A33;
+  --tape:#DDB02C; --tape-ink:#1B1604;
+  --chalk:#94B5FF; --chalk-bg:#22304F; --chalk-band:rgba(148,181,255,.12);
+  --alarm:#FF8C75; --alarm-bg:#3A1C16;
+  --void:#5A5E6E; --void-bg:#23252D;
+  --g-every:#9AB4D0; --g-natural:#E8C25A; --g-bb:#D9763F; --g-strong:#7A4536; --g-comic:#6680E0; --g-duo:#B85C8C;
+  --g-geom:#6E7080;
+  color-scheme:dark;
+}
+body { background:var(--paper); color:var(--ink); font:400 var(--fs-15)/1.5 var(--font-body); -webkit-text-size-adjust:100%; }
+.num, .mono { font-variant-numeric:tabular-nums; }
+
+/* Status chips: the house vocabulary, raised to 11 px. No other chip words (no ASSUMED, ART, GEOMETRY, EST/DER). */
+.chip { display:inline-block; font:500 var(--fs-11)/1 var(--font-mono); letter-spacing:.06em; text-transform:uppercase; padding:4px 6px 3px; border-radius:2px; border:1.5px solid var(--ink); color:var(--ink); white-space:nowrap; vertical-align:middle; }
+.chip.measured { background:var(--ink); color:var(--sheet); }
+.chip.official { border-style:double; border-width:3.5px; padding:2.5px 5px 1.5px; }
+.chip.reported { border-style:dashed; }
+.chip.derived  { border-style:dotted; border-width:2px; padding:3.5px 5.5px 2.5px; }
+.chip.estimate { border-style:dotted; border-width:2px; padding:3.5px 5.5px 2.5px; background:repeating-linear-gradient(135deg,var(--rule) 0 1.5px,transparent 1.5px 5px); }
+.chip.unknown  { border-color:var(--rule); color:var(--ink-3); font-style:italic; }
+/* Flags: the words carry the meaning; colour only says "warning". */
+.chip.over   { border-color:var(--alarm); color:var(--alarm); background:var(--alarm-bg); }  /* NOT COMPARABLE, MAY BE OVERSTATED */
+.chip.beyond { border-color:var(--alarm); color:var(--alarm); background:transparent; }    /* BEYOND HUMAN DATA */
+/* Tool check results */
+.chip.pass  { border-color:var(--ink); }
+.chip.note  { border-color:var(--ink-3); color:var(--ink-2); }
+.chip.check { border-color:var(--alarm); color:var(--alarm); }
+.chip.fail  { border-color:var(--alarm); background:var(--alarm); color:var(--sheet); }
+/* Stop tag (scale position) */
+.tag { display:inline-block; font:600 var(--fs-11)/1 var(--font-mono); letter-spacing:.08em; text-transform:uppercase; background:var(--tape); color:var(--tape-ink); padding:4px 8px 3px; border-radius:2px; }
+:focus-visible { outline:2px solid var(--chalk); outline-offset:2px; }
+@media (prefers-reduced-motion: reduce) { * { transition:none !important; scroll-behavior:auto !important; } }
+```
+
+SVG patterns are defined once in a hidden `<svg>`. Their colours are set by CSS classes (for example `.hatch-void rect{fill:var(--void-bg)} .hatch-void line{stroke:var(--void)}`), never by var() in presentation attributes, so Safari themes them too.
+- **#hatch-void:** a --void-bg rect, with 1.5 px --void lines at 135°, 5 px apart.
+- **#hatch-g-{group}:** a --wall rect, with 1.5 px lines in the group colour at 45°, 5 px apart (for tails).
+===== fonts 1617
+Google Fonts is the only outside request. Use the sister page's exact link:
+
+```html
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+```
+
+Roles:
+
+- **Big Shoulders Display 800, uppercase:**
+  - H1 at --fs-h1, line-height .92, letter-spacing .01em.
+  - Section h2 at --fs-24.
+  - Stop headlines at --fs-stop.
+  - Plate score ranges: 24 px desktop, 20 px phone, tabular.
+  - Big values in limit plates and anchor rows: 28 px.
+- **Big Shoulders Display 700:** the "NO BUILDS HERE" label in gap tiles, 22 px, in --ink-3.
+- **Public Sans:**
+  - Body 15/1.5.
+  - Verdicts 600 at 18 px desktop, 17 px phone.
+  - Lede 18/1.45 desktop, 17/1.45 phone, with numbers in 700.
+  - Build names on plates 600 at 13 px desktop, 12 px phone.
+  - Forest names 500 at 13 px.
+  - Sub and note text 13–14 px in --ink-2.
+- **IBM Plex Mono:** every data line, axis label, chip, tag, eyebrow and spec line.
+  - Eyebrows and labels: 11 px, 600, uppercase, letter-spacing .08–.1em.
+  - Data: 11–13 px, 400/500, tabular numbers.
+
+Hard rule: no visible text under 11 CSS px at 390 px wide. That includes axis and tape labels, chips and the tool's guide labels.
+
+To keep that true in charts, SVGs carry shapes only. Every chart label is HTML, positioned with percent offsets over the chart, so it renders at real CSS px however the chart scales.
+===== layout 8833
+Breakpoints: phone below 720 px; desktop from 720; masthead two columns from 960. Under 360 px, lineups drop to three figures a row. The wrap is max-width 1280 px with a 16 px side gutter (content 1,248 px at 1280). Every section opens with an eyebrow or tag, an uppercase heading, a bold one-line verdict, then at most two lines of grey support text. There is no horizontal scroll at any width, in any mode.
+
+## Desktop (1280)
+
+### 1. Masthead (padding 28 px top, 20 px bottom)
+- Grid 7fr 5fr, gap 40.
+- **Left column:**
+  - mono eyebrow;
+  - H1 "BUILD COMPARISON";
+  - lede (60ch, 18 px), whose numbers are links to their stops, with an ESTIMATE chip after the duo sentence and a DERIVED chip after the 924 sentence.
+- **Right column, bottom-aligned:**
+  - a "The score" box: --sheet background, 1 px --rule border, 3 px radius, padding 14×16, 14 px text;
+  - under it, a three-item edge key with drawn 56×18 swatches.
+- **Full-width spec line:** mono 12, --ink-3.
+- **Glance block (full width):**
+  - a caption line (mono 11 label plus a 13 px sentence);
+  - the glance tape, 84 px tall (spec in chart_spec);
+  - a jump row: mono 12 links separated by " · ", on one line.
+
+### 2. Controls row (padding 14 px, no border)
+- Two segmented controls, FIGURES and VIEW, with mono 11 labels above them.
+- When Real heights or Side is on, a one-line 13 px --ink-2 note sits under the row.
+
+### 3. The lineup, in stops (border-top 1 px --rule)
+- **Intro:** verdict, then the sub-line, then the edge strip: one line, mono 12, three drawn samples plus a "Full key" link.
+- **Sticky locator:** 48 px high, full content width, top 0, sticky inside this section only.
+- **Ten stops,** each with padding-top 36 px and border-top 1 px --rule (none on the first):
+  1. under 25
+  2. 25 to 32
+  3. 32 to 42
+  4. GAP 42 to 59
+  5. 59 to 88
+  6. GAP 88 to 130
+  7. Rex and Ollie, 130 to 220
+  8. GAP 220 to 924
+  9. Meatball 924
+  10. Measure (that one is a later section, not a stop)
+
+  The ranges are computed. The figures above are from today's data; the builder must not type them.
+- **Stop head** (max-width 76ch): the tag row (.tag, plus a BEYOND HUMAN DATA chip when the stop starts at 42 or above), the headline, the verdict, the here-line (mono 12, --ink-2) and the note (14 px, --ink-2, 70ch). Then the lineup row, 14 px below.
+- **Lineup row:** a flex-wrap row with 14 px row gap and no column gap.
+  - Figure cells: width 120 px, growing to at most 200 px (flex 1 0 120px; max-width 200px). They are buttons.
+  - Each row ends with a filler wall cell (flex 1 1 0, aria-hidden) that carries the wall and floor to the right edge.
+  - Cell SVG: H = 150 px from skull top to floor; headroom 0.09H = 14 px; floor band 8 px; SVG height 172.
+  - Plate: min-height 124, padding 8/8/10, on --floor, with a 1 px --floor-edge top border.
+- **Gap stop:** one tile, 100% wide and 296 px tall (the height of a figure row plus its plate), so every gap tile is the same size. Spec in chart_spec.
+- **Drawer:** inserted at the end of the tapped figure's stop.
+  - --sheet background, 3 px --chalk top border, padding 20.
+  - Grid 280px | 1fr, gap 28: the figure on a wall panel at H = 240, then the facts.
+  - Rows are a dl in a grid of 150px | 1fr: label mono 11 uppercase, value 15 px.
+  - Close button at top right.
+
+### 4. How to read a figure
+- A `<details>` element, open on desktop.
+- Two columns, 1.2fr | 1fr:
+  - left: edges and the plate;
+  - right: the six group swatches plus geometry, then the five status chips with their definitions from builds.json status_vocabulary.
+
+### 5. Every build, to scale (forest plot)
+- Section head, then the SCALE segmented control and a legend row (mono 12, wraps).
+- Then the plot: a sticky axis header 44 px tall, and rows on the grid 250px | 1fr | 120px, row height 24 px (spec in chart_spec).
+- About 62 rows: about 1,500 px.
+
+### 6. Where the body stops working
+- Head, then four figure cards in a row (grid repeat(4,1fr), gap 12):
+  - 1. the median soldier's shape at the start (27);
+  - 2. arms out;
+  - 3. thighs touch;
+  - 4. hands to face.
+- Each card: a wall panel with the figure at H = 200, then a plate with the big value (28 px), the range line, a chip, the label (600) and the definition (13 px).
+- Notes follow as a bullet list, 70ch.
+
+### 7. The score, and the natural limit
+- Two --sheet cards, grid 1fr 1fr, gap 24.
+- **Left card:** the formula block (mono 15 on --chalk-bg, with a 3 px chalk left border), the body text, a worked table (Build | Height | Fat-free mass | Plain FFMI | Score) and the meatball paragraph.
+- **Right card:** the natural anchors, one per row. Each row is a 64 px value column (Big Shoulders 28) then: the label (600), the kind (mono 11, --ink-3, plain text, never chip-styled), the status chip, and the text (13 px).
+
+### 8. Measure a character
+- A --sheet card in two columns, 5fr | 7fr, gap 28.
+- **Left column:**
+  - the example select;
+  - the sheet viewer (the SVG at the column's width, with an HTML label gutter of 64 px at its left);
+  - the checks list.
+- **Right column:**
+  - the tool test line;
+  - the inputs, in a three-column grid;
+  - Measure and Copy results buttons;
+  - the status line;
+  - the results table.
+- **Below, spanning both columns:** the target outline. Grid 260px | 1fr: inputs on the left; on the right, two images side by side, each 320 px tall.
+
+### 9. What this ignores
+Bullets at 76ch.
+
+### 10. Sources
+`<details>` per topic, then the colophon (13 px, --ink-3).
+
+**Estimated length:** about 11,000 px.
+
+## Phone (390; content 358 px)
+
+### 1. Masthead (one column)
+- Mono 11 eyebrow, H1 (41.6 px, one line), lede at 17 px (about 7 lines, with chips).
+- The spec line (mono 12, wraps to 3 lines) also holds the score definition. There is no right-hand box; the edge key moves to the lineup intro.
+- Glance caption (2–3 lines).
+- Glance tape, 76 px tall: ticks 20 px, tape 24 px, labels 30 px; labels in short form.
+- Jump row, wrapping to 2 lines.
+- The first frame (844 px) reaches the stop 1
+===== chart_spec 11778
+## Shared axis
+
+- Log10 scale. Domain [12, 1000], so Bruce Banner's low end, 12.8, sits on the scale. The brief says "about 15"; 12 is the honest start.
+- Mapping: x(s) = (log10 s − log10 12) / (log10 1000 − log10 12) × W.
+- Close-up domain [12, 45], on the same formula.
+- Not a broken axis: a break would cut out exactly the empty stretches the brief wants visibly empty.
+- Ticks:
+
+  | | Labelled ticks |
+  |---|---|
+  | Desktop | 12, 15, 20, 30, 40, 50, 70, 100, 150, 200, 300, 500, 1,000 |
+  | Phone | 15, 20, 30, 50, 100, 200, 500, 1,000 |
+  | Close-up | 12, 15, 20, 25, 30, 35, 40, 45 |
+
+  Minor ticks, unlabelled: 13, 14, 16–19, 25, 35, 45, 60, 80, 90, 400, 600, 700, 800, 900. A label is dropped if it would sit within 4 px of a neighbour.
+- Axis title, mono 11: "SCORE: FFMI AT 1.80 M, SAME SHAPE (KG/M²)".
+
+## Number format, everywhere
+
+- **Scores and FFMI:** whole numbers below 100. From 100 up, 2 significant figures: 160, 180, 130–190, 220.
+- **The one exception: 924.** It is a defined end point with its formula shown, and it is never rounded.
+- **Ranges:** an en dash with no spaces, "37–40". If a range rounds to one number, write "about 31".
+- **Thousands** take a comma: 1,060.
+- **Banned:** "≈" and percent increases.
+- **Body fat:** whole percents, except 7.5%.
+- **Masses:** whole kg below 1,000; 3 significant figures at 1,000 and above (about 2,390 kg).
+
+## Computed values (never typed)
+
+- **Real men end:** realEnd = the highest score.hi among Everyday, Natural athletes, Bodybuilders, and Strongmen and lifters. It is 41.5 today (Big Ramy), shown as 42.
+- **Gaps:** model.gaps(list, 924, 1.25). Today: 42–59, 88–130 and 220–924.
+- **Stops:**
+  - Fixed edges at 25 (Kouri's sample top) and 32 (31.7, Trexler's top college footballer). Both are sourced anchors.
+  - Every other edge comes from the gaps.
+  - Membership is by working score.
+  - A not-comparable build inside a gap belongs to that gap stop. Today that is the Thing, at 58.7.
+
+## A. Glance tape (masthead): the whole scale at once
+
+**Size:** an SVG at its container's pixel width (redrawn on ResizeObserver). 84 px tall on desktop, 76 on phone.
+
+**Tick row** (y 0–22; 0–20 on phone):
+- Every build is a 2 px × 18 px rect at x(working score), in its group fill.
+- Each rect has a 1 px --paper stroke drawn first (paint-order: stroke), so dense ticks stay separate.
+- Each gap is a hatched rect (#hatch-void) from x(from) to x(to) over the tick row.
+- 924 is a chalk ring: r 7, stroke 1.5, no fill, centred at x(924). A test asserts its centre is within 1 px of x(924).
+
+**Tape** (y 24–50; 22–46 on phone):
+- A --tape rect.
+- Major ticks 9 px and minor ticks 5 px, hanging from the tape's top edge in --tape-ink.
+- Labels are HTML, mono 11 500, inside the tape at the bottom.
+
+**Cluster labels** (y 54–84). These are HTML buttons in two lines, mono 11: the name in uppercase 600 with the range under it in --ink-2.
+
+| Cluster | Desktop name | Phone name | Range |
+|---|---|---|---|
+| All stops below the first gap | EVERY REAL MAN | REAL MEN | 13–42 |
+| Comic giants | COMIC GIANTS | GIANTS | 59–88 |
+| The duo | REX AND OLLIE | REX, OLLIE | 130–220 |
+| End | END OF SCALE | 924 | 924 |
+
+- Each label is centred under its cluster, and the 924 label is right-aligned. A collision pass pushes labels apart with at least 6 px between them.
+- Tapping a label scrolls to that stop.
+- Positions checked at 358 px: men centred at 54, giants at 145, duo at 212, 924 right-aligned at 352. These fit with the short phone names.
+
+## B. Sticky locator (in the lineup section only)
+
+**Size:** position: sticky; top 0; z-index 5; 48 px tall; --paper background; 1 px --rule bottom border.
+
+**Line 1** (16 px), mono 11 600 uppercase, --ink-2:
+- "TO SCALE · NOW: SCORE {lo} TO {hi}"; for a gap stop, "NOW: EMPTY {lo} TO {hi}".
+- Desktop only, right-aligned: "Tap the tape to jump", in --ink-3.
+
+**Line 2** (26 px):
+- An 8 px tick row: builds as 1.5 × 8 px ticks, gaps hatched.
+- An 18 px tape with ticks, and labels in mono 11 inside it.
+
+**Current-stop window:**
+- A rect with a 2 px --chalk border and --chalk-band fill, from x(stop lo) to x(stop hi), covering the tick row and the tape.
+- Minimum width 10 px; radius 2; it moves with a 150 ms transform transition.
+
+**Behaviour:**
+- An IntersectionObserver on the stops (rootMargin −45% 0 −50% 0) sets the current stop.
+- A click or tap on the tape inverts x to a score and scrolls to the stop that contains it, or the nearest one.
+- The SVG has role="img" and aria-label "To-scale tape. Now showing scores {lo} to {hi}." The jump row is the keyboard route.
+
+## C. Gap tile (inside the lineup)
+
+**Structure:**
+- One tile, 100% wide, the same height as a figure row with its plate.
+- Its wall area matches a figure cell's: the chalk skull-top line and the landmark lines.
+- Below it, the floor area is filled with #hatch-void.
+
+**Centre label:** "NO BUILDS HERE", Big Shoulders 700, 22 px, --ink-3, uppercase, centred in the wall area. If a post or a figure collides with it, it moves down 30%.
+
+**Mini-scale** along the floor line:
+- A 1 px --ink-3 line from 4% to 96% of the tile width.
+- Log positions between the gap's from and to values.
+- End labels in mono 11: "{from}" on the left, "{to}" on the right.
+- It is to scale only within the tile. All gap tiles are the same size, whatever their real width; the real width shows on the tapes and the forest plot.
+
+**Limit posts:**
+- Each functional limit whose headline score falls inside the gap is a 1.5 px solid --chalk vertical line, from the floor line to the skull line, at its x on the mini-scale.
+- Its label sits at the top in mono 11, --chalk, on a --wall halo (padding 1 px 3 px): "ARMS OUT · 42", "THIGHS TOUCH · 49", "HANDS TO FACE · 220".
+- Today: 42 and 49 fall in 42–59; 220 falls in 220–924, at its left edge.
+
+**A not-comparable build inside a gap** (the Thing) is drawn in its not-comparable style, centred at its x and clamped inside the tile, with its normal plate under it.
+
+## D. Forest plot: every bu
+===== figure_spec 6215
+## Fills
+Each build's fill is its group's colour:
+
+| Group | Token |
+|---|---|
+| Everyday men | --g-every |
+| Natural athletes | --g-natural |
+| Bodybuilders | --g-bb |
+| Strongmen and lifters | --g-strong |
+| Comic characters | --g-comic |
+| Rex and Ollie | --g-duo |
+
+Geometry (the meatball and the limit templates) uses --g-geom and is never a group colour. There is no interior detail: no seams, no muscle lines. Hands and feet are simple mitts and heads are average, following the turnarounds' clean contours.
+
+## Edge marking (per part, so it can change along one figure)
+**Drawing order:** each part's outline is stroked first in --ink, width --edge-w (3.8 px), with vector-effect: non-scaling-stroke and round line joins. Then all fills are drawn on top. Only the outer 1.9 px of the stroke shows, and the seams inside the body vanish.
+
+**Marks:**
+
+| Mark | Meaning | Stroke |
+|---|---|---|
+| Solid | This build's own number: the girth's status is measured, official or reported | butt caps |
+| Dotted | Filled in: the girth is derived, either from a template build scaled to this build's weight or calculated from its other numbers. It matches the house DERIVED chip, which is dotted too. | dasharray var(--dot) = 0.1 6.4, round caps (3.8 px dots, 2.6 px clear gaps) |
+| Dash-dot | Traced from art (Rex and Ollie, the whole outline) | dasharray var(--dashdot) = 8 6.4 0.1 6.4, round caps |
+| No edge | Average head, hands and feet on human figures | none |
+
+**Rule**, from figure.js bandEdges and the arm segments: mark = 'own' if the status is in {measured, official, reported}; 'derived' if the status is derived or the part is template-filled; 'none' for the head, hands and feet; 'art' for the duo.
+
+**What this means per build:**
+- Coleman: solid chest, waist, flexed arm and calf; dotted thigh (derived), forearm and neck (template).
+- The ANSUR percentile builds: solid all over.
+- Comic characters: dotted all over, because no publisher gives a girth.
+
+This replaces the current dashed template edge. No drawing anywhere uses a dashed line, because dashed means "reported" on the chips.
+
+## Tails (drawn, not counted)
+- The tail region is filled with #hatch-g-duo (the group colour in lines over the wall colour), drawn after the body.
+- It gets a 1 px solid outline in the group colour and no ink edge.
+- Front view: Rex's tail shows as a hatched bulb between his legs. Ollie's is hidden, and his plate says "tail not counted".
+- Side view: both tails show in full, hatched. Their cells widen to fit.
+
+## Not comparable (the Thing; Colossus, armoured)
+- The body is filled with #hatch-void (grey hatch), so it reads as struck out.
+- Edges are marked per part as usual (dotted for comics).
+- The plate carries the NOT COMPARABLE chip and its flag line.
+
+## May be overstated (Thor)
+- Normal fill.
+- The plate carries a MAY BE OVERSTATED chip and a flag. Only if a sourced fact backs it; see open questions.
+
+## Wolverine
+- Normal fill, scored at Marvel's official 195 lb "without adamantium" (settings).
+- Flag: "Weight without his adamantium skeleton (Marvel)".
+
+## The wall and floor in every cell
+- **Wall:** --wall.
+- **Skull-top datum:** a 1 px --chalk line at 60% opacity, at y = headroom. The first cell of each stop labels it in HTML: "top of skull", mono 11, --chalk.
+- **Landmark lines:** 1 px --wall-line at the ANSUR II median fractions of stature from outline.json: acromial 0.820, chest 0.735, waist (omphalion) 0.601, crotch 0.482, knee (mid-patella) 0.278.
+- **Floor:** --floor, with a 1 px --floor-edge line.
+
+## Same height (the default)
+- Every figure is scaled so the skull top to the floor is H: 150 px desktop, 92 phone, 240 or 200 in the drawer.
+- Rex, Ollie and the meatball use the same H. Nothing is enlarged.
+- Headroom is 0.09H for every cell. Rex's crest (+4.4%) and Ollie's horns (+5.3%) rise above the skull line into it.
+- Skull-top rows for the duo come from the turnaround traces, normalised to their duo.jpg skull heights: Rex 2.92 m, Ollie 2.91 m (measured from art, estimate).
+
+## Real heights (the option)
+- One px-per-metre for the whole lineup: H / 2.92, so Rex and Ollie's skulls sit on the same line as in same-height mode. Humans shrink to about 0.6H.
+- The skull line is replaced by 1 px --wall-line rules at 1, 2 and 3 m, labelled in HTML (mono 11) in each stop's first cell.
+- The meatball is drawn 1.80 m tall, the reference height.
+- Plates do not change.
+
+## Front and side
+- **Front** is the default.
+- **Side:**
+  - Humans use figure.js side profiles from ANSUR II depth-to-width ratios.
+  - Rex and Ollie use their traced side views, tails hatched.
+  - Cell widths follow each figure's bounding box.
+
+## Geometry figures
+- **Meatball:**
+  - A circle with diameter H, sitting on the floor, centred in its own cell. The cell's width is at least H + 24 px, so nothing clips it.
+  - --g-geom fill, a 1.5 px --chalk outline, and a 10 px --chalk centre cross.
+  - Beside it, in a 120 px cell: the median soldier's outline as a ghost, with no fill and a 1.5 px --chalk stroke, for scale.
+- **Limit templates** (limits section):
+  - --g-geom fill with no ink edge.
+  - The part that decides each limit gets a 2.5 px solid --chalk outline: upper arm and forearm for arms out; both thighs for thighs touch; upper arm and forearm for hands to face.
+  - Optional, if time allows: a small inset of the arm bent as far as it goes, for hands to face.
+
+## Key swatches
+56 × 18 px rectangles filled with --g-geom, each with one edge pattern. Fill colour carries no meaning in the key. This fixes the reader mock, where the coloured swatches looked as if the fill was the code.
+
+## Drawer figure
+- The same rules, at H = 240 (desktop) or 200 (phone).
+- Under it, a caption in words built from the part marks. For example: "Solid edge: chest, waist, flexed arm and calf, from his reported numbers. Dotted: thigh, calculated from his other numbers; forearm and neck, filled in from Mr America winners 1938–54, scaled to his weight. No edge: average he
+===== controls 2158
+Few controls, and each one visibly changes something. The current "Groups shown" filter chips are removed: all 49 builds always show, so nothing reads as cherry-picked.
+
+## 1. FIGURES: [Same height | Real heights]
+- Segmented buttons with aria-pressed.
+- Applies to every lineup, the gap tiles and the meatball.
+- Real heights adds the note line described in the copy.
+
+## 2. VIEW: [Front | Side]
+- Segmented, aria-pressed.
+- Applies to the lineup and the drawer figure.
+- Side adds its note line.
+
+## 3. SCALE: [Whole scale | Close-up, 12 to 45]
+- Segmented, aria-pressed, in the forest-plot section only. It re-maps the forest's track and axis.
+- The glance tape and the locator always show the whole scale.
+
+## Figure selection
+- Each lineup cell is a `<button>` with aria-label "{name}, score {lo} to {hi}, {status}. Open details".
+- Click, tap, Enter or Space opens that build's drawer at the end of its stop.
+- When it opens:
+  - the plate gets a 3 px --chalk top bar;
+  - the drawer scrolls into view (block: nearest; smooth unless reduced motion);
+  - focus moves to the drawer heading.
+- The drawer's "Close" button (min 44 × 32) returns focus to the cell. Esc also closes it.
+- Opening another figure moves the drawer.
+- A forest-plot row name opens the same drawer.
+
+## Jumping
+- **Jump row** (masthead) links to stop anchors: #rex-and-ollie, #empty (the first gap), #limits, #to-scale, #measure.
+- **Glance-tape cluster labels** are buttons that scroll to their stop.
+- **Locator:** tap the tape to jump.
+- These are bare #anchors, with no other URL state.
+
+## Hover
+Cells and forest rows highlight on hover and focus. Nothing exists only on hover; every value is printed.
+
+## Remembered choices
+- FIGURES, VIEW and SCALE are remembered per viewer in localStorage under key "bc.prefs".
+- Every read and write is wrapped in try/catch, so the page renders the defaults if storage is missing or blocked.
+
+## Defaults
+- Same height, Front, Whole scale.
+- Key `<details>` open on desktop (≥720 px) and closed on phone, set once at load.
+- There is no theme toggle: the page follows prefers-color-scheme and [data-theme].
+
+## Tool controls
+See tool_ui.
+===== tool_ui 5887
+Section "MEASURE A CHARACTER": a --sheet card, two columns on desktop (5fr | 7fr), stacked on a phone. The rule from BRIEF.md holds: the turnarounds are never loaded or measured here in Step 1.
+
+## Left column
+### 1. Example
+A select labelled "EXAMPLE":
+- "Soldier sheet, drawn on this page (average soldier at 1.80 m)". This is the default, the current synthetic sheet: front, side and back, so every check runs.
+- "Choose a sheet…", a file input styled as a button. The chosen file name shows beside it, and drag and drop also works.
+
+### 2. Sheet viewer
+- An SVG of the sheet at the column's width, with no inner horizontal scroll. Labels live in an HTML gutter on the left (64 px desktop, 52 px phone; mono 11, --chalk) and are never drawn as SVG text. This fixes labels that rendered at 4–8 px.
+- Overlay:
+  - one ground line, 1.5 px --ink;
+  - a "top of skull" line, 1.5 px --chalk;
+  - guide lines in 1 px --chalk at shoulder, chest, waist, crotch and knee, found on the front view and carried across all views. The copy must say how they were found: "found on the front view's outline".
+  - the chest width and depth slices, as 2 px --alarm marks on the front and side views;
+  - an outline around any left-out region (a tail), 1.5 px --alarm with a hatch.
+- Captions under each view, mono 11: "FRONT · 702 px", "SIDE · 702 px", "BACK · 702 px".
+
+### 3. Checks
+A list. Each item has a chip (PASS / NOTE / CHECK / FAIL), then a bold claim and the numbers:
+- "Views agree in height. Front 702, side 702, back 702 px: 0.0% apart (limit 2%)." A FAIL here rejects the sheet.
+- "One shared ground line, within 1% of the height."
+- "Front and back landmarks line up within 2% of the height: neck, armpits, waist, crotch, knees."
+- "Side-view neck lines up with the front within 3%."
+- NOTE: "The figure is 702 px tall; the sheet spec asks for at least 2,000 px. Edges count for more at low resolution."
+- NOTE: "Side view: the depth at each row is the widest run. If the near arm overlaps the torso, chest and waist depth read high. The spec asks for a side view without the near arm."
+- With no side view, a NOTE: "No side view: depths come from ANSUR II depth-to-width ratios (soldiers, not dinosaurs)."
+
+## Right column
+### 4. Tool test
+Shown first, as a PASS line run at load:
+
+"Tool test: run now on duo.jpg (Rex, front view only, the old depth ratios), it measures {2.54} m³. The three earlier methods gave 2.52 to 2.60 m³ (reconciled 2.55)."
+
+A "Show the test picture" toggle reveals duo.jpg with Rex's slices drawn over it, if measure.js exposes them. Optional.
+
+### 5. Inputs
+Three fields: a grid on desktop, two a row on a phone. 16 px input text, labels in mono 11 uppercase, hints in 12 px --ink-2.
+
+| Label | Default | Hint |
+|---|---|---|
+| "HEIGHT TO TOP OF SKULL (M)" | 1.80 | "Not the crest or horn tips." |
+| "DENSITY (KG/M³)" | 1060 | "Lean body: about 1,060. Rex and Ollie: 1,060." |
+| "BODY FAT FOR THE SCORE (%)" | 7.5 | "Used only for the score." |
+
+Advanced fields stay in a `<details>` element labelled "Sheet layout": views left to right, skull-top rows, arm depth/width.
+
+### 6. Buttons
+- "Measure" (primary: ink background, sheet text).
+- "Copy results" (secondary).
+
+### 7. Status line
+Above the table:
+
+"Every result is measured from art: an estimate [ESTIMATE]. Slices are treated as ellipses, so girths can be off by 5 to 10% and volume by a few percent."
+
+### 8. Results table
+- Columns: Result | Value | Likely range.
+- Group header rows (mono 11 uppercase):
+  - **SIZE:** Volume, Mass, Frontal area. Volume, mass and score are bold.
+  - **SCORE:** Score, Plain FFMI.
+  - **GIRTHS · EACH ±5–10%:** Chest, Waist, Flexed upper arm, Forearm, Thigh, Calf, Neck.
+  - **LENGTHS:** head, neck to crotch, crotch height, thigh, shank, ankle height, armpit to elbow, elbow to wrist, wrist to fingertip, arm angle.
+- Values are tabular mono 13. On a phone it is one quantity per row in 3 columns, never wider than the screen.
+
+### 9. Copy results
+- Calls navigator.clipboard.writeText inside the click handler. The text is a ready-to-paste builds.json entry with status "derived" for girths and the note "measured from art, estimate".
+- On success: "Copied: {n} lines, ready to paste as a build entry."
+- On failure: show a read-only textarea with the text selected, and the line "Copy is blocked here. The text is selected below: press Ctrl+C, or long-press and choose Copy."
+
+## Target outline (full width, below)
+Heading "DRAW AN OUTLINE FOR ANY SCORE" and its verdict.
+
+**Inputs** (260 px column on desktop):
+- "TARGET SCORE": a number, default 100, allowed 15–900.
+- "BASE SHAPE": a select of the six limit templates. Median soldier, the default; 5th-percentile soldier; 95th-percentile soldier; Steve Reeves; Ronnie Coleman; the soldier with the largest arm.
+- "Draw" button.
+
+**Result line:** "{shape} at 1.80 m with every width and depth × {f}: it measures {s} (target {t}) at 7.5% fat and 1,060 kg/m³."
+
+**Images:**
+- Front and side, black fill on white, drawn at the sheet spec with the five guide lines and the ground line.
+- Each is rendered to a canvas, then shown as an `<img>` (toDataURL), so right-click or long-press can save it where the browser allows.
+- Both images are the same height (320 px desktop, 220 px phone), side by side, object-fit: contain. This fixes the current mismatch, where the front image was small and the side image large.
+- Captions: "Front · score {s}" and "Side · score {s}".
+
+**Note:** "This page can't start a download. To keep an image, right-click or long-press it and save, if your browser allows. For full-size 2,000 px sheets, run tools/export_targets.js in the repository."
+
+**"Copy target numbers"** copies the target score, base shape, factor and each girth. It has the same success and fallback behaviour as Copy results.
+
+The validation stays a node test as well (test/duo.js), with the 2.52–2.60 m³ spread.
+===== copy 13937
+Text in {braces} is computed. The values shown are today's data, for checking. [CHIP] marks a status chip.
+
+## Masthead
+- **Eyebrow:** MEN'S BUILDS · MUSCLE LEVEL WITH HEIGHT TAKEN OUT
+- **H1:** BUILD COMPARISON
+- **Lede:** "Drawn at one height, the median US Army man scores about {21}. The biggest bodybuilders on stage reach about {39}, and the heaviest comic characters about {84}. Rex and Ollie score about {160} and {180}. [ESTIMATE] The scale ends at 924, the score of a solid ball of muscle as tall as the figure. [DERIVED]"
+- **Spec line:** "score = 1.8 × fat-free mass ÷ height³: the FFMI a body would have at 1.80 m, same shape · {49} men · every number says how sure it is"
+- **"The score" box** (desktop): "**The score** is fat-free mass ÷ height³ × 1.8. That is the FFMI (fat-free mass ÷ height², in kg/m²) the same body would have if it were 1.80 m tall. Body fat is mostly unknown, so every score is a range."
+- **Glance caption:** "THE WHOLE SCALE, TO SCALE" + "Each tick is one build. Hatched: nothing there. Equal steps are equal ratios: 20 to 40 is as far as 100 to 200. Tap a stretch to jump to it."
+- **Cluster labels:** see chart_spec A.
+- **Jump row:** "Jump to: Rex and Ollie · The empty stretches · Body limits · Every build to scale · Measure a character"
+
+## Controls
+- Labels: "FIGURES" [Same height | Real heights]; "VIEW" [Front | Side].
+- Real heights note: "Real heights: one scale for every figure. Wall lines mark 1, 2 and 3 m. The meatball is drawn 1.80 m tall, the height the score uses. Edges are hard to read this small, so tap a figure for its full drawing."
+- Side note: "Side view: human depths come from ANSUR II depth-to-width ratios (soldiers). Rex and Ollie are traced from their side views, and their tails show in full, hatched."
+
+## Lineup intro
+- **Verdict:** "Everyone is drawn at the same height, in score order. Only the build differs."
+- **Sub:** "The figures are in order, not to scale. The tape pinned to the top of the screen is to scale. Neighbours whose ranges overlap can't be ranked against each other. Tap a figure for its numbers and sources."
+- **Edge strip:** "EDGES [solid] its own number · [dotted] filled in · [dash-dot] traced from art · Full key"
+- **Locator:** "TO SCALE · NOW: SCORE {32} TO {42}" (a gap reads "NOW: EMPTY {42} TO {59}"); desktop adds "Tap the tape to jump".
+
+## Stops (tag / headline / verdict / here-line / note)
+The here-line, for every build stop, in mono: "HERE: {13} BUILDS · {5} EVERYDAY · {2} NATURAL · {2} BODYBUILDERS · {4} COMIC". Counts are in fixed group order, and zero counts are left out.
+
+### 1. Under 25
+- Tag: SCORE UNDER 25
+- Headline: WHERE MOST MEN SIT
+- Verdict: "Soldiers and US men score {21} to {22} here. [ESTIMATE] Every drug-free man in Kouri's study scored under 25. [MEASURED]"
+- Note: "Bruce Banner, the Hulk at rest, is the slimmest build on the chart. The 5th, 50th and 95th percentile soldiers are statistics, not real people."
+
+### 2. 25 to 32
+- Tag: SCORE 25 TO 32
+- Headline: PAST KOURI'S 25
+- Verdict: "No drug-free man in Kouri's study reached this far. [MEASURED] A few measured athletes do: the top 2.5% of college footballers start at 28, and the top one reached 32. [MEASURED]"
+- Note: "Those studies did no drug tests of their own, and many of those athletes carry 15 to 20% fat."
+
+### 3. 32 to 42
+- Tag: SCORE 32 TO {42}
+- Headline: THE TOP OF THE HUMAN RECORD
+- Verdict: "The biggest bodybuilders on stage and the strongest strongmen top out here, at about {39}. [ESTIMATE] No real man on this chart scores above {42}. [ESTIMATE]"
+- Note: "Pro weights are contest-day figures from magazines, and their body fat is assumed. Strongmen carry more fat, so their bars are wider. The largest fat-free mass measured in any study, a sumo wrestler's, scores 34. [MEASURED]"
+
+### 4. Gap
+- Tag: SCORE {42} TO {59} [BEYOND HUMAN DATA]
+- Headline: NOTHING COMPARABLE. Use "EMPTY" when no not-comparable build sits inside the gap.
+- Verdict: "Nothing comparable scores {42} to {59}. [ESTIMATE] From here on every score is an extrapolation: no real man on this chart scores above {42}."
+- Note: "The Thing would land at {59}, but most of his weight is rock, so he doesn't count. Two limits of the drawn body fall in this stretch: the arms can no longer hang down (about {42}), and the thighs touch all the way to the knee (about {49}). [ESTIMATE] On this scale the stretch is as wide as the step from the median soldier ({21}) to the soldier with the largest arm ({29}). Step 2 fills it with figures drawn to order, each labelled "measured from art"."
+- How the comparison is chosen: the gap ratio is to/from. Pick the real man whose working score is closest to the median soldier's score × that ratio, and use him only if he is within 4%. Otherwise drop the sentence.
+
+### 5. 59 to 88
+- Tag: SCORE {59} TO {88} [BEYOND HUMAN DATA]
+- Headline: COMIC GIANTS. Only if every member is a comic character; otherwise use "SCORE {lo} TO {hi}".
+- Verdict: "The heaviest comic characters score {62} to {84}, if their published weights are flesh and bone. [ESTIMATE] For some they are not."
+- Note: "Comic heights and weights are official. Their shapes are not: no publisher gives a girth, so every outline is filled in from a template build, and every edge is dotted. Their body fat is assumed, 8 to 20%."
+
+### 6. Gap
+- Tag: SCORE {88} TO {130} [BEYOND HUMAN DATA]
+- Headline: EMPTY
+- Verdict: "Nothing scores {88} to {130}. [ESTIMATE]"
+- Note: "On this scale that is as wide as the step from the median soldier ({21}) to Sergio Oliva ({31}). Step 2 fills it with figures drawn to order, each labelled "measured from art"."
+
+### 7. Rex and Ollie
+- Tag: SCORE {130} TO {220} [BEYOND HUMAN DATA]
+- Headline: REX AND OLLIE
+- Verdict: "Rex scores about {160} and Ollie about {180}, roughly twice the top comic giants. [ESTIMATE]"
+- Note: "Both are scored at 7.5% body fat (5 to 10%). Height is to the top of the skull, read off duo.jpg: Rex {2.92} m, Ollie {2.91} m. [ESTIMATE] Their crest and
+===== grafted 4575
+## Base
+The **reader** proposal (C): the page as a sequence of score-band stops. Each stop opens with a yellow score tag, a display headline and a one-line verdict, then shows its lineup. Both judges picked it as the strongest base.
+
+## From the reader (C)
+- One skull-top height for every figure, the duo and the meatball included.
+- The tool opens on an honest example plus its own validation line, never on the turnarounds. The height field reads "to top of skull", with the hint "Not the crest or horn tips."
+- Computed comparison sentences ("as wide as the step from the median soldier to Sergio Oliva").
+- The meatball shown beside the median soldier for size.
+- Wall lines at 1, 2 and 3 m in real-height mode.
+- The notes "The 5th, 50th and 95th percentile soldiers are statistics, not real people" and "every girth is filled from a template, so every edge is dotted".
+- The pinned to-scale tape with a current-stop window. Rebuilt as a horizontal sticky locator, so it no longer takes 46 px of width from phone figures and needs no 100svh.
+- Umber print kept as the fallback style.
+
+## From the instrument (A)
+- The forest plot of all 49 builds on one log track, with "Bars that overlap can't be ranked against each other".
+- The log gloss "equal steps are equal ratios: 20 to 40 is the same distance as 100 to 200", now shown on the page.
+- Gap rows in score order.
+- The red "real men end" rule, plus a per-build BEYOND HUMAN DATA chip, reusing the Build Calculator's existing .chip.beyond.
+- The left arrowhead on hollow bars for rock and steel.
+- The edge vocabulary fix: dotted means filled in or derived, matching the DERIVED chip; dash-dot means traced from art; nothing on a figure is dashed.
+- The "Close-up 12 to 45" zoom.
+- The detail panel's girth-by-girth table with the edge each girth produced, plus "What this ignores".
+- PASS/CHECK chips with numbers, a ± column and the bold top rows in the tool.
+- The worked plain-FFMI-against-score table, and "Every 1% of height moves the score about 3%".
+
+## From the lineup (B)
+- The studio wall ruled at ANSUR landmarks, with floor plates. This is the chosen style, already built.
+- The meatball disc with a drafting centre cross.
+- The drawer at a large size, with the per-part marking said in words.
+- "The scale ends at 924", with the cylinder and cube arithmetic.
+- Limit templates with the deciding part outlined.
+- Limit posts placed at their score, now chalk and inside the gap tiles.
+- Hatched-floor gap tiles, now all the same size.
+
+## From the current build and data
+The model's computed ranges, gaps and limits (limits.json: 42, 49, 220, computed rather than placeholders), settings anchors and text, Wolverine's sourced 195 lb weight without adamantium, and the existing score, natural-limit and ignores copy.
+
+## Judges' problems, and the fix for each
+**Both judges:**
+- False 924 claims: banned strings, plus "chosen end point" copy.
+- Dead controls: a shots test that every mode changes the page.
+- Specific limit positions: now computed values, with ESTIMATE chips and bands.
+- Turnaround loaded in the tool, and crest height as the default: replaced by the soldier example and a skull-top field.
+- Edge vocabulary clash: the new mapping.
+
+**Judge 1:**
+- Log scale unexplained: the gloss in the glance caption and the forest sub.
+- Group-named stops holding other groups: band-true headlines, plus computed here-lines and tests.
+- Duo drawn larger: fixed, one height.
+- Meatball clipped: its own wide cell, plus a test.
+- "the ceiling" wording: banned.
+- Measured body fat shown with no spread: always ranges.
+- Lede numbers without chips: chips added.
+- Out-of-vocabulary ASSUMED, GEOMETRY, ART and EST/DER chips: removed.
+- Packed lanes reading as group spans: replaced by per-build forest rows.
+
+**Judge 2:**
+- Small phone text: an 11 px floor, with all chart text in HTML.
+- Lines through labels: halos and collision passes.
+- 924 mark off its tick: a position test.
+- Key 20 default: all 49 always.
+- Decorative tape over a lineup not to scale: replaced by a glance tape with every build.
+- 4.1 px tool labels: an HTML gutter.
+- 9.5 px FFMI and 8.5 px abbreviated chips: 11 px and full words.
+- Narrow gap tile on a phone: tiles are full width.
+- Rex nine screens down: glance labels, the jump row and the locator.
+- Key before the figures: a compact edge strip, with the full key after the lineup.
+- 1.1 MB page: RDP simplification, target under 700 KB.
+
+**Palette:** the all-pairs colour-blind failure, found while validating this spec, is fixed by re-stepping the duo and comic fills.
+===== open_questions 3405
+## For the owner
+
+1. **Edge vocabulary.** The brief's example was solid / dashed / dotted. This spec uses:
+   - solid: own number;
+   - dotted: filled in or derived;
+   - dash-dot: traced from art;
+   - no edge: average head, hands and feet.
+
+   The reason: the house chips already use dashed for "reported" and dotted for "derived". This needs the owner's sign-off.
+
+2. **The brief's meatball sentence is false as geometry.** It says "a figure can't hold more volume than a ball as tall as itself". A cylinder as wide as it is tall holds 1.5 times as much (about 1,400), and a cube about 1.9 times (about 1,800). The page calls 924 a chosen end point. The owner should confirm the wording, or reword the brief.
+
+3. **Palette change.** Rex and Ollie move from maroon #8E2440 to plum #8A2F6E (dark mode #B85C8C), and comic characters from #34489A to #3A55B0. Without this, the duo and the strongmen can't be told apart by readers with red-green colour blindness. The owner may prefer another fix, such as giving the strongmen a different hue.
+
+4. **Thor's "denser tissue".** facts.json has no sourced fact for it. Either research one (Marvel's handbook text, with a URL), or drop Thor's MAY BE OVERSTATED flag. The flag stays off until a source exists.
+
+5. **The Thing's placement.** He is drawn inside the 42–59 gap tile, as not comparable, at his score. The tile is then headed "NOTHING COMPARABLE" instead of "EMPTY". The alternative, moving him into the comic stop, breaks score order without saying so.
+
+6. **Stop edges at 25 and 32.** These are sourced anchors: Kouri's sample top, and Trexler's top college footballer at 31.7. The other edges are computed from the data. The owner may prefer only computed edges, which would make one large stop covering 13–42.
+
+7. **Rounding.** Scores from 100 up round to 2 significant figures (Rex "160", Ollie "180", gap "88 to 130"); 924 stays exact as a defined constant.
+
+## Open risks
+
+8. **Templates read as fat.** Every widened template (the limit figures, target outlines) looks fat rather than muscular, because the rule widens everything by one factor. The page now says so. A sourced widening rule, such as ANSUR girth against FFMI or bodybuilders' girth ratios, would move the limits. Step 2 or later.
+
+9. **Unverified inside the published claude.ai frame.** These need checking after publishing:
+   - sticky positioning (the locator, the forest axis);
+   - long-press or right-click saving of the outline images;
+   - clipboard writes.
+
+   If image saving fails, the "Copy target numbers" route and tools/export_targets.js remain.
+
+10. **Page length.** About 17,000–18,000 px on a phone. The jump row, glance labels and locator are the way around it. If review still finds it too long, the next step would be a closed-by-default forest plot on phones. Not recommended, because the overlap message would hide.
+
+11. **Very small figures.** Edges in real-heights mode on a phone (humans about 55 px tall) are too small to read. The note tells readers to tap a figure.
+
+12. **Coleman past the arms limit.** limits.json says Coleman's own drawn shape already rests its arms about 39° out, past the 30° arms limit. That could make a good line in the limits section ("Ronnie Coleman's own drawn shape is already past the first limit"). It is model output, so it needs checking before use. Not in the copy yet.
+
+## Art assets
+None are needed for this design.

@@ -56,6 +56,7 @@ button, input, select { font: inherit; color: inherit; }
 [hidden] { display: none !important; }
 /* Rings drawn inside controls whose neighbours or containers would cover an outside ring. */
 .seg button:focus-visible, .fig:focus-visible { outline-offset: -4px; position: relative; z-index: 1; }
+.seg button[aria-pressed="true"]:focus-visible { outline-color: var(--sheet); }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .wrap { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block: 0 56px; }
 html { scroll-padding-top: 60px; }
@@ -66,7 +67,7 @@ html { scroll-padding-top: 60px; }
 .chip { display: inline-block; font: 500 11px/1 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; padding: 4px 6px 3px; border-radius: 2px; border: 1.5px solid var(--ink); color: var(--ink); white-space: nowrap; vertical-align: middle; }
 .chip.measured { background: var(--ink); color: var(--sheet); }
 .chip.official { border-style: double; border-width: 3.5px; padding: 2.5px 5px 1.5px; }
-.chip.reported { border-style: dashed; }
+.chip.reported, .chip.disputed { border-style: dashed; }
 .chip.derived { border-style: dotted; border-width: 2px; padding: 3.5px 5.5px 2.5px; }
 .chip.estimate { border-style: dotted; border-width: 2px; padding: 3.5px 5.5px 2.5px; background: repeating-linear-gradient(135deg, var(--rule) 0 1.5px, transparent 1.5px 5px); }
 .chip.unknown { border-color: var(--rule); color: var(--ink-3); font-style: italic; }
@@ -326,7 +327,8 @@ details.key > summary { cursor: pointer; font-weight: 600; font-size: 15px; }
 .viewer .gut { position: relative; background: var(--sheet); border-right: 1px solid var(--rule); }
 .viewer .gut span { position: absolute; right: 4px; transform: translateY(-50%); font: 500 11px/1 var(--font-mono); color: var(--chalk); white-space: nowrap; }
 .viewer canvas { display: block; width: 100%; height: auto; }
-.viewcaps { display: flex; justify-content: space-around; font: 500 11px/1.2 var(--font-mono); color: var(--ink-3); text-transform: uppercase; letter-spacing: .05em; padding-left: 64px; }
+.viewcaps span { white-space: nowrap; }
+.viewcaps { display: flex; flex-wrap: wrap; gap: 2px 12px; justify-content: space-around; font: 500 11px/1.2 var(--font-mono); color: var(--ink-3); text-transform: uppercase; letter-spacing: .05em; padding-left: 64px; }
 @media (max-width: 719px) { .viewcaps { padding-left: 52px; } }
 .btn { min-height: 36px; padding: 0 14px; border: 1px solid var(--ink); border-radius: 3px; background: var(--ink); color: var(--sheet); font-weight: 600; font-size: 14px; cursor: pointer; }
 .btn.ghost { background: transparent; color: var(--ink); }
@@ -354,6 +356,7 @@ details.adv .fields { margin-top: 10px; }
 @media (max-width: 899px) { .target .ins .fields { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .target-imgs { display: flex; gap: 12px; flex-wrap: wrap; }
 .target-imgs figure { margin: 0; display: grid; gap: 4px; flex: 1 1 140px; min-width: 0; }
+.target-imgs img:not([src]) { visibility: hidden; }
 .target-imgs img { width: 100%; height: 320px; object-fit: contain; background: #FFFFFF; border: 1px solid var(--rule); border-radius: 2px; display: block; }
 @media (max-width: 719px) { .target-imgs img { height: 220px; } }
 .target-imgs figcaption { font: 500 11px/1.2 var(--font-mono); color: var(--ink-3); text-transform: uppercase; letter-spacing: .05em; }
@@ -417,7 +420,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
   <section class="sec" id="lineup" aria-labelledby="lineupH">
     <div class="sec-head">
       <h2 id="lineupH">The lineup</h2>
-      <p class="verdict">Everyone is drawn at the same height, in score order. Only the build differs.</p>
+      <p class="verdict" id="lineupVerdict">Everyone is drawn at the same height, in score order. Only the build differs.</p>
       <p class="sub">The figures are in order, not to scale. The tape pinned to the top of the screen is to scale. Neighbours whose ranges overlap can't be ranked against each other. Tap a figure for its numbers and sources.</p>
       <p class="edgestrip" id="edgeStrip"></p>
     </div>
@@ -479,7 +482,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
       <div>
         <div class="picker" id="picker">
           <div class="field" style="flex:1 1 220px"><span class="flab" id="sheetLab">Sheet</span><div class="btnrow" role="group" aria-labelledby="sheetLab"><button type="button" class="btn ghost" id="tSoldier">Soldier sheet (drawn here)</button><button type="button" class="btn ghost" id="tChoose">Choose a sheet…</button></div></div>
-          <input type="file" id="file" accept="image/png,image/jpeg,image/webp" class="sr" tabindex="-1">
+          <input type="file" id="file" accept="image/png,image/jpeg,image/webp" class="sr" tabindex="-1" aria-hidden="true">
           <span id="sheetName"></span>
         </div>
         <div class="viewer"><div class="gut" id="gutter" aria-hidden="true"></div><canvas id="sheetCanvas" width="10" height="10" aria-label="The model sheet with the rows the tool measured"></canvas></div>
@@ -487,7 +490,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
         <ul class="checks" id="checks"></ul>
       </div>
       <div>
-        <p class="status-line" id="validation">Tool test: running on duo.jpg…</p>
+        <p class="status-line" id="validation" aria-live="polite">Tool test: running on duo.jpg…</p>
         <div class="fields">
           <div class="field"><label for="tH">Height to top of skull (m)</label><input id="tH" inputmode="decimal" value="1.80"><span class="hint">Not the crest or horn tips.</span></div>
           <div class="field"><label for="tRho">Density (kg/m³)</label><input id="tRho" inputmode="decimal" value="1060"><span class="hint">Lean body: about 1,060. Rex and Ollie: 1,060.</span></div>
@@ -500,7 +503,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
             <div class="field"><label for="tArmK">Arm depth ÷ width</label><input id="tArmK" inputmode="decimal" value="1.0"></div>
           </div></details>
         <div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn" id="measureBtn">Measure</button><button type="button" class="btn ghost" id="copyBtn">Copy results</button></div>
-        <p class="status-line" id="toolStatus"></p>
+        <p class="status-line" id="toolStatus" aria-live="polite"></p><p class="status-line" id="toolTick" aria-hidden="true"></p>
         <textarea class="copy-out" id="copyOut" hidden readonly aria-label="Results as text"></textarea>
         <div class="tbl-wrap"><table class="tbl" id="results"></table></div>
       </div>
@@ -508,12 +511,12 @@ details.src summary { cursor: pointer; font-weight: 600; }
         <div class="ins">
           <div class="sec-head" style="gap:6px"><h3 style="font:600 11px/1.2 var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)">Draw an outline for any score</h3>
             <p class="sub">Pick a score and a base shape. You get front and side outlines at the model-sheet spec, to use as control images.</p></div>
-          <div class="fields"><div class="field"><label for="tTarget">Target score</label><input id="tTarget" inputmode="decimal" value="100"><span class="hint">15 to 900</span></div>
+          <div class="fields"><div class="field"><label for="tTarget">Target score</label><input id="tTarget" inputmode="decimal" value="60"><span class="hint">15 to 900</span></div>
             <div class="field"><label for="tShape">Base shape</label><select id="tShape"></select></div></div>
           <div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn ghost" id="targetBtn">Draw</button><button type="button" class="btn ghost" id="targetCopy">Copy target numbers</button></div>
         </div>
         <div style="display:grid;gap:10px;min-width:0">
-          <p class="status-line" id="targetStatus"></p>
+          <p class="status-line" id="targetStatus" aria-live="polite"></p>
           <div class="target-imgs"><figure><img id="tgtFront" alt="Target outline, front view"><figcaption id="capFront">Front</figcaption></figure><figure><img id="tgtSide" alt="Target outline, side view"><figcaption id="capSide">Side</figcaption></figure></div>
           <p class="sub">This page can't start a download. To keep an image, right-click or long-press it and save, if your browser allows. For full-size 2,000 px sheets, run tools/export_targets.js in the repository.</p>
           <textarea class="copy-out" id="targetOut" hidden readonly aria-label="Target numbers as text"></textarea>
@@ -700,15 +703,41 @@ details.src summary { cursor: pointer; font-weight: 600; }
     return 'On this scale the stretch is as wide as the step from the median soldier (' + sc(base.score.value) + ') to ' + best.short + ' (' + sc(best.score.value) + '). ';
   }
   /**
-   * Which of the chart's own figures already meet a limit's test (tools/compute_limits.js runs the
-   * three tests on every drawn figure, at its own height and girths). below: count only those
-   * scoring under it. Returns '' when none do.
+   * The chart's own figures already past a limit as drawn. tools/compute_limits.js runs the three
+   * tests on every figure (its own height and girths) and scores its outline the same way as the
+   * limit shapes: lean (7.5% fat), from the drawing (head and body by the measuring tool, arms as
+   * round limbs). Those outline scores, not the chart's weight-based scores, compare with a limit.
    */
-  function metSooner(L, below) {
-    var ids = (L.met_by || []).filter(function (id) { var e = byId(id); return e && e.score.value < below; });
+  function pastAsDrawn(L, below) {
+    var CF = LIMITS.chart_figures;
+    return (L.met_by || []).filter(function (id) { return byId(id) && CF[id] && CF[id].outline_score < below; });
+  }
+  function sameWay(L, below, what) {
+    var ids = pastAsDrawn(L, below), CF = LIMITS.chart_figures;
     if (!ids.length) return '';
-    var first = byId(ids[0]);
-    return 'The chart\'s own figures, drawn from their girths, meet this test sooner: ' + (ids.length === 1 ? esc(first.short) + ' (about ' + sc(first.score.value) + ')' : (NUMW[ids.length] || fmt.sep(ids.length, 0)) + ' of them, from ' + esc(first.short) + ' (about ' + sc(first.score.value) + ') up') + '. ';
+    var first = byId(ids[0]), fs = sc(CF[ids[0]].outline_score);
+    return 'Scored the same way (lean, from the drawn outline), ' + (ids.length === 1 ? esc(first.short) + '\'s outline is already past ' + what + ' at about ' + fs
+      : (NUMW[ids.length] || fmt.sep(ids.length, 0)) + ' of the chart\'s own outlines are already past ' + what + ' below ' + sc(below) + ', the lowest ' + esc(first.short) + '\'s at about ' + fs) + '. ';
+  }
+  function count(n) { return NUMW[n] || fmt.sep(n, 0); }
+  /** For a limit card: who is past it as drawn, and on whose girths their outlines are drawn. */
+  function cardMet(L) {
+    var CF = LIMITS.chart_figures, ids = (L.met_by || []).filter(byId);
+    var t;
+    if (!ids.length) t = (L.models ? 'By contact geometry, none' : 'None') + ' of the chart\'s own figures is past this limit as drawn. ';
+    else {
+      var own = ids.filter(function (id) { return CF[id].girths_from[L.id] === 'own'; }), owners = [];
+      ids.forEach(function (id) { var o = CF[id].girths_from[L.id]; if (o !== 'own' && owners.indexOf(o) < 0) owners.push(o); });
+      t = 'As drawn from their girths, ' + count(ids.length) + ' of the chart\'s own figures are already past this limit. Scored the same way (lean, from the outline), the lowest is ' + esc(byId(ids[0]).short) + '\'s at about ' + sc(CF[ids[0]].outline_score) + '. ';
+      if (own.length) t += (own.length === ids.length ? 'All are' : own.length === 1 ? 'Only ' + esc(byId(own[0]).short) + ' is' : 'Only ' + count(own.length) + ' are') + ' drawn on ' + (own.length === 1 && ids.length > 1 ? 'his' : 'their') + ' own published girths' + (own.length > 1 && own.length < ids.length ? ' (' + esc(listWords(own.map(function (id) { return byId(id).short; }))) + ')' : '') + '. ';
+      if (owners.length) t += (own.length ? 'The other ' + count(ids.length - own.length) : 'All') + ' use ' + esc(listWords(owners.map(function (o) { return byId(o).short + '\'s'; }))) + ' shape' + (owners.length > 1 ? 's' : '') + ', scaled to their weights. ';
+      t += 'Reported girths can run high: each figure\'s details say how far its drawing is from its weight.';
+    }
+    if (L.models && L.met_by_steep_model) {
+      var st = L.met_by_steep_model.filter(byId);
+      t += ' By the steep fit, ' + (st.length ? count(st.length) + ' are: ' + esc(listWords(st.map(function (id) { return byId(id).short; }))) + ', whose arm and forearm girths add up to more than ' + fmt.sep(L.models.steep_girth_sum_m, 2) + ' m.' : 'none is.');
+    }
+    return t;
   }
   function gapCopy(item) {
     var g = item.gap, out = {};
@@ -727,8 +756,8 @@ details.src summary { cursor: pointer; font-weight: 600; }
     var heads = item.limits.filter(function (L) { return L.headline !== false; }), bands = item.limits.filter(function (L) { return L.headline === false; });
     if (heads.length) {
       var lw = heads.map(function (L) { return L.label.charAt(0).toLowerCase() + L.label.slice(1) + ' (about ' + sc(L.score) + ')'; });
-      sub += (heads.length > 1 ? NUMW[heads.length].charAt(0).toUpperCase() + NUMW[heads.length].slice(1) + ' limits of the evenly widened soldier fall in this stretch: ' : 'A limit of the evenly widened soldier falls in this stretch: ') + esc(listWords(lw)) + '. ' + chip('estimate') + ' ';
-      heads.forEach(function (L) { var m = metSooner(L, g.from); if (m) sub += m.replace('this test', 'the ' + esc(L.tiny) + ' test'); });
+      sub += (heads.length > 1 ? NUMW[heads.length].charAt(0).toUpperCase() + NUMW[heads.length].slice(1) + ' limits of the drawn body fall in this stretch' : 'A limit of the drawn body falls in this stretch') + ' (the median soldier widened evenly at fixed bones; see <a href="#limits">the limits</a>): ' + esc(listWords(lw)) + '. ' + chip('estimate') + ' ';
+      heads.forEach(function (L) { sub += sameWay(L, L.score, 'the ' + esc(L.tiny) + ' limit'); });
     }
     bands.forEach(function (L) {
       var top = g.above ? g.to : MEAT, below = L.range[0] < g.from, above = L.range[1] > top;
@@ -745,7 +774,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
   var T = D.outline;
   var figCache = {};
   /** Arms at 20 degrees, or just past where the figure's own outline lets them rest (tools/compute_limits.js), so they never pass through the body. */
-  function armAngle(e) { var c = LIMITS && LIMITS.chart_figures[e.id]; return c ? Math.max(20, c.rest_deg + 2) : 20; }
+  function armAngle(e) { var c = LIMITS && LIMITS.chart_figures[e.id]; return c ? c.drawn_arm_deg : 20; }
   function figureOf(e, view) {
     var key = e.id + '|' + view;
     if (figCache[key]) return figCache[key];
@@ -899,7 +928,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
         sec.appendChild(figGrid(item.members));
         (item.limits || []).forEach(function (L) {
           var n = document.createElement('p'); n.className = 'limitnote';
-          n.innerHTML = '<b>Limit · ' + esc(L.short) + ' · about ' + sc(L.score) + '</b> (' + scr(L.range[0], L.range[1]) + ' across six template shapes) ' + chip('estimate') + ' ' + esc(L.label) + ', on the median soldier\'s outline widened at fixed bones. ' + metSooner(L, L.score) + '<a href="#limits">How this is worked out</a>';
+          n.innerHTML = '<b>Limit · ' + esc(L.short) + ' · about ' + sc(L.score) + '</b> (' + scr(L.range[0], L.range[1]) + ' across six template shapes) ' + chip('estimate') + ' ' + esc(L.label) + ', on the median soldier\'s outline widened at fixed bones. ' + sameWay(L, L.score, 'it') + '<a href="#limits">How this is worked out</a>';
           sec.appendChild(n);
         });
       } else if (item.kind === 'gap') {
@@ -1043,23 +1072,15 @@ details.src summary { cursor: pointer; font-weight: 600; }
   }
   /**
    * How far the drawing's volume is from the weight: the outline is drawn from girths, not fitted
-   * to weight. Volume measured by the tool on the drawn sheet; body density from the working body
-   * fat with Siri's two-compartment densities (fat 0.9007, fat-free 1.100 g/cm³).
+   * to weight. The drawn volume comes from tools/compute_limits.js (head and body by the measuring
+   * tool, arms as round limbs, as the page draws them); body density from the working body fat with
+   * Siri's two-compartment densities (fat 0.9007, fat-free 1.100 g/cm³).
    */
-  var drawCache = {};
   function drawingCheck(e) {
-    if (drawCache[e.id] == null) {
-      var g = {}; BuildCalc.SITES.forEach(function (s) { g[s] = e.girths[s].value; });
-      var H = e.height.value, f = Figure.human(T, H, g, {}, { buttockFit: BuildCalc.FRUSTUM.M.buttock, armDeg: Math.max(35, armAngle(e)) }), y = f.dims.levels;
-      var img = Figure.renderSheet({ front: f.front, side: f.side }, H, { shoulder: y.acromion, chest: y.chest, waist: y.waist, crotch: y.crotch, knee: y.knee }, { figurePx: 600 });
-      var r = Measure.measureSheet(img, { heightM: H, heightRef: 'top', density: 1000, bodyFatPct: 0, seg: { refine: 0 } });
-      var fat = e.bodyFat.value / 100, rho = 1000 / (fat / 0.9007 + (1 - fat) / 1.1);
-      drawCache[e.id] = r.volume_m3 ? { v: r.volume_m3.value, rho: rho, ratio: r.volume_m3.value * rho / e.mass.value } : false;
-    }
-    var c = drawCache[e.id];
-    if (!c) return '';
-    var pct = Math.round((c.ratio - 1) * 100);
-    return 'Drawing check: this outline holds ' + fmt.sep(c.v, 3) + ' m³. At his working body fat (body density about ' + fmt.sep(Math.round(c.rho), 0) + ' kg/m³) that weighs ' +
+    var c = LIMITS && LIMITS.chart_figures[e.id];
+    if (!c || !c.volume_m3) return '';
+    var fat = e.bodyFat.value / 100, rho = 1000 / (fat / 0.9007 + (1 - fat) / 1.1), pct = Math.round((c.volume_m3 * rho / e.mass.value - 1) * 100);
+    return 'Drawing check: this outline holds ' + fmt.sep(c.volume_m3, 3) + ' m³ (head and body read by the measuring tool, arms as round limbs). At his working body fat (body density about ' + fmt.sep(Math.round(rho), 0) + ' kg/m³) that weighs ' +
       (Math.abs(pct) < 2 ? 'about the same as' : Math.abs(pct) + '% ' + (pct > 0 ? 'more' : 'less') + ' than') + ' the weight counted. The drawing shows the build; the score uses the weight.';
   }
   function renderDrawer() {
@@ -1230,8 +1251,9 @@ details.src summary { cursor: pointer; font-weight: 600; }
     state.stop = s;
     if (!s) return;
     var lo = sc(s.lo), hi = s.kind === 'meat' || (s.kind === 'gap' && s.last) ? MEAT_TXT : sc(s.hi);
-    $('locNow').textContent = 'To scale · now: ' + (s.kind === 'gap' ? 'empty ' : 'score ') + (s.kind === 'meat' ? MEAT_TXT : (s === STOPS[0] ? 'under ' + hi : lo + ' to ' + hi));
-    host.setAttribute('aria-label', 'To-scale tape. Now showing scores ' + (s === STOPS[0] ? 'under ' + hi : lo + ' to ' + hi) + '.');
+    var now = (s.kind === 'gap' ? 'empty ' : 'score ') + (s.kind === 'meat' ? MEAT_TXT : (s === STOPS[0] ? 'under ' + hi : lo + ' to ' + hi));
+    $('locNow').textContent = 'To scale · now: ' + now;
+    host.setAttribute('aria-label', 'To-scale tape. Now showing ' + now + '.');
     if (win && host._X) {
       var a = host._X(s === STOPS[0] ? AX.lo : s.lo), b = host._X(s.hi);
       if (b - a < 10) { a = (a + b) / 2 - 5; b = a + 10; }
@@ -1355,12 +1377,13 @@ details.src summary { cursor: pointer; font-weight: 600; }
     var r = calc.compute({ buildId: main.id, heightM: 1.8 }), g = {};
     BuildCalc.SITES.forEach(function (s) { g[s] = r.girths[s].value; });
     var start = Figure.human(T, 1.8, g, {}, { buttockFit: BuildCalc.FRUSTUM.M.buttock });
-    var Hd = 200, W = 200;
+    var W = 200, Hd = 200;
+    // One scale for every card: the widest figure (arms level) sets it, so all reach one skull line.
+    [start.front].concat(LIM.map(function (L) { return L.figure.parts; })).forEach(function (parts) { var bb = Figure.bounds(parts); Hd = Math.min(Hd, (W - 8) * 1.8 / (bb[2] - bb[0])); });
     var cards = [{ big: sc(main.score_at_f1), range: null, label: 'The median soldier\'s own shape', d: 'Scored lean (7.5% fat), like the limits and Rex and Ollie. His real score, at his own body fat, is ' + sc(byId(main.id).score.value) + '.', parts: start.front, hot: null }];
     LIM.forEach(function (L) {
-      var met = (L.met_by || []).length ? metSooner(L, Infinity).replace(' sooner', '').replace('meet this test: ', 'already meet this test: ') : 'None of the chart\'s own figures meets this test. ';
-      if ((L.met_by || []).length) met += 'Their outlines are not an evenly widened soldier: the width sits where their own girths put it, and reported girths can run high (each figure\'s details say how far its drawing is from its weight).';
-      cards.push(L.headline === false ? { big: scr(L.range[0], L.range[1]), range: L.models ? 'about ' + sc(L.models.contact_geometry) + ' by contact geometry; about ' + sc(L.models.steep_bmi_fit) + ' if bend falls as with body fat' : null, label: L.label, d: L.definition, met: met, parts: L.figure.parts, hot: HOT[L.id] } :
+      var met = cardMet(L);
+      cards.push(L.headline === false ? { big: scr(L.range[0], L.range[1]), range: L.models ? 'about ' + sc(L.models.contact_geometry) + ' by contact geometry; about ' + sc(L.models.steep_bmi_fit) + ' by the steep fit (bend falling as fast as it does with body fat)' : null, label: L.label, d: L.definition, met: met, parts: L.figure.parts, hot: HOT[L.id] } :
         { big: sc(L.score), range: scr(L.range[0], L.range[1]) + ' across six templates', label: L.label, d: L.definition, met: met, parts: L.figure.parts, hot: HOT[L.id] });
     });
     el.innerHTML = '';
@@ -1410,7 +1433,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
     $('sources').innerHTML = Object.keys(topics).map(function (t) {
       return '<details class="src"><summary>' + esc(NAMES[t] || t) + ' (' + topics[t].length + ')</summary>' + topics[t].map(function (kf) {
         var f = kf[1];
-        return '<div class="fact"><span><b>' + esc(f.label) + '</b> ' + chip(f.status === 'disputed' ? 'reported' : f.status, f.status) + '</span>' + (f.summary ? '<span>' + esc(f.summary) + '</span>' : '') +
+        return '<div class="fact"><span><b>' + esc(f.label) + '</b> ' + chip(f.status) + '</span>' + (f.summary ? '<span>' + esc(f.summary) + '</span>' : '') +
           '<ul>' + (f.sources || []).filter(function (s) { return s.url && /^https?:/.test(s.url); }).map(function (s) { return '<li><a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(s.title) + '</a></li>'; }).join('') + '</ul></div>';
       }).join('') + '</details>';
     }).join('') + '<p class="sub" style="margin-top:10px">The builds\' own heights, weights and girths, with their sources, come from the Build Calculator\'s data; each figure\'s details list them.</p>';
@@ -1419,8 +1442,8 @@ details.src summary { cursor: pointer; font-weight: 600; }
   // ---------- the measuring tool ----------
   var tool = { img: null, name: 'Soldier sheet', res: null, example: true, run: 0 };
   function exampleSheet() {
-    var e = byId('ansur2_m_p50');
-    var g = {}; BuildCalc.SITES.forEach(function (s) { g[s] = e.girths[s].value; });
+    // The median soldier's shape scaled to 1.80 m (his girths at that height), as the limits use.
+    var r0 = calc.compute({ buildId: 'ansur2_m_p50', heightM: 1.8 }), g = {}; BuildCalc.SITES.forEach(function (s) { g[s] = r0.girths[s].value; });
     var f = Figure.human(T, 1.8, g, {}, { buttockFit: BuildCalc.FRUSTUM.M.buttock, armDeg: 35 });
     var y = f.dims.levels;
     return Figure.renderSheet({ front: f.front, side: f.side }, 1.8, { shoulder: y.acromion, chest: y.chest, waist: y.waist, crotch: y.crotch, knee: y.knee }, { figurePx: 700 });
@@ -1449,6 +1472,8 @@ details.src summary { cursor: pointer; font-weight: 600; }
     $('gutter').innerHTML = gut;
   }
   function num(id) { var raw = String($(id).value).trim(), v = Number(raw.replace(',', '.')); return raw === '' || !isFinite(v) ? NaN : v; }
+  /** The tool's fields as they stand now, to tell whether a result still matches them. */
+  function fieldsNow() { return ['tH', 'tRho', 'tBf', 'tArmK', 'tSkull', 'tOrder'].map(function (id) { return String($(id).value); }).join('|'); }
   function measure() {
     var H = num('tH'), rho = num('tRho'), bf = num('tBf'), armK = num('tArmK');
     var bad = false;
@@ -1458,42 +1483,54 @@ details.src summary { cursor: pointer; font-weight: 600; }
     var order = $('tOrder').value.split(','), skull = null;
     if (rows.length) { skull = {}; order.forEach(function (v, i) { skull[v] = rows[Math.min(i, rows.length - 1)]; }); }
     $('measureBtn').disabled = true;
-    var inputs = { H: H, rho: rho, bf: bf, armK: armK, skull: skull, order: order }, run = ++tool.run;
+    var inputs = { H: H, rho: rho, bf: bf, armK: armK, skull: skull, order: order, fields: fieldsNow(), img: tool.img }, run = ++tool.run;
     measureAsync(tool.img, { heightM: H, heightRef: skull ? 'skull' : 'top', skullRows: skull, order: order, density: rho, bodyFatPct: bf, armK: armK }, function (err, r) {
-      if (run !== tool.run) return; // a newer measurement replaced this one
+      if (run !== tool.run || inputs.img !== tool.img) return; // a newer measurement, or a new sheet, replaced this one
       $('measureBtn').disabled = false;
       if (err) { tool.res = null; $('toolStatus').textContent = 'The tool could not read this sheet: ' + err; return; }
       r.inputs = inputs; tool.res = r; writeResults(r);
+      // Fields edited while it ran: the results are for the old ones.
+      if (fieldsNow() !== inputs.fields) markStale();
     });
   }
+  function markStale() { if (tool.res && !tool.res.stale) { tool.res.stale = true; $('toolStatus').textContent = 'The fields changed since this measurement: press Measure to update the results.'; } }
+  /** A new sheet: drop any measurement still running for the old one and the old results. */
+  function newSheet() { tool.run++; tool.res = null; stopWorker(); $('measureBtn').disabled = false; $('results').innerHTML = ''; $('checks').innerHTML = ''; $('toolTick').textContent = ''; }
   /**
    * Measure a sheet off the main thread: a Web Worker built from the measuring tool's own inlined
    * source, so a large sheet does not freeze the page. Falls back to the main thread if workers are
-   * not available. Shows the elapsed time while it runs.
+   * not available. A new job stops one still running. Shows the elapsed time while it runs.
    */
-  var worker = null, workerJobs = {}, workerSeq = 0;
-  function measureAsync(img, opts, cb) {
-    var t0 = Date.now(), tick = setInterval(function () { $('toolStatus').textContent = 'Measuring… ' + Math.round((Date.now() - t0) / 1000) + ' s'; }, 1000);
-    $('toolStatus').textContent = 'Measuring…';
-    var done = function (err, r) { clearInterval(tick); cb(err, r); };
-    if (worker === null) {
-      try {
-        // The result holds helper functions (landmark finders) that cannot cross to the page: send data only.
-        var glue = '\nfunction plain(o) { if (typeof o === "function") return undefined; if (!o || typeof o !== "object" || ArrayBuffer.isView(o)) return o; if (Array.isArray(o)) return o.map(plain); var out = {}; for (var k in o) { var v = plain(o[k]); if (v !== undefined) out[k] = v; } return out; }' +
-          '\nself.onmessage = function (ev) { var d = ev.data, r; try { r = self.Measure.measureSheet(d.img, d.opts); delete r.mask; self.postMessage({ id: d.id, r: plain(r) }); } catch (e) { self.postMessage({ id: d.id, err: String(e && e.message || e) }); } };';
-        worker = new Worker(URL.createObjectURL(new Blob([$('measureSrc').textContent + glue], { type: 'text/javascript' })));
-        worker.onmessage = function (ev) { var j = workerJobs[ev.data.id]; delete workerJobs[ev.data.id]; if (j) j.done(ev.data.err || null, ev.data.r); };
-        // If the worker fails (a browser that blocks it), measure on the page instead.
-        worker.onerror = function (ev) { ev.preventDefault(); var jobs = workerJobs; workerJobs = {}; worker = false; Object.keys(jobs).forEach(function (k) { onPage(jobs[k]); }); };
-      } catch (e) { worker = false; }
-    }
-    var job = { img: img, opts: opts, done: done };
-    if (!worker) { onPage(job); return; }
-    var id = ++workerSeq, data = new Uint8ClampedArray(img.data);
-    workerJobs[id] = job;
-    worker.postMessage({ id: id, img: { width: img.width, height: img.height, data: data }, opts: opts }, [data.buffer]);
+  var worker = null, workerJob = null, workerSeq = 0, tick = null;
+  function stopWorker() { if (worker && workerJob) { worker.terminate(); worker = null; } workerJob = null; if (tick) { clearInterval(tick); tick = null; } }
+  function startWorker() {
+    try {
+      // The result holds helper functions (landmark finders) that cannot cross to the page: send data only.
+      var glue = '\nfunction plain(o) { if (typeof o === "function") return undefined; if (!o || typeof o !== "object" || ArrayBuffer.isView(o)) return o; if (Array.isArray(o)) return o.map(plain); var out = {}; for (var k in o) { var v = plain(o[k]); if (v !== undefined) out[k] = v; } return out; }' +
+        '\nself.onmessage = function (ev) { var d = ev.data, r; try { r = self.Measure.measureSheet(d.img, d.opts); delete r.mask; self.postMessage({ id: d.id, r: plain(r) }); } catch (e) { self.postMessage({ id: d.id, err: String(e && e.message || e) }); } };';
+      var url = URL.createObjectURL(new Blob([$('measureSrc').textContent + glue], { type: 'text/javascript' }));
+      var w = new Worker(url);
+      URL.revokeObjectURL(url);
+      w.onmessage = function (ev) { var j = workerJob; if (!j || j.id !== ev.data.id) return; workerJob = null; window.__bc.measuredIn = 'worker'; j.done(ev.data.err || null, ev.data.r); };
+      // If the worker fails (a browser that blocks it), measure on the page instead.
+      w.onerror = function (ev) { ev.preventDefault(); var j = workerJob; workerJob = null; worker = false; if (j) onPage(j); };
+      return w;
+    } catch (e) { return false; }
   }
-  function onPage(job) { setTimeout(function () { try { var r = Measure.measureSheet(job.img, job.opts); delete r.mask; job.done(null, r); } catch (e) { job.done(e.message); } }, 30); }
+  function measureAsync(img, opts, cb) {
+    stopWorker();
+    var t0 = Date.now();
+    $('toolStatus').textContent = 'Measuring…'; $('toolTick').textContent = '';
+    tick = setInterval(function () { $('toolTick').textContent = Math.round((Date.now() - t0) / 1000) + ' s'; }, 1000);
+    var done = function (err, r) { clearInterval(tick); tick = null; $('toolTick').textContent = ''; cb(err, r); };
+    if (worker === null) worker = startWorker();
+    var job = { id: ++workerSeq, img: img, opts: opts, done: done };
+    if (!worker) { onPage(job); return; }
+    var data = new Uint8ClampedArray(img.data);
+    workerJob = job;
+    worker.postMessage({ id: job.id, img: { width: img.width, height: img.height, data: data }, opts: opts }, [data.buffer]);
+  }
+  function onPage(job) { setTimeout(function () { try { var r = Measure.measureSheet(job.img, job.opts); delete r.mask; window.__bc.measuredIn = 'page'; job.done(null, r); } catch (e) { job.done(e.message); } }, 30); }
   function capFirst(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
   function writeResults(r) {
     drawSheet(r);
@@ -1506,7 +1543,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
     $('checks').innerHTML = items.join('');
     if (!r.volume_m3) { $('results').innerHTML = ''; $('toolStatus').textContent = 'No result: ' + (r.errors || []).join(' '); return; }
     $('toolStatus').innerHTML = (r.ok ? '' : '<b>The sheet failed a check, so treat these numbers as rejected.</b> ') + 'Every result is measured from art: an estimate ' + chip('estimate') + '. Slices are treated as ellipses, so girths can be off by 5 to 10% and volume by a few percent.' +
-      (tool.example ? ' The example is the median soldier at 1.80 m, counted at 7.5% fat and 1,060 kg/m³ like Rex and Ollie, so it scores higher than he does at his own body fat. The limits section reads the same shape at ' + (LIMITS ? sc(LIMITS.templates[0].score_at_f1) : '27') + ' from a larger drawing; the reading moves by a few percent with the drawing\'s size.' : '');
+      (tool.example ? ' The example is the median soldier\'s shape scaled to 1.80 m, counted at 7.5% fat and 1,060 kg/m³ like Rex and Ollie, so it scores higher than he does at his own body fat. The limits section scores the same shape at ' + (LIMITS ? sc(LIMITS.templates[0].score_at_f1) : '26') + ': it adds the arms as round limbs, while this tool counts each arm at torso depth where it meets the shoulder, which reads a few percent high.' : '');
     var pm = function (v, lo, hi, f, u) { return '<td class="n">' + f(v) + (u || '') + '</td><td>' + f(lo) + '–' + f(hi) + (u || '') + '</td>'; };
     var f3 = function (x) { return fmt.sep(x, 3); }, f1 = function (x) { return fmt.sep(x, 1); };
     var h = '<thead><tr><th>Result</th><th>Value</th><th>Likely range</th></tr></thead><tbody>';
@@ -1562,7 +1599,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
         // A transparent background reads as black on a canvas: take the figure from the alpha channel
         // instead (black figure on white), whatever colour it is drawn in.
         if (clear > 0.05 * px.length / 4) for (i = 0; i < px.length; i += 4) { var v = px[i + 3] >= 128 ? 0 : 255; px[i] = px[i + 1] = px[i + 2] = v; px[i + 3] = 255; }
-        tool.img = { width: c.width, height: c.height, data: px }; tool.name = file.name; tool.example = false; tool.res = null; tool.alpha = clear > 0.05 * px.length / 4;
+        newSheet(); tool.img = { width: c.width, height: c.height, data: px }; tool.name = file.name; tool.example = false; tool.alpha = clear > 0.05 * px.length / 4;
         $('sheetName').textContent = file.name + ' (' + c.width + ' × ' + c.height + ' px)';
         $('tH').value = ''; $('tH').focus();
         drawSheet(null); $('results').innerHTML = ''; $('checks').innerHTML = '';
@@ -1582,29 +1619,34 @@ details.src summary { cursor: pointer; font-weight: 600; }
     var r0 = calc.compute({ buildId: id, heightM: 1.8 }), gs = {};
     BuildCalc.SITES.forEach(function (s) { gs[s] = r0.girths[s].value; });
     var H = 1.8, fit = BuildCalc.FRUSTUM.M.buttock, base = Figure.human(T, H, gs, {}, { buttockFit: fit, armDeg: 35 });
-    var y = base.dims.levels, lv = { shoulder: y.acromion, chest: y.chest, waist: y.waist, crotch: y.crotch, knee: y.knee };
+    var lvOf = function (fig) { var y = fig.dims.levels; return { shoulder: y.acromion, chest: y.chest, waist: y.waist, crotch: y.crotch, knee: y.knee }; };
     var make = function (f, deg) { return Figure.human(T, H, gs, {}, { buttockFit: fit, armDeg: deg, widthScale: f, legAxis: base.dims.legAxis }); };
-    // Arms at 35 degrees (the middle of the sheet A-pose), or where the body lets them rest if wider.
-    // Measured from the known skull row, as a widened trapezius can rise above the head.
-    var sheetAt = function (f, px) {
-      var fig = make(f, Math.max(35, Figure.armRestAngle(function (d) { return make(f, d); }) + 2));
-      var img = Figure.renderSheet({ front: fig.front, side: fig.side }, H, lv, { figurePx: px });
+    // Arms at 35 degrees (the middle of the sheet A-pose), or just past where the body lets them rest
+    // if that is wider (at most 88: level). Measured from the known skull row.
+    var drawn = function (f) { var deg = Math.min(88, Math.max(35, Figure.armRestAngle(function (d) { return make(f, d); }) + 2)); return { fig: make(f, deg), deg: deg }; };
+    var sheet = function (views, lv, px) {
+      var img = Figure.renderSheet(views, H, lv, { figurePx: px });
       return { img: img, r: Measure.measureSheet(img, { heightM: H, heightRef: 'skull', skullRows: Figure.sheetSkullRows(img, H), density: 1060, bodyFatPct: 7.5, order: ['front', 'side', 'back'], seg: { refine: 0 } }) };
     };
-    var passing = function (r) { return r.ok && r.score ? r.score.value : NaN; };
+    // The outline's score as drawn: head and body by the tool, arms as round limbs (as the limits).
+    var drawnScore = function (f, px) {
+      var d = drawn(f), r = sheet(Figure.headAndBody(d.fig), lvOf(d.fig), px).r;
+      if (!r.volume_m3 || r.checks.some(function (c) { return !c.ok && !/arms followed/.test(c.name); })) return NaN;
+      return 1.8 * (r.volume_m3.value + Figure.armVolume(d.fig, d.deg)) * 1060 * 0.925 / (H * H * H);
+    };
     var none = function (msg) { target = null; $('tgtFront').removeAttribute('src'); $('tgtSide').removeAttribute('src'); $('capFront').textContent = 'Front'; $('capSide').textContent = 'Side'; $('targetStatus').textContent = msg; };
     $('targetStatus').textContent = 'Drawing…';
     setTimeout(function () {
-      var sol = Figure.solveTarget(function (f) { return passing(sheetAt(f, 300).r); }, tv);
+      var sol = Figure.solveTarget(function (f) { return drawnScore(f, 300); }, tv);
       if (sol.f == null) {
-        none(sol.reason === 'fails' ? 'No outline on this shape reaches ' + sc(tv) + ' and passes the tool\'s own checks: beyond widths and depths × ' + fmt.sep(sol.bestF, 2) + ' (score ' + sc(sol.bestScore) + ') the drawing fails them. Try another shape.'
+        none(sol.reason === 'gap' ? 'No outline on this shape scores between ' + sc(sol.bestScore) + ' and ' + sc(sol.nextScore) + ': the reading jumps there. Try another shape.'
+          : sol.reason === 'fails' ? 'No outline on this shape reaches ' + sc(tv) + ' and passes the tool\'s own checks: beyond widths and depths × ' + fmt.sep(sol.bestF, 2) + ' the drawing fails them. Try another shape.'
           : 'Every width and depth × ' + fmt.sep(sol.bestF, 2) + ' ' + (sol.bestScore > tv ? 'goes no lower than ' : 'reaches only ') + sc(sol.bestScore) + ' on this shape. Try another shape.');
         return;
       }
-      // Converge again at full size (the reading moves a little with resolution).
-      var f = sol.f, out = sheetAt(f, 1000);
-      for (var i = 0; i < 2 && out.r.ok && Math.abs(out.r.score.value / tv - 1) > 0.005; i++) { f *= Math.sqrt(tv / out.r.score.value); out = sheetAt(f, 1000); }
-      if (!out.r.ok) { none('The full-size outline fails the tool\'s own checks (' + out.r.checks.filter(function (c) { return !c.ok; }).map(function (c) { return c.name; }).join('; ') + '), so it is not offered. Try another shape.'); return; }
+      var f = sol.f, d = drawn(f), s = drawnScore(f, 800), out = sheet({ front: d.fig.front, side: d.fig.side }, lvOf(d.fig), 1000);
+      var other = out.r.checks.filter(function (c) { return !c.ok && !/arms followed/.test(c.name); });
+      if (!(s === s) || other.length) { none('The full-size outline fails the tool\'s own checks (' + other.map(function (c) { return c.name; }).join('; ') + '), so it is not offered. Try another shape.'); return; }
       var V = out.r.views, img = out.img, pad = Math.round(0.03 * img.width);
       var crop = function (v) {
         var x0 = Math.max(0, v.x0 - pad), x1 = Math.min(img.width, v.x1 + pad), c = document.createElement('canvas');
@@ -1613,11 +1655,14 @@ details.src summary { cursor: pointer; font-weight: 600; }
         return c.toDataURL('image/png');
       };
       $('tgtFront').src = crop(V.front); $('tgtSide').src = crop(V.side);
-      var s = out.r.score.value;
       $('capFront').textContent = 'Front · score ' + sc(s); $('capSide').textContent = 'Side · score ' + sc(s);
-      target = { target_score: tv, base_shape: e.short, base_build_id: id, height_m: H, width_factor: +f.toFixed(4), measured_score: +s.toFixed(2), density_kg_m3: 1060, body_fat_pct: 7.5, checks_passed: true, girths_m: {} };
-      BuildCalc.SITES.forEach(function (k) { var x = out.r.girths[k]; target.girths_m[k] = x && x.value_m ? +x.value_m.toFixed(4) : null; });
-      $('targetStatus').textContent = e.short + ' at 1.80 m with every width and depth × ' + fmt.sep(f, 2) + ' (head, hands, feet and joints unchanged): it measures ' + sc(s) + ' (target ' + sc(tv) + ') at 7.5% fat and 1,060 kg/m³, and passes the tool\'s checks.';
+      var toolReads = out.r.ok && out.r.score ? out.r.score.value : null;
+      // The drawing's girths: the template's at 1.80 m times the width factor (every width and depth times f).
+      target = { target_score: tv, base_shape: e.short, base_build_id: id, height_m: H, width_factor: +f.toFixed(4), arm_angle_deg: +d.deg.toFixed(1), drawn_score: +s.toFixed(2), measuring_tool_reads: toolReads == null ? null : +toolReads.toFixed(2), density_kg_m3: 1060, body_fat_pct: 7.5, drawn_girths_m: {} };
+      BuildCalc.SITES.forEach(function (k) { target.drawn_girths_m[k] = +(gs[k] * f).toFixed(4); });
+      $('targetStatus').textContent = e.short + ' at 1.80 m with every width and depth × ' + fmt.sep(f, 2) + ' (head, hands, feet and joints unchanged), arms ' + Math.round(d.deg) + '° out: it scores ' + sc(s) + ' as drawn (target ' + sc(tv) + ') at 7.5% fat and 1,060 kg/m³, with the head and body measured by the tool and the arms counted as round limbs.' +
+        (d.deg > 40 ? ' The arms stand outside the sheet spec\'s 30–40° A-pose: a body this wide cannot hold them closer in a flat front view.' : '') +
+        (toolReads != null ? ' The measuring tool reads the whole sheet as ' + sc(toolReads) + ' (it counts each arm at torso depth where it meets the shoulder).' : ' The measuring tool cannot follow these arms (this wide, they cannot hang clear of the body), so it cannot check art drawn from this outline.');
     }, 30);
   }
   function initTool() {
@@ -1627,7 +1672,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
     $('measureBtn').addEventListener('click', measure);
     $('copyBtn').addEventListener('click', copyResults);
     $('tChoose').addEventListener('click', function () { $('file').click(); });
-    $('tSoldier').addEventListener('click', function () { tool.img = exampleSheet(); tool.name = 'Soldier sheet'; tool.example = true; $('tH').value = '1.80'; $('sheetName').textContent = tool.img.width + ' × ' + tool.img.height + ' px'; measure(); });
+    $('tSoldier').addEventListener('click', function () { newSheet(); tool.img = exampleSheet(); tool.name = 'Soldier sheet'; tool.example = true; $('tH').value = '1.80'; $('sheetName').textContent = tool.img.width + ' × ' + tool.img.height + ' px'; measure(); });
     $('file').addEventListener('change', function () { loadFile(this.files[0]); });
     var drop = $('picker');
     ['dragenter', 'dragover'].forEach(function (t) { drop.addEventListener(t, function (ev) { ev.preventDefault(); drop.classList.add('over'); }); });
@@ -1641,8 +1686,8 @@ details.src summary { cursor: pointer; font-weight: 600; }
       copyText(text, 'targetStatus', 'targetOut', 'Copied the target numbers: ' + text.split('\n').length + ' lines.');
     });
     ['tH', 'tRho', 'tBf', 'tArmK', 'tSkull', 'tOrder'].forEach(function (id) {
-      $(id).addEventListener('input', function () { if (tool.res && !tool.res.stale) { tool.res.stale = true; $('toolStatus').textContent = 'The fields changed since this measurement: press Measure to update the results.'; } });
-      $(id).addEventListener('change', function () { if (tool.res && !tool.res.stale) { tool.res.stale = true; $('toolStatus').textContent = 'The fields changed since this measurement: press Measure to update the results.'; } });
+      $(id).addEventListener('input', markStale);
+      $(id).addEventListener('change', markStale);
     });
     // The example measurement, the target outline and the duo.jpg test run when the tool comes
     // near the screen, so they do not hold up the lineup.
@@ -1695,12 +1740,12 @@ details.src summary { cursor: pointer; font-weight: 600; }
       '<li><svg width="56" height="18" aria-hidden="true"><rect x="0" y="0" width="56" height="18" class="geo" stroke="var(--chalk)" stroke-width="1.5"/></svg><span><b>Blue outline and grey fill: geometry, not a build</b> (the meatball, the limit templates).</span></li>' +
       '</ul><h3 style="margin-top:16px">The plate</h3><ul>' +
       '<li><span class="mono" style="font-weight:600">37–40</span><span><b>Big number: the score range</b> across plausible body fat. Under it: the score at the working body fat.</span></li>' +
-      '<li><span>' + chip('estimate') + '</span><span><b>How sure the score is.</b> ESTIMATE: body fat assumed. DERIVED: body fat measured.</span></li>' +
+      '<li><span>' + chip('estimate') + '</span><span><b>How sure the score is.</b> ESTIMATE: body fat assumed or only reported. DERIVED: body fat measured.</span></li>' +
       '<li><span class="mono">FFMI</span><span><b>Plain FFMI</b>, fat-free mass ÷ height² (kg/m²), for comparison with the familiar scale. Same status as the score.</span></li>' +
       '<li><span class="flag">Red</span><span><b>Red text: a warning.</b> Not comparable, may be overstated, or beyond human data.</span></li>' +
       '</ul></div><div><h3>Groups</h3><ul>' + GROUPS.map(function (g) { return '<li><svg width="56" height="18" aria-hidden="true"><rect width="56" height="18" fill="var(' + g.v + ')"/></svg><span>' + esc(g.label) + '</span></li>'; }).join('') +
       '<li><svg width="56" height="18" aria-hidden="true"><rect width="56" height="18" class="geo"/></svg><span>Geometry (not a build)</span></li></ul>' +
-      '<h3 style="margin-top:16px">Status chips</h3><ul>' + ['measured', 'official', 'reported', 'derived', 'estimate', 'disputed'].map(function (s) { return '<li><span>' + chip(s === 'disputed' ? 'reported' : s, s) + '</span><span>' + esc(VOCAB[s] || '') + '</span></li>'; }).join('') + '</ul></div>';
+      '<h3 style="margin-top:16px">Status chips</h3><ul>' + ['measured', 'official', 'reported', 'derived', 'estimate', 'disputed'].map(function (s) { return '<li><span>' + chip(s) + '</span><span>' + esc(VOCAB[s] || '') + '</span></li>'; }).join('') + '</ul></div>';
     if (window.innerWidth >= 720) $('keyDetails').open = true;
   }
   function setSeg(a, b, on) { $(a).setAttribute('aria-pressed', on ? 'true' : 'false'); $(b).setAttribute('aria-pressed', on ? 'false' : 'true'); }
@@ -1709,6 +1754,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
     if (state.heights === 'real') n.push('Real heights: one scale for every figure. Wall lines mark 1, 2 and 3 m. The meatball is drawn 1.80 m tall, the height the score uses. Edges are hard to read this small, so tap a figure for its full drawing.');
     if (state.view === 'side') n.push('Side view: human depths come from ANSUR II depth-to-width ratios (soldiers). Rex and Ollie are traced from their side views, and their tails show in full, hatched.');
     $('modeNote').textContent = n.join(' ');
+    $('lineupVerdict').textContent = state.heights === 'real' ? 'Everyone is drawn to one scale, at his own height, in score order.' : 'Everyone is drawn at the same height, in score order. Only the build differs.';
   }
   function rerenderFigures() {
     var s = state.stop, el = s && $(s.id), before = el ? el.getBoundingClientRect().top : null;
@@ -1727,6 +1773,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
     var tapeJump = function (ev) {
       var host = this, X = host._X, W = host._W; if (!X) return;
       var x = ev.clientX - host.getBoundingClientRect().left, t = Math.max(0, Math.min(1, (x - 6) / (W - 12)));
+      if (x >= X(MEAT) - 8) { jump('meatball'); return; } // the ring marks the meatball
       var st = stopAt(Math.exp(Math.log(AX.lo) + (Math.log(AX.hi) - Math.log(AX.lo)) * t)); if (st) jump(st.id);
     };
     $('locTape').addEventListener('click', tapeJump);

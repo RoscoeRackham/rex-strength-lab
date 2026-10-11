@@ -1,0 +1,172 @@
+{
+ "verdicts": [
+  {
+   "id": "F1",
+   "real": true,
+   "severity": "major",
+   "reasoning": "I tested the reviewed build, commit 3cd65f5. The finding's line numbers match that commit: host.innerHTML='' at line 841, placeDrawer at 966, lowest at 1131. I exported it to scratchpad/review1/v0, built it, and ran probe.js at 1280 px. Clicking ronnie_coleman opened the drawer. After #hReal, document.getElementById('drawer') was null. Clicking phil_heath, then Side, Front and Same, then rex gave 'no drawer', and the page threw \"Failed to execute 'appendChild' on 'Node': parameter 1 is not of type 'Node'.\" six times. No figure opens again until the page is reloaded. At HEAD (2093fed) renderStops first calls document.body.appendChild($('drawer')), and shots.js now covers this case. On HEAD the same sequence opened Phil Heath and then Rex with no errors.",
+   "better_fix": "Fixed at HEAD as the finding proposed: the drawer is moved back to body before #stops is cleared, and there is a shots.js regression step. Nothing more is needed."
+  },
+  {
+   "id": "F2",
+   "real": true,
+   "severity": "major",
+   "reasoning": "In v0, settings.limits.notes[2] is the corrected Vasen text ('Unaided eating and drinking use about 130 to 136\u00b0... 49 of 50 ... the lowest setting tested'). limits.json notes[2] and the rendered #limitsNotes still show the old 'A softer line comes earlier: with the elbow held to 120\u00b0, people still manage...'. verify_function.json rec_vasen_120_line rejects that wording. v0 test.js never mentions limits.json, so the drift went unnoticed. At HEAD limits.json has been regenerated and matches settings. A new test compares verdict, method, notes and each item's label, short, tiny, definition and headline. The page now shows the corrected text, and 24 tests pass.",
+   "better_fix": "Fixed at HEAD as proposed (limits.json regenerated, plus a text-equality test). Nothing more is needed."
+  },
+  {
+   "id": "F3",
+   "real": true,
+   "severity": "major",
+   "reasoning": "Reproduced in v0. The duo stop reads 'Their art shows arms held out and thighs touching: by the drawn body's own limits, they are past the first two.' limits.notes[3] says '...so they are past the first two limits whatever their score.' Both turnarounds are A-pose renders: BRIEF.md says 'A-pose, front, back and side views' and 'The arms clear the torso in the front views', and the sheet spec asks for 'arms about 30\u201340\u00b0 out'. The arms limit is 'held as close as the outlines allow ... at least 30\u00b0 out', and its own definition says '30\u00b0 is also the low end of the model-sheet A-pose'. Arms posed out therefore say nothing about whether they could hang down. The images show daylight between arm and torso for both characters. compute_limits.js runs only the human templates, and no test checks the limits on the duo outlines. Thigh contact is plainly visible for Rex. At HEAD both texts say the thighs touch and the A-pose arms are untested.",
+   "better_fix": "Fixed at HEAD with the wording proposed. Nothing more is needed."
+  },
+  {
+   "id": "F4",
+   "real": true,
+   "severity": "major",
+   "reasoning": "Reproduced in v0. Both the forest row and the natural-limit card read 'Largest fat-free mass measured: a sumo wrestler | 34 | MEASURED' (121.3 kg). On the same page, Kraemer 2020's strongmen drawer shows '1.8 \u00d7 124 kg \u00f7 1.87\u00b3'. builds.json gives 152.9 \u00d7 (1 \u2212 0.187) = 124.3 kg, or DXA lean 118.0 + bone mineral 5.2 = 123.2 kg, and that is a group mean of 18 men. Brian Shaw's drawer shows 144 kg (174.5 \u00d7 0.824). Kondo's abstract says only 'the largest one of 121.3 kg' within its own 37 wrestlers. At HEAD the label reads 'Kondo 1994's largest sumo wrestler: 121 kg of fat-free mass', the status is derived, and the text notes that the strongmen carry as much.",
+   "better_fix": "Fixed at HEAD. Nothing more is needed."
+  },
+  {
+   "id": "F5",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced in v0. The giants stop says 'Their heights and weights are official.' hulk_grey has height and weight status 'reported', and his drawer says '6'6\" (fan wiki only)' and '900 lb (fan wiki only)'. One part of the evidence is wrong: Hulk (grey) does not set the '69 to 84' span. Darkseid (68.7) and Abomination (83.9) do. I rate it minor rather than major because one of six members is mislabelled in summary copy and his own drawer labels it correctly. At HEAD the sentence is built from the members: 'Their heights and weights are official, except Hulk (grey)'s (reported).'",
+   "better_fix": "HEAD's fix is correct. To meet the owner's 'say so' rule for fan sites, name the source instead of the status, e.g. \"except the grey Hulk's (fan wiki only)\". This could use the basis text, or add a 'fan wiki' flag in settings."
+  },
+  {
+   "id": "F6",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced in v0. Brian Shaw's plate reads '30\u201334 | 32 at 18% fat | DERIVED' and his forest row is DERIVED. builds.json gives his body_fat_pct status as 'reported' (hydrostatic test, self-filmed, relayed by FitnessVolt). His drawer shows REPORTED. The key says 'DERIVED: body fat measured', and the old scoreStatus let 'reported' through. He is the only build affected; every other DERIVED build has measured body fat. I rate it minor: one build, with the drawer correct. At HEAD scoreStatus returns 'estimate' unless bodyFat.status is 'measured', and Shaw's chip is ESTIMATE. The key still reads 'ESTIMATE: body fat assumed', which is now slightly wrong for him: his value is reported, not assumed.",
+   "better_fix": "Keep HEAD's scoreStatus. Reword the key (app.html ~l.1597) and the forest sub (~l.433) to 'ESTIMATE: body fat assumed or only reported. DERIVED: body fat measured in a study.'"
+  },
+  {
+   "id": "F7",
+   "real": true,
+   "severity": "major",
+   "reasoning": "Reproduced in v0. The clusters read 'EVERY REAL MAN 13\u201342' at 1280 px and 'REAL MEN 13\u201342' at 390 px. lowest = min over LIST = 12.82, which is bruce_banner (Comic characters). The lowest real man's range starts at ansur2_m_p95's lo of 18.66, which rounds to 19. At HEAD the lower end comes from HUMANS and is 19, but the cluster now reads 'EVERY REAL MAN 19\u201345'. The upper end is still firstGap = GAPS[0].from = 44.56, which is Kingpin's top (a comic character, whose body-fat floor moved to 2%). HUMAN_TOP is 41.50, and the page itself says 'No real man on this chart scores above 42.' So HEAD fixes one end of the range and breaks the other.",
+   "better_fix": "In drawGlance (HEAD app.html ~l.1157) use HUMAN_TOP for the real-men cluster: range: sc(lowest) + '\u2013' + sc(HUMAN_TOP), b: HUMAN_TOP. Add a shots.js or test assertion that the cluster text equals sc(min lo over humans) + '\u2013' + sc(HUMAN_TOP)."
+  },
+  {
+   "id": "F8",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced in v0. The natural card reads 'The NCAA tests at random, but these studies did no testing of their own'. The past25 sub says 'The footballer studies did no drug tests of their own'. In facts.json, currier2019_ffmi_check.verify says 'Drug testing is unknown, not none ... unsupported for Currier', and verify_natural item 6 agrees. Currier also covers ten sports, not only football. At HEAD the text reads \"Trexler's study did no testing of its own, and Currier's abstract does not say\", and the past25 sub reads 'The footballer study did no drug testing of its own (the NCAA tests at random)'.",
+   "better_fix": "Fixed at HEAD. Nothing more is needed."
+  },
+  {
+   "id": "F9",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced in v0. The anchor is 'Kouri 1995: highest of 74 drug-free lifters (height-normalised FFMI) | 25' beside text saying all 74 'scored under 25'. The plate reads \"Kouri's drug-free lifters\". The drawer reads '74 male gym athletes ... Means come second-hand from Helms and McDonald', with height and weight REPORTED as a 'secondary source'. kouri1995_fulltext_methods shows 18 of the 74 came from a testosterone trial, and Table 1 (1.80 m, 82.06 kg) was read from the primary PDF. At HEAD the label, short name, description and statuses are fixed (the drawer now shows MEASURED, 'Table 1 group mean: 82.06 kg'). One contradiction remains: the build's name, shown as the drawer heading, is still 'Gym athletes who never used steroids (Kouri 1995, n=74)', while the description below it says 56 gym athletes and 18 trial volunteers.",
+   "better_fix": "Also rename builds.json kouri1995_nonusers.name to 'Men who never used steroids (Kouri 1995, n=74)'. It is a shared file, so claim it in STATUS.md first."
+  },
+  {
+   "id": "F10",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced in v0. The lede says 'the heaviest comic characters about 84' (Abomination, 444.5 kg). The giants verdict says 'The heaviest comic characters score 69 to 84'. By listed mass, Darkseid (823 kg), Hulk Marvel.com (522 kg) and Hulk savage (472 kg) are heavier than Abomination. Doomsday (415 kg) outweighs Juggernaut and Hulk grey (408 kg each) but scores 34 and is not in the band. At HEAD both read 'top comic characters'.",
+   "better_fix": "Fixed at HEAD. Nothing more is needed."
+  },
+  {
+   "id": "F11",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced in v0. The Mr America anchor ends 'Only the guessed body fat and that weight differ.' kouri1995_mr_america_table2.verify says the S conversion 'uses Todd's heights and weights, which are not Kouri's inputs ... Kouri's Willoughby weights differ, at least for Grimek'. builds_json_kouri_corrections.verify says 'The input weights differ for some rows as well as the fat' (Reeves: programme 213 lb against Todd's 192 lb). '25.8 on this scale with their heights' also hides that Todd's heights were used. At HEAD the text says 'with Todd's heights' and 'The two used different height and weight records (Kouri: Willoughby 1970) and different fat guesses.'",
+   "better_fix": "Fixed at HEAD. Nothing more is needed."
+  },
+  {
+   "id": "F12",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced in v0. The score card says \"Kouri's correction, fitted to men of 1.55 to 2.05 m, would give about 250\". 1.55\u20132.05 is calc.js FFMI_NORM_RANGE, the window where the Build Calculator chooses to apply the correction (its comment, lines 37\u201341). Kouri fitted the 6.1 slope on 'elite nonuser athletes with FFMI scores of 22 or above'. The non-users' mean height was 1.80 \u00b1 0.074 m, with the 1.59 m and '1.93 m (one of the tallest)' men as the extremes noted (kouri1995_fulltext_methods). At HEAD the card reads 'fitted to drug-free athletes of about 1.6 to 1.9 m'.",
+   "better_fix": "Fixed at HEAD. Nothing more is needed."
+  },
+  {
+   "id": "F13",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced in v0. The past25 verdict reads 'A few measured athletes do: the top 2.5% of college footballers start at 28'. trexler2017_ffmi_fulltext_check gives n_over_25 62 of 235 (26.4%), which is far more than 'a few'. At HEAD it reads 'Many measured athletes do: 62 of 235 college footballers (26%) were above 25'.",
+   "better_fix": "Fixed at HEAD. Nothing more is needed."
+  },
+  {
+   "id": "F14",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced in v0. Bruce Banner's body-fat row reads 'Assumed: the range of measured US soldiers.' (15\u201334%). In facts.json, ansur2_men_bodyfat_from_army_equation has status 'estimate' and its notes say 'ANSUR II has no body-composition data'. P5\u2013P95 of 15.2\u201333.5% come from the Army one-site tape equation; Taylor's equation gives 17.3\u201336.5%. At HEAD the note reads 'the range estimated for US soldiers from waist and weight'.",
+   "better_fix": "Fixed at HEAD. Nothing more is needed."
+  },
+  {
+   "id": "F15",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced in v0. Rex's and Ollie's 'What this ignores' lists say 'Body fat is assumed for his group.' and 'Beyond human data: ... so his shape and body fat are extrapolated.' Their outlines are 'Dash-dot edge all round: traced from his turnaround', and the 5\u201310% body fat is the owner's canon (bodyfat_range_rex_ollie, official). The ansur2_m_p50 drawer says 'Body fat is assumed for his group.' while its own body-fat row says 'Estimated from this build's navel waist and weight'. At HEAD, Rex shows 'Body fat is the owner's canon range, 5 to 10%.' and 'Beyond human data: no real man scores this high.' ansur2_m_p50 shows 'Body fat is estimated from his waist and weight.'",
+   "better_fix": "Fixed at HEAD. Nothing more is needed."
+  },
+  {
+   "id": "F16",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced in v0. In the close-up, the forest row reads 'EMPTY \u00b7 220 TO 924 | off this scale: 220\u2013920 \u2192'. off() passes MEAT through scr()/sc(), which rounds 924.1 to two significant figures, although MEAT_TXT is commented 'a defined end point: never rounded further'. Target 100 gives 'it measures 101.4 (target 100)', against the sc() convention used everywhere else. At HEAD the row reads '220\u2013924' and the target reads 'it measures 100 (target 100)'.",
+   "better_fix": "Fixed at HEAD. Nothing more is needed."
+  },
+  {
+   "id": "F17",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced in v0. The 42\u201362 gap tile shows 'THOR \u00b7 62', 'THE THING \u00b7 59' and 'NO BUILDS HERE' together. On the glance tape the first hatch spans x 350.5\u2013461.2 px, with the Thing's tick at 444.1 and Thor's at 458.2, under the caption 'Hatched: nothing there.' At HEAD the tile says 'NOTHING COMPARABLE HERE' and the caption says 'Hatched: nothing comparable there.'",
+   "better_fix": "Fixed at HEAD. Nothing more is needed."
+  },
+  {
+   "id": "F18",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced in v0. The 'Score 220 to 924' stop says 'The hands to face limit lies somewhere from 86 to 230, across this stretch and beyond'. The band is 86.06\u2013233.31 and the stretch 216.2\u2013924.1, so they overlap only from 216 to 233. The condition range[0] < g.from || range[1] > g.to is true only because the band starts below the stretch. At HEAD it reads 'reaching into the bottom of this stretch'. The 88\u2013130 stop correctly keeps 'across this stretch and beyond'.",
+   "better_fix": "Fixed at HEAD. Nothing more is needed."
+  },
+  {
+   "id": "F19",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced in v0. The Thing's drawer says 'No source says how much of his weight it is, so his score is too high by an unknown amount.' In facts.json, thing_rocky_hide has hide_mass_kg and hide_density_kg_m3 null, and Marvel.com calls the skin 'actually supple'. No official source says the hide is denser or heavier than tissue, so 'too high' is asserted without support. At HEAD he is reclassified as comparable 'uncertain', with the hedged 'whether his listed weight overstates his muscle is unknown'.",
+   "better_fix": "Fixed at HEAD. Nothing more is needed."
+  },
+  {
+   "id": "F20",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced in v0. The forest shows 'Largest fat-free mass measured: a sumo wrestler | 34 | MEASURED', and the top stop has '...scores 34. MEASURED'. 33.9 = 1.8 \u00d7 121.3 / 1.86\u00b3 is calculated by this project, which status_vocabulary defines as derived. The athletes' anchor range [28.0, 28.7] is the approximate S conversions (Currier p97_5_all_S_at_mean_height_approx 28, rugby 28.7). Its value is Trexler's unconverted 28.1, whose own conversion (27.5) falls outside the range. At HEAD the sumo row is DERIVED, and the athletes' range is the source values [28.1, 29.1], labelled 'their height-normalised FFMI'.",
+   "better_fix": "Fixed at HEAD. Nothing more is needed."
+  },
+  {
+   "id": "F21",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced in v0. The limit card shows '27 \u00b7 The median soldier's own shape \u00b7 Scored lean (7.5% fat)'. The tool example shows 'Mass 90 kg' and 'Score 26 (24\u201328)' for the 'median soldier at 1.80 m, counted at 7.5% fat and 1,060 kg/m\u00b3'. The finding's cause and fix are wrong, though. scratchpad f21.js isolates the cause. compute_limits uses girths from calc.compute({heightM: 1.8}), his shape scaled to 1.80 m. exampleSheet uses his own 1.75 m girths drawn on a 1.80 m frame, a taller and slimmer body. The scores: own girths with arm 35\u00b0 at 700 px give 25.70; at 800 px with the default arm, 25.80; girths at 1.80 m with arm 35\u00b0 at 700 px, 26.86; at 800 px with the default arm, 26.98. Arm angle and resolution move the reading by \u00b10.5. The girth basis moves it by (1.8/1.75)\u00b2 \u2248 5.8%. HEAD adds 'The limits section reads the same shape at 27: its figure is drawn with the arms at another angle and at higher resolution, which moves the reading by a few percent'. That explanation is wrong, and the tool's 'median soldier at 1.80 m' is not the same shape.",
+   "better_fix": "In exampleSheet (HEAD app.html ~l.1374), take girths at 1.80 m the way compute_limits does: var r = BuildCalc.create? Use the existing model's calc: g[s] = calcModel.compute({ buildId: 'ansur2_m_p50', heightM: 1.8 }).girths[s].value. This measures about 27, matching the card, and is the median soldier's shape scaled to 1.80 m. Then delete HEAD's sentence about arm angle and resolution. Alternatively, draw the example at his own 1.75 m with tH = 1.75, which keeps the shape and gives the same score."
+  },
+  {
+   "id": "F22",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced in v0. The Withers 1997 drawer reads 'The range covers body fat 3\u20137% and height 1.78\u20131.78 m.' builds.json gives a height range of [1.776, 1.783], and both ends format as 1.78. At HEAD the formatted strings are compared, and the drawer reads 'The range covers body fat 3\u20137%.'",
+   "better_fix": "Fixed at HEAD. Nothing more is needed."
+  },
+  {
+   "id": "F23",
+   "real": false,
+   "severity": "not_a_bug",
+   "reasoning": "The arithmetic is as stated: 0.289 \u00d7 1,060 = 306.3. But 307 is the correct value. The unrounded measured tail volume is 0.28941 m\u00b3 (history/scratchpad/mass/checker/results_checker.json segments_m3.tail 0.2894122456), and 0.28941 \u00d7 1,060 = 306.8 kg, which rounds to 307. builds.json rex.tail.mass_kg_at_1060 is 307 from that value. The basis text shows the volume to three figures, which is ordinary display rounding of an estimate whose uncertainty runs to tens of kg; the 1 kg difference moves Rex's score by 0.04%. HEAD changed settings and test.js to 306. That is slightly less accurate than the source, and it now disagrees with builds.json, which still says 307 and 'about 307 kg' in the Build Calculator's note.",
+   "better_fix": "Revert HEAD to mass_kg 307 (and test.js 2700 \u2212 307). If the arithmetic must reproduce exactly, print the volume as 0.2894 m\u00b3 in the basis, or say 'about 0.29 m\u00b3'."
+  },
+  {
+   "id": "F24",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced in the v0 limit card: 'From here every step must be at least hip-joint width, about twice an ordinary step.' The sources compare step width: obese_gait_step_width gives 0.16 m against 0.08 m, and ansur_thigh_gap_legs_vertical gives an inter-hip-joint median of 0.174 m. An ordinary step length is far longer, so the sentence is false read literally. At HEAD the definition reads 'the feet must stay at least hip-joint width apart (about 17 cm), about twice an ordinary step width (8 cm)', and limits.json matches.",
+   "better_fix": "Fixed at HEAD. Nothing more is needed."
+  }
+ ]
+}

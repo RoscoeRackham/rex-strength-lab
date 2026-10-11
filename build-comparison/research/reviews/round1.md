@@ -11,6 +11,14 @@ Workflow `build-comparison-review-r1`, run 11 October 2026 on the first publishe
 - **Verbatim results:** [round1.json](round1.json) holds every finding, the verdict on each, and what each reviewer checked and found sound (`verified_ok`). The repro scripts are in the session scratchpad and are copied into the history entry.
 - **Totals:** 76 findings. The verifiers confirmed 69 and rejected 7. Of the 7, three were already fixed by the time the verifier ran (code F1, F4 and F11 duplicate model F1 and F3), and four were judged not defects (claims F23, data DC-1 and DC-9, ux L14).
 
+**Round 2 found seven of these fixes only partial:**
+- claims F6, F9 and F21
+- data DC-14
+- UX L1 and L8
+- the archive.org quotes
+
+It also showed that the measured limit scores were themselves inflated by the tool's arm reading. All of this is in [round2.md](round2.md).
+
 ## Fixes, by lens
 
 Commits are on `claude/hopeful-keller-vly1s9`.
@@ -49,13 +57,13 @@ All 23 confirmed findings were fixed:
 
 Kouri's non-users now come from Table 1 of the full paper.
 
-F23 (Rex's tail 307 against 306 kg) was judged not a defect; the page uses 306.
+F23 (Rex's tail, 307 against 306 kg) was judged not a defect: the unrounded volume, 0.2894 m³, gives 307 kg. The round 1 fix had changed it to 306, and round 2 restored 307.
 
 ### Data (14 findings, 12 confirmed). Commit `f594930`
 
 | ID | Finding | Outcome |
 |---|---|---|
-| DC-1 | Archive.org search-API links often fail, and the handbook items are lending-only. | Rejected as a defect (the API answered the verifier 69 times), but hardened anyway as the verifier suggested. `tools/fetch_archive_snippets.py` keeps the matched text in `research/archive_snippets.json`. Each API source now shows the quote and is labelled as an API that may fail. Each book's stable archive.org page is added, opening a search inside for the quoted words. |
+| DC-1 | Archive.org search-API links often fail, and the handbook items are lending-only. | Rejected as a defect (the API answered the verifier 69 times), but hardened anyway as the verifier suggested. `tools/fetch_archive_snippets.py` keeps the matched text in `research/archive_snippets.json`. API sources now show the quote and are labelled as an API that may fail. Round 2 found 4 of the 21 without a quote; after round 2, 18 have one, and the other 3 are explained in round2.md. Each book's stable archive.org page is added, opening a search inside for the quoted words. |
 | DC-2 | A Sources label gave Rex's old-basis numbers (261 vs 159). | Fixed: about 250 vs 160 on the page's basis. |
 | DC-3 | Pope's 6–16% was credited to Kouri 1995. | Fixed: credited to Todd 2008 (recalled, unpublished). |
 | DC-4 | 19 drawers said "No publisher gives body fat". | Fixed: "none was found in the sources searched". |
@@ -97,7 +105,7 @@ Fixed:
 |---|---|---|
 | F2 | A front-and-back sheet passed every check, and the back view was used as the side depth (+29%). | Fixed. A new check refuses a side view as wide as the front at both the waist and the hips. The turnarounds' round bellies reach 0.94–1.07 at the waist but 0.6 at the hips, so real side views pass. Tested. |
 | F3 | Typed skull rows were not validated (23,800,000 kg, all checks passing). | Fixed. A row outside its view's head is refused and not scored, and the row used is drawn on the sheet. Tested in Node and in the page. |
-| F5 | A 2,000 px sheet froze the page for 12–16 s. | Partly fixed. Measuring now runs in a Web Worker built from the inlined tool, with the elapsed time shown, so the page stays responsive. Refinement runs on each view's crop: about a third faster, and much less memory. A 2,000 px sheet still takes about 10 s. |
+| F5 | A 2,000 px sheet froze the page for 12–16 s. | Partly fixed. Measuring now runs in a Web Worker built from the inlined tool, with the elapsed time shown, so the page stays responsive. Refinement runs on each view's crop. That uses much less memory but saves little time: a 2,000 px sheet still takes about 10 s. |
 | F6 | CI did not check `facts.json` or `limits.json`. | Fixed. CI regenerates `facts.json` and fails on a difference. `limits.json` is compared whole in `test.js`. |
 | F7 | Tests did not test what their names said. | Fixed. Tests now check that the tail faces right, check which turnaround checks fail by name, and test the arm functions that are actually used. |
 | F8 | Copy used the height field's current value. | Fixed. Copy uses the inputs that were measured and refuses after the fields change. |

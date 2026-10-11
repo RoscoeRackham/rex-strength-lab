@@ -41,7 +41,7 @@ B.PHASES = [
     ('03-review-round-1', 'Review round 1 and its fixes', ('workflow', 'build-comparison-review-r1'),
      'Review round 1 (five lenses: model, claims, data, UX, code; each finding reproduced or refuted by a skeptic) ran while the README, notes and first publish were finished. Its 69 confirmed findings were fixed: limit scores measured on the drawn shapes, the tests run on every chart figure and arms drawn at their rest angle, a converging target solver, source and wording corrections, archive.org quotes kept with stable links, accessibility and layout fixes, new checks in the measuring tool and a Web Worker for it. A second context compaction happened in this phase.'),
     ('04-review-round-2', 'Review round 2, the pull request and this history', ('workflow', 'build-comparison-review-r2'),
-     'The page was republished with the round 1 fixes and the pull request opened. Review round 2 checked every round 1 fix and looked for regressions; its confirmed findings were fixed, the page republished again, and this history entry written.'),
+     'The page was republished with the round 1 fixes and pull request #5 opened; the collaborator merged it at that state while review round 2 ran. Round 2 checked every round 1 fix and looked for regressions (40 findings, all confirmed, among them a measuring-tool defect with arms held far out); its fixes were made, the page republished again, the branch restarted from main with the round 2 commit, and this history entry written for a second pull request.'),
 ]
 
 B.DIRS = collections.OrderedDict([
@@ -112,7 +112,7 @@ def write_readme(out, events, starts, phase_lines, counts, compactions, scratch_
           '## Commits', '', '| When (UTC) | Commit | Subject |', '|---|---|---|']
     for c in commits:
         L.append(f'| {B.ts_fmt(c["ts"])[:16]} | `{c["commit"]}` | {c["text"].split("  [")[0]} |')
-    L += ['', 'All are on branch `claude/hopeful-keller-vly1s9`. The commit that adds this history folder, and anything after it, is not in the transcript.', '',
+    L += ['', 'All were made on branch `claude/hopeful-keller-vly1s9`. Those up to `1f32e2c` reached `main` through pull request #5 (merged by the collaborator); the round 2 fixes were then re-applied on a branch restarted from `main` and go in with this folder through a second pull request. The commit that adds this history folder, and anything after it, is not in the transcript.', '',
           '## Context compactions', '']
     for c in compactions:
         L.append(f'- {B.ts_fmt(c["ts"])}: the context was replaced by a written summary (shown collapsed in the transcript at that point). The raw log keeps everything before it, so nothing in this history depends on the summaries.')

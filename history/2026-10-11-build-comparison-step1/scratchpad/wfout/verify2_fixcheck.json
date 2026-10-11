@@ -1,0 +1,81 @@
+{
+ "verdicts": [
+  {
+   "id": "R2-FIX-01",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced on HEAD 1f32e2c. The only commits after 7061d55 touch STATUS.md and history/, so build-comparison is unchanged and the working tree is clean. In Chromium the tool example shows 'Mass 90 kg', 'Score 26 (24\u201328)' and the sentence: 'The limits section reads the same shape at 27 from a larger drawing; the reading moves by a few percent with the drawing's size.' The limits card shows 27 for 'The median soldier's own shape'.\n\nexampleSheet() (app.html:1421-1427) draws e.girths, his own girths at 1.755 m, on a 1.80 m frame. compute_limits.js maker() uses calc.compute({heightM: 1.8}), whose girths are 1.8/1.755 = 1.0256 times larger. My Node run (fixv/s/f21.js) uses the page's own options (top reference, default refine):\n- own girths: 25.70 at 700 px, 25.70 at 800 px, 25.76 at 1,600 px. Drawing size moves the reading by 0.2%.\n- girths at 1.80 m: 26.86 at 700 px, 27.13 at 800 px.\n- limits.json score_at_f1 is 27.26.\nThe girth basis accounts for about 5% of the gap and the drawing size for under 1%. The page's explanation is wrong. Its example is also not 'the same shape' as the card, and not 'the median soldier at 1.80 m' in the same-shape sense: it is a slimmer body. The round 1 verifier gave this exact cause and fix, and HEAD kept the wrong sentence.",
+   "better_fix": "In exampleSheet(), use the shape scaled to 1.80 m, as drawTarget (app.html:1582) and compute_limits do:\n  var r0 = calc.compute({ buildId: 'ansur2_m_p50', heightM: 1.8 }), g = {};\n  BuildCalc.SITES.forEach(function (s) { g[s] = r0.girths[s].value; });\nThe example then reads 26.86, which the page shows as 27, matching the card. Delete the sentence 'The limits section reads the same shape at \u2026 with the drawing's size.' from writeResults (app.html:1509). Or keep a short true version: 'The limits section reads the same shape at 27.' Alternatively, keep his own girths but set tH and the sheet to 1.755 m."
+  },
+  {
+   "id": "R2-FIX-02",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced with my own script (fixv/s/l8.js), which dispatches clicks at offsets from X(MEAT) on #glance and #locTape at 1280 px and at 390 px (touch). The results are the same on both tapes and at both widths: dx = -6, -4, -2, -1, -0.5, 0 and +0.5 go to 'empty-3'; +1, +2, +4 and +6 go to 'meatball'. A real mouse click at the ring centre at 1280 px (s/l8real.js) scrolls to 'Empty to the end', and the locator then reads 'now: empty 220 to 924'.\n\nThe cause is in stopAt. The last gap's hi equals MEAT (924.099), so any score below MEAT has gap d = 0 and meatball d > 0. The change to d <= best.d only fixes ties at or above MEAT. So tapping the centre or the left half of the ring, which marks the meatball, still lands on the gap, and round1.md:83 ('L8: the 924 ring jumps to the meatball') is only half true. One small error in the finding: the locator's ring radius is 3.5 px, not 7.",
+   "better_fix": "In tapeJump (app.html:1727), after computing x and before stopAt:\n  if (x >= X(MEAT) - 8) { jump('meatball'); return; }\nThis covers the 7 px glance ring, the 3.5 px locator ring, and everything to their right. In the 390 px locator, X(220) to X(924) spans about 100 px, so the gap stays tappable. Add a shots.js check that taps X(MEAT) - 3 on both tapes and expects #meatball at the top."
+  },
+  {
+   "id": "R2-FIX-03",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced (fixv/s/focus.js, screenshots fixv/shots/f-*.png). With focus({focusVisible: true}), each pressed segmented button (hSame, vFront, zAll, the defaults) has outline-offset -4px. The ring lies on the button's own fill:\n- light: ring rgb(31,79,166) on rgb(21,24,31), 2.31:1\n- dark: ring rgb(148,181,255) on rgb(232,233,238), 1.68:1\nThe unpressed buttons give 7.26:1 (light) and 8.27:1 (dark) against the effective background.\n\nThe ring is visible but faint on the pressed buttons, below the 3:1 that WCAG 1.4.11 asks for focus indicators. The round 1 verifier's 'sheet-coloured inner ring' was not applied, and round1.md:76 records L1 as fixed without saying so.",
+   "better_fix": "Add after app.html:58:\n  .seg button[aria-pressed=\"true\"]:focus-visible { outline-color: var(--sheet); }\nThis gives 16.7:1 (light) and 13.9:1 (dark) on the pressed ink fill. Alternatively use box-shadow: inset 0 0 0 4px var(--sheet) together with the chalk outline, as the verifier proposed."
+  },
+  {
+   "id": "R2-FIX-04",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced. The page's key text reads 'How sure the score is. ESTIMATE: body fat assumed. DERIVED: body fat measured.' The forest sub reads 'Every range is an estimate (body fat assumed) unless it carries a DERIVED chip (body fat measured).'\n\nBrian Shaw's plate chip is ESTIMATE, from scoreStatus: bodyFat.status !== 'measured'. His drawer says 'BODY FAT 18% (15\u201321%) REPORTED The build's own measured or reported value'. A tally over model.all() finds he is the only build with bodyFat.status 'reported'; every other ESTIMATE has 'estimate' body fat. So the key's definition is false for him, and the round 1 verifier's rewording was not applied.",
+   "better_fix": "app.html:1698 key: 'ESTIMATE: body fat assumed or only reported. DERIVED: body fat measured in a study.' app.html:439 forest sub: '\u2026 an estimate (body fat assumed or only reported) unless it carries a DERIVED chip (body fat measured in a study).'"
+  },
+  {
+   "id": "R2-FIX-05",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced from the rendered drawer (fixv/drawers.json). The heading reads 'GYM ATHLETES WHO NEVER USED STEROIDS (KOURI 1995, N=74)'. Directly below it: 'Group means of Kouri 1995's 74 non-users (56 gym athletes and 18 volunteers from a testosterone trial)\u2026'. builds.json kouri1995_nonusers.name is still 'Gym athletes who never used steroids (Kouri 1995, n=74)'.\n\nfacts.json kouri1995_fulltext_methods confirms that 18 of the 74 came from a testosterone cypionate trial, not from the gym recruitment. The heading therefore contradicts the text under it. The round 1 verifier flagged this, and round1.md lists 'Kouri's labels' as fixed.",
+   "better_fix": "Claim build-calculator/data/builds.json in STATUS.md. Set kouri1995_nonusers.name to 'Men who never used steroids (Kouri 1995, n=74)'. Rebuild both pages (the Build Calculator shows the name too)."
+  },
+  {
+   "id": "R2-FIX-06",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced in Chromium (fixv/s/drawers.js). There are two chips whose text is 'disputed'. Both have class 'chip reported' and the title 'Stated by a magazine, fan site, the athlete, or a secondary source; not independently measured.' One is the key's own row, next to the text 'Facts only (kept from the research): sources disagree\u2026'. The other is on the mass-height exponent fact, whose sources are Burton/Med Hypotheses and journal papers.\n\nThe cause is the remap at app.html:1413 and :1703, chip(s === 'disputed' ? 'reported' : s, s). builds.json status_vocabulary already has a 'disputed' entry, so chip('disputed') would give the right tooltip. The key row was added, which is the part round1.md calls fixed. The chip's style and hover text still give the REPORTED definition.",
+   "better_fix": "app.html:1413: chip(f.status). app.html:1703: chip(s). Add a CSS rule so DISPUTED does not fall back to the plain solid chip, for example .chip.disputed { border-style: dashed; border-color: var(--ink-3); font-style: italic; }. Any distinct style will do."
+  },
+  {
+   "id": "R2-FIX-07",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced. These sources disagree on the tail mass:\n- 306 kg: settings.json:514-515 and test.js:72/76/77. The Rex drawer reads 'WEIGHT COUNTED 2,390 kg: 2,700 kg less 306 kg of tail \u2026 306 kg'.\n- 307 kg: NOTES.md:43 ('Rex 307 kg'), and builds.json rex.tail mass_kg_at_1060 and its note, which the Build Calculator shows ('about 307 kg').\n\nhistory/scratchpad/mass/checker/results_checker.json gives tail 0.2894122456 m\u00b3, and 0.28941 \u00d7 1,060 = 306.78, which rounds to 307. The value 306 was introduced in 2093fed, after the verifier ruled 307 correct (round1.json F23: real=false, better_fix 'Revert HEAD to mass_kg 307'). round1.md:52 says only 'judged not a defect; the page uses 306', which hides that the verdict was to revert. The effect on scores is about 0.04%, but the repo states two values for one measured quantity.",
+   "better_fix": "settings.json rex exclude_mass: mass_kg 307, basis 'Picture measurement: tail 0.2894 m^3 at 1,060 kg/m^3 (visible part plus the hidden base): 307 kg'. test.js lines 72, 76 and 77: 2700 - 307, 2300 - 307 and 3000 - 307. Rebuild, then check limits.json and the stored test values. round1.md:52: 'F23 (Rex's tail 307 vs 306 kg) was judged not a defect: the unrounded volume 0.2894 m\u00b3 gives 307 kg, which the page keeps.'"
+  },
+  {
+   "id": "R2-FIX-08",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced on HEAD.\n- README.md:25 says '(28 checks)', but node test/test.js prints '30 passed, 0 failed', and round1.md 'After the fixes' also says 30.\n- README.md:69 still says 'No Marvel or DC source gives any character's body fat.' The DC-4 verifier asked for this exact sentence to change, and it contradicts the Kingpin drawer's possible 2004 handbook figure.\n- README.md:64 (the reviewer cites :63) says the 69 confirmed findings were 'all fixed or partly fixed with the reason stated'. That is untrue given R2-FIX-01 to -07, which I reproduced: items recorded as fixed that are not, or are partly fixed with no reason given.",
+   "better_fix": "README.md:25: drop the count ('\u2026 data derivations') or change it to '(30 checks)'. README.md:69: 'No body-fat figure for a comic character was found in the Marvel and DC sources searched (one fan-wiki figure for Kingpin, attributed to a 2004 handbook, is unverified).' README.md:64: once round 2 lands, 'all fixed, or partly fixed as listed in round1.md and round2.md'. Until then, list F21, L1, L8, F6, F9 and DC-14 as partly fixed."
+  },
+  {
+   "id": "R2-FIX-09",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced in Node (fixv/s/prof.js, s/prof2.js). I compared measure.js before the change (7b6306e~1, whole-sheet refinement) with HEAD (refineViews). The input is the 2,000 px median-soldier sheet, 4,479 \u00d7 2,320 px, from templateViews and renderSheet, measured with the page's options.\n\nFull measureSheet, warm, alternating:\n- new: 9,666, 8,841 and 9,149 ms\n- old: 10,804, 10,827 and 10,405 ms\n- 10\u201318% faster\n\nRefinement alone (subtracting the refine:0 runs of about 1.6 s): about 7.2\u20138.3 s against 8.8\u20139.2 s, 12\u201322% faster. The masks are identical (0 pixels differ) and so is the score (26.953).\n\n'About a third faster' (round1.md:100) overstates it. It probably compares against the verifier's 16 s, which was inflated by other jobs running at the same time. The '~10 s' and worker parts of the row are accurate.",
+   "better_fix": "round1.md:100: 'Refinement runs on each view's crop: 10\u201320% faster on a 2,000 px sheet (about 10.5 s down to 9 s in Node), and much less memory.' Or make it a real speed-up by refining only a band about 2 \u00d7 refineDist px around the coarse mask edge."
+  },
+  {
+   "id": "R2-FIX-10",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced with a Python check over data/facts.json: 21 archive.org page_production sources, 4 without 'it matched'. Three are in asgardian_tissue_density_ohotmu (the 1987 vol 4 search, 'times the density' AND Asgardian, and dense/denser/density) and one in asgardian_tissue_density_dk. research/archive_snippets.json stores an official hit for officialhandbook04grue: ' and bone is about 3 times {{{denser than similar human tissue}}}\u2026'.\n\nQUOTE_PICK requires 'Asgardian flesh and bone|flesh and bone is about (three|3) times'. The highlight starts at 'and bone', so neither the quote nor the item page is added. The only added item page for the fact is the 2006 vol 1. The DK search is stored as {error: 'HTTP Error 400: Bad Request'}. round1.md:58 says 'Each API source now shows the quote \u2026 Each book's stable archive.org page is added'. That is not true for these 4, including the official 1987 handbook. DC-1 itself was rejected, so this affects only the accuracy of the record.",
+   "better_fix": "In tools/compile_facts.py, set QUOTE_PICK['asgardian_tissue_density_ohotmu'] = r'Asgardian flesh and bone|(flesh and )?bone is about (three|3) times|denser than similar human tissue'. Re-run compile_facts.py and node build.js; CI checks facts.json. This adds the 1987 quote and the officialhandbook04grue item link. The 'considerably denser' Asgard-matter hit and the two searches with no official hit or an error will still have no quote, so reword round1.md:58: 'Each API source shows its matched quote where the stored search found one in an official book (17 of 21); the other four say only that the API may fail.'"
+  },
+  {
+   "id": "R2-FIX-11",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "The drawn-volume part reproduces. I parsed every drawer's 'Drawing check' sentence (fixv/drawers.json) and compared it with NOTES.md:65 ('3% less to 34% more \u2026 median +10% \u2026 soldiers \u22123% to +8% \u2026 Arnold +34%, Oliva +26%, Coleman +21%'). The page now gives:\n- p5 \u22124%, p95 +7%, Oliva +27%, Coleman +20%, Arnold +34%\n- Hafthor and Eddie Hall 'about the same'\n- median about 11\u201312%\n- armoured Colossus \u221220%, which NOTES's 'from 3% less' also ignores\nThe line dates from 5f86608, before 1af0101 changed the figures' arm angle (Math.max(35, armAngle(e)) in the drawing check).\n\nThe arm-angle part is weaker but holds by the page's own definition. The 'Comic giants' band (SEQ id 'giants') is Darkseid, both Hulks, Juggernaut, the grey Hulk and Abomination, with rest_deg 70.2\u201384.1. The 63.5\u00b0 and 63.8\u00b0 belong to the Thing and Thor, who sit in the 'Nothing comparable' gap (44.6\u201362.5). This is internal-notes staleness only; the page itself is consistent.",
+   "better_fix": "NOTES.md:65: 'Measured with the tool at each build's body-fat density, the drawn human and comic figures hold from 4% less to 34% more volume than their weights (median about +12%). The armoured Colossus is the exception, about 20% less. Soldiers are within \u22124% to +7%; bodybuilders with magazine girths run highest (Arnold +34%, Oliva +27%, Coleman +20%)\u2026' Better, have a script print these from the drawing checks. NOTES.md:60: 'The comic giants' arms rest 70\u201384\u00b0 out, nearly level (the Thing and Thor about 64\u00b0).'"
+  }
+ ]
+}

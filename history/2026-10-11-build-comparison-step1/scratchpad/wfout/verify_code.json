@@ -1,0 +1,99 @@
+{
+ "verdicts": [
+  {
+   "id": "F1",
+   "real": false,
+   "severity": "not_a_bug",
+   "reasoning": "Fixed at HEAD (1af0101, 'review round 1 fixes (model lens)'). The S1*f*f line is in HEAD~1 (tools/compute_limits.js:62) but not in HEAD. compute_limits.js now uses scoreAt(m, f): it draws the widened template with arms at max(35, rest+2) and reads it with measureViews at 800 px (lines 43-49 and 79), and does the same for faceLow (line 90). I rebuilt and ran node test/test.js: 28 passed. The new tests 'data/limits.json is what tools/compute_limits.js computes' (deepStrictEqual against run()) and 'each headline limit's score is the measuring tool's reading of that drawn shape, not a scaling rule' both pass. limits.json now gives arms 40.71 [36.88-40.99], thighs 46.11 [42.24-49.21] and face 189.14 [86.89-199.43]. settings face.definition no longer says 'near 220'. README says 'somewhere from 87 to 200', and NOTES.md records the old f^2 error. Nothing to fix."
+  },
+  {
+   "id": "F2",
+   "real": true,
+   "severity": "major",
+   "reasoning": "Reproduced at HEAD. scratchpad/review1/verify/f2.js renders the median soldier at 700 px as front + back (the back is the mirrored front, placed as the middle view; the third view is erased: verify/frontback.png). The full front+side+back sheet gives 'ok true vol 0.0888 score 26.9 chest 108.3'. The front+back sheet gives 'ok true vol 0.1136 score 34.4 chest 115.7', errors [], with only a warning 'Found 2 views; expected 3 (front, side, back).' That is 28% too high. Loaded through the page's #file input (verify/ui.js), the captions read 'FRONT \u00b7 702 PX / SIDE \u00b7 702 PX', and all three checks show PASS, including 'Side-view neck lines up with the front view ... (0.0%)'. The result is 'Score 34 32\u201337', and the status line has no 'treat these numbers as rejected'. Cause: measure.js:695-697. A view-count mismatch is only pushed to warnings, and V is assigned by position, so the back view becomes V.side. A depth-ratio check, as the finding suggests, would wrongly reject round shapes such as the meatball, whose depth is about its width. A count check is safer.",
+   "better_fix": "In src/measure.js measureSheet, replace line 696 with: `if (views.length !== order.length) { out.ok = false; out.errors.push('Found ' + views.length + ' views, but the layout says ' + order.length + ' (' + order.join(', ') + '). Set \"Views, left to right\" to match the sheet; depth can only come from a side view.'); return out; }`. Add a two-view layout to app.html's #tOrder (`<option value=\"front,side\">front, side</option>`) so genuine front+side sheets still measure. Add a test that the front+back sheet built as in f2.js is rejected."
+  },
+  {
+   "id": "F3",
+   "real": true,
+   "severity": "major",
+   "reasoning": "Reproduced at HEAD. In Node (verify/f3.js), on the page's own example sheet (1568x812, ground 756, true skull row 56), skull rows 640 give: ok true, errors [], every check PASS ('front 118 px, side 118 px, back 118 px'), 'volume 21.678 mass 2.298e+4 score 6560.4 thigh cm 375.7 crotch height m 5.16'. In the page (verify/ui.js, #tSkull '640'): all checks PASS, no rejection banner, 'Mass 22,000 kg', 'Score 6,300', 'Thigh 365.0 cm', 'Crotch height 5.16 m'. Rows of 5000 give negative heights ('Front -4242 px', 'Thigh -10.3 cm', 'Crotch height -0.14 m'). Here the sheet is rejected, but only by accident: the ground-line tolerance 0.01*hpx.front goes negative. topOf() (measure.js:707-710) takes any typed row. The page's filter (app.html:1433) only drops values <= 0. out.landmarks (line 765) has no skull field, so drawSheet (app.html:1415) always draws the blue line at F.top, the figure's top pixel (frontLandmarks: top = v.y0). The typed row is never shown, so a user cannot see a typo. A subtler typo, such as a row in the neck, gives a plausible but wrong score that passes every check.",
+   "better_fix": "In measureSheet, after the boxes are re-measured, validate each typed row: `Object.keys(V).forEach(function (n) { var sr = (opts.skullRows || {})[n]; if (sr == null) return; var v = V[n]; if (!(sr >= v.y0 - 0.01 * v.heightPx && sr <= v.y0 + 0.15 * v.heightPx)) { out.ok = false; out.errors.push('Skull row ' + sr + ' for the ' + n + ' view is not in the top of the figure (rows ' + v.y0 + '-' + Math.round(v.y0 + 0.15 * v.heightPx) + ').'); } }); if (!out.ok) return out;` Then set `out.landmarks.skull = topOf('front')`. In drawSheet, draw the blue line at res.landmarks.skull and label it 'skull', and keep a separate 'top' mark at F.top when the two differ."
+  },
+  {
+   "id": "F4",
+   "real": false,
+   "severity": "not_a_bug",
+   "reasoning": "Fixed at HEAD (1af0101). drawTarget now finds f with Figure.solveTarget, a false-position solve on log f and log score to 0.2% at 300 px (figure.js:524-562). It then re-checks at 1,000 px with up to two corrections, and refuses failing sheets. scratchpad/review1/verify/f4.js runs the page's drawTarget code line for line. Every case lands within 0.3% at 1,000 px: median soldier 200 -> 200.6 (f 2.934), median 900 -> 900.1 (f 6.958), Coleman 300 -> 300.0 (f 2.948), Coleman 500 -> 500.2, Coleman 900 -> 900.1 (f 5.644), p5 900 -> 900.2 (f 7.606), Reeves 400 -> 400.7, median 100 -> 100.1, median 60 -> 59.9. test.js now has 'the target solver converges' (targets 20, 217 and 900 within 0.3%), and it passes. The 15-900 range is now honoured."
+  },
+  {
+   "id": "F5",
+   "real": true,
+   "severity": "major",
+   "reasoning": "Reproduced at HEAD in Chromium (verify/f5.js). The page's measure() passes no seg options, so it runs refine 2. A median-soldier sheet with a 2,000 px figure (4479x2320, the spec minimum) takes 16,271 ms on the main thread; the same sheet with refine 0 takes 1,668 ms. At 3,000 px (6718x3480) it takes 24,980 ms, against 3,957 ms without refinement. At 390 px with 4x CPU throttling (verify/f5t.js), the 2,000 px sheet takes 44,418 ms. These times are a little inflated, because Node jobs ran alongside the first run. The refinement changes this clean sheet's score by only 0.2% (26.95 against 27.01). pushPull allocates Float32Array(w*h*3), about 125 MB at this size, plus W and the pyramid levels. Results are correct, but the tab is frozen for 16-44 s on its intended input, long enough for the browser's unresponsive-page prompt. I did not reproduce an out-of-memory crash.",
+   "better_fix": "Limit refineMask to each view's bounding box plus a margin, or to a band about 4 px wide around the coarse mask's edge, instead of the whole image. For example, crop img and mask to the union of the splitViews boxes padded by 2*refineDist, refine the crop, and paste it back. Or run Measure.measureSheet in a Web Worker built from a Blob of the inlined measure.js source; it has no DOM use. Either way, keep 'Measuring\u2026' with elapsed time in #toolStatus."
+  },
+  {
+   "id": "F6",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Partly fixed at HEAD. limits.json is now covered: test.js:283-286 deep-compares the committed file with compute_limits.run(), and CI runs test.js. So the settings and builds.json cases in the finding would now fail CI. The facts.json half still stands. .github/workflows/test.yml never runs tools/compile_facts.py, the git diff step covers only rex-strength-lab/src/data.js and */dist/index.html, and test.js only checks that cited keys exist (lines 113-121). Check in a git-archive copy (verify/copy): compile_facts.py reproduces the committed facts.json byte for byte ('133 facts, 38 corrections applied'). After the last entry in research/corrections.json (key comic_score_treatment) is dropped, it writes '133 facts, 37 corrections applied', and facts.json differs. Nothing in CI would notice a stale facts.json, though README.md:38 lists it as generated by that tool. CI already sets up Python 3.13.",
+   "better_fix": "In .github/workflows/test.yml, change the 'Build Comparison - build' step to `run: python tools/compile_facts.py && node build.js`, and extend the diff step's pathspec: `git diff --exit-code --stat -- rex-strength-lab/src/data.js '*/dist/index.html' build-comparison/data/facts.json`."
+  },
+  {
+   "id": "F7",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Partly fixed at HEAD. The limits test now calls Fig.armRestAngle, checks it is monotone in f, and asserts the median soldier rests under 20\u00b0 (test.js:269-280). New tests cover the arm rest angles of chart figures and re-measure the limit scores. Still true at HEAD: (1) 'side views facing right' (test.js:162-173) asserts only that the source facing is 'left' and that a tail part exists, never the traced direction. verify/f7.js shows the behaviour is correct (Rex tail mean x -1.03, Ollie -0.85, body near 0), but a flipped trace would pass. (2) The turnaround test asserts !ok and a resolution warning, not which check fails. Both actually fail on 'front and back landmarks line up' (Rex: crotch front 531, back 401; Ollie: waist and crotch), which is the tail over the back view, so the name is accurate but unasserted. (3) Fig.elbowFlexion, which sets the face limit, has no behaviour test; it is only covered by the deepStrictEqual regression check of limits.json. Real but low impact: the behaviours hold today.",
+   "better_fix": "In the facing test add: `const tail = Fig.traced(duo.characters[name], 'side', H).parts.filter(p => p.mark === 'tail'); const xs = tail.flatMap(p => p.poly.map(q => q[0])); assert.ok(xs.reduce((a, b) => a + b, 0) / xs.length < 0, name + ' faces right: tail behind (x < 0)');` In the turnaround test add `assert.ok(r.checks.some(c => !c.ok && /front and back landmarks/.test(c.name)), name + ': the back view (tail) fails the line-up check');`. Add an elbowFlexion test: at the calibrated crease (limitsRun.elbow_crease_fraction_of_upper_arm * Lu) the median soldier bends 145\u00b0 within 0.5\u00b0, and flexion falls monotonically for f = 1, 1.5, 2, 2.5."
+  },
+  {
+   "id": "F8",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced at HEAD in the page (verify/ui.js). I measured the example at #tH 1.80 ('Mass 90 kg', 'Score 26'), changed #tH without re-measuring, and clicked #copyBtn. With 3.00 the copy holds 'height_m 3 weight_kg 90 notes score 25.7 (23.9-27.5) at 7.5% fat'. With 'abc' it holds 'height_m null weight_kg 90'. At 3.00 m the same drawing would weigh 90 x (3/1.8)^3 = 417 kg, so the exported build is internally inconsistent. Cause: resultEntry (app.html:1479) reads num('tH') at copy time rather than the height used for tool.res, and no input listener invalidates the result.",
+   "better_fix": "In measure(), after `var r = Measure.measureSheet(...)`, add `r.inputs = { H: H, rho: rho, bf: bf, armK: armK, skull: skull, order: order };`. In resultEntry use `height_m: { value: r.inputs.H, ... }`. In initTool add `['tH','tRho','tBf','tArmK','tSkull','tOrder'].forEach(function (id) { $(id).addEventListener('input', function () { if (tool.res) { tool.res = null; $('results').innerHTML = ''; $('toolStatus').textContent = 'Inputs changed: press Measure again.'; } }); });`."
+  },
+  {
+   "id": "F9",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced at HEAD through the page's #file input (verify/make_odd.js, verify/ui.js). A black figure on a fully transparent background (alpha-black.png) gives 'No result: Found 0 view(s); a sheet needs a front and a side view (and ideally a back view).' A grey-120 figure on grey 150 (lowcontrast.png) gives the same message. loadFile (app.html:1505-1508) draws onto a transparent canvas, and segment() ignores alpha, so transparent pixels read as RGB 0,0,0: black on black. BRIEF.md:80 asks for 'a solid silhouette layer or mask as a separate PNG', so a black-on-transparent mask is an expected input, and the message points the user at the wrong problem. Filling the canvas white first, as the finding suggests, would break white-on-transparent masks, which work today; using alpha when present handles both. I did not re-test the edge-touching case.",
+   "better_fix": "In loadFile, after getImageData: `var d = g.getImageData(...), px = d.data, hasAlpha = false; for (var i = 3; i < px.length; i += 4) if (px[i] < 250) { hasAlpha = true; break; } if (hasAlpha) for (var i = 0; i < px.length; i += 4) { var v = px[i + 3] > 127 ? 0 : 255; px[i] = px[i + 1] = px[i + 2] = v; px[i + 3] = 255; }`. In measureSheet, when views.length === 0, use the error 'No figure separated from the background: the figure needs a clear colour or darkness difference from a plain background.'"
+  },
+  {
+   "id": "F10",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced at HEAD (verify/f12_f10.js, longtask PerformanceObserver). At 1280 px: FCP 180 ms, load 1,042 ms, then long tasks of 314, 561, 1,812 and 1,283 ms, with the tool's automatic runs finished at 4.2 s. At 390 px with Emulation.setCPUThrottlingRate 4: load 4,469 ms, long tasks of 1,344, 2,550, 6,654 and 5,724 ms, and the example measurement, target outline and duo.jpg validation finished at 17.1 s. Taps and scrolls on the lineup queue behind these runs, which come from initTool (app.html:1586-1588: measure(), setTimeout(drawTarget, 400), the duo validation), for a section at the bottom of the page. Content and numbers are unaffected.",
+   "better_fix": "In initTool, replace the immediate `measure(); setTimeout(drawTarget, 400);` and the duo.jpg validation with a lazy start: `var started = false, io = new IntersectionObserver(function (es) { if (started || !es.some(function (e) { return e.isIntersecting; })) return; started = true; io.disconnect(); measure(); setTimeout(drawTarget, 400); runValidation(); }, { rootMargin: '600px' }); io.observe($('picker').closest('section') || $('picker'));`, with the validation moved into runValidation(). Update shots.js to scroll to the tool before waiting for it."
+  },
+  {
+   "id": "F11",
+   "real": false,
+   "severity": "not_a_bug",
+   "reasoning": "Fixed at HEAD (1af0101). templateViews (export_targets.js:24-35) now draws at armDeg max(35, armRestAngle + 2), not the 20\u00b0 default. The CLI uses Fig.solveTarget with fMax 12 (figure.js:524), not a cap of 6. Run at HEAD: `node tools/export_targets.js --score 100 --build ansur2_m_p50 --px 1000` gives 'widths x 1.936', 'measured score 100.0' in 4.5 s; the page's drawTarget gives f 1.937 (verify/f4.js). `--score 900 --build ronnie_coleman --px 1000` gives 'widths x 5.642', 'measured score 899.8'; the page gives f 5.644. The CLI and the page now agree. Only a small nit remains: main() prints the checks but not res.warnings. That is optional (`console.log(result.warnings.join('\\n'))`), not a defect in the outlines."
+  },
+  {
+   "id": "F12",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced at HEAD (verify/f12_f10.js, 1280 px). The page has 10 <details>, 9 of them closed after load: Sheet layout and the eight Sources topics. document.body.innerText is 30,866 characters with them closed and 80,138 with them open. I planted a span 'NaN-probe NaN' inside a closed details body: /\\bNaN\\b/ on innerText found nothing (seenClosed false), and found it once the details were opened (seenOpen true). shots.js audit() (line 53) reads document.body.innerText, and nothing in shots.js opens the details before auditing, so about 60% of the rendered text is outside the NaN/undefined/Infinity and banned-phrase checks.",
+   "better_fix": "At the top of audit() in test/shots.js: `const closed = [...document.querySelectorAll('details:not([open])')]; closed.forEach(d => d.open = true); const text = document.body.innerText; closed.forEach(d => d.open = false);`. Keep the small-text walker's existing `details:not([open])` exclusion by running it after the details are closed again, as now."
+  },
+  {
+   "id": "F13",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced at HEAD. The hint (app.html:494) reads 'Pixel rows, front, side, back: e.g. 52, 57, 52'. measure() (app.html:1435) assigns rows in the selected layout order: `order.forEach(function (v, i) { skull[v] = rows[...] })`. Rex's turnaround is laid out front, back, side, with skull rows front 52, back 52, side 57 (trace_turnarounds READINGS), so the hint's example is literally Rex's rows, in the wrong order for his own sheet. verify/f13.js on rex-turnaround.png: the true rows give 'front 710 px, back 712 px, side 705 px'. Typing '52, 57, 52' as the hint says assigns back=57 and side=52, giving 'front 710 px, back 707 px, side 710 px'. The side view's scale is then off by about 0.7%, and the side neck search starts at the wrong row.",
+   "better_fix": "Change the hint in src/app.html:494 to: `<span class=\"hint\">Pixel rows, in the order of the views left to right (as set above). Rex's sheet (front, back, side): 52, 52, 57</span>`."
+  },
+  {
+   "id": "F14",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Partly fixed at HEAD. README.md:25 now says '(28 checks)', which matches test.js (28 test() calls, '28 passed'). Still stale at HEAD: README.md:52 'lists the 113 research facts' (data/facts.json has 133; build.js prints '133 facts') and README.md:62 '26 corrections applied' (research/corrections.json has 38 entries; compile_facts.py prints '133 facts, 38 corrections applied'). STATUS.md:15 also says '26 corrections applied'.",
+   "better_fix": "README.md:52: 'lists the 133 research facts'. README.md:62: '38 corrections applied (`research/corrections.json`)'. STATUS.md:15: '38 corrections applied'. Or drop the counts and say 'every research fact' and 'every correction', so they cannot go stale."
+  }
+ ]
+}

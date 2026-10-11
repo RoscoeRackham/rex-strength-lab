@@ -1,0 +1,10 @@
+const R = __dirname + '/head/';
+const BC = require(R + 'build-calculator/src/calc.js');
+const builds = require(R + 'build-calculator/data/builds.json');
+const Fig = require(R + 'build-comparison/src/figure.js');
+const T = require(R + 'build-comparison/data/outline.json');
+const calc = BC.create(builds);
+const r = calc.compute({ buildId: 'ansur2_m_p50' }); const g = {}; for (const s of BC.SITES) g[s] = r.girths[s].value;
+const base = Fig.human(T, r.height.value, g, {}, { buttockFit: BC.FRUSTUM.M.buttock });
+const mk = (f, deg) => Fig.human(T, r.height.value, g, {}, { buttockFit: BC.FRUSTUM.M.buttock, widthScale: f, legAxis: base.dims.legAxis, armDeg: deg });
+for (const f of [1, 1.2, 1.254, 1.4, 1.8]) console.log('f', f, 'armBoneClearance', Fig.armBoneClearance(mk(f)), 'armRestAngle', Fig.armRestAngle(d => mk(f, d)).toFixed(1), 'thigh', Fig.thighContact(mk(f)).toFixed(2));

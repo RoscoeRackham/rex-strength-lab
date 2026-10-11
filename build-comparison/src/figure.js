@@ -229,7 +229,8 @@
       var Lu = d.upperArmL, Lf = d.foreArmL;
       var elbowR = (d.armR + d.foreR) / 2 * 0.78;
       d.armStations = { upper: [[0, d.deltR], [0.22 * Lu, d.deltR * 0.92], [0.45 * Lu, d.armR], [0.75 * Lu, d.armR * 0.9], [Lu, elbowR]],
-        fore: [[0, elbowR], [0.22 * Lf, d.foreR], [0.6 * Lf, (d.foreR + d.wristR) / 2 * 1.02], [Lf, d.wristR]], Lu: Lu, Lf: Lf };
+        fore: [[0, elbowR], [0.22 * Lf, d.foreR], [0.6 * Lf, (d.foreR + d.wristR) / 2 * 1.02], [Lf, d.wristR]], Lu: Lu, Lf: Lf,
+        hand: [[0, d.wristR * 0.95], [0.35 * d.handL, d.handB * 0.36], [0.75 * d.handL, d.handB * 0.32], [d.handL * 0.95, d.handB * 0.22]], Lh: 0.95 * d.handL };
       front.push({ name: s > 0 ? 'left upper arm' : 'right upper arm', mark: mk('arm_flexed'), poly: limb(origin, a, [[0, d.deltR], [0.22 * Lu, d.deltR * 0.92], [0.45 * Lu, d.armR], [0.75 * Lu, d.armR * 0.9], [Lu, elbowR]], 6) });
       var elbow = [origin[0] + Math.sin(a) * Lu, origin[1] - Math.cos(a) * Lu];
       front.push({ name: s > 0 ? 'left forearm' : 'right forearm', mark: mk('forearm'), poly: limb(elbow, a, [[0, elbowR], [0.22 * Lf, d.foreR], [0.6 * Lf, (d.foreR + d.wristR) / 2 * 1.02], [Lf, d.wristR]], 6) });
@@ -459,6 +460,34 @@
   }
 
   /** Skull-top row of every view on a sheet drawn by renderSheet (the top of its height bar). */
+  /**
+   * Volume of both arms as drawn (m^3): upper arm and forearm as round limbs, the hand as a flat
+   * one (thickness HAND_DEPTH of its breadth, an estimate), integrated along the arm's own axis.
+   * Only the stretch whose axis lies outside the body outline counts; the rest is inside the trunk,
+   * which the measuring tool reads from the front and side views (headAndBody). Used for drawn
+   * figures whose arms stand out too far for the measuring tool to follow them row by row.
+   */
+  var HAND_DEPTH = 0.35;
+  function armVolume(fig, armDeg) {
+    var d = fig.dims, st = d.armStations, sj = d.shoulderJoint, a = armDeg * Math.PI / 180;
+    var body = fig.front.filter(function (p) { return p.name === 'body'; })[0].poly;
+    var at = function (S, x) {
+      if (x <= S[0][0]) return S[0][1];
+      for (var k = 1; k < S.length; k++) if (x <= S[k][0]) return S[k - 1][1] + (S[k][1] - S[k - 1][1]) * (x - S[k - 1][0]) / (S[k][0] - S[k - 1][0]);
+      return S[S.length - 1][1];
+    };
+    var v = 0, n = 240;
+    [[st.upper, 0, st.Lu, 1], [st.fore, st.Lu, st.Lf, 1], [st.hand, st.Lu + st.Lf, st.Lh, HAND_DEPTH]].forEach(function (seg) {
+      for (var i = 0; i < n; i++) {
+        var x = (i + 0.5) / n * seg[2], r = at(seg[0], x), along = seg[1] + x;
+        if (!pointInPoly([sj[0] + Math.sin(a) * along, sj[1] - Math.cos(a) * along], body)) v += Math.PI * seg[3] * r * r * seg[2] / n;
+      }
+    });
+    return 2 * v;
+  }
+  /** The views to give the measuring tool when the arms are added by armVolume: head and body only in front. */
+  function headAndBody(fig) { return { front: fig.front.filter(function (p) { return p.name === 'head' || p.name === 'body'; }), side: fig.side }; }
+
   function sheetSkullRows(img, H) { var r = Math.round(img.ground - H * img.k); return { front: r, side: r, back: r }; }
 
   /**
@@ -466,7 +495,8 @@
    * or NaN when the sheet fails the tool's checks. Brackets the target from f = 1 (widening up to
    * fMax, or narrowing down to 0.1), then closes in by false position on log f and log score
    * (Illinois rule) until the score is within tol (default 0.2%). Returns { f, score }, or
-   * { f: null, reason: 'fails' | 'range', bestF, bestScore } when no passing sheet reaches it.
+   * { f: null, reason: 'fails' | 'range' | 'gap', bestF, bestScore } when no passing sheet reaches
+   * it ('gap': the score jumps across the target, from bestScore to nextScore).
    */
   function solveTarget(scoreAt, target, fMax, tol) {
     fMax = fMax || 12; tol = tol || 0.002;
@@ -493,20 +523,23 @@
     var near = function (s) { return ok(s) && Math.abs(s / target - 1) <= tol; };
     if (near(sl)) return { f: fl, score: sl };
     if (near(sh)) return { f: fh, score: sh };
-    var kept = 0;
+    var kept = 0, slTrue = sl, shTrue = sh;
     for (var i = 0; i < 40; i++) {
       var xl = Math.log(fl), xh = Math.log(fh), yl = Math.log(sl / target), yh = Math.log(sh / target);
       var x = yh !== yl ? xl - yl * (xh - xl) / (yh - yl) : (xl + xh) / 2;
       if (!(x > xl && x < xh)) x = (xl + xh) / 2;
       var f = Math.exp(x), s = scoreAt(f);
+      // A failing sheet inside the bracket: try just beside it (failures are often one-pixel
+      // landmark flickers); if that fails too, give up rather than guess which side it is on.
+      if (!ok(s)) { var f2 = f * 1.005; s = scoreAt(f2); if (ok(s)) f = f2; else return { f: null, reason: 'fails', bestF: fl, bestScore: slTrue }; }
       if (near(s)) return { f: f, score: s };
-      if (ok(s) && s < target) { fl = f; sl = s; if (kept === 1) sh = Math.sqrt(sh * target); kept = 1; }
-      else { fh = f; if (ok(s)) sh = s; if (kept === -1) sl = Math.sqrt(sl * target); kept = -1; }
-      if (xh - xl < 1e-7) break;
+      if (s < target) { fl = f; sl = slTrue = s; if (kept === 1) sh = Math.sqrt(sh * target); kept = 1; }
+      else { fh = f; sh = shTrue = s; if (kept === -1) sl = Math.sqrt(sl * target); kept = -1; }
+      if (Math.log(fh) - Math.log(fl) < 1e-6) break;
     }
-    // Did not reach the tolerance (a failing sheet inside the bracket): the passing side below.
-    return { f: fl, score: scoreAt(fl) };
+    // The bracket closed without reaching the target: the score jumps across it.
+    return { f: null, reason: 'gap', bestF: fl, bestScore: slTrue, nextF: fh, nextScore: shTrue };
   }
 
-  return { sheetSkullRows: sheetSkullRows, solveTarget: solveTarget, SITES: SITES, armRestAngle: armRestAngle, armClearAt: armClearAt, thighContact: thighContact, elbowFlexion: elbowFlexion, solveScale: solveScale, pointInPoly: pointInPoly, fillParts: fillParts, renderSheet: renderSheet, bandEdges: bandEdges, spline: spline, symmetric: symmetric, limb: limb, ellipse: ellipse, human: human, traced: traced, bounds: bounds, pathData: pathData };
+  return { armVolume: armVolume, headAndBody: headAndBody, sheetSkullRows: sheetSkullRows, solveTarget: solveTarget, SITES: SITES, armRestAngle: armRestAngle, armClearAt: armClearAt, thighContact: thighContact, elbowFlexion: elbowFlexion, solveScale: solveScale, pointInPoly: pointInPoly, fillParts: fillParts, renderSheet: renderSheet, bandEdges: bandEdges, spline: spline, symmetric: symmetric, limb: limb, ellipse: ellipse, human: human, traced: traced, bounds: bounds, pathData: pathData };
 });

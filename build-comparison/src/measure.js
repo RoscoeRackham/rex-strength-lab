@@ -588,7 +588,8 @@
     };
     // Crotch: the top of the gap between the legs, found upwards from the ground on the midline.
     var crotch = null;
-    for (y = ground; y > top + 0.3 * Hp; y--) if (mask[y * w + mid]) { crotch = y; break; }
+    var midFilled = function (y) { var n = 0; for (var dx = -2; dx <= 2; dx++) if (mask[y * w + mid + dx]) n++; return n >= 3; };
+    for (y = ground; y > top + 0.3 * Hp; y--) if (midFilled(y)) { crotch = y; break; }
     if (given.crotch != null) crotch = given.crotch;
     if (crotch === null || (ground - crotch) / Hp < 0.25 || (ground - crotch) / Hp > 0.6) {
       problems.push('crotch not found where expected (is something between the legs, such as a tail?)');
@@ -652,7 +653,7 @@
     var arms = [0, 1].map(function (side) {
       var start = armpit[side];
       if (start === null) return null;
-      var pts = [], widths = [];
+      var pts = [], widths = [], lastRow = null;
       for (var yy = start + 1; yy < ground; yy++) {
         var tr = torsoRun(yy), rr = R(yy), arm = null;
         rr.forEach(function (r) {
@@ -665,11 +666,15 @@
           var lr = legRuns(yy), leg = lr[side];
           if (arm && leg && arm[0] === leg[0]) arm = null;
         }
-        if (!arm) { if (pts.length > 0.1 * Hp) break; else continue; }
-        pts.push([(arm[0] + arm[1]) / 2, yy]); widths.push([yy, arm[1] - arm[0] + 1]);
+        // The arm has ended once it has been missing for a short stretch after it was seen.
+        if (!arm) { if (pts.length >= 3 && yy - lastRow > Math.max(3, 0.02 * Hp)) break; else continue; }
+        pts.push([(arm[0] + arm[1]) / 2, yy]); widths.push([yy, arm[1] - arm[0] + 1]); lastRow = yy;
       }
-      if (pts.length < 0.1 * Hp) return null;
+      if (pts.length < 3) return null;
       var line = fitLine(pts), ang = Math.atan(line.b), c = Math.cos(ang);
+      // An arm is judged by its length along its own axis, not by how many rows it spans: an arm
+      // held nearly level spans few rows.
+      if ((pts[pts.length - 1][1] - start) / Math.max(c, 0.05) < 0.1 * Hp) return null;
       var span = pts[pts.length - 1][1] - start;
       var perp = function (f0, f1, wantMax) {
         var best = null;
@@ -781,9 +786,22 @@
     var shiftSide = V.side.y1 - V.front.y1;
     if (B) {
       var tol = 0.02 * F.Hp, bad = [];
+      // Neck, waist and knee are the narrowest rows of a profile that can be nearly flat, so the
+      // narrowest row can jump on one pixel. When the rows differ, they still agree if the back
+      // view is as narrow at the front's row as at its own (within 2 px or 1%).
+      var torsoW = function (L, y) { var t = L.torsoRun(Math.round(y)); return t ? t[1] - t[0] + 1 : 0; };
+      var legsW = function (L, y) { var lr = L.legRuns(Math.round(y)), a = lr[0] ? lr[0][1] - lr[0][0] + 1 : 0, b = lr[1] ? lr[1][1] - lr[1][0] + 1 : 0; return a && b ? (a + b) / 2 : Math.max(a, b); };
+      var widthOf = { neck: torsoW, waist: torsoW, knee: legsW };
       ['neck', 'armpit', 'waist', 'crotch', 'knee'].forEach(function (k) {
         var a = Fdet.rows[k] - V.front.y1, b = B.rows[k] - V.back.y1;
-        if (a == null || b == null || isNaN(a) || isNaN(b) || Math.abs(a - b) > tol) bad.push(k + ' (front ' + Fdet.rows[k] + ', back ' + B.rows[k] + ')');
+        if (a == null || b == null || isNaN(a) || isNaN(b)) { bad.push(k + ' (front ' + Fdet.rows[k] + ', back ' + B.rows[k] + ')'); return; }
+        if (Math.abs(a - b) <= tol) return;
+        var wf = widthOf[k];
+        if (wf) {
+          var wAt = wf(B, V.back.y1 + a), wOwn = wf(B, B.rows[k]);
+          if (wAt && wOwn && wAt - wOwn <= Math.max(2, 0.01 * wOwn)) return;
+        }
+        bad.push(k + ' (front ' + Fdet.rows[k] + ', back ' + B.rows[k] + ')');
       });
       out.checks.push({ name: 'front and back landmarks line up (within 2% of the height)', ok: bad.length === 0, detail: bad.length ? 'off: ' + bad.join(', ') : 'neck, armpits, waist, crotch and knees agree' });
     }
@@ -806,8 +824,16 @@
       var sd = sideDepth(mask, w, V.side, y + shiftSide);
       return tw && sd ? sd / tw : null;
     };
-    var rW = ratioAt(F.rows.waist), rH = F.rows.waist != null && F.rows.crotch != null ? ratioAt((F.rows.waist + 2 * F.rows.crotch) / 3) : null;
+    // The hip row needs the crotch; when something hides it (a tail between the legs), skip the hips.
+    var crotchSure = !F.problems.some(function (p) { return /crotch/.test(p); });
+    var rW = ratioAt(F.rows.waist), rH = crotchSure && F.rows.waist != null && F.rows.crotch != null ? ratioAt((F.rows.waist + 2 * F.rows.crotch) / 3) : null;
+    if (rW != null && rH == null && rW > 0.92) out.warnings.push('The view taken as the side is as wide as the front at the waist (depth ÷ width ' + rW.toFixed(2) + '), and the hips could not be checked (the crotch was not found). Check that it is a side view.');
     if (rW != null && rH != null) out.checks.push({ name: 'the side view is a side view (narrower than the front at the waist and hips)', ok: !(rW > 0.92 && rH > 0.92), detail: 'depth ÷ front width ' + rW.toFixed(2) + ' at the waist, ' + rH.toFixed(2) + ' at the hips; a front or back view in the side position gives about 1' });
+    // Both arms must be followed from the armpit to the hand: an arm the tool cannot separate from
+    // the torso is sliced as torso (front width times trunk depth), which reads the volume high.
+    var lost = ['the left of the picture', 'the right of the picture'].filter(function (nm, i) { return !F.arms[i]; });
+    out.checks.push({ name: 'both arms followed from the armpits (arms clear of the torso)', ok: lost.length === 0,
+      detail: lost.length ? 'no arm followed on ' + lost.join(' or ') + '; it would be counted as torso, reading the volume high' : 'arms at ' + F.arms.map(function (a) { return Math.abs(a.angleDeg).toFixed(0) + '°'; }).join(' and ') + ' from vertical' });
     out.checks.forEach(function (c) { if (!c.ok) { out.ok = false; out.errors.push('Rejected: ' + c.name + ' failed. ' + c.detail); } });
     out.landmarks = { front: F.rows, back: B ? B.rows : null, sideNeck: sn, arms: F.arms, skull: ref === 'skull' ? topOf('front') : null };
     if (F.rows.armpit != null && F.rows.chest < F.rows.armpit - 0.02 * F.Hp) out.warnings.push('The arms touch the torso at the chest row, so the chest width there includes the arms: the chest girth reads high.');
