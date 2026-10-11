@@ -34,7 +34,7 @@ const READINGS = {
     ignore: [[0, 795, 1859, 844]], // the FRONT / BACK / SIDE labels
     views: {
       front: { skull: 36, skullRange: [32, 40], tail: null },
-      back: { skull: 36, skullRange: [32, 40], tail: null },
+      back: { skull: 36, skullRange: [32, 40], tail: [[905, 370], [985, 370], [985, 470], [1050, 470], [1050, 700], [935, 700], [935, 470], [905, 470]] },
       side: { skull: 36, skullRange: [32, 40], tail: [[1285, 345], [1472, 345], [1470, 372], [1446, 388], [1424, 425], [1412, 470], [1416, 520], [1424, 700], [1285, 700]] },
     },
   },

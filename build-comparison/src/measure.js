@@ -188,6 +188,36 @@
         if (warm > opts.warm || dark || dist > opts.dist) mask[y * w + x] = 1;
       }
     }
+    // Guide lines (spec: thin horizontal lines at the shoulder, chest, waist, crotch and knee,
+    // and the ground line) cross every view. Find them, record their rows and paint them out,
+    // bridging the figure where a line crosses it.
+    var lineRows = [];
+    for (y = 0; y < h; y++) {
+      // a guide line runs unbroken across the gaps between views
+      var longest = 0, run = 0;
+      for (x = 0; x < w; x++) { if (mask[y * w + x]) { run++; if (run > longest) longest = run; } else run = 0; }
+      if (longest > 0.6 * w) lineRows.push(y);
+    }
+    var lines = [];
+    lineRows.forEach(function (y) { var last = lines[lines.length - 1]; if (last && y === last.y1 + 1) last.y1 = y; else lines.push({ y0: y, y1: y }); });
+    lines = lines.filter(function (l) { return l.y1 - l.y0 + 1 <= Math.max(3, 0.006 * h); });
+    if (lines.length) {
+      // Paint the lines out of a copy of the picture (blend of the rows just above and below), so
+      // the refinement passes see the figure and background without them.
+      var copy = new Uint8ClampedArray(d);
+      lines.forEach(function (l) {
+        var ya = Math.max(0, l.y0 - 1), yb = Math.min(h - 1, l.y1 + 1);
+        for (var x = 0; x < w; x++) {
+          var above = mask[ya * w + x], below = mask[yb * w + x];
+          for (var yy = l.y0; yy <= l.y1; yy++) {
+            var t = (yy - ya) / Math.max(1, yb - ya), o = (yy * w + x) * 4;
+            for (var c = 0; c < 3; c++) copy[o + c] = d[(ya * w + x) * 4 + c] * (1 - t) + d[(yb * w + x) * 4 + c] * t;
+            mask[yy * w + x] = above && below ? 1 : 0;
+          }
+        }
+      });
+      img = { width: w, height: h, data: copy };
+    }
     (opts.ignore || []).forEach(function (r) {
       for (var y = Math.max(0, r[1]); y <= Math.min(h - 1, r[3]); y++) for (var x = Math.max(0, r[0]); x <= Math.min(w - 1, r[2]); x++) mask[y * w + x] = 0;
     });
@@ -209,7 +239,7 @@
     }
     for (i = 0; i < w * h; i++) if (!mask[i] && holes.sizes[holes.labels[i]] === -1) mask[i] = 1;
     for (var pass = 0; pass < (opts.refine || 0); pass++) mask = refineMask(img, mask, opts);
-    return { mask: mask, width: w, height: h, bg: bg };
+    return { mask: mask, width: w, height: h, bg: bg, lines: lines.map(function (l) { return (l.y0 + l.y1) / 2; }) };
   }
 
   /**
@@ -488,6 +518,342 @@
     return out;
   }
 
+
+  // ---------- model sheets ----------
+  var SIDE_ORDER = ['front', 'side', 'back'];
+  // ANSUR II men (data/outline.json): the chest is 0.0216 of stature below the armpit.
+  var CHEST_BELOW_ARMPIT = 0.0216;
+  var CHEST_HEIGHT = 0.7351; // chest height / stature, ANSUR II men (data/outline.json)
+
+  /** Remove polygons (image px) from a mask, in place. */
+  function clearPolys(mask, w, h, polys) {
+    (polys || []).forEach(function (p) { var m = polygonMask(p, w, h); for (var i = 0; i < m.length; i++) if (m[i]) mask[i] = 0; });
+  }
+
+  /** Least-squares line x = a + b y through points [[x, y], ...]. */
+  function fitLine(pts) {
+    var n = pts.length, sy = 0, sx = 0, syy = 0, sxy = 0;
+    pts.forEach(function (p) { sx += p[0]; sy += p[1]; syy += p[1] * p[1]; sxy += p[0] * p[1]; });
+    var den = n * syy - sy * sy;
+    var b = den ? (n * sxy - sx * sy) / den : 0;
+    return { a: (sx - b * sy) / n, b: b };
+  }
+
+  /**
+   * Landmarks of a front or back view in an A-pose: the rows of the neck, armpits, chest, waist,
+   * hips, crotch, thigh, knee, calf and ankle, the arms' axes and widths, and the leg axes.
+   * Returns { rows: {...}, arms: [left, right], legs: [left, right], mid, problems: [...] }.
+   */
+  function frontLandmarks(mask, w, v, skullRow, given) {
+    given = given || {};
+    var top = v.y0, ground = v.y1, Hp = ground - top + 1, problems = [];
+    var skull = skullRow != null ? skullRow : top;
+    var R = function (y) { return runs(mask, w, y, v.x0, v.x1); };
+    // Midline: centre of the widest run 30-45% down the figure.
+    var cs = [];
+    for (var y = Math.round(top + 0.30 * Hp); y <= Math.round(top + 0.45 * Hp); y++) {
+      var rr = R(y); if (!rr.length) continue;
+      rr.sort(function (a, b) { return (b[1] - b[0]) - (a[1] - a[0]); });
+      cs.push((rr[0][0] + rr[0][1]) / 2);
+    }
+    var mid = Math.round(median(cs));
+    var torsoRun = function (y) {
+      var rr = R(y), best = null, bd = Infinity;
+      rr.forEach(function (r) { var dd = r[0] > mid ? r[0] - mid : r[1] < mid ? mid - r[1] : 0; if (dd < bd) { bd = dd; best = r; } });
+      return bd === 0 ? best : null;
+    };
+    // Crotch: the top of the gap between the legs, found upwards from the ground on the midline.
+    var crotch = null;
+    for (y = ground; y > top + 0.3 * Hp; y--) if (mask[y * w + mid]) { crotch = y; break; }
+    if (given.crotch != null) crotch = given.crotch;
+    if (crotch === null || (ground - crotch) / Hp < 0.25 || (ground - crotch) / Hp > 0.6) {
+      problems.push('crotch not found where expected (is something between the legs, such as a tail?)');
+      crotch = Math.round(ground - 0.4815 * Hp);
+    }
+    // Neck: the narrowest torso run from below the face to a fifth of the way down.
+    var neck = null, nw = Infinity;
+    for (var yn = Math.round(skull + 0.09 * Hp); yn < Math.round(skull + 0.22 * Hp); yn++) {
+      var tn = torsoRun(yn); if (!tn) continue;
+      if (tn[1] - tn[0] < nw) { nw = tn[1] - tn[0]; neck = yn; }
+    }
+    // Armpits: follow the gap between each arm and the torso upwards from the hands. A short
+    // contact (an elbow against the lats) is crossed; a long one is the shoulder, and the top of
+    // the last stretch of gap below it is the armpit.
+    var armpit = [null, null];
+    [0, 1].forEach(function (side) {
+      var seen = false, topRow = null, merged = 0;
+      for (var yy = Math.round(crotch - 0.02 * Hp); yy > (neck || skull + 0.1 * Hp); yy--) {
+        var tr = torsoRun(yy); if (!tr) continue;
+        var has = R(yy).some(function (r) { return (side === 0 ? r[1] < tr[0] - 1 : r[0] > tr[1] + 1) && r[1] - r[0] > 0.03 * Hp; });
+        if (has) { seen = true; topRow = yy; merged = 0; }
+        else if (seen && ++merged > 0.06 * Hp) break;
+      }
+      armpit[side] = topRow;
+    });
+    if (armpit[0] === null || armpit[1] === null) {
+      problems.push('arm-to-torso gap not found on ' + (armpit[0] === null && armpit[1] === null ? 'either side' : armpit[0] === null ? 'the left of the picture' : 'the right of the picture') + ' (arms must clear the torso)');
+    }
+    var pit = Math.round(median(armpit.filter(function (a) { return a !== null; }).concat(armpit[0] === null && armpit[1] === null ? [skull + 0.243 * Hp] : [])));
+    // Chest: at the ANSUR II proportion of the skull-top height (0.735 above the ground), since a
+    // heavily muscled arm can hide the armpit; a guide line or a typed row overrides it.
+    var Hs = ground + 1 - skull;
+    var chest = given.chest != null ? given.chest : Math.round(ground + 1 - CHEST_HEIGHT * Hs);
+    var widthAt = function (y) { var t = torsoRun(y); return t ? t[1] - t[0] + 1 : 0; };
+    var waist = null, ww = Infinity;
+    for (y = Math.round(chest + 0.05 * Hp); y < crotch - 0.05 * Hp; y++) { var wv = widthAt(y); if (wv && wv < ww) { ww = wv; waist = y; } }
+    if (given.waist != null) waist = given.waist;
+    var hip = null, hw = 0;
+    for (y = waist || chest; y < crotch; y++) { var hv = widthAt(y); if (hv > hw) { hw = hv; hip = y; } }
+    // Legs: the two runs either side of the midline below the crotch.
+    var legRuns = function (y) {
+      var rr = R(y), left = null, right = null;
+      rr.forEach(function (r) {
+        var c = (r[0] + r[1]) / 2;
+        if (c < mid && (!left || (r[1] - r[0]) > (left[1] - left[0]))) left = r;
+        if (c >= mid && (!right || (r[1] - r[0]) > (right[1] - right[0]))) right = r;
+      });
+      return [left, right];
+    };
+    var legW = function (y) { var lr = legRuns(y); var a = lr[0] ? lr[0][1] - lr[0][0] + 1 : 0, b = lr[1] ? lr[1][1] - lr[1][0] + 1 : 0; return a && b ? (a + b) / 2 : Math.max(a, b); };
+    var argBand = function (y0, y1, wantMax) {
+      var best = null, bv = wantMax ? -Infinity : Infinity;
+      for (var yy = Math.round(y0); yy <= Math.round(y1); yy++) { var lw = legW(yy); if (!lw) continue; if (wantMax ? lw > bv : lw < bv) { bv = lw; best = yy; } }
+      return best;
+    };
+    var thigh = Math.round(crotch + 0.02 * Hp);
+    var knee = given.knee != null ? given.knee : argBand(ground - 0.33 * Hp, ground - 0.22 * Hp, false);
+    var calf = argBand((knee || ground - 0.28 * Hp) + 0.02 * Hp, ground - 0.10 * Hp, true);
+    var ankle = argBand(ground - 0.10 * Hp, ground - 0.03 * Hp, false);
+    // Arms: the run outside the torso run, from the armpit down to the fingertips.
+    var arms = [0, 1].map(function (side) {
+      var start = armpit[side];
+      if (start === null) return null;
+      var pts = [], widths = [];
+      for (var yy = start + 1; yy < ground; yy++) {
+        var tr = torsoRun(yy), rr = R(yy), arm = null;
+        rr.forEach(function (r) {
+          var outside = tr ? (side === 0 ? r[1] < tr[0] - 1 : r[0] > tr[1] + 1) : (side === 0 ? r[1] < mid : r[0] > mid);
+          if (!outside) return;
+          // below the crotch, ignore the legs: the arm is the run farthest out
+          if (!arm || (side === 0 ? r[0] < arm[0] : r[1] > arm[1])) arm = r;
+        });
+        if (yy > crotch) {
+          var lr = legRuns(yy), leg = lr[side];
+          if (arm && leg && arm[0] === leg[0]) arm = null;
+        }
+        if (!arm) { if (pts.length > 0.1 * Hp) break; else continue; }
+        pts.push([(arm[0] + arm[1]) / 2, yy]); widths.push([yy, arm[1] - arm[0] + 1]);
+      }
+      if (pts.length < 0.1 * Hp) return null;
+      var line = fitLine(pts), ang = Math.atan(line.b), c = Math.cos(ang);
+      var span = pts[pts.length - 1][1] - start;
+      var perp = function (f0, f1, wantMax) {
+        var best = null;
+        widths.forEach(function (q) {
+          var f = (q[0] - start) / span; if (f < f0 || f > f1) return;
+          var wp = q[1] * c;
+          if (!best || (wantMax ? wp > best.w : wp < best.w)) best = { row: q[0], w: wp, runW: q[1] };
+        });
+        return best;
+      };
+      return { side: side === 0 ? 'picture-left' : 'picture-right', armpit: start, end: pts[pts.length - 1][1], angleDeg: ang * 180 / Math.PI,
+        upper: perp(0, 0.3, true), elbow: perp(0.25, 0.45, false), fore: perp(0.4, 0.6, true), wrist: perp(0.62, 0.8, false), line: line };
+    });
+    return { mid: mid, top: top, ground: ground, Hp: Hp, rows: { neck: neck, armpit: pit, armpitL: armpit[0], armpitR: armpit[1], chest: chest, waist: waist, hip: hip, crotch: crotch, thigh: thigh, knee: knee, calf: calf, ankle: ankle },
+      arms: arms, legRuns: legRuns, torsoRun: torsoRun, problems: problems };
+  }
+
+  /** Widest run of a side view at a row (the body's depth there). */
+  function sideDepth(mask, w, v, y) {
+    if (y < v.y0 || y > v.y1) return 0;
+    var rr = runs(mask, w, Math.round(y), v.x0, v.x1), best = 0;
+    rr.forEach(function (r) { if (r[1] - r[0] + 1 > best) best = r[1] - r[0] + 1; });
+    return best;
+  }
+
+  /**
+   * Measure a model sheet: front, side and back views of one figure at one scale.
+   * opts: { heightM, heightRef: 'skull' | 'top', skullRows: { front, side, back } (image rows; needed
+   *   for 'skull'), order: view order left to right (default front, side, back), density (kg/m^3),
+   *   bodyFatPct, armK (arm depth / width, default 1), fullness (torso sections vs ellipses,
+   *   default 1), exclude: { front: [poly], side: [poly], back: [poly] } (tails), seg: segment opts,
+   *   name }
+   */
+  function measureSheet(img, opts) {
+    opts = opts || {};
+    var w = img.width, h = img.height;
+    var seg = segment(img, opts.seg);
+    var mask = seg.mask;
+    var views = splitViews(mask, w, h);
+    var out = { ok: true, errors: [], warnings: [], checks: [], guideLines: seg.lines };
+    // A height bar is a view much narrower than it is tall: set it aside.
+    var bars = views.filter(function (v) { return (v.x1 - v.x0 + 1) < 0.05 * v.heightPx; });
+    views = views.filter(function (v) { return bars.indexOf(v) < 0; });
+    if (bars.length) out.heightBar = bars[0];
+    var order = opts.order || SIDE_ORDER;
+    if (views.length < 2) { out.ok = false; out.errors.push('Found ' + views.length + ' view(s); a sheet needs a front and a side view (and ideally a back view).'); return out; }
+    if (views.length !== order.length) out.warnings.push('Found ' + views.length + ' views; expected ' + order.length + ' (' + order.join(', ') + ').');
+    var V = {};
+    order.forEach(function (name, i) { if (views[i]) V[name] = views[i]; });
+    if (!V.front || !V.side) { out.ok = false; out.errors.push('No front or side view in the expected order (' + order.join(', ') + ').'); return out; }
+    Object.keys(V).forEach(function (name) { clearPolys(mask, w, h, (opts.exclude || {})[name]); });
+    // Re-measure the boxes after exclusions.
+    Object.keys(V).forEach(function (name) {
+      var v = V[name], y0 = h, y1 = -1, area = 0;
+      for (var y = v.y0; y <= v.y1; y++) for (var x = v.x0; x <= v.x1; x++) if (mask[y * w + x]) { area++; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+      v.y0 = y0; v.y1 = y1; v.area = area; v.heightPx = y1 - y0 + 1;
+    });
+    // Heights and scale
+    var ref = opts.heightRef === 'top' ? 'top' : 'skull';
+    var topOf = function (name) {
+      var sr = (opts.skullRows || {})[name];
+      return ref === 'skull' && sr != null ? sr : V[name].y0;
+    };
+    if (ref === 'skull' && !(opts.skullRows && opts.skullRows.front != null)) { out.warnings.push('No skull-top row given: the height is taken to the top of the figure.'); ref = 'top'; }
+    var hpx = {};
+    Object.keys(V).forEach(function (name) { hpx[name] = V[name].y1 + 1 - topOf(name); });
+    var hs = Object.keys(hpx).map(function (k) { return hpx[k]; });
+    var spread = Math.max.apply(null, hs) / Math.min.apply(null, hs) - 1;
+    out.checks.push({ name: 'view heights agree within 2%', ok: spread <= 0.02, detail: Object.keys(hpx).map(function (k) { return k + ' ' + hpx[k] + ' px'; }).join(', ') + ' (spread ' + (100 * spread).toFixed(1) + '%)' });
+    var grounds = Object.keys(V).map(function (k) { return V[k].y1; });
+    var gSpread = Math.max.apply(null, grounds) - Math.min.apply(null, grounds);
+    out.checks.push({ name: 'one shared ground line (within 1% of the height)', ok: gSpread <= 0.01 * hpx.front, detail: 'lowest rows ' + Object.keys(V).map(function (k) { return k + ' ' + V[k].y1; }).join(', ') });
+    var mPerPx = opts.heightM / hpx.front;
+    if (hpx.front < 2000) out.warnings.push('The figure is ' + hpx.front + ' px tall; the sheet spec asks for at least 2,000 px. Edges count for more at low resolution.');
+    out.scale = { mPerPx: mPerPx, heightPx: hpx.front, heightM: opts.heightM, heightRef: ref };
+    // Landmarks
+    // Landmark rows: typed rows win, then the sheet's guide lines (shoulder, chest, waist, crotch,
+    // knee, top to bottom, above the ground line), then detection.
+    var given = Object.assign({}, opts.rows || {});
+    var inside = (seg.lines || []).filter(function (y) { return y > V.front.y0 + 0.05 * hpx.front && y < V.front.y1 - 0.02 * hpx.front; }).sort(function (a, b) { return a - b; });
+    if (inside.length === 5) {
+      ['shoulder', 'chest', 'waist', 'crotch', 'knee'].forEach(function (k, i) { if (given[k] == null) given[k] = Math.round(inside[i]); });
+      out.landmarkSource = 'guide lines on the sheet';
+    } else {
+      out.landmarkSource = Object.keys(given).length ? 'typed rows, then detection' : 'detected from the outline';
+      if (inside.length) out.warnings.push('Found ' + inside.length + ' guide line(s); expected 5 (shoulder, chest, waist, crotch, knee), so they were not used.');
+    }
+    var F = frontLandmarks(mask, w, V.front, (opts.skullRows || {}).front, given);
+    F.problems.forEach(function (p) { out.warnings.push('Front view: ' + p); });
+    var Fdet = Object.keys(given).length ? frontLandmarks(mask, w, V.front, (opts.skullRows || {}).front) : F;
+    var B = V.back ? frontLandmarks(mask, w, V.back, (opts.skullRows || {}).back) : null;
+    if (B) B.problems.forEach(function (p) { out.warnings.push('Back view: ' + p); });
+    var shiftSide = V.side.y1 - V.front.y1;
+    if (B) {
+      var tol = 0.02 * F.Hp, bad = [];
+      ['neck', 'armpit', 'waist', 'crotch', 'knee'].forEach(function (k) {
+        var a = Fdet.rows[k] - V.front.y1, b = B.rows[k] - V.back.y1;
+        if (a == null || b == null || isNaN(a) || isNaN(b) || Math.abs(a - b) > tol) bad.push(k + ' (front ' + Fdet.rows[k] + ', back ' + B.rows[k] + ')');
+      });
+      out.checks.push({ name: 'front and back landmarks line up (within 2% of the height)', ok: bad.length === 0, detail: bad.length ? 'off: ' + bad.join(', ') : 'neck, armpits, waist, crotch and knees agree' });
+    }
+    // Side neck: the narrowest depth between the head and the chest
+    var sn = null, snw = Infinity;
+    var sideSkull = (opts.skullRows || {}).side != null ? opts.skullRows.side : V.side.y0;
+    for (var y = Math.round(sideSkull + 0.09 * F.Hp); y < Math.round(sideSkull + 0.22 * F.Hp); y++) { var dw = sideDepth(mask, w, V.side, y); if (dw && dw < snw) { snw = dw; sn = y; } }
+    if (sn !== null && F.rows.neck !== null) {
+      var off = Math.abs((sn - shiftSide) - F.rows.neck);
+      out.checks.push({ name: 'side-view neck lines up with the front view (within 3% of the height)', ok: off <= 0.03 * F.Hp, detail: 'front ' + F.rows.neck + ', side ' + sn + ' (' + (100 * off / F.Hp).toFixed(1) + '%)' });
+    }
+    out.checks.forEach(function (c) { if (!c.ok) { out.ok = false; out.errors.push('Rejected: ' + c.name + ' failed. ' + c.detail); } });
+    out.landmarks = { front: F.rows, back: B ? B.rows : null, sideNeck: sn, arms: F.arms };
+    if (F.rows.armpit != null && F.rows.chest < F.rows.armpit - 0.02 * F.Hp) out.warnings.push('The arms touch the torso at the chest row, so the chest width there includes the arms: the chest girth reads high.');
+    out.warnings.push('Side view: the depth at each row is the widest run. If the near arm overlaps the torso, chest and waist depths include it (the sheet spec asks for a side view without the near arm).');
+
+    // Volume: torso, head and legs from front width x side depth; arms from their own width.
+    var armK = opts.armK || 1, fullness = opts.fullness || 1;
+    function volume(m) {
+      var vol = { head: 0, torso: 0, legs: 0, arms: 0 };
+      for (var y = V.front.y0; y <= V.front.y1; y++) {
+        var rr = runs(m, w, y, V.front.x0, V.front.x1); if (!rr.length) continue;
+        var depth = sideDepth(m, w, V.side, y + shiftSide);
+        var tr = F.torsoRun(y);
+        rr.forEach(function (r) {
+          var wd = r[1] - r[0] + 1;
+          var isArm = false;
+          F.arms.forEach(function (a) { if (!a || y <= a.armpit || y > a.end) return; var ax = a.line.a + a.line.b * y; if (ax >= r[0] - 2 && ax <= r[1] + 2 && !(tr && r[0] === tr[0])) isArm = true; });
+          if (y > F.rows.crotch) { var lr = F.legRuns(y); if ((lr[0] && r[0] === lr[0][0]) || (lr[1] && r[0] === lr[1][0])) isArm = false; }
+          if (isArm) {
+            var a0 = F.arms.filter(Boolean)[0], c = Math.cos(((a0 && a0.angleDeg) || 0) * Math.PI / 180);
+            F.arms.forEach(function (a) { if (a) { var ax = a.line.a + a.line.b * y; if (ax >= r[0] - 2 && ax <= r[1] + 2) c = Math.cos(a.angleDeg * Math.PI / 180); } });
+            vol.arms += Math.PI / 4 * wd * wd * armK * c;
+          } else {
+            var part = y < (F.rows.neck || F.top) ? 'head' : y <= F.rows.crotch ? 'torso' : 'legs';
+            vol[part] += Math.PI / 4 * wd * Math.min(depth, 4 * wd) * (part === 'torso' ? fullness : 1);
+          }
+        });
+      }
+      var m3 = Math.pow(mPerPx, 3);
+      Object.keys(vol).forEach(function (k) { vol[k] *= m3; });
+      vol.total = vol.head + vol.torso + vol.legs + vol.arms;
+      return vol;
+    }
+    var vc = volume(mask);
+    var vLo = volume(morph(mask, w, h, false)).total, vHi = volume(morph(mask, w, h, true)).total;
+    // Relative uncertainty, combined in quadrature: mask edge (+/- 1 px), ellipse vs real sections
+    // (up to +7% on the torso), arm depth ratio (+/- 15% on the arms).
+    var eEdge = (vHi - vLo) / 2 / vc.total, eShape = 0.07 * vc.torso / vc.total, eArm = 0.15 * vc.arms / vc.total;
+    var eTot = Math.sqrt(eEdge * eEdge + eShape * eShape + eArm * eArm);
+    out.volume_m3 = { value: vc.total, low: vc.total * (1 - eTot), high: vc.total * (1 + eTot), parts: vc, note: 'mask edge +/-1 px, section shape (ellipse vs real, up to 7% on the torso) and arm depth (+/-15%), combined' };
+    var rho = opts.density || 1060, bf = opts.bodyFatPct != null ? opts.bodyFatPct : 7.5, Hm = opts.heightM;
+    var mass = function (v) { return v * rho; };
+    out.mass_kg = { value: mass(vc.total), low: mass(out.volume_m3.low), high: mass(out.volume_m3.high), density: rho };
+    var ffm = function (v) { return mass(v) * (1 - bf / 100); };
+    out.ffm_kg = ffm(vc.total);
+    out.score = { value: 1.8 * ffm(vc.total) / Math.pow(Hm, 3), low: 1.8 * ffm(out.volume_m3.low) / Math.pow(Hm, 3), high: 1.8 * ffm(out.volume_m3.high) / Math.pow(Hm, 3), bodyFatPct: bf };
+    out.ffmi = ffm(vc.total) / (Hm * Hm);
+    if (ref === 'top') out.warnings.push('The height is to the top of the figure, not the skull: the chart scores use the top of the skull.');
+
+    // Girths
+    var gir = {}, pm = mPerPx;
+    var ell = function (wd, dp) { return ellipsePerimeter(wd * pm, dp * pm); };
+    var site = function (name, wd, dp, row, note) {
+      if (!wd || !dp) { gir[name] = { value_m: null, note: 'not found' }; return; }
+      var g = ell(wd, dp);
+      gir[name] = { value_m: g, low_m: g * 0.9, high_m: g * 1.1, width_m: wd * pm, depth_m: dp * pm, row: row, note: note };
+    };
+    var tw = function (y) { var t = y != null ? F.torsoRun(y) : null; return t ? t[1] - t[0] + 1 : 0; };
+    site('chest', tw(F.rows.chest), sideDepth(mask, w, V.side, F.rows.chest + shiftSide), F.rows.chest, 'front width at the chest row x side depth; the side depth may include the near arm');
+    site('waist', tw(F.rows.waist), sideDepth(mask, w, V.side, F.rows.waist + shiftSide), F.rows.waist, 'narrowest torso width x side depth');
+    site('neck', tw(F.rows.neck), snw < Infinity ? snw : 0, F.rows.neck, 'narrowest torso width under the head x narrowest side depth');
+    var legW = function (y) { var lr = F.legRuns(y); var a = lr[0] ? lr[0][1] - lr[0][0] + 1 : 0, b = lr[1] ? lr[1][1] - lr[1][0] + 1 : 0; return a && b ? (a + b) / 2 : Math.max(a, b); };
+    site('thigh', legW(F.rows.thigh), sideDepth(mask, w, V.side, F.rows.thigh + shiftSide), F.rows.thigh, 'leg width just below the crotch x side depth (a hand beside the thigh in the side view adds to it)');
+    site('calf', legW(F.rows.calf), sideDepth(mask, w, V.side, F.rows.calf + shiftSide), F.rows.calf, 'widest lower leg x side depth');
+    var armSite = function (key, name, note) {
+      var ws = F.arms.filter(function (a) { return a && a[key]; }).map(function (a) { return a[key].w; });
+      if (!ws.length) { gir[name] = { value_m: null, note: 'not found' }; return; }
+      var wd = ws.reduce(function (s, x) { return s + x; }, 0) / ws.length;
+      site(name, wd, wd * armK, null, note);
+    };
+    armSite('upper', 'arm_flexed', 'widest upper arm across its axis, depth = ' + armK + ' x width; an A-pose arm is relaxed, not flexed');
+    armSite('fore', 'forearm', 'widest forearm across its axis, depth = ' + armK + ' x width');
+    out.girths = gir;
+    // Segment lengths
+    var L = {}, rows = F.rows, row2m = function (a, b) { return a != null && b != null ? Math.abs(b - a) * pm : null; };
+    L.head = row2m(topOf('front'), rows.neck);
+    L.neck_to_crotch = row2m(rows.neck, rows.crotch);
+    L.crotch_height = row2m(rows.crotch, V.front.y1 + 1);
+    L.thigh = row2m(rows.crotch, rows.knee);
+    L.shank = row2m(rows.knee, rows.ankle);
+    L.ankle_height = row2m(rows.ankle, V.front.y1 + 1);
+    var a1 = F.arms.filter(Boolean)[0];
+    if (a1 && a1.elbow && a1.wrist) {
+      var c1 = Math.cos(a1.angleDeg * Math.PI / 180);
+      L.armpit_to_elbow = (a1.elbow.row - a1.armpit) * pm / c1;
+      L.elbow_to_wrist = (a1.wrist.row - a1.elbow.row) * pm / c1;
+      L.wrist_to_fingertip = (a1.end - a1.wrist.row) * pm / c1;
+      L.arm_angle_deg = Math.abs(a1.angleDeg);
+    }
+    out.lengths = L;
+    var fa = 0;
+    for (var yy = V.front.y0; yy <= V.front.y1; yy++) for (var xx = V.front.x0; xx <= V.front.x1; xx++) fa += mask[yy * w + xx];
+    out.frontal_area_m2 = fa * pm * pm;
+    out.views = V;
+    out.mask = mask;
+    out.frontLandmarks = F;
+    return out;
+  }
+
   function andMask(a, b) { var o = new Uint8Array(a.length); for (var i = 0; i < a.length; i++) o[i] = a[i] & b[i]; return o; }
   function countMask(a) { var n = 0; for (var i = 0; i < a.length; i++) n += a[i]; return n; }
 
@@ -495,6 +861,6 @@
     SEG_DEFAULTS: SEG_DEFAULTS, ellipsePerimeter: ellipsePerimeter, median: median,
     backgroundRows: backgroundRows, pushPull: pushPull, components: components, morph: morph, segment: segment,
     splitViews: splitViews, runs: runs, contour: contour, simplify: simplify, polyArea: polyArea,
-    polygonMask: polygonMask, sliceRows: sliceRows, kProfile: kProfile, frontOnly: frontOnly, sliceRotated: sliceRotated, andMask: andMask, countMask: countMask
+    polygonMask: polygonMask, clearPolys: clearPolys, fitLine: fitLine, frontLandmarks: frontLandmarks, sideDepth: sideDepth, measureSheet: measureSheet, sliceRows: sliceRows, kProfile: kProfile, frontOnly: frontOnly, sliceRotated: sliceRotated, andMask: andMask, countMask: countMask
   };
 });

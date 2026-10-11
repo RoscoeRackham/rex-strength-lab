@@ -111,7 +111,7 @@ function derive(csvFile) {
   const fitShoulder = ols(rows.map((r) => [1, Math.log(r.chestcircumference), Math.log(r.bicepscircumferenceflexed)]),
     rows.map((r) => Math.log(r.shouldercircumference)));
   out.fits = {
-    shoulder_girth: { form: 'ln(shouldercircumference) = b0 + b1 ln(chestcircumference) + b2 ln(bicepscircumferenceflexed); any length unit', b: fitShoulder.b.map(r6), rmse_ln: r6(fitShoulder.rmse), r2: r6(fitShoulder.r2) },
+    shoulder_girth: { form: 'ln(shouldercircumference) = b0 + b1 ln(chestcircumference) + b2 ln(bicepscircumferenceflexed); all in mm', b: fitShoulder.b.map(r6), rmse_ln: r6(fitShoulder.rmse), r2: r6(fitShoulder.r2) },
   };
   // Neck base over neck: the trapezius line starts at the neck base.
   out.ratios = {
