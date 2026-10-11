@@ -30,7 +30,14 @@ for path in sorted(glob.glob(os.path.join(R1, 'research_*.json'))):
     for f in res['facts']:
         k = f['key']
         if k in facts:
-            raise SystemExit('duplicate fact key ' + k)
+            # Two topics researched the same source under one key: keep the first, add the second's
+            # notes and any new sources, and say so.
+            first = facts[k]
+            first['notes'] = first['notes'].rstrip() + '\n\nAlso researched under the ' + topic + ' topic (' + f['status'] + '): ' + f['notes']
+            for src in f['sources']:
+                if src.get('url') not in [x.get('url') for x in first['sources']]:
+                    first['sources'].append(src)
+            continue
         try:
             values = json.loads(f['values'])
         except Exception:

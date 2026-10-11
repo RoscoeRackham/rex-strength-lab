@@ -986,6 +986,27 @@ details.src summary { cursor: pointer; font-weight: 600; }
     placeDrawer();
     var c = id && document.querySelector('.fig[data-id="' + id + '"]'); if (c) c.focus();
   }
+  /**
+   * How far the drawing's volume is from the weight: the outline is drawn from girths, not fitted
+   * to weight. Volume measured by the tool on the drawn sheet; body density from the working body
+   * fat with Siri's two-compartment densities (fat 0.9007, fat-free 1.100 g/cm³).
+   */
+  var drawCache = {};
+  function drawingCheck(e) {
+    if (drawCache[e.id] == null) {
+      var g = {}; BuildCalc.SITES.forEach(function (s) { g[s] = e.girths[s].value; });
+      var H = e.height.value, f = Figure.human(T, H, g, {}, { buttockFit: BuildCalc.FRUSTUM.M.buttock, armDeg: 35 }), y = f.dims.levels;
+      var img = Figure.renderSheet({ front: f.front, side: f.side }, H, { shoulder: y.acromion, chest: y.chest, waist: y.waist, crotch: y.crotch, knee: y.knee }, { figurePx: 600 });
+      var r = Measure.measureSheet(img, { heightM: H, heightRef: 'top', density: 1000, bodyFatPct: 0, seg: { refine: 0 } });
+      var fat = e.bodyFat.value / 100, rho = 1000 / (fat / 0.9007 + (1 - fat) / 1.1);
+      drawCache[e.id] = r.volume_m3 ? { v: r.volume_m3.value, rho: rho, ratio: r.volume_m3.value * rho / e.mass.value } : false;
+    }
+    var c = drawCache[e.id];
+    if (!c) return '';
+    var pct = Math.round((c.ratio - 1) * 100);
+    return 'Drawing check: this outline holds ' + fmt.sep(c.v, 3) + ' m³. At his working body fat (body density about ' + fmt.sep(Math.round(c.rho), 0) + ' kg/m³) that weighs ' +
+      (Math.abs(pct) < 2 ? 'about the same as' : Math.abs(pct) + '% ' + (pct > 0 ? 'more' : 'less') + ' than') + ' the weight counted. The drawing shows the build; the score uses the weight.';
+  }
   function renderDrawer() {
     var e = byId(state.sel); if (!e) return;
     var b = e.build, f = figureOf(e, state.view), bb = f.bounds, duo = isDuo(e);
@@ -1041,7 +1062,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
         (derivedList.length ? 'Dotted: ' + listWords(derivedList) + ', calculated from his other numbers. ' : '') +
         Object.keys(tmpl).map(function (tn) { return 'Dotted: ' + listWords(tmpl[tn]) + ', filled in from ' + tn + ', scaled to his weight. '; }).join('') + 'No edge: average head, hands and feet.';
     }
-    row('Outline', '<span class="why">' + esc(words) + '</span>');
+    row('Outline', '<span class="why">' + esc(words) + '</span>' + (duo ? '' : '<span class="why" id="drawCheck">' + drawingCheck(e) + '</span>'));
     var ign = [];
     if (bf.status === 'estimate') ign.push('Body fat is assumed for his group.');
     if (!duo && (derivedList.length || Object.keys(tmpl).length)) ign.push('Parts with a dotted edge are filled in.');

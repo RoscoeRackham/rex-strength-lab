@@ -2745,9 +2745,21 @@
     {
      "title": "Harrington ME et al. Prediction of the hip joint centre ... based on MRI. J Biomech 2007;40(3):595-602, PMID 16584737 (abstract via NCBI E-utilities)",
      "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=16584737&rettype=abstract&retmode=text"
+    },
+    {
+     "title": "Hara R, McGinley J, Briggs C, Baker R, Sangeux M. Predicting the location of the hip joint centres, impact of age group and sex. Sci Rep 2016;6:37707 (full text via Europe PMC)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC5121588/fullTextXML"
+    },
+    {
+     "title": "Harrington ME et al. Prediction of the hip joint centre in adults, children, and patients with cerebral palsy based on MRI. J Biomech 2007;40:595-602 (abstract, Europe PMC)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22Prediction%20of%20the%20hip%20joint%20centre%20in%20adults%2C%20children%2C%20and%20patients%20with%20cerebral%20palsy%22&resultType=core&format=json&pageSize=3"
+    },
+    {
+     "title": "Bell AL, Pedersen DR, Brand RA. A comparison of the accuracy of several hip center location prediction methods. J Biomech 1990;23:617-621 (record only, no abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22comparison%20of%20the%20accuracy%20of%20several%20hip%20center%20location%20prediction%20methods%22&resultType=core&format=json&pageSize=3"
     }
    ],
-   "notes": "Hara et al.: 'We propose the equations with leg length as single predictor'; read via the PMC page: HJC_X = 11 - 0.063 LL, HJC_Y (medial-lateral) = 8 + 0.086 LL, HJC_Z = -9 - 0.078 LL (mm; units implied by mm errors). Leg length = 'Distance from ASIS to medial malleolus through the medial epicondyle of the femur'. 'Using leg length as the single predictor, the accuracy of the regression equations to locate the HJC was 5.2 mm, 4.4 mm, and 3.8 mm in the posterior-anterior, medial-lateral and inferior-superior directions'; 'our analysis did not support the use of additional ... (age, sex) predictors'. The formulas are images in the XML, so I read them through the rendered page. Harrington 2007 (8 adults, MRI) found pelvic width and depth best for the medial-lateral direction. Its exact equation (reported second-hand as ML = 0.33 x inter-ASIS + 7.3 mm) was NOT verified in the primary source. Used to fix the leg axes for the thigh-contact test.",
+   "notes": "Hara et al.: 'We propose the equations with leg length as single predictor'; read via the PMC page: HJC_X = 11 - 0.063 LL, HJC_Y (medial-lateral) = 8 + 0.086 LL, HJC_Z = -9 - 0.078 LL (mm; units implied by mm errors). Leg length = 'Distance from ASIS to medial malleolus through the medial epicondyle of the femur'. 'Using leg length as the single predictor, the accuracy of the regression equations to locate the HJC was 5.2 mm, 4.4 mm, and 3.8 mm in the posterior-anterior, medial-lateral and inferior-superior directions'; 'our analysis did not support the use of additional ... (age, sex) predictors'. The formulas are images in the XML, so I read them through the rendered page. Harrington 2007 (8 adults, MRI) found pelvic width and depth best for the medial-lateral direction. Its exact equation (reported second-hand as ML = 0.33 x inter-ASIS + 7.3 mm) was NOT verified in the primary source. Used to fix the leg axes for the thigh-contact test.\n\nAlso researched under the outline topic (measured): Hara 2016: CT of 157 deceased individuals (37 children, 120 skeletally mature). HJC = centre of the femoral head. Table 2 and the text: \"HJC X = 11 −0.063 LL, HJC Y = 8 +0.086 LL, and HJC Z = −9 −0.078 LL\", where LL is clinical leg length, ASIS to medial malleolus through the medial femoral epicondyle, and IA is the inter-ASIS distance. Accuracy: \"5.2 mm, 4.4 mm, and 3.8 mm in the posterior-anterior, medial-lateral and inferior-superior directions\". Table 3 gives Bell et al.'s equations applied to the Hara data: 8.1, 6.1, 10.9 mm.\n\nHarrington 2007 abstract: \"Maximum absolute errors of 31 mm were found in adults\" for three common regression equations. Its own equations are not quoted in the abstract.\n\nBell 1990 and Harrington full texts are paywalled, so Bell's coefficients are not verified here. All of these work from bony pelvic landmarks (ASIS), which ANSUR II does not measure. For a silhouette, use the trochanter-level rule plus the inter-HJC estimate.",
    "topic": "function",
    "verify": {
     "ok": true,
@@ -4774,6 +4786,1287 @@
     "corrected": ""
    }
   },
+  "ansur2_outline_landmark_definitions": {
+   "label": "ANSUR II landmark heights for the outline: what each marks, and the standing posture",
+   "status": "official",
+   "values": {
+    "crotch_blade_added_m": 0.01,
+    "crotch_blade_added_cm": 1,
+    "TR11_017_printed_pages": {
+     "standing_posture": 73,
+     "stature": 152,
+     "cervicale_landmark": 27,
+     "suprasternale_height": 153,
+     "acromion_landmark": 23,
+     "acromial_height": 78,
+     "axilla_height": 82,
+     "scye_landmarks": 56,
+     "chest_point_landmark": 28,
+     "chest_height": 103,
+     "omphalion_landmark": 70,
+     "waist_height_omphalion": 167,
+     "buttock_height": 95,
+     "trochanterion_landmark": 69,
+     "crotch_height": 104,
+     "midpatella_landmark": 48,
+     "knee_height_midpatella": 133,
+     "lateral_malleolus_landmark": 44,
+     "lateral_malleolus_height": 136,
+     "stylion_landmark": 60,
+     "wrist_height": 170,
+     "tragion_top_of_head": 159
+    }
+   },
+   "sources": [
+    {
+     "title": "Hotzman J et al. 2011, Measurer's Handbook: US Army and Marine Corps Anthropometric Surveys 2010-2011, NATICK/TR-11/017 (PDF)",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR11-017.pdf"
+    },
+    {
+     "title": "Gordon CC et al. 2014, 2012 Anthropometric Survey of U.S. Army Personnel: Methods and Summary Statistics, NATICK/TR-15/007 (PDF)",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+    }
+   ],
+   "notes": "Fetched both PDFs and extracted the text with pdftotext.\n\nStanding posture (6.1.1): \"stand erect, with their weight evenly distributed on both feet, heels together as much as possible, legs and trunk straight without stiffness ... The arms are to hang relaxed with the elbows lightly touching the sides with the palms of the hands beside, but not touching, the thighs. On individuals with muscular upper arms, the elbows may not touch the sides.\" Most heights are taken \"at the maximum point of quiet respiration\".\n\nLandmark definitions:\n- Stature: \"The vertical distance from a standing surface to the top of the head\", head in the Frankfurt plane, hair compressed.\n- Cervicale: \"The most prominent palpable point of the spine of the seventh cervical vertebra\". ANSUR 1988 used the 'superior palpable point'.\n- Suprasternale: \"The inferior point of the jugular notch of the sternum\".\n- Acromion: \"The point of intersection of the lateral border of the acromial process and a line running down the middle of the shoulder from the neck to the tip of the shoulder.\"\n- Axilla height: \"the right axillary fold, as designated by the anterior scye on the torso landmark\". That mark is drawn at the top of a level rule clamped in the armpit.\n- Chest height: to chest point anterior, \"The most anterior right point on the chest\". ANSUR 1988 used the nipple (thelion) for men.\n- Waist height: to \"the center of the navel\" (omphalion), abdomen not tensed.\n- Buttock height: \"the level of the maximum protrusion of the right buttock\".\n- Trochanterion: \"The superior point of the greater trochanter of the right femur of a standing participant\". The handbook warns it \"can be a difficult landmark to locate\".\n- Crotch height: the blade is raised into firm contact with the crotch, and \"The computer will add 1 cm to the recorded dimension to account for the width of the anthropometer blade.\"\n- Knee height, midpatella: \"The anterior point halfway between the top and bottom of the patella\", with the knee relaxed.\n- Lateral malleolus: \"The most lateral point of the right lateral malleolus\".\n- Wrist height: to stylion (\"The inferior point of the bottom of the radius\"), with \"the arms ... extended downwards with the elbow, wrist, and fingers held rigidly straight. The arms lightly touch the sides. The palms face inward (medially).\"\n\nAll landmarks are on the right side. Every height is a vertical distance from the floor in this standing posture, so an outline drawn from them is a relaxed, arms-down stance, not an A-pose.",
+   "topic": "outline",
+   "verify": {
+    "ok": true,
+    "issue": "I re-downloaded TR-11/017 (sha matches the published file size, 5,224,258 bytes) and checked every quoted definition: standing posture 6.1.1, stature, cervicale with the ANSUR 1988 'superior palpable point' footnote, suprasternale, acromion, axilla/anterior scye, chest point, omphalion, buttock, trochanterion and its 'difficult landmark' caution, crotch +1 cm, midpatella, lateral malleolus, stylion and wrist height. All quotes match. I checked all 22 printed page numbers by script and all match (73, 152, 27, 153, 23, 78, 82, 56, 28, 103, 70, 167, 95, 69, 104, 48, 133, 44, 136, 60, 170, 159).\n\nTwo omissions:\n- Not every height uses the 6.1.1 posture. Tibial and lateral femoral epicondyle heights are taken with the feet together on a table, and wrist height with the arms 'rigidly straight'.\n- The handbook warns that tibiale (p.65) and the lateral femoral epicondyle (p.43) are 'difficult or impossible to locate accurately in heavily muscled participants'. That matters for a chart that extends to bodybuilders.",
+    "corrected": "No value changes. Add to the notes: 'TR-11/017 pp.43 and 65: tibiale and lateral femoral epicondyle are \"difficult or impossible to locate accurately in heavily muscled participants\".' Also add that the knee and wrist heights use slightly different postures from 6.1.1."
+   }
+  },
+  "ansur2_outline_breadth_depth_definitions": {
+   "label": "ANSUR II trunk, head, hand and foot breadths and depths: exact definitions (incl. whether chest breadth includes the lats)",
+   "status": "official",
+   "values": {
+    "TR11_017_printed_pages": {
+     "biacromial": 85,
+     "bideltoid": 88,
+     "buttock_circumference": 93,
+     "buttock_depth": 94,
+     "chest_breadth": 100,
+     "chest_circumference": 101,
+     "chest_depth": 102,
+     "foot_breadth": 112,
+     "foot_length": 113,
+     "hand_breadth": 119,
+     "hand_length": 121,
+     "head_breadth": 122,
+     "head_length": 124,
+     "hip_breadth": 127,
+     "waist_breadth": 163,
+     "waist_circumference": 164,
+     "waist_depth": 165
+    },
+    "TR15_007_printed_pages": {
+     "biacromial": 59,
+     "bideltoid": 65,
+     "chest_breadth": 89
+    },
+    "chest_breadth_state": "full inspiration, tissue compressed to rib cage",
+    "chest_depth_and_girth_state": "quiet respiration, light contact"
+   },
+   "sources": [
+    {
+     "title": "Hotzman J et al. 2011, NATICK/TR-11/017 Measurer's Handbook (PDF)",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR11-017.pdf"
+    },
+    {
+     "title": "Gordon CC et al. 2014, NATICK/TR-15/007 (PDF)",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+    }
+   ],
+   "notes": "Chest breadth (6.4.24): \"The maximum horizontal breadth of the chest at the level of the chest point anterior landmark.\" The participant puts both hands on the hips and takes a deep breath. The measurer is told to \"Compress the tissue firmly to ensure contact with the rib cage, ask the participant to lower the arms, and take the measurement. The measurement is taken at maximum inspiration\". Breast tissue is excluded. TR-15/007 footnote: \"This measurement also differs from ANSUR because the tissue is now compressed and the measurement is taken at maximum inspiration.\"\n\nThe latissimus is never mentioned. Lat tissue at that level is squeezed against the ribs by the caliper, not excluded by rule. So chest breadth is a compressed rib-cage width, not the outline width of the torso.\n\nOther trunk measures:\n- Chest depth: from chest point anterior to the back at the same level, at quiet respiration, \"only enough pressure to maintain contact\".\n- Chest girth: taken at quiet respiration. \"The tape will span body hollows in this measurement.\"\n- Waist breadth: at omphalion. \"Care must be taken not to compress the soft tissue.\"\n- Waist depth: from waist omphalion anterior to posterior, right hand on the chest, abdomen not tensed.\n- Hip breadth: \"The horizontal distance between the lateral buttock landmarks on the sides of the hips\", standing with the arms slightly away from the body. It sits at the buttock-protrusion level, the same level as buttock depth and buttock girth, so it is not necessarily the widest hip level.\n- Buttock depth: \"The horizontal depth of the torso at the level of the maximum protrusion of the right buttock\", from the posterior buttock point to the abdomen.\n\nHead, hand and foot:\n- Head breadth: \"The maximum horizontal breadth of the head above the ears\" (euryon).\n- Head length: glabella to opisthocranion, at its maximum, hair compressed.\n- Hand breadth: \"between the landmarks at metacarpale II and metacarpale V\", so the thumb is excluded.\n- Hand length: stylion to the tip of the middle finger.\n- Foot length: pternion to the tip of the longest toe, on a Brannock device, standing.\n- Foot breadth: \"The maximum breadth of the right foot\", at the metatarsophalangeal level, standing.",
+   "topic": "outline",
+   "verify": {
+    "ok": true,
+    "issue": "Every quote is verified in TR-11/017: chest breadth (p.100; compress 'firmly to ensure contact with the rib cage', taken at maximum inspiration), chest circumference (p.101; 'The tape will span body hollows'), chest depth (p.102), hip breadth (p.127), buttock depth (p.94), waist breadth (p.163; 'Care must be taken not to compress'), head breadth and length, hand and foot. The TR-15/007 chest-breadth footnote is verified on p.89. The word 'latissimus' or 'lat' never appears in either report (grep).\n\n'A compressed rib-cage width, not the outline width' is the researcher's inference from the procedure, not a handbook statement. It is reasonable, but it should be worded as an inference.",
+    "corrected": "Reword to: 'By the procedure (firm compression to the rib cage), chest breadth is narrower than the visible torso outline (our inference; the handbook does not say so).'"
+   }
+  },
+  "ansur2_biacromial_vs_bideltoid": {
+   "label": "Biacromial vs bideltoid breadth in ANSUR II: bone-to-bone vs widest muscle across the arms",
+   "status": "derived",
+   "values": {
+    "biacromial_p50_m": 0.415,
+    "bideltoid_p50_m": 0.509,
+    "derived_half_difference_bideltoid_minus_biacromial_m": {
+     "p50": 0.047,
+     "p5": 0.029,
+     "p95": 0.0675
+    },
+    "derived_half_difference_bideltoid_minus_chest_breadth_m": {
+     "p50": 0.11,
+     "p5": 0.0935,
+     "p95": 0.129
+    },
+    "derived_bideltoid_over_shoulder_circumference": {
+     "p50": 0.432,
+     "p5": 0.417,
+     "p95": 0.453
+    },
+    "orig_mm": "biacromial p50 415, bideltoid p50 509; half-differences p50 47 mm and 110 mm"
+   },
+   "sources": [
+    {
+     "title": "Hotzman J et al. 2011, NATICK/TR-11/017 (sections 6.4.9 and 6.4.12)",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR11-017.pdf"
+    },
+    {
+     "title": "Gordon CC et al. 2014, NATICK/TR-15/007 (dimensions 8 and 11)",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+    },
+    {
+     "title": "ANSUR II male CSV (OPEN Design Lab), local copy sha256 0547aea0170e5293...",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+    }
+   ],
+   "notes": "Biacromial breadth: \"The distance between the right and left acromion landmarks on the tips of the shoulder.\" It is taken in anthropometric sitting with a beam caliper from behind, \"Use sufficient pressure to maintain firm contact with the skin\". It is a bony width.\n\nBideltoid breadth: \"The maximum horizontal distance between the lateral margins of the upper arms on the deltoid muscles.\" The caliper blades are brushed up and down the arms, \"When the blades lightly touch the skin on both sides, withdraw the instrument\". The handbook adds \"the deltoid landmarks are NOT used for this dimension\" and \"This measurement should never be taken lower than the bottom of the deltoid muscles.\"\n\nTR-15/007 says both are seated: \"The shoulders and upper arms are relaxed, and the forearms and hands are extended forward horizontally with the palms facing each other\". Both are at quiet respiration. Bideltoid therefore includes the soft tissue of both arms; it is the widest front-view width across the shoulders with the arms down.\n\nThe numbers in values are my arithmetic on the 4,082 men (script ansur_outline.py): (bideltoid - biacromial)/2, (bideltoid - chest breadth)/2, and bideltoid / shoulder circumference. Shoulder circumference is taken at the deltoid points. Caveat: both breadths are seated while acromial height is standing.\n\nCorrection (verifier): Split the status: definitions 'official'; half-differences and the ratio 'derived'. In the recommendations, describe 47 mm as 'lateral extent of deltoid/arm beyond the acromion tip' and 110 mm as 'half-width from compressed rib cage to outer deltoid'. Neither is a clearance.",
+   "topic": "outline",
+   "verify": {
+    "ok": false,
+    "issue": "The quotes are verified: TR-11/017 6.4.9 on p.85 and 6.4.12 on p.88, and TR-15/007 dims 8 and 11 on pp.59 and 65 (both seated, forearms forward, palms facing). The numbers recompute exactly from the CSV:\n- biacromial p50 415 mm, bideltoid 509 mm\n- (bideltoid - biacromial)/2 = 47 mm [p5 29, p95 67.5]\n- (bideltoid - chest breadth)/2 = 110 mm [93.5, 129]\n- bideltoid / shoulder circumference = 0.432 [0.417, 0.453]\nShoulder circumference is at the deltoid points (p.145, standing).\n\nProblems:\n- The fact is labelled 'official', but most of its values are the researcher's arithmetic.\n- The recommendations call these differences 'room per side' for the arms-hang test. Neither measures clearance between arm and torso. The 47 mm is arm and deltoid tissue lateral to the bony acromion. The 110 mm is the whole upper-arm thickness plus lateral chest tissue beyond a compressed rib-cage width, with the two breadths taken in different postures.",
+    "corrected": "Split the status: definitions 'official'; half-differences and the ratio 'derived'. In the recommendations, describe 47 mm as 'lateral extent of deltoid/arm beyond the acromion tip' and 110 mm as 'half-width from compressed rib cage to outer deltoid'. Neither is a clearance."
+   },
+   "applied": [
+    "Verifier (outline): The quotes are verified: TR-11/017 6.4.9 on p.85 and 6.4.12 on p.88, and TR-15/007 dims 8 and 11 on pp.59 and 65 (both seated, forearms forward, palms facing). The numbers recompute exactly from the CSV:\n- biacromial p50 415 mm, bideltoid 509 mm\n- (bideltoid - biacromial)/2 = 47 mm [p5 29, p95 67.5]\n- (bideltoid - chest breadth)/2 = 110 mm [93.5, 129]\n- bideltoid / shoulder circumference = 0.432 ["
+   ]
+  },
+  "ansur2_outline_height_fractions_male": {
+   "label": "ANSUR II men: landmark heights as fractions of stature (median, 5th, 95th percentile)",
+   "status": "derived",
+   "values": {
+    "n": 4082,
+    "stature_p50_m": 1.755,
+    "order": "[p50, p5, p95] of individual height/stature",
+    "fraction_of_stature": {
+     "cervicale": [
+      0.864,
+      0.853,
+      0.875
+     ],
+     "suprasternale": [
+      0.819,
+      0.807,
+      0.831
+     ],
+     "acromion": [
+      0.821,
+      0.804,
+      0.836
+     ],
+     "axilla_anterior_scye": [
+      0.757,
+      0.742,
+      0.771
+     ],
+     "chest_point": [
+      0.735,
+      0.718,
+      0.753
+     ],
+     "tenth_rib": [
+      0.638,
+      0.619,
+      0.659
+     ],
+     "omphalion_waist": [
+      0.602,
+      0.58,
+      0.622
+     ],
+     "iliocristale": [
+      0.604,
+      0.584,
+      0.626
+     ],
+     "buttock_protrusion": [
+      0.505,
+      0.48,
+      0.533
+     ],
+     "trochanterion": [
+      0.512,
+      0.489,
+      0.54
+     ],
+     "crotch": [
+      0.481,
+      0.459,
+      0.506
+     ],
+     "knee_midpatella": [
+      0.278,
+      0.263,
+      0.294
+     ],
+     "lateral_femoral_epicondyle": [
+      0.28,
+      0.267,
+      0.293
+     ],
+     "tibiale": [
+      0.266,
+      0.253,
+      0.28
+     ],
+     "lateral_malleolus": [
+      0.0415,
+      0.0369,
+      0.0464
+     ],
+     "wrist_stylion": [
+      0.4825,
+      0.462,
+      0.503
+     ],
+     "fingertip_derived": [
+      0.373,
+      0.35,
+      0.395
+     ],
+     "tragion": [
+      0.925,
+      0.918,
+      0.932
+     ]
+    },
+    "p50_mm": {
+     "cervicale": 1517,
+     "suprasternale": 1437,
+     "acromion": 1439,
+     "axilla": 1328,
+     "chest_point": 1289,
+     "tenth_rib": 1119,
+     "omphalion": 1055,
+     "iliocristale": 1061,
+     "buttock": 885,
+     "trochanterion": 899,
+     "crotch": 845,
+     "knee_midpatella": 487,
+     "lateral_femoral_epicondyle": 491,
+     "tibiale": 467.5,
+     "lateral_malleolus": 73,
+     "wrist": 847
+    }
+   },
+   "sources": [
+    {
+     "title": "ANSUR II male CSV (OPEN Design Lab)",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+    },
+    {
+     "title": "Gordon CC et al. 2014, NATICK/TR-15/007 (cross-check of medians)",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+    }
+   ],
+   "notes": "Computed by /tmp/claude-0/-home-user-rex-strength-lab/9b81b796-3162-56bd-85b7-22e02b6583e2/scratchpad/research/outline/scripts/ansur_outline.py; output in ../ansur_outline_out.json. The CSV hash (0547aea0...) matches the one recorded in ansur2_dataset.\n\nThis extends the existing key ansur2_segments_male. Its medians (cervicale 0.864, acromial 0.821, chest 0.735, omphalion 0.602, trochanterion 0.512, crotch 0.481, midpatella 0.278, lateral malleolus 0.042) are reproduced. New here: axilla, tenth rib, iliocristale, buttock, wrist and tragion heights, plus each fraction's spread. SD of the fractions is 0.003 to 0.016, so proportions vary little between men.\n\nTR-15/007 medians match the CSV: axilla height 132.80 cm, buttock height 88.50 cm.\n\nFingertip height is wrist height minus hand length; TR-15/007 defines dactylion height (D12) the same way. Tragion height is stature minus tragion-top of head. That head measure is taken seated, but in the Frankfurt plane it is a head-only distance.\n\nCaveats: US Army soldiers aged 17-58. The fractions describe the relaxed standing posture.",
+   "topic": "outline",
+   "verify": {
+    "ok": true,
+    "issue": "I recomputed these with my own script on the CSV (sha256 0547aea0...c64, re-downloaded; n = 4,082). Every [p50, p5, p95] reproduces to the stated precision. Examples: cervicale [0.864, 0.853, 0.875]; acromion [0.821, 0.804, 0.836]; axilla [0.757, 0.742, 0.771]; buttock [0.505, 0.480, 0.533]; fingertip [0.373, 0.350, 0.395]; tragion [0.925, 0.918, 0.932]. The p50 mm values match. The SDs of the fractions run from 0.0029 (malleolus) to 0.0164 (buttock), as stated.",
+    "corrected": ""
+   }
+  },
+  "ansur2_outline_breadth_fractions_male": {
+   "label": "ANSUR II men: breadths, depths and hand/foot/head lengths as fractions of stature",
+   "status": "derived",
+   "values": {
+    "n": 4082,
+    "order": "[p50, p5, p95] of dimension/stature",
+    "fraction_of_stature": {
+     "biacromial": [
+      0.2365,
+      0.221,
+      0.2535
+     ],
+     "bideltoid": [
+      0.29,
+      0.262,
+      0.3225
+     ],
+     "chest_breadth": [
+      0.165,
+      0.149,
+      0.182
+     ],
+     "chest_depth": [
+      0.1445,
+      0.1205,
+      0.169
+     ],
+     "waist_breadth": [
+      0.186,
+      0.156,
+      0.2185
+     ],
+     "waist_depth": [
+      0.1335,
+      0.107,
+      0.17
+     ],
+     "hip_breadth_at_buttock": [
+      0.196,
+      0.177,
+      0.22
+     ],
+     "buttock_depth": [
+      0.14,
+      0.116,
+      0.165
+     ],
+     "head_breadth": [
+      0.088,
+      0.081,
+      0.095
+     ],
+     "head_length": [
+      0.114,
+      0.106,
+      0.122
+     ],
+     "hand_length": [
+      0.11,
+      0.103,
+      0.117
+     ],
+     "palm_length": [
+      0.066,
+      0.062,
+      0.071
+     ],
+     "hand_breadth": [
+      0.05,
+      0.047,
+      0.054
+     ],
+     "foot_length": [
+      0.154,
+      0.146,
+      0.163
+     ],
+     "foot_breadth": [
+      0.058,
+      0.0535,
+      0.063
+     ],
+     "bimalleolar_breadth": [
+      0.0426,
+      0.039,
+      0.046
+     ],
+     "acromion_radiale": [
+      0.191,
+      0.181,
+      0.201
+     ],
+     "radiale_stylion": [
+      0.152,
+      0.143,
+      0.163
+     ],
+     "span": [
+      1.031,
+      0.991,
+      1.081
+     ]
+    },
+    "p50_m": {
+     "biacromial": 0.415,
+     "bideltoid": 0.509,
+     "chest_breadth": 0.289,
+     "chest_depth": 0.253,
+     "waist_breadth": 0.325,
+     "waist_depth": 0.234,
+     "hip_breadth": 0.344,
+     "buttock_depth": 0.246,
+     "head_breadth": 0.154,
+     "head_length": 0.2,
+     "hand_length": 0.193,
+     "hand_breadth": 0.088,
+     "foot_length": 0.271,
+     "foot_breadth": 0.102
+    }
+   },
+   "sources": [
+    {
+     "title": "ANSUR II male CSV (OPEN Design Lab)",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+    }
+   ],
+   "notes": "Same script (ansur_outline.py). Medians match ansur2_segments_male where both exist, and TR-15/007 tables (hip breadth 34.40 cm, buttock depth 24.60 cm, chest breadth 28.90 cm).\n\nBreadths vary more than heights. The bideltoid fraction spans 0.26-0.32, and waist depth 0.107-0.170. Use stature fractions only for the median template, and set widths from girths (see ansur2_trunk_width_per_girth_male).",
+   "topic": "outline",
+   "verify": {
+    "ok": true,
+    "issue": "All [p50, p5, p95] fractions and p50 metres reproduce from the CSV. Examples: bideltoid [0.290, 0.262, 0.3225]; waist depth [0.1335, 0.107, 0.170]; head length [0.114, 0.106, 0.122]; span [1.031, 0.991, 1.081]. TR-15/007 chest breadth p50 of 28.90 cm is confirmed in the PDF; the hip breadth and buttock depth medians match the CSV (344 and 246 mm).",
+    "corrected": ""
+   }
+  },
+  "ansur2_ellipse_vs_girth_male": {
+   "label": "How well an ellipse from breadth and depth reproduces the measured girth (chest, waist, buttock, head), ANSUR II men",
+   "status": "derived",
+   "values": {
+    "n": 4082,
+    "method": "Ramanujan II perimeter of ellipse with axes = breadth, depth; ratio = measured girth / ellipse perimeter",
+    "girth_over_ellipse": {
+     "chest": {
+      "mean": 1.238,
+      "sd": 0.032,
+      "p5": 1.188,
+      "p50": 1.237,
+      "p95": 1.292,
+      "share_within_5pct": 0.0
+     },
+     "waist_omphalion": {
+      "mean": 1.054,
+      "sd": 0.018,
+      "p5": 1.026,
+      "p50": 1.054,
+      "p95": 1.083,
+      "share_within_5pct": 0.4
+     },
+     "buttock": {
+      "mean": 1.09,
+      "sd": 0.019,
+      "p5": 1.059,
+      "p50": 1.09,
+      "p95": 1.122,
+      "share_within_5pct": 0.017
+     },
+     "head": {
+      "mean": 1.029,
+      "sd": 0.012,
+      "p5": 1.01,
+      "p50": 1.029,
+      "p95": 1.048,
+      "share_within_5pct": 0.96
+     }
+    },
+    "BMI_quintile_edges": [
+     15.4,
+     24.2,
+     26.5,
+     28.5,
+     31.0,
+     43.5
+    ],
+    "mean_ratio_by_BMI_quintile": {
+     "chest": [
+      1.217,
+      1.23,
+      1.238,
+      1.245,
+      1.26
+     ],
+     "waist": [
+      1.049,
+      1.055,
+      1.056,
+      1.056,
+      1.056
+     ],
+     "buttock": [
+      1.091,
+      1.094,
+      1.09,
+      1.089,
+      1.084
+     ]
+    },
+    "depth_over_breadth_p50": {
+     "chest": 0.876,
+     "waist": 0.721,
+     "buttock": 0.71,
+     "head_length_over_breadth": 1.297
+    }
+   },
+   "sources": [
+    {
+     "title": "ANSUR II male CSV (OPEN Design Lab)",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+    },
+    {
+     "title": "Hotzman J et al. 2011, NATICK/TR-11/017 (why chest breadth is narrow: compressed, full inspiration)",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR11-017.pdf"
+    }
+   ],
+   "notes": "Computed by /tmp/claude-0/-home-user-rex-strength-lab/9b81b796-3162-56bd-85b7-22e02b6583e2/scratchpad/research/outline/scripts/ansur_outline.py, section 'ellipse_vs_girth'. The ellipse never over-predicts at any site; the smallest individual ratio is 0.9996, at the waist.\n\nChest: the tape is 24% longer than the ellipse, for two reasons. The breadth is taken pressed down to the rib cage at full inspiration, and the tape (quiet respiration) spans the back, lats and hollows. On the chest this reproduces the existing key trunk_cross_section_shape (chest_C_over_ellipse_perimeter 1.238). Its waist d/b of 0.727 differs slightly from my median of 0.721, probably mean vs median.\n\nThe chest ratio rises with BMI by about 0.004 per BMI unit (r^2 0.24). The waist and buttock ratios hardly move (r^2 under 0.03).\n\nButtock: the shape is boxier than an ellipse (two lobes, flat sides), so it is 9% short.\n\nHead: girth is measured above the brow ridges on a tilted plane, which gives the 3% gap. 96% of men fall within 5%.\n\nUse: an ellipse is fine for the head, within about 5-6% for the waist, and needs a site factor (x1.09) for the buttock. It is wrong by about a quarter for the chest when caliper chest breadth is used. A silhouette chest width that includes the lats would give a smaller factor, but ANSUR has no such width to test.\n\nCorrection (verifier): Replace with: 'The ellipse under-predicts at the chest and buttock in every man, and at the waist in all but one. At the head, 32 men (0.8%) have girth below the ellipse (minimum ratio 0.988). Chest gap: caused by compressing the caliper to the rib cage and by a non-elliptical section whose tape spans hollows; full inspiration works against the gap.' Label the head and buttock explanations 'likely' or 'our interpretation'.",
+   "topic": "outline",
+   "verify": {
+    "ok": false,
+    "issue": "Every number reproduces independently:\n- chest 1.2381 ± 0.0317 (p5/50/95 1.188 / 1.237 / 1.292)\n- waist 1.0544 ± 0.0176\n- buttock 1.0895 ± 0.0194\n- head 1.0291 ± 0.0115\n- share within 5%: 0 / 0.401 / 0.017 / 0.963\n- BMI quintile edges and quintile means\n- chest slope 0.00387 per BMI unit (r² 0.242); waist and buttock r² 0.016 and 0.021\n- d/b medians 0.876 / 0.721 / 0.710 / 1.297; waist mean d/b 0.727, as guessed\n\nErrors in the notes:\n1. 'The ellipse never over-predicts at any site; the smallest individual ratio is 0.9996, at the waist' is false. 32 of 4,082 men have a head ratio below 1 (minimum 0.988). The waist has 1 man (0.9996). The chest (minimum 1.134) and buttock (minimum 1.017) never fall below 1.\n2. Full inspiration is listed as a cause of the 24% chest gap. It works the other way: inspiration widens the caliper breadth and shrinks the gap. The gap comes from compression to the rib cage plus a non-elliptical section whose tape spans hollows.\n3. The causes given for the head gap (tilted plane) and the buttock gap (two lobes) are unsourced conjecture presented as fact.",
+    "corrected": "Replace with: 'The ellipse under-predicts at the chest and buttock in every man, and at the waist in all but one. At the head, 32 men (0.8%) have girth below the ellipse (minimum ratio 0.988). Chest gap: caused by compressing the caliper to the rib cage and by a non-elliptical section whose tape spans hollows; full inspiration works against the gap.' Label the head and buttock explanations 'likely' or 'our interpretation'."
+   },
+   "applied": [
+    "Verifier (outline): Every number reproduces independently:\n- chest 1.2381 ± 0.0317 (p5/50/95 1.188 / 1.237 / 1.292)\n- waist 1.0544 ± 0.0176\n- buttock 1.0895 ± 0.0194\n- head 1.0291 ± 0.0115\n- share within 5%: 0 / 0.401 / 0.017 / 0.963\n- BMI quintile edges and quintile means\n- chest slope 0.00387 per BMI unit (r² 0.242); waist and buttock r² 0.016 and 0.021\n- d/b medians 0.876 / 0.721 / 0.710 / 1.297; waist mean d/b 0."
+   ]
+  },
+  "ansur2_trunk_width_per_girth_male": {
+   "label": "Front width and side depth per unit girth at chest, waist and buttock, and how they shift with build (ANSUR II men)",
+   "status": "derived",
+   "values": {
+    "n": 4082,
+    "p50": {
+     "chest": {
+      "breadth_over_girth": 0.274,
+      "depth_over_girth": 0.24,
+      "effective_ellipse_breadth_over_girth": 0.388
+     },
+     "waist_omphalion": {
+      "breadth_over_girth": 0.348,
+      "depth_over_girth": 0.252,
+      "effective_ellipse_breadth_over_girth": 0.379
+     },
+     "buttock": {
+      "breadth_over_girth": 0.339,
+      "depth_over_girth": 0.241,
+      "effective_ellipse_breadth_over_girth": 0.387
+     }
+    },
+    "BMI_quintile_edges": [
+     15.4,
+     24.2,
+     26.5,
+     28.5,
+     31.0,
+     43.5
+    ],
+    "breadth_over_girth_by_BMI_quintile": {
+     "chest": [
+      0.288,
+      0.279,
+      0.273,
+      0.269,
+      0.261
+     ],
+     "waist": [
+      0.356,
+      0.351,
+      0.349,
+      0.346,
+      0.341
+     ],
+     "buttock": [
+      0.347,
+      0.341,
+      0.339,
+      0.337,
+      0.334
+     ]
+    },
+    "depth_over_girth_by_BMI_quintile": {
+     "chest": [
+      0.234,
+      0.238,
+      0.24,
+      0.242,
+      0.244
+     ],
+     "waist": [
+      0.247,
+      0.249,
+      0.251,
+      0.254,
+      0.26
+     ],
+     "buttock": [
+      0.231,
+      0.236,
+      0.241,
+      0.244,
+      0.25
+     ]
+    },
+    "effective_chest_breadth_over_caliper_breadth": {
+     "p50": 1.414,
+     "p5": 1.316,
+     "p95": 1.536
+    }
+   },
+   "sources": [
+    {
+     "title": "ANSUR II male CSV (OPEN Design Lab)",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+    }
+   ],
+   "notes": "Same script, sections 'width_ratios_by_BMI_quintile' and 'effective_ellipse_breadth'.\n\nThe effective ellipse breadth is the breadth an ellipse needs, keeping the measured depth, for its perimeter to equal the measured girth.\n\nFor the chest, the effective breadth is about 1.4 times the caliper breadth. Its value, 0.39 x girth, is close to the waist and buttock values (0.38-0.39). That gives one consistent rule for a filled outline: width about 0.38-0.39 x girth with the measured depth.\n\nAs build gets heavier, cross-sections get rounder. Breadth per girth falls and depth per girth rises, by about 7-10% from the leanest to the heaviest fifth.\n\nBeyond ANSUR's range (bodybuilders, comic figures) these ratios are extrapolations and must be labelled as template values.\n\nCorrection (verifier): Change the trend to '4–9% from the leanest to the heaviest fifth (chest breadth −9%, buttock depth +8%, the others 4–5%)'.\n\nRecommendation: draw the waist at 0.348 × girth and the hip at 0.339 × girth (ANSUR p50; Q1–Q5 band 0.341–0.356 and 0.334–0.347). The chest outline width is not measured. Bracket it between 0.274 (ANSUR, compressed) and 0.325 (AIST D4/F5, light contact, lean Japanese men) and label it 'estimate'.\n\nUse the effective-ellipse breadth only internally, as the axis that makes an ellipse's perimeter match the girth. Never use it as a displayed width.",
+   "topic": "outline",
+   "verify": {
+    "ok": false,
+    "issue": "The values reproduce: p50 breadth/girth 0.274 / 0.348 / 0.339; depth/girth 0.240 / 0.252 / 0.241; effective-ellipse breadth/girth 0.388 / 0.378–0.379 / 0.387; effective/caliper chest 1.414 [1.316, 1.536]. The quintile medians reproduce to rounding (waist Q1 0.3555, chest depth Q4 0.2415).\n\nErrors:\n1. 'Breadth per girth falls and depth per girth rises by about 7–10%' overstates. From the leanest to the heaviest fifth:\n   - chest breadth −9%, waist breadth −4%, buttock breadth −4%\n   - chest depth +4%, waist depth +5%, buttock depth +8%\n2. 'That gives one consistent rule for a filled outline: width about 0.38–0.39 × girth' is wrong for a drawn silhouette, and it contradicts the brief ('widths from girths through measured breadth-to-girth ratios').\n   - At the waist and buttock the caliper breadths are taken with light contact, so they are real outline widths: 0.348 and 0.339 × girth. Using 0.379 and 0.387 would draw waists about 9% and hips about 14% too wide (effective/caliper p50 1.087 and 1.141).\n   - The near-equality across sites is mostly arithmetic. Depth/girth is about 0.24–0.25 at every site, so any ellipse with that depth needs a breadth of about 0.38–0.39 × girth to close the perimeter.\n   - An independent check: AIST 1991-92 chest items D4, E2 and F5 (nipple level, quiet respiration, no compression in the definition; I fetched them) give breadth/girth 0.325. Yet their effective-ellipse breadth/girth is also 0.389, 1.195 × the measured breadth.",
+    "corrected": "Change the trend to '4–9% from the leanest to the heaviest fifth (chest breadth −9%, buttock depth +8%, the others 4–5%)'.\n\nRecommendation: draw the waist at 0.348 × girth and the hip at 0.339 × girth (ANSUR p50; Q1–Q5 band 0.341–0.356 and 0.334–0.347). The chest outline width is not measured. Bracket it between 0.274 (ANSUR, compressed) and 0.325 (AIST D4/F5, light contact, lean Japanese men) and label it 'estimate'.\n\nUse the effective-ellipse breadth only internally, as the axis that makes an ellipse's perimeter match the girth. Never use it as a displayed width."
+   },
+   "applied": [
+    "Verifier (outline): The values reproduce: p50 breadth/girth 0.274 / 0.348 / 0.339; depth/girth 0.240 / 0.252 / 0.241; effective-ellipse breadth/girth 0.388 / 0.378–0.379 / 0.387; effective/caliper chest 1.414 [1.316, 1.536]. The quintile medians reproduce to rounding (waist Q1 0.3555, chest depth Q4 0.2415).\n\nErrors:\n1. 'Breadth per girth falls and depth per girth rises by about 7–10%' overstates. From the leanest to"
+   ]
+  },
+  "aist_limb_cross_sections_male": {
+   "label": "Thigh, knee, calf and ankle: breadth, depth and girth at the same level (AIST 1991-92, young Japanese men)",
+   "status": "derived",
+   "values": {
+    "population": "Japanese men aged 18-29, measured Jul-Aug 1991, right side",
+    "n": 216,
+    "stature_mean_m": 1.714,
+    "thigh_gluteal_furrow": {
+     "breadth_m": 0.1652,
+     "depth_m": 0.1682,
+     "girth_m": 0.5357,
+     "depth_over_breadth": 1.018,
+     "breadth_over_girth": 0.308,
+     "depth_over_girth": 0.314,
+     "girth_over_ellipse": 1.023
+    },
+    "knee_midpatella": {
+     "breadth_m": 0.1076,
+     "depth_m": 0.1176,
+     "girth_m": 0.3644,
+     "depth_over_breadth": 1.093,
+     "breadth_over_girth": 0.295,
+     "depth_over_girth": 0.323,
+     "girth_over_ellipse": 1.03
+    },
+    "calf_max": {
+     "breadth_m": 0.113,
+     "depth_m": 0.1109,
+     "girth_m": 0.3623,
+     "depth_over_breadth": 0.981,
+     "breadth_over_girth": 0.312,
+     "depth_over_girth": 0.306,
+     "girth_over_ellipse": 1.03
+    },
+    "ankle_min": {
+     "breadth_m": 0.0586,
+     "depth_m": 0.0735,
+     "girth_m": 0.2194,
+     "depth_over_breadth": 1.254,
+     "breadth_over_girth": 0.267,
+     "depth_over_girth": 0.335,
+     "girth_over_ellipse": 1.054
+    },
+    "orig_mm": "means (SD): thigh breadth D15 165.2 (12.44) n216, depth E8 168.2 (15.48) n216, girth F16 535.7 (40.20) n217; knee D16 107.6 (5.89), E9 117.6 (6.26), F19 364.4 (18.32); calf D17 113.0 (7.81), E10 110.9 (7.67), F20 362.3 (23.24); ankle D18 58.6 (4.15), E11 73.5 (4.56), F21 219.4 (12.86)"
+   },
+   "sources": [
+    {
+     "title": "Kouchi M, Mochimaru M 2005, AIST Anthropometric Database 1991-92 (AIST H16PRO 287): item list",
+     "url": "https://www.airc.aist.go.jp/dhrt/91-92/data/list.html"
+    },
+    {
+     "title": "AIST 1991-92 database overview (sample, dates, citation)",
+     "url": "https://www.airc.aist.go.jp/dhrt/91-92/index.html"
+    },
+    {
+     "title": "AIST 1991-92 item statistics images D15, E8, F16, D16, E9, F19, D17, E10, F20, D18, E11, F21, B1 (pattern shown for D15)",
+     "url": "https://www.airc.aist.go.jp/dhrt/91-92/data/gif/D15.gif"
+    }
+   ],
+   "notes": "I read each item's statistics table and definition from its image and transcribed them into /tmp/claude-0/-home-user-rex-strength-lab/9b81b796-3162-56bd-85b7-22e02b6583e2/scratchpad/research/outline/scripts/aist_limbs.py; output in ../aist_limbs_out.json. Images are saved in ../dl/aist/.\n\nDefinitions (translated):\n- Thigh breadth D15: horizontal transverse diameter of the thigh at the height of the lower edge of the gluteal furrow, perpendicular to the knee's flexion plane. Standing, feet slightly apart.\n- Thigh depth E8: horizontal front-to-back diameter at the same height. Heels together.\n- Thigh girth F16: horizontal girth at the lower edge of the gluteal furrow, the same site as ANSUR II thigh circumference.\n- Calf D17/E10/F20: all at the height where the calf outline seen from the front is widest.\n- Knee D16/E9/F19: all at the mid-patella.\n- Ankle D18/E11/F21: all at the narrowest level above the medial malleolus.\n\nOverview page: young group of 217 men and 204 women aged 18-29. Each item was measured by one measurer for all subjects, to avoid inflating variance across measurers. The page itself warns that some items have systematic measurement problems.\n\nOnly summary statistics are public, so every ratio here is a ratio of means. With CVs of 5-9% the bias is under 1%. The girth/ellipse ratio uses Ramanujan's perimeter of the mean breadth and depth.\n\nCaveats: lean young Japanese men of 1991 (mean stature 1.714 m), not ANSUR soldiers or bodybuilders. Hypertrophy could change the shape.",
+   "topic": "outline",
+   "verify": {
+    "ok": true,
+    "issue": "I re-fetched all 12 item images plus B1 and read them myself. Every mean, SD and n matches:\n- D15 165.2/12.44/216, E8 168.2/15.48/216, F16 535.7/40.20/217\n- D16 107.6/5.89/216, E9 117.6/6.26/216, F19 364.4/18.32/217\n- D17 113.0/7.81, E10 110.9/7.67, F20 362.3/23.24\n- D18 58.6/4.15, E11 73.5/4.56, F21 219.4/12.86\n- B1 1714.0/62.55\nThe translated definitions and postures match: D15 feet slightly apart, E8 heels together; D17/E10/F20 at the widest calf seen from the front; D18/E11/F21 at the narrowest level above the malleoli. All ratios recompute (thigh 1.018 / 0.308 / 0.314 / 1.023 ... ankle 1.254 / 0.267 / 0.335 / 1.054). The overview page confirms 217 men aged 18–29, Jul–Aug 1991, one measurer per item group and the warning about systematic error.\n\nNuances:\n- The overview (section 4) offers an Excel package of individual values on application. So 'only summary statistics are public' is true for free access, but the ratio-of-means limitation can be removed.\n- ANSUR thigh circumference is taken perpendicular to the thigh axis and AIST F16 horizontally. Same site, slightly different plane.\n- 'Ankle' here is the minimum lower-leg girth above the malleoli, not a girth at the ankle bones.",
+    "corrected": "No value changes. Add these notes: individual data available on application; ANSUR thigh girth is perpendicular to the thigh axis while AIST F16 is horizontal; the 'ankle' site is the minimum girth above the malleoli."
+   }
+  },
+  "aist_forearm_neckbase_implied_shape": {
+   "label": "Forearm and neck base: breadth vs girth, and the depth an ellipse would need (AIST 1991-92, weak)",
+   "status": "derived",
+   "values": {
+    "n": 217,
+    "forearm": {
+     "max_breadth_m": 0.0926,
+     "max_girth_relaxed_m": 0.2592,
+     "breadth_over_girth": 0.357,
+     "breadth_over_circle_diameter": 1.122,
+     "implied_depth_over_breadth": 0.775
+    },
+    "neck_base": {
+     "neck_root_breadth_m": 0.1442,
+     "neckbase_girth_m": 0.4336,
+     "breadth_over_girth": 0.333,
+     "implied_depth_over_breadth": 0.913
+    },
+    "neck_girth_below_adams_apple_m": 0.3563,
+    "upper_arm_girth_relaxed_m": 0.2808,
+    "orig_mm": "D14 forearm breadth 92.6 (SD 5.51); F26 forearm girth 259.2 (15.66, n214); D1 neck root breadth 144.2 (7.76); F3 neckbase girth 433.6 (22.39); F1 neck girth 356.3 (17.84); F25 upper arm girth 280.8 (25.04)"
+   },
+   "sources": [
+    {
+     "title": "AIST Anthropometric Database 1991-92, item D14 (pattern; also F26, D1, F3, F1, F25)",
+     "url": "https://www.airc.aist.go.jp/dhrt/91-92/data/gif/D14.gif"
+    },
+    {
+     "title": "AIST 1991-92 item list",
+     "url": "https://www.airc.aist.go.jp/dhrt/91-92/data/list.html"
+    }
+   ],
+   "notes": "Same script (aist_limbs.py). The implied depth is the ellipse depth that, with the measured breadth, reproduces the measured girth. It is not a measurement.\n\nForearm: D14 is the maximum breadth parallel to the palm, perpendicular to the forearm axis, standing with \"palms facing forward\". F26 is the horizontal girth at the most bulging point a few cm below the elbow, arm hanging, fingers extended, no fist. The two are not at one level, so the implied depth/breadth of about 0.78 is approximate.\n\nIn an A-pose with palms in, the forearm is rotated relative to this palms-forward posture, so its front-view width will be narrower.\n\nNeck base: the girth loop runs through cervicale, the neck-root points and the jugular notch, so it is tilted, not horizontal. No source gave the breadth and depth of the neck at one level. The neck at the Adam's apple (the ANSUR neck girth site) has no shape data.\n\nANSUR's forearm girth is flexed with a clenched fist, a different state from AIST's relaxed one.",
+   "topic": "outline",
+   "verify": {
+    "ok": true,
+    "issue": "Images re-read: D14 92.6/5.51/217 (parallel to the palm, palms forward); F26 259.2/15.66/214 (a few cm below the elbow, fingers extended, no fist); D1 144.2/7.76; F3 433.6/22.39 (loop through cervicale, neck-root points and jugular notch); F1 356.3/17.84; F25 280.8/25.04. The implied d/b recomputes: forearm 0.775, neck 0.913. The weak-evidence labelling is appropriate.",
+    "corrected": ""
+   }
+  },
+  "upper_arm_two_view_ellipse_liu2018": {
+   "label": "Upper arm: an ellipse from front and side photo widths reproduces mid-upper-arm girth within about 3%; one view alone misses by 17-20%",
+   "status": "measured",
+   "values": {
+    "n": 31,
+    "n_men": 20,
+    "age_mean_y": 26.2,
+    "BMI_range": [
+     18.0,
+     30.6
+    ],
+    "MUAC_right_mean_m": 0.2941,
+    "ellipse_front_plus_side": {
+     "MAD_m": 0.00935,
+     "MAD_sd_m": 0.00507,
+     "MAPD_pct": 3.19
+    },
+    "circle_front_only_MAPD_pct": 17.47,
+    "circle_side_only_MAPD_pct": 20.44,
+    "regression_front_plus_side_MAD_m": 0.00462,
+    "derived_implied_small_over_large_width": [
+     0.67,
+     0.69
+    ],
+    "orig": "ellipse views 1+3: MAD 9.35 +/- 5.07 mm, MAPD 3.19%; circle view 1 MAPD 17.47%, view 3 20.44% (camera calibration)"
+   },
+   "sources": [
+    {
+     "title": "Liu Y, Sowmya A, Khamis H. Single camera multi-view anthropometric measurement of human height and mid-upper arm circumference using linear regression. PLoS One 2018;13:e0195600 (full text via Europe PMC)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC5896949/fullTextXML"
+    }
+   ],
+   "notes": "Mid-upper arm is the midpoint between acromion and elbow. The arm hangs relaxed. The tape \"touching the skin without compressing\". View 1 is the front, view 3 the side.\n\nFrom Table 5: \"the ellipse method was found to be the most accurate of the three shape models with a mean MAD i of 9.35 mm ± 5.07 mm SD (optimal view combination {1, 3})\". A circle from the front view alone has MAPD 17.47%, and from the side alone 20.44%. That means the relaxed upper arm is far from round.\n\nThe 0.67-0.69 width ratio is my derivation. It assumes an ellipse and that the two single-view circles err in opposite directions. The paper does not say which view is wider; the front-view and back-view errors also differ (17% vs 25%), which suggests method noise.\n\nCaveats: small mixed-sex sample with normal BMI, relaxed arm, not flexed.",
+   "topic": "outline",
+   "verify": {
+    "ok": true,
+    "issue": "Full text re-fetched. These are verified:\n- 31 participants (11 women, 20 men), age 26.2 ± 4.8, BMI 18.0–30.6, right MUAC 294.1 mm\n- the tape 'touching the skin without compressing'\n- Table 5: ellipse views {1,3} MAD 9.35 ± 5.07 mm, MAPD 3.19%; circle view 1 17.47%, view 3 20.44%, view 5 25.23%\n- regression with views {1,3}: 4.62 mm\nThe derived width ratio checks out: b/a = 0.677 gives +18% and −20% for the two single-view circles.\n\nCaveat to add: Table 5 also gives circle errors of 14.29% from view 2 (45°) and 4.19% from view 4. An ellipse aligned to the body would give the same error from both obliques, so the photo data are noisy and the 0.67–0.69 aspect is shaky. The researcher already flags the front/back difference.",
+    "corrected": "Add: 'Circle errors from the two oblique views differ (view 2 14.3%, view 4 4.2%), inconsistent with a body-aligned ellipse; treat the 0.67–0.69 aspect as indicative only.'"
+   }
+  },
+  "arm_cross_section_noncircular_heymsfield1982": {
+   "label": "CT: treating the mid-arm muscle as a circle overstates its area by 10-15%",
+   "status": "measured",
+   "values": {
+    "circle_assumption_area_overestimate_pct": [
+     10,
+     15
+    ],
+    "bone_inclusion_overestimate_pct": [
+     5,
+     10
+    ],
+    "total_overestimate_pct": [
+     20,
+     25
+    ],
+    "derived_equivalent_ellipse_depth_over_breadth": [
+     0.54,
+     0.6
+    ]
+   },
+   "sources": [
+    {
+     "title": "Heymsfield SB et al. Anthropometric measurement of muscle mass: revised equations for calculating bone-free arm muscle area. Am J Clin Nutr 1982;36:680-690 (abstract, Europe PMC)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22Anthropometric%20measurement%20of%20muscle%20mass%3A%20revised%20equations%20for%20calculating%20bone-free%20arm%20muscle%20area%22&resultType=core&format=json&pageSize=2"
+    }
+   ],
+   "notes": "Abstract: \"Two correctible error sources were: a 10 to 15% overestimation caused by assuming a circular midarm muscle compartment and a 5 to 10% overestimation due to inclusion of midarm cross-sectional bone area.\" Reference standard: computerized axial tomography.\n\nThe equivalent ellipse depth/breadth of 0.54-0.60 is my arithmetic: the d/b at which an ellipse with the same perimeter as the circle has 1/1.10-1/1.15 of its area. It assumes the compartment is an ellipse; a non-elliptical shape also lowers area, so this is a bound, not a measurement.\n\nIt concerns the muscle compartment inside the fat, not the skin outline, and the abstract gives neither the sample nor which axis is longer. Only the abstract was fetched.",
+   "topic": "outline",
+   "verify": {
+    "ok": true,
+    "issue": "The abstract is re-fetched and the quote is exact ('10 to 15% overestimation caused by assuming a circular midarm muscle compartment'; '5 to 10%' for bone; 20 to 25% in total; CT reference). The 0.54–0.60 aspect recomputes (0.601 at 1.10, 0.538 at 1.15).\n\nThis is a bound for the muscle compartment inside the fat, not for the skin outline. The recommendations nonetheless fold it into the skin-outline aspect range ('roughly 0.55–0.7'). The only skin-outline evidence is Liu's indirect 0.67–0.69.",
+    "corrected": "In the recommendations, give the skin-outline upper-arm aspect as about 0.65–0.7 (indirect, Liu 2018). Cite Heymsfield only as evidence that the arm is not round."
+   }
+  },
+  "deleva1996_joint_centre_offsets": {
+   "label": "de Leva 1996: joint centres relative to surface bony landmarks (shoulder below acromion, hip above trochanterion, knee above tibiale)",
+   "status": "reported",
+   "values": {
+    "sign": "positive = proximal",
+    "males_mm": {
+     "shoulder_vs_acromion": -34.5,
+     "elbow_vs_radiale": [
+      14.3,
+      16.8
+     ],
+     "wrist_vs_stylion": [
+      -1.5,
+      -2.4
+     ],
+     "hip_vs_trochanterion": 3.2,
+     "knee_vs_tibiale": [
+      33.5,
+      35.0
+     ],
+     "ankle_vs_sphyrion": -12.6
+    },
+    "females_mm": {
+     "shoulder_vs_acromion": -33.7,
+     "hip_vs_trochanterion": 2.8,
+     "knee_vs_tibiale": [
+      29.4,
+      35.0
+     ]
+    },
+    "males_m": {
+     "shoulder_below_acromion": 0.0345,
+     "hip_above_trochanterion": 0.0032,
+     "knee_above_tibiale": [
+      0.0335,
+      0.035
+     ]
+    },
+    "derived_pct_of_segment_males": {
+     "shoulder_pct_of_acromion_radiale_331.8mm": 10.4,
+     "elbow_pct_of_acromion_radiale": 4.3,
+     "hip_pct_of_trochanterion_tibiale_453.3mm": 0.71,
+     "knee_pct_of_trochanterion_tibiale": 7.4,
+     "knee_pct_of_tibiale_sphyrion_393.4mm": 8.9,
+     "ankle_pct_of_tibiale_sphyrion": 3.2
+    }
+   },
+   "sources": [
+    {
+     "title": "de Leva P. Adjustments to Zatsiorsky-Seluyanov's segment inertia parameters. J Biomech 1996;29:1223-1230 (PDF, Table 2)",
+     "url": "https://ebm.ufabc.edu.br/wp-content/uploads/2013/12/Leva-1996.pdf"
+    },
+    {
+     "title": "de Leva P. Joint center longitudinal positions computed from a selected subset of Chandler's data. J Biomech 1996;29:1231-1233 (abstract, Europe PMC)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=AUTH%3A%22de%20Leva%20P%22%20AND%20PUB_YEAR%3A1996&resultType=core&format=json&pageSize=5"
+    }
+   ],
+   "notes": "The PDF's server omits its intermediate TLS certificate. I fetched GlobalSign's own intermediate, checked it against the system roots and appended it to the CA bundle; verification stayed on.\n\nTable 2 is headed \"Estimated longitudinal positions of the main joint centers for the Zatsiorsky et al. subjects (the positive sign indicates the proximal direction)\". Rows include: Shoulder -33.7 (F) / -34.5 (M) relative to Acromion, calculated using acromion-radiale, \"Estimated for subjects holding their arm in the standard anatomical position (adducted)\". Hip 2.8 / 3.2 relative to Trochanterion. Knee 29.4/33.5 relative to Tibiale (via trochanterion-tibiale) and 35.0/35.0 (via tibiale-sphyrion). Elbow 13.9/14.3 and 16.6/16.8 relative to Radiale. Wrist -1.5 and -2.2/-2.4 relative to Stylion. Ankle -12.6 relative to Sphyrion.\n\nText: \"Since the HJC is slightly proximal to the trochanterion\". The offsets come from percentages de Leva computed on six cadavers measured by Chandler et al. 1975 (companion paper abstract), scaled to Zatsiorsky's young adults. No SD is given.\n\nThe offsets are longitudinal, along the segment axis. De Leva assumes joint centres lie on the segment long axes, so no medial-lateral offset is given. The percentages in values are my arithmetic, using de Leva's standard adducted acromion-radiale (331.8 mm, males) and trochanterion-tibiale (520.2 - 66.9 = 453.3 mm).",
+   "topic": "outline",
+   "verify": {
+    "ok": true,
+    "issue": "The PDF was re-fetched. Its server omits the GlobalSign intermediate; I took the intermediate from GlobalSign's AIA URL, ran openssl verify against the system roots (OK) and kept verification on.\n\nTable 2 matches exactly (M/F): shoulder −34.5/−33.7; elbow 14.3/13.9 and 16.8/16.6; wrist −1.5/−1.5 and −2.4/−2.2; hip 3.2/2.8; knee 33.5/29.4 and 35.0/35.0; ankle −12.6. The 'positive = proximal' heading and the adducted-arm footnote are confirmed.\n\nThe inputs for the percentages are confirmed in the text: 331.8 mm adducted acromion-radiale (p.1229), iliospinale-tibiale 520.2 (Table 1), and trochanterion-iliospinale 66.9 (Table 3). The percentages recompute: 10.40, 4.31, 0.71, 7.39, 8.90, 3.20. The companion abstract confirms 'Chandler et al. ... on six cadavers'.",
+    "corrected": ""
+   }
+  },
+  "deleva1996_jc_segment_lengths_male": {
+   "label": "de Leva 1996: segment lengths between joint centres, young men (stature 1.741 m)",
+   "status": "reported",
+   "values": {
+    "stature_m": 1.741,
+    "mass_kg": 73.0,
+    "lengths_m": {
+     "upper_arm_SJC_EJC": 0.2817,
+     "forearm_EJC_WJC": 0.2689,
+     "hand_WJC_MET3": 0.0862,
+     "thigh_HJC_KJC": 0.4222,
+     "shank_KJC_LMAL": 0.434,
+     "foot_heel_toe": 0.2581,
+     "head_vertex_midgonion": 0.2033,
+     "trunk_suprasternale_midhip": 0.5319
+    },
+    "derived_fraction_of_stature": {
+     "upper_arm": 0.162,
+     "forearm": 0.154,
+     "hand_to_MET3": 0.05,
+     "thigh": 0.243,
+     "shank": 0.249,
+     "foot": 0.148,
+     "head_vertex_midgonion": 0.117,
+     "trunk_suprasternale_midhip": 0.306
+    }
+   },
+   "sources": [
+    {
+     "title": "de Leva P. Adjustments to Zatsiorsky-Seluyanov's segment inertia parameters. J Biomech 1996;29:1223-1230 (PDF, Table 4)",
+     "url": "https://ebm.ufabc.edu.br/wp-content/uploads/2013/12/Leva-1996.pdf"
+    }
+   ],
+   "notes": "Table 4 header: \"Adjusted parameters for females (F; body mass = 61.9 kg ...) and males (M; 73.0 kg, 1.741 m)\". Male longitudinal lengths in mm: Head VERT-MIDG 203.3, Trunk SUPR-MIDH 531.9, Upper arm SJC-EJC 281.7, Forearm EJC-WJC 268.9, Hand WJC-MET3 86.2, Thigh HJC-KJC 422.2, Shank KJC-LMAL 434.0, Foot HEEL-TTIP 258.1.\n\nThe fractions of stature are my arithmetic. The subjects were Zatsiorsky's Russian college-age men; some lengths were themselves estimated from other surveys. Useful for placing elbows, knees and the limb lengths between joint centres.",
+   "topic": "outline",
+   "verify": {
+    "ok": true,
+    "issue": "Table 4 is confirmed: 73.0 kg, 1.741 m; male lengths 203.3, 531.9, 281.7, 268.9, 86.2, 422.2, 434.0, 258.1 mm. The fractions recompute (0.117, 0.306, 0.162, 0.154, 0.050, 0.243, 0.249, 0.148).",
+    "corrected": ""
+   }
+  },
+  "ansur2_joint_centre_heights_estimate": {
+   "label": "Joint-centre heights for the ANSUR II template, from de Leva's offsets (shoulder, elbow, wrist, hip, knee)",
+   "status": "estimate",
+   "values": {
+    "n": 4082,
+    "fraction_of_stature_p50": {
+     "shoulder": 0.801,
+     "elbow": 0.638,
+     "wrist": 0.482,
+     "hip": 0.514,
+     "knee": 0.2845
+    },
+    "fraction_p5_p95": {
+     "shoulder": [
+      0.785,
+      0.816
+     ],
+     "elbow": [
+      0.621,
+      0.653
+     ],
+     "wrist": [
+      0.461,
+      0.502
+     ],
+     "hip": [
+      0.491,
+      0.542
+     ],
+     "knee": [
+      0.271,
+      0.299
+     ]
+    },
+    "shoulder_below_acromion_m": {
+     "p50": 0.0348,
+     "p5": 0.0319,
+     "p95": 0.038
+    },
+    "hip_above_trochanterion_m_p50": 0.0031,
+    "knee_above_tibiale_m_p50": 0.0319,
+    "knee_minus_lateral_femoral_epicondyle_m": {
+     "p50": 0.0083,
+     "p5": -0.0062,
+     "p95": 0.0245
+    }
+   },
+   "sources": [
+    {
+     "title": "ANSUR II male CSV (OPEN Design Lab)",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+    },
+    {
+     "title": "de Leva P 1996, J Biomech 29:1223 (Table 2 offsets)",
+     "url": "https://ebm.ufabc.edu.br/wp-content/uploads/2013/12/Leva-1996.pdf"
+    }
+   ],
+   "notes": "Script ansur_outline.py, section 'joint_centre_heights_deLeva_offsets'. Rules applied to each man:\n- Shoulder = acromial height - 0.104 x acromion-radiale.\n- Elbow = acromial height - acromion-radiale + 0.0431 x acromion-radiale. Radiale height is not in ANSUR II, so it is approximated with the arm hanging.\n- Wrist = wrist height - 0.006 x radiale-stylion.\n- Hip = trochanterion + 0.0071 x (trochanterion - tibiale).\n- Knee = tibiale + 0.0739 x (trochanterion - tibiale).\n\nANSUR's acromion (border of the acromial process meeting the mid-shoulder line) is close to de Leva's (\"most lateral point on the lateral margin of the acromial process\"). ANSUR's median acromion-radiale of 335 mm is close to de Leva's 331.8 mm.\n\nThe knee centre lands 8 mm (median) above the ANSUR lateral femoral epicondyle, so epicondyle height is a usable proxy. Shoulder longitudinal offsets are treated as vertical, which holds only with the arm hanging.\n\nThis is an estimate built from a 6-cadaver source applied to 4,082 soldiers.\n\nCorrection (verifier): Set the status to 'estimate'. Add the heavily-muscled landmark caution, and the 'knee pivot point' wording as support for using epicondyle height as the knee centre.",
+   "topic": "outline",
+   "verify": {
+    "ok": false,
+    "issue": "Every number reproduces from the CSV:\n- shoulder 0.8007 [0.785, 0.816]; elbow 0.638 [0.621, 0.653]; wrist 0.4816; hip 0.5138; knee 0.2845 [0.271, 0.299]\n- shoulder below acromion 34.8 mm [31.9, 38.0]\n- hip above trochanterion 3.1 mm; knee above tibiale 31.9 mm\n- knee minus lateral femoral epicondyle 8.3 mm [−6.2, 24.5]\n\nProblems:\n- Mislabelled. The key name and the notes both say 'estimate' (6 cadavers scaled onto 4,082 soldiers), but the status is 'derived'.\n- A caveat is missing. TR-11/017 says tibiale (p.65) and the lateral femoral epicondyle (p.43) are 'difficult or impossible to locate accurately in heavily muscled participants'. Both inputs are therefore least reliable for the builds the chart cares about.\n- Supporting detail worth adding: the handbook itself calls the lateral femoral epicondyle the 'knee pivot point' (p.43).",
+    "corrected": "Set the status to 'estimate'. Add the heavily-muscled landmark caution, and the 'knee pivot point' wording as support for using epicondyle height as the knee centre."
+   },
+   "applied": [
+    "Verifier (outline): Every number reproduces from the CSV:\n- shoulder 0.8007 [0.785, 0.816]; elbow 0.638 [0.621, 0.653]; wrist 0.4816; hip 0.5138; knee 0.2845 [0.271, 0.299]\n- shoulder below acromion 34.8 mm [31.9, 38.0]\n- hip above trochanterion 3.1 mm; knee above tibiale 31.9 mm\n- knee minus lateral femoral epicondyle 8.3 mm [−6.2, 24.5]\n\nProblems:\n- Mislabelled. The key name and the notes both say 'estimate' (6 cad"
+   ]
+  },
+  "hip_joint_centre_vs_greater_trochanter": {
+   "label": "Hip joint centre height is about level with the top of the greater trochanter (within about 1 cm)",
+   "status": "measured",
+   "values": {
+    "hu2022_head_centre_to_GT_tip_along_femoral_axis_m": {
+     "median": 0.00635,
+     "iqr": [
+      0.00433,
+      0.00975
+     ]
+    },
+    "hu2022_n": 33,
+    "hu2022_age_range_y": [
+     75,
+     85
+    ],
+    "hu2022_femoral_offset_m": {
+     "median": 0.0492,
+     "iqr": [
+      0.0465,
+      0.0527
+     ]
+    },
+    "deleva1996_hjc_above_trochanterion_m": 0.0032,
+    "orig_mm": "VD-CFH-TGTAAF non-operative side median 6.35 (IQR 4.33-9.75); FO 49.20 (46.50-52.70)"
+   },
+   "sources": [
+    {
+     "title": "Hu H et al. Intraoperative method of femoral head central measurement to prevent leg length discrepancy following hemiarthroplasty. Front Surg 2022;9:1055199 (full text via Europe PMC)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC9859662/fullTextXML"
+    },
+    {
+     "title": "de Leva P 1996, J Biomech 29:1223 (Table 2: hip +3.2 mm vs trochanterion)",
+     "url": "https://ebm.ufabc.edu.br/wp-content/uploads/2013/12/Leva-1996.pdf"
+    }
+   ],
+   "notes": "Hu 2022, Table 3: \"the median number of VD-CFH-TGTAAF ... on the nonoperative side were 6.35 mm (IQR, 4.33–9.75 mm)\". VD-CFH-TGTAAF is the vertical distance from the centre of the femoral head to the tip of the greater trochanter, along the femoral anatomical axis, on radiographs.\n\nThe paper does not state the direction of this distance. De Leva places the HJC slightly proximal (3.2 mm) to trochanterion.\n\nCaveats: elderly femoral-neck-fracture patients (sex mix not checked), the uninjured side, n = 33. The skin landmark trochanterion is palpated, and the handbook calls it difficult to locate. Treat this as 'level with trochanterion, within about 1 cm'.",
+   "topic": "outline",
+   "verify": {
+    "ok": true,
+    "issue": "Hu 2022 Table 3 is verified: 6.35 mm (IQR 4.33–9.75) and femoral offset 49.20 mm (46.50–52.70), on the non-operative side; the distance is measured along the femoral anatomical axis on radiographs. The direction is not stated, as the researcher says.\n\nThe sex mix the researcher left unchecked is in Table 1: the 33-patient group was 8 men and 25 women, median age 81 (78–82.5), femoral-neck-fracture patients at one Fujian hospital. Applied to young men this is weak evidence. The headline rests mainly on de Leva's 3.2 mm.",
+    "corrected": "Fill in: 'IM-CMFH group 8 men / 25 women, median age 81; radiographic bony trochanter tip, not the skin landmark.' Keep the claim at 'level with trochanterion within about 1 cm', resting mainly on de Leva."
+   }
+  },
+  "inter_hip_joint_centre_distance_estimate": {
+   "label": "Distance between the two hip joint centres: about 0.10 of stature, about half the ANSUR hip breadth",
+   "status": "estimate",
+   "values": {
+    "inter_HJC_m": [
+     0.169,
+     0.188
+    ],
+    "fraction_of_stature": [
+     0.096,
+     0.108
+    ],
+    "fraction_of_ANSUR_hip_breadth_0.344m": [
+     0.49,
+     0.55
+    ],
+    "inputs": {
+     "bispinous_breadth_IA_m": 0.2557,
+     "assumed_leg_length_LL_m": 0.89
+    }
+   },
+   "sources": [
+    {
+     "title": "Hara R et al. 2016, Sci Rep 6:37707 (y equations)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC5121588/fullTextXML"
+    },
+    {
+     "title": "de Leva P 1996, J Biomech 29:1223 (Table 3: bispinous breadth 255.7 mm scaled, from Clauser 1969 cadavers)",
+     "url": "https://ebm.ufabc.edu.br/wp-content/uploads/2013/12/Leva-1996.pdf"
+    }
+   ],
+   "notes": "My arithmetic, not a measured value.\n- Route 1: 2 x (10 + 0.329 x IA), with IA = 255.7 mm, gives 188 mm. IA is the scaled male bispinous breadth in de Leva Table 3, from Clauser et al. 1969's 13 male cadavers, mean age 49. 188 mm is 0.108 of de Leva's 1.741 m stature.\n- Route 2: 2 x (8 + 0.086 x LL), with an assumed LL of 0.89 m (ASIS to medial malleolus for a 1.755 m man; ANSUR II has no iliospinale height), gives 169 mm, or 0.096 of 1.755 m.\n\nBoth estimates are about half of ANSUR median hip breadth (344 mm). Use it only to place the leg pivots for the silhouette and for the 'thighs touch' limit, labelled estimate.",
+   "topic": "outline",
+   "verify": {
+    "ok": true,
+    "issue": "The arithmetic checks: 2 × (10 + 0.329 × 255.7) = 188.3 mm; 2 × (8 + 0.086 × 890) = 169.1 mm; 0.108 and 0.096 of stature; 0.49–0.55 of hip breadth. De Leva Table 3 is confirmed: bispinous breadth 29.40% (N = 1), scaled to 255.7 mm, from Clauser 1969 (13 male cadavers, mean age 49).\n\nCaveat: the IA equation pools children. Hara's age-group IA model, y = 34 + 0.151 IA + 16.714 × age, gives about 179 mm for an adult if the dummy is coded 0/1. That coding is not stated, so it is unverified. 179 mm is still inside the 169–188 mm range. The 'estimate' status is right.",
+    "corrected": "Add a note: 'Hara's IA equation is fitted on pooled children and adults; the adult-intercept variant gives about 179 mm (dummy coding assumed), within the range.'"
+   }
+  },
+  "glenohumeral_centre_estimation_methods": {
+   "label": "Shoulder (glenohumeral) joint centre: published estimation methods and their accuracy",
+   "status": "reported",
+   "values": {
+    "meskers1998": {
+     "n_cadaver_specimens": 36,
+     "regression_RMSE_m": [
+      0.00232,
+      0.00269,
+      0.00304
+     ],
+     "inputs": "5 scapular bony landmarks"
+    },
+    "campbell2009": {
+     "n_subjects": 20,
+     "new_regression_error_m": {
+      "mean": 0.013,
+      "sd": 0.002
+     },
+     "inter_tester_error_m": {
+      "mean": 0.006,
+      "sd": 0.004
+     }
+    },
+    "deleva1996_shoulder_below_acromion_m": 0.0345,
+    "vicon_shoulder_offset_guideline": "(anterior/posterior girth)/2"
+   },
+   "sources": [
+    {
+     "title": "Meskers CG et al. In vivo estimation of the glenohumeral joint rotation center from scapular bony landmarks by linear regression. J Biomech 1998;31:93-96 (abstract, Europe PMC)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE:%22glenohumeral%20joint%20rotation%20center%20from%20scapular%20bony%20landmarks%22&resultType=core&format=json"
+    },
+    {
+     "title": "Campbell AC et al. MRI development and validation of two new predictive methods of glenohumeral joint centre location identification. J Biomech 2009;42:1527-1532 (abstract, Europe PMC)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A19428014%20AND%20SRC%3AMED&resultType=core&format=json&pageSize=1"
+    },
+    {
+     "title": "Vicon FAQ: required subject measurements for Plug-in Gait (shoulder offset)",
+     "url": "https://www.vicon.com/support/faqs/what-are-the-required-subject-measurements-for-plug-in-gait/"
+    },
+    {
+     "title": "Tsai CY et al. 2012, Biomed Eng Online 11:87 (describes Rab 2002 constant-offset method; full text)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC3538571/fullTextXML"
+    },
+    {
+     "title": "Rab G, Petuskey K, Bagley A. A method for determination of upper extremity kinematics. Gait Posture 2002;15:113-119 (abstract, Europe PMC)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:11869904%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Meskers 1998 abstract: regression on 36 cadaver specimens predicted the rotation centre with RMSE 2.32, 2.69 and 3.04 mm. It needs scapular landmarks, which a silhouette lacks.\n\nCampbell 2009 abstract: 20 subjects with MRI. Their new regression gave \"an GHJ location error of 13+/-2 mm\"; six established methods were all worse.\n\nVicon FAQ: shoulder offset is \"The vertical distance from the center of the glenohumeral joint to the marker on the acromion clavicular joint\", and \"Some researchers have used the (anterior/posterior girth)/2\". That is an industry rule of thumb, not data.\n\nTsai 2012 describes Rab 2002 as \"a constant offset method which estimates the rotation center using constant distance ratio relative to acromion marker and the mid-point between lateral and medial epicondyle markers\". The ratio itself was not verified; Rab's full text is paywalled and his abstract does not give it.\n\nThe only usable surface-landmark number fetched is de Leva's 34.5 mm below the acromion (see deleva1996_joint_centre_offsets). Expect errors of about 1-2 cm.",
+   "topic": "outline",
+   "verify": {
+    "ok": true,
+    "issue": "All abstracts are re-fetched and match:\n- Meskers: 36 cadaver scapula and humerus sets; RMSE 2.32, 2.69, 3.04 mm\n- Campbell: 20 subjects; '13+/-2 mm' location error; inter-tester 6 ± 4 mm; better than the six established methods\n- Rab abstract: no ratio\n- Tsai 2012: the constant-offset quote is exact\nThe Vicon FAQ quotes are exact. Its offset is measured to the acromio-clavicular joint marker, not the lateral acromion tip, so it is not directly comparable to de Leva's 34.5 mm. 'Reported' is the right status.",
+    "corrected": ""
+   }
+  },
+  "head_height_fraction_male": {
+   "label": "Head height (crown to chin) as a fraction of stature: about 0.13 to 0.14 (central about 0.133, 7.2 to 7.8 heads); depends on the measuring instrument",
+   "status": "estimate",
+   "values": {
+    "aist_young_men": {
+     "total_head_height_m": 0.2387,
+     "stature_m": 1.714,
+     "head_over_stature": 0.139,
+     "heads_per_stature": 7.18,
+     "head_height_over_tragion_vertex": 1.722,
+     "tragion_vertex_over_stature": 0.0809
+    },
+    "ansur_scaled": {
+     "head_height_m": {
+      "p50": 0.2256,
+      "p5": 0.2084,
+      "p95": 0.2428
+     },
+     "head_over_stature": {
+      "p50": 0.129,
+      "p5": 0.117,
+      "p95": 0.141
+     },
+     "heads_per_stature_p50": 7.77,
+     "chin_height_over_stature_p50": 0.871,
+     "chin_minus_cervicale_m_p50": 0.0129
+    },
+    "ansur_tragion_top_over_stature_p50": 0.0747,
+    "ansur_cervicale_over_stature_p50": 0.864,
+    "orig_mm": "AIST A36 238.7 (SD 8.03, n 217); A33 138.6 (5.98); B1 1714.0 (62.55)"
+   },
+   "sources": [
+    {
+     "title": "AIST Anthropometric Database 1991-92, item A36 total head height",
+     "url": "https://www.airc.aist.go.jp/dhrt/91-92/data/gif/A36.gif"
+    },
+    {
+     "title": "AIST 1991-92 item A33 tragion to vertex height",
+     "url": "https://www.airc.aist.go.jp/dhrt/91-92/data/gif/A33.gif"
+    },
+    {
+     "title": "AIST 1991-92 item B1 stature",
+     "url": "https://www.airc.aist.go.jp/dhrt/91-92/data/gif/B1.gif"
+    },
+    {
+     "title": "ANSUR II male CSV (tragion-top of head, stature, cervicale)",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+    }
+   ],
+   "notes": "ANSUR II has no crown-to-chin measure; only tragion-top of head, 131 mm. AIST A36 definition (translated): distance from the menton/gnathion point to the plane touching the top of the head, perpendicular to the Frankfurt plane. Seated, with a head gauge.\n\nThe ANSUR-scaled value multiplies each soldier's tragion-top by the AIST ratio 238.7/138.6 (script ansur_outline.py, 'head_height_estimate'). That ratio comes from Japanese men, whose tragion-top/stature (0.081) is larger than ANSUR's (0.075). Population and instrument differences both play a part.\n\nRange: about 7.2-7.8 heads per stature (0.13-0.14 of stature). The chin sits about 13 mm above cervicale height in the ANSUR estimate.\n\nCorrection (verifier): Status: 'estimate' for the ANSUR-scaled values; AIST's 0.139 is 'measured', for Japanese men. Report head height as 0.13–0.14 of stature (7.2–7.8 heads), with a central value of about 0.133. Note that the ANSUR scaling depends on instrument: 0.129 with AIST's ratio, 0.133 with Hoshi's caliper-consistent ratio. Do not headline '7.8 heads'.",
+   "topic": "outline",
+   "verify": {
+    "ok": false,
+    "issue": "The AIST images re-read correctly: A36 238.7 (SD 8.03, n 217), from gnathion to the vertex plane, perpendicular to the Frankfurt plane, seated, head gauge plus height gauge; A33 138.6 (5.98); B1 1714.0 (62.55). The arithmetic reproduces: 0.139 and 7.18 heads; ANSUR-scaled 0.1286 [0.117, 0.141]; 7.77 heads; chin 0.871; 12.9 mm above cervicale.\n\nProblems:\n1. Status. The ANSUR-scaled half is a cross-population, cross-instrument estimate, not 'derived' data.\n2. Bias the notes understate. The A33 image shows AIST's tragion-vertex is significantly larger (**) than comparison surveys measured with a rod caliper: Hoshi 132.1 (also Japanese) and USAF 129.7. A gap that large within Japanese samples points to method more than population.\n   - ANSUR's tragion-top is a caliper measurement (131 mm), so dividing by AIST's 138.6 likely biases the ANSUR head height low.\n   - Hoshi's own pair (A36 234.6 / A33 132.1 = 1.776) applied to ANSUR gives 0.133 of stature (7.5 heads), not 0.129 (7.8).",
+    "corrected": "Status: 'estimate' for the ANSUR-scaled values; AIST's 0.139 is 'measured', for Japanese men. Report head height as 0.13–0.14 of stature (7.2–7.8 heads), with a central value of about 0.133. Note that the ANSUR scaling depends on instrument: 0.129 with AIST's ratio, 0.133 with Hoshi's caliper-consistent ratio. Do not headline '7.8 heads'."
+   },
+   "applied": [
+    "Verifier (outline): The AIST images re-read correctly: A36 238.7 (SD 8.03, n 217), from gnathion to the vertex plane, perpendicular to the Frankfurt plane, seated, head gauge plus height gauge; A33 138.6 (5.98); B1 1714.0 (62.55). The arithmetic reproduces: 0.139 and 7.18 heads; ANSUR-scaled 0.1286 [0.117, 0.141]; 7.77 heads; chin 0.871; 12.9 mm above cervicale.\n\nProblems:\n1. Status. The ANSUR-scaled half is a cross-"
+   ]
+  },
+  "hand_foot_head_silhouette_fractions_male": {
+   "label": "Hand, foot and head proportions for silhouettes (fractions of stature)",
+   "status": "derived",
+   "values": {
+    "ANSUR_p50_fraction_of_stature": {
+     "hand_length": 0.11,
+     "palm_length": 0.066,
+     "hand_breadth_metacarpals": 0.05,
+     "foot_length": 0.154,
+     "foot_breadth": 0.058,
+     "heel_breadth": 0.041,
+     "bimalleolar_breadth": 0.043,
+     "lateral_malleolus_height": 0.0415,
+     "wrist_height": 0.4825,
+     "fingertip_height": 0.373,
+     "head_breadth": 0.088,
+     "head_length": 0.114,
+     "bizygomatic_breadth": 0.081,
+     "menton_sellion": 0.07,
+     "span": 1.031
+    },
+    "ANSUR_head_length_over_breadth_p50": 1.297,
+    "AIST_mean_fraction_of_stature": {
+     "hand_thickness_at_MC3": 0.016,
+     "dorsal_arch_height": 0.036,
+     "neck_root_breadth": 0.084,
+     "max_body_breadth_arms_hanging": 0.274
+    },
+    "ANSUR_p50_m": {
+     "hand_length": 0.193,
+     "hand_breadth": 0.088,
+     "foot_length": 0.271,
+     "foot_breadth": 0.102,
+     "head_breadth": 0.154,
+     "head_length": 0.2
+    },
+    "AIST_mean_m": {
+     "hand_thickness": 0.0275,
+     "dorsal_arch_height": 0.0619
+    }
+   },
+   "sources": [
+    {
+     "title": "ANSUR II male CSV (OPEN Design Lab)",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+    },
+    {
+     "title": "AIST 1991-92 item L16 hand thickness",
+     "url": "https://www.airc.aist.go.jp/dhrt/91-92/data/gif/L16.gif"
+    },
+    {
+     "title": "AIST 1991-92 item M6 dorsal arch height",
+     "url": "https://www.airc.aist.go.jp/dhrt/91-92/data/gif/M6.gif"
+    }
+   ],
+   "notes": "ANSUR fractions come from ansur_outline.py. Hand breadth is metacarpale II-V, without the thumb. Fingertip height = wrist height - hand length, as in TR-15/007 D12; arms straight, palms in.\n\nAIST items:\n- L16 hand thickness: maximum thickness at the head of the 3rd metacarpal, 27.5 mm (SD 2.65, n 214).\n- M6 dorsal arch height: floor to the cuneiform point, 61.9 mm (SD 5.43, n 214).\n- D3 maximum body breadth: across the arms at the lateral humeral epicondyle level, arms hanging, 469.9 mm.\nThese are fractions of AIST mean stature (1.714 m), Japanese men.\n\nIn an A-pose with palms facing in, the front view shows the hand's thickness (about 0.016 of stature) and the side view its breadth (about 0.050). The front view of a foot shows breadth and instep height. The side view shows length and the ankle at about 0.04 of stature.",
+   "topic": "outline",
+   "verify": {
+    "ok": true,
+    "issue": "The ANSUR fractions reproduce: hand 0.110 / 0.066 / 0.050; foot 0.154 / 0.058; heel 0.041; bimalleolar 0.0426; bizygomatic 0.081; menton-sellion 0.070; span 1.031; head length/breadth 1.297. The AIST images are verified:\n- L16 27.5 (2.65, n 214), maximum thickness at the 3rd metacarpal head\n- M6 61.9 (5.43, n 214), floor to the cuneiform point\n- D3 469.9 (26.41), maximum body breadth including the arms, at the lateral humeral epicondyle level\n- D1 144.2\nFractions of 1,714 mm: 0.016, 0.036, 0.274, 0.084.",
+    "corrected": ""
+   }
+  },
+  "ellipse_volume_model_accuracy_recheck": {
+   "label": "Published accuracy of elliptical-zone and geometric volume models (re-check of existing keys)",
+   "status": "reported",
+   "values": {
+    "chiu2016": {
+     "n_men": 17,
+     "reference": "3D photonic scanning",
+     "total_volume_relative_TEM_pct": 3,
+     "large_segments_relative_TEM_pct": "<10",
+     "poor_segments": [
+      "neck",
+      "hand",
+      "foot"
+     ]
+    },
+    "williams2013_table1_body_mass_accuracy_pct": {
+     "jensen1978_photo_elliptical_zones": "<2",
+     "yeadon1990": "<2.1",
+     "gittoes2009": "<2.9",
+     "hatze1980": "<0.05 (unit unclear)"
+    },
+    "liu2018_upper_arm_two_view_ellipse_girth_MAPD_pct": 3.19
+   },
+   "sources": [
+    {
+     "title": "Chiu CY et al. Validation of body volume acquisition by using elliptical zone method. Int J Sports Med 2016;37:1117-1123 (abstract, Europe PMC)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A27676147%20AND%20SRC%3AMED&resultType=core&format=json&pageSize=1"
+    },
+    {
+     "title": "Williams G et al. Accuracy of body mass prediction using segmental inertia parameters modelled from photographic images. ISBS Proceedings 2013 (PDF, Table 1)",
+     "url": "https://ojs.ub.uni-konstanz.de/cpa/article/view/5669/5160"
+    },
+    {
+     "title": "Jensen RK 1978, J Biomech 11:349-358 (record only, no abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=AUTH%3A%22Jensen%20RK%22%20AND%20TITLE%3A%22photogrammetric%22%20AND%20PUB_YEAR%3A1978&resultType=core&format=json&pageSize=3"
+    }
+   ],
+   "notes": "This relies on the existing keys ezone_volume_accuracy and inertia_model_mass_accuracy_table; I re-fetched both sources and the numbers hold.\n\nChiu 2016: \"The relative technical error of measurement (TEM) of total body volume estimations was around 3% for E-Zone\". Upper torso, lower torso, thigh, shank, upper arm and lower arm were \"accurately (relative TEM<10%)\"; neck, hand and foot were poor.\n\nWilliams 2013 Table 1 (secondary): \"Jensen (1978) Photo 408 ... <2\", \"Yeadon (1990) Direct 95 ... < 2.1\", \"Gittoes et al. (2009) Photo 95 ... < 2.9\", \"Hatze (1980) Direct 242 ... < 0.05\". The column is \"% accuracy of predicted body mass\".\n\nJensen's original is not accessible. Important: elliptical-zone models are accurate for volume (area integrated along the body), even though a single trunk ellipse from caliper breadths misses the chest girth by about 24% (ansur2_ellipse_vs_girth_male). Volume and girth accuracy are different questions.\n\nCorrection (verifier): Status: 'reported' (Williams secondary table). Keep Chiu as 'measured' (abstract only). Hatze: '<0.05 as printed in a column headed %; suspect'.",
+   "topic": "outline",
+   "verify": {
+    "ok": false,
+    "issue": "Both sources are re-fetched.\n- Chiu 2016 abstract: 17 men, TEM 'around 3%', segments <10%, neck, hand and foot poor. Confirmed.\n- Williams 2013 PDF Table 1: Jensen Photo 408 <2; Hatze Direct 242 <0.05; Yeadon 95 <2.1; Gittoes 95 <2.9; column '% accuracy of predicted body mass'. Confirmed.\n\nStatus problem: the whole fact is labelled 'measured', but the Williams numbers are a secondary summary. The existing key inertia_model_mass_accuracy_table correctly labels them 'reported'. The Hatze unit is not 'unclear': the column header says %. The figure is still suspect, as the existing key notes. Chiu's TEM measures agreement with 3D scanning, not bias.",
+    "corrected": "Status: 'reported' (Williams secondary table). Keep Chiu as 'measured' (abstract only). Hatze: '<0.05 as printed in a column headed %; suspect'."
+   },
+   "applied": [
+    "Verifier (outline): Both sources are re-fetched.\n- Chiu 2016 abstract: 17 men, TEM 'around 3%', segments <10%, neck, hand and foot poor. Confirmed.\n- Williams 2013 PDF Table 1: Jensen Photo 408 <2; Hatze Direct 242 <0.05; Yeadon 95 <2.1; Gittoes 95 <2.9; column '% accuracy of predicted body mass'. Confirmed.\n\nStatus problem: the whole fact is labelled 'measured', but the Williams numbers are a secondary summary. The "
+   ]
+  },
   "duo_skull_heights": {
    "label": "Rex and Ollie: height to the top of the skull, read off duo.jpg at the picture's scale",
    "status": "estimate",
@@ -4864,6 +6157,12 @@
   "lifters_rom_chang1988_and_later",
   "arm_hang_model_ansur_median",
   "hand_to_mouth_reach_geometry",
-  "elbow_flexion_vs_girth_wedge_model"
+  "elbow_flexion_vs_girth_wedge_model",
+  "ansur2_biacromial_vs_bideltoid",
+  "ansur2_ellipse_vs_girth_male",
+  "ansur2_trunk_width_per_girth_male",
+  "ansur2_joint_centre_heights_estimate",
+  "head_height_fraction_male",
+  "ellipse_volume_model_accuracy_recheck"
  ]
 }

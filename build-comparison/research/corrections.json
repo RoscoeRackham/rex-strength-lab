@@ -159,6 +159,49 @@
    "set": {
     "label": "Maximum elbow flexion vs arm girth: a wedge contact model; pure geometry (exponent 1) and a fit to BMI groups (about 1.7) bracket it; neither tested above ordinary girths (estimate)"
    }
+  },
+  {
+   "key": "ansur2_biacromial_vs_bideltoid",
+   "append_notes": "Split the status: definitions 'official'; half-differences and the ratio 'derived'. In the recommendations, describe 47 mm as 'lateral extent of deltoid/arm beyond the acromion tip' and 110 mm as 'half-width from compressed rib cage to outer deltoid'. Neither is a clearance.",
+   "why": "Verifier (outline): The quotes are verified: TR-11/017 6.4.9 on p.85 and 6.4.12 on p.88, and TR-15/007 dims 8 and 11 on pp.59 and 65 (both seated, forearms forward, palms facing). The numbers recompute exactly from the CSV:\n- biacromial p50 415 mm, bideltoid 509 mm\n- (bideltoid - biacromial)/2 = 47 mm [p5 29, p95 67.5]\n- (bideltoid - chest breadth)/2 = 110 mm [93.5, 129]\n- bideltoid / shoulder circumference = 0.432 [",
+   "set": {
+    "status": "derived"
+   }
+  },
+  {
+   "key": "ansur2_ellipse_vs_girth_male",
+   "append_notes": "Replace with: 'The ellipse under-predicts at the chest and buttock in every man, and at the waist in all but one. At the head, 32 men (0.8%) have girth below the ellipse (minimum ratio 0.988). Chest gap: caused by compressing the caliper to the rib cage and by a non-elliptical section whose tape spans hollows; full inspiration works against the gap.' Label the head and buttock explanations 'likely' or 'our interpretation'.",
+   "why": "Verifier (outline): Every number reproduces independently:\n- chest 1.2381 ± 0.0317 (p5/50/95 1.188 / 1.237 / 1.292)\n- waist 1.0544 ± 0.0176\n- buttock 1.0895 ± 0.0194\n- head 1.0291 ± 0.0115\n- share within 5%: 0 / 0.401 / 0.017 / 0.963\n- BMI quintile edges and quintile means\n- chest slope 0.00387 per BMI unit (r² 0.242); waist and buttock r² 0.016 and 0.021\n- d/b medians 0.876 / 0.721 / 0.710 / 1.297; waist mean d/b 0."
+  },
+  {
+   "key": "ansur2_trunk_width_per_girth_male",
+   "append_notes": "Change the trend to '4–9% from the leanest to the heaviest fifth (chest breadth −9%, buttock depth +8%, the others 4–5%)'.\n\nRecommendation: draw the waist at 0.348 × girth and the hip at 0.339 × girth (ANSUR p50; Q1–Q5 band 0.341–0.356 and 0.334–0.347). The chest outline width is not measured. Bracket it between 0.274 (ANSUR, compressed) and 0.325 (AIST D4/F5, light contact, lean Japanese men) and label it 'estimate'.\n\nUse the effective-ellipse breadth only internally, as the axis that makes an ellipse's perimeter match the girth. Never use it as a displayed width.",
+   "why": "Verifier (outline): The values reproduce: p50 breadth/girth 0.274 / 0.348 / 0.339; depth/girth 0.240 / 0.252 / 0.241; effective-ellipse breadth/girth 0.388 / 0.378–0.379 / 0.387; effective/caliper chest 1.414 [1.316, 1.536]. The quintile medians reproduce to rounding (waist Q1 0.3555, chest depth Q4 0.2415).\n\nErrors:\n1. 'Breadth per girth falls and depth per girth rises by about 7–10%' overstates. From the leanest to"
+  },
+  {
+   "key": "ansur2_joint_centre_heights_estimate",
+   "append_notes": "Set the status to 'estimate'. Add the heavily-muscled landmark caution, and the 'knee pivot point' wording as support for using epicondyle height as the knee centre.",
+   "why": "Verifier (outline): Every number reproduces from the CSV:\n- shoulder 0.8007 [0.785, 0.816]; elbow 0.638 [0.621, 0.653]; wrist 0.4816; hip 0.5138; knee 0.2845 [0.271, 0.299]\n- shoulder below acromion 34.8 mm [31.9, 38.0]\n- hip above trochanterion 3.1 mm; knee above tibiale 31.9 mm\n- knee minus lateral femoral epicondyle 8.3 mm [−6.2, 24.5]\n\nProblems:\n- Mislabelled. The key name and the notes both say 'estimate' (6 cad",
+   "set": {
+    "status": "estimate"
+   }
+  },
+  {
+   "key": "head_height_fraction_male",
+   "append_notes": "Status: 'estimate' for the ANSUR-scaled values; AIST's 0.139 is 'measured', for Japanese men. Report head height as 0.13–0.14 of stature (7.2–7.8 heads), with a central value of about 0.133. Note that the ANSUR scaling depends on instrument: 0.129 with AIST's ratio, 0.133 with Hoshi's caliper-consistent ratio. Do not headline '7.8 heads'.",
+   "why": "Verifier (outline): The AIST images re-read correctly: A36 238.7 (SD 8.03, n 217), from gnathion to the vertex plane, perpendicular to the Frankfurt plane, seated, head gauge plus height gauge; A33 138.6 (5.98); B1 1714.0 (62.55). The arithmetic reproduces: 0.139 and 7.18 heads; ANSUR-scaled 0.1286 [0.117, 0.141]; 7.77 heads; chin 0.871; 12.9 mm above cervicale.\n\nProblems:\n1. Status. The ANSUR-scaled half is a cross-",
+   "set": {
+    "status": "estimate",
+    "label": "Head height (crown to chin) as a fraction of stature: about 0.13 to 0.14 (central about 0.133, 7.2 to 7.8 heads); depends on the measuring instrument"
+   }
+  },
+  {
+   "key": "ellipse_volume_model_accuracy_recheck",
+   "append_notes": "Status: 'reported' (Williams secondary table). Keep Chiu as 'measured' (abstract only). Hatze: '<0.05 as printed in a column headed %; suspect'.",
+   "why": "Verifier (outline): Both sources are re-fetched.\n- Chiu 2016 abstract: 17 men, TEM 'around 3%', segments <10%, neck, hand and foot poor. Confirmed.\n- Williams 2013 PDF Table 1: Jensen Photo 408 <2; Hatze Direct 242 <0.05; Yeadon 95 <2.1; Gittoes 95 <2.9; column '% accuracy of predicted body mass'. Confirmed.\n\nStatus problem: the whole fact is labelled 'measured', but the Williams numbers are a secondary summary. The ",
+   "set": {
+    "status": "reported"
+   }
   }
  ]
 }
