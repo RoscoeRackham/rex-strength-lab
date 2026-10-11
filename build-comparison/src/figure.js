@@ -169,9 +169,11 @@
     var legX = opts.legAxis != null ? opts.legAxis : Math.max(hj, hipHalf - d.thighR);
     d.legAxis = legX;
     var fb = d.footB / 2, fo = 0.012 * H;
+    // The trapezius: a convex slope from the side of the neck to the acromion.
+    var trapX = function (t) { var x0 = d.neckR * 1.1; return x0 + t * (Math.max(d.biacromial / 2, x0 + 0.01 * H) - x0); };
     var outer = spline([
-      [d.neckR, y.chin + 0.02 * H], [d.neckR * 1.02, y.chin - 0.01 * H], [d.neckBaseR, y.neckBase + 0.012 * H],
-      [(d.neckBaseR + d.biacromial / 2) / 2 + 0.006 * H, (y.neckBase + y.acromion) / 2 + 0.002 * H],
+      [d.neckR, y.chin + 0.02 * H], [d.neckR, y.chin - 0.004 * H], [d.neckR * 1.1, y.neckBase + 0.016 * H],
+      [trapX(0.3), y.neckBase + 0.005 * H], [trapX(0.65), (y.neckBase + y.acromion) / 2 - 0.001 * H],
       [d.biacromial / 2, y.acromion], [Math.max(sj[0] + d.armR * 0.3, chestHalf * 1.04), y.axilla + 0.012 * H],
       [chestHalf * 1.02, y.axilla - 0.006 * H], [chestHalf, y.chest], [(chestHalf + waistHalf) / 2 + 0.003 * H, (y.chest + y.waist) / 2],
       [waistHalf, y.waist], [(waistHalf + hipHalf) / 2 + 0.003 * H, (y.waist + y.hip) / 2], [hipHalf, y.hip],
@@ -222,10 +224,9 @@
     // posture; ANSUR II gives depths, not where they sit).
     var A = function (depth, fwd) { return [depth * fwd, depth * (1 - fwd)]; }; // [forward, back]
     var stations = [
-      [y.top, A(d.headL * 0.55, 0.55)], [H - headH * 0.35, A(d.headL, 0.56)], [y.chin + headH * 0.1, A(d.headL * 0.85, 0.62)],
-      [y.chin, A(d.neckR * 2, 0.55)], [y.neckBase, A(d.neckBaseR * 2.1, 0.45)],
-      [y.acromion, A(d.chestD * 0.92, 0.5)], [y.chest, A(d.chestD, 0.56)], [y.waist, A(d.waistD, 0.58)],
-      [y.hip, A(d.hipD, 0.4)], [y.crotch, A(d.hipD * 0.85, 0.45)], [y.crotch - 0.05 * H, A(d.thighR * 2 * 1.04, 0.52)],
+      [y.chin + headH * 0.4, A(d.neckR * 1.6, 0.4)], [y.chin, A(d.neckR * 2, 0.5)], [y.neckBase + 0.01 * H, A(d.neckBaseR * 2, 0.45)],
+      [y.acromion, A(d.chestD * 0.9, 0.5)], [y.chest, A(d.chestD, 0.55)], [(y.chest + y.waist) / 2, A((d.chestD + d.waistD) / 2, 0.55)], [y.waist, A(d.waistD, 0.55)],
+      [y.hip, A(d.hipD, 0.42)], [y.crotch, A(d.hipD * 0.85, 0.45)], [y.crotch - 0.05 * H, A(d.thighR * 2 * 1.04, 0.52)],
       [y.lowThigh, A(d.lowThighR * 2, 0.55)], [y.knee, A(d.lowThighR * 1.85, 0.58)], [y.calf, A(d.calfR * 2, 0.42)],
       [y.ankle, A(d.ankleR * 2, 0.5)]
     ];
@@ -243,6 +244,7 @@
       if (p[1] > y.malleolus) return { band: 'calf', mark: mk('calf') };
       return { band: 'foot', mark: 'average' };
     };
+    side.push({ name: 'head', mark: 'average', poly: ellipse(d.headL * 0.08, H - headH * 0.5, d.headL / 2, headH / 2, 36) });
     side.push({ name: 'body', mark: 'own', poly: sidePoly, edges: bandEdges(sidePoly, sideBand) });
     return { H: H, front: front, side: side, dims: d };
   }
@@ -253,10 +255,11 @@
    * or 'side'; skullH: height of the top of the skull in metres. Points are scaled so the skull top
    * sits at skullH, x centred on the body's midline; the side view faces +x.
    */
-  function traced(C, view, skullH, faceRight) {
+  function traced(C, view, skullH) {
     var v = C.views[view];
     var s = skullH / (v.ground_y - v.skull_y);
-    var conv = function (p) { return [(p[0] - v.mid_x) * s * (faceRight === false ? -1 : 1), (v.ground_y - p[1]) * s]; };
+    var flip = v.facing === 'left' ? -1 : 1; // side views are drawn facing right, like the human ones
+    var conv = function (p) { return [(p[0] - v.mid_x) * s * flip, (v.ground_y - p[1]) * s]; };
     var parts = v.body.map(function (p, i) { return { name: 'body ' + (i + 1), mark: 'art', poly: p.map(conv) }; });
     v.tail.forEach(function (p, i) { parts.push({ name: 'tail ' + (i + 1), mark: 'tail', poly: p.map(conv) }); });
     return { H: (v.ground_y - v.top_y) * s, skullH: skullH, front: view === 'front' ? parts : null, side: view === 'side' ? parts : null, parts: parts, mPerPx: s };

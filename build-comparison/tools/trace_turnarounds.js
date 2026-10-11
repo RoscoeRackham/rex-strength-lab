@@ -25,7 +25,7 @@ const READINGS = {
     views: {
       front: { skull: 52, skullRange: [46, 58], tail: [[303, 532], [386, 532], [389, 600], [387, 650], [372, 680], [345, 690], [318, 682], [304, 656], [300, 600]] },
       back: { skull: 52, skullRange: [46, 58], tail: null },
-      side: { skull: 57, skullRange: [53, 61], tail: [[1551, 300], [1940, 300], [1940, 770], [1700, 770], [1650, 690], [1612, 610], [1590, 540], [1578, 470], [1566, 400]] },
+      side: { skull: 57, skullRange: [53, 61], facing: 'left', tail: [[1551, 300], [1940, 300], [1940, 770], [1700, 770], [1650, 690], [1612, 610], [1590, 540], [1578, 470], [1566, 400]] },
     },
   },
   ollie: {
@@ -35,7 +35,7 @@ const READINGS = {
     views: {
       front: { skull: 36, skullRange: [32, 40], tail: null },
       back: { skull: 36, skullRange: [32, 40], tail: [[905, 370], [985, 370], [985, 470], [1050, 470], [1050, 700], [935, 700], [935, 470], [905, 470]] },
-      side: { skull: 36, skullRange: [32, 40], tail: [[1285, 345], [1472, 345], [1470, 372], [1446, 388], [1424, 425], [1412, 470], [1416, 520], [1424, 700], [1285, 700]] },
+      side: { skull: 36, skullRange: [32, 40], facing: 'right', tail: [[1285, 345], [1472, 345], [1470, 372], [1446, 388], [1424, 425], [1412, 470], [1416, 520], [1424, 700], [1285, 700]] },
     },
   },
 };
@@ -94,7 +94,7 @@ function run(overlayDir) {
       C.views[vname] = {
         box: [v.x0, v.y0, v.x1, v.y1], top_y: v.y0, ground_y: v.y1 + 1, skull_y: rd.skull, skull_range_y: rd.skullRange,
         mid_x: Math.round(M.median(cs) * 2) / 2, height_px: v.heightPx, area_px: v.area, tail_area_px: t.tailAreaPx,
-        body: t.body.map((p) => p.points), tail: t.tail.map((p) => p.points), tail_polygon_drawn: rd.tail,
+        facing: rd.facing || null, body: t.body.map((p) => p.points), tail: t.tail.map((p) => p.points), tail_polygon_drawn: rd.tail,
       };
       if (overlay) {
         const tm = rd.tail ? M.polygonMask(rd.tail, img.width, img.height) : null;
