@@ -96,8 +96,9 @@
         bodyFat: bf,
         score: { value: S, lo: lo, hi: hi, status: 'estimate', varies: varies },
         plain: { value: ffmi(ffmAt(W, bf.value), H), lo: ffmi(ffmAt(Wr[0], bf.hi), Math.max(Hr[0], Hr[1])), hi: ffmi(ffmAt(Wr[1], bf.lo), Math.min(Hr[0], Hr[1])) },
-        // 'yes'; 'overstated' (official text says the tissue is denser than ours or partly not
-        // tissue, so the score is too high); 'no' (the body is not tissue: shown, not ranked).
+        // 'yes'; 'overstated' (official text says the tissue is denser than ours, so the score is too
+        // high); 'uncertain' (official text says part of the body is not ordinary tissue but not what
+        // it weighs); 'no' (the body is not tissue: shown, not ranked). Only 'yes' bounds a gap.
         comparable: s.comparable || 'yes', comparableNote: s.comparable_note || null, comparableKeys: s.comparable_keys || [],
         girths: r.girths, calc: r
       };

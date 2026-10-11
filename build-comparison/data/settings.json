@@ -308,10 +308,12 @@
    "fat_class": "comic_lean",
    "ranges": "none",
    "short": "Superman",
-   "comparable_note": "No official DC source says what his mass is made of; claims of denser tissue are fan-wiki only.",
+   "comparable_note": "DK's DC Comics Encyclopedia (2021) gives Kryptonians a “dense molecular structure”, with no figure, so his score may be too high by an amount no source gives.",
    "comparable_keys": [
     "dc_density_claims_fan_only"
-   ]
+   ],
+   "comparable": "overstated",
+   "flag": "Kryptonian tissue said to be denser than ours"
   },
   "batman": {
    "fat_class": "comic_lean",
@@ -328,9 +330,12 @@
    "ranges": "none",
    "short": "Thor",
    "comparable": "overstated",
-   "density_factor": 3,
-   "flag": "Tissue said to be 3 times denser than ours",
-   "comparable_note": "Marvel's official handbook says Asgardian flesh and bone is about three times as dense as human tissue (DK's encyclopedia says their skin and bones). His listed weight is counted as if it were ordinary tissue, so his score is too high. If his whole body were three times as dense, the same body in ordinary tissue would score {adjusted}.",
+   "density_factor": [
+    2,
+    4
+   ],
+   "flag": "Tissue said to be about 3 times denser than ours",
+   "comparable_note": "Marvel's official handbook says Asgardian flesh and bone is “about three times denser than similar human tissue” (DK's encyclopedia says skin and bones), and its 2004 edition gives Thor the attributes of an Asgardian “to a much greater degree”. His listed weight is counted as if it were ordinary tissue, so his score is too high. If his tissue is 2 to 4 times as dense as ours, the same body in ordinary tissue would score {adjusted}.",
    "comparable_keys": [
     "asgardian_tissue_density_ohotmu",
     "asgardian_tissue_density_dk",
@@ -417,7 +422,7 @@
    "fat_class": "comic_brute",
    "ranges": "none",
    "short": "Doomsday",
-   "comparable_note": "No official DC source says what his mass is made of; claims of denser tissue are fan-wiki only.",
+   "comparable_note": "No official DC statement on what his mass is made of was found; claims of denser tissue are fan-wiki only.",
    "comparable_keys": [
     "dc_density_claims_fan_only"
    ]
@@ -426,7 +431,7 @@
    "fat_class": "comic_brute",
    "ranges": "none",
    "short": "Darkseid",
-   "comparable_note": "No official DC source says what his mass is made of; claims of denser tissue are fan-wiki only.",
+   "comparable_note": "No official DC statement on what his mass is made of was found; claims of denser tissue are fan-wiki only.",
    "comparable_keys": [
     "dc_density_claims_fan_only"
    ]
@@ -446,17 +451,17 @@
    "fat": {
     "kind": "value",
     "value": 12,
-    "lo": 8,
+    "lo": 2,
     "hi": 20,
     "status": "estimate",
-    "basis": "Assumed like the other comic brutes (8-20%). Marvel says his bulk is muscle, not fat, and gives no percentage; a fan wiki's 9 lb of fat (2%) cites no source",
+    "basis": "Assumed like the other comic brutes (working 12%, up to 20%), down to 2%: Marvel says his bulk is muscle, not fat, and a fan wiki gives 9 lb of fat (2%), citing the 2004 Daredevil handbook (not verified). Marvel also likens his size to a sumo wrestler's, and sumo wrestlers are not lean",
     "keys": [
      "kingpin_bulk_not_fat",
      "comic_body_fat_official",
      "bodyfat_range_comic_characters"
     ]
    },
-   "comparable_note": "Marvel: “Most of Fisk's bulk is actually muscle, not fat.”",
+   "comparable_note": "Marvel: “Most of Fisk's bulk is actually muscle, not fat; his enormous size is comparable to that of a sumo wrestler.”",
    "comparable_keys": [
     "kingpin_bulk_not_fat"
    ]
@@ -469,10 +474,10 @@
   "thing": {
    "fat_class": "comic_brute",
    "ranges": "none",
-   "comparable": "overstated",
-   "comparable_note": "Marvel describes his skin as a rock-like hide. No source says how much of his weight it is, so his score is too high by an unknown amount.",
+   "comparable": "uncertain",
+   "comparable_note": "Marvel describes his skin as a rock-like hide that is “actually supple”. No official source says what is under it or what it weighs, so whether his listed weight overstates his muscle is unknown.",
    "short": "The Thing",
-   "flag": "Rock-like hide: weight not all muscle",
+   "flag": "Rock-like skin of unstated weight",
    "comparable_keys": [
     "thing_rocky_hide"
    ]
@@ -750,7 +755,7 @@
    "title": "Comic giants",
    "only_group": "Comic characters",
    "verdict": "The heaviest comic characters score {min} to {max}, if their published weights are flesh and bone. {chip:estimate}",
-   "sub": "Their heights and weights are official. Their shapes are not: no publisher gives a girth, so every outline is filled in from a template build, and every edge is dotted. No Marvel or DC source gives any character's body fat; it is assumed, 8 to 20%."
+   "sub": "Their heights and weights are official. Their shapes are not: no publisher gives a girth, so every outline is filled in from a template build, and every edge is dotted. No body-fat figure was found in the Marvel and DC sources searched; it is assumed, 8 to 20%."
   },
   {
    "id": "duo",

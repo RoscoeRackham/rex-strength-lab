@@ -174,6 +174,8 @@ html { scroll-padding-top: 60px; }
 .inside { display: grid; gap: 8px; }
 .inside > p { font-size: 13px; color: var(--ink-2); }
 
+.limitnote { font-size: 14px; color: var(--ink-2); line-height: 1.5; border-left: 3px solid var(--chalk); background: var(--chalk-band); padding: 8px 12px; max-width: 80ch; }
+.limitnote b { color: var(--chalk); font: 600 12px/1.4 var(--font-mono); text-transform: uppercase; letter-spacing: .05em; }
 .rule-end { display: flex; gap: 10px; align-items: center; color: var(--alarm); font: 600 11.5px/1.3 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; padding-block: 16px 4px; }
 .rule-end::before, .rule-end::after { content: ""; flex: 1 1 24px; border-top: 2px solid var(--alarm); }
 
@@ -667,6 +669,8 @@ details.src summary { cursor: pointer; font-weight: 600; }
       s.tag = !prev ? 'Score under ' + sc(s.hi) : 'Score ' + sc(s.lo) + ' to ' + sc(s.hi);
       s.beyond = s.lo >= HUMAN_TOP - 1e-9;
       if (s.st.only_group && s.members.some(function (e) { return e.group !== s.st.only_group; })) s.title = 'Score ' + sc(s.lo) + ' to ' + sc(s.hi);
+      // A limit whose headline falls inside this band (not in a gap) is noted under its figures.
+      s.limits = LIM.filter(function (L) { return L.headline !== false && L.score > s.lo && L.score <= s.hi && !GAPS.some(function (g) { return L.score > g.from && L.score < g.to; }); });
     });
     // The rule where real men end goes after the band that holds the highest real man.
     var host = -1;
@@ -695,7 +699,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
     }
     var sub = '';
     if (item.inside.length) {
-      sub += listWords(item.inside.map(function (e) { return esc(e.short) + ' (' + sc(e.score.value) + ')'; })) + (item.inside.length > 1 ? ' would land here on their listed weights, but their scores are overstated: ' : ' would land here on his listed weight, but his score is overstated: ') +
+      sub += listWords(item.inside.map(function (e) { return esc(e.short) + ' (' + sc(e.score.value) + ')'; })) + (item.inside.length > 1 ? ' would land here on their listed weights, but neither counts as comparable: ' : ' would land here on his listed weight, but does not count as comparable: ') +
         item.inside.map(function (e) { return esc(e.setting.flag ? e.setting.flag.charAt(0).toLowerCase() + e.setting.flag.slice(1) : 'not comparable') + ' (' + esc(e.short) + ')'; }).join('; ') + '. ';
     }
     var heads = item.limits.filter(function (L) { return L.headline !== false; }), bands = item.limits.filter(function (L) { return L.headline === false; });
@@ -802,6 +806,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
     var chips = [], lines = [];
     if (e.comparable === 'no') chips.push(chip('over', 'not comparable'));
     if (e.comparable === 'overstated') chips.push(chip('over', 'may be overstated'));
+    if (e.comparable === 'uncertain') chips.push(chip('over', 'composition unknown'));
     if (beyond(e)) chips.push(chip('beyond', 'beyond human data'));
     if (e.setting.flag) lines.push(['', e.setting.flag]);
     if (isDuo(e)) lines.push(['plain', 'Traced from art' + (e.setting.exclude_mass ? ' · tail not counted' : '')]);
@@ -855,6 +860,11 @@ details.src summary { cursor: pointer; font-weight: 600; }
         var grid = document.createElement('div'); grid.className = 'figs';
         item.members.forEach(function (e) { grid.appendChild(figureCell(e)); });
         sec.appendChild(grid);
+        (item.limits || []).forEach(function (L) {
+          var n = document.createElement('p'); n.className = 'limitnote';
+          n.innerHTML = '<b>Limit · ' + esc(L.short) + ' · about ' + sc(L.score) + '</b> (' + scr(L.range[0], L.range[1]) + ' across six template shapes) ' + chip('estimate') + ' ' + esc(L.label) + ', on the median soldier\'s outline widened at fixed bones. <a href="#limits">How this is worked out</a>';
+          sec.appendChild(n);
+        });
       } else if (item.kind === 'gap') {
         var cp = gapCopy(item);
         item.verdict = cp.verdict; item.sub = cp.sub;
@@ -1039,8 +1049,9 @@ details.src summary { cursor: pointer; font-weight: 600; }
     row('Body fat', '<span class="v">' + pc(bf.value) + '%</span> (' + pc(bf.lo) + '–' + pc(bf.hi) + '%) ' + chip(bf.status === 'estimate' ? 'estimate' : bf.status) +
       '<span class="why">' + (cls ? 'Assumed for this group: ' + esc(cls.label) + '. ' + esc(cls.note) : esc(bf.basis) + '.') + '</span>');
     if (e.comparableNote) {
-      var note = e.comparableNote.replace('{adjusted}', 'about ' + sc(e.score.value / (e.setting.density_factor || 1)));
-      row(e.comparable === 'no' ? 'Not comparable' : e.comparable === 'overstated' ? 'May be overstated' : 'What the mass is', '<span class="why">' + esc(note) + '</span>');
+      var df = e.setting.density_factor, adj = Array.isArray(df) ? 'about ' + sc(e.score.value / df[1]) + ' to ' + sc(e.score.value / df[0]) : df ? 'about ' + sc(e.score.value / df) : '';
+      var note = e.comparableNote.replace('{adjusted}', adj);
+      row({ no: 'Not comparable', overstated: 'May be overstated', uncertain: 'Composition unknown' }[e.comparable] || 'What the mass is', '<span class="why">' + esc(note) + '</span>');
     }
     if (b.drug_status) row('Drug status', '<span class="why">' + esc(b.drug_status) + '</span>');
     var own = [], derivedList = [], tmpl = {};
@@ -1068,6 +1079,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
     if (!duo && (derivedList.length || Object.keys(tmpl).length)) ign.push('Parts with a dotted edge are filled in.');
     if (e.comparable === 'no') ign.push('Not comparable: his weight is not muscle.');
     if (e.comparable === 'overstated') ign.push('May be overstated: his listed weight is counted as ordinary tissue.');
+    if (e.comparable === 'uncertain') ign.push('Composition unknown: his listed weight is counted as ordinary tissue, though no source says what it is.');
     if (beyond(e)) ign.push('Beyond human data: no real man scores this high, so his shape and body fat are extrapolated.');
     if (ign.length) row('What this ignores', '<ul class="ign">' + ign.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>');
     var cites = [];
@@ -1220,10 +1232,10 @@ details.src summary { cursor: pointer; font-weight: 600; }
         if (e.score.lo <= dom.hi) {
           mark = '<span class="bar' + (e.comparable === 'no' ? ' hollow' : '') + '" style="left:' + a.toFixed(2) + '%;width:' + Math.max(0.8, b - a).toFixed(2) + '%;background:' + col + ';border-color:' + col + '"></span>' +
             (e.score.value <= dom.hi ? '<span class="tick" style="left:' + P(e.score.value).toFixed(2) + '%"></span>' : '') +
-            (nc ? '<span class="arr' + (e.comparable === 'overstated' ? ' soft' : '') + '" style="left:' + a.toFixed(2) + '%"></span>' : '');
+            (nc && e.comparable !== 'uncertain' ? '<span class="arr' + (e.comparable === 'overstated' ? ' soft' : '') + '" style="left:' + a.toFixed(2) + '%"></span>' : '');
         }
-        var x = e.comparable === 'no' ? ' <span class="x">' + esc((e.setting.flag || 'not muscle').toLowerCase()) + '</span>' : e.comparable === 'overstated' ? ' <span class="x">may be overstated</span>' : '';
-        return '<div class="fp-row" data-row="' + e.id + '"><button type="button" class="nm" data-open="' + e.id + '" aria-label="' + esc(e.short + ', score ' + scr(e.score.lo, e.score.hi) + ', ' + st + (nc ? ', ' + (e.comparable === 'no' ? 'not comparable' : 'may be overstated') : '')) + '"><span class="sw" style="background:' + col + '"></span>' + esc(e.short) + x + '</button>' +
+        var x = e.comparable === 'no' ? ' <span class="x">' + esc((e.setting.flag || 'not muscle').toLowerCase()) + '</span>' : e.comparable === 'overstated' ? ' <span class="x">may be overstated</span>' : e.comparable === 'uncertain' ? ' <span class="x">composition unknown</span>' : '';
+        return '<div class="fp-row" data-row="' + e.id + '"><button type="button" class="nm" data-open="' + e.id + '" aria-label="' + esc(e.short + ', score ' + scr(e.score.lo, e.score.hi) + ', ' + st + (nc ? ', ' + ({ no: 'not comparable', overstated: 'may be overstated', uncertain: 'composition unknown' }[e.comparable]) : '')) + '"><span class="sw" style="background:' + col + '"></span>' + esc(e.short) + x + '</button>' +
           '<span class="tk">' + mark + off(e.score.lo, e.score.hi) + '</span><span class="vl">' + scr(e.score.lo, e.score.hi).replace(/^about /, '') + (st === 'derived' ? chip('derived') : '') + '</span></div>';
       }
       if (r.kind === 'anchor') {
@@ -1325,7 +1337,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
     }).join('');
     $('natCard').innerHTML = '<h3>Where the natural limit might be</h3><p>No study shows a hard limit. These are the best anchors. Most are normalised FFMI from their studies, which for men near 1.80 m is within a few percent of this page\'s score.</p><ul class="nat">' + nat + '</ul>';
     var cls = C.fat_classes;
-    $('fatCard').innerHTML = '<h3>Body fat, the biggest unknown</h3><p>Only a few builds have a measured body fat. The rest take a range for their group, so every score is a range; the tick is the working value. No Marvel or DC source gives any character\'s body fat.</p>' +
+    $('fatCard').innerHTML = '<h3>Body fat, the biggest unknown</h3><p>Only a few builds have a measured body fat. The rest take a range for their group, so every score is a range; the tick is the working value. No body-fat figure for a comic character was found in the Marvel and DC sources searched.</p>' +
       '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Group</th><th>Range</th><th>Working</th></tr></thead><tbody>' +
       Object.keys(cls).map(function (k) { var c = cls[k]; return '<tr><td>' + esc(c.label) + '</td><td class="n">' + pc(c.range_pct[0]) + '–' + pc(c.range_pct[1]) + '%</td><td class="n">' + pc(c.working_pct) + '%</td></tr>'; }).join('') +
       '</tbody></table></div><p>Soldiers\' body fat is estimated from waist and weight with two equations fitted to soldiers\' DXA scans (the Army\'s official 2023 equation and Taylor 2024\'s): the mean of the two, with a range covering both plus their 3.4-point error. Builds with their own measured value use it, ± 2 to 3 points for the method. Different DXA machines and methods (DXA, skinfolds, underwater weighing) also differ by a point or two.</p>';

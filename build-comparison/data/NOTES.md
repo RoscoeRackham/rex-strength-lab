@@ -18,23 +18,24 @@ The judgement calls behind `settings.json`, the derived files, and what is still
 - **Pre-steroid contest:** 6-16% (working 10), Pope's blind estimates from photographs in Kouri 1995.
 - **Enhanced pros on stage:** 4-8% (working 5). No lab measurement of a top pro on stage exists; the range rests on Withers 1997 (5.0%, 4-compartment, five days out; drug status not stated), an IFBB pro at 5.9% by skinfolds, and the natural values.
 - **Strongmen and lifters:** 12-28% (working 19). Kraemer 2020's elite strongmen measured 18.7 ± 6.2% by DXA; 12% is about mean − 1.1 SD (raised by judgement), 28% covers the sumo and heavy-powerlifter means.
-- **Comic characters:** no publisher gives any body fat (searched DK Marvel 2019, DK DC 2021 and 2019, Marvel.com and the Official Handbook). Assumed: lean heroes 5-12%, brutes 8-20%, Bruce Banner like an everyday man (15-34%). Kingpin is treated as a brute (8-20%), because Marvel says his bulk "is actually muscle, not fat"; the fan-wiki 9 lb (2%) cites nothing.
+- **Comic characters:** no body-fat percentage was found in the sources searched (DK Marvel 2019, DK DC 2021 and 2019, Marvel.com, the Official Handbook Deluxe); the 2004-2010 handbooks were not fully searched. Assumed: lean heroes 5-12%, brutes 8-20%, Bruce Banner like an everyday man (15-34%). Kingpin: 2-20% (working 12): Marvel says his bulk "is actually muscle, not fat" and likens him to a sumo wrestler; a fan wiki gives 9 lb of fat (2%), citing the 2004 Daredevil handbook (not verified).
 - **Rex and Ollie:** 7.5% (5-10%), the owner's canon.
 
 ## Comic characters: what the weight is
 
 From `research/round1/research_comics.json` (official = Marvel's Official Handbook via archive.org full-text search, Marvel.com, DK encyclopedias):
 
-- **Thor:** "Asgardian flesh and bone is about three times denser than similar human tissue" (Handbook); DK says skin and bones. Marked *may be overstated*; the details give the score of the same body in ordinary tissue (about 21). He is not moved on the chart, because only the handbook's round "about three" exists and DK names fewer tissues.
-- **The Thing:** Marvel describes a rock-like hide; nothing gives its mass. *May be overstated* by an unknown amount. (An earlier label, "most of his weight is rock", had no source and was removed.)
+- **Thor:** "Asgardian flesh and bone is about three times denser than similar human tissue" (Handbook); DK says skin and bones; the 2004 handbook gives Thor the Asgardian attributes "to a much greater degree". Marked *may be overstated*; the details give the score of the same body in ordinary tissue for 2 to 4 times the density (about 15 to 31). He is not moved on the chart, because the factor is a round in-universe "about three".
+- **Superman:** DK's DC Comics Encyclopedia (2021) gives Kryptonians a "dense molecular structure", no figure: *may be overstated*, like Luke Cage.
+- **The Thing:** Marvel describes rock-like, "actually supple" skin; nothing says what is under it or what it weighs. *Composition unknown*: kept out of the gaps, but not called overstated, because the direction is unknown. (Earlier labels, "most of his weight is rock" and then "may be overstated", went beyond the sources and were removed after the comics verifier.)
 - **Luke Cage:** "very dense muscle and bone tissue" (DK); no figure. *May be overstated*.
 - **Colossus, armoured:** his whole body becomes "an organic, steel-like substance" (Marvel). *Not comparable*: shown, not ranked, grey-hatched.
 - **Wolverine:** scored at Marvel's official 195 lb without adamantium (the metal adds 105 lb).
 - **Hulks and the Abomination:** the Handbook calls the added mass "bone marrow and (muscle) tissue": comparable, with that note.
 - **Juggernaut:** no source says whether his 900 lb includes his helmet. Note only.
-- **Darkseid, Doomsday, Superman:** no official DC statement on composition; density claims are fan-wiki only.
+- **Darkseid, Doomsday:** no official DC statement on composition was found; density claims are fan-wiki only.
 
-Overstated and not-comparable builds never bound an empty stretch, so the first gap runs from the top comparable score below (Kingpin, about 42) to Darkseid's low end (about 62), with the Thing and Thor shown inside it.
+Overstated, uncertain and not-comparable builds never bound an empty stretch, so the first gap runs from the top comparable score below (Kingpin's high end, about 45, at 2% fat) to Darkseid's low end (about 62), with the Thing and Thor shown inside it.
 
 ## Rex and Ollie
 
@@ -76,3 +77,4 @@ Built by `tools/compute_limits.js` on six template shapes (5th, 50th and 95th pe
 3. **Palette:** Rex and Ollie moved from maroon to plum, comics from navy to a lighter blue, so the duo and the strongmen stay apart for red-green colour-blind readers.
 4. **Stop edges at 25 and 32** are sourced anchors; the alternative is one computed stop from about 13 to 42.
 5. **Thor** is flagged, not moved; the alternative is to plot him at a third of his listed mass.
+6. **The Thing** is "composition unknown" and kept out of the gaps; the alternative is to treat him as comparable (his weight is official), which would close part of the first gap.

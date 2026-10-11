@@ -84,16 +84,16 @@ test('comic editions are not mixed into a range; Wolverine is scored without ada
   near(model.evaluate('wolverine').mass.value, calc.byId.wolverine.girth_basis_weight_kg, 1e-9);
 });
 
-test('armoured Colossus is not comparable; Thor, the Thing and Luke Cage are overstated; none of them fills a gap', () => {
+test('armoured Colossus is not comparable; Thor, Superman and Luke Cage may be overstated; the Thing is uncertain; none bounds a gap', () => {
   const list = model.all();
-  assert.strictEqual(model.evaluate('colossus_armored').comparable, 'no');
-  for (const id of ['thor', 'thing', 'luke_cage']) {
+  const want = { colossus_armored: 'no', thor: 'overstated', superman: 'overstated', luke_cage: 'overstated', thing: 'uncertain' };
+  for (const [id, c] of Object.entries(want)) {
     const e = model.evaluate(id);
-    assert.strictEqual(e.comparable, 'overstated', id);
+    assert.strictEqual(e.comparable, c, id);
     assert.ok(e.comparableNote && e.comparableKeys.length, id + ' says why, with sources');
   }
   const gaps = model.gaps(list, Compare.ballScore(1060, 7.5));
-  for (const g of gaps) for (const id of ['thing', 'thor', 'luke_cage', 'colossus_armored']) assert.ok(g.below !== id && g.above !== id, id + ' bounds a gap');
+  for (const g of gaps) for (const id of Object.keys(want)) assert.ok(g.below !== id && g.above !== id, id + ' bounds a gap');
   assert.ok(gaps.length >= 2, 'expected gaps, got ' + gaps.length);
   const top = gaps[gaps.length - 1];
   assert.strictEqual(top.above, null); assert.strictEqual(top.below, 'ollie');
