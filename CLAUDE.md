@@ -16,8 +16,9 @@ The owner is a professional critic. Factual accuracy and honest labelling come f
 ## Canon
 
 - Rex: 10 ft (3.048 m) tall by the owner's ruling; about 2,700 kg (2,300–3,000 kg), measured from `rex-strength-lab/assets/duo.jpg`.
-- Ollie: as strong, tough and big as Rex. Plush bull-man: horns, nose ring, leather vest, cargo pants, laced boots, no visible claws. Measured at Rex's scale (3.06 m to his horn tips).
-- Both are male, and both are 5–10% body fat (7.5% as the working value), from their definition and occasional vascularity. Rex's tail does not count toward his muscle level, and muscle scores use height to the top of the skull (not Rex's crest or Ollie's horns).
+- Ollie: as strong, tough and big as Rex. Plush bull-man: horns, nose ring, a tufted bull's tail (already in `duo.jpg`), no visible claws. His usual outfit is a leather vest, cargo pants and laced boots; his turnaround shows him in briefs and barefoot for measuring. Measured at Rex's scale (3.06 m to his horn tips).
+- Both are male, and both are 5–10% body fat (7.5% as the working value), from their definition and occasional vascularity. Neither one's tail counts toward his muscle level, and muscle scores use height to the top of the skull (not Rex's crest or Ollie's horns).
+- Turnarounds (A-pose: front, back, side): `build-comparison/assets/rex-turnaround.png` and `ollie-turnaround.png`.
 - Do not invent other canon for either; ask.
 - Art in `rex-strength-lab/assets/` is the owner's. Use it; don't redraw the characters.
 
