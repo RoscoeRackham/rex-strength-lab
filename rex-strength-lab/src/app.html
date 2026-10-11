@@ -165,6 +165,7 @@ table.cases td.on { outline: 2px solid var(--accent); outline-offset: -2px; back
 .viz text { fill: var(--ink-2); font-family: var(--font-mono); font-size: 11px; }
 .viz .axis { stroke: var(--line); stroke-width: 1; }
 .viz .lbl-strong { fill: var(--ink); font-weight: 500; }
+.viz .halo { paint-order: stroke; stroke: var(--surface); stroke-width: 3.5px; stroke-linejoin: round; }
 details.math { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: var(--surface); }
 details.math summary { cursor: pointer; font-weight: 700; }
 details.math .eq { font-family: var(--font-mono); font-size: 0.85rem; color: var(--ink-2); white-space: pre-wrap; overflow-wrap: anywhere; margin-top: 8px; line-height: 1.55; }
@@ -177,6 +178,9 @@ details.math .eq { font-family: var(--font-mono); font-size: 0.85rem; color: var
 .bay-controls .effort-field { flex: 3 1 300px; }
 .bay-controls .effort-slider { flex-basis: 100%; }
 .bay-controls .goal-field, .bay-controls .near-field { flex: 1 1 150px; }
+details.effort-adjust { flex-basis: 100%; }
+details.effort-adjust > summary, details.haz-list > summary { cursor: pointer; font-weight: 600; font-size: 0.9rem; color: var(--ink-2); }
+details.effort-adjust > .bay-controls { margin-top: 10px; }
 .callout { border-left: 3px solid var(--accent); background: var(--accent-wash); padding: 10px 12px; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
 
 /* Sections */
@@ -356,11 +360,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         <div class="field">
           <label for="absorb">Absorbed energy goes to</label>
           <select id="absorb">
-            <option value="ocean">The endless ocean (canon default): no change</option>
-            <option value="gradual">Gradual growth: becomes mass over a chosen time</option>
-            <option value="instant">Instant growth: all at once</option>
-            <option value="runaway">Runaway: instant, and its side effects are absorbed too</option>
+            <option value="ocean">Endless ocean (canon)</option>
+            <option value="gradual">Gradual growth</option>
+            <option value="instant">Instant growth</option>
+            <option value="runaway">Runaway growth</option>
           </select>
+          <span class="hint" id="absorb-hint">Applies to the energy Silent strike, Soft landing and Cool flight take back, and to the Weight tab’s what-if. Endless ocean: it returns to the store they draw on, and nothing changes. Gradual: it becomes mass over a time you set. Instant: all at once. Runaway: instant, and the growth’s own side effects are taken back too.</span>
         </div>
         <div class="field" id="grow-fields">
           <span class="lbl" id="grow-lbl">Growth form</span>
@@ -576,8 +581,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   // Effort presets: the heroic default, the most that stays harmless, the not-so-heroic ones at rising scales
   // (each set by a hazard, solved per move), all-out, and a free slider.
   const EFFORT_PRESETS = [
-    { id: 'least', label: 'Least disruptive (the heroic default)' },
-    { id: 'ceiling', label: 'Courtesy ceiling: as hard as stays harmless' },
+    { id: 'least', label: 'Least disruptive (default)' },
+    { id: 'ceiling', label: 'Courtesy ceiling' },
     { id: 'rattle', label: 'Rattle the windows', loud: true },
     { id: 'plaster', label: 'Crack the plaster next door', loud: true },
     { id: 'windows', label: 'Break windows across the street', loud: true },
@@ -1033,6 +1038,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const gB = P.grownBody(body, E, state.growS);
     const small = gB.lnr < 1e-3;
     items.push('It becomes ' + fmtMass(gB.dm) + ' of new mass (energy ÷ c²)' + (small ? ', less than a thousandth of his mass: unnoticeable.' : ': ' + fmtRatio(gB.ratio) + ' his mass, so he is ' + fmtDist(gB.H) + ' tall at ' + fmtDensity2(gB.rho) + ' (' + growFormText(gB.s) + ').'));
+    if (small) return items;   // nothing else would show
     if (state.absorb === 'gradual') {
       const G = P.gradualGrowth(body, E, state.growS);
       if (G.T > 0) {
@@ -1050,7 +1056,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         items.push('All at once: over ' + fmtTime(I.tau) + ', the time sound takes to cross his new body (our choice of timescale; truly instant would need unlimited energy). He grows from his soles: his sides move out at about ' + speedOnly(I.u) + ' and the top of his head rises at ' + speedOnly(I.uHead) + (I.uHead >= K.a0 ? ' (' + fmtMach(I.uHead) + ')' : '') + '.');
         items.push('The air at his surface jumps by ' + fmtSI(I.dpLo, 'Pa') + ' to ' + fmtSI(I.dpHi, 'Pa') + '. As a blast that is ' + fmtTNT(I.Elo) + ' to ' + fmtTNT(I.Ehi) + (wHi > 0.05 ? ': windows break out to about ' + fmtDist(wLo) + '–' + fmtDist(wHi) + '.' : ', too little to break windows.') + ' Rough: the low end treats him as a ball, the high end as flat pistons.');
         const bolted = state.anchor === 'bolted';
-        items.push('Momentum isn’t absorbed: his middle rises ' + fmtDist(gB.dH / 2) + ' in that time, so the ground has to push him up with ' + fmtSI(I.Fground, 'N') + ' (' + fmtSI(I.groundPressure, 'Pa') + ' under his feet, ' + (I.groundPressure > 1.7e9 ? 'more than any rock can take' : 'within what granite can take') + '). ' + (bolted ? 'Bolted to the planet, he stays put and the Earth takes it.' : 'Nothing then pulls him back down: he is thrown about ' + fmtDist(I.launch) + ' up (no air drag), unless he is bolted to the planet.'));
+        items.push('Momentum isn’t absorbed: his middle rises ' + fmtDist(gB.dH / 2) + ' in that time, so the ground has to push him up with an extra ' + fmtSI(I.Fground - I.grown.m * g, 'N') + ' on top of his new weight (' + fmtSI(I.groundPressure, 'Pa') + ' under his feet in all, ' + (I.groundPressure > 1.7e9 ? 'more than any rock can take' : 'within what granite can take') + '). ' + (bolted ? 'Bolted to the planet, he stays put and the Earth takes it.' : 'Nothing then pulls him back down: he is thrown about ' + fmtDist(I.launch) + ' up (no air drag), unless he is bolted to the planet.'));
       } else items.push('Pure density: he doesn’t get any bigger, so there is no blast. Only his weight changes.');
     }
     if (state.absorb === 'runaway') {
@@ -2141,7 +2147,13 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   const CATCH_D_MAX = Math.PI * K.R_E;
   const catchBall = () => (state.cObj === 'partner' ? null : objById(state.cObj));
   let slowTimer = null;
-  function scheduleBaySlow() { clearTimeout(slowTimer); slowTimer = setTimeout(() => { save(); renderBay(true); }, 180); }
+  // the two-player tabs render more slowly: at most one render every 180 ms during a drag, and one at the end
+  let slowPending = false;
+  function scheduleBaySlow() {
+    if (slowTimer) { slowPending = true; return; }
+    save(); renderBay(true);
+    slowTimer = setTimeout(function done() { slowTimer = null; if (slowPending) { slowPending = false; scheduleBaySlow(); } }, 180);
+  }
   function catchControls(Dmin) {
     const f = el('div', { class: 'field' }, el('label', { for: 'c-obj', text: 'Ball' }));
     const s = el('select', { id: 'c-obj' });
@@ -2854,26 +2866,43 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (e === 'allout') return out;
     if (e === 'custom') { out.use = Math.min(c.F, Math.pow(10, state.effortLogKg) * g); return out; }
     if (e === 'least') {
+      // the gentlest effort that reaches the goal, but never past the courtesy ceiling: nothing is harmed
       const gl = p.goal();
       out.goal = gl;
-      if (gl.reached) out.use = gl.use;
-      else out.note = 'Even all-out he can’t do this: ' + GOALS[move].text(goalTarget(move)).replace(/^(\w+)s /, '$1 ') + '. Showing all-out.';
+      const want = gl.reached ? gl.use : undefined;
+      const M = P.RESTRAINT.MOVES[move], rr = p.run(want);
+      const goalText = GOALS[move].text(goalTarget(move)).replace(/^(\w+)s /, '$1 ');
+      if (!P.RESTRAINT.HAZARDS.some((h) => h.test(M, rr, p.opt))) {
+        out.use = want;
+        if (!gl.reached) { out.note = 'Even all-out he can’t ' + goalText + '. Showing all-out, which harms nothing.'; out.why = 'Everything he has, and still short of the goal.'; }
+        return out;
+      }
+      const ce = p.ceiling();
+      out.ceiling = ce;
+      out.capped = true;
+      out.use = ce.below > 0 ? ce.below : p.lo;
+      out.why = ce.below > 0 ? 'The most he can do with nothing nearby harmed.' : 'The gentlest try he can make.';
+      out.note = (gl.reached ? 'To ' + goalText + ' he would need more, and ' : 'Even all-out he can’t ' + goalText + ', and ') + (ce.below > 0 ? 'past ' + atText(ce.below, c.F) + ' ' : 'even the gentlest try means ') + EFF_HAZ[ce.by].what + '.';
       return out;
     }
     if (e === 'ceiling') {
       const ce = p.ceiling();
       out.ceiling = ce;
-      if (!ce.by) return out;                       // nothing harmful even all-out
+      if (!ce.by) { out.why = 'Nothing this move does harms anyone nearby, so he can go all-out.'; return out; }
       out.use = ce.below > 0 ? ce.below : p.lo;
-      if (!(ce.below > 0)) out.note = 'Nothing here is harmless: even the gentlest try means ' + EFF_HAZ[ce.by].what + '.';
+      if (!(ce.below > 0)) { out.why = 'The gentlest try he can make.'; out.note = 'Nothing here is harmless: even the gentlest try means ' + EFF_HAZ[ce.by].what + '.'; }
       return out;
     }
     const r = p.ensure('preset:' + e);
-    if (r.never) out.note = 'Even all-out, this move doesn’t do that. Showing all-out.';
+    if (r.never) { out.why = 'Everything he has.'; out.note = 'Even all-out, this move doesn’t ' + PRESET_WHAT[e]().replace(/^(\w+?)(e?s) /, (m, a, b) => a + (b === 'es' && !/(sh|ch|ss|x)$/.test(a) ? 'e' : '') + ' ') + '.'; }
     else out.use = r.use;
     return out;
   }
-  const shareText2 = (use, F) => (!isFinite(F) ? (isFinite(use) ? 'a vanishing share of his unlimited strength' : 'all of his unlimited strength') : (use >= F * (1 - 1e-9) ? '100%' : sig(Math.max(100 * use / F, 1e-12), 2) + '%') + ' of his strength');
+  const pctOf = (use, F) => (use >= F * (1 - 1e-9) ? '100%' : sig(Math.max(100 * use / F, 1e-12), 2) + '%');
+  // how hard: a share of his strength and the mass it would lift; at unlimited strength only the mass means anything
+  const atText = (use, F) => (isFinite(F) ? pctOf(use, F) + (isFinite(use) && use < F * (1 - 1e-9) ? ' (lifting ' + fmtMass(use / g) + ')' : '') : isFinite(use) ? 'lifting ' + fmtMass(use / g) : 'unlimited strength');
+  const amountText = (use, F) => (isFinite(F) ? pctOf(use, F) + ' of his strength' + (use < F * (1 - 1e-9) ? ' (as hard as lifting ' + fmtMass(use / g) + ')' : '') : isFinite(use) ? 'as hard as lifting ' + fmtMass(use / g) : 'all of his unlimited strength');
+  let effortAdjOpen = false, hazOpen = false;
   function effortFields(move, c, eff) {
     const p = eff.p;
     const sel = el('select', { id: 'effort' },
@@ -2883,31 +2912,36 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     sel.value = state.effort;
     sel.onchange = (e) => { if (e.target.value === 'custom') state.effortLogKg = Math.log10((eff.use == null ? c.F : eff.use) / g); state.effort = e.target.value; update(); };
     const fields = [el('div', { class: 'field effort-field' }, el('label', { for: 'effort', text: 'Effort' }), sel)];
+    // the goal, the slider and the distance sit in a collapsed box, so the result comes first
+    const adj = el('div', { class: 'bay-controls' });
     const G = GOALS[move];
     if (G.key) {
       const inp = el('input', { id: 'goal', type: 'number', min: '0', step: 'any', value: String(state[G.key]) });
       inp.onchange = (e) => { const v = Number(e.target.value); if (v > 0 && isFinite(v)) state[G.key] = v; update(); };
-      fields.push(el('div', { class: 'field goal-field' }, el('label', { for: 'goal', text: G.label }), el('div', { class: 'inline-num' }, inp)));
+      adj.append(el('div', { class: 'field goal-field' }, el('label', { for: 'goal', text: G.label }), el('div', { class: 'inline-num' }, inp)));
     }
-    const lo = Math.log10(p.lo / g), hi = isFinite(c.F) ? Math.log10(c.F / g) : 34;
-    const cur = eff.use == null ? hi : Math.log10(Math.min(eff.use, isFinite(c.F) ? c.F : 1e34 * g) / g);
-    const sl = el('input', { id: 'effort-use', type: 'range', min: String(lo), max: String(hi), step: '0.01', value: String(Math.min(hi, Math.max(lo, cur))), 'aria-label': 'Effort: the strength he uses, log scale', 'aria-valuetext': eff.use == null ? 'All-out' : 'As hard as lifting ' + fmtMass(eff.use / g) });
-    sl.oninput = (e) => { state.effort = 'custom'; state.effortLogKg = Number(e.target.value); const s2 = $('#effort'); if (s2) s2.value = 'custom'; scheduleBay(); };
-    fields.push(el('div', { class: 'field effort-slider' }, el('label', { for: 'effort-use', text: 'Effort (gentle ↔ all-out)' }), sl));
     const near = el('input', { id: 'near', type: 'number', min: '0.5', max: '1000', step: 'any', value: String(state.near) });
     near.onchange = (e) => { const v = Number(e.target.value); if (v >= 0.5 && v <= 1000) state.near = v; update(); };
-    fields.push(el('div', { class: 'field near-field' }, el('label', { for: 'near', text: 'People and buildings within (m)' }), el('div', { class: 'inline-num' }, near)));
+    adj.append(el('div', { class: 'field near-field' }, el('label', { for: 'near', text: 'People and buildings within (m)' }), el('div', { class: 'inline-num' }, near)));
+    const lo = Math.log10(p.lo / g), hi = isFinite(c.F) ? Math.log10(c.F / g) : 34;
+    const cur = eff.use == null ? hi : Math.log10(Math.min(eff.use, isFinite(c.F) ? c.F : 1e34 * g) / g);
+    const vText = (v) => (v >= hi - 1e-9 && isFinite(c.F) ? 'All-out' : 'As hard as lifting ' + fmtMass(Math.pow(10, v)));
+    const sl = el('input', { id: 'effort-use', type: 'range', min: String(lo), max: String(hi), step: '0.01', value: String(Math.min(hi, Math.max(lo, cur))), 'aria-valuetext': eff.use == null ? 'All-out' : vText(cur) });
+    sl.oninput = (e) => { state.effort = 'custom'; state.effortLogKg = Number(e.target.value); e.target.setAttribute('aria-valuetext', vText(state.effortLogKg)); const s2 = $('#effort'); if (s2) s2.value = 'custom'; scheduleBay(); };
+    adj.append(el('div', { class: 'field effort-slider' }, el('label', { for: 'effort-use', text: 'Effort (gentle ↔ all-out)' }), sl));
+    const det = el('details', { class: 'effort-adjust' }, el('summary', { text: 'Adjust effort: ' + (G.key ? 'goal, ' : '') + 'distance, slider' }), adj);
+    det.open = effortAdjOpen;
+    det.addEventListener('toggle', () => { effortAdjOpen = det.open; });
+    fields.push(det);
     return fields;
   }
   function effortReadout(move, c, eff) {
     const p = eff.p, M = P.RESTRAINT.MOVES[move];
     const box = el('div', { class: 'effort-read' });
     const use = eff.use == null ? c.F : eff.use;
-    const head = el('p', {}, el('b', { text: (eff.use == null ? 'All-out: ' : 'Effort: ') + shareText2(use, c.F) }), isFinite(use) && eff.use != null ? ' (as hard as lifting ' + fmtMass(use / g) + ').' : '.');
-    const why = { least: 'The gentlest push that ' + GOALS[move].text(goalTarget(move)) + '.', ceiling: 'The most he can use before something nearby comes to harm.', allout: 'Everything he has.', custom: 'Set by hand.' }[state.effort]
+    const why = eff.why || { least: 'The gentlest push that ' + GOALS[move].text(goalTarget(move)) + '.', ceiling: 'The most he can use before something nearby comes to harm.', allout: 'Everything he has.', custom: 'Set by hand.' }[state.effort]
       || (PRESET_WHAT[state.effort] ? 'The least effort that ' + PRESET_WHAT[state.effort]() + '.' : '');
-    head.append(' ' + why);
-    box.append(head);
+    box.append(el('p', {}, el('b', { text: eff.use == null ? 'All-out.' : 'Effort: ' + amountText(use, c.F) + '.' }), ' ' + why));
     if (eff.note) box.append(el('p', { class: 'warn-ink', text: eff.note }));
     const r = p.run(eff.use), rc = P.RESTRAINT.reach(move, r, p.opt);
     // the courtesy ceiling, once the hazard searches are done (or now, if the preset needed it)
@@ -2917,29 +2951,33 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       let t;
       if (!ce.by) t = 'Courtesy ceiling: none. Nothing this move does harms anyone within ' + fmtDist(state.near) + (isFinite(c.F) ? ', even all-out.' : ' at any finite strength.');
       else if (!(ce.below > 0)) t = 'Courtesy ceiling: none. Even the gentlest try means ' + EFF_HAZ[ce.by].what + '.';
-      else t = 'Courtesy ceiling: ' + shareText2(ce.below, c.F) + (isFinite(ce.below) ? ' (lifting ' + fmtMass(ce.below / g) + ')' : '') + '. Past that, ' + EFF_HAZ[ce.by].what + (ce.by === 'air' || ce.by === 'plaster' ? ' ' + fmtDist(state.near) + ' ' + (M.where === 'where it lands' ? 'from where it lands' : 'away') : '') + '.';
+      else t = 'Courtesy ceiling: ' + atText(ce.below, c.F) + '. Past that, ' + EFF_HAZ[ce.by].what + (ce.by === 'air' || ce.by === 'plaster' ? ' ' + fmtDist(state.near) + ' ' + (M.where === 'where it lands' ? 'from where it lands' : 'away') : '') + '.';
       box.append(el('p', { text: t }));
       if (ce.by && use > ce.below * (1 + 1e-6)) box.append(status('warn', 'Above the courtesy ceiling'));
       const items = [];
       for (const h of P.RESTRAINT.HAZARDS) {
         const res = p.result('hazard:' + h.id);
         if (res.never) continue;
-        const from = res.onlyUnlimited ? 'only at unlimited strength' : res.atLowest ? 'at any effort' : 'from ' + shareText2(res.use, c.F).replace(' of his strength', '') + (isFinite(res.use) ? ' (lifting ' + fmtMass(res.use / g) + ')' : '');
+        const from = res.onlyUnlimited ? 'only at unlimited strength' : res.atLowest ? 'at any effort' : 'from ' + atText(res.use, c.F);
         let now;
         if (h.id === 'air') now = rc.air > 0.05 ? 'now out to ' + fmtDist(rc.air) + ' ' + (M.where === 'where it lands' ? 'from where it lands' : 'from him') : 'not now';
         else if (h.id === 'plaster') now = rc.plaster > 0.05 ? 'now out to ' + fmtDist(rc.plaster) + (M.where === 'where it lands' ? ' from where it lands' : '') : 'not now';
         else now = rc[h.id] ? 'happens now' : 'not now';
         items.push(el('li', {}, el('b', { text: EFF_HAZ[h.id].name }), ' ' + (h.id === 'air' || h.id === 'plaster' ? 'within ' + fmtDist(state.near) + ' ' : '') + from + '; ' + now + '.'));
       }
-      if (items.length) box.append(el('ul', {}, items));
-      else box.append(el('p', { class: 'muted', text: 'None of the hazards the lab checks (a sonic boom, an air blast loud enough to risk damage, ground shaking that may crack plaster, broken ground, a crushed object) can happen in this move at this strength.' }));
+      const det = el('details', { class: 'haz-list' }, el('summary', { text: items.length ? 'Where each hazard starts (' + items.length + ')' : 'Hazards checked' }),
+        items.length ? el('ul', {}, items) : el('p', { class: 'muted', text: 'None of the hazards the lab checks (a sonic boom, an air blast loud enough to risk damage, ground shaking that may crack plaster, broken ground, a crushed object) can happen in this move at this strength.' }));
+      det.open = hazOpen;
+      det.addEventListener('toggle', () => { hazOpen = det.open; });
+      box.append(det);
     } else box.append(el('p', { class: 'muted', text: 'Working out the courtesy ceiling…' }));
     return box;
   }
   function attachEffort(parts, move, c, eff) {
     let ctl = parts[0] && parts[0].classList && parts[0].classList.contains('bay-controls') ? parts[0] : null;
     if (!ctl) { ctl = el('div', { class: 'bay-controls' }); parts.unshift(ctl); }
-    ctl.prepend(...effortFields(move, c, eff));
+    // the move's own picks first, then the effort
+    ctl.append(...effortFields(move, c, eff));
     // the result first: the readout goes after the verdict and its status chips
     let at = parts.findIndex((x) => x && x.classList && x.classList.contains('verdict'));
     at = at < 0 ? 1 : at + 1;
@@ -2957,32 +2995,38 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   // PPV against distance on log axes, with the thresholds as horizontal lines and the listener marked.
   function ppvChart(curves, dMark, TH0) {
     const THc = TH0 || P.VIB.TH;
-    const w = chartW(), h = w < 480 ? 240 : 280, padL = 70, padR = 14, padT = 14, padB = 36;
-    const d0 = P.VIB.RMIN, d1 = 1000, v0 = 1e-6, v1 = 1;
+    const w = chartW(), h = w < 480 ? 260 : 300, padL = 70, padR = 14, padT = 14, padB = 36;
+    const d0 = P.VIB.RMIN, d1 = 10000, v0 = 1e-6, v1 = 1;
     const sx = (d) => padL + (Math.log10(d) - Math.log10(d0)) / (Math.log10(d1) - Math.log10(d0)) * (w - padL - padR);
     const sy = (v) => h - padB - (Math.log10(Math.min(v1, Math.max(v0, v))) - Math.log10(v0)) / (Math.log10(v1) - Math.log10(v0)) * (h - padT - padB);
     const svg = sv('svg', { viewBox: `0 0 ${w} ${h}`, role: 'img', 'aria-label': 'Ground shaking against distance, with the thresholds' });
-    for (const d of [1, 10, 100, 1000]) { svg.append(sv('line', { x1: sx(d), x2: sx(d), y1: padT, y2: h - padB, class: 'axis' })); svg.append(sv('text', { x: sx(d), y: h - padB + 16, 'text-anchor': 'middle' }, fmtDist(d))); }
+    for (const d of [1, 10, 100, 1000, 10000]) { svg.append(sv('line', { x1: sx(d), x2: sx(d), y1: padT, y2: h - padB, class: 'axis' })); svg.append(sv('text', { x: sx(d), y: h - padB + 16, 'text-anchor': d === 10000 ? 'end' : 'middle' }, fmtDist(d))); }
     for (const v of [1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1]) { svg.append(sv('line', { x1: padL, x2: w - padR, y1: sy(v), y2: sy(v), class: 'axis' })); svg.append(sv('text', { x: padL - 6, y: sy(v) + 4, 'text-anchor': 'end' }, fmtPPV(v))); }
     svg.append(sv('text', { x: w - padR, y: h - 4, 'text-anchor': 'end' }, 'distance from his foot →'));
-    // label each threshold line at the right; nudge labels apart where lines sit close together
-    // labels alternate right and left so close lines stay readable
-    WALK_TH.slice().sort((a, b) => THc[a] - THc[b]).forEach((k, i) => {
-      const v = THc[k], yy = sy(v), right = i % 2 === 0;
-      svg.append(sv('line', { x1: padL, x2: w - padR, y1: yy, y2: yy, stroke: k === 'plasterWalk' || k === 'footing' ? 'var(--bad)' : 'var(--ink-3)', 'stroke-dasharray': '5 4', 'stroke-width': 1.2 }));
-      const short = { shimmer: 'glass ripples', feel: 'felt', rings: 'rings in a glass', rattle: 'rattle', plasterWalk: 'plaster may crack', footing: '1 g: loose things lift' };
-      svg.append(sv('text', { x: right ? w - padR - 2 : padL + 4, y: yy - 4, 'text-anchor': right ? 'end' : 'start', class: 'lbl-strong' }, w < 560 ? short[k] : VIB_LABEL[k].toLowerCase()));
-    });
+    const ths = WALK_TH.slice().sort((a, b) => THc[a] - THc[b]);
+    for (const k of ths) svg.append(sv('line', { x1: padL, x2: w - padR, y1: sy(THc[k]), y2: sy(THc[k]), stroke: k === 'plasterWalk' || k === 'footing' ? 'var(--bad)' : 'var(--ink-3)', 'stroke-dasharray': '5 4', 'stroke-width': 1.2 }));
     curves.forEach((cv, i) => {
       const pts = [];
       for (let lg = Math.log10(d0); lg <= Math.log10(d1) + 1e-9; lg += 0.02) { const d = Math.pow(10, lg), v = cv.f(d); if (v >= v0 && v <= v1) pts.push([sx(d), sy(v)]); }
-      if (pts.length > 1) svg.append(sv('path', { d: pts.map((p, j) => (j ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' '), fill: 'none', stroke: i ? 'var(--olive)' : 'var(--accent)', 'stroke-width': 2.2, 'stroke-dasharray': i ? '7 4' : null }));
+      if (pts.length > 1) svg.append(sv('path', { d: pts.map((p, j) => (j ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' '), fill: 'none', stroke: cv.color || (i ? 'var(--olive)' : 'var(--accent)'), 'stroke-width': cv.thin ? 1.4 : 2.2, 'stroke-dasharray': cv.dash || null }));
+    });
+    // threshold labels in a column at the right, pushed apart so none overlap, each on a halo so lines don't strike them
+    const LH = 13, short = { shimmer: 'glass ripples', feel: 'felt', rings: 'rings in a glass', rattle: 'rattle', plasterWalk: 'plaster may crack', footing: '1 g: loose things lift' };
+    const ys = ths.map((k) => sy(THc[k]) - 3);
+    for (let i = 1; i < ys.length; i++) if (ys[i] > ys[i - 1] - LH) ys[i] = ys[i - 1] - LH;   // higher threshold = smaller y
+    const top = padT + 10;
+    if (ys[ys.length - 1] < top) { const sh = top - ys[ys.length - 1]; for (let i = 0; i < ys.length; i++) ys[i] += sh; for (let i = ys.length - 2; i >= 0; i--) if (ys[i] < ys[i + 1] + LH) ys[i] = ys[i + 1] + LH; }
+    ths.forEach((k, i) => {
+      const yLine = sy(THc[k]), yy = ys[i];
+      if (Math.abs(yy + 3 - yLine) > 4) svg.append(sv('line', { x1: w - padR - 4, x2: w - padR, y1: yy - 4, y2: yLine, stroke: 'var(--ink-3)', 'stroke-width': 1 }));
+      svg.append(sv('text', { x: w - padR - 6, y: yy, 'text-anchor': 'end', class: 'lbl-strong halo' }, w < 560 ? short[k] : VIB_LABEL[k].toLowerCase()));
     });
     if (dMark >= d0 && dMark <= d1) {
-      svg.append(sv('line', { x1: sx(dMark), x2: sx(dMark), y1: padT, y2: h - padB, stroke: 'var(--ink)', 'stroke-width': 1.5 }));
-      svg.append(sv('text', { x: sx(dMark) + 4, y: padT + 10, class: 'lbl-strong' }, 'listener'));
+      const x = sx(dMark), right = x > w - padR - 70;
+      svg.append(sv('line', { x1: x, x2: x, y1: padT, y2: h - padB, stroke: 'var(--ink)', 'stroke-width': 1.5 }));
+      svg.append(sv('text', { x: right ? x - 4 : x + 4, y: h - padB - 6, 'text-anchor': right ? 'end' : 'start', class: 'lbl-strong halo' }, 'listener'));
     }
-    const legend = el('div', { class: 'ladder-legend' }, curves.map((cv, i) => el('span', {}, el('i', { style: 'border-radius:0;height:0;width:16px;background:none;border-top:2px ' + (i ? 'dashed var(--olive)' : 'solid var(--accent)') }), cv.label)));
+    const legend = el('div', { class: 'ladder-legend' }, curves.map((cv, i) => el('span', {}, el('i', { style: 'border-radius:0;height:0;width:16px;background:none;border-top:' + (cv.thin ? '1.5px ' : '2px ') + (cv.dash ? 'dashed ' : 'solid ') + (cv.color || (i ? 'var(--olive)' : 'var(--accent)')) }), cv.label)));
     return el('div', {}, legend, el('div', { class: 'viz' }, svg));
   }
   function printText(fp) {
@@ -3013,7 +3057,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       chipRow('Pace', 'pace', Object.entries(PACE_LABEL), state.pace, (v) => { state.pace = v; }));
     const sl = el('input', { id: 'step-effort', type: 'range', min: '0', max: '1', step: '0.01', value: String(state.stepEffort), 'aria-valuetext': stepWord(state.stepEffort) + ' steps' });
     const slLbl = el('label', { for: 'step-effort', text: 'Effort per step: ' + stepWord(state.stepEffort) });
-    sl.oninput = (e) => { state.stepEffort = Number(e.target.value); slLbl.textContent = 'Effort per step: ' + stepWord(state.stepEffort); scheduleBay(); };
+    sl.oninput = (e) => { state.stepEffort = Number(e.target.value); slLbl.textContent = 'Effort per step: ' + stepWord(state.stepEffort); e.target.setAttribute('aria-valuetext', stepWord(state.stepEffort) + ' steps'); scheduleBay(); };
     ctl.append(el('div', { class: 'field effort-slider' }, slLbl, sl, el('div', { class: 'scale-ends' }, el('span', { text: 'Soft-footed (least disruptive)' }), el('span', { text: 'Heavy, stamping' }))));
     const dIn = el('input', { id: 'walk-d', type: 'number', min: '0.5', max: '10000', step: 'any', value: String(state.walkD) });
     dIn.onchange = (e) => { const v = Number(e.target.value); if (v >= 0.5 && v <= 10000) state.walkD = v; update(); };
@@ -3032,7 +3076,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const sf = c.surface;
     // thresholds for these steps: losing one's footing is capped at 1 g up and down, g / (2 pi f), at the footfall's frequency
     const TH = Object.assign({}, P.VIB.TH, { footing: Math.min(P.VIB.TH.footing, g * st.Tpulse / (2 * Math.PI)) });
-    const reachOf = (k) => Math.max(...pres.map((x) => P.ppvReach(x.pr.step.src, TH[k])));
+    const reachOf = (k) => Math.max(...pres.map((x) => P.ppvReach(x.pr.step.src, TH[k] / (both ? 2 : 1))));   // both: their steps landing together
     const groundTiles = [
       tile('Pace', speedOnly(st.v), sig(st.stepRate, 2) + ' steps a second'),
       tile('Load on each step', sig(st.kLoad, 2) + '× his weight', 'plus a landing pulse of ' + sig(st.Fpulse / st.W, 2) + '× over ' + fmtTime(st.Tpulse)),
@@ -3062,7 +3106,11 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       tile('Ground shaking at ' + fmtDist(D0), fmtPPV(v), 'peak, up and down' + (both ? '; both in step' : '') + ' · estimate, about 3–5× either way'),
       tile('Compared with an elephant', elText, elSub),
       ...groundTiles));
-    out.push(ppvChart(pres.map((x) => ({ label: x.n, f: (d) => x.pr.ppv(d) })), D0, TH));
+    // both walking: the curve the verdict uses (their steps landing together), with each one's own curve thin and dashed
+    const same = both && Math.abs(pres[0].pr.ppv(10) - pres[1].pr.ppv(10)) <= 1e-9 * pres[0].pr.ppv(10);
+    out.push(ppvChart(both ? [{ label: 'Both in step', f: ppvAtD }].concat(same ? [{ label: 'Either one alone (Rex and Ollie are the same here)', f: (d) => pres[0].pr.ppv(d), thin: true, dash: '6 4', color: 'var(--ink-3)' }]
+      : pres.map((x, i) => ({ label: x.n + ' alone', f: (d) => x.pr.ppv(d), thin: true, dash: i ? '2 3' : '6 4', color: i ? 'var(--olive)' : 'var(--ink-3)' })))
+      : pres.map((x) => ({ label: x.n, f: (d) => x.pr.ppv(d) })), D0, TH));
     const items = [];
     for (const k of WALK_TH) {
       const r = reachOf(k);
@@ -3075,7 +3123,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (D0 > P.VIB.RFIT) notes.push('Past 60 m, the furthest the model was checked, it is extended with the fall-off measured for dropped weights (about distance^−1.3). Rough.');
     if (D0 < P.VIB.RMIN) notes.push('The model starts ' + fmtDist(P.VIB.RMIN) + ' from his foot; closer in it shows the value there.');
     notes.push('Rattling has no standard level: about 1 mm/s is our estimate (0.3–3), and construction guidance says dishes and windows can rattle at or below the level people feel. Indoors, floors and walls can make all of these 2–4× stronger than on open ground.');
-    if (both) notes.push('Both walking: when their steps land together the shaking can reach twice either one’s. The distances above are for one of them.');
+    if (both) notes.push('Both walking: when their steps land together the shaking can reach twice either one’s. The verdict, the chart’s main line and the distances above take that worst case.');
     out.push(happens(notes, 6));
     // the canon target, as a result
     const tgt = [];
@@ -3139,8 +3187,11 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       if (state.colMode === 'push') return null;
       const r = P.collide(cA, cB, { source: state.colSrc, gb, bounce: state.colBounce === 'bounce' });
       if (!r || r.blackHole || r.planetScale || r.noCharge) return null;
-      const Q = r.Elocal != null && (r.relativistic || r.outcome === 'boltsLate') ? r.Elocal : r.h && state.colBounce !== 'bounce' ? r.h.Q : 0;
-      return r.v0 >= K.a0 ? 'the charge breaks the sound barrier' : win(Q) ? 'the hit’s air blast risks damage ' + fmtDist(near) + ' away' : null;
+      // the same rule as the Collide tab: a hit slower than sound crossing the damage zone is a loud thump, not a blast
+      const splat = state.colBounce !== 'bounce', F = r.contact ? (splat ? r.contact.soft : r.contact.softEl) : null;
+      const Q = r.Elocal != null && (r.relativistic || r.outcome === 'boltsLate') ? r.Elocal : r.h && splat ? r.h.Q : 0;
+      const thump = isFinite(Q) && Q > 0 && (F ? F.t : 0) * K.a0 > Math.max(P.blastRadius(Q, 6900), 0.5);
+      return r.v0 >= K.a0 ? 'the charge breaks the sound barrier' : !thump && win(Q) ? 'the hit’s air blast risks damage ' + fmtDist(near) + ' away' : null;
     }
     return null;
   }
@@ -3185,28 +3236,41 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   }
   function duoEffortBox(act, eff) {
     const FR = fullF('R');
-    const sel = el('select', { id: 'duo-effort' }, [['least', 'Least disruptive: as hard as they can go with nothing breaking'], ['allout', 'All-out'], ['custom', 'Custom (use the slider)']].map(([v, t]) => el('option', { value: v, text: t })));
+    const sel = el('select', { id: 'duo-effort' }, [['least', 'Least disruptive (default)'], ['allout', 'All-out'], ['custom', 'Custom (use the slider)']].map(([v, t]) => el('option', { value: v, text: t })));
     sel.value = state.duoEffort;
     sel.onchange = (e) => { if (e.target.value === 'custom') state.duoLogKg = Math.log10(Math.min(eff.use, isFinite(FR) ? FR : 1e34 * g) / g); state.duoEffort = e.target.value; update(); };
     const lo = Math.log10(eff.p.lo / g), hi = Math.log10(eff.p.hi / g);
     const cur = isFinite(eff.use) ? Math.log10(eff.use / g) : hi;
-    const sl = el('input', { id: 'duo-effort-use', type: 'range', min: String(lo), max: String(Math.max(hi, lo + 0.01)), step: '0.01', value: String(Math.min(hi, Math.max(lo, cur))), 'aria-label': 'Their effort: the strength each uses, log scale' });
-    sl.oninput = (e) => { state.duoEffort = 'custom'; state.duoLogKg = Number(e.target.value); const s2 = $('#duo-effort'); if (s2) s2.value = 'custom'; scheduleBaySlow(); };
+    const vText = (v) => (v >= hi - 1e-9 && isFinite(eff.p.hi) && hi >= Math.log10(FR / g) - 1e-9 ? 'All-out' : 'Each as hard as lifting ' + fmtMass(Math.pow(10, v)));
+    const sl = el('input', { id: 'duo-effort-use', type: 'range', min: String(lo), max: String(Math.max(hi, lo + 0.01)), step: '0.01', value: String(Math.min(hi, Math.max(lo, cur))), 'aria-valuetext': isFinite(eff.use) ? vText(cur) : 'All-out' });
+    sl.oninput = (e) => { state.duoEffort = 'custom'; state.duoLogKg = Number(e.target.value); e.target.setAttribute('aria-valuetext', vText(state.duoLogKg)); const s2 = $('#duo-effort'); if (s2) s2.value = 'custom'; scheduleBaySlow(); };
     const own = el('label', { class: 'check', style: 'margin-top:0' }, el('input', { type: 'checkbox', id: 'o-effort-own', checked: state.oEffortOwn ? true : null, onchange: (e) => { state.oEffortOwn = e.target.checked; if (state.oEffortOwn) state.oEffortLogKg = cur; update(); } }), el('span', { text: 'What-if: Ollie sets his own effort' }));
-    const fields = [el('div', { class: 'field effort-field' }, el('label', { for: 'duo-effort', text: 'Effort (one for both)' }), sel), el('div', { class: 'field effort-slider' }, el('label', { for: 'duo-effort-use', text: 'Effort (gentle ↔ all-out)' }), sl), el('div', { class: 'field near-field' }, own)];
+    const adj = el('div', { class: 'bay-controls' }, el('div', { class: 'field effort-slider' }, el('label', { for: 'duo-effort-use', text: 'Effort (gentle ↔ all-out)' }), sl), el('div', { class: 'field near-field' }, own));
+    const det = el('details', { class: 'effort-adjust' }, el('summary', { text: 'Adjust effort: slider, Ollie’s own' }), adj);
+    det.open = effortAdjOpen || state.oEffortOwn;
+    det.addEventListener('toggle', () => { effortAdjOpen = det.open; });
+    const fields = [el('div', { class: 'field effort-field' }, el('label', { for: 'duo-effort', text: 'Effort (one for both)' }), sel), det];
     if (state.oEffortOwn) {
-      const so = el('input', { id: 'o-effort-use', type: 'range', min: String(lo), max: String(Math.max(hi, lo + 0.01)), step: '0.01', value: String(Math.min(hi, Math.max(lo, state.oEffortLogKg))), 'aria-label': 'Ollie’s own effort, log scale' });
-      so.oninput = (e) => { state.oEffortLogKg = Number(e.target.value); scheduleBaySlow(); };
-      fields.push(el('div', { class: 'field effort-slider' }, el('label', { for: 'o-effort-use', text: 'Ollie’s effort (what-if)' }), so));
+      const oText = (v) => 'Ollie as hard as lifting ' + fmtMass(Math.pow(10, v));
+      const so = el('input', { id: 'o-effort-use', type: 'range', min: String(lo), max: String(Math.max(hi, lo + 0.01)), step: '0.01', value: String(Math.min(hi, Math.max(lo, state.oEffortLogKg))), 'aria-valuetext': oText(state.oEffortLogKg) });
+      so.oninput = (e) => { state.oEffortLogKg = Number(e.target.value); e.target.setAttribute('aria-valuetext', oText(state.oEffortLogKg)); scheduleBaySlow(); };
+      adj.append(el('div', { class: 'field effort-slider' }, el('label', { for: 'o-effort-use', text: 'Ollie’s effort (what-if)' }), so));
     }
     const read = el('div', { class: 'effort-read' });
-    const head = el('p', {}, el('b', { text: (isFinite(eff.use) && eff.use < FR * (1 - 1e-9) ? 'Effort: ' + shareText2(eff.use, FR) : 'All-out') }), isFinite(eff.use) && eff.use < FR ? ' (each pushes as hard as lifting ' + fmtMass(eff.use / g) + (state.oEffortOwn ? '; Ollie his own ' + fmtMass(Math.pow(10, state.oEffortLogKg)) : '') + ').' : '.');
-    head.append(' ' + ({ least: 'The hardest both can go while nothing around them breaks.', allout: 'Everything they have.', custom: 'Set by hand.' }[state.duoEffort]));
+    const capped = isFinite(eff.use) && eff.use < FR * (1 - 1e-9);
+    const oKg = Math.pow(10, state.oEffortLogKg);
+    const each = state.oEffortOwn ? ' (Rex as hard as lifting ' + fmtMass(eff.use / g) + ', Ollie ' + fmtMass(oKg) + ')' : ' (each as hard as lifting ' + fmtMass(eff.use / g) + ')';
+    const noCap = state.duoEffort === 'least' && eff.p.s && eff.p.s.never;
+    const head = el('p', {}, el('b', { text: noCap ? 'All-out: no cap needed.' : capped ? 'Effort: ' + (isFinite(FR) ? pctOf(eff.use, FR) + ' of his strength' : 'as hard as lifting ' + fmtMass(eff.use / g)) + '.' : 'All-out.' }),
+      capped && (isFinite(FR) || state.oEffortOwn) ? each + '.' : '');
+    head.append(' ' + (noCap ? 'Nothing in this test can harm anything nearby, so they go all-out.' : { least: 'The hardest both can go while nothing around them breaks.', allout: 'Everything they have.', custom: 'Set by hand.' }[state.duoEffort]));
     read.append(head);
     if (eff.note) read.append(el('p', { class: 'warn-ink', text: eff.note }));
     if (eff.p.s && eff.p.done) {
       const s0 = eff.p.s;
-      read.append(el('p', { text: s0.never ? 'Courtesy ceiling: none. Nothing in this test harms anything nearby' + (isFinite(eff.p.hi) ? ', even all-out.' : '.') : 'Courtesy ceiling: ' + shareText2(s0.below, FR) + '. Past that, ' + eff.p.harmAt(s0.use) + '.' }));
+      read.append(el('p', { text: s0.never ? 'Courtesy ceiling: none. Nothing in this test harms anything nearby' + (isFinite(eff.p.hi) ? ', even all-out.' : '.')
+        : !(s0.below > 0) ? 'Courtesy ceiling: none. Even at the least they need to stand, ' + eff.p.harmAt(s0.use) + '.'
+          : 'Courtesy ceiling: ' + atText(s0.below, FR) + '. Past that, ' + eff.p.harmAt(s0.use) + '.' }));
     }
     if (eff.harm) read.append(status('warn', 'At this effort ' + eff.harm));
     return { fields, read };
@@ -3246,14 +3310,19 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         const box = duoEffortBox(act, duoEff);
         let ctl = parts[0] && parts[0].classList && parts[0].classList.contains('bay-controls') ? parts[0] : null;
         if (!ctl) { ctl = el('div', { class: 'bay-controls' }); parts.unshift(ctl); }
-        ctl.prepend(...box.fields);
-        parts.splice(1, 0, box.read);
+        ctl.append(...box.fields);
+        // the result first: the readout goes after the verdict and its status chips, as on the solo tabs
+        let at = parts.findIndex((x) => x && x.classList && x.classList.contains('verdict'));
+        at = at < 0 ? 1 : at + 1;
+        if (parts[at] && parts[at].classList && parts[at].classList.contains('status-row')) at++;
+        parts.splice(at, 0, box.read);
       }
       if (gate && !gate.stop) parts.splice(parts[0] && parts[0].classList && parts[0].classList.contains('bay-controls') ? (eff ? 2 : 1) : 0, 0, callout(gate.text));
     }
     catch (e) { parts = [callout('Calculation failed: ' + e.message)]; console.error(e); }
     // Keep the live controls in place during a slider drag; replacing them ends the drag.
-    const old = keepControls ? bay.querySelector(':scope > .bay-controls') : null;
+    // (only while a control in the bay has focus: a change from outside, like the strength dial, rebuilds them)
+    const old = keepControls && bay.contains(document.activeElement) ? bay.querySelector(':scope > .bay-controls') : null;
     if (old && parts[0] && parts[0].classList && parts[0].classList.contains('bay-controls')) {
       while (old.nextSibling) old.nextSibling.remove();
       old.after(...parts.slice(1));
@@ -3266,7 +3335,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     liveTimer = setTimeout(() => { $('#bay-live').textContent = vd ? vd.textContent : ''; }, 600);
   }
   let bayTimer = null;
-  function scheduleBay() { clearTimeout(bayTimer); bayTimer = setTimeout(() => { save(); renderBay(true); }, 30); }
+  // one render per animation frame while a slider moves, so the result follows the thumb
+  function scheduleBay() { if (bayTimer) return; bayTimer = requestAnimationFrame(() => { bayTimer = null; save(); renderBay(true); }); }
 
   // ---------------------------------------------------------------- ladder
   const LMIN = 1, LMAX = 34;
