@@ -2,7 +2,7 @@
 
 A readable record of one stretch of the collaborator's local Claude Code session (Windows, VS Code), for the owner and anyone else who couldn't see it. It covers 16 prompts, from the duo-mass correction to a cleanup pass. Each prompt is quoted verbatim, then summarised: what it did, what it settled, and what questions it raised.
 
-Nothing here is merged yet. The work sits on three stacked branches: `terantic/duo-mass` (pull request open), then `terantic/grip`, then `terantic/presence-brief`.
+The mass correction (`terantic/duo-mass`) was merged as pull request #8. The rest (`terantic/grip` and `terantic/presence-brief`) goes up as one pull request.
 
 ## At a glance
 

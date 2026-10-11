@@ -27,5 +27,20 @@ for (const lg of [1, 2, 2.708, 3, 4, 6, 9, 12, 15, 18, 21, 24, 27, 30, 34, Infin
     n++;
   }
 }
+// The page's default 10 ft Rex and Ollie (their own builds and canon mass), not just the calibration body.
+for (const build of ['rex', 'ollie']) {
+  const body = P.makeBody(Object.assign({ build }, P.DEFAULT_BODIES[build]));
+  for (const lg of [2, 3, 3.5, 4, 6, 9, 12, 18, 24, 30, 34, Infinity]) for (const mode of ['comic', 'real']) for (const surface of D.surfaces) for (const anchor of ['friction', 'braced', 'bolted']) for (const groundHolds of [false, true]) {
+    const ctx = { F: isFinite(lg) ? Math.pow(10, lg) * g : Infinity, mode, body, surface, groundHolds, anchor };
+    const L = `${build} lg=${lg} ${mode} ${surface.id} ${anchor} holds=${groundHolds}`;
+    for (const o of D.objects) {
+      scan(L + ' lift ' + o.id, P.lift(ctx, o));
+      if (!o.noPull) scan(L + ' pull ' + o.id, P.pull(ctx, o));
+      if (!o.noThrow && anchor !== 'braced' && surface.id === 'concrete') for (const a of [0, 45, 90]) scan(L + ' throw ' + o.id + ' ' + a, P.throwObject(ctx, o, a));
+    }
+    scan(L + ' jump', P.jump(ctx)); scan(L + ' stomp', P.stomp(ctx)); scan(L + ' punch', P.punch(ctx)); scan(L + ' clap', P.clap(ctx)); scan(L + ' sprint', P.sprint(ctx));
+    n++;
+  }
+}
 console.log('contexts', n, 'ms', Date.now() - t0, 'problems', bad.length);
 console.log(bad.slice(0, 40).join('\n'));

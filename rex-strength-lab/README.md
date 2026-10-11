@@ -46,7 +46,7 @@ On macOS and Linux the Python command may be `python3`. On Windows, set `PYTHONU
 ```
 node test/shots.js         # writes dist/preview.html; Chromium screenshots at 1280 px light and 390 px dark, checks overflow and console errors (needs Playwright, about 17 s)
 node test/calibration.js   # calibration, physics invariants and the regressions from each review round (about 80 s; ends "all checks passed")
-node test/sweep.js         # every solo move across 5,184 setting combinations; flags NaN and negative outputs (about 5 min)
+node test/sweep.js         # every solo move across 7,776 setting combinations (the calibration body and the default 10 ft Rex and Ollie); flags NaN and negative outputs (about 5 min)
 ```
 
 The usual run is `python build-data.py && node build.js && node test/shots.js && node test/calibration.js`, about 100 s in all.
