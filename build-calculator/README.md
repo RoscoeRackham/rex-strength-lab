@@ -30,7 +30,7 @@ node test/shots.js     # headless Chromium at 390 and 1280 px, light and dark (n
 
 ## Files
 
-- `data/builds.json`: builds, 139 sourced facts, and the log of the 92 fact-check corrections applied. `data/NOTES.md` explains the judgement calls and gaps.
+- `data/builds.json`: builds, 140 sourced facts, and the log of the 93 corrections applied. `data/NOTES.md` explains the judgement calls and gaps.
 - `data/ansur2/`: the ANSUR II public CSVs (US Army, public domain), used by the tests.
 - `src/calc.js`: the model (node and browser). `src/app.html`: the page.
 - `tools/derive_frustum.js`: derives the volume-model ratios from the ANSUR II CSVs.

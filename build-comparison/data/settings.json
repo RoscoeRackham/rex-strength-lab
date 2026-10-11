@@ -101,7 +101,7 @@
     "bodyfat_range_comic_characters",
     "ansur2_men_bodyfat_from_army_equation"
    ],
-   "note": "No publisher gives body fat. Assumed: the range of measured US soldiers."
+   "note": "No publisher gives body fat. Assumed: the range estimated for US soldiers from waist and weight."
   },
   "duo": {
    "label": "Rex and Ollie (owner's canon)",
@@ -198,7 +198,7 @@
      "kouri1995_fulltext_methods"
     ]
    },
-   "short": "Kouri's drug-free lifters"
+   "short": "Kouri's non-users"
   },
   "chappell2019_natural_pro": {
    "fat_class": "stage",
@@ -510,8 +510,8 @@
    "exclude_mass": [
     {
      "name": "tail",
-     "mass_kg": 307,
-     "basis": "Picture measurement: tail 0.289 m^3 at 1,060 kg/m^3 (visible part plus the hidden base)"
+     "mass_kg": 306,
+     "basis": "Picture measurement: tail 0.289 m^3 at 1,060 kg/m^3 (visible part plus the hidden base): 306 kg"
     }
    ],
    "mass_note": "His 2,700 kg was measured over his tank top and cargo pants; Step 2 measures him from his turnaround.",
@@ -546,7 +546,7 @@
   "natural": [
    {
     "id": "kouri",
-    "label": "Kouri 1995: highest of 74 drug-free lifters (height-normalised FFMI)",
+    "label": "Kouri 1995: 74 non-users, all under 25 (height-normalised FFMI)",
     "short": "Kouri 25",
     "value": 25.0,
     "kind": "sample maximum",
@@ -556,16 +556,16 @@
      "kouri1995_fig2_distribution",
      "kouri1995_ffmi_natural_limit"
     ],
-    "text": "All 74 men who said they had never used steroids, and whose urine tests agreed, scored under 25 on FFMI normalised to 1.80 m. That equals this page's score only for a 1.80 m man: on this score one of them, a 1.59 m man, sits near 27 (derived from the paper's figures). Nine sat between 24 and 25. It is the top of one sample, not a ceiling: 46 of the 83 steroid users in the same study also scored under 25."
+    "text": "All 74 men who said they had never used steroids, and whose urine tests agreed (56 gym athletes and 18 volunteers from a testosterone trial), scored under 25 on FFMI normalised to 1.80 m; nine sat between 24 and 25. That equals this page's score only for a 1.80 m man: on this score one of them, a 1.59 m man, sits near 27 (derived from the paper's figures). It is the top of one sample, not a ceiling: 46 of the 83 steroid users in the same study also scored under 25."
    },
    {
     "id": "tail",
-    "label": "College athletes, top 2.5% (DXA)",
+    "label": "College athletes, top 2.5% (DXA; their height-normalised FFMI)",
     "short": "athletes 28",
     "value": 28.1,
     "range": [
-     28.0,
-     28.7
+     28.1,
+     29.1
     ],
     "kind": "measured upper tail",
     "status": "measured",
@@ -573,7 +573,7 @@
      "trexler2017_ffmi_fulltext_check",
      "currier2019_ffmi_check"
     ],
-    "text": "Among 235 US college footballers the 97.5th percentile was 28.1 and the top man 31.7 (Trexler 2017); across 209 athletes of ten sports the 97.5th percentile was 28.3, rugby 29.1 (Currier 2019). The NCAA tests at random, but these studies did no testing of their own, and many of these men carry 15-20% fat."
+    "text": "Among 235 US college footballers the 97.5th percentile was 28.1 and the top man 31.7, and 62 of them (26%) were above 25 (Trexler 2017); across 209 athletes of ten sports the 97.5th percentile was 28.3, rugby 29.1 (Currier 2019). Both use height-normalised FFMI, within a few percent of this page's score for men near 1.80 m. The NCAA tests at random; Trexler's study did no testing of its own, and Currier's abstract does not say. Many of these men carry 15-20% fat."
    },
    {
     "id": "mr_america",
@@ -590,7 +590,7 @@
      "kouri1995_mr_america_table2",
      "todd2008_mr_america_reanalysis"
     ],
-    "text": "Kouri's blind estimates from photographs of the 1939-1959 winners average 25.4 (25.8 on this scale with their heights), top 28.0 (29.2). A later re-estimate of the same men from their heights and weights gives a mean of 26.4 and a top of 32.0, but that top rests on a 221 lb weight for John Grimek that the 1956 contest programme gives as 195 lb (about 28). Only the guessed body fat and that weight differ."
+    "text": "Kouri's blind estimates from photographs of the 1939-1959 winners average 25.4 (25.8 on this scale with Todd's heights), top 28.0 (29.2). A later re-estimate by Todd from her own height and weight records gives a mean of 26.4 and a top of 32.0, but that top rests on a 221 lb weight for John Grimek that the 1956 contest programme gives as 195 lb (about 28). The two used different height and weight records (Kouri: Willoughby 1970) and different fat guesses."
    },
    {
     "id": "butt",
@@ -610,15 +610,15 @@
    },
    {
     "id": "sumo",
-    "label": "Largest fat-free mass measured: a sumo wrestler",
+    "label": "Kondo 1994's largest sumo wrestler: 121 kg of fat-free mass",
     "short": "sumo",
     "value": 33.9,
-    "kind": "measured extreme",
-    "status": "measured",
+    "kind": "measured individual, converted to this score",
+    "status": "derived",
     "keys": [
      "kondo1994_sumo_ffm_upper_limit"
     ],
-    "text": "121.3 kg of fat-free mass at 1.86 m and 33% fat (Kondo 1994, underwater weighing): plain FFMI 35.1, 33.9 on this scale. Drug status was not reported, and at 33% fat some of that fat-free mass is the extra water and tissue that carry fat."
+    "text": "121.3 kg of fat-free mass at 1.86 m and 33% fat (Kondo 1994, underwater weighing): plain FFMI 35.1, 33.9 on this scale. The largest in a study of the upper limit of fat-free mass; strongmen on this chart carry as much (Kraemer's group mean is about 123 kg). Drug status was not reported, and at 33% fat some of that fat-free mass is the extra water and tissue that carry fat."
    }
   ],
   "enhanced": [
@@ -694,7 +694,7 @@
     "label": "Thighs touch all the way to the knee",
     "short": "thighs touch",
     "tiny": "thighs",
-    "definition": "Standing with straight legs under the hip joints, the inner thighs meet from the crotch down to the top of the kneecap. The median soldier has about 4 cm of daylight there. From here every step must be at least hip-joint width, about twice an ordinary step."
+    "definition": "Standing with straight legs under the hip joints, the inner thighs meet from the crotch down to the top of the kneecap. The median soldier has about 4 cm of daylight there. From here the feet must stay at least hip-joint width apart (about 17 cm), about twice an ordinary step width (8 cm)."
    }
   },
   "face": {
@@ -723,7 +723,7 @@
    "No study gives these limits. Each threshold is an estimate built from sourced pieces: what stops a joint (soft tissue meeting soft tissue), how far ordinary men can move, and how far daily tasks need. The sources are listed under “Where the body stops working” below.",
    "This is flat, front-view geometry on drawn templates. Real soft tissue squashes, arms can sit a little in front of the body, and shoulders shrug, so each limit is a band, not a line.",
    "A softer line comes earlier. Unaided eating and drinking use about 130 to 136° of elbow bend; with the elbow held to 120°, 49 of 50 people still managed eating, drinking and washing by moving the shoulder and wrist instead (Vasen 1995), the lowest setting tested.",
-   "The bands are for human-shaped bodies. Rex and Ollie are not built like the template: their art shows their arms well out and their thighs touching, so they are past the first two limits whatever their score.",
+   "The bands are for human-shaped bodies. Rex and Ollie are not built like the template, and the limits were not tested on their outlines: their thighs touch in the art, but their arms are posed out (an A-pose), so whether they could hang down is untested.",
    "These are shapes scored lean (7.5% fat). A fat body reaches the same outline at a lower score: ordinary obese men's thighs already touch, and very obese people step wider."
   ]
  },
@@ -739,30 +739,30 @@
    "id": "past25",
    "upto": 32,
    "title": "Past Kouri's 25",
-   "verdict": "No drug-free man in Kouri's study reached 25 on his scale. {chip:measured} A few measured athletes do: the top 2.5% of college footballers start at 28, and the top one reached 32. {chip:measured}",
-   "sub": "Kouri's 25 is FFMI normalised to 1.80 m, which equals this page's score only for a 1.80 m man; for one 1.59 m drug-free lifter in his study it comes to about 27. The footballer studies did no drug tests of their own, and many of those athletes carry 15 to 20% fat."
+   "verdict": "No drug-free man in Kouri's study reached 25 on his scale. {chip:measured} Many measured athletes do: 62 of 235 college footballers (26%) were above 25, the top 2.5% start at 28, and the top one reached 32. {chip:measured}",
+   "sub": "Kouri's 25 is FFMI normalised to 1.80 m, which equals this page's score only for a 1.80 m man; for one 1.59 m drug-free lifter in his study it comes to about 27. The footballer study did no drug testing of its own (the NCAA tests at random), and many of those athletes carry 15 to 20% fat."
   },
   {
    "id": "top",
    "upto": 45,
    "title": "The top of the human record",
    "verdict": "The biggest bodybuilders on stage and the strongest strongmen top out here, at about {r:big_ramy}. {chip:estimate} No real man on this chart scores above {humanTop}. {chip:estimate}",
-   "sub": "Pro weights are reported contest-day figures, and their body fat is assumed. Strongmen carry more fat, so their bars are wider. The largest fat-free mass found in a study of its upper limit, a sumo wrestler's, scores 34. {chip:measured}"
+   "sub": "Pro weights are reported contest-day figures, and their body fat is assumed. Strongmen carry more fat, so their bars are wider. Kondo 1994's largest sumo wrestler (121 kg of fat-free mass) scores 34. {chip:derived}"
   },
   {
    "id": "giants",
    "upto": 150,
    "title": "Comic giants",
    "only_group": "Comic characters",
-   "verdict": "The heaviest comic characters score {min} to {max}, if their published weights are flesh and bone. {chip:estimate}",
-   "sub": "Their heights and weights are official. Their shapes are not: no publisher gives a girth, so every outline is filled in from a template build, and every edge is dotted. No body-fat figure was found in the Marvel and DC sources searched; it is assumed, 8 to 20%."
+   "verdict": "The top comic characters score {min} to {max}, if their published weights are flesh and bone. {chip:estimate}",
+   "sub": "{hwofficial} Their shapes are not: no publisher gives a girth, so every outline is filled in from a template build, and every edge is dotted. No body-fat figure was found in the Marvel and DC sources searched; it is assumed, 8 to 20%."
   },
   {
    "id": "duo",
    "upto": 500,
    "title": "Rex and Ollie",
    "verdict": "Rex scores about {r:rex} and Ollie about {r:ollie}, {x:rex/abomination} the top comic giants. {chip:estimate}",
-   "sub": "Both are scored at 7.5% body fat (5 to 10%). Height is to the top of the skull, read off duo.jpg: Rex {h:rex} m, Ollie {h:ollie} m. {chip:estimate} Their crest and horns rise above the skull line, and their tails are left out. Their mass is the current canon, about 2,700 kg each, measured from one picture; Step 2 measures them again from their turnarounds. Their art shows arms held out and thighs touching: by the drawn body's own limits, they are past the first two."
+   "sub": "Both are scored at 7.5% body fat (5 to 10%). Height is to the top of the skull, read off duo.jpg: Rex {h:rex} m, Ollie {h:ollie} m. {chip:estimate} Their crest and horns rise above the skull line, and their tails are left out. Their mass is the current canon, about 2,700 kg each, measured from one picture; Step 2 measures them again from their turnarounds. Their thighs touch in the art. Their arms are posed out (an A-pose), so the art cannot show whether they could hang down; Step 2 can test that on the new sheets."
   }
  ]
 }

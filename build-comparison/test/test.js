@@ -69,12 +69,12 @@ test('every build scores without NaN, with its central value inside its range', 
 test('Rex and Ollie: height to the top of the skull, tails out, 7.5% fat (5-10%)', () => {
   const rex = model.evaluate('rex'), ollie = model.evaluate('ollie');
   near(rex.height.value, 2.92, 1e-9); near(ollie.height.value, 2.91, 1e-9);
-  near(rex.mass.value, 2700 - 307, 1e-9); near(ollie.mass.value, 2700 - 11, 1e-9);
+  near(rex.mass.value, 2700 - 306, 1e-9); near(ollie.mass.value, 2700 - 11, 1e-9);
   assert.deepStrictEqual([rex.bodyFat.lo, rex.bodyFat.value, rex.bodyFat.hi], [5, 7.5, 10]);
-  near(rex.score.value, 1.8 * 2393 * 0.925 / Math.pow(2.92, 3), 1e-9);
+  near(rex.score.value, 1.8 * 2394 * 0.925 / Math.pow(2.92, 3), 1e-9);
   // the range covers mass 2,300-3,000 kg, skull height and body fat together
-  near(rex.score.lo, 1.8 * (2300 - 307) * 0.9 / Math.pow(2.95, 3), 1e-9);
-  near(rex.score.hi, 1.8 * (3000 - 307) * 0.95 / Math.pow(2.90, 3), 1e-9);
+  near(rex.score.lo, 1.8 * (2300 - 306) * 0.9 / Math.pow(2.95, 3), 1e-9);
+  near(rex.score.hi, 1.8 * (3000 - 306) * 0.95 / Math.pow(2.90, 3), 1e-9);
 });
 
 test('comic editions are not mixed into a range; Wolverine is scored without adamantium', () => {
@@ -108,6 +108,15 @@ test('no build range reaches into a gap, even one sorted before a neighbour with
   const fake = (id, v, lo, hi) => ({ id, comparable: 'yes', score: { value: v, lo, hi } });
   const g = model.gaps([fake('a', 20, 15, 60), fake('b', 21, 20, 22), fake('c', 50, 45, 55)], null);
   assert.strictEqual(g.length, 0, JSON.stringify(g));
+});
+
+test('data/limits.json carries the current settings text (it is regenerated, never edited)', () => {
+  const L = require('../data/limits.json'), S = settings.limits;
+  assert.strictEqual(L.verdict, S.verdict); assert.strictEqual(L.method, S.method); assert.deepStrictEqual(L.notes, S.notes);
+  for (const it of L.items) {
+    for (const k of ['label', 'short', 'tiny', 'definition']) assert.strictEqual(it[k], S[it.id].text[k], it.id + '.' + k + ' is stale: run node tools/compute_limits.js');
+    assert.strictEqual(it.headline, S[it.id].headline !== false, it.id + '.headline is stale');
+  }
 });
 
 test('every fact key the settings cite exists, in facts.json or builds.json', () => {

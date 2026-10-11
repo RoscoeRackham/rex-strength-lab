@@ -15,7 +15,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
   - Done: research (six topics, each verified; 26 corrections applied), design (three proposals, two judges, one spec: `build-comparison/research/reviews/design.md`), the page, the measuring tool (validated on duo.jpg), functional limits, tests (`test/test.js`, `test/duo.js`, `test/shots.js`), README and `data/NOTES.md`.
   - Published (first version, private): https://claude.ai/artifact/DBtZrixDeZnvRwDhZMsCDn
   - In progress: adversarial review rounds and fixes; then republish, open the pull request, and write the `history/` entry.
-  - `build-calculator/data/builds.json` and `src/calc.js` are claimed but have not been changed.
+  - `build-calculator/data/builds.json`: one correction (Kouri 1995's non-users now use Table 1 of the full paper; logged in its NOTES.md, Build Calculator rebuilt and tested). `src/calc.js` is unchanged.
 
 ## Waiting on
 

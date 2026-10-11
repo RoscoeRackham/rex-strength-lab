@@ -393,7 +393,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
     </div>
     <p class="spec full" id="spec"></p>
     <div class="glance full">
-      <p class="cap"><b>The whole scale, to scale</b>Each tick is one build. Hatched: nothing there. Equal steps are equal ratios: 20 to 40 is as far as 100 to 200. Tap a stretch to jump to it.</p>
+      <p class="cap"><b>The whole scale, to scale</b>Each tick is one build. Hatched: nothing comparable there. Equal steps are equal ratios: 20 to 40 is as far as 100 to 200. Tap a stretch to jump to it.</p>
       <div class="tapeplot" id="glance"></div>
       <div class="clusters" id="clusters"></div>
     </div>
@@ -587,7 +587,8 @@ details.src summary { cursor: pointer; font-weight: 600; }
   /** Derived when height, weight and body fat are all on record; otherwise an estimate. */
   function scoreStatus(e) {
     if (isDuo(e)) return 'estimate';
-    var st = [e.height.status, e.mass.status, e.bodyFat.status];
+    if (e.bodyFat.status !== 'measured') return 'estimate';
+    var st = [e.height.status, e.mass.status];
     return st.indexOf('estimate') >= 0 || st.indexOf('unknown') >= 0 ? 'estimate' : 'derived';
   }
   function factLinks(keys) {
@@ -625,6 +626,10 @@ details.src summary { cursor: pointer; font-weight: 600; }
       if (k === 'x') { var ab = arg.split('/'); return timesWords(byId(ab[0]).score.value / byId(ab[1]).score.value); }
       if (k === 'chip') return chip(arg);
       if (k === 'humanTop') return sc(HUMAN_TOP);
+      if (k === 'hwofficial' && ctx && ctx.members) {
+        var odd = ctx.members.filter(function (e) { return e.height.status !== 'official' || e.mass.status !== 'official'; });
+        return odd.length ? 'Their heights and weights are official, except ' + listWords(odd.map(function (e) { return esc(e.short) + '\'s (' + (e.height.status === e.mass.status ? e.mass.status : e.height.status + ' and ' + e.mass.status) + ')'; })) + '.' : 'Their heights and weights are official.';
+      }
       if (ctx && ctx[k] != null) return esc(ctx[k]);
       return m;
     });
@@ -646,7 +651,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
       GAPS.forEach(function (g) { if (g.to <= Math.min.apply(null, vals) + 1e-9 && g.to > lo) lo = g.to; if (g.from >= Math.max.apply(null, vals) - 1e-9 && g.from < hi) hi = g.from; });
       var title = st.title;
       if (st.only_group && members.some(function (e) { return e.group !== st.only_group; })) title = 'Score ' + sc(lo) + ' to ' + sc(hi);
-      var ctx = { min: sc(Math.min.apply(null, vals)), max: sc(Math.max.apply(null, vals)) };
+      var ctx = { min: sc(Math.min.apply(null, vals)), max: sc(Math.max.apply(null, vals)), members: members };
       seq.push({ kind: 'band', id: st.id === 'duo' ? 'rex-and-ollie' : st.id, st: st, members: members, lo: Math.max(AX.lo, lo || AX.lo), hi: hi,
         tag: floor === 0 ? 'Score under ' + sc(hi) : 'Score ' + sc(lo) + ' to ' + sc(hi), title: title, verdict: fillText(st.verdict, ctx), sub: fillText(st.sub, ctx), beyond: lo >= HUMAN_TOP - 1e-9 });
     });
@@ -708,7 +713,9 @@ details.src summary { cursor: pointer; font-weight: 600; }
       sub += (heads.length > 1 ? NUMW[heads.length].charAt(0).toUpperCase() + NUMW[heads.length].slice(1) + ' limits of the drawn body fall in this stretch: ' : 'A limit of the drawn body falls in this stretch: ') + esc(listWords(lw)) + '. ' + chip('estimate') + ' ';
     }
     bands.forEach(function (L) {
-      sub += 'The ' + esc(L.short) + ' limit lies somewhere from ' + sc(L.range[0]) + ' to ' + sc(L.range[1]) + (L.range[0] < g.from || L.range[1] > g.to ? ', across this stretch and beyond' : '') + ': where exactly depends on a model no study has tested. ' + chip('estimate') + ' ';
+      var top = g.above ? g.to : MEAT, below = L.range[0] < g.from, above = L.range[1] > top;
+      var where = below && above ? ', across this stretch and beyond' : below ? ', reaching into the bottom of this stretch' : above ? ', from inside this stretch upward' : ', inside this stretch';
+      sub += 'The ' + esc(L.short) + ' limit lies somewhere from ' + sc(L.range[0]) + ' to ' + sc(L.range[1]) + where + ': where exactly depends on a model no study has tested. ' + chip('estimate') + ' ';
     });
     if (item.last) { var r = MEAT / g.from; sub += MEAT_TXT + ' is more than ' + (NUMW[Math.floor(r)] || fmt.sep(Math.floor(r), 0)) + ' times ' + esc(byId(g.below).short) + '\'s top score.'; }
     else sub += gapStep(g) + 'Step 2 fills it with figures drawn to order, each labelled “measured from art”.';
@@ -843,6 +850,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
   }
   function renderStops() {
     var host = $('stops');
+    document.body.appendChild($('drawer')); // the drawer lives in a stop; keep it while the stops are redrawn
     host.innerHTML = '';
     cellGeometry();
     SEQ.forEach(function (item) {
@@ -935,8 +943,9 @@ details.src summary { cursor: pointer; font-weight: 600; }
       var lw = 150, xs = item.limits.map(function (L) { return X(L.score); }).concat(marks.map(function (m) { return m.l; }), marks.map(function (m) { return m.r; }));
       var spot = null;
       [0.5, 0.35, 0.65, 0.25, 0.75].some(function (f) { var cx = f * W; if (cx - lw / 2 < 4 || cx + lw / 2 > W - 4) return false; if (xs.every(function (x) { return Math.abs(x - cx) > lw / 2 + 6; }) && !taken.some(function (t) { return cx + lw / 2 > t.l && cx - lw / 2 < t.r && head + 4 + t.row * 17 + 14 > head + (wallH - head) * 0.5 - 12; })) { spot = cx; return true; } return false; });
-      if (spot != null) html += '<span class="lab" style="left:' + spot.toFixed(0) + 'px;top:' + (head + (wallH - head) * 0.55).toFixed(0) + 'px">No builds here</span>';
-      else html += '<span class="lab" style="left:50%;top:' + (wallH + floorH / 2 + 6).toFixed(0) + 'px;background:var(--floor);padding:0 6px">No builds here</span>';
+      var labTxt = item.inside.length ? 'Nothing comparable here' : 'No builds here';
+      if (spot != null && !item.inside.length) html += '<span class="lab" style="left:' + spot.toFixed(0) + 'px;top:' + (head + (wallH - head) * 0.55).toFixed(0) + 'px">' + labTxt + '</span>';
+      else html += '<span class="lab" style="left:50%;top:' + (wallH + floorH / 2 + 6).toFixed(0) + 'px;background:var(--floor);padding:0 6px">' + labTxt + '</span>';
       tile.innerHTML = '';
       tile.appendChild(svg);
       tile.insertAdjacentHTML('beforeend', html);
@@ -1030,7 +1039,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
     var bf = e.bodyFat;
     var ranges = ['body fat ' + pc(bf.lo) + '–' + pc(bf.hi) + '%'];
     if (e.mass.range[0] !== e.mass.range[1]) ranges.push('weight ' + kg(e.mass.range[0]) + '–' + kg(e.mass.range[1]) + ' kg');
-    if (e.height.range && e.height.range[0] !== e.height.range[1]) ranges.push('height ' + fmt.sep(e.height.range[0], 2) + '–' + fmt.sep(e.height.range[1], 2) + ' m');
+    if (e.height.range && fmt.sep(e.height.range[0], 2) !== fmt.sep(e.height.range[1], 2)) ranges.push('height ' + fmt.sep(e.height.range[0], 2) + '–' + fmt.sep(e.height.range[1], 2) + ' m');
     row('Score', '<span class="v">' + scr(e.score.lo, e.score.hi) + '</span> ' + chip(st) + ' <span>· ' + sc(e.score.value) + ' at ' + pc(bf.value) + '% fat</span>' +
       '<span class="why">The range covers ' + esc(listWords(ranges)) + '. Score = 1.8 × fat-free mass ÷ height³ = 1.8 × ' + kg(e.mass.value * (1 - bf.value / 100)) + ' kg ÷ ' + fmt.sep(e.height.value, 2) + '³.</span>');
     var hRel = Math.abs(e.height.value - 1.8) < 0.005 ? 'The same as the score, because he is 1.80 m tall.' : e.height.value > 1.8 ?
@@ -1075,12 +1084,15 @@ details.src summary { cursor: pointer; font-weight: 600; }
     }
     row('Outline', '<span class="why">' + esc(words) + '</span>' + (duo ? '' : '<span class="why" id="drawCheck">' + drawingCheck(e) + '</span>'));
     var ign = [];
-    if (bf.status === 'estimate') ign.push('Body fat is assumed for his group.');
+    var fatKind = e.setting.fat && e.setting.fat.kind;
+    if (duo) ign.push('Body fat is the owner\'s canon range, 5 to 10%.');
+    else if (fatKind === 'army_equation') ign.push('Body fat is estimated from his waist and weight.');
+    else if (bf.status === 'estimate') ign.push('Body fat is assumed for his group.');
     if (!duo && (derivedList.length || Object.keys(tmpl).length)) ign.push('Parts with a dotted edge are filled in.');
     if (e.comparable === 'no') ign.push('Not comparable: his weight is not muscle.');
     if (e.comparable === 'overstated') ign.push('May be overstated: his listed weight is counted as ordinary tissue.');
     if (e.comparable === 'uncertain') ign.push('Composition unknown: his listed weight is counted as ordinary tissue, though no source says what it is.');
-    if (beyond(e)) ign.push('Beyond human data: no real man scores this high, so his shape and body fat are extrapolated.');
+    if (beyond(e)) ign.push(duo ? 'Beyond human data: no real man scores this high.' : 'Beyond human data: no real man scores this high, so his shape and body fat are extrapolated.');
     if (ign.length) row('What this ignores', '<ul class="ign">' + ign.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>');
     var cites = [];
     function add(c) { if (c && c.url && !cites.some(function (x) { return x.url === c.url; })) cites.push(c); }
@@ -1140,7 +1152,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
     var X = host._X; if (!X) return;
     var bands = STOPS.filter(function (s) { return s.kind === 'band'; });
     var firstGap = GAPS[0] ? GAPS[0].from : HUMAN_TOP;
-    var lowest = LIST.reduce(function (m, e) { return Math.min(m, e.score.lo); }, 1e9);
+    var lowest = HUMANS.reduce(function (m, e) { return Math.min(m, e.score.lo); }, 1e9);
     var giants = bands.filter(function (s) { return s.id === 'giants'; })[0], duo = bands.filter(function (s) { return s.id === 'rex-and-ollie'; })[0];
     var cl = [{ id: bands[0].id, name: phone ? 'Real men' : 'Every real man', range: sc(lowest) + '–' + sc(firstGap), a: lowest, b: firstGap }];
     if (giants) cl.push({ id: giants.id, name: phone ? 'Giants' : 'Comic giants', range: sc(giants.lo) + '–' + sc(giants.hi), a: giants.lo, b: giants.hi });
@@ -1224,7 +1236,8 @@ details.src summary { cursor: pointer; font-weight: 600; }
     GAPS.forEach(function (g) { rows.push({ v: g.from + 1e-6, kind: 'gap', g: g }); });
     rows.sort(function (x, y) { return x.v - y.v; });
     rows.push({ v: MEAT, kind: 'meat' });
-    var off = function (lo, hi) { return lo > dom.hi ? '<span class="off">off this scale: ' + scr(lo, hi) + ' →</span>' : hi > dom.hi ? '<span class="chev">→</span>' : ''; };
+    var rng = function (lo, hi) { return hi >= MEAT - 1e-6 ? sc(lo) + '–' + MEAT_TXT : scr(lo, hi); };
+    var off = function (lo, hi) { return lo > dom.hi ? '<span class="off">off this scale: ' + rng(lo, hi) + ' →</span>' : hi > dom.hi ? '<span class="chev">→</span>' : ''; };
     var h = rows.map(function (r) {
       if (r.kind === 'build') {
         var e = r.e, col = 'var(' + GV[e.group].v + ')', st = scoreStatus(e), a = P(e.score.lo), b = P(e.score.hi), nc = e.comparable !== 'yes';
@@ -1328,7 +1341,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
     var kouriRex = rex.plain.value + BuildCalc.KOURI_C * (1.8 - rex.height.value);
     $('scoreCard').innerHTML = '<h3>The score</h3><div class="formula">score = 1.8 × fat-free mass ÷ height³</div>' +
       '<p>Fat-free mass is everything but fat: muscle, bone, organs, water. Scale a body up at the same shape and its mass grows with height cubed, so dividing by height cubed takes size out. The result is the plain FFMI (fat-free mass ÷ height², in kg/m²) the same body would have at <b>1.80 m</b>, the height Kouri 1995 normalised to. At 1.80 m the two are equal.</p>' +
-      '<p>Plain FFMI is roughly flat with height among real men, because tall men are not scaled-up short men. So this score rates tall men a little lower than Kouri\'s height correction does. Within human heights the difference is small; at Rex\'s height Kouri\'s correction, fitted to men of 1.55 to 2.05 m, would give about ' + sc(kouriRex) + ' instead of ' + sc(rex.score.value) + '.</p>' +
+      '<p>Plain FFMI is roughly flat with height among real men, because tall men are not scaled-up short men. So this score rates tall men a little lower than Kouri\'s height correction does. Within human heights the difference is small; at Rex\'s height Kouri\'s correction, fitted to drug-free athletes of about 1.6 to 1.9 m, would give about ' + sc(kouriRex) + ' instead of ' + sc(rex.score.value) + '.</p>' +
       '<p>Height is to the <b>top of the skull</b>. Each 1% of height moves the score by about 3%.</p>' +
       '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Build</th>' + (phone ? '<th>Height · fat-free mass</th>' : '<th>Height</th><th>Fat-free mass</th>') + '<th>Plain FFMI</th><th>Score</th></tr></thead><tbody>' + ex + '</tbody></table></div>' +
       '<p><b>The meatball (' + MEAT_TXT + ').</b> A solid ball of muscle as tall as the figure, at 1,060 kg/m³ and 7.5% fat (' + sc(MEAT_LO) + ' to ' + sc(MEAT_HI) + ' at 10 to 5%). It ends the scale; it is not a hard maximum. A body wider than it is tall could hold more: a cylinder as wide as it is tall would score about ' + sc(1.8 * 1060 * Math.PI / 4 * 0.925) + ', a cube about ' + sc(1.8 * 1060 * 0.925) + '.</p>';
@@ -1418,7 +1431,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
     $('checks').innerHTML = items.join('');
     if (!r.volume_m3) { $('results').innerHTML = ''; $('toolStatus').textContent = 'No result: ' + (r.errors || []).join(' '); return; }
     $('toolStatus').innerHTML = (r.ok ? '' : '<b>The sheet failed a check, so treat these numbers as rejected.</b> ') + 'Every result is measured from art: an estimate ' + chip('estimate') + '. Slices are treated as ellipses, so girths can be off by 5 to 10% and volume by a few percent.' +
-      (tool.example ? ' The example is the median soldier at 1.80 m, counted at 7.5% fat and 1,060 kg/m³ like Rex and Ollie, so it scores higher than he does at his own body fat.' : '');
+      (tool.example ? ' The example is the median soldier at 1.80 m, counted at 7.5% fat and 1,060 kg/m³ like Rex and Ollie, so it scores higher than he does at his own body fat. The limits section reads the same shape at ' + (LIMITS ? sc(LIMITS.templates[0].score_at_f1) : '27') + ': its figure is drawn with the arms at another angle and at higher resolution, which moves the reading by a few percent.' : '');
     var pm = function (v, lo, hi, f, u) { return '<td class="n">' + f(v) + (u || '') + '</td><td>' + f(lo) + '–' + f(hi) + (u || '') + '</td>'; };
     var f3 = function (x) { return fmt.sep(x, 3); }, f1 = function (x) { return fmt.sep(x, 1); };
     var h = '<thead><tr><th>Result</th><th>Value</th><th>Likely range</th></tr></thead><tbody>';
@@ -1513,7 +1526,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
       $('capFront').textContent = 'Front · score ' + sc(s); $('capSide').textContent = 'Side · score ' + sc(s);
       target = { target_score: tv, base_shape: e.short, base_build_id: id, height_m: H, width_factor: +f.toFixed(4), measured_score: +s.toFixed(2), density_kg_m3: 1060, body_fat_pct: 7.5, girths_m: {} };
       BuildCalc.SITES.forEach(function (k) { var x = out.r.girths[k]; target.girths_m[k] = x && x.value_m ? +x.value_m.toFixed(4) : null; });
-      $('targetStatus').textContent = e.short + ' at 1.80 m with every width and depth × ' + fmt.sep(f, 2) + ': it measures ' + fmt.sep(s, 1) + ' (target ' + fmt.sep(tv, 0) + ') at 7.5% fat and 1,060 kg/m³.';
+      $('targetStatus').textContent = e.short + ' at 1.80 m with every width and depth × ' + fmt.sep(f, 2) + ': it measures ' + sc(s) + ' (target ' + sc(tv) + ') at 7.5% fat and 1,060 kg/m³.';
     }, 30);
   }
   function initTool() {
@@ -1559,7 +1572,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
     var army = byId('ansur2_m_p50'), ramy = byId('big_ramy'), rex = byId('rex'), ollie = byId('ollie');
     var a = function (id, txt) { return '<a href="#' + id + '"><b>' + txt + '</b></a>'; };
     $('lede').innerHTML = 'Drawn at one height, the median US Army man scores about ' + a('under25', sc(army.score.value)) + '. The biggest bodybuilders on stage reach about ' + a('top', sc(ramy.score.value)) +
-      ', and the heaviest comic characters about ' + a('giants', sc(COMIC_TOP.score.value)) + '. Rex and Ollie score about ' + a('rex-and-ollie', sc(rex.score.value)) + ' and ' + a('rex-and-ollie', sc(ollie.score.value)) + '. ' + chip('estimate') +
+      ', and the top comic characters about ' + a('giants', sc(COMIC_TOP.score.value)) + '. Rex and Ollie score about ' + a('rex-and-ollie', sc(rex.score.value)) + ' and ' + a('rex-and-ollie', sc(ollie.score.value)) + '. ' + chip('estimate') +
       ' The scale ends at ' + a('meatball', MEAT_TXT) + ', the score of a solid ball of muscle as tall as the figure. ' + chip('derived');
     $('spec').textContent = 'score = 1.8 × fat-free mass ÷ height³: the FFMI a body would have at 1.80 m, same shape · ' + LIST.length + ' men · every number says how sure it is';
     var sample = function (mark) { return '<svg width="56" height="18" aria-hidden="true"><rect x="0" y="5" width="56" height="13" class="geo"/><line x1="0" x2="56" y1="5" y2="5" class="edge ' + mark + '" stroke-width="3.8"/></svg>'; };

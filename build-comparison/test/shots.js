@@ -158,6 +158,12 @@ async function sweep(p) {
     await p.click(back);
   }
   if ((await sig()) !== base) problems.push('sweep: switching every mode back did not restore the page');
+  // Switching a mode with a figure's details open keeps the page working (review round 1, F1).
+  await p.evaluate(() => document.querySelector('.fig[data-id="ronnie_coleman"]').click());
+  for (const btn of ['#hReal', '#vSide', '#vFront', '#hSame']) await p.click(btn);
+  const after = await p.evaluate(() => { const d = document.getElementById('drawer'); document.querySelector('.fig[data-id="phil_heath"]').click(); const d2 = document.getElementById('drawer'); return { had: !!d, open: !!d2 && !d2.hidden && /Heath/.test((document.getElementById('drawerH') || {}).textContent || '') }; });
+  if (!after.had || !after.open) problems.push('sweep: after switching modes with details open, a figure no longer opens its details: ' + JSON.stringify(after));
+  await p.keyboard.press('Escape');
   // The stops come from the model: tags match the gaps, and the giants are all comic characters.
   const seq = await p.evaluate(() => { const bc = window.__bc; return { gaps: bc.GAPS.map((g) => [bc.sc(g.from), g.above ? bc.sc(g.to) : null]), tags: Array.from(document.querySelectorAll('.stop .tag')).map((t) => t.textContent), giants: Array.from(document.querySelectorAll('#giants .fig')).map((f) => f.getAttribute('data-id')), groups: bc.LIST.reduce((o, e) => (o[e.id] = e.group, o), {}) }; });
   for (const [a, b] of seq.gaps) if (!seq.tags.some((t) => t === 'Score ' + a + ' to ' + (b || '924'))) problems.push('sweep: no stop tagged for the gap ' + a + ' to ' + (b || '924') + ': ' + seq.tags.join(' | '));
