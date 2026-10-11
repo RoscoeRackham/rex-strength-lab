@@ -11,13 +11,13 @@ import subprocess
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FACTS = {}
-for topic in ['humans', 'fiction', 'objects', 'environment', 'density', 'duo']:
-    for f in json.load(open(os.path.join(HERE, 'research', f'final-{topic}.json')))['facts']:
+for topic in ['humans', 'fiction', 'objects', 'environment', 'density', 'duo', 'presence']:
+    for f in json.load(open(os.path.join(HERE, 'research', f'final-{topic}.json'), encoding='utf-8'))['facts']:
         FACTS[f['key']] = f
 
 ST = 907.18474  # US short ton, kg (Marvel handbook tons read as short tons)
 G = 9.80665
-RANK = {'verified': 0, 'canon_stated': 1, 'reported': 2, 'estimate': 3, 'claimed': 4, 'disputed': 5, 'not_quantified': 6}
+RANK = {'verified': 0, 'canon_stated': 1, 'derived': 2, 'reported': 3, 'estimate': 4, 'claimed': 5, 'disputed': 6, 'not_quantified': 7}
 # Canon only per press accounts or reviews; the page itself was not seen (see research notes).
 REPORTED = {'secret_wars_4_hulk_mountain', 'all_star_superman_200_quintillion', 'superman_v3_13_earth_bench'}
 
@@ -365,11 +365,15 @@ row('Mass: Phobos and Deimos', '1.06 × 10^16 kg and 1.44 × 10^15 kg', ['phobos
 # Every other fact behind the Weight tab and the two-player tests gets its own row, labelled by area.
 USED_ABOVE = {d for d in ['density_plush_stuffing_estimate', 'density_water_4c', 'density_bodybuilders_fry1987', 'density_human_body_measured', 'density_structural_steel', 'density_osmium',
                           'density_white_dwarf_sirius_b_mean', 'nuclear_saturation_density', 'density_neutron_star_mean', 'phobos_mass', 'deimos_mass']}
-for topic, prefix in [('density', 'Weight'), ('duo', None)]:
+# the presence brief's facts (effort, the Walk tab, comic switches, growth), each in its own row, labelled by area
+PRESENCE_AREA = {'presence_step': 'Walking', 'presence_attenuation': 'Ground shaking', 'presence_elephant': 'Elephants', 'presence_thresholds': 'Thresholds',
+                 'presence_ripple': 'Water glass', 'presence_comic': 'Comic switches', 'presence_growth': 'Growth'}
+for topic, prefix in [('density', 'Weight'), ('duo', None), ('presence', None)]:
     for f in json.load(open(os.path.join(HERE, 'research', f'final-{topic}.json')))['facts']:
         if f['key'] in USED_ABOVE:
             continue
-        label = (prefix or f.get('category', 'Rex and Ollie')) + ': ' + f['label'][0].lower() + f['label'][1:] if f['label'] else f['key']
+        area = PRESENCE_AREA.get(f.get('category'), f.get('category', 'Rex and Ollie')) if topic == 'presence' else f.get('category', 'Rex and Ollie')
+        label = (prefix or area) + ': ' + f['label'][0].lower() + f['label'][1:] if f['label'] else f['key']
         # the vaporisation row draws on more than two sources (one per material): show them all
         row(label, f['display'], [f['key']], note=None, extra_sources=[{'url': x['url'], 'title': x.get('title') or ''} for x in f['sources'][2:]] if f['key'] in ('heat_to_vaporise_per_kg',) else None)
 

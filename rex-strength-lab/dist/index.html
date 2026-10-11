@@ -209,7 +209,7 @@ section.block > .intro { max-width: 68ch; color: var(--ink-2); }
 .badge { font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; border-radius: 4px; padding: 2px 6px; border: 1px solid currentColor; }
 .badge.verified { color: var(--good-ink); }
 .badge.disputed, .badge.claimed { color: var(--warn-ink); }
-.badge.canon_stated { color: var(--olive); }
+.badge.canon_stated, .badge.derived { color: var(--olive); }
 .badge.not_quantified, .badge.estimate, .badge.reported { color: var(--ink-3); }
 .run { border: 1px solid var(--ink); background: var(--ink); color: var(--surface); border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: 0.88rem; }
 .run:hover { background: var(--accent); border-color: var(--accent); color: #000; }
@@ -411,7 +411,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   <section class="block" id="sources">
     <div class="eyebrow">Data</div>
     <h2>Sources</h2>
-    <p class="intro">Every number the sim uses, with its status. Estimates are labelled as estimates.</p>
+    <p class="intro">Every number the sim uses, with its status. <b>Derived</b> means we computed it from verified numbers (the note gives the formula). Estimates are labelled as estimates.</p>
     <details class="src-details" id="src-details"><summary id="src-summary">Show every sourced number</summary>
     <div class="table-wrap"><table id="src-table"><colgroup><col style="width:30%"><col style="width:32%"><col style="width:11%"><col style="width:27%"></colgroup><thead><tr><th>Item</th><th>Value</th><th>Status</th><th>Source</th></tr></thead><tbody></tbody></table></div>
     </details>
@@ -10679,8 +10679,8 @@ window.DINO_DATA = {
     throw: { key: 'gThrow', unit: 'm', label: 'Goal: throw it (m)', text: (t) => (state.angle >= 90 ? 'throws the ' + objById(state.obj).short + ' ' + fmtDist(t) + ' straight up' : 'lands the ' + objById(state.obj).short + ' ' + fmtDist(t) + ' away') },
     jump: { key: 'gJump', unit: 'm', label: 'Goal: jump this high (m)', text: (t) => 'jumps ' + fmtDist(t) + ' high' },
     stomp: { text: () => 'makes a stomp people feel ' + fmtDist(state.near) + ' away' },
-    punch: { fixed: CAL_PUNCH, text: (t) => 'throws a punch as fast as the strongest human’s (' + speedOnly(t) + ')' },
-    clap: { fixed: CAL_CLAP, text: (t) => 'claps as fast as the strongest human (' + speedOnly(t) + ')' },
+    punch: { fixed: CAL_PUNCH, text: (t) => 'throws a punch as fast as the strongest human’s (' + speedOnly(t) + ' in this model, inside the 6.6–12.5 m/s measured in elite boxers)' },
+    clap: { fixed: CAL_CLAP, text: (t) => 'claps as fast as the strongest human would in this model (' + speedOnly(t) + ')' },
     sprint: { key: 'gSprint', unit: 'm/s', label: 'Goal: run at (m/s)', text: (t) => 'runs at ' + speedOnly(t) },
     pull: { key: 'gPull', unit: 's', label: 'Goal: drag it 10 m in (s)', text: (t) => 'drags the ' + objById(state.obj).short + ' 10 m in ' + fmtTime(t) },
   };
@@ -11296,7 +11296,7 @@ window.DINO_DATA = {
   }
 
   // ---------------------------------------------------------------- feats
-  const STATUS_LABEL = { verified: 'Verified', disputed: 'Disputed', claimed: 'Claimed', canon_stated: 'Canon', reported: 'Reported', not_quantified: 'Not quantified', estimate: 'Estimate' };
+  const STATUS_LABEL = { verified: 'Verified', derived: 'Derived', disputed: 'Disputed', claimed: 'Claimed', canon_stated: 'Canon', reported: 'Reported', not_quantified: 'Not quantified', estimate: 'Estimate' };
   function renderFeats() {
     const groups = [['human', 'Real humans'], ['comic', 'Comics and anime'], ['myth', 'Myth and legend']];
     const box = $('#feat-groups');
