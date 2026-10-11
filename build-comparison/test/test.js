@@ -77,15 +77,41 @@ test('comic editions are not mixed into a range; Wolverine is scored without ada
   near(model.evaluate('wolverine').mass.value, calc.byId.wolverine.girth_basis_weight_kg, 1e-9);
 });
 
-test('the Thing and armoured Colossus are not comparable and stay out of the gaps', () => {
+test('armoured Colossus is not comparable; Thor, the Thing and Luke Cage are overstated; none of them fills a gap', () => {
   const list = model.all();
-  assert.strictEqual(model.evaluate('thing').comparable, 'no');
   assert.strictEqual(model.evaluate('colossus_armored').comparable, 'no');
+  for (const id of ['thor', 'thing', 'luke_cage']) {
+    const e = model.evaluate(id);
+    assert.strictEqual(e.comparable, 'overstated', id);
+    assert.ok(e.comparableNote && e.comparableKeys.length, id + ' says why, with sources');
+  }
   const gaps = model.gaps(list, Compare.ballScore(1060, 7.5));
-  for (const g of gaps) assert.ok(g.below !== 'thing' && g.above !== 'thing');
+  for (const g of gaps) for (const id of ['thing', 'thor', 'luke_cage', 'colossus_armored']) assert.ok(g.below !== id && g.above !== id, id + ' bounds a gap');
   assert.ok(gaps.length >= 2, 'expected gaps, got ' + gaps.length);
   const top = gaps[gaps.length - 1];
   assert.strictEqual(top.above, null); assert.strictEqual(top.below, 'ollie');
+});
+
+test('no build range reaches into a gap, even one sorted before a neighbour with a lower top', () => {
+  const list = model.all();
+  for (const g of model.gaps(list, Compare.ballScore(1060, 7.5))) {
+    for (const e of list) if (e.comparable === 'yes') assert.ok(e.score.hi <= g.from + 1e-9 || e.score.lo >= g.to - 1e-9, e.id + ' reaches into ' + g.from + '-' + g.to);
+  }
+  // A wide range sorted earlier closes the gap a narrow neighbour would leave open.
+  const fake = (id, v, lo, hi) => ({ id, comparable: 'yes', score: { value: v, lo, hi } });
+  const g = model.gaps([fake('a', 20, 15, 60), fake('b', 21, 20, 22), fake('c', 50, 45, 55)], null);
+  assert.strictEqual(g.length, 0, JSON.stringify(g));
+});
+
+test('every fact key the settings cite exists, in facts.json or builds.json', () => {
+  const facts = require('../data/facts.json').facts;
+  const keys = new Set();
+  (function walk(o) {
+    if (Array.isArray(o)) { o.forEach(walk); return; }
+    if (o && typeof o === 'object') for (const [k, v] of Object.entries(o)) { if (k === 'keys') v.forEach((x) => keys.add(x)); else walk(v); }
+  })(settings);
+  const missing = [...keys].filter((k) => !facts[k] && !builds.facts[k]);
+  assert.deepStrictEqual(missing, []);
 });
 
 // ---------- the outline template ----------

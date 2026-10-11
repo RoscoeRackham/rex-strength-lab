@@ -89,7 +89,9 @@
         bodyFat: bf,
         score: { value: S, lo: lo, hi: hi, status: 'estimate', varies: varies },
         plain: { value: ffmi(ffmAt(W, bf.value), H), lo: ffmi(ffmAt(Wr[0], bf.hi), Math.max(Hr[0], Hr[1])), hi: ffmi(ffmAt(Wr[1], bf.lo), Math.min(Hr[0], Hr[1])) },
-        comparable: s.comparable || 'yes', comparableNote: s.comparable_note || null,
+        // 'yes'; 'overstated' (official text says the tissue is denser than ours or partly not
+        // tissue, so the score is too high); 'no' (the body is not tissue: shown, not ranked).
+        comparable: s.comparable || 'yes', comparableNote: s.comparable_note || null, comparableKeys: s.comparable_keys || [],
         girths: r.girths, calc: r
       };
     }
@@ -101,18 +103,24 @@
     }
 
     /**
-     * Empty stretches of the scale: between neighbouring comparable builds whose central scores
-     * differ by more than ratio (default 1.25), and from the top build to the meatball.
+     * Empty stretches of the scale: places where no comparable build's range reaches (builds whose
+     * score is overstated or not comparable do not fill a stretch), wider than
+     * ratio (default 1.25: the top of the stretch over its bottom), and from the top build to the
+     * meatball. A stretch runs from the highest range top of every build below it to the lowest
+     * range bottom of every build above it, so an overlapping range never sits inside a gap.
      */
     function gaps(list, top, ratio) {
       ratio = ratio || 1.25;
-      var xs = list.filter(function (e) { return e.comparable !== 'no'; }).map(function (e) { return e; });
+      var xs = list.filter(function (e) { return e.comparable === 'yes'; }).slice().sort(function (a, b) { return a.score.value - b.score.value; });
       var out = [];
       for (var i = 1; i < xs.length; i++) {
-        var a = xs[i - 1], b = xs[i];
-        if (b.score.lo / a.score.hi > ratio) out.push({ from: a.score.hi, to: b.score.lo, below: a.id, above: b.id });
+        var below = xs.slice(0, i).reduce(function (m, e) { return e.score.hi > m.score.hi ? e : m; });
+        var above = xs.slice(i).reduce(function (m, e) { return e.score.lo < m.score.lo ? e : m; });
+        if (above.score.lo / below.score.hi > ratio && !out.some(function (g) { return g.below === below.id && g.above === above.id; })) {
+          out.push({ from: below.score.hi, to: above.score.lo, below: below.id, above: above.id });
+        }
       }
-      var last = xs[xs.length - 1];
+      var last = xs.reduce(function (m, e) { return e.score.hi > m.score.hi ? e : m; });
       if (top && top / last.score.hi > ratio) out.push({ from: last.score.hi, to: top, below: last.id, above: null });
       return out;
     }

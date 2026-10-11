@@ -34,7 +34,15 @@ const duoJpg = fs.readFileSync(path.join(root, '..', 'rex-strength-lab', 'assets
 const slim = JSON.parse(JSON.stringify(builds));
 delete slim.corrections_applied;
 delete slim.meta.inputs;
-for (const f of Object.values(slim.facts)) if (f.verify) f.verify = { ok: f.verify.ok, applied: f.verify.applied || [] };
+// This page shows a fact's label, status and linked sources; calc.js reads some values. The long
+// research notes stay in the Build Calculator's own page.
+// Values only for the facts calc.js reads (the same list as its F.* lookups).
+const CALC_KEYS = /^(ansur2_bmi|ansur2_stature|ansur2_weight|ansur_frustum_volume_model|ansur_girth_allometry|ffmi_athletes|ffmi_population_norms|kouri1995_ffmi_natural_limit|ansur2_girth_predictor_.*|ansur2_weight_regression_.*)$/;
+for (const [k, f] of Object.entries(slim.facts)) {
+  delete f.verify; delete f.notes; delete f.applied;
+  if (!CALC_KEYS.test(k)) delete f.values;
+  f.sources = (f.sources || []).filter((s) => s.url && /^https?:/.test(s.url)).map((s) => ({ title: s.title, url: s.url }));
+}
 (function stripFiles(o) {
   if (Array.isArray(o)) { o.forEach(stripFiles); return; }
   if (o && typeof o === 'object') {

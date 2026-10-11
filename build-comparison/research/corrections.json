@@ -1,0 +1,10 @@
+{
+ "about": "Corrections to the research facts, applied by tools/compile_facts.py. Each names the fact key, what changes and why; text replacements are asserted against the current notes, so none fails silently. Sources: the verifier checks in research/round1/verify_<topic>.json and this session's own reading.",
+ "corrections": [
+  {
+   "key": "bodyfat_range_comic_characters",
+   "set": {"sources": []},
+   "why": "The fact is an assumption with no source (its own source title says so), but the researcher attached an unrelated Europe PMC search URL to it. Removed the URL so the page does not show a link as if it were a source."
+  }
+ ]
+}

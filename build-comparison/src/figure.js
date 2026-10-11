@@ -12,8 +12,9 @@
  *
  * A figure is a list of parts: { name, poly: [[x, y], ...], mark }. mark is one of
  *   'own'      the build's own number (measured, official or reported)  - solid edge
- *   'template' filled from a template build                              - dashed edge
- *   'art'      traced from art                                           - dotted edge
+ *   'template' filled in: from a template build, or derived               - dotted edge
+ *   'art'      traced from art                                           - dash-dot edge
+ * (Nothing is drawn dashed: a dashed border means "reported" on the house status chips.)
  *   'average'  average proportions for every human build (head, hands, feet) - no edge
  *   'tail'     drawn but excluded from the score
  */
