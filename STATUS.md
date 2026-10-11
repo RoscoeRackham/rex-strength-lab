@@ -11,8 +11,11 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## In progress
 
-- Rex lab, restraint and presence (owner's cloud session, `claude/rex-presence`): building `rex-strength-lab/BRIEF-presence.md` in its order. Stage 1, research with verified facts: started.
-- Pull request open (collaborator, `terantic/presence-brief`):
+- Rex lab, restraint and presence (owner's cloud session, `claude/rex-presence`), building `rex-strength-lab/BRIEF-presence.md` in its order:
+  - Research: seven topics, each checked by a skeptic (step forces, ground shaking, elephants, thresholds, the water glass, comic switches, growth). Done except growth; facts being compiled into `research/final-presence.json`.
+  - Built (on the branch, not yet reviewed): effort and the courtesy ceiling on every solo tab, the not-so-heroic presets, shared effort in the two-player tests, the Walk tab (elastic-ground model checked against a drop test and elephant footfalls), the comic switches, the absorption modes and growth what-if, `test/presence.js`, `test/shots.js` in four views.
+  - Next: adversarial review rounds and fixes, publish, pull request, `history/` entry.
+- Pull request #9 (collaborator, `terantic/presence-brief`), now merged:
   - a "Hands and grip" assumption card in the Rex lab
   - **new canon:** restraint, absorption (four modes) and growth (three forms)
   - `rex-strength-lab/BRIEF-presence.md`: complete, with no open questions, for the owner's cloud session to build
