@@ -1,0 +1,22 @@
+const C = require('./contest.js');
+const { P, D, K } = C; const g = K.g;
+const surf = (id) => D.surfaces.find((s) => s.id === id);
+const HULK = 100 * 907.18474, HUMAN = 511;
+const mk = (o) => { const body = P.makeBody({ H: o.H || 2, m: o.m || (180 * Math.pow((o.H || 2) / 2, 3)) }); return { F: o.kg === Infinity ? Infinity : (o.kg || HULK) * g, mode: o.mode || 'comic', body, surface: surf(o.surf || 'concrete'), groundHolds: !!o.comic, anchor: o.anchor || 'friction' }; };
+const pin = (l, a, b) => { const r = C.armWrestle(a, b); console.log(l, r.outcome, r.winner || '', r.pin ? JSON.stringify(r.pin) : '', 'AA', r.AA, 'AB', r.AB, 'torqueA', r.torqueA, 'impactRatio', r.impactRatio); };
+pin('human vs half real', mk({ kg: HUMAN, mode: 'real' }), mk({ kg: HUMAN / 2, mode: 'real' }));
+pin('human vs 0.9 human real', mk({ kg: HUMAN, mode: 'real' }), mk({ kg: HUMAN * 0.9, mode: 'real' }));
+pin('human vs 0.9 human comic', mk({ kg: HUMAN }), mk({ kg: HUMAN * 0.9 }));
+pin('Hulk braced vs Hulk*0.5 braced comic', mk({ anchor: 'braced' }), mk({ anchor: 'braced', kg: HULK / 2 }));
+pin('1e10 kg bolted vs Hulk bolted comic', mk({ anchor: 'bolted', kg: 1e10 }), mk({ anchor: 'bolted' }));
+pin('1e20 kg bolted vs Hulk bolted comic', mk({ anchor: 'bolted', kg: 1e20 }), mk({ anchor: 'bolted' }));
+pin('1e30 kg bolted vs Hulk bolted comic', mk({ anchor: 'bolted', kg: 1e30 }), mk({ anchor: 'bolted' }));
+// gravity numbers
+const bR = P.makeBody({}), bNS = P.makeBody({ m: 4e17 * 0.18 });
+console.log('rEq', C.rEq(bR), 'BH threshold mass at 2 m', C.rEq(bR) * K.c * K.c / (2 * C.G), 'rho', C.rEq(bR) * K.c * K.c / (2 * C.G) / 0.18);
+console.log('GM/(rc^2) NS', C.G * bNS.m / (C.rEq(bNS) * K.c * K.c));
+console.log('NS self surface g', C.G * bNS.m / C.rEq(bNS) ** 2);
+const mg = C.mutualGravity(bNS, bNS, 2 * C.rEq(bNS)); console.log('NS contact', JSON.stringify(mg), 'ratio to weight', mg.F / (bNS.m * g));
+const mg0 = C.mutualGravity(bR, bR, 2 * C.rEq(bR)); console.log('default contact', JSON.stringify(mg0), 'equiv mass mg', mg0.F / g * 1e6, 'mg');
+const mgx = C.mutualGravity(bR, bNS, C.rEq(bR) + C.rEq(bNS)); console.log('normal vs NS contact', JSON.stringify(mgx), 'ratio to normal weight', mgx.F / (bR.m * g));
+console.log('Newton depth NS into concrete', 2 * C.rEq(bNS) * 4e17 / 2400);

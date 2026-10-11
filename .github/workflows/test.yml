@@ -1,0 +1,55 @@
+# Rebuild both pages, run every test, and check the committed builds are current.
+name: test
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install Playwright and Chromium
+        run: |
+          npm install -g playwright@1.64.0
+          playwright install --with-deps chromium
+
+      - name: Rex lab - build
+        working-directory: rex-strength-lab
+        run: python build-data.py && node build.js
+      - name: Build Calculator - build
+        working-directory: build-calculator
+        run: node build.js
+      - name: Committed builds match the sources
+        run: |
+          git diff --exit-code --stat -- rex-strength-lab/src/data.js '*/dist/index.html' \
+            || { echo "::error::Generated files are out of date. Rebuild and commit them."; exit 1; }
+
+      - name: Rex lab - calibration and physics checks
+        working-directory: rex-strength-lab
+        run: node test/calibration.js
+      - name: Rex lab - page screenshots
+        working-directory: rex-strength-lab
+        run: node test/shots.js
+      - name: Build Calculator - model tests
+        working-directory: build-calculator
+        run: node test/test.js
+      - name: Build Calculator - page screenshots
+        working-directory: build-calculator
+        run: node test/shots.js
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots
+          path: '*/shots/'
+          if-no-files-found: ignore

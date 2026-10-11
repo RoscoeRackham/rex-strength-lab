@@ -1,0 +1,763 @@
+#### ansur2_dataset
+{
+ "key": "ansur2_dataset",
+ "label": "ANSUR II public working databases: what they are",
+ "status": "official",
+ "values": "{\"n_male\":4082,\"n_female\":1986,\"age_min_yr\":17,\"age_max_yr\":58,\"male_age_median_yr\":28,\"female_age_median_yr\":27,\"orig\":\"93 directly measured dimensions; CSV units mm, weightkg column = kg*10; survey Oct 2010 - Apr 2012\"}",
+ "sources": [
+  {
+   "title": "OPEN Design Lab ANSUR II page",
+   "url": "https://www.openlab.psu.edu/ansur2/"
+  },
+  {
+   "title": "NSRDEC memo 14 Apr 2017: ANSUR II working databases",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSURII-MFR.pdf"
+  },
+  {
+   "title": "Gordon et al. 2014, NATICK/TR-15/007 (ANSUR II methods and summary statistics)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+  },
+  {
+   "title": "ANSUR II male CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+  },
+  {
+   "title": "ANSUR II female CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+  }
+ ],
+ "notes": "Downloaded both CSVs (sha256 male 0547aea0..., female ed7e800a...) from tools.openlab.psu.edu over HTTPS (the http:// links on the OPEN Lab page now return an HTML app shell; https works). Memo: 'All measurements are recorded in millimeters with the exception of the variable weightkg' (kg*10). TR-15/007 p.33: the working databases are stratified random samples matched to Total Army age/race/component distributions (DMDC 30 Sep 2011), so plain unweighted statistics are the intended population estimates; memo says male and female files should be analysed separately. Population is US Army soldiers aged 17-58 (fitter and younger than the general US adult population); memo cautions it may not represent other populations."
+}
+---- CHECK: {
+ "key": "ansur2_dataset",
+ "ok": true,
+ "issue": "Verified. I re-downloaded both CSVs over https and the sha256 hashes match the researcher's (male 0547aea0..., female ed7e800a...). The http:// CSV link returns a 645-byte HTML app shell, as stated. The memo confirms n=4,082 men and 1,986 women, 93 directly measured dimensions, Oct 2010 to Apr 2012, mm units with weightkg as kg*10, and that the two sexes should be analysed separately. TR-15/007 p.32-33 confirms stratified random sampling matched to DMDC 30 Sep 2011. Age range 17-58 and medians 28 (M) / 27 (F) recomputed. Minor: https://www.openlab.psu.edu/ansur2/ now redirects to /datasets/ansur2/. That page also says the sample 'is still not an approximation of the US Civilian population', which is worth quoting."
+}
+
+#### ansur2_measurement_definitions
+{
+ "key": "ansur2_measurement_definitions",
+ "label": "How ANSUR II girths were taken (matters when comparing to bodybuilding tape numbers)",
+ "status": "official",
+ "values": "{\"allowable_observer_error_chest_m\":0.014,\"allowable_observer_error_waist_m\":0.012,\"allowable_observer_error_biceps_m\":0.006,\"allowable_observer_error_forearm_m\":0.005,\"allowable_observer_error_thigh_m\":0.006,\"allowable_observer_error_calf_m\":0.004,\"allowable_observer_error_neck_m\":0.006,\"allowable_observer_error_weight_kg\":0.3,\"orig\":\"Allowable observer error (mm): chest 14, waist 12, biceps 6, forearm 5, thigh 6, calf 4, neck 6; weight 0.3 kg\"}",
+ "sources": [
+  {
+   "title": "Hotzman et al. 2011, NATICK/TR-11/017 (Measurer's Handbook)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR11-017.pdf"
+  },
+  {
+   "title": "Gordon et al. 2014, NATICK/TR-15/007 (ANSUR II methods and summary statistics)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+  }
+ ],
+ "notes": "Measurer's Handbook sec. 6.4: CHEST = horizontal at chest point anterior (fullest part of chest/bust), at the maximum point of QUIET respiration (not a puffed/expanded chest). WAIST (OMPHALION) = horizontal at the centre of the navel, abdomen not tensed; ANSUR II did NOT measure natural-waist (narrowest) circumference (TR-15/007 App. F lists natural-indentation waist only for ANSUR 1988), so omphalion waist runs larger than a 'natural waist' tape number. BICEPS FLEXED = right upper arm horizontal forward, elbow ~90 deg, fist clenched toward head, 'maximum effort in making a muscle', tape at highest point of flexed biceps, perpendicular to arm. FOREARM FLEXED = at the elbow crease, upper arm horizontal, elbow 90 deg, fist tightly clenched. THIGH = at the gluteal furrow (top of thigh), muscles relaxed. LOWER THIGH = at suprapatella (just above knee). CALF = maximum horizontal calf girth, standing. NECK = at infrathyroid landmark (just below Adam's apple), perpendicular to neck axis; NECK BASE is a separate, larger measure. Allowable observer error from Table G-1."
+}
+---- CHECK: {
+ "key": "ansur2_measurement_definitions",
+ "ok": true,
+ "issue": "Allowable errors confirmed in TR-11/017 Appendix G, Table G-1 (pp.224-227): chest 14, waist 12, biceps 6, forearm 5, thigh 6, calf 4, neck 6, neck base 8 mm, weight 0.3 kg. Protocols confirmed: chest at the fullest part of the chest/bust at the maximum point of quiet respiration, waist at the centre of the navel, biceps 'making a muscle' with maximum effort, forearm at the elbow crease with fist clenched, thigh at the gluteal furrow with thigh muscles not tensed, lower thigh at suprapatella. Three wording fixes: (1) the neck landmark (infrathyroid) is 'the inferior point of the thyroid cartilage (Adam's apple)', so the tape sits at the lower edge of the Adam's apple. 'Just below' is loose. (2) Thigh girth is taken perpendicular to the long axis of the thigh, not horizontally. (3) Table G-1 values are allowable thresholds, not measured error. TR-15/007 also reports the measured inter-observer error (for example about 5.9 mm for waist).",
+ "corrected": "Neck: 'at the infrathyroid landmark, the lowest point of the thyroid cartilage (Adam's apple), perpendicular to the neck axis'. Thigh: 'at the gluteal furrow, perpendicular to the thigh's long axis, thigh relaxed'. Calf: 'three readings in the region of maximum girth; the highest is kept (TR-15/007)'."
+}
+
+#### ansur2_stature
+{
+ "key": "ansur2_stature",
+ "label": "Stature (standing height)",
+ "status": "measured",
+ "values": "{\"male_mean_m\":1.7562,\"male_sd_m\":0.0685,\"male_p5_m\":1.648,\"male_p50_m\":1.755,\"male_p95_m\":1.87,\"male_min_m\":1.491,\"male_max_m\":1.993,\"female_mean_m\":1.6285,\"female_sd_m\":0.0642,\"female_p5_m\":1.525,\"female_p50_m\":1.626,\"female_p95_m\":1.74,\"female_min_m\":1.409,\"female_max_m\":1.829,\"orig\":\"male: p5/p50/p95 164.8/175.5/187.0 cm = 64.9/69.1/73.6 in; mean 175.62 SD 6.86 cm; range 149.1-199.3 cm | female: p5/p50/p95 152.5/162.6/174.0 cm = 60.0/64.0/68.5 in; mean 162.85 SD 6.42 cm; range 140.9-182.9 cm\"}",
+ "sources": [
+  {
+   "title": "ANSUR II male CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+  },
+  {
+   "title": "ANSUR II female CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+  },
+  {
+   "title": "Gordon et al. 2014, NATICK/TR-15/007 (ANSUR II methods and summary statistics)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+  }
+ ],
+ "notes": "From the CSVs (n=4082 M, 1986 F); definition in ansur2_measurement_definitions. TR-15/007 (75) STATURE: M 5th/50th/95th 164.8/175.5/187.0, mean 175.62 SD 6.86; F 152.5/162.6/174.0, mean 162.85 SD 6.42 - matches."
+}
+---- CHECK: {
+ "key": "ansur2_stature",
+ "ok": true,
+ "issue": "Recomputed from the CSV. Mean 175.62 / 162.85, SD 6.86 / 6.42, min/max and p5/p50/p95 all exactly match TR-15/007 table (75)."
+}
+
+#### ansur2_weight
+{
+ "key": "ansur2_weight",
+ "label": "Body weight (scale)",
+ "status": "measured",
+ "values": "{\"male_mean_kg\":85.52,\"male_sd_kg\":14.22,\"male_p5_kg\":64.4,\"male_p50_kg\":84.6,\"male_p95_kg\":110.69,\"male_min_kg\":39.3,\"male_max_kg\":144.2,\"female_mean_kg\":67.76,\"female_sd_kg\":10.98,\"female_p5_kg\":51.3,\"female_p50_kg\":66.8,\"female_p95_kg\":87.08,\"female_min_kg\":35.8,\"female_max_kg\":119.6,\"orig\":\"male: p5/p50/p95 64.4/84.6/110.7 kg = 142/187/244 lb; mean 85.52 SD 14.22 kg; range 39.3-144.2 | female: p5/p50/p95 51.3/66.8/87.1 kg = 113/147/192 lb; mean 67.76 SD 10.98 kg; range 35.8-119.6\"}",
+ "sources": [
+  {
+   "title": "ANSUR II male CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+  },
+  {
+   "title": "ANSUR II female CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+  },
+  {
+   "title": "Gordon et al. 2014, NATICK/TR-15/007 (ANSUR II methods and summary statistics)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+  }
+ ],
+ "notes": "From the CSVs (n=4082 M, 1986 F); definition in ansur2_measurement_definitions. TR-15/007 (91) WEIGHT: M 64.4/84.6/110.7 kg, mean 85.52 SD 14.22; F 51.3/66.8/87.1, mean 67.76 SD 10.98 - matches (F p95 87.08 vs 87.10 is a percentile-interpolation difference)."
+}
+---- CHECK: {
+ "key": "ansur2_weight",
+ "ok": true,
+ "issue": "Recomputed. Mean, SD, min/max and p5/p50 match TR-15/007 table (91) exactly. p95 is 110.69 vs TR 110.70 (M) and about 87.07-87.08 vs TR 87.10 (F), an interpolation difference."
+}
+
+#### ansur2_bmi
+{
+ "key": "ansur2_bmi",
+ "label": "BMI computed from measured stature and weight",
+ "status": "derived",
+ "values": "{\"male_mean_kg_per_m2\":27.69,\"male_sd_kg_per_m2\":4.04,\"male_p5_kg_per_m2\":21.4,\"male_p50_kg_per_m2\":27.46,\"male_p95_kg_per_m2\":34.8,\"male_min_kg_per_m2\":15.35,\"male_max_kg_per_m2\":43.45,\"female_mean_kg_per_m2\":25.5,\"female_sd_kg_per_m2\":3.49,\"female_p5_kg_per_m2\":20.26,\"female_p50_kg_per_m2\":25.27,\"female_p95_kg_per_m2\":31.66,\"female_min_kg_per_m2\":16.37,\"female_max_kg_per_m2\":40.78,\"orig\":\"male: p5/p50/p95 21.4/27.5/34.8, mean 27.69 | female: p5/p50/p95 20.3/25.3/31.7, mean 25.50\"}",
+ "sources": [
+  {
+   "title": "ANSUR II male CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+  },
+  {
+   "title": "ANSUR II female CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+  }
+ ],
+ "notes": "Computed per subject from measured stature and weight in the CSVs (n=4082 M, 1986 F). Not cross-checked against a TR table."
+}
+---- CHECK: {
+ "key": "ansur2_bmi",
+ "ok": true,
+ "issue": "Recomputed identically: M mean 27.69, SD 4.04, p5/p50/p95 21.40/27.46/34.80, range 15.35-43.45; F 25.50, 3.49, 20.26/25.27/31.66, range 16.37-40.78. Status 'derived' is correct."
+}
+
+#### ansur2_chest
+{
+ "key": "ansur2_chest",
+ "label": "Chest circumference",
+ "status": "measured",
+ "values": "{\"male_mean_m\":1.0587,\"male_sd_m\":0.0874,\"male_p5_m\":0.922,\"male_p50_m\":1.056,\"male_p95_m\":1.207,\"male_min_m\":0.774,\"male_max_m\":1.469,\"female_mean_m\":0.9469,\"female_sd_m\":0.0827,\"female_p5_m\":0.824,\"female_p50_m\":0.94,\"female_p95_m\":1.094,\"female_min_m\":0.695,\"female_max_m\":1.266,\"orig\":\"male: p5/p50/p95 92.2/105.6/120.7 cm = 36.3/41.6/47.5 in; mean 105.87 SD 8.74 cm; range 77.4-146.9 cm | female: p5/p50/p95 82.4/94.0/109.4 cm = 32.5/37.0/43.1 in; mean 94.69 SD 8.27 cm; range 69.5-126.6 cm\"}",
+ "sources": [
+  {
+   "title": "ANSUR II male CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+  },
+  {
+   "title": "ANSUR II female CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+  },
+  {
+   "title": "Gordon et al. 2014, NATICK/TR-15/007 (ANSUR II methods and summary statistics)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+  }
+ ],
+ "notes": "From the CSVs (n=4082 M, 1986 F); definition in ansur2_measurement_definitions. TR-15/007 (24) CHEST CIRCUMFERENCE: M 92.2/105.6/120.7, mean 105.87 SD 8.74; F 82.4/94.0/109.4, mean 94.69 SD 8.27 - matches. Taken at quiet respiration, not an expanded 'bodybuilding' chest."
+}
+---- CHECK: {
+ "key": "ansur2_chest",
+ "ok": true,
+ "issue": "Matches TR-15/007 table (24) exactly (mean, SD, min, max, p5/p50/p95). The quiet-respiration note is supported by the handbook."
+}
+
+#### ansur2_waist_omphalion
+{
+ "key": "ansur2_waist_omphalion",
+ "label": "Waist circumference at omphalion (navel)",
+ "status": "measured",
+ "values": "{\"male_mean_m\":0.9406,\"male_sd_m\":0.1117,\"male_p5_m\":0.768,\"male_p50_m\":0.937,\"male_p95_m\":1.131,\"male_min_m\":0.648,\"male_max_m\":1.379,\"female_mean_m\":0.8609,\"female_sd_m\":0.0999,\"female_p5_m\":0.71,\"female_p50_m\":0.852,\"female_p95_m\":1.04,\"female_min_m\":0.611,\"female_max_m\":1.334,\"orig\":\"male: p5/p50/p95 76.8/93.7/113.1 cm = 30.2/36.9/44.5 in; mean 94.06 SD 11.17 cm; range 64.8-137.9 cm | female: p5/p50/p95 71.0/85.2/104.0 cm = 28.0/33.5/40.9 in; mean 86.09 SD 9.99 cm; range 61.1-133.4 cm\"}",
+ "sources": [
+  {
+   "title": "ANSUR II male CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+  },
+  {
+   "title": "ANSUR II female CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+  },
+  {
+   "title": "Gordon et al. 2014, NATICK/TR-15/007 (ANSUR II methods and summary statistics)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+  }
+ ],
+ "notes": "From the CSVs (n=4082 M, 1986 F); definition in ansur2_measurement_definitions. TR-15/007 (87) WAIST CIRCUMFERENCE (OMPHALION): M 76.8/93.7/113.1, mean 94.06 SD 11.17; F 71.0/85.2/104.0, mean 86.09 SD 9.99 - matches. This is NAVEL-level waist, not natural (narrowest) waist; ANSUR II has no natural-waist girth."
+}
+---- CHECK: {
+ "key": "ansur2_waist_omphalion",
+ "ok": true,
+ "issue": "Matches TR-15/007 table (87) exactly. TR-15/007 Table F-1 confirms natural-indentation waist was measured in ANSUR 1988 only, so the 'no natural waist' claim is correct."
+}
+
+#### ansur2_biceps_flexed
+{
+ "key": "ansur2_biceps_flexed",
+ "label": "Upper-arm (biceps) circumference, flexed",
+ "status": "measured",
+ "values": "{\"male_mean_m\":0.3581,\"male_sd_m\":0.0346,\"male_p5_m\":0.303,\"male_p50_m\":0.357,\"male_p95_m\":0.418,\"male_min_m\":0.246,\"male_max_m\":0.49,\"female_mean_m\":0.3056,\"female_sd_m\":0.0308,\"female_p5_m\":0.259,\"female_p50_m\":0.304,\"female_p95_m\":0.36,\"female_min_m\":0.216,\"female_max_m\":0.435,\"orig\":\"male: p5/p50/p95 30.3/35.7/41.8 cm = 11.9/14.1/16.5 in; mean 35.81 SD 3.46 cm; range 24.6-49.0 cm | female: p5/p50/p95 25.9/30.4/36.0 cm = 10.2/12.0/14.2 in; mean 30.56 SD 3.08 cm; range 21.6-43.5 cm\"}",
+ "sources": [
+  {
+   "title": "ANSUR II male CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+  },
+  {
+   "title": "ANSUR II female CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+  },
+  {
+   "title": "Gordon et al. 2014, NATICK/TR-15/007 (ANSUR II methods and summary statistics)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+  }
+ ],
+ "notes": "From the CSVs (n=4082 M, 1986 F); definition in ansur2_measurement_definitions. TR-15/007 (9) BICEPS CIRCUMFERENCE, FLEXED: M 30.3/35.7/41.8, mean 35.81 SD 3.46; F 25.9/30.4/36.0, mean 30.56 SD 3.08 - matches. Flexed with maximal effort, tape at the biceps peak, so the protocol matches a bodybuilder's flexed-arm number. Bodybuilders' figures may be taken cold or pumped and are usually self-reported, so they are not strictly comparable."
+}
+---- CHECK: {
+ "key": "ansur2_biceps_flexed",
+ "ok": true,
+ "issue": "Matches TR-15/007 table (9) exactly, including max 49.0 cm (M) and 43.5 cm (F). Small caveat: in ANSUR the upper arm is held forward horizontally with the elbow at 90 degrees and the tape at the drawn biceps-peak landmark. 'Matches a bodybuilder's flexed-arm number' is slightly strong because pose and pump differ. The existing caveat sentence covers this."
+}
+
+#### ansur2_forearm_flexed
+{
+ "key": "ansur2_forearm_flexed",
+ "label": "Forearm circumference, flexed (at elbow crease)",
+ "status": "measured",
+ "values": "{\"male_mean_m\":0.3101,\"male_sd_m\":0.022,\"male_p5_m\":0.275,\"male_p50_m\":0.31,\"male_p95_m\":0.348,\"male_min_m\":0.233,\"male_max_m\":0.402,\"female_mean_m\":0.2641,\"female_sd_m\":0.0185,\"female_p5_m\":0.235,\"female_p50_m\":0.263,\"female_p95_m\":0.296,\"female_min_m\":0.2,\"female_max_m\":0.342,\"orig\":\"male: p5/p50/p95 27.5/31.0/34.8 cm = 10.8/12.2/13.7 in; mean 31.01 SD 2.20 cm; range 23.3-40.2 cm | female: p5/p50/p95 23.5/26.3/29.6 cm = 9.3/10.4/11.7 in; mean 26.41 SD 1.85 cm; range 20.0-34.2 cm\"}",
+ "sources": [
+  {
+   "title": "ANSUR II male CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+  },
+  {
+   "title": "ANSUR II female CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+  },
+  {
+   "title": "Gordon et al. 2014, NATICK/TR-15/007 (ANSUR II methods and summary statistics)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+  }
+ ],
+ "notes": "From the CSVs (n=4082 M, 1986 F); definition in ansur2_measurement_definitions. TR-15/007 (38) FOREARM CIRCUMFERENCE, FLEXED: M 27.5/31.0/34.8, mean 31.01 SD 2.20; F 23.5/26.3/29.6, mean 26.41 SD 1.85 - matches."
+}
+---- CHECK: {
+ "key": "ansur2_forearm_flexed",
+ "ok": true,
+ "issue": "Matches TR-15/007 table (38) (p95 34.79 vs 34.80)."
+}
+
+#### ansur2_thigh
+{
+ "key": "ansur2_thigh",
+ "label": "Thigh circumference (at gluteal furrow, relaxed)",
+ "status": "measured",
+ "values": "{\"male_mean_m\":0.6251,\"male_sd_m\":0.0584,\"male_p5_m\":0.532,\"male_p50_m\":0.624,\"male_p95_m\":0.723,\"male_min_m\":0.412,\"male_max_m\":0.843,\"female_mean_m\":0.6161,\"female_sd_m\":0.0558,\"female_p5_m\":0.527,\"female_p50_m\":0.613,\"female_p95_m\":0.711,\"female_min_m\":0.448,\"female_max_m\":0.87,\"orig\":\"male: p5/p50/p95 53.2/62.4/72.3 cm = 20.9/24.6/28.5 in; mean 62.51 SD 5.84 cm; range 41.2-84.3 cm | female: p5/p50/p95 52.7/61.3/71.1 cm = 20.7/24.1/28.0 in; mean 61.62 SD 5.58 cm; range 44.8-87.0 cm\"}",
+ "sources": [
+  {
+   "title": "ANSUR II male CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+  },
+  {
+   "title": "ANSUR II female CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+  },
+  {
+   "title": "Gordon et al. 2014, NATICK/TR-15/007 (ANSUR II methods and summary statistics)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+  }
+ ],
+ "notes": "From the CSVs (n=4082 M, 1986 F); definition in ansur2_measurement_definitions. TR-15/007 (78) THIGH CIRCUMFERENCE: M 53.2/62.4/72.3, mean 62.51 SD 5.85; F 52.7/61.3/71.1, mean 61.61 SD 5.58 - matches. Measured at the gluteal furrow (very top of the thigh), relaxed. This is usually the largest thigh girth and runs larger than a mid-thigh tape."
+}
+---- CHECK: {
+ "key": "ansur2_thigh",
+ "ok": true,
+ "issue": "Matches TR-15/007 table (78). The male SD of 5.84 in values versus 5.85 in TR (and in my ddof=1 recompute) is a rounding edge. Add that the tape is perpendicular to the thigh axis."
+}
+
+#### ansur2_lower_thigh
+{
+ "key": "ansur2_lower_thigh",
+ "label": "Lower thigh circumference (above knee)",
+ "status": "measured",
+ "values": "{\"male_mean_m\":0.4093,\"male_sd_m\":0.0319,\"male_p5_m\":0.359,\"male_p50_m\":0.408,\"male_p95_m\":0.463,\"male_min_m\":0.29,\"male_max_m\":0.54,\"female_mean_m\":0.4007,\"female_sd_m\":0.0352,\"female_p5_m\":0.347,\"female_p50_m\":0.398,\"female_p95_m\":0.465,\"female_min_m\":0.302,\"female_max_m\":0.6,\"orig\":\"male: p5/p50/p95 35.9/40.8/46.3 cm = 14.1/16.1/18.2 in; mean 40.93 SD 3.19 cm; range 29.0-54.0 cm | female: p5/p50/p95 34.7/39.8/46.5 cm = 13.7/15.7/18.3 in; mean 40.07 SD 3.52 cm; range 30.2-60.0 cm\"}",
+ "sources": [
+  {
+   "title": "ANSUR II male CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+  },
+  {
+   "title": "ANSUR II female CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+  }
+ ],
+ "notes": "From the CSVs (n=4082 M, 1986 F); definition in ansur2_measurement_definitions. Not cross-checked against a TR table."
+}
+---- CHECK: {
+ "key": "ansur2_lower_thigh",
+ "ok": true,
+ "issue": "The note says 'Not cross-checked against a TR table'. I checked it: it matches TR-15/007 table (60) for mean 40.93/40.07, SD 3.19/3.52, range and p5/p50/p95.",
+ "corrected": "Replace 'Not cross-checked against a TR table' with 'Matches TR-15/007 table (60)'."
+}
+
+#### ansur2_calf
+{
+ "key": "ansur2_calf",
+ "label": "Calf circumference (maximum)",
+ "status": "measured",
+ "values": "{\"male_mean_m\":0.3923,\"male_sd_m\":0.0297,\"male_p5_m\":0.346,\"male_p50_m\":0.392,\"male_p95_m\":0.443,\"male_min_m\":0.266,\"male_max_m\":0.523,\"female_mean_m\":0.3733,\"female_sd_m\":0.0285,\"female_p5_m\":0.328,\"female_p50_m\":0.372,\"female_p95_m\":0.423,\"female_min_m\":0.282,\"female_max_m\":0.482,\"orig\":\"male: p5/p50/p95 34.6/39.2/44.3 cm = 13.6/15.4/17.4 in; mean 39.23 SD 2.97 cm; range 26.6-52.3 cm | female: p5/p50/p95 32.8/37.2/42.3 cm = 12.9/14.6/16.7 in; mean 37.33 SD 2.85 cm; range 28.2-48.2 cm\"}",
+ "sources": [
+  {
+   "title": "ANSUR II male CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+  },
+  {
+   "title": "ANSUR II female CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+  },
+  {
+   "title": "Gordon et al. 2014, NATICK/TR-15/007 (ANSUR II methods and summary statistics)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+  }
+ ],
+ "notes": "From the CSVs (n=4082 M, 1986 F); definition in ansur2_measurement_definitions. TR-15/007 (21) CALF CIRCUMFERENCE: M 34.6/39.2/44.3, mean 39.23 SD 2.97; F 32.8/37.2/42.3, mean 37.33 SD 2.85 - matches. The handbook has measurers record 3 readings near the maximum; the public file holds one value per subject, and which reduction (max or mean) was used is not stated in the documents read."
+}
+---- CHECK: {
+ "key": "ansur2_calf",
+ "ok": false,
+ "issue": "Values match TR-15/007 table (21) exactly, but the note is wrong. It says the documents do not say whether the max or the mean of the 3 readings was kept. TR-15/007 (method-change section, near the observer-error discussion) states: 'The new method for Calf Circumference involved taking three measurements and using the highest value'. It also reports less than 0.1 mm difference from the 1988 landmark method. Gap #8 is wrong for the same reason.",
+ "corrected": "Notes: 'Three readings around the observed maximum; the highest value is kept (TR-15/007). This equals the 1988 landmark method within 0.1 mm.' Delete gap #8."
+}
+
+#### ansur2_neck
+{
+ "key": "ansur2_neck",
+ "label": "Neck circumference (below Adam's apple)",
+ "status": "measured",
+ "values": "{\"male_mean_m\":0.3977,\"male_sd_m\":0.0258,\"male_p5_m\":0.36,\"male_p50_m\":0.395,\"male_p95_m\":0.443,\"male_min_m\":0.311,\"male_max_m\":0.514,\"female_mean_m\":0.3298,\"female_sd_m\":0.0192,\"female_p5_m\":0.302,\"female_p50_m\":0.328,\"female_p95_m\":0.363,\"female_min_m\":0.275,\"female_max_m\":0.424,\"orig\":\"male: p5/p50/p95 36.0/39.5/44.3 cm = 14.2/15.6/17.4 in; mean 39.77 SD 2.58 cm; range 31.1-51.4 cm | female: p5/p50/p95 30.2/32.8/36.3 cm = 11.9/12.9/14.3 in; mean 32.98 SD 1.92 cm; range 27.5-42.4 cm\"}",
+ "sources": [
+  {
+   "title": "ANSUR II male CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+  },
+  {
+   "title": "ANSUR II female CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+  },
+  {
+   "title": "Gordon et al. 2014, NATICK/TR-15/007 (ANSUR II methods and summary statistics)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+  }
+ ],
+ "notes": "From the CSVs (n=4082 M, 1986 F); definition in ansur2_measurement_definitions. TR-15/007 (62) NECK CIRCUMFERENCE: M 36.0/39.5/44.3, mean 39.76 SD 2.58; F 30.2/32.8/36.3, mean 32.98 SD 1.92 - matches."
+}
+---- CHECK: {
+ "key": "ansur2_neck",
+ "ok": true,
+ "issue": "Matches TR-15/007 table (62). Fix the label wording: the tape is at the lower edge of the Adam's apple (infrathyroid), not 'below' it."
+}
+
+#### ansur2_neck_base
+{
+ "key": "ansur2_neck_base",
+ "label": "Neck circumference at base",
+ "status": "measured",
+ "values": "{\"male_mean_m\":0.4346,\"male_sd_m\":0.0257,\"male_p5_m\":0.395,\"male_p50_m\":0.433,\"male_p95_m\":0.479,\"male_min_m\":0.35,\"male_max_m\":0.545,\"female_mean_m\":0.3712,\"female_sd_m\":0.0197,\"female_p5_m\":0.34,\"female_p50_m\":0.37,\"female_p95_m\":0.405,\"female_min_m\":0.302,\"female_max_m\":0.457,\"orig\":\"male: p5/p50/p95 39.5/43.3/47.9 cm = 15.6/17.0/18.9 in; mean 43.46 SD 2.57 cm; range 35.0-54.5 cm | female: p5/p50/p95 34.0/37.0/40.5 cm = 13.4/14.6/15.9 in; mean 37.12 SD 1.97 cm; range 30.2-45.7 cm\"}",
+ "sources": [
+  {
+   "title": "ANSUR II male CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+  },
+  {
+   "title": "ANSUR II female CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+  },
+  {
+   "title": "Gordon et al. 2014, NATICK/TR-15/007 (ANSUR II methods and summary statistics)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+  }
+ ],
+ "notes": "From the CSVs (n=4082 M, 1986 F); definition in ansur2_measurement_definitions. TR-15/007 (63) NECK CIRCUMFERENCE, BASE: M 39.5/43.3/47.9, mean 43.46; F 34.0/37.0/40.5, mean 37.12 - matches."
+}
+---- CHECK: {
+ "key": "ansur2_neck_base",
+ "ok": true,
+ "issue": "Matches TR-15/007 table (63) exactly."
+}
+
+#### ansur2_wrist
+{
+ "key": "ansur2_wrist",
+ "label": "Wrist circumference",
+ "status": "measured",
+ "values": "{\"male_mean_m\":0.1759,\"male_sd_m\":0.009,\"male_p5_m\":0.162,\"male_p50_m\":0.176,\"male_p95_m\":0.191,\"male_min_m\":0.141,\"male_max_m\":0.216,\"female_mean_m\":0.1548,\"female_sd_m\":0.0078,\"female_p5_m\":0.142,\"female_p50_m\":0.154,\"female_p95_m\":0.168,\"female_min_m\":0.124,\"female_max_m\":0.183,\"orig\":\"male: p5/p50/p95 16.2/17.6/19.1 cm = 6.4/6.9/7.5 in; mean 17.59 SD 0.90 cm; range 14.1-21.6 cm | female: p5/p50/p95 14.2/15.4/16.8 cm = 5.6/6.1/6.6 in; mean 15.48 SD 0.78 cm; range 12.4-18.3 cm\"}",
+ "sources": [
+  {
+   "title": "ANSUR II male CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+  },
+  {
+   "title": "ANSUR II female CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+  }
+ ],
+ "notes": "From the CSVs (n=4082 M, 1986 F). Not cross-checked against a TR table. Useful as a frame-size input; it barely tracks body mass (see girth scaling)."
+}
+---- CHECK: {
+ "key": "ansur2_wrist",
+ "ok": true,
+ "issue": "Not cross-checked by the researcher. I checked it: it matches TR-15/007 table (92) (mean 17.59/15.48, SD 0.90/0.78, range 14.1-21.6 / 12.4-18.3).",
+ "corrected": "Replace 'Not cross-checked' with 'Matches TR-15/007 table (92)'."
+}
+
+#### ansur2_hip
+{
+ "key": "ansur2_hip",
+ "label": "Buttock (hip) circumference",
+ "status": "measured",
+ "values": "{\"male_mean_m\":1.0195,\"male_sd_m\":0.0767,\"male_p5_m\":0.899,\"male_p50_m\":1.017,\"male_p95_m\":1.149,\"male_min_m\":0.737,\"male_max_m\":1.305,\"female_mean_m\":1.0212,\"female_sd_m\":0.0759,\"female_p5_m\":0.901,\"female_p50_m\":1.018,\"female_p95_m\":1.156,\"female_min_m\":0.798,\"female_max_m\":1.341,\"orig\":\"male: p5/p50/p95 89.9/101.7/114.9 cm = 35.4/40.0/45.2 in; mean 101.95 SD 7.67 cm; range 73.7-130.5 cm | female: p5/p50/p95 90.1/101.8/115.6 cm = 35.5/40.1/45.5 in; mean 102.12 SD 7.59 cm; range 79.8-134.1 cm\"}",
+ "sources": [
+  {
+   "title": "ANSUR II male CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+  },
+  {
+   "title": "ANSUR II female CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+  }
+ ],
+ "notes": "From the CSVs (n=4082 M, 1986 F). Not cross-checked against a TR table."
+}
+---- CHECK: {
+ "key": "ansur2_hip",
+ "ok": true,
+ "issue": "Not cross-checked by the researcher. I checked it: it matches TR-15/007 table (16) BUTTOCK CIRCUMFERENCE (mean 101.95/102.12, SD 7.67/7.59, p50 101.7/101.8). Labelling it 'hip' is acceptable if the calculator says it is the buttock-level girth.",
+ "corrected": "Replace 'Not cross-checked' with 'Matches TR-15/007 table (16)'."
+}
+
+#### ansur2_selfreport_bias
+{
+ "key": "ansur2_selfreport_bias",
+ "label": "Self-reported vs measured height and weight in ANSUR II",
+ "status": "derived",
+ "values": "{\"male_height_bias_m\":0.0227,\"male_weight_bias_kg\":-0.22,\"female_height_bias_m\":0.0124,\"female_weight_bias_kg\":-0.85,\"orig\":\"Mean self-report minus measured: men +2.27 cm, -0.22 kg; women +1.24 cm, -0.85 kg\"}",
+ "sources": [
+  {
+   "title": "ANSUR II male CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+  },
+  {
+   "title": "ANSUR II female CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+  },
+  {
+   "title": "NSRDEC memo 14 Apr 2017: ANSUR II working databases",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSURII-MFR.pdf"
+  }
+ ],
+ "notes": "The memo says the Heightin and Weightlbs columns are self-reported. On average people over-report their height by about 1-2 cm, even in this routinely measured population. Worth flagging when the calculator takes reported heights of athletes or celebrities."
+}
+---- CHECK: {
+ "key": "ansur2_selfreport_bias",
+ "ok": true,
+ "issue": "Reproduced, with one undisclosed step. The male weight bias of -0.22 kg excludes one record where Weightlbs is 0; including it gives -0.25. Each sex also has 18 height self-reports more than 10 cm off (max +61 cm M, +32 cm F). Trimmed means (|diff| <= 10 cm) are 2.21 / 1.21 cm, so the conclusion holds. The notes should state the exclusion. Medians are more robust: height +2.10 cm M / +1.18 cm F, weight -0.05 kg M / -0.59 kg F.",
+ "corrected": "Add: 'one male record with Weightlbs=0 excluded; medians: height +2.10 / +1.18 cm, weight -0.05 / -0.59 kg (M/F)'."
+}
+
+#### ansur2_girth_scaling_male
+{
+ "key": "ansur2_girth_scaling_male",
+ "label": "How each girth scales with sqrt(weight/height), males",
+ "status": "derived",
+ "values": "{\"chest_k_cm_per_sqrt_kg_per_m\":15.2277,\"chest_k_p5\":14.5013,\"chest_k_p95\":15.9904,\"chest_free_b\":1.0191,\"waist_omphalion_k_cm_per_sqrt_kg_per_m\":13.5613,\"waist_omphalion_k_p5\":12.2198,\"waist_omphalion_k_p95\":14.7396,\"waist_omphalion_free_b\":1.4426,\"biceps_flexed_k_cm_per_sqrt_kg_per_m\":5.1529,\"biceps_flexed_k_p5\":4.7432,\"biceps_flexed_k_p95\":5.6303,\"biceps_flexed_free_b\":1.0868,\"forearm_flexed_k_cm_per_sqrt_kg_per_m\":4.4531,\"forearm_flexed_k_p5\":4.1375,\"forearm_flexed_k_p95\":4.8112,\"forearm_flexed_free_b\":0.7603,\"thigh_upper_k_cm_per_sqrt_kg_per_m\":8.998,\"thigh_upper_k_p5\":8.4368,\"thigh_upper_k_p95\":9.527,\"thigh_upper_free_b\":1.1513,\"thigh_lower_k_cm_per_sqrt_kg_per_m\":5.8833,\"thigh_lower_k_p5\":5.5361,\"thigh_lower_k_p95\":6.2417,\"thigh_lower_free_b\":0.9128,\"calf_k_cm_per_sqrt_kg_per_m\":5.6364,\"calf_k_p5\":5.2576,\"calf_k_p95\":6.0431,\"calf_free_b\":0.8447,\"neck_k_cm_per_sqrt_kg_per_m\":5.7093,\"neck_k_p5\":5.3211,\"neck_k_p95\":6.1387,\"neck_free_b\":0.6985,\"orig\":\"girth_cm = k * sqrt(weight_kg / stature_m); fit stats: chest R2 0.869, RMSE 3.17 cm; b 95%CI [1.007,1.031], R2log 0.870; waist_omphalion R2 0.765, RMSE 5.41 cm; b 95%CI [1.424,1.462], R2log 0.844; biceps_flexed R2 0.707, RMSE 1.87 cm; b 95%CI [1.066,1.108], R2log 0.718; forearm_flexed R2 0.587, RMSE 1.41 cm; b 95%CI [0.744,0.777], R2log 0.657; thigh_upper R2 0.843, RMSE 2.32 cm; b 95%CI [1.137,1.165], R2log 0.861; thigh_lower R2 0.775, RMSE 1.51 cm; b 95%CI [0.898,0.927], R2log 0.785; calf R2 0.686, RMSE 1.67 cm; b 95%CI [0.828,0.861], R2log 0.712; neck R2 0.552, RMSE 1.72 cm; b 95%CI [0.684,0.713], R2log 0.675\"}",
+ "sources": [
+  {
+   "title": "ANSUR II male CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+  }
+ ],
+ "notes": "Geometric expectation: if body SHAPE is fixed (isometric scaling, or widening at fixed height), every girth is proportional to sqrt(W/H), i.e. exponent b=1. Two fits per girth. (1) Proportional through the origin, G = k*X with X = sqrt(W[kg]/H[m]). k is a per-girth shape constant, and the per-subject percentiles of G/X show how much shape varies. R2 is measured against the mean of G and is negative for girths that barely track mass (wrist: -0.22 M, -0.17 F). (2) Free power law ln G = ln a + b ln X (OLS). Results: chest tracks the geometric law almost exactly (b about 1.02-1.04). Waist grows much faster than geometric (b about 1.4): in this population extra mass goes to the abdomen. Upper thigh and biceps grow a bit faster (b about 1.09-1.24). Lower thigh is about geometric (0.91 M, 1.02 F). Forearm, calf and neck grow slower (b about 0.62-0.85). These exponents describe how soldiers differ, which is mostly fat. They do NOT describe how a body changes when it adds muscle: a bodybuilder adds girth to arms, chest and thighs, not to the waist, so use them with care outside the sample. Also fitted: ln G = c + p ln W + q ln H (see ansur2_girth_predictor_male). All per-girth values are saved in fits.json."
+}
+---- CHECK: {
+ "key": "ansur2_girth_scaling_male",
+ "ok": false,
+ "issue": "All numbers reproduced: k, k p5/p95, free b and 95% CIs (forearm CI 0.743 vs 0.744), R2. The wrist R2 of -0.22 is also confirmed. The problem is the interpretation 'how soldiers differ, which is mostly fat', which is stated as fact but is unsupported by this dataset: the public file has no body-composition data, as gap #3 itself says. The claim is plausible but needs an outside source and an 'estimate' label. Forbes's cross-sectional relation, as restated by Hall 2007 (Br J Nutr 97:1059, PMC2376748), gives dFFM/dBW = 10.4/(10.4 + FM). At FM of 15-25 kg that means about 29-41% of extra weight is lean and the rest fat. It was derived from women of similar stature.",
+ "corrected": "Keep all values. Change the note to: 'These exponents describe how soldiers differ in size. ANSUR II has no body-composition data. By Forbes's relation (Hall 2007), at typical fat masses roughly 60-70% of between-person weight difference is fat (estimate, derived from data on women).' Apply the same wording in the summary and in ansur2_girth_predictor_male."
+}
+
+#### ansur2_girth_scaling_female
+{
+ "key": "ansur2_girth_scaling_female",
+ "label": "How each girth scales with sqrt(weight/height), females",
+ "status": "derived",
+ "values": "{\"chest_k_cm_per_sqrt_kg_per_m\":14.7336,\"chest_k_p5\":13.6952,\"chest_k_p95\":15.8551,\"chest_free_b\":1.038,\"waist_omphalion_k_cm_per_sqrt_kg_per_m\":13.4215,\"waist_omphalion_k_p5\":12.035,\"waist_omphalion_k_p95\":14.8395,\"waist_omphalion_free_b\":1.405,\"biceps_flexed_k_cm_per_sqrt_kg_per_m\":4.76,\"biceps_flexed_k_p5\":4.3914,\"biceps_flexed_k_p95\":5.1462,\"biceps_flexed_free_b\":1.2418,\"forearm_flexed_k_cm_per_sqrt_kg_per_m\":4.1041,\"forearm_flexed_k_p5\":3.8314,\"forearm_flexed_k_p95\":4.3936,\"forearm_flexed_free_b\":0.8,\"thigh_upper_k_cm_per_sqrt_kg_per_m\":9.5931,\"thigh_upper_k_p5\":8.9893,\"thigh_upper_k_p95\":10.1711,\"thigh_upper_free_b\":1.1587,\"thigh_lower_k_cm_per_sqrt_kg_per_m\":6.2346,\"thigh_lower_k_p5\":5.7548,\"thigh_lower_k_p95\":6.7242,\"thigh_lower_free_b\":1.0182,\"calf_k_cm_per_sqrt_kg_per_m\":5.8024,\"calf_k_p5\":5.3575,\"calf_k_p95\":6.2578,\"calf_free_b\":0.8536,\"neck_k_cm_per_sqrt_kg_per_m\":5.1208,\"neck_k_p5\":4.759,\"neck_k_p95\":5.5263,\"neck_free_b\":0.6229,\"orig\":\"girth_cm = k * sqrt(weight_kg / stature_m); fit stats: chest R2 0.736, RMSE 4.25 cm; b 95%CI [1.011,1.065], R2log 0.737; waist_omphalion R2 0.699, RMSE 5.48 cm; b 95%CI [1.371,1.439], R2log 0.766; biceps_flexed R2 0.763, RMSE 1.50 cm; b 95%CI [1.214,1.269], R2log 0.796; forearm_flexed R2 0.630, RMSE 1.12 cm; b 95%CI [0.775,0.825], R2log 0.674; thigh_upper R2 0.824, RMSE 2.34 cm; b 95%CI [1.137,1.181], R2log 0.842; thigh_lower R2 0.704, RMSE 1.91 cm; b 95%CI [0.989,1.047], R2log 0.707; calf R2 0.623, RMSE 1.75 cm; b 95%CI [0.826,0.881], R2log 0.645; neck R2 0.388, RMSE 1.50 cm; b 95%CI [0.601,0.645], R2log 0.599\"}",
+ "sources": [
+  {
+   "title": "ANSUR II female CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+  }
+ ],
+ "notes": "Same method as ansur2_girth_scaling_male; n=1986. Female biceps grows faster with mass (b=1.24) than male (1.09); chest bust-inclusive."
+}
+---- CHECK: {
+ "key": "ansur2_girth_scaling_female",
+ "ok": true,
+ "issue": "All values reproduced (k, percentiles, b and CIs, R2). Apply the same 'mostly fat' wording caveat if it is inherited from the male note."
+}
+
+#### ansur2_girth_predictor_male
+{
+ "key": "ansur2_girth_predictor_male",
+ "label": "Predict 'average-shape' girths from weight and height, males",
+ "status": "derived",
+ "values": "{\"chest_A\":14.5924,\"chest_p_weight\":0.5084,\"chest_q_height\":-0.4917,\"waist_omphalion_A\":5.8855,\"waist_omphalion_p_weight\":0.7277,\"waist_omphalion_q_height\":-0.8234,\"biceps_flexed_A\":4.4491,\"biceps_flexed_p_weight\":0.5485,\"biceps_flexed_q_height\":-0.6257,\"forearm_flexed_A\":6.716,\"forearm_flexed_p_weight\":0.3681,\"forearm_flexed_q_height\":-0.1877,\"thigh_upper_A\":6.6267,\"thigh_upper_p_weight\":0.5733,\"thigh_upper_q_height\":-0.5382,\"thigh_lower_A\":6.6519,\"thigh_lower_p_weight\":0.4462,\"thigh_lower_q_height\":-0.2931,\"calf_A\":7.3905,\"calf_p_weight\":0.4156,\"calf_q_height\":-0.3149,\"neck_A\":10.3419,\"neck_p_weight\":0.351,\"neck_q_height\":-0.3768,\"orig\":\"girth_cm = A * weight_kg^p * stature_m^q; residual SD: chest 3.0%; waist_omphalion 4.7%; biceps_flexed 5.1%; forearm_flexed 4.1%; thigh_upper 3.5%; thigh_lower 3.6%; calf 4.0%; neck 3.7%. Check at median H=1.755 m, W=84.6 kg: predicted chest 105.7, waist 93.6, biceps 35.7, forearm 31.0, thigh 62.3, lower thigh 40.9, calf 39.2, neck 39.7 cm vs observed medians 105.6, 93.7, 35.7, 31.0, 62.4, 40.8, 39.2, 39.5 cm\"}",
+ "sources": [
+  {
+   "title": "ANSUR II male CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+  }
+ ],
+ "notes": "OLS on logs, n=4082. R2 on the log scale: chest 0.870, waist 0.845, biceps 0.719, forearm 0.666, thigh 0.862, lower thigh 0.791, calf 0.714, neck 0.675. The residual SD of ln(girth) is roughly the fractional 1-SD scatter. This is the everyday-body baseline: it gives the girths of a soldier of a given height and weight, whose extra weight is mostly fat. It is valid only inside the sample range (weight 39-144 kg, stature 149-199 cm). Do not use it for bodybuilders or superheroes without a build-specific shape adjustment."
+}
+---- CHECK: {
+ "key": "ansur2_girth_predictor_male",
+ "ok": false,
+ "issue": "Numbers reproduced: A, p, q and residual SDs agree to 4 decimals. The validity range (39-144 kg, 149-199 cm) is correct. The note repeats the unsourced claim that extra weight is 'mostly fat'.",
+ "corrected": "Keep the values. Replace 'whose extra weight is mostly fat' with 'whose extra weight includes a large but unmeasured fat share (no body-composition data; see Forbes/Hall 2007 for an estimate)'."
+}
+
+#### ansur2_girth_predictor_female
+{
+ "key": "ansur2_girth_predictor_female",
+ "label": "Predict 'average-shape' girths from weight and height, females",
+ "status": "derived",
+ "values": "{\"chest_A\":13.8073,\"chest_p_weight\":0.5233,\"chest_q_height\":-0.5704,\"waist_omphalion_A\":6.4553,\"waist_omphalion_p_weight\":0.7186,\"waist_omphalion_q_height\":-0.8967,\"biceps_flexed_A\":3.0808,\"biceps_flexed_p_weight\":0.6316,\"biceps_flexed_q_height\":-0.75,\"forearm_flexed_A\":5.8014,\"forearm_flexed_p_weight\":0.3839,\"forearm_flexed_q_height\":-0.2062,\"thigh_upper_A\":7.0837,\"thigh_upper_p_weight\":0.5757,\"thigh_upper_q_height\":-0.5351,\"thigh_lower_A\":5.9085,\"thigh_lower_p_weight\":0.4979,\"thigh_lower_q_height\":-0.3746,\"calf_A\":7.4246,\"calf_p_weight\":0.4112,\"calf_q_height\":-0.239,\"neck_A\":10.2349,\"neck_p_weight\":0.3049,\"neck_q_height\":-0.2322,\"orig\":\"girth_cm = A * weight_kg^p * stature_m^q; residual SD: chest 4.4%; waist_omphalion 5.5%; biceps_flexed 4.5%; forearm_flexed 3.9%; thigh_upper 3.6%; thigh_lower 4.7%; calf 4.5%; neck 3.6%. Check at median H=1.626 m, W=66.8 kg: predicted chest 94.3, waist 85.5, biceps 30.4, forearm 26.3, thigh 61.3, lower thigh 39.9, calf 37.2, neck 32.9 cm vs observed medians 94.0, 85.2, 30.4, 26.3, 61.3, 39.8, 37.2, 32.8 cm\"}",
+ "sources": [
+  {
+   "title": "ANSUR II female CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+  }
+ ],
+ "notes": "OLS on logs, n=1986. R2 on the log scale: chest 0.738, waist 0.770, biceps 0.798, forearm 0.683, thigh 0.842, lower thigh 0.710, calf 0.652, neck 0.602. It is valid only inside the sample range (weight 36-120 kg, stature 141-183 cm). Same caveats as the male predictor."
+}
+---- CHECK: {
+ "key": "ansur2_girth_predictor_female",
+ "ok": true,
+ "issue": "A, p, q and residual SDs reproduced (for example chest A 13.807, p 0.5233, q -0.5704; rsd 4.4%)."
+}
+
+#### ansur2_weight_regression_male
+{
+ "key": "ansur2_weight_regression_male",
+ "label": "Weight from height + 7 girths (chest, waist, flexed biceps, flexed forearm, thigh, calf, neck), males",
+ "status": "derived",
+ "values": "{\"loglog_ln_intercept\":-8.4404,\"loglog_ln_stature_cm\":0.98733,\"loglog_ln_chest_cm\":0.41323,\"loglog_ln_waist_omphalion_cm\":0.30609,\"loglog_ln_biceps_flexed_cm\":0.10894,\"loglog_ln_forearm_flexed_cm\":0.12599,\"loglog_ln_thigh_upper_cm\":0.4389,\"loglog_ln_calf_cm\":0.27805,\"loglog_ln_neck_cm\":0.21877,\"loglog_smearing_factor\":1.00018,\"loglog_r2\":0.9868,\"loglog_rmse_kg\":1.634,\"loglog_cv10_rmse_kg\":1.639,\"loglog_rmse_pct\":1.91,\"loglog_resid_p5_kg\":-2.58,\"loglog_resid_p95_kg\":2.66,\"geom_c_chest\":0.000989,\"geom_c_waist_omphalion\":0.000721,\"geom_c_biceps_flexed\":0.001063,\"geom_c_forearm_flexed\":0.004399,\"geom_c_thigh_upper\":0.002765,\"geom_c_calf\":0.004856,\"geom_c_neck\":0.004353,\"geom_r2\":0.9856,\"geom_rmse_kg\":1.703,\"geom_cv10_rmse_kg\":1.708,\"linear_intercept\":-160.09427,\"linear_stature_cm\":0.47827,\"linear_chest_cm\":0.32586,\"linear_waist_omphalion_cm\":0.29795,\"linear_biceps_flexed_cm\":0.25992,\"linear_forearm_flexed_cm\":0.34307,\"linear_thigh_upper_cm\":0.58804,\"linear_calf_cm\":0.60997,\"linear_neck_cm\":0.46436,\"linear_r2\":0.9825,\"linear_rmse_kg\":1.88,\"linear_cv10_rmse_kg\":1.886,\"height_only_r2\":0.2199,\"height_only_rmse_kg\":12.559,\"orig\":\"LOG-LOG: W_kg = 1.00018 * exp(-8.4404) * H_cm^0.9873 * chest^0.4132 * waist^0.3061 * biceps^0.1089 * forearm^0.1260 * thigh^0.4389 * calf^0.2780 * neck^0.2188 (girths cm); R2 0.9868, RMSE 1.634 kg (1.91%), 10-fold CV RMSE 1.639 kg, 90% of residuals in [-2.58, 2.66] kg; sum of girth exponents 1.89 (geometry predicts 2), height exponent 0.987 (geometry predicts 1). GEOMETRIC: W_kg = H_m * sum(c_i * G_i_cm^2), c = {chest: 0.00099, waist_omphalion: 0.00072, biceps_flexed: 0.00106, forearm_flexed: 0.00440, thigh_upper: 0.00276, calf: 0.00486, neck: 0.00435}; R2 0.9856, RMSE 1.703 kg, CV RMSE 1.708 kg. LINEAR: W_kg = -160.094 + 0.4783*H_cm + 0.3259*chest + 0.2980*waist + 0.2599*biceps + 0.3431*forearm + 0.5880*thigh + 0.6100*calf + 0.4644*neck; R2 0.9825, RMSE 1.88 kg, CV RMSE 1.886 kg. Height alone: R2 0.2199, RMSE 12.559 kg.\"}",
+ "sources": [
+  {
+   "title": "ANSUR II male CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+  }
+ ],
+ "notes": "OLS fits, n=4082. 10-fold cross-validated errors are essentially equal to in-sample errors (no overfitting); the geometric form was fit by non-negative least squares. Extrapolation test 1: trained on all but the heaviest 10%, then predicted the heaviest 10%. Mean error (observed - predicted): linear 3.47 kg (RMSE 4.19), log-log 0.82 kg (RMSE 2.29), geometric -0.51 kg (RMSE 2.35). Extrapolation test 2: trained without the 10% biggest flexed arms, then predicted them. Mean error: linear 1.72 kg, log-log 0.04 kg, geometric -0.92 kg. Recommendation: use the log-log or geometric (H x girth^2) form for extreme builds; the linear form under-predicts large bodies. All three were fitted on soldiers whose largest flexed arm was 49.0 cm, so predictions for 55-60 cm arms are extrapolations and should be labelled estimates. Individual coefficients are not interpretable because the girths are strongly collinear (pairwise r 0.53-0.89). Reduced models (log-log): H+chest+waist gives R2 0.9255, RMSE 3.881 kg; H+chest+waist+biceps+thigh+calf gives R2 0.9832, RMSE 1.843 kg. Their coefficients are in fits.json."
+}
+---- CHECK: {
+ "key": "ansur2_weight_regression_male",
+ "ok": true,
+ "issue": "Fully reproduced by an independent re-fit. Log-log coefficients identical, smearing factor 1.00018, RMSE 1.634, R2 0.9868, residual p5/p95 -2.58/2.66, 10-fold CV 1.638. Geometric NNLS c identical (RMSE 1.703). Linear coefficients identical (RMSE 1.880). Height-only R2 0.2199, RMSE 12.559. Heaviest-10% test: mean error log-log 0.81, geometric -0.52, linear 3.47 kg. Biggest-arm test: 0.04 / -0.91 / 1.73 kg. One caveat to make explicit: out-of-tail RMSE is about 2.3 kg against 1.6 in-sample, and these are within-sample tails, not bodybuilders. Gap #5 says this."
+}
+
+#### ansur2_weight_regression_female
+{
+ "key": "ansur2_weight_regression_female",
+ "label": "Weight from height + 7 girths (chest, waist, flexed biceps, flexed forearm, thigh, calf, neck), females",
+ "status": "derived",
+ "values": "{\"loglog_ln_intercept\":-8.37056,\"loglog_ln_stature_cm\":0.99109,\"loglog_ln_chest_cm\":0.33931,\"loglog_ln_waist_omphalion_cm\":0.2191,\"loglog_ln_biceps_flexed_cm\":0.15083,\"loglog_ln_forearm_flexed_cm\":0.08197,\"loglog_ln_thigh_upper_cm\":0.50976,\"loglog_ln_calf_cm\":0.34502,\"loglog_ln_neck_cm\":0.2518,\"loglog_smearing_factor\":1.00024,\"loglog_r2\":0.9813,\"loglog_rmse_kg\":1.502,\"loglog_cv10_rmse_kg\":1.509,\"loglog_rmse_pct\":2.19,\"loglog_resid_p5_kg\":-2.4,\"loglog_resid_p95_kg\":2.34,\"geom_c_chest\":0.000843,\"geom_c_waist_omphalion\":0.000511,\"geom_c_biceps_flexed\":0.002367,\"geom_c_forearm_flexed\":0.003555,\"geom_c_thigh_upper\":0.002832,\"geom_c_calf\":0.005472,\"geom_c_neck\":0.006242,\"geom_r2\":0.9804,\"geom_rmse_kg\":1.539,\"geom_cv10_rmse_kg\":1.546,\"linear_intercept\":-128.39031,\"linear_stature_cm\":0.41265,\"linear_chest_cm\":0.24671,\"linear_waist_omphalion_cm\":0.17197,\"linear_biceps_flexed_cm\":0.36305,\"linear_forearm_flexed_cm\":0.17757,\"linear_thigh_upper_cm\":0.55602,\"linear_calf_cm\":0.6294,\"linear_neck_cm\":0.52302,\"linear_r2\":0.9773,\"linear_rmse_kg\":1.656,\"linear_cv10_rmse_kg\":1.664,\"height_only_r2\":0.2846,\"height_only_rmse_kg\":9.289,\"orig\":\"LOG-LOG: W_kg = 1.00024 * exp(-8.3706) * H_cm^0.9911 * chest^0.3393 * waist^0.2191 * biceps^0.1508 * forearm^0.0820 * thigh^0.5098 * calf^0.3450 * neck^0.2518 (girths cm); R2 0.9813, RMSE 1.502 kg (2.19%), 10-fold CV RMSE 1.509 kg, 90% of residuals in [-2.4, 2.34] kg; sum of girth exponents 1.8978 (geometry predicts 2), height exponent 0.991 (geometry predicts 1). GEOMETRIC: W_kg = H_m * sum(c_i * G_i_cm^2), c = {chest: 0.00084, waist_omphalion: 0.00051, biceps_flexed: 0.00237, forearm_flexed: 0.00356, thigh_upper: 0.00283, calf: 0.00547, neck: 0.00624}; R2 0.9804, RMSE 1.539 kg, CV RMSE 1.546 kg. LINEAR: W_kg = -128.390 + 0.4127*H_cm + 0.2467*chest + 0.1720*waist + 0.3631*biceps + 0.1776*forearm + 0.5560*thigh + 0.6294*calf + 0.5230*neck; R2 0.9773, RMSE 1.656 kg, CV RMSE 1.664 kg. Height alone: R2 0.2846, RMSE 9.289 kg.\"}",
+ "sources": [
+  {
+   "title": "ANSUR II female CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+  }
+ ],
+ "notes": "OLS fits, n=1986. 10-fold CV errors are essentially equal to in-sample errors. Extrapolation test 1: trained on all but the heaviest 10%, then predicted the heaviest 10%. Mean error (observed - predicted): linear 2.8 kg (RMSE 3.45), log-log 0.7 kg (RMSE 1.97), geometric -0.26 kg (RMSE 1.96). Extrapolation test 2: trained without the 10% biggest flexed arms, then predicted them. Mean error: linear 1.36 kg, log-log -0.06 kg, geometric -0.78 kg. The largest flexed arm in the female sample is 43.5 cm. Reduced models (log-log): H+chest+waist gives R2 0.8608, RMSE 4.097 kg; H+chest+waist+biceps+thigh+calf gives R2 0.9771, RMSE 1.661 kg. Their coefficients are in fits.json."
+}
+---- CHECK: {
+ "key": "ansur2_weight_regression_female",
+ "ok": true,
+ "issue": "Fully reproduced: log-log coefficients, smearing factor 1.00024, RMSE 1.502, geometric c, linear coefficients, height-only R2 0.2846, extrapolation means (log-log 0.72, geometric -0.25, linear 2.83). One trivial difference: in the biggest-arm test I get log-log -0.09 vs the reported -0.06, from tie handling at the 90th-percentile cut."
+}
+
+#### ansur2_volume_model_male
+{
+ "key": "ansur2_volume_model_male",
+ "label": "Calibration of a simple frustum (stacked-cone) body-volume model, males",
+ "status": "derived",
+ "values": "{\"kg_per_model_litre_median\":1.0422,\"kg_per_model_litre_p5\":1.0066,\"kg_per_model_litre_p95\":1.083,\"kg_per_model_litre_sd\":0.0236,\"model_volume_median_m3\":0.081,\"rmse_kg\":1.95,\"corr_ratio_with_bmi\":-0.233,\"share_head_neck\":0.056,\"share_neck_to_chest\":0.131,\"share_chest_to_waist\":0.227,\"share_waist_to_crotch\":0.197,\"share_thigh_x2\":0.189,\"share_shank_x2\":0.091,\"share_upper_arm_x2\":0.073,\"share_forearm_x2\":0.032,\"orig\":\"weight_kg = 1.0422 * V_model_litres; V_model p5/p50/p95 61.2/81.0/107.1 L\"}",
+ "sources": [
+  {
+   "title": "ANSUR II male CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+  }
+ ],
+ "notes": "The model is a stack of circular frustums (truncated cones), each running between two end circumferences over a length. Head+neck: neck to head circumference, over stature minus cervicale height. Upper trunk: neck base to chest, over cervicale height minus chest height. Mid trunk: chest to waist (omphalion). Lower trunk: waist to buttock circumference, over omphalion height minus crotch height. Thigh: upper to lower thigh, over crotch to midpatella. Shank (midpatella to lateral malleolus): 0.85 x lower thigh to calf over the top third, then calf to ankle over the lower two thirds. Upper arm: flexed biceps to flexed forearm, over acromion-radiale. Forearm: flexed forearm to wrist, over radiale-stylion. Hands and feet are omitted. Frustum volume = L/(12*pi)*(C1^2 + C1*C2 + C2^2). The calibration constant (kg per model litre) is NOT body density: it absorbs non-circular cross-sections, the oversized flexed arm girths and the omitted hands and feet. Its spread is small (SD 2.3% M, 2.7% F), so this geometric model predicts weight about as well as the regressions (RMSE about 1.9 kg). Being physical, it scales sensibly to extreme builds. The ratio falls slightly with BMI (corr -0.23), so very fat bodies run a little lighter per model-litre."
+}
+---- CHECK: {
+ "key": "ansur2_volume_model_male",
+ "ok": false,
+ "issue": "Calibration reproduced exactly from the described construction: median 1.0422 kg/L, p5/p95 1.0066/1.0830, SD 0.0236, volume p50 81.0 L, RMSE 1.95 kg, correlation with BMI -0.233, and all segment shares. The frustum formula L/(12*pi)*(C1^2+C1*C2+C2^2) is correct. The problem is the claim 'Being physical, it scales sensibly to extreme builds', which is untested. (a) The constant depends on body composition: it falls with BMI (r=-0.23) because fat is less dense than lean tissue, so very lean, muscular builds should run heavier per model-litre, and the model would under-predict them. (b) It uses flexed biceps and flexed forearm girths as whole-segment girths. The flexed-versus-relaxed excess differs for bodybuilders, so the bias absorbed by the constant may not transfer. (c) No external validation against measured athletes.",
+ "corrected": "Replace 'Being physical, it scales sensibly to extreme builds' with: 'A geometric base for extreme builds (assumption, not validated beyond ANSUR II). Expect it to under-predict very lean muscular bodies because the constant falls with fatness (r=-0.23 with BMI).' Status of that claim: estimate."
+}
+
+#### ansur2_volume_model_female
+{
+ "key": "ansur2_volume_model_female",
+ "label": "Calibration of a simple frustum (stacked-cone) body-volume model, females",
+ "status": "derived",
+ "values": "{\"kg_per_model_litre_median\":1.0444,\"kg_per_model_litre_p5\":0.9999,\"kg_per_model_litre_p95\":1.0901,\"kg_per_model_litre_sd\":0.0279,\"model_volume_median_m3\":0.064,\"rmse_kg\":1.85,\"corr_ratio_with_bmi\":-0.105,\"share_head_neck\":0.059,\"share_neck_to_chest\":0.127,\"share_chest_to_waist\":0.191,\"share_waist_to_crotch\":0.216,\"share_thigh_x2\":0.216,\"share_shank_x2\":0.097,\"share_upper_arm_x2\":0.062,\"share_forearm_x2\":0.027,\"orig\":\"weight_kg = 1.0444 * V_model_litres; V_model p5/p50/p95 48.7/64.0/84.1 L\"}",
+ "sources": [
+  {
+   "title": "ANSUR II female CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+  }
+ ],
+ "notes": "Same model as ansur2_volume_model_male; n=1986."
+}
+---- CHECK: {
+ "key": "ansur2_volume_model_female",
+ "ok": true,
+ "issue": "Reproduced: median 1.0444, p5/p95 0.9999/1.0901, SD 0.0279, V p50 64.0 L, RMSE 1.85, corr -0.105, shares identical. The extreme-build caveat from the male entry applies here too."
+}
+
+#### ansur2_segments_male
+{
+ "key": "ansur2_segments_male",
+ "label": "Segment lengths, heights and breadths for a volume model, males",
+ "status": "measured",
+ "values": "{\"stature_p50_m\":1.755,\"cervicale_height_p50_m\":1.517,\"acromial_height_p50_m\":1.439,\"suprasternale_height_p50_m\":1.437,\"chest_height_p50_m\":1.289,\"waist_height_omphalion_p50_m\":1.055,\"trochanterion_height_p50_m\":0.899,\"crotch_height_p50_m\":0.845,\"knee_height_midpatella_p50_m\":0.487,\"lateral_femoral_epicondyle_height_p50_m\":0.491,\"tibiale_height_p50_m\":0.4675,\"lateral_malleolus_height_p50_m\":0.073,\"sitting_height_p50_m\":0.918,\"span_p50_m\":1.812,\"acromion_radiale_len_upperarm_p50_m\":0.335,\"radiale_stylion_len_forearm_p50_m\":0.267,\"hand_length_p50_m\":0.193,\"foot_length_p50_m\":0.271,\"head_length_p50_m\":0.2,\"head_breadth_p50_m\":0.154,\"biacromial_breadth_p50_m\":0.415,\"bideltoid_breadth_p50_m\":0.509,\"chest_breadth_p50_m\":0.289,\"chest_depth_p50_m\":0.253,\"waist_breadth_p50_m\":0.325,\"waist_depth_p50_m\":0.234,\"hip_breadth_p50_m\":0.344,\"thigh_len_trochanterion_to_lat_femoral_epicondyle_p50_m\":0.408,\"thigh_len_crotch_to_midpatella_p50_m\":0.357,\"shank_len_tibiale_to_lat_malleolus_p50_m\":0.3945,\"head_neck_len_stature_minus_cervicale_p50_m\":0.239,\"trunk_len_suprasternale_to_crotch_p50_m\":0.593,\"chest_breadth_over_depth_median\":1.1412,\"waist_breadth_over_depth_median\":1.3868,\"orig\":\"cm p5/p50/p95 (median ratio to stature): stature 164.8/175.5/187.0 (1.000); cervicale_height 141.6/151.7/162.3 (0.864); acromial_height 133.9/143.9/154.6 (0.821); suprasternale_height 134.1/143.7/154.0 (0.819); chest_height 120.0/128.9/138.7 (0.735); waist_height_omphalion 97.2/105.5/114.5 (0.602); trochanterion_height 82.4/89.9/98.5 (0.512); crotch_height 77.1/84.5/92.5 (0.481); knee_height_midpatella 44.3/48.7/53.6 (0.278); lateral_femoral_epicondyle_height 44.9/49.1/53.7 (0.280); tibiale_height 42.6/46.8/51.3 (0.266); lateral_malleolus_height 6.4/7.3/8.3 (0.042); sitting_height 86.0/91.8/97.7 (0.524); span 168.0/181.2/195.7 (1.031); acromion_radiale_len_upperarm 30.7/33.5/36.5 (0.191); radiale_stylion_len_forearm 24.4/26.7/29.5 (0.152); hand_length 17.7/19.3/21.0 (0.110); foot_length 25.0/27.1/29.3 (0.154); head_length 18.8/20.0/21.1 (0.114); head_breadth 14.6/15.4/16.3 (0.088); biacromial_breadth 38.4/41.5/44.7 (0.236); bideltoid_breadth 45.9/50.9/56.7 (0.290); chest_breadth 26.1/28.9/32.0 (0.165); chest_depth 21.1/25.3/29.8 (0.144); waist_breadth 27.2/32.5/38.5 (0.186); waist_depth 18.8/23.4/30.0 (0.134); hip_breadth 30.8/34.4/38.7 (0.196); thigh_len_trochanterion_to_lat_femoral_epicondyle 36.4/40.8/45.8 (0.233); thigh_len_crotch_to_midpatella 31.8/35.7/39.8 (0.204); shank_len_tibiale_to_lat_malleolus 35.7/39.5/43.7 (0.225); head_neck_len_stature_minus_cervicale 21.8/23.9/26.0 (0.136); trunk_len_suprasternale_to_crotch 54.2/59.3/64.5 (0.338)\"}",
+ "sources": [
+  {
+   "title": "ANSUR II male CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+  },
+  {
+   "title": "Hotzman et al. 2011, NATICK/TR-11/017 (Measurer's Handbook)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR11-017.pdf"
+  }
+ ],
+ "notes": "All values are direct measurements except the derived lengths and the breadth/depth ratios. Derived lengths: thigh = trochanterion height - lateral femoral epicondyle height, or crotch height - knee height midpatella; shank = tibiale height - lateral malleolus height; head+neck = stature - cervicale height; trunk = suprasternale height - crotch height. Chest and waist cross-sections are wider than deep, so use an ellipse, not a circle, when building cross-sections from breadths. Heights are standing landmark heights above the floor. The ratios to stature let a calculator rescale to any height, assuming the same proportions."
+}
+---- CHECK: {
+ "key": "ansur2_segments_male",
+ "ok": true,
+ "issue": "Spot-checked medians (cervicale 151.7, chest height 128.9, omphalion 105.5, crotch 84.5, knee 48.7, acromion-radiale 33.5, radiale-stylion 26.7, biacromial 41.5, bideltoid 50.9, span 181.2, chest B/D 1.1412, waist B/D 1.3868, thigh length 35.7, trunk 59.3). All match. Minor labelling point: the fact mixes measured values with derived lengths and ratios under status 'measured'. The note flags which are derived, but a split or per-value flag would be cleaner."
+}
+
+#### ansur2_segments_female
+{
+ "key": "ansur2_segments_female",
+ "label": "Segment lengths, heights and breadths for a volume model, females",
+ "status": "measured",
+ "values": "{\"stature_p50_m\":1.626,\"cervicale_height_p50_m\":1.393,\"acromial_height_p50_m\":1.332,\"suprasternale_height_p50_m\":1.3265,\"chest_height_p50_m\":1.169,\"waist_height_omphalion_p50_m\":0.9775,\"trochanterion_height_p50_m\":0.844,\"crotch_height_p50_m\":0.78,\"knee_height_midpatella_p50_m\":0.448,\"lateral_femoral_epicondyle_height_p50_m\":0.465,\"tibiale_height_p50_m\":0.437,\"lateral_malleolus_height_p50_m\":0.063,\"sitting_height_p50_m\":0.857,\"span_p50_m\":1.657,\"acromion_radiale_len_upperarm_p50_m\":0.311,\"radiale_stylion_len_forearm_p50_m\":0.2405,\"hand_length_p50_m\":0.18,\"foot_length_p50_m\":0.246,\"head_length_p50_m\":0.19,\"head_breadth_p50_m\":0.147,\"biacromial_breadth_p50_m\":0.365,\"bideltoid_breadth_p50_m\":0.45,\"chest_breadth_p50_m\":0.268,\"chest_depth_p50_m\":0.245,\"waist_breadth_p50_m\":0.298,\"waist_depth_p50_m\":0.209,\"hip_breadth_p50_m\":0.353,\"thigh_len_trochanterion_to_lat_femoral_epicondyle_p50_m\":0.379,\"thigh_len_crotch_to_midpatella_p50_m\":0.333,\"shank_len_tibiale_to_lat_malleolus_p50_m\":0.374,\"head_neck_len_stature_minus_cervicale_p50_m\":0.232,\"trunk_len_suprasternale_to_crotch_p50_m\":0.547,\"chest_breadth_over_depth_median\":1.0922,\"waist_breadth_over_depth_median\":1.4188,\"orig\":\"cm p5/p50/p95 (median ratio to stature): stature 152.5/162.6/174.0 (1.000); cervicale_height 130.0/139.3/149.8 (0.857); acromial_height 124.2/133.2/143.4 (0.820); suprasternale_height 123.6/132.7/142.8 (0.817); chest_height 108.0/116.9/126.6 (0.719); waist_height_omphalion 90.0/97.8/106.4 (0.602); trochanterion_height 77.4/84.4/91.9 (0.519); crotch_height 71.2/78.0/85.7 (0.480); knee_height_midpatella 40.8/44.8/49.3 (0.275); lateral_femoral_epicondyle_height 42.2/46.5/51.1 (0.286); tibiale_height 39.9/43.7/47.9 (0.269); lateral_malleolus_height 5.4/6.3/7.1 (0.039); sitting_height 80.3/85.7/91.2 (0.527); span 152.9/165.7/180.3 (1.018); acromion_radiale_len_upperarm 28.3/31.1/34.0 (0.191); radiale_stylion_len_forearm 21.8/24.1/26.8 (0.148); hand_length 16.5/18.0/19.9 (0.111); foot_length 22.6/24.6/26.8 (0.151); head_length 17.8/19.0/20.2 (0.117); head_breadth 14.0/14.7/15.6 (0.091); biacromial_breadth 33.5/36.5/39.6 (0.225); bideltoid_breadth 40.6/45.0/49.9 (0.276); chest_breadth 24.1/26.8/30.2 (0.165); chest_depth 20.5/24.5/29.6 (0.151); waist_breadth 25.0/29.8/35.6 (0.183); waist_depth 16.9/20.9/27.1 (0.128); hip_breadth 31.1/35.3/40.0 (0.217); thigh_len_trochanterion_to_lat_femoral_epicondyle 34.0/37.9/41.8 (0.233); thigh_len_crotch_to_midpatella 29.7/33.3/37.1 (0.205); shank_len_tibiale_to_lat_malleolus 33.8/37.4/41.5 (0.230); head_neck_len_stature_minus_cervicale 21.4/23.2/25.3 (0.143); trunk_len_suprasternale_to_crotch 50.1/54.7/59.3 (0.336)\"}",
+ "sources": [
+  {
+   "title": "ANSUR II female CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+  },
+  {
+   "title": "Hotzman et al. 2011, NATICK/TR-11/017 (Measurer's Handbook)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR11-017.pdf"
+  }
+ ],
+ "notes": "Same derivations as ansur2_segments_male."
+}
+---- CHECK: {
+ "key": "ansur2_segments_female",
+ "ok": true,
+ "issue": "Spot-checked medians (cervicale 139.3, chest height 116.9, omphalion 97.75, crotch 78.0, acromion-radiale 31.1, radiale-stylion 24.05, biacromial 36.5, bideltoid 45.0, span 165.7, chest B/D 1.0922, waist B/D 1.4188). All match. Same mixed-status note as the male entry."
+}
+
+#### ansur2_male_subgroups
+{
+ "key": "ansur2_male_subgroups",
+ "label": "ANSUR II male subgroups: lean-but-heavy vs big-waist vs normal BMI (medians)",
+ "status": "derived",
+ "values": "{\"leanheavy_n\":39,\"leanheavy_weight_kg\":92.1,\"leanheavy_stature_m\":1.759,\"leanheavy_chest_m\":1.151,\"leanheavy_waist_omphalion_m\":0.93,\"leanheavy_biceps_flexed_m\":0.407,\"leanheavy_thigh_upper_m\":0.655,\"leanheavy_calf_m\":0.403,\"bigwaist_n\":589,\"bigwaist_weight_kg\":102.4,\"bigwaist_stature_m\":1.747,\"bigwaist_chest_m\":1.17,\"bigwaist_waist_omphalion_m\":1.103,\"bigwaist_biceps_flexed_m\":0.389,\"bigwaist_thigh_upper_m\":0.692,\"bigwaist_calf_m\":0.423,\"normalbmi_n\":1061,\"normalbmi_weight_kg\":70.7,\"normalbmi_stature_m\":1.758,\"normalbmi_chest_m\":0.963,\"normalbmi_waist_omphalion_m\":0.818,\"normalbmi_biceps_flexed_m\":0.324,\"normalbmi_thigh_upper_m\":0.563,\"normalbmi_calf_m\":0.364,\"orig\":\"leanheavy [BMI>=28 and chest-waist>=20 cm] n=39 medians: stature 175.9 cm, weight 92.1 kg, BMI 29.5, chest 115.1, waist 93.0, biceps 40.7, forearm 33.9, thigh 65.5, lower thigh 42.3, calf 40.3, neck 41.1 cm; k = chest 15.767, waist 12.702, biceps 5.52, forearm 4.607, thigh 8.973, lower thigh 5.711, calf 5.57, neck 5.643 || bigwaist [BMI>=30 and waist/height>=0.60] n=589 medians: stature 174.7, weight 102.4, BMI 33.5, chest 117.0, waist 110.3, biceps 38.9, forearm 32.7, thigh 69.2, lower thigh 44.3, calf 42.3, neck 42.6; k = chest 15.255, waist 14.426, biceps 5.088, forearm 4.279, thigh 9.047, lower thigh 5.779, calf 5.501, neck 5.562 || normalbmi [BMI 18.5-25] n=1061 medians: stature 175.8, weight 70.7, BMI 23.2, chest 96.3, waist 81.8, biceps 32.4, forearm 29.0, thigh 56.3, lower thigh 37.7, calf 36.4, neck 37.3; k = chest 15.179, waist 12.886, biceps 5.082, forearm 4.562, thigh 8.838, lower thigh 5.942, calf 5.734, neck 5.89\"}",
+ "sources": [
+  {
+   "title": "ANSUR II male CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+  }
+ ],
+ "notes": "Subgroups I selected from the CSV; the rules are in orig. 'leanheavy' = high BMI with a chest far larger than the navel waist, the most athletic shape available in ANSUR II. Its n is small and it is NOT a bodybuilder sample. Compare the shape constants k = girth/sqrt(W/H): the lean-heavy group has higher chest k (15.77 vs 15.26), higher biceps k (5.52 vs 5.09) and lower waist k (12.70 vs 14.43) than the big-waist group. That is the direction a muscular build shifts the girths."
+}
+---- CHECK: {
+ "key": "ansur2_male_subgroups",
+ "ok": false,
+ "issue": "Subgroup sizes and medians reproduced exactly (n 39/589/1061; k values identical). The inference is partly circular. The 'lean-heavy' rule requires chest minus waist of at least 20 cm, so its higher chest k and lower waist k are produced by the selection rule and are not evidence of how muscle shifts girths. Only the girths not used in the rule are independent evidence: biceps k 5.52 vs 5.08-5.09 in both other groups, forearm 4.61. Thigh and calf k are about the same or lower (8.97 vs 9.05; 5.57 vs 5.50/5.73).",
+ "corrected": "Replace 'That is the direction a muscular build shifts the girths' with: 'Chest and waist k differ partly because of the selection rule. The independent signal is a higher biceps k (5.52 vs 5.08) in the lean-heavy group, with thigh and calf k about unchanged. Small n, not an athlete sample.'"
+}
+
+#### ansur2_male_largest_arms
+{
+ "key": "ansur2_male_largest_arms",
+ "label": "Ceiling of the data: largest flexed arms in ANSUR II, males",
+ "status": "measured",
+ "values": "{\"top_biceps_flexed_m\":0.49,\"top_weight_kg\":113.9,\"top_stature_m\":1.745,\"orig\":\"3 largest flexed arms (cm, kg): #1 stature 174.5, weight 113.9, BMI 37.4, biceps 49.0, chest 123.2, waist 104.4, forearm 40.2, thigh 73.2, calf 46.1, neck 45.3; #2 stature 190.5, weight 126.2, BMI 34.8, biceps 47.8, chest 124.2, waist 121.1, forearm 35.3, thigh 75.6, calf 44.3, neck 45.0; #3 stature 189.0, weight 114.4, BMI 32.0, biceps 47.7, chest 119.4, waist 101.3, forearm 37.6, thigh 70.0, calf 47.5, neck 42.5\"}",
+ "sources": [
+  {
+   "title": "ANSUR II male CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+  }
+ ],
+ "notes": "Individual anonymous rows of the public database. They mark the edge of the data: the regressions and predictors are not validated beyond these sizes."
+}
+---- CHECK: {
+ "key": "ansur2_male_largest_arms",
+ "ok": true,
+ "issue": "Top three rows reproduced exactly (49.0 cm at 174.5 cm / 113.9 kg / BMI 37.4, and so on). Status 'measured' is correct."
+}
+
+#### ansur2_female_subgroups
+{
+ "key": "ansur2_female_subgroups",
+ "label": "ANSUR II female subgroups: lean-but-heavy vs big-waist vs normal BMI (medians)",
+ "status": "derived",
+ "values": "{\"leanheavy_n\":70,\"leanheavy_weight_kg\":76.7,\"leanheavy_stature_m\":1.644,\"leanheavy_chest_m\":1.053,\"leanheavy_waist_omphalion_m\":0.87,\"leanheavy_biceps_flexed_m\":0.326,\"leanheavy_thigh_upper_m\":0.65,\"leanheavy_calf_m\":0.391,\"bigwaist_n\":133,\"bigwaist_weight_kg\":85.2,\"bigwaist_stature_m\":1.626,\"bigwaist_chest_m\":1.09,\"bigwaist_waist_omphalion_m\":1.055,\"bigwaist_biceps_flexed_m\":0.36,\"bigwaist_thigh_upper_m\":0.702,\"bigwaist_calf_m\":0.409,\"normalbmi_n\":936,\"normalbmi_weight_kg\":60.1,\"normalbmi_stature_m\":1.626,\"normalbmi_chest_m\":0.892,\"normalbmi_waist_omphalion_m\":0.79,\"normalbmi_biceps_flexed_m\":0.285,\"normalbmi_thigh_upper_m\":0.58,\"normalbmi_calf_m\":0.357,\"orig\":\"leanheavy [BMI>=26 and chest-waist>=15 cm] n=70 medians: stature 164.4 cm, weight 76.7 kg, BMI 28.3, chest 105.3, waist 87.0, biceps 32.6, forearm 27.5, thigh 65.0, lower thigh 41.9, calf 39.1, neck 34.2 cm; k = chest 15.528, waist 12.941, biceps 4.787, forearm 4.039, thigh 9.537, lower thigh 6.239, calf 5.759, neck 5.004 || bigwaist [BMI>=30 and waist/height>=0.60] n=133 medians: stature 162.6, weight 85.2, BMI 32.6, chest 109.0, waist 105.5, biceps 36.0, forearm 28.9, thigh 70.2, lower thigh 44.8, calf 40.9, neck 35.5; k = chest 14.992, waist 14.514, biceps 4.929, forearm 3.995, thigh 9.653, lower thigh 6.217, calf 5.617, neck 4.902 || normalbmi [BMI 18.5-25] n=936 medians: stature 162.6, weight 60.1, BMI 22.9, chest 89.2, waist 79.0, biceps 28.5, forearm 25.3, thigh 58.0, lower thigh 38.0, calf 35.7, neck 31.8; k = chest 14.653, waist 12.974, biceps 4.69, forearm 4.164, thigh 9.487, lower thigh 6.246, calf 5.876, neck 5.248\"}",
+ "sources": [
+  {
+   "title": "ANSUR II female CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+  }
+ ],
+ "notes": "Subgroups I selected from the CSV; the rules are in orig. Women's chest includes the bust, so the chest-minus-waist rule partly selects for bust size, not muscle. The lean-heavy group has higher chest k and lower waist k than the big-waist group, but unlike in men its biceps k is not higher (4.79 vs 4.93). Small n; NOT an athlete sample."
+}
+---- CHECK: {
+ "key": "ansur2_female_subgroups",
+ "ok": true,
+ "issue": "Reproduced (n 70/133/936; k values identical). The same selection-circularity caveat applies to the chest and waist k comparison. The researcher already flags the bust effect and the absence of a biceps-k gain."
+}
+
+#### ansur2_female_largest_arms
+{
+ "key": "ansur2_female_largest_arms",
+ "label": "Ceiling of the data: largest flexed arms in ANSUR II, females",
+ "status": "measured",
+ "values": "{\"top_biceps_flexed_m\":0.435,\"top_weight_kg\":119.6,\"top_stature_m\":1.72,\"orig\":\"3 largest flexed arms (cm, kg): #1 stature 172.0, weight 119.6, BMI 40.4, biceps 43.5, chest 116.1, waist 133.4, forearm 31.1, thigh 87.0, calf 48.2, neck 37.8; #2 stature 164.7, weight 99.5, BMI 36.7, biceps 42.4, chest 107.1, waist 109.3, forearm 31.6, thigh 78.2, calf 45.2, neck 35.6; #3 stature 165.6, weight 100.0, BMI 36.5, biceps 41.5, chest 115.0, waist 116.4, forearm 31.5, thigh 78.2, calf 47.1, neck 34.2\"}",
+ "sources": [
+  {
+   "title": "ANSUR II female CSV (OPEN Design Lab)",
+   "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+  }
+ ],
+ "notes": "Individual anonymous rows of the public database. The largest female arms belong to high-BMI women, not to muscular ones. These rows mark the edge of the data."
+}
+---- CHECK: {
+ "key": "ansur2_female_largest_arms",
+ "ok": false,
+ "issue": "Rows reproduced exactly. The clause 'not to muscular ones' is an inference without body-composition data. The data show these women have BMI 36.5-40.4 and navel waists of 109-133 cm; their muscularity is unknown.",
+ "corrected": "'The largest female flexed arms belong to high-BMI women (BMI 36.5-40.4, navel waist 109-133 cm); their muscularity is unknown (no body-composition data).'"
+}
+

@@ -1,0 +1,23 @@
+const run = require('./page.js');
+run(async (p) => {
+  await p.selectOption('#buildSelect', 'kraemer2020_strongmen');
+  await p.waitForTimeout(100);
+  console.log('KRAEMER stats:', (await p.innerText('#stats')).replace(/\s+/g, ' '));
+  console.log('KRAEMER chest basis:', (await p.innerText('#girths li[data-site="chest"] .basis')));
+  await p.selectOption('#buildSelect', 'ollie');
+  await p.waitForTimeout(100);
+  console.log('OLLIE notes:', (await p.innerText('#bNotes')).split('\n').filter(l => /Volume|Height|Weight/.test(l)).join('\n'));
+  await p.selectOption('#buildSelect', 'ansur2_m_p95');
+  await p.waitForTimeout(100);
+  console.log('P95 FFMI note:', await p.innerText('#ffmiNote'));
+  await p.selectOption('#buildSelect', 'ansur2_f_p50');
+  await p.waitForTimeout(100);
+  console.log('F p50 stats:', (await p.innerText('#stats')).replace(/\s+/g, ' '));
+  console.log('Mode label:', (await p.innerText('label[for], .choice')).slice(0, 0));
+  const ml = await p.evaluate(() => document.querySelector('#modeAnsur').closest('label').innerText);
+  console.log('Average soldier label:', ml.replace(/\s+/g, ' '));
+  await p.selectOption('#buildSelect', 'rex');
+  await p.fill('#hFt', '9'); await p.fill('#hIn', '0'); await p.dispatchEvent('#hIn', 'input');
+  await p.waitForTimeout(100);
+  console.log('REX at 9 ft:', (await p.innerText('#wBig')) + ' ' + (await p.innerText('#wChip')), '| stats', (await p.innerText('#stats')).replace(/\s+/g, ' '));
+});

@@ -1,0 +1,10 @@
+global.window = {};
+const P = require('/home/user/dino-strength-sim/src/engine.js');
+require('/home/user/dino-strength-sim/src/data.js');
+const D = window.DINO_DATA;
+const g = P.K.g;
+const surf = (id) => D.surfaces.find((s) => s.id === id);
+const obj = (id) => D.objects.find((o) => o.id === id);
+const V = (H) => P.bodyVolume(H);
+const C = (o) => Object.assign({ F: (o.kg !== undefined ? o.kg : 1e5) * g, mode: 'comic', body: P.makeBody({ H: o.H || 2, m: o.m || 180 }), surface: surf(o.surface || 'concrete'), groundHolds: !!o.gh, anchor: o.anchor || 'friction' }, o.extra || {});
+module.exports = { P, D, g, surf, obj, V, C };

@@ -1,0 +1,11 @@
+const P = require('/home/user/dino-strength-sim/src/engine.js');
+const K = P.K, g = K.g;
+const D = (function(){ const window = {}; eval(require('fs').readFileSync('/home/user/dino-strength-sim/src/data.js','utf8')); return window.DINO_DATA; })();
+const body = P.makeBody({});
+const ctx = (kg) => ({ F: kg * g, mode: 'comic', body, surface: D.surfaces.find(s => s.id === 'concrete'), groundHolds: false, anchor: 'friction' });
+const f = (pred) => Math.log10(P.threshold((F) => pred(F / g), 1e2, 1e40) / g);
+console.log('punch vFist>=11 km/s at logKg', f((kg) => P.punch(ctx(kg)).vFist >= 11000).toFixed(3));
+console.log('jump v>=10 km/s at logKg', f((kg) => P.jump(ctx(kg)).v >= 10000).toFixed(3));
+console.log('jump apex>=50 m at logKg', f((kg) => P.jump(ctx(kg)).flight.apex >= 50).toFixed(3));
+const j = P.jump(ctx(10 ** 7)); console.log('jump logKg 7: v', j.v.toFixed(1), 'apex', j.flight.apex.toFixed(1), 'vImpact', j.flight.vImpact.toFixed(1), 'vTerminal(UI)', j.vTerminal.toFixed(1), 'terminal for topArea', Math.sqrt(2 * body.m * g / (K.rho0 * body.Cd * body.topArea)).toFixed(1));
+const p = P.punch(ctx(10 ** 9.5)); console.log('punch logKg 9.5 vFist', p.vFist.toFixed(0), 'stagT', p.stagT.toFixed(0));

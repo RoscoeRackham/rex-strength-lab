@@ -31,9 +31,11 @@ All images are in `assets/` and are inlined into the page by `build.js`:
 ## Build
 
 ```
-python3 build-data.py   # research/final-*.json + src/static-data.js -> src/data.js (about 1 s)
+python build-data.py    # research/final-*.json + src/static-data.js -> src/data.js (about 1 s)
 node build.js           # inline engine, data and images -> dist/index.html (about 1 s)
 ```
+
+On macOS and Linux the Python command may be `python3`. On Windows, set `PYTHONUTF8=1` first, or Python reads the UTF-8 research files with the system code page and fails.
 
 ## Test
 
@@ -43,7 +45,7 @@ node test/calibration.js   # calibration, physics invariants and the regressions
 node test/sweep.js         # every solo move across 5,184 setting combinations; flags NaN and negative outputs (about 5 min)
 ```
 
-The usual run is `python3 build-data.py && node build.js && node test/shots.js && node test/calibration.js`, about 100 s in all.
+The usual run is `python build-data.py && node build.js && node test/shots.js && node test/calibration.js`, about 100 s in all.
 
 ## Files
 

@@ -1,15 +1,25 @@
 // Headless render of dist/index.html: screenshots at 390 and 1280 px, light and dark,
 // plus a sweep of every build in both unit systems that fails on NaN, undefined,
 // Infinity, console errors or horizontal page scroll.
-// Run: node test/shots.js   (needs Playwright and the Chromium build below)
+// Run: node test/shots.js   (needs Playwright and its Chromium; see below)
 'use strict';
 const fs = require('fs');
 const path = require('path');
-const { execFileSync } = require('child_process');
-const { chromium } = require(process.env.PLAYWRIGHT || '/opt/node22/lib/node_modules/playwright');
+const { pathToFileURL } = require('url');
+const { execFileSync, execSync } = require('child_process');
+
+// Playwright: $PLAYWRIGHT, the cloud sandbox's copy, a local install, or a global `npm install -g playwright`.
+function loadPlaywright() {
+  for (const p of [process.env.PLAYWRIGHT, '/opt/node22/lib/node_modules/playwright', 'playwright']) {
+    if (p) try { return require(p); } catch (e) { /* next */ }
+  }
+  return require(path.join(execSync('npm root -g').toString().trim(), 'playwright'));
+}
+const { chromium } = loadPlaywright();
 
 const root = path.join(__dirname, '..');
-const CHROME = process.env.CHROME || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+// Chromium: $CHROME, the cloud sandbox's build, or Playwright's own (npx playwright install chromium).
+const CHROME = [process.env.CHROME, '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'].find(p => p && fs.existsSync(p));
 const shots = path.join(root, 'shots');
 fs.mkdirSync(shots, { recursive: true });
 
@@ -48,7 +58,7 @@ async function routeFonts(ctx) {
       const errs = [];
       p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
       p.on('pageerror', e => errs.push(String(e)));
-      await p.goto('file://' + tmp);
+      await p.goto(pathToFileURL(tmp).href);
       await p.evaluate(() => document.fonts.ready);
       await p.waitForTimeout(300);
       const info = await p.evaluate(() => ({ sw: document.documentElement.scrollWidth, iw: window.innerWidth, font: document.fonts.check('800 40px "Big Shoulders Display"') }));

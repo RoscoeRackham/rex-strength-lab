@@ -1,0 +1,605 @@
+Project: "Rex Super-Strength Lab", a single-page physics simulator for Rex, an indestructible, tireless plush kaiju-dinosaur (default 2 m tall, 180 kg). A strength dial sets his maximum force as a lift capacity from 10 kg to 1e34 kg, plus infinity. Moves today: lift, throw, jump, stomp, punch, clap, sprint, pull. Two muscle models: "comic" (fixed share of strength at any speed) and "real" (Hill force-velocity curve; limb speed caps). Settings: ground surface (sand, gravel, soft clay, stiff clay, asphalt, concrete, lake ice, steel deck, granite), "comic ground" (never breaks), anchoring (friction / claws dug in / bolted to the planet), height (isometric scaling) and mass.
+Read these before designing (do NOT edit anything under /home/user/dino-strength-sim; put scratch files in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/duo/):
+- /home/user/dino-strength-sim/src/engine.js: the physics engine (SI units; relativistic momentum helpers momentumToV/momentumToKE/vToMomentum; pushApart two-body push in comic or Hill mode; anchorCapacity footing model; fly() RK4 flight over a round Earth with drag and Kepler arcs; craterDiameter Collins et al.; blastRadius Kinney-Graham; seismicMagnitude; stagnationT; lift/throw/jump/stomp/punch/clap/sprint/pull).
+- /home/user/dino-strength-sim/src/app.html (the bay* functions show how results become page text), /home/user/dino-strength-sim/src/static-data.js (assumptions text), /home/user/dino-strength-sim/build-data.py (how sourced facts become the sources table).
+- Fact format used by the project: /home/user/dino-strength-sim/research/final-environment.json ("facts" entries with key, category, label, status in {verified, canon_stated, reported, estimate, claimed, disputed, not_quantified}, value_si, unit_si, low_si, high_si, display, sources [{title, url}], notes).
+NEW FEATURES being added (the owner's request): (1) "density and weight, and the effect that would have on the environment, like if Rex were the density of a neutron star"; (2) Rex's boyfriend Ollie, "equally as overpowered and indestructible", for two-person simulations: arm wrestling, regular wrestling, games of catch, unstoppable force vs immovable object. Ollie, from the owner's image, is a plush bull-man: horns, nose ring, leather vest, cargo pants, laced boots (no visible claws), about Rex's height and build. Do not invent other canon for him; default him to Rex's size, mass and strength, with his own adjustable settings.
+The owner is a professional critic: factual accuracy and honest labelling come first. Every number must be either sourced (fetch the source and confirm the number on the page; give the exact URL) or labelled an estimate with the reasoning. Prefer primary or authoritative sources (journals, textbooks, NASA/ESA, standards bodies). Never present speculation as fact; say what the model ignores. The page's tone is plain, specific and readable for a general audience (short sentences, no jargon without a gloss).
+
+Adversarially check this design for the area "Arm wrestling and wrestling". Default to suspicion. (1) For EVERY fact: fetch the source URL and confirm the number and wording; mark ok=false with the correct value and a better source if wrong, unsupported, or mislabelled (e.g. an estimate called verified). (2) Re-derive every equation and recompute every test case independently (write scripts in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/duo/contest-check/); report physics errors, wrong regimes, missing forces or effects, double counting, unit slips, and anything that would show a reader a false or misleading claim, with concrete fixes. (3) List what is missing for an honest, complete simulation of the brief. (4) Check that the page text never overstates certainty.
+
+BRIEF:
+Design two strength contests between Rex and Ollie: ARM WRESTLING and WRESTLING (shoving match / sumo-style push, plus lifting or throwing the other).
+Physics to get right: Newton's third law makes the contact force between them equal, so strength alone decides nothing once both exceed what their footing, the table, or the ground can transmit; then the weakest link in the load path decides (table top and elbow pads, friction or claw/boot grip, ground bearing, the ground between them when both are bolted, which is put in tension). For arm wrestling: model the hands, forearm lever about the elbow, the torque each arm can make from its strength share (source real arm-wrestling force or torque data and arm/forearm dimensions; source the known humerus spiral-fracture risk in human arm wrestling as context), what the table and elbow pads must carry (source a regulation table or typical table dimensions and wood/steel strength as estimates), and the outcome when strengths differ (the stronger pins: time to pin from torque difference and arm inertia) or are equal (stalemate; what breaks first). For wrestling: pushing contest with each body's footing (friction mu*m*g, claws dug in, bolted, comic ground), mass and density from the new density setting, the "both too strong for their footing" case (they shove each other apart like skaters; reuse the engine's two-body push), lifting the other (needs strength > partner's weight; dense partners), and a toss of the partner (reuse throw physics with the partner as the object). Include unequal strengths and sizes, infinite strength on one or both sides (infinity minus infinity is undefined: say so), and mutual gravity when both are very dense (the density area will supply G m1 m2 / d^2).
+
+DESIGN:
+{
+ "area": "Arm wrestling and wrestling: Rex vs Ollie (shoving match, shove, lift, throw)",
+ "summary": "Two strength contests between Rex and Ollie. ARM WRESTLING: each arm pushes sideways on the clasped hands with 11% of its owner's strength, in both muscle models. That share is an estimate set so a record-strength human arm twists its upper-arm bone with about 190 N·m, roughly the theoretical torsional strength of a human humerus. Newton's third law makes the hand-to-hand push the same both ways, and that push goes through each body into his feet. So each side can use only min(arm force, footing). For a 180 kg body standing on concrete the limit is 1,059 N, far below the 97,861 N a Hulk-strength arm can make. Once both are footing-limited, strength stops mattering: equal footing is a dead heat at any strength, and otherwise the heavier or better-anchored one wins. When one side has a force surplus, it spins both forearms (each acts like 0.97% of its owner's mass at the grip) through a quarter turn to the pin pad. That gives a time to pin, a hand speed and a slam energy, which is compared with what a regulation WAF table (19 mm plywood on a steel frame) can take. WRESTLING has four parts. (1) A sustained shoving match, decided by each side's walking drive against the other's hold, with the loser walked out of a 4.55 m sumo ring. (2) An explosive shove that reuses pushApart with both footings. When both out-muscle their feet, they fly apart like skaters: 49 m/s each at the default Hulk setting. (3) Lifting the partner: strength must exceed his weight, plus any dug-in pull-out, plus mutual gravity. (4) A toss that reuses throwObject with the partner as the object. Mutual gravity G m1 m2/d^2 is negligible at normal density (4.4 µN at contact). At neutron-star density (7.2e16 kg each) it is 7.05e23 N, about a million times their Earth weight, so it glues them together before any contest starts.",
+ "facts": [
+  {
+   "key": "aw_waf_table_dimensions",
+   "label": "World Armwrestling Federation regulation table: dimensions and construction",
+   "status": "verified",
+   "value_si": 1.016,
+   "unit_si": "m",
+   "display": "Stand-up table 101.6 cm (40 in) from floor to top; top 91.4 cm across × 66.0 cm deep; elbow pads 17.8 cm square, 5.1 cm thick, set 5.1 cm from their edge; touch (pin) pads 25.4 × 10.2 cm; hand pegs 2.5 cm across, 15.2 cm high; top normally 1.9 cm (3/4 in) plywood; frame of steel tubing no wider than 5.1 cm",
+   "sources": [
+    {
+     "title": "WAF: Armwrestling Table (official rules page)",
+     "url": "https://www.waf-armwrestling.com/armwrestling-rules/armwrestling-table/"
+    }
+   ],
+   "notes": "Confirmed on the WAF page (fetched). The sit-down table is 71.1 cm. The page gives no centre-to-centre spacing for the elbow pads (see aw_elbow_pad_spacing). Equipment makers quote 104 cm; the WAF page says 101.6 cm."
+  },
+  {
+   "key": "aw_elbow_pad_spacing",
+   "label": "Distance between elbow-pad centres on a WAF table",
+   "status": "estimate",
+   "value_si": 0.38,
+   "unit_si": "m",
+   "display": "~38 cm (computed from the WAF dimensions)",
+   "sources": [
+    {
+     "title": "WAF: Armwrestling Table",
+     "url": "https://www.waf-armwrestling.com/armwrestling-rules/armwrestling-table/"
+    }
+   ],
+   "notes": "My arithmetic, not a published value: 66.0 cm depth − 2 × (5.1 cm edge gap + 17.8/2 cm half-pad) = 38.0 cm. Assumes the 5.1 cm is measured to the pad's outer edge. Used only to place the bodies across the table."
+  },
+  {
+   "key": "aw_pin_and_elbow_foul_rules",
+   "label": "Arm wrestling: what counts as a pin, and the elbow foul",
+   "status": "verified",
+   "display": "Pin: the fingers or wrist go below the pin line (touching the pin pad is not required). Fouls include the elbow losing contact with the pad (up, or off the front, back or sides). Any two fouls lose the match.",
+   "sources": [
+    {
+     "title": "Canadian Armwrestling Federation: Rules (summarized), Sept 2023",
+     "url": "https://cawf.ca/rulessummarized"
+    }
+   ],
+   "notes": "Confirmed on the CAWF page (fetched). The page does not say whether it follows WAF wording word for word. The WAF rulebook PDFs (armsport.sk mirrors) were blocked, so the WAF text itself was not seen."
+  },
+  {
+   "key": "aw_humeral_fracture_series_ogawa_1997",
+   "label": "Humeral shaft fractures from arm wrestling: 30-case series",
+   "status": "verified",
+   "value_si": 30,
+   "unit_si": "cases",
+   "display": "30 humeral shaft fractures from arm wrestling (28 men, 2 women; age 15-60, mean 30): all spiral; 23% with a medial butterfly fragment, 23% with radial nerve palsy; all happened while full force was being exerted",
+   "sources": [
+    {
+     "title": "Ogawa K, Ui M. Humeral shaft fracture sustained during arm wrestling: report on 30 cases and review of the literature. J Trauma 1997;42(2):243-6 (PubMed 9042875)",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/9042875/"
+    }
+   ],
+   "notes": "Abstract confirmed through NCBI E-utilities (efetch, PMID 9042875), because the PubMed page needs cookies. The authors attribute the fractures to the shoulder internal rotators switching suddenly from maximal concentric to eccentric contraction, which produces an intense rotational force. Context only: Rex and Ollie are indestructible."
+  },
+  {
+   "key": "aw_humeral_torque_pitchers_sabick_2004",
+   "label": "Peak torque about the humerus's long axis in professional pitchers",
+   "status": "verified",
+   "value_si": 92,
+   "unit_si": "N m",
+   "low_si": 76,
+   "high_si": 108,
+   "display": "92 ± 16 N·m (25 professional pitchers in games), averaging 48% of the humerus's theoretical torsional strength",
+   "sources": [
+    {
+     "title": "Sabick MB et al. Humeral torque in professional baseball pitchers. Am J Sports Med 2004;32(4):892-8 (PubMed 15150034)",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/15150034/"
+    },
+    {
+     "title": "Boise State ScholarWorks record of the same paper",
+     "url": "https://scholarworks.boisestate.edu/mecheng_facpubs/27/"
+    }
+   ],
+   "notes": "Abstract confirmed on both pages. low/high are mean ± 1 SD."
+  },
+  {
+   "key": "aw_humerus_torsional_strength",
+   "label": "Twist that breaks a human upper-arm bone (humerus)",
+   "status": "estimate",
+   "value_si": 190,
+   "unit_si": "N m",
+   "low_si": 25,
+   "high_si": 190,
+   "display": "~190 N·m theoretical for a healthy adult humerus; drilled cadaver humeri failed at 25-31 N·m",
+   "sources": [
+    {
+     "title": "Sabick et al. 2004 (92 N·m = 48% of theoretical strength)",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/15150034/"
+    },
+    {
+     "title": "Dini AA et al. 2021, Arthroscopy, Sports Medicine, and Rehabilitation: humeri with tenodesis drill holes failed at 31.35 and 25.08 N·m (DOAJ record)",
+     "url": "https://doaj.org/article/e5c4f2c4ef3943bda8c6198bdf01cfcb"
+    }
+   ],
+   "notes": "192 N·m is my arithmetic (92 / 0.48), not a measured failure. The Dini cadaver bones had drill holes, which act as stress raisers, so they are a low bound rather than a typical value. A textbook figure of 60 N·m (Kane & Sternheim, reproduced on a Harvard demonstrations page) could not be fetched (403) and is not used."
+  },
+  {
+   "key": "aw_internal_rotation_torque_lo_2013",
+   "label": "Shoulder internal-rotation torque in arm-wrestling position (ordinary young men)",
+   "status": "verified",
+   "value_si": 79.55,
+   "unit_si": "N m",
+   "low_si": 66.32,
+   "high_si": 86.02,
+   "display": "Winners 79.6 ± 19.3 N·m concentric and 86.0 ± 21.3 N·m eccentric at 45°/s; losers 66.3 ± 11.5 and 71.2 ± 14.6 N·m (30 men, 66 kg, 1.74 m; Biodex)",
+   "sources": [
+    {
+     "title": "Lo K-C, Wu H-W, Hong M-K, Wang L-H. Armwrestling exercise and shoulder internal rotation strength. ISBS 2013 proceedings",
+     "url": "https://ojs.ub.uni-konstanz.de/cpa/article/view/5698"
+    }
+   ],
+   "notes": "Read in the full PDF (Table 1). Elbow at 90° in the arm-wrestling start position; the body was not strapped down. These are untrained university volunteers, not elite athletes."
+  },
+  {
+   "key": "aw_elite_hook_force_kamayev_2024",
+   "label": "Hand force of elite arm wrestlers in a hook-pull test",
+   "status": "verified",
+   "value_si": 818.9,
+   "unit_si": "N",
+   "low_si": 459,
+   "high_si": 818.9,
+   "display": "Up to 83.5 kgf (819 N), right arm, a 90 kg multiple world champion; 75.6 kgf (741 N) for a 136 kg champion; 46.8-49.4 kgf for a 62 kg champion",
+   "sources": [
+    {
+     "title": "Kamayev O et al. Features of the manifestation of strength and speed-strength abilities of elite armwrestlers of different weight categories. Slobozhanskyi Herald of Science and Sport 2024;28(2) (Table 1)",
+     "url": "https://shssjournal.com/index.php/journal/article/view/153"
+    }
+   ],
+   "notes": "Read in the PDF (https://shssjournal.com/index.php/journal/article/download/153/41/349). Measured with a Kern FL1K strain-gauge dynamometer on an armwrestling table. The 'hook' pulls a handle toward the chest, so it is not the pure sideways twist of a match. Used only to bound the arm-force share."
+  },
+  {
+   "key": "aw_force_share",
+   "label": "Arm-wrestling force at the hand as a share of full strength",
+   "status": "estimate",
+   "value_si": 0.11,
+   "unit_si": "1",
+   "low_si": 0.05,
+   "high_si": 0.16,
+   "display": "11% of full strength, sideways at the clasped hands (both muscle models)",
+   "sources": [
+    {
+     "title": "Sabick et al. 2004 (humerus theoretical strength)",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/15150034/"
+    },
+    {
+     "title": "Lo et al. 2013 (ordinary men's internal-rotation torque)",
+     "url": "https://ojs.ub.uni-konstanz.de/cpa/article/view/5698"
+    },
+    {
+     "title": "Kamayev et al. 2024 (elite hook force)",
+     "url": "https://shssjournal.com/index.php/journal/article/view/153"
+    }
+   ],
+   "notes": "Estimate. The share is set so the sim's record-human strength (511 kg deadlift, 5,011 N) twists a human-sized arm with about the theoretical humerus strength: 191.7 N·m / (0.19 × 1.7562 m × 5,011.2 N) = 0.1146, rounded to 0.11. Reasoning: humeral fractures happen at full effort (Ogawa & Ui). Low bound: ordinary men's ~80 N·m over a 0.33 m lever gives 240 N, 0.05 of record strength. High bound: the elite 819 N hook pull is 0.16 (not a pure twist). One share serves both modes because the contest is mostly isometric; comic mode is therefore never weaker than real."
+  },
+  {
+   "key": "anthro_forearm_center_of_grip_ansur2",
+   "label": "Elbow-to-grip length (US Army men, ANSUR II)",
+   "status": "verified",
+   "value_si": 0.349,
+   "unit_si": "m",
+   "low_si": 0.331,
+   "high_si": 0.367,
+   "display": "Forearm-center of grip length 34.90 cm (SD 1.80) for men whose mean stature is 175.62 cm, i.e. 0.199 of height",
+   "sources": [
+    {
+     "title": "Gordon CC et al. 2012 Anthropometric Survey of U.S. Army Personnel: Methods and Summary Statistics, NATICK/TR-15/007 (2014), dimension 37 and 75",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+    }
+   ],
+   "notes": "Measured horizontally from the olecranon (back of the elbow) to the centre of a gripped 1-1/4 in dowel, elbow at 90°. low/high are ±1 SD. 34.90/175.62 = 0.1987 (my arithmetic)."
+  },
+  {
+   "key": "anthro_radiale_stylion_ansur2",
+   "label": "Forearm length, elbow to wrist (US Army men, ANSUR II)",
+   "status": "verified",
+   "value_si": 0.2679,
+   "unit_si": "m",
+   "display": "Radiale-stylion length 26.79 cm (SD 1.54), i.e. 0.1525 of the 175.62 cm mean stature",
+   "sources": [
+    {
+     "title": "Gordon CC et al. NATICK/TR-15/007 (2014), dimension 67",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+    }
+   ],
+   "notes": "Used as the elbow-wrist length for the Dempster/Winter forearm+hand inertia."
+  },
+  {
+   "key": "anthro_forearm_hand_inertia",
+   "label": "Forearm + hand segment: mass, centre of mass, radius of gyration",
+   "status": "verified",
+   "value_si": 0.022,
+   "unit_si": "1",
+   "display": "2.2% of body mass; centre of mass 0.682, radius of gyration about the elbow 0.827 of the elbow-wrist length",
+   "sources": [
+    {
+     "title": "BMClab (M. Duarte): Dempster body-segment parameters as adapted by Winter (2009), data table",
+     "url": "https://raw.githubusercontent.com/BMClab/BMC/master/data/BSP_DempsterWinter.txt"
+    },
+    {
+     "title": "BMClab notebook: Body segment parameters",
+     "url": "https://nbviewer.jupyter.org/github/demotu/BMC/blob/master/notebooks/BodySegmentParameters.ipynb"
+    }
+   ],
+   "notes": "Row 'Forearm hand, EJC-STYL: 0.022, 0.682, 0.318, 0.468, 0.827, 0.565'. This is a university lab's reproduction of Winter (2009) Table 4.1; it was not checked against the printed book. Consistent with the project's verified Dempster fractions (forearm 1.6% + hand 0.6%)."
+  },
+  {
+   "key": "aw_lever_and_effective_mass",
+   "label": "Arm-wrestling lever and forearm effective mass",
+   "status": "estimate",
+   "value_si": 0.19,
+   "unit_si": "1 (× height)",
+   "display": "Lever from the humerus axis to the grip = 0.19 × height (0.38 m at 2 m). Each forearm + hand acts like 0.97% of its owner's body mass at the grip.",
+   "sources": [
+    {
+     "title": "ANSUR II NATICK/TR-15/007",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+    },
+    {
+     "title": "BMClab Dempster/Winter table",
+     "url": "https://raw.githubusercontent.com/BMClab/BMC/master/data/BSP_DempsterWinter.txt"
+    }
+   ],
+   "notes": "Lever: ANSUR's 0.199 H is measured from the back of the elbow; the bone's long axis sits about 1-2 cm in front of that, so 0.19 H is used. Effective mass: 0.022 × (0.827 × 0.1525 / 0.19)^2 = 0.009693 of body mass. The upper arm spinning about its own axis would add under 10%; it is ignored. Human proportions are applied to Rex and Ollie, as the project already does for segment masses."
+  },
+  {
+   "key": "table_ps2_panel_requirements",
+   "label": "Minimum strength of a 19 mm structural floor panel (US PS 2-18)",
+   "status": "verified",
+   "value_si": 2450,
+   "unit_si": "N",
+   "display": "Single Floor 24 o.c. panels: ultimate concentrated static load at least 2.45 kN (550 lbf); impact test 102 N·m (75 lbf·ft), after which the panel must still carry 1.78 kN (400 lbf)",
+   "sources": [
+    {
+     "title": "NIST Voluntary Product Standard PS 2-18, Performance Standard for Wood Structural Panels, Table 2",
+     "url": "https://www.nist.gov/document/ps2-18finalapr2019dfareviewedpdf"
+    }
+   ],
+   "notes": "Read in Table 2 and Section 7.1 (ASTM E661: a 76 mm disc at mid-span, 610 mm span). These are minimums for a pass, not typical failure loads."
+  },
+  {
+   "key": "table_elbow_capacity",
+   "label": "Downward load a regulation table takes under one elbow pad",
+   "status": "estimate",
+   "value_si": 10000,
+   "unit_si": "N",
+   "low_si": 2500,
+   "high_si": 50000,
+   "display": "~10 kN (2.5-50 kN) at regulation size; scaled with table size squared",
+   "sources": [
+    {
+     "title": "NIST PS 2-18 Table 2",
+     "url": "https://www.nist.gov/document/ps2-18finalapr2019dfareviewedpdf"
+    },
+    {
+     "title": "WAF table construction",
+     "url": "https://www.waf-armwrestling.com/armwrestling-rules/armwrestling-table/"
+    }
+   ],
+   "notes": "Estimate. PS 2 guarantees at least 2.45 kN for a 19 mm panel under a 76 mm disc at mid-span. Elbow pads sit 5 cm from the edge, over the steel frame, and spread the load over 18 × 18 cm, so the real capacity should be several times higher; the 5 cm steel-tube legs take tens of kN. Matters only at high density."
+  },
+  {
+   "key": "table_slam_rating",
+   "label": "Slam energy the table top is built to survive",
+   "status": "estimate",
+   "value_si": 102,
+   "unit_si": "J",
+   "display": "~100 J at regulation size (the PS 2 impact test); scaled with table size cubed",
+   "sources": [
+    {
+     "title": "NIST PS 2-18 Table 2, note (b)",
+     "url": "https://www.nist.gov/document/ps2-18finalapr2019dfareviewedpdf"
+    }
+   ],
+   "notes": "Estimate. A pin slam up to this energy: table holds. Up to 10×: may crack the top. Over 10×: goes through the table. The 10× cut-off is a judgment call."
+  },
+  {
+   "key": "sumo_ring_diameter",
+   "label": "Sumo ring (dohyō) inner circle",
+   "status": "verified",
+   "value_si": 4.55,
+   "unit_si": "m",
+   "display": "Bouts are confined to an inner circle a little over 4.55 m across (platform 6.7 m square, 60 cm high)",
+   "sources": [
+    {
+     "title": "Japan Sumo Association: Sumo introduction (English PDF)",
+     "url": "https://www.sumo.or.jp/pdf/en/sumo_introduction.pdf"
+    }
+   ],
+   "notes": "Confirmed in the PDF text. The sim uses 4.55 m at the default 2 m size and scales it with the pair's mean height."
+  },
+  {
+   "key": "codata_G",
+   "label": "Newtonian constant of gravitation",
+   "status": "verified",
+   "value_si": 6.6743e-11,
+   "unit_si": "m^3 kg^-1 s^-2",
+   "low_si": 6.67415e-11,
+   "high_si": 6.67445e-11,
+   "display": "6.674 30(15) × 10⁻¹¹ m³ kg⁻¹ s⁻² (CODATA 2022)",
+   "sources": [
+    {
+     "title": "NIST CODATA: Newtonian constant of gravitation",
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?bg"
+    }
+   ],
+   "notes": "Probably also supplied by the density area; use one shared K.G."
+  },
+  {
+   "key": "newton_impact_depth",
+   "label": "Newton's impact-depth approximation",
+   "status": "verified",
+   "display": "D ≈ L × ρ_impactor / ρ_target; valid when friction is negligible and the impact is slower than sound in the target",
+   "sources": [
+    {
+     "title": "Wikipedia: Impact depth",
+     "url": "https://en.wikipedia.org/wiki/Impact_depth"
+    }
+   ],
+   "notes": "A rough approximation. It is used only to say that a far-denser thrown partner punches in rather than making a crater; Collins crater scaling is fitted to impactors of rock or iron density."
+  },
+  {
+   "key": "ollie_footing_assumption",
+   "label": "Ollie's grip on the ground (boots, no claws)",
+   "status": "estimate",
+   "display": "Same traction as Rex's feet on each surface. 'Dug in' for Ollie means boots kicked into footholds, given the same buried area as Rex's claws (0.2 m² at 2 m).",
+   "sources": [
+    {
+     "title": "Project fact set: ground traction coefficients (research/final-environment.json)",
+     "url": "https://www.tugraz.at/fileadmin/user_upload/Institute/IAG/Files/18_Bearing_Capacity_of_Soils-USACE.pdf"
+    }
+   ],
+   "notes": "Assumption, not sourced: no canon says how Ollie's boots grip. Rubber soles on dry pavement grip in roughly the same range as the sim's claw values; on ice and steel the values are rough for both."
+  },
+  {
+   "key": "ground_tear_around_anchor",
+   "label": "Force at which the ground around a bolted stance tears out",
+   "status": "estimate",
+   "display": "Ground shear strength × 0.2 m² buried area at 2 m: concrete 300 kN, granite 7.2 MN, loose sand 200 N",
+   "sources": [
+    {
+     "title": "Project surface data (shear values used for 'claws dug in')",
+     "url": "https://www.tugraz.at/fileadmin/user_upload/Institute/IAG/Files/18_Bearing_Capacity_of_Soils-USACE.pdf"
+    }
+   ],
+   "notes": "Estimate that reuses the engine's dug-in limit. Bolted to the planet never gives; only the surface layer around the bolts breaks. Real tensile strengths differ from these shear values by up to about 3× either way (concrete ~2-3 MPa, granite roughly 5-25 MPa)."
+  },
+  {
+   "key": "duo_gravity_distances",
+   "label": "Centre-to-centre distances used for their mutual gravity",
+   "status": "estimate",
+   "display": "Touching: two balls of their volume (0.70 m at 2 m). Across the table: 0.66 m table depth (scaled) + 0.25 × mean height (1.25 m). One held overhead: 0.65 × lifter's height + 0.1 × partner's height (1.5 m).",
+   "sources": [
+    {
+     "title": "WAF table depth",
+     "url": "https://www.waf-armwrestling.com/armwrestling-rules/armwrestling-table/"
+    }
+   ],
+   "notes": "Estimates. Treating tall bodies as balls changes the force by up to about 2× at contact (two touching 2 m cylinders pull roughly 1.4× harder than the equal-volume balls)."
+  }
+ ],
+ "inputs": "Contexts already built by app.html. cR = ctx() for Rex and cO = ctxOllie() for Ollie. Each is { F (N, may be Infinity), mode 'comic'|'real', body = P.makeBody({H, m}) with H, s = H/2, m, volume (0.18 s^3 m^3), rho, footArea, footB, digArea (0.2 s^2), frontArea (0.8 s^2), Cd 1.0, handEff (0.022 m), strokes.throw (1.6 s), surface (shared: mu, shear, qult, rho, granular, Bref), groundHolds (shared comic-ground flag), anchor 'friction'|'braced'|'bolted' (Ollie's own: state.oAnchor) }. New UI state, to be added to DEFAULTS and VALID: wrestleMove 'push'|'shove'|'lift'|'throw' (default 'push'); wrestleWho 'rex'|'ollie'|'both' (default 'rex'; 'both' only for shove); the throw reuses state.angle. Engine values used: K.g, K.c, K.rho0, MUSCLE.punch.vmax (17 m/s at 2 m, the arm's top speed in real mode), MUSCLE.throwPush {forceFrac 0.523, comicFrac ≈ 0.1682, vmax 35}, MUSCLE.k 0.25, anchorCapacity, pushApart, momentumToV/KE, sprint (walking speed cap), lift, throwObject (via throwOnce), craterDiameter, seismicMagnitude, blastRadius. From the density area (use if it exists, otherwise add here): K.G = 6.67430e-11, an isBlackHole(body) flag (2Gm/c^2 ≥ equivalent-sphere radius), a canStand(ctx) flag (strength vs own weight), and the sinking flag (standRatio > 1 off comic ground, via P.lift(c, {m: 0}).standRatio). New engine constants (P.AW): forceFrac 0.11, lever 0.19, forearm 0.1525, effMass 0.009693, pinAngle π/2, elbowLoad 0.036, holdArm 0.012043. TABLE: refH 1.7562 m, depth 0.660 m, elbowCap 10e3 N, slamJ 102 J. RING_D 4.55 m (at a mean height of 2 m). HUMERUS_NM 190. A working reference prototype of every function below is at /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/duo/contest/contest.js, with the runner final.js (node final.js) that prints every test value.",
+ "equations": "E1. Newton's third law at the hands or chests: F_Rex→Ollie = −F_Ollie→Rex. The whole push C reaches each body. With ΣF = 0, each one's feet must supply C, so each can press only as hard as his footing R_i allows. Strength beyond R_i just makes him slide.\nE2. Footing (existing anchorCapacity, θ = 0): R_i = μ·min(m_i g, N_max) + [dug in] τ_s·A_dig, where N_max = q_ult·2A_foot (∞ on comic ground). Bolted: R = ∞. Default: 0.6 × 180 × 9.80665 = 1,059.12 N; dug in on concrete adds 1.5 MPa × 0.2 m² = 300 kN.\nE3. Arm force: P_i = 0.11·F_i in both modes. Calibration: 92 N·m / 0.48 = 191.7 N·m (theoretical humerus strength); 191.7 / (0.19 × 1.7562 m × 511 × 9.80665 N) = 0.1146, rounded to 0.11. Valid as a share at any strength (comic premise).\nE4. Usable force: A_i = min(P_i, R_i). If A_R = A_O (relative 1e-9, finite only): stalemate with contact C = A. If both are ∞ (both bolted and infinite): undefined, ∞ − ∞. Otherwise the larger one pins.\nE5. Lever L_i = 0.19 H_i. Twist on the upper arm τ_i = A_i·L_i (N·m), compared with 190 N·m. In a stalemate τ = C·L.\nE6. Arm inertia: I_i = 0.022 m_i (0.827 × 0.1525 H_i)^2 about the elbow. At the grip m_eff,i = I_i/L_i^2 = 0.009693 m_i, independent of height. M = 0.009693 (m_R + m_O).\nE7. Pin. Path s = (π/2)·L_loser: a quarter turn, because the pin line (top of a 10.2 cm touch pad) is about level with the elbow pivot (5.1 cm pad + elbow). Comic, constant net ΔA = A_w − A_l, relativistic constant force: x(t) = (M c²/ΔA)(√(1 + (ΔA t/Mc)²) − 1), so t = (M c/ΔA)·√((1 + ΔA s/(M c²))² − 1), v = momentumToV(ΔA t, M), slam energy E = ΔA·s (work-energy, exact). Below 1% of c: t = √(2sM/ΔA), v = √(2ΔA s/M). This is exactly pushApart({F: A_w, d: s, mA: M, mB: M, RA: Infinity, RB: A_l, mode: 'comic'}), with side A fixed and the loser resisting statically. Real: pushApart({F: P_w, Fcap: R_w if R_w < P_w, d: s, mA: M, mB: M, RA: Infinity, RB: A_l, mode: 'real', vmax: 17·s_w}); the winner's force is P_w·Hill(v/vmax) with k = 0.25, and the loser resists with A_l at any speed (engine Hill(u ≤ 0) = 1). Terminal speed v_t = vmax(1 − r)/(1 + r/k) with r = A_l/P_w.\nE8. Holding the forearm up: P_i ≥ 0.012043 m_i g, from 0.022 m g × 0.682 × 0.1525 H / 0.19 H with the forearm horizontal (worst case).\nE9. Table scaled to the pair: s_t = ((H_R + H_O)/2)/1.7562. Elbow load W_e,i = 0.036 m_i g (forearm + hand 2.2% plus half the upper arm 1.4%, Dempster). Capacity Q_e = 10 kN·s_t² (∞ on comic ground). Slam rating E_t = 102 J·s_t³. Report W_e/Q_e and E/E_t.\nE10. Slam effects, mirroring stomp. If 2 km/s ≤ v < 0.01c and not comic ground: craterDiameter({L: (6M/(π ρ_w))^(1/3), v, rhoI: ρ_w, rhoT: surface.rho, angleDeg: 90, E}). Always: seismicMagnitude(E), and blast via blastBlock(E). At v ≥ 0.01c: energy release only, no crater fit.\nE11. Ground around a bolted stance: T_tear,i = τ_s × A_dig,i (∞ on comic ground). Ratio A_i/T_tear,i in arm wrestling; C/min(T_tear) in the pushing match.\nE12. Pushing match. Hold H_i = min(F_i, R_i) (bolted: ∞). Drive D_i = min(F_i, μ·min(m_i g, N_max,i) + [dug in] 0.25 τ_s A_dig); 0 if bolted or unable to stand. The 0.25 factor is the engine's sprint rule for claws while moving. Net n_R = D_R − H_O and n_O = D_O − H_R. Since D ≤ H, at most one is positive. Walk-out: a = n/(m_R + m_O); x = ring radius = 4.55 m × H̄/2 m / 2 (2.275 m by default); v_cap = sprint(c_w).vTop. If √(2ax) ≤ v_cap: t = √(2x/a), v = √(2ax). Otherwise t = v_cap/a + (x − v_cap²/2a)/v_cap and v = v_cap. Deadlock contact C = min(H_R, H_O). Both bolted: C = max(F_R, F_O), undefined if both are ∞.\nE13. Shove. F_s = min(F_A, 2·share·F_A), with share = comicFrac 0.1682 or real 0.523 per hand, as in the throw's shove. Stroke d = strokes.throw (1.6 m × s_A). m_arms = 2 handEff_A; mA = m_A − m_arms; mB = m_B + m_arms. RA(F) = Rslide_A(F) + F_g; RB = R_B + F_g, where F_g is mutual gravity at contact, held constant (an upper bound). Then pushApart, blended comic/real like comicAtLeastReal on v_B, with throwOnce's held-back variant. Momentum split as in throwOnce: p_B' = p_B m_B/(m_B + m_arms); p_A' = max(0, p_A − p_B m_arms/(m_B + m_arms)). Slide after contact: m v dv/dx = −(R + k v²) with k = ½ρ0 Cd A_front, so x = (m/2k)·ln(1 + k v²/R) (below 0.01c; R = 0 gives ∞). Out of the ring if x_B,stroke + x_slide,B ≥ x. Bound together if v_A' + v_B' < √(2G(m_A + m_B)/(d0 + d)). Gravity lock if the push stalls and F_g ≥ F_s.\nE14. Lift. Need = m_B g + G m_A m_B/d_over² + T_pull, with T_pull = τ_s A_dig,B if B is dug in and ∞ if bolted. The ground under the lifter carries (m_A + m_B) g / (2 A_foot) against q_ult (P.lift). Mutual gravity is internal to the pair and does not load the ground. The partner pushing down on the lifter is internal too, so he cannot make himself heavier.\nE15. Throw. throwObject(c_A, {m: m_B, area: A_front,B, Cd: 1.0, CdSup: 1.75, rho: ρ_B, L: (6V_B/π)^(1/3), extraHold: F_g + T_pull, extraResist: F_g}, θ). Requires two new optional fields in throwOnce: needed = mB g + extraHold, and RB += extraResist (both default 0, so existing results are unchanged). The partner escapes the thrower if v ≥ √(2G(m_A + m_B)/d_over). If ρ_B/ρ_ground > 10, crater scaling is invalid; report Newton's depth D ≈ L ρ_B/ρ_ground instead.\nE16. Mutual gravity: F_g = G m_A m_B/d². Equivalent-ball radius r = (3V/4π)^(1/3) = 0.3503 m at 2 m. d_contact = r_A + r_B; d_table = max(0.660 s_t + 0.25 H̄, r_A + r_B); d_over = max(0.65 H_A + 0.1 H_B, r_A + r_B). Escape speed v_esc = √(2G(m_A + m_B)/d). Falling together from rest at d0 to d1, with μ = G(m_A + m_B) and x = d1/d0: t = √(d0³/2μ)·[√(x(1−x)) + arccos√x]; v_rel = √(2μ(1/d1 − 1/d0)); E = G m_A m_B (1/d1 − 1/d0). Newtonian gravity is fine: G m/(r c²) = 1.5e-10 even for a neutron-star-dense 2 m body. Black hole when 2Gm/c² ≥ r, i.e. ρ ≥ 1.31e27 kg/m³ at 2 m.",
+ "algorithm": "ENGINE (engine.js). Add the constants AW, TABLE, RING_D and HUMERUS_NM (values in inputs). Add K.G if the density area has not. Add these helpers:\n- rEq(b) = cbrt(3 b.volume/(4π)).\n- mutualGravity(bA, bB, d) → {d, F, vEsc, Ebind}.\n- fallTogether(bA, bB, d0, d1) → {t, vRel, E}; returns zeros when d0 ≤ d1.\n- footing(c, mA) = anchorCapacity({body: c.body, surface: c.surface, theta: 0, anchor: c.anchor, groundHolds: c.groundHolds, mA}).\n- groundTear(c) = c.groundHolds ? ∞ : c.surface.shear × c.body.digArea.\n- same(a, b) = a === b || (isFinite(a) && isFinite(b) && |a − b| ≤ 1e-9·max(|a|, |b|)). This guard matters: a naive relative test calls ∞ equal to any finite number.\n- shoveDrive(c) = min(c.F, 2·c.F·(real ? 0.523 : comicFrac)).\nPrelude for every duo function: if isBlackHole(A or B), return {blackHole: true}. If !groundHolds and either body's standRatio > 1, set sinks flags and rerun the contest with groundHolds = true (the bay prefixes the verdict accordingly).\n\narmWrestle(cA, cB):\n1. P_i = 0.11 F_i; f_i = footing(c_i); A_i = min(P_i, f_i.R); footLimited_i = f_i.R < P_i; L_i = 0.19 H_i.\n2. armHold_i = 0.012043 m_i g; canHoldArm_i = P_i ≥ armHold_i.\n3. s_t = mean H / 1.7562; elbowCap = groundHolds ? ∞ : 10e3 s_t²; elbowLoad_i = 0.036 m_i g; tableRatio = max(elbowLoad)/elbowCap; slamCap = groundHolds ? ∞ : 102 s_t³.\n4. d_t = max(0.660 s_t + 0.25 H̄, rA + rB); grav = mutualGravity(A, B, d_t); fall = fallTogether(A, B, d_t, rA + rB); pulledTogether = grav.F > min(R_A, R_B) && grav.F > max(shoveDrive_A, shoveDrive_B).\n5. If both A_i are infinite, outcome = 'undefined' and return.\n6. If same(A_A, A_B): outcome 'stalemate', contact = A_A.\n7. Otherwise w = argmax A. s = (π/2)·0.19·H_loser; M = 0.009693 (m_A + m_B); vmax = 17·s_w. Comic: push = pushApart({F: A_w, d: s, mA: M, mB: M, RA: Infinity, RB: A_l, mode: 'comic'}). Real: push = pushApart({F: P_w, Fcap: f_w.R < P_w ? f_w.R : undefined, d: s, mA: M, mB: M, RA: Infinity, RB: A_l, mode: 'real', vmax}). pin = {t: push.t, v: push.vB, E: push.EB, s, M, dA: A_w − A_l}; contact = A_l; slamRatio = E/slamCap.\n8. Slam effects per E10, using the winner's density.\n9. τ_i = A_i L_i; humerusRatio_i = τ_i/190; tear_i = bolted_i ? A_i/groundTear(c_i) : 0.\n\npushMatch(cA, cB):\n1. f_i = footing(c_i); H_i = bolted ? ∞ : min(F_i, f_i.R).\n2. drive_i = (bolted || !canStand) ? 0 : μ·min(m_i g, f_i.Nmax) + (braced ? 0.25 τ_s A_dig : 0); D_i = min(F_i, drive_i).\n3. ring = 4.55 (H_A + H_B)/4; x = ring/2; Fg = mutualGravity(A, B, rA + rB).\n4. If both bolted: outcome 'bothBolted'; contact = (both F infinite) ? NaN (undefined) : max(F_A, F_B); tear = contact/min(groundTear).\n5. nA = D_A − H_B; nB = D_B − H_A; tol = 1e-9·max(D_A, D_B). If nA > tol, A walks B out; else if nB > tol, B walks A out; else deadlock: contact = min(H_A, H_B); allOut = neither bolted && F_A > R_A && F_B > R_B; if allOut, attach shoveBoth(cA, cB).\n6. Walk-out: M = m_A + m_B; a = n/M; vCap = sprint(c_w).vTop (if 0, treat the drive as 0). Timing per E12.\n7. Flags: canLift_i (liftPartner(c_i, c_other).can); gravityLock = Fg.F > max(shoveDrive_A, shoveDrive_B).\n\nshove(cA, cB) = comicAtLeastReal-style blend of shoveOnce on vB (metric r.vB, cap sizeVmax('throwPush', A)). shoveOnce follows E13 and copies throwOnce's held-back loop: if F_s > Rlim = (f_A.R + F_g)(1 − 1e-9) > RB, try Fcap/F = Rlim × [1, 1.25, 1.6, 2, 3, 5, 10] in real mode or Rlim in comic mode, and keep the largest pB. Return {Fdrive, d, push, heldBack, vA, vB, EA, EB, slideA, slideB, outOfRing, Fg, gravityLock, boundTogether, vEsc, stalled, relativistic (v > 0.01c), basis}.\nshoveBoth(cA, cB): if shoveDrive_A ≥ shoveDrive_B, shove(cA, cB) with shover 'A'; otherwise shove(cB, cA) with shover 'B'. Both infinite on finite footing is just an infinite push.\n\nliftPartner(cA, cB): per E14. Return {weight, Fg, dOver, pullOut, need, can, margin = F/need, pressure, qult, groundRatio}, with ground values from P.lift(cA, {m: m_B}). If B is bolted, need = ∞.\n\nthrowPartner(cA, cB, θ): if B is bolted, return {bolted: true}. If F_A < m_B g + F_g + T_pull, return canHold false. Otherwise r = throwObject(cA, obj, θ) per E15. Add vEsc and fallsBack = r.v < vEsc; penetrates = ρ_B/ρ_ground > 10; newtonDepth = L ρ_B/ρ_ground. When penetrates, the bay suppresses the crater.\n\nExport: AW, TABLE, armWrestle, pushMatch, shove, shoveBoth, liftPartner, throwPartner, mutualGravity, fallTogether, rEq (plus isBlackHole if not provided elsewhere).\n\nAPP (app.html).\nbayArm(): cR = ctx(), cO = ctxOllie(); r = P.armWrestle(cR, cO); render duoHeader, then verdict, chips, tiles, logBars, happens and math (see page_text).\nbayWrestle(): a sub-move chip row (Shoving match / Shove / Lift / Throw) and a who row (Rex → Ollie, Ollie → Rex, and 'Both at once' for Shove only). For Throw, add angleControl(). Map who to (cA, cB) = (cR, cO) or (cO, cR) and name the actors accordingly. Throw rendering can reuse bayThrow's flight text by passing a pseudo-object {short: 'Ollie'|'Rex', ...}.\nPersist wrestleMove and wrestleWho in state.",
+ "edge_cases": "INFINITE STRENGTH. One side infinite on finite footing: A = R, so infinity buys nothing past the feet (the ∞ Rex vs record-human test gives a pin with only 507.9 N to spare). Infinite and bolted against a finite side: comic pin in s/c = 1.99 ns at light speed with unbounded slam energy (blast and quake 'unbounded'; the ground around his bolts tears, ratio ∞ unless comic ground). Real muscle: the hand tops out near 17 m/s (vmax) with ~504 J. Both infinite and both bolted: arm wrestling and pushing match return 'undefined'. Say so plainly: infinity minus infinity has no value, and an unstoppable force meeting an immovable object is a contradiction, not a result. Both infinite with finite footing: arm wrestling and pushing match are footing-limited stalemates. An all-out shove-off is an infinite push on finite resistance, so both leave at light speed with unbounded energy. That is well defined (∞ force against finite R), not ∞ − ∞. Guard: the same() check must treat ∞ vs finite as unequal; NaN contact (∞ vs ∞) maps to 'undefined', never a number.\nBOTH TOO STRONG FOR THEIR FOOTING (the default Hulk pair on concrete). Arm wrestling is a stalemate at 1,059 N each; pushing all-out would drag each off his pad (a foul in competition). The pushing match is a deadlock at 1,059 N, and allOut shows the skater shove-off: 49.3 m/s each, sliding 138-143 m. A heavier body or dug-in claws/boots break the tie; strength does not.\nBOLTED. Bolted bodies cannot walk (drive 0), so a bolted winner can only shove. A bolted body cannot be lifted or thrown (need = ∞), and a shove against him just recoils the shover. Both bolted in the pushing match: nothing moves; C = max(F_R, F_O) stretches the ground between them, and the ground around the bolts tears above τ_s × A_dig (concrete 300 kN, so 2.97× at the default Hulk strength; granite 7.2 MN holds). Comic ground: no tearing and no table damage.\nCOMIC GROUND. Sets the table and the ground to unbreakable (elbowCap and slamCap ∞, no crater, no tear). Friction still limits footing (engine convention). Dug-in shear also stays at τ_s A_dig, as in the solo moves.\nEXTREME DENSITY. Plush (30 kg/m³, 5.4 kg each): footing is 31.8 N, so everything is a footing stalemate. A shove sends a plush body off at 285 m/s, but air drag stops it in ~39 m, and a thrown plush Ollie flies only 35 m despite a 226 m/s launch. Below air density (ρ ≤ 1.225 kg/m³) he floats: footing is 0 if the density area applies buoyancy (apparent weight max(0, m − ρ_air V)g), so any push just drifts both apart. Real dense materials (osmium 22,590 kg/m³, 4,066 kg): the table still holds (elbow load 1.44 kN against 13 kN). Neutron-star density (example 4e17 kg/m³, 7.2e16 kg each; the density area supplies the final value): they cannot hold their forearms up without 8.5e15 N of arm force; elbow load 2.5e16 N against 13 kN (2e12×); both sink on real ground (flag, then rerun on comic ground); mutual gravity across the table is 2.2e23 N, so they fall together in 0.39 ms at 3,476 m/s, releasing 2.2e23 J; at contact 7.05e23 N, about 1e6× their weight, and pulling apart needs a dial setting of at least 7.2e22 kg. A normal-density Ollie meets a neutron-star Rex with 1.76e9 N, so he is gravity-locked (his 299 kN shove cannot break it). A thrown neutron-star Ollie penetrates (Newton depth 1.2e14 m, far deeper than Earth is wide), so suppress the crater and defer to the density area's sinking result. Black hole (ρ ≥ ~1.3e27 kg/m³ at 2 m): return blackHole and show no contest.\nRELATIVISTIC. The pin and shove use relativistic momentum (pushApart). Slide distances are computed only below 0.01c; above that, flag relativistic and reuse the throw bay's fireball wording. Slam energy E = ΔA·s holds exactly at any speed.\nCOMIC VS REAL. Arm force uses the same 11% share in both modes, and the comic pin (constant force) is always at least as fast as the real one (Hill). Shove and throw use comicAtLeastReal: heavy record-human shoves fall back to real muscle (3.57 vs 2.2 m/s).\nUNEQUAL SIZES. P does not depend on size (strength is a force); the lever 0.19 H and the pin path use the loser's lever; M sums both. The table and ring scale with the mean height. If the height ratio exceeds 1.5, add an info chip: 'Sizes too different for a fair table; numbers are rough.' A body whose strength is less than its own weight cannot stand (density area's canStand): its drive is 0, and the bay says so (the 50 m Ollie at Hulk strength weighs 27.6 MN against 0.89 MN of strength).\nZERO/NaN GUARDS. Mass > 0 and F ≥ 10 kg·g are enforced by state validation. Use Math.max(..., 1e-300) in tolerances. vCap = 0 means no walk. fallTogether returns zeros if d0 ≤ d1. Ratios against ∞ capacity are 0. Ratios ∞/∞ are 'undefined'. log1p is used in the slide formula. R = 0 gives an infinite slide (drag alone never quite stops him), so report 'coasts until something stops him'.",
+ "outputs": "armWrestle → {blackHole?, sinksA, sinksB, PA, PB (N, arm force), RA, RB (N, footing; ∞ if bolted), AA, AB (N, usable), footLimitedA/B (bool), LA, LB (m), armHoldA/B (N), canHoldArmA/B (bool), sT (table scale), elbowCap (N), elbowLoadA/B (N), tableRatio, slamCap (J), grav {d (m), F (N), vEsc (m/s), Ebind (J)}, fall {t (s), vRel (m/s), E (J)}, pulledTogether (bool), outcome 'stalemate'|'pin'|'undefined', winner 'A'|'B', contact (N), pin {t (s), v (m/s), E (J), s (m), M (kg), dA (N)}, slamRatio, crater (m), craterExtrapolated, quake (magnitude), relativistic (bool), torqueA/B (N·m), humerusRatioA/B, tearA/B}.\npushMatch → {HA, HB, DA, DB (N), holdA, holdB (N), grav, ring (m), outcome 'walkOut'|'deadlock'|'bothBolted', winner, net (N), accel (m/s²), x (m), t (s), v (m/s), vCap (m/s), contact (N, NaN = undefined), tear, allOut (bool), shoveOff (shoveBoth result), canLiftA/B, gravityLock}.\nshove / shoveBoth → {Fdrive (N), d (m), push (pushApart result), heldBack, basis, vA, vB (m/s, final speeds after the arm momentum split), EA, EB (J), slideA, slideB (m), outOfRing (bool), Fg (N), gravityLock, boundTogether, vEsc (m/s), stalled, relativistic, shover}.\nliftPartner → {weight, Fg, pullOut, need (N), can, margin, pressure (Pa), qult (Pa), groundRatio, dOver (m)}.\nthrowPartner → {bolted?} or {r (throwObject result: v, flight, Eobj, Eimpact, crater, quake, recoilV, heldBack, basis), vEsc (m/s), fallsBack, newtonDepth (m), penetrates}.",
+ "page_text": "ARM WRESTLE BAY. duoHeader(cR, cO), then the parts below.\nVERDICT (first match wins):\n1. blackHole: 'No contest: at this density [Rex/Ollie] is a black hole (see Weight).'\n2. Either one sinks (off comic ground): prefix 'On real [surface] [they sink/he sinks] just standing here (see Weight). If the ground could hold them: ' and continue with the rerun result.\n3. pulledTogether: 'They never get to arm-wrestle. Their own gravity drags them together across the table: they meet at [vRel] within [t], with [E] ([TNT]).'\n4. !canHoldArm: '[Name] can't even hold his forearm up: at this density it weighs more than his arm can push ([armHold] vs [P]).'\n5. tableRatio > 1: 'The table collapses under their elbows before they start: each elbow presses [elbowLoad]; the table takes about [elbowCap].'\n6. undefined: 'Unstoppable force meets immovable object. Both are infinitely strong and bolted down, so the push between them is infinity against infinity. That has no answer, and the sim won't invent one.'\n7. stalemate, both footLimited: 'Dead heat. Each arm could push [P], but their feet only hold [R]. Past that they'd just drag themselves off the table, so strength stops mattering.'\n8. stalemate, otherwise: 'Dead heat: [C] each way, arms locked upright.'\n9. pin, winner footLimited: '[W] wins, but only by [dA]: his feet hold [R_w], not his full [P_w].' Then the speed clause.\n10. pin: '[W] pins [L] in [t].' Speed clause when v ≥ 1 m/s: ' The back of [L]'s hand hits the pad at [v]' plus ', and goes through the table' (slamRatio > 10), ', cracking the top' (1-10), or '.' At v ≥ 0.01c: ' at [x]% of light speed: [E or unbounded].'\nSTATUS CHIPS:\n- 'Arm force: Rex [A_R] · Ollie [A_O]' (info).\n- Per side: good 'Rex's feet hold' when R ≥ P; bad 'Rex's feet slip above [R]' when footLimited; info 'Rex bolted' when bolted.\n- Table: info 'Comic ground: table never breaks'; good 'Table holds' (tableRatio ≤ 1 and slamRatio ≤ 1); warn 'Pin may crack the table' (1 < slamRatio ≤ 10); bad 'Pin smashes the table' (> 10); bad 'Table crushed by their elbows' (tableRatio > 1).\n- bad 'Ground around [X]'s bolts tears out' when tear > 1.\n- warn 'Their own gravity: [Fg]' when Fg > 1e-3 × the lighter one's weight.\n- info 'Sizes too different for a fair table' when the height ratio is over 1.5.\nTILES:\n- 'Pushing force' — [A_R] vs [A_O], sub 'arm 11% of strength, capped by footing'.\n- 'Time to pin' — [t] or 'Stalemate'.\n- 'Hand speed at the pin' — speedTile(v).\n- 'Slam' — [E], sub [TNT] · '[slamRatio]× what the table top is built to take'.\n- 'Twist on each upper arm' — [τ], sub '[humerusRatio]× what breaks a human humerus (~190 N·m, estimate)'.\n- 'Feet hold' — R_R / R_O.\nCHART: logBars('Forces, newtons', rows) with rows Rex's arm P_R; Rex's feet hold R_R (skip if ∞); Ollie's arm P_O; Ollie's feet hold R_O; Table under one elbow Q_e (skip if ∞); Their mutual gravity F_g (only if > 1e-3 N). Highlight the two used values A.\nHAPPENS (choose up to 5, in this order of relevance):\n(a) 'Newton's third law: the push between their hands is the same both ways. It reaches each of them sideways, so each can only press as hard as his feet hold: [R] standing on [surface].'\n(b) footLimited: 'Push harder and his feet slide; his elbow leaves the pad, which is a foul in competition (two fouls lose).'\n(c) pin: '[W]'s [dA] surplus spins both forearms (together they act like [M] at the hand) a quarter turn, [s], down to the pad.'\n(d) table: 'A regulation table (World Armwrestling Federation: 19 mm plywood on a steel frame, scaled ×[s_t] to their size) is built for people. This pin delivers [E], [slamRatio]× the 102 J impact a 19 mm floor panel must survive in US panel tests.'\n(e) human: 'In people, a full-force twist like this is how the upper arm snaps: in one series of 30 arm-wrestling fractures, every one was a spiral break of the humerus. A healthy humerus takes roughly 190 N·m in theory (an estimate). Rex and Ollie are indestructible.'\n(f) gravity: 'At [ρ] each weighs [m]. Across the table their gravity pulls them together with [Fg], [ratio]× their weight on Earth.'\n(g) infinite on finite footing: 'Infinite strength doesn't help here: his feet still let go at [R].'\n(h) bolted with tear > 1: 'Bolted to the planet holds, but the ground around the bolts doesn't: past about [T] the surface breaks up around his feet.'\nMATH (Show the math):\n- 'Arm force = 11% of strength in both muscle models (estimate): Rex [P_R], Ollie [P_O].'\n- 'Usable = min(arm force, footing); footing = μ m g [+ shear × buried area if dug in; unlimited if bolted].'\n- 'Pin: net [dA] on M = 0.0097 × (m_Rex + m_Ollie) = [M] over s = (π/2) × 0.19 H = [s]; comic t = √(2 s M / ΔF) with relativistic momentum; real muscle force falls with hand speed (Hill, top speed [vmax]).'\n- 'Twist τ = force × 0.19 H.'\n- 'Gravity F = G m₁ m₂ / d², d = [d].'\n\nWRESTLE BAY. Sub-move chips and who chips, then:\nSHOVING MATCH VERDICTS:\n- bothBolted, undefined: 'Unstoppable force meets immovable object: both bolted, both infinitely strong. No answer.'\n- bothBolted: 'Neither moves: both are bolted to the planet. They press with [C], and that stretches the ground between their feet' + ' — it tears up around the bolts ([tear]× its limit).' or ' — it holds.'\n- deadlock with allOut: 'Dead heat. Both are far stronger than their footing (each holds only [R]), so strength stops mattering. Pushing all-out, they'd just shove each other apart like skaters: [vR] and [vO], sliding [x].'\n- deadlock with a bolted side: '[Bolted] can't be moved, and being bolted he can't walk [other] out either. Stalemate (he can still shove him: see Shove).'\n- deadlock: 'Dead heat at [C].'\n- walkOut: '[W] walks [L] out of the ring in [t]' + (v ≥ 5 m/s ? ', hitting [v]' : '') + '. [L]'s ' + (H_l < R_l ? 'muscles give at [H_l]' : 'feet only hold [H_l]') + '.'\n- Suffixes: gravityLock adds ' Their gravity holds them together with [Fg]; neither can push the other away.' canLift of the winner (or of either, in a deadlock) adds ' [X] could also just lift [Y] off his feet (Lift).'\nSHOVING MATCH CHIPS: 'Rex holds [H_R] · drives [D_R]', 'Ollie holds [H_O] · drives [D_O]', a ground-tear chip, and a gravity chip.\nSHOVING MATCH CHART: logBars of strength, footing hold and walking drive for each.\nSHOVING MATCH TILES: Winner / Time out of the ring / Speed at the edge / Push between them.\nSHOVE VERDICTS:\n- stalled with gravityLock: '[B] is held to [A] by gravity ([Fg]); [A]'s shove ([F]) can't break it.'\n- stalled: 'Nobody moves: [A]'s shove ([F]) can't beat [B]'s footing ([R_B]) and his own ([R_A]).'\n- relativistic: '[B] leaves at [x]% of light speed.' Then reuse the throw bay's fireball bullet with 'Ollie' as the object.\n- otherwise: '[B] flies back at [vB] and slides [slideB] before he stops' + (outOfRing ? ', well out of the ring.' : ', still inside the ring.') + (vA > 0.01 ? ' [A] recoils at [vA].' : '') + (boundTogether ? ' Their gravity pulls them straight back together.' : '').\n- Both at once adds: 'The stronger shove sets the push: the weaker one's arms can't extend against it. Evenly matched, both arms could extend, so this is a low estimate.'\nSHOVE BULLETS: Newton's third law (each gets the same push for the same time), footing, held-back, slide physics ('friction and air drag stop him; a real body would tumble').\nLIFT VERDICTS:\n- bolted: '[B] is bolted to the planet: lifting him means lifting the planet. Can't be done.'\n- can: '[A] lifts [B] overhead with [margin]× the force needed.' Then (dug in) ' First he tears [B]'s [claws/boots] out of the ground ([pullOut]).', (Fg > 1% of W) ' Their gravity adds [Fg], [ratio]× [B]'s weight.', and (groundRatio > 1) ' [A]'s feet sink: both their weights press [pressure] into ground that holds [qult].'\n- cannot: '[A] can't lift [B]: it takes [need], he has [F].'\n- Bullet: '[B] can't make himself heavier by pushing down on [A]: that push stays between the two of them. Only his grip on the ground counts.'\nTHROW: reuse bayThrow's verdicts, tiles and chart with the object short name 'Ollie'/'Rex' and his frontArea and Cd. Additional verdicts: bolted 'He's bolted to the planet: there's nothing to throw.'; fallsBack 'Their gravity pulls [B] straight back to [A].'; penetrates '[B] is so dense ([ρ]) that he doesn't make a crater: he punches into the ground (Newton's rough estimate: [depth]), far deeper than any crater. See Weight.' (suppress the crater tile).\n\nASSUMPTIONS CARD (static-data.js) — one new entry, 'Rex vs Ollie': see caveats.",
+ "caveats": "For the assumptions card, in plain language:\n- Ollie. He is assumed to be as strong, tough and big as Rex unless his own settings say otherwise. He wears boots, so the sim gives his boots the same grip as Rex's feet on each surface. 'Dug in' for Ollie means boots kicked into footholds, treated like Rex's buried claws. Nothing else about him is invented.\n- Arm wrestling. Each arm pushes sideways at the hands with 11% of its owner's strength in both muscle models. That share is an estimate: at record-human strength it twists a human-sized upper arm with about 190 N·m, roughly the most a healthy humerus can take in theory, and arm-wrestling fractures happen at full effort. Measured values point anywhere from 5% to 16%. Wrist, finger and body-lean technique are ignored.\n- Who wins. The push between their hands is the same both ways and goes down through each body to his feet. Neither can use more force than his feet hold. When both are stronger than that, the heavier or better-anchored one wins whatever the strength. Leaning, toppling, leverage and the table's own grip are not modelled.\n- Arms. Forearms have human proportions (US Army ANSUR II survey and Dempster's cadaver data), scaled with height. A pin is a quarter turn of both forearms.\n- The table. It is a regulation World Armwrestling Federation table (19 mm plywood on a steel frame), scaled to their size. Its strength is an estimate from US plywood floor-panel test minimums: about 10 kN under an elbow and about 100 J of slam at regulation size.\n- Wrestling. A sustained push uses full strength, as the Pull move does. Walking someone backward uses friction plus a quarter of the claw grip, as the sprint does. Bolted or dug-in stances can resist but can't walk. A shove uses the throw's two-handed push. When both shove at once, the stronger shove sets the push, which is a low estimate for an even match. After a shove they slide to a stop against friction and air drag as if they stayed upright; real bodies would tumble. The sumo ring is 4.55 m across at the default 2 m size, scaled with their height.\n- Bolted to the planet. The bolts never give, but the ground around them does. It is estimated with the same shear limit the sim uses for dug-in claws, within a factor of about 3 of real tensile strengths.\n- Lifting and throwing a partner. A partner who is dug in has to be torn out of the ground first (same shear estimate). A bolted partner can't be lifted or thrown. A partner far denser than the ground punches in instead of making a crater (Newton's rough impact-depth rule).\n- Their own gravity. It is G m₁ m₂ / d² with each body treated as a ball of the same volume, which is good to about a factor of 2 for tall bodies close together. It matters only at extreme density.\n- Infinity. Infinite strength against a finite foothold is still limited by the foothold. Infinite strength on both sides, with both bolted down, is infinity against infinity: the sim says 'no answer' rather than inventing one.",
+ "tests": [
+  {
+   "name": "AW-1 default pair: footing decides",
+   "inputs": "Both H 2 m, m 180 kg, strength 90,718.474 kg (F = 889,644 N), comic, concrete (mu 0.6, shear 1.5 MPa), both friction, groundHolds false",
+   "expected": "outcome stalemate; P = 97,860.9 N each; R = 1,059.12 N each; A = 1,059.12 N; footLimited both true; torque 402.47 N·m each (humerusRatio 2.118)",
+   "reasoning": "P = 0.11 × 889,644 = 97,860.9 N. R = 0.6 × 180 × 9.80665 = 1,059.12 N. A = min(P, R) = 1,059.12 for both, so they are equal: stalemate. τ = 1,059.12 × 0.19 × 2 = 402.47 N·m; 402.47 / 190 = 2.118.",
+   "tolerance": "1e-6 relative"
+  },
+  {
+   "name": "AW-2 both dug in",
+   "inputs": "As AW-1, both anchor braced",
+   "expected": "stalemate; A = 97,860.9 N each (footLimited false; R = 301,059 N); torque 37,187 N·m",
+   "reasoning": "R = 1,059.12 + 1.5e6 × 0.2 = 301,059 N > P, so A = P on both sides: equal. τ = 97,860.9 × 0.38.",
+   "tolerance": "1e-6 relative"
+  },
+  {
+   "name": "AW-3 Hulk vs record human, both dug in, comic",
+   "inputs": "Rex as AW-2; Ollie strength 511 kg, braced",
+   "expected": "pin by Rex; dA = 97,309.6 N; M = 3.48954 kg; s = 0.596903 m; t = 6.5430 ms; v = 182.46 m/s; E = 58,084 J (13.9 g TNT); slamCap 150.65 J so slamRatio 385.6 ('smashes the table'); torques Rex 37,187 / Ollie 209.47 N·m",
+   "reasoning": "A_O = 0.11 × 511 × 9.80665 = 551.232 N. dA = 97,860.9 − 551.2 = 97,309.6 N. M = 0.009693 × 360 = 3.48954 kg. s = (π/2) × 0.38 = 0.596903 m. t = √(2 × 0.596903 × 3.48954 / 97,309.6) = √4.2810e-5 = 6.543e-3 s. v = dA·t/M = 182.46 m/s. E = dA × s = 58,084 J. s_t = 2/1.7562 = 1.13882, so slamCap = 102 × 1.13882³ = 150.65 J.",
+   "tolerance": "1e-4 relative"
+  },
+  {
+   "name": "AW-3r same, real muscle",
+   "inputs": "AW-3 with mode real for both",
+   "expected": "pin by Rex; t = 37.88 ms; v = 16.532 m/s; E = 476.8 J; slamRatio 3.17 ('may crack the top')",
+   "reasoning": "Hill with vmax = 17 m/s and k = 0.25: r = 551.232/97,860.9 = 0.0056329; terminal u = (1 − r)/(1 + r/k) = 0.97246, so v_t = 16.532 m/s, reached in ~2 ms. t ≈ 0.5969/16.532 + transient ≈ 37.9 ms. E = ½ M v² = 0.5 × 3.48954 × 16.532² = 476.8 J.",
+   "tolerance": "1% (numerical integration)"
+  },
+  {
+   "name": "AW-4 infinite Rex vs record human, both standing",
+   "inputs": "Rex F = Infinity, friction; Ollie 511 kg, friction; concrete; comic (real gives the same)",
+   "expected": "pin by Rex with A_R = 1,059.12 N (footing-limited) vs A_O = 551.232 N; dA = 507.886 N; t = 90.567 ms; v = 13.1815 m/s; E = 303.16 J",
+   "reasoning": "min(∞, 1,059.12) = 1,059.12. t = √(2 × 0.596903 × 3.48954 / 507.886) = √8.2024e-3 = 0.090567 s. v = 507.886 × 0.090567 / 3.48954 = 13.18 m/s. In real mode Fcap = R keeps the force at 1,059 N below vmax, so the result is the same.",
+   "tolerance": "1e-4 relative"
+  },
+  {
+   "name": "AW-5 both infinite and bolted",
+   "inputs": "Both F = Infinity, both bolted",
+   "expected": "outcome 'undefined' (no numbers); verdict 'Unstoppable force meets immovable object...'",
+   "reasoning": "A = min(∞, ∞) = ∞ on both sides, so the difference ∞ − ∞ is undefined. same() must not report equality and no pin must be computed.",
+   "tolerance": "exact"
+  },
+  {
+   "name": "AW-6 infinite bolted vs Hulk bolted",
+   "inputs": "Rex F = Infinity, bolted; Ollie Hulk, bolted; comic, then real",
+   "expected": "Comic: pin in t = s/c = 1.99105e-9 s; v = c; E = Infinity; tearA = Infinity, tearB = 0.3262. Real: v = 16.995 m/s, t = 35.13 ms, E = 503.9 J",
+   "reasoning": "pushApart with F = ∞ returns t = d/c = 0.596903/299,792,458. Ollie's 97,860.9 N against the 300 kN concrete tear limit gives 0.326. In real mode Hill caps the hand at vmax = 17 m/s.",
+   "tolerance": "1e-6 (comic), 1% (real)"
+  },
+  {
+   "name": "AW-7 lake ice",
+   "inputs": "AW-1 bodies; surface ice (mu 0.1); Rex Hulk, Ollie 511 kg; both friction",
+   "expected": "stalemate at 176.52 N (both footing-limited, despite a 177× strength gap)",
+   "reasoning": "R = 0.1 × 1,765.2 = 176.52 N < 551.232 N < 97,860.9 N.",
+   "tolerance": "1e-6 relative"
+  },
+  {
+   "name": "AW-8 record human vs record human",
+   "inputs": "Both 511 kg, friction, concrete",
+   "expected": "stalemate at 551.232 N; torque 209.47 N·m at Rex's 0.38 m lever (183.9 N·m at a 1.756 m human's 0.3337 m lever ≈ 190 N·m calibration)",
+   "reasoning": "P = 551.232 < R = 1,059.12. τ = 551.232 × 0.38 = 209.47 N·m.",
+   "tolerance": "1e-6 relative"
+  },
+  {
+   "name": "AW-9 record human vs half strength",
+   "inputs": "Rex 511 kg, Ollie 255.5 kg, friction, concrete",
+   "expected": "Real: t = 0.2580 s, v = 2.808 m/s, E = 13.76 J (slamRatio 0.091, table holds). Comic: t = 0.12294 s, v = 9.710 m/s, E = 164.5 J (slamRatio 1.09)",
+   "reasoning": "dA = 275.616 N. Comic: t = √(2 × 0.596903 × 3.48954 / 275.616) = 0.12294 s. Real: r = 0.5 gives u = 0.5/(1 + 2) = 1/6, so v_t = 2.833 m/s; t ≈ 0.597/2.81 ≈ 0.26 s, a realistic human pin.",
+   "tolerance": "1e-4 (comic), 1% (real)"
+  },
+  {
+   "name": "AW-10 neutron-star density pair",
+   "inputs": "Both H 2 m, m = 7.2e16 kg (4e17 kg/m³ × 0.18 m³), Hulk strength, concrete, comic",
+   "expected": "canHoldArm false (needs 8.503e15 N vs 97,860.9 N); elbowLoad 2.5419e16 N vs elbowCap 12,969 N (1.96e12×); d_table 1.25162 m; Fg 2.2086e23 N; fall together in 0.3903 ms at 3,475.9 m/s, releasing 2.1747e23 J; pulledTogether true; sinks on real ground",
+   "reasoning": "armHold = 0.012043 × 7.2e16 × 9.80665. elbowLoad = 0.036 × 7.2e16 × 9.80665. d_t = 0.660 × 1.13882 + 0.25 × 2 = 1.25162 m. Fg = 6.6743e-11 × (7.2e16)² / 1.25162² = 2.2086e23 N. Fall with μ = G × 1.44e17 = 9.611e6 and x = 0.70053/1.25162 = 0.5597: t = √(1.9607/1.9222e7) × (0.49642 + 0.72475) = 3.903e-4 s.",
+   "tolerance": "1e-4 relative"
+  },
+  {
+   "name": "AW-11 comic ground",
+   "inputs": "AW-3 with groundHolds true",
+   "expected": "Same pin numbers as AW-3; elbowCap and slamCap Infinity; slamRatio 0; chip 'Comic ground: table never breaks'",
+   "reasoning": "Comic ground makes the table unbreakable. Friction and the dug-in limit are unchanged.",
+   "tolerance": "exact"
+  },
+  {
+   "name": "AW-12 plush pair",
+   "inputs": "Both 2 m, m 5.4 kg (30 kg/m³), Hulk, friction, concrete",
+   "expected": "stalemate at 31.774 N",
+   "reasoning": "R = 0.6 × 5.4 × 9.80665 = 31.774 N, far below P.",
+   "tolerance": "1e-6 relative"
+  },
+  {
+   "name": "W-1 shoving match, default pair",
+   "inputs": "AW-1 settings",
+   "expected": "deadlock; contact 1,059.12 N; allOut true; shoveBoth: Ollie 49.263 m/s, Rex 49.271 m/s, contact time 31.05 ms, slides 138.26 m / 142.71 m (comic)",
+   "reasoning": "H = D = min(889,644, 1,059.12) for both, so net = 0. Both F > R gives allOut. Shove: F_s = 2 × 0.16818 × 889,644 = 299,240 N. Ollie's final p = p_B × 180/187.92 gives 49.263 m/s. Slide = (180/0.98) ln(1 + 0.49 × 49.263²/1,059.12) = 138.26 m.",
+   "tolerance": "0.5% (depends on the engine's comicFrac)"
+  },
+  {
+   "name": "W-2 Rex dug in vs Ollie standing",
+   "inputs": "Rex braced, Ollie friction, Hulk both, concrete; comic, then real",
+   "expected": "Rex walks Ollie out: drive 76,059.1 N; Ollie holds 1,059.12 N; net 75,000 N; a = 208.33 m/s²; x = 2.275 m. Comic: t = 0.14778 s, v = 30.79 m/s. Real (cap 17.9 m/s): t = 0.17006 s, v = 17.9 m/s",
+   "reasoning": "drive = 1,059.12 + 0.25 × 300,000. a = 75,000/360. Comic: t = √(2 × 2.275/208.33) and v = √(2 × 208.33 × 2.275) = 30.79 < vCap 205.4. Real: 17.9/208.33 + (2.275 − 17.9²/416.67)/17.9 = 0.08592 + 0.08414.",
+   "tolerance": "1e-4 relative"
+  },
+  {
+   "name": "W-3 heavier body wins regardless of strength",
+   "inputs": "Rex m 360 kg, Ollie 180 kg, both friction, concrete, Hulk (also true at 511 kg each)",
+   "expected": "Rex walks Ollie out: net 1,059.12 N; a = 1.96133 m/s²; t = 1.5231 s; v = 2.987 m/s",
+   "reasoning": "Rex holds and drives 0.6 × 360 × 9.80665 = 2,118.24; Ollie holds 1,059.12. a = 1,059.12/540. t = √(2 × 2.275/1.96133).",
+   "tolerance": "1e-4 relative"
+  },
+  {
+   "name": "W-4 both bolted",
+   "inputs": "Both bolted, Hulk, concrete; then granite",
+   "expected": "bothBolted; contact 889,644 N; tear 2.965 on concrete (300 kN, the ground tears), 0.1236 on granite (7.2 MN, holds)",
+   "reasoning": "C = max(F) = 889,644. Limit = shear × 0.2 m²: 1.5e6 × 0.2 = 3e5; 36e6 × 0.2 = 7.2e6.",
+   "tolerance": "1e-6 relative"
+  },
+  {
+   "name": "W-5 both bolted and infinite",
+   "inputs": "Both bolted, F = Infinity",
+   "expected": "contact undefined (NaN mapped to 'undefined'); no tear number",
+   "reasoning": "max(∞, ∞) pressed between two immovable anchors: an unbounded push against an unbounded hold.",
+   "tolerance": "exact"
+  },
+  {
+   "name": "W-6 bolted Rex vs standing Ollie",
+   "inputs": "Rex bolted, Ollie friction, Hulk both",
+   "expected": "deadlock (Rex drive 0, Rex hold ∞); contact 1,059.12 N; allOut false",
+   "reasoning": "A bolted body cannot walk, and nobody can push a bolted body back.",
+   "tolerance": "exact"
+  },
+  {
+   "name": "W-7 weak Rex gives way before his feet do",
+   "inputs": "Rex strength 100 kg (980.665 N), Ollie Hulk, both friction",
+   "expected": "Ollie walks Rex out: H_Rex = 980.665 N (muscles, not feet); net 78.453 N; a = 0.21793 m/s²; t = 4.569 s",
+   "reasoning": "H = min(F, R) = 980.665 < 1,059.12. Net = 1,059.12 − 980.665.",
+   "tolerance": "1e-4 relative"
+  },
+  {
+   "name": "SH-3 record human shoves record human",
+   "inputs": "Both 511 kg, friction, concrete, comic (falls back to real)",
+   "expected": "basis real; F_s 5,011.2 N; Ollie 3.568 m/s, Rex 3.659 m/s; Ollie travels 0.757 + 1.079 = 1.836 m < 2.275 m (stays in the ring)",
+   "reasoning": "Real 2 × 0.523 F is capped at F. Comic 0.336 F is slower, so the blend picks real (as comicAtLeastReal does).",
+   "tolerance": "0.5%"
+  },
+  {
+   "name": "SH-4 infinite bolted Rex shoves standing Ollie",
+   "inputs": "Rex F = Infinity, bolted; Ollie Hulk, friction",
+   "expected": "Comic: Ollie at c (relativistic flag, E = Infinity, no slide number). Real: Ollie 35.0 m/s (vmax 35), slides 82.47 m",
+   "reasoning": "pushApart with infinite F returns c. Real muscle caps at vmax_throwPush = 35 m/s. Slide = (180/0.98) ln(1 + 0.49 × 35²/1,059.12).",
+   "tolerance": "1% (real)"
+  },
+  {
+   "name": "SH-5 shoving a bolted partner",
+   "inputs": "Rex Hulk friction shoves Ollie bolted",
+   "expected": "Ollie doesn't move; Rex recoils at 71.19 m/s (comic) and slides 227.6 m",
+   "reasoning": "RB = ∞, so the whole stroke goes into Rex's own recoil.",
+   "tolerance": "0.5%"
+  },
+  {
+   "name": "SH-6 gravity lock",
+   "inputs": "Ollie (Hulk, 180 kg) shoves Rex (m 7.2e16 kg), comic ground",
+   "expected": "stalled; gravityLock true; Fg = 1.7626e9 N > F_s 299,240 N",
+   "reasoning": "Fg = 6.6743e-11 × 180 × 7.2e16 / 0.70053² = 1.7626e9 N, about 1e6× Ollie's weight.",
+   "tolerance": "1e-4 relative"
+  },
+  {
+   "name": "L-1/2/3 lifting Ollie",
+   "inputs": "Rex Hulk; Ollie 180 kg standing / dug in / bolted; concrete",
+   "expected": "Standing: need 1,765.2 N, margin 503.99, foot pressure 39.23 kPa (1.57% of 2.5 MPa). Dug in: need 301,765 N, margin 2.948. Bolted: cannot (need ∞)",
+   "reasoning": "W = 180 × 9.80665. Pull-out = 1.5e6 × 0.2. Pressure = 360 × 9.80665 / 0.09.",
+   "tolerance": "1e-6 relative"
+  },
+  {
+   "name": "L-5/6 lifting a neutron-star partner",
+   "inputs": "Both 7.2e16 kg, comic ground; Rex strength 1e23 kg, then 1e22 kg",
+   "expected": "need 1.5378e23 N (mutual gravity at d_over 1.5 m; weight 7.06e17 N is 0.0005% of it); 1e23 kg can (6.38×), 1e22 kg cannot (0.638×)",
+   "reasoning": "d_over = 0.65 × 2 + 0.1 × 2 = 1.5 m. Fg = 6.6743e-11 × 5.184e33 / 2.25 = 1.5378e23 N.",
+   "tolerance": "1e-4 relative"
+  },
+  {
+   "name": "T-1 Rex throws Ollie",
+   "inputs": "Rex Hulk, friction, concrete, comic, 45°; Ollie 180 kg (area 0.8 m², Cd 1.0, CdSup 1.75)",
+   "expected": "v = 64.67 m/s, range 238.4 m, Rex recoil 10.32 m/s; with Rex dug in: 71.23 m/s, 266.5 m",
+   "reasoning": "Reuses throwObject unchanged, with extraHold and extraResist ≈ 0 at normal density.",
+   "tolerance": "0.5% (depends on the engine)"
+  },
+  {
+   "name": "T-5 throwing a neutron-star Ollie",
+   "inputs": "Rex strength 1e23 kg, bolted, normal density; Ollie 7.2e16 kg; comic ground; 45°",
+   "expected": "penetrates true (density ratio 1.67e14); Newton depth 1.17e14 m; crater suppressed; fallsBack false (v 3,829 m/s > vEsc 2,531 m/s)",
+   "reasoning": "L = (6 × 0.18/π)^(1/3) = 0.7005 m; D = 0.7005 × 4e17/2400. vEsc = √(2G × 7.2e16 / 1.5).",
+   "tolerance": "1e-3 relative"
+  },
+  {
+   "name": "G-1/G-2 mutual gravity at contact",
+   "inputs": "Two 2 m bodies, d = 2 × 0.35026 = 0.70053 m; 180 kg each, then 7.2e16 kg each",
+   "expected": "180 kg: 4.4066e-6 N (the weight of 0.45 mg). 7.2e16 kg: 7.0505e23 N = 998,546× their weight; vEsc 5,238 m/s; pulling apart needs a dial setting of at least 7.19e22 kg",
+   "reasoning": "G m²/d² = 6.6743e-11 × 32,400 / 0.490738, and 6.6743e-11 × 5.184e33 / 0.490738.",
+   "tolerance": "1e-4 relative"
+  },
+  {
+   "name": "Guard: infinity vs finite is not a tie",
+   "inputs": "same(Infinity, 97860.9)",
+   "expected": "false (the naive |a−b| ≤ 1e-9 max(|a|,|b|) test wrongly returns true)",
+   "reasoning": "∞ ≤ 1e-9 × ∞ is true in IEEE arithmetic. This bug made the prototype call infinite-vs-finite a stalemate before it was fixed.",
+   "tolerance": "exact"
+  }
+ ],
+ "open_questions": "1. The arm-force share 0.11 is the softest number. Sources support 0.05 (ordinary men's ~80 N·m twist) up to 0.16 (an elite 819 N hook pull, which is not a pure twist). The owner may prefer to show the range on the page.\n2. The WAF rulebook PDF itself was blocked by the proxy. The pin and elbow-foul wording comes from the Canadian federation's summary; check it against the WAF text if wording matters.\n3. Comic ground currently leaves the dug-in shear finite (the engine convention). Should comic ground also make dug-in claws and boots unbreakable?\n4. 'Both shove at once' uses the stronger shove over one arm's stroke. Evenly matched pairs could extend both arms (up to √2 faster); the rule is discontinuous at exact equality if changed.\n5. Coordinate names with the density area: K.G, isBlackHole, canStand, the sinking flag, buoyancy and apparent weight, and the neutron-star density value. Tests here use 4e17 kg/m³ only as an example.\n6. Table strength (10 kN per elbow, 102 J slam) is an estimate built from PS 2 minimums. Pins in comic mode at record-human strength (164 J) will read 'may crack the top', which is a comic-mode exaggeration; real-mode human pins are 1-15 J.\n7. No toppling, leaning or leverage (sumo technique of getting low and lifting is approximated only by the separate Lift move). Gravity torque of the forearms is ignored in the pin. Unequal-height arm wrestling is rough.\n8. Mutual-gravity distances (equal-volume balls) are good to about 2×. If the density area models body shape differently, reuse its distances."
+}

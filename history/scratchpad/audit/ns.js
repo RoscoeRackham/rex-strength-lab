@@ -1,0 +1,15 @@
+global.window={}; const P=require('/home/user/dino-strength-sim/src/engine.js'); require('/home/user/dino-strength-sim/src/data.js'); const D=window.DINO_DATA;
+const K=P.K||{};
+console.log(Object.keys(P).join(' '));
+const m=4.12e17*0.18;
+const body=P.makeBody({H:2,m});
+const surface=D.surfaces.find(s=>s.id==='concrete');
+const ctx={F:90718.474*9.80665,mode:'comic',body,surface,groundHolds:false,anchor:'friction'};
+const t0=Date.now();
+const r=P.weight(ctx);
+console.log('time',Date.now()-t0);
+console.log('fall firstPass',r.fall.firstPass, 't',r.fall.t,'maxV',r.fall.maxV);
+console.log('settle',r.settle);
+console.log('shortRange',r.shortRange,'settleRange',r.settleRange,'energyJ',r.energyJ);
+const gm = 9.80665;
+console.log('depthShort*m*g', r.fall.firstPass.depthShort*m*9.82, 'J ; firstPassLossJ', r.settle.firstPassLossJ, 'ratio', r.settle.firstPassLossJ/(r.fall.firstPass.depthShort*m*9.82));

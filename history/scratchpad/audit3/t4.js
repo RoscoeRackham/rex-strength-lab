@@ -1,0 +1,13 @@
+const {P,D,g,ctx,obj}=require('./h.js');
+const T = (name, fn) => { const t0 = Date.now(); let n = 0; while (Date.now() - t0 < 1500) { fn(); n++; } console.log(name, ((Date.now()-t0)/n).toFixed(1), 'ms/call'); };
+const cc = ctx({}), cr = ctx({mode:'real'});
+T('comic punch hulk', () => P.punch(cc));
+T('real punch hulk', () => P.punch(cr));
+T('comic throw car hulk', () => P.throwObject(cc, obj('car'), 45));
+T('real throw car hulk', () => P.throwObject(cr, obj('car'), 45));
+T('comic throw car 1e3', () => P.throwObject(ctx({logKg:3}), obj('shot'), 45));
+T('comic jump hulk', () => P.jump(cc));
+T('real jump hulk', () => P.jump(cr));
+T('comic jump 1e3', () => P.jump(ctx({logKg:3})));
+T('comic stomp 1e3', () => P.stomp(ctx({logKg:3})));
+T('real throw tank braced 1e8', () => P.throwObject(ctx({mode:'real',anchor:'braced',logKg:8}), obj('tank'), 30));
