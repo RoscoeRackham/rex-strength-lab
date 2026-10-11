@@ -1231,8 +1231,11 @@
     const landSink = landRatio > 1 ? penetrationDepth(body.m, A2, vLand, qultFor(surface, body.footB), surface.rho || 2000) : 0;
     // what shakes the ground: the feet and shanks (2 x legEff) stopping at touchdown, as in a stomp; his bent legs
     // take the rest of the energy over the stroke
-    const Eimpact = landed && !soft ? 0.5 * 2 * body.legEff * vLand * vLand : 0;
-    const landing = { landed, v: vLand, E: Eland, Eimpact, F: landF, t: landT, ratio: landRatio, sink: landSink, soft, absorbed: soft ? Eland : 0,
+    const EimpactFeet = landed ? 0.5 * 2 * body.legEff * vLand * vLand : 0;
+    const Eimpact = soft ? 0 : EimpactFeet;
+    // soft landing takes back what the landing would put into the ground: the feet's impact, and (if the ground gives)
+    // the work it takes; his bent legs stop the rest either way
+    const landing = { landed, v: vLand, E: Eland, Eimpact, F: landF, t: landT, ratio: landRatio, sink: landSink, soft, absorbed: soft ? (landRatio > 1 ? Eland : EimpactFeet) : 0,
       // when the feet punch in, the ground takes the energy they lose doing it: the work against its bearing and inertia
       Eground: landRatio > 1 && !soft ? Eland : 0 };
     return {
@@ -2844,6 +2847,10 @@
       softclay: { rho: 1700, cs: 120, xi: 0.05 }, stiffclay: { rho: 1900, cs: 250, xi: 0.03 },
       asphalt: { rho: 2000, cs: 250, xi: 0.03 }, concrete: { rho: 2000, cs: 250, xi: 0.03 },
       granite: { rho: 2700, cs: 3000, xi: 0.01 },
+      // firmer sand, as in the model's elephant check (shear waves at 280 m/s, near the 248-264 m/s measured where
+      // Asian elephants walked; O'Connell-Rodwell): the elephant comparison's other end, since the measured site's
+      // stiffness is unknown (estimate)
+      firmsand: { rho: 1800, cs: 280, xi: 0.03 },
     },
     STRAIN: 1e-4,       // the ground stays elastic while its strain is below about 1e-4 (estimate)
     RMIN: 1,            // closest distance the model covers, m
@@ -2859,6 +2866,8 @@
     //   plasterWalk: cosmetic damage from repeated steps (Caltrans older homes, continuous: 7.6 mm/s)
     //   plaster: cosmetic damage from one event, a stomp or a landing (US Bureau of Mines RI 8507, plaster: 12.7 mm/s)
     //   footing: people lose their footing (estimate from earthquakes: about 300 mm/s, 80-600)
+    // plasterHigh: the same safe limit above 40 Hz (RI 8507: 2.0 in/s for all houses), for short single pulses
+    PLASTER_F: 40, plasterHigh: 2.0 * 0.0254,
     TH: { feel: 0.3e-3, feelOnce: 0.04 * 0.0254, shimmer: 0.2e-3, rings: 0.7e-3, rattle: 1e-3, plasterWalk: 7.6e-3, plaster: 12.7e-3, footing: 0.3 },
     // horizontal over vertical shaking at the surface of uniform ground (Poisson's ratio 1/4): 1/3 in the near field,
     // 0.68 for Rayleigh waves (vib_rayleigh_horizontal_and_resultant, derived). Only the water glass's shimmer uses it.
@@ -2907,6 +2916,12 @@
   // shaking is not known (yielding soaks up energy, softening lets it move more).
   const ppvNonlinear = (src, d) => { const list = Array.isArray(src) ? src : [src]; const r = Math.max(d, VIB.RMIN); return list.some((x) => x && Math.max(ppvAt(x, d) / x.ground.cs, 0.75 * x.F / (2 * Math.PI * x.ground.rho * x.ground.cs * x.ground.cs * r * r)) > VIB.STRAIN); };
   const elephantPPV = (d) => VIB.ELEPHANT.v * VIB.ELEPHANT.d / d;
+  // One event's plaster check (US Bureau of Mines RI 8507): 12.7 mm/s for a pulse of 40 Hz or less, 50.8 mm/s above.
+  // A pulse of length T is taken at frequency 1/T (a ramp: 1/(2 tau)). plasterOver: does any part reach its limit at d?
+  const pulseHz = (x) => (x.kind === 'ramp' ? 1 / (2 * x.tau) : 1 / x.T);
+  const plasterLimit = (x) => (pulseHz(x) > VIB.PLASTER_F ? VIB.plasterHigh : VIB.TH.plaster);
+  const plasterOver = (src, d) => { const list = Array.isArray(src) ? src : [src]; return list.some((x) => x && ppvAt(x, d) >= plasterLimit(x)); };
+  const plasterReach = (src) => { const list = Array.isArray(src) ? src : [src]; return Math.max(0, ...list.filter(Boolean).map((x) => ppvReach(x, plasterLimit(x)))); };
 
   // ---------------------------------------------------------------------------
   // Presence: walking. People's gait scaled to their size by dynamic similarity (equal Froude number
@@ -2994,7 +3009,8 @@
     const pPeak = impact ? impact.p : p;
     if (surface.granular) {
       const qSand = 37e3 * B / 0.316;   // the loose sand's bearing at this foot width (the elephant print's sand)
-      return { depth: PRINT.d * Math.pow(p / PRINT.p, PRINT.n) * (B / PRINT.B) * Math.min(1, qSand / q), kind: 'print' };
+      // Schanz's anchor stress is the elephant's dynamic (peak) stress, so the print follows the step's peak
+      return { depth: PRINT.d * Math.pow(Math.max(p, pPeak) / PRINT.p, PRINT.n) * (B / PRINT.B) * Math.min(1, qSand / q), kind: 'print' };
     }
     if (surface.id === 'softclay' || surface.id === 'stiffclay') {
       // the landing pulse, if it is past the clay's bearing, drives the foot in like a small stomp
@@ -3054,7 +3070,8 @@
     // a foot's contact pulse: a drill stamp peaks 26 ms after contact, so about 52 ms, scaled with size
     const footPulse = (body) => 2 * WALK.STAMP.t * Math.sqrt(WALK.HIP * body.H / WALK.HS.h);
     // the effective mass of a drill stamp: its impulse (half the 6.5 W peak times the pulse) over the leg's speed
-    const stampMass = (body) => 0.5 * WALK.STAMP.kPeak * body.m * K.g * footPulse(body) / Math.sqrt(2 * K.g * WALK.STAMP.thigh * body.H);
+    const stampSpeed = (body) => Math.sqrt(2 * K.g * WALK.STAMP.thigh * body.H);
+    const stampMass = (body) => 0.5 * WALK.STAMP.kPeak * body.m * K.g * footPulse(body) / stampSpeed(body);
     // Energy counts as an air blast only when it is let go faster than sound can carry it off: something moving
     // past Mach 1 (a shock wave), or a fireball. Slower, it is a thump or a crash, not a blast wave.
     const shock = (v, E) => (v >= K.a0 ? E : 0);
@@ -3065,6 +3082,8 @@
         run: (c, o) => throwObject(c, o.obj, o.angle),
         goal: (r, o) => r.canMove && !r.fallsBack && (o.angle >= 90 ? r.flight.relativistic || r.flight.escaped || r.flight.apex >= o.target : range(r.flight) >= o.target),
         speed: (r) => (r.canMove ? r.v : 0),
+        // the boom counts the object and his own recoil
+        boomSpeed: (r) => (r.canMove ? Math.max(r.v, r.recoilV || 0) : 0),
         ground: (r, o) => !SOIL.has(o.surface && o.surface.id) && r.canMove && r.sinkRatio > 1,
         crush: (r, o) => !o.gentleHold && r.canMove && r.gripRatio > 1,
         blast: (r) => (!r.canMove || !r.flight ? 0 : r.flight.relativistic ? r.Eobj : r.flight.landed ? shock(r.flight.vImpact, r.Eimpact) : 0),
@@ -3084,7 +3103,9 @@
         goal: (r, o) => r.v > 0 && (r.relativistic || r.flight.escaped || r.flight.apex >= o.target),
         speed: (r) => r.v,
         // take-off or landing: on paving, slabs, rock, ice or steel the surface breaks; in soil his feet only sink in
-        ground: (r, o) => !SOIL.has(o.surface && o.surface.id) && (r.groundFails || !!(r.landing && r.landing.ratio > 1)),
+        // (in soil only a crater counts: over a megajoule into the ground, the Jump tab's 'two craters')
+        ground: (r, o) => (SOIL.has(o.surface && o.surface.id) ? (r.groundFails && r.Eground >= 1e6) || !!(r.landing && r.landing.Eground >= 1e6)
+          : r.groundFails || !!(r.landing && r.landing.ratio > 1)),
         blast: (r) => shock(r.footSpeed, r.Eground || 0),
         // the landing, if he comes back down (soft landing absorbs it)
         // the landing on bent legs (the body stopped over the leg stroke) and the feet hitting the ground first
@@ -3109,7 +3130,9 @@
         // A measured drill stamp (6.5 x body weight over about 52 ms, scaled) stops more than the leg: about 0.2 body-weight
         // seconds, as if half his body stopped from the leg's 3.7 m/s. The stomp takes the same effective mass, so the
         // Stomp and Walk tabs agree when the foot lands at the same speed.
-        shake: (r, o) => (r.vFoot > 0 ? impulseSource(o.surface, momentumOf(r.vFoot, Math.max(o.body.legEff, stampMass(o.body))), Math.max(footPulse(o.body), 2 * (r.holeDepth || 0) / r.vFoot)) : null),
+        // (the leg at the foot's speed; the rest of the stamp's effective mass at most at the stamp's own leg speed,
+        // since his body is pushed up, not down, by a harder stomp)
+        shake: (r, o) => (r.vFoot > 0 ? impulseSource(o.surface, momentumOf(r.vFoot, o.body.legEff) + Math.max(0, stampMass(o.body) - o.body.legEff) * Math.min(r.vFoot, stampSpeed(o.body)), Math.max(footPulse(o.body), 2 * (r.holeDepth || 0) / r.vFoot)) : null),
         where: 'around him',
       },
       punch: {
@@ -3142,9 +3165,9 @@
     };
     // Hazards that set the courtesy ceiling: harm to people or property nearby.
     const HAZARDS = [
-      { id: 'boom', test: (m, r, o) => !(o.silentStrike && m.silent) && m.speed(r) >= K.a0 },
+      { id: 'boom', test: (m, r, o) => !(o.silentStrike && m.silent) && (m.boomSpeed || m.speed)(r) >= K.a0 },
       { id: 'air', test: (m, r, o) => !!m.blast && blastRadius(m.blast(r, o), R.DP_HARM) >= o.near },
-      { id: 'plaster', test: (m, r, o) => !!m.shake && ppvAt(m.shake(r, o), o.near) >= VIB.TH.plaster },
+      { id: 'plaster', test: (m, r, o) => !!m.shake && plasterOver(m.shake(r, o), o.near) },
       { id: 'ground', test: (m, r, o) => !!m.ground && !o.groundHolds && m.ground(r, o) },
       { id: 'crush', test: (m, r, o) => !!m.crush && m.crush(r, o) },
       { id: 'passenger', test: (m, r, o) => !!m.passenger && m.passenger(r, o) },
@@ -3153,7 +3176,7 @@
     // Not-so-heroic presets, at rising scales: each is the least effort that does what it says.
     const PRESETS = [
       { id: 'rattle', test: (m, r, o) => (!!m.shake && ppvAt(m.shake(r, o), o.near) >= VIB.TH.rattle) || (!!m.blast && blastRadius(m.blast(r, o), R.DP_RATTLE) >= o.near) },
-      { id: 'plaster', test: (m, r, o) => !!m.shake && ppvAt(m.shake(r, o), o.near) >= VIB.TH.plaster },
+      { id: 'plaster', test: (m, r, o) => !!m.shake && plasterOver(m.shake(r, o), o.near) },
       { id: 'windows', test: (m, r, o) => !!m.blast && blastRadius(m.blast(r, o), R.DP_WINDOWS) >= R.STREET },
       { id: 'ground', test: (m, r, o) => !!m.ground && !o.groundHolds && m.ground(r, o) },
       { id: 'houses', test: (m, r, o) => !!m.blast && blastRadius(m.blast(r, o), R.DP_HOUSES) >= o.near },
@@ -3169,7 +3192,7 @@
     // two efforts: something else (footing, the ground, the object's own limit) caps it, so more effort changes
     // nothing and the grid stops there.
     const FINE = 7;
-    function search(test, lo, hi, unlimited, same) {
+    function search(test, lo, hi, unlimited, same, tol) {
       const n = Math.max(1, Math.ceil(2 * Math.log10(hi / lo)));
       const grid = (i) => (i >= n ? hi : lo * Math.pow(10, i / 2));
       // .below: the most effort that stays short of it (0 if even the least does it; hi, or unlimited, if nothing does)
@@ -3197,7 +3220,7 @@
           if (test(x)) { s.b = x; s.fine = 0; } else { s.a = x; s.fine++; }
           return;
         }
-        if (s.b / s.a < 1 + R.TOL) { s.use = s.b; s.below = s.a; return; }
+        if (s.b / s.a < 1 + (tol || R.TOL)) { s.use = s.b; s.below = s.a; return; }
         const mid = Math.sqrt(s.a * s.b);
         if (test(mid)) s.b = mid; else s.a = mid;
       };
@@ -3221,7 +3244,10 @@
       // (soil: sand, gravel and clay)
     // the move has saturated when it comes out at the same nonzero speed (to a part in a million) at two efforts
       // half a decade apart: real muscle tops out at its limb speed, footing and the ground cap the push
-      const same = (u0, u1) => { const a = M.speed(at(u0)), b = M.speed(at(u1)); return a > 0 && isFinite(a) && Math.abs(b - a) <= 1e-6 * a; };
+      // ... and only if all-out comes out the same too: a run held back to the footing or the ground can sit on a flat
+      // stretch, then rise again where the full push wins
+      const eqv = (a, b) => a > 0 && isFinite(a) && Math.abs(b - a) <= 1e-6 * a;
+      const same = (u0, u1) => { const a = M.speed(at(u0)), b = M.speed(at(u1)); return eqv(a, b) && eqv(b, M.speed(at(hi))); };
       const jobs = new Map();
       jobs.set('goal', search((u) => M.goal(at(u), opt), lo, hi, unlimited, same));
       for (const h of HAZARDS) jobs.set('hazard:' + h.id, search((u) => h.test(M, at(u), opt), lo, hi, unlimited, same));
@@ -3269,8 +3295,8 @@
         feel: src ? ppvReach(src, VIB.TH.feel) : 0,
         shimmer: src ? ppvReach(src, VIB.TH.shimmer) : 0,
         rattle: src ? ppvReach(src, VIB.TH.rattle) : 0,
-        plaster: src ? ppvReach(src, VIB.TH.plaster) : 0,
-        boom: !(opt.silentStrike && M.silent) && M.speed(r) >= K.a0,
+        plaster: src ? plasterReach(src) : 0,
+        boom: !(opt.silentStrike && M.silent) && (M.boomSpeed || M.speed)(r) >= K.a0,
         ground: !!M.ground && !opt.groundHolds && M.ground(r, opt),
         crush: !!M.crush && M.crush(r, opt),
         passenger: !!M.passenger && M.passenger(r, opt),
@@ -3485,6 +3511,6 @@
     kgRatio, overpressureAt, blastRadius, penetrationDepth,
     lift, throwObject, jump, stomp, punch, clap, sprint, pull, threshold, calibrateComic,
     throwOnce, jumpOnce, stompOnce, punchOnce, clapOnce,
-    driveStrength, PASSENGER, VIB, ppvAt, ppvNonlinear, groundOf, vibSource, elephantPPV, sphereOverpressure, growthShape, WALK, walkStep, walkThresholds, footprint, presence, walkEffortFor, ppvReach, RESTRAINT, GROW, formShare, grownBody, grownMakeBody, pistonOverpressure, gradualGrowth, instantGrowth, runawayGrowth,
+    driveStrength, PASSENGER, VIB, ppvAt, ppvNonlinear, groundOf, vibSource, elephantPPV, sphereOverpressure, growthShape, WALK, walkStep, walkThresholds, plasterOver, plasterReach, footprint, presence, walkEffortFor, ppvReach, RESTRAINT, GROW, formShare, grownBody, grownMakeBody, pistonOverpressure, gradualGrowth, instantGrowth, runawayGrowth,
   };
 });

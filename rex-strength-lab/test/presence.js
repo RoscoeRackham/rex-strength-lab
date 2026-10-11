@@ -73,6 +73,21 @@ const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface
   }
 }
 
+// 2c. A search that says 'never' really means all-out doesn't do it either: plateaus where a run is held back to the
+// footing or the ground (comic mode) must not stop the search early (review round 2).
+{
+  const cases = [['jump', ctxOf(1e12 * g, { surface: surf('ice') }), { target: 3 }], ['jump', ctxOf(1e7 * g), { target: 3 }],
+    ['throw', ctxOf(1e8 * g), { obj: obj('tank'), angle: 45, target: 30 }], ['throw', ctxOf(1e7 * g), { obj: obj('semi'), angle: 45, target: 30 }],
+    ['throw', ctxOf(1e8 * g, { surface: surf('granite') }), { obj: obj('tank'), angle: 45, target: 30 }], ['throw', ctxOf(1e12 * g), { obj: obj('loco'), angle: 45, target: 30 }]];
+  for (const [mv, c, o] of cases) {
+    const p = P.RESTRAINT.planNow(mv, c, Object.assign({ near: 5 }, o)), M = P.RESTRAINT.MOVES[mv], all = p.run(undefined);
+    const wrong = [];
+    if (p.goal().never && M.goal(all, p.opt)) wrong.push('goal');
+    for (const h of P.RESTRAINT.HAZARDS) if (p.result('hazard:' + h.id).never && h.test(M, all, p.opt)) wrong.push(h.id);
+    ok(mv + ' (' + (o.obj ? o.obj.id + ', ' : '') + c.surface.id + ', ' + (c.F / g).toExponential(0) + ' kg): nothing reported as never happens all-out', wrong.length === 0, wrong.join(','));
+  }
+}
+
 // 3. Presence: more effort, a faster pace or less distance never gives less shaking.
 {
   for (const b of [rex, ollie]) for (const sid of ['sand', 'softclay', 'concrete', 'granite']) {
@@ -167,7 +182,8 @@ const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface
     ok('silent strike removes the blast and the boom', pb.air === 0 && pb.windows === 0 && !pb.boom && (pa.air > 0 || F < 1e7 * g));
     const ja = P.jump(c), jb = P.jump(ctxOf(F, { softLanding: true }));
     // soft landing takes back the landing's energy, not its force: the ground still bears the same stop
-    ok('soft landing keeps the jump and absorbs the landing energy', ja.v === jb.v && jb.landing.soft && jb.landing.absorbed === ja.landing.E && jb.landing.Eimpact === 0 && jb.landing.Eground === 0);
+    // it takes back what the landing would put into the ground: the feet's impact (and the ground's share if it gives)
+    ok('soft landing keeps the jump and absorbs what the landing would put into the ground', ja.v === jb.v && jb.landing.soft && jb.landing.absorbed === (ja.landing.ratio > 1 ? ja.landing.E : ja.landing.Eimpact) && jb.landing.absorbed > 0 && jb.landing.Eimpact === 0 && jb.landing.Eground === 0);
     ok('soft landing keeps the force on the ground (same push, bearing ratio and sinking)', jb.landing.F === ja.landing.F && jb.landing.t === ja.landing.t && jb.landing.ratio === ja.landing.ratio && jb.landing.sink === ja.landing.sink && jb.landing.v === ja.landing.v);
     const jo = { surface: c.surface, body: rex, m: rex.m, near: 5 };
     const sa = P.RESTRAINT.MOVES.jump.shake(ja, jo), sb = P.RESTRAINT.MOVES.jump.shake(jb, jo);
