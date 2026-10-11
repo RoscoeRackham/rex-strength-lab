@@ -165,7 +165,8 @@
     // One outline for the neck, torso and legs (right half, then mirrored). Where the thighs or
     // calves meet, the inner edge runs down the midline, as in a silhouette of touching legs.
     var chestHalf = d.chestB / 2, waistHalf = d.waistB / 2, hipHalf = d.hipB / 2;
-    var legX = Math.max(hj, hipHalf - d.thighR);
+    // The leg axes are bones: a scaled-up figure keeps the unscaled build's axes (opts.legAxis).
+    var legX = opts.legAxis != null ? opts.legAxis : Math.max(hj, hipHalf - d.thighR);
     d.legAxis = legX;
     var fb = d.footB / 2, fo = 0.012 * H;
     var outer = spline([
@@ -208,6 +209,8 @@
       var a = s * ang, origin = [s * sj[0], sj[1]];
       var Lu = d.upperArmL, Lf = d.foreArmL;
       var elbowR = (d.armR + d.foreR) / 2 * 0.78;
+      d.armStations = { upper: [[0, d.deltR], [0.22 * Lu, d.deltR * 0.92], [0.45 * Lu, d.armR], [0.75 * Lu, d.armR * 0.9], [Lu, elbowR]],
+        fore: [[0, elbowR], [0.22 * Lf, d.foreR], [0.6 * Lf, (d.foreR + d.wristR) / 2 * 1.02], [Lf, d.wristR]], Lu: Lu, Lf: Lf };
       front.push({ name: s > 0 ? 'left upper arm' : 'right upper arm', mark: mk('arm_flexed'), poly: limb(origin, a, [[0, d.deltR], [0.22 * Lu, d.deltR * 0.92], [0.45 * Lu, d.armR], [0.75 * Lu, d.armR * 0.9], [Lu, elbowR]], 6) });
       var elbow = [origin[0] + Math.sin(a) * Lu, origin[1] - Math.cos(a) * Lu];
       front.push({ name: s > 0 ? 'left forearm' : 'right forearm', mark: mk('forearm'), poly: limb(elbow, a, [[0, elbowR], [0.22 * Lf, d.foreR], [0.6 * Lf, (d.foreR + d.wristR) / 2 * 1.02], [Lf, d.wristR]], 6) });
@@ -321,6 +324,124 @@
     return img;
   }
 
+
+  // ---------- where the body stops working ----------
+  function pointInPoly(pt, poly) {
+    var inside = false;
+    for (var i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      var a = poly[i], b = poly[j];
+      if ((a[1] > pt[1]) !== (b[1] > pt[1]) && pt[0] < (b[0] - a[0]) * (pt[1] - a[1]) / (b[1] - a[1]) + a[0]) inside = !inside;
+    }
+    return inside;
+  }
+  /** Radius of a limb at distance s along its stations (linear between stations). */
+  function radiusAt(st, s) {
+    if (s <= st[0][0]) return st[0][1];
+    for (var i = 1; i < st.length; i++) if (s <= st[i][0]) return st[i - 1][1] + (st[i][1] - st[i - 1][1]) * (s - st[i - 1][0]) / (st[i][0] - st[i - 1][0]);
+    return st[st.length - 1][1];
+  }
+
+  /**
+   * (a) The smallest angle from vertical at which the arm clears the torso in the front view.
+   * The arm swings about the shoulder joint; only the arm below the deltoid (from 30% of the upper
+   * arm down) and the torso below the armpit are tested. Returns degrees.
+   */
+  function armClearance(fig) {
+    var d = fig.dims, body = fig.front.filter(function (p) { return p.name === 'body'; })[0].poly;
+    var torso = body.filter(function (p) { return p[1] < d.levels.axilla && p[1] > d.levels.crotch; });
+    var sj = d.shoulderJoint, st = d.armStations;
+    for (var deg = 0; deg <= 90; deg += 0.25) {
+      var a = deg * Math.PI / 180, hit = false;
+      var dx = Math.sin(a), dy = -Math.cos(a), nx = -dy, ny = dx;
+      // inner edge of the upper arm and forearm (the side facing the body: -n)
+      for (var s = 0.3 * st.Lu; s <= st.Lu + st.Lf && !hit; s += (st.Lu + st.Lf) / 120) {
+        var r = s <= st.Lu ? radiusAt(st.upper, s) : radiusAt(st.fore, s - st.Lu);
+        var p = [sj[0] + dx * s - nx * r, sj[1] + dy * s - ny * r];
+        if (p[1] < d.levels.axilla && p[1] > d.levels.crotch && pointInPoly(p, body)) hit = true;
+      }
+      // and no torso edge point inside the arm band
+      if (!hit) for (var i = 0; i < torso.length && !hit; i++) {
+        var q = torso[i]; if (q[0] <= 0) continue;
+        var rx = q[0] - sj[0], ry = q[1] - sj[1];
+        var along = rx * dx + ry * dy, across = rx * nx + ry * ny;
+        if (along < 0.3 * st.Lu || along > st.Lu + st.Lf) continue;
+        var rr = along <= st.Lu ? radiusAt(st.upper, along) : radiusAt(st.fore, along - st.Lu);
+        if (Math.abs(across) < rr) hit = true;
+      }
+      if (!hit) return deg;
+    }
+    return 90;
+  }
+
+
+  /**
+   * (a') The smallest angle from vertical at which the upper-arm bone (the line from the shoulder
+   * joint to the elbow) stays outside the torso outline: the arm cannot hang closer even if all the
+   * soft tissue between arm and body were squashed flat. Returns degrees.
+   */
+  function armBoneClearance(fig) {
+    var d = fig.dims, body = fig.front.filter(function (p) { return p.name === 'body'; })[0].poly;
+    var sj = d.shoulderJoint, Lu = d.armStations.Lu;
+    for (var deg = 0; deg <= 90; deg += 0.25) {
+      var a = deg * Math.PI / 180, hit = false;
+      for (var s = 0.15 * Lu; s <= Lu && !hit; s += Lu / 100) {
+        var p = [sj[0] + Math.sin(a) * s, sj[1] - Math.cos(a) * s];
+        if (p[1] < d.levels.axilla && pointInPoly(p, body)) hit = true;
+      }
+      if (!hit) return deg;
+    }
+    return 90;
+  }
+
+  /**
+   * (b) How far down the thighs touch, as a fraction of the way from the crotch to the knee
+   * (1 = all the way). The leg axes stay where the bones are.
+   */
+  function thighContact(fig) {
+    var d = fig.dims, y = d.levels, steps = 50, touch = 0;
+    for (var i = 0; i <= steps; i++) {
+      var yy = y.crotch - 0.03 * d.H - (y.crotch - 0.03 * d.H - y.lowThigh) * i / steps;
+      var t = (y.crotch - 0.03 * d.H - yy) / (y.crotch - 0.03 * d.H - y.lowThigh);
+      var r = d.thighR * 0.97 + (d.lowThighR - d.thighR * 0.97) * t; // the inner edge between its stations
+      if (d.legAxis - r <= 0) touch = i / steps; else break;
+    }
+    return touch;
+  }
+
+  /**
+   * (c) The most the elbow can bend before the front of the forearm meets the front of the upper
+   * arm, in degrees (0 = straight, 180 = folded flat). Round limbs, the bones on their axes, in the
+   * plane of the bend. Contact closer to the elbow than crease (metres, along the upper arm) is
+   * the skin fold of the elbow crease and does not stop the bend.
+   */
+  function elbowFlexion(fig, crease, squash) {
+    squash = squash || 0;
+    var st = fig.dims.armStations, Lu = st.Lu, Lf = st.Lf;
+    var up = function (x) { return radiusAt(st.upper, Lu - x); }; // x measured from the elbow
+    var fo = function (t) { return radiusAt(st.fore, t); };
+    var blocked = function (phi) {
+      var alpha = (180 - phi) * Math.PI / 180; // interior angle between the segments
+      // Upper arm along +x from the elbow, front surface y = up(x). A point on the forearm's front
+      // surface at distance t: t along the forearm axis plus fo(t) towards the upper arm.
+      for (var t = 0; t <= Lf; t += Lf / 300) {
+        var px = t * Math.cos(alpha) + fo(t) * Math.sin(alpha), py = t * Math.sin(alpha) - fo(t) * Math.cos(alpha);
+        if (px >= crease && px <= Lu && py < up(px) - squash) return true;
+      }
+      return false;
+    };
+    for (var phi = 0; phi <= 180; phi += 0.25) if (blocked(phi)) return phi - 0.25;
+    return 180;
+  }
+
+  /** Solve for the width factor at which f(widthScale) crosses a target (bisection; f increasing). */
+  function solveScale(build, test, lo, hi) {
+    lo = lo || 1; hi = hi || 6;
+    if (test(build(lo))) return lo;
+    if (!test(build(hi))) return null;
+    for (var i = 0; i < 40; i++) { var mid = (lo + hi) / 2; if (test(build(mid))) hi = mid; else lo = mid; }
+    return hi;
+  }
+
   /** Bounding box of a list of parts. */
   function bounds(parts) {
     var b = [Infinity, Infinity, -Infinity, -Infinity];
@@ -335,5 +456,5 @@
     return s + 'Z';
   }
 
-  return { SITES: SITES, fillParts: fillParts, renderSheet: renderSheet, bandEdges: bandEdges, spline: spline, symmetric: symmetric, limb: limb, ellipse: ellipse, human: human, traced: traced, bounds: bounds, pathData: pathData };
+  return { SITES: SITES, armClearance: armClearance, armBoneClearance: armBoneClearance, thighContact: thighContact, elbowFlexion: elbowFlexion, solveScale: solveScale, pointInPoly: pointInPoly, fillParts: fillParts, renderSheet: renderSheet, bandEdges: bandEdges, spline: spline, symmetric: symmetric, limb: limb, ellipse: ellipse, human: human, traced: traced, bounds: bounds, pathData: pathData };
 });

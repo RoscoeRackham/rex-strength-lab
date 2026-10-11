@@ -854,6 +854,26 @@
     return out;
   }
 
+
+  // ---------- target outlines ----------
+  /**
+   * Widen (f > 1) or narrow every run of figure pixels about its own centre, row by row, inside
+   * each view box: widths and depths scale by f, heights stay. Returns a new mask.
+   */
+  function scaleRuns(mask, w, h, views, f) {
+    var out = new Uint8Array(w * h);
+    views.forEach(function (v) {
+      var lo = Math.max(0, Math.floor(v.x0 - (f - 1) * (v.x1 - v.x0))), hi = Math.min(w - 1, Math.ceil(v.x1 + (f - 1) * (v.x1 - v.x0)));
+      for (var y = v.y0; y <= v.y1; y++) {
+        runs(mask, w, y, v.x0, v.x1).forEach(function (r) {
+          var c = (r[0] + r[1] + 1) / 2, half = (r[1] - r[0] + 1) / 2 * f;
+          for (var x = Math.max(lo, Math.round(c - half)); x < Math.min(hi + 1, Math.round(c + half)); x++) out[y * w + x] = 1;
+        });
+      }
+    });
+    return out;
+  }
+
   function andMask(a, b) { var o = new Uint8Array(a.length); for (var i = 0; i < a.length; i++) o[i] = a[i] & b[i]; return o; }
   function countMask(a) { var n = 0; for (var i = 0; i < a.length; i++) n += a[i]; return n; }
 
@@ -861,6 +881,6 @@
     SEG_DEFAULTS: SEG_DEFAULTS, ellipsePerimeter: ellipsePerimeter, median: median,
     backgroundRows: backgroundRows, pushPull: pushPull, components: components, morph: morph, segment: segment,
     splitViews: splitViews, runs: runs, contour: contour, simplify: simplify, polyArea: polyArea,
-    polygonMask: polygonMask, clearPolys: clearPolys, fitLine: fitLine, frontLandmarks: frontLandmarks, sideDepth: sideDepth, measureSheet: measureSheet, sliceRows: sliceRows, kProfile: kProfile, frontOnly: frontOnly, sliceRotated: sliceRotated, andMask: andMask, countMask: countMask
+    polygonMask: polygonMask, clearPolys: clearPolys, fitLine: fitLine, frontLandmarks: frontLandmarks, sideDepth: sideDepth, measureSheet: measureSheet, scaleRuns: scaleRuns, sliceRows: sliceRows, kProfile: kProfile, frontOnly: frontOnly, sliceRotated: sliceRotated, andMask: andMask, countMask: countMask
   };
 });

@@ -1,0 +1,423 @@
+{
+ "about": "Build Comparison settings: which body-fat range each build uses, the score height and excluded mass for Rex and Ollie, and which comic scores are not comparable. Facts are in facts.json.",
+ "fat_classes": {
+  "everyday_us": {
+   "label": "US men, middle half (NHANES DXA, 1999-2004)",
+   "range_pct": [
+    24.1,
+    32.1
+   ],
+   "working_pct": 28.0,
+   "keys": [
+    "nhanes_dxa_bodyfat_men_1999_2004"
+   ],
+   "note": "Median and interquartile range of measured body fat in US men aged 20 and over."
+  },
+  "stage": {
+   "label": "Bodybuilders on contest day",
+   "range_pct": [
+    4,
+    10
+   ],
+   "working_pct": 6,
+   "keys": [
+    "bodyfat_range_natural_stage",
+    "barakat2022_natural_pro_peak_week_dxa",
+    "rossow2013_natural_pro_case"
+   ],
+   "note": "Measured contest-day values for natural bodybuilders run from about 4.5% to 7.4% (DXA)."
+  },
+  "presteroid_contest": {
+   "label": "Pre-steroid champions at their contests (estimated from photos)",
+   "range_pct": [
+    6,
+    16
+   ],
+   "working_pct": 10,
+   "keys": [
+    "kouri1995_mr_america_table2"
+   ],
+   "note": "Pope's blind estimates from photographs ran from about 6% to 16% (Kouri 1995)."
+  },
+  "enhanced_stage": {
+   "label": "Enhanced pro bodybuilders on stage",
+   "range_pct": [
+    4,
+    8
+   ],
+   "working_pct": 5,
+   "keys": [
+    "bodyfat_range_enhanced_stage",
+    "withers1997_elite_bb_4C",
+    "rosaci2026_ifbb_pro_case"
+   ],
+   "note": "No lab measurement (DXA or 4-compartment) of a top pro on stage was found; the range rests on Withers 1997 (5.0%, 4C, five days out), an IFBB pro measured at 5.9% by skinfolds, and the natural contest-day floor."
+  },
+  "strongman": {
+   "label": "Strongmen and heavy lifters",
+   "range_pct": [
+    12,
+    28
+   ],
+   "working_pct": 19,
+   "keys": [
+    "bodyfat_range_strongmen_lifters",
+    "kraemer2020_elite_strongmen_dxa"
+   ],
+   "note": "Elite strongmen measured 18.7% +/- 6.2 by DXA (Kraemer 2020). No measured body fat was found for super-heavyweight weightlifters."
+  },
+  "comic_lean": {
+   "label": "Comic heroes drawn lean (assumed)",
+   "range_pct": [
+    5,
+    12
+   ],
+   "working_pct": 8,
+   "keys": [
+    "bodyfat_range_comic_characters"
+   ],
+   "note": "No publisher gives body fat. Assumed from how they are drawn: like lean bodybuilders."
+  },
+  "comic_brute": {
+   "label": "Comic brutes (assumed)",
+   "range_pct": [
+    8,
+    20
+   ],
+   "working_pct": 12,
+   "keys": [
+    "bodyfat_range_comic_characters"
+   ],
+   "note": "No publisher gives body fat. Assumed: muscular, less defined than stage bodybuilders."
+  },
+  "comic_heavy": {
+   "label": "Kingpin (assumed)",
+   "range_pct": [
+    15,
+    35
+   ],
+   "working_pct": 25,
+   "keys": [
+    "bodyfat_range_comic_characters"
+   ],
+   "note": "No publisher gives body fat. Marvel says most of his bulk is muscle, likened to a sumo wrestler; sumo wrestlers measure about 26%."
+  },
+  "comic_everyday": {
+   "label": "Bruce Banner (assumed)",
+   "range_pct": [
+    12,
+    28
+   ],
+   "working_pct": 20,
+   "keys": [
+    "bodyfat_range_comic_characters"
+   ],
+   "note": "No publisher gives body fat. Assumed: like an ordinary slim man."
+  },
+  "duo": {
+   "label": "Rex and Ollie (owner's canon)",
+   "range_pct": [
+    5,
+    10
+   ],
+   "working_pct": 7.5,
+   "keys": [
+    "bodyfat_range_rex_ollie"
+   ],
+   "note": "5-10% from their definition and occasional vascularity; 7.5% is the working value."
+  }
+ },
+ "builds": {
+  "ansur2_m_p5": {
+   "fat": {
+    "kind": "army_equation",
+    "error_points": 4,
+    "basis": "Estimated from this build's navel waist and weight with the US Army's 2023 one-site equation, plus or minus 4 points",
+    "keys": [
+     "army_one_site_tape_equation_2023",
+     "ansur2_men_bodyfat_from_army_equation",
+     "taylor2024_army_dxa_bodyfat"
+    ]
+   }
+  },
+  "ansur2_m_p50": {
+   "fat": {
+    "kind": "army_equation",
+    "error_points": 4,
+    "basis": "Estimated from this build's navel waist and weight with the US Army's 2023 one-site equation, plus or minus 4 points",
+    "keys": [
+     "army_one_site_tape_equation_2023",
+     "ansur2_men_bodyfat_from_army_equation",
+     "taylor2024_army_dxa_bodyfat"
+    ]
+   }
+  },
+  "ansur2_m_p95": {
+   "fat": {
+    "kind": "army_equation",
+    "error_points": 4,
+    "basis": "Estimated from this build's navel waist and weight with the US Army's 2023 one-site equation, plus or minus 4 points",
+    "keys": [
+     "army_one_site_tape_equation_2023",
+     "ansur2_men_bodyfat_from_army_equation",
+     "taylor2024_army_dxa_bodyfat"
+    ]
+   }
+  },
+  "ansur2_m_leanheavy": {
+   "fat": {
+    "kind": "army_equation",
+    "error_points": 4,
+    "basis": "Estimated from this build's navel waist and weight with the US Army's 2023 one-site equation, plus or minus 4 points",
+    "keys": [
+     "army_one_site_tape_equation_2023",
+     "ansur2_men_bodyfat_from_army_equation",
+     "taylor2024_army_dxa_bodyfat"
+    ]
+   }
+  },
+  "ansur2_m_largest_arm": {
+   "fat": {
+    "kind": "army_equation",
+    "error_points": 4,
+    "basis": "Estimated from this build's navel waist and weight with the US Army's 2023 one-site equation, plus or minus 4 points",
+    "keys": [
+     "army_one_site_tape_equation_2023",
+     "ansur2_men_bodyfat_from_army_equation",
+     "taylor2024_army_dxa_bodyfat"
+    ]
+   }
+  },
+  "nhanes_m_median": {
+   "fat_class": "everyday_us"
+  },
+  "kouri1995_nonusers": {
+   "fat": {
+    "kind": "value",
+    "value": 12.5,
+    "lo": 9.5,
+    "hi": 15.5,
+    "status": "measured",
+    "basis": "Kouri 1995's measured group mean (skinfolds), 12.5%, plus or minus 3 points for the method",
+    "keys": [
+     "kouri1995_fulltext_methods"
+    ]
+   }
+  },
+  "chappell2019_natural_pro": {
+   "fat_class": "stage"
+  },
+  "mr_america_1938_1954_mean": {
+   "fat_class": "presteroid_contest"
+  },
+  "steve_reeves_1947": {
+   "fat_class": "presteroid_contest"
+  },
+  "ronnie_coleman": {
+   "fat_class": "enhanced_stage"
+  },
+  "arnold_schwarzenegger": {
+   "fat_class": "enhanced_stage"
+  },
+  "dorian_yates": {
+   "fat_class": "enhanced_stage"
+  },
+  "jay_cutler": {
+   "fat_class": "enhanced_stage"
+  },
+  "phil_heath": {
+   "fat_class": "enhanced_stage"
+  },
+  "big_ramy": {
+   "fat_class": "enhanced_stage"
+  },
+  "sergio_oliva": {
+   "fat_class": "enhanced_stage"
+  },
+  "demoraes2019_br_national": {
+   "fat_class": "stage"
+  },
+  "sukwong2022_thai_elite": {
+   "fat": {
+    "kind": "own",
+    "error_points": 3,
+    "basis": "The build's own measured or reported value, plus or minus 3 points for the method"
+   }
+  },
+  "mcinnis1999_bodybuilders": {
+   "fat": {
+    "kind": "own",
+    "error_points": 3,
+    "basis": "The build's own measured or reported value, plus or minus 3 points for the method"
+   }
+  },
+  "fry1991_nonelite": {
+   "fat": {
+    "kind": "own",
+    "error_points": 3,
+    "basis": "The build's own measured or reported value, plus or minus 3 points for the method"
+   }
+  },
+  "brian_shaw": {
+   "fat": {
+    "kind": "own",
+    "error_points": 3,
+    "basis": "The build's own measured or reported value, plus or minus 3 points for the method"
+   }
+  },
+  "withers1997_elite": {
+   "fat": {
+    "kind": "own",
+    "error_points": 2,
+    "basis": "The build's own measured value (4-compartment model or DXA), plus or minus 2 points for the method"
+   }
+  },
+  "kraemer2020_strongmen": {
+   "fat": {
+    "kind": "own",
+    "error_points": 2,
+    "basis": "The build's own measured value (4-compartment model or DXA), plus or minus 2 points for the method"
+   }
+  },
+  "hafthor_bjornsson": {
+   "fat_class": "strongman"
+  },
+  "eddie_hall": {
+   "fat_class": "strongman"
+  },
+  "lasha_talakhadze": {
+   "fat_class": "strongman"
+  },
+  "superman": {
+   "fat_class": "comic_lean",
+   "ranges": "none"
+  },
+  "batman": {
+   "fat_class": "comic_lean",
+   "ranges": "none"
+  },
+  "captain_america": {
+   "fat_class": "comic_lean",
+   "ranges": "none"
+  },
+  "thor": {
+   "fat_class": "comic_lean",
+   "ranges": "none"
+  },
+  "black_panther": {
+   "fat_class": "comic_lean",
+   "ranges": "none"
+  },
+  "luke_cage": {
+   "fat_class": "comic_lean",
+   "ranges": "none"
+  },
+  "wolverine": {
+   "fat_class": "comic_lean",
+   "ranges": "none",
+   "comparable_note": "Scored without his adamantium skeleton: the 195 lb (88.5 kg) Marvel gives for him without it."
+  },
+  "colossus_human": {
+   "fat_class": "comic_lean",
+   "ranges": "none"
+  },
+  "hulk_savage": {
+   "fat_class": "comic_brute",
+   "ranges": "none"
+  },
+  "hulk_grey": {
+   "fat_class": "comic_brute",
+   "ranges": "none"
+  },
+  "hulk_marvelcom": {
+   "fat_class": "comic_brute",
+   "ranges": "none"
+  },
+  "juggernaut": {
+   "fat_class": "comic_brute",
+   "ranges": "none"
+  },
+  "abomination": {
+   "fat_class": "comic_brute",
+   "ranges": "none"
+  },
+  "doomsday": {
+   "fat_class": "comic_brute",
+   "ranges": "none"
+  },
+  "darkseid": {
+   "fat_class": "comic_brute",
+   "ranges": "none"
+  },
+  "bane": {
+   "fat_class": "comic_brute",
+   "ranges": "none"
+  },
+  "kingpin": {
+   "fat_class": "comic_heavy",
+   "ranges": "none"
+  },
+  "bruce_banner": {
+   "fat_class": "comic_everyday",
+   "ranges": "none"
+  },
+  "thing": {
+   "fat_class": "comic_brute",
+   "ranges": "none",
+   "comparable": "no",
+   "comparable_note": "His body is orange rock, so most of his weight is not muscle. His score is shown faded and kept out of the gaps."
+  },
+  "colossus_armored": {
+   "fat_class": "comic_brute",
+   "ranges": "none",
+   "comparable": "no",
+   "comparable_note": "In armoured form his body is organic steel, so his weight is not muscle. His score is shown faded and kept out of the gaps."
+  },
+  "rex": {
+   "fat_class": "duo",
+   "score_height": {
+    "value_m": 2.92,
+    "range_m": [
+     2.9,
+     2.95
+    ],
+    "status": "estimate",
+    "basis": "Top of the skull, measured from art: rex-strength-lab/assets/duo.jpg at its scale (3.858 mm per pixel on the original 1280 px picture, 6.859 mm per pixel on the 720 px copy in this repository). Skull top at row 23 +/- 3 of the 720 px copy, floor under the ankles at row 449.",
+    "keys": [
+     "duo_skull_heights"
+    ]
+   },
+   "exclude_mass": [
+    {
+     "name": "tail",
+     "mass_kg": 307,
+     "basis": "Picture measurement: tail 0.289 m^3 at 1,060 kg/m^3 (visible part plus the hidden base)"
+    }
+   ],
+   "mass_note": "His 2,700 kg was measured over his tank top and cargo pants; Step 2 measures him from his turnaround."
+  },
+  "ollie": {
+   "fat_class": "duo",
+   "score_height": {
+    "value_m": 2.91,
+    "range_m": [
+     2.87,
+     2.95
+    ],
+    "status": "estimate",
+    "basis": "Top of the skull, measured from art on duo.jpg at the same scale: 2.98 m to the skull in his boots (hair top at row 13.5 of the 720 px copy, less about 4 cm of hair; floor under the boots at row 454), less about 7 cm of boot sole (5-9 cm). Stature is measured barefoot.",
+    "keys": [
+     "duo_skull_heights"
+    ]
+   },
+   "exclude_mass": [
+    {
+     "name": "tail",
+     "mass_kg": 11,
+     "basis": "Picture measurement: tail about 0.010 m^3 (core 0.006 plus hair tuft at 15% packing), about 11 kg at 1,060 kg/m^3"
+    }
+   ],
+   "mass_note": "His 2,700 kg was measured over his clothes and boots; Step 2 measures him barefoot from his turnaround."
+  }
+ }
+}
