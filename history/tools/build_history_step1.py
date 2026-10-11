@@ -20,6 +20,7 @@ Run from the repository root:
 """
 import collections
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -37,8 +38,10 @@ B.PHASES = [
      'The owner asked for Step 1 of the Build Comparison and went to bed. A research workflow (six topics, each checked by a skeptic) and a design workflow (three proposals, two judges, one synthesis) were launched, and while they ran the data derivations (ANSUR II outline template, skull-top heights, turnaround traces), the measuring tool and its duo.jpg validation, the score model, the first page and the functional limits were built and committed.'),
     ('02-page-to-spec', 'The page rebuilt to the design spec', ('after_commit', 'Build Comparison: functional limits'),
      'The design synthesis arrived and the page was rebuilt around it: score-band stops, a glance tape and a pinned locator, equal gap tiles with limit posts, a forest plot, the tool layout. The comics research relabelled Thor, the Thing and Luke Cage, and the verifiers\' corrections (Army body-fat equations, Kouri\'s normalised 25, the hands-to-face band, the outline ratios) were applied. A context compaction happened at the start of this phase.'),
-    ('03-review-rounds', 'Review rounds and fixes', ('workflow', 'build-comparison-review-r1'),
-     'Adversarial review rounds (five lenses, each finding reproduced or refuted by a skeptic), the fixes after each, the README and notes, and the first publish of the page.'),
+    ('03-review-round-1', 'Review round 1 and its fixes', ('workflow', 'build-comparison-review-r1'),
+     'Review round 1 (five lenses: model, claims, data, UX, code; each finding reproduced or refuted by a skeptic) ran while the README, notes and first publish were finished. Its 69 confirmed findings were fixed: limit scores measured on the drawn shapes, the tests run on every chart figure and arms drawn at their rest angle, a converging target solver, source and wording corrections, archive.org quotes kept with stable links, accessibility and layout fixes, new checks in the measuring tool and a Web Worker for it. A second context compaction happened in this phase.'),
+    ('04-review-round-2', 'Review round 2, the pull request and this history', ('workflow', 'build-comparison-review-r2'),
+     'The page was republished with the round 1 fixes and the pull request opened. Review round 2 checked every round 1 fix and looked for regressions; its confirmed findings were fixed, the page republished again, and this history entry written.'),
 ]
 
 B.DIRS = collections.OrderedDict([
@@ -59,10 +62,16 @@ B.SNAPSHOT_DIRS = ()
 _skip = B.skip_reason
 
 
+REPO_COPY_RE = re.compile(r'(^|/)(history|build-comparison|build-calculator|rex-strength-lab|\.github)/')
+
+
 def skip_reason(top, rel, size, ext, head=''):
-    """Like the first session's rule, plus: keep the extracted workflow results (JSON) in wfout/."""
+    """Like the first session's rule, plus: keep the extracted workflow results (JSON) in wfout/,
+    and list (do not copy) the reviewers' git-archive snapshots of the repository."""
     if top == 'wfout' and ext in ('.json', '.txt') and size <= 400_000:
         return None
+    if top.startswith('review') and REPO_COPY_RE.search(rel):
+        return 'copy of project code'
     return _skip(top, rel, size, ext, head)
 
 
