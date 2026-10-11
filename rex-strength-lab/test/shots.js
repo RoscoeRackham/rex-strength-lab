@@ -15,6 +15,7 @@ const CHROME = [process.env.CHROME, '/opt/pw-browsers/chromium-1194/chrome-linux
   const out = path.join(__dirname, '..', 'shots'); fs.mkdirSync(out, { recursive: true });
   const browser = await chromium.launch({ executablePath: CHROME });
   const only = process.argv[2];
+  let problems = 0;
   for (const [w, h, scheme] of [[1280, 900, 'light'], [390, 844, 'dark']]) {
     const page = await browser.newPage({ viewport: { width: w, height: h }, colorScheme: scheme });
     const errs = [];
@@ -24,6 +25,7 @@ const CHROME = [process.env.CHROME, '/opt/pw-browsers/chromium-1194/chrome-linux
     await page.waitForTimeout(4000);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     console.log(`${w}x${h} ${scheme}: overflow=${overflow}px errors=${JSON.stringify(errs.slice(0, 5))}`);
+    if (overflow > 0 || errs.length) problems++;
     if (!only) await page.screenshot({ path: path.join(out, `full-${w}.png`), fullPage: true });
     for (const tab of (only ? [only] : ['lift', 'throw', 'jump', 'stomp', 'punch', 'clap', 'sprint', 'pull'])) {
       await page.click('#tab-' + tab);
@@ -34,4 +36,5 @@ const CHROME = [process.env.CHROME, '/opt/pw-browsers/chromium-1194/chrome-linux
     await page.close();
   }
   await browser.close();
-})();
+  if (problems) { console.log('PROBLEMS: overflow or console errors above'); process.exit(1); }
+})().catch((e) => { console.error(e); process.exit(1); });
