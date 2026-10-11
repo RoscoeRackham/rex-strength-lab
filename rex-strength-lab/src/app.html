@@ -604,6 +604,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     absorb: 'ocean', growS: 0.5, growT: 60, halfLife: 1, growWhat: 'none',
     // Walk tab: who walks, the pace, the effort of each step (0 soft-footed, 0.5 ordinary, 1 a heavy stamp), the listener's distance (m)
     walker: 'rex', pace: 'walk', stepEffort: 0, walkD: 3,
+    // two-player tests: one effort for both (least disruptive, all-out or custom), unless Ollie gets his own (what-if)
+    duoEffort: 'least', duoLogKg: 4, oEffortOwn: false, oEffortLogKg: 4,
   };
   let state = Object.assign({}, DEFAULTS);
   // lightest density the slider and the mass boxes allow, kg/m³ (the slider's left end, 10^1)
@@ -616,6 +618,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   state.effort = 'least';   // the page always opens on the heroic default; anything louder is chosen each visit
   state.absorb = 'ocean'; state.growWhat = 'none';   // growth is a what-if: canon size and mass on every visit
   state.stepEffort = 0;   // they walk soft-footed unless the visitor chooses otherwise
+  state.duoEffort = 'least'; state.oEffortOwn = false;
   {
     const num = (lo, hi) => (v) => typeof v === 'number' && isFinite(v) && v >= lo && v <= hi;
     const VALID = {
@@ -640,6 +643,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       effort: (v) => EFFORT_PRESETS.some((x) => x.id === v), effortLogKg: num(-3, 34), near: num(0.5, 1000),
       gThrow: num(0.1, 1e9), gJump: num(0.01, 1e9), gSprint: num(0.1, 3e8), gPull: num(0.01, 1e9),
       gentleHold: (v) => typeof v === 'boolean', safePassenger: (v) => typeof v === 'boolean', silentStrike: (v) => typeof v === 'boolean', softLanding: (v) => typeof v === 'boolean', coolFlight: (v) => typeof v === 'boolean',
+      duoEffort: (v) => ['least', 'allout', 'custom'].includes(v), duoLogKg: num(-3, 34), oEffortOwn: (v) => typeof v === 'boolean', oEffortLogKg: num(-3, 34),
       walker: (v) => ['rex', 'ollie', 'both'].includes(v), pace: (v) => ['stroll', 'walk', 'brisk', 'fast'].includes(v), stepEffort: num(0, 1), walkD: num(0.5, 10000),
       absorb: (v) => ['ocean', 'gradual', 'instant', 'runaway'].includes(v), growS: num(0, 1), growT: num(1e-3, 1e12), halfLife: num(1e-3, 1e12), growWhat: (v) => ['none', 'krakatoa', 'chicxulub', 'sun'].includes(v),
     };
@@ -668,17 +672,19 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   function ctx(overrides) {
     const body = P.makeBody({ H: state.H, m: state.m, build: state.build });
     const surface = D.surfaces.find((s) => s.id === state.surface);
-    const c = { F: state.inf ? Infinity : Math.pow(10, state.logKg) * g, mode: state.mode, body, surface, groundHolds: state.groundHolds, anchor: state.anchor,
+    const c = { F: Math.min(state.inf ? Infinity : Math.pow(10, state.logKg) * g, isDuo() ? duoCap.R : Infinity), mode: state.mode, body, surface, groundHolds: state.groundHolds, anchor: state.anchor,
       gentleHold: state.gentleHold, safePassenger: state.safePassenger, silentStrike: state.silentStrike, softLanding: state.softLanding, coolFlight: state.coolFlight };
     return Object.assign(c, overrides || {});
   }
   // Ollie shares the ground and the muscle setting; his strength follows Rex's dial unless set apart.
   function ctxOllie(overrides) {
     const body = P.makeBody({ H: state.oH, m: state.oM, build: 'ollie' });
-    const F = state.oSame ? (state.inf ? Infinity : Math.pow(10, state.logKg) * g) : (state.oInf ? Infinity : Math.pow(10, state.oLogKg) * g);
+    const F = Math.min(state.oSame ? (state.inf ? Infinity : Math.pow(10, state.logKg) * g) : (state.oInf ? Infinity : Math.pow(10, state.oLogKg) * g), isDuo() ? duoCap.O : Infinity);
     return Object.assign(ctx(), { F, body, anchor: state.oAnchor }, overrides || {});
   }
   const isDuo = () => state.group === 'duo';
+  // the effort cap in the two-player tests (strength used, N), set by renderBay before a two-player bay runs
+  let duoCap = { R: Infinity, O: Infinity };
   const curAction = () => (isDuo() ? state.duoAction : state.action);
   const objById = (id) => D.objects.find((o) => o.id === id);
 
@@ -3022,6 +3028,124 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     return out;
   }
 
+  // ---------------------------------------------------------------- effort in the two-player tests
+  // One effort for both: each uses at most this strength (never less than he needs to stand and walk). A contest
+  // has no goal short of the test itself, so its least disruptive effort is the hardest both can go while nothing
+  // around them breaks: no torn table, no broken object, no sonic boom, no blast that breaks windows nearby, no crater.
+  const fullF = (who) => (who === 'O' && !state.oSame ? (state.oInf ? Infinity : Math.pow(10, state.oLogKg) * g) : (state.inf ? Infinity : Math.pow(10, state.logKg) * g));
+  function duoHarm(act) {
+    const cR = ctx(), cO = ctxOllie();
+    const near = state.near, win = (E) => isFinite(E) ? E > 0 && P.blastRadius(E, P.RESTRAINT.R.DP_WINDOWS) >= near : E > 0;
+    if (act === 'arm') {
+      const r = P.armWrestle(cR, cO);
+      if (r.blackHole) return null;
+      return r.tableBreaks ? 'the table tears apart' : r.slamRatio > 1 ? 'the pin cracks the table' : r.crater > 0 ? 'the pin makes a crater' : r.quake > 2 ? 'the pin shakes the ground like a quake' : r.relativistic ? 'the pin turns into a fireball' : null;
+    }
+    if (act === 'wrestle') {
+      const move = state.wrestleMove;
+      if (move === 'shove') {
+        const both = state.wrestleWho === 'both', cA = state.wrestleWho === 'ollie' ? cO : cR, cB = state.wrestleWho === 'ollie' ? cR : cO;
+        const r = both ? P.shoveBoth(cR, cO) : P.shove(cA, cB);
+        return Math.max(r.vA || 0, r.vB || 0) >= K.a0 ? 'someone flies off faster than sound' : null;
+      }
+      if (move === 'throw') {
+        const cA = state.wrestleWho === 'ollie' ? cO : cR, cB = state.wrestleWho === 'ollie' ? cR : cO;
+        const t = P.throwPartner(cA, cB, state.angle);
+        if (!t.r || !t.r.canMove) return null;
+        return t.r.v >= K.a0 ? 'the throw breaks the sound barrier' : win(t.r.Eimpact) ? 'the landing breaks windows ' + fmtDist(near) + ' away' : t.r.sinkRatio > 1 ? 'the ground gives way under the thrower' : null;
+      }
+      return null;
+    }
+    if (act === 'catch') {
+      if (state.cObj === 'partner') return null;
+      const o = objById(state.cObj), D0 = Math.pow(10, state.cLogD);
+      const legs = [P.catchLeg(cR, cO, o, D0, state.cStyle), P.catchLeg(cO, cR, o, D0, state.cStyle)];
+      for (const L of legs) {
+        if (!L) continue;
+        if (L.aim && L.aim.vL >= K.a0) return 'a throw breaks the sound barrier';
+        if (['crushed-launch', 'breaks-up', 'burns-up', 'wreckage', 'fireball'].includes(L.result) || L.bursts) return 'the ' + o.short + ' is destroyed';
+      }
+      return null;
+    }
+    if (act === 'collide') {
+      const ollieX = state.colWho === 'ollie', cA = ollieX ? cO : cR, cB = ollieX ? cR : cO;
+      const gb = state.colInf ? Infinity : Math.pow(10, state.colGB);
+      if (state.colMode === 'push') return null;
+      const r = P.collide(cA, cB, { source: state.colSrc, gb, bounce: state.colBounce === 'bounce' });
+      if (!r || r.blackHole || r.planetScale || r.noCharge) return null;
+      const Q = r.Elocal != null && (r.relativistic || r.outcome === 'boltsLate') ? r.Elocal : r.h && state.colBounce !== 'bounce' ? r.h.Q : 0;
+      return r.v0 >= K.a0 ? 'the charge breaks the sound barrier' : win(Q) ? 'the hit breaks windows ' + fmtDist(near) + ' away' : null;
+    }
+    return null;
+  }
+  const duoPlans = new Map();
+  function duoPlanFor(act) {
+    const FR = fullF('R'), FO = fullF('O');
+    const key = JSON.stringify([act, FR, FO, state.mode, state.H, state.m, state.build, state.oH, state.oM, state.surface, state.groundHolds, state.anchor, state.oAnchor, state.near, state.wrestleMove, state.wrestleWho, state.angle, state.cObj, state.cLogD, state.cStyle, state.colMode, state.colWho, state.colSrc, state.colGB, state.colInf, state.colBounce, state.colImm, state.oEffortOwn, state.oEffortLogKg, state.gentleHold, state.coolFlight, state.softLanding, state.silentStrike]);
+    let p = duoPlans.get(key);
+    if (p) return p;
+    const need = (m) => P.W8.WALK_LOAD * m * g / P.MUSCLE.jump.forceFrac;
+    const lo = Math.max(need(state.m), need(state.oM)), hiF = Math.max(FR, FO), hi = isFinite(hiF) ? hiF : 1e34 * g;
+    const memo = new Map();
+    const harmAt = (u) => {
+      const k = u === Infinity ? 'inf' : u;
+      if (!memo.has(k)) {
+        const save = duoCap;
+        duoCap = { R: Math.max(u, lo), O: state.oEffortOwn ? Math.max(Math.pow(10, state.oEffortLogKg) * g, lo) : Math.max(u, lo) };
+        try { memo.set(k, duoHarm(act)); } finally { duoCap = save; }
+      }
+      return memo.get(k);
+    };
+    const s = lo < hi ? P.RESTRAINT.search((u) => !!harmAt(u), lo, hi, !isFinite(hiF)) : null;
+    p = { act, lo, hi, s, harmAt, done: !s };
+    p.step = () => { if (p.done) return true; s.step(); if (s.use !== undefined) p.done = true; return p.done; };
+    duoPlans.set(key, p);
+    if (duoPlans.size > 30) duoPlans.delete(duoPlans.keys().next().value);
+    return p;
+  }
+  // the cap for this render (Infinity = all-out) and what the readout says
+  function resolveDuoEffort(act) {
+    const p = duoPlanFor(act);
+    let use = Infinity, note = null;
+    if (state.duoEffort === 'custom') use = Math.max(Math.pow(10, state.duoLogKg) * g, p.lo);
+    else if (state.duoEffort === 'least' && p.s) {
+      while (!p.step());
+      if (p.s.never) use = Infinity;
+      else if (!(p.s.below > 0)) { use = p.lo; note = 'Nothing is harmless here: even at the least they need to stand, ' + p.harmAt(p.lo) + '.'; }
+      else use = p.s.below;
+    }
+    const harm = p.harmAt(use);
+    return { p, use, note, harm };
+  }
+  function duoEffortBox(act, eff) {
+    const FR = fullF('R');
+    const sel = el('select', { id: 'duo-effort' }, [['least', 'Least disruptive: as hard as they can go with nothing breaking'], ['allout', 'All-out'], ['custom', 'Custom (use the slider)']].map(([v, t]) => el('option', { value: v, text: t })));
+    sel.value = state.duoEffort;
+    sel.onchange = (e) => { if (e.target.value === 'custom') state.duoLogKg = Math.log10(Math.min(eff.use, isFinite(FR) ? FR : 1e34 * g) / g); state.duoEffort = e.target.value; update(); };
+    const lo = Math.log10(eff.p.lo / g), hi = Math.log10(eff.p.hi / g);
+    const cur = isFinite(eff.use) ? Math.log10(eff.use / g) : hi;
+    const sl = el('input', { id: 'duo-effort-use', type: 'range', min: String(lo), max: String(Math.max(hi, lo + 0.01)), step: '0.01', value: String(Math.min(hi, Math.max(lo, cur))), 'aria-label': 'Their effort: the strength each uses, log scale' });
+    sl.oninput = (e) => { state.duoEffort = 'custom'; state.duoLogKg = Number(e.target.value); const s2 = $('#duo-effort'); if (s2) s2.value = 'custom'; scheduleBaySlow(); };
+    const own = el('label', { class: 'check', style: 'margin-top:0' }, el('input', { type: 'checkbox', id: 'o-effort-own', checked: state.oEffortOwn ? true : null, onchange: (e) => { state.oEffortOwn = e.target.checked; if (state.oEffortOwn) state.oEffortLogKg = cur; update(); } }), el('span', { text: 'What-if: Ollie sets his own effort' }));
+    const fields = [el('div', { class: 'field effort-field' }, el('label', { for: 'duo-effort', text: 'Effort (one for both)' }), sel), el('div', { class: 'field effort-slider' }, el('label', { for: 'duo-effort-use', text: 'Effort (gentle ↔ all-out)' }), sl), el('div', { class: 'field near-field' }, own)];
+    if (state.oEffortOwn) {
+      const so = el('input', { id: 'o-effort-use', type: 'range', min: String(lo), max: String(Math.max(hi, lo + 0.01)), step: '0.01', value: String(Math.min(hi, Math.max(lo, state.oEffortLogKg))), 'aria-label': 'Ollie’s own effort, log scale' });
+      so.oninput = (e) => { state.oEffortLogKg = Number(e.target.value); scheduleBaySlow(); };
+      fields.push(el('div', { class: 'field effort-slider' }, el('label', { for: 'o-effort-use', text: 'Ollie’s effort (what-if)' }), so));
+    }
+    const read = el('div', { class: 'effort-read' });
+    const head = el('p', {}, el('b', { text: (isFinite(eff.use) && eff.use < FR * (1 - 1e-9) ? 'Effort: ' + shareText2(eff.use, FR) : 'All-out') }), isFinite(eff.use) && eff.use < FR ? ' (each pushes as hard as lifting ' + fmtMass(eff.use / g) + (state.oEffortOwn ? '; Ollie his own ' + fmtMass(Math.pow(10, state.oEffortLogKg)) : '') + ').' : '.');
+    head.append(' ' + ({ least: 'The hardest both can go while nothing around them breaks.', allout: 'Everything they have.', custom: 'Set by hand.' }[state.duoEffort]));
+    read.append(head);
+    if (eff.note) read.append(el('p', { class: 'warn-ink', text: eff.note }));
+    if (eff.p.s && eff.p.done) {
+      const s0 = eff.p.s;
+      read.append(el('p', { text: s0.never ? 'Courtesy ceiling: none. Nothing in this test harms anything nearby' + (isFinite(eff.p.hi) ? ', even all-out.' : '.') : 'Courtesy ceiling: ' + shareText2(s0.below, FR) + '. Past that, ' + eff.p.harmAt(s0.use) + '.' }));
+    }
+    if (eff.harm) read.append(status('warn', 'At this effort ' + eff.harm));
+    return { fields, read };
+  }
+
   const BAYS = { walk: bayWalk, lift: bayLift, throw: bayThrow, jump: bayJump, stomp: bayStomp, punch: bayPunch, clap: bayClap, sprint: baySprint, pull: bayPull, weight: bayWeight, arm: bayArm, wrestle: bayWrestle, catch: bayCatch, collide: bayCollide };
 
   let lastBayAction = null, liveTimer = null;
@@ -3042,10 +3166,23 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     try {
       // At planet-scale masses the move models (a small Rex on a fixed Earth) stop applying.
       const gate = act === 'weight' || isDuo() ? null : soloGate(ctx());
+      let duoEff = null;
+      duoCap = { R: Infinity, O: Infinity };
+      if (isDuo()) {
+        duoEff = resolveDuoEffort(act);
+        duoCap = { R: Math.max(duoEff.use, duoEff.p.lo), O: state.oEffortOwn ? Math.max(Math.pow(10, state.oEffortLogKg) * g, duoEff.p.lo) : Math.max(duoEff.use, duoEff.p.lo) };
+      }
       const c0 = ctx();
       const eff = isEffortMove(act) && !(gate && gate.stop) ? resolveEffort(act, c0) : null;
       parts = gate && gate.stop ? [callout(gate.text)] : BAYS[act](eff ? Object.assign({}, c0, { use: eff.use }) : c0);
       if (eff) attachEffort(parts, act, c0, eff);
+      if (duoEff) {
+        const box = duoEffortBox(act, duoEff);
+        let ctl = parts[0] && parts[0].classList && parts[0].classList.contains('bay-controls') ? parts[0] : null;
+        if (!ctl) { ctl = el('div', { class: 'bay-controls' }); parts.unshift(ctl); }
+        ctl.prepend(...box.fields);
+        parts.splice(1, 0, box.read);
+      }
       if (gate && !gate.stop) parts.splice(parts[0] && parts[0].classList && parts[0].classList.contains('bay-controls') ? (eff ? 2 : 1) : 0, 0, callout(gate.text));
     }
     catch (e) { parts = [callout('Calculation failed: ' + e.message)]; console.error(e); }

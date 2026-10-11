@@ -2834,53 +2834,89 @@
   }
 
   // ---------------------------------------------------------------------------
-  // Presence: walking. Each step loads one foot with about WALK_LOAD x body weight (more at a brisker pace),
-  // and the foot lands with a small impact: the foot and shank (legEff) arrive at a vertical speed that grows
-  // with the effort of the step, from soft-footed to a deliberate stamp. Speeds and step rates scale with size
-  // by dynamic similarity (equal Froude number, v^2 / (g L), with L the leg length).
+  // Presence: walking. People's gait scaled to their size by dynamic similarity (equal Froude number
+  // Fr = v^2 / (g h) on hip height h): pace, step rate and stance. Each step has two parts:
+  //   the weight-bearing load, k x body weight through the stance (1.0-1.5, rising with pace), and
+  //   the impact as the foot lands (heel strike): the energy absorbed at touchdown, which drives the ground
+  //   shaking. Effort per step runs from soft-footed through an ordinary step to a soldier's drill stamp.
+  // Sources and status: research/final-presence.json (step_*).
   // ---------------------------------------------------------------------------
   const WALK = {
-    LEG: 0.47,                // leg length, share of height (placeholder until research)
-    PACES: { stroll: 0.1, walk: 0.25, brisk: 0.4, fast: 0.5 },   // Froude number of each pace (placeholder)
-    STRIDE: [2.3, 0.3],       // stride / leg length = 2.3 Fr^0.3 (Alexander's dynamic-similarity fit; placeholder)
-    LOAD: [1.0, 1.5],         // peak load per step at the slowest and fastest walk, x body weight (Nilsson & Thorstensson 1989)
-    VC: { soft: 0.1, normal: 0.5, stamp: 3.0 },   // foot's vertical speed at contact for a 0.9 m human leg, m/s (placeholder)
-    LEG_REF: 0.9,             // the human leg those speeds belong to, m (placeholder)
+    HIP: 0.45,                 // hip height, share of height (our measurement from the turnarounds; estimate)
+    PACES: { stroll: 0.1, walk: 0.18, brisk: 0.3, fast: 0.5 },   // Froude numbers: elephant-like, comfortable, brisk, the walk-run switch
+    CADENCE: [0.789, 0.211],   // step rate = 0.789 Fr^0.211 sqrt(g / h) (fitted to the CADENCE-adults data)
+    DUTY: [0.7, 0.55],         // share of a stride each foot is down: very slow walk, fast walk (Alexander 2004)
+    // load per step, x body weight: 1.2 at 1.5 m/s for people (Keller et al. 1996), rising 0.25 per m/s (Nilsson &
+    // Thorstensson 1989: 1.0-1.5 over 1-3 m/s); taken at the same Froude number on a 0.9 m human hip
+    LOAD: { at: 1.2, vh: 1.5, slope: 0.25, lo: 1.0, hi: 1.5, hRef: 0.9 },
+    // heel strike: 2.7 J absorbed vertically per step at 1.3 m/s (Baines et al. 2018: 76.7 kg, hip about 0.9 m),
+    // scaled as M g h; effective mass 11% of the body, heel at 0.57 m/s, about 30 ms
+    HS: { J: 2.7, m: 76.7, h: 0.9, share: 0.11, v: 0.57, t: 0.03 },
+    SOFT: 0.4,                 // soft-footed: the impact cut to 0.4 (quiet walking cuts the loading rate 45-69%; estimate)
+    // a drill stamp from thigh-horizontal: the leg (16% of the body) meets the ground at 3.7 m/s by gravity, peak
+    // force 6.5 x body weight in trained soldiers (Carden et al. 2015), 16-36 ms to peak (Rawcliffe et al. 2020)
+    STAMP: { share: 0.16, thigh: 0.233, kPeak: 6.5, t: 0.026 },
   };
-  // effort per step: 0 soft-footed, 0.5 an ordinary step, 1 a deliberate heavy step (a stamp)
-  function footSpeed(e, s) {
-    const V = WALK.VC, k = Math.sqrt(s);
-    const lv = e <= 0.5 ? Math.log(V.soft) + (Math.log(V.normal) - Math.log(V.soft)) * e / 0.5 : Math.log(V.normal) + (Math.log(V.stamp) - Math.log(V.normal)) * (e - 0.5) / 0.5;
-    return Math.exp(lv) * k;
-  }
+  // the human-equivalent walking speed at Froude Fr (for the load rule)
+  const walkLoad = (Fr) => { const L = WALK.LOAD, vh = Math.sqrt(Fr * K.g * L.hRef); return Math.min(L.hi, Math.max(L.lo, L.at + L.slope * (vh - L.vh))); };
+  // effort per step e: 0 soft-footed, 0.5 an ordinary step, 1 a drill stamp. Impact energy and peak force are
+  // interpolated on a log scale between the three anchors.
   function walkStep(body, surface, o) {
     const opt = o || {};
-    const L = WALK.LEG * body.H, Fr = WALK.PACES[opt.pace || 'walk'] || WALK.PACES.walk;
-    const v = Math.sqrt(Fr * K.g * L);
-    const stride = WALK.STRIDE[0] * L * Math.pow(Fr, WALK.STRIDE[1]);
-    const stepRate = v / (stride / 2);
-    const frs = Object.values(WALK.PACES), fLo = Math.min(...frs), fHi = Math.max(...frs);
-    const kLoad = WALK.LOAD[0] + (WALK.LOAD[1] - WALK.LOAD[0]) * Math.min(1, Math.max(0, (Fr - fLo) / (fHi - fLo)));
+    const h = WALK.HIP * body.H, Fr = typeof opt.pace === 'number' ? opt.pace : (WALK.PACES[opt.pace || 'walk'] || WALK.PACES.walk);
+    const v = Math.sqrt(Fr * K.g * h);
+    const stepRate = WALK.CADENCE[0] * Math.pow(Fr, WALK.CADENCE[1]) * Math.sqrt(K.g / h);
+    const duty = WALK.DUTY[0] + (WALK.DUTY[1] - WALK.DUTY[0]) * Math.min(1, Math.max(0, (Fr - 0.05) / (0.4 - 0.05)));
+    const stance = duty * 2 / stepRate;
     const W = body.m * K.g;
-    const e = opt.effort == null ? 0.5 : opt.effort;
-    const s = L / WALK.LEG_REF;          // size ratio of his leg to the human reference leg
-    const vc = footSpeed(e, s);
-    const mI = body.legEff;
-    const Eimp = 0.5 * mI * vc * vc;
-    // the impact stops the foot over about its own sole width of give in the ground (placeholder), so it lasts ~ B / vc
-    const tauI = Math.max(body.footB / Math.max(vc, 1e-6), 1e-3);
-    const Fimp = mI * vc / tauI * Math.PI / 2;
-    const Fpeak = kLoad * W + Fimp;
+    const kLoad = walkLoad(Fr);
+    const e = opt.effort == null ? 0.5 : Math.min(1, Math.max(0, opt.effort));
+    const hs = WALK.HS, sc = Math.sqrt(h / hs.h);
+    // the three anchors: impact energy (J), effective mass (kg), contact speed (m/s), peak force (x W), time to peak (s)
+    const Enorm = hs.J * (body.m / hs.m) * (h / hs.h);
+    const st = WALK.STAMP, vSt = Math.sqrt(2 * K.g * st.thigh * body.H);
+    const A = [
+      { E: WALK.SOFT * Enorm, k: Math.max(0.85, 1 - 0.15) * kLoad, t: hs.t * sc / WALK.SOFT },
+      { E: Enorm, k: kLoad, t: hs.t * sc },
+      { E: 0.5 * st.share * body.m * vSt * vSt, k: st.kPeak, t: st.t * sc },
+    ];
+    const lerp = (a, b, f) => Math.exp(Math.log(a) + (Math.log(b) - Math.log(a)) * f);
+    const [a, b, f] = e <= 0.5 ? [A[0], A[1], e / 0.5] : [A[1], A[2], (e - 0.5) / 0.5];
+    const Eimp = lerp(a.E, b.E, f), kPeak = lerp(a.k, b.k, f), tRise = lerp(a.t, b.t, f);
+    const Fpeak = kPeak * W;
     const q = qultFor(surface, body.footB);
-    const pressure = Fpeak / body.footArea;
-    const ratio = opt.groundHolds ? 0 : pressure / q;
-    // footprint: the bearing-with-depth rule of the Weight tab, for one foot carrying the step's peak load
-    let sink = 0;
-    if (ratio > 1) {
-      const soil = { sand: W8.NQ.sand, gravel: W8.NQ.gravel, softclay: 1, stiffclay: 1 }[surface.id];
-      sink = soil ? (pressure - q) / ((surface.rho || 1800) * K.g * soil) : penetrationDepth(mI, body.footArea, vc, q, surface.rho || 2000);
+    // the ground carries the weight-bearing load for the whole stance; the impact peak lasts a few hundredths of a second
+    const Fhold = Math.min(kLoad, kPeak) * W;
+    const pressure = Fhold / body.footArea, peakPressure = Fpeak / body.footArea;
+    const ratio = opt.groundHolds ? 0 : pressure / q, peakRatio = opt.groundHolds ? 0 : peakPressure / q;
+    return { h, Fr, v, stepRate, stride: 2 * v / stepRate, stance, kLoad, W, effort: e, Eimp, kPeak, tRise, Fpeak, Fhold, pressure, peakPressure, q, ratio, peakRatio,
+      footprint: footprint(body, surface, pressure, opt.groundHolds), src: { E: Eimp, F: Fpeak, tau: tRise } };
+  }
+  // Footprint depth under a step. Sand and gravel: scaled from the one measured large-animal print (a weighed 2,530 kg
+  // African elephant cow left 20-26 mm forefoot prints in medium sand, Schanz et al. 2013): depth ~ 0.022 m x (p / p_e)
+  // x (B / 0.274 m), p_e about 265 kPa; looser sand (lower bearing) takes it deeper in proportion. Clay: the foot sinks
+  // until the bearing, which grows with depth (N_c up to 1.46x by four foot-widths, never past 9), carries it. Paving,
+  // slabs, ice, steel and rock: no print until they fail. All estimates.
+  const PRINT = { d: 0.022, p: 265e3, B: 0.274, qRef: 240e3 };
+  function footprint(body, surface, p, groundHolds) {
+    if (groundHolds) return { depth: 0, kind: 'comic' };
+    const q = qultFor(surface, body.footB), B = body.footB;
+    if (surface.granular) {
+      const qMed = PRINT.qRef * B / surface.Bref;   // the medium sand of the elephant print: taken as dense sand's bearing
+      return { depth: PRINT.d * (p / PRINT.p) * (B / PRINT.B) * Math.max(1, qMed / q), kind: 'print' };
     }
-    return { L, Fr, v, stride, stepRate, kLoad, W, effort: e, vc, mI, Eimp, tauI, Fimp, Fpeak, pressure, q, ratio, sink, src: { E: Eimp, F: Fpeak, tau: tauI } };
+    if (surface.id === 'softclay' || surface.id === 'stiffclay') {
+      if (p <= q) return { depth: 0, kind: 'holds' };
+      const su = surface.shear, Nc0 = q / su;
+      // N_c grows with depth: x1.15 at D/B = 0.5, 1.24 at 1, 1.46 at 4 (EM 1110-1-1905), capped at 9
+      const Nc = (D) => Math.min(9, Nc0 * (1 + 0.46 * Math.min(1, Math.log1p(D / B) / Math.log(5))));
+      const gam = (surface.rho || 1800) * K.g;
+      let lo = 0, hi = 10 * body.H;
+      if (Nc(hi) * su + gam * hi < p) return { depth: Infinity, kind: 'mired' };
+      for (let i = 0; i < 60; i++) { const mid = 0.5 * (lo + hi); if (Nc(mid) * su + gam * mid >= p) hi = mid; else lo = mid; }
+      return { depth: hi, kind: 'sinks' };
+    }
+    return { depth: 0, kind: p > q ? 'breaks' : 'holds' };
   }
   // A walker's presence: the step, the ground shaking at a distance, and how far each threshold reaches.
   function presence(body, surface, o) {
@@ -3087,7 +3123,7 @@
         crush: !!M.crush && M.crush(r, opt),
       };
     }
-    return { R, MOVES, HAZARDS, PRESETS, plan, planNow, reach, bounds };
+    return { R, MOVES, HAZARDS, PRESETS, plan, planNow, reach, bounds, search };
   })();
 
   // ---------------------------------------------------------------------------
@@ -3237,6 +3273,6 @@
     kgRatio, overpressureAt, blastRadius, penetrationDepth,
     lift, throwObject, jump, stomp, punch, clap, sprint, pull, threshold, calibrateComic,
     throwOnce, jumpOnce, stompOnce, punchOnce, clapOnce,
-    driveStrength, PASSENGER, VIB, ppvAt, WALK, walkStep, presence, walkEffortFor, ppvReach, RESTRAINT, GROW, formShare, grownBody, grownMakeBody, pistonOverpressure, gradualGrowth, instantGrowth, runawayGrowth,
+    driveStrength, PASSENGER, VIB, ppvAt, WALK, walkStep, footprint, presence, walkEffortFor, ppvReach, RESTRAINT, GROW, formShare, grownBody, grownMakeBody, pistonOverpressure, gradualGrowth, instantGrowth, runawayGrowth,
   };
 });

@@ -3256,53 +3256,89 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   }
 
   // ---------------------------------------------------------------------------
-  // Presence: walking. Each step loads one foot with about WALK_LOAD x body weight (more at a brisker pace),
-  // and the foot lands with a small impact: the foot and shank (legEff) arrive at a vertical speed that grows
-  // with the effort of the step, from soft-footed to a deliberate stamp. Speeds and step rates scale with size
-  // by dynamic similarity (equal Froude number, v^2 / (g L), with L the leg length).
+  // Presence: walking. People's gait scaled to their size by dynamic similarity (equal Froude number
+  // Fr = v^2 / (g h) on hip height h): pace, step rate and stance. Each step has two parts:
+  //   the weight-bearing load, k x body weight through the stance (1.0-1.5, rising with pace), and
+  //   the impact as the foot lands (heel strike): the energy absorbed at touchdown, which drives the ground
+  //   shaking. Effort per step runs from soft-footed through an ordinary step to a soldier's drill stamp.
+  // Sources and status: research/final-presence.json (step_*).
   // ---------------------------------------------------------------------------
   const WALK = {
-    LEG: 0.47,                // leg length, share of height (placeholder until research)
-    PACES: { stroll: 0.1, walk: 0.25, brisk: 0.4, fast: 0.5 },   // Froude number of each pace (placeholder)
-    STRIDE: [2.3, 0.3],       // stride / leg length = 2.3 Fr^0.3 (Alexander's dynamic-similarity fit; placeholder)
-    LOAD: [1.0, 1.5],         // peak load per step at the slowest and fastest walk, x body weight (Nilsson & Thorstensson 1989)
-    VC: { soft: 0.1, normal: 0.5, stamp: 3.0 },   // foot's vertical speed at contact for a 0.9 m human leg, m/s (placeholder)
-    LEG_REF: 0.9,             // the human leg those speeds belong to, m (placeholder)
+    HIP: 0.45,                 // hip height, share of height (our measurement from the turnarounds; estimate)
+    PACES: { stroll: 0.1, walk: 0.18, brisk: 0.3, fast: 0.5 },   // Froude numbers: elephant-like, comfortable, brisk, the walk-run switch
+    CADENCE: [0.789, 0.211],   // step rate = 0.789 Fr^0.211 sqrt(g / h) (fitted to the CADENCE-adults data)
+    DUTY: [0.7, 0.55],         // share of a stride each foot is down: very slow walk, fast walk (Alexander 2004)
+    // load per step, x body weight: 1.2 at 1.5 m/s for people (Keller et al. 1996), rising 0.25 per m/s (Nilsson &
+    // Thorstensson 1989: 1.0-1.5 over 1-3 m/s); taken at the same Froude number on a 0.9 m human hip
+    LOAD: { at: 1.2, vh: 1.5, slope: 0.25, lo: 1.0, hi: 1.5, hRef: 0.9 },
+    // heel strike: 2.7 J absorbed vertically per step at 1.3 m/s (Baines et al. 2018: 76.7 kg, hip about 0.9 m),
+    // scaled as M g h; effective mass 11% of the body, heel at 0.57 m/s, about 30 ms
+    HS: { J: 2.7, m: 76.7, h: 0.9, share: 0.11, v: 0.57, t: 0.03 },
+    SOFT: 0.4,                 // soft-footed: the impact cut to 0.4 (quiet walking cuts the loading rate 45-69%; estimate)
+    // a drill stamp from thigh-horizontal: the leg (16% of the body) meets the ground at 3.7 m/s by gravity, peak
+    // force 6.5 x body weight in trained soldiers (Carden et al. 2015), 16-36 ms to peak (Rawcliffe et al. 2020)
+    STAMP: { share: 0.16, thigh: 0.233, kPeak: 6.5, t: 0.026 },
   };
-  // effort per step: 0 soft-footed, 0.5 an ordinary step, 1 a deliberate heavy step (a stamp)
-  function footSpeed(e, s) {
-    const V = WALK.VC, k = Math.sqrt(s);
-    const lv = e <= 0.5 ? Math.log(V.soft) + (Math.log(V.normal) - Math.log(V.soft)) * e / 0.5 : Math.log(V.normal) + (Math.log(V.stamp) - Math.log(V.normal)) * (e - 0.5) / 0.5;
-    return Math.exp(lv) * k;
-  }
+  // the human-equivalent walking speed at Froude Fr (for the load rule)
+  const walkLoad = (Fr) => { const L = WALK.LOAD, vh = Math.sqrt(Fr * K.g * L.hRef); return Math.min(L.hi, Math.max(L.lo, L.at + L.slope * (vh - L.vh))); };
+  // effort per step e: 0 soft-footed, 0.5 an ordinary step, 1 a drill stamp. Impact energy and peak force are
+  // interpolated on a log scale between the three anchors.
   function walkStep(body, surface, o) {
     const opt = o || {};
-    const L = WALK.LEG * body.H, Fr = WALK.PACES[opt.pace || 'walk'] || WALK.PACES.walk;
-    const v = Math.sqrt(Fr * K.g * L);
-    const stride = WALK.STRIDE[0] * L * Math.pow(Fr, WALK.STRIDE[1]);
-    const stepRate = v / (stride / 2);
-    const frs = Object.values(WALK.PACES), fLo = Math.min(...frs), fHi = Math.max(...frs);
-    const kLoad = WALK.LOAD[0] + (WALK.LOAD[1] - WALK.LOAD[0]) * Math.min(1, Math.max(0, (Fr - fLo) / (fHi - fLo)));
+    const h = WALK.HIP * body.H, Fr = typeof opt.pace === 'number' ? opt.pace : (WALK.PACES[opt.pace || 'walk'] || WALK.PACES.walk);
+    const v = Math.sqrt(Fr * K.g * h);
+    const stepRate = WALK.CADENCE[0] * Math.pow(Fr, WALK.CADENCE[1]) * Math.sqrt(K.g / h);
+    const duty = WALK.DUTY[0] + (WALK.DUTY[1] - WALK.DUTY[0]) * Math.min(1, Math.max(0, (Fr - 0.05) / (0.4 - 0.05)));
+    const stance = duty * 2 / stepRate;
     const W = body.m * K.g;
-    const e = opt.effort == null ? 0.5 : opt.effort;
-    const s = L / WALK.LEG_REF;          // size ratio of his leg to the human reference leg
-    const vc = footSpeed(e, s);
-    const mI = body.legEff;
-    const Eimp = 0.5 * mI * vc * vc;
-    // the impact stops the foot over about its own sole width of give in the ground (placeholder), so it lasts ~ B / vc
-    const tauI = Math.max(body.footB / Math.max(vc, 1e-6), 1e-3);
-    const Fimp = mI * vc / tauI * Math.PI / 2;
-    const Fpeak = kLoad * W + Fimp;
+    const kLoad = walkLoad(Fr);
+    const e = opt.effort == null ? 0.5 : Math.min(1, Math.max(0, opt.effort));
+    const hs = WALK.HS, sc = Math.sqrt(h / hs.h);
+    // the three anchors: impact energy (J), effective mass (kg), contact speed (m/s), peak force (x W), time to peak (s)
+    const Enorm = hs.J * (body.m / hs.m) * (h / hs.h);
+    const st = WALK.STAMP, vSt = Math.sqrt(2 * K.g * st.thigh * body.H);
+    const A = [
+      { E: WALK.SOFT * Enorm, k: Math.max(0.85, 1 - 0.15) * kLoad, t: hs.t * sc / WALK.SOFT },
+      { E: Enorm, k: kLoad, t: hs.t * sc },
+      { E: 0.5 * st.share * body.m * vSt * vSt, k: st.kPeak, t: st.t * sc },
+    ];
+    const lerp = (a, b, f) => Math.exp(Math.log(a) + (Math.log(b) - Math.log(a)) * f);
+    const [a, b, f] = e <= 0.5 ? [A[0], A[1], e / 0.5] : [A[1], A[2], (e - 0.5) / 0.5];
+    const Eimp = lerp(a.E, b.E, f), kPeak = lerp(a.k, b.k, f), tRise = lerp(a.t, b.t, f);
+    const Fpeak = kPeak * W;
     const q = qultFor(surface, body.footB);
-    const pressure = Fpeak / body.footArea;
-    const ratio = opt.groundHolds ? 0 : pressure / q;
-    // footprint: the bearing-with-depth rule of the Weight tab, for one foot carrying the step's peak load
-    let sink = 0;
-    if (ratio > 1) {
-      const soil = { sand: W8.NQ.sand, gravel: W8.NQ.gravel, softclay: 1, stiffclay: 1 }[surface.id];
-      sink = soil ? (pressure - q) / ((surface.rho || 1800) * K.g * soil) : penetrationDepth(mI, body.footArea, vc, q, surface.rho || 2000);
+    // the ground carries the weight-bearing load for the whole stance; the impact peak lasts a few hundredths of a second
+    const Fhold = Math.min(kLoad, kPeak) * W;
+    const pressure = Fhold / body.footArea, peakPressure = Fpeak / body.footArea;
+    const ratio = opt.groundHolds ? 0 : pressure / q, peakRatio = opt.groundHolds ? 0 : peakPressure / q;
+    return { h, Fr, v, stepRate, stride: 2 * v / stepRate, stance, kLoad, W, effort: e, Eimp, kPeak, tRise, Fpeak, Fhold, pressure, peakPressure, q, ratio, peakRatio,
+      footprint: footprint(body, surface, pressure, opt.groundHolds), src: { E: Eimp, F: Fpeak, tau: tRise } };
+  }
+  // Footprint depth under a step. Sand and gravel: scaled from the one measured large-animal print (a weighed 2,530 kg
+  // African elephant cow left 20-26 mm forefoot prints in medium sand, Schanz et al. 2013): depth ~ 0.022 m x (p / p_e)
+  // x (B / 0.274 m), p_e about 265 kPa; looser sand (lower bearing) takes it deeper in proportion. Clay: the foot sinks
+  // until the bearing, which grows with depth (N_c up to 1.46x by four foot-widths, never past 9), carries it. Paving,
+  // slabs, ice, steel and rock: no print until they fail. All estimates.
+  const PRINT = { d: 0.022, p: 265e3, B: 0.274, qRef: 240e3 };
+  function footprint(body, surface, p, groundHolds) {
+    if (groundHolds) return { depth: 0, kind: 'comic' };
+    const q = qultFor(surface, body.footB), B = body.footB;
+    if (surface.granular) {
+      const qMed = PRINT.qRef * B / surface.Bref;   // the medium sand of the elephant print: taken as dense sand's bearing
+      return { depth: PRINT.d * (p / PRINT.p) * (B / PRINT.B) * Math.max(1, qMed / q), kind: 'print' };
     }
-    return { L, Fr, v, stride, stepRate, kLoad, W, effort: e, vc, mI, Eimp, tauI, Fimp, Fpeak, pressure, q, ratio, sink, src: { E: Eimp, F: Fpeak, tau: tauI } };
+    if (surface.id === 'softclay' || surface.id === 'stiffclay') {
+      if (p <= q) return { depth: 0, kind: 'holds' };
+      const su = surface.shear, Nc0 = q / su;
+      // N_c grows with depth: x1.15 at D/B = 0.5, 1.24 at 1, 1.46 at 4 (EM 1110-1-1905), capped at 9
+      const Nc = (D) => Math.min(9, Nc0 * (1 + 0.46 * Math.min(1, Math.log1p(D / B) / Math.log(5))));
+      const gam = (surface.rho || 1800) * K.g;
+      let lo = 0, hi = 10 * body.H;
+      if (Nc(hi) * su + gam * hi < p) return { depth: Infinity, kind: 'mired' };
+      for (let i = 0; i < 60; i++) { const mid = 0.5 * (lo + hi); if (Nc(mid) * su + gam * mid >= p) hi = mid; else lo = mid; }
+      return { depth: hi, kind: 'sinks' };
+    }
+    return { depth: 0, kind: p > q ? 'breaks' : 'holds' };
   }
   // A walker's presence: the step, the ground shaking at a distance, and how far each threshold reaches.
   function presence(body, surface, o) {
@@ -3509,7 +3545,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         crush: !!M.crush && M.crush(r, opt),
       };
     }
-    return { R, MOVES, HAZARDS, PRESETS, plan, planNow, reach, bounds };
+    return { R, MOVES, HAZARDS, PRESETS, plan, planNow, reach, bounds, search };
   })();
 
   // ---------------------------------------------------------------------------
@@ -3659,7 +3695,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     kgRatio, overpressureAt, blastRadius, penetrationDepth,
     lift, throwObject, jump, stomp, punch, clap, sprint, pull, threshold, calibrateComic,
     throwOnce, jumpOnce, stompOnce, punchOnce, clapOnce,
-    driveStrength, PASSENGER, VIB, ppvAt, WALK, walkStep, presence, walkEffortFor, ppvReach, RESTRAINT, GROW, formShare, grownBody, grownMakeBody, pistonOverpressure, gradualGrowth, instantGrowth, runawayGrowth,
+    driveStrength, PASSENGER, VIB, ppvAt, WALK, walkStep, footprint, presence, walkEffortFor, ppvReach, RESTRAINT, GROW, formShare, grownBody, grownMakeBody, pistonOverpressure, gradualGrowth, instantGrowth, runawayGrowth,
   };
 });
 
@@ -8395,6 +8431,8 @@ window.DINO_DATA = {
     absorb: 'ocean', growS: 0.5, growT: 60, halfLife: 1, growWhat: 'none',
     // Walk tab: who walks, the pace, the effort of each step (0 soft-footed, 0.5 ordinary, 1 a heavy stamp), the listener's distance (m)
     walker: 'rex', pace: 'walk', stepEffort: 0, walkD: 3,
+    // two-player tests: one effort for both (least disruptive, all-out or custom), unless Ollie gets his own (what-if)
+    duoEffort: 'least', duoLogKg: 4, oEffortOwn: false, oEffortLogKg: 4,
   };
   let state = Object.assign({}, DEFAULTS);
   // lightest density the slider and the mass boxes allow, kg/m³ (the slider's left end, 10^1)
@@ -8407,6 +8445,7 @@ window.DINO_DATA = {
   state.effort = 'least';   // the page always opens on the heroic default; anything louder is chosen each visit
   state.absorb = 'ocean'; state.growWhat = 'none';   // growth is a what-if: canon size and mass on every visit
   state.stepEffort = 0;   // they walk soft-footed unless the visitor chooses otherwise
+  state.duoEffort = 'least'; state.oEffortOwn = false;
   {
     const num = (lo, hi) => (v) => typeof v === 'number' && isFinite(v) && v >= lo && v <= hi;
     const VALID = {
@@ -8431,6 +8470,7 @@ window.DINO_DATA = {
       effort: (v) => EFFORT_PRESETS.some((x) => x.id === v), effortLogKg: num(-3, 34), near: num(0.5, 1000),
       gThrow: num(0.1, 1e9), gJump: num(0.01, 1e9), gSprint: num(0.1, 3e8), gPull: num(0.01, 1e9),
       gentleHold: (v) => typeof v === 'boolean', safePassenger: (v) => typeof v === 'boolean', silentStrike: (v) => typeof v === 'boolean', softLanding: (v) => typeof v === 'boolean', coolFlight: (v) => typeof v === 'boolean',
+      duoEffort: (v) => ['least', 'allout', 'custom'].includes(v), duoLogKg: num(-3, 34), oEffortOwn: (v) => typeof v === 'boolean', oEffortLogKg: num(-3, 34),
       walker: (v) => ['rex', 'ollie', 'both'].includes(v), pace: (v) => ['stroll', 'walk', 'brisk', 'fast'].includes(v), stepEffort: num(0, 1), walkD: num(0.5, 10000),
       absorb: (v) => ['ocean', 'gradual', 'instant', 'runaway'].includes(v), growS: num(0, 1), growT: num(1e-3, 1e12), halfLife: num(1e-3, 1e12), growWhat: (v) => ['none', 'krakatoa', 'chicxulub', 'sun'].includes(v),
     };
@@ -8459,17 +8499,19 @@ window.DINO_DATA = {
   function ctx(overrides) {
     const body = P.makeBody({ H: state.H, m: state.m, build: state.build });
     const surface = D.surfaces.find((s) => s.id === state.surface);
-    const c = { F: state.inf ? Infinity : Math.pow(10, state.logKg) * g, mode: state.mode, body, surface, groundHolds: state.groundHolds, anchor: state.anchor,
+    const c = { F: Math.min(state.inf ? Infinity : Math.pow(10, state.logKg) * g, isDuo() ? duoCap.R : Infinity), mode: state.mode, body, surface, groundHolds: state.groundHolds, anchor: state.anchor,
       gentleHold: state.gentleHold, safePassenger: state.safePassenger, silentStrike: state.silentStrike, softLanding: state.softLanding, coolFlight: state.coolFlight };
     return Object.assign(c, overrides || {});
   }
   // Ollie shares the ground and the muscle setting; his strength follows Rex's dial unless set apart.
   function ctxOllie(overrides) {
     const body = P.makeBody({ H: state.oH, m: state.oM, build: 'ollie' });
-    const F = state.oSame ? (state.inf ? Infinity : Math.pow(10, state.logKg) * g) : (state.oInf ? Infinity : Math.pow(10, state.oLogKg) * g);
+    const F = Math.min(state.oSame ? (state.inf ? Infinity : Math.pow(10, state.logKg) * g) : (state.oInf ? Infinity : Math.pow(10, state.oLogKg) * g), isDuo() ? duoCap.O : Infinity);
     return Object.assign(ctx(), { F, body, anchor: state.oAnchor }, overrides || {});
   }
   const isDuo = () => state.group === 'duo';
+  // the effort cap in the two-player tests (strength used, N), set by renderBay before a two-player bay runs
+  let duoCap = { R: Infinity, O: Infinity };
   const curAction = () => (isDuo() ? state.duoAction : state.action);
   const objById = (id) => D.objects.find((o) => o.id === id);
 
@@ -10813,6 +10855,124 @@ window.DINO_DATA = {
     return out;
   }
 
+  // ---------------------------------------------------------------- effort in the two-player tests
+  // One effort for both: each uses at most this strength (never less than he needs to stand and walk). A contest
+  // has no goal short of the test itself, so its least disruptive effort is the hardest both can go while nothing
+  // around them breaks: no torn table, no broken object, no sonic boom, no blast that breaks windows nearby, no crater.
+  const fullF = (who) => (who === 'O' && !state.oSame ? (state.oInf ? Infinity : Math.pow(10, state.oLogKg) * g) : (state.inf ? Infinity : Math.pow(10, state.logKg) * g));
+  function duoHarm(act) {
+    const cR = ctx(), cO = ctxOllie();
+    const near = state.near, win = (E) => isFinite(E) ? E > 0 && P.blastRadius(E, P.RESTRAINT.R.DP_WINDOWS) >= near : E > 0;
+    if (act === 'arm') {
+      const r = P.armWrestle(cR, cO);
+      if (r.blackHole) return null;
+      return r.tableBreaks ? 'the table tears apart' : r.slamRatio > 1 ? 'the pin cracks the table' : r.crater > 0 ? 'the pin makes a crater' : r.quake > 2 ? 'the pin shakes the ground like a quake' : r.relativistic ? 'the pin turns into a fireball' : null;
+    }
+    if (act === 'wrestle') {
+      const move = state.wrestleMove;
+      if (move === 'shove') {
+        const both = state.wrestleWho === 'both', cA = state.wrestleWho === 'ollie' ? cO : cR, cB = state.wrestleWho === 'ollie' ? cR : cO;
+        const r = both ? P.shoveBoth(cR, cO) : P.shove(cA, cB);
+        return Math.max(r.vA || 0, r.vB || 0) >= K.a0 ? 'someone flies off faster than sound' : null;
+      }
+      if (move === 'throw') {
+        const cA = state.wrestleWho === 'ollie' ? cO : cR, cB = state.wrestleWho === 'ollie' ? cR : cO;
+        const t = P.throwPartner(cA, cB, state.angle);
+        if (!t.r || !t.r.canMove) return null;
+        return t.r.v >= K.a0 ? 'the throw breaks the sound barrier' : win(t.r.Eimpact) ? 'the landing breaks windows ' + fmtDist(near) + ' away' : t.r.sinkRatio > 1 ? 'the ground gives way under the thrower' : null;
+      }
+      return null;
+    }
+    if (act === 'catch') {
+      if (state.cObj === 'partner') return null;
+      const o = objById(state.cObj), D0 = Math.pow(10, state.cLogD);
+      const legs = [P.catchLeg(cR, cO, o, D0, state.cStyle), P.catchLeg(cO, cR, o, D0, state.cStyle)];
+      for (const L of legs) {
+        if (!L) continue;
+        if (L.aim && L.aim.vL >= K.a0) return 'a throw breaks the sound barrier';
+        if (['crushed-launch', 'breaks-up', 'burns-up', 'wreckage', 'fireball'].includes(L.result) || L.bursts) return 'the ' + o.short + ' is destroyed';
+      }
+      return null;
+    }
+    if (act === 'collide') {
+      const ollieX = state.colWho === 'ollie', cA = ollieX ? cO : cR, cB = ollieX ? cR : cO;
+      const gb = state.colInf ? Infinity : Math.pow(10, state.colGB);
+      if (state.colMode === 'push') return null;
+      const r = P.collide(cA, cB, { source: state.colSrc, gb, bounce: state.colBounce === 'bounce' });
+      if (!r || r.blackHole || r.planetScale || r.noCharge) return null;
+      const Q = r.Elocal != null && (r.relativistic || r.outcome === 'boltsLate') ? r.Elocal : r.h && state.colBounce !== 'bounce' ? r.h.Q : 0;
+      return r.v0 >= K.a0 ? 'the charge breaks the sound barrier' : win(Q) ? 'the hit breaks windows ' + fmtDist(near) + ' away' : null;
+    }
+    return null;
+  }
+  const duoPlans = new Map();
+  function duoPlanFor(act) {
+    const FR = fullF('R'), FO = fullF('O');
+    const key = JSON.stringify([act, FR, FO, state.mode, state.H, state.m, state.build, state.oH, state.oM, state.surface, state.groundHolds, state.anchor, state.oAnchor, state.near, state.wrestleMove, state.wrestleWho, state.angle, state.cObj, state.cLogD, state.cStyle, state.colMode, state.colWho, state.colSrc, state.colGB, state.colInf, state.colBounce, state.colImm, state.oEffortOwn, state.oEffortLogKg, state.gentleHold, state.coolFlight, state.softLanding, state.silentStrike]);
+    let p = duoPlans.get(key);
+    if (p) return p;
+    const need = (m) => P.W8.WALK_LOAD * m * g / P.MUSCLE.jump.forceFrac;
+    const lo = Math.max(need(state.m), need(state.oM)), hiF = Math.max(FR, FO), hi = isFinite(hiF) ? hiF : 1e34 * g;
+    const memo = new Map();
+    const harmAt = (u) => {
+      const k = u === Infinity ? 'inf' : u;
+      if (!memo.has(k)) {
+        const save = duoCap;
+        duoCap = { R: Math.max(u, lo), O: state.oEffortOwn ? Math.max(Math.pow(10, state.oEffortLogKg) * g, lo) : Math.max(u, lo) };
+        try { memo.set(k, duoHarm(act)); } finally { duoCap = save; }
+      }
+      return memo.get(k);
+    };
+    const s = lo < hi ? P.RESTRAINT.search((u) => !!harmAt(u), lo, hi, !isFinite(hiF)) : null;
+    p = { act, lo, hi, s, harmAt, done: !s };
+    p.step = () => { if (p.done) return true; s.step(); if (s.use !== undefined) p.done = true; return p.done; };
+    duoPlans.set(key, p);
+    if (duoPlans.size > 30) duoPlans.delete(duoPlans.keys().next().value);
+    return p;
+  }
+  // the cap for this render (Infinity = all-out) and what the readout says
+  function resolveDuoEffort(act) {
+    const p = duoPlanFor(act);
+    let use = Infinity, note = null;
+    if (state.duoEffort === 'custom') use = Math.max(Math.pow(10, state.duoLogKg) * g, p.lo);
+    else if (state.duoEffort === 'least' && p.s) {
+      while (!p.step());
+      if (p.s.never) use = Infinity;
+      else if (!(p.s.below > 0)) { use = p.lo; note = 'Nothing is harmless here: even at the least they need to stand, ' + p.harmAt(p.lo) + '.'; }
+      else use = p.s.below;
+    }
+    const harm = p.harmAt(use);
+    return { p, use, note, harm };
+  }
+  function duoEffortBox(act, eff) {
+    const FR = fullF('R');
+    const sel = el('select', { id: 'duo-effort' }, [['least', 'Least disruptive: as hard as they can go with nothing breaking'], ['allout', 'All-out'], ['custom', 'Custom (use the slider)']].map(([v, t]) => el('option', { value: v, text: t })));
+    sel.value = state.duoEffort;
+    sel.onchange = (e) => { if (e.target.value === 'custom') state.duoLogKg = Math.log10(Math.min(eff.use, isFinite(FR) ? FR : 1e34 * g) / g); state.duoEffort = e.target.value; update(); };
+    const lo = Math.log10(eff.p.lo / g), hi = Math.log10(eff.p.hi / g);
+    const cur = isFinite(eff.use) ? Math.log10(eff.use / g) : hi;
+    const sl = el('input', { id: 'duo-effort-use', type: 'range', min: String(lo), max: String(Math.max(hi, lo + 0.01)), step: '0.01', value: String(Math.min(hi, Math.max(lo, cur))), 'aria-label': 'Their effort: the strength each uses, log scale' });
+    sl.oninput = (e) => { state.duoEffort = 'custom'; state.duoLogKg = Number(e.target.value); const s2 = $('#duo-effort'); if (s2) s2.value = 'custom'; scheduleBaySlow(); };
+    const own = el('label', { class: 'check', style: 'margin-top:0' }, el('input', { type: 'checkbox', id: 'o-effort-own', checked: state.oEffortOwn ? true : null, onchange: (e) => { state.oEffortOwn = e.target.checked; if (state.oEffortOwn) state.oEffortLogKg = cur; update(); } }), el('span', { text: 'What-if: Ollie sets his own effort' }));
+    const fields = [el('div', { class: 'field effort-field' }, el('label', { for: 'duo-effort', text: 'Effort (one for both)' }), sel), el('div', { class: 'field effort-slider' }, el('label', { for: 'duo-effort-use', text: 'Effort (gentle ↔ all-out)' }), sl), el('div', { class: 'field near-field' }, own)];
+    if (state.oEffortOwn) {
+      const so = el('input', { id: 'o-effort-use', type: 'range', min: String(lo), max: String(Math.max(hi, lo + 0.01)), step: '0.01', value: String(Math.min(hi, Math.max(lo, state.oEffortLogKg))), 'aria-label': 'Ollie’s own effort, log scale' });
+      so.oninput = (e) => { state.oEffortLogKg = Number(e.target.value); scheduleBaySlow(); };
+      fields.push(el('div', { class: 'field effort-slider' }, el('label', { for: 'o-effort-use', text: 'Ollie’s effort (what-if)' }), so));
+    }
+    const read = el('div', { class: 'effort-read' });
+    const head = el('p', {}, el('b', { text: (isFinite(eff.use) && eff.use < FR * (1 - 1e-9) ? 'Effort: ' + shareText2(eff.use, FR) : 'All-out') }), isFinite(eff.use) && eff.use < FR ? ' (each pushes as hard as lifting ' + fmtMass(eff.use / g) + (state.oEffortOwn ? '; Ollie his own ' + fmtMass(Math.pow(10, state.oEffortLogKg)) : '') + ').' : '.');
+    head.append(' ' + ({ least: 'The hardest both can go while nothing around them breaks.', allout: 'Everything they have.', custom: 'Set by hand.' }[state.duoEffort]));
+    read.append(head);
+    if (eff.note) read.append(el('p', { class: 'warn-ink', text: eff.note }));
+    if (eff.p.s && eff.p.done) {
+      const s0 = eff.p.s;
+      read.append(el('p', { text: s0.never ? 'Courtesy ceiling: none. Nothing in this test harms anything nearby' + (isFinite(eff.p.hi) ? ', even all-out.' : '.') : 'Courtesy ceiling: ' + shareText2(s0.below, FR) + '. Past that, ' + eff.p.harmAt(s0.use) + '.' }));
+    }
+    if (eff.harm) read.append(status('warn', 'At this effort ' + eff.harm));
+    return { fields, read };
+  }
+
   const BAYS = { walk: bayWalk, lift: bayLift, throw: bayThrow, jump: bayJump, stomp: bayStomp, punch: bayPunch, clap: bayClap, sprint: baySprint, pull: bayPull, weight: bayWeight, arm: bayArm, wrestle: bayWrestle, catch: bayCatch, collide: bayCollide };
 
   let lastBayAction = null, liveTimer = null;
@@ -10833,10 +10993,23 @@ window.DINO_DATA = {
     try {
       // At planet-scale masses the move models (a small Rex on a fixed Earth) stop applying.
       const gate = act === 'weight' || isDuo() ? null : soloGate(ctx());
+      let duoEff = null;
+      duoCap = { R: Infinity, O: Infinity };
+      if (isDuo()) {
+        duoEff = resolveDuoEffort(act);
+        duoCap = { R: Math.max(duoEff.use, duoEff.p.lo), O: state.oEffortOwn ? Math.max(Math.pow(10, state.oEffortLogKg) * g, duoEff.p.lo) : Math.max(duoEff.use, duoEff.p.lo) };
+      }
       const c0 = ctx();
       const eff = isEffortMove(act) && !(gate && gate.stop) ? resolveEffort(act, c0) : null;
       parts = gate && gate.stop ? [callout(gate.text)] : BAYS[act](eff ? Object.assign({}, c0, { use: eff.use }) : c0);
       if (eff) attachEffort(parts, act, c0, eff);
+      if (duoEff) {
+        const box = duoEffortBox(act, duoEff);
+        let ctl = parts[0] && parts[0].classList && parts[0].classList.contains('bay-controls') ? parts[0] : null;
+        if (!ctl) { ctl = el('div', { class: 'bay-controls' }); parts.unshift(ctl); }
+        ctl.prepend(...box.fields);
+        parts.splice(1, 0, box.read);
+      }
       if (gate && !gate.stop) parts.splice(parts[0] && parts[0].classList && parts[0].classList.contains('bay-controls') ? (eff ? 2 : 1) : 0, 0, callout(gate.text));
     }
     catch (e) { parts = [callout('Calculation failed: ' + e.message)]; console.error(e); }
