@@ -1036,25 +1036,27 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (state.absorb === 'gradual') {
       const G = P.gradualGrowth(body, E, state.growS);
       if (G.T > 0) {
-        const T = state.growT, r = G.r;
-        const dp = K.rho0 * Math.PI * gB.dV / (8 * r * T * T), u = Math.PI * (gB.R - gB.R0) / (2 * T);
+        const T = state.growT, dp = G.pAt(T), u = G.uAt(T);
         const safe = T >= G.T * (1 - 1e-9);
-        items.push('Shortest harmless time: ' + fmtTime(G.T) + ', set by ' + (G.by === 'pressure' ? 'the air he pushes aside (a pressure pulse on someone ' + fmtDist(P.GROW.GAP) + ' from him)' : 'how fast his skin moves outward (it shoves anyone touching him)') + '.');
-        items.push('Over ' + fmtTime(T) + (safe ? ' it is harmless: ' : ' it is not: ') + 'the air pulse ' + fmtDist(P.GROW.GAP) + ' from him peaks at ' + fmtSI(dp, 'Pa') + ' (harmless below ' + fmtSI(P.GROW.SAFE_DP, 'Pa') + ', windows break at 6.9 kPa) and his surface moves out at up to ' + speedOnly(u) + ' (harmless below ' + speedOnly(P.GROW.SAFE_U) + ').');
-      } else items.push('Pure density: he doesn’t get any bigger, so nothing around him is pushed aside.');
+        items.push('Shortest harmless time: ' + fmtTime(G.T) + ', set by ' + ({ shove: 'how fast the top of his head rises: anything above or beside him has to be able to get out of the way (a surface moving at 0.25 m/s or less, OSHA’s limit for robots that touch people)', pressure: 'the air he pushes aside: a pressure pulse on someone ' + fmtDist(P.GROW.GAP) + ' from him, kept under 100 Pa (134 dB, the US Bureau of Mines’ safe level for houses)', lift: 'keeping his feet on the ground while his middle rises' }[G.by]) + '. The air alone would allow ' + fmtTime(G.Tp) + '.');
+        items.push('Over ' + fmtTime(T) + (safe ? ' it is harmless: ' : ' it is not: ') + 'the air pulse ' + fmtDist(P.GROW.GAP) + ' from him peaks at ' + fmtSI(dp, 'Pa') + ' (windows break from 3.4 kPa) and the top of his head rises at up to ' + speedOnly(u) + '. The growth curve starts and stops smoothly (our choice).');
+      } else items.push('Pure density: he doesn’t get any bigger, so nothing around him is pushed aside. Only his weight changes.');
     }
     if (state.absorb === 'instant' || state.absorb === 'runaway') {
       const I = P.instantGrowth(body, E, state.growS);
       if (gB.dV > 0) {
-        const rw = P.blastRadius(I.Eair, 6900);
-        items.push('All at once: over ' + fmtTime(I.tau) + ', the time sound takes to cross his new body. His surface moves out at ' + speedOnly(I.u) + (I.u >= K.a0 ? ' (' + fmtMach(I.u) + ')' : '') + ' and pushes the air in front to up to ' + fmtSI(I.dp, 'Pa') + ' above normal.');
-        items.push('As a blast that is up to ' + fmtTNT(I.Eair) + (rw > 0.05 ? ': windows break out to ' + fmtDist(rw) + '.' : ', too little to break windows.') + ' He grows from where he stands, so his middle rises ' + fmtDist(gB.dH / 2) + ' in that time; the push that does it puts about ' + fmtTNT(I.Eground) + ' into the ground' + (I.quake > 2 ? ' (a magnitude ' + sig(I.quake, 2) + ' quake).' : '.') + ' Both are rough upper bounds.');
+        const win = (Ex, dp) => P.blastRadius(Ex, dp);
+        const wLo = win(I.Elo, 6900), wHi = win(I.Ehi, 3400);
+        items.push('All at once: over ' + fmtTime(I.tau) + ', the time sound takes to cross his new body (our choice of timescale; truly instant would need unlimited energy). He grows from his soles: his sides move out at about ' + speedOnly(I.u) + ' and the top of his head rises at ' + speedOnly(I.uHead) + (I.uHead >= K.a0 ? ' (' + fmtMach(I.uHead) + ')' : '') + '.');
+        items.push('The air at his surface jumps by ' + fmtSI(I.dpLo, 'Pa') + ' to ' + fmtSI(I.dpHi, 'Pa') + '. As a blast that is ' + fmtTNT(I.Elo) + ' to ' + fmtTNT(I.Ehi) + (wHi > 0.05 ? ': windows break out to about ' + fmtDist(wLo) + '–' + fmtDist(wHi) + '.' : ', too little to break windows.') + ' Rough: the low end treats him as a ball, the high end as flat pistons.');
+        const bolted = state.anchor === 'bolted';
+        items.push('Momentum isn’t absorbed: his middle rises ' + fmtDist(gB.dH / 2) + ' in that time, so the ground has to push him up with ' + fmtSI(I.Fground, 'N') + ' (' + fmtSI(I.groundPressure, 'Pa') + ' under his feet, ' + (I.groundPressure > 1.7e9 ? 'more than any rock can take' : 'within what granite can take') + '). ' + (bolted ? 'Bolted to the planet, he stays put and the Earth takes it.' : 'Nothing then pulls him back down: he is thrown about ' + fmtDist(I.launch) + ' up (no air drag), unless he is bolted to the planet.'));
       } else items.push('Pure density: he doesn’t get any bigger, so there is no blast. Only his weight changes.');
     }
     if (state.absorb === 'runaway') {
       const RW = P.runawayGrowth(body, E, state.growS);
-      items.push('Runaway loop: each joule absorbed sends back ' + (RW.k > 0 ? sci(RW.k, 2) : '0') + ' J of side effects (air, ground and his own gravity), which are absorbed too. ' + (RW.runs ? 'That is 1 or more, so it would run away: the half-life (' + fmtTime(state.halfLife) + ') drains the extra into the endless ocean and stops it.' : 'That is far below 1, so the loop dies out at once: in all he absorbs ' + (RW.k < 1e-6 ? 'the same energy to within a millionth.' : fmtSI(RW.total, 'J') + '.')));
-      items.push('A real runaway needs side effects as large as the energy itself. Only his own gravity could get there: its share is 0.6 × (event-horizon radius ÷ his radius) × (2 − s/3) ÷ 2, now ' + sci(RW.kGravNow, 2) + ', and at most ' + sig(RW.kGravAtHorizon, 2) + ' at his own event horizon. So outside a black hole the loop never reaches 1, and the half-life never has to act.');
+      items.push('Runaway loop: each joule absorbed sends back about ' + (RW.k > 0 ? sci(RW.k, 1) : '0') + ' J of side effects (pushing the air back and his own gravity pulling him tighter), which are absorbed too. ' + (RW.runs ? 'That is 1 or more: it would run away, and the half-life (' + fmtTime(state.halfLife) + ', a story choice: no physics sets it) drains the extra into the endless ocean.' : 'That is far below 1, so the loop dies out at once: he absorbs ' + (RW.k < 1e-6 ? 'the same energy to within a millionth.' : fmtSI(RW.total, 'J') + ' in all.')));
+      items.push('A real runaway needs side effects as big as the energy itself. Only his own gravity can get there: its share is 0.3 × (2 − s/3) × (his event-horizon radius ÷ his radius), where s is the share of growth into size. That is ' + sci(RW.kGravNow, 1) + ' now and reaches 1 only inside his own event horizon. So outside a black hole the half-life never has to act.');
     }
     if (!small) {
       const gb = P.grownMakeBody(body, E, state.growS);

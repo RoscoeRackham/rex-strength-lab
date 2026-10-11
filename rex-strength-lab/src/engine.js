@@ -3236,11 +3236,12 @@
     felt: (aG, thetaDeg) => { const th = thetaDeg * Math.PI / 180; return Math.hypot(aG * Math.cos(th), aG * Math.sin(th) + 1); },
   };
   const GROW = {
-    TISSUE_C: 1540,   // speed of sound in soft tissue, m/s: instant growth takes the time sound needs to cross the body
-    SAFE_DP: 200,     // overpressure taken as harmless to a bystander, Pa (placeholder until research)
-    SAFE_U: 0.5,      // speed at which a growing surface can shove a bystander harmlessly, m/s (placeholder)
-    GAP: 2,           // a bystander stands this far from his surface, m (estimate)
+    TISSUE_C: 1540,   // speed of sound in soft tissue, m/s: instant growth takes the time sound needs to cross the body (estimate of the timescale)
+    SAFE_DP: 100,     // air pulse that stays harmless at a house: 134 dB, USBM RI 8485's safe level, Pa
+    SAFE_U: 0.25,     // a moving surface slow enough for a person to get out of the way: OSHA's 250 mm/s for robots, m/s
+    GAP: 2,           // a bystander stands this far from his final surface, m (estimate)
     MIX: 0.5,         // the even mix
+    DP_WIN: [3400, 6900],   // windows usually shatter, Pa (data: blast_window_breakage)
   };
   const formShare = (form) => (typeof form === 'number' ? Math.min(1, Math.max(0, form)) : form === 'size' ? 1 : form === 'density' ? 0 : GROW.MIX);
   // The body after absorbing E joules as mass. lnr = ln(mass ratio), kept exact for tiny energies.
@@ -3259,58 +3260,90 @@
     const g = grownBody(body, E, form);
     return makeBody({ H: g.H, m: g.m, build: body.build });
   }
-  // Overpressure at the face of a flat piston pushed into still air at speed u (shock relation; the acoustic
-  // rho0 a0 u when slow, rho0 (gamma+1)/2 u^2 when fast). A growing body's surface is curved, which lets the air
-  // slip aside, so this is an upper bound.
+  // Overpressure in front of a flat piston pushed into still air at speed u (normal-shock relations): about rho0 a0 u
+  // when slow, about 1.2 rho0 u^2 when fast. The upper bound for a growing surface.
   function pistonOverpressure(u) {
-    const q = (K.gammaAir + 1) / 4 * u;
-    return K.rho0 * u * (q + Math.sqrt(q * q + K.a0 * K.a0));
+    const q = (K.gammaAir + 1) * u / (4 * K.a0), M = q + Math.sqrt(q * q + 1);
+    return K.p0 * (2 * K.gammaAir / (K.gammaAir + 1)) * (M * M - 1);
+  }
+  // At the surface of a sphere expanding at constant speed u (Taylor 1946; our solution, checked two ways): about
+  // k rho0 u^2, with k from 1.16 at 0.3 a0 to 1.00 past 1.5 a0. Slower than that the planar onset rho0 a0 u applies.
+  function sphereOverpressure(u) {
+    const x = u / K.a0, T = [[0.3, 1.16], [0.45, 1.08], [0.6, 1.04], [0.8, 1.02], [1.0, 1.01], [1.5, 1.0]];
+    if (x < 0.3) return Math.min(K.rho0 * K.a0 * u, 1.16 * K.rho0 * u * u + K.rho0 * K.a0 * u * Math.max(0, 1 - x / 0.3));
+    let k = 1.0;
+    for (let i = 1; i < T.length; i++) if (x <= T[i][0]) { k = T[i - 1][1] + (T[i][1] - T[i - 1][1]) * (x - T[i - 1][0]) / (T[i][0] - T[i - 1][0]); break; }
+    return k * K.rho0 * u * u;
+  }
+  // Gradual growth over T with a smooth start and stop: the share of the mass added by time t is
+  // t/T - sin(2 pi t/T) / (2 pi), so the rate goes as 1 - cos(2 pi t/T) (our choice of profile). Returns the peak
+  // volume acceleration and the peak rate of height growth, as k_V = max|V''| T^2 / dV and k_H = max(H') T / dH.
+  function growthShape(body, E, form) {
+    const g = grownBody(body, E, form), N = 400;
+    if (!(g.dV > 0) || !isFinite(g.lnr)) return { kV: 2 * Math.PI, kH: 2 };
+    const at = (u) => { const sh = u - Math.sin(2 * Math.PI * u) / (2 * Math.PI), lnk = Math.log1p(Math.expm1(g.lnr) * sh); return { V: Math.exp(lnk * g.s), H: Math.exp(lnk * g.s / 3) }; };
+    let kV = 0, kH = 0;
+    const h = 1 / N;
+    for (let i = 1; i < N; i++) {
+      const a = at((i - 1) * h), b = at(i * h), c2 = at((i + 1) * h);
+      kV = Math.max(kV, Math.abs(c2.V - 2 * b.V + a.V) / (h * h));
+      kH = Math.max(kH, (c2.H - a.H) / (2 * h));
+    }
+    const dVr = Math.expm1(g.lnr * g.s), dHr = Math.expm1(g.lnr * g.s / 3);
+    return { kV: kV / dVr, kH: kH / dHr };
   }
   // Gradual growth: the shortest duration that stays harmless to a bystander GAP metres from his final surface.
-  // Two limits: air pressure (the growing body is a source of volume flow Q; at a distance r the pressure is
-  // rho0 Q'(t) / (4 pi r), the acoustic monopole; with a half-cosine growth curve the peak Q' is pi^2 dV / (2 T^2)),
-  // and shove speed (his surface moves out at up to pi dR / (2T)).
+  // Air: the growing body is a compact source of volume flow; on rigid ground the pressure at r is rho0 V''/(2 pi r)
+  // (twice the free-field monopole), peaking at rho0 k_V dV / (2 pi r T^2). Shove: the top of his head rises at up to
+  // k_H dH / T; anything above or beside him has to be able to get out of the way. Lift: his middle has to rise
+  // without leaving the ground, T >= sqrt(pi dH / g) (not binding next to the shove).
   function gradualGrowth(body, E, form, o) {
     const opt = o || {};
     const g = grownBody(body, E, form);
     const gap = opt.gap == null ? GROW.GAP : opt.gap, dpSafe = opt.dp || GROW.SAFE_DP, uSafe = opt.u || GROW.SAFE_U;
-    const r = g.R + gap, dR = g.R - g.R0;
-    const Tp = g.dV > 0 ? Math.sqrt(K.rho0 * Math.PI * g.dV / (8 * r * dpSafe)) : 0;
-    const Tu = dR > 0 ? Math.PI * dR / (2 * uSafe) : 0;
-    const T = Math.max(Tp, Tu);
-    // quasi-static: the monopole is valid while T is much longer than sound's crossing time of the body
-    return { grown: g, T, Tp, Tu, by: Tp >= Tu ? 'pressure' : 'shove', r, compact: T > 10 * g.R / K.a0 };
+    const sh = growthShape(body, E, form), r = g.R + gap;
+    const Tp = g.dV > 0 ? Math.sqrt(K.rho0 * sh.kV * g.dV / (2 * Math.PI * r * dpSafe)) : 0;
+    const Tu = g.dH > 0 ? sh.kH * g.dH / uSafe : 0;
+    const Tl = g.dH > 0 ? Math.sqrt(Math.PI * g.dH / K.g) : 0;
+    const T = Math.max(Tp, Tu, Tl);
+    const pAt = (Tc) => (g.dV > 0 ? K.rho0 * sh.kV * g.dV / (2 * Math.PI * r * Tc * Tc) : 0);
+    const uAt = (Tc) => (g.dH > 0 ? sh.kH * g.dH / Tc : 0);
+    return { grown: g, shape: sh, T, Tp, Tu, Tl, by: T === Tu ? 'shove' : T === Tp ? 'pressure' : 'lift', r, pAt, uAt, compact: T > 10 * g.H / K.a0 };
   }
-  // Instant growth: all at once, over the time sound takes to cross the final body (head to foot).
-  // Air: the surface moves out by dR in that time; the air in front gets the piston overpressure for its speed,
-  // and the energy pushed into it, dp x dV, is treated as a blast (an upper bound). Ground: he grows from where he
-  // stands, so his centre of mass rises dH/2 in that time; the push that does it goes into the ground.
+  // Instant growth: all at once, over the time sound takes to cross his new body (height / 1,540 m/s; an estimate).
+  // He grows from his soles, so his sides move out at about dR / t and the top of his head rises at dH / t. The air at
+  // his surface gets from the expanding-sphere value (low end) to the flat-piston value at his head's speed (high end);
+  // the excess energy pushed into the air, dp x dV, is a blast; on hard ground it counts double. Momentum: his middle
+  // rises dH/2 in t, so the ground has to push him up hard enough to give that speed, and nothing pulls him back: he is
+  // launched unless bolted to the planet.
   function instantGrowth(body, E, form) {
     const g = grownBody(body, E, form);
     const tau = g.H / GROW.TISSUE_C;
     const dR = g.R - g.R0;
-    const u = dR / tau;
-    const dp = pistonOverpressure(u);
-    const Eair = dp * g.dV;
-    const vcm = 0.5 * g.dH / tau;
-    const Eground = 0.5 * g.m * vcm * vcm;
-    return { grown: g, tau, u, mach: u / K.a0, dp, Eair, vcm, Eground, quake: seismicMagnitude(Eground) };
+    const u = dR / tau, uHead = g.dH / tau;
+    const dpLo = g.dV > 0 ? sphereOverpressure(u) : 0;
+    const dpHi = g.dV > 0 ? pistonOverpressure(uHead) / 3 + 2 * pistonOverpressure(u) / 3 : 0;
+    const Elo = 2 * dpLo * g.dV, Ehi = 2 * dpHi * g.dV;          // x2: rigid ground reflects it (equivalent free-air energy)
+    const vcm = 0.5 * g.dH / tau;                                // his middle's mean upward speed during the growth
+    const Fground = g.m * vcm / tau + g.m * K.g;                 // the ground's push that gives it
+    const soles = 2 * body.footArea * Math.exp(g.lnr * g.s * 2 / 3);
+    const launch = vcm * vcm / (2 * K.g);
+    return { grown: g, tau, u, uHead, mach: u / K.a0, machHead: uHead / K.a0, dpLo, dpHi, Elo, Ehi, Eatm: K.p0 * g.dV, vcm, Fground, groundPressure: Fground / soles, soles, launch };
   }
-  // Runaway: the consequences (the energy pushed into air and ground, and the gravitational binding energy his
-  // own pull releases as he grows) are absorbed as growth too. Loop ratio k = fed-back energy / absorbed energy.
-  // k < 1: the loop dies out, total absorbed E / (1 - k). k >= 1: it would run away, and a half-life dumps the
-  // extra into the endless ocean. Binding energy of a uniform ball: 3 G M^2 / (5 R).
+  // Runaway: the side effects (the work done pushing the air back, p0 + dp over dV, and the gravitational binding
+  // energy his own pull releases as he grows) are absorbed as growth too. Loop ratio f = energy fed back / energy
+  // absorbed. f < 1: the loop dies out, and he absorbs E / (1 - f) in all. f >= 1: it runs away, and only the half-life
+  // (a story choice: no physics sets it) drains the extra into the endless ocean. Binding energy of a uniform ball:
+  // 3 G M^2 / (5 R), so the gravity share is 0.3 (2 - s/3) r_s / R: 1 only inside his own event horizon.
   function runawayGrowth(body, E, form) {
     const inst = instantGrowth(body, E, form), g = inst.grown;
     const bind = (m, R) => 0.6 * K.G * m * m / R;
-    const dBind = bind(g.m, g.R) - bind(body.m, g.R0);
-    const kSurround = isFinite(E) && E > 0 ? (inst.Eair + inst.Eground) / E : 0;
-    const kGrav = isFinite(E) && E > 0 ? Math.max(0, dBind) / E : 0;
-    const k = kSurround + kGrav;
-    // the same ratio for a small extra step at the grown size, d(binding)/d(M c^2) = 0.6 (2 - s/3) G M / (R c^2)
-    const kGravNow = 0.6 * (2 - g.s / 3) * K.G * g.m / (g.R * K.c * K.c);
+    const fAir = isFinite(E) && E > 0 ? (K.p0 + inst.dpHi) * g.dV / E : 0;
+    const fGrav = isFinite(E) && E > 0 ? Math.max(0, bind(g.m, g.R) - bind(body.m, g.R0)) / E : 0;
+    const k = fAir + fGrav;
+    const kGravNow = 0.3 * (2 - g.s / 3) * 2 * K.G * g.m / (g.R * K.c * K.c);
     const rs = 2 * K.G * g.m / (K.c * K.c);
-    return { instant: inst, grown: g, k, kSurround, kGrav, kGravNow, runs: k >= 1, total: k < 1 ? E / (1 - k) : Infinity,
+    return { instant: inst, grown: g, k, kAir: fAir, kGrav: fGrav, kSurround: fAir, kGravNow, runs: k >= 1 || rs >= g.R, total: k < 1 ? E / (1 - k) : Infinity,
       rs, rsOverR: rs / g.R, kGravAtHorizon: 0.3 * (2 - g.s / 3) };
   }
 
@@ -3369,6 +3402,6 @@
     kgRatio, overpressureAt, blastRadius, penetrationDepth,
     lift, throwObject, jump, stomp, punch, clap, sprint, pull, threshold, calibrateComic,
     throwOnce, jumpOnce, stompOnce, punchOnce, clapOnce,
-    driveStrength, PASSENGER, VIB, ppvAt, ppvNonlinear, groundOf, vibSource, elephantPPV, WALK, walkStep, footprint, presence, walkEffortFor, ppvReach, RESTRAINT, GROW, formShare, grownBody, grownMakeBody, pistonOverpressure, gradualGrowth, instantGrowth, runawayGrowth,
+    driveStrength, PASSENGER, VIB, ppvAt, ppvNonlinear, groundOf, vibSource, elephantPPV, sphereOverpressure, growthShape, WALK, walkStep, footprint, presence, walkEffortFor, ppvReach, RESTRAINT, GROW, formShare, grownBody, grownMakeBody, pistonOverpressure, gradualGrowth, instantGrowth, runawayGrowth,
   };
 });
