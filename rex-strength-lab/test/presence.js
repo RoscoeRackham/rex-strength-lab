@@ -27,6 +27,8 @@ const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface
 
 // 2. Least-disruptive effort reaches each move's goal and, where the courtesy ceiling allows it, stays under every hazard.
 {
+  // the goals that need more than the courtesy ceiling allows (on sand the car's crush window and the jump's craters)
+  const ABOVE = new Set(['throw 9.07e+4 sand', 'throw 1.00e+7 sand', 'jump 1.00e+7 sand', 'throw inf sand', 'jump inf sand']);
   const moves = [['throw', { obj: obj('car'), angle: 45, target: 30 }], ['jump', { target: 3 }], ['stomp', {}], ['punch', { target: 10.4 }], ['clap', { target: 6 }], ['sprint', { target: 12.42 }], ['pull', { obj: obj('bus'), target: 10 }]];
   for (const F of [90718 * g, 1e7 * g, Infinity]) for (const sid of ['concrete', 'sand']) for (const [mv, o] of moves) {
     const c = ctxOf(F, { surface: surf(sid) });
@@ -42,8 +44,11 @@ const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface
     ok(mv + ' least-disruptive reaches its goal (F ' + (F / g).toPrecision(3) + ' kg, ' + sid + ')', M.goal(r, p.opt));
     // and it is restrained: well under all-out, and a push a fifth gentler misses the goal (unless it is the least he can try)
     ok(mv + ' least-disruptive is gentler than all-out and the gentlest that works (' + sid + ')', gl.use < (isFinite(F) ? F : Infinity) && (gl.atLowest || !M.goal(p.run(gl.use * 0.8), p.opt)), (gl.use / g).toPrecision(3) + ' kg');
-    // under every hazard whenever the goal is below the ceiling
-    if (gl.use <= ce.below) {
+    // under every hazard whenever the goal is below the ceiling; the few goals above it are listed, so a regression
+    // can't drop checks silently
+    const above = gl.use > ce.below;
+    ok(mv + ' goal ' + (above ? 'above' : 'within') + ' the courtesy ceiling as expected (F ' + (F / g).toPrecision(3) + ' kg, ' + sid + ')', above === ABOVE.has([mv, F === Infinity ? 'inf' : (F / g).toPrecision(3), sid].join(' ')));
+    if (!above) {
       const bad = P.RESTRAINT.HAZARDS.filter((h) => h.test(P.RESTRAINT.MOVES[mv], r, p.opt));
       ok(mv + ' least-disruptive stays under every hazard (' + sid + ')', bad.length === 0, bad.map((h) => h.id).join(','));
     }
@@ -260,6 +265,52 @@ const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface
     scan('grown ' + E + ' ' + f, P.grownBody(rex, E, f), ''); scan('gradual ' + E + ' ' + f, P.gradualGrowth(rex, E, f), ''); scan('instant ' + E + ' ' + f, P.instantGrowth(rex, E, f), ''); scan('runaway ' + E + ' ' + f, P.runawayGrowth(rex, E, f), '');
   }
   ok('new paths: no NaN or negative values (moves at any effort, walking on every surface, growth over 60 decades)', bad.length === 0, bad.slice(0, 5).join('; '));
+}
+
+// 8. Guards for the review fixes: each check fails if one line of its fix is undone (review round 2, code lens).
+{
+  const H = (id) => P.RESTRAINT.HAZARDS.find((h) => h.id === id), M = P.RESTRAINT.MOVES;
+  // soil: sinking in is a footprint. On sand at the default dial, all-out, the throw's and sprint's feet sink and the
+  // jump's feet punch in (under a megajoule: no craters), and none of that counts as breaking the ground
+  { const c = ctxOf(90718 * g, { surface: surf('sand') }), o = { surface: c.surface, body: rex, m: rex.m, near: 5, obj: obj('car'), angle: 45 };
+    const t = P.throwObject(c, obj('car'), 45), j = P.jump(c), sp = P.sprint(c);
+    ok('on sand, sinking in is not broken ground (throw, jump, sprint)', t.sinkRatio > 1 && j.groundFails && j.Eground < 1e6 && sp.sinks && !H('ground').test(M.throw, t, o) && !H('ground').test(M.jump, j, o) && !H('ground').test(M.sprint, sp, o));
+    const j2 = P.jump(ctxOf(1e7 * g, { surface: surf('sand') }));
+    ok('on sand, a jump that leaves craters (over a megajoule into the ground) does break it', j2.Eground >= 1e6 && H('ground').test(M.jump, j2, o)); }
+  // a jump's landing breaks a slab when it is past the slab's bearing, even if the take-off didn't
+  { const c = ctxOf(3e6 * g, { surface: surf('concrete') }), r = P.jump(c), o = { surface: c.surface, body: rex, m: rex.m, near: 5 };
+    const landOnly = Object.assign({}, r, { groundFails: false });
+    ok('jump on concrete: a landing past the bearing sets the ground hazard', r.landing.ratio > 1 && H('ground').test(M.jump, landOnly, o) && !H('ground').test(M.jump, Object.assign({}, landOnly, { landing: Object.assign({}, r.landing, { ratio: 0.9 }) }), o), 'landing ratio ' + r.landing.ratio.toFixed(2)); }
+  // the Stomp tab's shaking at the drill stamp's leg speed equals the Walk tab's stamp
+  { const st = P.walkStep(rex, surf('concrete'), { effort: 1 }), vSt = Math.sqrt(2 * g * P.WALK.STAMP.thigh * rex.H);
+    const sh = M.stomp.shake({ vFoot: vSt, holeDepth: 0 }, { surface: surf('concrete'), body: rex });
+    ok('a stomp at the drill stamp\'s leg speed shakes the ground like the Walk tab\'s stamp', near(P.ppvAt(sh, 5), P.ppvAt(st.src[0], 5), 0.01), (P.ppvAt(sh, 5) * 1000).toPrecision(3) + ' vs ' + (P.ppvAt(st.src[0], 5) * 1000).toPrecision(3) + ' mm/s'); }
+  // the stomp's goal is the one-jolt level, not the walk-past level
+  { const c = ctxOf(90718 * g), p = P.RESTRAINT.planNow('stomp', c, { near: 5 }), r = p.run(p.goal().use);
+    ok('stomp goal is the 1 mm/s one-jolt level', near(P.ppvAt(M.stomp.shake(r, p.opt), 5), P.VIB.TH.feelOnce, 0.02)); }
+  // a person's launch is judged by the push's peak (real muscle pushes hardest at first)
+  // (at 350 kg of effort the average push is within the 1.5 g limit and the peak is past it)
+  { const person = obj('person'), r = P.throwObject(ctxOf(90718 * g, { mode: 'real', use: 350 * g }), person, 45), o = { obj: person, angle: 45 };
+    const nAvg = P.PASSENGER.felt(r.launchG, 45), nPk = P.PASSENGER.felt(r.launchGPeak, 45), lim = P.PASSENGER.noHarm(r.launchT);
+    ok('passenger hazard uses the launch peak', nAvg <= lim && nPk > lim && H('passenger').test(M.throw, r, o), sig2(nAvg) + ' g mean, ' + sig2(nPk) + ' g peak, limit ' + sig2(lim)); }
+  // instant growth: the ground's bearing caps the launch
+  { const I = P.instantGrowth(rex, 4.2e23, 0.5, { surface: surf('concrete') }), I0 = P.instantGrowth(rex, 4.2e23, 0.5);
+    ok('instant growth (Chicxulub, mix) on concrete: the slab gives, so no 15 km launch', I0.launch > 1e4 && I.driven && I.launch < 1 && I.vLeave <= Math.max(0, I.Fmax - I.grown.m * g) * I.tau / I.grown.m + 1e-9, sig2(I0.launch) + ' m uncapped'); }
+  // gradual growth: the shortest harmless times in the research (growth_slow_tmin_examples)
+  for (const [E, f, T] of [[4.2e23, 0.5, 86], [4.2e23, 1, 248], [3.828e26, 0.5, 824], [3.828e26, 1, 2560]]) ok('gradual growth shortest harmless time ' + T + ' s (' + E.toExponential(1) + ' J, s = ' + f + ')', near(P.gradualGrowth(rex, E, f).T, T, 0.02), P.gradualGrowth(rex, E, f).T.toFixed(1));
+  ok('instant growth timescale: sound crossing his new body (6.7 ms for Chicxulub, mix)', near(P.instantGrowth(rex, 4.2e23, 0.5).tau, 0.0067, 0.02));
+  ok('runaway air share about 2e-16 for Chicxulub (mix)', near(P.runawayGrowth(rex, 4.2e23, 0.5).kAir, 2.25e-16, 0.05));
+  // clap with silent strike, as for the punch
+  { const a = P.clap(ctxOf(1e9 * g)), b = P.clap(ctxOf(1e9 * g, { silentStrike: true }));
+    ok('silent strike keeps the clap and turns off its boom and air hazards', a.vHand === b.vHand && a.vHand >= P.K.a0 && H('boom').test(M.clap, a, { near: 5 }) && !H('boom').test(M.clap, b, { near: 5, silentStrike: true }) && !H('air').test(M.clap, b, { near: 5, silentStrike: true })); }
+  // a thrown object's landing shakes the ground
+  { const r = P.throwObject(ctxOf(90718 * g), obj('car'), 45);
+    ok('a landing car shakes the ground where it lands', P.ppvAt(M.throw.shake(r, { obj: obj('car'), surface: surf('concrete') }), 5) > 1e-4); }
+  // 'break windows across the street' is judged at 15 m
+  { const pw = P.RESTRAINT.PRESETS.find((x) => x.id === 'windows'), r = P.punch(ctxOf(1e9 * g)), E = M.punch.blast(r, {});
+    ok('the windows preset is judged at the street (15 m)', P.RESTRAINT.R.STREET === 15 && pw.test(M.punch, r, { near: 5 }) === (P.blastRadius(E, P.RESTRAINT.R.DP_WINDOWS) >= 15)); }
+  // Ollie's boots on soft clay: mired
+  ok('Ollie on soft clay is mired', P.walkStep(ollie, surf('softclay'), {}).footprint.kind === 'mired');
 }
 
 console.log(n + ' checks, ' + (fails ? fails + ' FAILED' : 'all checks passed'));

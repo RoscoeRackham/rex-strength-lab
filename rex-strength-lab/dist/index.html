@@ -12356,6 +12356,9 @@ window.DINO_DATA = {
     { id: 'allout', label: 'All-out' },
     { id: 'custom', label: 'Custom (use the slider)' },
   ];
+  // the ranges a number input accepts, shared by the inputs and by the checks on saved settings
+  const RANGES = { gThrow: [0.1, 1e9], gJump: [0.01, 1e9], gSprint: [0.1, 3e8], gPull: [0.01, 1e9], growT: [1e-3, 1e12], halfLife: [1e-3, 1e12], near: [0.5, 1000], walkD: [0.5, 10000] };
+  const inRange = (k, v) => isFinite(v) && v >= RANGES[k][0] && v <= RANGES[k][1];
   const DEFAULTS = {
     logKg: Math.log10(100 * 907.18474), inf: false, mode: 'comic', surface: 'concrete', groundHolds: false, anchor: 'friction', H: P.DEFAULT_BODIES.rex.H, m: P.DEFAULT_BODIES.rex.m, build: 'rex', action: 'throw', obj: 'car', angle: 45,
     // two-player tests: which group of tabs is showing, and the last tab picked in the Rex + Ollie group
@@ -12410,12 +12413,12 @@ window.DINO_DATA = {
       colGB: num(-8.48, 4), colInf: (v) => typeof v === 'boolean', colBounce: (v) => v === 'splat' || v === 'bounce', colImm: (v) => typeof v === 'boolean',
       surface: (v) => D.surfaces.some((x) => x.id === v),
       obj: (v) => D.objects.some((x) => x.id === v),
-      effort: (v) => EFFORT_PRESETS.some((x) => x.id === v), effortLogKg: num(-3, 34), near: num(0.5, 1000),
-      gThrow: num(0.1, 1e9), gJump: num(0.01, 1e9), gSprint: num(0.1, 3e8), gPull: num(0.01, 1e9),
+      effort: (v) => EFFORT_PRESETS.some((x) => x.id === v), effortLogKg: num(-3, 34), near: num(...RANGES.near),
+      gThrow: num(...RANGES.gThrow), gJump: num(...RANGES.gJump), gSprint: num(...RANGES.gSprint), gPull: num(...RANGES.gPull),
       gentleHold: (v) => typeof v === 'boolean', safePassenger: (v) => typeof v === 'boolean', silentStrike: (v) => typeof v === 'boolean', softLanding: (v) => typeof v === 'boolean', coolFlight: (v) => typeof v === 'boolean',
       duoEffort: (v) => ['least', 'allout', 'custom'].includes(v), duoLogKg: num(-3, 34), oEffortOwn: (v) => typeof v === 'boolean', oEffortLogKg: num(-3, 34),
-      walker: (v) => ['rex', 'ollie', 'both'].includes(v), pace: (v) => ['stroll', 'walk', 'brisk', 'fast'].includes(v), stepEffort: num(0, 1), walkD: num(0.5, 10000),
-      absorb: (v) => ['ocean', 'gradual', 'instant', 'runaway'].includes(v), growS: num(0, 1), growT: num(1e-3, 1e12), halfLife: num(1e-3, 1e12), growWhat: (v) => ['none', 'krakatoa', 'chicxulub', 'sun'].includes(v),
+      walker: (v) => ['rex', 'ollie', 'both'].includes(v), pace: (v) => ['stroll', 'walk', 'brisk', 'fast'].includes(v), stepEffort: num(0, 1), walkD: num(...RANGES.walkD),
+      absorb: (v) => ['ocean', 'gradual', 'instant', 'runaway'].includes(v), growS: num(0, 1), growT: num(...RANGES.growT), halfLife: num(...RANGES.halfLife), growWhat: (v) => ['none', 'krakatoa', 'chicxulub', 'sun'].includes(v),
     };
     for (const [k, ok] of Object.entries(VALID)) if (!ok(state[k])) state[k] = DEFAULTS[k];
     for (const k of Object.keys(state)) if (!(k in DEFAULTS)) delete state[k];
@@ -12553,6 +12556,7 @@ window.DINO_DATA = {
     }
     let strengthFrame = 0;
     $('#strength').addEventListener('input', (e) => {
+      dialAt = performance.now();
       state.inf = false; state.logKg = Number(e.target.value);
       renderDial();
       if (strengthFrame) return;   // one bay render per frame while dragging
@@ -12587,8 +12591,10 @@ window.DINO_DATA = {
     $('#absorb').onchange = (e) => { state.absorb = e.target.value; update(); };
     for (const [lbl, v] of [['Mix (default)', 0.5], ['Pure size', 1], ['Pure density', 0]]) $('#grow-chips').append(el('button', { type: 'button', class: 'chip', 'data-s': v, onclick: () => { state.growS = v; update(); } }, lbl));
     $('#grow-s').addEventListener('input', (e) => { state.growS = Number(e.target.value); renderDial(); scheduleBay(); });
-    $('#grow-t').onchange = (e) => { const v = Number(e.target.value); if (v > 0 && isFinite(v)) state.growT = v; update(); };
-    $('#half-life').onchange = (e) => { const v = Number(e.target.value); if (v > 0 && isFinite(v)) state.halfLife = v; update(); };
+    for (const [id, k] of [['grow-t', 'growT'], ['half-life', 'halfLife']]) {
+      $('#' + id).min = RANGES[k][0]; $('#' + id).max = RANGES[k][1];
+      $('#' + id).onchange = (e) => { const v = Number(e.target.value); if (inRange(k, v)) state[k] = v; update(); };
+    }
     // Rex alone / Rex + Ollie
     $('#grp-solo').onclick = () => { state.group = 'solo'; buildTabs(); update(); };
     $('#grp-duo').onclick = () => { state.group = 'duo'; buildTabs(); update(); };
@@ -14625,14 +14631,19 @@ window.DINO_DATA = {
   // finish the rest of a plan in ~20 ms slices, then redraw the bay; a newer plan takes over. `waits`: the jobs the
   // page is showing a placeholder for; the bay is redrawn as soon as they are done, and again when the plan is.
   let planWaits = null;
+  // while the strength dial is being dragged, searches wait: every position is a new plan
+  let dialAt = -1e9;
+  const dialMoving = () => performance.now() - dialAt < 300;
+  function stopPlan() { clearTimeout(planTimer); planRunning = null; planWaits = null; }
   function stepPlan(p, waits) {
-    if (p.done) { planWaits = null; return; }
+    if (p.done) { if (planRunning && planRunning !== p) stopPlan(); planWaits = null; return; }
     if (waits) planWaits = waits;
     if (planRunning === p) return;
     clearTimeout(planTimer);
     planRunning = p;
     const tick = () => {
       if (planRunning !== p) return;
+      if (dialMoving()) { planTimer = setTimeout(tick, 300); return; }
       const t0 = performance.now();
       while (performance.now() - t0 < 20) if (p.step()) { planRunning = null; planWaits = null; renderBay(true); return; }
       if (planWaits && planWaits.every((n) => p.result(n))) { planWaits = null; renderBay(true); }
@@ -14643,7 +14654,7 @@ window.DINO_DATA = {
   // step the named jobs for up to `ms` of this render; true if they are all done. The rest finishes in the background.
   const EFFORT_BUDGET = 40;
   function ready(p, names, t0) {
-    for (const n of names) while (!p.result(n)) { if (performance.now() - t0 > EFFORT_BUDGET) return false; p.stepJob(n); }
+    for (const n of names) while (!p.result(n)) { if (dialMoving() || performance.now() - t0 > EFFORT_BUDGET) return false; p.stepJob(n); }
     return true;
   }
   const HAZ_JOBS = () => P.RESTRAINT.HAZARDS.map((h) => 'hazard:' + h.id);
@@ -14739,12 +14750,12 @@ window.DINO_DATA = {
     const adj = el('div', { class: 'bay-controls' });
     const G = GOALS[move];
     if (G.key) {
-      const inp = el('input', { id: 'goal', type: 'number', min: '0', step: 'any', value: String(state[G.key]) });
-      inp.onchange = (e) => { const v = Number(e.target.value); if (v > 0 && isFinite(v)) state[G.key] = v; update(); };
+      const inp = el('input', { id: 'goal', type: 'number', min: String(RANGES[G.key][0]), max: String(RANGES[G.key][1]), step: 'any', value: String(state[G.key]) });
+      inp.onchange = (e) => { const v = Number(e.target.value); if (inRange(G.key, v)) state[G.key] = v; update(); };
       adj.append(el('div', { class: 'field goal-field' }, el('label', { for: 'goal', text: G.label }), el('div', { class: 'inline-num' }, inp)));
     }
     const near = el('input', { id: 'near', type: 'number', min: '0.5', max: '1000', step: 'any', value: String(state.near) });
-    near.onchange = (e) => { const v = Number(e.target.value); if (v >= 0.5 && v <= 1000) state.near = v; update(); };
+    near.onchange = (e) => { const v = Number(e.target.value); if (inRange('near', v)) state.near = v; update(); };
     adj.append(el('div', { class: 'field near-field' }, el('label', { for: 'near', text: 'Nearest people and buildings (m)' }), el('div', { class: 'inline-num' }, near)));
     const hi = isFinite(c.F) ? Math.log10(c.F / g) : 34, lo = hi - Math.ceil((hi - Math.log10(p.lo / g)) / 0.01) * 0.01;   // the 0.01 grid ends at all-out
     const cur = eff.use == null ? hi : Math.log10(Math.min(eff.use, isFinite(c.F) ? c.F : 1e34 * g) / g);
@@ -14901,7 +14912,7 @@ window.DINO_DATA = {
     sl.oninput = (e) => { state.stepEffort = Number(e.target.value); slLbl.textContent = 'Effort per step: ' + stepWord(state.stepEffort); e.target.setAttribute('aria-valuetext', stepWord(state.stepEffort) + ' steps'); scheduleBay(); };
     ctl.append(el('div', { class: 'field effort-slider' }, slLbl, sl, el('div', { class: 'scale-ends' }, el('span', { text: 'Soft-footed (least disruptive)' }), el('span', { text: 'Heavy, stamping' }))));
     const dIn = el('input', { id: 'walk-d', type: 'number', min: '0.5', max: '10000', step: 'any', value: String(state.walkD) });
-    dIn.onchange = (e) => { const v = Number(e.target.value); if (v >= 0.5 && v <= 10000) state.walkD = v; update(); };
+    dIn.onchange = (e) => { const v = Number(e.target.value); if (inRange('walkD', v)) state.walkD = v; update(); };
     ctl.append(el('div', { class: 'field near-field' }, el('label', { for: 'walk-d', text: 'Listener’s distance from his foot (m)' }), el('div', { class: 'inline-num' }, dIn)));
     out.push(ctl);
     // can they walk at all?
@@ -15103,10 +15114,15 @@ window.DINO_DATA = {
   }
   const duoPlans = new Map();
   function duoPlanFor(act) {
-    const FR = fullF('R'), FO = fullF('O');
-    const key = JSON.stringify([act, FR, FO, state.mode, state.H, state.m, state.build, state.oH, state.oM, state.surface, state.groundHolds, state.anchor, state.oAnchor, state.near, state.wrestleMove, state.wrestleWho, state.angle, state.cObj, state.cLogD, state.cStyle, state.colMode, state.colWho, state.colSrc, state.colGB, state.colInf, state.colBounce, state.colImm, state.oEffortOwn, state.oEffortLogKg, state.gentleHold, state.coolFlight, state.softLanding, state.silentStrike, state.safePassenger]);
+    const key = duoKey(act);
     let p = duoPlans.get(key);
     if (p) return p;
+    return makeDuoPlan(act, key);
+  }
+  const duoKey = (act) => { const FR = fullF('R'), FO = fullF('O'); return JSON.stringify([act, FR, FO, state.mode, state.H, state.m, state.build, state.oH, state.oM, state.surface, state.groundHolds, state.anchor, state.oAnchor, state.near, state.wrestleMove, state.wrestleWho, state.angle, state.cObj, state.cLogD, state.cStyle, state.colMode, state.colWho, state.colSrc, state.colGB, state.colInf, state.colBounce, state.colImm, state.oEffortOwn, state.oEffortLogKg, state.gentleHold, state.coolFlight, state.softLanding, state.silentStrike, state.safePassenger]); };
+  function makeDuoPlan(act, key) {
+    const FR = fullF('R'), FO = fullF('O');
+    let p;
     const need = (m) => P.W8.WALK_LOAD * m * g / P.MUSCLE.jump.forceFrac;
     const lo = Math.max(need(state.m), need(state.oM)), hiF = Math.max(FR, FO), hi = isFinite(hiF) ? hiF : 1e34 * g;
     const memo = new Map(), sigs = new Map();
@@ -15123,7 +15139,7 @@ window.DINO_DATA = {
     const same = (u0, u1) => { harmAt(u0); harmAt(u1); harmAt(hi); const a = sigs.get(u0), b = sigs.get(u1); return !!a && a === b && b === sigs.get(hi); };
     // 5% is close enough for the shared effort: each probe runs the whole test
     const s = lo < hi ? P.RESTRAINT.search((u) => !!harmAt(u), lo, hi, !isFinite(hiF), same, 0.05) : null;
-    p = { act, lo, hi, s, harmAt, done: !s };
+    p = { act, key, lo, hi, s, harmAt, done: !s };
     p.step = () => { if (p.done) return true; s.step(); if (s.use !== undefined) p.done = true; return p.done; };
     duoPlans.set(key, p);
     if (duoPlans.size > 30) duoPlans.delete(duoPlans.keys().next().value);
@@ -15135,7 +15151,8 @@ window.DINO_DATA = {
     if (p.done || duoRunning === p) return;
     duoRunning = p;
     const tick = () => {
-      if (duoRunning !== p) return;
+      if (duoRunning !== p || !isDuo() || duoKey(curAction()) !== p.key) { if (duoRunning === p) duoRunning = null; return; }
+      if (dialMoving()) { setTimeout(tick, 300); return; }
       const t0 = performance.now();
       while (performance.now() - t0 < 20) if (p.step()) { duoRunning = null; if (isDuo()) renderBay(true); return; }
       setTimeout(tick, 0);
@@ -15145,11 +15162,15 @@ window.DINO_DATA = {
   // the cap for this render (Infinity = all-out) and what the readout says
   function resolveDuoEffort(act) {
     const p = duoPlanFor(act);
+    if (duoRunning && duoRunning !== p) duoRunning = null;   // a search for other settings stops
     let use = Infinity, note = null;
     if (state.duoEffort === 'custom') use = Math.max(Math.pow(10, state.duoLogKg) * g, p.lo);
     else if (state.duoEffort === 'least' && p.s) {
       const t0 = performance.now();
-      while (!p.step()) if (performance.now() - t0 > EFFORT_BUDGET) { stepDuoPlan(p); return { p, use: Infinity, note: null, harm: p.harmAt(Infinity), pending: true }; }
+      while (!p.done) {
+        if (dialMoving() || performance.now() - t0 > EFFORT_BUDGET) { stepDuoPlan(p); return { p, use: Infinity, note: null, harm: null, pending: true }; }
+        p.step();
+      }
       if (p.s.never) use = Infinity;
       else if (!(p.s.below > 0)) { use = p.lo; note = state.oEffortOwn ? 'Ollie’s own what-if effort does it at any shared effort: ' + p.harmAt(p.lo) + '.' : 'Nothing is harmless here: even at the least they need to stand, ' + p.harmAt(p.lo) + '.'; }
       else use = p.s.below;
@@ -15196,7 +15217,7 @@ window.DINO_DATA = {
     if (eff.note) read.append(el('p', { class: 'warn-ink', text: eff.note }));
     if (eff.p.s && eff.p.done) {
       const s0 = eff.p.s;
-      read.append(el('p', { text: s0.never ? 'Courtesy ceiling: none. Nothing in this test harms anything nearby' + (isFinite(eff.p.hi) ? ', even all-out.' : '.')
+      read.append(el('p', { text: s0.never ? 'Courtesy ceiling: none. Nothing in this test harms anything nearby' + (isFinite(fullF('R')) ? ', even all-out.' : '.')
         : !(s0.below > 0) ? 'Courtesy ceiling: none. ' + (state.oEffortOwn ? 'With Ollie’s own effort, ' : 'Even at the least they need to stand, ') + eff.p.harmAt(s0.use) + '.'
           : 'Courtesy ceiling: ' + atText(s0.below, FR) + '. Past that, ' + eff.p.harmAt(s0.use) + '.' }));
     }
@@ -15235,6 +15256,8 @@ window.DINO_DATA = {
       const eff = isEffortMove(act) && !(gate && gate.stop) ? resolveEffort(act, c0) : null;
       parts = gate && gate.stop ? [callout(gate.text)] : BAYS[act](eff ? Object.assign({}, c0, { use: eff.use }) : c0);
       if (eff) attachEffort(parts, act, c0, eff);
+      else stopPlan();
+      if (!isDuo()) duoRunning = null;
       bayPending = !!(eff && eff.pending) || !!(duoEff && duoEff.pending);
       if (duoEff) {
         const box = duoEffortBox(act, duoEff);

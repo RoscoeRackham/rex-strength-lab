@@ -14,8 +14,9 @@ Who is working on what. Update it before every push (see "Two people, two accoun
   - Research: seven topics, each checked by a skeptic (step forces, ground shaking, elephants, thresholds, the water glass, comic switches, growth). Done: 268 facts in `research/final-presence.json`.
   - Built: effort and the courtesy ceiling on every solo tab, the not-so-heroic presets, shared effort in the two-player tests, the Walk tab (elastic-ground model checked against a drop test and elephant footfalls), the comic switches, the absorption modes and growth what-if, `test/presence.js`, `test/shots.js` in four views.
   - Review round 1 done: 78 findings, 77 confirmed by the skeptics; all fixed except one documented limit (a real-muscle jump's ground flicker at about 10⁸ kg, which can't change without changing all-out results). Record: `rex-strength-lab/research/reviews/presence-round1.json`. History builder ready (`history/tools/build_history_presence.py`).
-  - Published the round 1 build to the live page (version 6). Review round 2 running; pull request open for review.
-  - Next: round 2 fixes, republish, `history/` entry.
+  - Published the round 1 build to the live page (version 6). Pull request #11 open for review.
+  - Review round 2 done: 68 findings, all confirmed; all fixed (two partly, documented in the README's known limits). Record: `rex-strength-lab/research/reviews/presence-round2.json`.
+  - Next: review round 3 (regressions from round 2's fixes), its fixes, republish, `history/` entry.
 
 ## Waiting on
 
