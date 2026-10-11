@@ -1,0 +1,735 @@
+{
+ "about": "Review round 2 of the Build Comparison page (workflow build-comparison-review-r2, 11 Oct 2026, on commit 7061d55 and its successors): four lenses (fixcheck, modelclaims, ux, code) each found defects with repro scripts; one skeptic per lens then reproduced or refuted every finding. Verbatim structured results. What was fixed is in round2.md.",
+ "lenses": [
+  {
+   "lens": "fixcheck",
+   "verified_ok": [
+    "Build: node build.js reproduces the committed dist/index.html byte for byte. compile_facts.py reproduces data/facts.json byte for byte (133 facts, 43 corrections). HEAD 7061d55; build-comparison and build-calculator are unchanged in later commits a66d4d4 and 1f32e2c.",
+    "Tests on a git-archive copy: test.js 30 passed, 0 failed; duo.js all passed (Rex 2.54 m³); shots.js 'no problems', including the tablet drawer sweep, the tool checks and the focus return.",
+    "Model F1: limit scores are now the tool's reading of the widened drawing. My re-measurements of the median-soldier shapes at 30/35/45° and 800/1,600 px: arms 40.0–40.95 (stored 40.71), thighs 45.7–46.3 (stored 46.11). The face shape reads 189.1–190.3 at 90–92° (stored 189.14). Band 87–200; the 'near 220' text is gone.",
+    "Model F2: met_by lists 24 arms figures from Arnold (27) and 11 thighs figures from Coleman (39), and the page says so in the band note (15 below 41), the gap copy (3 below 45) and the limit cards. armClearAt at the drawn angle is true for all 47 posable chart figures (s/armsall.js). Every figure is drawn at one scale (0.721 at phone widths, 1.000 at 720 px and up, Front and Side).",
+    "Model F3 / code F4: in the page, targets 15, 20, 217 and 900 (median soldier), 15, 300 and 900 (Coleman), 900 (5th percentile), 600 (Reeves), 900 (largest arm) and 15 (95th) all measure on target and pass the checks. The CLI refuses target 5 (exit 1) and reaches 900 on Coleman.",
+    "Model F4: the 95th-percentile text now gives fat 34% against 25% and 'about 23' (22.76).",
+    "Model F5: test.js deep-compares limits.json with compute_limits.run().",
+    "Model F6: the test uses armRestAngle; armBoneClearance and armClearance are removed.",
+    "Model F7: sliceRotated on the 40×100 rectangle with a k profile gives 94,562 at 0.001°, the same as sliceRows (was 110,113). There is a regression test.",
+    "Claims F1: a drawer survives the Real heights, Side, Front and Same toggles, and the next figure opens with no errors.",
+    "Claims F2, F3, F4, F5 (except Hulk (grey)'s (reported)), F7 (Every real man 19–42), F8, F10, F11, F12, F13/DC-6 (54 of 235 on Kouri's equation), F14, F15 (duo and soldier ignore lines), F16 ('220–924', 'measures 100 (target 100)'), F17, F18, F19, F20, F22 and F24 are fixed as round1.md says, confirmed in the page text and the drawers.",
+    "Data DC-2 (label 250 vs 160, old values kept with a note), DC-3, DC-4 on the page, DC-5, DC-7, DC-8, DC-10 (Juggernaut drawer gives the Marvel.com 9'5\"/1,900 lb dispute), DC-11 (the bar and value both in normalised FFMI, 22.6–28.0), DC-12 (values say 1 statement) and DC-13 facts and corrections counts are all fixed.",
+    "UX: L2 shows 0 of 49 drawers scrolling sideways at 720, 768, 800, 820, 860, 899, 900 and 960 px. L3: cell and forest aria-labels carry the warnings and flags. L4: no Kouri/end-label overlap at 360–1280 px. L5: value cells have a sheet background. L6: no plate overflow in Real heights + Side at 360/375/390. L7, L9 (closed drawer display:none, 0 px), L11 (1,000 label inside the tape), L12 (focus returns to the forest row via Escape and Close), L13 (ring on all four sides), L15 (two buttons) and L16 (open band ends drawn as arrows in the 88–130 tile) are fixed.",
+    "Code F2: front + mirrored front + back, and a front + back 2-view sheet, are both rejected by 'the side view is a side view' (ratios 0.99–1.00); the real sheet gives 0.73/0.71 and passes. Code F3: rows 640 and 5000 are refused with no score; true rows are used and reported in landmarks.skull.",
+    "Code F5: measuring runs in a Blob Web Worker. A 2,000 px sheet takes 10.1 s with a largest timer gap of 171 ms. Per-view refinement gives the same mask as whole-sheet refinement on the soldier sheets.",
+    "Code F6 (CI runs compile_facts.py and diffs facts.json), F7 (tail-facing and failing-check-name tests), F8 (copy refused after a field edit), F9 (black-on-transparent and white-on-transparent sheets measure, and the 0/1-view messages explain), F10 (nothing runs before the tool comes near; after that, long tasks of 0.7 and 1.9 s at desktop speed), F12 (the audit reads all text nodes) and F13 (the hint follows the view order) are fixed.",
+    "round1.md totals (76 findings, 69 confirmed, 7 rejected) match round1.json."
+   ],
+   "findings": [
+    {
+     "id": "R2-FIX-01",
+     "severity": "minor",
+     "title": "Claims F21 is not fixed: the page's new explanation for the 26 vs 27 gap is wrong, and the example is not 'the same shape'",
+     "location": "build-comparison/src/app.html:1509 (writeResults, example sentence) and :1421 exampleSheet()",
+     "evidence": "The page now says: \"The example is the median soldier at 1.80 m ... The limits section reads the same shape at 27 from a larger drawing; the reading moves by a few percent with the drawing's size.\" exampleSheet() still draws e.girths, his own girths at 1.755 m, on a 1.80 m frame. compute_limits.js uses calc.compute({heightM: 1.8}), his shape scaled to 1.80 m. Script scratchpad/review2/s/f21.js, page settings (1,060 kg/m³, 7.5% fat):\n- page example, own girths, 700 px, default refine: 25.70 (90.0 kg)\n- own girths at 800 px: 25.82\n- own girths at 1,600 px: 25.82\n- girths at 1.80 m, 800 px: 27.26, which is limits.json score_at_f1\nA larger drawing changes the reading by 0.5%. The girth basis changes it by (1.8/1.755)² = 5.2%. The round 1 verifier gave this cause and fix (round1.json, claims F21 better_fix). HEAD kept the explanation the verifier had shown to be wrong. round1.md says all 23 confirmed claims findings were fixed.",
+     "expected": "The tool example and the limits card read one stated shape and give one number. Otherwise the page gives the true cause of the difference.",
+     "fix": "In exampleSheet(), take girths at 1.80 m as drawTarget does: var r0 = calc.compute({ buildId: 'ansur2_m_p50', heightM: 1.8 }); BuildCalc.SITES.forEach(function (s) { g[s] = r0.girths[s].value; }). Then delete the sentence 'The limits section reads the same shape at ... with the drawing's size.' The example then measures about 27, the same as the card.",
+     "verdict": {
+      "id": "R2-FIX-01",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Reproduced on HEAD 1f32e2c. The only commits after 7061d55 touch STATUS.md and history/, so build-comparison is unchanged and the working tree is clean. In Chromium the tool example shows 'Mass 90 kg', 'Score 26 (24–28)' and the sentence: 'The limits section reads the same shape at 27 from a larger drawing; the reading moves by a few percent with the drawing's size.' The limits card shows 27 for 'The median soldier's own shape'.\n\nexampleSheet() (app.html:1421-1427) draws e.girths, his own girths at 1.755 m, on a 1.80 m frame. compute_limits.js maker() uses calc.compute({heightM: 1.8}), whose girths are 1.8/1.755 = 1.0256 times larger. My Node run (fixv/s/f21.js) uses the page's own options (top reference, default refine):\n- own girths: 25.70 at 700 px, 25.70 at 800 px, 25.76 at 1,600 px. Drawing size moves the reading by 0.2%.\n- girths at 1.80 m: 26.86 at 700 px, 27.13 at 800 px.\n- limits.json score_at_f1 is 27.26.\nThe girth basis accounts for about 5% of the gap and the drawing size for under 1%. The page's explanation is wrong. Its example is also not 'the same shape' as the card, and not 'the median soldier at 1.80 m' in the same-shape sense: it is a slimmer body. The round 1 verifier gave this exact cause and fix, and HEAD kept the wrong sentence.",
+      "better_fix": "In exampleSheet(), use the shape scaled to 1.80 m, as drawTarget (app.html:1582) and compute_limits do:\n  var r0 = calc.compute({ buildId: 'ansur2_m_p50', heightM: 1.8 }), g = {};\n  BuildCalc.SITES.forEach(function (s) { g[s] = r0.girths[s].value; });\nThe example then reads 26.86, which the page shows as 27, matching the card. Delete the sentence 'The limits section reads the same shape at … with the drawing's size.' from writeResults (app.html:1509). Or keep a short true version: 'The limits section reads the same shape at 27.' Alternatively, keep his own girths but set tH and the sheet to 1.755 m."
+     }
+    },
+    {
+     "id": "R2-FIX-02",
+     "severity": "minor",
+     "title": "UX L8 is only half fixed: tapping the 924 ring at its centre or anywhere on its left half still jumps to 'Empty to the end'",
+     "location": "build-comparison/src/app.html:1218 stopAt (now d <= best.d) and :1727 tapeJump; research/reviews/round1.md:83",
+     "evidence": "Script scratchpad/review2/s/l8.js taps the circle.m924 ring at offsets from its centre and records the id that jump() scrolls to. At 1280 px and 390 px (touch), on both the glance tape (ring 14 px) and the locator (ring 7 px): -6, -4, -2, -1 and 0 px go to 'empty-3'; +1 to +4 px go to 'meatball'. The round 1 verifier predicted this (round1.json L8): 'Changing to d <= best.d alone does not fix it: a tap a hair left of the ring centre still has gap d=0 and meatball d>0.' Its fix, a snap in tapeJump, was not applied. round1.md:83 says 'L8: the 924 ring jumps to the meatball.'",
+     "expected": "A tap anywhere on the ring, which marks the meatball, jumps to the meatball stop.",
+     "fix": "In tapeJump, before stopAt: if (Math.abs(x - X(MEAT)) <= 8) { jump('meatball'); return; }. Here x is the tap position in the host and X = host._X. Add the dx = -3 tap to shots.js.",
+     "verdict": {
+      "id": "R2-FIX-02",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Reproduced with my own script (fixv/s/l8.js), which dispatches clicks at offsets from X(MEAT) on #glance and #locTape at 1280 px and at 390 px (touch). The results are the same on both tapes and at both widths: dx = -6, -4, -2, -1, -0.5, 0 and +0.5 go to 'empty-3'; +1, +2, +4 and +6 go to 'meatball'. A real mouse click at the ring centre at 1280 px (s/l8real.js) scrolls to 'Empty to the end', and the locator then reads 'now: empty 220 to 924'.\n\nThe cause is in stopAt. The last gap's hi equals MEAT (924.099), so any score below MEAT has gap d = 0 and meatball d > 0. The change to d <= best.d only fixes ties at or above MEAT. So tapping the centre or the left half of the ring, which marks the meatball, still lands on the gap, and round1.md:83 ('L8: the 924 ring jumps to the meatball') is only half true. One small error in the finding: the locator's ring radius is 3.5 px, not 7.",
+      "better_fix": "In tapeJump (app.html:1727), after computing x and before stopAt:\n  if (x >= X(MEAT) - 8) { jump('meatball'); return; }\nThis covers the 7 px glance ring, the 3.5 px locator ring, and everything to their right. In the 390 px locator, X(220) to X(924) spans about 100 px, so the gap stays tappable. Add a shots.js check that taps X(MEAT) - 3 on both tapes and expects #meatball at the top."
+     }
+    },
+    {
+     "id": "R2-FIX-03",
+     "severity": "minor",
+     "title": "UX L1 is partly fixed: on the pressed segmented buttons the inside focus ring is 2.3:1 (light) and 1.7:1 (dark) against the button",
+     "location": "build-comparison/src/app.html:58 (.seg button:focus-visible { outline-offset: -4px }); research/reviews/round1.md:76",
+     "evidence": "Script scratchpad/review2/s/focus3.js focuses each segmented button with focusVisible. The ring now sits inside the button, so the button's fill is on both sides of it.\n- Light, pressed hSame/vFront/zAll: ring rgb(31,79,166) on rgb(21,24,31), contrast 2.31:1\n- Dark, pressed: ring rgb(148,181,255) on rgb(232,233,238), contrast 1.68:1. Screenshot scratchpad/review2/shots/f-hSame-dark.png shows a faint pale-blue ring.\nThe unpressed buttons are fine (7.3 and 8.3:1). The pressed buttons are the defaults (Same height, Front, Whole scale), so a keyboard user meets these first. The round 1 verifier's fix included 'a sheet-coloured inner ring so it also shows on the pressed (ink) button'. That part was not applied, and round1.md does not say so.",
+     "expected": "A focus indicator of at least 3:1 against the colours next to it (WCAG 1.4.11) on every segmented button, pressed or not.",
+     "fix": "Add: .seg button[aria-pressed=\"true\"]:focus-visible { outline-color: var(--sheet); }. The sheet colour on the pressed fill gives 16.7:1 (light) and 13.9:1 (dark). Alternatively use the verifier's box-shadow: inset 0 0 0 4px var(--sheet).",
+     "verdict": {
+      "id": "R2-FIX-03",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Reproduced (fixv/s/focus.js, screenshots fixv/shots/f-*.png). With focus({focusVisible: true}), each pressed segmented button (hSame, vFront, zAll, the defaults) has outline-offset -4px. The ring lies on the button's own fill:\n- light: ring rgb(31,79,166) on rgb(21,24,31), 2.31:1\n- dark: ring rgb(148,181,255) on rgb(232,233,238), 1.68:1\nThe unpressed buttons give 7.26:1 (light) and 8.27:1 (dark) against the effective background.\n\nThe ring is visible but faint on the pressed buttons, below the 3:1 that WCAG 1.4.11 asks for focus indicators. The round 1 verifier's 'sheet-coloured inner ring' was not applied, and round1.md:76 records L1 as fixed without saying so.",
+      "better_fix": "Add after app.html:58:\n  .seg button[aria-pressed=\"true\"]:focus-visible { outline-color: var(--sheet); }\nThis gives 16.7:1 (light) and 13.9:1 (dark) on the pressed ink fill. Alternatively use box-shadow: inset 0 0 0 4px var(--sheet) together with the chalk outline, as the verifier proposed."
+     }
+    },
+    {
+     "id": "R2-FIX-04",
+     "severity": "minor",
+     "title": "Claims F6 is partly fixed: the key still defines ESTIMATE as 'body fat assumed', but Brian Shaw's ESTIMATE rests on a reported body fat",
+     "location": "build-comparison/src/app.html:1698 (key: 'ESTIMATE: body fat assumed. DERIVED: body fat measured.') and :439 (forest sub: 'Every range is an estimate (body fat assumed) unless ...')",
+     "evidence": "scoreStatus now returns 'estimate' unless bodyFat.status is 'measured', so Brian Shaw's plate and forest row read ESTIMATE. His drawer shows 'BODY FAT 18% (15–21%) REPORTED The build's own measured or reported value' (scratchpad/review2/drawers.json). He is the only build with bodyFat.status 'reported' (node check over model.all()). The key and the forest sub explain his chip as 'body fat assumed', which his own drawer contradicts. The round 1 verifier's better_fix was to reword both texts to 'ESTIMATE: body fat assumed or only reported'. They were not changed.",
+     "expected": "The key's meaning for each chip matches every build that carries it.",
+     "fix": "Key: 'ESTIMATE: body fat assumed or only reported. DERIVED: body fat measured in a study.' Forest sub: '... an estimate (body fat assumed or only reported) unless it carries a DERIVED chip (body fat measured)'.",
+     "verdict": {
+      "id": "R2-FIX-04",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Reproduced. The page's key text reads 'How sure the score is. ESTIMATE: body fat assumed. DERIVED: body fat measured.' The forest sub reads 'Every range is an estimate (body fat assumed) unless it carries a DERIVED chip (body fat measured).'\n\nBrian Shaw's plate chip is ESTIMATE, from scoreStatus: bodyFat.status !== 'measured'. His drawer says 'BODY FAT 18% (15–21%) REPORTED The build's own measured or reported value'. A tally over model.all() finds he is the only build with bodyFat.status 'reported'; every other ESTIMATE has 'estimate' body fat. So the key's definition is false for him, and the round 1 verifier's rewording was not applied.",
+      "better_fix": "app.html:1698 key: 'ESTIMATE: body fat assumed or only reported. DERIVED: body fat measured in a study.' app.html:439 forest sub: '… an estimate (body fat assumed or only reported) unless it carries a DERIVED chip (body fat measured in a study).'"
+     }
+    },
+    {
+     "id": "R2-FIX-05",
+     "severity": "minor",
+     "title": "Claims F9 is partly fixed: the Kouri drawer heading still says 'Gym athletes', directly above '56 gym athletes and 18 volunteers from a testosterone trial'",
+     "location": "build-calculator/data/builds.json:1922 (kouri1995_nonusers.name), shown as the drawer heading",
+     "evidence": "Drawer text (scratchpad/review2/drawers.json, kouri1995_nonusers): 'GYM ATHLETES WHO NEVER USED STEROIDS (KOURI 1995, N=74) Group means of Kouri 1995's 74 non-users (56 gym athletes and 18 volunteers from a testosterone trial) ...'. The round 1 verifier flagged this remaining contradiction and asked for the name to be changed. round1.md lists 'Kouri's labels' as fixed.",
+     "expected": "The heading matches the description: 74 non-users, not all of them gym athletes.",
+     "fix": "Claim builds.json in STATUS.md, then set name to 'Men who never used steroids (Kouri 1995, n=74)'. Rebuild both pages.",
+     "verdict": {
+      "id": "R2-FIX-05",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Reproduced from the rendered drawer (fixv/drawers.json). The heading reads 'GYM ATHLETES WHO NEVER USED STEROIDS (KOURI 1995, N=74)'. Directly below it: 'Group means of Kouri 1995's 74 non-users (56 gym athletes and 18 volunteers from a testosterone trial)…'. builds.json kouri1995_nonusers.name is still 'Gym athletes who never used steroids (Kouri 1995, n=74)'.\n\nfacts.json kouri1995_fulltext_methods confirms that 18 of the 74 came from a testosterone cypionate trial, not from the gym recruitment. The heading therefore contradicts the text under it. The round 1 verifier flagged this, and round1.md lists 'Kouri's labels' as fixed.",
+      "better_fix": "Claim build-calculator/data/builds.json in STATUS.md. Set kouri1995_nonusers.name to 'Men who never used steroids (Kouri 1995, n=74)'. Rebuild both pages (the Build Calculator shows the name too)."
+     }
+    },
+    {
+     "id": "R2-FIX-06",
+     "severity": "minor",
+     "title": "DC-14 is partly fixed: the DISPUTED chip still renders as a REPORTED chip, with the 'magazine, fan site' tooltip, in the key and in Sources",
+     "location": "build-comparison/src/app.html:1413 (Sources: chip(f.status === 'disputed' ? 'reported' : f.status, f.status)) and :1703 (key: chip(s === 'disputed' ? 'reported' : s, s))",
+     "evidence": "Script scratchpad/review2/s/dc14.js lists both chips whose text is 'disputed'. Each has class 'chip reported' and title 'Stated by a magazine, fan site, the athlete, or a secondary source; not independently measured.' One is the key's own row, next to the correct text 'Facts only (kept from the research): sources disagree.' The other is on 'Is the human mass-height exponent really about 2, or nearer 3?', whose sources are Med Hypotheses, Ann Hum Biol and AJCN. VOCAB already has a 'disputed' entry, so the remapping is not needed.",
+     "expected": "The DISPUTED chip's style and hover text say 'sources disagree', not the REPORTED definition.",
+     "fix": "Use chip('disputed') in both places, so the title comes from VOCAB.disputed and the class is 'chip disputed'. Add a .chip.disputed rule (for example, the reported style with a distinct border), so it does not look identical to REPORTED.",
+     "verdict": {
+      "id": "R2-FIX-06",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Reproduced in Chromium (fixv/s/drawers.js). There are two chips whose text is 'disputed'. Both have class 'chip reported' and the title 'Stated by a magazine, fan site, the athlete, or a secondary source; not independently measured.' One is the key's own row, next to the text 'Facts only (kept from the research): sources disagree…'. The other is on the mass-height exponent fact, whose sources are Burton/Med Hypotheses and journal papers.\n\nThe cause is the remap at app.html:1413 and :1703, chip(s === 'disputed' ? 'reported' : s, s). builds.json status_vocabulary already has a 'disputed' entry, so chip('disputed') would give the right tooltip. The key row was added, which is the part round1.md calls fixed. The chip's style and hover text still give the REPORTED definition.",
+      "better_fix": "app.html:1413: chip(f.status). app.html:1703: chip(s). Add a CSS rule so DISPUTED does not fall back to the plain solid chip, for example .chip.disputed { border-style: dashed; border-color: var(--ink-3); font-style: italic; }. Any distinct style will do."
+     }
+    },
+    {
+     "id": "R2-FIX-07",
+     "severity": "minor",
+     "title": "Rex's tail: the page says 306 kg, while NOTES.md and builds.json say 307 kg; the round 1 verifier ruled 307 correct",
+     "location": "build-comparison/data/settings.json:514-515 (mass_kg 306, basis '0.289 m^3 ... 306 kg'), test/test.js:72-77; build-comparison/data/NOTES.md:43 ('Rex 307 kg'); build-calculator/data/builds.json rex tail (mass_kg_at_1060 307, 'about 307 kg'); research/reviews/round1.md:52",
+     "evidence": "The Rex drawer reads 'WEIGHT COUNTED 2,390 kg: 2,700 kg less 306 kg of tail ... tail 0.289 m^3 at 1,060 kg/m^3 ...: 306 kg'. NOTES.md:43 says 'Rex 307 kg (0.289 m³ at 1,060 kg/m³ ...)', and builds.json says 307. The verifier rejected F23 because 307 is the correct value: history/scratchpad/mass/checker/results_checker.json has tail 0.2894122456, and 0.28941 × 1,060 = 306.8, which rounds to 307. Its better_fix was to revert to 307. round1.md:52 says only 'was judged not a defect; the page uses 306', so the record hides that the change it kept was judged the less accurate one. The repo now gives two values for one quantity.",
+     "expected": "One tail mass everywhere, the one the unrounded measurement gives (307 kg).",
+     "fix": "Set settings.json rex exclude_mass mass_kg 307 with basis 'tail 0.2894 m^3 at 1,060 kg/m^3 ...: 307 kg', and test.js to 2700 − 307. Rebuild. Reword round1.md:52 to give the verdict (307 kept).",
+     "verdict": {
+      "id": "R2-FIX-07",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Reproduced. These sources disagree on the tail mass:\n- 306 kg: settings.json:514-515 and test.js:72/76/77. The Rex drawer reads 'WEIGHT COUNTED 2,390 kg: 2,700 kg less 306 kg of tail … 306 kg'.\n- 307 kg: NOTES.md:43 ('Rex 307 kg'), and builds.json rex.tail mass_kg_at_1060 and its note, which the Build Calculator shows ('about 307 kg').\n\nhistory/scratchpad/mass/checker/results_checker.json gives tail 0.2894122456 m³, and 0.28941 × 1,060 = 306.78, which rounds to 307. The value 306 was introduced in 2093fed, after the verifier ruled 307 correct (round1.json F23: real=false, better_fix 'Revert HEAD to mass_kg 307'). round1.md:52 says only 'judged not a defect; the page uses 306', which hides that the verdict was to revert. The effect on scores is about 0.04%, but the repo states two values for one measured quantity.",
+      "better_fix": "settings.json rex exclude_mass: mass_kg 307, basis 'Picture measurement: tail 0.2894 m^3 at 1,060 kg/m^3 (visible part plus the hidden base): 307 kg'. test.js lines 72, 76 and 77: 2700 - 307, 2300 - 307 and 3000 - 307. Rebuild, then check limits.json and the stored test values. round1.md:52: 'F23 (Rex's tail 307 vs 306 kg) was judged not a defect: the unrounded volume 0.2894 m³ gives 307 kg, which the page keeps.'"
+     }
+    },
+    {
+     "id": "R2-FIX-08",
+     "severity": "minor",
+     "title": "README statements about the fixes are not true: test count, comic body-fat sentence, and 'all fixed or partly fixed with the reason stated'",
+     "location": "build-comparison/README.md:25, :69, :63",
+     "evidence": "- README.md:25 says 'node test/test.js ... (28 checks)'. On HEAD, test.js prints '30 passed, 0 failed', and round1.md's 'After the fixes' also says 30. README counts were reported in L17, DC-13 and code F14, and round1.md says they were fixed.\n- README.md:69 still says 'No Marvel or DC source gives any character's body fat.' The DC-4 verifier asked for this exact README sentence to be changed. The page now says 'No body-fat figure ... was found in the Marvel and DC sources searched', and the Kingpin drawer cites a possible 2004 handbook figure.\n- README.md:63 says the 69 confirmed findings were 'all fixed or partly fixed with the reason stated'. Findings R2-FIX-01 to 07 here are not fixed, or are partly fixed with no reason given.",
+     "expected": "README numbers and claims match the code, the page and the review record.",
+     "fix": "Change ':25' to '(30 checks)', or drop the count. Change ':69' to 'No body-fat figure for a comic character was found in the Marvel and DC sources searched.' Correct ':63' once round 2's fixes land, or list the items that are only partly fixed.",
+     "verdict": {
+      "id": "R2-FIX-08",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Reproduced on HEAD.\n- README.md:25 says '(28 checks)', but node test/test.js prints '30 passed, 0 failed', and round1.md 'After the fixes' also says 30.\n- README.md:69 still says 'No Marvel or DC source gives any character's body fat.' The DC-4 verifier asked for this exact sentence to change, and it contradicts the Kingpin drawer's possible 2004 handbook figure.\n- README.md:64 (the reviewer cites :63) says the 69 confirmed findings were 'all fixed or partly fixed with the reason stated'. That is untrue given R2-FIX-01 to -07, which I reproduced: items recorded as fixed that are not, or are partly fixed with no reason given.",
+      "better_fix": "README.md:25: drop the count ('… data derivations') or change it to '(30 checks)'. README.md:69: 'No body-fat figure for a comic character was found in the Marvel and DC sources searched (one fan-wiki figure for Kingpin, attributed to a 2004 handbook, is unverified).' README.md:64: once round 2 lands, 'all fixed, or partly fixed as listed in round1.md and round2.md'. Until then, list F21, L1, L8, F6, F9 and DC-14 as partly fixed."
+     }
+    },
+    {
+     "id": "R2-FIX-09",
+     "severity": "minor",
+     "title": "round1.md overstates the per-view refinement speed-up ('about a third faster')",
+     "location": "build-comparison/research/reviews/round1.md:100 (code F5 row)",
+     "evidence": "Scripts scratchpad/review2/s/prof.js and s/refine_browser.js compare measure.js at 3cd65f5 (whole-sheet refinement) with HEAD (refineViews). The input is the 2,000 px median-soldier sheet, 4,479 × 2,320 px, made with templateViews and renderSheet.\n- Node, refinement only: 8,866 and 8,244 ms (old) against 7,091 and 7,115 ms (new), 14–20% faster\n- Node, full measureSheet: 10,723 and 10,014 ms against 8,819 and 8,986 ms\n- Chromium, full measureSheet: 11,481 and 10,737 ms against 9,611 and 10,698 ms (0–16%)\nThe masks are identical (0 pixels differ) and so is the score (26.95). The worker and 'about 10 s' parts of the row are true: 10.1 s in the page, with a largest timer gap of 171 ms while it runs.",
+     "expected": "The review record gives the speed-up it measured.",
+     "fix": "Change 'about a third faster' to 'about 10–20% faster (refinement 8.2–8.9 s down to 7.1 s on a 2,000 px sheet)'. Alternatively, make it faster, for example by refining only a band a few pixels wide around the coarse mask edge.",
+     "verdict": {
+      "id": "R2-FIX-09",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Reproduced in Node (fixv/s/prof.js, s/prof2.js). I compared measure.js before the change (7b6306e~1, whole-sheet refinement) with HEAD (refineViews). The input is the 2,000 px median-soldier sheet, 4,479 × 2,320 px, from templateViews and renderSheet, measured with the page's options.\n\nFull measureSheet, warm, alternating:\n- new: 9,666, 8,841 and 9,149 ms\n- old: 10,804, 10,827 and 10,405 ms\n- 10–18% faster\n\nRefinement alone (subtracting the refine:0 runs of about 1.6 s): about 7.2–8.3 s against 8.8–9.2 s, 12–22% faster. The masks are identical (0 pixels differ) and so is the score (26.953).\n\n'About a third faster' (round1.md:100) overstates it. It probably compares against the verifier's 16 s, which was inflated by other jobs running at the same time. The '~10 s' and worker parts of the row are accurate.",
+      "better_fix": "round1.md:100: 'Refinement runs on each view's crop: 10–20% faster on a 2,000 px sheet (about 10.5 s down to 9 s in Node), and much less memory.' Or make it a real speed-up by refining only a band about 2 × refineDist px around the coarse mask edge."
+     }
+    },
+    {
+     "id": "R2-FIX-10",
+     "severity": "minor",
+     "title": "round1.md says each archive.org API source now shows its quote and its book's page; 4 of 21 show neither, including the official 1987 handbook hit",
+     "location": "build-comparison/research/reviews/round1.md:58 (DC-1 row); build-comparison/tools/compile_facts.py:84-133 (QUOTE_PICK, OFFICIAL_ITEMS)",
+     "evidence": "A Python check over data/facts.json found 21 page_production sources, 4 with no 'it matched' quote. All 4 are in asgardian_tissue_density_ohotmu ('OHOTMU 1987 TPB vol 4: same phrases'; 'times the density' AND Asgardian; 'dense/denser/density') and asgardian_tissue_density_dk. research/archive_snippets.json stores a hit for the 1987 handbook (officialhandbook04grue, an official item): '... bone is about 3 times {{{denser than similar human tissue}}}, contributing to the Asgardians ...'. QUOTE_PICK for this fact requires 'Asgardian flesh and bone|flesh and bone is about (three|3) times', and the highlight begins at 'and bone', so neither the quote nor the item page is added. The asgardian_tissue_density_dk search is stored as {'error': 'HTTP Error 400: Bad Request'}. DC-1 itself was rejected as a defect, so this concerns only the accuracy of the record.",
+     "expected": "The record's description of the hardening matches facts.json, or the 1987 handbook quote and its item link are added as described.",
+     "fix": "Widen QUOTE_PICK['asgardian_tissue_density_ohotmu'] to r'(flesh and )?bone is about (three|3) times|denser than similar human tissue', re-run tools/compile_facts.py and rebuild. Reword round1.md:58 to say which sources have no stored match.",
+     "verdict": {
+      "id": "R2-FIX-10",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Reproduced with a Python check over data/facts.json: 21 archive.org page_production sources, 4 without 'it matched'. Three are in asgardian_tissue_density_ohotmu (the 1987 vol 4 search, 'times the density' AND Asgardian, and dense/denser/density) and one in asgardian_tissue_density_dk. research/archive_snippets.json stores an official hit for officialhandbook04grue: ' and bone is about 3 times {{{denser than similar human tissue}}}…'.\n\nQUOTE_PICK requires 'Asgardian flesh and bone|flesh and bone is about (three|3) times'. The highlight starts at 'and bone', so neither the quote nor the item page is added. The only added item page for the fact is the 2006 vol 1. The DK search is stored as {error: 'HTTP Error 400: Bad Request'}. round1.md:58 says 'Each API source now shows the quote … Each book's stable archive.org page is added'. That is not true for these 4, including the official 1987 handbook. DC-1 itself was rejected, so this affects only the accuracy of the record.",
+      "better_fix": "In tools/compile_facts.py, set QUOTE_PICK['asgardian_tissue_density_ohotmu'] = r'Asgardian flesh and bone|(flesh and )?bone is about (three|3) times|denser than similar human tissue'. Re-run compile_facts.py and node build.js; CI checks facts.json. This adds the 1987 quote and the officialhandbook04grue item link. The 'considerably denser' Asgard-matter hit and the two searches with no official hit or an error will still have no quote, so reword round1.md:58: 'Each API source shows its matched quote where the stored search found one in an official book (17 of 21); the other four say only that the API may fail.'"
+     }
+    },
+    {
+     "id": "R2-FIX-11",
+     "severity": "minor",
+     "title": "NOTES.md numbers about the redrawn figures are stale: drawn volume vs weight, and the giants' arm angles",
+     "location": "build-comparison/data/NOTES.md:65 (Drawn volume vs weight) and :60 ('The comic giants' arms rest 64-84° out')",
+     "evidence": "Each drawer's drawing check, read from all 49 drawers (scratchpad/review2/drawers.json), against NOTES.md:65:\n- NOTES: '3% less to 34% more ... (median +10%). Soldiers are within −3% to +8%; ... (Arnold +34%, Oliva +26%, Coleman +21%)'\n- Page: ansur2_m_p5 −4%, ansur2_m_p95 +7%, Oliva +27%, Coleman +20%, Arnold +34%, median about +12% (11.5, Colossus armoured excluded)\nThe drawing check now uses each figure's own arm angle, Math.max(35, armAngle(e)).\nNOTES.md:60, '64-84°': the comic giants band (Darkseid, the Hulks, Juggernaut, Abomination) rests at 70.2–84.1° in limits.json chart_figures. The 63.5° and 63.8° belong to the Thing and Thor, who sit in the 45–62 gap, not in the giants band.",
+     "expected": "The notes give the numbers the current page shows.",
+     "fix": "NOTES.md:65: 'from 4% less to 34% more (median about +12%). Soldiers are within −4% to +7% ... (Arnold +34%, Oliva +27%, Coleman +20%)'. Better, generate these from the build. NOTES.md:60: 'The comic giants' arms rest 70–84° out (Thor and the Thing about 64°)'.",
+     "verdict": {
+      "id": "R2-FIX-11",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "The drawn-volume part reproduces. I parsed every drawer's 'Drawing check' sentence (fixv/drawers.json) and compared it with NOTES.md:65 ('3% less to 34% more … median +10% … soldiers −3% to +8% … Arnold +34%, Oliva +26%, Coleman +21%'). The page now gives:\n- p5 −4%, p95 +7%, Oliva +27%, Coleman +20%, Arnold +34%\n- Hafthor and Eddie Hall 'about the same'\n- median about 11–12%\n- armoured Colossus −20%, which NOTES's 'from 3% less' also ignores\nThe line dates from 5f86608, before 1af0101 changed the figures' arm angle (Math.max(35, armAngle(e)) in the drawing check).\n\nThe arm-angle part is weaker but holds by the page's own definition. The 'Comic giants' band (SEQ id 'giants') is Darkseid, both Hulks, Juggernaut, the grey Hulk and Abomination, with rest_deg 70.2–84.1. The 63.5° and 63.8° belong to the Thing and Thor, who sit in the 'Nothing comparable' gap (44.6–62.5). This is internal-notes staleness only; the page itself is consistent.",
+      "better_fix": "NOTES.md:65: 'Measured with the tool at each build's body-fat density, the drawn human and comic figures hold from 4% less to 34% more volume than their weights (median about +12%). The armoured Colossus is the exception, about 20% less. Soldiers are within −4% to +7%; bodybuilders with magazine girths run highest (Arnold +34%, Oliva +27%, Coleman +20%)…' Better, have a script print these from the drawing checks. NOTES.md:60: 'The comic giants' arms rest 70–84° out, nearly level (the Thing and Thor about 64°).'"
+     }
+    }
+   ]
+  },
+  {
+   "lens": "modelclaims",
+   "verified_ok": [
+    "Build and tests in a git-archive copy of HEAD 7061d55: node build.js gives a dist identical to the working tree's; node test/test.js passes 30 of 30.",
+    "Width factors at the limits for the median soldier, recomputed by my own bisection: arms 1.2539, thighs 1.3464, face 2.8373, all matching limits.json. The thighs factor matches the closed form legAxis/lowThighR = 0.0900/0.0668 = 1.3464.",
+    "The arms and thighs limit shapes measured by the tool at 800 and 2000 px: 40.71/40.68 and 46.11/45.91, so the stored 40.71 and 46.11 are reproduced. My own polygon integration is 3–6% lower at both limits and also at f=1 (26.3 against 27.0): this is the tool's shoulder-merge convention applied consistently, not a defect. The headlines and bands (41, 37–41; 46, 42–49) are rounded correctly.",
+    "The order arms < thighs < face holds for all six templates, so 'arms forced out first, thighs close next, hands lose the face last' is true, and stays true with the corrected face values.",
+    "The 'about 4 cm of daylight' at the lower-thigh station: 4.5 cm at 1.755 m and 4.6 cm at 1.80 m in the model, against the fact's 4.4 cm. Hip-joint spacing is 17.5 cm against the fact's 17.4 cm ('about 17 cm'), and Spyropoulos gives a step width of 0.08 m.",
+    "met_by and the counts on the page match chart_figures: arms 24, with 15 scoring below 40.71; thighs 11, with 3 below the gap start of 44.56; face 0. The figure named first, its rounded score, and 'fifteen'/'three' are correct.",
+    "Arms drawn at max(20, rest+2): no chart figure's arm (beyond 0.35 of the upper arm) overlaps the body below chest height. Above it, the overlap is at most 0.3% of the arm area (grey Hulk, Abomination). The key's 'arms 20° out, or just past where the figure's own outline lets them hang; the comic giants' arms are nearly level' is right (giants at 66–86°).",
+    "Target tool, apart from the defects reported: on all six shapes, targets 15, 20, 25, 30, 40, 60, 100, 150, 200, 300, 500, 700 and 900 come back within 0.5% at 1000 px and pass the checks. The 'range' refusal cannot occur between 15 and 900. Its 'head, hands, feet and joints unchanged' matches Figure.human's widthScale.",
+    "Skull-row validation: the turnaround readings under Rex's crest (52, 52, 57) and Ollie's horns (36) are accepted. The height-bar row is accepted on anti-aliased template sheets at 600, 1000 and 2000 px. The 20% upper limit leaves room for the 4–5% crest and horns. Rows above the figure or below its top fifth are refused (tests).",
+    "Side-view check: in ANSUR II, waist depth/breadth exceeds 0.92 in 8 of 4,082 men, buttock depth/hip breadth in none (max 0.87), and no man exceeds it at both. Both turnarounds pass with their tails masked, and pass with the tail only in the side view. Front-plus-back sheets are refused.",
+    "Copy checked against facts and data: Kondo 121.3 kg at 1.86 m gives S 33.9 ('scores 34', DERIVED). Kraemer FFM 118.0 + 5.2 = 123 kg. Kouri 56 + 18 = 74 non-users, 46 of 83 users under 25, slope fitted to non-users of about 1.59–1.93 m. Trexler: 54/235 (23%) on Kouri's equation, 62 (26%) on the study's own scale. Mr America 22.6–28.0, mean 25.4 (25.8 and 29.2 with Todd's heights; Willoughby 1970). The p95 soldier at the median's fat scores 22.8 ('about 23'), from 33.9% against 25.3% fat. Rex on Kouri's scale 252.9 ('about 250') against S 160.1. Thor 61.8/4 to 61.8/2 gives 15–31. The giants score 69–84, and Rex is 'roughly twice' them (1.91×). Meatball 924 (899–949, shown as 900–950), cylinder 1,386 ('about 1,400'), cube 1,765 ('about 1,800'). Gap edges 44.6, 62.5, 87.7, 125.8 and 216.2 are shown as 45, 62, 88, 130 and 220. The gapStep comparisons (largest-arm 29, Oliva 31) are within 4%. Vasen: 49 of 50, all tasks, 75–120°. Burton 2010 is sourced in height_exponent_regression_vs_isometry.",
+    "The new fact labels and source titles (archive.org search snippets, item links, the Todd 2008 page range, the Hotzman 2011 protocol) match the facts' quoted text. Superman's 'overstated' flag is backed by the DK DC 2021 OCR quote recorded in dc_density_claims_fan_only. The Thing's 'composition unknown' wording matches thing_rocky_hide."
+   ],
+   "findings": [
+    {
+     "id": "R2-M1",
+     "severity": "major",
+     "title": "Face-limit band (87–200, 'about 190', 'about 87') is inflated 14–18% because the tool silently reads the level arms as torso",
+     "location": "tools/compute_limits.js scoreAt() (arms drawn at max(35, rest+2) = 92° at the face factors, 70.1° at f=1.786); src/measure.js frontLandmarks/volume (arms with < 0.1·Hp rows dropped, their pixels counted as torso width × trunk depth); data/limits.json items.face (score 189.14, range [86.89, 199.43], models); page: face limit card, forest row, empty-2 gap copy and gap tile 'HANDS TO FACE · 87–200'",
+     "evidence": "Scripts in scratchpad/review2. face_arms.js measures each template's face shape two ways: (a) the tool on the full drawing (the stored value) and (b) the tool on head and body only, plus both arms as solids of revolution outside the body outline. Results, (a) vs (b): p50 189.1 vs 164.3 (tool arms volume 0.0000, sheet ok, no arm warning); p5 179.2 vs 154.3; p95 199.4 vs 174.5; Reeves 164.1 vs 139.6; Coleman 177.1 vs 154.2; largest arm 158.2 vs 137.2. The tool is 14–18% high. facelow.js and jump.js show the tool's score jumping where the arms are no longer detected: f 1.74 (arms at 69°, found) gives 75.5; f 1.75 (68.2°, not found) gives 83.8, an 11% jump for 0.6% more width. The pessimistic point f=1.786 reads 86.9 with arms not found. facelow2.js counts the arms as limbs there: 71.3. My own polygon integration (limits_indep.js) reproduces the stored f values (1.2539, 1.3464, 2.8373), but gives 164.6 for the face shape. Round 1 had already flagged that the face score depends on the arm pose (152.6 at 20°, 191.9 at rest); the fix chose the one pose the tool cannot parse.",
+     "expected": "With the arms counted as arms, contact geometry gives about 165 for the median soldier, and about 137–175 across the six templates. The pessimistic end is about 71 (arms as limbs), or about 79 if the tool's own curve is carried past the jump (75.2 × (1.786/1.74)²). The band is therefore roughly 70–175, not 87–200. The 'about 190' and 'about 87' labels on the card are wrong.",
+     "fix": "Score the limit shapes in a way that does not depend on the tool finding the arms. Either measure head and body with the tool and add both arms as solids of revolution, or have measureSheet keep a separated arm run shorter than 0.1·Hp, and warn whenever no arms are found. Regenerate limits.json. Add a test that the measured score stays smooth in f through the 60–80° arm range.",
+     "verdict": {
+      "id": "R2-M1",
+      "real": true,
+      "severity": "major",
+      "reasoning": "Reproduced on HEAD 1f32e2c (the only changes since 7061d55 are STATUS.md and history/). I used a git-archive copy at scratchpad/review2v/tree, and the scripts are s/m1.js, m1b.js and m1c.js. At every face factor, compute_limits.scoreAt draws the arms at max(35, rest+2) = 92°. measureViews then returns landmarks.arms [null,null] and volume parts.arms 0.0000, the sheet passes, and the only warning is the generic side-view note. A level arm is joined to the torso run on every row it crosses, so frontLandmarks never finds a separate arm run longer than 0.1·Hp. Those arm pixels are then counted as torso width × trunk depth. My cross-check measured head and body with the tool, then added each arm as a solid of revolution (π∫r² along the armStations), counting only the stretch whose axis lies outside the body outline. Tool vs that check: p50 189.1 vs 163.6; p5 179.2 vs 154.0; p95 199.4 vs 173.4; Reeves 164.1 vs 138.3; Coleman 177.1 vs 151.5; largest arm 158.2 vs 135.8. The tool is 15–19% high. Counting the whole arm length (an upper bound) still gives only 143–182. Sweeping f on p50 at 800 px: f 1.74 reads 75.2 (arms found, 67.7°) and f 1.75 reads 83.8 (arms lost, 68.2°), an 11% jump for 0.6% more width. The pessimistic point f 1.786 reads 86.9 with arms lost; the cross-check gives 70.6. The page shows '87–200' and 'about 190 by contact geometry; about 87 if bend falls as with body fat', and the HANDS TO FACE · 87–200 tile. round1.json had already recorded the pose dependence (152.6 at 20°, 191.9 at rest). One caveat on size: part of the gap is a general overcount that also exists when the arms are found (p50 at f=1: 27.3 vs 25.7; arms limit 40.7 vs 37.8). That comes from arm pixels merged with the torso near the shoulder, so a fix will move all three limits a little, not just the face.",
+      "better_fix": "In tools/compute_limits.js, score the limit shapes without relying on arm detection. Measure head and body with the tool, then add the arms analytically:\n```js\nfunction armVolume(fig, deg) { // both arms, the length whose axis is outside the body outline\n  const d = fig.dims, st = d.armStations, sj = d.shoulderJoint, a = deg * Math.PI / 180;\n  const body = fig.front.find((p) => p.name === 'body').poly, L = st.Lu + st.Lf, n = 600;\n  const rad = (S, s) => { if (s <= S[0][0]) return S[0][1]; for (let k = 1; k < S.length; k++) if (s <= S[k][0]) return S[k-1][1] + (S[k][1]-S[k-1][1]) * (s-S[k-1][0]) / (S[k][0]-S[k-1][0]); return S[S.length-1][1]; };\n  let v = 0;\n  for (let i = 0; i < n; i++) { const s = (i + 0.5) / n * L, r = s < st.Lu ? rad(st.upper, s) : rad(st.fore, s - st.Lu);\n    if (!Fig.pointInPoly([sj[0] + Math.sin(a) * s, sj[1] - Math.cos(a) * s], body)) v += Math.PI * r * r * L / n; }\n  return 2 * v;\n}\nfunction scoreAt(m, f) {\n  const deg = Math.max(35, Fig.armRestAngle((x) => m.make(f, x)) + 2), fig = m.make(f, deg);\n  const r = measureViews({ front: fig.front.filter((p) => p.name === 'head' || p.name === 'body'), side: fig.side }, H, m.levels, 800).res;\n  return 1.8 * (r.volume_m3.value + armVolume(fig, deg)) * 1060 * 0.925 / Math.pow(H, 3);\n}\n```\nThis gives a face band of about 136–173 by contact geometry and about 71 at f 1.786. Regenerate limits.json and change the card and gap text. In measure.js, warn when an arm-to-torso gap was seen but no arm run was kept ('Arms not found: their pixels are counted as torso, so the volume reads high'). Add a test that scoreAt changes by less than 2% between f 1.74 and 1.75."
+     }
+    },
+    {
+     "id": "R2-M2",
+     "severity": "major",
+     "title": "'Meet this test sooner' compares two bases: weight-based scores at each build's own fat against limit scores read from drawings at 7.5% fat",
+     "location": "src/app.html metSooner() and its callers: the band note in 'top' ('15 of them, from Arnold Schwarzenegger (about 27) up'), the gap 'empty' ('three of them, from Ronnie Coleman (about 39) up'), the limit cards ('already meet this test: 24 … / 11 … from …') and the limits verdict",
+     "evidence": "The limit scores (arms 41 [37–41], thighs 46 [42–49]) are the tool's reading of a drawing at 1,060 kg/m³ and 7.5% fat. The figures' scores quoted beside them are weight-based, at each figure's assumed fat (5–19%). metby_basis.js scores each met_by figure's own drawing the way the limits are scored. Arms: Arnold 35.0 (page 27.5), Oliva 37.3, Bane 37.7, Doomsday 39.2, Hafthor 39.5, Kraemer 40.0, Heath 40.0, Yates 40.6, Lasha 40.9, Cutler 41.1, Wolverine 42.0, Kingpin 42.4, Eddie Hall 42.5, Coleman 44.4. Thighs: Coleman 44.4 (page 39.2), Big Ramy 44.6 (39.3), Luke Cage 46.9 (41.1).",
+     "expected": "Scored on the same basis, only Arnold (about 35) clearly meets the arms test before the 37–41 band. No figure meets the thighs test before the 42–49 band. Most of the gap between 'from 27' or 'from 39' and 41 or 46 comes from the basis: Arnold's drawing holds 34% more than his weight, and the strongmen are at 19% fat against 7.5%.",
+     "fix": "Quote each figure's outline scored like the limit shapes (for example, 'Arnold's outline, scored like the limit figures, is about 35'). Or drop 'sooner' and say that their outlines meet the test at scores inside the band.",
+     "verdict": {
+      "id": "R2-M2",
+      "real": true,
+      "severity": "major",
+      "reasoning": "Reproduced with s/m2.js. Each met_by figure was drawn at its own height and girths, with the arms at max(35, rest+2) as the limits are, and read by the tool at 1,060 kg/m³ and 7.5% fat, as the limit shapes are. Arms (limit 40.7, band 36.9–41.0): Arnold 35.0 (page 27.5), Oliva 37.0, Bane 37.7, Doomsday 39.2, Hafthor 39.5, Kraemer 40.0, Heath 40.0, Yates 40.6, Lasha 40.9, Cutler 41.1, Wolverine 42.0, Kingpin 42.5, Eddie Hall 42.7, Coleman 44.4. Thighs (limit 46.1, band 42.2–49.2): Coleman 44.4 (page 39.2), Big Ramy 44.6 (39.3), Luke Cage 46.9 (41.1). On the same basis, 8 figures fall under 40.7 rather than the page's 15, and only Arnold is below the arms band. 2 fall under 46.1 rather than 3, and both are inside the thighs band. The rendered page says 'meet this test sooner: 15 of them, from Arnold Schwarzenegger (about 27) up' (forest note) and 'meet the thighs test sooner: three of them, from Ronnie Coleman (about 39) up' (gap copy), neither with any caveat. The limit cards add 'reported girths can run high'. Arnold's own drawer says his drawing holds 34% more than his weight, so the 27-vs-41 contrast mixes a weight-based score with a drawing-based one. The cards credit the gap to shape ('the width sits where…'), but on a consistent basis most of it disappears.",
+      "better_fix": "In compute_limits.js, store chart_figures[id].outline_score: the figure's own drawing scored with the same scoreAt as the limits (after the R2-M1 fix). In metSooner, compare and quote that number, for example: 'Scored like the limit figures (lean, from the drawn outline), Arnold Schwarzenegger's outline is about 35, below the 37–41 band; N other outlines meet it inside the band.' Count 'sooner' only where outline_score < L.score. Put the fat point next to it: 'a fatter body reaches the same outline at a lower chart score'."
+     }
+    },
+    {
+     "id": "R2-M3",
+     "severity": "major",
+     "title": "'The width sits where their own girths put it' is false for most of the figures counted: 18 of 24 (arms) and 10 of 11 (thighs) are template shapes",
+     "location": "src/app.html limit cards: 'The chart's own figures, drawn from their girths, already meet this test … Their outlines are not an evenly widened soldier: the width sits where their own girths put it, and reported girths can run high'; metSooner(): 'drawn from their girths'",
+     "evidence": "I listed the girth status for every met_by id. Arms (24): only Arnold, Heath, Cutler and Coleman have their own arm, chest and waist numbers; Oliva and Yates are partly derived. The other 18 have every girth filled from a template build scaled to their weight: Bane from Oliva; Doomsday and Wolverine from Yates; Hafthor, Kraemer, Lasha, Eddie Hall and Kingpin from the ANSUR largest-arm soldier; Big Ramy, Luke Cage, the Thing, Thor, Darkseid, the Hulks, Juggernaut and the Abomination from Coleman. Thighs (11): 10 use Coleman's template. Coleman's own thigh is status 'derived', with value_basis 'midpoint of 34 in (FitnessVolt) and 36 in (GreatestPhysiques); no source prints it' (builds.json).",
+     "expected": "The thighs evidence is one shape, Coleman's, resting on an unprinted fan-site thigh figure and drawn at 11 sizes. Most of the arms evidence is four template shapes. The text should not call these widths 'their own girths'.",
+     "fix": "Count only figures whose deciding girths are their own (arms: arm, chest and waist; thighs: thigh). Name the template behind the rest, for example: '11 figures, all Coleman's shape (his thigh is a fan-site figure)'.",
+     "verdict": {
+      "id": "R2-M3",
+      "real": true,
+      "severity": "major",
+      "reasoning": "Reproduced from the model's girth provenance with s/m3b.js (calc kind/owner per site). Of the 24 figures meeting the arms test, only Arnold, Heath, Cutler and Coleman have their own arm, chest and waist girths, and Oliva and Yates have their own partly derived ones. The other 18 are template girths scaled to their weight. Bane is Oliva's template. Doomsday and Wolverine are Yates's. Hafthor, Kraemer, Lasha, Eddie Hall and Kingpin are the largest-arm soldier's. Big Ramy, Luke Cage, the Thing, Thor, Darkseid, the three Hulks, Juggernaut and the Abomination are all Coleman's. For the thighs test, 10 of the 11 are Coleman's template. Coleman's own thigh in builds.json is status 'derived', with value_basis 'midpoint of 34 in (FitnessVolt) and 36 in (GreatestPhysiques); no source prints it'. The rendered cards say 'drawn from their girths … the width sits where their own girths put it, and reported girths can run high'. That is false for 18 of 24 and 10 of 11 figures: template girths are neither the figures' own nor reported. It also presents 11 copies of one shape as 11 independent bodies. This shares sentences with R2-M2, but it is a separate mislabelling.",
+      "better_fix": "In compute_limits.js, record for each met_by id whether the deciding girths are its own (arms: arm_flexed, chest, waist; thighs: thigh) or the template owner (e.calc girth .owner). Write the cards from that: 'As drawn, 24 figures meet it: 6 on their own published girths (Arnold, Oliva, Heath, Yates, Cutler, Coleman); the other 18 are drawn on four template shapes (Coleman's, Yates's, Oliva's, the largest-arm soldier's) scaled to their weights.' For the thighs: '11 figures, all Ronnie Coleman's shape at different sizes; his thigh girth is a fan-site figure (34–36 in).' Replace 'their own girths' with 'those girths'."
+     }
+    },
+    {
+     "id": "R2-M4",
+     "severity": "major",
+     "title": "Target tool: no outline reaches about 76–83, misses are reported as successes, and outlines above about 85 are mis-measured, including the copied chest of 4.98 m",
+     "location": "src/app.html drawTarget(); src/figure.js solveTarget() (final 'return { f: fl, score: scoreAt(fl) }'); tools/export_targets.js; src/measure.js arm detection; the status line and 'Copy target numbers'",
+     "evidence": "In the page (page_targets.js): 'Army men, median … × 1.71 …: it measures 73 (target 80) … and passes the tool's checks.' Likewise target 78 gives 71, Reeves 75 gives 69, Coleman 75 gives 70, largest-arm 75 gives 69. jump.js: f 1.74 gives 75.5 (arms found) and f 1.75 gives 83.8 (arms not found), so no width factor scores 76–83. solveTarget then returns the passing side below with no reason, and the page treats it as success. The test claims it 'says when no passing sheet reaches the target' but only tries 5, 20, 217 and 900. Above the jump, every outline has its arms at 70–92° (sweep: from target 150 up, 'armDeg 92.0'); the sheet spec asks for an A-pose at 30–40°, yet the panel says the outlines are 'at the model-sheet spec'. Their readings are inflated (target_true.js): target 100 reads 100.1 by the tool but 82.5 with the arms as limbs (+21%); target 150, 129.1 (+16%); target 300, 266.1 (+13%). The copied numbers for the page's default target 100 (target_copy.js): \"chest\": 4.9802, \"arm_flexed\": null, \"forearm\": null. warn100.js: arms landmarks [null,null], no warning about the arms.",
+     "expected": "Targets that no outline can reach should be refused, with the reason given. For targets above about 85, the stated score should come from a reading that counts the arms. The chest of the widened soldier is about 2.07 m (1.067 m × 1.937), not 4.98 m.",
+     "fix": "Fix the arm-aware measurement as in R2-M1. In solveTarget, return {f:null, reason:'gap', bestF, bestScore} when the loop ends outside tolerance, and have the page say so. Draw targets with the arms inside the A-pose spec, or flag when they cannot be. Do not export girths for sites the tool did not find, nor a chest that includes the arms. Test targets 70–90 on all six shapes.",
+     "verdict": {
+      "id": "R2-M4",
+      "real": true,
+      "severity": "major",
+      "reasoning": "Reproduced in the page with Playwright (s/m4page.js). The default target 100 gives a status saying it measures 100 and passes, and its copied JSON has \"chest\": 4.9802, \"arm_flexed\": null, \"forearm\": null. In Node (s/m4b.js) the same sheet has landmarks.arms [null,null], arms volume 0, and no arm warning. Its chest width of 1.86 m includes the arms; the soldier's chest at 1.80 m is 1.083 m, so ×1.937 gives about 2.10 m. The rest angle there is 77°, so the arms are drawn at 79°, while the sheet spec is 30–40° and the panel says 'outlines at the model-sheet spec'. Gap targets in the page: median 80 → 'measures 73 (target 80) … and passes the tool's checks'; median 78 → 71; Reeves 75 → 69; Coleman 75 → 70; largest arm 75 → 69. A sweep (s/m4c.js) shows no width factor on the median soldier reads 76–83, at both 300 and 1000 px: f 1.745 reads 75.7 and f 1.750 reads 83.8 (arms lost). Coleman jumps from 69.2 to 75.7. solveTarget then falls through to 'return { f: fl, score: scoreAt(fl) }' with no reason, contrary to its own doc comment. The test titled 'says when no passing sheet reaches the target' tries only 20, 217, 900 and 5, and shots.js tries only 300 on Coleman and 60 on the median.",
+      "better_fix": "In figure.js solveTarget, replace the last line with:\n```js\nreturn { f: null, reason: 'gap', bestF: fl, bestScore: sl, nextF: fh, nextScore: sh };\n```\nThen in app.html drawTarget and export_targets noSheet, handle reason 'gap': 'No outline on this shape measures between ' + sc(sl) + ' and ' + sc(sh) + ': the tool's reading jumps there. Try another shape.' After the R2-M1 measurement fix, the jump goes away for most targets. When the drawn arm angle is above 40°, say so in the status ('arms at 79°, outside the sheet's 30–40° A-pose'). Do not export chest, arm or forearm girths when out.r.landmarks.arms has no arm; set them to null with a note. Add a test that runs targets 70–90 in steps of 2 on all six shapes and requires either |score/target − 1| ≤ 0.5% or f === null."
+     }
+    },
+    {
+     "id": "R2-M5",
+     "severity": "major",
+     "title": "The 'Drawing check' in the details of all eight comic giants overstates the drawing by about 20 points (level arms read as torso)",
+     "location": "src/app.html drawingCheck() (arms drawn at max(35, armAngle(e)) = 66–86° for the giants)",
+     "evidence": "Page drawers (drawer_check.js): Hulk (savage) 'weighs 17% more than the weight counted'; Darkseid 18%; Abomination 15%; the Thing 22%. drawcheck.js gives the same reading with the tool's arms volume at 0.0000 for all eight; with the arms counted as limbs, the figures are Darkseid −5%, Hulk Marvel.com −4%, Juggernaut −4%, Hulk savage −5%, Hulk grey −5%, Abomination −5%, Thing +1%, Thor +1%, against the page's 18, 19, 19, 17, 15, 15, 22 and 22%.",
+     "expected": "The giants' drawings hold about their counted weight (−5% to +1%), not 15–22% more.",
+     "fix": "Use the arm-aware volume from R2-M1, or measure the drawing check with the arms at the A-pose and the arms' overlap removed. Re-state the 'from 3% less to 34% more' range in NOTES.",
+     "verdict": {
+      "id": "R2-M5",
+      "real": true,
+      "severity": "major",
+      "reasoning": "Reproduced in the page (s/m5page.js) by opening each drawer and reading #drawCheck: Thing 22%, Thor 22%, Darkseid 18%, Hulk Marvel.com 19%, Juggernaut 19%, Hulk savage 17%, Hulk grey 15%, Abomination 15% 'more than the weight counted'. A Node replica of drawingCheck (s/m5.js) gives the same values and shows armsFound 0 and arms volume 0.0000 for all eight (arms drawn at 66–86°). Counting the arms as limbs (head and body by the tool, plus arms as solids of revolution) gives −7% to −1% using the stretch outside the body outline, or −3% to +4% using the whole arm length (s/m5w.js). So the giants' drawings hold about their counted weight, and the page overstates them by about 15–20 points. For scale, figures whose arms are found show a smaller version of the same bias: Coleman reads +20% on the page against +9% to +13% by limbs, from arm pixels merged with the torso near the shoulder. The NOTES range 'from 3% less to 34% more' should be recomputed after the fix.",
+      "better_fix": "In drawingCheck, use the same arm-aware volume as R2-M1: measure the sheet rendered from fig.front.filter(head|body) plus fig.side, and add armVolume(fig, deg). Or, as a minimum, return '' or 'arms not measured' when r.landmarks.arms has no arm. Recompute and restate the NOTES.md 'Drawn volume vs weight' range."
+     }
+    },
+    {
+     "id": "R2-m1",
+     "severity": "minor",
+     "title": "Pessimistic face factor 1.786 is applied relative to the median soldier, but the fitted model's reference (k=1) is normal-BMI men; the median soldier is k≈1.09",
+     "location": "data/settings.json limits.face.pessimistic_girth_factor; tools/compute_limits.js faceLow = scoreAt(mainM, wedge)",
+     "evidence": "Fact elbow_flexion_vs_girth_wedge_model: tan((180−φ)/2) = 0.3153·k^1.69, k = (flexed biceps + flexed forearm)/0.614 m, with k=1 giving 145° (normal-BMI men) and 'ansur_overall_median_k': 1.086. The median soldier's sum is 0.667 m (0.684 m at 1.80 m). Widening him by 1.786 gives k≈1.94, so φ≈92° (script output 'phi at k=1.786*1.086: 92.0'), already past the 100° threshold. 100° falls at k=1.785, a width factor of 1.643 (1.602 on absolute girth). facelow3.js reads the tool there at 66.8 (63.6), arms found.",
+     "expected": "The steep-fit end of the face band is about 64–67, not 87 (and not the about 71–79 of R2-M1 either).",
+     "fix": "Use f = 1.785 / k_soldier, or state that both models anchor k=1 at the median soldier and re-derive the factor on that basis.",
+     "verdict": {
+      "id": "R2-m1",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Reproduced with s/m1d.js. The fact elbow_flexion_vs_girth_wedge_model defines k = (flexed biceps + flexed forearm) / 0.614 m, with k = 1 at 145° (normal-BMI men) and ansur_overall_median_k 1.086. The median soldier's sum is 0.667 m at 1.755 m, so k = 1.086. settings.json uses 1.786, the k at 100° on the fit's own reference, as a width factor on the median soldier. That gives k = 1.94, and the steep fit then puts φ at 92.0°, not 100°. Read literally, the fit puts the median soldier at 140.1° (between Zwerus's 140° overweight group and 145° normal-BMI group) and reaches 100° at f = 1.7846 / 1.086 = 1.643 (1.602 on absolute girth at 1.80 m). There the tool reads 66.8 (63.6), with the arms found; an arm-aware reading gives 60.8. The fact's own verifier note says the steep crossing is at 'S≈65'. The page's other model also anchors 145° on the soldier, so the 1.786 reading is an arguable choice, but it is not stated, and it contradicts the fact's stated reference. Minor, because it moves only the untested lower end of a band shown without a headline.",
+      "better_fix": "In compute_limits.js, derive the factor instead of hard-coding it: f = Math.pow(Math.tan(40*Math.PI/180)/0.3153, 1/1.69) / kSoldier, where kSoldier = (arm_flexed + forearm at his own height) / 0.614 (gives 1.643). Drop pessimistic_girth_factor from settings.json. Or keep 1.786 and add to the face definition: 'both models put the median soldier at 145°'."
+     }
+    },
+    {
+     "id": "R2-m2",
+     "severity": "minor",
+     "title": "The front/back landmark check fails on an exact mirror image, so the target tool refuses reachable targets",
+     "location": "src/measure.js measureSheet (the 'front and back landmarks line up' check compares detected argmin rows); src/app.html drawTarget() full-size step",
+     "evidence": "In the page: largest-arm 40, p95 60 and p5 15 each give 'The full-size outline fails the tool's own checks (front and back landmarks line up (within 2% of the height)), so it is not offered. Try another shape.' The details (target_sweep2.js) are 'off: waist (front 395, back 689)', 'off: waist (front 747, back 395), crotch (front 800, back 598)' and 'off: neck (front 197, back 219)'. renderSheet draws the back view as the exact mirror of the front. mirror2.js: torso widths at rows 390 and 690 are 211 and 210 px, so the waist argmin over that flat profile flips by about 300 px on one pixel of rasterisation. The same check would reject real sheets whose back view is near-symmetric.",
+     "expected": "A mirror image always lines up, and the reachable targets are offered.",
+     "fix": "Compare landmarks only where they are well conditioned. For example, pass if the back view's width at the front's row is within 1–2 px of its minimum, or compare width profiles. Use the guide-line rows when present. Add the three cases above as tests.",
+     "verdict": {
+      "id": "R2-m2",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Reproduced in the page (s/m4page.js). Largest arm 40, p95 60 and p5 15 each return 'The full-size outline fails the tool's own checks (front and back landmarks line up (within 2% of the height)), so it is not offered.' In Node (s/m2m.js), on the page's own solve-and-refine path: largest arm 40 (f 1.0372) gives 'off: waist (front 395, back 689)', and the front torso widths at those rows are 211 and 211 px, a flat profile. p95 60 gives 'off: waist (front 747, back 395), crotch (front 800, back 598)', with the back view's crotch found 200 px higher. p5 15 gives 'off: neck (front 197, back 219)', with widths 53 and 53 px. renderSheet draws the back as the mirrored front polygons, so the comparison of detected argmin rows flips on one pixel of rasterisation, and on a 1-px difference in the midline crotch scan. A mirror image should never fail this check.",
+      "better_fix": "In measure.js, compare landmarks by width rather than argmin row. For waist and neck, pass if the back view's torso width at the front's landmark row is within max(2 px, 1%) of the back's own minimum, and the same the other way. Scan for the crotch over mid ± 2 px, not a single column. Add the three cases above (largest arm 40, p95 60, p5 15 on the page path) as tests."
+     }
+    },
+    {
+     "id": "R2-m3",
+     "severity": "minor",
+     "title": "Face card says 'None of the chart's own figures meets this test', which is true only under contact geometry; the band's other model puts the giants past it",
+     "location": "src/app.html limit cards (met line); tools/compute_limits.js chart_figures.face (crease model only)",
+     "evidence": "The card's band and definition use both models; the 'met' line uses only the crease model. The fact's steep fit, tan((180−φ)/2)=0.3153·k^1.69, applied to each figure's own arm and forearm girths (k scaled to 1.755 m) gives Darkseid 78°, Hulk Marvel.com 77°, Hulk savage 72°, Abomination 68°, Hulk grey 69°, Juggernaut 76°, Thor 85° and the Thing 85°. All are below the 100° threshold (43–81° on absolute girth).",
+     "expected": "Under the steep fit, eight chart figures meet the face test.",
+     "fix": "Write 'None meets it by contact geometry; by the body-fat fit the comic giants, Thor and the Thing would', or store met_by under both models.",
+     "verdict": {
+      "id": "R2-m3",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Reproduced with s/m3m.js. The face card reads 'None of the chart's own figures meets this test', but chart_figures.face uses the crease (contact geometry) model only. The same card's band and its 'about 87 if bend falls as with body fat' use the steep fit. Applying that fit to each figure's own arm and forearm girths gives these elbow bends, all below 100°: Abomination 68°, Hulk grey 69°, Hulk savage 72°, Juggernaut 76°, Hulk Marvel.com 77°, Darkseid 78°, Thor 85°, Thing 85°. That is with k height-normalised to 1.755 m and the 0.614 m reference. Anchored on the median soldier, as the page does, they are 76–93°, so they still meet it. Under the card's own second model, eight figures meet the test.",
+      "better_fix": "In compute_limits.js, also store met_by_steep, computed with tan((180−φ)/2) = 0.3153·k^1.69 on each figure's girths. Change the card line to: 'None meets it by contact geometry; on the body-fat fit, the six comic giants, Thor and the Thing would (their arm girths put the bend at about 70–85°).'"
+     }
+    },
+    {
+     "id": "R2-m4",
+     "severity": "minor",
+     "title": "The side-view check rejects Rex's real side view whenever his tail cannot be masked, which is always so in the page",
+     "location": "src/measure.js the 'side view is a side view' check; src/app.html measure() (no exclusion option)",
+     "evidence": "sideview_tail.js on assets/rex-turnaround.png with the READINGS skull rows. With the tails excluded (Node only) it passes: '0.94 at the waist, 0.60 at the hips'. With the tails kept, as the page must: 'FAIL depth ÷ front width 0.99 at the waist, 0.94 at the hips; a front or back view in the side position gives about 1', and the crotch row moves from 531 to 400. With the tail only in the side view, it passes (0.99 and 0.82). For comparison, ANSUR II buttock depth over hip breadth peaks at 0.87 across 4,082 men, so a tail-less real side view should not fail. The page does say the turnarounds are not measured there, so the impact is limited.",
+     "expected": "A real side view should not be refused with a message saying it looks like a front or back view.",
+     "fix": "Skip the hip ratio when the crotch is suspect or a tail is present. Otherwise name the likely cause in the detail ('a tail or object behind the hips adds depth') and offer a tail mask.",
+     "verdict": {
+      "id": "R2-m4",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Reproduced, but narrower than claimed (s/m4m.js, m4m2.js). On assets/rex-turnaround.png with the READINGS skull rows, excluding the tails passes (0.94 at the waist, 0.60 at the hips). Keeping the tails, as the page must, fails with 'depth ÷ front width 0.99 at the waist, 0.94 at the hips; a front or back view in the side position gives about 1', and the front crotch moves from 531 to 400. The cause is the front view's tail between the legs. The tool itself warns 'Front view: crotch not found where expected (is something between the legs, such as a tail?)' and then still uses the fallback crotch for the hip row. With the tail kept only in the side view, the check passes (0.99 and 0.82). So it is not 'whenever his tail cannot be masked': it is only when the crotch is flagged. That sheet already fails two other checks, the spec has Step 2 remove the tail from the front and back views, and the page says turnarounds are not measured there. The remaining defect is a rejection whose stated reason is false, based on a row the tool already marked unreliable. Ollie passes in every variant.",
+      "better_fix": "In measure.js, skip the hip-ratio half of the side-view check (or downgrade it to a warning) when frontLandmarks reported 'crotch not found where expected'. In that case, say in the detail: 'the crotch was not found (something between the legs), so the hip row is uncertain'."
+     }
+    },
+    {
+     "id": "R2-m5",
+     "severity": "minor",
+     "title": "A sentence in the 'Shape' line of What this ignores starts in lower case",
+     "location": "data/settings.json ignores[0]",
+     "evidence": "Rendered text: '…is disputed (Burton 2010). giants and monsters would need thicker bones and different proportions…'",
+     "expected": "'Giants and monsters would need…'",
+     "fix": "Capitalise 'Giants'.",
+     "verdict": {
+      "id": "R2-m5",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Confirmed in the rendered page text and in data/settings.json (ignores[0], line 655): '…is disputed (Burton 2010). giants and monsters would need thicker bones and different proportions (Galileo and Haldane made this point).' A sentence starts in lower case. This is a typo in published text.",
+      "better_fix": "In data/settings.json, change '(Burton 2010). giants and monsters' to '(Burton 2010). Giants and monsters', then rebuild."
+     }
+    }
+   ]
+  },
+  {
+   "lens": "ux",
+   "verified_ok": [
+    "Build and tests on a git-archive copy of HEAD (1f32e2c; build-comparison identical to 7061d55): node build.js reproduces dist/index.html byte-for-byte; test/test.js 30 passed; test/duo.js passed (Rex 2.544 m³); test/shots.js reported no problems. Its preview file was moved into the scratchpad because Chromium would not start with a long TMPDIR.",
+    "One drawing height (s/figs.js): at 360, 390, 768, 1024 and 1280 px, in Same/Real heights × Front/Side, every lineup and inside-gap figure SVG has the same CSS height (124 px below 720, 172 px above) and the same drawn scale (0.721 and 1.000 user units per px) in every stop. No figure group falls outside its SVG box or the viewBox vertically. The comic giants with level arms (wr 1.064) and Rex and Ollie's side views with tails fit. No plate content overflows, and there is no horizontal page scroll.",
+    "Gap tiles (s/gaptiles.js): the wall height follows the figure cells (182 px phone, 274 px wide); no post, mark, end or 'No builds here' label overlaps another or leaves its tile, at 5 widths in both height modes.",
+    "Forest (s/forest.js): no axis label overlaps another or leaves the tape, in whole scale and close-up, at 5 widths, light and dark. 'Kouri 25' is dropped when it would collide. Phone value cells have an opaque ground; no background rule crosses value text; names and values never overlap; 'off this scale' labels stay inside their tracks.",
+    "Focus rings (s/focus.js plus pixel diff in s/focus.py): segmented buttons, figure cells (2nd and last), cluster buttons, forest row buttons, tool buttons, inputs, selects, details summaries and links all show the ring on all four sides at 390 and 1280, light and dark. The one exception is cosmetic: the first forest row's top edge sits under the sticky axis at 1280, with the other three sides visible.",
+    "Drawer (s/drawer.js, s/drawerfocus.js): one column below 900 px, 280 px + 1fr at 1024 and 1280. All 49 drawers, in Same/Front and Real/Side at 360, 768, 1024 and 1280, have no element outside the drawer, no page scroll and no clipped big figure. Opened by keyboard at 360, 768 and 1024, focus goes to the heading, the heading and Close are on screen and not under the locator, and Escape returns focus to the cell.",
+    "Jumps (s/jumps.js): every stop's tag lands clear of the sticky locator at 360, 768 and 1024.",
+    "Accessible names (CDP, s/ax.js): figure cells and forest rows carry their warnings ('composition unknown', 'beyond human data', 'Traced from art · tail not counted'); segmented buttons expose aria-pressed; the sheet picker group is named 'Sheet'; the open drawer is a named region; the canvas is named.",
+    "Worker measuring (s/lazy.js, s/workerfb.js): measuring runs off the main thread; the status shows 'Measuring… N s' and is then replaced by the results (27 rows). With Worker throwing, or blocked by CSP worker-src 'none', it falls back to the page and still completes.",
+    "Lazy start: the lineup, tapes, forest, limits and score cards render without the tool. The tool starts within 900 px of the viewport. The duo.jpg check then passes live (2.54 m³ in 2.52–2.60). No section shows empty content apart from the target images (UX2-10).",
+    "Target outline display (s/target.js, s/tfail.js): targets 15, 60, 100, 300, 500 and 900 on the median, 5th- and 95th-percentile soldiers, Coleman and the largest-arm soldier all converge and pass the checks. The captions read 'Front · score N' and 'Side · score N', and the images fit their boxes (object-fit: contain).",
+    "Tool layout (s/toollayout.js): at 360, 390, 768, 1024 and 1280, light and dark, nothing leaves the tool card; the results table does not need to scroll; gutter labels do not overlap; the two sheet-picker buttons wrap cleanly.",
+    "Limit cards (s/limits.js): no text overflows at any width. The median, arms and thighs figures stand on the skull line. The text is consistent with limits.json (arms 41, band 37–41, 24 met_by; thighs 46, band 42–49, 11 met_by; face 87–200, none).",
+    "Gap copy numbers: 45–62 'as wide as the step from the median soldier (21) to Army man with the largest arm (29)' and 88–130 to Sergio Oliva (31) are both within the code's 4% rule. The band verdicts, the 'No real man on this chart scores above 42' rule and the cluster ranges (19–42, 62–88, 130–220, 924) match window.__bc.",
+    "Round 1 UX fixes rechecked and holding: L1/L13 focus rings, L2 drawer columns, L3 accessible names, L4/L11 forest labels, L5 phone value cells, L7 cluster 19–42, L9 [hidden] rule, L12 focus return from a forest row (shots.js and the s/drawerfocus.js sweep)."
+   ],
+   "findings": [
+    {
+     "id": "UX2-1",
+     "severity": "major",
+     "title": "Loading a new sheet while the worker is still measuring shows and copies the old sheet's results under the new file's name",
+     "location": "build-comparison/src/app.html:1552-1575 (loadFile does not invalidate the in-flight run), 1461-1466 (the callback checks only tool.run), 1476-1478 (the elapsed-time interval keeps running)",
+     "evidence": "Script: scratchpad/review2/s/race.js (sheets from s/mksheets.js, drawn with the page's own Figure.renderSheet). Steps at 1280x900: load coleman-2000.png (4992x2320), type 1.80, press Measure. After 1.5 s, load soldier-500.png (1241x580). Output while the first job is still running: the status reads 'Measuring… 2 s … 4 s' instead of 'Loaded. Type the height…', and the Measure button stays disabled. When the old job finishes, the page shows sheetName 'soldier-500.png (1241 × 580 px)' with captions 'front · 2002 px / side · 2002 px / back · 2002 px', Volume 0.146 m³, Mass 155 kg and Chest 247.4 cm. The height field is empty. Copy then says 'Copied: 118 lines' and the entry has name 'soldier-500.png', weight 154.9 and the note 'score 44.2 (42.3-46.2)'. Measured on its own, soldier-500.png gives 0.088 m³ and 93 kg. Screenshot scratchpad/review2/race-tool.png: the gutter labels (chest, waist, crotch, knee, ground) fall into the checks list, because the landmark rows of the 2,320 px image are placed on the 580 px one.",
+     "expected": "A result belongs to the image and inputs it was measured from. When the sheet changes, a pending measurement must be discarded: its status ticker stopped, the button re-enabled and nothing written. Otherwise a wrong build entry can be pasted into builds.json under another file's name.",
+     "fix": "In loadFile, and in the Soldier-sheet handler, add `tool.run++`, clear the pending ticker (keep it as tool.tick and clear it in done) and set `$('measureBtn').disabled = false`. Belt and braces: in measure() capture `var img = tool.img`, and in the callback return early when `img !== tool.img`.",
+     "verdict": {
+      "id": "UX2-1",
+      "real": true,
+      "severity": "major",
+      "reasoning": "Reproduced on HEAD 1f32e2c (build-comparison is unchanged since 7061d55 and the working tree is clean). Script: /tmp/claude-0/-home-user-rex-strength-lab/9b81b796-3162-56bd-85b7-22e02b6583e2/scratchpad/review2/v/race.js, with sheets drawn by v/mk.js using the page's own Figure.renderSheet. big-2000.png is 5273x2320 (median soldier, widths x1.5); small-500.png is 1120x580. At 1280x900 I loaded big, typed 1.80, pressed Measure, and loaded small 1.5 s later. From 2.5 s to 11.6 s the status read 'Measuring… 2 s' … 'Measuring… 11 s' (the 'Loaded…' message was overwritten), measureBtn.disabled stayed true and the sheet name read 'small-500.png (1120 × 580 px)'. At 12.6 s the old result was applied to the new image: captions 'front · 2002 px side · 2002 px back · 2002 px', Volume 0.184 m³, Mass 195 kg, Chest 261.1 cm. Gutter rows were placed at top:372.59% (ground), 119% (chest) and so on, so the labels landed in the checks list, and the 'top' line was drawn across the middle of the small figure (v/race-tool.png). The tH field was empty. Copy reported 'Copied: 118 lines' with name 'small-500.png', height 1.8, weight 195.2 and 'score 55.7'. Measured on its own, small-500.png gives 0.089 m³ and 94 kg. The cause is in loadFile (app.html:1552-1575): it never increments tool.run, so the callback's guard `run !== tool.run` (1462) passes. The ticker is local to measureAsync (1476), and the button is re-enabled only inside the callback. The Soldier-sheet handler is safe because it calls measure(), which does ++tool.run. Major: the tool hands a build entry, under another file's name, ready to paste into builds.json.",
+      "better_fix": "In measureAsync keep the ticker on the tool: `tool.tick = setInterval(...)`, and in done use `clearInterval(tick)` as now. In loadFile, right after `tool.img = {...}`, add: `tool.run++; clearInterval(tool.tick); $('measureBtn').disabled = false;`. Belt and braces, in measure(): `var img = tool.img;` and as the first line of the callback: `if (run !== tool.run || img !== tool.img) return;`"
+     }
+    },
+    {
+     "id": "UX2-2",
+     "severity": "major",
+     "title": "Fields edited while the worker measures are not marked stale: the results and the copy use the old height while the field shows the new one (round 1 F8 still leaks)",
+     "location": "build-comparison/src/app.html:1643-1646 (the input/change listeners mark only the result already on screen) and 1461-1466 (the new result is stored without comparing it with the current fields)",
+     "evidence": "Script: scratchpad/review2/s/stale.js, at 1280x900. Load coleman-2000.png, type 1.80, press Measure. After 1 s, type 2.50 and press Tab, all while the worker is running. When the result arrives, the field shows '2.50' but the table shows 'Mass 155 kg' and the normal status, with no warning. Copy reports 'Copied: 118 lines, ready to paste as a build entry.' with height_m 1.8. Pressing Measure again with 2.50 gives 'Mass 415 kg' (155 × (2.5/1.8)³ = 415). Without the Tab, the copy happens to be refused, because clicking Copy blurs the field and fires 'change'. The guard works by accident, not by design.",
+     "expected": "Round 1 F8 says 'Copy uses the inputs that were measured and refuses after the fields change.' A change made during an asynchronous measurement is still a change after the button press, so the result should arrive marked stale, or be discarded.",
+     "fix": "Keep a counter `tool.fieldsVer` that every input/change event on tH, tRho, tBf, tArmK, tSkull and tOrder increments. Capture it in measure(). In the callback, if it differs, set `r.stale = true` after writeResults and show 'The fields changed since this measurement: press Measure to update the results.' Or compare r.inputs with num() of the current fields.",
+     "verdict": {
+      "id": "UX2-2",
+      "real": true,
+      "severity": "major",
+      "reasoning": "Reproduced with v/stale.js at 1280x900. I loaded big-2000.png, typed 1.80 and pressed Measure. After 1 s I filled tH with 2.50 and pressed Tab, all during the worker run. When the run finished, tH read '2.50', the status line was the normal 'Every result is measured from art…' and the table showed 'Mass 195 kg', the 1.80 m result, with no warning. Copy reported 'Copied: 118 lines, ready to paste as a build entry.' and the clipboard held height_m 1.8. The cause: the input/change listeners (app.html:1643-1646) mark only the tool.res already on screen, which during the run is the previous result. The callback then stores a fresh r with r.inputs captured at the button press and no stale flag. Round 1 F8 is recorded as 'refuses after the fields change', and this path still lets the copy through. It is the same failure F8 was meant to prevent: the copied entry is not for the height the user typed (2.50 m), while the page shows that height next to 1.80 m results. I did not separately check the reviewer's no-Tab remark, which is commentary; my second loop failed only because the same file cannot be re-set on an input.",
+      "better_fix": "Count field edits: in the listeners at 1643-1646 add `tool.fieldsVer = (tool.fieldsVer || 0) + 1;` before the existing code. In measure(), capture `var ver = tool.fieldsVer;`. In the callback, after `r.inputs = inputs; tool.res = r; writeResults(r);` add `if (ver !== tool.fieldsVer) { r.stale = true; $('toolStatus').textContent = 'The fields changed while measuring: press Measure to update the results.'; }`. copyResults already refuses stale results."
+     }
+    },
+    {
+     "id": "UX2-3",
+     "severity": "major",
+     "title": "'Meet this test (sooner)' reads as 'pass this test', the opposite of what is meant, and gives different counts for the same test without saying why",
+     "location": "build-comparison/src/app.html:707-712 (metSooner), 731 (gap copy), 902 (band note), 1361-1362 (limit cards); data/settings.json:721 (limits verdict)",
+     "evidence": "Rendered text (scratchpad/review2/s/text.js, 1280 px). Limits verdict: 'The chart's own drawings of the biggest bodybuilders already meet the first two.' Face card: 'None of the chart's own figures meets this test.' In plain English, meeting a test means passing it, so a general reader takes this as 'every figure can still reach its face', or 'their arms pass'. The intended meaning is that the body has reached the limit: the arms can no longer hang down. The band note in 'The top of the human record' comes about 7,000 px before the limits section that introduces 'the same three tests'. It reads: 'Limit · arms out · about 41 … The chart's own figures, drawn from their girths, meet this test sooner: 15 of them, from Arnold Schwarzenegger (about 27) up.' The arms card says: 'already meet this test: 24 of them, from Arnold Schwarzenegger (about 27) up.' The 45–62 gap says: 'meet the thighs test sooner: three of them, from Ronnie Coleman (about 39) up.' The thighs card says: '11 of them, from Ronnie Coleman (about 39) up.' The same claim pattern carries different counts (15 vs 24, 3 vs 11), and no sentence says that 'sooner' counts only figures scoring below the limit (metSooner(L, L.score)) or below the stretch (metSooner(L, g.from)). The gap copy also uses 'the evenly widened soldier' before the page has explained it.",
+     "expected": "The owner's standard asks for plain, specific wording that a general reader cannot read backwards. Each count should say what it counts.",
+     "fix": "Name the outcome, not a test. Cards: 'Already past this limit in their own drawings: 24 of the chart's figures (their arms cannot hang closer than 30°), from Arnold Schwarzenegger (about 27) up.' Face: 'None of the chart's own figures is past this limit.' Band and gap notes: '15 figures scoring under 41 are already past it in their drawings, from Arnold Schwarzenegger (about 27) up.' Verdict: '…already reach the first two limits.' In the gap copy, gloss 'evenly widened soldier' or link it to #limits.",
+     "verdict": {
+      "id": "UX2-3",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Rendered text (v/text.js, v/counts.js). The 'top' band note reads: 'The chart's own figures, drawn from their girths, meet this test sooner: 15 of them, from Arnold Schwarzenegger (about 27) up.' The arms card reads: '…already meet this test: 24 of them, from Arnold Schwarzenegger (about 27) up.' The 45–62 gap reads: 'meet the thighs test sooner: three of them, from Ronnie Coleman (about 39) up', and the thighs card reads '11 of them, from Ronnie Coleman (about 39) up'. From limits.json met_by against the page's scores: arms has 24 figures, 15 of them under 40.71; thighs has 11, 3 of them under 45 and 3 under 46.11. So the counts are arithmetically right, but the same sentence pattern, 'N of them, from X (about Y) up', gives 15 vs 24 and 3 vs 11. The only cue to the different scope is the word 'sooner', and 'from X up' suggests every figure upward. A reader sees what looks like a contradiction, so this is a real labelling defect, but minor, not major: no number is wrong. The 'meet reads as pass' part is weaker. Each card's title states the outcome ('Arms can no longer hang down by the sides'), so 'meets this test' reads naturally as reaching that condition, although 'None of the chart's own figures meets this test' under the face card can be misread. The 'evenly widened soldier' wording is already glossed earlier, in the 'top' band note ('on the median soldier's outline widened at fixed bones'), so that part is not a defect.",
+      "better_fix": "Name the scope and the outcome in metSooner (app.html:711): `return (ids.length === 1 ? esc(first.short) + ' (about ' + sc(first.score.value) + ') is' : (NUMW[ids.length] || fmt.sep(ids.length, 0)) + ' of the chart\\'s own figures scoring under ' + sc(below) + ' are') + ' already past this limit in their own drawings' + (ids.length > 1 ? ', from ' + esc(first.short) + ' (about ' + sc(first.score.value) + ') up' : '') + '. ';`. For the cards (1361), drop 'scoring under' when below is Infinity: '24 of the chart\\'s own figures are already past this limit in their own drawings, from Arnold Schwarzenegger (about 27) up.' Face card: 'None of the chart\\'s own figures is past this limit.' Adjust the gap-copy replace() at 731 to match."
+     }
+    },
+    {
+     "id": "UX2-4",
+     "severity": "minor",
+     "title": "In Real heights mode the lineup still says 'Everyone is drawn at the same height'",
+     "location": "build-comparison/src/app.html:420 (static verdict) and 1707-1712 (modeNote updates only #modeNote)",
+     "evidence": "Script: scratchpad/review2/s/realverdict.js, 1280x900. After clicking 'Real heights' (aria-pressed=true), #lineup .verdict still reads 'Everyone is drawn at the same height, in score order. Only the build differs.' The figures are now drawn at different heights: Bruce Banner 90 px, the median soldier 90 px, Hulk (savage) 110 px, Rex 158 px. The mode note just above says 'Real heights: one scale for every figure.' Screenshot: scratchpad/review2/ux/real-heights-verdict-1280.png.",
+     "expected": "A section verdict that is true in the mode on screen. In Real heights: 'Everyone is drawn to one scale, at their real heights, in score order.'",
+     "fix": "Give the verdict an id and set it in modeNote() from state.heights, for example: same → 'Everyone is drawn at the same height, in score order. Only the build differs.'; real → 'Everyone is drawn to one scale at his real height, in score order.'",
+     "verdict": {
+      "id": "UX2-4",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Reproduced with v/realv.js at 1280x900. After clicking #hReal (aria-pressed='true'), '#lineup .verdict' still reads 'Everyone is drawn at the same height, in score order. Only the build differs.' The figures are drawn at different heights: bruce_banner 90 px, ansur2_m_p50 90 px, hulk_savage 110 px, rex 158 px, ollie 153 px. #modeNote just above says 'Real heights: one scale for every figure.' The verdict is static HTML (app.html:420), and modeNote() (1707-1712) updates only #modeNote. In Real heights mode the section's headline contradicts what is drawn and the mode note above it.",
+      "better_fix": "Give the verdict an id: `<p class=\"verdict\" id=\"lineupVerdict\">`. In modeNote() add: `$('lineupVerdict').textContent = state.heights === 'real' ? 'Everyone is drawn to one scale, at his real height, in score order.' : 'Everyone is drawn at the same height, in score order. Only the build differs.';`"
+     }
+    },
+    {
+     "id": "UX2-5",
+     "severity": "minor",
+     "title": "The hands-to-face limit card shrinks its figure to 85% height, below the skull line and the landmark lines drawn for the other cards",
+     "location": "build-comparison/src/app.html:1329-1336 (limitFigure lowers k when the figure is wider than W−8, but wall() still draws the skull and landmark lines for the full Hd)",
+     "evidence": "Script: scratchpad/review2/s/limits.js, at every width from 360 to 1280. The skull line is at y=10 and the floor at y=210 in each card. The median soldier, arms and thighs figures have their top at y=10.0–10.2. The face figure's top is at y=39.9: it is drawn 170 of 200 units tall. The cause is the face figure's width, 2.03 m in limits.json against the 192/111.1 = 1.73 m that fits, so k drops from 111.1 to 94.6 px/m. Screenshots scratchpad/review2/limits-1280-light.png and limits-390-dark.png: the fourth figure is visibly shorter, with its head well under the blue line. The key says 'Blue line across the wall: the top of the skull. Every figure is drawn to it', and the limits method says each template is drawn at 1.80 m.",
+     "expected": "All four limit figures at the same 1.80 m drawing height, skull on the blue line, with the shoulder, chest, waist, crotch and knee lines at the figure's own landmarks.",
+     "fix": "Keep k = Hd/H and widen that card's viewBox instead: W = max(200, ceil((bb[2]−bb[0])·k) + 8). The SVG is width:100%, height:auto, so the card scales it down. Or compute one k for all four cards from the widest figure and draw the wall at Hd = 1.8·k.",
+     "verdict": {
+      "id": "UX2-5",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Reproduced with v/limfig.js at 390 (dark) and 1280 (light). All four cards have viewBox 0 0 200 218, skull line y=10 and floor y=210. The figure tops (getBBox) are 10.0, 10.2 and 10.2 for the soldier, arms and thighs, but 39.9 for the face figure. Its width is 2.030 m in limits.json (the others are 1.24 and 1.41 m), so limitFigure (app.html:1333) lowers k from 111.1 to 192/2.03 = 94.6 px/m and draws it 170 units tall. wall() still draws the skull line and the template landmark lines for Hd=200. Screenshot v/limits-1280.png: the face figure's head sits well below the blue skull line, and the chest, waist, crotch and knee lines do not meet its landmarks. That contradicts the key ('Blue line across the wall: the top of the skull. Every figure … drawn to it', app.html:1694) and the method's 'Each template is drawn at 1.80 m'.",
+      "better_fix": "Draw all four cards at one scale that fits the widest figure. In renderLimits, after `cards` is built and before drawing: `var maxW = Math.max.apply(null, cards.map(function (c) { var b = Figure.bounds(c.parts); return b[2] - b[0]; })); Hd = Math.min(200, Math.floor((W - 8) * 1.8 / maxW));`. This gives 170. limitFigure then never takes its shrink branch, so every figure meets the skull line, and widths stay comparable across the cards. Alternatively, keep k = Hd/H and widen only that card's viewBox: `W = Math.max(200, Math.ceil((bb[2] - bb[0]) * Hd / H) + 8)`."
+     }
+    },
+    {
+     "id": "UX2-6",
+     "severity": "minor",
+     "title": "Locator tape's accessible name says 'scores 920 to 924' for the meatball and drops 'empty' for empty stretches",
+     "location": "build-comparison/src/app.html:1232-1234 (markStop: the aria-label uses sc(s.lo) and never the gap/meat wording)",
+     "evidence": "Script: scratchpad/review2/s/loclabel.js, at 390 and 1280. At #meatball the visible line reads 'To scale · now: score 924' but the aria-label is 'To-scale tape. Now showing scores 920 to 924.' sc() rounds 924.1 to two significant figures, 920, which breaks the round 1 rule that 924 is never rounded. At #empty the visible line is 'now: empty 45 to 62' while the aria-label is 'Now showing scores 45 to 62.' The same goes for 88 to 130 and 220 to 924. CDP confirms #locTape has role=image with that name.",
+     "expected": "The accessible name says what the visible line says: 'score 924' for the meatball, and 'empty 45 to 62' for an empty stretch.",
+     "fix": "Build one string and use it for both: `var now = (s.kind === 'gap' ? 'empty ' : 'score ') + (s.kind === 'meat' ? MEAT_TXT : s === STOPS[0] ? 'under ' + hi : lo + ' to ' + hi);` then set `$('locNow').textContent = 'To scale · now: ' + now` and the aria-label to 'To-scale tape. Now showing ' + now + '.'",
+     "verdict": {
+      "id": "UX2-6",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Reproduced with v/loc.js at 390x844. At #meatball, #locNow reads 'To scale · now: score 924', but the #locTape (role=img) aria-label is 'To-scale tape. Now showing scores 920 to 924.' At #empty it reads 'empty 45 to 62' against the label 'scores 45 to 62'. #empty-2 shows the same pattern (88 to 130), as does #empty-3 (220 to 924). markStop (app.html:1232-1234) builds the aria-label from sc(s.lo), which rounds the meatball's 924 to 920, and never uses the gap or meat wording. This breaks round 1's '924 never rounded' rule for screen-reader users, invents a 920–924 range, and drops 'empty'.",
+      "better_fix": "In markStop build one string: `var now = (s.kind === 'gap' ? 'empty ' : 'score ') + (s.kind === 'meat' ? MEAT_TXT : s === STOPS[0] ? 'under ' + hi : lo + ' to ' + hi); $('locNow').textContent = 'To scale · now: ' + now; host.setAttribute('aria-label', 'To-scale tape. Now showing ' + now + '.');`"
+     }
+    },
+    {
+     "id": "UX2-7",
+     "severity": "minor",
+     "title": "Tool status lines are not live regions, so measuring, results, failures and copy confirmations are never announced",
+     "location": "build-comparison/src/app.html:490 (#validation), 503 (#toolStatus), 516 (#targetStatus)",
+     "evidence": "No element in the page has aria-live or role=status: grep for 'aria-live|role=\"status\"' in src/app.html returns nothing. CDP Accessibility.getPartialAXTree (scratchpad/review2/s/ax.js) gives #toolStatus, #targetStatus and #validation as role=paragraph with no live property. Measuring now runs asynchronously in a worker: the 2,000 px sheet in race.js took about 10–12 s. A screen-reader user who presses Measure, Draw or Copy hears nothing: not 'Measuring…', not the result, not 'The sheet failed a check, so treat these numbers as rejected', not 'Copied'.",
+     "expected": "Status messages announced politely (WCAG 4.1.3), above all now that results arrive seconds after the button press.",
+     "fix": "Add role=\"status\" (implicit aria-live=polite) to #toolStatus and #targetStatus, and to #validation if wanted. Keep the per-second 'Measuring… N s' ticker out of the live text, for example in an aria-hidden span, so it is not read every second.",
+     "verdict": {
+      "id": "UX2-7",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Confirmed. A grep for aria-live, role=\"status\" and role=\"alert\" in src/app.html and dist/index.html returns 0 matches. CDP Accessibility.getPartialAXTree (v/ax.js) gives #toolStatus, #targetStatus and #validation as role=paragraph with no live property. Measuring now takes about 12 s for a 2,000 px sheet in the worker (race.js), and the target solve takes about 2 s. A screen-reader user hears nothing when the result, a rejection ('The sheet failed a check…'), a refusal or 'Copied…' appears. This is a WCAG 4.1.3 status-message defect.",
+      "better_fix": "Add role=\"status\" to <p id=\"toolStatus\">, <p id=\"targetStatus\"> and <p id=\"validation\">. In measureAsync, write the per-second ticker into a child `<span aria-hidden=\"true\">` (or update it every 5 s), so the live region announces 'Measuring…' once and then the result."
+     }
+    },
+    {
+     "id": "UX2-8",
+     "severity": "minor",
+     "title": "The hidden file input is still exposed to screen readers as a second, unlabelled 'Choose File' button",
+     "location": "build-comparison/src/app.html:482",
+     "evidence": "CDP AX tree (scratchpad/review2/s/ax.js): #file gives role=button, name 'Choose File', not ignored. It has class .sr and tabindex=-1, which removes it from the Tab order only. A screen reader's virtual cursor still finds it next to 'Choose a sheet…', with a generic name and no context.",
+     "expected": "One control for choosing a sheet. The proxy input is hidden from assistive technology, since #tChoose triggers it.",
+     "fix": "Add aria-hidden=\"true\" to <input type=file id=file> (it is never focused by keyboard anyway).",
+     "verdict": {
+      "id": "UX2-8",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Confirmed with v/ax.js: #file is exposed as role=button, name 'Choose File', not ignored, focusable=true. It has class .sr (1x1 px, clipped) and tabindex=-1, which takes it out of the Tab order only. A screen reader's browse mode still finds a second, generically named control next to #tChoose ('Choose a sheet…'). It works if activated, so the impact is low: a redundant control with no <label>, which axe's form-label rule also flags. #tChoose triggers it programmatically, so hiding it from assistive technology loses nothing.",
+      "better_fix": "`<input type=\"file\" id=\"file\" accept=\"image/png,image/jpeg,image/webp\" class=\"sr\" tabindex=\"-1\" aria-hidden=\"true\">`"
+     }
+    },
+    {
+     "id": "UX2-9",
+     "severity": "minor",
+     "title": "Sheet view captions run together on phones ('FRONT · 702SIDE · 702BACK · 702', with 'PX' on its own line)",
+     "location": "build-comparison/src/app.html:329-330 (.viewcaps: flex, space-around, no gap, wrapping allowed) and 1447",
+     "evidence": "Script: scratchpad/review2/s/caps.js. At 360 px the three captions each break onto 2 lines; the gap between 'front · 702 px' (x 93–172) and 'side · 702 px' (x 172–244) is 0 px, and between side and back it is 2 px. At 390 and 414 px each caption still wraps, leaving 'PX' alone on a second line (gaps 11–19 px). Screenshot scratchpad/review2/ux/viewcaps-360.png (dpr 3) reads 'FRONT · 702SIDE · 702BACK · 702' over 'PX PX PX'. A 2,000 px sheet makes each caption one character longer ('2002 px').",
+     "expected": "Three separate captions under the three views, each on one line or clearly apart.",
+     "fix": "`.viewcaps { gap: 8px; } .viewcaps span { white-space: nowrap; }` and below 720 px drop ' px' or use a smaller form ('front 702'). Better, place each caption under its view's centre from res.views[v].x0/x1, as the gutter labels are placed.",
+     "verdict": {
+      "id": "UX2-9",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Reproduced with v/caps.js (fallback mono font; Plex Mono has the same 0.6 em advance, so widths match). At 360, 390 and 414 px every caption ('front · 702 px') wraps onto 2 lines (span height 26 px against a 13 px line), and the spans' boxes touch (gaps 0, 0). Screenshot v/caps-360.png (dpr 3) reads 'FRONT · 702SIDE · 702BACK · 702' over 'PX PX PX'. At 1280 they are single lines 43 px apart. The available width at 360 px is about 226 px for three 14-character captions of about 100 px each, so they cannot fit. The cause is .viewcaps (app.html:329-330): flex with space-around, no gap and wrapping text. A 2,000 px sheet adds a character ('2002 px').",
+      "better_fix": "CSS: `.viewcaps { gap: 8px; } .viewcaps span { white-space: nowrap; }` and `@media (max-width: 719px) { .viewcaps { letter-spacing: 0; } }`. In drawSheet (app.html:1447) drop the unit on narrow screens: `'<span>' + v + (innerWidth < 720 ? ' ' : ' · ') + V[v].heightPx + (innerWidth < 720 ? '' : ' px') + '</span>'`. 'front 2002' is about 66 px at letter-spacing 0, three fit in about 210 px, and the gutter's unit can be stated once ('heights in px'). Or place each caption under its view's centre from V[v].x0/x1, as the gutter labels are placed."
+     }
+    },
+    {
+     "id": "UX2-10",
+     "severity": "minor",
+     "title": "Target outline boxes show broken-image icons until the first outline is drawn",
+     "location": "build-comparison/src/app.html:517 (<img> with no src), 1595 (none() removes src), 1649 (drawTarget runs 400 ms after the lazy start, then blocks about 2 s)",
+     "evidence": "Script: scratchpad/review2/s/emptyboxes.js, 1280x900, clicking the 'Measure a character' jump link. When the solver starts (762 ms), the target status reads 'Drawing…', #tgtFront has no src and naturalWidth 0, and the image is in view. The outline appears only at 2,602 ms, and the main thread is blocked for about 1.9 s in between (long task in s/lazy.js), so that frame stays on screen. Screenshot scratchpad/review2/ux/target-before-start-390.png shows the two 220–320 px boxes with Chromium's broken-image icon and the alt text 'Target outline, front view'. The same boxes return after any refused target, because none() removes the src. Screen readers also announce two images that do not exist.",
+     "expected": "No broken-image placeholders: an empty, labelled area ('The outline appears here') or nothing until an outline exists.",
+     "fix": "Put `hidden` on .target-imgs until the first successful draw, and set it again in none(). Or give the boxes a CSS placeholder and set the alt only when a src is set.",
+     "verdict": {
+      "id": "UX2-10",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Reproduced (v/empty.js, v/empty3.js). When the target status reads 'Drawing…', #tgtFront has src=null, naturalWidth 0 and complete=true, and it sits in view at 220 px tall (390 px wide). The more lasting case: target 15 on 'Army men, 5th percentile' is refused ('The full-size outline fails the tool's own checks…'), none() removes both srcs, and the boxes then stay indefinitely as two 220 px white frames, each with Chromium's broken-image icon and the alt text 'Target outline, front view' / 'Target outline, side view' (v/target-refused-390.png). Screen readers also announce two images that do not exist. I could not screenshot the transient pre-draw frame, because the main-thread solve blocks capture, but the refused state shows the same rendering persistently.",
+      "better_fix": "`<div class=\"target-imgs\" id=\"tgtImgs\" hidden>` in app.html:517. In drawTarget's success path, after setting the srcs: `$('tgtImgs').hidden = false;`. In none(): `$('tgtImgs').hidden = true;`. The page already enforces [hidden] (round 1 L9)."
+     }
+    }
+   ]
+  },
+  {
+   "lens": "code",
+   "verified_ok": [
+    "**Worker in use.** It is used both from file:// and over http: one Blob URL and one worker per page, with no growth across measurements.",
+    "**Worker results match the main thread.** Measure.measureSheet in the page, on the same posted image and options, gives an identical result (every field equal; score 25.697556851735232 both ways).",
+    "**Worker fallback works.** With CSP worker-src 'none', with Worker undefined, and with a worker script that throws on load, the example still measures 26 (24–28) on the main thread.",
+    "**refineViews matches the old whole-sheet refinement.** Masks differ by 283 px on duo.jpg (Rex 2.5447 vs 2.5448 m³), by 319 and 124 px on the Rex and Ollie turnarounds (volume ratios 1.00013 and 1.00001, girths identical), and by 0 px on the page's example (25.698 both).",
+    "**Crops cannot damage neighbours.** They are bounded halfway between views, so they cannot overwrite a neighbouring view or the height bar (at most one shared gap column).",
+    "**sliceRotated fix.** The regression test fails on the 3cd65f5 code (ratios 1.1645 and 1.1741) and passes on HEAD (1.0000).",
+    "**Skull-row checks.** Rows of 5000, +400 and −40 are refused in Node and on the page.",
+    "**Side-view check.** It passes the real turnarounds (0.94/0.60 and 1.07/0.64) and refuses a front-plus-back sheet.",
+    "**Arm clearance.** On the arms and thighs limit sheets the arms are drawn at the exact rest angle and clear the body (armClearAt is true at the unrounded angle).",
+    "**compute_limits.js is deterministic.** Its fresh run equals the committed limits.json under Node 22.22 (test.js) and Node 20.20, and takes about 20 s. test.js takes 58 s in total.",
+    "**compile_facts.py is deterministic and offline.** Two runs are byte-identical to the committed facts.json, and it makes no network calls (only urllib.parse). All 18 archive.org API URLs cited in research/round1 have entries in archive_snippets.json.",
+    "**Archive quote picks.** They are correct for the Asgardian and Thor density facts, Hulk, Colossus (both searches), Kingpin, Juggernaut (helmet/skullcap and the 6'10\"/900 lb entry), and the comic body-fat fact. The Angel quote is labelled as such in the notes.",
+    "**CI catches stale data.** The 'Committed builds match the sources' step fails (exit 1) when research/corrections.json is edited without recompiling facts.json. A stale limits.json is caught by test.js's whole-object deepStrictEqual.",
+    "**Builds reproduce the committed pages.** Build Comparison and Build Calculator both rebuild to byte-identical dist/index.html.",
+    "**All test suites pass.** Build Comparison: test.js 30 passed, duo.js all passed (2.545 m³), shots.js no problems. Build Calculator: test.js 22 passed, shots.js no problems.",
+    "**No XSS route.** The file name goes only to textContent and the JSON copy; skull rows and the target are parsed to numbers; tOrder and tShape are selects; source URLs are filtered to http(s) and escaped.",
+    "**Copy refuses edited fields.** After a field edit, Copy refuses (the change event on blur marks the result stale), including when the edit happens during a running measurement.",
+    "**solveTarget usually converges.** It lands within 0.2% at 300 px on 60 of 66 (shape, target) pairs scanned. For target 5 it returns reason fails/range. A pure power law converges in 12 or fewer evaluations."
+   ],
+   "findings": [
+    {
+     "id": "C2-1",
+     "severity": "major",
+     "title": "The measuring tool drops near-level arms without a warning and slices them as torso, adding about 10% volume. This skews the target tool, the face-limit band and the giants' drawing checks",
+     "location": "src/measure.js frontLandmarks() arms (`if (pts.length < 0.1 * Hp) return null;`) and measureSheet volume(). Callers: tools/compute_limits.js scoreAt() (arms drawn at Math.max(35, rest + 2), which is 92° when rest = 90); src/app.html drawingCheck(), drawTarget(); tools/export_targets.js",
+     "evidence": "An arm is kept only if its run spans at least 10% of the figure's height in image rows. A widened figure's arms rest 65–90° out, so they span fewer rows and are dropped. Nothing warns: `problems` only reports a missing armpit. Those rows are then sliced as torso (front width × torso side depth).\n\n**Reproduced with scratchpad/review2/code/disc.js and disc_parts.js** (ansur2_m_p50 template, 1,000 px):\n- f = 1.7408: arms 68.6°, both found. Torso 0.1674 m³, arms 0.0095 m³, score 75.32.\n- f = 1.75: arms [null, null]. Torso 0.2043 m³, arms 0, score 83.82.\n- So the score rises 11% for 0.5% more width.\n\n**Target tool, on the page (code/page_target_pw80.js):** 'Army men, median', target 80 gives \"it measures 73 (target 80) … and passes the tool's checks\". The 5th percentile gives 72.5 and the 95th 73.1. The CLI `node tools/export_targets.js --score 80` writes target-80-*.png and prints \"measured score 72.9 (target 80)\". No outline on these shapes measures between about 75 and 83.\n\n**Face limit (code/face_arms.js):** on all six templates the face sheet is drawn with the arms at 92° (rest 90 means 'cannot clear', plus 2). The tool finds 0 arms on every one. The ratio tool ÷ (no-arm reading + arms sliced across their axis with sliceRotated) is:\n- 1.17–1.21 on the face sheets\n- 1.07–1.10 on the same templates' arms and thighs sheets, where the arms are found\n\nThe steep-BMI end (f = 1.786, arms at 70.1°) also finds 0 arms. Rescaling the found-arm reading at f = 1.7408 (75.3) by f² gives about 79, against the stored 86.89. So both ends of the face band (87–200, and 189 by contact geometry) read about 10% high.\n\n**Drawing check (code/drawcheck3.js):** for 8 comic giants the tool finds 0 arms: Abomination, grey Hulk, savage Hulk, Juggernaut, the Marvel.com Hulk, Darkseid, Thor and the Thing. Their tool ÷ (no-arm + sliced arms) is 1.23–1.25, against 1.08–1.10 for heavy builds whose arms are found (Coleman 1.09, Luke Cage 1.09). The details panel says, for example, savage Hulk \"weighs 17% more than the weight counted\" and Thor \"22% more\". Read like the other figures' arms, these would be about 13–15 points lower.",
+     "expected": "The volume of a figure should change smoothly with its width. Arms at any angle up to horizontal should be found and sliced across their own axis. If they can't be found, the tool should warn and refuse, not count them as torso. The face band, the giants' drawing checks and the target outlines all depend on this reading.",
+     "fix": "- In frontLandmarks, accept an arm by its length along its axis (row span ÷ cos(angle), or the path of the run centres), not by its row span. Add a warning when an armpit is found but no arm.\n- Or slice arms with sliceRotated, the way frontOnly does.\n- In compute_limits.js, cap the drawing angle at 90° (do not draw at rest + 2 when rest = 90).\n- Then recompute limits.json and the drawing checks.\n- Add a test that the score is continuous through f = 1.70–1.80 on the median template.",
+     "verdict": {
+      "id": "C2-1",
+      "real": true,
+      "severity": "major",
+      "reasoning": "Reproduced independently on HEAD 1f32e2c. The two commits after 7061d55 touch only STATUS.md and history/, so build-comparison is unchanged. Scripts are in scratchpad/review2v/c2/.\n\n**The jump (c1_scan.js, c1_pts.js; ansur2_m_p50, 1,000 px, arms at max(35, rest+2)):**\n- f 1.745, arms 68.0°: the tool finds both arms (−68.9/68.9°). Torso 0.1684 m³, arms 0.0094 m³, score 75.70.\n- f 1.75, arms 68.2°: both arms null. Torso 0.2043 m³, arms 0, score 83.82.\n- Cause: the left arm's run covers 99 image rows against the `pts.length < 0.1 * Hp` threshold of 100. At 1.745 it covers 101.\n- The same f 1.75 shape drawn with the arms at 60° is found and reads 75.08, so the jump is the detector's, not the body's.\n- The warnings at 1.745 and 1.75 are identical: nothing says an arm was dropped.\n\n**Target tool:**\n- The page in Chromium, 'Army men, median', target 80, prints: \"…× 1.71 …: it measures 73 (target 80) … and passes the tool's checks.\"\n- Node emulation of drawTarget: p5 → 72.52, p95 → 73.13.\n- CLI `node tools/export_targets.js --score 80` prints \"measured score 72.9 (target 80)\" and writes the sheets.\n- The page's default outline (target 100, f 1.937) is itself one with no arms found.\n\n**Face limit (c1_face.js):** every template's face sheet has rest = 90 and is drawn at 92°; the tool finds no arms on any of them. My reference is the same sheet measured without arm parts, plus each arm's own pixels sliced across its axis with sliceRotated (k = 1). Tool ÷ reference:\n- face sheets: 1.17–1.21\n- the same templates' arms-limit sheets, where the arms are found: 1.07–1.09\n- steep-BMI point (f 1.786, arms 70.1°, no arms found): 1.226, against 1.112 at f 1.7408 where they are found.\nSo both ends of the shown face band (87–200) read about 10% high compared with how the other limits are read.\n\n**Drawing check (c1_draw.js, the page's drawingCheck emulated):**\n- No arms found for Abomination, grey Hulk, savage Hulk, the Marvel.com Hulk, Juggernaut, Darkseid, Thor and the Thing. Their ratio is 1.23–1.25, against 1.02–1.11 for every figure whose arms are found.\n- Page figures reproduce: savage Hulk 17%, Thor 22%. Normalised to the found-arm bias, the giants' excess is about 0–7%, about 13–15 points lower.\n\n**On the fix:** the reviewer's 'cap at 90°' alone would not help. A horizontal arm still spans few rows, and at rest = 90 the arm overlaps the body at every angle. The arms must be measured along their own axis, or the sheet refused.",
+      "better_fix": "1. src/measure.js frontLandmarks: judge an arm by its length along its axis, not its row count:\n```js\nif (!arm) { if (pts.length > 0.03 * Hp && rowsSinceArm++ > 0.02 * Hp) break; else continue; }\n...\nif (pts.length < 3) return null;\nvar line = fitLine(pts), ang = Math.atan(line.b), c = Math.cos(ang);\nif ((pts[pts.length - 1][1] - start) / Math.max(c, 0.05) < 0.1 * Hp) return null;\n```\n2. In measureSheet, refuse instead of counting the arm as torso:\n```js\n[0, 1].forEach(function (s) {\n  if ((s ? F.rows.armpitR : F.rows.armpitL) != null && !F.arms[s]) {\n    out.ok = false;\n    out.errors.push('Front view: an arm was found at the armpit but could not be followed; it would be counted as torso (volume about 10% high).');\n  }\n});\n```\n3. tools/compute_limits.js scoreAt and app.html drawingCheck: when rest >= 60, read the figure as (the sheet measured without its arm parts) + 2 × M.sliceRotated(armMask, w, h, armK, armDeg) × mPerPx³, the way frontOnly does. Then regenerate limits.json.\n4. Add a test that the score is continuous on ansur2_m_p50 for f = 1.70–1.80 (no step over 2% between f values 0.005 apart)."
+     }
+    },
+    {
+     "id": "C2-2",
+     "severity": "major",
+     "title": "'Front and back landmarks line up' rejects sheets whose back view is the exact mirror of the front. The target tool and the CLI then refuse valid targets, and the CLI refuses every target on the 5th-percentile base",
+     "location": "src/measure.js frontLandmarks() waist (argmin of the torso width between chest + 5% and crotch − 5%) and the front/back check in measureSheet (compares detected Fdet with B). Also Figure.solveTarget (gives up if f = 1 fails), tools/export_targets.js noSheet(), tools/compute_limits.js scoreAt() (does not check r.ok)",
+     "evidence": "renderSheet draws the back view as the exact mirror of the front. The waist row is the argmin of a nearly flat width profile, so one-pixel rasterisation differences move it a long way.\n\n**Mirror sheets rejected (code/mirror_scan.js):**\n- ansur2_m_p5 at f = 1, 800 px: \"off: waist (front 316, back 368)\", 6.5% of the height against a 2% tolerance. Rejected.\n- 6 of 90 mirror sheets fail (6 shapes × f 0.8–1.2 × 600, 800 and 1,000 px).\n- ansur2_m_p95 at f = 1.1, 1,000 px: \"waist (front 395, back 683)\".\n\n**Detected waist (code/waist.js):** without guide lines the waist lands at 0.685 of stature, the top edge of its search band, on p50, p95 and the largest-arm soldier. The template's waist is at 0.601.\n\n**On the page (code/page_target_pw.js):** 'Army men, 5th percentile' with target 23 or 18 gives \"The full-size outline fails the tool's own checks (front and back landmarks line up (within 2% of the height)), so it is not offered.\" Emulating the page (code/page_target.js) also refuses p5 at 15, 22 and 24, p95 at 60, and the largest-arm soldier at 40.\n\n**CLI:** `node tools/export_targets.js --score 30 --build ansur2_m_p5` (default --px) gives \"No passing sheet reaches 30 on this base: beyond widths x 1.00 (score NaN) the drawing fails the tool's own checks.\" Scores 60 and 200 give the same, so every target is refused, and the message prints NaN.\n\n**compute_limits.js** stores p5's score_at_f1 (22.99) from a sheet that fails this check.",
+     "expected": "A sheet whose back view is the mirror image of its front should pass a check meant to catch misaligned views. A 2% alignment test needs landmarks that are stable to within 2%.",
+     "fix": "- Take the waist as the middle of the rows within about 1% of the minimum width. Or, when the sheet's guide lines are found (they cross every view), use those rows for both views. Or test the front's width at the back's waist row rather than comparing the two argmin rows.\n- In solveTarget, do not stop when f = 1 fails; search nearby.\n- Print 'the base sheet fails …', not 'score NaN'.\n- Make compute_limits scoreAt require r.ok.",
+     "verdict": {
+      "id": "C2-2",
+      "real": true,
+      "severity": "major",
+      "reasoning": "Reproduced exactly.\n\n**Mirror scan (c2_mirror.js):** 6 shapes × f 0.8–1.2 × 600/800/1,000 px, back view = renderSheet's exact mirror. 6 of 90 sheets fail 'front and back landmarks line up', the same cases the reviewer lists:\n- p5, f 1, 800 px: \"off: waist (front 316, back 368)\", 52 px = 6.5% against a 16 px tolerance\n- p95, f 1.1, 1,000 px: \"waist (front 395, back 683)\"\n\n**Why the waist moves (c2_waist.js):**\n- On p50, p95 and the largest-arm soldier, the detected waist sits at 0.685 of stature, which is the top edge of its search band. The template's waist is at 0.601.\n- On p5, 74 rows are within 1 px of the minimum width, so the argmin flips between mirror images.\n- The sheets carry five guide lines and F uses them, but the check compares Fdet and B, which are both detected without them.\n\n**On the page (Chromium):** Army men, 5th percentile, targets 23, 18 and 15 all give \"The full-size outline fails the tool's own checks (front and back landmarks line up (within 2% of the height)), so it is not offered.\"\n\n**Node emulation of drawTarget:** also refuses p5 at 22 and 24, p95 at 60 (waist 747/395 and crotch 800/598), and the largest-arm soldier at 40.\n\n**CLI:** `--build ansur2_m_p5` with --score 30, 60 or 200 each prints \"No passing sheet reaches N on this base: beyond widths x 1.00 (score NaN) the drawing fails the tool's own checks.\" and exits 1.\n\n**compute_limits:** scoreAt does not check r.ok, so it stores p5 score_at_f1 = 22.99 from the f = 1, 800 px sheet that fails this check.\n\nOne of the six shapes in the target picker is unusable for most targets, so this is a broken control: major.",
+      "better_fix": "1. src/measure.js measureSheet: when the five guide lines are found, give the back view the same rows, and compare only the rows that were detected on both views:\n```js\nvar fromLines = inside.length === 5 ? given : {};\nvar B = V.back ? frontLandmarks(mask, w, V.back, (opts.skullRows || {}).back, fromLines) : null;\nvar Fcmp = inside.length === 5 ? F : Fdet;\n['neck', 'armpit', 'waist', 'crotch', 'knee'].filter(function (k) { return fromLines[k] == null; }).forEach(...compare Fcmp.rows[k] with B.rows[k]...);\n```\n2. frontLandmarks: take the waist as the middle of the rows whose width is within 1% of the narrowest, not the first argmin:\n```js\nvar wr = [];\nfor (y = Math.round(chest + 0.05 * Hp); y < crotch - 0.05 * Hp; y++) { var wv = widthAt(y); if (wv) wr.push([y, wv]); }\nvar wmin = Math.min.apply(null, wr.map(function (q) { return q[1]; }));\nvar nb = wr.filter(function (q) { return q[1] <= wmin * 1.01 + 1; });\nwaist = nb.length ? Math.round((nb[0][0] + nb[nb.length - 1][0]) / 2) : null;\n```\n3. tools/export_targets.js noSheet: when the base fails, print 'The base sheet (widths x 1.00) fails the tool's own checks', not 'score NaN'.\n4. tools/compute_limits.js scoreAt: `if (!r.ok || !r.score) throw ...`."
+     }
+    },
+    {
+     "id": "C2-3",
+     "severity": "major",
+     "title": "A measurement still running when a new sheet is loaded lands on the new sheet, and Copy exports its numbers under the new file's name",
+     "location": "src/app.html loadFile() (does not invalidate the running job: tool.run is not bumped) and the measure() callback (`if (run !== tool.run) return;` then writeResults on tool.img)",
+     "evidence": "Reproduced with scratchpad/review2/race_load.js:\n1. Load big-p95.png (a 2,000 px figure, about 10 s to measure), type 1.80 and press Measure.\n2. 0.3 s later, load small-wide.png.\n3. When the first result returns, the page shows sheetName \"small-wide.png (1564 × 580 px)\" with viewCaps \"front · 2002 px side · 2002 px back · 2002 px\" and the p95 results table. The p95 landmarks are drawn over the new image, and tH is empty.\n4. Press Copy. It exports `name=small-wide.png weight=110.8` with notes `score 31.6 (30.2-33.1) at 7.5% fat`: the first sheet's measurement, labelled 'measured from art' under the second sheet's name.",
+     "expected": "A result belongs only to the image and inputs it was measured from. Loading a new sheet should discard any measurement still running.",
+     "fix": "- Increment tool.run, and clear the status timer, in loadFile and in the Soldier-sheet handler.\n- In the callback, also require that the measured image is still tool.img.\n- Optionally terminate and recreate the worker, so the stale job stops.",
+     "verdict": {
+      "id": "C2-3",
+      "real": true,
+      "severity": "major",
+      "reasoning": "Reproduced in Chromium (scratchpad/review2v/c2/br.js race).\n\n**Steps:**\n1. Load big-p95.png (4,490 × 2,320, a 2,000 px figure), type 1.80 and press Measure.\n2. 0.3 s later, load small-wide.png (1,022 × 522).\n\n**What happens:**\n- Straight after the second load the status reads \"Loaded…\" and sheetName \"small-wide.png (1022 × 522 px)\".\n- The first job returns after 9.2 s and is written over the new sheet. viewCaps reads \"front · 2002 px side · 2002 px back · 2002 px\" on a 1,022 × 522 canvas, the results show the p95 score (32, 30–33), and tH is empty.\n- Copy succeeds (\"Copied: 118 lines\"). It exports name=small-wide.png, weight 110.8, notes \"score 31.6 (30.2-33.1) at 7.5% fat\" and height 1.8: the first sheet's measurement under the second file's name.\n\n**Cause:** loadFile sets tool.res = null but never bumps tool.run, so the callback's `run !== tool.run` guard passes.\n\n**Caveat for the fix:** bumping tool.run alone would leave the Measure button disabled and the old 'Measuring… N s' ticker running. The stale callback returns before re-enabling the button, and the interval is cleared only when the stale job finishes. The fix must reset both.",
+      "better_fix": "In src/app.html:\n\n1. Add one function that cancels the current run:\n```js\nfunction cancelRun() {\n  tool.run++;\n  if (tool.tick) { clearInterval(tool.tick); tool.tick = null; }\n  if (worker && Object.keys(workerJobs).length) { worker.terminate(); worker = null; workerJobs = {}; }\n  $('measureBtn').disabled = false;\n}\n```\n2. Call `cancelRun()` first in loadFile's im.onload and in the tSoldier handler.\n3. In measure(), capture the image: `var img = tool.img;`. In the callback, use `if (run !== tool.run || img !== tool.img) return;`.\n4. In measureAsync, store the interval on `tool.tick` (see C2-6)."
+     }
+    },
+    {
+     "id": "C2-4",
+     "severity": "major",
+     "title": "The example-sheet note blames the 26 vs 27 gap on drawing size. The real cause is that the example draws the soldier's unscaled girths at 1.80 m, so it is not the same shape",
+     "location": "src/app.html exampleSheet() (uses byId('ansur2_m_p50').girths) and writeResults() example text",
+     "evidence": "The page says (code/example_text.js): \"The example is the median soldier at 1.80 m … The limits section reads the same shape at 27 from a larger drawing; the reading moves by a few percent with the drawing's size.\" The example measures 26 (24–28).\n\nexampleSheet() draws his own girths, measured at his height of 1.755 m (chest 1.056 m), on a 1.80 m figure. The limits and the target tool use calc.compute({heightM: 1.8}), whose girths are scaled up by 1.8/1.755 (chest 1.083 m).\n\nReadings (code/example_gap.js, refine 0):\n\n| Girths | 700 px | 800 px |\n|---|---|---|\n| The page's (unscaled) | 25.83 | 25.82 |\n| Scaled to 1.80 m | 27.01 | 27.26 |\n\nDrawing size moves the reading by 1% or less. The roughly 6% gap comes from a 2.5% narrower shape.",
+     "expected": "The page should either use the same shape, or give the true reason for the difference.",
+     "fix": "Draw the example from calc.compute({ buildId: 'ansur2_m_p50', heightM: 1.8 }) girths. It then reads about 27, as the limits do, and the sentence can drop the drawing-size explanation. Otherwise, say that it is his own girths drawn at 1.80 m, a slimmer shape.",
+     "verdict": {
+      "id": "C2-4",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Reproduced.\n\n**What the page says (Chromium):** \"The example is the median soldier at 1.80 m … The limits section reads the same shape at 27 from a larger drawing; the reading moves by a few percent with the drawing's size.\" The example reads 26 (24–28).\n\n**What the code does:** exampleSheet() uses byId('ansur2_m_p50').girths. Those are his own girths at his own height of 1.755 m (chest 1.0560 m), drawn on a 1.80 m figure. The limits and the target tool use calc.compute({heightM: 1.8}), whose chest is 1.0831 m, scaled by 1.8/1.755 = 1.0256.\n\n**Readings (c4.js):**\n\n| Girths | Measured the page's way, 600–1,000 px | Measured the limits' way |\n|---|---|---|\n| Unscaled (the page's) | 25.61–25.72 | 25.77–25.83 |\n| Scaled to 1.80 m | 26.85–27.13 | 27.01–27.26 |\n\n- Drawing size moves the reading by about 1% or less.\n- The roughly 6% gap is the 2.5% slimmer shape (volume goes as width²).\n- So the stated cause is wrong, and the example is not 'the same shape'.\n\n**Severity:** minor rather than major. It is one false explanatory sentence about a one-point gap in the tool's example, and no chart score depends on it.",
+      "better_fix": "In src/app.html exampleSheet(), draw from the 1.80 m girths, as drawTarget does:\n```js\nvar r = calc.compute({ buildId: 'ansur2_m_p50', heightM: 1.8 }), g = {};\nBuildCalc.SITES.forEach(function (s) { g[s] = r.girths[s].value; });\n```\nIt then reads about 27 (26.86 at 700 px). Replace the sentence with: \"The limits section reads the same shape at 27.\"\n\nIf the example keeps his own girths instead, write: \"It uses his own girths drawn at 1.80 m, a slightly slimmer shape than the limits section's median soldier scaled to 1.80 m (27).\""
+     }
+    },
+    {
+     "id": "C2-5",
+     "severity": "minor",
+     "title": "Figure.solveTarget treats a failing sheet inside the bracket as 'above target', loses the root, and returns a 10.8% miss as a success",
+     "location": "src/figure.js solveTarget(): the else branch `fh = f; if (ok(s)) sh = s;` and the final `return { f: fl, score: scoreAt(fl) }`",
+     "evidence": "Traced with code/../solve_trace.js (ansur2_m_p5, target 15, 300 px, as the page solves):\n1. Narrowing hits a failure at 0.667. edge() finds 0.692 (12.55), so the bracket is [0.692 → 12.55, 1 → 22.74].\n2. The first false-position point, f = 0.7729, fails the checks. Its score is 14.82, below 15, but it is treated as high: fh = 0.7729 while sh keeps the stale 22.74.\n3. The root, near 0.78, is now outside the bracket.\n4. After 41 evaluations it returns {\"f\":0.7208,\"score\":13.378}, a −10.8% miss with a non-null f, which callers treat as converged.\n\nOther misses from solve_scan.out: p5 target 22 gives 21.19 (−3.7%); Coleman 250 gives −0.32% after 33 evaluations. The test covers only p50 targets 20, 217 and 900, where no sheet fails.",
+     "expected": "The solver should hit the 0.2% tolerance, or report that it could not.",
+     "fix": "- On NaN, never put a stale score on the new endpoint. Bisect between the passing endpoint and the failing point, or probe both sides of the failure.\n- When the tolerance is not reached, return f: null with reason 'fails' (or a converged: false flag that drawTarget and export_targets check).\n- Add a regression test on ansur2_m_p5 at target 15.",
+     "verdict": {
+      "id": "C2-5",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Reproduced exactly (c5.js; ansur2_m_p5, target 15, 300 px sheets, as the page solves).\n\n**Trace:**\n1. 1.0 → 22.74; 0.667 fails.\n2. edge() settles on 0.692 (12.55), so the bracket is [0.692 → 12.55, 1 → 22.74].\n3. The next false-position point, 0.7729, fails the checks. Its raw score is 14.82, below the target, but the else branch sets fh = 0.7729 and keeps the stale sh = 22.74.\n4. The root is now outside the bracket. After 41 evaluations the solver returns {\"f\":0.7208,\"score\":13.378}, a −10.8% miss with a non-null f, which callers treat as a solution.\n\nA scan shows passing sheets that hit the target: f 0.7800 → 15.01, f 0.7775 → 14.95.\n\n**Other misses (Node emulation of drawTarget):** p5 target 22 → 21.19 (−3.7%); p50 target 80 → 79.25 (−0.9%).\n\nThe page's two full-size square-root steps partly hide this. On p5 the full-size sheet then fails C2-2's check anyway. test.js covers only p50 at 20, 217 and 900. Minor.",
+      "better_fix": "In src/figure.js solveTarget:\n\n1. Never pair a new endpoint with a stale score. On NaN, test a point just beside it; these failures are one-pixel landmark flickers:\n```js\nif (!ok(s)) { var f2 = f * 1.005; s = scoreAt(f2); if (ok(s)) f = f2; }\nif (ok(s) && s < target) { fl = f; sl = s; ... }\nelse if (ok(s)) { fh = f; sh = s; ... }\nelse { return { f: null, reason: 'fails', bestF: fl, bestScore: sl }; }\n```\n2. After the loop, return a point only if it meets the tolerance:\n```js\nvar sfl = scoreAt(fl);\nreturn near(sfl) ? { f: fl, score: sfl } : { f: null, reason: 'fails', bestF: fl, bestScore: sfl };\n```\n3. Add a test: solveTarget on ansur2_m_p5 at target 15 (300 px) either lands within 0.2% or returns f: null."
+     }
+    },
+    {
+     "id": "C2-6",
+     "severity": "minor",
+     "title": "Two quick measurements: two elapsed-time counters overwrite each other, and the new job waits behind the abandoned one",
+     "location": "src/app.html measureAsync() (a new setInterval per call) and the tSoldier handler (calls measure() while the button is disabled)",
+     "evidence": "code/two_quick.js: measure big-p95.png, then press 'Soldier sheet' 2.5 s later.\n- The status alternates \"Measuring… 3 s\", \"Measuring… 1 s\", \"Measuring… 4 s\", \"Measuring… 2 s\" and so on, up to 10.4 s.\n- The soldier sheet, normally under 1 s, returns after about 8 s, because it is queued in the single worker behind the superseded 2,000 px job. Nothing terminates that job.",
+     "expected": "One counter for the current run, and the superseded job cancelled.",
+     "fix": "Keep the interval handle on `tool` and clear it when a new run starts. When a newer run or a new sheet supersedes a job, call worker.terminate() and set worker = null, so the next call builds a fresh worker.",
+     "verdict": {
+      "id": "C2-6",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Reproduced in Chromium (br.js two). I measured big-p95.png, then pressed 'Soldier sheet (drawn here)' 2.5 s later.\n\n- The status alternates between two counters: \"Measuring… 3 s | Measuring… 1 s | Measuring… 4 s | Measuring… 2 s | … | Measuring… 8 s | Measuring… 6 s | Measuring… 7 s\".\n- The soldier result arrives 7.6 s after the click. A 700 px sheet measures in well under a second in Node. It waited in the single worker behind the superseded 2,000 px job, which nothing terminates.\n- Cause: measureAsync creates a new setInterval on each call, and only that job's own done() clears it.",
+      "better_fix": "In src/app.html measureAsync, keep one ticker:\n```js\nif (tool.tick) clearInterval(tool.tick);\nvar t0 = Date.now(), tick = tool.tick = setInterval(function () {\n  $('toolStatus').textContent = 'Measuring… ' + Math.round((Date.now() - t0) / 1000) + ' s';\n}, 1000);\nvar done = function (err, r) { clearInterval(tick); if (tool.tick === tick) tool.tick = null; cb(err, r); };\n```\nBefore posting a new job, if one is still pending, stop it:\n```js\nif (worker && Object.keys(workerJobs).length) { worker.terminate(); worker = null; workerJobs = {}; }\n```\nThe next call then builds a fresh worker. This uses the same cancelRun() as C2-3."
+     }
+    },
+    {
+     "id": "C2-7",
+     "severity": "minor",
+     "title": "The archive quote shown for Luke Cage is garbled OCR without the claimed words, and the Abomination quote stops before the claim",
+     "location": "tools/compile_facts.py QUOTE_PICK and OFFICIAL_ITEMS",
+     "evidence": "**Luke Cage.** The Sources section shows, for luke_cage_dense_tissue: \"it matched “…DiaMoNDBAcK—but graduated to battling bone tissue, and steel-hard skin. He recovers three times faster % from injury…”\". It does not contain 'dense'.\n\nThe same search (archive_snippets.json, \"steel-hard skin\") has a clean hit from item marvelcomicsency0000unse: \"strength, very dense muscle and bone tissue and steel-hard skin. He recovers three times faster from injury\". That hit is dropped because the item is not in OFFICIAL_ITEMS. The fact's own notes say \"A clean copy of the same DK text appears in the full-text search snippet.\"\n\n**Abomination.** The pattern r'Abomination.s body fortified|pounds of bone marrow and muscle' matches the first highlight: \"…Hulk’s. The gamma radiation that mutated the Abomination’s body fortified his cellular structure and added…\". That stops before \"over 800 pounds of bone marrow and muscle tissue\", which is the fact's label. The second highlight contains it.",
+     "expected": "The quote shown under each source should contain the words the fact relies on.",
+     "fix": "- Luke Cage: use r'dense muscle and bone tissue' and add marvelcomicsency0000unse to OFFICIAL_ITEMS (labelled as the DK Marvel Comics Encyclopedia).\n- Abomination: put r'pounds of bone marrow and muscle' alone (or first, with a preference for the most specific alternative).\n- Add a check that each picked quote matches a key phrase of the fact.",
+     "verdict": {
+      "id": "C2-7",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Reproduced from research/archive_snippets.json and the built dist/index.html.\n\n**Luke Cage.** The page shows, for luke_cage_dense_tissue: \"it matched “…DiaMoNDBAcK—but graduated to battling bone tissue, and steel-hard skin. He recovers three times faster % from injury…”\".\n- This is column-interleaved OCR, and it lacks the fact's words 'very dense muscle and bone tissue'.\n- A clean hit, \"strength, very dense muscle and bone tissue and steel-hard skin. He recovers three times faster from injury\", is in the same search from item marvelcomicsency0000unse (title: \"The Marvel Comics encyclopedia : a complete guide to the characters of the Marvel Universe\", lending library).\n- That hit is skipped because the item is not in OFFICIAL_ITEMS.\n\n**Abomination.** The pattern r'Abomination.s body fortified|pounds of bone marrow and muscle' takes the first matching highlight: \"…Hulk’s. The gamma radiation that mutated the Abomination’s body fortified his cellular structure and added…\".\n- The page shows that quote twice.\n- It stops before \"over 800 pounds of bone marrow and muscle tissue\", which the fact's label quotes.\n- The officialhandbook0001unse hit containing those words is present in the snippets.",
+      "better_fix": "In tools/compile_facts.py:\n```python\n'abomination_added_mass_composition': r'pounds of bone marrow and muscle',\n'luke_cage_dense_tissue': r'dense muscle and bone tissue',\nOFFICIAL_ITEMS = {..., 'marvelcomicsency0000unse'}  # DK, The Marvel Comics Encyclopedia (lending library)\n```\nAlso add a build check that each picked quote matches the fact's QUOTE_PICK key phrase and contains no OCR column debris. Then regenerate facts.json and dist."
+     }
+    },
+    {
+     "id": "C2-8",
+     "severity": "minor",
+     "title": "Tests do not cover what the round-1 fixes claim: no test sees the worker path, and an arms-flag assertion cannot fail",
+     "location": "test/shots.js (tool waits); test/test.js \"the chart's own figures …\" and \"each headline limit's score …\"",
+     "evidence": "- **Worker.** shots.js waits only for results rows and the duo.jpg validation. With a worker script that throws on load, or Worker undefined, the page falls back to the main thread and shows the same score, \"Score 26 (24–28)\" (code/fallback.js). A broken worker therefore passes CI, although the F5 fix is 'measuring runs in a Web Worker'.\n- **Arms flag.** `assert.strictEqual(c.arms, c.rest_deg >= L.arms.angle_deg)` compares the fresh run's flag with the fresh run's own rest angle. compute_limits defines arms as exactly rest >= angle, so this can fail only through the 0.1° rounding of rest_deg.\n- **Thighs and face flags** are never checked against Fig.thighContact or Fig.elbowFlexion.\n- **Face limit.** The 'headline limit … tool's reading' test re-measures only arms and thighs, so the face reading (arms at 92°, not found; see C2-1) is untested.",
+     "expected": "Each test should be able to fail on the defect its name describes.",
+     "fix": "- In shots.js, record Worker construction and a message from it with an init script, and fail if the tool fell back.\n- Recompute the thighs and face flags from the figure in the test.\n- Add the face item to the re-measure test, with an assertion that the arms were found.",
+     "verdict": {
+      "id": "C2-8",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Reproduced, with one part softened.\n\n**Worker.** test/shots.js never mentions Worker. In Chromium I ran the page twice: once with `window.Worker = undefined`, once with a Worker whose script throws on load. Both show the same \"Score 26 (24–28)\" and log no console error, because worker.onerror calls preventDefault and falls back to the page. So a broken worker passes CI, although round1.md code F5 says measuring now runs in a Web Worker.\n\n**Flags (mutation test).** In a copy I changed compute_limits.js so the face flag is `elbowFlexion < 140` (30 chart builds then 'meet' the face test, Captain America among them) and the thighs flag is `thighContact >= 0.3`. I regenerated limits.json and ran node test/test.js: \"30 passed, 0 failed\". The test named \"…the tests match the stored flags\" checks only the arms flag.\n\n**Softened part.** The claim that the arms-flag assertion 'cannot fail' is too strong. limitsRun is the fresh run, but rest_deg is independently re-derived (`near(Fig.armRestAngle(mk), c.rest_deg, 0.1)`), so the assertion does pin the arms definition and threshold.\n\n**Face re-measure.** The 'headline limit' test leaves out the face limit. Its name covers only headline limits, and face has headline: false, so that part is a coverage gap rather than a mislabelled test.",
+      "better_fix": "1. test/test.js, in the chart-figures test, recompute the other two flags from the figure:\n```js\nconst fig = mk(20), crease = limitsRun.elbow_crease_fraction_of_upper_arm * fig.dims.armStations.Lu;\nassert.strictEqual(c.thighs, Fig.thighContact(fig) >= L.thighs.fraction, id + ' thighs flag');\nassert.strictEqual(c.face, Fig.elbowFlexion(fig, crease) < L.face.max_flexion_deg, id + ' face flag');\n```\n2. test/shots.js, before goto:\n```js\nawait ctx.addInitScript(() => {\n  const W = window.Worker; window.__wmsg = 0;\n  window.Worker = function (u, o) { const w = new W(u, o); w.addEventListener('message', () => window.__wmsg++); return w; };\n});\n```\nAfter the tool finishes:\n```js\nif (!(await p.evaluate(() => window.__wmsg > 0))) problems.push('tool: measuring did not run in the worker');\n```\n3. Re-measure the face sheet in the limits test and assert both arms were found (this fails until C2-1 is fixed)."
+     }
+    },
+    {
+     "id": "C2-9",
+     "severity": "minor",
+     "title": "round1.md overstates the per-view crop speed-up",
+     "location": "research/reviews/round1.md, code F5: \"Refinement runs on each view's crop: about a third faster\"",
+     "evidence": "code/speed.js, measureSheet on a 4490 × 2320 sheet (2,000 px figure, refinement on):\n- 3cd65f5 code: 12.2 s and 11.1 s\n- HEAD: 10.1 s and 9.5 s\n\nThat is about 15% faster. On the turnarounds (code/../cmp_refine.js): Rex 2.00 s before, 2.07 s after; Ollie 2.01 s before, 1.68 s after.",
+     "expected": "The review record should state what was measured.",
+     "fix": "Change it to 'about 15% faster on a 2,000 px sheet, little change on the 800 px turnarounds', or measure again and quote the numbers.",
+     "verdict": {
+      "id": "C2-9",
+      "real": true,
+      "severity": "minor",
+      "reasoning": "Reproduced (c9.js, c9b.js and c9c.js; measure.js from 3cd65f5 against HEAD, in the same process, alternating).\n\n| Measured | 3cd65f5 | HEAD | Less time |\n|---|---|---|---|\n| measureSheet, 4,490 × 2,320 sheet (2,000 px figure), refinement on | 11.71 s, 11.88 s | 9.60 s, 9.74 s | about 18% (1.22× speed) |\n| Refinement step alone | 10.26 s, 9.10 s | 7.75 s, 8.00 s | 12–25% |\n| Rex turnaround (1,941 × 810) | 1.85 s, 1.61 s | 1.81 s, 1.47 s | 0–15% |\n| Ollie turnaround (1,860 × 845) | 1.78 s, 1.47 s | 1.51 s, 1.45 s | 0–15% |\n\nround1.md code F5 says \"Refinement runs on each view's crop: about a third faster\". No reading of 'a third' (33% less time, or 1.33× speed) matches. The review record overstates the gain.",
+      "better_fix": "In research/reviews/round1.md, code F5, replace \"about a third faster\" with: \"about 18% faster on a 2,000 px sheet (11.8 s to 9.7 s in Node), little change on the turnarounds\". Re-measure the \"much less memory\" claim before keeping it."
+     }
+    }
+   ]
+  }
+ ]
+}

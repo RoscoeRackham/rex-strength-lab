@@ -14,9 +14,10 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 - Build Comparison Step 1 (cloud session, branch `claude/hopeful-keller-vly1s9`, started 2026-10-11). Also claims root `README.md` (one row for the new page), one build line in `CLAUDE.md`, `.github/workflows/test.yml` (build and test steps for the new project) and a new `history/` entry for this session (`history/2026-10-11-build-comparison-step1/`, built by `history/tools/build_history_step1.py`).
   - Done: research (six topics, each verified), design (three proposals, two judges, one spec: `build-comparison/research/reviews/design.md`), the page, the measuring tool (validated on duo.jpg), functional limits, tests (`test/test.js`, `test/duo.js`, `test/shots.js`), README and `data/NOTES.md`.
   - Done: review round 1 (five lenses, each finding reproduced or refuted by a skeptic): 76 findings, 69 confirmed, all fixed or partly fixed with the reason stated in `build-comparison/research/reviews/round1.md`. 43 research corrections now applied (`research/corrections.json`). CI now also regenerates `build-comparison/data/facts.json` and fails if it differs.
-  - Published (private): https://claude.ai/artifact/DBtZrixDeZnvRwDhZMsCDn, republished with the round 1 fixes.
-  - In progress: review round 2 (checks every round 1 fix and looks for regressions); then its fixes, republish, the pull request, and the `history/` entry.
-  - `build-calculator/data/builds.json`: one correction (Kouri 1995's non-users now use Table 1 of the full paper; logged in its NOTES.md, Build Calculator rebuilt and tested). `src/calc.js` is unchanged.
+  - Done: review round 2 (every round 1 fix re-checked, plus regressions): 40 findings, all confirmed, all fixed or partly fixed as listed in `build-comparison/research/reviews/round2.md`. Main change: the page's own figures are scored as drawn (head and body by the measuring tool, arms as round limbs), after the tool was found to lose arms held far out. Still open for Step 2: the tool cannot follow arms that cannot hang clear of the body.
+  - Published (private): https://claude.ai/artifact/DBtZrixDeZnvRwDhZMsCDn, republished with the round 2 fixes. Pull request: https://github.com/RoscoeRackham/rex-strength-lab/pull/5 (not merged).
+  - In progress: the `history/` entry for this session.
+  - `build-calculator/data/builds.json`: two changes to the Kouri 1995 non-users build (Table 1 of the full paper; renamed "Men who never used steroids", as 18 of the 74 were trial volunteers), logged in its NOTES.md; Build Calculator rebuilt and tested. `src/calc.js` is unchanged.
 
 ## Waiting on
 
