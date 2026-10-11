@@ -3273,13 +3273,19 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     RFIT: 60, NFAR: 1.3, // past 60 m: no faster than r^-1.3
     // thresholds, peak particle velocity at the ground, m/s (research/final-presence.json, thr_* and ripple_*):
     //   feel: just perceptible indoors (BS 5228-2 Table B.1, 0.3 mm/s; 0.14-1)
-    //   shimmer: a glass of water visibly ripples (derived, not measured: about 0.2 mm/s, 0.02-1)
+    //   feelOnce: one isolated event (a stomp) barely felt by most people (Caltrans 2020 Table 20, transient: 1.0 mm/s)
+    //   shimmer: a glass of water visibly ripples (estimate: about 0.2 mm/s side to side, 0.02-1); compared with the
+    //     horizontal shaking, not the vertical (see HV)
     //   rings: concentric rings in the glass, the film look (derived: about 0.5-1 mm/s vertical)
     //   rattle: windows and ornaments rattle (our estimate, no standard sets it: about 1 mm/s, 0.3-3)
     //   plasterWalk: cosmetic damage from repeated steps (Caltrans older homes, continuous: 7.6 mm/s)
     //   plaster: cosmetic damage from one event, a stomp or a landing (US Bureau of Mines RI 8507, plaster: 12.7 mm/s)
     //   footing: people lose their footing (estimate from earthquakes: about 300 mm/s, 80-600)
-    TH: { feel: 0.3e-3, shimmer: 0.2e-3, rings: 0.7e-3, rattle: 1e-3, plasterWalk: 7.6e-3, plaster: 12.7e-3, footing: 0.3 },
+    TH: { feel: 0.3e-3, feelOnce: 1e-3, shimmer: 0.2e-3, rings: 0.7e-3, rattle: 1e-3, plasterWalk: 7.6e-3, plaster: 12.7e-3, footing: 0.3 },
+    // horizontal over vertical shaking at the surface of uniform ground (Poisson's ratio 1/4): 1/3 in the near field,
+    // 0.68 for Rayleigh waves (vib_rayleigh_horizontal_and_resultant, derived). Only the water glass's shimmer uses it.
+    HV: { near: 1 / 3, far: 0.68 },
+    HORIZ: { shimmer: true },
     // a wild African elephant walking 20 m from a seismometer on sandy ground (Steinmann et al. 2025; our reading
     // of their figure): about 0.005 mm/s, falling about as 1/D from 5 to 100 m; real ones vary 0.15x to 8x
     ELEPHANT: { v: 0.005e-3, d: 20, lo: 0.15, hi: 8, dMin: 5, dMax: 100 },
@@ -3292,29 +3298,30 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   }
   // a pulse that carries impulse J over T: a Hann pulse of peak 2 J / T
   const impulseSource = (surface, J, T) => vibSource(surface, 'hann', 2 * J / T, T);
-  function ppvAt(src, d) {
+  function ppvAt(src, d, horiz) {
     if (!src) return 0;
-    if (Array.isArray(src)) return src.reduce((m, x) => Math.max(m, ppvAt(x, d)), 0);
+    if (Array.isArray(src)) return src.reduce((m, x) => Math.max(m, ppvAt(x, d, horiz)), 0);
     if (!(src.F > 0)) return 0;
     if (!isFinite(src.F)) return Infinity;
-    if (d > VIB.RFIT) return Math.max(ppvElastic(src, d), ppvElastic(src, VIB.RFIT) * Math.pow(VIB.RFIT / d, VIB.NFAR));
-    return ppvElastic(src, d);
+    if (d > VIB.RFIT) return Math.max(ppvElastic(src, d, horiz), ppvElastic(src, VIB.RFIT, horiz) * Math.pow(VIB.RFIT / d, VIB.NFAR));
+    return ppvElastic(src, d, horiz);
   }
-  function ppvElastic(src, d) {
+  // horiz: the side-to-side shaking instead of the up-and-down
+  function ppvElastic(src, d, horiz) {
     const { rho, cs, xi } = src.ground, r = Math.max(d, VIB.RMIN);
     const ramp = src.kind === 'ramp', T = ramp ? src.tau : src.T;
-    const near = (ramp ? 0.1875 : 0.375) * src.F / (rho * cs * cs * T * r);
-    const far = (ramp ? 0.181 : 0.620) * src.F / (rho * Math.pow(cs, 2.5) * Math.pow(T, 1.5) * Math.sqrt(r));
+    const near = (horiz ? VIB.HV.near : 1) * (ramp ? 0.1875 : 0.375) * src.F / (rho * cs * cs * T * r);
+    const far = (horiz ? VIB.HV.far : 1) * (ramp ? 0.181 : 0.620) * src.F / (rho * Math.pow(cs, 2.5) * Math.pow(T, 1.5) * Math.sqrt(r));
     const z = xi * r / (0.919 * cs * T);
     const D = ramp ? Math.pow(1 + Math.pow(z / 0.195, 2.05), -1.5 / 2.05) : Math.pow(1 + Math.pow(z / 0.224, 1.4), -2.5 / 1.4);
     return Math.max(near, far) * D;
   }
   // distance at which the vibration falls to v (m/s); 0 if it is below v even at the closest distance covered
-  function ppvReach(src, v) {
-    if (!(ppvAt(src, VIB.RMIN) >= v)) return 0;
-    if (ppvAt(src, 1e7) >= v) return Infinity;
+  function ppvReach(src, v, horiz) {
+    if (!(ppvAt(src, VIB.RMIN, horiz) >= v)) return 0;
+    if (ppvAt(src, 1e7, horiz) >= v) return Infinity;
     let lo = VIB.RMIN, hi = 1e7;
-    for (let i = 0; i < 100 && hi / lo > 1 + 1e-6; i++) { const mid = Math.sqrt(lo * hi); if (ppvAt(src, mid) >= v) lo = mid; else hi = mid; }
+    for (let i = 0; i < 100 && hi / lo > 1 + 1e-6; i++) { const mid = Math.sqrt(lo * hi); if (ppvAt(src, mid, horiz) >= v) lo = mid; else hi = mid; }
     return lo;
   }
   // past the ground's elastic range at distance d? The wave strain is about PPV / cs; close to the foot the static
@@ -3388,7 +3395,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const pressure = Fhold / body.footArea, peakPressure = Fpeak / body.footArea;
     const ratio = opt.groundHolds ? 0 : pressure / q, peakRatio = opt.groundHolds ? 0 : peakPressure / q;
     const src = [vibSource(surface, 'hann', Fpulse, Tpulse), vibSource(surface, 'ramp', kLoad * W, tRamp)].filter(Boolean);
-    return { h, Fr, v, stepRate, stride: 2 * v / stepRate, stance, kLoad, W, effort: e, Eimp, Fpulse, Tpulse, tRamp, kPeak, Fpeak, Fhold, pressure, peakPressure, q, ratio, peakRatio,
+    return { h, Fr, v, stepRate, stride: 2 * v / stepRate, stance, kLoad, W, effort: e, Eimp, Fpulse, Tpulse, tRamp, heelV: hs.v * sc, heelT: Thv, kPeak, Fpeak, Fhold, pressure, peakPressure, q, ratio, peakRatio,
       footprint: footprint(body, surface, pressure, opt.groundHolds), src: src.length ? src : null, modelled: !!groundOf(surface) };
   }
   // Footprint depth under a step. Sand and gravel: scaled from the one measured large-animal print. A weighed 2,530 kg
@@ -3422,12 +3429,16 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   function presence(body, surface, o) {
     const st = walkStep(body, surface, o);
     const reach = {};
-    for (const k of Object.keys(VIB.TH)) reach[k] = ppvReach(st.src, VIB.TH[k]);
-    return { step: st, ppv: (d) => ppvAt(st.src, d), nonlinear: (d) => ppvNonlinear(st.src, d), reach };
+    for (const k of Object.keys(VIB.TH)) reach[k] = ppvReach(st.src, VIB.TH[k], !!VIB.HORIZ[k]);
+    return { step: st, ppv: (d) => ppvAt(st.src, d), ppvH: (d) => ppvAt(st.src, d, true), nonlinear: (d) => ppvNonlinear(st.src, d), reach };
   }
+  // The Walk tab's thresholds for one step: losing one's footing is capped at 1 g up and down at the footfall's own
+  // frequency (peak velocity g T / (2 pi) for a pulse of length T), below the 300 mm/s earthquake value.
+  const walkThresholds = (step) => Object.assign({}, VIB.TH, { footing: Math.min(VIB.TH.footing, K.g * step.Tpulse / (2 * Math.PI)) });
   // The least step effort (0..1) at which the vibration at distance d reaches threshold v; Infinity if not even a stamp.
-  function walkEffortFor(body, surface, o, v, d) {
-    const f = (e) => ppvAt(walkStep(body, surface, Object.assign({}, o, { effort: e })).src, d) >= v;
+  // horiz: compare the side-to-side shaking (the water glass's shimmer).
+  function walkEffortFor(body, surface, o, v, d, horiz) {
+    const f = (e) => ppvAt(walkStep(body, surface, Object.assign({}, o, { effort: e })).src, d, horiz) >= v;
     if (f(0)) return 0;
     if (!f(1)) return Infinity;
     let lo = 0, hi = 1;
@@ -3458,6 +3469,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     // Energy counts as an air blast only when it is let go faster than sound can carry it off: something moving
     // past Mach 1 (a shock wave), or a fireball. Slower, it is a thump or a crash, not a blast wave.
     const shock = (v, E) => (v >= K.a0 ? E : 0);
+    const SOIL = new Set(['sand', 'gravel', 'softclay', 'stiffclay']);
     // Each move: run, what it is for (goal), the fastest thing it sets moving, and what it does to the ground and air.
     const MOVES = {
       throw: {
@@ -3473,6 +3485,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
           const L = o.obj.L || Math.cbrt(6 * o.obj.m / (Math.PI * (o.obj.rho || 1000))), v = r.flight.vImpact;
           return impulseSource(o.surface, momentumOf(v, o.obj.m), Math.max(1e-3, L / v));
         },
+        // a person thrown without the safe-passenger switch: the launch presses them past the ride limits
+        passenger: (r, o) => !!o.obj.passenger && !o.safePassenger && r.canMove && r.launchG > 0 && PASSENGER.felt(r.launchG, o.angle) > PASSENGER.noHarm(r.launchT),
         where: 'where it lands',
       },
       jump: {
@@ -3492,9 +3506,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       },
       stomp: {
         run: (c) => stomp(c),
-        goal: (r, o) => ppvAt(MOVES.stomp.shake(r, o), o.near) >= VIB.TH.feel,
+        // one stomp is a single event: most people barely feel it from 1 mm/s (Caltrans transient)
+        goal: (r, o) => ppvAt(MOVES.stomp.shake(r, o), o.near) >= VIB.TH.feelOnce,
         speed: (r) => r.vFoot,
-        ground: (r) => r.holeDepth >= 0.01 || r.crater > 0,
+        // paving, slabs, rock, ice and steel break when the foot punches a 1 cm hole; in soil a dent is only a
+        // footprint, so only a crater counts there
+        ground: (r, o) => r.crater > 0 || (!SOIL.has(o.surface && o.surface.id) && r.holeDepth >= 0.01),
         blast: (r) => shock(r.vFoot, r.E),
         // the foot and shank stop on the ground: their momentum over a foot's contact time (or the time the hole takes)
         shake: (r, o) => (r.vFoot > 0 ? impulseSource(o.surface, momentumOf(r.vFoot, o.body.legEff), Math.max(footPulse(o.body), 2 * (r.holeDepth || 0) / r.vFoot)) : null),
@@ -3533,8 +3550,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       { id: 'boom', test: (m, r, o) => !(o.silentStrike && m.silent) && m.speed(r) >= K.a0 },
       { id: 'air', test: (m, r, o) => !!m.blast && blastRadius(m.blast(r, o), R.DP_HARM) >= o.near },
       { id: 'plaster', test: (m, r, o) => !!m.shake && ppvAt(m.shake(r, o), o.near) >= VIB.TH.plaster },
-      { id: 'ground', test: (m, r, o) => !!m.ground && !o.groundHolds && m.ground(r) },
+      { id: 'ground', test: (m, r, o) => !!m.ground && !o.groundHolds && m.ground(r, o) },
       { id: 'crush', test: (m, r, o) => !!m.crush && m.crush(r, o) },
+      { id: 'passenger', test: (m, r, o) => !!m.passenger && m.passenger(r, o) },
     ];
     MOVES.punch.silent = true; MOVES.clap.silent = true;
     // Not-so-heroic presets, at rising scales: each is the least effort that does what it says.
@@ -3542,7 +3560,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       { id: 'rattle', test: (m, r, o) => (!!m.shake && ppvAt(m.shake(r, o), o.near) >= VIB.TH.rattle) || (!!m.blast && blastRadius(m.blast(r, o), R.DP_RATTLE) >= o.near) },
       { id: 'plaster', test: (m, r, o) => !!m.shake && ppvAt(m.shake(r, o), o.near) >= VIB.TH.plaster },
       { id: 'windows', test: (m, r, o) => !!m.blast && blastRadius(m.blast(r, o), R.DP_WINDOWS) >= R.STREET },
-      { id: 'ground', test: (m, r, o) => !!m.ground && !o.groundHolds && m.ground(r) },
+      { id: 'ground', test: (m, r, o) => !!m.ground && !o.groundHolds && m.ground(r, o) },
       { id: 'houses', test: (m, r, o) => !!m.blast && blastRadius(m.blast(r, o), R.DP_HOUSES) >= o.near },
       { id: 'block', test: (m, r, o) => !!m.blast && blastRadius(m.blast(r, o), R.DP_HOUSES) >= R.BLOCK },
     ];
@@ -3552,8 +3570,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     // (two points a decade, shared by every search through the memo), then bisects the first step where it turns
     // on. Finds the first onset even when a hazard later turns off again (a thrown object that flies off and never
     // lands). step() runs one probe; .use is set when done (lo if it already holds there; Infinity if it never does,
-    // or only at unlimited strength: .onlyUnlimited).
-    function search(test, lo, hi, unlimited) {
+    // or only at unlimited strength: .onlyUnlimited). same(u0, u1), if given, says the move came out exactly the same at
+    // two efforts: something else (footing, the ground, the object's own limit) caps it, so more effort changes
+    // nothing and the grid stops there.
+    function search(test, lo, hi, unlimited, same) {
       const n = Math.max(1, Math.ceil(2 * Math.log10(hi / lo)));
       const grid = (i) => (i >= n ? hi : lo * Math.pow(10, i / 2));
       // .below: the most effort that stays short of it (0 if even the least does it; hi, or unlimited, if nothing does)
@@ -3566,8 +3586,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
             if (s.i === 0) { s.use = lo; s.below = 0; return; }
             s.a = grid(s.i - 1); s.b = u; s.bisect = true; return;
           }
-          if (s.i >= n) {
+          if (s.i >= n || (same && s.i > 0 && same(grid(s.i - 1), u))) {
             s.use = Infinity;
+            s.saturated = s.i < n;
             if (unlimited && test(Infinity)) { s.onlyUnlimited = true; s.below = hi; } else { s.never = true; s.below = unlimited ? Infinity : hi; }
             return;
           }
@@ -3594,10 +3615,13 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       };
       const [lo, hi] = bounds(ctx);
       const unlimited = !isFinite(ctx.F);
+      // the move has saturated when it comes out at the same nonzero speed (to a part in a million) at two efforts
+      // half a decade apart: real muscle tops out at its limb speed, footing and the ground cap the push
+      const same = (u0, u1) => { const a = M.speed(at(u0)), b = M.speed(at(u1)); return a > 0 && isFinite(a) && Math.abs(b - a) <= 1e-6 * a; };
       const jobs = new Map();
-      jobs.set('goal', search((u) => M.goal(at(u), opt), lo, hi, unlimited));
-      for (const h of HAZARDS) jobs.set('hazard:' + h.id, search((u) => h.test(M, at(u), opt), lo, hi, unlimited));
-      for (const p of PRESETS) jobs.set('preset:' + p.id, search((u) => p.test(M, at(u), opt), lo, hi, unlimited));
+      jobs.set('goal', search((u) => M.goal(at(u), opt), lo, hi, unlimited, same));
+      for (const h of HAZARDS) jobs.set('hazard:' + h.id, search((u) => h.test(M, at(u), opt), lo, hi, unlimited, same));
+      for (const p of PRESETS) jobs.set('preset:' + p.id, search((u) => p.test(M, at(u), opt), lo, hi, unlimited, same));
       const result = (name) => {
         const j = jobs.get(name);
         if (!j || j.use === undefined) return null;
@@ -3605,6 +3629,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       };
       const out = { move, opt, lo, hi, unlimited, done: false };
       out.ensure = (name) => { const j = jobs.get(name); while (j.use === undefined) j.step(); return result(name); };
+      // one probe of one job; true once that job is done
+      out.stepJob = (name) => { const j = jobs.get(name); if (j.use === undefined) j.step(); return j.use !== undefined; };
       out.result = result;
       out.goal = () => { const g = out.ensure('goal'); return Object.assign(g, { reached: !g.never && !g.onlyUnlimited }); };
       // the courtesy ceiling: just under the first hazard to start (null `by`: nothing harmful even all-out)
@@ -3641,8 +3667,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         rattle: src ? ppvReach(src, VIB.TH.rattle) : 0,
         plaster: src ? ppvReach(src, VIB.TH.plaster) : 0,
         boom: !(opt.silentStrike && M.silent) && M.speed(r) >= K.a0,
-        ground: !!M.ground && !opt.groundHolds && M.ground(r),
+        ground: !!M.ground && !opt.groundHolds && M.ground(r, opt),
         crush: !!M.crush && M.crush(r, opt),
+        passenger: !!M.passenger && M.passenger(r, opt),
       };
     }
     return { R, MOVES, HAZARDS, PRESETS, plan, planNow, reach, bounds, search };
@@ -3656,13 +3683,14 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   // Momentum is never absorbed.
   // ---------------------------------------------------------------------------
   // A person he throws: the most acceleration an ordinary, unprepared person takes with no harm, and the level
-  // that starts to injure (placeholders until the research is in; see research/final-presence.json).
+  // that starts to injure (research/final-presence.json: comic_passenger_no_harm_limit, comic_passenger_injury_level).
   // Ride-design limits are for seated, supported riders; nobody has measured them for someone held in hands, so these
   // are a best case. Unknown orientation (a tumbling throw, a catch face-first) takes the worst axis, eyes-front (-Gx):
-  // ASTM F2291-06a allows 2 g for up to 0.2 s and 1.5 g sustained. Injury becomes possible past what harnessed
-  // volunteers took uninjured (Eiband 1959): 45 g for 0.044 s, 40 g for 0.1 s, 25 g for 0.2 s, 13 g for 0.6 s, 10 g for 1.6 s.
+  // ASTM F2291-06a Fig. 7 runs from 2 g at 0.2 s to 1.5 g at 0.5 s, then 1.5 g held. The standard doesn't cover pushes
+  // shorter than 0.2 s; keeping 2 g there is our estimate. Injury becomes possible past what harnessed volunteers took
+  // uninjured (Eiband 1959): 45 g for 0.044 s, 40 g for 0.1 s, 25 g for 0.2 s, 13 g for 0.6 s, 10 g for 1.6 s.
   const PASSENGER = {
-    noHarm: (t) => (t <= 0.2 ? 2 : 1.5),
+    noHarm: (t) => (t <= 0.2 ? 2 : t >= 0.5 ? 1.5 : 2 - 0.5 * (t - 0.2) / 0.3),
     EIBAND: [[0.044, 45], [0.1, 40], [0.2, 25], [0.6, 13], [1.6, 10]],
     injury(t) {
       const E = PASSENGER.EIBAND;
@@ -3841,7 +3869,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     kgRatio, overpressureAt, blastRadius, penetrationDepth,
     lift, throwObject, jump, stomp, punch, clap, sprint, pull, threshold, calibrateComic,
     throwOnce, jumpOnce, stompOnce, punchOnce, clapOnce,
-    driveStrength, PASSENGER, VIB, ppvAt, ppvNonlinear, groundOf, vibSource, elephantPPV, sphereOverpressure, growthShape, WALK, walkStep, footprint, presence, walkEffortFor, ppvReach, RESTRAINT, GROW, formShare, grownBody, grownMakeBody, pistonOverpressure, gradualGrowth, instantGrowth, runawayGrowth,
+    driveStrength, PASSENGER, VIB, ppvAt, ppvNonlinear, groundOf, vibSource, elephantPPV, sphereOverpressure, growthShape, WALK, walkStep, walkThresholds, footprint, presence, walkEffortFor, ppvReach, RESTRAINT, GROW, formShare, grownBody, grownMakeBody, pistonOverpressure, gradualGrowth, instantGrowth, runawayGrowth,
   };
 });
 
@@ -5002,11 +5030,11 @@ window.DINO_DATA = {
  "assumptions": [
   {
    "t": "Effort is not strength",
-   "d": "The dial sets how strong he is. Effort is how hard he chooses to push: the strength he puts into a move’s push, never more than the dial. Standing, walking and holding a load up still get his full strength. The page opens on the least disruptive effort, the gentlest push that still does what each move is for: throw the object to the goal distance, jump to the goal height, a stomp people feel at the chosen distance, a punch or clap as fast as the strongest human’s, run at the goal speed, drag the object 10 m in the goal time. Lift needs no effort setting: he only ever pushes as hard as the weight. All-out reproduces the lab’s earlier results exactly."
+   "d": "The dial sets how strong he is. Effort is how hard he chooses to push: the strength he puts into a move’s push, never more than the dial. Standing, walking and holding a load up still get his full strength. The page opens on the least disruptive effort, the gentlest push that still does what each move is for, but never past the courtesy ceiling (if the goal needs more, it shows the most he can do with nothing harmed and says so): throw the object to the goal distance, jump to the goal height, a stomp most people can just feel at the chosen distance (1 mm/s, the level for one isolated jolt: Caltrans), a punch or clap as fast as the strongest human’s, run at the goal speed, drag the object 10 m in the goal time. Lift needs no effort setting: he only ever pushes as hard as the weight. All-out reproduces the lab’s earlier results exactly."
   },
   {
    "t": "The courtesy ceiling and the not-so-heroic presets",
-   "d": "The courtesy ceiling is the most effort he can use before something nearby comes to harm. The lab checks five hazards: a sonic boom (anything he moves breaks the sound barrier), an air blast louder than 134 dB (100 Pa, the US Bureau of Mines safe maximum for houses) at the chosen distance, ground shaking there over 12.7 mm/s (where plaster may crack: US Bureau of Mines), the ground breaking under his feet, and his hands crushing what he holds. Each not-so-heroic preset is the least effort that does what its name says: windows rattle (1 mm/s of ground shaking, our estimate, or a 36 Pa air blast, where rattling complaints start), plaster may crack, windows break across a 15 m street (6.9 kPa), the ground breaks under him, houses next door collapse (26.8 kPa), houses collapse 100 m away (a city block, our estimate). Blast radii use the Kinney–Graham curve as if all the energy went into the air, so they are upper bounds."
+   "d": "The courtesy ceiling is the most effort he can use before something nearby comes to harm. The lab checks six hazards: a sonic boom (anything he moves breaks the sound barrier), an air blast louder than 134 dB (100 Pa, the US Bureau of Mines safe maximum for houses) at the chosen distance, ground shaking there over 12.7 mm/s (where plaster may crack: US Bureau of Mines), the ground breaking under his feet, his hands crushing what he holds, and a thrown person pressed harder than amusement rides allow (ASTM F2291). A thrown person’s landing is not counted: it is a fall unless someone catches them. Each not-so-heroic preset is the least effort that does what its name says: windows rattle (1 mm/s of ground shaking, our estimate, or an air blast of about 36 Pa, where rattling complaints start: 120 dB on the 6 Hz meter the US Bureau of Mines used, which is about 125 dB, 36 Pa, unfiltered, by our conversion), plaster may crack, windows break across a 15 m street (6.9 kPa), the ground breaks under him, houses next door collapse (26.8 kPa), houses collapse 100 m away (a city block, our estimate). Blast radii use the Kinney–Graham curve as if all the energy went into the air, so they are upper bounds."
   },
   {
    "t": "Two-player effort",
@@ -5014,15 +5042,15 @@ window.DINO_DATA = {
   },
   {
    "t": "Walking: their gait",
-   "d": "Their gait is people’s gait scaled to their size at the same Froude number (speed² ÷ g × hip height), with hip height 0.45 of their height (our estimate from the turnarounds). A comfortable walk is Froude 0.18, about 1.6 m/s for them; at Froude 0.5 they would break into a run. Each step holds about 1.2× body weight (1.0–1.5 as the pace rises). The ground shaking comes from the landing of each foot: about 160 J for an ordinary step, scaled from heel strikes measured in people; soft-footed 0.4 of that (an estimate); a drill stamp drops the leg from thigh height (about 3.4 kJ) and peaks at 6.5× body weight, as measured in soldiers."
+   "d": "Their gait is people’s gait scaled to their size at the same Froude number (speed² ÷ g × hip height), with hip height 0.45 of their height (our estimate from the turnarounds). A comfortable walk is Froude 0.18, about 1.6 m/s for them; at Froude 0.5 they would break into a run. Each step holds about 1.2× body weight (1.0–1.5 as the pace rises). The ground shaking comes from the force of each footfall (see the next card): an ordinary heel strike is a pulse of about 0.43× body weight over 37 ms, scaled from people; soft-footed is 0.31 of that (an estimate from the 45–69% cut in loading rate measured when people walk quietly); a drill stamp peaks at 6.5× body weight, as measured in soldiers. The foot itself also soaks up about 160 J per ordinary step (scaled from people); that energy stays in the foot and doesn’t shake the ground."
   },
   {
    "t": "Walking: ground shaking",
-   "d": "Each footfall is a force on the ground: the weight coming onto the foot over about a sixth of a second, plus a short landing pulse (about 0.43× body weight over 37 ms for an ordinary heel strike, scaled from people; soft-footed 0.31 of that; a drill stamp 6.5× body weight). An elastic-ground model (Lamb’s problem) turns that into peak particle velocity (PPV) at a distance, using each surface’s density, shear-wave speed and damping (our estimates). It matched one drop test (130 kg at Pisa) within about 2× from 2.5 to 60 m and elephant footfalls roughly; nobody has measured footsteps this way, so read it as uncertain by about 3–5×, more past 60 m. Lake ice and a steel deck bend as plates and are not modelled. The numbers are for open ground: indoors, floors and walls can make the shaking 2–4× stronger. The thresholds come from construction and blasting standards (feel 0.3 mm/s; plaster may crack above 7.6 mm/s for a walk past, 12.7 mm/s for a single stamp: safe limits, below which cracks are very unlikely) or are our estimates where no standard exists (a rippling glass, rattling windows, the 1 g at which loose things lift)."
+   "d": "Each footfall is a force on the ground: the weight coming onto the foot over about a sixth of a second, plus a short landing pulse (about 0.43× body weight over 37 ms for an ordinary heel strike, scaled from people; soft-footed 0.31 of that; a drill stamp 6.5× body weight). An elastic-ground model (Lamb’s problem) turns that into peak particle velocity (PPV) at a distance, using each surface’s density, shear-wave speed and damping (our estimates). It matched one drop test (130 kg at Pisa) within about 2× from 2.5 to 60 m and elephant footfalls roughly; nobody has measured footsteps this way, so read it as uncertain by about 3–5×, more past 60 m. Lake ice and a steel deck bend as plates and are not modelled. The numbers are for open ground: indoors, floors and walls can make the shaking 2–4× stronger. The thresholds come from construction and blasting standards (feel 0.3 mm/s for a walk past, 1 mm/s for one isolated jolt; plaster may crack above 7.6 mm/s for a walk past, 12.7 mm/s for a single stamp: safe limits, below which cracks are very unlikely) or are our estimates where no standard exists (a rippling glass, rattling windows, the 1 g at which loose things lift). The glass ripples with side-to-side shaking, about a third of the up-and-down close to the foot and two-thirds further out (uniform ground), so the page compares it with that."
   },
   {
    "t": "Footprints",
-   "d": "In sand and gravel, footprint depth is scaled from the one measured large-animal print we found: a weighed 2,530 kg African elephant cow left forefoot prints 20–26 mm deep in medium sand. Looser sand takes it deeper in proportion to how much weaker it is. In clay a foot sinks until the clay’s bearing, which grows a little with depth, carries the step. Paving, slabs, ice, steel and rock show no print until they break. All estimates."
+   "d": "In sand and gravel, footprint depth is scaled from the one large-animal print we found measured: a weighed 2,530 kg African elephant cow left forefoot prints 20–26 mm deep in loose-to-medium sand (Schanz et al. 2013). The lab anchors on the authors’ calibrated model of that sand (18 mm at 350 kPa), with depth rising as pressure to the power 1.27 and in proportion to foot width. Loose sand is taken as that sand; gravel, which bears more, gets shallower prints in proportion. In clay a foot sinks until the clay’s bearing, which grows a little with depth, carries the step. Paving, slabs, ice, steel and rock show no print until they break. All estimates."
   },
   {
    "t": "Comic switches",
@@ -5030,7 +5058,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Absorbed energy and growth",
-   "d": "Canon: the energy they put out is theirs, so they can take it back. By default it returns to the endless store of power they draw on, and nothing changes. The growth modes are what-ifs that turn it into mass, m = E ÷ c². Growth form: the even mix grows volume and density each by the square root of the mass ratio (height by its sixth root); pure size keeps the density; pure density keeps the size. Gradual growth starts and stops smoothly (our choice); it is harmless if the air pulse 2 m from him stays under 100 Pa (134 dB, the US Bureau of Mines safe level) and the top of his head rises no faster than 0.25 m/s (OSHA’s limit for robots that touch people). Instant growth takes the time sound needs to cross his new body (our choice); the blast is a range from a ball to flat pistons, doubled for the ground, and his rising middle would throw him into the air unless he is bolted down. In the runaway mode the side effects are absorbed too; the loop dies out at once unless its ratio reaches 1, which his own gravity can’t do outside a black hole."
+   "d": "Canon: the energy they put out is theirs, so they can take it back. By default it returns to the endless store of power they draw on, and nothing changes. The growth modes are what-ifs that turn it into mass, m = E ÷ c². Growth form: the even mix grows volume and density each by the square root of the mass ratio (height by its sixth root); pure size keeps the density; pure density keeps the size. Gradual growth starts and stops smoothly (our choice); it is harmless if the air pulse 2 m from him stays under 100 Pa (134 dB, the US Bureau of Mines safe level) and the top of his head rises no faster than 0.25 m/s (the reduced robot speed OSHA’s Technical Manual calls slow enough for a person to get out of the way; borrowed from robot safety, not tested for this case). Instant growth takes the time sound needs to cross his new body (our choice); the blast is a range from a ball to flat pistons, doubled for the ground, and his rising middle would throw him into the air unless he is bolted down. In the runaway mode the side effects are absorbed too; the loop dies out at once unless its ratio reaches 1, which his own gravity can’t do outside a black hole."
   },
   {
    "t": "Strength means force",
@@ -7355,7 +7383,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Weight: pREM density profile of the Earth (polynomials in x = r/6371 km)",
+   "label": "Weight: PREM density profile of the Earth (polynomials in x = r/6371 km)",
    "value": "Inner core 13.0885 − 8.8381x²; outer core 12.5815 − 1.2638x − 3.6426x² − 5.5281x³; lower mantle 7.9565 − 6.4761x + 5.5283x² − 3.0807x³; then 5.3197 − 1.4836x (5701–5771 km), 11.2494 − 8.0298x (to 5971), 7.1089 − 3.8045x (to 6151), 2.6910 + 0.6924x (to 6346.6), 2.900 (to 6356), 2.600 (to 6368), ocean 1.020 (g/cm³)",
    "status": "verified",
    "sources": [
@@ -7371,7 +7399,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Weight: pREM values used to check the integration",
+   "label": "Weight: PREM values used to check the integration",
    "value": "Central pressure 363.852 GPa; inner/outer core boundary g 4.4002 m/s²; core–mantle boundary g 10.6823 m/s²; surface g 9.8156 m/s²; outer core liquid, inner core solid",
    "status": "verified",
    "sources": [
@@ -7395,7 +7423,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Weight: earth's sidereal rotation period",
+   "label": "Weight: Earth's sidereal rotation period",
    "value": "23.9345 h, so Ω = 7.2921 × 10⁻⁵ rad/s",
    "status": "verified",
    "sources": [
@@ -7407,7 +7435,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Weight: earth's gravitational binding energy, integrated from PREM (check)",
+   "label": "Weight: Earth's gravitational binding energy, integrated from PREM (check)",
    "value": "2.49 × 10³² J (our integral of G M(r) dm / r over PREM)",
    "status": "estimate",
    "sources": [
@@ -7455,7 +7483,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Weight: bondi accretion: radius and rate",
+   "label": "Weight: Bondi accretion: radius and rate",
    "value": "r_B = GM/c_s²; Ṁ = 4πλG²M²ρ∞/c∞³ with λ = 0.625 for air-like gas (γ = 1.4)",
    "status": "verified",
    "sources": [
@@ -7495,7 +7523,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Weight: earth's total surface heat flow",
+   "label": "Weight: Earth's total surface heat flow",
    "value": "47 ± 2 TW",
    "status": "verified",
    "sources": [
@@ -7803,7 +7831,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Arm wrestling and wrestling: newton's impact-depth approximation",
+   "label": "Arm wrestling and wrestling: Newton's impact-depth approximation",
    "value": "D ≈ L × ρ_impactor / ρ_target; valid when friction is negligible and the impact is slower than sound in the target",
    "status": "verified",
    "sources": [
@@ -7815,7 +7843,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Arm wrestling and wrestling: ollie's grip on the ground (boots, no claws)",
+   "label": "Arm wrestling and wrestling: Ollie's grip on the ground (boots, no claws)",
    "value": "Same traction as Rex's feet on each surface. 'Dug in' for Ollie means boots kicked into footholds, given the same buried area as Rex's claws (0.2 × (height / 2 m)² m²: 0.46 m² at the default 10 ft).",
    "status": "estimate",
    "sources": [],
@@ -7846,7 +7874,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Game of catch: uS Army men (ANSUR II): thumbtip reach, chest depth and stature, means",
+   "label": "Game of catch: US Army men (ANSUR II): thumbtip reach, chest depth and stature, means",
    "value": "Thumbtip reach 81.19 cm (SD 4.37), chest depth 25.38 cm (SD 2.62), stature 175.62 cm (SD 6.86); 4,082 men",
    "status": "verified",
    "sources": [
@@ -7898,7 +7926,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Game of catch: sutton–Graves stagnation-point convective heating, Earth air",
+   "label": "Game of catch: Sutton–Graves stagnation-point convective heating, Earth air",
    "value": "q = 1.74 × 10⁻⁴ √(ρ/rₙ) v³ W/m²; original form q = K √(pₛ/rₙ)(hₛ − h_w), K = 0.1113 kg s⁻¹ m⁻³ᐟ² atm⁻¹ᐟ² for air",
    "status": "verified",
    "sources": [
@@ -7990,7 +8018,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Game of catch: wood: temperature at the base of the char layer",
+   "label": "Game of catch: Wood: temperature at the base of the char layer",
    "value": "Generally taken to be 300 °C (550 °F ≈ 288 °C)",
    "status": "verified",
    "sources": [
@@ -8054,7 +8082,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Game of catch: newton's impact-depth rule, used for how far a relativistic object gets through air",
+   "label": "Game of catch: Newton's impact-depth rule, used for how far a relativistic object gets through air",
    "value": "D ≈ L × ρ_object / ρ_target: it stops after pushing aside its own mass of target. In air: sweep = m / (ρ₀ A) (baseball 27.8 m, car 126 m, shot 524 m, tank 1.9 km, pyramid 141 km)",
    "status": "estimate",
    "sources": [
@@ -8090,7 +8118,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Game of catch: earth's mean radius and rotation (for the far-side distance and the spin caveat)",
+   "label": "Game of catch: Earth's mean radius and rotation (for the far-side distance and the spin caveat)",
    "value": "Volumetric mean radius 6,371.000 km (so the far side of the planet is π × 6,371 = 20,015 km away along the surface); sidereal rotation 23.9345 h; equator moves at 465.1 m/s",
    "status": "verified",
    "sources": [
@@ -8174,7 +8202,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Unstoppable force vs immovable object: earth: mass, moment of inertia factor, sidereal rotation, mean radius",
+   "label": "Unstoppable force vs immovable object: Earth: mass, moment of inertia factor, sidereal rotation, mean radius",
    "value": "M = 5.9722 × 10^24 kg; I/(MR²) = 0.3308; sidereal rotation 23.9345 h; mean radius 6,371.000 km",
    "status": "verified",
    "sources": [
@@ -8578,7 +8606,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Walking: rex's and Ollie's hip height (leg length for gait scaling)",
+   "label": "Walking: Rex's and Ollie's hip height (leg length for gait scaling)",
    "value": "Hip height about 0.45 of height: 1.37 m (1.28–1.46 m)",
    "status": "estimate",
    "sources": [
@@ -8594,7 +8622,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Walking: rex's and Ollie's comfortable walking pace (people scaled up at equal Froude number)",
+   "label": "Walking: Rex's and Ollie's comfortable walking pace (people scaled up at equal Froude number)",
    "value": "About 1.6–1.7 m/s (about 6 km/h) as a default; 1.2 m/s at Froude 0.1 (slow); 2.0 m/s brisk",
    "status": "estimate",
    "sources": [
@@ -8622,7 +8650,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Walking: rex's and Ollie's step rate and step length at a comfortable walk",
+   "label": "Walking: Rex's and Ollie's step rate and step length at a comfortable walk",
    "value": "About 88–91 steps per minute (1.5 per second), each step about 1.1 m",
    "status": "estimate",
    "sources": [
@@ -8652,7 +8680,7 @@ window.DINO_DATA = {
   {
    "label": "Walking: load on one foot at each walking step, and pressure under it",
    "value": "35 kN (about 3.6 tonnes-force) per step at 1.2 × body weight; Rex's paw 114 kPa, Ollie's boot 236 kPa",
-   "status": "derived",
+   "status": "estimate",
    "sources": [
     {
      "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:11415629%20AND%20SRC:MED&resultType=core&format=json",
@@ -8790,7 +8818,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Walking: african elephants: foot size, walking speed and peak foot pressures",
+   "label": "Walking: African elephants: foot size, walking speed and peak foot pressures",
    "value": "Five African elephants (1.5–3.0 t, keepers' estimates): forefoot circumference 1.06–1.27 m; peak local pressures 200–320 kPa",
    "status": "verified",
    "sources": [
@@ -8820,7 +8848,7 @@ window.DINO_DATA = {
   {
    "label": "Walking: one of Rex's or Ollie's walking steps compared with a same-weight elephant's forefoot",
    "value": "Each walking step puts about 2.2 × the force of a 3-tonne elephant's forefoot into the ground (35 kN against 16 kN). Rex's average sole pressure is lower (0.5–0.9 × the elephant's); Ollie's is 1.1–1.9 ×",
-   "status": "derived",
+   "status": "estimate",
    "sources": [
     {
      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2872429/",
@@ -8918,8 +8946,8 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Walking: rex's and Ollie's walking footprint depth in sand like the elephant's (scaled from one print)",
-   "value": "In loose-to-medium sand like the elephant's: Rex about 1–1.5 cm, Ollie about 2 cm per walking step (estimate; up to about 3 and 4 cm if the print was made at the force-plate load of 0.55 × body weight)",
+   "label": "Walking: Rex's and Ollie's walking footprint depth in sand like the elephant's (scaled from one print, as the lab computes it)",
+   "value": "In loose-to-medium sand like the elephant's: Rex about 0.8–1 cm, Ollie about 1.3–1.8 cm per step, from a stroll to the fastest walk (estimate; anchored on the authors' calibrated model, 18 mm at 350 kPa; anchored on the measured 22 mm instead, about 20% deeper; up to about 3 and 4 cm if the print was made at the force-plate load of 0.55 × body weight)",
    "status": "estimate",
    "sources": [
     {
@@ -8930,7 +8958,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: bS 5228-2 Table E.1: ground vibration from dynamic compaction (weight dropped on the ground)",
+   "label": "Ground shaking: BS 5228-2 Table E.1: ground vibration from dynamic compaction (weight dropped on the ground)",
    "value": "PPV ≤ 0.037 (√W_h / x)^1.7 mm/s; W_h = potential energy of the raised tamper (J), x = distance along the ground (m); valid 5–100 m and 1–12 MJ",
    "status": "verified",
    "sources": [
@@ -8946,7 +8974,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: bS 5228-2 Table E.2: ground factor k_p for percussive piling (PPV ≤ k_p √W / r^1.3)",
+   "label": "Ground shaking: BS 5228-2 Table E.2: ground factor k_p for percussive piling (PPV ≤ k_p √W / r^1.3)",
    "value": "k_p = 5 (piles at refusal), 3 (very stiff clay, dense granular), 1.5 (stiff clay, medium dense granular, compacted fill), 1 (soft clay, loose granular, loose fill, organic)",
    "status": "verified",
    "sources": [
@@ -8962,7 +8990,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: mayne (1985) upper-bound law for dynamic compaction vibration, as printed in TRL 429",
+   "label": "Ground shaking: Mayne (1985) upper-bound law for dynamic compaction vibration, as printed in TRL 429",
    "value": "v_res ≤ 92 (√(M·H) / x)^1.7 mm/s (M tamper mass in t, H drop height in m, x distance in m)",
    "status": "verified",
    "sources": [
@@ -8974,7 +9002,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: mayne/BS 5228 dynamic-compaction law at low drop energy: TRL finds it under-predicts by up to 10×",
+   "label": "Ground shaking: Mayne/BS 5228 dynamic-compaction law at low drop energy: TRL finds it under-predicts by up to 10×",
    "value": "7 t weight dropped 1.2 m (82 kJ): measured PPV was 1.4–5× the Mayne (1985) prediction within 30 m and 2.5–10× at 50–100 m (TRL: 'up to an order of magnitude')",
    "status": "verified",
    "sources": [
@@ -8998,7 +9026,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: tRL 429: empirical construction-vibration predictors hold to about 100 m",
+   "label": "Ground shaking: TRL 429: empirical construction-vibration predictors hold to about 100 m",
    "value": "Valid up to about 100 m from the source; extrapolating much further is not recommended (TRL: it 'will generally provide a conservative estimate')",
    "status": "verified",
    "sources": [
@@ -9010,7 +9038,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: mayne, Jones & Dumas (1984) original upper-bound law for dynamic compaction vibration",
+   "label": "Ground shaking: Mayne, Jones & Dumas (1984) original upper-bound law for dynamic compaction vibration",
    "value": "PPV ≤ 70 (√(W·H) / d)^1.4 mm/s (W tamper in t, H drop in m, d in m)",
    "status": "reported",
    "sources": [
@@ -9022,7 +9050,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: mayne (1985) normalised form: PPV scaled by impact speed and tamper radius",
+   "label": "Ground shaking: Mayne (1985) normalised form: PPV scaled by impact speed and tamper radius",
    "value": "PPV = 0.2 √(2gH) (d/r₀)^-1.7 (impact speed √(2gH), tamper radius r₀; based on 12 sites)",
    "status": "reported",
    "sources": [
@@ -9034,7 +9062,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: fHWA chart: PPV against scaled energy factor √E / d, one line per soil type (Lukas 1986, 1995)",
+   "label": "Ground shaking: FHWA chart: PPV against scaled energy factor √E / d, one line per soil type (Lukas 1986, 1995)",
    "value": "PPV grows with √(energy)/distance; separate lines for 8 ground types. The plotted lines span a scaled energy factor of about 0.07–6 √(t·m)/m and PPV of about 1–250 mm/s (our reading of the chart)",
    "status": "verified",
    "sources": [
@@ -9050,7 +9078,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: fHWA GEC 1 chart read off: PPV at the marked point of each soil line, and at a scaled energy factor of 1",
+   "label": "Ground shaking: FHWA GEC 1 chart read off: PPV at the marked point of each soil line, and at a scaled energy factor of 1",
    "value": "At √(E[kJ]/9.8)/d = 1: roughly 13 mm/s (decomposed garbage, loose sand fill) to 80 mm/s (very stiff silty clay); a factor of about 6 between ground types",
    "status": "derived",
    "sources": [
@@ -9078,7 +9106,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: pPV from the same drop rises as the ground under it is compacted (about 3–8× over repeated drops)",
+   "label": "Ground shaking: PPV from the same drop rises as the ground under it is compacted (about 3–8× over repeated drops)",
    "value": "18.1 t from 30 m: 4 → 13 mm/s at 20 m over 21 drops; 11 t from 18 m: 1–2 → ~8 mm/s at 10 m over 6 drops",
    "status": "verified",
    "sources": [
@@ -9106,7 +9134,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: pisa test site: shear-wave speed, unit weight and damping of the layers",
+   "label": "Ground shaking: Pisa test site: shear-wave speed, unit weight and damping of the layers",
    "value": "Vs 150–245 m/s in the upper layers (380 m/s deep sand), unit weight 16.75–20 kN/m³, damping ratio 2–7%",
    "status": "verified",
    "sources": [
@@ -9150,7 +9178,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: caltrans screening law for impact pile drivers (energy-scaled, with distance exponent n)",
+   "label": "Ground shaking: Caltrans screening law for impact pile drivers (energy-scaled, with distance exponent n)",
    "value": "PPV = 0.65 in/s × (25/D[ft])^1.1 × (E/36,000 ft·lb)^0.5",
    "status": "verified",
    "sources": [
@@ -9162,7 +9190,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: woods & Jedele (1985) distance exponent n by soil class (PPV = k D^-n), as given by Caltrans",
+   "label": "Ground shaking: Woods & Jedele (1985) distance exponent n by soil class (PPV = k D^-n), as given by Caltrans",
    "value": "Class I weak/soft soils: suggested 1.4 (no data); II competent soils: measured 1.5, suggested 1.3; III hard soils: 1.1; IV hard rock: suggested 1.0 (no data)",
    "status": "verified",
    "sources": [
@@ -9198,7 +9226,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: asian elephant footfalls and rumbles: ground-wave speed, frequency and range of measurement",
+   "label": "Ground shaking: Asian elephant footfalls and rumbles: ground-wave speed, frequency and range of measurement",
    "value": "Seismic signals travelled at 248–264 m/s, predominant frequency about 20 Hz, well above background at 40 m",
    "status": "verified",
    "sources": [
@@ -9210,7 +9238,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: asian elephant foot stomps: ground velocity at 3–12 m and at 40 m (peak-to-peak)",
+   "label": "Ground shaking: Asian elephant foot stomps: ground velocity at 3–12 m and at 40 m (peak-to-peak)",
    "value": "About 48.7 µm/s peak-to-peak at 3–12 m and 17.0 µm/s at 40 m (roughly 0.024 and 0.009 mm/s peak)",
    "status": "reported",
    "sources": [
@@ -9258,7 +9286,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: bornitz/Mintrop attenuation form: geometric spreading times exponential material damping",
+   "label": "Ground shaking: Bornitz/Mintrop attenuation form: geometric spreading times exponential material damping",
    "value": "A₁ = A₀ (r₀/r₁)^β e^{-α(r₁ - r₀)}, β = 0.5 for surface waves; α ≈ 0.03 ft⁻¹ (0.10 m⁻¹) has been used for all soils",
    "status": "verified",
    "sources": [
@@ -9438,7 +9466,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: nEHRP site classes by average shear-wave speed in the top 30 m",
+   "label": "Ground shaking: NEHRP site classes by average shear-wave speed in the top 30 m",
    "value": "A hard rock > 1,500; B rock 760–1,500; C very dense soil and soft rock 360–760; D stiff soil 180–360; E < 180 m/s",
    "status": "verified",
    "sources": [
@@ -9789,7 +9817,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Elephants: mortimer et al. 2018 model: displacement 200 m from an elephant fast walk and a bull rumble on sandy ground, with converted velocity",
+   "label": "Elephants: Mortimer et al. 2018 model: displacement 200 m from an elephant fast walk and a bull rumble on sandy ground, with converted velocity",
    "value": "Modelled, not measured: fast walk about 2 × 10⁻⁷ m at 200 m, about 0.01 mm/s (0.006–0.013); bull rumble about 5 × 10⁻⁷ m at 200 m",
    "status": "derived",
    "sources": [
@@ -9805,7 +9833,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Elephants: asian elephant foot stomps: peak-to-peak vertical ground velocity at 3–12 m and at 40 m (as quoted by a later paper)",
+   "label": "Elephants: Asian elephant foot stomps: peak-to-peak vertical ground velocity at 3–12 m and at 40 m (as quoted by a later paper)",
    "value": "48.7 µm/s peak-to-peak at 3–12 m; 17.0 µm/s at 40 m",
    "status": "reported",
    "sources": [
@@ -9817,7 +9845,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Elephants: asian elephant foot stomps: zero-to-peak vertical velocity (half of the quoted peak-to-peak)",
+   "label": "Elephants: Asian elephant foot stomps: zero-to-peak vertical velocity (half of the quoted peak-to-peak)",
    "value": "About 0.024 mm/s at 3–12 m and 0.0085 mm/s at 40 m",
    "status": "reported",
    "sources": [
@@ -9845,7 +9873,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Elephants: asian elephant rumbles and stomps: seismic wave speed, frequency and distance recorded",
+   "label": "Elephants: Asian elephant rumbles and stomps: seismic wave speed, frequency and distance recorded",
    "value": "Clearly above background at 40 m; ground waves at 248–264 m/s; frequencies near 20 Hz",
    "status": "verified",
    "sources": [
@@ -10033,7 +10061,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: bS 5228-2 Table B.1: effects of vibration levels on people (construction vibration, PPV)",
+   "label": "Thresholds: BS 5228-2 Table B.1: effects of vibration levels on people (construction vibration, PPV)",
    "value": "0.14 mm/s just perceptible (most sensitive); 0.3 mm/s just perceptible in homes; 1.0 mm/s likely complaint; 10 mm/s intolerable beyond a very brief exposure",
    "status": "verified",
    "sources": [
@@ -10049,7 +10077,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: bS 5228-2 B.2: human threshold of perception, PPV",
+   "label": "Thresholds: BS 5228-2 B.2: human threshold of perception, PPV",
    "value": "Threshold of perception typically 0.14-0.3 mm/s PPV",
    "status": "verified",
    "sources": [
@@ -10061,7 +10089,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: caltrans 2020 Table 20: human response to vibration, transient vs continuous (PPV)",
+   "label": "Thresholds: Caltrans 2020 Table 20: human response to vibration, transient vs continuous (PPV)",
    "value": "Barely perceptible: 0.04 in/s (1.0 mm/s) transient, 0.01 in/s (0.25 mm/s) continuous; distinctly 0.25/0.04 in/s; strongly 0.9/0.10 in/s; severe 2.0/0.4 in/s",
    "status": "verified",
    "sources": [
@@ -10073,7 +10101,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: caltrans 2020: which sources count as transient and which as continuous",
+   "label": "Thresholds: Caltrans 2020: which sources count as transient and which as continuous",
    "value": "Transient = a single isolated event (blasting, drop balls); continuous/frequent intermittent = repeated impacts or vibratory plant (impact pile drivers, compactors)",
    "status": "verified",
    "sources": [
@@ -10085,7 +10113,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: whiffin & Leonard (1971) TRRL LR 418: human reaction to continuous (traffic) vibration, PPV",
+   "label": "Thresholds: Whiffin & Leonard (1971) TRRL LR 418: human reaction to continuous (traffic) vibration, PPV",
    "value": "Threshold of perception 0.15-0.30 mm/s (0.006-0.019 in/s); readily perceptible 2.0 mm/s; begins to annoy 2.5 mm/s; annoying 5 mm/s; unpleasant 10-15 mm/s",
    "status": "verified",
    "sources": [
@@ -10097,7 +10125,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: wiss (1974): human response to transient vibration, PPV",
+   "label": "Thresholds: Wiss (1974): human response to transient vibration, PPV",
    "value": "Barely perceptible 0.035 in/s (0.9 mm/s); distinctly 0.24 in/s (6.1 mm/s); strongly 0.9 in/s (22.9 mm/s); severe 2.0 in/s (50.8 mm/s)",
    "status": "verified",
    "sources": [
@@ -10121,7 +10149,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: iSO 2631 building vibration criteria (8-80 Hz), rms velocity, as reproduced in Caltrans 2020 Table 7 (Caltrans dates the ISO guide 1981)",
+   "label": "Thresholds: ISO 2631 building vibration criteria (8-80 Hz), rms velocity, as reproduced in Caltrans 2020 Table 7 (Caltrans dates the ISO guide 1981)",
    "value": "Residence 78 VdB day / 75 night = 0.008 in/s rms (0.20 mm/s rms); operating room 72 VdB = 0.004 in/s rms (0.10 mm/s rms); office 0.016 in/s; workshop 0.032 in/s",
    "status": "verified",
    "sources": [
@@ -10133,7 +10161,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: iSO 2631-2: 1989 edition limits in PPV terms, and the 2003 edition's lack of limits",
+   "label": "Thresholds: ISO 2631-2: 1989 edition limits in PPV terms, and the 2003 edition's lack of limits",
    "value": "1989 edition: about 0.3 mm/s PPV for continuous vibration by day, 0.14 mm/s at night, 5-10 mm/s for transient events; 2003 edition has no vibration limits",
    "status": "reported",
    "sources": [
@@ -10161,7 +10189,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: fTA 2018: human response to ground-borne vibration in buildings (rms velocity level)",
+   "label": "Thresholds: FTA 2018: human response to ground-borne vibration in buildings (rms velocity level)",
    "value": "65 VdB approximate threshold of perception (about 0.045 mm/s rms, about 0.2 mm/s PPV); 75 VdB barely-to-distinctly perceptible boundary; 85 VdB tolerable only if infrequent; 100 VdB damage threshold for typical buildings",
    "status": "verified",
    "sources": [
@@ -10185,7 +10213,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: fTA 2018: ground vibration is felt differently outdoors",
+   "label": "Thresholds: FTA 2018: ground vibration is felt differently outdoors",
    "value": "'Ground-borne vibration is almost never a problem outdoors' (no number)",
    "status": "verified",
    "sources": [
@@ -10197,7 +10225,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: bS 6472-1 vibration dose value (VDV) criteria as used by HS2 (homes)",
+   "label": "Thresholds: BS 6472-1 vibration dose value (VDV) criteria as used by HS2 (homes)",
    "value": "Lowest observed adverse effect: VDV 0.2 m/s^1.75 by day, 0.1 at night; significant adverse effect: 0.8 by day, 0.4 at night",
    "status": "verified",
    "sources": [
@@ -10209,7 +10237,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: caltrans: rattling of dishes, windows and doors can happen below the level people feel",
+   "label": "Thresholds: Caltrans: rattling of dishes, windows and doors can happen below the level people feel",
    "value": "Rattling of a china cabinet 'can also occur, even when vibration levels are well below perception' (no number)",
    "status": "verified",
    "sources": [
@@ -10221,7 +10249,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: uSBM RI 8507: wall motion rattles windows and dishes; walls amplify ground motion",
+   "label": "Thresholds: USBM RI 8507: wall motion rattles windows and dishes; walls amplify ground motion",
    "value": "Midwall motion causes 'window sashes rattling, picture frames tilting, dishes jiggling, and knick-knacks falling'; typical amplification 1.5 (whole house, 4-12 Hz) and 4 (midwalls, 10-25 Hz) at resonance; below 1 above 40 Hz",
    "status": "verified",
    "sources": [
@@ -10233,7 +10261,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: eMS-98 intensity IV-V: china, glasses, windows and doors rattle",
+   "label": "Thresholds: EMS-98 intensity IV-V: china, glasses, windows and doors rattle",
    "value": "IV 'Largely observed': china, glasses, windows and doors rattle; V 'Strong': china and glasses clatter, small top-heavy objects may fall, liquids oscillate",
    "status": "verified",
    "sources": [
@@ -10249,7 +10277,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: uSGS abbreviated Modified Mercalli Intensity: II to VI",
+   "label": "Thresholds: USGS abbreviated Modified Mercalli Intensity: II to VI",
    "value": "IV: 'Dishes, windows, doors disturbed; walls make cracking sound. Sensation like heavy truck striking building.' V: 'some dishes, windows broken. Unstable objects overturned.'",
    "status": "verified",
    "sources": [
@@ -10261,7 +10289,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: jMA seismic intensity scale: dishes rattle (3-4), walking hard (5 Upper), standing hard (6 Lower)",
+   "label": "Thresholds: JMA seismic intensity scale: dishes rattle (3-4), walking hard (5 Upper), standing hard (6 Lower)",
    "value": "3: dishes in cupboards may rattle; 4: dishes rattle, unstable ornaments may fall; 5 Upper: walking difficult without holding on; 6 Lower: difficult to remain standing; 6 Upper: impossible to remain standing",
    "status": "verified",
    "sources": [
@@ -10289,7 +10317,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: wald 1999: below intensity V the velocity values are imposed, not fitted, and low intensities follow acceleration",
+   "label": "Thresholds: Wald 1999: below intensity V the velocity values are imposed, not fitted, and low intensities follow acceleration",
    "value": "Felt/not-felt boundary about 1-2 cm/s^2 peak acceleration; the low-intensity PGV relation was imposed to join it",
    "status": "verified",
    "sources": [
@@ -10341,7 +10369,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: bS 7385-2 Table 1: transient vibration guide values for cosmetic damage (frequency-dependent)",
+   "label": "Thresholds: BS 7385-2 Table 1: transient vibration guide values for cosmetic damage (frequency-dependent)",
    "value": "Homes and light commercial (line 2): 15 mm/s at 4 Hz rising to 20 mm/s at 15 Hz and 50 mm/s at 40 Hz and above; below 4 Hz, 0.6 mm displacement. Framed and industrial (line 1): 50 mm/s at 4 Hz and above",
    "status": "verified",
    "sources": [
@@ -10357,7 +10385,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: bS 7385-2 via BS 5228-2: minor damage at 2x, major at 4x the guide values; up to 50% lower for continuous vibration",
+   "label": "Thresholds: BS 7385-2 via BS 5228-2: minor damage at 2x, major at 4x the guide values; up to 50% lower for continuous vibration",
    "value": "Minor damage is possible above 2x the Table B.2 values; major damage can occur above 4x; for continuous vibration that causes resonance, the guide values might need to be reduced by up to 50%",
    "status": "verified",
    "sources": [
@@ -10373,7 +10401,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: bS 7385-2: probability of damage tends to zero at 12.5 mm/s",
+   "label": "Thresholds: BS 7385-2: probability of damage tends to zero at 12.5 mm/s",
    "value": "12.5 mm/s peak component particle velocity",
    "status": "verified",
    "sources": [
@@ -10389,7 +10417,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: dIN 4150-3:1999 Table 1: short-term vibration guideline values for buildings, by frequency",
+   "label": "Thresholds: DIN 4150-3:1999 Table 1: short-term vibration guideline values for buildings, by frequency",
    "value": "Dwellings: 5 mm/s below 10 Hz, 5-15 mm/s at 10-50 Hz, 15-20 mm/s at 50-100 Hz (foundation); 15 mm/s top floor. Sensitive or listed: 3, 3-8, 8-10, 8. Commercial: 20, 20-40, 40-50, 40",
    "status": "verified",
    "sources": [
@@ -10401,7 +10429,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: dIN 4150-3:2016 Table 1 as reproduced (one cell conflicts with the 1999 edition)",
+   "label": "Thresholds: DIN 4150-3:2016 Table 1 as reproduced (one cell conflicts with the 1999 edition)",
    "value": "2016 reproduction matches 1999 except dwellings at 50-100 Hz read '40 to 50' (1999: '15 to 20'); adds floor slabs, vertical, 20 mm/s at all frequencies",
    "status": "disputed",
    "sources": [
@@ -10417,7 +10445,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: uSBM RI 8507: practical safe blasting vibration levels for houses (chosen so that cosmetic cracking is unlikely)",
+   "label": "Thresholds: USBM RI 8507: practical safe blasting vibration levels for houses (chosen so that cosmetic cracking is unlikely)",
    "value": "Below 40 Hz: 0.50 in/s (12.7 mm/s) for plaster-on-lath, 0.75 in/s (19 mm/s) for drywall; above 40 Hz: 2.0 in/s (51 mm/s)",
    "status": "verified",
    "sources": [
@@ -10433,7 +10461,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: uSBM RI 8507 Figure B-1: frequency-dependent safe level for houses",
+   "label": "Thresholds: USBM RI 8507 Figure B-1: frequency-dependent safe level for houses",
    "value": "0.030 in (0.76 mm) displacement below about 2.7-4 Hz; 0.50 in/s plaster or 0.75 in/s drywall up to about 10-15 Hz; then 0.008 in (0.2 mm) displacement to 40 Hz; 2.0 in/s above 40 Hz",
    "status": "verified",
    "sources": [
@@ -10445,7 +10473,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: siskind et al. (1980): probability of blast damage to houses by PPV",
+   "label": "Thresholds: Siskind et al. (1980): probability of blast damage to houses by PPV",
    "value": "Threshold (cosmetic) damage: 5% at 0.5 in/s (13 mm/s), 50% at 2.5 in/s (64 mm/s); minor: 5% at 1.8 (46), 50% at 5.0 (127); major: 5% at 2.5 (64), 50% at 6.0 in/s (152 mm/s)",
    "status": "verified",
    "sources": [
@@ -10461,7 +10489,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: caltrans 2020 Table 19: building damage potential, transient vs continuous (PPV)",
+   "label": "Thresholds: Caltrans 2020 Table 19: building damage potential, transient vs continuous (PPV)",
    "value": "Older homes: 0.5 in/s (12.7 mm/s) transient, 0.3 in/s (7.6 mm/s) continuous; new homes 1.0/0.5 in/s; fragile 0.2/0.1 in/s; ruins 0.12/0.08 in/s; modern commercial 2.0/0.5 in/s",
    "status": "verified",
    "sources": [
@@ -10473,7 +10501,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: fTA 2018 Table 7-5: construction vibration damage criteria",
+   "label": "Thresholds: FTA 2018 Table 7-5: construction vibration damage criteria",
    "value": "I reinforced concrete/steel/timber 0.5 in/s (12.7 mm/s); II engineered concrete and masonry 0.3 (7.6); III non-engineered timber and masonry 0.2 (5.1); IV extremely susceptible 0.12 (3.0)",
    "status": "verified",
    "sources": [
@@ -10485,7 +10513,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: whiffin & Leonard (1971): continuous vibration and buildings, PPV",
+   "label": "Thresholds: Whiffin & Leonard (1971): continuous vibration and buildings, PPV",
    "value": "5 mm/s (0.2 in/s): threshold of risk of 'architectural' damage to plastered houses; 2.5 mm/s virtually no risk; 10-15 mm/s architectural and possibly minor structural damage; 2 mm/s upper limit for ruins",
    "status": "verified",
    "sources": [
@@ -10553,7 +10581,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: eMS-98: when people lose their balance or find it hard to stand",
+   "label": "Thresholds: EMS-98: when people lose their balance or find it hard to stand",
    "value": "VI: 'A few persons lose their balance'; VII: 'Many find it difficult to stand, especially on upper floors'; VIII: 'Many people find it difficult to stand, even outdoors'; IX: 'People may be forcibly thrown to the ground'",
    "status": "verified",
    "sources": [
@@ -10657,7 +10685,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: irish EPA, as summarised in an Irish planning appendix: perception 0.15-0.3 mm/s for continuous vibration, 0.5-1.5 mm/s for impulsive blasting",
+   "label": "Thresholds: Irish EPA, as summarised in an Irish planning appendix: perception 0.15-0.3 mm/s for continuous vibration, 0.5-1.5 mm/s for impulsive blasting",
    "value": "Continuous vibration at 8-80 Hz: 0.15-0.3 mm/s PPV; impulsive vibration from blasting: 0.5-1.5 mm/s PPV",
    "status": "reported",
    "sources": [
@@ -10669,7 +10697,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: irish EPA limits on quarry and mine blasting vibration for people nearby: 12 mm/s for blasting once a week or less, 8 mm/s more often or below 10 Hz",
+   "label": "Thresholds: Irish EPA limits on quarry and mine blasting vibration for people nearby: 12 mm/s for blasting once a week or less, 8 mm/s more often or below 10 Hz",
    "value": "12 mm/s PPV for blasting once a week or less; 8 mm/s for more frequent blasting, or when the frequency is below 10 Hz (levels for vibration below 40 Hz)",
    "status": "verified",
    "sources": [
@@ -10681,7 +10709,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: atherton (via USBM RI 8507): floor impacts of about 0.2 s at 19 Hz judged 'disturbing' at a mean of 3.5-4.4 in/s floor velocity",
+   "label": "Thresholds: Atherton (via USBM RI 8507): floor impacts of about 0.2 s at 19 Hz judged 'disturbing' at a mean of 3.5-4.4 in/s floor velocity",
    "value": "'Disturbing' at a mean of 3.5-4.4 in/s (89-112 mm/s) peak floor velocity, for impacts of 3-5 cycles at 19 Hz (about 200 ms); over 5 times Goldman's steady-state 'intolerable' 0.77 in/s (20 mm/s) at 20 Hz",
    "status": "verified",
    "sources": [
@@ -10705,7 +10733,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: uSBM RI 8507: people moving about a house shake its floors far more than the ground thresholds",
+   "label": "Thresholds: USBM RI 8507: people moving about a house shake its floors far more than the ground thresholds",
    "value": "House strains from everyday activity equal ground vibration of up to 0.50 in/s (12.7 mm/s). Peak midfloor velocity: walking up to 1.49 in/s (38 mm/s), heel drops 5.84 (148 mm/s), jumps 10.1 (257 mm/s); a mine blast with 0.47 in/s (12 mm/s) ground PPV gave 1.18 in/s (30 mm/s)",
    "status": "verified",
    "sources": [
@@ -10717,7 +10745,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: uSBM RI 8507: share of neighbours annoyed by blast vibration around 0.5 in/s",
+   "label": "Thresholds: USBM RI 8507: share of neighbours annoyed by blast vibration around 0.5 in/s",
    "value": "At 0.5-0.75 in/s (13-19 mm/s), about 5-10% of neighbours judge blast vibration unacceptable; a community mean of 0.5 in/s gives 15-30% 'very annoyed' without a public-relations effort; complaints can reach 30% at 0.5 in/s",
    "status": "verified",
    "sources": [
@@ -10769,7 +10797,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Water glass: uSGS ShakeMap legend: peak ground velocity listed for Mercalli intensity IV (earthquakes; context only)",
+   "label": "Water glass: USGS ShakeMap legend: peak ground velocity listed for Mercalli intensity IV (earthquakes; context only)",
    "value": "Intensity IV (Light): PGV 1.41 cm/s, PGA 2.76% of g (earthquake sloshing, not a ripple threshold)",
    "status": "verified",
    "sources": [
@@ -10817,7 +10845,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Water glass: faraday (parametric) wave onset for water in a 70 mm tank shaken up and down at 10-20 Hz",
+   "label": "Water glass: Faraday (parametric) wave onset for water in a 70 mm tank shaken up and down at 10-20 Hz",
    "value": "Onset about 0.3-0.8 m/s² at the mode resonances (3-8% of g), about 3-7 mm/s peak velocity at 11-20 Hz; may be peak-to-peak",
    "status": "verified",
    "sources": [
@@ -10998,7 +11026,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Water glass: water in a glass visibly shimmers: value for the Walk tab (horizontal shaking)",
-   "value": "About 0.2 mm/s horizontal at the table (derived, not measured; range 0.02-1 mm/s)",
+   "value": "About 0.2 mm/s horizontal at the table (estimate from a model, not measured; range 0.02-1 mm/s)",
    "status": "estimate",
    "sources": [
     {
@@ -11014,7 +11042,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Water glass: concentric rings in a glass (the Jurassic Park look): value for the Walk tab (vertical shaking)",
-   "value": "About 0.5-1 mm/s vertical at the table (derived, not measured; range about 0.05-3 mm/s); bold film-style rings take a few mm/s",
+   "value": "About 0.5-1 mm/s vertical at the table (estimate from a model, not measured; range about 0.05-3 mm/s); bold film-style rings take a few mm/s",
    "status": "estimate",
    "sources": [
     {
@@ -11045,7 +11073,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: cauchy's equation of motion for a solid (Newton's second law for every bit of a body)",
+   "label": "Comic switches: Cauchy's equation of motion for a solid (Newton's second law for every bit of a body)",
    "value": "∇·σ + ρb = ρa (σ stress, ρ density, b body force per unit mass, a acceleration)",
    "status": "verified",
    "sources": [
@@ -11141,7 +11169,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: nASA sustained acceleration limits for seated, restrained astronauts (upper bound, not for ordinary people)",
+   "label": "Comic switches: NASA sustained acceleration limits for seated, restrained astronauts (upper bound, not for ordinary people)",
    "value": "Non-deconditioned seated crew: head-to-foot (+Az) 81.4 m/s² (8.3 g) at 0.5 s, 62.8 (6.4 g) at 5 s, 39.2 (4.0 g) at 1,200 s. Chest-to-back (+Ax) 186 (19 g) at 0.5 s, 157 (16 g) at 5 s, 73.5 (7.5 g) at 300 s",
    "status": "verified",
    "sources": [
@@ -11341,13 +11369,25 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: airblast at which people start to notice rattling: about 120 dB (20 Pa)",
-   "value": "Rattling complaints above about 120 dB (20 Pa, 0.003 psi; 6 Hz measuring system); at 134 dB (100 Pa; 0.1 Hz system) 5–10% of homes show rattling or fright disturbances",
+   "label": "Comic switches: airblast at which people start to notice rattling: about 120 dB on a 6 Hz meter",
+   "value": "Rattling complaints above about 120 dB on the 6 Hz measuring system (20 Pa as read on that meter; about 36 Pa unfiltered, our conversion: see airblast_rattle_onset_unfiltered); at 134 dB (100 Pa; 0.1 Hz system) 5–10% of homes show rattling or fright disturbances",
    "status": "verified",
    "sources": [
     {
      "url": "https://www.resolutionmineeis.us/sites/default/files/references/siskind-et-al-1980.pdf",
      "title": "Siskind, Stachura, Stagg & Kopp (1980), Structure Response and Damage Produced by Airblast from Surface Mining, US Bureau of Mines RI 8485, pp. 58 and 66 (PDF pp. 64, 72); copy hosted in the Resolution Copper EIS reference library"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Comic switches: rattling onset as an unfiltered peak pressure (our conversion of USBM's 120 dB on a 6 Hz meter)",
+   "value": "About 36 Pa (125 dB) unfiltered: USBM's 'about 120 dB (6 Hz)' rattling onset, shifted by the 5 dB between its safe levels on the two meters (129 dB on 6 Hz = 134 dB on 0.1 Hz)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://www.resolutionmineeis.us/sites/default/files/references/siskind-et-al-1980.pdf",
+     "title": "Siskind, Stachura, Stagg & Kopp (1980) Structure Response and Damage Produced by Airblast from Surface Mining, US Bureau of Mines Report of Investigations 8485 (copy hosted by the Resolution Copper Mine EIS)"
     }
    ],
    "note": null
@@ -11481,7 +11521,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Growth: krakatoa 1883: surface-burst explosion size that reproduces its air pressure wave",
+   "label": "Growth: Krakatoa 1883: surface-burst explosion size that reproduces its air pressure wave",
    "value": "100–150 Mt of TNT (4.2–6.3 × 10¹⁷ J), as a nuclear surface-burst equivalent for the air wave only; as mass it adds 4.7–7.0 kg",
    "status": "verified",
    "sources": [
@@ -11497,7 +11537,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Growth: krakatoa 1883: spread of published energy estimates",
+   "label": "Growth: Krakatoa 1883: spread of published energy estimates",
    "value": "Quoted estimates run from about 10¹⁷ J (24 Mt) to 6.3 × 10¹⁸ J (1.5 Gt); the compiler's own inferred extreme is about 5 × 10¹⁹ J (12 Gt). The popular 200 Mt (8.4 × 10¹⁷ J) is inside. As mass: 1–70 kg (about 560 kg at the extreme)",
    "status": "disputed",
    "sources": [
@@ -11509,7 +11549,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Growth: chicxulub impact energy (2022 review)",
+   "label": "Growth: Chicxulub impact energy (2022 review)",
    "value": "About 5 × 10²³ J, estimated from the 80–100 km transient crater; the abstract rounds this to \"about 10²³ joules\"",
    "status": "verified",
    "sources": [
@@ -11650,7 +11690,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Growth: airblast levels that rattle houses but do no damage (US Bureau of Mines)",
-   "value": "Safe limit for houses: 134 dB on a 0.1 Hz high-pass meter (0.0145 psi, 100 Pa). Rattling complaints begin above about 120 dB on a 6 Hz meter, roughly 36 Pa unfiltered; some homes still rattle below the safe limit",
+   "value": "Safe limit for houses: 134 dB on a 0.1 Hz high-pass meter (0.0145 psi, 100 Pa). Rattling complaints begin above about 120 dB on a 6 Hz meter (about 36 Pa unfiltered by our conversion: airblast_rattle_onset_unfiltered); some homes still rattle below the safe limit",
    "status": "verified",
    "sources": [
     {
@@ -11703,7 +11743,7 @@ window.DINO_DATA = {
   {
    "label": "Growth: gradual growth: shortest harmless durations for the worked examples",
    "value": "The shove sets the limit, not the air: Chicxulub about 1½ min (mix) or 4 min (pure size); one second of sunlight about 14 min (mix) or 43 min (pure size); Krakatoa a few hundredths of a second. Pure density has no air or shove limit",
-   "status": "derived",
+   "status": "estimate",
    "sources": [
     {
      "url": "https://www.resolutionmineeis.us/sites/default/files/references/siskind-et-al-1980.pdf",
@@ -12658,7 +12698,7 @@ window.DINO_DATA = {
       if (G.T > 0) {
         const T = state.growT, dp = G.pAt(T), u = G.uAt(T);
         const safe = T >= G.T * (1 - 1e-9);
-        items.push('Shortest harmless time: ' + fmtTime(G.T) + ', set by ' + ({ shove: 'how fast the top of his head rises: anything above or beside him has to be able to get out of the way (a surface moving at 0.25 m/s or less, OSHA’s limit for robots that touch people)', pressure: 'the air he pushes aside: a pressure pulse on someone ' + fmtDist(P.GROW.GAP) + ' from him, kept under 100 Pa (134 dB, the US Bureau of Mines’ safe level for houses)', lift: 'keeping his feet on the ground while his middle rises' }[G.by]) + '. The air alone would allow ' + fmtTime(G.Tp) + '.');
+        items.push('Shortest harmless time: ' + fmtTime(G.T) + ', set by ' + ({ shove: 'how fast the top of his head rises: anything above or beside him has to be able to get out of the way (0.25 m/s, the reduced robot speed OSHA’s Technical Manual calls slow enough for a person to get out of the way; borrowed from robot safety, not tested for this case)', pressure: 'the air he pushes aside: a pressure pulse on someone ' + fmtDist(P.GROW.GAP) + ' from him, kept under 100 Pa (134 dB, the US Bureau of Mines’ safe level for houses)', lift: 'keeping his feet on the ground while his middle rises' }[G.by]) + '. The air alone would allow ' + fmtTime(G.Tp) + '.');
         items.push('Over ' + fmtTime(T) + (safe ? ' it is harmless: ' : ' it is not: ') + 'the air pulse ' + fmtDist(P.GROW.GAP) + ' from him peaks at ' + fmtSI(dp, 'Pa') + ' (windows break from 3.4 kPa) and the top of his head rises at up to ' + speedOnly(u) + '. The growth curve starts and stops smoothly (our choice).');
       } else items.push('Pure density: he doesn’t get any bigger, so nothing around him is pushed aside. Only his weight changes.');
     }
@@ -12742,7 +12782,7 @@ window.DINO_DATA = {
     if (!r.canMove) return null;
     const L = P.PASSENGER, n = L.felt(r.launchG, state.angle), fall = f && f.landed ? f.vImpact * f.vImpact / (2 * g) : null;
     const launch = c.safePassenger ? 'Safe passenger: his push is spread through their whole body like gravity, so the launch puts no load on them; they float as if falling.'
-      : 'The throw presses them with about ' + sig(n, 2) + ' g for ' + fmtTime(r.launchT) + '. Amusement rides allow an unprepared rider 2 g for up to 0.2 s and 1.5 g held (ASTM F2291, facing forward and pushed from the front, the worst case); harnessed volunteers took ' + sig(L.injury(r.launchT), 2) + ' g for that long uninjured (Eiband 1959). ' + (n > L.injury(r.launchT) ? 'This is past that: injury possible.' : n > L.noHarm(r.launchT) ? 'This is past what rides allow.' : 'This is within ride limits.') + ' All of these assume a seat or harness; held in his hands it would be worse, by an amount nobody has measured.';
+      : 'The throw presses them with about ' + sig(n, 2) + ' g for ' + fmtTime(r.launchT) + '. Amusement rides allow an unprepared rider ' + sig(L.noHarm(r.launchT), 2) + ' g for that long (ASTM F2291, pushed on the chest, the worst way round: 2 g at 0.2 s, falling to 1.5 g held; the standard doesn’t cover pushes shorter than 0.2 s, so keeping 2 g there is our estimate); harnessed volunteers took ' + sig(L.injury(r.launchT), 2) + ' g for that long uninjured (Eiband 1959). ' + (n > L.injury(r.launchT) ? 'This is past that: injury possible.' : n > L.noHarm(r.launchT) ? 'This is past what rides allow.' : 'This is within ride limits.') + ' All of these assume a seat or harness; held in his hands it would be worse, by an amount nobody has measured.';
     return launch + (fall != null ? ' The landing is still real: they hit the ground at ' + speedOnly(f.vImpact) + ', like falling ' + fmtDist(fall) + ', unless someone catches them.' : '');
   }
   function bayLift(c) {
@@ -13255,6 +13295,12 @@ window.DINO_DATA = {
       return el('tr', {}, el('th', { text: lbl }), el('td', { 'data-col': 'Mass', text: fmtMass(gB.m) + ' (' + fmtRatio(gB.ratio) + ')' }), el('td', { 'data-col': 'Height', text: fmtDist(gB.H) }), el('td', { 'data-col': 'Density', text: fmtDensity2(gB.rho) }));
     });
     box.append(el('p', { style: 'margin:0', text: capital(ref.short) + ': ' + fmtSI(E, 'J') + ', which becomes ' + fmtMass(E / (K.c * K.c)) + ' of mass. From ' + fmtMass(c.body.m) + ' and ' + fmtDist(c.body.H) + ':' }));
+    // how firm each energy is (research/final-environment.json and final-presence.json)
+    const firm = {
+      krakatoa: 'Claimed: 8.4 × 10¹⁷ J (200 Mt) is a popular figure. Published estimates run from about 10¹⁷ to 6.3 × 10¹⁸ J; the air wave alone needed 100–150 Mt, 4.2–6.3 × 10¹⁷ J (Harkrider & Press 1967).',
+      chicxulub: 'Disputed: published estimates run from about 10²³ to 10²⁴ J; Morgan et al. (2022) give about 5 × 10²³ J from the crater. The lab uses 4.2 × 10²³ J, as the brief does.',
+    }[ref.id];
+    if (firm) box.append(el('p', { class: 'muted', style: 'margin:0', text: firm }));
     box.append(el('div', { class: 'cases-wrap' }, el('table', { class: 'cases' }, el('thead', {}, el('tr', {}, el('th', { text: 'Growth form' }), el('th', { text: 'Mass' }), el('th', { text: 'Height' }), el('th', { text: 'Density' }))), el('tbody', {}, rows))));
     const items = growthItems(E, c.body, c.surface);
     if (items) box.append(el('p', { style: 'margin:0', text: { gradual: 'Gradual growth', instant: 'Instant growth', runaway: 'Runaway' }[state.absorb] + ', ' + growFormText(state.growS) + ':' }), happens(items, 8));
@@ -13988,6 +14034,11 @@ window.DINO_DATA = {
     else if (a.aim) chips.push(status('good', 'Gentle lob: ' + speedOnly(a.aim.vL)));
     if (k && arrived) {
       chips.push(catchOutcomeChip(a, o));
+      if (o.passenger) {
+        const pg = catchPassengerG(a, o);
+        chips.push(state.safePassenger ? status('info', 'Safe passenger: throw and catch spread through them')
+          : pg ? status(pg.n > P.PASSENGER.injury(pg.t) ? 'bad' : pg.over ? 'warn' : 'good', (pg.where === 'throw' ? 'Throw: ' : 'Catch: ') + sig(pg.n, 2) + ' g, ' + (pg.n > P.PASSENGER.injury(pg.t) ? 'injury possible' : pg.over ? 'past ride limits' : 'within ride limits')) : null);
+      }
       if (['caught', 'wreckage', 'slams', 'cant-hold-it'].includes(a.result)) {
         if (cO.anchor === 'bolted') chips.push(status('info', 'Bolted to the planet'));
         else if (k.sinkRatio > 1) chips.push(status('bad', 'Feet sink: ' + fmtRatio(k.sinkRatio) + ' the ground’s limit'));
@@ -14012,7 +14063,7 @@ window.DINO_DATA = {
         tile('Flight', fmtTime(a.time), a.wells && a.wells.wellDominated ? 'straight line through their pull' : (a.flight ? 'top ' + fmtDist(a.flight.apex) : '')),
         tile('Arrives at', speedOnly(a.vArrive), fmtAngle(a.angleDeg, false) + (a.wells && a.wells.GC > 0 ? ' · sped up by Ollie’s pull' : '')),
         caughtish ? (first
-          ? tile('Hits his palms with', fmtRange(k.F1[0], k.F1[1], 'N'), 'first contact, over in ' + fmtTime(k.tContact[0]) + ' to ' + fmtTime(k.tContact[1]) + ' · ' + big(k.F1[0] / o.m / g, 2) + ' g or more on the ' + o.short)
+          ? tile('Hits his palms with', fmtRange(k.F1[0], k.F1[1], 'N'), 'first contact, over in ' + fmtTime(k.tContact[0]) + ' to ' + fmtTime(k.tContact[1]) + ' · ' + big(k.F1[0] / o.m / g, 2) + ' g or more on the ' + o.short + (o.passenger && state.safePassenger ? ' (Safe passenger: spread through them, no harm)' : ''))
           : tile('Catch force', fmtSI(k.Fpeak, 'N'), (isFinite(k.Fcap) ? sig(100 * k.Fpeak / k.Fcap, 2) + '% of Ollie’s strength · ' : '') + big(k.decelG, 2) + ' g on the ' + o.short)) : tile('Hits him with', fmtSI(k.Ecatch, 'J'), fmtTNT(k.Ecatch)),
         caughtish ? tile('Ollie slides', cO.anchor === 'bolted' ? 'bolted' : (k.slide > 0.005 ? fmtDist(k.slide) : 'nothing'), cO.anchor === 'bolted' ? 'bolted to the planet' : 'feet hold up to ' + fmtN(k.R)) : null,
         round ? tile('Round trip', 'about ' + fmtTime(round), strokesIn ? 'throws, flights and catches' : 'throws and flights') : null));
@@ -14418,7 +14469,7 @@ window.DINO_DATA = {
   const GOALS = {
     throw: { key: 'gThrow', unit: 'm', label: 'Goal: throw it (m)', text: (t) => (state.angle >= 90 ? 'throws the ' + objById(state.obj).short + ' ' + fmtDist(t) + ' straight up' : 'lands the ' + objById(state.obj).short + ' ' + fmtDist(t) + ' away') },
     jump: { key: 'gJump', unit: 'm', label: 'Goal: jump this high (m)', text: (t) => 'jumps ' + fmtDist(t) + ' high' },
-    stomp: { text: () => 'makes a stomp people feel ' + fmtDist(state.near) + ' away' },
+    stomp: { text: () => 'makes a stomp most people can just feel ' + fmtDist(state.near) + ' away (1 mm/s, the level for one isolated jolt)' },
     punch: { fixed: CAL_PUNCH, text: (t) => 'throws a punch as fast as the strongest human’s (' + speedOnly(t) + ' in this model, inside the 6.6–12.5 m/s measured in elite boxers)' },
     clap: { fixed: CAL_CLAP, text: (t) => 'claps as fast as the strongest human would in this model (' + speedOnly(t) + ')' },
     sprint: { key: 'gSprint', unit: 'm/s', label: 'Goal: run at (m/s)', text: (t) => 'runs at ' + speedOnly(t) },
@@ -14426,7 +14477,7 @@ window.DINO_DATA = {
   };
   const goalTarget = (move) => (GOALS[move].fixed != null ? GOALS[move].fixed : GOALS[move].key ? state[GOALS[move].key] : null);
   function planOpts(move) {
-    const o = { near: state.near, target: goalTarget(move), gentleHold: state.gentleHold, silentStrike: state.silentStrike, softLanding: state.softLanding };
+    const o = { near: state.near, target: goalTarget(move), gentleHold: state.gentleHold, silentStrike: state.silentStrike, softLanding: state.softLanding, safePassenger: state.safePassenger };
     if (move === 'throw') Object.assign(o, { obj: objById(state.obj), angle: state.angle });
     if (move === 'pull') o.obj = objById(state.obj);
     return o;
@@ -14444,25 +14495,38 @@ window.DINO_DATA = {
     }
     return p;
   }
-  // finish the rest of a plan in ~20 ms slices, then redraw the bay; a newer plan takes over
-  function stepPlan(p) {
-    if (p.done || planRunning === p) return;
+  // finish the rest of a plan in ~20 ms slices, then redraw the bay; a newer plan takes over. `waits`: the jobs the
+  // page is showing a placeholder for; the bay is redrawn as soon as they are done, and again when the plan is.
+  let planWaits = null;
+  function stepPlan(p, waits) {
+    if (p.done) { planWaits = null; return; }
+    if (waits) planWaits = waits;
+    if (planRunning === p) return;
     clearTimeout(planTimer);
     planRunning = p;
     const tick = () => {
       if (planRunning !== p) return;
       const t0 = performance.now();
-      while (performance.now() - t0 < 20) if (p.step()) { planRunning = null; renderBay(true); return; }
+      while (performance.now() - t0 < 20) if (p.step()) { planRunning = null; planWaits = null; renderBay(true); return; }
+      if (planWaits && planWaits.every((n) => p.result(n))) { planWaits = null; renderBay(true); }
       planTimer = setTimeout(tick, 0);
     };
     planTimer = setTimeout(tick, 0);
   }
+  // step the named jobs for up to `ms` of this render; true if they are all done. The rest finishes in the background.
+  const EFFORT_BUDGET = 40;
+  function ready(p, names, t0) {
+    for (const n of names) while (!p.result(n)) { if (performance.now() - t0 > EFFORT_BUDGET) return false; p.stepJob(n); }
+    return true;
+  }
+  const HAZ_JOBS = () => P.RESTRAINT.HAZARDS.map((h) => 'hazard:' + h.id);
   const EFF_HAZ = {
     boom: { name: 'Sonic boom', what: 'something he moves breaks the sound barrier' },
     air: { name: 'Air blast loud enough to risk damage', what: 'the air blast gets loud enough to risk damage to houses (over 134 dB)' },
     plaster: { name: 'Plaster may crack', what: 'the ground shakes hard enough that plaster may crack' },
     ground: { name: 'The ground breaks', what: 'the ground under his feet gives way' },
     crush: { name: 'He crushes the object', what: 'his hands crush the object' },
+    passenger: { name: 'Past ride limits for the person', what: 'the launch presses the person harder than amusement rides allow (ASTM F2291)' },
   };
   const PRESET_WHAT = {
     rattle: () => 'rattles windows and ornaments ' + fmtDist(state.near) + ' away, through the ground or the air',
@@ -14479,8 +14543,12 @@ window.DINO_DATA = {
     const out = { p, preset: e, use: undefined, note: null };
     if (e === 'allout') return out;
     if (e === 'custom') { out.use = Math.min(c.F, Math.pow(10, state.effortLogKg) * g); return out; }
+    // a search that needs more than this render's time budget: show all-out for now, and redraw when it's done
+    const t0 = performance.now();
+    const pending = (names, what) => { out.pending = names; out.why = 'Working out ' + what + '… Showing all-out until then.'; return out; };
     if (e === 'least') {
       // the gentlest effort that reaches the goal, but never past the courtesy ceiling: nothing is harmed
+      if (!ready(p, ['goal'], t0)) return pending(['goal'].concat(HAZ_JOBS()), 'the least disruptive effort');
       const gl = p.goal();
       out.goal = gl;
       const want = gl.reached ? gl.use : undefined;
@@ -14491,6 +14559,7 @@ window.DINO_DATA = {
         if (!gl.reached) { out.note = 'Even all-out he can’t ' + goalText + '. Showing all-out, which harms nothing.'; out.why = 'Everything he has, and still short of the goal.'; }
         return out;
       }
+      if (!ready(p, HAZ_JOBS(), t0)) return pending(HAZ_JOBS(), 'the least disruptive effort');
       const ce = p.ceiling();
       out.ceiling = ce;
       out.capped = true;
@@ -14500,6 +14569,7 @@ window.DINO_DATA = {
       return out;
     }
     if (e === 'ceiling') {
+      if (!ready(p, HAZ_JOBS(), t0)) return pending(HAZ_JOBS(), 'the courtesy ceiling');
       const ce = p.ceiling();
       out.ceiling = ce;
       if (!ce.by) { out.why = 'Nothing this move does harms anyone nearby, so he can go all-out.'; return out; }
@@ -14507,7 +14577,8 @@ window.DINO_DATA = {
       if (!(ce.below > 0)) { out.why = 'The gentlest try he can make.'; out.note = 'Nothing here is harmless: even the gentlest try means ' + EFF_HAZ[ce.by].what + '.'; }
       return out;
     }
-    const r = p.ensure('preset:' + e);
+    if (!ready(p, ['preset:' + e], t0)) return pending(['preset:' + e], 'that effort');
+    const r = p.result('preset:' + e);
     if (r.never) { out.why = 'Everything he has.'; out.note = 'Even all-out, this move doesn’t ' + PRESET_WHAT[e]().replace(/^(\w+?)(e?s) /, (m, a, b) => a + (b === 'es' && !/(sh|ch|ss|x)$/.test(a) ? 'e' : '') + ' ') + '.'; }
     else out.use = r.use;
     return out;
@@ -14555,18 +14626,19 @@ window.DINO_DATA = {
     const use = eff.use == null ? c.F : eff.use;
     const why = eff.why || { least: 'The gentlest push that ' + GOALS[move].text(goalTarget(move)) + '.', ceiling: 'The most he can use before something nearby comes to harm.', allout: 'Everything he has.', custom: 'Set by hand.' }[state.effort]
       || (PRESET_WHAT[state.effort] ? 'The least effort that ' + PRESET_WHAT[state.effort]() + '.' : '');
-    box.append(el('p', {}, el('b', { text: eff.use == null ? 'All-out.' : 'Effort: ' + amountText(use, c.F) + '.' }), ' ' + why));
+    box.append(el('p', {}, el('b', { text: eff.pending ? 'Effort: working it out.' : eff.use == null ? 'All-out.' : 'Effort: ' + amountText(use, c.F) + '.' }), ' ' + why));
     if (eff.note) box.append(el('p', { class: 'warn-ink', text: eff.note }));
-    const r = p.run(eff.use), rc = P.RESTRAINT.reach(move, r, p.opt);
     // the courtesy ceiling, once the hazard searches are done (or now, if the preset needed it)
     const haz = P.RESTRAINT.HAZARDS.map((h) => p.result('hazard:' + h.id));
     if (haz.every(Boolean)) {
+      const r = p.run(eff.use), rc = P.RESTRAINT.reach(move, r, p.opt);
       const ce = p.ceiling();
       let t;
       if (!ce.by) t = 'Courtesy ceiling: none. Nothing this move does harms anyone within ' + fmtDist(state.near) + (isFinite(c.F) ? ', even all-out.' : ' at any finite strength.');
       else if (!(ce.below > 0)) t = 'Courtesy ceiling: none. Even the gentlest try means ' + EFF_HAZ[ce.by].what + '.';
       else t = 'Courtesy ceiling: ' + atText(ce.below, c.F) + '. Past that, ' + EFF_HAZ[ce.by].what + (ce.by === 'air' || ce.by === 'plaster' ? ' ' + fmtDist(state.near) + ' ' + (M.where === 'where it lands' ? 'from where it lands' : 'away') : '') + '.';
       box.append(el('p', { text: t }));
+      if (move === 'throw' && objById(state.obj).passenger && !state.safePassenger) box.append(el('p', { class: 'muted', text: 'For a person this covers the launch only. The landing is a fall unless someone catches them, and the lab doesn’t count it.' }));
       if (ce.by && use > ce.below * (1 + 1e-6)) box.append(status('warn', 'Above the courtesy ceiling'));
       const items = [];
       for (const h of P.RESTRAINT.HAZARDS) {
@@ -14597,7 +14669,7 @@ window.DINO_DATA = {
     at = at < 0 ? 1 : at + 1;
     if (parts[at] && parts[at].classList && parts[at].classList.contains('status-row')) at++;
     parts.splice(at, 0, effortReadout(move, c, eff));
-    stepPlan(eff.p);
+    stepPlan(eff.p, eff.pending || null);
   }
 
   // ---------------------------------------------------------------- walk (presence)
@@ -14633,7 +14705,7 @@ window.DINO_DATA = {
     ths.forEach((k, i) => {
       const yLine = sy(THc[k]), yy = ys[i];
       if (Math.abs(yy + 3 - yLine) > 4) svg.append(sv('line', { x1: w - padR - 4, x2: w - padR, y1: yy - 4, y2: yLine, stroke: 'var(--ink-3)', 'stroke-width': 1 }));
-      svg.append(sv('text', { x: w - padR - 6, y: yy, 'text-anchor': 'end', class: 'lbl-strong halo' }, w < 560 ? short[k] : VIB_LABEL[k].toLowerCase()));
+      svg.append(sv('text', { x: w - padR - 6, y: yy, 'text-anchor': 'end', class: 'lbl-strong halo' }, (w < 560 ? short[k] : VIB_LABEL[k].toLowerCase()) + (P.VIB.HORIZ[k] ? ' (side to side)' : '')));
     });
     if (dMark >= d0 && dMark <= d1) {
       const x = sx(dMark), right = x > w - padR - 70;
@@ -14689,8 +14761,10 @@ window.DINO_DATA = {
     const st = pres[0].pr.step;
     const sf = c.surface;
     // thresholds for these steps: losing one's footing is capped at 1 g up and down, g / (2 pi f), at the footfall's frequency
-    const TH = Object.assign({}, P.VIB.TH, { footing: Math.min(P.VIB.TH.footing, g * st.Tpulse / (2 * Math.PI)) });
-    const reachOf = (k) => Math.max(...pres.map((x) => P.ppvReach(x.pr.step.src, TH[k] / (both ? 2 : 1))));   // both: their steps landing together
+    const TH = P.walkThresholds(st);
+    // the glass's shimmer answers to side-to-side shaking; everything else to up-and-down. Both: their steps landing together
+    const H = (k) => !!P.VIB.HORIZ[k];
+    const reachOf = (k) => Math.max(...pres.map((x) => P.ppvReach(x.pr.step.src, TH[k] / (both ? 2 : 1), H(k))));
     const groundTiles = [
       tile('Pace', speedOnly(st.v), sig(st.stepRate, 2) + ' steps a second'),
       tile('Load on each step', sig(st.kLoad, 2) + '× his weight', 'plus a landing pulse of ' + sig(st.Fpulse / st.W, 2) + '× over ' + fmtTime(st.Tpulse)),
@@ -14705,26 +14779,33 @@ window.DINO_DATA = {
       return out;
     }
     const ppvAtD = (d) => (both ? 2 : 1) * Math.max(...pres.map((x) => x.pr.ppv(d)));
-    const v = ppvAtD(D0);
-    const hit = WALK_TH.filter((k) => v >= TH[k]).sort((a, b) => TH[a] - TH[b]);
-    let vt = 'At ' + fmtDist(D0) + ', ' + (both ? 'their' : walkers[0][0] + '’s') + ' ' + stepWord(state.stepEffort) + ' steps shake the ground at ' + fmtPPV(v) + '.';
-    vt += hit.length ? ' ' + VIB_LABEL[hit[hit.length - 1]] + '.' : v >= 0.5 * TH.shimmer ? ' Close to what a glass of water shows.' : ' Too little to notice.';
+    const ppvHAtD = (d) => (both ? 2 : 1) * Math.max(...pres.map((x) => x.pr.ppvH(d)));
+    const v = ppvAtD(D0), vH = ppvHAtD(D0);
+    const over = (k) => (H(k) ? vH : v) >= TH[k];
+    const hit = WALK_TH.filter(over).sort((a, b) => TH[a] - TH[b]);
+    let vt = 'At ' + fmtDist(D0) + ', ' + (both ? 'their' : walkers[0][0] + '’s') + ' ' + stepWord(state.stepEffort) + ' steps shake the ground at ' + fmtPPV(v) + ' up and down.';
+    vt += hit.length ? ' ' + VIB_LABEL[hit[hit.length - 1]] + '.' : vH >= 0.5 * TH.shimmer ? ' Close to what a glass of water shows.' : ' Too little to notice.';
     out.push(verdict(vt));
     out.push(el('div', { class: 'status-row' }, hit.map((k) => status(k === 'plasterWalk' || k === 'footing' ? 'bad' : k === 'rattle' ? 'warn' : 'info', VIB_LABEL[k])),
       printChip(pres.map((x) => x.pr.step.footprint))));
     // the elephant comparison: a wild African elephant measured at 20 m, falling about as 1/D from 5 to 100 m
-    const EL = P.VIB.ELEPHANT, dE = D0 >= EL.dMin && D0 <= EL.dMax ? D0 : EL.d, ratioE = ppvAtD(dE) / P.elephantPPV(dE);
+    // the elephant was measured on sandy ground, so the comparison puts them on the same ground, whatever is picked
+    const EL = P.VIB.ELEPHANT, dE = D0 >= EL.dMin && D0 <= EL.dMax ? D0 : EL.d;
+    const sandSf = D.surfaces.find((x) => x.id === 'sand');
+    const onSand = pres.map((x) => (sf.id === 'sand' ? x.pr : P.presence(x.b, sandSf, o)));
+    const ratioE = (both ? 2 : 1) * Math.max(...onSand.map((pr) => pr.ppv(dE))) / P.elephantPPV(dE);
     const elText = ratioE >= 0.7 && ratioE <= 1.5 ? 'about the same' : ratioE > 1 ? sig(ratioE, 1) + '× the elephant' : sig(1 / ratioE, 1) + '× quieter';
-    const elSub = 'one measured walking past ' + fmtDist(dE) + ' away' + (ratioE >= EL.lo && ratioE <= EL.hi ? '; inside the 0.15–8× real elephants vary' : '');
+    const elSub = 'both on sandy ground, as the elephant was; it was measured walking past ' + fmtDist(dE) + ' away' + (ratioE >= EL.lo && ratioE <= EL.hi ? '; inside the 0.15–8× real elephants vary' : '');
     out.push(tiles(
       tile('Ground shaking at ' + fmtDist(D0), fmtPPV(v), 'peak, up and down' + (both ? '; both in step' : '') + ' · estimate, about 3–5× either way'),
       tile('Compared with an elephant', elText, elSub),
       ...groundTiles));
     // both walking: the curve the verdict uses (their steps landing together), with each one's own curve thin and dashed
     const same = both && Math.abs(pres[0].pr.ppv(10) - pres[1].pr.ppv(10)) <= 1e-9 * pres[0].pr.ppv(10);
-    out.push(ppvChart(both ? [{ label: 'Both in step', f: ppvAtD }].concat(same ? [{ label: 'Either one alone (Rex and Ollie are the same here)', f: (d) => pres[0].pr.ppv(d), thin: true, dash: '6 4', color: 'var(--ink-3)' }]
+    const hCurve = { label: 'Side to side (the glass ripples with this)', f: both ? ppvHAtD : (d) => pres[0].pr.ppvH(d), thin: true, dash: '1 3', color: 'var(--accent)', horiz: true };
+    out.push(ppvChart([].concat(both ? [{ label: 'Both in step, up and down', f: ppvAtD }].concat(same ? [{ label: 'Either one alone (Rex and Ollie are the same here)', f: (d) => pres[0].pr.ppv(d), thin: true, dash: '6 4', color: 'var(--ink-3)' }]
       : pres.map((x, i) => ({ label: x.n + ' alone', f: (d) => x.pr.ppv(d), thin: true, dash: i ? '2 3' : '6 4', color: i ? 'var(--olive)' : 'var(--ink-3)' })))
-      : pres.map((x) => ({ label: x.n, f: (d) => x.pr.ppv(d) })), D0, TH));
+      : pres.map((x) => ({ label: x.n + (pres.length === 1 ? ', up and down' : ''), f: (d) => x.pr.ppv(d) })), hCurve), D0, TH));
     const items = [];
     for (const k of WALK_TH) {
       const r = reachOf(k);
@@ -14742,7 +14823,7 @@ window.DINO_DATA = {
     // the canon target, as a result
     const tgt = [];
     const wB = walkers[0][1];
-    const ripE = P.walkEffortFor(wB, sf, o, TH.shimmer, 3), feelE = P.walkEffortFor(wB, sf, o, TH.feel, 3), plE = P.walkEffortFor(wB, sf, o, TH.plasterWalk, 3);
+    const ripE = P.walkEffortFor(wB, sf, o, TH.shimmer, 3, true), feelE = P.walkEffortFor(wB, sf, o, TH.feel, 3), plE = P.walkEffortFor(wB, sf, o, TH.plasterWalk, 3);
     const stepAt = (e) => (e <= 0 ? 'even soft-footed steps' : stepWord(e) + ' steps (' + sig(100 * e, 2) + '% of the way from soft-footed to a stamp)');
     tgt.push('Canon says that, restrained, their footsteps can be felt and ripple water glasses a few metres away. On ' + sf.short + ', a glass 3 m away ripples with ' + (isFinite(ripE) ? stepAt(ripE) : 'nothing short of a stomp') + ', and people 3 m away feel ' + (isFinite(feelE) ? stepAt(feelE) : 'nothing short of a stomp') + '.');
     tgt.push('Presence stops being harmless when plaster 3 m away may crack: ' + (isFinite(plE) ? 'with ' + stepAt(plE) + '.' : 'not even when he stamps. It takes a stomp (see the Stomp tab).'));
@@ -14750,7 +14831,7 @@ window.DINO_DATA = {
     const gd = P.groundOf(sf);
     out.push(math([
       'Pace: people’s gait scaled to his size at the same Froude number v²/(g h), hip height h = ' + sig(st.h, 3) + ' m (0.45 of his height, our estimate). Froude ' + st.Fr + ' → ' + speedOnly(st.v) + ', ' + sig(st.stepRate, 2) + ' steps a second (0.789 Fr^0.211 √(g/h), fitted to people at Froude 0.09–0.37), each foot down ' + fmtTime(st.stance) + '.',
-      'Load: ' + sig(st.kLoad, 2) + '× body weight comes onto the foot over ' + fmtTime(st.tRamp) + ' (people: 1.2 at 1.5 m/s, rising 0.25 per m/s; Keller 1996, Nilsson & Thorstensson 1989). The landing adds a pulse of ' + sig(st.Fpulse / st.W, 2) + '× his weight lasting ' + fmtTime(st.Tpulse) + ': an ordinary heel strike stops 11% of him at 0.70 m/s in 37 ms (Baines 2018, scaled); soft-footed 0.31 of that; a drill stamp 6.5× (Carden 2015).',
+      'Load: ' + sig(st.kLoad, 2) + '× body weight comes onto the foot over ' + fmtTime(st.tRamp) + ' (people: 1.2 at 1.5 m/s, rising 0.25 per m/s; Keller 1996, Nilsson & Thorstensson 1989). The landing adds a pulse of ' + sig(st.Fpulse / st.W, 2) + '× his weight lasting ' + fmtTime(st.Tpulse) + ': an ordinary heel strike stops 11% of him at ' + speedOnly(st.heelV) + ' in ' + fmtTime(st.heelT) + ' (Baines 2018: 0.57 m/s in 30 ms for people, scaled by √(hip height ÷ 0.9 m)); soft-footed 0.31 of that; a drill stamp 6.5× (Carden 2015).',
       'Ground shaking (elastic ground, Lamb’s problem): for a pulse of peak F lasting T, PPV = max(0.375 F/(ρ c² T r), 0.620 F/(ρ c^2.5 T^1.5 √r)) × damping, with ρ = ' + gd.rho + ' kg/m³, shear-wave speed c = ' + gd.cs + ' m/s and damping ' + gd.xi + ' for ' + sf.short + ' (estimates). Checked against one drop test (130 kg at Pisa: within about 2× from 2.5 to 60 m, contact time fitted) and loosely against elephant footfalls; footsteps themselves were never measured. Uncertain by about 3–5× either way, more past 60 m.',
     ]));
     return out;
@@ -14761,11 +14842,17 @@ window.DINO_DATA = {
   // has no goal short of the test itself, so its least disruptive effort is the hardest both can go while nothing
   // around them breaks: no torn table, no broken object, no sonic boom, no blast that breaks windows nearby, no crater.
   const fullF = (who) => (who === 'O' && !state.oSame ? (state.oInf ? Infinity : Math.pow(10, state.oLogKg) * g) : (state.inf ? Infinity : Math.pow(10, state.logKg) * g));
+  // duoSig: a fingerprint of what the test came out as (rounded speeds and outcomes). The same fingerprint at two
+  // efforts means the test has saturated (something else caps it), so the search can stop.
+  let duoSig = '';
+  const fp = (...xs) => xs.map((x) => (typeof x === 'number' ? (isFinite(x) ? x.toPrecision(9) : String(x)) : String(x))).join('|');
   function duoHarm(act) {
     const cR = ctx(), cO = ctxOllie();
+    duoSig = '';
     const near = state.near, win = (E) => isFinite(E) ? E > 0 && P.blastRadius(E, P.RESTRAINT.R.DP_HARM) >= near : E > 0;
     if (act === 'arm') {
       const r = P.armWrestle(cR, cO);
+      duoSig = fp(r.slamRatio, r.quake, r.crater, r.relativistic, r.tableBreaks, r.blackHole);
       if (r.blackHole) return null;
       return r.tableBreaks ? 'the table tears apart' : r.slamRatio > 1 ? 'the pin cracks the table' : r.crater > 0 ? 'the pin makes a crater' : r.quake > 2 ? 'the pin shakes the ground like a quake' : r.relativistic ? 'the pin turns into a fireball' : null;
     }
@@ -14774,13 +14861,16 @@ window.DINO_DATA = {
       if (move === 'shove') {
         const both = state.wrestleWho === 'both', cA = state.wrestleWho === 'ollie' ? cO : cR, cB = state.wrestleWho === 'ollie' ? cR : cO;
         const r = both ? P.shoveBoth(cR, cO) : P.shove(cA, cB);
+        duoSig = fp(r.vA || 0, r.vB || 0);
         return Math.max(r.vA || 0, r.vB || 0) >= K.a0 ? 'someone flies off faster than sound' : null;
       }
       if (move === 'throw') {
         const cA = state.wrestleWho === 'ollie' ? cO : cR, cB = state.wrestleWho === 'ollie' ? cR : cO;
         const t = P.throwPartner(cA, cB, state.angle);
+        duoSig = fp(t.r && t.r.v, t.r && t.r.sinkRatio);
         if (!t.r || !t.r.canMove) return null;
-        return t.r.v >= K.a0 ? 'the throw breaks the sound barrier' : win(t.r.Eimpact) ? 'the landing’s air blast risks damage ' + fmtDist(near) + ' away' : t.r.sinkRatio > 1 ? 'the ground gives way under the thrower' : null;
+        // the landing counts as a blast only if it is supersonic (the solo throw's rule)
+        return t.r.v >= K.a0 ? 'the throw breaks the sound barrier' : win(P.RESTRAINT.MOVES.throw.blast(t.r)) ? 'the landing’s air blast risks damage ' + fmtDist(near) + ' away' : t.r.sinkRatio > 1 ? 'the ground gives way under the thrower' : null;
       }
       return null;
     }
@@ -14788,10 +14878,13 @@ window.DINO_DATA = {
       if (state.cObj === 'partner') return null;
       const o = objById(state.cObj), D0 = Math.pow(10, state.cLogD);
       const legs = [P.catchLeg(cR, cO, o, D0, state.cStyle), P.catchLeg(cO, cR, o, D0, state.cStyle)];
+      duoSig = fp(...legs.flatMap((L) => (L ? [L.aim && L.aim.vL, L.vArrive, L.result, L.bursts] : ['none'])));
       for (const L of legs) {
         if (!L) continue;
         if (L.aim && L.aim.vL >= K.a0) return 'a throw breaks the sound barrier';
         if (['crushed-launch', 'breaks-up', 'burns-up', 'wreckage', 'fireball'].includes(L.result) || L.bursts) return 'the ' + o.short + ' is destroyed';
+        const pg = catchPassengerG(L, o);
+        if (pg && pg.over) return pg.where === 'throw' ? 'the throw presses the person harder than amusement rides allow' : 'the catch stops the person harder than amusement rides allow';
       }
       return null;
     }
@@ -14800,6 +14893,7 @@ window.DINO_DATA = {
       const gb = state.colInf ? Infinity : Math.pow(10, state.colGB);
       if (state.colMode === 'push') return null;
       const r = P.collide(cA, cB, { source: state.colSrc, gb, bounce: state.colBounce === 'bounce' });
+      duoSig = fp(r && r.v0, r && r.outcome);
       if (!r || r.blackHole || r.planetScale || r.noCharge) return null;
       // the same rule as the Collide tab: a hit slower than sound crossing the damage zone is a loud thump, not a blast
       const splat = state.colBounce !== 'bounce', F = r.contact ? (splat ? r.contact.soft : r.contact.softEl) : null;
@@ -14809,30 +14903,56 @@ window.DINO_DATA = {
     }
     return null;
   }
+  // A person in the game of catch: the throw's average push (release speed over the push time) and the catch, against
+  // the ride limits the solo Throw uses. null when the object isn't a person or Safe passenger is on.
+  const CAUGHT = ['caught', 'wreckage', 'slams', 'cant-hold-it'];
+  function catchPassengerG(L, o) {
+    if (!o.passenger || state.safePassenger || !L || !L.aim || !(L.tPush > 0)) return null;
+    const nL = P.PASSENGER.felt(L.aim.vL / L.tPush / g, L.aim.thetaDeg || 0);
+    if (nL > P.PASSENGER.noHarm(L.tPush)) return { over: true, where: 'throw', n: nL, t: L.tPush, limit: P.PASSENGER.noHarm(L.tPush) };
+    const k = L.catch;
+    if (!k || !CAUGHT.includes(L.result)) return { over: false, where: 'throw', n: nL, t: L.tPush, limit: P.PASSENGER.noHarm(L.tPush) };
+    const first = k.firstShare > 0.5, n = first ? k.F1[0] / (o.m * g) : k.decelG, t = first ? k.tContact[1] : k.tStroke;
+    return { over: n > P.PASSENGER.noHarm(t), where: 'catch', n, t, limit: P.PASSENGER.noHarm(t) };
+  }
   const duoPlans = new Map();
   function duoPlanFor(act) {
     const FR = fullF('R'), FO = fullF('O');
-    const key = JSON.stringify([act, FR, FO, state.mode, state.H, state.m, state.build, state.oH, state.oM, state.surface, state.groundHolds, state.anchor, state.oAnchor, state.near, state.wrestleMove, state.wrestleWho, state.angle, state.cObj, state.cLogD, state.cStyle, state.colMode, state.colWho, state.colSrc, state.colGB, state.colInf, state.colBounce, state.colImm, state.oEffortOwn, state.oEffortLogKg, state.gentleHold, state.coolFlight, state.softLanding, state.silentStrike]);
+    const key = JSON.stringify([act, FR, FO, state.mode, state.H, state.m, state.build, state.oH, state.oM, state.surface, state.groundHolds, state.anchor, state.oAnchor, state.near, state.wrestleMove, state.wrestleWho, state.angle, state.cObj, state.cLogD, state.cStyle, state.colMode, state.colWho, state.colSrc, state.colGB, state.colInf, state.colBounce, state.colImm, state.oEffortOwn, state.oEffortLogKg, state.gentleHold, state.coolFlight, state.softLanding, state.silentStrike, state.safePassenger]);
     let p = duoPlans.get(key);
     if (p) return p;
     const need = (m) => P.W8.WALK_LOAD * m * g / P.MUSCLE.jump.forceFrac;
     const lo = Math.max(need(state.m), need(state.oM)), hiF = Math.max(FR, FO), hi = isFinite(hiF) ? hiF : 1e34 * g;
-    const memo = new Map();
+    const memo = new Map(), sigs = new Map();
     const harmAt = (u) => {
       const k = u === Infinity ? 'inf' : u;
       if (!memo.has(k)) {
         const save = duoCap;
         duoCap = { R: Math.max(u, lo), O: state.oEffortOwn ? Math.max(Math.pow(10, state.oEffortLogKg) * g, lo) : Math.max(u, lo) };
-        try { memo.set(k, duoHarm(act)); } finally { duoCap = save; }
+        try { memo.set(k, duoHarm(act)); sigs.set(k, duoSig); } finally { duoCap = save; }
       }
       return memo.get(k);
     };
-    const s = lo < hi ? P.RESTRAINT.search((u) => !!harmAt(u), lo, hi, !isFinite(hiF)) : null;
+    const same = (u0, u1) => { harmAt(u0); harmAt(u1); const a = sigs.get(u0), b = sigs.get(u1); return !!a && a === b; };
+    const s = lo < hi ? P.RESTRAINT.search((u) => !!harmAt(u), lo, hi, !isFinite(hiF), same) : null;
     p = { act, lo, hi, s, harmAt, done: !s };
     p.step = () => { if (p.done) return true; s.step(); if (s.use !== undefined) p.done = true; return p.done; };
     duoPlans.set(key, p);
     if (duoPlans.size > 30) duoPlans.delete(duoPlans.keys().next().value);
     return p;
+  }
+  // finish a two-player search in the background (each probe runs the whole test, up to a second or so), then redraw
+  let duoRunning = null;
+  function stepDuoPlan(p) {
+    if (p.done || duoRunning === p) return;
+    duoRunning = p;
+    const tick = () => {
+      if (duoRunning !== p) return;
+      const t0 = performance.now();
+      while (performance.now() - t0 < 20) if (p.step()) { duoRunning = null; if (isDuo()) renderBay(true); return; }
+      setTimeout(tick, 0);
+    };
+    setTimeout(tick, 0);
   }
   // the cap for this render (Infinity = all-out) and what the readout says
   function resolveDuoEffort(act) {
@@ -14840,7 +14960,8 @@ window.DINO_DATA = {
     let use = Infinity, note = null;
     if (state.duoEffort === 'custom') use = Math.max(Math.pow(10, state.duoLogKg) * g, p.lo);
     else if (state.duoEffort === 'least' && p.s) {
-      while (!p.step());
+      const t0 = performance.now();
+      while (!p.step()) if (performance.now() - t0 > EFFORT_BUDGET) { stepDuoPlan(p); return { p, use: Infinity, note: null, harm: p.harmAt(Infinity), pending: true }; }
       if (p.s.never) use = Infinity;
       else if (!(p.s.below > 0)) { use = p.lo; note = 'Nothing is harmless here: even at the least they need to stand, ' + p.harmAt(p.lo) + '.'; }
       else use = p.s.below;
@@ -14875,6 +14996,10 @@ window.DINO_DATA = {
     const oKg = Math.pow(10, state.oEffortLogKg);
     const each = state.oEffortOwn ? ' (Rex as hard as lifting ' + fmtMass(eff.use / g) + ', Ollie ' + fmtMass(oKg) + ')' : ' (each as hard as lifting ' + fmtMass(eff.use / g) + ')';
     const noCap = state.duoEffort === 'least' && eff.p.s && eff.p.s.never;
+    if (eff.pending) {
+      read.append(el('p', {}, el('b', { text: 'Effort: working it out.' }), ' Working out the least disruptive effort… Showing all-out until then.'));
+      return { fields, read };
+    }
     const head = el('p', {}, el('b', { text: noCap ? 'All-out: no cap needed.' : capped ? 'Effort: ' + (isFinite(FR) ? pctOf(eff.use, FR) + ' of his strength' : 'as hard as lifting ' + fmtMass(eff.use / g)) + '.' : 'All-out.' }),
       capped && (isFinite(FR) || state.oEffortOwn) ? each + '.' : '');
     head.append(' ' + (noCap ? 'Nothing in this test can harm anything nearby, so they go all-out.' : { least: 'The hardest both can go while nothing around them breaks.', allout: 'Everything they have.', custom: 'Set by hand.' }[state.duoEffort]));

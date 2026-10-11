@@ -2845,13 +2845,19 @@
     RFIT: 60, NFAR: 1.3, // past 60 m: no faster than r^-1.3
     // thresholds, peak particle velocity at the ground, m/s (research/final-presence.json, thr_* and ripple_*):
     //   feel: just perceptible indoors (BS 5228-2 Table B.1, 0.3 mm/s; 0.14-1)
-    //   shimmer: a glass of water visibly ripples (derived, not measured: about 0.2 mm/s, 0.02-1)
+    //   feelOnce: one isolated event (a stomp) barely felt by most people (Caltrans 2020 Table 20, transient: 1.0 mm/s)
+    //   shimmer: a glass of water visibly ripples (estimate: about 0.2 mm/s side to side, 0.02-1); compared with the
+    //     horizontal shaking, not the vertical (see HV)
     //   rings: concentric rings in the glass, the film look (derived: about 0.5-1 mm/s vertical)
     //   rattle: windows and ornaments rattle (our estimate, no standard sets it: about 1 mm/s, 0.3-3)
     //   plasterWalk: cosmetic damage from repeated steps (Caltrans older homes, continuous: 7.6 mm/s)
     //   plaster: cosmetic damage from one event, a stomp or a landing (US Bureau of Mines RI 8507, plaster: 12.7 mm/s)
     //   footing: people lose their footing (estimate from earthquakes: about 300 mm/s, 80-600)
-    TH: { feel: 0.3e-3, shimmer: 0.2e-3, rings: 0.7e-3, rattle: 1e-3, plasterWalk: 7.6e-3, plaster: 12.7e-3, footing: 0.3 },
+    TH: { feel: 0.3e-3, feelOnce: 1e-3, shimmer: 0.2e-3, rings: 0.7e-3, rattle: 1e-3, plasterWalk: 7.6e-3, plaster: 12.7e-3, footing: 0.3 },
+    // horizontal over vertical shaking at the surface of uniform ground (Poisson's ratio 1/4): 1/3 in the near field,
+    // 0.68 for Rayleigh waves (vib_rayleigh_horizontal_and_resultant, derived). Only the water glass's shimmer uses it.
+    HV: { near: 1 / 3, far: 0.68 },
+    HORIZ: { shimmer: true },
     // a wild African elephant walking 20 m from a seismometer on sandy ground (Steinmann et al. 2025; our reading
     // of their figure): about 0.005 mm/s, falling about as 1/D from 5 to 100 m; real ones vary 0.15x to 8x
     ELEPHANT: { v: 0.005e-3, d: 20, lo: 0.15, hi: 8, dMin: 5, dMax: 100 },
@@ -2864,29 +2870,30 @@
   }
   // a pulse that carries impulse J over T: a Hann pulse of peak 2 J / T
   const impulseSource = (surface, J, T) => vibSource(surface, 'hann', 2 * J / T, T);
-  function ppvAt(src, d) {
+  function ppvAt(src, d, horiz) {
     if (!src) return 0;
-    if (Array.isArray(src)) return src.reduce((m, x) => Math.max(m, ppvAt(x, d)), 0);
+    if (Array.isArray(src)) return src.reduce((m, x) => Math.max(m, ppvAt(x, d, horiz)), 0);
     if (!(src.F > 0)) return 0;
     if (!isFinite(src.F)) return Infinity;
-    if (d > VIB.RFIT) return Math.max(ppvElastic(src, d), ppvElastic(src, VIB.RFIT) * Math.pow(VIB.RFIT / d, VIB.NFAR));
-    return ppvElastic(src, d);
+    if (d > VIB.RFIT) return Math.max(ppvElastic(src, d, horiz), ppvElastic(src, VIB.RFIT, horiz) * Math.pow(VIB.RFIT / d, VIB.NFAR));
+    return ppvElastic(src, d, horiz);
   }
-  function ppvElastic(src, d) {
+  // horiz: the side-to-side shaking instead of the up-and-down
+  function ppvElastic(src, d, horiz) {
     const { rho, cs, xi } = src.ground, r = Math.max(d, VIB.RMIN);
     const ramp = src.kind === 'ramp', T = ramp ? src.tau : src.T;
-    const near = (ramp ? 0.1875 : 0.375) * src.F / (rho * cs * cs * T * r);
-    const far = (ramp ? 0.181 : 0.620) * src.F / (rho * Math.pow(cs, 2.5) * Math.pow(T, 1.5) * Math.sqrt(r));
+    const near = (horiz ? VIB.HV.near : 1) * (ramp ? 0.1875 : 0.375) * src.F / (rho * cs * cs * T * r);
+    const far = (horiz ? VIB.HV.far : 1) * (ramp ? 0.181 : 0.620) * src.F / (rho * Math.pow(cs, 2.5) * Math.pow(T, 1.5) * Math.sqrt(r));
     const z = xi * r / (0.919 * cs * T);
     const D = ramp ? Math.pow(1 + Math.pow(z / 0.195, 2.05), -1.5 / 2.05) : Math.pow(1 + Math.pow(z / 0.224, 1.4), -2.5 / 1.4);
     return Math.max(near, far) * D;
   }
   // distance at which the vibration falls to v (m/s); 0 if it is below v even at the closest distance covered
-  function ppvReach(src, v) {
-    if (!(ppvAt(src, VIB.RMIN) >= v)) return 0;
-    if (ppvAt(src, 1e7) >= v) return Infinity;
+  function ppvReach(src, v, horiz) {
+    if (!(ppvAt(src, VIB.RMIN, horiz) >= v)) return 0;
+    if (ppvAt(src, 1e7, horiz) >= v) return Infinity;
     let lo = VIB.RMIN, hi = 1e7;
-    for (let i = 0; i < 100 && hi / lo > 1 + 1e-6; i++) { const mid = Math.sqrt(lo * hi); if (ppvAt(src, mid) >= v) lo = mid; else hi = mid; }
+    for (let i = 0; i < 100 && hi / lo > 1 + 1e-6; i++) { const mid = Math.sqrt(lo * hi); if (ppvAt(src, mid, horiz) >= v) lo = mid; else hi = mid; }
     return lo;
   }
   // past the ground's elastic range at distance d? The wave strain is about PPV / cs; close to the foot the static
@@ -2960,7 +2967,7 @@
     const pressure = Fhold / body.footArea, peakPressure = Fpeak / body.footArea;
     const ratio = opt.groundHolds ? 0 : pressure / q, peakRatio = opt.groundHolds ? 0 : peakPressure / q;
     const src = [vibSource(surface, 'hann', Fpulse, Tpulse), vibSource(surface, 'ramp', kLoad * W, tRamp)].filter(Boolean);
-    return { h, Fr, v, stepRate, stride: 2 * v / stepRate, stance, kLoad, W, effort: e, Eimp, Fpulse, Tpulse, tRamp, kPeak, Fpeak, Fhold, pressure, peakPressure, q, ratio, peakRatio,
+    return { h, Fr, v, stepRate, stride: 2 * v / stepRate, stance, kLoad, W, effort: e, Eimp, Fpulse, Tpulse, tRamp, heelV: hs.v * sc, heelT: Thv, kPeak, Fpeak, Fhold, pressure, peakPressure, q, ratio, peakRatio,
       footprint: footprint(body, surface, pressure, opt.groundHolds), src: src.length ? src : null, modelled: !!groundOf(surface) };
   }
   // Footprint depth under a step. Sand and gravel: scaled from the one measured large-animal print. A weighed 2,530 kg
@@ -2994,12 +3001,16 @@
   function presence(body, surface, o) {
     const st = walkStep(body, surface, o);
     const reach = {};
-    for (const k of Object.keys(VIB.TH)) reach[k] = ppvReach(st.src, VIB.TH[k]);
-    return { step: st, ppv: (d) => ppvAt(st.src, d), nonlinear: (d) => ppvNonlinear(st.src, d), reach };
+    for (const k of Object.keys(VIB.TH)) reach[k] = ppvReach(st.src, VIB.TH[k], !!VIB.HORIZ[k]);
+    return { step: st, ppv: (d) => ppvAt(st.src, d), ppvH: (d) => ppvAt(st.src, d, true), nonlinear: (d) => ppvNonlinear(st.src, d), reach };
   }
+  // The Walk tab's thresholds for one step: losing one's footing is capped at 1 g up and down at the footfall's own
+  // frequency (peak velocity g T / (2 pi) for a pulse of length T), below the 300 mm/s earthquake value.
+  const walkThresholds = (step) => Object.assign({}, VIB.TH, { footing: Math.min(VIB.TH.footing, K.g * step.Tpulse / (2 * Math.PI)) });
   // The least step effort (0..1) at which the vibration at distance d reaches threshold v; Infinity if not even a stamp.
-  function walkEffortFor(body, surface, o, v, d) {
-    const f = (e) => ppvAt(walkStep(body, surface, Object.assign({}, o, { effort: e })).src, d) >= v;
+  // horiz: compare the side-to-side shaking (the water glass's shimmer).
+  function walkEffortFor(body, surface, o, v, d, horiz) {
+    const f = (e) => ppvAt(walkStep(body, surface, Object.assign({}, o, { effort: e })).src, d, horiz) >= v;
     if (f(0)) return 0;
     if (!f(1)) return Infinity;
     let lo = 0, hi = 1;
@@ -3030,6 +3041,7 @@
     // Energy counts as an air blast only when it is let go faster than sound can carry it off: something moving
     // past Mach 1 (a shock wave), or a fireball. Slower, it is a thump or a crash, not a blast wave.
     const shock = (v, E) => (v >= K.a0 ? E : 0);
+    const SOIL = new Set(['sand', 'gravel', 'softclay', 'stiffclay']);
     // Each move: run, what it is for (goal), the fastest thing it sets moving, and what it does to the ground and air.
     const MOVES = {
       throw: {
@@ -3045,6 +3057,8 @@
           const L = o.obj.L || Math.cbrt(6 * o.obj.m / (Math.PI * (o.obj.rho || 1000))), v = r.flight.vImpact;
           return impulseSource(o.surface, momentumOf(v, o.obj.m), Math.max(1e-3, L / v));
         },
+        // a person thrown without the safe-passenger switch: the launch presses them past the ride limits
+        passenger: (r, o) => !!o.obj.passenger && !o.safePassenger && r.canMove && r.launchG > 0 && PASSENGER.felt(r.launchG, o.angle) > PASSENGER.noHarm(r.launchT),
         where: 'where it lands',
       },
       jump: {
@@ -3064,9 +3078,12 @@
       },
       stomp: {
         run: (c) => stomp(c),
-        goal: (r, o) => ppvAt(MOVES.stomp.shake(r, o), o.near) >= VIB.TH.feel,
+        // one stomp is a single event: most people barely feel it from 1 mm/s (Caltrans transient)
+        goal: (r, o) => ppvAt(MOVES.stomp.shake(r, o), o.near) >= VIB.TH.feelOnce,
         speed: (r) => r.vFoot,
-        ground: (r) => r.holeDepth >= 0.01 || r.crater > 0,
+        // paving, slabs, rock, ice and steel break when the foot punches a 1 cm hole; in soil a dent is only a
+        // footprint, so only a crater counts there
+        ground: (r, o) => r.crater > 0 || (!SOIL.has(o.surface && o.surface.id) && r.holeDepth >= 0.01),
         blast: (r) => shock(r.vFoot, r.E),
         // the foot and shank stop on the ground: their momentum over a foot's contact time (or the time the hole takes)
         shake: (r, o) => (r.vFoot > 0 ? impulseSource(o.surface, momentumOf(r.vFoot, o.body.legEff), Math.max(footPulse(o.body), 2 * (r.holeDepth || 0) / r.vFoot)) : null),
@@ -3105,8 +3122,9 @@
       { id: 'boom', test: (m, r, o) => !(o.silentStrike && m.silent) && m.speed(r) >= K.a0 },
       { id: 'air', test: (m, r, o) => !!m.blast && blastRadius(m.blast(r, o), R.DP_HARM) >= o.near },
       { id: 'plaster', test: (m, r, o) => !!m.shake && ppvAt(m.shake(r, o), o.near) >= VIB.TH.plaster },
-      { id: 'ground', test: (m, r, o) => !!m.ground && !o.groundHolds && m.ground(r) },
+      { id: 'ground', test: (m, r, o) => !!m.ground && !o.groundHolds && m.ground(r, o) },
       { id: 'crush', test: (m, r, o) => !!m.crush && m.crush(r, o) },
+      { id: 'passenger', test: (m, r, o) => !!m.passenger && m.passenger(r, o) },
     ];
     MOVES.punch.silent = true; MOVES.clap.silent = true;
     // Not-so-heroic presets, at rising scales: each is the least effort that does what it says.
@@ -3114,7 +3132,7 @@
       { id: 'rattle', test: (m, r, o) => (!!m.shake && ppvAt(m.shake(r, o), o.near) >= VIB.TH.rattle) || (!!m.blast && blastRadius(m.blast(r, o), R.DP_RATTLE) >= o.near) },
       { id: 'plaster', test: (m, r, o) => !!m.shake && ppvAt(m.shake(r, o), o.near) >= VIB.TH.plaster },
       { id: 'windows', test: (m, r, o) => !!m.blast && blastRadius(m.blast(r, o), R.DP_WINDOWS) >= R.STREET },
-      { id: 'ground', test: (m, r, o) => !!m.ground && !o.groundHolds && m.ground(r) },
+      { id: 'ground', test: (m, r, o) => !!m.ground && !o.groundHolds && m.ground(r, o) },
       { id: 'houses', test: (m, r, o) => !!m.blast && blastRadius(m.blast(r, o), R.DP_HOUSES) >= o.near },
       { id: 'block', test: (m, r, o) => !!m.blast && blastRadius(m.blast(r, o), R.DP_HOUSES) >= R.BLOCK },
     ];
@@ -3124,8 +3142,10 @@
     // (two points a decade, shared by every search through the memo), then bisects the first step where it turns
     // on. Finds the first onset even when a hazard later turns off again (a thrown object that flies off and never
     // lands). step() runs one probe; .use is set when done (lo if it already holds there; Infinity if it never does,
-    // or only at unlimited strength: .onlyUnlimited).
-    function search(test, lo, hi, unlimited) {
+    // or only at unlimited strength: .onlyUnlimited). same(u0, u1), if given, says the move came out exactly the same at
+    // two efforts: something else (footing, the ground, the object's own limit) caps it, so more effort changes
+    // nothing and the grid stops there.
+    function search(test, lo, hi, unlimited, same) {
       const n = Math.max(1, Math.ceil(2 * Math.log10(hi / lo)));
       const grid = (i) => (i >= n ? hi : lo * Math.pow(10, i / 2));
       // .below: the most effort that stays short of it (0 if even the least does it; hi, or unlimited, if nothing does)
@@ -3138,8 +3158,9 @@
             if (s.i === 0) { s.use = lo; s.below = 0; return; }
             s.a = grid(s.i - 1); s.b = u; s.bisect = true; return;
           }
-          if (s.i >= n) {
+          if (s.i >= n || (same && s.i > 0 && same(grid(s.i - 1), u))) {
             s.use = Infinity;
+            s.saturated = s.i < n;
             if (unlimited && test(Infinity)) { s.onlyUnlimited = true; s.below = hi; } else { s.never = true; s.below = unlimited ? Infinity : hi; }
             return;
           }
@@ -3166,10 +3187,13 @@
       };
       const [lo, hi] = bounds(ctx);
       const unlimited = !isFinite(ctx.F);
+      // the move has saturated when it comes out at the same nonzero speed (to a part in a million) at two efforts
+      // half a decade apart: real muscle tops out at its limb speed, footing and the ground cap the push
+      const same = (u0, u1) => { const a = M.speed(at(u0)), b = M.speed(at(u1)); return a > 0 && isFinite(a) && Math.abs(b - a) <= 1e-6 * a; };
       const jobs = new Map();
-      jobs.set('goal', search((u) => M.goal(at(u), opt), lo, hi, unlimited));
-      for (const h of HAZARDS) jobs.set('hazard:' + h.id, search((u) => h.test(M, at(u), opt), lo, hi, unlimited));
-      for (const p of PRESETS) jobs.set('preset:' + p.id, search((u) => p.test(M, at(u), opt), lo, hi, unlimited));
+      jobs.set('goal', search((u) => M.goal(at(u), opt), lo, hi, unlimited, same));
+      for (const h of HAZARDS) jobs.set('hazard:' + h.id, search((u) => h.test(M, at(u), opt), lo, hi, unlimited, same));
+      for (const p of PRESETS) jobs.set('preset:' + p.id, search((u) => p.test(M, at(u), opt), lo, hi, unlimited, same));
       const result = (name) => {
         const j = jobs.get(name);
         if (!j || j.use === undefined) return null;
@@ -3177,6 +3201,8 @@
       };
       const out = { move, opt, lo, hi, unlimited, done: false };
       out.ensure = (name) => { const j = jobs.get(name); while (j.use === undefined) j.step(); return result(name); };
+      // one probe of one job; true once that job is done
+      out.stepJob = (name) => { const j = jobs.get(name); if (j.use === undefined) j.step(); return j.use !== undefined; };
       out.result = result;
       out.goal = () => { const g = out.ensure('goal'); return Object.assign(g, { reached: !g.never && !g.onlyUnlimited }); };
       // the courtesy ceiling: just under the first hazard to start (null `by`: nothing harmful even all-out)
@@ -3213,8 +3239,9 @@
         rattle: src ? ppvReach(src, VIB.TH.rattle) : 0,
         plaster: src ? ppvReach(src, VIB.TH.plaster) : 0,
         boom: !(opt.silentStrike && M.silent) && M.speed(r) >= K.a0,
-        ground: !!M.ground && !opt.groundHolds && M.ground(r),
+        ground: !!M.ground && !opt.groundHolds && M.ground(r, opt),
         crush: !!M.crush && M.crush(r, opt),
+        passenger: !!M.passenger && M.passenger(r, opt),
       };
     }
     return { R, MOVES, HAZARDS, PRESETS, plan, planNow, reach, bounds, search };
@@ -3228,13 +3255,14 @@
   // Momentum is never absorbed.
   // ---------------------------------------------------------------------------
   // A person he throws: the most acceleration an ordinary, unprepared person takes with no harm, and the level
-  // that starts to injure (placeholders until the research is in; see research/final-presence.json).
+  // that starts to injure (research/final-presence.json: comic_passenger_no_harm_limit, comic_passenger_injury_level).
   // Ride-design limits are for seated, supported riders; nobody has measured them for someone held in hands, so these
   // are a best case. Unknown orientation (a tumbling throw, a catch face-first) takes the worst axis, eyes-front (-Gx):
-  // ASTM F2291-06a allows 2 g for up to 0.2 s and 1.5 g sustained. Injury becomes possible past what harnessed
-  // volunteers took uninjured (Eiband 1959): 45 g for 0.044 s, 40 g for 0.1 s, 25 g for 0.2 s, 13 g for 0.6 s, 10 g for 1.6 s.
+  // ASTM F2291-06a Fig. 7 runs from 2 g at 0.2 s to 1.5 g at 0.5 s, then 1.5 g held. The standard doesn't cover pushes
+  // shorter than 0.2 s; keeping 2 g there is our estimate. Injury becomes possible past what harnessed volunteers took
+  // uninjured (Eiband 1959): 45 g for 0.044 s, 40 g for 0.1 s, 25 g for 0.2 s, 13 g for 0.6 s, 10 g for 1.6 s.
   const PASSENGER = {
-    noHarm: (t) => (t <= 0.2 ? 2 : 1.5),
+    noHarm: (t) => (t <= 0.2 ? 2 : t >= 0.5 ? 1.5 : 2 - 0.5 * (t - 0.2) / 0.3),
     EIBAND: [[0.044, 45], [0.1, 40], [0.2, 25], [0.6, 13], [1.6, 10]],
     injury(t) {
       const E = PASSENGER.EIBAND;
@@ -3413,6 +3441,6 @@
     kgRatio, overpressureAt, blastRadius, penetrationDepth,
     lift, throwObject, jump, stomp, punch, clap, sprint, pull, threshold, calibrateComic,
     throwOnce, jumpOnce, stompOnce, punchOnce, clapOnce,
-    driveStrength, PASSENGER, VIB, ppvAt, ppvNonlinear, groundOf, vibSource, elephantPPV, sphereOverpressure, growthShape, WALK, walkStep, footprint, presence, walkEffortFor, ppvReach, RESTRAINT, GROW, formShare, grownBody, grownMakeBody, pistonOverpressure, gradualGrowth, instantGrowth, runawayGrowth,
+    driveStrength, PASSENGER, VIB, ppvAt, ppvNonlinear, groundOf, vibSource, elephantPPV, sphereOverpressure, growthShape, WALK, walkStep, walkThresholds, footprint, presence, walkEffortFor, ppvReach, RESTRAINT, GROW, formShare, grownBody, grownMakeBody, pistonOverpressure, gradualGrowth, instantGrowth, runawayGrowth,
   };
 });

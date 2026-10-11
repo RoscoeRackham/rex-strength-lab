@@ -35,7 +35,8 @@ const CHROME = [process.env.CHROME, '/opt/pw-browsers/chromium-1194/chrome-linux
       await page.click(duo ? '#grp-duo' : '#grp-solo');
       await page.click('#tab-' + tab);
       await page.waitForTimeout(duo ? 900 : 400);
-      const t = await page.evaluate(() => document.querySelector('#bay').innerText);
+      // the whole page, not only the bay: header, dial, settings, switches, ladder and sources too
+      const t = await page.evaluate(() => document.body.innerText);
       const b = bad(t);
       if (b.length) texts.push(tab + ': ' + b.join(', '));
       const bay = await page.$('main.panel');

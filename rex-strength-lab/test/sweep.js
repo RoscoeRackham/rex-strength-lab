@@ -44,3 +44,4 @@ for (const build of ['rex', 'ollie']) {
 }
 console.log('contexts', n, 'ms', Date.now() - t0, 'problems', bad.length);
 console.log(bad.slice(0, 40).join('\n'));
+process.exit(bad.length ? 1 : 0);

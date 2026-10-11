@@ -1153,11 +1153,11 @@ window.DINO_DATA = {
  "assumptions": [
   {
    "t": "Effort is not strength",
-   "d": "The dial sets how strong he is. Effort is how hard he chooses to push: the strength he puts into a move’s push, never more than the dial. Standing, walking and holding a load up still get his full strength. The page opens on the least disruptive effort, the gentlest push that still does what each move is for: throw the object to the goal distance, jump to the goal height, a stomp people feel at the chosen distance, a punch or clap as fast as the strongest human’s, run at the goal speed, drag the object 10 m in the goal time. Lift needs no effort setting: he only ever pushes as hard as the weight. All-out reproduces the lab’s earlier results exactly."
+   "d": "The dial sets how strong he is. Effort is how hard he chooses to push: the strength he puts into a move’s push, never more than the dial. Standing, walking and holding a load up still get his full strength. The page opens on the least disruptive effort, the gentlest push that still does what each move is for, but never past the courtesy ceiling (if the goal needs more, it shows the most he can do with nothing harmed and says so): throw the object to the goal distance, jump to the goal height, a stomp most people can just feel at the chosen distance (1 mm/s, the level for one isolated jolt: Caltrans), a punch or clap as fast as the strongest human’s, run at the goal speed, drag the object 10 m in the goal time. Lift needs no effort setting: he only ever pushes as hard as the weight. All-out reproduces the lab’s earlier results exactly."
   },
   {
    "t": "The courtesy ceiling and the not-so-heroic presets",
-   "d": "The courtesy ceiling is the most effort he can use before something nearby comes to harm. The lab checks five hazards: a sonic boom (anything he moves breaks the sound barrier), an air blast louder than 134 dB (100 Pa, the US Bureau of Mines safe maximum for houses) at the chosen distance, ground shaking there over 12.7 mm/s (where plaster may crack: US Bureau of Mines), the ground breaking under his feet, and his hands crushing what he holds. Each not-so-heroic preset is the least effort that does what its name says: windows rattle (1 mm/s of ground shaking, our estimate, or a 36 Pa air blast, where rattling complaints start), plaster may crack, windows break across a 15 m street (6.9 kPa), the ground breaks under him, houses next door collapse (26.8 kPa), houses collapse 100 m away (a city block, our estimate). Blast radii use the Kinney–Graham curve as if all the energy went into the air, so they are upper bounds."
+   "d": "The courtesy ceiling is the most effort he can use before something nearby comes to harm. The lab checks six hazards: a sonic boom (anything he moves breaks the sound barrier), an air blast louder than 134 dB (100 Pa, the US Bureau of Mines safe maximum for houses) at the chosen distance, ground shaking there over 12.7 mm/s (where plaster may crack: US Bureau of Mines), the ground breaking under his feet, his hands crushing what he holds, and a thrown person pressed harder than amusement rides allow (ASTM F2291). A thrown person’s landing is not counted: it is a fall unless someone catches them. Each not-so-heroic preset is the least effort that does what its name says: windows rattle (1 mm/s of ground shaking, our estimate, or an air blast of about 36 Pa, where rattling complaints start: 120 dB on the 6 Hz meter the US Bureau of Mines used, which is about 125 dB, 36 Pa, unfiltered, by our conversion), plaster may crack, windows break across a 15 m street (6.9 kPa), the ground breaks under him, houses next door collapse (26.8 kPa), houses collapse 100 m away (a city block, our estimate). Blast radii use the Kinney–Graham curve as if all the energy went into the air, so they are upper bounds."
   },
   {
    "t": "Two-player effort",
@@ -1165,15 +1165,15 @@ window.DINO_DATA = {
   },
   {
    "t": "Walking: their gait",
-   "d": "Their gait is people’s gait scaled to their size at the same Froude number (speed² ÷ g × hip height), with hip height 0.45 of their height (our estimate from the turnarounds). A comfortable walk is Froude 0.18, about 1.6 m/s for them; at Froude 0.5 they would break into a run. Each step holds about 1.2× body weight (1.0–1.5 as the pace rises). The ground shaking comes from the landing of each foot: about 160 J for an ordinary step, scaled from heel strikes measured in people; soft-footed 0.4 of that (an estimate); a drill stamp drops the leg from thigh height (about 3.4 kJ) and peaks at 6.5× body weight, as measured in soldiers."
+   "d": "Their gait is people’s gait scaled to their size at the same Froude number (speed² ÷ g × hip height), with hip height 0.45 of their height (our estimate from the turnarounds). A comfortable walk is Froude 0.18, about 1.6 m/s for them; at Froude 0.5 they would break into a run. Each step holds about 1.2× body weight (1.0–1.5 as the pace rises). The ground shaking comes from the force of each footfall (see the next card): an ordinary heel strike is a pulse of about 0.43× body weight over 37 ms, scaled from people; soft-footed is 0.31 of that (an estimate from the 45–69% cut in loading rate measured when people walk quietly); a drill stamp peaks at 6.5× body weight, as measured in soldiers. The foot itself also soaks up about 160 J per ordinary step (scaled from people); that energy stays in the foot and doesn’t shake the ground."
   },
   {
    "t": "Walking: ground shaking",
-   "d": "Each footfall is a force on the ground: the weight coming onto the foot over about a sixth of a second, plus a short landing pulse (about 0.43× body weight over 37 ms for an ordinary heel strike, scaled from people; soft-footed 0.31 of that; a drill stamp 6.5× body weight). An elastic-ground model (Lamb’s problem) turns that into peak particle velocity (PPV) at a distance, using each surface’s density, shear-wave speed and damping (our estimates). It matched one drop test (130 kg at Pisa) within about 2× from 2.5 to 60 m and elephant footfalls roughly; nobody has measured footsteps this way, so read it as uncertain by about 3–5×, more past 60 m. Lake ice and a steel deck bend as plates and are not modelled. The numbers are for open ground: indoors, floors and walls can make the shaking 2–4× stronger. The thresholds come from construction and blasting standards (feel 0.3 mm/s; plaster may crack above 7.6 mm/s for a walk past, 12.7 mm/s for a single stamp: safe limits, below which cracks are very unlikely) or are our estimates where no standard exists (a rippling glass, rattling windows, the 1 g at which loose things lift)."
+   "d": "Each footfall is a force on the ground: the weight coming onto the foot over about a sixth of a second, plus a short landing pulse (about 0.43× body weight over 37 ms for an ordinary heel strike, scaled from people; soft-footed 0.31 of that; a drill stamp 6.5× body weight). An elastic-ground model (Lamb’s problem) turns that into peak particle velocity (PPV) at a distance, using each surface’s density, shear-wave speed and damping (our estimates). It matched one drop test (130 kg at Pisa) within about 2× from 2.5 to 60 m and elephant footfalls roughly; nobody has measured footsteps this way, so read it as uncertain by about 3–5×, more past 60 m. Lake ice and a steel deck bend as plates and are not modelled. The numbers are for open ground: indoors, floors and walls can make the shaking 2–4× stronger. The thresholds come from construction and blasting standards (feel 0.3 mm/s for a walk past, 1 mm/s for one isolated jolt; plaster may crack above 7.6 mm/s for a walk past, 12.7 mm/s for a single stamp: safe limits, below which cracks are very unlikely) or are our estimates where no standard exists (a rippling glass, rattling windows, the 1 g at which loose things lift). The glass ripples with side-to-side shaking, about a third of the up-and-down close to the foot and two-thirds further out (uniform ground), so the page compares it with that."
   },
   {
    "t": "Footprints",
-   "d": "In sand and gravel, footprint depth is scaled from the one measured large-animal print we found: a weighed 2,530 kg African elephant cow left forefoot prints 20–26 mm deep in medium sand. Looser sand takes it deeper in proportion to how much weaker it is. In clay a foot sinks until the clay’s bearing, which grows a little with depth, carries the step. Paving, slabs, ice, steel and rock show no print until they break. All estimates."
+   "d": "In sand and gravel, footprint depth is scaled from the one large-animal print we found measured: a weighed 2,530 kg African elephant cow left forefoot prints 20–26 mm deep in loose-to-medium sand (Schanz et al. 2013). The lab anchors on the authors’ calibrated model of that sand (18 mm at 350 kPa), with depth rising as pressure to the power 1.27 and in proportion to foot width. Loose sand is taken as that sand; gravel, which bears more, gets shallower prints in proportion. In clay a foot sinks until the clay’s bearing, which grows a little with depth, carries the step. Paving, slabs, ice, steel and rock show no print until they break. All estimates."
   },
   {
    "t": "Comic switches",
@@ -1181,7 +1181,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Absorbed energy and growth",
-   "d": "Canon: the energy they put out is theirs, so they can take it back. By default it returns to the endless store of power they draw on, and nothing changes. The growth modes are what-ifs that turn it into mass, m = E ÷ c². Growth form: the even mix grows volume and density each by the square root of the mass ratio (height by its sixth root); pure size keeps the density; pure density keeps the size. Gradual growth starts and stops smoothly (our choice); it is harmless if the air pulse 2 m from him stays under 100 Pa (134 dB, the US Bureau of Mines safe level) and the top of his head rises no faster than 0.25 m/s (OSHA’s limit for robots that touch people). Instant growth takes the time sound needs to cross his new body (our choice); the blast is a range from a ball to flat pistons, doubled for the ground, and his rising middle would throw him into the air unless he is bolted down. In the runaway mode the side effects are absorbed too; the loop dies out at once unless its ratio reaches 1, which his own gravity can’t do outside a black hole."
+   "d": "Canon: the energy they put out is theirs, so they can take it back. By default it returns to the endless store of power they draw on, and nothing changes. The growth modes are what-ifs that turn it into mass, m = E ÷ c². Growth form: the even mix grows volume and density each by the square root of the mass ratio (height by its sixth root); pure size keeps the density; pure density keeps the size. Gradual growth starts and stops smoothly (our choice); it is harmless if the air pulse 2 m from him stays under 100 Pa (134 dB, the US Bureau of Mines safe level) and the top of his head rises no faster than 0.25 m/s (the reduced robot speed OSHA’s Technical Manual calls slow enough for a person to get out of the way; borrowed from robot safety, not tested for this case). Instant growth takes the time sound needs to cross his new body (our choice); the blast is a range from a ball to flat pistons, doubled for the ground, and his rising middle would throw him into the air unless he is bolted down. In the runaway mode the side effects are absorbed too; the loop dies out at once unless its ratio reaches 1, which his own gravity can’t do outside a black hole."
   },
   {
    "t": "Strength means force",
@@ -3506,7 +3506,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Weight: pREM density profile of the Earth (polynomials in x = r/6371 km)",
+   "label": "Weight: PREM density profile of the Earth (polynomials in x = r/6371 km)",
    "value": "Inner core 13.0885 − 8.8381x²; outer core 12.5815 − 1.2638x − 3.6426x² − 5.5281x³; lower mantle 7.9565 − 6.4761x + 5.5283x² − 3.0807x³; then 5.3197 − 1.4836x (5701–5771 km), 11.2494 − 8.0298x (to 5971), 7.1089 − 3.8045x (to 6151), 2.6910 + 0.6924x (to 6346.6), 2.900 (to 6356), 2.600 (to 6368), ocean 1.020 (g/cm³)",
    "status": "verified",
    "sources": [
@@ -3522,7 +3522,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Weight: pREM values used to check the integration",
+   "label": "Weight: PREM values used to check the integration",
    "value": "Central pressure 363.852 GPa; inner/outer core boundary g 4.4002 m/s²; core–mantle boundary g 10.6823 m/s²; surface g 9.8156 m/s²; outer core liquid, inner core solid",
    "status": "verified",
    "sources": [
@@ -3546,7 +3546,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Weight: earth's sidereal rotation period",
+   "label": "Weight: Earth's sidereal rotation period",
    "value": "23.9345 h, so Ω = 7.2921 × 10⁻⁵ rad/s",
    "status": "verified",
    "sources": [
@@ -3558,7 +3558,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Weight: earth's gravitational binding energy, integrated from PREM (check)",
+   "label": "Weight: Earth's gravitational binding energy, integrated from PREM (check)",
    "value": "2.49 × 10³² J (our integral of G M(r) dm / r over PREM)",
    "status": "estimate",
    "sources": [
@@ -3606,7 +3606,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Weight: bondi accretion: radius and rate",
+   "label": "Weight: Bondi accretion: radius and rate",
    "value": "r_B = GM/c_s²; Ṁ = 4πλG²M²ρ∞/c∞³ with λ = 0.625 for air-like gas (γ = 1.4)",
    "status": "verified",
    "sources": [
@@ -3646,7 +3646,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Weight: earth's total surface heat flow",
+   "label": "Weight: Earth's total surface heat flow",
    "value": "47 ± 2 TW",
    "status": "verified",
    "sources": [
@@ -3954,7 +3954,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Arm wrestling and wrestling: newton's impact-depth approximation",
+   "label": "Arm wrestling and wrestling: Newton's impact-depth approximation",
    "value": "D ≈ L × ρ_impactor / ρ_target; valid when friction is negligible and the impact is slower than sound in the target",
    "status": "verified",
    "sources": [
@@ -3966,7 +3966,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Arm wrestling and wrestling: ollie's grip on the ground (boots, no claws)",
+   "label": "Arm wrestling and wrestling: Ollie's grip on the ground (boots, no claws)",
    "value": "Same traction as Rex's feet on each surface. 'Dug in' for Ollie means boots kicked into footholds, given the same buried area as Rex's claws (0.2 × (height / 2 m)² m²: 0.46 m² at the default 10 ft).",
    "status": "estimate",
    "sources": [],
@@ -3997,7 +3997,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Game of catch: uS Army men (ANSUR II): thumbtip reach, chest depth and stature, means",
+   "label": "Game of catch: US Army men (ANSUR II): thumbtip reach, chest depth and stature, means",
    "value": "Thumbtip reach 81.19 cm (SD 4.37), chest depth 25.38 cm (SD 2.62), stature 175.62 cm (SD 6.86); 4,082 men",
    "status": "verified",
    "sources": [
@@ -4049,7 +4049,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Game of catch: sutton–Graves stagnation-point convective heating, Earth air",
+   "label": "Game of catch: Sutton–Graves stagnation-point convective heating, Earth air",
    "value": "q = 1.74 × 10⁻⁴ √(ρ/rₙ) v³ W/m²; original form q = K √(pₛ/rₙ)(hₛ − h_w), K = 0.1113 kg s⁻¹ m⁻³ᐟ² atm⁻¹ᐟ² for air",
    "status": "verified",
    "sources": [
@@ -4141,7 +4141,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Game of catch: wood: temperature at the base of the char layer",
+   "label": "Game of catch: Wood: temperature at the base of the char layer",
    "value": "Generally taken to be 300 °C (550 °F ≈ 288 °C)",
    "status": "verified",
    "sources": [
@@ -4205,7 +4205,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Game of catch: newton's impact-depth rule, used for how far a relativistic object gets through air",
+   "label": "Game of catch: Newton's impact-depth rule, used for how far a relativistic object gets through air",
    "value": "D ≈ L × ρ_object / ρ_target: it stops after pushing aside its own mass of target. In air: sweep = m / (ρ₀ A) (baseball 27.8 m, car 126 m, shot 524 m, tank 1.9 km, pyramid 141 km)",
    "status": "estimate",
    "sources": [
@@ -4241,7 +4241,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Game of catch: earth's mean radius and rotation (for the far-side distance and the spin caveat)",
+   "label": "Game of catch: Earth's mean radius and rotation (for the far-side distance and the spin caveat)",
    "value": "Volumetric mean radius 6,371.000 km (so the far side of the planet is π × 6,371 = 20,015 km away along the surface); sidereal rotation 23.9345 h; equator moves at 465.1 m/s",
    "status": "verified",
    "sources": [
@@ -4325,7 +4325,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Unstoppable force vs immovable object: earth: mass, moment of inertia factor, sidereal rotation, mean radius",
+   "label": "Unstoppable force vs immovable object: Earth: mass, moment of inertia factor, sidereal rotation, mean radius",
    "value": "M = 5.9722 × 10^24 kg; I/(MR²) = 0.3308; sidereal rotation 23.9345 h; mean radius 6,371.000 km",
    "status": "verified",
    "sources": [
@@ -4729,7 +4729,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Walking: rex's and Ollie's hip height (leg length for gait scaling)",
+   "label": "Walking: Rex's and Ollie's hip height (leg length for gait scaling)",
    "value": "Hip height about 0.45 of height: 1.37 m (1.28–1.46 m)",
    "status": "estimate",
    "sources": [
@@ -4745,7 +4745,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Walking: rex's and Ollie's comfortable walking pace (people scaled up at equal Froude number)",
+   "label": "Walking: Rex's and Ollie's comfortable walking pace (people scaled up at equal Froude number)",
    "value": "About 1.6–1.7 m/s (about 6 km/h) as a default; 1.2 m/s at Froude 0.1 (slow); 2.0 m/s brisk",
    "status": "estimate",
    "sources": [
@@ -4773,7 +4773,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Walking: rex's and Ollie's step rate and step length at a comfortable walk",
+   "label": "Walking: Rex's and Ollie's step rate and step length at a comfortable walk",
    "value": "About 88–91 steps per minute (1.5 per second), each step about 1.1 m",
    "status": "estimate",
    "sources": [
@@ -4803,7 +4803,7 @@ window.DINO_DATA = {
   {
    "label": "Walking: load on one foot at each walking step, and pressure under it",
    "value": "35 kN (about 3.6 tonnes-force) per step at 1.2 × body weight; Rex's paw 114 kPa, Ollie's boot 236 kPa",
-   "status": "derived",
+   "status": "estimate",
    "sources": [
     {
      "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:11415629%20AND%20SRC:MED&resultType=core&format=json",
@@ -4941,7 +4941,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Walking: african elephants: foot size, walking speed and peak foot pressures",
+   "label": "Walking: African elephants: foot size, walking speed and peak foot pressures",
    "value": "Five African elephants (1.5–3.0 t, keepers' estimates): forefoot circumference 1.06–1.27 m; peak local pressures 200–320 kPa",
    "status": "verified",
    "sources": [
@@ -4971,7 +4971,7 @@ window.DINO_DATA = {
   {
    "label": "Walking: one of Rex's or Ollie's walking steps compared with a same-weight elephant's forefoot",
    "value": "Each walking step puts about 2.2 × the force of a 3-tonne elephant's forefoot into the ground (35 kN against 16 kN). Rex's average sole pressure is lower (0.5–0.9 × the elephant's); Ollie's is 1.1–1.9 ×",
-   "status": "derived",
+   "status": "estimate",
    "sources": [
     {
      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2872429/",
@@ -5069,8 +5069,8 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Walking: rex's and Ollie's walking footprint depth in sand like the elephant's (scaled from one print)",
-   "value": "In loose-to-medium sand like the elephant's: Rex about 1–1.5 cm, Ollie about 2 cm per walking step (estimate; up to about 3 and 4 cm if the print was made at the force-plate load of 0.55 × body weight)",
+   "label": "Walking: Rex's and Ollie's walking footprint depth in sand like the elephant's (scaled from one print, as the lab computes it)",
+   "value": "In loose-to-medium sand like the elephant's: Rex about 0.8–1 cm, Ollie about 1.3–1.8 cm per step, from a stroll to the fastest walk (estimate; anchored on the authors' calibrated model, 18 mm at 350 kPa; anchored on the measured 22 mm instead, about 20% deeper; up to about 3 and 4 cm if the print was made at the force-plate load of 0.55 × body weight)",
    "status": "estimate",
    "sources": [
     {
@@ -5081,7 +5081,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: bS 5228-2 Table E.1: ground vibration from dynamic compaction (weight dropped on the ground)",
+   "label": "Ground shaking: BS 5228-2 Table E.1: ground vibration from dynamic compaction (weight dropped on the ground)",
    "value": "PPV ≤ 0.037 (√W_h / x)^1.7 mm/s; W_h = potential energy of the raised tamper (J), x = distance along the ground (m); valid 5–100 m and 1–12 MJ",
    "status": "verified",
    "sources": [
@@ -5097,7 +5097,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: bS 5228-2 Table E.2: ground factor k_p for percussive piling (PPV ≤ k_p √W / r^1.3)",
+   "label": "Ground shaking: BS 5228-2 Table E.2: ground factor k_p for percussive piling (PPV ≤ k_p √W / r^1.3)",
    "value": "k_p = 5 (piles at refusal), 3 (very stiff clay, dense granular), 1.5 (stiff clay, medium dense granular, compacted fill), 1 (soft clay, loose granular, loose fill, organic)",
    "status": "verified",
    "sources": [
@@ -5113,7 +5113,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: mayne (1985) upper-bound law for dynamic compaction vibration, as printed in TRL 429",
+   "label": "Ground shaking: Mayne (1985) upper-bound law for dynamic compaction vibration, as printed in TRL 429",
    "value": "v_res ≤ 92 (√(M·H) / x)^1.7 mm/s (M tamper mass in t, H drop height in m, x distance in m)",
    "status": "verified",
    "sources": [
@@ -5125,7 +5125,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: mayne/BS 5228 dynamic-compaction law at low drop energy: TRL finds it under-predicts by up to 10×",
+   "label": "Ground shaking: Mayne/BS 5228 dynamic-compaction law at low drop energy: TRL finds it under-predicts by up to 10×",
    "value": "7 t weight dropped 1.2 m (82 kJ): measured PPV was 1.4–5× the Mayne (1985) prediction within 30 m and 2.5–10× at 50–100 m (TRL: 'up to an order of magnitude')",
    "status": "verified",
    "sources": [
@@ -5149,7 +5149,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: tRL 429: empirical construction-vibration predictors hold to about 100 m",
+   "label": "Ground shaking: TRL 429: empirical construction-vibration predictors hold to about 100 m",
    "value": "Valid up to about 100 m from the source; extrapolating much further is not recommended (TRL: it 'will generally provide a conservative estimate')",
    "status": "verified",
    "sources": [
@@ -5161,7 +5161,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: mayne, Jones & Dumas (1984) original upper-bound law for dynamic compaction vibration",
+   "label": "Ground shaking: Mayne, Jones & Dumas (1984) original upper-bound law for dynamic compaction vibration",
    "value": "PPV ≤ 70 (√(W·H) / d)^1.4 mm/s (W tamper in t, H drop in m, d in m)",
    "status": "reported",
    "sources": [
@@ -5173,7 +5173,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: mayne (1985) normalised form: PPV scaled by impact speed and tamper radius",
+   "label": "Ground shaking: Mayne (1985) normalised form: PPV scaled by impact speed and tamper radius",
    "value": "PPV = 0.2 √(2gH) (d/r₀)^-1.7 (impact speed √(2gH), tamper radius r₀; based on 12 sites)",
    "status": "reported",
    "sources": [
@@ -5185,7 +5185,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: fHWA chart: PPV against scaled energy factor √E / d, one line per soil type (Lukas 1986, 1995)",
+   "label": "Ground shaking: FHWA chart: PPV against scaled energy factor √E / d, one line per soil type (Lukas 1986, 1995)",
    "value": "PPV grows with √(energy)/distance; separate lines for 8 ground types. The plotted lines span a scaled energy factor of about 0.07–6 √(t·m)/m and PPV of about 1–250 mm/s (our reading of the chart)",
    "status": "verified",
    "sources": [
@@ -5201,7 +5201,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: fHWA GEC 1 chart read off: PPV at the marked point of each soil line, and at a scaled energy factor of 1",
+   "label": "Ground shaking: FHWA GEC 1 chart read off: PPV at the marked point of each soil line, and at a scaled energy factor of 1",
    "value": "At √(E[kJ]/9.8)/d = 1: roughly 13 mm/s (decomposed garbage, loose sand fill) to 80 mm/s (very stiff silty clay); a factor of about 6 between ground types",
    "status": "derived",
    "sources": [
@@ -5229,7 +5229,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: pPV from the same drop rises as the ground under it is compacted (about 3–8× over repeated drops)",
+   "label": "Ground shaking: PPV from the same drop rises as the ground under it is compacted (about 3–8× over repeated drops)",
    "value": "18.1 t from 30 m: 4 → 13 mm/s at 20 m over 21 drops; 11 t from 18 m: 1–2 → ~8 mm/s at 10 m over 6 drops",
    "status": "verified",
    "sources": [
@@ -5257,7 +5257,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: pisa test site: shear-wave speed, unit weight and damping of the layers",
+   "label": "Ground shaking: Pisa test site: shear-wave speed, unit weight and damping of the layers",
    "value": "Vs 150–245 m/s in the upper layers (380 m/s deep sand), unit weight 16.75–20 kN/m³, damping ratio 2–7%",
    "status": "verified",
    "sources": [
@@ -5301,7 +5301,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: caltrans screening law for impact pile drivers (energy-scaled, with distance exponent n)",
+   "label": "Ground shaking: Caltrans screening law for impact pile drivers (energy-scaled, with distance exponent n)",
    "value": "PPV = 0.65 in/s × (25/D[ft])^1.1 × (E/36,000 ft·lb)^0.5",
    "status": "verified",
    "sources": [
@@ -5313,7 +5313,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: woods & Jedele (1985) distance exponent n by soil class (PPV = k D^-n), as given by Caltrans",
+   "label": "Ground shaking: Woods & Jedele (1985) distance exponent n by soil class (PPV = k D^-n), as given by Caltrans",
    "value": "Class I weak/soft soils: suggested 1.4 (no data); II competent soils: measured 1.5, suggested 1.3; III hard soils: 1.1; IV hard rock: suggested 1.0 (no data)",
    "status": "verified",
    "sources": [
@@ -5349,7 +5349,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: asian elephant footfalls and rumbles: ground-wave speed, frequency and range of measurement",
+   "label": "Ground shaking: Asian elephant footfalls and rumbles: ground-wave speed, frequency and range of measurement",
    "value": "Seismic signals travelled at 248–264 m/s, predominant frequency about 20 Hz, well above background at 40 m",
    "status": "verified",
    "sources": [
@@ -5361,7 +5361,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: asian elephant foot stomps: ground velocity at 3–12 m and at 40 m (peak-to-peak)",
+   "label": "Ground shaking: Asian elephant foot stomps: ground velocity at 3–12 m and at 40 m (peak-to-peak)",
    "value": "About 48.7 µm/s peak-to-peak at 3–12 m and 17.0 µm/s at 40 m (roughly 0.024 and 0.009 mm/s peak)",
    "status": "reported",
    "sources": [
@@ -5409,7 +5409,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: bornitz/Mintrop attenuation form: geometric spreading times exponential material damping",
+   "label": "Ground shaking: Bornitz/Mintrop attenuation form: geometric spreading times exponential material damping",
    "value": "A₁ = A₀ (r₀/r₁)^β e^{-α(r₁ - r₀)}, β = 0.5 for surface waves; α ≈ 0.03 ft⁻¹ (0.10 m⁻¹) has been used for all soils",
    "status": "verified",
    "sources": [
@@ -5589,7 +5589,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shaking: nEHRP site classes by average shear-wave speed in the top 30 m",
+   "label": "Ground shaking: NEHRP site classes by average shear-wave speed in the top 30 m",
    "value": "A hard rock > 1,500; B rock 760–1,500; C very dense soil and soft rock 360–760; D stiff soil 180–360; E < 180 m/s",
    "status": "verified",
    "sources": [
@@ -5940,7 +5940,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Elephants: mortimer et al. 2018 model: displacement 200 m from an elephant fast walk and a bull rumble on sandy ground, with converted velocity",
+   "label": "Elephants: Mortimer et al. 2018 model: displacement 200 m from an elephant fast walk and a bull rumble on sandy ground, with converted velocity",
    "value": "Modelled, not measured: fast walk about 2 × 10⁻⁷ m at 200 m, about 0.01 mm/s (0.006–0.013); bull rumble about 5 × 10⁻⁷ m at 200 m",
    "status": "derived",
    "sources": [
@@ -5956,7 +5956,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Elephants: asian elephant foot stomps: peak-to-peak vertical ground velocity at 3–12 m and at 40 m (as quoted by a later paper)",
+   "label": "Elephants: Asian elephant foot stomps: peak-to-peak vertical ground velocity at 3–12 m and at 40 m (as quoted by a later paper)",
    "value": "48.7 µm/s peak-to-peak at 3–12 m; 17.0 µm/s at 40 m",
    "status": "reported",
    "sources": [
@@ -5968,7 +5968,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Elephants: asian elephant foot stomps: zero-to-peak vertical velocity (half of the quoted peak-to-peak)",
+   "label": "Elephants: Asian elephant foot stomps: zero-to-peak vertical velocity (half of the quoted peak-to-peak)",
    "value": "About 0.024 mm/s at 3–12 m and 0.0085 mm/s at 40 m",
    "status": "reported",
    "sources": [
@@ -5996,7 +5996,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Elephants: asian elephant rumbles and stomps: seismic wave speed, frequency and distance recorded",
+   "label": "Elephants: Asian elephant rumbles and stomps: seismic wave speed, frequency and distance recorded",
    "value": "Clearly above background at 40 m; ground waves at 248–264 m/s; frequencies near 20 Hz",
    "status": "verified",
    "sources": [
@@ -6184,7 +6184,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: bS 5228-2 Table B.1: effects of vibration levels on people (construction vibration, PPV)",
+   "label": "Thresholds: BS 5228-2 Table B.1: effects of vibration levels on people (construction vibration, PPV)",
    "value": "0.14 mm/s just perceptible (most sensitive); 0.3 mm/s just perceptible in homes; 1.0 mm/s likely complaint; 10 mm/s intolerable beyond a very brief exposure",
    "status": "verified",
    "sources": [
@@ -6200,7 +6200,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: bS 5228-2 B.2: human threshold of perception, PPV",
+   "label": "Thresholds: BS 5228-2 B.2: human threshold of perception, PPV",
    "value": "Threshold of perception typically 0.14-0.3 mm/s PPV",
    "status": "verified",
    "sources": [
@@ -6212,7 +6212,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: caltrans 2020 Table 20: human response to vibration, transient vs continuous (PPV)",
+   "label": "Thresholds: Caltrans 2020 Table 20: human response to vibration, transient vs continuous (PPV)",
    "value": "Barely perceptible: 0.04 in/s (1.0 mm/s) transient, 0.01 in/s (0.25 mm/s) continuous; distinctly 0.25/0.04 in/s; strongly 0.9/0.10 in/s; severe 2.0/0.4 in/s",
    "status": "verified",
    "sources": [
@@ -6224,7 +6224,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: caltrans 2020: which sources count as transient and which as continuous",
+   "label": "Thresholds: Caltrans 2020: which sources count as transient and which as continuous",
    "value": "Transient = a single isolated event (blasting, drop balls); continuous/frequent intermittent = repeated impacts or vibratory plant (impact pile drivers, compactors)",
    "status": "verified",
    "sources": [
@@ -6236,7 +6236,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: whiffin & Leonard (1971) TRRL LR 418: human reaction to continuous (traffic) vibration, PPV",
+   "label": "Thresholds: Whiffin & Leonard (1971) TRRL LR 418: human reaction to continuous (traffic) vibration, PPV",
    "value": "Threshold of perception 0.15-0.30 mm/s (0.006-0.019 in/s); readily perceptible 2.0 mm/s; begins to annoy 2.5 mm/s; annoying 5 mm/s; unpleasant 10-15 mm/s",
    "status": "verified",
    "sources": [
@@ -6248,7 +6248,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: wiss (1974): human response to transient vibration, PPV",
+   "label": "Thresholds: Wiss (1974): human response to transient vibration, PPV",
    "value": "Barely perceptible 0.035 in/s (0.9 mm/s); distinctly 0.24 in/s (6.1 mm/s); strongly 0.9 in/s (22.9 mm/s); severe 2.0 in/s (50.8 mm/s)",
    "status": "verified",
    "sources": [
@@ -6272,7 +6272,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: iSO 2631 building vibration criteria (8-80 Hz), rms velocity, as reproduced in Caltrans 2020 Table 7 (Caltrans dates the ISO guide 1981)",
+   "label": "Thresholds: ISO 2631 building vibration criteria (8-80 Hz), rms velocity, as reproduced in Caltrans 2020 Table 7 (Caltrans dates the ISO guide 1981)",
    "value": "Residence 78 VdB day / 75 night = 0.008 in/s rms (0.20 mm/s rms); operating room 72 VdB = 0.004 in/s rms (0.10 mm/s rms); office 0.016 in/s; workshop 0.032 in/s",
    "status": "verified",
    "sources": [
@@ -6284,7 +6284,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: iSO 2631-2: 1989 edition limits in PPV terms, and the 2003 edition's lack of limits",
+   "label": "Thresholds: ISO 2631-2: 1989 edition limits in PPV terms, and the 2003 edition's lack of limits",
    "value": "1989 edition: about 0.3 mm/s PPV for continuous vibration by day, 0.14 mm/s at night, 5-10 mm/s for transient events; 2003 edition has no vibration limits",
    "status": "reported",
    "sources": [
@@ -6312,7 +6312,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: fTA 2018: human response to ground-borne vibration in buildings (rms velocity level)",
+   "label": "Thresholds: FTA 2018: human response to ground-borne vibration in buildings (rms velocity level)",
    "value": "65 VdB approximate threshold of perception (about 0.045 mm/s rms, about 0.2 mm/s PPV); 75 VdB barely-to-distinctly perceptible boundary; 85 VdB tolerable only if infrequent; 100 VdB damage threshold for typical buildings",
    "status": "verified",
    "sources": [
@@ -6336,7 +6336,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: fTA 2018: ground vibration is felt differently outdoors",
+   "label": "Thresholds: FTA 2018: ground vibration is felt differently outdoors",
    "value": "'Ground-borne vibration is almost never a problem outdoors' (no number)",
    "status": "verified",
    "sources": [
@@ -6348,7 +6348,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: bS 6472-1 vibration dose value (VDV) criteria as used by HS2 (homes)",
+   "label": "Thresholds: BS 6472-1 vibration dose value (VDV) criteria as used by HS2 (homes)",
    "value": "Lowest observed adverse effect: VDV 0.2 m/s^1.75 by day, 0.1 at night; significant adverse effect: 0.8 by day, 0.4 at night",
    "status": "verified",
    "sources": [
@@ -6360,7 +6360,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: caltrans: rattling of dishes, windows and doors can happen below the level people feel",
+   "label": "Thresholds: Caltrans: rattling of dishes, windows and doors can happen below the level people feel",
    "value": "Rattling of a china cabinet 'can also occur, even when vibration levels are well below perception' (no number)",
    "status": "verified",
    "sources": [
@@ -6372,7 +6372,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: uSBM RI 8507: wall motion rattles windows and dishes; walls amplify ground motion",
+   "label": "Thresholds: USBM RI 8507: wall motion rattles windows and dishes; walls amplify ground motion",
    "value": "Midwall motion causes 'window sashes rattling, picture frames tilting, dishes jiggling, and knick-knacks falling'; typical amplification 1.5 (whole house, 4-12 Hz) and 4 (midwalls, 10-25 Hz) at resonance; below 1 above 40 Hz",
    "status": "verified",
    "sources": [
@@ -6384,7 +6384,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: eMS-98 intensity IV-V: china, glasses, windows and doors rattle",
+   "label": "Thresholds: EMS-98 intensity IV-V: china, glasses, windows and doors rattle",
    "value": "IV 'Largely observed': china, glasses, windows and doors rattle; V 'Strong': china and glasses clatter, small top-heavy objects may fall, liquids oscillate",
    "status": "verified",
    "sources": [
@@ -6400,7 +6400,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: uSGS abbreviated Modified Mercalli Intensity: II to VI",
+   "label": "Thresholds: USGS abbreviated Modified Mercalli Intensity: II to VI",
    "value": "IV: 'Dishes, windows, doors disturbed; walls make cracking sound. Sensation like heavy truck striking building.' V: 'some dishes, windows broken. Unstable objects overturned.'",
    "status": "verified",
    "sources": [
@@ -6412,7 +6412,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: jMA seismic intensity scale: dishes rattle (3-4), walking hard (5 Upper), standing hard (6 Lower)",
+   "label": "Thresholds: JMA seismic intensity scale: dishes rattle (3-4), walking hard (5 Upper), standing hard (6 Lower)",
    "value": "3: dishes in cupboards may rattle; 4: dishes rattle, unstable ornaments may fall; 5 Upper: walking difficult without holding on; 6 Lower: difficult to remain standing; 6 Upper: impossible to remain standing",
    "status": "verified",
    "sources": [
@@ -6440,7 +6440,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: wald 1999: below intensity V the velocity values are imposed, not fitted, and low intensities follow acceleration",
+   "label": "Thresholds: Wald 1999: below intensity V the velocity values are imposed, not fitted, and low intensities follow acceleration",
    "value": "Felt/not-felt boundary about 1-2 cm/s^2 peak acceleration; the low-intensity PGV relation was imposed to join it",
    "status": "verified",
    "sources": [
@@ -6492,7 +6492,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: bS 7385-2 Table 1: transient vibration guide values for cosmetic damage (frequency-dependent)",
+   "label": "Thresholds: BS 7385-2 Table 1: transient vibration guide values for cosmetic damage (frequency-dependent)",
    "value": "Homes and light commercial (line 2): 15 mm/s at 4 Hz rising to 20 mm/s at 15 Hz and 50 mm/s at 40 Hz and above; below 4 Hz, 0.6 mm displacement. Framed and industrial (line 1): 50 mm/s at 4 Hz and above",
    "status": "verified",
    "sources": [
@@ -6508,7 +6508,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: bS 7385-2 via BS 5228-2: minor damage at 2x, major at 4x the guide values; up to 50% lower for continuous vibration",
+   "label": "Thresholds: BS 7385-2 via BS 5228-2: minor damage at 2x, major at 4x the guide values; up to 50% lower for continuous vibration",
    "value": "Minor damage is possible above 2x the Table B.2 values; major damage can occur above 4x; for continuous vibration that causes resonance, the guide values might need to be reduced by up to 50%",
    "status": "verified",
    "sources": [
@@ -6524,7 +6524,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: bS 7385-2: probability of damage tends to zero at 12.5 mm/s",
+   "label": "Thresholds: BS 7385-2: probability of damage tends to zero at 12.5 mm/s",
    "value": "12.5 mm/s peak component particle velocity",
    "status": "verified",
    "sources": [
@@ -6540,7 +6540,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: dIN 4150-3:1999 Table 1: short-term vibration guideline values for buildings, by frequency",
+   "label": "Thresholds: DIN 4150-3:1999 Table 1: short-term vibration guideline values for buildings, by frequency",
    "value": "Dwellings: 5 mm/s below 10 Hz, 5-15 mm/s at 10-50 Hz, 15-20 mm/s at 50-100 Hz (foundation); 15 mm/s top floor. Sensitive or listed: 3, 3-8, 8-10, 8. Commercial: 20, 20-40, 40-50, 40",
    "status": "verified",
    "sources": [
@@ -6552,7 +6552,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: dIN 4150-3:2016 Table 1 as reproduced (one cell conflicts with the 1999 edition)",
+   "label": "Thresholds: DIN 4150-3:2016 Table 1 as reproduced (one cell conflicts with the 1999 edition)",
    "value": "2016 reproduction matches 1999 except dwellings at 50-100 Hz read '40 to 50' (1999: '15 to 20'); adds floor slabs, vertical, 20 mm/s at all frequencies",
    "status": "disputed",
    "sources": [
@@ -6568,7 +6568,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: uSBM RI 8507: practical safe blasting vibration levels for houses (chosen so that cosmetic cracking is unlikely)",
+   "label": "Thresholds: USBM RI 8507: practical safe blasting vibration levels for houses (chosen so that cosmetic cracking is unlikely)",
    "value": "Below 40 Hz: 0.50 in/s (12.7 mm/s) for plaster-on-lath, 0.75 in/s (19 mm/s) for drywall; above 40 Hz: 2.0 in/s (51 mm/s)",
    "status": "verified",
    "sources": [
@@ -6584,7 +6584,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: uSBM RI 8507 Figure B-1: frequency-dependent safe level for houses",
+   "label": "Thresholds: USBM RI 8507 Figure B-1: frequency-dependent safe level for houses",
    "value": "0.030 in (0.76 mm) displacement below about 2.7-4 Hz; 0.50 in/s plaster or 0.75 in/s drywall up to about 10-15 Hz; then 0.008 in (0.2 mm) displacement to 40 Hz; 2.0 in/s above 40 Hz",
    "status": "verified",
    "sources": [
@@ -6596,7 +6596,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: siskind et al. (1980): probability of blast damage to houses by PPV",
+   "label": "Thresholds: Siskind et al. (1980): probability of blast damage to houses by PPV",
    "value": "Threshold (cosmetic) damage: 5% at 0.5 in/s (13 mm/s), 50% at 2.5 in/s (64 mm/s); minor: 5% at 1.8 (46), 50% at 5.0 (127); major: 5% at 2.5 (64), 50% at 6.0 in/s (152 mm/s)",
    "status": "verified",
    "sources": [
@@ -6612,7 +6612,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: caltrans 2020 Table 19: building damage potential, transient vs continuous (PPV)",
+   "label": "Thresholds: Caltrans 2020 Table 19: building damage potential, transient vs continuous (PPV)",
    "value": "Older homes: 0.5 in/s (12.7 mm/s) transient, 0.3 in/s (7.6 mm/s) continuous; new homes 1.0/0.5 in/s; fragile 0.2/0.1 in/s; ruins 0.12/0.08 in/s; modern commercial 2.0/0.5 in/s",
    "status": "verified",
    "sources": [
@@ -6624,7 +6624,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: fTA 2018 Table 7-5: construction vibration damage criteria",
+   "label": "Thresholds: FTA 2018 Table 7-5: construction vibration damage criteria",
    "value": "I reinforced concrete/steel/timber 0.5 in/s (12.7 mm/s); II engineered concrete and masonry 0.3 (7.6); III non-engineered timber and masonry 0.2 (5.1); IV extremely susceptible 0.12 (3.0)",
    "status": "verified",
    "sources": [
@@ -6636,7 +6636,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: whiffin & Leonard (1971): continuous vibration and buildings, PPV",
+   "label": "Thresholds: Whiffin & Leonard (1971): continuous vibration and buildings, PPV",
    "value": "5 mm/s (0.2 in/s): threshold of risk of 'architectural' damage to plastered houses; 2.5 mm/s virtually no risk; 10-15 mm/s architectural and possibly minor structural damage; 2 mm/s upper limit for ruins",
    "status": "verified",
    "sources": [
@@ -6704,7 +6704,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: eMS-98: when people lose their balance or find it hard to stand",
+   "label": "Thresholds: EMS-98: when people lose their balance or find it hard to stand",
    "value": "VI: 'A few persons lose their balance'; VII: 'Many find it difficult to stand, especially on upper floors'; VIII: 'Many people find it difficult to stand, even outdoors'; IX: 'People may be forcibly thrown to the ground'",
    "status": "verified",
    "sources": [
@@ -6808,7 +6808,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: irish EPA, as summarised in an Irish planning appendix: perception 0.15-0.3 mm/s for continuous vibration, 0.5-1.5 mm/s for impulsive blasting",
+   "label": "Thresholds: Irish EPA, as summarised in an Irish planning appendix: perception 0.15-0.3 mm/s for continuous vibration, 0.5-1.5 mm/s for impulsive blasting",
    "value": "Continuous vibration at 8-80 Hz: 0.15-0.3 mm/s PPV; impulsive vibration from blasting: 0.5-1.5 mm/s PPV",
    "status": "reported",
    "sources": [
@@ -6820,7 +6820,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: irish EPA limits on quarry and mine blasting vibration for people nearby: 12 mm/s for blasting once a week or less, 8 mm/s more often or below 10 Hz",
+   "label": "Thresholds: Irish EPA limits on quarry and mine blasting vibration for people nearby: 12 mm/s for blasting once a week or less, 8 mm/s more often or below 10 Hz",
    "value": "12 mm/s PPV for blasting once a week or less; 8 mm/s for more frequent blasting, or when the frequency is below 10 Hz (levels for vibration below 40 Hz)",
    "status": "verified",
    "sources": [
@@ -6832,7 +6832,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: atherton (via USBM RI 8507): floor impacts of about 0.2 s at 19 Hz judged 'disturbing' at a mean of 3.5-4.4 in/s floor velocity",
+   "label": "Thresholds: Atherton (via USBM RI 8507): floor impacts of about 0.2 s at 19 Hz judged 'disturbing' at a mean of 3.5-4.4 in/s floor velocity",
    "value": "'Disturbing' at a mean of 3.5-4.4 in/s (89-112 mm/s) peak floor velocity, for impacts of 3-5 cycles at 19 Hz (about 200 ms); over 5 times Goldman's steady-state 'intolerable' 0.77 in/s (20 mm/s) at 20 Hz",
    "status": "verified",
    "sources": [
@@ -6856,7 +6856,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: uSBM RI 8507: people moving about a house shake its floors far more than the ground thresholds",
+   "label": "Thresholds: USBM RI 8507: people moving about a house shake its floors far more than the ground thresholds",
    "value": "House strains from everyday activity equal ground vibration of up to 0.50 in/s (12.7 mm/s). Peak midfloor velocity: walking up to 1.49 in/s (38 mm/s), heel drops 5.84 (148 mm/s), jumps 10.1 (257 mm/s); a mine blast with 0.47 in/s (12 mm/s) ground PPV gave 1.18 in/s (30 mm/s)",
    "status": "verified",
    "sources": [
@@ -6868,7 +6868,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Thresholds: uSBM RI 8507: share of neighbours annoyed by blast vibration around 0.5 in/s",
+   "label": "Thresholds: USBM RI 8507: share of neighbours annoyed by blast vibration around 0.5 in/s",
    "value": "At 0.5-0.75 in/s (13-19 mm/s), about 5-10% of neighbours judge blast vibration unacceptable; a community mean of 0.5 in/s gives 15-30% 'very annoyed' without a public-relations effort; complaints can reach 30% at 0.5 in/s",
    "status": "verified",
    "sources": [
@@ -6920,7 +6920,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Water glass: uSGS ShakeMap legend: peak ground velocity listed for Mercalli intensity IV (earthquakes; context only)",
+   "label": "Water glass: USGS ShakeMap legend: peak ground velocity listed for Mercalli intensity IV (earthquakes; context only)",
    "value": "Intensity IV (Light): PGV 1.41 cm/s, PGA 2.76% of g (earthquake sloshing, not a ripple threshold)",
    "status": "verified",
    "sources": [
@@ -6968,7 +6968,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Water glass: faraday (parametric) wave onset for water in a 70 mm tank shaken up and down at 10-20 Hz",
+   "label": "Water glass: Faraday (parametric) wave onset for water in a 70 mm tank shaken up and down at 10-20 Hz",
    "value": "Onset about 0.3-0.8 m/s² at the mode resonances (3-8% of g), about 3-7 mm/s peak velocity at 11-20 Hz; may be peak-to-peak",
    "status": "verified",
    "sources": [
@@ -7149,7 +7149,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Water glass: water in a glass visibly shimmers: value for the Walk tab (horizontal shaking)",
-   "value": "About 0.2 mm/s horizontal at the table (derived, not measured; range 0.02-1 mm/s)",
+   "value": "About 0.2 mm/s horizontal at the table (estimate from a model, not measured; range 0.02-1 mm/s)",
    "status": "estimate",
    "sources": [
     {
@@ -7165,7 +7165,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Water glass: concentric rings in a glass (the Jurassic Park look): value for the Walk tab (vertical shaking)",
-   "value": "About 0.5-1 mm/s vertical at the table (derived, not measured; range about 0.05-3 mm/s); bold film-style rings take a few mm/s",
+   "value": "About 0.5-1 mm/s vertical at the table (estimate from a model, not measured; range about 0.05-3 mm/s); bold film-style rings take a few mm/s",
    "status": "estimate",
    "sources": [
     {
@@ -7196,7 +7196,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: cauchy's equation of motion for a solid (Newton's second law for every bit of a body)",
+   "label": "Comic switches: Cauchy's equation of motion for a solid (Newton's second law for every bit of a body)",
    "value": "∇·σ + ρb = ρa (σ stress, ρ density, b body force per unit mass, a acceleration)",
    "status": "verified",
    "sources": [
@@ -7292,7 +7292,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: nASA sustained acceleration limits for seated, restrained astronauts (upper bound, not for ordinary people)",
+   "label": "Comic switches: NASA sustained acceleration limits for seated, restrained astronauts (upper bound, not for ordinary people)",
    "value": "Non-deconditioned seated crew: head-to-foot (+Az) 81.4 m/s² (8.3 g) at 0.5 s, 62.8 (6.4 g) at 5 s, 39.2 (4.0 g) at 1,200 s. Chest-to-back (+Ax) 186 (19 g) at 0.5 s, 157 (16 g) at 5 s, 73.5 (7.5 g) at 300 s",
    "status": "verified",
    "sources": [
@@ -7492,13 +7492,25 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: airblast at which people start to notice rattling: about 120 dB (20 Pa)",
-   "value": "Rattling complaints above about 120 dB (20 Pa, 0.003 psi; 6 Hz measuring system); at 134 dB (100 Pa; 0.1 Hz system) 5–10% of homes show rattling or fright disturbances",
+   "label": "Comic switches: airblast at which people start to notice rattling: about 120 dB on a 6 Hz meter",
+   "value": "Rattling complaints above about 120 dB on the 6 Hz measuring system (20 Pa as read on that meter; about 36 Pa unfiltered, our conversion: see airblast_rattle_onset_unfiltered); at 134 dB (100 Pa; 0.1 Hz system) 5–10% of homes show rattling or fright disturbances",
    "status": "verified",
    "sources": [
     {
      "url": "https://www.resolutionmineeis.us/sites/default/files/references/siskind-et-al-1980.pdf",
      "title": "Siskind, Stachura, Stagg & Kopp (1980), Structure Response and Damage Produced by Airblast from Surface Mining, US Bureau of Mines RI 8485, pp. 58 and 66 (PDF pp. 64, 72); copy hosted in the Resolution Copper EIS reference library"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Comic switches: rattling onset as an unfiltered peak pressure (our conversion of USBM's 120 dB on a 6 Hz meter)",
+   "value": "About 36 Pa (125 dB) unfiltered: USBM's 'about 120 dB (6 Hz)' rattling onset, shifted by the 5 dB between its safe levels on the two meters (129 dB on 6 Hz = 134 dB on 0.1 Hz)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://www.resolutionmineeis.us/sites/default/files/references/siskind-et-al-1980.pdf",
+     "title": "Siskind, Stachura, Stagg & Kopp (1980) Structure Response and Damage Produced by Airblast from Surface Mining, US Bureau of Mines Report of Investigations 8485 (copy hosted by the Resolution Copper Mine EIS)"
     }
    ],
    "note": null
@@ -7632,7 +7644,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Growth: krakatoa 1883: surface-burst explosion size that reproduces its air pressure wave",
+   "label": "Growth: Krakatoa 1883: surface-burst explosion size that reproduces its air pressure wave",
    "value": "100–150 Mt of TNT (4.2–6.3 × 10¹⁷ J), as a nuclear surface-burst equivalent for the air wave only; as mass it adds 4.7–7.0 kg",
    "status": "verified",
    "sources": [
@@ -7648,7 +7660,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Growth: krakatoa 1883: spread of published energy estimates",
+   "label": "Growth: Krakatoa 1883: spread of published energy estimates",
    "value": "Quoted estimates run from about 10¹⁷ J (24 Mt) to 6.3 × 10¹⁸ J (1.5 Gt); the compiler's own inferred extreme is about 5 × 10¹⁹ J (12 Gt). The popular 200 Mt (8.4 × 10¹⁷ J) is inside. As mass: 1–70 kg (about 560 kg at the extreme)",
    "status": "disputed",
    "sources": [
@@ -7660,7 +7672,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Growth: chicxulub impact energy (2022 review)",
+   "label": "Growth: Chicxulub impact energy (2022 review)",
    "value": "About 5 × 10²³ J, estimated from the 80–100 km transient crater; the abstract rounds this to \"about 10²³ joules\"",
    "status": "verified",
    "sources": [
@@ -7801,7 +7813,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Growth: airblast levels that rattle houses but do no damage (US Bureau of Mines)",
-   "value": "Safe limit for houses: 134 dB on a 0.1 Hz high-pass meter (0.0145 psi, 100 Pa). Rattling complaints begin above about 120 dB on a 6 Hz meter, roughly 36 Pa unfiltered; some homes still rattle below the safe limit",
+   "value": "Safe limit for houses: 134 dB on a 0.1 Hz high-pass meter (0.0145 psi, 100 Pa). Rattling complaints begin above about 120 dB on a 6 Hz meter (about 36 Pa unfiltered by our conversion: airblast_rattle_onset_unfiltered); some homes still rattle below the safe limit",
    "status": "verified",
    "sources": [
     {
@@ -7854,7 +7866,7 @@ window.DINO_DATA = {
   {
    "label": "Growth: gradual growth: shortest harmless durations for the worked examples",
    "value": "The shove sets the limit, not the air: Chicxulub about 1½ min (mix) or 4 min (pure size); one second of sunlight about 14 min (mix) or 43 min (pure size); Krakatoa a few hundredths of a second. Pure density has no air or shove limit",
-   "status": "derived",
+   "status": "estimate",
    "sources": [
     {
      "url": "https://www.resolutionmineeis.us/sites/default/files/references/siskind-et-al-1980.pdf",

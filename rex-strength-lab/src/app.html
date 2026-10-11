@@ -1044,7 +1044,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       if (G.T > 0) {
         const T = state.growT, dp = G.pAt(T), u = G.uAt(T);
         const safe = T >= G.T * (1 - 1e-9);
-        items.push('Shortest harmless time: ' + fmtTime(G.T) + ', set by ' + ({ shove: 'how fast the top of his head rises: anything above or beside him has to be able to get out of the way (a surface moving at 0.25 m/s or less, OSHA’s limit for robots that touch people)', pressure: 'the air he pushes aside: a pressure pulse on someone ' + fmtDist(P.GROW.GAP) + ' from him, kept under 100 Pa (134 dB, the US Bureau of Mines’ safe level for houses)', lift: 'keeping his feet on the ground while his middle rises' }[G.by]) + '. The air alone would allow ' + fmtTime(G.Tp) + '.');
+        items.push('Shortest harmless time: ' + fmtTime(G.T) + ', set by ' + ({ shove: 'how fast the top of his head rises: anything above or beside him has to be able to get out of the way (0.25 m/s, the reduced robot speed OSHA’s Technical Manual calls slow enough for a person to get out of the way; borrowed from robot safety, not tested for this case)', pressure: 'the air he pushes aside: a pressure pulse on someone ' + fmtDist(P.GROW.GAP) + ' from him, kept under 100 Pa (134 dB, the US Bureau of Mines’ safe level for houses)', lift: 'keeping his feet on the ground while his middle rises' }[G.by]) + '. The air alone would allow ' + fmtTime(G.Tp) + '.');
         items.push('Over ' + fmtTime(T) + (safe ? ' it is harmless: ' : ' it is not: ') + 'the air pulse ' + fmtDist(P.GROW.GAP) + ' from him peaks at ' + fmtSI(dp, 'Pa') + ' (windows break from 3.4 kPa) and the top of his head rises at up to ' + speedOnly(u) + '. The growth curve starts and stops smoothly (our choice).');
       } else items.push('Pure density: he doesn’t get any bigger, so nothing around him is pushed aside. Only his weight changes.');
     }
@@ -1128,7 +1128,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (!r.canMove) return null;
     const L = P.PASSENGER, n = L.felt(r.launchG, state.angle), fall = f && f.landed ? f.vImpact * f.vImpact / (2 * g) : null;
     const launch = c.safePassenger ? 'Safe passenger: his push is spread through their whole body like gravity, so the launch puts no load on them; they float as if falling.'
-      : 'The throw presses them with about ' + sig(n, 2) + ' g for ' + fmtTime(r.launchT) + '. Amusement rides allow an unprepared rider 2 g for up to 0.2 s and 1.5 g held (ASTM F2291, facing forward and pushed from the front, the worst case); harnessed volunteers took ' + sig(L.injury(r.launchT), 2) + ' g for that long uninjured (Eiband 1959). ' + (n > L.injury(r.launchT) ? 'This is past that: injury possible.' : n > L.noHarm(r.launchT) ? 'This is past what rides allow.' : 'This is within ride limits.') + ' All of these assume a seat or harness; held in his hands it would be worse, by an amount nobody has measured.';
+      : 'The throw presses them with about ' + sig(n, 2) + ' g for ' + fmtTime(r.launchT) + '. Amusement rides allow an unprepared rider ' + sig(L.noHarm(r.launchT), 2) + ' g for that long (ASTM F2291, pushed on the chest, the worst way round: 2 g at 0.2 s, falling to 1.5 g held; the standard doesn’t cover pushes shorter than 0.2 s, so keeping 2 g there is our estimate); harnessed volunteers took ' + sig(L.injury(r.launchT), 2) + ' g for that long uninjured (Eiband 1959). ' + (n > L.injury(r.launchT) ? 'This is past that: injury possible.' : n > L.noHarm(r.launchT) ? 'This is past what rides allow.' : 'This is within ride limits.') + ' All of these assume a seat or harness; held in his hands it would be worse, by an amount nobody has measured.';
     return launch + (fall != null ? ' The landing is still real: they hit the ground at ' + speedOnly(f.vImpact) + ', like falling ' + fmtDist(fall) + ', unless someone catches them.' : '');
   }
   function bayLift(c) {
@@ -1641,6 +1641,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       return el('tr', {}, el('th', { text: lbl }), el('td', { 'data-col': 'Mass', text: fmtMass(gB.m) + ' (' + fmtRatio(gB.ratio) + ')' }), el('td', { 'data-col': 'Height', text: fmtDist(gB.H) }), el('td', { 'data-col': 'Density', text: fmtDensity2(gB.rho) }));
     });
     box.append(el('p', { style: 'margin:0', text: capital(ref.short) + ': ' + fmtSI(E, 'J') + ', which becomes ' + fmtMass(E / (K.c * K.c)) + ' of mass. From ' + fmtMass(c.body.m) + ' and ' + fmtDist(c.body.H) + ':' }));
+    // how firm each energy is (research/final-environment.json and final-presence.json)
+    const firm = {
+      krakatoa: 'Claimed: 8.4 × 10¹⁷ J (200 Mt) is a popular figure. Published estimates run from about 10¹⁷ to 6.3 × 10¹⁸ J; the air wave alone needed 100–150 Mt, 4.2–6.3 × 10¹⁷ J (Harkrider & Press 1967).',
+      chicxulub: 'Disputed: published estimates run from about 10²³ to 10²⁴ J; Morgan et al. (2022) give about 5 × 10²³ J from the crater. The lab uses 4.2 × 10²³ J, as the brief does.',
+    }[ref.id];
+    if (firm) box.append(el('p', { class: 'muted', style: 'margin:0', text: firm }));
     box.append(el('div', { class: 'cases-wrap' }, el('table', { class: 'cases' }, el('thead', {}, el('tr', {}, el('th', { text: 'Growth form' }), el('th', { text: 'Mass' }), el('th', { text: 'Height' }), el('th', { text: 'Density' }))), el('tbody', {}, rows))));
     const items = growthItems(E, c.body, c.surface);
     if (items) box.append(el('p', { style: 'margin:0', text: { gradual: 'Gradual growth', instant: 'Instant growth', runaway: 'Runaway' }[state.absorb] + ', ' + growFormText(state.growS) + ':' }), happens(items, 8));
@@ -2374,6 +2380,11 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     else if (a.aim) chips.push(status('good', 'Gentle lob: ' + speedOnly(a.aim.vL)));
     if (k && arrived) {
       chips.push(catchOutcomeChip(a, o));
+      if (o.passenger) {
+        const pg = catchPassengerG(a, o);
+        chips.push(state.safePassenger ? status('info', 'Safe passenger: throw and catch spread through them')
+          : pg ? status(pg.n > P.PASSENGER.injury(pg.t) ? 'bad' : pg.over ? 'warn' : 'good', (pg.where === 'throw' ? 'Throw: ' : 'Catch: ') + sig(pg.n, 2) + ' g, ' + (pg.n > P.PASSENGER.injury(pg.t) ? 'injury possible' : pg.over ? 'past ride limits' : 'within ride limits')) : null);
+      }
       if (['caught', 'wreckage', 'slams', 'cant-hold-it'].includes(a.result)) {
         if (cO.anchor === 'bolted') chips.push(status('info', 'Bolted to the planet'));
         else if (k.sinkRatio > 1) chips.push(status('bad', 'Feet sink: ' + fmtRatio(k.sinkRatio) + ' the ground’s limit'));
@@ -2398,7 +2409,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         tile('Flight', fmtTime(a.time), a.wells && a.wells.wellDominated ? 'straight line through their pull' : (a.flight ? 'top ' + fmtDist(a.flight.apex) : '')),
         tile('Arrives at', speedOnly(a.vArrive), fmtAngle(a.angleDeg, false) + (a.wells && a.wells.GC > 0 ? ' · sped up by Ollie’s pull' : '')),
         caughtish ? (first
-          ? tile('Hits his palms with', fmtRange(k.F1[0], k.F1[1], 'N'), 'first contact, over in ' + fmtTime(k.tContact[0]) + ' to ' + fmtTime(k.tContact[1]) + ' · ' + big(k.F1[0] / o.m / g, 2) + ' g or more on the ' + o.short)
+          ? tile('Hits his palms with', fmtRange(k.F1[0], k.F1[1], 'N'), 'first contact, over in ' + fmtTime(k.tContact[0]) + ' to ' + fmtTime(k.tContact[1]) + ' · ' + big(k.F1[0] / o.m / g, 2) + ' g or more on the ' + o.short + (o.passenger && state.safePassenger ? ' (Safe passenger: spread through them, no harm)' : ''))
           : tile('Catch force', fmtSI(k.Fpeak, 'N'), (isFinite(k.Fcap) ? sig(100 * k.Fpeak / k.Fcap, 2) + '% of Ollie’s strength · ' : '') + big(k.decelG, 2) + ' g on the ' + o.short)) : tile('Hits him with', fmtSI(k.Ecatch, 'J'), fmtTNT(k.Ecatch)),
         caughtish ? tile('Ollie slides', cO.anchor === 'bolted' ? 'bolted' : (k.slide > 0.005 ? fmtDist(k.slide) : 'nothing'), cO.anchor === 'bolted' ? 'bolted to the planet' : 'feet hold up to ' + fmtN(k.R)) : null,
         round ? tile('Round trip', 'about ' + fmtTime(round), strokesIn ? 'throws, flights and catches' : 'throws and flights') : null));
@@ -2804,7 +2815,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   const GOALS = {
     throw: { key: 'gThrow', unit: 'm', label: 'Goal: throw it (m)', text: (t) => (state.angle >= 90 ? 'throws the ' + objById(state.obj).short + ' ' + fmtDist(t) + ' straight up' : 'lands the ' + objById(state.obj).short + ' ' + fmtDist(t) + ' away') },
     jump: { key: 'gJump', unit: 'm', label: 'Goal: jump this high (m)', text: (t) => 'jumps ' + fmtDist(t) + ' high' },
-    stomp: { text: () => 'makes a stomp people feel ' + fmtDist(state.near) + ' away' },
+    stomp: { text: () => 'makes a stomp most people can just feel ' + fmtDist(state.near) + ' away (1 mm/s, the level for one isolated jolt)' },
     punch: { fixed: CAL_PUNCH, text: (t) => 'throws a punch as fast as the strongest human’s (' + speedOnly(t) + ' in this model, inside the 6.6–12.5 m/s measured in elite boxers)' },
     clap: { fixed: CAL_CLAP, text: (t) => 'claps as fast as the strongest human would in this model (' + speedOnly(t) + ')' },
     sprint: { key: 'gSprint', unit: 'm/s', label: 'Goal: run at (m/s)', text: (t) => 'runs at ' + speedOnly(t) },
@@ -2812,7 +2823,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   };
   const goalTarget = (move) => (GOALS[move].fixed != null ? GOALS[move].fixed : GOALS[move].key ? state[GOALS[move].key] : null);
   function planOpts(move) {
-    const o = { near: state.near, target: goalTarget(move), gentleHold: state.gentleHold, silentStrike: state.silentStrike, softLanding: state.softLanding };
+    const o = { near: state.near, target: goalTarget(move), gentleHold: state.gentleHold, silentStrike: state.silentStrike, softLanding: state.softLanding, safePassenger: state.safePassenger };
     if (move === 'throw') Object.assign(o, { obj: objById(state.obj), angle: state.angle });
     if (move === 'pull') o.obj = objById(state.obj);
     return o;
@@ -2830,25 +2841,38 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     }
     return p;
   }
-  // finish the rest of a plan in ~20 ms slices, then redraw the bay; a newer plan takes over
-  function stepPlan(p) {
-    if (p.done || planRunning === p) return;
+  // finish the rest of a plan in ~20 ms slices, then redraw the bay; a newer plan takes over. `waits`: the jobs the
+  // page is showing a placeholder for; the bay is redrawn as soon as they are done, and again when the plan is.
+  let planWaits = null;
+  function stepPlan(p, waits) {
+    if (p.done) { planWaits = null; return; }
+    if (waits) planWaits = waits;
+    if (planRunning === p) return;
     clearTimeout(planTimer);
     planRunning = p;
     const tick = () => {
       if (planRunning !== p) return;
       const t0 = performance.now();
-      while (performance.now() - t0 < 20) if (p.step()) { planRunning = null; renderBay(true); return; }
+      while (performance.now() - t0 < 20) if (p.step()) { planRunning = null; planWaits = null; renderBay(true); return; }
+      if (planWaits && planWaits.every((n) => p.result(n))) { planWaits = null; renderBay(true); }
       planTimer = setTimeout(tick, 0);
     };
     planTimer = setTimeout(tick, 0);
   }
+  // step the named jobs for up to `ms` of this render; true if they are all done. The rest finishes in the background.
+  const EFFORT_BUDGET = 40;
+  function ready(p, names, t0) {
+    for (const n of names) while (!p.result(n)) { if (performance.now() - t0 > EFFORT_BUDGET) return false; p.stepJob(n); }
+    return true;
+  }
+  const HAZ_JOBS = () => P.RESTRAINT.HAZARDS.map((h) => 'hazard:' + h.id);
   const EFF_HAZ = {
     boom: { name: 'Sonic boom', what: 'something he moves breaks the sound barrier' },
     air: { name: 'Air blast loud enough to risk damage', what: 'the air blast gets loud enough to risk damage to houses (over 134 dB)' },
     plaster: { name: 'Plaster may crack', what: 'the ground shakes hard enough that plaster may crack' },
     ground: { name: 'The ground breaks', what: 'the ground under his feet gives way' },
     crush: { name: 'He crushes the object', what: 'his hands crush the object' },
+    passenger: { name: 'Past ride limits for the person', what: 'the launch presses the person harder than amusement rides allow (ASTM F2291)' },
   };
   const PRESET_WHAT = {
     rattle: () => 'rattles windows and ornaments ' + fmtDist(state.near) + ' away, through the ground or the air',
@@ -2865,8 +2889,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const out = { p, preset: e, use: undefined, note: null };
     if (e === 'allout') return out;
     if (e === 'custom') { out.use = Math.min(c.F, Math.pow(10, state.effortLogKg) * g); return out; }
+    // a search that needs more than this render's time budget: show all-out for now, and redraw when it's done
+    const t0 = performance.now();
+    const pending = (names, what) => { out.pending = names; out.why = 'Working out ' + what + '… Showing all-out until then.'; return out; };
     if (e === 'least') {
       // the gentlest effort that reaches the goal, but never past the courtesy ceiling: nothing is harmed
+      if (!ready(p, ['goal'], t0)) return pending(['goal'].concat(HAZ_JOBS()), 'the least disruptive effort');
       const gl = p.goal();
       out.goal = gl;
       const want = gl.reached ? gl.use : undefined;
@@ -2877,6 +2905,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         if (!gl.reached) { out.note = 'Even all-out he can’t ' + goalText + '. Showing all-out, which harms nothing.'; out.why = 'Everything he has, and still short of the goal.'; }
         return out;
       }
+      if (!ready(p, HAZ_JOBS(), t0)) return pending(HAZ_JOBS(), 'the least disruptive effort');
       const ce = p.ceiling();
       out.ceiling = ce;
       out.capped = true;
@@ -2886,6 +2915,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       return out;
     }
     if (e === 'ceiling') {
+      if (!ready(p, HAZ_JOBS(), t0)) return pending(HAZ_JOBS(), 'the courtesy ceiling');
       const ce = p.ceiling();
       out.ceiling = ce;
       if (!ce.by) { out.why = 'Nothing this move does harms anyone nearby, so he can go all-out.'; return out; }
@@ -2893,7 +2923,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       if (!(ce.below > 0)) { out.why = 'The gentlest try he can make.'; out.note = 'Nothing here is harmless: even the gentlest try means ' + EFF_HAZ[ce.by].what + '.'; }
       return out;
     }
-    const r = p.ensure('preset:' + e);
+    if (!ready(p, ['preset:' + e], t0)) return pending(['preset:' + e], 'that effort');
+    const r = p.result('preset:' + e);
     if (r.never) { out.why = 'Everything he has.'; out.note = 'Even all-out, this move doesn’t ' + PRESET_WHAT[e]().replace(/^(\w+?)(e?s) /, (m, a, b) => a + (b === 'es' && !/(sh|ch|ss|x)$/.test(a) ? 'e' : '') + ' ') + '.'; }
     else out.use = r.use;
     return out;
@@ -2941,18 +2972,19 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const use = eff.use == null ? c.F : eff.use;
     const why = eff.why || { least: 'The gentlest push that ' + GOALS[move].text(goalTarget(move)) + '.', ceiling: 'The most he can use before something nearby comes to harm.', allout: 'Everything he has.', custom: 'Set by hand.' }[state.effort]
       || (PRESET_WHAT[state.effort] ? 'The least effort that ' + PRESET_WHAT[state.effort]() + '.' : '');
-    box.append(el('p', {}, el('b', { text: eff.use == null ? 'All-out.' : 'Effort: ' + amountText(use, c.F) + '.' }), ' ' + why));
+    box.append(el('p', {}, el('b', { text: eff.pending ? 'Effort: working it out.' : eff.use == null ? 'All-out.' : 'Effort: ' + amountText(use, c.F) + '.' }), ' ' + why));
     if (eff.note) box.append(el('p', { class: 'warn-ink', text: eff.note }));
-    const r = p.run(eff.use), rc = P.RESTRAINT.reach(move, r, p.opt);
     // the courtesy ceiling, once the hazard searches are done (or now, if the preset needed it)
     const haz = P.RESTRAINT.HAZARDS.map((h) => p.result('hazard:' + h.id));
     if (haz.every(Boolean)) {
+      const r = p.run(eff.use), rc = P.RESTRAINT.reach(move, r, p.opt);
       const ce = p.ceiling();
       let t;
       if (!ce.by) t = 'Courtesy ceiling: none. Nothing this move does harms anyone within ' + fmtDist(state.near) + (isFinite(c.F) ? ', even all-out.' : ' at any finite strength.');
       else if (!(ce.below > 0)) t = 'Courtesy ceiling: none. Even the gentlest try means ' + EFF_HAZ[ce.by].what + '.';
       else t = 'Courtesy ceiling: ' + atText(ce.below, c.F) + '. Past that, ' + EFF_HAZ[ce.by].what + (ce.by === 'air' || ce.by === 'plaster' ? ' ' + fmtDist(state.near) + ' ' + (M.where === 'where it lands' ? 'from where it lands' : 'away') : '') + '.';
       box.append(el('p', { text: t }));
+      if (move === 'throw' && objById(state.obj).passenger && !state.safePassenger) box.append(el('p', { class: 'muted', text: 'For a person this covers the launch only. The landing is a fall unless someone catches them, and the lab doesn’t count it.' }));
       if (ce.by && use > ce.below * (1 + 1e-6)) box.append(status('warn', 'Above the courtesy ceiling'));
       const items = [];
       for (const h of P.RESTRAINT.HAZARDS) {
@@ -2983,7 +3015,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     at = at < 0 ? 1 : at + 1;
     if (parts[at] && parts[at].classList && parts[at].classList.contains('status-row')) at++;
     parts.splice(at, 0, effortReadout(move, c, eff));
-    stepPlan(eff.p);
+    stepPlan(eff.p, eff.pending || null);
   }
 
   // ---------------------------------------------------------------- walk (presence)
@@ -3019,7 +3051,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     ths.forEach((k, i) => {
       const yLine = sy(THc[k]), yy = ys[i];
       if (Math.abs(yy + 3 - yLine) > 4) svg.append(sv('line', { x1: w - padR - 4, x2: w - padR, y1: yy - 4, y2: yLine, stroke: 'var(--ink-3)', 'stroke-width': 1 }));
-      svg.append(sv('text', { x: w - padR - 6, y: yy, 'text-anchor': 'end', class: 'lbl-strong halo' }, w < 560 ? short[k] : VIB_LABEL[k].toLowerCase()));
+      svg.append(sv('text', { x: w - padR - 6, y: yy, 'text-anchor': 'end', class: 'lbl-strong halo' }, (w < 560 ? short[k] : VIB_LABEL[k].toLowerCase()) + (P.VIB.HORIZ[k] ? ' (side to side)' : '')));
     });
     if (dMark >= d0 && dMark <= d1) {
       const x = sx(dMark), right = x > w - padR - 70;
@@ -3075,8 +3107,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const st = pres[0].pr.step;
     const sf = c.surface;
     // thresholds for these steps: losing one's footing is capped at 1 g up and down, g / (2 pi f), at the footfall's frequency
-    const TH = Object.assign({}, P.VIB.TH, { footing: Math.min(P.VIB.TH.footing, g * st.Tpulse / (2 * Math.PI)) });
-    const reachOf = (k) => Math.max(...pres.map((x) => P.ppvReach(x.pr.step.src, TH[k] / (both ? 2 : 1))));   // both: their steps landing together
+    const TH = P.walkThresholds(st);
+    // the glass's shimmer answers to side-to-side shaking; everything else to up-and-down. Both: their steps landing together
+    const H = (k) => !!P.VIB.HORIZ[k];
+    const reachOf = (k) => Math.max(...pres.map((x) => P.ppvReach(x.pr.step.src, TH[k] / (both ? 2 : 1), H(k))));
     const groundTiles = [
       tile('Pace', speedOnly(st.v), sig(st.stepRate, 2) + ' steps a second'),
       tile('Load on each step', sig(st.kLoad, 2) + '× his weight', 'plus a landing pulse of ' + sig(st.Fpulse / st.W, 2) + '× over ' + fmtTime(st.Tpulse)),
@@ -3091,26 +3125,33 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       return out;
     }
     const ppvAtD = (d) => (both ? 2 : 1) * Math.max(...pres.map((x) => x.pr.ppv(d)));
-    const v = ppvAtD(D0);
-    const hit = WALK_TH.filter((k) => v >= TH[k]).sort((a, b) => TH[a] - TH[b]);
-    let vt = 'At ' + fmtDist(D0) + ', ' + (both ? 'their' : walkers[0][0] + '’s') + ' ' + stepWord(state.stepEffort) + ' steps shake the ground at ' + fmtPPV(v) + '.';
-    vt += hit.length ? ' ' + VIB_LABEL[hit[hit.length - 1]] + '.' : v >= 0.5 * TH.shimmer ? ' Close to what a glass of water shows.' : ' Too little to notice.';
+    const ppvHAtD = (d) => (both ? 2 : 1) * Math.max(...pres.map((x) => x.pr.ppvH(d)));
+    const v = ppvAtD(D0), vH = ppvHAtD(D0);
+    const over = (k) => (H(k) ? vH : v) >= TH[k];
+    const hit = WALK_TH.filter(over).sort((a, b) => TH[a] - TH[b]);
+    let vt = 'At ' + fmtDist(D0) + ', ' + (both ? 'their' : walkers[0][0] + '’s') + ' ' + stepWord(state.stepEffort) + ' steps shake the ground at ' + fmtPPV(v) + ' up and down.';
+    vt += hit.length ? ' ' + VIB_LABEL[hit[hit.length - 1]] + '.' : vH >= 0.5 * TH.shimmer ? ' Close to what a glass of water shows.' : ' Too little to notice.';
     out.push(verdict(vt));
     out.push(el('div', { class: 'status-row' }, hit.map((k) => status(k === 'plasterWalk' || k === 'footing' ? 'bad' : k === 'rattle' ? 'warn' : 'info', VIB_LABEL[k])),
       printChip(pres.map((x) => x.pr.step.footprint))));
     // the elephant comparison: a wild African elephant measured at 20 m, falling about as 1/D from 5 to 100 m
-    const EL = P.VIB.ELEPHANT, dE = D0 >= EL.dMin && D0 <= EL.dMax ? D0 : EL.d, ratioE = ppvAtD(dE) / P.elephantPPV(dE);
+    // the elephant was measured on sandy ground, so the comparison puts them on the same ground, whatever is picked
+    const EL = P.VIB.ELEPHANT, dE = D0 >= EL.dMin && D0 <= EL.dMax ? D0 : EL.d;
+    const sandSf = D.surfaces.find((x) => x.id === 'sand');
+    const onSand = pres.map((x) => (sf.id === 'sand' ? x.pr : P.presence(x.b, sandSf, o)));
+    const ratioE = (both ? 2 : 1) * Math.max(...onSand.map((pr) => pr.ppv(dE))) / P.elephantPPV(dE);
     const elText = ratioE >= 0.7 && ratioE <= 1.5 ? 'about the same' : ratioE > 1 ? sig(ratioE, 1) + '× the elephant' : sig(1 / ratioE, 1) + '× quieter';
-    const elSub = 'one measured walking past ' + fmtDist(dE) + ' away' + (ratioE >= EL.lo && ratioE <= EL.hi ? '; inside the 0.15–8× real elephants vary' : '');
+    const elSub = 'both on sandy ground, as the elephant was; it was measured walking past ' + fmtDist(dE) + ' away' + (ratioE >= EL.lo && ratioE <= EL.hi ? '; inside the 0.15–8× real elephants vary' : '');
     out.push(tiles(
       tile('Ground shaking at ' + fmtDist(D0), fmtPPV(v), 'peak, up and down' + (both ? '; both in step' : '') + ' · estimate, about 3–5× either way'),
       tile('Compared with an elephant', elText, elSub),
       ...groundTiles));
     // both walking: the curve the verdict uses (their steps landing together), with each one's own curve thin and dashed
     const same = both && Math.abs(pres[0].pr.ppv(10) - pres[1].pr.ppv(10)) <= 1e-9 * pres[0].pr.ppv(10);
-    out.push(ppvChart(both ? [{ label: 'Both in step', f: ppvAtD }].concat(same ? [{ label: 'Either one alone (Rex and Ollie are the same here)', f: (d) => pres[0].pr.ppv(d), thin: true, dash: '6 4', color: 'var(--ink-3)' }]
+    const hCurve = { label: 'Side to side (the glass ripples with this)', f: both ? ppvHAtD : (d) => pres[0].pr.ppvH(d), thin: true, dash: '1 3', color: 'var(--accent)', horiz: true };
+    out.push(ppvChart([].concat(both ? [{ label: 'Both in step, up and down', f: ppvAtD }].concat(same ? [{ label: 'Either one alone (Rex and Ollie are the same here)', f: (d) => pres[0].pr.ppv(d), thin: true, dash: '6 4', color: 'var(--ink-3)' }]
       : pres.map((x, i) => ({ label: x.n + ' alone', f: (d) => x.pr.ppv(d), thin: true, dash: i ? '2 3' : '6 4', color: i ? 'var(--olive)' : 'var(--ink-3)' })))
-      : pres.map((x) => ({ label: x.n, f: (d) => x.pr.ppv(d) })), D0, TH));
+      : pres.map((x) => ({ label: x.n + (pres.length === 1 ? ', up and down' : ''), f: (d) => x.pr.ppv(d) })), hCurve), D0, TH));
     const items = [];
     for (const k of WALK_TH) {
       const r = reachOf(k);
@@ -3128,7 +3169,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     // the canon target, as a result
     const tgt = [];
     const wB = walkers[0][1];
-    const ripE = P.walkEffortFor(wB, sf, o, TH.shimmer, 3), feelE = P.walkEffortFor(wB, sf, o, TH.feel, 3), plE = P.walkEffortFor(wB, sf, o, TH.plasterWalk, 3);
+    const ripE = P.walkEffortFor(wB, sf, o, TH.shimmer, 3, true), feelE = P.walkEffortFor(wB, sf, o, TH.feel, 3), plE = P.walkEffortFor(wB, sf, o, TH.plasterWalk, 3);
     const stepAt = (e) => (e <= 0 ? 'even soft-footed steps' : stepWord(e) + ' steps (' + sig(100 * e, 2) + '% of the way from soft-footed to a stamp)');
     tgt.push('Canon says that, restrained, their footsteps can be felt and ripple water glasses a few metres away. On ' + sf.short + ', a glass 3 m away ripples with ' + (isFinite(ripE) ? stepAt(ripE) : 'nothing short of a stomp') + ', and people 3 m away feel ' + (isFinite(feelE) ? stepAt(feelE) : 'nothing short of a stomp') + '.');
     tgt.push('Presence stops being harmless when plaster 3 m away may crack: ' + (isFinite(plE) ? 'with ' + stepAt(plE) + '.' : 'not even when he stamps. It takes a stomp (see the Stomp tab).'));
@@ -3136,7 +3177,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const gd = P.groundOf(sf);
     out.push(math([
       'Pace: people’s gait scaled to his size at the same Froude number v²/(g h), hip height h = ' + sig(st.h, 3) + ' m (0.45 of his height, our estimate). Froude ' + st.Fr + ' → ' + speedOnly(st.v) + ', ' + sig(st.stepRate, 2) + ' steps a second (0.789 Fr^0.211 √(g/h), fitted to people at Froude 0.09–0.37), each foot down ' + fmtTime(st.stance) + '.',
-      'Load: ' + sig(st.kLoad, 2) + '× body weight comes onto the foot over ' + fmtTime(st.tRamp) + ' (people: 1.2 at 1.5 m/s, rising 0.25 per m/s; Keller 1996, Nilsson & Thorstensson 1989). The landing adds a pulse of ' + sig(st.Fpulse / st.W, 2) + '× his weight lasting ' + fmtTime(st.Tpulse) + ': an ordinary heel strike stops 11% of him at 0.70 m/s in 37 ms (Baines 2018, scaled); soft-footed 0.31 of that; a drill stamp 6.5× (Carden 2015).',
+      'Load: ' + sig(st.kLoad, 2) + '× body weight comes onto the foot over ' + fmtTime(st.tRamp) + ' (people: 1.2 at 1.5 m/s, rising 0.25 per m/s; Keller 1996, Nilsson & Thorstensson 1989). The landing adds a pulse of ' + sig(st.Fpulse / st.W, 2) + '× his weight lasting ' + fmtTime(st.Tpulse) + ': an ordinary heel strike stops 11% of him at ' + speedOnly(st.heelV) + ' in ' + fmtTime(st.heelT) + ' (Baines 2018: 0.57 m/s in 30 ms for people, scaled by √(hip height ÷ 0.9 m)); soft-footed 0.31 of that; a drill stamp 6.5× (Carden 2015).',
       'Ground shaking (elastic ground, Lamb’s problem): for a pulse of peak F lasting T, PPV = max(0.375 F/(ρ c² T r), 0.620 F/(ρ c^2.5 T^1.5 √r)) × damping, with ρ = ' + gd.rho + ' kg/m³, shear-wave speed c = ' + gd.cs + ' m/s and damping ' + gd.xi + ' for ' + sf.short + ' (estimates). Checked against one drop test (130 kg at Pisa: within about 2× from 2.5 to 60 m, contact time fitted) and loosely against elephant footfalls; footsteps themselves were never measured. Uncertain by about 3–5× either way, more past 60 m.',
     ]));
     return out;
@@ -3147,11 +3188,17 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   // has no goal short of the test itself, so its least disruptive effort is the hardest both can go while nothing
   // around them breaks: no torn table, no broken object, no sonic boom, no blast that breaks windows nearby, no crater.
   const fullF = (who) => (who === 'O' && !state.oSame ? (state.oInf ? Infinity : Math.pow(10, state.oLogKg) * g) : (state.inf ? Infinity : Math.pow(10, state.logKg) * g));
+  // duoSig: a fingerprint of what the test came out as (rounded speeds and outcomes). The same fingerprint at two
+  // efforts means the test has saturated (something else caps it), so the search can stop.
+  let duoSig = '';
+  const fp = (...xs) => xs.map((x) => (typeof x === 'number' ? (isFinite(x) ? x.toPrecision(9) : String(x)) : String(x))).join('|');
   function duoHarm(act) {
     const cR = ctx(), cO = ctxOllie();
+    duoSig = '';
     const near = state.near, win = (E) => isFinite(E) ? E > 0 && P.blastRadius(E, P.RESTRAINT.R.DP_HARM) >= near : E > 0;
     if (act === 'arm') {
       const r = P.armWrestle(cR, cO);
+      duoSig = fp(r.slamRatio, r.quake, r.crater, r.relativistic, r.tableBreaks, r.blackHole);
       if (r.blackHole) return null;
       return r.tableBreaks ? 'the table tears apart' : r.slamRatio > 1 ? 'the pin cracks the table' : r.crater > 0 ? 'the pin makes a crater' : r.quake > 2 ? 'the pin shakes the ground like a quake' : r.relativistic ? 'the pin turns into a fireball' : null;
     }
@@ -3160,13 +3207,16 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       if (move === 'shove') {
         const both = state.wrestleWho === 'both', cA = state.wrestleWho === 'ollie' ? cO : cR, cB = state.wrestleWho === 'ollie' ? cR : cO;
         const r = both ? P.shoveBoth(cR, cO) : P.shove(cA, cB);
+        duoSig = fp(r.vA || 0, r.vB || 0);
         return Math.max(r.vA || 0, r.vB || 0) >= K.a0 ? 'someone flies off faster than sound' : null;
       }
       if (move === 'throw') {
         const cA = state.wrestleWho === 'ollie' ? cO : cR, cB = state.wrestleWho === 'ollie' ? cR : cO;
         const t = P.throwPartner(cA, cB, state.angle);
+        duoSig = fp(t.r && t.r.v, t.r && t.r.sinkRatio);
         if (!t.r || !t.r.canMove) return null;
-        return t.r.v >= K.a0 ? 'the throw breaks the sound barrier' : win(t.r.Eimpact) ? 'the landing’s air blast risks damage ' + fmtDist(near) + ' away' : t.r.sinkRatio > 1 ? 'the ground gives way under the thrower' : null;
+        // the landing counts as a blast only if it is supersonic (the solo throw's rule)
+        return t.r.v >= K.a0 ? 'the throw breaks the sound barrier' : win(P.RESTRAINT.MOVES.throw.blast(t.r)) ? 'the landing’s air blast risks damage ' + fmtDist(near) + ' away' : t.r.sinkRatio > 1 ? 'the ground gives way under the thrower' : null;
       }
       return null;
     }
@@ -3174,10 +3224,13 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       if (state.cObj === 'partner') return null;
       const o = objById(state.cObj), D0 = Math.pow(10, state.cLogD);
       const legs = [P.catchLeg(cR, cO, o, D0, state.cStyle), P.catchLeg(cO, cR, o, D0, state.cStyle)];
+      duoSig = fp(...legs.flatMap((L) => (L ? [L.aim && L.aim.vL, L.vArrive, L.result, L.bursts] : ['none'])));
       for (const L of legs) {
         if (!L) continue;
         if (L.aim && L.aim.vL >= K.a0) return 'a throw breaks the sound barrier';
         if (['crushed-launch', 'breaks-up', 'burns-up', 'wreckage', 'fireball'].includes(L.result) || L.bursts) return 'the ' + o.short + ' is destroyed';
+        const pg = catchPassengerG(L, o);
+        if (pg && pg.over) return pg.where === 'throw' ? 'the throw presses the person harder than amusement rides allow' : 'the catch stops the person harder than amusement rides allow';
       }
       return null;
     }
@@ -3186,6 +3239,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       const gb = state.colInf ? Infinity : Math.pow(10, state.colGB);
       if (state.colMode === 'push') return null;
       const r = P.collide(cA, cB, { source: state.colSrc, gb, bounce: state.colBounce === 'bounce' });
+      duoSig = fp(r && r.v0, r && r.outcome);
       if (!r || r.blackHole || r.planetScale || r.noCharge) return null;
       // the same rule as the Collide tab: a hit slower than sound crossing the damage zone is a loud thump, not a blast
       const splat = state.colBounce !== 'bounce', F = r.contact ? (splat ? r.contact.soft : r.contact.softEl) : null;
@@ -3195,30 +3249,56 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     }
     return null;
   }
+  // A person in the game of catch: the throw's average push (release speed over the push time) and the catch, against
+  // the ride limits the solo Throw uses. null when the object isn't a person or Safe passenger is on.
+  const CAUGHT = ['caught', 'wreckage', 'slams', 'cant-hold-it'];
+  function catchPassengerG(L, o) {
+    if (!o.passenger || state.safePassenger || !L || !L.aim || !(L.tPush > 0)) return null;
+    const nL = P.PASSENGER.felt(L.aim.vL / L.tPush / g, L.aim.thetaDeg || 0);
+    if (nL > P.PASSENGER.noHarm(L.tPush)) return { over: true, where: 'throw', n: nL, t: L.tPush, limit: P.PASSENGER.noHarm(L.tPush) };
+    const k = L.catch;
+    if (!k || !CAUGHT.includes(L.result)) return { over: false, where: 'throw', n: nL, t: L.tPush, limit: P.PASSENGER.noHarm(L.tPush) };
+    const first = k.firstShare > 0.5, n = first ? k.F1[0] / (o.m * g) : k.decelG, t = first ? k.tContact[1] : k.tStroke;
+    return { over: n > P.PASSENGER.noHarm(t), where: 'catch', n, t, limit: P.PASSENGER.noHarm(t) };
+  }
   const duoPlans = new Map();
   function duoPlanFor(act) {
     const FR = fullF('R'), FO = fullF('O');
-    const key = JSON.stringify([act, FR, FO, state.mode, state.H, state.m, state.build, state.oH, state.oM, state.surface, state.groundHolds, state.anchor, state.oAnchor, state.near, state.wrestleMove, state.wrestleWho, state.angle, state.cObj, state.cLogD, state.cStyle, state.colMode, state.colWho, state.colSrc, state.colGB, state.colInf, state.colBounce, state.colImm, state.oEffortOwn, state.oEffortLogKg, state.gentleHold, state.coolFlight, state.softLanding, state.silentStrike]);
+    const key = JSON.stringify([act, FR, FO, state.mode, state.H, state.m, state.build, state.oH, state.oM, state.surface, state.groundHolds, state.anchor, state.oAnchor, state.near, state.wrestleMove, state.wrestleWho, state.angle, state.cObj, state.cLogD, state.cStyle, state.colMode, state.colWho, state.colSrc, state.colGB, state.colInf, state.colBounce, state.colImm, state.oEffortOwn, state.oEffortLogKg, state.gentleHold, state.coolFlight, state.softLanding, state.silentStrike, state.safePassenger]);
     let p = duoPlans.get(key);
     if (p) return p;
     const need = (m) => P.W8.WALK_LOAD * m * g / P.MUSCLE.jump.forceFrac;
     const lo = Math.max(need(state.m), need(state.oM)), hiF = Math.max(FR, FO), hi = isFinite(hiF) ? hiF : 1e34 * g;
-    const memo = new Map();
+    const memo = new Map(), sigs = new Map();
     const harmAt = (u) => {
       const k = u === Infinity ? 'inf' : u;
       if (!memo.has(k)) {
         const save = duoCap;
         duoCap = { R: Math.max(u, lo), O: state.oEffortOwn ? Math.max(Math.pow(10, state.oEffortLogKg) * g, lo) : Math.max(u, lo) };
-        try { memo.set(k, duoHarm(act)); } finally { duoCap = save; }
+        try { memo.set(k, duoHarm(act)); sigs.set(k, duoSig); } finally { duoCap = save; }
       }
       return memo.get(k);
     };
-    const s = lo < hi ? P.RESTRAINT.search((u) => !!harmAt(u), lo, hi, !isFinite(hiF)) : null;
+    const same = (u0, u1) => { harmAt(u0); harmAt(u1); const a = sigs.get(u0), b = sigs.get(u1); return !!a && a === b; };
+    const s = lo < hi ? P.RESTRAINT.search((u) => !!harmAt(u), lo, hi, !isFinite(hiF), same) : null;
     p = { act, lo, hi, s, harmAt, done: !s };
     p.step = () => { if (p.done) return true; s.step(); if (s.use !== undefined) p.done = true; return p.done; };
     duoPlans.set(key, p);
     if (duoPlans.size > 30) duoPlans.delete(duoPlans.keys().next().value);
     return p;
+  }
+  // finish a two-player search in the background (each probe runs the whole test, up to a second or so), then redraw
+  let duoRunning = null;
+  function stepDuoPlan(p) {
+    if (p.done || duoRunning === p) return;
+    duoRunning = p;
+    const tick = () => {
+      if (duoRunning !== p) return;
+      const t0 = performance.now();
+      while (performance.now() - t0 < 20) if (p.step()) { duoRunning = null; if (isDuo()) renderBay(true); return; }
+      setTimeout(tick, 0);
+    };
+    setTimeout(tick, 0);
   }
   // the cap for this render (Infinity = all-out) and what the readout says
   function resolveDuoEffort(act) {
@@ -3226,7 +3306,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     let use = Infinity, note = null;
     if (state.duoEffort === 'custom') use = Math.max(Math.pow(10, state.duoLogKg) * g, p.lo);
     else if (state.duoEffort === 'least' && p.s) {
-      while (!p.step());
+      const t0 = performance.now();
+      while (!p.step()) if (performance.now() - t0 > EFFORT_BUDGET) { stepDuoPlan(p); return { p, use: Infinity, note: null, harm: p.harmAt(Infinity), pending: true }; }
       if (p.s.never) use = Infinity;
       else if (!(p.s.below > 0)) { use = p.lo; note = 'Nothing is harmless here: even at the least they need to stand, ' + p.harmAt(p.lo) + '.'; }
       else use = p.s.below;
@@ -3261,6 +3342,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const oKg = Math.pow(10, state.oEffortLogKg);
     const each = state.oEffortOwn ? ' (Rex as hard as lifting ' + fmtMass(eff.use / g) + ', Ollie ' + fmtMass(oKg) + ')' : ' (each as hard as lifting ' + fmtMass(eff.use / g) + ')';
     const noCap = state.duoEffort === 'least' && eff.p.s && eff.p.s.never;
+    if (eff.pending) {
+      read.append(el('p', {}, el('b', { text: 'Effort: working it out.' }), ' Working out the least disruptive effort… Showing all-out until then.'));
+      return { fields, read };
+    }
     const head = el('p', {}, el('b', { text: noCap ? 'All-out: no cap needed.' : capped ? 'Effort: ' + (isFinite(FR) ? pctOf(eff.use, FR) + ' of his strength' : 'as hard as lifting ' + fmtMass(eff.use / g)) + '.' : 'All-out.' }),
       capped && (isFinite(FR) || state.oEffortOwn) ? each + '.' : '');
     head.append(' ' + (noCap ? 'Nothing in this test can harm anything nearby, so they go all-out.' : { least: 'The hardest both can go while nothing around them breaks.', allout: 'Everything they have.', custom: 'Set by hand.' }[state.duoEffort]));
