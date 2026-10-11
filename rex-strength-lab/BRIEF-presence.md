@@ -13,12 +13,20 @@ The lab has no way to show that. This brief adds three things.
 - The dial stays "how strong he is". A new control sets **effort**: how hard he chooses to push, from gentle to all-out (a share of the dial, or a target such as "throw it 30 m").
 - **The default is least disruptive:** the gentlest effort that still does what the move is for. Each move needs a stated goal. For example: lift it clear of the ground; throw it to a target distance (the game of catch already aims an "easy" lob); jump to a height; walk at a pace.
 - **Courtesy ceiling:** for each move, the most effort he can use before something nearby comes to harm. The hazards are the ones the engine already computes (windows breaking at a distance, people knocked down, the ground giving way, an object crushed, quakes felt, sonic booms), plus the new presence hazards below. Show which hazard sets the ceiling, and how far it reaches.
-- **All-out stays one click away,** and the page says plainly what it does to the surroundings.
+- **The page opens in least-disruptive mode** (owners' decision). A first-time visitor sees the heroic default and chooses anything louder.
+- **Not-so-heroic modes** (owners' decision): named effort presets for when they want to enjoy some property damage, at rising scales. Each preset is set by a hazard, not by a number. For example, rattle the windows, break windows on the street, flatten a parked car, crack the road, level a block. Each says what it would do and how far it reaches. All-out is the last preset, and the page says plainly what it does to the surroundings.
+- **One effort for both of them in the two-player tests** (owners' decision), unless the visitor gives Ollie his own as a what-if, the same way his strength works today.
 - Reuse the existing physics and its threshold machinery (the strength ladder's `thresholdDefs` already bisects "the strength at which X happens"). Effort is mostly a new framing of it.
 
 ## 2. Selective comic physics
 
-Named switches, off by default. Each states exactly which real limit it suspends, and everything else stays real (momentum and energy are conserved).
+Named switches, off by default. Each states exactly which real limit it suspends, and everything else stays real.
+
+**How it works (canon):** the energy they put out comes from them, so they can take it back, absorbing what they dish out. Energy is conserved: it goes back into them, so from outside it only looks as if it vanished. Momentum is not absorbed: it still goes into them and through their feet into the ground (restrained effort makes that gentle). So there are two kinds of switch:
+
+- **Material limits suspended** (energy and momentum go where real physics sends them): gentle hold, comic ground, bolted to the planet, and possibly safe passenger (a person he carries or throws to safety feels no harmful g-force) and cool flight (no heating on a fast-thrown object).
+- **Absorbed** (the energy that would harm the surroundings goes back into them): possibly silent strike (no blast or sonic boom from a punch or clap) and soft landing (no crater or quake when landing or catching). Show how much energy they absorbed and the mass it adds (E ÷ c²) once that is worth mentioning: about 9 kg at Krakatoa's energy, but about 4,700 tonnes at the dinosaur-killer impact's. Past that point, the Weight tab's physics (their own gravity, sinking) applies to the heavier body.
+- Not offered: "no recoil". Absorbing energy cannot remove momentum.
 
 - **Gentle hold (tactile telekinesis):** his push is spread through the whole held object in proportion to its mass, so the object is not stressed by his grip (it accelerates like a falling body, with no internal load). It removes grip crushing in Lift, Throw and the game of catch, the hands punching through at launch, and an object sagging under its own weight. It does **not** remove the ground's load under him, his recoil, air pressure on a thrown object's front (break-up, heating), or the impact where it lands.
 - **Comic ground** already exists ("never breaks").
@@ -67,10 +75,10 @@ If time runs short, 1 and 2 are the core and the rest can be a later run.
 
 ## Open questions for the owners
 
-1. Should the page open in least-disruptive mode, so a first-time visitor sees the heroic default and has to choose all-out? The canon suggests yes; today the page opens all-out.
-2. Does effort apply to Ollie separately in the two-player tests, or do both share one effort setting?
-3. "For the most part": should the page name a deliberate not-so-heroic mode, or simply leave all-out available without comment?
-4. Which further comic switches, if any, beyond gentle hold and comic ground?
+1. Which comic switches to build: safe passenger, cool flight, silent strike, soft landing (besides gentle hold, comic ground and bolted)?
+2. What happens to energy they absorb: do they keep it (and the mass it adds), or release it later, and how?
+
+Settled: the page opens least-disruptive; both share one effort unless Ollie's is set as a what-if; named not-so-heroic presets for property damage at rising scales.
 
 ## Not in scope
 

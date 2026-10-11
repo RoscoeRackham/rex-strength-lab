@@ -21,6 +21,7 @@ The owner is a professional critic. Factual accuracy and honest labelling come f
 - Both are male, and both are 5–10% body fat (7.5% as the working value), from their definition and occasional vascularity. Neither one's tail counts toward his muscle level, and muscle scores use height to the top of the skull (not Rex's crest or Ollie's horns).
 - Turnarounds (A-pose: front, back, side): `build-comparison/assets/rex-turnaround.png` and `ollie-turnaround.png`.
 - They want to be seen as heroes, for the most part. By default each chooses the least disruptive way to exist in the world: just enough force for the job, with comic-book physics used selectively and on purpose, never by default. Infinite might is a hazard to reality itself. Restrained, their presence is about kaiju-like on a local scale (footsteps you can feel, water glasses rippling a few metres away), not destructive. They can choose otherwise.
+- How their comic physics works (canon): the energy they put out comes from them, so they can take it back, absorbing what they dish out as power for themselves. Energy doesn't vanish; from outside it only looks that way. Momentum is not absorbed: it still goes into them and through their feet into the ground. Absorbed energy adds mass (E ÷ c²): negligible up to about a large volcanic eruption (Krakatoa's energy is about 9 kg), but about 4,700 tonnes at the scale of the dinosaur-killer impact.
 - Do not invent other canon for either; ask.
 - Art in `rex-strength-lab/assets/` is the owner's. Use it; don't redraw the characters.
 
