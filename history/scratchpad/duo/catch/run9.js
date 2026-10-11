@@ -1,0 +1,15 @@
+const X = require('./catch2.js');
+const { P, K } = X;
+require('/home/user/dino-strength-sim/src/data.js');
+const DD = window.DINO_DATA;
+const obj = (id) => DD.objects.find((o) => o.id === id);
+const surf = (id) => DD.surfaces.find((s) => s.id === id);
+const g = K.g;
+const mk = (o) => Object.assign({ F: 100 * 907.18474 * g, mode: 'comic', body: P.makeBody({}), surface: surf('concrete'), groundHolds: false, anchor: 'friction' }, o || {});
+const big = P.makeBody({ H: 50 });
+const r = X.leg(mk({ body: big, F: 1e9 * g }), mk(), obj('baseball'), 100, 'hard');
+console.log('kaiju hard baseball 100 m:', r.result, 'th', r.aim.thetaDeg, 'v', r.aim.vL, 'arr', r.vArrive, 'ang', r.angleDeg, 't', r.time, 'F', r.catch.F, 'clean', r.catch.clean);
+const r2 = X.leg(mk(), mk({ body: big, F: 1e9 * g }), obj('baseball'), 100, 'hard');
+console.log('Rex -> kaiju hard baseball 100 m:', r2.result, 'th', r2.aim.thetaDeg, 'v', r2.aim.vL, 'arr', r2.vArrive, 'ang', r2.angleDeg, 't', r2.time);
+const r3 = X.leg(mk(), mk({ body: big, F: 1e9 * g }), obj('baseball'), 100, 'easy');
+console.log('Rex -> kaiju easy baseball 100 m:', r3.result, 'th', r3.aim && r3.aim.thetaDeg, 'v', r3.aim && r3.aim.vL, 'arr', r3.vArrive, 't', r3.time, 'apex', r3.flight && r3.flight.apex);

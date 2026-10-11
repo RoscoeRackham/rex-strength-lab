@@ -1,0 +1,129 @@
+{
+ "role": "checker / reconciliation of methods A, B, C",
+ "scale": {
+  "rex_crest_row": 8.5,
+  "rex_ground_row": 798.5,
+  "rex_skull_row": 41,
+  "m_per_px": 0.003858227848101266,
+  "ollie_horn_row": 13,
+  "ollie_hair_row": 24,
+  "ollie_skull_row": 34,
+  "ollie_ground_row": 807
+ },
+ "heights": {
+  "rex_px": 790.0,
+  "rex_skull_px": 757.5,
+  "ol_px": 794.0,
+  "ol_hair_px": 783.0,
+  "ol_skull_px": 773.0,
+  "rex_m": 3.048,
+  "rex_skull_m": 2.923,
+  "ol_m": 3.063,
+  "ol_hair_m": 3.021,
+  "ol_skull_m": 2.982
+ },
+ "density": {
+  "central": 1060,
+  "low": 1020,
+  "high": 1080,
+  "basis": "Fry, Cisar & Housh 1987 (J Appl Sport Sci Res 1(4):61-65): 12 competitive male bodybuilders, body density 1.0812 g/mL by underwater weighing corrected for residual lung volume, 8.5% fat. Modlesky et al. 1996 (J Appl Physiol 80:2085): fat-free-mass density 1.089+/-0.005 g/mL in weight trainers. Ward & Lieber 2005 (J Biomech 38:2317): standard muscle density 1.0597 g/cm3. Living gas: ~2% of volume (lungs scaled between stature^3, ~0.8%, and body mass, ~4.5%) -> 1.081 x 0.98 = 1,060. Low 1,020 = tissue -1 SD with human-proportional (mass-scaled) lungs; high 1,080 = tissue +1 SD with stature-scaled lungs."
+ },
+ "rex": {
+  "volume_m3": {
+   "central": 2.553,
+   "p5": 2.296,
+   "p95": 2.742,
+   "low": 2.26,
+   "high": 2.78
+  },
+  "mass_kg": {
+   "central": 2700.0,
+   "low": 2300,
+   "high": 3000,
+   "unrounded": [
+    2706.088116406862,
+    2413.125214693633,
+    2893.542757638059
+   ],
+   "mc_p2_5_p97_5_kg": [
+    2373,
+    2940
+   ],
+   "all_extremes_kg": [
+    1950,
+    3450
+   ]
+  },
+  "segments_m3": {
+   "head_neck": 0.09,
+   "torso": 1.1253402628416307,
+   "arm_L": 0.25409051394497933,
+   "arm_R": 0.25409051394497933,
+   "legs": 0.38997978100093683,
+   "feet": 0.15,
+   "tail": 0.2894122456324375,
+   "tail_visible": 0.127245,
+   "tail_hidden": 0.16216724563243748
+  },
+  "frontal_area_m2": 4.92,
+  "foot_sole_m2": 0.31,
+  "heightPx": 790
+ },
+ "ollie": {
+  "volume_m3": {
+   "central": 2.531,
+   "p5": 2.246,
+   "p95": 2.721,
+   "low": 2.2,
+   "high": 2.77
+  },
+  "mass_kg": {
+   "central": 2700.0,
+   "low": 2300,
+   "high": 3000,
+   "unrounded": [
+    2683.0731609835766,
+    2359.7384369852243,
+    2872.9236551670224
+   ],
+   "mc_p2_5_p97_5_kg": [
+    2318,
+    2921
+   ],
+   "all_extremes_kg": [
+    1990,
+    3250
+   ]
+  },
+  "segments_m3": {
+   "head_neck": 0.075,
+   "torso": 1.626380491738876,
+   "arm_L": 0.18789382117144254,
+   "arm_R": 0.18789382117144254,
+   "legs": 0.37403296118576435,
+   "feet": 0.07,
+   "tail": 0.01
+  },
+  "frontal_area_m2": 4.5,
+  "foot_sole_m2": 0.15,
+  "heightPx": 794,
+  "height_ratio_to_rex": 1.0051
+ },
+ "frontal_area_check": {
+  "rex_A_mask_m2": 4.923,
+  "rex_B_independent_mask_at_checker_scale_m2": 4.972,
+  "ollie_A_mask_m2": 4.475
+ },
+ "corrected_method_totals_m3": {
+  "rex": {
+   "A": 2.56,
+   "B": 2.6,
+   "C": 2.52
+  },
+  "ollie": {
+   "A": 2.53,
+   "B": 2.62,
+   "C": 2.5
+  }
+ }
+}

@@ -1,0 +1,16 @@
+global.window = {};
+const P = require('/home/user/dino-strength-sim/src/engine.js');
+require('/home/user/dino-strength-sim/src/data.js');
+const D = window.DINO_DATA;
+console.log(JSON.stringify(P.MUSCLE));
+const conc = D.surfaces.find(s=>s.id==='concrete');
+const body = P.makeBody({});
+console.log('body', JSON.stringify(body));
+const a = P.anchorCapacity({body, surface: conc, theta:0, anchor:'friction'});
+const b = P.anchorCapacity({body, surface: conc, theta:0, anchor:'braced'});
+console.log('R friction', a.R, 'braced', b.R);
+const hulk = 100*907.18474;
+const ctx = {F: hulk*P.K.g, mode:'comic', body, surface: conc, groundHolds:false, anchor:'friction'};
+console.log('sprint hulk friction', JSON.stringify(P.sprint(ctx)));
+console.log('sprint hulk braced', JSON.stringify(P.sprint(Object.assign({},ctx,{anchor:'braced'}))));
+console.log('sprint hulk braced real', JSON.stringify(P.sprint(Object.assign({},ctx,{anchor:'braced', mode:'real'}))));

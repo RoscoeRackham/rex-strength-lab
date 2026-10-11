@@ -1,0 +1,12 @@
+const fs = require('fs');
+let s = fs.readFileSync('/home/user/dino-strength-sim/dist/preview.html', 'utf8');
+const rep = (a, b) => { if (!s.includes(a)) throw new Error('missing: ' + a.slice(0, 60)); s = s.replace(a, b); };
+rep(".ladder-wrap svg .mk:focus { outline: none; }", ".ladder-wrap svg .mk:focus { outline: none; }\n.ladder-wrap svg .mk:focus-visible .hit { fill: var(--accent-wash); stroke: var(--accent); stroke-width: 2; }");
+rep("side: 'L', color: 'var(--olive)',", "key: 'L:' + t.id, side: 'L', color: 'var(--olive)',");
+rep("side: 'R', color: 'var(--accent)',", "key: 'R:' + t.id, side: 'R', color: 'var(--accent)',");
+rep("const g2 = sv('g', { class: 'mk', tabindex: '0',", "const g2 = sv('g', { class: 'mk', 'data-key': it.key, tabindex: '0',");
+rep("g2.append(sv('path', { d: `M${axisX}", "g2.append(sv('rect', { class: 'hit', x: left ? 0 : axisX, y: it.ty - 14, width: axisX, height: 32, rx: 6, fill: 'transparent' }));\n      g2.append(sv('path', { d: `M${axisX}");
+rep("g2.append(sv('rect', { x: left ? 0 : axisX, y: it.ty - 14, width: axisX, height: 32, fill: 'transparent' }));", "");
+rep("const wrap = $('#ladder-viz');", "const wrap = $('#ladder-viz');\n    const fk = wrap.contains(document.activeElement) ? document.activeElement.getAttribute('data-key') : null;");
+rep("wrap.replaceChildren(svg, tip);", "wrap.replaceChildren(svg, tip);\n    if (fk) { const n = svg.querySelector('[data-key=\"' + fk + '\"]'); if (n) n.focus({ preventScroll: true }); }");
+fs.writeFileSync('patched.html', s);

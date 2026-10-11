@@ -1,0 +1,32 @@
+const C = require('./contest.js');
+const { P, D, K } = C; const g = K.g;
+const surf = (id) => D.surfaces.find((s) => s.id === id);
+const HULK = 100 * 907.18474, HUMAN = 511;
+const mk = (o) => {
+  const body = P.makeBody({ H: o.H || 2, m: o.m || (180 * Math.pow((o.H || 2) / 2, 3)) });
+  return { F: o.kg === Infinity ? Infinity : (o.kg || HULK) * g, mode: o.mode || 'comic', body, surface: surf(o.surf || 'concrete'), groundHolds: !!o.comic, anchor: o.anchor || 'friction' };
+};
+const fmt = (x) => (typeof x === 'number' ? (Math.abs(x) > 1e5 || (Math.abs(x) < 1e-3 && x !== 0) ? x.toExponential(4) : +x.toPrecision(6)) : x);
+const show = (label, o) => { const r = {}; for (const [k, v] of Object.entries(o)) { if (v && typeof v === 'object') { const s = {}; for (const [k2, v2] of Object.entries(v)) if (typeof v2 !== 'object') s[k2] = fmt(v2); r[k] = s; } else r[k] = fmt(v); } console.log('\n## ' + label + '\n' + JSON.stringify(r)); };
+console.log('AW', JSON.stringify(C.AW));
+const NSM = 4e17 * 0.18;
+const scen = process.argv[2] || 'all';
+// ---------------- arm wrestling
+show('AW S1 default both friction', C.armWrestle(mk({}), mk({})));
+show('AW S2 both braced', C.armWrestle(mk({ anchor: 'braced' }), mk({ anchor: 'braced' })));
+show('AW S3 Hulk vs human, both braced, comic', C.armWrestle(mk({ anchor: 'braced' }), mk({ anchor: 'braced', kg: HUMAN })));
+show('AW S3r Hulk vs human, both braced, real', C.armWrestle(mk({ anchor: 'braced', mode: 'real' }), mk({ anchor: 'braced', kg: HUMAN, mode: 'real' })));
+show('AW S3b record human vs record human friction', C.armWrestle(mk({ kg: HUMAN }), mk({ kg: HUMAN })));
+show('AW S3c record human vs 255.5 (half) friction comic', C.armWrestle(mk({ kg: HUMAN }), mk({ kg: HUMAN / 2 })));
+show('AW S4 inf vs record human, friction', C.armWrestle(mk({ kg: Infinity }), mk({ kg: HUMAN })));
+show('AW S4b inf bolted vs Hulk bolted comic', C.armWrestle(mk({ kg: Infinity, anchor: 'bolted' }), mk({ anchor: 'bolted' })));
+show('AW S4c inf bolted vs Hulk bolted real', C.armWrestle(mk({ kg: Infinity, anchor: 'bolted', mode: 'real' }), mk({ anchor: 'bolted', mode: 'real' })));
+show('AW S4d both inf bolted', C.armWrestle(mk({ kg: Infinity, anchor: 'bolted' }), mk({ kg: Infinity, anchor: 'bolted' })));
+show('AW S4e Hulk bolted vs Hulk bolted', C.armWrestle(mk({ anchor: 'bolted' }), mk({ anchor: 'bolted' })));
+show('AW S4f Hulk bolted vs human bolted', C.armWrestle(mk({ anchor: 'bolted' }), mk({ anchor: 'bolted', kg: HUMAN })));
+show('AW S5 NS both, Hulk strength', C.armWrestle(mk({ m: NSM }), mk({ m: NSM })));
+show('AW S5b NS both, 1e23 kg strength, bolted', C.armWrestle(mk({ m: NSM, kg: 1e23, anchor: 'bolted' }), mk({ m: NSM, kg: 1e23, anchor: 'bolted' })));
+show('AW S6 plush 30 kg/m3 both Hulk friction', C.armWrestle(mk({ m: 30 * 0.18 }), mk({ m: 30 * 0.18 })));
+show('AW S7 Rex 2 m vs Ollie 50 m, Hulk each, braced', C.armWrestle(mk({ anchor: 'braced' }), mk({ H: 50, anchor: 'braced' })));
+show('AW S8 ice friction Hulk vs human', C.armWrestle(mk({ surf: 'ice' }), mk({ surf: 'ice', kg: HUMAN })));
+show('AW S9 comic ground braced Hulk vs human', C.armWrestle(mk({ anchor: 'braced', comic: true }), mk({ anchor: 'braced', comic: true, kg: HUMAN })));

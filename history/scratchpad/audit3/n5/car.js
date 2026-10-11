@@ -1,0 +1,11 @@
+global.window = {};
+const E = require('/home/user/dino-strength-sim/src/engine.js');
+require('/home/user/dino-strength-sim/src/data.js');
+const D = window.DINO_DATA;
+const body = E.makeBody({ H: 2, m: 180 });
+const surface = D.surfaces.find((s) => s.id === 'concrete');
+const c = { F: 15800 * 9.80665, mode: 'comic', body, surface, groundHolds: false, anchor: 'friction', record: true };
+const o = D.objects.find((x) => x.id === 'car');
+const a = E.throwOnce(c, o, 45), b = E.throwOnce(Object.assign({}, c, { mode: 'real' }), o, 45);
+console.log('comic v', a.v, 'real v', b.v, 'diff', b.v - a.v, 'comic Fdrive', a.Fdrive, 'real Fdrive', b.Fdrive);
+console.log('bowling mass', D.objects.find((x) => x.id === 'bowling').m);

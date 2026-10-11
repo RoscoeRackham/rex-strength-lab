@@ -1,0 +1,13 @@
+const { P, D, g, S, O, ctx } = require('./common.js');
+const pr = (n, c, obj, ang) => { const r = P.throwObject(c, O(obj), ang); const f = r.flight; console.log(n.padEnd(36), 'v', r.v.toFixed(3), 'range', f ? f.range.toFixed(2) : '-', 'recoil', r.recoilV.toFixed(2), 'heldBack', r.heldBack, 'basis', r.basis || '', 'R', r.anchor.R.toFixed(0), 'sink', r.sinkRatio.toFixed(2)); return r; };
+pr('comic car45 4.1', ctx({ lg: 4.1 }), 'car', 45);
+pr('comic car45 4.2', ctx({ lg: 4.2 }), 'car', 45);
+pr('comic car45 4.5', ctx({ lg: 4.5 }), 'car', 45);
+pr('comic car45 4.9', ctx({ lg: 4.9 }), 'car', 45);
+pr('comic tank45 5.38', ctx({ lg: Math.log10(240000) }), 'tank', 45);
+pr('comic tank45 5.8', ctx({ lg: Math.log10(631000) }), 'tank', 45);
+pr('real car45 hulk', ctx({ mode: 'real', lg: Math.log10(90718.474) }), 'car', 45);
+pr('real car45 3.83', ctx({ mode: 'real', lg: 3.83 }), 'car', 45);
+pr('real car45 8', ctx({ mode: 'real', lg: 8 }), 'car', 45);
+pr('real car45 inf', ctx({ mode: 'real', inf: true }), 'car', 45);
+pr('comic car45 inf', ctx({ mode: 'comic', inf: true }), 'car', 45);

@@ -1,0 +1,11 @@
+const fs = require('fs'); const path = require('path');
+const root='/home/user/dino-strength-sim';
+const src = (f) => fs.readFileSync(path.join(root, 'src', f), 'utf8');
+const img = 'data:image/jpeg;base64,' + fs.readFileSync(path.join(root, 'assets', 'dino.jpg')).toString('base64');
+let html = src('app.html');
+html = html.replace('/*__ENGINE__*/', () => src('engine.js')).replace('/*__DATA__*/', () => src('data.js')).replace('__DINO_IMG__', img);
+fs.writeFileSync('built.html', html);
+const d = fs.readFileSync(path.join(root,'dist','index.html'),'utf8');
+console.log('same as dist:', d===html, d.length, html.length);
+const p = fs.readFileSync(path.join(root,'dist','preview.html'),'utf8');
+console.log('preview contains dist:', p.includes(d));

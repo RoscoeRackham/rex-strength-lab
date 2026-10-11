@@ -1,0 +1,451 @@
+{
+ "method": "A: pixel silhouette slices (see compute.py, run_all.py, final.py, report.py)",
+ "image": "/root/.claude/uploads/6435a7db-fe21-5f3b-bca9-e49ba2609387/89c1d7ad-image.jpg",
+ "scale": {
+  "rex_ground_row": 798,
+  "rex_crest_top_row": 8,
+  "rex_skull_top_row": 40,
+  "rex_height_px": 790,
+  "m_per_px": 0.003858227848101266,
+  "ollie_ground_row": 807,
+  "ollie_horn_top_row": 11,
+  "ollie_hair_top_row": 24,
+  "ollie_skull_top_row": 34
+ },
+ "density_kg_m3": {
+  "central": 1030,
+  "low": 980,
+  "high": 1065
+ },
+ "rex": {
+  "volume_m3": {
+   "central": 2.29,
+   "low": 1.911,
+   "high": 2.789,
+   "low_all_extremes": 1.701,
+   "high_all_extremes": 3.358
+  },
+  "mass_kg": {
+   "central": 2358,
+   "low": 1955,
+   "high": 2881,
+   "low_all_extremes": 1667,
+   "high_all_extremes": 3576
+  },
+  "segments_m3": {
+   "head_neck": 0.0972,
+   "torso": 1.0723,
+   "arm_L": 0.1964,
+   "arm_R": 0.1964,
+   "leg_L": 0.2017,
+   "leg_R": 0.1876,
+   "feet": 0.1362,
+   "tail_visible": 0.1118,
+   "tail_hidden": 0.09,
+   "tail": 0.2018,
+   "total": 2.2898
+  },
+  "arm_views_m3_imageleft_imageright": [
+   0.1148,
+   0.278
+  ],
+  "foot_model": {
+   "W_m": 0.656,
+   "L_m": 0.787,
+   "H_m": 0.293,
+   "fill": 0.45,
+   "sole_fill": 0.7
+  },
+  "foot_sole_m2": {
+   "central": 0.361,
+   "low": 0.204,
+   "high": 0.617
+  },
+  "frontal_area_m2": 4.923,
+  "uncertainty_factors_on_volume": {
+   "depth_ratios+fullness": [
+    0.842,
+    1.184
+   ],
+   "arm_view_asymmetry": [
+    0.985,
+    1.071
+   ],
+   "feet_model": [
+    0.971,
+    1.049
+   ],
+   "tail_extras": [
+    0.973,
+    1.045
+   ],
+   "mask_edge": [
+    0.971,
+    1.03
+   ],
+   "pixel_scale": [
+    0.976,
+    1.024
+   ],
+   "perspective_same_distance": [
+    1.0,
+    1.0
+   ]
+  },
+  "regions": {
+   "crest": {
+    "V_m3": 0.0018,
+    "method": "lt",
+    "angle_deg": 0.0,
+    "len_m": 0.463,
+    "max_w_m": 0.286,
+    "mean_w_m": 0.116
+   },
+   "head_neck": {
+    "V_m3": 0.0954,
+    "method": "rows",
+    "angle_deg": 0.0,
+    "len_m": 0.552,
+    "max_w_m": 0.621,
+    "mean_w_m": 0.423
+   },
+   "arm_L_upper": {
+    "V_m3": 0.0578,
+    "method": "rot",
+    "angle_deg": -6.0,
+    "len_m": 0.903,
+    "max_w_m": 0.428,
+    "mean_w_m": 0.265
+   },
+   "arm_L_fore": {
+    "V_m3": 0.0467,
+    "method": "rot",
+    "angle_deg": -16.0,
+    "len_m": 0.532,
+    "max_w_m": 0.509,
+    "mean_w_m": 0.328
+   },
+   "arm_L_hand": {
+    "V_m3": 0.0103,
+    "method": "rot",
+    "angle_deg": 0.0,
+    "len_m": 0.367,
+    "max_w_m": 0.324,
+    "mean_w_m": 0.237
+   },
+   "arm_R_upper": {
+    "V_m3": 0.1931,
+    "method": "rot",
+    "angle_deg": 16.0,
+    "len_m": 1.038,
+    "max_w_m": 0.648,
+    "mean_w_m": 0.456
+   },
+   "arm_R_fore": {
+    "V_m3": 0.0714,
+    "method": "rot",
+    "angle_deg": 8.0,
+    "len_m": 0.54,
+    "max_w_m": 0.602,
+    "mean_w_m": 0.418
+   },
+   "arm_R_hand": {
+    "V_m3": 0.0136,
+    "method": "rot",
+    "angle_deg": 0.0,
+    "len_m": 0.301,
+    "max_w_m": 0.432,
+    "mean_w_m": 0.302
+   },
+   "torso": {
+    "V_m3": 0.9935,
+    "method": "rows",
+    "angle_deg": 0.0,
+    "len_m": 1.644,
+    "max_w_m": 1.196,
+    "mean_w_m": 0.943
+   },
+   "leg_L": {
+    "V_m3": 0.2017,
+    "method": "rot",
+    "angle_deg": -3.0,
+    "len_m": 0.806,
+    "max_w_m": 0.725,
+    "mean_w_m": 0.552
+   },
+   "leg_R": {
+    "V_m3": 0.1876,
+    "method": "rot",
+    "angle_deg": 13.0,
+    "len_m": 0.965,
+    "max_w_m": 0.629,
+    "mean_w_m": 0.475
+   },
+   "tail": {
+    "V_m3": 0.0998,
+    "method": "lt",
+    "angle_deg": 0.0,
+    "len_m": 1.265,
+    "max_w_m": 0.806,
+    "mean_w_m": 0.371
+   },
+   "pouch_L": {
+    "V_m3": 0.0054,
+    "method": "slab",
+    "angle_deg": 0.0,
+    "len_m": 0.444,
+    "max_w_m": 0.12,
+    "mean_w_m": 0.081
+   },
+   "pouch_R": {
+    "V_m3": 0.0039,
+    "method": "slab",
+    "angle_deg": 0.0,
+    "len_m": 0.363,
+    "max_w_m": 0.077,
+    "mean_w_m": 0.072
+   }
+  },
+  "height": {
+   "px": 790,
+   "m": 3.048,
+   "skull_px": 758,
+   "skull_m": 2.925
+  }
+ },
+ "ollie": {
+  "volume_m3": {
+   "central": 2.358,
+   "low": 1.927,
+   "high": 2.879,
+   "low_all_extremes": 1.641,
+   "high_all_extremes": 3.264
+  },
+  "mass_kg": {
+   "central": 2429,
+   "low": 1973,
+   "high": 2973,
+   "low_all_extremes": 1608,
+   "high_all_extremes": 3476
+  },
+  "segments_m3": {
+   "head_neck": 0.0888,
+   "torso": 1.5488,
+   "arm_L": 0.132,
+   "arm_R": 0.132,
+   "leg_L": 0.1766,
+   "leg_R": 0.1968,
+   "feet": 0.0672,
+   "tail_visible": 0.0135,
+   "tail_hidden": 0.002,
+   "tail": 0.0155,
+   "total": 2.3579
+  },
+  "arm_views_m3_imageleft_imageright": [
+   0.2161,
+   0.048
+  ],
+  "foot_model": {
+   "W_m": 0.3,
+   "L_m": 0.7,
+   "H_m": 0.32,
+   "fill": 0.5,
+   "sole_fill": 0.7
+  },
+  "foot_sole_m2": {
+   "central": 0.147,
+   "low": 0.087,
+   "high": 0.23
+  },
+  "frontal_area_m2": 4.475,
+  "uncertainty_factors_on_volume": {
+   "depth_ratios+fullness": [
+    0.835,
+    1.201
+   ],
+   "arm_view_asymmetry": [
+    0.974,
+    1.071
+   ],
+   "feet_model": [
+    0.987,
+    1.018
+   ],
+   "tail_extras": [
+    0.997,
+    1.004
+   ],
+   "mask_edge": [
+    0.947,
+    1.027
+   ],
+   "pixel_scale": [
+    0.976,
+    1.024
+   ],
+   "perspective_same_distance": [
+    0.94,
+    1.0
+   ]
+  },
+  "regions": {
+   "horn_L": {
+    "V_m3": 0.0014,
+    "method": "lt",
+    "angle_deg": 0.0,
+    "len_m": 0.208,
+    "max_w_m": 0.17,
+    "mean_w_m": 0.106
+   },
+   "horn_R": {
+    "V_m3": 0.0009,
+    "method": "lt",
+    "angle_deg": 0.0,
+    "len_m": 0.204,
+    "max_w_m": 0.127,
+    "mean_w_m": 0.073
+   },
+   "ear_L": {
+    "V_m3": 0.0004,
+    "method": "lt",
+    "angle_deg": 0.0,
+    "len_m": 0.177,
+    "max_w_m": 0.197,
+    "mean_w_m": 0.122
+   },
+   "ear_R": {
+    "V_m3": 0.0,
+    "method": "lt",
+    "angle_deg": 0.0,
+    "len_m": 0.116,
+    "max_w_m": 0.046,
+    "mean_w_m": 0.028
+   },
+   "head": {
+    "V_m3": 0.0633,
+    "method": "rows",
+    "angle_deg": 0.0,
+    "len_m": 0.397,
+    "max_w_m": 0.66,
+    "mean_w_m": 0.379
+   },
+   "neck": {
+    "V_m3": 0.0228,
+    "method": "rows",
+    "angle_deg": 0.0,
+    "len_m": 0.081,
+    "max_w_m": 0.71,
+    "mean_w_m": 0.526
+   },
+   "arm_L_upper": {
+    "V_m3": 0.1283,
+    "method": "rot",
+    "angle_deg": -45.0,
+    "len_m": 0.876,
+    "max_w_m": 0.652,
+    "mean_w_m": 0.383
+   },
+   "arm_L_fore": {
+    "V_m3": 0.0644,
+    "method": "rot",
+    "angle_deg": 60.0,
+    "len_m": 0.791,
+    "max_w_m": 0.455,
+    "mean_w_m": 0.323
+   },
+   "arm_L_fist": {
+    "V_m3": 0.0234,
+    "method": "rot",
+    "angle_deg": 0.0,
+    "len_m": 0.397,
+    "max_w_m": 0.37,
+    "mean_w_m": 0.302
+   },
+   "arm_R_upper": {
+    "V_m3": 0.0267,
+    "method": "rot",
+    "angle_deg": 16.0,
+    "len_m": 0.795,
+    "max_w_m": 0.289,
+    "mean_w_m": 0.197
+   },
+   "arm_R_fore": {
+    "V_m3": 0.0046,
+    "method": "rot",
+    "angle_deg": -35.0,
+    "len_m": 0.297,
+    "max_w_m": 0.224,
+    "mean_w_m": 0.131
+   },
+   "arm_R_fist": {
+    "V_m3": 0.0167,
+    "method": "rot",
+    "angle_deg": 0.0,
+    "len_m": 0.309,
+    "max_w_m": 0.34,
+    "mean_w_m": 0.297
+   },
+   "torso": {
+    "V_m3": 1.4475,
+    "method": "rows",
+    "angle_deg": 0.0,
+    "len_m": 1.701,
+    "max_w_m": 1.458,
+    "mean_w_m": 1.142
+   },
+   "leg_L": {
+    "V_m3": 0.1766,
+    "method": "rot",
+    "angle_deg": -22.0,
+    "len_m": 0.992,
+    "max_w_m": 0.656,
+    "mean_w_m": 0.44
+   },
+   "leg_R": {
+    "V_m3": 0.1968,
+    "method": "rot",
+    "angle_deg": 6.0,
+    "len_m": 0.787,
+    "max_w_m": 0.687,
+    "mean_w_m": 0.547
+   },
+   "tail_core": {
+    "V_m3": 0.0056,
+    "method": "lt",
+    "angle_deg": 0.0,
+    "len_m": 0.293,
+    "max_w_m": 0.208,
+    "mean_w_m": 0.181
+   },
+   "tail_tuft": {
+    "V_m3": 0.053,
+    "method": "lt",
+    "angle_deg": 0.0,
+    "len_m": 0.718,
+    "max_w_m": 0.417,
+    "mean_w_m": 0.271
+   }
+  },
+  "height": {
+   "px": 796,
+   "m": 3.071,
+   "hair_top_px": 783,
+   "hair_top_m": 3.021,
+   "skull_px": 773,
+   "skull_m": 2.982,
+   "note": "in boots; ~7 cm lug sole. Floor-row perspective correction (Ollie ~2% nearer camera) would give ~3.01 m"
+  }
+ },
+ "notes": {
+  "files": "seg.py (mask) -> regions.py (polygons) -> volume.py (rasterize, overlay_regions.png) -> compute.py (slicer, local thickness, synthetic tests) -> run_all.py (k table) -> final.py (limb angles, region volumes) -> report.py (segments, uncertainty) -> write_json.py. ANSUR ratios: ansur.py -> ansur_ratios.json.",
+  "k_definition": "k = depth along camera axis / visible width of each 1-px slice; slice area = pi/4*k*w^2 per run",
+  "torso_k": "Rex zones y<290 0.90 (0.78-1.05), 290-400 0.75 (0.65-0.88), >=400 0.72 (0.65-0.85); Ollie y<270 0.90, 270-390 0.72 (0.62-0.85), >=390 0.72 (0.65-0.85); x fullness 1.07 (1.00-1.12)",
+  "limb_k": "upper arm 1.0 (0.85-1.15), forearm 0.9 (0.75-1.05), Rex hand 0.6 (0.45-0.8), Ollie fist 0.75 (0.6-0.9), legs 1.0 (0.85-1.15)",
+  "head_k": "Rex head+neck 1.05 (0.85-1.3), crest 0.5 (0.3-0.8); Ollie head 1.25 (1.05-1.45), neck 1.0, horns 1.0, ears 0.25",
+  "tail": "Rex visible tail local thickness k 0.8 (0.6-1.0) x foreshortening 1.12 (1.0-1.25) + hidden base 0.09 (0.04-0.18) m3; Ollie tuft packing 0.15 (0.05-0.3), hidden stub 0.002 m3",
+  "arms": "each arm = mean of the two visible arms (low: geometric mean; high: larger view)",
+  "range": "low/high = independent log factors in quadrature incl. density; *_all_extremes = every factor at its bound",
+  "density": "1030 (980-1065) kg/m3: bodybuilder tissue 1.0812 g/mL (Fry, Cisar & Housh 1987, J Appl Sport Sci Res 1(4):61-65) + ~0.045 L/kg lung+gut gas at relaxed mid-breath",
+  "shared_folder": "results.json, results_method_b.json, method_b.py, mask.npy etc. in this folder belong to a separate Method B run, not this one"
+ }
+}

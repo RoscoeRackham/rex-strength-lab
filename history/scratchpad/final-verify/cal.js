@@ -1,0 +1,26 @@
+const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+(async () => {
+  const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' });
+  const page = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
+  const errs = []; page.on('pageerror', (e) => errs.push(e.message));
+  await page.goto('file:///home/user/dino-strength-sim/dist/preview.html');
+  await page.evaluate(() => { localStorage.clear(); localStorage.setItem('rex-lab-v1', JSON.stringify({ action: 'weight' })); });
+  await page.reload(); await page.waitForTimeout(700);
+  const pressed = () => page.evaluate(() => [...document.querySelectorAll('#size-chips button, #size-cal button, #density-chips button, #o-density-chips button')].filter((b) => b.getAttribute('aria-pressed') === 'true').map((b) => b.closest('[id]').id + ':' + b.textContent.trim()).join(' | '));
+  const st = () => page.evaluate(() => localStorage.getItem('rex-lab-v1'));
+  const math = () => page.evaluate(() => { document.querySelectorAll('#bay details').forEach((d) => (d.open = true)); const t = document.querySelector('#bay').innerText; const i = t.indexOf('Volume ='); return t.slice(i, i + 260); });
+  const head = () => page.evaluate(() => { const t = document.querySelector('#bay').innerText; const i = t.indexOf('Black hole'); return t.slice(i + 10, i + 400).replace(/\n+/g, ' / '); });
+  console.log('default:', await pressed()); console.log(await math());
+  await page.click('text=Calibration body (2 m, 180 kg)'); await page.waitForTimeout(500);
+  console.log('after cal:', await pressed(), await st()); console.log(await math()); console.log(await head());
+  await page.click('#density-chips >> text=His build (default)'); await page.waitForTimeout(500);
+  console.log('after build chip on cal body:', await pressed(), await st()); console.log(await math());
+  await page.click('#size-chips >> text=Rex (10 ft)'); await page.waitForTimeout(500);
+  console.log('after Rex 10ft:', await pressed(), await st()); console.log(await math());
+  await page.click('#density-chips >> text=Water'); await page.waitForTimeout(500);
+  console.log('after water:', await pressed(), await st()); console.log(await math());
+  await page.click('#size-chips >> text=Kaiju (50 m)'); await page.waitForTimeout(500);
+  console.log('after kaiju:', await pressed(), await st());
+  console.log('errors', errs);
+  await browser.close();
+})();
