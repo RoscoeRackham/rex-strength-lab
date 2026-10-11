@@ -63,7 +63,7 @@ For each target score: export the outline, generate a featureless body over it, 
 
 ## D. Into the data and the page
 
-- [ ] A new group, "Illustrative figures", in `build-calculator/data/builds.json`: featureless, measured from art, status estimate, at 7.5% body fat like the duo (to confirm). Decide whether the Build Calculator shows the group too.
+- [ ] A new group, "Illustrative figures", in `build-calculator/data/builds.json`: featureless, measured from art, status estimate, at 7.5% body fat like the duo (owners' decision). Decide whether the Build Calculator shows the group too.
 - [ ] Settings in Build Comparison: each figure comparable, its body-fat class, and how it's labelled (traced from art, not a person).
 - [ ] The page, its tests and the screenshots; README and NOTES. The owner republishes after merging.
 
