@@ -6,16 +6,20 @@ Live page: https://claude.ai/artifact/YFpbHtX8tM2Qwffd6znbZP (private until shar
 
 ## The default bodies
 
-Rex is 10 ft (3.048 m) tall by his owner's ruling. Ollie measures 3.06 m to his horn tips, which is 10 ft within measuring error. Each one's mass, about 2,700 kg (plausibly 2,300–3,000 kg), comes from their reference picture (`assets/duo.jpg`):
+Rex is 10 ft (3.048 m) tall by his owner's ruling. Ollie measures 3.06 m to his horn tips, which is 10 ft within measuring error.
+
+Their mass is also by ruling: Rex is 2,700 kg without his tail, and Ollie weighs the same as Rex in all. Rex's tail is about 307 kg (measured from the picture), so each weighs **3,007 kg** in all (Ollie's tail is about 11 kg, so about 2,996 kg of his is body). At 1,060 kg/m³ that is 2.84 m³ each.
+
+The rest comes from their reference picture (`assets/duo.jpg`), which on its own measured less volume:
 
 - Scale: Rex is 790 px from crest tip to floor, so each pixel is 3.86 mm.
-- Volume: each body is cut into 1-pixel slices, and each slice is treated as an ellipse. Its front-to-back depth is its visible width times a depth ratio taken from US Army body measurements (ANSUR II). Limbs are sliced across their own axis. Only one arm of each is fully visible, so both arms are sized from that one. Rex's tail includes the part hidden behind his hips. Rex comes out at 2.55 m³ and Ollie at 2.53 m³. Three independent methods agreed within 3% once each one's errors were corrected.
+- Volume: each body is cut into 1-pixel slices, and each slice is treated as an ellipse. Its front-to-back depth is its visible width times a depth ratio taken from US Army body measurements (ANSUR II). Limbs are sliced across their own axis. Only one arm of each is fully visible, so both arms are sized from that one. Rex's tail includes the part hidden behind his hips. Rex comes out at 2.55 m³ and Ollie at 2.53 m³, tails included. Three independent methods agreed within 3% once each one's errors were corrected. The ruled mass needs both bodies about 12% bigger than this at the same density, most likely deeper front to back than the borrowed ratios; side views will test it.
 - Density: 1,060 kg/m³. Lean bodybuilders measure 1,081 kg/m³ with lung air removed (Fry, Cisar & Housh 1987); about 2% comes off for the air in the lungs and gut.
 - From the same picture: facing area 4.4 m² for Rex (tail trailing) and 4.5 m² for Ollie, and one foot's sole 0.31 m² (Rex's paws) and 0.15 m² (Ollie's boots).
 
-In the engine these are the `rex` and `ollie` builds (`BUILDS` and `DEFAULT_BODIES` in `src/engine.js`): volume 0.08995 × height³, with areas scaling as height². The method, the checks and the range are in `research/final-duo.json` (`rex_ollie_picture_build`, `density_bodybuilders_fry1987`).
+In the engine these are the `rex` and `ollie` builds (`BUILDS` and `DEFAULT_BODIES` in `src/engine.js`): volume 0.10017 × height³ (from the ruled mass), with areas scaling as height². The ruling, the picture method and its checks are in `research/final-duo.json` (`rex_ollie_picture_build`, `density_bodybuilders_fry1987`).
 
-The strength dial is calibrated on a separate, human-sized body: 2 m, 180 kg, 1,000 kg/m³. At record-human strength it reproduces the shot put, pitching and sprint records in both muscle models. You can pick it from the **Calibration body (2 m, 180 kg)** chip under Size. The real-human feats (deadlift, shot put, Bolt's sprint, and so on) run on it when you press Simulate, because at those strengths the 10 ft, 2,700 kg Rex can't get up. The density chips include **His build (default)** at 1,060 kg/m³ and **Water** (1,000 kg/m³, fresh water at 4 °C, the calibration body's density).
+The strength dial is calibrated on a separate, human-sized body: 2 m, 180 kg, 1,000 kg/m³. At record-human strength it reproduces the shot put, pitching and sprint records in both muscle models. You can pick it from the **Calibration body (2 m, 180 kg)** chip under Size. The real-human feats (deadlift, shot put, Bolt's sprint, and so on) run on it when you press Simulate, because at those strengths the 10 ft, 3,007 kg Rex can't get up. The density chips include **His build (default)** at 1,060 kg/m³ and **Water** (1,000 kg/m³, fresh water at 4 °C, the calibration body's density).
 
 ## Art on the page
 
@@ -67,7 +71,7 @@ The usual run is `python build-data.py && node build.js && node test/shots.js &&
 ## Known limits
 
 - Real-muscle speeds follow the Hill curve with a single-muscle shape factor. Whole limbs are flatter, so real-muscle results are a model, not a measurement.
-- The body mass is an estimate from one picture (2,300–3,000 kg). Dinosaur-style air sacs could make Rex about 7% lighter.
+- The body mass is set by ruling (3,007 kg each). Rex's tail share (about 307 kg) is an estimate from one picture, and the picture alone measured about 12% less body; side views will show whether the bodies are that much deeper. Dinosaur-style air sacs could make Rex about 7% lighter at the same size.
 - Ground is a bearing-capacity-plus-inertia model. It does not model ice sheets snapping in bending, layered soils, or ejecta.
 - Crater sizes past a few hundred km and anything near Earth's binding energy are rough or flagged as planet-scale.
 - Flight counts only Earth's gravity; arcs past the Moon's orbit are flagged as rough.

@@ -7068,16 +7068,13 @@
     ]
    },
    "weight_kg": {
-    "value": 2700,
+    "value": 3007,
     "status": "estimate",
     "source_keys": [
      "rex_ollie_picture_mass"
     ],
-    "basis": "picture measurement: volume x density",
-    "range": [
-     2300,
-     3000
-    ],
+    "basis": "set by ruling (11 Oct 2026): Rex is 2,700 kg without his tail, and Ollie weighs the same as Rex in all",
+    "range": null,
     "disputed": false,
     "cite": [
      {
@@ -7099,12 +7096,13 @@
     ]
    },
    "volume_m3": {
-    "value": 2.55,
+    "value": 2.84,
     "status": "estimate",
     "source_keys": [
      "rex_ollie_picture_mass"
     ],
-    "note": "Central picture estimate 2.553 m^3 (range 2.26-2.78)"
+    "note": "The ruled mass at 1,060 kg/m^3. The picture alone measured 2.553 m^3, tails included, so the ruled body is about 12% bigger than measured (most likely deeper front to back than the borrowed ANSUR depth ratios).",
+    "picture_m3": 2.553
    },
    "density_kg_m3": {
     "value": 1060,
@@ -7119,8 +7117,13 @@
     "note": "Bodybuilder whole-body density 1.0812 g/mL (Fry, Cisar & Housh 1987) less about 2% for lung gas."
    },
    "body_fat_pct": {
-    "value": null,
-    "status": "unknown"
+    "value": 7.5,
+    "range": [
+     5,
+     10
+    ],
+    "status": "estimate",
+    "note": "Owners' canon: 5-10% from their definition and occasional vascularity; 7.5% is the working value."
    },
    "girths": {
     "chest": {
@@ -7309,14 +7312,15 @@
     "source_keys": [
      "rex_ollie_picture_mass"
     ],
-    "note": "The large tail adds weight (about 0.29 m^3, about 11% of the volume, about 307 kg at 1,060 kg/m^3) but has no listed girth. It is included in the 2,700 kg."
+    "note": "The large tail adds weight (about 0.29 m^3, about 307 kg at 1,060 kg/m^3) but has no listed girth. It is on top of his 2,700 kg of body: 3,007 kg in all."
    },
    "notes": [
     "All girths are derived from one front-view picture. Depth is not visible, so each girth assumes an ellipse with depth = k x width; k comes from the reconciled volume model.",
     "Method check on ANSUR II medians: the same construction from chest breadth gives a chest girth about 12% short of the real tape (0.931 vs 1.056 m); the waist is about 2% short. So the chest here may read low.",
     "The arm is not in a flexed pose; the page field is \"flexed upper arm\", so the definition differs.",
     "Height, mass, volume and density are estimates from the picture; the girths are derived from the picture.",
-    "Both are male (the owner refers to Rex and Ollie as he)."
+    "Both are male (the owner refers to Rex and Ollie as he).",
+    "Mass by ruling: 3,007 kg in all, at 1,060 kg/m^3 a body about 12% bigger than the picture measured. The girths were built on the picture's volume, so they may read low; if the extra is depth, by about 6%."
    ],
    "derived": {
     "bmi": 290.6,
@@ -7364,16 +7368,13 @@
     ]
    },
    "weight_kg": {
-    "value": 2700,
+    "value": 3007,
     "status": "estimate",
     "source_keys": [
      "rex_ollie_picture_mass"
     ],
-    "basis": "picture measurement: volume x density",
-    "range": [
-     2300,
-     3000
-    ],
+    "basis": "set by ruling (11 Oct 2026): Rex is 2,700 kg without his tail, and Ollie weighs the same as Rex in all",
+    "range": null,
     "disputed": false,
     "cite": [
      {
@@ -7395,12 +7396,13 @@
     ]
    },
    "volume_m3": {
-    "value": 2.53,
+    "value": 2.84,
     "status": "estimate",
     "source_keys": [
      "rex_ollie_picture_mass"
     ],
-    "note": "Central picture estimate 2.531 m^3 (range 2.20-2.77)"
+    "note": "The ruled mass at 1,060 kg/m^3. The picture alone measured 2.531 m^3, tails included, so the ruled body is about 12% bigger than measured (most likely deeper front to back than the borrowed ANSUR depth ratios).",
+    "picture_m3": 2.531
    },
    "density_kg_m3": {
     "value": 1060,
@@ -7415,8 +7417,13 @@
     "note": "Bodybuilder whole-body density 1.0812 g/mL (Fry, Cisar & Housh 1987) less about 2% for lung gas."
    },
    "body_fat_pct": {
-    "value": null,
-    "status": "unknown"
+    "value": 7.5,
+    "range": [
+     5,
+     10
+    ],
+    "status": "estimate",
+    "note": "Owners' canon: 5-10% from their definition and occasional vascularity; 7.5% is the working value."
    },
    "girths": {
     "chest": {
@@ -7605,14 +7612,15 @@
     "source_keys": [
      "rex_ollie_picture_mass"
     ],
-    "note": "Small tufted tail, about 0.01 m^3 (about 11 kg), included in the 2,700 kg; no girth."
+    "note": "Small tufted tail, about 0.01 m^3 (about 11 kg), part of his 3,007 kg (about 2,996 kg of body); no girth."
    },
    "notes": [
     "All girths are derived from one front-view picture. Depth is not visible, so each girth assumes an ellipse with depth = k x width; k comes from the reconciled volume model.",
     "Method check on ANSUR II medians: the same construction from chest breadth gives a chest girth about 12% short of the real tape (0.931 vs 1.056 m); the waist is about 2% short. So the chest here may read low.",
     "The arm is not in a flexed pose; the page field is \"flexed upper arm\", so the definition differs.",
     "Height, mass, volume and density are estimates from the picture; the girths are derived from the picture.",
-    "Both are male (the owner refers to Rex and Ollie as he)."
+    "Both are male (the owner refers to Rex and Ollie as he).",
+    "Mass by ruling: 3,007 kg in all, at 1,060 kg/m^3 a body about 12% bigger than the picture measured. The girths were built on the picture's volume, so they may read low; if the extra is depth, by about 6%."
    ],
    "derived": {
     "bmi": 287.8,

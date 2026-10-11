@@ -69,12 +69,13 @@ test('every build scores without NaN, with its central value inside its range', 
 test('Rex and Ollie: height to the top of the skull, tails out, 7.5% fat (5-10%)', () => {
   const rex = model.evaluate('rex'), ollie = model.evaluate('ollie');
   near(rex.height.value, 2.92, 1e-9); near(ollie.height.value, 2.91, 1e-9);
-  near(rex.mass.value, 2700 - 307, 1e-9); near(ollie.mass.value, 2700 - 11, 1e-9);
+  // mass by ruling: 3,007 kg each in all; Rex is 2,700 kg without his tail, Ollie about 2,996 kg without his
+  near(rex.mass.value, 3007 - 307, 1e-9); near(ollie.mass.value, 3007 - 11, 1e-9);
   assert.deepStrictEqual([rex.bodyFat.lo, rex.bodyFat.value, rex.bodyFat.hi], [5, 7.5, 10]);
-  near(rex.score.value, 1.8 * 2393 * 0.925 / Math.pow(2.92, 3), 1e-9);
-  // the range covers mass 2,300-3,000 kg, skull height and body fat together
-  near(rex.score.lo, 1.8 * (2300 - 307) * 0.9 / Math.pow(2.95, 3), 1e-9);
-  near(rex.score.hi, 1.8 * (3000 - 307) * 0.95 / Math.pow(2.90, 3), 1e-9);
+  near(rex.score.value, 1.8 * 2700 * 0.925 / Math.pow(2.92, 3), 1e-9);
+  // the range covers skull height and body fat together (the ruled mass has no range)
+  near(rex.score.lo, 1.8 * 2700 * 0.9 / Math.pow(2.95, 3), 1e-9);
+  near(rex.score.hi, 1.8 * 2700 * 0.95 / Math.pow(2.90, 3), 1e-9);
 });
 
 test('comic editions are not mixed into a range; Wolverine is scored without adamantium', () => {

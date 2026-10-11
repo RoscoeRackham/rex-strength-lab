@@ -547,6 +547,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   // lightest density the slider and the mass boxes allow, kg/m³ (the slider's left end, 10^1)
   const RHO_MIN = 10;
   try { const saved = JSON.parse(localStorage.getItem('rex-lab-v1') || 'null'); if (saved) state = Object.assign(state, saved); } catch (e) { /* storage unavailable */ }
+  // The default mass was 2,700 kg until it was ruled to leave out the tails; a saved old default moves to the new one.
+  if (state.m === 2700) state.m = DEFAULTS.m;
+  if (state.oM === 2700) state.oM = DEFAULTS.oM;
   state.oSame = true;   // Ollie is as strong as Rex; a what-if strength lasts only for this visit
   {
     const num = (lo, hi) => (v) => typeof v === 'number' && isFinite(v) && v >= lo && v <= hi;
@@ -1566,7 +1569,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (r.denserThanOsmium && pl.regime !== 'blackHole') items.push('Osmium is the densest element at everyday pressure (22,587 kg/m³). Nothing denser exists at everyday pressure; it is found only under enormous pressure, deep inside giant planets, stars and dead stars.' + (r.innerCrust ? ' Past about ' + fmtDensity(P.W8.RHO_DRIP) + ' (neutron drip) matter squeezed this hard is neutron-rich nuclei in a sea of free neutrons, as in a neutron star’s inner crust; freed, it would expand explosively too. His indestructibility holds it together.' : r.rho >= 1e8 && !r.nmCaveat ? ' White-dwarf matter is held up by the pressure of its squeezed electrons; freed, it would expand explosively too. His indestructibility holds it together.' : '') + (r.nmCaveat ? nmText(r.nmCaveat) : ''));
     out.push(happens(items, 6));
     out.push(math([
-      'Volume = ' + sig(P.BUILDS[c.body.build].kV, 4) + ' × height³ (' + (c.body.build === 'human' ? 'the 2 m, 180 kg calibration body: 0.18 m³ at 2 m' : 'his build, measured from his picture: ' + sig(P.bodyVolume(P.DEFAULT_BODIES.rex.H, c.body.build), 3) + ' m³ at 10 ft') + ') = ' + sig(r.V, 3) + ' m³; mass = density × volume = ' + fmtDensity(r.rho) + ' × ' + sig(r.V, 3) + ' m³ = ' + fmtMass(r.m) + '; weight W = m g = ' + fmtSI(r.W, 'N') + '.',
+      'Volume = ' + sig(P.BUILDS[c.body.build].kV, 4) + ' × height³ (' + (c.body.build === 'human' ? 'the 2 m, 180 kg calibration body: 0.18 m³ at 2 m' : 'his build, from his ruled mass at 1,060 kg/m³: ' + sig(P.bodyVolume(P.DEFAULT_BODIES.rex.H, c.body.build), 3) + ' m³ at 10 ft') + ') = ' + sig(r.V, 3) + ' m³; mass = density × volume = ' + fmtDensity(r.rho) + ' × ' + sig(r.V, 3) + ' m³ = ' + fmtMass(r.m) + '; weight W = m g = ' + fmtSI(r.W, 'N') + '.',
       'Both legs push up to 1.4 × strength = ' + fmtSI(mv.legForce, 'N') + '. Stand: ≥ W. Walk: ≥ 1.2 W, the load on one leg per step (Nilsson & Thorstensson 1989), set against both legs’ push (a rough rule). Run (the Sprint tab’s rough rule): strength > W; measured running peaks are 2–2.9 W per step.',
       pl.regime !== 'none' ? null : 'Feet: W ÷ (2 × ' + sig(c.body.footArea, 2) + ' m²) = ' + fmtSI(gd.footPressure, 'Pa') + '. Whole underside: W ÷ ' + sig(c.body.topArea, 2) + ' m² = ' + fmtSI(gd.bodyPressure, 'Pa') + '. Sand and gravel: limit + γ·depth·N_q (N_q 18.4 or 64.2; USACE EM 1110-1-1905). Clay: limit + γ·depth.',
       pl.regime !== 'none' ? null : 'Bedrock carries up to 1.7 GPa × his underside = ' + fmtSI(gd.rockCap, 'N') + ' (estimate). Bolted to the planet stops sliding, not sinking; only Comic ground keeps the floor whole.',

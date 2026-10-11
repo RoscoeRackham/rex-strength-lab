@@ -190,7 +190,7 @@ Every ok=false check is covered. Every check with corrected text is covered. The
   - Wolverine's reference weight is 300 lb with adamantium. His girths are scaled from the 195 lb body (`girth_basis_weight_kg`), because the metal sits inside the bones and adds no girth.
   - Superman's 225 lb is an alternative (licensed RPG, reported), not a range. The verifier kept 235 lb as the official value.
 - Rex and Ollie:
-  - Height 3.048 m, mass 2,700 kg (2,300-3,000), volume 2.55 m^3 and density 1,060 kg/m^3 are all marked estimate, source picture measurement, as instructed.
+  - Height 3.048 m and density 1,060 kg/m^3 are marked estimate, source picture measurement. Mass was 2,700 kg (2,300-3,000) from the picture; on 11 Oct 2026 it was set by ruling: Rex is 2,700 kg without his tail and Ollie weighs the same in all, so both are 3,007 kg, still marked estimate because Rex's tail share is. Volume follows at 1,060 kg/m^3 (2.84 m^3); the picture's own volume is kept as `volume_m3.picture_m3`. Body fat 7.5% (5-10%), the owners' canon.
   - Ollie measures 3.06 m to his horn tips at Rex's scale. The checker's own volume for Ollie is 2.531 m^3. Both are noted.
   - Sex is not stated, so it is null.
   - Their girths are derived (from picture). See "Rex and Ollie: how the girths were derived" below.
@@ -305,8 +305,8 @@ Clothing:
 
 Tail:
 
-- Rex's large tail is about 0.29 m^3 (about 307 kg at 1,060 kg/m^3, about 11% of his volume). It is inside the 2,700 kg. It adds weight but has no listed girth.
-- Ollie has a small tufted tail, about 0.01 m^3 (about 11 kg), also inside the 2,700 kg.
+- Rex's large tail is about 0.29 m^3 (about 307 kg at 1,060 kg/m^3, about 11% of his volume). It was inside the old 2,700 kg; since 11 Oct 2026 it is on top of his 2,700 kg of body (3,007 kg in all). It adds weight but has no listed girth.
+- Ollie has a small tufted tail, about 0.01 m^3 (about 11 kg), part of his 3,007 kg (about 2,996 kg of body).
 
 Caveats:
 
