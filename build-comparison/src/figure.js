@@ -421,29 +421,31 @@
    * Returns degrees (90 if the arm cannot clear).
    */
   function armRestAngle(build) {
-    var clear = function (deg) {
-      var fig = build(deg), d = fig.dims, yc = d.levels.chest, sj = d.shoulderJoint, near = 0.35 * d.armStations.Lu;
-      var ax = Math.sin(deg * Math.PI / 180), ay = -Math.cos(deg * Math.PI / 180);
-      // Only below chest height, and only from a third of the way down the upper arm (measured along
-      // the arm): above that, the deltoid and the armpit folds join arm and torso.
-      var tested = function (q) { return q[1] < yc && (q[0] - sj[0]) * ax + (q[1] - sj[1]) * ay > near; };
-      var body = fig.front.filter(function (p) { return p.name === 'body'; })[0].poly;
-      var arm = fig.front.filter(function (p) { return /^left (upper arm|forearm|hand)$/.test(p.name); });
-      for (var i = 0; i < arm.length; i++) {
-        var poly = arm[i].poly;
-        for (var j = 0; j < poly.length; j++) if (tested(poly[j]) && pointInPoly(poly[j], body)) return false;
-      }
-      for (var k = 0; k < body.length; k++) {
-        if (body[k][0] <= 0 || !tested(body[k])) continue;
-        for (var a = 0; a < arm.length; a++) if (pointInPoly(body[k], arm[a].poly)) return false;
-      }
-      return true;
-    };
+    var clear = function (deg) { return armClearAt(build(deg), deg); };
     if (clear(0)) return 0;
     if (!clear(90)) return 90;
     var lo = 0, hi = 90;
     for (var it = 0; it < 14; it++) { var mid = (lo + hi) / 2; if (clear(mid)) hi = mid; else lo = mid; }
     return hi;
+  }
+  /** Whether a figure drawn with its arms at deg hangs them clear of the body (the test above). */
+  function armClearAt(fig, deg) {
+    var d = fig.dims, yc = d.levels.chest, sj = d.shoulderJoint, near = 0.35 * d.armStations.Lu;
+    var ax = Math.sin(deg * Math.PI / 180), ay = -Math.cos(deg * Math.PI / 180);
+    // Only below chest height, and only from a third of the way down the upper arm (measured along
+    // the arm): above that, the deltoid and the armpit folds join arm and torso.
+    var tested = function (q) { return q[1] < yc && (q[0] - sj[0]) * ax + (q[1] - sj[1]) * ay > near; };
+    var body = fig.front.filter(function (p) { return p.name === 'body'; })[0].poly;
+    var arm = fig.front.filter(function (p) { return /^left (upper arm|forearm|hand)$/.test(p.name); });
+    for (var i = 0; i < arm.length; i++) {
+      var poly = arm[i].poly;
+      for (var j = 0; j < poly.length; j++) if (tested(poly[j]) && pointInPoly(poly[j], body)) return false;
+    }
+    for (var k = 0; k < body.length; k++) {
+      if (body[k][0] <= 0 || !tested(body[k])) continue;
+      for (var a = 0; a < arm.length; a++) if (pointInPoly(body[k], arm[a].poly)) return false;
+    }
+    return true;
   }
 
   /**
@@ -509,5 +511,55 @@
     return s + 'Z';
   }
 
-  return { SITES: SITES, armClearance: armClearance, armBoneClearance: armBoneClearance, armRestAngle: armRestAngle, thighContact: thighContact, elbowFlexion: elbowFlexion, solveScale: solveScale, pointInPoly: pointInPoly, fillParts: fillParts, renderSheet: renderSheet, bandEdges: bandEdges, spline: spline, symmetric: symmetric, limb: limb, ellipse: ellipse, human: human, traced: traced, bounds: bounds, pathData: pathData };
+  /** Skull-top row of every view on a sheet drawn by renderSheet (the top of its height bar). */
+  function sheetSkullRows(img, H) { var r = Math.round(img.ground - H * img.k); return { front: r, side: r, back: r }; }
+
+  /**
+   * The width factor whose drawing measures a target score. scoreAt(f) returns the measured score,
+   * or NaN when the sheet fails the tool's checks. Brackets the target from f = 1 (widening up to
+   * fMax, or narrowing down to 0.1), then closes in by false position on log f and log score
+   * (Illinois rule) until the score is within tol (default 0.2%). Returns { f, score }, or
+   * { f: null, reason: 'fails' | 'range', bestF, bestScore } when no passing sheet reaches it.
+   */
+  function solveTarget(scoreAt, target, fMax, tol) {
+    fMax = fMax || 12; tol = tol || 0.002;
+    var ok = function (s) { return s === s; };
+    var fl = 1, sl = scoreAt(1), fh = 1, sh = sl;
+    if (!ok(sl)) return { f: null, reason: 'fails', bestF: 1, bestScore: NaN };
+    // The passing factor nearest the failing one: say how far the drawing gets before it fails.
+    var edge = function (good, bad) { for (var j = 0; j < 12; j++) { var m = Math.sqrt(good * bad); if (ok(scoreAt(m))) good = m; else bad = m; } return good; };
+    if (sl > target) {
+      while (ok(sl) && sl > target && fl > 0.1) { fh = fl; sh = sl; fl = fl / 1.5; sl = scoreAt(fl); }
+      if (!ok(sl)) {
+        var a = edge(fh, fl), sa = scoreAt(a);
+        if (sa > target) return { f: null, reason: 'fails', bestF: a, bestScore: sa };
+        fl = a; sl = sa;
+      } else if (sl > target) return { f: null, reason: 'range', bestF: fl, bestScore: sl };
+    } else {
+      while (ok(sh) && sh < target && fh < fMax) { fl = fh; sl = sh; fh = Math.min(fMax, fh * 1.5); sh = scoreAt(fh); }
+      if (!ok(sh)) {
+        var c = edge(fl, fh), scc = scoreAt(c);
+        if (scc < target) return { f: null, reason: 'fails', bestF: c, bestScore: scc };
+        fh = c; sh = scc;
+      } else if (sh < target) return { f: null, reason: 'range', bestF: fh, bestScore: sh };
+    }
+    var near = function (s) { return ok(s) && Math.abs(s / target - 1) <= tol; };
+    if (near(sl)) return { f: fl, score: sl };
+    if (near(sh)) return { f: fh, score: sh };
+    var kept = 0;
+    for (var i = 0; i < 40; i++) {
+      var xl = Math.log(fl), xh = Math.log(fh), yl = Math.log(sl / target), yh = Math.log(sh / target);
+      var x = yh !== yl ? xl - yl * (xh - xl) / (yh - yl) : (xl + xh) / 2;
+      if (!(x > xl && x < xh)) x = (xl + xh) / 2;
+      var f = Math.exp(x), s = scoreAt(f);
+      if (near(s)) return { f: f, score: s };
+      if (ok(s) && s < target) { fl = f; sl = s; if (kept === 1) sh = Math.sqrt(sh * target); kept = 1; }
+      else { fh = f; if (ok(s)) sh = s; if (kept === -1) sl = Math.sqrt(sl * target); kept = -1; }
+      if (xh - xl < 1e-7) break;
+    }
+    // Did not reach the tolerance (a failing sheet inside the bracket): the passing side below.
+    return { f: fl, score: scoreAt(fl) };
+  }
+
+  return { sheetSkullRows: sheetSkullRows, solveTarget: solveTarget, SITES: SITES, armClearance: armClearance, armBoneClearance: armBoneClearance, armRestAngle: armRestAngle, armClearAt: armClearAt, thighContact: thighContact, elbowFlexion: elbowFlexion, solveScale: solveScale, pointInPoly: pointInPoly, fillParts: fillParts, renderSheet: renderSheet, bandEdges: bandEdges, spline: spline, symmetric: symmetric, limb: limb, ellipse: ellipse, human: human, traced: traced, bounds: bounds, pathData: pathData };
 });

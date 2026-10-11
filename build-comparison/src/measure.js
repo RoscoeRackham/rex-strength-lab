@@ -438,25 +438,25 @@
   /**
    * Volume of a limb tilted by angleDeg from vertical (positive: lower end to the right), sliced
    * across its own axis. Each pixel is split into 2 x 2 samples and resampled on a half-pixel grid
-   * aligned with the limb. Returns px^3.
+   * aligned with the limb. A depth profile k(row) is read at each slice's mean image row. Returns px^3.
    */
   function sliceRotated(mask, w, h, k, angleDeg) {
     if (!angleDeg) return sliceRows(mask, w, h, k);
     var a = angleDeg * Math.PI / 180, sa = Math.sin(a), ca = Math.cos(a);
-    var U = [], V = [], umin = Infinity, vmin = Infinity, umax = -Infinity, vmax = -Infinity;
+    var U = [], V = [], Y = [], umin = Infinity, vmin = Infinity, umax = -Infinity, vmax = -Infinity;
     for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) {
       if (!mask[y * w + x]) continue;
       for (var dx = -0.25; dx <= 0.25; dx += 0.5) for (var dy = -0.25; dy <= 0.25; dy += 0.5) {
         var u = (x + dx) * sa + (y + dy) * ca, v = (x + dx) * ca - (y + dy) * sa;
         var ui = Math.floor(u * 2), vi = Math.floor(v * 2);
-        U.push(ui); V.push(vi);
+        U.push(ui); V.push(vi); Y.push(y);
         if (ui < umin) umin = ui; if (ui > umax) umax = ui; if (vi < vmin) vmin = vi; if (vi > vmax) vmax = vi;
       }
     }
     if (!U.length) return 0;
     var gw = vmax - vmin + 1, gh = umax - umin + 1;
-    var g = new Uint8Array(gw * gh);
-    for (var i = 0; i < U.length; i++) g[(U[i] - umin) * gw + (V[i] - vmin)] = 1;
+    var g = new Uint8Array(gw * gh), ySum = new Float64Array(gh), yN = new Uint32Array(gh);
+    for (var i = 0; i < U.length; i++) { g[(U[i] - umin) * gw + (V[i] - vmin)] = 1; ySum[U[i] - umin] += Y[i]; yN[U[i] - umin]++; }
     // Close single-sample gaps along each row.
     for (var r = 0; r < gh; r++) for (var c = 1; c < gw - 1; c++) if (!g[r * gw + c] && g[r * gw + c - 1] && g[r * gw + c + 1]) g[r * gw + c] = 1;
     var kf = typeof k === 'function' ? k : function () { return k; };
@@ -468,7 +468,7 @@
         else if (run) { s += (run / 2) * (run / 2); run = 0; }
       }
       if (run) s += (run / 2) * (run / 2);
-      vol += Math.PI / 4 * kf(r) * s * 0.5;
+      if (s) vol += Math.PI / 4 * kf(ySum[r] / yN[r]) * s * 0.5;
     }
     return vol;
   }

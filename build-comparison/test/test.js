@@ -110,15 +110,6 @@ test('no build range reaches into a gap, even one sorted before a neighbour with
   assert.strictEqual(g.length, 0, JSON.stringify(g));
 });
 
-test('data/limits.json carries the current settings text (it is regenerated, never edited)', () => {
-  const L = require('../data/limits.json'), S = settings.limits;
-  assert.strictEqual(L.verdict, S.verdict); assert.strictEqual(L.method, S.method); assert.deepStrictEqual(L.notes, S.notes);
-  for (const it of L.items) {
-    for (const k of ['label', 'short', 'tiny', 'definition']) assert.strictEqual(it[k], S[it.id].text[k], it.id + '.' + k + ' is stale: run node tools/compute_limits.js');
-    assert.strictEqual(it.headline, S[it.id].headline !== false, it.id + '.headline is stale');
-  }
-});
-
 test('every fact key the settings cite exists, in facts.json or builds.json', () => {
   const facts = require('../data/facts.json').facts;
   const keys = new Set();
@@ -253,6 +244,15 @@ test('the current turnarounds fail the sheet checks (tail over the back view, lo
   }
 });
 
+test('a tilted part with a depth profile reads the profile at its own image rows', () => {
+  const w = 200, h = 300, mask = new Uint8Array(w * h);
+  for (let y = 100; y < 200; y++) for (let x = 80; x < 120; x++) mask[y * w + x] = 1;
+  const k = M.kProfile([[100, 1], [200, 0.5]]);
+  near(M.sliceRotated(mask, w, h, k, 0.001) / M.sliceRows(mask, w, h, k), 1, 0.01, 'tilted by 0.001 degrees:');
+  // At 30 degrees a rectangle slices differently across its tilt, but the profile must cost no more than a flat k does.
+  near((M.sliceRotated(mask, w, h, k, 30) / M.sliceRows(mask, w, h, k)) / (M.sliceRotated(mask, w, h, 0.75, 30) / M.sliceRows(mask, w, h, 0.75)), 1, 0.005, 'tilted by 30 degrees, profile against flat:');
+});
+
 test('widening every run by f multiplies the measured volume by f^2', () => {
   const H = 1.8, s = synth(H);
   const img = Fig.renderSheet({ front: s.front, side: s.side }, H, null, { figurePx: 1600 });
@@ -265,18 +265,72 @@ test('widening every run by f multiplies the measured volume by f^2', () => {
 });
 
 // ---------- functional limits ----------
-test('limits: wider at fixed bones, the thighs touch further down and the arms are pushed out', () => {
+test('limits: wider at fixed bones, the thighs touch further down and the arms are pushed further out', () => {
   const { r, g } = girthsOf('ansur2_m_p50');
   const base = Fig.human(outline, r.height.value, g, {}, { buttockFit: BC.FRUSTUM.M.buttock });
-  const mk = (f) => Fig.human(outline, r.height.value, g, {}, { buttockFit: BC.FRUSTUM.M.buttock, widthScale: f, legAxis: base.dims.legAxis });
+  const mk = (f, deg) => Fig.human(outline, r.height.value, g, {}, { buttockFit: BC.FRUSTUM.M.buttock, widthScale: f, legAxis: base.dims.legAxis, armDeg: deg });
   let lastT = -1, lastA = -1;
   for (const f of [1, 1.2, 1.4, 1.8]) {
-    const x = mk(f), t = Fig.thighContact(x), a = Fig.armBoneClearance(x);
+    const t = Fig.thighContact(mk(f)), a = Fig.armRestAngle((deg) => mk(f, deg));
     assert.ok(t >= lastT && a >= lastA, 'monotone at f=' + f);
     lastT = t; lastA = a;
   }
-  assert.strictEqual(Fig.armBoneClearance(base), 0, 'an ordinary man can let his arms hang');
+  assert.ok(Fig.armRestAngle((deg) => mk(1, deg)) < 20, 'an ordinary man can let his arms hang within the chart\'s 20 degrees');
   assert.ok(Fig.thighContact(base) < 1, 'an ordinary man has daylight between the thighs above the knee');
+});
+
+// The limits and the chart's own figures, recomputed: data/limits.json must be what the tool gives.
+const limitsRun = JSON.parse(JSON.stringify(require('../tools/compute_limits.js').run()));
+test('data/limits.json is what tools/compute_limits.js computes (run it after changing settings or figures)', () => {
+  assert.deepStrictEqual(require('../data/limits.json'), limitsRun);
+});
+
+test("each headline limit's score is the measuring tool's reading of that drawn shape, not a scaling rule", () => {
+  const { measureViews } = require('../tools/export_targets.js');
+  const L = settings.limits, main = limitsRun.templates.find((t) => t.id === L.main_template);
+  const r = calc.compute({ buildId: L.main_template, heightM: 1.8 }), g = {};
+  for (const s of BC.SITES) g[s] = r.girths[s].value;
+  const base = Fig.human(outline, 1.8, g, {}, { buttockFit: BC.FRUSTUM.M.buttock, armDeg: 35 });
+  const y = base.dims.levels, levels = { shoulder: y.acromion, chest: y.chest, waist: y.waist, crotch: y.crotch, knee: y.knee };
+  for (const k of ['arms', 'thighs']) {
+    const f = main[k].f, mk = (deg) => Fig.human(outline, 1.8, g, {}, { buttockFit: BC.FRUSTUM.M.buttock, widthScale: f, legAxis: base.dims.legAxis, armDeg: deg });
+    const fig = mk(Math.max(35, Fig.armRestAngle(mk) + 2));
+    const m = measureViews({ front: fig.front, side: fig.side }, 1.8, levels, 600).res;
+    assert.ok(m.ok, k + ': the limit shape passes the tool\'s checks');
+    near(m.score.value / main[k].score, 1, 0.03, k + ' limit score vs a fresh measurement at another resolution:');
+    // The head, hands, feet and joints are not widened, so the drawn shape grows more slowly than f^2.
+    assert.ok(main[k].score < main.score_at_f1 * f * f, k + ' grows more slowly than f^2');
+  }
+});
+
+test("the chart's own figures: arms drawn past their rest angle clear the body, and the tests match the stored flags", () => {
+  const L = settings.limits;
+  for (const id of ['ansur2_m_p50', 'ronnie_coleman', 'hulk_savage']) {
+    const e = model.all().find((x) => x.id === id), c = limitsRun.chart_figures[id], g = {};
+    for (const s of BC.SITES) g[s] = e.girths[s].value;
+    const mk = (deg) => Fig.human(outline, e.height.value, g, {}, { buttockFit: BC.FRUSTUM.M.buttock, armDeg: deg });
+    near(Fig.armRestAngle(mk), c.rest_deg, 0.1, id + ' rest angle');
+    const drawn = Math.max(20, c.rest_deg + 2);
+    assert.ok(Fig.armClearAt(mk(drawn), drawn), id + ' arms clear at the drawn angle, ' + drawn + ' degrees');
+    if (c.rest_deg > 0) assert.ok(!Fig.armClearAt(mk(c.rest_deg - 2), c.rest_deg - 2), id + ' arms pass through the body just inside the rest angle');
+    assert.strictEqual(c.arms, c.rest_deg >= L.arms.angle_deg, id + ' arms flag');
+  }
+  // Ronnie Coleman's own outline already meets the arms and thighs tests; the median soldier's meets neither.
+  assert.ok(limitsRun.chart_figures.ronnie_coleman.arms && limitsRun.chart_figures.ronnie_coleman.thighs);
+  assert.ok(!limitsRun.chart_figures.ansur2_m_p50.arms && !limitsRun.chart_figures.ansur2_m_p50.thighs);
+  const arms = limitsRun.items.find((i) => i.id === 'arms');
+  assert.ok(arms.met_by.includes('ronnie_coleman') && !arms.met_by.includes('ansur2_m_p50'));
+});
+
+test('the target solver converges, and says when no passing sheet reaches the target', () => {
+  const { measureTemplate, scoreOrNaN } = require('../tools/export_targets.js');
+  const at = (f) => scoreOrNaN(measureTemplate('ansur2_m_p50', 1.8, f, 300).res);
+  for (const t of [20, 217, 900]) { const s = Fig.solveTarget(at, t); assert.ok(s.f > 0, 'reaches ' + t); near(s.score / t, 1, 0.003, 'target ' + t + ':'); }
+  const low = Fig.solveTarget(at, 5);
+  assert.strictEqual(low.f, null); assert.ok(low.bestScore > 5, 'reports how low it gets');
+  // A plain function: false position closes in fast.
+  let n = 0; const sq = Fig.solveTarget((f) => { n++; return 27 * Math.pow(f, 1.9); }, 300);
+  near(sq.score / 300, 1, 0.002); assert.ok(n <= 12, n + ' evaluations');
 });
 
 console.log('\n' + passed + ' passed, ' + failed + ' failed');

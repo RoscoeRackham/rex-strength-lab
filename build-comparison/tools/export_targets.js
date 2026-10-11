@@ -27,8 +27,10 @@ function templateViews(buildId, H, f) {
   const model = BC.create(data);
   const r = model.compute({ buildId, heightM: H });
   const g = {}; for (const s of BC.SITES) g[s] = r.girths[s].value;
-  const base = Fig.human(T, H, g, {}, { buttockFit: BC.FRUSTUM.M.buttock });
-  const fig = Fig.human(T, H, g, {}, { buttockFit: BC.FRUSTUM.M.buttock, widthScale: f, legAxis: base.dims.legAxis });
+  // Arms at 35 degrees, the middle of the model-sheet A-pose (30-40), or wider if the body needs it.
+  const base = Fig.human(T, H, g, {}, { buttockFit: BC.FRUSTUM.M.buttock, armDeg: 35 });
+  const make = (deg) => Fig.human(T, H, g, {}, { buttockFit: BC.FRUSTUM.M.buttock, widthScale: f, legAxis: base.dims.legAxis, armDeg: deg });
+  const fig = make(Math.max(35, Fig.armRestAngle(make) + 2));
   const y = base.dims.levels;
   return { views: { front: fig.front, side: fig.side }, levels: { shoulder: y.acromion, chest: y.chest, waist: y.waist, crotch: y.crotch, knee: y.knee } };
 }
@@ -36,17 +38,17 @@ function templateViews(buildId, H, f) {
 /** Render, then measure with the tool itself: the score the collaborator will get back. */
 function measureTemplate(buildId, H, f, px) {
   const t = templateViews(buildId, H, f);
-  const img = Fig.renderSheet(t.views, H, t.levels, { figurePx: px });
-  const res = M.measureSheet(img, { heightM: H, heightRef: 'top', density: DENSITY, bodyFatPct: FAT, order: ['front', 'side', 'back'] });
+  return measureViews(t.views, H, t.levels, px);
+}
+/** Render views as a sheet and measure it, scaled by the known skull row (a widened trapezius can rise above the head). */
+function measureViews(views, H, levels, px) {
+  const img = Fig.renderSheet(views, H, levels, { figurePx: px });
+  const res = M.measureSheet(img, { heightM: H, heightRef: 'skull', skullRows: Fig.sheetSkullRows(img, H), density: DENSITY, bodyFatPct: FAT, order: ['front', 'side', 'back'], seg: { refine: 0 } });
   return { img, res };
 }
+/** The measured score, or NaN when the sheet fails the tool's own checks. */
+function scoreOrNaN(r) { return r.ok && r.score ? r.score.value : NaN; }
 
-/** Bisection on the width factor until the measured score hits the target. */
-function solve(scoreOf, target) {
-  let lo = 0.3, hi = 6;
-  for (let i = 0; i < 30; i++) { const mid = Math.sqrt(lo * hi); if (scoreOf(mid) < target) lo = mid; else hi = mid; }
-  return Math.sqrt(lo * hi);
-}
 
 function crop(img, x0, x1) {
   const w = x1 - x0, out = { width: w, height: img.height, data: new Uint8ClampedArray(w * img.height * 4) };
@@ -75,19 +77,22 @@ function main() {
       for (let i = 0; i < m.length; i++) { const v = m[i] ? 0 : 255; img.data[i * 4] = img.data[i * 4 + 1] = img.data[i * 4 + 2] = v; img.data[i * 4 + 3] = 255; }
       return img;
     };
-    const scoreOf = (f) => M.measureSheet(make(f), Object.assign({}, opts, { seg: { refine: 0 } })).score.value;
-    const f = solve(scoreOf, target);
+    const scoreOf = (f) => scoreOrNaN(M.measureSheet(make(f), Object.assign({}, opts, { seg: { refine: 0 } })));
+    const sol = Fig.solveTarget(scoreOf, target);
+    if (sol.f == null) { console.error(noSheet(sol, target)); process.exit(1); }
+    const f = sol.f;
     sheet = make(f);
     result = M.measureSheet(sheet, Object.assign({}, opts, { seg: { refine: 0 } }));
     console.log('source sheet scores ' + base.score.value.toFixed(1) + '; widths x ' + f.toFixed(3));
   } else {
     const buildId = arg('build', 'ansur2_m_p50');
     const H = Number(arg('height', 1.8));
-    let f = solve((f) => measureTemplate(buildId, H, f, Math.min(px, 800)).res.score.value, target);
-    let m = measureTemplate(buildId, H, f, px);
-    // One correction at full size (the score goes with the square of the width factor).
-    f *= Math.sqrt(target / m.res.score.value);
-    m = measureTemplate(buildId, H, f, px);
+    const sol = Fig.solveTarget((f) => scoreOrNaN(measureTemplate(buildId, H, f, Math.min(px, 800)).res), target);
+    if (sol.f == null) { console.error(noSheet(sol, target)); process.exit(1); }
+    let f = sol.f, m = measureTemplate(buildId, H, f, px);
+    // Converge at full size too (small resolution effects).
+    for (let i = 0; i < 2 && m.res.ok && Math.abs(m.res.score.value / target - 1) > 0.005; i++) { f *= Math.sqrt(target / m.res.score.value); m = measureTemplate(buildId, H, f, px); }
+    if (!m.res.ok) { console.error('The full-size sheet fails a check: ' + m.res.checks.filter((c) => !c.ok).map((c) => c.name).join('; ')); process.exit(1); }
     sheet = m.img; result = m.res;
     console.log(buildId + ' on the ANSUR II template at ' + H + ' m; widths x ' + f.toFixed(3));
   }
@@ -101,5 +106,11 @@ function main() {
   console.log('wrote ' + ['sheet', 'front', 'side'].map((k) => path.join(outDir, name + '-' + k + '.png')).join(', '));
 }
 
+function noSheet(sol, target) {
+  const dir = sol.bestScore > target ? 'go no lower than' : 'reach only';
+  return sol.reason === 'fails' ? 'No passing sheet reaches ' + target + ' on this base: beyond widths x ' + sol.bestF.toFixed(2) + ' (score ' + sol.bestScore.toFixed(0) + ') the drawing fails the tool\'s own checks.'
+    : 'Widths x ' + sol.bestF.toFixed(2) + ' ' + dir + ' ' + sol.bestScore.toFixed(0) + ' on this base.';
+}
+
 if (require.main === module) main();
-module.exports = { templateViews, measureTemplate, solve };
+module.exports = { templateViews, measureTemplate, measureViews, scoreOrNaN };

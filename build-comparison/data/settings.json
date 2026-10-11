@@ -712,13 +712,13 @@
     "label": "Hands can no longer reach the face",
     "short": "hands to face",
     "tiny": "face",
-    "definition": "The forearm meets the upper arm before the elbow bends 100°, so even with the wrist fully bent the fingertips cannot reach the mouth (that needs about 99° here, 123° with a straight wrist). Where that happens depends on a model no study has tested above ordinary girths: contact geometry alone (set so the median soldier bends a normal 145°) puts it near 220; elbow bend falling as fast as it does across body-fat groups puts it near 90."
+    "definition": "The forearm meets the upper arm before the elbow bends 100°, so even with the wrist fully bent the fingertips cannot reach the mouth (that needs about 99° here, 123° with a straight wrist). Where that happens depends on a model no study has tested above ordinary girths: contact geometry alone (set so the median soldier bends a normal 145°) puts it near the top of the band; elbow bend falling as fast as it does across body-fat groups puts it near the bottom."
    },
    "pessimistic_girth_factor": 1.786,
    "headline": false
   },
-  "verdict": "Three limits come from the drawn body itself. Widen the average soldier at fixed bones and the arms are forced out first, the thighs close next, and the hands lose the face last.",
-  "method": "Each template is widened at fixed bones (every width and depth times the same factor; shoulder joints, hip joints and elbows stay put) until the limit is reached, and that shape's score is read with the measuring tool at 1,060 kg/m³ and 7.5% fat. The headline is the median soldier's shape; the band runs across six templates, from the 5th-percentile soldier to Ronnie Coleman's shape.",
+  "verdict": "Three limits come from the drawn body itself. Widen the average soldier at fixed bones and the arms are forced out first, the thighs close next, and the hands lose the face last. The chart's own drawings of the biggest bodybuilders already meet the first two.",
+  "method": "Each template is drawn at 1.80 m and widened at fixed bones: every width and depth of the trunk and limbs times the same factor, while the joints, head, hands and feet stay as they are. At the factor where the limit is reached, the measuring tool reads that drawn shape's score at 1,060 kg/m³ and 7.5% fat. The headline is the median soldier's shape; the band runs across six templates, from the 5th-percentile soldier to Ronnie Coleman's shape. The same three tests are run on every figure on the chart, drawn at its own height and girths.",
   "notes": [
    "No study gives these limits. Each threshold is an estimate built from sourced pieces: what stops a joint (soft tissue meeting soft tissue), how far ordinary men can move, and how far daily tasks need. The sources are listed under “Where the body stops working” below.",
    "This is flat, front-view geometry on drawn templates. Real soft tissue squashes, arms can sit a little in front of the body, and shoulders shrug, so each limit is a band, not a line.",
@@ -733,7 +733,7 @@
    "upto": 25,
    "title": "Where most men sit",
    "verdict": "Soldiers and US men score {span:ansur2_m_p95,ansur2_m_p50,ansur2_m_p5,nhanes_m_median} here. {chip:estimate} Every drug-free man in Kouri's study scored under 25 on his height-normalised scale. {chip:measured}",
-   "sub": "Bruce Banner, the Hulk at rest, is the slimmest build on the chart. The 5th, 50th and 95th percentile soldiers are statistics, not real people: each number is that measure's own percentile. The 95th scores lower than the median because he is taller, not more muscular."
+   "sub": "Bruce Banner, the Hulk at rest, is the slimmest build on the chart. The 5th, 50th and 95th percentile soldiers are statistics, not real people: each number is that measure's own percentile. The 95th scores lower than the median because the Army equations give his larger waist much more fat (about 34% against 25%); at the median's body fat he would score about 23, a little above him."
   },
   {
    "id": "past25",
