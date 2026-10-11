@@ -16,7 +16,8 @@ Who is working on what. Update it before every push (see "Two people, two accoun
   - Review round 1 done: 78 findings, 77 confirmed by the skeptics; all fixed except one documented limit (a real-muscle jump's ground flicker at about 10⁸ kg, which can't change without changing all-out results). Record: `rex-strength-lab/research/reviews/presence-round1.json`. History builder ready (`history/tools/build_history_presence.py`).
   - Published the round 1 build to the live page (version 6). Pull request #11 open for review.
   - Review round 2 done: 68 findings, all confirmed; all fixed (two partly, documented in the README's known limits). Record: `rex-strength-lab/research/reviews/presence-round2.json`.
-  - Next: review round 3 (regressions from round 2's fixes), its fixes, republish, `history/` entry.
+  - Published the round 2 build (version 7). Review round 3 (regressions from round 2's fixes) running; the `history/` builder is ready (`history/tools/build_history_presence.py`).
+  - Next: round 3 fixes, republish, `history/2026-10-11-rex-presence/`.
 
 ## Waiting on
 

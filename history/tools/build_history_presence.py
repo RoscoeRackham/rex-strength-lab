@@ -39,7 +39,11 @@ B.PHASES = [
     ('02-research-compiled', 'Research compiled and the models rebuilt on it', ('workflow', 'rex-presence-compile'),
      'Compile workflows applied each verifier\'s corrections and wrote the final facts (267 in research/final-presence.json). The Walk tab was rebuilt on the elastic-ground pulse model (Lamb\'s problem) checked against the Pisa drop test, with the verified thresholds, the elephant comparison, a 1 g footing cap and footprints re-anchored to an elephant print; the growth modes were rebuilt on the verified limits; a 7,776-case sweep found no broken output.'),
     ('03-review-round-1', 'Review round 1 and its fixes', ('workflow', 'rex-presence-review'),
-     'Review round 1: five lenses (physics, claims, data, UX, code), each finding reproduced or refuted by a skeptic, then the fixes.'),
+     'Review round 1: five lenses (physics, claims, data, UX, code), each finding reproduced or refuted by a skeptic. 78 findings, 77 confirmed. The fixes: least disruptive never above the courtesy ceiling, a compact readout after the verdict, background searches that stop when a move saturates (two page freezes of 53 s and 91 s), the water glass judged on side-to-side shaking, a passenger hazard, a soil rule, soft landing that keeps its force, the Stomp and Walk tabs sharing the measured drill stamp, clay footprints and mired walkers, the instant-growth launch capped by the ground, subsonic punches as thumps, stronger tests. A context compaction happened during this phase.'),
+    ('04-review-round-2', 'Review round 2, the first publish and the pull request', ('after_commit', 'Rex lab: review round 1 fixes (physics and claims lenses)'),
+     'The round 1 build was published to the live page (its version 6), main merged in, and pull request #11 opened. Review round 2 checked every round 1 fix: 68 findings, all confirmed. Among them, the round 1 saturation stop could end a search on a plateau that was not the top (goals and hazards reported as never when all-out reached them). Fixes and guard tests followed (313 checks), and the page was republished (version 7).'),
+    ('05-review-round-3', 'Review round 3, the last publish and this history', ('after_commit', 'Rex lab: review round 2 fixes (code lens)'),
+     'Review round 3 looked for regressions from round 2.'),
 ]
 
 B.DIRS = collections.OrderedDict([
@@ -75,19 +79,52 @@ _skip = B.skip_reason
 
 
 REPO_COPY_RE = re.compile(r'(^|/)(history|build-comparison|build-calculator|rex-strength-lab|\.github)/')
+# Paths of the Rex lab's own files (e.g. test/presence.js, build-data.py): reviewers copied the
+# project into their folders, often with one line mutated, to test whether the tests catch it.
+_LAB = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'rex-strength-lab')
+LAB_FILES = {os.path.relpath(os.path.join(r, f), _LAB).replace(os.sep, '/')
+             for r, ds, fs in os.walk(_LAB) if 'node_modules' not in r for f in fs}
 
 
 def skip_reason(top, rel, size, ext, head=''):
     """Like the first session's rule, plus: keep the extracted workflow results (JSON) in wfout/,
-    and list (do not copy) the reviewers' git-archive snapshots of the repository."""
+    and list (do not copy) the reviewers' snapshots and mutated copies of the repository."""
     if top == 'wfout' and ext in ('.json', '.txt') and size <= 400_000:
         return None
-    if top.startswith('review') and REPO_COPY_RE.search(rel):
+    if top.startswith('review') and (REPO_COPY_RE.search(rel) or any(rel.endswith('/' + p) for p in LAB_FILES)):
         return 'copy of project code'
+    if re.search(r'(^|/)dl/', rel):
+        return 'raw download'
     return _skip(top, rel, size, ext, head)
 
 
 B.skip_reason = skip_reason
+_copy_scratchpad = B.copy_scratchpad
+
+# The index's fixed text was written for the first session; say what is true of this one.
+INDEX_FIXES = [
+    ('the old project folder (/home/user/dino-strength-sim)', 'the repository at /home/user/rex-strength-lab'),
+    ('plus JSON and text results up to 100 KB in mass/ and bcdata/. ', 'plus the workflows\' extracted results (JSON and text up to 400 KB) in wfout/. '),
+    ('Copies of project code are earlier states of engine.js, data.js and the tests, kept for diffing (the patched engine variants in audit/, '
+     'the catch-base and src-before-armduo baselines, backup/ and old/ trees). The released versions are in the repository.',
+     'Copies of project code are the reviewers\' snapshots of the repository and their mutated copies of the lab\'s files '
+     '(one line changed, to see whether a test catches it). The released versions are in the repository.'),
+]
+
+
+def copy_scratchpad(out, scratch, scripts):
+    stats = _copy_scratchpad(out, scratch, scripts)
+    p = os.path.join(out, 'scratchpad', 'INDEX.md')
+    if stats and os.path.exists(p):
+        txt = open(p, encoding='utf-8').read()
+        for a, b in INDEX_FIXES:
+            assert txt.count(a) == 1, a
+            txt = txt.replace(a, b)
+        open(p, 'w', encoding='utf-8').write(txt)
+    return stats
+
+
+B.copy_scratchpad = copy_scratchpad
 
 
 def write_readme(out, events, starts, phase_lines, counts, compactions, scratch_stats, missing):
@@ -124,14 +161,15 @@ def write_readme(out, events, starts, phase_lines, counts, compactions, scratch_
           '## Commits', '', '| When (UTC) | Commit | Subject |', '|---|---|---|']
     for c in commits:
         L.append(f'| {B.ts_fmt(c["ts"])[:16]} | `{c["commit"]}` | {c["text"].split("  [")[0]} |')
-    L += ['', 'All were made on branch `claude/rex-presence` and go to `main` through one pull request. The commit that adds this history folder, and anything after it, is not in the transcript.', '',
+    L += ['', 'All were made on branch `claude/rex-presence` and go to `main` through pull request #11. The commit that adds this history folder, and anything after it, is not in the transcript.', '',
           '## Context compactions', '']
     for c in compactions:
         L.append(f'- {B.ts_fmt(c["ts"])}: the context was replaced by a written summary (shown collapsed in the transcript at that point). The raw log keeps everything before it, so nothing in this history depends on the summaries.')
     L += ['', '## Overnight work', '',
           'The owner\'s one prompt ends “I\'m going to bed, so get as far as you can.” The whole session ran unattended. '
-          'There were no scheduled wake-ups; the session was re-invoked each time a background job finished (a workflow or a wait on one). '
-          'Each of those notifications is marked “Woken” in the transcript, with what it led to.', '',
+          'The session was re-invoked each time a background job finished (a workflow or a wait on one); those notifications are marked “Woken” in the transcript, with what it led to. '
+          'After the pull request opened, GitHub CI results also reached the session as queued notifications, read with the ReadNotifications tool (shown as tool calls), '
+          'and the session armed one-off safety-net check-ins with `send_later` while the pull request waited on CI.', '',
           '## What could not be recovered, and what was left out on purpose', '',
           f'- Nothing had to be reconstructed: the raw main log and all {len(set(e["_wf"] for e in events if e.get("_wf")))} workflow folders were on disk, including everything before each compaction.',
           '- Tool results are omitted, except errors (first 3 lines). Claude’s private reasoning, the system prompt and harness reminders are not included.',
