@@ -1056,6 +1056,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (state.absorb === 'runaway') {
       const RW = P.runawayGrowth(body, E, state.growS);
       items.push('Runaway loop: each joule absorbed sends back about ' + (RW.k > 0 ? sci(RW.k, 1) : '0') + ' J of side effects (pushing the air back and his own gravity pulling him tighter), which are absorbed too. ' + (RW.runs ? 'That is 1 or more: it would run away, and the half-life (' + fmtTime(state.halfLife) + ', a story choice: no physics sets it) drains the extra into the endless ocean.' : 'That is far below 1, so the loop dies out at once: he absorbs ' + (RW.k < 1e-6 ? 'the same energy to within a millionth.' : fmtSI(RW.total, 'J') + ' in all.')));
+      items.push('Open question for the owners: whether those side effects are paid from the energy they absorbed or from the endless store. Only in the first case does the loop add anything, and here it is tiny either way.');
       items.push('A real runaway needs side effects as big as the energy itself. Only his own gravity can get there: its share is 0.3 × (2 − s/3) × (his event-horizon radius ÷ his radius), where s is the share of growth into size. That is ' + sci(RW.kGravNow, 1) + ' now and reaches 1 only inside his own event horizon. So outside a black hole the half-life never has to act.');
     }
     if (!small) {

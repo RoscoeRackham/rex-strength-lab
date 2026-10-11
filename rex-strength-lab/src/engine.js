@@ -3018,7 +3018,7 @@
       STREET: 15,    // windows across a street (m): estimate
       BLOCK: 100,    // a city block (m): estimate
       DP_HARM: 100,       // Pa, the most air blast that stays harmless at a house: 134 dB, USBM RI 8485's safe maximum (comic_airblast_safe_max)
-      DP_RATTLE: 20,      // Pa, windows start to rattle: complaints from about 120 dB (comic_airblast_rattle_onset)
+      DP_RATTLE: 36,      // Pa, windows start to rattle: complaints from about 120 dB on a 6 Hz meter, roughly 36 Pa unfiltered (growth_airblast_usbm_ri8485)
       DP_WINDOWS: 6900,   // Pa, windows shatter (data: blast_window_breakage)
       DP_HOUSES: 26800,   // Pa, houses collapse (data: blast_residential_collapse)
       TOL: 0.005,    // searches stop within 0.5%
