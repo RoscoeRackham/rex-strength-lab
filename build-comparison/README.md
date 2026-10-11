@@ -61,7 +61,7 @@ Every number is either sourced or labelled an estimate, with its status (measure
 
 - **Research** (six topics, each checked by a skeptic who re-fetched sources): 43 corrections applied (`research/corrections.json`), including those from the review rounds.
 - **Design**: three proposals, two judges, one synthesis (`research/reviews/design.md`).
-- **Review rounds**: see `research/reviews/` (round records are added as they finish).
+- **Review round 1**: five lenses (model, claims, data, UX, code), each finding reproduced or refuted by a skeptic: 76 findings, 69 confirmed, all fixed or partly fixed with the reason stated ([research/reviews/round1.md](research/reviews/round1.md), verbatim results in `round1.json`).
 
 ## Known limits
 
