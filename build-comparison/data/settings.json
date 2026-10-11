@@ -586,5 +586,72 @@
   "<b>Rex and Ollie.</b> Their mass (about 2,700 kg each) was measured from one front-view picture over their clothes, with assumed depth and density; their skull heights are read off the same picture. Both are estimates until Step 2 measures them from their turnarounds.",
   "<b>Silhouettes.</b> Human figures are drawn from seven girths on the average soldier's proportions, with round limbs and elliptical trunk sections. They show the build, not the person; heads, hands and feet are average.",
   "<b>The limits.</b> Where the body stops working is worked out on flat drawings of a template man widened at fixed bones. Real tissue squashes and real joints move in three dimensions, so each limit is a band, not a line."
- ]
+ ],
+ "limits": {
+  "templates": [
+   "ansur2_m_p50",
+   "ansur2_m_p5",
+   "ansur2_m_p95",
+   "steve_reeves_1947",
+   "ronnie_coleman",
+   "ansur2_m_largest_arm"
+  ],
+  "main_template": "ansur2_m_p50",
+  "arms": {
+   "angle_deg": 30,
+   "keys": [
+    "ansur_seated_arm_angle",
+    "arm_hang_model_ansur_median",
+    "ansur2_standing_posture_limb_contact",
+    "obesity_reduces_rom_park2010_jeong2018"
+   ],
+   "text": {
+    "label": "Arms can no longer hang down by the sides",
+    "short": "arms out",
+    "tiny": "arms",
+    "definition": "Held as close as the outlines allow, the arms stand at least 30\u00b0 out from vertical (tested below chest height, where arm meets torso, hip or thigh). The most any of 4,082 soldiers\u2019 arms stand out is about 26\u00b0; 30\u00b0 is also the low end of the model-sheet A-pose."
+   }
+  },
+  "thighs": {
+   "fraction": 1.0,
+   "keys": [
+    "ansur_thigh_gap_legs_vertical",
+    "hip_joint_centre_regression_hara2016",
+    "obese_gait_step_width"
+   ],
+   "text": {
+    "label": "Thighs touch all the way to the knee",
+    "short": "thighs touch",
+    "tiny": "thighs",
+    "definition": "Standing with straight legs under the hip joints, the inner thighs meet from the crotch down to the top of the kneecap. The median soldier has about 4 cm of daylight there. From here every step must be at least hip-joint width, about twice an ordinary step."
+   }
+  },
+  "face": {
+   "normal_max_flexion_deg": 145,
+   "max_flexion_deg": 100,
+   "keys": [
+    "elbow_knee_flexion_norms_cdc",
+    "rom_end_point_soft_tissue_contact",
+    "hand_to_mouth_reach_geometry",
+    "va_rating_limited_elbow_knee_flexion",
+    "elbow_rom_daily_tasks_morrey1981",
+    "elbow_rom_compensated_vasen1995"
+   ],
+   "text": {
+    "label": "Hands can no longer reach the face",
+    "short": "hands to face",
+    "tiny": "face",
+    "definition": "The forearm meets the upper arm before the elbow bends 100\u00b0, so even with the wrist fully bent the fingertips cannot reach the mouth (that needs about 99\u00b0 here, 123\u00b0 with a straight wrist). The elbow model is set so the median soldier bends a normal 145\u00b0. The band reaches down to where a steeper loss, fitted to how flexion falls with BMI, would put it."
+   },
+   "pessimistic_girth_factor": 1.786
+  },
+  "verdict": "Three limits come from the drawn body itself. Widen the average soldier at fixed bones and the arms are forced out first, the thighs close next, and the hands lose the face last.",
+  "method": "Each template is widened at fixed bones (every width and depth times the same factor; shoulder joints, hip joints and elbows stay put) until the limit is reached, and that shape's score is read with the measuring tool at 1,060 kg/m\u00b3 and 7.5% fat. The headline is the median soldier's shape; the band runs across six templates, from the 5th-percentile soldier to Ronnie Coleman's shape.",
+  "notes": [
+   "No study gives these limits. Each threshold is an estimate built from sourced pieces: what stops a joint (soft tissue meeting soft tissue), how far ordinary men can move, and how far daily tasks need. The sources are listed under \u201cWhere the body stops working\u201d below.",
+   "This is flat, front-view geometry on drawn templates. Real soft tissue squashes, arms can sit a little in front of the body, and shoulders shrug, so each limit is a band, not a line.",
+   "A softer line comes earlier: with the elbow held to 120\u00b0, people still manage eating, drinking and washing by moving the shoulder and wrist instead (Vasen 1995).",
+   "The bands are for human-shaped bodies. Rex and Ollie are not built like the template: their art shows their arms well out and their thighs touching, so they are past the first two limits whatever their score."
+  ]
+ }
 }

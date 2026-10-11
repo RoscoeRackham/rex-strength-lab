@@ -95,6 +95,14 @@
     return edges.filter(function (e) { return e.pts.length > 1; });
   }
 
+  /** Full depth of the ellipse with full width w whose perimeter is G (bisection; w <= G / pi). */
+  function ellipseDepthFor(G, w) {
+    var per = function (a, b) { var A = a / 2, B = b / 2, h = (A - B) * (A - B) / ((A + B) * (A + B)); return Math.PI * (A + B) * (1 + 3 * h / (10 + Math.sqrt(4 - 3 * h))); };
+    var lo = 0, hi = G / 2;
+    for (var i = 0; i < 50; i++) { var mid = (lo + hi) / 2; if (per(w, mid) < G) lo = mid; else hi = mid; }
+    return (lo + hi) / 2;
+  }
+
   // ---------- the human template ----------
   /**
    * Builds the geometry of a human figure.
@@ -114,8 +122,10 @@
     var sec = T.sections;
     var C = opts.constants || {};
     var hj = (C.hipJointHalf != null ? C.hipJointHalf : 0.05) * H;
-    var sjIn = (C.shoulderJointIn != null ? C.shoulderJointIn : 0.02) * H;
-    var sjDown = (C.shoulderJointDown != null ? C.shoulderJointDown : 0.025) * H;
+    // Shoulder joint centre: about 2 cm medial to and 4 cm below the acromion in a 1.755 m man
+    // (research fact shoulder joint; scaled with height).
+    var sjIn = (C.shoulderJointIn != null ? C.shoulderJointIn : 0.0114) * H;
+    var sjDown = (C.shoulderJointDown != null ? C.shoulderJointDown : 0.0228) * H;
     var headH = (C.headHeight != null ? C.headHeight : 0.13) * H;
     var armDeg = opts.armDeg != null ? opts.armDeg : 20;
 
@@ -167,17 +177,23 @@
     var chestHalf = d.chestB / 2, waistHalf = d.waistB / 2, hipHalf = d.hipB / 2;
     // The leg axes are bones: a scaled-up figure keeps the unscaled build's axes (opts.legAxis).
     var legX = opts.legAxis != null ? opts.legAxis : Math.max(hj, hipHalf - d.thighR);
+    // Two round thighs would be wider than the hips (ANSUR II hip breadth is the widest point of the
+    // hips and upper thighs, standing). So the top of the thigh is drawn no wider than the hip line
+    // allows, and deeper to keep its girth: an ellipse with that width and the measured girth.
+    d.thighW = Math.min(d.thighR, Math.max(hipHalf - legX, d.lowThighR));
+    d.thighD = ellipseDepthFor(2 * Math.PI * d.thighR, 2 * d.thighW) / 2;
     d.legAxis = legX;
     var fb = d.footB / 2, fo = 0.012 * H;
     // The trapezius: a convex slope from the side of the neck to the acromion.
     var trapX = function (t) { var x0 = d.neckR * 1.1; return x0 + t * (Math.max(d.biacromial / 2, x0 + 0.01 * H) - x0); };
     var outer = spline([
-      [d.neckR, y.chin + 0.02 * H], [d.neckR, y.chin - 0.004 * H], [d.neckR * 1.1, y.neckBase + 0.016 * H],
+      // The neck starts inside the head (so a thick neck meets the jaw instead of showing a flat top).
+      [Math.min(d.neckR, d.headB * 0.42), y.chin + 0.3 * headH], [d.neckR, y.chin - 0.004 * H], [d.neckR * 1.1, y.neckBase + 0.016 * H],
       [trapX(0.3), y.neckBase + 0.005 * H], [trapX(0.65), (y.neckBase + y.acromion) / 2 - 0.001 * H],
       [d.biacromial / 2, y.acromion], [Math.max(sj[0] + d.armR * 0.3, chestHalf * 1.04), y.axilla + 0.012 * H],
       [chestHalf * 1.02, y.axilla - 0.006 * H], [chestHalf, y.chest], [(chestHalf + waistHalf) / 2 + 0.003 * H, (y.chest + y.waist) / 2],
       [waistHalf, y.waist], [(waistHalf + hipHalf) / 2 + 0.003 * H, (y.waist + y.hip) / 2], [hipHalf, y.hip],
-      [Math.max(hipHalf, legX + d.thighR) * 0.995, y.crotch - 0.015 * H], [legX + (d.thighR + d.lowThighR) / 2 * 1.02, (y.crotch + y.lowThigh) / 2],
+      [Math.max(hipHalf, legX + d.thighW) * 0.995, y.crotch - 0.015 * H], [legX + (d.thighW + d.lowThighR) / 2 * 1.02, (y.crotch + y.lowThigh) / 2],
       [legX + d.lowThighR, y.lowThigh], [legX + d.lowThighR * 0.9, y.knee], [legX + d.calfR, y.calf],
       [legX + (d.calfR + d.ankleR) / 2 * 0.96, (y.calf + y.ankle) / 2], [legX + d.ankleR, y.ankle], [legX + d.ankleR * 0.97, y.malleolus]
     ], 6);
@@ -185,7 +201,7 @@
     var inner = spline([
       [legX - d.ankleR * 0.97, y.malleolus], [legX - d.ankleR, y.ankle], [legX - (d.calfR * 0.9 + d.ankleR) / 2, (y.calf + y.ankle) / 2],
       [legX - d.calfR * 0.9, y.calf], [legX - d.lowThighR * 0.85, y.knee], [legX - d.lowThighR, y.lowThigh],
-      [legX - (d.thighR + d.lowThighR) / 2, (y.crotch + y.lowThigh) / 2], [legX - d.thighR * 0.97, y.crotch - 0.03 * H]
+      [legX - (d.thighW + d.lowThighR) / 2, (y.crotch + y.lowThigh) / 2], [legX - d.thighW * 0.97, y.crotch - 0.03 * H]
     ], 6).map(function (p) { return [Math.max(0, p[0]), p[1]]; });
     var crotchY = y.crotch;
     // The inner edges meet the crotch; when the thighs overlap, the midline carries the outline up to it.
@@ -226,7 +242,7 @@
     var stations = [
       [y.chin + headH * 0.4, A(d.neckR * 1.6, 0.4)], [y.chin, A(d.neckR * 2, 0.5)], [y.neckBase + 0.01 * H, A(d.neckBaseR * 2, 0.45)],
       [y.acromion, A(d.chestD * 0.9, 0.5)], [y.chest, A(d.chestD, 0.55)], [(y.chest + y.waist) / 2, A((d.chestD + d.waistD) / 2, 0.55)], [y.waist, A(d.waistD, 0.55)],
-      [y.hip, A(d.hipD, 0.42)], [y.crotch, A(d.hipD * 0.85, 0.45)], [y.crotch - 0.05 * H, A(d.thighR * 2 * 1.04, 0.52)],
+      [y.hip, A(d.hipD, 0.42)], [y.crotch, A(d.hipD * 0.85, 0.45)], [y.crotch - 0.05 * H, A(d.thighD * 2, 0.52)],
       [y.lowThigh, A(d.lowThighR * 2, 0.55)], [y.knee, A(d.lowThighR * 1.85, 0.58)], [y.calf, A(d.calfR * 2, 0.42)],
       [y.ankle, A(d.ankleR * 2, 0.5)]
     ];
@@ -396,6 +412,39 @@
     return 90;
   }
 
+
+  /**
+   * (a) Arm rest angle: the smallest angle from vertical at which the arm hangs clear of the body
+   * outline (torso, hips, thighs) in the front view, testing only below chest height (the armpit
+   * folds join arm and torso above it). build(armDeg) returns the figure with its arms at armDeg.
+   * Returns degrees (90 if the arm cannot clear).
+   */
+  function armRestAngle(build) {
+    var clear = function (deg) {
+      var fig = build(deg), d = fig.dims, yc = d.levels.chest, sj = d.shoulderJoint, near = 0.35 * d.armStations.Lu;
+      var ax = Math.sin(deg * Math.PI / 180), ay = -Math.cos(deg * Math.PI / 180);
+      // Only below chest height, and only from a third of the way down the upper arm (measured along
+      // the arm): above that, the deltoid and the armpit folds join arm and torso.
+      var tested = function (q) { return q[1] < yc && (q[0] - sj[0]) * ax + (q[1] - sj[1]) * ay > near; };
+      var body = fig.front.filter(function (p) { return p.name === 'body'; })[0].poly;
+      var arm = fig.front.filter(function (p) { return /^left (upper arm|forearm|hand)$/.test(p.name); });
+      for (var i = 0; i < arm.length; i++) {
+        var poly = arm[i].poly;
+        for (var j = 0; j < poly.length; j++) if (tested(poly[j]) && pointInPoly(poly[j], body)) return false;
+      }
+      for (var k = 0; k < body.length; k++) {
+        if (body[k][0] <= 0 || !tested(body[k])) continue;
+        for (var a = 0; a < arm.length; a++) if (pointInPoly(body[k], arm[a].poly)) return false;
+      }
+      return true;
+    };
+    if (clear(0)) return 0;
+    if (!clear(90)) return 90;
+    var lo = 0, hi = 90;
+    for (var it = 0; it < 14; it++) { var mid = (lo + hi) / 2; if (clear(mid)) hi = mid; else lo = mid; }
+    return hi;
+  }
+
   /**
    * (b) How far down the thighs touch, as a fraction of the way from the crotch to the knee
    * (1 = all the way). The leg axes stay where the bones are.
@@ -405,7 +454,7 @@
     for (var i = 0; i <= steps; i++) {
       var yy = y.crotch - 0.03 * d.H - (y.crotch - 0.03 * d.H - y.lowThigh) * i / steps;
       var t = (y.crotch - 0.03 * d.H - yy) / (y.crotch - 0.03 * d.H - y.lowThigh);
-      var r = d.thighR * 0.97 + (d.lowThighR - d.thighR * 0.97) * t; // the inner edge between its stations
+      var r = d.thighW * 0.97 + (d.lowThighR - d.thighW * 0.97) * t; // the inner edge between its stations
       if (d.legAxis - r <= 0) touch = i / steps; else break;
     }
     return touch;
@@ -459,5 +508,5 @@
     return s + 'Z';
   }
 
-  return { SITES: SITES, armClearance: armClearance, armBoneClearance: armBoneClearance, thighContact: thighContact, elbowFlexion: elbowFlexion, solveScale: solveScale, pointInPoly: pointInPoly, fillParts: fillParts, renderSheet: renderSheet, bandEdges: bandEdges, spline: spline, symmetric: symmetric, limb: limb, ellipse: ellipse, human: human, traced: traced, bounds: bounds, pathData: pathData };
+  return { SITES: SITES, armClearance: armClearance, armBoneClearance: armBoneClearance, armRestAngle: armRestAngle, thighContact: thighContact, elbowFlexion: elbowFlexion, solveScale: solveScale, pointInPoly: pointInPoly, fillParts: fillParts, renderSheet: renderSheet, bandEdges: bandEdges, spline: spline, symmetric: symmetric, limb: limb, ellipse: ellipse, human: human, traced: traced, bounds: bounds, pathData: pathData };
 });
