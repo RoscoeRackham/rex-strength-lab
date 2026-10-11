@@ -6,10 +6,12 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 | Folder or file | Who | Branch | Since |
 |---|---|---|---|
+| `rex-strength-lab/` (all of it), root `README.md` (Rex lab row only), `.github/workflows/test.yml` (Rex lab steps only), `history/2026-10-11-rex-presence/` (new) | Owner (cloud session) | `claude/rex-presence` | 2026-10-11 |
 | `CLAUDE.md` canon, `rex-strength-lab/src/static-data.js` (grip card), `rex-strength-lab/test/sweep.js` and `README.md`, `rex-strength-lab/BRIEF-presence.md`, `build-comparison/BRIEF.md`, `build-comparison/data/NOTES.md`, `build-comparison/tools/compile_facts.py`, `history/2026-10-11-collaborator-canon-and-planning.md` | Collaborator | `terantic/presence-brief` (includes `terantic/grip`) | 2026-10-11 |
 
 ## In progress
 
+- Rex lab, restraint and presence (owner's cloud session, `claude/rex-presence`): building `rex-strength-lab/BRIEF-presence.md` in its order. Stage 1, research with verified facts: started.
 - Pull request open (collaborator, `terantic/presence-brief`):
   - a "Hands and grip" assumption card in the Rex lab
   - **new canon:** restraint, absorption (four modes) and growth (three forms)
