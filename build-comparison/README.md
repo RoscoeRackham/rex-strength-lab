@@ -2,7 +2,7 @@
 
 Men's builds on one scale of muscle level, with height taken out: from ordinary men, through the top of the human record and the comic giants, to Rex and Ollie and the end of the scale. Each build is a flat silhouette and a score range. Empty stretches stay empty until measured art fills them (Step 2). The page also holds a tool that measures a character from an A-pose model sheet.
 
-Live page: *(added after publishing; see the root README)*
+Live page: https://claude.ai/artifact/DBtZrixDeZnvRwDhZMsCDn (private until shared)
 
 Step 1 of the plan in [BRIEF.md](BRIEF.md). Rex's and Ollie's mass is unchanged (about 2,700 kg each, from the duo picture); Step 2 remeasures them from their turnarounds.
 

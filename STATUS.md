@@ -11,9 +11,10 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## In progress
 
-- Build Comparison Step 1 (cloud session, branch `claude/hopeful-keller-vly1s9`, started 2026-10-11). Also claims root `README.md` (one row for the new page), `.github/workflows/test.yml` (build and test steps for the new project) and a new `history/` entry for this session.
+- Build Comparison Step 1 (cloud session, branch `claude/hopeful-keller-vly1s9`, started 2026-10-11). Also claims root `README.md` (one row for the new page), one build line in `CLAUDE.md`, `.github/workflows/test.yml` (build and test steps for the new project) and a new `history/` entry for this session (`history/2026-10-11-build-comparison-step1/`, built by `history/tools/build_history_step1.py`).
   - Done: research (six topics, each verified; 26 corrections applied), design (three proposals, two judges, one spec: `build-comparison/research/reviews/design.md`), the page, the measuring tool (validated on duo.jpg), functional limits, tests (`test/test.js`, `test/duo.js`, `test/shots.js`), README and `data/NOTES.md`.
-  - In progress: adversarial review rounds and fixes; then publish as a new Artifact, open the pull request, and write the `history/` entry.
+  - Published (first version, private): https://claude.ai/artifact/DBtZrixDeZnvRwDhZMsCDn
+  - In progress: adversarial review rounds and fixes; then republish, open the pull request, and write the `history/` entry.
   - `build-calculator/data/builds.json` and `src/calc.js` are claimed but have not been changed.
 
 ## Waiting on
