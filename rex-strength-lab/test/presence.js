@@ -87,7 +87,7 @@ const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface
   }
 }
 
-// 3b. The ground-shaking model reproduces its sourced anchors and each threshold's worked conversion.
+// 3b. The ground-shaking model reproduces its sourced anchors; each threshold equals its research value.
 {
   // Pisa drop test (Colombero et al. 2015): 130 kg dropped about 3 m; field readings from their Fig. 6 (verifier) 8.7 / 4.7 /
   // 1.8 / 0.77 / 0.4 / 0.19 mm/s at 2.5 / 5 / 10 / 20 / 35 / 60 m; the model with the site's ground (c_s 150 m/s,
@@ -110,6 +110,25 @@ const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface
   ok('elephant anchor: 0.005 mm/s at 20 m, about 1/D', near(P.elephantPPV(20), 5e-6, 1e-9) && near(P.elephantPPV(10), 10e-6, 1e-9));
   ok('threshold: 0.5 in/s = 12.7 mm/s (US Bureau of Mines plaster)', near(P.VIB.TH.plaster, 0.5 * 0.0254, 1e-9));
   ok('threshold: 0.3 in/s = 7.6 mm/s (Caltrans, repeated steps)', near(P.VIB.TH.plasterWalk, 0.3 * 0.0254, 0.003));
+  // every threshold and limit the engine uses equals the value in the research file (so a change to either is caught)
+  const R = Object.fromEntries(require('../research/final-presence.json').facts.map((f) => [f.key, f]));
+  const same = (name, a, key, scale) => ok(name + ' matches ' + key, near(a, R[key].value_si * (scale || 1), 0.01), a + ' vs ' + R[key].value_si);
+  same('feel 0.3 mm/s', P.VIB.TH.feel, 'thr_rec_feel');
+  same('one jolt 1 mm/s', P.VIB.TH.feelOnce, 'thr_caltrans2020_table20_human_transient_continuous');
+  same('glass shimmer', P.VIB.TH.shimmer, 'ripple_threshold_shimmer');
+  same('glass rings', P.VIB.TH.rings, 'ripple_threshold_rings');
+  same('rattle', P.VIB.TH.rattle, 'thr_rec_rattle');
+  same('footing', P.VIB.TH.footing, 'thr_rec_footing');
+  same('air blast harmless', P.RESTRAINT.R.DP_HARM, 'comic_airblast_safe_max');
+  same('air rattle', P.RESTRAINT.R.DP_RATTLE, 'airblast_rattle_onset_unfiltered');
+  same('drill stamp peak', P.WALK.STAMP.kPeak, 'step_carden2015_drill_peak_force');
+  ok('soft-footed factor is the 48.7% cut at normal speed (Yoon 2025)', near(P.WALK.SOFT, 1 - 0.487, 0.01) && /48\.7%|49%/.test(R.step_yoon2025_quiet_walking.display + R.step_yoon2025_quiet_walking.notes));
+  const eib = JSON.parse(R.comic_eiband_voluntary_limits.values_json)[Object.keys(JSON.parse(R.comic_eiband_voluntary_limits.values_json)).find((k) => k.startsWith('spineward, voluntary'))];
+  ok('Eiband limits match comic_eiband_voluntary_limits', P.PASSENGER.EIBAND.every(([t, gl]) => eib[String(t)] === gl), JSON.stringify(eib));
+  // a person walking past the elephant's station (Steinmann et al. 2025, sandy dry ground): about 0.002 mm/s at 53 m
+  const hum = JSON.parse(R.elephant_steinmann2025_other_animals.values_json).rows.find((x) => x.animal === 'human');
+  const vHum = P.presence(P.makeBody({ build: 'human', H: 1.75, m: 76.7 }), surf('sand'), { effort: 0.5 }).ppv(hum.distance_m);
+  ok('a person walking 53 m away on sand: within 2x of the recorded 0.002 mm/s', vHum / (hum.ppv_mm_s / 1000) < 2 && (hum.ppv_mm_s / 1000) / vHum < 2, (vHum * 1000).toExponential(2) + ' mm/s');
   // the Walk tab's footing threshold for an ordinary step is the 1 g cap at its pulse frequency, below the 300 mm/s earthquake value
   const st = P.walkStep(rex, surf('concrete'), { effort: 0.5 });
   const thw = P.walkThresholds(st);

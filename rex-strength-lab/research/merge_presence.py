@@ -7,6 +7,9 @@ history/2026-10-11-rex-presence/). This script only merges those compiled files,
 duplicate keys or a status outside the house vocabulary.
 
   python3 research/merge_presence.py <folder with step.json, attenuation.json, ...>
+
+Used once, to build the first final-presence.json. Since review round 1 that file is edited by hand and is the source
+of truth; re-running this script would undo the review fixes. The script refuses to overwrite it unless given --force.
 """
 import json
 import os
@@ -40,5 +43,8 @@ for t in TOPICS:
             out['values_json'] = f['values_json']
         facts.append(out)
     gaps[t] = d.get('gaps', '')
-json.dump({'facts': facts, 'gaps': gaps}, open(os.path.join(here, 'final-presence.json'), 'w', encoding='utf-8', newline='\n'), ensure_ascii=False, indent=1)
+dest = os.path.join(here, 'final-presence.json')
+if os.path.exists(dest) and '--force' not in sys.argv:
+    sys.exit('final-presence.json exists and is edited by hand since review round 1; pass --force to overwrite it')
+json.dump({'facts': facts, 'gaps': gaps}, open(dest, 'w', encoding='utf-8', newline='\n'), ensure_ascii=False, indent=1)
 print(len(facts), 'facts from', len(gaps), 'topics')

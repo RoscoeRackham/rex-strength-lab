@@ -2829,7 +2829,7 @@
   //   ramp:       near = 0.1875 F / (rho cs^2 tau r), far = 0.181 F / (rho cs^2.5 tau^1.5 sqrt r)
   //   PPV (vertical) = max(near, far) x D(zeta), zeta = xi r / (0.919 cs T)
   // Checked against a 130 kg drop test at Pisa (within about 2x over 2.5-60 m, with the contact time fitted) and
-  // elephant footfalls (within about 2-4x, guessed inputs); footsteps were never measured. Uncertain by about 3-5x. Past 60 m, the furthest it was checked, its
+  // elephant footfalls (within about 2-4x, guessed inputs); one recorded person walking past at 53 m on sandy ground (Steinmann 2025) within about 2x. Uncertain by about 3-5x. Past 60 m, the furthest it was checked, its
   // damping makes a short pulse fade as r^-2 to r^-3, faster than any measured impact (r^-1.0 to r^-1.6: Pisa r^-1.28,
   // dropped weights r^-1.1 to r^-1.35), so there it falls no faster than r^-1.3 from its 60 m value (an estimate).
   // Sources and status: research/final-presence.json (vib_*).
@@ -2850,15 +2850,16 @@
     RFIT: 60, NFAR: 1.3, // past 60 m: no faster than r^-1.3
     // thresholds, peak particle velocity at the ground, m/s (research/final-presence.json, thr_* and ripple_*):
     //   feel: just perceptible indoors (BS 5228-2 Table B.1, 0.3 mm/s; 0.14-1)
-    //   feelOnce: one isolated event (a stomp) barely felt by most people (Caltrans 2020 Table 20, transient: 1.0 mm/s)
+    //   feelOnce: one isolated event (a stomp) 'barely perceptible' (Caltrans 2020 Table 20, transient: 1.0 mm/s); the average
+    //     person needs about 2.4-3.3 mm/s for a jolt this short (USBM RI 8507 Table 15)
     //   shimmer: a glass of water visibly ripples (estimate: about 0.2 mm/s side to side, 0.02-1); compared with the
     //     horizontal shaking, not the vertical (see HV)
-    //   rings: concentric rings in the glass, the film look (derived: about 0.5-1 mm/s vertical)
+    //   rings: concentric rings in the glass, the film look (estimate from a ripple model: about 0.5-1 mm/s vertical)
     //   rattle: windows and ornaments rattle (our estimate, no standard sets it: about 1 mm/s, 0.3-3)
     //   plasterWalk: cosmetic damage from repeated steps (Caltrans older homes, continuous: 7.6 mm/s)
     //   plaster: cosmetic damage from one event, a stomp or a landing (US Bureau of Mines RI 8507, plaster: 12.7 mm/s)
     //   footing: people lose their footing (estimate from earthquakes: about 300 mm/s, 80-600)
-    TH: { feel: 0.3e-3, feelOnce: 1e-3, shimmer: 0.2e-3, rings: 0.7e-3, rattle: 1e-3, plasterWalk: 7.6e-3, plaster: 12.7e-3, footing: 0.3 },
+    TH: { feel: 0.3e-3, feelOnce: 0.04 * 0.0254, shimmer: 0.2e-3, rings: 0.7e-3, rattle: 1e-3, plasterWalk: 7.6e-3, plaster: 12.7e-3, footing: 0.3 },
     // horizontal over vertical shaking at the surface of uniform ground (Poisson's ratio 1/4): 1/3 in the near field,
     // 0.68 for Rayleigh waves (vib_rayleigh_horizontal_and_resultant, derived). Only the water glass's shimmer uses it.
     HV: { near: 1 / 3, far: 0.68 },
@@ -3043,7 +3044,7 @@
       STREET: 15,    // windows across a street (m): estimate
       BLOCK: 100,    // a city block (m): estimate
       DP_HARM: 100,       // Pa, the most air blast that stays harmless at a house: 134 dB, USBM RI 8485's safe maximum (comic_airblast_safe_max)
-      DP_RATTLE: 36,      // Pa, windows start to rattle: complaints from about 120 dB on a 6 Hz meter, roughly 36 Pa unfiltered (growth_airblast_usbm_ri8485)
+      DP_RATTLE: 36,      // Pa, windows start to rattle: complaints from about 120 dB on a 6 Hz meter, roughly 36 Pa unfiltered (airblast_rattle_onset_unfiltered, derived)
       DP_WINDOWS: 6900,   // Pa, windows shatter (data: blast_window_breakage)
       DP_HOUSES: 26800,   // Pa, houses collapse (data: blast_residential_collapse)
       TOL: 0.005,    // searches stop within 0.5%
@@ -3097,7 +3098,7 @@
       },
       stomp: {
         run: (c) => stomp(c),
-        // one stomp is a single event: most people barely feel it from 1 mm/s (Caltrans transient)
+        // one stomp is a single event: 'barely perceptible' from 1 mm/s (Caltrans transient)
         goal: (r, o) => ppvAt(MOVES.stomp.shake(r, o), o.near) >= VIB.TH.feelOnce,
         speed: (r) => r.vFoot,
         // paving, slabs, rock, ice and steel break when the foot punches a 1 cm hole; in soil a dent is only a

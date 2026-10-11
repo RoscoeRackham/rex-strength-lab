@@ -3278,15 +3278,16 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     RFIT: 60, NFAR: 1.3, // past 60 m: no faster than r^-1.3
     // thresholds, peak particle velocity at the ground, m/s (research/final-presence.json, thr_* and ripple_*):
     //   feel: just perceptible indoors (BS 5228-2 Table B.1, 0.3 mm/s; 0.14-1)
-    //   feelOnce: one isolated event (a stomp) barely felt by most people (Caltrans 2020 Table 20, transient: 1.0 mm/s)
+    //   feelOnce: one isolated event (a stomp) 'barely perceptible' (Caltrans 2020 Table 20, transient: 1.0 mm/s); the average
+    //     person needs about 2.4-3.3 mm/s for a jolt this short (USBM RI 8507 Table 15)
     //   shimmer: a glass of water visibly ripples (estimate: about 0.2 mm/s side to side, 0.02-1); compared with the
     //     horizontal shaking, not the vertical (see HV)
-    //   rings: concentric rings in the glass, the film look (derived: about 0.5-1 mm/s vertical)
+    //   rings: concentric rings in the glass, the film look (estimate from a ripple model: about 0.5-1 mm/s vertical)
     //   rattle: windows and ornaments rattle (our estimate, no standard sets it: about 1 mm/s, 0.3-3)
     //   plasterWalk: cosmetic damage from repeated steps (Caltrans older homes, continuous: 7.6 mm/s)
     //   plaster: cosmetic damage from one event, a stomp or a landing (US Bureau of Mines RI 8507, plaster: 12.7 mm/s)
     //   footing: people lose their footing (estimate from earthquakes: about 300 mm/s, 80-600)
-    TH: { feel: 0.3e-3, feelOnce: 1e-3, shimmer: 0.2e-3, rings: 0.7e-3, rattle: 1e-3, plasterWalk: 7.6e-3, plaster: 12.7e-3, footing: 0.3 },
+    TH: { feel: 0.3e-3, feelOnce: 0.04 * 0.0254, shimmer: 0.2e-3, rings: 0.7e-3, rattle: 1e-3, plasterWalk: 7.6e-3, plaster: 12.7e-3, footing: 0.3 },
     // horizontal over vertical shaking at the surface of uniform ground (Poisson's ratio 1/4): 1/3 in the near field,
     // 0.68 for Rayleigh waves (vib_rayleigh_horizontal_and_resultant, derived). Only the water glass's shimmer uses it.
     HV: { near: 1 / 3, far: 0.68 },
@@ -3471,7 +3472,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       STREET: 15,    // windows across a street (m): estimate
       BLOCK: 100,    // a city block (m): estimate
       DP_HARM: 100,       // Pa, the most air blast that stays harmless at a house: 134 dB, USBM RI 8485's safe maximum (comic_airblast_safe_max)
-      DP_RATTLE: 36,      // Pa, windows start to rattle: complaints from about 120 dB on a 6 Hz meter, roughly 36 Pa unfiltered (growth_airblast_usbm_ri8485)
+      DP_RATTLE: 36,      // Pa, windows start to rattle: complaints from about 120 dB on a 6 Hz meter, roughly 36 Pa unfiltered (airblast_rattle_onset_unfiltered, derived)
       DP_WINDOWS: 6900,   // Pa, windows shatter (data: blast_window_breakage)
       DP_HOUSES: 26800,   // Pa, houses collapse (data: blast_residential_collapse)
       TOL: 0.005,    // searches stop within 0.5%
@@ -3525,7 +3526,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       },
       stomp: {
         run: (c) => stomp(c),
-        // one stomp is a single event: most people barely feel it from 1 mm/s (Caltrans transient)
+        // one stomp is a single event: 'barely perceptible' from 1 mm/s (Caltrans transient)
         goal: (r, o) => ppvAt(MOVES.stomp.shake(r, o), o.near) >= VIB.TH.feelOnce,
         speed: (r) => r.vFoot,
         // paving, slabs, rock, ice and steel break when the foot punches a 1 cm hole; in soil a dent is only a
@@ -5073,11 +5074,11 @@ window.DINO_DATA = {
  "assumptions": [
   {
    "t": "Effort is not strength",
-   "d": "The dial sets how strong he is. Effort is how hard he chooses to push: the strength he puts into a move’s push, never more than the dial. Standing, walking and holding a load up still get his full strength. The page opens on the least disruptive effort, the gentlest push that still does what each move is for, but never past the courtesy ceiling (if the goal needs more, it shows the most he can do with nothing harmed and says so): throw the object to the goal distance, jump to the goal height, a stomp most people can just feel at the chosen distance (1 mm/s, the level for one isolated jolt: Caltrans), a punch or clap as fast as the strongest human’s, run at the goal speed, drag the object 10 m in the goal time. Lift needs no effort setting: he only ever pushes as hard as the weight. All-out reproduces the lab’s earlier results exactly."
+   "d": "The dial sets how strong he is. Effort is how hard he chooses to push: the strength he puts into a move’s push, never more than the dial. Standing, walking and holding a load up still get his full strength. The page opens on the least disruptive effort, the gentlest push that still does what each move is for, but never past the courtesy ceiling (if the goal needs more, it shows the most he can do with nothing harmed and says so): throw the object to the goal distance, jump to the goal height, a stomp just perceptible at the chosen distance (1 mm/s, what Caltrans calls barely perceptible for one jolt; the average person needs about 3 mm/s for a jolt that short), a punch or clap as fast as the strongest human’s, run at the goal speed, drag the object 10 m in the goal time. Lift needs no effort setting: he only ever pushes as hard as the weight. All-out reproduces the lab’s earlier results exactly."
   },
   {
    "t": "The courtesy ceiling and the not-so-heroic presets",
-   "d": "The courtesy ceiling is the most effort he can use before something nearby comes to harm. The lab checks six hazards: a sonic boom (anything he moves breaks the sound barrier), an air blast louder than 134 dB (100 Pa, the US Bureau of Mines safe maximum for houses) at the chosen distance (a blast counts only when something moves past the speed of sound or makes a fireball; slower, the air flows out of the way and the release is a thump), ground shaking there over 12.7 mm/s (where plaster may crack: US Bureau of Mines), the ground breaking under his feet, his hands crushing what he holds, and a thrown person pressed harder than amusement rides allow (ASTM F2291). A thrown person’s landing is not counted: it is a fall unless someone catches them. Each not-so-heroic preset is the least effort that does what its name says: windows rattle (1 mm/s of ground shaking, our estimate, or an air blast of about 36 Pa, where rattling complaints start: 120 dB on the 6 Hz meter the US Bureau of Mines used, which is about 125 dB, 36 Pa, unfiltered, by our conversion), plaster may crack, windows break across a 15 m street (6.9 kPa), the ground breaks under him, houses next door collapse (26.8 kPa), houses collapse 100 m away (a city block, our estimate). Blast radii use the Kinney–Graham curve as if all the energy went into the air, so they are upper bounds."
+   "d": "The courtesy ceiling is the most effort he can use before something nearby comes to harm. The lab checks six hazards: a sonic boom (anything he moves breaks the sound barrier), an air blast louder than 134 dB (100 Pa, the US Bureau of Mines safe maximum for houses) at the chosen distance (a blast counts only when something moves past the speed of sound or makes a fireball; slower, the air flows out of the way and the release is a thump), ground shaking there over 12.7 mm/s (the US Bureau of Mines safe limit for plaster: a few percent of houses may get hairline cracks; about half do by 64 mm/s, Siskind via Caltrans), the ground breaking under his feet, his hands crushing what he holds, and a thrown person pressed harder than amusement rides allow (ASTM F2291). A thrown person’s landing is not counted: it is a fall unless someone catches them. Each not-so-heroic preset is the least effort that does what its name says: windows rattle (1 mm/s of ground shaking, our estimate, or an air blast of about 36 Pa, where rattling complaints start: 120 dB on the 6 Hz meter the US Bureau of Mines used, which is about 125 dB, 36 Pa, unfiltered, by our conversion), plaster may crack, windows break across a 15 m street (6.9 kPa), the ground breaks under him, houses next door collapse (26.8 kPa), houses collapse 100 m away (a city block, our estimate). Blast radii use the Kinney–Graham curve as if all the energy went into the air, so they are upper bounds."
   },
   {
    "t": "Two-player effort",
@@ -5089,7 +5090,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Walking: ground shaking",
-   "d": "Each footfall is a force on the ground: the weight coming onto the foot over about a sixth of a second, plus a short landing pulse (about 0.43× body weight over 37 ms for an ordinary heel strike, scaled from people; soft-footed 0.51 of that; a drill stamp 6.5× body weight). An elastic-ground model (Lamb’s problem) turns that into peak particle velocity (PPV) at a distance, using each surface’s density, shear-wave speed and damping (our estimates). It matched one drop test (130 kg at Pisa) within about 2× from 2.5 to 60 m and elephant footfalls roughly; nobody has measured footsteps this way, so read it as uncertain by about 3–5×, more past 60 m. Lake ice and a steel deck bend as plates and are not modelled. The numbers are for open ground: indoors, floors and walls can make the shaking 2–4× stronger. The thresholds come from construction and blasting standards (feel 0.3 mm/s for a walk past, 1 mm/s for one isolated jolt; plaster may crack above 7.6 mm/s for a walk past, 12.7 mm/s for a single stamp: safe limits, below which cracks are very unlikely) or are our estimates where no standard exists (a rippling glass, rattling windows, the 1 g at which loose things lift). The glass ripples with side-to-side shaking, about a third of the up-and-down close to the foot and two-thirds further out (uniform ground), so the page compares it with that."
+   "d": "Each footfall is a force on the ground: the weight coming onto the foot over about a sixth of a second, plus a short landing pulse (about 0.43× body weight over 37 ms for an ordinary heel strike, scaled from people; soft-footed 0.51 of that; a drill stamp 6.5× body weight). An elastic-ground model (Lamb’s problem) turns that into peak particle velocity (PPV) at a distance, using each surface’s density, shear-wave speed and damping (our estimates). It matched one drop test (130 kg at Pisa) within about 2× from 2.5 to 60 m, one recorded person walking past at 53 m on sandy ground within about 2×, and elephant footfalls roughly; read it as uncertain by about 3–5×, more past 60 m. Lake ice and a steel deck bend as plates and are not modelled. The numbers are for open ground: indoors, floors and walls can make the shaking 2–4× stronger. The thresholds come from construction and blasting standards (feel 0.3 mm/s for a walk past, 1 mm/s barely perceptible for one isolated jolt; plaster may crack above 7.6 mm/s for a walk past, 12.7 mm/s for a single stamp: safe limits, below which cracks are very unlikely) or are our estimates where no standard exists (a rippling glass, rattling windows, the 1 g at which loose things lift). The glass ripples with side-to-side shaking, about a third of the up-and-down close to the foot and two-thirds further out (uniform ground), so the page compares it with that."
   },
   {
    "t": "Footprints",
@@ -7290,7 +7291,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Weight: sirius B (white dwarf): mass and radius",
+   "label": "Weight: Sirius B (white dwarf): mass and radius",
    "value": "1.017 ± 0.025 M☉; radius 0.803 ± 0.011 R☉/100 (0.808 with the Gaia DR2 parallax)",
    "status": "verified",
    "sources": [
@@ -7370,7 +7371,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Weight: newtonian constant of gravitation",
+   "label": "Weight: Newtonian constant of gravitation",
    "value": "6.674 30(15) × 10⁻¹¹ m³ kg⁻¹ s⁻² (CODATA 2022)",
    "status": "verified",
    "sources": [
@@ -7382,7 +7383,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Weight: schwarzschild radius (event-horizon radius of a non-spinning black hole)",
+   "label": "Weight: Schwarzschild radius (event-horizon radius of a non-spinning black hole)",
    "value": "r_s = 2GM/c²; Earth's would be about 9 mm, the Sun's about 3.0 km",
    "status": "verified",
    "sources": [
@@ -7394,7 +7395,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Weight: buchdahl's limit: how compact a static body can be",
+   "label": "Weight: Buchdahl's limit: how compact a static body can be",
    "value": "2GM/(Rc²) ≤ 8/9, so R ≥ 9/8 of the Schwarzschild radius (isotropic pressure, density not rising outward)",
    "status": "verified",
    "sources": [
@@ -7554,7 +7555,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Weight: stevenson's proposal: sinking a probe to Earth's core in molten iron",
+   "label": "Weight: Stevenson's proposal: sinking a probe to Earth's core in molten iron",
    "value": "10⁸–10¹⁰ kg of molten iron; about a week to reach the core",
    "status": "verified",
    "sources": [
@@ -7622,7 +7623,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Arm wrestling and wrestling: world Armwrestling Federation regulation table: dimensions and construction",
+   "label": "Arm wrestling and wrestling: World Armwrestling Federation regulation table: dimensions and construction",
    "value": "Stand-up table 101.6 cm (40 in) from floor to top; top 91.4 cm across × 66.0 cm deep; elbow pads 17.8 cm square, 5.1 cm thick, set 5.1 cm from their edge; touch (pin) pads 25.4 × 10.2 cm; hand pegs 2.5 cm across, 15.2 cm high; top normally 1.9 cm (3/4 in) plywood; frame of steel tubing no wider than 5.1 cm",
    "status": "verified",
    "sources": [
@@ -7862,7 +7863,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Arm wrestling and wrestling: newtonian constant of gravitation",
+   "label": "Arm wrestling and wrestling: Newtonian constant of gravitation",
    "value": "6.674 30(15) × 10⁻¹¹ m³ kg⁻¹ s⁻² (CODATA 2022)",
    "status": "verified",
    "sources": [
@@ -8763,7 +8764,7 @@ window.DINO_DATA = {
   {
    "label": "Walking: force of a deliberate drill-style stamp by Rex or Ollie (soldiers' measured multiples, scaled)",
    "value": "At trained soldiers' average drill stamp (6.5 × body weight): about 190 kN; untrained men's average (4.4 ×): 130 kN. Rex's paw 420–620 kPa, Ollie's boot 870–1,280 kPa. Individuals likely reach 8 × or more (about 240 kN). Rigid-floor values; soft ground lowers them",
-   "status": "derived",
+   "status": "estimate",
    "sources": [
     {
      "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC5117012/fullTextXML",
@@ -10665,7 +10666,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Thresholds: recommended page value: people feel it",
-   "value": "0.3 mm/s PPV for a walk past (range 0.14-1 mm/s). For one isolated step: the most sensitive notice from about 0.3 mm/s, most people from about 1 mm/s, the average person 2-3 mm/s",
+   "value": "0.3 mm/s PPV for a walk past (range 0.14-1 mm/s). For one isolated step: the most sensitive notice from about 0.3 mm/s, Caltrans calls about 1 mm/s barely perceptible for one jolt, and the average person needs about 2-3 mm/s for a jolt this short (USBM RI 8507 Table 15)",
    "status": "estimate",
    "sources": [
     {
@@ -10675,6 +10676,18 @@ window.DINO_DATA = {
     {
      "url": "https://dot.ca.gov/-/media/dot-media/programs/environmental-analysis/documents/env/tcvgm-apr2020-a11y.pdf",
      "title": "Caltrans (2020) Transportation and Construction Vibration Guidance Manual, CT-HWANP-RT-20-365.01.01 (April 2020)"
+    },
+    {
+     "url": "https://files.dep.state.pa.us/Mining/BureauOfMiningPrograms/BMPPortalFiles/Blasting_Research_Papers/1980%20Siskind%20RI%208507%20Structure%20Response%20and%20Damage%20Produced%20by%20Ground%20Vibration%20from%20Surface%20Mine%20Blasting%20(No.%2018).pdf",
+     "title": "Siskind, Stagg, Kopp & Dowding (1980) US Bureau of Mines Report of Investigations 8507 (Pennsylvania DEP copy)"
+    },
+    {
+     "url": "https://rosap.ntl.bts.gov/view/dot/37056/dot_37056_DS1.pdf",
+     "title": "FTA (2018) Transit Noise and Vibration Impact Assessment Manual, FTA Report No. 0123 (Volpe Center), ROSA P copy of the official PDF"
+    },
+    {
+     "url": "https://www.pleanala.ie/publicaccess/EIAR-NIS/314724/5_EIAR/Volume%205%20Appendices/Chapter%2014%20Ground-borne%20Noise%20and%20Vibration/A14.1%20Relevant%20guidance%20and%20standards.pdf",
+     "title": "MetroLink EIAR Vol. 5 Appendix A14.1 'Relevant guidance and standards' (Jacobs IDOM), hosted by An Bord Pleanala (Irish planning board); reproduces BS 5228-2:2009+A1:2014, BS 7385-2, DIN 4150-3:2016, HS2 tables and Irish EPA guidance"
     }
    ],
    "note": null
@@ -10691,6 +10704,18 @@ window.DINO_DATA = {
     {
      "url": "https://rosap.ntl.bts.gov/view/dot/37056/dot_37056_DS1.pdf",
      "title": "FTA (2018) Transit Noise and Vibration Impact Assessment Manual, FTA Report No. 0123 (Volpe Center), ROSA P copy of the official PDF"
+    },
+    {
+     "url": "https://files.dep.state.pa.us/Mining/BureauOfMiningPrograms/BMPPortalFiles/Blasting_Research_Papers/1980%20Siskind%20RI%208507%20Structure%20Response%20and%20Damage%20Produced%20by%20Ground%20Vibration%20from%20Surface%20Mine%20Blasting%20(No.%2018).pdf",
+     "title": "Siskind, Stagg, Kopp & Dowding (1980) US Bureau of Mines Report of Investigations 8507 (Pennsylvania DEP copy)"
+    },
+    {
+     "url": "https://sid.ipe.muni.cz/ems-98_eng.pdf",
+     "title": "Grunthal (ed.) (1998) European Macroseismic Scale 1998 (EMS-98); copy hosted by Masaryk University"
+    },
+    {
+     "url": "https://pubs.usgs.gov/tm/2005/12A01/pdf/508TM12-A1.pdf",
+     "title": "Wald et al., ShakeMap Manual, USGS Techniques and Methods 12-A1 (2006), reproducing Wald et al. 1999"
     }
    ],
    "note": null
@@ -10707,6 +10732,18 @@ window.DINO_DATA = {
     {
      "url": "https://www.nottinghamshire.gov.uk/media/110052/british-standard-bs5228-2009.pdf",
      "title": "BS 5228-2:2009 Code of practice for noise and vibration control on construction and open sites, Part 2: Vibration (licensed copy posted by Nottinghamshire County Council), Annex B"
+    },
+    {
+     "url": "https://dot.ca.gov/-/media/dot-media/programs/environmental-analysis/documents/env/tcvgm-apr2020-a11y.pdf",
+     "title": "Caltrans (2020) Transportation and Construction Vibration Guidance Manual, CT-HWANP-RT-20-365.01.01 (April 2020)"
+    },
+    {
+     "url": "https://rosap.ntl.bts.gov/view/dot/37056/dot_37056_DS1.pdf",
+     "title": "FTA (2018) Transit Noise and Vibration Impact Assessment Manual, FTA Report No. 0123 (Volpe Center), ROSA P copy of the official PDF"
+    },
+    {
+     "url": "https://assets.watercare.co.nz/media/peter_millar_appendix_b_9d042ff732.pdf",
+     "title": "Watercare Services (Auckland) evidence, P. Millar, Appendix B 'Review of vibration standards' (reproduces DIN 4150-3:1999 Table 1)"
     }
    ],
    "note": null
@@ -10723,6 +10760,10 @@ window.DINO_DATA = {
     {
      "url": "https://pubs.usgs.gov/tm/2005/12A01/pdf/508TM12-A1.pdf",
      "title": "Wald et al., ShakeMap Manual, USGS Techniques and Methods 12-A1 (2006), reproducing Wald et al. 1999"
+    },
+    {
+     "url": "https://www.iitk.ac.in/nicee/wcee/article/13_1320.pdf",
+     "title": "Takahashi, Saito, Azuhata & Ohtomo (2004) Shaking table test on indoor human response and evacuation action limit in strong ground motion, 13th WCEE Paper 1320"
     }
    ],
    "note": null
@@ -11413,7 +11454,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Comic switches: airblast at which people start to notice rattling: about 120 dB on a 6 Hz meter",
-   "value": "Rattling complaints above about 120 dB on the 6 Hz measuring system (20 Pa as read on that meter; about 36 Pa unfiltered, our conversion: see airblast_rattle_onset_unfiltered); at 134 dB (100 Pa; 0.1 Hz system) 5–10% of homes show rattling or fright disturbances",
+   "value": "Rattling complaints above about 120 dB on the 6 Hz measuring system (20 Pa as read on that meter; about 36 Pa unfiltered, our conversion: see the row \"Rattling onset as an unfiltered peak pressure\"); at 134 dB (100 Pa; 0.1 Hz system) 5–10% of homes show rattling or fright disturbances",
    "status": "verified",
    "sources": [
     {
@@ -11733,7 +11774,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Growth: airblast levels that rattle houses but do no damage (US Bureau of Mines)",
-   "value": "Safe limit for houses: 134 dB on a 0.1 Hz high-pass meter (0.0145 psi, 100 Pa). Rattling complaints begin above about 120 dB on a 6 Hz meter (about 36 Pa unfiltered by our conversion: airblast_rattle_onset_unfiltered); some homes still rattle below the safe limit",
+   "value": "Safe limit for houses: 134 dB on a 0.1 Hz high-pass meter (0.0145 psi, 100 Pa). Rattling complaints begin above about 120 dB on a 6 Hz meter (about 36 Pa unfiltered by our conversion: see the row \"Rattling onset as an unfiltered peak pressure\"); some homes still rattle below the safe limit",
    "status": "verified",
    "sources": [
     {
@@ -11856,7 +11897,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Growth: taylor's expanding sphere (1946), as described by Courant & Friedrichs",
+   "label": "Growth: Taylor's expanding sphere (1946), as described by Courant & Friedrichs",
    "value": "A sphere expanding at constant speed drives a constant-speed shock; the air behind it keeps compressing up to the surface; the shock is much weaker than a flat piston's at the same speed",
    "status": "verified",
    "sources": [
@@ -12281,7 +12322,7 @@ window.DINO_DATA = {
     { id: 'least', label: 'Least disruptive (default)' },
     { id: 'ceiling', label: 'Courtesy ceiling' },
     { id: 'rattle', label: 'Rattle the windows', loud: true },
-    { id: 'plaster', label: 'Crack the plaster next door', loud: true },
+    { id: 'plaster', label: 'Risk cracking the plaster next door', loud: true },
     { id: 'windows', label: 'Break windows across the street', loud: true },
     { id: 'ground', label: 'Break the ground under him', loud: true },
     { id: 'houses', label: 'Flatten the houses next door', loud: true },
@@ -12742,7 +12783,7 @@ window.DINO_DATA = {
         const T = state.growT, dp = G.pAt(T), u = G.uAt(T);
         const safe = T >= G.T * (1 - 1e-9);
         items.push('Shortest harmless time: ' + fmtTime(G.T) + ', set by ' + ({ shove: 'how fast the top of his head rises: anything above or beside him has to be able to get out of the way (0.25 m/s, the reduced robot speed OSHA’s Technical Manual calls slow enough for a person to get out of the way; borrowed from robot safety, not tested for this case)', pressure: 'the air he pushes aside: a pressure pulse on someone ' + fmtDist(P.GROW.GAP) + ' from him, kept under 100 Pa (134 dB, the US Bureau of Mines’ safe level for houses)', lift: 'keeping his feet on the ground while his middle rises' }[G.by]) + '. The air alone would allow ' + fmtTime(G.Tp) + '.');
-        items.push('Over ' + fmtTime(T) + (safe ? ' it is harmless: ' : ' it is not: ') + 'the air pulse ' + fmtDist(P.GROW.GAP) + ' from him peaks at ' + fmtSI(dp, 'Pa') + ' (windows break from 3.4 kPa) and the top of his head rises at up to ' + speedOnly(u) + '. The growth curve starts and stops smoothly (our choice).');
+        items.push('Over ' + fmtTime(T) + (safe ? ' it is harmless: ' : ' it is not: ') + 'the air pulse ' + fmtDist(P.GROW.GAP) + ' from him peaks at ' + fmtSI(dp, 'Pa') + ' (windows usually shatter from 3.4–6.9 kPa; weak or cracked panes from about 0.4 kPa) and the top of his head rises at up to ' + speedOnly(u) + '. The growth curve starts and stops smoothly (our choice).');
       } else items.push('Pure density: he doesn’t get any bigger, so nothing around him is pushed aside. Only his weight changes.');
     }
     if (state.absorb === 'instant' || state.absorb === 'runaway') {
@@ -12752,7 +12793,7 @@ window.DINO_DATA = {
         const win = (Ex, dp) => P.blastRadius(Ex, dp);
         const wLo = win(I.Elo, 6900), wHi = win(I.Ehi, 3400);
         items.push('All at once: over ' + fmtTime(I.tau) + ', the time sound takes to cross his new body (our choice of timescale; truly instant would need unlimited energy). He grows from his soles (our choice; an open question for the owners): his sides move out at about ' + speedOnly(I.u) + ' and the top of his head rises at ' + speedOnly(I.uHead) + (I.uHead >= K.a0 ? ' (' + fmtMach(I.uHead) + ')' : '') + '.');
-        const winText = I.dpHi < 3400 ? ', too little to break windows (that takes about 3.4 kPa).' : ': windows break out to about ' + fmtDist(wLo) + '–' + fmtDist(wHi) + ' from his middle.';
+        const winText = I.dpHi < 3400 ? ', below the 3.4–6.9 kPa at which windows usually shatter (Glasstone & Dolan); weak or cracked panes can break from about 0.4–0.7 kPa (US Bureau of Mines).' : ': windows break out to about ' + fmtDist(wLo) + '–' + fmtDist(wHi) + ' from his middle.';
         items.push('The air at his surface jumps by ' + fmtSI(I.dpLo, 'Pa') + ' to ' + fmtSI(I.dpHi, 'Pa') + '. ' + (state.absorb === 'runaway' ? 'In runaway mode that blast’s energy (' + fmtTNT(I.Elo) + ' to ' + fmtTNT(I.Ehi) + ') is taken back as growth too, so nothing outside breaks.' : 'As a blast that is ' + fmtTNT(I.Elo) + ' to ' + fmtTNT(I.Ehi) + winText) + ' Rough: the low end treats him as a ball, the high end as flat pistons.');
         const push = 'Momentum isn’t absorbed: his middle rises ' + fmtDist(gB.dH / 2) + ' in that time, so the ground has to push him up with an extra ' + fmtSI(I.Fground - I.grown.m * g, 'N') + ' on top of his new weight (' + fmtSI(I.groundPressure, 'Pa') + ' under his feet in all). ';
         items.push(push + (bolted ? 'Bolted to the planet, he stays put and the Earth takes it.'
@@ -13351,8 +13392,8 @@ window.DINO_DATA = {
     box.append(el('p', { style: 'margin:0', text: capital(ref.short) + ': ' + fmtSI(E, 'J') + ', which becomes ' + fmtMass(E / (K.c * K.c)) + ' of mass. From ' + fmtMass(c.body.m) + ' and ' + fmtDist(c.body.H) + ':' }));
     // how firm each energy is (research/final-environment.json and final-presence.json)
     const firm = {
-      krakatoa: 'Claimed: 8.4 × 10¹⁷ J (200 Mt) is a popular figure. Published estimates run from about 10¹⁷ to 6.3 × 10¹⁸ J; the air wave alone needed 100–150 Mt, 4.2–6.3 × 10¹⁷ J (Harkrider & Press 1967).',
-      chicxulub: 'Disputed: published estimates run from about 10²³ to 10²⁴ J; Morgan et al. (2022) give about 5 × 10²³ J from the crater. The lab uses 4.2 × 10²³ J, as the brief does.',
+      krakatoa: 'Claimed: 8.4 × 10¹⁷ J (200 Mt) is a popular figure. Figures quoted in encyclopedias and a popular book run from about 10¹⁷ to 6.3 × 10¹⁸ J (as collected in an unrefereed preprint, Lobanovsky 2013); a refereed study of the air wave alone needed 100–150 Mt, 4.2–6.3 × 10¹⁷ J (Harkrider & Press 1967).',
+      chicxulub: 'Disputed: Wikipedia’s summary of the literature gives about 10²³ to 10²⁴ J; Morgan et al. (2022) give about 5 × 10²³ J from the crater. The lab uses 4.2 × 10²³ J, as the brief does.',
     }[ref.id];
     if (firm) box.append(el('p', { class: 'muted', style: 'margin:0', text: firm }));
     box.append(el('div', { class: 'cases-wrap' }, el('table', { class: 'cases' }, el('thead', {}, el('tr', {}, el('th', { text: 'Growth form' }), el('th', { text: 'Mass' }), el('th', { text: 'Height' }), el('th', { text: 'Density' }))), el('tbody', {}, rows))));
@@ -14523,8 +14564,8 @@ window.DINO_DATA = {
   const GOALS = {
     throw: { key: 'gThrow', unit: 'm', label: 'Goal: throw it (m)', text: (t) => (state.angle >= 90 ? 'throws the ' + objById(state.obj).short + ' ' + fmtDist(t) + ' straight up' : 'lands the ' + objById(state.obj).short + ' ' + fmtDist(t) + ' away') },
     jump: { key: 'gJump', unit: 'm', label: 'Goal: jump this high (m)', text: (t) => 'jumps ' + fmtDist(t) + ' high' },
-    stomp: { text: () => 'makes a stomp most people can just feel ' + fmtDist(state.near) + ' away (1 mm/s, the level for one isolated jolt)' },
-    punch: { fixed: CAL_PUNCH, text: (t) => 'throws a punch as fast as the strongest human’s (' + speedOnly(t) + ' in this model, inside the 6.6–12.5 m/s measured in elite boxers)' },
+    stomp: { text: () => 'makes a stomp just perceptible ' + fmtDist(state.near) + ' away (1 mm/s, what Caltrans calls barely perceptible for one jolt: sensitive people notice it; the average person needs about 3 mm/s for a jolt this short)' },
+    punch: { fixed: CAL_PUNCH, text: (t) => 'throws a punch as fast as the strongest human’s (' + speedOnly(t) + ' in this model, inside the 6.6–12.5 m/s measured in four experienced boxers)' },
     clap: { fixed: CAL_CLAP, text: (t) => 'claps as fast as the strongest human would in this model (' + speedOnly(t) + ')' },
     sprint: { key: 'gSprint', unit: 'm/s', label: 'Goal: run at (m/s)', text: (t) => 'runs at ' + speedOnly(t) },
     pull: { key: 'gPull', unit: 's', label: 'Goal: drag it 10 m in (s)', text: (t) => 'drags the ' + objById(state.obj).short + ' 10 m in ' + fmtTime(t) },
@@ -14885,7 +14926,7 @@ window.DINO_DATA = {
     const items = [];
     for (const k of WALK_TH) {
       const r = reachOf(k);
-      items.push(VIB_LABEL[k] + ' (' + fmtPPV(TH[k]) + (k === 'footing' ? ', 1 g at this step’s ' + sig(1 / st.Tpulse, 2) + ' Hz' : '') + '): ' + (r >= P.VIB.RMIN ? 'out to ' + fmtDist(r) : 'not even ' + fmtDist(P.VIB.RMIN) + ' away') + '.');
+      items.push(VIB_LABEL[k] + ' (' + fmtPPV(TH[k]) + (k === 'footing' ? ', 1 g at this step’s ' + sig(1 / st.Tpulse, 2) + ' Hz' : '') + (k === 'shimmer' ? ', side to side' : k === 'rings' ? ', up and down' : '') + (k === 'shimmer' || k === 'rings' ? '; our estimate from a ripple model, never measured, could be 10× either way' : '') + '): ' + (r >= P.VIB.RMIN ? 'out to ' + fmtDist(r) : 'not even ' + fmtDist(P.VIB.RMIN) + ' away') + '.');
     }
     out.push(happens(items, 8));
     const notes = [];
@@ -14906,14 +14947,14 @@ window.DINO_DATA = {
     const stompV = P.ppvAt(stompSrc, 3), stompH = P.ppvAt(stompSrc, 3, true);
     const byStomp = (v, th) => (v >= th ? 'nothing short of a stomp (an all-out one at this strength does it)' : 'not even an all-out stomp at this strength');
     const stepAt = (e) => (e <= 0 ? 'even soft-footed steps' : stepWord(e) + ' steps (' + sig(100 * e, 2) + '% of the way from soft-footed to a stamp)');
-    tgt.push('Canon says that, restrained, their footsteps can be felt and ripple water glasses a few metres away. On ' + sf.short + ', a glass 3 m away ripples with ' + (isFinite(ripE) ? stepAt(ripE) : byStomp(stompH, TH.shimmer)) + ', and people 3 m away feel ' + (isFinite(feelE) ? stepAt(feelE) : byStomp(stompV, TH.feelOnce)) + (both ? ' (both walking, their steps landing together)' : '') + '.');
+    tgt.push('Canon says that, restrained, their footsteps can be felt and ripple water glasses a few metres away. On ' + sf.short + ', a glass 3 m away ripples (by our ripple-model estimate, which could be 10× either way) with ' + (isFinite(ripE) ? stepAt(ripE) : byStomp(stompH, TH.shimmer)) + ', and people 3 m away feel ' + (isFinite(feelE) ? stepAt(feelE) : byStomp(stompV, TH.feelOnce)) + (both ? ' (both walking, their steps landing together)' : '') + '.');
     tgt.push('Presence stops being harmless when plaster 3 m away may crack: ' + (isFinite(plE) ? 'with ' + stepAt(plE) + '.' : 'not even when ' + (both ? 'they stamp' : 'he stamps') + '. ' + (stompV >= TH.plaster ? 'An all-out stomp at this strength would (see the Stomp tab).' : 'Not even an all-out stomp at this strength would.')));
     out.push(callout(tgt.join(' ')));
     const gd = P.groundOf(sf);
     out.push(math([
       'Pace: people’s gait scaled to his size at the same Froude number v²/(g h), hip height h = ' + sig(st.h, 3) + ' m (0.45 of his height, our estimate). Froude ' + st.Fr + ' → ' + speedOnly(st.v) + ', ' + sig(st.stepRate, 2) + ' steps a second (0.789 Fr^0.211 √(g/h), fitted to people at Froude 0.09–0.37), each foot down ' + fmtTime(st.stance) + '.',
       'Load: ' + sig(st.kLoad, 2) + '× body weight comes onto the foot over ' + fmtTime(st.tRamp) + ' (people: 1.2 at 1.5 m/s, rising 0.25 per m/s; Keller 1996, Nilsson & Thorstensson 1989). The landing adds a pulse of ' + sig(st.Fpulse / st.W, 2) + '× his weight lasting ' + fmtTime(st.Tpulse) + ': an ordinary heel strike stops 11% of him at ' + speedOnly(st.heelV) + ' in ' + fmtTime(st.heelT) + ' (Baines 2018: 0.57 m/s in 30 ms for people, scaled by √(hip height ÷ 0.9 m)); soft-footed 0.51 of that (Yoon 2025, walking quietly at the same speed); a drill stamp 6.5× (Carden 2015).',
-      'Ground shaking (elastic ground, Lamb’s problem): for a pulse of peak F lasting T, PPV = max(0.375 F/(ρ c² T r), 0.620 F/(ρ c^2.5 T^1.5 √r)) × damping, with ρ = ' + gd.rho + ' kg/m³, shear-wave speed c = ' + gd.cs + ' m/s and damping ' + gd.xi + ' for ' + sf.short + ' (estimates). Checked against one drop test (130 kg at Pisa: within about 2× from 2.5 to 60 m, contact time fitted) and loosely against elephant footfalls; footsteps themselves were never measured. Uncertain by about 3–5× either way, more past 60 m.',
+      'Ground shaking (elastic ground, Lamb’s problem): for a pulse of peak F lasting T, PPV = max(0.375 F/(ρ c² T r), 0.620 F/(ρ c^2.5 T^1.5 √r)) × damping, with ρ = ' + gd.rho + ' kg/m³, shear-wave speed c = ' + gd.cs + ' m/s and damping ' + gd.xi + ' for ' + sf.short + ' (estimates). Checked against one drop test (130 kg at Pisa: within about 2× from 2.5 to 60 m, contact time fitted), against one recorded person walking past (Steinmann 2025: about 0.002 mm/s at 53 m on sandy ground; the model gives 0.0012 for an average man) and loosely against elephant footfalls. Uncertain by about 3–5× either way, more past 60 m.',
     ]));
     return out;
   }

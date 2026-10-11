@@ -29,11 +29,12 @@ NAMES = {'Rex', "Rex's", 'Ollie', "Ollie's", 'Krakatoa', 'Chicxulub', 'Caltrans'
          'Wood', 'Panagiotopoulou', 'Larramendi', 'Alexander', 'Kram', 'Yoon', 'Rawcliffe', 'Bohannon', 'Nilsson', 'Tudor-Locke', 'Fukuchi',
          'Harkrider', 'Morgan', 'Taylor', 'Siskind', 'Murray', 'Wald', 'Fraser', 'Cochran', 'Stapp', 'Kinney', 'Lamb', 'Lamb’s', "Lamb's",
          'Mortimer', 'Wijayaraja', 'Hiller', 'Whiffen', 'Reiher', 'Wiss', 'Takahashi', 'Pisa', 'Etosha', 'Africa', 'African', 'Asian', 'Sri',
-         'Cauchy', "Cauchy's", 'Mayne', 'Bornitz', 'Sutton', 'Woods', 'Whiffin', 'Irish', 'Atherton', 'Newton', "Newton's", 'Faraday', 'Rayleigh', 'Bondi', 'Jurassic', 'Earth', "Earth's", 'Mach', 'Froude', 'OSHA', 'ASTM', 'NASA'}
+         'Cauchy', "Cauchy's", 'Mayne', 'Bornitz', 'Sutton', 'Woods', 'Whiffin', 'Irish', 'Atherton', 'Sirius', 'Newtonian', 'Schwarzschild', 'Buchdahl', 'Stevenson', 'World', 'Taylor', 'Newton', "Newton's", 'Faraday', 'Rayleigh', 'Bondi', 'Jurassic', 'Earth', "Earth's", 'Mach', 'Froude', 'OSHA', 'ASTM', 'NASA'}
 
 
 def lower_first(t):
     w = t.split(' ')[0].rstrip(':,;')
+    w = w[:-2] if w.endswith("'s") or w.endswith('’s') else w
     if w in NAMES or w.split('/')[0] in NAMES or w.split('–')[0] in NAMES or '/' in w or (len(w) > 1 and (w[1].isupper() or w[1].isdigit())) or any(ch.isdigit() for ch in w) or w[0] in '“"(':
         return t
     return t[0].lower() + t[1:]
@@ -392,7 +393,7 @@ for topic, prefix in [('density', 'Weight'), ('duo', None), ('presence', None)]:
         area = PRESENCE_AREA.get(f.get('category'), f.get('category', 'Rex and Ollie')) if topic == 'presence' else f.get('category', 'Rex and Ollie')
         label = (prefix or area) + ': ' + lower_first(f['label']) if f['label'] else f['key']
         # the vaporisation row draws on more than two sources (one per material): show them all
-        row(label, f['display'], [f['key']], note=None, extra_sources=[{'url': x['url'], 'title': x.get('title') or ''} for x in f['sources'][2:]] if f['key'] in ('heat_to_vaporise_per_kg',) else None)
+        row(label, f['display'], [f['key']], note=None, extra_sources=[{'url': x['url'], 'title': x.get('title') or ''} for x in f['sources'][2:]] if f['key'] in ('heat_to_vaporise_per_kg',) or f['key'].startswith('thr_rec_') else None)
 
 data = dict(tiers=tiers, surfaces=[{k: v for k, v in s.items() if not k.startswith('k_')} for s in surfaces], objects=objects,
             energyRefs=energy, overpressure=overpressure, heights=heights, speeds=speeds, calibration=calibration,

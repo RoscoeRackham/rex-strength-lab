@@ -486,7 +486,7 @@
      "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:11415629%20AND%20SRC:MED&resultType=core&format=json"
     }
    ],
-   "notes": "1.2 × 3,007 kg × 9.81 = 35.4 kN; range 1.0–1.5 BW (29.5–44.2 kN). Pressure = force / sole area (rex_ollie_picture_build, an estimate from the picture: Rex 0.31 m², Ollie 0.15 m²): Rex 95 / 114 / 143 kPa; Ollie 197 / 236 / 295 kPa at 1.0 / 1.2 / 1.5 BW. These are sole averages; real soles load unevenly (an elephant's local peaks are about twice its average). A walking biped carries its whole weight on one foot at a time. Floor: averaged over its stance, each foot carries 1/(2 × duty factor) of body weight, 0.71–0.91 BW for duty 0.55–0.7 (0.83 at 0.6); the peak must exceed that, so even soft-footed walking cannot drop the peak much below about 0.9–1.0 BW (estimate). Verifier: recomputed; corrected the floor range (the recommendation's '0.85–1.0' was wrong). Review round 1 (data lens): status estimate (was derived): the numbers rest on estimated inputs (sole areas from the picture; the side factor and the growth profile).",
+   "notes": "1.2 × 3,007 kg × 9.81 = 35.4 kN; range 1.0–1.5 BW (29.5–44.2 kN). Pressure = force / sole area (rex_ollie_picture_build, an estimate from the picture: Rex 0.31 m², Ollie 0.15 m²): Rex 95 / 114 / 143 kPa; Ollie 197 / 236 / 295 kPa at 1.0 / 1.2 / 1.5 BW. These are sole averages; real soles load unevenly (an elephant's local peaks are about twice its average). A walking biped carries its whole weight on one foot at a time. Floor: averaged over its stance, each foot carries 1/(2 × duty factor) of body weight, 0.71–0.91 BW for duty 0.55–0.7 (0.83 at 0.6); the peak must exceed that, so even soft-footed walking cannot drop the peak much below about 0.9–1.0 BW (estimate). Verifier: recomputed; corrected the floor range (the recommendation's '0.85–1.0' was wrong). Review round 1 (data lens): status estimate (was derived): the pressures use the sole areas measured from the picture (an estimate).",
    "who_when": "Computed 2026"
   },
   {
@@ -536,7 +536,7 @@
    "key": "step_rex_ollie_stamp_load",
    "category": "presence_step",
    "label": "Force of a deliberate drill-style stamp by Rex or Ollie (soldiers' measured multiples, scaled)",
-   "status": "derived",
+   "status": "estimate",
    "value_si": 192000,
    "unit_si": "N",
    "low_si": 100000,
@@ -552,7 +552,7 @@
      "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:28800005%20AND%20SRC:MED&resultType=core&format=json"
     }
    ],
-   "notes": "Multiples × 29.5 kN: 3.4 BW (drop landing, reported) 100 kN; 4.4 BW (untrained men's mean) 130 kN; 6.5 BW (trained men's mean at the halt) 192 kN; 6.6 BW (highest group mean) 195 kN; 8 BW 236 kN. Pressure on Rex's 0.31 m² paw: 324 / 419 / 619 kPa (761 at 8 BW); on Ollie's 0.15 m² boot: 669 / 865 / 1,278 kPa (1,573 at 8 BW). Loading rates of 300–1,000 BW/s give 9–29 MN/s. Time to peak 16–36 ms in people, about 20–45 ms if scaled by 1.25 (uncertain). Assumes they stamp like soldiers at human effort, and that contact stiffness scales with body size (a heel pad or boot does not). Above that, the Stomp model takes over. low_si and high_si span the 3.4–6.6 BW means. Verifier: numbers reproduce; 6.5 BW is a group mean (SD 1.5), not 'the human-effort ceiling'; forces are rigid-plate values that soft ground would reduce.",
+   "notes": "Multiples × 29.5 kN: 3.4 BW (drop landing, reported) 100 kN; 4.4 BW (untrained men's mean) 130 kN; 6.5 BW (trained men's mean at the halt) 192 kN; 6.6 BW (highest group mean) 195 kN; 8 BW 236 kN. Pressure on Rex's 0.31 m² paw: 324 / 419 / 619 kPa (761 at 8 BW); on Ollie's 0.15 m² boot: 669 / 865 / 1,278 kPa (1,573 at 8 BW). Loading rates of 300–1,000 BW/s give 9–29 MN/s. Time to peak 16–36 ms in people, about 20–45 ms if scaled by 1.25 (uncertain). Assumes they stamp like soldiers at human effort, and that contact stiffness scales with body size (a heel pad or boot does not). Above that, the Stomp model takes over. low_si and high_si span the 3.4–6.6 BW means. Verifier: numbers reproduce; 6.5 BW is a group mean (SD 1.5), not 'the human-effort ceiling'; forces are rigid-plate values that soft ground would reduce. Review round 2 (data lens): status estimate (was derived): the force is canon mass times a measured multiple, but the pressures use the sole areas measured from the picture (an estimate).",
    "who_when": "Computed 2026"
   },
   {
@@ -746,7 +746,7 @@
      "url": "https://app.pan.pl/archive/published/app61/app001362014.pdf"
     }
    ],
-   "notes": "Elephant: 0.55 × 3,000 kg × 9.81 = 16.2 kN per forefoot at a walk; average pressure over 0.128–0.075 m² is 126–216 kPa. Rex and Ollie: 35.4 kN at 1.2 BW; 114 kPa (Rex) and 236 kPa (Ollie), using the picture-measured sole areas (estimates). Ratios: force 2.18; Rex's pressure 0.53–0.90, Ollie's 1.09–1.87. Timing at equal speed: at 1.2 m/s (Fr 0.1 for Rex) Rex's stance is about 0.9–1.1 s (duty factor 0.6–0.7) against the elephant's 1.5 s. Vibration comparisons need the measured elephant seismic data from the vibration topic; this fact compares only forces. Verifier: corrected 'similar pressure for Rex' (it is 0.5–0.9 ×) and moved the stance comparison to equal speed. Review round 1 (data lens): status estimate (was derived): the numbers rest on estimated inputs (sole areas from the picture; the side factor and the growth profile).",
+   "notes": "Elephant: 0.55 × 3,000 kg × 9.81 = 16.2 kN per forefoot at a walk; average pressure over 0.128–0.075 m² is 126–216 kPa. Rex and Ollie: 35.4 kN at 1.2 BW; 114 kPa (Rex) and 236 kPa (Ollie), using the picture-measured sole areas (estimates). Ratios: force 2.18; Rex's pressure 0.53–0.90, Ollie's 1.09–1.87. Timing at equal speed: at 1.2 m/s (Fr 0.1 for Rex) Rex's stance is about 0.9–1.1 s (duty factor 0.6–0.7) against the elephant's 1.5 s. Vibration comparisons need the measured elephant seismic data from the vibration topic; this fact compares only forces. Verifier: corrected 'similar pressure for Rex' (it is 0.5–0.9 ×) and moved the stance comparison to equal speed. Review round 1 (data lens): status estimate (was derived): the pressure ratios use the sole areas measured from the picture (an estimate).",
    "who_when": "Computed 2026"
   },
   {
@@ -3542,7 +3542,7 @@
    "unit_si": "m/s",
    "low_si": 0.00014,
    "high_si": 0.001,
-   "display": "0.3 mm/s PPV for a walk past (range 0.14-1 mm/s). For one isolated step: the most sensitive notice from about 0.3 mm/s, most people from about 1 mm/s, the average person 2-3 mm/s",
+   "display": "0.3 mm/s PPV for a walk past (range 0.14-1 mm/s). For one isolated step: the most sensitive notice from about 0.3 mm/s, Caltrans calls about 1 mm/s barely perceptible for one jolt, and the average person needs about 2-3 mm/s for a jolt this short (USBM RI 8507 Table 15)",
    "sources": [
     {
      "title": "BS 5228-2:2009 Code of practice for noise and vibration control on construction and open sites, Part 2: Vibration (licensed copy posted by Nottinghamshire County Council), Annex B",
@@ -3565,7 +3565,7 @@
      "url": "https://www.pleanala.ie/publicaccess/EIAR-NIS/314724/5_EIAR/Volume%205%20Appendices/Chapter%2014%20Ground-borne%20Noise%20and%20Vibration/A14.1%20Relevant%20guidance%20and%20standards.pdf"
     }
    ],
-   "notes": "Set by BS 5228-2 Table B.1 ('might be just perceptible in residential environments', 0.3 mm/s), for construction vibration of roughly 8-80 Hz felt by people in buildings. Agrees with Whiffin & Leonard (0.15-0.3 mm/s, continuous), Caltrans Table 20 continuous (0.25 mm/s), the ISO 2631 residential criterion via Caltrans (about 0.3 mm/s peak) and FTA's 65 VdB (about 0.2 mm/s PPV). Low end 0.14 mm/s: the most sensitive people. High end 1.0 mm/s: Caltrans 'barely perceptible' for a single transient. For one step outdoors the closer evidence is higher: Wiss & Parmelee's subjects stood on an open platform under vertical pulses, and the average needed 2.4-3.3 mm/s for a 0.5-1 s event (RI 8507 Table 15); the Irish EPA gives 0.5-1.5 mm/s for impulsive blasting (thr_irish_epa_perception). Below about 8 Hz a higher PPV is needed. Verifier: added the outdoor and impulsive evidence.",
+   "notes": "Set by BS 5228-2 Table B.1 ('might be just perceptible in residential environments', 0.3 mm/s), for construction vibration of roughly 8-80 Hz felt by people in buildings. Agrees with Whiffin & Leonard (0.15-0.3 mm/s, continuous), Caltrans Table 20 continuous (0.25 mm/s), the ISO 2631 residential criterion via Caltrans (about 0.3 mm/s peak) and FTA's 65 VdB (about 0.2 mm/s PPV). Low end 0.14 mm/s: the most sensitive people. High end 1.0 mm/s: Caltrans 'barely perceptible' for a single transient. For one step outdoors the closer evidence is higher: Wiss & Parmelee's subjects stood on an open platform under vertical pulses, and the average needed 2.4-3.3 mm/s for a 0.5-1 s event (RI 8507 Table 15); the Irish EPA gives 0.5-1.5 mm/s for impulsive blasting (thr_irish_epa_perception). Below about 8 Hz a higher PPV is needed. Verifier: added the outdoor and impulsive evidence. Review round 2 (data lens): 'most people from about 1 mm/s' corrected; the average person's threshold for a short jolt is about 2.4-3.3 mm/s (RI 8507 Table 15).",
    "who_when": "Recommendation, this research"
   },
   {
@@ -4812,7 +4812,7 @@
    "unit_si": "Pa",
    "low_si": 20,
    "high_si": 100,
-   "display": "Rattling complaints above about 120 dB on the 6 Hz measuring system (20 Pa as read on that meter; about 36 Pa unfiltered, our conversion: see airblast_rattle_onset_unfiltered); at 134 dB (100 Pa; 0.1 Hz system) 5–10% of homes show rattling or fright disturbances",
+   "display": "Rattling complaints above about 120 dB on the 6 Hz measuring system (20 Pa as read on that meter; about 36 Pa unfiltered, our conversion: see the row \"Rattling onset as an unfiltered peak pressure\"); at 134 dB (100 Pa; 0.1 Hz system) 5–10% of homes show rattling or fright disturbances",
    "sources": [
     {
      "title": "Siskind, Stachura, Stagg & Kopp (1980), Structure Response and Damage Produced by Airblast from Surface Mining, US Bureau of Mines RI 8485, pp. 58 and 66 (PDF pp. 64, 72); copy hosted in the Resolution Copper EIS reference library",
@@ -5343,7 +5343,7 @@
    "unit_si": "Pa",
    "low_si": 100,
    "high_si": 100,
-   "display": "Safe limit for houses: 134 dB on a 0.1 Hz high-pass meter (0.0145 psi, 100 Pa). Rattling complaints begin above about 120 dB on a 6 Hz meter (about 36 Pa unfiltered by our conversion: airblast_rattle_onset_unfiltered); some homes still rattle below the safe limit",
+   "display": "Safe limit for houses: 134 dB on a 0.1 Hz high-pass meter (0.0145 psi, 100 Pa). Rattling complaints begin above about 120 dB on a 6 Hz meter (about 36 Pa unfiltered by our conversion: see the row \"Rattling onset as an unfiltered peak pressure\"); some homes still rattle below the safe limit",
    "sources": [
     {
      "title": "Siskind, Stachura, Stagg & Kopp (1980) Structure Response and Damage Produced by Airblast from Surface Mining, US Bureau of Mines Report of Investigations 8485 (copy hosted by the Resolution Copper Mine EIS)",
@@ -5439,7 +5439,7 @@
      "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:9143432%20AND%20SRC:MED&resultType=core&format=json"
     }
    ],
-   "notes": "Bystander 5 m from his final surface, on rigid ground; p_safe 100 Pa (USBM safe level) or 36 Pa (rattle onset on the 0.1 Hz basis); u_safe 0.25 m/s (OSHA TM) or 1.4 m/s (walking). Head speed unless marked side. At the shove-limited duration the air pulse is tiny: Chicxulub pure size at 250 s gives 100 Pa × (1.9/250)² ≈ 0.006 Pa. Side values use the equivalent-ball factor 0.29 (an assumption); at a reach factor of 0.8 the Chicxulub pure-size side figure would be about 200 s, still under the head limit, so the shortest safe duration does not change. The window (3.4 kPa) and eardrum (34.5 kPa) levels are fast-blast thresholds, not tested for smooth pulses lasting seconds. Pure density changes no volume; its hazards are the Weight tab's. Verifier: every entry reproduced; the 20 Pa column was replaced with 36 Pa and the side column flagged. Review round 1 (data lens): status estimate (was derived): the numbers rest on estimated inputs (sole areas from the picture; the side factor and the growth profile).",
+   "notes": "Bystander 5 m from his final surface, on rigid ground; p_safe 100 Pa (USBM safe level) or 36 Pa (rattle onset on the 0.1 Hz basis); u_safe 0.25 m/s (OSHA TM) or 1.4 m/s (walking). Head speed unless marked side. At the shove-limited duration the air pulse is tiny: Chicxulub pure size at 250 s gives 100 Pa × (1.9/250)² ≈ 0.006 Pa. Side values use the equivalent-ball factor 0.29 (an assumption); at a reach factor of 0.8 the Chicxulub pure-size side figure would be about 200 s, still under the head limit, so the shortest safe duration does not change. The window (3.4 kPa) and eardrum (34.5 kPa) levels are fast-blast thresholds, not tested for smooth pulses lasting seconds. Pure density changes no volume; its hazards are the Weight tab's. Verifier: every entry reproduced; the 20 Pa column was replaced with 36 Pa and the side column flagged. Review round 1 (data lens): status estimate (was derived): the durations use the equivalent-ball side factor and the 1 - cos growth profile (our choices).",
    "who_when": "derived",
    "values_json": "{\"columns\": \"T_pressure at 100 Pa / 36 Pa; T_shove at 0.25 m/s (head / side, equivalent-ball factor 0.29); T_shove at 1.4 m/s (head); all seconds\", \"Krakatoa 8.4e17 J, mix\": [0.003, 0.005, 0.013, 0.0036, 0.0023], \"Krakatoa 8.4e17 J, pure size\": [0.0043, 0.0072, 0.025, 0.0073, 0.0045], \"Chicxulub 1e23 J, mix\": [0.44, 0.74, 53, 15, 9.4], \"Chicxulub 1e23 J, pure size\": [1.1, 1.8, 146, 42, 26], \"Chicxulub 4.2e23 J, mix\": [0.69, 1.2, 86, 25, 15], \"Chicxulub 4.2e23 J, pure size\": [1.9, 3.2, 250, 72, 44], \"Sun 1 s (3.8e26 J), mix\": [5.0, 8.4, 850, 240, 150], \"Sun 1 s (3.8e26 J), pure size\": [22, 37, 2600, 740, 460], \"any, pure density\": \"no volume change: no pressure pulse, no shove\"}"
   },
