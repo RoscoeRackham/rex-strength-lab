@@ -12,6 +12,8 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 - Canon change (collaborator, pull request open on `terantic/duo-mass`): Rex and Ollie were 2,700 kg *before* their tails were counted; corrected to equal total weight. Rex: 2,700 kg of body plus a 307 kg tail, about 3,007 kg. Ollie: the same total, so about 2,996 kg of body plus an 11 kg tail. Density stays 1,060 kg/m³ and the volumes follow (the front-only picture under-read both by about 12–13%).
 
+- Rex lab, restraint and presence (collaborator, planning): `rex-strength-lab/BRIEF-presence.md` drafted on `terantic/presence-brief`, for the owner's cloud session to build. Canon on restraint added to `CLAUDE.md`. Also on these branches: a "Hands and grip" assumption card (`terantic/grip`).
+
 ## Waiting on
 
 - Owner review of Build Comparison design decisions listed in `build-comparison/data/NOTES.md` ("Design decisions to review"): the edge marking, the brief's meatball sentence (false as geometry), the palette change, the stop edges, Thor's and the Thing's treatment, the group colours' contrast, and figures drawn with their arms at their rest angle.
