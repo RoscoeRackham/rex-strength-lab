@@ -1061,8 +1061,11 @@
       standRatio: ctx.groundHolds ? 0 : (body.m * K.g / feet) / qult,
       footAreaNeeded,
       gripPressure,
-      gripRatio: obj.crush ? gripPressure / obj.crush : 0,
-      plateNeeded: obj.crush ? W / obj.crush : 0,
+      // gentle hold (comic switch): his push is spread through the whole object, so his grip doesn't stress it
+      gentle: !!ctx.gentleHold,
+      gripRatio: obj.crush && !ctx.gentleHold ? gripPressure / obj.crush : 0,
+      gripRatioRaw: obj.crush ? gripPressure / obj.crush : 0,
+      plateNeeded: obj.crush && !ctx.gentleHold ? W / obj.crush : 0,
     };
   }
 
@@ -1150,8 +1153,14 @@
       canMove: !push.stalled && v > 0,
       push, v, mach: v / K.a0, Eobj, heldBack, escapeNeeded, vOut, fallsBack, landsNear, rMax,
       recoilV, recoilE,
-      gripRatio: obj.crush ? handF / contact / obj.crush : 0,
-      plateNeeded: obj.crush ? handF / obj.crush : 0,
+      gentle: !!ctx.gentleHold,
+      gripRatio: obj.crush && !ctx.gentleHold ? handF / contact / obj.crush : 0,
+      gripRatioRaw: obj.crush ? handF / contact / obj.crush : 0,
+      plateNeeded: obj.crush && !ctx.gentleHold ? handF / obj.crush : 0,
+      // mean acceleration over the throw (what a thrown person feels), and how long it lasts
+      launchG: !push.stalled && push.t > 0 && isFinite(push.t) ? v / push.t / K.g : (v > 0 ? Infinity : 0), launchT: push.t,
+      // energy the air takes from it in flight (heat and air motion): what "cool flight" absorbs, for flights that land
+      dragLoss: !fallsBack && flight.landed && !flight.relativistic ? Math.max(0, Eobj + obj.m * (K.GM / K.R_E - K.GM / (K.R_E + body.releaseHeight)) - Eimp) : null,
       sinkRatio: isFinite(anc.Nmax) ? Nfeet / anc.Nmax : 0,
       flight, Eimpact: Eimp,
       crater: crater.D, craterExtrapolated: !!crater.extrapolated,
@@ -1205,6 +1214,21 @@
     const vTerm = Math.sqrt(2 * body.m * K.g / (K.rho0 * body.Cd * body.topArea));
     const groundFails = !ctx.groundHolds && push.xB > 1e-3;
     const Eground = groundFails ? (finiteRun ? push.lossB + push.EB : Infinity) : 0;
+    // The landing: he comes down on bent legs and stops over the same leg stroke he pushed off with, so the
+    // ground takes a mean force m v^2 / (2 d) + m g for 2 d / v. Past what the ground bears, his feet punch in
+    // (rigid-foot penetration, an upper bound on depth). Soft landing (comic switch) absorbs the landing's
+    // energy instead: the momentum still reaches the ground, gently.
+    const landed = v > 0 && v < 0.01 * K.c && flight.landed;
+    const vLand = landed ? flight.vImpact : 0;
+    const Eland = landed ? keFromV(vLand, body.m) : 0;
+    const soft = !!ctx.softLanding;
+    const landF = landed && !soft ? body.m * vLand * vLand / (2 * d) + body.m * K.g : 0;
+    const landT = landed && vLand > 0 ? 2 * d / vLand : 0;
+    const landRatio = landed && !soft && !ctx.groundHolds ? landF / RB : 0;
+    const landSink = landRatio > 1 ? penetrationDepth(body.m, A2, vLand, qultFor(surface, body.footB), surface.rho || 2000) : 0;
+    const landing = { landed, v: vLand, E: Eland, F: landF, t: landT, ratio: landRatio, sink: landSink, soft, absorbed: soft ? Eland : 0,
+      // when the feet punch in, the ground takes the energy they lose doing it: the work against its bearing and inertia
+      Eground: landRatio > 1 ? Eland : 0 };
     return {
       F, push, v, mach: v / K.a0, flight, vacuumApex: vacuumApex(v, 0),
       sink: push.xB, footSpeed: push.vBmax || push.vB, groundFails, heldBack, groundLimitForce: RB,
@@ -1213,6 +1237,7 @@
       Ebody: momentumToKE(p, body.m),
       Eground, groundQuake: seismicMagnitude(Eground), groundDisrupts: Eground >= K.EARTH_BIND,
       relativistic: v > 0.01 * K.c,
+      landing,
     };
   }
   function jump(ctx) { return comicAtLeastReal(ctx, jumpOnce, (r) => r.v, sizeVmax('jump', ctx.body)); }
@@ -2668,15 +2693,18 @@
       const k = out.catch;
       const breakable = !obj.indestructible;
       // survival gate: what reaches him has to be the object, whole, before anyone can catch it
-      if (breakable && obj.crush && out.launchRatio > 1) out.result = 'crushed-launch';    // no plate spreads his push enough
+      // comic switches: gentle hold spreads the thrower's push and the catcher's stop through the whole object (no
+      // crushing by hands); cool flight absorbs the heat of drag. Neither touches the air's push on its front.
+      out.gentleT = !!ctxT.gentleHold; out.gentleC = !!ctxC.gentleHold; out.cool = !!ctxT.coolFlight;
+      if (breakable && obj.crush && out.launchRatio > 1 && !out.gentleT) out.result = 'crushed-launch';    // no plate spreads his push enough
       else if (breakable && obj.crush && out.qDynMax > obj.crush) out.result = 'breaks-up';       // Collins et al. (2005): rho v^2 > strength
-      else if (breakable && out.heat && out.heat.kind === 'destroyed') out.result = 'burns-up';
+      else if (breakable && out.heat && out.heat.kind === 'destroyed' && !out.cool) out.result = 'burns-up';
       else if (out.size > 2 * hStop) out.result = 'too-big';
       else if (!k.clean) out.result = k.canHold ? 'slams' : 'cant-hold-it';
-      else if (breakable && obj.crush && k.wholeFront > 1) out.result = 'wreckage';
+      else if (breakable && obj.crush && k.wholeFront > 1 && !out.gentleC) out.result = 'wreckage';
       else out.result = 'caught';
       out.breakAtLaunch = !!(breakable && obj.crush && rhoAt(h0) * vL * vL > obj.crush);
-      out.bursts = out.result === 'caught' && obj.id === 'baseball' && k.baseballRatio > 1;   // the first hit on his palms bursts it
+      out.bursts = out.result === 'caught' && obj.id === 'baseball' && k.baseballRatio > 1 && !out.gentleC;   // the first hit on his palms bursts it
       // the bow shock it carries hits him with it: stagnation pressure ~ rho v^2
       out.shockPa = out.vArrive > K.a0 ? rhoAt(hStop) * out.vArrive * out.vArrive : 0;
       // if he misses: on to the ground beside him
@@ -2791,7 +2819,7 @@
     E0: 9806.65,        // the law's energy unit: 1 tonne dropped 1 m, J
     k: 0.070, n: 1.4,   // m/s; placeholder until the attenuation research is in
     // thresholds, PPV in m/s (placeholders until the thresholds research is in)
-    TH: { feel: 0.3e-3, ripple: 0.3e-3, rattle: 1e-3, plaster: 5e-3, footing: 0.2 },
+    TH: { feel: 0.3e-3, ripple: 0.2e-3, rattle: 1e-3, plaster: 5e-3 },
   };
   function ppvAt(src, d) {
     if (!src || !(src.E > 0)) return 0;
@@ -2803,6 +2831,72 @@
     if (!src || !(src.E > 0)) return 0;
     if (!isFinite(src.E)) return Infinity;
     return Math.sqrt(src.E / VIB.E0) / Math.pow(v / VIB.k, 1 / VIB.n);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Presence: walking. Each step loads one foot with about WALK_LOAD x body weight (more at a brisker pace),
+  // and the foot lands with a small impact: the foot and shank (legEff) arrive at a vertical speed that grows
+  // with the effort of the step, from soft-footed to a deliberate stamp. Speeds and step rates scale with size
+  // by dynamic similarity (equal Froude number, v^2 / (g L), with L the leg length).
+  // ---------------------------------------------------------------------------
+  const WALK = {
+    LEG: 0.47,                // leg length, share of height (placeholder until research)
+    PACES: { stroll: 0.1, walk: 0.25, brisk: 0.4, fast: 0.5 },   // Froude number of each pace (placeholder)
+    STRIDE: [2.3, 0.3],       // stride / leg length = 2.3 Fr^0.3 (Alexander's dynamic-similarity fit; placeholder)
+    LOAD: [1.0, 1.5],         // peak load per step at the slowest and fastest walk, x body weight (Nilsson & Thorstensson 1989)
+    VC: { soft: 0.1, normal: 0.5, stamp: 3.0 },   // foot's vertical speed at contact for a 0.9 m human leg, m/s (placeholder)
+    LEG_REF: 0.9,             // the human leg those speeds belong to, m (placeholder)
+  };
+  // effort per step: 0 soft-footed, 0.5 an ordinary step, 1 a deliberate heavy step (a stamp)
+  function footSpeed(e, s) {
+    const V = WALK.VC, k = Math.sqrt(s);
+    const lv = e <= 0.5 ? Math.log(V.soft) + (Math.log(V.normal) - Math.log(V.soft)) * e / 0.5 : Math.log(V.normal) + (Math.log(V.stamp) - Math.log(V.normal)) * (e - 0.5) / 0.5;
+    return Math.exp(lv) * k;
+  }
+  function walkStep(body, surface, o) {
+    const opt = o || {};
+    const L = WALK.LEG * body.H, Fr = WALK.PACES[opt.pace || 'walk'] || WALK.PACES.walk;
+    const v = Math.sqrt(Fr * K.g * L);
+    const stride = WALK.STRIDE[0] * L * Math.pow(Fr, WALK.STRIDE[1]);
+    const stepRate = v / (stride / 2);
+    const frs = Object.values(WALK.PACES), fLo = Math.min(...frs), fHi = Math.max(...frs);
+    const kLoad = WALK.LOAD[0] + (WALK.LOAD[1] - WALK.LOAD[0]) * Math.min(1, Math.max(0, (Fr - fLo) / (fHi - fLo)));
+    const W = body.m * K.g;
+    const e = opt.effort == null ? 0.5 : opt.effort;
+    const s = L / WALK.LEG_REF;          // size ratio of his leg to the human reference leg
+    const vc = footSpeed(e, s);
+    const mI = body.legEff;
+    const Eimp = 0.5 * mI * vc * vc;
+    // the impact stops the foot over about its own sole width of give in the ground (placeholder), so it lasts ~ B / vc
+    const tauI = Math.max(body.footB / Math.max(vc, 1e-6), 1e-3);
+    const Fimp = mI * vc / tauI * Math.PI / 2;
+    const Fpeak = kLoad * W + Fimp;
+    const q = qultFor(surface, body.footB);
+    const pressure = Fpeak / body.footArea;
+    const ratio = opt.groundHolds ? 0 : pressure / q;
+    // footprint: the bearing-with-depth rule of the Weight tab, for one foot carrying the step's peak load
+    let sink = 0;
+    if (ratio > 1) {
+      const soil = { sand: W8.NQ.sand, gravel: W8.NQ.gravel, softclay: 1, stiffclay: 1 }[surface.id];
+      sink = soil ? (pressure - q) / ((surface.rho || 1800) * K.g * soil) : penetrationDepth(mI, body.footArea, vc, q, surface.rho || 2000);
+    }
+    return { L, Fr, v, stride, stepRate, kLoad, W, effort: e, vc, mI, Eimp, tauI, Fimp, Fpeak, pressure, q, ratio, sink, src: { E: Eimp, F: Fpeak, tau: tauI } };
+  }
+  // A walker's presence: the step, the ground shaking at a distance, and how far each threshold reaches.
+  function presence(body, surface, o) {
+    const st = walkStep(body, surface, o);
+    const reach = {};
+    for (const k of Object.keys(VIB.TH)) reach[k] = ppvReach(st.src, VIB.TH[k]);
+    return { step: st, ppv: (d) => ppvAt(st.src, d), reach };
+  }
+  // The least step effort (0..1) at which the vibration at distance d reaches threshold v; Infinity if not even a stamp.
+  function walkEffortFor(body, surface, o, v, d) {
+    const f = (e) => ppvAt(walkStep(body, surface, Object.assign({}, o, { effort: e })).src, d) >= v;
+    if (f(0)) return 0;
+    if (!f(1)) return Infinity;
+    let lo = 0, hi = 1;
+    for (let i = 0; i < 40; i++) { const mid = 0.5 * (lo + hi); if (f(mid)) hi = mid; else lo = mid; }
+    return hi;
   }
 
   // ---------------------------------------------------------------------------
@@ -3003,6 +3097,12 @@
   // density, 0.5 = the even mix), so volume grows as ratio^s, density as ratio^(1-s) and height as ratio^(s/3).
   // Momentum is never absorbed.
   // ---------------------------------------------------------------------------
+  // A person he throws: the most acceleration an ordinary, unprepared person takes with no harm, and the level
+  // that starts to injure (placeholders until the research is in; see research/final-presence.json).
+  const PASSENGER = {
+    G_SAFE: 3, G_INJURY: 10,
+    text: 'Placeholder limits until the research is in.',
+  };
   const GROW = {
     TISSUE_C: 1540,   // speed of sound in soft tissue, m/s: instant growth takes the time sound needs to cross the body
     SAFE_DP: 200,     // overpressure taken as harmless to a bystander, Pa (placeholder until research)
@@ -3137,6 +3237,6 @@
     kgRatio, overpressureAt, blastRadius, penetrationDepth,
     lift, throwObject, jump, stomp, punch, clap, sprint, pull, threshold, calibrateComic,
     throwOnce, jumpOnce, stompOnce, punchOnce, clapOnce,
-    driveStrength, VIB, ppvAt, ppvReach, RESTRAINT, GROW, formShare, grownBody, grownMakeBody, pistonOverpressure, gradualGrowth, instantGrowth, runawayGrowth,
+    driveStrength, PASSENGER, VIB, ppvAt, WALK, walkStep, presence, walkEffortFor, ppvReach, RESTRAINT, GROW, formShare, grownBody, grownMakeBody, pistonOverpressure, gradualGrowth, instantGrowth, runawayGrowth,
   };
 });

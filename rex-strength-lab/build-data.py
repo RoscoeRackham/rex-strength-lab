@@ -134,6 +134,8 @@ def obj(id, name, short, group, m, area, cd, crush=None, rho=None, L=None, crr=N
 objects = [
     obj('baseball', 'Baseball', 'baseball', 'Everyday', 0.1453, 0.00427, (0.35, 0.92), rho=680, keys=['baseball_mass', 'baseball_cross_section_area', 'cd_baseball_subsonic']),
     obj('shot', 'Shot put (men’s, 7.26 kg)', 'shot', 'Everyday', 7.26, 0.0113, SPHERE, crush=750e6, crushWhole=True, rho=8000, keys=['shot_put_men_mass', 'shot_put_cross_section_area', 'mat_grey_cast_iron']),
+    obj('person', 'A person (average US man, 90 kg)', 'person', 'People', fact('human_us_adult_male_mass')['value_si'], fact('human_projected_area')['value_si'], TUMBLE, rho=985, passenger=True,
+        keys=['human_us_adult_male_mass', 'human_projected_area']),
     obj('bowling', 'Bowling ball (16 lb)', 'bowling ball', 'Everyday', 7.257, 0.037, SPHERE, rho=1340, keys=['bowling_ball_max_mass', 'bowling_ball_cross_section_area']),
     obj('piano', 'Steinway Model D grand piano', 'piano', 'Everyday', 480, 4.3, TUMBLE, crush=10e6, rho=110, keys=['steinway_model_d_mass', 'steinway_model_d_projected_area', 'mat_hard_maple']),
     obj('motorcycle', 'Motorcycle', 'motorcycle', 'Vehicles', 183, 2.4, TUMBLE, crush=3e6, rho=100, crr=0.012, keys=['motorcycle_typical_mass', 'motorcycle_projected_area']),

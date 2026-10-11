@@ -192,6 +192,18 @@ window.DINO_DATA = {
    "crushWhole": true
   },
   {
+   "id": "person",
+   "name": "A person (average US man, 90 kg)",
+   "short": "person",
+   "group": "People",
+   "m": 90.26,
+   "area": 0.67,
+   "Cd": 1.15,
+   "CdSup": 1.75,
+   "rho": 985,
+   "passenger": true
+  },
+  {
    "id": "bowling",
    "name": "Bowling ball (16 lb)",
    "short": "bowling ball",
@@ -1736,6 +1748,18 @@ window.DINO_DATA = {
     }
    ],
    "note": "Contact pressure a hand-sized grip can apply before the structure gives way locally. Engineering estimate from the material strength and wall thickness; thin skins give far below the material’s yield strength. Solid metal all through, so the Game of catch also uses it as the strength of the whole object."
+  },
+  {
+   "label": "Mass: A person (average US man, 90 kg)",
+   "value": "199.0 lb (90.3 kg); height 68.9 in (1.750 m)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.cdc.gov/nchs/fastats/body-measurements.htm",
+     "title": "CDC NCHS FastStats - Body Measurements"
+    }
+   ],
+   "note": null
   },
   {
    "label": "Mass: Bowling ball (16 lb)",
