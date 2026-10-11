@@ -50,9 +50,11 @@ Neither can see the other's sessions, chats or memory. Anything the other person
 
 ## Build and test
 
+From the repo root; each line ends back at the root, so they run one after the other in the same shell:
+
 ```
-cd rex-strength-lab && python build-data.py && node build.js && node test/calibration.js && node test/shots.js
-cd build-calculator && node build.js && node test/test.js && node test/shots.js
+cd rex-strength-lab && python build-data.py && node build.js && node test/calibration.js && node test/shots.js && cd ..
+cd build-calculator && node build.js && node test/test.js && node test/shots.js && cd ..
 ```
 
 - On macOS and Linux the Python command may be `python3`.
