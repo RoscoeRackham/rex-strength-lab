@@ -650,7 +650,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
     });
     GAPS.forEach(function (g, i) {
       var inside = LIST.filter(function (e) { return gapOf(e) === g; });
-      var lims = LIM.filter(function (L) { return L.score > g.from && L.score < g.to; });
+      var lims = LIM.filter(function (L) { return L.headline !== false ? L.score > g.from && L.score < g.to : L.range[0] < g.to && L.range[1] > g.from; });
       var last = !g.above;
       seq.push({ kind: 'gap', id: i === 0 ? 'empty' : 'empty-' + (i + 1), gap: g, inside: inside, limits: lims, lo: g.from, hi: g.to, last: last,
         tag: 'Score ' + sc(g.from) + ' to ' + (last ? MEAT_TXT : sc(g.to)), beyond: g.from >= HUMAN_TOP - 1e-9,
@@ -698,11 +698,14 @@ details.src summary { cursor: pointer; font-weight: 600; }
       sub += listWords(item.inside.map(function (e) { return esc(e.short) + ' (' + sc(e.score.value) + ')'; })) + (item.inside.length > 1 ? ' would land here on their listed weights, but their scores are overstated: ' : ' would land here on his listed weight, but his score is overstated: ') +
         item.inside.map(function (e) { return esc(e.setting.flag ? e.setting.flag.charAt(0).toLowerCase() + e.setting.flag.slice(1) : 'not comparable') + ' (' + esc(e.short) + ')'; }).join('; ') + '. ';
     }
-    if (item.limits.length) {
-      var lw = item.limits.map(function (L) { return L.label.charAt(0).toLowerCase() + L.label.slice(1) + ' (about ' + sc(L.score) + ')'; });
-      if (item.last) sub += 'A limit of the drawn body sits at the start of this stretch: ' + esc(listWords(lw)) + ', though its band runs from ' + sc(item.limits[0].range[0]) + ' to ' + sc(item.limits[0].range[1]) + '. ' + chip('estimate') + ' ';
-      else sub += (item.limits.length > 1 ? NUMW[item.limits.length].charAt(0).toUpperCase() + NUMW[item.limits.length].slice(1) + ' limits of the drawn body fall in this stretch: ' : 'A limit of the drawn body falls in this stretch: ') + esc(listWords(lw)) + '. ' + chip('estimate') + ' ';
+    var heads = item.limits.filter(function (L) { return L.headline !== false; }), bands = item.limits.filter(function (L) { return L.headline === false; });
+    if (heads.length) {
+      var lw = heads.map(function (L) { return L.label.charAt(0).toLowerCase() + L.label.slice(1) + ' (about ' + sc(L.score) + ')'; });
+      sub += (heads.length > 1 ? NUMW[heads.length].charAt(0).toUpperCase() + NUMW[heads.length].slice(1) + ' limits of the drawn body fall in this stretch: ' : 'A limit of the drawn body falls in this stretch: ') + esc(listWords(lw)) + '. ' + chip('estimate') + ' ';
     }
+    bands.forEach(function (L) {
+      sub += 'The ' + esc(L.short) + ' limit lies somewhere from ' + sc(L.range[0]) + ' to ' + sc(L.range[1]) + (L.range[0] < g.from || L.range[1] > g.to ? ', across this stretch and beyond' : '') + ': where exactly depends on a model no study has tested. ' + chip('estimate') + ' ';
+    });
     if (item.last) { var r = MEAT / g.from; sub += MEAT_TXT + ' is more than ' + (NUMW[Math.floor(r)] || fmt.sep(Math.floor(r), 0)) + ' times ' + esc(byId(g.below).short) + '\'s top score.'; }
     else sub += gapStep(g) + 'Step 2 fills it with figures drawn to order, each labelled “measured from art”.';
     out.sub = sub;
@@ -893,9 +896,17 @@ details.src summary { cursor: pointer; font-weight: 600; }
       var html = '<span class="end" style="left:' + (x0 - 3).toFixed(0) + 'px;top:' + (wallH + 8) + 'px">' + sc(g.from) + '</span><span class="end" style="right:' + (W - x1 - 3).toFixed(0) + 'px;top:' + (wallH + 8) + 'px">' + (item.last ? MEAT_TXT : sc(g.to)) + '</span>';
       var taken = [];
       item.limits.forEach(function (L) {
-        var x = X(L.score);
-        svgEl('line', { x1: x, x2: x, y1: head, y2: wallH, stroke: 'var(--chalk)', 'stroke-width': 1.5 }, svg);
-        var txt = L.short.toUpperCase() + ' · ' + sc(L.score), w = txt.length * 7 + 8;
+        var x;
+        if (L.headline === false) {
+          // A band, not a line: shade the part of the stretch it covers.
+          var a = X(Math.max(g.from, L.range[0])), b = X(Math.min(top, L.range[1]));
+          svgEl('rect', { x: a, y: head, width: Math.max(2, b - a), height: wallH - head, fill: 'var(--chalk-band)', stroke: 'var(--chalk)', 'stroke-width': 1 }, svg);
+          x = a;
+        } else {
+          x = X(L.score);
+          svgEl('line', { x1: x, x2: x, y1: head, y2: wallH, stroke: 'var(--chalk)', 'stroke-width': 1.5 }, svg);
+        }
+        var txt = L.short.toUpperCase() + ' · ' + (L.headline === false ? sc(L.range[0]) + '–' + sc(L.range[1]) : sc(L.score)), w = txt.length * 7 + 8;
         var left = Math.max(2, Math.min(W - w - 2, x + 4 + w > W ? x - w - 4 : x + 4)), row = 0;
         while (taken.some(function (t) { return t.row === row && left < t.r && left + w > t.l; })) row++;
         taken.push({ l: left, r: left + w, row: row });
@@ -1176,7 +1187,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
     var rows = [];
     LIST.forEach(function (e) { rows.push({ v: e.score.value, kind: 'build', e: e }); });
     (ANCH.natural || []).concat(ANCH.enhanced || []).forEach(function (a) { rows.push({ v: a.value, kind: 'anchor', a: a }); });
-    LIM.forEach(function (L) { rows.push({ v: L.score, kind: 'limit', L: L }); });
+    LIM.forEach(function (L) { rows.push({ v: L.headline !== false ? L.score : L.range[0], kind: 'limit', L: L }); });
     GAPS.forEach(function (g) { rows.push({ v: g.from + 1e-6, kind: 'gap', g: g }); });
     rows.sort(function (x, y) { return x.v - y.v; });
     rows.push({ v: MEAT, kind: 'meat' });
@@ -1201,8 +1212,8 @@ details.src summary { cursor: pointer; font-weight: 600; }
         return '<div class="fp-row r-anchor"><span class="nm"><span class="sw" style="background:transparent;border-radius:50%"></span>' + esc(an.label) + '</span><span class="tk">' + m2 + off(rg ? rg[0] : an.value, rg ? rg[1] : an.value) + '</span><span class="vl">' + (rg ? scr(rg[0], rg[1]).replace(/^about /, '') : sc(an.value)) + chip(an.status) + '</span></div>';
       }
       if (r.kind === 'limit') {
-        var L = r.L, m3 = L.range[0] <= dom.hi ? '<span class="pill lim" style="left:' + P(L.range[0]).toFixed(2) + '%;width:' + Math.max(0.8, P(L.range[1]) - P(L.range[0])).toFixed(2) + '%"></span>' + (L.score <= dom.hi ? '<span class="tick lim" style="left:' + P(L.score).toFixed(2) + '%"></span>' : '') : '';
-        return '<div class="fp-row r-limit"><span class="nm">Limit: ' + esc(L.label.charAt(0).toLowerCase() + L.label.slice(1)) + '</span><span class="tk">' + m3 + off(L.range[0], L.range[1]) + '</span><span class="vl">' + sc(L.score) + ' (' + scr(L.range[0], L.range[1]).replace(/^about /, '') + ')' + chip('estimate') + '</span></div>';
+        var L = r.L, hd = L.headline !== false, m3 = L.range[0] <= dom.hi ? '<span class="pill lim" style="left:' + P(L.range[0]).toFixed(2) + '%;width:' + Math.max(0.8, P(L.range[1]) - P(L.range[0])).toFixed(2) + '%"></span>' + (hd && L.score <= dom.hi ? '<span class="tick lim" style="left:' + P(L.score).toFixed(2) + '%"></span>' : '') : '';
+        return '<div class="fp-row r-limit"><span class="nm">Limit: ' + esc(L.label.charAt(0).toLowerCase() + L.label.slice(1)) + '</span><span class="tk">' + m3 + off(L.range[0], L.range[1]) + '</span><span class="vl">' + (hd ? sc(L.score) + ' (' + scr(L.range[0], L.range[1]).replace(/^about /, '') + ')' : scr(L.range[0], L.range[1])) + chip('estimate') + '</span></div>';
       }
       if (r.kind === 'gap') {
         var g = r.g, inside = LIST.some(function (e) { return e.comparable !== 'yes' && e.score.value > g.from && e.score.value < g.to; });
@@ -1255,7 +1266,10 @@ details.src summary { cursor: pointer; font-weight: 600; }
     var start = Figure.human(T, 1.8, g, {}, { buttockFit: BuildCalc.FRUSTUM.M.buttock });
     var Hd = 200, W = 200;
     var cards = [{ big: sc(main.score_at_f1), range: null, label: 'The median soldier\'s own shape', d: 'Scored lean (7.5% fat), like the limits and Rex and Ollie. His real score, at his own body fat, is ' + sc(byId(main.id).score.value) + '.', parts: start.front, hot: null }];
-    LIM.forEach(function (L) { cards.push({ big: sc(L.score), range: scr(L.range[0], L.range[1]) + ' across six templates', label: L.label, d: L.definition, parts: L.figure.parts, hot: HOT[L.id] }); });
+    LIM.forEach(function (L) {
+      cards.push(L.headline === false ? { big: scr(L.range[0], L.range[1]), range: L.models ? 'about ' + sc(L.models.contact_geometry) + ' by contact geometry; about ' + sc(L.models.steep_bmi_fit) + ' if bend falls as with body fat' : null, label: L.label, d: L.definition, parts: L.figure.parts, hot: HOT[L.id] } :
+        { big: sc(L.score), range: scr(L.range[0], L.range[1]) + ' across six templates', label: L.label, d: L.definition, parts: L.figure.parts, hot: HOT[L.id] });
+    });
     el.innerHTML = '';
     cards.forEach(function (c) {
       var card = document.createElement('div'); card.className = 'limit';
@@ -1293,7 +1307,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
     $('fatCard').innerHTML = '<h3>Body fat, the biggest unknown</h3><p>Only a few builds have a measured body fat. The rest take a range for their group, so every score is a range; the tick is the working value. No Marvel or DC source gives any character\'s body fat.</p>' +
       '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Group</th><th>Range</th><th>Working</th></tr></thead><tbody>' +
       Object.keys(cls).map(function (k) { var c = cls[k]; return '<tr><td>' + esc(c.label) + '</td><td class="n">' + pc(c.range_pct[0]) + '–' + pc(c.range_pct[1]) + '%</td><td class="n">' + pc(c.working_pct) + '%</td></tr>'; }).join('') +
-      '</tbody></table></div><p>Soldiers\' body fat comes from the US Army\'s 2023 one-site tape equation, ± 4 points. Builds with their own measured value use it, ± 2 to 3 points for the method.</p>';
+      '</tbody></table></div><p>Soldiers\' body fat is estimated from waist and weight with two equations fitted to soldiers\' DXA scans (the Army\'s official 2023 equation and Taylor 2024\'s): the mean of the two, with a range covering both plus their 3.4-point error. Builds with their own measured value use it, ± 2 to 3 points for the method. Different DXA machines and methods (DXA, skinfolds, underwater weighing) also differ by a point or two.</p>';
   }
   function renderIgnores() { $('ignores').innerHTML = (C.ignores || []).map(function (t) { return '<li>' + t + '</li>'; }).join(''); }
   function renderSources() {

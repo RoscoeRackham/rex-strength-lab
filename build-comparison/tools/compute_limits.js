@@ -79,6 +79,9 @@ function run() {
     const fig = make(main[k].f, Math.max(20, Math.min(80, rest)));
     return Object.assign({}, L[k].text, {
       id: k, score: main[k].score, range: [Math.min.apply(null, scores), Math.max.apply(null, scores)],
+      // false when the place depends on an untested model choice: then the page shows only the band.
+      headline: L[k].headline !== false,
+      models: k === 'face' && faceLow != null ? { contact_geometry: main[k].score, steep_bmi_fit: faceLow } : undefined,
       arm_rest_angle_deg: round(rest, 1), figure: { H, parts: slimParts(fig.front) },
     });
   });

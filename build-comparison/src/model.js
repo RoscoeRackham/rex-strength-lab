@@ -29,6 +29,12 @@
   function ballScore(density, fatPct) { return REF_H * density * Math.PI / 6 * (1 - fatPct / 100); }
   /** US Army one-site body-fat equation (men, AD 2023-11): weight in lb, navel waist in inches. */
   function armyBodyFat(weightKg, waistM) { return -26.97 - 0.12 * (weightKg / 0.45359237) + 1.99 * (waistM / 0.0254); }
+  /**
+   * Taylor 2024's one-site equation for men, fitted to 1,261 soldiers' DXA (RMSE 3.35 points).
+   * On a cohort of the same size it reads about 2.5 points above the official equation, which
+   * reads low against DXA (research/round1/verify_fat.json).
+   */
+  function taylorBodyFat(weightKg, waistM) { return -27.05 - 0.12 * (weightKg / 0.45359237) + 2.06 * (waistM / 0.0254); }
 
   /**
    * Bind the model to its data.
@@ -46,9 +52,10 @@
         return { value: own.value, lo: Math.max(0, own.value - e), hi: own.value + e, status: own.status, basis: s.fat.basis, cls: null, own: true };
       }
       if (s.fat && s.fat.kind === 'army_equation') {
+        // The mean of the two DXA-fitted Army equations; the range covers both, plus their error.
         var waist = b.girths.waist.value_m, w = b.weight_kg.value;
-        var v = armyBodyFat(w, waist), e2 = s.fat.error_points;
-        return { value: v, lo: v - e2, hi: v + e2, status: 'estimate', basis: s.fat.basis, cls: null, equation: true };
+        var o = armyBodyFat(w, waist), t = taylorBodyFat(w, waist), e2 = s.fat.error_points;
+        return { value: (o + t) / 2, lo: Math.min(o, t) - e2, hi: Math.max(o, t) + e2, status: 'estimate', basis: s.fat.basis, cls: null, equation: true, official: o, taylor: t };
       }
       if (s.fat && s.fat.kind === 'value') {
         return { value: s.fat.value, lo: s.fat.lo, hi: s.fat.hi, status: s.fat.status || 'estimate', basis: s.fat.basis, cls: null };
@@ -128,5 +135,5 @@
     return { evaluate: evaluate, all: all, gaps: gaps, bodyFat: bodyFat, settings: settings, classes: classes };
   }
 
-  return { REF_H: REF_H, score: score, ffmi: ffmi, plainFromScore: plainFromScore, ballScore: ballScore, armyBodyFat: armyBodyFat, create: create, isNum: isNum };
+  return { REF_H: REF_H, score: score, ffmi: ffmi, plainFromScore: plainFromScore, ballScore: ballScore, armyBodyFat: armyBodyFat, taylorBodyFat: taylorBodyFat, create: create, isNum: isNum };
 });

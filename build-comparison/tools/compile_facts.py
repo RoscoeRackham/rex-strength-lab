@@ -47,12 +47,16 @@ cp = os.path.join(ROOT, 'research', 'corrections.json')
 applied = []
 if os.path.exists(cp):
     for c in load(cp)['corrections']:
+        if c['key'] not in facts:
+            raise SystemExit('correction for an unknown fact key: ' + c['key'])
         f = facts[c['key']]
         for field, change in c.get('set', {}).items():
             f[field] = change
         for old, new in c.get('replace_notes', []):
             assert old in f['notes'], c['key'] + ': text to replace not found: ' + old[:60]
             f['notes'] = f['notes'].replace(old, new)
+        if c.get('append_notes'):
+            f['notes'] = f['notes'].rstrip() + '\n\nCorrection (verifier): ' + c['append_notes']
         for vk, vv in c.get('values', {}).items():
             f['values'][vk] = vv
         f.setdefault('applied', []).append(c['why'])

@@ -45,6 +45,13 @@ test('the Army one-site equation reproduces its published worked example (35 in,
 });
 
 // ---------- the builds ----------
+test("soldiers' body fat: the mean of the official and Taylor equations, the range covering both plus 3.35 points", () => {
+  const e = model.evaluate('ansur2_m_p50'), b = e.build;
+  const o = Compare.armyBodyFat(b.weight_kg.value, b.girths.waist.value_m), t = Compare.taylorBodyFat(b.weight_kg.value, b.girths.waist.value_m);
+  near(t - o, -0.08 + 0.07 * b.girths.waist.value_m / 0.0254, 1e-9, 'Taylor minus official');
+  near(e.bodyFat.value, (o + t) / 2, 1e-9); near(e.bodyFat.lo, Math.min(o, t) - 3.35, 1e-9); near(e.bodyFat.hi, Math.max(o, t) + 3.35, 1e-9);
+});
+
 test('the chart has every man in builds.json and no woman', () => {
   const men = builds.builds.filter((b) => b.sex === 'M').map((b) => b.id).sort();
   assert.deepStrictEqual(Object.keys(settings.builds).sort(), men);

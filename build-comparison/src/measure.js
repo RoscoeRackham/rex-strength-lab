@@ -820,6 +820,9 @@
     };
     var tw = function (y) { var t = y != null ? F.torsoRun(y) : null; return t ? t[1] - t[0] + 1 : 0; };
     site('chest', tw(F.rows.chest), sideDepth(mask, w, V.side, F.rows.chest + shiftSide), F.rows.chest, 'front width at the chest row x side depth; the side depth may include the near arm');
+    // ANSUR's chest breadth is a caliper pressed to the rib cage, so its 1.238 factor is validated
+    // only for that width; a drawn outline that shows the lats is wider and reads high.
+    if (gir.chest.value_m) { gir.chest.low_m = gir.chest.value_m * 0.8; gir.chest.note += '. Unvalidated for outlines that include the lats: those read high, so the likely range runs 20% down'; }
     site('waist', tw(F.rows.waist), sideDepth(mask, w, V.side, F.rows.waist + shiftSide), F.rows.waist, 'narrowest torso width x side depth');
     site('neck', tw(F.rows.neck), snw < Infinity ? snw : 0, F.rows.neck, 'narrowest torso width under the head x narrowest side depth');
     var legW = function (y) { var lr = F.legRuns(y); var a = lr[0] ? lr[0][1] - lr[0][0] + 1 : 0, b = lr[1] ? lr[1][1] - lr[1][0] + 1 : 0; return a && b ? (a + b) / 2 : Math.max(a, b); };
