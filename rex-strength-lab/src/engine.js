@@ -1222,11 +1222,14 @@
     const vLand = landed ? flight.vImpact : 0;
     const Eland = landed ? keFromV(vLand, body.m) : 0;
     const soft = !!ctx.softLanding;
-    const landF = landed && !soft ? body.m * vLand * vLand / (2 * d) + body.m * K.g : 0;
+    const landF = landed ? body.m * vLand * vLand / (2 * d) + body.m * K.g : 0;
     const landT = landed && vLand > 0 ? 2 * d / vLand : 0;
     const landRatio = landed && !soft && !ctx.groundHolds ? landF / RB : 0;
     const landSink = landRatio > 1 ? penetrationDepth(body.m, A2, vLand, qultFor(surface, body.footB), surface.rho || 2000) : 0;
-    const landing = { landed, v: vLand, E: Eland, F: landF, t: landT, ratio: landRatio, sink: landSink, soft, absorbed: soft ? Eland : 0,
+    // what shakes the ground: the feet and shanks (2 x legEff) stopping at touchdown, as in a stomp; his bent legs
+    // take the rest of the energy over the stroke
+    const Eimpact = landed && !soft ? 0.5 * 2 * body.legEff * vLand * vLand : 0;
+    const landing = { landed, v: vLand, E: Eland, Eimpact, F: landF, t: landT, ratio: landRatio, sink: landSink, soft, absorbed: soft ? Eland : 0,
       // when the feet punch in, the ground takes the energy they lose doing it: the work against its bearing and inertia
       Eground: landRatio > 1 ? Eland : 0 };
     return {
@@ -2818,8 +2821,15 @@
   const VIB = {
     E0: 9806.65,        // the law's energy unit: 1 tonne dropped 1 m, J
     k: 0.070, n: 1.4,   // m/s; placeholder until the attenuation research is in
-    // thresholds, PPV in m/s (placeholders until the thresholds research is in)
-    TH: { feel: 0.3e-3, ripple: 0.2e-3, rattle: 1e-3, plaster: 5e-3 },
+    // thresholds, peak particle velocity at the ground, m/s (research/final-presence.json, thr_* and ripple_*):
+    //   feel: just perceptible indoors (BS 5228-2 Table B.1, 0.3 mm/s; 0.14-1)
+    //   shimmer: a glass of water visibly ripples (derived, not measured: about 0.2 mm/s, 0.02-1)
+    //   rings: concentric rings in the glass, the film look (derived: about 0.5-1 mm/s vertical)
+    //   rattle: windows and ornaments rattle (our estimate, no standard sets it: about 1 mm/s, 0.3-3)
+    //   plasterWalk: cosmetic damage from repeated steps (Caltrans older homes, continuous: 7.6 mm/s)
+    //   plaster: cosmetic damage from one event, a stomp or a landing (US Bureau of Mines RI 8507, plaster: 12.7 mm/s)
+    //   footing: people lose their footing (estimate from earthquakes: about 300 mm/s, 80-600)
+    TH: { feel: 0.3e-3, shimmer: 0.2e-3, rings: 0.7e-3, rattle: 1e-3, plasterWalk: 7.6e-3, plaster: 12.7e-3, footing: 0.3 },
   };
   function ppvAt(src, d) {
     if (!src || !(src.E > 0)) return 0;
@@ -2945,11 +2955,16 @@
       NEAR: 5,       // people and buildings this close to him (m): estimate, the page lets the visitor change it
       STREET: 15,    // windows across a street (m): estimate
       BLOCK: 100,    // a city block (m): estimate
+      DP_HARM: 100,       // Pa, the most air blast that stays harmless at a house: 134 dB, USBM RI 8485's safe maximum (comic_airblast_safe_max)
+      DP_RATTLE: 20,      // Pa, windows start to rattle: complaints from about 120 dB (comic_airblast_rattle_onset)
       DP_WINDOWS: 6900,   // Pa, windows shatter (data: blast_window_breakage)
       DP_HOUSES: 26800,   // Pa, houses collapse (data: blast_residential_collapse)
       TOL: 0.005,    // searches stop within 0.5%
     };
     const range = (f) => (f.relativistic || f.escaped || f.orbit || f.leavesHill || f.timedOut ? Infinity : f.landed ? f.range : 0);
+    // Energy counts as an air blast only when it is let go faster than sound can carry it off: something moving
+    // past Mach 1 (a shock wave), or a fireball. Slower, it is a thump or a crash, not a blast wave.
+    const shock = (v, E) => (v >= K.a0 ? E : 0);
     // Each move: run, what it is for (goal), the fastest thing it sets moving, and what it does to the ground and air.
     const MOVES = {
       throw: {
@@ -2958,7 +2973,7 @@
         speed: (r) => (r.canMove ? r.v : 0),
         ground: (r) => r.canMove && r.sinkRatio > 1,
         crush: (r, o) => !o.gentleHold && r.canMove && r.gripRatio > 1,
-        blast: (r) => (r.canMove && r.flight && r.flight.landed ? r.Eimpact : r.canMove && r.flight && r.flight.relativistic ? r.Eobj : 0),
+        blast: (r) => (!r.canMove || !r.flight ? 0 : r.flight.relativistic ? r.Eobj : r.flight.landed ? shock(r.flight.vImpact, r.Eimpact) : 0),
         shake: (r) => ({ E: r.canMove && r.flight && r.flight.landed ? r.Eimpact : 0 }),
         where: 'where it lands',
       },
@@ -2967,9 +2982,9 @@
         goal: (r, o) => r.v > 0 && (r.relativistic || r.flight.escaped || r.flight.apex >= o.target),
         speed: (r) => r.v,
         ground: (r) => r.groundFails,
-        blast: (r) => r.Eground || 0,
+        blast: (r) => shock(r.footSpeed, r.Eground || 0),
         // the landing, if he comes back down (soft landing absorbs it)
-        shake: (r, o) => ({ E: (r.Eground || 0) + (!o.softLanding && r.v > 0 && !r.relativistic && r.flight.landed ? momentumToKE(vToMomentum(r.flight.vImpact, o.m), o.m) : 0) }),
+        shake: (r) => ({ E: (r.Eground || 0) + (r.landing ? r.landing.Eimpact : 0) }),
         where: 'around him',
       },
       stomp: {
@@ -2977,7 +2992,7 @@
         goal: (r, o) => ppvAt({ E: r.E }, o.near) >= VIB.TH.feel,
         speed: (r) => r.vFoot,
         ground: (r) => r.holeDepth >= 0.01 || r.crater > 0,
-        blast: (r) => r.E,
+        blast: (r) => shock(r.vFoot, r.E),
         shake: (r) => ({ E: r.E }),
         where: 'around him',
       },
@@ -2985,14 +3000,14 @@
         run: (c) => punch(c),
         goal: (r, o) => r.vFist >= o.target,
         speed: (r) => r.vFist,
-        blast: (r, o) => (o.silentStrike ? 0 : r.E),
+        blast: (r, o) => (o.silentStrike ? 0 : shock(r.vFist, r.E)),
         where: 'at his fist',
       },
       clap: {
         run: (c) => clap(c),
         goal: (r, o) => r.vHand >= o.target,
         speed: (r) => r.vHand,
-        blast: (r, o) => (o.silentStrike ? 0 : r.E),
+        blast: (r, o) => (o.silentStrike ? 0 : shock(r.vHand, r.E)),
         where: 'between his hands',
       },
       sprint: {
@@ -3012,7 +3027,7 @@
     // Hazards that set the courtesy ceiling: harm to people or property nearby.
     const HAZARDS = [
       { id: 'boom', test: (m, r, o) => !(o.silentStrike && m.silent) && m.speed(r) >= K.a0 },
-      { id: 'windows', test: (m, r, o) => !!m.blast && blastRadius(m.blast(r, o), R.DP_WINDOWS) >= o.near },
+      { id: 'air', test: (m, r, o) => !!m.blast && blastRadius(m.blast(r, o), R.DP_HARM) >= o.near },
       { id: 'plaster', test: (m, r, o) => !!m.shake && ppvAt(m.shake(r, o), o.near) >= VIB.TH.plaster },
       { id: 'ground', test: (m, r, o) => !!m.ground && !o.groundHolds && m.ground(r) },
       { id: 'crush', test: (m, r, o) => !!m.crush && m.crush(r, o) },
@@ -3020,7 +3035,7 @@
     MOVES.punch.silent = true; MOVES.clap.silent = true;
     // Not-so-heroic presets, at rising scales: each is the least effort that does what it says.
     const PRESETS = [
-      { id: 'rattle', test: (m, r, o) => (!!m.shake && ppvAt(m.shake(r, o), o.near) >= VIB.TH.rattle) },
+      { id: 'rattle', test: (m, r, o) => (!!m.shake && ppvAt(m.shake(r, o), o.near) >= VIB.TH.rattle) || (!!m.blast && blastRadius(m.blast(r, o), R.DP_RATTLE) >= o.near) },
       { id: 'plaster', test: (m, r, o) => !!m.shake && ppvAt(m.shake(r, o), o.near) >= VIB.TH.plaster },
       { id: 'windows', test: (m, r, o) => !!m.blast && blastRadius(m.blast(r, o), R.DP_WINDOWS) >= R.STREET },
       { id: 'ground', test: (m, r, o) => !!m.ground && !o.groundHolds && m.ground(r) },
@@ -3112,10 +3127,12 @@
       const M = MOVES[move], opt = Object.assign({ near: R.NEAR }, o || {});
       const E = M.blast ? M.blast(r, opt) : 0, src = M.shake ? M.shake(r, opt) : null;
       return {
+        air: E > 0 ? blastRadius(E, R.DP_HARM) : 0,
+        airRattle: E > 0 ? blastRadius(E, R.DP_RATTLE) : 0,
         windows: E > 0 ? blastRadius(E, R.DP_WINDOWS) : 0,
         houses: E > 0 ? blastRadius(E, R.DP_HOUSES) : 0,
         feel: src ? ppvReach(src, VIB.TH.feel) : 0,
-        ripple: src ? ppvReach(src, VIB.TH.ripple) : 0,
+        shimmer: src ? ppvReach(src, VIB.TH.shimmer) : 0,
         rattle: src ? ppvReach(src, VIB.TH.rattle) : 0,
         plaster: src ? ppvReach(src, VIB.TH.plaster) : 0,
         boom: !(opt.silentStrike && M.silent) && M.speed(r) >= K.a0,
@@ -3135,9 +3152,22 @@
   // ---------------------------------------------------------------------------
   // A person he throws: the most acceleration an ordinary, unprepared person takes with no harm, and the level
   // that starts to injure (placeholders until the research is in; see research/final-presence.json).
+  // Ride-design limits are for seated, supported riders; nobody has measured them for someone held in hands, so these
+  // are a best case. Unknown orientation (a tumbling throw, a catch face-first) takes the worst axis, eyes-front (-Gx):
+  // ASTM F2291-06a allows 2 g for up to 0.2 s and 1.5 g sustained. Injury becomes possible past what harnessed
+  // volunteers took uninjured (Eiband 1959): 45 g for 0.044 s, 40 g for 0.1 s, 25 g for 0.2 s, 13 g for 0.6 s, 10 g for 1.6 s.
   const PASSENGER = {
-    G_SAFE: 3, G_INJURY: 10,
-    text: 'Placeholder limits until the research is in.',
+    noHarm: (t) => (t <= 0.2 ? 2 : 1.5),
+    EIBAND: [[0.044, 45], [0.1, 40], [0.2, 25], [0.6, 13], [1.6, 10]],
+    injury(t) {
+      const E = PASSENGER.EIBAND;
+      if (t <= E[0][0]) return E[0][1];
+      if (t >= E[E.length - 1][0]) return E[E.length - 1][1];
+      for (let i = 1; i < E.length; i++) if (t <= E[i][0]) { const [t0, g0] = E[i - 1], [t1, g1] = E[i]; return Math.exp(Math.log(g0) + (Math.log(g1) - Math.log(g0)) * Math.log(t / t0) / Math.log(t1 / t0)); }
+      return E[E.length - 1][1];
+    },
+    // what the person feels: the push plus holding them up against gravity, n = |a + g| / g with a along the throw
+    felt: (aG, thetaDeg) => { const th = thetaDeg * Math.PI / 180; return Math.hypot(aG * Math.cos(th), aG * Math.sin(th) + 1); },
   };
   const GROW = {
     TISSUE_C: 1540,   // speed of sound in soft tissue, m/s: instant growth takes the time sound needs to cross the body
