@@ -1,0 +1,769 @@
+{
+ "about": "Build Comparison settings: which body-fat range each build uses, the score height and excluded mass for Rex and Ollie, and which comic scores are not comparable. Facts are in facts.json.",
+ "fat_classes": {
+  "everyday_us": {
+   "label": "US men, middle half (NHANES DXA, 1999-2004)",
+   "range_pct": [
+    24.1,
+    32.1
+   ],
+   "working_pct": 28.0,
+   "keys": [
+    "nhanes_dxa_bodyfat_men_1999_2004"
+   ],
+   "note": "Median and interquartile range of measured body fat in US men aged 20 and over."
+  },
+  "stage": {
+   "label": "Bodybuilders on contest day",
+   "range_pct": [
+    4,
+    10
+   ],
+   "working_pct": 6,
+   "keys": [
+    "bodyfat_range_natural_stage",
+    "barakat2022_natural_pro_peak_week_dxa",
+    "rossow2013_natural_pro_case"
+   ],
+   "note": "One contest-day value is confirmed by DXA (6.3%, Barakat 2022, one natural pro); field methods give about 4 to 7%. The 4-10% range is an estimate around them."
+  },
+  "presteroid_contest": {
+   "label": "Pre-steroid champions at their contests (estimated from photos)",
+   "range_pct": [
+    6,
+    16
+   ],
+   "working_pct": 10,
+   "keys": [
+    "kouri1995_mr_america_table2",
+    "todd2008_mr_america_reanalysis"
+   ],
+   "note": "Kouri 1995 estimated each winner's body fat blind from photographs but did not publish the estimates; Pope, who made them, later recalled they ran from about 6% to 16% (Todd 2008)."
+  },
+  "enhanced_stage": {
+   "label": "Enhanced pro bodybuilders on stage",
+   "range_pct": [
+    4,
+    8
+   ],
+   "working_pct": 5,
+   "keys": [
+    "bodyfat_range_enhanced_stage",
+    "withers1997_elite_bb_4C",
+    "rosaci2026_ifbb_pro_case"
+   ],
+   "note": "No lab measurement (DXA or 4-compartment) of a top pro on stage was found. The range rests on Withers 1997 (5.0% by 4-compartment model, five days out; drug status not stated), an IFBB pro measured at 5.9% by skinfolds, and the natural contest-day values."
+  },
+  "strongman": {
+   "label": "Strongmen and heavy lifters",
+   "range_pct": [
+    12,
+    28
+   ],
+   "working_pct": 19,
+   "keys": [
+    "bodyfat_range_strongmen_lifters",
+    "kraemer2020_elite_strongmen_dxa"
+   ],
+   "note": "Elite strongmen measured 18.7% +/- 6.2 by DXA (Kraemer 2020). No measured body fat was found for super-heavyweight weightlifters."
+  },
+  "comic_lean": {
+   "label": "Comic heroes drawn lean (assumed)",
+   "range_pct": [
+    5,
+    12
+   ],
+   "working_pct": 8,
+   "keys": [
+    "bodyfat_range_comic_characters"
+   ],
+   "note": "No body-fat figure was found in the Marvel and DC sources searched. Assumed from how they are drawn: like lean bodybuilders."
+  },
+  "comic_brute": {
+   "label": "Comic brutes (assumed)",
+   "range_pct": [
+    8,
+    20
+   ],
+   "working_pct": 12,
+   "keys": [
+    "bodyfat_range_comic_characters"
+   ],
+   "note": "No body-fat figure was found in the Marvel and DC sources searched. Assumed: muscular, less defined than stage bodybuilders."
+  },
+  "comic_everyday": {
+   "label": "Bruce Banner (assumed: like an everyday man)",
+   "range_pct": [
+    15,
+    34
+   ],
+   "working_pct": 24,
+   "keys": [
+    "bodyfat_range_comic_characters",
+    "ansur2_men_bodyfat_from_army_equation"
+   ],
+   "note": "No body-fat figure was found in the Marvel and DC sources searched. Assumed: the range estimated for US soldiers from waist and weight."
+  },
+  "duo": {
+   "label": "Rex and Ollie (owner's canon)",
+   "range_pct": [
+    5,
+    10
+   ],
+   "working_pct": 7.5,
+   "keys": [
+    "bodyfat_range_rex_ollie"
+   ],
+   "note": "5-10% from their definition and occasional vascularity; 7.5% is the working value."
+  }
+ },
+ "builds": {
+  "ansur2_m_p5": {
+   "fat": {
+    "kind": "army_equation",
+    "error_points": 3.35,
+    "basis": "Estimated from this build's navel waist and weight with two equations fitted to soldiers' DXA scans: the Army's official 2023 one-site tape equation and Taylor 2024's. The working value is their mean; the range covers both, plus their 3.4-point error. The official equation reads about 2 to 3 points low against DXA",
+    "keys": [
+     "army_one_site_tape_equation_2023",
+     "taylor2024_army_dxa_bodyfat",
+     "ansur2_men_bodyfat_from_army_equation"
+    ]
+   },
+   "short": "Army men, 5th percentile"
+  },
+  "ansur2_m_p50": {
+   "fat": {
+    "kind": "army_equation",
+    "error_points": 3.35,
+    "basis": "Estimated from this build's navel waist and weight with two equations fitted to soldiers' DXA scans: the Army's official 2023 one-site tape equation and Taylor 2024's. The working value is their mean; the range covers both, plus their 3.4-point error. The official equation reads about 2 to 3 points low against DXA",
+    "keys": [
+     "army_one_site_tape_equation_2023",
+     "taylor2024_army_dxa_bodyfat",
+     "ansur2_men_bodyfat_from_army_equation"
+    ]
+   },
+   "short": "Army men, median"
+  },
+  "ansur2_m_p95": {
+   "fat": {
+    "kind": "army_equation",
+    "error_points": 3.35,
+    "basis": "Estimated from this build's navel waist and weight with two equations fitted to soldiers' DXA scans: the Army's official 2023 one-site tape equation and Taylor 2024's. The working value is their mean; the range covers both, plus their 3.4-point error. The official equation reads about 2 to 3 points low against DXA",
+    "keys": [
+     "army_one_site_tape_equation_2023",
+     "taylor2024_army_dxa_bodyfat",
+     "ansur2_men_bodyfat_from_army_equation"
+    ]
+   },
+   "short": "Army men, 95th percentile"
+  },
+  "ansur2_m_leanheavy": {
+   "fat": {
+    "kind": "army_equation",
+    "error_points": 3.35,
+    "basis": "Estimated from this build's navel waist and weight with two equations fitted to soldiers' DXA scans: the Army's official 2023 one-site tape equation and Taylor 2024's. The working value is their mean; the range covers both, plus their 3.4-point error. The official equation reads about 2 to 3 points low against DXA",
+    "keys": [
+     "army_one_site_tape_equation_2023",
+     "taylor2024_army_dxa_bodyfat",
+     "ansur2_men_bodyfat_from_army_equation"
+    ]
+   },
+   "short": "Army men, 'lean but heavy'"
+  },
+  "ansur2_m_largest_arm": {
+   "fat": {
+    "kind": "army_equation",
+    "error_points": 3.35,
+    "basis": "Estimated from this build's navel waist and weight with two equations fitted to soldiers' DXA scans: the Army's official 2023 one-site tape equation and Taylor 2024's. The working value is their mean; the range covers both, plus their 3.4-point error. The official equation reads about 2 to 3 points low against DXA",
+    "keys": [
+     "army_one_site_tape_equation_2023",
+     "taylor2024_army_dxa_bodyfat",
+     "ansur2_men_bodyfat_from_army_equation"
+    ]
+   },
+   "short": "Army man with the largest arm"
+  },
+  "nhanes_m_median": {
+   "fat_class": "everyday_us",
+   "short": "US men, median"
+  },
+  "kouri1995_nonusers": {
+   "fat": {
+    "kind": "value",
+    "value": 12.5,
+    "lo": 9.5,
+    "hi": 15.5,
+    "status": "measured",
+    "basis": "Kouri 1995's measured group mean (skinfolds), 12.5%, plus or minus 3 points for the method",
+    "keys": [
+     "kouri1995_fulltext_methods"
+    ]
+   },
+   "short": "Kouri's non-users"
+  },
+  "chappell2019_natural_pro": {
+   "fat_class": "stage",
+   "short": "British natural pros"
+  },
+  "mr_america_1938_1954_mean": {
+   "fat_class": "presteroid_contest",
+   "short": "Mr America winners, 1938-54"
+  },
+  "steve_reeves_1947": {
+   "fat_class": "presteroid_contest",
+   "short": "Steve Reeves"
+  },
+  "ronnie_coleman": {
+   "fat_class": "enhanced_stage",
+   "short": "Ronnie Coleman"
+  },
+  "arnold_schwarzenegger": {
+   "fat_class": "enhanced_stage",
+   "short": "Arnold Schwarzenegger"
+  },
+  "dorian_yates": {
+   "fat_class": "enhanced_stage",
+   "short": "Dorian Yates"
+  },
+  "jay_cutler": {
+   "fat_class": "enhanced_stage",
+   "short": "Jay Cutler"
+  },
+  "phil_heath": {
+   "fat_class": "enhanced_stage",
+   "short": "Phil Heath"
+  },
+  "big_ramy": {
+   "fat_class": "enhanced_stage",
+   "short": "'Big Ramy' Elssbiay"
+  },
+  "sergio_oliva": {
+   "fat_class": "enhanced_stage",
+   "short": "Sergio Oliva"
+  },
+  "demoraes2019_br_national": {
+   "fat_class": "stage",
+   "short": "Brazilian contest bodybuilders"
+  },
+  "sukwong2022_thai_elite": {
+   "fat": {
+    "kind": "own",
+    "error_points": 3,
+    "basis": "The build's own measured or reported value, plus or minus 3 points for the method"
+   },
+   "short": "Thai national-team bodybuilders"
+  },
+  "mcinnis1999_bodybuilders": {
+   "fat": {
+    "kind": "own",
+    "error_points": 3,
+    "basis": "The build's own measured or reported value, plus or minus 3 points for the method"
+   },
+   "short": "Bodybuilders (McInnis 1999)"
+  },
+  "fry1991_nonelite": {
+   "fat": {
+    "kind": "own",
+    "error_points": 3,
+    "basis": "The build's own measured or reported value, plus or minus 3 points for the method"
+   },
+   "short": "Non-elite bodybuilders (Fry 1991)"
+  },
+  "brian_shaw": {
+   "fat": {
+    "kind": "own",
+    "error_points": 3,
+    "basis": "The build's own measured or reported value, plus or minus 3 points for the method"
+   },
+   "short": "Brian Shaw"
+  },
+  "withers1997_elite": {
+   "fat": {
+    "kind": "own",
+    "error_points": 2,
+    "basis": "The build's own measured value (4-compartment model or DXA), plus or minus 2 points for the method"
+   },
+   "short": "Elite bodybuilders (Withers 1997)"
+  },
+  "kraemer2020_strongmen": {
+   "fat": {
+    "kind": "own",
+    "error_points": 2,
+    "basis": "The build's own measured value (4-compartment model or DXA), plus or minus 2 points for the method"
+   },
+   "short": "Elite strongmen (Kraemer 2020)"
+  },
+  "hafthor_bjornsson": {
+   "fat_class": "strongman",
+   "short": "Hafthor Bjornsson"
+  },
+  "eddie_hall": {
+   "fat_class": "strongman",
+   "short": "Eddie Hall"
+  },
+  "lasha_talakhadze": {
+   "fat_class": "strongman",
+   "short": "Lasha Talakhadze"
+  },
+  "superman": {
+   "fat_class": "comic_lean",
+   "ranges": "none",
+   "short": "Superman",
+   "comparable_note": "DK's DC Comics Encyclopedia (2021) gives Kryptonians a “dense molecular structure”, with no figure, so his score may be too high by an amount no source gives.",
+   "comparable_keys": [
+    "dc_density_claims_fan_only"
+   ],
+   "comparable": "overstated",
+   "flag": "Kryptonian tissue said to be denser than ours"
+  },
+  "batman": {
+   "fat_class": "comic_lean",
+   "ranges": "none",
+   "short": "Batman"
+  },
+  "captain_america": {
+   "fat_class": "comic_lean",
+   "ranges": "none",
+   "short": "Captain America"
+  },
+  "thor": {
+   "fat_class": "comic_lean",
+   "ranges": "none",
+   "short": "Thor",
+   "comparable": "overstated",
+   "density_factor": [
+    2,
+    4
+   ],
+   "flag": "Tissue said to be about 3 times denser than ours",
+   "comparable_note": "Marvel's official handbook says Asgardian flesh and bone is “about three times denser than similar human tissue” (DK's encyclopedia says skin and bones), and its 2004 edition gives Thor the attributes of an Asgardian “to a much greater degree”. His listed weight is counted as if it were ordinary tissue, so his score is too high. If his tissue is 2 to 4 times as dense as ours, the same body in ordinary tissue would score {adjusted}.",
+   "comparable_keys": [
+    "asgardian_tissue_density_ohotmu",
+    "asgardian_tissue_density_dk",
+    "thor_density_adjusted_mass"
+   ]
+  },
+  "black_panther": {
+   "fat_class": "comic_lean",
+   "ranges": "none",
+   "short": "Black Panther"
+  },
+  "luke_cage": {
+   "fat_class": "comic_lean",
+   "ranges": "none",
+   "short": "Luke Cage",
+   "comparable": "overstated",
+   "flag": "Tissue said to be denser than ours",
+   "comparable_note": "Marvel says his muscle and bone tissue is very dense, but gives no figure, so his score may be too high by an amount no source gives.",
+   "comparable_keys": [
+    "luke_cage_dense_tissue"
+   ]
+  },
+  "wolverine": {
+   "fat_class": "comic_lean",
+   "ranges": "none",
+   "comparable_note": "Scored at the 195 lb (88.5 kg) Marvel gives for him without his adamantium. Marvel says the metal adds 105 lb to his frame; counting it would raise his score about one and a half times.",
+   "short": "Wolverine",
+   "flag": "Weight without his adamantium skeleton (Marvel)",
+   "comparable_keys": [
+    "wolverine_adamantium_mass"
+   ]
+  },
+  "colossus_human": {
+   "fat_class": "comic_lean",
+   "ranges": "none",
+   "short": "Colossus (human form)"
+  },
+  "hulk_savage": {
+   "fat_class": "comic_brute",
+   "ranges": "none",
+   "short": "Hulk (savage)",
+   "comparable_note": "Marvel's official handbook says his transformation adds “over 800 pounds of bone marrow and tissue”, so his weight is counted as body tissue. It also says the radiation “fortified his cellular structure”, with no figure for density.",
+   "comparable_keys": [
+    "hulk_added_mass_composition"
+   ]
+  },
+  "hulk_grey": {
+   "fat_class": "comic_brute",
+   "ranges": "none",
+   "short": "Hulk (grey)",
+   "comparable_note": "Marvel's official handbook says his transformation adds “over 800 pounds of bone marrow and tissue”, so his weight is counted as body tissue. It also says the radiation “fortified his cellular structure”, with no figure for density.",
+   "comparable_keys": [
+    "hulk_added_mass_composition"
+   ]
+  },
+  "hulk_marvelcom": {
+   "fat_class": "comic_brute",
+   "ranges": "none",
+   "short": "Hulk (Marvel.com)",
+   "comparable_note": "Marvel's official handbook says his transformation adds “over 800 pounds of bone marrow and tissue”, so his weight is counted as body tissue. It also says the radiation “fortified his cellular structure”, with no figure for density.",
+   "comparable_keys": [
+    "hulk_added_mass_composition"
+   ]
+  },
+  "juggernaut": {
+   "fat_class": "comic_brute",
+   "ranges": "none",
+   "short": "Juggernaut",
+   "comparable_note": "No source says whether his listed 900 lb includes his helmet and skullcap, which are made of a mystical metal.",
+   "comparable_keys": [
+    "juggernaut_composition"
+   ]
+  },
+  "abomination": {
+   "fat_class": "comic_brute",
+   "ranges": "none",
+   "short": "Abomination",
+   "comparable_note": "Marvel's official handbook says his transformation adds “over 800 pounds of bone marrow and muscle tissue”, so his weight is counted as body tissue.",
+   "comparable_keys": [
+    "abomination_added_mass_composition"
+   ]
+  },
+  "doomsday": {
+   "fat_class": "comic_brute",
+   "ranges": "none",
+   "short": "Doomsday",
+   "comparable_note": "No official DC statement on what his mass is made of was found; claims of denser tissue are fan-wiki only.",
+   "comparable_keys": [
+    "dc_density_claims_fan_only"
+   ]
+  },
+  "darkseid": {
+   "fat_class": "comic_brute",
+   "ranges": "none",
+   "short": "Darkseid",
+   "comparable_note": "No official DC statement on what his mass is made of was found; claims of denser tissue are fan-wiki only.",
+   "comparable_keys": [
+    "dc_density_claims_fan_only"
+   ]
+  },
+  "bane": {
+   "fat_class": "comic_brute",
+   "ranges": "none",
+   "short": "Bane",
+   "comparable_note": "Scored at his base 350 lb. DC lists 425 lb with Venom, the super-steroid, without saying what the extra 75 lb is.",
+   "comparable_keys": [
+    "bane_venom_weight"
+   ]
+  },
+  "kingpin": {
+   "ranges": "none",
+   "short": "Kingpin",
+   "fat": {
+    "kind": "value",
+    "value": 12,
+    "lo": 2,
+    "hi": 20,
+    "status": "estimate",
+    "basis": "Assumed like the other comic brutes (working 12%, up to 20%), down to 2%: Marvel says his bulk is muscle, not fat, and a fan wiki gives 9 lb of fat (2%), citing the 2004 Daredevil handbook (not verified). Marvel also likens his size to a sumo wrestler's, and sumo wrestlers are not lean",
+    "keys": [
+     "kingpin_bulk_not_fat",
+     "comic_body_fat_official",
+     "bodyfat_range_comic_characters"
+    ]
+   },
+   "comparable_note": "Marvel: “Most of Fisk's bulk is actually muscle, not fat; his enormous size is comparable to that of a sumo wrestler.”",
+   "comparable_keys": [
+    "kingpin_bulk_not_fat"
+   ]
+  },
+  "bruce_banner": {
+   "fat_class": "comic_everyday",
+   "ranges": "none",
+   "short": "Bruce Banner"
+  },
+  "thing": {
+   "fat_class": "comic_brute",
+   "ranges": "none",
+   "comparable": "uncertain",
+   "comparable_note": "Marvel describes his skin as a rock-like hide that is “actually supple”. No official source says what is under it or what it weighs, so whether his listed weight overstates his muscle is unknown.",
+   "short": "The Thing",
+   "flag": "Rock-like skin of unstated weight",
+   "comparable_keys": [
+    "thing_rocky_hide"
+   ]
+  },
+  "colossus_armored": {
+   "fat_class": "comic_brute",
+   "ranges": "none",
+   "comparable": "no",
+   "comparable_note": "In armoured form his whole body turns into an organic, steel-like substance (Marvel), so his weight is not muscle. Shown for reference, not ranked.",
+   "short": "Colossus (armoured)",
+   "flag": "Steel body, not muscle",
+   "comparable_keys": [
+    "colossus_armored_composition"
+   ]
+  },
+  "rex": {
+   "fat_class": "duo",
+   "score_height": {
+    "value_m": 2.92,
+    "range_m": [
+     2.9,
+     2.95
+    ],
+    "status": "estimate",
+    "basis": "Top of the skull, measured from art: rex-strength-lab/assets/duo.jpg at its scale (3.858 mm per pixel on the original 1280 px picture, 6.859 mm per pixel on the 720 px copy in this repository). Skull top at row 23 +/- 3 of the 720 px copy, floor under the ankles at row 449.",
+    "keys": [
+     "duo_skull_heights"
+    ]
+   },
+   "exclude_mass": [
+    {
+     "name": "tail",
+     "mass_kg": 306,
+     "basis": "Picture measurement: tail 0.289 m^3 at 1,060 kg/m^3 (visible part plus the hidden base): 306 kg"
+    }
+   ],
+   "mass_note": "His 2,700 kg was measured over his tank top and cargo pants; Step 2 measures him from his turnaround.",
+   "short": "Rex"
+  },
+  "ollie": {
+   "fat_class": "duo",
+   "score_height": {
+    "value_m": 2.91,
+    "range_m": [
+     2.87,
+     2.95
+    ],
+    "status": "estimate",
+    "basis": "Top of the skull, measured from art on duo.jpg at the same scale: 2.98 m to the skull in his boots (hair top at row 13.5 of the 720 px copy, less about 4 cm of hair; floor under the boots at row 454), less about 7 cm of boot sole (5-9 cm). Stature is measured barefoot.",
+    "keys": [
+     "duo_skull_heights"
+    ]
+   },
+   "exclude_mass": [
+    {
+     "name": "tail",
+     "mass_kg": 11,
+     "basis": "Picture measurement: tail about 0.010 m^3 (core 0.006 plus hair tuft at 15% packing), about 11 kg at 1,060 kg/m^3"
+    }
+   ],
+   "mass_note": "His 2,700 kg was measured over his clothes and boots; Step 2 measures him barefoot from his turnaround.",
+   "short": "Ollie"
+  }
+ },
+ "anchors": {
+  "natural": [
+   {
+    "id": "kouri",
+    "label": "Kouri 1995: 74 non-users, all under 25 (height-normalised FFMI)",
+    "short": "Kouri 25",
+    "value": 25.0,
+    "kind": "sample maximum",
+    "status": "measured",
+    "keys": [
+     "kouri1995_fulltext_methods",
+     "kouri1995_fig2_distribution",
+     "kouri1995_ffmi_natural_limit"
+    ],
+    "text": "All 74 men who said they had never used steroids, and whose urine tests agreed (56 gym athletes and 18 volunteers from a testosterone trial), scored under 25 on FFMI normalised to 1.80 m; nine sat between 24 and 25. That equals this page's score only for a 1.80 m man: on this score one of them, a 1.59 m man, sits near 27 (derived from the paper's figures). It is the top of one sample, not a ceiling: 46 of the 83 steroid users in the same study also scored under 25."
+   },
+   {
+    "id": "tail",
+    "label": "College athletes, top 2.5% (DXA; their height-normalised FFMI)",
+    "short": "athletes 28",
+    "value": 28.1,
+    "range": [
+     28.1,
+     29.1
+    ],
+    "kind": "measured upper tail",
+    "status": "measured",
+    "keys": [
+     "trexler2017_ffmi_fulltext_check",
+     "currier2019_ffmi_check"
+    ],
+    "text": "Among 235 US college footballers the 97.5th percentile was 28.1 and the top man 31.7, and 62 of them (26%) were above 25 (Trexler 2017); across 209 athletes of ten sports the 97.5th percentile was 28.3, rugby 29.1 (Currier 2019). Both use height-normalised FFMI, within a few percent of this page's score for men near 1.80 m. The NCAA tests at random; Trexler's study did no testing of its own, and Currier's abstract does not say. Many of these men carry 15-20% fat."
+   },
+   {
+    "id": "mr_america",
+    "label": "Pre-steroid Mr America winners (estimated from photos; normalised FFMI)",
+    "short": "Mr America",
+    "value": 25.4,
+    "range": [
+     22.6,
+     28.0
+    ],
+    "kind": "estimate from photos",
+    "status": "estimate",
+    "keys": [
+     "kouri1995_mr_america_table2",
+     "todd2008_mr_america_reanalysis"
+    ],
+    "text": "Kouri's blind estimates from photographs put the 20 winners of 1939-1959 at 22.6 to 28.0 normalised FFMI, mean 25.4; on this page's scale, with Todd's heights, the mean is 25.8 and the top 29.2. A later re-estimate by Todd from her own height and weight records gives a mean of 26.4 and a top of 32.0, but that top rests on a 221 lb weight for John Grimek that the 1956 contest programme gives as 195 lb (about 28). The two used different height and weight records (Kouri: Willoughby 1970) and different fat guesses."
+   },
+   {
+    "id": "butt",
+    "label": "Casey Butt's frame-based prediction",
+    "short": "Butt",
+    "value": 25.4,
+    "range": [
+     24.1,
+     26.9
+    ],
+    "kind": "prediction (formula)",
+    "status": "reported",
+    "keys": [
+     "butt_frame_model_max_lbm"
+    ],
+    "text": "A self-published formula from height, wrist and ankle, said to be fitted to about 300 natural champions. For a 1.80 m man with the median ANSUR II wrist and ankle it predicts 25.1-25.7; across frames from the 5th to the 95th percentile, 24.1-26.9. Not peer-reviewed."
+   },
+   {
+    "id": "sumo",
+    "label": "Kondo 1994's largest sumo wrestler: 121 kg of fat-free mass",
+    "short": "sumo",
+    "value": 33.9,
+    "kind": "measured individual, converted to this score",
+    "status": "derived",
+    "keys": [
+     "kondo1994_sumo_ffm_upper_limit"
+    ],
+    "text": "121.3 kg of fat-free mass at 1.86 m and 33% fat (Kondo 1994, underwater weighing): plain FFMI 35.1, 33.9 on this scale. The largest in a study of the upper limit of fat-free mass; strongmen on this chart carry as much (Kraemer's group mean is about 123 kg). Drug status was not reported, and at 33% fat some of that fat-free mass is the extra water and tissue that carry fat."
+   }
+  ],
+  "enhanced": [
+   {
+    "id": "users",
+    "label": "Long-term steroid users (Pope group)",
+    "value": 26,
+    "range": [
+     24,
+     28
+    ],
+    "kind": "measured sample",
+    "status": "measured",
+    "keys": [
+     "baggish2017_aas_users_ffmi",
+     "hudson2020_aas_users_ffmi"
+    ],
+    "text": "86 long-term users: median normalised FFMI 26, middle half 24-28; current users 27 (25-29). Many enhanced lifters sit inside the natural range; the top pros at 35-40 are far beyond the typical user."
+   }
+  ]
+ },
+ "topic_names": {
+  "index": "The score (a size-independent index)",
+  "natural": "The natural limit",
+  "fat": "Body fat by group, and steroid users",
+  "comics": "Comic characters: mass that is not muscle",
+  "function": "Where the body stops working",
+  "outline": "Drawing a body from measurements",
+  "duo": "Rex and Ollie",
+  "geometry": "Geometry"
+ },
+ "ignores": [
+  "<b>Shape.</b> The score assumes a body grows at the same shape. On average, taller men carry less fat-free mass per height cubed (across adults it grows about as height squared), so the score rates them a little lower; whether real bodies differ in shape or this is partly a statistical artefact is disputed (Burton 2010). giants and monsters would need thicker bones and different proportions (Galileo and Haldane made this point).",
+  "<b>Body fat.</b> Most builds have no measured body fat, so most scores rest on an assumed range for their group. The ranges are shown on every bar.",
+  "<b>What the mass is.</b> Fat-free mass includes bone, organs and water, not only muscle. Comic weights are as published; where the art or the publisher says the body is rock, steel or denser than human tissue, the score is flagged.",
+  "<b>Rex and Ollie.</b> Their mass (about 2,700 kg each) was measured from one front-view picture over their clothes, with assumed depth and density; their skull heights are read off the same picture. Both are estimates until Step 2 measures them from their turnarounds.",
+  "<b>Silhouettes.</b> Human figures are drawn from seven girths on the average soldier's proportions, with round limbs and elliptical trunk sections. They show the build, not the person; heads, hands and feet are average.",
+  "<b>The limits.</b> Where the body stops working is worked out on flat drawings of a template man widened at fixed bones. Real tissue squashes and real joints move in three dimensions, so each limit is a band, not a line."
+ ],
+ "limits": {
+  "templates": [
+   "ansur2_m_p50",
+   "ansur2_m_p5",
+   "ansur2_m_p95",
+   "steve_reeves_1947",
+   "ronnie_coleman",
+   "ansur2_m_largest_arm"
+  ],
+  "main_template": "ansur2_m_p50",
+  "arms": {
+   "angle_deg": 30,
+   "keys": [
+    "ansur_seated_arm_angle",
+    "arm_hang_model_ansur_median",
+    "ansur2_standing_posture_limb_contact",
+    "obesity_reduces_rom_park2010_jeong2018"
+   ],
+   "text": {
+    "label": "Arms can no longer hang down by the sides",
+    "short": "arms out",
+    "tiny": "arms",
+    "definition": "Held as close as the outlines allow, the arms stand at least 30° out from vertical (tested below chest height, where arm meets torso, hip or thigh). Of 4,082 soldiers (screened by Army weight rules), none comes out above about 26° on a seated, derived measure; very obese civilians were not measured. 30° is also the low end of the model-sheet A-pose."
+   }
+  },
+  "thighs": {
+   "fraction": 1.0,
+   "keys": [
+    "ansur_thigh_gap_legs_vertical",
+    "hip_joint_centre_regression_hara2016",
+    "obese_gait_step_width"
+   ],
+   "text": {
+    "label": "Thighs touch all the way to the knee",
+    "short": "thighs touch",
+    "tiny": "thighs",
+    "definition": "Standing with straight legs under the hip joints, the inner thighs meet from the crotch down to the top of the kneecap. The median soldier has about 4 cm of daylight there. From here the feet must stay at least hip-joint width apart (about 17 cm), about twice an ordinary step width (8 cm)."
+   }
+  },
+  "face": {
+   "normal_max_flexion_deg": 145,
+   "max_flexion_deg": 100,
+   "keys": [
+    "elbow_knee_flexion_norms_cdc",
+    "rom_end_point_soft_tissue_contact",
+    "hand_to_mouth_reach_geometry",
+    "va_rating_limited_elbow_knee_flexion",
+    "elbow_rom_daily_tasks_morrey1981",
+    "elbow_rom_compensated_vasen1995"
+   ],
+   "text": {
+    "label": "Hands can no longer reach the face",
+    "short": "hands to face",
+    "tiny": "face",
+    "definition": "The forearm meets the upper arm before the elbow bends 100°, so even with the wrist fully bent the fingertips cannot reach the mouth (that needs about 99° here, 123° with a straight wrist). Where that happens depends on a model no study has tested above ordinary girths: contact geometry alone (set so the median soldier bends a normal 145°) puts it near the top of the band; elbow bend falling as fast as it does across body-fat groups puts it near the bottom."
+   },
+   "pessimistic_girth_factor": 1.786,
+   "headline": false
+  },
+  "verdict": "Three limits come from the drawn body itself. Widen the average soldier at fixed bones and the arms are forced out first, the thighs close next, and the hands lose the face last. The chart's own drawings of the biggest bodybuilders already meet the first two.",
+  "method": "Each template is drawn at 1.80 m and widened at fixed bones: every width and depth of the trunk and limbs times the same factor, while the joints, head, hands and feet stay as they are. At the factor where the limit is reached, the measuring tool reads that drawn shape's score at 1,060 kg/m³ and 7.5% fat. The headline is the median soldier's shape; the band runs across six templates, from the 5th-percentile soldier to Ronnie Coleman's shape. The same three tests are run on every figure on the chart, drawn at its own height and girths.",
+  "notes": [
+   "No study gives these limits. Each threshold is an estimate built from sourced pieces: what stops a joint (soft tissue meeting soft tissue), how far ordinary men can move, and how far daily tasks need. The sources are listed under “Where the body stops working” below.",
+   "This is flat, front-view geometry on drawn templates. Real soft tissue squashes, arms can sit a little in front of the body, and shoulders shrug, so each limit is a band, not a line.",
+   "A softer line comes earlier. Unaided eating and drinking use about 130 to 136° of elbow bend; with elbow motion braced to between 75° and 120°, 49 of 50 adults still did all 12 daily tasks tested, using the joints next to the elbow to compensate (Vasen 1995).",
+   "The bands are for human-shaped bodies. Rex and Ollie are not built like the template, and the limits were not tested on their outlines: their thighs touch in the art, but their arms are posed out (an A-pose), so whether they could hang down is untested.",
+   "These are shapes scored lean (7.5% fat). A fat body reaches the same outline at a lower score: ordinary obese men's thighs already touch, and very obese people step wider."
+  ]
+ },
+ "stops": [
+  {
+   "id": "under25",
+   "upto": 25,
+   "title": "Where most men sit",
+   "verdict": "Soldiers and US men score {span:ansur2_m_p95,ansur2_m_p50,ansur2_m_p5,nhanes_m_median} here. {chip:estimate} Every drug-free man in Kouri's study scored under 25 on his height-normalised scale. {chip:measured}",
+   "sub": "Bruce Banner, the Hulk at rest, is the slimmest build on the chart. The 5th, 50th and 95th percentile soldiers are statistics, not real people: each number is that measure's own percentile. The 95th scores lower than the median because the Army equations give his larger waist much more fat (about 34% against 25%); at the median's body fat he would score about 23, a little above him."
+  },
+  {
+   "id": "past25",
+   "upto": 32,
+   "title": "Past Kouri's 25",
+   "verdict": "No drug-free man in Kouri's study reached 25 on his scale. {chip:measured} Many measured athletes do: on Kouri's equation, 54 of 235 college footballers (23%) were above 25. On their study's own height-normalised FFMI, the top 2.5% start at 28 and the top one reached 32. {chip:measured}",
+   "sub": "Kouri's 25 is FFMI normalised to 1.80 m, which equals this page's score only for a 1.80 m man; for one 1.59 m drug-free lifter in his study it comes to about 27. The footballer study did no drug testing of its own (the NCAA tests at random), and many of those athletes carry 15 to 20% fat."
+  },
+  {
+   "id": "top",
+   "upto": 45,
+   "title": "The top of the human record",
+   "verdict": "The biggest bodybuilders on stage and the strongest strongmen top out here, at about {r:big_ramy}. {chip:estimate} No real man on this chart scores above {humanTop}. {chip:estimate}",
+   "sub": "Pro weights are reported contest-day figures, and their body fat is assumed. Strongmen carry more fat, so their bars are wider. Kondo 1994's largest sumo wrestler (121 kg of fat-free mass) scores 34. {chip:derived}"
+  },
+  {
+   "id": "giants",
+   "upto": 150,
+   "title": "Comic giants",
+   "only_group": "Comic characters",
+   "verdict": "The top comic characters score {min} to {max}, if their published weights are flesh and bone. {chip:estimate}",
+   "sub": "{hwofficial} Their shapes are not: no publisher gives a girth, so every outline is filled in from a template build, and every edge is dotted. No body-fat figure was found in the Marvel and DC sources searched; it is assumed, 8 to 20%."
+  },
+  {
+   "id": "duo",
+   "upto": 500,
+   "title": "Rex and Ollie",
+   "verdict": "Rex scores about {r:rex} and Ollie about {r:ollie}, {x:rex/abomination} the top comic giants. {chip:estimate}",
+   "sub": "Both are scored at 7.5% body fat (5 to 10%). Height is to the top of the skull, read off duo.jpg: Rex {h:rex} m, Ollie {h:ollie} m. {chip:estimate} Their crest and horns rise above the skull line, and their tails are left out. Their mass is the current canon, about 2,700 kg each, measured from one picture; Step 2 measures them again from their turnarounds. Their thighs touch in the art. Their arms are posed out (an A-pose), so the art cannot show whether they could hang down; Step 2 can test that on the new sheets."
+  }
+ ]
+}

@@ -1,0 +1,305 @@
+{
+ "about": "Corrections to the research facts, applied by tools/compile_facts.py. Each names the fact key, what changes and why; text replacements are asserted against the current notes, so none fails silently. Sources: the verifier checks in research/round1/verify_<topic>.json and this session's own reading.",
+ "corrections": [
+  {
+   "key": "bodyfat_range_comic_characters",
+   "set": {
+    "sources": []
+   },
+   "why": "The fact is an assumption with no source (its own source title says so), but the researcher attached an unrelated Europe PMC search URL to it. Removed the URL so the page does not show a link as if it were a source."
+  },
+  {
+   "key": "geometric_similarity_mass_cubed",
+   "append_notes": "Change to: 'Burton 2018 (Children) is peer-reviewed. Burton 2010 is a Medical Hypotheses paper published before that journal adopted peer review in 2010 (editor-selected): argument plus modelling.' The geometric statement itself is exact for a true scaled copy and needs no empirical source.",
+   "why": "Verifier (index): All quotations check out:\n- Burton 2010, from the abstract record.\n- Burton 2018, from the Europe PMC full-text XML (PMC5835999, CC BY): 'hypothetical set of individuals of different sizes but identical density and bodily proportions ... The BMIs of these isometric individuals would inevitably increase with height'.\n- Haldane ('a thousand times his, or about eighty to ninety tons'; bones 'only a h"
+  },
+  {
+   "key": "ffm_over_height_cubed_literature",
+   "append_notes": "Replace 'none found' with: 'No published FFM/H^3 muscularity index for adults was found, but Forbes's model FFM = 10.3 x H^3 (reported by Wang et al. 2012) and Wang's fit FFM = 10.8 x H^2.95 (males aged 5-59, CI 2.83-3.07) are published precedent for FFM proportional to H^3 across growth. Forbes's 10.3 kg/m^3 equals S = 1.8 x 10.3 = 18.5, close to Schutz's adult median FFMI of 18.9.' Status reported. Keep the warning that within adults, FFM scales with about H^2.",
+   "why": "Verifier (index): Wells & Cole 2002 (FFM/HT^2 optimal, FM/HT^6, n = 69, deuterium) and Ramirez-Velez 2018 (n = 4673, fat mass/height^3) check out. The researcher's ABSTRACT-field phrase searches do return 0, as stated.\nThe search was too narrow, though, and missed a directly relevant paper: Wang Z, Zhang J, Ying Z, Heymsfield SB, 'New insights into scaling of fat-free mass to height across children and adults', Am ",
+   "set": {
+    "label": "Published fat-free mass over height cubed: no adult muscularity index found, but FFM proportional to H^3 across growth has precedent (Forbes; Wang 2012); within adults FFM scales with about H^2"
+   }
+  },
+  {
+   "key": "tall_men_not_scaled_copies",
+   "append_notes": "Use the label 'On average, taller adults have lower girth-to-height ratios (regression powers below 1)'. Status: measured for the regression numbers, but put the structural reading under the disputed key height_exponent_regression_vs_isometry, citing Burton 2010's counter-claim on girths. Note that waist and hip mostly reflect fat.",
+   "why": "Verifier (index): The numbers check out:\n- Burton 2012 abstract: 155 men, 162 women, P = 0.00006-0.027.\n- Heymsfield 2011 abstract, re-fetched: waist 0.76 +/- 0.08 and hip 0.45 +/- 0.05 in men, adjusted for age and race.\nThe status and framing overstate them:\n(a) These are regression powers. Burton 2010, which the researcher cites, argues that regression underestimates structural exponents. It says girth data 'are ",
+   "set": {
+    "label": "On average, taller adults have lower girth-to-height ratios (regression powers below 1); whether that is structural is disputed"
+   }
+  },
+  {
+   "key": "allometric_normalisation_practice",
+   "append_notes": "Label: 'Sport science normalises performance for body size allometrically. Exponents come either from geometric similarity (Jaric's proposal: 0.67 for force) or from fitting to data (Nevill 1992: about 2/3 for VO2max and power).' Add: 'Applied to FFM against adult height, the empirical approach gives about 2 (FFMI); geometric similarity gives 3. These papers cover performance, not body composition.'",
+   "why": "Verifier (index): All three quotes are verbatim: Jaric 2005 'allometric normalization based on theoretical models that presume geometric similarity'; Jaric 2002 b = 0.67 / 1; Nevill 1992 'kg 2/3'.\nThe characterisation is wrong for Nevill. His 2/3 is 'Based on the fitted power functions', an empirically fitted exponent, and the abstract never mentions geometric similarity. Jaric 2005 is titled 'a proposal for standa",
+   "set": {
+    "label": "Sport science normalises performance for body size allometrically: exponents from geometric similarity (Jaric's proposal) or fitted to data (Nevill)"
+   }
+  },
+  {
+   "key": "rescaled_ffmi_identity_at_180",
+   "append_notes": "Change to: 'Kouri's 25 equals S = 25 only for a 1.80 m man. For non-users at that boundary between 1.60 and 1.95 m, S would be about 24-27. Draw it as \"Kouri's non-user maximum, value at 1.80 m\".' Apply the same caveat to Schutz's 18.9, a median over men of mixed heights.",
+   "why": "Verifier (index): The algebra is right and reproduced: S = FFMI at 1.80 m for FFM 61.2, 81 and 120 kg.\nThe note overreaches: 'Kouri's 25.0 non-user maximum ... can be drawn on the S axis at 25 without conversion.' Kouri's 25 is a normalised FFMI. For a non-user exactly at that boundary, S depends on his height: 1.60 m gives S 26.7, 1.65 m gives 26.2, 1.90 m gives 24.3 and 1.95 m gives 24.0 (c = 6.3). Kouri's athlet"
+  },
+  {
+   "key": "rescaled_index_height_sensitivity",
+   "append_notes": "Ollie: S is 8.4% higher with the skull-top height (ratio 1.084).",
+   "why": "Verifier (index): 1/1.01^3 = 0.9706 and 1/0.99^3 = 1.0306 are correct, and the 1 cm error at 1.80 m moves S by 1.65%, so 'about 1.7%' holds. One arithmetic slip: (3.063/2.982)^3 = 1.0837, which is 8.4%, not 8.3%."
+  },
+  {
+   "key": "meatball_score_check",
+   "append_notes": "Label: 'Reference shape: a ball as tall as the figure scores about 924 at 7.5% fat (899-949 for 5-10%). It is a vivid marker, not a ceiling: a cylinder as wide as it is tall scores about 1,390 and a cube about 1,760.' Flag the brief's 'can't hold more volume' sentence to the owner as incorrect.",
+   "why": "Verifier (index): The arithmetic is reproduced: 924.1 (7.5% fat), 949.1 (5%), 899.1 (10%), 942.4 at 1,081 kg/m^3, and plain FFMI 1,564.8 at 3.048 m.\nThe label 'Upper bound' is wrong geometry, and so is the brief's sentence 'A figure can't hold more volume than a ball as tall as itself'. A sphere is not the largest solid of a given height. At the same density and fat:\n- A cylinder H tall and H wide scores 1,386.\n- A",
+   "set": {
+    "label": "Reference shape, not a ceiling: a ball of tissue as tall as the figure scores about 924 at 7.5% fat (899-949 for 5-10%)"
+   }
+  },
+  {
+   "key": "recommended_size_independent_index",
+   "append_notes": "Keep S. Replace 'recommended practice' with 'one proposed approach (Jaric 2005)'. Cite Forbes/Wang 2012 as precedent for FFM proportional to H^3 across growth, and Burton 2007's endorsement of FFM/H^2 within adults as the counterpoint. Draw the landmarks as 'value at 1.80 m'. Present the meatball as a reference shape. Replace 'better' with 'closer to how real men's FFM scales with height (about H^2 to H^2.45)'.",
+   "why": "Verifier (index): Choosing S = 1.8 x FFM / H^3 is defensible as a same-shape index, and the stated limits are mostly honest. Several supporting claims overstate the evidence:\n(a) 'Allometric normalisation based on geometric similarity is the recommended practice (Jaric 2005)'. Jaric 2005 is a proposal, and Nevill fits exponents empirically, which for adult FFM against height gives about 2.\n(b) Burton 2007 is cited "
+  },
+  {
+   "key": "todd2008_mr_america_reanalysis",
+   "append_notes": "Source title: 'Iron Game History 10(3):3-22 (Aug 2008); Mr America analysis pp. 14-16'. Add: max 31.99 depends on a 221-lb 1941 weight that conflicts with the 1956 program's 195 lb (≈27.9 at 7% fat); Todd's own Pearl caption (193 lb) contradicts her table (201 lb). S max 32.5 inherits this.",
+   "why": "Verifier (natural): Every height, weight, fat fraction and FFMI in her table is transcribed correctly. My recompute: printed-column mean 26.45; 15 above 26; 17 (not 18) above 25; 26.46 (not 26.54) excluding Park and Schaeffer. Grimek 1941 needs 6% fat to give 31.99; Lacy gives 25.97. The quotes check: Pope's email (6% to 16%), the Reeves 25.7 note, 'At 5'8\" and 221 pounds ... 31.99'. Problems:\n(1) The citation pages ",
+   "set": {
+    "label": "Jan Todd 2008: re-estimate of the same pre-steroid Mr America winners with Pope's formula, mean 26.4; top 32.0 rests on a disputed weight (subjective fat estimates)"
+   }
+  },
+  {
+   "key": "santos2014_drug_tested_athletes_ffmi",
+   "append_notes": "Add to label/notes: 'rugby DXA group n=39, age 16-28 (mean 18.2); model-smoothed percentiles; height 182.8 cm is from the n=62 anthropometry sample; testing not described beyond the inclusion criterion'. Treat as weak for an adult natural limit.",
+   "why": "Verifier (natural): The numbers are right: inclusion criterion 3 quoted correctly; 339 men by DXA, mean 19.78 (19.56-20.00); rugby n = 39, 21.33. Table S7 male 95th percentiles: rugby 25.79 (23.54-28.71), wrestling/judo 24.60, handball 23.64, soccer 23.47, volleyball 23.31. Missing caveats that change how much the anchor weighs:\n(1) Table 1 shows the rugby DXA subsample was aged 16-28, mean 18.2 ± 2.1 years. These ar",
+   "set": {
+    "label": "Santos et al. 2014: DXA FFMI percentiles in athletes who had to test negative for performance-enhancing drugs; highest 95th percentile 25.8 (rugby, mostly juniors, model-smoothed)"
+   }
+  },
+  {
+   "key": "ansur2_men_bodyfat_from_army_equation",
+   "append_notes": "bodyfat mean 24.1 (official equation) to 26.6 (Taylor DXA-fitted equation); P5–P95 15.2–33.5 (official) or 17.3–36.5 (Taylor); median S 21.4 (official) or 20.7 (Taylor); median FFMI 20.8 or 20.1. Remove 'matches measured DXA mean' as evidence. Add: the official equation probably reads about 2–3 points below GE iDXA in Taylor's cohort (derived from Taylor Tables 1, 2 and 4).",
+   "why": "Verifier (fat): I reproduced every number on the ANSUR II CSV with my own script (n 4,082; official equation mean 24.10, SD 5.68, P5 15.24, P50 24.03, P95 33.53, min 8.19, max 48.63; FFMI P50 20.81; S P50 21.35; Taylor equation mean 26.61, P5 17.26, P95 36.47). The numbers are right. The 'consistency check' is wrong. The official and Taylor equations have the same weight coefficient, so for any man the gap is −0."
+  },
+  {
+   "key": "barakat2022_natural_pro_peak_week_dxa",
+   "append_notes": "Ultrasound JP-7 read 1.4–2.7 points (mean about 2.0) below DXA during peak week.",
+   "why": "Verifier (fat): Table 2 matches: DXA 5.5, 6.0, 6.2, 5.6, 5.4, 6.3%; competition day 73.55 kg, FM 4.63, FFM 68.91 (FFM includes BMC 2.591), JP-7 ultrasound 3.6. The subject is the first author, 29 years old, a 'professional natural bodybuilder', and placed first in both classes in October 2021. A stadiometer height was taken but is not reported (unknown, as stated). One claim is off: 'JP-7 reads about 2-3 points l"
+  },
+  {
+   "key": "robinson2015_natural_bb_skinfold",
+   "append_notes": "start_bodyfat_pct 13.6 (tabled as 14); end_bodyfat_pct_derived 6.7–6.8 (not 7.2). Fix the same number in bodyfat_range_natural_stage measured_points.",
+   "why": "Verifier (fat): Table 2 and the text match (178.5 cm, 86.0 kg, 14%, FM 11.7, FFM 74.3; −6.7 kg fat, −6.8% body fat, −5.0 kg FFM; ISAK skinfolds with Davidson equations). The derived end value is wrong. The researcher subtracted 6.8 from the rounded 14. From the tabled masses, start fat is 11.7/86.0 = 13.6%, and end fat is (11.7 − 6.7)/(86.0 − 11.7) = 5.0/74.3 = 6.7%, matching 13.6 − 6.8 = 6.8%. The FFMIs (23.3 to"
+  },
+  {
+   "key": "mitchell2018_bodyfat_pct_derived",
+   "append_notes": "Label: 'derived from abstract fat and lean masses (method not stated in the abstract; DXA unconfirmed)'. Note that PRE16 %fat uses PRE8 lean mass.",
+   "why": "Verifier (fat): The arithmetic is correct: 8.8/80.6 = 10.9%; 5.3/76.2 = 7.0%; with BMC 3.5 kg, 10.5% and 6.6%. Two problems. (a) The abstract I re-fetched does not name the body-composition method; it says only 'Assessments included body composition'. 'DXA' in this key's label and summary (and in the existing key's label) is not confirmed. (b) The PRE16 figure divides PRE16 fat by PRE8 lean, because PRE16 lean is",
+   "set": {
+    "label": "Mitchell et al. 2018: percent fat of 9 natural bodybuilders derived from their abstract's fat and lean masses (method not stated in the abstract)"
+   }
+  },
+  {
+   "key": "buhl2025_aas_users_bia",
+   "append_notes": "current_men_n: 61 (stated); previous 18; nonusers 42.",
+   "why": "Verifier (fat): Table 1 men's values match: body fat 13.1 (10.4–16.5), 17.8 (12.3–21.2), 20.0 (16.3–22.5); BMI 29.4, 27.4, 26.5; heights 1.81, 1.79, 1.83. SOZO bioimpedance; March–December 2022. The current-user count is not inferred: the abstract states '80 ... active AAS users (... 61 men [76.2%])'. 61 + 18 + 42 = 121. 'Active' includes men who stopped within 3 months. Median cumulative use was only 2.2 years."
+  },
+  {
+   "key": "bhasin_testosterone_ffm_gains",
+   "append_notes": "bhasin2001 design: 'GnRH agonist + testosterone enanthate; energy and protein standardized; exercise restriction and FFM method not confirmed (abstract only)'.",
+   "why": "Verifier (fat): The 1996 abstract matches (n 43, 600 mg/week, 10 weeks, underwater weighing, +6.1 ± 0.6 kg with exercise). The 2001 abstract matches (61 men, GnRH agonist plus 25–600 mg/week for 20 weeks; nadirs 253–2,370 ng/dL; +3.4, 5.2, 7.9 kg). +2.4 FFMI at 1.80 m is correct (7.9/3.24 = 2.44). Two 2001 details are not in the fetched abstract: 'no training' (it says only 'Energy and protein intakes were standa"
+  },
+  {
+   "key": "bodyfat_range_everyday_men",
+   "append_notes": "ANSUR builds: centre = mean of the official and Taylor 1-site equations (about +1.2 points over the official value), band = both equations ± about 3.4 RMSE. Group range about 15–37%, median about 24–27%. Label: 'estimated from waist and weight (two Army-soldier DXA equations)'.",
+   "why": "Verifier (fat): Centring each ANSUR build on the official equation with ±4 points biases the centre low. On Taylor's representative DXA cohort the official equation reads about 2.8 points below DXA (derived; see the ansur2 check), and Taylor's DXA-fitted equation gives ANSUR 2.4–2.7 points more for every man. The group range 15–34 should span both equations (P5 15.2 to P95 36.5). The working median should be abou"
+  },
+  {
+   "key": "bodyfat_range_natural_stage",
+   "append_notes": "measured_points: Rossow2013_method_unconfirmed 4.5; Robinson2015_skinfold_end_derived 6.8. Text: 'one confirmed DXA contest-day value (Barakat 6.3%) plus field-method values of about 4–6%'. S effect +2% / −4% around 6%.",
+   "why": "Verifier (fat): 'Lab-grade (DXA) contest-day values cluster at 4.5–6.3%' overstates the evidence. The re-fetched Rossow 2013 abstract does not name the body-fat method, so 'Rossow2013_DXA' is unconfirmed (the existing key does not confirm DXA either). The only confirmed DXA contest-day value is Barakat: one self-described natural, 6.3% (5.4–6.3 over the week). Kistler's 7.4% is DXA at the end of prep, not contest"
+  },
+  {
+   "key": "bodyfat_range_natural_offstage",
+   "append_notes": "'Kouri 1995 overall mean about 13% (12.8 ± 4.8%, users and non-users together; secondary summaries, status reported)'.",
+   "why": "Verifier (fat): Calling 13% 'Kouri's non-user' value mislabels it. The existing key kouri1995_group_means has about 13% for both groups and 12.8 ± 4.8% overall, from secondary summaries (Helms, McDonald), not a non-user mean from the paper. Mitchell's 10.5–10.9 at 16 weeks out is method-unconfirmed and mixes time points. The other points match their keys (Graybeal 11.8 ± 4.4, 4C; Kistler 17.5; Robinson 13.6–14; B"
+  },
+  {
+   "key": "bodyfat_range_enhanced_stage",
+   "append_notes": "S effect +1% / −3% around 5%. Withers listed as 'drug status not stated; FFMI about 28 at 5% suggests use (inference)'.",
+   "why": "Verifier (fat): Coleman's S recomputes (39.6, 39.2, 37.9 at 4, 5 and 8%). 'Moves S by only about ±2%' is not symmetric: 4% and 8% around 5% change S by +1% and −3%. Withers 1997 is 'probably enhanced' only by inference: its derived FFMI of about 27.8 at 5% fat exceeds the Pope screening rule. Drug status is not stated, so it must be labelled an inference. The natural DXA floor of 4.5–6.3% leans on Rossow's unconf"
+  },
+  {
+   "key": "bodyfat_range_strongmen_lifters",
+   "append_notes": "Notes: '12–28% runs from about mean − 1.1 SD to mean + 1.5 SD of Kraemer's DXA strongmen; the lower end was raised to 12% (judgement); the upper end already covers the sumo and heavyweight-powerlifter means (about 26%)'.",
+   "why": "Verifier (fat): The stated rationale does not match the numbers. Kraemer's 18.7 ± 1.5 × 6.2 gives 9.4–28.0, so the upper end of 28 is not 'clipped by sumo or powerlifter values (about 26%)'. The lower end of 12 is about −1.1 SD and is the one actually cut. 'S at 12% vs 28% differs by about 18%' is correct (0.72/0.88). Shaw's 17.6% is a self-filmed hydrostatic test relayed by FitnessVolt, a fitness magazine site. "
+  },
+  {
+   "key": "lifters_rom_chang1988_and_later",
+   "append_notes": "label: 'Shoulder (and in powerlifters hip) range is lower in bodybuilders and powerlifters; the cause is not established. Strength training in general does not reduce ROM in short RCTs (Afonso 2021).' Add: Spence 2023 controls were recreationally strength-trained and did not differ in body mass.",
+   "why": "Verifier (function): The numbers are right: Barlow 29/25, 166 vs 180°, internal rotation −11°; Gadomski 15/15 and the Wilks >500 / LBM sentence; Afonso 11 RCTs, n=452, ES −0.22 (−0.55 to 0.12). The label clause 'training alone is not the cause', and the summary's 'Training alone does not reduce range of motion (Afonso 2021)', are not supported. Afonso compares strength training with stretching in short supervised RCTs",
+   "set": {
+    "label": "Joint range in power lifters and bodybuilders: shoulder range lower than in controls; the cause (bulk, tightness or training pattern) is not established"
+   }
+  },
+  {
+   "key": "arm_hang_model_ansur_median",
+   "append_notes": "k_at_30deg: [1.3, 1.8] unless the exact script is saved and re-run; save the region-variant script in the scratchpad",
+   "why": "Verifier (function): The saved arm_hang.py tests only from axilla height down, which gives 10° at k=1 and 30° at k≈1.2. Neither reported table comes from it as saved. I added the region switch. 'Below chest height (1.289 m)' reproduces the reported row exactly (6/15/23/29/35/39/43/50/56/64/70). 'Elbow and below' does not: testing s≥upper-arm length gives 4/8/12/15/19/22.5/26/33/40/56/71.5 at k=1.0-3.0, against the rep"
+  },
+  {
+   "key": "hand_to_mouth_reach_geometry",
+   "append_notes": "Drop or re-derive chin/nose/opposite-cheek values with a saved script",
+   "why": "Verifier (function): reach.py reproduces the main values: mouth 123° (wrist straight) and 99° (wrist flexed 80°), d=0.278 m, chin forward 3 cm 96°, same-side cheek 107°, and upper-arm-length sensitivity 98-100°. The chin (127/102), nose tip (94) and opposite cheek (91) values are not produced by the saved script, so they cannot be reproduced. The same-side cheek with a straight wrist comes out at 133°, which is not re"
+  },
+  {
+   "key": "elbow_flexion_vs_girth_wedge_model",
+   "append_notes": "Present both as a band: p=1 'pure geometry, assumption'; p≈1.7 'fitted to BMI groups (mostly fat, age-confounded)'; neither tested above k≈1.17. Do not call either the main model on the strength of the review statement.",
+   "why": "Verifier (function): The arithmetic all reproduces (elbow_fit.py and ansur_limits.py). c=0.3153 (tan 17.5°). ANSUR BMI-group girth sums are 555/614/666/718 mm (the <18.5 group has n=9). Active p=1.69, passive 1.86. Crossings: 130° at 1.26-1.48, 120° at 1.43-1.83, 110° at 1.60-2.22, 100° at 1.79-2.66. The tan(half-angle) ∝ thickness geometry is right for contact at a fixed axial distance. The problem is the recommendat",
+   "set": {
+    "label": "Maximum elbow flexion vs arm girth: a wedge contact model; pure geometry (exponent 1) and a fit to BMI groups (about 1.7) bracket it; neither tested above ordinary girths (estimate)"
+   }
+  },
+  {
+   "key": "ansur2_biacromial_vs_bideltoid",
+   "append_notes": "Split the status: definitions 'official'; half-differences and the ratio 'derived'. In the recommendations, describe 47 mm as 'lateral extent of deltoid/arm beyond the acromion tip' and 110 mm as 'half-width from compressed rib cage to outer deltoid'. Neither is a clearance.",
+   "why": "Verifier (outline): The quotes are verified: TR-11/017 6.4.9 on p.85 and 6.4.12 on p.88, and TR-15/007 dims 8 and 11 on pp.59 and 65 (both seated, forearms forward, palms facing). The numbers recompute exactly from the CSV:\n- biacromial p50 415 mm, bideltoid 509 mm\n- (bideltoid - biacromial)/2 = 47 mm [p5 29, p95 67.5]\n- (bideltoid - chest breadth)/2 = 110 mm [93.5, 129]\n- bideltoid / shoulder circumference = 0.432 [",
+   "set": {
+    "status": "derived"
+   }
+  },
+  {
+   "key": "ansur2_ellipse_vs_girth_male",
+   "append_notes": "Replace with: 'The ellipse under-predicts at the chest and buttock in every man, and at the waist in all but one. At the head, 32 men (0.8%) have girth below the ellipse (minimum ratio 0.988). Chest gap: caused by compressing the caliper to the rib cage and by a non-elliptical section whose tape spans hollows; full inspiration works against the gap.' Label the head and buttock explanations 'likely' or 'our interpretation'.",
+   "why": "Verifier (outline): Every number reproduces independently:\n- chest 1.2381 ± 0.0317 (p5/50/95 1.188 / 1.237 / 1.292)\n- waist 1.0544 ± 0.0176\n- buttock 1.0895 ± 0.0194\n- head 1.0291 ± 0.0115\n- share within 5%: 0 / 0.401 / 0.017 / 0.963\n- BMI quintile edges and quintile means\n- chest slope 0.00387 per BMI unit (r² 0.242); waist and buttock r² 0.016 and 0.021\n- d/b medians 0.876 / 0.721 / 0.710 / 1.297; waist mean d/b 0."
+  },
+  {
+   "key": "ansur2_trunk_width_per_girth_male",
+   "append_notes": "Change the trend to '4–9% from the leanest to the heaviest fifth (chest breadth −9%, buttock depth +8%, the others 4–5%)'.\n\nRecommendation: draw the waist at 0.348 × girth and the hip at 0.339 × girth (ANSUR p50; Q1–Q5 band 0.341–0.356 and 0.334–0.347). The chest outline width is not measured. Bracket it between 0.274 (ANSUR, compressed) and 0.325 (AIST D4/F5, light contact, lean Japanese men) and label it 'estimate'.\n\nUse the effective-ellipse breadth only internally, as the axis that makes an ellipse's perimeter match the girth. Never use it as a displayed width.",
+   "why": "Verifier (outline): The values reproduce: p50 breadth/girth 0.274 / 0.348 / 0.339; depth/girth 0.240 / 0.252 / 0.241; effective-ellipse breadth/girth 0.388 / 0.378–0.379 / 0.387; effective/caliper chest 1.414 [1.316, 1.536]. The quintile medians reproduce to rounding (waist Q1 0.3555, chest depth Q4 0.2415).\n\nErrors:\n1. 'Breadth per girth falls and depth per girth rises by about 7–10%' overstates. From the leanest to"
+  },
+  {
+   "key": "ansur2_joint_centre_heights_estimate",
+   "append_notes": "Set the status to 'estimate'. Add the heavily-muscled landmark caution, and the 'knee pivot point' wording as support for using epicondyle height as the knee centre.",
+   "why": "Verifier (outline): Every number reproduces from the CSV:\n- shoulder 0.8007 [0.785, 0.816]; elbow 0.638 [0.621, 0.653]; wrist 0.4816; hip 0.5138; knee 0.2845 [0.271, 0.299]\n- shoulder below acromion 34.8 mm [31.9, 38.0]\n- hip above trochanterion 3.1 mm; knee above tibiale 31.9 mm\n- knee minus lateral femoral epicondyle 8.3 mm [−6.2, 24.5]\n\nProblems:\n- Mislabelled. The key name and the notes both say 'estimate' (6 cad",
+   "set": {
+    "status": "estimate"
+   }
+  },
+  {
+   "key": "head_height_fraction_male",
+   "append_notes": "Status: 'estimate' for the ANSUR-scaled values; AIST's 0.139 is 'measured', for Japanese men. Report head height as 0.13–0.14 of stature (7.2–7.8 heads), with a central value of about 0.133. Note that the ANSUR scaling depends on instrument: 0.129 with AIST's ratio, 0.133 with Hoshi's caliper-consistent ratio. Do not headline '7.8 heads'.",
+   "why": "Verifier (outline): The AIST images re-read correctly: A36 238.7 (SD 8.03, n 217), from gnathion to the vertex plane, perpendicular to the Frankfurt plane, seated, head gauge plus height gauge; A33 138.6 (5.98); B1 1714.0 (62.55). The arithmetic reproduces: 0.139 and 7.18 heads; ANSUR-scaled 0.1286 [0.117, 0.141]; 7.77 heads; chin 0.871; 12.9 mm above cervicale.\n\nProblems:\n1. Status. The ANSUR-scaled half is a cross-",
+   "set": {
+    "status": "estimate",
+    "label": "Head height (crown to chin) as a fraction of stature: about 0.13 to 0.14 (central about 0.133, 7.2 to 7.8 heads); depends on the measuring instrument"
+   }
+  },
+  {
+   "key": "ellipse_volume_model_accuracy_recheck",
+   "append_notes": "Status: 'reported' (Williams secondary table). Keep Chiu as 'measured' (abstract only). Hatze: '<0.05 as printed in a column headed %; suspect'.",
+   "why": "Verifier (outline): Both sources are re-fetched.\n- Chiu 2016 abstract: 17 men, TEM 'around 3%', segments <10%, neck, hand and foot poor. Confirmed.\n- Williams 2013 PDF Table 1: Jensen Photo 408 <2; Hatze Direct 242 <0.05; Yeadon 95 <2.1; Gittoes 95 <2.9; column '% accuracy of predicted body mass'. Confirmed.\n\nStatus problem: the whole fact is labelled 'measured', but the Williams numbers are a secondary summary. The ",
+   "set": {
+    "status": "reported"
+   }
+  },
+  {
+   "key": "thing_rocky_hide",
+   "append_notes": "Label: 'The Thing: official sources describe rock-like, supple skin or hide; they say nothing about what is under it or how much it weighs.' Notes: the fan wiki's density sentence is in a paragraph that cites The Thing Vol 3 #1 (2022, not seen); status reported.",
+   "why": "Verifier (comics): The quotes and numbers check out. Marvel.com: 'rock-like skin ... supple', 'lumpy hide to what appears to be individual rocks linked together', 'HEIGHT 6' WEIGHT 500 lbs.' The Marvel.com guide: 'rocky exterior'. DK 2019: 'Ben's skin turned orange and rocky' and 'He can lft 85 tons'. S = 66.74/60.07/56.73. The label goes beyond the sources, though. 'Not a body of rock' is the researcher's inference",
+   "set": {
+    "label": "The Thing: official sources describe rock-like, supple skin or hide; they say nothing about what is under it or how much it weighs"
+   }
+  },
+  {
+   "key": "kingpin_bulk_not_fat",
+   "append_notes": "Notes: 'Fan wiki: \"...only the bare 9 pounds actually being fat\", cited there to OHOTMU: Daredevil 2004 #1; primary not seen; status reported.' Label: '...the 9 lb fat figure is reported (fan wiki citing OHOTMU: Daredevil 2004, unverified)'.",
+   "why": "Verifier (comics): The official quotes are confirmed. Marvel.com: 'Most of Fisk's bulk is actually muscle, not fat; his enormous size is comparable to that of a sumo wrestler', 'HEIGHT 6'7\"' and 'WEIGHT 450 lbs.' OHOTMU vol 1: 'His great bulk does not consist of fat but of muscles that have been developed to enormous size, as' and 'as in a sumo wrestler. The Kingpin can lift (press) approximately 650 pounds.' Recomp",
+   "set": {
+    "label": "Kingpin: official sources say his bulk is muscle, not fat, likened to a sumo wrestler; the 9 lb fat figure is reported (fan wiki citing OHOTMU: Daredevil 2004, unverified)"
+   }
+  },
+  {
+   "key": "juggernaut_composition",
+   "append_notes": "Label: 'Juggernaut: powers from the mystical energy of Cyttorak; helmet and skullcap of an \"unknown mystical metal\"; no source says whether the 900 lb (OHOTMU Deluxe, verified) includes them.'",
+   "why": "Verifier (comics): The quotes are confirmed. OHOTMU vol 1: 'the mystical energy of Cyttorak gives the Juggernaut an extraordinary de- gree of resistance', 'Without his helmet and skullcap, both con- structed of an unknown mystical metal', 'constructed a skullcap from scraps of the metal'. The weight line is confirmed by a separate query: 'Height: 6° 10° Weight: 900 lbs. Eyes: Blue Hair: Red Strength level: The Jugge",
+   "set": {
+    "label": "Juggernaut: powers from the mystical energy of Cyttorak; helmet and skullcap of an unknown mystical metal; no source says whether the 900 lb (OHOTMU Deluxe, verified) includes them"
+   }
+  },
+  {
+   "key": "dc_density_claims_fan_only",
+   "append_notes": "official_density_statements_found: 1 (Kryptonians, DK DC 2021: 'dense molecular structure', no factor; applies to Superman). Status of the Kryptonian statement: official. Darkseid, Doomsday, Batman, Bane: none found. Label: 'DC: only one official density statement (Kryptonians, no factor); the rest are fan-wiki claims.'",
+   "why": "Verifier (comics): This is wrong for Superman. DC Comics Encyclopedia New Edition (DK 2021), KRYPTONIANS entry, OCR line 30445: 'POWERS/ABILITIES On Krypton: high intelligence, dense molecular structure, cells capable of absorbing and storing certain frequencies of radiation. Under a yellow sun: super-strength, speed, flight, invulnerability, enhanced senses—all fueled by exposure to solar energy.' That is a DC-lice",
+   "set": {
+    "label": "DC: one official density statement (Kryptonians, 'dense molecular structure', no factor; DK 2021); the rest are fan-wiki claims",
+    "status": "official"
+   }
+  },
+  {
+   "key": "comic_body_fat_official",
+   "append_notes": "Status: derived (search result), with the qualitative quotes marked official. Angel quote: 'His body is virtually devoid of fat, and posses- ses greater proportionate muscle mass' (OHOTMU Deluxe vol 1; character inferred). Kingpin 9 lb: reported, attributed by the fan wiki to OHOTMU: Daredevil 2004, unverified.",
+   "why": "Verifier (comics): (1) The Angel quote is misattributed. The wording 'are hollow like those of a bird; his body is virtually devoid of fat; he possesses greater proportionate' comes from archive.org item kileko_empire, the unauthorised upload the researcher says was not cited. The OHOTMU Deluxe vol 1 text reads 'a man of his height and build. His body is virtually devoid of fat, and posses- ses greater proportionate",
+   "set": {
+    "status": "derived",
+    "label": "Comic characters' body fat: no percentage found in the Marvel and DC sources searched (qualitative statements only; one fan-wiki figure attributed to a 2004 handbook, unverified)"
+   }
+  },
+  {
+   "key": "comic_score_treatment",
+   "append_notes": "thing: {class: 'uncertain', basis: 'official: rock-like, supple skin; mass and density not stated'}; superman: {class: 'overstated', factor: null, basis: 'DK DC 2021 Kryptonians: dense molecular structure'}; thor: {class: 'overstated', factor: 'about 3 (2-4)', plot_mass_kg_range: [65, 129]}; kingpin fat_note: 'official: bulk not fat, like a sumo wrestler; 9 lb reported (wiki cites OHOTMU: Daredevil 2004)'.",
+   "why": "Verifier (comics): Several classes go beyond the evidence or are applied inconsistently. (a) Thing 'overstated': official text only calls the skin rock-like and 'supple'. The density claim is fan-wiki. Without that, the direction is unknown. (b) Superman 'comparable': DK 2021 says Kryptonians have a 'dense molecular structure'. Under the researcher's own rule for Luke Cage, that makes him 'overstated, amount unknown"
+  },
+  {
+   "key": "kouri_correction_beyond_human_heights",
+   "set": {
+    "label": "Kouri's linear height correction fails far outside human heights (Rex at his skull height, tail not counted: about 250 on Kouri's scale against 160 on this page's)"
+   },
+   "append_notes": "On the page's basis (height to the top of the skull, 2.92 m; 306 kg of tail not counted; 7.5% fat; Kouri's c = 6.1): plain FFMI 259.7, Kouri-normalised 252.9, S 160.0. The values above use the earlier basis (crest height 3.048 m, tail counted).",
+   "why": "Review round 1 (data lens, DC-2): the label still gave the old-basis numbers (261 vs 159), which contradicted the score card (about 250 vs 160). Recomputed on the page's basis."
+  },
+  {
+   "key": "todd2008_mr_america_reanalysis",
+   "retitle_sources": [
+    [
+     "https://starkcenter.org/igh/igh-v10/igh-v10-n3/igh1003p03.pdf",
+     "Todd J. Size Matters: Reflections on Muscle, Drugs, and Sport. Iron Game History 10(3):3-22, Aug 2008 (Seward Staley Honor Lecture, NASSH 2008); Mr America analysis pp. 14-16"
+    ]
+   ],
+   "why": "Review round 1 (data lens, DC-7): the verifier's page-range correction had gone into the notes only; the source title on the page still said 13-15. The PDF's first page is printed 3; Pope's 6-16% recollection is on p.14 and the 221 lb Grimek estimate on p.15."
+  },
+  {
+   "key": "ansur2_ellipse_vs_girth_male",
+   "retitle_sources": [
+    [
+     "https://tools.openlab.psu.edu/publicData/ANSURII-TR11-017.pdf",
+     "Hotzman J et al. 2011, NATICK/TR-11/017 (chest breadth protocol, section 6.4.24: caliper compressed firmly to the rib cage, at maximum inspiration)"
+    ]
+   ],
+   "why": "Review round 1 (data lens, DC-8): the title gave full inspiration as a reason chest breadth is narrow; the verifier found inspiration widens it. The title now describes the protocol without claiming a cause."
+  },
+  {
+   "key": "dc_density_claims_fan_only",
+   "values": {
+    "official_density_statements_found": 1,
+    "kryptonians_dk_dc_2021": "KRYPTONIANS ... POWERS/ABILITIES On Krypton: high intelligence, dense molecular structure, cells capable of absorbing and storing certain frequencies of radiation. (OCR line 30445; no factor)"
+   },
+   "replace_notes": [
+    [
+     "Grep of both DK DC OCR texts for dense/denser/density/'body fat' found hits only for other characters",
+     "Grep of both DK DC OCR texts for dense/denser/density/'body fat' found one statement about Superman's species (DK 2021, Kryptonians entry: 'On Krypton: high intelligence, dense molecular structure, ...'; no factor); the other hits are other characters"
+    ]
+   ],
+   "why": "Review round 1 (data lens, DC-12): the label had been corrected to one official statement but the values still said 0. Confirmed in the DK DC Comics Encyclopedia New Edition (2021) OCR text, line 30445, fetched 11 Oct 2026."
+  },
+  {
+   "key": "trexler2017_ffmi_fulltext_check",
+   "values": {
+    "n_over_25_kouri_equation": 54,
+    "pct_over_25_kouri_equation": 23.0
+   },
+   "append_notes": "Results, 'Upper limits for FFMI': 'Sixty-two participants (26.4%) had FFMIAdj values above 25 kg·m−2 (Figure 1B). When using the KE adjustment, 54 participants (23.0%) had FFMIKE values above 25 kg·m−2 (Figure 1C).' FFMIAdj uses the study's own slope (2.943); FFMIKE uses Kouri's (6.1). The 28.1 (97.5th percentile) and 31.7 (maximum) are FFMIAdj. Full text fetched 11 Oct 2026 through PMC's OAI service (the article page served a captcha).",
+   "why": "Review round 1 (data lens, DC-6): the page put Trexler's own-slope count (62, 26%) in a sentence about Kouri's scale. On Kouri's equation the count is 54 (23%)."
+  }
+ ]
+}

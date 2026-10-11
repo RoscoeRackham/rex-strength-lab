@@ -26,7 +26,7 @@ Each build has a reference height and weight. Each has a status, source keys, a 
 
 ## Corrections applied
 
-There are 92 log entries.
+There are 93 log entries. The last one was added by the Build Comparison work on 2026-10-11 (see below).
 
 - 23 checks had ok=false. All 23 corrections are applied.
   - 20 are on facts. Each fact is edited.
@@ -381,3 +381,8 @@ Scripts are in `/tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/sc
 - Then `python3 -I tools/audit_fixes.py data/builds.json` (in this project) for the page-audit fixes.
 
 The NHANES PDF is in `scratchpad/bcdata/nhanes_dl/` (sha256 936396720de7ce66b69e392a3b964d552f3170fc241f91fc9e93efb74c447b2d).
+
+## Change from the Build Comparison research (2026-10-11)
+
+- `kouri1995_nonusers`: height 1.80 m, weight 82.06 kg and body fat 12.5% now come from Table 1 of Kouri 1995's full paper (status measured; new fact `kouri1995_table1`), read and verified for the Build Comparison (`build-comparison/data/facts.json`, key `kouri1995_fulltext_methods`). They replace approximate second-hand means (1.8 m, 82.0 kg, 13%, reported). The description now says the 74 non-users were 56 gym athletes and 18 volunteers from a testosterone trial.
+

@@ -127,7 +127,7 @@ test('FFMI uses the given body fat and Kouri normalisation with c = 6.1', () => 
   const d = M.compute({ buildId: 'ansur2_m_p50' });
   assert.strictEqual(d.bodyFat.value, 15); assert.strictEqual(d.bodyFat.status, 'estimate');
   const k = M.compute({ buildId: 'kouri1995_nonusers' });
-  assert.strictEqual(k.bodyFat.value, 13); assert.strictEqual(k.bodyFat.status, 'reported');
+  assert.strictEqual(k.bodyFat.value, 12.5); assert.strictEqual(k.bodyFat.status, 'measured'); // Kouri 1995 Table 1
   assert.strictEqual(F.kouri1995_ffmi_natural_limit.values.nonuser_normalized_FFMI_upper_limit_kg_m2, 25.0);
   assert.ok(/sample maximum, not a hard physiological limit/.test(F.kouri1995_ffmi_natural_limit.label));
   assert.strictEqual(M.compute({ buildId: 'she_hulk' }).ffmi.ref.applies, false);

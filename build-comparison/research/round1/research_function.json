@@ -1,0 +1,440 @@
+{
+ "summary": "I found sources for all three functional limits, but no source gives the limits themselves. Each threshold below is my own estimate, built from sourced pieces.\n\n(1) Soft-tissue contact limits flexion. CDC's goniometry protocol says elbow flexion ends \"usually when the muscle bulk of the anterior forearm contacts the muscle bulk of the anterior upper arm\", and knee flexion ends when calf meets thigh. Normal passive elbow flexion in men aged 20-44 is 144.6 deg (CDC); the VA standard is 0-145 deg (38 CFR 4.71). Zwerus et al. measured active flexion in men falling with BMI: 151, 145, 140 and 136 deg across the four BMI groups. An open-access review says \"bodybuilders may flex only up to 130 degrees due to their muscle bulk\"; it cites a textbook and gives no measured sample.\n\n(2) Hand-to-mouth needs about 130 deg in natural movement (Morrey 1981: most daily tasks 30-130; Safaee-Rad 1990: feeding 70-130; Murphy 2006: drinking 136). With compensation, 49 of 50 adults did all 12 daily tasks with flexion limited to 120 deg (Vasen 1995). The VA rates flexion limited to 110 deg as 0% and 100 deg as 10%.\n\n(3) Extra tissue reduces range of motion. In obese men, 9 of 30 motions were reduced, including shoulder adduction (by up to 39%) and knee flexion (Park 2010). Shoulder range is lower in bodybuilders and powerlifters. Training alone does not reduce range of motion (Afonso 2021 meta-analysis). Chang 1988 is abstract-only and gives no joint detail.\n\n(4) ANSUR II measures standing \"heels together as much as possible\", with \"elbows lightly touching the sides\". The handbook adds: \"On individuals with muscular upper arms, the elbows may not touch the sides.\" Thigh girth is taken with the legs apart \"just enough so that the thighs do not touch\". Obese men walk with steps 0.16 m wide against 0.08 m for non-obese men, attributed to fat inside the thighs (Spyropoulos 1991).\n\n(5) I found no published model that predicts maximum flexion from limb girth. Thigh-calf contact starts above 130 deg of knee flexion and scales with girth (Zelle 2007, 2009). Animation and digital-human models handle tissue collision but take joint angles as inputs.\n\nI derived calibration numbers from the ANSUR II CSV and simple geometry (all estimates):\n- With the legs vertical, the median man has a 4.4 cm gap between his thighs just above the knee; 1 of 4,082 men has none.\n- An arm angle derived from seated forearm-forearm breadth has a median of about 10 deg, 99th percentile 19 deg and maximum 26 deg.\n- For hand-to-mouth, geometry with median proportions needs about 123 deg of elbow flexion with a straight wrist, or about 99 deg with the wrist fully flexed.\n- A wedge model calibrated to 145 deg puts flexion at 100 deg when arm girth is 2.7 times the normal-weight reference (pure geometry), or 1.8 times if the steeper loss seen with BMI is applied.\n\nScripts are in /tmp/claude-0/-home-user-rex-strength-lab/9b81b796-3162-56bd-85b7-22e02b6583e2/scratchpad/research/functional-limits/scripts/ and raw downloads in /tmp/claude-0/-home-user-rex-strength-lab/9b81b796-3162-56bd-85b7-22e02b6583e2/scratchpad/research/functional-limits/dl/. I relied on these existing builds.json keys rather than re-researching them: ansur2_dataset, ansur2_segments_male, ansur2_measurement_definitions, ansur2_thigh, ansur2_biceps_flexed, ansur2_forearm_flexed.",
+ "facts": [
+  {
+   "key": "elbow_knee_flexion_norms_cdc",
+   "label": "Normal passive elbow and knee flexion in healthy people (CDC Normal Joint Range of Motion Study, 674 people aged 2-69)",
+   "status": "measured",
+   "values": "{\"elbow_flexion_men_20_44_deg\":144.6,\"elbow_flexion_men_20_44_ci95_deg\":[143.6,145.6],\"elbow_flexion_men_20_44_rad\":2.524,\"elbow_flexion_men_45_69_deg\":143.5,\"elbow_flexion_women_20_44_deg\":150.0,\"knee_flexion_men_20_44_deg\":137.7,\"knee_flexion_men_20_44_ci95_deg\":[136.5,138.9],\"knee_flexion_men_45_69_deg\":132.9,\"elbow_flexion_all_ages_both_sexes_mean_deg\":148.0,\"elbow_flexion_all_sd_deg\":6.2,\"elbow_flexion_all_min_max_deg\":[120,166],\"n_total\":674}",
+   "sources": [
+    {
+     "title": "CDC Joint Range of Motion Study (archived page with reference-value tables)",
+     "url": "https://archive.cdc.gov/www_cdc_gov/ncbddd/jointrom/index.html"
+    },
+    {
+     "title": "CDC Public Use Dataset for Normal Joint Range of Motion: Data Description and Sample Data Tables (10/27/2010)",
+     "url": "https://stacks.cdc.gov/view/cdc/153156/cdc_153156_DS1.pdf"
+    },
+    {
+     "title": "Soucie et al. 2011, Haemophilia 17:500-507, PMID 21070485 (abstract via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=21070485&rettype=abstract&retmode=text"
+    }
+   ],
+   "notes": "CDC table 'Reference Values for Normal Joint Range of Motion- ages 20 - 44': 'Elbow flexion 150.0 (149.1 - 150.9) [females] 144.6 (143.6 - 145.6) [males]'; 'Knee flexion 141.9 (140.9 - 142.9) 137.7 (136.5 - 138.9)'. Ages 45-69 males: elbow 143.5 (142.3-144.7), knee 132.9 (131.6-134.2). Soucie abstract: 'Nine licensed physical therapists used universal goniometers to determine passive joint motion'; collected Nov 2003 - Jul 2006; 'Female subjects had greater joint mobility'; values 'in most cases, were significantly different than most commonly used normative values'. The DS1 PDF (p.5) gives whole-sample statistics, both sexes and all ages: right elbow flexion mean 148.00, SD 6.43, range 120-166; left 148.00, SD 6.17, range 125-165. These are passive values, a few degrees above active ones. The public dataset includes weight and height, so it could test BMI against flexion directly, but its download link is now dead (404) and the Wayback copy was unreachable from this sandbox. The CDC page shows 95% confidence intervals and calls the values 'reference values'."
+  },
+  {
+   "key": "rom_end_point_soft_tissue_contact",
+   "label": "What ends elbow, knee and hip flexion in a standard goniometry protocol: muscle bulk meeting muscle bulk",
+   "status": "official",
+   "values": "{\"elbow_flexion_sample_mean_deg\":148.0,\"knee_flexion_sample_mean_deg\":140.3,\"orig\":\"CDC protocol: elbow flexion stops when anterior forearm bulk meets anterior upper-arm bulk; knee flexion when calf and thigh meet; hip flexion when anterior thigh meets lower abdomen\"}",
+   "sources": [
+    {
+     "title": "CDC Public Use Dataset for Normal Joint Range of Motion: Data Description and Sample Data Tables",
+     "url": "https://stacks.cdc.gov/view/cdc/153156/cdc_153156_DS1.pdf"
+    },
+    {
+     "title": "Zwerus et al., Normative values and affecting factors for the elbow range of motion, Shoulder Elbow 2019;11(3):215-224, doi 10.1177/1758573217728711 (PMC full text)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6555111/"
+    }
+   ],
+   "notes": "CDC DS1 p.2, Elbow flexion (supine, arm at side, forearm supinated): 'ROM is recorded when the elbow can bend no further, usually when the muscle bulk of the anterior forearm contacts the muscle bulk of the anterior upper arm.' Knee flexion: 'ROM is recorded when the knee can bend no further, usually when the muscle bulk of the calf and thigh contact each other.' Hip flexion: 'ROM is recorded when contact is made between the muscle bulk of the anterior thigh and lower abdomen or when the pelvis begins to tilt posteriorly.' Zwerus et al., Introduction: 'Flexion is usually restricted by anterior soft tissues such as the biceps muscle, resulting in an elastic end-feeling.' Together these support 'soft-tissue approximation' as the normal end-feel of elbow and knee flexion. The textbooks named in the brief (Norkin & White, Kapandji, Magee, the AAOS booklet) were NOT fetched; only flashcards and secondary pages quoted them, so they are not cited here."
+  },
+  {
+   "key": "cfr_standard_joint_ranges",
+   "label": "US VA standard ranges of motion (38 CFR 4.71, Plates I and II): elbow flexion 0-145 deg, wrist flexion 0-80 deg, knee flexion 0-140 deg",
+   "status": "official",
+   "values": "{\"elbow_flexion_deg\":145,\"wrist_palmar_flexion_deg\":80,\"wrist_dorsiflexion_deg\":70,\"forearm_pronation_deg\":80,\"forearm_supination_deg\":85,\"shoulder_abduction_deg\":180,\"knee_flexion_deg\":140,\"hip_flexion_deg\":125,\"hip_abduction_deg\":45}",
+   "sources": [
+    {
+     "title": "38 CFR 4.71 Measurement of ankylosis and joint motion (LII)",
+     "url": "https://www.law.cornell.edu/cfr/text/38/4.71"
+    },
+    {
+     "title": "38 CFR 4.71 Plate I (image)",
+     "url": "https://www.law.cornell.edu/images/ecfr/ec04no91.001.gif"
+    },
+    {
+     "title": "38 CFR 4.71 Plate II (image)",
+     "url": "https://www.law.cornell.edu/images/ecfr/ec04no91.002.gif"
+    }
+   ],
+   "notes": "Text: 'Plates I and II provide a standardized description of ankylosis and joint motion measurement. The anatomical position is considered as 0\u00b0, with two major exceptions'. The degree values are printed on the plate images; I read them from the GIFs: 'The Elbow Flexion' 0-145\u00b0; wrist 'Palmar Flexion' 80\u00b0 and 'Dorsiflexion (Extension)' 70\u00b0; 'The Knee Flexion and Extension' 0-140\u00b0; 'The Hip Flexion' 125\u00b0; 'The Hip Abduction' 45\u00b0. These are regulatory reference ranges for disability rating, not a measured sample. Use the 80\u00b0 wrist flexion as the wrist limit in the hand-to-mouth geometry."
+  },
+  {
+   "key": "va_rating_limited_elbow_knee_flexion",
+   "label": "VA disability ratings for limited elbow flexion (38 CFR 4.71a, DC 5206) and limited knee flexion (DC 5260)",
+   "status": "official",
+   "values": "{\"elbow_flexion_limited_to_deg_rating_0pct\":110,\"elbow_flexion_limited_to_deg_rating_10pct\":100,\"elbow_flexion_limited_to_deg_rating_20pct\":90,\"elbow_flexion_limited_to_deg_rating_30pct_major_arm\":70,\"elbow_flexion_limited_to_deg_rating_40pct_major_arm\":55,\"elbow_flexion_limited_to_deg_rating_50pct_major_arm\":45,\"knee_flexion_limited_to_deg_rating_0pct\":60,\"knee_flexion_limited_to_deg_rating_10pct\":45,\"knee_flexion_limited_to_deg_rating_20pct\":30,\"knee_flexion_limited_to_deg_rating_30pct\":15}",
+   "sources": [
+    {
+     "title": "38 CFR 4.71a Schedule of ratings, musculoskeletal system (LII)",
+     "url": "https://www.law.cornell.edu/cfr/text/38/4.71a"
+    }
+   ],
+   "notes": "Text as extracted: '5206 Forearm, limitation of flexion of: | Flexion limited to 45\u00b0 | 50 | 40 | Flexion limited to 55\u00b0 | 40 | 30 | Flexion limited to 70\u00b0 | 30 | 20 | Flexion limited to 90\u00b0 | 20 | 20 | Flexion limited to 100\u00b0 | 10 | 10 | Flexion limited to 110\u00b0 | 0 | 0' (major | minor arm, percent). '5260 Leg, limitation of flexion of: Flexion limited to 15\u00b0 30; 30\u00b0 20; 45\u00b0 10; 60\u00b0 0'. This is a compensation schedule, not a study of function. Still, it is an official judgement that elbow flexion down to 110\u00b0 carries no rated impairment and that rated impairment starts at 100\u00b0. That supports putting a 'can't reach the face' threshold near 100\u00b0 rather than at the ~130\u00b0 that natural eating uses."
+  },
+  {
+   "key": "elbow_flexion_vs_bmi_zwerus",
+   "label": "Elbow flexion falls as BMI rises: 352 healthy adults (166 men), goniometer, active and passive",
+   "status": "measured",
+   "values": "{\"n_total\":352,\"n_men\":166,\"age_range_yr\":[18,79],\"men_active_flexion_deg\":143,\"men_passive_flexion_deg\":147,\"men_active_flexion_by_bmi_deg\":{\"bmi_lt_18_5\":151,\"bmi_18_5_25\":145,\"bmi_25_30\":140,\"bmi_ge_30\":136},\"men_passive_flexion_by_bmi_deg\":{\"bmi_lt_18_5\":155,\"bmi_18_5_25\":149,\"bmi_25_30\":144,\"bmi_ge_30\":140},\"men_n_by_bmi\":{\"bmi_lt_18_5\":6,\"bmi_18_5_25\":105,\"bmi_25_30\":40,\"bmi_ge_30\":15},\"r_bmi_vs_active_flexion\":[-0.57,-0.59],\"r_bmi_vs_passive_flexion\":[-0.59,-0.59],\"men_active_flexion_by_age_deg\":{\"18_29\":146,\"30_39\":145,\"40_49\":143,\"50_59\":143,\"60_69\":141,\"70_79\":139}}",
+   "sources": [
+    {
+     "title": "Zwerus et al., Shoulder Elbow 2019;11(3):215-224, doi 10.1177/1758573217728711 (PMC full text)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6555111/"
+    },
+    {
+     "title": "Europe PMC REST record (abstract) for PMC6555111",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=PMCID:PMC6555111&resultType=core&format=json"
+    }
+   ],
+   "notes": "Results, Correlations: 'BMI correlated moderately negative on flexion, both active (-0.57; -0.59) and passive (-0.59; -0.59).' The pairs are probably dominant and non-dominant sides; the page does not say whether r is pooled across sexes. Discussion: 'A higher BMI correlated with a lower ROM for active and passive flexion.' Table 4, men, dominant side, mean (95% CI): BMI <18.5 (n=6) active 151 (148-155), passive 155 (152-159); 18.5-24.99 (n=105) active 145 (144-146), passive 149 (148-150); 25-29.99 (n=40) active 140 (139-142), passive 144 (143-'1456' sic, probably 146); >=30 (n=15) active 136 (134-138), passive 140 (138-143). The authors note 'the underweight and obese groups are relatively small.' Methods: universal goniometer, '0\u00b0 shoulder anteflexion and 0\u00b0 abduction and a maximally supinated forearm'. The abstract (Europe PMC) confirms: 'Elbow ROM is influenced by age, sex and BMI.' I read the table through the PMC page with a fetch tool; direct curl was blocked by a CAPTCHA. Caveats: the extra tissue in these groups is mostly fat, not muscle; the BMI groups may differ in age (about -1\u00b0 per decade in men); Dutch adults, not soldiers. It is the best quantitative evidence I found that soft-tissue volume reduces elbow flexion."
+  },
+  {
+   "key": "elbow_flexion_bodybuilders_review_statement",
+   "label": "Review statement: bodybuilders may flex the elbow only to about 130 deg because of muscle bulk (no measured sample)",
+   "status": "reported",
+   "values": "{\"normal_flexion_max_deg\":145,\"bodybuilder_flexion_max_deg\":130,\"hyperlax_hyperextension_deg\":10,\"functional_arc_deg\":[30,130]}",
+   "sources": [
+    {
+     "title": "Islam et al., The Anatomy and Biomechanics of the Elbow, Open Orthop J 2020;14:95, doi 10.2174/1874325002014010095",
+     "url": "https://openorthopaedicsjournal.com/VOLUME/14/PAGE/95/FULLTEXT/"
+    }
+   ],
+   "notes": "Section 6.1: 'The normal arc of elbow flexion is 0 [full extension] to 145 degrees. However, there is considerable variation between individualS: hyperlax individuals may hyperextend by 10 degrees or more and bodybuilders may flex only up to 130 degrees due to their muscle bulk [1].' Reference [1] is DeLee, Drez & Miller, Orthopaedic Sports Medicine: Principles and Practice, chapter 'Biomechanics of the elbow and forearm', 2003. I did not fetch that textbook. The statement gives no sample, method or bodybuilder size, so treat it as expert opinion. It is the only source found that names muscle bulk as limiting elbow flexion in bodybuilders. An open-access, peer-reviewed journal, but a narrative review."
+  },
+  {
+   "key": "ansur2_standing_posture_limb_contact",
+   "label": "ANSUR II measuring postures: heels together, elbows lightly touching the sides ('muscular upper arms' may not), thighs apart for thigh girth",
+   "status": "official",
+   "values": "{\"handbook_section\":\"6.1.1\",\"handbook_page\":73,\"scan_posture_feet_apart_m\":0.30,\"tabletop_measures_feet_apart_m\":0.10}",
+   "sources": [
+    {
+     "title": "Hotzman et al. 2011, NATICK/TR-11/017, ANSUR II Measurer's Handbook",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR11-017.pdf"
+    }
+   ],
+   "notes": "Sec. 6.1.1 (p.73, PDF p.83): 'participants are asked to stand erect, with their weight evenly distributed on both feet, heels together as much as possible, legs and trunk straight without stiffness ... The arms are to hang relaxed with the elbows lightly touching the sides with the palms of the hands beside, but not touching, the thighs. On individuals with muscular upper arms, the elbows may not touch the sides.' Sec. 6.4.79 Thigh Circumference: 'The legs are spread apart just enough so that the thighs do not touch'. This implies the thighs often touch at the top in the standard stance. Sec. 6.4.28 Crotch Height: the participant spreads the legs to place the blade, 'then brings the heels back together'. Sec. 6.1.2 Anthropometric Sitting: 'the upper arms are hanging loosely at the sides ... flex the elbows 90\u00b0 with the hands straight, palms facing inward' (the posture for forearm-forearm breadth, sec. 6.4.40). Body scans used 'feet are 30 cm apart ... arms straight, and held away from the body'. These sentences anchor the definitions: an ordinary man's arms hang with the elbows lightly touching, and muscle bulk pushing the elbows off the sides is already seen inside the human range. sha256 of the PDF begins d31d6333."
+  },
+  {
+   "key": "elbow_rom_daily_tasks_morrey1981",
+   "label": "Morrey, Askew & Chao 1981: elbow motion needed for 15 daily tasks (33 normal adults, electrogoniometer)",
+   "status": "measured",
+   "values": "{\"n\":33,\"n_men\":15,\"most_adl_flexion_deg\":[30,130],\"reach_occiput_flexion_deg\":140,\"tie_shoe_flexion_deg\":15,\"forearm_pronation_deg\":50,\"forearm_supination_deg\":50}",
+   "sources": [
+    {
+     "title": "Morrey BF, Askew LJ, Chao EY. J Bone Joint Surg Am 1981;63(6):872-7, PMID 7240327 (abstract via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=7240327&rettype=abstract&retmode=text"
+    }
+   ],
+   "notes": "Abstract: 'Activities of dressing and hygiene require elbow positioning from about 140 degrees of flexion needed to reach the occiput to 15 degrees of flexion required to tie a shoe ... Other activities of daily living (such as eating, using a telephone, or opening a door) are accomplished with arcs of motion of varying magnitudes. Most of the activities of daily living that were studied in this project can be accomplished with 100 degrees of elbow flexion (from 30 to 130 degrees)'. The full text is paywalled (JBJS returned 402). The per-task values widely quoted second-hand (e.g. drinking 72-129\u00b0) were not seen in a primary source and are not used. Electrogoniometer measurements of natural, unconstrained movement; 'most' tasks, not all."
+  },
+  {
+   "key": "elbow_rom_feeding_safaee_rad1990",
+   "label": "Safaee-Rad et al. 1990: elbow flexion 70-130 deg for three feeding tasks (10 men)",
+   "status": "measured",
+   "values": "{\"n_men\":10,\"feeding_elbow_flexion_deg\":[70,130],\"shoulder_flexion_deg\":[5,45],\"shoulder_abduction_deg\":[5,35],\"wrist_flexion_to_extension_deg\":[-10,25]}",
+   "sources": [
+    {
+     "title": "Safaee-Rad R et al. Arch Phys Med Rehabil 1990;71(7):505-9, PMID 2350221 (abstract via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=2350221&rettype=abstract&retmode=text"
+    }
+   ],
+   "notes": "Abstract: 'Ten able-bodied men were studied as they performed three feeding tasks--eating with a spoon, eating with a fork, and drinking from a handled cup ... the required ranges of motion for the feeding tasks were 5 degrees to 45 degrees shoulder flexion, 5 degrees to 35 degrees shoulder abduction ... 70 degrees to 130 degrees elbow flexion'. 3D measurement system, natural movement. Small sample (10)."
+  },
+  {
+   "key": "elbow_rom_contemporary_sardelli2011",
+   "label": "Sardelli et al. 2011: positional tasks reach 149 deg flexion; functional tasks max 142 deg (cell phone); 25 people, optical tracking",
+   "status": "measured",
+   "values": "{\"n\":25,\"positional_flexion_min_deg\":27,\"positional_flexion_max_deg\":149,\"positional_flexion_max_sd_deg\":5,\"functional_flexion_min_deg\":23,\"functional_flexion_max_deg\":142,\"functional_flexion_max_sd_deg\":3,\"max_functional_arc_deg\":130}",
+   "sources": [
+    {
+     "title": "Sardelli M, Tashjian RZ, MacWilliams BA. J Bone Joint Surg Am 2011;93(5):471-7, PMID 21368079 (abstract via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=21368079&rettype=abstract&retmode=text"
+    }
+   ],
+   "notes": "Abstract: 'Positional tasks required a minimum (mean and standard deviation) of 27\u00b0 \u00b1 7\u00b0 of flexion and a maximum of 149\u00b0 \u00b1 5\u00b0 of flexion ... For functional tasks, the maximum flexion arc was 130\u00b0 \u00b1 7\u00b0, with a minimum value recorded as 23\u00b0 \u00b1 6\u00b0 and a maximum value recorded as 142\u00b0 \u00b1 3\u00b0. All of these were for the cellular telephone task.' Conclusion: functional ROM 'may be greater than previously reported'. The abstract does not say which positional task needed 149\u00b0."
+  },
+  {
+   "key": "elbow_rom_adl_raiss2007",
+   "label": "Raiss et al. 2007: 10 daily tasks needed elbow 0-36-146 deg (7 people, 3D motion analysis)",
+   "status": "measured",
+   "values": "{\"n\":7,\"elbow_flexion_min_deg\":36,\"elbow_flexion_max_deg\":146,\"elbow_arc_deg\":110}",
+   "sources": [
+    {
+     "title": "Raiss P et al. Z Orthop Unfall 2007;145(4):493-8, PMID 17912671 (English abstract via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=17912671&rettype=abstract&retmode=text"
+    }
+   ],
+   "notes": "Abstract: tasks included 'eating with a spoon, combing hair, genital hygiene, using a telephone, typing on a keyboard, drinking from a glass ...'; 'To perform the ADL, an elbow extension/flexion of 0 - 36 - 146 degrees (total 110 degrees) ... was needed.' Article in German; only the English abstract was read. Very small sample (7)."
+  },
+  {
+   "key": "elbow_flexion_drinking_murphy2006",
+   "label": "Murphy et al. 2006: peak elbow flexion while drinking from a glass 136.4 deg (20 adults)",
+   "status": "measured",
+   "values": "{\"n\":20,\"n_men\":9,\"mean_age_yr\":48.2,\"drinking_max_elbow_flexion_deg\":136.4,\"sd_deg\":3.8,\"ci95_deg\":[134.6,138.1]}",
+   "sources": [
+    {
+     "title": "Murphy MA, Sunnerhagen KS, Johnels B, Willen C. J NeuroEng Rehabil 2006;3:18, doi 10.1186/1743-0003-3-18 (PMC1562432 full text via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=1562432&rettype=xml"
+    }
+   ],
+   "notes": "Table 2: 'Elbow ... Drinking (maximal flexion) 136.4 3.8 134.6-138.1' (mean, SD, 95% CI). 'The maximal elbow flexion occurred during the drinking phase.' Subjects: '20 control subjects (9 male and 11 female). The mean age was 48.2 years (range 31-64).' The elbow angle comes from skin markers ('the angle between the vectors joining elbow and wrist markers and the elbow and shoulder markers'), so it is not identical to a goniometer reading. Optoelectronic motion capture; pilot study."
+  },
+  {
+   "key": "elbow_rom_adl_review_oosterwijk2018",
+   "label": "Systematic review (36 studies, 66 daily tasks): unimpaired people used up to full elbow flexion (150 deg) in personal care, eating and drinking",
+   "status": "reported",
+   "values": "{\"n_studies\":36,\"n_tasks\":66,\"max_elbow_flexion_used_deg\":150,\"shoulder_flexion_abduction_needed_deg\":130}",
+   "sources": [
+    {
+     "title": "Oosterwijk AM et al. Physiother Theory Pract 2018;34(7):505-528, PMID 29377745 (abstract via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=29377745&rettype=abstract&retmode=text"
+    },
+    {
+     "title": "Hanze University research portal record (no full text)",
+     "url": "https://research.hanze.nl/en/publications/shoulder-and-elbow-range-of-motion-for-the-performance-of-activit/"
+    }
+   ],
+   "notes": "Abstract: 'Thirty-six studies involving a total of 66 ADL tasks were included. Results demonstrated that unimpaired participants used up to full elbow flexion (150\u00b0) in personal care, eating, and drinking tasks. For shoulder flexion and abduction approximately 130\u00b0 was necessary.' Full text not available, so the per-task angles were not read. 'Used' is not 'required': people use their full range when it is available."
+  },
+  {
+   "key": "elbow_rom_compensated_vasen1995",
+   "label": "Vasen et al. 1995: with flexion braced at 120 deg, 49 of 50 adults still did all 12 daily tasks (using other joints to compensate)",
+   "status": "measured",
+   "values": "{\"n_subjects\":50,\"n_limbs\":100,\"n_tasks\":12,\"brace_step_deg\":15,\"flexion_limit_all_tasks_deg\":120,\"extension_limit_all_tasks_deg\":75,\"subjects_completing_all_tasks\":49}",
+   "sources": [
+    {
+     "title": "Vasen AP, Lacey SH, Keith MW, Shaffer JW. J Hand Surg Am 1995;20(2):288-92, PMID 7775772 (abstract via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=7775772&rettype=abstract&retmode=text"
+    }
+   ],
+   "notes": "Abstract: 'One hundred normal upper extremities in 50 adults were sequentially studied in a Bledsoe brace, which limited elbow motion. The amount of flexion and extension of the elbow was serially limited by 15 degree increments ... Overall, 49 of the subjects performed all of the tasks with extension limited at 75 degrees and flexion limited at 120 degrees. By isolating the allowable range of motion of the elbow and allowing for compensatory motions and strategies of the normal adjacent joints, the functional elbow range of motion is established as 75 degrees-120 degrees flexion.' The abstract does not list the 12 tasks or say how many people failed at the next step (105\u00b0). Full text not fetched (paywalled). This is the best source that compensation lowers the flexion needed below the ~130\u00b0 of natural movement."
+  },
+  {
+   "key": "obesity_reduces_rom_park2010_jeong2018",
+   "label": "Extra soft tissue reduces joint range: obese men lose shoulder adduction (up to 39%) and knee flexion; pre-obese and obese people lose elbow and knee flexion",
+   "status": "measured",
+   "values": "{\"park2010_n_obese_men\":20,\"park2010_n_nonobese_men\":20,\"park2010_motions_tested\":30,\"park2010_motions_reduced\":9,\"park2010_max_reduction_pct_left_shoulder_adduction\":38.9,\"park2010_min_sig_reduction_pct_right_knee_flexion\":11.1,\"escalante1999_n\":687}",
+   "sources": [
+    {
+     "title": "Park W, Ramachandran J, Weisman P, Jung ES. Obesity effect on male active joint range of motion. Ergonomics 2010;53(1):102-8, PMID 20069486 (abstract via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=20069486&rettype=abstract&retmode=text"
+    },
+    {
+     "title": "Jeong Y, Heo S, Lee G, Park W. Pre-obesity and obesity impacts on passive joint range of motion. Ergonomics 2018;61(9):1223-1231, PMID 29775425 (abstract via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=29775425&rettype=abstract&retmode=text"
+    },
+    {
+     "title": "Escalante A et al. Determinants of hip and knee flexion range. Arthritis Care Res 1999;12(1):8-18, PMID 10513485 (abstract via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=10513485&rettype=abstract&retmode=text"
+    }
+   ],
+   "notes": "Park 2010: 'Obesity significantly reduced RoM for nine of the 30 motions: shoulder extensions and adductions, lumbar spine extension and lateral flexions and knee flexions. The largest significant RoM reduction was 38.9% for the left shoulder adduction. The smallest was 11.1% for the right knee flexion. The obesity-associated RoM reductions appear to be mainly due to the mechanical interposition and obstruction of inter-segmental motions caused by excess fat in the obese body.' Elbow flexion was NOT among the significant motions in this small active-ROM study (Zwerus, with more men, did find a BMI effect). The full text with per-motion values and the adduction method was not fetched (paywalled). Jeong 2018 (passive, 'A publicly available passive RoM dataset was analysed', probably the CDC set, unconfirmed): 'The pre-obese and obese groups were found to have significantly smaller RoM means than the normal-weight for elbow flexion and supination, hip extension and flexion, knee flexion and ankle plantar flexion.' Escalante 1999 (687 people aged 65-79): 'rising BMI ... with reduced FR of both hips and knees'. All three concern fat, not muscle; the mechanism they name (tissue interposition) is the one the chart's limits model."
+  },
+  {
+   "key": "lifters_rom_chang1988_and_later",
+   "label": "Joint range in power lifters and bodybuilders: shoulder range lower than in controls; training alone is not the cause (Chang 1988 abstract has no joint detail)",
+   "status": "measured",
+   "values": "{\"chang1988_n_lifters\":10,\"chang1988_n_controls\":10,\"barlow2002_n_bodybuilders\":29,\"barlow2002_n_controls\":25,\"barlow2002_total_shoulder_rotation_bb_deg\":166,\"barlow2002_total_shoulder_rotation_ctrl_deg\":180,\"barlow2002_internal_rotation_loss_deg\":11,\"gadomski2018_n_powerlifters\":15,\"gadomski2018_n_controls\":15,\"afonso2021_n_rcts\":11,\"afonso2021_n_participants\":452,\"afonso2021_effect_size\":-0.22,\"afonso2021_es_ci95\":[-0.55,0.12]}",
+   "sources": [
+    {
+     "title": "Chang DE, Buschbacher LP, Edlich RF. Limited joint mobility in power lifters. Am J Sports Med 1988;16(3):280-4, PMID 3381987 (abstract via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=3381987&rettype=abstract&retmode=text"
+    },
+    {
+     "title": "Barlow JC et al. Shoulder strength and range-of-motion characteristics in bodybuilders. J Strength Cond Res 2002;16(3):367-72, PMID 12173950 (abstract via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=12173950&rettype=abstract&retmode=text"
+    },
+    {
+     "title": "Gadomski SJ, Ratamess NA, Cutrufello PT. Range of motion adaptations in powerlifters. J Strength Cond Res 2018;32(11):3020-3028, PMID 30204657 (abstract via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=30204657&rettype=abstract&retmode=text"
+    },
+    {
+     "title": "Spence AJ et al. Range of motion predicts performance in national-level New Zealand male powerlifters. J Strength Cond Res 2023;37(1):123-128, PMID 36515597 (abstract via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=36515597&rettype=abstract&retmode=text"
+    },
+    {
+     "title": "Afonso J et al. Strength training versus stretching for improving range of motion: systematic review and meta-analysis. Healthcare 2021;9(4):427, PMID 33917036 (abstract via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=33917036&rettype=abstract&retmode=text"
+    }
+   ],
+   "notes": "Chang 1988 abstract (whole text): 'In this study we compared the flexibility of 10 power lifters with 10 age-matched nonpower lifters as controls. To do this, we used goniometric measurements, the behind the back reach test, and the sit and reach test. The sit and reach test was the only measurement that showed the flexibility of the power lifters to be greater than that of the nonpower lifters.' The full text (SAGE) returned 403, so which joints were limited, and by how much, is UNKNOWN; two letters by Herrick (PMIDs 3239626, 2633753) comment on it. Barlow 2002: 'Bodybuilders showed an overall loss of shoulder rotation ROM (166 degrees vs. 180 degrees) and a significantly decreased internal rotation ROM (-11 degrees)'. Gadomski 2018: 'Passive glenohumeral (GH) extension, internal rotation, and external rotation ROM were significantly decreased in powerlifters ... GH ROM limitations were more pronounced in elite powerlifters (Wilks >500), who had more powerlifting experience (p = 0.048) and greater lean body mass (p = 0.040)'; knee extension (hamstring) range was better. Spence 2023: male powerlifters had 'significantly less shoulder extension and horizontal abduction, and hip flexion, extension, and adduction'. Spence 2021 (PMID 34334773): range was 'not reduced' in female powerlifters. Afonso 2021: 'Pooled data showed no differences between ST and stretching on ROM (ES = -0.22; 95% CI = -0.55 to 0.12)'. Reading: strength training does not make people less flexible in general. Shoulder losses in big lifters are shown but their cause (tightness or bulk) is not separated. No study measured elbow flexion or shoulder adduction in bodybuilders."
+  },
+  {
+   "key": "thigh_calf_contact_zelle",
+   "label": "Thigh-calf contact starts beyond about 130 deg of knee flexion; bigger thigh and calf girths give more contact (10 healthy adults, pressure mats)",
+   "status": "measured",
+   "values": "{\"n\":10,\"contact_onset_min_knee_flexion_deg\":130,\"max_knee_flexion_squat_deg\":151.8,\"max_knee_flexion_kneel_deg\":156.4,\"max_contact_force_squat_pct_bodyweight\":34.2,\"max_contact_force_kneel_pct_bodyweight\":30.9,\"r_girth_vs_force_reduction\":0.89,\"hemmerich2006_squat_heels_up_knee_flexion_deg\":157,\"hemmerich2006_sd_deg\":6}",
+   "sources": [
+    {
+     "title": "Zelle J et al. Thigh-calf contact force measurements in deep knee flexion. Clin Biomech 2007;22(7):821-6, PMID 17512647 (abstract via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=17512647&rettype=abstract&retmode=text"
+    },
+    {
+     "title": "Zelle J et al. Thigh-calf contact: does it affect the loading of the knee in the high-flexion range? J Biomech 2009;42(5):587-93, PMID 19200996 (abstract via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=19200996&rettype=abstract&retmode=text"
+    },
+    {
+     "title": "Hemmerich A et al. Hip, knee, and ankle kinematics of high range of motion activities of daily living. J Orthop Res 2006;24(4):770-81, PMID 16514664 (abstract via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=16514664&rettype=abstract&retmode=text"
+    }
+   ],
+   "notes": "Zelle 2007: 'In general, thigh-calf contact did not take place below 130 degrees knee flexion. The average maximal contact forces for each leg were 34.2% bodyweight during squatting and 30.9% bodyweight during kneeling. Corresponding average maximal knee flexion angles were 151.8 degrees during squatting and 156.4 degrees during kneeling. Thigh and calf circumferences were correlated with the contact force measurements.' Zelle 2009: 'there was a clear correlation between a subject's thigh and calf circumference and the force reduction at maximal flexion due to thigh-calf contact (R=0.89)'. Hemmerich 2006 (30 Indian adults): 'A mean maximum flexion of 157 degrees +/- 6 degrees at the knee joint was required for squatting with heels up.' Useful as a compression allowance: under about a third of body weight, soft tissue lets the knee bend some 20-25\u00b0 past first contact. This is the only quantitative contact-onset vs end-of-range data found; it is for the knee, not the elbow."
+  },
+  {
+   "key": "obese_gait_step_width",
+   "label": "Thigh tissue widens gait: obese men walk with 0.16 m step width vs 0.08 m in non-obese men",
+   "status": "measured",
+   "values": "{\"spyropoulos1991_n_obese_men\":12,\"step_width_obese_m\":0.16,\"step_width_nonobese_m\":0.08,\"stride_obese_m\":1.25,\"stride_nonobese_m\":1.67,\"speed_obese_m_s\":1.09,\"speed_nonobese_m_s\":1.64,\"scataglini2025_n_studies\":14}",
+   "sources": [
+    {
+     "title": "Spyropoulos P et al. Biomechanical gait analysis in obese men. Arch Phys Med Rehabil 1991;72(13):1065-70, PMID 1741658 (abstract via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=1741658&rettype=abstract&retmode=text"
+    },
+    {
+     "title": "Browning RC, Kram R. Effects of obesity on the biomechanics of walking at different speeds. Med Sci Sports Exerc 2007;39(9):1632-41, PMID 17805097 (abstract via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=17805097&rettype=abstract&retmode=text"
+    },
+    {
+     "title": "Scataglini S et al. Gait in adults with obesity vs normal weight: systematic review and meta-analysis. Int J Obes 2025;49(4):541-553, PMID 39562690 (abstract via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=39562690&rettype=abstract&retmode=text"
+    }
+   ],
+   "notes": "Spyropoulos 1991 (12 obese men, 70-99% above ideal weight, cinematography): 'obese persons take significantly (p less than .001) shorter strides (1.25m vs 1.67m) and exhibit step widths (.16m) twice those of nonobese persons (.08m)'; conclusion: gait differs 'mainly because of the excessive adipose tissue inside their thighs.' Browning & Kram 2007: obese adults had 'much greater ... step width (m)'. Scataglini 2025 meta-analysis of 14 case-control studies: 'an increase in step width'. Note that 0.16 m is close to the ~0.17 m hip-joint spacing derived below, which links 'thighs touch to the knee with the legs vertical' to an obese-type wide gait. Old, small sample; the cause is the authors' interpretation."
+  },
+  {
+   "key": "hip_joint_centre_regression_hara2016",
+   "label": "Hip joint centre lateral offset = 8 mm + 0.086 x leg length (Hara et al. 2016, imaging-based regression)",
+   "status": "measured",
+   "values": "{\"hjc_ml_intercept_mm\":8,\"hjc_ml_slope_per_mm_leg_length\":0.086,\"ml_accuracy_mm\":4.4,\"leg_length_definition\":\"ASIS to medial malleolus through the medial femoral epicondyle\"}",
+   "sources": [
+    {
+     "title": "Hara R, McGinley J, Briggs C, Baker R, Sangeux M. Predicting the location of the hip joint centres, impact of age group and sex. Sci Rep 2016;6:37707, doi 10.1038/srep37707 (PMC page)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5121588/"
+    },
+    {
+     "title": "Same article, PMC full-text XML via NCBI E-utilities",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=5121588&rettype=xml"
+    },
+    {
+     "title": "Harrington ME et al. Prediction of the hip joint centre ... based on MRI. J Biomech 2007;40(3):595-602, PMID 16584737 (abstract via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=16584737&rettype=abstract&retmode=text"
+    }
+   ],
+   "notes": "Hara et al.: 'We propose the equations with leg length as single predictor'; read via the PMC page: HJC_X = 11 - 0.063 LL, HJC_Y (medial-lateral) = 8 + 0.086 LL, HJC_Z = -9 - 0.078 LL (mm; units implied by mm errors). Leg length = 'Distance from ASIS to medial malleolus through the medial epicondyle of the femur'. 'Using leg length as the single predictor, the accuracy of the regression equations to locate the HJC was 5.2 mm, 4.4 mm, and 3.8 mm in the posterior-anterior, medial-lateral and inferior-superior directions'; 'our analysis did not support the use of additional ... (age, sex) predictors'. The formulas are images in the XML, so I read them through the rendered page. Harrington 2007 (8 adults, MRI) found pelvic width and depth best for the medial-lateral direction. Its exact equation (reported second-hand as ML = 0.33 x inter-ASIS + 7.3 mm) was NOT verified in the primary source. Used to fix the leg axes for the thigh-contact test."
+  },
+  {
+   "key": "ansur_thigh_gap_legs_vertical",
+   "label": "Gap between the thighs just above the knee with legs vertical: ANSUR II men (estimate from girths and a hip-joint regression)",
+   "status": "estimate",
+   "values": "{\"inter_hjc_p50_m\":0.174,\"inter_hjc_p5_p95_m\":[0.160,0.189],\"gap_above_knee_p50_m\":0.044,\"gap_above_knee_p5_p95_m\":[0.024,0.063],\"men_with_no_gap\":1,\"n_men\":4082,\"lower_thigh_width_factor_to_close_p50\":1.34,\"lower_thigh_width_factor_to_close_p5_p95\":[1.17,1.53],\"factor_if_feet_shoulder_width_apart_p50\":2.17}",
+   "sources": [
+    {
+     "title": "ANSUR II male CSV (OPEN Design Lab), same file as build-calculator/data/ansur2/ANSUR_II_MALE_Public.csv",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+    },
+    {
+     "title": "Hara et al. 2016 Sci Rep 6:37707 (hip joint centre regression)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5121588/"
+    }
+   ],
+   "notes": "Script: scratchpad/research/functional-limits/scripts/ansur_thighgap.py. Per man: leg length LL is estimated as iliocristale height - 0.06 m - (lateral malleolus height + 0.01 m), an assumption because ANSUR II has no ASIS height. HJC offset = 8 + 0.086 LL (mm). Legs vertical means ankle centres directly under the hip joint centres (0\u00b0 hip abduction). Lower-thigh half-width = ANSUR lower thigh circumference (suprapatellar site) / 2\u03c0, assuming a circular cross-section centred on the leg axis. Result: the median man has about 4.4 cm between his thighs just above the knee; only 1 of 4,082 men has zero gap; the median man's lower-thigh width must grow about 1.34x about the leg axis to close it. For comparison, with ankle centres one biacromial breadth apart ('feet shoulder-width'), the factor is about 2.2. With heels together (ANSUR standing), most men's knees nearly meet, so the stance choice moves this limit by a large amount. Ignores: non-circular thighs, medial bulk (vastus medialis, adductors) off the axis, compression, knee valgus or varus. Relies on existing builds.json keys ansur2_dataset and ansur2_thigh."
+  },
+  {
+   "key": "ansur_seated_arm_angle",
+   "label": "How far ANSUR II men's upper arms angle out when hanging at the sides (seated, elbows 90 deg), from forearm-forearm breadth (estimate)",
+   "status": "estimate",
+   "values": "{\"n_men\":4082,\"angle_p5_deg\":3.6,\"angle_p50_deg\":10.0,\"angle_p95_deg\":16.5,\"angle_p99_deg\":19.2,\"angle_max_deg\":26.2,\"angle_range_over_assumptions_p50_deg\":[9.0,11.9],\"angle_range_over_assumptions_max_deg\":[25.1,28.5],\"corr_with_bmi\":0.69,\"corr_with_flexed_biceps\":0.57,\"median_by_bmi_deg\":{\"lt25\":6.4,\"25_30\":9.9,\"30_35\":13.2,\"ge35\":15.5}}",
+   "sources": [
+    {
+     "title": "ANSUR II male CSV (OPEN Design Lab)",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+    },
+    {
+     "title": "ANSUR II Measurer's Handbook, sec. 6.1.2 sitting posture and 6.4.40 forearm-forearm breadth",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR11-017.pdf"
+    }
+   ],
+   "notes": "Script: scratchpad/research/functional-limits/scripts/ansur_armangle.py. Posture: 'the upper arms are hanging loosely at the sides ... flex the elbows 90\u00b0 ... palms facing inward'. Forearm-forearm breadth is the maximum distance across the outsides of the forearms. Angle = asin((FFB/2 - flexed forearm girth/2\u03c0 - (biacromial/2 - 0.02)) / (acromion-radiale - 0.03)). The shoulder-joint offset (0.015-0.03 m tried) and upper-arm length are assumptions. Result: men's hanging arms angle out about 10\u00b0 (median), 19\u00b0 at the 99th percentile and 26\u00b0 at most (a short man, BMI 35.5). The angle rises with BMI (r 0.69). The highest values belong to high-BMI men, not to the men with the biggest arms. A rough but data-based spread of the human range for the arm-hang limit; seated, not standing."
+  },
+  {
+   "key": "arm_hang_model_ansur_median",
+   "label": "Front-view arm rest angle vs width factor, ANSUR II median man (simple 2D model, estimate)",
+   "status": "estimate",
+   "values": "{\"standing_rest_angle_k1_deg\":[4,6],\"test_below_chest_height_deg_by_k\":{\"1.0\":6,\"1.1\":15,\"1.2\":23,\"1.3\":29,\"1.4\":35,\"1.5\":39,\"1.6\":43,\"1.8\":50,\"2.0\":56,\"2.5\":64,\"3.0\":70},\"test_elbow_and_below_deg_by_k\":{\"1.0\":4,\"1.1\":8,\"1.2\":12,\"1.3\":16,\"1.4\":20,\"1.5\":24,\"1.6\":28,\"1.8\":36,\"2.0\":43,\"2.5\":60,\"3.0\":76},\"k_at_30deg\":[1.3,1.65]}",
+   "sources": [
+    {
+     "title": "ANSUR II male CSV (OPEN Design Lab)",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+    },
+    {
+     "title": "ANSUR II Measurer's Handbook (standing posture, elbows lightly touching)",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR11-017.pdf"
+    }
+   ],
+   "notes": "Script: scratchpad/research/functional-limits/scripts/arm_hang.py. Uses ANSUR medians: shoulder joint 2 cm medial and 4 cm below the acromion (estimate); torso half-widths from chest, waist and hip breadth at their landmark heights; arm half-widths from flexed biceps x 0.93, flexed forearm and wrist girths over 2\u03c0. The arm is straight and rotates about the fixed shoulder joint. Widths scale by k about each segment's own axis; the skeleton stays fixed. At k=1 the arm rests 4-6\u00b0 out, matching ANSUR's 'elbows lightly touching the sides', which checks the model. Testing from the armpit itself is meaningless: arm and torso are joined there by the axillary folds, and the contact would force about 10\u00b0 even at k=1, so the test region must start below the folds. The choice of test region moves the 30\u00b0 crossing between k = 1.3 and 1.65. The torso scaled about the midline overstates torso growth (the ribcage does not grow), so real muscular builds with small waists reach the limit later through the waist and sooner through the lats."
+  },
+  {
+   "key": "hand_to_mouth_reach_geometry",
+   "label": "Elbow flexion needed for the hand to touch the mouth, from arm and head geometry (ANSUR II median proportions, estimate)",
+   "status": "estimate",
+   "values": "{\"shoulder_to_mouth_distance_m\":0.278,\"flexion_needed_wrist_straight_deg\":123,\"flexion_needed_wrist_flexed_80deg_deg\":99,\"chin_wrist_straight_deg\":127,\"chin_wrist_flexed_deg\":102,\"nose_tip_wrist_flexed_deg\":94,\"opposite_cheek_wrist_flexed_deg\":91,\"same_side_cheek_wrist_flexed_deg\":107,\"sensitivity_upper_arm_length_0_29_to_0_33_m_deg\":[98,100],\"chin_forward_3cm_wrist_flexed_deg\":96}",
+   "sources": [
+    {
+     "title": "ANSUR II male CSV (OPEN Design Lab)",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+    },
+    {
+     "title": "38 CFR 4.71 Plate I (wrist palmar flexion 80 deg)",
+     "url": "https://www.law.cornell.edu/images/ecfr/ec04no91.001.gif"
+    }
+   ],
+   "notes": "Script: scratchpad/research/functional-limits/scripts/reach.py. With the shoulder free, a hand point can touch the mouth only if its distance from the shoulder joint can equal the shoulder-to-mouth distance. Elbow flexion sets the closest the hand can come, so the needed flexion is where that closest distance equals the mouth distance. Inputs (ANSUR medians, with estimates): shoulder joint to elbow axis 0.31 m (acromion-radiale 0.335 minus offsets), elbow to wrist 0.265 m, hand 0.193 m. Mouth relative to shoulder joint: 0.19 m medial, 0.17 m up, 0.11 m forward (from stature, tragion-to-top-of-head and menton-sellion length; estimate). Straight wrist: about 123\u00b0 (chin 127\u00b0), close to the ~130\u00b0 the daily-task studies measured for eating and drinking (Morrey, Safaee-Rad), which supports the geometry. Wrist flexed to its 80\u00b0 limit (38 CFR): about 99\u00b0 for the mouth, 91-107\u00b0 across the face. The planar model ignores neck movement, shoulder-girdle movement, and bulk on the chest and deltoid that can block the arm from crossing in front of the body."
+  },
+  {
+   "key": "elbow_flexion_vs_girth_wedge_model",
+   "label": "Maximum elbow flexion vs arm girth: wedge contact model calibrated to 145 deg and checked against the BMI data (estimate)",
+   "status": "estimate",
+   "values": "{\"model\":\"tan((180-phi_max)/2) = c * k^p; k = (flexed biceps + flexed forearm girth) / 0.614 m\",\"c_active\":0.3153,\"reference_girth_sum_m\":0.614,\"ansur_overall_median_k\":1.086,\"p_pure_geometry\":1.0,\"p_fitted_to_bmi_groups_active\":1.69,\"p_fitted_passive\":1.86,\"phi_max_deg_p1\":{\"k1.25\":137,\"k1.5\":129,\"k1.75\":122,\"k2.0\":116,\"k2.5\":104,\"k3.0\":93},\"phi_max_deg_p1_69\":{\"k1.25\":131,\"k1.5\":116,\"k1.75\":102,\"k2.0\":89},\"k_at_130deg\":[1.26,1.48],\"k_at_120deg\":[1.43,1.83],\"k_at_110deg\":[1.60,2.22],\"k_at_100deg\":[1.79,2.66]}",
+   "sources": [
+    {
+     "title": "Zwerus et al. 2019 Shoulder Elbow (flexion by BMI group, men)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6555111/"
+    },
+    {
+     "title": "ANSUR II male CSV (girths by BMI group)",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+    }
+   ],
+   "notes": "Scripts: scratchpad/research/functional-limits/scripts/elbow_fit.py and ansur_limits.py. Model: the upper arm and forearm close like a wedge until their front tissue fills it. If tissue thickness grows by k at a fixed contact distance, tan(half the remaining angle) grows by k (p=1). c is set so k=1 gives 145\u00b0 (Zwerus normal-BMI men, active; CDC men 20-44 passive 144.6\u00b0; 38 CFR 145\u00b0). Check against data: ANSUR II median flexed biceps + forearm girth by BMI group is 555, 614, 666 and 718 mm (k = 0.90, 1, 1.085, 1.17). Zwerus's 151/145/140/136\u00b0 then implies p = 1.6-2.0, a steeper loss than pure geometry. But p\u22481.7 would put elite bodybuilder arms (girth about 1.7x the reference, e.g. a reported 0.61 m flexed arm) near 100\u00b0, far below the ~130\u00b0 the Islam review states for bodybuilders. p=1 gives about 122-129\u00b0 there. Possible reasons: much of a bodybuilder's arm girth is triceps behind the elbow, which does not block flexion; the BMI groups differ in age and fat; and mapping Dutch BMI groups onto ANSUR girths is approximate. Recommend p=1 as the main model with p\u22481.7 as the pessimistic bound. Nothing measured above about k=1.2, so every value beyond is an extrapolation."
+  },
+  {
+   "key": "soft_tissue_contact_models_survey",
+   "label": "No published model found that predicts maximum joint flexion from limb girth or cross-section; the nearest are contact-force models and animation tissue simulation",
+   "status": "reported",
+   "values": "{\"wu2019_pf_force_reduction_pct\":42,\"wu2019_tf_force_reduction_pct\":57,\"singh2013_abdomen_thigh_contact_pct_bodyweight\":10.17,\"singh2013_n\":10,\"singh2013_mean_bmi\":39.04}",
+   "sources": [
+    {
+     "title": "McAdams A et al. Efficient elasticity for character skinning with contact and collisions. ACM SIGGRAPH 2011 / ACM TOG 30(4)",
+     "url": "https://media.disneyanimation.com/uploads/production/publication_asset/18/asset/elasticSkinning.pdf"
+    },
+    {
+     "title": "Reed MP et al. Developing and implementing parametric human body shape models in ergonomics software (Jack)",
+     "url": "https://mreed.umtri.umich.edu/mreed/pubs/Reed_2014_DHM_Jack.pdf"
+    },
+    {
+     "title": "Wu JZ et al. Biomechanical modeling of deep squatting: effects of the interface contact between posterior thigh and shank. J Biomech 2019;96:109333, PMID 31558308 (abstract via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=31558308&rettype=abstract&retmode=text"
+    },
+    {
+     "title": "Singh B et al. Abdomen-thigh contact during forward reaching tasks in obese individuals. J Appl Biomech 2013;29(5):517-24, PMID 23183157 (abstract via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=23183157&rettype=abstract&retmode=text"
+    }
+   ],
+   "notes": "McAdams 2011: 'a new algorithm for near-interactive simulation of skeleton driven, high resolution elasticity models ... Since body collisions, self collisions and soft-constraints are necessary for real-world examples, we present a simple framework for enforcing them.' Joint angles are inputs; tissue deforms to avoid passing through itself; the model does not output a range limit. Reed 2014 (Jack): figures 'can be scaled by inputting standard anthropometric dimensions ... However, the shapes of these scaled figures are often unrealistic, particularly for extreme body types'. The paper covers body shape, not joint range. Wu 2019 (AnyBody): 'in a deep squatting posture (knee flexion 120+ degrees), the posterior thigh/shank contact helps reduce the patellofemoral (PF) and tibiofemoral (TF) normal contact forces by 42% and 57%'. Singh 2013: 'This soft tissue apposition acts as a mechanical restriction'; mean contact force '10.17 \u00b1 5.18% of body weight'. I found no RAMSIS or Jack documentation computing range limits from soft-tissue collision, and no paper predicting elbow flexion from arm cross-section. The wedge model in this set is our own derivation."
+  }
+ ],
+ "recommendations": "Label every threshold below as an estimate on the page. All three use 2D outline contact, which the sources support as the real mechanism (CDC protocol; Zwerus; Park 2010).\n\n0. Implementation rule (essential). If the whole picture is stretched sideways about the body's midline, every gap (arm to torso, thigh to thigh) stretches too and never closes, so no limit can ever trip. Keep the skeleton fixed: shoulder joint centres, hip joint centres, elbow axes and leg axes scale with height only. Widen each segment's outline about its own axis: torso about the midline, each arm about the arm axis, each thigh about its leg axis.\n   - Shoulder joint: about 2 cm medial and 4 cm below the acromion. The acromion comes from ANSUR biacromial breadth (0.236 H) and acromial height (0.821 H).\n   - Hip joint centres: about 0.087 m either side of the midline for a 1.755 m man (about 0.05 H each side), from Hara 2016 (8 mm + 0.086 x leg length).\n   - Compute every limit on two or three base shapes (the ANSUR median template, one bodybuilder-proportion template, and the duo's traced outlines). Mark each limit as a band, not a line.\n\n(a) Arms can no longer hang by the sides.\n   - Test: the arm straight, palm toward the thigh, rotated in the front view about the fixed shoulder joint. \u03b8_rest is the smallest angle from vertical at which the outline of the upper arm (below chest height, about 0.735 H), forearm and hand clears the torso, hip and thigh outline. Skip the zone just under the armpit: arm and torso are joined there by the axillary folds.\n   - Threshold: \u03b8_rest \u2265 30\u00b0 (estimate; sensitivity band 20-45\u00b0). Reasons:\n     - ANSUR's standard posture has 'elbows lightly touching the sides'. The model gives 4-6\u00b0 for the median man.\n     - The handbook notes that 'muscular upper arms' already keep the elbows off the sides, so small angles are ordinary human variation.\n     - A seated arm angle derived from 4,082 soldiers has median 10\u00b0, 99th percentile 19\u00b0 and maximum 26\u00b0, so 30\u00b0 is beyond every one of them.\n     - 30\u00b0 is the low end of the art spec's A-pose: at the limit the figure cannot relax out of an A-pose.\n   - Ignores: 3D (arms can hang slightly in front of the lats); tissue compression of several cm; shoulder-girdle shrug or protraction moving the joint; clothing; the test-region choice (moves the crossing between width x1.3 and x1.65 for the median man).\n\n(b) Thighs touch all the way to the knee.\n   - Test: legs straight and vertical, ankle centres under the hip joint centres (0\u00b0 hip abduction). The inner thigh outlines overlap at every level from the crotch (0.481 H) down to the top of the kneecap (about knee height midpatella + 4 cm, about 0.30 H).\n   - Calibration: for the median ANSUR man the gap just above the knee is about 4.4 cm; only 1 of 4,082 men has none; the lower-thigh width must grow about 1.34x (1.17-1.53 from 5th to 95th percentile) to close it.\n   - Plain-language meaning: the knees cannot come closer than the hip-joint spacing (about 0.17 m), so every step must be at least that wide. That is about twice the 0.08 m of non-obese men and like the 0.16 m measured in obese men (Spyropoulos 1991), and the thighs rub with each step.\n   - State the stance on the page. With heels together (ANSUR) many ordinary men's knees already meet; with feet shoulder-width apart the limit moves to about x2.2 thigh width.\n   - Ignores: non-circular thighs and medial bulk; compression; knee alignment; gait strategies such as swinging the leg around.\n\n(c) Hands can no longer reach the face. Two steps.\n   - Step 1, maximum elbow flexion from soft-tissue contact: tan((180\u00b0 - \u03c6_max)/2) = 0.315 x k. Here k is upper-arm plus forearm girth (or front-view width, assuming circular sections) relative to normal-weight men (ANSUR II BMI 18.5-25: flexed biceps 0.324 m + flexed forearm 0.290 m). k=1 gives 145\u00b0, matching CDC, Zwerus and 38 CFR. Or run the same contact test directly on the arm outlines, calibrated so the reference arm gives 145\u00b0.\n   - Step 2, compare with the flexion the figure needs to reach its mouth, computed from its own segment lengths and head position. For human proportions that is about 123\u00b0 with a straight wrist and about 99\u00b0 with the wrist flexed to its 80\u00b0 limit.\n   - Threshold: \u03c6_max \u2264 100\u00b0 (estimate; band 95-110\u00b0): even the fingertips, with the wrist fully flexed and the head upright, cannot touch the mouth. This agrees with the VA schedule rating 110\u00b0 as 0% and 100\u00b0 as the first rated loss.\n   - Optionally mark a softer 'eating and drinking need compensation' line at \u03c6_max of about 120\u00b0: Vasen 1995 found all 12 daily tasks still done with flexion braced at 120\u00b0; natural feeding uses about 130\u00b0 (Morrey 1981, Safaee-Rad 1990).\n   - Model crossing: \u03c6_max = 100\u00b0 at k \u2248 2.7 (pure geometry, the recommended main model, consistent with the review's ~130\u00b0 for bodybuilders) or k \u2248 1.8 (steeper loss fitted to BMI data, a pessimistic bound). Show the gap between them as the uncertainty.\n   - Ignores: 3D shoulder, neck and trunk compensation; chest and deltoid bulk blocking the arm from crossing the body; biceps vs triceps distribution; muscle vs fat compliance; forearm rotation.\n   - For Rex and Ollie, use their own traced proportions (snout and muzzle position); the human 99\u00b0 does not apply to them.\n\nRough order (uniform widening of the median man, at fixed height mass \u221d width\u00b2): (b) first at about x1.3 width, about 1.7x the reference score; then (a) at x1.3-1.65, about 1.7-2.7x; then (c) at x1.8-2.7, about 3-7x. That puts all three limits between the top human anchors and the heaviest comic characters, far below the meatball. Real builds are not uniform (bodybuilders have small waists and huge arms), so compute on each base silhouette.\n\nPage wording: 'tissue meets tissue' as the cause (sourced); every threshold is an estimate, with its reason; past width x1.2 everything is extrapolation; say what each model ignores.",
+ "gaps": "Not fetched or not verified:\n- Norkin & White 'Measurement of Joint Motion', Kapandji, Magee and the AAOS 'Joint Motion' booklet. No primary text was accessible: Google Books API quota exhausted, publisher pages only. Their exact end-feel wording and the AAOS 150\u00b0 norm are not cited. The soft-tissue end point rests on the CDC protocol, Zwerus 2019 and Islam 2020 instead.\n- Morrey 1981 full text (JBJS paywall, HTTP 402). Per-task angles (e.g. drinking 72-129\u00b0) are quoted second-hand everywhere and were not used; only the abstract (30-130\u00b0, occiput 140\u00b0) is.\n- Chang, Buschbacher & Edlich 1988 full text (SAGE 403). Which joints were limited in power lifters, and by how much, is unknown; the abstract mentions no joint and no elbow or adduction values.\n- Park 2010 per-motion table, including how shoulder adduction was measured and its baseline. Abstract only.\n- Vasen 1995: which 12 tasks, and what failed at 105\u00b0 or below. Abstract only.\n- Oosterwijk 2018 per-task angles. Abstract only.\n- Aizawa 2010 and Magermans 2005 (face-washing and hair-combing angles). Paywalled; abstracts give no angles.\n- Harrington 2007's exact hip-joint equation (seen only second-hand). Hara 2016 used instead.\n- The Hara 2016 formulas and the Zwerus Table 4 values were read through a fetch tool's rendering of the PMC page (curl was CAPTCHA-blocked; the equations are images). The Zwerus abstract was cross-checked via the Europe PMC API.\n- The CDC public ROM dataset (with height and weight), which could test BMI against flexion directly: the download link is dead (404) and the Wayback Machine was unreachable through the proxy.\n\nNot found at all:\n- Any measurement of elbow flexion or shoulder adduction in bodybuilders or strongmen. The only statement is a narrative review citing a textbook, '130 degrees'.\n- Any study of thigh contact or 'thigh gap' in men. The only hits are aesthetic surveys of women's thigh gaps.\n- Any model in biomechanics, ergonomics (RAMSIS, Jack) or animation that outputs maximum flexion from limb cross-section.\n\nAssumptions in my derived numbers:\n- Shoulder joint 2 cm medial and 4 cm below the acromion.\n- Mouth 0.19/0.17/0.11 m from the shoulder joint.\n- ASIS-based leg length estimated from iliocristale height.\n- Circular limb sections.\n- Flexed girths as a stand-in for relaxed tissue thickness.\n- Dutch BMI groups mapped onto ANSUR girths.\n\nAll are estimates; sensitivity was checked only for some of them (upper-arm length and mouth position: \u00b13\u00b0; shoulder-joint offset: \u00b11-2\u00b0 on the seated arm angle; test region for the arm-hang angle: crossing at width x1.3-1.65). Nothing above about 1.2x the reference arm or thigh girth is measured, so all limit positions are extrapolations.\n\nHousekeeping: early in this run I accidentally wrote 14 PubMed abstract .txt files into /home/user/rex-strength-lab/build-comparison/. I moved 13 to the scratchpad dl/ folder and deleted the 14th after checking it was identical to the scratchpad copy. Nothing of mine remains in the repo; the other uncommitted changes in git status are not mine."
+}

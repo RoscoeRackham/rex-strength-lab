@@ -1,0 +1,578 @@
+{
+ "about": "Validation of the measuring tool on rex-strength-lab/assets/duo.jpg: Rex from the front view only, with the depth ratios, region polygons and modelled hidden parts of the 2026-10-10 picture measurement (its checker's reconciled model). The tool slices the picture's pixels itself; only the parts a front picture cannot show are carried in as volumes.",
+ "status": "derived",
+ "sources": [
+  {
+   "title": "Region polygons, drawn by hand on the original 1280 px picture",
+   "file": "history/scratchpad/mass/regions.py"
+  },
+  {
+   "title": "Checker's reconciled model: depth ratios, arm mirroring, tail, feet",
+   "file": "history/scratchpad/mass/checker/reconcile.py"
+  },
+  {
+   "title": "Checker's slicer and limb angles",
+   "file": "history/scratchpad/mass/checker/check_vol.py"
+  },
+  {
+   "title": "Checker's results: Rex 2.553 m^3; corrected method totals A 2.56, B 2.60, C 2.52",
+   "file": "history/scratchpad/mass/checker/results_checker.json"
+  }
+ ],
+ "image": "rex-strength-lab/assets/duo.jpg",
+ "image_note": "The repository's duo.jpg is the original 1280 px picture resized to 720 x 480, so every polygon coordinate and profile row is multiplied by 0.5625 and one pixel is 3.858 / 0.5625 = 6.859 mm.",
+ "scale": 0.5625,
+ "rex_height_m": 3.048,
+ "rex_crest_row_original": 8.5,
+ "rex_ground_row_original": 798.5,
+ "mPerPx": 0.006859072,
+ "parts": [
+  {
+   "name": "head and neck",
+   "group": "head_neck",
+   "polygon": [
+    [
+     740,
+     0
+    ],
+    [
+     795,
+     0
+    ],
+    [
+     798,
+     50
+    ],
+    [
+     812,
+     42
+    ],
+    [
+     830,
+     40
+    ],
+    [
+     848,
+     46
+    ],
+    [
+     865,
+     58
+    ],
+    [
+     885,
+     75
+    ],
+    [
+     905,
+     95
+    ],
+    [
+     925,
+     112
+    ],
+    [
+     930,
+     100
+    ],
+    [
+     885,
+     150
+    ],
+    [
+     860,
+     168
+    ],
+    [
+     800,
+     172
+    ],
+    [
+     765,
+     160
+    ],
+    [
+     755,
+     125
+    ],
+    [
+     740,
+     100
+    ]
+   ],
+   "k": 1.05,
+   "exclude": [
+    [
+     [
+      795,
+      0
+     ],
+     [
+      960,
+      0
+     ],
+     [
+      960,
+      125
+     ],
+     [
+      925,
+      112
+     ],
+     [
+      905,
+      95
+     ],
+     [
+      885,
+      75
+     ],
+     [
+      865,
+      58
+     ],
+     [
+      848,
+      46
+     ],
+     [
+      830,
+      40
+     ],
+     [
+      812,
+      42
+     ],
+     [
+      798,
+      50
+     ]
+    ]
+   ],
+   "note": "crest spikes cut out (their volume is an extra below), as in the old method"
+  },
+  {
+   "name": "torso",
+   "group": "torso",
+   "polygon": [
+    [
+     755,
+     125
+    ],
+    [
+     765,
+     160
+    ],
+    [
+     800,
+     172
+    ],
+    [
+     860,
+     168
+    ],
+    [
+     885,
+     150
+    ],
+    [
+     930,
+     100
+    ],
+    [
+     952,
+     160
+    ],
+    [
+     975,
+     225
+    ],
+    [
+     978,
+     300
+    ],
+    [
+     968,
+     345
+    ],
+    [
+     975,
+     400
+    ],
+    [
+     1000,
+     430
+    ],
+    [
+     1022,
+     445
+    ],
+    [
+     1022,
+     525
+    ],
+    [
+     660,
+     525
+    ],
+    [
+     662,
+     470
+    ],
+    [
+     668,
+     430
+    ],
+    [
+     690,
+     400
+    ],
+    [
+     722,
+     380
+    ],
+    [
+     712,
+     345
+    ],
+    [
+     705,
+     340
+    ],
+    [
+     697,
+     300
+    ],
+    [
+     697,
+     230
+    ],
+    [
+     718,
+     160
+    ],
+    [
+     745,
+     135
+    ]
+   ],
+   "kPoints": [
+    [
+     300,
+     1.05
+    ],
+    [
+     345,
+     0.8
+    ],
+    [
+     470,
+     0.8
+    ],
+    [
+     525,
+     0.6
+    ]
+   ],
+   "note": "chest 1.05 (ANSUR II chest girth evidence), waist 0.80, tapering to 0.60 at the crotch; the thigh pouches are cut out of the widths (their volume is an extra below), as in the old method",
+   "exclude": [
+    [
+     [
+      640,
+      405
+     ],
+     [
+      692,
+      405
+     ],
+     [
+      692,
+      526
+     ],
+     [
+      640,
+      526
+     ]
+    ],
+    [
+     [
+      1003,
+      425
+     ],
+     [
+      1030,
+      425
+     ],
+     [
+      1030,
+      526
+     ],
+     [
+      1003,
+      526
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "upper arm (fully visible arm, counted for both)",
+   "group": "arms",
+   "polygon": [
+    [
+     925,
+     90
+    ],
+    [
+     1200,
+     90
+    ],
+    [
+     1200,
+     300
+    ],
+    [
+     1160,
+     300
+    ],
+    [
+     1100,
+     330
+    ],
+    [
+     1040,
+     345
+    ],
+    [
+     985,
+     350
+    ],
+    [
+     968,
+     345
+    ],
+    [
+     978,
+     300
+    ],
+    [
+     975,
+     225
+    ],
+    [
+     952,
+     160
+    ]
+   ],
+   "k": 0.9,
+   "angle": 16,
+   "count": 2
+  },
+  {
+   "name": "forearm (fully visible arm, counted for both)",
+   "group": "arms",
+   "polygon": [
+    [
+     968,
+     345
+    ],
+    [
+     985,
+     350
+    ],
+    [
+     1040,
+     345
+    ],
+    [
+     1100,
+     330
+    ],
+    [
+     1160,
+     300
+    ],
+    [
+     1200,
+     300
+    ],
+    [
+     1200,
+     448
+    ],
+    [
+     1030,
+     448
+    ],
+    [
+     1000,
+     430
+    ],
+    [
+     975,
+     400
+    ]
+   ],
+   "k": 0.85,
+   "angle": 8,
+   "count": 2
+  },
+  {
+   "name": "hand (fully visible arm, counted for both)",
+   "group": "arms",
+   "polygon": [
+    [
+     1030,
+     448
+    ],
+    [
+     1200,
+     448
+    ],
+    [
+     1200,
+     505
+    ],
+    [
+     1140,
+     505
+    ],
+    [
+     1100,
+     527
+    ],
+    [
+     1070,
+     522
+    ],
+    [
+     1045,
+     497
+    ],
+    [
+     1025,
+     470
+    ],
+    [
+     1022,
+     455
+    ]
+   ],
+   "k": 0.6,
+   "count": 2
+  },
+  {
+   "name": "left leg",
+   "group": "legs",
+   "polygon": [
+    [
+     655,
+     525
+    ],
+    [
+     852,
+     525
+    ],
+    [
+     852,
+     724
+    ],
+    [
+     655,
+     724
+    ]
+   ],
+   "k": 1.0,
+   "angle": -3
+  },
+  {
+   "name": "right leg",
+   "group": "legs",
+   "polygon": [
+    [
+     852,
+     525
+    ],
+    [
+     1022,
+     525
+    ],
+    [
+     1012,
+     560
+    ],
+    [
+     1025,
+     590
+    ],
+    [
+     1040,
+     620
+    ],
+    [
+     1047,
+     650
+    ],
+    [
+     1046,
+     690
+    ],
+    [
+     1040,
+     712
+    ],
+    [
+     1046,
+     736
+    ],
+    [
+     852,
+     736
+    ]
+   ],
+   "k": 1.0,
+   "angle": 13
+  }
+ ],
+ "extras": [
+  {
+   "name": "crest spikes",
+   "volume_m3": 0.0018,
+   "note": "local-thickness estimate of the old Method A"
+  },
+  {
+   "name": "thigh pouches",
+   "volume_m3": 0.009,
+   "note": "0.15 m slabs, old checker"
+  },
+  {
+   "name": "feet",
+   "volume_m3": 0.15,
+   "note": "wedge model, no side view (old checker central value)"
+  },
+  {
+   "name": "tail, visible part",
+   "volume_m3": 0.127245,
+   "note": "Method A local thickness 0.0998 m^3 at k 0.8, rescaled to k 0.85 and x 1.20 for distance and foreshortening (old checker)"
+  },
+  {
+   "name": "tail, hidden base",
+   "volume_m3": 0.162167,
+   "note": "frustum 0.55 to 0.46 m across, 0.95 m long, k 0.85 (old checker)"
+  }
+ ],
+ "expected": {
+  "total_m3": 2.553,
+  "spread_m3": [
+   2.52,
+   2.6
+  ],
+  "spread_note": "the three old methods after the checker's corrections: A 2.56, B 2.60, C 2.52 m^3",
+  "parts_m3": {
+   "head_neck": 0.0952,
+   "torso": 1.1163,
+   "arms": 0.5082,
+   "legs": 0.39
+  },
+  "parts_note": "old checker values for the same parts at these k values: torso 0.5207 x 1.05 + 0.6210 x 0.80 + 0.1214 x 0.60; arms 2 x 0.2541; legs 0.3900; head and neck 0.0952 at k 1.05 (Method A re-check; the checker then used 0.09)"
+ }
+}

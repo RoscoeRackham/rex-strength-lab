@@ -1,0 +1,1756 @@
+<title>Build Comparison</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<style>
+:root {
+  /* Studio lineup on a tailor's sheet (design spec: research/reviews/design.md). Figures stand in
+     score-band stops against the turnarounds' blue-grey studio wall, ruled at ANSUR II landmark
+     heights; the page around them is the Build Calculator's measurement sheet. One job per accent:
+     yellow tape is the scale, chalk blue is geometry, alarm red is a warning, ink is data. Nothing
+     drawn is dashed, because a dashed border means "reported" on the house status chips. */
+  --paper:#ECEDF1; --sheet:#F8F8FA; --wall:#DADCE4; --wall-line:#C2C5D1; --floor:#F1F1F4; --floor-edge:#A9ADBB;
+  --ink:#15181F; --ink-2:#464C5A; --ink-3:#5C6270; --rule:#C4C7D0; --rule-2:#E0E2E8;
+  --tape:#EDBE2E; --tape-ink:#231D07;
+  --chalk:#1F4FA6; --chalk-bg:#E3E9F5; --chalk-band:rgba(31,79,166,.10);
+  --alarm:#B0321D; --alarm-bg:#F6E2DC;
+  --void:#9EA2B0; --void-bg:#E6E7EC;
+  --g-every:#7D8599; --g-natural:#CFA23A; --g-bb:#B9592A; --g-strong:#5A3624; --g-comic:#3A55B0; --g-duo:#8A2F6E;
+  --g-geom:#A4A7B3;
+  --font-display:"Big Shoulders Display","Arial Narrow","Roboto Condensed",sans-serif;
+  --font-body:"Public Sans","Helvetica Neue",Arial,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:#14151A; --sheet:#1B1D23; --wall:#262833; --wall-line:#373A49; --floor:#30323D; --floor-edge:#555A6B;
+    --ink:#E8E9EE; --ink-2:#B4B8C3; --ink-3:#9CA1AF; --rule:#3A3E4A; --rule-2:#272A33;
+    --tape:#DDB02C; --tape-ink:#1B1604;
+    --chalk:#94B5FF; --chalk-bg:#22304F; --chalk-band:rgba(148,181,255,.12);
+    --alarm:#FF8C75; --alarm-bg:#3A1C16;
+    --void:#5A5E6E; --void-bg:#23252D;
+    --g-every:#9AB4D0; --g-natural:#E8C25A; --g-bb:#D9763F; --g-strong:#7A4536; --g-comic:#6680E0; --g-duo:#B85C8C;
+    --g-geom:#6E7080;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper:#14151A; --sheet:#1B1D23; --wall:#262833; --wall-line:#373A49; --floor:#30323D; --floor-edge:#555A6B;
+  --ink:#E8E9EE; --ink-2:#B4B8C3; --ink-3:#9CA1AF; --rule:#3A3E4A; --rule-2:#272A33;
+  --tape:#DDB02C; --tape-ink:#1B1604;
+  --chalk:#94B5FF; --chalk-bg:#22304F; --chalk-band:rgba(148,181,255,.12);
+  --alarm:#FF8C75; --alarm-bg:#3A1C16;
+  --void:#5A5E6E; --void-bg:#23252D;
+  --g-every:#9AB4D0; --g-natural:#E8C25A; --g-bb:#D9763F; --g-strong:#7A4536; --g-comic:#6680E0; --g-duo:#B85C8C;
+  --g-geom:#6E7080;
+  color-scheme:dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font: 400 15px/1.5 var(--font-body); -webkit-text-size-adjust: 100%; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: var(--chalk); text-underline-offset: 2px; }
+a:hover { text-decoration-thickness: 2px; }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--chalk); outline-offset: 2px; }
+[hidden] { display: none !important; }
+/* Rings drawn inside controls whose neighbours or containers would cover an outside ring. */
+.seg button:focus-visible, .fig:focus-visible { outline-offset: -4px; position: relative; z-index: 1; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.wrap { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block: 0 56px; }
+html { scroll-padding-top: 60px; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+/* status chips: the house vocabulary at 11 px, plus three flags whose words carry the meaning */
+.chip { display: inline-block; font: 500 11px/1 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; padding: 4px 6px 3px; border-radius: 2px; border: 1.5px solid var(--ink); color: var(--ink); white-space: nowrap; vertical-align: middle; }
+.chip.measured { background: var(--ink); color: var(--sheet); }
+.chip.official { border-style: double; border-width: 3.5px; padding: 2.5px 5px 1.5px; }
+.chip.reported { border-style: dashed; }
+.chip.derived { border-style: dotted; border-width: 2px; padding: 3.5px 5.5px 2.5px; }
+.chip.estimate { border-style: dotted; border-width: 2px; padding: 3.5px 5.5px 2.5px; background: repeating-linear-gradient(135deg, var(--rule) 0 1.5px, transparent 1.5px 5px); }
+.chip.unknown { border-color: var(--rule); color: var(--ink-3); font-style: italic; }
+.chip.over { border-color: var(--alarm); color: var(--alarm); background: var(--alarm-bg); }
+.chip.beyond { border-color: var(--alarm); color: var(--alarm); background: transparent; }
+.chip.pass { border-color: var(--ink); }
+.chip.note { border-color: var(--ink-3); color: var(--ink-2); }
+.chip.check { border-color: var(--alarm); color: var(--alarm); }
+.chip.fail { border-color: var(--alarm); background: var(--alarm); color: var(--sheet); }
+.tag { display: inline-block; font: 600 11px/1 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; background: var(--tape); color: var(--tape-ink); padding: 5px 8px 4px; border-radius: 2px; }
+
+/* ---------- masthead ---------- */
+.mast { display: grid; gap: 14px 40px; padding-block: 28px 18px; }
+@media (min-width: 960px) { .mast { grid-template-columns: 7fr 5fr; } .mast > .full { grid-column: 1 / -1; } }
+.mast-l { display: grid; gap: 12px; align-content: start; min-width: 0; }
+.mast-r { display: none; gap: 12px; align-content: end; min-width: 0; }
+@media (min-width: 960px) { .mast-r { display: grid; } }
+.eyebrow { font: 600 11px/1.3 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.mast h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.6rem, 8vw, 4.4rem); line-height: .92; letter-spacing: .01em; text-transform: uppercase; }
+.lede { font-size: 17px; line-height: 1.45; max-width: 60ch; }
+@media (min-width: 720px) { .lede { font-size: 18px; } }
+.lede b { font-weight: 700; }
+.lede a { color: inherit; text-decoration-color: var(--tape); text-decoration-thickness: 2px; }
+.scorebox { background: var(--sheet); border: 1px solid var(--rule); border-radius: 3px; padding: 14px 16px; font-size: 14px; color: var(--ink-2); line-height: 1.5; }
+.scorebox b { color: var(--ink); }
+.edgekey { display: grid; gap: 6px; font-size: 13px; color: var(--ink-2); }
+.edgekey span { display: flex; gap: 10px; align-items: center; }
+.edgekey svg { flex: none; display: block; }
+.spec { font: 400 12px/1.45 var(--font-mono); color: var(--ink-3); }
+.glance { display: grid; gap: 6px; min-width: 0; }
+.glance .cap { font-size: 13px; color: var(--ink-2); }
+.glance .cap b { font: 600 11px/1 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2); margin-right: 6px; }
+.tapeplot { position: relative; min-width: 0; }
+.tapeplot svg { display: block; width: 100%; }
+.tapeplot .tl { position: absolute; transform: translateX(-50%); font: 500 11px/1 var(--font-mono); color: var(--tape-ink); white-space: nowrap; pointer-events: none; }
+.clusters { position: relative; height: 32px; }
+.clusters button { position: absolute; top: 0; border: 0; background: none; padding: 0 2px; cursor: pointer; text-align: center; font: 600 11px/1.25 var(--font-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--ink); white-space: nowrap; }
+.clusters button span { display: block; font-weight: 400; color: var(--ink-2); letter-spacing: 0; }
+.clusters button:hover { color: var(--chalk); }
+.jumps { font: 500 12px/1.6 var(--font-mono); color: var(--ink-3); }
+.jumps a { white-space: nowrap; }
+
+/* ---------- controls ---------- */
+.controls { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: end; padding-block: 6px 6px; }
+.ctl { display: grid; gap: 5px; min-width: 0; }
+.ctl .label { font: 600 11px/1.2 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--rule); border-radius: 3px; overflow: hidden; background: var(--sheet); }
+.seg button { min-height: 36px; padding: 0 12px; border: 0; background: transparent; color: var(--ink-2); cursor: pointer; font-weight: 500; font-size: 14px; white-space: nowrap; }
+.seg button + button { border-left: 1px solid var(--rule); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--sheet); }
+.modenote { font-size: 13px; color: var(--ink-2); min-height: 0; padding-bottom: 12px; max-width: 80ch; }
+
+/* ---------- sections ---------- */
+.sec { padding-block: 30px 10px; border-top: 1px solid var(--rule); display: grid; gap: 14px; min-width: 0; }
+.sec-head { display: grid; gap: 8px; max-width: 76ch; }
+.sec h2 { font-family: var(--font-display); font-weight: 800; font-size: 24px; line-height: 1.05; text-transform: uppercase; letter-spacing: .02em; }
+.verdict { font-size: 17px; font-weight: 600; line-height: 1.38; }
+@media (min-width: 720px) { .verdict { font-size: 18px; } }
+.sub { color: var(--ink-2); font-size: 14px; line-height: 1.5; max-width: 72ch; }
+.edgestrip { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: center; font: 500 12px/1.4 var(--font-mono); color: var(--ink-2); }
+.edgestrip span { display: inline-flex; gap: 6px; align-items: center; }
+.edgestrip b { font-weight: 600; letter-spacing: .08em; }
+
+/* sticky locator */
+.locator { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); padding-block: 6px 4px; margin-top: 8px; }
+.loc-line { display: flex; justify-content: space-between; gap: 8px; font: 600 11px/16px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
+.loc-line .hint { color: var(--ink-3); font-weight: 500; letter-spacing: .02em; text-transform: none; }
+@media (max-width: 719px) { .loc-line .hint { display: none; } }
+.locator .tapeplot { cursor: pointer; }
+
+/* ---------- stops ---------- */
+.stop { display: grid; gap: 14px; padding-block: 34px 6px; min-width: 0; }
+.stop + .stop, .stop + .rule-end + .stop { border-top: 1px solid var(--rule); }
+.stop-head { display: grid; gap: 8px; max-width: 76ch; }
+.tagrow { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.stop h3 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.625rem, 4.2vw, 1.875rem); line-height: 1; text-transform: uppercase; letter-spacing: .01em; }
+.here { font: 400 12px/1.45 var(--font-mono); color: var(--ink-2); letter-spacing: .02em; }
+
+/* Equal columns in every row, so every figure is drawn at one scale. */
+/* Every figure drawing is --figh tall; a grid's columns are at least as wide as its widest figure needs (--wr = its width / height). */
+.figs { --figh: 172px; --colmin: 120px; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, max(var(--colmin), calc(var(--figh) * var(--wr, 0.5)))), 1fr)); row-gap: 14px; column-gap: 0; min-width: 0; }
+@media (max-width: 719px) { .figs { --figh: 124px; --colmin: 84px; } }
+.fig { display: grid; grid-template-rows: auto 1fr; grid-template-columns: minmax(0, 1fr); border: 0; padding: 0; margin: 0; background: var(--floor); text-align: left; color: inherit; cursor: pointer; min-width: 0; font: inherit; }
+.fig svg { display: block; width: 100%; height: var(--figh); }
+.fig:hover .plate, .fig:focus-visible .plate { background: var(--sheet); }
+.fig[aria-expanded="true"] .plate { box-shadow: inset 0 3px 0 var(--chalk); background: var(--sheet); }
+.plate { padding: 8px 8px 10px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; align-content: start; border-top: 1px solid var(--floor-edge); min-width: 0; min-height: 124px; }
+@media (max-width: 719px) { .plate { padding: 6px 5px 8px; min-height: 120px; } }
+.plate .s { font-family: var(--font-display); font-weight: 800; font-size: 24px; line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: .01em; }
+@media (max-width: 719px) { .plate .s { font-size: 20px; } }
+.plate .w { font: 400 11px/1.3 var(--font-mono); color: var(--ink-2); }
+.plate .n { font-size: 13px; line-height: 1.25; font-weight: 600; overflow-wrap: anywhere; }
+@media (max-width: 719px) { .plate .n { font-size: 12px; } }
+.sw { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; border: 1px solid var(--ink); vertical-align: 0; }
+.plate .f { font: 400 11px/1.3 var(--font-mono); color: var(--ink-3); }
+.flag { font: 500 11.5px/1.3 var(--font-body); color: var(--alarm); }
+.flag.plain { color: var(--ink-2); }
+.plate .chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.plate .chip { padding-inline: 4px; white-space: normal; overflow-wrap: anywhere; line-height: 1.15; max-width: 100%; }
+
+/* gap tiles */
+.gaptile { position: relative; min-width: 0; background: var(--wall); }
+.gaptile svg { display: block; width: 100%; }
+.gaptile .lab { position: absolute; transform: translate(-50%, -50%); font-family: var(--font-display); font-weight: 700; font-size: 22px; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-3); white-space: nowrap; pointer-events: none; }
+.gaptile .end { position: absolute; font: 500 11px/1 var(--font-mono); color: var(--ink-2); white-space: nowrap; background: var(--floor); padding: 2px 3px; }
+.gaptile .post { position: absolute; font: 600 11px/1 var(--font-mono); color: var(--chalk); white-space: nowrap; background: var(--wall); padding: 1px 3px; letter-spacing: .04em; }
+.gaptile .mark { position: absolute; font: 600 11px/1 var(--font-mono); color: var(--alarm); white-space: nowrap; background: var(--wall); padding: 1px 3px; }
+.inside { display: grid; gap: 8px; }
+.inside > p { font-size: 13px; color: var(--ink-2); }
+
+.limitnote { font-size: 14px; color: var(--ink-2); line-height: 1.5; border-left: 3px solid var(--chalk); background: var(--chalk-band); padding: 8px 12px; max-width: 80ch; }
+.limitnote b { color: var(--chalk); font: 600 12px/1.4 var(--font-mono); text-transform: uppercase; letter-spacing: .05em; }
+.rule-end { display: flex; gap: 10px; align-items: center; color: var(--alarm); font: 600 11.5px/1.3 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; padding-block: 16px 4px; }
+.rule-end::before, .rule-end::after { content: ""; flex: 1 1 24px; border-top: 2px solid var(--alarm); }
+
+.meat { display: flex; flex-wrap: wrap; gap: 16px 28px; align-items: flex-end; }
+.meat svg { display: block; height: auto; max-width: 100%; }
+.meat .txt { flex: 1 1 280px; display: grid; gap: 10px; min-width: 0; }
+.formula { font: 500 14px/1.5 var(--font-mono); background: var(--chalk-bg); border-left: 3px solid var(--chalk); padding: 10px 12px; overflow-x: auto; }
+
+/* ---------- the drawer ---------- */
+.drawer { background: var(--sheet); border: 1px solid var(--rule); border-top: 3px solid var(--chalk); border-radius: 0 0 4px 4px; padding: 16px; display: grid; gap: 18px; min-width: 0; position: relative; }
+@media (min-width: 900px) { .drawer { grid-template-columns: 280px minmax(0, 1fr); padding: 20px; gap: 28px; } }
+.drawer h3 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.6rem, 4vw, 2.1rem); line-height: 1; padding-right: 80px; }
+.drawer h3:focus { outline: none; }
+.drawer .close { position: absolute; top: 12px; right: 12px; min-width: 44px; min-height: 32px; border: 1px solid var(--ink); border-radius: 3px; background: var(--sheet); font-weight: 600; font-size: 14px; cursor: pointer; padding: 0 10px; }
+.bigfig { display: grid; justify-items: center; gap: 8px; align-content: start; margin: 0; }
+.bigfig svg { width: 100%; max-width: 280px; height: auto; }
+.bigfig figcaption { font-size: 13px; color: var(--ink-2); max-width: 36ch; line-height: 1.45; }
+.dhead { display: grid; gap: 8px; margin-bottom: 12px; }
+.facts { display: grid; border-top: 1px solid var(--rule); margin: 0; }
+.facts > div { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 4px 14px; padding: 9px 0; border-bottom: 1px solid var(--rule-2); align-items: baseline; }
+@media (max-width: 559px) { .facts > div { grid-template-columns: minmax(0, 1fr); } }
+.facts dt { font: 600 11px/1.3 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.facts dd { margin: 0; display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; font-variant-numeric: tabular-nums; min-width: 0; font-size: 15px; }
+.facts dd .v { font-weight: 600; }
+.facts dd .why { flex-basis: 100%; font-size: 13px; color: var(--ink-2); line-height: 1.45; overflow-wrap: anywhere; }
+.facts ul.ign { margin: 0; padding-left: 18px; font-size: 13px; color: var(--ink-2); display: grid; gap: 3px; flex-basis: 100%; }
+.gt { width: 100%; border-collapse: collapse; font-size: 13px; }
+.gt td { padding: 4px 8px 4px 0; border-bottom: 1px solid var(--rule-2); vertical-align: baseline; }
+.gt td.num { white-space: nowrap; font-weight: 600; }
+.gt td.edge-key svg { display: block; }
+.gt .from { color: var(--ink-2); font-size: 12px; }
+.cites { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 13px; color: var(--ink-2); flex-basis: 100%; }
+.cites li { overflow-wrap: anywhere; }
+
+/* ---------- key ---------- */
+details.key { background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; padding: 12px 16px; }
+details.key > summary { cursor: pointer; font-weight: 600; font-size: 15px; }
+.keygrid { display: grid; gap: 18px; margin-top: 14px; }
+@media (min-width: 900px) { .keygrid { grid-template-columns: 1.2fr 1fr; gap: 32px; } }
+.keygrid h3 { font: 600 11px/1.2 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 8px; }
+.keygrid ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+.keygrid li { display: grid; grid-template-columns: 60px minmax(0, 1fr); gap: 10px; align-items: center; font-size: 13.5px; color: var(--ink-2); line-height: 1.4; }
+.keygrid li b { color: var(--ink); font-weight: 600; }
+.keygrid svg { display: block; }
+
+/* ---------- every build, to scale ---------- */
+.forest { background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; padding: 0 12px 10px; min-width: 0; }
+@media (min-width: 720px) { .forest { padding: 0 20px 12px; } }
+.fp-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font: 400 12px/1.5 var(--font-mono); color: var(--ink-2); padding-top: 12px; }
+.fp-legend span { display: inline-flex; gap: 6px; align-items: center; }
+.fp-axis { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 4; background: var(--sheet); display: grid; grid-template-columns: 250px minmax(0, 1fr) 120px; column-gap: 12px; padding-top: 8px; border-bottom: 1px solid var(--rule); }
+.fp-axis .h { font: 600 11px/1 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); align-self: end; padding-bottom: 8px; }
+.fp-axis .h.v { text-align: right; }
+.fp-axis .trk { position: relative; height: 46px; }
+.fp-axis .lbls { position: relative; height: 16px; }
+.fp-axis .lbls span { position: absolute; top: 2px; font: 600 11px/1 var(--font-mono); white-space: nowrap; }
+.fp-axis .tp { position: relative; height: 26px; background: var(--tape); margin-top: 2px; }
+.fp-axis .tp i { position: absolute; top: 0; width: 1px; background: var(--tape-ink); }
+.fp-axis .tp b { position: absolute; bottom: 3px; transform: translateX(-50%); font: 500 11px/1 var(--font-mono); color: var(--tape-ink); white-space: nowrap; }
+.fp { position: relative; }
+.fp-bg { position: absolute; top: 0; bottom: 0; left: calc(250px + 12px); right: calc(120px + 12px); pointer-events: none; }
+.fp-bg i { position: absolute; top: 0; bottom: 0; }
+.fp-row { display: grid; grid-template-columns: 250px minmax(0, 1fr) 120px; column-gap: 12px; align-items: center; min-height: 24px; position: relative; }
+.fp-row:hover { background: var(--rule-2); }
+.fp-row .nm { font-size: 13px; line-height: 1.25; font-weight: 500; min-width: 0; overflow-wrap: anywhere; }
+.fp-row button.nm { border: 0; background: none; padding: 2px 0; text-align: left; cursor: pointer; color: var(--ink); }
+.fp-row button.nm:hover { color: var(--chalk); text-decoration: underline; }
+.fp-row .nm .x { color: var(--alarm); font-size: 12px; font-weight: 500; }
+.fp-row .tk { position: relative; height: 24px; }
+.fp-row .vl { font: 400 13px/1.2 var(--font-mono); text-align: right; white-space: nowrap; display: flex; gap: 6px; justify-content: flex-end; align-items: center; }
+.fp-row.r-anchor .nm { font-style: italic; color: var(--ink-2); }
+.fp-row.r-limit .nm { color: var(--chalk); }
+.fp-row.r-gap { min-height: 28px; }
+.fp-row.r-gap .nm { font: 500 12px/1.3 var(--font-mono); text-transform: uppercase; color: var(--ink-2); letter-spacing: .03em; }
+.fp-row .bar { position: absolute; top: 8px; height: 8px; border-radius: 4px; box-shadow: 0 0 0 1px var(--ink-3); }
+.fp-row .bar.hollow { background: transparent !important; border: 1.5px solid; box-shadow: none; }
+.fp-row .tick { position: absolute; top: 5px; width: 2px; height: 14px; margin-left: -1px; background: var(--ink); box-shadow: 0 0 0 1px var(--sheet); }
+.fp-row .ring { position: absolute; top: 8px; width: 8px; height: 8px; margin-left: -4px; border-radius: 50%; border: 1.5px solid var(--ink); background: var(--sheet); }
+.fp-row .pill { position: absolute; top: 8px; height: 8px; border-radius: 4px; border: 1.5px solid var(--ink); }
+.fp-row .pill.lim { border-color: var(--chalk); background: var(--chalk-bg); }
+.fp-row .tick.lim { background: var(--chalk); }
+.fp-row .ring.meat { width: 10px; height: 10px; margin-left: -5px; top: 7px; border-color: var(--chalk); }
+.fp-row .hz { position: absolute; top: 4px; height: 16px; border: 1px solid var(--void); background: repeating-linear-gradient(135deg, var(--void) 0 1.5px, var(--void-bg) 1.5px 6.5px); }
+.fp-row .arr { position: absolute; top: 8px; width: 0; height: 0; border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-right: 8px solid var(--alarm); margin-left: -11px; }
+.fp-row .arr.soft { opacity: .6; }
+.fp-row .off { position: absolute; right: 0; top: 6px; font: 400 11px/1 var(--font-mono); color: var(--ink-3); white-space: nowrap; }
+.fp-row .chev { position: absolute; right: -2px; top: 6px; font: 600 11px/1 var(--font-mono); color: var(--ink-2); }
+@media (max-width: 719px) {
+  .fp-axis { grid-template-columns: minmax(0, 1fr); }
+  .fp-axis .h { display: none; }
+  .fp-bg { left: 0; right: 0; }
+  .fp-row { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "nm vl" "tk tk"; min-height: 32px; row-gap: 1px; padding-block: 3px; }
+  .fp-row .nm { grid-area: nm; } .fp-row .vl { grid-area: vl; } .fp-row .tk { grid-area: tk; height: 12px; }
+  .fp-row .vl { position: relative; z-index: 1; background: var(--sheet); padding-left: 4px; }
+  .fp-row .bar { top: 3px; height: 6px; border-radius: 3px; }
+  .fp-row .tick { top: 1px; height: 10px; }
+  .fp-row .ring, .fp-row .pill { top: 2px; }
+  .fp-row .ring.meat { top: 1px; }
+  .fp-row .hz { top: 1px; height: 10px; }
+  .fp-row .arr { top: 2px; }
+  .fp-row .off, .fp-row .chev { top: 0; }
+}
+
+/* ---------- limits ---------- */
+.limits { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 899px) { .limits { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.limit { display: grid; grid-template-rows: auto 1fr; background: var(--floor); border: 1px solid var(--rule); border-radius: 3px; overflow: hidden; min-width: 0; }
+.limit svg { display: block; width: 100%; height: auto; }
+.limit .plate { min-height: 0; }
+.limit .big { font-family: var(--font-display); font-weight: 800; font-size: 28px; line-height: 1; font-variant-numeric: tabular-nums; }
+.limit .d { font-size: 13px; color: var(--ink-2); line-height: 1.45; }
+.limit .d.met { margin-top: 6px; }
+.limit .lb { font-weight: 600; font-size: 14px; line-height: 1.3; }
+.limits-list { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 14px; color: var(--ink-2); max-width: 76ch; }
+.limits-list b { color: var(--ink); }
+
+/* ---------- the score ---------- */
+.cols { display: grid; gap: 18px; }
+@media (min-width: 900px) { .cols { grid-template-columns: 1fr 1fr; gap: 24px; } .cols > .wide { grid-column: 1 / -1; } }
+.card { background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; padding: 16px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card h3 { font: 600 11px/1.2 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2); }
+.card p { font-size: 14px; color: var(--ink-2); line-height: 1.5; }
+.card p b { color: var(--ink); }
+.tbl-wrap { overflow-x: auto; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.tbl th { text-align: left; font: 600 11px/1.2 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); padding: 6px 8px 6px 0; border-bottom: 1px solid var(--rule); }
+.tbl td { padding: 6px 8px 6px 0; border-bottom: 1px solid var(--rule-2); vertical-align: baseline; }
+.tbl td.n { text-align: right; white-space: nowrap; font-weight: 600; }
+.tbl tr.grp td { font: 600 11px/1.2 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); padding-top: 12px; }
+.nat { list-style: none; padding: 0; margin: 0; display: grid; border-top: 1px solid var(--rule); }
+.nat li { display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 4px 12px; padding: 10px 0; border-bottom: 1px solid var(--rule-2); }
+.nat .nv { white-space: nowrap; font-family: var(--font-display); font-weight: 800; font-size: 26px; line-height: 1; font-variant-numeric: tabular-nums; }
+.nat .nt { font-size: 13px; color: var(--ink-2); line-height: 1.45; display: grid; gap: 3px; }
+.nat .nt b { color: var(--ink); font-weight: 600; font-size: 14px; }
+.nat .kind { font: 400 11px/1.3 var(--font-mono); color: var(--ink-3); }
+
+/* ---------- tool ---------- */
+.tool { display: grid; gap: 22px; background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; padding: 16px; min-width: 0; }
+@media (min-width: 900px) { .tool { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); padding: 20px 24px; gap: 28px; } .tool > .wide { grid-column: 1 / -1; } }
+.tool > div { display: grid; gap: 12px; align-content: start; min-width: 0; }
+.picker { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; font-size: 13px; color: var(--ink-2); }
+.picker.over { outline: 2px dashed var(--chalk); outline-offset: 4px; }
+.viewer { display: grid; grid-template-columns: 64px minmax(0, 1fr); background: #FFFFFF; border: 1px solid var(--rule); border-radius: 2px; }
+@media (max-width: 719px) { .viewer { grid-template-columns: 52px minmax(0, 1fr); } }
+.viewer .gut { position: relative; background: var(--sheet); border-right: 1px solid var(--rule); }
+.viewer .gut span { position: absolute; right: 4px; transform: translateY(-50%); font: 500 11px/1 var(--font-mono); color: var(--chalk); white-space: nowrap; }
+.viewer canvas { display: block; width: 100%; height: auto; }
+.viewcaps { display: flex; justify-content: space-around; font: 500 11px/1.2 var(--font-mono); color: var(--ink-3); text-transform: uppercase; letter-spacing: .05em; padding-left: 64px; }
+@media (max-width: 719px) { .viewcaps { padding-left: 52px; } }
+.btn { min-height: 36px; padding: 0 14px; border: 1px solid var(--ink); border-radius: 3px; background: var(--ink); color: var(--sheet); font-weight: 600; font-size: 14px; cursor: pointer; }
+.btn.ghost { background: transparent; color: var(--ink); }
+.btn[disabled] { opacity: .5; cursor: progress; }
+.fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 719px) { .fields { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.field { display: grid; gap: 5px; min-width: 0; align-content: start; }
+.btnrow { display: flex; flex-wrap: wrap; gap: 6px; }
+.field label, .field .flab { font: 600 11px/1.25 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
+.field input, .field select { width: 100%; min-width: 0; height: 38px; padding: 0 10px; border: 1px solid var(--rule); border-radius: 3px; background: var(--paper); font-size: 16px; font-variant-numeric: tabular-nums; }
+.field .hint { font-size: 12px; color: var(--ink-2); line-height: 1.35; }
+.field input[aria-invalid="true"] { border-color: var(--alarm); }
+details.adv summary { cursor: pointer; font-size: 13.5px; font-weight: 600; }
+details.adv .fields { margin-top: 10px; }
+.checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 13px; }
+.checks li { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 8px; align-items: baseline; color: var(--ink-2); overflow-wrap: anywhere; }
+.checks li .chip { text-align: center; }
+.checks b { color: var(--ink); font-weight: 600; }
+.status-line { font-size: 13.5px; color: var(--ink-2); line-height: 1.5; }
+.copy-out { width: 100%; min-height: 6em; font: 400 12px/1.4 var(--font-mono); background: var(--paper); border: 1px solid var(--rule); border-radius: 3px; padding: 8px; }
+.target { display: grid; gap: 14px; border-top: 1px solid var(--rule); padding-top: 18px; }
+@media (min-width: 900px) { .target { grid-template-columns: 260px minmax(0, 1fr); gap: 28px; } }
+.target .ins { display: grid; gap: 12px; align-content: start; }
+.target .ins .fields { grid-template-columns: minmax(0, 1fr); }
+@media (max-width: 899px) { .target .ins .fields { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.target-imgs { display: flex; gap: 12px; flex-wrap: wrap; }
+.target-imgs figure { margin: 0; display: grid; gap: 4px; flex: 1 1 140px; min-width: 0; }
+.target-imgs img { width: 100%; height: 320px; object-fit: contain; background: #FFFFFF; border: 1px solid var(--rule); border-radius: 2px; display: block; }
+@media (max-width: 719px) { .target-imgs img { height: 220px; } }
+.target-imgs figcaption { font: 500 11px/1.2 var(--font-mono); color: var(--ink-3); text-transform: uppercase; letter-spacing: .05em; }
+
+/* ---------- sources ---------- */
+details.src { background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; padding: 10px 14px; }
+details.src + details.src { margin-top: 8px; }
+details.src summary { cursor: pointer; font-weight: 600; }
+.fact { padding: 10px 0; border-top: 1px solid var(--rule-2); display: grid; gap: 4px; font-size: 13px; color: var(--ink-2); }
+.fact:first-of-type { border-top: 0; }
+.fact b { color: var(--ink); }
+.fact ul { margin: 0; padding-left: 18px; }
+.fact li { overflow-wrap: anywhere; }
+.foot { padding-block: 26px 0; border-top: 1px solid var(--rule); color: var(--ink-3); font-size: 13px; display: grid; gap: 6px; max-width: 84ch; margin-top: 20px; }
+@media (prefers-reduced-motion: no-preference) { .fig .plate { transition: background-color .15s; } .locator .win { transition: x .15s, width .15s; } }
+
+/* SVG patterns take their colours from classes, so every browser themes them */
+.p-void rect { fill: var(--void-bg); } .p-void line { stroke: var(--void); }
+.p-tail rect { fill: var(--wall); } .p-tail line { stroke: var(--g-duo); }
+.wallr { fill: var(--wall); }
+.gl { stroke: var(--wall-line); stroke-width: 1; }
+.skull { stroke: var(--chalk); stroke-width: 1; opacity: .6; }
+.floorr { fill: var(--floor); }
+.floorl { stroke: var(--floor-edge); stroke-width: 1; }
+.edge { fill: none; stroke: var(--ink); stroke-linejoin: round; stroke-linecap: butt; }
+.edge.template { stroke-dasharray: 0.1 6.4; stroke-linecap: round; }
+.edge.art { stroke-dasharray: 8 6.4 0.1 6.4; stroke-linecap: round; }
+.geo { fill: var(--g-geom); }
+.ghost { fill: none; stroke: var(--chalk); stroke-width: 1.5; stroke-linejoin: round; }
+.hot { fill: none; stroke: var(--chalk); stroke-width: 2.5; stroke-linejoin: round; }
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <div class="mast-l">
+      <p class="eyebrow">Men's builds · muscle level with height taken out</p>
+      <h1>Build Comparison</h1>
+      <p class="lede" id="lede"></p>
+    </div>
+    <div class="mast-r">
+      <p class="scorebox"><b>The score</b> is fat-free mass ÷ height³ × 1.8. That is the FFMI (fat-free mass ÷ height², in kg/m²) the same body would have if it were 1.80 m tall. Body fat is mostly unknown, so every score is a range.</p>
+      <div class="edgekey" id="edgeKey"></div>
+    </div>
+    <p class="spec full" id="spec"></p>
+    <div class="glance full">
+      <p class="cap"><b>The whole scale, to scale</b>Each tick is one build. Hatched: nothing comparable there. Equal steps are equal ratios: 20 to 40 is as far as 100 to 200. Tap a stretch to jump to it.</p>
+      <div class="tapeplot" id="glance"></div>
+      <div class="clusters" id="clusters"></div>
+    </div>
+    <p class="jumps full">Jump to: <a href="#rex-and-ollie">Rex and Ollie</a> · <a href="#empty">The empty stretches</a> · <a href="#limits">Body limits</a> · <a href="#to-scale">Every build to scale</a> · <a href="#measure">Measure a character</a></p>
+  </header>
+
+  <div class="controls" role="group" aria-label="Figure options">
+    <div class="ctl"><span class="label" id="hLbl">Figures</span>
+      <div class="seg" role="group" aria-labelledby="hLbl"><button type="button" id="hSame" aria-pressed="true">Same height</button><button type="button" id="hReal" aria-pressed="false">Real heights</button></div></div>
+    <div class="ctl"><span class="label" id="vLbl">View</span>
+      <div class="seg" role="group" aria-labelledby="vLbl"><button type="button" id="vFront" aria-pressed="true">Front</button><button type="button" id="vSide" aria-pressed="false">Side</button></div></div>
+  </div>
+  <p class="modenote" id="modeNote"></p>
+
+  <section class="sec" id="lineup" aria-labelledby="lineupH">
+    <div class="sec-head">
+      <h2 id="lineupH">The lineup</h2>
+      <p class="verdict">Everyone is drawn at the same height, in score order. Only the build differs.</p>
+      <p class="sub">The figures are in order, not to scale. The tape pinned to the top of the screen is to scale. Neighbours whose ranges overlap can't be ranked against each other. Tap a figure for its numbers and sources.</p>
+      <p class="edgestrip" id="edgeStrip"></p>
+    </div>
+    <div class="locator" id="locator">
+      <div class="loc-line"><span id="locNow">To scale</span><span class="hint">Tap the tape to jump</span></div>
+      <div class="tapeplot" id="locTape" role="img" aria-label="To-scale tape"></div>
+    </div>
+    <div id="stops"></div>
+  </section>
+
+  <section class="sec" aria-labelledby="keyH">
+    <details class="key" id="keyDetails"><summary id="keyH">How to read a figure: the full key</summary><div class="keygrid" id="key"></div></details>
+  </section>
+
+  <section class="sec" id="to-scale" aria-labelledby="scaleH">
+    <div class="sec-head">
+      <h2 id="scaleH">Every build, to scale</h2>
+      <p class="verdict">Each bar spans a build's score across plausible body fat. Bars that overlap can't be ranked against each other.</p>
+      <p class="sub">A log scale: equal steps are equal ratios, so 20 to 40 is the same distance as 100 to 200. Every range is an estimate (body fat assumed) unless it carries a DERIVED chip (body fat measured). Rows in italics are reference points, not builds.</p>
+    </div>
+    <div class="ctl"><span class="label" id="zLbl">Scale</span>
+      <div class="seg" role="group" aria-labelledby="zLbl"><button type="button" id="zAll" aria-pressed="true">Whole scale</button><button type="button" id="zHum" aria-pressed="false">Close-up, 12 to 45</button></div></div>
+    <div class="forest">
+      <div class="fp-legend" id="fpLegend"></div>
+      <div class="fp-axis" id="fpAxis"></div>
+      <div class="fp" id="fp"></div>
+    </div>
+  </section>
+
+  <section class="sec" id="limits" aria-labelledby="limitsH">
+    <div class="sec-head">
+      <h2 id="limitsH">Where the body stops working</h2>
+      <p class="verdict" id="limitsVerdict"></p>
+      <p class="sub" id="limitsSub"></p>
+    </div>
+    <div class="limits" id="limitCards"></div>
+    <ul class="limits-list" id="limitsNotes"></ul>
+  </section>
+
+  <section class="sec" aria-labelledby="scoreH">
+    <div class="sec-head">
+      <h2 id="scoreH">The score, and the natural limit</h2>
+      <p class="verdict">The score asks how much fat-free mass a body would carry if it were 1.80 m tall, at the same shape. No hard natural limit is known.</p>
+    </div>
+    <div class="cols">
+      <div class="card" id="scoreCard"></div>
+      <div class="card" id="natCard"></div>
+      <div class="card wide" id="fatCard"></div>
+    </div>
+  </section>
+
+  <section class="sec" id="measure" aria-labelledby="toolH">
+    <div class="sec-head">
+      <h2 id="toolH">Measure a character</h2>
+      <p class="verdict">Load an A-pose model sheet, type the height and density, and get the volume, mass, girths and score.</p>
+      <p class="sub">The sheet needs front, side and back views at one scale. Nothing leaves this page: copy the results, or save the outline images by hand. The turnarounds are not measured here; Step 2 does that once they are redrawn to the sheet spec.</p>
+    </div>
+    <div class="tool" id="tool">
+      <div>
+        <div class="picker" id="picker">
+          <div class="field" style="flex:1 1 220px"><span class="flab" id="sheetLab">Sheet</span><div class="btnrow" role="group" aria-labelledby="sheetLab"><button type="button" class="btn ghost" id="tSoldier">Soldier sheet (drawn here)</button><button type="button" class="btn ghost" id="tChoose">Choose a sheet…</button></div></div>
+          <input type="file" id="file" accept="image/png,image/jpeg,image/webp" class="sr" tabindex="-1">
+          <span id="sheetName"></span>
+        </div>
+        <div class="viewer"><div class="gut" id="gutter" aria-hidden="true"></div><canvas id="sheetCanvas" width="10" height="10" aria-label="The model sheet with the rows the tool measured"></canvas></div>
+        <div class="viewcaps" id="viewCaps"></div>
+        <ul class="checks" id="checks"></ul>
+      </div>
+      <div>
+        <p class="status-line" id="validation">Tool test: running on duo.jpg…</p>
+        <div class="fields">
+          <div class="field"><label for="tH">Height to top of skull (m)</label><input id="tH" inputmode="decimal" value="1.80"><span class="hint">Not the crest or horn tips.</span></div>
+          <div class="field"><label for="tRho">Density (kg/m³)</label><input id="tRho" inputmode="decimal" value="1060"><span class="hint">Lean body: about 1,060. Rex and Ollie: 1,060.</span></div>
+          <div class="field"><label for="tBf">Body fat for the score (%)</label><input id="tBf" inputmode="decimal" value="7.5"><span class="hint">Used only for the score.</span></div>
+        </div>
+        <details class="adv"><summary>Sheet layout</summary>
+          <div class="fields">
+            <div class="field"><label for="tOrder">Views, left to right</label><select id="tOrder"><option value="front,side,back">front, side, back</option><option value="front,back,side">front, back, side</option><option value="side,front,back">side, front, back</option></select></div>
+            <div class="field"><label for="tSkull">Skull-top rows</label><input id="tSkull" placeholder="top of figure"><span class="hint">Pixel rows, in the same order as “Views, left to right”: e.g. 52, 57, 52</span></div>
+            <div class="field"><label for="tArmK">Arm depth ÷ width</label><input id="tArmK" inputmode="decimal" value="1.0"></div>
+          </div></details>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn" id="measureBtn">Measure</button><button type="button" class="btn ghost" id="copyBtn">Copy results</button></div>
+        <p class="status-line" id="toolStatus"></p>
+        <textarea class="copy-out" id="copyOut" hidden readonly aria-label="Results as text"></textarea>
+        <div class="tbl-wrap"><table class="tbl" id="results"></table></div>
+      </div>
+      <div class="wide target">
+        <div class="ins">
+          <div class="sec-head" style="gap:6px"><h3 style="font:600 11px/1.2 var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)">Draw an outline for any score</h3>
+            <p class="sub">Pick a score and a base shape. You get front and side outlines at the model-sheet spec, to use as control images.</p></div>
+          <div class="fields"><div class="field"><label for="tTarget">Target score</label><input id="tTarget" inputmode="decimal" value="100"><span class="hint">15 to 900</span></div>
+            <div class="field"><label for="tShape">Base shape</label><select id="tShape"></select></div></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn ghost" id="targetBtn">Draw</button><button type="button" class="btn ghost" id="targetCopy">Copy target numbers</button></div>
+        </div>
+        <div style="display:grid;gap:10px;min-width:0">
+          <p class="status-line" id="targetStatus"></p>
+          <div class="target-imgs"><figure><img id="tgtFront" alt="Target outline, front view"><figcaption id="capFront">Front</figcaption></figure><figure><img id="tgtSide" alt="Target outline, side view"><figcaption id="capSide">Side</figcaption></figure></div>
+          <p class="sub">This page can't start a download. To keep an image, right-click or long-press it and save, if your browser allows. For full-size 2,000 px sheets, run tools/export_targets.js in the repository.</p>
+          <textarea class="copy-out" id="targetOut" hidden readonly aria-label="Target numbers as text"></textarea>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="ignH">
+    <div class="sec-head"><h2 id="ignH">What this ignores</h2>
+      <p class="verdict">The score is a mass ratio. It says nothing about strength, health, or whether a body that size could stand.</p></div>
+    <ul class="limits-list" id="ignores"></ul>
+  </section>
+
+  <section class="sec" aria-labelledby="srcH">
+    <div class="sec-head"><h2 id="srcH">Sources</h2>
+      <p class="verdict">Every number above comes from one of these, with its status.</p></div>
+    <div id="sources"></div>
+  </section>
+
+  <footer class="foot" id="foot"></footer>
+</div>
+<div class="drawer" id="drawer" hidden role="region" aria-labelledby="drawerH"></div>
+
+<!--@DATA-->
+<!--@SCRIPTS-->
+<script>
+(function () {
+  'use strict';
+  var D = window.COMPARE_DATA, C = D.comparison;
+  var calc = BuildCalc.create(D.builds);
+  var model = Compare.create(calc, C);
+  var fmt = BuildCalc.fmt;
+  var LIST = model.all();
+  var MEAT = Compare.ballScore(1060, 7.5), MEAT_LO = Compare.ballScore(1060, 10), MEAT_HI = Compare.ballScore(1060, 5);
+  var GAPS = model.gaps(LIST, MEAT, 1.25);
+  var LIMITS = C.limits || null;
+  var ANCH = C.anchors || { natural: [], enhanced: [] };
+  var FACTS = Object.assign({}, D.builds.facts, C.facts || {});
+  var VOCAB = D.builds.status_vocabulary || {};
+  var $ = function (id) { return document.getElementById(id); };
+  var NS = 'http://www.w3.org/2000/svg';
+  var GROUPS = [
+    { name: 'Everyday', short: 'everyday', label: 'Everyday men', v: '--g-every' },
+    { name: 'Natural athletes', short: 'natural', label: 'Natural athletes', v: '--g-natural' },
+    { name: 'Bodybuilders', short: 'bodybuilders', label: 'Bodybuilders', v: '--g-bb' },
+    { name: 'Strongmen and lifters', short: 'strongmen', label: 'Strongmen and lifters', v: '--g-strong' },
+    { name: 'Comic characters', short: 'comic', label: 'Comic characters', v: '--g-comic' },
+    { name: 'Rex and Ollie', short: 'Rex and Ollie', label: 'Rex and Ollie', v: '--g-duo' }
+  ];
+  var GV = {}; GROUPS.forEach(function (g) { GV[g.name] = g; });
+  var AX = { lo: 12, hi: 1000 }, CLOSE = { lo: 12, hi: 45 };
+  var MEAT_TXT = fmt.sep(Math.round(MEAT), 0); // a defined end point: never rounded further
+
+  // ---------- helpers ----------
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function chip(status, text) { var t = VOCAB[status] || ''; return '<span class="chip ' + esc(status) + '"' + (t ? ' title="' + esc(t) + '"' : '') + '>' + esc(text || status) + '</span>'; }
+  /** Scores and FFMI: whole numbers below 100, two significant figures from 100 up. */
+  function sc(x) { if (Math.abs(x) >= 100) { var p = Math.pow(10, Math.floor(Math.log(Math.abs(x)) / Math.LN10) - 1); return fmt.sep(Math.round(x / p) * p, 0); } return fmt.sep(Math.round(x), 0); }
+  function scr(lo, hi) { var a = sc(lo), b = sc(hi); return a === b ? 'about ' + a : a + '–' + b; }
+  /** Masses: whole kg below 1,000, three significant figures above. */
+  function kg(x) { if (x >= 1000) { var p = Math.pow(10, Math.floor(Math.log(x) / Math.LN10) - 2); return fmt.sep(Math.round(x / p) * p, 0); } return fmt.sep(Math.round(x), 0); }
+  function pc(x) { return Math.abs(x - 7.5) < 1e-9 ? '7.5' : fmt.sep(Math.round(x), 0); }
+  function load() { try { return JSON.parse(window.localStorage.getItem('bc.prefs') || '{}') || {}; } catch (e) { return {}; } }
+  function save() { try { window.localStorage.setItem('bc.prefs', JSON.stringify({ heights: state.heights, view: state.view, zoom: state.zoom })); } catch (e) { /* not available */ } }
+  function svgEl(tag, attrs, parent) {
+    var el = document.createElementNS(NS, tag);
+    for (var k in attrs) if (attrs[k] != null) el.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(el);
+    return el;
+  }
+  function byId(id) { for (var i = 0; i < LIST.length; i++) if (LIST[i].id === id) return LIST[i]; return null; }
+  function isDuo(e) { return e.group === 'Rex and Ollie'; }
+  function isHuman(e) { return e.group !== 'Comic characters' && !isDuo(e); }
+  function logPos(s, d) { return (Math.log(s) - Math.log(d.lo)) / (Math.log(d.hi) - Math.log(d.lo)); }
+  function clampS(s, d) { return Math.max(d.lo, Math.min(d.hi, s)); }
+  /** Derived when height, weight and body fat are all on record; otherwise an estimate. */
+  function scoreStatus(e) {
+    if (isDuo(e)) return 'estimate';
+    if (e.bodyFat.status !== 'measured') return 'estimate';
+    var st = [e.height.status, e.mass.status];
+    return st.indexOf('estimate') >= 0 || st.indexOf('unknown') >= 0 ? 'estimate' : 'derived';
+  }
+  function factLinks(keys) {
+    var out = [];
+    (keys || []).forEach(function (k) { var f = FACTS[k]; if (!f) return; (f.sources || []).forEach(function (s) { if (s.url && /^https?:/.test(s.url) && !out.some(function (o) { return o.url === s.url; })) out.push({ title: s.title, url: s.url }); }); });
+    return out;
+  }
+  function listWords(xs) { return xs.length <= 1 ? xs.join('') : xs.slice(0, -1).join(', ') + ' and ' + xs[xs.length - 1]; }
+  function timesWords(r) {
+    var h = Math.round(r * 2) / 2;
+    if (h <= 1) return 'about the same as';
+    if (h === 1.5) return 'about one and a half times';
+    if (h === 2) return 'roughly twice';
+    return 'about ' + fmt.sep(h, h % 1 ? 1 : 0) + ' times';
+  }
+  var NUMW = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
+
+  // ---------- landmarks of the scale (computed, never typed) ----------
+  var HUMANS = LIST.filter(isHuman);
+  var HUMAN_TOP = HUMANS.reduce(function (m, e) { return Math.max(m, e.score.hi); }, 0);
+  function beyond(e) { return e.score.value > HUMAN_TOP; }
+  var COMIC_TOP = LIST.filter(function (e) { return e.group === 'Comic characters' && e.comparable === 'yes'; }).reduce(function (a, e) { return e.score.value > a.score.value ? e : a; });
+  var LIM = LIMITS ? LIMITS.items : [];
+
+  // ---------- state ----------
+  var pref = load();
+  var state = { heights: pref.heights === 'real' ? 'real' : 'same', view: pref.view === 'side' ? 'side' : 'front', zoom: pref.zoom === 'close' ? 'close' : 'all', sel: null, stop: null };
+
+  // ---------- the stops: score bands, empty stretches, the meatball ----------
+  function fillText(t, ctx) {
+    return esc(t || '').replace(/\{(\w+)(?::([\w\/,]+))?\}/g, function (m, k, arg) {
+      if (k === 's' || k === 'r') return sc(byId(arg).score.value);
+      if (k === 'h') return fmt.sep(byId(arg).height.value, 2);
+      if (k === 'span') { var v = arg.split(',').map(function (id) { return byId(id).score.value; }); var a = sc(Math.min.apply(null, v)), b = sc(Math.max.apply(null, v)); return a === b ? 'about ' + a : a + ' to ' + b; }
+      if (k === 'x') { var ab = arg.split('/'); return timesWords(byId(ab[0]).score.value / byId(ab[1]).score.value); }
+      if (k === 'chip') return chip(arg);
+      if (k === 'humanTop') return sc(HUMAN_TOP);
+      if (k === 'hwofficial' && ctx && ctx.members) {
+        var odd = ctx.members.filter(function (e) { return e.height.status !== 'official' || e.mass.status !== 'official'; });
+        return odd.length ? 'Their heights and weights are official, except ' + listWords(odd.map(function (e) { return esc(e.short) + '\'s (' + (e.height.status === e.mass.status ? e.mass.status : e.height.status + ' and ' + e.mass.status) + ')'; })) + '.' : 'Their heights and weights are official.';
+      }
+      if (ctx && ctx[k] != null) return esc(ctx[k]);
+      return m;
+    });
+  }
+  function hereLine(members) {
+    var parts = GROUPS.map(function (g) { var n = members.filter(function (e) { return e.group === g.name; }).length; return n ? n + ' ' + g.short : null; }).filter(Boolean);
+    return 'Here: ' + members.length + (members.length === 1 ? ' build' : ' builds') + ' · ' + parts.join(' · ');
+  }
+  function buildSequence() {
+    var seq = [], prevEdge = 0, prevUpto = 0;
+    var gapOf = function (e) { return GAPS.filter(function (g) { return e.score.value > g.from && e.score.value < g.to; })[0]; };
+    (C.stops || []).forEach(function (st) {
+      var members = LIST.filter(function (e) { return e.score.value > prevUpto && e.score.value <= st.upto && !gapOf(e); });
+      var floor = prevUpto; prevUpto = st.upto;
+      if (!members.length) return;
+      var core = members.filter(function (e) { return e.comparable === 'yes'; });
+      var vals = (core.length ? core : members).map(function (e) { return e.score.value; });
+      var lo = floor, hi = st.upto;
+      GAPS.forEach(function (g) { if (g.to <= Math.min.apply(null, vals) + 1e-9 && g.to > lo) lo = g.to; if (g.from >= Math.max.apply(null, vals) - 1e-9 && g.from < hi) hi = g.from; });
+      var title = st.title;
+      if (st.only_group && members.some(function (e) { return e.group !== st.only_group; })) title = 'Score ' + sc(lo) + ' to ' + sc(hi);
+      var ctx = { min: sc(Math.min.apply(null, vals)), max: sc(Math.max.apply(null, vals)), members: members };
+      seq.push({ kind: 'band', id: st.id === 'duo' ? 'rex-and-ollie' : st.id, st: st, members: members, lo: Math.max(AX.lo, lo || AX.lo), hi: hi,
+        tag: floor === 0 ? 'Score under ' + sc(hi) : 'Score ' + sc(lo) + ' to ' + sc(hi), title: title, verdict: fillText(st.verdict, ctx), sub: fillText(st.sub, ctx), beyond: lo >= HUMAN_TOP - 1e-9 });
+    });
+    GAPS.forEach(function (g, i) {
+      var inside = LIST.filter(function (e) { return gapOf(e) === g; });
+      var lims = LIM.filter(function (L) { return L.headline !== false ? L.score > g.from && L.score < g.to : L.range[0] < g.to && L.range[1] > g.from; });
+      var last = !g.above;
+      seq.push({ kind: 'gap', id: i === 0 ? 'empty' : 'empty-' + (i + 1), gap: g, inside: inside, limits: lims, lo: g.from, hi: g.to, last: last,
+        tag: 'Score ' + sc(g.from) + ' to ' + (last ? MEAT_TXT : sc(g.to)), beyond: g.from >= HUMAN_TOP - 1e-9,
+        title: inside.length ? 'Nothing comparable' : last ? 'Empty to the end' : 'Empty' });
+    });
+    seq.push({ kind: 'meat', id: 'meatball', lo: MEAT, hi: MEAT, tag: 'Score ' + MEAT_TXT, title: 'The meatball', beyond: true });
+    seq.sort(function (a, b) { return a.lo - b.lo; });
+    // A band next to an empty stretch starts or ends where the stretch does.
+    seq.forEach(function (s, i) {
+      if (s.kind !== 'band') return;
+      var prev = seq[i - 1], next = seq[i + 1];
+      if (prev && prev.kind === 'gap') s.lo = prev.hi;
+      if (next && next.kind === 'gap') s.hi = next.lo;
+      s.tag = !prev ? 'Score under ' + sc(s.hi) : 'Score ' + sc(s.lo) + ' to ' + sc(s.hi);
+      s.beyond = s.lo >= HUMAN_TOP - 1e-9;
+      if (s.st.only_group && s.members.some(function (e) { return e.group !== s.st.only_group; })) s.title = 'Score ' + sc(s.lo) + ' to ' + sc(s.hi);
+      // A limit whose headline falls inside this band (not in a gap) is noted under its figures.
+      s.limits = LIM.filter(function (L) { return L.headline !== false && L.score > s.lo && L.score <= s.hi && !GAPS.some(function (g) { return L.score > g.from && L.score < g.to; }); });
+    });
+    // The rule where real men end goes after the band that holds the highest real man.
+    var host = -1;
+    seq.forEach(function (s, i) { if (s.kind === 'band' && s.members.some(function (e) { return isHuman(e) && e.score.hi >= HUMAN_TOP - 1e-9; })) host = i; });
+    if (host >= 0) seq.splice(host + 1, 0, { kind: 'end', id: 'real-men-end', lo: HUMAN_TOP, hi: HUMAN_TOP });
+    return seq;
+  }
+  var SEQ = buildSequence();
+  var STOPS = SEQ.filter(function (s) { return s.kind !== 'end'; });
+
+  /** The gap sentence: the same ratio as a step between two real men, if one fits within 4%. */
+  function gapStep(g) {
+    var r = g.to / g.from, base = byId('ansur2_m_p50'), want = base.score.value * r;
+    var best = HUMANS.reduce(function (a, e) { return Math.abs(Math.log(e.score.value / want)) < Math.abs(Math.log(a.score.value / want)) ? e : a; });
+    if (Math.abs(Math.log(best.score.value / want)) > Math.log(1.04)) return '';
+    return 'On this scale the stretch is as wide as the step from the median soldier (' + sc(base.score.value) + ') to ' + best.short + ' (' + sc(best.score.value) + '). ';
+  }
+  /**
+   * Which of the chart's own figures already meet a limit's test (tools/compute_limits.js runs the
+   * three tests on every drawn figure, at its own height and girths). below: count only those
+   * scoring under it. Returns '' when none do.
+   */
+  function metSooner(L, below) {
+    var ids = (L.met_by || []).filter(function (id) { var e = byId(id); return e && e.score.value < below; });
+    if (!ids.length) return '';
+    var first = byId(ids[0]);
+    return 'The chart\'s own figures, drawn from their girths, meet this test sooner: ' + (ids.length === 1 ? esc(first.short) + ' (about ' + sc(first.score.value) + ')' : (NUMW[ids.length] || fmt.sep(ids.length, 0)) + ' of them, from ' + esc(first.short) + ' (about ' + sc(first.score.value) + ') up') + '. ';
+  }
+  function gapCopy(item) {
+    var g = item.gap, out = {};
+    if (item.last) {
+      out.verdict = 'Nothing scores between ' + esc(byId(g.below).short) + '\'s top, ' + sc(g.from) + ', and the end of the scale, ' + MEAT_TXT + '. ' + chip('estimate');
+    } else if (item.inside.length) {
+      out.verdict = 'Nothing comparable scores ' + sc(g.from) + ' to ' + sc(g.to) + '. ' + chip('estimate') + (item.beyond && g === GAPS[0] ? ' From here on every score is an extrapolation: no real man on this chart scores above ' + sc(HUMAN_TOP) + '.' : '');
+    } else {
+      out.verdict = 'Nothing scores ' + sc(g.from) + ' to ' + sc(g.to) + '. ' + chip('estimate') + (item.beyond && g === GAPS[0] ? ' From here on every score is an extrapolation: no real man on this chart scores above ' + sc(HUMAN_TOP) + '.' : '');
+    }
+    var sub = '';
+    if (item.inside.length) {
+      sub += listWords(item.inside.map(function (e) { return esc(e.short) + ' (' + sc(e.score.value) + ')'; })) + (item.inside.length > 1 ? ' would land here on their listed weights, but neither counts as comparable: ' : ' would land here on his listed weight, but does not count as comparable: ') +
+        item.inside.map(function (e) { return esc(e.setting.flag ? e.setting.flag.charAt(0).toLowerCase() + e.setting.flag.slice(1) : 'not comparable') + ' (' + esc(e.short) + ')'; }).join('; ') + '. ';
+    }
+    var heads = item.limits.filter(function (L) { return L.headline !== false; }), bands = item.limits.filter(function (L) { return L.headline === false; });
+    if (heads.length) {
+      var lw = heads.map(function (L) { return L.label.charAt(0).toLowerCase() + L.label.slice(1) + ' (about ' + sc(L.score) + ')'; });
+      sub += (heads.length > 1 ? NUMW[heads.length].charAt(0).toUpperCase() + NUMW[heads.length].slice(1) + ' limits of the evenly widened soldier fall in this stretch: ' : 'A limit of the evenly widened soldier falls in this stretch: ') + esc(listWords(lw)) + '. ' + chip('estimate') + ' ';
+      heads.forEach(function (L) { var m = metSooner(L, g.from); if (m) sub += m.replace('this test', 'the ' + esc(L.tiny) + ' test'); });
+    }
+    bands.forEach(function (L) {
+      var top = g.above ? g.to : MEAT, below = L.range[0] < g.from, above = L.range[1] > top;
+      var where = below && above ? ', across this stretch and beyond' : below ? ', reaching into the bottom of this stretch' : above ? ', from inside this stretch upward' : ', inside this stretch';
+      sub += 'The ' + esc(L.short) + ' limit lies somewhere from ' + sc(L.range[0]) + ' to ' + sc(L.range[1]) + where + ': where exactly depends on a model no study has tested. ' + chip('estimate') + ' ';
+    });
+    if (item.last) { var r = MEAT / g.from; sub += MEAT_TXT + ' is more than ' + (NUMW[Math.floor(r)] || fmt.sep(Math.floor(r), 0)) + ' times ' + esc(byId(g.below).short) + '\'s top score.'; }
+    else sub += gapStep(g) + 'Step 2 fills it with figures drawn to order, each labelled “measured from art”.';
+    out.sub = sub;
+    return out;
+  }
+
+  // ---------- figures ----------
+  var T = D.outline;
+  var figCache = {};
+  /** Arms at 20 degrees, or just past where the figure's own outline lets them rest (tools/compute_limits.js), so they never pass through the body. */
+  function armAngle(e) { var c = LIMITS && LIMITS.chart_figures[e.id]; return c ? Math.max(20, c.rest_deg + 2) : 20; }
+  function figureOf(e, view) {
+    var key = e.id + '|' + view;
+    if (figCache[key]) return figCache[key];
+    var out;
+    if (isDuo(e)) {
+      var t = Figure.traced(D.duo.characters[e.id], view, e.height.value);
+      out = { parts: t.parts, skull: e.height.value, top: t.H };
+    } else {
+      var g = {}, marks = {};
+      BuildCalc.SITES.forEach(function (s) { g[s] = e.girths[s].value; marks[s] = /^(measured|official|reported)$/.test(e.girths[s].status) ? 'own' : 'template'; });
+      var f = Figure.human(T, e.height.value, g, marks, { buttockFit: BuildCalc.FRUSTUM.M.buttock, armDeg: armAngle(e) });
+      out = { parts: view === 'side' ? f.side : f.front, skull: e.height.value, top: e.height.value };
+    }
+    out.bounds = Figure.bounds(out.parts);
+    figCache[key] = out;
+    return out;
+  }
+  /**
+   * Draw a figure into an SVG group. Each part's outline is stroked first (3.8 px on screen, so the
+   * outer 1.9 px shows), then every fill goes on top, so seams inside the body vanish.
+   */
+  function drawFigure(g, parts, k, ox, oy, fill, opts) {
+    opts = opts || {};
+    parts.forEach(function (p) {
+      if (p.mark === 'tail') return;
+      var edges = p.edges || [{ pts: p.poly.concat([p.poly[0]]), mark: p.mark }];
+      edges.forEach(function (e) {
+        if (e.mark === 'average' || e.mark === 'tail') return;
+        var d = '';
+        for (var i = 0; i < e.pts.length; i++) d += (i ? 'L' : 'M') + (ox + e.pts[i][0] * k).toFixed(1) + ' ' + (oy - e.pts[i][1] * k).toFixed(1);
+        svgEl('path', { d: d, 'class': 'edge ' + e.mark, 'stroke-width': opts.edge || 3.8, 'vector-effect': 'non-scaling-stroke' }, g);
+      });
+    });
+    parts.forEach(function (p) {
+      if (p.mark === 'tail') return;
+      svgEl('path', { d: Figure.pathData(p.poly, k, ox, oy), fill: opts.hatch ? 'url(#hatchVoid)' : fill }, g);
+    });
+    parts.forEach(function (p) {
+      if (p.mark !== 'tail') return;
+      svgEl('path', { d: Figure.pathData(p.poly, k, ox, oy), fill: 'url(#hatchTail)', stroke: fill, 'stroke-width': 1, 'vector-effect': 'non-scaling-stroke' }, g);
+    });
+  }
+  function defs() {
+    var s = document.createElementNS(NS, 'svg');
+    s.setAttribute('width', 0); s.setAttribute('height', 0); s.setAttribute('aria-hidden', 'true'); s.style.position = 'absolute';
+    s.innerHTML = '<defs>' +
+      '<pattern id="hatchVoid" class="p-void" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(135)"><rect width="5" height="5"/><line x1="0" y1="0" x2="0" y2="5" stroke-width="1.5"/></pattern>' +
+      '<pattern id="hatchTail" class="p-tail" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5"/><line x1="0" y1="0" x2="0" y2="5" stroke-width="1.5"/></pattern>' +
+      '</defs>';
+    document.body.appendChild(s);
+  }
+
+  // One drawing scale for every figure cell, so "same height" really is the same height: every
+  // cell's drawing is the same height on screen (--figh in the CSS), and each grid's columns are at
+  // least as wide as its widest figure needs (figures with their arms out need more).
+  var LEVELS = ['acromialheight', 'chestheight', 'waistheightomphalion', 'crotchheight', 'kneeheightmidpatella'];
+  var CELL = null, DUO_SKULL = Math.max(byId('rex').height.value, byId('ollie').height.value);
+  function cellGeometry() {
+    var Hd = 150;
+    CELL = { Hd: Hd, pad: 6, head: Math.round(0.09 * Hd), floor: 8, kReal: Hd / DUO_SKULL };
+    CELL.VH = CELL.head + CELL.Hd + CELL.floor;
+  }
+  function figScale(f) { return state.heights === 'same' ? CELL.Hd / f.skull : CELL.kReal; }
+  /** A grid of figure cells: the viewBox width fits its widest member; columns are sized from it. */
+  function figGrid(members) {
+    var W = 0;
+    members.forEach(function (e) { var f = figureOf(e, state.view); W = Math.max(W, (f.bounds[2] - f.bounds[0]) * figScale(f)); });
+    W = Math.ceil(W + 2 * CELL.pad);
+    var grid = document.createElement('div'); grid.className = 'figs';
+    grid.style.setProperty('--wr', (W / CELL.VH).toFixed(3));
+    members.forEach(function (e) { grid.appendChild(figureCell(e, W)); });
+    return grid;
+  }
+  /** The wall: landmark lines and the skull line (same heights), or 1, 2 and 3 m lines (real heights). */
+  function wall(svg, W, Hd, head, floorH, kReal, bleed) {
+    // bleed: how far the wall runs past the viewBox on each side (figure cells are often wider than it).
+    var x0 = -(bleed || 0), x1 = W + (bleed || 0), w = x1 - x0;
+    svgEl('rect', { x: x0, y: 0, width: w, height: head + Hd, 'class': 'wallr' }, svg);
+    if (kReal) {
+      for (var m = 1; m * kReal <= Hd + head; m++) { var yy = head + Hd - m * kReal; svgEl('line', { x1: x0, x2: x1, y1: yy, y2: yy, 'class': 'gl', 'vector-effect': 'non-scaling-stroke' }, svg); }
+    } else {
+      LEVELS.forEach(function (k) { var y = head + Hd * (1 - T.levels[k].mean); svgEl('line', { x1: x0, x2: x1, y1: y, y2: y, 'class': 'gl', 'vector-effect': 'non-scaling-stroke' }, svg); });
+      svgEl('line', { x1: x0, x2: x1, y1: head, y2: head, 'class': 'skull', 'vector-effect': 'non-scaling-stroke' }, svg);
+    }
+    svgEl('rect', { x: x0, y: head + Hd, width: w, height: floorH, 'class': 'floorr' }, svg);
+    svgEl('line', { x1: x0, x2: x1, y1: head + Hd, y2: head + Hd, 'class': 'floorl', 'vector-effect': 'non-scaling-stroke' }, svg);
+  }
+  function figureSvg(e, W) {
+    var f = figureOf(e, state.view), b = f.bounds, z = CELL, k = figScale(f);
+    var svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + z.VH, preserveAspectRatio: 'xMidYMax meet', 'aria-hidden': 'true', focusable: 'false' });
+    wall(svg, W, z.Hd, z.head, z.floor, state.heights === 'real' ? z.kReal : null, 4 * z.VH);
+    drawFigure(svgEl('g', {}, svg), f.parts, k, W / 2 - (b[0] + b[2]) / 2 * k, z.head + z.Hd, 'var(' + GV[e.group].v + ')', { hatch: e.comparable === 'no' });
+    return svg;
+  }
+  function flagsOf(e) {
+    var chips = [], lines = [];
+    if (e.comparable === 'no') chips.push(chip('over', 'not comparable'));
+    if (e.comparable === 'overstated') chips.push(chip('over', 'may be overstated'));
+    if (e.comparable === 'uncertain') chips.push(chip('over', 'composition unknown'));
+    if (beyond(e)) chips.push(chip('beyond', 'beyond human data'));
+    if (e.setting.flag) lines.push(['', e.setting.flag]);
+    if (isDuo(e)) lines.push(['plain', 'Traced from art' + (e.setting.exclude_mass ? ' · tail not counted' : '')]);
+    return { chips: chips, lines: lines };
+  }
+  function figureCell(e, W) {
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'fig';
+    btn.setAttribute('data-id', e.id); btn.setAttribute('aria-expanded', e.id === state.sel ? 'true' : 'false');
+    var st = scoreStatus(e);
+    var fl = flagsOf(e);
+    btn.setAttribute('aria-label', e.short + ', score ' + scr(e.score.lo, e.score.hi) + ', ' + st + fl.chips.map(function (c) { return ', ' + c.replace(/<[^>]+>/g, ''); }).join('') + fl.lines.map(function (l) { return '. ' + l[1]; }).join('') + '. Open details');
+    btn.appendChild(figureSvg(e, W));
+    var plate = document.createElement('span');
+    plate.className = 'plate';
+    plate.innerHTML = '<span class="s">' + scr(e.score.lo, e.score.hi) + '</span>' +
+      '<span class="w">' + sc(e.score.value) + ' at ' + pc(e.bodyFat.value) + '% fat</span>' +
+      '<span class="chips">' + chip(st) + fl.chips.join('') + '</span>' +
+      '<span class="n"><span class="sw" style="background:var(' + GV[e.group].v + ')"></span>' + esc(e.short) + '</span>' +
+      '<span class="f">FFMI ' + scr(e.plain.lo, e.plain.hi) + '</span>' +
+      fl.lines.map(function (f) { return '<span class="flag ' + f[0] + '">' + esc(f[1]) + '</span>'; }).join('');
+    btn.appendChild(plate);
+    btn.addEventListener('click', function () { if (state.sel === e.id) closeDrawer(); else openDrawer(e.id); });
+    return btn;
+  }
+
+  // ---------- rendering the stops ----------
+  function stopHead(item) {
+    return '<div class="stop-head"><div class="tagrow"><span class="tag">' + esc(item.tag) + '</span>' + (item.beyond ? chip('beyond', 'beyond human data') : '') + '</div>' +
+      '<h3 id="h-' + item.id + '">' + esc(item.title) + '</h3>' +
+      (item.verdict ? '<p class="verdict">' + item.verdict + '</p>' : '') +
+      (item.here ? '<p class="here">' + esc(item.here) + '</p>' : '') +
+      (item.sub ? '<p class="sub">' + item.sub + '</p>' : '') + '</div>';
+  }
+  function renderStops() {
+    var host = $('stops');
+    document.body.appendChild($('drawer')); // the drawer lives in a stop; keep it while the stops are redrawn
+    host.innerHTML = '';
+    cellGeometry();
+    SEQ.forEach(function (item) {
+      if (item.kind === 'end') {
+        var r = document.createElement('div'); r.className = 'rule-end'; r.id = item.id;
+        r.innerHTML = '<span>No real man on this chart scores above ' + sc(HUMAN_TOP) + '</span>';
+        host.appendChild(r); return;
+      }
+      var sec = document.createElement('section');
+      sec.className = 'stop ' + item.kind; sec.id = item.id;
+      sec.setAttribute('aria-labelledby', 'h-' + item.id);
+      if (item.kind === 'band') {
+        item.here = hereLine(item.members);
+        sec.innerHTML = stopHead(item);
+        sec.appendChild(figGrid(item.members));
+        (item.limits || []).forEach(function (L) {
+          var n = document.createElement('p'); n.className = 'limitnote';
+          n.innerHTML = '<b>Limit · ' + esc(L.short) + ' · about ' + sc(L.score) + '</b> (' + scr(L.range[0], L.range[1]) + ' across six template shapes) ' + chip('estimate') + ' ' + esc(L.label) + ', on the median soldier\'s outline widened at fixed bones. ' + metSooner(L, L.score) + '<a href="#limits">How this is worked out</a>';
+          sec.appendChild(n);
+        });
+      } else if (item.kind === 'gap') {
+        var cp = gapCopy(item);
+        item.verdict = cp.verdict; item.sub = cp.sub;
+        sec.innerHTML = stopHead(item);
+        var tile = document.createElement('div'); tile.className = 'gaptile'; tile.setAttribute('data-gap', item.id);
+        sec.appendChild(tile);
+        if (item.inside.length) {
+          var ins = document.createElement('div'); ins.className = 'inside';
+          ins.innerHTML = '<p>On their listed weights, inside this stretch:</p>';
+          ins.appendChild(figGrid(item.inside)); sec.appendChild(ins);
+        }
+      } else if (item.kind === 'meat') {
+        item.verdict = 'The scale ends at ' + MEAT_TXT + ': a solid ball of muscle as tall as the figure. ' + chip('derived');
+        sec.innerHTML = stopHead(item);
+        sec.appendChild(meatball());
+      }
+      host.appendChild(sec);
+    });
+    drawGapTiles();
+    placeDrawer();
+  }
+  /** Gap tiles: one size for every empty stretch; only the mini-scale on the floor is to scale. */
+  function drawGapTiles() {
+    var cell = document.querySelector('.fig svg');
+    Array.prototype.forEach.call(document.querySelectorAll('.gaptile'), function (tile) {
+      var item = SEQ.filter(function (s) { return s.id === tile.getAttribute('data-gap'); })[0];
+      var W = tile.clientWidth || 340;
+      var wallH = cell ? Math.round(cell.getBoundingClientRect().height * (CELL.head + CELL.Hd) / (CELL.head + CELL.Hd + CELL.floor)) : 160;
+      var floorH = W < 560 ? 64 : 110, Hd = wallH - Math.round(wallH * 0.09 / 1.09), head = wallH - Hd, H = wallH + floorH;
+      var svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + H, height: H, 'aria-hidden': 'true' });
+      wall(svg, W, Hd, head, 0, state.heights === 'real' ? Hd / DUO_SKULL : null);
+      svgEl('rect', { x: 0, y: wallH, width: W, height: floorH, fill: 'url(#hatchVoid)' }, svg);
+      var g = item.gap, x0 = 0.04 * W, x1 = 0.96 * W, top = item.last ? MEAT : g.to;
+      var X = function (s) { return x0 + (x1 - x0) * (Math.log(s) - Math.log(g.from)) / (Math.log(top) - Math.log(g.from)); };
+      svgEl('line', { x1: x0, x2: x1, y1: wallH, y2: wallH, stroke: 'var(--ink-3)', 'stroke-width': 1 }, svg);
+      [x0, x1].forEach(function (x) { svgEl('line', { x1: x, x2: x, y1: wallH - 5, y2: wallH + 5, stroke: 'var(--ink-3)', 'stroke-width': 1 }, svg); });
+      var html = '<span class="end" style="left:' + (x0 - 3).toFixed(0) + 'px;top:' + (wallH + 8) + 'px">' + sc(g.from) + '</span><span class="end" style="right:' + (W - x1 - 3).toFixed(0) + 'px;top:' + (wallH + 8) + 'px">' + (item.last ? MEAT_TXT : sc(g.to)) + '</span>';
+      var taken = [];
+      item.limits.forEach(function (L) {
+        var x;
+        if (L.headline === false) {
+          // A band, not a line: shade the part of the stretch it covers.
+          var a = X(Math.max(g.from, L.range[0])), b = X(Math.min(top, L.range[1]));
+          svgEl('rect', { x: a, y: head, width: Math.max(2, b - a), height: wallH - head, fill: 'var(--chalk-band)' }, svg);
+          // Edges only where the band really ends; where it runs on past the stretch, an arrow.
+          [[a, L.range[0] >= g.from, -1], [b, L.range[1] <= top, 1]].forEach(function (s2) {
+            if (s2[1]) svgEl('line', { x1: s2[0], x2: s2[0], y1: head, y2: wallH, stroke: 'var(--chalk)', 'stroke-width': 1 }, svg);
+            else svgEl('path', { d: 'M' + (s2[0] - s2[2] * 9).toFixed(1) + ' ' + (wallH - 14) + 'l' + (s2[2] * 7) + ' 5l' + (-s2[2] * 7) + ' 5', fill: 'none', stroke: 'var(--chalk)', 'stroke-width': 1.5 }, svg);
+          });
+          x = a;
+        } else {
+          x = X(L.score);
+          svgEl('line', { x1: x, x2: x, y1: head, y2: wallH, stroke: 'var(--chalk)', 'stroke-width': 1.5 }, svg);
+        }
+        var txt = L.short.toUpperCase() + ' · ' + (L.headline === false ? sc(L.range[0]) + '–' + sc(L.range[1]) : sc(L.score)), w = txt.length * 7 + 8;
+        var left = Math.max(2, Math.min(W - w - 2, x + 4 + w > W ? x - w - 4 : x + 4)), row = 0;
+        while (taken.some(function (t) { return t.row === row && left < t.r && left + w > t.l; })) row++;
+        taken.push({ l: left, r: left + w, row: row });
+        html += '<span class="post" style="left:' + left.toFixed(0) + 'px;top:' + (head + 4 + row * 17) + 'px">' + esc(txt) + '</span>';
+      });
+      var marks = [];
+      item.inside.slice().sort(function (a, b) { return b.score.value - a.score.value; }).forEach(function (e) {
+        var x = X(e.score.value);
+        svgEl('path', { d: 'M' + x.toFixed(1) + ' ' + (wallH - 1) + 'l-5 -9h10z', fill: 'var(--alarm)' }, svg);
+        var txt = e.short.toUpperCase() + ' · ' + sc(e.score.value), w = txt.length * 7 + 8, left = Math.max(2, Math.min(W - w - 2, x - w / 2)), row = 0;
+        while (marks.some(function (t) { return t.row === row && left < t.r + 4 && left + w > t.l - 4; })) row++;
+        marks.push({ l: left, r: left + w, row: row, top: wallH - 28 - row * 17 });
+        html += '<span class="mark" style="left:' + left.toFixed(0) + 'px;top:' + (wallH - 28 - row * 17) + 'px">' + esc(txt) + '</span>';
+      });
+      // "No builds here" goes where no post or mark is; failing that, onto the floor.
+      var lw = 150, xs = item.limits.map(function (L) { return X(L.score); }).concat(marks.map(function (m) { return m.l; }), marks.map(function (m) { return m.r; }));
+      var spot = null;
+      [0.5, 0.35, 0.65, 0.25, 0.75].some(function (f) { var cx = f * W; if (cx - lw / 2 < 4 || cx + lw / 2 > W - 4) return false; if (xs.every(function (x) { return Math.abs(x - cx) > lw / 2 + 6; }) && !taken.some(function (t) { return cx + lw / 2 > t.l && cx - lw / 2 < t.r && head + 4 + t.row * 17 + 14 > head + (wallH - head) * 0.5 - 12; })) { spot = cx; return true; } return false; });
+      var labTxt = item.inside.length ? 'Nothing comparable here' : 'No builds here';
+      if (spot != null && !item.inside.length) html += '<span class="lab" style="left:' + spot.toFixed(0) + 'px;top:' + (head + (wallH - head) * 0.55).toFixed(0) + 'px">' + labTxt + '</span>';
+      else html += '<span class="lab" style="left:50%;top:' + (wallH + floorH / 2 + 6).toFixed(0) + 'px;background:var(--floor);padding:0 6px">' + labTxt + '</span>';
+      tile.innerHTML = '';
+      tile.appendChild(svg);
+      tile.insertAdjacentHTML('beforeend', html);
+      tile.style.height = H + 'px';
+    });
+  }
+  function meatball() {
+    var div = document.createElement('div'); div.className = 'meat';
+    var e = byId('ansur2_m_p50'), f = figureOf(e, 'front'), b = f.bounds;
+    var real = state.heights === 'real';
+    var Hd = 150, head = Math.round(0.09 * Hd), D = real ? 1.8 * Hd / DUO_SKULL : Hd, kS = real ? Hd / DUO_SKULL : Hd / f.skull;
+    var figW = Math.ceil((b[2] - b[0]) * kS) + 16, W = figW + Math.ceil(D) + 40;
+    var svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + (head + Hd + 8), width: W * 1.2, 'aria-hidden': 'true' });
+    wall(svg, W, Hd, head, 8, real ? Hd / DUO_SKULL : null);
+    var g = svgEl('g', {}, svg), ox = figW / 2 - (b[0] + b[2]) / 2 * kS;
+    f.parts.forEach(function (p) { svgEl('path', { d: Figure.pathData(p.poly, kS, ox, head + Hd), 'class': 'ghost', 'vector-effect': 'non-scaling-stroke' }, g); });
+    var r = D / 2, cx = figW + 20 + r, cy = head + Hd - r;
+    svgEl('circle', { cx: cx, cy: cy, r: r, 'class': 'geo', stroke: 'var(--chalk)', 'stroke-width': 1.5, 'vector-effect': 'non-scaling-stroke', id: 'meatCircle' }, svg);
+    svgEl('line', { x1: cx - 5, x2: cx + 5, y1: cy, y2: cy, stroke: 'var(--chalk)', 'stroke-width': 1.5 }, svg);
+    svgEl('line', { x1: cx, x2: cx, y1: cy - 5, y2: cy + 5, stroke: 'var(--chalk)', 'stroke-width': 1.5 }, svg);
+    div.appendChild(svg);
+    var t = document.createElement('div'); t.className = 'txt';
+    t.innerHTML = '<p class="formula">1.8 × 1,060 kg/m³ × π/6 × (1 − 0.075) = ' + MEAT_TXT + '</p>' +
+      '<p class="sub">' + sc(MEAT_LO) + ' to ' + sc(MEAT_HI) + ' at 10 to 5% fat. It is a chosen end point, not a law of geometry: a cylinder of muscle as wide as it is tall would score about ' + sc(1.8 * 1060 * Math.PI / 4 * 0.925) +
+      ', and a cube about ' + sc(1.8 * 1060 * 0.925) + '. Beside it, for size: the median soldier\'s outline' + (real ? ', both at their real heights (the ball 1.80 m, the height the score uses).' : '.') + '</p>';
+    div.appendChild(t);
+    return div;
+  }
+
+  // ---------- the drawer ----------
+  var SITE_NAME = { chest: 'Chest', waist: 'Waist', arm_flexed: 'Flexed upper arm', forearm: 'Forearm', thigh: 'Thigh', calf: 'Calf', neck: 'Neck' };
+  function edgeSample(mark, w, h) {
+    w = w || 44; h = h || 12;
+    if (mark === 'average') return '<svg width="' + w + '" height="' + h + '" aria-hidden="true"></svg>';
+    return '<svg width="' + w + '" height="' + h + '" aria-hidden="true"><line x1="3" x2="' + (w - 3) + '" y1="' + h / 2 + '" y2="' + h / 2 + '" class="edge ' + mark + '" stroke-width="3"/></svg>';
+  }
+  function placeDrawer() {
+    var d = $('drawer'), e = state.sel && byId(state.sel);
+    if (!e) { d.hidden = true; document.body.appendChild(d); return; }
+    var cell = document.querySelector('.fig[data-id="' + e.id + '"]'), sec = cell && cell.closest('.stop');
+    if (!sec) { d.hidden = true; return; }
+    sec.appendChild(d);
+    d.hidden = false;
+    renderDrawer();
+  }
+  function openDrawer(id, fromElsewhere) {
+    var a = document.activeElement;
+    if (!state.sel || !$('drawer').contains(a)) state.opener = a && a !== document.body ? a : null;
+    state.sel = id;
+    Array.prototype.forEach.call(document.querySelectorAll('.fig[data-id]'), function (c) { c.setAttribute('aria-expanded', c.getAttribute('data-id') === id ? 'true' : 'false'); });
+    placeDrawer();
+    var d = $('drawer');
+    if (d.scrollIntoView) d.scrollIntoView({ block: fromElsewhere ? 'start' : 'nearest' });
+    var h = $('drawerH'); if (h) h.focus({ preventScroll: true });
+  }
+  function closeDrawer() {
+    var id = state.sel; state.sel = null;
+    Array.prototype.forEach.call(document.querySelectorAll('.fig[data-id]'), function (c) { c.setAttribute('aria-expanded', 'false'); });
+    placeDrawer();
+    var o = state.opener; state.opener = null;
+    var c = o && document.body.contains(o) ? o : id && document.querySelector('.fig[data-id="' + id + '"]');
+    if (c) c.focus();
+  }
+  /**
+   * How far the drawing's volume is from the weight: the outline is drawn from girths, not fitted
+   * to weight. Volume measured by the tool on the drawn sheet; body density from the working body
+   * fat with Siri's two-compartment densities (fat 0.9007, fat-free 1.100 g/cm³).
+   */
+  var drawCache = {};
+  function drawingCheck(e) {
+    if (drawCache[e.id] == null) {
+      var g = {}; BuildCalc.SITES.forEach(function (s) { g[s] = e.girths[s].value; });
+      var H = e.height.value, f = Figure.human(T, H, g, {}, { buttockFit: BuildCalc.FRUSTUM.M.buttock, armDeg: Math.max(35, armAngle(e)) }), y = f.dims.levels;
+      var img = Figure.renderSheet({ front: f.front, side: f.side }, H, { shoulder: y.acromion, chest: y.chest, waist: y.waist, crotch: y.crotch, knee: y.knee }, { figurePx: 600 });
+      var r = Measure.measureSheet(img, { heightM: H, heightRef: 'top', density: 1000, bodyFatPct: 0, seg: { refine: 0 } });
+      var fat = e.bodyFat.value / 100, rho = 1000 / (fat / 0.9007 + (1 - fat) / 1.1);
+      drawCache[e.id] = r.volume_m3 ? { v: r.volume_m3.value, rho: rho, ratio: r.volume_m3.value * rho / e.mass.value } : false;
+    }
+    var c = drawCache[e.id];
+    if (!c) return '';
+    var pct = Math.round((c.ratio - 1) * 100);
+    return 'Drawing check: this outline holds ' + fmt.sep(c.v, 3) + ' m³. At his working body fat (body density about ' + fmt.sep(Math.round(c.rho), 0) + ' kg/m³) that weighs ' +
+      (Math.abs(pct) < 2 ? 'about the same as' : Math.abs(pct) + '% ' + (pct > 0 ? 'more' : 'less') + ' than') + ' the weight counted. The drawing shows the build; the score uses the weight.';
+  }
+  function renderDrawer() {
+    var e = byId(state.sel); if (!e) return;
+    var b = e.build, f = figureOf(e, state.view), bb = f.bounds, duo = isDuo(e);
+    var Hd = window.innerWidth < 720 ? 200 : 240, head = Math.round(0.09 * Hd), floorH = 10;
+    var k = Hd / f.skull, w = Math.max(220, (bb[2] - bb[0]) * k + 24);
+    var svg = svgEl('svg', { viewBox: '0 0 ' + w + ' ' + (head + Hd + floorH), 'aria-hidden': 'true' });
+    wall(svg, w, Hd, head, floorH, null);
+    drawFigure(svgEl('g', {}, svg), f.parts, k, w / 2 - (bb[0] + bb[2]) / 2 * k, head + Hd, 'var(' + GV[e.group].v + ')', { hatch: e.comparable === 'no' });
+    var st = scoreStatus(e), rows = [];
+    function row(label, html) { rows.push('<div><dt>' + esc(label) + '</dt><dd>' + html + '</dd></div>'); }
+    var bf = e.bodyFat;
+    var ranges = ['body fat ' + pc(bf.lo) + '–' + pc(bf.hi) + '%'];
+    if (e.mass.range[0] !== e.mass.range[1]) ranges.push('weight ' + kg(e.mass.range[0]) + '–' + kg(e.mass.range[1]) + ' kg');
+    if (e.height.range && fmt.sep(e.height.range[0], 2) !== fmt.sep(e.height.range[1], 2)) ranges.push('height ' + fmt.sep(e.height.range[0], 2) + '–' + fmt.sep(e.height.range[1], 2) + ' m');
+    row('Score', '<span class="v">' + scr(e.score.lo, e.score.hi) + '</span> ' + chip(st) + ' <span>· ' + sc(e.score.value) + ' at ' + pc(bf.value) + '% fat</span>' +
+      '<span class="why">The range covers ' + esc(listWords(ranges)) + '. Score = 1.8 × fat-free mass ÷ height³ = 1.8 × ' + kg(e.mass.value * (1 - bf.value / 100)) + ' kg ÷ ' + fmt.sep(e.height.value, 2) + '³.</span>');
+    var hRel = Math.abs(e.height.value - 1.8) < 0.005 ? 'The same as the score, because he is 1.80 m tall.' : e.height.value > 1.8 ?
+      'Higher than the score, because he is ' + fmt.sep(e.height.value, 2) + ' m tall. Plain FFMI grows with height at the same shape; the score takes that out.' : 'Lower than the score, because he is shorter than 1.80 m.';
+    row('Plain FFMI', '<span class="v">' + scr(e.plain.lo, e.plain.hi) + '</span> ' + chip(st) + '<span class="why">' + hRel + '</span>');
+    row('Height counted', '<span class="v">' + fmt.sep(e.height.value, 2) + ' m</span> ' + chip(e.height.status) + (duo ? ' <span>to the top of the skull</span>' : '') +
+      '<span class="why">' + esc((e.height.basis || b.height_m.basis || '') + (b.height_m.disputed && b.height_m.value_basis ? ' Sources disagree' + (b.weight_kg.disputed && b.weight_kg.value_basis === b.height_m.value_basis ? ' on height and weight' : '') + '; counted from ' + b.height_m.value_basis + '.' : '')) + '</span>');
+    var wv = duo ? kg(e.mass.value) + ' kg: ' + kg(b.weight_kg.value) + ' kg less ' + kg(e.mass.excludedKg) + ' kg of tail' : kg(e.mass.value) + ' kg (' + fmt.sep(e.mass.value / 0.45359237, 0) + ' lb)';
+    var wWhy = [];
+    if (b.weight_kg.basis) wWhy.push(b.weight_kg.basis + '.');
+    if (b.weight_kg.disputed && b.weight_kg.value_basis && b.weight_kg.value_basis !== (b.height_m.disputed && b.height_m.value_basis)) wWhy.push('Sources disagree; counted from ' + b.weight_kg.value_basis + '.');
+    if (e.mass.excludedKg) wWhy.push('Tail: ' + e.setting.exclude_mass.map(function (x) { return x.basis; }).join('; ') + '.');
+    if (b.girth_basis_weight_kg) wWhy.push('Counted without the adamantium: ' + kg(b.girth_basis_weight_kg) + ' kg of his listed ' + kg(b.weight_kg.value) + ' kg, the weight Marvel gives without it.');
+    if (e.setting.mass_note) wWhy.push(e.setting.mass_note);
+    row('Weight counted', '<span class="v">' + wv + '</span> ' + chip(b.weight_kg.status) + '<span class="why">' + esc(wWhy.join(' ')) + '</span>');
+    var cls = bf.cls && C.fat_classes[bf.cls];
+    row('Body fat', '<span class="v">' + pc(bf.value) + '%</span> (' + pc(bf.lo) + '–' + pc(bf.hi) + '%) ' + chip(bf.status === 'estimate' ? 'estimate' : bf.status) +
+      '<span class="why">' + (cls ? 'Assumed for this group: ' + esc(cls.label) + '. ' + esc(cls.note) : esc(bf.basis) + '.') + '</span>');
+    if (e.comparableNote) {
+      var df = e.setting.density_factor, adj = Array.isArray(df) ? 'about ' + sc(e.score.value / df[1]) + ' to ' + sc(e.score.value / df[0]) : df ? 'about ' + sc(e.score.value / df) : '';
+      var note = e.comparableNote.replace('{adjusted}', adj);
+      row({ no: 'Not comparable', overstated: 'May be overstated', uncertain: 'Composition unknown' }[e.comparable] || 'What the mass is', '<span class="why">' + esc(note) + '</span>');
+    }
+    if (b.drug_status) row('Drug status', '<span class="why">' + esc(b.drug_status) + '</span>');
+    var own = [], derivedList = [], tmpl = {};
+    var gt = '<table class="gt"><tbody>' + BuildCalc.SITES.map(function (s) {
+      var g = e.girths[s], mark = duo ? 'art' : /^(measured|official|reported)$/.test(g.status) ? 'own' : 'template';
+      var from = g.kind === 'template' ? 'from ' + esc(calc.templateName(g.chain[g.chain.length - 1] || g.method)) : g.entry && g.entry.derived_from === 'picture' ? 'from the picture' : g.status === 'derived' ? 'calculated from his numbers' : 'own number';
+      if (!duo) {
+        if (mark === 'own') own.push(SITE_NAME[s].toLowerCase());
+        else if (g.kind === 'template') { var tn = calc.templateName(g.chain[g.chain.length - 1] || g.method); (tmpl[tn] = tmpl[tn] || []).push(SITE_NAME[s].toLowerCase()); }
+        else derivedList.push(SITE_NAME[s].toLowerCase());
+      }
+      return '<tr><td class="edge-key">' + edgeSample(mark) + '</td><td>' + SITE_NAME[s] + '</td><td class="num">' + (g.value == null ? 'unknown' : fmt.sep(g.value * 100, 1) + ' cm') + '</td><td>' + chip(g.status) + ' <span class="from">' + from + '</span></td></tr>';
+    }).join('') + '</tbody></table>';
+    row('Girths', gt);
+    var words;
+    if (duo) words = 'Dash-dot edge all round: traced from his turnaround. His girths were measured from the duo picture (see the Build Calculator). Hatched: the tail, drawn but not counted.';
+    else {
+      words = (own.length ? 'Solid edge: ' + listWords(own) + ', from his ' + (e.group === 'Comic characters' ? 'published' : 'own') + ' numbers. ' : '') +
+        (derivedList.length ? 'Dotted: ' + listWords(derivedList) + ', calculated from his other numbers. ' : '') +
+        Object.keys(tmpl).map(function (tn) { return 'Dotted: ' + listWords(tmpl[tn]) + ', filled in from ' + tn + ', scaled to his weight. '; }).join('') + 'No edge: average head, hands and feet.';
+    }
+    row('Outline', '<span class="why">' + esc(words) + '</span>' + (duo ? '' : '<span class="why" id="drawCheck">' + drawingCheck(e) + '</span>'));
+    var ign = [];
+    var fatKind = e.setting.fat && e.setting.fat.kind;
+    if (duo) ign.push('Body fat is the owner\'s canon range, 5 to 10%.');
+    else if (fatKind === 'army_equation') ign.push('Body fat is estimated from his waist and weight.');
+    else if (bf.status === 'estimate') ign.push('Body fat is assumed for his group.');
+    if (!duo && (derivedList.length || Object.keys(tmpl).length)) ign.push('Parts with a dotted edge are filled in.');
+    if (e.comparable === 'no') ign.push('Not comparable: his weight is not muscle.');
+    if (e.comparable === 'overstated') ign.push('May be overstated: his listed weight is counted as ordinary tissue.');
+    if (e.comparable === 'uncertain') ign.push('Composition unknown: his listed weight is counted as ordinary tissue, though no source says what it is.');
+    if (beyond(e)) ign.push(duo ? 'Beyond human data: no real man scores this high.' : 'Beyond human data: no real man scores this high, so his shape and body fat are extrapolated.');
+    if (ign.length) row('What this ignores', '<ul class="ign">' + ign.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>');
+    var cites = [];
+    function add(c) { if (c && c.url && !cites.some(function (x) { return x.url === c.url; })) cites.push(c); }
+    (b.height_m.cite || []).concat(b.weight_kg.cite || []).forEach(add);
+    factLinks((e.setting.fat && e.setting.fat.keys) || (cls && cls.keys) || []).forEach(add);
+    if (e.setting.score_height) factLinks(e.setting.score_height.keys).forEach(add);
+    factLinks(e.comparableKeys).forEach(add);
+    var fileOnly = [];
+    (b.height_m.cite || []).concat(b.weight_kg.cite || []).forEach(function (c) { if (c && !c.url && c.file && fileOnly.indexOf(c.file) < 0) fileOnly.push(c.file); });
+    row('Sources', '<ul class="cites">' + cites.slice(0, 12).map(function (c) { return '<li><a href="' + esc(c.url) + '" target="_blank" rel="noopener">' + esc(c.title) + '</a></li>'; }).join('') +
+      fileOnly.map(function (fl) { return '<li>project record: ' + esc(fl) + '</li>'; }).join('') + '</ul>');
+    var d = $('drawer');
+    d.innerHTML = '<figure class="bigfig"></figure><div><div class="dhead"><span class="eyebrow">' + esc(e.group) + '</span><h3 id="drawerH" tabindex="-1">' + esc(e.name) + '</h3>' +
+      (b.description ? '<p class="sub">' + esc(b.description) + '</p>' : '') + '</div><dl class="facts">' + rows.join('') + '</dl></div>' +
+      '<button type="button" class="close" id="drawerClose">Close</button>';
+    var fig = d.querySelector('.bigfig');
+    fig.appendChild(svg);
+    var cap = document.createElement('figcaption');
+    cap.textContent = words;
+    fig.appendChild(cap);
+    $('drawerClose').addEventListener('click', closeDrawer);
+  }
+
+  // ---------- the to-scale tapes: the glance (masthead) and the locator (pinned) ----------
+  /** A tape at the container's pixel width: build ticks over a yellow log tape, labels in HTML. */
+  function drawTape(host, o) {
+    var W = host.clientWidth; if (!W) return null;
+    var pad = 6, X = function (s) { return pad + (W - 2 * pad) * logPos(clampS(s, AX), AX); };
+    var tickH = o.tickH, tapeY = tickH + 2, tapeH = o.tapeH, H = tapeY + tapeH;
+    var s = '';
+    GAPS.forEach(function (g) { s += '<rect x="' + X(g.from).toFixed(1) + '" y="0" width="' + (X(g.to) - X(g.from)).toFixed(1) + '" height="' + tickH + '" fill="url(#hatchVoid)"/>'; });
+    LIST.forEach(function (e) { s += '<rect x="' + (X(e.score.value) - o.tw / 2).toFixed(1) + '" y="' + (tickH - o.th) + '" width="' + o.tw + '" height="' + o.th + '" fill="var(' + GV[e.group].v + ')" stroke="var(--ink-3)" stroke-width="1" paint-order="stroke"/>'; });
+    s += '<rect x="0" y="' + tapeY + '" width="' + W + '" height="' + tapeH + '" fill="var(--tape)"/>';
+    var labs = o.labels, html = '';
+    for (var dec = 10; dec <= 1000; dec *= 10) for (var m = 1; m < 10; m++) {
+      var v = dec * m; if (v < AX.lo || v > AX.hi) continue;
+      var big = m === 1 || labs.indexOf(v) >= 0;
+      s += '<line x1="' + X(v).toFixed(1) + '" x2="' + X(v).toFixed(1) + '" y1="' + tapeY + '" y2="' + (tapeY + (big ? o.major : o.minor)) + '" stroke="var(--tape-ink)" stroke-width="1"/>';
+    }
+    var last = -1e9;
+    labs.forEach(function (v) {
+      var x = X(v), t = fmt.sep(v, 0), half = t.length * 3.5 + 2; if (x - last < 26) return; last = x;
+      // Labels at the ends are anchored inside the tape, so none runs past it.
+      var tr = x + half > W ? 'translateX(-100%)' : x - half < 0 ? 'translateX(0)' : 'translateX(-50%)';
+      html += '<span class="tl" style="left:' + x.toFixed(1) + 'px;top:' + (tapeY + tapeH - 13) + 'px;transform:' + tr + '">' + t + '</span>';
+    });
+    var mx = X(MEAT);
+    s += '<circle cx="' + mx.toFixed(1) + '" cy="' + (tickH / 2).toFixed(1) + '" r="' + Math.min(7, tickH / 2 - 1) + '" fill="none" stroke="var(--chalk)" stroke-width="1.5" class="m924"/>';
+    s += o.extra ? o.extra(X, tapeY, H) : '';
+    host.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" height="' + H + '" aria-hidden="true">' + s + '</svg>' + html;
+    host._X = X; host._W = W;
+    return X;
+  }
+  function drawGlance() {
+    var host = $('glance'), phone = host.clientWidth < 560;
+    drawTape(host, { tickH: phone ? 20 : 22, th: 18, tw: 2, tapeH: phone ? 24 : 26, major: 9, minor: 5, labels: phone ? [15, 20, 30, 50, 100, 200, 500, 1000] : [12, 15, 20, 30, 40, 50, 70, 100, 150, 200, 300, 500, 1000] });
+    var X = host._X; if (!X) return;
+    var bands = STOPS.filter(function (s) { return s.kind === 'band'; });
+    var lowest = HUMANS.reduce(function (m, e) { return Math.min(m, e.score.lo); }, 1e9);
+    var giants = bands.filter(function (s) { return s.id === 'giants'; })[0], duo = bands.filter(function (s) { return s.id === 'rex-and-ollie'; })[0];
+    var cl = [{ id: bands[0].id, name: phone ? 'Real men' : 'Every real man', range: sc(lowest) + '–' + sc(HUMAN_TOP), a: lowest, b: HUMAN_TOP }];
+    if (giants) cl.push({ id: giants.id, name: phone ? 'Giants' : 'Comic giants', range: sc(giants.lo) + '–' + sc(giants.hi), a: giants.lo, b: giants.hi });
+    if (duo) cl.push({ id: duo.id, name: phone ? 'Rex, Ollie' : 'Rex and Ollie', range: sc(duo.lo) + '–' + sc(duo.hi), a: duo.lo, b: duo.hi });
+    cl.push({ id: 'meatball', name: phone ? MEAT_TXT : 'End of scale', range: phone ? 'end' : MEAT_TXT, a: MEAT, b: MEAT, right: true });
+    var host2 = $('clusters'), W = host.clientWidth;
+    host2.innerHTML = cl.map(function (c) { return '<button type="button" data-jump="' + c.id + '">' + esc(c.name) + '<span>' + esc(c.range) + '</span></button>'; }).join('');
+    var btns = host2.querySelectorAll('button'), lastR = -1e9;
+    cl.forEach(function (c, i) {
+      var bw = btns[i].offsetWidth, cx = (X(c.a) + X(c.b)) / 2, left = c.right ? W - bw : cx - bw / 2;
+      left = Math.max(0, Math.min(W - bw, left));
+      if (left < lastR + 6) left = lastR + 6;
+      btns[i].style.left = left + 'px'; lastR = left + bw;
+    });
+    // If pushing ran off the right edge, pull everything back from the right.
+    var nextL = W + 6;
+    for (var j = cl.length - 1; j >= 0; j--) { var bw2 = btns[j].offsetWidth, l = parseFloat(btns[j].style.left); if (l + bw2 > nextL - 6) { l = nextL - 6 - bw2; btns[j].style.left = l + 'px'; } nextL = l; }
+    Array.prototype.forEach.call(btns, function (b) { b.addEventListener('click', function () { jump(b.getAttribute('data-jump')); }); });
+  }
+  function drawLocator() {
+    var host = $('locTape');
+    drawTape(host, { tickH: 9, th: 8, tw: 1.5, tapeH: 18, major: 6, minor: 3, labels: host.clientWidth < 560 ? [20, 50, 100, 200, 500] : [15, 20, 30, 50, 100, 200, 300, 500, 1000],
+      extra: function (X, tapeY, H) { return '<rect class="win" id="locWin" x="0" y="0.5" width="0" height="' + (H - 1) + '" rx="2" fill="var(--chalk-band)" stroke="var(--chalk)" stroke-width="2" style="display:none"/>'; } });
+    markStop();
+  }
+  function jump(id) { var el = $(id); if (el) el.scrollIntoView({ block: 'start' }); }
+  function stopAt(score) {
+    var best = null;
+    STOPS.forEach(function (s) { var d = score < s.lo ? Math.log(s.lo / score) : score > s.hi ? Math.log(score / s.hi) : 0; if (!best || d <= best.d) best = { s: s, d: d }; });
+    return best && best.s;
+  }
+  function currentStop() {
+    var line = window.innerHeight * 0.45, cur = null;
+    STOPS.forEach(function (s) { var el = $(s.id); if (el && el.getBoundingClientRect().top <= line) cur = s; });
+    return cur || STOPS[0];
+  }
+  function markStop() {
+    var s = currentStop(), host = $('locTape'), win = $('locWin');
+    state.stop = s;
+    if (!s) return;
+    var lo = sc(s.lo), hi = s.kind === 'meat' || (s.kind === 'gap' && s.last) ? MEAT_TXT : sc(s.hi);
+    $('locNow').textContent = 'To scale · now: ' + (s.kind === 'gap' ? 'empty ' : 'score ') + (s.kind === 'meat' ? MEAT_TXT : (s === STOPS[0] ? 'under ' + hi : lo + ' to ' + hi));
+    host.setAttribute('aria-label', 'To-scale tape. Now showing scores ' + (s === STOPS[0] ? 'under ' + hi : lo + ' to ' + hi) + '.');
+    if (win && host._X) {
+      var a = host._X(s === STOPS[0] ? AX.lo : s.lo), b = host._X(s.hi);
+      if (b - a < 10) { a = (a + b) / 2 - 5; b = a + 10; }
+      win.setAttribute('x', a.toFixed(1)); win.setAttribute('width', (b - a).toFixed(1)); win.style.display = '';
+    }
+  }
+
+  // ---------- every build, to scale (forest plot) ----------
+  function renderForest() {
+    var dom = state.zoom === 'close' ? CLOSE : AX, phone = $('fp').clientWidth < 560;
+    var P = function (v) { return 100 * logPos(clampS(v, dom), dom); };
+    var labels = state.zoom === 'close' ? [12, 15, 20, 25, 30, 35, 40, 45] : phone ? [15, 20, 30, 50, 100, 200, 500, 1000] : [12, 15, 20, 30, 40, 50, 70, 100, 150, 200, 300, 500, 1000];
+    // the sticky axis header
+    var trackW = Math.max(100, ($('fp').clientWidth || 600) - (phone ? 0 : 250 + 120 + 24));
+    var ticks = '', minor = [13, 14, 16, 17, 18, 19, 25, 35, 45, 60, 80, 90, 400, 600, 700, 800, 900];
+    labels.concat(minor).forEach(function (v) { if (v < dom.lo || v > dom.hi) return; ticks += '<i style="left:' + P(v).toFixed(2) + '%;height:' + (labels.indexOf(v) >= 0 ? 10 : 5) + 'px"></i>'; });
+    var last = -1e9;
+    labels.forEach(function (v) {
+      var x = P(v) / 100 * trackW, w = fmt.sep(v, 0).length * 7;
+      if (x - last < 4 + w) return; last = x;
+      // End labels stay inside the tape, as on the other two tapes.
+      var tf = x + w / 2 > trackW ? 'translateX(-100%)' : x - w / 2 < 0 ? 'translateX(0)' : '';
+      ticks += '<b style="left:' + P(v).toFixed(2) + '%' + (tf ? ';transform:' + tf : '') + '">' + fmt.sep(v, 0) + '</b>';
+    });
+    var kx = P(25), ex = P(HUMAN_TOP), endTxt;
+    var endPx = ex / 100 * trackW, msg = 'no real man past here →', msgW = msg.length * 6.8;
+    var fits = endPx + 4 + msgW < trackW, alt = '← real men end here', altW = alt.length * 6.8;
+    endTxt = fits ? '<span style="left:calc(' + ex.toFixed(2) + '% + 4px);color:var(--alarm)">' + msg + '</span>' : '<span style="right:calc(' + (100 - ex).toFixed(2) + '% + 4px);color:var(--alarm)">' + alt + '</span>';
+    // The edges of the end label actually drawn, so 'Kouri 25' never prints over it.
+    var endL = fits ? endPx + 4 : endPx - 4 - altW, endR = fits ? endPx + 4 + msgW : endPx - 4;
+    var kTxt = 'Kouri 25', kPx = kx / 100 * trackW;
+    var kHtml = (kPx + 30 < endL || kPx - 30 > endR) ? '<span style="left:' + kx.toFixed(2) + '%;transform:translateX(-50%);color:var(--ink-2)">' + kTxt + '</span>' : '';
+    $('fpAxis').innerHTML = '<span class="h">Build</span><div class="trk"><div class="lbls">' + kHtml + endTxt + '</div><div class="tp">' + ticks + '</div></div><span class="h v">Score range</span>';
+    // background layers
+    var bg = '';
+    GAPS.forEach(function (g) { if (g.from < dom.hi) bg += '<i style="left:' + P(g.from).toFixed(2) + '%;width:' + (P(Math.min(g.to, dom.hi)) - P(g.from)).toFixed(2) + '%;background:repeating-linear-gradient(135deg,var(--void) 0 1.5px,var(--void-bg) 1.5px 6.5px);opacity:.5"></i>'; });
+    LIM.forEach(function (L) { if (L.range[0] < dom.hi) bg += '<i style="left:' + P(L.range[0]).toFixed(2) + '%;width:' + (P(Math.min(L.range[1], dom.hi)) - P(L.range[0])).toFixed(2) + '%;background:var(--chalk-band)"></i>'; });
+    labels.forEach(function (v) { if (v >= dom.lo && v <= dom.hi) bg += '<i style="left:' + P(v).toFixed(2) + '%;border-left:1px solid var(--rule-2)"></i>'; });
+    bg += '<i style="left:' + P(25).toFixed(2) + '%;border-left:1px solid var(--ink-3)"></i>';
+    bg += '<i style="left:' + P(HUMAN_TOP).toFixed(2) + '%;border-left:1.5px solid var(--alarm)"></i>';
+    if (MEAT <= dom.hi) bg += '<i style="left:' + P(MEAT).toFixed(2) + '%;border-left:1.5px solid var(--chalk)" class="m924"></i>';
+    // rows
+    var rows = [];
+    LIST.forEach(function (e) { rows.push({ v: e.score.value, kind: 'build', e: e }); });
+    (ANCH.natural || []).concat(ANCH.enhanced || []).forEach(function (a) { rows.push({ v: a.value, kind: 'anchor', a: a }); });
+    LIM.forEach(function (L) { rows.push({ v: L.headline !== false ? L.score : L.range[0], kind: 'limit', L: L }); });
+    GAPS.forEach(function (g) { rows.push({ v: g.from + 1e-6, kind: 'gap', g: g }); });
+    rows.sort(function (x, y) { return x.v - y.v; });
+    rows.push({ v: MEAT, kind: 'meat' });
+    var rng = function (lo, hi) { return hi >= MEAT - 1e-6 ? sc(lo) + '–' + MEAT_TXT : scr(lo, hi); };
+    var off = function (lo, hi) { return lo > dom.hi ? '<span class="off">off this scale: ' + rng(lo, hi) + ' →</span>' : hi > dom.hi ? '<span class="chev">→</span>' : ''; };
+    var h = rows.map(function (r) {
+      if (r.kind === 'build') {
+        var e = r.e, col = 'var(' + GV[e.group].v + ')', st = scoreStatus(e), a = P(e.score.lo), b = P(e.score.hi), nc = e.comparable !== 'yes';
+        var mark = '';
+        if (e.score.lo <= dom.hi) {
+          mark = '<span class="bar' + (e.comparable === 'no' ? ' hollow' : '') + '" style="left:' + a.toFixed(2) + '%;width:' + Math.max(0.8, b - a).toFixed(2) + '%;background:' + col + ';border-color:' + col + '"></span>' +
+            (e.score.value <= dom.hi ? '<span class="tick" style="left:' + P(e.score.value).toFixed(2) + '%"></span>' : '') +
+            (nc && e.comparable !== 'uncertain' ? '<span class="arr' + (e.comparable === 'overstated' ? ' soft' : '') + '" style="left:' + a.toFixed(2) + '%"></span>' : '');
+        }
+        var x = e.comparable === 'no' ? ' <span class="x">' + esc((e.setting.flag || 'not muscle').toLowerCase()) + '</span>' : e.comparable === 'overstated' ? ' <span class="x">may be overstated</span>' : e.comparable === 'uncertain' ? ' <span class="x">composition unknown</span>' : '';
+        return '<div class="fp-row" data-row="' + e.id + '"><button type="button" class="nm" data-open="' + e.id + '" aria-label="' + esc(e.short + ', score ' + scr(e.score.lo, e.score.hi) + ', ' + st + (nc ? ', ' + ({ no: 'not comparable', overstated: 'may be overstated', uncertain: 'composition unknown' }[e.comparable]) : '') + (beyond(e) ? ', beyond human data' : '')) + '"><span class="sw" style="background:' + col + '"></span>' + esc(e.short) + x + '</button>' +
+          '<span class="tk">' + mark + off(e.score.lo, e.score.hi) + '</span><span class="vl">' + scr(e.score.lo, e.score.hi).replace(/^about /, '') + (st === 'derived' ? chip('derived') : '') + '</span></div>';
+      }
+      if (r.kind === 'anchor') {
+        var an = r.a, rg = an.range;
+        var m2 = rg ? '<span class="pill" style="left:' + P(rg[0]).toFixed(2) + '%;width:' + Math.max(0.8, P(rg[1]) - P(rg[0])).toFixed(2) + '%"></span>' : '<span class="ring" style="left:' + P(an.value).toFixed(2) + '%"></span>';
+        if ((rg ? rg[0] : an.value) > dom.hi) m2 = '';
+        return '<div class="fp-row r-anchor"><span class="nm"><span class="sw" style="background:transparent;border-radius:50%"></span>' + esc(an.label) + '</span><span class="tk">' + m2 + off(rg ? rg[0] : an.value, rg ? rg[1] : an.value) + '</span><span class="vl">' + (rg ? scr(rg[0], rg[1]).replace(/^about /, '') : sc(an.value)) + chip(an.status) + '</span></div>';
+      }
+      if (r.kind === 'limit') {
+        var L = r.L, hd = L.headline !== false, m3 = L.range[0] <= dom.hi ? '<span class="pill lim" style="left:' + P(L.range[0]).toFixed(2) + '%;width:' + Math.max(0.8, P(L.range[1]) - P(L.range[0])).toFixed(2) + '%"></span>' + (hd && L.score <= dom.hi ? '<span class="tick lim" style="left:' + P(L.score).toFixed(2) + '%"></span>' : '') : '';
+        return '<div class="fp-row r-limit"><span class="nm">Limit: ' + esc(L.label.charAt(0).toLowerCase() + L.label.slice(1)) + '</span><span class="tk">' + m3 + off(L.range[0], L.range[1]) + '</span><span class="vl">' + (hd ? sc(L.score) + ' (' + scr(L.range[0], L.range[1]).replace(/^about /, '') + ')' : scr(L.range[0], L.range[1])) + chip('estimate') + '</span></div>';
+      }
+      if (r.kind === 'gap') {
+        var g = r.g, inside = LIST.some(function (e) { return e.comparable !== 'yes' && e.score.value > g.from && e.score.value < g.to; });
+        var top = g.above ? sc(g.to) : MEAT_TXT;
+        return '<div class="fp-row r-gap"><span class="nm">' + (inside ? 'Nothing comparable' : 'Empty') + ' · ' + sc(g.from) + ' to ' + top + '</span><span class="tk">' + (g.from < dom.hi ? '<span class="hz" style="left:' + P(g.from).toFixed(2) + '%;width:' + (P(Math.min(g.to, dom.hi)) - P(g.from)).toFixed(2) + '%"></span>' : '') + off(g.from, g.to) + '</span><span class="vl"></span></div>';
+      }
+      return '<div class="fp-row r-meat"><span class="nm">The meatball: end of the scale</span><span class="tk">' + (MEAT <= dom.hi ? '<span class="ring meat" style="left:' + P(MEAT).toFixed(2) + '%"></span>' : '<span class="off">off this scale: ' + MEAT_TXT + ' →</span>') + '</span><span class="vl">' + MEAT_TXT + chip('derived') + '</span></div>';
+    }).join('');
+    $('fp').innerHTML = '<div class="fp-bg" aria-hidden="true">' + bg + '</div>' + h;
+    Array.prototype.forEach.call($('fp').querySelectorAll('[data-open]'), function (b) { b.addEventListener('click', function () { openDrawer(b.getAttribute('data-open'), true); }); });
+    $('fpLegend').innerHTML = '<span><svg width="30" height="12" aria-hidden="true"><rect x="1" y="2" width="28" height="8" rx="4" fill="var(--ink-3)"/></svg>range across plausible body fat</span>' +
+      '<span><svg width="10" height="14" aria-hidden="true"><rect x="4" y="0" width="2" height="14" fill="var(--ink)"/></svg>at the working body fat</span>' +
+      '<span><svg width="40" height="12" aria-hidden="true"><path d="M2 6l8 -4v8z" fill="var(--alarm)"/><rect x="12" y="2.5" width="26" height="7" rx="3.5" fill="none" stroke="var(--ink-3)" stroke-width="1.5"/></svg>hollow: not comparable; true score lower</span>' +
+      '<span><svg width="40" height="12" aria-hidden="true"><path d="M2 6l8 -4v8z" fill="var(--alarm)" opacity=".6"/><rect x="12" y="2" width="26" height="8" rx="4" fill="var(--ink-3)"/></svg>may be overstated</span>' +
+      '<span><svg width="24" height="12" aria-hidden="true"><rect width="24" height="12" fill="var(--chalk-band)" stroke="var(--chalk)"/></svg>a limit of the drawn body</span>' +
+      '<span><svg width="24" height="12" aria-hidden="true"><rect width="24" height="12" fill="url(#hatchVoid)" stroke="var(--void)"/></svg>nothing comparable</span>' +
+      '<span><svg width="10" height="14" aria-hidden="true"><rect x="4" y="0" width="1.5" height="14" fill="var(--alarm)"/></svg>no real man past here</span>';
+  }
+
+  // ---------- the limits ----------
+  var HOT = { arms: /upper arm|forearm/, thighs: /^body$/, face: /upper arm|forearm/ };
+  function limitFigure(parts, H, hot, Hd, W) {
+    var head = 10;
+    var svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + (head + Hd + 8), 'aria-hidden': 'true' });
+    wall(svg, W, Hd, head, 8, null);
+    var bb = Figure.bounds(parts), k = Hd / H;
+    if ((bb[2] - bb[0]) * k > W - 8) k = (W - 8) / (bb[2] - bb[0]);
+    var g = svgEl('g', {}, svg), ox = W / 2 - (bb[0] + bb[2]) / 2 * k, oy = head + Hd;
+    parts.forEach(function (p) { svgEl('path', { d: Figure.pathData(p.poly, k, ox, oy), 'class': 'geo', stroke: 'var(--ink-3)', 'stroke-width': 1, 'vector-effect': 'non-scaling-stroke' }, g); });
+    parts.forEach(function (p) {
+      if (!hot || !hot.test(p.name)) return;
+      if (p.name === 'body') {
+        // thighs: outline only the leg part of the body, below the crotch
+        var cut = 0.5 * H, legs = p.poly.filter(function (q) { return q[1] < cut; });
+        if (legs.length > 2) svgEl('path', { d: Figure.pathData(legs, k, ox, oy), 'class': 'hot', 'vector-effect': 'non-scaling-stroke' }, g);
+        return;
+      }
+      svgEl('path', { d: Figure.pathData(p.poly, k, ox, oy), 'class': 'hot', 'vector-effect': 'non-scaling-stroke' }, g);
+    });
+    return svg;
+  }
+  function renderLimits() {
+    var el = $('limitCards');
+    if (!LIMITS) { $('limitsVerdict').textContent = 'Not worked out in this build.'; return; }
+    $('limitsVerdict').textContent = LIMITS.verdict;
+    $('limitsSub').textContent = LIMITS.method;
+    var main = LIMITS.templates.filter(function (t) { return t.id === 'ansur2_m_p50'; })[0] || LIMITS.templates[0];
+    var r = calc.compute({ buildId: main.id, heightM: 1.8 }), g = {};
+    BuildCalc.SITES.forEach(function (s) { g[s] = r.girths[s].value; });
+    var start = Figure.human(T, 1.8, g, {}, { buttockFit: BuildCalc.FRUSTUM.M.buttock });
+    var Hd = 200, W = 200;
+    var cards = [{ big: sc(main.score_at_f1), range: null, label: 'The median soldier\'s own shape', d: 'Scored lean (7.5% fat), like the limits and Rex and Ollie. His real score, at his own body fat, is ' + sc(byId(main.id).score.value) + '.', parts: start.front, hot: null }];
+    LIM.forEach(function (L) {
+      var met = (L.met_by || []).length ? metSooner(L, Infinity).replace(' sooner', '').replace('meet this test: ', 'already meet this test: ') : 'None of the chart\'s own figures meets this test. ';
+      if ((L.met_by || []).length) met += 'Their outlines are not an evenly widened soldier: the width sits where their own girths put it, and reported girths can run high (each figure\'s details say how far its drawing is from its weight).';
+      cards.push(L.headline === false ? { big: scr(L.range[0], L.range[1]), range: L.models ? 'about ' + sc(L.models.contact_geometry) + ' by contact geometry; about ' + sc(L.models.steep_bmi_fit) + ' if bend falls as with body fat' : null, label: L.label, d: L.definition, met: met, parts: L.figure.parts, hot: HOT[L.id] } :
+        { big: sc(L.score), range: scr(L.range[0], L.range[1]) + ' across six templates', label: L.label, d: L.definition, met: met, parts: L.figure.parts, hot: HOT[L.id] });
+    });
+    el.innerHTML = '';
+    cards.forEach(function (c) {
+      var card = document.createElement('div'); card.className = 'limit';
+      card.appendChild(limitFigure(c.parts, 1.8, c.hot, Hd, W));
+      var p = document.createElement('div'); p.className = 'plate';
+      p.innerHTML = '<span class="big">' + c.big + '</span>' + (c.range ? '<span class="w">' + c.range + '</span>' : '') + '<span class="chips">' + chip('estimate') + '</span><span class="lb">' + esc(c.label) + '</span><span class="d">' + esc(c.d) + '</span>' + (c.met ? '<span class="d met">' + c.met + '</span>' : '');
+      card.appendChild(p);
+      el.appendChild(card);
+    });
+    $('limitsNotes').innerHTML = (LIMITS.notes || []).map(function (n) { return '<li>' + esc(n) + '</li>'; }).join('') +
+      '<li>Widening every width and depth by one factor is the simplest rule, not a measured way muscle grows. It widens the waist as fast as the chest, so these figures look fat rather than muscular. A rule fitted to real bodybuilders\' girths would move the limits.</li>' +
+      '<li>The figures are geometry, not builds: grey fill, with the part that decides each limit outlined in blue.</li>';
+  }
+
+  // ---------- the score, the natural limit, body fat ----------
+  function renderScore() {
+    var army = byId('ansur2_m_p50'), cole = byId('ronnie_coleman'), rex = byId('rex');
+    var phone = window.innerWidth < 560;
+    var ex = [army, cole, rex].map(function (e) {
+      var ffm = kg(e.mass.value * (1 - e.bodyFat.value / 100)) + ' kg';
+      return '<tr><td>' + esc(e.short) + '</td>' + (phone ? '<td class="n">' + fmt.sep(e.height.value, 2) + ' m · ' + ffm + '</td>' : '<td class="n">' + fmt.sep(e.height.value, 2) + ' m</td><td class="n">' + ffm + '</td>') + '<td class="n">' + sc(e.plain.value) + '</td><td class="n">' + sc(e.score.value) + '</td></tr>';
+    }).join('');
+    var kouriRex = rex.plain.value + BuildCalc.KOURI_C * (1.8 - rex.height.value);
+    $('scoreCard').innerHTML = '<h3>The score</h3><div class="formula">score = 1.8 × fat-free mass ÷ height³</div>' +
+      '<p>Fat-free mass is everything but fat: muscle, bone, organs, water. Scale a body up at the same shape and its mass grows with height cubed, so dividing by height cubed takes size out. The result is the plain FFMI (fat-free mass ÷ height², in kg/m²) the same body would have at <b>1.80 m</b>, the height Kouri 1995 normalised to. At 1.80 m the two are equal.</p>' +
+      '<p>Plain FFMI is roughly flat with height among real men: across adults, fat-free mass grows on average about as height squared, not height cubed. So this score rates tall men a little lower than Kouri\'s height correction does (whether tall men really differ in shape, or this is partly a statistical artefact, is disputed). Within human heights the difference is small; at Rex\'s height Kouri\'s correction, fitted to drug-free athletes of about 1.6 to 1.9 m, would give about ' + sc(kouriRex) + ' instead of ' + sc(rex.score.value) + '.</p>' +
+      '<p>Height is to the <b>top of the skull</b>. Each 1% of height moves the score by about 3%.</p>' +
+      '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Build</th>' + (phone ? '<th>Height · fat-free mass</th>' : '<th>Height</th><th>Fat-free mass</th>') + '<th>Plain FFMI</th><th>Score</th></tr></thead><tbody>' + ex + '</tbody></table></div>' +
+      '<p><b>The meatball (' + MEAT_TXT + ').</b> A solid ball of muscle as tall as the figure, at 1,060 kg/m³ and 7.5% fat (' + sc(MEAT_LO) + ' to ' + sc(MEAT_HI) + ' at 10 to 5%). It ends the scale; it is not a hard maximum. A body wider than it is tall could hold more: a cylinder as wide as it is tall would score about ' + sc(1.8 * 1060 * Math.PI / 4 * 0.925) + ', a cube about ' + sc(1.8 * 1060 * 0.925) + '.</p>';
+    var nat = (ANCH.natural || []).concat(ANCH.enhanced || []).map(function (a) {
+      return '<li><span class="nv">' + (a.range ? sc(a.range[0]) + '–' + sc(a.range[1]) : sc(a.value)) + '</span><span class="nt"><b>' + esc(a.label) + '</b><span class="kind">' + esc(a.kind) + '</span><span>' + chip(a.status) + '</span><span>' + esc(a.text) + '</span></span></li>';
+    }).join('');
+    $('natCard').innerHTML = '<h3>Where the natural limit might be</h3><p>No study shows a hard limit. These are the best anchors. Most are normalised FFMI from their studies, which for men near 1.80 m is within a few percent of this page\'s score.</p><ul class="nat">' + nat + '</ul>';
+    var cls = C.fat_classes;
+    $('fatCard').innerHTML = '<h3>Body fat, the biggest unknown</h3><p>Only a few builds have a measured body fat. The rest take a range for their group, so every score is a range; the tick is the working value. No body-fat figure for a comic character was found in the Marvel and DC sources searched.</p>' +
+      '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Group</th><th>Range</th><th>Working</th></tr></thead><tbody>' +
+      Object.keys(cls).map(function (k) { var c = cls[k]; return '<tr><td>' + esc(c.label) + '</td><td class="n">' + pc(c.range_pct[0]) + '–' + pc(c.range_pct[1]) + '%</td><td class="n">' + pc(c.working_pct) + '%</td></tr>'; }).join('') +
+      '</tbody></table></div><p>Soldiers\' body fat is estimated from waist and weight with two equations fitted to soldiers\' DXA scans (the Army\'s official 2023 equation and Taylor 2024\'s): the mean of the two, with a range covering both plus their 3.4-point error. Builds with their own measured value use it, ± 2 to 3 points for the method. Different DXA machines and methods (DXA, skinfolds, underwater weighing) also differ by a point or two.</p>';
+  }
+  function renderIgnores() { $('ignores').innerHTML = (C.ignores || []).map(function (t) { return '<li>' + t + '</li>'; }).join(''); }
+  function renderSources() {
+    var used = C.facts || {}, topics = {};
+    Object.keys(used).forEach(function (k) { var f = used[k]; (topics[f.topic || 'other'] = topics[f.topic || 'other'] || []).push([k, f]); });
+    var NAMES = C.topic_names || {};
+    $('sources').innerHTML = Object.keys(topics).map(function (t) {
+      return '<details class="src"><summary>' + esc(NAMES[t] || t) + ' (' + topics[t].length + ')</summary>' + topics[t].map(function (kf) {
+        var f = kf[1];
+        return '<div class="fact"><span><b>' + esc(f.label) + '</b> ' + chip(f.status === 'disputed' ? 'reported' : f.status, f.status) + '</span>' + (f.summary ? '<span>' + esc(f.summary) + '</span>' : '') +
+          '<ul>' + (f.sources || []).filter(function (s) { return s.url && /^https?:/.test(s.url); }).map(function (s) { return '<li><a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(s.title) + '</a></li>'; }).join('') + '</ul></div>';
+      }).join('') + '</details>';
+    }).join('') + '<p class="sub" style="margin-top:10px">The builds\' own heights, weights and girths, with their sources, come from the Build Calculator\'s data; each figure\'s details list them.</p>';
+  }
+
+  // ---------- the measuring tool ----------
+  var tool = { img: null, name: 'Soldier sheet', res: null, example: true, run: 0 };
+  function exampleSheet() {
+    var e = byId('ansur2_m_p50');
+    var g = {}; BuildCalc.SITES.forEach(function (s) { g[s] = e.girths[s].value; });
+    var f = Figure.human(T, 1.8, g, {}, { buttockFit: BuildCalc.FRUSTUM.M.buttock, armDeg: 35 });
+    var y = f.dims.levels;
+    return Figure.renderSheet({ front: f.front, side: f.side }, 1.8, { shoulder: y.acromion, chest: y.chest, waist: y.waist, crotch: y.crotch, knee: y.knee }, { figurePx: 700 });
+  }
+  function drawSheet(res) {
+    var c = $('sheetCanvas'), img = tool.img;
+    c.width = img.width; c.height = img.height;
+    var g = c.getContext('2d');
+    g.putImageData(new ImageData(new Uint8ClampedArray(img.data), img.width, img.height), 0, 0);
+    var gut = '';
+    if (res && res.frontLandmarks) {
+      var F = res.frontLandmarks, lw = Math.max(1, Math.round(img.width / 700));
+      var line = function (y, col, w) { g.strokeStyle = col; g.lineWidth = w; g.beginPath(); g.moveTo(0, y + 0.5); g.lineTo(img.width, y + 0.5); g.stroke(); };
+      line(F.ground, '#15181F', 1.5 * lw);
+      var bySkull = res.scale && res.scale.heightRef === 'skull' && res.landmarks && res.landmarks.skull != null, topY = bySkull ? res.landmarks.skull : F.top;
+      line(topY, '#1F4FA6', 1.5 * lw);
+      gut += '<span style="top:' + (100 * F.ground / img.height).toFixed(2) + '%">ground</span><span style="top:' + (100 * topY / img.height).toFixed(2) + '%">' + (bySkull || tool.example ? 'skull' : 'top') + '</span>';
+      ['chest', 'waist', 'crotch', 'knee'].forEach(function (k) {
+        var yy = F.rows[k]; if (yy == null) return;
+        line(yy, 'rgba(31,79,166,.75)', lw);
+        gut += '<span style="top:' + (100 * yy / img.height).toFixed(2) + '%">' + k + '</span>';
+      });
+      var V = res.views || {};
+      $('viewCaps').innerHTML = ['front', 'side', 'back'].filter(function (v) { return V[v]; }).map(function (v) { return '<span>' + v + ' · ' + V[v].heightPx + ' px</span>'; }).join('');
+    } else $('viewCaps').innerHTML = '';
+    $('gutter').innerHTML = gut;
+  }
+  function num(id) { var raw = String($(id).value).trim(), v = Number(raw.replace(',', '.')); return raw === '' || !isFinite(v) ? NaN : v; }
+  function measure() {
+    var H = num('tH'), rho = num('tRho'), bf = num('tBf'), armK = num('tArmK');
+    var bad = false;
+    [['tH', H > 0.1 && H < 100], ['tRho', rho > 100 && rho < 30000], ['tBf', bf >= 0 && bf < 60], ['tArmK', armK > 0.3 && armK < 2]].forEach(function (p) { $(p[0]).setAttribute('aria-invalid', p[1] ? 'false' : 'true'); if (!p[1]) bad = true; });
+    if (bad) { $('toolStatus').textContent = 'Check the highlighted fields: height in metres, density in kg/m³, body fat in percent, arm depth over width between 0.3 and 2.'; return; }
+    var rows = String($('tSkull').value).split(',').map(function (s) { return Number(s.trim()); }).filter(function (v) { return isFinite(v) && v > 0; });
+    var order = $('tOrder').value.split(','), skull = null;
+    if (rows.length) { skull = {}; order.forEach(function (v, i) { skull[v] = rows[Math.min(i, rows.length - 1)]; }); }
+    $('measureBtn').disabled = true;
+    var inputs = { H: H, rho: rho, bf: bf, armK: armK, skull: skull, order: order }, run = ++tool.run;
+    measureAsync(tool.img, { heightM: H, heightRef: skull ? 'skull' : 'top', skullRows: skull, order: order, density: rho, bodyFatPct: bf, armK: armK }, function (err, r) {
+      if (run !== tool.run) return; // a newer measurement replaced this one
+      $('measureBtn').disabled = false;
+      if (err) { tool.res = null; $('toolStatus').textContent = 'The tool could not read this sheet: ' + err; return; }
+      r.inputs = inputs; tool.res = r; writeResults(r);
+    });
+  }
+  /**
+   * Measure a sheet off the main thread: a Web Worker built from the measuring tool's own inlined
+   * source, so a large sheet does not freeze the page. Falls back to the main thread if workers are
+   * not available. Shows the elapsed time while it runs.
+   */
+  var worker = null, workerJobs = {}, workerSeq = 0;
+  function measureAsync(img, opts, cb) {
+    var t0 = Date.now(), tick = setInterval(function () { $('toolStatus').textContent = 'Measuring… ' + Math.round((Date.now() - t0) / 1000) + ' s'; }, 1000);
+    $('toolStatus').textContent = 'Measuring…';
+    var done = function (err, r) { clearInterval(tick); cb(err, r); };
+    if (worker === null) {
+      try {
+        // The result holds helper functions (landmark finders) that cannot cross to the page: send data only.
+        var glue = '\nfunction plain(o) { if (typeof o === "function") return undefined; if (!o || typeof o !== "object" || ArrayBuffer.isView(o)) return o; if (Array.isArray(o)) return o.map(plain); var out = {}; for (var k in o) { var v = plain(o[k]); if (v !== undefined) out[k] = v; } return out; }' +
+          '\nself.onmessage = function (ev) { var d = ev.data, r; try { r = self.Measure.measureSheet(d.img, d.opts); delete r.mask; self.postMessage({ id: d.id, r: plain(r) }); } catch (e) { self.postMessage({ id: d.id, err: String(e && e.message || e) }); } };';
+        worker = new Worker(URL.createObjectURL(new Blob([$('measureSrc').textContent + glue], { type: 'text/javascript' })));
+        worker.onmessage = function (ev) { var j = workerJobs[ev.data.id]; delete workerJobs[ev.data.id]; if (j) j.done(ev.data.err || null, ev.data.r); };
+        // If the worker fails (a browser that blocks it), measure on the page instead.
+        worker.onerror = function (ev) { ev.preventDefault(); var jobs = workerJobs; workerJobs = {}; worker = false; Object.keys(jobs).forEach(function (k) { onPage(jobs[k]); }); };
+      } catch (e) { worker = false; }
+    }
+    var job = { img: img, opts: opts, done: done };
+    if (!worker) { onPage(job); return; }
+    var id = ++workerSeq, data = new Uint8ClampedArray(img.data);
+    workerJobs[id] = job;
+    worker.postMessage({ id: id, img: { width: img.width, height: img.height, data: data }, opts: opts }, [data.buffer]);
+  }
+  function onPage(job) { setTimeout(function () { try { var r = Measure.measureSheet(job.img, job.opts); delete r.mask; job.done(null, r); } catch (e) { job.done(e.message); } }, 30); }
+  function capFirst(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  function writeResults(r) {
+    drawSheet(r);
+    var items = (r.checks || []).map(function (c) { return '<li>' + chip(c.ok ? 'pass' : 'fail', c.ok ? 'pass' : 'fail') + '<span><b>' + esc(capFirst(c.name)) + '.</b> ' + esc(capFirst(c.detail)) + '.</span></li>'; });
+    (r.warnings || []).forEach(function (w) {
+      if (tool.example && /top of the figure, not the skull/.test(w)) return; // the example has no crest or hair: its top is the skull
+      items.push('<li>' + chip('note') + '<span>' + esc(w) + '</span></li>');
+    });
+    (r.errors || []).filter(function (e) { return !/^Rejected/.test(e); }).forEach(function (w) { items.push('<li>' + chip('fail') + '<span>' + esc(w) + '</span></li>'); });
+    $('checks').innerHTML = items.join('');
+    if (!r.volume_m3) { $('results').innerHTML = ''; $('toolStatus').textContent = 'No result: ' + (r.errors || []).join(' '); return; }
+    $('toolStatus').innerHTML = (r.ok ? '' : '<b>The sheet failed a check, so treat these numbers as rejected.</b> ') + 'Every result is measured from art: an estimate ' + chip('estimate') + '. Slices are treated as ellipses, so girths can be off by 5 to 10% and volume by a few percent.' +
+      (tool.example ? ' The example is the median soldier at 1.80 m, counted at 7.5% fat and 1,060 kg/m³ like Rex and Ollie, so it scores higher than he does at his own body fat. The limits section reads the same shape at ' + (LIMITS ? sc(LIMITS.templates[0].score_at_f1) : '27') + ' from a larger drawing; the reading moves by a few percent with the drawing\'s size.' : '');
+    var pm = function (v, lo, hi, f, u) { return '<td class="n">' + f(v) + (u || '') + '</td><td>' + f(lo) + '–' + f(hi) + (u || '') + '</td>'; };
+    var f3 = function (x) { return fmt.sep(x, 3); }, f1 = function (x) { return fmt.sep(x, 1); };
+    var h = '<thead><tr><th>Result</th><th>Value</th><th>Likely range</th></tr></thead><tbody>';
+    h += '<tr class="grp"><td colspan="3">Size</td></tr>';
+    h += '<tr><td><b>Volume</b></td>' + pm(r.volume_m3.value, r.volume_m3.low, r.volume_m3.high, f3, ' m³') + '</tr>';
+    h += '<tr><td><b>Mass</b></td>' + pm(r.mass_kg.value, r.mass_kg.low, r.mass_kg.high, kg, ' kg') + '</tr>';
+    h += '<tr><td>Frontal area</td><td class="n">' + fmt.sep(r.frontal_area_m2, 2) + ' m²</td><td></td></tr>';
+    h += '<tr class="grp"><td colspan="3">Score</td></tr>';
+    h += '<tr><td><b>Score</b></td>' + pm(r.score.value, r.score.low, r.score.high, sc) + '</tr>';
+    h += '<tr><td>Plain FFMI</td><td class="n">' + sc(r.ffmi) + '</td><td></td></tr>';
+    h += '<tr class="grp"><td colspan="3">Girths · each ±5–10%</td></tr>';
+    BuildCalc.SITES.forEach(function (s) { var g = r.girths[s]; h += '<tr><td>' + SITE_NAME[s] + '</td>' + (g && g.value_m ? pm(g.value_m * 100, g.low_m * 100, g.high_m * 100, f1, ' cm') : '<td class="n">not found</td><td></td>') + '</tr>'; });
+    h += '<tr class="grp"><td colspan="3">Lengths</td></tr>';
+    Object.keys(r.lengths || {}).forEach(function (k) { var v = r.lengths[k]; if (v == null) return; h += '<tr><td>' + esc(capFirst(k.replace(/_deg$/, '').replace(/_/g, ' '))) + '</td><td class="n">' + (/_deg$/.test(k) ? fmt.sep(v, 0) + '°' : fmt.sep(v, 2) + ' m') + '</td><td></td></tr>'; });
+    $('results').innerHTML = h + '</tbody>';
+  }
+  function resultEntry(r) {
+    var g = {}; BuildCalc.SITES.forEach(function (s) { var x = r.girths[s]; g[s] = x && x.value_m ? { value: +x.value_m.toFixed(4), status: 'derived', range: [+x.low_m.toFixed(4), +x.high_m.toFixed(4)], derived_from: 'model sheet', basis: 'measured from art, estimate: ' + (x.note || 'front width and side depth of the slice') } : { value: null, status: 'unknown' }; });
+    return {
+      id: 'new_build', name: tool.name, group: 'Measured from art', sex: 'M',
+      height_m: { value: r.inputs.H, status: 'estimate', basis: 'measured from art, estimate: ' + (r.scale.heightRef === 'skull' ? 'top of the skull' : 'top of the figure') },
+      weight_kg: { value: +r.mass_kg.value.toFixed(1), status: 'estimate', range: [+r.mass_kg.low.toFixed(1), +r.mass_kg.high.toFixed(1)], basis: 'measured from art, estimate: volume ' + r.volume_m3.value.toFixed(3) + ' m^3 x density ' + r.mass_kg.density + ' kg/m^3' },
+      body_fat_pct: { value: r.score.bodyFatPct, status: 'estimate' },
+      girths: g, notes: ['measured from art, estimate', 'score ' + r.score.value.toFixed(1) + ' (' + r.score.low.toFixed(1) + '-' + r.score.high.toFixed(1) + ') at ' + r.score.bodyFatPct + '% fat', 'frontal area ' + r.frontal_area_m2.toFixed(3) + ' m^2'].concat(r.checks.map(function (c) { return (c.ok ? 'pass: ' : 'FAIL: ') + c.name; })),
+      lengths_m: r.lengths
+    };
+  }
+  function copyText(text, statusId, outId, okMsg) {
+    var out = $(outId);
+    out.value = text;
+    var done = function (ok) {
+      $(statusId).textContent = ok ? okMsg : 'Copy is blocked here. The text is selected below: press Ctrl+C, or long-press and choose Copy.';
+      out.hidden = ok; if (!ok) { out.focus(); out.select(); }
+    };
+    try { navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); }); } catch (e) { done(false); }
+  }
+  function copyResults() {
+    if (!tool.res || !tool.res.volume_m3) { $('toolStatus').textContent = 'Measure a sheet first.'; return; }
+    if (tool.res.stale) { $('toolStatus').textContent = 'The fields changed since this measurement. Press Measure first, so the copy matches them.'; return; }
+    var text = JSON.stringify(resultEntry(tool.res), null, 1);
+    copyText(text, 'toolStatus', 'copyOut', 'Copied: ' + text.split('\n').length + ' lines, ready to paste as a build entry.');
+  }
+  function loadFile(file) {
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      var im = new Image();
+      im.onload = function () {
+        var c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight;
+        var g = c.getContext('2d', { willReadFrequently: true }); g.drawImage(im, 0, 0);
+        var d = g.getImageData(0, 0, c.width, c.height), px = d.data, clear = 0;
+        for (var i = 3; i < px.length; i += 4) if (px[i] < 250) clear++;
+        // A transparent background reads as black on a canvas: take the figure from the alpha channel
+        // instead (black figure on white), whatever colour it is drawn in.
+        if (clear > 0.05 * px.length / 4) for (i = 0; i < px.length; i += 4) { var v = px[i + 3] >= 128 ? 0 : 255; px[i] = px[i + 1] = px[i + 2] = v; px[i + 3] = 255; }
+        tool.img = { width: c.width, height: c.height, data: px }; tool.name = file.name; tool.example = false; tool.res = null; tool.alpha = clear > 0.05 * px.length / 4;
+        $('sheetName').textContent = file.name + ' (' + c.width + ' × ' + c.height + ' px)';
+        $('tH').value = ''; $('tH').focus();
+        drawSheet(null); $('results').innerHTML = ''; $('checks').innerHTML = '';
+        $('toolStatus').textContent = 'Loaded' + (tool.alpha ? ' (transparent background: the figure is read from its transparency)' : '') + '. Type the height to the top of the skull, the skull rows if you have them (Sheet layout), and press Measure.';
+      };
+      im.onerror = function () { $('toolStatus').textContent = 'That file is not an image this browser can read. Use a PNG or JPEG.'; };
+      im.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+  var target = null;
+  function drawTarget() {
+    var tv = num('tTarget');
+    if (!(tv >= 15 && tv <= 900)) { $('tTarget').setAttribute('aria-invalid', 'true'); $('targetStatus').textContent = 'Enter a target score from 15 to 900.'; return; }
+    $('tTarget').setAttribute('aria-invalid', 'false');
+    var id = $('tShape').value, e = byId(id);
+    var r0 = calc.compute({ buildId: id, heightM: 1.8 }), gs = {};
+    BuildCalc.SITES.forEach(function (s) { gs[s] = r0.girths[s].value; });
+    var H = 1.8, fit = BuildCalc.FRUSTUM.M.buttock, base = Figure.human(T, H, gs, {}, { buttockFit: fit, armDeg: 35 });
+    var y = base.dims.levels, lv = { shoulder: y.acromion, chest: y.chest, waist: y.waist, crotch: y.crotch, knee: y.knee };
+    var make = function (f, deg) { return Figure.human(T, H, gs, {}, { buttockFit: fit, armDeg: deg, widthScale: f, legAxis: base.dims.legAxis }); };
+    // Arms at 35 degrees (the middle of the sheet A-pose), or where the body lets them rest if wider.
+    // Measured from the known skull row, as a widened trapezius can rise above the head.
+    var sheetAt = function (f, px) {
+      var fig = make(f, Math.max(35, Figure.armRestAngle(function (d) { return make(f, d); }) + 2));
+      var img = Figure.renderSheet({ front: fig.front, side: fig.side }, H, lv, { figurePx: px });
+      return { img: img, r: Measure.measureSheet(img, { heightM: H, heightRef: 'skull', skullRows: Figure.sheetSkullRows(img, H), density: 1060, bodyFatPct: 7.5, order: ['front', 'side', 'back'], seg: { refine: 0 } }) };
+    };
+    var passing = function (r) { return r.ok && r.score ? r.score.value : NaN; };
+    var none = function (msg) { target = null; $('tgtFront').removeAttribute('src'); $('tgtSide').removeAttribute('src'); $('capFront').textContent = 'Front'; $('capSide').textContent = 'Side'; $('targetStatus').textContent = msg; };
+    $('targetStatus').textContent = 'Drawing…';
+    setTimeout(function () {
+      var sol = Figure.solveTarget(function (f) { return passing(sheetAt(f, 300).r); }, tv);
+      if (sol.f == null) {
+        none(sol.reason === 'fails' ? 'No outline on this shape reaches ' + sc(tv) + ' and passes the tool\'s own checks: beyond widths and depths × ' + fmt.sep(sol.bestF, 2) + ' (score ' + sc(sol.bestScore) + ') the drawing fails them. Try another shape.'
+          : 'Every width and depth × ' + fmt.sep(sol.bestF, 2) + ' ' + (sol.bestScore > tv ? 'goes no lower than ' : 'reaches only ') + sc(sol.bestScore) + ' on this shape. Try another shape.');
+        return;
+      }
+      // Converge again at full size (the reading moves a little with resolution).
+      var f = sol.f, out = sheetAt(f, 1000);
+      for (var i = 0; i < 2 && out.r.ok && Math.abs(out.r.score.value / tv - 1) > 0.005; i++) { f *= Math.sqrt(tv / out.r.score.value); out = sheetAt(f, 1000); }
+      if (!out.r.ok) { none('The full-size outline fails the tool\'s own checks (' + out.r.checks.filter(function (c) { return !c.ok; }).map(function (c) { return c.name; }).join('; ') + '), so it is not offered. Try another shape.'); return; }
+      var V = out.r.views, img = out.img, pad = Math.round(0.03 * img.width);
+      var crop = function (v) {
+        var x0 = Math.max(0, v.x0 - pad), x1 = Math.min(img.width, v.x1 + pad), c = document.createElement('canvas');
+        c.width = x1 - x0; c.height = img.height;
+        c.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(img.data), img.width, img.height), -x0, 0);
+        return c.toDataURL('image/png');
+      };
+      $('tgtFront').src = crop(V.front); $('tgtSide').src = crop(V.side);
+      var s = out.r.score.value;
+      $('capFront').textContent = 'Front · score ' + sc(s); $('capSide').textContent = 'Side · score ' + sc(s);
+      target = { target_score: tv, base_shape: e.short, base_build_id: id, height_m: H, width_factor: +f.toFixed(4), measured_score: +s.toFixed(2), density_kg_m3: 1060, body_fat_pct: 7.5, checks_passed: true, girths_m: {} };
+      BuildCalc.SITES.forEach(function (k) { var x = out.r.girths[k]; target.girths_m[k] = x && x.value_m ? +x.value_m.toFixed(4) : null; });
+      $('targetStatus').textContent = e.short + ' at 1.80 m with every width and depth × ' + fmt.sep(f, 2) + ' (head, hands, feet and joints unchanged): it measures ' + sc(s) + ' (target ' + sc(tv) + ') at 7.5% fat and 1,060 kg/m³, and passes the tool\'s checks.';
+    }, 30);
+  }
+  function initTool() {
+    tool.img = exampleSheet();
+    $('sheetName').textContent = tool.img.width + ' × ' + tool.img.height + ' px';
+    drawSheet(null);
+    $('measureBtn').addEventListener('click', measure);
+    $('copyBtn').addEventListener('click', copyResults);
+    $('tChoose').addEventListener('click', function () { $('file').click(); });
+    $('tSoldier').addEventListener('click', function () { tool.img = exampleSheet(); tool.name = 'Soldier sheet'; tool.example = true; $('tH').value = '1.80'; $('sheetName').textContent = tool.img.width + ' × ' + tool.img.height + ' px'; measure(); });
+    $('file').addEventListener('change', function () { loadFile(this.files[0]); });
+    var drop = $('picker');
+    ['dragenter', 'dragover'].forEach(function (t) { drop.addEventListener(t, function (ev) { ev.preventDefault(); drop.classList.add('over'); }); });
+    ['dragleave', 'drop'].forEach(function (t) { drop.addEventListener(t, function (ev) { ev.preventDefault(); drop.classList.remove('over'); }); });
+    drop.addEventListener('drop', function (ev) { if (ev.dataTransfer && ev.dataTransfer.files[0]) loadFile(ev.dataTransfer.files[0]); });
+    $('tShape').innerHTML = (LIMITS ? LIMITS.templates.map(function (t) { return t.id; }) : ['ansur2_m_p50']).map(function (id) { var e = byId(id); return '<option value="' + id + '">' + esc(e.short) + '</option>'; }).join('');
+    $('targetBtn').addEventListener('click', drawTarget);
+    $('targetCopy').addEventListener('click', function () {
+      if (!target) { $('targetStatus').textContent = 'Draw a target outline first.'; return; }
+      var text = JSON.stringify(target, null, 1);
+      copyText(text, 'targetStatus', 'targetOut', 'Copied the target numbers: ' + text.split('\n').length + ' lines.');
+    });
+    ['tH', 'tRho', 'tBf', 'tArmK', 'tSkull', 'tOrder'].forEach(function (id) {
+      $(id).addEventListener('input', function () { if (tool.res && !tool.res.stale) { tool.res.stale = true; $('toolStatus').textContent = 'The fields changed since this measurement: press Measure to update the results.'; } });
+      $(id).addEventListener('change', function () { if (tool.res && !tool.res.stale) { tool.res.stale = true; $('toolStatus').textContent = 'The fields changed since this measurement: press Measure to update the results.'; } });
+    });
+    // The example measurement, the target outline and the duo.jpg test run when the tool comes
+    // near the screen, so they do not hold up the lineup.
+    var started = false, start = function () { if (started) return; started = true; measure(); setTimeout(drawTarget, 400); validate(); };
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (es) { if (es.some(function (x) { return x.isIntersecting; })) { io.disconnect(); start(); } }, { rootMargin: '900px 0px' });
+      io.observe($('tool'));
+    } else setTimeout(start, 1500);
+  }
+  /** The tool test on duo.jpg, run live. */
+  function validate() {
+    var im = new Image();
+    im.onload = function () {
+      var c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight;
+      var g = c.getContext('2d', { willReadFrequently: true }); g.drawImage(im, 0, 0);
+      var d = g.getImageData(0, 0, c.width, c.height);
+      var seg = Measure.segment({ width: c.width, height: c.height, data: d.data });
+      var r = Measure.frontOnly(seg.mask, c.width, c.height, D.validation);
+      var sp = D.validation.expected.spread_m3, ok = r.total_m3 >= sp[0] && r.total_m3 <= sp[1];
+      $('validation').innerHTML = chip(ok ? 'pass' : 'fail', ok ? 'pass' : 'fail') + ' Tool test: run now on duo.jpg (Rex, front view only, the old depth ratios), it measures <b>' + fmt.sep(r.total_m3, 2) + ' m³</b>. The three earlier methods gave ' + fmt.sep(sp[0], 2) + ' to ' + fmt.sep(sp[1], 2) + ' m³ (reconciled ' + fmt.sep(D.validation.expected.total_m3, 2) + ').';
+    };
+    im.src = D.duoImage;
+  }
+
+  // ---------- masthead, key, controls ----------
+  function writeMast() {
+    var army = byId('ansur2_m_p50'), ramy = byId('big_ramy'), rex = byId('rex'), ollie = byId('ollie');
+    var a = function (id, txt) { return '<a href="#' + id + '"><b>' + txt + '</b></a>'; };
+    $('lede').innerHTML = 'Drawn at one height, the median US Army man scores about ' + a('under25', sc(army.score.value)) + '. The biggest bodybuilders on stage reach about ' + a('top', sc(ramy.score.value)) +
+      ', and the top comic characters about ' + a('giants', sc(COMIC_TOP.score.value)) + '. Rex and Ollie score about ' + a('rex-and-ollie', sc(rex.score.value)) + ' and ' + a('rex-and-ollie', sc(ollie.score.value)) + '. ' + chip('estimate') +
+      ' The scale ends at ' + a('meatball', MEAT_TXT) + ', the score of a solid ball of muscle as tall as the figure. ' + chip('derived');
+    $('spec').textContent = 'score = 1.8 × fat-free mass ÷ height³: the FFMI a body would have at 1.80 m, same shape · ' + LIST.length + ' men · every number says how sure it is';
+    var sample = function (mark) { return '<svg width="56" height="18" aria-hidden="true"><rect x="0" y="5" width="56" height="13" class="geo"/><line x1="0" x2="56" y1="5" y2="5" class="edge ' + mark + '" stroke-width="3.8"/></svg>'; };
+    $('edgeKey').innerHTML = '<span>' + sample('own') + 'Solid edge: the build\'s own number</span><span>' + sample('template') + 'Dotted: filled in from a template build</span><span>' + sample('art') + 'Dash-dot: traced from art</span>';
+    var mini = function (mark) { return '<svg width="28" height="10" aria-hidden="true"><line x1="2" x2="26" y1="5" y2="5" class="edge ' + mark + '" stroke-width="3"/></svg>'; };
+    $('edgeStrip').innerHTML = '<b>EDGES</b><span>' + mini('own') + 'its own number</span><span>' + mini('template') + 'filled in</span><span>' + mini('art') + 'traced from art</span><a href="#keyH">Full key</a>';
+  }
+  function renderKey() {
+    var sample = function (mark, fill) { return '<svg width="56" height="18" aria-hidden="true"><rect x="0" y="5" width="56" height="13" fill="' + (fill || 'var(--g-geom)') + '"/>' + (mark ? '<line x1="0" x2="56" y1="5" y2="5" class="edge ' + mark + '" stroke-width="3.8"/>' : '') + '</svg>'; };
+    var line = function (cls) { return '<svg width="56" height="18" aria-hidden="true"><rect width="56" height="18" class="wallr"/><line x1="0" x2="56" y1="9" y2="9" class="' + cls + '"/></svg>'; };
+    $('key').innerHTML = '<div><h3>Edges</h3><ul>' +
+      '<li>' + sample('own') + '<span><b>Solid: this build\'s own number.</b> A measured, official or reported girth sets that part\'s width.</span></li>' +
+      '<li>' + sample('template') + '<span><b>Dotted: filled in.</b> There is no girth for this part, or it was calculated from other numbers, so it comes from a template build scaled to this build\'s weight. Same dots as the DERIVED chip.</span></li>' +
+      '<li>' + sample('art') + '<span><b>Dash-dot: traced from art.</b> Rex and Ollie, from their turnarounds.</span></li>' +
+      '<li>' + sample(null) + '<span><b>No edge: average head, hands and feet.</b></span></li>' +
+      '<li><svg width="56" height="18" aria-hidden="true"><rect x="23" y="1" width="10" height="17" fill="var(--g-geom)"/><path d="M23 3 L10 16 M33 3 L46 16" stroke="var(--g-geom)" stroke-width="3"/></svg><span><b>Arms: 20° out, or just past where the figure\'s own outline lets them hang.</b> The wider the body, the further out they stand; the comic giants\' arms are nearly level. See “Where the body stops working”.</span></li>' +
+      '<li>' + sample(null, 'url(#hatchTail)') + '<span><b>Hatched in the figure\'s colour: drawn, not counted</b> (tails).</span></li>' +
+      '<li>' + sample(null, 'url(#hatchVoid)') + '<span><b>Grey hatch: not comparable.</b> The weight is steel, not muscle.</span></li>' +
+      '<li>' + line('skull') + '<span><b>Blue line across the wall: the top of the skull.</b> Every figure is drawn to it; crests and horns rise above it. Thin lines: average shoulder, chest, waist, crotch and knee heights.</span></li>' +
+      '<li><svg width="56" height="18" aria-hidden="true"><rect x="0" y="0" width="56" height="18" class="geo" stroke="var(--chalk)" stroke-width="1.5"/></svg><span><b>Blue outline and grey fill: geometry, not a build</b> (the meatball, the limit templates).</span></li>' +
+      '</ul><h3 style="margin-top:16px">The plate</h3><ul>' +
+      '<li><span class="mono" style="font-weight:600">37–40</span><span><b>Big number: the score range</b> across plausible body fat. Under it: the score at the working body fat.</span></li>' +
+      '<li><span>' + chip('estimate') + '</span><span><b>How sure the score is.</b> ESTIMATE: body fat assumed. DERIVED: body fat measured.</span></li>' +
+      '<li><span class="mono">FFMI</span><span><b>Plain FFMI</b>, fat-free mass ÷ height² (kg/m²), for comparison with the familiar scale. Same status as the score.</span></li>' +
+      '<li><span class="flag">Red</span><span><b>Red text: a warning.</b> Not comparable, may be overstated, or beyond human data.</span></li>' +
+      '</ul></div><div><h3>Groups</h3><ul>' + GROUPS.map(function (g) { return '<li><svg width="56" height="18" aria-hidden="true"><rect width="56" height="18" fill="var(' + g.v + ')"/></svg><span>' + esc(g.label) + '</span></li>'; }).join('') +
+      '<li><svg width="56" height="18" aria-hidden="true"><rect width="56" height="18" class="geo"/></svg><span>Geometry (not a build)</span></li></ul>' +
+      '<h3 style="margin-top:16px">Status chips</h3><ul>' + ['measured', 'official', 'reported', 'derived', 'estimate', 'disputed'].map(function (s) { return '<li><span>' + chip(s === 'disputed' ? 'reported' : s, s) + '</span><span>' + esc(VOCAB[s] || '') + '</span></li>'; }).join('') + '</ul></div>';
+    if (window.innerWidth >= 720) $('keyDetails').open = true;
+  }
+  function setSeg(a, b, on) { $(a).setAttribute('aria-pressed', on ? 'true' : 'false'); $(b).setAttribute('aria-pressed', on ? 'false' : 'true'); }
+  function modeNote() {
+    var n = [];
+    if (state.heights === 'real') n.push('Real heights: one scale for every figure. Wall lines mark 1, 2 and 3 m. The meatball is drawn 1.80 m tall, the height the score uses. Edges are hard to read this small, so tap a figure for its full drawing.');
+    if (state.view === 'side') n.push('Side view: human depths come from ANSUR II depth-to-width ratios (soldiers). Rex and Ollie are traced from their side views, and their tails show in full, hatched.');
+    $('modeNote').textContent = n.join(' ');
+  }
+  function rerenderFigures() {
+    var s = state.stop, el = s && $(s.id), before = el ? el.getBoundingClientRect().top : null;
+    modeNote(); renderStops();
+    if (s && before != null) { var el2 = $(s.id); if (el2) window.scrollBy(0, el2.getBoundingClientRect().top - before); }
+    markStop(); save();
+  }
+  function wireControls() {
+    $('hSame').addEventListener('click', function () { state.heights = 'same'; setSeg('hSame', 'hReal', true); rerenderFigures(); });
+    $('hReal').addEventListener('click', function () { state.heights = 'real'; setSeg('hSame', 'hReal', false); rerenderFigures(); });
+    $('vFront').addEventListener('click', function () { state.view = 'front'; setSeg('vFront', 'vSide', true); rerenderFigures(); });
+    $('vSide').addEventListener('click', function () { state.view = 'side'; setSeg('vFront', 'vSide', false); rerenderFigures(); });
+    $('zAll').addEventListener('click', function () { state.zoom = 'all'; setSeg('zAll', 'zHum', true); renderForest(); save(); });
+    $('zHum').addEventListener('click', function () { state.zoom = 'close'; setSeg('zAll', 'zHum', false); renderForest(); save(); });
+    setSeg('hSame', 'hReal', state.heights === 'same'); setSeg('vFront', 'vSide', state.view === 'front'); setSeg('zAll', 'zHum', state.zoom === 'all');
+    var tapeJump = function (ev) {
+      var host = this, X = host._X, W = host._W; if (!X) return;
+      var x = ev.clientX - host.getBoundingClientRect().left, t = Math.max(0, Math.min(1, (x - 6) / (W - 12)));
+      var st = stopAt(Math.exp(Math.log(AX.lo) + (Math.log(AX.hi) - Math.log(AX.lo)) * t)); if (st) jump(st.id);
+    };
+    $('locTape').addEventListener('click', tapeJump);
+    $('glance').addEventListener('click', tapeJump);
+    document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && state.sel) closeDrawer(); });
+    var ticking = false;
+    window.addEventListener('scroll', function () { if (ticking) return; ticking = true; requestAnimationFrame(function () { ticking = false; markStop(); }); }, { passive: true });
+    var t = null, lastW = document.documentElement.clientWidth;
+    window.addEventListener('resize', function () {
+      clearTimeout(t);
+      t = setTimeout(function () { var w = document.documentElement.clientWidth; if (w === lastW) return; lastW = w; drawGlance(); drawLocator(); drawGapTiles(); renderForest(); }, 150);
+    });
+  }
+  function renderFoot() {
+    $('foot').innerHTML = '<p>Build Comparison, Step 1. Rex\'s and Ollie\'s scores use their current canon mass (about 2,700 kg each, measured from the duo picture) and their skull-top heights measured on the same picture. Step 2 remeasures both from their turnarounds and fills the empty stretches with measured figures.</p>' +
+      '<p>Heights, weights and girths of the builds come from the Build Calculator\'s data. Human and comic figures are drawn from their numbers on the median soldier\'s proportions (ANSUR II, 4,082 men). No photograph or comic art was traced.</p>';
+  }
+
+  // ---------- start ----------
+  defs();
+  writeMast(); renderKey(); modeNote(); wireControls();
+  renderStops(); renderForest(); renderLimits(); renderScore(); renderIgnores(); renderSources(); renderFoot();
+  drawGlance(); drawLocator();
+  initTool();
+  window.__bc = { LIST: LIST, GAPS: GAPS, SEQ: SEQ, HUMAN_TOP: HUMAN_TOP, MEAT: MEAT, AX: AX, sc: sc };
+})();
+</script>
