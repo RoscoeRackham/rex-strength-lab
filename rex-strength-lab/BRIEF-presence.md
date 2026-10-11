@@ -28,6 +28,28 @@ Named switches, off by default. Each states exactly which real limit it suspends
 - **Absorbed** (the energy that would harm the surroundings goes back into them): possibly silent strike (no blast or sonic boom from a punch or clap) and soft landing (no crater or quake when landing or catching). Show how much energy they absorbed and the mass it adds (E ÷ c²) once that is worth mentioning: about 9 kg at Krakatoa's energy, but about 4,700 tonnes at the dinosaur-killer impact's. Past that point, the Weight tab's physics (their own gravity, sinking) applies to the heavier body.
 - Not offered: "no recoil". Absorbing energy cannot remove momentum.
 
+All four candidate switches are wanted (owners' decision): safe passenger, cool flight, silent strike, soft landing.
+
+### What happens to absorbed energy (canon: four modes)
+
+1. **Endless ocean (default).** The energy goes back into the store of infinite power they draw on but don't manifest: "a drop in an endless ocean". No mass gain, no consequences. Label it as the canon mechanism.
+2. **Gradual growth.** The energy becomes mass (E ÷ c²) over a chosen duration. Duration is the safety factor: slow growth shoves the surroundings aside harmlessly, but a surface that expands fast enough pushes a pressure wave and the growth itself becomes a blast. Compute the new size and weight, and the **shortest safe duration** for each amount absorbed.
+3. **Instant growth.** All at once, and the surroundings deal with being shoved aside. Truly zero duration means infinite energy, so choose and state a physical timescale (for example, the time sound takes to cross the body). Size the blast from how much air and ground is displaced, and how fast.
+4. **Runaway.** As 3, but the consequences are absorbed as growth too, so it can feed back. If it would run away, a **half-life** dumps the absorbed energy into the endless ocean (mode 1) to bring it to a halt instead of growing forever.
+   - Rough first look, to verify: for ordinary blasts the feedback dies out at once, because shoving the surroundings aside returns roughly 10⁻¹⁵ of the energy the growth itself took.
+   - A real runaway needs a feedback term comparable to their own mass-energy. Their own gravity is the candidate, and it approaches that only near black-hole density, which the Weight tab already computes. If that holds, the half-life matters only in that regime.
+   - Show the loop's ratio and where it crosses 1.
+
+**Growth form** (for modes 2–4; canon, three options):
+- **Mix (default):** both size and density grow. Even split unless research suggests better: volume and density each take the square root of the mass ratio, so height grows with its sixth root. A slider between the two pure forms is fine, with the even split as default.
+- **Pure size:** height grows with the cube root of the mass ratio at the same density.
+- **Pure density:** same size, denser; the Weight tab's physics applies (ground failure, sinking, their own gravity).
+
+Worked examples to check against (mass ratio from 3,007 kg, at 10 ft):
+- Krakatoa's energy (8.4 × 10¹⁷ J) adds about 9 kg: unnoticeable in any form.
+- Chicxulub's (4.2 × 10²³ J) adds about 4,700 t (×1,560): mix ≈10 m and ≈42,000 kg/m³; pure size ≈35 m; pure density ≈1.7 × 10⁶ kg/m³.
+- One second of the Sun's output (3.8 × 10²⁶ J) adds about 4.3 × 10⁶ t (×1.4 × 10⁶): mix ≈32 m and ≈1.3 × 10⁶ kg/m³; pure size ≈340 m; pure density ≈1.5 × 10⁹ kg/m³ (white-dwarf matter).
+
 - **Gentle hold (tactile telekinesis):** his push is spread through the whole held object in proportion to its mass, so the object is not stressed by his grip (it accelerates like a falling body, with no internal load). It removes grip crushing in Lift, Throw and the game of catch, the hands punching through at launch, and an object sagging under its own weight. It does **not** remove the ground's load under him, his recoil, air pressure on a thrown object's front (break-up, heating), or the impact where it lands.
 - **Comic ground** already exists ("never breaks").
 - Others only if a move clearly needs one; propose each before building it.
@@ -75,10 +97,13 @@ If time runs short, 1 and 2 are the core and the rest can be a later run.
 
 ## Open questions for the owners
 
-1. Which comic switches to build: safe passenger, cool flight, silent strike, soft landing (besides gentle hold, comic ground and bolted)?
-2. What happens to energy they absorb: do they keep it (and the mass it adds), or release it later, and how?
-
-Settled: the page opens least-disruptive; both share one effort unless Ollie's is set as a what-if; named not-so-heroic presets for property damage at rising scales.
+None open. Settled:
+- the page opens least-disruptive
+- both share one effort unless Ollie's is set as a what-if
+- named not-so-heroic presets for property damage at rising scales
+- all four candidate comic switches
+- four absorption modes, with endless ocean as the default
+- three growth forms, with mix as the default
 
 ## Not in scope
 
