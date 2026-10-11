@@ -6,12 +6,12 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 | Folder or file | Who | Branch | Since |
 |---|---|---|---|
-| `build-comparison/` | Owner (cloud), Step 1 | not started | |
-| `build-calculator/data/builds.json`, `build-calculator/src/calc.js` | Owner (cloud), for Build Comparison Step 1 | not started | |
+| `build-comparison/` | Owner (cloud), Step 1 | `claude/hopeful-keller-vly1s9` | 2026-10-11 |
+| `build-calculator/data/builds.json`, `build-calculator/src/calc.js` | Owner (cloud), for Build Comparison Step 1 | `claude/hopeful-keller-vly1s9` | 2026-10-11 |
 
 ## In progress
 
-- Build Comparison Step 1: the brief is final (`build-comparison/BRIEF.md`: decisions, silhouettes, measuring tool, model-sheet spec, two steps). Next: the owner starts a fresh cloud session with the prompt in the PR that added the turnarounds.
+- Build Comparison Step 1 (cloud session, branch `claude/hopeful-keller-vly1s9`, started 2026-10-11): research with verified facts, then design, build, review rounds, publish, pull request. Also claims root `README.md` (one row for the new page), `.github/workflows/test.yml` (build and test steps for the new project) and a new `history/` entry for this session.
 
 ## Waiting on
 
