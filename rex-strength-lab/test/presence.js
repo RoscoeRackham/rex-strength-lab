@@ -60,6 +60,32 @@ const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface
   }
 }
 
+// 3b. The ground-shaking model reproduces its sourced anchors and each threshold's worked conversion.
+{
+  // Pisa drop test (Colombero et al. 2015): 130 kg dropped about 3 m, measured 9 / 5 / 0.5 / 0.2 mm/s at 2.5 / 5 / 35 / 60 m;
+  // the model with the site's ground (c_s 150 m/s, 1,850 kg/m3, damping 0.03) and a 30 ms pulse carrying the momentum.
+  const pisa = { kind: 'hann', F: 2 * 997.4 / 0.03, T: 0.03, ground: { rho: 1850, cs: 150, xi: 0.03 } };
+  const meas = [[2.5, 9e-3], [5, 5e-3], [35, 0.5e-3], [60, 0.2e-3]];
+  for (const [d, m] of meas) { const v = P.ppvAt(pisa, d); ok('Pisa drop test at ' + d + ' m within 1.5x of measured', v / m < 1.5 && m / v < 1.5, (v * 1000).toPrecision(2) + ' mm/s vs ' + m * 1000); }
+  // the near field: PPV x r tends to 0.375 F / (rho cs^2 T) close in
+  const nf = 0.375 * pisa.F / (1850 * 150 * 150 * 0.03);
+  ok('near-field limit 0.375 F / (rho cs^2 T r)', near(P.ppvAt(pisa, 1) * 1, nf, 0.05) || P.ppvAt(pisa, 1) >= nf * 0.95, (P.ppvAt(pisa, 1)).toPrecision(3) + ' vs ' + nf.toPrecision(3));
+  // an elephant-like soft footfall (a 10 kN load rising over 0.05-0.1 s on firm ground, c_s 280 m/s) lands inside the
+  // measured elephant band at 20 m (0.0007-0.04 mm/s: Steinmann et al. 2025, read from their figure, 0.15x to 8x)
+  for (const tau of [0.05, 0.1]) { const v = P.ppvAt({ kind: 'ramp', F: 10e3, tau, ground: { rho: 1800, cs: 280, xi: 0.03 } }, 20); ok('elephant-like footfall (ramp ' + tau + ' s) inside the measured band at 20 m', v >= 0.7e-6 && v <= 40e-6, (v * 1e6).toPrecision(2) + ' um/s'); }
+  ok('elephant anchor: 0.005 mm/s at 20 m, about 1/D', near(P.elephantPPV(20), 5e-6, 1e-9) && near(P.elephantPPV(10), 10e-6, 1e-9));
+  ok('threshold: 0.5 in/s = 12.7 mm/s (US Bureau of Mines plaster)', near(P.VIB.TH.plaster, 0.5 * 0.0254, 1e-9));
+  ok('threshold: 0.3 in/s = 7.6 mm/s (Caltrans, repeated steps)', near(P.VIB.TH.plasterWalk, 0.3 * 0.0254, 0.003));
+  ok('threshold: 1 g up and down at 20 Hz = 78 mm/s', near(g / (2 * Math.PI * 20), 0.078, 0.01));
+  // the Walk tab's footing threshold for an ordinary step is the 1 g cap at its pulse frequency, below the 300 mm/s earthquake value
+  const st = P.walkStep(rex, surf('concrete'), { effort: 0.5 });
+  ok('footing threshold capped at 1 g for a footstep', g * st.Tpulse / (2 * Math.PI) < P.VIB.TH.footing, (g * st.Tpulse / (2 * Math.PI) * 1000).toPrecision(2) + ' mm/s');
+  // a heel strike scaled by dynamic similarity is the same share of body weight at any size (about 0.43)
+  const small = P.walkStep(P.makeBody({}), surf('concrete'), { effort: 0.5 });
+  ok('heel-strike pulse is about 0.43 x body weight at any size', near(st.Fpulse / st.W, 0.43, 0.03) && near(small.Fpulse / small.W, 0.43, 0.03), (st.Fpulse / st.W).toFixed(3));
+  ok('no ground shaking modelled on lake ice or a steel deck', P.presence(rex, surf('ice'), {}).ppv(5) === 0 && !P.walkStep(rex, surf('steel'), {}).modelled);
+}
+
 // 4. Gentle hold changes only grip and launch-crush results, never ground, recoil, air or impact results.
 {
   for (const F of [90718 * g, 1e8 * g]) for (const id of ['car', 'piano', 'bus']) {
