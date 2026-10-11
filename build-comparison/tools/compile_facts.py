@@ -164,7 +164,7 @@ for k, f in LOCAL.items():
     facts[k] = f
 
 out = {'about': 'Research facts for the Build Comparison, with the verifier\'s result per fact. Builds and their own sources are in build-calculator/data/builds.json.', 'facts': facts, 'corrections_applied': applied}
-with open(os.path.join(ROOT, 'data', 'facts.json'), 'w', encoding='utf-8') as f:
+with open(os.path.join(ROOT, 'data', 'facts.json'), 'w', encoding='utf-8', newline='\n') as f:
     json.dump(out, f, indent=1, ensure_ascii=False)
     f.write('\n')
 print('wrote data/facts.json: %d facts, %d corrections applied' % (len(facts), len(applied)))

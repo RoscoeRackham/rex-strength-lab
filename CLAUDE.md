@@ -15,11 +15,12 @@ The owner is a professional critic. Factual accuracy and honest labelling come f
 
 ## Canon
 
-- Rex: 10 ft (3.048 m) tall by the owner's ruling. Mass by ruling too: 2,700 kg without his tail; his tail is about 307 kg (measured from `rex-strength-lab/assets/duo.jpg`), so 3,007 kg in all. At 1,060 kg/m³ that is 2.84 m³; the picture alone measured about 12% less body.
-- Rex and Ollie weigh the same in all: 3,007 kg each. Ollie's tail is about 11 kg, so about 2,996 kg of him is body.
-- Ollie: as strong, tough and big as Rex. Plush bull-man: horns, nose ring, a tufted bull's tail (already in `duo.jpg`), no visible claws. His usual outfit is a leather vest, cargo pants and laced boots; his turnaround shows him in briefs and barefoot for measuring. Measured at Rex's scale (3.06 m to his horn tips).
-- Both are male, and both are 5–10% body fat (7.5% as the working value), from their definition and occasional vascularity. Neither one's tail counts toward his muscle level, and muscle scores use height to the top of the skull (not Rex's crest or Ollie's horns).
-- Turnarounds (A-pose: front, back, side): `build-comparison/assets/rex-turnaround.png` and `ollie-turnaround.png`.
+- **Rex:** 10 ft (3.048 m) to his crest tip, by the owner's ruling. 2,700 kg without his tail, also by ruling; his tail is about 307 kg (measured from `rex-strength-lab/assets/duo.jpg`), so 3,007 kg in all.
+- **Ollie:** as strong, tough and big as Rex, and the same 3,007 kg in all (his tail is about 11 kg). Plush bull-man: horns, nose ring, a tufted bull's tail, no visible claws. Usual outfit: leather vest, cargo pants, laced boots (his turnaround shows him in briefs and barefoot, for measuring). 3.06 m to his horn tips at Rex's scale.
+- **Both:** male; 5–10% body fat (7.5% the working value), from their definition and occasional vascularity. At 1,060 kg/m³ each is 2.84 m³, about 12% more body than the front-only picture measured. Muscle scores leave the tails out and use height to the top of the skull.
+- **Turnarounds** (A-pose: front, back, side): `build-comparison/assets/rex-turnaround.png` and `ollie-turnaround.png`.
+- **Restraint:** they want to be seen as heroes, for the most part. By default each uses the least disruptive way to exist in the world: just enough force for the job, with comic-book physics used selectively and on purpose. Infinite might is a hazard to reality itself. Restrained, they are kaiju-like only locally (footsteps you can feel, water glasses rippling a few metres away). They can choose otherwise.
+- **Absorption:** the energy they put out is theirs, so they can take it back; it only looks as if it vanished. By default it returns to the store of infinite power they draw on but don't manifest ("a drop in an endless ocean"). They can instead absorb it as growth (mass = E ÷ c²) in size, density or both. Momentum is never absorbed. The modes, growth forms and worked figures are in `rex-strength-lab/BRIEF-presence.md`.
 - Do not invent other canon for either; ask.
 - Art in `rex-strength-lab/assets/` is the owner's. Use it; don't redraw the characters.
 
