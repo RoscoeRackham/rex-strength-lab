@@ -33,15 +33,15 @@ const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface
     const gl = p.goal(), ce = p.ceiling();
     if (!gl.reached) { ok(mv + ' goal unreachable reported (F ' + F + ', ' + sid + ')', gl.never || gl.onlyUnlimited); continue; }
     const r = p.run(gl.use);
-    ok(mv + ' least-disruptive reaches its goal (F ' + (F / g).toPrecision(3) + ' kg, ' + sid + ')', P.RESTRAINT.MOVES[mv].goal(r, Object.assign({ near: P.RESTRAINT.R.NEAR, m: rex.m }, o)));
+    ok(mv + ' least-disruptive reaches its goal (F ' + (F / g).toPrecision(3) + ' kg, ' + sid + ')', P.RESTRAINT.MOVES[mv].goal(r, p.opt));
     // under every hazard whenever the goal is below the ceiling
     if (gl.use <= ce.below) {
-      const bad = P.RESTRAINT.HAZARDS.filter((h) => h.test(P.RESTRAINT.MOVES[mv], r, Object.assign({ near: P.RESTRAINT.R.NEAR, groundHolds: false, m: rex.m }, o)));
+      const bad = P.RESTRAINT.HAZARDS.filter((h) => h.test(P.RESTRAINT.MOVES[mv], r, p.opt));
       ok(mv + ' least-disruptive stays under every hazard (' + sid + ')', bad.length === 0, bad.map((h) => h.id).join(','));
     }
     // the ceiling is harmless and the first hazard really starts just above it
     if (ce.by && ce.below > 0) {
-      const M = P.RESTRAINT.MOVES[mv], oo = Object.assign({ near: P.RESTRAINT.R.NEAR, groundHolds: false, m: rex.m }, o);
+      const M = P.RESTRAINT.MOVES[mv], oo = p.opt;
       const under = P.RESTRAINT.HAZARDS.filter((h) => h.test(M, p.run(ce.below), oo));
       ok(mv + ' courtesy ceiling is harmless and ' + ce.by + ' starts just above it (' + sid + ')', under.length === 0 && P.RESTRAINT.HAZARDS.find((h) => h.id === ce.by).test(M, p.run(ce.use), oo), under.map((h) => h.id).join(','));
     }

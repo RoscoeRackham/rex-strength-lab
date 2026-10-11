@@ -2947,14 +2947,15 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
 
   // ---------------------------------------------------------------- walk (presence)
   const PACE_LABEL = { stroll: 'Stroll', walk: 'Walk', brisk: 'Brisk', fast: 'Fastest walk' };
-  const VIB_LABEL = { feel: 'People feel it', shimmer: 'A glass of water ripples', rings: 'Rings in the glass (the film look)', rattle: 'Windows and ornaments rattle', plasterWalk: 'Plaster may crack', plaster: 'Plaster may crack (one stamp)', footing: 'People lose their footing' };
+  const VIB_LABEL = { feel: 'People feel it', shimmer: 'A glass of water ripples', rings: 'Rings in the glass (the film look)', rattle: 'Windows and ornaments rattle', plasterWalk: 'Plaster may crack', plaster: 'Plaster may crack (one stamp)', footing: 'The ground lifts loose things; people may stumble' };
   const WALK_TH = ['shimmer', 'feel', 'rings', 'rattle', 'plasterWalk', 'footing'];
   const stepWord = (e) => (e <= 0.02 ? 'soft-footed' : e < 0.4 ? 'light' : e <= 0.6 ? 'ordinary' : e < 0.95 ? 'heavy' : 'stamping');
   const fmtPPV = (v) => (v >= 1 ? sig(v, 2) + ' m/s' : v >= 1e-4 ? sig(v * 1000, 2) + ' mm/s' : sig(v * 1e6, 2) + ' µm/s');
   // PPV against distance on log axes, with the thresholds as horizontal lines and the listener marked.
-  function ppvChart(curves, dMark) {
-    const w = chartW(), h = w < 480 ? 240 : 280, padL = 56, padR = 14, padT = 14, padB = 36;
-    const d0 = 0.5, d1 = 1000, v0 = 1e-6, v1 = 1;
+  function ppvChart(curves, dMark, TH0) {
+    const THc = TH0 || P.VIB.TH;
+    const w = chartW(), h = w < 480 ? 240 : 280, padL = 70, padR = 14, padT = 14, padB = 36;
+    const d0 = P.VIB.RMIN, d1 = 1000, v0 = 1e-6, v1 = 1;
     const sx = (d) => padL + (Math.log10(d) - Math.log10(d0)) / (Math.log10(d1) - Math.log10(d0)) * (w - padL - padR);
     const sy = (v) => h - padB - (Math.log10(Math.min(v1, Math.max(v0, v))) - Math.log10(v0)) / (Math.log10(v1) - Math.log10(v0)) * (h - padT - padB);
     const svg = sv('svg', { viewBox: `0 0 ${w} ${h}`, role: 'img', 'aria-label': 'Ground shaking against distance, with the thresholds' });
@@ -2962,14 +2963,13 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     for (const v of [1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1]) { svg.append(sv('line', { x1: padL, x2: w - padR, y1: sy(v), y2: sy(v), class: 'axis' })); svg.append(sv('text', { x: padL - 6, y: sy(v) + 4, 'text-anchor': 'end' }, fmtPPV(v))); }
     svg.append(sv('text', { x: w - padR, y: h - 4, 'text-anchor': 'end' }, 'distance from his foot →'));
     // label each threshold line at the right; nudge labels apart where lines sit close together
-    let lastY = Infinity;
-    for (const k of WALK_TH.slice().sort((a, b) => P.VIB.TH[a] - P.VIB.TH[b])) {
-      const v = P.VIB.TH[k], yy = sy(v);
+    // labels alternate right and left so close lines stay readable
+    WALK_TH.slice().sort((a, b) => THc[a] - THc[b]).forEach((k, i) => {
+      const v = THc[k], yy = sy(v), right = i % 2 === 0;
       svg.append(sv('line', { x1: padL, x2: w - padR, y1: yy, y2: yy, stroke: k === 'plasterWalk' || k === 'footing' ? 'var(--bad)' : 'var(--ink-3)', 'stroke-dasharray': '5 4', 'stroke-width': 1.2 }));
-      const ty = Math.min(yy - 4, lastY - 13);
-      svg.append(sv('text', { x: w - padR - 2, y: ty, 'text-anchor': 'end', class: 'lbl-strong' }, VIB_LABEL[k].toLowerCase()));
-      lastY = ty;
-    }
+      const short = { shimmer: 'glass ripples', feel: 'felt', rings: 'rings in a glass', rattle: 'rattle', plasterWalk: 'plaster may crack', footing: '1 g: loose things lift' };
+      svg.append(sv('text', { x: right ? w - padR - 2 : padL + 4, y: yy - 4, 'text-anchor': right ? 'end' : 'start', class: 'lbl-strong' }, w < 560 ? short[k] : VIB_LABEL[k].toLowerCase()));
+    });
     curves.forEach((cv, i) => {
       const pts = [];
       for (let lg = Math.log10(d0); lg <= Math.log10(d1) + 1e-9; lg += 0.02) { const d = Math.pow(10, lg), v = cv.f(d); if (v >= v0 && v <= v1) pts.push([sx(d), sy(v)]); }
@@ -3025,42 +3025,67 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     }
     const D0 = state.walkD;
     const both = pres.length > 1;
+    const st = pres[0].pr.step;
+    const sf = c.surface;
+    // thresholds for these steps: losing one's footing is capped at 1 g up and down, g / (2 pi f), at the footfall's frequency
+    const TH = Object.assign({}, P.VIB.TH, { footing: Math.min(P.VIB.TH.footing, g * st.Tpulse / (2 * Math.PI)) });
+    const reachOf = (k) => Math.max(...pres.map((x) => P.ppvReach(x.pr.step.src, TH[k])));
+    const groundTiles = [
+      tile('Pace', speedOnly(st.v), sig(st.stepRate, 2) + ' steps a second'),
+      tile('Load on each step', sig(st.kLoad, 2) + '× his weight', 'plus a landing pulse of ' + sig(st.Fpulse / st.W, 2) + '× over ' + fmtTime(st.Tpulse)),
+      tile('Ground under each step', fmtSI(st.pressure, 'Pa'), (c.groundHolds ? 'comic ground' : (st.ratio > 1 ? fmtRatio(st.ratio) : sig(100 * st.ratio, 2) + '% of') + ' what ' + sf.short + ' bears') + (both ? ' (Rex)' : '')),
+      tile('Footprint', printText(st.footprint), 'estimate' + (both ? ' (Rex)' : '')),
+    ];
+    if (!st.modelled) {
+      out.push(verdict('On ' + sf.short + ' the lab doesn’t model ground shaking.'));
+      out.push(el('div', { class: 'status-row' }, printChip(pres.map((x) => x.pr.step.footprint))));
+      out.push(tiles(...groundTiles));
+      out.push(happens([capital(theSurf(sf)) + ' bends as a plate under each step rather than carrying ground waves, and the lab has no model for that. Pick soil, paving or rock under Settings to see the shaking.']));
+      return out;
+    }
     const ppvAtD = (d) => (both ? 2 : 1) * Math.max(...pres.map((x) => x.pr.ppv(d)));
     const v = ppvAtD(D0);
-    const TH = P.VIB.TH;
     const hit = WALK_TH.filter((k) => v >= TH[k]).sort((a, b) => TH[a] - TH[b]);
-    const st = pres[0].pr.step;
-    const who = both ? 'their' : walkers[0][0] + '’s';
     let vt = 'At ' + fmtDist(D0) + ', ' + (both ? 'their' : walkers[0][0] + '’s') + ' ' + stepWord(state.stepEffort) + ' steps shake the ground at ' + fmtPPV(v) + '.';
-    vt += hit.length ? ' ' + VIB_LABEL[hit[hit.length - 1]] + '.' : ' Too little to feel.';
+    vt += hit.length ? ' ' + VIB_LABEL[hit[hit.length - 1]] + '.' : v >= 0.5 * TH.shimmer ? ' Close to what a glass of water shows.' : ' Too little to notice.';
     out.push(verdict(vt));
     out.push(el('div', { class: 'status-row' }, hit.map((k) => status(k === 'plasterWalk' || k === 'footing' ? 'bad' : k === 'rattle' ? 'warn' : 'info', VIB_LABEL[k])),
       printChip(pres.map((x) => x.pr.step.footprint))));
+    // the elephant comparison: a wild African elephant measured at 20 m, falling about as 1/D from 5 to 100 m
+    const EL = P.VIB.ELEPHANT, dE = D0 >= EL.dMin && D0 <= EL.dMax ? D0 : EL.d, ratioE = ppvAtD(dE) / P.elephantPPV(dE);
+    const elText = ratioE >= 0.7 && ratioE <= 1.5 ? 'about the same' : ratioE > 1 ? sig(ratioE, 1) + '× the elephant' : sig(1 / ratioE, 1) + '× quieter';
+    const elSub = 'one measured walking past ' + fmtDist(dE) + ' away' + (ratioE >= EL.lo && ratioE <= EL.hi ? '; inside the 0.15–8× real elephants vary' : '');
     out.push(tiles(
-      tile('Ground shaking at ' + fmtDist(D0), fmtPPV(v), 'peak particle velocity' + (both ? ', both in step' : '')),
-      tile('Pace', speedOnly(st.v), sig(st.stepRate, 2) + ' steps a second'),
-      tile('Load on each step', sig(st.kLoad, 2) + '× his weight', 'peaking at ' + sig(st.kPeak, 2) + '× as the foot lands'),
-      tile('Ground under each step', fmtSI(st.pressure, 'Pa'), (c.groundHolds ? 'comic ground' : (st.ratio > 1 ? fmtRatio(st.ratio) : sig(100 * st.ratio, 2) + '% of') + ' what ' + c.surface.short + ' bears') + (both ? ' (Rex)' : '')),
-      tile('Footprint', printText(st.footprint), 'estimate' + (both ? ' (Rex)' : ''))));
-    out.push(ppvChart(pres.map((x) => ({ label: x.n + (both ? '' : ''), f: (d) => x.pr.ppv(d) })), D0));
+      tile('Ground shaking at ' + fmtDist(D0), fmtPPV(v), 'peak, up and down' + (both ? '; both in step' : '') + ' · estimate'),
+      tile('Compared with an elephant', elText, elSub),
+      ...groundTiles));
+    out.push(ppvChart(pres.map((x) => ({ label: x.n, f: (d) => x.pr.ppv(d) })), D0, TH));
     const items = [];
     for (const k of WALK_TH) {
-      const r = Math.max(...pres.map((x) => x.pr.reach[k]));
-      items.push(VIB_LABEL[k] + ' (' + fmtPPV(TH[k]) + '): ' + (r >= 0.5 ? 'out to ' + fmtDist(r) : 'not even at his foot') + '.');
+      const r = reachOf(k);
+      items.push(VIB_LABEL[k] + ' (' + fmtPPV(TH[k]) + (k === 'footing' ? ', 1 g at this step’s ' + sig(1 / st.Tpulse, 2) + ' Hz' : '') + '): ' + (r >= P.VIB.RMIN ? 'out to ' + fmtDist(r) : 'not even ' + fmtDist(P.VIB.RMIN) + ' away') + '.');
     }
-    if (both) items.push('Both walking: if their steps land at the same moment the shaking adds up, so it can reach twice either one’s. The distances above are for one of them.');
     out.push(happens(items, 8));
+    const notes = [];
+    notes.push('An elephant walking past ' + fmtDist(dE) + ' away shakes the ground at about ' + fmtPPV(P.elephantPPV(dE)) + ' (a wild African elephant measured 20 m from a seismometer, falling about as 1 ÷ distance; real ones vary from ' + EL.lo + '× to ' + EL.hi + '× that). At 3,007 kg, Rex and Ollie each weigh about as much as an adult female African elephant, but an elephant’s cushioned feet make it seismically quiet. Their harder feet and boots probably hit harder; that is our inference.');
+    if (pres.some((x) => x.pr.nonlinear(Math.max(D0, P.VIB.RMIN)))) notes.push('This close, the shaking strains the ground past its elastic range (velocity ÷ shear-wave speed over 1 in 10,000), so real ground yields and soaks up more: read the number as an upper bound.');
+    if (D0 < P.VIB.RMIN) notes.push('The model starts ' + fmtDist(P.VIB.RMIN) + ' from his foot; closer in it shows the value there.');
+    notes.push('Rattling has no standard level: about 1 mm/s is our estimate (0.3–3), and construction guidance says dishes and windows can rattle at or below the level people feel. Indoors, floors and walls can make all of these 2–4× stronger than on open ground.');
+    if (both) notes.push('Both walking: when their steps land together the shaking can reach twice either one’s. The distances above are for one of them.');
+    out.push(happens(notes, 6));
     // the canon target, as a result
     const tgt = [];
-    const ripE = P.walkEffortFor(walkers[0][1], c.surface, o, TH.shimmer, 3), feelE = P.walkEffortFor(walkers[0][1], c.surface, o, TH.feel, 3), plE = P.walkEffortFor(walkers[0][1], c.surface, o, TH.plasterWalk, 3);
-    tgt.push('Canon says that, restrained, their footsteps can be felt and ripple water glasses a few metres away. Here a glass 3 m away ripples ' + (isFinite(ripE) ? (ripE <= 0 ? 'even when he walks soft-footed' : 'once his steps are ' + stepWord(ripE) + ' (' + sig(100 * ripE, 2) + '% of the way to a stamp)') : 'only with more than a stamp: try the Stomp tab') + ', and people 3 m away feel it ' + (isFinite(feelE) ? (feelE <= 0 ? 'at any step' : 'from ' + stepWord(feelE) + ' steps') : 'only past a stamp') + '.');
-    tgt.push('Presence stops being harmless when plaster cracks 3 m away: ' + (isFinite(plE) ? 'with ' + stepWord(plE) + ' steps (' + sig(100 * plE, 2) + '% of the way to a stamp).' : 'not even when he stamps. It takes a stomp (see the Stomp tab).'));
+    const wB = walkers[0][1];
+    const ripE = P.walkEffortFor(wB, sf, o, TH.shimmer, 3), feelE = P.walkEffortFor(wB, sf, o, TH.feel, 3), plE = P.walkEffortFor(wB, sf, o, TH.plasterWalk, 3);
+    const stepAt = (e) => (e <= 0 ? 'even soft-footed steps' : stepWord(e) + ' steps (' + sig(100 * e, 2) + '% of the way from soft-footed to a stamp)');
+    tgt.push('Canon says that, restrained, their footsteps can be felt and ripple water glasses a few metres away. On ' + sf.short + ', a glass 3 m away ripples with ' + (isFinite(ripE) ? stepAt(ripE) : 'nothing short of a stomp') + ', and people 3 m away feel ' + (isFinite(feelE) ? stepAt(feelE) : 'nothing short of a stomp') + '.');
+    tgt.push('Presence stops being harmless when plaster 3 m away may crack: ' + (isFinite(plE) ? 'with ' + stepAt(plE) + '.' : 'not even when he stamps. It takes a stomp (see the Stomp tab).'));
     out.push(callout(tgt.join(' ')));
+    const gd = P.groundOf(sf);
     out.push(math([
-      'Pace: people’s gait scaled to his size at the same Froude number v²/(g h), hip height h = ' + sig(st.h, 3) + ' m (0.45 of his height, our estimate). Froude ' + st.Fr + ' → ' + speedOnly(st.v) + ', ' + sig(st.stepRate, 2) + ' steps a second (0.789 Fr^0.211 √(g/h)), each foot down ' + fmtTime(st.stance) + '.',
-      'Load per step: ' + sig(st.kLoad, 2) + '× body weight held through the stance (people: 1.2 at 1.5 m/s, rising 0.25 per m/s; Keller 1996, Nilsson & Thorstensson 1989). The landing peaks at ' + sig(st.kPeak, 2) + '× (a drill stamp: 6.5×, Carden 2015).',
-      'Impact energy per step: ' + fmtSI(st.Eimp, 'J') + ' (an ordinary step: 2.7 J measured per heel strike in people, Baines 2018, scaled by M g h; soft-footed 0.4 of that; a stamp: the leg, 16% of him, dropped from thigh height).',
-      'Ground shaking: PPV = ' + P.VIB.k * 1000 + ' mm/s × (√(E / 1 t·m) / d)^' + P.VIB.n + ', with E the foot’s impact energy (' + fmtSI(st.Eimp, 'J') + ').',
+      'Pace: people’s gait scaled to his size at the same Froude number v²/(g h), hip height h = ' + sig(st.h, 3) + ' m (0.45 of his height, our estimate). Froude ' + st.Fr + ' → ' + speedOnly(st.v) + ', ' + sig(st.stepRate, 2) + ' steps a second (0.789 Fr^0.211 √(g/h), fitted to people at Froude 0.09–0.37), each foot down ' + fmtTime(st.stance) + '.',
+      'Load: ' + sig(st.kLoad, 2) + '× body weight comes onto the foot over ' + fmtTime(st.tRamp) + ' (people: 1.2 at 1.5 m/s, rising 0.25 per m/s; Keller 1996, Nilsson & Thorstensson 1989). The landing adds a pulse of ' + sig(st.Fpulse / st.W, 2) + '× his weight lasting ' + fmtTime(st.Tpulse) + ': an ordinary heel strike stops 11% of him at 0.70 m/s in 37 ms (Baines 2018, scaled); soft-footed 0.31 of that; a drill stamp 6.5× (Carden 2015).',
+      'Ground shaking (elastic ground, Lamb’s problem): for a pulse of peak F lasting T, PPV = max(0.375 F/(ρ c² T r), 0.620 F/(ρ c^2.5 T^1.5 √r)) × damping, with ρ = ' + gd.rho + ' kg/m³, shear-wave speed c = ' + gd.cs + ' m/s and damping ' + gd.xi + ' for ' + sf.short + ' (estimates). Checked against a 130 kg drop test at Pisa (within 1.3×); good to about 3× either way.',
     ]));
     return out;
   }
