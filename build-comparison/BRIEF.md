@@ -10,8 +10,8 @@ A build comparison chart that measures "muscle level" irrespective of height. It
 
 - **Men only.** The chart compares male builds. FFMI norms differ by sex and Kouri's natural-limit sample was men, so one mixed scale would mislead. The women's builds (ANSUR II, NHANES, She-Hulk) stay in the Build Calculator but are not on this chart.
 - **Rex and Ollie are 7.5% body fat** (canon: 5–10%, from their definition and occasional vascularity). Use 7.5% with 5–10% as the range.
-- **Rex's tail does not count** toward his muscle score. Exclude its volume and mass from the score, and say so on the page. His total mass elsewhere is unchanged.
-- **The score uses height to the top of the skull**, not to Rex's crest or Ollie's horn tips. The score falls with height cubed, so this matters: every 1% of height is about 3% of score. Their canon heights (Rex 10 ft to his crest tip, Ollie 3.06 m to his horn tips) stay as they are everywhere else. In Step 1, measure each one's skull-top height on `duo.jpg` at its existing scale (3.858 mm per pixel) and record it as "measured from art, estimate"; Step 2 replaces it from the turnarounds. With heights to crest and horns, the current figures at 7.5% fat are about 141 for Rex (tail excluded) and 156 for Ollie; skull-top heights will raise both.
+- **Tails do not count** toward the muscle score: Rex's, or Ollie's (a tufted bull's tail, shown on his turnaround). Exclude each tail's volume and mass from the score, and say so on the page. Their total mass elsewhere is unchanged.
+- **The score uses height to the top of the skull**, not to Rex's crest or Ollie's horn tips. The score falls with height cubed, so this matters: every 1% of height is about 3% of score. Their canon heights (Rex 10 ft to his crest tip, Ollie 3.06 m to his horn tips) stay as they are everywhere else. In Step 1, measure each one's skull-top height on `duo.jpg` at its existing scale (3.858 mm per pixel) and record it as "measured from art, estimate"; Step 2 replaces it from the turnarounds. With heights to crest and horns, the current figures at 7.5% fat are about 141 for Rex (tail excluded) and 156 for Ollie (tail included; the picture measurement split it into core and tuft, so it can be taken out, which lowers him slightly). Skull-top heights will raise both.
 - **The scale tops out at the "meatball".** A figure can't hold more volume than a ball as tall as itself. A solid ball of muscle at 7.5% fat scores about 924 on the height-independent FFMI below (1,060 kg/m³ × π/6 × 0.925 × 1.8). Below that, find and mark where the body stops working, by geometry on the drawn silhouettes: the arms can no longer hang down by the sides, the thighs touch all the way to the knee, and the hands can't reach the face. Run the axis from about 15 to 1,000, on a log scale or a broken axis.
 
 ## What exists to build on
@@ -40,8 +40,8 @@ A build comparison chart that measures "muscle level" irrespective of height. It
 
 - **Flat filled shapes for every build**, so outlines traced from art and outlines drawn from data look alike. Builds can differ only in how their outline is marked: measured, derived from a template, or measured from art (for example solid, dashed and dotted edges). Explain the marking in a key.
 - **Real and comic builds are drawn from their numbers** on a human template with ANSUR II proportions: landmark heights as fractions of stature, widths from girths through measured breadth-to-girth and depth-to-girth ratios. Never use the duo's shapes as the base for a human build; their proportions are not human.
-- **Rex and Ollie are traced from their art.** Until new turnarounds are measured (Step 2), trace `duo.jpg`.
-- **Style key:** the duo's art (and their turnarounds, if attached to the first prompt) sets how silhouettes are drawn: contour smoothness, level of interior detail, how hands, feet and heads are simplified. Propose two or three chart styles from the art's palette, pick one, and note the choice for review. A fill colour per group (everyday, natural athletes, enhanced, strongmen, comic, the duo) is a reasonable default.
+- **Rex and Ollie are traced from their turnarounds** (front view for the chart; side view for the side-by-side option). Their numbers stay as they are until Step 2.
+- **Style key:** the duo's turnarounds (see "The turnarounds" below) set how silhouettes are drawn: contour smoothness, level of interior detail, how hands, feet and heads are simplified. Propose two or three chart styles from the art's palette, pick one, and note the choice for review. A fill colour per group (everyday, natural athletes, enhanced, strongmen, comic, the duo) is a reasonable default.
 - Show every figure at the same height so only the build differs, with an option to show real heights side by side.
 - Do not trace or embed photos of real people, or the art of Marvel and DC characters. Use their published measurements.
 
@@ -55,6 +55,20 @@ Build a tool in this project that measures a character from an A-pose model shee
 - **Validation:** run it on `duo.jpg` (front view only, with the old ANSUR depth ratios) and reproduce Rex's 2.55 m³ within the old methods' spread. Make this a test.
 - **Target outlines:** export the outline for any target score (a measured shape's proportions, widths scaled to the target) as front and side PNGs at the sheet spec. The collaborator uses these as control images in GPT Images 2.5 to make gap-filler figures that land on the target.
 - Reuse `history/scratchpad/mass/` where it helps.
+
+## The turnarounds
+
+`assets/rex-turnaround.png` (1941 × 810 px) and `assets/ollie-turnaround.png` (1860 × 845 px): 3D renders, A-pose, front, back and side views, briefs only, barefoot.
+
+- **Checked:** each figure separates cleanly from the grey background (a saturation-or-dark mask; fill the holes the scale texture leaves inside Rex). Figure heights agree across views within 1.1% (Rex: 741, 745, 737 px) and 1.7% (Ollie: 764, 758, 771 px, including horns and hair). The arms clear the torso in the front views.
+- **Step 1:** use them as the style key and to trace both outlines. Do not measure mass or girths from them.
+- **Before Step 2 they will be regenerated to the spec below**, fixing:
+  - resolution (figures about 760 px tall, against 2,000)
+  - no height bar, guide lines or marked heights, the skull top above all
+  - mild perspective (visible floor; feet seen slightly from above)
+  - Rex's tail overlapping his legs in the front and back views
+  - the near arm covering the torso in both side views
+  - a gradient background with soft floor shadows
 
 ## Art: model-sheet spec
 
