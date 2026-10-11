@@ -1,0 +1,11 @@
+global.window={}; const P=require('/home/user/dino-strength-sim/src/engine.js'); require('/home/user/dino-strength-sim/src/data.js'); const D=window.DINO_DATA;
+const S=(id)=>D.surfaces.find(s=>s.id===id);
+const mk=(kg,H,m,anchor,surf,mode)=>({F:kg*9.80665,mode:mode||'comic',body:P.makeBody({H,m}),surface:S(surf||'concrete'),groundHolds:false,anchor:anchor||'friction'});
+const obj=(id)=>D.objects.find(x=>x.id===id);
+const args=process.argv.slice(2);
+const [id,Dd,style,kgR,kgO,mO,anchO,mR]=[args[0],+args[1],args[2],+(args[3]||90718.474),+(args[4]||90718.474),+(args[5]||180),args[6]||'friction',+(args[7]||180)];
+const cR=mk(kgR,2,mR), cO=mk(kgO,2,mO,anchO);
+const o = id==='partner'? null : obj(id);
+const L=P.catchLeg(cR,cO,o,Dd,style);
+const strip=(x)=>JSON.stringify(x,(k,v)=>k==='path'?undefined:(typeof v==='number'?+v.toPrecision(6):v));
+console.log(strip(Object.assign({},L,{flight:L.flight?Object.assign({},L.flight,{path:undefined}):undefined})));

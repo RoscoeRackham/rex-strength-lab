@@ -1,0 +1,22 @@
+const P0 = require('/home/user/dino-strength-sim/src/engine.js');
+const P1 = require('./engine_patched.js');
+const { refPush } = require('./v_bio1_ref.js');
+const g = 9.80665;
+const concrete = { qult: 10e6, mu: 0.8, shear: 2e6, rho: 2400 };
+const body = P0.makeBody({ H: 0.4, m: 180 * Math.pow(0.2, 3) });
+const car = { m: 1360, area: 4, Cd: 1.0, crush: 1e6, rho: 300 };
+const kg = Math.pow(10, 5.5);
+const c = { F: kg * g, mode: 'real', body, surface: concrete, groundHolds: true, anchor: 'friction' };
+const r0 = P0.throwObject(c, car, 45), r1 = P1.throwObject(c, car, 45);
+const anc = r0.anchor;
+const arm = 2 * body.handEff, mB = car.m + arm, mA = body.m - arm, vmax = 55 * body.s, F0 = 0.3 * kg * g, d = body.strokes.throw;
+const RB = mB * g * Math.SQRT1_2;
+console.log({ mA, mB, RA: anc.R, RB, F0, vmax, d });
+console.log('original v', r0.v, 'saturated', r0.push.saturated, '| patched v', r1.v, 'saturated', r1.push.saturated);
+const ref = refPush({ F: F0, d, mA, mB, RA: anc.R, RB, vmax, N: 400000 });
+console.log('reference vB', ref.vB, 'vA', ref.vA, 'u_end', (ref.vA + ref.vB) / vmax);
+// equilibrium u from Hill when force ~ RA
+const k = 0.25, Feq = (anc.R / mA + RB / mB) / (1 / mA + 1 / mB);
+const h = Feq / F0, ueq = (1 - h) / (1 + h / k);
+console.log('F_eq', Feq.toFixed(0), 'F_eq/F0', h.toFixed(4), 'u_eq', ueq.toFixed(4), '=> patched saturated branch wrongly assumes u = 1');
+console.log('patched threshold 1e3*mRed*vmax^2/d =', (1e3 * (1 / (1 / mA + 1 / mB)) * vmax * vmax / d).toExponential(3), 'vs F0', F0.toExponential(3));

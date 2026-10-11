@@ -1,0 +1,492 @@
+Project: "Rex Super-Strength Lab", a single-page physics simulator for Rex, an indestructible, tireless plush kaiju-dinosaur (default 2 m tall, 180 kg). A strength dial sets his maximum force as a lift capacity from 10 kg to 1e34 kg, plus infinity. Moves today: lift, throw, jump, stomp, punch, clap, sprint, pull. Two muscle models: "comic" (fixed share of strength at any speed) and "real" (Hill force-velocity curve; limb speed caps). Settings: ground surface (sand, gravel, soft clay, stiff clay, asphalt, concrete, lake ice, steel deck, granite), "comic ground" (never breaks), anchoring (friction / claws dug in / bolted to the planet), height (isometric scaling) and mass.
+Read these before designing (do NOT edit anything under /home/user/dino-strength-sim; put scratch files in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/duo/):
+- /home/user/dino-strength-sim/src/engine.js: the physics engine (SI units; relativistic momentum helpers momentumToV/momentumToKE/vToMomentum; pushApart two-body push in comic or Hill mode; anchorCapacity footing model; fly() RK4 flight over a round Earth with drag and Kepler arcs; craterDiameter Collins et al.; blastRadius Kinney-Graham; seismicMagnitude; stagnationT; lift/throw/jump/stomp/punch/clap/sprint/pull).
+- /home/user/dino-strength-sim/src/app.html (the bay* functions show how results become page text), /home/user/dino-strength-sim/src/static-data.js (assumptions text), /home/user/dino-strength-sim/build-data.py (how sourced facts become the sources table).
+- Fact format used by the project: /home/user/dino-strength-sim/research/final-environment.json ("facts" entries with key, category, label, status in {verified, canon_stated, reported, estimate, claimed, disputed, not_quantified}, value_si, unit_si, low_si, high_si, display, sources [{title, url}], notes).
+NEW FEATURES being added (the owner's request): (1) "density and weight, and the effect that would have on the environment, like if Rex were the density of a neutron star"; (2) Rex's boyfriend Ollie, "equally as overpowered and indestructible", for two-person simulations: arm wrestling, regular wrestling, games of catch, unstoppable force vs immovable object. Ollie, from the owner's image, is a plush bull-man: horns, nose ring, leather vest, cargo pants, laced boots (no visible claws), about Rex's height and build. Do not invent other canon for him; default him to Rex's size, mass and strength, with his own adjustable settings.
+The owner is a professional critic: factual accuracy and honest labelling come first. Every number must be either sourced (fetch the source and confirm the number on the page; give the exact URL) or labelled an estimate with the reasoning. Prefer primary or authoritative sources (journals, textbooks, NASA/ESA, standards bodies). Never present speculation as fact; say what the model ignores. The page's tone is plain, specific and readable for a general audience (short sentences, no jargon without a gloss).
+
+Adversarially check this design for the area "Game of catch". Default to suspicion. (1) For EVERY fact: fetch the source URL and confirm the number and wording; mark ok=false with the correct value and a better source if wrong, unsupported, or mislabelled (e.g. an estimate called verified). (2) Re-derive every equation and recompute every test case independently (write scripts in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/duo/catch-check/); report physics errors, wrong regimes, missing forces or effects, double counting, unit slips, and anything that would show a reader a false or misleading claim, with concrete fixes. (3) List what is missing for an honest, complete simulation of the brief. (4) Check that the page text never overstates certainty.
+
+BRIEF:
+Design a GAME OF CATCH between Rex and Ollie at a chosen distance (e.g. 10 m to across the planet) with any object from the existing object list (and optionally the other partner as the "ball"). Reuse the engine's throw (throwObject) and flight (fly) for the pitch: the thrower aims so the object reaches the catcher (solve the launch angle for the distance if reachable, flat throw vs lob; note drag). Then the catch: the catcher's hands give over a catch stroke (source human catching hand travel/time, e.g. baseball mitt studies) so the catch force F = p/t or m v^2 / (2 d) (relativistic where needed), whether his strength can stop it within the stroke, his recoil and footing slide (reuse anchorCapacity and two-body momentum), and what the object suffers (crush strength already in the object data; heating). Find the speed and distance limits: beyond about 1% of light speed the object turns into a fireball in the air before arriving (the engine already treats relativistic throws as fireballs; quantify the distance over which it sweeps up its own mass of air), supersonic heating, objects that escape Earth or orbit before arriving, flight time over long distances (round trip for a "game"). If the catcher misses, what the impact does (existing crater/quake/blast). Include infinite strength, unequal strengths, and dense partners (the ball must climb out of the thrower's gravity and falls into the catcher's: patched conic; the density area supplies G m).
+
+DESIGN:
+{
+ "area": "Game of catch (Rex and Ollie)",
+ "summary": "Rex throws an object (any throwable object, or his partner tossed straight up) to Ollie at a chosen distance, from 5 m to the far side of the planet (20,015 km). Ollie catches it, then throws it back. Each throw is aimed on purpose. The \"Gentle lob\" uses the least launch speed that reaches him; the \"Fastball\" uses full strength along the flattest path that reaches his hands. Both use the engine's existing throw model and a lightly extended flight model (stop at the catcher's hand height or at his distance; nose heating added up along the way). The catch is the gentlest steady force that stops the object while his hands give 0.3 × his height (60 cm at 2 m), from full reach to his chest. If the stopping force is more than his footing holds, he slides. If it is more than his strength, the object shoves his hands back and slams into his chest. The main physics shows up at the extremes. Air, not strength, limits light objects: a baseball never gets much past 470 m at default strength, and no survivable speed gets it to 1 km. A 2 m, 180 kg Rex catching his own 629 m/s fastball 10 m away feels 34 kN (86% of a home-run hit's squeeze on the ball). At neutron-star density the ball must leave the thrower at 4.3 km/s just to climb out of his gravity, and it falls into a dense catcher's hands at 2.2 km/s even from a 10 m/s lob. Above 1% of light speed the object becomes plasma within m/(ρA) of the hand, so whether Ollie is hit by a ball, by plasma or by a blast depends on that distance. A working reference implementation with passing tests is at /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/duo/catch/ (flyto.js, catch2.js, tests.js).",
+ "facts": [
+  {
+   "key": "catch_anthro_ansur2_reach_chest",
+   "category": "catch",
+   "label": "US Army men (ANSUR II): thumbtip reach, chest depth and stature, means",
+   "status": "verified",
+   "value_si": 0.8119,
+   "unit_si": "m",
+   "display": "Thumbtip reach 81.19 cm (SD 4.37), chest depth 25.38 cm (SD 2.62), stature 175.62 cm (SD 6.86); 4,082 men",
+   "sources": [
+    {
+     "title": "Gordon et al. (2014), 2012 Anthropometric Survey of U.S. Army Personnel: Methods and Summary Statistics, NATICK/TR-15/007: (80) Thumbtip Reach pp. 203-204, (25) Chest Depth pp. 93-94, (75) Stature pp. 193-194",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+    }
+   ],
+   "notes": "Thumbtip reach is the horizontal distance from a back wall (shoulders against it) to the tip of the thumb, with the arm stretched forward. Chest depth is the front-to-back depth at nipple level. Read from the PDF's summary tables (male columns)."
+  },
+  {
+   "key": "catch_stroke_fraction",
+   "category": "catch",
+   "label": "Catch stroke: how far his hands give while stopping the object",
+   "status": "estimate",
+   "value_si": 0.3,
+   "unit_si": "x height",
+   "low_si": 0.05,
+   "high_si": 0.318,
+   "display": "0.30 × height (60 cm for a 2 m Rex or Ollie)",
+   "sources": [
+    {
+     "title": "ANSUR II (Gordon et al. 2014), thumbtip reach and chest depth",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR15-007.pdf"
+    }
+   ],
+   "notes": "Our estimate. From full reach to touching the chest, a man's hand travels (81.19 - 25.38) / 175.62 = 0.318 of his height. We round down to 0.30 to leave room for the object between hands and chest. Rex and Ollie are assumed to have human-proportioned arms. We found no measured study of how far hands give in a catch (searches turned up only textbook examples). Real catchers with mitts stop a ball in a few centimetres, so 0.3 × height is the softest catch a body this size could make, not a typical one. Stepping back is not modelled."
+  },
+  {
+   "key": "catch_eccentric_force_ratio",
+   "category": "catch",
+   "label": "Muscle force while being stretched (eccentric) compared with holding still (isometric)",
+   "status": "verified",
+   "value_si": 1.2,
+   "unit_si": "ratio",
+   "low_si": 1.2,
+   "high_si": 1.8,
+   "display": "Plateau near 1.8× maximum isometric force in isolated muscle; about 1.2× in living people",
+   "sources": [
+    {
+     "title": "Franchi, Reeves & Narici (2017), Skeletal Muscle Remodeling in Response to Eccentric vs. Concentric Loading, Front. Physiol. 8:447",
+     "url": "https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2017.00447/full"
+    }
+   ],
+   "notes": "Quoted: the force 'rises until it reaches a plateau at a value close to 1.8 times the maximum isometric force' (in vitro); in vivo 'about 1.2 times the maximum isometric force'. The sim caps catching force at full strength (1.0×) in both muscle modes, so it slightly understates how hard a real-muscle catch can be."
+  },
+  {
+   "key": "catch_force_cap_model",
+   "category": "catch",
+   "label": "Most force he can stop an object with",
+   "status": "estimate",
+   "value_si": 1,
+   "unit_si": "x dial strength",
+   "display": "His full strength (the dial), same as holding a weight",
+   "sources": [
+    {
+     "title": "Franchi et al. (2017) on eccentric force",
+     "url": "https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2017.00447/full"
+    }
+   ],
+   "notes": "Modelling choice. Catching is resisting a load, like holding one, so the cap is the dial value (two arms, 2 × 52.3% in the throw model, capped at 100%). The eccentric bonus (about 1.2× in living people) is left out."
+  },
+  {
+   "key": "sutton_graves_air",
+   "category": "heating",
+   "label": "Sutton–Graves stagnation-point convective heating, Earth air",
+   "status": "verified",
+   "value_si": 0.00017415,
+   "unit_si": "kg^0.5/m (q in W/m^2 = k sqrt(rho/r_n) v^3)",
+   "display": "q = 1.74 × 10⁻⁴ √(ρ/rₙ) v³ W/m²; original form q = K √(pₛ/rₙ)(hₛ − h_w), K = 0.1113 kg s⁻¹ m⁻³ᐟ² atm⁻¹ᐟ² for air",
+   "sources": [
+    {
+     "title": "Sutton & Graves (1971), A General Stagnation-Point Convective-Heating Equation for Arbitrary Gas Mixtures, NASA TR R-376 (Table II, air: K = 0.1113)",
+     "url": "https://ntrs.nasa.gov/api/citations/19720003329/downloads/19720003329.pdf"
+    },
+    {
+     "title": "Wikipedia: Planar reentry equations (k = 1.74153 × 10⁻⁴ for Earth, W/m²)",
+     "url": "https://en.wikipedia.org/wiki/Planar_reentry_equations"
+    }
+   ],
+   "notes": "Fitted for enthalpies of 2.3-116.2 MJ/kg (about 2.1-15 km/s), pressures of 0.001-100 atm and wall temperatures of 300 and 1,111 K, with radiation neglected (all stated in the report). Converting K with pₛ ≈ ρv² and hₛ ≈ v²/2 gives 0.1113 / (2 √101,325) = 1.748 × 10⁻⁴, within 0.4% of the 1.7415 × 10⁻⁴ used here. At sea level the stagnation pressure passes 100 atm at √(100 × 101,325 / 1.225) = 2,876 m/s, so heating above that is an extrapolation and the page flags it."
+  },
+  {
+   "key": "shock_layer_radiation_onset",
+   "category": "heating",
+   "label": "When glowing shock-layer air starts adding heat (radiation)",
+   "status": "verified",
+   "value_si": 11000,
+   "unit_si": "m/s",
+   "low_si": 11000,
+   "high_si": 15000,
+   "display": "Negligible at orbital entry speed; secondary at lunar return (~11 km/s); rises rapidly above 12 km/s and is over half the heat load at 15 km/s",
+   "sources": [
+    {
+     "title": "NASA TM X-58091 (1972), Radiative Heating to the Apollo Command Module: Engineering Prediction and Flight Measurement",
+     "url": "https://ntrs.nasa.gov/api/citations/19720017314/downloads/19720017314.pdf"
+    },
+    {
+     "title": "Cornette & Sullivan (1971), Instrumentation Requirements for a Flight Reentry Heating Experiment at Interplanetary Return Velocity, NASA TN D-6265",
+     "url": "https://ntrs.nasa.gov/api/citations/19710018541/downloads/19710018541.pdf"
+    }
+   ],
+   "notes": "These are entry conditions at high altitude. Radiation grows faster with air density than convection does, so at sea level it matters at lower speeds. The sim's heating, which leaves radiation out, is therefore a lower bound above 11 km/s, and the page says so."
+  },
+  {
+   "key": "baseball_terminal_speed_adair",
+   "category": "objects",
+   "label": "Baseball: speed at which drag equals its weight (terminal speed)",
+   "status": "verified",
+   "value_si": 42,
+   "unit_si": "m/s",
+   "display": "About 95 mph (42 m/s)",
+   "sources": [
+    {
+     "title": "Adair (1995), The physics of baseball, Physics Today 48(5): 26-31, p. 27",
+     "url": "https://aip.brightspotcdn.com/PTO.v48.i5.26_1.online.pdf"
+    }
+   ],
+   "notes": "Quoted: 'at about 95 mph (42 m/s), the drag force is equal to the force of gravity.' The sim's baseball (Cd 0.35, 42.7 cm²) gives √(2mg/(ρ Cd A)) = 39.5 m/s, 6% lower, and its long throws come down at 38-39 m/s. This is a check, not an input."
+  },
+  {
+   "key": "baseball_bat_collision_force",
+   "category": "objects",
+   "label": "Peak squeeze on a baseball in a home-run bat collision",
+   "status": "verified",
+   "value_si": 40000,
+   "unit_si": "N",
+   "display": "About 9,000 lb (40,000 N); collision about 1 ms, most momentum transfer in 0.6 ms",
+   "sources": [
+    {
+     "title": "Adair (1995), The physics of baseball, Physics Today 48(5), p. 31",
+     "url": "https://aip.brightspotcdn.com/PTO.v48.i5.26_1.online.pdf"
+    }
+   ],
+   "notes": "Baseballs survive this, so it is a known-safe level, not a breaking strength. The object data has no crush figure for the baseball. The page compares the catch force with this number and makes no claim above it."
+  },
+  {
+   "key": "iron_melting_heats",
+   "category": "heating",
+   "label": "Iron: melting point, heat of fusion, heat capacity",
+   "status": "verified",
+   "value_si": 1811,
+   "unit_si": "K",
+   "display": "Melts at 1,538 °C; heat of fusion 13.81 kJ/mol (247 kJ/kg); molar heat capacity 25.10 J/(mol·K) (0.449 kJ/kg·K)",
+   "sources": [
+    {
+     "title": "Wikipedia: Iron (infobox)",
+     "url": "https://en.wikipedia.org/wiki/Iron"
+    }
+   ],
+   "notes": "Per-kg values use 55.845 g/mol. Steels melt a little lower (roughly 1,400-1,500 °C). Damage threshold for 'steel' objects."
+  },
+  {
+   "key": "aluminium_melting_heats",
+   "category": "heating",
+   "label": "Aluminium: melting point, heat of fusion, heat capacity",
+   "status": "verified",
+   "value_si": 933.47,
+   "unit_si": "K",
+   "display": "Melts at 660.32 °C; heat of fusion 10.71 kJ/mol (397 kJ/kg); 24.20 J/(mol·K) (0.897 kJ/kg·K)",
+   "sources": [
+    {
+     "title": "Wikipedia: Aluminium (infobox)",
+     "url": "https://en.wikipedia.org/wiki/Aluminium"
+    }
+   ],
+   "notes": "Damage threshold for aircraft and the shuttle stack. Alloys melt somewhat lower."
+  },
+  {
+   "key": "copper_melting_heats",
+   "category": "heating",
+   "label": "Copper: melting point, heat of fusion, heat capacity",
+   "status": "verified",
+   "value_si": 1357.77,
+   "unit_si": "K",
+   "display": "Melts at 1,084.62 °C; heat of fusion 13.26 kJ/mol (209 kJ/kg); 24.44 J/(mol·K) (0.385 kJ/kg·K)",
+   "sources": [
+    {
+     "title": "Wikipedia: Copper (infobox)",
+     "url": "https://en.wikipedia.org/wiki/Copper"
+    }
+   ],
+   "notes": "Damage threshold for the Statue of Liberty (copper skin)."
+  },
+  {
+   "key": "wood_char_base_temperature",
+   "category": "heating",
+   "label": "Wood: temperature at the base of the char layer",
+   "status": "verified",
+   "value_si": 573,
+   "unit_si": "K",
+   "display": "Generally taken to be 300 °C (550 °F ≈ 288 °C)",
+   "sources": [
+    {
+     "title": "White & Dietenberger (2010), Fire Safety of Wood Construction, Wood Handbook ch. 18, USDA FPL-GTR-190",
+     "url": "https://research.fs.usda.gov/download/treesearch/37415.pdf"
+    }
+   ],
+   "notes": "Quoted: 'The temperature at the base of the char layer is generally taken to be 300 °C or 550 °F (288 °C).' Used for every 'organic' object (piano wood; we assume the same for the baseball's leather and yarn and the bowling ball's resin, which we did not source separately)."
+  },
+  {
+   "key": "limestone_calcination",
+   "category": "heating",
+   "label": "Limestone breaks down to quicklime",
+   "status": "verified",
+   "value_si": 1098,
+   "unit_si": "K",
+   "display": "Above 825 °C",
+   "sources": [
+    {
+     "title": "Wikipedia: Calcium oxide",
+     "url": "https://en.wikipedia.org/wiki/Calcium_oxide"
+    }
+   ],
+   "notes": "Quoted: 'This is accomplished by heating the material to above 825 °C.' Damage threshold for the pyramid and the Empire State Building's limestone facade."
+  },
+  {
+   "key": "heat_to_melt_per_kg",
+   "category": "heating",
+   "label": "Heat needed to melt or char 1 kg of an object's skin",
+   "status": "estimate",
+   "value_si": 1000000,
+   "unit_si": "J/kg",
+   "low_si": 500000,
+   "high_si": 1400000,
+   "display": "About 1 MJ/kg for every object",
+   "sources": [
+    {
+     "title": "Wikipedia: Iron",
+     "url": "https://en.wikipedia.org/wiki/Iron"
+    },
+    {
+     "title": "Wikipedia: Aluminium",
+     "url": "https://en.wikipedia.org/wiki/Aluminium"
+    }
+   ],
+   "notes": "Our estimate. Heating from 15 °C to melting plus the heat of fusion, at room-temperature heat capacity: iron 0.449 × 1,523 + 247 = 931 kJ/kg; aluminium 0.897 × 645 + 397 = 976 kJ/kg; copper 0.385 × 1,070 + 209 = 620 kJ/kg. Heat capacity rises with temperature, so the true values are a bit higher. Wood and stone are taken as the same. Used only for the rough 'share it could melt' upper bound."
+  },
+  {
+   "key": "newton_impact_depth_air",
+   "category": "relativistic",
+   "label": "Newton's impact-depth rule, used for how far a relativistic object gets through air",
+   "status": "estimate",
+   "display": "D ≈ L × ρ_object / ρ_target: it stops after pushing aside its own mass of target. In air: sweep = m / (ρ₀ A) (baseball 27.8 m, car 126 m, shot 524 m, tank 1.9 km, pyramid 141 km)",
+   "sources": [
+    {
+     "title": "Wikipedia: Impact depth",
+     "url": "https://en.wikipedia.org/wiki/Impact_depth"
+    }
+   ],
+   "notes": "The rule rests only on momentum conservation and is stated for speeds high enough to ignore friction but below the target's speed of sound. At 1% of light speed and above we are far outside that, so the sweep length is an order-of-magnitude scale for where most of the energy goes into the air. The existing Throw tab already uses the same length."
+  },
+  {
+   "key": "air_column_mass",
+   "category": "atmosphere",
+   "label": "Mass of air above each square metre at sea level",
+   "status": "verified",
+   "value_si": 10332,
+   "unit_si": "kg/m^2",
+   "display": "About 1.03 kg per cm² (10.3 t per m²); the engine uses p₀/g = 10,332 kg/m²",
+   "sources": [
+    {
+     "title": "Wikipedia: Atmospheric pressure",
+     "url": "https://en.wikipedia.org/wiki/Atmospheric_pressure"
+    }
+   ],
+   "notes": "An object with less mass per frontal area (m/A) than about this, divided by the sine of its climb angle, can't punch through the atmosphere at any survivable speed. That is why a thrown car or baseball has a hard range limit set by air."
+  },
+  {
+   "key": "relativistic_arrival_classes",
+   "category": "relativistic",
+   "label": "What reaches the catcher above 1% of light speed",
+   "status": "estimate",
+   "display": "D < 1% of sweep: arrives nearly whole (≥99% of its energy). 1-100%: he is hit by its plasma. Beyond the sweep length: it is a fireball before it reaches him and only the blast does",
+   "sources": [
+    {
+     "title": "Wikipedia: Impact depth",
+     "url": "https://en.wikipedia.org/wiki/Impact_depth"
+    }
+   ],
+   "notes": "Our estimate (snowplow picture). Momentum is kept while it scoops up air, so the energy still moving with it is E/(1 + D/sweep). The thermalised share D/sweep sets how fast its vapour spreads sideways, about v√(D/sweep), so over a flight of D it widens by about D√(D/sweep). At D = 1% of sweep that is 10% of D. The 1% cut is a judgement call."
+  },
+  {
+   "key": "earth_radius_rotation",
+   "category": "earth",
+   "label": "Earth's mean radius and rotation (for the far-side distance and the spin caveat)",
+   "status": "verified",
+   "value_si": 6371000,
+   "unit_si": "m",
+   "display": "Volumetric mean radius 6,371.000 km (so the far side of the planet is π × 6,371 = 20,015 km away along the surface); sidereal rotation 23.9345 h; equator moves at 465.1 m/s",
+   "sources": [
+    {
+     "title": "NASA NSSDC Earth Fact Sheet",
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"
+    },
+    {
+     "title": "Wikipedia: Earth's rotation (465.10 m/s at the equator)",
+     "url": "https://en.wikipedia.org/wiki/Earth%27s_rotation"
+    }
+   ],
+   "notes": "The sim's Earth doesn't spin. In a 79-minute antipode throw the ground at the equator moves 465.1 × 4,715 s = 2,190 km, so a real long throw would have to lead Ollie by up to about that much."
+  }
+ ],
+ "inputs": "From the page (app.html):\n- ctxR = ctx(), ctxO = ctxOllie(). Each has F (N, may be Infinity), mode ('comic'|'real'), body (makeBody: H, m, volume, rho, palmArea, frontArea, Cd, releaseHeight = 0.9 H, strokes), surface (shared), groundHolds (comic ground, shared) and anchor (each has his own: friction|braced|bolted).\n- Ball: an object from D.objects with !noThrow (fields m, area, Cd, CdSup, rho, crush?, L?, and a NEW field material), or the partner. Partner-as-ball becomes the object partnerAsObject(body, name) = { id:'partner', name, short:name, m: body.m, area: body.frontArea, Cd: body.Cd, CdSup: 1.75, rho: body.rho, L: body.H, indestructible: true }.\n- D: ground distance between them, m, along the curved surface. Log slider from Dmin = pushStartRadius(thrower) + heldRadius(catcher, obj) + 0.3 × H_catcher + 1 m (about 3.1 m at default size; clamp up to it) to π R_E = 20,015 km. Chips: 10 m, 100 m, 1 km, 100 km, 1,000 km, 10,000 km, 'Other side of the planet' (20,015 km). When the ball is the partner, the same slider becomes 'Toss height' (log, 3 m to 100 km; chips 10 m, 100 m, 1 km).\n- style: 'easy' ('Gentle lob': least launch speed that reaches him) or 'hard' ('Fastball': full strength, flattest path).\n- miss: boolean, 'Show what happens if he misses'.\nNew app state keys and validators: cObj (default 'baseball'; a valid D.objects id with !noThrow, or 'partner'), cLogD (default 1 = 10 m; num(log10 Dmin_floor = 0.5, log10 20,015,000)), cStyle ('easy'|'hard', default 'easy'), cMiss (boolean, default false). Add them to DEFAULTS and VALID.\nEngine values reused: K (g, c, rho0, p0, a0, R_E, GM, G, M_E), eqRadius, isBlackHole, mutualGravity, fallTogether, bodyGravity, groundUnderWeight, planetRegime, heldRadius, selfGravityOn, selfPull (local consts already in engine.js), throwObject/throwOnce, pushApart (via throw), anchorCapacity, fly (extended), stagnationT, cdAt, rhoAt, conicTo, craterDiameter, seismicMagnitude, overpressureAt, blastRadius, keFromV, momentumToV, momentumToKE, vToMomentum.\nNew data: objects.material in {steel, aluminium, copper, organic, stone}. Mapping: baseball, bowling, piano = organic; shot, motorcycle, car, pickup, bus, semi, tank, loco, eiffel, titanic, nimitz, bar511, backlift, desoto, ruyi = steel; cc177, b777, shuttle = aluminium; liberty = copper; esb, pyramid = stone. Also a MATERIALS table: steel {tC 1538, verb 'melt'}, aluminium {660, 'melt'}, copper {1085, 'melt'}, organic {300, 'char'}, stone {825, 'break down'}.",
+ "equations": "Notation: T = thrower, C = catcher, m = object mass, A = its frontal area, M = catcher's mass, d = catch stroke, R = his footing limit (anchorCapacity), F_cap = his strength (dial force), g = 9.80665, ρ₀ = 1.225 kg/m³.\n\nE1. Catch stroke: d = 0.3 H_C (0.6 m at 2 m). ANSUR II gives (81.19 − 25.38)/175.62 = 0.318 from full reach to the chest, rounded down. Add strokes.catch = 0.3·H to makeBody.\n\nE2. Aiming over a round Earth with air: the flight is fly() extended with three backward-compatible options.\n (a) hStop: stop when the object comes DOWN through height hStop (the catcher's hands, 0.9 H_C). A flag 'above' starts as h0 ≥ hStop and turns true once it has risen to hStop. Until then the stop surface is the ground, and stopping there sets belowStop. The vacuum shortcut uses conicTo(..., R_E + hStop) when above, and integrates otherwise. Near the stop surface the descending step limit uses height above hStop: dt ≤ max(0.5, 0.05 (r − R_E − hStop))/v.\n (b) xStop: stop when the ground distance R_E·|φ| reaches xStop (interpolate within the step). Report hAtX, vAtX and angleAtXDeg (positive = descending). If a space (Kepler) jump carries it past xStop, set crossedX with hAtX = ∞ (it passes high overhead).\n (c) Rn (nose radius, √(A/π)): add up Sutton–Graves heating, q = k √(ρ(h)/Rn) v³ with k = 1.7415×10⁻⁴, as heatLoad += q·dt (J/m²). Also keep qMax.\n With hStop = 0 and no xStop the result is identical to today's fly() (test T1).\n\nE3. Gentle lob (aimEasy): v_E(θ) = least speed whose flight (hStop = hand height of C) comes down at range ≥ D. Bisect on ln v in [1 mm/s, 0.999 × 0.01c]; an overshoot (orbit, escape or time-out) counts as reaching. Then minimise over θ: scan 5, 15, …, 75°, then golden-section to 0.1°. It doesn't depend on strength, so cache by (object, D, h0, hStop). Check: in a vacuum on flat ground, v = √(gD) at 45° (9.903 m/s for 10 m); the sim gives 10.16 m/s at 45.1° because of drag.\n\nE4. Fastball (aimHard): v(θ) = the thrower's full-strength release speed. Find the smallest θ in [−80°, 89°] (it may aim downward) whose flight, with xStop = D, passes ground distance D at or above C's hand height. Scan a grid, then bisect to 10⁻⁶ relative. If any grid angle gives v ≥ 0.01c it is a fireball (E10). If a flight escapes or orbits before any angle reaches D, report 'overshoots'. If no angle reaches D, report 'too weak'. The flight reported is the xStop flight; arrival speed is vAtX and the angle max(0, angleAtXDeg).\n\nE5. Release speed versus angle (releaseTable): v(θ) = throwObject(ctxT, obj, θ).v (canMove, else 0) at θ = 0, 7.5, …, 90°, linearly interpolated. Also keep holdLoad = needed and canHold from the 45° throw, and E0 = Eobj at 0°. This uses throwOnce's raw release speed, before the dense-thrower well correction. Add ctx.noFlight to throwOnce so it skips its internal fly() and the crater/impact block (about 10× faster).\n\nE6. Gentle lob too weak: if v_L(θ_easy) > v(θ_easy), compute farthest() at full strength (golden-section on θ of range(v(θ), θ), capped below 0.01c). If farthest ≥ D, use aimHard and flag fullStrength. Otherwise 'too weak', reporting farthest and the easy speed needed with its heat verdict. (Heavy objects need this: a car at 30 m can't be lobbed gently by the default Rex, but his 47.9° full-strength throw at 18.2 m/s gets there.)\n\nE7. Two gravity wells (dense partners). The density area supplies G m. GM_X = G m_X when selfGravityOn(body), else 0. Partners are point masses on the line between them; x is measured from T's centre.\n Φ(x) = −GM_T/x − GM_C/(D − x).\n Release point x₀ = pushStartRadius(T) = max(eqRadius(T), 0.25 H_T). This is the radius throwOnce already uses; factor it into a function.\n C's hands meet it at r_meet = heldRadius(C, obj) + d, and it ends held at r_held = heldRadius(C, obj). So x₁ = max(x₀, D − r_meet).\n Saddle: x* = D/(1 + √(GM_C/GM_T)) if both are dense; x₁ if only T is; x₀ if only C is. Clamp to [x₀, x₁]. Φ is concave, so this is its top.\n barrier = max(0, Φ(x*) − Φ(x₀)), gain = Φ(x₀) − Φ(x₁), inStroke = GM_C (1/r_held − 1/r_meet) (energy per kg C's pull adds while he brings it in).\n Launch: v_L² = v_E² + 2·barrier, where v_E is the air-arc speed from E3/E4 (fastball: v_E = √(v_max² − 2·barrier), and 0 means it falls back).\n Arrival: v_meet² = v_E,arrive² + 2(barrier + gain). This is exact energy bookkeeping with no drag inside the wells, and Earth's potential cancels when the two heights are equal; otherwise it is in v_E,arrive. For a light thrower and dense catcher it reduces to v_meet² = v_arrive² + 2GM_C(1/r_meet − 1/(D − x₀)). For a dense thrower with D → ∞ it reduces to the engine's vInfinity.\n Wells dominate when D < √(GM_T/g) + √(GM_C/g) (their pull beats Earth's over the whole gap). Then the throw is aimed straight at him (θ = 0, arrival angle 0). The gentle speed is v_E = √(gD), a small margin over the hump. Time is t = ∫ dx / √(v_E² + 2(Φ(x*) − Φ(x))) from x₀ to x₁ (4,000-step midpoint rule). Heat load is k √(ρ₀/Rn) ∫ v² dx. Drag is ignored, and flagged if the path is longer than 0.2 × the supersonic e-folding length 2m/(ρ₀ CdSup A).\n\nE8. The catch (catchIt, classical, valid below 1% c where γ − 1 < 5×10⁻⁵):\n v_eff² = v_meet² + 2·inStroke.\n hold = m √(g² + g_self²), with g_self = GM_C/r_held².\n R = anchorCapacity({body: C, surface, theta: γ (arrival angle below horizontal, clamped ≥ 0), anchor, groundHolds, mA: M, mB: m}).R.\n If his feet hold: F_A = m v_eff²/(2d), used when F_A ≤ R. Otherwise he slides while stopping it: F_B = (v_eff²/(2d) + R/M)/(1/m + 1/M), which is the constant force that closes the relative speed over the relative distance d; F_B > R exactly when F_A > R.\n Need = max(F, hold). Clean catch if F_cap ≥ need.\n If not clean: F = F_cap, relative deceleration a_rel = F/m + max(0, F − R)/M, and it hits his chest at v_slam = √(max(0, v_eff² − 2 a_rel d)). The object then sticks to him (perfectly inelastic). If F_cap < hold he can't hold it at all ('cant-hold-it').\n Stroke time: t_s = (√v_eff² − v_slam)/a_rel.\n His speed at the end of the stroke: v_c = (F − R)/M · t_s when F > R. Pair speed afterwards: u = v_c (clean) or (m(v_c + v_slam) + M v_c)/(m + M).\n Slide: during the stroke ½ a_c t_s² cos γ; afterwards (M + m)/(2k) · ln(1 + k u_h²/R_s), where u_h = u cos γ, R_s = anchorCapacity(theta 0, mA: M + m).R (friction or shear) and k = ½ ρ₀ max(Cd_C·frontArea_C, CdSup·A). That is friction plus air drag (at km/s speeds air dominates). Bolted means no slide.\n Object: deceleration F/(m g). Grip ratio = max(F, hold)/(A_contact · crush), with A_contact = min(2 palmArea, A); plate needed = max(F, hold)/crush. Baseball: ratio to 40,000 N (known safe).\n Feet: sinkRatio = anc.N(F)/anc.Nmax (comic ground gives 0).\n Example, 10 m gentle lob: F = 0.1453 × 9.674²/(2 × 0.6) = 11.33 N, t_s = 2d/v = 0.124 s.\n\nE9. Heat verdict (object only; partner is 'immune'): nose temperature T_n = stagnationT(peak speed below 80 km) − 273.15 °C. Share it could melt or char, upper bound: f = heatLoad × A / (m × 1 MJ/kg).\n kind = 'warm' if T_n < material threshold; 'skin' if f < 1%; 'loses' if 1% ≤ f < 50%; 'destroyed' if f ≥ 50%.\n Flags: extrapolated if peak speed in air > 2,876 m/s (sea-level stagnation pressure above the fit's 100 atm); radiation if > 11 km/s.\n Check: baseball at 629 m/s gives T_n = 288.15 (1 + 0.2 (629.1/340.29)²) − 273.15 = 212 °C, under the 300 °C char point, so 'warm'.\n\nE10. At or above 1% of light speed: E = Eobj (exact, may be ∞), p = vToMomentum(v, m), sweep = m/(ρ₀ A), x = D/sweep.\n 'arrives' if x < 0.01; 'plasma' if 0.01 ≤ x < 1; 'before' if x ≥ 1.\n Energy still moving with it: E_arr = E/(1 + x) (snowplow: momentum kept, air scooped up). Energy dumped into the air between them: E − E_arr.\n 'before': blast at the catcher = overpressureAt(E, max(D − sweep, H_C)).\n 'arrives': relativistic catch, F_need = E_arr/d (work-energy, exact for force along the motion). Clean if F_cap ≥ F_need and both are finite; ∞ against ∞ is undefined. Recoil: momentumToV(p, M + m) unless bolted, in which case Earth recoils at p/M_E.\n\nE11. Miss: flight(obj, v_E, θ, h0, hStop = 0) to the ground. E = keFromV. Crater = craterDiameter if v ≥ 2 km/s (same call as throwOnce). Quake = seismicMagnitude(E). Blast = blastBlock(E). 'past' = range − D.\n\nE12. Partner as the ball (tossPartner): T throws the partner straight up (θ = 90°) and catches him at release height. Gentle: bisect v until the apex reaches the chosen toss height. Hard: full-strength v from throwObject(ctxT, partner, 90). Flight: flyTo(θ 90, h0 = hStop = 0.9 H_T). Catch: catchIt(ctxT, partner, vImpact, 90°). With theta 90 the anchor can't slide (R = ∞), but the feet can sink: sinkRatio = (mA g + F)/Nmax.\n\nE13. Can they stand apart? F_pull = mutualGravity(bR, bO, D).F, compared with each footing limit anchorCapacity(theta 0, own mass).R. If F_pull exceeds the smaller one, they fall together: fallTogether(bR, bO, D, dContact) gives t and vRel. Bolted means they hold.\n\nE14. Round trip: if both legs are clean catches, t_A + t_B + t_s,A + t_s,B.",
+ "algorithm": "Engine (engine.js). The reference implementation is in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/duo/catch/flyto.js and catch2.js; port them. The tests in tests.js all pass against the live engine.\n1. Constants: CATCH = { STROKE: 0.3, ECC: 1.0, V_FIREBALL: 0.01*K.c, E_STAR: 1e6, SG_K: 1.7415e-4, SG_V100ATM: Math.sqrt(100*101325/K.rho0), V_RAD: 11000, BASEBALL_SAFE_N: 40000, ARRIVE_FRAC: 0.01 }. Add a MATERIALS table (inputs). In makeBody add strokes.catch = 0.3*s*2.\n2. fly(o): add o.hStop, o.xStop and o.Rn exactly as in flyto.js. Keep all existing outputs; add heatLoad, qMax, belowStop, crossedX, hAtX, vAtX, angleAtXDeg and inSpaceAtX. Guards: xStop defaults to Infinity. With a finite xStop, skip the whole-flight vacuum shortcut and integrate. Interpolate the xStop crossing inside the RK4 step, adding the partial heat. In the space branch, if R·|φ + Δφ| ≥ xStop, set crossedX with hAtX = Infinity and break.\n3. throwOnce: if ctx.noFlight, skip fly() and the impact/crater block (flight = null, Eimpact = 0). throwObject passes it through. Factor r0 into pushStartRadius(body).\n4. catchFlight(obj, v, θ, h0, hStop, record) = fly({v0:v, thetaDeg:θ, h0, hStop, m, A: area, Cd, CdSup, Rn: √(area/π), record}). reaches(f, D) = relativistic || escaped || orbit || timedOut || (landed && !belowStop && range ≥ D).\n5. aimEasy(obj, D, h0, hStop): cached Map, cleared above 300 entries. For each θ in [5, 15, …, 75], vNeededAt = bisection on ln v up to a ratio of 1 + 2e-4, warm-started at ±25% of the last solution. Take the best, golden-section between its neighbours to 0.1°, return {reachable, thetaDeg, v}. Cold cost 0.2-0.8 s; cached afterwards. Strength changes never invalidate it.\n6. releaseTable(ctxT, obj): 13 throwObject calls with noFlight (θ = 0…90 step 7.5) → vOf(θ) (linear), at45 (canHold, needed), E0, r0. Cache per (ctx strength, mode, anchor, surface, body, obj) for the render.\n7. aimHard(obj, D, h0, hStop, vOfE): grid [−80, −60, −45, −30, −20, −10, −5, −2, −1, −0.5, 0, 0.25, 0.5, 1, 2, 3, 5, 7.5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 89]. ok(f) = crossedX && hAtX ≥ hStop, using fly with hStop 0 and xStop D. The first ok angle is bisected against the previous one. v ≥ V_FIREBALL gives fireball. Escaped or orbit without crossedX gives overshoots. No ok angle gives short.\n8. farthest(obj, h0, hStop, vOf): ranges at θ = 1, 10, 20, 30, 40, 45, 50, 60, 70, 80 with v capped at 0.999 × V_FIREBALL (escape or orbit counts as ∞), then golden-section around the best to 0.2°.\n9. catchWells(bT, bC, obj, D): E7, returning {GT, GC, x0, x1, xs, rHeld, rMeet, barrier, gain, inStroke, phi, dBeatT, dBeatC, wellDominated}. wellPath(w, obj, vE): time, heatLoad, vmax, length (E7).\n10. catchIt(ctxC, obj, v, γ, w): E8. Returns {stroke, Fcap, Fneed, F, clean, slips, R, holdLoad, canHold, tStroke, decelG, vSlam, uAfter, slide, contact, gripRatio, plateNeeded, baseballRatio, sinkRatio, Ecatch}.\n11. heatVerdict(obj, heatLoad, stagT, vMaxAir): E9. fireballAt(obj, v, D, ctxC, Eknown): E10.\n12. catchLeg(ctxT, ctxC, obj, D, style):\n a. isBlackHole(T) → 'thrower-black-hole'.\n b. w = catchWells; tab = releaseTable; !tab.at45.canHold → 'cant-hold' (holdNeeded).\n c. vOfE(θ) = √(max(0, vOf(θ)² − 2·barrier)).\n d. If w.wellDominated: E7 straight line. v_L ≥ V_FIREBALL → 'fireball'. v_L > vMax or v_E ≤ 0 → 'falls-back' (escapeNeeded = √(2·barrier)). Otherwise time and heat come from wellPath, with arrival from E7 and angle 0.\n e. Otherwise, easy: aimEasy, which may be unreachable (then 'unreachable' with farthestAny at the cap speed). Apply E6. Hard: aimHard (fireball, overshoots, too-weak or ok). Then the final flight (record: true): catchFlight with hStop for easy, or fly with xStop D for hard (vImpact = vAtX, angle = max(0, angleAtXDeg)). Arrival speed from E7. Heat from E9.\n f. catch = catchIt(ctxC, obj, vArrive, angle, w). result = clean ? 'caught' : (canHold ? 'slams' : 'cant-hold-it').\n g. Unless wells dominate: miss = E11.\n Returns {result, aim {thetaDeg, vE, vL, vMax}, flight (with path), time, vArrive, angleDeg, heat, catch, miss, wells, fullStrength, farthest, needFactor, fireball, holdNeeded}.\n13. tossPartner(ctxT, partnerBody, name, style, hTarget): E12. Results caught, slams, too-weak, cant-hold, unreachable, escapes, orbit or fireball.\n14. catchGame(ctxR, ctxO, ball, D, style): A = leg(R→O), B = leg(O→R) (for a partner ball: A = tossPartner(ctxR, bO), B = tossPartner(ctxO, bR)), plus E13 (pull, holdR, holdO, together) and E14 (round). Export catchGame, catchLeg, catchIt, tossPartner, catchWells, aimEasy, aimHard, farthest, heatVerdict, fireballAt, partnerAsObject, pushStartRadius, CATCH, MATERIALS.\nPage (app.html bayCatch(c)):\n15. cR = ctx(), cO = ctxOllie(). Push duoHeader(cR, cO). Push bay-controls: Ball select (objectPicker(!noThrow) plus an optgroup 'Partner' option 'Ollie: Rex tosses him up and catches him'), Distance or Toss-height log slider with chips, segmented control Gentle lob | Fastball, and a Miss checkbox.\n16. Gates. Run soloGate(cR) and soloGate(cO) with the names swapped in. A stop gate (black hole, or a body that reshapes the planet) shows the callout and returns. A sinking gate (fallsThrough) shows a warn chip and continues. If the result has 'together', the verdict is the fall-together sentence and the game below is shown greyed with 'if both were bolted'.\n17. r = P.catchGame(cR, cO, ball, D, state.cStyle). Render the leg-A verdict, a status row, tiles, the trajectory chart (r.a.flight.path; no ghost; for a hard throw, endNote null; label 'Flight path of the ' + short), a one-line return leg (B), happens bullets (≤5), the miss block if cMiss, and math.\n18. Performance: aimEasy is cached and independent of strength. The strength slider re-runs only releaseTable (13 throwOnce calls with noFlight), aimHard (~20-40 short flights), farthest (only when too weak) and catchIt. Keep the existing rAF throttle. Distance and object changes go through scheduleBay (30 ms).\nData (build-data.py, static-data.js):\n19. Add material to each object. Add sourceRows for every fact listed. Add an assumptions item 'Game of catch' (caveats text, shortened).\n20. Tests: copy tests.js into test/catch.js (require ../src/engine.js and ../src/data.js), replacing X.leg with P.catchLeg and so on.",
+ "edge_cases": "Infinite strength (thrower). The gentle lob is unaffected (it uses only the speed needed). The fastball becomes a fireball: Eobj = ∞, so the page says 'unbounded energy', not a number. fireballAt still classifies by D against the sweep length (a baseball at 10 m is 'plasma': Ollie is inside). No blast radius is given for infinite energy.\nInfinite strength (catcher). Any finite incoming momentum is a clean catch at the gentlest force. The slide and object damage don't depend on his strength, because he still gives over d.\nBoth infinite. Lobs are normal. A fastball 'arrives' case is ∞ against ∞, so clean is undefined; the page says the sim can't compare two infinities and points to the Collide tab's unstoppable-vs-immovable discussion.\nUnequal strengths. Each leg uses its own thrower and catcher context, so either leg can be too-weak, slams or cant-hold while the other is fine. The round trip is shown only if both are clean ('The game stops here: Ollie can't throw it back that far (his best: X)').\nDense partners. The thrower can't hold anything when his own arm weighs more than his strength: at neutron-star density the arm's effective mass is 0.003 × 7.4×10¹⁶ = 2.2×10¹⁴ kg, so holding even a baseball needs 2.18×10¹⁵ N, a dial of about 2.2×10¹⁴ kg. The object falls back into his hand when vMax² < 2·barrier. A dense catcher pulls the ball in, so a 10 m/s lob arrives at 2.2 km/s. Two partners can't stand apart when their mutual pull beats the weaker footing: neutron-star Rex and a normal Ollie 10 m apart attract with 8.9 MN against Ollie's 1.06 kN, so Ollie is dragged in within 15.7 ms at 3.6 km/s, unless both are bolted. Dense bodies on ordinary ground fall into the planet (soloGate warns; comic ground fixes it).\nFrom the plush to black-hole densities: below about 10⁻³ g of self-pull at H/2 (selfGravityOn false), GM is 0 and the game is ordinary. A black-hole thrower can't throw. A black-hole catcher (isBlackHole) swallows anything that reaches him; there is nothing to catch, so the leg reads 'disappears into him'. These are rare because soloGate stops first.\nRelativistic speeds. Below 1% c the catch is classical; the error is under 0.01% because γ − 1 < 5×10⁻⁵. At or above 1% c the object never flies as an object (project convention). Either the plasma or blast reaches him, or (D < 1% of sweep, dense heavy objects) it arrives nearly whole, and a relativistic work-energy catch applies with recoil momentumToV(p, M + m). Bolted means Earth recoils at p/M_E.\nComic ground. sinkRatio = 0; friction still limits sliding. Bolted means R = ∞: no slide and no recoil, and the planet takes the momentum.\nUnequal sizes. Release height is 0.9 H_T and catch height 0.9 H_C. The fastball may aim downward (a 50 m kaiju throws a baseball at −23° to a 2 m Ollie 100 m away). A lob to a taller catcher must rise to his hands. If it never gets up to hand height, flight.belowStop makes it count as not reaching.\nLong ranges. Ranges above π R_E aren't requested, because D is capped at the far side. The easy solution never orbits (the minimum-energy path is sub-orbital), but overshoot counts as reaching inside the bisection. A fastball can 'overshoot': too fast to land on him at any angle, it either ploughs into air and falls short or leaves Earth.\nAir wall. Objects with m/A much less than 10,332 kg/m² have a range limit that more speed barely changes (baseball about 470 m at default strength, about 1 km even at 1% c). The easy aim finds an absurd speed, the heat verdict calls it 'destroyed', and the page explains the air limit instead of quoting the speed as achievable.\nZero and NaN guards. vOf returns 0 when canMove is false. Bisection bounds are positive. v_E ≤ 0 means falls-back. The slide log1p handles k = 0. D is clamped to [Dmin, π R_E]. hold uses hypot. A_contact = min(2 palm, area) > 0. Fneed = ∞ only on infinite input.\nPartner as ball. Indestructible: no crush, no heat damage (heat kind 'immune'). A neutron-star partner needs a dial of at least m_partner (7.4×10¹⁶ kg) just to hold. The catcher's feet sink: a hard toss of Ollie at the default dial puts 1.42× the slab's limit on Rex's feet.",
+ "outputs": "catchGame(ctxR, ctxO, ball, D, style) → { a: Leg (Rex throws, Ollie catches), b: Leg (Ollie throws back), round: s or null, pull: mutualGravity result {F: N, d: m, dContact: m}, holdR: N, holdO: N, together: null | {t: s, vRel: m/s, E: J} }.\nLeg = {\n result: 'caught' | 'slams' | 'cant-hold-it' | 'too-weak' | 'unreachable' | 'overshoots' | 'fireball' | 'falls-back' | 'cant-hold' | 'thrower-black-hole'.\n style: 'easy' | 'hard'; fullStrength: bool (the lob became a full-strength throw).\n D, h0, hStop: m.\n aim: {thetaDeg: deg (may be negative), vE: m/s (speed for the air arc), vL: m/s (speed leaving his hand), vMax: m/s (his full-strength speed at that angle)}.\n flight: the extended fly output {path [[x m, h m]], apex m, range m, time s, heatLoad J/m², qMax W/m², maxStagT K, maxMach, eFold m, …}.\n time: s. vArrive: m/s (when his hands meet it). angleDeg: deg below horizontal.\n heat: {kind: 'warm'|'skin'|'loses'|'destroyed'|'immune', mat {label, tC, verb}, noseC: °C, frac: share it could melt (upper bound), heatLoad: J/m², extrapolated: bool, radiation: bool}.\n catch: {stroke m, Fcap N, Fneed N, F N, clean, slips, R N, holdLoad N, canHold, tStroke s, decelG, vSlam m/s, uAfter m/s, slide m, contact m², gripRatio, plateNeeded m², baseballRatio, sinkRatio, Ecatch J}.\n miss: {vImpact m/s, E J, crater m, craterExtrapolated, quake (magnitude), past m}.\n wells: {GT, GC m³/s², barrier J/kg, gain J/kg, inStroke J/kg, x0, x1, xs, rHeld, rMeet m, dBeatT, dBeatC m, wellDominated}.\n farthest: {range m, thetaDeg}; farthestAny (same); needFactor (speed needed / speed he has); easyNeed {thetaDeg, vL, vE}.\n fireball: {E J, p kg·m/s, sweep m, kind 'arrives'|'plasma'|'before', Earr J, Eair J, rBlast m, overpressure Pa, catch {Fneed N, Fcap N, clean, undefinedInf, recoilV m/s, earthRecoilV m/s, stroke m}}.\n holdNeeded: N; escapeNeeded: m/s; dragIgnored: bool.\n}\ntossPartner → {result, obj, v m/s, flight, catch, holdNeeded N, vMax}.",
+ "page_text": "Tab: 'Catch' (duo group). Controls: 'Ball' select; 'Distance' (or 'Toss height' when the ball is a partner) with chips 10 m · 100 m · 1 km · 100 km · 1,000 km · 10,000 km · Other side of the planet; 'Throw' segmented control: 'Gentle lob' (title: the slowest throw that reaches him) | 'Fastball' (title: as hard as he can, flattest path); checkbox 'Show what happens if he misses'.\n\nVERDICT (leg A; swap the names for B). Use the first condition that applies:\n- together: 'They can't play at this distance. Their pull on each other ({F}) beats {name}'s footing ({R}), so they slam together in {t} at {vRel}. Bolt both to the planet to play.'\n- thrower-black-hole: 'Rex is a black hole at this density. Nothing he throws can get out.'\n- cant-hold: 'Rex can't throw the {short}: he can't even hold it up.' Add ' His own arm weighs more than his strength can hold.' when holdNeeded comes mostly from his arm (needed > 2 × object weight with self-pull).\n- falls-back: 'Rex's own gravity wins. The {short} needs {escapeNeeded} just to climb out of his pull, and his best throw is {vMax}. It drops back into his hand.'\n- unreachable: 'No throw gets the {short} {D}. Air stops it within about {farthestAny} at any speed below 1% of light speed.'\n- too-weak, heat destroyed: 'Rex can't throw the {short} {D}: his best goes {farthest}. Air is the wall. It would need about {easyNeed.vL}, and at that speed it would {melt|char|break down} away long before it got there.'\n- too-weak, otherwise: 'Rex can't throw the {short} that far. His best throw goes {farthest}.' Add 'It needs {needFactor}× the speed he has' if finite.\n- overshoots: 'Thrown as hard as Rex can, the {short} can't come down on Ollie: kept low, it burns its speed in the air; aimed higher, it {leaves Earth for good | goes into orbit}. Switch to Gentle lob.'\n- fireball, before: 'At {v} the {short} turns into a fireball within about {sweep} of Rex's hand, before it reaches Ollie. What reaches him {D} away is the blast.' Or, for infinite energy: '…unbounded energy, so no finite blast size applies.'\n- fireball, plasma: 'At {v} the {short} turns to plasma at once. Ollie, {D} away, is inside the fireball: about {Earr} of it hits him.'\n- fireball, arrives: 'The {short} is so heavy for its size that it reaches Ollie before it has pushed aside its own weight in air. It arrives white-hot at {v}, carrying {Earr}.' Then: clean → ' Ollie stops it in {stroke} with {Fneed}.'; not clean → ' Ollie can't stop it ({Fneed} needed). It carries him off at {recoilV}.'; undefinedInf → ' Infinite strength against infinite energy: the sim can't call it.'\n- caught, easy: 'Rex lobs the {short} {D} to Ollie at {vL}, {θ}° up. It reaches Ollie {time} later at {vArrive}, and he stops it by giving with it over {stroke}.'\n- caught, hard: 'Rex fires the {short} at {vL}{, Mach N}. It reaches Ollie {time} later at {vArrive}. Stopping it in {stroke} takes {F}{; his feet slide {slide}}.'\n- caught, fullStrength: prefix 'It's too heavy to lob gently that far, so Rex throws it as hard as he can. '\n- slams: 'Ollie can't stop it with his arms. Catching it in {stroke} takes {Fneed}; he has {Fcap}. It shoves his hands back to his chest and hits him at {vSlam}. He's fine. The {short} isn't.'\n- cant-hold-it: 'Ollie can't even hold the {short} up ({holdLoad}). It knocks him back {slide}. He's fine.'\nAdd a second sentence, B summary: 'Ollie throws it back: {B verdict, shortened}.' If both are clean: ' One round trip takes {round}.'\nPartner ball: 'Rex tosses Ollie {apex} up. He comes back down {time} later at {vImpact}, and Rex catches him with {F}.' Add '{Rex's feet punch into {surface}}' if sinkRatio > 1.\n\nSTATUS CHIPS (≤5):\n- Reach: good 'Gentle lob: {vL}' | warn 'Full strength needed' | bad 'Out of reach (best {farthest})' | bad 'Fireball, no ball arrives'.\n- Catch: good 'Clean catch: {F/Fcap %} of Ollie's strength' | bad 'Too fast to stop: needs {Fneed}' | bad 'Too heavy to hold'.\n- Footing: info 'Bolted to the planet' | good 'Feet hold' | warn 'Slides {slide}' | bad 'Feet sink: {sinkRatio}× the ground's limit' (if > 1).\n- Object (not for a partner): good 'Survives the catch' (gripRatio ≤ 1, or no crush) | bad 'Hands punch into it' (gripRatio > 1) | for the baseball, info '{baseballRatio}× a home-run hit's squeeze' (warn if > 1).\n- Heat: info 'Nose air {noseC} °C' with the verdict: 'warms up' | 'skin {chars/melts}' | 'loses up to {frac}%' | bad 'burns up on the way'. Add 'Supersonic: sonic boom' (warn) if vL ≥ a0 and < 1% c.\n\nTILES:\n- 'Throw': {vL} (Mach if supersonic); sub '{θ}° up · gentle lob | full strength'. For a dense thrower, sub '{escape} just to get away from Rex'.\n- 'Flight': {time}; sub 'top {apex}' (or 'straight line through their pull').\n- 'Arrives at': {vArrive}; sub '{angleDeg}° down'. For a dense catcher, sub 'sped up by Ollie's pull'.\n- 'Catch force': {F}; sub '{F/Fcap %} of Ollie's strength · {decelG} g on the {short}'.\n- 'Ollie slides': {slide} (or 'nothing' / 'bolted'); sub 'feet hold up to {R}'.\n- 'Round trip': {round}; sub 'both throws and catches' (only if round).\n\nCHART: trajectoryChart(r.a.flight.path, null, 'Flight path of the ' + short, apex) when a flight path exists and wells don't dominate. Add a dashed vertical tick at x = D labelled 'Ollie'. Skip it for fireball, well-dominated or partner-toss results; for the toss, show the existing height tile instead.\n\nHAPPENS (choose ≤5, in this order of priority):\n1. Lob: 'The gentlest throw that gets there leaves at about {θ}°. With no air it would be 45° at {√(gD)}; drag asks for {pct}% more.' (Only if D < 10 km.)\n2. Air wall (too-weak or unreachable with m/A < 10,332 kg/m², or farthest < D): 'More speed hardly helps a {short}. Above the speed of sound it loses 63% of its speed every {eFold} of air, then falls at about its terminal speed. The air above each square metre of ground weighs 10.3 t, far more than the {short} carries per square metre of its front ({m/A} kg/m²).'\n3. Catch physics: 'Catching is stopping momentum. Ollie's hands give {stroke}, from full reach to his chest, so the force is the {short}'s energy spread over that distance: ½mv²/d = {F}. A real catcher's mitt gives a few centimetres, so his hands feel {stroke/0.05}× more.' (For the default human scale; otherwise drop the last sentence.)\n4. Footing (slips): 'His feet hold only {R} along that line, so he skids {slide} while he stops it, the way you slide back catching a heavy medicine ball on ice.' Bolted: 'Bolted to the planet, he doesn't move: Earth takes the momentum.'\n5. Object: grip > 1: 'His palms press {F/contact} into the {short}, which gives way at about {crush}. To catch it whole he'd need a plate {plateNeeded}.' Baseball: 'That's {ratio}× the ~40,000 N squeeze of a home-run hit, which baseballs survive. Past that, the sim can't say when it bursts.'\n6. Heat: warm: 'The air at its nose peaks at {noseC} °C, below the {tC} °C where {material} {verb}s, so it only warms up.' skin: 'Air at its nose reaches {noseC} °C, past the {tC} °C where {material} {verb}s, but it's only in the air {time}: its surface {verb}s while the inside stays cool.' loses/destroyed: 'Air heating could {verb} away up to {frac}% of it on the way (rough upper bound).' Flags: '(Above 2.9 km/s at sea level this is beyond the heating formula's tested range.)'; '(Above 11 km/s glowing air adds radiant heat the sim leaves out, so it would be worse.)'\n7. Dense thrower: 'Rex's own pull at his hands is {selfPullG} g. The {short} needs {√(2 barrier)} just to get away from him, and it leaves his pull at only {vE}.' Dense catcher: 'Ollie's pull grabs it: a {vL} lob hits his hands at {vArrive}, and it adds {inStroke energy} more while he brings it in.'\n8. Long flights (time > 60 s): 'Each throw takes {time}; it climbs {apex}, {above the Kármán line (100 km) if apex > 100 km}. A round trip takes {round}.'\n9. Fireball: 'Past 1% of light speed the air can't get out of the way. The {short} keeps its momentum while it scoops up air and is spent after about {sweep}, where it has met its own mass of air.' For 'arrives': 'The air it ploughs through between them still takes {Eair} ({compareEnergy}).'\n10. Unequal: 'Ollie can't throw it back that far: his best goes {B.farthest}.' (when B is too-weak).\n\nMISS BLOCK (cMiss and result has miss): 'If Ollie misses, it lands {past} behind him at {vImpact}: {E} ({fmtTNT}).' If E > 4.184e9 J, add crater/quake as in the throw tab (crater only if vImpact ≥ 2 km/s) and blastBlock(E, 'where it lands'). For a partner: 'If Rex misses, Ollie lands on his feet at {vImpact}', with the same crater/quake treatment.\n\nMATH (Show the math):\n'Aim: the gentlest throw is the angle needing the least launch speed, each speed solved so the arc comes down at Ollie's hand height ({hStop}) {D} away. Same air and round-Earth model as Throw.'\n'Fastball: his full-strength speed at each angle; the flattest angle whose path passes Ollie's hands.'\n'Catch: F = m v²/(2d) if his footing holds (F ≤ R = {R}); otherwise F = (v²/(2d) + R/M)/(1/m + 1/M) and he slides. d = 0.3 × his height = {stroke}.'\n'Slide: the pair coasts to a stop against friction and air drag: x = (M+m)/(2k)·ln(1 + k u²/R).'\nDense: 'Their gravity: Φ(x) = −G m_Rex/x − G m_Ollie/(D − x). Launch v² = v_air² + 2 × (top of Φ − Φ at release); arrival adds the drop into Ollie's well.'\nHeat: 'Nose heating (Sutton–Graves, NASA): q = 1.74×10⁻⁴ √(ρ/rₙ) v³ W/m², added up along the path; share it could melt ≈ heat × frontal area / (mass × 1 MJ/kg).'\nFireball: 'Above 1% of c: sweep = m/(ρ₀A) = {sweep}; energy reaching him ≈ E/(1 + D/sweep).'\n\nASSUMPTIONS ITEM (static-data.js), title 'Game of catch': 'Each throw is aimed: the gentle lob is the slowest throw that reaches the catcher's hands, the fastball his hardest along the flattest path. Catching is the gentlest steady force that stops it while his hands give 0.3 × his height (full reach to chest, from US Army body measurements); his strength caps that force, and his footing decides whether he slides. Air heating uses NASA's stagnation-point formula as a rough upper bound and leaves out glowing-gas radiation above 11 km/s. Dense partners are treated as points with their mass at the centre. Earth doesn't spin here, there is no spin on the ball and no wind, and above 1% of light speed nothing arrives as a ball unless it is far heavier than the air in its way.'",
+ "caveats": "What the model leaves out, in plain words:\n- Catching is idealised. The hands give a fixed 0.3 × height (0.6 m at 2 m) with a perfectly steady force, the softest catch a person this size could make. No study measuring how far hands give was found. Real catches with a mitt stop a ball in a few centimetres with a higher, peaked force. Stepping back, falling over and bouncing out of the hands are not modelled. Catch force is capped at his full strength; real muscle resists about 1.2× harder while being stretched, so real-muscle catches are a little stronger than shown.\n- Footing during a slide uses the static grip limit as the sliding friction. After a fast catch, sliding off at km/s, he would really be knocked off his feet and flung. The 'slide' then means how far he and the object travel before air and ground stop them.\n- Object damage: the crush check uses the existing rough crush strengths. The baseball has no crush figure; it is compared only with the force of a home-run hit, which it survives. Heating is a rough upper bound: the stagnation-point flux is applied over the whole front, a single 1 MJ/kg melting heat is used for all materials, and melting doesn't feed back into the flight. Above 2.9 km/s at sea level the heating formula is used beyond its tested pressure range. Above 11 km/s radiant heat from glowing air is missing, so the damage there is a lower bound.\n- Above 1% of light speed the 'how far it gets' scale (m/(ρA), Newton's impact-depth rule) is an order of magnitude. The rule is meant for slower impacts. The 1% cut between 'arrives' and 'plasma' is a judgement call.\n- Dense partners are point masses at their centres, with the hands at fixed distances. A real 2 m body's gravity near its surface depends on its shape, so this is good to about a factor of two that close. Where their pull beats Earth's over the whole gap, the throw is a straight line with no drag and no Earth gravity. Elsewhere their wells are added to an Earth-only flight. Their own pull on the surrounding air (which the Weight tab describes) is not included in the flight. Both partners are assumed to stay put: on real ground a neutron-star-dense body sinks into the planet, and two dense partners pull each other together unless bolted.\n- Flight: same as the Throw tab, so no spin, lift, wind or Earth rotation. Earth turns about 0.25° a minute. In a 79-minute throw to the far side, the ground at the equator moves about 2,200 km, so a real throw would have to lead the catcher by up to that much. The Moon and Sun are ignored.\n- The gentle-lob search finds the least launch speed to about 0.02% in speed and 0.1° in angle. Near the minimum the speed barely changes with angle, so the angle shown is the less certain number.\n- Ollie uses the same body model as Rex (proportions, palms, Dempster segment masses). 'Dug in' for him means boots kicked into footholds, with the same buried area.",
+ "tests": [
+  {
+   "name": "T1 fly() extension is backward compatible",
+   "inputs": "baseball (m 0.1453 kg, A 0.00427 m², Cd 0.35/0.92), v0 200 m/s, θ 30°, h0 1.8 m; fly() vs extended fly with no hStop/xStop",
+   "expected": "range 348.867 m from both, identical",
+   "tolerance": "1e-9 m",
+   "reasoning": "With hStop = 0 and xStop = ∞ the new code takes exactly the old path. Rn only adds a heat accumulator."
+  },
+  {
+   "name": "T2 Sutton–Graves peak flux",
+   "inputs": "baseball, v0 3,000 m/s, θ 45°, h0 = hStop = 1.8 m, Rn = √(0.00427/π) = 0.036868 m",
+   "expected": "qMax = 2.710e7 W/m²",
+   "tolerance": "±0.01e7",
+   "reasoning": "q = 1.7415e-4 × √(1.225/0.036868) × 3000³ = 1.7415e-4 × 5.7643 × 2.7e10 = 2.7104e7 W/m², at launch at sea level."
+  },
+  {
+   "name": "T3 Gentle lob of a baseball, 10 m, default bodies",
+   "inputs": "Rex and Ollie 2 m/180 kg, comic, concrete, friction, dial 100 short tons (90,718 kg); ball baseball; D 10 m; style easy",
+   "expected": "launch 10.16 m/s at 45.1°; flight 1.446 s; arrives 9.674 m/s at 46.4° down; catch force 11.33 N; stroke time 0.124 s; footing holds; heat 'warm'",
+   "tolerance": "speed ±0.05 m/s, angle ±1.5°, time ±0.01 s, arrival ±0.03 m/s, force ±0.1 N",
+   "reasoning": "With no air on flat ground the minimum is √(gD) = √(9.80665 × 10) = 9.903 m/s at 45°, flight 2v sin45°/g = 1.428 s. Drag raises the speed 2.6% and the time to 1.446 s. Catch: F = m v²/(2d) = 0.1453 × 9.674²/(2 × 0.6) = 0.1453 × 93.59/1.2 = 11.33 N, below the footing limit (about 4.2 kN at 46°). t = 2d/v = 1.2/9.674 = 0.1240 s."
+  },
+  {
+   "name": "T4 Fastball baseball, 10 m",
+   "inputs": "same as T3, style hard",
+   "expected": "launch 629.1 m/s at about 0.008°; arrives 533.1 m/s; catch force 34,390 N; slips; slide 0.0152 m; 0.860× the home-run squeeze; heat 'warm' (nose 212 °C)",
+   "tolerance": "speeds ±1 m/s, force ±100 N, slide ±0.001 m",
+   "reasoning": "Supersonic drag e-folding length λ = 2m/(ρ Cd A) = 0.2906/(1.225 × 0.92 × 0.00427) = 60.39 m, so v(10 m) = 629.14 × e^(−10/60.39) = 629.14 × 0.8474 = 533.1 m/s. F_A = 0.1453 × 533.14²/1.2 = 34,416 N, more than R = 0.6 × 180 × 9.80665 = 1,059 N, so he slides. F_B = (236,865 + 1,059/180)/(1/0.1453 + 1/180) = 236,871/6.8879 = 34,390 N. 34,390/40,000 = 0.860. Nose: 288.15 × (1 + 0.2 × (629.1/340.29)²) = 485.1 K = 212 °C, below the 300 °C char point."
+  },
+  {
+   "name": "T5 Gentle lob of a car, 10 m: Ollie slides",
+   "inputs": "as T3, ball car (1,340 kg, 8.7 m², Cd 1.15/1.75)",
+   "expected": "launch 10.09 m/s at 45°; arrives 9.737 m/s at 46.0°; R = 43,330 N; catch force 50,734 N; slide 1.27 m",
+   "tolerance": "force ±200 N, slide ±0.05 m",
+   "reasoning": "F_A = 1340 × 9.737²/1.2 = 105,870 N, more than R (anchorCapacity at 46° with the car held on the line) = 43,330 N, so F_B = (9.737²/1.2 + 43,330/180)/(1/1340 + 1/180) = (79.0 + 240.7)/0.006302 = 50,734 N. a_rel = 50,734/1340 + (50,734 − 43,330)/180 = 37.86 + 41.13 = 78.99 m/s², t = 9.737/78.99 = 0.1233 s. Pair speed u = (1340 × 9.737 − 43,330 × 0.1233)/1520 = 5.07 m/s, horizontal 3.52 m/s. Afterwards: Rs = 0.6 × 1520 × 9.80665 = 8,944 N, k = ½ × 1.225 × 1.75 × 8.7 = 9.33, so x = 1520/(2 × 9.33) × ln(1 + 9.33 × 12.39/8944) = 1.046 m. During the stroke: ½ × 41.13 × 0.1233² × cos46° = 0.217 m. Total 1.26 m."
+  },
+  {
+   "name": "T6 Air is the wall for a baseball at 1 km",
+   "inputs": "as T3, D 1,000 m, easy",
+   "expected": "result too-weak; farthest at full strength 470.6 m (at about 25°); the lob would need about 2.6×10⁶ m/s and the heat verdict is 'destroyed'",
+   "tolerance": "farthest ±3 m",
+   "reasoning": "m/A = 34 kg/m², about 300× less than the 10,332 kg/m² of air above the ground. Speed falls 63% every 60 m above the speed of sound, so even 3 km/s at 45° only reaches about 496 m. The 629 m/s best throw tops out at 471 m."
+  },
+  {
+   "name": "T7 Terminal speed sanity check",
+   "inputs": "baseball data",
+   "expected": "√(2mg/(ρ Cd A)) = 39.45 m/s; Adair (1995) gives about 42 m/s",
+   "tolerance": "±0.05 m/s",
+   "reasoning": "2 × 0.1453 × 9.80665/(1.225 × 0.35 × 0.00427) = 2.8498/0.0018307 = 1556.7, √ = 39.45. That is 6% under Adair's drag-equals-weight speed, consistent with the sim's Cd of 0.35."
+  },
+  {
+   "name": "T8 Round trip, default lob",
+   "inputs": "catchGame(default, default, baseball, 10 m, easy)",
+   "expected": "3.140 s",
+   "tolerance": "±0.02 s",
+   "reasoning": "2 × (1.4459 flight + 0.1240 catch) = 3.1398 s; both legs are symmetric."
+  },
+  {
+   "name": "T9 Neutron-star Rex must give the ball escape speed",
+   "inputs": "Rex density 4.12e17 kg/m³ (m = 7.416e16 kg), both bolted, comic ground, both dials 1e22 kg; Ollie default; baseball; D 10 m; easy",
+   "expected": "barrier 9.308e6 J/kg; launch 4,315 m/s; arrives 9.903 m/s (straight line, wells dominate)",
+   "tolerance": "barrier ±0.002e6, launch ±2 m/s, arrival ±0.01",
+   "reasoning": "GM = 6.6743e-11 × 7.416e16 = 4.9497e6 m³/s². Release x₀ = max(0.3503, 0.5) = 0.5 m. Ollie's held radius = 1 + 0.5 × ∛(0.1453/680) = 1.02989 m, r_meet = 1.62989, x₁ = 8.37011 m. barrier = GM(1/0.5 − 1/8.37011) = 4.9497e6 × 1.880527 = 9.3080e6. v_E = √(gD) = 9.903, so v_L = √(98.07 + 1.86160e7) = 4,314.6. Wells dominate (√(GM/g) = 710 m > 10 m). Ollie has no well, so barrier + gain = 0 and arrival = v_E."
+  },
+  {
+   "name": "T9b Neutron-star Rex at the default dial can't even hold the ball",
+   "inputs": "T9 bodies but friction, dial 100 short tons",
+   "expected": "result cant-hold; holdNeeded 2.182e15 N",
+   "tolerance": "±0.002e15",
+   "reasoning": "throwOnce holds the object plus the effective hand mass 0.003 × 7.416e16 = 2.2248e14 kg: × 9.80665 = 2.1818e15 N, far above the 8.9e5 N dial."
+  },
+  {
+   "name": "T10 A neutron-star Ollie pulls in a gentle lob",
+   "inputs": "Rex default, Ollie density 4.12e17, both bolted, comic ground, dials 1e22 kg; baseball, 10 m, easy",
+   "expected": "arrival 2,243 m/s; catch force 1.0377e6 N (clean)",
+   "tolerance": "arrival ±1 m/s, force ±0.001e6 N",
+   "reasoning": "gain = GM(1/r_meet − 1/(D − x₀)) = 4.9497e6 × (0.613538 − 0.105263) = 2.5158e6 J/kg, so v = √(98.07 + 5.0316e6) = 2,243.1. inStroke = GM(1/1.02989 − 1/1.62989) = 1.7692e6, v_eff² = 8.5701e6, F = 0.1453 × 8.5701e6/1.2 = 1.0377e6 N."
+  },
+  {
+   "name": "T10b Same, both at the default dial: it slams into him",
+   "inputs": "T10 with dials 100 short tons",
+   "expected": "result slams; v_slam 1,105.8 m/s",
+   "tolerance": "±1 m/s",
+   "reasoning": "F_cap = 889,644 N is less than 1.0377e6 needed (hold 6.78e5 N is fine). Remaining v² = 8.5701e6 − 2 × (889,644/0.1453) × 0.6 = 8.5701e6 − 7.3474e6 = 1.2227e6, √ = 1,105.8."
+  },
+  {
+   "name": "T11 Neutron-star Rex and normal Ollie can't stand 10 m apart",
+   "inputs": "catchGame(NS Rex friction, default Ollie friction, baseball, 10 m)",
+   "expected": "pull 8.909e6 N; Ollie's footing 1,059 N; they fall together in 0.01566 s",
+   "tolerance": "pull ±0.002e6, time ±0.0002 s",
+   "reasoning": "F = 6.6743e-11 × 7.416e16 × 180/10² = 8.909e6 N. fallTogether with contact 0.70053 m: t = √(10³/(2 × 4.9497e6)) × (√(x(1−x)) + acos√x), x = 0.070053, which is 0.010051 × 1.55811 = 0.015661 s."
+  },
+  {
+   "name": "T12 Two neutron-star partners: over the hump between them",
+   "inputs": "both 4.12e17 kg/m³, bolted, comic ground, dials 1e22 kg; baseball; 10 m; easy",
+   "expected": "barrier 8.440e6 J/kg; launch 4,109 m/s; arrival 1,816 m/s",
+   "tolerance": "±0.002e6; ±2 m/s; ±2 m/s",
+   "reasoning": "Saddle at 5 m: Φ(5) = −0.4 GM, Φ(0.5) = −(2 + 1/9.5) GM = −2.105263 GM, so barrier = 1.705263 × 4.9497e6 = 8.4405e6. v_L = √(98.07 + 1.68809e7) = 4,108.7. gain = Φ(0.5) − Φ(8.37011) = (−2.105263 + 0.733011) GM = −6.7922e6, so arrival = √(98.07 + 2 × (8.4405e6 − 6.7922e6)) = 1,815.7."
+  },
+  {
+   "name": "T13 Infinite-strength fastball: the plasma reaches Ollie",
+   "inputs": "both infinite strength, baseball, 10 m, hard",
+   "expected": "result fireball, kind 'plasma', sweep 27.78 m, energy unbounded",
+   "tolerance": "sweep ±0.01 m",
+   "reasoning": "sweep = 0.1453/(1.225 × 0.00427) = 27.778 m; D/sweep = 0.36, between 1% and 100%."
+  },
+  {
+   "name": "T13b A relativistic pyramid arrives nearly whole",
+   "inputs": "dials 1e30 kg, bolted; pyramid (6e9 kg, 34,700 m²); 10 m; hard",
+   "expected": "kind 'arrives', sweep 141.15 km, clean catch (F needed 8.80e30 N < 9.81e30 N)",
+   "tolerance": "sweep ±0.1 km",
+   "reasoning": "6e9/(1.225 × 34,700) = 141,152 m; D/sweep = 7.1e-5 < 1%. F = E_arr/0.6 m."
+  },
+  {
+   "name": "T14 Rex tosses Ollie 10 m up and catches him",
+   "inputs": "default bodies and settings, partner ball, easy, toss height 10 m",
+   "expected": "toss speed 12.83 m/s; flight 2.585 s; catch force 23,630 N; sink ratio 0.113",
+   "tolerance": "±0.05 m/s; ±0.02 s; ±150 N",
+   "reasoning": "With no air, √(2g × 8.2 m) = 12.68 m/s and 2v/g = 2.586 s; drag on a 0.8 m² body (λ = 367 m) adds a little speed. He comes down at 12.55 m/s, so F = 180 × 12.55²/1.2 = 23,627 N. Load on the feet (1,765 + 23,627 N)/(2.5 MPa × 0.09 m²) = 0.113."
+  },
+  {
+   "name": "T14b Full-strength toss of Ollie sinks Rex into the slab",
+   "inputs": "as T14, hard",
+   "expected": "apex 163.3 m; comes back at 46.0 m/s; catch 3.17e5 N; sink ratio 1.418",
+   "tolerance": "apex ±1 m; sink ±0.01",
+   "reasoning": "71.2 m/s up (throwObject at 90°). F = 180 × 45.99²/1.2 = 317,270 N, and (1,765 + 317,270)/225,000 = 1.418 > 1, so his feet punch into the 10 cm slab."
+  },
+  {
+   "name": "T15 A game of catch across the planet",
+   "inputs": "both dials 1e17 kg, bolted, comic ground; pyramid; D 20,000 km; easy",
+   "expected": "launch 9,798 m/s at about 21°; one way 78.6 min; round trip 2.62 h; arrives 7.3 km/s; heat 'skin' (about 0.07% could melt); catch 2.7e17 N; his palms punch in (plate 8.9e9 m², about 94 km square)",
+   "tolerance": "speed ±30 m/s; time ±0.5 min; round ±0.02 h",
+   "reasoning": "m/A = 173,000 kg/m², 17× the air column, so it punches through the air. A vacuum minimum-energy arc to the far side is about orbital speed (7.9 km/s) at a low angle; air and the 20° climb push that to 9.8 km/s. Plate side = √8.918e9 = 94.4 km."
+  },
+  {
+   "name": "T16 Unequal strengths: Ollie with a 1 t dial and a car",
+   "inputs": "Rex default; Ollie dial 1,000 kg; car; 10 m; easy",
+   "expected": "leg A: cant-hold-it (car weighs 13,141 N > Ollie's 9,807 N); leg B: cant-hold; no round trip",
+   "tolerance": "exact flags",
+   "reasoning": "Weight 1340 × 9.80665 = 13,141 N, more than 1,000 × 9.80665."
+  },
+  {
+   "name": "T17 Heavy object: the gentle lob is out of reach but a full-strength throw works",
+   "inputs": "defaults; car; 30 m; easy",
+   "expected": "caught with fullStrength = true at about 47.9°, 18.2 m/s; force 9.18e4 N; slide 4.56 m",
+   "tolerance": "angle ±0.5°, speed ±0.1 m/s",
+   "reasoning": "The gentlest arc needs 18.14 m/s at 44°, but his full-strength car throw at 44° is only 16.65 m/s. The farthest at full strength is 45.6 m (at 60°), more than 30 m, so the flattest full-strength angle that reaches is used."
+  },
+  {
+   "name": "T18 Unequal sizes: kaiju thrower aims down",
+   "inputs": "Rex 50 m (dial 1e9 kg), Ollie default; baseball; 100 m; hard",
+   "expected": "θ about −23.3°, launch 2,978 m/s, arrives about 493 m/s, clean catch",
+   "tolerance": "angle ±0.5°",
+   "reasoning": "Release at 45 m, hands at 1.8 m: atan(43.2/100) = 23.4° below level, so the flattest path is a downward line. Drag over about 109 m of path takes the speed from 2,978 to about 493 m/s (supersonic λ = 60.4 m, e^(−1.8) = 0.165)."
+  }
+ ],
+ "open_questions": "1. Partner as the ball. With only two people, I designed it as 'Rex tosses Ollie straight up and catches him', and the return leg is Ollie tossing Rex. The alternative is throwing the partner to a spot D away, where he lands on his feet (that is just Throw with a partner as the object). Please confirm the vertical toss is what the owner wants.\n2. Catch stroke. No measured study of how far hands give in a catch turned up. 0.3 × height is anatomical (ANSUR II reach minus chest depth) and is the softest possible catch. Do we want a 'Hard hands (mitt, 5 cm)' option? Forces would be 12× higher.\n3. Real-muscle eccentric bonus. Should real-muscle catches get the ~1.2× living-human eccentric factor (Franchi et al. 2017)? I left it at 1.0× to stay conservative and simple.\n4. Heating detail. Materials are five classes with sourced damage temperatures and one 1 MJ/kg melting heat. This needs a new material field per object in build-data.py. Is the coarse 'warm / skin / loses / burns up' verdict enough, or should the page show the heat load in J/m² as well?\n5. Earth rotation is ignored, as in the Throw tab. For flights over a few minutes this shifts the landing point by up to thousands of km (about 2,200 km in the 79-minute far-side throw). Do we want a 'lead the catcher' note computed from latitude, or just the caveat?\n6. Performance. The cold gentle-lob solve takes 0.2-0.8 s per new object or distance (cached afterwards). Adding ctx.noFlight to throwOnce makes the per-frame strength-dial path about 10× cheaper. The engineer may want a 'computing…' state or a Web Worker if long-range distances feel sluggish.\n7. Black-hole catcher wording ('it disappears into him') and the ∞ vs ∞ fireball catch should match the Collide area's language. Please coordinate.\n8. The dense-partner model uses the engine's heldRadius (0.5 H + half the object) and pushStartRadius (0.25 H). Those belong to the density area; if they change, tests T9-T12 change with them."
+}

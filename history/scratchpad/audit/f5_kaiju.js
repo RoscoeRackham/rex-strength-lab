@@ -1,0 +1,13 @@
+const fs = require('fs');
+const P = require('/home/user/dino-strength-sim/src/engine.js');
+global.window = {}; eval(fs.readFileSync('/home/user/dino-strength-sim/src/data.js', 'utf8'));
+const D = window.DINO_DATA, g = P.K.g, deg = Math.PI / 180;
+const sand = D.surfaces.find(s => s.id === 'sand');
+const body = P.makeBody({ H: 50, m: 180 * 25 ** 3 });
+const b747 = D.objects.find(o => o.id === 'b747');
+const qV = 0.5 * sand.rho * g * Math.sqrt(body.footArea) * 22.40 * 0.6;
+const c = (q) => ({ F: 1e7 * g, mode: 'comic', body, surface: { ...sand, qult: q }, groundHolds: false, anchor: 'friction' });
+const a = P.lift(c(sand.qult), b747), b = P.lift(c(qV), b747);
+console.log('Kaiju lifts 747 on sand: engine groundRatio', a.groundRatio.toFixed(2), 'standRatio', a.standRatio.toFixed(2), '| Vesic30 groundRatio', b.groundRatio.toFixed(2), 'standRatio', b.standRatio.toFixed(2));
+const t1 = P.throwObject(c(sand.qult), D.objects.find(o => o.id === 'car'), 45), t2 = P.throwObject(c(qV), D.objects.find(o => o.id === 'car'), 45);
+console.log('Kaiju throws car 45deg on sand: engine anchor R', t1.anchor.R.toExponential(3), 'recoilV', t1.recoilV.toFixed(3), '| Vesic30 anchor R', t2.anchor.R.toExponential(3), 'recoilV', t2.recoilV.toFixed(3));

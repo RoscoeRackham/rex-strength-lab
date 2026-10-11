@@ -1,0 +1,378 @@
+You are fixing confirmed audit findings in the "Rex Super-Strength Lab" physics simulator at /home/user/dino-strength-sim.
+Findings file: /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit-final.json. It is a JSON array of 4 lenses (physics, regression, data, ux). Each has a "confirmed" array. IDs are the lens initial plus the index in that array: p0 = physics.confirmed[0], r3 = regression.confirmed[3], d4 = data.confirmed[4], u10 = ux.confirmed[10]. Each finding has title, claim, evidence (exact repro), fix, and a skeptic's verdict with a refined fix. Line numbers may have drifted; search by content.
+Files: src/engine.js (physics), src/app.html (page text and UI), src/static-data.js (assumption cards), research/final-*.json (sourced facts; build-data.py turns them into src/data.js), test/calibration.js (tests).
+Build and test after every few fixes: cd /home/user/dino-strength-sim && python3 build-data.py && node build.js && node test/shots.js && node test/calibration.js   (calibration must end "all checks passed"; it takes about 75 s).
+Render any page state and dump its text to check your fix: node /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/a3/weightshot.js '[["name",1280,{STATE}]]'  (state keys: see DEFAULTS in src/app.html; screenshots land in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/a3/<name>.png; add "dark" as a 4th element for dark mode; use 390 for phone width).
+Rules:
+- Fix the root cause, minimally and consistently; do not widen scope. If two findings conflict, choose the physically correct option and say why.
+- For each critical or major physics fix, add a regression check to test/calibration.js.
+- Page text: plain, short sentences; every number sourced or labelled an estimate; never invent canon about Ollie (bull-man with horns, nose ring, earrings, vest, cargo pants, boots: no claws). Rex and Ollie are equally strong and equally indestructible.
+- Do NOT change: the BUILDS / DEFAULT_BODIES values in src/engine.js (marked provisional; set separately), the art figures and avatars, or the line that forces state.oSame = true on load.
+- Do not commit or push. Other agents fix other batches after you, on the same files: leave the tree building and passing.
+Return a list of every finding ID in your batch with what you changed (file and function) and how you verified it, or why you left it.
+
+You are now a SKEPTICAL RE-VERIFIER, not a fixer: do not edit project files (scratch scripts under /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/reverify/ only). Rebuild once, then for each of these finding IDs re-run its original reproduction on the current build and decide whether it is really fixed, and whether the fix introduced a new problem nearby: p0 p1 p2 p3 p4 p5 p6 p7 p8 p9 p10 p11 p12 r0 r1 r2 r3 r4 r5 r6 r7 r8 r9 r10 r11.
+
+Fixers' reports:
+[
+ {
+  "batch": "density-weight",
+  "report": {
+   "items": [
+    {
+     "id": "p0",
+     "status": "fixed",
+     "change": "src/engine.js settle() passFor: the gravitational-drag term now uses m*dfCoef*v (a force) instead of m*dfCoef*v^2. test/calibration.js has two new checks: settle().firstPassLossJ / (m g x the 3-D shortfall) is 1 +- 0.15 for the 2 m neutron-star Rex, and the settling time differs between 7.4e16 kg and 1e18 kg.",
+     "verified": "node: 7.416e16 kg at 2 m gives a loss of 4.18e18 J per trip (ratio to the 3-D shortfall 1.09) and 2,198 yr; 1e18 kg gives 512 yr. Page {H:2,m:7.416e16}: '~2,200 years / 490 years to 29,000 years', '1 Gt TNT per trip ... magnitude 6.5 quake'. Both new calibration checks pass."
+    },
+    {
+     "id": "d6",
+     "status": "fixed",
+     "change": "research/final-density.json has two new facts. gravitational_drag_ostriker cites Ostriker 1999, ApJ 513:252, arXiv astro-ph/9810324; its eqs. 12, 14 and 15 were read from the arXiv PDF, and the ln-Lambda = 5 choice is labelled an estimate. rock_sound_speed_prem gives the PREM S and P wave speeds, read from ObsPy prem.nd: 3.2-7.3 and 5.8-13.7 km/s. build-data.py turns both into source rows. src/engine.js: dfCoef takes an optional cs, fallThrough and settle pass opt.cs, and there is a new W8.CS_LOW = 3200. In weight(), the fast end of the settle, shortfall and stop ranges now uses strong rock, k = 2 and cs = 3.2 km/s. app.html bayWeight math line and the static-data.js 'Sinking' card now give the c_s basis and say how the ranges use it.",
+     "verified": "Sensitivity scan: with cs 3.5, 6, 9 and 13.7 km/s the 7.4e16 kg settle times are 748, 2,198, 3,551 and 4,419 yr. All now fall inside the shown range of 490 to 29,000 yr. data.js now has the Ostriker and prem.nd rows."
+    },
+    {
+     "id": "p7",
+     "status": "fixed",
+     "change": "src/engine.js has a new restRadius(body, sigma) helper, and settle() uses it. In weight(), the weak- and strong-rock stuckRange runs integrate with full:true and tMax 4 days until he sticks; if a run never sticks, it falls back to the static rest radius. A run is never mapped to r = 0. stuckRange.swings is now recorded. The calibration check now expects the computed weak-rock stop (10.4 +- 3 km) instead of 'rMin < 50 km'.",
+     "verified": "At 2 m, the white-dwarf weak-rock run passes the centre and sticks at 10.4 km (the old run reported 'not stuck'). The page reads 'anywhere from 10.4 km to 646 km from the centre ... weak rock lets him swing through the centre before he stops'. The 3.05 m preset reads '1.08 km to 87.5 km'."
+    },
+    {
+     "id": "d12",
+     "status": "fixed",
+     "change": "Same engine fix as p7. The verdict sentence in app.html bayWeight adds 'weak rock lets him swing through the centre before he stops' when a run swung first. The deep_rock_strength_assumption note in research/final-density.json is refreshed to the current values: threshold 3.1e6-1.25e8 kg with buoyancy, white-dwarf stop about 10 to 646 km, and the parameters at each end of the range.",
+     "verified": "Rendered the white-dwarf states at 2 m and 3.05 m: the page no longer shows '0 mm'. The calibration check passes."
+    },
+    {
+     "id": "u3",
+     "status": "fixed",
+     "change": "app.html bayWeight verdict now prints the shortfall range itself: 'coasts to a stop X to Y under the far side's surface (it depends on how strong deep rock is)'. 'a few metres/kilometres (about ...)' is gone. A shared shortText says 'up to Y' when the low end is under 1 m, because the 3-D turnaround has a +0.45 m bias in a no-drag run; otherwise the page would print '0 mm to 50 m'. The same text is used in the per-trip bullet.",
+     "verified": "m=1e12: '512 km to 951 km under the far side's surface'. m=1e15: '556 m to 1.11 km'. 2 m neutron star: '2.78 m to 9.75 m'. 1e18 kg: 'up to 50.4 m'."
+    },
+    {
+     "id": "d8",
+     "status": "fixed",
+     "change": "app.html happens() takes an optional cap, and bayWeight calls happens(items, 6). The Weight tab can produce at most 6 bullets, so the osmium and neutron-matter caveat is no longer cut.",
+     "verified": "The neutron-star preset at the default height (1.05e18 kg) and the 2 m neutron-star state now show all 6 bullets, including the matter caveat. The other tabs still cap at 5."
+    },
+    {
+     "id": "u6",
+     "status": "fixed",
+     "change": "Same fix as d8: happens(items, 6) in bayWeight. I raised the cap rather than reordering, because cutting the Bondi bullet instead would orphan the 'Air falls onto him' chip.",
+     "verified": "Rendered the Neutron star chip state and m=1e15: the caveat bullet appears in both."
+    },
+    {
+     "id": "p8",
+     "status": "fixed",
+     "change": "src/engine.js: new W8.RHO_NUC = 2.7e17 and W8.RHO_NS_CORE = 2.7e18 (10 n0, from the Lattimer & Prakash fact). nmCaveat now carries rhoNuc and beyondNS. app.html has a new nmText(). Above 2.7e18 kg/m3 it says he is denser than any known matter, even neutron-star cores, that holding it would take far more than the 2.2-3.4 x 10^32 Pa of nuclear matter, and keeps 16 MeV per neutron as 'at least'. When the energy exceeds Earth's binding energy it is shown as a ratio instead of a 6,300,000% figure.",
+     "verified": "m=1e22 and 1e25 render the 'denser than any known matter' text with '2.2-3.4 x 10^32 Pa' and 'at least ...'."
+    },
+    {
+     "id": "d2",
+     "status": "fixed",
+     "change": "For 1e17 to 2.7e18 kg/m3, app.html nmText() now gives the pressure and energy at nuclear density only: 'At nuclear density (2.7 x 10^17 kg/m3) that takes ... 2.2-3.4 x 10^32 Pa, and more when denser', and '16 +- 2 MeV per neutron ..., and the nuclei that form and decay add more'. The figure for this Rex is labelled 'roughly ... (an estimate)'. I reworded the text below rho0 rather than gating at rho0, so the 1e17-2.7e17 band doesn't fall back to the electron-degenerate white-dwarf sentence. Also updated the E_NM comment in engine.js and the nuclear_saturation_density note.",
+     "verified": "Rendered H 2, m 1.08e17 (1.5e17 kg/m3, 0.56 rho0) with comic ground: the text no longer claims 3 x 10^32 Pa or 'at least 16 MeV' for this density."
+    },
+    {
+     "id": "p6",
+     "status": "fixed",
+     "change": "src/engine.js planetRegime: 'reshapes' no longer has tff, and eLow = m*(0 - premPhi(0)), the energy of sinking to the centre. app.html bayWeight: the 'Earth falls onto him' tile is shown only for earthFalls; reshapes gets a 'Share of Earth's mass' tile ('he sinks to the centre'). The reshapes bullet now says sinking alone releases X and the planet squeezing in adds more. The surface-based dBeat, loose-things and crush-radius sentences and the dBeat chip now appear only in regime 'none'.",
+     "verified": "m=1e22: the tiles show 'Share of Earth's mass 0.17% / he sinks to the centre' and 'Energy released, at least 4.9 x 10^29 J'. There is no 14.9 min tile and no surface-granite crush sentence."
+    },
+    {
+     "id": "u8",
+     "status": "fixed",
+     "change": "In app.html: (1) the reshapes tile, as in p6. (2) earthCutaway() takes a caption, and bayWeight builds it from the outcome. A stuck run reads 'ends up east/west of straight down', using the sign of driftKm; a fall-through reads 'drifts west/east of the exact opposite point'. f.stuck now takes precedence for the end label too, because a heavily damped full run can have both firstPass and stuck. (3) The bedrock clause is printed only when rCrush > his radius and the regime is 'none'. (4) In the 'stands' regime the verdict reads 'The ground holds him, but he's too heavy...' or 'The ground holds him. He can stand, but he's too heavy to walk.'",
+     "verified": "Old white-dwarf preset (1.76e9 kg): the caption says 'ends up east of straight down', matching the bullet's '19.2 km east'. Real white-dwarf chip: 'west', matching '159 km west', with end label 'stops here'. m=1e12: 'bedrock stays put.' with no 0.11 mm radius. m=1e25: no 1.1e6 km clause. m=5001.46 with logKg 1: 'The ground holds him, but he's too heavy for his own legs...'."
+    },
+    {
+     "id": "d5",
+     "status": "fixed",
+     "change": "Followed the skeptic's fix: the rules stay as they are and the basis is stated plainly. In app.html bayWeight, the walk-OK bullet now says the sim sets 1.2 W on one leg against both legs' 1.4x push (a rough rule), that running is the Sprint tab's rough rule, and that real 2-2.9 W running peaks come from springy, near-straight legs the dial doesn't model. The stand and walk-fail bullets say 'both legs', and the math line states each basis. The static-data.js 'Density and weight' card and the moveCheck comment in engine.js are updated to match. I did not adopt the per-leg running rule: it breaks the Bolt calibration.",
+     "verified": "Rendered steel (walks), stand-but-no-walk and can't-stand states. The text is consistent, and calibration still passes, including Bolt's top speed."
+    },
+    {
+     "id": "r9",
+     "status": "fixed",
+     "change": "src/engine.js groundUnderWeight: fallsThrough, strongRockHolds, weakRockFails and rockRatio now use the net weight (m - premRho(crust) V) premG(R_E). This is the same buoyancy-corrected test fallThrough uses to decide he is held. New calibration check: for a 500 m Rex, just below the threshold he is not fallsThrough, and at 1.0005x the threshold he sinks thousands of km, never a 1 s / 4.9 m stop.",
+     "verified": "Probe at 2 m and 500 m, from 1.00001x to 1.01x the threshold: every case is fallsThrough with a deep stop, and 0.9995x is 'sinks'. Rendered 500 m granite states on both sides of the rex-build threshold (3.2751e12 kg): 'feet punch into the granite' and 'sinks 24.8 km ... upper mantle' (a real buoyancy stop at the denser mantle). The 4.89 m / 1 s artifact and 'sinks at up to 0 m/s' are gone. The calibration check passes."
+    },
+    {
+     "id": "r3",
+     "status": "fixed",
+     "change": "src/engine.js pull() now calls moveCheck. Dragging a load means walking, so net force is 0 unless move.walk. It returns cantWalk, cantStand and walkNeedKg, with limitedBy 'legs'. app.html bayPull: new verdict 'Rex can't drag it: he is too heavy to get up off the floor / to walk. Walking needs a dial setting of X', a 'Too heavy to get up/walk' chip, and an explanatory bullet. New calibration check: steel Rex at 2 m (1,413 kg) with a 501 kg dial can't drag a car, and the default Rex at 511 kg still can.",
+     "verified": "Page {action:pull,H:2,m:1413,logKg:2.7}: 'Rex can't drag it: he is too heavy to get up off the floor. Walking needs a dial setting of 1.21 t.' White-dwarf state: the same. The default pull is unchanged. The calibration check and the existing relativistic-pull check pass."
+    },
+    {
+     "id": "u14",
+     "status": "fixed",
+     "change": "app.html earthCutaway: the 'inner core' label now sits beside the circle with a short leader line, because the inner core is at most 69 px across at the 420 px cap. The end and inner-core labels get a var(--surface) halo stroke (paint-order stroke). logBars: when no row has a finite non-zero value, it renders a one-line text summary (e.g. 'Rex's strength no limit · ... none') instead of an axis that draws infinity at 10 N.",
+     "verified": "2x screenshots at 390 px in light and dark, and at 1280: the label is readable and clear of the path, and 'stops here' is readable on the inner core. Wrestle push with inf and both bolted shows the text summary instead of the 1 N-10 N axis. shots.js reports overflow 0 and no console errors at 1280 and 390."
+    }
+   ],
+   "testsPass": true,
+   "notes": "The full pipeline ends 'all checks passed': python3 build-data.py && node build.js && node test/shots.js && node test/calibration.js. Files changed: src/engine.js, src/app.html, src/static-data.js, test/calibration.js, research/final-density.json; src/data.js and dist/ were regenerated. Nothing committed or pushed.\n\nNot touched: BUILDS / DEFAULT_BODIES, the art and avatars, and the state.oSame = true line.\n\nThings the next agents should know:\n1. Some audit repro states are stale because the build volume changed since the audit. At the default height the Neutron star chip is now 1.049e18 kg, not 2.62e17, and the White dwarf chip is 7.06e9 kg. I verified against both the old states and the real chip values.\n2. The earth_surface_heat_flow research note quoted the old settling time ('23 TW over ~5,000 years'). The p0 fix changed that, so I refreshed it to about 50 TW over about 2,200 years. Notes are not exported to the page.\n3. Left alone, outside my batch:\n   - The Bondi 'air falls onto him' bullet still shows in the reshapes and earthFalls regimes, where he is at or near the centre.\n   - The 'White-dwarf matter is held up by electrons' sentence still shows for 1e14-1e17 kg/m3, which is neutron-drip territory.\n   - The 'outer core' label touches the outer-core boundary at phone width.\n\nScratch tools: /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/cutshot.js screenshots the cut-away. weightshot.js now honours MAXT for longer text dumps."
+  }
+ },
+ {
+  "batch": "catch",
+  "report": {
+   "items": [
+    {
+     "id": "p1",
+     "status": "fixed",
+     "change": "engine.js fireballAt: momentum is now computed from energy (pc = sqrt(E²+2Emc²)), which stays exact when v rounds to c. The lump's rest mass now counts its swept air and its heat (E/c²). New fields: Ehere (E minus the motion left after the hit: p²/2M_E if bolted, KE(p, M+m_lump) if free), Eafter, Ecarry, sweepOn, Lnear, Enear (free pair's snowplow heat within sqrt(2 R_E H_s) ≈ 320 km), and Eblast ('before': E; otherwise Ehere+Enear). app.html: pushText now states the energy freed where Ollie stands; the 'arrives' verdict calls Egap heat that 'rides along with it'; catchEnvItems replaces 'air between them takes Egap' with the release accounting; blastBlock is fed Eblast instead of Egap; Show the math gains the release formula. research/final-duo.json relativistic_arrival_classes display and notes updated.",
+     "verified": "New calibration checks for the car at 10^22 kg and the pyramid at 10^30 kg, both bolted: blast energy never drops as D falls across before/plasma/arrives, and Ehere > 0.999E. Free-Ollie check: Ehere ≥ Egap and Ehere+Ecarry = E. A sweep of 960 legs found no Ehere<Egap and no NaN. Page renders: car at 10^22 bolted frees 7.4e22 J at every distance (was 7.45e20); pyramid at 10^30 frees 8e30 J (was 3.6e25)."
+    },
+    {
+     "id": "p3",
+     "status": "fixed",
+     "change": "engine.js catchIt: wholeFront = max(first-hit F1, arm force, hold)/area/strength, so no plate helps once it exceeds 1. leg(): new launch check launchPush = m vL²/(2·stroke), launchRatio over the cross-section, and a new first gate result 'crushed-launch'. app.html adds the verdict, chip, tile, bullet, env item and math line for it, and includes it in lostEarly and CATCH_ARRIVED.",
+     "verified": "Checks: shot put at 10^7 kg bolted fastball is 'wreckage' (first hit 4.7 GPa vs 750 MPa); car at 10^8 kg fastball is 'crushed-launch' (7.4× its grip limit). The existing pyramid-across-the-planet check now expects 'crushed-launch': its push is 173,000× its strength, before the air acts, which is correct physics. Rendered on the page."
+    },
+    {
+     "id": "d4",
+     "status": "partly",
+     "change": "Labelled, with no new strength added. build-data.py adds crushWhole=True on the shot, bar511 and ruyi (solid metal, so the crush value is a whole-object strength), and their grip-limit source rows get a note saying whether the catch uses the value as a whole-object strength or errs toward survival. app.html strengthText(): solid objects read 'the ~X it can take'; all others read 'its ~X grip limit (a rough local value; the whole car gives way sooner)'. This is used in the breaks-up, crushed-launch and wreckage text, the tiles and the math line, and the math line says the checks err toward survival. 'Whole front (2.95 m × 2.95 m)' became 'average cross-section (8.7 m²)'. The catch_breakup_ram_pressure fact display and notes are corrected, and the static-data.js catch card is updated.",
+     "verified": "Check: crushWhole only on bar511, ruyi and shot. Rendered car, shot and pyramid states. Left open: hollow objects still use the lenient grip limit as their gate, now labelled. A real whole-structure strength per object would need new sourced research."
+    },
+    {
+     "id": "p5",
+     "status": "fixed",
+     "change": "engine.js catchIt: tStroke = vE/aRel, the time the stated force actually takes (the 2d/v cap is removed). app.html: when the catches are more than a quarter of the round trip, a bullet explains each catch takes X at the least force and that pulling harder would be quicker; the math line adds t = v_eff/a. Consequence: the default lob's round trip is now 33 s (was 4.5 s), because each least-force catch takes 14.5 s.",
+     "verified": "Check: F·tStroke = sqrt(2 F d (m+m_h)) to 1e-6. Default page rendered."
+    },
+    {
+     "id": "p12",
+     "status": "fixed",
+     "change": "engine.js leg: new armHold field (the arm's weight). app.html legVerdict 'cant-hold' now says 'at this density he can't even hold his own arm up (X)' when the arm is more than half the load. The throwOnce comment is corrected; the scalar sum is kept as a slight overestimate for a load held at the shoulder (the verdict called the vector part optional).",
+     "verified": "Check: 1e12 kg partners give cant-hold with armHold > 99% of the load. Page: the oM 7.416e16 state reads 'Ollie can't throw the baseball: at this density he can't even hold his own arm up (2.18 PN)'."
+    },
+    {
+     "id": "r0",
+     "status": "fixed",
+     "change": "engine.js releaseTable: 16 exact angles (80, 84, 86, 88, 89 added), capped at 89° so nothing interpolates toward the singular 90° value; cached per ctx and object; adds vTop and an exact at(th). aimHard: at or above 1% of c it returns a fireball only if the straight line at the exact aim angle thAim (curvature included) meets him; otherwise it returns overshoots with relativistic set. leg reports the aimed angle's own speed and exact energy. app.html: overshoots text for the relativistic case ('turns into a fireball heading up, not toward him').",
+     "verified": "Check: table within 20% of exact throws up to 89° (worst 1.125×, was ~123×). Check: no fastball fireball below 1% of c for Eiffel 10^19 and 10^20 and pyramid 10^18 and 10^20.5 at 100 km. Results: Eiffel 10^19 and pyramid 10^18 are too-weak, as the auditor found; Eiffel 10^20 is overshoots-relativistic."
+    },
+    {
+     "id": "r10",
+     "status": "partly",
+     "change": "Catch side fixed by the 89° table cap (shared root with r0). Solo Throw: app.html bayThrow's sink bullet now says (for angles ≥45° on failing ground) that the sim lets the ground take the downward part of his push, only the sideways part is footing-limited, and a near-vertical throw is an upper bound. anchorCapacity is unchanged; changing it would alter every throw on yielding ground.",
+     "verified": "Rendered pyramid at 10^19 kg at 89° and 90°: both show the note. The cliff itself remains in the model and is now explained on the page."
+    },
+    {
+     "id": "r4",
+     "status": "fixed",
+     "change": "engine.js aimEasy: an angle whose least reaching speed overshoots (escape or orbit) scores Infinity, so only landing arcs are minimised; noArc is returned only when every reaching angle overshoots, and leg returns 'no-arc' from that. vNeededAt now returns the flight at that speed, so no extra flight is needed.",
+     "verified": "Check: tank lobbed 10,000 km at 10^16 kg (comic ground) is no longer no-arc; it aims at 67° and is crushed at launch. The auditor expected breaks-up, and the launch check is earlier."
+    },
+    {
+     "id": "r5",
+     "status": "partly",
+     "change": "pushApartHill sizes its step to the Hill crawl speed when the stroke would be ≥20× the usual estimate. Catch: release table cached; distance-independent farthest() cached (farthestCached); bisection tolerance 2e-4→5e-4; golden-section stop 0.1°→0.25°; the redundant final flight per angle removed.",
+     "verified": "Shove 'both' at 1e21 kg/10^34: 2.2 s → 40 ms. A 120-state shove sweep is identical to the baseline at 4 significant figures, and a 540-state throw/jump/punch sweep at 6. Catch Eiffel lob at 100 km: first render 1.6 → 1.3 s, strength change 0.17 s, distance change 1.2 → 0.9 s. Still slow: b777 with unequal bodies at about 2.5 s, because it computes two separate aims."
+    },
+    {
+     "id": "r6",
+     "status": "fixed",
+     "change": "engine.js tossPartner returns 'cant-move' when vMax is not above 0, before any flight. app.html catchPartner gets new wording and skips the irrelevant notes.",
+     "verified": "Check (plush 5.4 kg bodies, 10 kg dial). Rendered: 'Rex can hold Ollie up, but that takes all the push his arms have, so he can't toss him.'"
+    },
+    {
+     "id": "r7",
+     "status": "fixed",
+     "change": "engine.js tossPartner takes a 6th argument anchorP and returns 'bolted' when it is bolted. app.html passes cO.anchor and uses the Wrestle > Lift wording.",
+     "verified": "Check passes. Rendered: 'Ollie is bolted to the planet: lifting him means lifting the planet. Can't be done.'"
+    },
+    {
+     "id": "u4",
+     "status": "fixed",
+     "change": "engine.js leg: new 'cant-move' result when every table speed is 0; 'falls-back' (with escapeNeeded from the easy aim) when his own pull eats all his speed; needFactor only when vMax > 0; airWall flag. app.html: no 0 mm range ('barely leaves his hand'), cant-move verdict and chip, the 'More speed hardly helps' bullet only when air is the limit, and the heat chip and item only for flights that happen (showHeat).",
+     "verified": "Check: 1e13 kg partners give falls-back. Rendered both auditor states: 'needs 42.2 m/s … his best throw is 20.3 m/s. It drops back into his hand.' and 'can hold the baseball up … can't throw it'. Neither shows the heat chip or the speed bullet."
+    },
+    {
+     "id": "u9",
+     "status": "fixed",
+     "change": "(a) app.html chip reads 'His arms then stop it: X%' when the first hit dominates, as the verdict advised. (b) Same fix as p12. (c) The slip bullet says 'the more it presses him down…' only when F·sin(angle) > 0.1(M+m)g; otherwise 'He and the car share the stopping, so his arms push X'.",
+     "verified": "Rendered the bowling-ball fastball (chip), the dense cant-hold state, and a car lob onto a 181 kg Ollie that arrives at 49° and slips."
+    },
+    {
+     "id": "u12",
+     "status": "fixed",
+     "change": "engine.js recoilOf: full strength uses the Throw tab's own throwObject recoilV at the aim angle; a lob solves the steady push that gives vL with the same push model; the coast distance uses coastDist, now shared with catchIt. outOfRange when the slide exceeds the gap or the recoil passes 1% of c, and roundTrip drops those trips. Fireball results carry the recoil too. app.html: recoil bullet (speed, slide, out of range, dig-in hint).",
+     "verified": "Check: car fastball recoil equals the Throw tab's to 1e-6 (417 m/s; the audit's 602 and 1,270 m/s were on older bodies), and its 1.71 km slide drops the round trip. Rendered: shuttle at 10^10 (7,530 m/s, 4.59 km), piano lob on ice (2.72 m/s), relativistic recoil."
+    },
+    {
+     "id": "d9",
+     "status": "fixed",
+     "change": "engine.js RAD_H comment corrected: the tables run 30–84 km and radiation above 30 km is left out. app.html heatItem range text: '(plus the most that glowing air below 30 km can radiate; higher up, radiation is left out)'; the math line says the same. research/final-duo.json shock_layer_radiation_onset: display now says the tables run 30–84 km, and the notes add the Table 2 value (36 km: 147 MW/m², about 31× Sutton–Graves).",
+     "verified": "Rebuilt data.js and checked the source-table row text; rendered heat lines."
+    },
+    {
+     "id": "d11",
+     "status": "fixed",
+     "change": "New fact heat_to_vaporise_per_kg in research/final-duo.json (estimate). Sources: iron 483 kJ/mol and forsterite 1,186 kJ/mol from 298 K to boiling (Fegley & Schaefer 2012, JANAF, text checked in the arXiv PDF), plus Wikipedia infobox values for aluminium and copper (fetched) and water. engine.js: per-material eVap (steel 8.6, Al 13.1, Cu 5.9, organic 2.6, stone 8.4 MJ/kg) replaces E_VAP=1e7. The page says 'roughly enough to boil it away N× over'. build-data.py shows all four sources on that row.",
+     "verified": "Source row rendered with 4 sources; the relativistic catch text shows 'roughly … 71 billion× over'."
+    }
+   ],
+   "testsPass": true,
+   "notes": "The full required chain passes: build-data.py, build.js, shots.js (no overflow, no errors), and calibration.js ends 'all checks passed'. Calibration now has 18 new regression checks. Nothing was committed or pushed.\n\nBehaviour changes later agents will see:\n- **New launch check (p3):** almost every fast heavy throw is now 'crushed-launch' rather than 'breaks-up'. Pushing an object to speed v over a 2.4 m stroke loads it about 25× more than the air does at that speed, so 'breaks-up' is now nearly unreachable. The old pyramid-across-the-planet check was updated to expect 'crushed-launch'.\n- **Slower default round trip (p5):** the default lob's round trip went from about 4.5 s to 33 s. Each least-force catch of the light ball now takes its true 14.5 s; a bullet on the page explains it.\n- **Wider page sweeps:** 960 engine legs showed no invariant violations, and 106 rendered catch states showed no 'Calculation failed', NaN or undefined. Phone width in dark mode has no overflow.\n\nAPI and data changes:\n- `P.tossPartner` takes an optional 6th argument for Ollie's anchor.\n- `P.catchReleaseTable` is newly exported.\n- New leg fields: `recoil`, `launchPush`, `launchRatio`, `launchStroke`, `armHold`, `airWall`, and fireball fields `Ehere`, `Eafter`, `Ecarry`, `Enear`, `Eblast`, `sweepOn`, `Lnear`.\n- New results: 'cant-move' and 'crushed-launch' (legs), and 'bolted' and 'cant-move' (toss).\n- `MATERIALS` gains `eVap`; `CATCH.E_VAP` is removed.\n\nFiles changed: /home/user/dino-strength-sim/src/engine.js, src/app.html, src/static-data.js (catch card), build-data.py, research/final-duo.json, test/calibration.js; src/data.js regenerated. BUILDS, DEFAULT_BODIES, the art and the oSame line are untouched. The pre-change snapshot is at /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/catch-base for diffing."
+  }
+ },
+ {
+  "batch": "collide-wrestle",
+  "report": {
+   "items": [
+    {
+     "id": "u0",
+     "status": "fixed",
+     "change": "One rule for an unlimited push between two holds that never let go, used on every tab. engine.js: new helper unlimitedClash(cA,cB) next to groundTear. Comic ground gives 'paradox': nothing moves and the force has no upper limit. Real rock gives 'rockGives': the rock around the bolts tears out (tearA/tearB), and the unlimited push then shoves both apart at just under light speed, each with a plug of rock. It is called from armWrestle (replaces outcome 'undefined'; on comic ground the unbreakable table carries the push, clash 'paradox' via 'table'), pushMatch (replaces undefinedPush/NaN), shoveOnce (replaces undefinedPush) and standoff. Why this is the physical choice: Newton's third law loads both anchors equally, and the rock is the only finite link, so both tear. After that, an unlimited force over the arm stroke acting on finite masses gives unbounded energy. The old 'Rex is carried off' wording was one-sided. app.html: new clashVerdict(kind,a,b,via) gives one shared wording, used by bayArm, wrestlePush, wrestleShove and collidePush. Hold chips now read 'X's rock tears loose' when the rock gives. The force tile reads 'no upper limit' (plus the tear-out force), never 'undefined'. Arm says 'Nobody pins anybody', and its 'feet still let go' clause only shows for an unlimited competitor who is not bolted. The Collide push four-case grid was reworded. Arm on comic ground with plain footing used to claim 'bolted down'; it now says the table carries the push, which is why it differs from Collide > Push for the same footing.",
+     "verified": "New calibration checks: Arm, Shoving match, Shove and Collide > Push (both directions) give the same outcome, rockGives on real rock and paradox on comic ground; comic arms go through the table; the shove flings both off at c on rock and nobody moves on comic ground. These fail on the pre-fix engine. Rendered all four tabs for {inf, anchor bolted, oAnchor bolted} with groundHolds false and true: the wording is identical and the chips agree. Render sweep of 756 duo states found no 'undefined', 'NaN' or 'No answer'."
+    },
+    {
+     "id": "r2",
+     "status": "fixed",
+     "change": "engine.js standoff: contact is now Infinity, not NaN. When cB.immovable and the push is unlimited, the outcome is 'pusherTorn' on real rock (the pusher's rock tears out and he is shoved back at just under c with a plug of rock) or 'pusherPlanet' on comic ground (pusher and planet driven back). The result is 'paradox' only when the immovable holder is bolted to the same unbreakable ground. Conflict: the skeptic suggested 'nothing moves if the pusher is on comic ground'. I chose the pusher plus planet being driven back, because an immovable body that is not bolted is outside the finite-mass pusher-plus-planet system, so the push is external to that system and it must move. app.html collidePush: verdicts for both new outcomes, chips ('X's rock tears loose' / 'X and the planet are driven back', 'Y holds: truly immovable'), a footing bullet, and a force tile reading 'no upper limit'. The forceWins verdict now says 'just under light speed'.",
+     "verified": "Calibration checks: no NaN contact over a 216-state standoff grid; the immovable-unbolted, comic and immovable-bolted cases. Rendered the evidence state: 'Rex is truly immovable, so the unlimited push drives Ollie back instead... Rex doesn't move.'"
+    },
+    {
+     "id": "p4",
+     "status": "fixed",
+     "change": "engine.js collide: rockGives = unlimited pA, holder bolted, real rock, not immovable. In that case held is false, so no out.earth or rock-load is made, and unlimitedVsBolted is computed from the same flag. The Earth figures for planetMoves and closedSystem are no longer printed as 3 x 10^8 m/s (see u2).",
+     "verified": "Calibration check: the light-speed charge into bolted Rex on real rock is not held, has no Earth share and gives rockGives; on comic ground it gives planetMoves and held. It fails on the pre-fix engine. Rendered {colSrc:set,colInf:true,anchor:bolted}: no Earth tile, no '∞' crack."
+    },
+    {
+     "id": "u2",
+     "status": "fixed",
+     "change": "app.html collideCharge: chip 'Rock gives way around his bolts' for rockGives; holder tile 'torn loose with a plug of rock'. The Earth tile now reads 'just under light speed' for planetMoves and 'ends up still' for closedSystem, and is absent for rockGives; it never shows a massive body at 3 x 10^8 m/s. The Earth-momentum bullet only shows for finite momentum. The bolted why-text now reads '...the rock around his bolts tears out, so the Earth keeps almost none of the momentum'. rockChip/rockBullet guard an infinite rT ('Rock gives way around his bolts'). Four-case grid cell: 'just under light speed (the planet too, but only if he's bolted to unbreakable ground)'.",
+     "verified": "Rendered the evidence state and the comic-ground variant: the verdict, chips, tiles and bullets agree."
+    },
+    {
+     "id": "d3",
+     "status": "fixed",
+     "change": "app.html collideCharge math line now reads 'Quake: 1 part in 10,000 of Q (the usual share, give or take ⅔ of a magnitude), as if all of Q reached the ground, which overstates it.' engine.js quakeHeld comment clarified: the energy input is the upper bound and the seismic share is the middle value. static-data card unchanged and now consistent.",
+     "verified": "Rendered Collide > Show the math."
+    },
+    {
+     "id": "d10",
+     "status": "fixed",
+     "change": "research/final-duo.json: new fact collide_rock_wave_speed_estimate (status estimate, 5 km/s, range 3.71-6.1 km/s). Sources: Padmanabha et al. 2021 Table 1, bar speed 3.71 ± 0.16 km/s; Birch 1960 JGR 65(4), granite P-wave speeds 3.7-6.1 km/s at 10 bar, read from the Wikipedia transcription of Birch's table. It becomes a source row through build-data.py. engine.js COL.C_ROCK comment updated (value unchanged). app.html boltsLate bullet uses P.COL.C_ROCK instead of the hard-coded 5000 and says '(at about 5 km/s, an estimate)'.",
+     "verified": "build-data.py regenerates data.js with the new row; the build passes."
+    },
+    {
+     "id": "u5",
+     "status": "fixed",
+     "change": "app.html collideCharge small-knockback verdict: braced Ollie gets 'dug-in boots', braced Rex keeps 'claws'.",
+     "verified": "Rendered colGB -7.05 (the original -6.875 no longer gives under 1 m with the 10 ft bodies): 'Ollie's dug-in boots take most of it' and 'Rex's claws...'. A grep shows no other claw text tied to Ollie. The 756-state sweep found no 'Ollie's claws'."
+    },
+    {
+     "id": "u7",
+     "status": "fixed",
+     "change": "(1) collidePush hold chips: a stalemate with both at their footing limit shows 'Both at their footing limit'. Other footing-limited non-losing cases show 'X at his footing limit: N'. 'feet slip first' now shows only when the object holds. (2) bayArm chip renamed 'Usable push: Rex … · Ollie …'. (3) Catch math prints fmtDist(k.give[0])–fmtDist(k.give[1]) '(1–2.5% of his height, an estimate)' instead of '2–5 cm'.",
+     "verified": "Rendered default Push ('Both at their footing limit'), Arm ('Usable push: Rex 15.9 kN · Ollie 15.9 kN') and Catch math ('3 cm–7.6 cm squash')."
+    },
+    {
+     "id": "r1",
+     "status": "fixed",
+     "change": "app.html wrestleShove rewritten to branch on which body moves (vA/vB). A target who doesn't move is described as bolted (or his footing holds), and the shove throws the shover back, with his slide (slideA) or the light-speed wording. The fireball sentence and the 'indestructible' bullet name whoever passes 1% of c. The target-slides tile becomes 'X moves: not at all'. A 'pusher slides' tile was added. The engine was already correct.",
+     "verified": "Rendered logKg 16 with Ollie bolted: 'Ollie is bolted to the planet and doesn't move, so the shove throws Rex back instead. Rex leaves at 2.52% of light speed. The air in Rex's path turns into a fireball.' The default dial with Ollie bolted gives 'Rex flies back at 22.1 m/s and slides 40 m'. Engine check added (vB = 0, vA > 1% c). The sweep found no '0 m/s' mover text."
+    },
+    {
+     "id": "u11",
+     "status": "fixed",
+     "change": "(1) catchControls: in partner mode with Fastball, the height slider and presets are disabled and labelled 'Toss height: as high as he can (Fastball)', and the miss checkbox is hidden in partner mode. Added CSS for disabled chips and sliders. (2) wrestleShove 'Both at once' says 'They shove each other apart', with a speed and slide for each and a slide tile for each. (3) wrestleLift prints the ground-load bullet only when the lift succeeds. (4) wrestleThrow prints Impact and Landing only when f.landed. (5) The shove slide bullet only names non-relativistic movers and only shows when a slide tile exists.",
+     "verified": "Rendered partner Fastball and Lob, Both at once, the failed lift (oM 1e9), the unlimited throw and the unlimited shove; the text matches the controls and outcome. Phone-width dark screenshot checked."
+    },
+    {
+     "id": "p11",
+     "status": "fixed",
+     "change": "app.html wrestleThrow: with Comic ground on (state.groundHolds), the landing reads 'Landing: comic ground takes it (… TNT), and nothing breaks.', with no 'the ground isn't' or crater. On real ground (including when the sinking gate forces the ground to hold), the original impact and landing text stays.",
+     "verified": "Rendered the evidence state with groundHolds true and the same state on real ground."
+    }
+   ],
+   "testsPass": true,
+   "notes": "Full sequence passes: python3 build-data.py, node build.js, node test/shots.js (0 overflow, no errors at both widths) and node test/calibration.js, which ends 'all checks passed'. Ten new regression checks are at the end of /home/user/dino-strength-sim/test/calibration.js, covering u0, r2, p4 and r1. Nine of them fail on the pre-fix engine. The r1 check passes on both, because r1 was a page-text bug. A 756-state render sweep over the Arm, Wrestle and Collide tabs found no undefined/NaN text, page errors, claws on Ollie, '∞' crack radius, 3 x 10^8 m/s Earth, or zero-speed movers.\n\nFiles changed: src/engine.js, src/app.html, test/calibration.js and research/final-duo.json; src/data.js was regenerated. I left BUILDS/DEFAULT_BODIES, the art, static-data.js and the state.oSame line alone. Nothing was committed. Baseline copies are in the scratchpad at cw-base/.\n\nLeft alone, outside this batch:\n- Exact-c speeds still read 'light speed (to the last digit)' (the existing fmtSpeed convention) in Shove and Throw.\n- Wrestle > Lift of a bolted partner with unlimited strength on real rock still says 'Can't be done' rather than applying the rock-gives rule.\n- The finite-force both-bolted Shoving match still says 'Neither moves' even when the ground tears around the bolts."
+  }
+ },
+ {
+  "batch": "arm-duo-misc",
+  "report": {
+   "items": [
+    {
+     "id": "p2",
+     "status": "fixed",
+     "change": "src/engine.js armWrestle. Once the table is broken, the loser's arm folds (a 'pin') only if the winner presses harder than that arm (Aw > P_loser). The pin is now resisted by the loser's full arm force, not his footing. If the winner can't press harder than the loser's arm, the new outcome 'drag' moves the loser's whole body: net = winner's push minus loser's footing, mass = loser's body plus the winner's forearm effective mass, over the winner's quarter-turn sweep. No slam, crater or table ratio is reported for a drag. While the table holds, a pin's peak elbow-pad load is now computed from torques about each elbow: P_l + (P_w - P_l)(effMass*m_l + holdArm*m_w)/(effMass*(mA+mB)). If that tops tableLat, the table breaks (tableBreaksBy 'pin') and the standing-up rules apply. New outputs: padLoad, padBy, tableBreaksBy, loserSlides. src/app.html bayArm: new verdicts for pin, drag and table-torn-by-pin. A standing pin says the hand 'swings down', never 'hits the pad / goes through the table'. Drag gets its own tiles (loser's speed, energy) and bullet; there is a pad-load bullet and a math line for drag and pad load.",
+     "verified": "Added 7 checks to test/calibration.js. Bolted vs standing with equal arms gives a drag (speed matches sqrt(2*net*s/M)). The finding repro (1e12 vs 1e11 kg) gives Ollie dragging Rex by the footing difference. 1,000 t bolted vs 100 t gives a pin resisted by the full arm. 100 t vs 511 kg tears the pad (18x the table). 4 t vs 3.6 t pins on the table, with pad-load coefficient 1.1212. These checks fail on the pre-fix engine. I rendered the default, bolted, braced and both-braced states, plus what-if states from a scratch copy of the page that leaves oSame unforced."
+    },
+    {
+     "id": "p9",
+     "status": "fixed",
+     "change": "src/engine.js armWrestle now sets each arm's twist from what its own arm carries. Winner = his push x his lever. A pinned loser = his own arm force x his lever. A dragged loser whose arm holds = the whole push. src/app.html: the tile shows 'Twist on the upper arms' as Rex / Ollie when the two differ, and keeps 'each' only when they are equal. The math line is reworded to match.",
+     "verified": "Calibration check: pinned Ollie's twist = PB x LB and Rex's = AA x LA, and a dragged arm carries the whole push. Render of the 511 kg what-if Ollie shows '9.2 kN·m / 725 N·m' (the verdict expected about 725 N·m)."
+    },
+    {
+     "id": "p10",
+     "status": "fixed",
+     "change": "src/static-data.js 'Rex and Ollie' card: 25% share (an estimate; plausibly 10-40%). It now says the regulation table carries the push until its pegs and pads tear out (about 5 kN at regulation size, an estimate), after which only their feet hold. 'Goes through each body to his feet' is kept for shoving and wrestling only. Added the standing-up fold-or-drag rule.",
+     "verified": "Dumped the rendered card text from dist/preview.html."
+    },
+    {
+     "id": "d0",
+     "status": "fixed",
+     "change": "Same card rewrite as p10. The 'Rex's body' card no longer hard-codes '2 m and 180 kg by default': it uses {DEFAULT_BODY} and {DEFAULT_FOOT}, which src/app.html fills from P.DEFAULT_BODIES and makeBody at render. The text can't go stale while those provisional values change, and DEFAULT_BODIES itself is untouched. The calibration card now says 'the 2 m, 180 kg calibration body'. build-data.py renames the density chip 'Water (default)' to 'Water' with note 'Close to a human body's density; the 2 m, 180 kg calibration body uses it.'",
+     "verified": "Rendered cards read 'By default 3.05 m and 2.7 t...' and 'Foot contact is 0.31 m² each on his default body...'. The chip title was checked in the page."
+    },
+    {
+     "id": "d1",
+     "status": "fixed",
+     "change": "src/app.html bayArm math line now reads '(estimate, plausibly 10–40%: ordinary men’s measured arm force against an assumed 1–2× body-weight deadlift)'. 'Same-person data' no longer appears anywhere in src.",
+     "verified": "grep finds the phrase only in the research note that says no such data exist. Rendered the math block."
+    },
+    {
+     "id": "d13",
+     "status": "fixed",
+     "change": "src/app.html bayArm: the 'feet hold' clause now names the actual limit. A foot-limited winner: 'can press only X, all his feet hold (his arm has Y)'. A bolted winner: 'his feet don't cap his push'. Otherwise: 'his feet hold X, more than his arm, so he presses with his full Y'. The table-broken stalemate says 'that's all their feet hold' only when both are foot-limited; otherwise it says 'their arms are locked'.",
+     "verified": "The braced-Rex state now reads 'Rex’s feet hold 713 kN, more than his arm, so he presses with his full 222 kN... Rex drags Ollie’s whole body sideways', and both-braced reads 'dead heat at 222 kN: their arms are locked'."
+    },
+    {
+     "id": "u1",
+     "status": "fixed",
+     "change": "src/app.html bayArm: the bolted or infinite winner gets 'X is bolted, so his feet don’t cap his push: his arm presses with unlimited force'. The engine now reports this case as a drag at light speed, not a 3 ns pin. The 'doesn’t help' sentence appears only for an infinitely strong side whose footing is finite, and it names him with his number: 'Rex’s unlimited strength doesn’t help here: his feet still let go at 15.9 kN.'",
+     "verified": "Calibration check 'arm u1'. Rendered {inf:true, oAnchor:'bolted'} and the what-if {oInf:true, anchor:'bolted'}. The both-bolted unlimited case still takes the clash path with no feet sentence."
+    },
+    {
+     "id": "r8",
+     "status": "fixed",
+     "change": "Already fixed before this batch: the comic-ground unlimited verdict no longer says 'bolted down', and an existing calibration check covers it. I only made the wording follow the gate: when the duo gate forces comic ground, it says 'treating the ground as if it held them'.",
+     "verified": "Rendered the evidence state {inf, groundHolds, H 2, m 180, oH 2, oM 180}: 'Both arms are unlimited, and on comic ground, the table never breaks...', with no 'bolted' claim."
+    },
+    {
+     "id": "u10",
+     "status": "fixed",
+     "change": "src/app.html duoGate: the callout now states each sinker's fate from the groundUnderWeight regime: 'would sink into / sink out of sight into / punch through the X / fall through the Earth'. For Ollie it adds 'The Weight tab shows only Rex: give him the same size and mass there to see it.' bayArm: when pulledTogether, the page shows only the verdict, a gravity chip, three tiles (time to meet, closing speed, energy released) and the fall math. The pin, push and table tiles and the comic-ground chip are skipped. A gate-forced comic ground is labelled 'Treating the ground as if it held them' in the chip, the tile, the bullet, the math line and the clash verdict.",
+     "verified": "Rendered {oM:2.6e17}: 'Just standing there, Ollie would fall through the Earth...', then the fall tiles only. {oM:3e8} shows the forced-ground labels."
+    },
+    {
+     "id": "d7",
+     "status": "fixed",
+     "change": "src/engine.js liftPartner returns dC and gPeakOnPath. In src/app.html wrestleLift, the tile caption is 'peak during the lift, from side by side (centres dC apart)' when the path term wins, else 'overhead, centres dOver apart'. Added a Show the math line with the 0.385 G m² / d² path-peak rule. research/final-duo.json duo_gravity_distances: the display and notes now carry the rule and its derivation (max of y/(x²+y²)^1.5 = 2/(3√3)/x² at y = x/√2).",
+     "verified": "Default lift: 'overhead, centres 2.29 m apart'. At the current 2.7 t default the overhead term wins: 9.3e-5 N against 6.6e-5 N. A 2 m calibration Rex with a 181 kg Ollie shows 'peak during the lift, from side by side (centres 91 cm apart)'. The JSON parses and build-data.py runs."
+    },
+    {
+     "id": "r11",
+     "status": "fixed",
+     "change": "src/app.html: added RHO_MIN = 10 kg/m³ (the slider's left end). The #mass and #o-mass handlers and the stored-state validator now clamp the mass to at least RHO_MIN x volume. src/engine.js tossPartner returns 'not-modelled' for a timed-out flight instead of 'orbit'. The page explains it: catchPartner says 'still in the air ... isn’t modelled to the end', and wrestleThrow gets a matching f.timedOut branch.",
+     "verified": "Rendered the four evidence states. oM 1e-300 becomes 7.2 kg / 25.5 kg at 10 kg/m³ and gives an ordinary toss and throw, with no 19 s freeze. oH 500 with oM 1e-6 becomes 112,000 t ('can’t even hold him up'). 0.1 m with 1e-9 kg becomes 0.9 g ('air stops him first'). I couldn't reproduce a timed-out toss after the clamp, so the 'not-modelled' text is unexercised."
+    },
+    {
+     "id": "u13",
+     "status": "partly",
+     "change": "src/app.html formatting. fmtRatio gives '8.3% of' below 1× (with grammar fixes at the two callers that need it). fmtRatioRange gives 'a–b%' below 1× ('as hard as' reads right). The 'Heat it takes in' tile uses a % value with an 'of' caption. compareEnergy uses '≈' only within 15%. fmtSpeed gives km/s at 10 km/s and up. fmtMach returns nothing above Mach 50, and all callers are guarded. fmtTime gives ps below 1 ns and scientific seconds below 1 ps. 'Gravity at his skin' uses scientific notation at 1e6 g and up. The weak-strength Weight tile reads 'his weight is N× his strength'. The fall-through stop range says 'anywhere from the centre out to X' when the lower bound is 0. showHeat hides the nose-air chip and bullet when the heating is under 5 °C.",
+     "verified": "Rendered m=1e25, m=1e22, the white-dwarf mass, the logKg 12 fastball and the default lob. Results: 'his weight is 110 quintillion× his strength', 'Escape speed 1,260 km/s', 'fires the baseball at 744 km/s' (no Mach), and no 'Nose air 15 °C' chip. Partly: '6,300,000,000% of the energy' and 'Rock cracks ∞' were already fixed by earlier batches, so I left them. I did not render a state that hits Castle Bravo; that change rests on the compareEnergy code edit alone."
+    }
+   ],
+   "testsPass": true,
+   "notes": "The final run passed in full: python3 build-data.py, node build.js, node test/shots.js (no overflow or errors at 1280 light and 390 dark) and node test/calibration.js (106 ok, 'all checks passed'). I did not commit or push.\n\n**Conflict choice (p2):** The table-holds sub-claim asked only for the pad load to be compared with the table. I went further: if the dynamic elbow-pad load during a pin tops tableLat, the table breaks and the standing-up rules apply. That is physically correct, because the load peaks at the start of the pin and the table can't un-break. I also took the elbow reaction from torques about each elbow (P_loser + 1.12 × surplus for equal bodies). The finding's rough 'forearm mass × a_cm' leaves out the hand force. With oSame forced on the page, the arms are equal, so default outcomes change only where footing differs: bolted or dug-in Rex now drags Ollie instead of pinning him. Unequal arms appear only with a what-if strength.\n\n**Things left alone:**\n- BUILDS / DEFAULT_BODIES are unchanged (I diffed them).\n- The `state.oSame = true` line is intact.\n- The art is untouched.\n- The catch fact row '7.9 kg at 180 kg' is accurate as worded, so I left it.\n\n**Files changed:**\n- /home/user/dino-strength-sim/src/engine.js (armWrestle, liftPartner, tossPartner)\n- /home/user/dino-strength-sim/src/app.html (bayArm, duoGate, wrestleLift, wrestleThrow, catchPartner, formatting helpers, mass clamp, assumption-card fill)\n- /home/user/dino-strength-sim/src/static-data.js\n- /home/user/dino-strength-sim/build-data.py (Water chip)\n- /home/user/dino-strength-sim/research/final-duo.json (duo_gravity_distances)\n- /home/user/dino-strength-sim/test/calibration.js (new arm block)\n\n**Backups and test copies:** Pre-batch sources are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/src-before-armduo and research-before-armduo. What-if states were rendered from a scratch copy of the page that leaves oSame unforced, made by scratchpad/a3/mkwhatif.sh and rendered with scratchpad/a3/whatifshot.js."
+  }
+ }
+]

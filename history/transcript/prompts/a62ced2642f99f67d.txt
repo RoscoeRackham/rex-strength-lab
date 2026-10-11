@@ -1,0 +1,521 @@
+Project: a small web calculator. The user picks a BUILD (average man or woman, athlete, record bodybuilder, strongman, comic-book character, or two original characters) and a HEIGHT, and the page shows estimated body WEIGHT and GIRTHS: chest, waist, upper arm (flexed), forearm, thigh, calf and neck. Every number must be sourced or clearly labelled as an estimate. The owner values factual accuracy over flattery: say "unknown" rather than invent, and label magazine-reported or fan-wiki numbers as such.
+Write raw downloads and scripts under /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/buildcalc/<topic>/ (create it). Do not edit anything under /home/user. Use WebSearch/WebFetch for sources; prefer primary sources (journals, official databases, publisher handbooks) over wikis. For each fact give: key, label, value(s) with units (SI and the original units), status (measured | official | reported | derived | estimate | disputed), sources (title + URL actually fetched), and notes (what exactly the source says, caveats).
+
+You are a skeptical fact-checker for the topic "comics". Below are the researcher's facts. Re-fetch at least 10 of the cited URLs (prioritise the numbers the calculator will lean on most) and check each value and status against what the source actually says; recompute any derived statistics you can (for ANSUR data, re-download and recompute a few percentiles). Mark ok=false with a correction for anything wrong, mislabelled (e.g. a fan wiki marked official), or unsupported. List important missing items.
+
+FACTS:
+{
+ "summary": "I found stated heights and weights for all 15 requested characters, plus She-Hulk and Abomination. Hulk is split into four forms and Wolverine into with and without adamantium. Raw files are under /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/buildcalc/comics/: raw/marvel_*.html, raw/dc_*.html, raw/wiki/*.json and raw/wiki/revs/*.txt (fan-wiki revision samples), raw/ia_dk/*.txt (DK book OCR text) and raw/ia_fts_*.txt (archive.org search-inside snippets). Scripts are in scripts/ (metrics.py, revhist.py, revcomments.py, iafts.py, statctx.py, entry.py). Computed metrics are in out/metrics.json.\n\nSOURCES USED\n(1) Marvel.com character pages: official, and they show HEIGHT/WEIGHT. One exception: the Juggernaut page carries Marvel's own disclaimer that it is crowd-sourced content 'not yet verified for accuracy by our erudite editors'.\n(2) DC.com character pages: their 'Character Facts' give no height or weight for any of the five DC characters.\n(3) DK licensed encyclopedias, which are copyright DC Comics / Marvel and carry HEIGHT/WEIGHT factfiles. I treat them as official licensed references, not the Official Handbook of the Marvel Universe (OHOTMU) or DC's Who's Who:\n- DC Comics Encyclopedia New Edition (2021), full OCR read\n- DC Comics Encyclopedia (2008), archive.org search-inside snippets\n- DC Comics Universe Guide (2007), snippets\n- Batman Character Encyclopedia (2016), snippets\n- DC Comics Ultimate Character Guide New Edition (2019), full OCR read\n- Marvel Encyclopedia New Edition (2019), full OCR read\nThe full OCR texts come from third-party archive.org uploads of these books. OCR misreads were corrected by context (for example, 'Gft 3in' read as 6 ft 3 in).\n(4) Fan wikis (Marvel Database, DC Database), including their revision history and edit summaries. Status is always 'reported'.\n\nI could not open any OHOTMU edition directly. Archive.org's OHOTMU copies (1987, 2004, 2006, 2008) are lend-only: text download returned HTTP 401 and search-inside was refused. So every edition-specific OHOTMU claim below is reported second-hand by fan-wiki editors.\n\nDISAGREEMENTS (status 'disputed')\n- Juggernaut: 6 ft 10 in, 900 lb (DK 2019; the fan wiki's 2007 citation of marvel.com/universe; wiki editors say 'every handbook') vs 9 ft 5 in, 1,900 lb (current crowd-sourced Marvel.com page).\n- Doomsday: 7 ft 0 in, 615 lb (DK 2008) vs 7 ft 6 in, 915 lb (DK 2021) vs 8 ft 10 in, 915 lb (DK 2019 guide).\n- Savage Hulk: 7 ft, 1,040 lb (DK 2019) vs 7–8 ft, 1,040–1,400 lb (fan wiki citing handbooks).\n- She-Hulk: 650 lb (DK 2019) vs 700 lb (Marvel.com).\n- Wolverine: Marvel.com gives 300 lb with adamantium and 195 lb without. DK 2019 lists 195 lb while describing his adamantium skeleton.\n- Captain America: 240 lb (Marvel.com and DK 2019). A 220 lb figure for some handbooks is fan-reported only.\n\nGIRTHS: No official source gives chest, waist, arm, forearm, thigh, calf or neck measurements for any of these characters. They are 'unknown' throughout.\n\nPHYSICAL PLAUSIBILITY\nI computed BMI, weight/height^3 (ponderal index, PI) and an upper bound on Kouri-normalised fat-free mass index (FFMI) assuming 0% body fat. Human references:\n- WHO: obesity is BMI 30 or more. At 1.80 m, BMI 25 corresponds to PI 13.9 and BMI 30 to PI 16.7.\n- Kouri 1995: athletes who had not used steroids reached a normalised FFMI of at most 25.0; some steroid users exceeded 30.\nResults:\n- Within the human range: Batman, Black Panther and Superman. Captain America at 240 lb fits steroid-user values but not drug-free ones.\n- Beyond any human value in these references:\n  - Hulk forms: BMI 100–107, PI 44–53\n  - Abomination: BMI 108\n  - Darkseid: BMI 116\n  - Juggernaut: BMI 94–105\n  - Thor: BMI 74\n  - She-Hulk: BMI 73–79\n  - Thing: BMI 68\n  - Doomsday: BMI 57–79\n  - Kingpin and Luke Cage: BMI about 49–51\n  - Bane: BMI 38, or 47 on Venom\n  - Wolverine: BMI 34.5 even without adamantium, which means a normalised FFMI above 30 even at 15% body fat\n- Colossus: his stated 500 lb armoured weight is far below what a body of his size made of steel would weigh. Marvel.com says his armoured tissue is 'analogous to osmium and to carbon steel'.\nI do not offer explanations. Only the publishers' own statements are quoted: Kingpin's bulk 'mostly muscle', Luke Cage's 'dense muscle tissues', Colossus's steel-like tissue, and adamantium adding 105 lb.",
+ "facts": [
+  {
+   "key": "superman",
+   "label": "Superman (Clark Kent / Kal-El), DC",
+   "status": "official",
+   "values": "{\"height_m\":1.905,\"weight_kg\":106.6,\"orig\":\"6 ft 3 in, 235 lbs\",\"bmi\":29.4,\"pi_kg_m3\":15.4,\"girths\":\"unknown (no official source)\",\"alt_reported_weight_kg\":102.1,\"alt_reported_orig\":\"225 lbs (fan wiki 2009-2010 revisions, unsourced)\"}",
+   "sources": [
+    {
+     "title": "DK DC Comics Encyclopedia New Edition (2021), archive.org OCR text (Copyright 2021 DC Comics)",
+     "url": "https://archive.org/download/dc-comics-encyclopedia-new-edition/DC%20Comics%20Encyclopedia%2C%20New%20Edition_djvu.txt"
+    },
+    {
+     "title": "DK The DC Comics Encyclopedia (2008), archive.org search-inside snippet",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=identifier%3Adccomicsencyclop0000unse+AND+%22235+lbs%22"
+    },
+    {
+     "title": "DK DC Comics Universe Guide (2007), archive.org search-inside snippet",
+     "url": "https://archive.org/details/dccomicsuniverse0000alas"
+    },
+    {
+     "title": "DC.com Superman character page (no height/weight given)",
+     "url": "https://www.dc.com/characters/superman"
+    },
+    {
+     "title": "DC Database (fan wiki) Kal-El (New Earth), wikitext + revision history via API",
+     "url": "https://dc.fandom.com/api.php?action=parse&page=Kal-El_(New_Earth)&prop=wikitext&format=json"
+    }
+   ],
+   "notes": "DK 2021 factfile, OCR-corrected: 'HEIGHT 6ft 3in WEIGHT 235 lbs EYES Blue HAIR Black'. The DK 2008 snippet and the DK 2007 Universe Guide snippet both read 'journalist BASE Metropolis Height 6ft 3in Weight 235 lbs Eyes Blue Hair Black'. So DK is consistent across 2007, 2008 and 2021. DC.com 'Character Facts' list only powers, first appearance, alter ego, base and occupation. The 225 lb figure is widely repeated online and appeared in DC Database revisions in 2009-10, but I found no official source for it. Status for 225 lb: reported. Girths: none in any source."
+  },
+  {
+   "key": "batman",
+   "label": "Batman (Bruce Wayne), DC",
+   "status": "official",
+   "values": "{\"height_m\":1.88,\"weight_kg\":95.3,\"orig\":\"6 ft 2 in, 210 lbs\",\"book_metric\":\"1.88 m, 95 kg (DK 2019 guide)\",\"bmi\":27.0,\"pi_kg_m3\":14.3,\"girths\":\"unknown (no official source)\"}",
+   "sources": [
+    {
+     "title": "DK DC Comics Encyclopedia New Edition (2021), archive.org OCR text",
+     "url": "https://archive.org/download/dc-comics-encyclopedia-new-edition/DC%20Comics%20Encyclopedia%2C%20New%20Edition_djvu.txt"
+    },
+    {
+     "title": "DK DC Comics Ultimate Character Guide New Edition (2019), archive.org OCR text",
+     "url": "https://archive.org/download/dc-comics-ultimate-character-guide-new-edition/DC%20Comics%20Ultimate%20Character%20Guide%2C%20New%20Edition_djvu.txt"
+    },
+    {
+     "title": "DK Batman Character Encyclopedia (2016), archive.org search-inside snippet",
+     "url": "https://archive.org/details/batmancharactere0000matt"
+    },
+    {
+     "title": "DK The DC Comics Encyclopedia (2008), archive.org search-inside snippet",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=identifier%3Adccomicsencyclop0000unse+AND+%22210+lbs%22"
+    },
+    {
+     "title": "DC.com Batman character page (no height/weight given)",
+     "url": "https://www.dc.com/characters/batman"
+    }
+   ],
+   "notes": "DK 2021: 'HEIGHT 6ft 2in WEIGHT 210 lbs EYES Blue HAIR Black'. DK 2019 guide: 'REAL NAME Bruce Wayne ... HEIGHT 6 ft 2 in (1.88 m) WEIGHT 210 lb (95 kg) BASE Gotham City'. DK 2016 snippet: 'Hero, crime fighter Height: 6ft 2in Weight: 210 lbs Base: Gotham City'. The DK 2008 snippet shows 'Gotham City ... 6ft 2in WEIGHT 210 lbs Eyes Blue Hair Black'. A 2007 DC Database revision said 225 lbs (unsourced, fan). Girths: none."
+  },
+  {
+   "key": "captain_america",
+   "label": "Captain America (Steve Rogers), Marvel",
+   "status": "official",
+   "values": "{\"height_m\":1.88,\"weight_kg\":108.9,\"orig\":\"6 ft 2 in, 240 lbs\",\"bmi\":30.8,\"pi_kg_m3\":16.4,\"alt_reported_weight_kg\":99.8,\"alt_reported_orig\":\"220 lbs (fan-reported for some handbooks)\",\"girths\":\"unknown (no official source)\"}",
+   "sources": [
+    {
+     "title": "Marvel.com Captain America (Steve Rogers) In Comics",
+     "url": "https://www.marvel.com/characters/captain-america-steve-rogers/in-comics"
+    },
+    {
+     "title": "DK Marvel Encyclopedia New Edition (2019), archive.org OCR text (2019 MARVEL)",
+     "url": "https://archive.org/download/marvel-encyclopedia-new-edition_202312/Marvel%20Encyclopedia%20New%20Edition_djvu.txt"
+    },
+    {
+     "title": "Marvel Database (fan wiki) Steven Rogers (Earth-616): revision edit summaries via API",
+     "url": "https://marvel.fandom.com/api.php?action=query&prop=revisions&titles=Steven_Rogers_(Earth-616)&rvprop=ids|timestamp|comment|user&rvlimit=500&format=json"
+    }
+   ],
+   "notes": "Marvel.com: 'HEIGHT 6'2'' WEIGHT 240 lbs.' DK 2019 factfile: 'HEIGHT 6ft2in WEIGHT 240 lbs'. Fan-wiki edit summaries, not verified, say the following. Civil War: Battle Damage Report (2007) lists 220 lb. A 2004 Avengers handbook lists 220. The OHOTMU editions of 2006 and 2008 list 240. Avengers: Roll Call #1 lists 240. The fan wiki currently shows 220. A fan-wiki editor also wrote in 2026 that 'Marvel.com profiles are too often incomplete and inaccurate' compared with the handbooks. Reported range across all sources: 220-240 lb. Girths: none."
+  },
+  {
+   "key": "thor",
+   "label": "Thor (Thor Odinson) and human host Donald Blake, Marvel",
+   "status": "official",
+   "values": "{\"height_m\":1.981,\"weight_kg\":290.3,\"orig\":\"6 ft 6 in, 640 lbs\",\"blake_height_m\":1.753,\"blake_weight_kg\":68.0,\"blake_orig\":\"5 ft 9 in, 150 lbs\",\"bmi\":74.0,\"pi_kg_m3\":37.3,\"girths\":\"unknown (no official source)\"}",
+   "sources": [
+    {
+     "title": "Marvel.com Thor (Thor Odinson) In Comics",
+     "url": "https://www.marvel.com/characters/thor-thor-odinson/in-comics"
+    },
+    {
+     "title": "DK Marvel Encyclopedia New Edition (2019), archive.org OCR text",
+     "url": "https://archive.org/download/marvel-encyclopedia-new-edition_202312/Marvel%20Encyclopedia%20New%20Edition_djvu.txt"
+    },
+    {
+     "title": "Marvel Database (fan wiki) Thor Odinson (Earth-616) wikitext via API",
+     "url": "https://marvel.fandom.com/api.php?action=parse&page=Thor_Odinson_(Earth-616)&prop=wikitext&format=json&redirects=1"
+    }
+   ],
+   "notes": "Marvel.com: 'HEIGHT Thor: 6'6\", Donald Blake: 5'9\" WEIGHT Thor: 640 lbs., Donald Blake: 150 lbs.' DK 2019: 'HEIGHT 6ft6 in WEIGHT 640 lbs'. The fan wiki has shown the same 6 ft 6 in, 640 lb in every yearly sample since 2007, so no edition disagreement was found. Marvel.com gives no density explanation. Girths: none."
+  },
+  {
+   "key": "hulk_banner",
+   "label": "Bruce Banner (Hulk's human form), Marvel",
+   "status": "official",
+   "values": "{\"height_m\":1.753,\"weight_kg\":58.1,\"orig\":\"5 ft 9 in, 128 lbs\",\"alt_reported_height_m\":1.778,\"alt_reported_orig\":\"5 ft 10 in (fan wiki citing Avengers: Roll Call #1, 2012)\",\"bmi\":18.9,\"pi_kg_m3\":10.8,\"girths\":\"unknown\"}",
+   "sources": [
+    {
+     "title": "Marvel.com Hulk (Bruce Banner) In Comics",
+     "url": "https://www.marvel.com/characters/hulk-bruce-banner/in-comics"
+    },
+    {
+     "title": "Marvel Database (fan wiki) Bruce Banner (Earth-616) wikitext via API",
+     "url": "https://marvel.fandom.com/api.php?action=parse&page=Bruce_Banner_(Earth-616)&prop=wikitext&format=json&redirects=1"
+    }
+   ],
+   "notes": "Marvel.com: 'HEIGHT Bruce Banner: 5'9'', Hulk: 7'6'' WEIGHT Bruce Banner: 128 lbs., Hulk: 1150 lbs.' The fan wiki has listed 5 ft 10 in since 2015, and a 2019 revision cites Avengers: Roll Call #1 for it (reported). Isometric scaling of Banner's 128 lb (derived) gives about 231 lb at 7 ft, 284 lb at 7 ft 6 in and 345 lb at 8 ft. Compare the stated Hulk weights of 1,040-1,400 lb."
+  },
+  {
+   "key": "hulk_savage",
+   "label": "Hulk, savage green form, Marvel",
+   "status": "disputed",
+   "values": "{\"height_m_min\":2.134,\"height_m_max\":2.438,\"weight_kg_min\":471.7,\"weight_kg_max\":635.0,\"orig\":\"7 ft / 1,040 lbs (DK 2019); 7-8 ft / 1,040-1,400 lbs (fan wiki)\",\"bmi_range\":\"103.6-106.8\",\"pi_kg_m3_range\":\"43.8-48.6\",\"girths\":\"unknown\"}",
+   "sources": [
+    {
+     "title": "DK Marvel Encyclopedia New Edition (2019), archive.org OCR text: 'THE HULK' factfile",
+     "url": "https://archive.org/download/marvel-encyclopedia-new-edition_202312/Marvel%20Encyclopedia%20New%20Edition_djvu.txt"
+    },
+    {
+     "title": "Marvel Database (fan wiki) Bruce Banner (Earth-616) wikitext + revision comments via API",
+     "url": "https://marvel.fandom.com/api.php?action=parse&page=Bruce_Banner_(Earth-616)&prop=wikitext&format=json&redirects=1"
+    },
+    {
+     "title": "Adventure International 'Hulk' (1984 licensed game) manual, archive.org search-inside snippet",
+     "url": "https://archive.org/details/vgmuseum_ai_hulk-c64-manual"
+    }
+   ],
+   "notes": "DK 2019 factfile: 'REAL NAME Robert Bruce Banner ... HEIGHT 7ft WEIGHT 1,040 lbs EYES Green HAIR Green'. The fan wiki gives Savage Hulk '7' ... lowest limit; 8' ... highest limit' and '1040 lbs ... 1400 lbs'. A 2018 edit summary attributes the Hulk profile to the OHOTMU A to Z (2008) entry (reported, not verified). The 1984 licensed game manual snippet reads 'Weight: 1,040 lbs. Eyes: Green Hair: Green'; its height is garbled in OCR. Marvel.com gives a single Hulk value of 7 ft 6 in / 1,150 lb (see hulk_merged_marvelcom). Girths: none."
+  },
+  {
+   "key": "hulk_grey_joe_fixit",
+   "label": "Hulk, grey 'Joe Fixit' form, Marvel",
+   "status": "reported",
+   "values": "{\"height_m\":1.981,\"weight_kg\":408.2,\"orig\":\"6 ft 6 in, 900 lbs\",\"bmi\":104.0,\"pi_kg_m3\":52.5,\"girths\":\"unknown\"}",
+   "sources": [
+    {
+     "title": "Marvel Database (fan wiki) Bruce Banner (Earth-616) wikitext via API",
+     "url": "https://marvel.fandom.com/api.php?action=parse&page=Bruce_Banner_(Earth-616)&prop=wikitext&format=json&redirects=1"
+    }
+   ],
+   "notes": "The fan wiki gives '6'6\" (Joe Fixit)' and '900 lbs (Joe Fixit)'. This was also its 'Gray Hulk' value from 2021 to 2024. No official page I fetched gives a separate grey-Hulk figure. Marvel.com has no Joe Fixit page; the slugs I tried returned 404. The DK 2019 Hulk entry gives only 7 ft / 1,040 lb. Treat as fan-reported."
+  },
+  {
+   "key": "hulk_merged_marvelcom",
+   "label": "Hulk as listed on Marvel.com (fan wiki calls these the 'Merged Hulk' values), Marvel",
+   "status": "official",
+   "values": "{\"height_m\":2.286,\"weight_kg\":521.6,\"orig\":\"7 ft 6 in, 1,150 lbs\",\"bmi\":99.8,\"pi_kg_m3\":43.7,\"girths\":\"unknown\"}",
+   "sources": [
+    {
+     "title": "Marvel.com Hulk (Bruce Banner) In Comics",
+     "url": "https://www.marvel.com/characters/hulk-bruce-banner/in-comics"
+    },
+    {
+     "title": "Marvel Database (fan wiki) Bruce Banner (Earth-616) wikitext via API",
+     "url": "https://marvel.fandom.com/api.php?action=parse&page=Bruce_Banner_(Earth-616)&prop=wikitext&format=json&redirects=1"
+    }
+   ],
+   "notes": "Marvel.com gives 'Hulk: 7'6'' / 1150 lbs.' and does not say which form. The fan wiki assigns 7 ft 6 in / 1,150 lb to 'the Merged Hulk' (reported). Official Hulk values therefore differ by source: 7 ft / 1,040 lb in DK 2019 versus 7 ft 6 in / 1,150 lb on Marvel.com."
+  },
+  {
+   "key": "thing",
+   "label": "The Thing (Ben Grimm), Marvel",
+   "status": "official",
+   "values": "{\"height_m\":1.829,\"weight_kg\":226.8,\"orig\":\"6 ft, 500 lbs\",\"alt_reported\":\"6 ft 6 in (1.981 m), 430 lbs (195.0 kg) in the fan wiki infobox; the same wiki's body text says 6 ft 6 in and 'almost 500 pounds', citing The Thing #1 (2022)\",\"bmi\":67.8,\"pi_kg_m3\":37.1,\"girths\":\"unknown\"}",
+   "sources": [
+    {
+     "title": "Marvel.com The Thing (Benjamin Grimm) In Comics",
+     "url": "https://www.marvel.com/characters/the-thing-benjamin-grimm/in-comics"
+    },
+    {
+     "title": "DK Marvel Encyclopedia New Edition (2019), archive.org OCR text",
+     "url": "https://archive.org/download/marvel-encyclopedia-new-edition_202312/Marvel%20Encyclopedia%20New%20Edition_djvu.txt"
+    },
+    {
+     "title": "Marvel Database (fan wiki) Benjamin Grimm (Earth-616) wikitext via API",
+     "url": "https://marvel.fandom.com/api.php?action=parse&page=Benjamin_Grimm_(Earth-616)&prop=wikitext&format=json&redirects=1"
+    },
+    {
+     "title": "Marvel Database (fan wiki) Thing Vol 3 1 issue page via API",
+     "url": "https://marvel.fandom.com/api.php?action=parse&page=Thing_Vol_3_1&prop=wikitext&format=json&redirects=1"
+    }
+   ],
+   "notes": "Marvel.com: 'HEIGHT 6' WEIGHT 500 lbs.' DK 2019: 'HEIGHT 6 ft WEIGHT 500 lbs'. The fan wiki showed 6 ft / 500 lb from 2007 to 2024. In 2025 it changed to 6 ft 6 in / 430 lb, citing The Thing #1 (2022, Walter Mosley, released Nov 10, 2021). Its body text, citing the same issue, says 'He now walks around at 6'6' feet and almost 500 pounds'. So the fan wiki contradicts itself, and I could not verify the comic text. The fan wiki also notes he is 'often depicted as being much taller' than the 6 ft listing."
+  },
+  {
+   "key": "juggernaut",
+   "label": "Juggernaut (Cain Marko), Marvel",
+   "status": "disputed",
+   "values": "{\"height_m_min\":2.083,\"height_m_max\":2.87,\"weight_kg_min\":408.2,\"weight_kg_max\":861.8,\"orig\":\"6 ft 10 in / 900 lbs (DK 2019; handbooks per fan wiki) vs 9 ft 5 in / 1,900 lbs (current Marvel.com, crowd-sourced)\",\"bmi_range\":\"94.1-104.6\",\"pi_kg_m3_range\":\"36.4-45.2\",\"girths\":\"unknown\"}",
+   "sources": [
+    {
+     "title": "Marvel.com Juggernaut (Cain Marko) page",
+     "url": "https://www.marvel.com/characters/juggernaut-cain-marko"
+    },
+    {
+     "title": "DK Marvel Encyclopedia New Edition (2019), archive.org OCR text",
+     "url": "https://archive.org/download/marvel-encyclopedia-new-edition_202312/Marvel%20Encyclopedia%20New%20Edition_djvu.txt"
+    },
+    {
+     "title": "Marvel Database (fan wiki) Cain Marko (Earth-616): yearly revision samples and edit summaries via API",
+     "url": "https://marvel.fandom.com/api.php?action=query&prop=revisions&titles=Cain_Marko_(Earth-616)&rvprop=ids|timestamp|comment|user&rvlimit=500&format=json"
+    }
+   ],
+   "notes": "The Marvel.com page says 'Take note, True Believer! This crowd-sourced content has not yet been verified for accuracy by our erudite editors!' followed by 'HEIGHT 9'5\" WEIGHT 1,900 lbs.' This was the only page among those fetched with that disclaimer. DK 2019 factfile (REAL NAME Cain Marko): 'HEIGHT 6 ft 10 in WEIGHT 900 lbs EYES Blue HAIR Red'. A Dec 2007 fan-wiki revision gave 6 ft 10 in / 900 lb citing http://marvel.com/universe/Juggernaut_(Cain_Marko); I could not check that archived page because Wayback is blocked here. Fan-wiki editors wrote in 2022 and 2024: 'Every handbook says that Juggernaut is 6'10\" and weighs 900 lbs' (reported). The wiki changed to 9 ft 5 in / 1,900 lb around 2012 and has gone back and forth since. Range: 6 ft 10 in-9 ft 5 in, 900-1,900 lb."
+  },
+  {
+   "key": "colossus",
+   "label": "Colossus (Piotr Rasputin), human and armoured forms, Marvel",
+   "status": "official",
+   "values": "{\"human_height_m\":1.981,\"human_weight_kg\":113.4,\"human_orig\":\"6 ft 6 in, 250 lbs\",\"armored_height_m\":2.261,\"armored_weight_kg\":226.8,\"armored_orig\":\"7 ft 5 in, 500 lbs\",\"human_bmi\":28.9,\"armored_bmi\":44.4,\"armored_pi_kg_m3\":19.6,\"girths\":\"unknown\"}",
+   "sources": [
+    {
+     "title": "Marvel.com Colossus (Piotr Rasputin)",
+     "url": "https://www.marvel.com/characters/colossus-piotr-rasputin"
+    },
+    {
+     "title": "DK Marvel Encyclopedia New Edition (2019), archive.org OCR text",
+     "url": "https://archive.org/download/marvel-encyclopedia-new-edition_202312/Marvel%20Encyclopedia%20New%20Edition_djvu.txt"
+    }
+   ],
+   "notes": "Marvel.com: 'HEIGHT Piotr Rasputin: 6'6\", Colossus: 7'5\" WEIGHT Piotr Rasputin: 250 lbs., Colossus: 500 lbs.' It also says he 'can convert the tissue of his entire body into an organic, steel-like substance analogous to osmium and to carbon steel'. DK 2019 lists only the armoured form: '7 ft 5 in (armored) / 500 lbs (armored)'. A 2009 fan-wiki edit updated the height per OHOTMU A to Z hardcover Vol 2 (reported). See colossus_density_check."
+  },
+  {
+   "key": "wolverine",
+   "label": "Wolverine (James Howlett / Logan), with and without adamantium, Marvel",
+   "status": "disputed",
+   "values": "{\"height_m\":1.6,\"orig_height\":\"5 ft 3 in\",\"weight_with_adamantium_kg\":136.1,\"weight_without_adamantium_kg\":88.5,\"orig_weight\":\"300 lbs with adamantium, 195 lbs without (Marvel.com); 195 lbs (DK 2019, no qualifier)\",\"adamantium_added_kg\":47.6,\"adamantium_added_lb\":105,\"bmi_with\":53.1,\"bmi_without\":34.5,\"pi_with\":33.2,\"pi_without\":21.6,\"girths\":\"unknown\"}",
+   "sources": [
+    {
+     "title": "Marvel.com Wolverine (Logan/James Howlett) In Comics",
+     "url": "https://www.marvel.com/characters/wolverine-james-howlett/in-comics"
+    },
+    {
+     "title": "DK Marvel Encyclopedia New Edition (2019), archive.org OCR text",
+     "url": "https://archive.org/download/marvel-encyclopedia-new-edition_202312/Marvel%20Encyclopedia%20New%20Edition_djvu.txt"
+    },
+    {
+     "title": "Marvel Database (fan wiki) James Howlett (Earth-616) wikitext via API",
+     "url": "https://marvel.fandom.com/api.php?action=parse&page=James_Howlett_(Earth-616)&prop=wikitext&format=json&redirects=1"
+    }
+   ],
+   "notes": "Marvel.com: 'HEIGHT 5'3\" WEIGHT 300 lbs., Without Adamantium skeleton: 195 lbs.' It also says the alloy 'adds an extra 105 pounds to his frame—or 47.6 kilograms'. DK 2019 factfile: 'HEIGHT 5 ft3in WEIGHT 195 lbs', and the same entry says 'His skeleton has been laced with the unbreakable metal Adamantium'. DK therefore gives 195 lb with no 'without adamantium' qualifier, which is why this is disputed (range 195-300 lb). Height is 5 ft 3 in in every source and every wiki revision sampled since 2007. The fan wiki cites Wolverine: Weapon X #5 for 'nearly 100 pounds of Adamantium' (story text, reported)."
+  },
+  {
+   "key": "kingpin",
+   "label": "Kingpin (Wilson Fisk), Marvel",
+   "status": "official",
+   "values": "{\"height_m\":2.007,\"weight_kg\":204.1,\"orig\":\"6 ft 7 in, 450 lbs\",\"bmi\":50.7,\"pi_kg_m3\":25.3,\"girths\":\"unknown\"}",
+   "sources": [
+    {
+     "title": "Marvel.com Kingpin (Wilson Fisk) In Comics",
+     "url": "https://www.marvel.com/characters/kingpin/in-comics"
+    },
+    {
+     "title": "DK Marvel Encyclopedia New Edition (2019), archive.org OCR text",
+     "url": "https://archive.org/download/marvel-encyclopedia-new-edition_202312/Marvel%20Encyclopedia%20New%20Edition_djvu.txt"
+    },
+    {
+     "title": "Marvel Database (fan wiki) Wilson Fisk (Earth-616) wikitext via API",
+     "url": "https://marvel.fandom.com/api.php?action=parse&page=Wilson_Fisk_(Earth-616)&prop=wikitext&format=json&redirects=1"
+    }
+   ],
+   "notes": "Marvel.com: 'HEIGHT 6'7\" WEIGHT 450 lbs.' and 'Most of Fisk's bulk is actually muscle, not fat; his enormous size is comparable to that of a sumo wrestler.' DK 2019: 'HEIGHT 6 ft7 in WEIGHT 450 lbs'. The fan wiki says 'only the bare 9 pounds actually being fat', citing OHOTMU: Daredevil 2004. That is reported only; I could not verify it in the primary source, and web searches found only copies of the wiki text. Taking 'mostly muscle' at face value implies a normalised FFMI near 45-49, far above the Kouri 1995 human values (derived)."
+  },
+  {
+   "key": "luke_cage",
+   "label": "Luke Cage (Carl Lucas), Marvel",
+   "status": "official",
+   "values": "{\"height_m\":1.981,\"weight_kg\":192.8,\"orig\":\"6 ft 6 in, 425 lbs\",\"bmi\":49.1,\"pi_kg_m3\":24.8,\"girths\":\"unknown\"}",
+   "sources": [
+    {
+     "title": "Marvel.com Luke Cage In Comics",
+     "url": "https://www.marvel.com/characters/luke-cage/in-comics"
+    },
+    {
+     "title": "DK Marvel Encyclopedia New Edition (2019), archive.org OCR text",
+     "url": "https://archive.org/download/marvel-encyclopedia-new-edition_202312/Marvel%20Encyclopedia%20New%20Edition_djvu.txt"
+    }
+   ],
+   "notes": "Marvel.com: 'HEIGHT 6'6\" WEIGHT 425 lbs.' Its powers list includes 'Superdense Body Mass', and it says his skin is bulletproof 'thanks to the incredibly dense muscle tissues created by the experiment'. DK 2019 gives 'HEIGHT 6ft6in'; its weight line is illegible in OCR in both archive.org copies. The fan wiki has said 6 ft 6 in / 425 lb since 2007."
+  },
+  {
+   "key": "black_panther",
+   "label": "Black Panther (T'Challa), Marvel",
+   "status": "official",
+   "values": "{\"height_m\":1.829,\"weight_kg\":90.7,\"orig\":\"6 ft, 200 lbs\",\"bmi\":27.1,\"pi_kg_m3\":14.8,\"girths\":\"unknown\"}",
+   "sources": [
+    {
+     "title": "Marvel.com Black Panther (T'Challa) In Comics",
+     "url": "https://www.marvel.com/characters/black-panther-t-challa/in-comics"
+    },
+    {
+     "title": "DK Marvel Encyclopedia New Edition (2019), archive.org OCR text",
+     "url": "https://archive.org/download/marvel-encyclopedia-new-edition_202312/Marvel%20Encyclopedia%20New%20Edition_djvu.txt"
+    }
+   ],
+   "notes": "Marvel.com: 'HEIGHT 6' WEIGHT 200 lbs.' DK 2019: 'HEIGHT 6 ft WEIGHT 200 lbs'. Fan-wiki revisions from 2007-08 said 185 lb (unsourced) and changed to 200 in 2009. This build is plausible for a human: normalised FFMI is about 24 at 10% body fat (derived)."
+  },
+  {
+   "key": "bane",
+   "label": "Bane, DC",
+   "status": "official",
+   "values": "{\"height_m\":2.032,\"weight_kg\":158.8,\"orig\":\"6 ft 8 in, 350 lbs\",\"with_venom_kg\":192.8,\"with_venom_orig\":\"425 lbs with Venom (DK 2021)\",\"book_metric\":\"2.03 m, 159 kg (DK 2019 guide)\",\"bmi\":38.4,\"bmi_venom\":46.7,\"pi_kg_m3\":18.9,\"girths\":\"unknown\"}",
+   "sources": [
+    {
+     "title": "DK DC Comics Encyclopedia New Edition (2021), archive.org OCR text",
+     "url": "https://archive.org/download/dc-comics-encyclopedia-new-edition/DC%20Comics%20Encyclopedia%2C%20New%20Edition_djvu.txt"
+    },
+    {
+     "title": "DK DC Comics Ultimate Character Guide New Edition (2019), archive.org OCR text",
+     "url": "https://archive.org/download/dc-comics-ultimate-character-guide-new-edition/DC%20Comics%20Ultimate%20Character%20Guide%2C%20New%20Edition_djvu.txt"
+    },
+    {
+     "title": "DK The DC Comics Encyclopedia (2008), archive.org search-inside snippet",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=identifier%3Adccomicsencyclop0000unse+AND+%22350+lbs%22"
+    },
+    {
+     "title": "DC.com Bane page (no height/weight given)",
+     "url": "https://www.dc.com/characters/bane"
+    }
+   ],
+   "notes": "DK 2021: 'HEIGHT 6ft 8in WEIGHT 350 lbs (425 lbs with Venom)'. DK 2019 guide: 'HEIGHT 6 ft 8 in (2.03 m) WEIGHT 350 lb (159 kg)'. The DK 2008 snippet shows 'REAL NAME Unknown | Base Gotham City | WEIGHT 350 lbs'; its height was not in the snippet. Fan-wiki revisions included 6 ft 8 in / 400 lb in 2008 (unsourced). At 10% body fat his normalised FFMI is about 33, above every non-user in Kouri 1995 and at the top of the steroid-user range (derived)."
+  },
+  {
+   "key": "doomsday",
+   "label": "Doomsday, DC",
+   "status": "disputed",
+   "values": "{\"height_m_min\":2.134,\"height_m_max\":2.692,\"weight_kg_min\":279.0,\"weight_kg_max\":415.0,\"orig\":\"7 ft 0 in / 615 lbs (DK 2008); 7 ft 6 in / 915 lbs (DK 2021); 8 ft 10 in / 915 lbs (DK 2019 guide, book metric 2.69 m / 415 kg)\",\"bmi_range\":\"57.3-79.4\",\"pi_kg_m3_range\":\"21.3-34.7\",\"girths\":\"unknown\"}",
+   "sources": [
+    {
+     "title": "DK The DC Comics Encyclopedia (2008), archive.org search-inside snippet",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=identifier%3Adccomicsencyclop0000unse+AND+%22615%22"
+    },
+    {
+     "title": "DK DC Comics Encyclopedia New Edition (2021), archive.org OCR text",
+     "url": "https://archive.org/download/dc-comics-encyclopedia-new-edition/DC%20Comics%20Encyclopedia%2C%20New%20Edition_djvu.txt"
+    },
+    {
+     "title": "DK DC Comics Ultimate Character Guide New Edition (2019), archive.org OCR text",
+     "url": "https://archive.org/download/dc-comics-ultimate-character-guide-new-edition/DC%20Comics%20Ultimate%20Character%20Guide%2C%20New%20Edition_djvu.txt"
+    },
+    {
+     "title": "DC Database (fan wiki) Doomsday (New Earth): revision samples via API",
+     "url": "https://dc.fandom.com/api.php?action=parse&page=Doomsday_(New_Earth)&prop=wikitext&format=json&redirects=1"
+    },
+    {
+     "title": "DC.com Doomsday page (no height/weight given)",
+     "url": "https://www.dc.com/characters/doomsday"
+    }
+   ],
+   "notes": "DK 2008 snippet: 'Destroyer BASE Earth ... HEIGHT 7ft WEIGHT 615 lbs Eyes Red Hair White'. DK 2021, OCR-corrected: 'HEIGHT 7ft 6in WEIGHT 915 lbs EYES Red HAIR White'. DK 2019 guide: 'HEIGHT 8 ft 10 in (2.69 m) WEIGHT 915 lb (415 kg)'. DC Database revisions from 2007 to 2015 gave 8 ft 0 in, then 8 ft 10 in, with 915 lb (unsourced). In 2016 it switched to 7 ft 0 in / 615 lb citing DK 2008, and its Prime Earth page uses 7 ft 6 in / 915 lb citing the DK New Edition. Range: 7 ft 0 in-8 ft 10 in, 615-915 lb."
+  },
+  {
+   "key": "darkseid",
+   "label": "Darkseid (Uxas), DC",
+   "status": "official",
+   "values": "{\"height_m\":2.667,\"weight_kg\":823.3,\"orig\":\"8 ft 9 in, 1,815 lbs\",\"book_metric\":\"2.67 m, 823 kg (DK 2019 guide)\",\"bmi\":115.7,\"pi_kg_m3\":43.4,\"girths\":\"unknown\"}",
+   "sources": [
+    {
+     "title": "DK DC Comics Encyclopedia New Edition (2021), archive.org OCR text",
+     "url": "https://archive.org/download/dc-comics-encyclopedia-new-edition/DC%20Comics%20Encyclopedia%2C%20New%20Edition_djvu.txt"
+    },
+    {
+     "title": "DK The DC Comics Encyclopedia (2008), archive.org search-inside snippet",
+     "url": "https://archive.org/services/search/beta/page_production/?service_backend=fts&page_type=collection_details&page_target=texts&user_query=identifier%3Adccomicsencyclop0000unse+AND+%221%2C815%22"
+    },
+    {
+     "title": "DK DC Comics Universe Guide (2007), archive.org search-inside snippet",
+     "url": "https://archive.org/details/dccomicsuniverse0000alas"
+    },
+    {
+     "title": "DK DC Comics Ultimate Character Guide New Edition (2019), archive.org OCR text",
+     "url": "https://archive.org/download/dc-comics-ultimate-character-guide-new-edition/DC%20Comics%20Ultimate%20Character%20Guide%2C%20New%20Edition_djvu.txt"
+    },
+    {
+     "title": "DC.com Darkseid page (no height/weight given)",
+     "url": "https://www.dc.com/characters/darkseid"
+    }
+   ],
+   "notes": "DK 2021, OCR-corrected: 'HEIGHT 8ft 9in WEIGHT 1,815 lbs EYES Red HAIR None'. DK 2008: 'BASE Apokolips ... HEIGHT 8ft 9in WEIGHT 1,815 lbs'. DK 2007: 'Base Apokolips Height 8ft 9in Weight 1,815 lbs'. DK 2019 guide: 'HEIGHT 8 ft. 9 in (2.67 m) WEIGHT 1,815 lb (823 kg)'. DK is consistent across 2007-2021. A 2007 DC Database revision gave 8 ft 5 in / 1,515 lb (unsourced, fan)."
+  },
+  {
+   "key": "she_hulk",
+   "label": "She-Hulk (Jennifer Walters), Marvel (bonus)",
+   "status": "disputed",
+   "values": "{\"height_m\":2.007,\"weight_kg_min\":294.8,\"weight_kg_max\":317.5,\"orig\":\"6 ft 7 in; 650 lbs (DK 2019) vs 700 lbs (Marvel.com)\",\"human_form\":\"Jen Walters 5 ft 10 in (1.778 m), 150 lbs (68.0 kg) per Marvel.com\",\"bmi_range\":\"73.2-78.9\",\"girths\":\"unknown\"}",
+   "sources": [
+    {
+     "title": "Marvel.com She-Hulk (Jennifer Walters) In Comics",
+     "url": "https://www.marvel.com/characters/she-hulk-jennifer-walters/in-comics"
+    },
+    {
+     "title": "DK Marvel Encyclopedia New Edition (2019), archive.org OCR text",
+     "url": "https://archive.org/download/marvel-encyclopedia-new-edition_202312/Marvel%20Encyclopedia%20New%20Edition_djvu.txt"
+    }
+   ],
+   "notes": "Marvel.com: 'HEIGHT Jen Walters: 5'10\", She-Hulk: 6'7\" WEIGHT Jen Walters: 150 lbs., She-Hulk: 700 lbs.' DK 2019 factfile (REAL NAME Jennifer Walters): 'HEIGHT 6 ft7 in WEIGHT 650 lbs'. The two official sources differ by 50 lb."
+  },
+  {
+   "key": "abomination",
+   "label": "Abomination (Emil Blonsky), Marvel (bonus)",
+   "status": "official",
+   "values": "{\"height_m\":2.032,\"weight_kg\":444.5,\"orig\":\"6 ft 8 in, 980 lbs\",\"human_form\":\"Blonsky 5 ft 10 in (1.778 m), 180 lbs (81.6 kg)\",\"bmi\":107.7,\"pi_kg_m3\":53.0,\"girths\":\"unknown\"}",
+   "sources": [
+    {
+     "title": "Marvel.com Abomination",
+     "url": "https://www.marvel.com/characters/abomination"
+    },
+    {
+     "title": "DK Marvel Encyclopedia New Edition (2019), archive.org OCR text",
+     "url": "https://archive.org/download/marvel-encyclopedia-new-edition_202312/Marvel%20Encyclopedia%20New%20Edition_djvu.txt"
+    }
+   ],
+   "notes": "Marvel.com: 'HEIGHT Abomination: 6'8\", Blonsky: 5'10\" WEIGHT Abomination: 980 lbs., Blonsky: 180 lbs.' DK 2019 shows 'WEIGHT 980 lbs'; its height is illegible in OCR."
+  },
+  {
+   "key": "dc_com_no_stats",
+   "label": "DC.com character pages give no height/weight",
+   "status": "official",
+   "values": "{\"height_m\":null,\"weight_kg\":null,\"orig\":\"not listed\"}",
+   "sources": [
+    {
+     "title": "DC.com Superman",
+     "url": "https://www.dc.com/characters/superman"
+    },
+    {
+     "title": "DC.com Batman",
+     "url": "https://www.dc.com/characters/batman"
+    },
+    {
+     "title": "DC.com Bane",
+     "url": "https://www.dc.com/characters/bane"
+    },
+    {
+     "title": "DC.com Doomsday",
+     "url": "https://www.dc.com/characters/doomsday"
+    },
+    {
+     "title": "DC.com Darkseid",
+     "url": "https://www.dc.com/characters/darkseid"
+    }
+   ],
+   "notes": "Each DC.com page's 'Character Facts' block lists only Powers, First Appearance, Alias/Alter Ego, Base of Operations and Occupation, plus a footer saying the site 'may not be accurate, complete, or up-to-date'. All DC heights and weights above therefore come from DK's DC-licensed encyclopedias. The 'Who's Who in the DC Universe' #1-3 (1992) items on archive.org are Mayfair DC Heroes RPG sourcebooks, not DC's loose-leaf series, and have no height or weight lines. DC's own Who's Who (1985-87 or 1990-92 loose-leaf) was not found."
+  },
+  {
+   "key": "human_ref_who_bmi",
+   "label": "Human reference: WHO adult BMI cut-offs, converted to weight/height^3 at 1.80 m",
+   "status": "official",
+   "values": "{\"underweight_bmi_lt\":18.5,\"overweight_bmi_ge\":25,\"obese_bmi_ge\":30,\"pi_at_1_80m\":{\"bmi18_5\":10.3,\"bmi25\":13.9,\"bmi30\":16.7},\"pi_unit\":\"kg/m^3\"}",
+   "sources": [
+    {
+     "title": "WHO Global Health Observatory: Body mass index (BMI) topic page",
+     "url": "https://www.who.int/data/gho/data/themes/topics/topic-details/GHO/body-mass-index"
+    }
+   ],
+   "notes": "The WHO GHO page lists indicators 'Underweight among adults, BMI < 18.5', 'Overweight among adults, BMI >= 25' and 'Obesity among adults, BMI >= 30'. The ponderal-index conversions (PI = BMI / height) at 1.80 m are derived."
+  },
+  {
+   "key": "human_ref_kouri_ffmi",
+   "label": "Human reference: fat-free mass index ceiling (Kouri et al. 1995)",
+   "status": "measured",
+   "values": "{\"natural_ffmi_norm_max\":25.0,\"pre_steroid_mr_america_mean_ffmi\":25.4,\"steroid_users_some_exceed\":30,\"normalisation\":\"FFMI + 6.3*(1.80 - h)\",\"derived_at_1_80m_10pct_fat\":{\"ffmi25_mass_kg\":90.0,\"bmi\":27.8,\"pi\":15.4,\"ffmi30_mass_kg\":108.0,\"bmi_ffmi30\":33.3,\"pi_ffmi30\":18.5}}",
+   "sources": [
+    {
+     "title": "Kouri EM, Pope HG, Katz DL, Oliva P. Fat-free mass index in users and nonusers of anabolic-androgenic steroids. Clin J Sport Med 1995;5(4):223-228. PMID 7496846 (Europe PMC REST record)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A7496846+AND+SRC%3AMED&resultType=core&format=json&pageSize=1"
+    }
+   ],
+   "notes": "The abstract says normalised FFMI in non-users 'extended up to a well-defined limit of 25.0'; pre-steroid-era Mr. America winners had a mean of 25.4; some steroid users 'even exceeded 30'. The equivalent body masses at 1.80 m use an assumed 10% body fat (estimate)."
+  },
+  {
+   "key": "plausibility_metrics",
+   "label": "Derived: BMI, weight/height^3 and FFMI upper bound for each stated comic figure",
+   "status": "derived",
+   "values": "{\"cols\":\"height_m,mass_kg,BMI,PI_kg_m3,FFMInorm_upper_0pct_fat,x_mass_of_BMI25_human\",\"batman\":[1.88,95.3,27.0,14.3,26.5,1.08],\"black_panther\":[1.829,90.7,27.1,14.8,26.9,1.08],\"superman\":[1.905,106.6,29.4,15.4,28.7,1.17],\"captain_america_240\":[1.88,108.9,30.8,16.4,30.3,1.23],\"colossus_human\":[1.981,113.4,28.9,14.6,27.7,1.16],\"wolverine_195\":[1.6,88.5,34.5,21.6,35.8,1.38],\"wolverine_300\":[1.6,136.1,53.1,33.2,54.4,2.13],\"bane\":[2.032,158.8,38.4,18.9,37.0,1.54],\"bane_venom\":[2.032,192.8,46.7,23.0,45.2,1.87],\"colossus_armored\":[2.261,226.8,44.4,19.6,41.5,1.78],\"luke_cage\":[1.981,192.8,49.1,24.8,48.0,1.96],\"kingpin\":[2.007,204.1,50.7,25.3,49.4,2.03],\"doomsday_2008\":[2.134,279.0,61.3,28.7,59.2,2.45],\"doomsday_2019_guide\":[2.692,415.0,57.3,21.3,51.6,2.29],\"doomsday_2021\":[2.286,415.0,79.4,34.7,76.4,3.18],\"thing\":[1.829,226.8,67.8,37.1,67.6,2.71],\"she_hulk_650\":[2.007,294.8,73.2,36.5,71.9,2.93],\"she_hulk_700\":[2.007,317.5,78.9,39.3,77.6,3.15],\"thor\":[1.981,290.3,74.0,37.3,72.8,2.96],\"juggernaut_6_10\":[2.083,408.2,94.1,45.2,92.3,3.76],\"juggernaut_9_5\":[2.87,861.8,104.6,36.4,97.9,4.18],\"hulk_marvelcom\":[2.286,521.6,99.8,43.7,96.8,3.99],\"hulk_savage_7ft\":[2.134,471.7,103.6,48.6,101.5,4.15],\"hulk_savage_8ft\":[2.438,635.0,106.8,43.8,102.8,4.27],\"hulk_grey\":[1.981,408.2,104.0,52.5,102.9,4.16],\"abomination\":[2.032,444.5,107.7,53.0,106.2,4.31],\"darkseid\":[2.667,823.3,115.7,43.4,110.3,4.63],\"banner\":[1.753,58.1,18.9,10.8,19.2,0.76],\"blake\":[1.753,68.0,22.2,12.6,22.4,0.89]}",
+   "sources": [
+    {
+     "title": "Computed by scripts/metrics.py from the stated figures above (Marvel.com, DK encyclopedias)",
+     "url": "https://www.marvel.com/characters/hulk-bruce-banner/in-comics"
+    },
+    {
+     "title": "Kouri et al. 1995 FFMI normalisation (Europe PMC)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A7496846+AND+SRC%3AMED&resultType=core&format=json&pageSize=1"
+    }
+   ],
+   "notes": "Conversions: 1 in = 0.0254 m, 1 lb = 0.45359237 kg. The FFMI upper bound assumes 0% body fat, so real FFMI would be lower. At 10% body fat the normalised FFMIs are: Batman 23.8, Black Panther 24.2, Superman 25.8, Captain America at 240 lb 27.2 (24.9 at 220 lb), Piotr Rasputin 24.9, Bane 33.1, Wolverine at 195 lb 32.4.\n\nComparison with the Kouri 1995 human values:\n- Batman and Black Panther fall within the drug-free range.\n- Superman is at the drug-free limit.\n- Captain America at 240 lb exceeds the drug-free limit but is within the steroid-user range.\n- Bane and Wolverine (even without adamantium) are above 30 at 10-15% body fat, the top of the reported human range.\n- Everything with BMI above about 45 is far beyond any value in the human references used here.\n\nIsometric scaling shows how far the stated weights depart from a scaled-up human (derived):\n- Banner's 128 lb scales to 231 lb at 7 ft and 345 lb at 8 ft; the Hulk is stated at 1,040-1,400 lb.\n- Blake's 150 lb scales to 217 lb at 6 ft 6 in; Thor is stated at 640 lb.\n- A 6 ft 2 in, 240 lb build (Captain America) scales to 327 lb at 6 ft 10 in, 855 lb at 9 ft 5 in, 686 lb at 8 ft 9 in and 432 lb at 7 ft 6 in. Compare Juggernaut at 900 or 1,900 lb, Darkseid at 1,815 lb and Hulk at 1,150 lb.\n\nI offer no explanations for these departures. Only Marvel's own wording is quoted where it exists: Luke Cage's 'dense muscle tissues' and 'Superdense Body Mass', Colossus's 'steel-like substance', and Kingpin's bulk being 'mostly muscle'."
+  },
+  {
+   "key": "colossus_density_check",
+   "label": "Derived: Colossus armoured weight vs Marvel's 'steel-like' description",
+   "status": "estimate",
+   "values": "{\"assumed_human_density_kg_m3\":[1000,1100],\"armored_volume_m3\":[0.168,0.153],\"steel_density_kg_m3_assumed\":7850,\"mass_if_steel_kg\":[1322,1202],\"mass_if_steel_lb\":[2915,2650],\"stated_armored_kg\":226.8,\"implied_mean_density_kg_m3\":[1346,1481]}",
+   "sources": [
+    {
+     "title": "Marvel.com Colossus (Piotr Rasputin)",
+     "url": "https://www.marvel.com/characters/colossus-piotr-rasputin"
+    }
+   ],
+   "notes": "Method:\n1. Start from Marvel's stated human form, 6 ft 6 in and 250 lb.\n2. Assume a body density of 1,000-1,100 kg/m^3, roughly that of water. This is an assumption, not a fetched value.\n3. Scale the volume isometrically to 7 ft 5 in (factor 1.486).\n4. Apply a carbon-steel density of 7,850 kg/m^3. This is a standard handbook value that I did not fetch.\nResult: a steel body of that size would weigh about 1,200-1,320 kg (2,650-2,900 lb), against Marvel's stated 500 lb (227 kg). The stated weight implies a mean density of only about 1,350-1,480 kg/m^3, but Marvel.com calls the tissue 'analogous to osmium and to carbon steel'. These inputs are estimates; only the 6 ft 6 in / 250 lb and 7 ft 5 in / 500 lb figures and the quoted wording are official."
+  }
+ ],
+ "gaps": "1. No OHOTMU edition was read directly. The archive.org copies are lend-only: 'officialhandbook04grue' (1987), 'officialhandbook0000unse_z5q7' (Avengers 2004), 'officialhandbook0001unse' (2006) and 'officialhandbook0000unse_i8k4' (A to Z 2008). Text download returned HTTP 401 and search-inside was refused. Edition-specific handbook claims therefore come only from Marvel Database edit summaries and are marked 'reported':\n   - Captain America at 220 lb in Avengers 2004 and Civil War: Battle Damage Report 2007, and 240 lb in 2006, 2008 and Avengers: Roll Call\n   - Juggernaut at 6 ft 10 in / 900 lb in 'every handbook'\n   - Hulk 7-8 ft / 1,040-1,400 lb (Savage), 6 ft 6 in / 900 lb (Joe Fixit) and 7 ft 6 in / 1,150 lb (Merged), with one edit attributing the Hulk profile to OHOTMU A to Z\n   - Kingpin '9 lb of fat' (OHOTMU: Daredevil 2004)\n   - Banner 5 ft 10 in (Avengers: Roll Call #1)\n   The 1983 (vol. 1), 1985-88 Deluxe and 1990s Master Edition values are therefore unconfirmed.\n2. DC Who's Who: the 1985-87 series and the 1990-92 loose-leaf were not found online. The archive.org 'Who's Who in the DC Universe #1-3' are Mayfair RPG books with no stats. All DC numbers come from DK's licensed encyclopedias (2007, 2008, 2016, 2019 guide, 2021). The often-repeated Superman '225 lbs' has no official source located.\n3. Two DK texts are third-party archive.org uploads of copyrighted books (DC Comics Encyclopedia New Edition 2021 and Marvel Encyclopedia New Edition 2019). I read them as OCR text, and some lines are illegible:\n   - Luke Cage's weight in DK 2019\n   - Abomination's height in DK 2019\n   The DK 2008, 2007 and 2016 books were seen only as search-inside snippets. The Bane height in the 2008 snippet was not visible.\n4. The 2006 first edition of DK's Marvel Encyclopedia is too garbled in OCR to attribute stats to characters.\n5. Wayback Machine and Google Books were blocked or out of quota here. I could not confirm when Marvel.com changed Juggernaut from 6 ft 10 in / 900 lb to 9 ft 5 in / 1,900 lb, or check older Marvel.com/universe pages directly.\n6. Marvel.com has no separate pages for Grey or Savage Hulk; the slugs I tried returned 404.\n7. Girths (chest, waist, upper arm, forearm, thigh, calf, neck): no official or licensed source gives any for these characters, so they are unknown. I did not estimate them here.\n8. Inputs to the plausibility checks that were not fetched: the human body density of 1,000-1,100 kg/m^3 and the steel density of 7,850 kg/m^3 are standard assumptions, labelled as estimates."
+}

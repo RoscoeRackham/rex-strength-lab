@@ -1,0 +1,54 @@
+const C = require('./contest.js');
+const { P, D, K } = C; const g = K.g;
+const surf = (id) => D.surfaces.find((s) => s.id === id);
+const HULK = 100 * 907.18474, HUMAN = 511;
+const mk = (o) => {
+  const body = P.makeBody({ H: o.H || 2, m: o.m || (180 * Math.pow((o.H || 2) / 2, 3)) });
+  return { F: o.kg === Infinity ? Infinity : (o.kg || HULK) * g, mode: o.mode || 'comic', body, surface: surf(o.surf || 'concrete'), groundHolds: !!o.comic, anchor: o.anchor || 'friction' };
+};
+const fmt = (x) => (typeof x === 'number' ? (Math.abs(x) > 1e5 || (Math.abs(x) < 1e-3 && x !== 0) ? x.toExponential(4) : +x.toPrecision(6)) : x);
+const show = (label, o) => { const r = {}; for (const [k, v] of Object.entries(o)) { if (v && typeof v === 'object') { const s = {}; for (const [k2, v2] of Object.entries(v)) if (typeof v2 !== 'object' && typeof v2 !== 'function') s[k2] = fmt(v2); r[k] = s; } else if (typeof v !== 'function') r[k] = fmt(v); } console.log('\n## ' + label + '\n' + JSON.stringify(r)); };
+const NSM = 4e17 * 0.18;
+show('PUSH W1 default friction', C.pushMatch(mk({}), mk({})));
+show('PUSH W2 Rex braced vs Ollie standing comic', C.pushMatch(mk({ anchor: 'braced' }), mk({})));
+show('PUSH W2r Rex braced vs Ollie standing real', C.pushMatch(mk({ anchor: 'braced', mode: 'real' }), mk({ mode: 'real' })));
+show('PUSH W3 Rex 360 kg (double density) vs Ollie 180 friction', C.pushMatch(mk({ m: 360 }), mk({})));
+show('PUSH W3b record human vs record human, Rex 360 kg', C.pushMatch(mk({ m: 360, kg: HUMAN }), mk({ kg: HUMAN })));
+show('PUSH W3c weak Rex (100 kg lift) vs Ollie Hulk, friction', C.pushMatch(mk({ kg: 100 }), mk({})));
+show('PUSH W4 both bolted Hulk', C.pushMatch(mk({ anchor: 'bolted' }), mk({ anchor: 'bolted' })));
+show('PUSH W4b both bolted inf', C.pushMatch(mk({ anchor: 'bolted', kg: Infinity }), mk({ anchor: 'bolted', kg: Infinity })));
+show('PUSH W4c Rex bolted Hulk vs Ollie friction', C.pushMatch(mk({ anchor: 'bolted' }), mk({})));
+show('PUSH W5 NS both', C.pushMatch(mk({ m: NSM }), mk({ m: NSM })));
+show('PUSH W5b NS both comic ground', C.pushMatch(mk({ m: NSM, comic: true }), mk({ m: NSM, comic: true })));
+show('PUSH W6 Rex NS vs Ollie default, comic ground', C.pushMatch(mk({ m: NSM, comic: true, kg: 1e18 }), mk({ comic: true })));
+// shoves
+const sh = (l, a, b) => { const r = C.shoveOnce(a, b); show(l, Object.assign({}, r, { push: undefined, pt: r.push.t, pxA: r.push.xA, pxB: r.push.xB, EB: r.push.EB, EA: r.push.EA })); };
+sh('SHOVE S1 Rex shoves Ollie default friction comic', mk({}), mk({}));
+sh('SHOVE S1r same real', mk({ mode: 'real' }), mk({ mode: 'real' }));
+sh('SHOVE S2 Rex braced shoves Ollie friction comic', mk({ anchor: 'braced' }), mk({}));
+sh('SHOVE S2r Rex braced shoves Ollie friction real', mk({ anchor: 'braced', mode: 'real' }), mk({ mode: 'real' }));
+sh('SHOVE S3 Rex bolted shoves Ollie friction comic', mk({ anchor: 'bolted' }), mk({}));
+sh('SHOVE S3i Rex bolted inf shoves Ollie friction comic', mk({ anchor: 'bolted', kg: Infinity }), mk({}));
+sh('SHOVE S3ir Rex bolted inf shoves Ollie friction real', mk({ anchor: 'bolted', kg: Infinity, mode: 'real' }), mk({ mode: 'real' }));
+sh('SHOVE S4 Rex shoves bolted Ollie', mk({}), mk({ anchor: 'bolted' }));
+sh('SHOVE S5 record human shoves record human comic', mk({ kg: HUMAN }), mk({ kg: HUMAN }));
+sh('SHOVE S5r record human shoves record human real', mk({ kg: HUMAN, mode: 'real' }), mk({ kg: HUMAN, mode: 'real' }));
+sh('SHOVE S6 NS: Rex 1e23 kg bolted shoves NS Ollie comic ground', mk({ m: NSM, kg: 1e23, anchor: 'bolted', comic: true }), mk({ m: NSM, comic: true }));
+sh('SHOVE S6b NS: Rex 1e25 kg bolted shoves NS Ollie comic ground', mk({ m: NSM, kg: 1e25, anchor: 'bolted', comic: true }), mk({ m: NSM, comic: true }));
+// lift
+show('LIFT L1 default', C.liftPartner(mk({}), mk({})));
+show('LIFT L2 Ollie braced', C.liftPartner(mk({}), mk({ anchor: 'braced' })));
+show('LIFT L3 record human lifts Ollie 180', C.liftPartner(mk({ kg: HUMAN }), mk({})));
+show('LIFT L4 NS Ollie, Rex default density, 1e23 kg', C.liftPartner(mk({ kg: 1e23, comic: true }), mk({ m: NSM, comic: true })));
+show('LIFT L5 NS both, 1e23 kg', C.liftPartner(mk({ m: NSM, kg: 1e23, comic: true }), mk({ m: NSM, comic: true })));
+show('LIFT L5b NS both, 1e22 kg', C.liftPartner(mk({ m: NSM, kg: 1e22, comic: true }), mk({ m: NSM, comic: true })));
+// throw
+const th = (l, a, b, t) => { const r = C.throwPartner(a, b, t); if (r.bolted) return show(l, r); const x = r.r; show(l, { v: x.v, canHold: x.canHold, canMove: x.canMove, range: x.flight && x.flight.range, apex: x.flight && x.flight.apex, time: x.flight && x.flight.time, vImpact: x.flight && x.flight.vImpact, Eobj: x.Eobj, Eimpact: x.Eimpact, crater: x.crater, quake: x.quake, recoilV: x.recoilV, heldBack: x.heldBack, basis: x.basis, Fdrive: x.Fdrive, vEsc: r.vEsc, fallsBack: r.fallsBack, escaped: x.flight && x.flight.escaped, orbit: x.flight && x.flight.orbit, relativistic: x.flight && x.flight.relativistic }); };
+th('THROW T1 default 45 comic', mk({}), mk({}), 45);
+th('THROW T1b default 45 comic braced', mk({ anchor: 'braced' }), mk({}), 45);
+th('THROW T1r default 45 real braced', mk({ anchor: 'braced', mode: 'real' }), mk({ mode: 'real' }), 45);
+th('THROW T2 record human throws Ollie 45 comic', mk({ kg: HUMAN }), mk({}), 45);
+th('THROW T3 bolted Ollie', mk({}), mk({ anchor: 'bolted' }), 45);
+th('THROW T4 inf Rex bolted throws Ollie 45 comic', mk({ kg: Infinity, anchor: 'bolted' }), mk({}), 45);
+th('THROW T5 NS Ollie by 1e23 kg Rex bolted comic ground', mk({ kg: 1e23, anchor: 'bolted', comic: true }), mk({ m: NSM, comic: true }), 45);
+th('THROW T6 plush Ollie 30 kg/m3 by Hulk Rex bolted', mk({ anchor: 'bolted' }), mk({ m: 30 * 0.18 }), 45);

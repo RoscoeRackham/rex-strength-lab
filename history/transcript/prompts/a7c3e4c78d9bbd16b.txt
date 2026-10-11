@@ -1,0 +1,476 @@
+Project: "Rex Super-Strength Lab", a single-page physics simulator for Rex, an indestructible, tireless plush kaiju-dinosaur (default 2 m tall, 180 kg). A strength dial sets his maximum force as a lift capacity from 10 kg to 1e34 kg, plus infinity. Moves today: lift, throw, jump, stomp, punch, clap, sprint, pull. Two muscle models: "comic" (fixed share of strength at any speed) and "real" (Hill force-velocity curve; limb speed caps). Settings: ground surface (sand, gravel, soft clay, stiff clay, asphalt, concrete, lake ice, steel deck, granite), "comic ground" (never breaks), anchoring (friction / claws dug in / bolted to the planet), height (isometric scaling) and mass.
+Read these before designing (do NOT edit anything under /home/user/dino-strength-sim; put scratch files in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/duo/):
+- /home/user/dino-strength-sim/src/engine.js: the physics engine (SI units; relativistic momentum helpers momentumToV/momentumToKE/vToMomentum; pushApart two-body push in comic or Hill mode; anchorCapacity footing model; fly() RK4 flight over a round Earth with drag and Kepler arcs; craterDiameter Collins et al.; blastRadius Kinney-Graham; seismicMagnitude; stagnationT; lift/throw/jump/stomp/punch/clap/sprint/pull).
+- /home/user/dino-strength-sim/src/app.html (the bay* functions show how results become page text), /home/user/dino-strength-sim/src/static-data.js (assumptions text), /home/user/dino-strength-sim/build-data.py (how sourced facts become the sources table).
+- Fact format used by the project: /home/user/dino-strength-sim/research/final-environment.json ("facts" entries with key, category, label, status in {verified, canon_stated, reported, estimate, claimed, disputed, not_quantified}, value_si, unit_si, low_si, high_si, display, sources [{title, url}], notes).
+NEW FEATURES being added (the owner's request): (1) "density and weight, and the effect that would have on the environment, like if Rex were the density of a neutron star"; (2) Rex's boyfriend Ollie, "equally as overpowered and indestructible", for two-person simulations: arm wrestling, regular wrestling, games of catch, unstoppable force vs immovable object. Ollie, from the owner's image, is a plush bull-man: horns, nose ring, leather vest, cargo pants, laced boots (no visible claws), about Rex's height and build. Do not invent other canon for him; default him to Rex's size, mass and strength, with his own adjustable settings.
+The owner is a professional critic: factual accuracy and honest labelling come first. Every number must be either sourced (fetch the source and confirm the number on the page; give the exact URL) or labelled an estimate with the reasoning. Prefer primary or authoritative sources (journals, textbooks, NASA/ESA, standards bodies). Never present speculation as fact; say what the model ignores. The page's tone is plain, specific and readable for a general audience (short sentences, no jargon without a gloss).
+
+Adversarially check this design for the area "Unstoppable force vs immovable object". Default to suspicion. (1) For EVERY fact: fetch the source URL and confirm the number and wording; mark ok=false with the correct value and a better source if wrong, unsupported, or mislabelled (e.g. an estimate called verified). (2) Re-derive every equation and recompute every test case independently (write scripts in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/duo/collide-check/); report physics errors, wrong regimes, missing forces or effects, double counting, unit slips, and anything that would show a reader a false or misleading claim, with concrete fixes. (3) List what is missing for an honest, complete simulation of the brief. (4) Check that the page text never overstates certainty.
+
+BRIEF:
+Design "UNSTOPPABLE FORCE VS IMMOVABLE OBJECT" between Rex and Ollie (Ollie is a bull, so "Ollie charges, Rex holds his ground" is a natural default; allow swapping roles). Cover both readings: (1) a static contest: one pushes with all his strength, the other braces (this overlaps the wrestling contest: equal strengths stalemate; the ground or anchors decide; both bolted puts the planet's crust between them in tension or compression, source rock tensile and compressive strength); (2) a collision: the charger arrives at a speed from his sprint or a stomp-launch or a jump (existing engine moves) or an arbitrary speed, and hits the braced partner. Use momentum conservation with two bounds for an indestructible plush body: perfectly elastic (bounce) and perfectly inelastic (energy released at the contact as heat, sound and a blast; reuse blastRadius, seismicMagnitude); the "immovable" one is only as immovable as his anchoring: friction, claws, bolted to the planet (then Earth's mass 5.97e24 kg takes the momentum: compute Earth's speed change), comic ground, or his own mass from the density setting. Contact force over the contact time (rigid bodies mean infinite force; real bodies have finite contact times set by stiffness or sound speed: source this, e.g. no perfectly rigid bodies in relativity because signals travel at most at c). Relativistic speeds (energy release, fireball). Infinite strength on both sides: explain plainly why the paradox has no answer in physics (an unstoppable force needs unbounded momentum, an immovable object unbounded inertia or anchoring; they cannot coexist; with either finite, the finite one gives), with a source for the standard resolution if one exists (or say it is the standard logical argument). Give the honest physics verdict for each combination.
+
+DESIGN:
+{
+ "area": "Unstoppable force vs immovable object (the Collide tab in Rex + Ollie: a static push and a charge)",
+ "summary": "The Collide tab answers the old question in two ways. In the Push, one partner shoves with everything while the other braces. Each can only use as much force as his footing takes, so strength past the feet just makes them slide. Two bolted partners only load the rock between them, and real granite cracks around the bolts. In the Charge, Ollie hits a braced Rex at his sprint speed, at the speed he lands from a jump or a stomp-launch, or at any set speed. Momentum and energy are exact, relativity included, for two bounds: a plush splat (no bounce, with the lost energy freed as heat, sound and blast) and a perfect bounce. Rex is only as immovable as what holds him: friction, claws, bolts that hand the momentum to Earth's 5.97 × 10^24 kg, or his own mass from the density setting. At the defaults, Ollie arrives at 46.5 m/s, frees 97 kJ (23 g of TNT) and knocks Rex 43 m. Bolted, Rex doesn't budge and Earth's speed changes by 1.4 × 10^-21 m/s. Earth gets exactly that back, because Ollie's run-up pushed it the other way. How hard they hit depends on how squishy they are, which nobody knows for an indestructible plush. A plush squash gives about 278 kN, and the hard ceiling is 1.8 × 10^12 N, never infinite, because relativity forbids perfectly rigid bodies. Unlimited momentum against unlimited inertia has no answer, because momentum conservation would have to divide ∞ by ∞. That matches the standard resolution: the two premises can't both hold.",
+ "facts": [
+  {
+   "key": "collide_paradox_premises",
+   "label": "Unstoppable force vs immovable object: why the paradox has no answer",
+   "status": "verified",
+   "display": "The paradox 'rests on two incompatible premises—that there can exist simultaneously such things as unstoppable forces and immovable objects'; both are implicitly assumed to be indestructible",
+   "sources": [
+    {
+     "title": "Wikipedia: Irresistible force paradox (cites Mike Alder 2004, 'Newton's Flaming Laser Sword', Philosophy Now 46: 29-33)",
+     "url": "https://en.wikipedia.org/wiki/Irresistible_force_paradox"
+    }
+   ],
+   "notes": "Quoted from the raw article text (fetched 2026-10-09): 'The paradox arises because it rests on two incompatible premises—that there can exist simultaneously such things as unstoppable forces and immovable objects.' Also: 'The immovable object and the unstoppable force are both implicitly assumed to be indestructible, or else the question would have a trivial resolution.' The article carries a 'more citations needed' banner. Its one source (Alder 2004) was not opened. The physics reading the page uses is our own standard argument, not quoted from a source: an unstoppable force needs unbounded momentum, an immovable object needs unbounded inertia, and momentum conservation would need ∞/∞."
+  },
+  {
+   "key": "collide_no_rigid_bodies",
+   "label": "No perfectly rigid bodies in relativity; the stiffest possible material has sound speed c",
+   "status": "verified",
+   "display": "Truly rigid solids are incompatible with relativity, because no influence can travel through a body faster than light. A relativistic 'rigid' body is one whose sound speed equals c.",
+   "sources": [
+    {
+     "title": "Natário (2020) Rigid elastic solids in relativity, Class. Quantum Grav. (doi 10.1088/1361-6382/abbd10); arXiv:1912.08221, Introduction",
+     "url": "https://arxiv.org/abs/1912.08221"
+    },
+    {
+     "title": "Wikipedia: Born rigidity (Definition section)",
+     "url": "https://en.wikipedia.org/wiki/Born_rigidity"
+    }
+   ],
+   "notes": "Natário, Introduction: 'truly rigid solids are incompatible with Einstein's relativity, since no influence can propagate on any given medium faster than the speed of light' and 'the speeds of sound cannot be greater than the speed of light, and so a relativistic rigid body should be defined as one where this maximum limit is attained.' Wikipedia: 'A body that could maintain its own rigidity would violate special relativity, as its speed of sound would be infinite.' Used for the light-speed ceiling on the contact force: the hit can't be shorter than a light signal's crossing of the smaller body."
+  },
+  {
+   "key": "collide_sound_speed_upper_bound",
+   "label": "Upper bound on the speed of sound in atom-built (condensed) matter",
+   "status": "verified",
+   "value_si": 36100,
+   "unit_si": "m/s",
+   "display": "v_u = α (m_e / 2m_p)^½ c ≈ 36.1 km/s, about twice the speed of sound in diamond",
+   "sources": [
+    {
+     "title": "Trachenko, Monserrat, Pickard & Brazhkin (2020) Speed of sound from fundamental physical constants, Science Advances 6, eabc8662; arXiv:2004.04818",
+     "url": "https://arxiv.org/abs/2004.04818"
+    }
+   ],
+   "notes": "Abstract: the combination of α and m_p/m_e 'provides the upper bound for the speed of sound in condensed phases'. Eq. (9) in the PDF: v_u ≈ 36,100 m/s. Text: 'vu is about twice as large as v in diamond'. Recomputed with CODATA constants: 36,100.8 m/s. It applies to ordinary matter made of atoms, not neutron-star matter. Used for the 'as stiff as any real material' force: F = p*/(L/36.1 km/s), shown only while the closing speed is below 36.1 km/s."
+  },
+  {
+   "key": "collide_granite_tensile_strength",
+   "label": "Granite: tensile strength (rock pulled apart)",
+   "status": "verified",
+   "value_si": 8380000,
+   "unit_si": "Pa",
+   "low_si": 5880000,
+   "high_si": 10880000,
+   "display": "8.38 ± 2.5 MPa (Malsburg granite, quasi-static Brazilian test). Fast loading raises it 1.5-5×. Rock's tensile strength is typically about 1/10 of its compressive strength.",
+   "sources": [
+    {
+     "title": "Padmanabha, Schäfer, Rae & Kenkmann (2021) Dynamic split tensile strength of basalt, granite, marble and sandstone, arXiv:2110.10072, Table 1",
+     "url": "https://arxiv.org/abs/2110.10072"
+    },
+    {
+     "title": "Hoek, Practical Rock Engineering, Ch. 11 (Rock mass properties), Eq. 15 and the m_i table",
+     "url": "https://www.rocscience.com/assets/resources/learning/hoek/Practical-Rock-Engineering-Chapter-11-Rock-Mass-Properties.pdf"
+    }
+   ],
+   "notes": "Padmanabha et al. Table 1: granite (MaGr) tensile strength 8.38 ± 2.5 MPa, density 2.62 g/cm³. Text: 'Rocks are generally weak in tension, where the uniaxial tensile strength is typically 1/10th of the uniaxial compressive strength' and 'the dynamic tensile strength of the rocks is higher than the quasi-static tensile strength (1.5 to 5 times)'. Cross-check with Hoek Eq. 15, σ_t = s σ_ci / m_b; for intact rock s = 1 and m_b = m_i = 32 ± 3 for granite. With the project's 200 MPa UCS that gives about 6.3 MPa, inside the measured range. The Brazilian test is indirect, and the low and high values are the paper's ±. A hit loads the rock in milliseconds, so the quasi-static value overstates cracking by up to √5 ≈ 2.2× in radius."
+  },
+  {
+   "key": "collide_crust_thickness",
+   "label": "Continental crust: average thickness",
+   "status": "verified",
+   "value_si": 41100,
+   "unit_si": "m",
+   "display": "41.1 km (weighted global average for continental crust)",
+   "sources": [
+    {
+     "title": "Christensen & Mooney (1995) Seismic velocity structure and composition of the continental crust: a global view, J. Geophys. Res. (USGS publication page)",
+     "url": "https://www.usgs.gov/publications/seismic-velocity-structure-and-composition-continental-crust-a-global-view"
+    }
+   ],
+   "notes": "USGS page: 'The weighted average crustal thickness based on these values is 41.1 km.' Continental crust only; oceanic crust is much thinner (not verified here). Used only as the depth past which the rock-cracking estimate stops: deeper rock is squeezed by the weight above and gets much stronger."
+  },
+  {
+   "key": "collide_earth_inertia_rotation",
+   "label": "Earth: mass, moment of inertia factor, sidereal rotation, mean radius",
+   "status": "verified",
+   "value_si": 5.9722e+24,
+   "unit_si": "kg",
+   "display": "M = 5.9722 × 10^24 kg; I/(MR²) = 0.3308; sidereal rotation 23.9345 h; mean radius 6,371.000 km",
+   "sources": [
+    {
+     "title": "NASA NSSDCA Earth Fact Sheet",
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"
+    }
+   ],
+   "notes": "All four read from the fact sheet on 2026-10-09. The engine already has M_E = 5.9722e24 and R_E = 6.371e6. Moment of inertia I = 0.3308 M R² = 8.019 × 10^37 kg m². Used for Earth's speed change (Δv = p/(M_E + m)) and the length-of-day change for a set-speed hit along the equator (ΔT = T² p / (2π × 0.3308 × M_E × R_E))."
+  },
+  {
+   "key": "collide_restitution_definition",
+   "label": "Coefficient of restitution: the two bounds",
+   "status": "verified",
+   "display": "e = 1 is a perfectly elastic collision (no kinetic energy lost); e = 0 is perfectly inelastic (the bodies don't rebound and end up stuck together). Most real collisions fall between.",
+   "sources": [
+    {
+     "title": "Wikipedia: Coefficient of restitution",
+     "url": "https://en.wikipedia.org/wiki/Coefficient_of_restitution"
+    }
+   ],
+   "notes": "Quote: 'In most real-world collisions, the coefficient of restitution is between 0 and 1, where 1 represents a perfectly elastic collision (in which the objects rebound with no loss of kinetic energy but in the opposite directions) and 0 a perfectly inelastic collision (in which the objects do not rebound at all, and end up coalescing).' The page shows both bounds. Below 1% of light speed, the energy freed at restitution e is (1 − e²) times the splat value (standard result, not quoted)."
+  },
+  {
+   "key": "collide_people_restitution",
+   "label": "People colliding: measured coefficient of restitution",
+   "status": "reported",
+   "value_si": 0.3,
+   "unit_si": "1",
+   "low_si": 0.1,
+   "high_si": 0.5,
+   "display": "0.1-0.5, measured by swinging harnessed people into each other (pendulum test)",
+   "sources": [
+    {
+     "title": "Alonso-Marroquin, Lozano, Ramírez-Gómez & Busch (2014) Simulation of counter flow pedestrian dynamics using spheropolygons, Phys. Rev. E 90, 063305; arXiv:1310.8482",
+     "url": "https://arxiv.org/abs/1310.8482"
+    }
+   ],
+   "notes": "Text: 'a pendulum test was conducted ... collisions between pedestrians suspended by ropes by harnesses in a rock climbing venue. By measuring the velocities before and after impact ... we obtained coefficients of restitution within the range 0.1–0.5.' The model used 0.3 in the text and 0.4 in Table 1, an inconsistency in the paper. It is an informal test described in one paragraph, hence 'reported'. Used only to say soft bodies sit near the splat end: e = 0.1-0.5 frees 75-99% of the splat energy."
+  },
+  {
+   "key": "collide_collision_formulas",
+   "label": "Collision formulas: inelastic energy loss, invariant mass, elastic reversal in the centre-of-momentum frame, rapidity",
+   "status": "verified",
+   "display": "Inelastic loss ΔKE = ½ μ u_rel² (μ = m₁m₂/(m₁+m₂)); invariant mass M² = (E₁+E₂)² − |p₁+p₂|² (c = 1); in an elastic hit each body's momentum reverses in the centre-of-momentum frame; rapidities add along a line",
+   "sources": [
+    {
+     "title": "Wikipedia: Inelastic collision",
+     "url": "https://en.wikipedia.org/wiki/Inelastic_collision"
+    },
+    {
+     "title": "Wikipedia: Invariant mass (two-particle collision)",
+     "url": "https://en.wikipedia.org/wiki/Invariant_mass"
+    },
+    {
+     "title": "Wikipedia: Elastic collision (one-dimensional relativistic)",
+     "url": "https://en.wikipedia.org/wiki/Elastic_collision"
+    },
+    {
+     "title": "Wikipedia: Rapidity",
+     "url": "https://en.wikipedia.org/wiki/Rapidity"
+    }
+   ],
+   "notes": "Inelastic collision: 'ΔKE = ½ μ u²_rel' and 'The reduction of total kinetic energy is equal to the total kinetic energy before the collision in a center of momentum frame'. Elastic collision: 'Relative to the center of momentum frame, the momentum of each colliding body does not change magnitude after collision, but reverses its direction'. Rapidity: β = tanh w, additive. Checked in our code: energy and momentum are conserved to about 1e-15 at 0.5c, 0.999999c and a 180 kg : 7.4 × 10^16 kg mass ratio. The cancellation-free form Q = 2 m_T K_A / (M + m_A + m_T) is our algebra from M² − (m_A + m_T)² = 2 m_T K_A / c²."
+  },
+  {
+   "key": "collide_universe_age",
+   "label": "Age of the universe (for 'Earth would take N × the age of the universe to move 1 mm')",
+   "status": "verified",
+   "value_si": 435080000000000000,
+   "unit_si": "s",
+   "display": "13.787 ± 0.020 billion years",
+   "sources": [
+    {
+     "title": "Planck Collaboration (2020) Planck 2018 results VI: Cosmological parameters, arXiv:1807.06209, Table 2",
+     "url": "https://arxiv.org/abs/1807.06209"
+    }
+   ],
+   "notes": "Table 2, combined TT,TE,EE+lowE+lensing+BAO column: Age 13.787 ± 0.020 Gyr. Converted with 1 yr = 3.15576 × 10^7 s."
+  },
+  {
+   "key": "collide_squash_estimate",
+   "label": "How far a plush body squashes in a hit (soft end of the contact force)",
+   "status": "estimate",
+   "value_si": 0.35,
+   "unit_si": "m",
+   "display": "Each body squashes by a quarter of the smaller body's depth: 0.35 m in all between two 2 m bodies (depth = 0.70 m, the diameter of a ball of equal volume)",
+   "sources": [],
+   "notes": "Not measured; nobody knows the stiffness of an indestructible plush. Reasoning: a hugged plush toy squashes by a quarter of its thickness or more, and so does a person's chest in a hard frontal hit. The smaller body sets the dent, so a 2 m Ollie hitting a 50 m Rex makes a local dent, not a 17 m squash. It scales with size. It changes only the force and the contact time, never momentum or energy. With a constant crush force F over squash s, F = Q/s and the time is 2s/v. For a linear spring (bounce), peak F = 2Q/s and the time is (π/2)·2s/v. Real bodies stiffen as they compress, so treat this as the soft end of a range whose top is the light-speed ceiling."
+  },
+  {
+   "key": "collide_runup_estimate",
+   "label": "Starting distance for the charge (used only for gravity on the way in and the air swept up)",
+   "status": "estimate",
+   "value_si": 20,
+   "unit_si": "m",
+   "display": "10 body heights (20 m at 2 m)",
+   "sources": [],
+   "notes": "A choice. It matters only for super-dense bodies, where it sets the gravitational infall energy G m₁m₂(1/d − 1/d₀) (the 1/d term dominates, so doubling it changes the result by under 4%), and for the rough air-heating estimate in relativistic runs."
+  },
+  {
+   "key": "collide_rock_failure_radius",
+   "label": "How far rock fails around a bolt carrying force C",
+   "status": "estimate",
+   "display": "r ≈ √(C / (2πσ)): a force C spread over a half-sphere of radius r averages C/(2πr²)",
+   "sources": [
+    {
+     "title": "Padmanabha et al. 2021 (tensile strength used)",
+     "url": "https://arxiv.org/abs/2110.10072"
+    },
+    {
+     "title": "Hoek, Practical Rock Engineering Ch. 11 (UCS context)",
+     "url": "https://www.rocscience.com/assets/resources/learning/hoek/Practical-Rock-Engineering-Chapter-11-Rock-Mass-Properties.pdf"
+    }
+   ],
+   "notes": "Our geometry, not a published formula. Force balance on a buried half-sphere gives an average stress C/(2πr²). Exact point-load fields (Boussinesq/Cerruti) fall off the same way, with angular factors of order 1. With σ_t = 8.38 MPa (pulled apart, between the two partners) and σ_c = 200 MPa (crushed, on the far side), the rock cracks through between their anchors once r_t reaches half their spacing (1 m): C ≥ 5.27 × 10^7 N, a dial of 5,370 t. It reaches past the 41.1 km crust at C ≥ 8.89 × 10^16 N (dial 9.07 × 10^15 kg), where the estimate stops. Intact granite is assumed; jointed rock is far weaker (the project's surface notes: up to about 17×)."
+  },
+  {
+   "key": "collide_planet_halves_pull",
+   "label": "Pull holding Earth's two halves together (planet-scale marker)",
+   "status": "estimate",
+   "value_si": 1.0997e+25,
+   "unit_si": "N",
+   "display": "About 1.1 × 10^25 N (3GM²/(16R²) for a uniform-density Earth)",
+   "sources": [
+    {
+     "title": "NASA Earth Fact Sheet (M, R)",
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"
+    }
+   ],
+   "notes": "Our derivation: inside a uniform ball g = −GMr/R³, so the force on the upper half is (3/4π)·∫z dV = 3GM²/(16R²) (with G = M = R = 1 this is 0.1875). A 400,000-pair Monte Carlo gave 0.1864. With G = 6.6743e-11 (CODATA 2022, already in the engine): 1.0997 × 10^25 N, a dial of 1.12 × 10^24 kg. Real Earth is centrally dense, so this is a marker, not a threshold. The page uses it only to say 'planet-scale: the planet itself would come apart'."
+  },
+  {
+   "key": "collide_anchor_spacing_estimate",
+   "label": "Distance between the two partners' anchors in a push",
+   "status": "estimate",
+   "value_si": 2,
+   "unit_si": "m",
+   "display": "One mean body height (2 m at default size)",
+   "sources": [],
+   "notes": "Leaning into each other chest to chest, their feet end up about a body height apart. Used only to decide when the cracked zones around the two anchors meet (r_t ≥ spacing/2)."
+  },
+  {
+   "key": "collide_relativistic_sprint_estimate",
+   "label": "Relativistic reading of the sprint's drag-limited top speed",
+   "status": "estimate",
+   "display": "Drag ½ρC_dA(γv)²: the engine's drag balance √(2F/(ρC_dA)) is read as the proper speed γv, not v",
+   "sources": [],
+   "notes": "In the runner's frame, air comes at him with density γρ and momentum γρv per unit volume. The momentum flux, and so the drag, grows as γ²v². This matches ½ρC_dAv² below 1% of light speed, so nothing changes there. Above it, momentum is m·u with u = min(√(2·thrust/(ρ₀C_dA)), leg cap), computed before the engine caps speed at c. That keeps a finite strength from giving infinite momentum. Rough: real relativistic drag on a body in air isn't modelled anywhere in the sim."
+  }
+ ],
+ "inputs": "From the page (app.html state). Existing: Rex: H, m, strength dial (logKg, inf), anchor; Ollie: oH, oM, oSame/oLogKg/oInf, oAnchor; shared: mode (comic/real), surface, groundHolds (comic ground). New state keys, added to DEFAULTS and VALID:\n- colMode: 'charge' | 'push' (default 'charge').\n- colWho: 'ollie' | 'rex' (default 'ollie': Ollie charges or pushes, Rex holds).\n- colSrc: 'sprint' | 'jump' | 'stomp' | 'set' (default 'sprint').\n- colGB: log10(γβ) for the set speed, number in [−8.48, 4] (default log10(100/c) = −6.4768, i.e. 100 m/s). v = c·γβ/√(1+γβ²).\n- colInf: boolean, light speed (unlimited momentum) for the set speed (default false).\n- colBounce: 'splat' | 'bounce' (default 'splat').\n- colImm: boolean (default false): 'Make the holder truly immovable (infinite mass, a thought experiment)'.\n\nContexts: cR = ctx(), cO = ctxOllie(). Charger and holder are (cA, cB) = colWho === 'ollie' ? (cO, cR) : (cR, cO). If colImm, set cB.immovable = true. If !groundHolds and fallsThrough(cA or cB) (density design's 'fallsThrough' regime; fallback m·g > 1.7e9 Pa × body.topArea), rerun with groundHolds = true for both and prefix the sink callout.\n\nEngine values used (all existing): K.g, K.c, K.G, K.M_E, K.R_E, K.rho0, K.a0, K.TNT_J_per_kg, K.EARTH_BIND; makeBody fields (m, H, s, rho, volume, footArea, footB, frontArea, topArea, digArea, Cd); eqRadius, isBlackHole, mutualGravity, fallTogether; momentumToV, momentumToKE, vToMomentum; anchorCapacity (θ = 0, mA = own mass); qultFor; penetrationDepth; craterDiameter; seismicMagnitude; blastRadius (through the bay's blastBlock); sprint, jump, stomp (charge speeds); MUSCLE.jump.forceFrac (1.4, for 'can he stand'); MUSCLE.run, CAL_LIFT_KG. Surfaces: shear (claw/tear capacity), mu, qult, rho.\n\nNew constants (COL in engine.js): SQUASH 0.25; V_SOUND_MAX 36100 m/s; ROCK_T 8.38e6 Pa; ROCK_C 2.0e8 Pa (existing fact ground_granite_ucs); CRUST 41.1e3 m; I_FACTOR 0.3308; T_SID 86164.2 s (23.9345 h; the density design's K.OMEGA_E can be reused); RUNUP 10 body heights; AGE_U 4.3508e17 s; M_RESHAPE 1e-3 × M_E (from the density design); ROCK_FAIL 1.7e9 Pa (from the density design); F_HALVES = 3 G M_E² / (16 R_E²) = 1.0997e25 N.\n\nReused existing facts for source rows: ground_granite_ucs, seismic_efficiency_impact, blast_kinney_graham_peak_overpressure, energy_earth_gravitational_binding, energy_chicxulub_impact, earth_escape_velocity_surface (speed chip); from the density design: density_neutron_star_mean, gravitational_constant, earth_sidereal_rotation. From the contest design: the 'same()' tolerance helper and the holder's-hold convention min(strength, footing).",
+ "equations": "Notation: charger A (mass m_A, depth L_A = 2·eqRadius), holder B (m_B, L_B); L = min(L_A, L_B); c = light speed; g = 9.80665.\n\nE1 Holder's hold H (what keeps B in place). Horizontal blow or push: bolted → ∞; truly immovable → ∞. Otherwise R = anchorCapacity({anchor: friction|braced, θ = 0, mA = m_B}).R; standing (1.4·F_B ≥ m_B g) → H = min(F_B, R), the contest design's rule (muscle holds his stance); lying flat (too heavy for his strength) → H = R. Blow from above (jump- or stomp-landing): H = ∞ if bolted or comic ground, else N_max − m_B g with N_max = qult·2·footArea (the engine's bearing). Bracing can't help against a blow from above; if his legs fold he is pressed onto the same ground. Defaults (180 kg, concrete): friction R = 0.6 × 180 × 9.80665 = 1,059.12 N; claws add 1.5 MPa × 0.2 m² = 300 kN → 301,059 N; bearing = 2.5 MPa × 0.09 m² − 1,765.2 = 223,235 N.\n\nE2 Static push (Reading 1). Pusher's usable push D_A = min(F_A, R_A) (bolted R_A = ∞). Compare with H_B using same() (relative 1e-9, ∞ never 'same' as a finite number). D_A = H_B → stalemate, contact C = D_A. D_A > H_B → force wins, C = H_B, net = D_A − H_B (walk-out or shove details come from the contest design's pushMatch/shove). D_A < H_B → object holds, C = D_A; if F_A > R_A, the pusher's own feet slip first. Both infinite (D_A = H_B = ∞): comic ground → 'paradox' (∞ − ∞ has no value); real ground → 'rockGives' (the rock around the bolts can't carry unlimited force). Newton's third law: the same C goes into both footings, which is why footing, not strength, decides.\n\nE3 Rock under bolts (static C, or the held blow's force F). A force C spread over a half-sphere of radius r averages C/(2πr²), so rock fails out to r_t = √(C/(2π·8.38 MPa)) in tension (between the partners: when both push toward each other, their anchors push the ground apart) and r_c = √(C/(2π·200 MPa)) crushed on the far side. Cracks meet between the anchors when r_t ≥ d_sep/2 (d_sep = mean height). Past the 41.1 km crust the estimate stops. Planet scale when C ≥ F_HALVES = 3GM²/(16R²) = 1.0997e25 N. The surface layer tears at C/(surface.shear × digArea) (contest design's ratio). Comic ground: nothing cracks.\n\nE4 Charge speed (Reading 2). Sprint: v = sprint(cA).vTop, proper speed u = min(√(2·thrust/(ρ₀C_dA_front)), legCap), computed before the engine caps at c (a relativistic reading of ½ρC_dA(γv)²; identical below 1% c). Jump: v = jump(cA).flight.vImpact, a blow from above; unavailable if the jump escapes, orbits, times out or is relativistic. Stomp-launch: v = stomp(cA).bodyFlight.vImpact, a blow from above; unavailable if bolted (no launch). Set: u = γβ·c, v = c·γβ/√(1+γβ²), ∞ = light speed. Momentum p = m_A·u (sprint/set) or vToMomentum(v, m_A) (drops).\n\nE5 Gravity on the way in (Newtonian; the planet-scale gate keeps GM/(rc²) < 1e-5). d₀ = 10·max(H_A, H_B), d = r_A + r_B (touching balls). Below 1% c: v_rel² = v² + v_f², with v_f = fallTogether(bA, bB, d₀, d).vRel = √(2G(m_A+m_B)(1/d − 1/d₀)). Above 1% c, gravity is ignored (< 0.4% of c at the gate). If mutualGravity at contact > H_B, the holder is dragged in too: both move, with total momentum m_A·v and relative speed v_rel (Newtonian CM split, E8).\n\nE6 Head-on hit, A (momentum p) into B at rest (mass m_T = m_B free, m_B + M_E held, ∞ immovable). E_A = √((m_A c²)² + (pc)²); K_A = momentumToKE(p, m_A); invariant mass M = √(m_A² + m_T² + 2 m_T E_A/c²). Splat (e = 0): they move off as one body of mass M with momentum p, V = momentumToV(p, M); energy freed Q = (M − m_A − m_T)c² = 2 m_T K_A/(M + m_A + m_T) (cancellation-free; → ½μv² below 1% c, μ = m_A m_T/(m_A+m_T)). Bounce (e = 1): below γβ = 1e-6, classical v_A' = (m_A − m_T)/(m_A + m_T)·v, v_T' = 2m_A/(m_A + m_T)·v. Otherwise rapidities: w_A = asinh(p/(m_A c)); β_cm = pc/(E_A + m_T c²); w_cm = atanh(β_cm) if β_cm < 0.5, else ln((E_A + m_T c² + pc)/(Mc²)); w_A' = 2w_cm − w_A, w_T' = 2w_cm; v = c·tanh(w), p = m·c·sinh(w). Centre-of-momentum momentum p* = p·m_T/M. Limits: m_T = ∞ → splat V = 0, Q = K_A; bounce v_A' = −v. p = ∞, m_T finite → Q = ∞, V = c; bounce v_A' = c·tanh(ln(m_A/m_T)) (0 for equal masses, −0.6c for 180 kg → 360 kg), v_T' = c. p = ∞ and m_T = ∞ → undefined (∞/∞): the paradox.\n\nE7 Held or not. F_held = Q_held/s, where Q_held is E6 with m_T = m_B + M_E (or ∞ if immovable) and s is from E9. Held if H_B ≥ F_held (any H = ∞ counts as held, except p = ∞ against a finite mass). Held: Earth takes the momentum, Δv_E = momentumToV(p_T, m_B + M_E). Day change (horizontal, set speed only): ΔT = T_sid²·p_T/(2π·0.3308·M_E·R_E). Run-up sources (sprint/jump/stomp): the charger got p by pushing on Earth, so Earth's net change over the whole episode is zero.\n\nE8 Splat with footing (non-relativistic, finite H, not held): constant crush force over squash s, holder resisted by H. F = μ(v²/(2s) + H/m_B), τ = 2s/v, V = max(0, v − Fτ/m_A), Q = F·s, holder moved during the hit x_B = ½((F − H)/m_B)τ², footing work H·x_B, impulse into Earth H·τ. H → 0 recovers the free splat; H → m_A v²/(2s) = F_held gives V = 0, so it joins E7 continuously. Energy check at defaults with claws: 194,532 J = ½·360·10.645² (20,397) + Q (149,991) + H·x_B (24,145). The bounce bound stays the free result (flagged as an upper bound when H > 0.1·F_held). Dragged by gravity: splat V = m_A v/(m_A + m_B), Q = ½μv_rel²; bounce v_A' = u − (m_B/M)v_rel, v_B' = u + (m_A/M)v_rel.\n\nE9 Contact force and time. Squash s = 2 × 0.25 × L (0.350263 m between two 2 m bodies). Plush splat: F = Q/s, t = p*·s/Q (= 2s/v below 1% c). Plush bounce: peak F = 2Q/s, t = (π/2)·p*·s/Q. Stiffest atom-built body: t_m = L/36,100 m/s, F_m = p*/t_m, shown only while v_rel < 36.1 km/s. Hard ceiling (no rigid bodies; signals ≤ c): the charger's centre-of-momentum γ*β* = p*/(m_A c), t_c = L/(γ* c (1 + β*)), F_c = p*/t_c. A perfectly rigid body would give t = 0 and F = ∞; relativity forbids it.\n\nE10 After the hit. Horizontal: slide x = m/(2k)·ln(1 + kV²/R), k = ½ρ₀·1.0·A_front (contest E13; R = 0 → ∞; V ≥ 0.01c → none). Splat pair: m_A + m_B, R = R_A + min(R_B, H_B), A = larger front area. Bounce: each body alone. Gravitationally bound runs (gravity boost and ½μv² < G m_A m_B/d₀): no slide, because they fall back together. From above, not held: splat pair driven down x_B + penetrationDepth(m_A + m_B, 2·footArea_B, V, qult, ρ_ground); at V ≥ 2 km/s use craterDiameter as the stomp does. Energy into the ground = H·x_B + ½(m_A+m_B)V².\n\nE11 Environment. Blast: blastBlock(Q, 'where they meet'), an upper bound as in the other tabs. Quake: seismicMagnitude(Q) only for held hits, labelled an upper bound (as if all of Q went into the ground); for drops that aren't held, seismicMagnitude(energy into ground). Earth 'time to move 1 mm' = 1e-3/Δv_E, compared with the age of the universe (4.3508e17 s). Relativistic run-up (v ≥ 0.01c): air heated ≈ ½ρ₀C_dA_front·u²·d₀ (rough, labelled) and the existing xkcd/plasma wording. Restitution between the bounds: (1 − e²)·Q_splat below 1% c.\n\nValidity: Newtonian gravity (gated); relativistic kinematics exact for a head-on 1-D hit; E8 and the slides below 1% c only; the force numbers depend on the squash estimate, and momentum and energy don't.",
+ "algorithm": "A complete, tested reference implementation is at /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/duo/collide/collide-ref.js. The test runner is final-tests.js and its output is final-tests.out. Port the body into engine.js inside the IIFE: drop `P.`, use local names, and export COL, headOn, headOnCM, splatWithFooting, contactForces, rockLoad, slideTo, holdOf, standoff, chargeSpeed and collide. Reuse the contest design's same() and the density design's fallsThrough if they exist; otherwise use the versions in the file.\n\nENGINE\n1. Constants: add COL (values in inputs) and COL.F_HALVES = 3·K.G·K.M_E²/(16·K.R_E²).\n2. sprint(): compute `const vDragRaw = Math.sqrt(2 * thrust / (K.rho0 * body.Cd * body.frontArea))` before the c-cap. Return `uTop: Math.min(vDragRaw, legCap)` (Infinity when thrust and legCap are infinite; equal to vTop below 1% c). Nothing else changes. Until then, chargeSpeed recomputes it, as in the file.\n3. headOn(p, mA, mT) per E6, in this order:\n   - p ≤ 0 → zeros.\n   - p = ∞ and mT = ∞ → {undefinedResult}.\n   - mT = ∞ → immovable branch.\n   - p = ∞ → unlimited branch.\n   - otherwise: EA, M, Q (cancellation-free), p*, splat V = momentumToV(p, M); bounce classical below γβ 1e-6, else rapidity with the atanh/log switch at β_cm = 0.5.\n   - Zero a bounce v_A smaller than 1e-9·v (equal-mass round-off, e.g. −6.7e-8 m/s at 0.9c).\n4. headOnCM(mA, mB, u, w): Newtonian, for the gravity-dragged case.\n5. splatWithFooting(mA, mB, v, s, H) per E8.\n6. contactForces(h, bA, bB, mA) per E9:\n   - Infinite Q or p* → F = ∞, t = 0.\n   - Q = 0 → zeros.\n7. rockLoad(C, cHold, dSep) per E3.\n8. slideTo(m, v, R, A) per E10:\n   - v ≥ 0.01c → NaN (relativistic).\n   - R = 0 → ∞.\n9. holdOf(cB, horiz) per E1: canStand = !isFinite(F) || 1.4F ≥ m g. Also return R and why ∈ {immovable, bolted, lying, strength, footing, comicGround, bearing}.\n10. standoff(cA, cB) per E2/E3:\n   - black-hole gate;\n   - D_A, R_A, H_B, outcome;\n   - rock for a bolted holder;\n   - gravityLock = mutualGravity(contact).F > min(R_A, R_B).\n11. chargeSpeed(cA, source, gb) per E4, with why codes: zero, cantSprint, cantJump, neverLands, boltedStomp, noLaunch.\n12. collide(cA, cB, {source, gb}):\n   a. Gates: isBlackHole(A or B) → {blackHole}; m ≥ 1e-3 M_E → {planetScale}.\n   b. sp = chargeSpeed; if v ≤ 0 → {noCharge}.\n   c. Gravity (E5): d₀, dC, fall, gNear, gFar, vRel, gravBoost (vRel > 1.001·v), bound.\n   d. hb = holdOf(cB, dir === 'h'); p_A = gravBoost ? m_A·vRel : (u != null ? m_A·u : vToMomentum(v, m_A)).\n   e. dragged = gravBoost && gNear.F > hb.H.\n   f. hHeld = headOn(p_A, m_A, immovable ? ∞ : m_B + M_E); F_held = contactForces(hHeld).soft.F.\n   g. Held (E7): dragged → false; immovable → true; p = ∞ → !isFinite(H); else !isFinite(H) || H ≥ F_held.\n   h. h = held ? hHeld : (dragged ? headOnCM(m_A, m_B, m_A v/(m_A+m_B), vRel) : headOn(p_A, m_A, m_B)). If undefinedResult → outcome 'paradox'.\n   i. contact = contactForces(h).\n   j. If not held, not dragged, not relativistic, p finite, H finite and > 0: pf = splatWithFooting. Overwrite h.Q, h.inel and contact.soft with pf; set elasticUpper = H > 0.1·F_held.\n   k. Held and not immovable: earth = {dvSplat, dvBounce, dayChange (horizontal only), runUpCancels: source !== 'set', t1mm}.\n   l. After-motion per E10: horizontal slides, or downward depth/crater. Slides are null when bound.\n   m. If held, bolted and not immovable: rock = comic ? {comic} : rockLoad(contact.soft.F, cB, mean height).\n   n. Q, quakeHeld, airRunUp, outcome ∈ {moved, held, immovable, unstoppable, paradox}.\n13. Guards:\n   - Every sqrt is of a non-negative value.\n   - Masses are > 0 (state validation).\n   - ∞/∞ never becomes a number: NaN contact means 'undefined'.\n   - Ratios against ∞ capacity are 0.\n   - Display |v| < 1e-9·v₀ as 0.\n   - log1p in the slide.\n   - In headOn, atanh is used for small β_cm (otherwise a 180 kg : 7.4e16 kg hit loses all precision; this was found and fixed in testing).\n\nAPP (app.html)\n14. State keys (see inputs) in DEFAULTS and VALID; persist them with save().\n15. bayCollide(c):\n   - Controls first, in one .bay-controls div so slider drags keep focus:\n     - mode chips: Charge / Push;\n     - who chips: 'Ollie charges, Rex holds' / 'Rex charges, Ollie holds' (label the push as 'pushes' in Push mode);\n     - Charge only: source chips Sprint / Jump onto him / Stomp-launch onto him / Set speed;\n     - Set only: a range input over colGB with the label 'Speed: ' + fmtSpeed(v), preset chips (10 m/s; Speed of sound 340 m/s; 1 km/s; Escape speed 11.2 km/s; 1% of light; 50%; 90%; 99.99%), and a checkbox 'Light speed (unlimited momentum)';\n     - bounce chips 'Splat (no bounce)' / 'Perfect bounce';\n     - checkbox 'Make the holder truly immovable (infinite mass, a thought experiment)'.\n   - Then duoHeader(cR, cO).\n   - Then sink/gate callouts, verdict, status row, tiles, chart, blastBlock, happens, the four-cases grid, and math (page_text gives the text).\n16. Add a small caseGrid(title, rowLabels, colLabels, cells, activeRow, activeCol) helper: a 2×2 table; the active cell gets aria-current and the accent outline. It must fit at 390 px: stack it to four labelled rows under 480 px.\n17. build-data.py: put the new facts in research/final-duo.json (shared with the other duo designs) and add 'duo' to the topic list. Add rows such as row('Collide: why the paradox has no answer', fact('collide_paradox_premises')['display'], ['collide_paradox_premises']), and likewise for every fact listed. Reuse ground_granite_ucs, seismic_efficiency_impact and blast_kinney_graham_peak_overpressure.\n18. static-data.js: add the assumptions card from page_text.\n19. Tests (test/duo-collide.js or appended to test/sanity.js): the cases in 'tests'. Also assert that both modes render without exceptions for every combination of source × anchor × groundHolds × colImm × colInf at the default, Strongest-human, Hulk, Earth-bench and ∞ strength, and at 30, 1000, 22587, 2.77e9 and 4.12e17 kg/m³ (each value finite or a defined ∞/NaN outcome).\n\nCost: collide() calls sprint/jump/stomp once. jump and stomp run fly(); everything else is closed form. Under 20 ms in Node per run.",
+ "edge_cases": "INFINITE STRENGTH\n- Charger, plain feet: sprint thrust is capped by friction (1,059 N at 180 kg on concrete), so he charges at 46.49 m/s, exactly as at Hulk strength (C1 = C16). Say it: 'Infinite strength isn't unstoppable: a charge needs grip.'\n- Charger, bolted: thrust ∞ → u = ∞ → p = ∞ → outcome 'unstoppable'. The holder, and the planet if he is bolted, is knocked away at light speed with unbounded energy. Since Ollie's own infinite momentum came from pushing on Earth, Earth's net motion is ∞ − ∞, undefined. Say so and print no Earth number.\n- Holder: H = min(∞, R) = R, so infinite strength holds only his footing. 'Infinite strength isn't immovable either.'\n\nBOTH INFINITE\n- Push, both bolted, comic ground: 'paradox' (∞ − ∞).\n- Push, both bolted, real ground: 'rockGives'.\n- Push, both on plain feet: a footing stalemate at 1,059 N (S9).\n- Charge: no strength setting gives infinite inertia. Unlimited momentum (set speed ∞, or a bolted charger with ∞ strength) against the immovable toggle → 'paradox' (∞/∞). Against anything finite, including bolted to Earth with comic ground → 'unstoppable'. Comic ground stops the ground from breaking, but the planet still has finite mass.\n\nEXTREME DENSITY\n- Plush (30 kg/m³, 5.4 kg holder): footing 31.8 N, so the charger barely slows. Splat: the pair moves at 45.13 m/s, frees 5,677 J and travels 123 m. Bounce: Rex at 90.27 m/s (about 2v), Ollie carries on at 43.78 m/s; air drag stops Rex in 26.7 m.\n- Below air density (≤ 1.225 kg/m³): defer to the density design's buoyancy. If footing is 0, H = 0, so the hit is free and the slide is ∞ ('coasts until something stops him').\n- Heavier than ~5.2 × 10^7 kg at 2 m on real ground: he falls through the rock (density design). Rerun with comic ground and prefix the callout.\n- Neutron-star Rex (7.416 × 10^16 kg) on comic ground vs a normal Ollie:\n  - Rex can't stand (1.4F ≪ W), so he lies flat and friction holds 4.36 × 10^17 N.\n  - His gravity pulls Ollie in from 20 m at 3,692.7 m/s whatever the run-up (vRel 3,693.0).\n  - Held; 1.227 × 10^9 J (293 kg TNT) freed. Ollie can't bounce away (bound). In Push mode the gravity lock flag is set (1.8 × 10^9 N vs 1,059 N).\n- Both neutron-star dense: gravity drags both. Closing speed 5,222 m/s; the splat frees 5.06 × 10^23 J, 1.2× the dinosaur-killing asteroid, and the pair drifts at 0.5 m/s.\n- A neutron-star charger can't sprint, jump or stomp-launch (cantSprint), so use Set speed.\n- m ≥ 1e-3 Earth masses (5.97 × 10^21 kg) → planetScale callout. Black hole (ρ ≥ 1.31 × 10^27 kg/m³ at 2 m) → blackHole callout.\n\nRELATIVISTIC SPEEDS\n- Kinematics are exact. Slides, the footing-aware splat and the gravity boost switch off at ≥ 1% c, where footing is negligible against forces ≥ 10^19 N.\n- The run-up air estimate and the plasma/xkcd wording apply. A free splat pair moving on at ≥ 1% c is a fireball too (V = 0.627c at 0.9c).\n- Show the 'stiffest real material' bar only while v_rel < 36.1 km/s.\n- 'Light speed (to the last digit)' and '≈ light speed' use the existing fmtSpeed and speedTile.\n\nCOMIC GROUND\n- Holds bearing (∞), so drops are held. No rock cracking and no surface tear.\n- Friction still limits sideways footing (engine convention), so a non-bolted Rex still slides from a sprint hit.\n\nBOLTED\n- Holder: Earth takes the momentum. The rock check applies unless the ground is comic. A bolted stomp has no launch (boltedStomp).\n- Charger bolted: sprint thrust = strength (engine convention 'perfect grip'). After the hit, his slide uses friction (bolts can't be fixed mid-run).\n\nUNEQUAL SIZES\n- Squash uses the smaller depth.\n- The light ceiling uses the smaller body; d₀ = 10 × the larger height; anchor spacing is the mean height.\n- A 50 m Rex (2.81 × 10^6 kg) can't stand at Hulk strength. He lies flat with 1.65 × 10^7 N of friction, so a 2 m Ollie's sprint hit (555 kN) is held.\n\nZERO/NaN\n- Set speed 0 → noCharge 'zero'.\n- Q = 0 → contact zeros and no blast.\n- p = ∞ and m = ∞ → NaN, shown as 'undefined', never a number.\n- same() treats ∞ vs finite as unequal.\n- All logBars rows with ∞ get a text label.\n- t1mm = ∞ when Δv = 0.",
+ "outputs": "standoff(cA, cB) →\n- {blackHole}, or\n- {outcome: 'stalemate' | 'forceWins' | 'objectHolds' | 'paradox' | 'rockGives';\n  DA (N, usable push; ∞ when bolted with ∞ strength);\n  RA (N, pusher's footing; ∞ when bolted);\n  FA, FB (N, strengths);\n  HB (N, holder's hold);\n  RB (N);\n  holdWhy;\n  contact (N; NaN = undefined);\n  net (N, forceWins);\n  pusherSlips (bool);\n  dSep (m);\n  gravF (N, mutual gravity at contact);\n  gravityLock (bool);\n  rock?: {comic} or {C N, rT m, rC m, tear (ratio), tearCap N, crackThrough, beyondCrust, planet (bools)}}.\n\ncollide(cA, cB, {source, gb}) →\n- {blackHole} | {planetScale} | {noCharge: why, speed}, or\n- {outcome: 'moved' | 'held' | 'immovable' | 'unstoppable' | 'paradox';\n  dir 'h' | 'v';\n  speed {v m/s, u m/s (γv), jump/stomp/run result, apex m};\n  v0, vRel (m/s);\n  d0, dC (m);\n  fall {t s, vRel m/s, E J};\n  gNear, gFar (mutualGravity results, N);\n  gravBoost, bound, dragged, relativistic (bools);\n  hold {H N, R N, why};\n  pA (kg m/s; ∞ allowed);\n  held (bool);\n  Fheld (N);\n  h {KA J, Q J, pStar kg m/s, Mstar kg, inel {V m/s, pT}, el {vA, vT m/s, pA, pT}};\n  partial? {F N, tau s, V m/s, Q J, xB m, Efoot J, Jearth N s};\n  elasticUpper (bool);\n  contact {s m, L m, soft {F N, t s}, softEl {F, t}, matter {F, t}, light {F, t}};\n  earth? {dvSplat, dvBounce m/s, dayChange s, runUpCancels, t1mm s};\n  after: horizontal {splat {V, during m, slide m, moved m}, bounce {vA, vB, slideA, slideB (m, null if bound, NaN if relativistic)}}, or from above {splat {V, depth m or D crater m, Eground J}, bounce {...}};\n  rock? (as above);\n  Q (J, splat energy freed);\n  quakeHeld (magnitude, upper bound);\n  airRunUp (J, rough)}.\n\nDisplay units: fmtSpeed, fmtSI(N | J | Pa), fmtTNT, fmtDist, fmtTime, sci for Earth's Δv (m/s).",
+ "page_text": "Names: X is the charger or pusher and Y is the holder (default X = Ollie, Y = Rex). 'surface' is c.surface.short.\n\nTAB INTRO (one muted line under the controls)\n'What happens when an unstoppable force meets an immovable object? Two ways to ask it: a push, and a charge.'\n\nGATES (callout, then stop, except the sink callout)\n- blackHole: 'At this density {name} is a black hole (see Weight). There's nothing left to collide with.'\n- planetScale: 'At {mass}, {name}'s own gravity reshapes the planet (see Weight). A charge across Earth's surface stops making sense here.'\n- sink (real ground and fallsThrough): 'On real ground {name} sinks into the planet just standing there (see Weight). This test assumes Comic ground.' Then compute with comic ground.\n\nCHARGE: NO-CHARGE VERDICTS\n- cantSprint: '{X} can't charge. At {mass} his strength ({F}) can't hold up his own weight ({W}), so he can't run. Try Set speed.'\n- cantJump: '{X} can't get off the ground, so he can't land on {Y}.'\n- neverLands: '{X}'s {jump | stomp-launch} carries him off the planet{ at {v}}. He never comes down on {Y}.'\n- boltedStomp: 'Bolted to the planet, {X}'s stomp can't launch him, so there's nothing to land on {Y}.'\n- noLaunch: '{X}'s stomp doesn't lift him off the ground.'\n- zero: 'Set a speed above zero.'\n\nCHARGE: VERDICT (splat; bounce variant after the slash)\n- moved, sideways, splat:\n  - default: '{X} hits {Y} at {vRel}. {Y} is knocked back at {V} and the two slide {moved} before they stop.'\n  - if moved < 1 m: '{X} hits {Y} at {vRel}. {Y}'s {claws | footing} take most of it: he's shoved back {moved}.'\n  - if V ≥ 1% c: '... The two of them carry on together at {V}, a fireball.'\n- moved, sideways, bounce:\n  - equal masses: '{X} stops dead and {Y} flies off at {vB}, like Newton's cradle.'\n  - otherwise: '{X} {bounces back at |vA| | keeps going at vA} and {Y} is knocked away at {vB}.'\n- moved, from above, splat: '{X} lands on {Y} at {vRel}. The ground gives: the two are driven {depth} into {surface}.' With a crater: '... and blast a crater up to {D} wide.'\n- moved, from above, bounce: '{Y} is driven {depth} into {surface}; {X} {stops on top | bounces back up at v}.'\n- held, sideways: '{Y} doesn't budge. {X} {stops dead against him | bounces straight back at |vA|}, and the blow goes through {his feet | his bolts} into the planet.'\n- held, from above: '{Y} doesn't budge: {the ground under him holds | comic ground can't give | his bolts hold}. {X} {stops on his head | bounces back up at v}.'\n- immovable: '{Y} is truly immovable here (infinite mass, a thought experiment), so {X} {stops dead | bounces back at v}. All {fmtTNT(K)} of his energy is {freed at the hit | handed back to him as motion}.'\n- unstoppable: '{X} carries unlimited momentum. Nothing with finite mass can stop him: {Y}{, and the planet he's bolted to,} is knocked away at light speed, with unlimited energy.'\n- paradox: 'No answer. {X} has unlimited momentum and {Y} has unlimited inertia, so momentum conservation would have to divide one infinity by another. That has no value. Physics doesn't settle the paradox; it says the two can't exist together.'\n- gravity boost (append): '{Y}'s gravity pulls {X} in: he arrives at {vRel} however fast he ran.' If dragged: 'Their gravity drags them together before anyone charges.'\n\nCHARGE: STATUS CHIPS\n- Charge:\n  - info 'Charge: {speed} ({his top sprint | falling from his {apex} jump | falling back after a stomp-launch | set speed})';\n  - warn 'Sonic boom on the way in' if v ≥ 340 m/s and < 1% c;\n  - bad 'Fireball on the way in' if ≥ 1% c.\n- Hold:\n  - held + bolted: info 'Bolted: Earth takes the blow';\n  - held + comicGround: info 'Comic ground takes the blow';\n  - held otherwise: good '{Y} holds: {H} vs a {Fheld} hit';\n  - moved: bad '{Y} gives: holds {H}, needs {Fheld}';\n  - immovable: info 'Thought experiment: infinite mass';\n  - dragged: bad 'Gravity drags {Y} in first'.\n- Rock (bolted):\n  - comic: info 'Comic ground: the rock can't crack';\n  - planet: bad 'Planet-scale load on the rock';\n  - rT ≥ 0.05 m: bad 'Rock cracks {rT} around his bolts';\n  - otherwise: good 'Rock around his bolts holds'.\n- Quake (held only): the existing quakeChip(Q, quakeHeld). The tile sub-line says 'upper bound'.\n- partial with H/F_held > 0.1: info 'His footing soaks up part of the blow'.\n- Bounce selected and elasticUpper: info 'Bounce ignores his footing (upper bound)'.\n\nCHARGE: TILES\n1. speedTile('Charge speed', vRel, source label; with gravity boost: 'his own run: ' + speedOnly(v0)).\n2. 'Energy freed at the hit':\n   - splat: fmtSI(Q, 'J'), sub fmtTNT(Q) + ' · ' + compareEnergy(Q);\n   - bounce: 'none', sub 'a perfect bounce keeps it as motion; a splat frees ' + fmtTNT(Qsplat);\n   - Q = ∞: 'unbounded'.\n3. Holder result:\n   - moved sideways: speedTile('{Y} knocked back at', V or vB, 'moves ' + fmtDist(moved) + ' in all');\n   - moved from above: tile('{Y} driven into the ground', fmtDist(depth), surface);\n   - held: tile('{Y} moves', 'not at all', why text);\n   - unstoppable: tile('{Y} moves', 'at light speed', 'unlimited momentum').\n4. tile('Force of the hit', fmtSI(F_soft or F_softEl, 'N'), 'over ' + fmtTime(t) + ' (plush squash, estimate)'). For Q = ∞: 'unbounded'.\n5. Held and not immovable: tile('Earth's speed change', sci(dv) + ' m/s', t1mm > age of universe ? 'Earth would take ' + sig(t1mm/AGE_U, 2) + '× the age of the universe to move 1 mm' : 'Earth would take ' + fmtTime(t1mm) + ' to move 1 mm'). Unstoppable + bolted: tile('Earth', 'knocked away at light speed', 'unlimited momentum').\n\nCHARGE: CHART\nlogBars('Forces at the hit', ...), skipped when Q is 0 or ∞. Rows:\n- {label 'What holds {Y}', value H; text 'no limit (bolted)' or 'no limit (comic ground)' when ∞};\n- {label 'The hit, plush squash', value F_soft, highlight};\n- {label 'As stiff as any real material', value F_m} (omit when supersonic);\n- {label 'Stiffest body physics allows', value F_c}.\nCaption (muted): 'A perfectly rigid body would make the hit infinite. Relativity forbids one, so the hit is never infinite.'\nThen blastBlock(Q, 'where they meet') for splat and finite Q > 0. For Q = ∞: callout 'The energy is unbounded, so no finite blast radius applies.'\n\nCHARGE: WHAT HAPPENS (happens(), max 5, in this priority)\na) Always: 'Momentum is never lost. Whatever {X} brings in, the two of them (plus whatever holds {Y}) carry away. A splat shares it and frees the rest of the energy as heat, sound and blast. A perfect bounce keeps all the energy as motion. Soft bodies sit near the splat end: people swung into each other on ropes bounced back with 10–50% of their closing speed, which frees 75–99% of the splat energy.'\nb) Always (one line chosen by why): '“Immovable” only means what holds {Y} in place.' followed by:\n   - footing: ' Standing on {surface}, friction holds him with {R}{ plus his claws}. Stopping {X} dead takes {Fheld}, so he {gets knocked back | holds}.'\n   - strength: ' His claws could hold {R}, but his muscles keep his stance against only {F_B}.'\n   - lying: ' At {mass} he's too heavy for his strength to stand, so he lies flat and friction alone holds him: {R}.'\n   - bearing: ' Bracing can't help against a blow from above. Only the ground under his feet holds him up: {H} on {surface}.'\n   - bolted: ' Bolted, he is part of the planet: the bolts hand the momentum to Earth's 5.97 × 10²⁴ kg.'\n   - comicGround: ' On comic ground nothing gives under him, so Earth takes it.'\n   - immovable: ' Here he gets infinite mass, which no real setting allows. Even bolted to an unbreakable planet he would be only as immovable as Earth's 5.97 × 10²⁴ kg.'\nc) Always (finite Q > 0): 'How hard they hit depends on how squishy they are, which nobody knows for an indestructible plush. If each squashes a quarter of his depth ({s} in all), the hit lasts {t} and pushes with about {F}. A perfectly rigid body would make the force infinite, but relativity forbids one: no push travels through a body faster than light. Even the stiffest body physics allows takes {t_c} to stop, which caps the force at {F_c}.'\nd) unstoppable/paradox (replaces c): 'An unstoppable force would need unlimited momentum, so nothing with finite mass could stop it. An immovable object would need unlimited inertia, so nothing with finite momentum could move it. Put them together and momentum conservation asks for ∞ ÷ ∞, which has no value. So the honest answer is that the two can't exist in the same universe: if one does, the other doesn't. That is the standard resolution of the paradox.'\ne) relativistic: 'At {v} the air ahead of {X} can't get out of the way: it's shock-heated into plasma. His last {d0} of run-up alone dumps very roughly {fmtTNT(air)} into the air before he arrives.' Then the existing xkcd sentence: '(Air only starts to fuse much closer to light speed …)' below 50% c, or '(… air nuclei start to fuse too …)' above.\nf) gravity boost: 'At {density}, gravity between them matters. Starting {d0} apart, {Y}'s pull alone brings {X} in at {fall.vRel}.' Add, by case: ' They're bound together: after a bounce they fall back.' ' The pull ({gNear}) beats what holds {Y} ({H}), so it drags him in too.'\ng) infinite strength:\n   - charger not unstoppable: 'Infinite strength isn't unstoppable: a charge needs grip. On {surface} his feet push off with only {thrust}, so he tops out at {v}.'\n   - holder moved: 'Infinite strength isn't immovable either: holding still needs footing, and his feet give at {R}.'\nh) Earth (held, not immovable): 'Earth takes the momentum: its speed changes by {dv}.' Then:\n   - runUpCancels: ' And {X} got his speed by pushing on Earth in the first place, so Earth just gets its own momentum back. Overall, nothing moves.'\n   - set speed: ' Arriving from outside, his momentum stays with Earth{; if he hits along the equator, the day gets {dayChange} longer or shorter}.'\ni) rock (bolted, not comic): 'The bolts are comic; the rock isn't. The blow loads the rock around his bolts with {F}: granite pulls apart within about {rT} and is crushed within about {rC}{, and the {surface} on top tears at {tear}× its limit}.' Add:\n   - beyondCrust: ' That reaches deeper than the crust (41 km on average under continents), where this estimate stops.'\n   - planet: ' That is more than the gravity holding Earth's two halves together (about 1.1 × 10²⁵ N): the planet itself would come apart.'\nOrder when there are too many: a, b, c|d, e, f, g, h, i. Truncate at 5.\n\nFOUR CASES GRID (always, under 'What happens'; title 'The four cases')\n- Rows: 'Finite momentum', 'Unlimited momentum (light speed)'.\n- Columns: 'Finite inertia (anything real, even bolted to Earth)', 'Unlimited inertia (truly immovable)'.\n- Cells:\n  - [0,0] 'Both move. They share the momentum; the softer the hit, the more energy it frees.'\n  - [0,1] 'The charger stops or bounces. The object doesn't budge, so the force was stoppable.'\n  - [1,0] 'The object is knocked away at light speed (the planet too, if bolted), so it was movable.'\n  - [1,1] 'No answer: ∞ ÷ ∞. The two can't exist in the same universe.'\n- Highlight row = isFinite(pA) ? 0 : 1, column = immovable ? 1 : 0.\n\nCHARGE: SHOW THE MATH (lines)\n- 'Charge: {source} → v = {v0}; momentum p = γ m v = {pA}.' + (relativistic sprint: ' Top speed read relativistically: drag ½ρC_dA(γv)² balances the push, so γv = √(2F/(ρC_dA)).')\n- gravity boost: 'Gravity on the way in: v_rel² = v² + 2G(m₁+m₂)(1/d − 1/d₀), d₀ = {d0}, d = {dC} → {vRel}.'\n- 'Splat: they move off as one body. Invariant mass M = √(m₁² + m₂² + 2m₂E₁/c²); energy freed Q = (M − m₁ − m₂)c² = {Q} (½μv² below 1% of light speed, μ = m₁m₂/(m₁+m₂)).'\n- 'Perfect bounce: each body's momentum reverses in the centre-of-momentum frame. Below 1% of light speed: v₁′ = (m₁−m₂)/(m₁+m₂)·v, v₂′ = 2m₁/(m₁+m₂)·v.'\n- held: 'Held: {Y} and Earth act as one body of {m + M_E}. Earth's Δv = p/(m + M_E) = {dv}.'\n- partial: 'His footing ({H}) pushes back during the hit: crush force F = μ(v²/2s + H/m₂) = {F}, contact 2s/v = {t}, he leaves at {V}.'\n- 'Force: squash s = ½ × the smaller depth = {s}; F = Q/s (splat) or 2Q/s peak (bounce). Real matter can't carry sound faster than 36.1 km/s: F ≤ p*/(L ÷ 36.1 km/s) = {Fm}. Nothing travels faster than light: F ≤ p*/(L/(γ*c(1+β*))) = {Fc}. Here p* = {pStar} is the momentum in the centre-of-momentum frame and L = {L}.'\n- 'Slide: x = m/(2k)·ln(1 + kV²/R), k = ½ρ₀C_dA.'\n- bolted: 'Rock: a force C spread over a half-sphere of radius r averages C/(2πr²); granite pulls apart at 8.4 MPa and crushes at 200 MPa, so r = √(C/2πσ).'\n- 'Blast radii: Kinney & Graham (1985), as if all of Q became a blast (upper bound). Quake: 1 part in 10,000 of Q, upper bound.'\n- Ollie charging: 'Ollie's horns don't change the momentum or the energy; they only put the force on a smaller patch.'\n\nPUSH: VERDICT\n- stalemate: 'Dead heat. {X} pushes with {C} and {Y} holds {C}. Neither moves.' If both footing-limited: ' Both are pushing as hard as their feet allow: the ground is the limit, not strength.'\n- objectHolds:\n  - pusherSlips: '{Y} doesn't move. {X}'s own feet slide back first: they hold only {RA}, far less than his {FA} of strength.'\n  - plainly weaker: '{Y} doesn't move. {X} pushes with {DA}, less than {Y}'s hold of {HB}.'\n  - both bolted: 'Neither moves. Both are bolted to the planet, so {X}'s {C} push goes into the rock between them and stretches it.'\n  - immovable: '{Y} doesn't move: here he's truly immovable.'\n- forceWins:\n  - '{X} wins. He pushes with {DA} and {Y} can hold only {HB}, so {Y} is driven back.' Add the contest walk-out time and speed when available. If X is bolted: ' Bolted, {X} can't walk him out; he can only shove him away (see Wrestle).'\n  - DA = ∞: '{X} pushes with unlimited force from bolted feet. {Y}'s hold is finite ({HB}), so he is shoved away at light speed with unlimited energy.'\n- rockGives: 'Unlimited push, real rock: the rock gives. The crust between them is torn apart, and {Y} is carried off with the rock he's bolted to.'\n- paradox: 'No answer. An unlimited push meets an unlimited hold on ground that can't break, and infinity minus infinity has no value. Physics doesn't settle it; it says the two can't exist together.'\n\nPUSH: CHIPS\n- '{X} pushes {DA}': info, or warn '{X}'s feet slip first'.\n- '{Y} holds {HB}': good when he holds, bad when he gives.\n- Rock chips as in Charge.\n- gravityLock: warn 'Gravity glues them together ({gravF})'.\n\nPUSH: TILES\n- '{X}'s push' fmtSI(DA), sub 'strength ' + F_A + ' · feet hold ' + (RA ∞ ? 'no limit (bolted)' : RA).\n- '{Y}'s hold' fmtSI(HB) or '∞', sub why: 'his footing' | 'his strength' | 'lying flat: friction' | 'bolted' | 'truly immovable'.\n- 'Force between them' fmtSI(C), or 'undefined'.\n- Bolted: 'Rock pulls apart out to' fmtDist(rT), sub 'crushed within ' + fmtDist(rC).\n\nPUSH: CHART\nlogBars('Forces', [{X}'s strength, {X}'s footing, {Y}'s strength, {Y}'s footing]), with ∞ rows texted 'no limit'.\n\nPUSH: WHAT HAPPENS\n- 'Newton's third law: {X} pushes {Y} exactly as hard as {Y} pushes back, and both forces end up in the ground. So each can use only as much force as his footing takes. Strength past that just makes his feet slide.'\n- 'Footing here: {X}'s feet hold {RA} ({why}); {Y} holds {HB} ({why}).'\n- Rock bullet as in Charge, with C.\n- Infinite strength: 'Infinite strength isn't unstoppable on plain feet: {X}'s push is capped at {RA}.'\n- gravityLock: 'At this density their gravity ({gravF}) beats {X}'s footing ({RA}): they're stuck together before anyone pushes.'\n- 'For a walk-out or a shove-off, see Wrestle.'\n\nPUSH: FOUR CASES GRID\n- Rows: 'Finite push', 'Unlimited push (unlimited strength, bolted)'.\n- Columns: 'Finite hold', 'Unlimited hold (bolted on unbreakable ground, or truly immovable)'.\n- Cells:\n  - [0,0] 'The bigger usable force wins; equal is a dead heat.'\n  - [0,1] 'He holds. The push goes into the ground, and real rock cracks around the bolts.'\n  - [1,0] 'He's shoved away at light speed.'\n  - [1,1] 'No answer: ∞ − ∞. On real rock, the rock gives first.'\n\nASSUMPTIONS CARD (static-data.js)\n{ t: 'Unstoppable force vs immovable object', d: 'Momentum and energy are exact, relativity included. Two bounds bracket every hit: a splat (no bounce; the lost energy comes out as heat, sound and blast) and a perfect bounce. How hard they hit depends on how squishy they are, which nobody knows for an indestructible plush. The sim lets each squash by a quarter of the smaller body's depth, and also shows the most any body could do, because relativity forbids perfectly rigid bodies. Bracing uses the same friction and claw model as the other tabs. Bolts never fail, but the granite around them does: it pulls apart at about 8 MPa and crushes at 200 MPa. Hits are straight and head-on: spin, glancing blows, horns and the air during the hit are ignored.' }",
+ "caveats": "- Squishiness is unknown. Nobody knows how stiff an indestructible plush is. The force and contact time rest on an assumed squash (a quarter of the smaller body's depth). The true force could be anywhere from that up to the light-speed ceiling. Momentum, energy, speeds and who moves do not depend on it, except the 'does he hold?' test. That test uses the soft (plush) force, so a stiffer pair would knock a braced Rex loose a bit more easily.\n- Two bounds, not one answer. Real hits fall between splat and bounce. Soft bodies are near the splat end, based on one informal test with people (restitution 0.1–0.5).\n- Footing. Standing holders hold with the smaller of strength and footing (the same rule as Wrestle). Too-heavy holders lie flat and use friction alone. The 'splat with footing' treats footing as a constant push-back during the hit. The bounce bound ignores footing, so it is the most he could be knocked away.\n- Landings from above. The landing speed is the speed Ollie would hit the ground at, so the extra 2 m of fall to Rex's head is ignored. Only the ground's bearing holds Rex up. The ground's own inertia during the 20 ms hit is ignored.\n- Rock. The cracking radius is an average-stress estimate for intact granite at slow loading rates. A real hit loads it faster, which makes it up to 5× stronger, so the cracks are overstated by up to about 2×. Jointed rock is much weaker. The estimate stops at crust depth. The planet-scale marker assumes a uniform-density Earth.\n- Earth. Earth is treated as one rigid ball taking the momentum; really it rings with seismic waves. The quake magnitude for held hits is an upper bound, as if all the energy went into the ground. Any momentum Ollie got from pushing on Earth goes back to Earth.\n- Gravity. Gravity is Newtonian between two balls of equal volume, starting 10 body heights apart. Super-dense bodies sink through real ground, so those runs assume comic ground. Past 0.1% of Earth's mass the test stops.\n- Relativity. Momentum and energy are exact. Sliding, footing and gravity are switched off at 1% of light speed. The relativistic sprint speed and the air heated by a relativistic run-up are rough.\n- Geometry. Blast radii are upper bounds. Bodies hit head-on in a straight line. Spin, glancing blows, horns and air flow during the hit are ignored.",
+ "tests": [
+  {
+   "name": "headOn: equal masses, non-relativistic splat and bounce",
+   "inputs": "headOn(p = 180 × 46.4916, 180, 180)",
+   "expected": "Q = 97,266 J; splat V = 23.2458 m/s; bounce vA = 0, vT = 46.4916 m/s; p* = 4,184.24 kg m/s",
+   "reasoning": "μ = 90 kg; Q = ½ × 90 × 46.4916² = 45 × 2,161.47 = 97,266. V = p/(2m). Equal-mass elastic swaps speeds (Newton's cradle). p* = p·m_T/M ≈ 90 × 46.4916.",
+   "tolerance": "1e-6 relative"
+  },
+  {
+   "name": "headOn: 0.5c into twice the mass (relativistic, unequal)",
+   "inputs": "headOn(p = 0.577350 × 180 × c, 180, 360)",
+   "expected": "Q = 1.64072e18 J; V = 0.183013c; bounce vA = −0.177219c, vT = 0.354163c; momentum and energy conserved to 1e-12",
+   "reasoning": "γβ = 0.5/√0.75 = 0.57735. E_tot = (1.1547 × 180 + 360)c² = 567.85c² kg; V = p/E_tot·c² = 103.92/567.85 = 0.18301c. M = √(180² + 360² + 2 × 360 × 207.85) = 568.47... Q = (M − 540)c², computed without cancellation. Bounce from rapidity reversal; checked by summing momenta and energies.",
+   "tolerance": "1e-9 relative (conservation 1e-12)"
+  },
+  {
+   "name": "headOn: 0.9c equal masses",
+   "inputs": "headOn(p = 2.0647416 × 180 × c, 180, 180)",
+   "expected": "Q = 9.16899e18 J (2.19 Gt TNT); V = 0.626789c; bounce vA = 0 (after the 1e-9 round-off guard), vT = 0.9c",
+   "reasoning": "γ = 2.2942; M = 180√(2 + 2γ) = 180 × 2.5667 = 462.0 kg; Q = (462.0 − 360)c² ≈ 9.17e18. V = γβm/(γm + m) = 2.0647/3.2942 = 0.62679c.",
+   "tolerance": "1e-6 relative"
+  },
+  {
+   "name": "headOn: heavy target precision (180 kg into 7.416e16 kg at γβ = 1e-5)",
+   "inputs": "headOn(1e-5 × 180 × c, 180, 7.416e16)",
+   "expected": "bounce vT = 2V = 4.8544e-20 c; momentum conserved to 1e-12; Q = 8.0888e8 J",
+   "reasoning": "Using ln((E + pc)/(Mc²)) for the centre-of-momentum rapidity loses all digits here (gave a momentum error of 18,000×). atanh(pc/E_tot) fixes it. Q ≈ ½ × 180 × (2,997.9)² = 8.0888e8.",
+   "tolerance": "1e-9 relative"
+  },
+  {
+   "name": "headOn: infinities",
+   "inputs": "headOn(∞, 180, 360); headOn(∞, 180, 180); headOn(∞, 180, ∞); headOn(8368.48, 180, ∞)",
+   "expected": "Q = ∞, splat V = c, bounce vA = −0.6c; bounce vA = 0; {undefinedResult}; Q = 194,532 J, splat V = 0, bounce vA = −46.4916 m/s",
+   "reasoning": "In the ultra-relativistic limit the charger's final rapidity is ln(m_A/m_T): tanh(ln 0.5) = (0.25 − 1)/(0.25 + 1) = −0.6. An infinite target takes no speed and frees all of K_A = ½ × 180 × 46.4916². ∞/∞ has no value.",
+   "tolerance": "exact flags; 1e-9 relative"
+  },
+  {
+   "name": "C1 default charge: Ollie sprints into standing Rex",
+   "inputs": "Both 2 m, 180 kg, Hulk (100 short tons, F = 889,644 N), comic, concrete, friction, comic ground off; collide(cO, cR, {source: 'sprint'})",
+   "expected": "v0 = vRel = 46.4916 m/s; H = 1,059.12 N (footing); F_held = 555,388 N → moved; splat Q = 97,451 J (23.3 g TNT), V = 23.2015 m/s, during 0.1748 m, slide 43.112 m, moved 43.29 m; force 278,223 N over 15.068 ms; bounce Ollie 0, Rex 46.4916 m/s, slide 127.31 m; ceiling F_c = 1.7907e12 N (t 2.3367 ns); matter F_m = 2.156e8 N",
+   "reasoning": "Sprint thrust = 0.6 × 180 × 9.80665 = 1,059.12 N; drag top speed √(2 × 1,059.12/(1.225 × 0.8)) = 46.4916. s = 0.5 × 0.700527 = 0.350263. F_held = ½ × 180 × 2,161.47/0.350263. Partial: F = 90 × (3,085.48 + 5.884) = 278,223; τ = 2s/v = 0.0150678; V = 46.4916 − 278,223 × 0.0150678/180 = 23.2015; Q = F·s. Slide = 367.35 × ln(1 + 0.49 × 538.31/2,118.24) = 43.11. Bounce slide = 183.67 × ln(2.000) = 127.31. F_c = 4,184.24/(0.700527/c).",
+   "tolerance": "1e-4 relative"
+  },
+  {
+   "name": "C2 bolted Rex: Earth takes it",
+   "inputs": "As C1 but Rex anchor 'bolted'",
+   "expected": "held; Q = 194,532 J (46.5 g TNT); force 555,388 N; Earth Δv = 1.40124e-21 m/s (bounce 2.80248e-21); 1 mm takes 7.137e17 s = 1.64× the age of the universe; day change 7.86e-19 s (run-up cancels); rock rT = 0.1027 m, rC = 0.0210 m, concrete tear 1.85×; quake −2.34 (no noticeable quake); bounce: Ollie back at 46.4916 m/s, slides 127.31 m",
+   "reasoning": "Target m_B + M_E: Q ≈ K_A = ½ × 180 × 2,161.47 = 194,532. Δv = 8,368.48/5.9722e24. 1e-3/1.40124e-21 = 7.137e17 s ÷ 4.3508e17 = 1.64. rT = √(555,388/(2π × 8.38e6)) = √0.010548. Tear = 555,388/(1.5e6 × 0.2).",
+   "tolerance": "1e-4 relative"
+  },
+  {
+   "name": "C3 claws in granite hold",
+   "inputs": "Both on granite, Ollie friction, Rex 'braced'",
+   "expected": "v0 = 42.4408 m/s; H = 889,644 N (his strength; claws alone 7.2009e6 N); F_held = 462,823 N ≤ H → held; Q = 162,110 J; Earth Δv = 1.27915e-21 m/s",
+   "reasoning": "Granite μ 0.5: thrust 882.6 N → √(2 × 882.6/0.98) = 42.44 m/s. Claws R = 0.5 × 1,765.2 + 36 MPa × 0.2 m² = 7.2009e6; standing H = min(889,644, R). F_held = ½ × 180 × 1,801.22/0.350263.",
+   "tolerance": "1e-4 relative"
+  },
+  {
+   "name": "C4 claws in concrete: partly held",
+   "inputs": "Default but Rex 'braced' on concrete",
+   "expected": "moved (partial); H = 301,059 N; splat F = 428,223 N; V = 10.645 m/s; Q = 149,991 J; Rex moves 0.0802 m during the hit + 0.0675 m slide = 0.148 m; elasticUpper = true",
+   "reasoning": "F = 90 × (3,085.48 + 301,059/180 = 1,672.55) = 428,223. V = 46.4916 − 428,223 × 0.0150678/180 = 10.645. x_B = ½ × (127,164/180) × 0.0150678² = 0.0802. Energy check: 20,397 + 149,991 + 301,059 × 0.0802 = 194,532 = initial KE.",
+   "tolerance": "1e-3 relative"
+  },
+  {
+   "name": "C5 Ollie jumps and lands on Rex (concrete)",
+   "inputs": "Default, source 'jump'",
+   "expected": "v0 = 32.7222 m/s (jump apex 57.8 m); H = 223,235 N (bearing); F_held = 275,126 N → moved (partial); splat F = 249,180 N, V = 3.0858 m/s, Q = 87,279 J; driven 0.0406 m into the slab (0.0330 during the hit + 0.0076 after)",
+   "reasoning": "Bearing = 2.5e6 × 0.09 − 1,765.2. F = 90 × (1,070.74/0.700527 + 223,235/180) = 90 × 2,768.67. τ = 0.70053/32.7222 = 0.021408. penetrationDepth(360, 0.09, 3.0858, 2.5e6, 2400) = 0.8333 × ln(1.009141) = 0.0076.",
+   "tolerance": "1e-3 relative"
+  },
+  {
+   "name": "C6 stomp-launch landing is held by the ground",
+   "inputs": "Default, source 'stomp'",
+   "expected": "v0 = 6.4664 m/s; held (F_held 10,744 N < 223,235 N); Q = 3,763 J; Earth Δv = 1.949e-22 m/s",
+   "reasoning": "½ × 180 × 6.4664² / 0.350263 = 10,744.",
+   "tolerance": "1e-3 relative"
+  },
+  {
+   "name": "C7 set speed 0.9c into standing Rex",
+   "inputs": "collide(cO, cR, {source: 'set', gb: 2.0647416})",
+   "expected": "moved; Q = 9.16899e18 J (2.19 Gt TNT); splat V = 1.87907e8 m/s (0.6268c), no slide (relativistic); bounce Ollie 0, Rex 0.9c; soft F = 2.6177e19 N over 1.658 ns; ceiling 3.878e19 N over 1.119 ns; matter bar hidden (supersonic); air run-up ≈ 3.75e18 J (rough)",
+   "reasoning": "Footing 1,059 N is negligible against 1e19 N, so the free hit applies. Light ceiling: γ*β* = p*/(m_A c) = 4.3408e10/(180c) = 0.80443 → γ* = 1.28339, β* = 0.62680 → t = 0.700527/(1.28339 × c × 1.6268). Air = 0.49 × (2.06474c)² × 20.",
+   "tolerance": "1e-4 relative"
+  },
+  {
+   "name": "C8 set speed 0.9c into bolted Rex",
+   "inputs": "As C7, Rex bolted",
+   "expected": "held; Q = 2.09364e19 J (5.00 Gt TNT); Earth Δv = 1.8656e-14 m/s (kept: set speed); day change 1.046e-11 s; quake upper bound 7.01; rock beyond crust (rT = 1,065 km), not planet-scale",
+   "reasoning": "Q ≈ K_A = (2.2942 − 1) × 180c² = 2.0936e19. M = (log10(2.0936e15) − 4.8)/1.5 = 7.01. ΔT = 86,164.2² × 1.11419e11/(2π × 0.3308 × 5.9722e24 × 6.371e6).",
+   "tolerance": "1e-4 relative"
+  },
+  {
+   "name": "C9/C10 light speed: unstoppable vs paradox",
+   "inputs": "Set speed ∞ into bolted Rex; set speed ∞ into Rex with colImm",
+   "expected": "C9 outcome 'unstoppable', Q = ∞, Earth to light speed, rock planet = true. C10 outcome 'paradox' with no numbers.",
+   "reasoning": "Unlimited momentum into a finite mass, Earth included, gives light speed and unbounded energy. Into an infinite mass it gives ∞/∞.",
+   "tolerance": "exact"
+  },
+  {
+   "name": "C11 sprint into a truly immovable Rex",
+   "inputs": "Default, colImm",
+   "expected": "outcome 'immovable'; Q = 194,532 J; splat Ollie stops; bounce Ollie back at 46.4916 m/s; no Earth tile",
+   "reasoning": "m_T = ∞ gives Q = K_A and v_A' = −v.",
+   "tolerance": "1e-6"
+  },
+  {
+   "name": "C12 normal Ollie sprints at neutron-star-dense Rex (comic ground)",
+   "inputs": "Rex m = 4.12e17 × 0.18 = 7.416e16 kg, groundHolds true; Ollie default",
+   "expected": "gravBoost; fall.vRel = 3,692.73 m/s, vRel = 3,693.03 m/s; Rex lying, H = 4.3636e17 N; held; Q = 1.2275e9 J (293 kg TNT); bound = true (bounce slide null); Earth Δv = 1.113e-19 m/s; gNear = 1.8155e9 N",
+   "reasoning": "μ_G = G(m_A + m_B) = 4.94966e6; v_f² = 2 × 4.94966e6 × (1/0.700527 − 1/20) = 1.36363e7. v_rel = √(2,161.47 + 1.36363e7). He can't stand: 1.4 × 889,644 ≪ 7.27e17 N, so R = 0.6 × 7.416e16 × 9.80665. Q ≈ ½ × 180 × 3,693.03².",
+   "tolerance": "1e-4 relative"
+  },
+  {
+   "name": "C13 both neutron-star dense (comic ground), set 1 m/s",
+   "inputs": "Both m = 7.416e16 kg, groundHolds; set gb = 1/c",
+   "expected": "dragged; vRel = 5,222.3 m/s; splat Q = 5.0563e23 J (1.20× the 4.2e23 J dinosaur-killing asteroid); pair V = 0.5 m/s, slides 0.0212 m; bounce speeds ±2,611 m/s, slides null (bound)",
+   "reasoning": "Mutual gravity at contact 7.48e23 N ≫ friction 4.36e17 N, so both fall. Q = G m² (1/0.700527 − 1/20) + ½μ(1)² = 6.6743e-11 × 5.4997e33 × 1.377497 = 5.0563e23. CM speed = m_A × 1/(2m) = 0.5.",
+   "tolerance": "1e-4 relative"
+  },
+  {
+   "name": "C14 neutron-star Ollie can't sprint",
+   "inputs": "Ollie m = 7.416e16 kg, sprint",
+   "expected": "noCharge 'cantSprint'",
+   "reasoning": "sprint() returns cantStand when F ≤ W.",
+   "tolerance": "exact"
+  },
+  {
+   "name": "C15 real muscle",
+   "inputs": "Default with mode 'real'",
+   "expected": "v0 = 17.9 m/s (leg cap); Q = 14,604 J; V = 8.835 m/s; Rex moves 6.75 m; force 41,694 N over 39.1 ms",
+   "reasoning": "Real-muscle sprint cap = 17.9 × s. Partial: F = 90 × (320.41/0.700527 + 5.884) = 41,694.",
+   "tolerance": "1e-3 relative"
+  },
+  {
+   "name": "C16/C17 infinite strength",
+   "inputs": "Both F = ∞, friction; then both F = ∞ and bolted",
+   "expected": "C16 identical to C1 (46.49 m/s, grip-limited). C17 'unstoppable', runUpCancels true, so Earth's net motion is printed as undefined.",
+   "reasoning": "Thrust = min(∞, friction cap) = 1,059.12 N. Bolted thrust = ∞ → uTop = ∞ → p = ∞.",
+   "tolerance": "exact / 1e-6"
+  },
+  {
+   "name": "C18 relativistic sprint with finite strength",
+   "inputs": "Ollie bolted, dial 1e20 kg; Rex bolted",
+   "expected": "u = 6.8266e9 m/s (γβ = 22.77, leg-limited); p = 1.22880e12 kg m/s; Q = 3.5256e20 J (84 Gt TNT); held; Earth Δv = 2.058e-13 m/s; quake upper bound 7.83",
+   "reasoning": "uDrag = √(2 × 9.80665e20/0.98) = 4.4737e10. uLeg = 12.42 × √((9.80665e20 − 1,765.2)/3,246.0) = 6.8266e9, so the leg cap is smaller. γ = √(1 + 22.77²) = 22.79; K = 21.79 × 180c².",
+   "tolerance": "1e-3 relative"
+  },
+  {
+   "name": "C19/C20 set speeds 11.2 km/s and 0",
+   "inputs": "Default, set gb = 11200/c; set gb = 0",
+   "expected": "Q = 5.6448e9 J (1.35 t TNT), V = 5,600 m/s, slide 3,266 m; bounce Rex 11,200 m/s, slide 2,015 m. gb = 0 → noCharge 'zero'",
+   "reasoning": "½ × 90 × 11,200² = 5.6448e9. Footing is negligible.",
+   "tolerance": "1e-3 relative"
+  },
+  {
+   "name": "C21/C22 unequal bodies",
+   "inputs": "Rex 50 m at 1,000 kg/m³ (2.8125e6 kg); Rex at 30 kg/m³ (5.4 kg)",
+   "expected": "50 m: lying, H = 1.65487e7 N, s = 0.350263 m (smaller depth), held, Q = 194,532 J. Plush: H = 31.77 N, splat V = 45.135 m/s, Q = 5,677 J, moved 123.3 m; bounce Rex 90.27 m/s (slide 26.68 m), Ollie 43.78 m/s",
+   "reasoning": "Squash uses min(L_A, L_B). Plush μ = 5.2426 kg; Q ≈ ½μv² + footing term; bounce v_T = 2 × 180/185.4 × 46.49 = 90.27.",
+   "tolerance": "1e-3 relative"
+  },
+  {
+   "name": "C23/C24 gates",
+   "inputs": "Rex at 1.31e27 kg/m³ (black hole), Rex m = 1e22 kg",
+   "expected": "{planetScale} for both (the planet gate runs first on mass; isBlackHole is checked first in code, so expect blackHole when isBlackHole is true)",
+   "reasoning": "1e22 > 1e-3 M_E = 5.97e21. At 2 m the black-hole density is 1.3102e27 kg/m³: just above it (1.31e27 × 0.18 = 2.358e26 kg), isBlackHole may round either way. Use 2e27 kg/m³ to test the blackHole branch.",
+   "tolerance": "exact"
+  },
+  {
+   "name": "S1-S4 static push basics",
+   "inputs": "Default both friction; Rex braced; Ollie bolted vs Rex friction; both bolted",
+   "expected": "S1 stalemate at 1,059.12 N (both footing-limited, pusherSlips true). S2 objectHolds, contact 1,059.12 N, H = 301,059. S3 forceWins, net 888,585 N. S4 objectHolds, contact 889,644 N, rock rT = 0.12999 m, rC = 0.02661 m, tear 2.9655×, no crack-through",
+   "reasoning": "D_A = min(889,644, 1,059.12). The bolted pusher's D = F. rT = √(889,644/5.26531e7) = √0.016896. Tear = 889,644/300,000, matching the contest design's 2.97×.",
+   "tolerance": "1e-6 relative"
+  },
+  {
+   "name": "S5/S14/S6 rock thresholds",
+   "inputs": "Both bolted at dial 1e10 kg; 1e16 kg; 5.9722e24 kg",
+   "expected": "1e10: rT = 43.16 m, rC = 8.834 m, crackThrough. 1e16: rT = 43,157 m > 41,100 → beyondCrust. 5.9722e24: C = 5.8567e25 N ≥ 1.0997e25 → planet",
+   "reasoning": "C = dial × 9.80665. Crack-through threshold 5.2653e7 N (dial 5.37e6 kg); beyond-crust threshold 8.894e16 N (dial 9.07e15 kg).",
+   "tolerance": "1e-4 relative"
+  },
+  {
+   "name": "S7-S10 infinite strength in the push",
+   "inputs": "Both ∞ + bolted + comic ground; both ∞ + bolted + real ground; both ∞ on friction; Ollie ∞ bolted vs Rex friction",
+   "expected": "paradox (contact NaN); rockGives; stalemate at 1,059.12 N; forceWins with DA = ∞ (contact 1,059.12, net ∞)",
+   "reasoning": "∞ − ∞ is undefined. Real rock can't carry unlimited force. Footing caps infinite strength. ∞ against finite gives a light-speed shove (contest shove).",
+   "tolerance": "exact"
+  },
+  {
+   "name": "S11-S13 density and strength limits",
+   "inputs": "Normal Ollie vs neutron-star Rex (comic ground); strongmen (511 kg) with Rex at 300 kg; bolted strongman Ollie vs braced strongman Rex",
+   "expected": "S11 objectHolds, H = 4.3636e17 N (lying), gravityLock true (gravF 1.8155e9 N). S12 objectHolds: Rex holds 1,765.2 N vs Ollie's 1,059.12. S13 stalemate at 5,011.2 N (Rex strength-limited; claws could hold 301,059)",
+   "reasoning": "Heavier body means more friction. Standing hold = min(F, R).",
+   "tolerance": "1e-6 relative"
+  },
+  {
+   "name": "F_HALVES and the human-restitution energy range",
+   "inputs": "3 G M_E² / (16 R_E²); (1 − e²) for e = 0.1 and 0.5",
+   "expected": "1.09967e25 N; 0.99 and 0.75",
+   "reasoning": "Monte Carlo of the hemisphere attraction gave 0.1864 vs the analytic 0.1875 (G = M = R = 1).",
+   "tolerance": "1e-4 relative"
+  },
+  {
+   "name": "Render sweep",
+   "inputs": "Both modes × every source × anchor ∈ {friction, braced, bolted} × groundHolds × colImm × colInf × strength ∈ {511 kg, Hulk, Earth-bench, ∞} × density ∈ {30, 1000, 22587, 2.77e9, 4.12e17}",
+   "expected": "No exceptions; every displayed number is finite, or a defined '∞', 'unbounded' or 'undefined' label; no 'NaN' text",
+   "reasoning": "Guards in E10-E13.",
+   "tolerance": "exact"
+  }
+ ],
+ "open_questions": "1. The holder's strength cap. In a collision, should a standing holder resist with min(strength, footing), the contest design's rule used here, or with footing alone? His body is indestructible; folding legs only lengthen the squash. Using footing alone changes only rare cases, such as claws in granite with strength below 7.2 MN.\n2. Function names. The contest design's pushMatch/shove (walk-out and shove-off details for a Push 'force wins') and the density design's groundUnderWeight/fallsThrough are referenced by name. Confirm the final names when they are implemented. collide-ref.js has fallbacks.\n3. Squash setting. Should the owner get a 'How squishy' control (plush / stiffest real material / light-speed stiff) instead of the fixed 25% squash plus the chart? Only the force and time change, and the 'does he hold' test.\n4. Ollie's horns. They are mentioned only to say they don't change momentum or energy. A horn-tip pressure tile would need a horn tip area, which would be invented canon, so it is left out.\n5. Run-up air heating in relativistic runs is a rough drag-times-distance estimate. If the audit wants it sourced or removed, drop that bullet; nothing else depends on it.\n6. The partly-held bounce bound is the free result (an upper bound on his speed). A spring-plus-friction solution exists, but piecewise. It isn't worth it unless the audit flags it."
+}

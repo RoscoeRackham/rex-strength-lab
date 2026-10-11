@@ -1,0 +1,411 @@
+{
+ "method": "C: anthropometric segment scaling (ANSUR II mean man x de Leva/Dempster segment volumes x length ratio x width ratio x depth ratio) + tapered elliptical-cone tail",
+ "image": "/root/.claude/uploads/6435a7db-fe21-5f3b-bca9-e49ba2609387/89c1d7ad-image.jpg",
+ "density_kg_m3": {
+  "central": 1056,
+  "p5": 1043,
+  "p95": 1064,
+  "extreme_low": 1026,
+  "extreme_high": 1080
+ },
+ "rex": {
+  "volume_m3": {
+   "central": 2.339,
+   "mc_median": 2.329,
+   "p5": 2.06,
+   "p95": 2.629,
+   "p2_5": 2.013,
+   "p97_5": 2.686,
+   "depth_only_low": 2.05,
+   "depth_only_high": 2.569
+  },
+  "mass_kg": {
+   "central": 2470,
+   "mc_median": 2454,
+   "p5": 2170,
+   "p95": 2771,
+   "p2_5": 2120,
+   "p97_5": 2830
+  },
+  "segments_m3": {
+   "head": 0.0298,
+   "neck": 0.0226,
+   "crest": 0.002,
+   "upt": 0.4791,
+   "mpt": 0.289,
+   "lpt": 0.3585,
+   "pouches": 0.01,
+   "uarm": 0.1911,
+   "farm": 0.1267,
+   "hand": 0.0206,
+   "thigh": 0.1984,
+   "shank": 0.232,
+   "foot": 0.1715,
+   "tail_hidden": 0.1512,
+   "tail_visible": 0.0564
+  },
+  "segments_mc_p5_p50_p95": {
+   "head": [
+    0.0248,
+    0.0303,
+    0.037
+   ],
+   "neck": [
+    0.0163,
+    0.023,
+    0.032
+   ],
+   "crest": [
+    0.0014,
+    0.0023,
+    0.0035
+   ],
+   "upt": [
+    0.3829,
+    0.4691,
+    0.5742
+   ],
+   "mpt": [
+    0.2367,
+    0.2836,
+    0.3383
+   ],
+   "lpt": [
+    0.3023,
+    0.3579,
+    0.4227
+   ],
+   "pouches": [
+    0.0027,
+    0.0087,
+    0.0131
+   ],
+   "uarm": [
+    0.1621,
+    0.1924,
+    0.226
+   ],
+   "farm": [
+    0.1083,
+    0.1263,
+    0.1461
+   ],
+   "hand": [
+    0.0161,
+    0.0204,
+    0.0258
+   ],
+   "thigh": [
+    0.1628,
+    0.1972,
+    0.2355
+   ],
+   "shank": [
+    0.1931,
+    0.2243,
+    0.2594
+   ],
+   "foot": [
+    0.1473,
+    0.1781,
+    0.215
+   ],
+   "tail_hidden": [
+    0.1149,
+    0.1528,
+    0.2009
+   ],
+   "tail_visible": [
+    0.0445,
+    0.0561,
+    0.0696
+   ]
+  },
+  "foot_sole_m2": {
+   "central": 0.288,
+   "p5": 0.241,
+   "p95": 0.364
+  },
+  "height_px_crest": 792.0,
+  "height_px_skull": 758.5,
+  "m_per_px": 0.0038484848484848485,
+  "height_m_crest": 3.048,
+  "height_m_skull": 2.919,
+  "frontal_area_m2": 4.904,
+  "frontal_area_px": 331095
+ },
+ "ollie": {
+  "volume_m3": {
+   "central": 2.418,
+   "mc_median": 2.38,
+   "p5": 2.042,
+   "p95": 2.771,
+   "p2_5": 1.985,
+   "p97_5": 2.85,
+   "depth_only_low": 1.989,
+   "depth_only_high": 2.762
+  },
+  "mass_kg": {
+   "central": 2554,
+   "mc_median": 2507,
+   "p5": 2152,
+   "p95": 2922,
+   "p2_5": 2089,
+   "p97_5": 3003
+  },
+  "segments_m3": {
+   "head": 0.0518,
+   "neck": 0.0161,
+   "horns_ears": 0.002,
+   "upt": 0.5051,
+   "mpt": 0.3312,
+   "lpt": 0.6167,
+   "uarm": 0.1636,
+   "farm": 0.0773,
+   "hand": 0.0276,
+   "thigh": 0.2976,
+   "shank": 0.273,
+   "foot": 0.0503,
+   "tail": 0.006
+  },
+  "segments_mc_p5_p50_p95": {
+   "head": [
+    0.0427,
+    0.0523,
+    0.0637
+   ],
+   "neck": [
+    0.0112,
+    0.0167,
+    0.0241
+   ],
+   "horns_ears": [
+    0.0014,
+    0.0023,
+    0.0035
+   ],
+   "upt": [
+    0.4178,
+    0.5124,
+    0.6288
+   ],
+   "mpt": [
+    0.2649,
+    0.3245,
+    0.3952
+   ],
+   "lpt": [
+    0.4853,
+    0.5881,
+    0.7055
+   ],
+   "uarm": [
+    0.1355,
+    0.1608,
+    0.1907
+   ],
+   "farm": [
+    0.064,
+    0.0761,
+    0.0901
+   ],
+   "hand": [
+    0.0216,
+    0.0266,
+    0.0327
+   ],
+   "thigh": [
+    0.242,
+    0.2924,
+    0.349
+   ],
+   "shank": [
+    0.2251,
+    0.2655,
+    0.3115
+   ],
+   "foot": [
+    0.0409,
+    0.0512,
+    0.0632
+   ],
+   "tail": [
+    0.0047,
+    0.0063,
+    0.0081
+   ]
+  },
+  "foot_sole_m2": {
+   "central": 0.171,
+   "p5": 0.149,
+   "p95": 0.205
+  },
+  "height_px_horns": 794.0,
+  "height_px_hair": 783.0,
+  "height_px_skull": 773.0,
+  "height_m_horns": 3.056,
+  "height_m_hair": 3.013,
+  "height_m_skull": 2.975,
+  "height_m_horns_barefoot_est": 2.956,
+  "frontal_area_m2": 4.503,
+  "frontal_area_px": 302008
+ },
+ "proportions_width_over_skull_height": {
+  "bideltoid": {
+   "rex": 0.628,
+   "ollie": 0.589,
+   "ansur": 0.291,
+   "rex_x_ansur": 2.16,
+   "ollie_x_ansur": 2.03
+  },
+  "chest": {
+   "rex": 0.389,
+   "ollie": 0.375,
+   "ansur": 0.165,
+   "rex_x_ansur": 2.36,
+   "ollie_x_ansur": 2.28
+  },
+  "waist": {
+   "rex": 0.312,
+   "ollie": 0.414,
+   "ansur": 0.186,
+   "rex_x_ansur": 1.68,
+   "ollie_x_ansur": 2.23
+  },
+  "hip": {
+   "rex": 0.415,
+   "ollie": 0.479,
+   "ansur": 0.197,
+   "rex_x_ansur": 2.11,
+   "ollie_x_ansur": 2.43
+  },
+  "upper_arm": {
+   "rex": 0.174,
+   "ollie": 0.149,
+   "ansur": 0.065,
+   "rex_x_ansur": 2.67,
+   "ollie_x_ansur": 2.29,
+   "bb": 0.078,
+   "rex_x_bb": 2.22,
+   "ollie_x_bb": 1.91,
+   "pro": 0.095,
+   "rex_x_pro": 1.83,
+   "ollie_x_pro": 1.57
+  },
+  "forearm": {
+   "rex": 0.183,
+   "ollie": 0.116,
+   "ansur": 0.056,
+   "rex_x_ansur": 3.26,
+   "ollie_x_ansur": 2.07,
+   "bb": 0.061,
+   "rex_x_bb": 3.02,
+   "ollie_x_bb": 1.92
+  },
+  "thigh": {
+   "rex": 0.198,
+   "ollie": 0.212,
+   "ansur": 0.113,
+   "rex_x_ansur": 1.75,
+   "ollie_x_ansur": 1.87,
+   "bb": 0.118,
+   "rex_x_bb": 1.67,
+   "ollie_x_bb": 1.79,
+   "pro": 0.122,
+   "rex_x_pro": 1.62,
+   "ollie_x_pro": 1.74
+  },
+  "calf": {
+   "rex": 0.218,
+   "ollie": 0.223,
+   "ansur": 0.071,
+   "rex_x_ansur": 3.06,
+   "ollie_x_ansur": 3.13,
+   "bb": 0.075,
+   "rex_x_bb": 2.91,
+   "ollie_x_bb": 2.98,
+   "pro": 0.086,
+   "rex_x_pro": 2.52,
+   "ollie_x_pro": 2.58
+  }
+ },
+ "length_proportions": {
+  "crotch_height": {
+   "rex": 0.337,
+   "ollie": 0.337,
+   "ansur": 0.482
+  },
+  "trunk_C7_to_hip": {
+   "rex": 0.488,
+   "ollie": 0.498,
+   "ansur": 0.351
+  }
+ },
+ "sanity_kg": {
+  "avg_man_75kg_1p75m_at_3048": 396,
+  "avg_man_at_skull_2919": 348,
+  "ansur_mean_85p5kg_at_3048": 447,
+  "competitive_bb_80kg_1p73m_at_3048": 438,
+  "large_bb_115kg_1p80m_FFMI32_at_3048": 558,
+  "schwarzenegger_contest_107kg_1p88m_at_3048": 456,
+  "mass_monster_140kg_1p80m_at_3048": 680,
+  "rex_mean_depth_m": 0.477,
+  "ollie_mean_depth_m": 0.537
+ },
+ "human_reference": {
+  "Vh_L": {
+   "headneck": 5.347173643020776,
+   "neck": 1.258,
+   "head": 4.089173643020776,
+   "upt": 15.562061972286571,
+   "mpt": 14.649283960365896,
+   "lpt": 9.274782721205575,
+   "uarm": 2.1660740978171775,
+   "farm": 1.2260956931575273,
+   "hand": 0.44973805943671974,
+   "thigh": 11.533516735493805,
+   "shank": 3.397419649479253,
+   "foot": 1.065162032871587
+  },
+  "Vh_total_L": 84.50931483339096,
+  "Lh": {
+   "head": 0.231,
+   "neck": 0.1,
+   "upt": 0.21154549562796676,
+   "mpt": 0.21738325470868447,
+   "lpt": 0.146973272441092,
+   "uarm": 0.2841617765727908,
+   "farm": 0.2712499173603956,
+   "hand": 0.1932778049975502,
+   "thigh": 0.4125426261636453,
+   "shank": 0.41548358647721706,
+   "foot": 0.27117834394904455
+  },
+  "Wh": {
+   "head": 0.15433023027927487,
+   "headlen": 0.19950465458108768,
+   "neck": 0.12657559093169712,
+   "upt": 0.28944145026947576,
+   "mpt": 0.3084944526186091,
+   "lpt": 0.33622370542990393,
+   "uarm": 0.11399813956662064,
+   "farm": [
+    0.09869470167503439,
+    0.05599602714098251
+   ],
+   "hand": 0.08826139147476726,
+   "thigh": [
+    0.19898898460810113,
+    0.13028036866138645
+   ],
+   "shank": [
+    0.12486044493791648,
+    0.07300244631732326
+   ],
+   "foot": 0.10185913767760901,
+   "footh": 0.0729044585987261
+  },
+  "Hh": 1.7562146006859383,
+  "Mh": 85.52395884370407
+ }
+}

@@ -1,0 +1,764 @@
+Project: "Rex Super-Strength Lab", a single-page physics simulator for Rex, an indestructible, tireless plush kaiju-dinosaur (default 2 m tall, 180 kg). A strength dial sets his maximum force as a lift capacity from 10 kg to 1e34 kg, plus infinity. Moves today: lift, throw, jump, stomp, punch, clap, sprint, pull. Two muscle models: "comic" (fixed share of strength at any speed) and "real" (Hill force-velocity curve; limb speed caps). Settings: ground surface (sand, gravel, soft clay, stiff clay, asphalt, concrete, lake ice, steel deck, granite), "comic ground" (never breaks), anchoring (friction / claws dug in / bolted to the planet), height (isometric scaling) and mass.
+Read these before designing (do NOT edit anything under /home/user/dino-strength-sim; put scratch files in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/duo/):
+- /home/user/dino-strength-sim/src/engine.js: the physics engine (SI units; relativistic momentum helpers momentumToV/momentumToKE/vToMomentum; pushApart two-body push in comic or Hill mode; anchorCapacity footing model; fly() RK4 flight over a round Earth with drag and Kepler arcs; craterDiameter Collins et al.; blastRadius Kinney-Graham; seismicMagnitude; stagnationT; lift/throw/jump/stomp/punch/clap/sprint/pull).
+- /home/user/dino-strength-sim/src/app.html (the bay* functions show how results become page text), /home/user/dino-strength-sim/src/static-data.js (assumptions text), /home/user/dino-strength-sim/build-data.py (how sourced facts become the sources table).
+- Fact format used by the project: /home/user/dino-strength-sim/research/final-environment.json ("facts" entries with key, category, label, status in {verified, canon_stated, reported, estimate, claimed, disputed, not_quantified}, value_si, unit_si, low_si, high_si, display, sources [{title, url}], notes).
+NEW FEATURES being added (the owner's request): (1) "density and weight, and the effect that would have on the environment, like if Rex were the density of a neutron star"; (2) Rex's boyfriend Ollie, "equally as overpowered and indestructible", for two-person simulations: arm wrestling, regular wrestling, games of catch, unstoppable force vs immovable object. Ollie, from the owner's image, is a plush bull-man: horns, nose ring, leather vest, cargo pants, laced boots (no visible claws), about Rex's height and build. Do not invent other canon for him; default him to Rex's size, mass and strength, with his own adjustable settings.
+The owner is a professional critic: factual accuracy and honest labelling come first. Every number must be either sourced (fetch the source and confirm the number on the page; give the exact URL) or labelled an estimate with the reasoning. Prefer primary or authoritative sources (journals, textbooks, NASA/ESA, standards bodies). Never present speculation as fact; say what the model ignores. The page's tone is plain, specific and readable for a general audience (short sentences, no jargon without a gloss).
+
+Adversarially check this design for the area "Density and weight". Default to suspicion. (1) For EVERY fact: fetch the source URL and confirm the number and wording; mark ok=false with the correct value and a better source if wrong, unsupported, or mislabelled (e.g. an estimate called verified). (2) Re-derive every equation and recompute every test case independently (write scripts in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/duo/density-check/); report physics errors, wrong regimes, missing forces or effects, double counting, unit slips, and anything that would show a reader a false or misleading claim, with concrete fixes. (3) List what is missing for an honest, complete simulation of the brief. (4) Check that the page text never overstates certainty.
+
+BRIEF:
+Design a density control for Rex (and Ollie) and a new solo tab, "Weight", that shows what his density does to him and his surroundings just by standing there; also how mass changes the existing moves.
+Cover: (a) a log-scale density setting at fixed size with sourced reference presets: plush toy stuffing, a typical body (human body density), water, steel, osmium (densest element), white-dwarf matter, neutron-star / nuclear density, and the density at which Rex's own size equals his Schwarzschild radius (computed, not sourced). Give Rex's mass at each preset for the default 2 m body (volume 0.18 m^3 at 1,000 kg/m^3) and sourced comparison masses (e.g. ships, Phobos, Deimos, the Moon, Earth). (b) Can he stand, walk, jump at his strength setting given his weight? (c) Ground: foot pressure vs bearing (existing model); when he sinks a little, when he punches into rock, and when he falls through the planet. If he falls through Earth: a sourced real-Earth gravity profile and gravity-tunnel time (e.g. Klotz 2015, Am. J. Phys.), drag through rock with bearing strength plus inertia, damping per pass, Earth's rotation, and where he ends up; energy released. (d) Self-gravity: distance at which his gravity beats Earth's; his surface gravity and escape speed (treat his body as a sphere of equal volume, say so); tidal stretch on a person nearby; whether he holds an atmosphere (Jeans-type rule, sourced); the radius inside which air or rock falls onto him (Bondi radius; rock crushed where rock strength < rho G M / r); infall heating. (e) Where Rex's mass exceeds Earth's: Earth falls onto him instead; at the Schwarzschild threshold he is a black hole. (f) Honest caveat that neutron-star matter only stays that dense under a star's gravity; outside it would decompress violently (source it); in the sim his indestructibility holds it together. (g) Effects on existing moves: recoil and footing scale with mass; a thrown object must first escape his own gravity well (patched-conic: v_inf^2 = v^2 - 2GM/r_hand) and otherwise falls back onto him; jumps need force beyond his weight. (h) Mutual gravity between Rex and Ollie when both are dense: the force between them vs strength and footing (feeds the two-person sims).
+
+DESIGN:
+{
+ "area": "Density and weight. This covers the density control for Rex and Ollie, a new solo \"Weight\" tab, Rex's self-gravity, the ground under his own weight, falling through the Earth, planet-scale and black-hole limits, how his mass changes the existing moves, and Rex–Ollie mutual gravity for the two-player tests.",
+ "summary": "Density sets Rex's mass at his current size. Mass is density × 0.18 m³ at 2 m, and the volume scales with height cubed. The new Weight tab shows what that mass does while he simply stands there: whether his legs can move it, whether the ground holds or he sinks, and whether any rock can carry him at all. On concrete he stands up to 22,900 kg. His feet punch into granite above 1.56 × 10⁷ kg. Above 5.2 × 10⁷ kg (2.9 × 10⁸ kg/m³ at 2 m) no rock can hold him and he falls into the planet. That fall is integrated in 3-D through PREM's real gravity profile. Rock resists him with its strength plus its inertia, and Earth turns beneath him. A white-dwarf-dense Rex (5.0 × 10⁸ kg) sinks at up to 2 km/s and sticks in the solid inner core about 216 km from the centre after 1.9 hours. A neutron-star-dense Rex (7.4 × 10¹⁶ kg, about 7 Phobos masses) falls clean through in 38 minutes. He turns back about 3 m short of the far-side surface, 7.3° (810 km at the equator) west of the antipode. He then swings back and forth for roughly 5,000 years (2,000 to 30,000 depending on rock assumptions) before settling at the centre, releasing 3.6 × 10²⁴ J. His own gravity is computed by treating him as a ball of equal volume (35 cm radius at 2 m). It only matters above about 10¹⁰ kg. At neutron-star density it beats Earth's within 710 m, pulls in air from 43 m (the Bondi radius), crushes rock within about 8 m, and would let him hold an atmosphere. Above Earth's mass the planet falls onto him. At 39.5 Earth masses (1.31 × 10²⁷ kg/m³ at 2 m) he is a black hole. The same functions give the Rex–Ollie pull for the duo tests: 7.5 × 10²³ N at contact when both are neutron-star dense.",
+ "facts": [
+  {
+   "key": "density_plush_stuffing_estimate",
+   "label": "Plush toy stuffing (packed polyester fiberfill): density",
+   "status": "estimate",
+   "value_si": 30,
+   "unit_si": "kg/m^3",
+   "low_si": 10,
+   "high_si": 60,
+   "display": "~30 kg/m³ (estimate). Loose fiberfill batts measure 5.6–9.6 kg/m³; one commercial batting about 21 kg/m³.",
+   "sources": [
+    {
+     "title": "US Patent 4,395,455 (DuPont, 1983): Polyester fiberfill batting having improved thermal insulating properties",
+     "url": "https://patents.google.com/patent/US4395455A/en"
+    }
+   ],
+   "notes": "No measured density for stuffed-toy filling was found; only retail listings and vendor blogs turned up. The DuPont patent gives fiberfill batting layers of 0.35–0.60 lb/ft³ (0.0056–0.0096 g/cm³), describes denser fiberfill as 1.0 lb/ft³ (0.016 g/cm³) or more, and gives commercial 'Sontique' batting as about 1.3 lb/ft³ (0.021 g/cm³). A stuffed toy is packed firmer than loose batting, so the sim uses 30 kg/m³. That is our estimate, plausibly 15–60. It ignores the fabric skin. At 2 m it gives 5.4 kg."
+  },
+  {
+   "key": "density_human_body_measured",
+   "label": "Whole human body density (young adults, hydrostatic weighing)",
+   "status": "verified",
+   "value_si": 1060,
+   "unit_si": "kg/m^3",
+   "low_si": 1047.5,
+   "high_si": 1072.7,
+   "display": "1.048–1.073 g/mL (women ~1.05, men ~1.07)",
+   "sources": [
+    {
+     "title": "Tesch, Papadopoulos, Dolgener & Tinsley (2022), New Equations for Hydrostatic Weighing without Head Submersion, J Funct Morphol Kinesiol 7(3):70, Table 2",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9506326/"
+    }
+   ],
+   "notes": "Criterion head-under hydrostatic weighing of 90 + 45 adults aged 18–36. Males 1.0727 ± 0.0102 and 1.0662 ± 0.0187 g/mL; females 1.0528 ± 0.0134 and 1.0475 ± 0.0157 g/mL. These values have residual lung air removed; with full lungs a person floats. The sim's default Rex (1,000 kg/m³) is about 6% lighter than a person of the same volume. 1,060 is the midpoint, used as a comparison only."
+  },
+  {
+   "key": "density_water_4c",
+   "label": "Density of fresh water at 4 °C",
+   "status": "verified",
+   "value_si": 999.84,
+   "unit_si": "kg/m^3",
+   "low_si": 996.69,
+   "high_si": 1000,
+   "display": "0.9998395 g/mL at 4 °C (USGS table rounds to 1.00000)",
+   "sources": [
+    {
+     "title": "USGS Water Science School: Water Density",
+     "url": "https://www.usgs.gov/water-science-school/science/water-density"
+    }
+   ],
+   "notes": "The USGS table also lists 0.99802 at 21 °C and 0.99669 at 26.7 °C. The sim uses 1,000 kg/m³, Rex's default. That is BASE_V = 0.18 m³ for 180 kg at 2 m, already in engine.js."
+  },
+  {
+   "key": "density_structural_steel",
+   "label": "Density of structural steel",
+   "status": "verified",
+   "value_si": 7850,
+   "unit_si": "kg/m^3",
+   "low_si": 7850,
+   "high_si": 8005,
+   "display": "7,850 kg/m³ (490 lb/ft³); Eurocode unit weight 77.0–78.5 kN/m³",
+   "sources": [
+    {
+     "title": "Eurocode Applied: steel design properties (EN 1991-1-1 Table A.4; ρ ≈ 7850 kg/m³)",
+     "url": "https://cdn.eurocodeapplied.com/design/en1993/steel-design-properties"
+    },
+    {
+     "title": "Iowa DOT IM 569, Computing structural steel weight (mass): 'Steel 490 lb./ft.3 (7850 kg/m3)'",
+     "url": "https://ia.iowadot.gov/erl/archiveapril2015/IM/content/569.htm"
+    }
+   ],
+   "notes": "Divided by g, the 77.0–78.5 kN/m³ unit weight is 7,852–8,005 kg/m³. 7,850 matches the steel-deck surface already in data.js. A 2 m steel Rex weighs 1,413 kg."
+  },
+  {
+   "key": "density_osmium",
+   "label": "Density of osmium, the densest element, at 20 °C",
+   "status": "verified",
+   "value_si": 22587,
+   "unit_si": "kg/m^3",
+   "low_si": 22578,
+   "high_si": 22596,
+   "display": "22.587 g/cm³ (iridium 22.562), 20 °C",
+   "sources": [
+    {
+     "title": "Girolami (2012), Osmium weighs in, Nature Chemistry 4:954, doi:10.1038/nchem.1479",
+     "url": "https://www.nature.com/articles/nchem.1479"
+    },
+    {
+     "title": "Author PDF of the same essay",
+     "url": "https://girolami-group.chemistry.illinois.edu/publications/publications/Nature%20Chem.%202012,%204,%20954.pdf"
+    }
+   ],
+   "notes": "Quote: 'the current values, 22.587 (Os) and 22.562 (Ir) g cm–3 at 20 °C differ by only 0.1%.' The essay describes osmium as the densest known metal. A search snippet gave ±0.009 g/cm³ from a 2007 Platinum Metals Review article that was not opened. The sim uses this as the densest matter that exists at everyday pressure. A 2 m osmium Rex weighs 4,066 kg."
+  },
+  {
+   "key": "sirius_b_mass_radius",
+   "label": "Sirius B (white dwarf): mass and radius",
+   "status": "verified",
+   "value_si": 2.0222e+30,
+   "unit_si": "kg",
+   "low_si": 1.9725e+30,
+   "high_si": 2.0719e+30,
+   "display": "1.017 ± 0.025 M☉; radius 0.803 ± 0.011 R☉/100 (0.808 with the Gaia DR2 parallax)",
+   "sources": [
+    {
+     "title": "Joyce, Barstow, Casewell et al. (2018), The gravitational redshift of Sirius B, MNRAS 481:2361 (arXiv:1809.01240)",
+     "url": "https://arxiv.org/abs/1809.01240"
+    },
+    {
+     "title": "ESA/Hubble heic0516: 98% of the Sun's mass, 12,000 km diameter",
+     "url": "https://esahubble.org/news/heic0516/"
+    }
+   ],
+   "notes": "The mass comes from the measured gravitational redshift (80.65 ± 0.77 km/s) and the known radius. The radius 0.803 ± 0.011 R☉/100 is from the paper's text. M☉ = 1.9884 × 10³⁰ kg is the project's sun_mass fact; R☉ = 6.957 × 10⁸ m is the IAU nominal value."
+  },
+  {
+   "key": "density_white_dwarf_sirius_b_mean",
+   "label": "White-dwarf matter: Sirius B average density (computed)",
+   "status": "estimate",
+   "value_si": 2770000000,
+   "unit_si": "kg/m^3",
+   "low_si": 2150000000,
+   "high_si": 2800000000,
+   "display": "~2.8 × 10⁹ kg/m³ (2.8 tonnes per cm³), Sirius B's average",
+   "sources": [
+    {
+     "title": "Joyce et al. (2018), MNRAS 481:2361",
+     "url": "https://arxiv.org/abs/1809.01240"
+    },
+    {
+     "title": "ESA/Hubble heic0516",
+     "url": "https://esahubble.org/news/heic0516/"
+    }
+   ],
+   "notes": "Our calculation: 1.017 × 1.9884e30 kg divided by (4/3)π(0.00803 × 6.957e8 m)³ gives 2.77e9 kg/m³. ESA's rounded figures (98%, 12,000 km) give 2.15e9. The centre of a white dwarf is denser than its average. A 2 m white-dwarf Rex weighs 4.99 × 10⁸ kg, about 4.8 Nimitz-class carriers."
+  },
+  {
+   "key": "neutron_star_typical",
+   "label": "Typical neutron star: mass, radius, central density",
+   "status": "verified",
+   "display": "~1.5 M☉, radius ~12 km, central density up to 5–10 × n₀ (n₀ ≈ 0.16 fm⁻³)",
+   "sources": [
+    {
+     "title": "Lattimer & Prakash (2004), The Physics of Neutron Stars, Science 304:536 (arXiv:astro-ph/0405262)",
+     "url": "https://arxiv.org/abs/astro-ph/0405262"
+    }
+   ],
+   "notes": "Quote: 'a mass M on the order of 1.5 solar masses, a radius R of ~12 km, and a central density nc as high as 5 to 10 times the nuclear equilibrium density n0 ≃ 0.16 fm−3'."
+  },
+  {
+   "key": "density_neutron_star_mean",
+   "label": "Neutron star: average density (computed)",
+   "status": "estimate",
+   "value_si": 412000000000000000,
+   "unit_si": "kg/m^3",
+   "low_si": 300000000000000000,
+   "high_si": 710000000000000000,
+   "display": "~4.1 × 10¹⁷ kg/m³ (about 400 million tonnes per cm³); ~1.5 × an atomic nucleus",
+   "sources": [
+    {
+     "title": "Lattimer & Prakash (2004), Science 304:536",
+     "url": "https://arxiv.org/abs/astro-ph/0405262"
+    }
+   ],
+   "notes": "Our calculation: 1.5 × 1.9884e30 kg divided by (4/3)π(12,000 m)³ gives 4.12e17. The range covers 1.4 M☉ in 13 km (3.0e17) up to 2.0 M☉ in 11 km (7.1e17). A 2 m neutron-star Rex weighs 7.42 × 10¹⁶ kg, about 7.0 Phobos masses."
+  },
+  {
+   "key": "nuclear_saturation_density",
+   "label": "Nuclear saturation density (inside an atomic nucleus)",
+   "status": "verified",
+   "value_si": 270000000000000000,
+   "unit_si": "kg/m^3",
+   "display": "ρ₀ = 2.7 × 10¹⁴ g/cm³ (n₀ = 0.16 fm⁻³)",
+   "sources": [
+    {
+     "title": "Hebeler, Lattimer, Pethick & Schwenk (2010), Constraints on neutron star radii based on chiral effective field theory interactions, PRL 105:161102 (arXiv:1007.1746)",
+     "url": "https://arxiv.org/abs/1007.1746"
+    },
+    {
+     "title": "Lattimer & Prakash (2004)",
+     "url": "https://arxiv.org/abs/astro-ph/0405262"
+    }
+   ],
+   "notes": "Hebeler et al. give 'saturation density ρ0 = 2.7 × 10^14 g cm−3', defined as nucleon mass × baryon density. Check: 0.16 fm⁻³ × 1.675e-27 kg = 2.68e17 kg/m³. The sim uses it as a comparison row and as the threshold (10¹⁷ kg/m³ and above) for showing the neutron-matter caveat."
+  },
+  {
+   "key": "neutron_matter_energy_per_particle",
+   "label": "Energy stored in pure neutron matter at saturation density",
+   "status": "verified",
+   "value_si": 1559200000000000,
+   "unit_si": "J/kg",
+   "low_si": 1350000000000000,
+   "high_si": 1770000000000000,
+   "display": "16.3 ± 2.2 MeV per neutron (≈ 1.56 × 10¹⁵ J/kg ≈ 370 kt TNT per kg)",
+   "sources": [
+    {
+     "title": "Hebeler et al. (2010), PRL 105:161102",
+     "url": "https://arxiv.org/abs/1007.1746"
+    }
+   ],
+   "notes": "Quote: 'The inclusion of 3N forces leads to En(ρ0)/N = 16.3 ± 2.2 MeV'. With nucleon-nucleon forces only it is 10.4 MeV. The J/kg conversion is ours: 16.3 MeV × 1.602e-13 J/MeV / 1.6749e-27 kg. This is energy relative to free neutrons at rest, so it is released if the matter expands freely. Later beta decays and nuclear reactions add more. Treat it as a lower estimate for denser-than-ρ₀ matter."
+  },
+  {
+   "key": "neutron_star_matter_pressure_saturation",
+   "label": "Pressure of neutron-star matter at saturation density",
+   "status": "verified",
+   "value_si": 2.8e+32,
+   "unit_si": "Pa",
+   "low_si": 2.24e+32,
+   "high_si": 3.36e+32,
+   "display": "P(ρ₀) = 1.4–2.1 MeV fm⁻³ ≈ 2.2–3.4 × 10³² Pa (about 3 × 10²⁷ atmospheres)",
+   "sources": [
+    {
+     "title": "Hebeler et al. (2010), PRL 105:161102",
+     "url": "https://arxiv.org/abs/1007.1746"
+    }
+   ],
+   "notes": "Quote: 'for the values of the pressure we find, P(ρ0) = 1.4 − 2.1 MeV fm−3'. The conversion uses 1 MeV/fm³ = 1.602e32 Pa. This is the pressure that only a neutron star's gravity holds in. In the sim, Rex's indestructibility holds it."
+  },
+  {
+   "key": "neutron_star_matter_decompression",
+   "label": "What freed neutron-star matter does",
+   "status": "verified",
+   "display": "It expands, forms neutron-rich nuclear clusters, loses neutrons, then beta-decays toward r-process nuclei",
+   "sources": [
+    {
+     "title": "Lattimer, Mackie, Ravenhall & Schramm (1977), The decompression of cold neutron star matter, ApJ 213:225",
+     "url": "https://inspirehep.net/files/b46a0e2d39730f7ee382f8edaa0ac6c5"
+    }
+   ],
+   "notes": "Abstract: 'as the density falls below nuclear density, nuclear clusters are formed ... these nuclei lose neutrons to the external sea of neutrons ... when the β-decay time scale becomes shorter than the expansion time scale, β-decays take place'. The paper's motivating case is tidal disruption by a black hole. It does not give an explosion energy; the sim's energy figure comes from Hebeler et al. 2010."
+  },
+  {
+   "key": "gravitational_constant",
+   "label": "Newtonian constant of gravitation",
+   "status": "verified",
+   "value_si": 6.6743e-11,
+   "unit_si": "m^3 kg^-1 s^-2",
+   "display": "6.674 30(15) × 10⁻¹¹ m³ kg⁻¹ s⁻² (CODATA 2022)",
+   "sources": [
+    {
+     "title": "NIST CODATA: Newtonian constant of gravitation",
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?bg"
+    }
+   ],
+   "notes": "Used for Rex's and Ollie's own gravity. Earth itself keeps the engine's GM = 3.986004418e14."
+  },
+  {
+   "key": "schwarzschild_radius",
+   "label": "Schwarzschild radius (event-horizon radius of a non-spinning black hole)",
+   "status": "verified",
+   "display": "r_s = 2GM/c²; Earth's would be about 9 mm, the Sun's about 3.0 km",
+   "sources": [
+    {
+     "title": "Wikipedia: Schwarzschild radius",
+     "url": "https://en.wikipedia.org/wiki/Schwarzschild_radius"
+    }
+   ],
+   "notes": "Check: 2 × 3.986e14 / c² = 8.87 mm for Earth. The sim calls Rex a black hole when r_s ≥ the radius of a ball with his volume."
+  },
+  {
+   "key": "buchdahl_bound",
+   "label": "Buchdahl's limit: how compact a static body can be",
+   "status": "verified",
+   "display": "2GM/(Rc²) ≤ 8/9, so R ≥ 9/8 of the Schwarzschild radius (isotropic pressure, density not rising outward)",
+   "sources": [
+    {
+     "title": "Andréasson (2008), Sharp bounds on 2m/r of general spherically symmetric static objects, J. Diff. Eq. 245:2243 (arXiv:gr-qc/0702137)",
+     "url": "https://arxiv.org/abs/gr-qc/0702137"
+    },
+    {
+     "title": "Buchdahl (1959), General Relativistic Fluid Spheres, Phys. Rev. 116:1027",
+     "url": "https://link.aps.org/doi/10.1103/PhysRev.116.1027"
+    }
+   ],
+   "notes": "Andréasson's abstract: 'In 1959 Buchdahl obtained the inequality 2M/R ≤ 8/9 under the assumptions that the energy density is non-increasing outwards and that the pressure is isotropic.' The APS page itself was not readable. Andréasson shows the bound loosens toward 1 for materials allowed stronger stresses, which is how an indestructible Rex can get closer."
+  },
+  {
+   "key": "density_black_hole_rex_2m",
+   "label": "Density at which a 2 m Rex is a black hole (computed)",
+   "status": "estimate",
+   "value_si": 1.3102e+27,
+   "unit_si": "kg/m^3",
+   "display": "3c²/(8πGR²) = 1.31 × 10²⁷ kg/m³ at 2 m (mass 2.36 × 10²⁶ kg = 39.5 Earths); scales as 1/height²",
+   "sources": [
+    {
+     "title": "Wikipedia: Schwarzschild radius",
+     "url": "https://en.wikipedia.org/wiki/Schwarzschild_radius"
+    },
+    {
+     "title": "NIST CODATA G",
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?bg"
+    }
+   ],
+   "notes": "Computed, not sourced. R = (3 × 0.18/4π)^⅓ = 0.350263 m; setting r_s = R gives m = Rc²/2G = 2.358e26 kg. Other sizes: 0.4 m plush 3.28e28 kg/m³ (7.9 Earths); 50 m kaiju 2.10e24 kg/m³ (987 Earths). Buchdahl's limit is reached at 8/9 of this mass, 2.10e26 kg at 2 m."
+  },
+  {
+   "key": "phobos_mass",
+   "label": "Mass of Phobos",
+   "status": "verified",
+   "value_si": 10618000000000000,
+   "unit_si": "kg",
+   "display": "1.06 × 10¹⁶ kg (GM 0.0007087 ± 0.0000006 km³/s²)",
+   "sources": [
+    {
+     "title": "JPL Solar System Dynamics: Planetary satellite physical parameters",
+     "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+    },
+    {
+     "title": "NASA NSSDC Mars Fact Sheet (Phobos 10.6 × 10¹⁵ kg)",
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html"
+    }
+   ],
+   "notes": "Mass = GM/G = 7.087e5 / 6.6743e-11 = 1.062e16 kg. The JPL GM comes from the MAR097 ephemeris; the NSSDC table (updated 19 May 2025) agrees at 10.6e15."
+  },
+  {
+   "key": "deimos_mass",
+   "label": "Mass of Deimos",
+   "status": "verified",
+   "value_si": 1441000000000000,
+   "unit_si": "kg",
+   "display": "1.44 × 10¹⁵ kg (GM 0.0000962 ± 0.0000028 km³/s²)",
+   "sources": [
+    {
+     "title": "JPL Solar System Dynamics: Planetary satellite physical parameters",
+     "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+    }
+   ],
+   "notes": "9.62e4 / 6.6743e-11 = 1.441e15 kg. The NSSDC Mars fact sheet still lists an older 2.4e15 kg; the JPL value is newer and used here."
+  },
+  {
+   "key": "prem_density_polynomials",
+   "label": "PREM density profile of the Earth (polynomials in x = r/6371 km)",
+   "status": "verified",
+   "display": "Inner core 13.0885 − 8.8381x²; outer core 12.5815 − 1.2638x − 3.6426x² − 5.5281x³; lower mantle 7.9565 − 6.4761x + 5.5283x² − 3.0807x³; then 5.3197 − 1.4836x (5701–5771 km), 11.2494 − 8.0298x (to 5971), 7.1089 − 3.8045x (to 6151), 2.6910 + 0.6924x (to 6346.6), 2.900 (to 6356), 2.600 (to 6368), ocean 1.020 (g/cm³)",
+   "sources": [
+    {
+     "title": "Dziewonski & Anderson (1981), Preliminary reference Earth model, PEPI 25:297 (doi:10.1016/0031-9201(81)90046-7)",
+     "url": "https://doi.org/10.1016/0031-9201(81)90046-7"
+    },
+    {
+     "title": "GENIE PREM implementation (code listing of the PREM density polynomials)",
+     "url": "https://hep.ph.liv.ac.uk/~costasa/genie_doxygen/master/html/namespacegenie_1_1utils_1_1prem.html"
+    }
+   ],
+   "notes": "The coefficients were read from the GENIE code listing; the original paper is paywalled. They were checked by integrating them: mass 5.976e24 kg, g = 10.68 m/s² at the core-mantle boundary, 4.40 at the inner-core boundary, central pressure 364 GPa, and Earth's binding energy 2.490e32 J. All agree with the published PREM values (next fact) to 0.1%. The sim replaces the 3 km ocean layer with 2,600 kg/m³ crust because Rex starts on land."
+  },
+  {
+   "key": "prem_checkpoints",
+   "label": "PREM values used to check the integration",
+   "status": "verified",
+   "display": "Central pressure 363.852 GPa; inner/outer core boundary g 4.4002 m/s²; core–mantle boundary g 10.6823 m/s²; surface g 9.8156 m/s²; outer core liquid, inner core solid",
+   "sources": [
+    {
+     "title": "Rodríguez-Mozos & Moya (2022), Internal structure and magnetic moment of rocky planets, A&A, Table 1 'Earth physical characteristics according to PREM' (arXiv:2203.01065)",
+     "url": "https://arxiv.org/abs/2203.01065"
+    }
+   ],
+   "notes": "The same paper's text: 'the outer core is dominated by liquid Fe ... and the inner core, which is composed by crystalline solid Fe'. The sim therefore gives the outer core no strength."
+  },
+  {
+   "key": "gravity_tunnel_time",
+   "label": "Fall time straight through the Earth (gravity tunnel)",
+   "status": "verified",
+   "value_si": 2280,
+   "unit_si": "s",
+   "display": "38 minutes along a diameter with the real (seismic) density profile; 42 minutes for a uniform Earth",
+   "sources": [
+    {
+     "title": "Klotz (2015), The gravity tunnel in a non-uniform Earth, Am. J. Phys. 83:231 (arXiv:1308.1342)",
+     "url": "https://arxiv.org/abs/1308.1342"
+    }
+   ],
+   "notes": "Abstract: 'The time taken to fall along the diameter is found to be 38 rather than 42 minutes.' Our PREM integration gives 38 min 10 s (2,290 s) and a top speed of 9,916 m/s at the centre. The uniform-Earth value is 42.17 min."
+  },
+  {
+   "key": "earth_sidereal_rotation",
+   "label": "Earth's sidereal rotation period",
+   "status": "verified",
+   "value_si": 86164.2,
+   "unit_si": "s",
+   "display": "23.9345 h, so Ω = 7.2921 × 10⁻⁵ rad/s",
+   "sources": [
+    {
+     "title": "NASA NSSDC Earth Fact Sheet",
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"
+    }
+   ],
+   "notes": "Ω = 2π/(23.9345 × 3600). Anderson's Theory of the Earth, Table A-5, gives 7.2921 × 10⁻⁵ rad/s."
+  },
+  {
+   "key": "energy_earth_binding_prem_computed",
+   "label": "Earth's gravitational binding energy, integrated from PREM (check)",
+   "status": "estimate",
+   "value_si": 2.4904e+32,
+   "unit_si": "J",
+   "display": "2.49 × 10³² J (our integral of G M(r) dm / r over PREM)",
+   "sources": [
+    {
+     "title": "Dziewonski & Anderson (1981) via GENIE coefficients",
+     "url": "https://hep.ph.liv.ac.uk/~costasa/genie_doxygen/master/html/namespacegenie_1_1utils_1_1prem.html"
+    }
+   ],
+   "notes": "This reproduces the 2.49e32 J that data.js holds as 'claimed' (energy_earth_gravitational_binding). That row could cite this computation as an independent check."
+  },
+  {
+   "key": "walking_running_peak_vertical_force",
+   "label": "Peak vertical ground force in walking and running",
+   "status": "verified",
+   "value_si": 1.2,
+   "unit_si": "body weights",
+   "low_si": 1,
+   "high_si": 1.5,
+   "display": "Walking 1.0–1.5 × body weight (rising with speed); running 2.0–2.9 ×",
+   "sources": [
+    {
+     "title": "Nilsson & Thorstensson (1989), Ground reaction forces at different speeds of human walking and running, Acta Physiol Scand 136:217 (PubMed 2782094)",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/2782094/"
+    }
+   ],
+   "notes": "Abstract, read through the Europe PMC API: 'The peak amplitude of the vertical reaction force in walking and running increased with speed from approximately 1.0 to 1.5 b.w. and 2.0 to 2.9 b.w. respectively' (12 men, 1.0–3.0 m/s walking). The sim uses 1.2 for walking, which is our choice for normal pace."
+  },
+  {
+   "key": "bearing_factor_nq",
+   "label": "Bearing capacity factor N_q (depth term) for sand and gravel",
+   "status": "verified",
+   "value_si": 18.4,
+   "low_si": 18.4,
+   "high_si": 64.19,
+   "display": "N_q = 18.40 at φ = 30° (loose sand), 64.19 at φ = 40° (dense sand and gravel)",
+   "sources": [
+    {
+     "title": "USACE EM 1110-1-1905 Bearing Capacity of Soils (1992), Table 4-4 (Meyerhof, Hansen, Vesic factors)",
+     "url": "https://www.tugraz.at/fileadmin/user_upload/Institute/IAG/Files/18_Bearing_Capacity_of_Soils-USACE.pdf"
+    }
+   ],
+   "notes": "Same source and friction angles as the project's sand and gravel bearing facts. In the sim the soil above a sinking foot adds γ·D·N_q of strength. Shape and depth factors are left out, which slightly overstates the sinking."
+  },
+  {
+   "key": "atmosphere_retention_rule",
+   "label": "Rule of thumb for keeping an atmosphere",
+   "status": "verified",
+   "value_si": 6,
+   "display": "A gas evaporates if v_rms > v_esc/6, so a body keeps it if v_esc > 6 v_rms",
+   "sources": [
+    {
+     "title": "SFU PHYS 390 Lecture 9, Planetary atmospheres (text: Carroll & Ostlie ch. 18.3, 21.5)",
+     "url": "https://www.sfu.ca/~boal/390lecs/390lec9.pdf"
+    }
+   ],
+   "notes": "Quote: 'It is found that vrms > vesc/6 is good enough for the atmosphere to evaporate.' Other teaching sources use 6× the mean speed, or a stricter 10× for billions of years; those were seen only in search snippets. It is a rule of thumb. Air at 288.15 K: v_rms = √(3 × 287.05 × 288.15) = 498 m/s, so the threshold is 2,989 m/s."
+  },
+  {
+   "key": "bondi_radius_and_rate",
+   "label": "Bondi accretion: radius and rate",
+   "status": "verified",
+   "display": "r_B = GM/c_s²; Ṁ = 2πG²M²ρ∞/(c∞² + v∞²)^(3/2)",
+   "sources": [
+    {
+     "title": "Edgar (2004), A review of Bondi–Hoyle–Lyttleton accretion, New Astron. Rev. 48:843 (arXiv:astro-ph/0406166), eqs. 30–31",
+     "url": "https://arxiv.org/abs/astro-ph/0406166"
+    }
+   ],
+   "notes": "Inside r_B, gas 'becomes supersonic and moves towards a freefall solution'. Eq. 31 is Bondi's interpolation formula; at rest it is 2πG²M²ρ/c³. The same review reports simulations in which heating and radiation pressure cut the rate far below the Bondi–Hoyle prediction, so the sim labels the rate an upper bound."
+  },
+  {
+   "key": "iau_nominal_solar_radius",
+   "label": "Nominal solar radius",
+   "status": "verified",
+   "value_si": 695700000,
+   "unit_si": "m",
+   "display": "1 R☉ = 6.957 × 10⁸ m",
+   "sources": [
+    {
+     "title": "IAU 2015 Resolution B3 (arXiv:1510.07674)",
+     "url": "https://arxiv.org/abs/1510.07674"
+    }
+   ],
+   "notes": "Used to turn Sirius B's radius into metres."
+  },
+  {
+   "key": "stevenson_core_probe",
+   "label": "Stevenson's proposal: sinking a probe to Earth's core in molten iron",
+   "status": "verified",
+   "display": "10⁸–10¹⁰ kg of molten iron; about a week to reach the core",
+   "sources": [
+    {
+     "title": "Stevenson (2003), Mission to Earth's core: a modest proposal, Nature 423:239 (Caltech record)",
+     "url": "https://authors.library.caltech.edu/39229"
+    }
+   ],
+   "notes": "Comparison only. Stevenson's mass sinks by cracking the rock open (molten iron in a crack), which is a different mechanism from Rex shoving rock aside. A 10⁸ kg Rex in the sim takes about 2.8 hours to stick at the inner core."
+  },
+  {
+   "key": "earth_surface_heat_flow",
+   "label": "Earth's total surface heat flow",
+   "status": "verified",
+   "value_si": 47000000000000,
+   "unit_si": "W",
+   "low_si": 45000000000000,
+   "high_si": 49000000000000,
+   "display": "47 ± 2 TW",
+   "sources": [
+    {
+     "title": "Davies & Davies (2010), Earth's surface heat flux, Solid Earth 1:5",
+     "url": "https://se.copernicus.org/articles/1/5/2010/"
+    }
+   ],
+   "notes": "Comparison for the average heat a settling neutron-star Rex dumps into the planet: about 23 TW over ~5,000 years."
+  },
+  {
+   "key": "deep_rock_strength_assumption",
+   "label": "Strength of rock against a body pushed through it, at any depth (sim assumption)",
+   "status": "estimate",
+   "value_si": 1700000000,
+   "unit_si": "Pa",
+   "low_si": 100000000,
+   "high_si": 4100000000,
+   "display": "1.7 GPa in all solid layers (crust, mantle, inner core); 0 in the liquid outer core",
+   "sources": [
+    {
+     "title": "Project fact ground_granite_ultimate_bearing_small_punch (USACE EM 1110-1-2908; Hoek)",
+     "url": "https://www.cedengineering.com/userfiles/Rock%20Foundations-R1.pdf"
+    },
+    {
+     "title": "Rodríguez-Mozos & Moya (2022): liquid outer core, solid inner core",
+     "url": "https://arxiv.org/abs/2203.01065"
+    }
+   ],
+   "notes": "Our assumption. The surface granite bearing value is reused everywhere because no measurement exists for rock resisting a body at these depths and speeds. Deep rock is hotter, which weakens it, and far more confined, which strengthens it. The 3-D integration shows that only bodies within a few times the fall-through threshold, and the late phase of settling, depend on this number. For a neutron-star Rex, 0.1–4.1 GPa moves the settling time between about 2,200 and 29,000 years."
+  }
+ ],
+ "inputs": "From the page state:\n- Rex: state.H (0.1–500 m), state.m (kg; density = state.m / P.bodyVolume(state.H)), strength F = 10^state.logKg × g (or Infinity when state.inf), state.mode (only used for the jump chip), state.surface, state.groundHolds (comic ground), state.anchor. In the Weight tab, anchor changes nothing: \"bolted\" stops sliding but not sinking, as in the Lift tab.\n- Ollie (duo tests, mutual gravity only): state.oH, state.oM, and his own strength.\n- Latitude is fixed at 0° (equator). There is no new control; the page says so.\n\nFrom engine.js (existing): K.g, K.GM, K.R_E, K.c, K.rho0, K.a0, K.T0, K.PONCELET_K (=1), K.TNT_J_per_kg, K.EARTH_BIND, P.bodyVolume(H) (0.18 m³ × (H/2)³), makeBody → {H, s, m, volume, rho, footArea (0.045 s²), footB, topArea (0.3 s²), digArea}, P.qultFor(surface, B), P.stagnationT(v), P.jump(ctx), P.throwOnce/throwObject, P.lift, MUSCLE.jump.forceFrac (1.4).\n\nNew constants (put in K):\n- G = 6.6743e-11\n- M_E = 5.9722e24\n- OMEGA_E = 2π/(23.9345 × 3600) = 7.29212e-5 rad/s\n- SIGMA_ROCK = 1.7e9 Pa\n- RHO_ROCK = 2700 kg/m³\n- UCS_ROCK = 2.0e8 Pa\n- R_AIR = 287.0528 J/(kg K)\n- NQ = {sand: 18.40, gravel: 64.19}\n- WALK_LOAD = 1.2\n- JEANS = 6\n- E_NM = 1.5592e15 J/kg (16.3 MeV per neutron mass)\n- P_NM = [2.24e32, 3.36e32] Pa\n- RHO_OSMIUM = 22587\n- RHO_NM_CAVEAT = 1e17 (show the neutron-matter caveat at or above this)\n- M_RESHAPE = 1e-3 × M_E = 5.9722e21 kg\n- Person used for tidal stretch: L = 1.8 m (illustrative).\n- Rex's hand: the throw starts at r0 = max(R, 0.25 H) from his middle; held objects sit at r_l = 0.5 H + L_o/2.\n\nNew data (build-data.py → data.js):\n- D.densities: [{id, chip, short, rho, note, keys}]:\n  - plush: 30, chip 'Plush'\n  - water: 1000, chip 'Water (default)'\n  - human: 1060, chip null (comparison only)\n  - steel: 7850, chip 'Steel'\n  - osmium: 22587, chip 'Osmium'\n  - whitedwarf: 2.77e9, chip 'White dwarf'\n  - nucleus: 2.7e17, chip null\n  - neutronstar: 4.12e17, chip 'Neutron star'\n  - The app appends a computed chip 'Black hole' with rho = P.blackHoleDensity(state.H). densityControl must skip entries with chip == null.\n- D.massRefs for the mass chart: Deimos 1.441e15, Phobos 1.062e16 (new); reuse D.objects masses for bowling ball, piano, car, tank, Titanic, Nimitz, Empire State, Great Pyramid, Everest, the sky (5.1e18), Moon, Earth, Sun.",
+ "equations": "All values are SI. \"Default\" means the 2 m, 180 kg body; \"NS\" means 4.12e17 kg/m³ (m = 7.416e16 kg); \"WD\" means 2.77e9 kg/m³ (m = 4.986e8 kg).\n\nE1 Size, mass and density\nV(H) = 0.18 (H/2)³ m³ (P.bodyVolume). m = ρV and ρ = m/V. Equal-volume radius R = (3V/4π)^⅓ = 0.350263 m at 2 m. Every self-gravity number treats him as a uniform ball of this radius, and as a point mass outside it. The page says so.\n\nE2 Weight\nW = m g (g = 9.80665). Valid while m ≪ M_E; above 1e-3 M_E the sim switches to the planet regimes (E18).\n\nE3 Can he move his own weight?\nHis legs push at most F_leg = 1.4 F. That is MUSCLE.jump.forceFrac, the share the jump already uses; comic mode never does worse than real, so 1.4 F applies in both modes.\n- Get up / stand up: F_leg ≥ W, i.e. lift ≥ m/1.4.\n- Walk: F_leg ≥ 1.2 W, i.e. lift ≥ 0.857 m. Each step puts 1.0–1.5 W on one leg (Nilsson & Thorstensson 1989).\n- Run: F > W, the existing Sprint rule.\n- Jump: P.jump(ctx).v > 0. The engine already pushes against (m − feet) g.\n- Standing still needs no muscle: his indestructible body carries the load.\nDefault: stand needs 128.6 kg lift, walk 154.3 kg, run 180 kg. This is pessimistic for weak strengths (real near-straight legs are stronger than at the bottom of a squat), which does not matter on a log scale of super-strength.\n\nE4 Pressure on the ground\n- Feet: p1 = W / (2 A_foot), with A_foot = 0.045 s².\n- Whole underside: p2 = W / A_b, with A_b = topArea = 0.3 s².\n- Surface limit: q0f = qultFor(surface, footB). Under the body: q0b = qultFor(surface, √A_b). Granular soils grow ∝ B; others are constant.\n- Default: p1 = 1765.2 / 0.09 = 19,613 Pa.\n\nE5 Sinking a little: two stages\nSand and gravel: q(D) = q0 + γ D N_q, with γ = ρ_soil g; N_q = 18.40 for sand (φ 30°), 64.19 for gravel (φ 40°).\nClays: q(D) = q0 + γ D. This counts only the weight of soil above (no Skempton depth factor), so it is conservative.\n- Stage 1, feet: D1 = (p1 − q0f) / (γN). Stop if D1 ≤ 0.45 H (leg length).\n- Stage 2, whole underside: D2 = max(0.45 H, (p2 − q0b) / (γN)). If D2 ≤ H he is in to his hips or chest. If D2 > H he is out of sight: he goes down through the soil to bedrock, at a depth the sim cannot know.\n- Thin layers (asphalt, the 10 cm slab, lake ice, steel deck): if p1 > q0 he punches through into whatever is below. Below ice he sinks to the lake bottom, because he is denser than water whenever p1 > 5 MPa.\n- Granite: if p1 > 1.7 GPa but p2 ≤ 1.7 GPa, his feet punch in and he stops at D = 0.45 H.\n\nE6 Falls through the planet\nW > σ_rock A_b = 1.7e9 × 0.3 s² N. At 2 m that is m > 5.2006e7 kg, i.e. ρ > 2.889e8 kg/m³; at 50 m, ρ > 1.156e7. This check comes before the surface checks, because the rock under any soil cannot hold him either.\n\nE7 PREM gravity\nρ(r) is the polynomial for the layer containing r (x = r/6371 km; table in facts; top 3 km set to 2,600).\n- Mass inside r, closed form per layer: M(r) = Σ_layers 4π Σ_k 1000 a_k R_E^−k (r2^(k+3) − r1^(k+3)) / (k+3).\n- g(r) = K.GM × [M(r)/M_PREM] / r², normalised so g(R_E) = K.GM/R_E² = 9.8203.\n- Φ(r) − Φ(R_E) = −∫_r^R g dr: a 1 km Simpson table, plus analytic in the inner core:\n  Φ_ic(r) = 4πG·s·1000 (13.0885 r²/6 − 8.8381 r⁴/(20 R_E²)) + const, with s = K.GM/(G M_PREM).\n- Checks: g(3480 km) = 10.683; g(1221.5 km) = 4.401; Φ(R) − Φ(0) = 4.9164e7 J/kg; v_max = √(2 × 4.9164e7) = 9,916 m/s; diameter fall time 38 min 10 s (Klotz: 38 min); central pressure 364.1 GPa (published 363.85); binding energy 2.4904e32 J.\n\nE8 Motion through the Earth\nUse a non-spinning frame with the origin at Earth's centre and z along the spin axis; Ω = 7.29212e-5 rad/s. The rock moves at Ω × r. His velocity relative to the rock is u = v − Ω × r = (vx + Ω y, vy − Ω x, vz).\na = −g(r) r̂ + (ρ(r) V/m) g(r) r̂ − (k ρ(r) A_b / m) |u| u − (strength impulse, E9).\n- The second term is buoyancy; the third is inertial drag with k = K.PONCELET_K = 1. This is the same Poncelet/cavity-expansion form the engine uses for stomps (penetrationDepth) and jumps (cB).\n- Start at latitude 0: r0 = (R_E, 0, 0), v0 = Ω × r0 = (0, 465.1, 0) m/s.\n\nE9 Rock strength as friction\nRock strength σ(r) = 1.7 GPa in solid layers, 0 in the outer core (1,221.5–3,480 km). It acts against u with magnitude σ A_b, but never reverses u. After each step: u ← u × max(0, 1 − σ A_b dt / (m |u|)).\nHe is stuck for good when u = 0 and |m − ρ(r) V| g(r) ≤ σ A_b. Rotation terms (≤ 0.34% of g at the surface) are ignored in that check.\n\nE10 Long-term settling (orbit average)\nUsed when the first trip loses little energy. Treat each half-trip as straight through the centre with amplitude A (outermost radius).\n- v²(r) = 2 [Φ(A) − Φ(|r|)]\n- Loss per half-trip: ΔE(A) = ∫_{−A}^{A} A_b [σ(r) + k ρ(r) v²] dr\n- Duration: T(A) = ∫ dr / v\n- Energy: E(A) = m [Φ(A) − Φ(0)], so dE/dA = m g(A)\n- Half-trips: N = ∫_{r_stop}^{R_E} m g(A) (1 − ρV/m) / ΔE(A) dA; time t = ∫ T(A) dN.\n- Rest radius r_stop: the largest solid-layer r with (m − ρV) g(r) ≤ σ A_b. NS: 1.88 mm. WD: 280 km.\n- Quadrature uses r = A sin θ with θ in (−π/2, π/2). Validated against full 3-D runs: m = 1e10 kg 5.6 h vs 6.1 h; 3e10 kg 17.2 vs 17.5 h; 1e11 kg 57.9 vs 58.8 h.\n\nE11 Energy released into the planet\nE = m [Φ(R_E) − Φ(r_end)].\n- NS: 7.416e16 × 4.9164e7 = 3.646e24 J (8.7 × the Chicxulub value 4.2e23).\n- WD, stopping at 216 km: 2.45e16 J (5.8 Mt).\n- Per first trip (NS): ΔE(R_E) = 2.373e18 J (567 Mt, 11 × Tsar Bomba). That is m g × 3.26 m, which is why he turns back about 3 m short.\n\nE12 His own gravity (equal-volume ball)\nGM_R = G m. Surface gravity g_s = G m / R². Escape speed v_esc = min(c, √(2 G m / R)).\nHis pull beats Earth's within d_beat = √(G m / g); this only matters when d_beat > R, i.e. m > g R²/G = 1.80e10 kg at 2 m.\nSomething dropped from rest at distance d0 (centre to centre, his pull only):\n- speed on arrival: v = √(2 G m (1/R − 1/d0))\n- time: t = √(d0³ / (2 G m)) [√(x(1−x)) + arccos √x], with x = R/d0.\nNS: GM = 4.9497e6; g_s = 4.0345e7 m/s² (4.11 million g); v_esc = 5,316 m/s; d_beat = 710.4 m; from 10 m an object arrives in 15.7 ms at 5,222 m/s.\nDefault: g_s = 9.79e-8 m/s²; v_esc = 0.26 mm/s; d_beat = 35 µm, which is inside him.\n\nE13 Tidal stretch on a person (L = 1.8 m, lying along the line to him)\nΔa(d) = G m [1/(d − L/2)² − 1/(d + L/2)²], with d ≥ R + L/2. Far away, Δa ≈ 2 G m L / d³.\nd_1g is where Δa = g, found by bisection; it is 0 if Δa(R + L/2) < g.\nThe pull through the person's middle is about m_p Δa / 8 for a uniform body.\nNS: d_1g = 122.0 m (far-field check (2 × 4.9497e6 × 1.8 / 9.80665)^⅓ = 122.0); at 10 m, Δa = 1,847 g.\n\nE14 Air falling onto him\nBondi radius r_B = G m / c_s², c_s = K.a0 = 340.29 m/s. Rate (upper bound) Ṁ = 2π G² m² ρ0 / c_s³. Heat per kg arriving = G m / R. Power = Ṁ G m / R. Arrival temperature = P.stagnationT(v_esc) (sea-level stagnation table, an upper bound), shown only if v_esc < 0.01 c.\nNS: r_B = 42.74 m; Ṁ = 4.785e6 kg/s; 1.413e7 J/kg; 6.76e13 W; about 7,460 K.\nAir falls in only when r_B > R, i.e. m > 6.08e14 kg at 2 m.\n\nE15 Holding an atmosphere (alone in space, 288 K)\nHe holds air if v_esc > 6 v_rms, with v_rms = √(3 R_air T0) = 498.1 m/s.\nAt 2 m: m > (6 v_rms)² R / (2G) = 2.344e16 kg (ρ > 1.30e17). NS: yes (5,316 > 2,989).\n\nE16 Rock crushed by his pull\nThe weight of rock around a point mass gives pressure P(r) = ρ_rock G m / r. Rock fails where P > σ, i.e. within r_crush = ρ_rock G m / σ.\nWith σ = 1.7 GPa (rock hemmed in, the sim's rock value): NS r_crush = 2700 × 4.9497e6 / 1.7e9 = 7.86 m.\nLoose surface rock (σ = UCS 200 MPa) fails 8.5× farther out: 66.8 m.\nr_crush = R_E at m = 6.0e22 kg, about 0.01 M_E.\n\nE17 Black hole\nr_s = 2 G m / c². He is a black hole if r_s ≥ R, i.e. ρ ≥ ρ_BH(H) = 3c² / (8π G R²).\n- 2 m: 1.3102e27 kg/m³, m = 2.3583e26 kg (39.49 M_E)\n- 0.4 m: 3.275e28\n- 50 m: 2.096e24\nBuchdahl flag: r_s > (8/9) R, i.e. m > 0.889 m_BH. Ordinary matter with isotropic pressure cannot stay static there; the sim lets his indestructibility hold until the horizon.\n\nE18 Planet regimes\n- 'reshapes' when M_RESHAPE ≤ m < M_E (r_crush ≳ 0.1 R_E).\n- 'earthFalls' when m ≥ M_E. Earth's surface falls onto him in t_ff = (π/2) √(R_E³ / (2 G (m + M_E))). At m = M_E that is 632.6 s; at the black-hole Rex (2.358e26 kg) it is 140.6 s.\n- Energy released, order of magnitude: E ≈ G m M_E / R_E. For the black-hole Rex this is 1.475e34 J, 59 × Earth's binding energy.\n\nE19 Neutron-matter caveat (ρ ≥ 1e17)\nE_release ≥ m × 1.5592e15 J/kg. NS: 1.156e32 J, 0.46 × Earth's binding energy. Pressure that must be held in: 2.2–3.4e32 Pa.\n\nE20 Effects on the existing moves\nMass already enters every move through body.m. Dempster segment masses scale with m, so a ρ-times-denser Rex needs ρ-times the strength to move his own limbs the same way. Recoil falls and friction footing (μ m g) rises with m. These need no new code.\nNew code is needed only for self-gravity, applied when G m / (0.5 H)² ≥ 1e-3 g (m ≥ 1.47e7 kg at 2 m):\n- Lift: object weight W_o = m_o (g + G m / r_l²), with r_l = 0.5 H + L_o/2 and L_o = obj.L || ∛(m_o/ρ_o). For example, an NS Rex holding a Corolla overhead: r_l = 2.134 m, g_s = 1.087e6, W_o = 1.457e9 N.\n- Throw, holding check: needed = hypot(m_B g, m_o G m / r_l²) ≤ F_drive.\n- Throw, escape: after throwOnce gives v, v_out² = v² − 2 G m / r0, with r0 = max(R, 0.25 H). This exactly accounts for the pull during the stroke and after release when the push does the same work (comic mode; it is approximate for real muscle). If v_out² ≤ 0 the object never gets away: it falls back onto him. Otherwise fly() with v_out (patched conic: his well, extent ~d_beat, is crossed in under a second).\n  NS: escape needs v > √(2 × 4.9497e6 / 0.5) = 4,450 m/s. Real muscle tops out at 84.6 m/s for a baseball, so nothing he throws escapes. In comic mode a baseball gets away above 1.47e21 kg of lift.\n- Jump: no change; his pull on the ground and Earth's pull on him are the same pair of forces. Gated per E18 and the ground regime.\n\nE21 Rex–Ollie gravity (duo tests)\nF = G mA mB / d², with d ≥ dc = R_A + R_B (equal-volume balls touching).\n- Binding at contact: G mA mB / dc.\n- Each body's footing (friction μ m g) slips when d < √(G m_other / (μ g)). The pull equals one body weight at d = √(G m_other / g).\n- Falling together from d0: radial Kepler with M = mA + mB:\n  t = √(d0³/(2GM)) [√(x(1−x)) + arccos √x], x = dc/d0; v = √(2GM (1/dc − 1/d0)).\n- Catch: the ball must cross the saddle of Φ(x) = −G mA/x − G mB/(d − x) at x* = d/(1 + √(mB/mA)). Need ½ v0² ≥ Φ(x*) − Φ(r0). Arrival speed: ½ v_f² = ½ v0² + Φ(r0) − Φ(x_catch).\nNS pair:\n- dc = 0.7005 m; F = 7.480e23 N (1.03 million × each weight; separating needs 7.63e22 kg of lift)\n- E_bind = 5.240e23 J; equal-weight distance 710.4 m; footing slips (μ 0.6) within 917 m\n- from 10 m apart they meet in 11.1 ms at 5.13 km/s, releasing 4.87e23 J\n- at 10 m, a ball released 0.5 m from Rex needs 4,109 m/s and arrives at Ollie at the same speed\nDefault pair: 4.41e-6 N, the weight of 0.45 mg.",
+ "algorithm": "A working prototype of everything below is at /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/duo/density/calc/weight.js. The test values come from final.js in the same folder; prem.js has the independent PREM integration. Port weight.js into engine.js inside the IIFE and export the functions.\n\n1. Constants. Add to K: G, M_E, OMEGA_E, SIGMA_ROCK, RHO_ROCK, UCS_ROCK, R_AIR, NQ, WALK_LOAD, JEANS, E_NM, P_NM, RHO_OSMIUM, M_RESHAPE. Define LEG_SHARE = MUSCLE.jump.forceFrac.\n\n2. PREM module.\n   - Store PREM as an array of [rTop m, [a0..a3] g/cm³, solid]:\n     [1221.5e3, [13.0885, 0, −8.8381, 0], true], [3480e3, [12.5815, −1.2638, −3.6426, −5.5281], false], [5701e3, [7.9565, −6.4761, 5.5283, −3.0807], true], [5771e3, [5.3197, −1.4836, 0, 0], true], [5971e3, [11.2494, −8.0298, 0, 0], true], [6151e3, [7.1089, −3.8045, 0, 0], true], [6346.6e3, [2.6910, 0.6924, 0, 0], true], [6356e3, [2.9, 0, 0, 0], true], [6371e3, [2.6, 0, 0, 0], true].\n   - premLayer(r) is a linear scan. premRho(r) evaluates the cubic with x = r/K.R_E, × 1000.\n   - shellMass(a, r1, r2) is the closed form in E7. Precompute cumulative layer masses and M_PREM. premMassFrac(r) = (cum[i] + shellMass(a_i, r_{i−1}, r)) / M_PREM.\n   - premG(r) = K.GM × premMassFrac(min(r, R_E)) / r², with premG(0) = 0.\n   - Φ table: PHI[i] at i km (i = 0…6371), with PHI[6371] = 0 and PHI[i] = PHI[i+1] − Simpson(g over [i, i+1] km). premPhi(r): r ≥ R_E → K.GM/R_E − K.GM/r; r ≤ 1221.5 km → PHI0 + Φ_ic(r) (analytic, E7, with PHI0 matched at 1221.5 km); else interpolate the table linearly. The table costs about 20k premG calls once at load.\n\n3. bodyGravity(body) returns, with R = cbrt(3 body.volume / 4π) and GM = K.G m:\n   - {GM, R, gSurf, vEsc (min c), dBeat, beatsOutside (dBeat > R)\n   - rBondi = GM/K.a0², bondiOutside, bondiRate (only if bondiOutside), heatPerKg = GM/R, infallPower\n   - infallT = vEsc < 0.01c ? P.stagnationT(vEsc) : Infinity\n   - holdsAir = vEsc > 6 √(3 K_R_AIR K.T0)\n   - rCrush = RHO_ROCK·GM/SIGMA_ROCK, rCrushUnconfined = RHO_ROCK·GM/UCS_ROCK\n   - tidal1g (E13 bisection on [R + 0.9, 1e12]; 0 if Δa(R + 0.9) < g)\n   - rs = 2GM/c², blackHole (rs ≥ R), buchdahl (rs > 8R/9)\n   - decompJ = body.rho ≥ 1e17 ? m E_NM : 0}\n   Also export blackHoleDensity(H) = 3c²/(8πG R(H)²) and infallFrom(GM, R, d0) → {t, v}.\n\n4. moveCheck(F, m) → {weight, legForce: 1.4F, stand: 1.4F ≥ W, walk: 1.4F ≥ 1.2W, run: F > W, standNeedKg: m/1.4, walkNeedKg: 1.2m/1.4, runNeedKg: m}. F = Infinity makes all three true. The app adds P.jump(ctx) for the jump chip.\n\n5. groundUnderWeight(body, surface, groundHolds), implementing E4–E6, in this order:\n   - groundHolds → 'comic'\n   - W > SIGMA_ROCK·topArea → 'fallsThrough'\n   - p1 ≤ q0f → 'stands'\n   - sand/gravel/softclay/stiffclay → two-stage depth (E5): 'sinks' {sink, stage: 'feet' | 'body'} or 'outOfSight'\n   - granite → 'sinks' {sink: 0.45H, stage: 'rock'}\n   - else → 'punchesThrough' {layer}\n   Return {regime, weight, footPressure, bodyPressure, q0, standRatio, rockRatio, sink, stage, legLength}. Map surfaces by id (sand→NQ.sand, gravel→NQ.gravel, clays→1). If new surfaces arrive later, add a \"kind\" field to D.surfaces rather than keying on ids.\n\n6. fallThrough(body, {latDeg = 0, tMax = 2 days, record}).\n   - State s = [x, y, z, vx, vy, vz] in the inertial frame; start as in E8.\n   - Each step:\n     a. vrel = |u|. dt = min((vrel > 100 || R_E − r < 20 km) ? 1 : 10, max(1e-3, 0.002 r/|v|)).\n     b. One RK4 step with gravity, buoyancy and inertial drag only. Drag and buoyancy apply only when r < R_E; above the surface use gravity alone (he never gets there with drag on).\n     c. If the new r < R_E and premSolid(r), apply the strength impulse of E9 to u and rebuild v = Ω × r + u.\n     d. If that made u = 0, test the stuck condition. If met, record stuck = {t, r} and stop.\n     e. Track minR, max |v|, and radial velocity v_r = r·v/|r|.\n     f. The first sign change of v_r from − to + marks the innermost point.\n     g. The next change from + to − is the far turnaround. Refine it with r_top = r_prev + v_r,prev² / (2 g). Record t, depthShort = R_E − r_top, Earth-fixed longitude lon = atan2(y, x) − Ω t, dLon = wrap(lon − 180°) (negative means west), and latitude asin(z/r). Then stop; the long term goes to step 7.\n     h. Stop at 400,000 steps or tMax, whichever comes first. If tMax is reached without stuck or a turnaround, return {stillSinking: true, r}.\n   - If record is set, push Earth-fixed points every ~30 s for the cut-away chart: (x cos Ωt + y sin Ωt, −x sin Ωt + y cos Ωt).\n   - Typical cost is 1,700–11,000 steps (5–60 ms in Node).\n   - Drift for stuck bodies: Earth-fixed longitude of the end point × r, about 10–20 km east.\n\n7. settle(body, Amax = R_E) implements E10.\n   - Quadrature: 200 points in θ per amplitude, 600 log-spaced amplitudes from max(r_stop, 1 m) to Amax. This takes about 12 ms and agrees with 3000 × 400 to 0.01%.\n   - Return {rStop, halfPasses, years, firstPassLossJ: ΔE(0.99999 R_E), energyJ: m (0 − Φ(rStop))}.\n   - Use it only when the 3-D first trip ended at a far turnaround with depthShort < 0.01 R_E. Otherwise keep integrating in 3-D until stuck (raise tMax to 10 days, all steps 10 s when slow); this covers 1e10–1e12 kg. If still not stuck, run settle(body, current amplitude) for the remainder.\n\n8. planetRegime(m, grav) returns the first match: 'blackHole' (grav.blackHole); 'earthFalls' (m ≥ K.M_E) with collapse = {tff, eLow: K.G m K.M_E / K.R_E}; 'reshapes' (m ≥ K.M_RESHAPE); 'none'.\n\n9. weight(ctx) wrapper for the tab returns\n   {m, rho, V, R, W, strengthRatio: F/W, move, ground, grav, planet, fall, settle, energyJ, denserThanOsmium: rho > 22587, nmCaveat: rho ≥ 1e17 ? {J, P: K.P_NM} : null}.\n   - Run fallThrough and settle only when ground.regime === 'fallsThrough' && !groundHolds && planet.regime === 'none'.\n   - energyJ is m (0 − Φ(r_end)), where r_end is the stuck radius or settle.rStop.\n\n10. Self-gravity hooks in the existing moves (E20), guarded by the 1e-3 g threshold so ordinary densities are unaffected:\n   - lift(): add selfPull to W and gripPressure.\n   - throwOnce(): change canHold and add v_out with a fallsBack flag. Keep v as the push result; pass v_out to fly(). Report escapeNeeded = √(2Gm/r0).\n   - Export selfPull(m, r) = G m/r², escapeSpeedFrom(m, r), vInfinity(v, m, r0).\n\n11. Duo helpers (E21): mutualGravity(mA, RA, mB, RB, d), fallTogether(mA, mB, dc, d0), catchMinSpeed(mA, mB, d, r0). The duo designer wires these into the arm-wrestle, wrestle, catch and collide bays.\n\n12. app.html\n   - Add bayWeight(c) to BAYS (ACTIONS already lists 'weight').\n   - Gate the move tabs: if planet.regime ≠ 'none', each move bay shows a callout and no results (\"His own gravity reshapes the planet at this mass; the move models assume a small Rex on a fixed Earth\"). If ground.regime === 'fallsThrough' && !groundHolds, show the callout \"No rock can hold him at this weight: he sinks into the planet (see Weight). Moves below assume he has something to push on; turn on Comic ground for a fair test\" and keep computing.\n   - The density chips skip chip == null and append a computed Black hole chip.\n   - Add D.densities and D.massRefs to build-data.py, plus source rows for every fact above (label \"Density: …\" etc.).\n   - Add the four assumption cards to static-data.js (see page_text).\n\n13. Numerical guards\n   - m must be finite and > 0, else use BASE_M s³.\n   - Clamp density to 10–1e30 on the slider; the mass box can go below.\n   - Every sqrt takes max(0, …).\n   - Cap vEsc at c and treat rs ≥ R as a black hole before any infall maths.\n   - Bisection loops are capped at 200 iterations.\n   - fallThrough never runs for planet regimes, or for m < 5.2e7 s² kg (no fall).",
+ "edge_cases": "- Infinite strength: stand, walk and run are all true and jump follows the engine (light speed in comic mode). Ground, gravity and planet results do not depend on strength, so the Weight tab still shows sinking or falling through. The verdict adds: \"Strength doesn't help: there's nothing under him that can push back.\"\n- Zero or very low strength: the dial minimum is 10 kg. A 180 kg Rex can't get up (needs 128.6 kg) but can stand still: \"his body takes the load\". The jump chip shows \"Can't jump\".\n- Both infinite (infinite strength and black-hole density): the planet regime wins and all moves are gated.\n- Plush (30 kg/m³, 5.4 kg at 2 m): every surface holds (sand at 2.4% of its limit). Self-gravity ~3e-9 of Earth's. Show the human-body comparison: \"about 1/35 of a person's density\".\n- Default (1,000): stands everywhere (loose sand 79%). Nothing self-gravitational.\n- Steel (1,413 kg): sinks 0.45 m in loose sand and 0.9 m (to the hips) in soft clay; stands on gravel (96%).\n- Osmium (4,066 kg): to the hips in sand and soft clay, 0.22 m into gravel, stands on stiff clay (92%), concrete (18%) and granite.\n- Above osmium: show the \"nothing denser exists at everyday pressure\" note.\n- White dwarf (5.0e8 kg): falls through and sticks 216 km from the centre after 1.9 h. Self-gravity is still inside his body (d_beat 5.8 cm < R 35 cm).\n- Neutron star (7.4e16 kg): first trip 38.2 min; turns back ~3 m short, 810 km west of the antipode at the equator; settles in ~4,900 years.\n- Black hole and above: a planet regime, no fall-through and no moves.\n- Near the fall-through threshold (5.2e7–1e8 kg): he sinks slowly (≤ 500–820 m/s) and sticks just inside the solid inner core (~1,195–1,217 km from the centre) after 2.8–10.6 h. Say the result is sensitive to the assumed rock strength (0.1–4 GPa) and could equally be \"stops in the mantle\".\n- Between 1e10 and ~1e12 kg: several damped swings; integrate in 3-D to stuck (hours to days).\n- Above ~1e13 kg: averaged settling (years to millions of years). At 1e18 kg settling takes ~66,000 years; at 1e20 kg, 6.6 million.\n- Relativistic speeds: vEsc is capped at c. Infall temperature is not shown above 0.01c (\"far hotter than the sim's air table goes\"). Below the black-hole density all fall-through speeds stay under 10 km/s, because Earth's potential well caps them.\n- Comic ground: the floor never breaks, so the regime is 'comic' with no sinking or fall. The air, tidal and self-gravity effects still show, phrased \"while he stands on the surface\". Planet regimes still apply: \"Comic ground keeps the floor whole, but at this mass his pull reshapes the planet itself.\"\n- Bolted anchor: does not stop sinking. That matches the Lift tab, where only Comic ground keeps the floor from failing. The math line says so.\n- Unequal sizes: all formulas use each body's own R(H) and V(H). The black-hole density scales as 1/H². The fall-through density threshold scales as 1/H (weight ∝ H³, area ∝ H²): 2.9e8 at 2 m, 1.16e7 at 50 m. A 50 m kaiju at default density stands on sand at the same 79% as the 2 m Rex (granular strength grows with foot width).\n- Duo: with mutual gravity, a dense pair can't be separated unless strength exceeds G mA mB / dc. Their footings slip toward each other inside √(G m / (μ g)). For bodies of very different mass, use each body's own weight in the slip check.\n- Zero, negative or NaN mass or height: fall back to defaults before any computation (state validation already rejects m ≤ 0).\n- Mass box below the slider minimum (e.g. 0.1 kg): formulas stay valid; the density readout shows < 10 kg/m³.\n- Latitude: the sim starts at the equator (sideways drift is largest there). The drift is ~7.3° of longitude at any latitude, so 810 km × cos(latitude), and none at the poles. The page text says this rather than adding a control.\n- Ocean: PREM's 3 km ocean is replaced with crust (he starts on land). The far-side turnaround point would often be under the sea in reality.\n- Ice: punching through drops him into the lake. At any density that breaks 5 MPa ice he is far denser than water, so he sinks to the bottom.",
+ "outputs": "P.weight(ctx) returns:\n- m (kg), rho (kg/m³), V (m³), R (m, equal-volume radius), W (N), strengthRatio (F/W; Infinity when strength is infinite).\n- move: {weight N, legForce N, stand, walk, run (booleans), standNeedKg, walkNeedKg, runNeedKg}.\n- ground: {regime: 'comic' | 'stands' | 'sinks' | 'outOfSight' | 'punchesThrough' | 'fallsThrough', footPressure Pa, bodyPressure Pa, q0 Pa, standRatio, rockRatio, sink m, stage: 'feet' | 'body' | 'rock', legLength m, layer}.\n- grav: {GM m³/s², R m, gSurf m/s², vEsc m/s, dBeat m, beatsOutside, rBondi m, bondiOutside, bondiRate kg/s, heatPerKg J/kg, infallPower W, infallT K, holdsAir, rCrush m, rCrushUnconfined m, tidal1g m, rs m, blackHole, buchdahl, decompJ J}.\n- planet: {regime: 'none' | 'reshapes' | 'earthFalls' | 'blackHole', massRatioEarth, tff s, eLow J}.\n- fall (only when falling through):\n  - stuck: {t s, r m, depth m, layer: 'inner core' | 'mantle' | …, driftKm}, or\n  - firstPass: {t s, depthShort m, dLonDeg, westKm, latDeg, minR m, vMax m/s}, plus stillSinking.\n  - path (optional), as Earth-fixed [x, y] points in m.\n- settle (oscillating case): {rStop m, halfPasses, years, firstPassLossJ J, energyJ J}.\n- energyJ (J released into the planet), denserThanOsmium (bool), nmCaveat: {J, P: [Pa, Pa]} or null.\n\nMove-tab additions:\n- lift: weight now includes selfPull; result gets selfPullG (in g).\n- throw: canHold uses selfPull; adds escapeNeeded (m/s), vOut (m/s) and fallsBack (bool).\n\nDuo helpers:\n- mutualGravity: {F N, dContact m, Fcontact N, Ebind J, dEqualWeight m}\n- fallTogether: {t s, v m/s}\n- catchMinSpeed: m/s",
+ "page_text": "WEIGHT TAB (solo group, tab label \"Weight\", title \"What his density does just standing there\")\n\nBay controls: a compact row of the same density chips as Settings (Plush, Water (default), Steel, Osmium, White dwarf, Neutron star, Black hole), so people can jump presets without opening Settings. No other controls.\n\nVERDICT. Use the first rule that applies; numbers come from the fmt helpers.\n\n1. Black hole (grav.blackHole): \"Rex is a black hole. At {fmtMass(m)}, {sig(m/M_E,3)} times Earth's mass, he fits inside his own event horizon ({fmtDist(rs)} in radius).\"\n2. Earth falls onto him (planet 'earthFalls'): \"Rex outweighs the Earth {fmtRatio(m/M_E)}. The planet falls onto him in about {fmtTime(tff)} and is crushed around him.\"\n3. Reshapes the planet (planet 'reshapes'): \"Rex has {sig(100 m/M_E,2)}% of Earth's mass, as much as {nearest massRef}. He sinks to the centre and his pull crushes the planet's rock out to {fmtDist(rCrush)}.\"\n4. Falls through and oscillates (fallsThrough, firstPass): \"Rex falls straight through the Earth. {fmtTime(t)} later he coasts to a stop {fmtDist(depthShort)} under the far side's surface, then falls back in.\"\n5. Falls through and sticks (fallsThrough, stuck): \"Rex sinks through the Earth and stops {fmtDist(R_E − r)} down, in the {layer}, {fmtTime(t)} later.\" For the inner core use \"…stops in the solid inner core, {fmtDist(r)} from the centre, …\".\n6. Out of sight: \"Rex sinks out of sight. The {surface.short} can't hold him, so he goes down until he reaches bedrock.\"\n7. Punches through:\n   - Slab, asphalt or steel deck: \"Rex goes straight through {surface.short}.\"\n   - Ice: \"Rex breaks through the ice and sinks to the bottom of the lake.\"\n8. Sinks:\n   - Feet stage: \"Rex sinks {fmtDist(sink)} into the {surface.short} and stops.\"\n   - Body stage: \"Rex sinks in up to his hips ({fmtDist(sink)}) and stops.\"\n   - Rock stage: \"Rex's feet punch into the granite. He sinks in up to his hips and stops.\"\n9. Stands: \"Rex stands fine.\"\n10. Comic ground: \"Comic ground holds him up.\"\n\nSuffixes for rules 8–10, based on legs:\n- !stand: \" But he's too heavy for his own legs: he can't get up, walk or jump.\"\n- stand && !walk: \" He can stand, but he's too heavy to walk.\"\n\nSuffix when beatsOutside: \" Anything within {fmtDist(dBeat)} falls onto him.\"\n\nSTATUS CHIPS (in this order)\n- Ground:\n  - comic → info \"Ground: comic, never breaks\"\n  - stands → good \"Ground holds ({sig(100·standRatio,2)}% of limit)\"\n  - sinks → warn \"Sinks {fmtDist(sink)}\"\n  - outOfSight / punchesThrough → bad \"Ground fails: {fmtRatio(standRatio)} its limit\"\n  - fallsThrough → bad \"No rock can hold him\"\n  - planet regimes → bad \"Reshapes the planet\" / \"Earth falls onto him\" / \"Black hole\"\n- Legs (only for comic / stands / sinks):\n  - walk → good \"Can walk\" (+ \"and run\" if run)\n  - stand && !walk → warn \"Can stand, can't walk\"\n  - !stand → bad \"Too heavy to get up\"\n- Jump (same regimes): v > 0 → good \"Jumps {fmtDist(apex)}\"; else bad \"Can't jump\".\n- Gravity:\n  - beatsOutside → warn \"His pull beats Earth's within {fmtDist(dBeat)}\"\n  - else, when ρ > 1e6 → info \"His gravity: {sci(gSurf/g,2)} of Earth's at his skin\"\n- Air: bondiOutside → bad \"Air falls onto him\".\n- Caveat: rho > 22,587 → info \"Held together only by being indestructible\".\n\nTILES (up to 6)\n- \"Mass\": fmtMass(m), sub \"≈ {fmtRatio(m/ref)} {ref.short}\" against the nearest lower massRef, or \"{fmtDensity(rho)}\".\n- \"Weight\": fmtSI(W,'N'), sub \"strength is {big(F/W,3)}× his weight\". Use \"…{sig(100F/W,2)}% of his weight\" below 1; \"unlimited strength\" if infinite.\n- \"Pressure under his feet\": fmtSI(p1,'Pa'), sub \"ground limit {fmtSI(q0,'Pa')}\" or \"comic ground\".\n- \"Gravity at his skin\": \"{sig(gSurf/g,2)} g\", sub \"as a ball of the same volume, {fmtDist(R)} radius\".\n- \"Escape speed from him\": speedOnly(vEsc), sub \"Earth's: 11.2 km/s\".\n- Regime tile (one of):\n  - firstPass → \"Time to the far side\" fmtTime(t), sub \"{fmtDist(depthShort)} short of the surface\"\n  - stuck → \"Where he stops\" \"{fmtDist(depth)} down\", sub \"after {fmtTime(t)}, top speed {speedOnly(vMax)}\"\n  - settle → \"Settles at the centre after\" \"~{sig(years,2)} years\", sub \"{big(halfPasses/2,2)} round trips\"\n  - earthFalls → \"Earth falls onto him in\" fmtTime(tff)\n  - blackHole → \"Event horizon radius\" fmtDist(rs)\n  - otherwise → \"His pull beats Earth's within\" fmtDist(dBeat), or \"nowhere outside him\"\n- Energy tile when falling through or in a planet regime: \"Energy released\" fmtSI(E,'J'), sub fmtTNT(E) · compareEnergy(E).\n\nCHARTS\na) Always: logBars(\"Rex's mass vs …\", rows) using fmtMass.\n   - Rows: massRefs and D.objects masses within six decades either side of m, plus the nearest one beyond each end.\n   - Highlighted row: \"Rex ({fmtDensity(rho)})\".\nb) When not comic and not fallsThrough: logMeter(\"Ground: pressure under his feet vs what {surface.short} can take\", standRatio).\n   When fallsThrough: logMeter(\"Weight vs what bedrock can carry under his whole body\", rockRatio).\nc) Earth cut-away, for fallsThrough with a path. An SVG circle at chartW, square aspect.\n   - Rings at 1,221.5, 3,480, 5,701 and 6,371 km, labelled inner core, outer core (liquid), mantle, crust; fills use surface tokens.\n   - Rex's path is an accent polyline in the Earth-fixed frame, rotated so the start is at the top. Mark the start (\"starts here\") and the end (\"turns back {depthShort} short\" or \"stops here\").\n   - aria-label: \"Cut-away of the Earth seen from above the North Pole. Rex's path from his starting point to {end}.\"\n   - Caption: \"Seen from above the North Pole. Earth turns under him while he falls, so he comes up west of the exact opposite point. At the poles there would be no drift.\"\n\nWHAT HAPPENS (bullets; `happens` keeps the first 5, so order by priority)\n\nB1, legs (comic / stands / sinks only):\n- !stand: \"His legs push with at most 1.4× the dial's force ({fmtSI(legForce,'N')}). His weight is {fmtSI(W,'N')}. He can stand still, because his indestructible body takes the load, but he can't bend his knees and push himself up again.\"\n- stand && !walk: \"Each step puts about 1.2× his weight on one leg (people measure 1.0–1.5×). His legs can't manage that, so he stays put.\"\n- walk && rho ≠ 1000: \"Walking needs about 1.2× his weight on one leg at each step. He has {fmtRatio(legForce/(1.2W))} what that takes.\"\n\nB2, ground:\n- stands: \"His feet press {fmtSI(p1,'Pa')} into the {surface.short}, which gives at about {fmtSI(q0,'Pa')}.\"\n- sinks (feet or body): \"The {surface.short} gives way under him ({fmtRatio(standRatio)} its limit). Soil gets stronger the deeper he goes, because the soil above presses it down (sand and gravel much more than clay), so he stops at {fmtDist(sink)}.\" Body stage adds: \"His legs go in first; once his wider body reaches the ground, the load spreads out.\"\n- rock: \"Granite gives way under a foot at about 1.7 GPa (rough: 0.1–4 GPa). His feet press {fmtSI(p1,'Pa')}, but his whole body spreads the load to {fmtSI(p2,'Pa')}, which the rock can carry.\"\n- outOfSight: \"Soil can't stop him. Soil layers are usually metres to tens of metres thick, so he sinks to bedrock, which can carry up to {fmtSI(σA,'N')} under his whole body. He weighs {fmtSI(W,'N')}.\"\n- punchesThrough: \"The {surface.short} is a thin layer. Once it breaks he's in whatever is underneath, and the sim doesn't know what that is.\"\n- fallsThrough: \"No rock can hold him. Even bedrock gives at about 1.7 GPa (a rough figure; real rock runs 0.1–4 GPa), and his weight presses {fmtSI(p2,'Pa')} on it. Strength doesn't help: there's nothing under him that can push back.\"\n\nB3, fall details:\n- firstPass: \"He falls through Earth's layers like a stone dropped down a tunnel through the planet. With Earth's real density profile the trip takes 38 minutes (Klotz 2015 found the same) and he passes the centre at {speedOnly(vMax)}. Shoving rock aside costs him {fmtTNT(ΔE)} per trip, so he comes back up {fmtDist(depthShort)} short of the far side, {fmtDist(westKm·1000)} west of the exact opposite point, because Earth turns under him.\"\n- settle (second bullet): \"He keeps swinging back and forth for about {sig(years,2)} years, each trip a little shorter, and ends up at the centre. The time is rough: depending on how rock resists him it could be 2,000 to 30,000 years. On the way he releases {fmtSI(E,'J')} as heat ({compareEnergy(E)}), on average about half of the 47 TW Earth already leaks from its interior.\"\n- stuck: \"He sinks at up to {speedOnly(vMax)}, pushing rock aside (like the ground under a stomp) and breaking it. In the liquid outer core only the shoving is left. Gravity weakens toward the centre, and the solid inner core holds him {fmtDist(r)} from it. Earth's spin drifts him about {fmtDist(drift)} east of straight down.\"\n\nB4, his gravity:\n- beatsOutside: \"Within {fmtDist(dBeat)} his gravity is stronger than Earth's. Something dropped 10 m from him hits him {fmtTime(t10)} later at {speedOnly(v10)}. Within {fmtDist(tidal1g)}, the pull on a person's near side beats their far side by more than 1 g, enough to stretch them.\"\n- ρ ≥ 1e6 && !beatsOutside: \"His gravity is real but tiny: {sci(gSurf/g,2)} of Earth's at his skin. It would only beat Earth's {fmtDist(dBeat)} from his middle, inside his own body.\"\n\nB5, air (bondiOutside; phrase \"while he stands on the surface\"):\n\"Air within about {fmtDist(rB)} can't push back against his pull (the Bondi radius). It falls in at up to {speedOnly(vEsc)} and slams to a stop at his skin, heating to about {fmtTemp(infallT)} (an upper bound). Bondi's formula gives {big(bondiRate/1000,2)} tonnes of air a second, carrying {fmtSI(power,'W')} of heat. The heat would push air back out, so the real rate would be lower.\"\nIf holdsAir, add: \"Out in space at room temperature he could even hold onto an atmosphere of his own.\"\n\nB6, caveat (rho > 22,587):\n\"Osmium is the densest element at everyday pressure (22,587 kg/m³). Anything this dense exists in nature only crushed inside a star.\"\nIf rho ≥ 1e17, add: \"Neutron-star matter stays this dense only under a neutron star's gravity, at a pressure of about 3 × 10³² Pa. Freed, it expands violently and turns into neutron-rich nuclei that then decay (Lattimer et al. 1977). It gives up at least 16 MeV per neutron (Hebeler et al. 2010), about 370 kt of TNT per kilogram. For this Rex that's {fmtSI(decompJ,'J')}, {sig(100·decompJ/2.49e32,2)}% of the energy it takes to blow Earth apart. In the sim his indestructibility holds it together.\"\n\nB7, black hole:\n\"Squeezed this hard, his mass fits inside its own event horizon (r_s = 2GM/c²; the sim treats him as a ball of his volume). General relativity says ordinary matter can't even hold its shape once it's within 9/8 of that radius (Buchdahl's limit). Only his indestructibility keeps him in one piece up to the horizon. Earth falls in within about {fmtTime(tff)}. How fast it disappears depends on how fast the heat can escape, which the sim doesn't model.\"\n\nB8, earth falls / reshapes:\n\"Rock can't hold itself up against his pull: his gravity alone crushes rock out to {fmtDist(rCrush)}. Earth falls onto him in about {fmtTime(tff)}, releasing roughly {fmtSI(eLow,'J')}, {fmtRatio(eLow/2.49e32)} the energy that holds Earth together. Read that as an order of magnitude.\"\nFor 'reshapes': \"Past 1/1,000 of Earth's mass his pull reshapes the planet around him; the sim stops modelling moves and the fall in detail.\"\n\nSHOW THE MATH\n- \"Volume = 0.18 m³ × (height ÷ 2 m)³ = {V}; mass = density × volume = {rho} × {V} = {fmtMass(m)}; weight W = m g = {W}\"\n- \"Legs push up to 1.4 × strength = {legForce}. Stand: ≥ W. Walk: ≥ 1.2 W (Nilsson & Thorstensson 1989). Run (Sprint tab): strength > W.\"\n- \"Feet: W ÷ (2 × {A_foot} m²) = {p1}. Whole underside: W ÷ {A_b} m² = {p2}. Sand and gravel: limit + γ·depth·N_q (N_q 18.4 or 64.2; USACE EM 1110-1-1905). Clay: limit + γ·depth.\"\n- \"Bedrock carries up to 1.7 GPa × his underside = {σA} (estimate). Bolted to the planet stops sliding, not sinking; only Comic ground keeps the floor whole.\"\n- \"Inside Earth: PREM gravity (Dziewonski & Anderson 1981); resistance = area × (rock strength + ρv²) against his motion relative to the turning rock; no strength in the liquid outer core; 3-D RK4, Earth turning once per 23.93 h.\"\n- \"His gravity treats him as a ball of equal volume, radius {R}. Surface gravity GM/R², escape speed √(2GM/R), G = 6.674 × 10⁻¹¹. His pull equals Earth's at √(GM/g) = {dBeat}.\"\n- \"Air: Bondi radius GM/c² with c = 340 m/s = {rB}; rate 2πG²M²ρ/c³ (upper bound). Rock crushed where ρ_rock GM/r tops 1.7 GPa: {rCrush} (loose surface rock, 200 MPa: {rCrushU}).\"\n- \"Black hole when 2GM/c² ≥ R: density ≥ 3c²/(8πGR²) = {rhoBH} at this height.\"\n\nCHANGES TO OTHER TABS\n- Lift: when selfPullG ≥ 0.001, add the tile \"His pull on it\", \"{sig(selfPullG,2)} g on top of Earth's\", and a bullet: \"At his density his own gravity adds to the weight of whatever he holds.\"\n- Throw:\n  - fallsBack, verdict: \"The {o.short} can't get away from him. It needs {speedOnly(escapeNeeded)} to escape his own gravity, but leaves his hand at {speedOnly(v)}, so it falls back onto him.\"\n  - Otherwise, when escapeNeeded > 1% of v, bullet: \"Climbing out of his own gravity costs it speed: it leaves at {speedOnly(v)} and keeps {speedOnly(vOut)}.\"\n  - Real-muscle note: \"Real muscle can't throw faster than {cap}, so nothing he throws escapes him.\"\n- Every move tab gets the gating callouts described in the algorithm.\n\nASSUMPTIONS CARDS (static-data.js)\n- \"Density and weight\": \"Density sets his mass at his size: 0.18 m³ at 2 m, scaling with height cubed. Heavier limbs need more strength to move, so every move uses his mass. Only Rex is indestructible: at extreme densities that includes holding together matter that in nature only exists inside stars.\"\n- \"His own gravity\": \"Treated as a ball of the same volume (35 cm radius at 2 m) and as a point beyond that, so numbers within about his own height of him are rough. Air falling in uses Bondi's estimate, an upper bound. Holding an atmosphere uses the rule of thumb 'escape speed above 6× the speed of the gas molecules'.\"\n- \"Sinking and falling through the Earth\": \"Soil gets stronger with depth. Bedrock is set at 1.7 GPa everywhere down to the core, except the liquid outer core, which has none. Rock also has to be shoved aside (ρv²). Earth's insides follow PREM, with its 3 km ocean replaced by crust. Earth's spin is included; tides, Earth's flattening and the channel of melted rock are not. Settling over many trips is averaged and good to a factor of a few.\"\n- \"Planet-scale masses\": \"Past 1/1,000 of Earth's mass his pull reshapes the planet and moves are not modelled. Past Earth's mass the planet falls onto him. When his mass fits inside 2GM/c² he is a black hole.\"",
+ "caveats": "- Self-gravity treats Rex as a uniform ball of his own volume. He is a 2 m dinosaur, not a 35 cm ball, so anything within about his height of him (hand-held objects, tidal stretch near him, the throw-escape speed) is rough, maybe ±50%.\n- Whether a body this shape forms a horizon is fuzzier than the ball threshold (Thorne's hoop conjecture). The black-hole density is a ball-equivalent figure.\n- Matter denser than osmium does not exist at everyday pressure. White-dwarf and neutron-star matter are held in by a star's gravity, at up to ~3 × 10³² Pa for neutron-star matter. The sim's Rex holds it in by being indestructible. If he weren't, neutron-star Rex would release at least ~1.2 × 10³² J. The sim never models that release.\n- The deep-rock strength (1.7 GPa) is the project's surface-granite bearing estimate, reused everywhere. Nobody has measured how rock resists a body pushed through it at these depths and speeds. Results for bodies within a few times the fall-through threshold (5 × 10⁷ to ~10⁹ kg at 2 m) could change a lot, e.g. stopping in the mantle instead of the inner core. The long settling time of a neutron-star Rex varies ~2,000–30,000 years across plausible strength and drag values.\n- Drag through rock uses the same Poncelet form as stomps (k = 1). At ~10 km/s rock is shocked, melted and vaporised. The sim does not model the channel he leaves, heat flow, or how the planet rings.\n- PREM is a spherically averaged Earth. It ignores continents, oceans (replaced with crust), Earth's flattening, lateral differences, the Moon and the Sun.\n- The start is fixed at the equator. The drift toward the west is ~7.3° of longitude at any latitude, so less ground distance toward the poles.\n- The orbit-averaged settling treats each trip as straight through the centre. Earth's spin actually makes each pass miss the centre by up to ~300 km; the 3-D check agrees within ~10%.\n- Bondi infall is an upper bound. Heating pushes air back, and the compressed ball of air that would pile up on him is not modelled. The arrival temperature uses the sim's sea-level stagnation table, also an upper bound.\n- The walking and standing rules are simple. Legs push 1.4× the dial; walking needs 1.2× body weight on one leg. This is cautious for weak strengths, where real near-straight legs do better.\n- Sinking in soil adds strength with depth (N_q for sand and gravel, overburden only for clay), without shape or depth factors and without friction on his legs. Real sinking is somewhat shallower. Under soil the sim can't know how deep bedrock is.\n- \"Bolted to the planet\" does not stop sinking, matching the Lift tab. Only \"Comic ground\" keeps the floor whole.\n- Above 1/1,000 of Earth's mass the planet would reshape around him. The sim describes this but does not model it. The energy for Earth falling onto him is an order-of-magnitude estimate (G m M_E / R_E).\n- The black-hole regime says nothing about radiation or how fast Earth is actually swallowed.\n- The plush-stuffing density is our estimate; no measured value for stuffed toys was found.",
+ "tests": [
+  {
+   "name": "Preset masses at 2 m",
+   "inputs": "H = 2 m (V = 0.18 m³); rho = 30, 1060, 7850, 22587, 2.77e9, 4.12e17",
+   "expected": "m = 5.4 kg; 190.8 kg; 1,413 kg; 4,065.7 kg; 4.986e8 kg; 7.416e16 kg",
+   "reasoning": "m = rho × 0.18. Example: 4.12e17 × 0.18 = 7.416e16 kg, which is 6.98 × Phobos (1.062e16). WD: 4.986e8 / 1.0394e8 = 4.8 Nimitz carriers.",
+   "tolerance": "0.1%"
+  },
+  {
+   "name": "Equal-volume radius",
+   "inputs": "H = 2 m",
+   "expected": "R = 0.350263 m",
+   "reasoning": "(3 × 0.18 / 4π)^⅓ = 0.042972^⅓ = 0.350263",
+   "tolerance": "1e-5 relative"
+  },
+  {
+   "name": "Black-hole density scales with 1/height²",
+   "inputs": "blackHoleDensity(H) for H = 0.4, 2, 50 m",
+   "expected": "3.275e28, 1.3102e27, 2.096e24 kg/m³. At 2 m, m = 2.3583e26 kg = 39.49 Earth masses; Buchdahl mass 2.096e26 kg",
+   "reasoning": "ρ = 3c²/(8πGR²) = 2.696266e17 / (25.1327 × 6.6743e-11 × 0.122684) = 2.696266e17 / 2.05795e-10 = 1.3102e27. Mass = ρV = 2.3583e26 = Rc²/2G. Divided by 5.9722e24 that is 39.49. Buchdahl = 8/9 × 2.3583e26.",
+   "tolerance": "0.1%"
+  },
+  {
+   "name": "Default Rex: self-gravity negligible",
+   "inputs": "H 2, m 180",
+   "expected": "GM 1.2014e-8; gSurf 9.79e-8 m/s²; vEsc 2.62e-4 m/s; dBeat 3.50e-5 m (beatsOutside false); rBondi 1.04e-13 m (bondiOutside false); rs 2.67e-25 m; blackHole false",
+   "reasoning": "GM = 6.6743e-11 × 180. gSurf = 1.2014e-8 / 0.122684. vEsc = √(2 × 1.2014e-8 / 0.350263) = √6.860e-8. dBeat = √(1.2014e-8 / 9.80665).",
+   "tolerance": "0.5%"
+  },
+  {
+   "name": "Neutron-star Rex self-gravity",
+   "inputs": "H 2, rho 4.12e17 (m 7.416e16)",
+   "expected": "GM 4.9497e6; gSurf 4.0345e7 m/s² (4.114e6 g); vEsc 5,316 m/s; dBeat 710.4 m; rBondi 42.74 m; bondiRate 4.785e6 kg/s; heatPerKg 1.413e7 J/kg; infallPower 6.76e13 W; infallT ≈ 7,460 K; holdsAir true; rCrush 7.861 m (unconfined 66.82 m); tidal1g 122.0 m; Δa at 10 m = 1,847 g; rs 1.10e-10 m",
+   "reasoning": "vEsc = √(2 × 4.9497e6 / 0.350263) = √2.8263e7 = 5,316. dBeat = √(4.9497e6 / 9.80665) = √504,729 = 710.4. rB = 4.9497e6 / 340.29² = 4.9497e6 / 115,797 = 42.74. Ṁ = 2π × (4.9497e6)² × 1.225 / 340.29³ = 1.8857e14 / 3.9405e7 = 4.785e6. Heat = 4.9497e6 / 0.350263 = 1.4131e7. rCrush = 2700 × 4.9497e6 / 1.7e9. tidal1g far-field: (2 × 4.9497e6 × 1.8 / 9.80665)^⅓ = (1.817e6)^⅓ = 122.0. Holds air: 5,316 > 6 × 498.1 = 2,989.",
+   "tolerance": "0.5% (infallT ±2% because it is interpolated)"
+  },
+  {
+   "name": "Infall onto neutron-star Rex",
+   "inputs": "GM 4.9497e6, R 0.350263, dropped from rest at d0 = 10 m",
+   "expected": "Arrives after 15.74 ms at 5,222 m/s",
+   "reasoning": "v = √(2 × 4.9497e6 × (1/0.350263 − 0.1)) = √(9.8994e6 × 2.75500) = 5,222. With x = 0.0350263: t = √(1000 / 9.8994e6) × (√(x(1 − x)) + acos(√x)) = 0.010051 × (0.18384 + 1.38341) = 0.01575 s.",
+   "tolerance": "0.5%"
+  },
+  {
+   "name": "White-dwarf Rex: gravity stays inside him",
+   "inputs": "rho 2.77e9 (m 4.986e8)",
+   "expected": "gSurf 0.2712 m/s² (0.028 g); vEsc 0.436 m/s; dBeat 0.0583 m < R, so beatsOutside false; rBondi 2.87e-7 m",
+   "reasoning": "GM = 0.033278. dBeat = √(0.033278 / 9.80665) = 0.0583 m, which is less than R = 0.350 m.",
+   "tolerance": "0.5%"
+  },
+  {
+   "name": "Self-gravity thresholds at 2 m",
+   "inputs": "Solve each condition for m",
+   "expected": "Pull beats Earth's outside him above m = 1.80e10 kg (ρ 1.00e11). Air falls in above m = 6.08e14 kg. Holds air above m = 2.344e16 kg (ρ 1.30e17). vEsc reaches Earth's 11.186 km/s at m = 3.28e17 kg. r_crush reaches R_E at m = 6.0e22 kg.",
+   "reasoning": "g R²/G = 9.80665 × 0.122684 / 6.6743e-11 = 1.8026e10. a0² R/G = 115,797 × 0.350263 / 6.6743e-11 = 6.077e14. (6 × 498.1)² × R / (2G) = 2.344e16. 11186² R/(2G) = 3.283e17. σ R_E / (ρ_rock G) = 1.7e9 × 6.371e6 / (2700 × 6.6743e-11) = 6.01e22.",
+   "tolerance": "0.5%"
+  },
+  {
+   "name": "PREM integration checks",
+   "inputs": "premG, premPhi, PREM mass",
+   "expected": "g(R_E) = 9.8203 (equals K.GM/R_E²); g(3480 km) = 10.683; g(1221.5 km) = 4.401; Φ(R_E) − Φ(0) = 4.916e7 J/kg; v at centre 9,916 m/s. Optional integrals: central pressure ≈ 364 GPa; binding energy 2.49e32 J",
+   "reasoning": "Published PREM checkpoints (Rodríguez-Mozos & Moya 2022, Table 1): 10.6823, 4.4002, 363.852 GPa. Our integration gave 10.689 / 4.403 / 364.09 GPa unscaled (PREM's own mass, G = 6.6743e-11). Scaling to the engine's GM changes these by <0.03%.",
+   "tolerance": "0.2%"
+  },
+  {
+   "name": "Gravity tunnel time (no drag, from the pole)",
+   "inputs": "fallThrough(NS body, latDeg 90, noDrag) to the far turnaround",
+   "expected": "38.19–38.2 minutes; top speed 9,916 m/s",
+   "reasoning": "Klotz (2015): 38 min along a diameter with seismic density (uniform Earth: 42 min). Our 1-D integral ∫dr/v gives 38 min 10 s. The uniform-Earth check is π√(R³/GM) = 42.17 min.",
+   "tolerance": "±0.1 min"
+  },
+  {
+   "name": "Default and kaiju Rex stand on sand",
+   "inputs": "Default 2 m / 180 kg on loose sand, concrete, granite; 50 m kaiju at 1,000 kg/m³ on sand",
+   "expected": "Sand ratio 0.790 (stands), concrete 0.785%, granite 0.0012%. Kaiju on sand also 0.790; kaiju on concrete 19.6%",
+   "reasoning": "p1 = 1765.2 / 0.09 = 19,613 Pa. q0 sand = 37,000 × 0.212132 / 0.316 = 24,838 → 0.790. Kaiju: p1 ∝ s and granular q0 ∝ B ∝ s, so the ratio is the same. Kaiju p1 = 2.8125e6 × 9.80665 / 56.25 = 490,333 Pa vs 2.5 MPa on concrete.",
+   "tolerance": "0.5%"
+  },
+  {
+   "name": "Sinking a little (two-stage)",
+   "inputs": "Steel Rex (1,413 kg) on loose sand and soft clay; osmium Rex (4,065.7 kg) on dense gravel, loose sand, soft clay",
+   "expected": "Steel: sand 0.447 m (feet); soft clay 0.90 m (body stage, to the hips); gravel stands (95.6%). Osmium: gravel 0.224 m; sand 0.90 m; soft clay 0.90 m; stiff clay stands (92.3%)",
+   "reasoning": "Steel on sand: p1 = 13,857 / 0.09 = 153,962; γN = 1600 × 9.80665 × 18.40 = 288,707; D1 = (153,962 − 24,838) / 288,707 = 0.4473 m < 0.9. Osmium on gravel: p1 = 443,012; q0 = 240,000 × 0.212132 / 0.316 = 161,113; γN = 2000 × 9.80665 × 64.19 = 1,258,978; D1 = 0.2239. Osmium on sand: D1 = 1.448 > 0.9; p2 = 39,871 / 0.3 = 132,903; q0b = 37,000 × 0.547723 / 0.316 = 64,132; D2 = max(0.9, (132,903 − 64,132) / 288,707 = 0.238) = 0.9.",
+   "tolerance": "0.5%"
+  },
+  {
+   "name": "Surface and fall-through thresholds",
+   "inputs": "2 m body; 50 m body",
+   "expected": "Concrete holds up to m = 22,944 kg (ρ 1.27e5). Granite under the feet up to 1.560e7 kg (ρ 8.67e7). Falls through above 5.2006e7 kg (ρ 2.889e8). 50 m kaiju falls through above ρ 1.156e7 (m 3.25e10 kg)",
+   "reasoning": "2.5e6 × 0.09 / 9.80665. 1.7e9 × 0.09 / 9.80665. 1.7e9 × 0.3 / 9.80665 = 5.2006e7, then ÷ 0.18. Kaiju: 1.7e9 × 0.3 × 625 / 9.80665 = 3.250e10, ÷ 2,812.5 m³ = 1.156e7.",
+   "tolerance": "0.1%"
+  },
+  {
+   "name": "Embedded in rock, through a slab, out of sight in soil",
+   "inputs": "m = 2e7 kg at 2 m on granite, concrete, loose sand",
+   "expected": "Granite: 'sinks' (rock stage), 0.9 m, to the hips. Concrete: 'punchesThrough'. Sand: 'outOfSight' (model depth 2,264 m, shown only as 'out of sight, down to bedrock')",
+   "reasoning": "W = 1.961e8 N < σ A_b = 5.1e8, so no fall-through. On granite p1 = 2.179e9 > 1.7e9 but p2 = 6.54e8 < 1.7e9. Concrete p1 ≫ 2.5 MPa. Sand: D2 = (6.54e8 − 64,132) / 288,707 = 2,264 m > H.",
+   "tolerance": "regime exact"
+  },
+  {
+   "name": "Ice",
+   "inputs": "m = 5e4 kg at 2 m on lake ice",
+   "expected": "'punchesThrough'; page text says he sinks to the lake bottom",
+   "reasoning": "p1 = 5.45 MPa > 5 MPa. Density 2.8e5 > 1,000.",
+   "tolerance": "exact"
+  },
+  {
+   "name": "Can he move his own weight?",
+   "inputs": "Default 180 kg at dial 90,718 kg (default), 150 kg, 10 kg; NS Rex at the default dial",
+   "expected": "Needs: stand 128.6 kg lift, walk 154.3 kg, run 180 kg. Default dial: all true. 150 kg: stand true, walk false, run false. 10 kg: all false. NS at default dial: all false (needs 5.30e16 / 6.36e16 / 7.42e16 kg)",
+   "reasoning": "stand: m/1.4; walk: 1.2m/1.4; run: F > W.",
+   "tolerance": "exact"
+  },
+  {
+   "name": "Neutron-star Rex: first trip through the Earth",
+   "inputs": "fallThrough(NS body, latDeg 0, comic ground off) to the first far-side turnaround",
+   "expected": "Turns back at t = 38.23 min, depthShort ≈ 3.2 m (3.2–3.7 depending on step size). dLon = −7.28° (809 km west of the antipode at the equator). Passes 298.7 km from the centre. vMax 9,910 m/s. Not stuck. At latDeg 45: dLon −7.28°, latitude −44.98°, closest approach 211 km",
+   "reasoning": "The orbit-averaged loss per trip is 2.373e18 J, which equals m g Δh with Δh = 2.373e18 / (7.416e16 × 9.82) = 3.26 m. No-drag control run: depthShort ≈ 0 (±0.1 m). Earth turns 360° × 2293.6 s / 86164 s = 9.58° during the trip. PREM's centrally concentrated gravity sweeps him ~2.3° further east than a uniform Earth would, leaving 7.28° west.",
+   "tolerance": "t ±0.1 min; depthShort 2.5–4.5 m; dLon ±0.05°; minR ±2 km"
+  },
+  {
+   "name": "Neutron-star Rex settles",
+   "inputs": "settle(NS body)",
+   "expected": "About 4,920 years; 9.39e7 half-trips; rStop 1.88 mm; firstPassLossJ 2.373e18 J (567 Mt); energyJ 3.646e24 J (8.7 × Chicxulub's 4.2e23); average power 23.5 TW",
+   "reasoning": "rStop = σA_b / (m × dg/dr) = 5.1e8 / (7.416e16 × 3.657e-6) = 1.88e-3 m. Energy = 7.416e16 × 4.9164e7. Power = 3.646e24 / (4,919 × 3.15576e7). Sensitivity: σ 0.1–4.1 GPa and k 0.5–2 give 2,240–29,100 years.",
+   "tolerance": "years ±5%; energy 0.2%"
+  },
+  {
+   "name": "White-dwarf Rex sinks and sticks",
+   "inputs": "fallThrough(WD body, latDeg 0)",
+   "expected": "Stuck after 1.89 h at r ≈ 216 km from the centre (inner core). vMax ≈ 1,977 m/s. Drifts ≈ 20 km east. Energy ≈ 2.45e16 J (5.8 Mt)",
+   "reasoning": "In the solid inner core g ≈ 3.66e-6 r. The static hold radius is σ A_b / (m × 3.66e-6) = 5.1e8 / (4.986e8 × 3.66e-6) = 280 km. He coasts past it and stops at ~216 km. Energy = m (Φ(R) − Φ(216 km)).",
+   "tolerance": "r ±3 km; t ±0.05 h; vMax ±1%"
+  },
+  {
+   "name": "Near-threshold body",
+   "inputs": "m = 5.25e7 kg at 2 m; and m = 1e8 kg",
+   "expected": "5.25e7: stuck at ≈1,216 km after ≈10.0–10.6 h, vMax ≈ 499 m/s. 1e8: stuck at ≈1,195 km after 2.78 h, vMax ≈ 800–820 m/s",
+   "reasoning": "Weight just exceeds σA_b = 5.1e8 N at the surface. g rises to 10.68 at the core–mantle boundary, so he keeps going. The liquid outer core has no strength. The inner core boundary (g = 4.40) holds him: 5.25e7 × 4.40 = 2.31e8 < 5.1e8.",
+   "tolerance": "r ±5 km; t ±0.5 h"
+  },
+  {
+   "name": "Averaged settling agrees with full 3-D",
+   "inputs": "m = 1e11 kg and 3e10 kg",
+   "expected": "1e11: 3-D stuck after 58.8 h at 1.27 km; settle() gives 57.9 h. 3e10: 17.5 h vs 17.2 h",
+   "reasoning": "Validates the orbit-averaged method used for the neutron-star case.",
+   "tolerance": "5%"
+  },
+  {
+   "name": "Earth falls onto him",
+   "inputs": "m = 2.3583e26 kg (black-hole Rex) and m = M_E",
+   "expected": "tff = 140.6 s and eLow = 1.475e34 J (59 × 2.49e32). For m = M_E: tff = 632.6 s, eLow = 3.737e32 J",
+   "reasoning": "(π/2) √(2.58596e20 / (2 × 6.6743e-11 × 2.41802e26)) = (π/2) × √8011.7 = (π/2) × 89.51 = 140.6. eLow = 6.6743e-11 × 2.3583e26 × 5.9722e24 / 6.371e6.",
+   "tolerance": "0.2%"
+  },
+  {
+   "name": "Planet regimes and black-hole flags",
+   "inputs": "2 m body at m = 1e21, 6e21, 6e24, 2.1e26, 2.36e26 kg; comic ground on",
+   "expected": "none (falls through if comic off); reshapes; earthFalls; earthFalls with buchdahl true and blackHole false; blackHole. Comic ground does not change the planet regime",
+   "reasoning": "Thresholds: M_RESHAPE = 5.972e21; M_E = 5.9722e24; Buchdahl 2.096e26; black hole 2.358e26.",
+   "tolerance": "exact"
+  },
+  {
+   "name": "Neutron-matter caveat energy",
+   "inputs": "NS body",
+   "expected": "decompJ = 1.156e32 J (46% of Earth's binding energy 2.49e32 J); per kg 1.559e15 J/kg (≈ 3.73e5 t TNT)",
+   "reasoning": "16.3 MeV × 1.602177e-13 J/MeV / 1.674927e-27 kg = 1.5592e15. × 7.416e16 = 1.1563e32.",
+   "tolerance": "0.2%"
+  },
+  {
+   "name": "Rex–Ollie mutual gravity",
+   "inputs": "Both 2 m at 4.12e17 kg/m³ (7.416e16 kg each); both default 180 kg",
+   "expected": "NS pair at contact (dc = 0.7005 m): F = 7.480e23 N = 1.03e6 × each one's weight; separating needs 7.63e22 kg of lift; Ebind 5.240e23 J; pull equals one body weight at 710.4 m; footings slip (μ 0.6) within 917 m; from 10 m apart they meet in 11.07 ms at 5,127 m/s, releasing 4.873e23 J. Default pair: 4.41e-6 N (the weight of 0.45 mg)",
+   "reasoning": "F = 6.6743e-11 × (7.416e16)² / 0.7005² = 6.6743e-11 × 5.4997e33 / 0.49070. Weight = 7.2726e17 N. Two-body Kepler with M = 1.4832e17. Default: 6.6743e-11 × 32,400 / 0.49070.",
+   "tolerance": "0.5%"
+  },
+  {
+   "name": "Catch between neutron-star-dense Rex and Ollie",
+   "inputs": "Equal masses 7.416e16 kg, centres 10 m apart, ball released 0.5 m from Rex's centre toward Ollie",
+   "expected": "Minimum release speed 4,109 m/s to pass the midpoint; it reaches Ollie's hand (0.5 m from his centre) at the release speed",
+   "reasoning": "½v² ≥ GM [(1/0.5 + 1/9.5) − (1/5 + 1/5)] = 4.9497e6 × 1.70526 = 8.4405e6, so v ≥ 4,108.6. The potential is symmetric, so the arrival speed equals the release speed.",
+   "tolerance": "0.2%"
+  },
+  {
+   "name": "Throwing out of his own gravity",
+   "inputs": "NS body, comic mode, bolted, comic ground, concrete, baseball at 45°, lift = 1e22 kg; same in real mode; threshold search",
+   "expected": "escapeNeeded = 4,450 m/s (r0 = 0.5 m). Comic: throw v = 11,610 m/s, vOut = 10,723 m/s. Real muscle: v = 84.6 m/s, so fallsBack is true. Comic threshold lift for a baseball to escape ≈ 1.47e21 kg",
+   "reasoning": "√(2 × 4.9497e6 / 0.5) = √1.97988e7 = 4,449.6. vOut = √(11,610² − 1.97988e7) = √1.14992e8 = 10,723. The real-muscle whip speed is capped near 84.6 m/s.",
+   "tolerance": "vOut 0.5%; threshold ±5%"
+  },
+  {
+   "name": "Held object weighs more near a dense Rex",
+   "inputs": "NS body lifting the Toyota Corolla (1,340 kg, ρ_o 115)",
+   "expected": "L_o = 2.267 m; r_l = 2.134 m; selfPull 1.087e6 m/s² (1.11e5 g); object weight 1.457e9 N",
+   "reasoning": "L_o = (1340/115)^⅓ = 2.267. r_l = 1 + 1.134. g_s = 4.9497e6 / 2.134² = 1.0874e6. W = 1340 × (9.80665 + 1.0874e6).",
+   "tolerance": "0.5%"
+  },
+  {
+   "name": "Guards",
+   "inputs": "m = 0 or NaN; H = 0.1 m with density 1e30; infinite strength with the NS body",
+   "expected": "Bad mass falls back to the default body. H 0.1 / 1e30: R = 0.0175 m, ρ_BH = 5.24e29, so blackHole true. Infinite strength: move.stand, walk and run all true, but ground.regime is still 'fallsThrough' (comic ground off) and the verdict says strength doesn't help",
+   "reasoning": "State validation already rejects m ≤ 0. Ground and planet results do not depend on strength.",
+   "tolerance": "exact"
+  }
+ ],
+ "open_questions": "1. Deep-rock strength. The 1.7 GPa reused at all depths is our assumption. Should the page offer a \"weak / typical / strong rock\" choice (0.1 / 1.7 / 4.1 GPa) so readers see the spread? It matters for bodies of 5e7–1e9 kg and for the settling time.\n2. Plush density (30 kg/m³) is an estimate; no measured stuffed-toy density was found. The owner could weigh a plush and measure its volume (water displacement in a bag) to replace it.\n3. Rule for keeping an atmosphere. The source uses v_esc > 6 v_rms. Other teaching material uses 10× the mean speed for billions of years. Keep 6 (the opened source), or show \"holds air for a while / for billions of years\" with both?\n4. Bolted anchor. For consistency with the Lift tab it does not stop sinking. If the owner reads \"bolted to the planet\" as holding him up too, both tabs need to change together.\n5. Latitude. The start is fixed at the equator. A latitude control would only change the drift distance (cos latitude) and the closest approach; probably not worth a control.\n6. Walking rule. 1.4 × strength ≥ 1.2 × weight is cautious at low strength. Fine for super-strength, but a weak, heavy Rex is told he can't walk when a real person of that build could. An alternative is \"walk if he can stand\".\n7. The 1/1,000-Earth-mass \"reshapes the planet\" cut-off is a judgement call (r_crush ≈ 0.1 R_E there). The moves are gated above it.\n8. Black-hole and \"Earth falls on him\" outcomes stop at free-fall times and an order-of-magnitude energy. Radiation, accretion rate and Hawking effects are not modelled; say so on the page.\n9. PREM coefficients were confirmed via the GENIE code listing and by reproducing published checkpoints, not from the paywalled 1981 paper itself. If the owner wants a primary-page check, the scanned table in Anderson's Theory of the Earth appendix (Caltech) is image-only and would need OCR.\n10. The existing data.js row for Earth's binding energy (status 'claimed', Wikipedia) could be upgraded with our PREM integral (2.4904e32 J) as an independent check.\n11. For Ollie (bull, boots, no claws), the duo designer should decide whether \"Claws dug in\" applies to him. Density and self-gravity functions are body-agnostic."
+}

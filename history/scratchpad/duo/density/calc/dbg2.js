@@ -1,0 +1,10 @@
+const X = require('./weight.js'); const { W, P, K } = X;
+const H = 2, V = P.bodyVolume(H), Om = W.OMEGA_E;
+const body = P.makeBody({ H, m: 2.77e9 * V });
+const r = X.fallThrough(body, { latDeg: 0, tMax: 5 * 3600, dtMax: 1 });
+const s = r.state, rr = Math.hypot(s[0], s[1], s[2]);
+const rel = [s[3] + Om * s[1], s[4] - Om * s[0], s[5]];
+const rhat = [s[0] / rr, s[1] / rr, s[2] / rr];
+const vrad = rel[0] * rhat[0] + rel[1] * rhat[1];
+console.log('r km', rr / 1e3, 'rel', rel, '|rel|', Math.hypot(...rel), 'radial part', vrad, 'tangential part', Math.sqrt(Math.max(0, Math.hypot(...rel) ** 2 - vrad ** 2)));
+console.log('rock speed', Om * rr, 'body inertial speed', Math.hypot(s[3], s[4], s[5]));
