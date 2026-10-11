@@ -20,25 +20,38 @@ The lab has no way to show that. This brief adds three things.
 
 ## 2. Selective comic physics
 
-Named switches, off by default. Each states exactly which real limit it suspends, and everything else stays real.
+Named switches, off by default. Each one says exactly what it changes; everything else stays real.
 
-**How it works (canon):** the energy they put out comes from them, so they can take it back, absorbing what they dish out. Energy is conserved: it goes back into them, so from outside it only looks as if it vanished. Momentum is not absorbed: it still goes into them and through their feet into the ground (restrained effort makes that gentle). So there are two kinds of switch:
+**How it works (canon):** the energy they put out comes from them, so they can take it back, absorbing what they dish out. Energy is conserved: it goes back into them, so from outside it only looks as if it vanished. Momentum is not absorbed: it still goes into them and through their feet into the ground (restrained effort makes that gentle). So there are two kinds of switch.
 
-- **Material limits suspended** (energy and momentum go where real physics sends them): gentle hold, comic ground, bolted to the planet, and possibly safe passenger (a person he carries or throws to safety feels no harmful g-force) and cool flight (no heating on a fast-thrown object).
-- **Absorbed** (the energy that would harm the surroundings goes back into them): possibly silent strike (no blast or sonic boom from a punch or clap) and soft landing (no crater or quake when landing or catching). Show how much energy they absorbed and the mass it adds (E ÷ c²) once that is worth mentioning: about 9 kg at Krakatoa's energy, but about 4,700 tonnes at the dinosaur-killer impact's. Past that point, the Weight tab's physics (their own gravity, sinking) applies to the heavier body.
-- Not offered: "no recoil". Absorbing energy cannot remove momentum.
+**Material limit suspended** (energy and momentum go where real physics sends them):
+- **Gentle hold (tactile telekinesis):** his push is spread through the whole held object in proportion to its mass, so his grip doesn't stress it (it accelerates like a falling body, with no internal load). It removes grip crushing in Lift, Throw and the game of catch, the hands punching through at launch, and an object sagging under its own weight. It does **not** remove the ground's load under him, his recoil, air pressure on a thrown object's front (break-up, heating), or the impact where it lands.
+- **Safe passenger:** the same spread push applied to a person he carries or throws to safety, so they feel no harmful g-force. The lab doesn't model passengers yet; add the simplest version (a person's mass and a survivable g limit, sourced).
+- **Comic ground** (exists): his footing never fails.
+- **Bolted to the planet** (exists): his feet never slide; the Earth takes the recoil.
 
-All four candidate switches are wanted (owners' decision): safe passenger, cool flight, silent strike, soft landing.
+**Absorbed** (the energy that would harm the surroundings goes back into them):
+- **Silent strike:** no blast or sonic boom from a punch or clap.
+- **Soft landing:** no crater or quake when he lands or catches something. The momentum still reaches the ground, gently.
+- **Cool flight:** no drag heating on a fast-thrown object. That heat is the object's own kinetic energy turned to heat by the air, so taking it away means absorbing it. The object still slows down, and its momentum still goes into the air.
+
+**Not offered:** "no recoil". Absorbing energy cannot remove momentum.
+
+All four new switches are wanted (owners' decision). Label every switch wherever its effect shows, with what it suspends or how much energy was absorbed. Propose any further switch before building it.
 
 ### What happens to absorbed energy (canon: four modes)
 
-1. **Endless ocean (default).** The energy goes back into the store of infinite power they draw on but don't manifest: "a drop in an endless ocean". No mass gain, no consequences. Label it as the canon mechanism.
+These apply wherever an absorbed switch is on.
+
+1. **Endless ocean (default).** The energy goes back into the store of infinite power they draw on but don't manifest: "a drop in an endless ocean". No mass gain, no consequences. Show how much energy was absorbed, and label this as the canon mechanism.
 2. **Gradual growth.** The energy becomes mass (E ÷ c²) over a chosen duration. Duration is the safety factor: slow growth shoves the surroundings aside harmlessly, but a surface that expands fast enough pushes a pressure wave and the growth itself becomes a blast. Compute the new size and weight, and the **shortest safe duration** for each amount absorbed.
 3. **Instant growth.** All at once, and the surroundings deal with being shoved aside. Truly zero duration means infinite energy, so choose and state a physical timescale (for example, the time sound takes to cross the body). Size the blast from how much air and ground is displaced, and how fast.
 4. **Runaway.** As 3, but the consequences are absorbed as growth too, so it can feed back. If it would run away, a **half-life** dumps the absorbed energy into the endless ocean (mode 1) to bring it to a halt instead of growing forever.
    - Rough first look, to verify: for ordinary blasts the feedback dies out at once, because shoving the surroundings aside returns roughly 10⁻¹⁵ of the energy the growth itself took.
    - A real runaway needs a feedback term comparable to their own mass-energy. Their own gravity is the candidate, and it approaches that only near black-hole density, which the Weight tab already computes. If that holds, the half-life matters only in that regime.
    - Show the loop's ratio and where it crosses 1.
+
+In the growth modes (2–4), show the mass gained once it is worth mentioning, and apply the Weight tab's physics (their own gravity, sinking) to the heavier body.
 
 **Growth form** (for modes 2–4; canon, three options):
 - **Mix (default):** both size and density grow. Even split unless research suggests better: volume and density each take the square root of the mass ratio, so height grows with its sixth root. A slider between the two pure forms is fine, with the even split as default.
@@ -49,11 +62,6 @@ Worked examples to check against (mass ratio from 3,007 kg, at 10 ft):
 - Krakatoa's energy (8.4 × 10¹⁷ J) adds about 9 kg: unnoticeable in any form.
 - Chicxulub's (4.2 × 10²³ J) adds about 4,700 t (×1,560): mix ≈10 m and ≈42,000 kg/m³; pure size ≈35 m; pure density ≈1.7 × 10⁶ kg/m³.
 - One second of the Sun's output (3.8 × 10²⁶ J) adds about 4.3 × 10⁶ t (×1.4 × 10⁶): mix ≈32 m and ≈1.3 × 10⁶ kg/m³; pure size ≈340 m; pure density ≈1.5 × 10⁹ kg/m³ (white-dwarf matter).
-
-- **Gentle hold (tactile telekinesis):** his push is spread through the whole held object in proportion to its mass, so the object is not stressed by his grip (it accelerates like a falling body, with no internal load). It removes grip crushing in Lift, Throw and the game of catch, the hands punching through at launch, and an object sagging under its own weight. It does **not** remove the ground's load under him, his recoil, air pressure on a thrown object's front (break-up, heating), or the impact where it lands.
-- **Comic ground** already exists ("never breaks").
-- Others only if a move clearly needs one; propose each before building it.
-- Label each switch as fiction wherever its effect shows.
 
 ## 3. Presence: a new Walk tab
 
@@ -80,19 +88,21 @@ The names above are leads for the research step to fetch and verify, not facts.
 
 ## What to build first
 
-1. Research (verified facts, as in the house pattern): step forces, attenuation laws, the elephant measurements, the thresholds, the water-glass value, and a whole-object stress argument for gentle hold.
+1. Research (verified facts, as in the house pattern): step forces, attenuation laws, the elephant measurements, the thresholds, the water-glass value, a whole-object stress argument for gentle hold, a survivable g limit for safe passenger, and the physics each growth mode needs.
 2. **The Walk tab** with effort and presence: the centre of this brief.
-3. **Effort and a courtesy ceiling on the existing solo tabs.** Lift is already restrained; then Stomp, Clap, Jump, Throw, Punch, Sprint and Pull.
-4. **Gentle hold** as the first comic switch.
-5. Adversarial review rounds with fixes; publish; pull request; a `history/` entry.
+3. **Effort, the courtesy ceiling and the not-so-heroic presets on the existing solo tabs.** Lift is already restrained; then Stomp, Clap, Jump, Throw, Punch, Sprint and Pull. Then the two-player tabs with shared effort.
+4. **The comic switches:** gentle hold first, then safe passenger, silent strike, soft landing and cool flight, with endless ocean as the absorption mode.
+5. **The growth modes and growth forms.**
+6. Adversarial review rounds with fixes; publish; pull request; a `history/` entry.
 
-If time runs short, 1 and 2 are the core and the rest can be a later run.
+If time runs short, 1 and 2 are the core. Stop at a clean point, record it in `STATUS.md`, and leave the rest for a later run.
 
 ## Tests
 
 - The engine's presence functions are monotone (more effort or less distance never gives less vibration) and reproduce the sourced anchors: the elephant comparison, and each threshold's own worked example.
-- Effort at 100% reproduces today's results exactly, so nothing already on the page changes unless the visitor lowers effort. Least-disruptive effort achieves each move's goal and stays under every hazard.
+- All-out effort reproduces today's results exactly; the page's opening view differs only because it opens least-disruptive. Least-disruptive effort achieves each move's goal and stays under every hazard.
 - Gentle hold changes only grip, launch-crush and sag results, never ground, recoil, air or impact results.
+- An absorbed switch removes only its own hazard and conserves momentum (the ground still gets the impulse). In endless ocean mode nothing outside changes and no mass is added. The growth modes reproduce the worked examples above, and the runaway loop's ratio is reported.
 - The existing calibration, sweep and screenshot tests still pass; the screenshot test covers the new tab at 390 and 1280 px, light and dark.
 
 ## Open questions for the owners
@@ -107,5 +117,5 @@ None open. Settled:
 
 ## Not in scope
 
-- Changing strength, size, mass or any other canon.
+- Changing their canon strength, size, mass or anything else in `CLAUDE.md`. The growth modes change size and mass only within a what-if, and the page resets to canon.
 - Effort in the Build Calculator or Build Comparison.

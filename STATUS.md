@@ -7,16 +7,23 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 | Folder or file | Who | Branch | Since |
 |---|---|---|---|
 | Rex and Ollie's mass across all three projects: `rex-strength-lab/` (engine, text, facts, tests), `build-calculator/data/builds.json` and its notes and tests, `build-comparison/` (settings, limits, text, tests), `CLAUDE.md` canon | Collaborator | `terantic/duo-mass` | 2026-10-11 |
+| `CLAUDE.md` canon, `rex-strength-lab/src/static-data.js` (grip card), `rex-strength-lab/BRIEF-presence.md`, `build-comparison/BRIEF.md`, `build-comparison/data/NOTES.md`, `build-comparison/tools/compile_facts.py`, `history/2026-10-11-collaborator-canon-and-planning.md` | Collaborator | `terantic/presence-brief` (on top of `terantic/grip` and `terantic/duo-mass`) | 2026-10-11 |
 
 ## In progress
 
 - Canon change (collaborator, pull request open on `terantic/duo-mass`): Rex and Ollie were 2,700 kg *before* their tails were counted; corrected to equal total weight. Rex: 2,700 kg of body plus a 307 kg tail, about 3,007 kg. Ollie: the same total, so about 2,996 kg of body plus an 11 kg tail. Density stays 1,060 kg/m³ and the volumes follow (the front-only picture under-read both by about 12–13%).
-
-- Rex lab, restraint and presence (collaborator, planning): `rex-strength-lab/BRIEF-presence.md` drafted on `terantic/presence-brief`, for the owner's cloud session to build. Canon on restraint added to `CLAUDE.md`. Also on these branches: a "Hands and grip" assumption card (`terantic/grip`).
+- Ready for a pull request once `terantic/duo-mass` is merged (collaborator, `terantic/presence-brief`):
+  - a "Hands and grip" assumption card in the Rex lab
+  - **new canon:** restraint, absorption (four modes) and growth (three forms)
+  - `rex-strength-lab/BRIEF-presence.md`: complete, with no open questions, for the owner's cloud session to build
+  - `build-comparison/BRIEF.md` brought up to date (scores after the mass ruling; the meatball sentence corrected)
+  - `compile_facts.py` writes LF line endings on every machine
+  - a readable record of the session: `history/2026-10-11-collaborator-canon-and-planning.md`
 
 ## Waiting on
 
-- Owner review of Build Comparison design decisions listed in `build-comparison/data/NOTES.md` ("Design decisions to review"): the edge marking, the brief's meatball sentence (false as geometry), the palette change, the stop edges, Thor's and the Thing's treatment, the group colours' contrast, and figures drawn with their arms at their rest angle.
+- Owner: confirm the new canon (mass, restraint, absorption, growth) in the two pull requests above, then build `BRIEF-presence.md` in a fresh cloud session.
+- Owner review of Build Comparison design decisions listed in `build-comparison/data/NOTES.md` ("Design decisions to review"): the edge marking, the palette change, the stop edges, Thor's and the Thing's treatment, the group colours' contrast, and figures drawn with their arms at their rest angle. (The meatball sentence is now reworded in the brief.)
 - Step 2 (collaborator): regenerate Rex's and Ollie's turnarounds to the model-sheet spec (fixes listed in BRIEF.md, "The turnarounds") and measure them; make gap-filler figures from target outlines with GPT Images 2.5.
   - **Blocker to solve first:** the measuring tool cannot follow arms that cannot hang clear of the body (rest angle near 90°; above about 100 on the median soldier, so most of the 88–170 and 220–924 stretches). It refuses such sheets. The target tool still draws and scores those outlines but says the tool cannot check art drawn from them. See `build-comparison/research/reviews/round2.md`, "Still open"; one way is to cut the arms at the shoulder line before slicing.
   - The tool also reads raised arms a few percent (35°) to about 20% (near level) high on any sheet, because it counts each arm at torso depth where it meets the shoulder.

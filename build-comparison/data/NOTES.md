@@ -80,7 +80,7 @@ Built by `tools/compute_limits.js` on six template shapes (5th, 50th and 95th pe
 ## Design decisions to review (owner)
 
 1. **Edge marking:** solid = own number, dotted = filled in (template or derived), dash-dot = traced from art; nothing drawn dashed, because dashed means "reported" on the house chips. The brief's example was solid/dashed/dotted.
-2. **The brief's meatball sentence** ("a figure can't hold more volume than a ball as tall as itself") is false as geometry: a cylinder as wide as it is tall holds 1.5 times as much (score about 1,400), a cube about 1.9 times. The page calls 924 a chosen end point. Suggest rewording the brief.
+2. **The brief's meatball sentence** ("a figure can't hold more volume than a ball as tall as itself") is false as geometry: a cylinder as wide as it is tall holds 1.5 times as much (score about 1,400), a cube about 1.9 times. The page calls 924 a chosen end point. The brief was reworded to match (11 Oct 2026).
 3. **Palette:** Rex and Ollie moved from maroon to plum, comics from navy to a lighter blue, so the duo and the strongmen stay apart for red-green colour-blind readers.
 4. **Stop edges at 25 and 32** are sourced anchors; the alternative is one computed stop from about 13 to 42.
 5. **Thor** is flagged, not moved; the alternative is to plot him at a third of his listed mass.

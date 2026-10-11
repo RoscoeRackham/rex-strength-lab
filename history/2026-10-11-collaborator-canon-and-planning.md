@@ -1,6 +1,6 @@
 # Collaborator session, 11 October 2026: duo mass, grip, restraint and absorption
 
-A readable record of one stretch of the collaborator's local Claude Code session (Windows, VS Code), for the owner and anyone else who couldn't see it. It covers 14 prompts, from the duo-mass correction to this file. Each prompt is quoted verbatim, then summarised: what it did, what it settled, and what questions it raised.
+A readable record of one stretch of the collaborator's local Claude Code session (Windows, VS Code), for the owner and anyone else who couldn't see it. It covers 16 prompts, from the duo-mass correction to a cleanup pass. Each prompt is quoted verbatim, then summarised: what it did, what it settled, and what questions it raised.
 
 Nothing here is merged yet. The work sits on three stacked branches: `terantic/duo-mass` (pull request open), then `terantic/grip`, then `terantic/presence-brief`.
 
@@ -22,6 +22,8 @@ Nothing here is merged yet. The work sits on three stacked branches: `terantic/d
 | 12 | All four switches; four absorption modes | **Canon:** endless ocean (default), gradual, instant, runaway with a half-life |
 | 13 | Three growth forms | **Canon:** mix (default), pure size, pure density (`2399fb4`) |
 | 14 | This transcript | This file |
+| 15 | Should a review come first? | Stale figures and contradictions found |
+| 16 | Go ahead with the pass | Briefs, canon, STATUS and the facts writer cleaned up; cool flight reclassified as absorbed |
 
 ---
 
@@ -228,6 +230,31 @@ Worked examples were computed and checked. While checking, an earlier mistake wa
 > If possible, I would like a human-readable breakdown of what each prompt did, what it clarified, and what questions it posited.
 
 **What it did:** wrote this file.
+
+## 15. Is a review needed first?
+
+> OK, should a cleanup/review pass be done before we make one more commit and initiate the pull request?
+
+**What it did:** scanned the branches for stale figures and contradictions, and recommended a review. It found:
+- old scores (Rex ≈141, Ollie ≈156) still in `build-comparison/BRIEF.md`, with its wrong meatball sentence
+- an out-of-date `STATUS.md`
+- `CLAUDE.md` grown to about 1,300 words
+- the Windows line-ending quirk in `compile_facts.py`
+
+**Questions it raised:** open the pull request against `terantic/duo-mass` now, or wait for that merge?
+
+## 16. The cleanup pass
+
+> Go ahead with the proposed pass.  we'll open the PR after we've settled everything else.
+
+**What it did:**
+- **`build-comparison/BRIEF.md`:** current scores after the mass ruling (Rex ≈181, Ollie ≈202) and the current gaps (45–62, 88–170, 220 to the meatball). The meatball sentence is corrected: 924 is a chosen end point, since a cylinder as wide as it is tall holds 1.5× more (≈1,400). Its design-review note is marked done.
+- **`CLAUDE.md`:** the canon restructured into short labelled bullets, with the details of the absorption modes moved to the brief. No canon was dropped.
+- **`BRIEF-presence.md`:** section 2 rebuilt. The switch descriptions had ended up after the absorption section, some still said "possibly", and showing "mass added" contradicted the endless-ocean default. **Cool flight moved to "absorbed":** a thrown object's drag heating is its own kinetic energy turned to heat, so removing it means absorbing that energy. The build order and tests now cover the switches, absorption modes and growth forms, and one test no longer contradicts the least-disruptive opening view.
+- **`compile_facts.py`:** writes LF line endings on every machine.
+- **`STATUS.md`:** claims and waiting-on brought up to date.
+
+**What it clarified:** the PR waits until everything is settled.
 
 ---
 
