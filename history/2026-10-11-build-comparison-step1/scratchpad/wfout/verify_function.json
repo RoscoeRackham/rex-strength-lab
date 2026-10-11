@@ -1,0 +1,174 @@
+{
+ "checks": [
+  {
+   "key": "elbow_knee_flexion_norms_cdc",
+   "ok": true,
+   "issue": "I re-fetched https://archive.cdc.gov/www_cdc_gov/ncbddd/jointrom/index.html. The table for ages 20-44 gives men 'Elbow flexion 144.6 (143.6 \u2013 145.6)' and 'Knee flexion 137.7 (136.5 \u2013 138.9)'. Ages 45-69 give 143.5 and 132.9. All match. DS1 p.5 (stacks.cdc.gov PDF, re-fetched) gives right elbow flexion 148.00 (SD 6.43, range 120-166) and left 148.00 (SD 6.17, range 125-165). One small mislabel: the values JSON pairs the left-side SD (6.2) with the right-side range (120-166). The whole-sample figures cover both sexes, ages 2-69, so they are not adult-male values. The dataset .xls is 404 at both the archive and cdc.gov paths, as the researcher reported.",
+   "corrected": "elbow_flexion_all: right SD 6.43, range 120-166; left SD 6.17, range 125-165; label as 'all 674 subjects, both sexes, ages 2-69'"
+  },
+  {
+   "key": "rom_end_point_soft_tissue_contact",
+   "ok": true,
+   "issue": "The DS1 protocol quotes are verbatim: the elbow ('usually when the muscle bulk of the anterior forearm contacts the muscle bulk of the anterior upper arm'), the knee and the hip. The Zwerus introduction sentence is verbatim on the PMC page. The two 'sample_mean' values (148.0, 140.3) are whole-sample, all-ages, both-sexes means, and 140.3 is the average of the left and right knee. Label them so, or drop them from this key.",
+   "corrected": ""
+  },
+  {
+   "key": "cfr_standard_joint_ranges",
+   "ok": true,
+   "issue": "I re-downloaded both plate GIFs and read them. Elbow flexion 0-145\u00b0, wrist palmar flexion 80\u00b0, dorsiflexion 70\u00b0, pronation 80\u00b0, supination 85\u00b0, shoulder abduction 180\u00b0, knee 0-140\u00b0, hip flexion 125\u00b0 and hip abduction 45\u00b0 are all as stated. The 4.71 text sentence is verbatim.",
+   "corrected": ""
+  },
+  {
+   "key": "va_rating_limited_elbow_knee_flexion",
+   "ok": true,
+   "issue": "DC 5206 and DC 5260 in 4.71a match exactly (110\u00b0\u21920/0, 100\u00b0\u219210/10, 90\u00b0\u219220/20, 70\u00b0\u219230/20, 55\u00b0\u219240/30, 45\u00b0\u219250/40; knee 60\u21920, 45\u219210, 30\u219220, 15\u219230). The overreach is in how it is used. This is a schedule rating loss of earning capacity. A 10% rating at 100\u00b0 says nothing about whether the hand can reach the face. The page may say the 100\u00b0 threshold is 'in the same region as' the VA's first rated step, but not that the VA schedule 'supports' it.",
+   "corrected": "Keep the values; change 'supports' / 'agrees with' to 'for comparison only; a compensation schedule, not a functional measurement'"
+  },
+  {
+   "key": "elbow_flexion_vs_bmi_zwerus",
+   "ok": true,
+   "issue": "I re-read the PMC page (via the fetch tool; E-utilities says the publisher blocks full-text XML). Table 4, men, dominant side: <18.5 n=6 151/155; 18.5-24.99 n=105 145/149; 25-29.99 n=40 140/144 (CI printed '143 to 1456'); >=30 n=15 136/140. The correlation sentence is verbatim, as are n=352 (47.2% male = 166), ages 18-79, men's overall active 143 and passive 147, the age decades 146/145/143/143/141/139, and 'the underweight and obese groups are relatively small'. Europe PMC confirms 'Elbow ROM is influenced by age, sex and BMI.' Reading the r pairs as dominant/non-dominant is an inference.",
+   "corrected": ""
+  },
+  {
+   "key": "elbow_flexion_bodybuilders_review_statement",
+   "ok": true,
+   "issue": "The quote is verbatim (re-fetched openorthopaedicsjournal.com), including the typo 'individualS', and ref [1] is the DeLee/Drez/Miller 2003 chapter. Status 'reported' is right. One caveat is missing: the Open Orthopaedics Journal is a Bentham Open title. Bentham Open as a publisher was on Beall's list of potential predatory publishers. I saw that only in a search summary of https://en.wikipedia.org/wiki/Bentham_Science_Publishers and did not fetch it. Treat the statement as unsourced expert opinion at second hand. It is not strong enough to choose between models (see the wedge model).",
+   "corrected": "notes: add 'narrative review in a Bentham Open journal; the 130\u00b0 traces to an unfetched textbook chapter; no sample'"
+  },
+  {
+   "key": "ansur2_standing_posture_limb_contact",
+   "ok": true,
+   "issue": "I re-fetched the handbook PDF (sha256 begins d31d6333, a match). Sec 6.1.1 on p.73 is verbatim, including 'On individuals with muscular upper arms, the elbows may not touch the sides.' Also confirmed: thigh circumference 'spread apart just enough so that the thighs do not touch'; sitting posture 'upper arms are hanging loosely at the sides ... flex the elbows 90\u00b0'; scan 'feet are 30 cm apart'; lower thigh circumference standing 'with the feet about 10 cm apart'. Two definitions matter downstream. Forearm circumference, flexed is measured 'at the elbow crease' with the fist clenched, not at the forearm maximum. Biceps flexed is taken while 'making a muscle'.",
+   "corrected": ""
+  },
+  {
+   "key": "elbow_rom_daily_tasks_morrey1981",
+   "ok": true,
+   "issue": "The abstract quote is verbatim. n=33 (15 men), occiput 140\u00b0, shoe 15\u00b0, 30-130\u00b0 and 50/50 rotation all match. The summary's line 'hand-to-mouth needs about 130 (Morrey: most daily tasks 30-130)' stretches it a little. Morrey's 30-130 covers 'most' of 15 tasks, and the abstract gives no angle for eating itself. Safaee-Rad (70-130, feeding) and Murphy (136.4, drinking) are the direct support.",
+   "corrected": ""
+  },
+  {
+   "key": "elbow_rom_feeding_safaee_rad1990",
+   "ok": true,
+   "issue": "Verbatim: 10 men, three feeding tasks, 70-130\u00b0 elbow flexion, shoulder flexion 5-45\u00b0, abduction 5-35\u00b0, wrist 10\u00b0 flexion to 25\u00b0 extension.",
+   "corrected": ""
+  },
+  {
+   "key": "elbow_rom_contemporary_sardelli2011",
+   "ok": true,
+   "issue": "Verbatim: n=25; positional 27\u00b17 to 149\u00b15; functional arc 130\u00b17, min 23\u00b16, max 142\u00b13, all for the cellular-telephone task.",
+   "corrected": ""
+  },
+  {
+   "key": "elbow_rom_adl_raiss2007",
+   "ok": true,
+   "issue": "Verbatim: seven people, mean age 25 (SD 15); elbow '0 - 36 - 146 degrees (total 110 degrees)'.",
+   "corrected": ""
+  },
+  {
+   "key": "elbow_flexion_drinking_murphy2006",
+   "ok": true,
+   "issue": "Re-fetched the PMC1562432 XML. Table 2 reads 'Drinking (maximal flexion) 136.4 | 3.8 | 134.6\u2013138.1'. Also confirmed: '20 control subjects (9 male and 11 female). The mean age was 48.2 years (range 31\u201364)', the marker-vector angle definition, and 'The maximal elbow flexion occurred during the drinking phase.'",
+   "corrected": ""
+  },
+  {
+   "key": "elbow_rom_adl_review_oosterwijk2018",
+   "ok": true,
+   "issue": "Verbatim: 36 studies, 66 tasks, 'up to full elbow flexion (150\u00b0)', shoulder about 130\u00b0. The caveat that 'used' is not 'required' is correct.",
+   "corrected": ""
+  },
+  {
+   "key": "elbow_rom_compensated_vasen1995",
+   "ok": true,
+   "issue": "The abstract is verbatim. Note that 49 of 50 managed all tasks with extension AND flexion both limited, an arc of 75-120\u00b0. The abstract does not report failures at 105\u00b0. See rec_vasen_120_line for how this is misused.",
+   "corrected": ""
+  },
+  {
+   "key": "obesity_reduces_rom_park2010_jeong2018",
+   "ok": true,
+   "issue": "All three abstracts are verbatim. Park: 20 vs 20 men, 9 of 30 motions, 38.9% left shoulder adduction, 11.1% right knee flexion, and elbow flexion not among the reduced motions. Jeong: the groups differ for elbow flexion and supination, hip extension and flexion, knee flexion and plantar flexion. Escalante: n=687, aged 65-79. Values match.",
+   "corrected": ""
+  },
+  {
+   "key": "lifters_rom_chang1988_and_later",
+   "ok": false,
+   "issue": "The numbers are right: Barlow 29/25, 166 vs 180\u00b0, internal rotation \u221211\u00b0; Gadomski 15/15 and the Wilks >500 / LBM sentence; Afonso 11 RCTs, n=452, ES \u22120.22 (\u22120.55 to 0.12). The label clause 'training alone is not the cause', and the summary's 'Training alone does not reduce range of motion (Afonso 2021)', are not supported. Afonso compares strength training with stretching in short supervised RCTs and finds similar ROM gains. It does not test whether years of heavy lifting cause the shoulder losses seen in lifters. Gadomski links the losses to bench-heavy programmes. Spence 2023 found the losses against recreationally strength-trained men (not sedentary ones), with 'no significant difference ... for ... body mass'. That points to sport-specific training rather than bulk. The cause (bulk, tightness or training pattern) is not separated in any of these.",
+   "corrected": "label: 'Shoulder (and in powerlifters hip) range is lower in bodybuilders and powerlifters; the cause is not established. Strength training in general does not reduce ROM in short RCTs (Afonso 2021).' Add: Spence 2023 controls were recreationally strength-trained and did not differ in body mass."
+  },
+  {
+   "key": "thigh_calf_contact_zelle",
+   "ok": true,
+   "issue": "All three abstracts are verbatim: no contact below 130\u00b0, 34.2%/30.9% BW, 151.8\u00b0/156.4\u00b0, R=0.89, Hemmerich 157\u00b16. Two cautions. (1) Girth is correlated with contact force and force reduction, not with the angle at which contact starts, so 'contact scales with girth' should not be read as 'onset angle falls with girth'. (2) 'The knee bends 20-25\u00b0 past first contact' is the researcher's own derivation. Onset is only bounded ('not below 130\u00b0'), so 22-26\u00b0 is an upper bound; mark it derived.",
+   "corrected": ""
+  },
+  {
+   "key": "obese_gait_step_width",
+   "ok": true,
+   "issue": "Spyropoulos is verbatim: 12 obese men aged 30-47, 70-99% above ideal weight, step widths .16 vs .08 m, strides 1.25 vs 1.67 m, speeds 1.09 vs 1.64 m/s. The abstract calls the comparison group 'nonobese persons', not men. The adipose-tissue explanation is the authors' conclusion about gait differences in general. Browning and Scataglini (14 studies, step width increased) are confirmed.",
+   "corrected": "step_width_nonobese: 'nonobese persons' (sex not stated in abstract)"
+  },
+  {
+   "key": "hip_joint_centre_regression_hara2016",
+   "ok": true,
+   "issue": "Confirmed in the PMC XML (Table 3 footnote, as text): 'HJCX = 11 \u22120.063 LL, HJCY = 8 +0.086 LL, and HJCZ = \u22129 \u22120.078 LL'. Accuracy is 5.2/4.4/3.8 mm. The origin is the mid-point between the ASIS, with HJC 'lateral' to it, so Y is the offset from the midline and the inter-HJC = 2Y use is right. Two corrections to the notes. The formulas are not only images; they are in the table footnote text. The sample, which the notes omit, is cadaveric CT of '157 deceased individuals (37 children, 120 skeletally matured)'. 'Measured' is acceptable for a published regression, though 'derived' would be more exact.",
+   "corrected": "notes: add sample = CT scans of 157 deceased individuals (120 skeletally mature)"
+  },
+  {
+   "key": "ansur_thigh_gap_legs_vertical",
+   "ok": true,
+   "issue": "Re-running ansur_thighgap.py on the local CSV (sha256 identical to the OPEN Design Lab download) reproduces every number. Inter-HJC 0.160/0.174/0.189, gap 0.024/0.044/0.063 m, one man at zero, k 1.17/1.34/1.53, feet shoulder-width 2.17. Not tested: sensitivity to the leg-length estimate (iliocristale \u22126 cm). A \u00b15 cm leg-length error moves Y by \u00b14.3 mm and the gap by about \u00b10.9 cm. Note too that ANSUR soldiers meet Army weight standards, so the very obese, who likely do close this gap, are under-represented.",
+   "corrected": ""
+  },
+  {
+   "key": "ansur_seated_arm_angle",
+   "ok": true,
+   "issue": "ansur_armangle.py reproduces every number: p5/p50/p95/p99/max 3.6/10.0/16.5/19.2/26.2; offset range 9.0-11.9 and 25.1-28.5; r 0.69 and 0.57; BMI medians 6.4/9.9/13.2/15.5. Two cautions. It is a seated angle that runs about 4-6\u00b0 above the standing model's 4-6\u00b0 at k=1, so the two scales are not interchangeable. And ANSUR excludes very obese men, so 'max 26\u00b0' describes screened soldiers, not all humans.",
+   "corrected": ""
+  },
+  {
+   "key": "arm_hang_model_ansur_median",
+   "ok": false,
+   "issue": "The saved arm_hang.py tests only from axilla height down, which gives 10\u00b0 at k=1 and 30\u00b0 at k\u22481.2. Neither reported table comes from it as saved. I added the region switch. 'Below chest height (1.289 m)' reproduces the reported row exactly (6/15/23/29/35/39/43/50/56/64/70). 'Elbow and below' does not: testing s\u2265upper-arm length gives 4/8/12/15/19/22.5/26/33/40/56/71.5 at k=1.0-3.0, against the reported 4/8/12/16/20/24/28/36/43/60/76. Testing below elbow height gives lower still (30\u00b0 at k\u22481.8). The upper end of 'k_at_30deg' is therefore about 1.7-1.8, not 1.65, or the script that made it was not saved. The 'k=1 gives 4-6\u00b0, which checks the model' claim is a consistency check on inputs taken from the same ANSUR medians, not an independent validation.",
+   "corrected": "k_at_30deg: [1.3, 1.8] unless the exact script is saved and re-run; save the region-variant script in the scratchpad"
+  },
+  {
+   "key": "hand_to_mouth_reach_geometry",
+   "ok": false,
+   "issue": "reach.py reproduces the main values: mouth 123\u00b0 (wrist straight) and 99\u00b0 (wrist flexed 80\u00b0), d=0.278 m, chin forward 3 cm 96\u00b0, same-side cheek 107\u00b0, and upper-arm-length sensitivity 98-100\u00b0. The chin (127/102), nose tip (94) and opposite cheek (91) values are not produced by the saved script, so they cannot be reproduced. The same-side cheek with a straight wrist comes out at 133\u00b0, which is not reported. The model also assumes the shoulder can take any orientation. For bulky figures, chest and deltoid contact when the arm crosses the body is likely to block reach before elbow flexion does. The notes list this, but the threshold leaves it out.",
+   "corrected": "Drop or re-derive chin/nose/opposite-cheek values with a saved script"
+  },
+  {
+   "key": "elbow_flexion_vs_girth_wedge_model",
+   "ok": false,
+   "issue": "The arithmetic all reproduces (elbow_fit.py and ansur_limits.py). c=0.3153 (tan 17.5\u00b0). ANSUR BMI-group girth sums are 555/614/666/718 mm (the <18.5 group has n=9). Active p=1.69, passive 1.86. Crossings: 130\u00b0 at 1.26-1.48, 120\u00b0 at 1.43-1.83, 110\u00b0 at 1.60-2.22, 100\u00b0 at 1.79-2.66. The tan(half-angle) \u221d thickness geometry is right for contact at a fixed axial distance. The problem is the recommendation to make p=1 the 'main model' and the data-fitted p\u22481.7 a 'pessimistic bound'. That reverses the evidence. The only measurements (Zwerus BMI groups mapped to ANSUR girths) give p\u22481.6-2.0. The case for p=1 rests on the unsourced Bentham-review '130\u00b0 for bodybuilders' and on a plausible but untested triceps argument. The two exponents put the 100\u00b0 crossing at S\u224865 versus S\u2248144 on the chart (see rec_rough_order), so this choice decides where limit (c) falls.",
+   "corrected": "Present both as a band: p=1 'pure geometry, assumption'; p\u22481.7 'fitted to BMI groups (mostly fat, age-confounded)'; neither tested above k\u22481.17. Do not call either the main model on the strength of the review statement."
+  },
+  {
+   "key": "soft_tissue_contact_models_survey",
+   "ok": true,
+   "issue": "Re-fetched both PDFs. The McAdams quotes ('a new algorithm for near-interactive simulation of skeleton driven, high resolution elasticity models'; 'Since body collisions, self collisions and soft-constraints are necessary...') and the Reed 2014 quote ('can be scaled by inputting standard anthropometric dimensions ... However, the shapes of these scaled figures are often unrealistic') are verbatim. Wu 2019 (42%/57%) and Singh 2013 (10.17\u00b15.18% BW, n=10, BMI 39.04) match. 'Reported' is fine for a negative search result.",
+   "corrected": ""
+  },
+  {
+   "key": "rec_rough_order_and_placement",
+   "ok": false,
+   "issue": "Two errors in 'Rough order ... (c) at x1.8-2.7, about 3-7x ... puts all three limits between the top human anchors and the heaviest comic characters'. (1) Mixed reference. The elbow k is measured against the BMI 18.5-25 group (0.614 m), but the median man is already k=1.086. Relative to the median man, (c) falls at x1.65 (p=1.69) to x2.45 (p=1); that is 2.7-6.0x his score, not 3-7x. (2) Placement. With median man S\u224824, (b) is at S\u224843, with a p5-p95 band of 33-56 that overlaps Coleman (35-39) and Hall (38). (a) is at 41-65, or up to about 79 with my region variants. (c) is at S\u224865 (p=1.69) or \u2248144 (p=1, the researcher's 'main' model). That is above every comic character (57-81) and level with Rex (141). The claim that all three limits fall between top humans and the heaviest comics is false on the researcher's own numbers. The research's own evidence also says (b) is already reached by ordinary obese men: their 0.16 m step width is about the 0.17 m hip-joint spacing.",
+   "corrected": "(b) \u2248 S 33-56 (overlaps top humans; obese men reach it); (a) \u2248 S 41-79; (c) \u2248 S 65-144 depending on exponent. State that uniform widening is only a rough guide."
+  },
+  {
+   "key": "rec_vasen_120_line",
+   "ok": false,
+   "issue": "The proposed soft line, 'eating and drinking need compensation' at \u03c6_max\u2248120\u00b0, is mislabelled. Natural feeding uses about 130\u00b0 (Safaee-Rad) and drinking 136\u00b0 (Murphy), so compensation is needed as soon as \u03c6_max drops below about 130-136\u00b0. Vasen's 120\u00b0 is the lowest brace setting at which 49 of 50 still managed all 12 tasks with compensation. Failures below it are not reported in the abstract.",
+   "corrected": "Mark ~130-136\u00b0 as 'natural eating/drinking needs compensation below here' and 120\u00b0 as 'lowest tested setting where compensation still sufficed (Vasen 1995)'"
+  },
+  {
+   "key": "rec_arm_hang_30deg_beyond_all",
+   "ok": false,
+   "issue": "'30\u00b0 is beyond every one of them' is true only of ANSUR soldiers, who are screened by Army weight standards, and only on a seated, derived angle that runs about 4-6\u00b0 above the standing model. It does not show that 30\u00b0 is beyond all humans. Very obese civilians, who are not in ANSUR, may exceed it. The 30\u00b0 figure is mainly an art-spec choice ('A-pose, arms about 30-40\u00b0 out', BRIEF.md line 78), and the page should say so.",
+   "corrected": "'beyond every ANSUR II soldier (seated, derived); not tested on very obese civilians; 30\u00b0 chosen to match the A-pose low end'"
+  }
+ ],
+ "missing": "1) The full text of Jeong et al. 2018 (PMID 29775425). It analysed a public passive-ROM dataset, probably the CDC one, by BMI group, including elbow flexion. That is the best available second calibration for the wedge exponent, now that the CDC .xls is 404 at both archive.cdc.gov and cdc.gov. 2) Any measurement of elbow flexion against muscle girth rather than fat girth. Nothing was found. One near miss worth citing: Tsunoda, O'Hagan, Sale & MacDougall 1993 (PMID 8477679; abstract fetched). In 11 male bodybuilders, peak elbow-flexion torque at 1.31 rad (75\u00b0 included angle, about 105\u00b0 of flexion) was 25% lower than at 120\u00b0. The authors write that 'larger elbow flexor muscle and fibre size ... may have been responsible for their impaired torque production at joint angles corresponding to the shortest muscle lengths'. That is about torque, not range. 3) A sensitivity check of the thigh gap to the leg-length estimate and to non-circular lower-thigh sections. Neither was run. 4) Data on the upper tail beyond ANSUR's weight-screened soldiers, for example NHANES thigh or arm girths, to show whether ordinary obese men already reach limits (a) and (b). The step-width evidence suggests they reach (b). 5) A way to test (c) on the drawn art. The wedge model needs the arm's front/back tissue split (biceps vs triceps), which a front-view A-pose silhouette does not give; the side view must be used, and the rule should be stated. 6) A shoulder-adduction or arm-across-chest contact check for hand-to-face. For bulky figures, chest and deltoid contact likely blocks reach before elbow flexion does. 7) A tissue-compression allowance for the elbow. Zelle shows the knee bends up to about 20-25\u00b0 past first contact under about a third of body weight, and a very strong figure could compress further. 8) The saved scripts for the 'elbow and below' arm-hang region and for the chin, nose and cheek reach cases, so those numbers can be reproduced.",
+ "verdict": "The sourced facts hold up. I re-fetched about 40 sources: 25 PubMed abstracts via E-utilities, the CDC page and its DS1 PDF, both 38 CFR plate GIFs, the 4.71 and 4.71a text, the Zwerus PMC page, the Hara XML, the ANSUR II handbook and CSV, Islam 2020, the Murphy XML, and the McAdams and Reed PDFs. Every quoted sentence and number checks out, with only small labelling slips: a mixed left/right SD on the CDC figure, the Hara sample not stated, and 'nonobese persons' given as men. All the ANSUR derivations I could re-run reproduce exactly: thigh gap, seated arm angle, BMI-group girths, wedge fit, and the main reach values. Some reported numbers are not reproducible from the saved scripts: the 'elbow and below' arm-hang row, whose 30\u00b0 crossing comes out at about k 1.7-1.8 rather than 1.65, and the chin, nose and cheek reach values. The real problems are in the interpretation and recommendations. (1) 'Training alone is not the cause' of lifters' shoulder losses is unsupported; Afonso does not test it, and Spence 2023 points the other way. (2) The wedge model's p=1 is promoted to 'main model' over the only data fit (p\u22481.7), on the strength of an unsourced statement in a Bentham Open review. (3) The 'rough order' mixes reference bases. Its claim that all three limits fall between top humans and the heaviest comics is false on the researcher's own numbers. Limit (b) overlaps Coleman and Hall and is reached by ordinary obese men. Limit (c) under the 'main' p=1 sits at S\u2248144: above every comic and level with Rex. (4) The VA schedule and the Vasen 120\u00b0 result are used beyond what they show. Keep every threshold as a labelled estimate, show the elbow limit as a wide band from both exponents, and reword the placement and causal claims before they reach the page."
+}

@@ -1,0 +1,123 @@
+{
+ "verdicts": [
+  {
+   "id": "L1",
+   "real": true,
+   "severity": "major",
+   "reasoning": "Reproduced with v/l1.js: keyboard Tab focuses the button and :focus-visible matches (solid 2px chalk, offset 2px), but .seg has overflow:hidden. A pixel count around each .seg finds chalk pixels only in 2 columns at the seam between the buttons. Light and dark give the same result: hSame x=119-120, hReal x=113-114, vFront x=72-73. zHum, the middle of a full-width seg, keeps only two vertical lines. The top, bottom and outer sides are clipped away. For hReal, vSide and zHum the surviving line sits inside the pressed neighbour. Focusing 'Same height' and focusing 'Real heights' differ only by a 2 px line moving about 6 px, so keyboard users cannot tell which of the six main controls has focus. Screenshot: v/l1-combined.png.",
+   "better_fix": "Draw the ring inside the button, with a sheet-coloured inner ring so it also shows on the pressed (ink) button: `.seg button:focus-visible { outline-offset: -2px; box-shadow: inset 0 0 0 4px var(--sheet); }`. Verified in v/fixes.js / fix-combined.png: the full ring shows on 'Real heights'."
+  },
+  {
+   "id": "L2",
+   "real": true,
+   "severity": "major",
+   "reasoning": "v/l2.js opens all 49 drawers per width and reproduces the reviewer's numbers exactly. Host skeleton: 720 px 49/49 drawers cause page scroll (worst: the table overflows the drawer by 66.5 px); 768 px 29/49 (worst 18.5 px). Task skeleton: 720 px 49/49 (82.5 px), 768 px 47/49. 700, 719, 800, 819, 820 and 900 px are clean. At 768 the Colossus girths table spans 509-770 px against a drawer edge at 752 and a viewport of 768; the ESTIMATE chip is cut off at the screen edge (v/l2-768-colossus.png). Cause: the 280px | 1fr drawer grid plus the 150px | 1fr fact rows leave the dd about 220 px wide, below the table's min-content of 261 px. shots.js only opens drawers at 390 px, so it never sees this.",
+   "better_fix": "Keep the drawer one column until 900 px: change `@media (min-width: 720px) { .drawer { grid-template-columns: 280px minmax(0, 1fr); padding: 20px; gap: 28px; } }` to `@media (min-width: 900px) { ... }`. Verified: with the drawer one column from 720 to 899 px, 0/49 drawers overflow at 720, 768 and 860 px. Also add a 768 px drawer sweep to test/shots.js."
+  },
+  {
+   "id": "L3",
+   "real": true,
+   "severity": "major",
+   "reasoning": "v/l3.js compares each lineup cell's aria-label with its visible chips and flags. All 14 flagged cells lose their warnings. Colossus reads 'Colossus (armoured), score 28\u201333, estimate. Open details', but the plate shows NOT COMPARABLE and 'Steel body, not muscle'. Thor's label drops 'may be overstated' and 'beyond human data'. The Thing drops 'composition unknown'. Superman, Luke Cage, Rex, Ollie, the Hulks, Darkseid, Juggernaut and Abomination drop 'beyond human data'. Wolverine drops his adamantium note. The a11y snapshot exposes only {role: button, name: aria-label}, and a button's children are presentational to screen readers. Forest rows: 10 rows score beyond human data and 0 of their labels say so. Under the owner's honest-labelling rule, screen-reader users hear a non-comparable mass as a plain estimate.",
+   "better_fix": "In figureCell: `var warn = []; if (e.comparable === 'no') warn.push('not comparable'); if (e.comparable === 'overstated') warn.push('may be overstated'); if (e.comparable === 'uncertain') warn.push('composition unknown'); if (beyond(e)) warn.push('beyond human data'); btn.setAttribute('aria-label', e.short + ', score ' + scr(e.score.lo, e.score.hi) + ', ' + st + (warn.length ? ', ' + warn.join(', ') : '') + (e.setting.flag ? '. ' + e.setting.flag : '') + '. Open details');`. In the forest row label, append `(beyond(e) ? ', beyond human data' : '')`."
+  },
+  {
+   "id": "L4",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "v/l4.js measures the axis label rects in close-up. 'Kouri 25' and '\u2190 real men end here' overlap by 40 px at 360, 29 px at 390, 52 px at 720 and 41 px at 768 (none at 560, 1024 or 1280; whole scale is clean). In the screenshot they print over each other (v/l4-390.png). Cause as stated: when the left-anchored message doesn't fit, the right-anchored fallback runs from about endPx-133 to endPx-4, but the Kouri test still compares against endPx-4.",
+   "better_fix": "`var fits = endPx + 4 + msgW < trackW, alt = '\u2190 real men end here', altW = alt.length * 6.8; var lblL = fits ? endPx + 4 : endPx - 4 - altW, lblR = fits ? endPx + 4 + msgW : endPx - 4; var kHtml = (kPx + 30 < lblL || kPx - 30 > lblR) ? '<span ...>Kouri 25</span>' : '';`. The Kouri rule line and the Kouri anchor row still mark the value when the label is dropped."
+  },
+  {
+   "id": "L5",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "v/l5.js tests each solid background rule against the text rects of the .vl cells. At 360 and 390 px the 924 chalk line crosses 59/59 value texts on the whole scale. In close-up the red real-men line crosses 59/59 ('13\u201317' is split at the dash; v/l5-390-zHum.png). On phones the Kouri and red lines also cross 42-56 build names. At 768 and 1280 px only the two over-long limit rows ('41 (37\u201341) estimate') are crossed, because they spill out of the 120 px value column. Cause: below 720 px, .fp-bg spans left:0 to right:0 over the whole row.",
+   "better_fix": "`@media (max-width: 719px) { .fp-row .vl { position: relative; z-index: 1; background: var(--sheet); padding-left: 4px; } }`. Better still, give .nm the same treatment, so on phones the rules show only in each row's track strip."
+  },
+  {
+   "id": "L6",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced only outside the default view. In Same height + Front (the default) no plate overflows at 360-414 px. In Side view or Real heights it does (v/l6c.js). Host skeleton, 390 px: the Thing's cell is 89.5 px and its content runs 5.4 px past it, under Thor's cell. 375 px host, or 390 px task skeleton: the Thing overflows by 9.1-9.4 px and Superman by 1.8-2.1 px, under the next cell. Visible as 'Rock-like skin o' / 'unstated weigh' and a clipped BEYOND HUMAN DATA chip border (v/l6-thing-real-390-x3.png). Cause: .plate's implicit auto column grows to fit the unbreakable word 'COMPOSITION'.",
+   "better_fix": "`.plate { grid-template-columns: minmax(0, 1fr); } .plate .chip { overflow-wrap: anywhere; }`. Verified in v/fixes.js: 0 overflowing plate elements in Real heights at 390 px, and the text wraps inside the plate (fix-combined.png)."
+  },
+  {
+   "id": "L7",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "v/l7.js: the clusters read 'Every real man 19\u201345' (1280) and 'Real men 19\u201345' (390). HUMAN_TOP is 41.5 (Big Ramy), and the rule reads 'No real man on this chart scores above 42'. The first gap's verdict also says 'no real man on this chart scores above 42'. The 45 is GAPS[0].from = 44.56, the top of Kingpin's range (a comic character). The design spec's table gives 13\u201342. The page contradicts itself on its first screen.",
+   "better_fix": "In drawGlance: `var cl = [{ id: bands[0].id, name: phone ? 'Real men' : 'Every real man', range: sc(lowest) + '\u2013' + sc(HUMAN_TOP), a: lowest, b: HUMAN_TOP }];`"
+  },
+  {
+   "id": "L8",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "v/l8.js taps the glance tape and the locator at scores 700, 900, 924, 960 and 1000, at 390 px (touch) and 1280 px (mouse). Every tap lands on #empty-3 at the top (locator: 'now: empty 220 to 924'). The cluster button reaches #meatball (v/l8b.js). The last gap's hi equals MEAT exactly (924.099), so a tap at 924 is inside the gap (d=0). At or above MEAT the gap and the meatball tie, and the strict '<' keeps the gap. Changing to `d <= best.d` alone does not fix it: a tap a hair left of the ring centre still has gap d=0 and meatball d>0.",
+   "better_fix": "Snap in tapeJump, before stopAt: `if (x >= X(MEAT) - 8) { jump('meatball'); return; }`. Here x is the tap position in the host and X is host._X; 8 px covers the 7 px ring."
+  },
+  {
+   "id": "L9",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "v/l9.js: with the task skeleton, or a host skeleton without a [hidden] rule, the closed drawer has hidden=true but computes display:grid. It shows as a 36 px (390) or 44 px (1280) empty sheet-coloured box with a 3 px chalk top border, 56 px below the footer (v/l9-bottom-390.png). With [hidden]{display:none!important} it is 0 px. The author rule `.drawer { display: grid }` beats the UA [hidden] rule. The repo's shots.js skeletons add that rule, which masks the bug in tests. If the real host does not add it, users see the box. The page should not depend on host CSS.",
+   "better_fix": "Add `.drawer[hidden] { display: none; }` to the page CSS (verified: height 0). Drop `[hidden]{display:none!important}` from the test/shots.js skeleton so tests see the page as it is."
+  },
+  {
+   "id": "L10",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "v/l10.js recomputes the WCAG ratios from the tokens and matches every figure the reviewer gave. Light: --g-natural 1.73:1 on wall, 2.02 on paper (tape ticks), 2.23 on sheet (forest bars); --g-every 2.70 on wall; --g-geom 1.75 on wall. Dark: --g-strong 1.91 on wall, 2.37 on paper, 2.19 on sheet; --g-geom 2.99 on wall. The proposed recolours check out: #97720F 3.24/4.19, #6B7387 3.46, #B06A52 3.51. Forest bars and tape ticks have no edge, so they fail WCAG 1.4.11 3:1 (the forest prints each range as text, which softens this). The limit-card figures are fill-only at 1.75:1 apart from the blue hot part, and the shape is that section's content (v/l10-limits-light.png). Torsos in the lineup are mostly held by ink edges; only head, hands and feet lack one.",
+   "better_fix": "Edge the marks rather than recolour the groups: `.fp-row .bar { box-shadow: inset 0 0 0 1px var(--ink-3); }`, `stroke=\"var(--ink-3)\" stroke-width=\"0.75\"` on the tape tick rects (in place of the paper stroke), and `.limit .geo { stroke: var(--ink-3); stroke-width: 1; vector-effect: non-scaling-stroke; }`. If the colours are changed instead, recheck neighbouring group pairs."
+  },
+  {
+   "id": "L11",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "v/l11.js, whole scale: the '1,000' label runs 16.5 px past the tape end at every width. At 360 and 390 px it also crosses the forest card's right border by 3.5 px. Task skeleton at 390: label 336.5-369.5 against a tape end of 353 and a border at 366, exactly as reported. Screenshot v/l11-390-x4.png shows the last digit over the border. In close-up, '45' runs 6.6 px past the tape end (inside the card). drawTape anchors end labels inside the tape; renderForest always uses translateX(-50%).",
+   "better_fix": "In renderForest's label loop: `var t = fmt.sep(v, 0), half = t.length * 3.5 + 2, x = P(v) / 100 * trackW; ... var tr = x + half > trackW ? 'translateX(-100%)' : x - half < 0 ? 'translateX(0)' : 'translateX(-50%)'; ticks += '<b style=\"left:' + P(v).toFixed(2) + '%;transform:' + tr + '\">' + t + '</b>';`"
+  },
+  {
+   "id": "L12",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "v/l12.js at 390x844: focusing the forest row 'Eddie Hall' scrolls to y=12,770. Enter opens the drawer in the lineup (y=6,432) with focus on #drawerH. Escape moves focus to the lineup cell .fig[data-id=eddie_hall] at y=5,128. The forest row is 53 tab stops away. 1280 px behaves the same. closeDrawer always focuses the lineup cell and does not record the opener.",
+   "better_fix": "In openDrawer: `state.opener = document.activeElement;`. In closeDrawer: `var o = state.opener; state.opener = null; if (o && document.contains(o) && o !== document.body) o.focus(); else if (c) c.focus();`"
+  },
+  {
+   "id": "L13",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "v/l13.js Tabs onto the second cell of a row and counts chalk pixels in the 2-4 px ring band on each side. At 390 light: left 570, top 178, bottom 178, right 0. At 1280: right 0. At 390 dark: right 0. The next cell's background and SVG paint over the right side of the outline (column-gap 0). Screenshot v/l13-x3.png.",
+   "better_fix": "`.fig:focus-visible { position: relative; z-index: 1; }`. Verified in v/fixes.js (fix-combined.png): all four sides of the ring show."
+  },
+  {
+   "id": "L14",
+   "real": false,
+   "severity": "not_a_bug",
+   "reasoning": "The measurements reproduce (v/l14.js, 390x844 host): first stop tag at 1,084 px, first figure at 1,473 px (1.7 screens), Rex at 9,679 px, page 26,205 px. At 360x740 the first figure is at 1,584 px. That misses design.md's 780-840 px target and its 17-18k px estimate. But this is a design trade-off, not a defect under the owner's rules (no wrong number, no contradiction on the page, no broken layout). The spec's own phone content list (7-line lede, 3-line spec line, 2-3 line caption, 76 px tape, 2-line jump row, controls, lineup intro, 48 px locator) cannot fit in 844 px, so the target was unreachable as written. The evidence also overstates: the first screen holds the to-scale glance tape with every build, cluster buttons that jump to Rex and Ollie, and both segmented controls (v/l14-first-390.png), so it is not 'all text, no figure'. The proposed fix is harmful: #spec is the only score definition on phones, because .mast-r (the scorebox) is display:none below 960 px.",
+   "better_fix": "Not a defect. If the owner wants a shorter phone page, move the lineup .sub and edge strip into the key (keep #spec), and update design.md's phone estimates to the real figures."
+  },
+  {
+   "id": "L15",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "v/l15.js: with #tExample focused, one ArrowDown changes the value to 'file' and fires change, which calls $('file').click(). Playwright records 1 filechooser event. With no file chosen, the select reads 'Choose a sheet\u2026' while #sheetName still reads '1566 \u00d7 812 px' and the 27 soldier result rows stay. A second ArrowDown on the last option fires 0 change events, so the dialog can't be reopened without first re-selecting the soldier (which re-measures). Chromium on Windows and Linux changes a closed select's value on arrow keys, so keyboard users hit this.",
+   "better_fix": "Take the file action out of the select. Options become only `<option value=\"soldier\">Soldier sheet (drawn here)</option>`, plus a `<button type=\"button\" class=\"btn ghost\" id=\"pickFile\">Choose a sheet\u2026</button>` wired to `$('file').click()`. Show the loaded file's name in #sheetName. The drop handler then no longer sets tExample.value = 'file'."
+  },
+  {
+   "id": "L16",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Partly reproduced (v/l16.js). The 88-to-130 tile (#empty-2) draws the hands-to-face band (now 86.9-199.4) as a rect stroked on all four sides, from x0 to x1: a closed chalk box exactly at 88 and 130. The label says 'HANDS TO FACE \u00b7 87\u2013200' and the text says 'across this stretch and beyond' (v/l16-empty-2-1280.png). The right edge at 130 shows an end that is not there. The 220-to-924 part no longer reproduces: with the current data the band ends at 199 < 216, so that tile has no band.",
+   "better_fix": "In drawGapTiles, fill without a stroke and stroke only the real ends: `svgEl('rect', { x: a, y: head, width: Math.max(2, b - a), height: wallH - head, fill: 'var(--chalk-band)' }, svg); svgEl('line', { x1: a, x2: b, y1: head, y2: head, stroke: 'var(--chalk)', 'stroke-width': 1 }, svg); if (L.range[0] >= g.from) svgEl('line', { x1: a, x2: a, y1: head, y2: wallH, stroke: 'var(--chalk)', 'stroke-width': 1 }, svg); if (L.range[1] <= top) svgEl('line', { x1: b, x2: b, y1: head, y2: wallH, stroke: 'var(--chalk)', 'stroke-width': 1 }, svg);`. Add a '\u2192' marker at an open end, like the forest's chevron."
+  },
+  {
+   "id": "L17",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "The fact-count half reproduced. Committed HEAD (1af0101) README:52, and the working tree when I first grepped, said 'lists the 113 research facts'. build.js prints 133 facts, data/facts.json has 133 keys, and the page's Sources section renders 133 .fact entries (16+33+25+18+19+20+1+1, v/l17.js). The test-count half does not reproduce: README:25 says 28 checks and test/test.js prints '28 passed, 0 failed'. During this review another session changed the uncommitted working-tree README to '133', so it is fixed but not yet committed.",
+   "better_fix": "Commit the README's '133' (already in the working tree). Better, drop hard-coded counts, or have build.js check that the README count matches Object.keys(factsSlim).length."
+  }
+ ]
+}

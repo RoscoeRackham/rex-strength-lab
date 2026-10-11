@@ -11,3 +11,5 @@ Three physics and anatomy tools built around Rex, an indestructible 10 ft dinosa
 Every number on every page is either sourced or labelled an estimate. Each folder has its own README with build and test steps, the sources, the review history and the known limits.
 
 All three pages are single self-contained HTML files (`dist/index.html`) built with Node and Python, with no runtime dependencies.
+
+Session histories, rebuilt from the raw logs: [`history/`](history/) (the session that built the first two projects) and [`history/2026-10-11-build-comparison-step1/`](history/2026-10-11-build-comparison-step1/) (Build Comparison, Step 1).

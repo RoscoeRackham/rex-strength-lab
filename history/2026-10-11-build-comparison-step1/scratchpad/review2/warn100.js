@@ -1,0 +1,18 @@
+const path = require('path');
+const B = path.join(__dirname, 'tree');
+const BC = require(B + '/build-calculator/src/calc.js');
+const Fig = require(B + '/build-comparison/src/figure.js');
+const M = require(B + '/build-comparison/src/measure.js');
+const T = require(B + '/build-comparison/data/outline.json');
+const calc = BC.create(require(B + '/build-calculator/data/builds.json'));
+const H = 1.8, r0 = calc.compute({ buildId: 'ansur2_m_p50', heightM: H }), g = {}; BC.SITES.forEach((s) => { g[s] = r0.girths[s].value; });
+const base = Fig.human(T, H, g, {}, { buttockFit: BC.FRUSTUM.M.buttock, armDeg: 35 });
+const make = (f, deg) => Fig.human(T, H, g, {}, { buttockFit: BC.FRUSTUM.M.buttock, widthScale: f, legAxis: base.dims.legAxis, armDeg: deg });
+const y = base.dims.levels, lv = { shoulder: y.acromion, chest: y.chest, waist: y.waist, crotch: y.crotch, knee: y.knee };
+const f = 1.937, deg = Math.max(35, Fig.armRestAngle((d) => make(f, d)) + 2), fig = make(f, deg);
+const img = Fig.renderSheet({ front: fig.front, side: fig.side }, H, lv, { figurePx: 1000 });
+const r = M.measureSheet(img, { heightM: H, heightRef: 'skull', skullRows: Fig.sheetSkullRows(img, H), density: 1060, bodyFatPct: 7.5, order: ['front', 'side', 'back'], seg: { refine: 0 } });
+console.log('arms drawn at', deg.toFixed(1), 'ok', r.ok, 'score', r.score.value.toFixed(1), 'parts', JSON.stringify(Object.fromEntries(Object.entries(r.volume_m3.parts).map(([k, v]) => [k, +v.toFixed(4)]))));
+console.log('arms landmarks', JSON.stringify(r.landmarks.arms));
+console.log('warnings:', r.warnings);
+console.log('girths arm_flexed', JSON.stringify(r.girths.arm_flexed), 'chest', r.girths.chest.value_m);

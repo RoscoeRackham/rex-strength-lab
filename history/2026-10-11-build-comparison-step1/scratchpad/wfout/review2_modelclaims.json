@@ -1,0 +1,108 @@
+{
+ "findings": [
+  {
+   "id": "R2-M1",
+   "severity": "major",
+   "title": "Face-limit band (87\u2013200, 'about 190', 'about 87') is inflated 14\u201318% because the tool silently reads the level arms as torso",
+   "location": "tools/compute_limits.js scoreAt() (arms drawn at max(35, rest+2) = 92\u00b0 at the face factors, 70.1\u00b0 at f=1.786); src/measure.js frontLandmarks/volume (arms with < 0.1\u00b7Hp rows dropped, their pixels counted as torso width \u00d7 trunk depth); data/limits.json items.face (score 189.14, range [86.89, 199.43], models); page: face limit card, forest row, empty-2 gap copy and gap tile 'HANDS TO FACE \u00b7 87\u2013200'",
+   "evidence": "Scripts in scratchpad/review2. face_arms.js measures each template's face shape two ways: (a) the tool on the full drawing (the stored value) and (b) the tool on head and body only, plus both arms as solids of revolution outside the body outline. Results, (a) vs (b): p50 189.1 vs 164.3 (tool arms volume 0.0000, sheet ok, no arm warning); p5 179.2 vs 154.3; p95 199.4 vs 174.5; Reeves 164.1 vs 139.6; Coleman 177.1 vs 154.2; largest arm 158.2 vs 137.2. The tool is 14\u201318% high. facelow.js and jump.js show the tool's score jumping where the arms are no longer detected: f 1.74 (arms at 69\u00b0, found) gives 75.5; f 1.75 (68.2\u00b0, not found) gives 83.8, an 11% jump for 0.6% more width. The pessimistic point f=1.786 reads 86.9 with arms not found. facelow2.js counts the arms as limbs there: 71.3. My own polygon integration (limits_indep.js) reproduces the stored f values (1.2539, 1.3464, 2.8373), but gives 164.6 for the face shape. Round 1 had already flagged that the face score depends on the arm pose (152.6 at 20\u00b0, 191.9 at rest); the fix chose the one pose the tool cannot parse.",
+   "expected": "With the arms counted as arms, contact geometry gives about 165 for the median soldier, and about 137\u2013175 across the six templates. The pessimistic end is about 71 (arms as limbs), or about 79 if the tool's own curve is carried past the jump (75.2 \u00d7 (1.786/1.74)\u00b2). The band is therefore roughly 70\u2013175, not 87\u2013200. The 'about 190' and 'about 87' labels on the card are wrong.",
+   "fix": "Score the limit shapes in a way that does not depend on the tool finding the arms. Either measure head and body with the tool and add both arms as solids of revolution, or have measureSheet keep a separated arm run shorter than 0.1\u00b7Hp, and warn whenever no arms are found. Regenerate limits.json. Add a test that the measured score stays smooth in f through the 60\u201380\u00b0 arm range."
+  },
+  {
+   "id": "R2-M2",
+   "severity": "major",
+   "title": "'Meet this test sooner' compares two bases: weight-based scores at each build's own fat against limit scores read from drawings at 7.5% fat",
+   "location": "src/app.html metSooner() and its callers: the band note in 'top' ('15 of them, from Arnold Schwarzenegger (about 27) up'), the gap 'empty' ('three of them, from Ronnie Coleman (about 39) up'), the limit cards ('already meet this test: 24 \u2026 / 11 \u2026 from \u2026') and the limits verdict",
+   "evidence": "The limit scores (arms 41 [37\u201341], thighs 46 [42\u201349]) are the tool's reading of a drawing at 1,060 kg/m\u00b3 and 7.5% fat. The figures' scores quoted beside them are weight-based, at each figure's assumed fat (5\u201319%). metby_basis.js scores each met_by figure's own drawing the way the limits are scored. Arms: Arnold 35.0 (page 27.5), Oliva 37.3, Bane 37.7, Doomsday 39.2, Hafthor 39.5, Kraemer 40.0, Heath 40.0, Yates 40.6, Lasha 40.9, Cutler 41.1, Wolverine 42.0, Kingpin 42.4, Eddie Hall 42.5, Coleman 44.4. Thighs: Coleman 44.4 (page 39.2), Big Ramy 44.6 (39.3), Luke Cage 46.9 (41.1).",
+   "expected": "Scored on the same basis, only Arnold (about 35) clearly meets the arms test before the 37\u201341 band. No figure meets the thighs test before the 42\u201349 band. Most of the gap between 'from 27' or 'from 39' and 41 or 46 comes from the basis: Arnold's drawing holds 34% more than his weight, and the strongmen are at 19% fat against 7.5%.",
+   "fix": "Quote each figure's outline scored like the limit shapes (for example, 'Arnold's outline, scored like the limit figures, is about 35'). Or drop 'sooner' and say that their outlines meet the test at scores inside the band."
+  },
+  {
+   "id": "R2-M3",
+   "severity": "major",
+   "title": "'The width sits where their own girths put it' is false for most of the figures counted: 18 of 24 (arms) and 10 of 11 (thighs) are template shapes",
+   "location": "src/app.html limit cards: 'The chart's own figures, drawn from their girths, already meet this test \u2026 Their outlines are not an evenly widened soldier: the width sits where their own girths put it, and reported girths can run high'; metSooner(): 'drawn from their girths'",
+   "evidence": "I listed the girth status for every met_by id. Arms (24): only Arnold, Heath, Cutler and Coleman have their own arm, chest and waist numbers; Oliva and Yates are partly derived. The other 18 have every girth filled from a template build scaled to their weight: Bane from Oliva; Doomsday and Wolverine from Yates; Hafthor, Kraemer, Lasha, Eddie Hall and Kingpin from the ANSUR largest-arm soldier; Big Ramy, Luke Cage, the Thing, Thor, Darkseid, the Hulks, Juggernaut and the Abomination from Coleman. Thighs (11): 10 use Coleman's template. Coleman's own thigh is status 'derived', with value_basis 'midpoint of 34 in (FitnessVolt) and 36 in (GreatestPhysiques); no source prints it' (builds.json).",
+   "expected": "The thighs evidence is one shape, Coleman's, resting on an unprinted fan-site thigh figure and drawn at 11 sizes. Most of the arms evidence is four template shapes. The text should not call these widths 'their own girths'.",
+   "fix": "Count only figures whose deciding girths are their own (arms: arm, chest and waist; thighs: thigh). Name the template behind the rest, for example: '11 figures, all Coleman's shape (his thigh is a fan-site figure)'."
+  },
+  {
+   "id": "R2-M4",
+   "severity": "major",
+   "title": "Target tool: no outline reaches about 76\u201383, misses are reported as successes, and outlines above about 85 are mis-measured, including the copied chest of 4.98 m",
+   "location": "src/app.html drawTarget(); src/figure.js solveTarget() (final 'return { f: fl, score: scoreAt(fl) }'); tools/export_targets.js; src/measure.js arm detection; the status line and 'Copy target numbers'",
+   "evidence": "In the page (page_targets.js): 'Army men, median \u2026 \u00d7 1.71 \u2026: it measures 73 (target 80) \u2026 and passes the tool's checks.' Likewise target 78 gives 71, Reeves 75 gives 69, Coleman 75 gives 70, largest-arm 75 gives 69. jump.js: f 1.74 gives 75.5 (arms found) and f 1.75 gives 83.8 (arms not found), so no width factor scores 76\u201383. solveTarget then returns the passing side below with no reason, and the page treats it as success. The test claims it 'says when no passing sheet reaches the target' but only tries 5, 20, 217 and 900. Above the jump, every outline has its arms at 70\u201392\u00b0 (sweep: from target 150 up, 'armDeg 92.0'); the sheet spec asks for an A-pose at 30\u201340\u00b0, yet the panel says the outlines are 'at the model-sheet spec'. Their readings are inflated (target_true.js): target 100 reads 100.1 by the tool but 82.5 with the arms as limbs (+21%); target 150, 129.1 (+16%); target 300, 266.1 (+13%). The copied numbers for the page's default target 100 (target_copy.js): \"chest\": 4.9802, \"arm_flexed\": null, \"forearm\": null. warn100.js: arms landmarks [null,null], no warning about the arms.",
+   "expected": "Targets that no outline can reach should be refused, with the reason given. For targets above about 85, the stated score should come from a reading that counts the arms. The chest of the widened soldier is about 2.07 m (1.067 m \u00d7 1.937), not 4.98 m.",
+   "fix": "Fix the arm-aware measurement as in R2-M1. In solveTarget, return {f:null, reason:'gap', bestF, bestScore} when the loop ends outside tolerance, and have the page say so. Draw targets with the arms inside the A-pose spec, or flag when they cannot be. Do not export girths for sites the tool did not find, nor a chest that includes the arms. Test targets 70\u201390 on all six shapes."
+  },
+  {
+   "id": "R2-M5",
+   "severity": "major",
+   "title": "The 'Drawing check' in the details of all eight comic giants overstates the drawing by about 20 points (level arms read as torso)",
+   "location": "src/app.html drawingCheck() (arms drawn at max(35, armAngle(e)) = 66\u201386\u00b0 for the giants)",
+   "evidence": "Page drawers (drawer_check.js): Hulk (savage) 'weighs 17% more than the weight counted'; Darkseid 18%; Abomination 15%; the Thing 22%. drawcheck.js gives the same reading with the tool's arms volume at 0.0000 for all eight; with the arms counted as limbs, the figures are Darkseid \u22125%, Hulk Marvel.com \u22124%, Juggernaut \u22124%, Hulk savage \u22125%, Hulk grey \u22125%, Abomination \u22125%, Thing +1%, Thor +1%, against the page's 18, 19, 19, 17, 15, 15, 22 and 22%.",
+   "expected": "The giants' drawings hold about their counted weight (\u22125% to +1%), not 15\u201322% more.",
+   "fix": "Use the arm-aware volume from R2-M1, or measure the drawing check with the arms at the A-pose and the arms' overlap removed. Re-state the 'from 3% less to 34% more' range in NOTES."
+  },
+  {
+   "id": "R2-m1",
+   "severity": "minor",
+   "title": "Pessimistic face factor 1.786 is applied relative to the median soldier, but the fitted model's reference (k=1) is normal-BMI men; the median soldier is k\u22481.09",
+   "location": "data/settings.json limits.face.pessimistic_girth_factor; tools/compute_limits.js faceLow = scoreAt(mainM, wedge)",
+   "evidence": "Fact elbow_flexion_vs_girth_wedge_model: tan((180\u2212\u03c6)/2) = 0.3153\u00b7k^1.69, k = (flexed biceps + flexed forearm)/0.614 m, with k=1 giving 145\u00b0 (normal-BMI men) and 'ansur_overall_median_k': 1.086. The median soldier's sum is 0.667 m (0.684 m at 1.80 m). Widening him by 1.786 gives k\u22481.94, so \u03c6\u224892\u00b0 (script output 'phi at k=1.786*1.086: 92.0'), already past the 100\u00b0 threshold. 100\u00b0 falls at k=1.785, a width factor of 1.643 (1.602 on absolute girth). facelow3.js reads the tool there at 66.8 (63.6), arms found.",
+   "expected": "The steep-fit end of the face band is about 64\u201367, not 87 (and not the about 71\u201379 of R2-M1 either).",
+   "fix": "Use f = 1.785 / k_soldier, or state that both models anchor k=1 at the median soldier and re-derive the factor on that basis."
+  },
+  {
+   "id": "R2-m2",
+   "severity": "minor",
+   "title": "The front/back landmark check fails on an exact mirror image, so the target tool refuses reachable targets",
+   "location": "src/measure.js measureSheet (the 'front and back landmarks line up' check compares detected argmin rows); src/app.html drawTarget() full-size step",
+   "evidence": "In the page: largest-arm 40, p95 60 and p5 15 each give 'The full-size outline fails the tool's own checks (front and back landmarks line up (within 2% of the height)), so it is not offered. Try another shape.' The details (target_sweep2.js) are 'off: waist (front 395, back 689)', 'off: waist (front 747, back 395), crotch (front 800, back 598)' and 'off: neck (front 197, back 219)'. renderSheet draws the back view as the exact mirror of the front. mirror2.js: torso widths at rows 390 and 690 are 211 and 210 px, so the waist argmin over that flat profile flips by about 300 px on one pixel of rasterisation. The same check would reject real sheets whose back view is near-symmetric.",
+   "expected": "A mirror image always lines up, and the reachable targets are offered.",
+   "fix": "Compare landmarks only where they are well conditioned. For example, pass if the back view's width at the front's row is within 1\u20132 px of its minimum, or compare width profiles. Use the guide-line rows when present. Add the three cases above as tests."
+  },
+  {
+   "id": "R2-m3",
+   "severity": "minor",
+   "title": "Face card says 'None of the chart's own figures meets this test', which is true only under contact geometry; the band's other model puts the giants past it",
+   "location": "src/app.html limit cards (met line); tools/compute_limits.js chart_figures.face (crease model only)",
+   "evidence": "The card's band and definition use both models; the 'met' line uses only the crease model. The fact's steep fit, tan((180\u2212\u03c6)/2)=0.3153\u00b7k^1.69, applied to each figure's own arm and forearm girths (k scaled to 1.755 m) gives Darkseid 78\u00b0, Hulk Marvel.com 77\u00b0, Hulk savage 72\u00b0, Abomination 68\u00b0, Hulk grey 69\u00b0, Juggernaut 76\u00b0, Thor 85\u00b0 and the Thing 85\u00b0. All are below the 100\u00b0 threshold (43\u201381\u00b0 on absolute girth).",
+   "expected": "Under the steep fit, eight chart figures meet the face test.",
+   "fix": "Write 'None meets it by contact geometry; by the body-fat fit the comic giants, Thor and the Thing would', or store met_by under both models."
+  },
+  {
+   "id": "R2-m4",
+   "severity": "minor",
+   "title": "The side-view check rejects Rex's real side view whenever his tail cannot be masked, which is always so in the page",
+   "location": "src/measure.js the 'side view is a side view' check; src/app.html measure() (no exclusion option)",
+   "evidence": "sideview_tail.js on assets/rex-turnaround.png with the READINGS skull rows. With the tails excluded (Node only) it passes: '0.94 at the waist, 0.60 at the hips'. With the tails kept, as the page must: 'FAIL depth \u00f7 front width 0.99 at the waist, 0.94 at the hips; a front or back view in the side position gives about 1', and the crotch row moves from 531 to 400. With the tail only in the side view, it passes (0.99 and 0.82). For comparison, ANSUR II buttock depth over hip breadth peaks at 0.87 across 4,082 men, so a tail-less real side view should not fail. The page does say the turnarounds are not measured there, so the impact is limited.",
+   "expected": "A real side view should not be refused with a message saying it looks like a front or back view.",
+   "fix": "Skip the hip ratio when the crotch is suspect or a tail is present. Otherwise name the likely cause in the detail ('a tail or object behind the hips adds depth') and offer a tail mask."
+  },
+  {
+   "id": "R2-m5",
+   "severity": "minor",
+   "title": "A sentence in the 'Shape' line of What this ignores starts in lower case",
+   "location": "data/settings.json ignores[0]",
+   "evidence": "Rendered text: '\u2026is disputed (Burton 2010). giants and monsters would need thicker bones and different proportions\u2026'",
+   "expected": "'Giants and monsters would need\u2026'",
+   "fix": "Capitalise 'Giants'."
+  }
+ ],
+ "verified_ok": [
+  "Build and tests in a git-archive copy of HEAD 7061d55: node build.js gives a dist identical to the working tree's; node test/test.js passes 30 of 30.",
+  "Width factors at the limits for the median soldier, recomputed by my own bisection: arms 1.2539, thighs 1.3464, face 2.8373, all matching limits.json. The thighs factor matches the closed form legAxis/lowThighR = 0.0900/0.0668 = 1.3464.",
+  "The arms and thighs limit shapes measured by the tool at 800 and 2000 px: 40.71/40.68 and 46.11/45.91, so the stored 40.71 and 46.11 are reproduced. My own polygon integration is 3\u20136% lower at both limits and also at f=1 (26.3 against 27.0): this is the tool's shoulder-merge convention applied consistently, not a defect. The headlines and bands (41, 37\u201341; 46, 42\u201349) are rounded correctly.",
+  "The order arms < thighs < face holds for all six templates, so 'arms forced out first, thighs close next, hands lose the face last' is true, and stays true with the corrected face values.",
+  "The 'about 4 cm of daylight' at the lower-thigh station: 4.5 cm at 1.755 m and 4.6 cm at 1.80 m in the model, against the fact's 4.4 cm. Hip-joint spacing is 17.5 cm against the fact's 17.4 cm ('about 17 cm'), and Spyropoulos gives a step width of 0.08 m.",
+  "met_by and the counts on the page match chart_figures: arms 24, with 15 scoring below 40.71; thighs 11, with 3 below the gap start of 44.56; face 0. The figure named first, its rounded score, and 'fifteen'/'three' are correct.",
+  "Arms drawn at max(20, rest+2): no chart figure's arm (beyond 0.35 of the upper arm) overlaps the body below chest height. Above it, the overlap is at most 0.3% of the arm area (grey Hulk, Abomination). The key's 'arms 20\u00b0 out, or just past where the figure's own outline lets them hang; the comic giants' arms are nearly level' is right (giants at 66\u201386\u00b0).",
+  "Target tool, apart from the defects reported: on all six shapes, targets 15, 20, 25, 30, 40, 60, 100, 150, 200, 300, 500, 700 and 900 come back within 0.5% at 1000 px and pass the checks. The 'range' refusal cannot occur between 15 and 900. Its 'head, hands, feet and joints unchanged' matches Figure.human's widthScale.",
+  "Skull-row validation: the turnaround readings under Rex's crest (52, 52, 57) and Ollie's horns (36) are accepted. The height-bar row is accepted on anti-aliased template sheets at 600, 1000 and 2000 px. The 20% upper limit leaves room for the 4\u20135% crest and horns. Rows above the figure or below its top fifth are refused (tests).",
+  "Side-view check: in ANSUR II, waist depth/breadth exceeds 0.92 in 8 of 4,082 men, buttock depth/hip breadth in none (max 0.87), and no man exceeds it at both. Both turnarounds pass with their tails masked, and pass with the tail only in the side view. Front-plus-back sheets are refused.",
+  "Copy checked against facts and data: Kondo 121.3 kg at 1.86 m gives S 33.9 ('scores 34', DERIVED). Kraemer FFM 118.0 + 5.2 = 123 kg. Kouri 56 + 18 = 74 non-users, 46 of 83 users under 25, slope fitted to non-users of about 1.59\u20131.93 m. Trexler: 54/235 (23%) on Kouri's equation, 62 (26%) on the study's own scale. Mr America 22.6\u201328.0, mean 25.4 (25.8 and 29.2 with Todd's heights; Willoughby 1970). The p95 soldier at the median's fat scores 22.8 ('about 23'), from 33.9% against 25.3% fat. Rex on Kouri's scale 252.9 ('about 250') against S 160.1. Thor 61.8/4 to 61.8/2 gives 15\u201331. The giants score 69\u201384, and Rex is 'roughly twice' them (1.91\u00d7). Meatball 924 (899\u2013949, shown as 900\u2013950), cylinder 1,386 ('about 1,400'), cube 1,765 ('about 1,800'). Gap edges 44.6, 62.5, 87.7, 125.8 and 216.2 are shown as 45, 62, 88, 130 and 220. The gapStep comparisons (largest-arm 29, Oliva 31) are within 4%. Vasen: 49 of 50, all tasks, 75\u2013120\u00b0. Burton 2010 is sourced in height_exponent_regression_vs_isometry.",
+  "The new fact labels and source titles (archive.org search snippets, item links, the Todd 2008 page range, the Hotzman 2011 protocol) match the facts' quoted text. Superman's 'overstated' flag is backed by the DK DC 2021 OCR quote recorded in dc_density_claims_fan_only. The Thing's 'composition unknown' wording matches thing_rocky_hide."
+ ]
+}

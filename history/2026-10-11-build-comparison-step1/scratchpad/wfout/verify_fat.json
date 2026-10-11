@@ -1,0 +1,189 @@
+{
+ "checks": [
+  {
+   "key": "nhanes_dxa_bodyfat_men_1999_2004",
+   "ok": true,
+   "issue": "Re-fetched sr11_250.pdf (same sha256 686bf1c5...). Table 3 matches cell for cell: men 20+ crude n 6,559, mean 28.0, P5\u2013P95 17.4\u201338.0; 20\u201339 y n 2,183, 26.1, 15.5\u201337.2; 40\u201359 y and 60\u201379 y also match; age-adjusted mean 28.1. The methods text confirms 'lean mass was decreased by 5%', no scans for people over 300 lb or taller than 6'5\", and multiple imputation. One caveat is missing: this is Hologic QDR 4500A data with an NCHS correction, while the soldier, football and strongman DXA values come from GE Lunar machines. 'DXA' values from different groups are therefore not strictly comparable."
+  },
+  {
+   "key": "nhanes_dxa_bodyfat_men_2011_2018",
+   "ok": true,
+   "issue": "Every men's cell in Liu 2021 Table 3 matches (Hispanic 27.8\u201328.6, NH white 26.8\u201327.9, NH black 24.9\u201325.5, NH Asian 25.5\u201328.2, Other 26.4\u201328.3; both sexes 32.6\u201333.1). DXA was done at ages 20\u201359 only; 0.1% were ineligible. One wording overstates. 'Confirms the 1999\u20132004 percentiles are not out of date' is too strong: Liu itself says 2011\u201318 values were 'much higher' than 1999\u20132004, and it used different software (Hologic APEX 4.0, NHANES BCA). The men's means do agree with 1999\u20132004 ages 20\u201359 (26.1 and 28.6), so 'consistent with' is the right phrase.",
+   "corrected": "Notes: replace 'confirms ... not out of date' with 'men's 2011\u201318 means (25\u201329%) are consistent with the 1999\u20132004 values for ages 20\u201359; different DXA software; Liu itself describes overall values as much higher than 1999\u20132004'."
+  },
+  {
+   "key": "taylor2024_army_dxa_bodyfat",
+   "ok": true,
+   "issue": "Values verified against Table 1 (24.3 \u00b1 6.3 DXA; 19.5 \u00b1 6.3 old AR; FM 21.5; FFM 61.7; height 176.3; weight 85.9; BMI 27.6), Table 2 (male 1-site manual without height: \u221227.05, 2.06, \u22120.12), Table 3 (male 1-site manual RMSE 3.351; AR 5.886) and Table 4. Three small corrections. (a) Table 1 gives cohort 1 men as n = 1259, not the abstract's 1261. (b) Cohort 2 men N = 753 is printed in the Table 1 header; no inference from race counts is needed. (c) The column order needs no inference: the text says 'mean bias of \u22124.79% ... in men'. The FFM caveat (FM + FFM = 83.2 vs 85.9 kg, so FFM probably excludes bone) is reasonable.",
+   "corrected": "cohort1 men n: 1259 in Table 1 (1261 in the abstract); cohort2 men N = 753 (stated); male AR bias \u22124.79 is stated in the text."
+  },
+  {
+   "key": "army_one_site_tape_equation_2023",
+   "ok": true,
+   "issue": "The IG Update 23-4 PDF (same sha256 236b7ad9...) has the men's and women's equations, the worked examples (17.48%, 26.475%) and 'Beginning 8 June 2024, one-site tape test method is the only authorized method' (in context: the only circumference tape method). The SI conversion is correct (0.2646 per kg, 0.7835 per cm). I re-fetched the Army.mil article (23 Feb 2024, Maj. Christina Deehl). It says USARIEM 'conducted a comprehensive study in 2021 involving 2,690 Soldiers', 'currently pending publication', comparing DXA, BIA and 3D scans. It says 'the DoD developed the single-site tape test'. It does not say the equation was fitted to that study, so 'the change came from' that study overstates slightly. Status 'official' is fine for an official Army summary, but AD 2023-11 itself was not fetched."
+  },
+  {
+   "key": "ansur2_men_bodyfat_from_army_equation",
+   "ok": false,
+   "issue": "I reproduced every number on the ANSUR II CSV with my own script (n 4,082; official equation mean 24.10, SD 5.68, P5 15.24, P50 24.03, P95 33.53, min 8.19, max 48.63; FFMI P50 20.81; S P50 21.35; Taylor equation mean 26.61, P5 17.26, P95 36.47). The numbers are right. The 'consistency check' is wrong. The official and Taylor equations have the same weight coefficient, so for any man the gap is \u22120.08 + 0.07 \u00d7 waist in inches: 2.2 points at 32 in, 2.4 at 36 in, 2.7 at 40 in. Taylor's DXA cohort has almost the same body size as ANSUR II (85.9 vs 85.5 kg; BMI 27.6 vs 27.7). Taylor's own 1-site equation has a male bias of only \u22120.39, which implies a mean abdomen of about 90.9 cm. On that cohort the official equation would give about 21.5%, about 2.8 points below the measured 24.3%. My inference assumes bias = predicted \u2212 DXA, which the \u22124.79 AR bias confirms. ANSUR II's navel waist averages 94.1 cm, about 3 cm more at the same weight, perhaps from a different measuring protocol. So the 24.1 vs 24.3 'match' is two offsets of about 3 points cancelling, not a validation. Taylor's DXA-fitted equation puts the ANSUR mean at 26.6%. The honest statement is a mean of about 24\u201327%, median S 20.6\u201321.4 and median FFMI 20.1\u201320.8. The headline still stands: the median man scores about 21, not 24. At the median height (1.755 m) and weight (84.6 kg), S = 24 needs 14.8% fat. Scripts: scratchpad/research/fat-check/scripts/ansur_check.py and ansur_vs_taylor.py.",
+   "corrected": "bodyfat mean 24.1 (official equation) to 26.6 (Taylor DXA-fitted equation); P5\u2013P95 15.2\u201333.5 (official) or 17.3\u201336.5 (Taylor); median S 21.4 (official) or 20.7 (Taylor); median FFMI 20.8 or 20.1. Remove 'matches measured DXA mean' as evidence. Add: the official equation probably reads about 2\u20133 points below GE iDXA in Taylor's cohort (derived from Taylor Tables 1, 2 and 4)."
+  },
+  {
+   "key": "barakat2022_natural_pro_peak_week_dxa",
+   "ok": false,
+   "issue": "Table 2 matches: DXA 5.5, 6.0, 6.2, 5.6, 5.4, 6.3%; competition day 73.55 kg, FM 4.63, FFM 68.91 (FFM includes BMC 2.591), JP-7 ultrasound 3.6. The subject is the first author, 29 years old, a 'professional natural bodybuilder', and placed first in both classes in October 2021. A stadiometer height was taken but is not reported (unknown, as stated). One claim is off: 'JP-7 reads about 2-3 points lower than DXA'. On days with both, the gap is 1.4\u20132.7 points (2.4, 2.1, 1.4, 1.6, 2.7).",
+   "corrected": "Ultrasound JP-7 read 1.4\u20132.7 points (mean about 2.0) below DXA during peak week."
+  },
+  {
+   "key": "kistler2014_natural_bb_dxa",
+   "ok": true,
+   "issue": "Abstract re-fetched: 'body composition was measured monthly by DXA', 88.6 to 73.3 kg, 17.5 to 7.4%. The pro-qualifying contest and 26 weeks are correct. The caveat that the last scan is not necessarily contest day is appropriate."
+  },
+  {
+   "key": "schoenfeld2020_natural_bb_case",
+   "ok": true,
+   "issue": "Abstract re-fetched: 'Body fat was reduced to very low levels (\u223c5%) immediately before competition'. He was a high-level amateur. The methods listed are multifrequency BIA and skinfolds; the abstract does not say which gave the 5%, as the researcher states. 'Measured' is acceptable only as a field-method value; it is not a lab measurement."
+  },
+  {
+   "key": "robinson2015_natural_bb_skinfold",
+   "ok": false,
+   "issue": "Table 2 and the text match (178.5 cm, 86.0 kg, 14%, FM 11.7, FFM 74.3; \u22126.7 kg fat, \u22126.8% body fat, \u22125.0 kg FFM; ISAK skinfolds with Davidson equations). The derived end value is wrong. The researcher subtracted 6.8 from the rounded 14. From the tabled masses, start fat is 11.7/86.0 = 13.6%, and end fat is (11.7 \u2212 6.7)/(86.0 \u2212 11.7) = 5.0/74.3 = 6.7%, matching 13.6 \u2212 6.8 = 6.8%. The FFMIs (23.3 to 21.7) are correct.",
+   "corrected": "start_bodyfat_pct 13.6 (tabled as 14); end_bodyfat_pct_derived 6.7\u20136.8 (not 7.2). Fix the same number in bodyfat_range_natural_stage measured_points."
+  },
+  {
+   "key": "mitchell2018_bodyfat_pct_derived",
+   "ok": false,
+   "issue": "The arithmetic is correct: 8.8/80.6 = 10.9%; 5.3/76.2 = 7.0%; with BMC 3.5 kg, 10.5% and 6.6%. Two problems. (a) The abstract I re-fetched does not name the body-composition method; it says only 'Assessments included body composition'. 'DXA' in this key's label and summary (and in the existing key's label) is not confirmed. (b) The PRE16 figure divides PRE16 fat by PRE8 lean, because PRE16 lean is not in the abstract. That mixes time points and should be stated.",
+   "corrected": "Label: 'derived from abstract fat and lean masses (method not stated in the abstract; DXA unconfirmed)'. Note that PRE16 %fat uses PRE8 lean mass."
+  },
+  {
+   "key": "rosaci2026_ifbb_pro_case",
+   "ok": true,
+   "issue": "Full text verified. Table 3: 128.7/122.3 kg, 6.1/5.9%, FFM 120.8/115.1. Skinfolds sum to 13.9 and 13.2 mm (5.3+3.9+4.7 and 5.0+3.7+4.5). The Evans equation reproduces 6.08% and 5.91%, with a floor of 2.65% for a white man. June 11, 2025 was 10 days before the IFBB Huanji China Pro. The drug-status quote is verbatim. FFMI 39.0/37.2 and S 39.9/38.0 recompute. The authors themselves warn that the equation 'was not specifically validated for top-level body builders'. Two additions. Add the context 'competed in 3 Mr. Olympia Open contests, best placing 12th', so it is not read as a winner-level physique. Note that %fat is a skinfold-equation prediction, not a scan. The Moreno abstract re-fetched: SM 19.6\u201360.4 kg, no %fat, so 12.2% is second-hand, as stated."
+  },
+  {
+   "key": "giakoni2025_mr_universe_bia",
+   "ok": true,
+   "issue": "Table 2 matches (78.0 \u00b1 6.5 kg, 171.3 \u00b1 3.7 cm, 8.9 \u00b1 1.8%, FFM 70.8 \u00b1 5.8). InBody 970, Mr. Universe Championship in Santiago after the official weigh-in. The IFBB is thanked in the acknowledgements. FFMI 24.1 from means is correct. One unsourced aside: the 'Raymond 2018: BIA underestimated DXA by 3.0 \u00b1 3.8 points' figure has no fetched URL in this key. Remove it or source it."
+  },
+  {
+   "key": "baggish2017_aas_users_ffmi",
+   "ok": true,
+   "issue": "Table 1 matches (FFMI 26 (24\u201328) vs 23 (21\u201325); BMI 31 (29\u201333) vs 29 (27\u201331); height 1.8). The footnote formula with 6.1 and the exclusion sentence (FFMI above 26 with fat below 10%) are verbatim. 58 on-drug and 28 off-drug. Add context: both groups were recruited as men aged 34\u201354 who 'could bench-press 275 pounds'. The non-users are strong experienced lifters, not ordinary men."
+  },
+  {
+   "key": "hudson2020_aas_users_ffmi",
+   "ok": true,
+   "issue": "Table 1 matches, including the printed typo '24 (25\u201328)' for former users, weights 97/95/98/91 and age 42. Same formula with 6.1."
+  },
+  {
+   "key": "bulut2024_aas_users_lean_mass_index",
+   "ok": true,
+   "issue": "Table 1 matches (n 27/32/31; LMI 20/23/21 (2); body fat 22/19/24; ages 31.2/38.3/35.3). Men in recreational strength training; blinded Cologne urinalysis; AAS found in 29 of 32 current and 3 of 31 former users. The body-composition method is not named in the text (confirmed)."
+  },
+  {
+   "key": "buhl2025_aas_users_bia",
+   "ok": false,
+   "issue": "Table 1 men's values match: body fat 13.1 (10.4\u201316.5), 17.8 (12.3\u201321.2), 20.0 (16.3\u201322.5); BMI 29.4, 27.4, 26.5; heights 1.81, 1.79, 1.83. SOZO bioimpedance; March\u2013December 2022. The current-user count is not inferred: the abstract states '80 ... active AAS users (... 61 men [76.2%])'. 61 + 18 + 42 = 121. 'Active' includes men who stopped within 3 months. Median cumulative use was only 2.2 years.",
+   "corrected": "current_men_n: 61 (stated); previous 18; nonusers 42."
+  },
+  {
+   "key": "bhasin_testosterone_ffm_gains",
+   "ok": false,
+   "issue": "The 1996 abstract matches (n 43, 600 mg/week, 10 weeks, underwater weighing, +6.1 \u00b1 0.6 kg with exercise). The 2001 abstract matches (61 men, GnRH agonist plus 25\u2013600 mg/week for 20 weeks; nadirs 253\u20132,370 ng/dL; +3.4, 5.2, 7.9 kg). +2.4 FFMI at 1.80 m is correct (7.9/3.24 = 2.44). Two 2001 details are not in the fetched abstract: 'no training' (it says only 'Energy and protein intakes were standardized') and 'DXA'. I tried the publisher full text and got HTTP 403. Mark both unconfirmed.",
+   "corrected": "bhasin2001 design: 'GnRH agonist + testosterone enanthate; energy and protein standardized; exercise restriction and FFM method not confirmed (abstract only)'."
+  },
+  {
+   "key": "nandrolone_bodybuilders_trials",
+   "ok": true,
+   "issue": "Both abstracts match: 2004, 4C, +2.2 kg mass, +2.6 kg FFM, n 16, ages 19\u201344; 2001, DXA bone-free lean 59.54 to 63.06 kg, total 76.16 to 78.73 kg, fat unchanged."
+  },
+  {
+   "key": "kaufman2024_aas_doses",
+   "ok": true,
+   "issue": "Table 1 matches (973 (627), 1978 (2130), 10.0 (6.0) years; N 51/32/19; age 47.5). The exclusion quote (FFMI 27.7, 7.5% fat) is verbatim. Status 'reported' fits self-reported doses. Calling one exclusion 'the group's working natural boundary' overstates. The group's stated rule is FFMI above 26 with fat below 10% (Baggish 2017). Also, 973 mg/week is the mean of 51 middle-aged long-term users in one US cohort, not 'users' average real-world dose' in general, as the summary says."
+  },
+  {
+   "key": "yu2014_doped_vs_clean_powerlifters",
+   "ok": true,
+   "issue": "Table 2 matches (108 \u00b1 17 vs 110 \u00b1 13 kg; LBM 89.8 \u00b1 8.2 vs 74.6 \u00b1 6.8, p = 0.06; lean leg 28.6 vs 25.5). The scan method and heights are absent (confirmed). Two nuances. The clean group were Swedish Powerlifting Federation members with repeated negative doping tests; the doped group were 'strength training elite athletes', not all powerlifters. The doped group was also 12 years older (41.1 vs 29.1)."
+  },
+  {
+   "key": "kondo1994_sumo_ffm_limit",
+   "ok": true,
+   "issue": "The abstract matches. FFMI 121.3/1.86\u00b2 = 35.1 and S = 33.9 recompute. 0.7 kg/cm is correctly presented as the authors' suggested limit, not a measured one."
+  },
+  {
+   "key": "hattori1999_sumo_divisions",
+   "ok": true,
+   "issue": "The abstract matches (n 36, 117.1 kg, BMI 36.5, 26.2%, cut-off about 30 on plain FFM/height\u00b2). Mean FFMI from means: 117.1 \u00d7 0.738 / (117.1/36.5) = 26.9. Correct."
+  },
+  {
+   "key": "bosch2019_d1_football_linemen_dxa",
+   "ok": true,
+   "issue": "Tables match: OL n 83, 192.9 cm, 135.5 kg, 30.8 (4.2)%, range 19\u201341, lean 89.5; DL n 53, 189.1 cm, 120.4 kg, 23.5 (7.0), range 12\u201337, lean 87.6; LB 18.8; DB 13.3. GE Lunar with enCore 16.2 reanalysis; pre-season. Lean-only FFMI 24.1 and 24.5 recompute."
+  },
+  {
+   "key": "martinezmireles2025_review_strength_sports",
+   "ok": true,
+   "issue": "Table rows match: NFL OL DXA n 65, 1.928 m, 28.8%, FFMI 27.0; DL n 58, 25.2%, 27.3; ADP OL n 11, 25.1%; DL n 7, 18.5%; 'Weightlifting, national from New Zealand ... heavy weight' n 15, 26.4%, FFMI 29.4. The reference list confirms [41] Kraemer 2005, [50] Anding & Oliver 2015 (Sports Sci Exch, Spanish) and [80] Keogh 2007, and the Keogh abstract confirms powerlifters. 'Reported' and secondary are right. Keogh's own sampling: one international and two national competitions, so 'national' is the review's label."
+  },
+  {
+   "key": "weightlifting_superheavy_bodyfat",
+   "ok": true,
+   "issue": "Correctly marked unknown, with the range labelled an estimate. The source 'URL' is a search query, which is fine as a record of the search but is not evidence."
+  },
+  {
+   "key": "bodyfat_range_everyday_men",
+   "ok": false,
+   "issue": "Centring each ANSUR build on the official equation with \u00b14 points biases the centre low. On Taylor's representative DXA cohort the official equation reads about 2.8 points below DXA (derived; see the ansur2 check), and Taylor's DXA-fitted equation gives ANSUR 2.4\u20132.7 points more for every man. The group range 15\u201334 should span both equations (P5 15.2 to P95 36.5). The working median should be about 24\u201327%, not a single 24. 'S proportional to (1 \u2212 fat): 15 vs 34% changes S by about 22%' is right relative to the lean end (0.66/0.85).",
+   "corrected": "ANSUR builds: centre = mean of the official and Taylor 1-site equations (about +1.2 points over the official value), band = both equations \u00b1 about 3.4 RMSE. Group range about 15\u201337%, median about 24\u201327%. Label: 'estimated from waist and weight (two Army-soldier DXA equations)'."
+  },
+  {
+   "key": "bodyfat_range_natural_stage",
+   "ok": false,
+   "issue": "'Lab-grade (DXA) contest-day values cluster at 4.5\u20136.3%' overstates the evidence. The re-fetched Rossow 2013 abstract does not name the body-fat method, so 'Rossow2013_DXA' is unconfirmed (the existing key does not confirm DXA either). The only confirmed DXA contest-day value is Barakat: one self-described natural, 6.3% (5.4\u20136.3 over the week). Kistler's 7.4% is DXA at the end of prep, not contest day. Mitchell's DXA is unconfirmed. Robinson's end value is 6.7\u20136.8%, not 7.2. The sensitivity is not \u00b13%: 4% and 10% around 6% change S by +2% and \u22124%. The 4\u201310% range itself is a reasonable estimate.",
+   "corrected": "measured_points: Rossow2013_method_unconfirmed 4.5; Robinson2015_skinfold_end_derived 6.8. Text: 'one confirmed DXA contest-day value (Barakat 6.3%) plus field-method values of about 4\u20136%'. S effect +2% / \u22124% around 6%."
+  },
+  {
+   "key": "bodyfat_range_natural_offstage",
+   "ok": false,
+   "issue": "Calling 13% 'Kouri's non-user' value mislabels it. The existing key kouri1995_group_means has about 13% for both groups and 12.8 \u00b1 4.8% overall, from secondary summaries (Helms, McDonald), not a non-user mean from the paper. Mitchell's 10.5\u201310.9 at 16 weeks out is method-unconfirmed and mixes time points. The other points match their keys (Graybeal 11.8 \u00b1 4.4, 4C; Kistler 17.5; Robinson 13.6\u201314; Bauer 9.6\u201316.3; Kondo bodybuilders 10.9).",
+   "corrected": "'Kouri 1995 overall mean about 13% (12.8 \u00b1 4.8%, users and non-users together; secondary summaries, status reported)'."
+  },
+  {
+   "key": "bodyfat_range_enhanced_stage",
+   "ok": false,
+   "issue": "Coleman's S recomputes (39.6, 39.2, 37.9 at 4, 5 and 8%). 'Moves S by only about \u00b12%' is not symmetric: 4% and 8% around 5% change S by +1% and \u22123%. Withers 1997 is 'probably enhanced' only by inference: its derived FFMI of about 27.8 at 5% fat exceeds the Pope screening rule. Drug status is not stated, so it must be labelled an inference. The natural DXA floor of 4.5\u20136.3% leans on Rossow's unconfirmed method (see above). The claim that diuretics lower FFM water rather than fat is unsourced physiology. Label it as reasoning.",
+   "corrected": "S effect +1% / \u22123% around 5%. Withers listed as 'drug status not stated; FFMI about 28 at 5% suggests use (inference)'."
+  },
+  {
+   "key": "bodyfat_range_enhanced_offseason",
+   "ok": true,
+   "issue": "Coleman's off-season figure recomputes: FFM 0.95 \u00d7 134.3 = 127.6 kg gives 10.7% at 142.9 kg and 14.8% at 149.7 kg. Those weights come from a magazine-sourced 'reported' key, which should be said. Buhl and Bulut values verified. Kouri's 13% is secondary and covers both groups (see above). The range is labelled an estimate."
+  },
+  {
+   "key": "bodyfat_range_strongmen_lifters",
+   "ok": false,
+   "issue": "The stated rationale does not match the numbers. Kraemer's 18.7 \u00b1 1.5 \u00d7 6.2 gives 9.4\u201328.0, so the upper end of 28 is not 'clipped by sumo or powerlifter values (about 26%)'. The lower end of 12 is about \u22121.1 SD and is the one actually cut. 'S at 12% vs 28% differs by about 18%' is correct (0.72/0.88). Shaw's 17.6% is a self-filmed hydrostatic test relayed by FitnessVolt, a fitness magazine site. Keep it 'reported', and the existing key is 'disputed' over his height.",
+   "corrected": "Notes: '12\u201328% runs from about mean \u2212 1.1 SD to mean + 1.5 SD of Kraemer's DXA strongmen; the lower end was raised to 12% (judgement); the upper end already covers the sumo and heavyweight-powerlifter means (about 26%)'."
+  },
+  {
+   "key": "bodyfat_range_comic_characters",
+   "ok": true,
+   "issue": "Correctly labelled an assumption with no source. The 'source' URL is the Bauer abstract, which is not a source for comics. Better to give no URL and cite the human-range keys. The 'mass, not muscle' handling for the Thing and armoured Colossus is sound."
+  },
+  {
+   "key": "bodyfat_range_rex_ollie",
+   "ok": true,
+   "issue": "Matches BRIEF.md line 12 verbatim. 5\u201310% around 7.5% gives \u00b12.7% in S. Correct. 'Official' fits the vocabulary for the owner as publisher, though 'canon' could be named in notes."
+  },
+  {
+   "key": "recommendations",
+   "ok": false,
+   "issue": "Mostly sound and well labelled. Overstatements: (1) Rec 2 centres everyday builds on the official equation and says 'S \u2248 21, not 24'. The conclusion holds (20.6\u201321.4), but the body-fat centre should span both equations (24\u201327%). (2) Rec 3 calls 13% 'Kouri's non-user mean'. It is the overall approximate mean from secondary sources. (3) Rec 5's 'max reported about 30\u201332' is not supported by any fact in this research. Its only basis is Helms' secondary remark on Kouri ('some users reached about 32') in the existing key, so cite it as such or drop it. (4) Rec 5 states Bhasin's +2.4 FFMI without noting it was in GnRH-suppressed men and that the training status is unconfirmed. (5) Rec 4 and the summary call DXA contest-day natural values 'lab-grade ... 4.5\u20136.3%'. Only Barakat (n = 1) is confirmed DXA on contest day. (6) The summary says 'Users' average real-world dose was 973 mg/week'. That is one cohort of 51 middle-aged long-term US users, self-reported."
+  }
+ ],
+ "missing": "- Different DXA machines give different numbers. NHANES used a Hologic QDR 4500A with NCHS's 5% lean-to-fat correction (1999\u20132004) and APEX 4.0 software (2011\u201318). Taylor, Bosch and Kraemer used GE Lunar. Barakat used a Hologic. 'DXA' body fat is not strictly comparable across chart groups, and the research never mentions this. At minimum, say so on the page.\n- No published accuracy figure for the official AD 2023-11 men's equation. Only Taylor's slightly different equation has an RMSE and bias, and on Taylor's cohort the official equation implies about \u22122.8 points (derived). The USARIEM 2,690-soldier study is 'pending publication' per Army.mil. Neither AD 2023-11 nor ALARACT 046/2023 was fetched.\n- ANSUR II's navel waist (mean 94.1 cm) is about 3 cm larger than the abdomen implied for Taylor's soldiers at the same weight. The cause (measuring protocol vs real difference) is unresolved and should be stated as a limitation.\n- The body-fat method is unconfirmed for Rossow 2013 and Mitchell 2018 (both abstracts are silent) and for Bhasin 2001 (also unconfirmed: no-training design). Heights are missing for Barakat, Mitchell, Rossow and Yu, so no FFMI can be computed for them.\n- NHANES 2011\u201318 DXA men's percentiles: Liu's appendix table 6 and the public NHANES DXA files could give current percentiles to replace or check the 1999\u20132004 table. Not fetched.\n- No lab (DXA or 4C) body fat for any Olympia-level pro, for super-heavyweight weightlifters, or for the named strongmen Hall and Bjornsson (acknowledged by the researcher). Kouri 1995's full text (the 13% and the 'about 32' user maximum) is still secondary.\n- Sources for a few asides are missing: Raymond 2018 (BIA vs DXA in football players), and the claim that stage diuretics lower FFM water rather than fat.",
+ "verdict": "Transcription is accurate. I re-fetched 16 full texts or PDFs (NCHS sr11_250, the Army IG PDF, Liu, Taylor, Barakat, Robinson, Rosaci, Giakoni, Baggish, Hudson, Bulut, Buhl, Kaufman, Yu, Bosch, Martinez-Mireles) and 17 abstracts, plus the Army.mil article. Every quoted table cell I checked matches. All derived FFMI, S, Coleman and Kondo numbers recompute, and the ANSUR II statistics reproduce exactly.\n\nWhat needs fixing:\n\n(1) The ANSUR II check is wrong. The official equation's 24.1% only coincidentally matches the 24.3% DXA soldier mean. On Taylor's own DXA cohort, which is the same body size, the official equation would read about 2.8 points low, and Taylor's DXA-fitted equation gives ANSUR 26.6%. Everyday men should therefore carry about 24\u201327% median fat (range about 15\u201337%). The headline survives: median S is about 21 (20.6\u201321.4), not 24.\n\n(2) Small number errors:\n- Robinson's end body fat is 6.7\u20136.8%, not 7.2%.\n- Buhl's 61 current-user men is stated in the paper, not inferred.\n- Taylor's Table 1 gives n = 1259.\n- Barakat's ultrasound-vs-DXA gap is 1.4\u20132.7 points.\n- The S sensitivity bands are asymmetric: +2/\u22124% for natural stage, +1/\u22123% for enhanced stage.\n- The strongman-range rationale does not match its numbers.\n\n(3) Evidence overstated:\n- The 'DXA' label for Rossow and Mitchell is unconfirmed, so lab-grade contest-day natural data are one subject (Barakat 6.3%).\n- Kouri's 13% is an overall secondary figure, not a non-user mean.\n- 'Max about 30\u201332' for steroid users is unsupported here.\n- Bhasin 2001's 'no training' and 'DXA' are unconfirmed.\n- Withers' 'probably enhanced' is an inference and must be labelled as one.\n\nStatuses are otherwise appropriate. The magazine-relayed Shaw value stays 'reported', and the secondary review stays 'reported'. My scripts and downloads are in /tmp/claude-0/-home-user-rex-strength-lab/9b81b796-3162-56bd-85b7-22e02b6583e2/scratchpad/research/fat-check/ (scripts/ansur_check.py, scripts/ansur_vs_taylor.py, dl/)."
+}

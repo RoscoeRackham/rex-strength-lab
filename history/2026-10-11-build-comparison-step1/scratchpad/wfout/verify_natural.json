@@ -1,0 +1,120 @@
+{
+ "checks": [
+  {
+   "key": "kouri1995_fulltext_methods",
+   "ok": true,
+   "issue": "Re-downloaded the publisher PDF. You need the Ovid cookie set by first loading the /fulltext/ page; a cold request is 307-redirected to HTML. The PDF's md5 matches the researcher's file. I read all 6 pages at 150-300 dpi and every number checks:\n- n: 156 recruited, 134 evaluable, +23 from the testosterone trial (5 former users, 18 non-users). Totals 157 = 83 users + 74 non-users.\n- Table 1: users 1.79\u00b10.075 m, 91.69\u00b111.8 kg, 12.8\u00b14.8% fat, FFMI 24.8\u00b12.2. Non-users 1.80\u00b10.074 m, 82.06\u00b113.0 kg, 12.5\u00b15.5% fat, FFMI 21.8\u00b11.8.\n- 'slope of 6.1 kg/m3' and 'Normalized FFMI = FFMI + 6.1 x (1.8 - h)', with 1.8 m as 'the mean height of the nonusers'. 6.3 appears only in the abstract.\n- 37 (45%) users beyond the top non-user. 'all 74 nonusers produced urine samples negative'. Six non-users (8.1%) above 20% fat. Skinfold SE 3.4%, with the 25.0 vs 24.2 example. The 1.59 m (23.5) and 1.93 m (25.4) men, and the 'appeared more muscular' quote. The '67%' slip (52/83 is 63%).\nTwo nits:\n- Table 1 says only 'FFMI'. 'Before height normalisation' is an inference; it makes almost no difference at these mean heights.\n- 18 of the 74 non-users came from a testosterone trial in 'normal men', not from gyms, so 'drug-free lifters' (used in the recommendations) overstates the group.",
+   "corrected": "Note: 74 non-users = 56 gym-recruited athletes + 18 men from a testosterone trial. Table 1 FFMI normalisation not stated (inference)."
+  },
+  {
+   "key": "kouri1995_fig2_distribution",
+   "ok": true,
+   "issue": "I recounted Fig. 2 from my own 300-dpi render, with an independent column-projection script and by eye.\n- Non-users, bins 17 to 24: 1, 5, 4, 16, 16, 13, 10, 9 (total 74).\n- Users, bins 19 to 31: 1, 3, 6, 6, 16, 14, 15, 5, 9, 3, 3, 1, 1 (total 83).\n- 37 users at or above 25 (44.6%, matching '37 (45%)'). One user in each of the 30-30.9 and 31-31.9 bins.\nFig. 1 top user: about 31.3 at about 1.735 m (approximate read). All correct.",
+   "corrected": ""
+  },
+  {
+   "key": "kouri1995_mr_america_table2",
+   "ok": true,
+   "issue": "Table 2 is transcribed exactly. Recomputed: mean 25.45, SD 1.549, max 28.0 (Delinger), min 22.6, 3 above 27, 13 above 25, 8 at or above 26. Slope 0.0418/yr (t = 0.75, so p \u2248 0.46 against the printed 0.44). Subsets: through 1944, 24.93 (max 27.3); through 1953, 25.57 (max 28.0). The Fig. 3 vs Table 2 bin discrepancy is confirmed. Method quotes confirmed: blind photo estimates, Park 1952 and Schaefer 1956 not rated, 'Todd T, personal communication', Willoughby 1970 as ref 21.\nCaveat on the S conversion (S mean 25.8, max 29.2). It uses Todd's heights and weights, which are not Kouri's inputs. With Todd's H/W, Kouri's Grimek 1941 value (26.9) implies 21% fat, beyond Pope's recalled 16% maximum. So Kouri's Willoughby weights differ, at least for Grimek. The S figures are a rough estimate only. They are insensitive to height (\u00b12 cm moves S about 0.2), so the conclusion holds.\nAlso, Helms notes possible testosterone access on the US West Coast from 1945 (uncorroborated), as well as Ziegler injecting Park and Grimek in 1954.",
+   "corrected": "Add: S conversion uses Todd's heights, not Kouri's (Willoughby) inputs; at least Grimek 1941's inputs differ (Todd's H/W would imply ~21% fat in Kouri's value)."
+  },
+  {
+   "key": "kouri1995_modern_bodybuilders",
+   "ok": true,
+   "issue": "Fig. 3 recounted (bins 26 to 39): 1, 2, 3, 2, 7, 5, 6, 4, 0, 0, 1, 0, 1, 1 (total 33). Midpoint mean 31.53. Quotes confirmed from p.226: '~60 monthly issues', 1989-1994, light-weight classes excluded, '4-6% (20); therefore, we used 5%', 'many of the modern bodybuilders had not even won a national contest'. Status 'estimate' is right.",
+   "corrected": ""
+  },
+  {
+   "key": "todd2008_mr_america_reanalysis",
+   "ok": false,
+   "issue": "Every height, weight, fat fraction and FFMI in her table is transcribed correctly. My recompute: printed-column mean 26.45; 15 above 26; 17 (not 18) above 25; 26.46 (not 26.54) excluding Park and Schaeffer. Grimek 1941 needs 6% fat to give 31.99; Lacy gives 25.97. The quotes check: Pope's email (6% to 16%), the Reeves 25.7 note, 'At 5'8\" and 221 pounds ... 31.99'. Problems:\n(1) The citation pages are wrong. The PDF is the whole article, pp. 3-22 of IGH 10(3) (first page '3', footnotes on 21-22). The Mr America material is on pp. 14-16, not '13-15'.\n(2) Her top value rests on 221 lb for Grimek in 1941. The 1956 contest program in builds.json (mr_america_1938_1954_program_girths) gives Grimek '1940/41' as 195 lb. At 195 lb, 1.73 m and her 7% fat he would be about 27.9, not 32.0. The 'top 32.0' is a single disputed weight and must be labelled so.\n(3) Her own figures disagree. The Pearl caption says 193 lb gives 26.95, but the table uses 91.17 kg (201 lb) to get 26.96; 193 lb would give about 26.1. She also writes that Pope found photos for '18 of the 20' (Kouri: 20 of 22).\n(4) 'Non-refereed history journal' is not verified by any fetched source; drop it or source it.",
+   "corrected": "Source title: 'Iron Game History 10(3):3-22 (Aug 2008); Mr America analysis pp. 14-16'. Add: max 31.99 depends on a 221-lb 1941 weight that conflicts with the 1956 program's 195 lb (\u224827.9 at 7% fat); Todd's own Pearl caption (193 lb) contradicts her table (201 lb). S max 32.5 inherits this."
+  },
+  {
+   "key": "butt_frame_model_max_lbm",
+   "ok": true,
+   "issue": "Formula and constants confirmed on weighttraining.nz (22.667, 17.01; metric 322.4, 241.9, which I re-derived exactly) and fitmatic (22.6670, 17.0104; 'approximately 300 natural bodybuilding champions spanning from 1947 to 2010'). McDonald's text confirms '7\u2033 wrist and 8.75\u2033 ankle'. His table gives 189/198/206 lb and LBM 170/178/185; I recompute 170.24, 177.80, 185.48. ANSUR recompute matches exactly: n = 1,814 at 175-185 cm, median wrist 17.8 and ankle 23.2. At 1.80 m: 81.46 and 83.24 kg (FFMI 25.14 and 25.69). Joint P5/P95 frames 24.06-26.87. All men: 25.29 and 25.84 (P5 24.30, P95 26.97). S medians 29.71 (155-160 cm, n = 34) and 23.82 (190-195 cm). The handbook wording for wrist and ankle is confirmed. weightrainer.net serves a 'Redirecting...' page and the Wayback Machine resets.\nNuances:\n(a) All three McDonald checks use one wrist/ankle pair and one fat level. They confirm the H^1.5 term and the overall scale, not the wrist and ankle constants separately or the F/224 term. The two calculators agreeing covers that.\n(b) Secondary accounts of the data disagree. Fitmatic says ~300 champions, 1947-2010. bonytobeastly says 'hundreds of natural bodybuilders, strength athletes, and regular gym goers' with data 'from the 1950s and 60s', which reaches into the steroid era.\n(c) Fitmatic attributes the \u00b13% caveat to Butt, without a citation; it is not unattributed.\n(d) The McDonald URL now redirects to /muscle-gain/genetic-muscular-potential.",
+   "corrected": "Add to notes: secondary sample descriptions conflict (fitmatic ~300 champions 1947-2010 vs bonytobeastly 'hundreds' incl. gym-goers, 1950s-60s data); the McDonald checks validate H^1.5 and overall scale at one frame only."
+  },
+  {
+   "key": "butt_max_girth_equations",
+   "ok": true,
+   "issue": "Re-fetched the canadianbrawn repost (posted by 'Taureau', 21 Nov 2018). All coefficients, measuring sites, the 'vast majority of trainees, including most champions' and 'none of the listed champions attained all' quotes, and the 2.53x wrist and 0.27x height arm statement are confirmed. My recompute of the 1.80 m examples matches: chest 124.8, biceps 45.1, forearm 35.6, neck 44.6, thigh 68.7, calf 45.3 cm.\nWorked-example nit, stated precisely: the thigh line prints 9.0, but its result (27.1) matches 9.25 (9.0 gives 26.7). The calf uses 9.0 in both. The page also notes 'No lean body mass formula with H^1.5 appears' in this article.",
+   "corrected": "Worked example: chest uses 9.25; thigh line prints 9.0 but its result corresponds to 9.25; calf uses 9.0."
+  },
+  {
+   "key": "berkhan_height_minus_100",
+   "ok": true,
+   "issue": "Re-fetched leangains. Confirmed: the formula and the 180 cm / 80 kg / 176 lb example; 'handful of guys'; the four data points; 'most accurate for men in the 170-190 cm height range'; offsets of -101, -100, -99 and -98; the 2% drop; 'will not differ ... in any meaningful way'; 'I haven't competed'. Conversions recompute: 23.2-23.5 at 1.80 m; S 25.6-25.9 at 1.60 m and 22.0-22.2 at 1.90 m. McDonald's LBM column (170/178/185) is identical to the Butt column; McDonald labels it 'lean body mass at 10% body fat'. Nit: his data points span FFMI 22.7-23.6 (Andreaz 69-71 kg at 5-6%), not 23.0-23.5.",
+   "corrected": "own_data_ffmi range 22.7-23.6"
+  },
+  {
+   "key": "mcdonald_rate_of_gain_model",
+   "ok": true,
+   "issue": "Table image re-fetched: 1.5-2 / 20-25, 1 / 10-12, 0.5 / 5-6, Irrelevant / 2-3. Quotes confirmed: '40-50 pounds', '130 pound ... 170-180 pounds of lean body mass after 4-5 years', 'not sure if I came up with this idea', 'Mine and Alan's are based on years of experience'. Posted 19 Jun 2009, updated 7 Jun 2020.",
+   "corrected": ""
+  },
+  {
+   "key": "aragon_helms_rate_of_gain_model",
+   "ok": true,
+   "issue": "Image re-fetched: beginner 1-1.5%, intermediate 0.5-1%, advanced 0.25-0.5% body weight per month; 'developed by Alan Aragon, Eric Helms or both'. The Aragon 2011 quotes are confirmed. Nit: aragon_novice_years = 3 loses his range of 'first 2-3 years'.",
+   "corrected": "aragon_novice_years: '2-3'"
+  },
+  {
+   "key": "kondo1994_sumo_ffm_upper_limit",
+   "ok": true,
+   "issue": "Europe PMC abstract matches verbatim: 37/14/26 men; 26.1/10.9/12.1% fat; six wrestlers above 100 kg FFM; 121.3 kg (186 cm, 181 kg, 33.0%); 0.61 and 0.66 kg/cm; 0.7 kg/cm. The journal is confirmed as Am J Hum Biol 6(5):613-618. Conversions recompute: FFMI 35.06, S 33.93, Kouri-normalised 34.70; 0.7 kg/cm gives 38.9 at 1.80 m, 41.1 at 1.75 m and 36.8 at 1.85 m. Kanehisa (59.1-107.6 kg, n = 23) and Midorikawa (larger liver and kidney) are confirmed.\nNotes:\n- The largest man's ratio is 121.3/186 = 0.652 kg/cm. The abstract's 'highest 0.66' is therefore another wrestler or a different rounding; do not equate them.\n- Kondo 1994, Hattori 1999 and Abe 2018 share authors (Kondo, Abe, Fukunaga), and the sumo samples probably overlap. Do not count them as independent confirmations.",
+   "corrected": ""
+  },
+  {
+   "key": "hattori1999_sumo_ffmi",
+   "ok": true,
+   "issue": "Abstract confirmed (36 wrestlers, 39 students, 117.1 kg, BMI 36.5, 26.2% fat, cut-off 'approximately 30'). Trexler's ref 11 is confirmed as Hattori et al. 1999, and his sentence 'mean FFMIRaw value of 26.6 ... as high as 37' is confirmed; both are correctly marked secondary. S conversions recompute: 30.9, 30.0, 29.2, 28.4.",
+   "corrected": ""
+  },
+  {
+   "key": "abe2018_skeletal_muscle_upper_limit",
+   "ok": true,
+   "issue": "Abstract confirmed: 95 athletes and 48 controls, nine sites, ten above 100 kg FFM, largest 120.2 kg, seven above 50 kg SM, largest 59.3, 44% and 56%, FFMI levelling off above 90 kg, SM index plateau about 17 above 120 kg. The Moreno 2024 abstract shows the eight competitors were 2 men and 6 women. Attributing the 17.9 maximum to the Men's Open bodybuilder is an inference: likely, but not stated.",
+   "corrected": "Note: Moreno 2024 sample = 2 M + 6 F; 17.9 is the group maximum, inferred (not stated) to be the men's open bodybuilder."
+  },
+  {
+   "key": "abe2020_ffm_plateau_review",
+   "ok": true,
+   "issue": "Abstract confirmed: 18 studies, 2,249 athletes, 72 data points, DXA, under 10% fat rare above 100 kg, FFM levelling off above about 120 kg. Status 'reported' is fine for a review of group means.",
+   "corrected": ""
+  },
+  {
+   "key": "trexler2017_ffmi_fulltext_check",
+   "ok": true,
+   "issue": "Abstract and full text (PMC, via WebFetch; curl hits a reCAPTCHA) confirm everything:\n- Drug testing: 'subject to random, year-round drug testing' but 'independent drug testing was not conducted'.\n- Regression on cases above the median; slope 2.943, r = 0.13, p = 0.16; mean change 0.20 \u00b1 0.14, largest 0.62.\n- Sample 184.7 \u00b1 6.9 cm, 103.6 \u00b1 20.1 kg, 19.8 \u00b1 7.4% fat.\n- Range 19.0-31.7; six athletes above 28.1 (3 OL, 3 DL); OL 25.1 \u00b1 2.0, DL 25.2 \u00b1 2.3; 62 (26.4%) above 25.\n- The 'coupling of fat mass and lean mass' sentence, and 'utilized a slope of 6.1'.\nS conversions recompute: 27.5 at the mean height; 29.7 if 1.95 m.",
+   "corrected": ""
+  },
+  {
+   "key": "currier2019_ffmi_check",
+   "ok": true,
+   "issue": "Abstract confirmed verbatim: 209 athletes, 10 sports, 182.9 \u00b1 6.7 cm, 90.8 \u00b1 16.8 kg, 15.6 \u00b1 5.3% fat, mean 22.8 \u00b1 2.8, football 24.28 \u00b1 2.39, water polo 20.68 (SD 3.56), 28.32 / 29.1 / 25.5. S recompute at 1.829 m: all athletes 27.87-28.04 (so 27.9-28.0, not up to 28.1); rugby 28.64-28.81. Drug testing is unknown, not 'none'. The recommendation's 'these studies did no testing' is unsupported for Currier.",
+   "corrected": "S range for all athletes 27.9-28.0; drug testing: not stated in abstract (unknown)."
+  },
+  {
+   "key": "santos2014_drug_tested_athletes_ffmi",
+   "ok": false,
+   "issue": "The numbers are right: inclusion criterion 3 quoted correctly; 339 men by DXA, mean 19.78 (19.56-20.00); rugby n = 39, 21.33. Table S7 male 95th percentiles: rugby 25.79 (23.54-28.71), wrestling/judo 24.60, handball 23.64, soccer 23.47, volleyball 23.31. Missing caveats that change how much the anchor weighs:\n(1) Table 1 shows the rugby DXA subsample was aged 16-28, mean 18.2 \u00b1 2.1 years. These are mostly juniors and still maturing, so this percentile says little about an adult natural ceiling.\n(2) The 182.8 cm rugby height comes from the separate n = 62 height/weight sample, not the n = 39 DXA group.\n(3) The percentiles are parametric empirical-Bayes estimates (a normal model that borrows across sports), not observed values.\n(4) The paper does not say who tested or when; 'negative test outcomes for performance-enhancing drugs' is only an inclusion criterion.",
+   "corrected": "Add to label/notes: 'rugby DXA group n=39, age 16-28 (mean 18.2); model-smoothed percentiles; height 182.8 cm is from the n=62 anthropometry sample; testing not described beyond the inclusion criterion'. Treat as weak for an adult natural limit."
+  },
+  {
+   "key": "natural_limit_anchor_conversions",
+   "ok": true,
+   "issue": "Arithmetic re-checked. Kouri 25 converts to S 26.8, 26.3, 25.8, 25.4, 25.0, 24.6, 24.3, 23.9 and 23.6 for 1.60 to 2.00 m. Non-users: 26.6 (1.59 m) and 23.7 (1.93 m). Chappell 25.4; Rossow 23.6/26.4; Santos 25.4; Trexler 27.5/29.7; Kondo 33.9. Implied exponent about 2.44.\nTwo issues with how the conversions are used:\n(a) On the S axis, Kouri's highest non-user is not 25. From Fig. 1, it is the 1.59 m man at S \u2248 26.6; the next highest are about 25.1 (\u22481.66 m and 1.71 m men). A 'sample maximum' tick on an S chart should be 26.6, or be explicitly labelled 'height-normalised FFMI (equals S only at 1.80 m)'.\n(b) todd_mr_america_max_S 32.5 inherits the disputed 221-lb Grimek weight (see todd2008).",
+   "corrected": "Add: kouri_nonuser_max_on_S \u2248 26.6 (single 1.59 m man, Fig. 1 read + text); todd max S flagged as resting on a disputed weight."
+  },
+  {
+   "key": "builds_json_kouri_corrections",
+   "ok": true,
+   "issue": "Every correction is confirmed against both builds.json and the PDF:\n- 'disputed' 6.3 vs 6.1 settles to 6.1.\n- The value_status of kouri1995_ffmi_natural_limit really does say 'assumed 5% fat, per McDonald'. McDonald's page says so and is wrong.\n- kouri1995_group_means overall_bodyfat 12.8 \u00b1 4.8 is the users' value only; McDonald writes '(12.8% +- 4.8%)' for 'both groups'.\n- The normalisation strings say 6.3.\nItem 6 is fair but not complete. With the program heights and weights, Kouri's values imply fat of 3.9% (Ross) to 17.0% (Reeves; program 213 lb vs Todd's 192 lb), outside Pope's recalled 6-16% for two men. The input weights differ for some rows as well as the fat. Process note: builds.json is a shared file and must be claimed in STATUS.md before editing.",
+   "corrected": ""
+  }
+ ],
+ "missing": "1. S-axis sample maximum. The chart ranks by S, and on S Kouri's highest drug-free non-user is the 1.59 m man at about 26.6 (Fig. 1 plus the text), not 25. The recommendation plots 25 as a solid 'sample maximum' tick. That is right only for a 1.80 m man, so it must carry the label 'height-normalised FFMI', or the S tick must sit at 26.6 and be described as one short man.\n2. Santos 2014 age. The rugby DXA subsample is 16\u201328 years old, mean 18.2. That should come with the anchor. As it stands, it is presented as the one drug-tested upper tail.\n3. Todd's Grimek weight. Her 32.0 (S 32.5) depends on a 221-lb weight in 1941 that conflicts with the 195 lb in the 1956 Mr America program already in builds.json. Her own Pearl caption also contradicts her table.\n4. Method differences. Kouri used skinfolds (SE 3.4% fat, about \u00b10.8\u20131 FFMI unit by the paper's own example). Trexler, Currier and Santos used DXA (lean mass plus bone mineral). Kondo, Hattori and Abe used hydrodensitometry. The band puts all of these side by side with only a body-fat caveat; it needs a 'methods differ by about \u00b11 unit' note.\n5. Who the non-users were. 18 of Kouri's 74 non-users came from a testosterone trial in 'normal men', not from gyms. Todd also criticises the sample as not elite (non-user mean FFMI 21.8). The '74 drug-free lifters' label should reflect both.\n6. Currier drug testing. It is unknown, not 'none'. The recommendation's 'these studies did no testing' is supported only for Trexler.\n7. Kondo's wording. Kondo's S of 33.9 is above the mean of about 31.5 for Kouri's enhanced magazine bodybuilders, so 'just below the enhanced pros' can mislead. Say it falls inside the enhanced bodybuilders' range, and that its FFM includes organ and water mass at 33% fat.\n8. Unresearched leads (not verified here; check before use): DXA or BodPod data on drug-tested natural bodybuilders beyond Chappell and Rossow, e.g. contest-prep studies of natural male bodybuilders (Mitchell et al. 2018, Eur J Sport Sci) and case studies (Kistler 2014, Pardue 2017, IJSNEM). Also WADA/IPF-tested weightlifters or powerlifters with DXA. Todd 2008 (pp. 17\u201320) also gives an estimated mean FFMI of 29.06 for nine pre-1958 strongmen (Sandow and others). It is very low quality but the highest 'pre-steroid' claim in the same source, so it is worth a note if the Todd bracket is shown.\n9. Helms on pre-steroid status. Helms says West Coast bodybuilders could possibly have obtained testosterone from 1945, though this is uncorroborated. That weakens the pre-steroid status of the 1945+ winners a little, not only the 1955\u201359 entries.\n10. Overlapping samples. The Kondo, Hattori and Abe sumo papers share authors and probably share subjects, so they are not independent confirmations.",
+ "verdict": "The research holds up, with a few corrections.\n\nThe central claims hold:\n- I fetched the Kouri 1995 PDF from Ovid myself; it is the same file as the researcher's. Every quoted sentence and table value matches. The 6.1 slope in the methods (6.3 only in the abstract), the blind photo-based Mr America fat estimates, and the non-users' 12.5\u00b15.5% fat are all confirmed. My own script reproduces the Fig. 2 and Fig. 3 counts exactly.\n- The Todd, Trexler, Currier, Santos, Kondo, Hattori, Abe, Berkhan, McDonald, Aragon and Butt-repost sources all say what the notes quote.\n- The derived numbers recompute: the Kouri and Todd statistics, the Butt formula against McDonald's table, the ANSUR II frame medians and predicted FFMI/S, the Berkhan and Kondo conversions, and the S conversions.\n\nCorrections needed:\n(1) Todd 2008. The cited pages are wrong: the article is pp. 3\u201322, with the Mr America analysis on pp. 14\u201316. Her top value of 32.0 rests on a 221-lb Grimek weight that conflicts with the 195 lb in builds.json's 1956 contest program. At 195 lb it would be about 27.9.\n(2) Santos 2014. The rugby DXA group was aged 16\u201328, mean 18.2. Its percentiles are model-smoothed, not observed. It is a weak anchor for an adult natural limit.\n(3) On the chart's S axis, Kouri's highest non-user is about 26.6 (the 1.59 m man), not 25. The recommended '25 sample maximum' tick needs a 'normalised FFMI, equals S only at 1.80 m' label.\n(4) Smaller nits: the Berkhan data-point range (22.7\u201323.6, not 23.0\u201323.5), Aragon's '2\u20133 years', the Currier S upper end (28.0, not 28.1), Moreno's 2 men + 6 women, and the unverified 'non-refereed' claim about Iron Game History.\n\nThe recommendations are sound in structure: a soft band, anchors typed by kind, no 'ceiling' wording, and rate models kept off the chart. They overstate the evidence in three places:\n- '74 drug-free lifters': 18 of the 74 came from a testosterone trial in ordinary men.\n- 'These studies did no testing': supported for Trexler only; unknown for Currier.\n- 'Just below the enhanced pros' for the sumo wrestler: his S of 33.9 is inside the enhanced bodybuilders' range.\n\nThe band also needs a methods caveat: skinfolds, DXA and densitometry can differ by about 1 FFMI unit.\n\nThe builds.json correction list is accurate and should be applied. The file is shared, so it needs a STATUS.md claim first."
+}

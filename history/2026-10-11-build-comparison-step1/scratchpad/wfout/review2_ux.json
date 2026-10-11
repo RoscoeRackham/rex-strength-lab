@@ -1,0 +1,111 @@
+{
+ "findings": [
+  {
+   "id": "UX2-1",
+   "severity": "major",
+   "title": "Loading a new sheet while the worker is still measuring shows and copies the old sheet's results under the new file's name",
+   "location": "build-comparison/src/app.html:1552-1575 (loadFile does not invalidate the in-flight run), 1461-1466 (the callback checks only tool.run), 1476-1478 (the elapsed-time interval keeps running)",
+   "evidence": "Script: scratchpad/review2/s/race.js (sheets from s/mksheets.js, drawn with the page's own Figure.renderSheet). Steps at 1280x900: load coleman-2000.png (4992x2320), type 1.80, press Measure. After 1.5 s, load soldier-500.png (1241x580). Output while the first job is still running: the status reads 'Measuring\u2026 2 s \u2026 4 s' instead of 'Loaded. Type the height\u2026', and the Measure button stays disabled. When the old job finishes, the page shows sheetName 'soldier-500.png (1241 \u00d7 580 px)' with captions 'front \u00b7 2002 px / side \u00b7 2002 px / back \u00b7 2002 px', Volume 0.146 m\u00b3, Mass 155 kg and Chest 247.4 cm. The height field is empty. Copy then says 'Copied: 118 lines' and the entry has name 'soldier-500.png', weight 154.9 and the note 'score 44.2 (42.3-46.2)'. Measured on its own, soldier-500.png gives 0.088 m\u00b3 and 93 kg. Screenshot scratchpad/review2/race-tool.png: the gutter labels (chest, waist, crotch, knee, ground) fall into the checks list, because the landmark rows of the 2,320 px image are placed on the 580 px one.",
+   "expected": "A result belongs to the image and inputs it was measured from. When the sheet changes, a pending measurement must be discarded: its status ticker stopped, the button re-enabled and nothing written. Otherwise a wrong build entry can be pasted into builds.json under another file's name.",
+   "fix": "In loadFile, and in the Soldier-sheet handler, add `tool.run++`, clear the pending ticker (keep it as tool.tick and clear it in done) and set `$('measureBtn').disabled = false`. Belt and braces: in measure() capture `var img = tool.img`, and in the callback return early when `img !== tool.img`."
+  },
+  {
+   "id": "UX2-2",
+   "severity": "major",
+   "title": "Fields edited while the worker measures are not marked stale: the results and the copy use the old height while the field shows the new one (round 1 F8 still leaks)",
+   "location": "build-comparison/src/app.html:1643-1646 (the input/change listeners mark only the result already on screen) and 1461-1466 (the new result is stored without comparing it with the current fields)",
+   "evidence": "Script: scratchpad/review2/s/stale.js, at 1280x900. Load coleman-2000.png, type 1.80, press Measure. After 1 s, type 2.50 and press Tab, all while the worker is running. When the result arrives, the field shows '2.50' but the table shows 'Mass 155 kg' and the normal status, with no warning. Copy reports 'Copied: 118 lines, ready to paste as a build entry.' with height_m 1.8. Pressing Measure again with 2.50 gives 'Mass 415 kg' (155 \u00d7 (2.5/1.8)\u00b3 = 415). Without the Tab, the copy happens to be refused, because clicking Copy blurs the field and fires 'change'. The guard works by accident, not by design.",
+   "expected": "Round 1 F8 says 'Copy uses the inputs that were measured and refuses after the fields change.' A change made during an asynchronous measurement is still a change after the button press, so the result should arrive marked stale, or be discarded.",
+   "fix": "Keep a counter `tool.fieldsVer` that every input/change event on tH, tRho, tBf, tArmK, tSkull and tOrder increments. Capture it in measure(). In the callback, if it differs, set `r.stale = true` after writeResults and show 'The fields changed since this measurement: press Measure to update the results.' Or compare r.inputs with num() of the current fields."
+  },
+  {
+   "id": "UX2-3",
+   "severity": "major",
+   "title": "'Meet this test (sooner)' reads as 'pass this test', the opposite of what is meant, and gives different counts for the same test without saying why",
+   "location": "build-comparison/src/app.html:707-712 (metSooner), 731 (gap copy), 902 (band note), 1361-1362 (limit cards); data/settings.json:721 (limits verdict)",
+   "evidence": "Rendered text (scratchpad/review2/s/text.js, 1280 px). Limits verdict: 'The chart's own drawings of the biggest bodybuilders already meet the first two.' Face card: 'None of the chart's own figures meets this test.' In plain English, meeting a test means passing it, so a general reader takes this as 'every figure can still reach its face', or 'their arms pass'. The intended meaning is that the body has reached the limit: the arms can no longer hang down. The band note in 'The top of the human record' comes about 7,000 px before the limits section that introduces 'the same three tests'. It reads: 'Limit \u00b7 arms out \u00b7 about 41 \u2026 The chart's own figures, drawn from their girths, meet this test sooner: 15 of them, from Arnold Schwarzenegger (about 27) up.' The arms card says: 'already meet this test: 24 of them, from Arnold Schwarzenegger (about 27) up.' The 45\u201362 gap says: 'meet the thighs test sooner: three of them, from Ronnie Coleman (about 39) up.' The thighs card says: '11 of them, from Ronnie Coleman (about 39) up.' The same claim pattern carries different counts (15 vs 24, 3 vs 11), and no sentence says that 'sooner' counts only figures scoring below the limit (metSooner(L, L.score)) or below the stretch (metSooner(L, g.from)). The gap copy also uses 'the evenly widened soldier' before the page has explained it.",
+   "expected": "The owner's standard asks for plain, specific wording that a general reader cannot read backwards. Each count should say what it counts.",
+   "fix": "Name the outcome, not a test. Cards: 'Already past this limit in their own drawings: 24 of the chart's figures (their arms cannot hang closer than 30\u00b0), from Arnold Schwarzenegger (about 27) up.' Face: 'None of the chart's own figures is past this limit.' Band and gap notes: '15 figures scoring under 41 are already past it in their drawings, from Arnold Schwarzenegger (about 27) up.' Verdict: '\u2026already reach the first two limits.' In the gap copy, gloss 'evenly widened soldier' or link it to #limits."
+  },
+  {
+   "id": "UX2-4",
+   "severity": "minor",
+   "title": "In Real heights mode the lineup still says 'Everyone is drawn at the same height'",
+   "location": "build-comparison/src/app.html:420 (static verdict) and 1707-1712 (modeNote updates only #modeNote)",
+   "evidence": "Script: scratchpad/review2/s/realverdict.js, 1280x900. After clicking 'Real heights' (aria-pressed=true), #lineup .verdict still reads 'Everyone is drawn at the same height, in score order. Only the build differs.' The figures are now drawn at different heights: Bruce Banner 90 px, the median soldier 90 px, Hulk (savage) 110 px, Rex 158 px. The mode note just above says 'Real heights: one scale for every figure.' Screenshot: scratchpad/review2/ux/real-heights-verdict-1280.png.",
+   "expected": "A section verdict that is true in the mode on screen. In Real heights: 'Everyone is drawn to one scale, at their real heights, in score order.'",
+   "fix": "Give the verdict an id and set it in modeNote() from state.heights, for example: same \u2192 'Everyone is drawn at the same height, in score order. Only the build differs.'; real \u2192 'Everyone is drawn to one scale at his real height, in score order.'"
+  },
+  {
+   "id": "UX2-5",
+   "severity": "minor",
+   "title": "The hands-to-face limit card shrinks its figure to 85% height, below the skull line and the landmark lines drawn for the other cards",
+   "location": "build-comparison/src/app.html:1329-1336 (limitFigure lowers k when the figure is wider than W\u22128, but wall() still draws the skull and landmark lines for the full Hd)",
+   "evidence": "Script: scratchpad/review2/s/limits.js, at every width from 360 to 1280. The skull line is at y=10 and the floor at y=210 in each card. The median soldier, arms and thighs figures have their top at y=10.0\u201310.2. The face figure's top is at y=39.9: it is drawn 170 of 200 units tall. The cause is the face figure's width, 2.03 m in limits.json against the 192/111.1 = 1.73 m that fits, so k drops from 111.1 to 94.6 px/m. Screenshots scratchpad/review2/limits-1280-light.png and limits-390-dark.png: the fourth figure is visibly shorter, with its head well under the blue line. The key says 'Blue line across the wall: the top of the skull. Every figure is drawn to it', and the limits method says each template is drawn at 1.80 m.",
+   "expected": "All four limit figures at the same 1.80 m drawing height, skull on the blue line, with the shoulder, chest, waist, crotch and knee lines at the figure's own landmarks.",
+   "fix": "Keep k = Hd/H and widen that card's viewBox instead: W = max(200, ceil((bb[2]\u2212bb[0])\u00b7k) + 8). The SVG is width:100%, height:auto, so the card scales it down. Or compute one k for all four cards from the widest figure and draw the wall at Hd = 1.8\u00b7k."
+  },
+  {
+   "id": "UX2-6",
+   "severity": "minor",
+   "title": "Locator tape's accessible name says 'scores 920 to 924' for the meatball and drops 'empty' for empty stretches",
+   "location": "build-comparison/src/app.html:1232-1234 (markStop: the aria-label uses sc(s.lo) and never the gap/meat wording)",
+   "evidence": "Script: scratchpad/review2/s/loclabel.js, at 390 and 1280. At #meatball the visible line reads 'To scale \u00b7 now: score 924' but the aria-label is 'To-scale tape. Now showing scores 920 to 924.' sc() rounds 924.1 to two significant figures, 920, which breaks the round 1 rule that 924 is never rounded. At #empty the visible line is 'now: empty 45 to 62' while the aria-label is 'Now showing scores 45 to 62.' The same goes for 88 to 130 and 220 to 924. CDP confirms #locTape has role=image with that name.",
+   "expected": "The accessible name says what the visible line says: 'score 924' for the meatball, and 'empty 45 to 62' for an empty stretch.",
+   "fix": "Build one string and use it for both: `var now = (s.kind === 'gap' ? 'empty ' : 'score ') + (s.kind === 'meat' ? MEAT_TXT : s === STOPS[0] ? 'under ' + hi : lo + ' to ' + hi);` then set `$('locNow').textContent = 'To scale \u00b7 now: ' + now` and the aria-label to 'To-scale tape. Now showing ' + now + '.'"
+  },
+  {
+   "id": "UX2-7",
+   "severity": "minor",
+   "title": "Tool status lines are not live regions, so measuring, results, failures and copy confirmations are never announced",
+   "location": "build-comparison/src/app.html:490 (#validation), 503 (#toolStatus), 516 (#targetStatus)",
+   "evidence": "No element in the page has aria-live or role=status: grep for 'aria-live|role=\"status\"' in src/app.html returns nothing. CDP Accessibility.getPartialAXTree (scratchpad/review2/s/ax.js) gives #toolStatus, #targetStatus and #validation as role=paragraph with no live property. Measuring now runs asynchronously in a worker: the 2,000 px sheet in race.js took about 10\u201312 s. A screen-reader user who presses Measure, Draw or Copy hears nothing: not 'Measuring\u2026', not the result, not 'The sheet failed a check, so treat these numbers as rejected', not 'Copied'.",
+   "expected": "Status messages announced politely (WCAG 4.1.3), above all now that results arrive seconds after the button press.",
+   "fix": "Add role=\"status\" (implicit aria-live=polite) to #toolStatus and #targetStatus, and to #validation if wanted. Keep the per-second 'Measuring\u2026 N s' ticker out of the live text, for example in an aria-hidden span, so it is not read every second."
+  },
+  {
+   "id": "UX2-8",
+   "severity": "minor",
+   "title": "The hidden file input is still exposed to screen readers as a second, unlabelled 'Choose File' button",
+   "location": "build-comparison/src/app.html:482",
+   "evidence": "CDP AX tree (scratchpad/review2/s/ax.js): #file gives role=button, name 'Choose File', not ignored. It has class .sr and tabindex=-1, which removes it from the Tab order only. A screen reader's virtual cursor still finds it next to 'Choose a sheet\u2026', with a generic name and no context.",
+   "expected": "One control for choosing a sheet. The proxy input is hidden from assistive technology, since #tChoose triggers it.",
+   "fix": "Add aria-hidden=\"true\" to <input type=file id=file> (it is never focused by keyboard anyway)."
+  },
+  {
+   "id": "UX2-9",
+   "severity": "minor",
+   "title": "Sheet view captions run together on phones ('FRONT \u00b7 702SIDE \u00b7 702BACK \u00b7 702', with 'PX' on its own line)",
+   "location": "build-comparison/src/app.html:329-330 (.viewcaps: flex, space-around, no gap, wrapping allowed) and 1447",
+   "evidence": "Script: scratchpad/review2/s/caps.js. At 360 px the three captions each break onto 2 lines; the gap between 'front \u00b7 702 px' (x 93\u2013172) and 'side \u00b7 702 px' (x 172\u2013244) is 0 px, and between side and back it is 2 px. At 390 and 414 px each caption still wraps, leaving 'PX' alone on a second line (gaps 11\u201319 px). Screenshot scratchpad/review2/ux/viewcaps-360.png (dpr 3) reads 'FRONT \u00b7 702SIDE \u00b7 702BACK \u00b7 702' over 'PX PX PX'. A 2,000 px sheet makes each caption one character longer ('2002 px').",
+   "expected": "Three separate captions under the three views, each on one line or clearly apart.",
+   "fix": "`.viewcaps { gap: 8px; } .viewcaps span { white-space: nowrap; }` and below 720 px drop ' px' or use a smaller form ('front 702'). Better, place each caption under its view's centre from res.views[v].x0/x1, as the gutter labels are placed."
+  },
+  {
+   "id": "UX2-10",
+   "severity": "minor",
+   "title": "Target outline boxes show broken-image icons until the first outline is drawn",
+   "location": "build-comparison/src/app.html:517 (<img> with no src), 1595 (none() removes src), 1649 (drawTarget runs 400 ms after the lazy start, then blocks about 2 s)",
+   "evidence": "Script: scratchpad/review2/s/emptyboxes.js, 1280x900, clicking the 'Measure a character' jump link. When the solver starts (762 ms), the target status reads 'Drawing\u2026', #tgtFront has no src and naturalWidth 0, and the image is in view. The outline appears only at 2,602 ms, and the main thread is blocked for about 1.9 s in between (long task in s/lazy.js), so that frame stays on screen. Screenshot scratchpad/review2/ux/target-before-start-390.png shows the two 220\u2013320 px boxes with Chromium's broken-image icon and the alt text 'Target outline, front view'. The same boxes return after any refused target, because none() removes the src. Screen readers also announce two images that do not exist.",
+   "expected": "No broken-image placeholders: an empty, labelled area ('The outline appears here') or nothing until an outline exists.",
+   "fix": "Put `hidden` on .target-imgs until the first successful draw, and set it again in none(). Or give the boxes a CSS placeholder and set the alt only when a src is set."
+  }
+ ],
+ "verified_ok": [
+  "Build and tests on a git-archive copy of HEAD (1f32e2c; build-comparison identical to 7061d55): node build.js reproduces dist/index.html byte-for-byte; test/test.js 30 passed; test/duo.js passed (Rex 2.544 m\u00b3); test/shots.js reported no problems. Its preview file was moved into the scratchpad because Chromium would not start with a long TMPDIR.",
+  "One drawing height (s/figs.js): at 360, 390, 768, 1024 and 1280 px, in Same/Real heights \u00d7 Front/Side, every lineup and inside-gap figure SVG has the same CSS height (124 px below 720, 172 px above) and the same drawn scale (0.721 and 1.000 user units per px) in every stop. No figure group falls outside its SVG box or the viewBox vertically. The comic giants with level arms (wr 1.064) and Rex and Ollie's side views with tails fit. No plate content overflows, and there is no horizontal page scroll.",
+  "Gap tiles (s/gaptiles.js): the wall height follows the figure cells (182 px phone, 274 px wide); no post, mark, end or 'No builds here' label overlaps another or leaves its tile, at 5 widths in both height modes.",
+  "Forest (s/forest.js): no axis label overlaps another or leaves the tape, in whole scale and close-up, at 5 widths, light and dark. 'Kouri 25' is dropped when it would collide. Phone value cells have an opaque ground; no background rule crosses value text; names and values never overlap; 'off this scale' labels stay inside their tracks.",
+  "Focus rings (s/focus.js plus pixel diff in s/focus.py): segmented buttons, figure cells (2nd and last), cluster buttons, forest row buttons, tool buttons, inputs, selects, details summaries and links all show the ring on all four sides at 390 and 1280, light and dark. The one exception is cosmetic: the first forest row's top edge sits under the sticky axis at 1280, with the other three sides visible.",
+  "Drawer (s/drawer.js, s/drawerfocus.js): one column below 900 px, 280 px + 1fr at 1024 and 1280. All 49 drawers, in Same/Front and Real/Side at 360, 768, 1024 and 1280, have no element outside the drawer, no page scroll and no clipped big figure. Opened by keyboard at 360, 768 and 1024, focus goes to the heading, the heading and Close are on screen and not under the locator, and Escape returns focus to the cell.",
+  "Jumps (s/jumps.js): every stop's tag lands clear of the sticky locator at 360, 768 and 1024.",
+  "Accessible names (CDP, s/ax.js): figure cells and forest rows carry their warnings ('composition unknown', 'beyond human data', 'Traced from art \u00b7 tail not counted'); segmented buttons expose aria-pressed; the sheet picker group is named 'Sheet'; the open drawer is a named region; the canvas is named.",
+  "Worker measuring (s/lazy.js, s/workerfb.js): measuring runs off the main thread; the status shows 'Measuring\u2026 N s' and is then replaced by the results (27 rows). With Worker throwing, or blocked by CSP worker-src 'none', it falls back to the page and still completes.",
+  "Lazy start: the lineup, tapes, forest, limits and score cards render without the tool. The tool starts within 900 px of the viewport. The duo.jpg check then passes live (2.54 m\u00b3 in 2.52\u20132.60). No section shows empty content apart from the target images (UX2-10).",
+  "Target outline display (s/target.js, s/tfail.js): targets 15, 60, 100, 300, 500 and 900 on the median, 5th- and 95th-percentile soldiers, Coleman and the largest-arm soldier all converge and pass the checks. The captions read 'Front \u00b7 score N' and 'Side \u00b7 score N', and the images fit their boxes (object-fit: contain).",
+  "Tool layout (s/toollayout.js): at 360, 390, 768, 1024 and 1280, light and dark, nothing leaves the tool card; the results table does not need to scroll; gutter labels do not overlap; the two sheet-picker buttons wrap cleanly.",
+  "Limit cards (s/limits.js): no text overflows at any width. The median, arms and thighs figures stand on the skull line. The text is consistent with limits.json (arms 41, band 37\u201341, 24 met_by; thighs 46, band 42\u201349, 11 met_by; face 87\u2013200, none).",
+  "Gap copy numbers: 45\u201362 'as wide as the step from the median soldier (21) to Army man with the largest arm (29)' and 88\u2013130 to Sergio Oliva (31) are both within the code's 4% rule. The band verdicts, the 'No real man on this chart scores above 42' rule and the cluster ranges (19\u201342, 62\u201388, 130\u2013220, 924) match window.__bc.",
+  "Round 1 UX fixes rechecked and holding: L1/L13 focus rings, L2 drawer columns, L3 accessible names, L4/L11 forest labels, L5 phone value cells, L7 cluster 19\u201342, L9 [hidden] rule, L12 focus return from a forest row (shots.js and the s/drawerfocus.js sweep)."
+ ]
+}

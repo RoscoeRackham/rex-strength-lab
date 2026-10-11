@@ -1,0 +1,74 @@
+{
+ "verdicts": [
+  {
+   "id": "UX2-1",
+   "real": true,
+   "severity": "major",
+   "reasoning": "Reproduced on HEAD 1f32e2c (build-comparison is unchanged since 7061d55 and the working tree is clean). Script: /tmp/claude-0/-home-user-rex-strength-lab/9b81b796-3162-56bd-85b7-22e02b6583e2/scratchpad/review2/v/race.js, with sheets drawn by v/mk.js using the page's own Figure.renderSheet. big-2000.png is 5273x2320 (median soldier, widths x1.5); small-500.png is 1120x580. At 1280x900 I loaded big, typed 1.80, pressed Measure, and loaded small 1.5 s later. From 2.5 s to 11.6 s the status read 'Measuring\u2026 2 s' \u2026 'Measuring\u2026 11 s' (the 'Loaded\u2026' message was overwritten), measureBtn.disabled stayed true and the sheet name read 'small-500.png (1120 \u00d7 580 px)'. At 12.6 s the old result was applied to the new image: captions 'front \u00b7 2002 px side \u00b7 2002 px back \u00b7 2002 px', Volume 0.184 m\u00b3, Mass 195 kg, Chest 261.1 cm. Gutter rows were placed at top:372.59% (ground), 119% (chest) and so on, so the labels landed in the checks list, and the 'top' line was drawn across the middle of the small figure (v/race-tool.png). The tH field was empty. Copy reported 'Copied: 118 lines' with name 'small-500.png', height 1.8, weight 195.2 and 'score 55.7'. Measured on its own, small-500.png gives 0.089 m\u00b3 and 94 kg. The cause is in loadFile (app.html:1552-1575): it never increments tool.run, so the callback's guard `run !== tool.run` (1462) passes. The ticker is local to measureAsync (1476), and the button is re-enabled only inside the callback. The Soldier-sheet handler is safe because it calls measure(), which does ++tool.run. Major: the tool hands a build entry, under another file's name, ready to paste into builds.json.",
+   "better_fix": "In measureAsync keep the ticker on the tool: `tool.tick = setInterval(...)`, and in done use `clearInterval(tick)` as now. In loadFile, right after `tool.img = {...}`, add: `tool.run++; clearInterval(tool.tick); $('measureBtn').disabled = false;`. Belt and braces, in measure(): `var img = tool.img;` and as the first line of the callback: `if (run !== tool.run || img !== tool.img) return;`"
+  },
+  {
+   "id": "UX2-2",
+   "real": true,
+   "severity": "major",
+   "reasoning": "Reproduced with v/stale.js at 1280x900. I loaded big-2000.png, typed 1.80 and pressed Measure. After 1 s I filled tH with 2.50 and pressed Tab, all during the worker run. When the run finished, tH read '2.50', the status line was the normal 'Every result is measured from art\u2026' and the table showed 'Mass 195 kg', the 1.80 m result, with no warning. Copy reported 'Copied: 118 lines, ready to paste as a build entry.' and the clipboard held height_m 1.8. The cause: the input/change listeners (app.html:1643-1646) mark only the tool.res already on screen, which during the run is the previous result. The callback then stores a fresh r with r.inputs captured at the button press and no stale flag. Round 1 F8 is recorded as 'refuses after the fields change', and this path still lets the copy through. It is the same failure F8 was meant to prevent: the copied entry is not for the height the user typed (2.50 m), while the page shows that height next to 1.80 m results. I did not separately check the reviewer's no-Tab remark, which is commentary; my second loop failed only because the same file cannot be re-set on an input.",
+   "better_fix": "Count field edits: in the listeners at 1643-1646 add `tool.fieldsVer = (tool.fieldsVer || 0) + 1;` before the existing code. In measure(), capture `var ver = tool.fieldsVer;`. In the callback, after `r.inputs = inputs; tool.res = r; writeResults(r);` add `if (ver !== tool.fieldsVer) { r.stale = true; $('toolStatus').textContent = 'The fields changed while measuring: press Measure to update the results.'; }`. copyResults already refuses stale results."
+  },
+  {
+   "id": "UX2-3",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Rendered text (v/text.js, v/counts.js). The 'top' band note reads: 'The chart's own figures, drawn from their girths, meet this test sooner: 15 of them, from Arnold Schwarzenegger (about 27) up.' The arms card reads: '\u2026already meet this test: 24 of them, from Arnold Schwarzenegger (about 27) up.' The 45\u201362 gap reads: 'meet the thighs test sooner: three of them, from Ronnie Coleman (about 39) up', and the thighs card reads '11 of them, from Ronnie Coleman (about 39) up'. From limits.json met_by against the page's scores: arms has 24 figures, 15 of them under 40.71; thighs has 11, 3 of them under 45 and 3 under 46.11. So the counts are arithmetically right, but the same sentence pattern, 'N of them, from X (about Y) up', gives 15 vs 24 and 3 vs 11. The only cue to the different scope is the word 'sooner', and 'from X up' suggests every figure upward. A reader sees what looks like a contradiction, so this is a real labelling defect, but minor, not major: no number is wrong. The 'meet reads as pass' part is weaker. Each card's title states the outcome ('Arms can no longer hang down by the sides'), so 'meets this test' reads naturally as reaching that condition, although 'None of the chart's own figures meets this test' under the face card can be misread. The 'evenly widened soldier' wording is already glossed earlier, in the 'top' band note ('on the median soldier's outline widened at fixed bones'), so that part is not a defect.",
+   "better_fix": "Name the scope and the outcome in metSooner (app.html:711): `return (ids.length === 1 ? esc(first.short) + ' (about ' + sc(first.score.value) + ') is' : (NUMW[ids.length] || fmt.sep(ids.length, 0)) + ' of the chart\\'s own figures scoring under ' + sc(below) + ' are') + ' already past this limit in their own drawings' + (ids.length > 1 ? ', from ' + esc(first.short) + ' (about ' + sc(first.score.value) + ') up' : '') + '. ';`. For the cards (1361), drop 'scoring under' when below is Infinity: '24 of the chart\\'s own figures are already past this limit in their own drawings, from Arnold Schwarzenegger (about 27) up.' Face card: 'None of the chart\\'s own figures is past this limit.' Adjust the gap-copy replace() at 731 to match."
+  },
+  {
+   "id": "UX2-4",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced with v/realv.js at 1280x900. After clicking #hReal (aria-pressed='true'), '#lineup .verdict' still reads 'Everyone is drawn at the same height, in score order. Only the build differs.' The figures are drawn at different heights: bruce_banner 90 px, ansur2_m_p50 90 px, hulk_savage 110 px, rex 158 px, ollie 153 px. #modeNote just above says 'Real heights: one scale for every figure.' The verdict is static HTML (app.html:420), and modeNote() (1707-1712) updates only #modeNote. In Real heights mode the section's headline contradicts what is drawn and the mode note above it.",
+   "better_fix": "Give the verdict an id: `<p class=\"verdict\" id=\"lineupVerdict\">`. In modeNote() add: `$('lineupVerdict').textContent = state.heights === 'real' ? 'Everyone is drawn to one scale, at his real height, in score order.' : 'Everyone is drawn at the same height, in score order. Only the build differs.';`"
+  },
+  {
+   "id": "UX2-5",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced with v/limfig.js at 390 (dark) and 1280 (light). All four cards have viewBox 0 0 200 218, skull line y=10 and floor y=210. The figure tops (getBBox) are 10.0, 10.2 and 10.2 for the soldier, arms and thighs, but 39.9 for the face figure. Its width is 2.030 m in limits.json (the others are 1.24 and 1.41 m), so limitFigure (app.html:1333) lowers k from 111.1 to 192/2.03 = 94.6 px/m and draws it 170 units tall. wall() still draws the skull line and the template landmark lines for Hd=200. Screenshot v/limits-1280.png: the face figure's head sits well below the blue skull line, and the chest, waist, crotch and knee lines do not meet its landmarks. That contradicts the key ('Blue line across the wall: the top of the skull. Every figure \u2026 drawn to it', app.html:1694) and the method's 'Each template is drawn at 1.80 m'.",
+   "better_fix": "Draw all four cards at one scale that fits the widest figure. In renderLimits, after `cards` is built and before drawing: `var maxW = Math.max.apply(null, cards.map(function (c) { var b = Figure.bounds(c.parts); return b[2] - b[0]; })); Hd = Math.min(200, Math.floor((W - 8) * 1.8 / maxW));`. This gives 170. limitFigure then never takes its shrink branch, so every figure meets the skull line, and widths stay comparable across the cards. Alternatively, keep k = Hd/H and widen only that card's viewBox: `W = Math.max(200, Math.ceil((bb[2] - bb[0]) * Hd / H) + 8)`."
+  },
+  {
+   "id": "UX2-6",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced with v/loc.js at 390x844. At #meatball, #locNow reads 'To scale \u00b7 now: score 924', but the #locTape (role=img) aria-label is 'To-scale tape. Now showing scores 920 to 924.' At #empty it reads 'empty 45 to 62' against the label 'scores 45 to 62'. #empty-2 shows the same pattern (88 to 130), as does #empty-3 (220 to 924). markStop (app.html:1232-1234) builds the aria-label from sc(s.lo), which rounds the meatball's 924 to 920, and never uses the gap or meat wording. This breaks round 1's '924 never rounded' rule for screen-reader users, invents a 920\u2013924 range, and drops 'empty'.",
+   "better_fix": "In markStop build one string: `var now = (s.kind === 'gap' ? 'empty ' : 'score ') + (s.kind === 'meat' ? MEAT_TXT : s === STOPS[0] ? 'under ' + hi : lo + ' to ' + hi); $('locNow').textContent = 'To scale \u00b7 now: ' + now; host.setAttribute('aria-label', 'To-scale tape. Now showing ' + now + '.');`"
+  },
+  {
+   "id": "UX2-7",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Confirmed. A grep for aria-live, role=\"status\" and role=\"alert\" in src/app.html and dist/index.html returns 0 matches. CDP Accessibility.getPartialAXTree (v/ax.js) gives #toolStatus, #targetStatus and #validation as role=paragraph with no live property. Measuring now takes about 12 s for a 2,000 px sheet in the worker (race.js), and the target solve takes about 2 s. A screen-reader user hears nothing when the result, a rejection ('The sheet failed a check\u2026'), a refusal or 'Copied\u2026' appears. This is a WCAG 4.1.3 status-message defect.",
+   "better_fix": "Add role=\"status\" to <p id=\"toolStatus\">, <p id=\"targetStatus\"> and <p id=\"validation\">. In measureAsync, write the per-second ticker into a child `<span aria-hidden=\"true\">` (or update it every 5 s), so the live region announces 'Measuring\u2026' once and then the result."
+  },
+  {
+   "id": "UX2-8",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Confirmed with v/ax.js: #file is exposed as role=button, name 'Choose File', not ignored, focusable=true. It has class .sr (1x1 px, clipped) and tabindex=-1, which takes it out of the Tab order only. A screen reader's browse mode still finds a second, generically named control next to #tChoose ('Choose a sheet\u2026'). It works if activated, so the impact is low: a redundant control with no <label>, which axe's form-label rule also flags. #tChoose triggers it programmatically, so hiding it from assistive technology loses nothing.",
+   "better_fix": "`<input type=\"file\" id=\"file\" accept=\"image/png,image/jpeg,image/webp\" class=\"sr\" tabindex=\"-1\" aria-hidden=\"true\">`"
+  },
+  {
+   "id": "UX2-9",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced with v/caps.js (fallback mono font; Plex Mono has the same 0.6 em advance, so widths match). At 360, 390 and 414 px every caption ('front \u00b7 702 px') wraps onto 2 lines (span height 26 px against a 13 px line), and the spans' boxes touch (gaps 0, 0). Screenshot v/caps-360.png (dpr 3) reads 'FRONT \u00b7 702SIDE \u00b7 702BACK \u00b7 702' over 'PX PX PX'. At 1280 they are single lines 43 px apart. The available width at 360 px is about 226 px for three 14-character captions of about 100 px each, so they cannot fit. The cause is .viewcaps (app.html:329-330): flex with space-around, no gap and wrapping text. A 2,000 px sheet adds a character ('2002 px').",
+   "better_fix": "CSS: `.viewcaps { gap: 8px; } .viewcaps span { white-space: nowrap; }` and `@media (max-width: 719px) { .viewcaps { letter-spacing: 0; } }`. In drawSheet (app.html:1447) drop the unit on narrow screens: `'<span>' + v + (innerWidth < 720 ? ' ' : ' \u00b7 ') + V[v].heightPx + (innerWidth < 720 ? '' : ' px') + '</span>'`. 'front 2002' is about 66 px at letter-spacing 0, three fit in about 210 px, and the gutter's unit can be stated once ('heights in px'). Or place each caption under its view's centre from V[v].x0/x1, as the gutter labels are placed."
+  },
+  {
+   "id": "UX2-10",
+   "real": true,
+   "severity": "minor",
+   "reasoning": "Reproduced (v/empty.js, v/empty3.js). When the target status reads 'Drawing\u2026', #tgtFront has src=null, naturalWidth 0 and complete=true, and it sits in view at 220 px tall (390 px wide). The more lasting case: target 15 on 'Army men, 5th percentile' is refused ('The full-size outline fails the tool's own checks\u2026'), none() removes both srcs, and the boxes then stay indefinitely as two 220 px white frames, each with Chromium's broken-image icon and the alt text 'Target outline, front view' / 'Target outline, side view' (v/target-refused-390.png). Screen readers also announce two images that do not exist. I could not screenshot the transient pre-draw frame, because the main-thread solve blocks capture, but the refused state shows the same rendering persistently.",
+   "better_fix": "`<div class=\"target-imgs\" id=\"tgtImgs\" hidden>` in app.html:517. In drawTarget's success path, after setting the srcs: `$('tgtImgs').hidden = false;`. In none(): `$('tgtImgs').hidden = true;`. The page already enforces [hidden] (round 1 L9)."
+  }
+ ]
+}

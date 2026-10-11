@@ -1,0 +1,145 @@
+{
+ "findings": [
+  {
+   "id": "DC-1",
+   "severity": "major",
+   "title": "Archive.org full-text-search source links often fail. The Hulk handbook quote, Luke Cage's 'steel-hard skin' and Kingpin's 'fat phrases' have no working link at all.",
+   "location": "data/facts.json, sources of hulk_added_mass_composition, luke_cage_dense_tissue, comic_body_fat_official, asgardian_tissue_density_*, juggernaut_composition, colossus_armored_composition and others (21 'page_production' URLs). They show in the Sources section and in the drawers of hulk_savage, hulk_grey, hulk_marvelcom, luke_cage, kingpin and thor.",
+   "evidence": "The page links to 23 archive.org URLs of the form https://archive.org/services/search/beta/page_production/?service_backend=fts&... . These are an internal JSON API, not a readable page. I fetched all 23 one at a time with 2 s gaps (scratchpad/review1/fts_pass3.json): 9 of the 23 returned HTTP 400, with the body 'child request for collection_materialization failed (... the FTS API request failed ... HTTP 502)'. Two earlier passes gave a similar share of failures. Three groups failed on every attempt (3 passes, plus 5 retries for the Hulk):\n- both Hulk handbook links ('fortified his cellular' / 'mutation was not a stable'). They are the only handbook links behind the drawer text: Marvel's official handbook says his transformation adds \u201cover 800 pounds of bone marrow and tissue\u201d.\n- \"steel-hard skin\" (Luke Cage).\n- 'Essential OHOTMU Deluxe vol 1: fat phrases'.\nThe comics verifier flagged the same problem (verify_comics.json, missing #7): 'every archive.org full-text search URL should come with the item's details URL, because that API often returns 502'. No item URL was added.",
+   "expected": "Each quoted official claim should have at least one stable link a reader can open and read. Examples: the item page https://archive.org/details/officialhandbook0001unse (with ?q=\"...\" for the phrase), or the item's _djvu.txt OCR file, as the DK books already use. The quoted snippet should also sit in the fact.",
+   "fix": "For every page_production source, add a second source with the item's details URL (or its /download/..._djvu.txt). Put the matched snippet in the source title. Then either drop the raw API URL or label it 'search API (may fail)'."
+  },
+  {
+   "id": "DC-2",
+   "severity": "minor",
+   "title": "A Sources label still gives Rex's old numbers (261 vs 159), which contradict the score card (250 vs 160).",
+   "location": "data/facts.json:3644, label of kouri_correction_beyond_human_heights (shown in Sources > 'The score'). Compare src/app.html:1344, the score card.",
+   "evidence": "Sources shows 'Kouri's linear height correction fails far outside human heights (Rex: 261 vs 159) DERIVED'. The score card on the same page says 'at Rex's height Kouri's correction ... would give about 250 instead of 160'. Recomputed:\n- Old basis (crest 3.048 m, tail counted, c = 6.3): plain 268.8, Kouri 261.0, S 158.8.\n- Page basis (skull 2.92 m, 306 kg tail excluded, c = 6.1): plain 259.7, Kouri 252.9, S 160.1.",
+   "expected": "One set of Rex numbers on the page, on the page's own basis (skull height, no tail): about 250 vs 160.",
+   "fix": "Change the label to 'Kouri's linear height correction fails far outside human heights (Rex at his skull height, tail excluded: about 250 vs 160)', or drop the numbers from the label."
+  },
+  {
+   "id": "DC-3",
+   "severity": "minor",
+   "title": "Pope's 6\u201316% photo body-fat range is credited to Kouri 1995. It was never published there; Pope recalled it to Todd in 2008.",
+   "location": "data/settings.json:40, fat_classes.presteroid_contest.note (shown in the drawers of steve_reeves_1947 and mr_america_1938_1954_mean)",
+   "evidence": "Both drawers say: 'Pope's blind estimates from photographs ran from about 6% to 16% (Kouri 1995).' Todd 2008, printed p.14 (https://starkcenter.org/igh/igh-v10/igh-v10-n3/igh1003p03.pdf, fetched): 'he'd never published the specific body fat estimates ... ranged from about 6% to a maximum of about 16%.' The project's own fact kouri1995_mr_america_table2 says: 'blind photo estimates, which Pope later recalled as about 6% to 16% (Todd 2008)'.",
+   "expected": "The citation is Todd 2008 (Pope's recollection), labelled as recalled and unpublished.",
+   "fix": "Change the note to: 'Kouri 1995 estimated each winner's fat blind from photographs; Pope later recalled the estimates ran from about 6% to 16% (Todd 2008).' Add todd2008_mr_america_reanalysis to the class keys."
+  },
+  {
+   "id": "DC-4",
+   "severity": "minor",
+   "title": "Nineteen comic drawers still say 'No publisher gives body fat'. The verifier corrected this wording, and it contradicts the Kingpin drawer.",
+   "location": "data/settings.json:79, 91 and 104 (fat_classes comic_lean, comic_brute and comic_everyday notes), shown in 19 drawers",
+   "evidence": "19 drawers carry 'Assumed for this group: ... No publisher gives body fat.' After the verifier, comic_body_fat_official says: 'no percentage found in the Marvel and DC sources searched (qualitative statements only; one fan-wiki figure attributed to a 2004 handbook, unverified)'. The Kingpin drawer says 'a fan wiki gives 9 lb of fat (2%), citing the 2004 Daredevil handbook (not verified)'. The giants stop and the body-fat card already use the corrected 'not found in the sources searched' wording.",
+   "expected": "The same hedged statement everywhere: none was found in the sources searched.",
+   "fix": "Replace 'No publisher gives body fat.' in the three class notes with 'No body-fat figure was found in the Marvel and DC sources searched.'"
+  },
+  {
+   "id": "DC-5",
+   "severity": "minor",
+   "title": "The limits note says more than Vasen 1995 does. The abstract names no tasks, and 120\u00b0 was not 'the lowest setting tested'.",
+   "location": "data/settings.json:725, limits.notes[2] (limits section, notes)",
+   "evidence": "The page says: 'with the elbow held to 120\u00b0, 49 of 50 people still managed eating, drinking and washing by moving the shoulder and wrist instead (Vasen 1995), the lowest setting tested.'\nThe abstract (https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=7775772&rettype=abstract&retmode=text, fetched) says: 'serially limited by 15 degree increments ... 12 activities of daily living ... 49 of the subjects performed all of the tasks with extension limited at 75 degrees and flexion limited at 120 degrees.' It lists no tasks.\nThe fact elbow_rom_compensated_vasen1995 says: 'The abstract does not list the 12 tasks or say how many people failed at the next step (105\u00b0).' The verifier's wording (rec_vasen_120_line) was 'lowest tested setting where compensation still sufficed'. The arc was also limited to 75\u2013120\u00b0, not just 'held to 120\u00b0'.",
+   "expected": "'With elbow motion braced to 75\u2013120\u00b0, 49 of 50 adults still did all 12 daily tasks tested by moving other joints (Vasen 1995); this is the tightest brace setting at which they did.'",
+   "fix": "Change the note as above. Name tasks only if the full text has been read."
+  },
+  {
+   "id": "DC-6",
+   "severity": "minor",
+   "title": "The 'Past Kouri's 25' verdict mixes Trexler's own height adjustment into a sentence about Kouri's scale.",
+   "location": "data/settings.json:742, stops[past25].verdict",
+   "evidence": "The page says: 'No drug-free man in Kouri's study reached 25 on his scale. Many measured athletes do: 62 of 235 college footballers (26%) were above 25, the top 2.5% start at 28, and the top one reached 32.' Trexler 2017 (PMC5438288, fetched) gives: 'Sixty-two participants (26.4%) had FFMIAdj values above 25 ... When using the KE adjustment, 54 participants (23.0%) had FFMIKE values above 25'. FFMIAdj uses Trexler's own slope of 2.943; FFMIKE uses Kouri's equation. The 28.1 and 31.7 are also FFMIAdj, not this page's score. For a 1.90 m lineman, 31.7 FFMIAdj is about S 30.3.",
+   "expected": "On Kouri's scale, 54 of 235 (23%) were above 25. The 28 and 32 should be called the footballers' height-normalised FFMI, as the anchor card now does.",
+   "fix": "Use '54 of 235 college footballers (23%) were above 25 on Kouri's equation'. Write 'the top 2.5% start at 28 and the top one reached 32 on their study's height-normalised FFMI'."
+  },
+  {
+   "id": "DC-7",
+   "severity": "minor",
+   "title": "The Todd 2008 source title still has the page range the verifier said was wrong.",
+   "location": "data/facts.json:4228 (sources of todd2008_mr_america_reanalysis, shown in Sources > The natural limit)",
+   "evidence": "The page shows 'Iron Game History 10(3):13-15, Aug 2008'. The verifier (verify_natural.json, todd2008) and corrections.json asked for 'Iron Game History 10(3):3-22 (Aug 2008); Mr America analysis pp. 14-16'. The correction went into notes only. The fetched PDF's first page is printed '3'. Pope's 6\u201316% is on printed p.14, and the 221 lb Grimek estimate is on p.15.",
+   "expected": "'Iron Game History 10(3):3-22, Aug 2008; Mr America analysis pp. 14-16'",
+   "fix": "Apply the corrected title with a 'set' on that source in corrections.json, then rebuild facts.json."
+  },
+  {
+   "id": "DC-8",
+   "severity": "minor",
+   "title": "A source title gives 'full inspiration' as a reason ANSUR chest breadth is narrow. The verifier found it works the other way.",
+   "location": "data/facts.json:5371, source title under ansur2_ellipse_vs_girth_male (Sources > Drawing a body from measurements)",
+   "evidence": "The page shows 'Hotzman J et al. 2011, NATICK/TR-11/017 (why chest breadth is narrow: compressed, full inspiration)'. TR-11/017 \u00a76.4.24 (fetched PDF) says: 'Ask the participant to take a deep breath and hold it. Compress the tissue firmly to ensure contact with the rib cage ... taken at maximum inspiration.' The verifier (verify_outline.json, ansur2_ellipse_vs_girth_male) says: 'Full inspiration is listed as a cause of the 24% chest gap. It works the other way: inspiration widens the caliper breadth.' Only append_notes was applied, so the title on the page is unchanged.",
+   "expected": "'(chest breadth is taken compressed to the rib cage, at full inspiration)', describing the protocol without claiming a cause, or naming compression alone as the cause.",
+   "fix": "Retitle the source through corrections.json and rebuild."
+  },
+  {
+   "id": "DC-9",
+   "severity": "minor",
+   "title": "The page states 'Real tall men are slimmer than scaled-up short men' as fact, though the verifier ruled the structural reading disputed and the page's own Sources marks it DISPUTED.",
+   "location": "data/settings.json:654 (ignores[0]) and src/app.html:1344 (score card: 'because tall men are not scaled-up short men')",
+   "evidence": "The ignores list says: 'Real tall men are slimmer than scaled-up short men, so the score rates them a little lower'. The verifier (verify_index.json, tall_men_not_scaled_copies) said: ''taller adults are relatively slimmer' as a statement about structure is disputed, not measured' (Burton 2010). The page's Sources show 'On average, taller adults have lower girth-to-height ratios ...; whether that is structural is disputed' and 'Is the human mass-height exponent really about 2, or nearer 3? ... DISPUTED'. What is measured is the average: adult FFM grows about as H^1.9\u20132 (Heymsfield 2007), and ANSUR weight/H^3 falls with height.",
+   "expected": "State the measured average and flag the structural reading as disputed.",
+   "fix": "Change the text to 'On average, taller men carry less fat-free mass per height cubed (across adults it grows about as height squared), so the score rates them a little lower; whether real bodies differ in shape or this is a regression artefact is disputed (Burton 2010).'"
+  },
+  {
+   "id": "DC-10",
+   "severity": "minor",
+   "title": "Juggernaut's drawer cites a Marvel.com page that lists different stats (9'5\", 1,900 lb) and never mentions the conflict.",
+   "location": "data/settings.json:403 (juggernaut). The drawer shows builds.json juggernaut height_m and weight_kg (disputed: true, value_basis) without value_basis.",
+   "evidence": "The drawer shows 'HEIGHT COUNTED 2.08 m OFFICIAL 6'10\" (DK 2019)' and 'WEIGHT COUNTED 408 kg (900 lb) OFFICIAL', and links 'Marvel.com Juggernaut (Cain Marko)'. That page (fetched) reads 'HEIGHT 9'5\" WEIGHT 1,900 lbs.' The drawer text contains neither '1,900' nor '9'5'. builds.json marks both values disputed: true, with value_basis 'Marvel.com's 9'5\" / 1,900 lb page is flagged by Marvel as unverified crowd-sourced content'. The comics use ranges: 'none', so the score range covers body fat only. At 9'5\"/1,900 lb he would score 52\u201360 (57.7 at 12%), inside the 'nothing comparable 45 to 62' stretch.",
+   "expected": "The drawer says the cited Marvel.com page gives 9'5\"/1,900 lb, which Marvel flags as unverified, and why the DK and handbook figure is used.",
+   "fix": "Add the builds.json value_basis to the drawer's height and weight rows (or to Juggernaut's comparable_note)."
+  },
+  {
+   "id": "DC-11",
+   "severity": "minor",
+   "title": "The Mr America anchor's '26\u201329' bar runs from the mean to the single top value, but it reads as the winners' spread.",
+   "location": "data/settings.json:579-590, anchors.natural[mr_america] (value 25.8, range [25.8, 29.2]). Drawn in the forest plot and the natural-limit card.",
+   "evidence": "The forest plot and natural card show 'Pre-steroid Mr America winners (estimated from photos) 26\u201329'. Kouri's Table 2 (fact kouri1995_mr_america_table2) gives 20 winners from 22.6 to 28.0 normalised, mean 25.4; 7 of the 20 are at or below 25.0. The other anchors' bars are spreads: an IQR (users), a frame range (Butt), and all-sports to rugby (athletes). This bar starts at the mean, so the lower half of the winners does not show.",
+   "expected": "A bar covering the winners (about 22.6\u201328.0 normalised, or converted), or a point at the mean marked 'mean; top 29'.",
+   "fix": "Set range to the winners' min\u2013max on the same basis, or drop range and show the mean as a point, with the top value in the text."
+  },
+  {
+   "id": "DC-12",
+   "severity": "minor",
+   "title": "In facts.json, dc_density_claims_fan_only still says 0 official density statements, which contradicts its corrected label and the source.",
+   "location": "data/facts.json:480 (dc_density_claims_fan_only.values.official_density_statements_found = 0)",
+   "evidence": "The label (shown on the page) says: 'DC: one official density statement (Kryptonians, 'dense molecular structure', no factor; DK 2021)'. The values still say 'official_density_statements_found': 0, and the notes start 'Grep ... found hits only for other characters'. The DK DC 2021 OCR (fetched, line 30445) reads: 'POWERS/ABILITIES On Krypton: high intelligence, dense molecular structure'. The correction set only the label and status.",
+   "expected": "official_density_statements_found: 1, with the Kryptonian quote in the values.",
+   "fix": "Add 'set': {'values': {...}} for this key in corrections.json, or edit research_comics.json, then recompile facts.json."
+  },
+  {
+   "id": "DC-13",
+   "severity": "minor",
+   "title": "The README's counts and band edges no longer match the data or the page.",
+   "location": "build-comparison/README.md:13, 52, 55 and 62",
+   "evidence": "README says 'lists the 113 research facts' (facts.json has 133; the Sources headings sum to 16+33+25+18+19+20+1+1 = 133), '26 corrections applied' (corrections.json has 38), 'nothing comparable 42 to 62' (the page now shows 'SCORE 45 TO 62' and 'Nothing comparable scores 45 to 62') and 'Kouri 1995 (FFMI of 74 drug-free lifters ...)' (the page now says 'non-users', since 18 came from a testosterone trial).",
+   "expected": "The README matches the data: 133 facts, 38 corrections, the 45\u201362 stretch, and 'non-users'.",
+   "fix": "Update the four phrases, or generate the counts in build.js."
+  },
+  {
+   "id": "DC-14",
+   "severity": "minor",
+   "title": "The Sources section shows a DISPUTED chip that the page's status key does not define.",
+   "location": "src/app.html:1602 (the status key lists only measured, official, reported, derived, estimate). Fact height_exponent_regression_vs_isometry has status 'disputed'.",
+   "evidence": "Sources > The score shows 'Is the human mass-height exponent really about 2, or nearer 3? ... DISPUTED'. The 'Status chips' key on the page explains only MEASURED, OFFICIAL, REPORTED, DERIVED and ESTIMATE. 'disputed' is defined only in builds.json status_vocabulary, so it appears only as a hover title.",
+   "expected": "Every chip on the page is explained in the key, or the fact uses one of the five house statuses with the dispute in its label.",
+   "fix": "Add 'disputed' to the key's list, or set the fact's status to 'reported' and keep 'disputed' in the label."
+  }
+ ],
+ "verified_ok": [
+  "Review basis: the repo changed under me during the review. All findings are re-checked against commit 2093fed (05:36 UTC, clean tree), rebuilt in scratch and rendered with Playwright at 1280 px; I edited nothing in the repo. Scratch files are in /tmp/claude-0/-home-user-rex-strength-lab/9b81b796-3162-56bd-85b7-22e02b6583e2/scratchpad/review1/ (render.js, drawers.js, status.txt, fts_pass3.json, page.txt, drawers.json).",
+  "Link check: of 252 external URLs on the page (Sources plus all 49 drawers), 222 returned HTTP 200 on the first parallel pass. The cdc.gov and army.mil 403s are bot blocks: the NCHS sr11_250 PDF and the Army.mil article load through WebFetch. The Army IG PDF (home.army.mil) timed out with curl and gave 503 to WebFetch.",
+  "Content-checked against fetched sources (30+):\n- Kouri 1995 Europe PMC abstract: 6.3 slope, 'limit of 25.0', Mr America mean 25.4.\n- Trexler 2017 PMC full text: 28.1, 31.7, 62 (26.4%), 54 on Kouri's equation, no independent testing.\n- Currier 2019 abstract: 209 athletes, 28.32, rugby 29.1; testing not mentioned, and the page now says so.\n- Kondo 1994: 121.3 kg, 186 cm, 181 kg, 33%.\n- Withers 1997: 5.0% by the 4-compartment model, 5 days out.\n- Kraemer 2020: 18.7 \u00b1 6.2% DXA; lean 118.0 + BMC 5.23 = about 123 kg.\n- Baggish 2017: FFMI 26 (24\u201328). Hudson 2020: current users 27 (25\u201329).\n- Taylor 2024: men's 1-site RMSE 3.351, DXA 24.3%.\n- Barakat 2022: 6.3% DXA on competition day. Rosaci 2026: 5.9% by skinfolds.\n- NHANES sr11_250 Table 3, men 20+: P25 24.1, P50 28.0, P75 32.1.\n- Hattori 1999: 36 wrestlers, cut-off about 30. Butt calculator: 22.667/17.01 and metric 322.4/241.9.",
+  "Comic statements checked:\n- Marvel.com: Wolverine 300 lb, 195 lb without adamantium, which adds 105 lb. Thor 6'6\", 640 lb. Kingpin 6'7\", 450 lb, with the 'muscle, not fat' quote. Thing 'rock-like skin'. Colossus 'organic, steel-like substance', 7'5\", 500 lb. Luke Cage 'incredibly dense muscle tissues' and 'Superdense Body Mass', 6'6\", 425 lb. Hulk 7'6\", 1,150 lb. Abomination 6'8\", 980 lb.\n- DK Marvel 2019 OCR: Asgardian 'skin and bones are three times as dense'; Juggernaut 6 ft 10 in, 900 lbs.\n- DK DC 2021 OCR: Bane 350 lb (425 with Venom); Kryptonians 'dense molecular structure'.\n- archive.org full-text search: OHOTMU 'about 3 times denser than similar human tissue'; Abomination 'over 800 pounds of bone marrow and muscle tissue'; Colossus 'organic steel-like'; Juggernaut helmet and skullcap.",
+  "Function sources checked:\n- CDC ROM: men 20\u201344, elbow flexion 144.6.\n- 38 CFR 4.71a DC 5206: 100\u00b0 rated 10%.\n- Zwerus 2019: 352 adults (166 men); flexion falls with BMI.\n- Morrey 1981: 30\u2013130\u00b0.\n- Spyropoulos 1991: step width 0.16 vs 0.08 m.\n- Hara 2016: HJC Y = 8 + 0.086 LL.\n- ANSUR TR-11/017 \u00a76.4.24: chest breadth compressed, at maximum inspiration.",
+  "Anchor numbers checked against facts and sources: Kouri (74 non-users, 56 + 18, nine in 24\u201324.9, 46 of 83 below 25, 1.59 m man about 26.6). Athletes, Mr America (25.4/25.8, 28.0/29.2, Todd 26.4/32.0, Grimek 221 vs 195 lb, about 27.9). Butt (25.1\u201325.7, 24.1\u201326.9). Sumo (35.1, 33.9). Users (86, 26, 24\u201328, 27 (25\u201329)).",
+  "Limits text: every number is in a sourced fact. Arms: 30\u00b0, 4,082 men, max 26.2\u00b0. Thighs: 4.4 cm gap, about 17 cm between hip joints, 8 cm ordinary step width. Face: 99\u00b0/123\u00b0 reach, 145\u00b0 norm, 100\u00b0 threshold, models 217 and 86. limits.json matches the settings text.",
+  "Fat classes match their sources: NHANES IQR; stage 4\u201310 (Barakat 6.3% the only DXA contest-day value); enhanced 4\u20138 (Withers 5.0, Rosaci 5.9); strongman 12\u201328 (Kraemer); Kouri non-users 12.5% \u00b1 3; Army equations (the official one and Taylor's coefficients in model.js match the facts; error 3.35).",
+  "Wolverine's 'one and a half times' (300/195 = 1.54) and Thor's 'about 21' (62/3) check out. Comic statuses: official for publisher figures, reported for the grey Hulk's fan-wiki stats (the giants stop now says so).",
+  "Fact statuses are all within the house vocabulary (measured 45, reported 24, estimate 22, derived 21, official 20), except one 'disputed' (see DC-14). The sumo anchor is correctly re-labelled derived.",
+  "Corrections reached the page for: thing_rocky_hide, kingpin_bulk_not_fat, juggernaut_composition, dc_density_claims_fan_only (label), comic_body_fat_official, ffm_over_height_cubed_literature, tall_men_not_scaled_copies (label), allometric_normalisation_practice, meatball_score_check, santos2014, mitchell2018, lifters_rom, elbow wedge band, ansur2_biacromial (derived), joint-centre heights (estimate), head height, ellipse volume (reported), and bodyfat_range_comic_characters (URL removed).",
+  "Verifier items now fixed in the anchors and stops at 2093fed: Currier drug testing 'not stated', Kouri's 18 trial non-users, the Kondo wording, the grey Hulk's 'reported' stats, Rex and Ollie's A-pose not counted against the arms limit, the Vasen 130\u2013136\u00b0 natural-use line, the arm-hang caveat, and Kouri's 25 labelled as height-normalised (about 27 for the 1.59 m man).",
+  "Build and data: a fresh build of the committed sources matched dist/index.html at the start of the review. The page drops non-http sources (local file paths) from links, as intended. The Rex and Ollie skull heights and tail masses in settings.json match duo_skull_heights and the drawers' arithmetic: Rex 2,394 kg \u00d7 0.925 / 2.92\u00b3 \u00d7 1.8 = 160."
+ ]
+}

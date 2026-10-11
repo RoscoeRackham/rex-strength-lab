@@ -1,0 +1,516 @@
+{
+ "summary": "Body-fat ranges for each chart group and measured FFMI in steroid users, researched from primary sources (Europe PMC / NCBI full texts, CDC/NCHS PDF, an official Army fact sheet). Main findings:\n\n(1) Everyday men. NHANES 1999-2004 DXA, men aged 20+: median 28.0%, 5th-95th 17.4-38.0%. Ages 20-39: median 26.1%, 5th-95th 15.5-37.2%. NHANES 2011-18 means for men aged 20-59 are 25-29% depending on race and ethnicity. US soldiers: Taylor et al. 2024 (USARIEM) measured 1,261 representatively sampled active-duty men by DXA in 2021-22: 24.3 \u00b1 6.3%. ANSUR II has no body fat, but the Army's official 2023 one-site tape equation can be applied to its navel waist and weight. That gives a median of 24.0% (5th-95th 15.2-33.5%), which matches the measured Army DXA mean. Important for the chart: at that body fat the ANSUR II median man scores S \u2248 21, not 24. The brief's \"about 24\" implies about 15% fat.\n\n(2) Natural bodybuilders measured on or near contest day: 4.5% (Rossow, DXA), 6.3% on competition morning (Barakat 2022, DXA; 5.4-6.3% over the last 8 days), about 5% (Schoenfeld 2020), 7.4% at the end of prep (Kistler 2014, DXA), and about 7% one week out (Mitchell 2018, derived from DXA masses). Off-season values are 12-18%.\n\n(3) Enhanced pros: I found no DXA or 4C measurement of a top IFBB pro on stage. The best data are Withers 1997 (4C, 5.0% five days out, probably enhanced but drug status not stated) and Rosaci 2026 (an IFBB Pro League competitor, 1.76 m, 122.3 kg, 5.9% by skinfold 10 days before a 2025 Pro show; 128.7 kg and 6.1% in the off-season). Skinfold results this lean are probably underestimates.\n\n(4) Strongmen: 18.7 \u00b1 6.2% (Kraemer 2020, DXA; existing key). Professional sumo: 26.1-26.2% (hydrodensitometry); the largest wrestler had 121.3 kg FFM at 1.86 m and 33% fat. Division I linemen (DXA): offensive 30.8 \u00b1 4.2%, defensive 23.5 \u00b1 7.0%. I found no measured body fat for super-heavyweight weightlifters.\n\n(5) FFMI in steroid users. Pope group: normalized FFMI median 26 (IQR 24-28) in 86 long-term users vs 23 (21-25) in 54 non-users; current users 27 (25-29). The same group screens out \"non-users\" with FFMI above 26 and body fat below 10% as probable hidden users. Danish current users (Bulut 2024): lean mass index 23 \u00b1 2 vs 20 \u00b1 2 in controls. Bhasin 2001: 600 mg/week testosterone for 20 weeks without training added 7.9 kg FFM (DXA), about +2.4 FFMI at 1.80 m; Bhasin 1996, with training, +6.1 kg in 10 weeks. Nandrolone 200 mg/week for 8 weeks added 2.6 kg FFM (4C). Users' average real-world dose was 973 mg/week.\n\n(6) Recommended ranges, each an estimate: everyday 15-34% (soldiers) or 17-38% (NHANES); natural on stage 4-10%; natural off stage 10-18%; enhanced on stage 4-8%; enhanced off-season 8-15%; strongmen and lifters 12-28%; comics, no source (a labelled assumption by drawn type); Rex and Ollie 5-10% (canon).",
+ "facts": [
+  {
+   "key": "nhanes_dxa_bodyfat_men_1999_2004",
+   "label": "US men: DXA percent body fat percentiles by age (NHANES 1999-2004, NCHS Vital Health Stat 11(250))",
+   "status": "measured",
+   "values": "{\"method\":\"DXA, Hologic QDR 4500A fan-beam, Discovery software v12.1\",\"men_20plus_crude\":{\"n\":6559,\"mean\":28.0,\"se\":0.1,\"p5\":17.4,\"p10\":19.5,\"p15\":21.4,\"p25\":24.1,\"p50\":28.0,\"p75\":32.1,\"p85\":34.3,\"p90\":35.9,\"p95\":38.0},\"men_20plus_age_adjusted_mean\":28.1,\"men_20_39\":{\"n\":2183,\"mean\":26.1,\"p5\":15.5,\"p10\":17.4,\"p15\":18.9,\"p25\":21.2,\"p50\":26.1,\"p75\":30.4,\"p85\":32.8,\"p90\":34.6,\"p95\":37.2},\"men_40_59\":{\"n\":2024,\"mean\":28.6,\"p5\":19.3,\"p25\":25.2,\"p50\":28.5,\"p75\":32.2,\"p95\":37.7},\"men_60_79\":{\"n\":1851,\"mean\":30.8,\"p5\":22.0,\"p50\":30.7,\"p95\":39.6},\"unit\":\"percent of body mass\"}",
+   "sources": [
+    {
+     "title": "Borrud LG, Flegal KM, Looker AC, Everhart JE, et al. Body composition data for individuals 8 years of age and older: U.S. population, 1999-2004. NCHS Vital Health Stat 11(250), 2010. Table 3 (PDF sha256 686bf1c5c0b3d4fb...)",
+     "url": "https://www.cdc.gov/nchs/data/series/sr_11/sr11_250.pdf"
+    }
+   ],
+   "notes": "Table 3, 'Total percentage body fat ... Male, All race and ethnicity': 'Age 20 years and older, crude ... 6,559 28.0 0.1 17.4 19.5 21.4 24.1 28.0 32.1 34.3 35.9 38.0'; '20-39 years ... 2,183 26.1 0.1 15.5 17.4 18.9 21.2 26.1 30.4 32.8 34.6 37.2'. Methods: people over 300 lb or taller than 6'5\" were not scanned ('physical limitations of the DXA table'). Missing or invalid scans were multiply imputed. 'Participant lean mass was decreased by 5% and an equivalent kilogram weight added to the fat mass', because the QDR 4500A was shown to underestimate fat (Schoeller et al.). The published %fat therefore already includes that correction. Weighted, nationally representative. Best primary source for 'everyday men'. Kelly, Wilson & Heymsfield 2009 (PLoS ONE, PMC2737140) uses the same NHANES DXA data. I fetched it, but its percentiles are in supplementary LMS files, so I used the NCHS tables instead."
+  },
+  {
+   "key": "nhanes_dxa_bodyfat_men_2011_2018",
+   "label": "US men aged 20-59: age-adjusted mean DXA body fat by race and ethnicity, NHANES 2011-18 (Liu et al. 2021, BMJ)",
+   "status": "measured",
+   "values": "{\"method\":\"DXA (NHANES 2011-18), ages 20-59 only\",\"n_both_sexes\":10864,\"men_age_adjusted_mean_pct\":{\"hispanic\":[27.8,28.6],\"nh_white\":[26.8,27.9],\"nh_black\":[24.9,25.5],\"nh_asian\":[25.5,28.2],\"other\":[26.4,28.3]},\"overall_both_sexes_pct\":[32.6,33.1],\"cycles\":\"2011-12, 2013-14, 2015-16, 2017-18 (ranges span the four cycles)\"}",
+   "sources": [
+    {
+     "title": "Liu B, Du Y, Wu Y, Snetselaar LG, Wallace RB, Bao W. Trends in obesity and adiposity measures by race or ethnicity among adults in the United States 2011-18: population based study. BMJ 2021;372:n365, Table 3 (Europe PMC full text PMC7961695)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7961695/fullTextXML"
+    }
+   ],
+   "notes": "Table 3 'Trends in age adjusted mean body fat percentage ... (n=10 864)', Men: Hispanic 27.8, 28.0, 28.4, 28.6; Non-Hispanic white 27.1, 27.9, 26.8, 27.2; Non-Hispanic black 25.0, 25.0, 24.9, 25.5; Non-Hispanic Asian 25.5, 26.7, 26.8, 28.2. 'Body fat percentage was available among adults aged 20-59 years.' Overall body fat was stable over 2011-18. The paper also says values were 'much higher' than 1999-2004. The DXA-ineligible share was small (0.1%). Table 3 has no all-race men figure, and I did not fetch the appendix. This confirms that the 1999-2004 NCHS percentiles are not out of date for men (about 25-29% means)."
+  },
+  {
+   "key": "taylor2024_army_dxa_bodyfat",
+   "label": "US Army active-duty men: DXA body fat in a representative sample (Taylor et al. 2024, USARIEM)",
+   "status": "measured",
+   "values": "{\"method\":\"DXA, GE Lunar iDXA\",\"cohort1_men_n\":1261,\"cohort1_height_cm\":176.3,\"height_sd\":7.1,\"cohort1_weight_kg\":85.9,\"weight_sd\":13.8,\"cohort1_BMI\":27.6,\"cohort1_bodyfat_dxa_pct\":24.3,\"bodyfat_dxa_sd\":6.3,\"cohort1_bodyfat_old_AR_tape_pct\":19.5,\"cohort1_fat_mass_kg\":21.5,\"cohort1_ffm_kg_as_tabled\":61.7,\"cohort2_men_n_from_race_counts\":753,\"cohort2_bodyfat_dxa_pct\":24.4,\"cohort2_sd\":6.9,\"male_1site_manual_equation_lb_in\":\"-27.05 + 2.06*abdomen_in - 0.12*weight_lb\",\"male_1site_manual_RMSE_pct_points\":3.35,\"male_old_AR_RMSE\":5.89,\"male_old_AR_bias\":-4.79,\"collection\":\"Oct 2021 - Dec 2022, four Army installations\"}",
+   "sources": [
+    {
+     "title": "Taylor KM, Castellani MP, Bartlett PM, Oliver TE, McClung HL. Development and cross-validation of a circumference-based predictive equation to estimate body fat in an active population. Obes Sci Pract 2024;10(2):e747, Tables 1-4 (Europe PMC full text PMC11026907)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11026907/fullTextXML"
+    }
+   ],
+   "notes": "Abstract: 'Body size and composition were evaluated in a representatively sampled cohort of 1904 active-duty Soldiers (1261 Males, 643 Females), using dual-energy X-ray absorptiometry'. Table 1, Men, Cohort 1: '% Body fatDXA 24.3 \u00b1 6.3'; '% Body fatCIRC 19.5 \u00b1 6.3' (the old AR 600-9 tape equation). Sampling was 'similar to those utilized in NHANES', with minorities oversampled. Cadets were excluded. The tabled FFM of 61.7 kg plus 21.5 kg fat is 83.2 kg, against a mean weight of 85.9 kg, so the 'fat-free mass' column probably excludes bone mineral (about 3 kg); treat it with care. Table 2 lists the male one-site manual equation (no height) as intercept -27.05, abdomen 2.06, weight -0.12, in inches and pounds judging by its closeness to the official equation. In the RMSE and bias tables the female column comes before the male one, which I inferred: the second column's old-AR bias of -4.79 matches the men's Table 1 difference of 19.5 - 24.3 = -4.8. This is the best measured body-fat value for US soldiers."
+  },
+  {
+   "key": "army_one_site_tape_equation_2023",
+   "label": "US Army one-site (navel waist) body-fat equation, Army Directive 2023-11 (as published in an official Army installation summary)",
+   "status": "official",
+   "values": "{\"men\":\"%BF = -26.97 - 0.12*weight_lb + 1.99*abdomen_in\",\"women\":\"%BF = -9.15 - 0.015*weight_lb + 1.27*abdomen_in\",\"site\":\"abdomen at the navel\",\"worked_example_men\":{\"abdomen_in\":35,\"weight_lb\":210,\"result_pct\":17.48},\"sole_authorized_tape_method_from\":\"2024-06-08\",\"SI_form_men\":\"%BF = -26.97 - 0.2646*weight_kg + 0.7835*abdomen_cm\"}",
+   "sources": [
+    {
+     "title": "US Army Training Center & Fort Jackson Inspector General, 'IG Update 23-4: Guidance on Changes to Army Directive 2023-11 (Army Body Fat Assessment for the Army Body Composition Program)', FY23 Q4 (PDF sha256 236b7ad9...)",
+     "url": "https://home.army.mil/jackson/download_file/view/84278f84-10a3-4177-a3bc-6d2f08ae7866/1016"
+    },
+    {
+     "title": "Army.mil, 'Evolving body composition standards in the U.S. Army: a science-informed approach' (background; 2021 USARIEM study of 2,690 soldiers)",
+     "url": "https://www.army.mil/article/273959/evolving_body_composition_standards_in_the_u_s_army_a_science_informed_approach"
+    }
+   ],
+   "notes": "The PDF reads: 'The equation for men is: % body fat = -26.97 - (0.12 x body weight in pounds) + (1.99 x abdomen circumference in inches)', with the worked example 'Abdomen = 35 inches; Weight = 210 pounds ... = -52.17 + 69.65 = 17 % (actual number is 17.48%...)'. It also says 'Beginning 8 June 2024, one-site tape test method is the only authorized method.' I did not fetch AD 2023-11 itself. This is an official Army installation summary of it. The Army.mil article says the change came from a 2021 USARIEM study of 2,690 soldiers compared against DXA. Taylor 2024 (separate key) gives a nearly identical one-site equation with an RMSE of about 3.4 percentage points in men."
+  },
+  {
+   "key": "ansur2_men_bodyfat_from_army_equation",
+   "label": "ANSUR II men (n = 4,082): body fat estimated with the Army one-site equation from measured navel waist and weight, with the resulting FFMI and height-independent score",
+   "status": "estimate",
+   "values": "{\"n\":4082,\"equation\":\"AD 2023-11 men\",\"bodyfat_pct\":{\"mean\":24.1,\"sd\":5.7,\"p1\":13.1,\"p5\":15.2,\"p10\":16.6,\"p25\":19.7,\"p50\":24.0,\"p75\":28.1,\"p90\":31.4,\"p95\":33.5,\"p99\":37.5,\"min\":8.2,\"max\":48.6},\"bodyfat_pct_with_Taylor2024_1site\":{\"mean\":26.6,\"p5\":17.3,\"p50\":26.6,\"p95\":36.5},\"FFMI_kg_m2\":{\"p5\":17.5,\"p50\":20.8,\"p95\":24.3,\"p99\":25.8,\"max\":28.6},\"S_1p8FFM_over_H3\":{\"p5\":17.8,\"p50\":21.4,\"p95\":25.2,\"p99\":26.9,\"max\":30.4},\"inputs\":\"weightkg/10 -> lb; waistcircumference (mm, at omphalion) -> in; stature mm\"}",
+   "sources": [
+    {
+     "title": "ANSUR II male public working database (repo copy, build-calculator/data/ansur2/ANSUR_II_MALE_Public.csv; provenance in existing key ansur2_dataset)",
+     "url": "file:///home/user/rex-strength-lab/build-calculator/data/ansur2/ANSUR_II_MALE_Public.csv"
+    },
+    {
+     "title": "Fort Jackson IG Update 23-4 (AD 2023-11 one-site equation)",
+     "url": "https://home.army.mil/jackson/download_file/view/84278f84-10a3-4177-a3bc-6d2f08ae7866/1016"
+    },
+    {
+     "title": "Taylor et al. 2024 Obes Sci Pract (PMC11026907)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11026907/fullTextXML"
+    }
+   ],
+   "notes": "ANSUR II has no body-composition data (existing builds say 'unknown'). I computed these with the official equation, using ANSUR II's navel-level waist (same site as the Army abdomen tape) and scale weight. Script: scratchpad research/bodyfat/scripts/ansur_bf.py. Check: the equation's ANSUR II mean (24.1%) matches the measured DXA mean of 2021-22 soldiers (24.3%, Taylor 2024), though the equation was fitted to soldiers, so this is consistency, not proof. Taylor's own one-site coefficients give about 2.5 points more (mean 26.6%), so the method is uncertain by about that much. Individual error is about 3.4-4 points RMSE. The regression narrows the spread a little (predicted SD 5.7 vs measured 6.3). ANSUR II was measured in 2010-12 and the equation was fitted to 2021-22 soldiers. For the chart, the median ANSUR II man scores S \u2248 21 at these body fats. The brief's rough 'Army median about 24' implies about 15% fat, which is lower than measured soldiers."
+  },
+  {
+   "key": "barakat2022_natural_pro_peak_week_dxa",
+   "label": "Barakat et al. 2022: self-described professional natural bodybuilder, DXA each day of peak week to competition morning",
+   "status": "measured",
+   "values": "{\"n\":1,\"age_y\":29,\"method\":\"DXA (also 7-site ultrasound skinfold JP-7)\",\"bodyfat_dxa_pct\":{\"8_days_out\":5.5,\"6_days_out\":6.0,\"3_days_out\":6.2,\"2_days_out\":5.6,\"1_day_out\":5.4,\"competition_day\":6.3},\"competition_day_mass_kg\":73.55,\"competition_day_ffm_kg\":68.91,\"competition_day_fat_kg\":4.63,\"ultrasound_jp7_bodyfat_competition_day_pct\":3.6,\"height\":\"measured but not found in the text I parsed (unknown)\"}",
+   "sources": [
+    {
+     "title": "Barakat C, Escalante G, Stevenson SW, Bradshaw JT, Barsuhn A, Tinsley GM, Walters J. Can Bodybuilding Peak Week Manipulations Favorably Affect Muscle Size, Subcutaneous Thickness, and Related Body Composition Variables? A Case Study. Sports 2022;10(7):106, Table 2 (Europe PMC full text PMC9321665)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC9321665/fullTextXML"
+    }
+   ],
+   "notes": "Table 2 'Body Composition', DEXA: 'Competition Day | 73.55 | 6.3 | 4.63 | 68.91 | 2.591 | 66.32 | 3.6'. The subject is the first author: 'a Middle Eastern-American (29 years old ...) professional natural bodybuilder'. He placed first in Open Middleweight Bodybuilding and Classic Physique A (October 2021). Drug-free status is self-described, and the text I read does not say whether the show was tested. Daily DXA %fat moved by up to 0.9 points within 8 days as glycogen and water changed, which shows DXA noise at stage leanness. Ultrasound skinfolds (JP-7) read about 2-3 points lower than DXA."
+  },
+  {
+   "key": "kistler2014_natural_bb_dxa",
+   "label": "Kistler et al. 2014: natural bodybuilder, 26-week prep for a pro-qualifier, DXA monthly",
+   "status": "measured",
+   "values": "{\"n\":1,\"method\":\"DXA\",\"bodyfat_start_pct\":17.5,\"bodyfat_end_pct\":7.4,\"mass_start_kg\":88.6,\"mass_end_kg\":73.3,\"weeks\":26}",
+   "sources": [
+    {
+     "title": "Kistler BM, Fitschen PJ, Ranadive SM, Fernhall B, Wilund KR. Case study: Natural bodybuilding contest preparation. Int J Sport Nutr Exerc Metab 2014;24(6):694-700 (PMID 24901578, abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:24901578%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Abstract: 'body composition was measured monthly by DXA ... Body weight (88.6 to 73.3 Kg ...) and percent body fat (17.5 to 7.4%) were reduced during preparation.' The 7.4% is the last monthly scan of prep, not necessarily contest day. The 17.5% start value is a useful natural off-season figure. Abstract only; height not given."
+  },
+  {
+   "key": "schoenfeld2020_natural_bb_case",
+   "label": "Schoenfeld et al. 2020: high-level amateur natural bodybuilder over 4 competitions, about 5% fat just before competing",
+   "status": "measured",
+   "values": "{\"n\":1,\"bodyfat_precontest_pct_approx\":5,\"methods\":\"multifrequency BIA and skinfolds (the abstract does not say which gave ~5%)\"}",
+   "sources": [
+    {
+     "title": "Schoenfeld BJ, Alto A, Grgic J, et al. Alterations in body composition, resting metabolic rate, muscular strength, and eating behavior in response to natural bodybuilding competition preparation: a case study. J Strength Cond Res 2020;34(11):3124-3138 (PMID 33105363, abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:33105363%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Abstract: 'Body fat was reduced to very low levels (~5%) immediately before competition, but this corresponded with a loss of lean mass.' A 'high-level amateur natural male bodybuilder'. Field methods (BIA, skinfolds) tend to read low at this leanness. Abstract only."
+  },
+  {
+   "key": "robinson2015_natural_bb_skinfold",
+   "label": "Robinson et al. 2015: 21-year-old natural amateur bodybuilder, 14-week prep, skinfolds",
+   "status": "measured",
+   "values": "{\"n\":1,\"height_m\":1.785,\"start_mass_kg\":86.0,\"start_bodyfat_pct\":14,\"start_fat_kg\":11.7,\"start_ffm_kg\":74.3,\"mass_loss_kg\":11.7,\"fat_loss_kg\":6.7,\"ffm_loss_kg\":5.0,\"bodyfat_drop_points\":6.8,\"end_bodyfat_pct_derived\":7.2,\"start_FFMI_derived\":23.3,\"end_FFMI_derived\":21.7}",
+   "sources": [
+    {
+     "title": "Robinson SL, Lambeth-Mansell A, Gillibrand G, Smith-Ryan A, Bannock L. A nutrition and conditioning intervention for natural bodybuilding contest preparation: case study. JISSN 2015;12:20, Table 2 and text (Europe PMC full text PMC4422265)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4422265/fullTextXML"
+    }
+   ],
+   "notes": "Table 2 baseline: 'Height (cm) 178.5; Body mass (kg) 86.0; Body fat (%) 14; Fat mass (kg) 11.7; Fat-free mass (kg) 74.3'. Text: 'a reduction of 6.7 kg's (or 6.8% body fat or 33 mm using sum of 8 skinfolds) and 5.0 kg's, in fat mass and FFM'. Body fat came from skinfolds with sex- and race-specific equations (ISAK protocol). End %fat (about 7.2%) and the FFMIs are my derivations. Skinfold method, lower quality than DXA or 4C."
+  },
+  {
+   "key": "mitchell2018_bodyfat_pct_derived",
+   "label": "Mitchell et al. 2018: percent fat of 9 natural bodybuilders derived from their DXA fat and lean masses (relies on existing key mitchell2018_natural_bodybuilders)",
+   "status": "derived",
+   "values": "{\"PRE16_fat_over_fat_plus_lean_pct\":10.9,\"PRE1_fat_over_fat_plus_lean_pct\":7.0,\"PRE16_with_assumed_BMC_3p5kg_pct\":10.5,\"PRE1_with_assumed_BMC_3p5kg_pct\":6.6,\"inputs\":{\"fat_PRE16_kg\":8.8,\"fat_PRE1_kg\":5.3,\"lean_PRE8_kg\":71.8,\"lean_PRE1_kg\":70.9}}",
+   "sources": [
+    {
+     "title": "Mitchell L et al. Physiological implications of preparing for a natural male bodybuilding competition. Eur J Sport Sci 2018;18(5):619-629 (PMID 29490578, abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:29490578%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Abstract: 'Fat mass (FM) was significantly reduced from PRE16 to PRE1 (8.8 \u00b1 3.1 vs. 5.3 \u00b1 2.4 kg ...). There was a small decrease in lean mass (LM) from PRE8 to PRE1 (71.8 \u00b1 9.1 vs. 70.9 \u00b1 9.1 kg'. Total mass and BMC are not in the abstract, so %fat is approximate. Fat over fat plus lean is an upper bound; adding an assumed 3.5 kg of bone mineral gives the lower figure. Ratio of group means, not mean of ratios. Result: about 7% one week out and about 10-11% 16 weeks out."
+  },
+  {
+   "key": "rosaci2026_ifbb_pro_case",
+   "label": "Rosaci, Biban & Bartolomei 2026: IFBB Pro League ('Mr. Olympia competitor') bodybuilder, off-season and 10 days pre-contest, skinfold body fat",
+   "status": "measured",
+   "values": "{\"n\":1,\"age_y\":38,\"height_m\":1.76,\"bulking_mass_kg\":128.7,\"bulking_bodyfat_pct\":6.1,\"bulking_ffm_kg\":120.8,\"cutting_mass_kg\":122.3,\"cutting_bodyfat_pct\":5.9,\"cutting_ffm_kg\":115.1,\"sum_3_skinfolds_mm\":[13.9,13.2],\"flexed_arm_cm\":[52.0,51.8],\"thigh_cm\":[75.5,73.4],\"calf_cm\":[44.5,44.4],\"method\":\"3-site skinfold, Evans et al. 2005 athlete equation (4C-derived)\",\"FFMI_derived\":{\"bulking\":39.0,\"cutting\":37.2},\"S_derived\":{\"bulking\":39.9,\"cutting\":38.0}}",
+   "sources": [
+    {
+     "title": "Rosaci G, Biban S, Bartolomei S. Beyond the Limits of Human Muscle Hypertrophy: A Case Study of a Mr. Olympia Competitor Bodybuilder. J Strength Cond Res 2026;40(10):1253-1258, Table 3 and methods (Europe PMC full text PMC13592830)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13592830/fullTextXML"
+    }
+   ],
+   "notes": "Table 3: 'Body mass (kg) 128.7 | 122.3 ... % Body fat (%) 6.1 | 5.9; Fat-free mass (kg) 120.8 | 115.1' (BP = bulking/off-season, CT = cutting). Cutting measurement: 'June 11th, 2025 ... 10 days before the 2025 IFBB Huanji China Pro League competition'. Drug status: 'The eventual use of performance enhancing drugs by the athlete, competing in IFBB Pro League contests, in which antidoping tests are not performed, was not considered'. Equation: '% body fat = 8.997 + 0.24658 x (SUM 3 SKF) - 6.343 x (sex) - 1.998 x (race)'. For a white man it cannot go below 2.65% even at zero skinfold. A 6.1% off-season reading at 128.7 kg is implausibly low for this method and probably an underestimate. I treat the FFM, and so the FFMI of about 37-39, as upper bounds. Single subject. Best published body composition of a current top-level (presumably enhanced) pro that I found. The authors also cite Moreno et al. 2024 (Am J Hum Biol, PMID 37563889) for an Open bodybuilder of 131.4 kg at 12.2% fat. I fetched only Moreno's abstract, which gives ultrasound-estimated skeletal muscle (60.4 kg at most) and neither number, so the 12.2% is second-hand."
+  },
+  {
+   "key": "giakoni2025_mr_universe_bia",
+   "label": "Giakoni-Ramirez et al. 2025: 18 male bodybuilders measured at the IFBB Mr. Universe (Santiago, Chile) after official weigh-in, BIA",
+   "status": "measured",
+   "values": "{\"n_men\":18,\"age_y\":32.1,\"method\":\"multifrequency BIA, InBody 970\",\"mass_kg\":78.0,\"mass_sd\":6.5,\"height_cm\":171.3,\"height_sd\":3.7,\"BMI\":26.5,\"fat_mass_pct\":8.9,\"fat_mass_pct_sd\":1.8,\"fat_mass_kg\":7.0,\"ffm_kg\":70.8,\"ffm_sd\":5.8,\"FFMI_derived_from_means\":24.1}",
+   "sources": [
+    {
+     "title": "Giakoni-Ramirez F, Munoz-Strale C, de Souza-Lima J, et al. Hydration Strategies and Body Composition Differences in Male and Female Elite Bodybuilders During Competition. Nutrients 2025;17(9):1554, Table 2 (Europe PMC full text PMC12073694)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12073694/fullTextXML"
+    }
+   ],
+   "notes": "Table 2, Males (n = 18): 'Weight (kg) 78.0 6.5; Height (cm) 171.3 3.7; Fat Mass (%) 8.9 1.8; Fat Free Mass (kg) 70.8 5.8'. Measured 'during the Mr. Universe Championship held in Santiago, Chile' after athletes had 'successfully passed the official weigh-in'. This is an IFBB amateur event. Drug status and testing are not stated. Hand-to-foot BIA in dehydrated, glycogen-loaded, very lean athletes is not reliable (see Raymond 2018: multifrequency BIA underestimated DXA %fat by 3.0 \u00b1 3.8 points in football players). Use as a soft upper reference for stage leanness."
+  },
+  {
+   "key": "baggish2017_aas_users_ffmi",
+   "label": "Baggish et al. 2017 (Pope group): normalized FFMI of 86 long-term AAS-using weightlifters vs 54 non-using weightlifters",
+   "status": "measured",
+   "values": "{\"users_n\":86,\"users_on_drug_n\":58,\"users_off_drug_n\":28,\"nonusers_n\":54,\"users_FFMI_median\":26,\"users_FFMI_IQR\":[24,28],\"nonusers_FFMI_median\":23,\"nonusers_FFMI_IQR\":[21,25],\"users_BMI_median\":31,\"users_BMI_IQR\":[29,33],\"nonusers_BMI_median\":29,\"height_m_median\":1.8,\"FFMI_formula\":\"W(1-BF)/H^2 + 6.1(1.8-H)\",\"min_lifetime_AAS_years\":2}",
+   "sources": [
+    {
+     "title": "Baggish AL, Weiner RB, Kanayama G, Hudson JI, Lu MT, Hoffmann U, Pope HG. Cardiovascular Toxicity of Illicit Anabolic-Androgenic Steroid Use. Circulation 2017;135(21):1991-2002, Table 1 (NCBI PMC XML, PMC5614517)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=5614517"
+    }
+   ],
+   "notes": "Table 1 (medians, IQR): 'Body mass index 31 (29-33) 29 (27-31); Fat-free mass index 26 (24-28) 23 (21-25)'. Footnote: 'The fat-free mass index is calculated as: (W(1-BF)/H^2) + 6.1(1.8-H)', so it is height-normalized with the 6.1 constant (see existing key ffmi_height_correction). Users had at least 2 years of cumulative AAS use; drug-test and hair-test screening was used. I did not find the body-fat method in the fetched text; the group has used skinfolds before, but that is not confirmed here. Medians, not maxima: a quarter of long-term users are below FFMI 24, so many enhanced lifters are not visibly beyond natural levels. Exclusion rule from the same paper: 'We also excluded men denying AAS use, but exhibiting a fat-free mass index greater than 26 kg/m2 together with body fat below 10%'."
+  },
+  {
+   "key": "hudson2020_aas_users_ffmi",
+   "label": "Hudson et al. 2020 (Pope group, same cohort): normalized FFMI of current vs past AAS users vs non-users",
+   "status": "measured",
+   "values": "{\"all_users_n\":85,\"current_users_n\":57,\"past_users_n\":28,\"nonusers_n\":52,\"FFMI_median_IQR\":{\"all_users\":[26,24,28],\"current_users\":[27,25,29],\"past_users_as_printed\":[24,25,28],\"nonusers\":[23,21,25]},\"weight_kg_median\":{\"all_users\":97,\"current\":95,\"past\":98,\"nonusers\":91},\"age_y_median_users\":42}",
+   "sources": [
+    {
+     "title": "Hudson JI, Kanayama G, Pope HG, et al. Glomerular Filtration Rate and Supraphysiologic-Dose Anabolic-Androgenic Steroid Use: A Cross-sectional Cohort Study. Am J Kidney Dis 2020;76(2):296-299, Table 1 (NCBI PMC XML, PMC7744117)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=7744117"
+    }
+   ],
+   "notes": "Table 1: 'Fat-free mass index 26 (24-28) 27 (25-29) 24 (25-28) 23 (21-25)' for all users (N = 85), current (N = 57), former (N = 28) and non-users (N = 52). The past-user cell '24 (25-28)' has a median outside its IQR, a typo in the source, so do not use it. Same FFMI formula (6.1 normalization). Current users' middle half spans 25-29, which overlaps the natural tail (Trexler 2017 football P97.5 = 28.1, existing key ffmi_athletes)."
+  },
+  {
+   "key": "bulut2024_aas_users_lean_mass_index",
+   "label": "Bulut et al. 2024 (Copenhagen): lean mass index and body fat in current and former AAS users vs strength-training controls",
+   "status": "measured",
+   "values": "{\"controls_n\":27,\"current_n\":32,\"former_n\":31,\"lean_mass_index_kg_m2\":{\"controls\":[20,2],\"current\":[23,2],\"former\":[21,2]},\"bodyfat_pct\":{\"controls\":[22,4],\"current\":[19,3],\"former\":[24,4]},\"format\":\"mean, SD\",\"age_y\":{\"controls\":31.2,\"current\":38.3,\"former\":35.3}}",
+   "sources": [
+    {
+     "title": "Bulut Y, Rasmussen JJ, Brandt-Jacobsen N, et al. Coronary Microvascular Dysfunction Years After Cessation of Anabolic Androgenic Steroid Use. JAMA Netw Open 2024;7(12):e2451013, Table 1 (Europe PMC full text PMC11650407)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11650407/fullTextXML"
+    }
+   ],
+   "notes": "Table 1: 'Lean mass index, mean (SD), kg/m2 20 (2) 23 (2) 21 (2)'; 'Body fat, mean (SD), % 22 (4) 19 (3) 24 (4)'. Text: 'Individuals with current use (mean [SD], 19% [3%]) demonstrated lower body fat compared with controls (22% [4%])'. Men in recreational strength training, AAS status self-reported, with blinded urine analysis (Cologne). The main text does not name the body-composition method. The same group used DXA in Rasmussen 2017 (PMID 28500659), but I could not confirm DXA for this paper. 'Lean mass index' is probably lean soft tissue over height squared, excluding bone, so it reads about 1 below FFMI. Rounded to whole numbers in the source."
+  },
+  {
+   "key": "buhl2025_aas_users_bia",
+   "label": "Buhl et al. 2025 (Denmark): body fat and BMI of current, previous and non-using male gym-goers, BIA",
+   "status": "measured",
+   "values": "{\"method\":\"bioimpedance (SOZO)\",\"men_total_n\":121,\"current_men_n_approx\":61,\"men_bodyfat_pct_median_IQR\":{\"current\":[13.1,10.4,16.5],\"previous\":[17.8,12.3,21.2],\"nonusers\":[20.0,16.3,22.5]},\"men_BMI_median_IQR\":{\"current\":[29.4,27.7,32.2],\"previous\":[27.4,25.6,29.9],\"nonusers\":[26.5,24.0,28.3]},\"men_height_m_median\":{\"current\":1.81,\"previous\":1.79,\"nonusers\":1.83},\"current_men_FFMI_approx_from_medians\":25.5}",
+   "sources": [
+    {
+     "title": "Buhl LF, Christensen LL, Hjortebjerg R, et al. Illicit Anabolic Steroid Use and Cardiovascular Status in Men and Women. JAMA Netw Open 2025;8(8):e2526636, Table 1 (Europe PMC full text PMC12397887)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12397887/fullTextXML"
+    }
+   ],
+   "notes": "Table 1, Men: 'Body fat percentage ... 13.1 (10.4-16.5) | 17.8 (12.3-21.2) | 20.0 (16.3-22.5)' (current, previous, non-users, median (IQR)); 'BMI ... 29.4 (27.7-32.2) ...'. Methods: 'body composition by bioimpedance (SOZO Digital Health Platform)'. Recruited from fitness centres March-December 2022. The current-user count of about 61 is inferred from a percentage row (15 = 24.6%). The FFMI of about 25.5 is a rough derivation from medians (29.4 x (1 - 0.131)), not a measured median. These are community users, not competitive bodybuilders."
+  },
+  {
+   "key": "bhasin_testosterone_ffm_gains",
+   "label": "Bhasin et al. 1996 and 2001: fat-free mass gained on supraphysiologic testosterone (randomized trials)",
+   "status": "measured",
+   "values": "{\"bhasin1996\":{\"n\":43,\"dose_mg_per_week\":600,\"weeks\":10,\"ffm_gain_testosterone_plus_exercise_kg\":6.1,\"se\":0.6,\"ffm_method\":\"underwater weighing\"},\"bhasin2001\":{\"n\":61,\"age_y\":\"18-35\",\"weeks\":20,\"design\":\"GnRH agonist + testosterone enanthate; no training\",\"ffm_change_kg\":{\"125mg\":3.4,\"300mg\":5.2,\"600mg\":7.9},\"nadir_testosterone_ng_dl\":{\"25mg\":253,\"50mg\":306,\"125mg\":542,\"300mg\":1345,\"600mg\":2370},\"ffm_method\":\"DXA (per full paper; abstract says fat-free mass)\"},\"600mg_20wk_as_FFMI_at_1p80m_derived\":2.4}",
+   "sources": [
+    {
+     "title": "Bhasin S, Storer TW, Berman N, et al. The effects of supraphysiologic doses of testosterone on muscle size and strength in normal men. N Engl J Med 1996;335(1):1-7 (PMID 8637535, abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:8637535%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Bhasin S, Woodhouse L, Casaburi R, et al. Testosterone dose-response relationships in healthy young men. Am J Physiol Endocrinol Metab 2001;281(6):E1172-81 (PMID 11701431, abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:11701431%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "1996 abstract: 'The men received injections of 600 mg of testosterone enanthate or placebo weekly for 10 weeks ... fat-free mass was determined by underwater weighing ... The men assigned to testosterone and exercise had greater increases in fat-free mass (6.1 +/- 0.6 kg)'. 2001 abstract: 'Fat-free mass increased dose dependently in men receiving 125, 300, or 600 mg of testosterone weekly (change +3.4, 5.2, and 7.9 kg, respectively)'. I did not fetch the 2001 full text, so 'DXA' for that FFM is from memory of the paper and should be confirmed or dropped. These are short trials in men new to drugs; they show the size of early gains, not the long-term ceiling. The +2.4 FFMI is my conversion of 7.9 kg at 1.80 m."
+  },
+  {
+   "key": "nandrolone_bodybuilders_trials",
+   "label": "Hartgens 2001 / van Marken Lichtenbelt 2004: 8 weeks of nandrolone decanoate 200 mg/week in experienced bodybuilders (randomized, placebo-controlled)",
+   "status": "measured",
+   "values": "{\"n\":16,\"dose_mg_per_week\":200,\"weeks\":8,\"ffm_gain_4C_kg\":2.6,\"body_mass_gain_kg\":2.2,\"dxa_bone_free_lean_kg\":{\"before\":59.54,\"after\":63.06},\"dxa_total_mass_kg\":{\"before\":76.16,\"after\":78.73},\"fat_mass_change\":\"no significant change\"}",
+   "sources": [
+    {
+     "title": "van Marken Lichtenbelt WD, Hartgens F, Vollaard NB, Ebbing S, Kuipers H. Bodybuilders' body composition: effect of nandrolone decanoate. Med Sci Sports Exerc 2004;36(3):484-489 (PMID 15076791, abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:15076791%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Hartgens F, van Marken Lichtenbelt WD, Ebbing S, et al. Body composition and anthropometry in bodybuilders: regional changes due to nandrolone decanoate administration. Int J Sports Med 2001;22(3):235-241 (PMID 11354529, abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:11354529%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "2004 abstract: '16 experienced male bodybuilders ... received ND (200 mg.wk-1 ...) or placebo for 8 wk. Body composition was assessed using the four-component model ... ND administration resulted in significant increments of body mass (+2.2 kg), fat-free mass (FFM: +2.6 kg)'. 2001 abstract (DXA): 'bone-free lean mass (from 59.54 +/- 2.36 to 63.06 +/- 2.99 kg ...)'. 'Total fat mass and total percentage fat remained unaffected'. The 200 mg/week dose is low compared with real use (see kaufman2024_aas_doses)."
+  },
+  {
+   "key": "kaufman2024_aas_doses",
+   "label": "Kaufman et al. 2024 (Pope group): self-reported AAS doses of long-term users",
+   "status": "reported",
+   "values": "{\"users_n\":51,\"current_n\":32,\"past_n\":19,\"age_y\":47.5,\"avg_weekly_AAS_dose_mg\":973,\"avg_dose_sd\":627,\"max_weekly_AAS_dose_mg\":1978,\"max_dose_sd\":2130,\"cumulative_years\":10.0,\"years_sd\":6.0}",
+   "sources": [
+    {
+     "title": "Kaufman MJ, Hudson JI, Kanayama G, et al. A study of long-term supraphysiologic-dose anabolic-androgenic steroid use on cognitive function in middle-aged men. Am J Drug Alcohol Abuse 2024 (NCBI PMC XML, PMC11974399)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=11974399"
+    }
+   ],
+   "notes": "Table 1 (mean (SD)): 'Average weekly AAS dose, mg 973 (627); Maximum weekly AAS dose, mg 1978 (2130); Cumulative lifetime AAS use, yrs 10.0 (6.0)'. Self-reported. The same paper excluded a claimed non-user who 'displayed a fat-free mass index of 27.7 kg/m2 with a body fat of 7.5% - figures not plausibly attainable without use of performance-enhancing drugs'. That is the group's working natural boundary. Table 1 gives no FFMI."
+  },
+  {
+   "key": "yu2014_doped_vs_clean_powerlifters",
+   "label": "Yu et al. 2014: lean body mass of long-term AAS-using vs clean strength athletes",
+   "status": "measured",
+   "values": "{\"doped_n\":10,\"clean_n\":7,\"years_of_use\":\"5-15\",\"body_weight_kg\":{\"doped\":[108,17],\"clean\":[110,13]},\"lean_body_mass_kg\":{\"doped\":[89.8,8.2],\"clean\":[74.6,6.8]},\"lean_leg_mass_kg\":{\"doped\":[28.6,2.5],\"clean\":[25.5,1.4]},\"height\":\"not in table (unknown)\"}",
+   "sources": [
+    {
+     "title": "Yu JG, Bonnerud P, Eriksson A, Stal PS, Tegner Y, Malm C. Effects of long term supplementation of anabolic androgen steroids on human skeletal muscle. PLoS One 2014;9(9):e105330, Table 2 (Europe PMC full text PMC4160183)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4160183/fullTextXML"
+    }
+   ],
+   "notes": "Table 2: 'Body weight (kg) 108\u00b117 | 110\u00b113; Lean body mass (kg) 89.8\u00b18.2 | 74.6\u00b16.8 (p = 0.06)'. Doping status was self-reported at interview. Same body weight, about 15 kg more lean mass in users, so users carried much less fat. Without heights no FFMI can be computed. Small sample. I did not confirm the scan method in the text I parsed."
+  },
+  {
+   "key": "kondo1994_sumo_ffm_limit",
+   "label": "Kondo et al. 1994: professional sumo wrestlers, hydrodensitometry; largest FFM 121.3 kg",
+   "status": "measured",
+   "values": "{\"sumo_n\":37,\"bodybuilders_n\":14,\"untrained_n\":26,\"method\":\"hydrodensitometry\",\"mean_bodyfat_pct\":{\"sumo\":26.1,\"bodybuilders\":10.9,\"untrained\":12.1},\"largest_wrestler\":{\"ffm_kg\":121.3,\"height_m\":1.86,\"mass_kg\":181,\"bodyfat_pct\":33.0},\"elite_ffm_per_stature_kg_cm\":0.61,\"highest_ffm_per_stature\":0.66,\"proposed_limit_ffm_per_stature\":0.7,\"largest_wrestler_FFMI_derived\":35.1,\"largest_wrestler_S_derived\":33.9}",
+   "sources": [
+    {
+     "title": "Kondo M, Abe T, Ikegawa S, Kawakami Y, Fukunaga T. Upper limit of fat-free mass in humans: A study on Japanese Sumo wrestlers. Am J Hum Biol 1994;6(5):613-618 (PMID 28548340, abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:28548340%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Abstract: 'Mean % fat of Sumo wrestlers, bodybuilders, and untrained subjects were, respectively, 26.1%, 10.9%, and 12.1% ... the largest one of 121.3 kg (stature: 186 cm, mass: 181 kg, %fat: 33.0%) ... It is suggested that a FFM/stature ratio of 0.7 kg/cm may be an upper limit in humans.' Two-compartment densitometry assumes a fixed FFM density, which is less accurate in very large or very muscular men (see existing key ffm_density_variation). Drug status of the 14 bodybuilders is not stated. Derived FFMI and S are mine. Abstract only."
+  },
+  {
+   "key": "hattori1999_sumo_divisions",
+   "label": "Hattori et al. 1999: 36 professional sumo wrestlers, densitometry; FFMI about 30 separates top-division (sekitori) wrestlers",
+   "status": "measured",
+   "values": "{\"n\":36,\"method\":\"densitometry\",\"mean_mass_kg\":117.1,\"mean_BMI\":36.5,\"mean_bodyfat_pct\":26.2,\"sekitori_FFMI_cutoff_approx\":30,\"mean_FFMI_derived_from_means\":26.9}",
+   "sources": [
+    {
+     "title": "Hattori K, Kondo M, Abe T, Tanaka S, Fukunaga T. Hierarchical differences in body composition of professional Sumo wrestlers. Ann Hum Biol 1999;26(2):179-184 (PMID 10195655, abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI:10.1080/030144699282886&resultType=core&format=json"
+    }
+   ],
+   "notes": "Abstract: 'The means of body weight, BMI and %fat for Sumo wrestlers were 117.1 kg, 36.5 and 26.2% ... The cut-off point of fat-free mass index which divided Sekitori wrestlers from other wrestlers is approximately 30'. The mean FFMI of 26.9 is my rough figure from group means (also listed in Martinez-Mireles 2025). Sumo wrestlers are not on the brief's group list, but they are the best-measured very heavy athletes and a useful 'strong and fat' reference."
+  },
+  {
+   "key": "bosch2019_d1_football_linemen_dxa",
+   "label": "Bosch et al. 2019: DXA body composition by position, 467 NCAA Division I football players (C-CAR)",
+   "status": "measured",
+   "values": "{\"method\":\"DXA, GE Lunar iDXA/Prodigy, central reanalysis enCore 16.2\",\"offensive_line\":{\"n\":83,\"height_cm\":192.9,\"mass_kg\":135.5,\"bodyfat_pct\":30.8,\"sd\":4.2,\"range_pct\":[19,41],\"lean_kg\":89.5},\"defensive_line\":{\"n\":53,\"height_cm\":189.1,\"mass_kg\":120.4,\"bodyfat_pct\":23.5,\"sd\":7.0,\"range_pct\":[12,37],\"lean_kg\":87.6},\"linebackers_bodyfat_pct\":18.8,\"defensive_backs_bodyfat_pct\":13.3,\"OL_lean_only_FFMI_derived\":24.1,\"DL_lean_only_FFMI_derived\":24.5}",
+   "sources": [
+    {
+     "title": "Bosch TA, Carbuhn AF, Stanforth PR, Oliver JM, Keller KA, Dengel DR. Body Composition and Bone Mineral Density of Division 1 Collegiate Football Players: A Consortium of College Athlete Research Study. J Strength Cond Res 2019;33(5):1339-1346, Tables 1-4 (NCBI PMC XML, PMC5591058)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=5591058"
+    }
+   ],
+   "notes": "'Positional Body Composition Characteristics': 'Percent Fat (%) | 30.8a (4.2) | 23.5b (7.0) ...' for OL (n = 83) and DL (n = 53). Ranges table: OL 19-41%, DL 12-37%. 'All players were scanned on GE Healthcare Lunar systems'. Preseason (June-August) scans. 'Lean mass' excludes bone mineral, so lean-only FFMI reads about 1 low. NFL professionals by DXA appear only in a secondary review (martinezmireles2025_review_strength_sports): OL 28.8%, DL 25.2%. The NFL primary (Dengel et al. 2014, PMID 24149760) abstract gives no position %fat. Drug status of college players is not verified."
+  },
+  {
+   "key": "martinezmireles2025_review_strength_sports",
+   "label": "Martinez-Mireles et al. 2025 scoping review: tabulated body fat of NFL linemen and heavyweight powerlifters (secondary)",
+   "status": "reported",
+   "values": "{\"NFL_OL_DXA\":{\"n\":65,\"height_m\":1.928,\"BMI\":37.9,\"bodyfat_pct\":28.8,\"FFMI\":27.0,\"primary\":\"Anding & Oliver 2015, GSSI Sports Science Exchange (Spanish)\"},\"NFL_DL_DXA\":{\"n\":58,\"height_m\":1.909,\"BMI\":36.5,\"bodyfat_pct\":25.2,\"FFMI\":27.3},\"NFL_OL_ADP\":{\"n\":11,\"bodyfat_pct\":25.1,\"primary\":\"Kraemer et al. 2005\"},\"NFL_DL_ADP\":{\"n\":7,\"bodyfat_pct\":18.5},\"NZ_heavyweight_powerlifters_anthropometry\":{\"n\":15,\"height_m\":1.747,\"BMI\":39.9,\"bodyfat_pct\":26.4,\"FFMI\":29.4,\"primary\":\"Keogh et al. 2007 (review mislabels as weightlifting)\"}}",
+   "sources": [
+    {
+     "title": "Martinez-Mireles X, et al. Defining Elite Zones: A Scoping Review of Body Physique and Body Fat in Elite Athletes. J Funct Morphol Kinesiol 2025;11(1):13, table 'Body composition in elite male athletes with indirect methods' (Europe PMC full text PMC12821704)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12821704/fullTextXML"
+    },
+    {
+     "title": "Keogh JW, Hume PA, Pearson SN, Mellow P. Anthropometric dimensions of male powerlifters of varying body mass. J Sports Sci 2007;25(12):1365-76 (PMID 17786689, abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI:10.1080/02640410601059630&resultType=core&format=json"
+    },
+    {
+     "title": "Kraemer WJ et al. Body size and composition of National Football League players. J Strength Cond Res 2005;19(3):485-9 (PMID 16095394, abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI:10.1519/18175.1&resultType=core&format=json"
+    }
+   ],
+   "notes": "Secondary compilation. Footnote: 'When BF% was not reported, values were estimated from the fat mass or lean mass ... using proportional calculations'. The row 'Weightlifting, national from New Zealand Category: heavy weight' cites Keogh 2007, whose abstract says 'Fifty-four male Oceania competitive powerlifters (9 lightweight, 30 middleweight, and 15 heavyweight)'. The 26.4% is therefore heavyweight powerlifters, measured by anthropometric fractionation rather than a lab method; the review's label is wrong. Its 'age 33.00' for NFL rows matches Kraemer 2020's strongman age and may be a copy error. The NFL DXA primary is a Gatorade SSE trade article. Use these only as context, not as chart anchors."
+  },
+  {
+   "key": "weightlifting_superheavy_bodyfat",
+   "label": "Olympic weightlifting super-heavyweights: measured body fat",
+   "status": "estimate",
+   "values": "{\"measured_values_found\":0,\"nearest_measured\":{\"strongmen_DXA_pct\":[18.7,6.2],\"sumo_densitometry_pct\":26.2,\"heavyweight_powerlifters_anthropometry_pct\":26.4},\"suggested_range_pct\":[15,30],\"working_pct\":20}",
+   "sources": [
+    {
+     "title": "Search record: Europe PMC query for weightlifter body composition by weight class (no super-heavyweight lab measurement found)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=(weightlifters%20OR%20weightlifting)%20AND%20(%22body%20composition%22%20OR%20%22body%20fat%22)%20AND%20(%22heavyweight%22%20OR%20%22super-heavyweight%22)&resultType=core&format=json"
+    },
+    {
+     "title": "Kraemer et al. 2020 (existing key kraemer2020_elite_strongmen_dxa)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:33235016%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Unknown. I found no DXA, densitometry or 4C body fat for elite super-heavyweight weightlifters (for example Talakhadze, 1.95-1.97 m, 157-178 kg at weigh-ins; existing key lasha_talakhadze_height_weight). A web summary of old Soviet data (Breaking Muscle) says fat rises with class (about 15% at 110 kg) and super-heavies run higher. That is not peer-reviewed and I did not use it. The suggested 15-30% is my estimate, between strongmen (DXA 18.7 \u00b1 6.2%) and sumo or heavyweight powerlifters (about 26%)."
+  },
+  {
+   "key": "bodyfat_range_everyday_men",
+   "label": "Recommended body-fat range: everyday men (ANSUR II soldiers, NHANES adults)",
+   "status": "estimate",
+   "values": "{\"ansur2_builds\":{\"method\":\"per build: Army AD 2023-11 equation on the build's navel waist and weight; range central +/- 4 points\",\"group_range_pct\":[15,34],\"median_man_working_pct\":24},\"nhanes_builds\":{\"group_range_pct\":[17,38],\"median_man_working_pct\":28,\"basis\":\"NHANES 1999-2004 DXA men 20+, 5th-95th and median\"},\"effect_on_score\":\"S is proportional to (1 - fat): 15% vs 34% changes S by about 22% end to end\"}",
+   "sources": [
+    {
+     "title": "NCHS Vital Health Stat 11(250), Table 3",
+     "url": "https://www.cdc.gov/nchs/data/series/sr_11/sr11_250.pdf"
+    },
+    {
+     "title": "Taylor et al. 2024 (PMC11026907)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11026907/fullTextXML"
+    },
+    {
+     "title": "Fort Jackson IG Update 23-4 (AD 2023-11 equation)",
+     "url": "https://home.army.mil/jackson/download_file/view/84278f84-10a3-4177-a3bc-6d2f08ae7866/1016"
+    }
+   ],
+   "notes": "ANSUR II percentile builds are percentiles of size, not of fatness, so give each build its own centre from the equation on its own waist and weight, with about \u00b14 points (Taylor's male one-site RMSE about 3.4; the official and Taylor coefficients differ by about 2.5 points on ANSUR II). Label it 'estimated from waist and weight (Army 2023 equation)'. For the NHANES median build use the DXA percentiles directly. Measured soldiers average 24.3% by DXA. US men average 28% by DXA."
+  },
+  {
+   "key": "bodyfat_range_natural_stage",
+   "label": "Recommended body-fat range: natural (drug-tested) bodybuilders on stage",
+   "status": "estimate",
+   "values": "{\"range_pct\":[4,10],\"working_pct\":6,\"measured_points\":{\"Rossow2013_DXA\":4.5,\"Barakat2022_DXA_comp_day\":6.3,\"Barakat2022_DXA_last8days\":[5.4,6.3],\"Schoenfeld2020_BIA_or_skinfold\":5,\"Mitchell2018_DXA_1wk_out_derived\":[6.6,7.0],\"Kistler2014_DXA_end_prep\":7.4,\"Robinson2015_skinfold_end_derived\":7.2,\"Bauer2023_near_competition_all_methods\":[5.8,10.7]}}",
+   "sources": [
+    {
+     "title": "Barakat et al. 2022 (PMC9321665)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC9321665/fullTextXML"
+    },
+    {
+     "title": "Kistler et al. 2014 (PMID 24901578)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:24901578%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Rossow 2013, Mitchell 2018, Bauer 2023 (existing keys rossow2013_natural_pro_case, mitchell2018_natural_bodybuilders, bauer2023_bodyfat_ranges_review)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:36727905%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Lab-grade (DXA) contest-day values cluster at 4.5-6.3%. Field methods (BIA, skinfolds, ultrasound) read lower, down to 3.6%. Bauer's 5.8-10.7% mixes methods and timing ('close to competition'). 4-10% covers all of them; 6% is the DXA centre. Drug-free status rests on federation testing or self-report (Rossow: IFPA pro; Barakat: self-described; Chappell's PROs: polygraph). At 4-10%, S varies by about \u00b13% around the 6% value."
+  },
+  {
+   "key": "bodyfat_range_natural_offstage",
+   "label": "Recommended body-fat range: natural athletes off stage (off-season bodybuilders, gym non-users)",
+   "status": "estimate",
+   "values": "{\"range_pct\":[10,18],\"working_pct\":13,\"measured_points\":{\"Kouri1995_nonusers_skinfold_approx\":13,\"Graybeal2020_4C\":[11.8,4.4],\"Rossow2013_DXA_start_and_6mo_after\":[14.8,14.6],\"Kistler2014_DXA_26wk_out\":17.5,\"Robinson2015_skinfold_start\":14,\"Mitchell2018_DXA_16wk_out_derived\":[10.5,10.9],\"Bauer2023_general_prep\":[9.6,16.3],\"Kondo1994_bodybuilders_densitometry\":10.9}}",
+   "sources": [
+    {
+     "title": "Graybeal et al. 2020, Kouri 1995 group means, Rossow 2013, Bauer 2023 (existing keys graybeal2020_bodybuilders_4C, kouri1995_group_means, rossow2013_natural_pro_case, bauer2023_bodyfat_ranges_review)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:30161092%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Kistler et al. 2014 (PMID 24901578)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:24901578%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Robinson et al. 2015 (PMC4422265)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4422265/fullTextXML"
+    }
+   ],
+   "notes": "Kouri's FFMI 25 limit was set at about 13% fat (skinfolds), so 13% is the natural working value for the natural-limit line. Graybeal and Kondo do not state drug status. Use this range for the Kouri non-user anchor, Mr America winners and off-season natural pros (Malcolm Cooper, Chappell's PROs at end-of-prep weight are 'stage' instead)."
+  },
+  {
+   "key": "bodyfat_range_enhanced_stage",
+   "label": "Recommended body-fat range: enhanced pro bodybuilders on stage (Coleman, Yates, Cutler, Heath, Ramy, Arnold, Oliva)",
+   "status": "estimate",
+   "values": "{\"range_pct\":[4,8],\"working_pct\":5,\"basis\":{\"Withers1997_4C_5d_out\":5.0,\"Rosaci2026_skinfold_10d_out\":5.9,\"natural_DXA_contest_day\":[4.5,6.3],\"Giakoni2025_BIA_IFBB_amateur\":[8.9,1.8],\"existing_derived_ffmi_pros_assumption\":5},\"Coleman_2004_134p3kg_1p803m_S\":{\"at_4pct\":39.6,\"at_5pct\":39.2,\"at_8pct\":37.9}}",
+   "sources": [
+    {
+     "title": "Rosaci et al. 2026 (PMC13592830)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13592830/fullTextXML"
+    },
+    {
+     "title": "Withers et al. 1997 (existing key withers1997_elite_bb_4C)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:9127683%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Giakoni-Ramirez et al. 2025 (PMC12073694)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12073694/fullTextXML"
+    }
+   ],
+   "notes": "No DXA or 4C measurement of a Mr. Olympia-level competitor on stage was found, so this is an estimate. Basis: the only 4C contest-week value (Withers, 3 elite men, probably enhanced, 5.0% five days out); a skinfold value for a current IFBB pro 10 days out (5.9%); and natural competitors reaching 4.5-6.3% by DXA. There is no measured evidence that enhanced pros get leaner than that. Enhanced pros' extra weight is lean mass, and stage diuretics lower FFM water rather than fat. The 5% working value matches the existing derived_ffmi_pros assumption. The band moves S by only about \u00b12%."
+  },
+  {
+   "key": "bodyfat_range_enhanced_offseason",
+   "label": "Recommended body-fat range: enhanced bodybuilders off-season, and community AAS users",
+   "status": "estimate",
+   "values": "{\"pro_offseason_range_pct\":[8,15],\"pro_offseason_working_pct\":11,\"community_users_range_pct\":[10,20],\"basis\":{\"Rosaci2026_offseason_skinfold\":6.1,\"Moreno2024_open_bb_via_Rosaci\":12.2,\"Coleman_offseason_if_stage_FFM_kept_derived\":[11,15],\"Buhl2025_current_men_BIA_median_IQR\":[13.1,10.4,16.5],\"Bulut2024_current_users\":[19,3],\"Kouri1995_users_skinfold_approx\":13}}",
+   "sources": [
+    {
+     "title": "Buhl et al. 2025 (PMC12397887)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12397887/fullTextXML"
+    },
+    {
+     "title": "Bulut et al. 2024 (PMC11650407)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11650407/fullTextXML"
+    },
+    {
+     "title": "Rosaci et al. 2026 (PMC13592830)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13592830/fullTextXML"
+    }
+   ],
+   "notes": "The Coleman figure is my derivation from existing key ronnie_coleman_height_weight: stage 134.3 kg at about 5% gives FFM \u2248 127.6 kg; off-season 143-150 kg with the same FFM gives 11-15% fat. It is an upper bound on fat if he also gained lean tissue and water. Rosaci's 6.1% off-season reading is probably low because the skinfold equation floors near 2.7%. Moreno's 12.2% is second-hand. Community users (Buhl, Bulut, Kouri) sit at 13-19%. Only needed if the chart shows off-season weights (for example Coleman's 330 lb)."
+  },
+  {
+   "key": "bodyfat_range_strongmen_lifters",
+   "label": "Recommended body-fat range: strongmen and heavy lifters (Shaw, Hall, Bjornsson, Talakhadze, Kraemer group)",
+   "status": "estimate",
+   "values": "{\"range_pct\":[12,28],\"working_pct\":19,\"basis\":{\"Kraemer2020_DXA_mean_sd\":[18.7,6.2],\"Shaw_2024_hydrostatic\":17.6,\"weightlifting_superheavy\":\"not measured; use same range\",\"heavyweight_powerlifters_anthropometry\":26.4,\"sumo_densitometry\":26.2,\"D1_offensive_line_DXA\":[30.8,4.2]},\"effect_on_score\":\"S at 12% vs 28% differs by about 18%\"}",
+   "sources": [
+    {
+     "title": "Kraemer et al. 2020 (existing key kraemer2020_elite_strongmen_dxa)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:33235016%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Brian Shaw hydrostatic test (existing key brian_shaw_height_weight)",
+     "url": "https://fitnessvolt.com/brian-shaws-body-fat-percentage-hydrostatic-testing/"
+    },
+    {
+     "title": "Bosch et al. 2019 (PMC5591058)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=5591058"
+    }
+   ],
+   "notes": "12-28% is Kraemer's mean \u00b1 about 1.5 SD, clipped at the upper end by the sumo and powerlifter values (about 26%). Use measured values where they exist (Shaw 17.6%, a self-filmed test, 'reported'). Hall and Bjornsson have no measured body fat (unknown), so use the group range. Talakhadze has no measured value either, so use the group range and label it an estimate. If linemen or sumo are added, use 20-35%."
+  },
+  {
+   "key": "bodyfat_range_comic_characters",
+   "label": "Recommended body-fat assumption: comic characters (no source exists)",
+   "status": "estimate",
+   "values": "{\"lean_heroes\":{\"who\":\"Superman, Batman, Captain America, Thor, Black Panther, Luke Cage, Wolverine (after removing adamantium), human Colossus\",\"range_pct\":[5,12],\"working_pct\":8,\"drawn_like\":\"enhanced bodybuilder, stage to near-stage\"},\"brutes\":{\"who\":\"Hulk (all forms), Juggernaut, Abomination, Doomsday, Bane, Darkseid\",\"range_pct\":[8,20],\"working_pct\":12,\"drawn_like\":\"off-season pro bodybuilder to strongman\"},\"heavy\":{\"who\":\"Kingpin\",\"range_pct\":[15,35],\"working_pct\":25,\"drawn_like\":\"strongman to sumo\"},\"everyday\":{\"who\":\"Bruce Banner\",\"range_pct\":[15,34],\"working_pct\":24},\"not_tissue\":{\"who\":\"The Thing, armoured Colossus\",\"rule\":\"body fat not meaningful; mass is rock or steel, score is not muscle; show as 'mass, not muscle'\"}}",
+   "sources": [
+    {
+     "title": "No source: assumption built on the human ranges in this research (see bodyfat_range_* keys); existing keys hulk_savage, kingpin, thing, colossus, wolverine for official stats",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:36727905%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "No publisher gives body fat for any of these characters (existing builds: all 'unknown'). This is a labelled assumption: each character gets the measured range of the human group they are drawn like, judged from typical art (visible abdominal definition and vascularity, or a heavy midsection). Show it on the page as 'assumed: drawn like ...'. The owner may prefer one comic-wide band (5-20%, working 10%) to avoid judging each character's art; that is simpler and still honest. Kingpin's wide band reflects art that shows a large midsection. Thing and armoured Colossus should not get a muscle score from body fat at all."
+  },
+  {
+   "key": "bodyfat_range_rex_ollie",
+   "label": "Body fat for Rex and Ollie (owner's canon)",
+   "status": "official",
+   "values": "{\"range_pct\":[5,10],\"working_pct\":7.5}",
+   "sources": [
+    {
+     "title": "Owner's canon: build-comparison/BRIEF.md ('Decisions already made') and CLAUDE.md ('Canon')",
+     "url": "file:///home/user/rex-strength-lab/build-comparison/BRIEF.md"
+    }
+   ],
+   "notes": "'Rex and Ollie are 7.5% body fat (canon: 5-10%, from their definition and occasional vascularity). Use 7.5% with 5-10% as the range.' This is set by the owner, not measured. 5-10% moves S by about \u00b13% around 7.5%. Tails are excluded from the score, and height is to the skull top, per the brief."
+  }
+ ],
+ "recommendations": "1. Draw each build's score as a bar across its body-fat range with a dot at the working value. S = 1.8\u00b7FFM/H\u00b3 is proportional to (1 \u2212 fat), so bars are short for lean groups (natural or enhanced stage: about \u00b12\u20133%) and long for everyday men and strongmen (about 18\u201322% end to end). Label every range with its basis: measured (DXA, 4C, densitometry), equation-estimated, or assumed.\n2. Everyday men: give each ANSUR II build its own body fat from the official Army 2023 one-site equation on that build's navel waist and weight (\u00b14 points). Label it \"estimated from waist and weight (Army 2023 equation)\". Give NHANES builds the NHANES DXA range (17\u201338%, median 28%). Fix the anchor text: at the measured soldier body fat (about 24%) the ANSUR II median man scores S \u2248 21 (FFMI \u2248 21), not 24. 24 corresponds to about 15% fat.\n3. Natural athletes: on stage 4\u201310% (working 6%); off stage 10\u201318% (working 13%, Kouri's non-user mean). Draw Kouri's 25 as a soft line. Optionally mark the Pope group's screening rule (normalized FFMI above 26 with fat below 10% suggests hidden steroid use) as \"where researchers start to doubt 'natural'\", not as a limit.\n4. Enhanced pros on stage: 4\u20138% (working 5%, matching the existing derived_ffmi_pros assumption). State on the page that no lab-grade (DXA or 4C) measurement of a top pro on stage exists, and that the basis is Withers 1997 (4C), Rosaci 2026 (skinfold) and natural competitors' DXA floor. Use Rosaci 2026 (FFMI about 37\u201339, probably an upper bound) as a measured-ish check beside Coleman (S about 38\u201340 at 4\u20138%).\n5. Steroid-user context: show the measured user distribution (normalized FFMI median 26, IQR 24\u201328, max reported about 30\u201332) to make clear that many enhanced lifters are not beyond the natural range. Bhasin's 600 mg/week gives about +2.4 FFMI in 20 weeks. Pros at 35\u201340 are far beyond the typical user.\n6. Strongmen and lifters: 12\u201328% (working 19%, Kraemer DXA). Use measured values where they exist (Shaw 17.6%, reported). Talakhadze, Hall and Bjornsson get the group range, labelled as such. Say that super-heavyweight weightlifters have no measured body fat.\n7. Comic characters: no source exists. Use the labelled assumption \"drawn like\" a human group (lean heroes 5\u201312%, brutes 8\u201320%, Kingpin 15\u201335%, Banner as everyday). Or, more simply, one band of 5\u201320% (working 10%) for all. Thing and armoured Colossus: show \"mass, not muscle\" instead of a body-fat range. Wolverine: remove adamantium mass first.\n8. Rex and Ollie: 5\u201310%, 7.5% working (canon).\n9. Reuse the existing keys (bauer2023, kraemer2020, rossow2013, mitchell2018, graybeal2020, withers1997, kouri1995_*, ffmi_athletes, brian_shaw_height_weight) rather than duplicating them. Add the new keys above to the comparison's data with their statuses. Mark the Bhasin 2001 \"DXA\" method as unconfirmed, because only the abstract was fetched.",
+ "gaps": "- No DXA or 4C body-fat measurement of a Mr. Olympia-level pro on stage or in the off-season. The only current-pro data (Rosaci 2026) are skinfold-based. Moreno 2024's 12.2% is second-hand (only Moreno's abstract fetched).\n- No measured body fat for elite super-heavyweight Olympic weightlifters. The 15\u201330% is an estimate.\n- NFL linemen by DXA come only from a secondary review citing a Gatorade SSE article. The NFL primary (Dengel 2014) abstract has no position values. I used college Division I DXA (Bosch 2019) as the primary.\n- Kouri 1995 full text still not fetched (existing secondary summaries). Bauer 2023, Kistler 2014, Schoenfeld 2020, Mitchell 2018, Kondo 1994, Hattori 1999, Bhasin 1996/2001, van Marken Lichtenbelt 2004 and Hartgens 2001 are abstract-only.\n- Bhasin 2001's FFM method (DXA) is not stated in the abstract, so it is unconfirmed.\n- The body-fat method is not stated in the fetched text of the Pope-group papers (Baggish 2017, Hudson 2020) or of Bulut 2024. Hudson 2020's past-user FFMI cell has a typo (median outside its IQR).\n- Barakat 2022's height was not found in the parsed text, so no FFMI.\n- Yu 2014 gives no heights, so no FFMI.\n- Mitchell 2018 %fat is derived from abstract masses with an assumed BMC.\n- Liu 2021's appendix (all-race men body fat 2011\u201318) was not fetched.\n- Army Directive 2023-11 itself was not fetched. The equation comes from an official Army installation IG summary with worked examples, consistent with Taylor 2024.\n- The ANSUR II body-fat estimate uses an equation fitted to 2021\u201322 soldiers on 2010\u201312 data. The official and Taylor coefficients differ by about 2.5 points on ANSUR II, and individual error is about 3.4\u20134 points.\n- Kelly 2009's NHANES percentiles sit in supplementary LMS files (not fetched). The NCHS report gives the same survey's percentiles directly.\n- Comic characters: no body-fat source exists anywhere. The ranges are assumptions.\n- Raw downloads and scripts are in /tmp/claude-0/-home-user-rex-strength-lab/9b81b796-3162-56bd-85b7-22e02b6583e2/scratchpad/research/bodyfat/ (dl/, scripts/ansur_bf.py, scripts/epmc.py, scripts/tables.py)."
+}

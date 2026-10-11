@@ -1,0 +1,21 @@
+// Why does an exact mirror fail the front/back check? Inspect the waist width profile and the crotch scan.
+const path = require('path');
+const B = path.join(__dirname, 'tree');
+const BC = require(B + '/build-calculator/src/calc.js');
+const Fig = require(B + '/build-comparison/src/figure.js');
+const M = require(B + '/build-comparison/src/measure.js');
+const T = require(B + '/build-comparison/data/outline.json');
+const calc = BC.create(require(B + '/build-calculator/data/builds.json'));
+const id = 'ansur2_m_largest_arm', f = 1.037, px = 1000;
+const r0 = calc.compute({ buildId: id, heightM: 1.8 }), gs = {}; BC.SITES.forEach((s) => { gs[s] = r0.girths[s].value; });
+const H = 1.8, fit = BC.FRUSTUM.M.buttock, base = Fig.human(T, H, gs, {}, { buttockFit: fit, armDeg: 35 });
+const y = base.dims.levels, lv = { shoulder: y.acromion, chest: y.chest, waist: y.waist, crotch: y.crotch, knee: y.knee };
+const make = (ff, deg) => Fig.human(T, H, gs, {}, { buttockFit: fit, armDeg: deg, widthScale: ff, legAxis: base.dims.legAxis });
+const fig = make(f, Math.max(35, Fig.armRestAngle((d) => make(f, d)) + 2));
+const img = Fig.renderSheet({ front: fig.front, side: fig.side }, H, lv, { figurePx: px });
+const seg = M.segment(img, { refine: 0 }); const vs = M.splitViews(seg.mask, img.width, img.height).filter((v) => (v.x1 - v.x0 + 1) >= 0.05 * v.heightPx);
+const F = M.frontLandmarks(seg.mask, img.width, vs[0]), Bk = M.frontLandmarks(seg.mask, img.width, vs[2]);
+console.log('front rows', JSON.stringify(F.rows)); console.log('back  rows', JSON.stringify(Bk.rows));
+const w = (L, v, yy) => { const t = L.torsoRun(yy); return t ? t[1] - t[0] + 1 : 0; };
+const lo = Math.min(F.rows.waist, Bk.rows.waist), hi = Math.max(F.rows.waist, Bk.rows.waist);
+let s = ''; for (let yy = lo - 5; yy <= hi + 5; yy += 15) s += yy + ':' + w(F, vs[0], yy) + '/' + w(Bk, vs[2], yy) + ' '; console.log('torso width front/back by row:', s);
