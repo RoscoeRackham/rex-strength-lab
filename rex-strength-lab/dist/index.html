@@ -168,6 +168,12 @@ table.cases td.on { outline: 2px solid var(--accent); outline-offset: -2px; back
 details.math { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: var(--surface); }
 details.math summary { cursor: pointer; font-weight: 700; }
 details.math .eq { font-family: var(--font-mono); font-size: 0.85rem; color: var(--ink-2); white-space: pre-wrap; overflow-wrap: anywhere; margin-top: 8px; line-height: 1.55; }
+.effort-read { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: var(--surface); font-size: 0.92rem; display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.effort-read p { margin: 0; }
+.effort-read ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 3px; }
+.warn-ink { color: var(--warn-ink); }
+.bay-controls .effort-field, .bay-controls .effort-slider { flex-basis: 100%; }
+.bay-controls .goal-field, .bay-controls .near-field { flex: 1 1 160px; }
 .callout { border-left: 3px solid var(--accent); background: var(--accent-wash); padding: 10px 12px; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
 
 /* Sections */
@@ -1397,8 +1403,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   //   { F, mode: 'comic'|'real', body, surface, groundHolds, anchor: 'friction'|'braced'|'bolted' }
   // ---------------------------------------------------------------------------
   function sizeVmax(key, body) { return MUSCLE[key].vmax * body.s; }
+  // Effort: how hard he chooses to push. ctx.use is the strength he puts into a move's drive (N), never more
+  // than the dial (ctx.F); left out, he goes all-out. Standing, walking and holding a load up still get his
+  // full strength: effort only sets the push. With real muscle it scales the force at every speed.
+  const driveStrength = (ctx) => (ctx.use == null ? ctx.F : Math.min(ctx.F, ctx.use));
   function actionForce(ctx, key) {
-    return ctx.F * (ctx.mode === 'real' ? MUSCLE[key].forceFrac : MUSCLE[key].comicFrac);
+    return driveStrength(ctx) * (ctx.mode === 'real' ? MUSCLE[key].forceFrac : MUSCLE[key].comicFrac);
   }
   // Comic mode is never weaker than real muscle. Its fixed share of strength is tuned to fast
   // moves at record strength, so for slow heavy loads (or below record strength) real muscle can
@@ -1466,7 +1476,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     // overestimate. For a dense thrower most of this is the weight of his own arm (armMass).
     const holdLoad = mB * K.g + obj.m * gSelf;
     const canHold = ctx.F >= holdLoad * (1 - 1e-9);
-    const Fdrive = Math.min(ctx.F, actionForce(ctx, key) * hands);
+    const Fdrive = Math.min(driveStrength(ctx), actionForce(ctx, key) * hands);
     // The arms also hold the load up at right angles to the push: only the rest drives it.
     const perp = mB * K.g * Math.cos(th);
     const F = isFinite(Fdrive) ? Math.sqrt(Math.max(0, Fdrive * Fdrive - perp * perp)) : Infinity;
@@ -1670,7 +1680,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     let thrust;
     let limit;
     let sinks = false;
-    if (ctx.anchor === 'bolted') { thrust = ctx.F; limit = 'strength'; }
+    // effort: the strength he puts into running (his full strength still carries him)
+    const Fu = driveStrength(ctx);
+    if (!(Fu > W)) {
+      return { thrust: 0, limit: 'effort', accel: 0, accelG: 0, vTop: 0, topLimit: 'effort', mach: 0, t100: Infinity, dragPower: 0, airPerSecond: 0, stagT: K.T0, relativistic: false, tooGentle: true };
+    }
+    if (ctx.anchor === 'bolted') { thrust = Fu; limit = Fu < ctx.F ? 'effort' : 'strength'; }
     else {
       // Average normal force over a stride equals his weight; each stance briefly carries
       // about 2.5x body weight on one foot. A soft surface caps that.
@@ -1680,8 +1695,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       const Nuse = Math.min(W, stanceCap);
       const dig = ctx.anchor === 'braced' ? surface.shear * body.digArea * 0.25 : 0;
       const cap = surface.mu * Nuse + dig;
-      thrust = Math.min(ctx.F, cap);
-      limit = ctx.F < cap ? 'strength' : (ctx.anchor === 'braced' ? 'shear' : (sinks ? 'soft ground' : 'friction'));
+      thrust = Math.min(Fu, cap);
+      limit = Fu < cap ? (Fu < ctx.F ? 'effort' : 'strength') : (ctx.anchor === 'braced' ? 'shear' : (sinks ? 'soft ground' : 'friction'));
     }
     let vDrag = Math.sqrt(2 * thrust / (K.rho0 * body.Cd * body.frontArea));
     if (!isFinite(vDrag) || vDrag > K.c) vDrag = K.c;
@@ -1690,7 +1705,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     // Leg speed: Bolt's speed at record strength. Comic speeds grow as sqrt(net force x stroke /
     // mass) like every other comic move; real muscle stops at the cap (scaled with size).
     const Fcal = CAL_LIFT_KG * K.g - BASE_M * K.g;
-    const ratio = isFinite(ctx.F) ? Math.max(0, (ctx.F - W) / Fcal) * (BASE_M / body.m) * body.s : Infinity;
+    const ratio = isFinite(Fu) ? Math.max(0, (Fu - W) / Fcal) * (BASE_M / body.m) * body.s : Infinity;
     let legCap = MUSCLE.run.atCal * Math.sqrt(ratio);
     if (ctx.mode === 'real') legCap = Math.min(legCap, MUSCLE.run.cap * body.s);
     if (legCap < vTop) { vTop = legCap; topLimit = 'leg speed'; }
@@ -1714,7 +1729,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const anc = anchorCapacity({ body, surface, theta: 0, anchor: ctx.anchor, groundHolds: ctx.groundHolds });
     // dragging a load means walking with it, so his legs must be able to walk under his own weight
     const move = moveCheck(ctx.F, body.m);
-    const usable = Math.min(ctx.F, anc.R);
+    const usable = Math.min(driveStrength(ctx), anc.R);
     const net = move.walk ? usable - resist : 0;
     const M = obj.m + body.m;
     const accel = net > 0 ? net / M : 0;
@@ -1724,7 +1739,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       resist, crr, rolling: obj.crr != null, anchor: anc, usable,
       canMove: net > 0, accel, t10m, vEnd: net > 0 ? momentumToV(net * t10m, M) : 0,
       cantWalk: !move.walk, cantStand: !move.stand, walkNeedKg: move.walkNeedKg,
-      limitedBy: !move.walk ? 'legs' : ctx.F < resist ? 'strength' : (anc.R < resist ? anc.limit : null),
+      limitedBy: !move.walk ? 'legs' : ctx.F < resist ? 'strength' : driveStrength(ctx) < resist && anc.R >= resist ? 'effort' : (anc.R < resist ? anc.limit : null),
     };
   }
 
@@ -3156,6 +3171,306 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     return { CATCH, MATERIALS, OBJ_MATERIAL, flyTo, aimEasy, aimHard, farthest, releaseTable, wells, wellRun, wellNeed, catchIt, heatVerdict, fireballAt, leg, tossPartner, game, roundTrip, partnerAsObject, pushStartRadius, meetRadius, chestRadius };
   })();
 
+  // ---------------------------------------------------------------------------
+  // Presence: ground vibration from what he does to the ground (Walk tab, and the restraint checks).
+  // A ground source is { E } (J delivered to the ground by an impact). Peak particle velocity (PPV) at a distance
+  // follows a scaled-distance law, PPV = k (sqrt(E / E0) / d)^n (see research/final-presence.json).
+  // ---------------------------------------------------------------------------
+  const VIB = {
+    E0: 9806.65,        // the law's energy unit: 1 tonne dropped 1 m, J
+    k: 0.070, n: 1.4,   // m/s; placeholder until the attenuation research is in
+    // thresholds, PPV in m/s (placeholders until the thresholds research is in)
+    TH: { feel: 0.3e-3, ripple: 0.3e-3, rattle: 1e-3, plaster: 5e-3, footing: 0.2 },
+  };
+  function ppvAt(src, d) {
+    if (!src || !(src.E > 0)) return 0;
+    if (!isFinite(src.E)) return Infinity;
+    return VIB.k * Math.pow(Math.sqrt(src.E / VIB.E0) / Math.max(d, 0.1), VIB.n);
+  }
+  // distance at which the vibration falls to v (m/s)
+  function ppvReach(src, v) {
+    if (!src || !(src.E > 0)) return 0;
+    if (!isFinite(src.E)) return Infinity;
+    return Math.sqrt(src.E / VIB.E0) / Math.pow(v / VIB.k, 1 / VIB.n);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Restraint: the least disruptive way to do each move, the most effort that stays harmless (the courtesy
+  // ceiling), and the not-so-heroic presets, each set by a hazard. Effort is the strength used for the drive
+  // (ctx.use). Every search assumes the hazard or goal, once reached, stays reached at higher effort.
+  // ---------------------------------------------------------------------------
+  const RESTRAINT = (() => {
+    const R = {
+      NEAR: 5,       // people and buildings this close to him (m): estimate, the page lets the visitor change it
+      STREET: 15,    // windows across a street (m): estimate
+      BLOCK: 100,    // a city block (m): estimate
+      DP_WINDOWS: 6900,   // Pa, windows shatter (data: blast_window_breakage)
+      DP_HOUSES: 26800,   // Pa, houses collapse (data: blast_residential_collapse)
+      TOL: 0.005,    // searches stop within 0.5%
+    };
+    const range = (f) => (f.relativistic || f.escaped || f.orbit || f.leavesHill || f.timedOut ? Infinity : f.landed ? f.range : 0);
+    // Each move: run, what it is for (goal), the fastest thing it sets moving, and what it does to the ground and air.
+    const MOVES = {
+      throw: {
+        run: (c, o) => throwObject(c, o.obj, o.angle),
+        goal: (r, o) => r.canMove && !r.fallsBack && (o.angle >= 90 ? r.flight.relativistic || r.flight.escaped || r.flight.apex >= o.target : range(r.flight) >= o.target),
+        speed: (r) => (r.canMove ? r.v : 0),
+        ground: (r) => r.canMove && r.sinkRatio > 1,
+        crush: (r, o) => !o.gentleHold && r.canMove && r.gripRatio > 1,
+        blast: (r) => (r.canMove && r.flight && r.flight.landed ? r.Eimpact : r.canMove && r.flight && r.flight.relativistic ? r.Eobj : 0),
+        shake: (r) => ({ E: r.canMove && r.flight && r.flight.landed ? r.Eimpact : 0 }),
+        where: 'where it lands',
+      },
+      jump: {
+        run: (c) => jump(c),
+        goal: (r, o) => r.v > 0 && (r.relativistic || r.flight.escaped || r.flight.apex >= o.target),
+        speed: (r) => r.v,
+        ground: (r) => r.groundFails,
+        blast: (r) => r.Eground || 0,
+        // the landing, if he comes back down (soft landing absorbs it)
+        shake: (r, o) => ({ E: (r.Eground || 0) + (!o.softLanding && r.v > 0 && !r.relativistic && r.flight.landed ? momentumToKE(vToMomentum(r.flight.vImpact, o.m), o.m) : 0) }),
+        where: 'around him',
+      },
+      stomp: {
+        run: (c) => stomp(c),
+        goal: (r, o) => ppvAt({ E: r.E }, o.near) >= VIB.TH.feel,
+        speed: (r) => r.vFoot,
+        ground: (r) => r.holeDepth >= 0.01 || r.crater > 0,
+        blast: (r) => r.E,
+        shake: (r) => ({ E: r.E }),
+        where: 'around him',
+      },
+      punch: {
+        run: (c) => punch(c),
+        goal: (r, o) => r.vFist >= o.target,
+        speed: (r) => r.vFist,
+        blast: (r, o) => (o.silentStrike ? 0 : r.E),
+        where: 'at his fist',
+      },
+      clap: {
+        run: (c) => clap(c),
+        goal: (r, o) => r.vHand >= o.target,
+        speed: (r) => r.vHand,
+        blast: (r, o) => (o.silentStrike ? 0 : r.E),
+        where: 'between his hands',
+      },
+      sprint: {
+        run: (c) => sprint(c),
+        goal: (r, o) => r.vTop >= o.target,
+        speed: (r) => r.vTop,
+        ground: (r) => !!r.sinks && r.vTop > 0,
+        where: 'along his path',
+      },
+      pull: {
+        run: (c, o) => pull(c, o.obj),
+        goal: (r, o) => r.canMove && r.t10m <= o.target,
+        speed: (r) => r.vEnd,
+        where: 'behind him',
+      },
+    };
+    // Hazards that set the courtesy ceiling: harm to people or property nearby.
+    const HAZARDS = [
+      { id: 'boom', test: (m, r, o) => !(o.silentStrike && m.silent) && m.speed(r) >= K.a0 },
+      { id: 'windows', test: (m, r, o) => !!m.blast && blastRadius(m.blast(r, o), R.DP_WINDOWS) >= o.near },
+      { id: 'plaster', test: (m, r, o) => !!m.shake && ppvAt(m.shake(r, o), o.near) >= VIB.TH.plaster },
+      { id: 'ground', test: (m, r, o) => !!m.ground && !o.groundHolds && m.ground(r) },
+      { id: 'crush', test: (m, r, o) => !!m.crush && m.crush(r, o) },
+    ];
+    MOVES.punch.silent = true; MOVES.clap.silent = true;
+    // Not-so-heroic presets, at rising scales: each is the least effort that does what it says.
+    const PRESETS = [
+      { id: 'rattle', test: (m, r, o) => (!!m.shake && ppvAt(m.shake(r, o), o.near) >= VIB.TH.rattle) },
+      { id: 'plaster', test: (m, r, o) => !!m.shake && ppvAt(m.shake(r, o), o.near) >= VIB.TH.plaster },
+      { id: 'windows', test: (m, r, o) => !!m.blast && blastRadius(m.blast(r, o), R.DP_WINDOWS) >= R.STREET },
+      { id: 'ground', test: (m, r, o) => !!m.ground && !o.groundHolds && m.ground(r) },
+      { id: 'houses', test: (m, r, o) => !!m.blast && blastRadius(m.blast(r, o), R.DP_HOUSES) >= o.near },
+      { id: 'block', test: (m, r, o) => !!m.blast && blastRadius(m.blast(r, o), R.DP_HOUSES) >= R.BLOCK },
+    ];
+    // Search bounds for the strength used: from a hundredth of his weight to the dial (or 10^34 kg-force when unlimited).
+    const bounds = (ctx) => [Math.max(1e-6, 0.01 * ctx.body.m * K.g), isFinite(ctx.F) ? ctx.F : 1e34 * K.g];
+    // A resumable search for the least effort at which test(use) first holds: it walks a log grid from lo to hi
+    // (two points a decade, shared by every search through the memo), then bisects the first step where it turns
+    // on. Finds the first onset even when a hazard later turns off again (a thrown object that flies off and never
+    // lands). step() runs one probe; .use is set when done (lo if it already holds there; Infinity if it never does,
+    // or only at unlimited strength: .onlyUnlimited).
+    function search(test, lo, hi, unlimited) {
+      const n = Math.max(1, Math.ceil(2 * Math.log10(hi / lo)));
+      const grid = (i) => (i >= n ? hi : lo * Math.pow(10, i / 2));
+      // .below: the most effort that stays short of it (0 if even the least does it; hi, or unlimited, if nothing does)
+      const s = { use: undefined, i: 0, a: lo, b: hi, never: false, bisect: false };
+      s.step = () => {
+        if (s.use !== undefined) return;
+        if (!s.bisect) {
+          const u = grid(s.i);
+          if (test(u)) {
+            if (s.i === 0) { s.use = lo; s.below = 0; return; }
+            s.a = grid(s.i - 1); s.b = u; s.bisect = true; return;
+          }
+          if (s.i >= n) {
+            s.use = Infinity;
+            if (unlimited && test(Infinity)) { s.onlyUnlimited = true; s.below = hi; } else { s.never = true; s.below = unlimited ? Infinity : hi; }
+            return;
+          }
+          s.i++; return;
+        }
+        if (s.b / s.a < 1 + R.TOL) { s.use = s.b; s.below = s.a; return; }
+        const mid = Math.sqrt(s.a * s.b);
+        if (test(mid)) s.b = mid; else s.a = mid;
+      };
+      return s;
+    }
+    // Everything the page needs for one move. Jobs: 'goal', 'hazard:<id>', 'preset:<id>'. ensure(name) finishes one
+    // job now; step() advances the rest a probe at a time and returns true when all are done.
+    // o: { obj, angle, target, near, gentleHold, silentStrike, softLanding, groundHolds, m }
+    function plan(move, ctx, o) {
+      const M = MOVES[move];
+      const opt = Object.assign({ near: R.NEAR, groundHolds: ctx.groundHolds, m: ctx.body.m }, o || {});
+      const memo = new Map();
+      const at = (u) => {
+        const key = u === Infinity ? 'inf' : u;
+        let r = memo.get(key);
+        if (!r) { r = M.run(Object.assign({}, ctx, { use: u }), opt); memo.set(key, r); }
+        return r;
+      };
+      const [lo, hi] = bounds(ctx);
+      const unlimited = !isFinite(ctx.F);
+      const jobs = new Map();
+      jobs.set('goal', search((u) => M.goal(at(u), opt), lo, hi, unlimited));
+      for (const h of HAZARDS) jobs.set('hazard:' + h.id, search((u) => h.test(M, at(u), opt), lo, hi, unlimited));
+      for (const p of PRESETS) jobs.set('preset:' + p.id, search((u) => p.test(M, at(u), opt), lo, hi, unlimited));
+      const result = (name) => {
+        const j = jobs.get(name);
+        if (!j || j.use === undefined) return null;
+        return { id: name.split(':')[1] || name, use: j.use, below: j.below, never: j.never, onlyUnlimited: !!j.onlyUnlimited, atLowest: j.use === lo };
+      };
+      const out = { move, opt, lo, hi, unlimited, done: false };
+      out.ensure = (name) => { const j = jobs.get(name); while (j.use === undefined) j.step(); return result(name); };
+      out.result = result;
+      out.goal = () => { const g = out.ensure('goal'); return Object.assign(g, { reached: !g.never && !g.onlyUnlimited }); };
+      // the courtesy ceiling: just under the first hazard to start (null `by`: nothing harmful even all-out)
+      out.ceiling = () => {
+        let first = null;
+        for (const h of HAZARDS) { const r = out.ensure('hazard:' + h.id); if (!r.never && (!first || r.use < first.use)) first = r; }
+        return first ? { use: first.use, below: first.below, by: first.id, atLowest: first.atLowest, onlyUnlimited: first.onlyUnlimited } : { use: unlimited ? Infinity : hi, below: unlimited ? Infinity : hi, by: null };
+      };
+      out.hazards = () => HAZARDS.map((h) => out.ensure('hazard:' + h.id));
+      out.presets = () => PRESETS.map((p) => out.ensure('preset:' + p.id));
+      out.step = () => {
+        if (out.done) return true;
+        for (const j of jobs.values()) if (j.use === undefined) { j.step(); return false; }
+        out.done = true;
+        return true;
+      };
+      out.run = (u) => at(u);
+      out.runs = () => memo.size;
+      return out;
+    }
+    function planNow(move, ctx, o) { const p = plan(move, ctx, o); while (!p.step()); return p; }
+    // How far each hazard reaches at a given result (m), or 0 / null when it doesn't apply.
+    function reach(move, r, o) {
+      const M = MOVES[move], opt = Object.assign({ near: R.NEAR }, o || {});
+      const E = M.blast ? M.blast(r, opt) : 0, src = M.shake ? M.shake(r, opt) : null;
+      return {
+        windows: E > 0 ? blastRadius(E, R.DP_WINDOWS) : 0,
+        houses: E > 0 ? blastRadius(E, R.DP_HOUSES) : 0,
+        feel: src ? ppvReach(src, VIB.TH.feel) : 0,
+        ripple: src ? ppvReach(src, VIB.TH.ripple) : 0,
+        rattle: src ? ppvReach(src, VIB.TH.rattle) : 0,
+        plaster: src ? ppvReach(src, VIB.TH.plaster) : 0,
+        boom: !(opt.silentStrike && M.silent) && M.speed(r) >= K.a0,
+        ground: !!M.ground && !opt.groundHolds && M.ground(r),
+        crush: !!M.crush && M.crush(r, opt),
+      };
+    }
+    return { R, MOVES, HAZARDS, PRESETS, plan, planNow, reach, bounds };
+  })();
+
+  // ---------------------------------------------------------------------------
+  // Absorbed energy and growth (canon: they can take back the energy they put out). By default it returns to the
+  // store of power they draw on (the "endless ocean": nothing changes). In the growth modes it becomes mass,
+  // dm = E / c^2. Growth form: s is the share of the mass ratio that goes into volume (1 = pure size, 0 = pure
+  // density, 0.5 = the even mix), so volume grows as ratio^s, density as ratio^(1-s) and height as ratio^(s/3).
+  // Momentum is never absorbed.
+  // ---------------------------------------------------------------------------
+  const GROW = {
+    TISSUE_C: 1540,   // speed of sound in soft tissue, m/s: instant growth takes the time sound needs to cross the body
+    SAFE_DP: 200,     // overpressure taken as harmless to a bystander, Pa (placeholder until research)
+    SAFE_U: 0.5,      // speed at which a growing surface can shove a bystander harmlessly, m/s (placeholder)
+    GAP: 2,           // a bystander stands this far from his surface, m (estimate)
+    MIX: 0.5,         // the even mix
+  };
+  const formShare = (form) => (typeof form === 'number' ? Math.min(1, Math.max(0, form)) : form === 'size' ? 1 : form === 'density' ? 0 : GROW.MIX);
+  // The body after absorbing E joules as mass. lnr = ln(mass ratio), kept exact for tiny energies.
+  function grownBody(body, E, form) {
+    const s = formShare(form);
+    const dm = E / (K.c * K.c);
+    const lnr = isFinite(dm) ? Math.log1p(dm / body.m) : Infinity;
+    const H = body.H * Math.exp(lnr * s / 3);
+    const V = body.volume * Math.exp(lnr * s);
+    const m = body.m + dm;
+    return { E, dm, s, lnr, ratio: Math.exp(lnr), H, m, V, rho: m / V, R0: eqRadius(body), R: Math.cbrt(3 * V / (4 * Math.PI)),
+      dV: body.volume * Math.expm1(lnr * s), dH: body.H * Math.expm1(lnr * s / 3) };
+  }
+  // A grown body in the engine's body format (for the Weight tab's physics): same build, new height and mass.
+  function grownMakeBody(body, E, form) {
+    const g = grownBody(body, E, form);
+    return makeBody({ H: g.H, m: g.m, build: body.build });
+  }
+  // Overpressure at the face of a flat piston pushed into still air at speed u (shock relation; the acoustic
+  // rho0 a0 u when slow, rho0 (gamma+1)/2 u^2 when fast). A growing body's surface is curved, which lets the air
+  // slip aside, so this is an upper bound.
+  function pistonOverpressure(u) {
+    const q = (K.gammaAir + 1) / 4 * u;
+    return K.rho0 * u * (q + Math.sqrt(q * q + K.a0 * K.a0));
+  }
+  // Gradual growth: the shortest duration that stays harmless to a bystander GAP metres from his final surface.
+  // Two limits: air pressure (the growing body is a source of volume flow Q; at a distance r the pressure is
+  // rho0 Q'(t) / (4 pi r), the acoustic monopole; with a half-cosine growth curve the peak Q' is pi^2 dV / (2 T^2)),
+  // and shove speed (his surface moves out at up to pi dR / (2T)).
+  function gradualGrowth(body, E, form, o) {
+    const opt = o || {};
+    const g = grownBody(body, E, form);
+    const gap = opt.gap == null ? GROW.GAP : opt.gap, dpSafe = opt.dp || GROW.SAFE_DP, uSafe = opt.u || GROW.SAFE_U;
+    const r = g.R + gap, dR = g.R - g.R0;
+    const Tp = g.dV > 0 ? Math.sqrt(K.rho0 * Math.PI * g.dV / (8 * r * dpSafe)) : 0;
+    const Tu = dR > 0 ? Math.PI * dR / (2 * uSafe) : 0;
+    const T = Math.max(Tp, Tu);
+    // quasi-static: the monopole is valid while T is much longer than sound's crossing time of the body
+    return { grown: g, T, Tp, Tu, by: Tp >= Tu ? 'pressure' : 'shove', r, compact: T > 10 * g.R / K.a0 };
+  }
+  // Instant growth: all at once, over the time sound takes to cross the final body (head to foot).
+  // Air: the surface moves out by dR in that time; the air in front gets the piston overpressure for its speed,
+  // and the energy pushed into it, dp x dV, is treated as a blast (an upper bound). Ground: he grows from where he
+  // stands, so his centre of mass rises dH/2 in that time; the push that does it goes into the ground.
+  function instantGrowth(body, E, form) {
+    const g = grownBody(body, E, form);
+    const tau = g.H / GROW.TISSUE_C;
+    const dR = g.R - g.R0;
+    const u = dR / tau;
+    const dp = pistonOverpressure(u);
+    const Eair = dp * g.dV;
+    const vcm = 0.5 * g.dH / tau;
+    const Eground = 0.5 * g.m * vcm * vcm;
+    return { grown: g, tau, u, mach: u / K.a0, dp, Eair, vcm, Eground, quake: seismicMagnitude(Eground) };
+  }
+  // Runaway: the consequences (the energy pushed into air and ground, and the gravitational binding energy his
+  // own pull releases as he grows) are absorbed as growth too. Loop ratio k = fed-back energy / absorbed energy.
+  // k < 1: the loop dies out, total absorbed E / (1 - k). k >= 1: it would run away, and a half-life dumps the
+  // extra into the endless ocean. Binding energy of a uniform ball: 3 G M^2 / (5 R).
+  function runawayGrowth(body, E, form) {
+    const inst = instantGrowth(body, E, form), g = inst.grown;
+    const bind = (m, R) => 0.6 * K.G * m * m / R;
+    const dBind = bind(g.m, g.R) - bind(body.m, g.R0);
+    const kSurround = isFinite(E) && E > 0 ? (inst.Eair + inst.Eground) / E : 0;
+    const kGrav = isFinite(E) && E > 0 ? Math.max(0, dBind) / E : 0;
+    const k = kSurround + kGrav;
+    // the same ratio for a small extra step at the grown size, d(binding)/d(M c^2) = 0.6 (2 - s/3) G M / (R c^2)
+    const kGravNow = 0.6 * (2 - g.s / 3) * K.G * g.m / (g.R * K.c * K.c);
+    const rs = 2 * K.G * g.m / (K.c * K.c);
+    return { instant: inst, grown: g, k, kSurround, kGrav, kGravNow, runs: k >= 1, total: k < 1 ? E / (1 - k) : Infinity,
+      rs, rsOverR: rs / g.R, kGravAtHorizon: 0.3 * (2 - g.s / 3) };
+  }
+
   function threshold(pred, lo, hi) {
     if (pred(lo)) return lo;
     if (!pred(hi)) return Infinity;
@@ -3211,6 +3526,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     kgRatio, overpressureAt, blastRadius, penetrationDepth,
     lift, throwObject, jump, stomp, punch, clap, sprint, pull, threshold, calibrateComic,
     throwOnce, jumpOnce, stompOnce, punchOnce, clapOnce,
+    driveStrength, VIB, ppvAt, ppvReach, RESTRAINT, GROW, formShare, grownBody, grownMakeBody, pistonOverpressure, gradualGrowth, instantGrowth, runawayGrowth,
   };
 });
 
@@ -7890,6 +8206,20 @@ window.DINO_DATA = {
   }
 
   // ---------------------------------------------------------------- state
+  // Effort presets: the heroic default, the most that stays harmless, the not-so-heroic ones at rising scales
+  // (each set by a hazard, solved per move), all-out, and a free slider.
+  const EFFORT_PRESETS = [
+    { id: 'least', label: 'Least disruptive (the heroic default)' },
+    { id: 'ceiling', label: 'Courtesy ceiling: as hard as stays harmless' },
+    { id: 'rattle', label: 'Rattle the windows', loud: true },
+    { id: 'plaster', label: 'Crack the plaster next door', loud: true },
+    { id: 'windows', label: 'Break windows across the street', loud: true },
+    { id: 'ground', label: 'Break the ground under him', loud: true },
+    { id: 'houses', label: 'Flatten the houses next door', loud: true },
+    { id: 'block', label: 'Level a block', loud: true },
+    { id: 'allout', label: 'All-out' },
+    { id: 'custom', label: 'Custom (use the slider)' },
+  ];
   const DEFAULTS = {
     logKg: Math.log10(100 * 907.18474), inf: false, mode: 'comic', surface: 'concrete', groundHolds: false, anchor: 'friction', H: P.DEFAULT_BODIES.rex.H, m: P.DEFAULT_BODIES.rex.m, build: 'rex', action: 'throw', obj: 'car', angle: 45,
     // two-player tests: which group of tabs is showing, and the last tab picked in the Rex + Ollie group
@@ -7899,6 +8229,10 @@ window.DINO_DATA = {
     wrestleMove: 'push', wrestleWho: 'rex',
     cObj: 'baseball', cLogD: 1, cStyle: 'easy', cMiss: false,
     colMode: 'charge', colWho: 'ollie', colSrc: 'sprint', colGB: Math.log10(100 / 299792458), colInf: false, colBounce: 'splat', colImm: false,
+    // effort: a preset (least disruptive by default), or a custom strength used (log10 kg); people and buildings this near (m)
+    effort: 'least', effortLogKg: 3, near: P.RESTRAINT.R.NEAR,
+    // what each move is for: throw it this far (m), jump this high (m), run this fast (m/s), drag it 10 m in this time (s)
+    gThrow: 30, gJump: 3, gSprint: 12.42, gPull: 10,
   };
   let state = Object.assign({}, DEFAULTS);
   // lightest density the slider and the mass boxes allow, kg/m³ (the slider's left end, 10^1)
@@ -7908,6 +8242,7 @@ window.DINO_DATA = {
   if (state.m === 2700) state.m = DEFAULTS.m;
   if (state.oM === 2700) state.oM = DEFAULTS.oM;
   state.oSame = true;   // Ollie is as strong as Rex; a what-if strength lasts only for this visit
+  state.effort = 'least';   // the page always opens on the heroic default; anything louder is chosen each visit
   {
     const num = (lo, hi) => (v) => typeof v === 'number' && isFinite(v) && v >= lo && v <= hi;
     const VALID = {
@@ -7929,6 +8264,8 @@ window.DINO_DATA = {
       colGB: num(-8.48, 4), colInf: (v) => typeof v === 'boolean', colBounce: (v) => v === 'splat' || v === 'bounce', colImm: (v) => typeof v === 'boolean',
       surface: (v) => D.surfaces.some((x) => x.id === v),
       obj: (v) => D.objects.some((x) => x.id === v),
+      effort: (v) => EFFORT_PRESETS.some((x) => x.id === v), effortLogKg: num(-3, 34), near: num(0.5, 1000),
+      gThrow: num(0.1, 1e9), gJump: num(0.01, 1e9), gSprint: num(0.1, 3e8), gPull: num(0.01, 1e9),
     };
     for (const [k, ok] of Object.entries(VALID)) if (!ok(state[k])) state[k] = DEFAULTS[k];
     for (const k of Object.keys(state)) if (!(k in DEFAULTS)) delete state[k];
@@ -9932,6 +10269,170 @@ window.DINO_DATA = {
     return out;
   }
 
+  // ---------------------------------------------------------------- effort
+  // Each solo move has a goal; the least disruptive effort is the gentlest that reaches it. The engine's
+  // RESTRAINT.plan finds that, the hazards' onsets (the courtesy ceiling is just under the first) and the presets.
+  // Plans are cached per setting; the search the page needs now runs at once, the rest in small background slices.
+  const EFFORT_MOVES = ['throw', 'jump', 'stomp', 'punch', 'clap', 'sprint', 'pull'];
+  const isEffortMove = (a) => !isDuo() && EFFORT_MOVES.includes(a);
+  // the strongest human's punch and clap (calibration body at the 511 kg record): the goal for both moves
+  const CAL_CTX = { F: P.CAL_LIFT_KG * g, mode: 'comic', body: P.makeBody({}), surface: D.surfaces.find((s) => s.id === 'concrete'), groundHolds: true, anchor: 'bolted' };
+  const CAL_PUNCH = P.punch(CAL_CTX).vFist, CAL_CLAP = P.clap(CAL_CTX).vHand;
+  const GOALS = {
+    throw: { key: 'gThrow', unit: 'm', label: 'Goal: throw it (m)', text: (t) => (state.angle >= 90 ? 'throws the ' + objById(state.obj).short + ' ' + fmtDist(t) + ' straight up' : 'lands the ' + objById(state.obj).short + ' ' + fmtDist(t) + ' away') },
+    jump: { key: 'gJump', unit: 'm', label: 'Goal: jump this high (m)', text: (t) => 'jumps ' + fmtDist(t) + ' high' },
+    stomp: { text: () => 'makes a stomp people feel ' + fmtDist(state.near) + ' away' },
+    punch: { fixed: CAL_PUNCH, text: (t) => 'throws a punch as fast as the strongest human’s (' + speedOnly(t) + ')' },
+    clap: { fixed: CAL_CLAP, text: (t) => 'claps as fast as the strongest human (' + speedOnly(t) + ')' },
+    sprint: { key: 'gSprint', unit: 'm/s', label: 'Goal: run at (m/s)', text: (t) => 'runs at ' + speedOnly(t) },
+    pull: { key: 'gPull', unit: 's', label: 'Goal: drag it 10 m in (s)', text: (t) => 'drags the ' + objById(state.obj).short + ' 10 m in ' + fmtTime(t) },
+  };
+  const goalTarget = (move) => (GOALS[move].fixed != null ? GOALS[move].fixed : GOALS[move].key ? state[GOALS[move].key] : null);
+  function planOpts(move) {
+    const o = { near: state.near, target: goalTarget(move) };
+    if (move === 'throw') Object.assign(o, { obj: objById(state.obj), angle: state.angle });
+    if (move === 'pull') o.obj = objById(state.obj);
+    return o;
+  }
+  const planCache = new Map();
+  let planTimer = null, planRunning = null;
+  function planFor(move, c) {
+    const o = planOpts(move);
+    const key = JSON.stringify([move, c.F, c.mode, c.body.H, c.body.m, c.body.build, c.surface.id, c.groundHolds, c.anchor, o.obj ? o.obj.id : null, o.angle, o.target, o.near]);
+    let p = planCache.get(key);
+    if (!p) {
+      p = P.RESTRAINT.plan(move, c, o);
+      planCache.set(key, p);
+      if (planCache.size > 40) planCache.delete(planCache.keys().next().value);
+    }
+    return p;
+  }
+  // finish the rest of a plan in ~20 ms slices, then redraw the bay; a newer plan takes over
+  function stepPlan(p) {
+    if (p.done || planRunning === p) return;
+    clearTimeout(planTimer);
+    planRunning = p;
+    const tick = () => {
+      if (planRunning !== p) return;
+      const t0 = performance.now();
+      while (performance.now() - t0 < 20) if (p.step()) { planRunning = null; renderBay(true); return; }
+      planTimer = setTimeout(tick, 0);
+    };
+    planTimer = setTimeout(tick, 0);
+  }
+  const EFF_HAZ = {
+    boom: { name: 'Sonic boom', what: 'something he moves breaks the sound barrier' },
+    windows: { name: 'Windows break', what: 'the blast breaks windows' },
+    plaster: { name: 'Plaster cracks', what: 'the ground shakes hard enough to crack plaster' },
+    ground: { name: 'The ground breaks', what: 'the ground under his feet gives way' },
+    crush: { name: 'He crushes the object', what: 'his hands crush the object' },
+  };
+  const PRESET_WHAT = {
+    rattle: () => 'shakes the ground enough to rattle windows and ornaments ' + fmtDist(state.near) + ' away',
+    plaster: () => 'shakes the ground enough to crack plaster ' + fmtDist(state.near) + ' away',
+    windows: () => 'breaks windows ' + fmtDist(P.RESTRAINT.R.STREET) + ' away, across a street',
+    ground: () => 'breaks the ground under his feet',
+    houses: () => 'blasts houses ' + fmtDist(state.near) + ' away flat',
+    block: () => 'blasts houses flat ' + fmtDist(P.RESTRAINT.R.BLOCK) + ' away, about a city block',
+  };
+  // The strength he uses for this move, and why. use undefined = all-out.
+  function resolveEffort(move, c) {
+    const p = planFor(move, c);
+    const e = state.effort;
+    const out = { p, preset: e, use: undefined, note: null };
+    if (e === 'allout') return out;
+    if (e === 'custom') { out.use = Math.min(c.F, Math.pow(10, state.effortLogKg) * g); return out; }
+    if (e === 'least') {
+      const gl = p.goal();
+      out.goal = gl;
+      if (gl.reached) out.use = gl.use;
+      else out.note = 'Even all-out he can’t do this: ' + GOALS[move].text(goalTarget(move)).replace(/^(\w+)s /, '$1 ') + '. Showing all-out.';
+      return out;
+    }
+    if (e === 'ceiling') {
+      const ce = p.ceiling();
+      out.ceiling = ce;
+      if (!ce.by) return out;                       // nothing harmful even all-out
+      out.use = ce.below > 0 ? ce.below : p.lo;
+      if (!(ce.below > 0)) out.note = 'Nothing here is harmless: even the gentlest try means ' + EFF_HAZ[ce.by].what + '.';
+      return out;
+    }
+    const r = p.ensure('preset:' + e);
+    if (r.never) out.note = 'Even all-out, this move doesn’t do that. Showing all-out.';
+    else out.use = r.use;
+    return out;
+  }
+  const shareText2 = (use, F) => (!isFinite(F) ? (isFinite(use) ? 'a vanishing share of his unlimited strength' : 'all of his unlimited strength') : (use >= F * (1 - 1e-9) ? '100%' : sig(Math.max(100 * use / F, 1e-12), 2) + '%') + ' of his strength');
+  function effortFields(move, c, eff) {
+    const p = eff.p;
+    const sel = el('select', { id: 'effort' },
+      el('optgroup', { label: 'Heroic' }, EFFORT_PRESETS.filter((x) => x.id === 'least' || x.id === 'ceiling').map((x) => el('option', { value: x.id, text: x.label }))),
+      el('optgroup', { label: 'Not so heroic' }, EFFORT_PRESETS.filter((x) => x.loud).map((x) => el('option', { value: x.id, text: x.label }))),
+      el('optgroup', { label: 'Other' }, EFFORT_PRESETS.filter((x) => x.id === 'allout' || x.id === 'custom').map((x) => el('option', { value: x.id, text: x.label }))));
+    sel.value = state.effort;
+    sel.onchange = (e) => { if (e.target.value === 'custom') state.effortLogKg = Math.log10((eff.use == null ? c.F : eff.use) / g); state.effort = e.target.value; update(); };
+    const fields = [el('div', { class: 'field effort-field' }, el('label', { for: 'effort', text: 'Effort' }), sel)];
+    const G = GOALS[move];
+    if (G.key) {
+      const inp = el('input', { id: 'goal', type: 'number', min: '0', step: 'any', value: String(state[G.key]) });
+      inp.onchange = (e) => { const v = Number(e.target.value); if (v > 0 && isFinite(v)) state[G.key] = v; update(); };
+      fields.push(el('div', { class: 'field goal-field' }, el('label', { for: 'goal', text: G.label }), el('div', { class: 'inline-num' }, inp)));
+    }
+    const lo = Math.log10(p.lo / g), hi = isFinite(c.F) ? Math.log10(c.F / g) : 34;
+    const cur = eff.use == null ? hi : Math.log10(Math.min(eff.use, isFinite(c.F) ? c.F : 1e34 * g) / g);
+    const sl = el('input', { id: 'effort-use', type: 'range', min: String(lo), max: String(hi), step: '0.01', value: String(Math.min(hi, Math.max(lo, cur))), 'aria-label': 'Effort: the strength he uses, log scale', 'aria-valuetext': eff.use == null ? 'All-out' : 'As hard as lifting ' + fmtMass(eff.use / g) });
+    sl.oninput = (e) => { state.effort = 'custom'; state.effortLogKg = Number(e.target.value); const s2 = $('#effort'); if (s2) s2.value = 'custom'; scheduleBay(); };
+    fields.push(el('div', { class: 'field effort-slider' }, el('label', { for: 'effort-use', text: 'Effort (gentle ↔ all-out)' }), sl));
+    const near = el('input', { id: 'near', type: 'number', min: '0.5', max: '1000', step: 'any', value: String(state.near) });
+    near.onchange = (e) => { const v = Number(e.target.value); if (v >= 0.5 && v <= 1000) state.near = v; update(); };
+    fields.push(el('div', { class: 'field near-field' }, el('label', { for: 'near', text: 'People and buildings within (m)' }), el('div', { class: 'inline-num' }, near)));
+    return fields;
+  }
+  function effortReadout(move, c, eff) {
+    const p = eff.p, M = P.RESTRAINT.MOVES[move];
+    const box = el('div', { class: 'effort-read' });
+    const use = eff.use == null ? c.F : eff.use;
+    const head = el('p', {}, el('b', { text: (eff.use == null ? 'All-out: ' : 'Effort: ') + shareText2(use, c.F) }), isFinite(use) && eff.use != null ? ' (as hard as lifting ' + fmtMass(use / g) + ').' : '.');
+    const why = { least: 'The gentlest push that ' + GOALS[move].text(goalTarget(move)) + '.', ceiling: 'The most he can use before something nearby comes to harm.', allout: 'Everything he has.', custom: 'Set by hand.' }[state.effort]
+      || (PRESET_WHAT[state.effort] ? 'The least effort that ' + PRESET_WHAT[state.effort]() + '.' : '');
+    head.append(' ' + why);
+    box.append(head);
+    if (eff.note) box.append(el('p', { class: 'warn-ink', text: eff.note }));
+    const r = p.run(eff.use), rc = P.RESTRAINT.reach(move, r, p.opt);
+    // the courtesy ceiling, once the hazard searches are done (or now, if the preset needed it)
+    const haz = P.RESTRAINT.HAZARDS.map((h) => p.result('hazard:' + h.id));
+    if (haz.every(Boolean)) {
+      const ce = p.ceiling();
+      let t;
+      if (!ce.by) t = 'Courtesy ceiling: none. Nothing this move does harms anyone within ' + fmtDist(state.near) + (isFinite(c.F) ? ', even all-out.' : ' at any finite strength.');
+      else if (!(ce.below > 0)) t = 'Courtesy ceiling: none. Even the gentlest try means ' + EFF_HAZ[ce.by].what + '.';
+      else t = 'Courtesy ceiling: ' + shareText2(ce.below, c.F) + (isFinite(ce.below) ? ' (lifting ' + fmtMass(ce.below / g) + ')' : '') + '. Past that, ' + EFF_HAZ[ce.by].what + (ce.by === 'windows' || ce.by === 'plaster' ? ' ' + fmtDist(state.near) + ' ' + (M.where === 'where it lands' ? 'from where it lands' : 'away') : '') + '.';
+      box.append(el('p', { text: t }));
+      if (ce.by && use > ce.below * (1 + 1e-6)) box.append(status('warn', 'Above the courtesy ceiling'));
+      const items = [];
+      for (const h of P.RESTRAINT.HAZARDS) {
+        const res = p.result('hazard:' + h.id);
+        if (res.never) continue;
+        const from = res.onlyUnlimited ? 'only at unlimited strength' : res.atLowest ? 'at any effort' : 'from ' + shareText2(res.use, c.F).replace(' of his strength', '') + (isFinite(res.use) ? ' (lifting ' + fmtMass(res.use / g) + ')' : '');
+        let now;
+        if (h.id === 'windows') now = rc.windows > 0.05 ? 'now out to ' + fmtDist(rc.windows) + ' ' + (M.where === 'where it lands' ? 'from where it lands' : 'from him') : 'not now';
+        else if (h.id === 'plaster') now = rc.plaster > 0.05 ? 'now out to ' + fmtDist(rc.plaster) + (M.where === 'where it lands' ? ' from where it lands' : '') : 'not now';
+        else now = rc[h.id] ? 'happens now' : 'not now';
+        items.push(el('li', {}, el('b', { text: EFF_HAZ[h.id].name }), ' ' + (h.id === 'windows' || h.id === 'plaster' ? 'within ' + fmtDist(state.near) + ' ' : '') + from + '; ' + now + '.'));
+      }
+      if (items.length) box.append(el('ul', {}, items));
+      else box.append(el('p', { class: 'muted', text: 'None of the hazards the lab checks (sonic boom, windows, cracked plaster, broken ground, a crushed object) can happen in this move at this strength.' }));
+    } else box.append(el('p', { class: 'muted', text: 'Working out the courtesy ceiling…' }));
+    return box;
+  }
+  function attachEffort(parts, move, c, eff) {
+    let ctl = parts[0] && parts[0].classList && parts[0].classList.contains('bay-controls') ? parts[0] : null;
+    if (!ctl) { ctl = el('div', { class: 'bay-controls' }); parts.unshift(ctl); }
+    ctl.prepend(...effortFields(move, c, eff));
+    parts.splice(1, 0, effortReadout(move, c, eff));
+    stepPlan(eff.p);
+  }
+
   const BAYS = { lift: bayLift, throw: bayThrow, jump: bayJump, stomp: bayStomp, punch: bayPunch, clap: bayClap, sprint: baySprint, pull: bayPull, weight: bayWeight, arm: bayArm, wrestle: bayWrestle, catch: bayCatch, collide: bayCollide };
 
   let lastBayAction = null, liveTimer = null;
@@ -9952,8 +10453,11 @@ window.DINO_DATA = {
     try {
       // At planet-scale masses the move models (a small Rex on a fixed Earth) stop applying.
       const gate = act === 'weight' || isDuo() ? null : soloGate(ctx());
-      parts = gate && gate.stop ? [callout(gate.text)] : BAYS[act](ctx());
-      if (gate && !gate.stop) parts.splice(parts[0] && parts[0].classList && parts[0].classList.contains('bay-controls') ? 1 : 0, 0, callout(gate.text));
+      const c0 = ctx();
+      const eff = isEffortMove(act) && !(gate && gate.stop) ? resolveEffort(act, c0) : null;
+      parts = gate && gate.stop ? [callout(gate.text)] : BAYS[act](eff ? Object.assign({}, c0, { use: eff.use }) : c0);
+      if (eff) attachEffort(parts, act, c0, eff);
+      if (gate && !gate.stop) parts.splice(parts[0] && parts[0].classList && parts[0].classList.contains('bay-controls') ? (eff ? 2 : 1) : 0, 0, callout(gate.text));
     }
     catch (e) { parts = [callout('Calculation failed: ' + e.message)]; console.error(e); }
     // Keep the live controls in place during a slider drag; replacing them ends the drag.
