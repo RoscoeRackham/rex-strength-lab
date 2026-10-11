@@ -46,19 +46,22 @@ On macOS and Linux the Python command may be `python3`. On Windows, set `PYTHONU
 ## Test
 
 ```
-node test/shots.js         # writes dist/preview.html; Chromium screenshots at 1280 px light and 390 px dark, checks overflow and console errors (needs Playwright, about 17 s)
+node test/shots.js         # writes dist/preview.html; Chromium screenshots of every tab at 1280 and 390 px, light and dark; fails on overflow, console errors or broken numbers in the text (needs Playwright, about 70 s)
 node test/calibration.js   # calibration, physics invariants and the regressions from each review round (about 80 s; ends "all checks passed")
-node test/sweep.js         # every solo move across 7,776 setting combinations (the calibration body and the default 10 ft Rex and Ollie); flags NaN and negative outputs (about 5 min)
+node test/presence.js      # effort, restraint, the Walk tab's model, the comic switches and growth (about 30 s; ends "all checks passed")
+node test/sweep.js         # every solo move across 7,776 setting combinations (the calibration body and the default 10 ft Rex and Ollie); flags NaN and negative outputs (about 9 min)
 ```
 
-The usual run is `python build-data.py && node build.js && node test/shots.js && node test/calibration.js`, about 100 s in all.
+The usual run is `python build-data.py && node build.js && node test/calibration.js && node test/presence.js && node test/shots.js`, about 3 min in all.
+
+`test/presence.js` checks, among others: that all-out effort reproduces the engine as it was before effort existed (`test/fixtures/allout-baseline.json`, written from `main`'s engine by `test/make-baseline.js`, 432 setting combinations); that the least disruptive effort reaches each move's goal and stays under every hazard whenever the ceiling allows; that ground shaking never falls with more effort or less distance; the Pisa drop test, the elephant band and each threshold's conversion; that gentle hold changes only grip results and the absorbed switches keep the momentum; and the brief's growth examples.
 
 ## Files
 
 - `src/engine.js`: the physics. Bodies and builds; two-body push (relativistic constant force, or Hill force-velocity with an implicit integrator); footing and ground limits; drag flight over a round Earth with Kepler arcs above 150 km; the Weight tab's self-gravity, PREM fall through the Earth and settling; arm wrestling, wrestling, the game of catch and the collide test; Kinney-Graham blast, Gutenberg-Richter quakes and Collins et al. craters.
 - `src/app.html`: the page. Every sentence a reader sees is generated in the `bay*` functions from engine numbers.
 - `src/static-data.js`: the assumption cards and the height references.
-- `research/final-*.json`: the sourced facts behind every number (humans, fiction, objects, environment, density, duo). Each fact carries its status, sources and notes.
+- `research/final-*.json`: the sourced facts behind every number (humans, fiction, objects, environment, density, duo, presence). Each fact carries its status, sources and notes. `final-presence.json` (267 facts: step forces, ground shaking, elephants, thresholds, the water glass, comic switches, growth) is assembled by `research/merge_presence.py` from the compiled research of this brief; each topic was researched, checked by a skeptic who re-fetched the sources, and compiled with every correction applied.
 - `build-data.py`: picks the facts the page uses and writes `src/data.js` with status and sources.
 - `research/reviews/`: the review records (see Review history).
 
@@ -71,6 +74,14 @@ The usual run is `python build-data.py && node build.js && node test/shots.js &&
 - Final checks on this build: `test/calibration.js` all 117 checks pass; `test/sweep.js` 5,184 setting combinations with no problems (about 5 min); a browser sweep of 1,512 page states across every tab with no broken text, slow renders or page errors.
 
 ## Known limits
+
+- Ground shaking (Walk tab and the restraint checks) comes from an elastic-ground model fed with force pulses. It matched one drop test within about 2× to 60 m and elephant footfalls roughly; footsteps themselves were never measured this way, so read it as uncertain by about 3–5×, more past 60 m (where it falls no faster than the measured r^-1.3). The ground constants for each surface are our picks. Lake ice and a steel deck are not modelled. Indoors, floors and walls can make shaking 2–4× stronger.
+- Their gait is people's gait scaled to their size (equal Froude number) from an estimated hip height (0.45 of height); their real gait, and how Rex's paws and Ollie's boots cushion a step, are not canon. The soft-footed factor (0.31 of an ordinary heel strike) is an estimate.
+- Footprints in sand are scaled from one measured elephant print. The Weight tab's sinking rule for standing (bearing growing with depth, D = (p − q₀)/(ρ g N_q)) overpredicts that elephant's print about tenfold; it is unchanged here, but the Walk tab doesn't use it.
+- Thresholds: rattling and losing one's footing have no standard; ours are estimates (1 mm/s; 1 g up and down at the step's frequency). 7.6 and 12.7 mm/s are safe limits for plaster, not the point where cracks start.
+- Effort and the courtesy ceiling check five hazards near him (a sonic boom, an air blast over 100 Pa, ground shaking over 12.7 mm/s, ground breaking under him, a crushed object). An air blast counts only when something moves past Mach 1. Running steps (Sprint) are not checked for ground shaking. The two-player tests share one effort, clamped to what they need to stand and walk.
+- The passenger limits are ride-design limits for seated, supported people (worst axis); nobody has measured them for someone held in hands. A thrown person's landing is reported as a fall height, with no injury threshold.
+- Growth: the gradual-growth limits (100 Pa, 0.25 m/s) are borrowed from blasting and robot safety; the instant-growth timescale and the blast range are estimates; instant growth from the soles would throw him into the air unless he is bolted down. Two canon questions are open for the owners (see STATUS.md).
 
 - Real-muscle speeds follow the Hill curve with a single-muscle shape factor. Whole limbs are flatter, so real-muscle results are a model, not a measurement.
 - The body mass is set by ruling (3,007 kg each). Rex's tail share (about 307 kg) is an estimate from one picture, and the picture alone measured about 12% less body; side views will show whether the bodies are that much deeper. Dinosaur-style air sacs could make Rex about 7% lighter at the same size.

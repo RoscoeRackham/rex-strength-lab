@@ -26,6 +26,11 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## Waiting on
 
+- Owners (canon questions from the presence build; the page labels both as open):
+  - Instant growth: does he grow from his soles (then the push that lifts his middle would throw him into the air unless he is bolted down) or about his middle (then his feet are driven into the ground)? The page assumes the soles.
+  - Runaway growth: are the side effects of growth (air pushed back, his own gravity) paid from the energy they absorbed or from the endless store? Only the first makes the runaway loop add anything; the page shows the loop ratio either way.
+  - Rex's and Ollie's gait (heel-first, like people, is assumed) and hip height (0.45 of height, measured from the turnarounds) are not canon.
+- Owner: the Weight tab's sinking rule for standing overpredicts a measured elephant footprint about tenfold (found by the presence research); left unchanged, decide whether to revise it.
 - Owner: confirm the new canon (restraint, absorption, growth) in the pull request above, then build `BRIEF-presence.md` in a fresh cloud session.
 - Owner: republish all three live pages from `main` (the mass correction changed all three).
 - Owner review of Build Comparison design decisions listed in `build-comparison/data/NOTES.md` ("Design decisions to review"): the edge marking, the palette change, the stop edges, Thor's and the Thing's treatment, the group colours' contrast, and figures drawn with their arms at their rest angle. (The meatball sentence is now reworded in the brief.)
