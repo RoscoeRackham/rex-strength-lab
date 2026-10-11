@@ -10,7 +10,7 @@ A build comparison chart that measures "muscle level" irrespective of height. It
 
 - `build-calculator/` has 55 builds (ANSUR II percentiles, NHANES adults, natural athletes, bodybuilders, strongmen, 21 comic characters, Rex and Ollie). Each has a height, a weight and seven girths, every value with a status and sources. `src/calc.js` already computes FFMI, with Kouri's height normalisation applied only between 1.55 and 2.05 m.
 - `build-calculator/data/ansur2/` has the ANSUR II CSVs: about 6,000 soldiers with 90-odd measurements each. These include landmark heights (acromial, chest, waist, crotch, knee, ankle), breadths (biacromial, bideltoid, chest, waist, hip) and depths (chest, waist, buttock). These can draw a body outline at any height from data alone.
-- `rex-strength-lab/research/reviews/body-estimate-from-picture.json` and `history/scratchpad/mass/` (branch `session-transcript`) show how Rex and Ollie were measured from their picture: ellipse slices, with depth-to-width ratios taken from ANSUR II.
+- `rex-strength-lab/research/reviews/body-estimate-from-picture.json` and `history/scratchpad/mass/` show how Rex and Ollie were measured from their picture: ellipse slices, with depth-to-width ratios taken from ANSUR II.
 
 ## Problems to solve, not assume away
 
