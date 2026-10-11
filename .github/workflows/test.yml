@@ -1,4 +1,4 @@
-# Rebuild both pages, run every test, and check the committed builds are current.
+# Rebuild every page, run every test, and check the committed builds are current.
 name: test
 
 on:
@@ -29,6 +29,9 @@ jobs:
       - name: Build Calculator - build
         working-directory: build-calculator
         run: node build.js
+      - name: Build Comparison - build
+        working-directory: build-comparison
+        run: node build.js
       - name: Committed builds match the sources
         run: |
           git diff --exit-code --stat -- rex-strength-lab/src/data.js '*/dist/index.html' \
@@ -45,6 +48,15 @@ jobs:
         run: node test/test.js
       - name: Build Calculator - page screenshots
         working-directory: build-calculator
+        run: node test/shots.js
+      - name: Build Comparison - model, figure and measuring-tool tests
+        working-directory: build-comparison
+        run: node test/test.js
+      - name: Build Comparison - measuring tool on duo.jpg
+        working-directory: build-comparison
+        run: node test/duo.js
+      - name: Build Comparison - page screenshots
+        working-directory: build-comparison
         run: node test/shots.js
 
       - uses: actions/upload-artifact@v4

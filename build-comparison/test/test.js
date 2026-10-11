@@ -165,7 +165,7 @@ test('the tool measures a figure of known volume to within 0.5%, and its girths 
   const H = 1.8, s = synth(H);
   for (const lines of [false, true]) {
     const img = Fig.renderSheet({ front: s.front, side: s.side }, H, lines ? s.levels : null, { figurePx: 2000 });
-    const r = M.measureSheet(img, { heightM: H, heightRef: 'top', armK: 1 });
+    const r = M.measureSheet(img, { heightM: H, heightRef: 'top', armK: 1, shape: false });
     assert.ok(r.ok, 'sheet accepted: ' + r.errors.join('; '));
     near(r.volume_m3.value / s.V, 1, 0.005, (lines ? 'with' : 'without') + ' guide lines: volume ratio');
     near(r.girths.chest.value_m / s.chest, 1, 0.01, 'chest');
@@ -173,6 +173,21 @@ test('the tool measures a figure of known volume to within 0.5%, and its girths 
     near(r.girths.arm_flexed.value_m / s.arm, 1, 0.02, 'arm');
     if (lines) { assert.strictEqual(r.guideLines.length, 6, 'five guide lines and the ground'); assert.strictEqual(r.landmarkSource, 'guide lines on the sheet'); }
   }
+});
+
+test("the tool's trunk shape factors are ANSUR II's tape-to-ellipse ratios", () => {
+  near(M.TRUNK_SHAPE.chest, outline.sections.chest.girth_over_ellipse.mean, 0.0005);
+  near(M.TRUNK_SHAPE.waist, outline.sections.waist.girth_over_ellipse.mean, 0.0005);
+});
+
+test('on a sheet drawn from the ANSUR II median man, the tool gives back his chest and waist tapes within 3%', () => {
+  const { r: rr, g } = girthsOf('ansur2_m_p50');
+  const f = Fig.human(outline, rr.height.value, g, {}, { buttockFit: BC.FRUSTUM.M.buttock, armDeg: 35 });
+  const y = f.dims.levels;
+  const img = Fig.renderSheet({ front: f.front, side: f.side }, rr.height.value, { shoulder: y.acromion, chest: y.chest, waist: y.waist, crotch: y.crotch, knee: y.knee }, { figurePx: 1600 });
+  const r = M.measureSheet(img, { heightM: rr.height.value, heightRef: 'top' });
+  near(r.girths.chest.value_m / g.chest, 1, 0.03, 'chest');
+  near(r.girths.waist.value_m / g.waist, 1, 0.03, 'waist');
 });
 
 test('the tool rejects a sheet whose views differ in height by more than 2%', () => {

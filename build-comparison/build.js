@@ -13,7 +13,17 @@ const json = (...p) => JSON.parse(rd(...p));
 
 const html = rd('src', 'app.html');
 const builds = json('..', 'build-calculator', 'data', 'builds.json');
-const comparison = json('data', 'comparison.json');
+// The chart's data: settings (body-fat classes, per-build choices, anchors, page text), research
+// facts, and the functional limits computed by tools/compute_limits.js.
+const settings = json('data', 'settings.json');
+const facts = fs.existsSync(path.join(root, 'data', 'facts.json')) ? json('data', 'facts.json').facts : {};
+const limits = fs.existsSync(path.join(root, 'data', 'limits.json')) ? json('data', 'limits.json') : null;
+// Facts as the page shows them: label, status, sources with a URL, and a short summary.
+const factsSlim = {};
+for (const [k, f] of Object.entries(facts)) {
+  factsSlim[k] = { label: f.label, status: f.status, topic: f.topic, sources: (f.sources || []).filter((s) => s.url && /^https?:/.test(s.url)), summary: f.summary || null };
+}
+const comparison = Object.assign({}, settings, { facts: factsSlim, limits });
 const outline = json('data', 'outline.json');
 const duo = json('data', 'duo-outlines.json');
 const validation = json('data', 'duo-validation.json');
@@ -54,4 +64,4 @@ const out = html
 
 fs.mkdirSync(path.join(root, 'dist'), { recursive: true });
 fs.writeFileSync(path.join(root, 'dist', 'index.html'), out);
-console.log('dist/index.html ' + (out.length / 1024).toFixed(0) + ' KB (' + Object.keys(comparison.builds).length + ' builds on the chart, ' + Object.keys(comparison.facts).length + ' facts)');
+console.log('dist/index.html ' + (out.length / 1024).toFixed(0) + ' KB (' + Object.keys(comparison.builds).length + ' builds on the chart, ' + Object.keys(factsSlim).length + ' facts' + (limits ? ', ' + limits.items.length + ' limits' : ', no limits yet') + ')');

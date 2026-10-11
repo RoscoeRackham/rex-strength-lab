@@ -1,0 +1,2947 @@
+{
+ "about": "Research facts for the Build Comparison, with the verifier's result per fact. Builds and their own sources are in build-calculator/data/builds.json.",
+ "facts": {
+  "nhanes_dxa_bodyfat_men_1999_2004": {
+   "label": "US men: DXA percent body fat percentiles by age (NHANES 1999-2004, NCHS Vital Health Stat 11(250))",
+   "status": "measured",
+   "values": {
+    "method": "DXA, Hologic QDR 4500A fan-beam, Discovery software v12.1",
+    "men_20plus_crude": {
+     "n": 6559,
+     "mean": 28.0,
+     "se": 0.1,
+     "p5": 17.4,
+     "p10": 19.5,
+     "p15": 21.4,
+     "p25": 24.1,
+     "p50": 28.0,
+     "p75": 32.1,
+     "p85": 34.3,
+     "p90": 35.9,
+     "p95": 38.0
+    },
+    "men_20plus_age_adjusted_mean": 28.1,
+    "men_20_39": {
+     "n": 2183,
+     "mean": 26.1,
+     "p5": 15.5,
+     "p10": 17.4,
+     "p15": 18.9,
+     "p25": 21.2,
+     "p50": 26.1,
+     "p75": 30.4,
+     "p85": 32.8,
+     "p90": 34.6,
+     "p95": 37.2
+    },
+    "men_40_59": {
+     "n": 2024,
+     "mean": 28.6,
+     "p5": 19.3,
+     "p25": 25.2,
+     "p50": 28.5,
+     "p75": 32.2,
+     "p95": 37.7
+    },
+    "men_60_79": {
+     "n": 1851,
+     "mean": 30.8,
+     "p5": 22.0,
+     "p50": 30.7,
+     "p95": 39.6
+    },
+    "unit": "percent of body mass"
+   },
+   "sources": [
+    {
+     "title": "Borrud LG, Flegal KM, Looker AC, Everhart JE, et al. Body composition data for individuals 8 years of age and older: U.S. population, 1999-2004. NCHS Vital Health Stat 11(250), 2010. Table 3 (PDF sha256 686bf1c5c0b3d4fb...)",
+     "url": "https://www.cdc.gov/nchs/data/series/sr_11/sr11_250.pdf"
+    }
+   ],
+   "notes": "Table 3, 'Total percentage body fat ... Male, All race and ethnicity': 'Age 20 years and older, crude ... 6,559 28.0 0.1 17.4 19.5 21.4 24.1 28.0 32.1 34.3 35.9 38.0'; '20-39 years ... 2,183 26.1 0.1 15.5 17.4 18.9 21.2 26.1 30.4 32.8 34.6 37.2'. Methods: people over 300 lb or taller than 6'5\" were not scanned ('physical limitations of the DXA table'). Missing or invalid scans were multiply imputed. 'Participant lean mass was decreased by 5% and an equivalent kilogram weight added to the fat mass', because the QDR 4500A was shown to underestimate fat (Schoeller et al.). The published %fat therefore already includes that correction. Weighted, nationally representative. Best primary source for 'everyday men'. Kelly, Wilson & Heymsfield 2009 (PLoS ONE, PMC2737140) uses the same NHANES DXA data. I fetched it, but its percentiles are in supplementary LMS files, so I used the NCHS tables instead.",
+   "topic": "fat",
+   "verify": null
+  },
+  "nhanes_dxa_bodyfat_men_2011_2018": {
+   "label": "US men aged 20-59: age-adjusted mean DXA body fat by race and ethnicity, NHANES 2011-18 (Liu et al. 2021, BMJ)",
+   "status": "measured",
+   "values": {
+    "method": "DXA (NHANES 2011-18), ages 20-59 only",
+    "n_both_sexes": 10864,
+    "men_age_adjusted_mean_pct": {
+     "hispanic": [
+      27.8,
+      28.6
+     ],
+     "nh_white": [
+      26.8,
+      27.9
+     ],
+     "nh_black": [
+      24.9,
+      25.5
+     ],
+     "nh_asian": [
+      25.5,
+      28.2
+     ],
+     "other": [
+      26.4,
+      28.3
+     ]
+    },
+    "overall_both_sexes_pct": [
+     32.6,
+     33.1
+    ],
+    "cycles": "2011-12, 2013-14, 2015-16, 2017-18 (ranges span the four cycles)"
+   },
+   "sources": [
+    {
+     "title": "Liu B, Du Y, Wu Y, Snetselaar LG, Wallace RB, Bao W. Trends in obesity and adiposity measures by race or ethnicity among adults in the United States 2011-18: population based study. BMJ 2021;372:n365, Table 3 (Europe PMC full text PMC7961695)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7961695/fullTextXML"
+    }
+   ],
+   "notes": "Table 3 'Trends in age adjusted mean body fat percentage ... (n=10 864)', Men: Hispanic 27.8, 28.0, 28.4, 28.6; Non-Hispanic white 27.1, 27.9, 26.8, 27.2; Non-Hispanic black 25.0, 25.0, 24.9, 25.5; Non-Hispanic Asian 25.5, 26.7, 26.8, 28.2. 'Body fat percentage was available among adults aged 20-59 years.' Overall body fat was stable over 2011-18. The paper also says values were 'much higher' than 1999-2004. The DXA-ineligible share was small (0.1%). Table 3 has no all-race men figure, and I did not fetch the appendix. This confirms that the 1999-2004 NCHS percentiles are not out of date for men (about 25-29% means).",
+   "topic": "fat",
+   "verify": null
+  },
+  "taylor2024_army_dxa_bodyfat": {
+   "label": "US Army active-duty men: DXA body fat in a representative sample (Taylor et al. 2024, USARIEM)",
+   "status": "measured",
+   "values": {
+    "method": "DXA, GE Lunar iDXA",
+    "cohort1_men_n": 1261,
+    "cohort1_height_cm": 176.3,
+    "height_sd": 7.1,
+    "cohort1_weight_kg": 85.9,
+    "weight_sd": 13.8,
+    "cohort1_BMI": 27.6,
+    "cohort1_bodyfat_dxa_pct": 24.3,
+    "bodyfat_dxa_sd": 6.3,
+    "cohort1_bodyfat_old_AR_tape_pct": 19.5,
+    "cohort1_fat_mass_kg": 21.5,
+    "cohort1_ffm_kg_as_tabled": 61.7,
+    "cohort2_men_n_from_race_counts": 753,
+    "cohort2_bodyfat_dxa_pct": 24.4,
+    "cohort2_sd": 6.9,
+    "male_1site_manual_equation_lb_in": "-27.05 + 2.06*abdomen_in - 0.12*weight_lb",
+    "male_1site_manual_RMSE_pct_points": 3.35,
+    "male_old_AR_RMSE": 5.89,
+    "male_old_AR_bias": -4.79,
+    "collection": "Oct 2021 - Dec 2022, four Army installations"
+   },
+   "sources": [
+    {
+     "title": "Taylor KM, Castellani MP, Bartlett PM, Oliver TE, McClung HL. Development and cross-validation of a circumference-based predictive equation to estimate body fat in an active population. Obes Sci Pract 2024;10(2):e747, Tables 1-4 (Europe PMC full text PMC11026907)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11026907/fullTextXML"
+    }
+   ],
+   "notes": "Abstract: 'Body size and composition were evaluated in a representatively sampled cohort of 1904 active-duty Soldiers (1261 Males, 643 Females), using dual-energy X-ray absorptiometry'. Table 1, Men, Cohort 1: '% Body fatDXA 24.3 ± 6.3'; '% Body fatCIRC 19.5 ± 6.3' (the old AR 600-9 tape equation). Sampling was 'similar to those utilized in NHANES', with minorities oversampled. Cadets were excluded. The tabled FFM of 61.7 kg plus 21.5 kg fat is 83.2 kg, against a mean weight of 85.9 kg, so the 'fat-free mass' column probably excludes bone mineral (about 3 kg); treat it with care. Table 2 lists the male one-site manual equation (no height) as intercept -27.05, abdomen 2.06, weight -0.12, in inches and pounds judging by its closeness to the official equation. In the RMSE and bias tables the female column comes before the male one, which I inferred: the second column's old-AR bias of -4.79 matches the men's Table 1 difference of 19.5 - 24.3 = -4.8. This is the best measured body-fat value for US soldiers.",
+   "topic": "fat",
+   "verify": null
+  },
+  "army_one_site_tape_equation_2023": {
+   "label": "US Army one-site (navel waist) body-fat equation, Army Directive 2023-11 (as published in an official Army installation summary)",
+   "status": "official",
+   "values": {
+    "men": "%BF = -26.97 - 0.12*weight_lb + 1.99*abdomen_in",
+    "women": "%BF = -9.15 - 0.015*weight_lb + 1.27*abdomen_in",
+    "site": "abdomen at the navel",
+    "worked_example_men": {
+     "abdomen_in": 35,
+     "weight_lb": 210,
+     "result_pct": 17.48
+    },
+    "sole_authorized_tape_method_from": "2024-06-08",
+    "SI_form_men": "%BF = -26.97 - 0.2646*weight_kg + 0.7835*abdomen_cm"
+   },
+   "sources": [
+    {
+     "title": "US Army Training Center & Fort Jackson Inspector General, 'IG Update 23-4: Guidance on Changes to Army Directive 2023-11 (Army Body Fat Assessment for the Army Body Composition Program)', FY23 Q4 (PDF sha256 236b7ad9...)",
+     "url": "https://home.army.mil/jackson/download_file/view/84278f84-10a3-4177-a3bc-6d2f08ae7866/1016"
+    },
+    {
+     "title": "Army.mil, 'Evolving body composition standards in the U.S. Army: a science-informed approach' (background; 2021 USARIEM study of 2,690 soldiers)",
+     "url": "https://www.army.mil/article/273959/evolving_body_composition_standards_in_the_u_s_army_a_science_informed_approach"
+    }
+   ],
+   "notes": "The PDF reads: 'The equation for men is: % body fat = -26.97 - (0.12 x body weight in pounds) + (1.99 x abdomen circumference in inches)', with the worked example 'Abdomen = 35 inches; Weight = 210 pounds ... = -52.17 + 69.65 = 17 % (actual number is 17.48%...)'. It also says 'Beginning 8 June 2024, one-site tape test method is the only authorized method.' I did not fetch AD 2023-11 itself. This is an official Army installation summary of it. The Army.mil article says the change came from a 2021 USARIEM study of 2,690 soldiers compared against DXA. Taylor 2024 (separate key) gives a nearly identical one-site equation with an RMSE of about 3.4 percentage points in men.",
+   "topic": "fat",
+   "verify": null
+  },
+  "ansur2_men_bodyfat_from_army_equation": {
+   "label": "ANSUR II men (n = 4,082): body fat estimated with the Army one-site equation from measured navel waist and weight, with the resulting FFMI and height-independent score",
+   "status": "estimate",
+   "values": {
+    "n": 4082,
+    "equation": "AD 2023-11 men",
+    "bodyfat_pct": {
+     "mean": 24.1,
+     "sd": 5.7,
+     "p1": 13.1,
+     "p5": 15.2,
+     "p10": 16.6,
+     "p25": 19.7,
+     "p50": 24.0,
+     "p75": 28.1,
+     "p90": 31.4,
+     "p95": 33.5,
+     "p99": 37.5,
+     "min": 8.2,
+     "max": 48.6
+    },
+    "bodyfat_pct_with_Taylor2024_1site": {
+     "mean": 26.6,
+     "p5": 17.3,
+     "p50": 26.6,
+     "p95": 36.5
+    },
+    "FFMI_kg_m2": {
+     "p5": 17.5,
+     "p50": 20.8,
+     "p95": 24.3,
+     "p99": 25.8,
+     "max": 28.6
+    },
+    "S_1p8FFM_over_H3": {
+     "p5": 17.8,
+     "p50": 21.4,
+     "p95": 25.2,
+     "p99": 26.9,
+     "max": 30.4
+    },
+    "inputs": "weightkg/10 -> lb; waistcircumference (mm, at omphalion) -> in; stature mm"
+   },
+   "sources": [
+    {
+     "title": "ANSUR II male public working database (repo copy, build-calculator/data/ansur2/ANSUR_II_MALE_Public.csv; provenance in existing key ansur2_dataset)",
+     "url": "file:///home/user/rex-strength-lab/build-calculator/data/ansur2/ANSUR_II_MALE_Public.csv"
+    },
+    {
+     "title": "Fort Jackson IG Update 23-4 (AD 2023-11 one-site equation)",
+     "url": "https://home.army.mil/jackson/download_file/view/84278f84-10a3-4177-a3bc-6d2f08ae7866/1016"
+    },
+    {
+     "title": "Taylor et al. 2024 Obes Sci Pract (PMC11026907)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11026907/fullTextXML"
+    }
+   ],
+   "notes": "ANSUR II has no body-composition data (existing builds say 'unknown'). I computed these with the official equation, using ANSUR II's navel-level waist (same site as the Army abdomen tape) and scale weight. Script: scratchpad research/bodyfat/scripts/ansur_bf.py. Check: the equation's ANSUR II mean (24.1%) matches the measured DXA mean of 2021-22 soldiers (24.3%, Taylor 2024), though the equation was fitted to soldiers, so this is consistency, not proof. Taylor's own one-site coefficients give about 2.5 points more (mean 26.6%), so the method is uncertain by about that much. Individual error is about 3.4-4 points RMSE. The regression narrows the spread a little (predicted SD 5.7 vs measured 6.3). ANSUR II was measured in 2010-12 and the equation was fitted to 2021-22 soldiers. For the chart, the median ANSUR II man scores S ≈ 21 at these body fats. The brief's rough 'Army median about 24' implies about 15% fat, which is lower than measured soldiers.",
+   "topic": "fat",
+   "verify": null
+  },
+  "barakat2022_natural_pro_peak_week_dxa": {
+   "label": "Barakat et al. 2022: self-described professional natural bodybuilder, DXA each day of peak week to competition morning",
+   "status": "measured",
+   "values": {
+    "n": 1,
+    "age_y": 29,
+    "method": "DXA (also 7-site ultrasound skinfold JP-7)",
+    "bodyfat_dxa_pct": {
+     "8_days_out": 5.5,
+     "6_days_out": 6.0,
+     "3_days_out": 6.2,
+     "2_days_out": 5.6,
+     "1_day_out": 5.4,
+     "competition_day": 6.3
+    },
+    "competition_day_mass_kg": 73.55,
+    "competition_day_ffm_kg": 68.91,
+    "competition_day_fat_kg": 4.63,
+    "ultrasound_jp7_bodyfat_competition_day_pct": 3.6,
+    "height": "measured but not found in the text I parsed (unknown)"
+   },
+   "sources": [
+    {
+     "title": "Barakat C, Escalante G, Stevenson SW, Bradshaw JT, Barsuhn A, Tinsley GM, Walters J. Can Bodybuilding Peak Week Manipulations Favorably Affect Muscle Size, Subcutaneous Thickness, and Related Body Composition Variables? A Case Study. Sports 2022;10(7):106, Table 2 (Europe PMC full text PMC9321665)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC9321665/fullTextXML"
+    }
+   ],
+   "notes": "Table 2 'Body Composition', DEXA: 'Competition Day | 73.55 | 6.3 | 4.63 | 68.91 | 2.591 | 66.32 | 3.6'. The subject is the first author: 'a Middle Eastern-American (29 years old ...) professional natural bodybuilder'. He placed first in Open Middleweight Bodybuilding and Classic Physique A (October 2021). Drug-free status is self-described, and the text I read does not say whether the show was tested. Daily DXA %fat moved by up to 0.9 points within 8 days as glycogen and water changed, which shows DXA noise at stage leanness. Ultrasound skinfolds (JP-7) read about 2-3 points lower than DXA.",
+   "topic": "fat",
+   "verify": null
+  },
+  "kistler2014_natural_bb_dxa": {
+   "label": "Kistler et al. 2014: natural bodybuilder, 26-week prep for a pro-qualifier, DXA monthly",
+   "status": "measured",
+   "values": {
+    "n": 1,
+    "method": "DXA",
+    "bodyfat_start_pct": 17.5,
+    "bodyfat_end_pct": 7.4,
+    "mass_start_kg": 88.6,
+    "mass_end_kg": 73.3,
+    "weeks": 26
+   },
+   "sources": [
+    {
+     "title": "Kistler BM, Fitschen PJ, Ranadive SM, Fernhall B, Wilund KR. Case study: Natural bodybuilding contest preparation. Int J Sport Nutr Exerc Metab 2014;24(6):694-700 (PMID 24901578, abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:24901578%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Abstract: 'body composition was measured monthly by DXA ... Body weight (88.6 to 73.3 Kg ...) and percent body fat (17.5 to 7.4%) were reduced during preparation.' The 7.4% is the last monthly scan of prep, not necessarily contest day. The 17.5% start value is a useful natural off-season figure. Abstract only; height not given.",
+   "topic": "fat",
+   "verify": null
+  },
+  "schoenfeld2020_natural_bb_case": {
+   "label": "Schoenfeld et al. 2020: high-level amateur natural bodybuilder over 4 competitions, about 5% fat just before competing",
+   "status": "measured",
+   "values": {
+    "n": 1,
+    "bodyfat_precontest_pct_approx": 5,
+    "methods": "multifrequency BIA and skinfolds (the abstract does not say which gave ~5%)"
+   },
+   "sources": [
+    {
+     "title": "Schoenfeld BJ, Alto A, Grgic J, et al. Alterations in body composition, resting metabolic rate, muscular strength, and eating behavior in response to natural bodybuilding competition preparation: a case study. J Strength Cond Res 2020;34(11):3124-3138 (PMID 33105363, abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:33105363%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Abstract: 'Body fat was reduced to very low levels (~5%) immediately before competition, but this corresponded with a loss of lean mass.' A 'high-level amateur natural male bodybuilder'. Field methods (BIA, skinfolds) tend to read low at this leanness. Abstract only.",
+   "topic": "fat",
+   "verify": null
+  },
+  "robinson2015_natural_bb_skinfold": {
+   "label": "Robinson et al. 2015: 21-year-old natural amateur bodybuilder, 14-week prep, skinfolds",
+   "status": "measured",
+   "values": {
+    "n": 1,
+    "height_m": 1.785,
+    "start_mass_kg": 86.0,
+    "start_bodyfat_pct": 14,
+    "start_fat_kg": 11.7,
+    "start_ffm_kg": 74.3,
+    "mass_loss_kg": 11.7,
+    "fat_loss_kg": 6.7,
+    "ffm_loss_kg": 5.0,
+    "bodyfat_drop_points": 6.8,
+    "end_bodyfat_pct_derived": 7.2,
+    "start_FFMI_derived": 23.3,
+    "end_FFMI_derived": 21.7
+   },
+   "sources": [
+    {
+     "title": "Robinson SL, Lambeth-Mansell A, Gillibrand G, Smith-Ryan A, Bannock L. A nutrition and conditioning intervention for natural bodybuilding contest preparation: case study. JISSN 2015;12:20, Table 2 and text (Europe PMC full text PMC4422265)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4422265/fullTextXML"
+    }
+   ],
+   "notes": "Table 2 baseline: 'Height (cm) 178.5; Body mass (kg) 86.0; Body fat (%) 14; Fat mass (kg) 11.7; Fat-free mass (kg) 74.3'. Text: 'a reduction of 6.7 kg's (or 6.8% body fat or 33 mm using sum of 8 skinfolds) and 5.0 kg's, in fat mass and FFM'. Body fat came from skinfolds with sex- and race-specific equations (ISAK protocol). End %fat (about 7.2%) and the FFMIs are my derivations. Skinfold method, lower quality than DXA or 4C.",
+   "topic": "fat",
+   "verify": null
+  },
+  "mitchell2018_bodyfat_pct_derived": {
+   "label": "Mitchell et al. 2018: percent fat of 9 natural bodybuilders derived from their DXA fat and lean masses (relies on existing key mitchell2018_natural_bodybuilders)",
+   "status": "derived",
+   "values": {
+    "PRE16_fat_over_fat_plus_lean_pct": 10.9,
+    "PRE1_fat_over_fat_plus_lean_pct": 7.0,
+    "PRE16_with_assumed_BMC_3p5kg_pct": 10.5,
+    "PRE1_with_assumed_BMC_3p5kg_pct": 6.6,
+    "inputs": {
+     "fat_PRE16_kg": 8.8,
+     "fat_PRE1_kg": 5.3,
+     "lean_PRE8_kg": 71.8,
+     "lean_PRE1_kg": 70.9
+    }
+   },
+   "sources": [
+    {
+     "title": "Mitchell L et al. Physiological implications of preparing for a natural male bodybuilding competition. Eur J Sport Sci 2018;18(5):619-629 (PMID 29490578, abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:29490578%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Abstract: 'Fat mass (FM) was significantly reduced from PRE16 to PRE1 (8.8 ± 3.1 vs. 5.3 ± 2.4 kg ...). There was a small decrease in lean mass (LM) from PRE8 to PRE1 (71.8 ± 9.1 vs. 70.9 ± 9.1 kg'. Total mass and BMC are not in the abstract, so %fat is approximate. Fat over fat plus lean is an upper bound; adding an assumed 3.5 kg of bone mineral gives the lower figure. Ratio of group means, not mean of ratios. Result: about 7% one week out and about 10-11% 16 weeks out.",
+   "topic": "fat",
+   "verify": null
+  },
+  "rosaci2026_ifbb_pro_case": {
+   "label": "Rosaci, Biban & Bartolomei 2026: IFBB Pro League ('Mr. Olympia competitor') bodybuilder, off-season and 10 days pre-contest, skinfold body fat",
+   "status": "measured",
+   "values": {
+    "n": 1,
+    "age_y": 38,
+    "height_m": 1.76,
+    "bulking_mass_kg": 128.7,
+    "bulking_bodyfat_pct": 6.1,
+    "bulking_ffm_kg": 120.8,
+    "cutting_mass_kg": 122.3,
+    "cutting_bodyfat_pct": 5.9,
+    "cutting_ffm_kg": 115.1,
+    "sum_3_skinfolds_mm": [
+     13.9,
+     13.2
+    ],
+    "flexed_arm_cm": [
+     52.0,
+     51.8
+    ],
+    "thigh_cm": [
+     75.5,
+     73.4
+    ],
+    "calf_cm": [
+     44.5,
+     44.4
+    ],
+    "method": "3-site skinfold, Evans et al. 2005 athlete equation (4C-derived)",
+    "FFMI_derived": {
+     "bulking": 39.0,
+     "cutting": 37.2
+    },
+    "S_derived": {
+     "bulking": 39.9,
+     "cutting": 38.0
+    }
+   },
+   "sources": [
+    {
+     "title": "Rosaci G, Biban S, Bartolomei S. Beyond the Limits of Human Muscle Hypertrophy: A Case Study of a Mr. Olympia Competitor Bodybuilder. J Strength Cond Res 2026;40(10):1253-1258, Table 3 and methods (Europe PMC full text PMC13592830)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13592830/fullTextXML"
+    }
+   ],
+   "notes": "Table 3: 'Body mass (kg) 128.7 | 122.3 ... % Body fat (%) 6.1 | 5.9; Fat-free mass (kg) 120.8 | 115.1' (BP = bulking/off-season, CT = cutting). Cutting measurement: 'June 11th, 2025 ... 10 days before the 2025 IFBB Huanji China Pro League competition'. Drug status: 'The eventual use of performance enhancing drugs by the athlete, competing in IFBB Pro League contests, in which antidoping tests are not performed, was not considered'. Equation: '% body fat = 8.997 + 0.24658 x (SUM 3 SKF) - 6.343 x (sex) - 1.998 x (race)'. For a white man it cannot go below 2.65% even at zero skinfold. A 6.1% off-season reading at 128.7 kg is implausibly low for this method and probably an underestimate. I treat the FFM, and so the FFMI of about 37-39, as upper bounds. Single subject. Best published body composition of a current top-level (presumably enhanced) pro that I found. The authors also cite Moreno et al. 2024 (Am J Hum Biol, PMID 37563889) for an Open bodybuilder of 131.4 kg at 12.2% fat. I fetched only Moreno's abstract, which gives ultrasound-estimated skeletal muscle (60.4 kg at most) and neither number, so the 12.2% is second-hand.",
+   "topic": "fat",
+   "verify": null
+  },
+  "giakoni2025_mr_universe_bia": {
+   "label": "Giakoni-Ramirez et al. 2025: 18 male bodybuilders measured at the IFBB Mr. Universe (Santiago, Chile) after official weigh-in, BIA",
+   "status": "measured",
+   "values": {
+    "n_men": 18,
+    "age_y": 32.1,
+    "method": "multifrequency BIA, InBody 970",
+    "mass_kg": 78.0,
+    "mass_sd": 6.5,
+    "height_cm": 171.3,
+    "height_sd": 3.7,
+    "BMI": 26.5,
+    "fat_mass_pct": 8.9,
+    "fat_mass_pct_sd": 1.8,
+    "fat_mass_kg": 7.0,
+    "ffm_kg": 70.8,
+    "ffm_sd": 5.8,
+    "FFMI_derived_from_means": 24.1
+   },
+   "sources": [
+    {
+     "title": "Giakoni-Ramirez F, Munoz-Strale C, de Souza-Lima J, et al. Hydration Strategies and Body Composition Differences in Male and Female Elite Bodybuilders During Competition. Nutrients 2025;17(9):1554, Table 2 (Europe PMC full text PMC12073694)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12073694/fullTextXML"
+    }
+   ],
+   "notes": "Table 2, Males (n = 18): 'Weight (kg) 78.0 6.5; Height (cm) 171.3 3.7; Fat Mass (%) 8.9 1.8; Fat Free Mass (kg) 70.8 5.8'. Measured 'during the Mr. Universe Championship held in Santiago, Chile' after athletes had 'successfully passed the official weigh-in'. This is an IFBB amateur event. Drug status and testing are not stated. Hand-to-foot BIA in dehydrated, glycogen-loaded, very lean athletes is not reliable (see Raymond 2018: multifrequency BIA underestimated DXA %fat by 3.0 ± 3.8 points in football players). Use as a soft upper reference for stage leanness.",
+   "topic": "fat",
+   "verify": null
+  },
+  "baggish2017_aas_users_ffmi": {
+   "label": "Baggish et al. 2017 (Pope group): normalized FFMI of 86 long-term AAS-using weightlifters vs 54 non-using weightlifters",
+   "status": "measured",
+   "values": {
+    "users_n": 86,
+    "users_on_drug_n": 58,
+    "users_off_drug_n": 28,
+    "nonusers_n": 54,
+    "users_FFMI_median": 26,
+    "users_FFMI_IQR": [
+     24,
+     28
+    ],
+    "nonusers_FFMI_median": 23,
+    "nonusers_FFMI_IQR": [
+     21,
+     25
+    ],
+    "users_BMI_median": 31,
+    "users_BMI_IQR": [
+     29,
+     33
+    ],
+    "nonusers_BMI_median": 29,
+    "height_m_median": 1.8,
+    "FFMI_formula": "W(1-BF)/H^2 + 6.1(1.8-H)",
+    "min_lifetime_AAS_years": 2
+   },
+   "sources": [
+    {
+     "title": "Baggish AL, Weiner RB, Kanayama G, Hudson JI, Lu MT, Hoffmann U, Pope HG. Cardiovascular Toxicity of Illicit Anabolic-Androgenic Steroid Use. Circulation 2017;135(21):1991-2002, Table 1 (NCBI PMC XML, PMC5614517)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=5614517"
+    }
+   ],
+   "notes": "Table 1 (medians, IQR): 'Body mass index 31 (29-33) 29 (27-31); Fat-free mass index 26 (24-28) 23 (21-25)'. Footnote: 'The fat-free mass index is calculated as: (W(1-BF)/H^2) + 6.1(1.8-H)', so it is height-normalized with the 6.1 constant (see existing key ffmi_height_correction). Users had at least 2 years of cumulative AAS use; drug-test and hair-test screening was used. I did not find the body-fat method in the fetched text; the group has used skinfolds before, but that is not confirmed here. Medians, not maxima: a quarter of long-term users are below FFMI 24, so many enhanced lifters are not visibly beyond natural levels. Exclusion rule from the same paper: 'We also excluded men denying AAS use, but exhibiting a fat-free mass index greater than 26 kg/m2 together with body fat below 10%'.",
+   "topic": "fat",
+   "verify": null
+  },
+  "hudson2020_aas_users_ffmi": {
+   "label": "Hudson et al. 2020 (Pope group, same cohort): normalized FFMI of current vs past AAS users vs non-users",
+   "status": "measured",
+   "values": {
+    "all_users_n": 85,
+    "current_users_n": 57,
+    "past_users_n": 28,
+    "nonusers_n": 52,
+    "FFMI_median_IQR": {
+     "all_users": [
+      26,
+      24,
+      28
+     ],
+     "current_users": [
+      27,
+      25,
+      29
+     ],
+     "past_users_as_printed": [
+      24,
+      25,
+      28
+     ],
+     "nonusers": [
+      23,
+      21,
+      25
+     ]
+    },
+    "weight_kg_median": {
+     "all_users": 97,
+     "current": 95,
+     "past": 98,
+     "nonusers": 91
+    },
+    "age_y_median_users": 42
+   },
+   "sources": [
+    {
+     "title": "Hudson JI, Kanayama G, Pope HG, et al. Glomerular Filtration Rate and Supraphysiologic-Dose Anabolic-Androgenic Steroid Use: A Cross-sectional Cohort Study. Am J Kidney Dis 2020;76(2):296-299, Table 1 (NCBI PMC XML, PMC7744117)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=7744117"
+    }
+   ],
+   "notes": "Table 1: 'Fat-free mass index 26 (24-28) 27 (25-29) 24 (25-28) 23 (21-25)' for all users (N = 85), current (N = 57), former (N = 28) and non-users (N = 52). The past-user cell '24 (25-28)' has a median outside its IQR, a typo in the source, so do not use it. Same FFMI formula (6.1 normalization). Current users' middle half spans 25-29, which overlaps the natural tail (Trexler 2017 football P97.5 = 28.1, existing key ffmi_athletes).",
+   "topic": "fat",
+   "verify": null
+  },
+  "bulut2024_aas_users_lean_mass_index": {
+   "label": "Bulut et al. 2024 (Copenhagen): lean mass index and body fat in current and former AAS users vs strength-training controls",
+   "status": "measured",
+   "values": {
+    "controls_n": 27,
+    "current_n": 32,
+    "former_n": 31,
+    "lean_mass_index_kg_m2": {
+     "controls": [
+      20,
+      2
+     ],
+     "current": [
+      23,
+      2
+     ],
+     "former": [
+      21,
+      2
+     ]
+    },
+    "bodyfat_pct": {
+     "controls": [
+      22,
+      4
+     ],
+     "current": [
+      19,
+      3
+     ],
+     "former": [
+      24,
+      4
+     ]
+    },
+    "format": "mean, SD",
+    "age_y": {
+     "controls": 31.2,
+     "current": 38.3,
+     "former": 35.3
+    }
+   },
+   "sources": [
+    {
+     "title": "Bulut Y, Rasmussen JJ, Brandt-Jacobsen N, et al. Coronary Microvascular Dysfunction Years After Cessation of Anabolic Androgenic Steroid Use. JAMA Netw Open 2024;7(12):e2451013, Table 1 (Europe PMC full text PMC11650407)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11650407/fullTextXML"
+    }
+   ],
+   "notes": "Table 1: 'Lean mass index, mean (SD), kg/m2 20 (2) 23 (2) 21 (2)'; 'Body fat, mean (SD), % 22 (4) 19 (3) 24 (4)'. Text: 'Individuals with current use (mean [SD], 19% [3%]) demonstrated lower body fat compared with controls (22% [4%])'. Men in recreational strength training, AAS status self-reported, with blinded urine analysis (Cologne). The main text does not name the body-composition method. The same group used DXA in Rasmussen 2017 (PMID 28500659), but I could not confirm DXA for this paper. 'Lean mass index' is probably lean soft tissue over height squared, excluding bone, so it reads about 1 below FFMI. Rounded to whole numbers in the source.",
+   "topic": "fat",
+   "verify": null
+  },
+  "buhl2025_aas_users_bia": {
+   "label": "Buhl et al. 2025 (Denmark): body fat and BMI of current, previous and non-using male gym-goers, BIA",
+   "status": "measured",
+   "values": {
+    "method": "bioimpedance (SOZO)",
+    "men_total_n": 121,
+    "current_men_n_approx": 61,
+    "men_bodyfat_pct_median_IQR": {
+     "current": [
+      13.1,
+      10.4,
+      16.5
+     ],
+     "previous": [
+      17.8,
+      12.3,
+      21.2
+     ],
+     "nonusers": [
+      20.0,
+      16.3,
+      22.5
+     ]
+    },
+    "men_BMI_median_IQR": {
+     "current": [
+      29.4,
+      27.7,
+      32.2
+     ],
+     "previous": [
+      27.4,
+      25.6,
+      29.9
+     ],
+     "nonusers": [
+      26.5,
+      24.0,
+      28.3
+     ]
+    },
+    "men_height_m_median": {
+     "current": 1.81,
+     "previous": 1.79,
+     "nonusers": 1.83
+    },
+    "current_men_FFMI_approx_from_medians": 25.5
+   },
+   "sources": [
+    {
+     "title": "Buhl LF, Christensen LL, Hjortebjerg R, et al. Illicit Anabolic Steroid Use and Cardiovascular Status in Men and Women. JAMA Netw Open 2025;8(8):e2526636, Table 1 (Europe PMC full text PMC12397887)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12397887/fullTextXML"
+    }
+   ],
+   "notes": "Table 1, Men: 'Body fat percentage ... 13.1 (10.4-16.5) | 17.8 (12.3-21.2) | 20.0 (16.3-22.5)' (current, previous, non-users, median (IQR)); 'BMI ... 29.4 (27.7-32.2) ...'. Methods: 'body composition by bioimpedance (SOZO Digital Health Platform)'. Recruited from fitness centres March-December 2022. The current-user count of about 61 is inferred from a percentage row (15 = 24.6%). The FFMI of about 25.5 is a rough derivation from medians (29.4 x (1 - 0.131)), not a measured median. These are community users, not competitive bodybuilders.",
+   "topic": "fat",
+   "verify": null
+  },
+  "bhasin_testosterone_ffm_gains": {
+   "label": "Bhasin et al. 1996 and 2001: fat-free mass gained on supraphysiologic testosterone (randomized trials)",
+   "status": "measured",
+   "values": {
+    "bhasin1996": {
+     "n": 43,
+     "dose_mg_per_week": 600,
+     "weeks": 10,
+     "ffm_gain_testosterone_plus_exercise_kg": 6.1,
+     "se": 0.6,
+     "ffm_method": "underwater weighing"
+    },
+    "bhasin2001": {
+     "n": 61,
+     "age_y": "18-35",
+     "weeks": 20,
+     "design": "GnRH agonist + testosterone enanthate; no training",
+     "ffm_change_kg": {
+      "125mg": 3.4,
+      "300mg": 5.2,
+      "600mg": 7.9
+     },
+     "nadir_testosterone_ng_dl": {
+      "25mg": 253,
+      "50mg": 306,
+      "125mg": 542,
+      "300mg": 1345,
+      "600mg": 2370
+     },
+     "ffm_method": "DXA (per full paper; abstract says fat-free mass)"
+    },
+    "600mg_20wk_as_FFMI_at_1p80m_derived": 2.4
+   },
+   "sources": [
+    {
+     "title": "Bhasin S, Storer TW, Berman N, et al. The effects of supraphysiologic doses of testosterone on muscle size and strength in normal men. N Engl J Med 1996;335(1):1-7 (PMID 8637535, abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:8637535%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Bhasin S, Woodhouse L, Casaburi R, et al. Testosterone dose-response relationships in healthy young men. Am J Physiol Endocrinol Metab 2001;281(6):E1172-81 (PMID 11701431, abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:11701431%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "1996 abstract: 'The men received injections of 600 mg of testosterone enanthate or placebo weekly for 10 weeks ... fat-free mass was determined by underwater weighing ... The men assigned to testosterone and exercise had greater increases in fat-free mass (6.1 +/- 0.6 kg)'. 2001 abstract: 'Fat-free mass increased dose dependently in men receiving 125, 300, or 600 mg of testosterone weekly (change +3.4, 5.2, and 7.9 kg, respectively)'. I did not fetch the 2001 full text, so 'DXA' for that FFM is from memory of the paper and should be confirmed or dropped. These are short trials in men new to drugs; they show the size of early gains, not the long-term ceiling. The +2.4 FFMI is my conversion of 7.9 kg at 1.80 m.",
+   "topic": "fat",
+   "verify": null
+  },
+  "nandrolone_bodybuilders_trials": {
+   "label": "Hartgens 2001 / van Marken Lichtenbelt 2004: 8 weeks of nandrolone decanoate 200 mg/week in experienced bodybuilders (randomized, placebo-controlled)",
+   "status": "measured",
+   "values": {
+    "n": 16,
+    "dose_mg_per_week": 200,
+    "weeks": 8,
+    "ffm_gain_4C_kg": 2.6,
+    "body_mass_gain_kg": 2.2,
+    "dxa_bone_free_lean_kg": {
+     "before": 59.54,
+     "after": 63.06
+    },
+    "dxa_total_mass_kg": {
+     "before": 76.16,
+     "after": 78.73
+    },
+    "fat_mass_change": "no significant change"
+   },
+   "sources": [
+    {
+     "title": "van Marken Lichtenbelt WD, Hartgens F, Vollaard NB, Ebbing S, Kuipers H. Bodybuilders' body composition: effect of nandrolone decanoate. Med Sci Sports Exerc 2004;36(3):484-489 (PMID 15076791, abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:15076791%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Hartgens F, van Marken Lichtenbelt WD, Ebbing S, et al. Body composition and anthropometry in bodybuilders: regional changes due to nandrolone decanoate administration. Int J Sports Med 2001;22(3):235-241 (PMID 11354529, abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:11354529%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "2004 abstract: '16 experienced male bodybuilders ... received ND (200 mg.wk-1 ...) or placebo for 8 wk. Body composition was assessed using the four-component model ... ND administration resulted in significant increments of body mass (+2.2 kg), fat-free mass (FFM: +2.6 kg)'. 2001 abstract (DXA): 'bone-free lean mass (from 59.54 +/- 2.36 to 63.06 +/- 2.99 kg ...)'. 'Total fat mass and total percentage fat remained unaffected'. The 200 mg/week dose is low compared with real use (see kaufman2024_aas_doses).",
+   "topic": "fat",
+   "verify": null
+  },
+  "kaufman2024_aas_doses": {
+   "label": "Kaufman et al. 2024 (Pope group): self-reported AAS doses of long-term users",
+   "status": "reported",
+   "values": {
+    "users_n": 51,
+    "current_n": 32,
+    "past_n": 19,
+    "age_y": 47.5,
+    "avg_weekly_AAS_dose_mg": 973,
+    "avg_dose_sd": 627,
+    "max_weekly_AAS_dose_mg": 1978,
+    "max_dose_sd": 2130,
+    "cumulative_years": 10.0,
+    "years_sd": 6.0
+   },
+   "sources": [
+    {
+     "title": "Kaufman MJ, Hudson JI, Kanayama G, et al. A study of long-term supraphysiologic-dose anabolic-androgenic steroid use on cognitive function in middle-aged men. Am J Drug Alcohol Abuse 2024 (NCBI PMC XML, PMC11974399)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=11974399"
+    }
+   ],
+   "notes": "Table 1 (mean (SD)): 'Average weekly AAS dose, mg 973 (627); Maximum weekly AAS dose, mg 1978 (2130); Cumulative lifetime AAS use, yrs 10.0 (6.0)'. Self-reported. The same paper excluded a claimed non-user who 'displayed a fat-free mass index of 27.7 kg/m2 with a body fat of 7.5% - figures not plausibly attainable without use of performance-enhancing drugs'. That is the group's working natural boundary. Table 1 gives no FFMI.",
+   "topic": "fat",
+   "verify": null
+  },
+  "yu2014_doped_vs_clean_powerlifters": {
+   "label": "Yu et al. 2014: lean body mass of long-term AAS-using vs clean strength athletes",
+   "status": "measured",
+   "values": {
+    "doped_n": 10,
+    "clean_n": 7,
+    "years_of_use": "5-15",
+    "body_weight_kg": {
+     "doped": [
+      108,
+      17
+     ],
+     "clean": [
+      110,
+      13
+     ]
+    },
+    "lean_body_mass_kg": {
+     "doped": [
+      89.8,
+      8.2
+     ],
+     "clean": [
+      74.6,
+      6.8
+     ]
+    },
+    "lean_leg_mass_kg": {
+     "doped": [
+      28.6,
+      2.5
+     ],
+     "clean": [
+      25.5,
+      1.4
+     ]
+    },
+    "height": "not in table (unknown)"
+   },
+   "sources": [
+    {
+     "title": "Yu JG, Bonnerud P, Eriksson A, Stal PS, Tegner Y, Malm C. Effects of long term supplementation of anabolic androgen steroids on human skeletal muscle. PLoS One 2014;9(9):e105330, Table 2 (Europe PMC full text PMC4160183)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4160183/fullTextXML"
+    }
+   ],
+   "notes": "Table 2: 'Body weight (kg) 108±17 | 110±13; Lean body mass (kg) 89.8±8.2 | 74.6±6.8 (p = 0.06)'. Doping status was self-reported at interview. Same body weight, about 15 kg more lean mass in users, so users carried much less fat. Without heights no FFMI can be computed. Small sample. I did not confirm the scan method in the text I parsed.",
+   "topic": "fat",
+   "verify": null
+  },
+  "kondo1994_sumo_ffm_limit": {
+   "label": "Kondo et al. 1994: professional sumo wrestlers, hydrodensitometry; largest FFM 121.3 kg",
+   "status": "measured",
+   "values": {
+    "sumo_n": 37,
+    "bodybuilders_n": 14,
+    "untrained_n": 26,
+    "method": "hydrodensitometry",
+    "mean_bodyfat_pct": {
+     "sumo": 26.1,
+     "bodybuilders": 10.9,
+     "untrained": 12.1
+    },
+    "largest_wrestler": {
+     "ffm_kg": 121.3,
+     "height_m": 1.86,
+     "mass_kg": 181,
+     "bodyfat_pct": 33.0
+    },
+    "elite_ffm_per_stature_kg_cm": 0.61,
+    "highest_ffm_per_stature": 0.66,
+    "proposed_limit_ffm_per_stature": 0.7,
+    "largest_wrestler_FFMI_derived": 35.1,
+    "largest_wrestler_S_derived": 33.9
+   },
+   "sources": [
+    {
+     "title": "Kondo M, Abe T, Ikegawa S, Kawakami Y, Fukunaga T. Upper limit of fat-free mass in humans: A study on Japanese Sumo wrestlers. Am J Hum Biol 1994;6(5):613-618 (PMID 28548340, abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:28548340%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Abstract: 'Mean % fat of Sumo wrestlers, bodybuilders, and untrained subjects were, respectively, 26.1%, 10.9%, and 12.1% ... the largest one of 121.3 kg (stature: 186 cm, mass: 181 kg, %fat: 33.0%) ... It is suggested that a FFM/stature ratio of 0.7 kg/cm may be an upper limit in humans.' Two-compartment densitometry assumes a fixed FFM density, which is less accurate in very large or very muscular men (see existing key ffm_density_variation). Drug status of the 14 bodybuilders is not stated. Derived FFMI and S are mine. Abstract only.",
+   "topic": "fat",
+   "verify": null
+  },
+  "hattori1999_sumo_divisions": {
+   "label": "Hattori et al. 1999: 36 professional sumo wrestlers, densitometry; FFMI about 30 separates top-division (sekitori) wrestlers",
+   "status": "measured",
+   "values": {
+    "n": 36,
+    "method": "densitometry",
+    "mean_mass_kg": 117.1,
+    "mean_BMI": 36.5,
+    "mean_bodyfat_pct": 26.2,
+    "sekitori_FFMI_cutoff_approx": 30,
+    "mean_FFMI_derived_from_means": 26.9
+   },
+   "sources": [
+    {
+     "title": "Hattori K, Kondo M, Abe T, Tanaka S, Fukunaga T. Hierarchical differences in body composition of professional Sumo wrestlers. Ann Hum Biol 1999;26(2):179-184 (PMID 10195655, abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI:10.1080/030144699282886&resultType=core&format=json"
+    }
+   ],
+   "notes": "Abstract: 'The means of body weight, BMI and %fat for Sumo wrestlers were 117.1 kg, 36.5 and 26.2% ... The cut-off point of fat-free mass index which divided Sekitori wrestlers from other wrestlers is approximately 30'. The mean FFMI of 26.9 is my rough figure from group means (also listed in Martinez-Mireles 2025). Sumo wrestlers are not on the brief's group list, but they are the best-measured very heavy athletes and a useful 'strong and fat' reference.",
+   "topic": "fat",
+   "verify": null
+  },
+  "bosch2019_d1_football_linemen_dxa": {
+   "label": "Bosch et al. 2019: DXA body composition by position, 467 NCAA Division I football players (C-CAR)",
+   "status": "measured",
+   "values": {
+    "method": "DXA, GE Lunar iDXA/Prodigy, central reanalysis enCore 16.2",
+    "offensive_line": {
+     "n": 83,
+     "height_cm": 192.9,
+     "mass_kg": 135.5,
+     "bodyfat_pct": 30.8,
+     "sd": 4.2,
+     "range_pct": [
+      19,
+      41
+     ],
+     "lean_kg": 89.5
+    },
+    "defensive_line": {
+     "n": 53,
+     "height_cm": 189.1,
+     "mass_kg": 120.4,
+     "bodyfat_pct": 23.5,
+     "sd": 7.0,
+     "range_pct": [
+      12,
+      37
+     ],
+     "lean_kg": 87.6
+    },
+    "linebackers_bodyfat_pct": 18.8,
+    "defensive_backs_bodyfat_pct": 13.3,
+    "OL_lean_only_FFMI_derived": 24.1,
+    "DL_lean_only_FFMI_derived": 24.5
+   },
+   "sources": [
+    {
+     "title": "Bosch TA, Carbuhn AF, Stanforth PR, Oliver JM, Keller KA, Dengel DR. Body Composition and Bone Mineral Density of Division 1 Collegiate Football Players: A Consortium of College Athlete Research Study. J Strength Cond Res 2019;33(5):1339-1346, Tables 1-4 (NCBI PMC XML, PMC5591058)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=5591058"
+    }
+   ],
+   "notes": "'Positional Body Composition Characteristics': 'Percent Fat (%) | 30.8a (4.2) | 23.5b (7.0) ...' for OL (n = 83) and DL (n = 53). Ranges table: OL 19-41%, DL 12-37%. 'All players were scanned on GE Healthcare Lunar systems'. Preseason (June-August) scans. 'Lean mass' excludes bone mineral, so lean-only FFMI reads about 1 low. NFL professionals by DXA appear only in a secondary review (martinezmireles2025_review_strength_sports): OL 28.8%, DL 25.2%. The NFL primary (Dengel et al. 2014, PMID 24149760) abstract gives no position %fat. Drug status of college players is not verified.",
+   "topic": "fat",
+   "verify": null
+  },
+  "martinezmireles2025_review_strength_sports": {
+   "label": "Martinez-Mireles et al. 2025 scoping review: tabulated body fat of NFL linemen and heavyweight powerlifters (secondary)",
+   "status": "reported",
+   "values": {
+    "NFL_OL_DXA": {
+     "n": 65,
+     "height_m": 1.928,
+     "BMI": 37.9,
+     "bodyfat_pct": 28.8,
+     "FFMI": 27.0,
+     "primary": "Anding & Oliver 2015, GSSI Sports Science Exchange (Spanish)"
+    },
+    "NFL_DL_DXA": {
+     "n": 58,
+     "height_m": 1.909,
+     "BMI": 36.5,
+     "bodyfat_pct": 25.2,
+     "FFMI": 27.3
+    },
+    "NFL_OL_ADP": {
+     "n": 11,
+     "bodyfat_pct": 25.1,
+     "primary": "Kraemer et al. 2005"
+    },
+    "NFL_DL_ADP": {
+     "n": 7,
+     "bodyfat_pct": 18.5
+    },
+    "NZ_heavyweight_powerlifters_anthropometry": {
+     "n": 15,
+     "height_m": 1.747,
+     "BMI": 39.9,
+     "bodyfat_pct": 26.4,
+     "FFMI": 29.4,
+     "primary": "Keogh et al. 2007 (review mislabels as weightlifting)"
+    }
+   },
+   "sources": [
+    {
+     "title": "Martinez-Mireles X, et al. Defining Elite Zones: A Scoping Review of Body Physique and Body Fat in Elite Athletes. J Funct Morphol Kinesiol 2025;11(1):13, table 'Body composition in elite male athletes with indirect methods' (Europe PMC full text PMC12821704)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12821704/fullTextXML"
+    },
+    {
+     "title": "Keogh JW, Hume PA, Pearson SN, Mellow P. Anthropometric dimensions of male powerlifters of varying body mass. J Sports Sci 2007;25(12):1365-76 (PMID 17786689, abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI:10.1080/02640410601059630&resultType=core&format=json"
+    },
+    {
+     "title": "Kraemer WJ et al. Body size and composition of National Football League players. J Strength Cond Res 2005;19(3):485-9 (PMID 16095394, abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI:10.1519/18175.1&resultType=core&format=json"
+    }
+   ],
+   "notes": "Secondary compilation. Footnote: 'When BF% was not reported, values were estimated from the fat mass or lean mass ... using proportional calculations'. The row 'Weightlifting, national from New Zealand Category: heavy weight' cites Keogh 2007, whose abstract says 'Fifty-four male Oceania competitive powerlifters (9 lightweight, 30 middleweight, and 15 heavyweight)'. The 26.4% is therefore heavyweight powerlifters, measured by anthropometric fractionation rather than a lab method; the review's label is wrong. Its 'age 33.00' for NFL rows matches Kraemer 2020's strongman age and may be a copy error. The NFL DXA primary is a Gatorade SSE trade article. Use these only as context, not as chart anchors.",
+   "topic": "fat",
+   "verify": null
+  },
+  "weightlifting_superheavy_bodyfat": {
+   "label": "Olympic weightlifting super-heavyweights: measured body fat",
+   "status": "estimate",
+   "values": {
+    "measured_values_found": 0,
+    "nearest_measured": {
+     "strongmen_DXA_pct": [
+      18.7,
+      6.2
+     ],
+     "sumo_densitometry_pct": 26.2,
+     "heavyweight_powerlifters_anthropometry_pct": 26.4
+    },
+    "suggested_range_pct": [
+     15,
+     30
+    ],
+    "working_pct": 20
+   },
+   "sources": [
+    {
+     "title": "Search record: Europe PMC query for weightlifter body composition by weight class (no super-heavyweight lab measurement found)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=(weightlifters%20OR%20weightlifting)%20AND%20(%22body%20composition%22%20OR%20%22body%20fat%22)%20AND%20(%22heavyweight%22%20OR%20%22super-heavyweight%22)&resultType=core&format=json"
+    },
+    {
+     "title": "Kraemer et al. 2020 (existing key kraemer2020_elite_strongmen_dxa)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:33235016%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Unknown. I found no DXA, densitometry or 4C body fat for elite super-heavyweight weightlifters (for example Talakhadze, 1.95-1.97 m, 157-178 kg at weigh-ins; existing key lasha_talakhadze_height_weight). A web summary of old Soviet data (Breaking Muscle) says fat rises with class (about 15% at 110 kg) and super-heavies run higher. That is not peer-reviewed and I did not use it. The suggested 15-30% is my estimate, between strongmen (DXA 18.7 ± 6.2%) and sumo or heavyweight powerlifters (about 26%).",
+   "topic": "fat",
+   "verify": null
+  },
+  "bodyfat_range_everyday_men": {
+   "label": "Recommended body-fat range: everyday men (ANSUR II soldiers, NHANES adults)",
+   "status": "estimate",
+   "values": {
+    "ansur2_builds": {
+     "method": "per build: Army AD 2023-11 equation on the build's navel waist and weight; range central +/- 4 points",
+     "group_range_pct": [
+      15,
+      34
+     ],
+     "median_man_working_pct": 24
+    },
+    "nhanes_builds": {
+     "group_range_pct": [
+      17,
+      38
+     ],
+     "median_man_working_pct": 28,
+     "basis": "NHANES 1999-2004 DXA men 20+, 5th-95th and median"
+    },
+    "effect_on_score": "S is proportional to (1 - fat): 15% vs 34% changes S by about 22% end to end"
+   },
+   "sources": [
+    {
+     "title": "NCHS Vital Health Stat 11(250), Table 3",
+     "url": "https://www.cdc.gov/nchs/data/series/sr_11/sr11_250.pdf"
+    },
+    {
+     "title": "Taylor et al. 2024 (PMC11026907)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11026907/fullTextXML"
+    },
+    {
+     "title": "Fort Jackson IG Update 23-4 (AD 2023-11 equation)",
+     "url": "https://home.army.mil/jackson/download_file/view/84278f84-10a3-4177-a3bc-6d2f08ae7866/1016"
+    }
+   ],
+   "notes": "ANSUR II percentile builds are percentiles of size, not of fatness, so give each build its own centre from the equation on its own waist and weight, with about ±4 points (Taylor's male one-site RMSE about 3.4; the official and Taylor coefficients differ by about 2.5 points on ANSUR II). Label it 'estimated from waist and weight (Army 2023 equation)'. For the NHANES median build use the DXA percentiles directly. Measured soldiers average 24.3% by DXA. US men average 28% by DXA.",
+   "topic": "fat",
+   "verify": null
+  },
+  "bodyfat_range_natural_stage": {
+   "label": "Recommended body-fat range: natural (drug-tested) bodybuilders on stage",
+   "status": "estimate",
+   "values": {
+    "range_pct": [
+     4,
+     10
+    ],
+    "working_pct": 6,
+    "measured_points": {
+     "Rossow2013_DXA": 4.5,
+     "Barakat2022_DXA_comp_day": 6.3,
+     "Barakat2022_DXA_last8days": [
+      5.4,
+      6.3
+     ],
+     "Schoenfeld2020_BIA_or_skinfold": 5,
+     "Mitchell2018_DXA_1wk_out_derived": [
+      6.6,
+      7.0
+     ],
+     "Kistler2014_DXA_end_prep": 7.4,
+     "Robinson2015_skinfold_end_derived": 7.2,
+     "Bauer2023_near_competition_all_methods": [
+      5.8,
+      10.7
+     ]
+    }
+   },
+   "sources": [
+    {
+     "title": "Barakat et al. 2022 (PMC9321665)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC9321665/fullTextXML"
+    },
+    {
+     "title": "Kistler et al. 2014 (PMID 24901578)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:24901578%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Rossow 2013, Mitchell 2018, Bauer 2023 (existing keys rossow2013_natural_pro_case, mitchell2018_natural_bodybuilders, bauer2023_bodyfat_ranges_review)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:36727905%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Lab-grade (DXA) contest-day values cluster at 4.5-6.3%. Field methods (BIA, skinfolds, ultrasound) read lower, down to 3.6%. Bauer's 5.8-10.7% mixes methods and timing ('close to competition'). 4-10% covers all of them; 6% is the DXA centre. Drug-free status rests on federation testing or self-report (Rossow: IFPA pro; Barakat: self-described; Chappell's PROs: polygraph). At 4-10%, S varies by about ±3% around the 6% value.",
+   "topic": "fat",
+   "verify": null
+  },
+  "bodyfat_range_natural_offstage": {
+   "label": "Recommended body-fat range: natural athletes off stage (off-season bodybuilders, gym non-users)",
+   "status": "estimate",
+   "values": {
+    "range_pct": [
+     10,
+     18
+    ],
+    "working_pct": 13,
+    "measured_points": {
+     "Kouri1995_nonusers_skinfold_approx": 13,
+     "Graybeal2020_4C": [
+      11.8,
+      4.4
+     ],
+     "Rossow2013_DXA_start_and_6mo_after": [
+      14.8,
+      14.6
+     ],
+     "Kistler2014_DXA_26wk_out": 17.5,
+     "Robinson2015_skinfold_start": 14,
+     "Mitchell2018_DXA_16wk_out_derived": [
+      10.5,
+      10.9
+     ],
+     "Bauer2023_general_prep": [
+      9.6,
+      16.3
+     ],
+     "Kondo1994_bodybuilders_densitometry": 10.9
+    }
+   },
+   "sources": [
+    {
+     "title": "Graybeal et al. 2020, Kouri 1995 group means, Rossow 2013, Bauer 2023 (existing keys graybeal2020_bodybuilders_4C, kouri1995_group_means, rossow2013_natural_pro_case, bauer2023_bodyfat_ranges_review)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:30161092%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Kistler et al. 2014 (PMID 24901578)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:24901578%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Robinson et al. 2015 (PMC4422265)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4422265/fullTextXML"
+    }
+   ],
+   "notes": "Kouri's FFMI 25 limit was set at about 13% fat (skinfolds), so 13% is the natural working value for the natural-limit line. Graybeal and Kondo do not state drug status. Use this range for the Kouri non-user anchor, Mr America winners and off-season natural pros (Malcolm Cooper, Chappell's PROs at end-of-prep weight are 'stage' instead).",
+   "topic": "fat",
+   "verify": null
+  },
+  "bodyfat_range_enhanced_stage": {
+   "label": "Recommended body-fat range: enhanced pro bodybuilders on stage (Coleman, Yates, Cutler, Heath, Ramy, Arnold, Oliva)",
+   "status": "estimate",
+   "values": {
+    "range_pct": [
+     4,
+     8
+    ],
+    "working_pct": 5,
+    "basis": {
+     "Withers1997_4C_5d_out": 5.0,
+     "Rosaci2026_skinfold_10d_out": 5.9,
+     "natural_DXA_contest_day": [
+      4.5,
+      6.3
+     ],
+     "Giakoni2025_BIA_IFBB_amateur": [
+      8.9,
+      1.8
+     ],
+     "existing_derived_ffmi_pros_assumption": 5
+    },
+    "Coleman_2004_134p3kg_1p803m_S": {
+     "at_4pct": 39.6,
+     "at_5pct": 39.2,
+     "at_8pct": 37.9
+    }
+   },
+   "sources": [
+    {
+     "title": "Rosaci et al. 2026 (PMC13592830)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13592830/fullTextXML"
+    },
+    {
+     "title": "Withers et al. 1997 (existing key withers1997_elite_bb_4C)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:9127683%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Giakoni-Ramirez et al. 2025 (PMC12073694)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12073694/fullTextXML"
+    }
+   ],
+   "notes": "No DXA or 4C measurement of a Mr. Olympia-level competitor on stage was found, so this is an estimate. Basis: the only 4C contest-week value (Withers, 3 elite men, probably enhanced, 5.0% five days out); a skinfold value for a current IFBB pro 10 days out (5.9%); and natural competitors reaching 4.5-6.3% by DXA. There is no measured evidence that enhanced pros get leaner than that. Enhanced pros' extra weight is lean mass, and stage diuretics lower FFM water rather than fat. The 5% working value matches the existing derived_ffmi_pros assumption. The band moves S by only about ±2%.",
+   "topic": "fat",
+   "verify": null
+  },
+  "bodyfat_range_enhanced_offseason": {
+   "label": "Recommended body-fat range: enhanced bodybuilders off-season, and community AAS users",
+   "status": "estimate",
+   "values": {
+    "pro_offseason_range_pct": [
+     8,
+     15
+    ],
+    "pro_offseason_working_pct": 11,
+    "community_users_range_pct": [
+     10,
+     20
+    ],
+    "basis": {
+     "Rosaci2026_offseason_skinfold": 6.1,
+     "Moreno2024_open_bb_via_Rosaci": 12.2,
+     "Coleman_offseason_if_stage_FFM_kept_derived": [
+      11,
+      15
+     ],
+     "Buhl2025_current_men_BIA_median_IQR": [
+      13.1,
+      10.4,
+      16.5
+     ],
+     "Bulut2024_current_users": [
+      19,
+      3
+     ],
+     "Kouri1995_users_skinfold_approx": 13
+    }
+   },
+   "sources": [
+    {
+     "title": "Buhl et al. 2025 (PMC12397887)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12397887/fullTextXML"
+    },
+    {
+     "title": "Bulut et al. 2024 (PMC11650407)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11650407/fullTextXML"
+    },
+    {
+     "title": "Rosaci et al. 2026 (PMC13592830)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13592830/fullTextXML"
+    }
+   ],
+   "notes": "The Coleman figure is my derivation from existing key ronnie_coleman_height_weight: stage 134.3 kg at about 5% gives FFM ≈ 127.6 kg; off-season 143-150 kg with the same FFM gives 11-15% fat. It is an upper bound on fat if he also gained lean tissue and water. Rosaci's 6.1% off-season reading is probably low because the skinfold equation floors near 2.7%. Moreno's 12.2% is second-hand. Community users (Buhl, Bulut, Kouri) sit at 13-19%. Only needed if the chart shows off-season weights (for example Coleman's 330 lb).",
+   "topic": "fat",
+   "verify": null
+  },
+  "bodyfat_range_strongmen_lifters": {
+   "label": "Recommended body-fat range: strongmen and heavy lifters (Shaw, Hall, Bjornsson, Talakhadze, Kraemer group)",
+   "status": "estimate",
+   "values": {
+    "range_pct": [
+     12,
+     28
+    ],
+    "working_pct": 19,
+    "basis": {
+     "Kraemer2020_DXA_mean_sd": [
+      18.7,
+      6.2
+     ],
+     "Shaw_2024_hydrostatic": 17.6,
+     "weightlifting_superheavy": "not measured; use same range",
+     "heavyweight_powerlifters_anthropometry": 26.4,
+     "sumo_densitometry": 26.2,
+     "D1_offensive_line_DXA": [
+      30.8,
+      4.2
+     ]
+    },
+    "effect_on_score": "S at 12% vs 28% differs by about 18%"
+   },
+   "sources": [
+    {
+     "title": "Kraemer et al. 2020 (existing key kraemer2020_elite_strongmen_dxa)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:33235016%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Brian Shaw hydrostatic test (existing key brian_shaw_height_weight)",
+     "url": "https://fitnessvolt.com/brian-shaws-body-fat-percentage-hydrostatic-testing/"
+    },
+    {
+     "title": "Bosch et al. 2019 (PMC5591058)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=5591058"
+    }
+   ],
+   "notes": "12-28% is Kraemer's mean ± about 1.5 SD, clipped at the upper end by the sumo and powerlifter values (about 26%). Use measured values where they exist (Shaw 17.6%, a self-filmed test, 'reported'). Hall and Bjornsson have no measured body fat (unknown), so use the group range. Talakhadze has no measured value either, so use the group range and label it an estimate. If linemen or sumo are added, use 20-35%.",
+   "topic": "fat",
+   "verify": null
+  },
+  "bodyfat_range_comic_characters": {
+   "label": "Recommended body-fat assumption: comic characters (no source exists)",
+   "status": "estimate",
+   "values": {
+    "lean_heroes": {
+     "who": "Superman, Batman, Captain America, Thor, Black Panther, Luke Cage, Wolverine (after removing adamantium), human Colossus",
+     "range_pct": [
+      5,
+      12
+     ],
+     "working_pct": 8,
+     "drawn_like": "enhanced bodybuilder, stage to near-stage"
+    },
+    "brutes": {
+     "who": "Hulk (all forms), Juggernaut, Abomination, Doomsday, Bane, Darkseid",
+     "range_pct": [
+      8,
+      20
+     ],
+     "working_pct": 12,
+     "drawn_like": "off-season pro bodybuilder to strongman"
+    },
+    "heavy": {
+     "who": "Kingpin",
+     "range_pct": [
+      15,
+      35
+     ],
+     "working_pct": 25,
+     "drawn_like": "strongman to sumo"
+    },
+    "everyday": {
+     "who": "Bruce Banner",
+     "range_pct": [
+      15,
+      34
+     ],
+     "working_pct": 24
+    },
+    "not_tissue": {
+     "who": "The Thing, armoured Colossus",
+     "rule": "body fat not meaningful; mass is rock or steel, score is not muscle; show as 'mass, not muscle'"
+    }
+   },
+   "sources": [
+    {
+     "title": "No source: assumption built on the human ranges in this research (see bodyfat_range_* keys); existing keys hulk_savage, kingpin, thing, colossus, wolverine for official stats",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:36727905%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "No publisher gives body fat for any of these characters (existing builds: all 'unknown'). This is a labelled assumption: each character gets the measured range of the human group they are drawn like, judged from typical art (visible abdominal definition and vascularity, or a heavy midsection). Show it on the page as 'assumed: drawn like ...'. The owner may prefer one comic-wide band (5-20%, working 10%) to avoid judging each character's art; that is simpler and still honest. Kingpin's wide band reflects art that shows a large midsection. Thing and armoured Colossus should not get a muscle score from body fat at all.",
+   "topic": "fat",
+   "verify": null
+  },
+  "bodyfat_range_rex_ollie": {
+   "label": "Body fat for Rex and Ollie (owner's canon)",
+   "status": "official",
+   "values": {
+    "range_pct": [
+     5,
+     10
+    ],
+    "working_pct": 7.5
+   },
+   "sources": [
+    {
+     "title": "Owner's canon: build-comparison/BRIEF.md ('Decisions already made') and CLAUDE.md ('Canon')",
+     "url": "file:///home/user/rex-strength-lab/build-comparison/BRIEF.md"
+    }
+   ],
+   "notes": "'Rex and Ollie are 7.5% body fat (canon: 5-10%, from their definition and occasional vascularity). Use 7.5% with 5-10% as the range.' This is set by the owner, not measured. 5-10% moves S by about ±3% around 7.5%. Tails are excluded from the score, and height is to the skull top, per the brief.",
+   "topic": "fat",
+   "verify": null
+  },
+  "ffmi_definition_vanitallie1990": {
+   "label": "FFMI definition: fat-free mass over height squared (VanItallie et al. 1990)",
+   "status": "reported",
+   "values": {
+    "formula": "FFMI = FFM_kg / H_m^2",
+    "units": "kg/m^2",
+    "companion_index": "BFMI = body fat mass_kg / H_m^2",
+    "reference_sample_men_n": 124,
+    "minnesota_semistarvation_men_n": 32,
+    "pem_detected_after_12wk": "27 of 32"
+   },
+   "sources": [
+    {
+     "title": "VanItallie TB, Yang MU, Heymsfield SB, Funk RC, Boileau RA. Height-normalized indices of the body's fat-free mass and fat mass: potentially useful indicators of nutritional status. Am J Clin Nutr 1990;52:953-959. doi:10.1093/ajcn/52.6.953 (Europe PMC abstract record, PMID 2239792)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:2239792%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Abstract, verbatim: 'we propose use of height-normalized indices, namely, a FFM index [FFM (kg)/height (m)2, or FFMI] and a BFM index [BFM (kg)/height (m)2, or BFMI]. We calculated these indices in a reference population of 124 healthy young men and in 32 nonobese young men (from the Minnesota Study)'. The stated purpose is clinical: telling malnourished tall patients from well-nourished short ones. The abstract gives no reason for choosing height^2 over another power. The full text (OUP/Elsevier) was not reachable; only the abstract was read. Heymsfield 2007 later wrote that its results 'provide support for the suggestion of Van Itallie et al to normalize fat and FFM for height 2' (see heymsfield2007_ffm_height_power_fulltext). Existing builds.json key ffmi_definition_kouri_limit already has FFMI = FFM/H^2 from Kouri; this adds the original source.",
+   "topic": "index",
+   "verify": null
+  },
+  "kouri1995_normalisation_reference": {
+   "label": "Kouri 1995 normalises FFMI to the height of a 1.80 m man (formula as printed in the abstract)",
+   "status": "reported",
+   "values": {
+    "ffmi_formula": "FFM_kg x H_m^-2",
+    "normalised_formula": "FFMI + 6.3 x (1.80 - H_m)",
+    "c_printed_in_abstract": 6.3,
+    "c_common_use": 6.1,
+    "reference_height_m": 1.8,
+    "n_athletes": 157,
+    "n_users": 83,
+    "n_nonusers": 74
+   },
+   "sources": [
+    {
+     "title": "Kouri EM, Pope HG, Katz DL, Oliva P. Fat-free mass index in users and nonusers of anabolic-androgenic steroids. Clin J Sport Med 1995;5:223-228 (Europe PMC abstract record, PMID 7496846), re-fetched 2026-10-11",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:7496846%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Abstract, verbatim: 'FFMI is defined by the formula (fat-free body mass in kg) x (height in meters)-2. We then added a slight correction of 6.3 x (1.80 m - height) to normalize these values to the height of a 1.8-m man.' This relies on and agrees with existing keys kouri1995_normalization_constant and ffmi_height_correction (status disputed: the abstract prints 6.3, while Trexler 2017 and most calculators use 6.1; at most 0.05 FFMI units apart between 1.55 and 2.05 m). The full text is not open access (Europe PMC: no PDF, not OA), so the athletes' height range and how the slope was fitted are unknown. The 1.80 m reference height is the reason the rescaled index uses the constant 1.8: at 1.80 m it then equals both plain and Kouri-normalised FFMI.",
+   "topic": "index",
+   "verify": null
+  },
+  "geometric_similarity_mass_cubed": {
+   "label": "At the same shape and density, mass (and muscle mass) scales with height cubed and areas with height squared",
+   "status": "reported",
+   "values": {
+    "mass_exponent_same_shape": 3,
+    "area_exponent_same_shape": 2,
+    "haldane_example": {
+     "height_factor": 10,
+     "width_factor": 10,
+     "thickness_factor": 10,
+     "weight_factor": 1000,
+     "bone_cross_section_factor": 100,
+     "giant_height_ft": 60,
+     "giant_height_m": 18.3,
+     "giant_weight_tons": [
+      80,
+      90
+     ]
+    },
+    "fowler_examples": {
+     "double_all_dimensions_weight_factor": 8,
+     "rope_strength_factor": 4,
+     "flea_100x_muscle_factor": 1000000
+    }
+   },
+   "sources": [
+    {
+     "title": "Burton RF. Human allometry: adult bodies are more nearly geometrically similar than regression analysis has suggested. Med Hypotheses 2010;74:15-17 (Europe PMC abstract, PMID 19726135)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:19726135%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Burton R. The Sitting-Height Index of Build, (Body Mass)/(Sitting Height)^3, as an Improvement on the Body Mass Index for Children, Adolescents and Young Adults. Children (Basel) 2018;5(2):30 (PMC full text, CC BY)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5835999/"
+    },
+    {
+     "title": "Haldane JBS. On Being the Right Size (transcription from 'On Being the Right Size and Other Essays', OUP 1985; marxists.org)",
+     "url": "https://www.marxists.org/archive/haldane/works/1920s/right-size.htm"
+    },
+    {
+     "title": "Harper's Magazine archive page: 'On being the right size', J.B.S. Haldane, March 1926 (publication date only; text not on the fetched page)",
+     "url": "https://harpers.org/archive/1926/03/on-being-the-right-size/"
+    },
+    {
+     "title": "Fowler M. Scaling: Why Giants Don't Exist. University of Virginia lecture notes (teaching source)",
+     "url": "https://galileoandeinstein.phys.virginia.edu/lectures/scaling.html"
+    }
+   ],
+   "notes": "Quotes:\n- Burton 2010 abstract: 'As he [Quetelet] realised, perfect isometry or geometric similarity requires that body mass varies with height cubed'.\n- Burton 2018 full text: 'consider first a hypothetical set of individuals of different sizes but identical density and bodily proportions. Their masses must vary in proportion to both (sitting height)3 and height3 ... The BMIs of these isometric individuals would inevitably increase with height.'\n- Haldane: 'These monsters were not only ten times as high as Christian, but ten times as wide and ten times as thick, so that their total weight was a thousand times his, or about eighty to ninety tons. Unfortunately the cross sections of their bones were only a hundred times those of Christian'.\n- Fowler: 'its height, length and breadth will all be doubled, so its volume -- and hence its weight -- will increase eightfold'; and 'a giant flea is one hundred times larger in all dimensions, so its weight is up by a factor of a million. Its amount of muscle is also up by a factor of a million'.\nEvidence quality: this is geometry, not a measurement, so the statement is exact for a true scaled copy. Burton 2010 and 2018 are peer-reviewed. Haldane is a classic popular essay. The marxists.org transcription dates the essay 1928 (from the OUP 1985 collection), but the Harper's archive page metadata gives datePublished 1926-03-01. Fowler is university lecture notes. Schmidt-Nielsen 1984 (Cambridge UP) could not be read. The 60 ft = 18.3 m conversion is mine.",
+   "topic": "index",
+   "verify": null
+  },
+  "size_change_changes_form": {
+   "label": "Real bodies are not scaled copies across large size changes (Galileo, Haldane, McMahon, Biewener)",
+   "status": "reported",
+   "values": {
+    "mcmahon1973_elastic_similarity": "length proportional to diameter^(2/3)",
+    "biewener2005_skeletal_scaling_mammals_birds": "l proportional to d^0.89 (isometry d^1.0; elastic similarity d^0.67; stress similarity d^0.5)",
+    "biewener2005_size_range_constant_stress_kg": [
+     0.04,
+     300
+    ],
+    "galileo_giant_height_factor": 10
+   },
+   "sources": [
+    {
+     "title": "Galileo, Two New Sciences, First Day (Crew & de Salvio translation), reproduced by M. Fowler, University of Virginia",
+     "url": "https://galileoandeinstein.phys.virginia.edu/tns1.htm"
+    },
+    {
+     "title": "Haldane JBS. On Being the Right Size (marxists.org transcription)",
+     "url": "https://www.marxists.org/archive/haldane/works/1920s/right-size.htm"
+    },
+    {
+     "title": "McMahon T. Size and shape in biology. Science 1973;179:1201-1204 (Europe PMC abstract, PMID 4689015)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:4689015%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Biewener AA. Biomechanical consequences of scaling. J Exp Biol 2005;208:1665-1676 (Europe PMC abstract, PMID 15855398)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:15855398%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Quotes:\n- Galileo (Salviati): 'nature cannot produce a horse as large as twenty ordinary horses or a giant ten times taller than an ordinary man unless by miracle or by greatly altering the proportions of his limbs and especially of his bones'.\n- Haldane: 'For every type of animal there is a most convenient size, and a large change in size inevitably carries with it a change of form.'\n- McMahon abstract: elastic-stability arguments 'require that living organisms adopt forms whereby lengths increase as the (2/3) power of diameter'. It adds that Hill 'was forced to use an oversimplified \"geometric similarity\" hypothesis'.\n- Biewener abstract: 'Although area:volume scaling predicts that stresses will increase with size, interspecific comparisons of mammals and birds show that skeletal allometry is modest, with most groups scaling (l ~ d^0.89) closer to geometric similarity (isometry: l ~ d^1.0) than to elastic similarity (l ~ d^0.67)'. It also says posture changes keep stresses fairly constant 'across a size range 0.04-300 kg. Above this size, extremely large mammals exhibit more pronounced skeletal allometry and reduced locomotor ability.'\nRelevance: the height-cubed index measures shape (bulk for height) exactly. It says nothing about whether a 3 m, 2,700 kg body of that shape could carry itself. Rex and Ollie are indestructible by canon, so the page should say this and not imply real-world feasibility. Galileo's publication year is not on the fetched page.",
+   "topic": "index",
+   "verify": null
+  },
+  "rohrer_tri_ponderal_index": {
+   "label": "Rohrer / ponderal / tri-ponderal mass index: body mass over height cubed (kg/m^3)",
+   "status": "reported",
+   "values": {
+    "formula": "W_kg / H_m^3",
+    "units": "kg/m^3",
+    "rohrer_year_reported": 1921,
+    "peterson2017_n": 2285,
+    "peterson2017_ages_y": [
+     8,
+     29
+    ],
+    "peterson2017_R2_pctfat_boys_TMI_vs_BMI": [
+     0.64,
+     0.38
+    ],
+    "peterson2017_R2_pctfat_girls_TMI_vs_BMI": [
+     0.72,
+     0.66
+    ],
+    "peterson2017_misclassification_TMI_pct": 8.4,
+    "peterson2017_misclassification_BMIz_pct": 19.4
+   },
+   "sources": [
+    {
+     "title": "Peterson CM et al. Tri-Ponderal Mass Index vs Body Mass Index in Estimating Body Fat During Adolescence. JAMA Pediatr 2017;171:629-636 (PMC full text)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5710345/"
+    },
+    {
+     "title": "Peterson 2017 (Europe PMC abstract, PMID 28505241)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:28505241%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Burton R. Children (Basel) 2018;5(2):30 (PMC full text; defines the Rohrer index)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5835999/"
+    },
+    {
+     "title": "Burton RF. Why is the body mass index calculated as mass/height2, not as mass/height3? Ann Hum Biol 2007;34:656-663 (Europe PMC abstract, PMID 18092209)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:18092209%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Wikipedia: Corpulence index (wikitext; tertiary source, used only for the Rohrer 1921 citation)",
+     "url": "https://en.wikipedia.org/w/index.php?title=Corpulence_index&action=raw"
+    }
+   ],
+   "notes": "Quotes:\n- Peterson 2017 full text: 'the tri-ponderal mass index (TMI = mass divided by height cubed [kilograms divided by meters cubed]), which is based on the ponderal index and the Rohrer Index (see eAppendix 1 in the Supplement for a historical overview)'.\n- Peterson abstract: 'percent body fat scales to height with an exponent closer to 3'.\n- Burton 2018: 'the Rohrer index, (body mass)/height 3'.\n- Burton 2007 abstract: 'Mass/height(3) is an index of body build that is independent of scale and statistics.'\nThe Rohrer 1921 citation (Rohrer F. Der Index der Körperfülle als Maß des Ernährungszustandes. Münch Med Wochenschr 1921;68:580-582) comes only from Wikipedia. The primary was not fetched, and the Peterson supplement with the history was blocked by a PMC download challenge. Treat the year as reported, not verified. The name 'ponderal index' is also used for H / W^(1/3) (Wikipedia notes this), so the page should give the formula, not just the name.\nThese indices use total mass and were validated for fatness in children and adolescents, not for muscularity in adults. They are precedent for dividing by height cubed, not validation of a fat-free version.",
+   "topic": "index",
+   "verify": null
+  },
+  "ffm_over_height_cubed_literature": {
+   "label": "Published fat-free mass over height cubed index: none found; in children FFM is best adjusted by height squared",
+   "status": "reported",
+   "values": {
+    "published_ffm_over_h3_index_found": false,
+    "wells_cole2002_n": 69,
+    "wells_cole2002_age_y": 8,
+    "wells_cole2002_optimal_FFM_power": 2,
+    "wells_cole2002_optimal_FM_power": 6,
+    "ramirez_velez2018_fat_mass_over_h3_used": true,
+    "ramirez_velez2018_n": 4673
+   },
+   "sources": [
+    {
+     "title": "Wells JC, Cole TJ, ALSPAC study team. Adjustment of fat-free mass and fat mass for height in children aged 8 y. Int J Obes 2002;26:947-952 (Europe PMC abstract, PMID 12080448)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:12080448%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Ramírez-Vélez R et al. Tri-Ponderal Mass Index vs. Fat Mass/Height^3 as a Screening Tool for Metabolic Syndrome Prediction in Colombian Children and Young People. Nutrients 2018;10:412 (Europe PMC abstract, PMID 29584641)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:29584641%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Wells & Cole 2002 abstract: 'FFM was optimally adjusted for height by calculating FFM/HT(2). FM was optimally adjusted by calculating FM/HT(6).' The method used deuterium dilution, and the power p was chosen to remove the index's correlation with height. Ramírez-Vélez 2018 used 'fat mass (kg)/height (m³)', which is fat, not fat-free mass, and is a metabolic-syndrome screen.\nSearch done: Europe PMC abstract searches for 'fat-free mass' with 'height3' or 'height cubed', 'lean mass' with 'height cubed', 'FFM/height3' and 'lean mass index' with 'height3' returned 0 hits. 'fat-free mass' with 'height(3)' returned 6 hits, none defining an FFM/H^3 index.\nConclusion: 1.8 x FFM/H^3 is a derived construct of this project (the fat-free analogue of the Rohrer index, scaled to Kouri's 1.80 m). It must not be presented as a published index. The task brief's guess that Wells & Cole support a height-cubed FFM index is wrong: they found height squared for FFM.",
+   "topic": "index",
+   "verify": null
+  },
+  "heymsfield2007_ffm_height_power_fulltext": {
+   "label": "Adult FFM and skeletal muscle scale with height to a power of about 2, not 3 (Heymsfield 2007, full-text numbers)",
+   "status": "measured",
+   "values": {
+    "FFM_power_men_NY2": 1.86,
+    "FFM_power_men_NY2_see": 0.1,
+    "n_men_NY2": 581,
+    "FFM_power_women_NY2": 2.05,
+    "FFM_power_women_NY2_see": 0.09,
+    "n_women_NY2": 765,
+    "SM_power_men_NY1": 1.98,
+    "SM_power_men_NY1_see": 0.27,
+    "n_men_NY1": 178,
+    "ATFM_power_men_NY1": 2.09,
+    "ATFM_power_men_NY1_see": 0.19,
+    "weight_power_men_NY1_NY2": [
+     1.78,
+     1.86
+    ],
+    "bone_mineral_power_men_NY2": 2.31,
+    "BMI_inclusion_kg_m2": [
+     18.5,
+     35
+    ],
+    "mean_age_men_NY2_y": 44.8
+   },
+   "sources": [
+    {
+     "title": "Heymsfield SB, Gallagher D, Mayer L, Beetsch J, Pietrobelli A. Scaling of human body composition to stature: new insights into body mass index. Am J Clin Nutr 2007;86:82-91 (PMC author manuscript, full text)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2729090/"
+    },
+    {
+     "title": "Same paper, Europe PMC abstract (PMID 17616766)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:17616766%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Full text, verbatim:\n- 'The similar compartment, FFM, scaled to height with respective powers of 1.86 ± 0.10 and 2.05 ± 0.09 in the NY-2 men and women. ... none of the β values differed significantly from 2.0.'\n- 'Skeletal muscle mass scaled to height with powers of 1.98 ± 0.27 and 2.08 ± 0.20 in the NY-1 men and women'.\n- Conclusions: 'weight, skeletal muscle, adipose tissue, ATFM, and FFM all scale to height with powers of 2 as the nearest whole integer. These observations indicate that corresponding height-normalized indexes are also independent of height'.\nTable 1: NY-1 has 178 men and 233 women (MRI plus DXA); NY-2 has 581 men and 765 women (DXA only).\nThis extends existing key heymsfield_2007_scaling, which has the abstract only, with the men's numbers. Caveats: general-population adults with BMI 18.5-35 and mean age about 45-50, not athletes; log-log least-squares regression (see height_exponent_regression_vs_isometry for why that may understate a structural exponent).\nThis is why plain FFMI is roughly height-independent among ordinary adults. FFM/H^1.86 vs FFM/H^2 differ by only (H/1.8)^0.14, under 2% across 1.65-1.95 m.",
+   "topic": "index",
+   "verify": null
+  },
+  "tall_men_not_scaled_copies": {
+   "label": "Taller adults are relatively slimmer: girths and leg cross-sections grow less than in proportion to height",
+   "status": "measured",
+   "values": {
+    "burton2012_n_men": 155,
+    "burton2012_n_women": 162,
+    "burton2012_leg_CSA_vs_leg_length": "negative, P = 0.00006-0.027 (after allowing for upper-body mass)",
+    "heymsfield2011_waist_power_men": 0.76,
+    "heymsfield2011_hip_power_men": 0.45,
+    "same_shape_girth_power": 1
+   },
+   "sources": [
+    {
+     "title": "Burton RF, Nevill AM, Stewart AD, Daniell N, Olds T. A negative relationship between leg length and leg cross-sectional areas in adults. Am J Hum Biol 2012;24:562-564 (Europe PMC abstract, PMID 22411043)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:22411043%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Heymsfield SB, Heo M, Pietrobelli A. Are adult body circumferences associated with height? Am J Clin Nutr 2011;93:302-7 (existing builds.json key heymsfield_2011_circumferences)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:21123461%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Burton 2012 abstract: 'volumes and leg CSAs were obtained by 3D scanning for 155 men and 162 women. ... With allowance made for positive correlations with upper body mass, leg CSAs showed a negative correlation with leg length (P = 0.00006-0.027).' The waist and hip powers come from existing key heymsfield_2011_circumferences (NHANES III; adjusted for age and race, not for weight). That key was not re-fetched; I rely on it. A scaled copy would have girth power 1. Consequence: real tall men are not scaled-up short men, so any height-cubed index will rate ordinary tall men as less bulky than ordinary short men (quantified in ansur_height_cubed_index_vs_height).",
+   "topic": "index",
+   "verify": null
+  },
+  "height_exponent_regression_vs_isometry": {
+   "label": "Is the human mass-height exponent really about 2, or nearer 3? (regression vs Burton's isometry hypothesis)",
+   "status": "disputed",
+   "values": {
+    "regression_b_whole_body_published_range": [
+     1.0,
+     2.5
+    ],
+    "benn_p_adult_range": [
+     1.1,
+     2.5
+    ],
+    "burton_hypothesised_true_exponent": 3,
+    "heymsfield2007_FFM_power_men": 1.86,
+    "ansur2_men_ols_p": 1.999,
+    "ansur2_men_rma_p": 4.24
+   },
+   "sources": [
+    {
+     "title": "Burton RF. Human allometry: adult bodies are more nearly geometrically similar than regression analysis has suggested. Med Hypotheses 2010;74:15-17 (Europe PMC abstract, PMID 19726135)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:19726135%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Burton RF. Ann Hum Biol 2007;34:656-663 (Europe PMC abstract, PMID 18092209)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:18092209%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Heymsfield 2007 full text (PMC2729090)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2729090/"
+    }
+   ],
+   "notes": "Burton 2010 abstract:\n- 'Values of b estimated by regression must usually underestimate the true functional values, doing so especially when mass and height are poorly correlated.'\n- Published b 'for the whole body (which range between 1.0 and 2.5)'.\n- 'Monte Carlo modelling has shown that the results obtained for total body mass are compatible with a true height exponent of three.'\nBurton 2007 abstract: 'In adult populations mass must vary more nearly with height(3) than with height(2), although ... conventional statistical techniques suggest otherwise'.\nAgainst this, Heymsfield 2007 finds FFM powers near 2 in large samples, and Burton 2012 (tall_men_not_scaled_copies) itself finds legs relatively thinner in long-legged people.\nThe ANSUR OLS (2.0) vs RMA (4.24) exponents come from existing key ansur_mass_height_exponent; that key already says neither should be used as the exponent for 'the same build at another height'. Burton 2010 is a Medical Hypotheses paper: argument plus modelling, no new measurements.\nStatus disputed: the structural exponent for real humans is unsettled. This matters only for how the index treats ordinary tall vs short men. It does not affect the exact statement that a true scaled copy has mass proportional to H^3.",
+   "topic": "index",
+   "verify": null
+  },
+  "allometric_normalisation_practice": {
+   "label": "Sport science normalises for body size with theoretical geometric-similarity exponents (allometric scaling)",
+   "status": "reported",
+   "values": {
+    "jaric2002_force_exponent_on_mass": 0.67,
+    "jaric2002_torque_exponent_on_mass": 1.0,
+    "nevill1992_vo2max_power_ratio_units": "ml kg^-2/3 min^-1",
+    "geometric_similarity_area_vs_mass": "m^(2/3)"
+   },
+   "sources": [
+    {
+     "title": "Jaric S, Mirkov D, Markovic G. Normalizing physical performance tests for body size: a proposal for standardization. J Strength Cond Res 2005;19:467-474 (Europe PMC abstract, PMID 15903392)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:15903392%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Jaric S. Muscle strength testing: use of normalisation for body size. Sports Med 2002;32:615-631 (Europe PMC abstract, PMID 12141882)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:12141882%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Nevill AM, Ramsbottom R, Williams C. Scaling physiological measurements for individuals of different body size. Eur J Appl Physiol 1992;65:110-117 (Europe PMC abstract, PMID 1396632)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:1396632%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Jaric 2005 abstract: 'we propose (a) using an allometric normalization based on theoretical models that presume geometric similarity'. Jaric 2002 abstract: 'The allometric parameter should be either b = 0.67 for muscle force ... or b = 1 for muscle torque'. Nevill 1992 abstract: 'the best method of scaling maximum oxygen uptake, peak and mean power output, required these variables to be divided by body mass, recorded in the units kg 2/3'.\nThe exponent 0.67 = 2/3 is the geometric-similarity exponent (area over volume). That derivation is mine; the Jaric 2002 abstract does not spell it out.\nRelevance: when bodies differ in size, the field's recommended practice is to divide by the size power implied by geometric similarity, not by a ratio picked for convenience. For mass against height that power is 3. These papers normalise performance, not body composition, and cover human ranges only.",
+   "topic": "index",
+   "verify": null
+  },
+  "ansur_height_cubed_index_vs_height": {
+   "label": "ANSUR II men: BMI is flat with height, but weight over height cubed (x1.8) falls as 1/height",
+   "status": "derived",
+   "values": {
+    "n": 4082,
+    "stature_range_m": [
+     1.491,
+     1.993
+    ],
+    "loglog_slope_BMI_vs_H": -0.001,
+    "loglog_slope_1p8W_over_H3_vs_H": -1.001,
+    "r_1p8W_over_H3_vs_lnH": -0.259,
+    "shortest_decile": {
+     "median_H_m": 1.647,
+     "median_BMI": 27.25,
+     "median_1p8W_over_H3": 29.92
+    },
+    "middle_decile": {
+     "median_H_m": 1.755,
+     "median_BMI": 27.4,
+     "median_1p8W_over_H3": 28.07
+    },
+    "tallest_decile": {
+     "median_H_m": 1.87,
+     "median_BMI": 27.28,
+     "median_1p8W_over_H3": 26.18
+    },
+    "tallest_vs_shortest_ratio": 0.875
+   },
+   "sources": [
+    {
+     "title": "ANSUR II male public data (local copy build-calculator/data/ansur2/ANSUR_II_MALE_Public.csv; published at the Penn State OpenLab mirror cited by existing key ansur_mass_height_exponent)",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+    }
+   ],
+   "notes": "Script: scratchpad/research/size_index/scripts/ansur_index_vs_height.py. Inputs: stature in mm / 1000, and weightkg in tenths of kg / 10. Deciles are by stature (sorted, bands 0-10%, 45-55% and 90-100%). I used the repo's local CSV and did not re-download it; existing key ansur_mass_height_exponent records the download and the same OLS exponent of 1.999.\nANSUR has no body-fat measurement, so this uses total weight, not FFM. It shows the direction and size of the bias, not FFM values. With Heymsfield's FFM power of 1.86 (± 0.10), the expected ratio of S between a 1.95 m and a 1.65 m man of typical build is (1.95/1.65)^(1.86-3), about 0.83 (0.81-0.84).\nReading: among ordinary soldiers of the same BMI, the tallest tenth score about 12% lower on a height-cubed index than the shortest tenth. That is a known bias of the rescaled index for real humans, and the page should state it. US Army sample, 2010-12; not representative of the population.",
+   "topic": "index",
+   "verify": null
+  },
+  "rescaled_ffmi_identity_at_180": {
+   "label": "Rescaled FFMI S = 1.8 x FFM / H^3 equals plain FFMI at exactly 1.80 m",
+   "status": "derived",
+   "values": {
+    "formula_S": "S = 1.8 x FFM_kg / H_m^3",
+    "equivalent": "S = FFMI x (1.8 / H_m)",
+    "units": "kg/m^2 (1.8 m x kg/m^3)",
+    "check_H_m": 1.8,
+    "check_FFM_kg": [
+     61.2,
+     81.0,
+     120.0
+    ],
+    "check_FFMI": [
+     18.89,
+     25.0,
+     37.04
+    ],
+    "check_S": [
+     18.89,
+     25.0,
+     37.04
+    ],
+    "max_abs_difference": 7e-15
+   },
+   "sources": [
+    {
+     "title": "Kouri 1995 abstract (reference height 1.80 m)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:7496846%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "VanItallie 1990 abstract (FFMI definition)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:2239792%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Algebra: at H = 1.8, S = 1.8 x FFM / 1.8^3 = FFM / 1.8^2 = FFMI. Script check: scratchpad/research/size_index/scripts/derived.py (the difference is floating-point rounding only).\nMeaning: S is the plain FFMI the same body would have if all its lengths were scaled to 1.80 m, keeping its shape and density. At 1.80 m it also equals Kouri's normalised FFMI, since Kouri's correction is zero there. So Kouri's 25.0 non-user maximum (existing key kouri1995_ffmi_natural_limit) can be drawn on the S axis at 25 without conversion, as a line from a human sample, not a ceiling. Equivalently, S = 1.8 m x (fat-free Rohrer index in kg/m^3).",
+   "topic": "index",
+   "verify": null
+  },
+  "same_shape_scaled_to_3048": {
+   "label": "The same shape scaled from 1.80 m to 3.048 m: plain FFMI rises 1.69 times, the rescaled index does not change",
+   "status": "derived",
+   "values": {
+    "height_ratio_k": 1.6933,
+    "FFM_multiplier_k3": 4.855,
+    "plain_FFMI_multiplier_k": 1.6933,
+    "S_multiplier": 1.0,
+    "example_FFMI25_at_1p80": {
+     "FFM_kg": 81.0,
+     "FFM_kg_at_3p048": 393.3,
+     "plain_FFMI_at_3p048": 42.3,
+     "S": 25.0
+    },
+    "rex_plain_FFMI_at_3p048_from_brief": 269,
+    "rex_S_tail_included": 158.9
+   },
+   "sources": [
+    {
+     "title": "Burton 2018 (isometric individuals: mass proportional to height^3; BMI rises with height)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5835999/"
+    },
+    {
+     "title": "Burton 2010 (geometric similarity requires mass proportional to height cubed)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:19726135%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "k = 3.048 / 1.8 = 1.6933. A scaled copy has FFM multiplied by k^3 = 4.855, so plain FFMI = FFM/H^2 is multiplied by k^3 / k^2 = k = 1.693, while S = 1.8 x FFM/H^3 is multiplied by k^3 / k^3 = 1. The 269 plain FFMI for Rex at 7.5% fat (tail included, height to crest 3.048 m) comes from the brief, not recomputed here. 269 / 1.6933 = 158.9, matching the brief's 'about 159'. General rule: for any body, plain FFMI = S x H / 1.8.",
+   "topic": "index",
+   "verify": null
+  },
+  "kouri_correction_beyond_human_heights": {
+   "label": "Kouri's linear height correction fails far outside human heights (Rex: 261 vs 159)",
+   "status": "derived",
+   "values": {
+    "kouri_correction_at_3p048_c6p1": -7.61,
+    "kouri_correction_at_3p048_c6p3": -7.86,
+    "rex_kouri_normalised_c6p1": 261.4,
+    "rex_kouri_normalised_c6p3": 261.1,
+    "rex_S": 158.9,
+    "same_shape_slope_per_m_at_FFMI": {
+     "20": 11.1,
+     "25": 13.9,
+     "30": 16.7
+    },
+    "kouri_6p3_as_fraction_of_same_shape_slope": {
+     "20": 0.57,
+     "25": 0.45,
+     "30": 0.38
+    },
+    "implied_FFM_height_power": {
+     "FFMI20": 2.57,
+     "FFMI25": 2.45,
+     "FFMI30": 2.38
+    },
+    "calc_js_norm_range_m": [
+     1.55,
+     2.05
+    ]
+   },
+   "sources": [
+    {
+     "title": "Kouri 1995 abstract (correction 6.3 x (1.80 - height))",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:7496846%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Arithmetic in scratchpad/research/size_index/scripts/derived.py.\n- Kouri adds a fixed c x (1.80 - H). At 3.048 m that is -7.6 (c = 6.1) or -7.9 (c = 6.3), so Rex's plain 269 becomes about 261. The same-shape rescaling gives 159.\n- For a same-shape body, FFMI(H) = S x H / 1.8, so near 1.80 m the exact same-shape correction has slope FFMI/1.8 per metre: 13.9 at FFMI 25.\n- Kouri's 6.3 is about 45% of that slope at FFMI 25. This is equivalent to assuming FFM proportional to H^2.45 (agrees with existing key ffmi_height_correction).\n- Because the correction is a constant slope, not a ratio, it cannot scale with the size of the body. It was fitted on human athletes only (height range not in the abstract; full text unavailable).\nThe Build Calculator's calc.js already applies Kouri only between 1.55 and 2.05 m (FFMI_NORM_RANGE) with c = 6.1. The chart should not use Kouri for comic characters beyond that range, nor for Rex or Ollie.",
+   "topic": "index",
+   "verify": null
+  },
+  "rescaled_vs_kouri_human_heights": {
+   "label": "Within human heights, the rescaled index and Kouri's normalised FFMI differ by up to about 2.5 units (at plain FFMI 25)",
+   "status": "derived",
+   "values": {
+    "plain_FFMI": 25,
+    "rows": [
+     {
+      "H_m": 1.55,
+      "kouri_c6p1": 26.52,
+      "S": 29.03
+     },
+     {
+      "H_m": 1.6,
+      "kouri_c6p1": 26.22,
+      "S": 28.12
+     },
+     {
+      "H_m": 1.7,
+      "kouri_c6p1": 25.61,
+      "S": 26.47
+     },
+     {
+      "H_m": 1.8,
+      "kouri_c6p1": 25.0,
+      "S": 25.0
+     },
+     {
+      "H_m": 1.9,
+      "kouri_c6p1": 24.39,
+      "S": 23.68
+     },
+     {
+      "H_m": 2.0,
+      "kouri_c6p1": 23.78,
+      "S": 22.5
+     },
+     {
+      "H_m": 2.05,
+      "kouri_c6p1": 23.48,
+      "S": 21.95
+     }
+    ],
+    "max_gap_1p70_to_1p90": 0.86,
+    "gap_at_1p55": 2.51,
+    "gap_at_2p05": -1.53
+   },
+   "sources": [
+    {
+     "title": "Kouri 1995 abstract (correction formula)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:7496846%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Computed for a man with plain FFMI 25 at each height (scripts/derived.py). Kouri values with c = 6.3 differ from c = 6.1 by 0.05 or less. Within 1.70-1.90 m the two agree within 0.9 units. At 1.55 m S is 2.5 units higher, and at 2.05 m it is 1.5 units lower.\nThe direction matches the ANSUR finding: S favours short men and penalises tall men relative to the human-fitted correction. This is because Kouri's correction implies FFM proportional to H^2.45 and S assumes H^3.\nExample with existing builds: a 1.91 m strongman or a 1.73 m bodybuilder will sit about 1 unit apart on the two scales. Show both for human builds so readers can see the gap.",
+   "topic": "index",
+   "verify": null
+  },
+  "rescaled_index_height_sensitivity": {
+   "label": "The rescaled index falls with height cubed: each 1% of height is about 3% of score",
+   "status": "derived",
+   "values": {
+    "S_factor_if_H_plus_1pct": 0.9706,
+    "S_factor_if_H_minus_1pct": 1.0306,
+    "approx_rule": "dS/S = -3 dH/H"
+   },
+   "sources": [
+    {
+     "title": "Burton 2010 (mass proportional to height cubed at the same shape)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:19726135%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "S proportional to H^-3 at fixed FFM: 1/1.01^3 = 0.9706 and 1/0.99^3 = 1.0306. This is why the brief requires height to the top of the skull, not to Rex's crest or Ollie's horn tips. Example from existing key rex_ollie_picture_mass: Ollie is 3.063 m to his horn tips and 2.982 m to his skull top. That is a 2.7% height difference, so his S is 8.3% higher with the skull-top height ((3.063/2.982)^3 = 1.083). For real people, a 1 cm error in a reported height at 1.80 m (0.56%) moves S by about 1.7%.",
+   "topic": "index",
+   "verify": null
+  },
+  "meatball_score_check": {
+   "label": "Upper bound: a solid ball of tissue as tall as the figure scores about 924 at 7.5% fat (899-949 for 5-10%)",
+   "status": "derived",
+   "values": {
+    "formula": "S = 1.8 x rho x (pi/6) x (1 - f)",
+    "rho_kg_m3": 1060,
+    "f": 0.075,
+    "S": 924.1,
+    "S_f0p05": 949.1,
+    "S_f0p10": 899.1,
+    "S_if_rho_1081_no_lung_gas": 942.4,
+    "plain_FFMI_meatball_at_1p8": 924.1,
+    "plain_FFMI_meatball_at_3p048": 1564.8
+   },
+   "sources": [
+    {
+     "title": "Existing builds.json key rex_ollie_picture_mass (whole-body density 1,060 kg/m^3 = 1,081 x 0.98 lung gas)",
+     "url": "https://www.bisp-surf.de/Record/PU198802031700"
+    },
+    {
+     "title": "Existing builds.json key muscle_tissue_density (Ward & Lieber 2005: conventional 1,059.7 kg/m^3)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:16154420%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "A ball of diameter H has volume (pi/6) H^3, so FFM = rho x (pi/6) H^3 x (1 - f) and S = 1.8 x rho x (pi/6) x (1 - f), whatever H is. 1.8 x 1060 x 0.5236 x 0.925 = 924.1, matching the brief.\nThe 1,060 kg/m^3 is the whole-body density used for Rex and Ollie, including about 2% lung gas (existing key rex_ollie_picture_mass; I did not re-fetch its sources). With lung-free tissue at 1,081 kg/m^3, S would be about 942. Use the same density as the duo so the top of the scale and the duo stay comparable.\nAt 3.048 m the same ball has plain FFMI 1,565. That is the plain-FFMI ceiling the page must not mix with S. This is geometry with an assumed density, not a physiological limit.",
+   "topic": "index",
+   "verify": null
+  },
+  "recommended_size_independent_index": {
+   "label": "Recommendation: keep S = 1.8 x FFM / H^3 ('FFMI at 1.80 m, same shape'); no better-sourced alternative found",
+   "status": "derived",
+   "values": {
+    "recommended": "S = 1.8 x FFM_kg / H_m^3",
+    "name_on_page": "FFMI rescaled to 1.80 m (same shape)",
+    "show_beside": [
+     "plain FFMI at real height",
+     "Kouri-normalised FFMI (humans 1.55-2.05 m only)"
+    ],
+    "rejected": {
+     "plain_FFMI": "rises with height for a scaled copy (x1.69 at 3.048 m)",
+     "kouri_normalised": "linear, fitted to human athletes; 261 vs 159 for Rex",
+     "benn_type_fitted_p": "p depends on population and statistics (1.1-2.5 adults; ANSUR OLS 2.0 vs RMA 4.2); undefined for non-humans"
+    },
+    "known_bias_humans": "tall men score lower: tallest ANSUR decile about 12% below shortest at equal BMI"
+   },
+   "sources": [
+    {
+     "title": "Burton 2007 (mass/height^3 independent of scale)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:18092209%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Burton 2018 full text (isometric individuals)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5835999/"
+    },
+    {
+     "title": "Jaric 2005 (allometric normalisation based on geometric similarity)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:15903392%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Kouri 1995 abstract (1.80 m reference)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:7496846%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Heymsfield 2007 full text (FFM ~ H^1.86 in men)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2729090/"
+    }
+   ],
+   "notes": "Why this index:\n- The height-cubed exponent is the only one that follows from geometry: constant for a scaled copy (Burton 2007, 2010, 2018; Haldane; Fowler).\n- Allometric normalisation based on geometric similarity is the recommended practice when sizes differ (Jaric 2005).\n- Weight/H^3 is an established index (Rohrer, tri-ponderal; Peterson 2017).\n- The constant 1.8 m is Kouri's reference height, so S equals plain and Kouri-normalised FFMI at 1.80 m. That lets readers use the familiar FFMI landmarks (Schutz median 18.9, Kouri 25) on the S axis.\nWhere S stops being valid, or misleads:\n1. Real tall men are not scaled copies. FFM goes roughly with H^1.86 to 2 (Heymsfield 2007), so S rates ordinary tall men lower and short men higher (ANSUR: about 12% between the tallest and shortest tenths). Kouri-normalised FFMI is the better human comparison between 1.55 and 2.05 m.\n2. S is not a published FFM index (none found). Kouri's 25 is a sample maximum in normalised FFMI, which equals S only at 1.80 m. At other human heights the two differ by up to about 2.5 units.\n3. S measures bulk for height (shape), not strength or physiology. It says nothing about whether a 3 m body of that shape could stand or move (Galileo, Haldane, Biewener).\n4. S is very sensitive to the height used (3% per 1%) and to the assumed density and body fat.\n5. Every S above the human data (about 40) is an extrapolation of geometry, not of any fitted human relation.",
+   "topic": "index",
+   "verify": null
+  },
+  "kouri1995_fulltext_methods": {
+   "label": "Kouri et al. 1995, full text: sample, how non-use was checked, body-fat method, group values, and the 6.1 height slope",
+   "status": "measured",
+   "values": {
+    "n_total": 157,
+    "n_users": 83,
+    "n_nonusers": 74,
+    "gym_study_recruited": 156,
+    "gym_study_evaluable": 134,
+    "testosterone_study_added": 23,
+    "testosterone_study_nonusers": 18,
+    "testosterone_study_former_users": 5,
+    "users_used_in_past_year": 52,
+    "users_height_m": 1.79,
+    "users_height_sd_m": 0.075,
+    "users_weight_kg": 91.69,
+    "users_weight_sd_kg": 11.8,
+    "users_bodyfat_pct": 12.8,
+    "users_bodyfat_sd_pct": 4.8,
+    "users_ffmi_kg_m2": 24.8,
+    "users_ffmi_sd_kg_m2": 2.2,
+    "nonusers_height_m": 1.8,
+    "nonusers_height_sd_m": 0.074,
+    "nonusers_weight_kg": 82.06,
+    "nonusers_weight_sd_kg": 13.0,
+    "nonusers_bodyfat_pct": 12.5,
+    "nonusers_bodyfat_sd_pct": 5.5,
+    "nonusers_ffmi_kg_m2": 21.8,
+    "nonusers_ffmi_sd_kg_m2": 1.8,
+    "height_slope_methods_kg_m3": 6.1,
+    "height_slope_abstract_kg_m3": 6.3,
+    "reference_height_m": 1.8,
+    "users_beyond_top_nonuser": 37,
+    "users_beyond_top_nonuser_pct": 45,
+    "nonusers_over_20pct_fat": 6,
+    "skinfold_equation_se_pct_fat": 3.4,
+    "shortest_nonuser_height_m": 1.59,
+    "shortest_nonuser_ffmi_unnormalized_kg_m2": 23.5,
+    "tall_nonuser_height_m": 1.93,
+    "tall_nonuser_ffmi_unnormalized_kg_m2": 25.4
+   },
+   "sources": [
+    {
+     "title": "Kouri EM, Pope HG Jr, Katz DL, Oliva P. Fat-free mass index in users and nonusers of anabolic-androgenic steroids. Clin J Sport Med 1995;5(4):223-228. Publisher's free full-text PDF (Ovid / Wolters Kluwer; scanned, 6 pages; read as page images)",
+     "url": "https://www.ovid.com/jnls/cjsportsmed/pdf/00042752-199510000-00003~fat-free-mass-index-in-users-and-nonusers-of"
+    },
+    {
+     "title": "Same article, publisher landing page reached from DOI 10.1097/00042752-199510000-00003 (marked 'Free', 'PDF Only')",
+     "url": "https://www.ovid.com/jnls/cjsportsmed/fulltext/00042752-199510000-00003~fat-free-mass-index-in-users-and-nonusers-of"
+    },
+    {
+     "title": "Europe PMC record, PMID 7496846 (abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:7496846%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Methods, p.223: 'One hundred fifty-six men in a large controlled study of athletes, recruited at gymnasiums in the Boston and Los Angeles areas, were administered physical examinations ... height, body weight, and body fat, the latter computed from the sum of six skinfold measurements using an equation derived from the data of Jackson and Pollock'. The equation is %fat = 0.217x1 - 0.00029x1^2 + 0.133x2 - 5.73, where x1 is the sum of the chest, thigh, ilium, abdomen, triceps and scapula skinfolds and x2 is age. One investigator (H.G.P.) took all the skinfolds.\n\nNon-use, p.223-224: 'Each athlete's history of steroid use was obtained by detailed personal interview, supplemented by urine testing ... no evidence suggested that any athlete had deliberately misrepresented his steroid use, nor did any urine test contradict an athlete's verbal report.' p.226: 'all 74 nonusers produced urine samples negative for steroids.' A urine test shows only recent use, so past use rests on the interview.\n\nSample, p.224: 'complete skinfold measurements were not performed in 22 subjects, leaving 134 evaluable individuals'. Added to them were 23 men from a testosterone cypionate trial: 'five men who had formerly used anabolic steroids and 18 who had not'. On the non-users: 'The nonusers included many dedicated bodybuilders. Several had competed successfully in \"natural\" bodybuilding contests, two held world records in strength events, and many others were recognized by their associates as highly successful weightlifters.'\n\nFormulas: FFM = weight x [1 - (%fat / 100)]; FFMI = FFM x height^-2.\n\nTable 1 (mean +/- SD; the FFMI here is before height normalisation):\n- Users: 1.79 +/- 0.075 m, 91.69 +/- 11.8 kg, 12.8 +/- 4.8% fat, FFMI 24.8 +/- 2.2.\n- Non-users: 1.80 +/- 0.074 m, 82.06 +/- 13.0 kg, 12.5 +/- 5.5% fat, FFMI 21.8 +/- 1.8.\n\nUsers vs non-users, p.224: 'users extended well beyond the line, with 37 (45%) of the users attaining levels of FFMI beyond the uppermost of the nonusers.'\n\nHeight slope, p.224: 'we calculated the slope of a regression line drawn through a plot of all the \"elite\" nonuser athletes with FFMI scores of 22 or above ... This calculation yielded a slope of 6.1 kg/m3 ... Normalized FFMI = FFMI + 6.1 x (1.8 - h)'. The 1.8 m is 'the mean height of the nonusers'. The abstract's '6.3' does not appear in the body of the paper.\n\nHeight effect: the paper re-measured 'the shortest nonuser (height 1.59 m) and one of the tallest nonusers (height 1.93 m)'. Their unnormalised FFMIs were 23.5 and 25.4, yet 'the short athlete appeared more muscular'.\n\nLimitations the authors give:\n- 74 non-users 'might not have been large enough to exhibit fully the upper limits of muscularity naturally attainable'.\n- The skinfold standard error is 3.4% fat. Their example: a 1.8 m, 90 kg man at 10% fat scores 25.0, and at 13% fat 24.2.\n- 'it is possible that fat individuals might be able to exceed substantially an FFMI of 25 without steroids'. Only 6 non-users (8.1%) were above 20% fat.\n\nSmall internal slip: 'Fifty-two of the users (67% of the user group)'. 52/83 is 63%; 52/78 gym-study users is 67%.\n\nEvidence quality: one cross-sectional sample of self-selected volunteers with one skinfold tester. It is strong evidence that these 74 men stopped below 25, and weak evidence for any population-wide ceiling.",
+   "topic": "natural",
+   "verify": null
+  },
+  "kouri1995_fig2_distribution": {
+   "label": "Kouri 1995 Fig. 2: every non-user's and user's normalised FFMI, in 1-unit bins (counted from the figure)",
+   "status": "measured",
+   "values": {
+    "bin_width_kg_m2": 1,
+    "nonusers_first_bin_low_kg_m2": 17,
+    "nonusers_bin_counts": [
+     1,
+     5,
+     4,
+     16,
+     16,
+     13,
+     10,
+     9
+    ],
+    "nonusers_top_bin_low_kg_m2": 24.0,
+    "nonusers_top_bin_high_kg_m2": 24.9,
+    "nonusers_in_top_bin": 9,
+    "users_first_bin_low_kg_m2": 19,
+    "users_bin_counts": [
+     1,
+     3,
+     6,
+     6,
+     16,
+     14,
+     15,
+     5,
+     9,
+     3,
+     3,
+     1,
+     1
+    ],
+    "users_at_or_above_25": 37,
+    "users_below_25": 46,
+    "users_at_or_above_30": 2,
+    "users_top_bin_low_kg_m2": 31.0,
+    "users_top_bin_high_kg_m2": 31.9
+   },
+   "sources": [
+    {
+     "title": "Kouri et al. 1995, Clin J Sport Med 5:223-228, Fig. 2 (p.225), publisher's free PDF",
+     "url": "https://www.ovid.com/jnls/cjsportsmed/pdf/00042752-199510000-00003~fat-free-mass-index-in-users-and-nonusers-of"
+    }
+   ],
+   "notes": "Counted by script (scratchpad scripts/count_dots.py, page rendered at 250 dpi) from Fig. 2, captioned 'FFMI, normalized to the height of a 1.8-m man in 74 nonusers ... and 83 users ... Each circle represents one individual.'\n\nBin counts:\n- Non-users, bins 17-17.9 to 24-24.9: 1, 5, 4, 16, 16, 13, 10, 9 (total 74).\n- Users, bins 19-19.9 to 31-31.9: 1, 3, 6, 6, 16, 14, 15, 5, 9, 3, 3, 1, 1 (total 83).\n\nThe 37 users at or above 25 match the text's '37 (45%)'. Text p.224: 'the nonusers \"stop\" abruptly at a maximum value of 25.0'. p.226: 'athletes who had not used steroids all had values of <25.0'. So the top non-user lies between 24.0 and 24.9, with 9 men in that bin; the paper does not print the exact top value.\n\nThe highest user is in the 31.0-31.9 bin, and 2 users exceed 30. Helms' 'some users reached ~32' rounds up. 46 of the 83 users (55%) were below 25, so an FFMI under 25 is no evidence that a man is natural.\n\nIn Fig. 1 (unnormalised FFMI against height) the top user sits at about 31, near 1.73 m. That is read off the plot, so it is approximate.\n\nThe status is 'measured' because each circle is one measured man, but the counts are read from a printed figure.",
+   "topic": "natural",
+   "verify": null
+  },
+  "kouri1995_mr_america_table2": {
+   "label": "Kouri 1995 Table 2: estimated normalised FFMI of 20 pre-steroid Mr America winners, 1939-1959 (blind photo-based fat estimates, not 5%)",
+   "status": "estimate",
+   "values": {
+    "n_rated": 20,
+    "n_not_rated": 2,
+    "year_first": 1939,
+    "year_last": 1959,
+    "years_table_order": [
+     1939,
+     1939,
+     1940,
+     1941,
+     1942,
+     1943,
+     1944,
+     1945,
+     1946,
+     1947,
+     1948,
+     1949,
+     1950,
+     1951,
+     1953,
+     1954,
+     1955,
+     1957,
+     1958,
+     1959
+    ],
+    "normalized_ffmi_table_order_kg_m2": [
+     24.3,
+     22.6,
+     24.0,
+     26.9,
+     25.5,
+     23.9,
+     27.3,
+     26.1,
+     25.9,
+     23.0,
+     27.7,
+     28.0,
+     26.5,
+     26.0,
+     25.8,
+     25.4,
+     23.5,
+     25.2,
+     26.8,
+     24.6
+    ],
+    "mean_kg_m2": 25.4,
+    "sd_kg_m2": 1.5,
+    "recomputed_mean_kg_m2": 25.45,
+    "recomputed_sd_kg_m2": 1.55,
+    "max_kg_m2": 28.0,
+    "min_kg_m2": 22.6,
+    "n_above_27": 3,
+    "n_above_25": 13,
+    "n_at_or_above_26": 8,
+    "mean_1939_1944_kg_m2": 24.9,
+    "max_1939_1944_kg_m2": 27.3,
+    "mean_1939_1953_kg_m2": 25.6,
+    "max_1939_1953_kg_m2": 28.0,
+    "trend_slope_per_year": 0.044,
+    "trend_p": 0.44,
+    "pope_recalled_bodyfat_low_pct": 6,
+    "pope_recalled_bodyfat_high_pct": 16,
+    "rescaled_S_mean_using_todd_heights": 25.8,
+    "rescaled_S_max_using_todd_heights": 29.2
+   },
+   "sources": [
+    {
+     "title": "Kouri et al. 1995, Clin J Sport Med 5:223-228, pp.224-226 and Table 2, publisher's free PDF",
+     "url": "https://www.ovid.com/jnls/cjsportsmed/pdf/00042752-199510000-00003~fat-free-mass-index-in-users-and-nonusers-of"
+    },
+    {
+     "title": "Todd J. Size Matters: Reflections on Muscle, Drugs, and Sport. Iron Game History 10(3), Aug 2008 (source of the heights used for S, and of Pope's recalled fat range)",
+     "url": "https://starkcenter.org/igh/igh-v10/igh-v10-n3/igh1003p03.pdf"
+    },
+    {
+     "title": "Helms E. 'What can be achieved as a natural bodybuilder?', Alan Aragon's Research Review, Aug 2014 (history of early testosterone use; skepticism subsets)",
+     "url": "https://www.alanaragon.com/wp-content/uploads/2016/08/Helms-Aug-2014-AARR.pdf"
+    }
+   ],
+   "notes": "Method, pp.224-226: 'we obtained the heights, weights, and ages, at the time of competition, of all Mr. America winners from 1939 to 1959 (21)'. Ref 21 is Willoughby DP, The Super Athletes, 1970. 'The second author (H.G.P.) estimated the body fat of each athlete from contemporaneous photographs in bodybuilding magazines of the era ..., averaging the estimates from several photographs of each athlete'. Faces and names were obscured 'to render all estimates blind'. 'Adequate photographs could not be found for two of the Mr. America winners (Park, 1952; and Schaefer, 1956).'\n\nTable 2 (normalised with k = 6.1):\n- 1939 Goodrich 24.3; 1939 Essmaker 22.6; 1940 Grimek 24.0; 1941 Grimek 26.9; 1942 Leeight 25.5; 1943 Bacon 23.9; 1944 Stanko 27.3.\n- 1945 Ross 26.1; 1946 Stephan 25.9; 1947 Reeves 23.0; 1948 Eiferman 27.7; 1949 Delinger 28.0; 1950 Farbotnik 26.5; 1951 Hilligenn 26.0.\n- 1953 Pearl 25.8; 1954 Dubois 25.4; 1955 Klisanin 23.5; 1957 Lacy 25.2; 1958 Sansone 26.8; 1959 Johnson 24.6.\n- 'Mean +/- SD 25.4 +/- 1.5', 'with only three having values of >27.0'.\n\nTrend: 'no significant trend toward increased FFMI ... (slope = 0.044 FFMI units/yr; p = 0.44)'. I recompute a slope of 0.042, mean 25.45, SD 1.55, and 13 of 20 above 25.0. Helms' subsets reproduce: through 1944, mean 24.9 and max 27.3; through 1953, mean 25.6 and max 28.0.\n\nAuthors, p.226: 'rare individuals, perhaps with some genetic or congenital anomalies, may attain an FFMI in excess of 25 without steroids, but this level could be achieved by only a few nonsteroid users in the entire United States.'\n\nCORRECTION for builds.json. kouri1995_ffmi_natural_limit (value_status) and kouri1995_group_means say the Mr America values assumed 5% fat; that came from McDonald's summary. The paper used blind photo estimates, which Pope later recalled as about 6% to 16% (Todd 2008). The 5% assumption was used only for the 33 modern bodybuilders. This explains most of the gap flagged under mr_america_1938_1954_program_girths (27.4 at 5% fat vs 25.4).\n\nMinor: Fig. 3 bins one winner at 22-22.9 where Table 2 puts him at 24-24.9. Fig. 3 counts 22:2, 23:3, 24:2; Table 2 gives 22:1, 23:3, 24:3.\n\nPre-steroid status rests on 'Todd T, personal communication'. Helms documents Ziegler giving testosterone to top US lifters from 1954, so the 1955-59 entries are less certain.\n\nThe same man moved by 2.9 units in a year (Grimek 24.0 in 1940, 26.9 in 1941), which shows how coarse these estimates are.\n\nS (= 1.8*FFM/H^3) needs each man's height, which Kouri did not print. Using Todd's heights for the same men (plain F = N - 6.1(1.8 - H), S = 1.8F/H) gives S mean 25.8 and max 29.2 (Delinger, 1.68 m). That is an estimate.",
+   "topic": "natural",
+   "verify": null
+  },
+  "kouri1995_modern_bodybuilders": {
+   "label": "Kouri 1995 Fig. 3: estimated normalised FFMI of 33 modern magazine bodybuilders, 1989-1994 (assumed 5% fat; not drug-tested)",
+   "status": "estimate",
+   "values": {
+    "n": 33,
+    "magazine_issues_approx": 60,
+    "year_first": 1989,
+    "year_last": 1994,
+    "assumed_bodyfat_pct": 5,
+    "first_bin_low_kg_m2": 26,
+    "bin_counts": [
+     1,
+     2,
+     3,
+     2,
+     7,
+     5,
+     6,
+     4,
+     0,
+     0,
+     1,
+     0,
+     1,
+     1
+    ],
+    "approx_mean_from_bin_midpoints_kg_m2": 31.5,
+    "top_bin_low_kg_m2": 39.0,
+    "top_bin_high_kg_m2": 39.9
+   },
+   "sources": [
+    {
+     "title": "Kouri et al. 1995, Clin J Sport Med 5:223-228, p.226 and Fig. 3 (p.227), publisher's free PDF",
+     "url": "https://www.ovid.com/jnls/cjsportsmed/pdf/00042752-199510000-00003~fat-free-mass-index-in-users-and-nonusers-of"
+    }
+   ],
+   "notes": "Method, p.226: 'we obtained the heights and weights of 33 modern competitive bodybuilders from ~60 monthly issues of various popular bodybuilding magazines that had appeared between 1989 and 1994'. Light-weight classes were excluded. 'A recent article in one bodybuilding magazine specified that modern high-ranking competitive bodybuilders displayed body fat levels of 4-6% (20); therefore, we used 5% in our calculations.' Also: 'many of the modern bodybuilders had not even won a national contest'.\n\nBins counted from Fig. 3 (26-26.9 up to 39-39.9): 1, 2, 3, 2, 7, 5, 6, 4, 0, 0, 1, 0, 1, 1 (total 33). The mean from bin midpoints is about 31.5. The highest bodybuilder is in 39.0-39.9.\n\nThese are the paper's contrast group. Drug use was not tested but is implied. The numbers suit the chart's 'enhanced' region, not the natural limit. The heights and weights are magazine claims.",
+   "topic": "natural",
+   "verify": null
+  },
+  "todd2008_mr_america_reanalysis": {
+   "label": "Jan Todd 2008: re-estimate of the same pre-steroid Mr America winners with Pope's formula, mean 26.4, top 32.0 (subjective fat estimates)",
+   "status": "estimate",
+   "values": {
+    "n": 22,
+    "heights_m": [
+     1.79,
+     1.8,
+     1.73,
+     1.73,
+     1.8,
+     1.7,
+     1.82,
+     1.75,
+     1.8,
+     1.85,
+     1.7,
+     1.68,
+     1.75,
+     1.68,
+     1.77,
+     1.77,
+     1.85,
+     1.77,
+     1.78,
+     1.73,
+     1.8,
+     1.75
+    ],
+    "weights_kg": [
+     88.5,
+     82,
+     87.5,
+     100.5,
+     94.8,
+     76.2,
+     101.25,
+     87.09,
+     93,
+     87,
+     88,
+     88,
+     88,
+     81,
+     84,
+     91.17,
+     98,
+     83.9,
+     95.25,
+     84,
+     96.25,
+     84.5
+    ],
+    "bodyfat_fraction": [
+     0.11,
+     0.1,
+     0.07,
+     0.07,
+     0.09,
+     0.07,
+     0.09,
+     0.09,
+     0.09,
+     0.08,
+     0.09,
+     0.09,
+     0.1,
+     0.07,
+     0.08,
+     0.08,
+     0.08,
+     0.09,
+     0.08,
+     0.09,
+     0.08,
+     0.09
+    ],
+    "normalized_ffmi_kg_m2": [
+     24.64,
+     22.78,
+     27.62,
+     31.99,
+     26.63,
+     25.13,
+     27.69,
+     26.18,
+     26.12,
+     23.08,
+     28.32,
+     29.11,
+     26.17,
+     27.42,
+     24.85,
+     26.96,
+     26.04,
+     24.55,
+     27.78,
+     26.07,
+     27.33,
+     25.41
+    ],
+    "stated_mean_kg_m2": 26.44,
+    "stated_n_above_26": 15,
+    "stated_n_above_25": 18,
+    "recount_n_above_25": 17,
+    "stated_mean_excl_park_schaeffer_kg_m2": 26.54,
+    "recomputed_mean_excl_park_schaeffer_kg_m2": 26.46,
+    "max_kg_m2": 31.99,
+    "max_height_m": 1.73,
+    "max_weight_kg": 100.5,
+    "max_weight_lb": 221,
+    "rescaled_S_mean": 26.8,
+    "rescaled_S_max": 32.5
+   },
+   "sources": [
+    {
+     "title": "Todd J. Size Matters: Reflections on Muscle, Drugs, and Sport. Iron Game History 10(3):13-15, Aug 2008 (Seward Staley Honor Lecture, NASSH 2008)",
+     "url": "https://starkcenter.org/igh/igh-v10/igh-v10-n3/igh1003p03.pdf"
+    },
+    {
+     "title": "McDonald L. Another Look at the Fat-Free Mass Index (FFMI), BodyRecomposition (secondary summary quoting Todd's 26.4 and 15 above 26)",
+     "url": "https://bodyrecomposition.com/muscle-gain/another-look-at-the-ffmi"
+    }
+   ],
+   "notes": "Order of men (heights in metres, weights in kg, fat as a fraction, normalised FFMI): 1939 Goodrich, 1939 Essmaker, 1940 Grimek, 1941 Grimek, 1942 Leight, 1943 Bacon, 1944 Stanko, 1945 Ross, 1946 Stephan, 1947 Reeves, 1948 Eiferman, 1949 Delinger, 1950 Farbotnik, 1951 Hilligenn, 1952 Park, 1953 Pearl, 1954 Dubois, 1955 Klisanin, 1956 Schaeffer, 1957 Lacy, 1958 Sansone, 1959 Johnson.\n\nTodd (p.14): Pope 'told [her] he'd never published the specific body fat estimates'. He remembered 'that the estimates ranged from about 6% to a maximum of about 16%'. Jan and Terry Todd re-estimated fat by eye (7-11% in her table) from the heights and weights at the time of winning, and applied Pope's formula. Her results:\n- 'the average FFMI for the 22 men known as Mr. America in the pre-steroid era according to our calculations was 26.44.'\n- 'Fifteen men out of that 22-nearly 70%-had FFMI's above 26'.\n- With 25 as the line, 'eighteen ... would be considered suspect-that's 82%'.\n- Without Park and Schaeffer, 'our average for the remaining 20 ... is 26.54'.\n- 'At 5'8\" and 221 pounds we estimated Grimek's FFMI at 31.99'.\nShe also notes that Pope's book The Adonis Complex lists Reeves at 25.7, against 23.0 in the 1995 table.\n\nMy recompute from her printed table (k = 6.1): mean 26.45 and 15 above 26, both matching her text. But I count 17 above 25 (she says 18), and 26.46 for the 20 (she says 26.54). Two rows do not reproduce from the printed inputs. Grimek 1941 gives 31.66 at the printed 7% fat; 31.99 matches 6%. Lacy 1957 gives 25.97, printed 26.07. The fat column is probably rounded.\n\nPope's 25.4 and the Todds' 26.4 come from the same men and the same formula; only the subjective photo fat estimates differ. S from her inputs: mean 26.8, max 32.5 (Grimek 1941, 1.73 m).\n\nThe source is an honour lecture by a sport historian in a non-refereed history journal. Terry Todd supplied the magazines Pope used. Evidence quality: low to moderate. Both sets rest on visual fat guesses applied to promotional heights and weights.",
+   "topic": "natural",
+   "verify": null
+  },
+  "butt_frame_model_max_lbm": {
+   "label": "Casey Butt's frame-based prediction of maximum drug-free lean mass from height, wrist and ankle (self-published; not peer-reviewed)",
+   "status": "reported",
+   "values": {
+    "height_exponent": 1.5,
+    "wrist_divisor_in": 22.667,
+    "ankle_divisor_in": 17.0104,
+    "wrist_divisor_cm_kg": 322.4,
+    "ankle_divisor_cm_kg": 241.9,
+    "bodyfat_divisor": 224,
+    "check_5ft8_lbm_lb": 170,
+    "check_5ft10_lbm_lb": 178,
+    "check_6ft0_lbm_lb": 185,
+    "check_wrist_in": 7,
+    "check_ankle_in": 8.75,
+    "check_bodyfat_pct": 10,
+    "ansur_175_185cm_median_wrist_cm": 17.8,
+    "ansur_175_185cm_median_ankle_cm": 23.2,
+    "ansur_175_185cm_n": 1814,
+    "pred_lbm_180cm_median_frame_5pct_kg": 81.5,
+    "pred_lbm_180cm_median_frame_10pct_kg": 83.2,
+    "pred_ffmi_180cm_median_frame_5pct_kg_m2": 25.1,
+    "pred_ffmi_180cm_median_frame_10pct_kg_m2": 25.7,
+    "pred_ffmi_180cm_p5_frame_5pct_kg_m2": 24.1,
+    "pred_ffmi_180cm_p95_frame_10pct_kg_m2": 26.9,
+    "ansur_all_pred_ffmi_median_5pct_kg_m2": 25.3,
+    "ansur_all_pred_ffmi_median_10pct_kg_m2": 25.8,
+    "ansur_all_pred_ffmi_p5_5pct_kg_m2": 24.3,
+    "ansur_all_pred_ffmi_p95_10pct_kg_m2": 27.0,
+    "ansur_pred_S_median_155_160cm_10pct": 29.7,
+    "ansur_pred_S_median_190_195cm_10pct": 23.8,
+    "reported_sample_size_secondary": 300,
+    "reported_sample_year_first_secondary": 1947,
+    "reported_sample_year_last_secondary": 2010
+   },
+   "sources": [
+    {
+     "title": "WeightTraining.nz, 'Casey Butt Calculator' (secondary; gives the imperial formula with 22.667/17.01 and the metric form with 322.4/241.9)",
+     "url": "https://weighttraining.nz/cb_calculator.php"
+    },
+    {
+     "title": "Fitmatic, 'Maximum Muscular Potential Calculator by Casey Butt' (secondary; constants 22.6670/17.0104, measuring sites, '~300 natural bodybuilding champions spanning from 1947 to 2010')",
+     "url": "https://www.fitmatic.com/body/calculators/maximum-muscular-potential"
+    },
+    {
+     "title": "McDonald L. 'Four Models for Genetic Muscular Potential', BodyRecomposition, 2009, updated 2020 (Butt-calculator outputs table, image)",
+     "url": "https://bodyrecomposition.com/muscle-gain/whats-my-genetic-muscular-potential"
+    },
+    {
+     "title": "McDonald's Butt-model table image (5'8\"/5'10\"/6'0\": 189/198/206 lb at 10% fat; LBM 170/178/185 lb)",
+     "url": "https://bodyrecomposition.com/wp-content/uploads/2009/06/Screen-Shot-2020-03-29-at-8.40.51-PM.png"
+    },
+    {
+     "title": "Bony to Beastly, 'Natural Muscular Potential Calculator' (secondary; says it uses the 4th edition of Butt's book 'Your Muscular Potential')",
+     "url": "https://bonytobeastly.com/maximum-muscular-potential-calculator/"
+    },
+    {
+     "title": "Butt's original site (fetched; now redirects to a domain-parking service, router.parklogic.com)",
+     "url": "http://www.weightrainer.net/potential.html"
+    },
+    {
+     "title": "ANSUR II Measurer's Handbook (Hotzman et al. 2011, NATICK/TR-11/017), sec. 6.4.5 Ankle Circumference and 6.4.93 Wrist Circumference",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSURII-TR11-017.pdf"
+    },
+    {
+     "title": "ANSUR II male CSV (repo copy at build-calculator/data/ansur2/; see builds.json ansur2_dataset)",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+    }
+   ],
+   "notes": "The formula, as the two secondary calculators give it (the primary pages could not be reached): M = H^1.5 x (sqrt(W)/22.6670 + sqrt(A)/17.0104) x (F/224 + 1). M is maximum lean body mass in lb; H is height, W wrist and A ankle, all in inches; F is the body-fat % at which the mass is wanted. weighttraining.nz rounds the constants to 22.667 and 17.01, and gives a metric form (cm, kg) with 322.4 and 241.9.\n\nCheck: the formula reproduces to the pound the three outputs of Butt's own calculator that McDonald published (7 in wrist, 8.75 in ankle, 10% fat: LBM 170, 178 and 185 lb at 5'8\", 5'10\" and 6'0\"). So the constants match Butt's calculator.\n\nMeasuring sites (fitmatic): wrist 'on the hand side of the styloid process'; ankle 'Smallest measurement just above your ankle'. ANSUR II measures the wrist at stylion with the upper edge of the tape 'just below the bony prominence at stylion', and the ankle as the 'Minimum horizontal circumference of the ankle'. So ANSUR frames are a fair input.\n\nData behind it:\n- fitmatic (secondary): 'approximately 300 natural bodybuilding champions spanning from 1947 to 2010'.\n- Butt's own sister article (reposted): 'a similar 6-year study I did on champion bodybuilders', based on 'drug-free champions both past and present'.\n- McDonald: Butt 'has done an exhaustive analysis of top level natural bodybuilders'.\nDrug-free status rests on the era (before about 1959) or federation testing. The measurements are contest and magazine figures.\n\nPeer review and validation: none found. It was self-published on weightrainer.net and in the e-book 'Your Muscular Potential' (4th edition per bonytobeastly), with no journal paper, no published data set and no error statistics. fitmatic says results 'may deviate by up to approximately 3%' for unusual frames, without a source. McDonald quotes Butt's site: 'I haven't received any legitimate, verifiable statistics that significantly exceed the results of the equations'. Butt signs as Ph.D.; I did not verify the field.\n\nweightrainer.net now redirects to a domain-parking service. The Wayback Machine (blocked by the egress policy) and archive.ph (connection reset) could not be reached from this sandbox.\n\nApplied to ANSUR II men (my derivation):\n- At 1.80 m with the median frame of the 1,814 men 175-185 cm tall (wrist 17.8 cm, ankle 23.2 cm): LBM 81.5 kg at 5% fat and 83.2 kg at 10%, which is FFMI (= S at 1.80 m) 25.1-25.7.\n- Frames at the 5th to 95th percentile give 24.1-26.9.\n- Applied to all 4,082 men at their own heights: plain FFMI median 25.3 at 5% fat and 25.8 at 10%; 5th-95th percentile 24.3-27.0.\n\nThe F/224 term makes 'lean' mass rise 2% between 5% and 10% fat. Mass scales as H^1.5 x frame, so the rescaled S of a Butt maximum falls with height: median S 29.7 at 155-160 cm, down to 23.8 at 190-195 cm (10% fat).\n\nEvidence quality: low to moderate. It is a curve fitted to hand-picked champions, with unpublished data and no peer review, though its result sits close to Kouri's measured 25.",
+   "topic": "natural",
+   "verify": null
+  },
+  "butt_max_girth_equations": {
+   "label": "Casey Butt's 'maximum muscular measurements' equations (chest, arm, forearm, neck, thigh, calf at about 10% fat): a per-body-part maximum, not one physique",
+   "status": "reported",
+   "values": {
+    "chest_wrist_coef": 1.625,
+    "chest_ankle_coef": 1.3682,
+    "chest_height_coef": 0.3562,
+    "biceps_wrist_coef": 1.1709,
+    "biceps_height_coef": 0.135,
+    "forearm_wrist_coef": 0.95,
+    "forearm_height_coef": 0.1041,
+    "neck_wrist_coef": 1.1875,
+    "neck_height_coef": 0.1301,
+    "thigh_ankle_coef": 1.4737,
+    "thigh_height_coef": 0.1918,
+    "calf_ankle_coef": 0.9812,
+    "calf_height_coef": 0.125,
+    "bodyfat_pct_approx": 10,
+    "example_180cm_chest_cm": 124.8,
+    "example_180cm_biceps_cm": 45.1,
+    "example_180cm_forearm_cm": 35.6,
+    "example_180cm_neck_cm": 44.6,
+    "example_180cm_thigh_cm": 68.7,
+    "example_180cm_calf_cm": 45.3,
+    "example_wrist_cm": 17.8,
+    "example_ankle_cm": 23.2,
+    "largest_natural_arm_to_wrist_ratio": 2.53,
+    "largest_natural_arm_to_height_ratio": 0.27
+   },
+   "sources": [
+    {
+     "title": "Butt C. 'Maximum Drug-Free Bodybuilding Potential, ed. 1.0' (The WeighTrainer), full-text repost on Canadian Brawn forum, 21 Nov 2018 (original site offline)",
+     "url": "https://canadianbrawn.com/threads/maximum-drug-free-bodybuilding-potential-ed-1-0-by-casey-butt-ph-d.1377/"
+    }
+   ],
+   "notes": "Read as a full-text forum repost (header 'The WeighTrainer ... by Casey Butt, Ph.D.') because the original site is offline. Treat it as reported.\n\n'Maximum Muscular Measurements (at approx. 10% body fat)', in inches:\n- chest = 1.625W + 1.3682A + 0.3562H\n- biceps = 1.1709W + 0.1350H\n- forearms = 0.950W + 0.1041H\n- neck = 1.1875W + 0.1301H\n- thighs = 1.4737A + 0.1918H\n- calves = 0.9812A + 0.1250H\nW is the wrist 'measured on the hand side of the styloid process', A the ankle 'at the smallest point', H the height. Measuring sites: chest relaxed, tape under the armpits; biceps flexed at the largest point; forearm with the fist clenched, at the largest point; neck below the Adam's apple at the smallest point; thigh midway between hip and knee; calf at the largest point.\n\nAuthor's caveats: 'The equations presented in this article outline a level of development beyond the capabilities of the vast majority of trainees, including most champions'; 'none of the listed champions attained all of the predictions in each of their body parts'. Each equation is a fit to the most extreme champions for that one body part (for example, the chest is set by Reg Park). So a figure with all six maxima would exceed any single natural champion.\n\nHis observations: 'the largest lean arms I know of ... are/were 2.53 times wrist circumference ... 0.27 times height'. His probability claim (95% of a million trainees could not beat these by even 1%) assumes the champions are the best of a random sample of known size, which he does not show.\n\nAt 1.80 m with the ANSUR median frame of men 175-185 cm tall (my calculation): chest 124.8 cm, biceps 45.1, forearm 35.6, neck 44.6, thigh 68.7, calf 45.3. The repost's worked example mixes ankle values: it states 9.25 in, uses 9.25 for chest and thigh, but 9.0 for the calf.\n\nEvidence quality: low (self-published, fitted to selected maxima). It is usable only as a labelled 'prediction' for a natural-limit silhouette's girths.",
+   "topic": "natural",
+   "verify": null
+  },
+  "berkhan_height_minus_100": {
+   "label": "Martin Berkhan's rule: height in cm minus 100 = stage weight in kg at 5-6% fat (a coach's rule from about four men)",
+   "status": "reported",
+   "values": {
+    "offset_at_180cm": 100,
+    "offset_at_160cm": 98,
+    "offset_at_170cm": 99,
+    "offset_at_190cm": 101,
+    "bodyfat_pct_low": 5,
+    "bodyfat_pct_high": 6,
+    "example_height_cm": 180,
+    "example_weight_kg": 80,
+    "example_weight_lb": 176,
+    "ffm_180cm_kg_low": 75.2,
+    "ffm_180cm_kg_high": 76.0,
+    "ffmi_180cm_kg_m2_low": 23.2,
+    "ffmi_180cm_kg_m2_high": 23.5,
+    "S_160cm_low": 25.6,
+    "S_160cm_high": 25.9,
+    "S_190cm_low": 22.0,
+    "S_190cm_high": 22.2,
+    "own_data_points": 4,
+    "own_data_ffmi_low_kg_m2": 23.0,
+    "own_data_ffmi_high_kg_m2": 23.5,
+    "stage_water_drop_pct": 2,
+    "valid_height_low_cm": 170,
+    "valid_height_high_cm": 190
+   },
+   "sources": [
+    {
+     "title": "Berkhan M. 'Maximum Muscular Potential of Drug-Free Athletes (Updated Dec 31st)', Leangains, 28 Dec 2010",
+     "url": "https://leangains.com/maximum-muscular-potential-of-drug-free-athletes/"
+    },
+    {
+     "title": "McDonald L. 'Four Models for Genetic Muscular Potential' (Berkhan model table, image)",
+     "url": "https://bodyrecomposition.com/wp-content/uploads/2009/06/Screen-Shot-2020-03-29-at-8.46.20-PM.png"
+    }
+   ],
+   "notes": "Berkhan: '(Height in centimeters - 100) = Body weight in kilo (\"shredded\", i.e. 5-6% body fat). Example: If your height is 180 cm (5'11), subtract 100 and you get 80. 80 kg (176 lbs) is your maximum muscular potential when you are in peak condition'. His basis: 'a formula based on the heights and body weights of natural bodybuilders on competition day' and 'I've only known a handful of guys who I was 100% sure of being natural. They all abide by this rule.'\n\nHis data points, with body fat 'estimated':\n- Marcus: 181 cm, 79 kg, 4-4.5%.\n- Andreaz: 169 cm, 69-71 kg, 5-6%.\n- Robert: 182 cm, 82 kg, 7%.\n- Himself: 186 cm, 87.5 kg; '186 cm/86 kg (-100) on competition day (5.5% body fat)'. He has not competed.\n\nLimits he states: 'most accurate for men in the 170-190 cm height range'. Offsets by height: 190 cm, -101; 180 cm, -100; 170 cm, -99; 160 cm, -98. 'the true limit will not differ from height - 100 in any meaningful way'. He reports 'a 2% drop in body weight' on stage day.\n\nMy conversion: at 1.80 m, 80 kg at 5-6% fat is 75.2-76.0 kg FFM, so FFMI = S = 23.2-23.5. With his offsets, FFMI stays about 23 from 1.60 to 1.90 m, while S runs from 25.6-25.9 at 1.60 m down to 22.0-22.2 at 1.90 m. His four people come out at FFMI 23.0-23.5.\n\nMcDonald's Berkhan table has a 'Lean Body Mass' column of 170/178/185 lb, which looks copied from the Butt column. At 5% fat, Berkhan's 160/171/182 lb are 152/162/173 lb of lean mass.\n\nIt sits below Kouri's 25 partly because stage-day weight is dry and glycogen-depleted.\n\nEvidence quality: very low. It is a coach's blog rule from about four men, with body fat judged by eye, no testing described and no peer review.",
+   "topic": "natural",
+   "verify": null
+  },
+  "mcdonald_rate_of_gain_model": {
+   "label": "Lyle McDonald's rate-of-gain model (a rate, not a ceiling; based on experience)",
+   "status": "reported",
+   "values": {
+    "year1_gain_lb_low": 20,
+    "year1_gain_lb_high": 25,
+    "year1_gain_kg_low": 9.1,
+    "year1_gain_kg_high": 11.3,
+    "year2_gain_lb_low": 10,
+    "year2_gain_lb_high": 12,
+    "year3_gain_lb_low": 5,
+    "year3_gain_lb_high": 6,
+    "year4_gain_lb_low": 2,
+    "year4_gain_lb_high": 3,
+    "career_total_lb_low": 40,
+    "career_total_lb_high": 50,
+    "career_total_kg_low": 18,
+    "career_total_kg_high": 23,
+    "example_start_lbm_lb": 130,
+    "example_end_lbm_lb_low": 170,
+    "example_end_lbm_lb_high": 180
+   },
+   "sources": [
+    {
+     "title": "McDonald L. 'Four Models for Genetic Muscular Potential', BodyRecomposition, posted 19 Jun 2009, updated 7 Jun 2020",
+     "url": "https://bodyrecomposition.com/muscle-gain/whats-my-genetic-muscular-potential"
+    },
+    {
+     "title": "McDonald's 'Rates of Muscular Gain in Males' table (image)",
+     "url": "https://bodyrecomposition.com/wp-content/uploads/2009/06/Screen-Shot-2020-03-29-at-8.25.48-PM.png"
+    }
+   ],
+   "notes": "His table: year 1 '1.5-2 lbs' a month and '20-25 lbs' a year; year 2 '1 lb' and '10-12 lbs'; year 3 '0.5 lb' and '5-6 lbs'; year 4 'Irrelevant' and '2-3 lbs'.\n\nText: 'if you total up those values, you get a gain of roughly 40-50 pounds of total muscle mass over a lifting career'. His example goes from 130 lb of lean mass to '170-180 pounds of lean body mass after 4-5 years of proper training'.\n\nBasis: 'I'm not sure if I came up with this idea on my own or stole it from somewhere else'; 'Mine and Alan's are based on years of experience in the field.'\n\nIt has no height or frame term, so it cannot be placed on the chart without assuming a starting mass and a height. Evidence quality: very low (expert opinion). Not a chart anchor.",
+   "topic": "natural",
+   "verify": null
+  },
+  "aragon_helms_rate_of_gain_model": {
+   "label": "Aragon/Helms rate-of-gain guidance (percent of body weight per month by training age; a rate, not a ceiling)",
+   "status": "reported",
+   "values": {
+    "beginner_pct_bw_per_month_low": 1.0,
+    "beginner_pct_bw_per_month_high": 1.5,
+    "intermediate_pct_bw_per_month_low": 0.5,
+    "intermediate_pct_bw_per_month_high": 1.0,
+    "advanced_pct_bw_per_month_low": 0.25,
+    "advanced_pct_bw_per_month_high": 0.5,
+    "aragon_novice_lb_per_year_low": 15,
+    "aragon_novice_lb_per_year_high": 20,
+    "aragon_novice_kg_per_year_low": 6.8,
+    "aragon_novice_kg_per_year_high": 9.1,
+    "aragon_novice_years": 3,
+    "aragon_advanced_after_years": 4,
+    "aragon_lb_per_month_low": 1,
+    "aragon_lb_per_month_high": 2
+   },
+   "sources": [
+    {
+     "title": "McDonald L. 'Four Models for Genetic Muscular Potential' (Aragon/Helms table, image)",
+     "url": "https://bodyrecomposition.com/wp-content/uploads/2009/06/Screen-Shot-2020-03-29-at-8.32.30-PM.png"
+    },
+    {
+     "title": "Aragon A. 'Interviewed by Wisconsin's Polytechnic University', alanaragonblog.com, 14 Dec 2011",
+     "url": "https://www.alanaragonblog.com/2011/12/14/interviewed-by-wisconsins-polytechnic-university/"
+    }
+   ],
+   "notes": "McDonald's 'Aragon/Helms Model': beginner '1-1.5% bodyweight/month', intermediate '0.5-1%', advanced '0.25-0.5%'. He says it 'was developed by Alan Aragon, Eric Helms or both'. I did not find the percentage table in a primary Aragon or Helms source.\n\nAragon in his own words (2011): 'For a 19 year-old who's just starting out, putting on 15-20 pounds of muscle per year in the first 2-3 years of consistent training is a very respectable accomplishment. Gains in the advanced stages (more than about 4 years of consistent progressive training as an adult) will typically slow down to half of that rate, at best'; and 'For muscle gain, roughly 1-2 pounds a month is plenty.'\n\nThis is rate guidance based on experience and not peer-reviewed. It has no height or frame term and is not a chart anchor.",
+   "topic": "natural",
+   "verify": null
+  },
+  "kondo1994_sumo_ffm_upper_limit": {
+   "label": "Kondo et al. 1994: largest measured fat-free mass, 121.3 kg in a 1.86 m sumo wrestler at 33% fat; proposed limit 0.7 kg of FFM per cm of height",
+   "status": "measured",
+   "values": {
+    "n_sumo": 37,
+    "n_bodybuilders": 14,
+    "n_untrained": 26,
+    "sumo_mean_fat_pct": 26.1,
+    "bodybuilders_mean_fat_pct": 10.9,
+    "untrained_mean_fat_pct": 12.1,
+    "sumo_over_100kg_ffm": 6,
+    "max_ffm_kg": 121.3,
+    "max_ffm_height_m": 1.86,
+    "max_ffm_mass_kg": 181,
+    "max_ffm_fat_pct": 33.0,
+    "elite_ffm_per_height_mean_kg_per_cm": 0.61,
+    "elite_ffm_per_height_max_kg_per_cm": 0.66,
+    "proposed_limit_kg_per_cm": 0.7,
+    "max_case_ffmi_kg_m2": 35.1,
+    "max_case_S": 33.9,
+    "max_case_kouri_normalized": 34.7,
+    "limit_at_180cm_ffm_kg": 126.0,
+    "limit_at_180cm_ffmi_kg_m2": 38.9,
+    "limit_at_175cm_S": 41.1,
+    "limit_at_185cm_S": 36.8,
+    "kanehisa1998_sumo_ffm_min_kg": 59.1,
+    "kanehisa1998_sumo_ffm_max_kg": 107.6
+   },
+   "sources": [
+    {
+     "title": "Kondo M, Abe T, Ikegawa S, Kawakami Y, Fukunaga T. Upper limit of fat-free mass in humans: A study on Japanese Sumo wrestlers. Am J Hum Biol 1994;6(5):613-618, doi:10.1002/ajhb.1310060509 (Europe PMC abstract, PMID 28548340)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:28548340%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Kanehisa H et al. Body composition and isokinetic strength of professional Sumo wrestlers. Eur J Appl Physiol 1998;77:352-359 (Europe PMC abstract, PMID 9562364)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:9562364%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Midorikawa T et al. High REE in Sumo wrestlers attributed to large organ-tissue mass. Med Sci Sports Exerc 2007;39:688-693 (Europe PMC abstract, PMID 17414807)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:17414807%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "The journal is Am J Hum Biol 6(5):613-618, not J Am Coll Nutr as the task named it; Europe PMC and the DOI agree. I read the abstract only (Wiley paywall; Semantic Scholar lists no open copy).\n\nAbstract: '37 professional Japanese Sumo wrestlers, 14 highly trained bodybuilders, and 26 untrained men were investigated for body composition (fat mass and FFM) and cross-sectional areas (CSA) of limb muscles, by hydrodensitometry and ultrasound'. 'Six of the wrestlers had more than 100 kg of FFM, including the largest one of 121.3 kg (stature: 186 cm, mass: 181 kg, %fat: 33.0%). The FFM/stature ratio of elite Sumo wrestlers averaged at 0.61 kg/cm, with the highest 0.66 kg/cm. It is suggested that a FFM/stature ratio of 0.7 kg/cm may be an upper limit in humans.' Drug testing is not mentioned.\n\nMy conversions for the largest wrestler: FFMI 121.3/1.86^2 = 35.1; S = 1.8 x 121.3/1.86^3 = 33.9; Kouri-normalised 34.7. A limit per cm of height converts to FFMI only at a stated height: 0.7 kg/cm at 1.80 m is 126 kg of FFM, FFMI 38.9 = S 38.9 (S 41.1 at 1.75 m, 36.8 at 1.85 m).\n\nCaveats:\n- Two-compartment densitometry assumes one FFM density. At 33% fat, much of the 'fat-free' mass is organ, water and the fat-free part of adipose tissue, not muscle. This is Kouri's own fourth limitation; Midorikawa 2007 found larger liver and kidney mass in sumo wrestlers; see also builds.json ffmi_obesity_caveat.\n- Kanehisa 1998 (23 professionals) reported FFM from 59.1 to 107.6 kg.\n\nEvidence quality: moderate for 'measured FFM this large exists'; weak for '0.7 kg/cm is a human limit', which is an extrapolation.",
+   "topic": "natural",
+   "verify": null
+  },
+  "hattori1999_sumo_ffmi": {
+   "label": "Hattori et al. 1999: sumo FFMI cut-off near 30 separating top-division (Sekitori) wrestlers; mean 26.6 and maximum about 37 as cited by Trexler",
+   "status": "measured",
+   "values": {
+    "n_sumo": 36,
+    "n_students": 39,
+    "sumo_mean_mass_kg": 117.1,
+    "sumo_mean_bmi": 36.5,
+    "sumo_mean_fat_pct": 26.2,
+    "sekitori_ffmi_cutoff_kg_m2": 30,
+    "mean_ffmi_cited_by_trexler_kg_m2": 26.6,
+    "max_ffmi_cited_by_trexler_kg_m2": 37,
+    "cutoff_S_at_175cm": 30.9,
+    "cutoff_S_at_180cm": 30.0,
+    "cutoff_S_at_185cm": 29.2,
+    "cutoff_S_at_190cm": 28.4
+   },
+   "sources": [
+    {
+     "title": "Hattori K, Kondo M, Abe T, Tanaka S, Fukunaga T. Hierarchical differences in body composition of professional Sumo wrestlers. Ann Hum Biol 1999;26(2):179-184 (Europe PMC abstract, PMID 10195655)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:10195655%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Trexler ET et al. 2017, J Strength Cond Res, PMC full text (cites Hattori's mean and maximum)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5438288/"
+    }
+   ],
+   "notes": "Abstract: 'The body composition of 36 professional Sumo wrestlers and 39 collegiate male students were assessed densitometrically. The means of body weight, BMI and %fat for Sumo wrestlers were 117.1 kg, 36.5 and 26.2%'; 'The cut-off point of fat-free mass index which divided Sekitori wrestlers from other wrestlers is approximately 30'.\n\nTrexler 2017 cites this paper: 'research in Sumo wrestlers (11) has documented a mean FFMI Raw value of 26.6 kg·m−2, with individual values as high as 37'. That is secondary; I did not see Hattori's full text.\n\nThe index is plain FFM/height^2. Heights are not in the abstract, and drug testing is not mentioned. S for FFMI 30: 30.9 at 1.75 m, 30.0 at 1.80 m, 29.2 at 1.85 m. These are high-fat men, so the obesity caveat applies.",
+   "topic": "natural",
+   "verify": null
+  },
+  "abe2018_skeletal_muscle_upper_limit": {
+   "label": "Abe et al. 2018: 95 large athletes; largest FFM 120.2 kg; FFMI levels off above about 90 kg body mass; skeletal-muscle index plateau about 17 kg/m2",
+   "status": "measured",
+   "values": {
+    "n_athletes": 95,
+    "n_controls": 48,
+    "ultrasound_sites": 9,
+    "athletes_over_100kg_ffm": 10,
+    "max_ffm_kg": 120.2,
+    "athletes_over_50kg_sm": 7,
+    "max_sm_kg": 59.3,
+    "ffmi_pct_above_controls": 44,
+    "smi_pct_above_controls": 56,
+    "ffmi_plateau_body_mass_kg": 90,
+    "smi_plateau_kg_m2": 17,
+    "smi_plateau_body_mass_kg": 120,
+    "moreno2024_bodybuilder_max_smi_kg_m2": 17.9
+   },
+   "sources": [
+    {
+     "title": "Abe T, Buckner SL, Dankel SJ, Jessee MB, Mattocks KT, Mouser JG, Loenneke JP. Skeletal muscle mass in human athletes: What is the upper limit? Am J Hum Biol 2018;30(3):e23102 (Europe PMC abstract, PMID 29356191)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:29356191%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Moreno EN, Hammert WB, Montgomery TR, Abe T, Loenneke JP, Buckner SL. Skeletal muscle mass in competitive physique-based athletes: a case series. Am J Hum Biol 2024;36(1):e23978 (Europe PMC abstract, PMID 37563889)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:37563889%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Abstract only (Wiley paywall; ResearchGate returned 403; Semantic Scholar lists it as closed).\n\nAbstract: 'Ninety-five large-sized male athletes and 48 recreationally active males (control) had muscle thickness measured by ultrasound at nine sites ... SM was estimated from an ultrasound-derived prediction equation. Body density was estimated by hydrostatic weighing technique'. 'Ten of the athletes had more than 100 kg of FFM, including the largest who had 120.2 kg, while seven of the athletes had more than 50 kg of SM, including the largest who had 59.3 kg.' 'The FFM index increased linearly up to 90 kg of body mass, and then the values leveled off in those of increasing body mass. Similarly, the SM index increased in a parabolic fashion reaching a plateau (approximately 17 kg/m2) beyond 120 kg body mass.' 'A SM index of approximately 17 kg/m2 may serve as the potential upper limit in humans.'\n\nNot in the abstract: the sports, the athletes' heights, the FFMI values and drug status. The SM index counts skeletal muscle only, so it cannot be converted to FFMI without the paper's data.\n\nCounterpoint from the same group: Moreno et al. 2024 found SM index values 'ranged from 7.2 to 17.9 kg/m2' in eight physique athletes. 'The Men's Open Bodybuilder ... had greater values of total SM and SM index compared to previously published values'. Drug status was not stated.\n\nEvidence quality: a moderate measurement, but the 'limit' is a plateau in one sample of mostly heavy athletes with more body fat.",
+   "topic": "natural",
+   "verify": null
+  },
+  "abe2020_ffm_plateau_review": {
+   "label": "Abe et al. 2020 review: in 2,249 elite male athletes (DXA), FFM levels off above about 120 kg body mass; under 10% fat is rare above 100 kg",
+   "status": "reported",
+   "values": {
+    "n_studies": 18,
+    "n_athletes": 2249,
+    "n_data_points": 72,
+    "ffm_plateau_body_mass_kg": 120,
+    "low_fat_rare_above_body_mass_kg": 100,
+    "low_fat_threshold_pct": 10
+   },
+   "sources": [
+    {
+     "title": "Abe T, Bell ZW, Wong V, Spitz RW, Loenneke JP. Why is low body fat rarely seen in large-sized male athletes? Am J Hum Biol 2020;32(6):e23399 (Europe PMC abstract, PMID 32022361)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:32022361%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Abstract: 'Eighteen studies estimated body composition in elite athletes by dual-energy X-ray absorptiometry, totaling 2249 elite male athletes and 72 data points.' 'low body fat (eg, less than 10% body fat) was rarely seen in large-sized male athletes over 100 kg body mass. The larger the body mass, the higher the fat-free mass, with fat-free mass leveling off when body mass exceeds approximately 120 kg.'\n\nThe review works on group means (data points), not individuals. Drug status is not discussed in the abstract. It supports describing the measured upper tail as a soft plateau that comes with rising body fat.",
+   "topic": "natural",
+   "verify": null
+  },
+  "trexler2017_ffmi_fulltext_check": {
+   "label": "Trexler et al. 2017 (checks builds.json ffmi_athletes): NCAA football, DXA, 97.5th percentile 28.1, max 31.7; random NCAA testing but none by the study",
+   "status": "measured",
+   "values": {
+    "n": 235,
+    "height_cm": 184.7,
+    "height_sd_cm": 6.9,
+    "mass_kg": 103.6,
+    "mass_sd_kg": 20.1,
+    "bodyfat_pct": 19.8,
+    "bodyfat_sd_pct": 7.4,
+    "ffmi_adj_mean_kg_m2": 23.7,
+    "ffmi_adj_sd_kg_m2": 2.1,
+    "ffmi_adj_p97_5_kg_m2": 28.1,
+    "ffmi_adj_max_kg_m2": 31.7,
+    "ffmi_adj_min_kg_m2": 19.0,
+    "n_over_25": 62,
+    "pct_over_25": 26.4,
+    "n_over_p97_5": 6,
+    "height_slope_kg_m3": 2.943,
+    "slope_r": 0.13,
+    "slope_p": 0.16,
+    "mean_abs_adjustment_kg_m2": 0.2,
+    "max_adjustment_kg_m2": 0.62,
+    "OL_mean_kg_m2": 25.1,
+    "DL_mean_kg_m2": 25.2,
+    "max_S_if_180cm": 31.7,
+    "max_S_if_195cm": 29.7,
+    "p97_5_S_at_mean_height": 27.5
+   },
+   "sources": [
+    {
+     "title": "Trexler ET, Smith-Ryan AE, Blue MNM, et al. Fat-Free Mass Index in NCAA Division I and II Collegiate American Football Players. J Strength Cond Res 2017;31(10):2719-2727, PMC5438288 full text",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5438288/"
+    },
+    {
+     "title": "Europe PMC abstract, PMID 27930454",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:27930454%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Every Trexler number already in builds.json ffmi_athletes is confirmed in the full text. New here:\n- Drug testing: 'Although NCAA athletes are subject to random, year-round drug testing, independent drug testing was not conducted in this study.'\n- FFMI = (LM + BMC)/Height^2 from DXA (Lunar iDXA and Hologic).\n- Height adjustment: 'Raw FFMI was regressed against height, using only cases in which FFMI values were above the median ... FFMIAdj = FFMI + (Slope)·(1.8 - Subject Height)'. The slope was 2.943, 'not significantly different from zero (r = 0.13; p = 0.16)'. The adjustment changed values by 0.20 +/- 0.14 on average, at most 0.62.\n- Sample: 235 men, 184.7 +/- 6.9 cm, 103.6 +/- 20.1 kg, BF 19.8 +/- 7.4%.\n- 'Values above 28.1 kg·m−2 were observed for six athletes (3 OL, 3 DL), with a maximal observed value of 31.7'. OL 25.1 +/- 2.0, DL 25.2 +/- 2.3.\n- The authors: positions with higher FFMI 'are also typically found to have higher BF% values', and 'the coupling of fat mass and lean mass ... suggests that a sample of lean individuals limits FFM accretion'.\n\nConversion: at 1.80 m, FFMIAdj = plain FFMI = S. The 31.7 player's height is not given; at 1.80-1.95 m his S would be 31.7-29.7. The 97.5th percentile at the sample's mean height (1.847 m) is about S 27.5. That is approximate, because a percentile mixes men of different heights.\n\nEvidence quality: good measurement (DXA, n = 235). Drug-free status is assumed from NCAA testing and not checked. The upper tail includes high-fat linemen.",
+   "topic": "natural",
+   "verify": null
+  },
+  "currier2019_ffmi_check": {
+   "label": "Currier et al. 2019 (checks builds.json ffmi_athletes): 209 male college athletes, DXA, 97.5th-percentile 'natural upper limit' 28.3 (all) and 29.1 (rugby); drug status not stated",
+   "status": "measured",
+   "values": {
+    "n": 209,
+    "n_sports": 10,
+    "height_cm": 182.9,
+    "height_sd_cm": 6.7,
+    "mass_kg": 90.8,
+    "mass_sd_kg": 16.8,
+    "bodyfat_pct": 15.6,
+    "bodyfat_sd_pct": 5.3,
+    "ffmi_adj_mean_kg_m2": 22.8,
+    "ffmi_adj_sd_kg_m2": 2.8,
+    "football_mean_kg_m2": 24.28,
+    "football_sd_kg_m2": 2.39,
+    "water_polo_mean_kg_m2": 20.68,
+    "p97_5_all_kg_m2": 28.32,
+    "p97_5_rugby_kg_m2": 29.1,
+    "p97_5_baseball_kg_m2": 25.5,
+    "p97_5_all_S_at_mean_height_approx": 28.0,
+    "p97_5_rugby_S_at_mean_height_approx": 28.7
+   },
+   "sources": [
+    {
+     "title": "Currier BS, Harty PS, Zabriskie HA, et al. Fat-Free Mass Index in a Diverse Sample of Male Collegiate Athletes. J Strength Cond Res 2019;33(6):1474-1479 (Europe PMC abstract, PMID 30985525)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:30985525%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Same article, publisher abstract page (Ovid; full text paywalled)",
+     "url": "https://www.ovid.com/jnls/nsca-jscr/abstract/10.1519/jsc.0000000000003158~fat-free-mass-index-in-a-diverse-sample-of-male-collegiate"
+    }
+   ],
+   "notes": "Abstract: '209 male collegiate athletes from 10 sports (baseball, cross country, football, golf, ice hockey, weightlifting, rugby, swimming, track and field, and water polo)'; 'measured using dual-energy x-ray absorptiometry. Linear regression was used to adjust for height, and the FFMIAdj natural upper limit was determined by calculating the 97.5th percentile of all values.' 'The FFMIAdj upper limit was calculated for all athletes (28.32 kg·m−2), rugby (29.1 kg·m−2), and baseball (25.5 kg·m−2).'\n\nThe 'upper limit' is the authors' name for a 97.5th percentile. It is not a ceiling; 2.5% of their own men exceed it.\n\nNot in the abstract: the regression slope, the reference height (presumably 1.8 m), the maximum value and any drug testing.\n\nS at the mean height of 1.829 m: 27.9-28.1 for all athletes and 28.6-28.8 for rugby, depending on the unknown slope (0 to 6.1). This is approximate.",
+   "topic": "natural",
+   "verify": null
+  },
+  "santos2014_drug_tested_athletes_ffmi": {
+   "label": "Santos et al. 2014: DXA FFMI percentiles in athletes who had to test negative for performance-enhancing drugs; highest 95th percentile 25.8 (rugby)",
+   "status": "measured",
+   "values": {
+    "n_men_dxa": 339,
+    "men_mean_ffmi_kg_m2": 19.78,
+    "men_mean_ffmi_ci_low": 19.56,
+    "men_mean_ffmi_ci_high": 20.0,
+    "men_mean_height_cm": 179.3,
+    "rugby_n_dxa": 39,
+    "rugby_mean_ffmi_kg_m2": 21.33,
+    "rugby_p95_ffmi_kg_m2": 25.79,
+    "rugby_p95_ci_low": 23.54,
+    "rugby_p95_ci_high": 28.71,
+    "rugby_mean_height_cm": 182.8,
+    "wrestling_judo_p95_ffmi_kg_m2": 24.6,
+    "handball_p95_ffmi_kg_m2": 23.64,
+    "rugby_p95_S_at_mean_height": 25.4
+   },
+   "sources": [
+    {
+     "title": "Santos DA, Dawson JA, Matias CN, et al. Reference values for body composition and anthropometric measurements in athletes. PLoS One 2014;9(5):e97846 (Europe PMC full text, PMC4022746)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4022746/fullTextXML"
+    },
+    {
+     "title": "Same, supplementary file S2, Table 7 'Whole-body fat-free mass index (kg/m2) percentiles by sport and sex'",
+     "url": "https://journals.plos.org/plosone/article/file?type=supplementary&id=10.1371/journal.pone.0097846.s002"
+    }
+   ],
+   "notes": "Inclusion criteria (methods): '1) in at least Tanner stage V ..., 2) 10 or more hours of training per week, 3) negative test outcomes for performance-enhancing drugs, and 4) not taking any medications.' DXA was done in season, at the Faculty of Human Kinetics in Lisbon with the Portuguese Institute of Sport.\n\nTable 5: the mean FFMI of all 339 men was 19.78 (95% CI 19.56-20.00); rugby 21.33 (n = 39).\n\nSupplementary Table 7 gives Bayesian-smoothed percentiles. The male 95th percentiles are: rugby 25.79 (CI 23.54-28.71), wrestling/judo 24.60, handball 23.64, soccer 23.47, volleyball 23.31.\n\nThe index is plain FFM/height^2, not height-normalised. The rugby 95th percentile at the rugby mean height of 1.828 m is S of about 25.4.\n\nThis is the only paper I found whose inclusion criteria required a negative drug test. Its upper tail (95th percentile about 26) sits right at Kouri's 25. These are sport athletes, not physique athletes.",
+   "topic": "natural",
+   "verify": null
+  },
+  "natural_limit_anchor_conversions": {
+   "label": "Natural-limit anchors converted to the rescaled index S = 1.8*FFM/H^3, with the conversion rules",
+   "status": "derived",
+   "values": {
+    "rule_reference_height_m": 1.8,
+    "kouri_k_kg_m3": 6.1,
+    "trexler_k_kg_m3": 2.943,
+    "kouri_limit_S_at_160cm": 26.8,
+    "kouri_limit_S_at_165cm": 26.3,
+    "kouri_limit_S_at_170cm": 25.8,
+    "kouri_limit_S_at_175cm": 25.4,
+    "kouri_limit_S_at_180cm": 25.0,
+    "kouri_limit_S_at_185cm": 24.6,
+    "kouri_limit_S_at_190cm": 24.3,
+    "kouri_limit_S_at_195cm": 23.9,
+    "kouri_limit_S_at_200cm": 23.6,
+    "kouri_shortest_nonuser_S": 26.6,
+    "kouri_tall_nonuser_S": 23.7,
+    "kouri_mr_america_mean_S": 25.8,
+    "kouri_mr_america_max_S": 29.2,
+    "todd_mr_america_mean_S": 26.8,
+    "todd_mr_america_max_S": 32.5,
+    "butt_180cm_median_frame_S_5pct": 25.1,
+    "butt_180cm_median_frame_S_10pct": 25.7,
+    "butt_180cm_frame_range_S_low": 24.1,
+    "butt_180cm_frame_range_S_high": 26.9,
+    "berkhan_180cm_S_low": 23.2,
+    "berkhan_180cm_S_high": 23.5,
+    "chappell_natural_pros_S": 25.4,
+    "rossow_case_S_if_180cm": 24.9,
+    "santos_rugby_p95_S": 25.4,
+    "trexler_p97_5_S_at_180cm": 28.1,
+    "trexler_p97_5_S_at_mean_height": 27.5,
+    "trexler_max_S_at_180cm": 31.7,
+    "trexler_max_S_at_195cm": 29.7,
+    "currier_p97_5_all_S": 28.0,
+    "currier_p97_5_rugby_S": 28.7,
+    "hattori_sekitori_cutoff_S_at_180cm": 30.0,
+    "kondo_max_S": 33.9,
+    "kondo_max_plain_ffmi": 35.1,
+    "kondo_proposed_limit_S_at_180cm": 38.9,
+    "kouri_modern_bb_mean_S_at_180cm_approx": 31.5,
+    "kouri_modern_bb_max_S_at_180cm_approx": 39.5
+   },
+   "sources": [
+    {
+     "title": "Kouri et al. 1995 full text (k = 6.1; reference height 1.8 m)",
+     "url": "https://www.ovid.com/jnls/cjsportsmed/pdf/00042752-199510000-00003~fat-free-mass-index-in-users-and-nonusers-of"
+    },
+    {
+     "title": "Trexler et al. 2017 full text (k = 2.943)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5438288/"
+    },
+    {
+     "title": "Todd 2008 (heights used for the Mr America conversion)",
+     "url": "https://starkcenter.org/igh/igh-v10/igh-v10-n3/igh1003p03.pdf"
+    },
+    {
+     "title": "Chappell, Simper & Helms 2019, Table 1 (builds.json chappell2019_natural_pro_bodybuilders)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6704518/fullTextXML"
+    }
+   ],
+   "notes": "Rules:\n- Plain FFMI F = FFM/H^2. S = 1.8*FFM/H^3 = 1.8F/H.\n- A height-normalised index N = F + k(1.8 - H), with k = 6.1 (Kouri) or 2.943 (Trexler).\n- At exactly H = 1.80 m, F = N = S. A value 'normalised to 1.8 m' is therefore already on the chart's basis for a 1.80 m man.\n- For a real person at another height: F = N - k(1.8 - H), then S = 1.8F/H.\n- A sample statistic (mean, percentile, maximum) without individual heights can be converted only roughly, at the sample's mean height; I flag those as approximate.\nScripts: scratchpad scripts/anchor_conversions.py, kouri_t2_S.py, todd_table.py, frame_models.py, butt_ansur.py.\n\nScaling mismatch: S assumes FFM grows as H^3 (same shape). Kouri's elite non-users implied about H^2.44, and Butt's formula about H^1.5 x frame. So on S, short naturals score higher and tall ones lower. Kouri's 1.59 m non-user (FFMI 23.5) is S 26.6, while his 1.93 m non-user (25.4) is S 23.7. The Kouri 25 line runs from S 26.3 at 1.65 m to 23.9 at 1.95 m.\n\nItems from existing keys:\n- Chappell 2019 PROs: 1.77 m, 82.3 kg end of prep (self-reported), 5% fat assumed; FFMI 25.0, S 25.4.\n- Rossow 2013: FFMI 24.9, height unknown, so S is 24.9 only if 1.80 m (23.6 at 1.90 m, 26.4 at 1.70 m).\n- Kouri's modern bodybuilders: S given at the 1.80 m basis from the normalised values; heights not printed.",
+   "topic": "natural",
+   "verify": null
+  },
+  "builds_json_kouri_corrections": {
+   "label": "Corrections to existing builds.json keys found by reading the Kouri 1995 full text",
+   "status": "derived",
+   "values": {
+    "kouri_k_methods_kg_m3": 6.1,
+    "kouri_k_abstract_kg_m3": 6.3,
+    "nonusers_bodyfat_pct": 12.5,
+    "nonusers_bodyfat_sd_pct": 5.5,
+    "users_bodyfat_pct": 12.8,
+    "users_bodyfat_sd_pct": 4.8,
+    "users_ffmi_table1_kg_m2": 24.8,
+    "nonusers_ffmi_table1_kg_m2": 21.8,
+    "users_top_bin_low_kg_m2": 31.0,
+    "users_top_bin_high_kg_m2": 31.9,
+    "mr_america_pope_fat_low_pct": 6,
+    "mr_america_pope_fat_high_pct": 16,
+    "modern_bb_assumed_fat_pct": 5
+   },
+   "sources": [
+    {
+     "title": "Kouri et al. 1995 full text, publisher's free PDF",
+     "url": "https://www.ovid.com/jnls/cjsportsmed/pdf/00042752-199510000-00003~fat-free-mass-index-in-users-and-nonusers-of"
+    },
+    {
+     "title": "Todd 2008, Iron Game History 10(3) (Pope's recalled fat range)",
+     "url": "https://starkcenter.org/igh/igh-v10/igh-v10-n3/igh1003p03.pdf"
+    }
+   ],
+   "notes": "1. kouri1995_normalization_constant and ffmi_height_correction are both marked 'disputed'. The paper's methods give 'a slope of 6.1 kg/m3' and 'Normalized FFMI = FFMI + 6.1 x (1.8 - h)'; only the abstract prints 6.3. Change to resolved: 6.1, with a footnote that the abstract misprints 6.3. The practical effect is at most 0.05 units.\n\n2. human_ref_kouri_ffmi and kouri1995_ffmi_natural_limit give the normalisation as '6.3*(1.80 - h)'. Change to 6.1.\n\n3. kouri1995_ffmi_natural_limit.value_status and kouri1995_group_means say the Mr America FFMIs used an assumed 5% fat. Wrong: Pope estimated each winner's fat blind from magazine photos, and later recalled about 6-16%. The 5% assumption was for the 33 modern bodybuilders. The non-user limit's method (skinfolds, interview plus urine test) is right.\n\n4. kouri1995_group_means has 'overall_bodyfat_pct 12.8 +/- 4.8'. That is the users' value only (McDonald misread it); the non-users were 12.5 +/- 5.5. Exact Table 1 values: users 1.79 m, 91.69 kg, FFMI 24.8 +/- 2.2; non-users 1.80 m, 82.06 kg, FFMI 21.8 +/- 1.8.\n\n5. Helms' 'some users reached ~32': the top user is in the 31.0-31.9 normalised bin, and 2 users exceed 30.\n\n6. mr_america_1938_1954_program_girths: its note that the program heights and weights give 27.4 at 5% fat against Kouri's 25.4 is mostly explained by Kouri's higher, photo-based fat estimates and by his height and weight source (Willoughby 1970). It is not evidence that the program weights are wrong.\n\n7. ffmi_athletes: add Trexler's sentence that NCAA athletes are randomly tested but the study did no testing of its own.",
+   "topic": "natural",
+   "verify": null
+  },
+  "duo_skull_heights": {
+   "label": "Rex and Ollie: height to the top of the skull, read off duo.jpg at the picture's scale",
+   "status": "estimate",
+   "topic": "duo",
+   "values": {
+    "scale_mm_per_px_original_1280px": 3.858,
+    "scale_mm_per_px_repo_720px": 6.859,
+    "rex_crest_row_720": 4.8,
+    "rex_skull_row_720": 23,
+    "rex_skull_row_uncertainty_px": 3,
+    "rex_floor_row_720": 449.2,
+    "rex_skull_height_m": 2.92,
+    "rex_skull_height_range_m": [
+     2.9,
+     2.95
+    ],
+    "ollie_hair_top_row_720": 13.5,
+    "ollie_hair_allowance_m": 0.04,
+    "ollie_floor_row_720": 453.9,
+    "ollie_skull_height_in_boots_m": 2.98,
+    "ollie_boot_sole_m": 0.07,
+    "ollie_boot_sole_range_m": [
+     0.05,
+     0.09
+    ],
+    "ollie_skull_height_barefoot_m": 2.91,
+    "ollie_skull_height_range_m": [
+     2.87,
+     2.95
+    ],
+    "turnaround_crosscheck_rex_skull_over_crest": 0.947,
+    "duo_rex_skull_over_crest": 0.959
+   },
+   "sources": [
+    {
+     "title": "rex-strength-lab/assets/duo.jpg (the owner's art; 720 x 480 copy of the 1280 px original)",
+     "file": "rex-strength-lab/assets/duo.jpg"
+    },
+    {
+     "title": "Old picture measurement: scale, floor rows, skull rows (checker)",
+     "file": "history/scratchpad/mass/checker/results_checker.json"
+    }
+   ],
+   "notes": "The repository's duo.jpg is the original 1280 px picture resized to 720 x 480 (0.5625x), so the 3.858 mm per pixel of the original is 6.859 mm per pixel here. Rex: crest tip at row 8.5 and floor under the ankles at row 798.5 of the original (444.4 px here, 3.048 m); the top of the skull under the crest spikes was read at row 23 +/- 3 here (row 41 of the original in the old check), so 2.92 m (2.90-2.95). Ollie: hair top at row 13.5 here (24 of the original), skull about 4 cm lower, floor under his boots at row 453.9: 2.98 m in boots. Stature is measured barefoot, so about 7 cm (5-9 cm) of boot sole comes off: 2.91 m (2.87-2.95). Cross-check: on the turnarounds (not used for numbers in Step 1) Rex's skull sits at 0.947 of his crest height in both front and side views, against 0.959 on duo.jpg; the head is tilted up in duo.jpg. Step 2 replaces both readings from the regenerated turnarounds.",
+   "verify": null
+  },
+  "meatball_and_other_shapes": {
+   "label": "The meatball and two bigger shapes, on the score",
+   "status": "derived",
+   "topic": "geometry",
+   "values": {
+    "density_kg_m3": 1060,
+    "fat_pct": 7.5,
+    "ball": 924.1,
+    "ball_fat_10": 899.1,
+    "ball_fat_5": 949.1,
+    "cylinder_d_equals_h": 1386.2,
+    "cube": 1764.9
+   },
+   "sources": [],
+   "verify": null,
+   "notes": "Score of a solid shape as tall as the figure: 1.8 x density x (volume / H^3) x (1 - fat). A ball of diameter H holds pi/6 H^3; a cylinder as wide as it is tall pi/4 H^3; a cube H^3. The meatball is where the owner chose to end the scale; a body wider than it is tall could hold more."
+  }
+ },
+ "corrections_applied": []
+}

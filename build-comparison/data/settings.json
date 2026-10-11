@@ -139,7 +139,8 @@
      "ansur2_men_bodyfat_from_army_equation",
      "taylor2024_army_dxa_bodyfat"
     ]
-   }
+   },
+   "short": "Army men, 5th percentile"
   },
   "ansur2_m_p50": {
    "fat": {
@@ -151,7 +152,8 @@
      "ansur2_men_bodyfat_from_army_equation",
      "taylor2024_army_dxa_bodyfat"
     ]
-   }
+   },
+   "short": "Army men, median"
   },
   "ansur2_m_p95": {
    "fat": {
@@ -163,7 +165,8 @@
      "ansur2_men_bodyfat_from_army_equation",
      "taylor2024_army_dxa_bodyfat"
     ]
-   }
+   },
+   "short": "Army men, 95th percentile"
   },
   "ansur2_m_leanheavy": {
    "fat": {
@@ -175,7 +178,8 @@
      "ansur2_men_bodyfat_from_army_equation",
      "taylor2024_army_dxa_bodyfat"
     ]
-   }
+   },
+   "short": "Army men, 'lean but heavy'"
   },
   "ansur2_m_largest_arm": {
    "fat": {
@@ -187,10 +191,12 @@
      "ansur2_men_bodyfat_from_army_equation",
      "taylor2024_army_dxa_bodyfat"
     ]
-   }
+   },
+   "short": "Army man with the largest arm"
   },
   "nhanes_m_median": {
-   "fat_class": "everyday_us"
+   "fat_class": "everyday_us",
+   "short": "US men, median"
   },
   "kouri1995_nonusers": {
    "fat": {
@@ -203,176 +209,218 @@
     "keys": [
      "kouri1995_fulltext_methods"
     ]
-   }
+   },
+   "short": "Kouri's drug-free lifters"
   },
   "chappell2019_natural_pro": {
-   "fat_class": "stage"
+   "fat_class": "stage",
+   "short": "British natural pros"
   },
   "mr_america_1938_1954_mean": {
-   "fat_class": "presteroid_contest"
+   "fat_class": "presteroid_contest",
+   "short": "Mr America winners, 1938-54"
   },
   "steve_reeves_1947": {
-   "fat_class": "presteroid_contest"
+   "fat_class": "presteroid_contest",
+   "short": "Steve Reeves"
   },
   "ronnie_coleman": {
-   "fat_class": "enhanced_stage"
+   "fat_class": "enhanced_stage",
+   "short": "Ronnie Coleman"
   },
   "arnold_schwarzenegger": {
-   "fat_class": "enhanced_stage"
+   "fat_class": "enhanced_stage",
+   "short": "Arnold Schwarzenegger"
   },
   "dorian_yates": {
-   "fat_class": "enhanced_stage"
+   "fat_class": "enhanced_stage",
+   "short": "Dorian Yates"
   },
   "jay_cutler": {
-   "fat_class": "enhanced_stage"
+   "fat_class": "enhanced_stage",
+   "short": "Jay Cutler"
   },
   "phil_heath": {
-   "fat_class": "enhanced_stage"
+   "fat_class": "enhanced_stage",
+   "short": "Phil Heath"
   },
   "big_ramy": {
-   "fat_class": "enhanced_stage"
+   "fat_class": "enhanced_stage",
+   "short": "'Big Ramy' Elssbiay"
   },
   "sergio_oliva": {
-   "fat_class": "enhanced_stage"
+   "fat_class": "enhanced_stage",
+   "short": "Sergio Oliva"
   },
   "demoraes2019_br_national": {
-   "fat_class": "stage"
+   "fat_class": "stage",
+   "short": "Brazilian contest bodybuilders"
   },
   "sukwong2022_thai_elite": {
    "fat": {
     "kind": "own",
     "error_points": 3,
     "basis": "The build's own measured or reported value, plus or minus 3 points for the method"
-   }
+   },
+   "short": "Thai national-team bodybuilders"
   },
   "mcinnis1999_bodybuilders": {
    "fat": {
     "kind": "own",
     "error_points": 3,
     "basis": "The build's own measured or reported value, plus or minus 3 points for the method"
-   }
+   },
+   "short": "Bodybuilders (McInnis 1999)"
   },
   "fry1991_nonelite": {
    "fat": {
     "kind": "own",
     "error_points": 3,
     "basis": "The build's own measured or reported value, plus or minus 3 points for the method"
-   }
+   },
+   "short": "Non-elite bodybuilders (Fry 1991)"
   },
   "brian_shaw": {
    "fat": {
     "kind": "own",
     "error_points": 3,
     "basis": "The build's own measured or reported value, plus or minus 3 points for the method"
-   }
+   },
+   "short": "Brian Shaw"
   },
   "withers1997_elite": {
    "fat": {
     "kind": "own",
     "error_points": 2,
     "basis": "The build's own measured value (4-compartment model or DXA), plus or minus 2 points for the method"
-   }
+   },
+   "short": "Elite bodybuilders (Withers 1997)"
   },
   "kraemer2020_strongmen": {
    "fat": {
     "kind": "own",
     "error_points": 2,
     "basis": "The build's own measured value (4-compartment model or DXA), plus or minus 2 points for the method"
-   }
+   },
+   "short": "Elite strongmen (Kraemer 2020)"
   },
   "hafthor_bjornsson": {
-   "fat_class": "strongman"
+   "fat_class": "strongman",
+   "short": "Hafthor Bjornsson"
   },
   "eddie_hall": {
-   "fat_class": "strongman"
+   "fat_class": "strongman",
+   "short": "Eddie Hall"
   },
   "lasha_talakhadze": {
-   "fat_class": "strongman"
+   "fat_class": "strongman",
+   "short": "Lasha Talakhadze"
   },
   "superman": {
    "fat_class": "comic_lean",
-   "ranges": "none"
+   "ranges": "none",
+   "short": "Superman"
   },
   "batman": {
    "fat_class": "comic_lean",
-   "ranges": "none"
+   "ranges": "none",
+   "short": "Batman"
   },
   "captain_america": {
    "fat_class": "comic_lean",
-   "ranges": "none"
+   "ranges": "none",
+   "short": "Captain America"
   },
   "thor": {
    "fat_class": "comic_lean",
-   "ranges": "none"
+   "ranges": "none",
+   "short": "Thor"
   },
   "black_panther": {
    "fat_class": "comic_lean",
-   "ranges": "none"
+   "ranges": "none",
+   "short": "Black Panther"
   },
   "luke_cage": {
    "fat_class": "comic_lean",
-   "ranges": "none"
+   "ranges": "none",
+   "short": "Luke Cage"
   },
   "wolverine": {
    "fat_class": "comic_lean",
    "ranges": "none",
-   "comparable_note": "Scored without his adamantium skeleton: the 195 lb (88.5 kg) Marvel gives for him without it."
+   "comparable_note": "Scored without his adamantium skeleton: the 195 lb (88.5 kg) Marvel gives for him without it.",
+   "short": "Wolverine",
+   "flag": "adamantium not counted"
   },
   "colossus_human": {
    "fat_class": "comic_lean",
-   "ranges": "none"
+   "ranges": "none",
+   "short": "Colossus (human form)"
   },
   "hulk_savage": {
    "fat_class": "comic_brute",
-   "ranges": "none"
+   "ranges": "none",
+   "short": "Hulk (savage)"
   },
   "hulk_grey": {
    "fat_class": "comic_brute",
-   "ranges": "none"
+   "ranges": "none",
+   "short": "Hulk (grey)"
   },
   "hulk_marvelcom": {
    "fat_class": "comic_brute",
-   "ranges": "none"
+   "ranges": "none",
+   "short": "Hulk (Marvel.com)"
   },
   "juggernaut": {
    "fat_class": "comic_brute",
-   "ranges": "none"
+   "ranges": "none",
+   "short": "Juggernaut"
   },
   "abomination": {
    "fat_class": "comic_brute",
-   "ranges": "none"
+   "ranges": "none",
+   "short": "Abomination"
   },
   "doomsday": {
    "fat_class": "comic_brute",
-   "ranges": "none"
+   "ranges": "none",
+   "short": "Doomsday"
   },
   "darkseid": {
    "fat_class": "comic_brute",
-   "ranges": "none"
+   "ranges": "none",
+   "short": "Darkseid"
   },
   "bane": {
    "fat_class": "comic_brute",
-   "ranges": "none"
+   "ranges": "none",
+   "short": "Bane"
   },
   "kingpin": {
    "fat_class": "comic_heavy",
-   "ranges": "none"
+   "ranges": "none",
+   "short": "Kingpin"
   },
   "bruce_banner": {
    "fat_class": "comic_everyday",
-   "ranges": "none"
+   "ranges": "none",
+   "short": "Bruce Banner"
   },
   "thing": {
    "fat_class": "comic_brute",
    "ranges": "none",
    "comparable": "no",
-   "comparable_note": "His body is orange rock, so most of his weight is not muscle. His score is shown faded and kept out of the gaps."
+   "comparable_note": "His body is orange rock, so most of his weight is not muscle. His score is shown faded and kept out of the gaps.",
+   "short": "The Thing"
   },
   "colossus_armored": {
    "fat_class": "comic_brute",
    "ranges": "none",
    "comparable": "no",
-   "comparable_note": "In armoured form his body is organic steel, so his weight is not muscle. His score is shown faded and kept out of the gaps."
+   "comparable_note": "In armoured form his body is organic steel, so his weight is not muscle. His score is shown faded and kept out of the gaps.",
+   "short": "Colossus (armoured)"
   },
   "rex": {
    "fat_class": "duo",
@@ -395,7 +443,8 @@
      "basis": "Picture measurement: tail 0.289 m^3 at 1,060 kg/m^3 (visible part plus the hidden base)"
     }
    ],
-   "mass_note": "His 2,700 kg was measured over his tank top and cargo pants; Step 2 measures him from his turnaround."
+   "mass_note": "His 2,700 kg was measured over his tank top and cargo pants; Step 2 measures him from his turnaround.",
+   "short": "Rex"
   },
   "ollie": {
    "fat_class": "duo",
@@ -418,7 +467,124 @@
      "basis": "Picture measurement: tail about 0.010 m^3 (core 0.006 plus hair tuft at 15% packing), about 11 kg at 1,060 kg/m^3"
     }
    ],
-   "mass_note": "His 2,700 kg was measured over his clothes and boots; Step 2 measures him barefoot from his turnaround."
+   "mass_note": "His 2,700 kg was measured over his clothes and boots; Step 2 measures him barefoot from his turnaround.",
+   "short": "Ollie"
   }
- }
+ },
+ "anchors": {
+  "natural": [
+   {
+    "id": "kouri",
+    "label": "Kouri 1995: highest of 74 drug-free lifters",
+    "short": "Kouri 25",
+    "value": 25.0,
+    "kind": "sample maximum",
+    "status": "measured",
+    "keys": [
+     "kouri1995_fulltext_methods",
+     "kouri1995_fig2_distribution",
+     "kouri1995_ffmi_natural_limit"
+    ],
+    "text": "All 74 men who said they had never used steroids, and whose urine tests agreed, scored under 25 (normalised to 1.80 m). Nine sat between 24 and 25. It is the top of one sample, not a ceiling: 46 of the 83 steroid users in the same study also scored under 25."
+   },
+   {
+    "id": "tail",
+    "label": "College athletes, top 2.5% (DXA)",
+    "short": "athletes 28",
+    "value": 28.1,
+    "range": [
+     28.0,
+     28.7
+    ],
+    "kind": "measured upper tail",
+    "status": "measured",
+    "keys": [
+     "trexler2017_ffmi_fulltext_check",
+     "currier2019_ffmi_check"
+    ],
+    "text": "Among 235 US college footballers the 97.5th percentile was 28.1 and the top man 31.7 (Trexler 2017); across 209 athletes of ten sports the 97.5th percentile was 28.3, rugby 29.1 (Currier 2019). The NCAA tests at random, but these studies did no testing of their own, and many of these men carry 15-20% fat."
+   },
+   {
+    "id": "mr_america",
+    "label": "Pre-steroid Mr America winners (estimated from photos)",
+    "short": "Mr America",
+    "value": 25.8,
+    "range": [
+     25.8,
+     29.2
+    ],
+    "kind": "estimate from photos",
+    "status": "estimate",
+    "keys": [
+     "kouri1995_mr_america_table2",
+     "todd2008_mr_america_reanalysis"
+    ],
+    "text": "Kouri's blind estimates from photographs of the 1939-1959 winners average 25.4 (25.8 on this scale with their heights), top 28.0 (29.2). A later re-estimate of the same men from their heights and weights gives a mean of 26.4 and a top of 32.0. Only the guessed body fat differs."
+   },
+   {
+    "id": "butt",
+    "label": "Casey Butt's frame-based prediction",
+    "short": "Butt",
+    "value": 25.4,
+    "range": [
+     24.1,
+     26.9
+    ],
+    "kind": "prediction (formula)",
+    "status": "reported",
+    "keys": [
+     "butt_frame_model_max_lbm"
+    ],
+    "text": "A self-published formula from height, wrist and ankle, said to be fitted to about 300 natural champions. For a 1.80 m man with the median ANSUR II wrist and ankle it predicts 25.1-25.7; across frames from the 5th to the 95th percentile, 24.1-26.9. Not peer-reviewed."
+   },
+   {
+    "id": "sumo",
+    "label": "Largest fat-free mass measured: a sumo wrestler",
+    "short": "sumo",
+    "value": 33.9,
+    "kind": "measured extreme",
+    "status": "measured",
+    "keys": [
+     "kondo1994_sumo_ffm_upper_limit"
+    ],
+    "text": "121.3 kg of fat-free mass at 1.86 m and 33% fat (Kondo 1994, underwater weighing): plain FFMI 35.1, 33.9 on this scale. Drug status was not reported, and at 33% fat some of that fat-free mass is the extra water and tissue that carry fat."
+   }
+  ],
+  "enhanced": [
+   {
+    "id": "users",
+    "label": "Long-term steroid users (Pope group)",
+    "value": 26,
+    "range": [
+     24,
+     28
+    ],
+    "kind": "measured sample",
+    "status": "measured",
+    "keys": [
+     "baggish2017_aas_users_ffmi",
+     "hudson2020_aas_users_ffmi"
+    ],
+    "text": "86 long-term users: median normalised FFMI 26, middle half 24-28; current users 27 (25-29). Many enhanced lifters sit inside the natural range; the top pros at 35-40 are far beyond the typical user."
+   }
+  ]
+ },
+ "topic_names": {
+  "index": "The score (a size-independent index)",
+  "natural": "The natural limit",
+  "fat": "Body fat by group, and steroid users",
+  "comics": "Comic characters: mass that is not muscle",
+  "function": "Where the body stops working",
+  "outline": "Drawing a body from measurements",
+  "duo": "Rex and Ollie",
+  "geometry": "Geometry"
+ },
+ "ignores": [
+  "<b>Shape.</b> The score assumes a body grows at the same shape. Real tall men are slimmer than scaled-up short men, so the score rates them a little lower; giants and monsters would need thicker bones and different proportions (Galileo and Haldane made this point).",
+  "<b>Body fat.</b> Most builds have no measured body fat, so most scores rest on an assumed range for their group. The ranges are shown on every bar.",
+  "<b>What the mass is.</b> Fat-free mass includes bone, organs and water, not only muscle. Comic weights are as published; where the art or the publisher says the body is rock, steel or denser than human tissue, the score is flagged.",
+  "<b>Rex and Ollie.</b> Their mass (about 2,700 kg each) was measured from one front-view picture over their clothes, with assumed depth and density; their skull heights are read off the same picture. Both are estimates until Step 2 measures them from their turnarounds.",
+  "<b>Silhouettes.</b> Human figures are drawn from seven girths on the average soldier's proportions, with round limbs and elliptical trunk sections. They show the build, not the person; heads, hands and feet are average.",
+  "<b>The limits.</b> Where the body stops working is worked out on flat drawings of a template man widened at fixed bones. Real tissue squashes and real joints move in three dimensions, so each limit is a band, not a line."
+ ]
 }

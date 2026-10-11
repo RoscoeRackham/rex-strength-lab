@@ -524,6 +524,7 @@
   // ANSUR II men (data/outline.json): the chest is 0.0216 of stature below the armpit.
   var CHEST_BELOW_ARMPIT = 0.0216;
   var CHEST_HEIGHT = 0.7351; // chest height / stature, ANSUR II men (data/outline.json)
+  var TRUNK_SHAPE = { chest: 1.238, waist: 1.054 }; // tape / ellipse(breadth, depth), ANSUR II men (data/outline.json)
 
   /** Remove polygons (image px) from a mask, in place. */
   function clearPolys(mask, w, h, polys) {
@@ -807,10 +808,15 @@
     // Girths
     var gir = {}, pm = mPerPx;
     var ell = function (wd, dp) { return ellipsePerimeter(wd * pm, dp * pm); };
+    // A tape follows a trunk section that is boxier than an ellipse: in ANSUR II men the chest tape
+    // is 1.238 times the perimeter of the ellipse with the chest breadth and depth, the waist 1.054
+    // (data/outline.json, sections.*.girth_over_ellipse). opts.shape: false turns this off.
+    var shape = opts.shape === false ? {} : (opts.shapeFactors || TRUNK_SHAPE);
     var site = function (name, wd, dp, row, note) {
       if (!wd || !dp) { gir[name] = { value_m: null, note: 'not found' }; return; }
-      var g = ell(wd, dp);
-      gir[name] = { value_m: g, low_m: g * 0.9, high_m: g * 1.1, width_m: wd * pm, depth_m: dp * pm, row: row, note: note };
+      var e = ell(wd, dp), k = shape[name] || 1, g = e * k;
+      gir[name] = { value_m: g, low_m: g * 0.9, high_m: g * 1.1, width_m: wd * pm, depth_m: dp * pm, ellipse_m: e, shape_factor: k, row: row,
+        note: note + (k !== 1 ? '; times ' + k + ', the ANSUR II ratio of the tape to that ellipse' : '') };
     };
     var tw = function (y) { var t = y != null ? F.torsoRun(y) : null; return t ? t[1] - t[0] + 1 : 0; };
     site('chest', tw(F.rows.chest), sideDepth(mask, w, V.side, F.rows.chest + shiftSide), F.rows.chest, 'front width at the chest row x side depth; the side depth may include the near arm');
@@ -881,6 +887,6 @@
     SEG_DEFAULTS: SEG_DEFAULTS, ellipsePerimeter: ellipsePerimeter, median: median,
     backgroundRows: backgroundRows, pushPull: pushPull, components: components, morph: morph, segment: segment,
     splitViews: splitViews, runs: runs, contour: contour, simplify: simplify, polyArea: polyArea,
-    polygonMask: polygonMask, clearPolys: clearPolys, fitLine: fitLine, frontLandmarks: frontLandmarks, sideDepth: sideDepth, measureSheet: measureSheet, scaleRuns: scaleRuns, sliceRows: sliceRows, kProfile: kProfile, frontOnly: frontOnly, sliceRotated: sliceRotated, andMask: andMask, countMask: countMask
+    polygonMask: polygonMask, clearPolys: clearPolys, fitLine: fitLine, frontLandmarks: frontLandmarks, sideDepth: sideDepth, measureSheet: measureSheet, scaleRuns: scaleRuns, TRUNK_SHAPE: TRUNK_SHAPE, sliceRows: sliceRows, kProfile: kProfile, frontOnly: frontOnly, sliceRotated: sliceRotated, andMask: andMask, countMask: countMask
   };
 });
