@@ -249,6 +249,57 @@
    "key": "comic_score_treatment",
    "append_notes": "thing: {class: 'uncertain', basis: 'official: rock-like, supple skin; mass and density not stated'}; superman: {class: 'overstated', factor: null, basis: 'DK DC 2021 Kryptonians: dense molecular structure'}; thor: {class: 'overstated', factor: 'about 3 (2-4)', plot_mass_kg_range: [65, 129]}; kingpin fat_note: 'official: bulk not fat, like a sumo wrestler; 9 lb reported (wiki cites OHOTMU: Daredevil 2004)'.",
    "why": "Verifier (comics): Several classes go beyond the evidence or are applied inconsistently. (a) Thing 'overstated': official text only calls the skin rock-like and 'supple'. The density claim is fan-wiki. Without that, the direction is unknown. (b) Superman 'comparable': DK 2021 says Kryptonians have a 'dense molecular structure'. Under the researcher's own rule for Luke Cage, that makes him 'overstated, amount unknown"
+  },
+  {
+   "key": "kouri_correction_beyond_human_heights",
+   "set": {
+    "label": "Kouri's linear height correction fails far outside human heights (Rex at his skull height, tail not counted: about 250 on Kouri's scale against 160 on this page's)"
+   },
+   "append_notes": "On the page's basis (height to the top of the skull, 2.92 m; 306 kg of tail not counted; 7.5% fat; Kouri's c = 6.1): plain FFMI 259.7, Kouri-normalised 252.9, S 160.0. The values above use the earlier basis (crest height 3.048 m, tail counted).",
+   "why": "Review round 1 (data lens, DC-2): the label still gave the old-basis numbers (261 vs 159), which contradicted the score card (about 250 vs 160). Recomputed on the page's basis."
+  },
+  {
+   "key": "todd2008_mr_america_reanalysis",
+   "retitle_sources": [
+    [
+     "https://starkcenter.org/igh/igh-v10/igh-v10-n3/igh1003p03.pdf",
+     "Todd J. Size Matters: Reflections on Muscle, Drugs, and Sport. Iron Game History 10(3):3-22, Aug 2008 (Seward Staley Honor Lecture, NASSH 2008); Mr America analysis pp. 14-16"
+    ]
+   ],
+   "why": "Review round 1 (data lens, DC-7): the verifier's page-range correction had gone into the notes only; the source title on the page still said 13-15. The PDF's first page is printed 3; Pope's 6-16% recollection is on p.14 and the 221 lb Grimek estimate on p.15."
+  },
+  {
+   "key": "ansur2_ellipse_vs_girth_male",
+   "retitle_sources": [
+    [
+     "https://tools.openlab.psu.edu/publicData/ANSURII-TR11-017.pdf",
+     "Hotzman J et al. 2011, NATICK/TR-11/017 (chest breadth protocol, section 6.4.24: caliper compressed firmly to the rib cage, at maximum inspiration)"
+    ]
+   ],
+   "why": "Review round 1 (data lens, DC-8): the title gave full inspiration as a reason chest breadth is narrow; the verifier found inspiration widens it. The title now describes the protocol without claiming a cause."
+  },
+  {
+   "key": "dc_density_claims_fan_only",
+   "values": {
+    "official_density_statements_found": 1,
+    "kryptonians_dk_dc_2021": "KRYPTONIANS ... POWERS/ABILITIES On Krypton: high intelligence, dense molecular structure, cells capable of absorbing and storing certain frequencies of radiation. (OCR line 30445; no factor)"
+   },
+   "replace_notes": [
+    [
+     "Grep of both DK DC OCR texts for dense/denser/density/'body fat' found hits only for other characters",
+     "Grep of both DK DC OCR texts for dense/denser/density/'body fat' found one statement about Superman's species (DK 2021, Kryptonians entry: 'On Krypton: high intelligence, dense molecular structure, ...'; no factor); the other hits are other characters"
+    ]
+   ],
+   "why": "Review round 1 (data lens, DC-12): the label had been corrected to one official statement but the values still said 0. Confirmed in the DK DC Comics Encyclopedia New Edition (2021) OCR text, line 30445, fetched 11 Oct 2026."
+  },
+  {
+   "key": "trexler2017_ffmi_fulltext_check",
+   "values": {
+    "n_over_25_kouri_equation": 54,
+    "pct_over_25_kouri_equation": 23.0
+   },
+   "append_notes": "Results, 'Upper limits for FFMI': 'Sixty-two participants (26.4%) had FFMIAdj values above 25 kg·m−2 (Figure 1B). When using the KE adjustment, 54 participants (23.0%) had FFMIKE values above 25 kg·m−2 (Figure 1C).' FFMIAdj uses the study's own slope (2.943); FFMIKE uses Kouri's (6.1). The 28.1 (97.5th percentile) and 31.7 (maximum) are FFMIAdj. Full text fetched 11 Oct 2026 through PMC's OAI service (the article page served a captcha).",
+   "why": "Review round 1 (data lens, DC-6): the page put Trexler's own-slope count (62, 26%) in a sentence about Kouri's scale. On Kouri's equation the count is 54 (23%)."
   }
  ]
 }

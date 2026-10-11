@@ -35,9 +35,10 @@
    ],
    "working_pct": 10,
    "keys": [
-    "kouri1995_mr_america_table2"
+    "kouri1995_mr_america_table2",
+    "todd2008_mr_america_reanalysis"
    ],
-   "note": "Pope's blind estimates from photographs ran from about 6% to 16% (Kouri 1995)."
+   "note": "Kouri 1995 estimated each winner's body fat blind from photographs but did not publish the estimates; Pope, who made them, later recalled they ran from about 6% to 16% (Todd 2008)."
   },
   "enhanced_stage": {
    "label": "Enhanced pro bodybuilders on stage",
@@ -76,7 +77,7 @@
    "keys": [
     "bodyfat_range_comic_characters"
    ],
-   "note": "No publisher gives body fat. Assumed from how they are drawn: like lean bodybuilders."
+   "note": "No body-fat figure was found in the Marvel and DC sources searched. Assumed from how they are drawn: like lean bodybuilders."
   },
   "comic_brute": {
    "label": "Comic brutes (assumed)",
@@ -88,7 +89,7 @@
    "keys": [
     "bodyfat_range_comic_characters"
    ],
-   "note": "No publisher gives body fat. Assumed: muscular, less defined than stage bodybuilders."
+   "note": "No body-fat figure was found in the Marvel and DC sources searched. Assumed: muscular, less defined than stage bodybuilders."
   },
   "comic_everyday": {
    "label": "Bruce Banner (assumed: like an everyday man)",
@@ -101,7 +102,7 @@
     "bodyfat_range_comic_characters",
     "ansur2_men_bodyfat_from_army_equation"
    ],
-   "note": "No publisher gives body fat. Assumed: the range estimated for US soldiers from waist and weight."
+   "note": "No body-fat figure was found in the Marvel and DC sources searched. Assumed: the range estimated for US soldiers from waist and weight."
   },
   "duo": {
    "label": "Rex and Ollie (owner's canon)",
@@ -577,12 +578,12 @@
    },
    {
     "id": "mr_america",
-    "label": "Pre-steroid Mr America winners (estimated from photos)",
+    "label": "Pre-steroid Mr America winners (estimated from photos; normalised FFMI)",
     "short": "Mr America",
-    "value": 25.8,
+    "value": 25.4,
     "range": [
-     25.8,
-     29.2
+     22.6,
+     28.0
     ],
     "kind": "estimate from photos",
     "status": "estimate",
@@ -590,7 +591,7 @@
      "kouri1995_mr_america_table2",
      "todd2008_mr_america_reanalysis"
     ],
-    "text": "Kouri's blind estimates from photographs of the 1939-1959 winners average 25.4 (25.8 on this scale with Todd's heights), top 28.0 (29.2). A later re-estimate by Todd from her own height and weight records gives a mean of 26.4 and a top of 32.0, but that top rests on a 221 lb weight for John Grimek that the 1956 contest programme gives as 195 lb (about 28). The two used different height and weight records (Kouri: Willoughby 1970) and different fat guesses."
+    "text": "Kouri's blind estimates from photographs put the 20 winners of 1939-1959 at 22.6 to 28.0 normalised FFMI, mean 25.4; on this page's scale, with Todd's heights, the mean is 25.8 and the top 29.2. A later re-estimate by Todd from her own height and weight records gives a mean of 26.4 and a top of 32.0, but that top rests on a 221 lb weight for John Grimek that the 1956 contest programme gives as 195 lb (about 28). The two used different height and weight records (Kouri: Willoughby 1970) and different fat guesses."
    },
    {
     "id": "butt",
@@ -651,7 +652,7 @@
   "geometry": "Geometry"
  },
  "ignores": [
-  "<b>Shape.</b> The score assumes a body grows at the same shape. Real tall men are slimmer than scaled-up short men, so the score rates them a little lower; giants and monsters would need thicker bones and different proportions (Galileo and Haldane made this point).",
+  "<b>Shape.</b> The score assumes a body grows at the same shape. On average, taller men carry less fat-free mass per height cubed (across adults it grows about as height squared), so the score rates them a little lower; whether real bodies differ in shape or this is partly a statistical artefact is disputed (Burton 2010). giants and monsters would need thicker bones and different proportions (Galileo and Haldane made this point).",
   "<b>Body fat.</b> Most builds have no measured body fat, so most scores rest on an assumed range for their group. The ranges are shown on every bar.",
   "<b>What the mass is.</b> Fat-free mass includes bone, organs and water, not only muscle. Comic weights are as published; where the art or the publisher says the body is rock, steel or denser than human tissue, the score is flagged.",
   "<b>Rex and Ollie.</b> Their mass (about 2,700 kg each) was measured from one front-view picture over their clothes, with assumed depth and density; their skull heights are read off the same picture. Both are estimates until Step 2 measures them from their turnarounds.",
@@ -722,7 +723,7 @@
   "notes": [
    "No study gives these limits. Each threshold is an estimate built from sourced pieces: what stops a joint (soft tissue meeting soft tissue), how far ordinary men can move, and how far daily tasks need. The sources are listed under “Where the body stops working” below.",
    "This is flat, front-view geometry on drawn templates. Real soft tissue squashes, arms can sit a little in front of the body, and shoulders shrug, so each limit is a band, not a line.",
-   "A softer line comes earlier. Unaided eating and drinking use about 130 to 136° of elbow bend; with the elbow held to 120°, 49 of 50 people still managed eating, drinking and washing by moving the shoulder and wrist instead (Vasen 1995), the lowest setting tested.",
+   "A softer line comes earlier. Unaided eating and drinking use about 130 to 136° of elbow bend; with elbow motion braced to between 75° and 120°, 49 of 50 adults still did all 12 daily tasks tested, using the joints next to the elbow to compensate (Vasen 1995).",
    "The bands are for human-shaped bodies. Rex and Ollie are not built like the template, and the limits were not tested on their outlines: their thighs touch in the art, but their arms are posed out (an A-pose), so whether they could hang down is untested.",
    "These are shapes scored lean (7.5% fat). A fat body reaches the same outline at a lower score: ordinary obese men's thighs already touch, and very obese people step wider."
   ]
@@ -739,7 +740,7 @@
    "id": "past25",
    "upto": 32,
    "title": "Past Kouri's 25",
-   "verdict": "No drug-free man in Kouri's study reached 25 on his scale. {chip:measured} Many measured athletes do: 62 of 235 college footballers (26%) were above 25, the top 2.5% start at 28, and the top one reached 32. {chip:measured}",
+   "verdict": "No drug-free man in Kouri's study reached 25 on his scale. {chip:measured} Many measured athletes do: on Kouri's equation, 54 of 235 college footballers (23%) were above 25. On their study's own height-normalised FFMI, the top 2.5% start at 28 and the top one reached 32. {chip:measured}",
    "sub": "Kouri's 25 is FFMI normalised to 1.80 m, which equals this page's score only for a 1.80 m man; for one 1.59 m drug-free lifter in his study it comes to about 27. The footballer study did no drug testing of its own (the NCAA tests at random), and many of those athletes carry 15 to 20% fat."
   },
   {

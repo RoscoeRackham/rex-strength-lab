@@ -15,7 +15,7 @@ The judgement calls behind `settings.json`, the derived files, and what is still
 - **NHANES men:** the measured DXA median and interquartile range (24.1-32.1%, working 28%).
 - **Kouri's non-users:** the paper's measured group mean, 12.5%, ± 3 points for skinfolds.
 - **Natural contest day:** 4-10% (working 6). Only one contest-day value is confirmed by DXA (Barakat 2022, 6.3%, one natural pro); the rest are field methods. Range is an estimate around them.
-- **Pre-steroid contest:** 6-16% (working 10), Pope's blind estimates from photographs in Kouri 1995.
+- **Pre-steroid contest:** 6-16% (working 10). Pope made blind estimates from photographs for Kouri 1995, which did not publish them; he later recalled the range to Todd (2008).
 - **Enhanced pros on stage:** 4-8% (working 5). No lab measurement of a top pro on stage exists; the range rests on Withers 1997 (5.0%, 4-compartment, five days out; drug status not stated), an IFBB pro at 5.9% by skinfolds, and the natural values.
 - **Strongmen and lifters:** 12-28% (working 19). Kraemer 2020's elite strongmen measured 18.7 ± 6.2% by DXA; 12% is about mean − 1.1 SD (raised by judgement), 28% covers the sumo and heavy-powerlifter means.
 - **Comic characters:** no body-fat percentage was found in the sources searched (DK Marvel 2019, DK DC 2021 and 2019, Marvel.com, the Official Handbook Deluxe); the 2004-2010 handbooks were not fully searched. Assumed: lean heroes 5-12%, brutes 8-20%, Bruce Banner like an everyday man (15-34%). Kingpin: 2-20% (working 12): Marvel says his bulk "is actually muscle, not fat" and likens him to a sumo wrestler; a fan wiki gives 9 lb of fat (2%), citing the 2004 Daredevil handbook (not verified).

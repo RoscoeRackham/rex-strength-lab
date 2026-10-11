@@ -66,8 +66,72 @@ if os.path.exists(cp):
             f['notes'] = f['notes'].rstrip() + '\n\nCorrection (verifier): ' + c['append_notes']
         for vk, vv in c.get('values', {}).items():
             f['values'][vk] = vv
+        for url, title in c.get('retitle_sources', []):
+            hit = [src for src in f['sources'] if src.get('url') == url]
+            assert hit, c['key'] + ': no source with url ' + url
+            for src in hit:
+                src['title'] = title
         f.setdefault('applied', []).append(c['why'])
         applied.append(c['key'])
+
+# Archive.org full-text search links: the API often fails and the handbooks are lending-library
+# items whose OCR text is not public. Put the matched text in the source (research/archive_snippets.json,
+# fetched by tools/fetch_archive_snippets.py) and add the item's own page, which opens a search inside
+# the book for the matched words.
+import re, urllib.parse
+SNIP_PATH = os.path.join(ROOT, 'research', 'archive_snippets.json')
+SNIP = load(SNIP_PATH)['searches'] if os.path.exists(SNIP_PATH) else {}
+# Which highlighted passage supports each fact (the searches also hit other characters).
+QUOTE_PICK = {
+    'asgardian_tissue_density_ohotmu': r'Asgardian flesh and bone|flesh and bone is about (three|3) times',
+    'thor_density_adjusted_mass': r'flesh and bone is about (three|3) times denser',
+    'comic_score_treatment': r'flesh and bone is about (three|3) times denser',
+    'colossus_armored_composition': r'organic steel|unknown composition|additional mass',
+    'hulk_added_mass_composition': r'Hulk.s body fortified|bone marrow and tissue to his body|mutation was not a stable',
+    'abomination_added_mass_composition': r'Abomination.s body fortified|pounds of bone marrow and muscle',
+    'luke_cage_dense_tissue': r'bone tissue, and steel-hard skin',
+    'kingpin_bulk_not_fat': r'great bulk does not consist|sumo wrestler',
+    'juggernaut_composition': r'helmet and skullcap|Weight: 900',
+    'comic_body_fat_official': r'virtually devoid of fat|great bulk does not consist',
+}
+# Official books only (the 'all texts' searches also hit fan uploads and unrelated books).
+OFFICIAL_ITEMS = {'officialhandbook0001unse', 'officialhandbook04grue', 'marvel-encyclopedia-new-edition_202312'}
+API = 'archive.org/services/search/beta/page_production/'
+
+
+def clean(t):
+    return re.sub(r'\s+', ' ', t.replace('{{{', '').replace('}}}', '')).strip()
+
+
+def matched(t):
+    return [m.strip() for m in re.findall(r'\{\{\{(.*?)\}\}\}', t)]
+
+
+for k, f in facts.items():
+    extra = []
+    for src in f['sources']:
+        if API not in src.get('url', ''):
+            continue
+        res = SNIP.get(src['url'], {})
+        pick = re.compile(QUOTE_PICK.get(k, r'.'), re.I)
+        quote = None
+        for h in res.get('hits', []):
+            if h['identifier'] not in OFFICIAL_ITEMS:
+                continue
+            q = [t for t in h['highlights'] if pick.search(clean(t))]
+            if not q:
+                continue
+            quote = quote or clean(q[0])
+            item = 'https://archive.org/details/' + h['identifier']
+            words = (matched(q[0]) or [''])[0]
+            url = item + ('?q=' + urllib.parse.quote_plus('"' + words + '"') if words else '')
+            have = [x.get('url', '') for x in f['sources'] + extra]
+            if any(u.startswith(item) or ('/download/' + h['identifier'] + '/') in u for u in have):
+                continue
+            lend = ' (lending library: borrow it to read the page)' if 'inlibrary' in (h.get('collection') or []) else ''
+            extra.append({'title': h['title'].rstrip(' .') + (' (' + h['date'] + ')' if h.get('date') else '') + ', archive.org' + lend + ': “…' + clean(q[0]) + '…”', 'url': url})
+        src['title'] = src['title'] + ' [archive.org search API: it often fails, so retry later' + ('; it matched “…' + quote + '…”' if quote else '') + ']'
+    f['sources'].extend(extra)
 
 # Facts this session derived itself.
 LOCAL = {

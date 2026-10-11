@@ -1068,10 +1068,11 @@ details.src summary { cursor: pointer; font-weight: 600; }
       'Higher than the score, because he is ' + fmt.sep(e.height.value, 2) + ' m tall. Plain FFMI grows with height at the same shape; the score takes that out.' : 'Lower than the score, because he is shorter than 1.80 m.';
     row('Plain FFMI', '<span class="v">' + scr(e.plain.lo, e.plain.hi) + '</span> ' + chip(st) + '<span class="why">' + hRel + '</span>');
     row('Height counted', '<span class="v">' + fmt.sep(e.height.value, 2) + ' m</span> ' + chip(e.height.status) + (duo ? ' <span>to the top of the skull</span>' : '') +
-      '<span class="why">' + esc(e.height.basis || b.height_m.basis || '') + '</span>');
+      '<span class="why">' + esc((e.height.basis || b.height_m.basis || '') + (b.height_m.disputed && b.height_m.value_basis ? ' Sources disagree' + (b.weight_kg.disputed && b.weight_kg.value_basis === b.height_m.value_basis ? ' on height and weight' : '') + '; counted from ' + b.height_m.value_basis + '.' : '')) + '</span>');
     var wv = duo ? kg(e.mass.value) + ' kg: ' + kg(b.weight_kg.value) + ' kg less ' + kg(e.mass.excludedKg) + ' kg of tail' : kg(e.mass.value) + ' kg (' + fmt.sep(e.mass.value / 0.45359237, 0) + ' lb)';
     var wWhy = [];
     if (b.weight_kg.basis) wWhy.push(b.weight_kg.basis + '.');
+    if (b.weight_kg.disputed && b.weight_kg.value_basis && b.weight_kg.value_basis !== (b.height_m.disputed && b.height_m.value_basis)) wWhy.push('Sources disagree; counted from ' + b.weight_kg.value_basis + '.');
     if (e.mass.excludedKg) wWhy.push('Tail: ' + e.setting.exclude_mass.map(function (x) { return x.basis; }).join('; ') + '.');
     if (b.girth_basis_weight_kg) wWhy.push('Counted without the adamantium: ' + kg(b.girth_basis_weight_kg) + ' kg of his listed ' + kg(b.weight_kg.value) + ' kg, the weight Marvel gives without it.');
     if (e.setting.mass_note) wWhy.push(e.setting.mass_note);
@@ -1365,7 +1366,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
     var kouriRex = rex.plain.value + BuildCalc.KOURI_C * (1.8 - rex.height.value);
     $('scoreCard').innerHTML = '<h3>The score</h3><div class="formula">score = 1.8 × fat-free mass ÷ height³</div>' +
       '<p>Fat-free mass is everything but fat: muscle, bone, organs, water. Scale a body up at the same shape and its mass grows with height cubed, so dividing by height cubed takes size out. The result is the plain FFMI (fat-free mass ÷ height², in kg/m²) the same body would have at <b>1.80 m</b>, the height Kouri 1995 normalised to. At 1.80 m the two are equal.</p>' +
-      '<p>Plain FFMI is roughly flat with height among real men, because tall men are not scaled-up short men. So this score rates tall men a little lower than Kouri\'s height correction does. Within human heights the difference is small; at Rex\'s height Kouri\'s correction, fitted to drug-free athletes of about 1.6 to 1.9 m, would give about ' + sc(kouriRex) + ' instead of ' + sc(rex.score.value) + '.</p>' +
+      '<p>Plain FFMI is roughly flat with height among real men: across adults, fat-free mass grows on average about as height squared, not height cubed. So this score rates tall men a little lower than Kouri\'s height correction does (whether tall men really differ in shape, or this is partly a statistical artefact, is disputed). Within human heights the difference is small; at Rex\'s height Kouri\'s correction, fitted to drug-free athletes of about 1.6 to 1.9 m, would give about ' + sc(kouriRex) + ' instead of ' + sc(rex.score.value) + '.</p>' +
       '<p>Height is to the <b>top of the skull</b>. Each 1% of height moves the score by about 3%.</p>' +
       '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Build</th>' + (phone ? '<th>Height · fat-free mass</th>' : '<th>Height</th><th>Fat-free mass</th>') + '<th>Plain FFMI</th><th>Score</th></tr></thead><tbody>' + ex + '</tbody></table></div>' +
       '<p><b>The meatball (' + MEAT_TXT + ').</b> A solid ball of muscle as tall as the figure, at 1,060 kg/m³ and 7.5% fat (' + sc(MEAT_LO) + ' to ' + sc(MEAT_HI) + ' at 10 to 5%). It ends the scale; it is not a hard maximum. A body wider than it is tall could hold more: a cylinder as wide as it is tall would score about ' + sc(1.8 * 1060 * Math.PI / 4 * 0.925) + ', a cube about ' + sc(1.8 * 1060 * 0.925) + '.</p>';
@@ -1635,7 +1636,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
       '<li><span class="flag">Red</span><span><b>Red text: a warning.</b> Not comparable, may be overstated, or beyond human data.</span></li>' +
       '</ul></div><div><h3>Groups</h3><ul>' + GROUPS.map(function (g) { return '<li><svg width="56" height="18" aria-hidden="true"><rect width="56" height="18" fill="var(' + g.v + ')"/></svg><span>' + esc(g.label) + '</span></li>'; }).join('') +
       '<li><svg width="56" height="18" aria-hidden="true"><rect width="56" height="18" class="geo"/></svg><span>Geometry (not a build)</span></li></ul>' +
-      '<h3 style="margin-top:16px">Status chips</h3><ul>' + ['measured', 'official', 'reported', 'derived', 'estimate'].map(function (s) { return '<li><span>' + chip(s) + '</span><span>' + esc(VOCAB[s] || '') + '</span></li>'; }).join('') + '</ul></div>';
+      '<h3 style="margin-top:16px">Status chips</h3><ul>' + ['measured', 'official', 'reported', 'derived', 'estimate', 'disputed'].map(function (s) { return '<li><span>' + chip(s === 'disputed' ? 'reported' : s, s) + '</span><span>' + esc(VOCAB[s] || '') + '</span></li>'; }).join('') + '</ul></div>';
     if (window.innerWidth >= 720) $('keyDetails').open = true;
   }
   function setSeg(a, b, on) { $(a).setAttribute('aria-pressed', on ? 'true' : 'false'); $(b).setAttribute('aria-pressed', on ? 'false' : 'true'); }
