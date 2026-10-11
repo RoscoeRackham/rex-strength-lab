@@ -3058,7 +3058,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const elText = ratioE >= 0.7 && ratioE <= 1.5 ? 'about the same' : ratioE > 1 ? sig(ratioE, 1) + '× the elephant' : sig(1 / ratioE, 1) + '× quieter';
     const elSub = 'one measured walking past ' + fmtDist(dE) + ' away' + (ratioE >= EL.lo && ratioE <= EL.hi ? '; inside the 0.15–8× real elephants vary' : '');
     out.push(tiles(
-      tile('Ground shaking at ' + fmtDist(D0), fmtPPV(v), 'peak, up and down' + (both ? '; both in step' : '') + ' · estimate'),
+      tile('Ground shaking at ' + fmtDist(D0), fmtPPV(v), 'peak, up and down' + (both ? '; both in step' : '') + ' · estimate, about 3–5× either way'),
       tile('Compared with an elephant', elText, elSub),
       ...groundTiles));
     out.push(ppvChart(pres.map((x) => ({ label: x.n, f: (d) => x.pr.ppv(d) })), D0, TH));
@@ -3088,7 +3088,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     out.push(math([
       'Pace: people’s gait scaled to his size at the same Froude number v²/(g h), hip height h = ' + sig(st.h, 3) + ' m (0.45 of his height, our estimate). Froude ' + st.Fr + ' → ' + speedOnly(st.v) + ', ' + sig(st.stepRate, 2) + ' steps a second (0.789 Fr^0.211 √(g/h), fitted to people at Froude 0.09–0.37), each foot down ' + fmtTime(st.stance) + '.',
       'Load: ' + sig(st.kLoad, 2) + '× body weight comes onto the foot over ' + fmtTime(st.tRamp) + ' (people: 1.2 at 1.5 m/s, rising 0.25 per m/s; Keller 1996, Nilsson & Thorstensson 1989). The landing adds a pulse of ' + sig(st.Fpulse / st.W, 2) + '× his weight lasting ' + fmtTime(st.Tpulse) + ': an ordinary heel strike stops 11% of him at 0.70 m/s in 37 ms (Baines 2018, scaled); soft-footed 0.31 of that; a drill stamp 6.5× (Carden 2015).',
-      'Ground shaking (elastic ground, Lamb’s problem): for a pulse of peak F lasting T, PPV = max(0.375 F/(ρ c² T r), 0.620 F/(ρ c^2.5 T^1.5 √r)) × damping, with ρ = ' + gd.rho + ' kg/m³, shear-wave speed c = ' + gd.cs + ' m/s and damping ' + gd.xi + ' for ' + sf.short + ' (estimates). Checked against a 130 kg drop test at Pisa (within about 2× from 2.5 to 60 m) and elephant footfalls; good to about 3× either way, rougher past 60 m.',
+      'Ground shaking (elastic ground, Lamb’s problem): for a pulse of peak F lasting T, PPV = max(0.375 F/(ρ c² T r), 0.620 F/(ρ c^2.5 T^1.5 √r)) × damping, with ρ = ' + gd.rho + ' kg/m³, shear-wave speed c = ' + gd.cs + ' m/s and damping ' + gd.xi + ' for ' + sf.short + ' (estimates). Checked against one drop test (130 kg at Pisa: within about 2× from 2.5 to 60 m, contact time fitted) and loosely against elephant footfalls; footsteps themselves were never measured. Uncertain by about 3–5× either way, more past 60 m.',
     ]));
     return out;
   }

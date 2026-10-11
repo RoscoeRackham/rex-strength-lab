@@ -899,6 +899,1751 @@
    "values_json": "{\"rule\": \"depth = d0 x (p / 350 kPa)^n x (B / 0.274 m); n = 1.1-1.3 from Schanz's calibrated model (4 / 8 / 18 mm at 99 / 185 / 350 kPa)\", \"anchor_measured_d0_0.022m\": {\"Rex_m\": [0.01, 0.013], \"Ollie_m\": [0.019, 0.02]}, \"anchor_model_d0_0.018m_n_1.27\": {\"Rex_m\": 0.0088, \"Ollie_m\": 0.0154}, \"upper_if_print_made_at_181kPa_linear\": {\"Rex_m\": 0.028, \"Ollie_m\": 0.041}, \"Rex\": {\"p_kPa\": 114, \"B_m\": 0.557}, \"Ollie\": {\"p_kPa\": 236, \"B_m\": 0.387}}"
   },
   {
+   "key": "vib_bs5228_dynamic_compaction_predictor",
+   "category": "presence_attenuation",
+   "label": "BS 5228-2 Table E.1: ground vibration from dynamic compaction (weight dropped on the ground)",
+   "status": "verified",
+   "value_si": 3.7e-05,
+   "unit_si": "m/s (coefficient k in PPV = k (sqrt(W_h)/x)^1.7, W_h in J, x in m)",
+   "low_si": null,
+   "high_si": null,
+   "display": "PPV ≤ 0.037 (√W_h / x)^1.7 mm/s; W_h = potential energy of the raised tamper (J), x = distance along the ground (m); valid 5–100 m and 1–12 MJ",
+   "sources": [
+    {
+     "title": "BS 5228-2:2009+A1:2014 Annex E, Tables E.1 and E.2 (licensed copy filed as public-inquiry core document CD43.12, Omega West)",
+     "url": "https://www.omegawestdocuments.com/media/documents/43/CD43.12%20-%204%20Code%20of%20practice%20for%20noise%20and%20vibration%20control%20on%20construction%20and%20open%20sites%20part%202%20vibration;.pdf"
+    },
+    {
+     "title": "York Potash Harbour Facilities Order, ES Appendix 14.1 Construction vibration calculations (2014), used only for the units caution",
+     "url": "https://northeastfc.uk/Infrastructure/projects/north-east/york-potash-harbour-facilities-order/TR030002-000493-Section%2014%20App%2014.1%20Construction%20vibration%20calculations.pdf"
+    }
+   ],
+   "notes": "Table E.1 row 'Dynamic compaction': 'νres ≤ 0.037 [√Wh / x]^1.7', range '5 ≤ x ≤ 100 m' and '1.0 ≤ Wh ≤ 12 MJ'. Key: 'νres resultant PPV, in millimetres per second (mm·s−1)'; 'Wh potential energy of a raised tamper, in joules (J)'; 'x distance measured along the ground surface, in metres (m)'. No scaling factor is given: it is an upper-bound predictor (TRL 429 calls Mayne's law a 'conservative upper limit'). Same law as Mayne (1985) to within 1%: 0.037 × 9,806.65^0.85 = 91.4, against 92 with M in t and H in m. Footsteps (our assumed 10 J–10 kJ) are 100 to 100,000 times below the 1 MJ floor, and 1–5 m is inside the 5 m floor. W_h is in joules: the York Potash sheet's 85 kJ percussive case (0.3 mm/s at 19.0 m) only works with W in kJ. Verifier: re-fetched; row, ranges and key confirmed.",
+   "who_when": "BSI 2014, reproducing Hiller & Crabb (TRL) 2000",
+   "values_json": "{\"table\": \"BS 5228-2:2009+A1:2014 Table E.1 (resultant PPV in mm/s)\", \"rows\": [{\"operation\": \"Vibratory compaction (steady state)\", \"equation\": \"v_res = k_s sqrt(n_d) [A/(x+L_d)]^1.5\", \"scaling\": \"k_s = 75 (50%), 143 (33.3%), 276 (5%)\", \"range\": \"1 <= n_d <= 2; 0.4 <= A <= 1.72 mm; 2 <= x <= 110 m; 0.75 <= L_d <= 2.2 m\"}, {\"operation\": \"Vibratory compaction (start up and run down)\", \"equation\": \"v_res = k_t sqrt(n_d) [A^1.5/(x+L_d)^1.3]\", \"scaling\": \"k_t = 65 (50%), 106 (33.3%), 177 (5%)\", \"range\": \"as above\"}, {\"operation\": \"Percussive piling\", \"equation\": \"v_res <= k_p [sqrt(W)/r^1.3]\", \"scaling\": \"piles at refusal k_p = 5; not at refusal 1 <= k_p <= 3 by soil (Table E.2)\", \"range\": \"1 <= L <= 27 m; 1 <= x <= 111 m (r^2 = L^2 + x^2); 1.5 <= W <= 85 kJ; W nominal hammer energy in J\"}, {\"operation\": \"Vibratory piling\", \"equation\": \"v_res = k_v / x^delta\", \"scaling\": \"k_v = 60 (50%), 126 (33.3%), 266 (5%)\", \"range\": \"1 <= x <= 100 m; 1.2 <= W <= 10.7 kJ; delta = 1.3 all, 1.2 start/stop, 1.4 steady\"}, {\"operation\": \"Dynamic compaction\", \"equation\": \"v_res <= 0.037 [sqrt(W_h)/x]^1.7\", \"scaling\": \"none (upper bound)\", \"range\": \"5 <= x <= 100 m; 1.0 <= W_h <= 12 MJ; W_h in J\"}, {\"operation\": \"Vibrated stone columns\", \"equation\": \"v_res = k_c / x^1.4\", \"scaling\": \"k_c = 33 (50%), 44 (33.3%), 95 (5%)\", \"range\": \"8 <= x <= 100 m\"}, {\"operation\": \"Tunnelling (groundborne vibration)\", \"equation\": \"v_res <= 180 / x^1.3\", \"scaling\": \"none\", \"range\": \"10 <= r <= 100 m\"}]}"
+  },
+  {
+   "key": "vib_bs5228_percussive_piling_kp",
+   "category": "presence_attenuation",
+   "label": "BS 5228-2 Table E.2: ground factor k_p for percussive piling (PPV ≤ k_p √W / r^1.3)",
+   "status": "verified",
+   "value_si": null,
+   "unit_si": "mm/s per (J^0.5 m^-1.3)",
+   "low_si": null,
+   "high_si": null,
+   "display": "k_p = 5 (piles at refusal), 3 (very stiff clay, dense granular), 1.5 (stiff clay, medium dense granular, compacted fill), 1 (soft clay, loose granular, loose fill, organic)",
+   "sources": [
+    {
+     "title": "BS 5228-2:2009+A1:2014 Annex E, Tables E.1 and E.2 (licensed copy filed as public-inquiry core document CD43.12, Omega West)",
+     "url": "https://www.omegawestdocuments.com/media/documents/43/CD43.12%20-%204%20Code%20of%20practice%20for%20noise%20and%20vibration%20control%20on%20construction%20and%20open%20sites%20part%202%20vibration;.pdf"
+    },
+    {
+     "title": "Hiller & Crabb (2000) TRL Report 429, Groundborne vibration caused by mechanised construction works (Transport Research Laboratory for the Highways Agency)",
+     "url": "https://www.trl.co.uk/uploads/trl/documents/TRL429.pdf"
+    }
+   ],
+   "notes": "Table E.2 'Values of kp for use in predictions of vibration from percussive piling'. The BS copy prints the 1.5 row as 'Pile toe not being driven through: Stiff cohesive soils ...'; TRL 429 Table 9 (the origin) reads 'Pile toe being driven through'. TRL eq. 19: W is 'the hammer energy per blow (J)' and r 'the distance from the toe of the pile to the point of interest (m)'. k_p values were 'calculated such that the value of vres at a distance (r) of 10m equates to the less conservative of the values' of Whyley & Sarsby (1992) and CEN (1998). The energy is released at the pile toe, at depth, so this is not a surface-impact law. It is listed only as the one BS predictor with a ground-type factor (soft or loose 1, very stiff or dense 3). Verifier: values, wording conflict and quotes confirmed.",
+   "who_when": "BSI 2014; Hiller & Crabb 2000 (TRL 429 Table 9)",
+   "values_json": "{\"refusal\": 5, \"very stiff cohesive / dense granular / fill with large obstructions\": 3, \"stiff cohesive / medium dense granular / compacted fill\": 1.5, \"soft cohesive / loose granular / loose fill / organic\": 1, \"units\": \"v_res mm/s, W in J, r in m\"}"
+  },
+  {
+   "key": "vib_mayne1985_upper_bound_trl",
+   "category": "presence_attenuation",
+   "label": "Mayne (1985) upper-bound law for dynamic compaction vibration, as printed in TRL 429",
+   "status": "verified",
+   "value_si": 0.092,
+   "unit_si": "m/s (coefficient; M in tonnes, H in m, x in m, exponent 1.7)",
+   "low_si": null,
+   "high_si": null,
+   "display": "v_res ≤ 92 (√(M·H) / x)^1.7 mm/s (M tamper mass in t, H drop height in m, x distance in m)",
+   "sources": [
+    {
+     "title": "Hiller & Crabb (2000) TRL Report 429, Groundborne vibration caused by mechanised construction works (Transport Research Laboratory for the Highways Agency)",
+     "url": "https://www.trl.co.uk/uploads/trl/documents/TRL429.pdf"
+    }
+   ],
+   "notes": "TRL 429 section 6.2 (p. 62): 'Mayne et al (1984) ... suggested a predictor which could be used to determine a conservative upper limit of vibration. The predictor was subsequently revised (Mayne, 1985) and presented as: v_res ≤ 92 [√(MH)/x]^1.7', with M 'the tamper weight (tonnes)', H 'the drop height (m)' and x 'the distance from impact (m)'. TRL's Coventry check (8.5 t from 10 and 12 m, 0.8–1.0 MJ, measured at 5–120 m) found 'a reasonable upper bound to the data', but 'an over prediction close to the source and an underestimate of vibration levels at distances in excess of 60m from the impact'. Same law as the BS 5228-2 dynamic compaction row to within 1% (0.037 × 9,806.65^0.85 = 91.4 vs 92). Original Mayne papers not fetched (ASCE). Verifier: 'identical to the BS row' corrected to 'within 1%'.",
+   "who_when": "Mayne 1985, as reproduced by Hiller & Crabb 2000"
+  },
+  {
+   "key": "vib_mayne_law_low_energy_failure",
+   "category": "presence_attenuation",
+   "label": "Mayne/BS 5228 dynamic-compaction law at low drop energy: TRL finds it under-predicts by up to 10×",
+   "status": "verified",
+   "value_si": 10,
+   "unit_si": "ratio (measured / predicted, worst case)",
+   "low_si": 1.4,
+   "high_si": 10,
+   "display": "7 t weight dropped 1.2 m (82 kJ): measured PPV was 1.4–5× the Mayne (1985) prediction within 30 m and 2.5–10× at 50–100 m (TRL: 'up to an order of magnitude')",
+   "sources": [
+    {
+     "title": "Hiller & Crabb (2000) TRL Report 429, Groundborne vibration caused by mechanised construction works (Transport Research Laboratory for the Highways Agency)",
+     "url": "https://www.trl.co.uk/uploads/trl/documents/TRL429.pdf"
+    }
+   ],
+   "notes": "TRL 429 pp. 62–63 on the high-speed dynamic compactor ('a 7 tonne weight dropped from a height of up to 1.2m onto a metal plate, which remains in contact with the ground'): 'The predictor appears to be unreliable for this compaction process, under estimating the vibration level by up to an order of magnitude. It is possible that Mayne’s predictor is less reliable for low energy dynamic compaction than for more energetic compaction.' Also: 'the predictor becomes less conservative as the potential energy of the raised tamper decreases.' The 10 is TRL's wording; the 1.4–5 and 2.5–10 ranges are our reading of Fig. 44 (vib_trl429_hsdc_digitised). 82 kJ is 12 times below BS 5228's 1 MJ floor. Verifier: Fig. 44 distance axis was misread; low bound corrected from 2 to 1.4. Compiler: the verifier's '1.4–4× within 30 m' is given as 1.4–5× because its own table shows 2.3–4.9 at 30 m.",
+   "who_when": "Hiller & Crabb 2000, data of Allen 1996"
+  },
+  {
+   "key": "vib_trl429_hsdc_digitised",
+   "category": "presence_attenuation",
+   "label": "High-speed dynamic compactor (7 t from 1.2 m, 82 kJ): measured PPV vs distance, read from TRL 429 Fig. 44",
+   "status": "derived",
+   "value_si": null,
+   "unit_si": "m/s",
+   "low_si": null,
+   "high_si": null,
+   "display": "Measured about 120–145 mm/s at 5 m, 21–30 at 10 m, 8–10 at 15 m, 6–10 at 20 m, 4–8 at 30 m, 2–4 at 50 m, 3–4 at 70 m and 1.2–1.5 mm/s at 100 m (three sites); Mayne (1985) predicts 36, 11, 5.6, 3.4, 1.7, 0.73, 0.41 and 0.22 mm/s",
+   "sources": [
+    {
+     "title": "Hiller & Crabb (2000) TRL Report 429, Groundborne vibration caused by mechanised construction works (Transport Research Laboratory for the Highways Agency)",
+     "url": "https://www.trl.co.uk/uploads/trl/documents/TRL429.pdf"
+    }
+   ],
+   "notes": "Read by eye from the log-log plot in TRL 429 Fig. 44, PDF p. 68 ('Vibration data from the high speed dynamic compactor reported by Allen (1996) compared with ppv predicted for the 7t tamper dropped from 1.2m using Mayne’s equation (1985)'; sites Weston, Waterbeach, Ipswich). Reading error about ±20%. Predictions are ours: 92 (√(7 × 1.2)/x)^1.7, W = 82.4 kJ. Measured/predicted: 3.3–4.0 at 5 m, 1.4–2.8 at 10–20 m, 2.3–5.6 at 30–50 m, 5.5–10 at 70–100 m. Measured fall-off is about x^-1.35 over 5–100 m (x^-1.1 over 10–100 m), slower than the law's x^-1.7. The weight lands on a steel plate already on the ground. Verifier: the plot's right edge is 100 m, not 120 m (the Mayne line reads 36 mm/s at 5 m and 0.22 at 100 m, matching the formula). Distances, predictions and ratios replaced; the earlier 5.6–120 m reading and 2–12× ratios are withdrawn.",
+   "who_when": "Allen 1996 data as plotted by Hiller & Crabb 2000; read off the figure by us 2026",
+   "values_json": "{\"distance_m\": [5, 10, 15, 20, 30, 50, 70, 100], \"measured_mm_s\": [[120, 145], [21, 30], [8, 10], [6.4, 9.5], [3.9, 8.4], [1.8, 4.1], [2.6, 4.3], [1.2, 1.5]], \"mayne1985_mm_s\": [36.4, 11.2, 5.6, 3.4, 1.7, 0.73, 0.41, 0.22], \"ratio_measured_over_mayne\": [[3.3, 4.0], [1.9, 2.7], [1.4, 1.8], [1.9, 2.8], [2.3, 4.9], [2.5, 5.6], [6, 10], [5.5, 6.6]], \"measured_fall_off\": \"about x^-1.35 over 5-100 m; x^-1.1 over 10-100 m\", \"note\": \"measured values read from TRL 429 Fig. 44 (PDF p. 68), about +/-20%; distance axis corrected by the verifier (right edge = 100 m)\"}"
+  },
+  {
+   "key": "vib_trl429_validity_100m",
+   "category": "presence_attenuation",
+   "label": "TRL 429: empirical construction-vibration predictors hold to about 100 m",
+   "status": "verified",
+   "value_si": 100,
+   "unit_si": "m",
+   "low_si": null,
+   "high_si": null,
+   "display": "Valid up to about 100 m from the source; extrapolating much further is not recommended (TRL: it 'will generally provide a conservative estimate')",
+   "sources": [
+    {
+     "title": "Hiller & Crabb (2000) TRL Report 429, Groundborne vibration caused by mechanised construction works (Transport Research Laboratory for the Highways Agency)",
+     "url": "https://www.trl.co.uk/uploads/trl/documents/TRL429.pdf"
+    }
+   ],
+   "notes": "TRL 429 p. 73: 'The predictors are valid up to a distance of about 100m from the vibration source. ... Extrapolation much beyond this distance is not recommended although it will generally provide a conservative estimate.' Material damping was left out 'because in nearly all cases the fit of the model to the data was not significantly improved by its inclusion. The slopes of the attenuation curves are, however, steeper than those expected theoretically from geometric attenuation of body waves in a homogeneous medium (slope of 1/r). Since the majority of the energy from sources of vibration at the ground surface radiates as surface waves ..., it may be inferred that attenuative mechanisms other than geometric spreading are also effective.' Verifier: the earlier quote stopped at 'geometric attenuation', changing its meaning; now restored.",
+   "who_when": "Hiller & Crabb 2000"
+  },
+  {
+   "key": "vib_mayne1984_upper_bound",
+   "category": "presence_attenuation",
+   "label": "Mayne, Jones & Dumas (1984) original upper-bound law for dynamic compaction vibration",
+   "status": "reported",
+   "value_si": 0.07,
+   "unit_si": "m/s (coefficient; W in tonnes, H in m, d in m, exponent 1.4)",
+   "low_si": null,
+   "high_si": null,
+   "display": "PPV ≤ 70 (√(W·H) / d)^1.4 mm/s (W tamper in t, H drop in m, d in m)",
+   "sources": [
+    {
+     "title": "Lauzon, Morel, Briet & Beaton (c. 2011) Ground Vibrations Induced by Dynamic Compaction and Rapid Impact Compaction (ISSMGE online library, GEO11 paper 581)",
+     "url": "https://www.issmge.org/uploads/publications/84/52/GEO11Paper581.pdf"
+    }
+   ],
+   "notes": "Not seen in the original (J. Geotech. Eng. ASCE 110(6):757-774, paywalled). Lauzon et al. eq. [2]: 'For preliminary estimates, Mayne et al (1984) proposed the following formula as a conservative upper limit to the ground vibration levels: PPV (mm/s) ≤ 70 (√(W H)/d)^1.4 ... Where W is in tonnes and H and d are in metres.' TRL 429 says this predictor 'was subsequently revised (Mayne, 1985)' to 92 and 1.7. The data range of the 1984 paper (energies, distances, soils) is unknown. At the Pisa drop (3.8 kJ) it gives 10.0 mm/s at 2.5 m (measured 9) and 0.117 mm/s at 60 m (measured 0.2). Verifier: eq. [2] confirmed from a page image; 'reported' is the right status.",
+   "who_when": "Mayne, Jones & Dumas 1984, as reproduced by Lauzon et al. c. 2011"
+  },
+  {
+   "key": "vib_mayne1985_normalised_law",
+   "category": "presence_attenuation",
+   "label": "Mayne (1985) normalised form: PPV scaled by impact speed and tamper radius",
+   "status": "reported",
+   "value_si": 0.2,
+   "unit_si": "1 (coefficient; PPV in the same units as impact speed)",
+   "low_si": null,
+   "high_si": null,
+   "display": "PPV = 0.2 √(2gH) (d/r₀)^-1.7 (impact speed √(2gH), tamper radius r₀; based on 12 sites)",
+   "sources": [
+    {
+     "title": "Lauzon, Morel, Briet & Beaton (c. 2011) Ground Vibrations Induced by Dynamic Compaction and Rapid Impact Compaction (ISSMGE online library, GEO11 paper 581)",
+     "url": "https://www.issmge.org/uploads/publications/84/52/GEO11Paper581.pdf"
+    }
+   ],
+   "notes": "Lauzon et al. eq. [4]: 'Based on vibration monitoring data from 12 different sites, Mayne (1985) proposed the following approximation: PPV = 0.2 √(2 g H) (d/ro)^-1.7 ... Where d is the distance, from the point of impact and ro is the radius of the tamper. PPV, g and H are in consistent units. With this approach, Mayne (1985) could attain a better fit for his set of data.' The source paper (ASCE Soil Dynamics Committee convention, Detroit 1985) was not fetched. Note it is independent of mass: it predicts the same shaking for any weight with the same contact radius and impact speed, which cannot hold for a footstep (a slow load, not a drop). Verifier: eq. [4], '12 different sites' and 'consistent units' confirmed from a page image.",
+   "who_when": "Mayne 1985, as reproduced by Lauzon et al. c. 2011"
+  },
+  {
+   "key": "vib_lukas_scaled_energy_chart",
+   "category": "presence_attenuation",
+   "label": "FHWA chart: PPV against scaled energy factor √E / d, one line per soil type (Lukas 1986, 1995)",
+   "status": "verified",
+   "value_si": null,
+   "unit_si": "m/s",
+   "low_si": null,
+   "high_si": null,
+   "display": "PPV grows with √(energy)/distance; separate lines for 8 ground types. The plotted lines span a scaled energy factor of about 0.07–6 √(t·m)/m and PPV of about 1–250 mm/s (our reading of the chart)",
+   "sources": [
+    {
+     "title": "Lukas (1986) Dynamic Compaction for Highway Construction, Vol. 1: Design and Construction Guidelines, FHWA/RD-86/133 (USDOT ROSAP scan)",
+     "url": "https://rosap.ntl.bts.gov/view/dot/68405/dot_68405_DS1.pdf"
+    },
+    {
+     "title": "Lukas (1995) Geotechnical Engineering Circular No. 1: Dynamic Compaction, FHWA-SA-95-037 (USDOT ROSAP scan)",
+     "url": "https://rosap.ntl.bts.gov/view/dot/40768/dot_40768_DS1.pdf"
+    }
+   ],
+   "notes": "FHWA/RD-86/133 p. 99: 'The magnitude of ground vibration increases with the square root of the energy applied and decreases as the distance from the point of impact. This figure can be used for planning purposes.' Fig. 35: particle velocity (in/s) against 'scaled energy factor (√energy – foot pounds / distance – feet)'. GEC 1 (1995) Fig. 7 is the SI version: x 'SCALED ENERGY FACTOR, (√(ENERGY (kJ)/9.8) / DISTANCE (m))', y mm/s, eight soils (listed in vib_gec1_chart_digitised). GEC 1 p. 12: 'This chart is based on records taken from many sites and provides a good estimation of ground vibration levels for planning purposes.' The axis itself runs 0.001–100; the 0.07–6 and 1–250 mm/s spans are read off the figure (derived, not stated). A footstep of our assumed 10 J–10 kJ at 1–200 m has a factor of about 0.0002–1, mostly left of the data. Verifier: quotes and axes confirmed.",
+   "who_when": "Lukas 1986 (Fig. 35); Lukas 1995 (GEC 1 Fig. 7)"
+  },
+  {
+   "key": "vib_gec1_chart_digitised",
+   "category": "presence_attenuation",
+   "label": "FHWA GEC 1 chart read off: PPV at the marked point of each soil line, and at a scaled energy factor of 1",
+   "status": "derived",
+   "value_si": null,
+   "unit_si": "m/s",
+   "low_si": null,
+   "high_si": null,
+   "display": "At √(E[kJ]/9.8)/d = 1: roughly 13 mm/s (decomposed garbage, loose sand fill) to 80 mm/s (very stiff silty clay); a factor of about 6 between ground types",
+   "sources": [
+    {
+     "title": "Lukas (1995) Geotechnical Engineering Circular No. 1: Dynamic Compaction, FHWA-SA-95-037 (USDOT ROSAP scan)",
+     "url": "https://rosap.ntl.bts.gov/view/dot/40768/dot_40768_DS1.pdf"
+    }
+   ],
+   "notes": "Marker points read off GEC 1 Fig. 7 (x = scaled energy factor in √(t·m)/m, y = PPV in mm/s), reading error about ±25%; listed in values_json. Line slopes read as about 1.0–1.4 on log-log axes. Values at x = 1 are our extrapolation with slope 1.2: about 13 mm/s (loose decomposed garbage) to 80 mm/s (very stiff silty clay). For comparison, the BS 5228 / Mayne (1985) upper bound gives 91 mm/s and Mayne (1984) 70 mm/s at x = 1. In this dynamic-compaction data stiffer, denser ground gives more PPV per unit scaled energy (loose fills absorb energy in the crater). That is the opposite of the elastic small-load trend, where softer ground shakes more for the same force; keep the two regimes apart. Verifier: re-read all eight points independently; all agree within about 5%.",
+   "who_when": "Lukas 1995 figure, read by us 2026",
+   "values_json": "{\"units\": \"x = sqrt(E[kJ]/9.8)/d[m]; PPV mm/s\", \"points\": {\"very stiff silty clay\": [0.58, 42], \"medium dense micaceous sand\": [1.2, 57], \"clayey mine spoil\": [3.9, 154], \"building rubble\": [0.14, 4.6], \"collapsible silt\": [0.46, 22], \"loose sand\": [0.65, 15], \"loose sand fill\": [1.2, 20], \"loose decomposed garbage\": [0.44, 4.7]}, \"at_x_1_slope_1p2\": {\"very stiff silty clay\": 80, \"medium dense micaceous sand\": 46, \"clayey mine spoil\": 30, \"building rubble\": 49, \"collapsible silt\": 56, \"loose sand\": 25, \"loose sand fill\": 16, \"loose decomposed garbage\": 13}}"
+  },
+  {
+   "key": "vib_dynamic_compaction_frequency",
+   "category": "presence_attenuation",
+   "label": "Dominant frequency of ground vibration from dropped weights (dynamic compaction, rapid impact compaction)",
+   "status": "verified",
+   "value_si": null,
+   "unit_si": "Hz",
+   "low_si": 3,
+   "high_si": 50,
+   "display": "Crane dynamic compaction 3–10 Hz (FHWA) or 5–10 Hz / 25–35 Hz (two Canadian sites); rapid impact compaction (9 t hammer on a plate) 20–30 Hz and 40–50 Hz",
+   "sources": [
+    {
+     "title": "Lukas (1986) Dynamic Compaction for Highway Construction, Vol. 1: Design and Construction Guidelines, FHWA/RD-86/133 (USDOT ROSAP scan)",
+     "url": "https://rosap.ntl.bts.gov/view/dot/68405/dot_68405_DS1.pdf"
+    },
+    {
+     "title": "Lauzon, Morel, Briet & Beaton (c. 2011) Ground Vibrations Induced by Dynamic Compaction and Rapid Impact Compaction (ISSMGE online library, GEO11 paper 581)",
+     "url": "https://www.issmge.org/uploads/publications/84/52/GEO11Paper581.pdf"
+    }
+   ],
+   "notes": "Lukas 1986 p. 101: 'Most of the dynamic compaction vibrations produce frequencies in the range of 3 to 10 Hertz'. Lauzon et al., Trois-Rivières (loose to compact fine sand, water table 1.7 m): 'Vibration frequencies for the DC rig are generally between 5 and 10 Hz. For the RIC rig, frequencies are generally between 20 and 30 Hz.' Québec City (crushed-stone fill 2–6 m on bedrock; 11 t tamper from 18 m): 'For DC tampers dropped from full height, frequencies are typically in the range of 25 to 35 Hz with similar values when the drop height has been reduced to half. For ironing using DC methods and for RIC, the frequencies typically are in the range between 40 and 50 Hz.' Frequency depends on the ground (stiffer, thinner deposits give higher frequency) and on the impact (smaller, quicker impacts give higher frequency). Verifier: quotes confirmed.",
+   "who_when": "Lukas 1986; Lauzon et al. c. 2011"
+  },
+  {
+   "key": "vib_repeat_drops_raise_ppv",
+   "category": "presence_attenuation",
+   "label": "PPV from the same drop rises as the ground under it is compacted (about 3–8× over repeated drops)",
+   "status": "verified",
+   "value_si": null,
+   "unit_si": "ratio",
+   "low_si": 3,
+   "high_si": 8,
+   "display": "18.1 t from 30 m: 4 → 13 mm/s at 20 m over 21 drops; 11 t from 18 m: 1–2 → ~8 mm/s at 10 m over 6 drops",
+   "sources": [
+    {
+     "title": "Lukas (1986) Dynamic Compaction for Highway Construction, Vol. 1: Design and Construction Guidelines, FHWA/RD-86/133 (USDOT ROSAP scan)",
+     "url": "https://rosap.ntl.bts.gov/view/dot/68405/dot_68405_DS1.pdf"
+    },
+    {
+     "title": "Lauzon, Morel, Briet & Beaton (c. 2011) Ground Vibrations Induced by Dynamic Compaction and Rapid Impact Compaction (ISSMGE online library, GEO11 paper 581)",
+     "url": "https://www.issmge.org/uploads/publications/84/52/GEO11Paper581.pdf"
+    }
+   ],
+   "notes": "Lukas 1986 p. 100: 'Dumas and Beaton (25) present information showing how the peak particle velocity increases from .16 to .51 in/sec (4 to 13 mm/sec) as the number of drops increases from 1 to 21. These readings were obtained at a point located 66 ft (20 m) from the imprint where a 20 ton (18.1 t) tamper was being dropped over a height of 98 ft (30 m) onto a silty rock fill.' Lauzon et al.: 'For the first blow, the vibration level was measured between 1 and 2 mm/s. After 6 blows the vibration level reached close to 8 mm/s at a distance of 10 m from the point of impact.' The first drop onto soft ground loses energy to cratering. Our cross-check: 18.1 t × 30 m = 5.3 MJ gives 119 mm/s at 20 m from BS 5228's upper bound, 9–30 times the 4–13 measured. Compiler: low bound changed from 2 to 3 (0.51/0.16 = 3.2; 8/2 = 4). Verifier: quotes and cross-check confirmed.",
+   "who_when": "Dumas & Beaton via Lukas 1986; Lauzon et al. c. 2011"
+  },
+  {
+   "key": "vib_pisa_drop_test_ppv",
+   "category": "presence_attenuation",
+   "label": "Low-energy drop test: 130 kg dropped about 3 m onto soil at Pisa, PPV at 2.5–60 m",
+   "status": "verified",
+   "value_si": 0.009,
+   "unit_si": "m/s (PPV at 2.5 m)",
+   "low_si": 0.0002,
+   "high_si": 0.009,
+   "display": "9 mm/s at 2.5 m falling to 0.2 mm/s at 60 m (quoted); fitted fall-off ∝ r^-1.28. Drop: 130 kg from about 3 m (about 3.8 kJ)",
+   "sources": [
+    {
+     "title": "Colombero, Kontoe, Foti & Potts (2015) Numerical modelling of wave attenuation through soil, XVI ECSMGE Edinburgh, pp. 3959-3964 (Politecnico di Torino repository)",
+     "url": "https://iris.polito.it/bitstream/11583/2882762/1/Colombero_et_al_2015_sub.pdf"
+    }
+   ],
+   "notes": "'The drop load test configuration consisted of a 130 kg weight dropped from a height of approximately 3 m, hitting the ground directly in order to avoid mass rebound'; '24 in-line geophones at 2.5m spacing'. 'The magnitude of the peak particle velocities recorded in Pisa decreases from 9 mm/s at a distance of 2.5 m from the source to 0.2 mm/s at a distance of 60 m (Figure 6, white circles).' Field power-law slope 'q = 1.282'. Probably vertical geophones. Verifier: values_json holds its Fig. 6 readings (±10%); the earlier 5 and 0.5 mm/s at 5 and 35 m are now 4.7 and 0.4. '25 Hz' is the central frequency of the authors' synthetic source pulse, not a measurement. T_S = 0.04 s is 'the period of the function' of a modified Gabor wavelet 'obtained with a calibration on the signal at the first geophone', not a contact time. C_b = 997.4 kg·m/s equals the drop momentum (130 × 7.67 m/s).",
+   "who_when": "Colombero, Kontoe, Foti & Potts 2015 (field data of Foti 2000/2003)",
+   "values_json": "{\"distance_m\": [2.5, 5, 10, 15, 20, 30, 35, 60], \"ppv_mm_s\": [8.7, 4.7, 1.8, 1.1, 0.77, 0.45, 0.4, 0.19], \"quoted_in_text_mm_s\": {\"2.5\": 9, \"60\": 0.2}, \"quality\": \"read from Colombero et al. Fig. 6 field circles by the verifier, about +/-10%\", \"fit_exponent_q\": 1.282, \"drop\": \"130 kg from ~3 m, directly on ground\", \"synthetic_source\": {\"central_frequency_Hz\": 25, \"T_S_s\": 0.04, \"C_b_kg_m_s\": 997.4, \"note\": \"model input fitted to the first geophone, not measured\"}}"
+  },
+  {
+   "key": "vib_pisa_soil_profile",
+   "category": "presence_attenuation",
+   "label": "Pisa test site: shear-wave speed, unit weight and damping of the layers",
+   "status": "verified",
+   "value_si": 170,
+   "unit_si": "m/s (typical Vs, top 10 m)",
+   "low_si": 150,
+   "high_si": 380,
+   "display": "Vs 150–245 m/s in the upper layers (380 m/s deep sand), unit weight 16.75–20 kN/m³, damping ratio 2–7%",
+   "sources": [
+    {
+     "title": "Colombero, Kontoe, Foti & Potts (2015) Numerical modelling of wave attenuation through soil, XVI ECSMGE Edinburgh, pp. 3959-3964 (Politecnico di Torino repository)",
+     "url": "https://iris.polito.it/bitstream/11583/2882762/1/Colombero_et_al_2015_sub.pdf"
+    }
+   ],
+   "notes": "Table 1 'Soil properties used in the finite element analysis': MG Vs 155 m/s, γ 19.00 kN/m³, ξ* 7.0%; A1 180, 18.50, 5.4%; A2 170, 18.00, 2.5%; BI 150, 16.75, 3.1%; BII 235, 19.50, 2.0%; BIII 245, 18.75, 2.0%; BIV 215, 18.00, 2.0%; C 380, 20.00, 2.0%; Poisson's ratio 0.33 for all. Water table taken at 1.3 m. Unit weights 16.75–20 kN/m³ correspond to densities 1,710–2,040 kg/m³. These are the inputs we used to test the elastic model against the Pisa drop (vib_model_check_pisa). value_si 170 m/s is our pick: the layer depths appear only in Fig. 3. Verifier: Table 1 and the 1.3 m water table confirmed.",
+   "who_when": "Colombero et al. 2015 (Table 1, after Foti 2003)",
+   "values_json": "{\"layer\": [\"MG\", \"A1\", \"A2\", \"BI\", \"BII\", \"BIII\", \"BIV\", \"C\"], \"Vs_m_s\": [155, 180, 170, 150, 235, 245, 215, 380], \"unit_weight_kN_m3\": [19.0, 18.5, 18.0, 16.75, 19.5, 18.75, 18.0, 20.0], \"damping_ratio_pct\": [7.0, 5.4, 2.5, 3.1, 2.0, 2.0, 2.0, 2.0], \"poisson\": 0.33}"
+  },
+  {
+   "key": "vib_drop_test_exponent_by_soil",
+   "category": "presence_attenuation",
+   "label": "Measured fall-off exponent q (PPV ∝ r^-q) for drop-weight tests: about 1.0 on sand, 1.6 on clay",
+   "status": "verified",
+   "value_si": 1.3,
+   "unit_si": "1",
+   "low_si": 1,
+   "high_si": 1.6,
+   "display": "q ≈ 1.0 (sandy soils) to 1.6 (clayey soils) for drop load tests; Pisa field fit 1.28",
+   "sources": [
+    {
+     "title": "Colombero, Kontoe, Foti & Potts (2015) Numerical modelling of wave attenuation through soil, XVI ECSMGE Edinburgh, pp. 3959-3964 (Politecnico di Torino repository)",
+     "url": "https://iris.polito.it/bitstream/11583/2882762/1/Colombero_et_al_2015_sub.pdf"
+    },
+    {
+     "title": "Auersch & Said (2010) Attenuation of ground vibrations due to different technical sources, Earthquake Engineering and Engineering Vibration 9(3):337-344 (TRID abstract)",
+     "url": "https://trid.trb.org/View/1101903"
+    }
+   ],
+   "notes": "Colombero et al. section 2.2: 'The experimental exponent q has been found varying between values of 1.0 and 1.6 for drop load tests carried out on sandy and clayey soils respectively (Auersch 2010).' Auersch & Said 2010 abstract (TRID): 'the technically induced ground vibrations exhibit a power-law attenuation v ∼ r −q where the exponents q are in the range of 0.5 to 2.0 and depend on the source types'; the main extra effect is 'material or scattering damping'; 'the sum of the exponential laws also yields a power law but with a higher exponent'; Rayleigh dispersion from layering 'yields an additional exponent of 0.5 in cases of impulsive loading'. Theory for a surface point load: 0.5 for Rayleigh waves alone (vib_geometric_spreading_exponents). Verifier: quotes confirmed. Caveats: Auersch 2010's 1.0/1.6 is seen only through Colombero; value_si 1.3 is our midpoint, not a source number.",
+   "who_when": "Auersch 2010 via Colombero et al. 2015; Auersch & Said 2010"
+  },
+  {
+   "key": "vib_pisa_vs_empirical_laws",
+   "category": "presence_attenuation",
+   "label": "How the dynamic-compaction laws do at 3.8 kJ (Pisa drop)",
+   "status": "derived",
+   "value_si": 5,
+   "unit_si": "ratio (measured / BS 5228 predicted at 60 m)",
+   "low_si": null,
+   "high_si": null,
+   "display": "BS 5228/Mayne 1985: 8.7 mm/s at 2.5 m (measured 9) but 0.04 mm/s at 60 m (measured 0.2, 5× low). Mayne 1984: 10 and 0.12 mm/s (1.7× low at 60 m)",
+   "sources": [
+    {
+     "title": "Colombero, Kontoe, Foti & Potts (2015) Numerical modelling of wave attenuation through soil, XVI ECSMGE Edinburgh, pp. 3959-3964 (Politecnico di Torino repository)",
+     "url": "https://iris.polito.it/bitstream/11583/2882762/1/Colombero_et_al_2015_sub.pdf"
+    },
+    {
+     "title": "BS 5228-2:2009+A1:2014 Annex E, Tables E.1 and E.2 (licensed copy filed as public-inquiry core document CD43.12, Omega West)",
+     "url": "https://www.omegawestdocuments.com/media/documents/43/CD43.12%20-%204%20Code%20of%20practice%20for%20noise%20and%20vibration%20control%20on%20construction%20and%20open%20sites%20part%202%20vibration;.pdf"
+    },
+    {
+     "title": "Lauzon, Morel, Briet & Beaton (c. 2011) Ground Vibrations Induced by Dynamic Compaction and Rapid Impact Compaction (ISSMGE online library, GEO11 paper 581)",
+     "url": "https://www.issmge.org/uploads/publications/84/52/GEO11Paper581.pdf"
+    }
+   ],
+   "notes": "W_h = 130 × 9.80665 × 3 = 3,825 J. BS 5228: 0.037 × (√3825/x)^1.7 → 8.65 mm/s at 2.5 m, 0.039 mm/s at 60 m. Mayne 1984 (reported): M·H = 0.39 t·m, 70 × (0.625/x)^1.4 → 10.0 mm/s at 2.5 m, 0.117 mm/s at 60 m. Measured 9 and 0.2 mm/s. So at footstep-scale energy the near field happens to agree, while the far field is under-predicted because real low-energy attenuation (r^-1.0 to r^-1.3) is slower than the law's r^-1.7 (or r^-1.4). Both 2.5 m and 3.8 kJ lie outside BS 5228's stated range (5–100 m, 1–12 MJ). One site only: treat as an indication, not a calibration. Verifier: recomputed (8.65 and 0.039; 10.0 and 0.117 mm/s). With its Fig. 6 reading of 0.19 mm/s at 60 m the ratios (about 5× and 1.6×) still hold.",
+   "who_when": "our calculation 2026"
+  },
+  {
+   "key": "vib_caltrans_impact_pile_driver",
+   "category": "presence_attenuation",
+   "label": "Caltrans screening law for impact pile drivers (energy-scaled, with distance exponent n)",
+   "status": "verified",
+   "value_si": 0.01651,
+   "unit_si": "m/s (PPV_ref = 0.65 in/s at 25 ft for 36,000 ft·lb)",
+   "low_si": null,
+   "high_si": null,
+   "display": "PPV = 0.65 in/s × (25/D[ft])^1.1 × (E/36,000 ft·lb)^0.5",
+   "sources": [
+    {
+     "title": "Caltrans (2020) Transportation and Construction Vibration Guidance Manual, April 2020 (Andrews, Buehler, Gill & Bender)",
+     "url": "https://dot.ca.gov/-/media/dot-media/programs/environmental-analysis/documents/env/tcvgm-apr2020-a11y.pdf"
+    }
+   ],
+   "notes": "Caltrans 2020 section 7.1.1: 'PPV Impact Pile Driver = PPVRef (25/D)^n x (Eequip/ERef)^0.5 (in/sec) (Eq. 9) Where: PPVRef = 0.65 in/sec for a reference pile driver at 25 ft. D = distance from pile driver to the receiver in ft. n = 1.1 ... ERef = 36,000 ft-lb (rated energy of reference pile driver)'. 'Literature indicates that the value of “n” in the above equation is generally 1 to 1.5. The suggested value for n is 1.1.' Rated energies of drivers: 'about 20,000–300,000 foot-pounds' (27–410 kJ); 'Smaller drivers have rated energies as low as 300 ft-lbs' (0.4 kJ). Caltrans Eq. 8: 'if the energy of the driving force changes from E1 to E2, the vibration amplitude changes from V1 to V2 according to ... V2 = V1(E2/E1)^0.5'. Pile energy enters at depth; listed as a second empirical comparison only. Verifier: confirmed.",
+   "who_when": "Caltrans 2020 (Eq. 9)"
+  },
+  {
+   "key": "vib_woods_jedele_n_by_soil_class",
+   "category": "presence_attenuation",
+   "label": "Woods & Jedele (1985) distance exponent n by soil class (PPV = k D^-n), as given by Caltrans",
+   "status": "verified",
+   "value_si": 1.1,
+   "unit_si": "1",
+   "low_si": 1,
+   "high_si": 1.5,
+   "display": "Class I weak/soft soils: suggested 1.4 (no data); II competent soils: measured 1.5, suggested 1.3; III hard soils: 1.1; IV hard rock: suggested 1.0 (no data)",
+   "sources": [
+    {
+     "title": "Caltrans (2020) Transportation and Construction Vibration Guidance Manual, April 2020 (Andrews, Buehler, Gill & Bender)",
+     "url": "https://dot.ca.gov/-/media/dot-media/programs/environmental-analysis/documents/env/tcvgm-apr2020-a11y.pdf"
+    }
+   ],
+   "notes": "Caltrans Table 17 (p. 32) 'Measured and Suggested “n” Values Based on Soil Class': I 'Weak or soft soils: loose soils, ... loose beach sand, and dune sand, recently plowed ground, ... top soil. (shovel penetrates easily)' — 'Data not available', suggested 1.4. II 'Competent soils: most sands, sandy clays, silty clays, gravel, silts, weathered rock. (can dig with shovel)' — 1.5, suggested 1.3. III 'Hard soils: dense compacted sand, dry consolidated clay, consolidated glacial till, some exposed rock. (cannot dig with shovel, need pick to break up)' — 1.1, 1.1. IV 'Hard, competent rock: bedrock, freshly exposed hard rock' — 'Data not available', 1.0. Caltrans: n 'is a composite value or pseudo-attenuation coefficient that accounts for both geometric and material damping'. Verifier: table confirmed word for word; Caltrans Table 3 (p. 17) is the measured-only version, 'Source: Wood 1997'.",
+   "who_when": "Woods & Jedele 1985 via Woods 1997 (NCHRP Synthesis 253) and Caltrans 2020 Table 17",
+   "values_json": "{\"class\": [\"I weak/soft\", \"II competent\", \"III hard\", \"IV hard rock\"], \"n_measured\": [null, 1.5, 1.1, null], \"n_suggested\": [1.4, 1.3, 1.1, 1.0]}"
+  },
+  {
+   "key": "vib_construction_frequency_range",
+   "category": "presence_attenuation",
+   "label": "Typical frequency of ground vibration from construction and traffic; wave speeds and wavelengths",
+   "status": "verified",
+   "value_si": 15,
+   "unit_si": "Hz",
+   "low_si": 10,
+   "high_si": 30,
+   "display": "Usually 10–30 Hz, centred near 15 Hz; pile driving 4–30 Hz; ground wave speeds 61–610 m/s, wavelengths 3–152 m",
+   "sources": [
+    {
+     "title": "Caltrans (2020) Transportation and Construction Vibration Guidance Manual, April 2020 (Andrews, Buehler, Gill & Bender)",
+     "url": "https://dot.ca.gov/-/media/dot-media/programs/environmental-analysis/documents/env/tcvgm-apr2020-a11y.pdf"
+    }
+   ],
+   "notes": "Caltrans p. 17: 'Typical vibration from transportation and construction sources typically falls in the range of 10–30 Hz and usually centers around 15 Hz (Hendriks 2002).' p. 17: 'damage levels in terms of velocity in the frequency range of 1–80 Hz tend to be independent of frequency. This is also true for complaint levels in a frequency range of 8–80 Hz.' Chapter on wave barriers: 'Pile driving typically generates ground vibration with frequencies in the range of 4–30 Hz. With common wave velocities in the range of 61–610 m/s, typical wavelengths can be in the range of 3–152 m.'",
+   "who_when": "Caltrans 2020 citing Hendriks 2002"
+  },
+  {
+   "key": "vib_footstep_frequency_band",
+   "category": "presence_attenuation",
+   "label": "Human footsteps: force mostly at 1–4 Hz; ground particle velocity mostly at 20–90 Hz",
+   "status": "verified",
+   "value_si": null,
+   "unit_si": "Hz",
+   "low_si": 20,
+   "high_si": 90,
+   "display": "Footstep force peaks at 1–4 Hz (walking rhythm); the seismic particle-velocity response is site-specific, characteristic band 20–90 Hz",
+   "sources": [
+    {
+     "title": "Ekimov & Sabatier (2006) Vibration and sound signatures of human footsteps in buildings, J Acoust Soc Am 120(2):762-8 (PubMed abstract, PMID 16938964, via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=16938964&rettype=abstract&retmode=text"
+    }
+   ],
+   "notes": "Abstract: 'Early research showed the maximum value for the force of multiple footsteps to be in the frequency band of 1-4 Hz.' 'The seismic particle velocity response to footsteps was shown to be site specific and the characteristic frequency band was 20-90 Hz.' 'Different walking styles result in different vibration signatures in the low-frequency range.' Both bands are earlier findings that the abstract summarises; the paper itself studies building floors and the band above 500 Hz, so cite them 'as summarised in Ekimov & Sabatier 2006'. The gap between 1–4 Hz force and 20–90 Hz ground velocity fits vib_physics_rayleigh_farfield: for the same force amplitude, ground velocity grows as frequency^1.5, so the quick parts of a footfall dominate. No footstep PPV against distance was found in a primary source. Verifier: abstract confirmed; citation caveat added.",
+   "who_when": "Earlier research as summarised in Ekimov & Sabatier 2006"
+  },
+  {
+   "key": "vib_elephant_seismic_speed_frequency",
+   "category": "presence_attenuation",
+   "label": "Asian elephant footfalls and rumbles: ground-wave speed, frequency and range of measurement",
+   "status": "verified",
+   "value_si": 256,
+   "unit_si": "m/s (seismic propagation speed at the site)",
+   "low_si": 248,
+   "high_si": 264,
+   "display": "Seismic signals travelled at 248–264 m/s, predominant frequency about 20 Hz, well above background at 40 m",
+   "sources": [
+    {
+     "title": "O'Connell-Rodwell, Arnason & Hart (2000) Seismic properties of Asian elephant vocalizations and locomotion, J Acoust Soc Am 108(6):3066-72 (PubMed abstract, PMID 11144599, via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=11144599&rettype=abstract&retmode=text"
+    }
+   ],
+   "notes": "Abstract: 'the acoustic signals traveling at 309 m/s and the seismic signals at 248-264 m/s. Both types of signals had predominant frequencies in the range of 20 Hz. Seismic signal amplitudes considerably above background noise were recorded at 40 m from the generating elephants for both the rumble and the stomp. Seismic propagation models suggest that seismic waveforms from vocalizations are potentially detectable by instruments at distances of up to 16 km, and up to 32 km for locomotion generated signals.' The 16–32 km figures are model estimates of instrument detection, not felt vibration. Our interpretation, not stated in the abstract: the 248–264 m/s is a Rayleigh-type surface-wave speed, implying a shear-wave speed of about 270–290 m/s (c_R ≈ 0.92 c_s). The elephant comparison as a whole belongs to the elephant topic. Verifier: abstract confirmed; the Rayleigh reading is ours.",
+   "who_when": "O'Connell-Rodwell, Arnason & Hart 2000"
+  },
+  {
+   "key": "vib_elephant_stomp_ppv",
+   "category": "presence_attenuation",
+   "label": "Asian elephant foot stomps: ground velocity at 3–12 m and at 40 m (peak-to-peak)",
+   "status": "reported",
+   "value_si": 4.87e-05,
+   "unit_si": "m/s peak-to-peak (at 3–12 m)",
+   "low_si": 1.7e-05,
+   "high_si": 4.87e-05,
+   "display": "About 48.7 µm/s peak-to-peak at 3–12 m and 17.0 µm/s at 40 m (roughly 0.024 and 0.009 mm/s peak)",
+   "sources": [
+    {
+     "title": "Towards Long Range Detection of Elephants Using Seismic Signals; A Geophone-Sensor Interface for Embedded Systems (arXiv:2406.05140, 2024), Section III, citing O'Connell-Rodwell et al. 2000",
+     "url": "https://arxiv.org/pdf/2406.05140"
+    },
+    {
+     "title": "O'Connell-Rodwell, Arnason & Hart (2000) Seismic properties of Asian elephant vocalizations and locomotion, J Acoust Soc Am 108(6):3066-72 (PubMed abstract, PMID 11144599, via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=11144599&rettype=abstract&retmode=text"
+    },
+    {
+     "title": "BS 5228-2:2009+A1:2014 Annex E, Tables E.1 and E.2 (licensed copy filed as public-inquiry core document CD43.12, Omega West)",
+     "url": "https://www.omegawestdocuments.com/media/documents/43/CD43.12%20-%204%20Code%20of%20practice%20for%20noise%20and%20vibration%20control%20on%20construction%20and%20open%20sites%20part%202%20vibration;.pdf"
+    }
+   ],
+   "notes": "Secondary quote; only the original's abstract was fetched: 'According to [44], the RMS velocity of elephant rumbles is 0.437 µm/s at a distance of 3-12 m and is 0.264 µm/s at a distance of 40 m. For the corresponding distances, experimental peak-to-peak velocities for stomps were 48.7 µm/s and 17.0 µm/s, respectively.' Ref. [44] is the JASA 108(6):3066 paper; vertical geophone. Peak (zero-to-peak) is about half of peak-to-peak. The elephants' masses and stomp forces are not in what we fetched, so this is an order-of-magnitude anchor: a few hundredths of a mm/s at about 10 m, about 6–12 times below BS 5228-2 Table B.1's 'might be just perceptible' guide values (0.14 mm/s 'in the most sensitive situations', 0.3 mm/s 'in residential environments'). Ratio 3–12 m to 40 m ≈ 2.9. Verifier: quote, reference and Table B.1 values confirmed.",
+   "who_when": "O'Connell-Rodwell et al. 2000, as quoted in arXiv:2406.05140 (2024)"
+  },
+  {
+   "key": "vib_wave_energy_partition_miller_pursey",
+   "category": "presence_attenuation",
+   "label": "Energy radiated by a vertical force on the ground surface, and its split among wave types (Miller & Pursey 1955)",
+   "status": "verified",
+   "value_si": 0.6735,
+   "unit_si": "1 (Rayleigh-wave share)",
+   "low_si": 0.67,
+   "high_si": 0.6735,
+   "display": "Mean power Π = 1.209 ω² P² / (π ρ c_p³) for a harmonic force P cos ωt (Poisson ratio 1/4); 67.35% Rayleigh, 25.76% shear, 6.89% compressional",
+   "sources": [
+    {
+     "title": "Sanchez-Sesma, Weaver, Kawase, Matsushima, Luzon & Campillo (2011) Energy partitions among elastic waves for dynamic surface loads in a semi-infinite solid, BSSA (accepted manuscript)",
+     "url": "https://www.isterre.fr/IMG/pdf/Sanchez_Sema_BSSA.pdf"
+    },
+    {
+     "title": "Caltrans (2020) Transportation and Construction Vibration Guidance Manual, April 2020 (Andrews, Buehler, Gill & Bender)",
+     "url": "https://dot.ca.gov/-/media/dot-media/programs/environmental-analysis/documents/env/tcvgm-apr2020-a11y.pdf"
+    },
+    {
+     "title": "Hiller & Crabb (2000) TRL Report 429, Groundborne vibration caused by mechanised construction works (Transport Research Laboratory for the Highways Agency)",
+     "url": "https://www.trl.co.uk/uploads/trl/documents/TRL429.pdf"
+    }
+   ],
+   "notes": "Sanchez-Sesma et al.: 'they found that the total power radiated by a vertical harmonic load Pe^{iωt} is given by Π=1.209ω²P²/πρα³, where ω = circular frequency, ρ = mass density, and α = propagation velocity of P waves. Such an amount is partitioned among P, SV and Rayleigh waves in 6.89, 25.76 and 67.35 per cent, respectively. They assumed a Poisson ratio ν =1/4'. Caltrans p. 13: 'About 67% of energy is transmitted in the R-wave, 26% in the S-wave, and 7% in the P-wave (Richart 1970).' TRL 429 p. 5: 'approximately two thirds of the energy from a source located at the ground surface is radiated as Rayleigh waves.' The 1955 paper was not fetched. Valid for a source small compared with the wavelength. Our Rayleigh amplitude (vib_physics_rayleigh_farfield) matches the 1.209 and 67.35% values to 0.02%. Verifier: all three quotes confirmed.",
+   "who_when": "Miller & Pursey 1955, as reproduced by Sanchez-Sesma et al. 2011; Caltrans 2020; TRL 2000"
+  },
+  {
+   "key": "vib_geometric_spreading_exponents",
+   "category": "presence_attenuation",
+   "label": "Geometric spreading: how amplitude falls with distance for each wave type from a surface point source",
+   "status": "verified",
+   "value_si": 0.5,
+   "unit_si": "1 (Rayleigh-wave exponent, surface source and receiver)",
+   "low_si": null,
+   "high_si": null,
+   "display": "Surface source, surface receiver: Rayleigh waves ∝ r^-0.5, body waves ∝ r^-2; buried source: body waves ∝ r^-1",
+   "sources": [
+    {
+     "title": "Caltrans (2020) Transportation and Construction Vibration Guidance Manual, April 2020 (Andrews, Buehler, Gill & Bender)",
+     "url": "https://dot.ca.gov/-/media/dot-media/programs/environmental-analysis/documents/env/tcvgm-apr2020-a11y.pdf"
+    },
+    {
+     "title": "Hiller & Crabb (2000) TRL Report 429, Groundborne vibration caused by mechanised construction works (Transport Research Laboratory for the Highways Agency)",
+     "url": "https://www.trl.co.uk/uploads/trl/documents/TRL429.pdf"
+    }
+   ],
+   "notes": "Caltrans Table 1 'Geometric Attenuation Coefficients' (source: Amick 2000): point on surface, R wave, measured at surface, γ = 0.5; point on surface, body (P or S), surface, 2; point at depth, body, surface, 1; point at depth, body, depth, 1. Eq. 5: 'vb = va (ra/rb)^γ'. Caltrans: 'The amplitude of R-waves decreases in direct proportion to the square root of the distance from the source.' TRL 429 p. 5: 'the particle velocity attenuates according to 1/r and 1/r^0.5 for body and surface waves, respectively.' Near the source (within about a third of a wavelength) the quasi-static field, which falls as 1/r, dominates instead (vib_physics_nearfield_boussinesq).",
+   "who_when": "Amick 2000 via Caltrans 2020 (Table 1); TRL 2000",
+   "values_json": "{\"surface source, R wave, surface\": 0.5, \"surface source, body wave, surface\": 2, \"depth source, body wave, surface\": 1, \"depth source, body wave, depth\": 1}"
+  },
+  {
+   "key": "vib_bornitz_damping_form",
+   "category": "presence_attenuation",
+   "label": "Bornitz/Mintrop attenuation form: geometric spreading times exponential material damping",
+   "status": "verified",
+   "value_si": 0.1,
+   "unit_si": "1/m (α used by Greenwood & Farmer 1971 and Heckman & Hagerty 1978)",
+   "low_si": 0.05,
+   "high_si": 0.1,
+   "display": "A₁ = A₀ (r₀/r₁)^β e^{-α(r₁ - r₀)}, β = 0.5 for surface waves; α ≈ 0.03 ft⁻¹ (0.10 m⁻¹) has been used for all soils",
+   "sources": [
+    {
+     "title": "Hiller & Crabb (2000) TRL Report 429, Groundborne vibration caused by mechanised construction works (Transport Research Laboratory for the Highways Agency)",
+     "url": "https://www.trl.co.uk/uploads/trl/documents/TRL429.pdf"
+    },
+    {
+     "title": "Caltrans (2020) Transportation and Construction Vibration Guidance Manual, April 2020 (Andrews, Buehler, Gill & Bender)",
+     "url": "https://dot.ca.gov/-/media/dot-media/programs/environmental-analysis/documents/env/tcvgm-apr2020-a11y.pdf"
+    }
+   ],
+   "notes": "TRL 429 eq. (5): 'A1 = A0 (r0/r1)^β e^{-α(r1 - r0)} where A1 is the amplitude at distance r1 from the source; A0 is the amplitude at distance r0 from the source; α is the absorption coefficient; and ß is the geometric spreading term. Mintrop (1911) presented this equation with ß having a value of 0.5'. 'Greenwood and Farmer (1971) and Heckman and Hagerty (1978) assumed α to have a value of 0.03ft-1 (0.10m-1). However, these authors considered that this value is applicable to all cases and is not dependent upon the geology.' Massarsch (1992) example with α = 0.05 m⁻¹. Caltrans Eq. 6 (Richart 1970) is the same form. α depends on frequency (α = 2π f ξ / c_R), so one α applied to a whole pulse over-damps it at long range; our pulse treatment is vib_physics_damping_factor. Verifier: confirmed.",
+   "who_when": "Mintrop 1911 / Bornitz 1931 via TRL 2000; Richart 1970 via Caltrans 2020"
+  },
+  {
+   "key": "vib_material_damping_coefficients",
+   "category": "presence_attenuation",
+   "label": "Measured material-damping coefficients α for soils (Amick 2000 compilation, Caltrans Table 2)",
+   "status": "verified",
+   "value_si": 0.1,
+   "unit_si": "1/m (typical)",
+   "low_si": 0.01,
+   "high_si": 0.65,
+   "display": "α from 0.01 m⁻¹ (saturated fine sand) to about 0.65 m⁻¹ (dune sand); 0.02 m⁻¹ for a 4-inch concrete slab on compact granular fill",
+   "sources": [
+    {
+     "title": "Caltrans (2020) Transportation and Construction Vibration Guidance Manual, April 2020 (Andrews, Buehler, Gill & Bender)",
+     "url": "https://dot.ca.gov/-/media/dot-media/programs/environmental-analysis/documents/env/tcvgm-apr2020-a11y.pdf"
+    }
+   ],
+   "notes": "Caltrans Table 2 'Summary of Material-Damping Coefficients (Applies to Both P- and S-Waves)', compiled from Amick 2000 and Hendriks 2002; each row in values_json as α per metre (per foot). Three printed metric lower bounds are decimal slips: Dalmatov sand and silt 0.079 ft⁻¹ printed 0.026 m⁻¹ (should be 0.26); dune sand 0.076 ft⁻¹ printed 0.025 (0.25); soft Bangkok clay 0.079 ft⁻¹ printed 0.026 (0.26). values_json gives the corrected values and notes the printed ones. Measurement frequencies are not given, so these α cannot be moved to another frequency without assuming one (α = 2π f ξ / c_R). value_si 0.1 m⁻¹ is our typical pick (as for marly chalk and loess, and the Greenwood & Farmer value), not a table average. Verifier: table and investigator column confirmed; the three slips are real.",
+   "who_when": "Amick 2000 and Hendriks 2002 via Caltrans 2020",
+   "values_json": "{\"units\": \"alpha per metre (per foot in brackets)\", \"silty gravelly sand (Forssblad)\": \"0.13 (0.04)\", \"4-in concrete slab over compact granular fill (Richart)\": \"0.02 (0.006)\", \"silty fine sand (Woods)\": \"0.26 (0.079)\", \"saturated fine sand (Barkan)\": \"0.010 (0.003)\", \"saturated fine sand, frozen\": \"0.06 (0.018)\", \"saturated sand with peat/organic silt\": \"0.04 (0.012)\", \"clayey sand, clay, silt above water\": \"0.04 (0.012)\", \"marly chalk\": \"0.1 (0.03)\", \"loess\": \"0.1 (0.03)\", \"saturated clay with sand and silt\": \"0.0-0.12 (0.0-0.037)\", \"sand and silt (Dalmatov)\": \"0.26-0.36 (0.079-0.11); printed 0.026-0.36\", \"sand fill over bay mud\": \"0.05-0.2 (0.015-0.061)\", \"dune sand\": \"0.25-0.65 (0.076-0.2); printed 0.025-0.65\", \"soft Bangkok clay\": \"0.26-0.44 (0.079-0.13); printed 0.026-0.44\", \"sand-silt, clayey silt, silty sand (Hendriks)\": \"0.021 (0.006)\"}"
+  },
+  {
+   "key": "vib_soil_p_to_s_speed_ratio",
+   "category": "presence_attenuation",
+   "label": "Soils: compressional-wave speed is about 1.7 times the shear-wave speed (Poisson ratio about 0.24)",
+   "status": "verified",
+   "value_si": 1.7,
+   "unit_si": "ratio c_p / c_s",
+   "low_si": null,
+   "high_si": null,
+   "display": "c_p ≈ 1.7 c_s for (unsaturated) soils, close to the ν = 1/4 \"Poisson solid\" (√3 = 1.73) that the exact formulas assume",
+   "sources": [
+    {
+     "title": "Hiller & Crabb (2000) TRL Report 429, Groundborne vibration caused by mechanised construction works (Transport Research Laboratory for the Highways Agency)",
+     "url": "https://www.trl.co.uk/uploads/trl/documents/TRL429.pdf"
+    }
+   ],
+   "notes": "TRL 429 p. 5: 'For soils, the compressional wave velocity is typically about 1.7 times the shear wave velocity.' c_p/c_s = 1.7 corresponds to ν = 0.24 (our conversion: ν = (r² − 2)/(2(r² − 1))). Saturated soils are different: below the water table c_p is set by the pore water (about 1,500 m/s) while c_s stays low, so ν approaches 0.5 (Pisa model used 0.33). Our model constants are for ν = 1/4; at ν = 0.45–0.49 the far-field coefficient falls by about 35–40% and the near-field one by about 27–32% (vib_physics_rayleigh_farfield). Verifier: quote confirmed; ν = 0.235 for 1.7 exactly; at ν = 0.45–0.49 the far coefficient drops 35–40% and the near 27–32%.",
+   "who_when": "Hiller & Crabb 2000"
+  },
+  {
+   "key": "vib_physics_nearfield_boussinesq",
+   "category": "presence_attenuation",
+   "label": "Near the step: quasi-static ground velocity from a changing vertical force (Boussinesq)",
+   "status": "derived",
+   "value_si": 0.1194,
+   "unit_si": "1 (coefficient (1-ν)/2π at ν = 1/4)",
+   "low_si": null,
+   "high_si": null,
+   "display": "PPV_near = (1 − ν) · (dF/dt)_max / (2π ρ c_s² r) ≈ 0.119 (dF/dt)_max / (ρ c_s² r)",
+   "sources": [
+    {
+     "title": "Colombero, Kontoe, Foti & Potts (2015) Numerical modelling of wave attenuation through soil, XVI ECSMGE Edinburgh, pp. 3959-3964 (Politecnico di Torino repository)",
+     "url": "https://iris.polito.it/bitstream/11583/2882762/1/Colombero_et_al_2015_sub.pdf"
+    }
+   ],
+   "notes": "Static vertical surface displacement at distance r from a vertical point force F on an elastic half-space: u = (1 − ν) F / (2π μ r), μ = ρ c_s² (Boussinesq). When the force changes slowly compared with the wave transit time, the ground follows quasi-statically: v = (1 − ν) Ḟ / (2π μ r). Checks: the low-frequency limit of the full wavenumber integral gives −(1 − ν)/(2π) = −0.1194; the exact time-domain solution gives PPV·r → 0.375 F/(ρ c_s² T) for a Hann pulse and 0.1875 F/(ρ c_s² τ) for a raised-cosine ramp. Valid for r below about 0.4 c_s T (Hann) or 1.1 c_s τ (ramp), and for r more than about twice the footprint radius. Colombero et al. is cited only for listing Pekeris (1955) and Lamb (1904) as the classical point-load solutions; the formula is textbook elasticity. Verifier: limit and both constants reproduced independently; near-to-far crossovers at x = 0.37 (Hann) and 1.07 (ramp).",
+   "who_when": "our derivation 2026 (Boussinesq static surface displacement, differentiated in time)"
+  },
+  {
+   "key": "vib_physics_rayleigh_farfield",
+   "category": "presence_attenuation",
+   "label": "Far from the step: Rayleigh-wave amplitude from a vertical surface force (Lamb 1904, pole residue)",
+   "status": "derived",
+   "value_si": 0.0763,
+   "unit_si": "1 (coefficient C1/√(2π ξ_R) at ν = 1/4)",
+   "low_si": null,
+   "high_si": null,
+   "display": "Harmonic force F cos ωt: Rayleigh vertical velocity amplitude = 0.0763 F ω^1.5 / (ρ c_s^2.5 √r) (ν = 1/4); c_R = 0.919 c_s",
+   "sources": [
+    {
+     "title": "Sanchez-Sesma, Weaver, Kawase, Matsushima, Luzon & Campillo (2011) Energy partitions among elastic waves for dynamic surface loads in a semi-infinite solid, BSSA (accepted manuscript)",
+     "url": "https://www.isterre.fr/IMG/pdf/Sanchez_Sema_BSSA.pdf"
+    }
+   ],
+   "notes": "Surface vertical displacement for a vertical harmonic point force: u_z = (F/2πμ) ∫ k_s² ν_α k J0(kr) / R(k) dk, with R(k) the Rayleigh function. The Rayleigh pole gives |u_z| = (F/μ) C1 √(k_s / (2π ξ_R r)), ξ_R = c_s/c_R. For ν = 1/4: ξ_R = 1.08766 (c_R = 0.9194 c_s), C1 = 0.19957; velocity = ω u gives 0.19957/√(2π·1.08766) = 0.0763. Checks: (1) the Rayleigh power from this amplitude is 0.04989 ω²F²/(ρ c_s³), against Miller & Pursey's 67.35% × 1.209/(π·3^1.5) = 0.04988; (2) C1 equals √(3√3 + 5)/16, the Rayleigh coefficient in Pekeris's closed form; (3) horizontal/vertical comes out 0.681, the textbook value for ν = 1/4. The ω^1.5 growth is why the quick parts of a footfall dominate far away. Other Poisson ratios in values_json. Verifier: reproduced by its own pole residue and a separate energy-flux integral (0.04989 vs 0.04988); the ν = 0.45 row matches.",
+   "who_when": "our derivation 2026, checked against Miller & Pursey 1955 (via Sanchez-Sesma et al. 2011)",
+   "values_json": "{\"nu\": [0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.49], \"cR_over_cs\": [0.9022, 0.911, 0.9194, 0.9274, 0.935, 0.9422, 0.949, 0.9541], \"C1\": [0.2449, 0.2214, 0.1996, 0.1794, 0.1608, 0.1438, 0.1282, 0.1167], \"far_coef_C1_over_sqrt_2pi_xiR\": [0.0928, 0.0843, 0.0763, 0.0689, 0.062, 0.0557, 0.0498, 0.0455], \"rayleigh_H_over_V\": [0.727, 0.705, 0.681, 0.656, 0.63, 0.602, 0.574, 0.55], \"near_coef_(1-nu)/2pi\": [0.1353, 0.1273, 0.1194, 0.1114, 0.1035, 0.0955, 0.0875, 0.0812]}"
+  },
+  {
+   "key": "vib_physics_pekeris_step_response",
+   "category": "presence_attenuation",
+   "label": "Exact surface motion from a suddenly applied vertical point force (Pekeris 1955 closed form, ν = 1/4): derived and numerically verified, original not fetched",
+   "status": "derived",
+   "value_si": null,
+   "unit_si": "m (displacement)",
+   "low_si": null,
+   "high_si": null,
+   "display": "w(r,t) = (P/μr)·W(τ), τ = c_s t / r: zero before the P wave (τ < 1/√3); singular at the Rayleigh arrival τ_R = 1.0877; static 3P/(8πμr) afterwards",
+   "sources": [
+    {
+     "title": "Colombero, Kontoe, Foti & Potts (2015) Numerical modelling of wave attenuation through soil, XVI ECSMGE Edinburgh, pp. 3959-3964 (Politecnico di Torino repository)",
+     "url": "https://iris.polito.it/bitstream/11583/2882762/1/Colombero_et_al_2015_sub.pdf"
+    }
+   ],
+   "notes": "Step load P·H(t), Poisson solid, γ_R² = (3 + √3)/4. τ < 1/√3: W = 0. 1/√3 < τ < 1: W = (1/32π)[6 − √3/√(τ² − 1/4) − √(3√3 + 5)/√(γ_R² − τ²) + √(3√3 − 5)/√(τ² − (3 − √3)/4)]. 1 < τ < γ_R: W = (1/16π)[6 − √(3√3 + 5)/√(γ_R² − τ²)]. τ > γ_R: W = 3/(8π). Rebuilt from memory: Pekeris (1955, PNAS 41:469) and Kausel (2012) could not be fetched. Our check: convolved with a smooth pulse it matches an independent numerical wavenumber integration to 0.5–1.3% RMS of peak at r = 1–10 c_s T. Velocity for any force history: v(r,t) = d/dt ∫ Ḟ(t − s) w_step(r, s) ds. Scripts: research/attenuation/scripts/lamb_check2.py and ppv_table.py. Verifier: W is continuous at the P arrival and at τ = 1, the static value is (1−ν)/2π, and the singular coefficient matches its own C1.",
+   "who_when": "Pekeris 1955 (formula reconstructed by us and verified numerically, 2026)"
+  },
+  {
+   "key": "vib_physics_pulse_ppv_model",
+   "category": "presence_attenuation",
+   "label": "Recommended PPV model for one footfall: exact elastic result for a smooth force pulse, in closed form",
+   "status": "derived",
+   "value_si": null,
+   "unit_si": "m/s",
+   "low_si": null,
+   "high_si": null,
+   "display": "PPV = max(near, far) × D; Hann pulse of peak F, length T: near = 0.375 F/(ρ c_s² T r), far = 0.620 F/(ρ c_s^2.5 T^1.5 √r); ramp of rise time τ: near = 0.1875 F/(ρ c_s² τ r), far = 0.181 F/(ρ c_s^2.5 τ^1.5 √r)",
+   "sources": [
+    {
+     "title": "Sanchez-Sesma, Weaver, Kawase, Matsushima, Luzon & Campillo (2011) Energy partitions among elastic waves for dynamic surface loads in a semi-infinite solid, BSSA (accepted manuscript)",
+     "url": "https://www.isterre.fr/IMG/pdf/Sanchez_Sema_BSSA.pdf"
+    },
+    {
+     "title": "Colombero, Kontoe, Foti & Potts (2015) Numerical modelling of wave attenuation through soil, XVI ECSMGE Edinburgh, pp. 3959-3964 (Politecnico di Torino repository)",
+     "url": "https://iris.polito.it/bitstream/11583/2882762/1/Colombero_et_al_2015_sub.pdf"
+    }
+   ],
+   "notes": "Vertical surface PPV at distance r from a vertical force on an elastic half-space (ρ, c_s, ν = 1/4). Hann: F·½(1 − cos 2πt/T), 0 ≤ t ≤ T (stamp). Ramp: F·½(1 − cos πt/τ) to τ, then held (footstep; toe-off mirrors it). Exact PPV = F/(ρ c_s³ T²)·Π(x), x = r/(c_s T), with τ for T for the ramp; Π in values_json. max(near, far) is within about 17% of it. D: vib_physics_damping_factor. Assumes uniform ground, footprint radius below 0.2 c_s T, linear ground (vib_linear_strain_limit), vertical force. Verifier: all constants reproduced; table error up to 7%. Checked against data only to 60 m, at one drop site (within about 2×). Beyond about 60 m the damped Hann pulse falls as r^-2 to r^-3, steeper than any measured trend (r^-1.0 to -1.6), so stamps are probably under-predicted there. PPV rises with F at fixed T and falls with r; it is not monotone in T (a longer Hann pulse gives more PPV at 100 m and beyond).",
+   "who_when": "our derivation 2026 (Lamb/Pekeris elastic half-space, ν = 1/4)",
+   "values_json": "{\"x_r_over_csT\": [0.02, 0.038, 0.072, 0.137, 0.26, 0.493, 0.936, 1.778, 3.375, 6.407, 12.164, 23.094, 43.843, 83.236, 158.021, 300.0], \"Pi_hann\": [18.8, 9.88, 5.22, 2.79, 1.51, 0.885, 0.566, 0.426, 0.312, 0.239, 0.175, 0.132, 0.094, 0.0686, 0.05, 0.0348], \"Pi_ramp\": [9.38, 4.94, 2.6, 1.38, 0.73, 0.398, 0.227, 0.145, 0.0977, 0.0707, 0.0515, 0.0383, 0.027, 0.02, 0.0145, 0.0102], \"PPV\": \"F/(rho cs^3 T^2) * Pi(x); T = pulse length (Hann) or rise time tau (ramp)\", \"asymptotes\": {\"hann_near\": \"0.375/x\", \"hann_far\": \"0.620/sqrt(x)\", \"ramp_near\": \"0.1875/x\", \"ramp_far\": \"0.181/sqrt(x)\"}, \"nu\": 0.25, \"table_noise\": \"up to about 7% (verifier recomputation; x = 43.8 entries corrected from 0.100 and 0.0287)\"}"
+  },
+  {
+   "key": "vib_physics_damping_factor",
+   "category": "presence_attenuation",
+   "label": "Material damping of a footfall pulse with distance (constant damping ratio ξ applied to every frequency)",
+   "status": "derived",
+   "value_si": null,
+   "unit_si": "1",
+   "low_si": null,
+   "high_si": null,
+   "display": "D = (1 + (ζ/0.224)^1.4)^(−2.5/1.4) for a Hann pulse, D = (1 + (ζ/0.195)^2.05)^(−1.5/2.05) for a ramp; ζ = ξ r / (c_R T)",
+   "sources": [
+    {
+     "title": "Colombero, Kontoe, Foti & Potts (2015) Numerical modelling of wave attenuation through soil, XVI ECSMGE Edinburgh, pp. 3959-3964 (Politecnico di Torino repository)",
+     "url": "https://iris.polito.it/bitstream/11583/2882762/1/Colombero_et_al_2015_sub.pdf"
+    },
+    {
+     "title": "Caltrans (2020) Transportation and Construction Vibration Guidance Manual, April 2020 (Andrews, Buehler, Gill & Bender)",
+     "url": "https://dot.ca.gov/-/media/dot-media/programs/environmental-analysis/documents/env/tcvgm-apr2020-a11y.pdf"
+    }
+   ],
+   "notes": "Each frequency ω decays as exp(−ω ξ r / c_R) (constant-Q damping; Colombero et al. use the same exp(−2πξ r/λ_R) form, eq. 2). Applied to the far-field Rayleigh pulse spectrum, taking the new peak gives D(ζ), ζ = ξ r/(c_R T). The fits are within a factor of 1.08 (Hann) and 1.20 (ramp) of the computed D over ζ = 0.001–100. At large ζ, D falls as ζ^-2.5 (Hann) or ζ^-1.5 (ramp). One fixed α (Bornitz) applied to the peak over-damps a pulse at long range. D is applied to both near and far terms. Pisa example (ξ 0.03, r 60 m, c_R 138 m/s, T 0.03 s): ζ = 0.43, D = 0.12. Verifier: reproduced by FFT. Caveat: with constant ξ, Hann-pulse PPV on soft ground falls as about r^-2 to r^-3 beyond 30 m (local slope 2.1 at 35–60 m and 2.7 at 100–200 m for Pisa inputs), while measured impact trends are r^-1.0 to -1.6. The ramp is less affected (slope 1.3–1.5).",
+   "who_when": "our derivation 2026",
+   "values_json": "{\"zeta\": [0.0, 0.001, 0.00316, 0.01, 0.0316, 0.1, 0.316, 1.0, 3.16, 10.0, 31.6, 100.0], \"D_hann\": [1.0, 0.994, 0.981, 0.943, 0.83, 0.562, 0.188, 0.021, 0.00132, 7.53e-05, 4.23e-06, 2.24e-07], \"D_ramp\": [1.0, 0.996, 0.989, 0.965, 0.894, 0.707, 0.365, 0.0975, 0.0185, 0.00328, 0.000553, 7.2e-05], \"fit_hann\": \"(1+(zeta/0.224)^1.4)^(-2.5/1.4)\", \"fit_ramp\": \"(1+(zeta/0.195)^2.05)^(-1.5/2.05)\"}"
+  },
+  {
+   "key": "vib_physics_seismic_energy_from_force",
+   "category": "presence_attenuation",
+   "label": "Seismic energy radiated by a changing vertical force on the ground",
+   "status": "derived",
+   "value_si": 0.1481,
+   "unit_si": "1 (coefficient in E = k ∫(dF/dt)² dt / (ρ c_s³), ν = 1/4)",
+   "low_si": null,
+   "high_si": null,
+   "display": "E_seismic = 2.418/(π ρ c_p³) ∫ (dF/dt)² dt = 0.148 ∫ (dF/dt)² dt / (ρ c_s³); two-thirds of it in Rayleigh waves",
+   "sources": [
+    {
+     "title": "Sanchez-Sesma, Weaver, Kawase, Matsushima, Luzon & Campillo (2011) Energy partitions among elastic waves for dynamic surface loads in a semi-infinite solid, BSSA (accepted manuscript)",
+     "url": "https://www.isterre.fr/IMG/pdf/Sanchez_Sema_BSSA.pdf"
+    }
+   ],
+   "notes": "From Π = 1.209 ω² P²/(π ρ c_p³) for P cos ωt, the real part of the ground's point admittance is 2.418 ω²/(π ρ c_p³). For a transient force, Parseval gives E = 2.418/(π ρ c_p³) · ∫ Ḟ² dt; with c_p = √3 c_s this is 0.148 ∫Ḟ² dt/(ρ c_s³). Valid for ν = 1/4 only. Examples (ours): Pisa drop as a 0.025–0.04 s Hann pulse of momentum 997 kg·m/s on c_s = 160 m/s: 6–25 J, 0.2–0.6% of the 3.8 kJ drop energy, above the 10⁻⁴ seismic efficiency the lab uses for large impacts (seismic_efficiency_impact). Rex walking with placeholder inputs (1.2 × body weight, 0.1 s raised-cosine rise and fall): about 1.7 J per step on loose sand, 0.15 J on stiff clay, 6 × 10⁻⁵ J on granite. The energy depends on how fast the force changes, not on body energy, so a seismic-efficiency factor is the wrong tool for footsteps. Verifier: derivation and all examples recomputed.",
+   "who_when": "our derivation 2026 from Miller & Pursey 1955"
+  },
+  {
+   "key": "vib_model_check_pisa",
+   "category": "presence_attenuation",
+   "label": "Check: the elastic pulse model against the Pisa drop test (130 kg from 3 m)",
+   "status": "derived",
+   "value_si": 2,
+   "unit_si": "ratio (model / measured, best-guess inputs)",
+   "low_si": 1.1,
+   "high_si": 2.1,
+   "display": "Model 9.3, 6.1, 3.5, 1.6, 0.65 and 0.21 mm/s against measured about 8.7, 4.7, 1.8, 0.77, 0.4 and 0.19 mm/s at 2.5, 5, 10, 20, 35 and 60 m: within about 2× across 2.5–60 m, with the contact time chosen within 0.025–0.04 s",
+   "sources": [
+    {
+     "title": "Colombero, Kontoe, Foti & Potts (2015) Numerical modelling of wave attenuation through soil, XVI ECSMGE Edinburgh, pp. 3959-3964 (Politecnico di Torino repository)",
+     "url": "https://iris.polito.it/bitstream/11583/2882762/1/Colombero_et_al_2015_sub.pdf"
+    }
+   ],
+   "notes": "Pulse: Hann with F·T/2 = 997.4 N·s (momentum of 130 kg at √(2g·3) = 7.67 m/s, no rebound), T = 0.03 s; c_s 150 m/s, ρ 1,850 kg/m³, ξ 0.03 from the site table (vib_pisa_soil_profile). The contact time was not measured; T was chosen within 0.025–0.04 s, so this is partly a one-parameter fit. Against all Fig. 6 field points the model is 1.1–2.1× high (about 2× at 10–30 m); T = 0.04 s gives about 0.5–1.4×. The shapes differ: the model goes as 1/r, then 1/√r, then damped, while the data follow a straight r^-1.3. One site, and a drop, not a step. Verifier: the earlier 'worst ratio 1.3' used a misread 35 m value (0.5, now 0.4) and only 4 of about 20 field points; 25 Hz is a model input, not a measurement. The model numbers above stay valid as regression values for tests.",
+   "who_when": "our calculation 2026",
+   "values_json": "{\"distance_m\": [2.5, 5, 10, 20, 35, 60], \"model_mm_s\": [9.3, 6.1, 3.5, 1.6, 0.65, 0.21], \"measured_mm_s\": [8.7, 4.7, 1.8, 0.77, 0.4, 0.19], \"ratio_model_over_measured\": [1.1, 1.3, 2.0, 2.1, 1.6, 1.1], \"inputs\": {\"shape\": \"hann\", \"F_peak_N\": 66493, \"T_s\": 0.03, \"rho_kg_m3\": 1850, \"cs_m_s\": 150, \"xi\": 0.03}, \"measured_source\": \"Colombero et al. 2015 Fig. 6 field circles, read by the verifier, about +/-10%\"}"
+  },
+  {
+   "key": "vib_model_check_elephant",
+   "category": "presence_attenuation",
+   "label": "Check: the elastic pulse model against elephant stomps (weak consistency check: force unknown)",
+   "status": "estimate",
+   "value_si": null,
+   "unit_si": "m/s",
+   "low_si": null,
+   "high_si": null,
+   "display": "A 10 kN footfall with a 0.05–0.1 s ramp on ground with c_s 280 m/s gives 44–89 µm/s at 3 m, 11–35 µm/s at 7.5–12 m and 4–9 µm/s at 40 m; reported about 24 (3–12 m) and 8.5 µm/s (40 m) peak. Agreement within a factor of about 2–4, for guessed inputs",
+   "sources": [
+    {
+     "title": "Towards Long Range Detection of Elephants Using Seismic Signals; A Geophone-Sensor Interface for Embedded Systems (arXiv:2406.05140, 2024), Section III, citing O'Connell-Rodwell et al. 2000",
+     "url": "https://arxiv.org/pdf/2406.05140"
+    },
+    {
+     "title": "O'Connell-Rodwell, Arnason & Hart (2000) Seismic properties of Asian elephant vocalizations and locomotion, J Acoust Soc Am 108(6):3066-72 (PubMed abstract, PMID 11144599, via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=11144599&rettype=abstract&retmode=text"
+    }
+   ],
+   "notes": "Ground from the measured 248–264 m/s surface-wave speed (c_s ≈ 280 m/s, our reading); ρ = 1,800 kg/m³ and ξ = 0.03 assumed. Force per foot and rise time are guesses (a quarter to a half of a 3–4 t animal's weight; 20 Hz content suggests 0.025–0.1 s). A 10–20 kN Hann pulse of 0.05 s instead gives 82–163 µm/s at 7.5 m and 23–47 µm/s at 40 m. The reported values are half the peak-to-peak figures from a secondary source (vib_elephant_stomp_ppv). The near/far ratio is reproduced (model 2–4, reported 2.9). Verifier: the reported band is 3–12 m and the earlier check used only its far end; at 3 m the model is 2–4× high. With force, rise time and the peak-to-peak conversion all guessed, this is a weak check of the distance trend, not validation. Compiler: status lowered from derived to estimate, as the verifier ruled for vib_rex_step_examples.",
+   "who_when": "our calculation 2026"
+  },
+  {
+   "key": "vib_rayleigh_horizontal_and_resultant",
+   "category": "presence_attenuation",
+   "label": "Vertical vs resultant PPV for a footfall",
+   "status": "derived",
+   "value_si": 1.1,
+   "unit_si": "ratio resultant/vertical",
+   "low_si": 1,
+   "high_si": 1.2,
+   "display": "Resultant (vector) PPV ≈ 1.0–1.2 × the vertical PPV the model gives, for uniform ground; in the field the vertical is often not the largest component, so the ratio can be higher",
+   "sources": [
+    {
+     "title": "BS 5228-2:2009+A1:2014 Annex E, Tables E.1 and E.2 (licensed copy filed as public-inquiry core document CD43.12, Omega West)",
+     "url": "https://www.omegawestdocuments.com/media/documents/43/CD43.12%20-%204%20Code%20of%20practice%20for%20noise%20and%20vibration%20control%20on%20construction%20and%20open%20sites%20part%202%20vibration;.pdf"
+    },
+    {
+     "title": "Hiller & Crabb (2000) TRL Report 429, Groundborne vibration caused by mechanised construction works (Transport Research Laboratory for the Highways Agency)",
+     "url": "https://www.trl.co.uk/uploads/trl/documents/TRL429.pdf"
+    }
+   ],
+   "notes": "Rayleigh wave at ν = 1/4: horizontal/vertical amplitude 0.68, a quarter cycle apart, so the resultant peak is close to the vertical peak. Quasi-static near field: radial/vertical surface displacement = (1 − 2ν)/(2(1 − ν)) = 1/3 at ν = 1/4, resultant 1.05 × vertical. BS 5228-2 Table E.1 predicts the resultant ('νres resultant PPV'); some damage standards use the largest single component. Treat model PPV × 1.1 as resultant. Verifier: 0.681 and 1/3 (resultant 1.054) confirmed, but they hold for a uniform half-space. TRL 429 notes from field data that the vertical component 'is often not the largest component', so field resultant/vertical can exceed 1.2.",
+   "who_when": "our calculation 2026"
+  },
+  {
+   "key": "vib_building_amplification",
+   "category": "presence_attenuation",
+   "label": "Ground-to-building amplification of vibration in low-rise houses",
+   "status": "reported",
+   "value_si": 3,
+   "unit_si": "ratio (structure / ground)",
+   "low_si": 2,
+   "high_si": 4,
+   "display": "Resonance can raise vibration at the structure 2–4× above the ground level in low-rise residential buildings",
+   "sources": [
+    {
+     "title": "Lauzon, Morel, Briet & Beaton (c. 2011) Ground Vibrations Induced by Dynamic Compaction and Rapid Impact Compaction (ISSMGE online library, GEO11 paper 581)",
+     "url": "https://www.issmge.org/uploads/publications/84/52/GEO11Paper581.pdf"
+    },
+    {
+     "title": "BS 5228-2:2009+A1:2014 Annex E, Tables E.1 and E.2 (licensed copy filed as public-inquiry core document CD43.12, Omega West)",
+     "url": "https://www.omegawestdocuments.com/media/documents/43/CD43.12%20-%204%20Code%20of%20practice%20for%20noise%20and%20vibration%20control%20on%20construction%20and%20open%20sites%20part%202%20vibration;.pdf"
+    }
+   ],
+   "notes": "Lauzon et al. section 4.1: 'Since the guidelines of RI 8507 accounts indirectly for soil-structure interaction, possible amplification due to resonance structural vibrations is included in the proposed criteria. These amplifications can raise the vibrations at the structure level by a factor ranging from 2 to 4 in low rise residential buildings.' No source is given for the 2–4. BS 5228-2 Table B.1 note A: 'The magnitudes of the values presented apply to a measurement position that is representative of the point of entry into the recipient.' The model gives free-field ground PPV; indoors a suspended floor may see more. Mainly for the thresholds topic. Verifier: quote confirmed, but it is an unsourced generalisation in a ground-improvement contractor's conference paper; status lowered from verified to reported. USBM RI 8507 (Siskind et al. 1980), the likely origin, was not fetched.",
+   "who_when": "Lauzon et al. c. 2011"
+  },
+  {
+   "key": "vib_nehrp_site_classes_vs30",
+   "category": "presence_attenuation",
+   "label": "NEHRP site classes by average shear-wave speed in the top 30 m",
+   "status": "verified",
+   "value_si": null,
+   "unit_si": "m/s",
+   "low_si": null,
+   "high_si": null,
+   "display": "A hard rock > 1,500; B rock 760–1,500; C very dense soil and soft rock 360–760; D stiff soil 180–360; E < 180 m/s",
+   "sources": [
+    {
+     "title": "USGS Open-File Report 97-501 (NEHRP soil profile types by Vs30)",
+     "url": "https://pubs.usgs.gov/of/1997/0501/report.pdf"
+    }
+   ],
+   "notes": "Table: 'A Vs30 > 1500 m/s, hard rock; B 760 m/s < Vs30 < 1500 m/s, rock; C 360 m/s < Vs30 < 760 m/s, very dense soil and soft rock; D 180 m/s < Vs30 < 360 m/s, stiff soil; E Vs30 < 180 m/s'. These are 30 m averages; the top few metres that carry footstep-frequency surface waves are usually slower than the average.",
+   "who_when": "USGS OFR 97-501 (NEHRP 1994 provisions)",
+   "values_json": "{\"A\": \">1500 hard rock\", \"B\": \"760-1500 rock\", \"C\": \"360-760 very dense soil and soft rock\", \"D\": \"180-360 stiff soil\", \"E\": \"<180\"}"
+  },
+  {
+   "key": "vib_soil_shear_speed_by_type",
+   "category": "presence_attenuation",
+   "label": "Shear-wave speed by soil type and density (national seismic code table)",
+   "status": "verified",
+   "value_si": null,
+   "unit_si": "m/s",
+   "low_si": null,
+   "high_si": null,
+   "display": "Loose sand < 200; medium dense sand and gravel 200–400; dense sand and gravel 400–700; soft clay < 200; stiff clay 200–300; very stiff clay 300–700; hard clay > 700 m/s",
+   "sources": [
+    {
+     "title": "Turkish seismic code (Ministry of Public Works and Settlement, Specification for Structures to be Built in Disaster Areas), Table 12.1 Soil Groups, as hosted by IISEE/BRI Japan",
+     "url": "https://iisee.kenken.go.jp/net/seismic_design_code/turkey/table-turkey3.htm"
+    }
+   ],
+   "notes": "Table 12.1 'Soil Groups', shear-wave velocity column: (A) 1 massive volcanic, unweathered metamorphic or stiff cemented sedimentary rock > 1000; 2 'Very dense sand and gravel' (N > 50, Dr 85–100%) > 700; 3 'Hard clay, silty clay' > 700. (B) 1 soft volcanic rock, weathered sedimentary rock 700–1000; 2 'Dense sand and gravel' (N 30–50, Dr 65–85%) 400–700; 3 'Very stiff clay, silty clay' 300–700. (C) 1 highly weathered rock 400–700; 2 'Medium dense sand and grovel' [sic] (N 10–30, Dr 35–65%) 200–400; 3 'Stiff clay, silty clay' (qu 100–200 kPa) 200–300. (D) 1 'Soft, deep alluvial layers with high water table' < 200; 2 'Loose sand' (N 0–10, Dr < 35%) < 200; 3 'Soft clay, silty clay' (qu < 100 kPa) < 200. Code values describe soil layers, not the loose top metre. Verifier: confirmed; the page gives no edition year, so none is added.",
+   "who_when": "Turkish Ministry of Public Works and Settlement seismic code, Table 12.1 (IISEE copy)",
+   "values_json": "{\"loose sand\": \"<200\", \"medium dense sand and gravel\": \"200-400\", \"dense sand and gravel\": \"400-700\", \"very dense sand and gravel\": \">700\", \"soft clay\": \"<200\", \"stiff clay\": \"200-300\", \"very stiff clay\": \"300-700\", \"hard clay\": \">700\", \"soft alluvium, high water table\": \"<200\", \"rock\": \">700 to >1000\"}"
+  },
+  {
+   "key": "vib_ice_seismic_speeds",
+   "category": "presence_attenuation",
+   "label": "Seismic wave speeds in ice (polar ice sheets)",
+   "status": "verified",
+   "value_si": 1940,
+   "unit_si": "m/s (shear, −16 to −29 °C)",
+   "low_si": 1934,
+   "high_si": 1960,
+   "display": "Shear waves 1,934–1,960 m/s; P waves 3,795 − 2.30·T m/s (T in °C); Poisson ratio about 0.33",
+   "sources": [
+    {
+     "title": "Kohnen (1974) The temperature dependence of seismic waves in ice, Journal of Glaciology 13(67):144-147",
+     "url": "https://www.cambridge.org/core/services/aop-cambridge-core/content/view/0DAA1D118D8BC16DA025F8B300C442EA/S0022143000023467a.pdf/the-temperature-dependence-of-seismic-waves-in-ice.pdf"
+    }
+   ],
+   "notes": "Kohnen eq. (1): 'Vp = −(2·30 ± 0.17) T + 3795 m/s'. Table II lists measured Vs of 1934–1960 m/s at −16.5 to −29 °C and Poisson's ratio 0.327–0.332; 'Assuming a constant Poisson's ratio of 0.329'. dVs/dT = −1.2 m/s per degree, so near 0 °C about 1,915–1,920 m/s (our extrapolation). Glacier ice; lake ice is similar material but forms a thin floating plate, so these bulk speeds do not by themselves give the vibration from a step on lake ice (vib_plate_surfaces_not_modelled).",
+   "who_when": "Kohnen 1974"
+  },
+  {
+   "key": "vib_granite_shear_speed",
+   "category": "presence_attenuation",
+   "label": "Granite: shear-wave speed near the surface",
+   "status": "estimate",
+   "value_si": 3000,
+   "unit_si": "m/s",
+   "low_si": 2100,
+   "high_si": 3500,
+   "display": "About 3,000 m/s (2,100–3,500), from near-surface P speeds of 3.7–6.1 km/s divided by about √3",
+   "sources": [
+    {
+     "title": "USGS Open-File Report 97-501 (NEHRP soil profile types by Vs30)",
+     "url": "https://pubs.usgs.gov/of/1997/0501/report.pdf"
+    }
+   ],
+   "notes": "Relies on the existing lab fact collide_rock_wave_speed_estimate (status estimate: granite P waves near the surface 3.7–6.1 km/s, Birch 1960; bar-wave speed 3.71 km/s, Padmanabha et al. 2021). For ν ≈ 0.25, c_s = c_p/√3: 2.1–3.5 km/s. USGS OFR 97-501 gives only NEHRP class A (hard rock) > 1,500 m/s, nothing on granite. Weathered or jointed granite at the surface can be much slower. Near the step the model gives about 1,000 times less shaking on granite than on loose sand for the same step, because near-field PPV ∝ 1/(ρ c_s²); nothing was checked against data on rock. Verifier: status lowered from derived to estimate (its input is an estimate); arithmetic confirmed.",
+   "who_when": "our estimate 2026 from existing key collide_rock_wave_speed_estimate (itself an estimate)"
+  },
+  {
+   "key": "vib_steel_shear_speed",
+   "category": "presence_attenuation",
+   "label": "Steel: shear-wave speed (for reference only; a deck is a plate)",
+   "status": "estimate",
+   "value_si": 3200,
+   "unit_si": "m/s",
+   "low_si": 3100,
+   "high_si": 3250,
+   "display": "About 3.2 km/s (from G ≈ 79 GPa and ρ = 7,850 kg/m³)",
+   "sources": [],
+   "notes": "c_s = √(G/ρ) with a typical structural-steel shear modulus of 77–80 GPa (not fetched in this run) and the lab's verified steel density 7,850 kg/m³ (existing key density_structural_steel): 3,130–3,190 m/s; textbook tables give about 3.2 km/s. Listed only for completeness: a steel deck vibrates as a plate on supports, and the half-space model does not apply (vib_plate_surfaces_not_modelled). Verifier: honestly labelled estimate; not used by the model.",
+   "who_when": "our estimate 2026"
+  },
+  {
+   "key": "vib_small_strain_damping_ratio",
+   "category": "presence_attenuation",
+   "label": "Material damping ratio of soils and rock at small (footstep) strains",
+   "status": "estimate",
+   "value_si": 0.03,
+   "unit_si": "1",
+   "low_si": 0.005,
+   "high_si": 0.07,
+   "display": "Soils about 2–5% (Pisa site: 2–7%); rock about 0.5–2%",
+   "sources": [
+    {
+     "title": "Colombero, Kontoe, Foti & Potts (2015) Numerical modelling of wave attenuation through soil, XVI ECSMGE Edinburgh, pp. 3959-3964 (Politecnico di Torino repository)",
+     "url": "https://iris.polito.it/bitstream/11583/2882762/1/Colombero_et_al_2015_sub.pdf"
+    },
+    {
+     "title": "Caltrans (2020) Transportation and Construction Vibration Guidance Manual, April 2020 (Andrews, Buehler, Gill & Bender)",
+     "url": "https://dot.ca.gov/-/media/dot-media/programs/environmental-analysis/documents/env/tcvgm-apr2020-a11y.pdf"
+    }
+   ],
+   "notes": "Pisa site layers: 2.0–7.0% (verified, vib_pisa_soil_profile); Colombero et al. fitted k = 2πξ = 0.302 for the measured drop data (ξ ≈ 4.8%). Caltrans α values (vib_material_damping_coefficients) convert to ξ = α c_R/(2π f): for 20 Hz and c_R 150 m/s, most entries (0.02–0.26 m⁻¹) give 2–30%, and dune sand's 0.65 m⁻¹ would give about 80%, implausible at 20 Hz, so those α were probably measured at higher frequencies. Our picks: loose sand 4%, dense sand and gravel 3%, soft clay 5%, stiff clay 3%, road or slab subgrade 3%, granite 1%. Damping matters little within about 10 m and controls the result beyond about 30 m. Verifier: conversions recomputed.",
+   "who_when": "our estimate 2026, anchored on Colombero et al. 2015 Table 1"
+  },
+  {
+   "key": "vib_ground_wave_params_by_surface",
+   "category": "presence_attenuation",
+   "label": "Ground-wave parameters for the lab's nine surfaces (what the Walk tab should use)",
+   "status": "estimate",
+   "value_si": null,
+   "unit_si": "m/s, kg/m³, 1",
+   "low_si": null,
+   "high_si": null,
+   "display": "c_s: loose sand 120, dense sand/gravel 300, soft clay 120, stiff clay 250, asphalt or concrete on grade 250 (subgrade), granite 3,000 m/s; lake ice and steel deck not modelled as ground",
+   "sources": [
+    {
+     "title": "Turkish seismic code (Ministry of Public Works and Settlement, Specification for Structures to be Built in Disaster Areas), Table 12.1 Soil Groups, as hosted by IISEE/BRI Japan",
+     "url": "https://iisee.kenken.go.jp/net/seismic_design_code/turkey/table-turkey3.htm"
+    },
+    {
+     "title": "USGS Open-File Report 97-501 (NEHRP soil profile types by Vs30)",
+     "url": "https://pubs.usgs.gov/of/1997/0501/report.pdf"
+    },
+    {
+     "title": "Colombero, Kontoe, Foti & Potts (2015) Numerical modelling of wave attenuation through soil, XVI ECSMGE Edinburgh, pp. 3959-3964 (Politecnico di Torino repository)",
+     "url": "https://iris.polito.it/bitstream/11583/2882762/1/Colombero_et_al_2015_sub.pdf"
+    },
+    {
+     "title": "Kohnen (1974) The temperature dependence of seismic waves in ice, Journal of Glaciology 13(67):144-147",
+     "url": "https://www.cambridge.org/core/services/aop-cambridge-core/content/view/0DAA1D118D8BC16DA025F8B300C442EA/S0022143000023467a.pdf/the-temperature-dependence-of-seismic-waves-in-ice.pdf"
+    },
+    {
+     "title": "Caltrans (2020) Transportation and Construction Vibration Guidance Manual, April 2020 (Andrews, Buehler, Gill & Bender)",
+     "url": "https://dot.ca.gov/-/media/dot-media/programs/environmental-analysis/documents/env/tcvgm-apr2020-a11y.pdf"
+    }
+   ],
+   "notes": "Densities are the lab's existing surface values (data.js), except road and slab, where the subgrade (about 2,000 kg/m³) carries the waves. Shear speeds are our near-surface picks: loose sand and soft clay 120 (code < 200; Pisa's soft layers 150–180), stiff clay 250 (code 200–300). Gravel 300 m/s: below the code range for dense sand and gravel (400–700 m/s at depth), our near-surface pick. At 10–50 Hz surface waves sample the top 2–10 m, so code values are upper guides. Asphalt and a 10 cm slab are far thinner than the 5–25 m wavelengths, so the subgrade sets the shaking. ν = 0.25 throughout; saturated soft clay is nearer 0.45–0.5 (PPV about a third lower). c_s ±40% alone moves PPV by ×0.5 to ×2.8 (near) and ×0.4 to ×3.6 (far). Verifier: gravel and c_s-uncertainty statements corrected; the old gravel wording is also in src/engine.js VIB.GROUND.",
+   "who_when": "our picks 2026 from the verified tables",
+   "values_json": "{\"sand\": {\"rho\": 1600, \"cs\": 120, \"cs_range\": [80, 180], \"xi\": 0.04, \"model\": \"half-space\"}, \"gravel\": {\"rho\": 2000, \"cs\": 300, \"cs_range\": [200, 450], \"xi\": 0.03, \"model\": \"half-space\"}, \"softclay\": {\"rho\": 1700, \"cs\": 120, \"cs_range\": [80, 170], \"xi\": 0.05, \"model\": \"half-space (nu may be ~0.45 if saturated)\"}, \"stiffclay\": {\"rho\": 1900, \"cs\": 250, \"cs_range\": [200, 350], \"xi\": 0.03, \"model\": \"half-space\"}, \"asphalt\": {\"rho\": 2000, \"cs\": 250, \"cs_range\": [180, 400], \"xi\": 0.03, \"model\": \"half-space of the subgrade; pavement layers ignored\"}, \"concrete\": {\"rho\": 2000, \"cs\": 250, \"cs_range\": [180, 400], \"xi\": 0.03, \"model\": \"half-space of the subgrade; 10 cm slab ignored\"}, \"ice\": {\"rho\": 917, \"cs\": 1920, \"xi\": null, \"model\": \"not modelled: floating plate (flexural-gravity waves)\"}, \"steel\": {\"rho\": 7850, \"cs\": 3200, \"xi\": null, \"model\": \"not modelled: plate on supports\"}, \"granite\": {\"rho\": 2700, \"cs\": 3000, \"cs_range\": [2100, 3500], \"xi\": 0.01, \"model\": \"half-space\"}}"
+  },
+  {
+   "key": "vib_plate_surfaces_not_modelled",
+   "category": "presence_attenuation",
+   "label": "Lake ice and steel deck: the ground-wave model does not apply",
+   "status": "estimate",
+   "value_si": null,
+   "unit_si": "",
+   "low_si": null,
+   "high_si": null,
+   "display": "Not modelled: on floating ice or a supported steel deck the step excites plate bending waves, not ground waves",
+   "sources": [
+    {
+     "title": "Kohnen (1974) The temperature dependence of seismic waves in ice, Journal of Glaciology 13(67):144-147",
+     "url": "https://www.cambridge.org/core/services/aop-cambridge-core/content/view/0DAA1D118D8BC16DA025F8B300C442EA/S0022143000023467a.pdf/the-temperature-dependence-of-seismic-waves-in-ice.pdf"
+    }
+   ],
+   "notes": "The model assumes a deep solid half-space. Thick lake ice floats on water: a step makes the sheet bend and sends flexural-gravity waves through it, with spreading, dispersion and damping set by ice thickness and water depth. A steel deck plate rests on beams: the response is the deck's own resonances. Neither was researched in this run. Recommended page wording: 'Ground shaking is not modelled on lake ice or a steel deck (they flex as plates).' The bulk speeds (ice c_s about 1.9 km/s, Kohnen 1974; steel about 3.2 km/s, estimate) are listed for reference only.",
+   "who_when": "our assessment 2026"
+  },
+  {
+   "key": "vib_extrapolation_to_footsteps",
+   "category": "presence_attenuation",
+   "label": "How far the dynamic-compaction laws are being stretched for footsteps",
+   "status": "estimate",
+   "value_si": 100000,
+   "unit_si": "ratio (BS 5228 lower energy limit / smallest footstep energy)",
+   "low_si": 100,
+   "high_si": 100000,
+   "display": "Footsteps (our assumed 10 J–10 kJ) sit 100 to 100,000 times below BS 5228's 1 MJ floor. At 82 kJ the law already under-predicts 1.4–5× within 30 m and 2.5–10× at 50–100 m; at 3.8 kJ about 5× at 60 m. Walking is a slow load, not a drop, so an energy law has no clear input",
+   "sources": [
+    {
+     "title": "BS 5228-2:2009+A1:2014 Annex E, Tables E.1 and E.2 (licensed copy filed as public-inquiry core document CD43.12, Omega West)",
+     "url": "https://www.omegawestdocuments.com/media/documents/43/CD43.12%20-%204%20Code%20of%20practice%20for%20noise%20and%20vibration%20control%20on%20construction%20and%20open%20sites%20part%202%20vibration;.pdf"
+    },
+    {
+     "title": "Hiller & Crabb (2000) TRL Report 429, Groundborne vibration caused by mechanised construction works (Transport Research Laboratory for the Highways Agency)",
+     "url": "https://www.trl.co.uk/uploads/trl/documents/TRL429.pdf"
+    },
+    {
+     "title": "Colombero, Kontoe, Foti & Potts (2015) Numerical modelling of wave attenuation through soil, XVI ECSMGE Edinburgh, pp. 3959-3964 (Politecnico di Torino repository)",
+     "url": "https://iris.polito.it/bitstream/11583/2882762/1/Colombero_et_al_2015_sub.pdf"
+    },
+    {
+     "title": "Lukas (1995) Geotechnical Engineering Circular No. 1: Dynamic Compaction, FHWA-SA-95-037 (USDOT ROSAP scan)",
+     "url": "https://rosap.ntl.bts.gov/view/dot/40768/dot_40768_DS1.pdf"
+    }
+   ],
+   "notes": "Ranges: BS 5228-2 dynamic compaction 1–12 MJ and 5–100 m; GEC 1 chart lines at a scaled energy factor of about 0.07–6 √(t·m)/m (our reading); a 10 J–10 kJ footstep at 1–200 m gives about 0.0002–1. The 10 J–10 kJ footstep energy is our assumed range, not a verified input. Below the range: at 82 kJ (TRL 429, Allen 1996) measured PPV was 1.4–5× the Mayne (1985) value within 30 m and 2.5–10× at 50–100 m; at 3.8 kJ (Pisa) the law agrees at 2.5 m and is about 5× low at 60 m; no drop data found at 10 J–1 kJ. At low energy the measured fall-off (r^-1.1 to r^-1.35) is slower than the law's r^-1.7, so errors grow with distance. A walking step loads the ground over roughly 0.1–0.3 s with no free fall; its shaking depends on force and loading rate (vib_physics_pulse_ppv_model). Verifier: status lowered from derived to estimate; 82 kJ ratios corrected from 2–10×.",
+   "who_when": "our assessment 2026"
+  },
+  {
+   "key": "vib_rex_step_examples",
+   "category": "presence_attenuation",
+   "label": "Example output: vertical PPV from one of Rex's (or Ollie's) steps, by ground and distance (placeholder step forces)",
+   "status": "estimate",
+   "value_si": null,
+   "unit_si": "m/s",
+   "low_si": null,
+   "high_si": null,
+   "display": "Illustration with placeholder step forces. Normal walk (1.2 × weight, 0.1 s rise) on loose sand: about 3 mm/s at 1 m, 1 at 3 m, 0.3 at 10 m, 0.03 at 100 m; on stiff clay about 5× less; on granite about 1,000× less",
+   "sources": [
+    {
+     "title": "Colombero, Kontoe, Foti & Potts (2015) Numerical modelling of wave attenuation through soil, XVI ECSMGE Edinburgh, pp. 3959-3964 (Politecnico di Torino repository)",
+     "url": "https://iris.polito.it/bitstream/11583/2882762/1/Colombero_et_al_2015_sub.pdf"
+    },
+    {
+     "title": "Sanchez-Sesma, Weaver, Kawase, Matsushima, Luzon & Campillo (2011) Energy partitions among elastic waves for dynamic surface loads in a semi-infinite solid, BSSA (accepted manuscript)",
+     "url": "https://www.isterre.fr/IMG/pdf/Sanchez_Sema_BSSA.pdf"
+    }
+   ],
+   "notes": "Computed with vib_physics_pulse_ppv_model, vib_physics_damping_factor and the estimated ground values (vib_ground_wave_params_by_surface); mass 3,007 kg (canon). Step forces are placeholders: 1.2 × body weight is the lab's W8.WALK_LOAD (existing key walking_running_peak_vertical_force); the rise times (0.1, 0.2 s), 'heavy step' (3 ×, 0.05 s) and 'stamp' (10 ×, 0.03 s) are illustrations pending the step-force topic. Ollie gives the same numbers. Limits: nothing is checked beyond 60 m, and the stamp values at 100–200 m are probably too low (vib_physics_damping_factor). Within about 1.4 m of a normal step on loose sand the quasi-static strain already passes 10⁻⁴ (1.8 × 10⁻⁴ at 1 m), and stamps within 1–3 m on soft soil are far past it; the error's direction there is unknown (vib_linear_strain_limit). Verifier: every number reproduced; status lowered from derived to estimate (placeholder inputs).",
+   "who_when": "our calculation 2026",
+   "values_json": "{\"distance_m\": [1, 3, 10, 30, 100, 200], \"units\": \"vertical PPV mm/s\", \"walk_1.2BW_ramp_0.1s\": {\"sand\": [2.9, 0.96, 0.28, 0.12, 0.026, 0.0075], \"gravel\": [0.37, 0.12, 0.037, 0.012, 0.0054, 0.0025], \"softclay\": [2.7, 0.9, 0.26, 0.1, 0.019, 0.0052], \"stiffclay\": [0.56, 0.19, 0.056, 0.019, 0.0083, 0.0036], \"asphalt_or_concrete_subgrade\": [0.53, 0.18, 0.053, 0.018, 0.0079, 0.0034], \"granite\": [0.0027, 0.00091, 0.00027, 9.1e-05, 2.7e-05, 1.4e-05]}, \"walk_1.2BW_ramp_0.2s\": {\"sand\": [1.4, 0.48, 0.14, 0.049, 0.018, 0.0066], \"gravel\": [0.18, 0.061, 0.018, 0.0061, 0.0022, 0.0013], \"softclay\": [1.4, 0.45, 0.13, 0.045, 0.014, 0.0047], \"stiffclay\": [0.28, 0.093, 0.028, 0.0093, 0.0035, 0.0021], \"asphalt_or_concrete_subgrade\": [0.27, 0.088, 0.027, 0.0088, 0.0034, 0.002], \"granite\": [0.0014, 0.00046, 0.00014, 4.6e-05, 1.4e-05, 6.8e-06]}, \"heavy_3BW_hann_0.05s\": {\"sand\": [28.0, 10.0, 4.4, 1.1, 0.075, 0.011], \"gravel\": [3.7, 1.2, 0.47, 0.21, 0.047, 0.012], \"softclay\": [27.0, 9.6, 3.7, 0.75, 0.044, 0.0063], \"stiffclay\": [5.6, 1.8, 0.76, 0.33, 0.062, 0.014], \"asphalt_or_concrete_subgrade\": [5.3, 1.7, 0.72, 0.31, 0.059, 0.013], \"granite\": [0.027, 0.0091, 0.0027, 0.00091, 0.00036, 0.00025]}, \"stamp_10BW_hann_0.03s\": {\"sand\": [160.0, 70.0, 24.0, 3.7, 0.18, 0.024], \"gravel\": [20.0, 6.7, 3.1, 1.2, 0.16, 0.031], \"softclay\": [140.0, 63.0, 18.0, 2.3, 0.099, 0.013], \"stiffclay\": [31.0, 10.0, 5.0, 1.7, 0.2, 0.035], \"asphalt_or_concrete_subgrade\": [29.0, 9.9, 4.7, 1.6, 0.19, 0.033], \"granite\": [0.15, 0.051, 0.015, 0.005, 0.0026, 0.0017]}, \"note\": \"step forces are placeholders pending the step-force topic\"}"
+  },
+  {
+   "key": "vib_linear_strain_limit",
+   "category": "presence_attenuation",
+   "label": "Where the elastic model stops: ground strain near a heavy step",
+   "status": "estimate",
+   "value_si": 0.0001,
+   "unit_si": "1 (shear strain)",
+   "low_si": 1e-05,
+   "high_si": 0.001,
+   "display": "Flag results where max(PPV/c_s, (1 − ν)F/(2π ρ c_s² r²)) is above about 10⁻⁴. The limit is an unsourced working value (for sands the linear threshold may be nearer 10⁻⁵), and near the foot the model error could go either way",
+   "sources": [
+    {
+     "title": "Colombero, Kontoe, Foti & Potts (2015) Numerical modelling of wave attenuation through soil, XVI ECSMGE Edinburgh, pp. 3959-3964 (Politecnico di Torino repository)",
+     "url": "https://iris.polito.it/bitstream/11583/2882762/1/Colombero_et_al_2015_sub.pdf"
+    }
+   ],
+   "notes": "Wave strain is about particle velocity / wave speed. Near the foot the strain is quasi-static, (1 − ν)F/(2π μ r²) with μ = ρ c_s², larger than PPV/c_s by about 2 c_s τ/(π r) for a ramp. For a normal step (1.2 × 3,007 kg × g = 35.4 kN) on loose sand it is 1.8 × 10⁻⁴ at 1 m (7.6 × PPV/c_s) and 4.6 × 10⁻⁵ at 2 m, so ordinary walking passes 10⁻⁴ within about 1.4 m. Soil stiffness falls and damping rises from somewhere around 10⁻⁵–10⁻⁴ strain, and soils yield near 10⁻³ (typical soil-dynamics ranges; no source fetched). Where the flag trips, the direction of the model error is unknown: yielding absorbs energy, but softening raises quasi-static motion (u ∝ 1/μ). Pisa: 9 mm/s at 2.5 m on 150 m/s ground is 6 × 10⁻⁵ wave strain. Verifier: the flag now includes the quasi-static strain; the earlier claim that the model over-estimates close in is withdrawn.",
+   "who_when": "our estimate 2026"
+  },
+  {
+   "key": "vib_walking_two_feet_caveat",
+   "category": "presence_attenuation",
+   "label": "Walking: the other foot unloading partly cancels the far-field shaking",
+   "status": "estimate",
+   "value_si": 0.5,
+   "unit_si": "factor (possible reduction, far field, walking only)",
+   "low_si": 0.5,
+   "high_si": 1,
+   "display": "While one foot loads, the other unloads; at distances and wavelengths much larger than the stride, the net force changes less, so walking PPV far away may be up to about 2× lower than a single-foot calculation",
+   "sources": [
+    {
+     "title": "Ekimov & Sabatier (2006) Vibration and sound signatures of human footsteps in buildings, J Acoust Soc Am 120(2):762-8 (PubMed abstract, PMID 16938964, via NCBI E-utilities)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=16938964&rettype=abstract&retmode=text"
+    }
+   ],
+   "notes": "The ground sees the sum of both feet's forces. While each foot alone goes from zero to 1.0–1.5 × body weight, the sum of both feet in walking varies much less, because one foot unloads as the other loads (general walking biomechanics, not from the cited abstract; Ekimov & Sabatier only note that the force of multiple footsteps is concentrated at 1–4 Hz). For wavelengths long compared with Rex's stride (1–2 m) the loading and unloading feet act partly as one varying source, which lowers the far-field PPV; near either foot (r of a few metres or less) the nearer foot dominates and the single-foot result holds. Fast transients (foot slap at touchdown) do not cancel. Not quantified with data; treat the single-foot model as an upper estimate for walking.",
+   "who_when": "our estimate 2026"
+  },
+  {
+   "key": "elephant_steinmann2025_walk_20m_displacement",
+   "category": "presence_elephant",
+   "label": "Walking African bush elephant 20 m away: peak vertical ground displacement (Kenya, sandy dry ground)",
+   "status": "derived",
+   "value_si": 4e-08,
+   "unit_si": "m",
+   "low_si": 1.9e-08,
+   "high_si": 4e-08,
+   "display": "Largest step about 4 × 10⁻⁸ m (40 nanometres); a typical step about 2 × 10⁻⁸ m",
+   "sources": [
+    {
+     "title": "Steinmann, Nissen-Meyer, Cotton, Tilmann & Mortimer (2025) Decoding the footsteps of the African savanna: classifying wildlife using seismic signals and machine learning. Methods Ecol. Evol. 16(4):819-836, doi:10.1111/2041-210X.70021 (published version, GFZ repository)",
+     "url": "https://gfzpublic.gfz.de/pubman/item/item_5034960_2/component/file_5034988/5034960.pdf"
+    },
+    {
+     "title": "Wijayaraja et al. (2024) arXiv 2406.05140 (IEEE Access 12:72210-72223), secondary statement of the instrument used by Szenicer et al.",
+     "url": "https://arxiv.org/pdf/2406.05140"
+    }
+   ],
+   "notes": "Read from Fig. 3f 'elephant, NWP05, 20 m' (y-axis 'Displacement [m]', ×1e-8, dashed gridlines at ±2.5): page rendered at 400 dpi, trace measured in pixels against the gridlines. Largest peak +4.0e-8 m (minimum −3.1e-8); median of the 12 largest peaks 1.9e-8 m; reading error about ±0.1e-8. Station NWP05 'is located on sandy dry ground'; data 'at 200 Hz ... high-pass filtered with a 5 Hz corner frequency'. The 20 m is a camera-trap estimate. One 10 s record of one wild animal, vertical component, Mpala Research Centre, Kenya, Feb–Mar 2019; mass not reported. The paper says only 'broadband seismometers' and does not describe instrument correction. Reported (secondary): Wijayaraja et al. 2024 say Szenicer et al., whose SeisSavanna data these are, used a Guralp 6TD seismometer. Verifier: own reading 3.9e-8 m max, 1.85e-8 m typical.",
+   "who_when": "Steinmann et al., 2025 (data recorded 2019)"
+  },
+  {
+   "key": "elephant_steinmann2025_walk_20m_ppv",
+   "category": "presence_elephant",
+   "label": "Walking African bush elephant 20 m away: peak vertical ground velocity (converted from displacement)",
+   "status": "derived",
+   "value_si": 4.7e-06,
+   "unit_si": "m/s",
+   "low_si": 2.2e-06,
+   "high_si": 6.1e-06,
+   "display": "About 0.005 mm/s (0.002–0.006 mm/s) at 20 m",
+   "sources": [
+    {
+     "title": "Steinmann et al. (2025) Methods Ecol. Evol. 16:819-836, Fig. 3f (published version, GFZ repository)",
+     "url": "https://gfzpublic.gfz.de/pubman/item/item_5034960_2/component/file_5034988/5034960.pdf"
+    }
+   ],
+   "notes": "Formula: peak velocity ≈ 2πf × peak displacement, treating each footfall as a narrow-band wavelet at its dominant frequency. Inputs: 4.0e-8 m (largest step) and 1.9e-8 m (typical) from elephant_steinmann2025_walk_20m_displacement; f = 18.7 Hz from elephant_steinmann2025_footfall_frequency. Largest step 2π × 18.7 × 4.0e-8 = 4.7e-6 m/s; typical 2.2e-6; over the 13.8–24.3 Hz quartiles the largest step gives 3.5e-6 to 6.1e-6. Expect ±30–50% from the conversion. Vertical component only. Verifier: own reading gives 4.5e-6 m/s (3.3–5.8e-6). Verifier corrected the vector caveat: for an ideal Rayleigh wave the true vector peak equals the vertical peak; only a pseudo-vector sum of separate component peaks is about 1.2×. Real horizontal/vertical ratios on soft ground were not measured. Best single anchor: the only peer-reviewed record in physical units of a walking elephant at a stated distance. Still one animal, one site, one record.",
+   "who_when": "Derived here (2026) from Steinmann et al., 2025"
+  },
+  {
+   "key": "elephant_steinmann2025_footfall_frequency",
+   "category": "presence_elephant",
+   "label": "Dominant frequency of a walking elephant's footfalls at 20 m",
+   "status": "derived",
+   "value_si": 19,
+   "unit_si": "Hz",
+   "low_si": 14,
+   "high_si": 24,
+   "display": "About 19 Hz (most energy 14–24 Hz)",
+   "sources": [
+    {
+     "title": "Steinmann et al. (2025) Methods Ecol. Evol. 16:819-836, Fig. 3f scalogram (GFZ repository)",
+     "url": "https://gfzpublic.gfz.de/pubman/item/item_5034960_2/component/file_5034988/5034960.pdf"
+    }
+   ],
+   "notes": "Brightness-weighted frequency of the printed scalogram (log axis 10–100 Hz, ticks located in pixels): brightest row 20.4 Hz, weighted median 18.7 Hz, quartiles 13.8 and 24.3 Hz. Verifier: inverting the colours through the figure's colorbar gives 18.3 Hz (quartiles 13.5–23.7). Agrees with the other studies: Wood et al. 2005, 'All species have a peak around 25 Hz', most energy 10–40 Hz; O'Connell-Rodwell et al. 2000 abstract, 'predominant frequencies in the range of 20 Hz'; Wijayaraja et al. 2024, power-spectrum peaks 26–29 Hz; Mortimer et al. 2018 Table S1, dominant ranges 5–10 to 20–25 Hz for walks. Ground changes it: Steinmann says giraffe footfalls on muddy ground near the waterhole 'exhibit almost no energy above 30 Hz', and on rocky ground show 'little energy below 20 Hz'.",
+   "who_when": "Derived here (2026) from Steinmann et al., 2025"
+  },
+  {
+   "key": "elephant_steinmann2025_running_38m",
+   "category": "presence_elephant",
+   "label": "Running African bush elephant 38 m away: peak vertical displacement and converted velocity",
+   "status": "derived",
+   "value_si": 4.4e-06,
+   "unit_si": "m/s",
+   "low_si": 3e-06,
+   "high_si": 5.8e-06,
+   "display": "Displacement about 2.5 × 10⁻⁸ m; about 0.004 mm/s at 38 m",
+   "sources": [
+    {
+     "title": "Steinmann et al. (2025) Methods Ecol. Evol. 16:819-836, Fig. 3g 'running elephant, NTA02, 38 m' (GFZ repository)",
+     "url": "https://gfzpublic.gfz.de/pubman/item/item_5034960_2/component/file_5034988/5034960.pdf"
+    }
+   ],
+   "notes": "Pixel reading of Fig. 3g (y-axis ×1e-8 m, gridline at +2.5): largest peak +2.5e-8 m, minimum −1.9e-8 m, median of the 12 largest peaks 1.3e-8 m. Scalogram weighted median 27.8 Hz (quartiles 19.2–36.8). v = 2π × 27.8 × 2.5e-8 = 4.4e-6 m/s (3.0e-6 to 5.8e-6 over the quartiles). Running gives 'smaller time intervals between individual footfalls'. NTA02 is near the waterhole; the paper says those stations share 'similar site conditions due to the presence of water'. Scaled to 20 m with 1/D this is 0.006–0.011 mm/s (verifier's arithmetic). Verifier: own reading 2.45e-8 m, 26.5 Hz, 4.1e-6 m/s.",
+   "who_when": "Derived here (2026) from Steinmann et al., 2025"
+  },
+  {
+   "key": "elephant_steinmann2025_group_20m",
+   "category": "presence_elephant",
+   "label": "Group of four walking elephants at the same station and nominal 20 m: peak vertical displacement and velocity",
+   "status": "derived",
+   "value_si": 7.5e-07,
+   "unit_si": "m/s",
+   "low_si": 6e-07,
+   "high_si": 1e-06,
+   "display": "Displacement about 5 × 10⁻⁹ m; about 0.0008 mm/s, about 6–7× weaker than the single elephant",
+   "sources": [
+    {
+     "title": "Steinmann et al. (2025) Methods Ecol. Evol. 16:819-836, Fig. 3h 'elephant group, NWP05, 20 m' (GFZ repository)",
+     "url": "https://gfzpublic.gfz.de/pubman/item/item_5034960_2/component/file_5034988/5034960.pdf"
+    }
+   ],
+   "notes": "Pixel reading of Fig. 3h (y-axis ×1e-9 m, gridlines ±5): largest peak 5.3e-9 m, median of the 12 largest 3.0e-9 m. Weighted frequency 22.5 Hz, so v = 2π × 22.5 × 5.3e-9 = 7.5e-7 m/s. The paper: 'Figure 3h shows a group of four elephants in locomotion, resulting in a tremor-like signal.' Same station and same labelled distance as the single elephant (Fig. 3f), yet weaker, so individual steps and estimated distances vary a lot. The camera-trap distance may refer to the nearest animal, or the group may have walked more softly. Use it to widen the uncertainty band, not as a separate anchor. Verifier: corrected '8× weaker' to 6–7× (velocity ratio 4.7e-6 / 7.5e-7 = 6.3; displacement ratio 7.5); own reading 5.2e-9 m at 22.3 Hz.",
+   "who_when": "Derived here (2026) from Steinmann et al., 2025"
+  },
+  {
+   "key": "elephant_steinmann2025_other_animals",
+   "category": "presence_elephant",
+   "label": "Other savanna animals (giraffe, zebra, human, hyena, warthog): peak vertical displacement and converted velocity at stated distances",
+   "status": "derived",
+   "value_si": null,
+   "unit_si": "m/s",
+   "low_si": null,
+   "high_si": null,
+   "display": "Giraffe at 20 m about 0.04 mm/s; zebra at 47 m about 0.003; human at 53 m about 0.002; warthog at 32 m about 0.0006; hyena at 17 m about 0.0002 (all on one station except warthog)",
+   "sources": [
+    {
+     "title": "Steinmann et al. (2025) Methods Ecol. Evol. 16:819-836, Figs 3 and 4 (GFZ repository)",
+     "url": "https://gfzpublic.gfz.de/pubman/item/item_5034960_2/component/file_5034988/5034960.pdf"
+    }
+   ],
+   "notes": "Same method as the elephant facts: pixel readings of the printed seismograms and scalograms, then v = 2πf × u. For Fig. 4, f = 20 Hz is assumed because the scalograms were not measured. No masses reported; the human's mass and gait are unknown. Authors' ranking: 'The giraffe produces the footfall signals with the largest amplitudes for individual animals, followed by the elephant, zebra and human.' Distances are camera-trap estimates. Single 10 s records: each is one example, not an average. Verifier: spot-checked panels 3a–3e and 4a–c; peaks match to about 10% (some are negative peaks) and the conversions recompute.",
+   "who_when": "Derived here (2026) from Steinmann et al., 2025",
+   "values_json": "{\"source\":\"Steinmann et al. 2025, Figs 3 and 4, digitized\",\"rows\":[{\"animal\":\"giraffe walking\",\"station\":\"NWP05 (sandy dry ground)\",\"distance_m\":20,\"peak_disp_m\":2.5e-7,\"dominant_Hz\":24,\"ppv_mm_s\":0.038},{\"animal\":\"zebra\",\"station\":\"NWP05\",\"distance_m\":47,\"peak_disp_m\":2.3e-8,\"dominant_Hz\":24,\"ppv_mm_s\":0.0034},{\"animal\":\"human\",\"station\":\"NWP05\",\"distance_m\":53,\"peak_disp_m\":1.6e-8,\"dominant_Hz\":20,\"ppv_mm_s\":0.002},{\"animal\":\"hyena\",\"station\":\"NWP05\",\"distance_m\":17,\"peak_disp_m\":1.7e-9,\"dominant_Hz\":21,\"ppv_mm_s\":0.0002},{\"animal\":\"warthog\",\"station\":\"NTA02\",\"distance_m\":32,\"peak_disp_m\":2.7e-9,\"dominant_Hz\":33,\"ppv_mm_s\":0.0006},{\"animal\":\"giraffe walking (Fig 4a)\",\"station\":\"NNL62 (rocky ground)\",\"distance_m\":34,\"peak_disp_m\":2.3e-9,\"dominant_Hz\":\"20 assumed\",\"ppv_mm_s\":0.0003},{\"animal\":\"giraffe walking (Fig 4b)\",\"station\":\"ETA00 (near waterhole)\",\"distance_m\":26,\"peak_disp_m\":3.5e-9,\"dominant_Hz\":\"20 assumed\",\"ppv_mm_s\":0.0004},{\"animal\":\"giraffe walking (Fig 4c)\",\"station\":\"ETA00\",\"distance_m\":103,\"peak_disp_m\":2.2e-10,\"dominant_Hz\":\"20 assumed\",\"ppv_mm_s\":0.00003}]}"
+  },
+  {
+   "key": "elephant_steinmann2025_site_spread",
+   "category": "presence_elephant",
+   "label": "Spread between single walking-giraffe records at three stations (20–34 m): about ×70–110 in peak displacement; site, animal and distance error mixed together, not a measured ground effect",
+   "status": "derived",
+   "value_si": 100,
+   "unit_si": "ratio",
+   "low_si": 70,
+   "high_si": 110,
+   "display": "About ×70–110 between single giraffe records at three stations (not corrected for distance; not a measured ground effect); ×16 drop from 26 m to 103 m at one station",
+   "sources": [
+    {
+     "title": "Steinmann et al. (2025) Methods Ecol. Evol. 16:819-836, Figs 3e and 4a–c (GFZ repository)",
+     "url": "https://gfzpublic.gfz.de/pubman/item/item_5034960_2/component/file_5034988/5034960.pdf"
+    }
+   ],
+   "notes": "Peak displacements (pixel readings): NWP05 (sandy dry ground) at 20 m, 2.5e-7 m; ETA00 at 26 m, 3.5e-9 m; NNL62 (rocky ground) at 34 m, 2.3e-9 m. Ratios 71 and 109. Each is one record of a different giraffe at a camera-trap distance, possibly on different sensors. The paper discusses the site in terms of frequency content ('illustrating the impact of the site on the signal's frequency content'), with a general remark that the muddy station's ground (named ETB00 in the text, ETA00 in the figure) 'attenuates high-frequency seismic waves, but amplifies ground motion amplitudes at low frequencies'; it does not quantify an amplitude difference between stations. At ETA00, 26 m → 103 m drops 3.5e-9 → 2.2e-10 m (×16); the paper says the 103 m record has 'a worse SNR overall due to low signal amplitudes', so that decay may be overstated. Verifier: the old label 'How much the ground changes the signal' was unsupported; relabelled.",
+   "who_when": "Derived here (2026) from Steinmann et al., 2025"
+  },
+  {
+   "key": "elephant_steinmann2025_soft_feet_finding",
+   "category": "presence_elephant",
+   "label": "Elephant footfalls lack the sharp impulses of hoofed animals (authors link this to soft cushion-like feet); separately, the elephant gave smaller amplitudes than a giraffe, which the authors call surprising",
+   "status": "verified",
+   "value_si": null,
+   "unit_si": "",
+   "low_si": null,
+   "high_si": null,
+   "display": "No sharp impulses, which the authors link to 'soft cushion-like feet'; smaller amplitudes than a giraffe and similar to a more distant zebra, which they call 'surprising' and do not explain",
+   "sources": [
+    {
+     "title": "Steinmann et al. (2025) Methods Ecol. Evol. 16:819-836 (GFZ repository)",
+     "url": "https://gfzpublic.gfz.de/pubman/item/item_5034960_2/component/file_5034988/5034960.pdf"
+    }
+   ],
+   "notes": "Quotes: 'While hoofed animals such as giraffes, zebras and warthogs produce clear and sharp impulses (Figure 3a,b,e), elephant with its soft cushion-like feet and hyena with its paws do not show these clear impulses (Figure 3d,f).' 'It is surprising to see that the elephant, having the largest average weight compared to the other animals, produces smaller amplitudes than the giraffe and similar amplitudes to the zebra, which is even more distant.' The authors link the feet only to the impulse shape. That the cushioned feet also explain the weaker amplitude is our inference, not theirs; if it holds, seismic output depends on how sharply the foot lands, not only on mass. Verifier: the earlier label and summary had attributed the weaker signal to the feet; relabelled.",
+   "who_when": "Steinmann et al., 2025"
+  },
+  {
+   "key": "elephant_steinmann2025_classification_distance",
+   "category": "presence_elephant",
+   "label": "Classification accuracy for savanna footfalls (elephant, giraffe, hyena, zebra) by maximum animal–sensor distance; 150 m is the dataset's cut-off",
+   "status": "verified",
+   "value_si": 150,
+   "unit_si": "m",
+   "low_si": 50,
+   "high_si": 150,
+   "display": "87% balanced accuracy up to 50 m; 77% up to 150 m (150 m is where the dataset stops, not a detection limit)",
+   "sources": [
+    {
+     "title": "Steinmann et al. (2025) Methods Ecol. Evol. 16:819-836 (GFZ repository)",
+     "url": "https://gfzpublic.gfz.de/pubman/item/item_5034960_2/component/file_5034988/5034960.pdf"
+    },
+    {
+     "title": "Steinmann et al., EGU General Assembly 2025 abstract EGU25-2842",
+     "url": "https://meetingorganizer.copernicus.org/EGU25/EGU25-2842.html"
+    }
+   ],
+   "notes": "Quote: 'The machine learning model achieves a balanced accuracy of 87% with a maximum animal-sensor distance of 50 m and 77% with a maximum animal-sensor distance of 150 m'. The authors put the drop down to 'decreasing signal and label quality'. Seismograms 'were extracted from seismic stations that are not further away than 150 m from the localized animals', so 150 m is the maximum distance chosen when building the dataset, not a measured detection or noise limit. SeisSavanna: 70,637 three-component 10 s seismograms from 11 wildlife categories. Classification by a broadband seismometer, not a range at which people could feel anything. Verifier: corrected the note that had called 150 m a detection range.",
+   "who_when": "Steinmann et al., 2025"
+  },
+  {
+   "key": "elephant_szenicer2022_detection_100m",
+   "category": "presence_elephant",
+   "label": "Elephants detected seismically up to 100 m away (machine learning, Kenyan savanna)",
+   "status": "verified",
+   "value_si": 100,
+   "unit_si": "m",
+   "low_si": null,
+   "high_si": null,
+   "display": "80–90% balanced accuracy for elephants up to 100 m",
+   "sources": [
+    {
+     "title": "Szenicer et al. (2022) Seismic savanna: machine learning for classifying wildlife and behaviours using ground-based vibration field recordings. Remote Sens. Ecol. Conserv. 8(2):236-250 — abstract via Crossref",
+     "url": "https://api.crossref.org/works/10.1002/rse2.242"
+    },
+    {
+     "title": "Wijayaraja et al. (2024) arXiv 2406.05140, secondary statement of Szenicer et al.'s instrument",
+     "url": "https://arxiv.org/pdf/2406.05140"
+    }
+   ],
+   "notes": "Abstract quote: 'Our classifiers ... achieved 80%–90% balanced accuracy in detecting elephants up to 100 m away, and over 90% balanced accuracy in recognising running and rumbling behaviours'. Data: '8000 h seismic recordings and 250 k camera trap pictures'. Full text blocked (publisher bot check), so no amplitudes. Same Mpala experiment as Steinmann et al. 2025 (SeisSavanna). Reported (secondary, from the verifier's list): Wijayaraja et al. 2024 write that Szenicer et al. 'utilized a Guralp 6TD seismometer to detect elephants'. A machine-learning detection range for a broadband seismometer, not a range at which people could feel anything.",
+   "who_when": "Szenicer et al., 2022 (online 2021)"
+  },
+  {
+   "key": "elephant_mortimer2018_fastwalk_velocity",
+   "category": "presence_elephant",
+   "label": "Fast-walking wild African elephant: peak vertical ground velocity at the geophone (2–30 m, mostly river sand)",
+   "status": "derived",
+   "value_si": 0.00036,
+   "unit_si": "m/s",
+   "low_si": 0.00021,
+   "high_si": 0.00037,
+   "display": "0.2–0.36 mm/s for three footfalls; the geophone was 2–30 m away (exact distance not given)",
+   "sources": [
+    {
+     "title": "Mortimer, Rees, Koelemeijer & Nissen-Meyer (2018) Classifying elephant behaviour through seismic vibrations. Curr. Biol. 28(9):R547-R548, Fig. 1D (UCL repository)",
+     "url": "https://discovery.ucl.ac.uk/id/eprint/10063309/1/1-s2.0-S0960982218304202-main.pdf"
+    },
+    {
+     "title": "Mortimer et al. (2018) Supplemental Information (Elsevier CDN)",
+     "url": "https://ars.els-cdn.com/content/image/1-s2.0-S0960982218304202-mmc1.pdf"
+    }
+   ],
+   "notes": "Fig. 1D 'Fast walk', y-axis 'Velocity (m s-1)', ticks ±4×10^-4; caption: 'recorded vertical ground velocity'. 600 dpi pixel reading: positive peaks 3.6e-4, 3.4e-4, 2.1e-4 m/s; negative 2.6e-4, 2.6e-4, 2.1e-4. Linked to the 946 N source force. Supplement: 'One geophone (RTC-4.5Hz-395 vertical, USA)'; 'Sampling frequency was 600 Hz'; geophone 'close (range of 2 to 30 m) to a focal individual'; 'elephants were mostly on river sands' (three consolidation levels), some on gneiss. Samburu and Buffalo Springs, Kenya; masses not given. Voltage was 'converted to velocity by multiplying by a calibration factor (set by hardware) of 23.4 V m-1 s-1'; the units imply division. These values are 40–80× the Steinmann value at 20 m. Verifier: the half-space check (at this walk's 5–10 Hz band) is consistent within a factor of a few only if the elephant was within about 2–5 m; it does not confirm the calibration.",
+   "who_when": "Mortimer et al., 2018"
+  },
+  {
+   "key": "elephant_mortimer2018_source_forces",
+   "category": "presence_elephant",
+   "label": "Seismic source force of elephant behaviours (peak of the deconvolved source function; geophone band ≥4.5 Hz; propagation modelled 4.5–25 Hz)",
+   "status": "verified",
+   "value_si": 946,
+   "unit_si": "N",
+   "low_si": 125,
+   "high_si": 1190,
+   "display": "Walks 125–946 N (fast walk 946 N); a climbing step 1,190 N; rumbles 69–2,546 N",
+   "sources": [
+    {
+     "title": "Mortimer et al. (2018) Supplemental Table S1 (Elsevier CDN)",
+     "url": "https://ars.els-cdn.com/content/image/1-s2.0-S0960982218304202-mmc1.pdf"
+    },
+    {
+     "title": "Mortimer et al. (2018) Curr. Biol. 28:R547-R548 (UCL repository)",
+     "url": "https://discovery.ucl.ac.uk/id/eprint/10063309/1/1-s2.0-S0960982218304202-main.pdf"
+    }
+   ],
+   "notes": "Table S1 'Max. force (N)'. A source function is 'the force strength and pattern generated by the elephant at the source', found by deconvolution against on-site weight drops: 'We calibrated the force generated through the weight dropping by using high-speed camera footage and force-motion equations'. 'Walks were chosen as they included the maximum, minimum and median maximum forces during that recording.' Reading it as the dynamic force in the seismic band, not the full ground reaction force, is our interpretation, not the paper's words. For comparison, walking_running_peak_vertical_force puts walking at 1.0–1.5× body weight (30–45 kN for 3 t). Verifier: the main text pairs 'maximum seismological force 2546 N' with a cow rumble (6.4 km), but Table S1 gives 2546 N to Bull 1 rumble 2; the 6.4 km is Cow 2 rumble 2 on sand. This is the paper's own inconsistency.",
+   "who_when": "Mortimer et al., 2018",
+   "values_json": "{\"unit\":\"N (max of source function); dominant frequency range in Hz\",\"rows\":[{\"behaviour\":\"Walk 1 (adult 1)\",\"max_force_N\":279,\"dominant_Hz\":\"10-15\"},{\"behaviour\":\"Walk 2 (young 1)\",\"max_force_N\":273,\"dominant_Hz\":\"10-15\"},{\"behaviour\":\"Walk 3 (adult 2)\",\"max_force_N\":125,\"dominant_Hz\":\"20-25\"},{\"behaviour\":\"Walk 4 (adult 3), the fast walk of Fig. 1\",\"max_force_N\":946,\"dominant_Hz\":\"5-10\"},{\"behaviour\":\"Walk 5 (young 2)\",\"max_force_N\":289,\"dominant_Hz\":\"10-15\"},{\"behaviour\":\"Climbing step\",\"max_force_N\":1190,\"dominant_Hz\":\"20-25\"},{\"behaviour\":\"Bull 1 rumbles 1-3\",\"max_force_N\":\"1314, 2546, 2100\"},{\"behaviour\":\"Cow rumbles\",\"max_force_N\":\"69, 2238, 1401\"},{\"behaviour\":\"Car (about 10 mph, closest 4 m)\",\"max_force_N\":88,\"dominant_Hz\":\"20-25\"}]}"
+  },
+  {
+   "key": "elephant_mortimer2018_source_force_vs_weight",
+   "category": "presence_elephant",
+   "label": "Elephant step: seismic-band source force as a share of body weight",
+   "status": "estimate",
+   "value_si": 0.03,
+   "unit_si": "ratio",
+   "low_si": 0.004,
+   "high_si": 0.05,
+   "display": "Adult walks about 0.4–4% of body weight; a climbing step 3.5–5% (if the elephants weighed 2.5–3.5 t)",
+   "sources": [
+    {
+     "title": "Mortimer et al. (2018) Supplemental Table S1 (forces)",
+     "url": "https://ars.els-cdn.com/content/image/1-s2.0-S0960982218304202-mmc1.pdf"
+    },
+    {
+     "title": "Ren & Hutchinson (2008) J. R. Soc. Interface 5:195-211, Table 1 (masses of comparable elephants)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2705974/"
+    }
+   ],
+   "notes": "Formula: F_seis / (m g). The Kenyan elephants were not weighed; we assumed 2,500–3,500 kg (as elephant_ren2008_masses). The assumption fits only the adult walks: Walks 2 and 5 were young animals and are left out. Adult walks: 125 N → 0.36–0.51%; 279 N → 0.8–1.1%; 946 N (fast walk) → 2.8–3.9%. Climbing step 1,190 N → 3.5–4.9%. Heavier adult bulls would give smaller shares. Use: an elephant-like soft step puts only a few percent of body weight into the band that makes ground vibration. Feeding the full ground reaction force (1.2 × body weight, W8.WALK_LOAD) into a seismic formula would overstate it by about 30–300×. Verifier: arithmetic confirmed; corrected 30–200× to 30–300× and restricted the mass assumption to the adult walks.",
+   "who_when": "Estimate here (2026) from Mortimer et al., 2018"
+  },
+  {
+   "key": "elephant_mortimer2018_modelled_range",
+   "category": "presence_elephant",
+   "label": "Modelled range at which an elephant fast walk stays detectable over background noise",
+   "status": "verified",
+   "value_si": 3600,
+   "unit_si": "m",
+   "low_si": 0,
+   "high_si": 3600,
+   "display": "Up to 3.6 km in a model (sand, quiet, 10–15 Hz band); not detectable at 1 km in high noise",
+   "sources": [
+    {
+     "title": "Mortimer et al. (2018) Curr. Biol. 28:R547-R548 (UCL repository)",
+     "url": "https://discovery.ucl.ac.uk/id/eprint/10063309/1/1-s2.0-S0960982218304202-main.pdf"
+    },
+    {
+     "title": "Mortimer et al. (2018) Supplemental Table S1",
+     "url": "https://ars.els-cdn.com/content/image/1-s2.0-S0960982218304202-mmc1.pdf"
+    }
+   ],
+   "notes": "Main text: 'Maximum propagation range estimates were 6.4 km for cow rumble versus 3.6 km for fast elephant walk'; ranges were '84 ± 16% lower under higher noise on average'. Fig. 1 caption: 'Only fast walk at 1000 m is not detectable over background noise'; the Fig. 1 case was modelled 'with high noise on sandy terrain'. Detection used STA/LTA (threshold 1.6) on modelled waveforms for a sensitive geophone: instrument detectability, not human feeling. The 3,600 m is Walk 4 (the fast walk) on sand, low noise, 10–15 Hz band; Table S1 walk ranges run from 0 to 3,600 m with ground, noise and band, in 200 m steps (verifier).",
+   "who_when": "Mortimer et al., 2018"
+  },
+  {
+   "key": "elephant_mortimer2018_modelled_200m",
+   "category": "presence_elephant",
+   "label": "Mortimer et al. 2018 model: displacement 200 m from an elephant fast walk and a bull rumble on sandy ground, with converted velocity",
+   "status": "derived",
+   "value_si": 9.4e-06,
+   "unit_si": "m/s",
+   "low_si": 6.3e-06,
+   "high_si": 1.26e-05,
+   "display": "Modelled, not measured: fast walk about 2 × 10⁻⁷ m at 200 m, about 0.01 mm/s (0.006–0.013); bull rumble about 5 × 10⁻⁷ m at 200 m",
+   "sources": [
+    {
+     "title": "Mortimer, Rees, Koelemeijer & Nissen-Meyer (2018) Classifying elephant behaviour through seismic vibrations. Curr. Biol. 28(9):R547-R548, Fig. 1C and 1F (UCL repository)",
+     "url": "https://discovery.ucl.ac.uk/id/eprint/10063309/1/1-s2.0-S0960982218304202-main.pdf"
+    },
+    {
+     "title": "Mortimer et al. (2018) Supplemental Table S1 (dominant source band of Walk 4)",
+     "url": "https://ars.els-cdn.com/content/image/1-s2.0-S0960982218304202-mmc1.pdf"
+    }
+   ],
+   "notes": "From the verifier's list (Fig. 1F read at 600 dpi; checked by eye here). Fig. 1 caption: 'modelled propagation sampled at 200 m and 1000 m from the source (modelled with high noise on sandy terrain; C, F)'; C is a bull rumble, F the fast walk (946 N). Fig. 1F (axis ±3×10^-7 m): largest 200 m peak about 2e-7 m. Fig. 1C (axis ±6×10^-7 m): about 5e-7 m. Conversion v = 2πf × u at the walk's dominant 5–10 Hz source band (Table S1): 6.3e-6 to 1.26e-5 m/s. The paper's own forward model (top 25 m sand or gneiss), not a field measurement. It is about 20× the 1/D anchor extrapolated to 200 m (0.0005 mm/s), so a high-force, low-frequency step on sand decays much more slowly than 1/D. A reason not to extend the anchor past 100 m.",
+   "who_when": "Derived here (2026) from Mortimer et al., 2018 (model)"
+  },
+  {
+   "key": "elephant_oconnell2000_stomp_pp_velocity",
+   "category": "presence_elephant",
+   "label": "Asian elephant foot stomps: peak-to-peak vertical ground velocity at 3–12 m and at 40 m (as quoted by a later paper)",
+   "status": "reported",
+   "value_si": 4.87e-05,
+   "unit_si": "m/s (peak-to-peak)",
+   "low_si": 1.7e-05,
+   "high_si": 4.87e-05,
+   "display": "48.7 µm/s peak-to-peak at 3–12 m; 17.0 µm/s at 40 m",
+   "sources": [
+    {
+     "title": "Wijayaraja, Wijekoon, Wijesundara & Wickramasinghe (2024) Toward long range detection of elephants using seismic signals: a geophone-sensor interface for embedded systems (arXiv 2406.05140; published IEEE Access 12:72210-72223), quoting O'Connell-Rodwell et al. 2000",
+     "url": "https://arxiv.org/pdf/2406.05140"
+    }
+   ],
+   "notes": "Secondary quote of O'Connell-Rodwell, Arnason & Hart (2000) J. Acoust. Soc. Am. 108:3066-3072: 'According to [44], the RMS velocity of elephant rumbles is 0.437 µm/s at a distance of 3-12 m and is 0.264 µm/s at a distance of 40 m. For the corresponding distances, experimental peak-to-peak velocities for stomps were 48.7 µm/s and 17.0 µm/s, respectively.' Also: 'The footfall signature of the elephant (i.e., stomp) has a mean frequency of 24.03 Hz (±2.98)'. Its Table 1 lists the 2000 study's geophone as 10 Hz vertical, 8000 samples/s. The primary paper was paywalled, so these are not confirmed against it: 'reported'. Captive Asian elephants; masses and ground unknown. Verifier: quote verbatim; Table 2 cross-check 48.7 µm/s × 85.8 V/(m/s) = 4178.46 µV.",
+   "who_when": "O'Connell-Rodwell, Arnason & Hart, 2000 (quoted by Wijayaraja et al., 2024)",
+   "values_json": "{\"stomp_peak_to_peak_um_s\":{\"3-12 m\":48.7,\"40 m\":17.0},\"rumble_rms_um_s\":{\"3-12 m\":0.437,\"40 m\":0.264},\"stomp_mean_frequency_Hz\":\"24.03 (+/-2.98)\",\"rumble_mean_frequency_Hz\":20.66}"
+  },
+  {
+   "key": "elephant_oconnell2000_stomp_ppv",
+   "category": "presence_elephant",
+   "label": "Asian elephant foot stomps: zero-to-peak vertical velocity (half of the quoted peak-to-peak)",
+   "status": "reported",
+   "value_si": 2.4e-05,
+   "unit_si": "m/s",
+   "low_si": 8.5e-06,
+   "high_si": 4.9e-05,
+   "display": "About 0.024 mm/s at 3–12 m and 0.0085 mm/s at 40 m",
+   "sources": [
+    {
+     "title": "Wijayaraja et al. (2024) arXiv 2406.05140, quoting O'Connell-Rodwell et al. 2000",
+     "url": "https://arxiv.org/pdf/2406.05140"
+    }
+   ],
+   "notes": "Formula: zero-to-peak ≈ peak-to-peak / 2, assuming a waveform symmetric about zero; the true peak lies between p-p/2 and p-p. 48.7/2 = 24.4 µm/s (up to 48.7) at 3–12 m; 17.0/2 = 8.5 µm/s at 40 m. Status stays 'reported', not 'derived', because the inputs are a secondary quote (elephant_oconnell2000_stomp_pp_velocity). These are deliberate stomps, possibly from a mock charge (our inference; see elephant_oconnell_stomp_mock_charge), so they likely overstate an ordinary walking step. Decay between the two distances gives n = 0.41–0.87 (elephant_decay_exponent_from_data). Verifier: halving and exponents recomputed.",
+   "who_when": "Derived here (2026) from O'Connell-Rodwell et al., 2000 (secondary)"
+  },
+  {
+   "key": "elephant_oconnell_stomp_mock_charge",
+   "category": "presence_elephant",
+   "label": "Authors' SICB abstract: foot stomps from a mock charge modelled to travel up to 32 km (instrument detectability)",
+   "status": "verified",
+   "value_si": 32000,
+   "unit_si": "m",
+   "low_si": null,
+   "high_si": null,
+   "display": "'foot stomps from a mock charge could possibly travel up to 32 kilometers' (modelled, instrumental)",
+   "sources": [
+    {
+     "title": "O'Connell-Rodwell, Arnason & Hart, SICB meeting abstract 'Exploring the Possibility of Low-Frequency Seismic Communication in Elephants and Other Large Mammals'",
+     "url": "https://sicb.org/?p=37257"
+    },
+    {
+     "title": "O'Connell-Rodwell, Arnason & Hart (2000) J. Acoust. Soc. Am. 108:3066-72, PubMed abstract (PMID 11144599)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=11144599,12083604&rettype=abstract&retmode=text"
+    }
+   ],
+   "notes": "Verified for the quote only. SICB: 'Using seismic modeling, we estimated that the elephant rumbles that we recorded could potentially travel up to 16.7 km in the ground and foot stomps from a mock charge could possibly travel up to 32 kilometers.' JASA 2000 abstract: 'up to 16 km' for vocalizations and 'up to 32 km for locomotion generated signals'. That the JASA 2000 stomp amplitudes (elephant_oconnell2000_stomp_pp_velocity) came from mock charges is our inference from the matching 32 km; treat that link as an estimate. The SICB page shows no meeting year (archive entry migrated in 2021). 32 km is a model of instrument detectability, not a measurement. Verifier: the old label stated the mock-charge link as verified fact; relabelled.",
+   "who_when": "O'Connell-Rodwell, Arnason & Hart (SICB abstract, c. 2001; JASA 2000)"
+  },
+  {
+   "key": "elephant_oconnell2000_abstract_measurements",
+   "category": "presence_elephant",
+   "label": "Asian elephant rumbles and stomps: seismic wave speed, frequency and distance recorded",
+   "status": "verified",
+   "value_si": 40,
+   "unit_si": "m",
+   "low_si": null,
+   "high_si": null,
+   "display": "Clearly above background at 40 m; ground waves at 248–264 m/s; frequencies near 20 Hz",
+   "sources": [
+    {
+     "title": "O'Connell-Rodwell, Arnason & Hart (2000) Seismic properties of Asian elephant (Elephas maximus) vocalizations and locomotion. J. Acoust. Soc. Am. 108(6):3066-72, PubMed abstract",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=11144599,12083604&rettype=abstract&retmode=text"
+    }
+   ],
+   "notes": "Abstract: 'elephant generated signals associated with rumbles and \"foot stomps\" propagated at different velocities in the two media, the acoustic signals traveling at 309 m/s and the seismic signals at 248-264 m/s. Both types of signals had predominant frequencies in the range of 20 Hz. Seismic signal amplitudes considerably above background noise were recorded at 40 m from the generating elephants for both the rumble and the stomp.' A 1998 JASA meeting abstract (doi:10.1121/1.423611, via OpenAlex) describes four geophones at about 30 m intervals out to 120 m. Full paper not available. Verifier: quotes verbatim; 1998 abstract confirmed.",
+   "who_when": "O'Connell-Rodwell, Arnason & Hart, 2000",
+   "values_json": "{\"seismic_speed_m_s\":\"248-264\",\"acoustic_speed_m_s\":309,\"predominant_frequency_Hz\":\"about 20\",\"recorded_above_noise_at_m\":40,\"modelled_instrumental_range_km\":{\"rumble\":16,\"locomotion\":32}}"
+  },
+  {
+   "key": "elephant_oconnell_rumble_ground_velocity",
+   "category": "presence_elephant",
+   "label": "Seismic part of a natural elephant rumble at 10 m (for contrast with footsteps)",
+   "status": "verified",
+   "value_si": 2.76e-07,
+   "unit_si": "m/s (40–60 Hz band; RMS by context)",
+   "low_si": null,
+   "high_si": null,
+   "display": "Mean 0.276 µm/s at 10 m (40–60 Hz band; RMS by context); not directly comparable with stomp peak values",
+   "sources": [
+    {
+     "title": "O'Connell-Rodwell et al. (2006) Wild elephant (Loxodonta africana) breeding herds respond to artificially transmitted seismic stimuli. Behav. Ecol. Sociobiol. 59:842-850 (author PDF, UCLA)",
+     "url": "https://bec.ucla.edu/wp-content/uploads/sites/108/archive/papers/OConnellRodwell_4.16.07.pdf"
+    }
+   ],
+   "notes": "Quote: playback was raised 'to peak presentation velocities ranging from 0.44 to 1.1 μm/s root mean square (RMS) at 10 m from the elephants, approximating the velocity of a naturally occurring seismic elephant rumble (40–60 Hz) at this distance (mean 0.276 μm/s; O'Connell-Rodwell et al. 2000a)'. The paper does not explicitly call the 0.276 mean RMS; the sentence implies it. The 2024 secondary quote gives 0.437 µm/s RMS at 3–12 m and 0.264 at 40 m for rumbles. Band-limited RMS values are not peak values. Mortimer 2018 found large rumble source forces (up to 2,546 N), so the studies differ on rumbles. Verifier: removed the earlier '100× weaker than a stomp' comparison, which set an RMS value against a peak value.",
+   "who_when": "O'Connell-Rodwell et al., 2006 (citing 2000a)"
+  },
+  {
+   "key": "elephant_oconnell2006_surface_wave_attenuation",
+   "category": "presence_elephant",
+   "label": "Measured surface-wave attenuation fitted near an elephant waterhole (Etosha calcrete, 40–60 Hz)",
+   "status": "verified",
+   "value_si": 0.018,
+   "unit_si": "1/m",
+   "low_si": 0.018,
+   "high_si": 0.05,
+   "display": "L = L0 · e^(−αr) / √r, with α = 0.018 per m (elephant-generated background) to 0.05 per m (buried shakers)",
+   "sources": [
+    {
+     "title": "O'Connell-Rodwell et al. (2006) Behav. Ecol. Sociobiol. 59:842-850, Eq. 1 and Table 1 (author PDF, UCLA)",
+     "url": "https://bec.ucla.edu/wp-content/uploads/sites/108/archive/papers/OConnellRodwell_4.16.07.pdf"
+    }
+   ],
+   "notes": "Quotes: 'we used the standard surface wave attenuation rate model (White 1965)'; Eq. (1) 'relates the velocity level L (m/s) at distance r based on a source signal level L0 and propagation constant α'. Fits: 'α=0.05/m and L0=25.5×10−6 m3/2/s ... for shaker-induced motions'; background 'α=0.018/m and L0=4×10−7 m3/2/s'. Table 1 noise α per trial 0.007–0.023 (mean 0.016). Ground: 'relatively homogeneous calcrete' (Etosha). Fitted at 40–60 Hz (45 Hz shakers) from two geophones (10 m and 90 m). Verifier: recomputed Eq. 1 (13.8 dB at 10 m, −30.5 dB at 90 m, as printed). Do not carry α to footstep frequencies near 20 Hz without scaling: at constant Q, α scales with f, giving roughly 0.008–0.022 per m at 20 Hz (verifier's scaling, an estimate). Using 0.05 per m at 20 Hz would cut 100 m amplitudes by e^−5 (about 150-fold) on top of spreading.",
+   "who_when": "O'Connell-Rodwell et al., 2006"
+  },
+  {
+   "key": "elephant_oconnell2006_waterhole_background",
+   "category": "presence_elephant",
+   "label": "Seismic background near a busy elephant waterhole (Etosha, 40–60 Hz band): measured at two geophones and modelled at the elephants",
+   "status": "verified",
+   "value_si": 2.5e-07,
+   "unit_si": "m/s (40–60 Hz band level)",
+   "low_si": null,
+   "high_si": null,
+   "display": "−12 dB re 1 µm/s (about 0.25 µm/s) at the elephants, 5 m from the waterhole; −20 dB (0.1 µm/s) and −42 dB (0.008 µm/s) at the geophones 10 m and 90 m from the shakers. Band levels, not footfall peaks",
+   "sources": [
+    {
+     "title": "O'Connell-Rodwell et al. (2006) Behav. Ecol. Sociobiol. 59:842-850, Table 1 and Results (author PDF, UCLA)",
+     "url": "https://bec.ucla.edu/wp-content/uploads/sites/108/archive/papers/OConnellRodwell_4.16.07.pdf"
+    }
+   ],
+   "notes": "From the verifier's list. Results: 'the mean background activity level is −12 dB re 1 μm/s for an overall SNR at the location of the elephants of −1.6 dB'. Table 1 means over eight trials: noise level −20.1 dB (SD 4.7) at the 10 m geophone and −42.1 dB (SD 5.1) at the 90 m geophone; −12.0 dB (SD 5.0) at the elephants, calculated with Eq. (1) at 'body length or 5 m from the water hole'. Conversion 10^(dB/20) µm/s: 0.25, 0.099 and 0.0079 µm/s (verifier confirmed −12 dB = 0.251). The authors assumed the noise came from the elephants at the waterhole, 'as their footfalls create seismic noise'. These are 40–60 Hz band levels (RMS by context), not single-step peaks, so they cannot be set directly against peak footfall values. One site (calcrete).",
+   "who_when": "O'Connell-Rodwell et al., 2006"
+  },
+  {
+   "key": "elephant_wood2005_detection_radius",
+   "category": "presence_elephant",
+   "label": "Range at which a single geophone picked up elephant footfalls at an Etosha waterhole",
+   "status": "verified",
+   "value_si": 100,
+   "unit_si": "m",
+   "low_si": null,
+   "high_si": null,
+   "display": "About 100 m",
+   "sources": [
+    {
+     "title": "Wood, O'Connell-Rodwell & Klemperer (2005) Using seismic sensors to detect elephants and other large mammals: a potential census technique. J. Appl. Ecol. 42:587-594 (Stanford CRUSTAL PDF)",
+     "url": "https://crustal.stanford.edu/sites/g/files/sbiybj21541/files/media/file/wood.elecensus.jappliedecol.2005_0.pdf"
+    }
+   ],
+   "notes": "Quote: 'Given that the duration of the recording in which footfalls are visible is 166 s, the radius of detection is roughly 100 m.' Speed: 'we estimated its speed at 1·2 m s−1'. Discussion: 'the detection radius for an elephant footfall is roughly 100 m in Etosha National Park. This will vary depending on the soil type'. Setup: 'a single 4·5 Hz vertical geophone ... buried 1 m from a major path leading to the waterhole, at a depth of 15 cm'; 31 bull and 12 herd recordings at Mushara waterhole, June 2002. Amplitudes normalized only. Wild African elephants, masses not given. The only measured detection radius among these studies; it is site-specific (the other long ranges are dataset cut-offs, space limits or models).",
+   "who_when": "Wood, O'Connell-Rodwell & Klemperer, 2005"
+  },
+  {
+   "key": "elephant_wood2005_overhead_vs_20m",
+   "category": "presence_elephant",
+   "label": "How much weaker a bull's footfalls were at 20 m than directly over the geophone",
+   "status": "verified",
+   "value_si": 10,
+   "unit_si": "amplitude ratio",
+   "low_si": null,
+   "high_si": null,
+   "display": "About 20 dB (×10 in amplitude) weaker at 20 m",
+   "sources": [
+    {
+     "title": "Wood et al. (2005) J. Appl. Ecol. 42:587-594, Fig. 4 and text (Stanford CRUSTAL PDF)",
+     "url": "https://crustal.stanford.edu/sites/g/files/sbiybj21541/files/media/file/wood.elecensus.jappliedecol.2005_0.pdf"
+    }
+   ],
+   "notes": "Quote: 'we can use Fig. 4 to estimate the maximum amplitude for an elephant that passed 20 m from the geophone. As indicated on the figure, this is considerably lower (∼20 dB) than when the elephant passed directly over the geophone.' 20 dB = ×10 in amplitude. The geophone was buried 1 m from the path, so 'directly over' is about 1 m, giving a decay exponent n = ln 10 / ln(20/1) ≈ 0.77; n = 1.0 would need r0 = 2 m (verifier). The authors' estimate from a time-to-distance conversion of one bull's envelope, not a calibrated pair of measurements.",
+   "who_when": "Wood, O'Connell-Rodwell & Klemperer, 2005"
+  },
+  {
+   "key": "elephant_wood2005_spectrum_and_gait",
+   "category": "presence_elephant",
+   "label": "Elephant footfall spectrum and step timing (Etosha)",
+   "status": "verified",
+   "value_si": 25,
+   "unit_si": "Hz",
+   "low_si": 10,
+   "high_si": 40,
+   "display": "Most energy 10–40 Hz, peak near 25 Hz; a front-foot strike about every 1.5 s at 1.2 m/s",
+   "sources": [
+    {
+     "title": "Wood et al. (2005) J. Appl. Ecol. 42:587-594 (Stanford CRUSTAL PDF)",
+     "url": "https://crustal.stanford.edu/sites/g/files/sbiybj21541/files/media/file/wood.elecensus.jappliedecol.2005_0.pdf"
+    }
+   ],
+   "notes": "Quotes: 'All species have a peak around 25 Hz but the shape of the spectra are different, with the elephant spectrum having the most pronounced low-frequency component'. 'A25Hz /A50Hz ∼ 1000 for elephants, but ≤ 100 for the other measured species.' Band-pass 10–40 Hz was used 'as most of the energy of the footfalls fell within this band pass range'. 'a large amplitude event (a front foot striking the ground) every ∼1·5 s, preceded by a smaller amplitude event (a rear foot striking the ground)'. Speed 1.2 m/s for the bull in Fig. 4. Species: elephant, gemsbok, giraffe, human, kudu, lion. Amplitudes normalized only. Verifier: A25/A50 comes from power-spectrum plots, so it is probably a power ratio; quoted as printed.",
+   "who_when": "Wood, O'Connell-Rodwell & Klemperer, 2005",
+   "values_json": "{\"energy_band_Hz\":\"10-40\",\"spectral_peak_Hz\":25,\"A25_over_A50\":{\"elephant\":\"about 1000\",\"other species\":\"100 or less\"},\"front_footfall_interval_s\":1.5,\"walking_speed_m_s\":1.2}"
+  },
+  {
+   "key": "elephant_wijayaraja2024_detection_and_masses",
+   "category": "presence_elephant",
+   "label": "Weighed Sri Lankan elephants walking past a geophone: masses and detection range",
+   "status": "verified",
+   "value_si": 155.6,
+   "unit_si": "m",
+   "low_si": null,
+   "high_si": null,
+   "display": "Elephants of 2,700–3,500 kg; a 2,700 kg elephant detected walking 155.6 m away (limited by the space available, not by noise)",
+   "sources": [
+    {
+     "title": "Wijayaraja et al. (2024) arXiv 2406.05140 (published IEEE Access 12:72210-72223)",
+     "url": "https://arxiv.org/pdf/2406.05140"
+    }
+   ],
+   "notes": "Table 5 (Pinnawala Elephant Orphanage, partly tamed): E1 56 y, 3,500 kg, 233 cm; E2 25 y, 3,100 kg, 237 cm; E3 16 y, 2,700 kg, 222 cm. 'The maximum distance was reported when the gain setting was S2: Av(total) = 25,911, and the reported maximum distance was 155.6 m. The detection range was limited only by the available physical space'. Table 6: gain 580 (S0) detected 0–50 m; gain 940 (S1) detected 0–100 m; S2 saturated within 100 m and detected 100–160 m. Geophone 'RGI-HS 10', vertical, 10 Hz, 'sensitivity of 85.8 V/m/s'. Power-spectrum peaks for E3 walking: 28.4, 29.3, 26.28 Hz. E3 carried a mahout ('the mahout was riding on top of the elephant'). Figures are ADC counts only. Verifier: corrected S1 to 0–100 m; added the mahout.",
+   "who_when": "Wijayaraja, Wijekoon, Wijesundara & Wickramasinghe, 2024"
+  },
+  {
+   "key": "elephant_wijayaraja2024_derived_velocity",
+   "category": "presence_elephant",
+   "label": "2,700 kg Sri Lankan elephant walking 0–50 m from the geophone: rough peak vertical velocity from ADC counts",
+   "status": "derived",
+   "value_si": 4e-06,
+   "unit_si": "m/s",
+   "low_si": 3.4e-06,
+   "high_si": 4.9e-06,
+   "display": "About 0.004 mm/s somewhere within 0–50 m (low confidence)",
+   "sources": [
+    {
+     "title": "Wijayaraja et al. (2024) arXiv 2406.05140, Figs 18a and 21 (gain S0 = 580)",
+     "url": "https://arxiv.org/pdf/2406.05140"
+    }
+   ],
+   "notes": "Formula: v = counts × ADC step / (gain × geophone sensitivity). Inputs stated in the paper: 10-bit ADC 'with a resolution of 4.88 mV'; gain 580 (S0); sensitivity 85.8 V/(m/s). Fig. 21 (E3, 2,700 kg plus a riding mahout, location 2, S0; the same record as Fig. 18a) peaks at about 35–50 counts from the mean (read by eye). 35–50 × 4.88e-3 / (580 × 85.8) = 3.4e-6 to 4.9e-6 m/s. Distance within the 0–50 m S0 range unknown. Filter and amplifier response near 25 Hz assumed flat. Low confidence, but the same size as the Steinmann 20 m value. Verifier: read at 300 dpi, peaks +38, +43, −45, −40 counts, giving 3.7–4.4e-6 m/s.",
+   "who_when": "Derived here (2026) from Wijayaraja et al., 2024"
+  },
+  {
+   "key": "elephant_wijayaraja2024_more_records",
+   "category": "presence_elephant",
+   "label": "More Wijayaraja et al. 2024 records converted from ADC counts: peak vertical velocity of weighed Sri Lankan elephants walking past (low confidence)",
+   "status": "derived",
+   "value_si": null,
+   "unit_si": "m/s",
+   "low_si": null,
+   "high_si": null,
+   "display": "About 0.017 mm/s (2,700 kg E3, somewhere within 0–100 m); 0.011 mm/s (3,500 kg E1, distance unknown); 0.0008 mm/s (E3, 100–160 m). Low confidence",
+   "sources": [
+    {
+     "title": "Wijayaraja, Wijekoon, Wijesundara & Wickramasinghe (2024) arXiv 2406.05140 (published IEEE Access 12:72210-72223), Figs 18b, 18c and 20, Tables 5 and 6",
+     "url": "https://arxiv.org/pdf/2406.05140"
+    }
+   ],
+   "notes": "From the verifier's list; peaks read from the figures by the verifier and checked by eye here. Formula: v = counts × 4.88 mV / (gain × 85.8 V/(m/s)). Fig. 18(b), gain S1 = 940, E3: peaks about 280 counts (some touch the plot frame) → 1.7e-5 m/s; Table 6 puts S1 detections within 0–100 m. Fig. 20, 'Walking pattern of elephant E1 synced with video (location 1, gain setting S1)': about 190 counts → 1.1e-5 m/s; location 1 is a 100 m path. Fig. 18(c), S2 = 25,911: about 380 counts → 8.3e-7 m/s; S2 saturated within 100 m, and the paper notes 'a slight clipping at the peak point' even at the maximum tested distance, so this may be an underestimate. E3 carried a mahout. Shows about ×4 between passes of the same animal. Filter response assumed flat; distances not known precisely.",
+   "who_when": "Derived here (2026) from Wijayaraja et al., 2024",
+   "values_json": "{\"formula\": \"v = counts x 4.88e-3 V / (gain x 85.8 V per m/s)\", \"rows\": [{\"figure\": \"18(b)\", \"elephant\": \"E3, 2,700 kg (with mahout)\", \"gain\": 940, \"distance_m\": \"0-100\", \"peak_counts\": 280, \"v_m_s\": 1.7e-05}, {\"figure\": \"20\", \"elephant\": \"E1, 3,500 kg\", \"gain\": 940, \"distance_m\": \"unknown (100 m path)\", \"peak_counts\": 190, \"v_m_s\": 1.1e-05}, {\"figure\": \"18(c)\", \"elephant\": \"E3, 2,700 kg (with mahout)\", \"gain\": 25911, \"distance_m\": \"100-160\", \"peak_counts\": 380, \"v_m_s\": 8.3e-07}, {\"figure\": \"21 / 18(a)\", \"elephant\": \"E3, 2,700 kg (with mahout)\", \"gain\": 580, \"distance_m\": \"0-50\", \"peak_counts\": \"35-50\", \"v_m_s\": \"3.4e-6 to 4.9e-6\"}]}"
+  },
+  {
+   "key": "elephant_wijayaraja2025_wild_range",
+   "category": "presence_elephant",
+   "label": "Wild Sri Lankan elephants detected by footfall vibration up to 140 m",
+   "status": "verified",
+   "value_si": 140,
+   "unit_si": "m",
+   "low_si": 66.9,
+   "high_si": 155.6,
+   "display": "155.6 m in controlled conditions; 140 m in the wild",
+   "sources": [
+    {
+     "title": "Wijayaraja, Wijekoon & Wijesundara (2025) Event detection and classification for long range sensing of elephants using seismic signals (arXiv 2509.02920)",
+     "url": "https://arxiv.org/pdf/2509.02920"
+    }
+   ],
+   "notes": "Abstract: 'the maximum validated detection range was 155.6 m in controlled conditions and 140 m in natural environments'. Text: footfalls recorded 'from wild elephants at distances ranging from 66.9 meters to 140 meters' (Kawudulla; Minneriya 85.3–106 m). Acquiring footfall signals 'was challenging, particularly over long distances, due to their very low amplitudes and high susceptibility to noise'. Same 85.8 V/(m/s) 10 Hz geophone with a high-gain amplifier: an instrument range. The 2024 paper says the controlled-test range was limited by space and higher gain would extend it, so these are not noise limits.",
+   "who_when": "Wijayaraja, Wijekoon & Wijesundara, 2025"
+  },
+  {
+   "key": "elephant_ren2008_masses",
+   "category": "presence_elephant",
+   "label": "Weighed elephants of about Rex and Ollie's mass (biomechanics study)",
+   "status": "verified",
+   "value_si": null,
+   "unit_si": "kg",
+   "low_si": 2550,
+   "high_si": 3230,
+   "display": "2,550–3,230 kg (five elephants aged 12–14, weighed on a truck scale)",
+   "sources": [
+    {
+     "title": "Ren & Hutchinson (2008) The three-dimensional locomotor dynamics of African (Loxodonta africana) and Asian (Elephas maximus) elephants reveal a smooth gait transition at moderate speed. J. R. Soc. Interface 5:195-211, Table 1 (PMC)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2705974/"
+    }
+   ],
+   "notes": "Table 1: Chandrika, Asian F, 14 y, 3,000 kg; Damini, Asian F, 12 y, 2,840 kg; Five, African F, 14 y, 2,780 kg; Jack, African M, 13 y, 3,230 kg; Latabe, African F, 13 y, 2,550 kg. Methods: 'All elephants had known body masses (mb) from placing all four limbs on a truck scale (±2 kg).' Read on the PMC page. Rex and Ollie at 3,007 kg each sit inside this range. Adult averages are in the step topic (step_elephant_body_mass_larramendi2016: African bush cow about 3.0 t, bull about 6.0 t). None of the seismic studies weighed their elephants except Wijayaraja et al. 2024 (2,700–3,500 kg).",
+   "who_when": "Ren & Hutchinson, 2008 (published online 2007)"
+  },
+  {
+   "key": "elephant_decay_exponent_from_data",
+   "category": "presence_elephant",
+   "label": "How fast elephant footfall vibration falls with distance: exponent n in PPV ∝ D^−n, from the elephant studies",
+   "status": "estimate",
+   "value_si": 1,
+   "unit_si": "dimensionless",
+   "low_si": 0.4,
+   "high_si": 2,
+   "display": "n about 1 (0.4–2): halving the distance roughly doubles the vibration",
+   "sources": [
+    {
+     "title": "Wood et al. (2005) J. Appl. Ecol. 42:587-594",
+     "url": "https://crustal.stanford.edu/sites/g/files/sbiybj21541/files/media/file/wood.elecensus.jappliedecol.2005_0.pdf"
+    },
+    {
+     "title": "Wijayaraja et al. (2024) arXiv 2406.05140 (quoting O'Connell-Rodwell 2000)",
+     "url": "https://arxiv.org/pdf/2406.05140"
+    },
+    {
+     "title": "Steinmann et al. (2025) Fig. 4b,c (GFZ repository)",
+     "url": "https://gfzpublic.gfz.de/pubman/item/item_5034960_2/component/file_5034988/5034960.pdf"
+    }
+   ],
+   "notes": "Formula: n = ln(A1/A2) / ln(D2/D1). (1) O'Connell-Rodwell stomps (reported, secondary): 24.4 → 8.5 µm/s from '3–12 m' to 40 m gives n = 0.41 (D1 = 3), 0.55 (6), 0.87 (12). (2) Wood: ×10 from 'directly over' (about 1 m) to 20 m gives n ≈ 0.77 (1.0 if 2 m). (3) Steinmann giraffes at ETA00, 26 → 103 m: n = 2.0, probably steepened by the far trace sitting near the noise floor, possibly different animals. Verifier: O'Connell 2006's fitted law gives effective n of 1.2 (background) to 2.3 (shakers) between 10 and 90 m at 40–60 Hz, about 0.8–1.3 if scaled to 20 Hz; Mortimer's model suggests a shallower decay (near 0.5) for low-frequency, high-force steps on sand (elephant_mortimer2018_modelled_200m). n = 1 for 5–100 m is our judgement over mixed-quality inputs, so the status is 'estimate', not 'derived'.",
+   "who_when": "Derived here (2026)"
+  },
+  {
+   "key": "elephant_halfspace_check",
+   "category": "presence_elephant",
+   "label": "Physics check: ground velocity from a footfall-sized force on an elastic half-space",
+   "status": "estimate",
+   "value_si": 1.2e-05,
+   "unit_si": "m/s (at 20 m)",
+   "low_si": 1.2e-06,
+   "high_si": 8.5e-05,
+   "display": "With Mortimer's 125–946 N forces at 20 Hz, at 20 m: about 0.002–0.01 mm/s on firmer soil, 0.01–0.09 mm/s on loose sand, about 0.001 mm/s on soft rock for 946 N (simple elastic-ground model; not valid within about one wavelength)",
+   "sources": [
+    {
+     "title": "Mortimer et al. (2018) Supplemental Table S1 (source forces used as inputs)",
+     "url": "https://ars.els-cdn.com/content/image/1-s2.0-S0960982218304202-mmc1.pdf"
+    }
+   ],
+   "notes": "Lamb's problem, Rayleigh-wave far field of a vertical harmonic point force F on a Poisson half-space (ν = 0.25): u_z(r) = (F k_s / (2μ)) × 0.1996 × sqrt(2 / (π k_R r)), k_s = 2πf/Vs, μ = ρVs², k_R = k_s/0.9194; v = 2πf u_z. Static limit checks against Boussinesq. At 20 Hz and 20 m: loose sand (ρ 1,700, Vs 120 m/s) 946 N → 0.085 mm/s, 125 N → 0.011; firmer soil (ρ 1,900, Vs 250) 0.012 and 0.0016; soft rock (Vs 600) 946 N → 0.0012. Soil values are assumed, not sourced. Ignores damping, layering, foot size and the near field: invalid within about one wavelength (6 m at Vs 120, 12.5 m at Vs 250, 30 m at Vs 600). Verifier: formula and all values reproduce; high_si cut from the 2 m sand value (0.27 mm/s, inside one wavelength) to 20 m. At the fast walk's 5–10 Hz band the model gives 0.06–0.09 mm/s at 2 m, so it matches Mortimer's 0.2–0.36 mm/s only within a factor of a few.",
+   "who_when": "Estimate here (2026)"
+  },
+  {
+   "key": "elephant_anchor_ppv_vs_distance",
+   "category": "presence_elephant",
+   "label": "Recommended page anchor: an elephant walking past at D metres (peak vertical ground velocity)",
+   "status": "estimate",
+   "value_si": 5e-06,
+   "unit_si": "m/s (at D = 20 m)",
+   "low_si": 7e-07,
+   "high_si": 4e-05,
+   "display": "About 0.005 mm/s at 20 m (band 0.0007–0.04, ×0.15 to ×8); about 0.01 mm/s at 10 m; about 0.02 mm/s at 5 m. Order of magnitude only",
+   "sources": [
+    {
+     "title": "Steinmann et al. (2025) Methods Ecol. Evol. 16:819-836 (central value)",
+     "url": "https://gfzpublic.gfz.de/pubman/item/item_5034960_2/component/file_5034988/5034960.pdf"
+    },
+    {
+     "title": "Wijayaraja et al. (2024) arXiv 2406.05140 (O'Connell-Rodwell stomp values; own data)",
+     "url": "https://arxiv.org/pdf/2406.05140"
+    },
+    {
+     "title": "Mortimer et al. (2018) Curr. Biol. 28:R547-R548 (close-range fast walk)",
+     "url": "https://discovery.ucl.ac.uk/id/eprint/10063309/1/1-s2.0-S0960982218304202-main.pdf"
+    },
+    {
+     "title": "Wood et al. (2005) J. Appl. Ecol. 42:587-594 (decay and detection radius)",
+     "url": "https://crustal.stanford.edu/sites/g/files/sbiybj21541/files/media/file/wood.elecensus.jappliedecol.2005_0.pdf"
+    }
+   ],
+   "notes": "PPV_elephant(D) = 0.005 mm/s × (20 m / D), 5 ≤ D ≤ 100 m, vertical component; band ×0.15 to ×8 (about 50-fold wide; do not call it '3× either way'). Centre: Steinmann walk at 20 m (0.0047). n = 1 from elephant_decay_exponent_from_data. Low end: Steinmann typical step (0.0022) and the four-elephant group (0.00075). High end: O'Connell-Rodwell stomps scaled to 20 m (0.004–0.019, reported) and Steinmann running (0.006–0.011). Wijayaraja: 0.004 mm/s at 0–50 m; 0.0008 mm/s at 100–160 m fits 1/D. Mortimer's 0.21–0.36 mm/s lies outside the formula's range; it fits only if the elephant was within about 2–3 m (unverified). Do not extrapolate past 100 m: Mortimer's model gives about 0.01 mm/s at 200 m for a fast walk on sand. A 'below background noise' distance is sourced only for Etosha (Wood, about 100 m). Verifier: corrected the running range, the noise-limit claim and the band label.",
+   "who_when": "Estimate here (2026) from the studies above",
+   "values_json": "{\"formula\":\"PPV(D) = 0.005 mm/s x (20 m / D), valid 5-100 m, vertical component\",\"band\":\"x0.15 to x8\",\"rows\":[{\"D_m\":5,\"central_mm_s\":0.02,\"low_mm_s\":0.003,\"high_mm_s\":0.16},{\"D_m\":10,\"central_mm_s\":0.01,\"low_mm_s\":0.0015,\"high_mm_s\":0.08},{\"D_m\":20,\"central_mm_s\":0.005,\"low_mm_s\":0.0007,\"high_mm_s\":0.04},{\"D_m\":50,\"central_mm_s\":0.002,\"low_mm_s\":0.0003,\"high_mm_s\":0.016},{\"D_m\":100,\"central_mm_s\":0.001,\"low_mm_s\":0.00015,\"high_mm_s\":0.008}],\"checks\":{\"Steinmann walk 20 m\":0.0047,\"Steinmann running 38 m\":0.0044,\"O'Connell-Rodwell stomp 3-12 m (0-pk)\":0.024,\"O'Connell-Rodwell stomp 40 m (0-pk)\":0.0085,\"Mortimer fast walk 2-30 m\":\"0.21-0.36\",\"Wijayaraja 0-50 m\":0.004}}"
+  },
+  {
    "key": "thr_bs5228_2_table_b1_effects",
    "category": "presence_thresholds",
    "label": "BS 5228-2 Table B.1: effects of vibration levels on people (construction vibration, PPV)",
@@ -3263,6 +5008,8 @@
  ],
  "gaps": {
   "step": "Not found or not verified, from the researcher's gaps and the verifier's missing list. None of the items below was fetched and confirmed, so none is a fact here.\n- Standard footfall force model used in vibration engineering: the Fourier-series walking load, with a first-harmonic dynamic load factor of about 0.4–0.5 body weight at the step rate, smaller higher harmonics, and an effective heel-impact impulse for stiff structures (ISO 10137, AISC Design Guide 11, SCI P354, CCIP-016; the Živanović et al. 2005 J Sound Vib review is an open candidate). The verifier names this as the biggest gap: without it the step is not in the form vibration methods actually use.\n- Frequency content of a footstep force: step rate about 1.1–1.8 Hz for Rex and Ollie, and heel-impact content up to about 1/(time to peak), tens of Hz. No measured seismic or vibration signature of human footsteps was fetched (e.g. Ekimov & Sabatier, JASA). The brief needs one as a human anchor for 'footsteps you can feel'.\n- Compliant ground: every force and loading rate here was measured on rigid force plates. Walking on sand (Lejeune et al. 1998, JEB, 1.6–2.5× energy cost) and any measured force or loading rate on sand or turf were not fetched. On soft ground the peaks and rates would be lower, by an unknown amount.\n- Walking heel-strike transient size in body weights: Whittle 1999 and Verdini 2006 full texts are paywalled. Describe the impact by heel speed and energy (Baines 2018), not as a force spike in body weights.\n- Directly measured human stance time at preferred speed: Öberg 1993 failed TLS on the VA site, and Bohannon's per-decade table is paywalled. Stance is computed as duty factor × stride period; label it 'computed'.\n- Drill stamp: foot speed, contact duration and individual (not group-mean) maximum forces are not reported. Stamp speed, effective mass and energy are estimates; the measured forces (group means 3.1–6.6 BW) are what the page can show as measured.\n- Footprints: only one anchor (one weighed elephant, one sand). A measured human footprint depth in dry or loose sand (D'Août et al. 2010; Bennett or Morse experiments) and Platt et al. 2012 (elephant track volumes versus moisture) were not read. Footprint depths in loose dry sand, wet sand and mud remain unanchored: say 'estimate, no measured anchor'. The engine's loose-sand failure rule (a person sinking about 0.2 m per step) could not be tested against a measured human print.\n- Langman et al. 1995 (elephant minimum cost of transport at 1.0 m/s in three mid-sized African elephants), known only as cited in Hutchinson 2006 per the verifier. The primary was not read. It would be a better basis for a 'comfortable elephant pace' than the unsupported 'Froude about 0.1 self-selected'.\n- Elephant hip heights behind Panagiotopoulou's Froude numbers (1.2 m/s at 0.07 implies about 2.1 m) and limb forces for adult (not juvenile) elephants.\n- Boot attenuation for Ollie is not quantified. Rawcliffe 2020 reports significant differences between three kinds of footwear, but the abstract gives no numbers; the full text was not read. Lafortune & Hennig 1992 give no usable number.\n- Alexander 1989 (Physiol Rev) and Alexander & Jayes 1983 (J Zool) were not read; Alexander 2004 (J Anat) and Kram 1997 were used instead.\n- Hutchinson 2006 tables were read through WebFetch because the PDF sat behind a Cloudflare challenge; its regression log base is not stated.\n- Ren 2010 walking peaks per limb (0.55 and 0.36 BW) were read off a small figure (±0.03). Ren's subjects were juveniles of about 2.3 t.\n- Panagiotopoulou 2016: the text's 946 kPa 'mean peak' against the table's 224–318 kPa per foot is unresolved; use the table. Its elephant masses are keepers' estimates.\n- Schanz 2013 does not print the measured foot speed (back-calculated at about 1.0 m/s). Its dynamic factor implies a 1.1 BW forefoot peak, double the force-plate value: mark it disputed if shown.\n- EM 1110-1-1904 (USACE settlement manual) could not be fetched; FHWA GEC 5 was used instead, and its Eq. 8.16 is an image, so the formula's form is inferred from its stated variables.\n- Rex's and Ollie's hip height (0.45 H) is our measurement from the turnarounds, and heel-first walking is assumed. Neither is canon; ask the owners if it matters.\n- Decker 2003's 3.4 BW for a 60 cm drop landing is known only as cited by Carden 2015 (reported).\n- Not in this topic: the sound of steps, seismic attenuation and the elephant seismic measurements (O'Connell-Rodwell, Mortimer), and perception and damage thresholds.",
+  "attenuation": "Not found or not verified (the researcher's gaps and the verifier's missing list). None of these was fetched and confirmed, so none is a fact here.\n- Walking regime unchecked: no measured ground PPV against distance for footsteps (people, animals, horses) or for slow quasi-static loads (for example Auersch's train data). The ramp and near-field branch, the Walk tab's main case, has no measured check. A search snippet that footsteps 'did not exceed 3 × 10⁻⁶ m/s at 3 m' could not be traced to its source and is not used.\n- Long range: no low-energy (about 1–100 kJ) impact data beyond 60 m, which is needed to choose between the model's steep damped fall-off (r^-2 to r^-3 for stamps on soft ground) and the measured r^-1.0 to r^-1.6. Model results beyond 60 m are untested and probably too low for stamps (verifier: by roughly 3–10× at 200 m if the measured exponents hold).\n- Low-energy drops: one site in range (Pisa, 3.8 kJ), plus 82 kJ (TRL Fig. 44) and the 1–12 MJ compaction data. Nothing measured at 10 J–1 kJ on soil.\n- The 10 J–10 kJ 'footstep energy' range used in the extrapolation argument has no stated physical basis.\n- Small-strain thresholds and damping: no source for the 10⁻⁴ strain flag or for damping ratios by soil type (candidates: Vucetic 1994; Darendeli 2001; Seed & Idriss).\n- Building amplification: Lauzon's 2–4 is unsourced; USBM RI 8507 (Siskind et al. 1980), a public report and the likely origin, was not fetched.\n- Near-surface shear-wave speeds for the specific surfaces (SASW or MASW profiles of loose sand, road subgrade, soft clay crusts) and the effect of layering or a water table at 1–2 m on surface waves: not researched. The surface values are picks inside 30 m class ranges.\n- Primary sources not fetched: Pekeris 1955 and Kausel 2012 (closed form rebuilt and checked numerically), Miller & Pursey 1955 (numbers via Sánchez-Sesma et al. 2011), Mayne et al. 1984 and Mayne 1985 (data ranges unknown), Woods & Jedele 1985, Amick 1999/2000, Gutowski & Dym 1976, Kim & Lee 2000. There is no verified table of soil damping α at a stated frequency.\n- Elephant stomps: amplitudes are secondary (arXiv 2024); the elephants' masses and stomp forces were not seen. The elephant topic should fetch O'Connell-Rodwell et al. 2000 in full.\n- Lake ice (flexural-gravity waves) and steel deck (plate resonance): not researched; the page should say ground shaking is not modelled on them. The steel shear speed (3.2 km/s) is an unsourced estimate.\n- Step-force inputs (footstep rise times, heel-strike transients, stamp contact times) belong to the step-force topic; the examples here use placeholders. The two-foot cancellation in walking (up to 2× lower far away) is unquantified.",
+  "elephant": "(1) O'Connell-Rodwell, Arnason & Hart (2000) JASA 108:3066-72 was not read (paywalled; publisher and ResearchGate 403; OpenAlex/Unpaywall closed). The stomp values (48.7 and 17.0 µm/s peak-to-peak at 3–12 m and 40 m), the rumble values (0.437 and 0.264 µm/s RMS) and the 24.03 Hz stomp frequency come from a secondary quote (Wijayaraja et al. 2024), so they and the halved zero-to-peak values are 'reported'. Unknown: the exact distances inside '3–12 m', the ground, the elephants' masses, and whether the stomps were mock-charge stomps (our inference from the matching 32 km in the authors' SICB abstract). On the page say 'reported by a later paper', not 'measured'. (2) Full text not read: Szenicer et al. 2022 (publisher bot check; abstract via Crossref), Günther et al. 2004 (rumbles only), O'Connell-Rodwell 2001 and 2007 (abstracts without numbers). Reinwald et al. 2021 was read but gives no footfall amplitudes. (3) Steinmann et al. 2025: every amplitude is a pixel reading of a printed figure converted with one dominant frequency (expect ±30–50%); each panel is one 10 s record of one animal at a camera-trap distance; the paper does not describe instrument correction (a Guralp 6TD is reported only by a secondary source). The horizontal components were recorded but not digitized. The authors' Methods Blog says giraffe steps shake the ground 'in the order of tens of micrometers', which conflicts with the paper's figures (about 0.1 µm at most); the blog was not used. (4) Mortimer et al. 2018: the Fig. 1D fast-walk distance is not given (only '2 to 30 m'); the calibration wording ('multiplying by ... 23.4 V m-1 s-1') is unclear, and the half-space check is consistent with it only within a factor of a few if the elephant was within 2–5 m, so it does not confirm it. The terrain noise distributions in Fig. S1B were not digitized. (5) Masses: none of the field seismic studies weighed wild elephants; only Wijayaraja et al. 2024 (2,700–3,500 kg, captive, E3 ridden by a mahout) and the non-seismic Ren & Hutchinson 2008 (2,550–3,230 kg, aged 12–14) did. The step topic's step_elephant_body_mass_larramendi2016 and step_elephant_match_3007kg give the adult averages; the brief's 'about as much as an African elephant' should read 'about as heavy as a female African elephant'. (6) Other animals: no absolute ground-velocity measurements of horses or cattle were found; Wood 2005's giraffe, gemsbok, kudu, lion and human records are normalized. Human footstep geophone work (Ekimov & Sabatier 2006/2011, Pakhomov et al. 2003, ARL/DTIC reports) was seen only as abstracts; no human amplitude other than Steinmann's single human at 53 m (mass and gait unknown) is included. (7) Synthesis: no study gives footfall amplitude against distance for one elephant at one site with calibrated sensors. The 1/D law (5–100 m), n = 1 and the ×0.15–×8 band are our estimate. (8) Verifier's missing items not added as facts: a check of the 'few percent of body weight in the seismic band' claim against measured elephant ground reaction forces and stance times (Ren & Hutchinson 2008 GRF data not used; the step topic's step_ren2010_elephant_limb_forces gives a forefoot peak of about 0.55 body weights, not combined here); horizontal-component amplitudes and real H/V on soft ground; a sourced Q or α for sandy soils near 20 Hz (the only fitted α is for 40–60 Hz on calcrete). (9) Cautions for the model, from the verifier's review of the recommendation: do not carry α = 0.02–0.05 per m (fitted at 40–60 Hz) to 20 Hz without scaling (at constant Q about 0.008–0.022 per m), and do not combine an e^(−αr) model with the separate 1/D anchor as two decay laws; the half-space formula is the Rayleigh-pole far field only and is invalid within about one wavelength (6 m at Vs 120, 12.5 m at Vs 250, 30 m at Vs 600 at 20 Hz), so it needs a near-field term or a stated minimum distance; Mayne's compaction-drop law (PPV = 70(√(WH)/d)^1.4) would be used at scaled distances of about 0.001–0.03, below the typical fitted range (not verified here), so label any use for footsteps as an extrapolation; there is no general 'below noise beyond 100–150 m' rule (Steinmann's 150 m is a dataset cut-off, Wijayaraja's 155.6 m was space-limited, Mortimer models 0.4–3.6 km; only Wood's ~100 m at Etosha is a measured detection radius); drop the '1.2× vector peak' bound (true vector peak equals the vertical for an ideal Rayleigh wave); ground multipliers should depend on distance (the half-space sand-to-rock ratio is ×72 at 20 m and should shrink with distance because loose sand damps more); the band is about 50-fold wide, so 'about like an elephant' must show that width; Mortimer's 0.21–0.36 mm/s sits outside the band at every D ≥ 5 m and is reconciled only by an unverified 'within about 2 m'; the elephant's cushioned feet are not the authors' explanation of its weak amplitude. (10) Working files: the researcher's downloads and scripts (digitize.py, scal.py, derive.py, lamb.py) are in scratchpad/research/elephant/; the verifier's (dig2.py, dig3.py, scal.py, lamb_check.py, derive_check.py) in scratchpad/research/elephant-check/.",
   "thresholds": "What is still missing or unverified, and what the page should do about it:\n- Footstep frequency and duration: the dominant frequency and length of a step's ground vibration are not part of this topic, and the engine's ppvAt has no frequency. The rattle option, the BS 7385-2 curve, the 1 g marker and the footing option all swing with f (rattle 4.4 mm/s at 5 Hz against 1.1 at 20 Hz; 1 g at 312 against 78 mm/s). Until the attenuation research gives f, show frequency-dependent values at a stated assumed frequency and call it an assumption. Caltrans assumes 10-30 Hz for construction and traffic. The verifier thinks the engine's law (k = 0.070 m/s, n = 1.4, E0 = 1 t m) looks like a heavy-tamper dynamic-compaction law, which may be low in frequency; not verified.\n- Rattling: no standard, agency guide or measurement gives a ground PPV at which windows or crockery rattle. Caltrans, its TA, FTA and USBM say only that rattling happens at or below perception. The 1 mm/s default comes from earthquake intensity IV acceleration converted at an assumed 20 Hz; it is an estimate and sits above the sources' own statements.\n- Losing footing: nothing covers loss of footing under vertical or short impulsive ground motion. The 300 mm/s value rests on horizontal earthquake shaking (EMS-98 wording on Wald 1999 PGV bands) and one small shake-table study whose onset is set by its test grid (Takahashi 2004: 30 young subjects, horizontal sinusoids, 'have not find clear limit value'). Whether footsteps make people lose footing sooner or later is unknown; 1 g vertical, g/(2 pi f), is a physics marker for lift-off.\n- Components: Wald/ShakeMap values are the larger horizontal component, Whiffin & Leonard's are vertical, BS 5228-2/7385-2 use the peak component. Which component ppvAt predicts is unstated.\n- Paywalled standards not opened: BS 7385-2 (seen via BS 5228-2 and An Bord Pleanala), DIN 4150-3 (1999 via Watercare; 2016 via An Bord Pleanala, whose dwellings 50-100 Hz cell '40 to 50' conflicts with 1999's '15 to 20', so disputed), ISO 2631 (via Caltrans, which dates its guide 1981, and Watercare, which cites the 1989 edition; the 2003 edition's lack of limits is a consultant's statement), BS 6472-1 (only HS2's VDV criteria). The BS 5228-2 A1:2014 footnotes and the Irish EPA guidance were seen only in An Bord Pleanala's reproduction.\n- Wald 1999 itself is paywalled; the USGS manual's reproduction was used. Below intensity V its PGV relation was imposed, not fitted; some printed PGA edges above V do not follow the manual's equation. ShakeMap now uses Worden et al. (2012), not fetched.\n- Siskind's damage probabilities come from two reproductions (Caltrans, Watercare) that disagree on the last column's heading (90% against 100%); neither was checked against RI 8507's probability plots (figs. 55-59).\n- Seen only as reproduced: Whiffin & Leonard (LR 418), Wiss (1974), Wiss & Parmelee (1974), Reiher & Meister (1931), Atherton, Murray, Stagg et al., Chae, Konan, Dowding, AASHTO and the Swiss standard. The FTA manual's official URL returned 403; the identical ROSA P copy was used.\n- Indoor response: indoor amplification is sourced only as typical USBM factors (1.5 whole house, 4 midwalls, below 1 above 40 Hz) and the RI 8507 test-house floor velocities. Human criteria are set for people indoors; FTA says ground vibration is 'almost never a problem outdoors'.",
   "ripple": "No measured naked-eye threshold for visible ripples in a glass at footstep frequencies (10-40 Hz) was found, by the researcher or by the verifier's two further searches; exact query strings were not logged. Both page thresholds (ripple_threshold_shimmer, ripple_threshold_rings) are estimates: derived, not measured. Open items, none fetched or confirmed: (1) Visibility criterion: the 10-arcmin 'noticeable' factor is a guess, ten times the sourced 1-arcmin acuity; it is the largest uncertainty (about a factor of 10). Webvision's hyperacuity chapter and motion-detection literature could tighten it. (2) Glass contact angle: water on household soda-lime glass, clean versus used, is unsourced (0-50° assumed); a PMC table with one glass value (45°) was behind a captcha. The ring threshold scales with meniscus height. (3) Ring (meniscus) radiation model: the verifier's own Green's-function derivation, checked numerically but not from a paper; no paper gives edge-wave height against forcing. (4) Capillary wavemaker theory: Hocking & Mahdmina 1991 (JFM 224) and the full text of Cocciaro, Faetti & Nobili 1991 (JFM 231) would replace the gravity-only ratio of 2. (5) Floor and table transfer: no source for amplification from ground to table top; suspended floors and tables often resonate at 10-30 Hz and could amplify several-fold. AISC Design Guide 11 and SCI P354 are candidates. (6) Component convention: shimmer responds to horizontal and rings to vertical motion; the threshold topic's PPV convention and an H/V ratio (about 0.7 for Rayleigh waves in a uniform half-space, textbook, not sourced here) need settling. (7) Pulse versus steady shaking: thresholds are for steady sinusoids; a footstep is a burst of a few cycles, which cannot build up the glass's resonant edge-wave peaks. (8) Faraday onset in an ordinary part-filled glass (moving contact line) was not measured; the Shao figures are for a brimful pinned tank and may be peak-to-peak. (9) Worden et al. (2012) was not fetched; the MMI IV band of 0.65-3.1 cm/s uses recalled coefficients. (10) Film production: no primary Lantieri interview was fetched, and the secondary sources conflict. (11) Human perception thresholds (BS 5228-2, ISO 2631-2) belong to the threshold topic and are not restated here. Fetch failures: the Clemson copy of Shao et al. 2021 JFM returned 503 (NSF PAR copy used); APS DFD abstracts returned 403; the Leicester Physics Special Topics search does not work in a plain fetch.",
   "comic": "Not found or not verified:\n- Current ASTM F2291 edition. The ASTM store lists F2291-26 (June 2026) as active and a reseller lists F2291-26a (Aug 2026); neither was checked. The limits here are F2291-06a (Public.Resource.Org copy). EN 13814:2019 was not fetched. Say 'ASTM F2291-06a (later editions may differ)'.\n- Any measured tolerance for a person held or carried by hand, or for soft tissue squeezed by a grip, or for head and neck support (whiplash) without a headrest beyond ASTM's headrest rule. Every limit found assumes a seat or harness: on the page, 'for someone held in his hands, nobody has measured it; these limits are a best case'.\n- Pulses under 200 ms for ordinary, unrestrained people. ASTM does not cover them; Eiband's numbers are for fully harnessed volunteers. Keeping each curve's 0.2 s value is an estimate.\n- Onset rates of Rex's throw and catch strokes: not modelled; the ride limit is under 15 g/s from 0 g and 5 g/s without a headrest (comic_passenger_onset_rate_limits).\n- Ground-landing injury for a thrown, uncaught passenger (injury against impact speed or fall height): no source. Any uncaught throw has an unquantified landing hazard; the fastest ride-limit launch lands at about 16 m/s, like a 13 m fall.\n- How far a person's body gives on landing, so the landing g is unknown unless he catches them.\n- Windblast injury thresholds for an unprotected person at 1.2–7.2 kPa dynamic pressure (44–108 m/s); only the drag g is derived.\n- Children under 48 in, elderly or pregnant passengers: the ride limits do not cover them.\n- Primary papers read only as reproduced or summarised: Cochran et al. 1954 (via SP-3006 Table 4-4, which gives no onset rate or posture); Fraser 1966; Perkins & Jackson, Windes, Poulter, Reed, Blume, Wiggins and Sutherland (via USBM RI 8485); Beeding & Mosely 1960 and Stapp (via SP-3006). NIOSH 1998's 140 dB limit was not fetched (OSHA's was).\n- Kirchhoff's uniqueness theorem (the stress-free solution is the only one) is standard but was not fetched.\n- The sonic boom from a supersonic fist or hand, and the airblast from a clap in dB with its frequency content. The engine gives only peak overpressure; rattle and damage thresholds depend on pulse length and on the measuring system (RI 8485's 120 dB and 129 dB are on a 6 Hz system, 134 dB on 0.1 Hz). Call dB thresholds approximate.\n- Cool flight: the share of drag energy that heats the object rather than the air, and how fast the air's residual p²/(2 m_air) falls as the wake spreads.\n- Motion sickness or discomfort from the few seconds of weightlessness that safe passenger produces: not quantified. Say 'people feel weightless, as on a drop ride; some find it unpleasant'.\nAccess notes: the NASA-STD-3001 Vol 2 Rev D link on nasa.gov returned 404, so Rev F (approved 2026-07-14) was used from a standards.nasa.gov 'system/files/tmp' path. NCBI Bookshelf and StatPearls blocked automated fetches, so G-LOC figures come from SP-3006 and Whinnery & Forster 2013. The VDV ride-limits paper (Rohde 2024) could not be fetched (expired TLS certificate). The centrifuge studies were read as abstracts only (Europe PMC); their subjects were screened, seated and strapped in.\nOn the page, call the passenger limits 'the limits used for fairground rides', not 'safe for anyone'."

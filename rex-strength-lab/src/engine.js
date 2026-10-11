@@ -2824,14 +2824,15 @@
   //   ramp:       near = 0.1875 F / (rho cs^2 tau r), far = 0.181 F / (rho cs^2.5 tau^1.5 sqrt r)
   //   PPV (vertical) = max(near, far) x D(zeta), zeta = xi r / (0.919 cs T)
   // Checked against a 130 kg drop test at Pisa (within about 2x over 2.5-60 m, with the contact time fitted) and
-  // elephant footfalls (within about 2-4x); good to about 3x either way. Past 60 m, the furthest it was checked, its
+  // elephant footfalls (within about 2-4x, guessed inputs); footsteps were never measured. Uncertain by about 3-5x. Past 60 m, the furthest it was checked, its
   // damping makes a short pulse fade as r^-2 to r^-3, faster than any measured impact (r^-1.0 to r^-1.6: Pisa r^-1.28,
   // dropped weights r^-1.1 to r^-1.35), so there it falls no faster than r^-1.3 from its 60 m value (an estimate).
   // Sources and status: research/final-presence.json (vib_*).
   // ---------------------------------------------------------------------------
   const VIB = {
-    // density (kg/m^3), shear-wave speed (m/s) and damping ratio of each surface's ground (estimates inside
-    // verified class ranges; paving and slabs are taken as their subgrade). Lake ice and a steel deck bend as
+    // density (kg/m^3), shear-wave speed (m/s) and damping ratio of each surface's ground: our near-surface picks
+    // (estimates; mostly inside the code class ranges, but gravel's 300 m/s is below the 400-700 m/s given for dense
+    // sand and gravel at depth). Paving and slabs are taken as their subgrade. Lake ice and a steel deck bend as
     // plates rather than carry ground waves: not modelled.
     GROUND: {
       sand: { rho: 1600, cs: 120, xi: 0.04 }, gravel: { rho: 2000, cs: 300, xi: 0.03 },
