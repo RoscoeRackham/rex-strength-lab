@@ -355,7 +355,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         <label class="check"><input type="checkbox" id="sw-passenger"><span><b>Safe passenger</b>: the same spread push on a person he lifts or throws, so they feel no harmful g-force. The landing stays real.</span></label>
         <div class="eyebrow" style="margin-top:12px">Absorbed (energy goes back into him; momentum doesn’t)</div>
         <label class="check"><input type="checkbox" id="sw-silent"><span><b>Silent strike</b>: no blast and no sonic boom from a punch or a clap.</span></label>
-        <label class="check"><input type="checkbox" id="sw-soft"><span><b>Soft landing</b>: no crater or quake when he lands. The ground still gets the push, gently.</span></label>
+        <label class="check"><input type="checkbox" id="sw-soft"><span><b>Soft landing</b>: no crater or quake when he lands: the impact’s energy is taken back. The ground still takes the same push as his legs stop him, so it can still give way or shake.</span></label>
         <label class="check"><input type="checkbox" id="sw-cool"><span><b>Cool flight</b>: no drag heating on what he throws. It still slows down, and the air still gets its momentum.</span></label>
         <div class="field">
           <label for="absorb">Absorbed energy goes to</label>
@@ -1587,6 +1587,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       plateNeeded: obj.crush && !ctx.gentleHold ? handF / obj.crush : 0,
       // mean acceleration over the throw (what a thrown person feels), and how long it lasts
       launchG: !push.stalled && push.t > 0 && isFinite(push.t) ? v / push.t / K.g : (v > 0 ? Infinity : 0), launchT: push.t,
+      // the hardest moment of the push: real muscle pushes hardest at the start (force falls with speed); comic is constant
+      launchGPeak: isFinite(Fused) && isFinite(F) ? Math.max(0, Math.min(F, Fused) - RB) / mB / K.g : Infinity,
       // energy the air takes from it in flight (heat and air motion): what "cool flight" absorbs, for flights that land
       dragLoss: !fallsBack && flight.landed && !flight.relativistic ? Math.max(0, Eobj + obj.m * (K.GM / K.R_E - K.GM / (K.R_E + body.releaseHeight)) - Eimp) : null,
       sinkRatio: isFinite(anc.Nmax) ? Nfeet / anc.Nmax : 0,
@@ -1652,14 +1654,15 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const soft = !!ctx.softLanding;
     const landF = landed ? body.m * vLand * vLand / (2 * d) + body.m * K.g : 0;
     const landT = landed && vLand > 0 ? 2 * d / vLand : 0;
-    const landRatio = landed && !soft && !ctx.groundHolds ? landF / RB : 0;
+    // soft landing takes back the energy, not the force: stopping m v within the leg stroke still needs landF
+    const landRatio = landed && !ctx.groundHolds ? landF / RB : 0;
     const landSink = landRatio > 1 ? penetrationDepth(body.m, A2, vLand, qultFor(surface, body.footB), surface.rho || 2000) : 0;
     // what shakes the ground: the feet and shanks (2 x legEff) stopping at touchdown, as in a stomp; his bent legs
     // take the rest of the energy over the stroke
     const Eimpact = landed && !soft ? 0.5 * 2 * body.legEff * vLand * vLand : 0;
     const landing = { landed, v: vLand, E: Eland, Eimpact, F: landF, t: landT, ratio: landRatio, sink: landSink, soft, absorbed: soft ? Eland : 0,
       // when the feet punch in, the ground takes the energy they lose doing it: the work against its bearing and inertia
-      Eground: landRatio > 1 ? Eland : 0 };
+      Eground: landRatio > 1 && !soft ? Eland : 0 };
     return {
       F, push, v, mach: v / K.a0, flight, vacuumApex: vacuumApex(v, 0),
       sink: push.xB, footSpeed: push.vBmax || push.vB, groundFails, heldBack, groundLimitForce: RB,
@@ -2927,8 +2930,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         uAfter, slide: slideDuring + slideAfter,
         mh, v1, E1, give, F1, firstShare: E0 > 0 ? E1 / E0 : 0,
         contact, press,
-        gripRatio: obj.crush ? press[0] / contact / obj.crush : 0, gripRatioHi: obj.crush ? press[1] / contact / obj.crush : 0,
-        plateNeeded: obj.crush ? press[0] / obj.crush : 0,
+        // gentle hold: the catcher's stop is spread through the whole object, so his palms put no load on it
+        gripRatio: obj.crush && !ctxC.gentleHold ? press[0] / contact / obj.crush : 0, gripRatioHi: obj.crush && !ctxC.gentleHold ? press[1] / contact / obj.crush : 0,
+        gripRatioRaw: obj.crush ? press[0] / contact / obj.crush : 0,
+        plateNeeded: obj.crush && !ctxC.gentleHold ? press[0] / obj.crush : 0,
         // the hardest push on it (first hit or arm stroke) spread over its average cross-section:
         // past 1, no plate can spread the load enough and it crumples
         wholeFront: obj.crush ? press[0] / obj.area / obj.crush : 0,
@@ -3349,7 +3354,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     // heel strike: 2.7 J absorbed vertically per step at 1.3 m/s (Baines et al. 2018: 76.7 kg, hip about 0.9 m),
     // scaled as M g h; effective mass 11% of the body, heel at 0.57 m/s, about 30 ms
     HS: { J: 2.7, m: 76.7, h: 0.9, share: 0.11, v: 0.57, t: 0.03 },
-    SOFT: 0.31,                // soft-footed: the impact cut to 0.31 (walking quietly cuts the impact loading rate 45-69%, Yoon et al. 2025; estimate)
+    SOFT: 0.51,                // soft-footed: the impact cut to 0.51 (walking quietly at the same speed cut the impact loading rate 48.7%, Yoon et al. 2025; 69% only when also 23% slower; estimate)
     RAMP: 0.15,                // the weight comes onto the foot over about 0.15 s on a 0.875 m hip (Keller et al.'s 8 body weights per second; estimate)
     // a drill stamp from thigh-horizontal: the leg (16% of the body) meets the ground at 3.7 m/s by gravity, peak
     // force 6.5 x body weight, trained soldiers' average on rigid force plates (Carden et al. 2015; individuals reach
@@ -3373,19 +3378,19 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const hs = WALK.HS, sc = Math.sqrt(h / hs.h);
     // The footfall's impact, as a force pulse (what shakes the ground): an ordinary heel strike stops 11% of the body
     // moving down at 0.57 m/s (scaled) in 30 ms (scaled), a pulse of about 0.43 x body weight; soft-footed cuts it to
-    // 0.31 of that; a drill stamp peaks at 6.5 x body weight, 26 ms after contact (scaled). Peak and length are
+    // 0.51 of that (people walking quietly at the same speed); a drill stamp peaks at 6.5 x body weight, 26 ms after contact (scaled). Peak and length are
     // interpolated on a log scale between the three. Absorbed energy at touchdown (2.7 J per human step) is shown too.
     const Thv = hs.t * sc, Fhs = 2 * hs.share * body.m * hs.v * sc / Thv;
     const Enorm = hs.J * (body.m / hs.m) * (h / hs.h);
     const st = WALK.STAMP, vSt = Math.sqrt(2 * K.g * st.thigh * body.H);
     const A = [
-      { F: WALK.SOFT * Fhs, T: Thv, E: WALK.SOFT * WALK.SOFT * Enorm },
-      { F: Fhs, T: Thv, E: Enorm },
-      { F: st.kPeak * W, T: 2 * st.t * sc, E: 0.5 * st.share * body.m * vSt * vSt },
+      { F: WALK.SOFT * Fhs, T: Thv, E: WALK.SOFT * WALK.SOFT * Enorm, v: WALK.SOFT * hs.v * sc },
+      { F: Fhs, T: Thv, E: Enorm, v: hs.v * sc },
+      { F: st.kPeak * W, T: 2 * st.t * sc, E: 0.5 * st.share * body.m * vSt * vSt, v: vSt },
     ];
     const lerp = (a, b, f) => Math.exp(Math.log(a) + (Math.log(b) - Math.log(a)) * f);
     const [a, b, f] = e <= 0.5 ? [A[0], A[1], e / 0.5] : [A[1], A[2], (e - 0.5) / 0.5];
-    const Fpulse = lerp(a.F, b.F, f), Tpulse = lerp(a.T, b.T, f), Eimp = lerp(a.E, b.E, f);
+    const Fpulse = lerp(a.F, b.F, f), Tpulse = lerp(a.T, b.T, f), Eimp = lerp(a.E, b.E, f), vImp = lerp(a.v, b.v, f);
     const tRamp = WALK.RAMP * Math.sqrt(h / 0.875);
     const kPeak = Math.max(kLoad, Fpulse / W + (e > 0.5 ? 0 : kLoad * 0));
     const Fpeak = Math.max(kLoad * W, Fpulse);
@@ -3396,34 +3401,43 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const ratio = opt.groundHolds ? 0 : pressure / q, peakRatio = opt.groundHolds ? 0 : peakPressure / q;
     const src = [vibSource(surface, 'hann', Fpulse, Tpulse), vibSource(surface, 'ramp', kLoad * W, tRamp)].filter(Boolean);
     return { h, Fr, v, stepRate, stride: 2 * v / stepRate, stance, kLoad, W, effort: e, Eimp, Fpulse, Tpulse, tRamp, heelV: hs.v * sc, heelT: Thv, kPeak, Fpeak, Fhold, pressure, peakPressure, q, ratio, peakRatio,
-      footprint: footprint(body, surface, pressure, opt.groundHolds), src: src.length ? src : null, modelled: !!groundOf(surface) };
+      // the impact as a mass m_eff = (pulse impulse) / (foot speed) driven in at the foot speed, for the footprint
+      footprint: footprint(body, surface, pressure, opt.groundHolds, { p: peakPressure, J: 0.5 * Fpulse * Tpulse, v: vImp }), src: src.length ? src : null, modelled: !!groundOf(surface) };
   }
   // Footprint depth under a step. Sand and gravel: scaled from the one measured large-animal print. A weighed 2,530 kg
   // African elephant cow left 20-26 mm forefoot prints in loose-to-medium sand (Schanz et al. 2013), and the authors'
   // calibrated model of that sand gives 8 mm at 185 kPa and 18 mm at 350 kPa: depth grows as pressure^1.27, and with
   // foot width. Our loose sand is taken as that sand; firmer gravel takes a print shallower in proportion to its
-  // bearing strength. Clay: the foot sinks until the bearing, which grows with depth (N_c up to 1.46x by four
-  // foot-widths, never past 9), carries it. Paving, slabs, ice, steel and rock: no print until they fail. All estimates.
+  // bearing strength. Clay: the foot sinks until the bearing, which grows with depth (N_c x1.15, 1.24, 1.36, 1.43 and
+  // 1.46 at 0.5, 1, 2, 3 and 4 foot-widths: EM 1110-1-1905 Table 4-7; never past 9), carries it; past half his hip
+  // height he is mired. A landing pulse past the ground's bearing also drives the foot in (as in a stomp: Poncelet
+  // penetration), in clay; on paving, slabs, ice, steel and rock it breaks the surface. All estimates.
   const PRINT = { d: 0.018, p: 350e3, n: 1.27, B: 0.274 };
-  function footprint(body, surface, p, groundHolds) {
+  const NC_DEPTH = [[0, 1], [0.5, 1.15], [1, 1.24], [2, 1.36], [3, 1.43], [4, 1.46]];
+  const ncDepth = (x) => { const T = NC_DEPTH; if (x >= T[T.length - 1][0]) return T[T.length - 1][1]; for (let i = 1; i < T.length; i++) if (x <= T[i][0]) return T[i - 1][1] + (T[i][1] - T[i - 1][1]) * (x - T[i - 1][0]) / (T[i][0] - T[i - 1][0]); return 1; };
+  function footprint(body, surface, p, groundHolds, impact) {
     if (groundHolds) return { depth: 0, kind: 'comic' };
     const q = qultFor(surface, body.footB), B = body.footB;
+    const pPeak = impact ? impact.p : p;
     if (surface.granular) {
       const qSand = 37e3 * B / 0.316;   // the loose sand's bearing at this foot width (the elephant print's sand)
       return { depth: PRINT.d * Math.pow(p / PRINT.p, PRINT.n) * (B / PRINT.B) * Math.min(1, qSand / q), kind: 'print' };
     }
     if (surface.id === 'softclay' || surface.id === 'stiffclay') {
-      if (p <= q) return { depth: 0, kind: 'holds' };
+      // the landing pulse, if it is past the clay's bearing, drives the foot in like a small stomp
+      const dImp = impact && pPeak > q && impact.v > 0 ? penetrationDepth(impact.J / impact.v, body.footArea, impact.v, q, surface.rho || 1800) : 0;
+      const mired = WALK.HIP * body.H / 2;   // a foot sunk past half the hip height: he is stuck
+      if (p <= q) return dImp > mired ? { depth: Infinity, kind: 'mired' } : { depth: dImp, kind: dImp > 0 ? 'sinks' : 'holds' };
       const su = surface.shear, Nc0 = q / su;
-      // N_c grows with depth: x1.15 at D/B = 0.5, 1.24 at 1, 1.46 at 4 (EM 1110-1-1905), capped at 9
-      const Nc = (D) => Math.min(9, Nc0 * (1 + 0.46 * Math.min(1, Math.log1p(D / B) / Math.log(5))));
+      const Nc = (D) => Math.min(9, Nc0 * ncDepth(D / B));
       const gam = (surface.rho || 1800) * K.g;
       let lo = 0, hi = 10 * body.H;
       if (Nc(hi) * su + gam * hi < p) return { depth: Infinity, kind: 'mired' };
       for (let i = 0; i < 60; i++) { const mid = 0.5 * (lo + hi); if (Nc(mid) * su + gam * mid >= p) hi = mid; else lo = mid; }
-      return { depth: hi, kind: 'sinks' };
+      const depth = Math.max(hi, dImp);
+      return depth > mired ? { depth: Infinity, kind: 'mired' } : { depth, kind: 'sinks' };
     }
-    return { depth: 0, kind: p > q ? 'breaks' : 'holds' };
+    return { depth: 0, kind: pPeak > q ? 'breaks' : 'holds' };
   }
   // A walker's presence: the step, the ground shaking at a distance, and how far each threshold reaches.
   function presence(body, surface, o) {
@@ -3466,6 +3480,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const momentumOf = (v, m) => (v >= K.c ? Infinity : vToMomentum(v, m));
     // a foot's contact pulse: a drill stamp peaks 26 ms after contact, so about 52 ms, scaled with size
     const footPulse = (body) => 2 * WALK.STAMP.t * Math.sqrt(WALK.HIP * body.H / WALK.HS.h);
+    // the effective mass of a drill stamp: its impulse (half the 6.5 W peak times the pulse) over the leg's speed
+    const stampMass = (body) => 0.5 * WALK.STAMP.kPeak * body.m * K.g * footPulse(body) / Math.sqrt(2 * K.g * WALK.STAMP.thigh * body.H);
     // Energy counts as an air blast only when it is let go faster than sound can carry it off: something moving
     // past Mach 1 (a shock wave), or a fireball. Slower, it is a thump or a crash, not a blast wave.
     const shock = (v, E) => (v >= K.a0 ? E : 0);
@@ -3476,7 +3492,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         run: (c, o) => throwObject(c, o.obj, o.angle),
         goal: (r, o) => r.canMove && !r.fallsBack && (o.angle >= 90 ? r.flight.relativistic || r.flight.escaped || r.flight.apex >= o.target : range(r.flight) >= o.target),
         speed: (r) => (r.canMove ? r.v : 0),
-        ground: (r) => r.canMove && r.sinkRatio > 1,
+        ground: (r, o) => !SOIL.has(o.surface && o.surface.id) && r.canMove && r.sinkRatio > 1,
         crush: (r, o) => !o.gentleHold && r.canMove && r.gripRatio > 1,
         blast: (r) => (!r.canMove || !r.flight ? 0 : r.flight.relativistic ? r.Eobj : r.flight.landed ? shock(r.flight.vImpact, r.Eimpact) : 0),
         // the object stops in about its own size: a pulse carrying its momentum over L / v
@@ -3486,21 +3502,24 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
           return impulseSource(o.surface, momentumOf(v, o.obj.m), Math.max(1e-3, L / v));
         },
         // a person thrown without the safe-passenger switch: the launch presses them past the ride limits
-        passenger: (r, o) => !!o.obj.passenger && !o.safePassenger && r.canMove && r.launchG > 0 && PASSENGER.felt(r.launchG, o.angle) > PASSENGER.noHarm(r.launchT),
+        // ... and air drag in flight, which Safe passenger can't take away (it lasts the flight: the held 1.5 g limit)
+        passenger: (r, o) => !!o.obj.passenger && r.canMove && ((!o.safePassenger && r.launchG > 0 && PASSENGER.felt(Math.max(r.launchG, r.launchGPeak || 0), o.angle) > PASSENGER.noHarm(r.launchT)) || PASSENGER.dragG(o.obj, r.v) > PASSENGER.noHarm(1)),
         where: 'where it lands',
       },
       jump: {
         run: (c) => jump(c),
         goal: (r, o) => r.v > 0 && (r.relativistic || r.flight.escaped || r.flight.apex >= o.target),
         speed: (r) => r.v,
-        ground: (r) => r.groundFails,
+        // take-off or landing: on paving, slabs, rock, ice or steel the surface breaks; in soil his feet only sink in
+        ground: (r, o) => !SOIL.has(o.surface && o.surface.id) && (r.groundFails || !!(r.landing && r.landing.ratio > 1)),
         blast: (r) => shock(r.footSpeed, r.Eground || 0),
         // the landing, if he comes back down (soft landing absorbs it)
         // the landing on bent legs (the body stopped over the leg stroke) and the feet hitting the ground first
         shake: (r, o) => {
           const L = r.landing;
-          if (!L || !L.landed || L.soft || !(L.v > 0)) return null;
-          return [impulseSource(o.surface, momentumOf(L.v, o.m), L.t), impulseSource(o.surface, 2 * o.body.legEff * L.v, footPulse(o.body))].filter(Boolean);
+          if (!L || !L.landed || !(L.v > 0)) return null;
+          // soft landing takes back the feet's impact energy; his body still stops over the leg stroke
+          return [impulseSource(o.surface, momentumOf(L.v, o.m), L.t), L.soft ? null : impulseSource(o.surface, 2 * o.body.legEff * L.v, footPulse(o.body))].filter(Boolean);
         },
         where: 'around him',
       },
@@ -3514,7 +3533,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         ground: (r, o) => r.crater > 0 || (!SOIL.has(o.surface && o.surface.id) && r.holeDepth >= 0.01),
         blast: (r) => shock(r.vFoot, r.E),
         // the foot and shank stop on the ground: their momentum over a foot's contact time (or the time the hole takes)
-        shake: (r, o) => (r.vFoot > 0 ? impulseSource(o.surface, momentumOf(r.vFoot, o.body.legEff), Math.max(footPulse(o.body), 2 * (r.holeDepth || 0) / r.vFoot)) : null),
+        // A measured drill stamp (6.5 x body weight over about 52 ms, scaled) stops more than the leg: about 0.2 body-weight
+        // seconds, as if half his body stopped from the leg's 3.7 m/s. The stomp takes the same effective mass, so the
+        // Stomp and Walk tabs agree when the foot lands at the same speed.
+        shake: (r, o) => (r.vFoot > 0 ? impulseSource(o.surface, momentumOf(r.vFoot, Math.max(o.body.legEff, stampMass(o.body))), Math.max(footPulse(o.body), 2 * (r.holeDepth || 0) / r.vFoot)) : null),
         where: 'around him',
       },
       punch: {
@@ -3535,7 +3557,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         run: (c) => sprint(c),
         goal: (r, o) => r.vTop >= o.target,
         speed: (r) => r.vTop,
-        ground: (r) => !!r.sinks && r.vTop > 0,
+        ground: (r, o) => !SOIL.has(o.surface && o.surface.id) && !!r.sinks && r.vTop > 0,
         where: 'along his path',
       },
       pull: {
@@ -3573,6 +3595,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     // or only at unlimited strength: .onlyUnlimited). same(u0, u1), if given, says the move came out exactly the same at
     // two efforts: something else (footing, the ground, the object's own limit) caps it, so more effort changes
     // nothing and the grid stops there.
+    const FINE = 7;
     function search(test, lo, hi, unlimited, same) {
       const n = Math.max(1, Math.ceil(2 * Math.log10(hi / lo)));
       const grid = (i) => (i >= n ? hi : lo * Math.pow(10, i / 2));
@@ -3584,7 +3607,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
           const u = grid(s.i);
           if (test(u)) {
             if (s.i === 0) { s.use = lo; s.below = 0; return; }
-            s.a = grid(s.i - 1); s.b = u; s.bisect = true; return;
+            s.a = grid(s.i - 1); s.b = u; s.bisect = true; s.fine = 1; s.a0 = s.a; s.b0 = u; return;
           }
           if (s.i >= n || (same && s.i > 0 && same(grid(s.i - 1), u))) {
             s.use = Infinity;
@@ -3593,6 +3616,13 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
             return;
           }
           s.i++; return;
+        }
+        // a hazard can switch on and off again (a run changes which muscle model wins): first scan the bracket at
+        // FINE points for an earlier onset, then bisect the first step where it turns on
+        if (s.fine && s.fine <= FINE) {
+          const x = s.a0 * Math.pow(s.b0 / s.a0, s.fine / (FINE + 1));
+          if (test(x)) { s.b = x; s.fine = 0; } else { s.a = x; s.fine++; }
+          return;
         }
         if (s.b / s.a < 1 + R.TOL) { s.use = s.b; s.below = s.a; return; }
         const mid = Math.sqrt(s.a * s.b);
@@ -3615,7 +3645,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       };
       const [lo, hi] = bounds(ctx);
       const unlimited = !isFinite(ctx.F);
-      // the move has saturated when it comes out at the same nonzero speed (to a part in a million) at two efforts
+      // (soil: sand, gravel and clay)
+    // the move has saturated when it comes out at the same nonzero speed (to a part in a million) at two efforts
       // half a decade apart: real muscle tops out at its limb speed, footing and the ground cap the push
       const same = (u0, u1) => { const a = M.speed(at(u0)), b = M.speed(at(u1)); return a > 0 && isFinite(a) && Math.abs(b - a) <= 1e-6 * a; };
       const jobs = new Map();
@@ -3699,6 +3730,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       for (let i = 1; i < E.length; i++) if (t <= E[i][0]) { const [t0, g0] = E[i - 1], [t1, g1] = E[i]; return Math.exp(Math.log(g0) + (Math.log(g1) - Math.log(g0)) * Math.log(t / t0) / Math.log(t1 / t0)); }
       return E[E.length - 1][1];
     },
+    // air drag on a flying person, in g, at speed v (strongest at release): 1/2 rho v^2 Cd A / (m g) (comic_passenger_drag_g)
+    dragG: (o, v) => (v > 0 ? 0.5 * K.rho0 * v * v * (v >= K.a0 ? (o.CdSup || o.Cd || 1) : (o.Cd || 1)) * (o.area || 0.67) / (o.m * K.g) : 0),
     // what the person feels: the push plus holding them up against gravity, n = |a + g| / g with a along the throw
     felt: (aG, thetaDeg) => { const th = thetaDeg * Math.PI / 180; return Math.hypot(aG * Math.cos(th), aG * Math.sin(th) + 1); },
   };
@@ -3783,7 +3816,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   // the excess energy pushed into the air, dp x dV, is a blast; on hard ground it counts double. Momentum: his middle
   // rises dH/2 in t, so the ground has to push him up hard enough to give that speed, and nothing pulls him back: he is
   // launched unless bolted to the planet.
-  function instantGrowth(body, E, form) {
+  // gnd (optional): { surface, groundHolds, bolted }. The ground can push his soles with at most its bearing: past
+  // that it gives, his soles are driven in, and he leaves only with the impulse it could supply in time tau.
+  function instantGrowth(body, E, form, gnd) {
     const g = grownBody(body, E, form);
     const tau = g.H / GROW.TISSUE_C;
     const dR = g.R - g.R0;
@@ -3794,14 +3829,22 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const vcm = 0.5 * g.dH / tau;                                // his middle's mean upward speed during the growth
     const Fground = g.m * vcm / tau + g.m * K.g;                 // the ground's push that gives it
     const soles = 2 * body.footArea * Math.exp(g.lnr * g.s * 2 / 3);
-    const launch = vcm * vcm / (2 * K.g);
-    return { grown: g, tau, u, uHead, mach: u / K.a0, machHead: uHead / K.a0, dpLo, dpHi, Elo, Ehi, Eatm: K.p0 * g.dV, vcm, Fground, groundPressure: Fground / soles, soles, launch };
+    let launch = vcm * vcm / (2 * K.g), vLeave = vcm, Fmax = Infinity, qGround = Infinity, driven = false;
+    if (gnd && gnd.surface && !gnd.groundHolds && !gnd.bolted) {
+      qGround = qultFor(gnd.surface, body.footB * Math.exp(g.lnr * g.s / 3));
+      Fmax = qGround * soles;
+      driven = Fground > Fmax;
+      vLeave = Math.min(vcm, Math.max(0, Fmax - g.m * K.g) * tau / g.m);
+      launch = vLeave * vLeave / (2 * K.g);
+    }
+    return { grown: g, tau, u, uHead, mach: u / K.a0, machHead: uHead / K.a0, dpLo, dpHi, Elo, Ehi, Eatm: K.p0 * g.dV, vcm, Fground, groundPressure: Fground / soles, soles, launch, vLeave, Fmax, qGround, driven };
   }
   // Runaway: the side effects (the work done pushing the air back, p0 + dp over dV, and the gravitational binding
   // energy his own pull releases as he grows) are absorbed as growth too. Loop ratio f = energy fed back / energy
   // absorbed. f < 1: the loop dies out, and he absorbs E / (1 - f) in all. f >= 1: it runs away, and only the half-life
   // (a story choice: no physics sets it) drains the extra into the endless ocean. Binding energy of a uniform ball:
-  // 3 G M^2 / (5 R), so the gravity share is 0.3 (2 - s/3) r_s / R: 1 only inside his own event horizon.
+  // 3 G M^2 / (5 R), so the gravity share is 0.3 (2 - s/3) r_s / R in weak gravity (Newtonian); relativity raises it,
+  // reaching 1 only at his event horizon (growth_loop_gravity_gr).
   function runawayGrowth(body, E, form) {
     const inst = instantGrowth(body, E, form), g = inst.grown;
     const bind = (m, R) => 0.6 * K.G * m * m / R;
@@ -5034,7 +5077,7 @@ window.DINO_DATA = {
   },
   {
    "t": "The courtesy ceiling and the not-so-heroic presets",
-   "d": "The courtesy ceiling is the most effort he can use before something nearby comes to harm. The lab checks six hazards: a sonic boom (anything he moves breaks the sound barrier), an air blast louder than 134 dB (100 Pa, the US Bureau of Mines safe maximum for houses) at the chosen distance, ground shaking there over 12.7 mm/s (where plaster may crack: US Bureau of Mines), the ground breaking under his feet, his hands crushing what he holds, and a thrown person pressed harder than amusement rides allow (ASTM F2291). A thrown person’s landing is not counted: it is a fall unless someone catches them. Each not-so-heroic preset is the least effort that does what its name says: windows rattle (1 mm/s of ground shaking, our estimate, or an air blast of about 36 Pa, where rattling complaints start: 120 dB on the 6 Hz meter the US Bureau of Mines used, which is about 125 dB, 36 Pa, unfiltered, by our conversion), plaster may crack, windows break across a 15 m street (6.9 kPa), the ground breaks under him, houses next door collapse (26.8 kPa), houses collapse 100 m away (a city block, our estimate). Blast radii use the Kinney–Graham curve as if all the energy went into the air, so they are upper bounds."
+   "d": "The courtesy ceiling is the most effort he can use before something nearby comes to harm. The lab checks six hazards: a sonic boom (anything he moves breaks the sound barrier), an air blast louder than 134 dB (100 Pa, the US Bureau of Mines safe maximum for houses) at the chosen distance (a blast counts only when something moves past the speed of sound or makes a fireball; slower, the air flows out of the way and the release is a thump), ground shaking there over 12.7 mm/s (where plaster may crack: US Bureau of Mines), the ground breaking under his feet, his hands crushing what he holds, and a thrown person pressed harder than amusement rides allow (ASTM F2291). A thrown person’s landing is not counted: it is a fall unless someone catches them. Each not-so-heroic preset is the least effort that does what its name says: windows rattle (1 mm/s of ground shaking, our estimate, or an air blast of about 36 Pa, where rattling complaints start: 120 dB on the 6 Hz meter the US Bureau of Mines used, which is about 125 dB, 36 Pa, unfiltered, by our conversion), plaster may crack, windows break across a 15 m street (6.9 kPa), the ground breaks under him, houses next door collapse (26.8 kPa), houses collapse 100 m away (a city block, our estimate). Blast radii use the Kinney–Graham curve as if all the energy went into the air, so they are upper bounds."
   },
   {
    "t": "Two-player effort",
@@ -5042,11 +5085,11 @@ window.DINO_DATA = {
   },
   {
    "t": "Walking: their gait",
-   "d": "Their gait is people’s gait scaled to their size at the same Froude number (speed² ÷ g × hip height), with hip height 0.45 of their height (our estimate from the turnarounds). A comfortable walk is Froude 0.18, about 1.6 m/s for them; at Froude 0.5 they would break into a run. Each step holds about 1.2× body weight (1.0–1.5 as the pace rises). The ground shaking comes from the force of each footfall (see the next card): an ordinary heel strike is a pulse of about 0.43× body weight over 37 ms, scaled from people; soft-footed is 0.31 of that (an estimate from the 45–69% cut in loading rate measured when people walk quietly); a drill stamp peaks at 6.5× body weight, as measured in soldiers. The foot itself also soaks up about 160 J per ordinary step (scaled from people); that energy stays in the foot and doesn’t shake the ground."
+   "d": "Their gait is people’s gait scaled to their size at the same Froude number (speed² ÷ g × hip height), with hip height 0.45 of their height (our estimate from the turnarounds). A comfortable walk is Froude 0.18, about 1.6 m/s for them; at Froude 0.5 they would break into a run. Each step holds about 1.2× body weight (1.0–1.5 as the pace rises). The ground shaking comes from the force of each footfall (see the next card): an ordinary heel strike is a pulse of about 0.43× body weight over 37 ms, scaled from people; soft-footed is 0.51 of that (an estimate from the 48.7% cut in loading rate measured when people walk quietly at their normal speed; the 69% cut came with walking 23% slower); a drill stamp peaks at 6.5× body weight, as measured in soldiers. The foot itself also soaks up about 160 J per ordinary step (scaled from people); that energy stays in the foot and doesn’t shake the ground."
   },
   {
    "t": "Walking: ground shaking",
-   "d": "Each footfall is a force on the ground: the weight coming onto the foot over about a sixth of a second, plus a short landing pulse (about 0.43× body weight over 37 ms for an ordinary heel strike, scaled from people; soft-footed 0.31 of that; a drill stamp 6.5× body weight). An elastic-ground model (Lamb’s problem) turns that into peak particle velocity (PPV) at a distance, using each surface’s density, shear-wave speed and damping (our estimates). It matched one drop test (130 kg at Pisa) within about 2× from 2.5 to 60 m and elephant footfalls roughly; nobody has measured footsteps this way, so read it as uncertain by about 3–5×, more past 60 m. Lake ice and a steel deck bend as plates and are not modelled. The numbers are for open ground: indoors, floors and walls can make the shaking 2–4× stronger. The thresholds come from construction and blasting standards (feel 0.3 mm/s for a walk past, 1 mm/s for one isolated jolt; plaster may crack above 7.6 mm/s for a walk past, 12.7 mm/s for a single stamp: safe limits, below which cracks are very unlikely) or are our estimates where no standard exists (a rippling glass, rattling windows, the 1 g at which loose things lift). The glass ripples with side-to-side shaking, about a third of the up-and-down close to the foot and two-thirds further out (uniform ground), so the page compares it with that."
+   "d": "Each footfall is a force on the ground: the weight coming onto the foot over about a sixth of a second, plus a short landing pulse (about 0.43× body weight over 37 ms for an ordinary heel strike, scaled from people; soft-footed 0.51 of that; a drill stamp 6.5× body weight). An elastic-ground model (Lamb’s problem) turns that into peak particle velocity (PPV) at a distance, using each surface’s density, shear-wave speed and damping (our estimates). It matched one drop test (130 kg at Pisa) within about 2× from 2.5 to 60 m and elephant footfalls roughly; nobody has measured footsteps this way, so read it as uncertain by about 3–5×, more past 60 m. Lake ice and a steel deck bend as plates and are not modelled. The numbers are for open ground: indoors, floors and walls can make the shaking 2–4× stronger. The thresholds come from construction and blasting standards (feel 0.3 mm/s for a walk past, 1 mm/s for one isolated jolt; plaster may crack above 7.6 mm/s for a walk past, 12.7 mm/s for a single stamp: safe limits, below which cracks are very unlikely) or are our estimates where no standard exists (a rippling glass, rattling windows, the 1 g at which loose things lift). The glass ripples with side-to-side shaking, about a third of the up-and-down close to the foot and two-thirds further out (uniform ground), so the page compares it with that."
   },
   {
    "t": "Footprints",
@@ -12690,8 +12733,8 @@ window.DINO_DATA = {
     const items = [];
     if (!isFinite(E)) { items.push('The energy is unbounded, so the growth has no limit. The page can’t size it.'); return items; }
     const gB = P.grownBody(body, E, state.growS);
-    const small = gB.lnr < 1e-3;
-    items.push('It becomes ' + fmtMass(gB.dm) + ' of new mass (energy ÷ c²)' + (small ? ', less than a thousandth of his mass: unnoticeable.' : ': ' + fmtRatio(gB.ratio) + ' his mass, so he is ' + fmtDist(gB.H) + ' tall at ' + fmtDensity2(gB.rho) + ' (' + growFormText(gB.s) + ').'));
+    const small = gB.lnr < 0.01;
+    items.push('It becomes ' + fmtMass(gB.dm) + ' of new mass (energy ÷ c²)' + (small ? ', ' + (gB.lnr < 1e-3 ? 'less than a thousandth' : 'about ' + sig(100 * (gB.ratio - 1), 1) + '%') + ' of his mass: unnoticeable.' : ': ' + (gB.ratio < 1.1 ? sig(100 * (gB.ratio - 1), 2) + '% more than his mass' : fmtRatio(gB.ratio) + ' his mass') + ', so he is ' + fmtDist(gB.H) + ' tall at ' + fmtDensity2(gB.rho) + ' (' + growFormText(gB.s) + ').'));
     if (small) return items;   // nothing else would show
     if (state.absorb === 'gradual') {
       const G = P.gradualGrowth(body, E, state.growS);
@@ -12703,21 +12746,26 @@ window.DINO_DATA = {
       } else items.push('Pure density: he doesn’t get any bigger, so nothing around him is pushed aside. Only his weight changes.');
     }
     if (state.absorb === 'instant' || state.absorb === 'runaway') {
-      const I = P.instantGrowth(body, E, state.growS);
+      const bolted = state.anchor === 'bolted';
+      const I = P.instantGrowth(body, E, state.growS, { surface: sf, groundHolds: state.groundHolds, bolted });
       if (gB.dV > 0) {
         const win = (Ex, dp) => P.blastRadius(Ex, dp);
         const wLo = win(I.Elo, 6900), wHi = win(I.Ehi, 3400);
-        items.push('All at once: over ' + fmtTime(I.tau) + ', the time sound takes to cross his new body (our choice of timescale; truly instant would need unlimited energy). He grows from his soles: his sides move out at about ' + speedOnly(I.u) + ' and the top of his head rises at ' + speedOnly(I.uHead) + (I.uHead >= K.a0 ? ' (' + fmtMach(I.uHead) + ')' : '') + '.');
-        items.push('The air at his surface jumps by ' + fmtSI(I.dpLo, 'Pa') + ' to ' + fmtSI(I.dpHi, 'Pa') + '. As a blast that is ' + fmtTNT(I.Elo) + ' to ' + fmtTNT(I.Ehi) + (wHi > 0.05 ? ': windows break out to about ' + fmtDist(wLo) + '–' + fmtDist(wHi) + '.' : ', too little to break windows.') + ' Rough: the low end treats him as a ball, the high end as flat pistons.');
-        const bolted = state.anchor === 'bolted';
-        items.push('Momentum isn’t absorbed: his middle rises ' + fmtDist(gB.dH / 2) + ' in that time, so the ground has to push him up with an extra ' + fmtSI(I.Fground - I.grown.m * g, 'N') + ' on top of his new weight (' + fmtSI(I.groundPressure, 'Pa') + ' under his feet in all, ' + (I.groundPressure > 1.7e9 ? 'more than any rock can take' : 'within what granite can take') + '). ' + (bolted ? 'Bolted to the planet, he stays put and the Earth takes it.' : 'Nothing then pulls him back down: he is thrown about ' + fmtDist(I.launch) + ' up (no air drag), unless he is bolted to the planet.'));
+        items.push('All at once: over ' + fmtTime(I.tau) + ', the time sound takes to cross his new body (our choice of timescale; truly instant would need unlimited energy). He grows from his soles (our choice; an open question for the owners): his sides move out at about ' + speedOnly(I.u) + ' and the top of his head rises at ' + speedOnly(I.uHead) + (I.uHead >= K.a0 ? ' (' + fmtMach(I.uHead) + ')' : '') + '.');
+        const winText = I.dpHi < 3400 ? ', too little to break windows (that takes about 3.4 kPa).' : ': windows break out to about ' + fmtDist(wLo) + '–' + fmtDist(wHi) + ' from his middle.';
+        items.push('The air at his surface jumps by ' + fmtSI(I.dpLo, 'Pa') + ' to ' + fmtSI(I.dpHi, 'Pa') + '. ' + (state.absorb === 'runaway' ? 'In runaway mode that blast’s energy (' + fmtTNT(I.Elo) + ' to ' + fmtTNT(I.Ehi) + ') is taken back as growth too, so nothing outside breaks.' : 'As a blast that is ' + fmtTNT(I.Elo) + ' to ' + fmtTNT(I.Ehi) + winText) + ' Rough: the low end treats him as a ball, the high end as flat pistons.');
+        const push = 'Momentum isn’t absorbed: his middle rises ' + fmtDist(gB.dH / 2) + ' in that time, so the ground has to push him up with an extra ' + fmtSI(I.Fground - I.grown.m * g, 'N') + ' on top of his new weight (' + fmtSI(I.groundPressure, 'Pa') + ' under his feet in all). ';
+        items.push(push + (bolted ? 'Bolted to the planet, he stays put and the Earth takes it.'
+          : state.groundHolds ? 'Comic ground gives that push: nothing holds him down, so he is thrown about ' + fmtDist(I.launch) + ' up before falling back (no air drag).'
+            : I.driven ? capital(theSurf(sf)) + ' bears only ' + fmtSI(I.qGround, 'Pa') + ': it gives, and his soles are driven into it. ' + (I.launch > 0.01 ? 'He still leaves the ground at ' + speedOnly(I.vLeave) + ' and rises about ' + fmtDist(I.launch) + ' before falling back.' : 'He doesn’t leave the ground.')
+              : capital(theSurf(sf)) + ' can take it (it bears ' + fmtSI(I.qGround, 'Pa') + '): nothing holds him down, so he is thrown about ' + fmtDist(I.launch) + ' up before falling back (no air drag).'));
       } else items.push('Pure density: he doesn’t get any bigger, so there is no blast. Only his weight changes.');
     }
     if (state.absorb === 'runaway') {
       const RW = P.runawayGrowth(body, E, state.growS);
       items.push('Runaway loop: each joule absorbed sends back about ' + (RW.k > 0 ? sci(RW.k, 1) : '0') + ' J of side effects (pushing the air back and his own gravity pulling him tighter), which are absorbed too. ' + (RW.runs ? 'That is 1 or more: it would run away, and the half-life (' + fmtTime(state.halfLife) + ', a story choice: no physics sets it) drains the extra into the endless ocean.' : 'That is far below 1, so the loop dies out at once: he absorbs ' + (RW.k < 1e-6 ? 'the same energy to within a millionth.' : fmtSI(RW.total, 'J') + ' in all.')));
       items.push('Open question for the owners: whether those side effects are paid from the energy they absorbed or from the endless store. Only in the first case does the loop add anything, and here it is tiny either way.');
-      items.push('A real runaway needs side effects as big as the energy itself. Only his own gravity can get there: its share is 0.3 × (2 − s/3) × (his event-horizon radius ÷ his radius), where s is the share of growth into size. That is ' + sci(RW.kGravNow, 1) + ' now and reaches 1 only inside his own event horizon. So outside a black hole the half-life never has to act.');
+      items.push('A real runaway needs side effects as big as the energy itself. Only his own gravity can get there: in weak gravity its share is about 0.3 × (2 − s/3) × (his event-horizon radius ÷ his radius), where s is the share of growth into size. That is ' + sci(RW.kGravNow, 1) + ' now; relativity raises it, but it reaches 1 only at his own event horizon. So outside a black hole the half-life never has to act.');
     }
     if (!small) {
       const gb = P.grownMakeBody(body, E, state.growS);
@@ -12774,16 +12822,20 @@ window.DINO_DATA = {
   // A thrown person: the mean acceleration of the throw against what an ordinary person takes without harm.
   function passengerChip(r, c) {
     if (!r.canMove) return null;
-    if (c.safePassenger) return status('info', 'Safe passenger: no harmful g-force');
-    const L = P.PASSENGER, n = L.felt(r.launchG, state.angle);
-    return n > L.injury(r.launchT) ? status('bad', 'Launch: ' + sig(n, 2) + ' g, injury possible') : n > L.noHarm(r.launchT) ? status('warn', 'Launch: ' + sig(n, 2) + ' g, past ride limits') : status('good', 'Launch: ' + sig(n, 2) + ' g, within ride limits');
+    const L = P.PASSENGER, o = objById(state.obj), dg = L.dragG(o, r.v);
+    if (c.safePassenger) return dg > L.noHarm(1) ? status(dg > L.injury(2) ? 'bad' : 'warn', 'Safe passenger, but air drag ' + sig(dg, 2) + ' g') : status('info', 'Safe passenger: no harmful g-force');
+    const n = L.felt(Math.max(r.launchG, r.launchGPeak || 0), state.angle);
+    const worst = Math.max(n / L.noHarm(r.launchT), dg / L.noHarm(1));
+    const inj = n > L.injury(r.launchT) || dg > L.injury(2);
+    return status(inj ? 'bad' : worst > 1 ? 'warn' : 'good', (dg / L.noHarm(1) > n / L.noHarm(r.launchT) ? 'Air drag: ' + sig(dg, 2) + ' g, ' : 'Launch: ' + sig(n, 2) + ' g, ') + (inj ? 'injury possible' : worst > 1 ? 'past ride limits' : 'within ride limits'));
   }
   function passengerText(r, c, f) {
     if (!r.canMove) return null;
-    const L = P.PASSENGER, n = L.felt(r.launchG, state.angle), fall = f && f.landed ? f.vImpact * f.vImpact / (2 * g) : null;
+    const L = P.PASSENGER, o = objById(state.obj), nAvg = L.felt(r.launchG, state.angle), n = L.felt(Math.max(r.launchG, r.launchGPeak || 0), state.angle), dg = L.dragG(o, r.v), fall = f && f.landed ? f.vImpact * f.vImpact / (2 * g) : null;
     const launch = c.safePassenger ? 'Safe passenger: his push is spread through their whole body like gravity, so the launch puts no load on them; they float as if falling.'
-      : 'The throw presses them with about ' + sig(n, 2) + ' g for ' + fmtTime(r.launchT) + '. Amusement rides allow an unprepared rider ' + sig(L.noHarm(r.launchT), 2) + ' g for that long (ASTM F2291, pushed on the chest, the worst way round: 2 g at 0.2 s, falling to 1.5 g held; the standard doesn’t cover pushes shorter than 0.2 s, so keeping 2 g there is our estimate); harnessed volunteers took ' + sig(L.injury(r.launchT), 2) + ' g for that long uninjured (Eiband 1959). ' + (n > L.injury(r.launchT) ? 'This is past that: injury possible.' : n > L.noHarm(r.launchT) ? 'This is past what rides allow.' : 'This is within ride limits.') + ' All of these assume a seat or harness; held in his hands it would be worse, by an amount nobody has measured.';
-    return launch + (fall != null ? ' The landing is still real: they hit the ground at ' + speedOnly(f.vImpact) + ', like falling ' + fmtDist(fall) + ', unless someone catches them.' : '');
+      : 'The throw presses them with about ' + sig(nAvg, 2) + ' g for ' + fmtTime(r.launchT) + (n > nAvg * 1.05 ? ', peaking at ' + sig(n, 2) + ' g as the push starts (real muscle pushes hardest at first)' : '') + '. Amusement rides allow an unprepared rider ' + sig(L.noHarm(r.launchT), 2) + ' g for that long (ASTM F2291, pushed on the chest, the worst way round: 2 g at 0.2 s, falling to 1.5 g held; the standard doesn’t cover pushes shorter than 0.2 s, so keeping 2 g there is our estimate); harnessed volunteers took ' + sig(L.injury(r.launchT), 2) + ' g for that long uninjured (Eiband 1959). ' + (n > L.injury(r.launchT) ? 'This is past that: injury possible.' : n > L.noHarm(r.launchT) ? 'This is past what rides allow.' : 'This is within ride limits.') + ' All of these assume a seat or harness; held in his hands it would be worse, by an amount nobody has measured.';
+    const drag = dg >= 0.1 ? ' In flight, air drag presses on them with up to ' + sig(dg, 2) + ' g at release' + (dg > L.noHarm(1) ? ', past the 1.5 g rides allow for that long' + (c.safePassenger ? '; Safe passenger covers only his push, not the air' : '') : '') + '.' : '';
+    return launch + drag + (fall != null ? ' The landing is still real: they hit the ground at ' + speedOnly(f.vImpact) + ', like falling ' + fmtDist(fall) + ', unless someone catches them.' : '');
   }
   function bayLift(c) {
     const o = objById(state.obj);
@@ -12807,10 +12859,10 @@ window.DINO_DATA = {
       tile('Weight in his hands', fmtSI(r.weight, 'N'), fmtMass(o.m)),
       tile('Pressure under his feet', fmtSI(r.pressure, 'Pa'), c.groundHolds ? 'comic ground' : 'limit ' + fmtSI(r.qult, 'Pa')),
       tile('Footing needed to not sink', c.groundHolds ? 'n/a' : fmtArea(r.footAreaNeeded), c.groundHolds ? '' : 'a square plate this size'),
-      o.crush ? tile('Grip plate to not crush it', fmtArea(r.plateNeeded), 'vs. his two palms, ' + fmtArea(2 * c.body.palmArea)) : null,
+      o.crush ? (r.gentle ? tile('Grip plate to not crush it', 'none needed', 'gentle hold: his push is spread through it') : tile('Grip plate to not crush it', fmtArea(r.plateNeeded), 'vs. his two palms, ' + fmtArea(2 * c.body.palmArea))) : null,
       r.selfPullG >= 0.001 ? tile('His pull on it', sig(r.selfPullG, 2) + ' g', 'on top of the Earth’s') : null));
     if (!c.groundHolds) out.push(logMeter('Ground: pressure vs. what ' + c.surface.short + ' can take', r.groundRatio));
-    if (o.crush) out.push(logMeter('Object: hand pressure vs. what the ' + o.short + ' can take', r.gripRatio));
+    if (o.crush && !r.gentle) out.push(logMeter('Object: hand pressure vs. what the ' + o.short + ' can take', r.gripRatio));
     const items = [];
     if (r.standRatio > 1) items.push('At this size Rex already sinks just standing here: his own weight is ' + fmtRatio(r.standRatio) + ' what the ground can carry.');
     if (r.canLift && r.groundRatio > 1) items.push('The ground fails first. Every newton he lifts goes straight down through his feet. Rex keeps sinking until he reaches something stronger, unless he stands on a plate ' + fmtArea(r.footAreaNeeded) + '.');
@@ -12827,7 +12879,7 @@ window.DINO_DATA = {
       'Weight W = m·g = ' + fmtMass(o.m) + ' × 9.81 m/s² = ' + fmtSI(r.weight, 'N'),
       'Foot pressure = (m_Rex + m) g / (2 feet × ' + sig(c.body.footArea, 2) + ' m²) = ' + fmtSI(r.pressure, 'Pa'),
       c.groundHolds ? null : 'Ground limit (ultimate bearing) for ' + c.surface.short + ' ≈ ' + fmtSI(r.qult, 'Pa') + (c.surface.granular ? ' at his foot width; sand and gravel get stronger under wider footings' : '') + ' → ' + fmtRatio(r.groundRatio) + ' the limit',
-      o.crush ? 'Grip pressure = W / (2 palms × ' + sig(c.body.palmArea, 2) + ' m²) = ' + fmtSI(r.gripPressure, 'Pa') + ' vs ' + fmtSI(o.crush, 'Pa') + ' (estimate)' : null,
+      o.crush ? (r.gentle ? 'Grip: with gentle hold his push acts on every kilogram of it, so his palms press nothing into it (without it: W / (2 palms × ' + sig(c.body.palmArea, 2) + ' m²) = ' + fmtSI(r.gripPressure, 'Pa') + ' vs ' + fmtSI(o.crush, 'Pa') + ', an estimate)' : 'Grip pressure = W / (2 palms × ' + sig(c.body.palmArea, 2) + ' m²) = ' + fmtSI(r.gripPressure, 'Pa') + ' vs ' + fmtSI(o.crush, 'Pa') + ' (estimate)') : null,
     ]));
     return out;
   }
@@ -12957,7 +13009,7 @@ window.DINO_DATA = {
     else if (f.escaped) items.push('It leaves the atmosphere faster than escape velocity (11.2 km/s at the surface), so gravity never brings it back.');
     if (f.landed && r.Eimpact > 4.184e9) items.push('Impact: ' + fmtTNT(r.Eimpact) + (r.planetScale ? '. That is planet-scale: crater scaling no longer applies' : (r.crater > 0 ? ', crater up to ' + fmtDist(r.crater) + ' across' + (r.craterBeyondFit ? ' (far past the few-hundred-km range the scaling is fitted to; rough size only)' : ' (impact scaling; rock and concrete make smaller craters)') : '')) + (r.quake > 2 && !r.planetScale ? ', felt like a magnitude ' + sig(r.quake, 2) + ' quake' : '') + '.');
     out.push(happens(items));
-    if (c.coolFlight && !f.relativistic) out.push(r.dragLoss != null ? absorbBlock(r.dragLoss, 'Cool flight: the heat of drag', c.body, c.surface) : callout('Cool flight: the heat the air would put into it is absorbed. It flies off without landing, so the page doesn’t total that energy.'));
+    if (c.coolFlight && !f.relativistic) out.push(r.dragLoss != null ? absorbBlock(r.dragLoss, 'Cool flight: the air takes ' + fmtSI(r.dragLoss, 'J') + ' from it in all (heat plus the wind it stirs). Only the share that would heat the ' + o.short + ' is taken back; this tab doesn’t split it (the Catch tab does), so the figure here is an upper bound', c.body, c.surface) : callout('Cool flight: the heat the air would put into it is absorbed. It flies off without landing, so the page doesn’t total that energy.'));
     const human = D.tiers.find((t) => t.id === 'human');
     const calBody = state.build === 'human' && Math.abs(state.H - 2) < 1e-9 && Math.abs(state.m - 180) < 1e-6;
     if (D.calibration && calBody && !state.inf && Math.abs(state.logKg - Math.log10(human.liftKg)) < 0.01) {
@@ -13104,6 +13156,8 @@ window.DINO_DATA = {
     return out;
   }
 
+  // below Mach 1 the air flows out of the way: a loud thump, not a blast wave (the courtesy ceiling's rule too)
+  const THUMP = (where) => 'Below the speed of sound the air flows out of the way of ' + where + ', so the release is a loud thump, not a blast wave. The lab counts a blast only when something moves past Mach 1 (or makes a fireball).';
   function bayPunch(c) {
     const r = P.punch(c);
     const out = [];
@@ -13122,10 +13176,10 @@ window.DINO_DATA = {
       tile('Energy in the punch', fmtSI(r.E, 'J'), fmtTNT(r.E)),
       tile('Compared with', compareEnergy(r.E), ''),
       r.recoilE > 0.01 * r.E ? tile('His own recoil', fmtSI(r.recoilE, 'J'), sig(100 * r.recoilE / r.E, 2) + '% of the total') : null,
-      r.vFist < 0.01 * K.c && r.vFist > 1000 ? tile('Air at the knuckles', fmtTemp(r.stagT), 'equilibrium air (ideal-gas formula: ' + fmtTemp(r.stagTIdeal) + ')') : null));
-    out.push(silent ? absorbBlock(r.E, 'Silent strike: the punch’s energy', c.body, c.surface) : blastBlock(r.E, 'at his fist'));
+      !silent && r.vFist < 0.01 * K.c && r.vFist > 1000 ? tile('Air at the knuckles', fmtTemp(r.stagT), 'equilibrium air (ideal-gas formula: ' + fmtTemp(r.stagTIdeal) + ')') : null));
+    out.push(silent ? absorbBlock(r.E, 'Silent strike: the punch’s energy', c.body, c.surface) : r.mach < 1 ? callout(THUMP('his fist')) : blastBlock(r.E, 'at his fist'));
     const items = [];
-    items.push('A punch into empty air does no work on anything but the air. Everything the arm put in, the fist’s energy plus his own recoil, is released when the arm stops.');
+    items.push('A punch into empty air does no work on anything but the air. Everything the arm put in, the fist’s energy plus his own recoil, is released when the arm stops' + (r.mach < 1 ? ': below the speed of sound, as a thump and as heat in his arm.' : '.'));
     if (r.recoilE > 0.5 * r.E) items.push('His footing can only hold ' + fmtSI(r.anchor.R, 'N') + '. Past that, the fist and Rex push apart like two skaters, and at extreme strength the light fist can’t go faster than light, so his own body takes most of the energy.');
     if (silent) items.push('Silent strike absorbs the energy that would hit the air as a blast or a boom. The momentum doesn’t go away: the recoil on his body and his footing is the same.');
     if (r.mach >= 1 && r.vFist < 0.01 * K.c && !silent) items.push('Past Mach 1 the fist drags a shock wave, like a bullet. Bystanders get the bang even if he misses.');
@@ -13146,10 +13200,10 @@ window.DINO_DATA = {
       speedTile('Hand speed', r.vHand, fmtMach(r.vHand)),
       tile('Energy released', fmtSI(r.E, 'J'), fmtTNT(r.E)),
       tile('Compared with', compareEnergy(r.E), '')));
-    out.push(silent ? absorbBlock(r.E, 'Silent strike: the clap’s energy', c.body, c.surface) : blastBlock(r.E, 'between his hands'));
+    out.push(silent ? absorbBlock(r.E, 'Silent strike: the clap’s energy', c.body, c.surface) : r.mach < 1 ? callout(THUMP('his hands')) : blastBlock(r.E, 'between his hands'));
     out.push(happens([
       'The clap is the one move with no recoil problem: both arms push on his chest equally and opposite, so he stays put however strong he is.',
-      'That makes a comic “thunderclap” fair physics: two hands’ worth of energy, released in a small space.',
+      !silent && r.mach >= 1 ? 'Past the speed of sound that makes a comic “thunderclap” fair physics: two hands’ worth of energy, released in a small space.' : null,
       (r.basis || state.mode) === 'real' ? 'In real-muscle mode the hands cap near ' + speedOnly(P.MUSCLE.clap.vmax * c.body.s) + ', so a clap stays a clap.' : null,
     ]));
     out.push(math(['Each arm drives a hand + forearm (' + sig(c.body.handEff, 2) + ' kg) with ' + fmtSI(r.F, 'N') + ' over ' + sig(c.body.strokes.clap, 2) + ' m.', 'Energy released = both hands’ kinetic energy (they stop dead).']));
@@ -13924,7 +13978,7 @@ window.DINO_DATA = {
     const k = a.catch;
     switch (a.result) {
       case 'caught':
-        if (a.gentleC && (k.gripRatio > 1 || k.baseballRatio > 1 || k.wholeFront > 1)) return status('info', 'Gentle hold: his hands can’t crush it');
+        if (a.gentleC && (k.gripRatioRaw > 1 || k.baseballRatio > 1 || k.wholeFront > 1)) return status('info', 'Gentle hold: his hands can’t crush it');
         if (o.id === 'baseball' && k.baseballRatio > 1) return status('bad', 'Stops it; the ball probably bursts');
         if (o.id === 'baseball' && k.baseballRatioHi > 1) return status('warn', 'Stops it; the ball may burst');
         if (k.gripRatio > 1) return status('warn', 'Stops it; his palms punch in');
@@ -14099,7 +14153,7 @@ window.DINO_DATA = {
     if (showHeat(a) && !(a.cool && a.heat && a.heat.kind !== 'warm')) items.push(heatItem(a));
     if (a.cool && a.heat && a.heat.kind !== 'warm' && a.heat.kind !== 'immune' && showHeat(a)) items.push('Cool flight: the heat the air would drive into it (enough to ' + (a.heat.kind === 'destroyed' ? verbIt(a.heat) + ' ' + fmtRatio(a.heat.frac) + ' over' : verbAway(a.heat) + ' part of it') + ') is absorbed. It still slows down, and the air still gets its momentum.' + (a.drag && a.drag.E > 0 ? ' The air takes ' + fmtSI(a.drag.E, 'J') + ' from it in all (heat plus the wind it stirs); the heat share of that is what cool flight takes back.' : ''));
     if (a.gentleT && a.launchRatio > 1) items.push('Gentle hold: Rex’s push of ' + fmtSI(a.launchPush, 'N') + ' is spread through the whole ' + o.short + ' like gravity, so it isn’t crushed at launch (without it: ' + fmtRatio(a.launchRatio) + ' what it can take). Air pressure on its front is still real.');
-    if (a.gentleC && k && (k.gripRatio > 1 || k.wholeFront > 1 || k.baseballRatio > 1)) items.push('Gentle hold: Ollie’s stop is spread through the whole ' + o.short + ', so his hands put no load on it (without it: ' + fmtRatio(Math.max(k.gripRatio, k.wholeFront, k.baseballRatio)) + ' what it can take).');
+    if (a.gentleC && k && (k.gripRatioRaw > 1 || k.wholeFront > 1 || k.baseballRatio > 1)) items.push('Gentle hold: Ollie’s stop is spread through the whole ' + o.short + ', so his hands put no load on it (without it: ' + fmtRatio(Math.max(k.gripRatioRaw, k.wholeFront, k.baseballRatio)) + ' what it can take).');
     // Newton's third law, as on the Throw tab: the push on it pushes Rex back
     const rc = a.recoil;
     if (rc && rc.v > 0.01) {
@@ -14526,15 +14580,17 @@ window.DINO_DATA = {
     plaster: { name: 'Plaster may crack', what: 'the ground shakes hard enough that plaster may crack' },
     ground: { name: 'The ground breaks', what: 'the ground under his feet gives way' },
     crush: { name: 'He crushes the object', what: 'his hands crush the object' },
-    passenger: { name: 'Past ride limits for the person', what: 'the launch presses the person harder than amusement rides allow (ASTM F2291)' },
+    passenger: { name: 'Past ride limits for the person', what: 'the person is pressed harder than amusement rides allow (ASTM F2291), by the launch or by air drag in flight' },
   };
+  // distances count from where the harm starts: for a throw, where the object lands
+  const fromW = () => (isEffortMove(curAction()) && P.RESTRAINT.MOVES[curAction()].where === 'where it lands' ? ' from where it lands' : ' away');
   const PRESET_WHAT = {
-    rattle: () => 'rattles windows and ornaments ' + fmtDist(state.near) + ' away, through the ground or the air',
-    plaster: () => 'shakes the ground enough that plaster may crack ' + fmtDist(state.near) + ' away',
-    windows: () => 'breaks windows ' + fmtDist(P.RESTRAINT.R.STREET) + ' away, across a street',
+    rattle: () => 'rattles windows and ornaments ' + fmtDist(state.near) + fromW() + ', through the ground or the air',
+    plaster: () => 'shakes the ground enough that plaster may crack ' + fmtDist(state.near) + fromW(),
+    windows: () => 'breaks windows ' + fmtDist(P.RESTRAINT.R.STREET) + fromW() + ', across a street',
     ground: () => 'breaks the ground under his feet',
-    houses: () => 'blasts houses ' + fmtDist(state.near) + ' away flat',
-    block: () => 'blasts houses flat ' + fmtDist(P.RESTRAINT.R.BLOCK) + ' away, about a city block',
+    houses: () => 'blasts houses ' + fmtDist(state.near) + fromW() + ' flat',
+    block: () => 'blasts houses flat ' + fmtDist(P.RESTRAINT.R.BLOCK) + fromW() + ', about a city block',
   };
   // The strength he uses for this move, and why. use undefined = all-out.
   function resolveEffort(move, c) {
@@ -14586,6 +14642,11 @@ window.DINO_DATA = {
   const pctOf = (use, F) => (use >= F * (1 - 1e-9) ? '100%' : sig(Math.max(100 * use / F, 1e-12), 2) + '%');
   // how hard: a share of his strength and the mass it would lift; at unlimited strength only the mass means anything
   const atText = (use, F) => (isFinite(F) ? pctOf(use, F) + (isFinite(use) && use < F * (1 - 1e-9) ? ' (lifting ' + fmtMass(use / g) + ')' : '') : isFinite(use) ? 'lifting ' + fmtMass(use / g) : 'unlimited strength');
+  // a hazard's onset: the middle of the search's last bracket, to two figures, so the ceiling and the list agree
+  const onsetOf = (res) => (res.below > 0 && isFinite(res.below) && isFinite(res.use) ? Math.sqrt(res.below * res.use) : res.use);
+  const r2 = (x) => (isFinite(x) && x > 0 ? Number(x.toPrecision(2)) : x);
+  const atText2 = (use, F) => (isFinite(F) ? pctOf(use, F) + (isFinite(use) && use < F * (1 - 1e-9) ? ' (lifting ' + fmtMass(r2(use / g)) + ')' : '') : isFinite(use) ? 'lifting ' + fmtMass(r2(use / g)) : 'unlimited strength');
+  const fmtReach = (d) => (d >= Math.PI * K.R_E ? 'the whole planet' : fmtDist(d));
   const amountText = (use, F) => (isFinite(F) ? pctOf(use, F) + ' of his strength' + (use < F * (1 - 1e-9) ? ' (as hard as lifting ' + fmtMass(use / g) + ')' : '') : isFinite(use) ? 'as hard as lifting ' + fmtMass(use / g) : 'all of his unlimited strength');
   let effortAdjOpen = false, hazOpen = false;
   function effortFields(move, c, eff) {
@@ -14636,18 +14697,24 @@ window.DINO_DATA = {
       let t;
       if (!ce.by) t = 'Courtesy ceiling: none. Nothing this move does harms anyone within ' + fmtDist(state.near) + (isFinite(c.F) ? ', even all-out.' : ' at any finite strength.');
       else if (!(ce.below > 0)) t = 'Courtesy ceiling: none. Even the gentlest try means ' + EFF_HAZ[ce.by].what + '.';
-      else t = 'Courtesy ceiling: ' + atText(ce.below, c.F) + '. Past that, ' + EFF_HAZ[ce.by].what + (ce.by === 'air' || ce.by === 'plaster' ? ' ' + fmtDist(state.near) + ' ' + (M.where === 'where it lands' ? 'from where it lands' : 'away') : '') + '.';
+      else t = 'Courtesy ceiling: ' + atText2(onsetOf(ce), c.F) + '. Past that, ' + EFF_HAZ[ce.by].what + (ce.by === 'air' || ce.by === 'plaster' ? ' ' + fmtDist(state.near) + ' ' + (M.where === 'where it lands' ? 'from where it lands' : 'away') : '') + '.';
       box.append(el('p', { text: t }));
+      if (state.absorb !== 'ocean' && ((move === 'punch' || move === 'clap') && state.silentStrike || move === 'jump' && state.softLanding || move === 'throw' && state.coolFlight)) box.append(el('p', { class: 'muted', text: 'The courtesy ceiling covers the move itself, not the growth what-if below, which has its own harms.' }));
       if (move === 'throw' && objById(state.obj).passenger && !state.safePassenger) box.append(el('p', { class: 'muted', text: 'For a person this covers the launch only. The landing is a fall unless someone catches them, and the lab doesn’t count it.' }));
       if (ce.by && use > ce.below * (1 + 1e-6)) box.append(status('warn', 'Above the courtesy ceiling'));
+      const pres = P.RESTRAINT.PRESETS.map((x) => [x.id, p.result('preset:' + x.id)]);
+      if (pres.every(([, x]) => x)) {
+        const already = pres.filter(([id, x]) => id !== state.effort && !x.never && x.use <= use * (1 + 1e-6) && !(x.onlyUnlimited && isFinite(use)));
+        if (already.length) box.append(el('p', { text: 'At this effort it also ' + already.map(([id]) => PRESET_WHAT[id]()).join('; ') + '.' }));
+      }
       const items = [];
       for (const h of P.RESTRAINT.HAZARDS) {
         const res = p.result('hazard:' + h.id);
         if (res.never) continue;
-        const from = res.onlyUnlimited ? 'only at unlimited strength' : res.atLowest ? 'at any effort' : 'from ' + atText(res.use, c.F);
+        const from = res.onlyUnlimited ? 'only at unlimited strength' : res.atLowest ? 'at any effort' : 'from ' + atText2(onsetOf(res), c.F);
         let now;
-        if (h.id === 'air') now = rc.air > 0.05 ? 'now out to ' + fmtDist(rc.air) + ' ' + (M.where === 'where it lands' ? 'from where it lands' : 'from him') : 'not now';
-        else if (h.id === 'plaster') now = rc.plaster > 0.05 ? 'now out to ' + fmtDist(rc.plaster) + (M.where === 'where it lands' ? ' from where it lands' : '') : 'not now';
+        if (h.id === 'air') now = rc.air > 0.05 ? 'now out to ' + fmtReach(rc.air) + (rc.air >= Math.PI * K.R_E ? '' : ' ' + (M.where === 'where it lands' ? 'from where it lands' : 'from him')) : 'not now';
+        else if (h.id === 'plaster') now = rc.plaster > 0.05 ? 'now out to ' + fmtReach(rc.plaster) + (M.where === 'where it lands' && rc.plaster < Math.PI * K.R_E ? ' from where it lands' : '') : 'not now';
         else now = rc[h.id] ? 'happens now' : 'not now';
         items.push(el('li', {}, el('b', { text: EFF_HAZ[h.id].name }), ' ' + (h.id === 'air' || h.id === 'plaster' ? 'within ' + fmtDist(state.near) + ' ' : '') + from + '; ' + now + '.'));
       }
@@ -14674,7 +14741,7 @@ window.DINO_DATA = {
 
   // ---------------------------------------------------------------- walk (presence)
   const PACE_LABEL = { stroll: 'Stroll', walk: 'Walk', brisk: 'Brisk', fast: 'Fastest walk' };
-  const VIB_LABEL = { feel: 'People feel it', shimmer: 'A glass of water ripples', rings: 'Rings in the glass (the film look)', rattle: 'Windows and ornaments rattle', plasterWalk: 'Plaster may crack', plaster: 'Plaster may crack (one stamp)', footing: 'The ground lifts loose things; people may stumble' };
+  const VIB_LABEL = { feel: 'People feel it', shimmer: 'A glass of water ripples', rings: 'Rings in the glass (the film look)', rattle: 'Windows and ornaments rattle', plasterWalk: 'Plaster may crack', plaster: 'Plaster may crack (one stamp)', footing: '1 g up and down: loose things hop (whether people stumble at this frequency is untested)' };
   const WALK_TH = ['shimmer', 'feel', 'rings', 'rattle', 'plasterWalk', 'footing'];
   const stepWord = (e) => (e <= 0.02 ? 'soft-footed' : e < 0.4 ? 'light' : e <= 0.6 ? 'ordinary' : e < 0.95 ? 'heavy' : 'stamping');
   const fmtPPV = (v) => (v >= 1 ? sig(v, 2) + ' m/s' : v >= 1e-4 ? sig(v * 1000, 2) + ' mm/s' : sig(v * 1e6, 2) + ' µm/s');
@@ -14697,7 +14764,7 @@ window.DINO_DATA = {
       if (pts.length > 1) svg.append(sv('path', { d: pts.map((p, j) => (j ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' '), fill: 'none', stroke: cv.color || (i ? 'var(--olive)' : 'var(--accent)'), 'stroke-width': cv.thin ? 1.4 : 2.2, 'stroke-dasharray': cv.dash || null }));
     });
     // threshold labels in a column at the right, pushed apart so none overlap, each on a halo so lines don't strike them
-    const LH = 13, short = { shimmer: 'glass ripples', feel: 'felt', rings: 'rings in a glass', rattle: 'rattle', plasterWalk: 'plaster may crack', footing: '1 g: loose things lift' };
+    const LH = 13, short = { shimmer: 'glass ripples', feel: 'felt', rings: 'rings in a glass', rattle: 'rattle', plasterWalk: 'plaster may crack', footing: '1 g: loose things hop' };
     const ys = ths.map((k) => sy(THc[k]) - 3);
     for (let i = 1; i < ys.length; i++) if (ys[i] > ys[i - 1] - LH) ys[i] = ys[i - 1] - LH;   // higher threshold = smaller y
     const top = padT + 10;
@@ -14756,6 +14823,14 @@ window.DINO_DATA = {
       out.push(happens(['Each step puts about 1.2× body weight on one leg, and the legs push with at most 1.4× the dial’s force (a rough rule; see the Weight tab).']));
       return out;
     }
+    // sinking past half his hip height at every step: stuck, not walking
+    const mired = pres.filter((x) => x.pr.step.footprint.kind === 'mired');
+    if (mired.length) {
+      out.push(verdict(mired.map((x) => x.n).join(' and ') + (mired.length > 1 ? ' sink' : ' sinks') + ' into ' + theSurf(c.surface) + ' past the knee at every step and ' + (mired.length > 1 ? 'get' : 'gets') + ' stuck: no walking here.'));
+      out.push(el('div', { class: 'status-row' }, status('bad', 'Mired')));
+      out.push(happens(mired.map((x) => x.n + '’s ' + (x.n === 'Ollie' ? 'boot presses ' : 'paw presses ') + fmtSI(x.pr.step.pressure, 'Pa') + ' (and the landing peaks at ' + fmtSI(x.pr.step.peakPressure, 'Pa') + ') into ground that bears ' + fmtSI(x.pr.step.q, 'Pa') + '. The clay gets stronger with depth, but not enough: the foot would sink past half his hip height (an estimate; see Footprints in the assumptions).').concat(['Pick firmer ground under Settings, or turn on Comic ground.'])));
+      return out;
+    }
     const D0 = state.walkD;
     const both = pres.length > 1;
     const st = pres[0].pr.step;
@@ -14768,7 +14843,7 @@ window.DINO_DATA = {
     const groundTiles = [
       tile('Pace', speedOnly(st.v), sig(st.stepRate, 2) + ' steps a second'),
       tile('Load on each step', sig(st.kLoad, 2) + '× his weight', 'plus a landing pulse of ' + sig(st.Fpulse / st.W, 2) + '× over ' + fmtTime(st.Tpulse)),
-      tile('Ground under each step', fmtSI(st.pressure, 'Pa'), (c.groundHolds ? 'comic ground' : (st.ratio > 1 ? fmtRatio(st.ratio) : sig(100 * st.ratio, 2) + '% of') + ' what ' + sf.short + ' bears') + (both ? ' (Rex)' : '')),
+      tile('Ground under each step', fmtSI(st.pressure, 'Pa'), (c.groundHolds ? 'comic ground' : (st.ratio > 1 ? fmtRatio(st.ratio) : sig(100 * st.ratio, 2) + '% of') + ' what ' + sf.short + ' bears' + (st.ratio > 1 && sf.granular ? ' by the textbook rule; sand takes shallow prints instead (see Footprint)' : '')) + (st.peakRatio > 1 && !c.groundHolds && st.peakRatio > st.ratio * 1.2 ? '; the landing peaks at ' + fmtSI(st.peakPressure, 'Pa') : '') + (both ? ' (Rex)' : '')),
       tile('Footprint', printText(st.footprint), 'estimate' + (both ? ' (Rex)' : '')),
     ];
     if (!st.modelled) {
@@ -14784,9 +14859,10 @@ window.DINO_DATA = {
     const over = (k) => (H(k) ? vH : v) >= TH[k];
     const hit = WALK_TH.filter(over).sort((a, b) => TH[a] - TH[b]);
     let vt = 'At ' + fmtDist(D0) + ', ' + (both ? 'their' : walkers[0][0] + '’s') + ' ' + stepWord(state.stepEffort) + ' steps shake the ground at ' + fmtPPV(v) + ' up and down.';
-    vt += hit.length ? ' ' + VIB_LABEL[hit[hit.length - 1]] + '.' : vH >= 0.5 * TH.shimmer ? ' Close to what a glass of water shows.' : ' Too little to notice.';
+    const SHORT_LABEL = (k) => (k === 'footing' ? 'Loose things hop off the ground (1 g up and down)' : VIB_LABEL[k]);
+    vt += hit.length ? ' ' + SHORT_LABEL(hit[hit.length - 1]) + '.' : vH >= 0.5 * TH.shimmer ? ' Close to what a glass of water shows.' : ' Too little to notice.';
     out.push(verdict(vt));
-    out.push(el('div', { class: 'status-row' }, hit.map((k) => status(k === 'plasterWalk' || k === 'footing' ? 'bad' : k === 'rattle' ? 'warn' : 'info', VIB_LABEL[k])),
+    out.push(el('div', { class: 'status-row' }, hit.map((k) => status(k === 'plasterWalk' || k === 'footing' ? 'bad' : k === 'rattle' ? 'warn' : 'info', SHORT_LABEL(k))),
       printChip(pres.map((x) => x.pr.step.footprint))));
     // the elephant comparison: a wild African elephant measured at 20 m, falling about as 1/D from 5 to 100 m
     // the elephant was measured on sandy ground, so the comparison puts them on the same ground, whatever is picked
@@ -14823,15 +14899,20 @@ window.DINO_DATA = {
     // the canon target, as a result
     const tgt = [];
     const wB = walkers[0][1];
-    const ripE = P.walkEffortFor(wB, sf, o, TH.shimmer, 3, true), feelE = P.walkEffortFor(wB, sf, o, TH.feel, 3), plE = P.walkEffortFor(wB, sf, o, TH.plasterWalk, 3);
+    const k2 = both ? 2 : 1;   // both walking: their steps landing together, as everywhere else on the tab
+    const ripE = P.walkEffortFor(wB, sf, o, TH.shimmer / k2, 3, true), feelE = P.walkEffortFor(wB, sf, o, TH.feel / k2, 3), plE = P.walkEffortFor(wB, sf, o, TH.plasterWalk / k2, 3);
+    // what an all-out stomp at this strength does 3 m away (the Stomp tab's own model)
+    const stompSrc = P.RESTRAINT.MOVES.stomp.shake(P.stomp(c), { surface: sf, body: c.body });
+    const stompV = P.ppvAt(stompSrc, 3), stompH = P.ppvAt(stompSrc, 3, true);
+    const byStomp = (v, th) => (v >= th ? 'nothing short of a stomp (an all-out one at this strength does it)' : 'not even an all-out stomp at this strength');
     const stepAt = (e) => (e <= 0 ? 'even soft-footed steps' : stepWord(e) + ' steps (' + sig(100 * e, 2) + '% of the way from soft-footed to a stamp)');
-    tgt.push('Canon says that, restrained, their footsteps can be felt and ripple water glasses a few metres away. On ' + sf.short + ', a glass 3 m away ripples with ' + (isFinite(ripE) ? stepAt(ripE) : 'nothing short of a stomp') + ', and people 3 m away feel ' + (isFinite(feelE) ? stepAt(feelE) : 'nothing short of a stomp') + '.');
-    tgt.push('Presence stops being harmless when plaster 3 m away may crack: ' + (isFinite(plE) ? 'with ' + stepAt(plE) + '.' : 'not even when he stamps. It takes a stomp (see the Stomp tab).'));
+    tgt.push('Canon says that, restrained, their footsteps can be felt and ripple water glasses a few metres away. On ' + sf.short + ', a glass 3 m away ripples with ' + (isFinite(ripE) ? stepAt(ripE) : byStomp(stompH, TH.shimmer)) + ', and people 3 m away feel ' + (isFinite(feelE) ? stepAt(feelE) : byStomp(stompV, TH.feelOnce)) + (both ? ' (both walking, their steps landing together)' : '') + '.');
+    tgt.push('Presence stops being harmless when plaster 3 m away may crack: ' + (isFinite(plE) ? 'with ' + stepAt(plE) + '.' : 'not even when ' + (both ? 'they stamp' : 'he stamps') + '. ' + (stompV >= TH.plaster ? 'An all-out stomp at this strength would (see the Stomp tab).' : 'Not even an all-out stomp at this strength would.')));
     out.push(callout(tgt.join(' ')));
     const gd = P.groundOf(sf);
     out.push(math([
       'Pace: people’s gait scaled to his size at the same Froude number v²/(g h), hip height h = ' + sig(st.h, 3) + ' m (0.45 of his height, our estimate). Froude ' + st.Fr + ' → ' + speedOnly(st.v) + ', ' + sig(st.stepRate, 2) + ' steps a second (0.789 Fr^0.211 √(g/h), fitted to people at Froude 0.09–0.37), each foot down ' + fmtTime(st.stance) + '.',
-      'Load: ' + sig(st.kLoad, 2) + '× body weight comes onto the foot over ' + fmtTime(st.tRamp) + ' (people: 1.2 at 1.5 m/s, rising 0.25 per m/s; Keller 1996, Nilsson & Thorstensson 1989). The landing adds a pulse of ' + sig(st.Fpulse / st.W, 2) + '× his weight lasting ' + fmtTime(st.Tpulse) + ': an ordinary heel strike stops 11% of him at ' + speedOnly(st.heelV) + ' in ' + fmtTime(st.heelT) + ' (Baines 2018: 0.57 m/s in 30 ms for people, scaled by √(hip height ÷ 0.9 m)); soft-footed 0.31 of that; a drill stamp 6.5× (Carden 2015).',
+      'Load: ' + sig(st.kLoad, 2) + '× body weight comes onto the foot over ' + fmtTime(st.tRamp) + ' (people: 1.2 at 1.5 m/s, rising 0.25 per m/s; Keller 1996, Nilsson & Thorstensson 1989). The landing adds a pulse of ' + sig(st.Fpulse / st.W, 2) + '× his weight lasting ' + fmtTime(st.Tpulse) + ': an ordinary heel strike stops 11% of him at ' + speedOnly(st.heelV) + ' in ' + fmtTime(st.heelT) + ' (Baines 2018: 0.57 m/s in 30 ms for people, scaled by √(hip height ÷ 0.9 m)); soft-footed 0.51 of that (Yoon 2025, walking quietly at the same speed); a drill stamp 6.5× (Carden 2015).',
       'Ground shaking (elastic ground, Lamb’s problem): for a pulse of peak F lasting T, PPV = max(0.375 F/(ρ c² T r), 0.620 F/(ρ c^2.5 T^1.5 √r)) × damping, with ρ = ' + gd.rho + ' kg/m³, shear-wave speed c = ' + gd.cs + ' m/s and damping ' + gd.xi + ' for ' + sf.short + ' (estimates). Checked against one drop test (130 kg at Pisa: within about 2× from 2.5 to 60 m, contact time fitted) and loosely against elephant footfalls; footsteps themselves were never measured. Uncertain by about 3–5× either way, more past 60 m.',
     ]));
     return out;
@@ -14883,6 +14964,7 @@ window.DINO_DATA = {
         if (!L) continue;
         if (L.aim && L.aim.vL >= K.a0) return 'a throw breaks the sound barrier';
         if (['crushed-launch', 'breaks-up', 'burns-up', 'wreckage', 'fireball'].includes(L.result) || L.bursts) return 'the ' + o.short + ' is destroyed';
+        if (CAUGHT.includes(L.result) && L.catch && L.catch.gripRatio > 1 && !L.gentleC) return 'the catch crushes the ' + o.short + ' in his palms';
         const pg = catchPassengerG(L, o);
         if (pg && pg.over) return pg.where === 'throw' ? 'the throw presses the person harder than amusement rides allow' : 'the catch stops the person harder than amusement rides allow';
       }
@@ -14963,7 +15045,7 @@ window.DINO_DATA = {
       const t0 = performance.now();
       while (!p.step()) if (performance.now() - t0 > EFFORT_BUDGET) { stepDuoPlan(p); return { p, use: Infinity, note: null, harm: p.harmAt(Infinity), pending: true }; }
       if (p.s.never) use = Infinity;
-      else if (!(p.s.below > 0)) { use = p.lo; note = 'Nothing is harmless here: even at the least they need to stand, ' + p.harmAt(p.lo) + '.'; }
+      else if (!(p.s.below > 0)) { use = p.lo; note = state.oEffortOwn ? 'Ollie’s own what-if effort does it at any shared effort: ' + p.harmAt(p.lo) + '.' : 'Nothing is harmless here: even at the least they need to stand, ' + p.harmAt(p.lo) + '.'; }
       else use = p.s.below;
     }
     const harm = p.harmAt(use);
@@ -15008,7 +15090,7 @@ window.DINO_DATA = {
     if (eff.p.s && eff.p.done) {
       const s0 = eff.p.s;
       read.append(el('p', { text: s0.never ? 'Courtesy ceiling: none. Nothing in this test harms anything nearby' + (isFinite(eff.p.hi) ? ', even all-out.' : '.')
-        : !(s0.below > 0) ? 'Courtesy ceiling: none. Even at the least they need to stand, ' + eff.p.harmAt(s0.use) + '.'
+        : !(s0.below > 0) ? 'Courtesy ceiling: none. ' + (state.oEffortOwn ? 'With Ollie’s own effort, ' : 'Even at the least they need to stand, ') + eff.p.harmAt(s0.use) + '.'
           : 'Courtesy ceiling: ' + atText(s0.below, FR) + '. Past that, ' + eff.p.harmAt(s0.use) + '.' }));
     }
     if (eff.harm) read.append(status('warn', 'At this effort ' + eff.harm));

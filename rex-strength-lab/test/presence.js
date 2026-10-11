@@ -7,6 +7,7 @@ const g = P.K.g;
 let fails = 0, n = 0;
 const ok = (name, cond, detail) => { n++; if (!cond) fails++; console.log((cond ? 'ok   ' : 'FAIL ') + name + (detail != null ? ': ' + detail : '')); };
 const near = (a, b, rel) => Math.abs(a - b) <= rel * Math.abs(b);
+const sig2 = (x) => Number(x.toPrecision(3));
 const surf = (id) => D.surfaces.find((s) => s.id === id);
 const obj = (id) => D.objects.find((o) => o.id === id);
 const rex = P.makeBody({ build: 'rex', H: 3.048, m: 3007 }), ollie = P.makeBody({ build: 'ollie', H: 3.048, m: 3007 });
@@ -52,6 +53,23 @@ const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface
       const under = P.RESTRAINT.HAZARDS.filter((h) => h.test(M, p.run(ce.below), oo));
       ok(mv + ' courtesy ceiling is harmless and ' + ce.by + ' starts just above it (' + sid + ')', under.length === 0 && P.RESTRAINT.HAZARDS.find((h) => h.id === ce.by).test(M, p.run(ce.use), oo), under.map((h) => h.id).join(','));
     }
+  }
+}
+
+// 2b. The courtesy ceiling holds everywhere below it, not just at the grid points the search tried: 120 log-spaced efforts
+// from the least he can try up to the ceiling, for cases where a hazard switches on and off (the default car throw's
+// crush window, where the winning muscle model changes). Known exception, left out here and listed in the README: a
+// real-muscle jump at huge strength, where two pushes give the same jump to a part in 100,000 and the engine's choice
+// between them (one breaks the ground) flickers with effort; changing that choice would change all-out results.
+{
+  const cases = [['throw', ctxOf(90718 * g), { obj: obj('car'), angle: 45, target: 30 }], ['throw', ctxOf(90718 * g), { obj: obj('desoto'), angle: 45, target: 30 }],
+    ['jump', ctxOf(90718 * g, { surface: surf('concrete') }), { target: 3 }], ['stomp', ctxOf(90718 * g), {}], ['punch', ctxOf(1e9 * g), { target: 10.4 }], ['sprint', ctxOf(1e7 * g), { target: 12.42 }]];
+  for (const [mv, c, o] of cases) {
+    const p = P.RESTRAINT.planNow(mv, c, Object.assign({ near: 5 }, o)), ce = p.ceiling(), M = P.RESTRAINT.MOVES[mv];
+    if (!ce.by || !(ce.below > 0)) continue;
+    const bad = [];
+    for (let k = 0; k <= 120; k++) { const u = p.lo * Math.pow(ce.below / p.lo, k / 120), r = M.run(Object.assign({}, c, { use: u }), p.opt); for (const h of P.RESTRAINT.HAZARDS) if (h.test(M, r, p.opt)) bad.push(h.id + '@' + (u / g).toPrecision(3)); }
+    ok(mv + ' (' + (o.obj ? o.obj.id + ', ' : '') + c.mode + ') harmless at every effort below the courtesy ceiling', bad.length === 0, bad.length ? bad.slice(0, 4).join(', ') : 'ceiling ' + (ce.below / g).toPrecision(3) + ' kg, set by ' + ce.by);
   }
 }
 
@@ -129,9 +147,12 @@ const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface
     const pa = P.RESTRAINT.reach('punch', a, {}), pb = P.RESTRAINT.reach('punch', b, { silentStrike: true });
     ok('silent strike removes the blast and the boom', pb.air === 0 && pb.windows === 0 && !pb.boom && (pa.air > 0 || F < 1e7 * g));
     const ja = P.jump(c), jb = P.jump(ctxOf(F, { softLanding: true }));
-    ok('soft landing keeps the jump and absorbs the landing energy', ja.v === jb.v && jb.landing.soft && jb.landing.absorbed === ja.landing.E && jb.landing.ratio === 0);
+    // soft landing takes back the landing's energy, not its force: the ground still bears the same stop
+    ok('soft landing keeps the jump and absorbs the landing energy', ja.v === jb.v && jb.landing.soft && jb.landing.absorbed === ja.landing.E && jb.landing.Eimpact === 0 && jb.landing.Eground === 0);
+    ok('soft landing keeps the force on the ground (same push, bearing ratio and sinking)', jb.landing.F === ja.landing.F && jb.landing.t === ja.landing.t && jb.landing.ratio === ja.landing.ratio && jb.landing.sink === ja.landing.sink && jb.landing.v === ja.landing.v);
     const jo = { surface: c.surface, body: rex, m: rex.m, near: 5 };
-    ok('soft landing removes the landing’s ground shaking and impact, not its momentum', P.RESTRAINT.MOVES.jump.shake(ja, jo) != null && P.RESTRAINT.MOVES.jump.shake(jb, jo) == null && jb.landing.Eimpact === 0 && jb.landing.Eground === 0 && jb.landing.v === ja.landing.v);
+    const sa = P.RESTRAINT.MOVES.jump.shake(ja, jo), sb = P.RESTRAINT.MOVES.jump.shake(jb, jo);
+    ok('soft landing removes only the feet’s impact from the ground shaking; the body’s stop still shakes it', sa.length === 2 && sb.length === 1 && sb[0].F === sa[0].F && P.ppvAt(sb, 5) <= P.ppvAt(sa, 5));
     // the hazards behind the courtesy ceiling (not only the page's reach) respect silent strike
     const boom = P.RESTRAINT.HAZARDS.find((h) => h.id === 'boom'), air = P.RESTRAINT.HAZARDS.find((h) => h.id === 'air');
     if (a.vFist >= P.K.a0) ok('silent strike turns off the boom and air-blast hazards for a supersonic punch (F ' + (F / g).toPrecision(2) + ' kg)', boom.test(P.RESTRAINT.MOVES.punch, a, { near: 5 }) && !boom.test(P.RESTRAINT.MOVES.punch, b, { near: 5, silentStrike: true }) && !air.test(P.RESTRAINT.MOVES.punch, b, { near: 5, silentStrike: true }));
@@ -143,9 +164,11 @@ const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface
   const B0 = P.catchLeg(cc(1e12 * g), oc(1e12 * g), obj('baseball'), Math.pow(10, 1.5), 'hard'), B1 = P.catchLeg(cc(1e12 * g, { coolFlight: true }), oc(1e12 * g, { coolFlight: true }), obj('baseball'), Math.pow(10, 1.5), 'hard');
   ok('cool flight in catch: no burn-up, same flight', B0.result === 'burns-up' && B1.result !== 'burns-up' && B0.vArrive === B1.vArrive && B0.aim.vL === B1.aim.vL, B0.result + ' -> ' + B1.result);
   // a thrown person: past the ride limits all-out at the default strength, and Safe passenger takes that hazard away
-  const person = obj('person'), pc = ctxOf(90718 * g), tp = P.throwObject(pc, person, 45);
-  const pz = P.RESTRAINT.HAZARDS.find((h) => h.id === 'passenger');
-  ok('throwing a person all-out is past the ride limits; Safe passenger removes that hazard only', pz.test(P.RESTRAINT.MOVES.throw, tp, { obj: person, angle: 45 }) && !pz.test(P.RESTRAINT.MOVES.throw, tp, { obj: person, angle: 45, safePassenger: true }));
+  const person = obj('person'), pz = P.RESTRAINT.HAZARDS.find((h) => h.id === 'passenger');
+  const tp = P.throwObject(ctxOf(90718 * g, { use: 4000 * g }), person, 45), tAll = P.throwObject(ctxOf(90718 * g), person, 45);
+  ok('a 30 m throw of a person is past the ride limits at launch; Safe passenger removes that', pz.test(P.RESTRAINT.MOVES.throw, tp, { obj: person, angle: 45 }) && !pz.test(P.RESTRAINT.MOVES.throw, tp, { obj: person, angle: 45, safePassenger: true }), sig2(tp.v) + ' m/s');
+  ok('all-out, the air drag on them is past the held limit too, and Safe passenger can’t take that away', P.PASSENGER.dragG(person, tAll.v) > 1.5 && pz.test(P.RESTRAINT.MOVES.throw, tAll, { obj: person, angle: 45, safePassenger: true }), P.PASSENGER.dragG(person, tAll.v).toFixed(1) + ' g at ' + sig2(tAll.v) + ' m/s');
+  ok('real muscle: the push on a thrown person peaks above its average', (() => { const r = P.throwObject(ctxOf(90718 * g, { use: 4000 * g, mode: 'real' }), person, 45); return r.launchGPeak > r.launchG; })());
   ok('ride limit follows ASTM F2291: 2 g at 0.2 s, 1.75 g at 0.35 s, 1.5 g from 0.5 s', P.PASSENGER.noHarm(0.1) === 2 && near(P.PASSENGER.noHarm(0.35), 1.75, 1e-9) && P.PASSENGER.noHarm(0.8) === 1.5);
   // presets: each fires, and the bigger version of the same harm needs more (a punch, 10^12 kg dial): rattling before
   // broken windows or flattened houses next door, and those before houses flattened a block away
@@ -177,7 +200,9 @@ const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface
   }
   const rw = P.runawayGrowth(rex, 4.2e23, 'mix');
   ok('runaway loop ratio reported and far below 1 for Chicxulub', rw.k > 0 && rw.k < 1e-6, rw.k.toExponential(2));
-  ok('self-gravity share stays under 1 at the event horizon (all forms)', ['size', 'mix', 'density'].every((f) => P.runawayGrowth(rex, 1, f).kGravAtHorizon < 1));
+  // the gravity share two ways: the binding-energy difference the loop uses, and the weak-field formula 0.3 (2 - s/3) r_s / R
+  const small = P.runawayGrowth(rex, 1e12, 'mix');
+  ok('runaway gravity share: binding-energy difference matches the weak-field formula for a small growth', near(small.kGrav, small.kGravNow, 0.02), small.kGrav.toExponential(3) + ' vs ' + small.kGravNow.toExponential(3));
 }
 
 // 7. A quick sweep of the new paths: no NaN or negative numbers (test/sweep.js covers the moves themselves, all-out).
