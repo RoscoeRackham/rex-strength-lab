@@ -2823,7 +2823,10 @@
   //   Hann pulse: near = 0.375 F / (rho cs^2 T r), far = 0.620 F / (rho cs^2.5 T^1.5 sqrt r)
   //   ramp:       near = 0.1875 F / (rho cs^2 tau r), far = 0.181 F / (rho cs^2.5 tau^1.5 sqrt r)
   //   PPV (vertical) = max(near, far) x D(zeta), zeta = xi r / (0.919 cs T)
-  // Checked against a 130 kg drop test at Pisa (within 1.3x) and elephant footfalls; good to about 3x either way.
+  // Checked against a 130 kg drop test at Pisa (within about 2x over 2.5-60 m, with the contact time fitted) and
+  // elephant footfalls (within about 2-4x); good to about 3x either way. Past 60 m, the furthest it was checked, its
+  // damping makes a short pulse fade as r^-2 to r^-3, faster than any measured impact (r^-1.0 to r^-1.6: Pisa r^-1.28,
+  // dropped weights r^-1.1 to r^-1.35), so there it falls no faster than r^-1.3 from its 60 m value (an estimate).
   // Sources and status: research/final-presence.json (vib_*).
   // ---------------------------------------------------------------------------
   const VIB = {
@@ -2836,8 +2839,9 @@
       asphalt: { rho: 2000, cs: 250, xi: 0.03 }, concrete: { rho: 2000, cs: 250, xi: 0.03 },
       granite: { rho: 2700, cs: 3000, xi: 0.01 },
     },
-    STRAIN: 1e-4,       // the ground stays elastic while PPV / cs is below about 1e-4; past that the model overstates it
+    STRAIN: 1e-4,       // the ground stays elastic while its strain is below about 1e-4 (estimate)
     RMIN: 1,            // closest distance the model covers, m
+    RFIT: 60, NFAR: 1.3, // past 60 m: no faster than r^-1.3
     // thresholds, peak particle velocity at the ground, m/s (research/final-presence.json, thr_* and ripple_*):
     //   feel: just perceptible indoors (BS 5228-2 Table B.1, 0.3 mm/s; 0.14-1)
     //   shimmer: a glass of water visibly ripples (derived, not measured: about 0.2 mm/s, 0.02-1)
@@ -2864,6 +2868,10 @@
     if (Array.isArray(src)) return src.reduce((m, x) => Math.max(m, ppvAt(x, d)), 0);
     if (!(src.F > 0)) return 0;
     if (!isFinite(src.F)) return Infinity;
+    if (d > VIB.RFIT) return Math.max(ppvElastic(src, d), ppvElastic(src, VIB.RFIT) * Math.pow(VIB.RFIT / d, VIB.NFAR));
+    return ppvElastic(src, d);
+  }
+  function ppvElastic(src, d) {
     const { rho, cs, xi } = src.ground, r = Math.max(d, VIB.RMIN);
     const ramp = src.kind === 'ramp', T = ramp ? src.tau : src.T;
     const near = (ramp ? 0.1875 : 0.375) * src.F / (rho * cs * cs * T * r);
@@ -2880,8 +2888,10 @@
     for (let i = 0; i < 100 && hi / lo > 1 + 1e-6; i++) { const mid = Math.sqrt(lo * hi); if (ppvAt(src, mid) >= v) lo = mid; else hi = mid; }
     return lo;
   }
-  // past the elastic limit at distance d? (the model then overstates the shaking)
-  const ppvNonlinear = (src, d) => { const list = Array.isArray(src) ? src : [src]; return list.some((x) => x && ppvAt(x, d) / x.ground.cs > VIB.STRAIN); };
+  // past the ground's elastic range at distance d? The wave strain is about PPV / cs; close to the foot the static
+  // strain (1 - nu) F / (2 pi rho cs^2 r^2) is larger. Past about 1e-4 the ground yields: which way that moves the
+  // shaking is not known (yielding soaks up energy, softening lets it move more).
+  const ppvNonlinear = (src, d) => { const list = Array.isArray(src) ? src : [src]; const r = Math.max(d, VIB.RMIN); return list.some((x) => x && Math.max(ppvAt(x, d) / x.ground.cs, 0.75 * x.F / (2 * Math.PI * x.ground.rho * x.ground.cs * x.ground.cs * r * r)) > VIB.STRAIN); };
   const elephantPPV = (d) => VIB.ELEPHANT.v * VIB.ELEPHANT.d / d;
 
   // ---------------------------------------------------------------------------

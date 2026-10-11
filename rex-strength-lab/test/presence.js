@@ -62,11 +62,14 @@ const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface
 
 // 3b. The ground-shaking model reproduces its sourced anchors and each threshold's worked conversion.
 {
-  // Pisa drop test (Colombero et al. 2015): 130 kg dropped about 3 m, measured 9 / 5 / 0.5 / 0.2 mm/s at 2.5 / 5 / 35 / 60 m;
-  // the model with the site's ground (c_s 150 m/s, 1,850 kg/m3, damping 0.03) and a 30 ms pulse carrying the momentum.
+  // Pisa drop test (Colombero et al. 2015): 130 kg dropped about 3 m; field readings from their Fig. 6 (verifier) 8.7 / 4.7 /
+  // 1.8 / 0.77 / 0.4 / 0.19 mm/s at 2.5 / 5 / 10 / 20 / 35 / 60 m; the model with the site's ground (c_s 150 m/s,
+  // 1,850 kg/m3, damping 0.03) and a 30 ms pulse carrying the momentum: within about 2x (the contact time was fitted).
   const pisa = { kind: 'hann', F: 2 * 997.4 / 0.03, T: 0.03, ground: { rho: 1850, cs: 150, xi: 0.03 } };
-  const meas = [[2.5, 9e-3], [5, 5e-3], [35, 0.5e-3], [60, 0.2e-3]];
-  for (const [d, m] of meas) { const v = P.ppvAt(pisa, d); ok('Pisa drop test at ' + d + ' m within 1.5x of measured', v / m < 1.5 && m / v < 1.5, (v * 1000).toPrecision(2) + ' mm/s vs ' + m * 1000); }
+  const meas = [[2.5, 8.7e-3], [5, 4.7e-3], [10, 1.8e-3], [20, 0.77e-3], [35, 0.4e-3], [60, 0.19e-3]];
+  for (const [d, m] of meas) { const v = P.ppvAt(pisa, d); ok('Pisa drop test at ' + d + ' m within 2.2x of measured', v / m < 2.2 && m / v < 2.2, (v * 1000).toPrecision(2) + ' mm/s vs ' + m * 1000); }
+  // past 60 m it falls no faster than r^-1.3 (measured impact trends), never as steeply as the damped pulse alone
+  ok('past 60 m the fall-off is no steeper than r^-1.3', P.ppvAt(pisa, 200) >= P.ppvAt(pisa, 60) * Math.pow(60 / 200, 1.3) * (1 - 1e-9));
   // the near field: PPV x r tends to 0.375 F / (rho cs^2 T) close in
   const nf = 0.375 * pisa.F / (1850 * 150 * 150 * 0.03);
   ok('near-field limit 0.375 F / (rho cs^2 T r)', near(P.ppvAt(pisa, 1) * 1, nf, 0.05) || P.ppvAt(pisa, 1) >= nf * 0.95, (P.ppvAt(pisa, 1)).toPrecision(3) + ' vs ' + nf.toPrecision(3));
