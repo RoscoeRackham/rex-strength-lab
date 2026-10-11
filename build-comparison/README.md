@@ -4,13 +4,13 @@ Men's builds on one scale of muscle level, with height taken out: from ordinary 
 
 Live page: https://claude.ai/artifact/DBtZrixDeZnvRwDhZMsCDn (private until shared)
 
-Step 1 of the plan in [BRIEF.md](BRIEF.md). Rex's and Ollie's mass is unchanged (about 2,700 kg each, from the duo picture); Step 2 remeasures them from their turnarounds.
+Step 1 of the plan in [BRIEF.md](BRIEF.md). Rex's and Ollie's mass is canon, set by ruling: 3,007 kg each in all (Rex 2,700 kg without his tail). Step 2 remeasures their shape from their turnarounds.
 
 ## What it shows
 
 - **The score.** S = 1.8 × fat-free mass ÷ height³: the FFMI (fat-free mass ÷ height², kg/m²) the same body would have at 1.80 m, same shape. It equals plain FFMI at 1.80 m. Height is to the top of the skull. Plain FFMI is shown beside it. Every score is a range across plausible body fat (and height and weight where sources disagree).
 - **49 men** from the Build Calculator's data: US Army ANSUR II soldiers, NHANES US men, natural athletes, bodybuilders, strongmen and lifters, 21 comic characters (one in two forms), and Rex and Ollie. Women stay in the Build Calculator.
-- **Stops by score band**, each with a one-line verdict: under 25, 25 to 32 (Kouri's natural-sample top to the top measured college footballer), 32 to 45 (the top of the human record; no real man scores above about 42), then the empty stretches and bands the data give: nothing comparable 45 to 62, comic giants 62 to 88, empty 88 to 130, Rex and Ollie 130 to 220, empty to 924, and the meatball.
+- **Stops by score band**, each with a one-line verdict: under 25, 25 to 32 (Kouri's natural-sample top to the top measured college footballer), 32 to 45 (the top of the human record; no real man scores above about 42), then the empty stretches and bands the data give: nothing comparable 45 to 62, comic giants 62 to 88, empty 88 to 170, Rex and Ollie 170 to 220, empty to 924, and the meatball.
 - **Functional limits** of a drawn body, found by geometry on the median soldier's outline widened at fixed bones and scored as drawn (head and body by the measuring tool, arms as round limbs): arms forced out (about 38), thighs touching to the knee (about 43), hands unable to reach the face (somewhere from 58 to 170; the model decides). The same tests run on every figure on the chart, and each outline is scored the same way: drawn from their girths, the biggest bodybuilders are already past the first two, and the page says so. All estimates; see `data/limits.json` and the page's limits section.
 - **The meatball (924)**: a solid ball of muscle as tall as the figure, at 1,060 kg/m³ and 7.5% fat. A chosen end of the scale, not a maximum: a cylinder as wide as it is tall would score about 1,400.
 - **Every build to scale**: a forest plot of every range on one log axis, with the natural-limit anchors, the limits and the gaps as rows; a close-up mode for 12 to 45.

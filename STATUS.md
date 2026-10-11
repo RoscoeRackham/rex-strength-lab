@@ -6,18 +6,17 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 | Folder or file | Who | Branch | Since |
 |---|---|---|---|
-
-Nothing is claimed. Build Comparison Step 1 is merged, so `build-comparison/` and `build-calculator/data/builds.json` / `src/calc.js` are free for Step 2.
+| Rex and Ollie's mass across all three projects: `rex-strength-lab/` (engine, text, facts, tests), `build-calculator/data/builds.json` and its notes and tests, `build-comparison/` (settings, limits, text, tests), `CLAUDE.md` canon | Collaborator | `terantic/duo-mass` | 2026-10-11 |
 
 ## In progress
 
-- Nothing.
+- Canon change (collaborator, pull request open on `terantic/duo-mass`): Rex and Ollie were 2,700 kg *before* their tails were counted; corrected to equal total weight. Rex: 2,700 kg of body plus a 307 kg tail, about 3,007 kg. Ollie: the same total, so about 2,996 kg of body plus an 11 kg tail. Density stays 1,060 kg/m³ and the volumes follow (the front-only picture under-read both by about 12–13%).
 
 ## Waiting on
 
 - Owner review of Build Comparison design decisions listed in `build-comparison/data/NOTES.md` ("Design decisions to review"): the edge marking, the brief's meatball sentence (false as geometry), the palette change, the stop edges, Thor's and the Thing's treatment, the group colours' contrast, and figures drawn with their arms at their rest angle.
 - Step 2 (collaborator): regenerate Rex's and Ollie's turnarounds to the model-sheet spec (fixes listed in BRIEF.md, "The turnarounds") and measure them; make gap-filler figures from target outlines with GPT Images 2.5.
-  - **Blocker to solve first:** the measuring tool cannot follow arms that cannot hang clear of the body (rest angle near 90°; above about 100 on the median soldier, so most of the 88–130 and 220–924 stretches). It refuses such sheets. The target tool still draws and scores those outlines but says the tool cannot check art drawn from them. See `build-comparison/research/reviews/round2.md`, "Still open"; one way is to cut the arms at the shoulder line before slicing.
+  - **Blocker to solve first:** the measuring tool cannot follow arms that cannot hang clear of the body (rest angle near 90°; above about 100 on the median soldier, so most of the 88–170 and 220–924 stretches). It refuses such sheets. The target tool still draws and scores those outlines but says the tool cannot check art drawn from them. See `build-comparison/research/reviews/round2.md`, "Still open"; one way is to cut the arms at the shoulder line before slicing.
   - The tool also reads raised arms a few percent (35°) to about 20% (near level) high on any sheet, because it counts each arm at torso depth where it meets the shoulder.
 
 ## Done

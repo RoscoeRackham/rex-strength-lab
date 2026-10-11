@@ -1104,7 +1104,9 @@ details.src summary { cursor: pointer; font-weight: 600; }
     row('Plain FFMI', '<span class="v">' + scr(e.plain.lo, e.plain.hi) + '</span> ' + chip(st) + '<span class="why">' + hRel + '</span>');
     row('Height counted', '<span class="v">' + fmt.sep(e.height.value, 2) + ' m</span> ' + chip(e.height.status) + (duo ? ' <span>to the top of the skull</span>' : '') +
       '<span class="why">' + esc((e.height.basis || b.height_m.basis || '') + (b.height_m.disputed && b.height_m.value_basis ? ' Sources disagree' + (b.weight_kg.disputed && b.weight_kg.value_basis === b.height_m.value_basis ? ' on height and weight' : '') + '; counted from ' + b.height_m.value_basis + '.' : '')) + '</span>');
-    var wv = duo ? kg(e.mass.value) + ' kg: ' + kg(b.weight_kg.value) + ' kg less ' + kg(e.mass.excludedKg) + ' kg of tail' : kg(e.mass.value) + ' kg (' + fmt.sep(e.mass.value / 0.45359237, 0) + ' lb)';
+    // whole kilograms here, so the subtraction on the line adds up
+    var kg0 = function (x) { return fmt.sep(Math.round(x), 0); };
+    var wv = duo ? kg0(e.mass.value) + ' kg: ' + kg0(b.weight_kg.value) + ' kg less ' + kg0(e.mass.excludedKg) + ' kg of tail' : kg(e.mass.value) + ' kg (' + fmt.sep(e.mass.value / 0.45359237, 0) + ' lb)';
     var wWhy = [];
     if (b.weight_kg.basis) wWhy.push(b.weight_kg.basis + '.');
     if (b.weight_kg.disputed && b.weight_kg.value_basis && b.weight_kg.value_basis !== (b.height_m.disputed && b.height_m.value_basis)) wWhy.push('Sources disagree; counted from ' + b.weight_kg.value_basis + '.');
@@ -1788,7 +1790,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
     });
   }
   function renderFoot() {
-    $('foot').innerHTML = '<p>Build Comparison, Step 1. Rex\'s and Ollie\'s scores use their current canon mass (about 2,700 kg each, measured from the duo picture) and their skull-top heights measured on the same picture. Step 2 remeasures both from their turnarounds and fills the empty stretches with measured figures.</p>' +
+    $('foot').innerHTML = '<p>Build Comparison, Step 1. Rex\'s and Ollie\'s scores use their canon mass, set by ruling (3,007 kg each in all; Rex 2,700 kg and Ollie about 2,996 kg without their tails) and their skull-top heights measured on the same picture. Step 2 remeasures both from their turnarounds and fills the empty stretches with measured figures.</p>' +
       '<p>Heights, weights and girths of the builds come from the Build Calculator\'s data. Human and comic figures are drawn from their numbers on the median soldier\'s proportions (ANSUR II, 4,082 men). No photograph or comic art was traced.</p>';
   }
 

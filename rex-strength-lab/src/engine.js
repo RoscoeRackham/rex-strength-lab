@@ -43,14 +43,16 @@
   const BASE_V = 0.18;
   // Builds: body volume as a multiple of height cubed, frontal area and one foot's sole as multiples
   // of height squared, and the default density. 'human' is the calibration body above (2 m, 180 kg).
-  // 'rex' and 'ollie' are measured from their reference picture (see research/final-duo.json).
+  // 'rex' and 'ollie': areas measured from their reference picture; volume set by the owners' ruling on
+  // mass at the build density (see research/final-duo.json).
   const BUILDS = {
     human: { kV: BASE_V / 8, kFront: 0.2, kFoot: 0.01125, rho: 1000 },
-    rex: { kV: 0.08995, kFront: 0.4736, kFoot: 0.03337, rho: 1060 },   // 2.55 m^3, 4.4 m^2 (tail trailing), 0.31 m^2 paws at 10 ft
-    ollie: { kV: 0.08995, kFront: 0.4844, kFoot: 0.01615, rho: 1060 }, // 2.55 m^3, 4.5 m^2, 0.15 m^2 boots at 10 ft
+    rex: { kV: 0.10017, kFront: 0.4736, kFoot: 0.03337, rho: 1060 },   // 2.84 m^3, 4.4 m^2 (tail trailing), 0.31 m^2 paws at 10 ft
+    ollie: { kV: 0.10017, kFront: 0.4844, kFoot: 0.01615, rho: 1060 }, // 2.84 m^3, 4.5 m^2, 0.15 m^2 boots at 10 ft
   };
-  // Default bodies on the page: Rex is 10 ft tall by his owner's ruling; masses from the picture.
-  const DEFAULT_BODIES = { rex: { H: 3.048, m: 2700 }, ollie: { H: 3.048, m: 2700 } };
+  // Default bodies on the page: 10 ft by the owners' ruling. Mass by ruling too: Rex is 2,700 kg without
+  // his tail (307 kg, measured from the picture), and Ollie weighs the same in all.
+  const DEFAULT_BODIES = { rex: { H: 3.048, m: 3007 }, ollie: { H: 3.048, m: 3007 } };
   const buildOf = (b) => (typeof b === 'string' ? BUILDS[b] : b) || BUILDS.human;
   function bodyVolume(H, build) { const h = H || BASE_H; return buildOf(build).kV * h * h * h; }
 
