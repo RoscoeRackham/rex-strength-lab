@@ -21,5 +21,5 @@ cn=['case','bf_brozek','bf_siri','D','age','wt_lb','ht_in','bmi','ffw_lb','neck'
 j=pd.read_csv(f"{raw}/jse/fat.dat.txt",sep=r"\s+",header=None,names=cn); j=j[j.case!=42]
 Hj=j.ht_in.values*0.0254; Wj=j.wt_lb.values*0.45359237
 Xj=np.column_stack([np.ones(len(j)),np.log(Hj)]+[np.log(j[c].values/100) for c in ["neck","chest","abdomen","thigh","wrist"]])
-e=[redacted](Wj); print("Penrose 5-girth: bias%%=%.2f sd%%=%.2f n=%d"%(100*e.mean(),100*e.std(),len(j)))
+e=Xj@b-np.log(Wj); print("Penrose 5-girth: bias%%=%.2f sd%%=%.2f n=%d"%(100*e.mean(),100*e.std(),len(j)))
 print("coef5",np.round(b,3))

@@ -1,0 +1,606 @@
+Project: a small web calculator. The user picks a BUILD (average man or woman, athlete, record bodybuilder, strongman, comic-book character, or two original characters) and a HEIGHT, and the page shows estimated body WEIGHT and GIRTHS: chest, waist, upper arm (flexed), forearm, thigh, calf and neck. Every number must be sourced or clearly labelled as an estimate. The owner values factual accuracy over flattery: say "unknown" rather than invent, and label magazine-reported or fan-wiki numbers as such.
+Write raw downloads and scripts under /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/buildcalc/<topic>/ (create it). Do not edit anything under /home/user. Use WebSearch/WebFetch for sources; prefer primary sources (journals, official databases, publisher handbooks) over wikis. For each fact give: key, label, value(s) with units (SI and the original units), status (measured | official | reported | derived | estimate | disputed), sources (title + URL actually fetched), and notes (what exactly the source says, caveats).
+
+You are a skeptical fact-checker for the topic "model". Below are the researcher's facts. Re-fetch at least 10 of the cited URLs (prioritise the numbers the calculator will lean on most) and check each value and status against what the source actually says; recompute any derived statistics you can (for ANSUR data, re-download and recompute a few percentiles). Mark ok=false with a correction for anything wrong, mislabelled (e.g. a fan wiki marked official), or unsupported. List important missing items.
+
+FACTS:
+{
+ "summary": "TOPIC: the physics and physiology of turning a build into a weight and a set of girths. Raw downloads, scripts and outputs are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/buildcalc/physics/ (raw/, scripts/, out/). The new analyses are scripts/scaling_analysis.py, scripts/segment_volume.py, scripts/vtaper_check.py and scripts/derived_tables.py. Their results are in out/scaling_results.json, out/segment_volume_results.json, out/vtaper_results.json and out/derived_tables.json. They run on measured ANSUR II data (4,082 men and 1,986 women, US Army 2010-12) and on the Penrose 1985 densitometry set (252 men).\n\nKEY FINDINGS\n(1) The two-compartment model assumes fat at 0.900 g/cm3 (0.9007 in the Brozek revision) and fat-free mass (FFM) at 1.100 g/cm3. From these, Siri gives %fat = 495/D - 450 and Brozek gives %fat = 457/D - 414.2. Measured FFM density actually ranges from 1.075 to 1.127. In weight trainers it is 1.089, against 1.099 in controls, so the Siri equation overstates their fat by about 4 points. Whole-body density in 252 men ran from 0.995 to 1.109 g/cm3.\n(2) FFMI = FFM/H^2. Medians are 18.9 for young men and 15.4 for young women. Kouri found a limit of 25.0 in 74 non-users. College athletes measured by DXA reach a 97.5th percentile of about 28.1 to 28.3, with a maximum of 31.7. The Kouri height-correction coefficient is disputed: 6.3 in the abstract, 6.1 as later cited.\n(3) Weight across adults scales with about H^2, with exponents of 1.8 to 2.3 depending on sex and sample (Quetelet; Heymsfield 2007, 2011, 2014). Burton warns that this exponent depends on the statistical method; ANSUR gives 2.0 by ordinary regression and 4.2 by reduced major axis. In ANSUR the chest follows the geometric law girth ∝ sqrt(W/H) almost exactly (fitted W^0.508 H^-0.492). Thigh and upper arm come close. Waist (W^0.73 H^-0.82, matching Krakauer's W^0.68 H^-0.81) scales faster with weight because extra weight between people is mostly fat. Neck, forearm and calf scale slower.\n(4) Behnke and Katch's ponderal somatogram uses W ∝ girth^2 × stature, and total ponderal equivalent matched body weight within 1.5 kg (group means), including world-class bodybuilders. Fitting ANSUR without that constraint gives the same dimensions: ln W has coefficient 0.99 on ln H and the girth coefficients sum to 1.89 to 1.90. Errors from the 7 calculator girths plus height, on ANSUR (1 SD):\n- log-linear regression: 1.9% (men), 2.2% (women)\n- Behnke-type W = k·H·(ΣG)^2: 2.6% / 3.6%\n- circular-frustum volume × 1053 kg/m3: 2.1% / 2.4%\nPublished geometric segment models reach about 2 to 3% on whole-body mass (Yeadon about 2.1%; Jensen <2%; E-Zone body volume about 3% TEM), but error grows to 5 to 10% when subjects differ from the calibration (Williams 2013).\n\nDESIGN NOTE (all of it is an estimate unless a number is sourced)\n\nA. Data model. Store each build as a reference record: H0, W0, body-fat % if known, and the 7 girths. Give every number its own status and source.\n\nB. Same build at a new height H1. W1 = W0·(H1/H0)^p. Girths G1 = G0·sqrt((W1/W0)/(H1/H0)) = G0·(H1/H0)^((p-1)/2).\n- p = 3 is a scaled copy: shape is kept and W/H^3 is unchanged, but FFMI rises in proportion to H. It suits comic characters \"as drawn\".\n- p = 2 keeps BMI and FFMI fixed. It is how real adults differ (exponents 1.8 to 2.3).\n- p of about 2.2 to 2.45 is implied for muscular athletes by the Trexler and Kouri height corrections.\n- The choice matters more than anything else. Going from 1.80 m to 2.20 m multiplies weight by 1.49 at p = 2 and by 1.83 at p = 3, and girths by 1.11 versus 1.22.\n- Show the p = 2 to p = 3 band, or let the user pick p and label it.\n- For the same composition, use the geometric exponents 0.5 and -0.5. Use the ANSUR exponents (for example waist 0.73) only when the weight change is a population-typical change in fat.\n\nC. Weight from girths. Inside the human range, use the ANSUR log-linear equation for each sex:\n- men: ln W = 4.8101 + 0.9873 ln H + 0.4132 ln chest + 0.3061 ln waist + 0.1089 ln arm(flexed) + 0.1260 ln forearm(flexed) + 0.4389 ln thigh + 0.2780 ln calf + 0.2188 ln neck (W in kg, lengths in m)\n- error is about ±2% (1 SD) and ±4% (95%)\n- it held up on the heaviest 2.5% (bias -1.0%), the biggest arms (bias +0.1%) and the Penrose men (SD 2.9%)\nBeyond the data, regressions have no physical guarantee, so switch to volume × density:\n- sum circular frustums from girths and segment lengths (the lengths default to proportions of H)\n- multiply by k_eff = 1053 kg/m3, calibrated on ANSUR (it absorbs lung air and the shape bias)\n- then scale by the Siri density for the target fat % relative to the reference: a 5%-fat build is about 1.088 g/cm3 versus about 1.053 at 20% fat, so add about 3%\n- ANSUR's leanest V-shaped men were under-predicted by 1.3 to 2.1%, which is consistent with that correction\nShow all three estimators; their spread is an honest error bar.\n\nD. Errors to expect.\n- Within human data: about 2 to 4% on weight from a complete set of girths, and 3 to 6% from a single girth relation.\n- Density: ±2 to 4%. FFM density ranges 1.075 to 1.127, and the fat % is unknown.\n- Trunk cross-section: a circle overstates the area of a flattened torso. At a depth/breadth ratio of 0.5 the true area is 0.84 of the circle's; at 0.4 it is 0.75. The trunk is about 51% of body volume, so this alone can shift weight by 5 to 13%.\n- Girths read from comic art: W ∝ G^2, so a 5% error in reading girths gives about 10% on weight.\n- Geometric models drift with distance from their calibration (Williams 2013: r = -0.80 between mass and error, up to ±10%).\n- No dataset tests anything at bodybuilder or comic scale. The largest flexed arm in ANSUR is 49 cm.\n- So report comic characters as a range of about ±15 to 25%, labelled estimate.\n\nE. Plausibility flags. FFMI above 25 exceeds the Kouri non-user limit. Above about 28 it exceeds the athletes' 97.5th percentile. Above 31.7 it exceeds the maximum observed in Trexler. Label these \"beyond human data\". Do not treat a high FFMI as proof of muscle: an obese Penrose subject has FFMI 32.4 at 33.8% fat.",
+ "facts": [
+  {
+   "key": "siri_equation",
+   "label": "Siri (1961) two-compartment equation: body density to % fat",
+   "status": "reported",
+   "values": "{\"equation\":\"%fat = 495/D - 450 (D in g/cm^3)\",\"fat_density_kg_m3\":900,\"ffm_density_kg_m3\":1100,\"orig\":\"fat 0.900 g/cm^3, FFM 1.100 g/cm^3\"}",
+   "sources": [
+    {
+     "title": "Johnson (1996) JSE dataset documentation 'Fitting Percentage of Body Fat to Simple Body Measurements' (Penrose et al. 1985 data)",
+     "url": "https://jse.amstat.org/datasets/fat.txt"
+    },
+    {
+     "title": "Modlesky et al. 1996 J Appl Physiol 80:2085 abstract (assumed Dffm 1.1 g/ml in Siri equation)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:8806917%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Siri WE. Body composition from fluid spaces and density (1961; reprinted Nutrition 1993;9:480-91) - bibliographic record only",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:8286893%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "The JSE documentation states 'Percent body fat using Siri's equation, 495/Density - 450'. Modlesky 1996 and Prior 2001 both describe 1.1 g/cm^3 as the FFM density assumed by the Siri equation. I checked algebraically that 1/D = f/0.900 + (1-f)/1.100 gives exactly 495/D - 450 (derived_tables.json). The Siri 1961 original (in Brozek & Henschel eds., Techniques for Measuring Body Composition, NAS 1961, pp. 223-244) was not accessible; only its bibliographic record was fetched."
+  },
+  {
+   "key": "brozek_equation",
+   "label": "Brozek et al. (1963) equation: body density to % fat",
+   "status": "reported",
+   "values": "{\"equation\":\"%fat = 457/D - 414.2 (D in g/cm^3)\",\"implied_zero_fat_density_kg_m3\":1103.3,\"siri_minus_brozek_points\":{\"D1.00\":2.2,\"D1.03\":1.09,\"D1.06\":0.05,\"D1.09\":-0.94,\"D1.10\":-1.25}}",
+   "sources": [
+    {
+     "title": "Johnson (1996) JSE dataset documentation (Brozek's equation 457/Density - 414.2)",
+     "url": "https://jse.amstat.org/datasets/fat.txt"
+    },
+    {
+     "title": "Brozek J, Grande F, Anderson JT, Keys A. Densitometric analysis of body composition: revision of some quantitative assumptions. Ann NY Acad Sci 1963;110:113-140 (record only)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:14062375%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "The equation is quoted from the JSE documentation; the original 1963 paper was not accessible. The zero-fat density (457/414.2) and the Siri-minus-Brozek differences are my own arithmetic. The two equations agree within about 1 percentage point between D = 1.03 and 1.09."
+  },
+  {
+   "key": "component_densities_2c",
+   "label": "Assumed densities of fat and fat-free mass in the two-compartment model",
+   "status": "reported",
+   "values": "{\"fat_kg_m3\":900.7,\"ffm_kg_m3\":1100.0,\"ffm_water_fraction\":0.7372,\"orig\":\"0.9007 g/cm^3 fat; 1.1000 g/cm^3 FFM; 73.72% water\"}",
+   "sources": [
+    {
+     "title": "Kuriyan R. Body composition techniques. Indian J Med Res 2018 (PMC6366261) full text",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6366261/fullTextXML"
+    }
+   ],
+   "notes": "Quote: 'The anhydrous FM is the chemically extractable fat with an assumed density of 0.9007 g/cm3, whereas the FFM is assumed to have a density of 1.1000 g/cm3 and water content of 73.72 per cent. The 2C model is based on assumption made from the analyses of three male cadavers.' The review also says the errors come more from the validity of these assumptions than from technical accuracy."
+  },
+  {
+   "key": "ffm_density_variation",
+   "label": "Measured variation of fat-free-mass density (athletes, weight trainers, ethnicity)",
+   "status": "measured",
+   "values": "{\"range_athletes_nonathletes_kg_m3\":[1075,1127],\"weight_trainers_kg_m3\":1089,\"weight_trainers_sd\":5,\"controls_kg_m3\":1099,\"controls_sd\":7,\"black_men_implied_kg_m3\":1113.5,\"pctfat_at_D1070\":{\"dffm1100\":12.6,\"dffm1089\":8.5,\"dffm1113\":17.0}}",
+   "sources": [
+    {
+     "title": "Prior BM et al. Muscularity and the density of the fat-free mass in athletes. J Appl Physiol 2001;90:1523-31 (abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:11247955%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Modlesky CM et al. Density of the fat-free mass and estimates of body composition in male weight trainers. J Appl Physiol 1996;80:2085-96 (abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:8806917%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Schutte JE et al. Density of lean body mass is greater in blacks than in whites. J Appl Physiol 1984;56:1647-9 (abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:6735823%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Prior 2001 (n=172, 4-component model): 'D(FFM) varied from 1.075 to 1.127 g/cm3'. It was not related to muscularity or mesomorphy; selected sports showed group errors of 2-5% body mass in densitometric %fat. Modlesky 1996 (14 weight trainers vs 14 controls): Dffm 1.089 +/- 0.005 vs 1.099 +/- 0.007 g/ml; Siri %fat was 17.3 vs 13.2 by the 4-component model. Schutte 1984 gives %fat = 100 x (4.374/D - 3.928) for black men, which implies Dffm = 4.374/3.928 = 1.1135 (my arithmetic). The %fat at D = 1.070 under each Dffm is my arithmetic."
+  },
+  {
+   "key": "whole_body_density_sample",
+   "label": "Measured whole-body density in 252 men (underwater weighing)",
+   "status": "measured",
+   "values": "{\"n\":251,\"min_kg_m3\":995,\"max_kg_m3\":1108.9,\"mean_kg_m3\":1055.7,\"p2_5_kg_m3\":1021.1,\"p97_5_kg_m3\":1090.5,\"orig\":\"0.995-1.1089 g/cm^3\"}",
+   "sources": [
+    {
+     "title": "JSE body-fat data file (Penrose, Nelson & Fisher 1985 data)",
+     "url": "https://jse.amstat.org/datasets/fat.dat.txt"
+    },
+    {
+     "title": "JSE dataset documentation",
+     "url": "https://jse.amstat.org/datasets/fat.txt"
+    }
+   ],
+   "notes": "Computed by me from the data file (out/scaling_results.json), excluding case 42, whose height is documented as wrong. The documentation warns that the densities of cases 48, 76 and 96 seem to contain one-digit errors, and that %fat is truncated at 0 for case 182. Sample: US men, mostly 22-81 y."
+  },
+  {
+   "key": "density_from_fat_table",
+   "label": "Whole-body tissue density implied by % fat (Siri model, lungs excluded)",
+   "status": "derived",
+   "values": "{\"pct3\":1092.7,\"pct5\":1087.9,\"pct8\":1080.8,\"pct10\":1076.1,\"pct15\":1064.5,\"pct20\":1053.2,\"pct25\":1042.1,\"pct30\":1031.3,\"pct40\":1010.2,\"pct50\":990.0,\"unit\":\"kg/m^3\"}",
+   "sources": [
+    {
+     "title": "Kuriyan 2018 (component densities)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6366261/fullTextXML"
+    }
+   ],
+   "notes": "Computed as D = 1/(f/0.900 + (1-f)/1.100) (scripts/derived_tables.py). It excludes lung and gut gas. If Dffm departs from 1.100 (range 1.075-1.127), shift these values by roughly the same relative amount."
+  },
+  {
+   "key": "muscle_tissue_density",
+   "label": "Skeletal muscle tissue density (conventional value)",
+   "status": "reported",
+   "values": "{\"conventional_kg_m3\":1059.7,\"fixed_4pct_formaldehyde_kg_m3\":1112,\"fixed_37pct_kg_m3\":1055}",
+   "sources": [
+    {
+     "title": "Ward SR, Lieber RL. Density and hydration of fresh and fixed human skeletal muscle. J Biomech 2005;38:2317-20 (abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:16154420%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Ward & Lieber state that studies 'use a density value of 1.0597 g/cm3, which was originally based on unfixed rabbit and canine muscle tissue'. Their own fixed human values were 1.112 (4% formaldehyde) and 1.055 (37% formaldehyde). No fresh living human value is given."
+  },
+  {
+   "key": "ffmi_definition_kouri_limit",
+   "label": "FFMI definition and the 'natural limit' of 25 (Kouri et al. 1995)",
+   "status": "measured",
+   "values": "{\"definition\":\"FFMI = FFM(kg)/H(m)^2\",\"nonuser_upper_limit_kg_m2\":25.0,\"mr_america_1939_1959_mean_kg_m2\":25.4,\"n_athletes\":157,\"n_nonusers\":74,\"n_users\":83}",
+   "sources": [
+    {
+     "title": "Kouri EM, Pope HG, Katz DL, Oliva P. Fat-free mass index in users and nonusers of anabolic-androgenic steroids. Clin J Sport Med 1995;5:223-8 (abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:7496846%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Abstract: non-users' normalized FFMI 'extended up to a well-defined limit of 25.0'; 20 pre-steroid Mr. America winners had an estimated mean of 25.4 (estimated, not measured); some users exceeded 30. The authors call the findings 'preliminary'. The 25 limit rests on 74 non-users, and the body-fat method is not given in the abstract."
+  },
+  {
+   "key": "ffmi_height_correction",
+   "label": "FFMI height normalisation coefficient (Kouri): 6.3 vs 6.1",
+   "status": "disputed",
+   "values": "{\"formula\":\"FFMI_norm = FFMI + c*(1.80 - H_m)\",\"c_in_kouri_abstract\":6.3,\"c_as_cited_by_trexler2017\":6.1,\"trexler_own_slope\":2.943,\"implied_FFM_height_exponent_kouri\":2.44,\"implied_FFM_height_exponent_trexler\":2.21}",
+   "sources": [
+    {
+     "title": "Kouri et al. 1995 abstract (states 6.3 x (1.80 m - height))",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:7496846%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Trexler ET et al. 2017, J Strength Cond Res, PMC5438288 full text (says Kouri 'utilized a slope of 6.1')",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5438288/"
+    }
+   ],
+   "notes": "The PubMed abstract prints 6.3, while Trexler 2017 and most calculators use 6.1; the Kouri full text was not accessible. Between 1.6 and 2.0 m the two differ by at most 0.04 kg/m^2. Trexler's own regression slope was 2.943 (not significant, r = 0.13). Implied exponents are my derivation: p = 2 + c*1.8/25 at FFMI 25, i.e. FFM proportional to H^p among these athletes."
+  },
+  {
+   "key": "ffmi_population_norms",
+   "label": "FFMI reference values in the general population",
+   "status": "measured",
+   "values": "{\"median_men_18_34_kg_m2\":18.9,\"median_women_18_34_kg_m2\":15.4,\"normalBMI_men_range_kg_m2\":[16.7,19.8],\"normalBMI_women_range_kg_m2\":[14.6,16.8],\"n_schutz\":5635}",
+   "sources": [
+    {
+     "title": "Schutz Y, Kyle UG, Pichard C. Fat-free mass index and fat mass index percentiles in Caucasians aged 18-98 y. Int J Obes 2002;26:953-60 (abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:12080449%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Kyle UG et al. Body composition interpretation: contributions of FFMI and BFMI. Nutrition 2003;19:597-604 (abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:12831945%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Both studies used a Swiss white sample with FFM from 50-kHz bioelectrical impedance (BIA). Medians are for ages 18-34. Kyle 2003 ranges are FFMI 'within the normal BMI ranges'."
+  },
+  {
+   "key": "ffmi_athletes",
+   "label": "FFMI in collegiate athletes (upper tail)",
+   "status": "measured",
+   "values": "{\"trexler2017_football\":{\"n\":235,\"mean\":23.7,\"sd\":2.1,\"p97_5\":28.1,\"max\":31.7,\"pct_over_25\":26.4,\"method\":\"DXA\"},\"currier2019_men\":{\"n\":209,\"mean_adj\":22.8,\"sd\":2.8,\"p97_5\":28.32,\"rugby_p97_5\":29.1,\"method\":\"DXA\"},\"fields2024_DIII_football\":{\"n\":111,\"mean\":23.5,\"sd\":2.04,\"range\":[18.1,27.7],\"method\":\"BIA\"},\"blue2019_women\":{\"n\":266,\"mean\":16.9,\"sd\":1.7,\"range\":[13.3,25.5],\"method\":\"DXA\"},\"unit\":\"kg/m^2\"}",
+   "sources": [
+    {
+     "title": "Trexler ET et al. FFMI in NCAA Division I and II collegiate American football players. J Strength Cond Res 2017 (abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:27930454%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Trexler 2017 full text (PMC5438288)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5438288/"
+    },
+    {
+     "title": "Currier BS et al. FFMI in a diverse sample of male collegiate athletes. J Strength Cond Res 2019 (abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:30985525%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Fields JB et al. FFMI in a large sample of collegiate American football athletes. 2024 (abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:38665859%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Blue MNM et al. Normative FFMI values for collegiate female athletes. J Sports Sci 2019 (abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:30893018%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "DXA FFM = lean mass + bone mineral content (Trexler Eq. 1). Methods differ (DXA, BIA, densitometry), so values are not strictly comparable with Kouri's. Drug-free status is not verified in these abstracts. Trexler's and Currier's values are height-adjusted to 1.80 m by regression."
+  },
+  {
+   "key": "ffmi_obesity_caveat",
+   "label": "High FFMI also occurs in obesity (Penrose data)",
+   "status": "derived",
+   "values": "{\"ffmi_mean\":20.4,\"ffmi_sd\":1.9,\"ffmi_min\":16.8,\"ffmi_max\":32.4,\"max_case_bodyfat_brozek_pct\":33.8,\"n\":251}",
+   "sources": [
+    {
+     "title": "JSE body-fat data file (Penrose et al. 1985)",
+     "url": "https://jse.amstat.org/datasets/fat.dat.txt"
+    }
+   ],
+   "notes": "Computed by me: FFM = documented 'Fat Free Weight' (Brozek), divided by H^2. The maximum (case 39, FFMI 32.4) is an obese man at 33.8% fat, not a bodybuilder. So FFMI above 25 is not proof of muscularity, and the 2C densitometry may misassign FFM in obesity."
+  },
+  {
+   "key": "quetelet_square_law",
+   "label": "Quetelet: adult weight increases as the square of height",
+   "status": "reported",
+   "values": "{\"exponent\":2,\"orig\":\"'the weight increases as the square of the height' (Quetelet 1830s)\"}",
+   "sources": [
+    {
+     "title": "Eknoyan G. Adolphe Quetelet (1796-1874) - the average man and indices of obesity. Nephrol Dial Transplant 2008;23:47-51 (abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:17890752%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Historical review. Quetelet's index was renamed BMI by Ancel Keys in 1972."
+  },
+  {
+   "key": "benn_index_exponent_debate",
+   "label": "Benn index W/H^p and why p is below 3 (Burton 2007)",
+   "status": "reported",
+   "values": "{\"p_typical_adult_range\":[1.1,2.5],\"ponderal_index\":\"W/H^3 scale-independent\"}",
+   "sources": [
+    {
+     "title": "Burton RF. Why is the body mass index calculated as mass/height2, not as mass/height3? Ann Hum Biol 2007;34:656-63 (abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:18092209%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Benn RT. Some mathematical properties of weight-for-height indices used as measures of adiposity. Br J Prev Soc Med 1971;25:42-50 (record only)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:5551233%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Burton: BMI 'is an approximation to the Benn index, mass/height(p), where p (typically 1.1-2.5 for adult populations) makes the index uncorrelated with height. Mass/height(3) is an index of body build that is independent of scale.' He argues 'mass must vary more nearly with height(3) than with height(2), although ... conventional statistical techniques suggest otherwise' (p rises with the mass-height correlation). Benn's 1971 text is a scanned image and was not read."
+  },
+  {
+   "key": "heymsfield_2007_scaling",
+   "label": "Scaling of body composition compartments to stature (MRI/DXA)",
+   "status": "measured",
+   "values": "{\"weight_power\":2,\"ffm_and_skeletal_muscle_power\":2,\"bone_mineral_power_range\":[2.31,2.48],\"brain_power_men\":0.83,\"n_mri\":411,\"n_dxa\":1346}",
+   "sources": [
+    {
+     "title": "Heymsfield SB et al. Scaling of human body composition to stature: new insights into body mass index. Am J Clin Nutr 2007;86:82-91 (abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:17616766%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Abstract: weight, skeletal muscle, residual mass, AT-free mass, FFM and liver 'scaled to height with powers of approximately 2'. Bone scaled with 2.31-2.48. Adipose tissue scaled weakly. Adiposity was independent of height."
+  },
+  {
+   "key": "heymsfield_2011_circumferences",
+   "label": "Scaling of weight, waist and hip circumference to height (NHANES III)",
+   "status": "measured",
+   "values": "{\"weight_power_men\":2.29,\"weight_power_men_se\":0.11,\"weight_power_women\":1.80,\"weight_power_women_se\":0.07,\"WC_power_men\":0.76,\"WC_power_women\":0.80,\"HC_power_men\":0.45,\"HC_power_women\":0.53,\"n_men\":7422,\"n_women\":7999}",
+   "sources": [
+    {
+     "title": "Heymsfield SB, Heo M, Pietrobelli A. Are adult body circumferences associated with height? Am J Clin Nutr 2011;93:302-7 (abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:21123461%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Powers are adjusted for age and race. Circumferences rise 0.2-0.5 cm per cm of height. These are univariate height powers, not at fixed BMI. Geometric similarity would predict 3 for weight and 1 for girths."
+  },
+  {
+   "key": "heymsfield_2014_scaling",
+   "label": "Scaling of weight and waist to height across sex and ethnic groups (NHANES, KNHANES)",
+   "status": "measured",
+   "values": "{\"BW_power_men_NHANES\":2.12,\"BW_power_men_KNHANES\":2.11,\"BW_power_women_NHANES\":2.02,\"BW_power_women_KNHANES\":1.99,\"WC_power_men\":[0.66,0.67],\"WC_power_women\":[0.61,0.56]}",
+   "sources": [
+    {
+     "title": "Heymsfield SB et al. Scaling of adult body weight to height across sex and race/ethnic groups: relevance to BMI. Am J Clin Nutr 2014;100:1455-61 (abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:25411280%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "These powers are after controlling for age and adiposity; the SEs are about 0.03-0.06. The conclusion is that BW scales to height with a power of about 2 in all 8 sex and ethnic groups."
+  },
+  {
+   "key": "absi_waist_allometry",
+   "label": "Waist circumference allometry in NHANES 1999-2004 (Krakauer & Krakauer ABSI)",
+   "status": "measured",
+   "values": "{\"lnWC_const\":-2.589,\"exp_weight\":0.6807,\"exp_weight_se\":0.0052,\"exp_height\":-0.814,\"exp_height_se\":0.020,\"R2\":0.829,\"n\":14105,\"rounded\":\"WC ~ W^(2/3) H^(-5/6); ABSI = WC/(BMI^(2/3) H^(1/2))\",\"units\":\"WC, H in m; W in kg; natural log\"}",
+   "sources": [
+    {
+     "title": "Krakauer NY, Krakauer JC. A new body shape index predicts mortality hazard independently of BMI. PLoS ONE 2012;7:e39504 (PDF)",
+     "url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0039504&type=printable"
+    }
+   ],
+   "notes": "Eq. (1) is read from the PDF text: log(WC) = (-2.589 +/- 0.020) + (0.6807 +/- 0.0052) log(weight) - (0.814 +/- 0.020) log(height). I checked that it gives about 0.94 m for 80 kg and 1.75 m with the natural log. The geometric law would predict W^0.5 H^-0.5; the waist grows faster with weight because between-person weight differences are largely fat."
+  },
+  {
+   "key": "mackay_2010_theory",
+   "label": "Biomechanical argument for the mass-height exponent (children)",
+   "status": "reported",
+   "values": "{\"p_range\":[2.333,2.667],\"p_preferred\":2.667,\"waist_q_range\":[0.667,1.0]}",
+   "sources": [
+    {
+     "title": "MacKay NJ. Scaling of human body mass with height: the body mass index revisited. J Biomech 2010;43:764-6 (abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:19909957%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "MacKay uses a stress-limit argument after Rashevsky: growing children should scale as 7/3 < p < 8/3, with p close to 8/3, and waist as h^q with q near the low end of 2/3 to 1. It is theory checked against Hong Kong and British children, not adults."
+  },
+  {
+   "key": "trefethen_new_bmi",
+   "label": "'New BMI' with exponent 2.5 (non-peer-reviewed proposal)",
+   "status": "reported",
+   "values": "{\"formula\":\"1.3*W(kg)/H(m)^2.5\",\"exponent\":2.5,\"reference_height_m\":1.69}",
+   "sources": [
+    {
+     "title": "Trefethen N. New BMI (New Body Mass Index), University of Oxford web page",
+     "url": "https://people.maths.ox.ac.uk/trefethen/bmi.html"
+    }
+   ],
+   "notes": "Personal web proposal: 'You might think that the exponent should simply be 3, but that doesn't match the data at all.' The constant 1.3 equals sqrt(1.69), chosen so the value is unchanged at 1.69 m. Treat as opinion, not data."
+  },
+  {
+   "key": "ansur_mass_height_exponent",
+   "label": "Mass-height exponent in ANSUR II, and its dependence on method",
+   "status": "derived",
+   "values": "{\"men\":{\"n\":4082,\"ols_p\":1.999,\"se\":0.059,\"r\":0.472,\"rma_p\":4.24,\"mean_H_m\":1.756,\"mean_W_kg\":85.5,\"mean_BMI\":27.7},\"women\":{\"n\":1986,\"ols_p\":2.192,\"se\":0.077,\"r\":0.539,\"rma_p\":4.07,\"mean_H_m\":1.629,\"mean_W_kg\":67.8,\"mean_BMI\":25.5}}",
+   "sources": [
+    {
+     "title": "ANSUR II male public data (Penn State OpenLab mirror)",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+    },
+    {
+     "title": "ANSUR II female public data",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+    }
+   ],
+   "notes": "My regression of ln W on ln H (scripts/scaling_analysis.py). Ordinary least squares gives about 2, as in NHANES. Reduced major axis gives about 4 because the correlation is weak, which illustrates Burton's point that the 'exponent' depends on the statistics. US Army sample, 2010-12, measured weight and stature; not population-representative."
+  },
+  {
+   "key": "ansur_girth_allometry",
+   "label": "Girth allometry ln G = a + b ln W + c ln H (ANSUR II); geometric law predicts b = 0.5, c = -0.5",
+   "status": "derived",
+   "values": "{\"men\":{\"chest\":[0.508,-0.492,0.870,3.0],\"waist\":[0.728,-0.823,0.845,4.8],\"upper_arm_flexed\":[0.549,-0.626,0.719,5.3],\"forearm_flexed\":[0.368,-0.188,0.666,4.2],\"thigh\":[0.573,-0.538,0.861,3.6],\"calf\":[0.416,-0.315,0.714,4.1],\"neck\":[0.351,-0.377,0.675,3.7]},\"women\":{\"chest\":[0.523,-0.570,0.738,4.5],\"waist\":[0.719,-0.897,0.770,5.7],\"upper_arm_flexed\":[0.632,-0.750,0.798,4.6],\"forearm_flexed\":[0.384,-0.206,0.683,4.0],\"thigh\":[0.576,-0.535,0.842,3.7],\"calf\":[0.411,-0.239,0.652,4.6],\"neck\":[0.305,-0.232,0.602,3.7]},\"array_order\":\"[b_W, c_H, R2, residual SD %]\"}",
+   "sources": [
+    {
+     "title": "ANSUR II male public data",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+    },
+    {
+     "title": "ANSUR II female public data",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+    }
+   ],
+   "notes": "Standard errors: b about 0.003-0.009, c about 0.011-0.037 (out/scaling_results.json). The chest follows sqrt(W/H) almost exactly; thigh and upper arm are close. Waist scales faster and neck, forearm and calf slower, because between-person weight differences are mostly fat. ANSUR definitions: chest at chest point; waist at omphalion; flexed biceps and forearm; thigh at gluteal furrow. The Penrose men give similar results (chest 0.549/-0.676, abdomen 0.761/-1.03, thigh 0.509/-0.295)."
+  },
+  {
+   "key": "ansur_geometric_law_test",
+   "label": "Error of the pure geometric law G = G_ref*sqrt((W/W_ref)/(H/H_ref)) in ANSUR men",
+   "status": "derived",
+   "values": "{\"resid_sd_pct\":{\"chest\":3.0,\"waist\":5.9,\"upper_arm_flexed\":5.3,\"forearm_flexed\":4.6,\"thigh\":3.7,\"calf\":4.3,\"neck\":4.4},\"bias_lowest_to_highest_BMI_quintile_pct\":{\"chest\":[-0.2,0.2],\"waist\":[-4.5,4.9],\"upper_arm_flexed\":[-1.4,0.6],\"forearm_flexed\":[2.7,-2.7],\"thigh\":[-1.9,1.1],\"calf\":[1.8,-1.7],\"neck\":[3.5,-2.6]},\"fixed_BMI_height_exponent_men\":{\"chest\":0.525,\"waist\":0.632,\"upper_arm_flexed\":0.471,\"forearm_flexed\":0.549,\"thigh\":0.608,\"calf\":0.516,\"neck\":0.325},\"fixed_BMI_height_exponent_women\":{\"chest\":0.476,\"waist\":0.541,\"upper_arm_flexed\":0.513,\"forearm_flexed\":0.562,\"thigh\":0.616,\"calf\":0.583,\"neck\":0.378}}",
+   "sources": [
+    {
+     "title": "ANSUR II male public data",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+    },
+    {
+     "title": "ANSUR II female public data",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+    }
+   ],
+   "notes": "The reference is the sample's geometric-mean man. At fixed BMI the geometric law predicts girth proportional to H^0.5; observed values are 0.47-0.63, except the neck at 0.33. So for moderate height changes at fixed BMI the sqrt rule is accurate to about 1%. Its error shows up mainly when the weight difference is fat (waist)."
+  },
+  {
+   "key": "ponderal_somatogram",
+   "label": "Behnke/Katch ponderal somatogram: weight proportional to girth^2 x stature",
+   "status": "reported",
+   "values": "{\"formula\":\"PE = (g/k)^2 * h_dm, k = g_ref/F, F = sqrt(W_ref_kg/h_ref_dm)\",\"F_male\":2.000,\"F_female\":1.852,\"total_PE_vs_weight_diff_kg\":\"< 1.5 (group means)\",\"datasets\":7}",
+   "sources": [
+    {
+     "title": "Katch FI, Behnke AR, Katch VL. The ponderal somatogram: evaluation of body size and shape from anthropometric girths and stature. Human Biology 1987;59(3):439-458 (abstract page)",
+     "url": "https://digitalcommons.wayne.edu/humbiol/vol59/iss3/6"
+    }
+   ],
+   "notes": "Abstract: 'There is similarity between the total body P.E. and body weight for all the data sets (differences less than 1.5 kg). This illustrates the concurrent validity of the fundamental relation between body weight and a squared matrix of girths multiplied by stature.' The data sets include 11 male world-class and 10 female champion bodybuilders. The full PDF (Cloudflare) and Behnke 1961 (J Appl Physiol 16:949, 960) were not accessible, so the k constants and the commonly quoted 0.0111 form are unverified."
+  },
+  {
+   "key": "ansur_weight_from_girths",
+   "label": "Predicting weight from the 7 calculator girths + stature (ANSUR II)",
+   "status": "derived",
+   "values": "{\"loglinear_men\":{\"const\":4.8101,\"lnH\":0.9873,\"ln_chest\":0.4132,\"ln_waist\":0.3061,\"ln_arm_flexed\":0.1089,\"ln_forearm_flexed\":0.1260,\"ln_thigh\":0.4389,\"ln_calf\":0.2780,\"ln_neck\":0.2188,\"cv10_sd_pct\":1.91,\"cv10_mae_pct\":1.51,\"p95_abs_pct\":3.7,\"rmse_kg\":1.64},\"loglinear_women\":{\"const\":4.9332,\"lnH\":0.9911,\"ln_chest\":0.3393,\"ln_waist\":0.2191,\"ln_arm_flexed\":0.1508,\"ln_forearm_flexed\":0.0820,\"ln_thigh\":0.5098,\"ln_calf\":0.3450,\"ln_neck\":0.2518,\"cv10_sd_pct\":2.20,\"p95_abs_pct\":4.15},\"sum_girth_exponents\":{\"men\":1.890,\"women\":1.898},\"behnke_type\":{\"formula\":\"W = k*H*(sum of 7 girths)^2, SI\",\"k_men_kg_m3\":2.904,\"sd_men_pct\":2.61,\"k_women_kg_m3\":3.027,\"sd_women_pct\":3.62},\"single_girth_chest_men\":{\"formula\":\"W = 43.18*H*C_chest^2\",\"sd_pct\":6.0},\"single_girth_waist_men_sd_pct\":11.5}",
+   "sources": [
+    {
+     "title": "ANSUR II male public data",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+    },
+    {
+     "title": "ANSUR II female public data",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+    }
+   ],
+   "notes": "My fits (SI units: W kg, H and girths m; natural logs; 10-fold cross-validation). The free regression recovers the dimensional law: height exponent 0.99 and girth exponents summing to about 1.9, i.e. W proportional to H*G^2. Valid only within ANSUR's range: men's flexed arm 24.6-49.0 cm, BMI up to 43.5."
+  },
+  {
+   "key": "ansur_frustum_volume_model",
+   "label": "Girth-and-length frustum volume model x effective density (ANSUR II)",
+   "status": "derived",
+   "values": "{\"k_eff_men_kg_m3\":1052.7,\"k_eff_women_kg_m3\":1053.4,\"mass_err_sd_men_pct\":2.07,\"mass_err_sd_women_pct\":2.44,\"p95_abs_men_pct\":4.13,\"p95_abs_women_pct\":4.79,\"bias_by_BMI_quintile_men_pct\":[0.21,-0.19,0.0,0.04,0.05],\"corr_k_BMI_men\":0.005,\"mean_volume_men_L\":81.3,\"volume_share_men_pct\":{\"trunk\":51.5,\"head_neck\":6.0,\"arms_hands\":12.0,\"legs_feet\":30.5},\"ellipse_trunk_variant_k_men_kg_m3\":1187.7}",
+   "sources": [
+    {
+     "title": "ANSUR II male public data",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+    },
+    {
+     "title": "ANSUR II female public data",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+    }
+   ],
+   "notes": "My crude model (scripts/segment_volume.py) uses circular frustums between measured girth levels and ANSUR landmark heights, an ellipsoid head, and box or stadium hands and feet. k_eff is just W/V, so it absorbs lung air, the circular-section bias and omitted shoulder mass; it is a calibration constant, not a tissue density. It shows no BMI trend inside ANSUR. The breadth/depth-ellipse variant gives an impossible 1188 kg/m^3, i.e. it underestimates trunk area. Some segment levels (calf at 65% of ankle-to-tibiale, head height 0.13 H) are my assumptions."
+  },
+  {
+   "key": "ansur_extrapolation_tests",
+   "label": "Out-of-range tests of weight-from-girth estimators",
+   "status": "derived",
+   "values": "{\"top2.5pct_flexed_arm_men\":{\"n\":105,\"arm_threshold_cm\":43.1,\"mean_W_kg\":113.0,\"mean_BMI\":35.4,\"loglinear_bias_pct\":0.09,\"loglinear_sd_pct\":1.83,\"behnke_bias_pct\":2.65},\"top2.5pct_BMI_men\":{\"n\":103,\"bmi_threshold\":36.2,\"loglinear_bias_pct\":-1.04,\"behnke_bias_pct\":2.31},\"women_fit_applied_to_men\":{\"loglinear_bias_pct\":0.89,\"loglinear_sd_pct\":2.08,\"behnke_bias_pct\":4.29},\"ANSUR_men_to_Penrose_men_5girths\":{\"n\":251,\"loglinear_bias_pct\":0.14,\"loglinear_sd_pct\":2.85,\"behnke_bias_pct\":0.07,\"behnke_sd_pct\":3.83},\"vtaper_men_top2.5pct_arm_over_waist\":{\"arm_cm\":39.0,\"waist_cm\":82.4,\"frustum_bias_pct\":-2.11,\"behnke_bias_pct\":-1.05,\"loglinear_bias_pct\":-0.44},\"vtaper_men_top2.5pct_chest_over_waist\":{\"frustum_bias_pct\":-1.26,\"behnke_bias_pct\":-1.72,\"loglinear_bias_pct\":-0.32},\"potbelly_men_bottom2.5pct_chest_over_waist\":{\"frustum_bias_pct\":1.37,\"behnke_bias_pct\":1.93,\"loglinear_bias_pct\":-0.49},\"vtaper_women_top2.5pct_arm_over_waist\":{\"frustum_bias_pct\":-1.88,\"behnke_bias_pct\":-3.80,\"loglinear_bias_pct\":-0.66}}",
+   "sources": [
+    {
+     "title": "ANSUR II male public data",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+    },
+    {
+     "title": "ANSUR II female public data",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_FEMALE_Public.csv"
+    },
+    {
+     "title": "JSE body-fat data file (Penrose et al. 1985)",
+     "url": "https://jse.amstat.org/datasets/fat.dat.txt"
+    }
+   ],
+   "notes": "Models were fitted on the remaining subjects and tested on the held-out extreme group (scripts/scaling_analysis.py, scripts/vtaper_check.py). Lean V-shaped people are under-predicted by the geometric methods and pot-bellied people over-predicted, consistent with lean tissue being denser (Siri: about 1.088 at 5% fat vs 1.053 at 20%). The Penrose test used neck, chest, waist/abdomen, thigh and wrist, because Penrose biceps were extended, not flexed. Caveat: even the 'extreme' ANSUR arms (about 43-49 cm) are far below elite bodybuilders, so no test reaches bodybuilder or comic scale."
+  },
+  {
+   "key": "trunk_cross_section_shape",
+   "label": "Trunk cross-section shape factors (area vs circle of the same perimeter)",
+   "status": "derived",
+   "values": "{\"ellipse_area_over_circle_area_by_depth_breadth_ratio\":{\"1.0\":1.0,\"0.9\":0.996,\"0.8\":0.982,\"0.7\":0.954,\"0.6\":0.909,\"0.5\":0.841,\"0.4\":0.745},\"ANSUR_men\":{\"chest_depth_over_breadth\":0.877,\"waist_depth_over_breadth\":0.727,\"buttock_depth_over_breadth\":0.71,\"chest_C_over_ellipse_perimeter\":1.238}}",
+   "sources": [
+    {
+     "title": "ANSUR II male public data",
+     "url": "https://tools.openlab.psu.edu/publicData/ANSUR_II_MALE_Public.csv"
+    },
+    {
+     "title": "Yeadon MR 1990 J Biomech 23:67-74 abstract (stadium solids more accurate than elliptical discs)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:2307693%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Isoperimetric ratios are my arithmetic using Ramanujan's ellipse perimeter (scripts/derived_tables.py). The measured ANSUR chest tape is 24% longer than the ellipse built from chest breadth and depth, so real torsos are not ellipses; Yeadon used stadium solids for this reason. A circle-from-girth model overstates the area of a flattened (wide-lat) torso by up to 16-25% at depth/breadth 0.5-0.4."
+  },
+  {
+   "key": "yeadon_model_accuracy",
+   "label": "Yeadon (1990) 40-solid inertia model: whole-body mass accuracy",
+   "status": "measured",
+   "values": "{\"n_solids\":40,\"n_measurements\":95,\"gittoes2009_abs_err_direct_pct\":2.10,\"gittoes2009_abs_err_image_pct\":2.87,\"gittoes_n\":5}",
+   "sources": [
+    {
+     "title": "Yeadon MR. The simulation of aerial movement II: a mathematical inertia model of the human body. J Biomech 1990;23:67-74 (abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:2307693%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Gittoes MJR, Bezodis IN, Wilson C. An image-based approach to obtaining anthropometric measurements for inertia modeling. J Appl Biomech 2009;25:265-70 (abstract page)",
+     "url": "https://pure.cardiffmet.ac.uk/en/publications/an-image-based-approach-to-obtaining-anthropometric-measurements-/"
+    }
+   ],
+   "notes": "Yeadon's abstract says errors in total body mass are 'discussed with reference to the unknown lung volumes'; his own numbers were not accessible (the Loughborough PDF was blocked). Gittoes 2009 tested 5 athletic performers with Dempster segment densities."
+  },
+  {
+   "key": "inertia_model_mass_accuracy_table",
+   "label": "Reported whole-body mass accuracy of geometric inertia models (Jensen, Hatze, Yeadon)",
+   "status": "reported",
+   "values": "{\"jensen1978\":{\"method\":\"photo, elliptical zones\",\"n_measurements\":408,\"mass_accuracy_pct\":\"<2\"},\"hatze1980\":{\"method\":\"direct\",\"n_measurements\":242,\"mass_accuracy_as_printed\":\"<0.05\"},\"yeadon1990\":{\"n_measurements\":95,\"mass_accuracy_pct\":\"<2.1\"},\"gittoes2009\":{\"mass_accuracy_pct\":\"<2.9\"}}",
+   "sources": [
+    {
+     "title": "Williams G, Irwin G, Kerwin DG, Newell KM. Accuracy of body mass prediction using segmental inertia parameters modelled from photographic images. ISBS Proceedings 2013 (Table 1)",
+     "url": "https://ojs.ub.uni-konstanz.de/cpa/article/view/5669/5160"
+    }
+   ],
+   "notes": "This is a secondary table. Hatze's '< 0.05' has no unit and may mean 0.05% or be a typo for 0.5%: treat as unverified. The Jensen 1978 (J Biomech 11:349) and Hatze 1980 (J Biomech 13:833) originals were not accessible (records only), and nor was Hanavan 1964 (DTIC blocked)."
+  },
+  {
+   "key": "williams2013_mass_dependent_error",
+   "label": "Inertia-model mass error grows away from the calibration body size",
+   "status": "measured",
+   "values": "{\"n\":15,\"abs_err_pct_mean\":5.42,\"abs_err_pct_sd\":2.92,\"rel_err_pct_mean\":-2.06,\"rel_err_pct_sd\":5.98,\"r_mass_vs_rel_err\":-0.80,\"crossover_mass_kg\":71,\"suggested_error_far_from_71kg_pct\":10}",
+   "sources": [
+    {
+     "title": "Williams G et al. 2013, ISBS Proceedings Archive, 31st Conference (full text PDF)",
+     "url": "https://ojs.ub.uni-konstanz.de/cpa/article/view/5669/5160"
+    },
+    {
+     "title": "Same, article landing page (publication date 2013-09-04)",
+     "url": "https://ojs.ub.uni-konstanz.de/cpa/article/view/5669"
+    }
+   ],
+   "notes": "Yeadon model with image-based measurements and Dempster densities, in 15 male recreational athletes (74.7 +/- 8.0 kg). Masses above 71 kg tended to be over-estimated and those below under-estimated: 'errors could be up to +/- 10% for participants with body masses much greater or less than 71 kg'. The authors doubt the relation stays linear at the extremes."
+  },
+  {
+   "key": "hanavan_total_weight_error",
+   "label": "Hanavan cylinder/frustum model: total weight discrepancy",
+   "status": "measured",
+   "values": "{\"n\":30,\"barter_equations_bias_pct\":-2.03,\"clauser_equations_bias_pct\":4.59}",
+   "sources": [
+    {
+     "title": "Miller DI, Morrison WE. Prediction of segmental parameters using the Hanavan human body model. Med Sci Sports 1975 (abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:1207433%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "In 30 adult male athletes, the sum of predicted segment weights was below body weight by an average of 2.03% with Barter's equations and above it by 4.59% with Clauser's. The original Hanavan 1964 AMRL report was not accessible."
+  },
+  {
+   "key": "ezone_volume_accuracy",
+   "label": "Elliptical zone (E-Zone, Jensen-type) total body volume vs 3D scanning",
+   "status": "measured",
+   "values": "{\"n\":17,\"total_volume_relative_TEM_pct\":3,\"large_segment_TEM_pct\":\"<10\"}",
+   "sources": [
+    {
+     "title": "Chiu CY, Pease DL, Fawkner S, Sanders RH. Validation of body volume acquisition by using elliptical zone method. Int J Sports Med 2016;37:1117-23 (abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:27676147%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "17 men of diverse somatotypes, with 3D photonic scanning as the reference. Total body volume relative TEM was 'around 3%'. Upper and lower torso, thigh, shank, upper arm and lower arm were within 10%; neck, hand and foot were poor."
+  },
+  {
+   "key": "surface_model_densities",
+   "label": "Segment densities used to convert scanned volume to mass (lungs included)",
+   "status": "reported",
+   "values": "{\"trunk_kg_m3\":940,\"other_segments_kg_m3\":1000}",
+   "sources": [
+    {
+     "title": "Peyer KE, Morris M, Sellers WI. Subject-specific body segment parameter estimation using 3D photogrammetry with multiple cameras. PeerJ 2015;3:e831 (PMC4359122 full text)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4359122/fullTextXML"
+    }
+   ],
+   "notes": "Quote: 'a trunk density value of 940 kg/m3 was chosen, while a uniform density of 1000 kg/m3 was assumed for all other body segments'. 'The body mass calculated from the volume was never exactly the same as the recorded body mass, so the density values were adjusted pro-rata.' They note that segment densities such as Winter's for the trunk exclude lung volume."
+  },
+  {
+   "key": "limb_volume_from_circumferences",
+   "label": "Accuracy of circumference-based (frustum/disc) limb volume vs water displacement",
+   "status": "measured",
+   "values": "{\"farina2024_segmental_centimetric_mean_err_pct\":0.86,\"farina2024_fixed_height_mean_err_pct\":1.2,\"farina2024_n\":22,\"chromy2015_frustum_sign_err_pct\":[2,8],\"chromy2015_disc_partial_frustum_err_pct\":[1,8]}",
+   "sources": [
+    {
+     "title": "Farina G et al. Limb volume measurements: a comparison of circumferential techniques and optoelectronic systems against water displacement. Bioengineering 2024;11:382 (abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:38671803%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Chromy A et al. Limb volume measurements: comparison of accuracy and decisive parameters of the most used present methods. SpringerPlus 2015;4:707 (abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:26618096%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Farina used circumferences every 5 cm (arm) or 10 cm (leg), or at proportional heights, and found errors under 2%. Chromy measured only 2 human subjects and reference cylinders; the frustum sign model ranged 2-8% depending on the person measuring. Both concern limbs, not the trunk."
+  },
+  {
+   "key": "weight_from_anthropometry_clinical",
+   "label": "Clinical equations predicting body weight from girths and lengths",
+   "status": "measured",
+   "values": "{\"chumlea1988_n_validation\":228,\"cross_validation_mean_signed_diff_kg\":[0.1,1.8],\"inputs\":\"knee height, arm and calf circumference, triceps and subscapular skinfolds\"}",
+   "sources": [
+    {
+     "title": "Chumlea WC, Guo S, Roche AF, Steinbaugh ML. Prediction of body weight for the nonambulatory elderly from anthropometry. J Am Diet Assoc 1988;88:564-8 (abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:3367012%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Elderly white sample. The abstract gives mean signed differences only, not individual SEE; clinical-validation errors were larger. Shown as an example of an empirical girth-to-weight regression."
+  },
+  {
+   "key": "action_toy_allometry_precedent",
+   "label": "Precedent: scaling figures to a 1.78 m man by classical allometry (Pope et al. 1999)",
+   "status": "reported",
+   "values": "{\"reference_height_m\":1.78,\"girths_measured\":[\"waist\",\"chest\",\"biceps\"]}",
+   "sources": [
+    {
+     "title": "Pope HG et al. Evolving ideals of male body image as seen through action toys. Int J Eat Disord 1999;26:65-72 (abstract)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:10349585%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Abstract: they measured waist, chest and biceps circumference of each figure and 'scaled these measurements using classical allometry to the height of an actual man (1.78 m)'. 'Many contemporary figures far exceed the muscularity of even the largest human bodybuilders.' The per-figure numbers are not in the abstract and were not verified."
+  },
+  {
+   "key": "height_rescaling_multipliers",
+   "label": "Weight and girth multipliers for moving a 1.80 m build to another height",
+   "status": "derived",
+   "values": "{\"formula\":\"W1/W0 = (H1/H0)^p ; G1/G0 = (H1/H0)^((p-1)/2)\",\"H2.0\":{\"W_p2\":1.235,\"W_p2.3\":1.274,\"W_p2.5\":1.301,\"W_p3\":1.372,\"G_p2\":1.054,\"G_p3\":1.111},\"H2.2\":{\"W_p2\":1.494,\"W_p3\":1.826,\"G_p2\":1.106,\"G_p3\":1.222},\"H2.5\":{\"W_p2\":1.929,\"W_p3\":2.679,\"G_p2\":1.179,\"G_p3\":1.389},\"H1.6\":{\"W_p2\":0.790,\"W_p3\":0.702,\"G_p2\":0.943,\"G_p3\":0.889}}",
+   "sources": [
+    {
+     "title": "Heymsfield 2014 (empirical p of about 2)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:25411280%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "Burton 2007 (W/H^3 as the scale-independent build index)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:18092209%20AND%20SRC:MED&resultType=core&format=json"
+    }
+   ],
+   "notes": "Pure arithmetic (out/derived_tables.json), with girths from the geometric law G proportional to sqrt(W/H). Choosing p (2 = same BMI/FFMI, about 2.2-2.45 = athlete FFM scaling implied by the height corrections, 3 = scaled copy) changes the result far more than any other modelling choice."
+  }
+ ],
+ "gaps": "I could not reach these primary sources and used secondary statements instead:\n- Siri 1961 (NAS volume) and Brozek et al. 1963: only bibliographic records. The equations come from the JSE dataset documentation, the densities from Kuriyan 2018, and the Siri form is my algebraic derivation.\n- Behnke 1961 (J Appl Physiol 16:949 and 960) and the full Katch/Behnke 1987 PDF (Cloudflare-blocked). The k constants and the often-quoted 'W = D^2 x h x 0.0111' form are unverified; only the Katch 1987 abstract was read.\n- Jensen 1978, Hatze 1980, Hanavan 1964 (DTIC blocked) and Yeadon's own mass errors (Loughborough PDF blocked). Their accuracies come from a secondary ISBS 2013 table; Hatze's '<0.05' value is ambiguous.\n- Kouri 1995 full text. The height-correction coefficient is 6.3 in the abstract and 6.1 as cited by Trexler, and Kouri's body-fat method is unknown.\n- Benn 1971 is a scanned image and was not read; Burton 2007's abstract stands in for it.\n\nNot found or untested:\n- No dataset pairs measured weight with girths at elite-bodybuilder or comic scale, so extrapolation beyond ANSUR is untested. ANSUR's maximum flexed arm is 49.0 cm and BMI 43.5, and ANSUR has no body-fat measurement, so the fat percentage behind the calibrated k_eff = 1053 kg/m3 is unknown.\n- I found no source on how individual girths change when muscle, rather than fat, is added. The recommendation to use the geometric 0.5 exponent for muscle-driven change is an assumption.\n- I did not source lung-gas volumes; the 940 kg/m3 trunk density (Peyer 2015) and my empirical k_eff stand in for them.\n- The adipose-tissue density value was not sourced (only lipid at 0.9007).\n- The per-figure measurements of Pope et al. 1999 were not verified.\n\nCaveats on my own analyses (ANSUR II, Penrose/JSE):\n- These are derived estimates on military and convenience samples.\n- My frustum model's segment-level placements (calf level, head height, hand and foot shapes) are assumptions."
+}

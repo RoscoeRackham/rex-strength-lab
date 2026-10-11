@@ -1,17 +1,26 @@
 # Round 4 audit, new art and 10 ft bodies
 
-2026-10-10 00:46:02 UTC to 2026-10-10 01:30:01 UTC. 16 assistant events, 12 subagent events, 66 tool call events, 4 user events, 1 wakeup events.
+2026-10-10 00:46:02 UTC to 2026-10-10 02:12:14 UTC. 16 assistant events, 12 subagent events, 66 tool call events, 4 user events, 1 wakeup events.
 
 The catch critique was applied and the round-4 audit launched. The owner sent new art, ruled that Ollie is as strong and resilient as Rex, and asked for a 10 ft Rex with a mass taken from the picture; a three-method body-volume workflow answered. The art went onto the page.
 
+Events are in the order they happened in the session; each workflow’s subagents are listed under the call that launched it, with their own start times.
+
+
+### Workflow `rex-duo-density-audit` · 2026-10-10 00:46:02 UTC
 
 - `Workflow` rex-duo-density-audit: Adversarial audit of the density/weight and Rex+Ollie features: find issues per lens, then verify each lens
   - run `wf_194cccff-88d`: 8 subagents, listed below
 
-<details>
-<summary>Subagent `find:physics` (rex-duo-density-audit, 2026-10-10 00:46:02 UTC): Returned findings: 13 (e.g. settle() gravitational-drag loss uses the wrong units (x v^2 instead of x v): per-trip ene; Relativistic catch leaves out the energy that reaches the catcher; the blast uses only the).</summary>
+**Subagent `find:physics`** · rex-duo-density-audit · started 2026-10-10 00:46:02 UTC
 
-Workflow run `wf_194cccff-88d`, phase `Find`, agent `a1e538250858eab5d`. Prompt, verbatim:
+- findings: 13 (2 critical, 3 major, 8 minor).
+- Most severe: settle() gravitational-drag loss uses the wrong units (x v^2 instead…; Relativistic catch leaves out the energy that reaches the catcher…; Arm wrestling 'pins' a loser whose arm is far stronger than his… (+2 more).
+
+<details>
+<summary>Prompt, verbatim (3,567 characters)</summary>
+
+Workflow run `wf_194cccff-88d`, phase `Find`, agent `a1e538250858eab5d`.
 
 ```text
 Project: "Rex Super-Strength Lab", a single-page physics simulator of an indestructible plush dinosaur (Rex) and, new in this round, his equally indestructible partner Ollie (a plush bull-man). Repo: /home/user/dino-strength-sim.
@@ -30,10 +39,15 @@ Return at most 15 findings, most severe first. Only report things you reproduced
 
 </details>
 
-<details>
-<summary>Subagent `find:regression` (rex-duo-density-audit, 2026-10-10 00:46:03 UTC): Returned findings: 12 (e.g. Fastball aims with interpolated release speeds that are up to 190x too high near vertical; Shove against a bolted partner names the wrong person and gives him the fireball).</summary>
+**Subagent `find:regression`** · rex-duo-density-audit · started 2026-10-10 00:46:03 UTC
 
-Workflow run `wf_194cccff-88d`, phase `Find`, agent `a5e28634e1be55591`. Prompt, verbatim:
+- findings: 12 (5 major, 7 minor).
+- Most severe: Fastball aims with interpolated release speeds that are up to 190x…; Shove against a bolted partner names the wrong person and gives him…; Truly immovable Rex is 'carried off with the rock he's bolted to'… (+2 more).
+
+<details>
+<summary>Prompt, verbatim (3,574 characters)</summary>
+
+Workflow run `wf_194cccff-88d`, phase `Find`, agent `a5e28634e1be55591`.
 
 ```text
 Project: "Rex Super-Strength Lab", a single-page physics simulator of an indestructible plush dinosaur (Rex) and, new in this round, his equally indestructible partner Ollie (a plush bull-man). Repo: /home/user/dino-strength-sim.
@@ -52,10 +66,15 @@ Return at most 15 findings, most severe first. Only report things you reproduced
 
 </details>
 
-<details>
-<summary>Subagent `find:data` (rex-duo-density-audit, 2026-10-10 01:16:22 UTC): Returned findings: 15 (e.g. 'Rex and Ollie' assumption card contradicts the engine on arm-wrestling share and load pat; Page claims 'same-person data' for the arm-force share, but the fact says no such data exi).</summary>
+**Subagent `find:data`** · rex-duo-density-audit · started 2026-10-10 01:16:22 UTC
 
-Workflow run `wf_194cccff-88d`, phase `Find`, agent `a31d23d4c34179753`. Prompt, verbatim:
+- findings: 15 (7 major, 8 minor).
+- Most severe: 'Rex and Ollie' assumption card contradicts the engine on…; Page claims 'same-person data' for the arm-force share, but the fact…; Neutron-matter caveat applies ρ₀-only facts from 10¹⁷ kg/m³ up, with… (+4 more).
+
+<details>
+<summary>Prompt, verbatim (3,548 characters)</summary>
+
+Workflow run `wf_194cccff-88d`, phase `Find`, agent `a31d23d4c34179753`.
 
 ```text
 Project: "Rex Super-Strength Lab", a single-page physics simulator of an indestructible plush dinosaur (Rex) and, new in this round, his equally indestructible partner Ollie (a plush bull-man). Repo: /home/user/dino-strength-sim.
@@ -74,10 +93,15 @@ Return at most 15 findings, most severe first. Only report things you reproduced
 
 </details>
 
-<details>
-<summary>Subagent `find:ux` (rex-duo-density-audit, 2026-10-10 01:33:18 UTC): Returned findings: 15 (e.g. Three tabs give three different answers to the same unstoppable-force setup; Arm wrestle prints 'wins by only ∞ N because his feet hold ∞ N, not his full unlimited').</summary>
+**Subagent `find:ux`** · rex-duo-density-audit · started 2026-10-10 01:33:18 UTC
 
-Workflow run `wf_194cccff-88d`, phase `Find`, agent `a24b2c513ceb7aa1e`. Prompt, verbatim:
+- findings: 15 (1 critical, 12 major, 2 minor).
+- Most severe: Three tabs give three different answers to the same unstoppable-force…; Arm wrestle prints 'wins by only ∞ N because his feet hold ∞ N, not…; Light-speed charge into a bolted Rex: the verdict says he is torn… (+10 more).
+
+<details>
+<summary>Prompt, verbatim (3,621 characters)</summary>
+
+Workflow run `wf_194cccff-88d`, phase `Find`, agent `a24b2c513ceb7aa1e`.
 
 ```text
 Project: "Rex Super-Strength Lab", a single-page physics simulator of an indestructible plush dinosaur (Rex) and, new in this round, his equally indestructible partner Ollie (a plush bull-man). Repo: /home/user/dino-strength-sim.
@@ -96,10 +120,14 @@ Return at most 15 findings, most severe first. Only report things you reproduced
 
 </details>
 
-<details>
-<summary>Subagent `verify:physics` (rex-duo-density-audit, 2026-10-10 01:51:54 UTC): Returned verdicts: 13 (e.g. settle() gravitational-drag loss uses the wrong units (x v^2 instead of x v): per-trip ene; Relativistic catch leaves out the energy that reaches the catcher; the blast uses only the).</summary>
+**Subagent `verify:physics`** · rex-duo-density-audit · started 2026-10-10 01:51:54 UTC
 
-Workflow run `wf_194cccff-88d`, phase `Verify`, agent `a74cc10aa7ca5565e`. Prompt, verbatim:
+- verdicts: 13 (13 confirmed).
+
+<details>
+<summary>Prompt, verbatim (21,758 characters)</summary>
+
+Workflow run `wf_194cccff-88d`, phase `Verify`, agent `a74cc10aa7ca5565e`.
 
 ```text
 Project: "Rex Super-Strength Lab", a single-page physics simulator of an indestructible plush dinosaur (Rex) and, new in this round, his equally indestructible partner Ollie (a plush bull-man). Repo: /home/user/dino-strength-sim.
@@ -237,10 +265,15 @@ FINDINGS:
 
 </details>
 
-<details>
-<summary>Subagent `verify:data` (rex-duo-density-audit, 2026-10-10 02:00:22 UTC): Returned verdicts: 15 (e.g. 'Rex and Ollie' assumption card contradicts the engine on arm-wrestling share and load pat; Page claims 'same-person data' for the arm-force share, but the fact says no such data exi).</summary>
+**Subagent `verify:data`** · rex-duo-density-audit · started 2026-10-10 02:00:22 UTC
 
-Workflow run `wf_194cccff-88d`, phase `Verify`, agent `ab0b278259de539e8`. Prompt, verbatim:
+- verdicts: 15 (14 confirmed, 1 refuted).
+- Refuted: Fact fields the density critique flagged remain unfixed or stale.
+
+<details>
+<summary>Prompt, verbatim (21,184 characters)</summary>
+
+Workflow run `wf_194cccff-88d`, phase `Verify`, agent `ab0b278259de539e8`.
 
 ```text
 Project: "Rex Super-Strength Lab", a single-page physics simulator of an indestructible plush dinosaur (Rex) and, new in this round, his equally indestructible partner Ollie (a plush bull-man). Repo: /home/user/dino-strength-sim.
@@ -396,10 +429,14 @@ FINDINGS:
 
 </details>
 
-<details>
-<summary>Subagent `verify:ux` (rex-duo-density-audit, 2026-10-10 02:03:46 UTC): Returned verdicts: 15 (e.g. Three tabs give three different answers to the same unstoppable-force setup; Arm wrestle prints 'wins by only ∞ N because his feet hold ∞ N, not his full unlimited').</summary>
+**Subagent `verify:ux`** · rex-duo-density-audit · started 2026-10-10 02:03:46 UTC
 
-Workflow run `wf_194cccff-88d`, phase `Verify`, agent `a74a7166a65bb7d1d`. Prompt, verbatim:
+- verdicts: 15 (15 confirmed).
+
+<details>
+<summary>Prompt, verbatim (24,166 characters)</summary>
+
+Workflow run `wf_194cccff-88d`, phase `Verify`, agent `a74a7166a65bb7d1d`.
 
 ```text
 Project: "Rex Super-Strength Lab", a single-page physics simulator of an indestructible plush dinosaur (Rex) and, new in this round, his equally indestructible partner Ollie (a plush bull-man). Repo: /home/user/dino-strength-sim.
@@ -555,10 +592,14 @@ FINDINGS:
 
 </details>
 
-<details>
-<summary>Subagent `verify:regression` (rex-duo-density-audit, 2026-10-10 02:11:30 UTC): Returned verdicts: 12 (e.g. Fastball aims with interpolated release speeds that are up to 190x too high near vertical; Shove against a bolted partner names the wrong person and gives him the fireball).</summary>
+**Subagent `verify:regression`** · rex-duo-density-audit · started 2026-10-10 02:11:30 UTC
 
-Workflow run `wf_194cccff-88d`, phase `Verify`, agent `a40ef564938af06e6`. Prompt, verbatim:
+- verdicts: 12 (12 confirmed).
+
+<details>
+<summary>Prompt, verbatim (18,672 characters)</summary>
+
+Workflow run `wf_194cccff-88d`, phase `Verify`, agent `a40ef564938af06e6`.
 
 ```text
 Project: "Rex Super-Strength Lab", a single-page physics simulator of an indestructible plush dinosaur (Rex) and, new in this round, his equally indestructible partner Ollie (a plush bull-man). Repo: /home/user/dino-strength-sim.
@@ -731,7 +772,7 @@ Status: catch-game fixes are done and tested; the final audit and the full brows
 
 Next: fix whatever the audit confirms, copy everything to lodge-docs, commit and push, then republish the page at the same link.
 
-### Owner · 2026-10-10 00:47:37 UTC
+## Owner · 2026-10-10 00:47:37 UTC
 
 *(no text; image only)*
 
@@ -781,7 +822,7 @@ The new picture is in the build and displays correctly at phone width. It's the 
 
 **Next:** when the audit reports back, I'll fix what it confirms, copy everything to lodge-docs, then commit, push and republish the page at the same link.
 
-### Owner · 2026-10-10 00:58:36 UTC
+## Owner · 2026-10-10 00:58:36 UTC
 
 ```text
 Ollie is as strong and resilient as Rex so keep that in mind.
@@ -820,7 +861,7 @@ Noted. Ollie now counts as equal to Rex in strength and toughness everywhere, no
 
 **Where things stand:** the final audit is still running. When it finishes I'll fix what it confirms, then rebuild with these changes and the new picture. After that I'll commit and push to lodge-docs and republish the page at the same link.
 
-### Owner · 2026-10-10 01:18:43 UTC
+## Owner · 2026-10-10 01:18:43 UTC
 
 ```text
 Can we also calculate Rex’s default height at 10 feet and his mass as based on this picture?
@@ -833,13 +874,20 @@ Can we also calculate Rex’s default height at 10 feet and his mass as based on
 I'll set Rex's default height to 10 ft (3.05 m) and estimate his mass from this picture. Three independent estimators will each measure it a different way, then a checker reconciles them. Ollie gets measured from the same picture, since a 10 ft Rex next to a 2 m Ollie would contradict it.
 
 
+### Workflow `rex-mass-from-picture` · 2026-10-10 01:20:39 UTC
+
 - `Workflow` rex-mass-from-picture: Estimate Rex (and Ollie) body volume and mass from the reference picture at a 10 ft height, three independent methods plus an adversarial check
   - run `wf_1b86f7c9-3cf`: 4 subagents, listed below
 
-<details>
-<summary>Subagent `estimate:slices` (rex-mass-from-picture, 2026-10-10 01:20:40 UTC): Method A, pixel silhouette slices. Scripts and results are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/mass/.</summary>
+**Subagent `estimate:slices`** · rex-mass-from-picture · started 2026-10-10 01:20:40 UTC
 
-Workflow run `wf_1b86f7c9-3cf`, phase `Estimate`, agent `a216ac860c0a552bc`. Prompt, verbatim:
+- Rex 2,360 kg; Ollie 2,430 kg.
+- Method A, pixel silhouette slices. Scripts and results are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/mass/.
+
+<details>
+<summary>Prompt, verbatim (3,171 characters)</summary>
+
+Workflow run `wf_1b86f7c9-3cf`, phase `Estimate`, agent `a216ac860c0a552bc`.
 
 ```text
 Task: estimate the body volume and mass of two characters from one reference picture, for a physics simulator.
@@ -853,10 +901,15 @@ METHOD A, pixel silhouette slices: segment each figure from the grey background 
 
 </details>
 
-<details>
-<summary>Subagent `estimate:solids` (rex-mass-from-picture, 2026-10-10 01:20:41 UTC): METHOD B, segment solids. The scripts and outputs are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/mass/methodb/: methodb.py (main), segdefs.py (every hand-read pixel measurement), geom.py, seg3.py (silhouette), overlaysegments.png (segment polygons, axes and stations drawn on the ...</summary>
+**Subagent `estimate:solids`** · rex-mass-from-picture · started 2026-10-10 01:20:41 UTC
 
-Workflow run `wf_1b86f7c9-3cf`, phase `Estimate`, agent `ae80d02cc761fa5e7`. Prompt, verbatim:
+- Rex 2,485 kg; Ollie 2,432 kg.
+- METHOD B, segment solids. The scripts and outputs are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/mass/methodb/: methodb.py (main), segdefs.py (every hand-read pixel measurement), geom.py, seg3.py (silhouette), overlaysegments.png (segment polygons, axes and stations ...
+
+<details>
+<summary>Prompt, verbatim (3,005 characters)</summary>
+
+Workflow run `wf_1b86f7c9-3cf`, phase `Estimate`, agent `ae80d02cc761fa5e7`.
 
 ```text
 Task: estimate the body volume and mass of two characters from one reference picture, for a physics simulator.
@@ -870,10 +923,15 @@ METHOD B, segment solids: measure each body segment by hand from the picture (le
 
 </details>
 
-<details>
-<summary>Subagent `estimate:girths` (rex-mass-from-picture, 2026-10-10 01:49:44 UTC): METHOD C, anthropometric segment scaling. All files are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/mass/methodc/: methodc.py (model and Monte Carlo), area.py, writeresults.py, annotate.py, crop.py; results in methodcresults.json and methodcraw.json; every pixel reading is drawn on ...</summary>
+**Subagent `estimate:girths`** · rex-mass-from-picture · started 2026-10-10 01:49:44 UTC
 
-Workflow run `wf_1b86f7c9-3cf`, phase `Estimate`, agent `ae287f2021ae1144f`. Prompt, verbatim:
+- Rex 2,470 kg; Ollie 2,554 kg.
+- METHOD C, anthropometric segment scaling. All files are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/mass/methodc/: methodc.py (model and Monte Carlo), area.py, writeresults.py, annotate.py, crop.py; results in methodcresults.json and methodcraw.json; every pixel ...
+
+<details>
+<summary>Prompt, verbatim (3,251 characters)</summary>
+
+Workflow run `wf_1b86f7c9-3cf`, phase `Estimate`, agent `ae287f2021ae1144f`.
 
 ```text
 Task: estimate the body volume and mass of two characters from one reference picture, for a physics simulator.
@@ -887,10 +945,15 @@ METHOD C, anthropometric scaling: compare each figure's proportions (shoulder br
 
 </details>
 
-<details>
-<summary>Subagent `check` (rex-mass-from-picture, 2026-10-10 02:12:14 UTC): Rex's 10 ft height sets the scale: 790 pixels from crest tip to floor, so each pixel is about 3.9 mm. Ollie comes out at 3.06 m to his horn tips at the same scale.</summary>
+**Subagent `check`** · rex-mass-from-picture · started 2026-10-10 02:12:14 UTC
 
-Workflow run `wf_1b86f7c9-3cf`, phase `Check`, agent `afa2e4e9389d4e28b`. Prompt, verbatim:
+- Rex 2,700 kg; Ollie 2,700 kg.
+- Rex's 10 ft height sets the scale: 790 pixels from crest tip to floor, so each pixel is about 3.9 mm. Ollie comes out at 3.06 m to his horn tips at the same scale.
+
+<details>
+<summary>Prompt, verbatim (52,576 characters)</summary>
+
+Workflow run `wf_1b86f7c9-3cf`, phase `Check`, agent `afa2e4e9389d4e28b`. Lines over 1,500 characters are cut here; the full prompt is in [prompts/afa2e4e9389d4e28b.txt](prompts/afa2e4e9389d4e28b.txt).
 
 ```text
 Task: estimate the body volume and mass of two characters from one reference picture, for a physics simulator.
@@ -904,7 +967,7 @@ You are the CHECKER. Three independent estimates are below. Be adversarial: re-m
 ESTIMATES:
 [
  {
-  "method": "Method A, pixel silhouette slices. Scripts and results are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/mass/. The pipeline runs seg.py, regions.py, volume.py, compute.py, run_all.py, final.py, report.py, then write_json.py, which writes results_methodA.json.\n\n(1) Mask. I fitted a smooth model of the grey wall and floor (iterated push-pull inpainting). A pixel counts as foreground when its RGB distance from the model is over 22, or its chroma (R-B) is more than 7 above the model, or it is more than 18 darker. Only holes under 150 px are filled, so real gaps such as arm-to-torso windows stay background. A hand-drawn divider polyline separates Ollie from Rex where they touch: the arms at x≈590-625, y≈255-440, and the boot toe against the claw at x≈615. Floor contact shadows are cut off by tight foot polygons. Check images: overlay_regions.png, unassigned.png (only floor shadows are left unassigned) and ov_raw.png.\n\n(2) Regions. Hand polygons from 2-4x zoom grids split each figure into head+neck, crest/horns/ears, torso, upper arm/forearm/hand per side, legs (crotch to pants hem), feet (hem to sole) and tail. Ollie's tail is split into core and tuft. Rex's thigh pouches are cut out of the hip widths.\n\n(3) Volume. Each 1-px slice is an ellipse with area = pi/4 x k x w^2 per run, where k = depth along the camera axis divided by visible width. Upright parts (head, torso) are sliced by image rows. Limbs are first rotated so their axis is vertical; the angles are set by hand because PCA failed on fat blobs. They are Rex arms -6/-16/0 and +16/+8/0 deg, Rex legs -3/+13; Ollie arms -45/+60/0 and +16/-35/0, legs -22/+6. The curved tail, crest, horns and ears use local thickness: sum over pixels of pi/4 x k x t, where t is the diameter of the largest inscribed disc. Synthetic tests: the rotated slicer is exact on a 40-degree cylinder, where plain rows overestimate by 25%. Local thickness is within 1.4% on that cylinder and 18% high on a sphere.\n\n(4) Hidden and modelled parts. Feet use a wedge, V = fill x L x W x H. Rex's hidden tail base is a frustum and Ollie's hidden tail stub is a small cylinder. Rex's tail also gets a foreshortening factor.\n\n(5) Scale. Rex's 3.048 m is set over 790 px, so m/px = 0.0038582, and Ollie uses the same scale as ruled.\n\n(6) Range. The low/high values combine independent log factors in quadrature: depth ratios + fullness (one factor, fully correlated across the body), arm-view asymmetry, feet model, tail extras, mask edge ±1 px (Ollie -2 px for fur), pixel scale ±0.8%, Ollie's perspective, and density. Bounds with every factor at its extreme are also reported.",
+  "method": "Method A, pixel silhouette slices. Scripts and results are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/mass/. The pipeline runs seg.py, regions.py, volume.py, compute.py, run_all.py, final.py, report.py, then write_json.py, which writes results_methodA.json.\n\n(1) Mask. I fitted a smooth model of the grey wall and floor (iterated push-pull inpainting). A pixel counts as foreground when its RGB distance from the model is over 22, or its chroma (R-B) is more than 7 above the model, or it is more than 18 darker. Only holes under 150 px are filled, so  … [2,081 more characters on this line; the full prompt is in prompts/afa2e4e9389d4e28b.txt]
   "rex": {
    "heightPx": 790,
    "heightPxSkull": 758,
@@ -939,11 +1002,11 @@ ESTIMATES:
    "footSoleM2": 0.15,
    "heightSkullM_hairTop": 3.021
   },
-  "assumptions": "HEIGHT AND SCALE\n- Floor row under each body. A standing figure's head is over its ankles, so I used the floor under the ankles, not the toe tips.\n- Rex: the left foot sits further back, heel bottom about row 788-790; the right foot points at the camera, toe pads 816, claws 822. His pants hems are at rows 722 and 735, so the right ankle is about 13 px nearer the camera. That puts the floor at about 791 under the left ankle and 804 under the right; mean 798 ± 6.\n- Ollie: boot heel/toe rows are 806/815 and 801/813, giving ankle floors of about 809 and 805; mean 807 ± 5.\n- Head tops are the visual half-coverage edge. The mask has a 1-2 px antialias halo, so the mask top rows are 6 for Rex and 9 for Ollie.\n  - Rex crest tip: row 8 ± 2.\n  - Rex skull dome under the spikes: row 40 ± 4.\n  - Ollie horn tip: row 11.\n  - Ollie hair top: row 24.\n  - Ollie skull: about row 34, allowing about 4 cm of hair.\n- Rex: 798 - 8 = 790 px, so 3.048 m / 790 px = 0.0038582 m/px. Error is ±0.8% linear and ±2.4% in volume.\n- Rex to the skull: 758 px = 2.925 m.\n- Ollie at the same scale (as ruled):\n  - horn tip: 796 px = 3.071 m\n  - hair top: 783 px = 3.021 m\n  - skull: 773 px = 2.982 m\n- These include about 7 cm of lug sole, so Ollie barefoot to the horn tip is about 3.00 m.\n- Perspective: Ollie's floor sits 9 px lower than Rex's, so he is likely about 2% nearer the camera. His true size would then be about 2% smaller (horn height about 3.01 m) and his volume about 6% smaller. This is included as a one-sided low factor of 0.94.\n- Camera tilt and keystone are ignored (about 1-2%).\n\nDEPTH RATIOS (k = depth / visible width), and why\nI computed the human anchors from the ANSUR II public male CSV (n = 4,082, downloaded from the Penn State OpenLab site; saved as ansur_ratios.json). Values are for all men, then the heaviest 10%, then the 10% with the most V-shaped chest-to-waist ratio:\n- chest depth / chest breadth: 0.877, 0.946, 0.842\n- waist depth / waist breadth: 0.727, 0.769, 0.698\n- buttock depth / hip breadth: 0.710, 0.754, 0.681\n- head length / head breadth: 1.294\n- foot length / foot breadth: 2.67\n- Fullness: ANSUR girths are larger than ellipses with the same breadth and depth (waist 1.054x, buttock 1.090x; chest 1.24x, because the caliper breadth misses the lats). Real trunk sections are boxier than ellipses, so I applied ×1.07 (range 1.00-1.12) to the torso. Without it, an ellipse-only model of the ANSUR mean man comes out about 6% light.\n\nRatios used:\n- Torso chest zone: 0.90 (0.78-1.05). Abdomen: 0.75 for Rex, 0.72 for Ollie (lean visible abs), range 0.62-0.88. Pelvis: 0.72 (0.65-0.85). These bodies are far more muscular than humans: lats widen the outline (which lowers k), while pecs, traps and spinal muscles add depth (which raises it). With no side view I kept near-human values and wide ranges.\n- Rex head+neck: 1.05 (0.85-1.30). The head is turned three-quarters and tipped up, so the snout is partly in the silhouette, and the neck is roughly round.\n- Ollie's head: 1.25 (1.05-1.45), from ANSUR's 1.29; neck 1.0.\n- Upper arms: 1.0 (0.85-1.15); bodybuilder arms are close to round.\n- Forearms: 0.9 (0.75-1.05).\n- Rex's open clawed hands: 0.6 (0.45-0.8). Ollie's fists: 0.75 (0.6-0.9).\n- Thigh, knee and calf in pants: 1.0 (0.85-1.15). Pants count as tight per the brief, though they look a little baggy, which pushes toward the low end.\n- Rex's tail: 0.8 (0.6-1.0). The picture shows the tail's side (dorsal spikes on top), so its visible width is its height, and reptile tails are flattened side to side. Foreshortening ×1.12 (1.0-1.25): the tail rests on the floor at about row 757 versus 798 under Rex, so it runs roughly 0.6-1.3 m back from the camera (depending on the unknown lens).\n- Rex's hidden tail base: 0.09 m^3 (0.04-0.18).\n- Rex's crest spikes: 0.5 (flattened plates). Ollie's horns: 1.0. Ears: 0.25.\n- Ollie's tail tuft is hair: packing 0.15 (0.05-0.30).\n- Rex's thigh pouches overhang the hips by about 25/20 px. Left in, they would inflate the pelvis ellipse by about 30%. I removed them from the widths and added them back as 0.15 m slabs (0.009 m^3).\n\nARMS\nThe two arms of each figure look very different in the picture:\n- Rex: image-left arm 0.115 m^3, image-right arm 0.278 (posed broadside).\n- Ollie: image-left arm 0.216 m^3 (fully shown), image-right arm 0.048 (turned away and behind the vest).\n\nTreating both bodies as symmetric:\n- Central: each arm is the mean of the two views.\n- Low: the geometric mean. This is exact if two elliptical limbs are seen from orthogonal sides.\n- High: the larger view.\n\nFEET (no side view)\nFeet use a wedge: V = fill × L × W × H.\n- Rex:\n  - W = 0.656 m (170 px across the forward-pointing foot, including splayed toes; range 155-180 px).\n  - L/W = 1.2 (0.95-1.6). The turned-out left foot spans only 198 px, so the feet are broad and short; the human ratio of 2.67 does not apply.\n  - H = 0.293 m; fill 0.45 (0.35-0.55).\n- Ollie's boots:\n  - L = 0.70 m (0.58-0.82) and W = 0.30 m (0.25-0.35). These are inferred from boots turned out about 30-45 degrees with visible spans of 152 and 183 px and shafts about 0.4 m wide.\n  - H = 0.32 m; fill 0.50 (0.40-0.60).\n- Sole outline area = c × L × W, with c = 0.70 (0.60-0.80) for gaps between toes and the boot arch gap.\n  - Rex: 0.36 m^2 (0.20-0.62) per foot.\n  - Ollie: 0.147 m^2 (0.087-0.23) per boot. On hard floor, lugs alone contact less.\n\nFRONTAL AREA\nThis is the mask pixel count × scale², with real gaps excluded.\n- Rex: 4.92 m^2, of which the tail is 0.47 m^2.\n- Ollie: 4.48 m^2, including the hair tuft.\n\nDENSITY\n1,030 kg/m^3 (980-1,065). The derivation is in densitySource.\n\nRANGE\nVolume uncertainty factors (low / high multipliers on the central volume):\n\n| Factor | Rex | Ollie |\n|---|---|---|\n| Depth ratios + fullness | 0.842 / 1.184 | 0.835 / 1.201 |\n| Arm view | 0.985 / 1.071 | 0.974 / 1.071 |\n| Feet | 0.971 / 1.049 | 0.987 / 1.018 |\n| Tail extras | 0.973 / 1.045 | 0.997 / 1.004 |\n| Mask edge | 0.971 / 1.030 | 0.947 / 1.027 |\n| Scale | 0.976 / 1.024 | 0.976 / 1.024 |\n| Perspective | — | 0.94 / 1.0 |\n\n- These are combined in quadrature with density (0.951 / 1.034).\n- With every factor at its extreme at once, the bounds are 1,670-3,580 kg for Rex and 1,610-3,480 kg for Ollie.",
-  "sanity": "HUMAN REFERENCES SCALED TO 3.048 m (mass × (3.048/h)^3)\n- Average man, 75 kg at 1.75 m: 396 kg.\n- ANSUR II mean man, 85.5 kg at 1.756 m: 447 kg.\n- ANSUR II heaviest 10%, 113 kg at 1.815 m: 535 kg.\n- Large bodybuilder, 125-136 kg at 1.78 m: 630-680 kg. At 150 kg and 1.80 m: 730 kg.\n\nHOW THE ESTIMATES COMPARE\n- Rex at 2,360 kg (1,950-2,880) is about 6x the scaled average man and about 3.5-3.8x a scaled top bodybuilder.\n- Ollie at 2,430 kg (1,970-2,970) is similar.\n\nWHY THE PICTURE SUPPORTS THAT\n- Arm-to-arm width is about 2.15 m for both figures. A scaled ANSUR man's shoulder width is 0.89 m, so they are 2.4x wider.\n- Rex's torso alone is 0.94 m wide on average and 1.20 m at most. A scaled human's is about 0.5-0.6 m.\n- Ollie's crotch is at 0.335 of his height, against 0.47 for humans. His torso region is therefore about 1.4x longer relative to height and about 2.2x wider, which is why his torso is 66% of his volume.\n- Simple isotropic-thickening check: scaled ANSUR man × (width ratio)^2 gives 447 × 2.43^2 ≈ 2,630 kg for Rex and 457 × 2.39^2 ≈ 2,610 kg for Ollie. Both agree with the slice results to within about 10%.\n\nSEGMENT SHARES\n- Rex: torso 47%, arms 17%, legs 17%, tail 9%, feet 6%, head 4%.\n- A human's trunk is about 50% of mass. Rex's extra share sits in the tail and the huge feet.\n\nMETHOD AND MASK CHECKS\n- Synthetic tests pass: the rotated slicer is exact on a tilted cylinder; local thickness is within 1.4% on a tube and 18% high on a sphere.\n- Region overlays were checked by eye (overlay_regions.png). Only floor shadows are left unassigned (unassigned.png).\n\nCAVEATS\n- Depth is the dominant unknown, worth about ±15-20%.\n- Treating the pants and Ollie's fur outline as body pushes toward the high side.\n\nNOTE ON THE SHARED FOLDER\nA separate Method B run has written its own files into the same folder: results.json, results_method_b.json, method_b.py, mask.npy and others. I did not write, check or overwrite those files; my results are in results_methodA.json. Its Rex volume, 2.34 m^3, is within 2.5% of this method's 2.29 m^3. It also uses a 800 px height scale and a 1,060 density."
+  "assumptions": "HEIGHT AND SCALE\n- Floor row under each body. A standing figure's head is over its ankles, so I used the floor under the ankles, not the toe tips.\n- Rex: the left foot sits further back, heel bottom about row 788-790; the right foot points at the camera, toe pads 816, claws 822. His pants hems are at rows 722 and 735, so the right ankle is about 13 px nearer the camera. That puts the floor at about 791 under the left ankle and 804 under the right; mean 798 ± 6.\n- Ollie: boot heel/toe rows are 806/815 and 801/813, giving ankle floors of about 809 and 805; mean 807 ± 5.\n- H … [5,744 more characters on this line; the full prompt is in prompts/afa2e4e9389d4e28b.txt]
+  "sanity": "HUMAN REFERENCES SCALED TO 3.048 m (mass × (3.048/h)^3)\n- Average man, 75 kg at 1.75 m: 396 kg.\n- ANSUR II mean man, 85.5 kg at 1.756 m: 447 kg.\n- ANSUR II heaviest 10%, 113 kg at 1.815 m: 535 kg.\n- Large bodybuilder, 125-136 kg at 1.78 m: 630-680 kg. At 150 kg and 1.80 m: 730 kg.\n\nHOW THE ESTIMATES COMPARE\n- Rex at 2,360 kg (1,950-2,880) is about 6x the scaled average man and about 3.5-3.8x a scaled top bodybuilder.\n- Ollie at 2,430 kg (1,970-2,970) is similar.\n\nWHY THE PICTURE SUPPORTS THAT\n- Arm-to-arm width is about 2.15 m for both figures. A scaled ANSUR man's shou … [1,560 more characters on this line; the full prompt is in prompts/afa2e4e9389d4e28b.txt]
  },
  {
-  "method": "METHOD B, segment solids. The scripts and outputs are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/mass/method_b/: method_b.py (main), segdefs.py (every hand-read pixel measurement), geom.py, seg3.py (silhouette), overlay_segments.png (segment polygons, axes and stations drawn on the picture), results.json (summary) and results_method_b.json (full detail). The mass/ folder is shared with another agent working in parallel, so all of my files are in the method_b/ subfolder. I briefly moved that agent's seg.py and bg.npy into my folder by mistake and then put them back unchanged. None of its scripts read my files.\n\n(1) Silhouette. The grey studio background was modelled by iterative normalized convolution (Gaussian sigma 25 px, wall and floor fitted separately). Foreground is colour distance > 20 or local std > 9; on the floor, pixels > 45 levels darker than the floor model. Holes were filled only if < 600 px or dark (clothing). The two figures were separated by a hand-drawn polyline along the edge of Ollie's arm, fist and boot, because Ollie's arm overlaps Rex's forearm.\n\n(2) Heights were read on 4-6x gridded zooms. The ground line is the mean of the two foot-contact centres, because the feet sit at different depths. Rex's far foot touches at about y 798 and his near foot at about y 819, so his ground is 808.5. The tip of his tallest crest spike is at y 8.5, giving 800.0 px = 3.048 m, so the scale is 0.003810 m/px. The same scale is used for Ollie: ground 812, horn tip y 12.5.\n\n(3) Trunk. Left and right silhouette edges were read by hand at 15 stations (y 128-543 for Rex, y 108-558 for Ollie). They exclude the arms, the flat cargo-pocket flaps and the vest buckle straps. The trunk was integrated in 1-px slices with an elliptic cross-section, area = pi/4*w*(k*w), where k varies with height (chest, then waist, then pelvis, then crotch).\n\n(4) Arms. Each arm part (upper arm, forearm, hand) has a hand-drawn polygon and axis. Chord widths perpendicular to the axis were measured every 1 px from the silhouette and stacked as elliptic sections. The slices sweep 94-99% of the polygon area. For Ollie, 3 px of fur fringe was removed from each width.\n\n(5) Legs. Thigh (crotch to knee) and shank (knee to cuff) widths were read every 10-20 px for each leg separately and stacked with circular-ish sections.\n\n(6) Head is an ellipsoid; neck a cylinder; crest, horns and ears are small solids; hands are silhouette area x thickness; Ollie's fists are ellipsoids; feet and boots are breadth x assumed length x height x fill.\n\n(7) Rex's tail was measured along its curve. Nine stations from where it emerges behind his near leg to the tip. Perpendicular thickness = vertical chord x cos(local slope). Arcs and thicknesses were scaled up for perspective. The hidden root section is modelled as an elliptic frustum. All tail pieces are elliptic frustums.\n\n(8) Uncertainty. Every assumed ratio has a central value and a 90% interval. A 40,000-draw Monte Carlo correlates the nine depth ratios (rho = 0.85, one shared 'how deep did the artist imagine him' factor) and adds: 3% width-reading error per body group, 0.6% overall scale error from ground-line ambiguity, 5% model-form error, and density drawn from a triangular distribution. Low and high are the 5th and 95th percentiles of mass; the volume range comes from the same run. Deterministic all-low and all-high extremes are also given below.",
+  "method": "METHOD B, segment solids. The scripts and outputs are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/mass/method_b/: method_b.py (main), segdefs.py (every hand-read pixel measurement), geom.py, seg3.py (silhouette), overlay_segments.png (segment polygons, axes and stations drawn on the picture), results.json (summary) and results_method_b.json (full detail). The mass/ folder is shared with another agent working in parallel, so all of my files are in the method_b/ subfolder. I briefly moved that agent's seg.py and bg.npy into my folder by mistake and th … [2,874 more characters on this line; the full prompt is in prompts/afa2e4e9389d4e28b.txt]
   "rex": {
    "heightPx": 800,
    "mPerPx": 0.00381,
@@ -953,7 +1016,7 @@ ESTIMATES:
    "volumeM3": 2.344,
    "volumeLowM3": 2.04,
    "volumeHighM3": 2.72,
-   "segments": "Central values in m^3 (all-low / all-high in brackets); px at 0.00381 m/px. Left and right are Rex's own; he faces the camera, so the image-left leg is his right. HEAD+NECK 0.067 [0.058/0.076]: skull ellipsoid 95 px tall (y42-137) x 104 px breadth (from a 120 px three-quarter-view width at about 40 deg yaw) x length 1.40*breadth = 0.36x0.40x0.56 m, 0.0417; crest spikes 150x30x20 px x 0.35 fill, 0.0017; neck cylinder d 135 px (0.51 m) x 30 px, 0.0237. TORSO 0.957 [0.841/1.103]: chest y128-330, widths 175/220/245/265/275/277/270/253 px (0.67-1.06 m), 0.382; waist y330-395, widths 253/232/237 px, 0.121; pelvis (belt to crotch) y395-543, widths 237/302/311/311/309/305 px (0.90-1.19 m), 0.454. EACH ARM 0.260 [0.215/0.305], modelled from his fully visible left arm (image-right). Upper arm incl. deltoid: axis 214 px (0.82 m), perpendicular widths 119/128/160/174 px at 20/40/60/80%, mean 137 px (0.52 m), 0.168. Forearm incl. wristband: 124 px (0.47 m), widths 155/153/152/125/93 px, mean 127 px (0.48 m), 0.078. Hand: silhouette 8,024 px^2, mean width 82 px, thickness 0.5x width, fill 0.75, 0.0136. His right arm (image-left) measures only 0.117 because it is partly hidden behind Ollie's arm. RIGHT LEG 0.169 [0.150/0.191]: thigh y543-590, widths 160/159/147/148 px, 0.047; shank y590-720, widths 148/169/174/164/141/131/124/120/116 px (calf bulge 0.66 m), 0.122. LEFT LEG 0.159 [0.142/0.180]: thigh 0.045 + shank 0.114 (widths 144-165 px). FEET 0.143 for both [0.091/0.218]: each 0.0713 = breadth 155 px (0.59 m, near foot at y 780) x assumed length 1.3x breadth (0.77 m) x height cuff-to-ground 86 px (0.33 m) x wedge fill 0.48. TAIL 0.330 [0.192/0.575], total length about 2.47 m. Hidden root section behind the leg: root d 0.58 m tapering to 0.46 m over 1.21 m, 0.231. Visible part: thickness 0.46/0.44/0.40/0.34/0.28 m at image x = 1060/1100/1140/1180/1210, then 0.22/0.16/0.10/0 m up the curl to the tip; arcs 0.24/0.21/0.18/0.13/0.12/0.18/0.13/0.07 m; 0.099. Tail width/height 0.9. Shares of total (central): torso 41%, arms 22%, tail 14%, legs 14%, feet 6%, head+neck 3%.",
+   "segments": "Central values in m^3 (all-low / all-high in brackets); px at 0.00381 m/px. Left and right are Rex's own; he faces the camera, so the image-left leg is his right. HEAD+NECK 0.067 [0.058/0.076]: skull ellipsoid 95 px tall (y42-137) x 104 px breadth (from a 120 px three-quarter-view width at about 40 deg yaw) x length 1.40*breadth = 0.36x0.40x0.56 m, 0.0417; crest spikes 150x30x20 px x 0.35 fill, 0.0017; neck cylinder d 135 px (0.51 m) x 30 px, 0.0237. TORSO 0.957 [0.841/1.103]: chest y128-330, widths 175/220/245/265/275/277/270/253 px (0.67-1.06 m), 0.382; waist y330-395, widths … [1,505 more characters on this line; the full prompt is in prompts/afa2e4e9389d4e28b.txt]
    "frontAreaM2": 5.13,
    "footSoleM2": 0.28,
    "density": 1060,
@@ -971,7 +1034,7 @@ ESTIMATES:
    "volumeM3": 2.294,
    "volumeLowM3": 1.97,
    "volumeHighM3": 2.68,
-   "segments": "Central values in m^3 (all-low / all-high in brackets); same 0.00381 m/px as Rex. Heights: horn tip y12.5 (799.5 px) = 3.046 m (10.0 ft); hair top y24 (788 px) = 3.00 m; skull top under about 11 px of hair at y35 (777 px) = 2.96 m (9.7 ft). Ground = mean of boot contacts (815, 809) = 812. HEAD+NECK 0.059 [0.053/0.065]: head ellipsoid breadth 97 px x height 118 px (82 px visible face height corrected for a ~25 deg backward tilt, plus vertex) x length 1.32x breadth = 0.37x0.45x0.49 m, 0.0424; horns as cones 70x25 and 65x22 px plus ears, 0.0015; neck d 125 px x 22 px, 0.0149. TORSO 1.423 [1.251/1.639]: chest and traps y108-340, widths 225/257/283/298/307/307/300/290 px (0.86-1.17 m), 0.569; waist y340-395, 290/270/300 px, 0.146; pelvis (belt to crotch) y395-558, widths 300/338/362/371/378/374/368 px (1.14-1.44 m; these include the upper thighs), 0.709. EACH ARM 0.182 [0.151/0.213], modelled from his fully visible right arm (image-left, akimbo). Upper arm incl. deltoid: axis 233 px (0.89 m), widths 107/134/160/103 px at 20/40/60/80%, mean 111 px (0.42 m) after removing 3 px of fur, 0.127. Forearm: 164 px (0.62 m), mean width 70 px (0.27 m), 0.033. Fist: ellipsoid 95x90 px x depth 0.85x width, x1.1, 0.022. His left arm (image-right) measures only 0.030 because it is foreshortened and hidden by his turned torso. RIGHT LEG (image-left) 0.177 [0.158/0.200]: thigh y558-600, widths 165/167/169/168 px, 0.051; shank y600-725, widths 168/176/170/163/138/134/128/115/112 px, 0.126. LEFT LEG 0.169 [0.151/0.191]: 0.044 + 0.125. BOOTS 0.093 for both [0.065/0.126]: each 0.0465 = breadth 95 px (0.36 m, about 0.82x the 116 px shaft) x assumed length 2.3x breadth (0.83 m) x height cuff-to-ground 90 px (0.34 m) x fill 0.45. TAIL 0.0087: shaft core d 22 px (0.084 m) x 278 px (1.06 m; about 150 px hidden behind the hips), plus a hair tuft ellipsoid 95x175x60 px at 10% packing. Shares (central): torso 62%, arms 16%, legs 15%, boots 4%, head+neck 3%.",
+   "segments": "Central values in m^3 (all-low / all-high in brackets); same 0.00381 m/px as Rex. Heights: horn tip y12.5 (799.5 px) = 3.046 m (10.0 ft); hair top y24 (788 px) = 3.00 m; skull top under about 11 px of hair at y35 (777 px) = 2.96 m (9.7 ft). Ground = mean of boot contacts (815, 809) = 812. HEAD+NECK 0.059 [0.053/0.065]: head ellipsoid breadth 97 px x height 118 px (82 px visible face height corrected for a ~25 deg backward tilt, plus vertex) x length 1.32x breadth = 0.37x0.45x0.49 m, 0.0424; horns as cones 70x25 and 65x22 px plus ears, 0.0015; neck d 125 px x 22 px, 0.0149. TORS … [1,375 more characters on this line; the full prompt is in prompts/afa2e4e9389d4e28b.txt]
    "massKg": 2432,
    "massLowKg": 2070,
    "massHighKg": 2830,
@@ -979,11 +1042,11 @@ ESTIMATES:
    "footSoleM2": 0.21,
    "volumeLowM3_note_placeholder_removed": 0
   },
-  "assumptions": "FRONT VIEW HIDES DEPTH. Every cross-section is an ellipse of area pi/4*w*(k*w), with w the measured frontal width. Values are central [90% interval].\n\nDepth ratios, from ANSUR II male data (4,082 men; public CSV mirrored at calmcode.io/datasets/ergonomics, computed in method_b/ansur.py):\n- CHEST k = 0.66 [0.58-0.80]. ANSUR chest depth/breadth is 0.877, but its caliper chest breadth (289 mm) is narrower than the frontal silhouette, because chest circumference (1,059 mm) includes the lats. An ellipse with the measured depth and circumference gives depth / equivalent breadth = 0.618 (SD 0.04), and 0.622 for heavy, lean-waisted men. Raised a little and skewed high because both characters are drawn with hugely protruding pecs and thick backs, and their arms hide part of the lats.\n- WAIST k = 0.80 [0.70-0.88]. ANSUR waist depth/breadth 0.727 (0.712 for muscular-ish men). The waist circumference implies a fuller-than-ellipse section (superellipse n about 2.7, area factor 0.864 vs 0.785), so area-equivalent k is about 0.79-0.81.\n- PELVIS k = 0.84 [0.74-0.92] at buttock level (top third of belt-to-crotch). ANSUR buttock depth/hip breadth 0.71, with circumference-based area factor giving 0.84-0.87. It falls linearly to CROTCH k = 0.66 [0.58-0.76], because two touching thighs give 0.5-0.69 (ANSUR thigh circumference 625 mm against a hip silhouette of about 340 mm gives about 0.66).\n- THIGH k = 1.00 [0.88-1.12]: thighs are near-circular (circumference 625 mm, about 199 mm diameter).\n- SHANK k = 0.95 [0.85-1.08]: the calf is about as deep as wide; pant bunching may widen the silhouette.\n- UPPER ARM k = 0.90 [0.75-1.05]: a human arm is about 1.05 AP/ML, but these silhouettes show biceps and lateral triceps bellies side by side, so the frontal width overstates depth.\n- FOREARM k = 0.85 [0.70-1.00]: ML is wider than AP near the elbow.\n- NECK k = 1.0 [0.85-1.10].\n- HEADS: Rex length/breadth 1.40 [1.2-1.6] (ANSUR head length/breadth 1.29, plus a snout); his breadth was back-solved from the three-quarter view. Ollie 1.32 [1.2-1.45]; his face height was divided by cos 25 deg for the backward head tilt.\n- HANDS: Rex's curled claws have thickness 0.5 [0.38-0.65] x width and lenticular fill 0.75. Ollie's fists have depth 0.85 [0.7-1.0] x width.\n- FEET: the front view gives only breadth and height. Rex's foot length is 1.3 [1.0-1.7] x breadth, because a broad clawed paw is shorter relative to its width than a human foot (2.67 in ANSUR); the far foot's 187 px projected width argues against a long foot. Wedge fill 0.48 [0.40-0.56], which reproduces about 1 L for a human foot. Ollie's boots: length 2.3 [1.9-2.7] x sole breadth (ANSUR foot 2.67, a broad boot slightly less), fill 0.45 [0.38-0.52].\n- TAIL: width/height 0.9 [0.75-1.05]; reptile tails are tall or round near the base. Root diameter 0.58 m [0.48-0.70], about the width of his thigh and a little above the 0.46 m measured where the tail emerges. Hidden length from root to the x1100 station is 1.45 m [1.2-1.75]: about 1.0 m sideways, 0.76 m down and 0.55 m backwards in 3D, plus 5% for curvature.\n\nSymmetry: each figure's arm that is partly hidden (Rex's right, behind Ollie's arm; Ollie's left, behind his own turned torso) is replaced by a mirror of the fully visible arm. Using the arms as visible instead cuts the central mass by about 6% (Rex 2,330 kg, Ollie 2,260 kg); the frontal areas add the hidden arm area back.\n\nPerspective: the camera height was estimated from the curvature of belts and pant cuffs. Rex's belt sags about 8-10 px over a 120 px half-width and the cuffs about 10 px over 60 px, which puts the horizon near y 200-300 and the camera about 8-11 m away, i.e. a telephoto (about 20 deg vertical field of view). Body silhouettes are therefore taken at the feet-plane scale, uncorrected; the front and back surfaces differ by only about ±5% in scale. The part of Rex's tail lying on the floor contacts at y 745-750 instead of 808, so it is about 0.11-0.13 D, roughly 1 m, behind his feet. Its linear dimensions are scaled up by 1.13 (1.10 on the descending part, 1.07 at the leg edge), with a ±5% band.\n\nOllie's ground line is 3.5 px lower than Rex's, so he may be about 0.6% nearer the camera and about 0.6% smaller (about 3.03 m) than the same-scale figure. Per the owner's ruling he is reported at Rex's scale. The ground line itself is uncertain by about ±5 px (±0.6% in scale, ±1.9% in volume), and using either single foot instead of the mean would shift the scale by ±1.3%.\n\nClothing counts as tight body. Flat side-pocket flaps and buckle straps are excluded, and 3 px of fur fringe is removed from Ollie's arm widths. Ollie's tail tuft is counted as hair at 10% packing, and only half of its silhouette counts toward his frontal area.\n\nFRONTAL AREA is the silhouette pixel count x scale^2. Rex: 4.85 m^2 visible, 5.13 m^2 with the hidden arm restored; about 0.46 m^2 of that is tail. Ollie: 4.37 m^2 visible, 4.73 m^2 with the arm restored and the tuft half-counted.\n\nSOLE AREA per foot = 0.95 x breadth x length x contact fraction. Rex's padded paw uses 0.65 [0.55-0.75]: 0.28 m^2 [0.18-0.42]. Ollie's rigid lug sole uses 0.72 [0.62-0.82], counting heel plus forefoot: 0.21 m^2 [0.15-0.28].\n\nDENSITY: 1,060 [1,010-1,085] kg/m^3 for both; reasoning in Rex's densitySource. The ranges reported for mass are the Monte Carlo 5-95% values. The deterministic everything-low and everything-high extremes are wider: Rex 1.90-2.95 m^3, 1,920-3,200 kg; Ollie 1.99-2.66 m^3, 2,010-2,880 kg.",
-  "sanity": "References: an average man (75 kg, 1.75 m) scaled isometrically to 3.048 m weighs 75 x (3.048/1.75)^3 = 396 kg. A heavyweight pro bodybuilder of about 1.78 m and 135 kg (Big Ramy class) scales to 678 kg; a 1.75 m, 100 kg amateur heavyweight scales to 528 kg.\n- Rex at 2,485 kg [2,140-2,870] is 6.3x the scaled average man and 3.7x the scaled pro bodybuilder.\n- Ollie at 2,432 kg [2,070-2,830] is 6.1x and 3.6x.\n\nThis is what the picture shows, not an error. Relative to stature, Rex's frontal widths are 1.6-3x a scaled man's: torso 1.06 m vs 0.66 m, hips 1.18 vs 0.61, upper arm 0.52 vs 0.17, thigh 0.57 vs 0.33. His frontal area is 5.1 m^2, against about 1.7-1.8 m^2 for a scaled man (0.55-0.6 m^2 x 3.03). His implied mean front-to-back thickness is V/A = 2.344/5.13 = 0.46 m, against about 0.25 m for a scaled man, a ratio of 1.8. That matches his width ratio, so the depth assumptions make him exactly as deep-relative-to-wide as a human, not more. If the true depth ratio were human chest-caliper-like (0.88) instead of 0.66, Rex would land near the high end.\n\nSegment shares compared with human mass fractions (Dempster/Winter: trunk about 50%, each arm 5%, thigh+shank 15%, foot 1.5%, head+neck 8%): Rex without the tail is torso 47%, each arm 13%, each leg 8%, feet 7%, head+neck 3%. That fits the drawing: grossly hypertrophied arms, short legs (crotch at 34% of height vs about 47% in humans), huge paws and a small head. Ollie's torso share is 62% because his long hip block (20% of height) contains the upper thighs.\n\nRex's tail alone is about 0.33 m^3, about 350 kg, roughly a whole scaled average man. Most of it (0.23 m^3) is the hidden base, which is the single largest volume uncertainty (0.19-0.57 m^3).\n\nThe two characters come out almost the same: Rex has more arm, tail and foot volume; Ollie more torso and hips. Their heights also agree to 0.1% at the head-feature definition (crest tip vs horn tip). At the skull definition Rex is 2.92 m and Ollie 2.96 m (Ollie 3.00 m to the top of his hair).\n\nUncertainty budget (Monte Carlo, Rex): depth ratios dominate (about ±10%), then the tail and foot assumptions, density (about ±3%), and scale and width-reading (about ±3%). With rho = 0.6 instead of 0.85 between depth ratios, Rex's 5-95% range narrows to 2,230-2,760 kg; with rho = 1, it is 2,170-2,830 kg."
+  "assumptions": "FRONT VIEW HIDES DEPTH. Every cross-section is an ellipse of area pi/4*w*(k*w), with w the measured frontal width. Values are central [90% interval].\n\nDepth ratios, from ANSUR II male data (4,082 men; public CSV mirrored at calmcode.io/datasets/ergonomics, computed in method_b/ansur.py):\n- CHEST k = 0.66 [0.58-0.80]. ANSUR chest depth/breadth is 0.877, but its caliper chest breadth (289 mm) is narrower than the frontal silhouette, because chest circumference (1,059 mm) includes the lats. An ellipse with the measured depth and circumference gives depth / equivalent breadth  … [4,942 more characters on this line; the full prompt is in prompts/afa2e4e9389d4e28b.txt]
+  "sanity": "References: an average man (75 kg, 1.75 m) scaled isometrically to 3.048 m weighs 75 x (3.048/1.75)^3 = 396 kg. A heavyweight pro bodybuilder of about 1.78 m and 135 kg (Big Ramy class) scales to 678 kg; a 1.75 m, 100 kg amateur heavyweight scales to 528 kg.\n- Rex at 2,485 kg [2,140-2,870] is 6.3x the scaled average man and 3.7x the scaled pro bodybuilder.\n- Ollie at 2,432 kg [2,070-2,830] is 6.1x and 3.6x.\n\nThis is what the picture shows, not an error. Relative to stature, Rex's frontal widths are 1.6-3x a scaled man's: torso 1.06 m vs 0.66 m, hips 1.18 vs 0.61, upper arm 0.5 … [1,752 more characters on this line; the full prompt is in prompts/afa2e4e9389d4e28b.txt]
  },
  {
-  "method": "METHOD C, anthropometric segment scaling. All files are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/mass/method_c/: method_c.py (model and Monte Carlo), area.py, write_results.py, annotate.py, crop.py; results in method_c_results.json and method_c_raw.json; every pixel reading is drawn on method_c_measurements.png; zoomed grid crops are c_*.png. Nothing under /home/user/dino-strength-sim was touched. I reused two things from the shared folder: the figure masks ../rex_fig.npy and ../ol_fig.npy (checked on ov_masks.png and used only for silhouette area and run widths), and the ANSUR II male public CSV in ../ansur_dl/male.csv (OPEN Design Lab, Penn State, n=4,082).\n\n(1) Scale. Rex's crest tip is at row 8.5, found by a row-by-row colour-difference scan. His ground (ankle-plane) row is 800.5 ±8: claw tips touch at 800 and 820, pads at about 795 and 812. That gives 792 px = 3.048 m, so 0.0038485 m/px. Ollie uses the same scale. His ground row is 807.5 (boot toes at 815–818). Horn tip is at 13.5, hair top at 24.5, skull top at about 34.5.\n\n(2) Human reference. The reference is the ANSUR II mean man: 1.7562 m, 85.52 kg. Segment volumes are de Leva (1996) male mass fractions divided by Dempster segment densities (Winter, Table 4.1). This gives tissue 81.1 L, which matches the Siri tissue volume at about 20% fat (81.2 L). I added FRC 3.3 L (Quanjer 1993 ERS) and 0.1 L of gut gas to the trunk, for a living envelope of 84.5 L (implied density 1,012, a check that it is realistic). The trunk is split into upper/middle/lower parts using de Leva's sub-segments, with boundaries at C7/suprasternale, xiphoid, navel and hip joint. Reference lengths are ANSUR landmark heights or de Leva joint-centre lengths. Reference widths are ANSUR breadths for the torso (chest 289, waist 326, hip 346 mm) and circumference/π for the limbs (flexed biceps, flexed forearm, wrist, thigh, lower thigh, calf, ankle), plus head breadth and length and foot breadth.\n\n(3) Segment formula. Each segment volume = V_human × (L_fig/L_hum) × (W_fig/W_hum) × depth ratio, in metres. Depth ratio = (H_fig/H_hum) × [(W_fig/H_fig)/(W_hum/H_hum)]^k, where H is the skull-top height (comparable to ANSUR stature). k = 1 is the squared-width rule. Exceptions:\n- Rex's upper arms and forearms: his two arms are seen from different sides (105 px and 165 px at the biceps belly), so their product is used as width × depth and no k is needed.\n- Heads: head length is set explicitly (Rex's head is turned about 40°; Ollie has a muzzle).\n- Feet: foot length is assumed.\n- Middle trunk uses the RMS of chest and waist widths; lower trunk uses the RMS of waist and hip widths, on both the figure and the human.\n\n(4) Tail. Rex's tail is a chain of elliptical frusta (a tapered cone):\n- Hidden part: from the rump to where it emerges beside his right calf. It is 0.95 m long, tapering from 155 px (0.60 m) to 105 px (0.40 m) tall.\n- Visible part: profile measured perpendicular to the tail axis at 105, 94, 79, 57, 45, 35 and 22 px, then 0, over 305 px (1.17 m).\n- Width/height ratio is 0.8.\n\nOllie's tail is a fleshy cone plus the hair switch.\n\n(5) Uncertainty. A 40,000-sample Monte Carlo, using triangular distributions, draws every landmark row and width (in px), the ground row, the skull top, a perspective/proportion factor (0.97–1.03), Ollie's relative distance (0.97–1.03), the depth exponents (trunk k 0.7–1.0–1.2; limbs 0.85–1.0–1.1, shared within a figure), the foot and tail assumptions, a model-form factor for how well human shape factors fit these bodies (0.88–1.12), and density. Reported low/high are the 2.5–97.5 percentiles; the central value has every input at its mode. Frontal area = mask pixels × s², with floor shadows clipped below each foot. The ANSUR and bodybuilder proportion table is in method_c_results.json.",
+  "method": "METHOD C, anthropometric segment scaling. All files are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/mass/method_c/: method_c.py (model and Monte Carlo), area.py, write_results.py, annotate.py, crop.py; results in method_c_results.json and method_c_raw.json; every pixel reading is drawn on method_c_measurements.png; zoomed grid crops are c_*.png. Nothing under /home/user/dino-strength-sim was touched. I reused two things from the shared folder: the figure masks ../rex_fig.npy and ../ol_fig.npy (checked on ov_masks.png and used only for silhouette are … [3,273 more characters on this line; the full prompt is in prompts/afa2e4e9389d4e28b.txt]
   "rex": {
    "heightPx": 792,
    "heightPxSkull": 758.5,
@@ -992,7 +1055,7 @@ ESTIMATES:
    "volumeM3": 2.339,
    "volumeLowM3": 2.01,
    "volumeHighM3": 2.69,
-   "segments": "m^3, central (dimensions in px at 0.0038485 m/px). HEAD+NECK 0.054: head 0.030 (skull top y42 to jaw y130 = 88 px = 0.34 m tall; true breadth about 79 px = 0.30 m; length including snout about 131 px = 0.50 m, from 145 px projected width at about 40 deg turn) + neck 0.023 (120 px = 0.46 m diameter, 35 px = 0.13 m long) + crest spikes 0.002. TORSO 1.137: upper trunk 0.479 (C7/suprasternale mid y155 to xiphoid y265 = 110 px = 0.42 m; chest breadth 295 px = 1.14 m, visible 275 between the arms plus an allowance for the part under the arms) + middle trunk 0.289 (xiphoid to navel y365 = 100 px = 0.385 m; RMS(chest 295, waist 237) = 268 px = 1.03 m) + lower trunk 0.359 (navel to hip joint y510 = 145 px = 0.56 m; RMS(waist 237, hip 315) = 279 px = 1.07 m) + thigh pouches 0.010. ARMS, both 0.338 (each 0.169): upper arms 0.191 (shoulder to elbow 165 px = 0.635 m; cross-section 105 x 165 px = 0.40 x 0.64 m, from the two arms seen at different angles) + forearms 0.127 (115 px = 0.44 m; just below the elbow 129 x 150 px, wrist 86 x 95 px) + hands 0.021 (90 px long, 82 px wide). LEGS, both 0.430: thighs 0.198 (hip joint y510 to knee y592 = 82 px = 0.32 m; upper 150 px = 0.58 m, above knee 143 px = 0.55 m) + shanks 0.232 (knee to ankle y720 = 128 px = 0.49 m; calf 165 px = 0.635 m, ankle 116 px = 0.45 m). FEET, both 0.172 (each 0.086: 80 px = 0.31 m tall, 170 px = 0.65 m wide, ASSUMED 0.80 m long, human foot fill about 0.53). TAIL 0.208: hidden 0.151 (rump to emergence, 0.95 m, 0.60 m to 0.40 m tall, w/h 0.8) + visible 0.056 (1.17 m measured taper to the tip). TOTAL 2.339. Monte Carlo 5/50/95: upper trunk 0.38/0.47/0.57, lower trunk 0.30/0.36/0.42, tail hidden 0.11/0.15/0.20, feet 0.15/0.18/0.22.",
+   "segments": "m^3, central (dimensions in px at 0.0038485 m/px). HEAD+NECK 0.054: head 0.030 (skull top y42 to jaw y130 = 88 px = 0.34 m tall; true breadth about 79 px = 0.30 m; length including snout about 131 px = 0.50 m, from 145 px projected width at about 40 deg turn) + neck 0.023 (120 px = 0.46 m diameter, 35 px = 0.13 m long) + crest spikes 0.002. TORSO 1.137: upper trunk 0.479 (C7/suprasternale mid y155 to xiphoid y265 = 110 px = 0.42 m; chest breadth 295 px = 1.14 m, visible 275 between the arms plus an allowance for the part under the arms) + middle trunk 0.289 (xiphoid to navel y3 … [1,129 more characters on this line; the full prompt is in prompts/afa2e4e9389d4e28b.txt]
    "frontAreaM2": 4.9,
    "footSoleM2": 0.29,
    "density": 1056,
@@ -1010,15 +1073,15 @@ ESTIMATES:
    "volumeM3": 2.418,
    "volumeLowM3": 1.98,
    "volumeHighM3": 2.85,
-   "segments": "m^3, central (same scale, 0.0038485 m/px; ground y807.5). Heights in boots: horn tips 794 px = 3.056 m; hair top 783 px = 3.013 m; skull top excluding horns and hair 773 px = 2.975 m. Barefoot is about 0.10 m less (outsole about 22-25 px). Monte Carlo 5-95% for horn height: 2.99-3.12 m. HEAD+NECK 0.070: head 0.052 (skull y34.5 to beard and chin y130 = 95 px = 0.37 m; breadth without ears 105 px = 0.40 m; length ASSUMED 1.5 x breadth = 0.61 m for the bovine muzzle) + neck 0.016 (120 px = 0.46 m diameter, 25 px = 0.10 m long) + horns and ears 0.002. TORSO 1.453 (vest counted as body): upper trunk 0.505 (y135 to xiphoid y255 = 120 px = 0.46 m; chest 290 px = 1.12 m) + middle trunk 0.331 (to navel y343 = 88 px = 0.34 m; RMS(290, waist 320) = 305 px = 1.18 m) + lower trunk 0.617 (to hip joint y505 = 162 px = 0.62 m; RMS(waist 320, hip 370 with cargo pockets) = 346 px = 1.33 m). ARMS, both 0.268 (image-left arm measured, akimbo and in plane; the right arm is partly hidden by the vest and Rex, so it is assumed equal): upper arms 0.164 (185 px = 0.71 m; thickness 115 px = 0.44 m) + forearms 0.077 (165 px = 0.635 m; 90 px = 0.35 m below the elbow, 60 px = 0.23 m at the wrist) + fists 0.028 (100 x 90 px). LEGS, both 0.571: thighs 0.298 (hip joint y505 to knee y610 = 105 px = 0.40 m; 164 px = 0.63 m upper, 153 px = 0.59 m lower) + shanks 0.273 (knee to ankle y757 = 147 px = 0.57 m; calf 172 px = 0.66 m, boot shaft 110 px = 0.42 m). FEET (boots), both 0.050 (each 0.025: sole to ankle 50 px = 0.19 m; boot breadth ASSUMED 0.34 m and length 0.72 m, because the toes turn out and the front view confounds them). TAIL 0.006 (fleshy cone about 0.8 m, 0.10 m tapering to 0.04 m, plus the hair switch). TOTAL 2.418. Monte Carlo 5/50/95: lower trunk 0.49/0.59/0.70, upper trunk 0.42/0.51/0.63, thighs 0.24/0.29/0.35. Volume from depth exponents alone: 1.99-2.76.",
+   "segments": "m^3, central (same scale, 0.0038485 m/px; ground y807.5). Heights in boots: horn tips 794 px = 3.056 m; hair top 783 px = 3.013 m; skull top excluding horns and hair 773 px = 2.975 m. Barefoot is about 0.10 m less (outsole about 22-25 px). Monte Carlo 5-95% for horn height: 2.99-3.12 m. HEAD+NECK 0.070: head 0.052 (skull y34.5 to beard and chin y130 = 95 px = 0.37 m; breadth without ears 105 px = 0.40 m; length ASSUMED 1.5 x breadth = 0.61 m for the bovine muzzle) + neck 0.016 (120 px = 0.46 m diameter, 25 px = 0.10 m long) + horns and ears 0.002. TORSO 1.453 (vest counted as b … [1,285 more characters on this line; the full prompt is in prompts/afa2e4e9389d4e28b.txt]
    "frontAreaM2": 4.5,
    "footSoleM2": 0.17,
    "massKg": 2554,
    "massLowKg": 2090,
    "massHighKg": 3000
   },
-  "assumptions": "DEPTH. A front view cannot show depth, so every segment's depth is tied to its width through the exponent k.\n- k = 1 (central) keeps the ANSUR II mean man's cross-section shape. ANSUR depth/breadth ratios: chest 0.877, waist 0.727, buttock depth to hip breadth 0.710; limbs treated as round (circumference/pi).\n- Evidence from ANSUR II (n=4,082 men; computed in this run): across men, torso depth grows at least as fast as breadth (log-log slope of depth on breadth: OLS 0.92 chest, 1.20 waist, 1.25 hip; reduced major axis 1.4-1.7). The 5% with the largest flexed-biceps/stature have deeper sections (chest 0.956 vs 0.877; waist 0.76 vs 0.73; hip 0.75 vs 0.71). So k = 1 is not generous.\n- The range still allows a flatter V-taper cartoon torso (lats add breadth without depth): trunk k is 0.7/1.0/1.2. Limbs are drawn as round muscle balls and baggy columns: limb k is 0.85/1.0/1.1. Each figure uses one shared trunk k and one shared limb k, so the error is not averaged away.\n- Depth alone moves the volume by -12%/+10% for Rex and -18%/+14% for Ollie.\n- Rex's arms are seen at different angles (105 vs 165 px at the biceps, 129 vs 150 px on the forearm), so their product is used as width x depth (+/-20%).\n\nPROPORTIONS. Segment lengths come from the picture, not from human proportions. Both figures have short legs: crotch height is 0.337 of skull height vs 0.482 for ANSUR. Their trunks are long: C7 to hip joint is 0.49-0.50 vs 0.351. So the thigh length ratio is only about 0.45 and the lower trunk about 2.2x. The hip joint is placed 25% of the way from the crotch to the belt/iliac crest, as in humans; moving it +/-15 px roughly cancels between thigh and lower trunk.\n\nWIDTH RATIOS vs ANSUR (width / skull-top height):\n| | Rex | Ollie |\n|---|---|---|\n| Bideltoid | 0.628 (2.16x) | 0.589 (2.03x) |\n| Chest | 2.36x | 2.28x |\n| Waist | 1.68x | 2.23x |\n| Hip | 2.11x | 2.43x |\n| Upper arm | 2.67x | 2.29x |\n| Forearm | 3.26x | 2.07x |\n| Thigh | 1.75x | 1.87x |\n| Calf | 3.06x | 3.13x |\n\nAgainst competitive bodybuilders (de Moraes et al. 2019, J Sports Sci Med 18:772, Table 2: 1.73 m, 80 kg, arm 42 cm, thigh 64, calf 41, forearm 33): Rex's arm is 2.2x, thigh 1.7x, calf 2.9x. Against Schwarzenegger's self-reported 1.88 m, arm 56, thigh 72, calf 51 cm: Rex's arm is 1.8x, thigh 1.6x, calf 2.5x. These bodies are far beyond any human. Volume scales with width squared, so the scaling multiplies segment volumes by about 3-9x.\n\nSCALE AND PERSPECTIVE.\n- Rex's ground row 800.5 +/-8 px (a ground point under the ankles, between the claw tips at 800/820 and pads at 795/812) gives +/-1% on scale.\n- Rex's skull top under the crest is y42 +/-6. Ollie's skull top under the hair is y34.5 (31-40).\n- Ollie is assumed to be at Rex's depth; his toes sit 7 px lower, so his scale has +/-3% uncertainty.\n- Perspective, plus the picture looking AI-rendered (proportions not guaranteed consistent), adds a +/-3% factor on all widths and lengths relative to height.\n- Silhouette edges are taken to lie in the body mid-plane.\n\nOCCLUSION, CLOTHING AND FEET.\n- Rex's chest breadth is 295 px: 275 visible between the arms plus an allowance for the part under the arms (275-320).\n- Ollie's image-right arm and elbow are partly behind the vest and Rex, so his left arm is mirrored.\n- Clothing is body: the vest, tank top, pouches (+0.010 m^3), knee pads, and the baggy cargo pants all count as silhouette. If the pants are actually loose, both legs and Ollie's lower trunk are overstated.\n- Rex's foot length (0.80 m, range 0.65-1.0) and Ollie's boot length (0.72, 0.65-0.80) and breadth (0.34, 0.30-0.40) are assumed. Foot volume uses the human foot's fill, about 0.53 of its bounding box.\n\nTAIL. Rex's hidden tail length is 0.95 m (0.75-1.25). His tail base height is 155 px = 0.60 m (130-175), from extrapolating the visible taper. Width/height is 0.8 (0.6-1.0), since tails are near-round to laterally compressed. The tail is 0.21 m^3, about 9% of Rex.\n\nSOLES AND FRONTAL AREA.\n- Sole contact = width x length x fill. Rex: fill 0.55 (0.45-0.65), as in human standing contact of about 0.5-0.6 of the foot box, giving 0.288 m^2 (MC 0.24-0.36). Ollie's boots: outsole 0.70 (0.6-0.8) of the box, with the arch gap, giving 0.171 m^2 (0.15-0.21).\n- Frontal area includes Rex's tail and spread arms; Ollie gets +0.03 m^2 for the hidden elbow. +/-2-4%.\n\nHEIGHTS. Rex: 3.048 m to crest tips (the ruling), 2.919 m to the skull. Ollie (in boots): 3.056 m to horn tips, 3.013 m to hair, 2.975 m to skull. Barefoot is about 0.10 m less.\n\nMODEL FORM. A further 0.88-1.12 factor covers how well human segment shape factors carry over to these bodies.",
-  "sanity": "Scaled references (mass x (3.048/h)^3):\n- Average man (75 kg, 1.75 m) scaled to 3.048 m: 396 kg; to Rex's skull height of 2.919 m: 348 kg.\n- ANSUR II mean man (85.5 kg, 1.756 m): 447 kg.\n- Competitive bodybuilder (de Moraes 2019, 80 kg at 1.73 m): 438 kg.\n- Large bodybuilder (115 kg at 1.80 m, FFMI about 32, the top of the Kouri et al. 1995 steroid-user range): 558 kg.\n- Schwarzenegger at contest weight (107 kg, 1.88 m): 456 kg.\n- 140 kg mass monster at 1.80 m: 680 kg.\n\nHow the results compare:\n- Rex at 2,470 kg (2,120-2,830) is 6.2x the scaled average man, 5.5x the scaled ANSUR man, and 4.4x the scaled large bodybuilder.\n- Ollie at 2,550 kg (2,090-3,000) is similar.\n- That size fits the widths. Per unit height, segment widths are 1.7-3.3x ANSUR and 1.6-2.5x an elite pro. Squared, that is 3-10x per segment, partly offset by legs only 0.70x human length.\n\nIndependent check:\n- Volume / frontal area gives a mean body depth of 0.48 m for Rex and 0.54 m for Ollie, against about 0.27 m for a man scaled to 3 m (0.0845 m^3 / about 0.55 m^2 frontal area x 1.74). That is about 1.8-2x human-proportional depth, the same order as the width ratios. The geometry is self-consistent.\n\nCross-check with method A (results_methodA.json in the parent folder):\n- Its Rex volume is 2.29 m^3, against 2.34 here: within 2%, from an independent method.\n- The mass difference (2,358 vs 2,470 kg) is mostly density (1,030 there vs 1,056 here).\n\nOllie vs Rex: Ollie comes out slightly larger (2.42 vs 2.34 m^3). His torso is much wider at waist and hips (320/370 px vs Rex's 237/315), while Rex has bigger arms, feet and the 0.21 m^3 tail. Their frontal areas without Rex's tail are nearly equal (about 4.4-4.5 m^2). The difference is well inside the uncertainty: call them equal mass, about 2.5 t each.\n\nDensity: 1,056 kg/m^3 is plausible for a lean, very muscular body whose lungs are a small share of its volume. An ordinary man in air is about 1,010-1,020 kg/m^3 because his lungs are a much larger share."
+  "assumptions": "DEPTH. A front view cannot show depth, so every segment's depth is tied to its width through the exponent k.\n- k = 1 (central) keeps the ANSUR II mean man's cross-section shape. ANSUR depth/breadth ratios: chest 0.877, waist 0.727, buttock depth to hip breadth 0.710; limbs treated as round (circumference/pi).\n- Evidence from ANSUR II (n=4,082 men; computed in this run): across men, torso depth grows at least as fast as breadth (log-log slope of depth on breadth: OLS 0.92 chest, 1.20 waist, 1.25 hip; reduced major axis 1.4-1.7). The 5% with the largest flexed-biceps/stature  … [4,092 more characters on this line; the full prompt is in prompts/afa2e4e9389d4e28b.txt]
+  "sanity": "Scaled references (mass x (3.048/h)^3):\n- Average man (75 kg, 1.75 m) scaled to 3.048 m: 396 kg; to Rex's skull height of 2.919 m: 348 kg.\n- ANSUR II mean man (85.5 kg, 1.756 m): 447 kg.\n- Competitive bodybuilder (de Moraes 2019, 80 kg at 1.73 m): 438 kg.\n- Large bodybuilder (115 kg at 1.80 m, FFMI about 32, the top of the Kouri et al. 1995 steroid-user range): 558 kg.\n- Schwarzenegger at contest weight (107 kg, 1.88 m): 456 kg.\n- 140 kg mass monster at 1.80 m: 680 kg.\n\nHow the results compare:\n- Rex at 2,470 kg (2,120-2,830) is 6.2x the scaled average man, 5.5x the scale … [1,435 more characters on this line; the full prompt is in prompts/afa2e4e9389d4e28b.txt]
  }
 ]
 ```
@@ -1075,7 +1138,7 @@ Rex's default height is set to 10 ft (3.048 m). His mass is still being estimate
 
 **Next:** when the mass estimate comes back, I'll fill in the numbers, update the text and density chips, re-run the tests and sweeps, then fix the audit findings.
 
-### Owner · 2026-10-10 01:24:43 UTC
+## Owner · 2026-10-10 01:24:43 UTC
 
 ```text
 More art also

@@ -1,14 +1,18 @@
 # Build Calculator
 
-2026-10-10 01:30:03 UTC to 2026-10-10 04:22:29 UTC. 10 assistant events, 1 commit events, 19 subagent events, 38 tool call events, 1 user events, 4 wakeup events.
+2026-10-10 01:30:03 UTC to 2026-10-10 04:34:54 UTC. 10 assistant events, 1 commit events, 19 subagent events, 38 tool call events, 1 user events, 4 wakeup events.
 
 A second project: a character build calculator (weight and seven girths from height and build). Research workflow, data compile, page build, audit and fixes, publish and commit, while the round-4 fix workflow ran in parallel for the Rex lab.
 
-### Owner · 2026-10-10 01:30:03 UTC
+Events are in the order they happened in the session; each workflow’s subagents are listed under the call that launched it, with their own start times.
+
+## Owner · 2026-10-10 01:29:36 UTC
 
 ```text
 A similar secondary project: the ability to calculate a character’s weight and general measurements (chest, arms, thighs, calves, waist) based on certain builds (comic book characters, record bodybuilders, etc)
 ```
+
+- Typed at 2026-10-10 01:29:36 UTC while Claude was working; delivered at 2026-10-10 01:30:03 UTC.
 
 **Claude · 2026-10-10 01:30:41 UTC**
 
@@ -24,13 +28,20 @@ A body-measurement calculator fits well alongside the strength lab. Plan:
 It needs sourced data first, so I'm starting a research workflow now. It runs alongside the Rex jobs, which are still going.
 
 
+### Workflow `build-calc-research` · 2026-10-10 01:31:12 UTC
+
 - `Workflow` build-calc-research: Research sourced data for a character build calculator (weight and girths from height and build), then adversarially verify each topic
   - run `wf_16409832-67f`: 8 subagents, listed below
 
-<details>
-<summary>Subagent `research:anthro` (build-calc-research, 2026-10-10 01:31:13 UTC): I downloaded the ANSUR II public working databases from Penn State's OPEN Design Lab: the male and female CSVs (4,082 men, 1,986 women), the NSRDEC data memo, technical report NATICK/TR-15/007 and the Measurer's Handbook TR-11/017. The http:// links on the OPEN Lab page now return an HTML app shell, but the same paths ... Returned facts: 31 (e.g. ansur2_dataset; ansur2_measurement_definitions).</summary>
+**Subagent `research:anthro`** · build-calc-research · started 2026-10-10 01:31:13 UTC
 
-Workflow run `wf_16409832-67f`, phase `Research`, agent `a4ac258e3c5361b3a`. Prompt, verbatim:
+- facts: 31 (17 measured, 12 derived, 2 official).
+- I downloaded the ANSUR II public working databases from Penn State's OPEN Design Lab: the male and female CSVs (4,082 men, 1,986 women), the NSRDEC data memo, technical report NATICK/TR-15/007 and the Measurer's Handbook TR-11/017. The http:// links on the OPEN Lab page now return an HTML app ...
+
+<details>
+<summary>Prompt, verbatim (1,962 characters)</summary>
+
+Workflow run `wf_16409832-67f`, phase `Research`, agent `a4ac258e3c5361b3a`.
 
 ```text
 Project: a small web calculator. The user picks a BUILD (average man or woman, athlete, record bodybuilder, strongman, comic-book character, or two original characters) and a HEIGHT, and the page shows estimated body WEIGHT and GIRTHS: chest, waist, upper arm (flexed), forearm, thigh, calf and neck. Every number must be sourced or clearly labelled as an estimate. The owner values factual accuracy over flattery: say "unknown" rather than invent, and label magazine-reported or fan-wiki numbers as such.
@@ -41,10 +52,15 @@ TOPIC: everyday-body baselines from measured data. Download the public ANSUR II 
 
 </details>
 
-<details>
-<summary>Subagent `research:muscle` (build-calc-research, 2026-10-10 01:31:13 UTC): Topic covered: record bodybuilders and strongmen (12 athletes plus a pre-steroid reference) and the peer-reviewed data on bodybuilder body composition and girths. Raw downloads are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/buildcalc/bodybuilders/dl/. Returned facts: 40 (e.g. kouri1995_ffmi_natural_limit; kouri1995_group_means).</summary>
+**Subagent `research:muscle`** · build-calc-research · started 2026-10-10 01:31:13 UTC
 
-Workflow run `wf_16409832-67f`, phase `Research`, agent `af5675402b3a338f1`. Prompt, verbatim:
+- facts: 40 (15 measured, 14 disputed, 8 reported, 2 derived, 1 official).
+- Topic covered: record bodybuilders and strongmen (12 athletes plus a pre-steroid reference) and the peer-reviewed data on bodybuilder body composition and girths. Raw downloads are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/buildcalc/bodybuilders/dl/.
+
+<details>
+<summary>Prompt, verbatim (1,916 characters)</summary>
+
+Workflow run `wf_16409832-67f`, phase `Research`, agent `af5675402b3a338f1`.
 
 ```text
 Project: a small web calculator. The user picks a BUILD (average man or woman, athlete, record bodybuilder, strongman, comic-book character, or two original characters) and a HEIGHT, and the page shows estimated body WEIGHT and GIRTHS: chest, waist, upper arm (flexed), forearm, thigh, calf and neck. Every number must be sourced or clearly labelled as an estimate. The owner values factual accuracy over flattery: say "unknown" rather than invent, and label magazine-reported or fan-wiki numbers as such.
@@ -55,10 +71,15 @@ TOPIC: record bodybuilders and strongmen. For about 12 well-known people (e.g. R
 
 </details>
 
-<details>
-<summary>Subagent `research:comics` (build-calc-research, 2026-10-10 01:44:05 UTC): I found stated heights and weights for all 15 requested characters, plus She-Hulk and Abomination. Hulk is split into four forms and Wolverine into with and without adamantium. Returned facts: 25 (e.g. superman; batman).</summary>
+**Subagent `research:comics`** · build-calc-research · started 2026-10-10 01:44:05 UTC
 
-Workflow run `wf_16409832-67f`, phase `Research`, agent `a7a9366e8f1ae0436`. Prompt, verbatim:
+- facts: 25 (16 official, 5 disputed, 1 reported, 1 measured, 1 derived, 1 estimate).
+- I found stated heights and weights for all 15 requested characters, plus She-Hulk and Abomination. Hulk is split into four forms and Wolverine into with and without adamantium.
+
+<details>
+<summary>Prompt, verbatim (2,018 characters)</summary>
+
+Workflow run `wf_16409832-67f`, phase `Research`, agent `a7a9366e8f1ae0436`.
 
 ```text
 Project: a small web calculator. The user picks a BUILD (average man or woman, athlete, record bodybuilder, strongman, comic-book character, or two original characters) and a HEIGHT, and the page shows estimated body WEIGHT and GIRTHS: chest, waist, upper arm (flexed), forearm, thigh, calf and neck. Every number must be sourced or clearly labelled as an estimate. The owner values factual accuracy over flattery: say "unknown" rather than invent, and label magazine-reported or fan-wiki numbers as such.
@@ -69,10 +90,15 @@ TOPIC: comic-book characters' official heights and weights. For about 15 charact
 
 </details>
 
-<details>
-<summary>Subagent `research:model` (build-calc-research, 2026-10-10 01:56:01 UTC): TOPIC: the physics and physiology of turning a build into a weight and a set of girths. Raw downloads, scripts and outputs are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/buildcalc/physics/ (raw/, scripts/, out/). Returned facts: 38 (e.g. siri_equation; brozek_equation).</summary>
+**Subagent `research:model`** · build-calc-research · started 2026-10-10 01:56:01 UTC
 
-Workflow run `wf_16409832-67f`, phase `Research`, agent `ae656028b2c1616ea`. Prompt, verbatim:
+- facts: 38 (15 measured, 12 reported, 10 derived, 1 disputed).
+- TOPIC: the physics and physiology of turning a build into a weight and a set of girths. Raw downloads, scripts and outputs are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/buildcalc/physics/ (raw/, scripts/, out/).
+
+<details>
+<summary>Prompt, verbatim (2,214 characters)</summary>
+
+Workflow run `wf_16409832-67f`, phase `Research`, agent `ae656028b2c1616ea`.
 
 ```text
 Project: a small web calculator. The user picks a BUILD (average man or woman, athlete, record bodybuilder, strongman, comic-book character, or two original characters) and a HEIGHT, and the page shows estimated body WEIGHT and GIRTHS: chest, waist, upper arm (flexed), forearm, thigh, calf and neck. Every number must be sourced or clearly labelled as an estimate. The owner values factual accuracy over flattery: say "unknown" rather than invent, and label magazine-reported or fan-wiki numbers as such.
@@ -83,10 +109,16 @@ TOPIC: the physics and physiology of turning a build into weight and girths. Fin
 
 </details>
 
-<details>
-<summary>Subagent `verify:anthro` (build-calc-research, 2026-10-10 02:12:14 UTC): The researcher's numbers are accurate and reproducible, so this is a strong base for the calculator. My own download matched their sha256 hashes. Returned checks: 31 (e.g. ansur2_dataset; ansur2_measurement_definitions).</summary>
+**Subagent `verify:anthro`** · build-calc-research · started 2026-10-10 02:12:14 UTC
 
-Workflow run `wf_16409832-67f`, phase `Verify`, agent `a3baa330dbf2469be`. Prompt, verbatim:
+- checks: 31 (25 ok, 6 not ok).
+- Not OK: ansur2_calf; ansur2_girth_scaling_male; ansur2_girth_predictor_male (+3 more).
+- The researcher's numbers are accurate and reproducible, so this is a strong base for the calculator. My own download matched their sha256 hashes.
+
+<details>
+<summary>Prompt, verbatim (63,964 characters)</summary>
+
+Workflow run `wf_16409832-67f`, phase `Verify`, agent `a3baa330dbf2469be`. Lines over 1,500 characters are cut here; the full prompt is in [prompts/a3baa330dbf2469be.txt](prompts/a3baa330dbf2469be.txt).
 
 ```text
 Project: a small web calculator. The user picks a BUILD (average man or woman, athlete, record bodybuilder, strongman, comic-book character, or two original characters) and a HEIGHT, and the page shows estimated body WEIGHT and GIRTHS: chest, waist, upper arm (flexed), forearm, thigh, calf and neck. Every number must be sourced or clearly labelled as an estimate. The owner values factual accuracy over flattery: say "unknown" rather than invent, and label magazine-reported or fan-wiki numbers as such.
@@ -96,7 +128,7 @@ You are a skeptical fact-checker for the topic "anthro". Below are the researche
 
 FACTS:
 {
- "summary": "I downloaded the ANSUR II public working databases from Penn State's OPEN Design Lab: the male and female CSVs (4,082 men, 1,986 women), the NSRDEC data memo, technical report NATICK/TR-15/007 and the Measurer's Handbook TR-11/017. The http:// links on the OPEN Lab page now return an HTML app shell, but the same paths over https:// serve the real files. CSV units are mm, and weightkg is stored as kg*10. The working databases are stratified random samples matched to the Army's demographics, so plain unweighted statistics are the intended estimates. My computed means, SDs and 5th/50th/95th percentiles match the TR-15/007 summary tables for stature, weight, chest, waist, biceps, forearm, thigh, calf, neck and neck base, which confirms the parsing and units.\n\nMedians (men / women): stature 175.5 / 162.6 cm; weight 84.6 / 66.8 kg; chest 105.6 / 94.0; waist at the navel (omphalion; ANSUR II never measured the natural waist) 93.7 / 85.2; flexed biceps 35.7 / 30.4; flexed forearm 31.0 / 26.3; thigh at the gluteal furrow 62.4 / 61.3; calf 39.2 / 37.2; neck 39.5 / 32.8 cm.\n\nGirth versus sqrt(W/H): chest follows the fixed-shape (geometric) law almost exactly, with exponent b = 1.02 (men) and 1.04 (women); the geometric law predicts b = 1. Waist grows much faster (b about 1.4). Upper thigh (about 1.15) and biceps (1.09 men, 1.24 women) grow somewhat faster. Forearm, calf and neck grow slower (0.62 to 0.85). These patterns reflect how soldiers differ, which is mostly fat, not how muscle gain changes a body.\n\nWeight from height plus 7 girths: the log-log model gives R2 0.987 (men) and 0.981 (women), with RMSE 1.6 and 1.5 kg; 10-fold cross-validated errors are almost identical. A physically motivated form, W = H_m * sum(c_i * G_i^2), does nearly as well: RMSE 1.7 and 1.5 kg. In extrapolation tests (predicting the heaviest 10% or the 10% with the biggest arms from a model fitted without them), the log-log and geometric forms stay within about 1 kg on average. The linear form under-predicts large bodies by about 3 kg. A simple stacked-cone (frustum) volume model built from ANSUR girths and segment lengths calibrates to 1.042 kg per model-litre (men) and 1.044 (women), with a spread of only 2.3 to 2.8% and RMSE about 1.9 kg. It is a sensible physical base for extreme builds.\n\nSegment lengths and breadths with ratios to stature, lean-heavy and big-waist subgroups, and the data ceiling (largest measured flexed arm: 49.0 cm in men, 43.5 cm in women) are included.\n\nFiles are under /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/buildcalc/ansur2/:\n- raw/: downloaded CSVs and PDFs, untouched\n- scripts/: analyze_ansur2.py, extras_ansur2.py, compact.py, make_facts.py; run with python3 -I <script> <raw> <out>\n- out/fits.json: all coefficients and fit statistics, including reduced models and correlations\n- out/ansur2_coefficients_compact.json: a calculator-ready subset\n- out/descriptives.csv and out/segments.csv: the 1/5/25/50/75/95/99th percentiles\n- out/facts.json: these facts",
+ "summary": "I downloaded the ANSUR II public working databases from Penn State's OPEN Design Lab: the male and female CSVs (4,082 men, 1,986 women), the NSRDEC data memo, technical report NATICK/TR-15/007 and the Measurer's Handbook TR-11/017. The http:// links on the OPEN Lab page now return an HTML app shell, but the same paths over https:// serve the real files. CSV units are mm, and weightkg is stored as kg*10. The working databases are stratified random samples matched to the Army's demographics, so plain unweighted statistics are the intended estimates. My computed means, SDs and 5th/50 … [2,461 more characters on this line; the full prompt is in prompts/a3baa330dbf2469be.txt]
  "facts": [
   {
    "key": "ansur2_dataset",
@@ -447,7 +479,7 @@ FACTS:
    "key": "ansur2_girth_scaling_male",
    "label": "How each girth scales with sqrt(weight/height), males",
    "status": "derived",
-   "values": "{\"chest_k_cm_per_sqrt_kg_per_m\":15.2277,\"chest_k_p5\":14.5013,\"chest_k_p95\":15.9904,\"chest_free_b\":1.0191,\"waist_omphalion_k_cm_per_sqrt_kg_per_m\":13.5613,\"waist_omphalion_k_p5\":12.2198,\"waist_omphalion_k_p95\":14.7396,\"waist_omphalion_free_b\":1.4426,\"biceps_flexed_k_cm_per_sqrt_kg_per_m\":5.1529,\"biceps_flexed_k_p5\":4.7432,\"biceps_flexed_k_p95\":5.6303,\"biceps_flexed_free_b\":1.0868,\"forearm_flexed_k_cm_per_sqrt_kg_per_m\":4.4531,\"forearm_flexed_k_p5\":4.1375,\"forearm_flexed_k_p95\":4.8112,\"forearm_flexed_free_b\":0.7603,\"thigh_upper_k_cm_per_sqrt_kg_per_m\":8.998,\"thigh_upper_k_p5\":8.4368,\"thigh_upper_k_p95\":9.527,\"thigh_upper_free_b\":1.1513,\"thigh_lower_k_cm_per_sqrt_kg_per_m\":5.8833,\"thigh_lower_k_p5\":5.5361,\"thigh_lower_k_p95\":6.2417,\"thigh_lower_free_b\":0.9128,\"calf_k_cm_per_sqrt_kg_per_m\":5.6364,\"calf_k_p5\":5.2576,\"calf_k_p95\":6.0431,\"calf_free_b\":0.8447,\"neck_k_cm_per_sqrt_kg_per_m\":5.7093,\"neck_k_p5\":5.3211,\"neck_k_p95\":6.1387,\"neck_free_b\":0.6985,\"orig\":\"girth_cm = k * sqrt(weight_kg / stature_m); fit stats: chest R2 0.869, RMSE 3.17 cm; b 95%CI [1.007,1.031], R2log 0.870; waist_omphalion R2 0.765, RMSE 5.41 cm; b 95%CI [1.424,1.462], R2log 0.844; biceps_flexed R2 0.707, RMSE 1.87 cm; b 95%CI [1.066,1.108], R2log 0.718; forearm_flexed R2 0.587, RMSE 1.41 cm; b 95%CI [0.744,0.777], R2log 0.657; thigh_upper R2 0.843, RMSE 2.32 cm; b 95%CI [1.137,1.165], R2log 0.861; thigh_lower R2 0.775, RMSE 1.51 cm; b 95%CI [0.898,0.927], R2log 0.785; calf R2 0.686, RMSE 1.67 cm; b 95%CI [0.828,0.861], R2log 0.712; neck R2 0.552, RMSE 1.72 cm; b 95%CI [0.684,0.713], R2log 0.675\"}",
+   "values": "{\"chest_k_cm_per_sqrt_kg_per_m\":15.2277,\"chest_k_p5\":14.5013,\"chest_k_p95\":15.9904,\"chest_free_b\":1.0191,\"waist_omphalion_k_cm_per_sqrt_kg_per_m\":13.5613,\"waist_omphalion_k_p5\":12.2198,\"waist_omphalion_k_p95\":14.7396,\"waist_omphalion_free_b\":1.4426,\"biceps_flexed_k_cm_per_sqrt_kg_per_m\":5.1529,\"biceps_flexed_k_p5\":4.7432,\"biceps_flexed_k_p95\":5.6303,\"biceps_flexed_free_b\":1.0868,\"forearm_flexed_k_cm_per_sqrt_kg_per_m\":4.4531,\"forearm_flexed_k_p5\":4.1375,\"forearm_flexed_k_p95\":4.8112,\"forearm_flexed_free_b\":0.7603,\"thigh_upper_k_cm_per_sqrt_kg_per_ … [1,073 more characters on this line; the full prompt is in prompts/a3baa330dbf2469be.txt]
    "sources": [
     {
      "title": "ANSUR II male CSV (OPEN Design Lab)",
@@ -460,7 +492,7 @@ FACTS:
    "key": "ansur2_girth_scaling_female",
    "label": "How each girth scales with sqrt(weight/height), females",
    "status": "derived",
-   "values": "{\"chest_k_cm_per_sqrt_kg_per_m\":14.7336,\"chest_k_p5\":13.6952,\"chest_k_p95\":15.8551,\"chest_free_b\":1.038,\"waist_omphalion_k_cm_per_sqrt_kg_per_m\":13.4215,\"waist_omphalion_k_p5\":12.035,\"waist_omphalion_k_p95\":14.8395,\"waist_omphalion_free_b\":1.405,\"biceps_flexed_k_cm_per_sqrt_kg_per_m\":4.76,\"biceps_flexed_k_p5\":4.3914,\"biceps_flexed_k_p95\":5.1462,\"biceps_flexed_free_b\":1.2418,\"forearm_flexed_k_cm_per_sqrt_kg_per_m\":4.1041,\"forearm_flexed_k_p5\":3.8314,\"forearm_flexed_k_p95\":4.3936,\"forearm_flexed_free_b\":0.8,\"thigh_upper_k_cm_per_sqrt_kg_per_m\":9.5931,\"thigh_upper_k_p5\":8.9893,\"thigh_upper_k_p95\":10.1711,\"thigh_upper_free_b\":1.1587,\"thigh_lower_k_cm_per_sqrt_kg_per_m\":6.2346,\"thigh_lower_k_p5\":5.7548,\"thigh_lower_k_p95\":6.7242,\"thigh_lower_free_b\":1.0182,\"calf_k_cm_per_sqrt_kg_per_m\":5.8024,\"calf_k_p5\":5.3575,\"calf_k_p95\":6.2578,\"calf_free_b\":0.8536,\"neck_k_cm_per_sqrt_kg_per_m\":5.1208,\"neck_k_p5\":4.759,\"neck_k_p95\":5.5263,\"neck_free_b\":0.6229,\"orig\":\"girth_cm = k * sqrt(weight_kg / stature_m); fit stats: chest R2 0.736, RMSE 4.25 cm; b 95%CI [1.011,1.065], R2log 0.737; waist_omphalion R2 0.699, RMSE 5.48 cm; b 95%CI [1.371,1.439], R2log 0.766; biceps_flexed R2 0.763, RMSE 1.50 cm; b 95%CI [1.214,1.269], R2log 0.796; forearm_flexed R2 0.630, RMSE 1.12 cm; b 95%CI [0.775,0.825], R2log 0.674; thigh_upper R2 0.824, RMSE 2.34 cm; b 95%CI [1.137,1.181], R2log 0.842; thigh_lower R2 0.704, RMSE 1.91 cm; b 95%CI [0.989,1.047], R2log 0.707; calf R2 0.623, RMSE 1.75 cm; b 95%CI [0.826,0.881], R2log 0.645; neck R2 0.388, RMSE 1.50 cm; b 95%CI [0.601,0.645], R2log 0.599\"}",
+   "values": "{\"chest_k_cm_per_sqrt_kg_per_m\":14.7336,\"chest_k_p5\":13.6952,\"chest_k_p95\":15.8551,\"chest_free_b\":1.038,\"waist_omphalion_k_cm_per_sqrt_kg_per_m\":13.4215,\"waist_omphalion_k_p5\":12.035,\"waist_omphalion_k_p95\":14.8395,\"waist_omphalion_free_b\":1.405,\"biceps_flexed_k_cm_per_sqrt_kg_per_m\":4.76,\"biceps_flexed_k_p5\":4.3914,\"biceps_flexed_k_p95\":5.1462,\"biceps_flexed_free_b\":1.2418,\"forearm_flexed_k_cm_per_sqrt_kg_per_m\":4.1041,\"forearm_flexed_k_p5\":3.8314,\"forearm_flexed_k_p95\":4.3936,\"forearm_flexed_free_b\":0.8,\"thigh_upper_k_cm_per_sqrt_kg_per_m\":9.59 … [1,067 more characters on this line; the full prompt is in prompts/a3baa330dbf2469be.txt]
    "sources": [
     {
      "title": "ANSUR II female CSV (OPEN Design Lab)",
@@ -499,7 +531,7 @@ FACTS:
    "key": "ansur2_weight_regression_male",
    "label": "Weight from height + 7 girths (chest, waist, flexed biceps, flexed forearm, thigh, calf, neck), males",
    "status": "derived",
-   "values": "{\"loglog_ln_intercept\":-8.4404,\"loglog_ln_stature_cm\":0.98733,\"loglog_ln_chest_cm\":0.41323,\"loglog_ln_waist_omphalion_cm\":0.30609,\"loglog_ln_biceps_flexed_cm\":0.10894,\"loglog_ln_forearm_flexed_cm\":0.12599,\"loglog_ln_thigh_upper_cm\":0.4389,\"loglog_ln_calf_cm\":0.27805,\"loglog_ln_neck_cm\":0.21877,\"loglog_smearing_factor\":1.00018,\"loglog_r2\":0.9868,\"loglog_rmse_kg\":1.634,\"loglog_cv10_rmse_kg\":1.639,\"loglog_rmse_pct\":1.91,\"loglog_resid_p5_kg\":-2.58,\"loglog_resid_p95_kg\":2.66,\"geom_c_chest\":0.000989,\"geom_c_waist_omphalion\":0.000721,\"geom_c_biceps_flexed\":0.001063,\"geom_c_forearm_flexed\":0.004399,\"geom_c_thigh_upper\":0.002765,\"geom_c_calf\":0.004856,\"geom_c_neck\":0.004353,\"geom_r2\":0.9856,\"geom_rmse_kg\":1.703,\"geom_cv10_rmse_kg\":1.708,\"linear_intercept\":-160.09427,\"linear_stature_cm\":0.47827,\"linear_chest_cm\":0.32586,\"linear_waist_omphalion_cm\":0.29795,\"linear_biceps_flexed_cm\":0.25992,\"linear_forearm_flexed_cm\":0.34307,\"linear_thigh_upper_cm\":0.58804,\"linear_calf_cm\":0.60997,\"linear_neck_cm\":0.46436,\"linear_r2\":0.9825,\"linear_rmse_kg\":1.88,\"linear_cv10_rmse_kg\":1.886,\"height_only_r2\":0.2199,\"height_only_rmse_kg\":12.559,\"orig\":\"LOG-LOG: W_kg = 1.00018 * exp(-8.4404) * H_cm^0.9873 * chest^0.4132 * waist^0.3061 * biceps^0.1089 * forearm^0.1260 * thigh^0.4389 * calf^0.2780 * neck^0.2188 (girths cm); R2 0.9868, RMSE 1.634 kg (1.91%), 10-fold CV RMSE 1.639 kg, 90% of residuals in [-2.58, 2.66] kg; sum of girth exponents 1.89 (geometry predicts 2), height exponent 0.987 (geometry predicts 1). GEOMETRIC: W_kg = H_m * sum(c_i * G_i_cm^2), c = {chest: 0.00099, waist_omphalion: 0.00072, biceps_flexed: 0.00106, forearm_flexed: 0.00440, thigh_upper: 0.00276, calf: 0.00486, neck: 0.00435}; R2 0.9856, RMSE 1.703 kg, CV RMSE 1.708 kg. LINEAR: W_kg = -160.094 + 0.4783*H_cm + 0.3259*chest + 0.2980*waist + 0.2599*biceps + 0.3431*forearm + 0.5880*thigh + 0.6100*calf + 0.4644*neck; R2 0.9825, RMSE 1.88 kg, CV RMSE 1.886 kg. Height alone: R2 0.2199, RMSE 12.559 kg.\"}",
+   "values": "{\"loglog_ln_intercept\":-8.4404,\"loglog_ln_stature_cm\":0.98733,\"loglog_ln_chest_cm\":0.41323,\"loglog_ln_waist_omphalion_cm\":0.30609,\"loglog_ln_biceps_flexed_cm\":0.10894,\"loglog_ln_forearm_flexed_cm\":0.12599,\"loglog_ln_thigh_upper_cm\":0.4389,\"loglog_ln_calf_cm\":0.27805,\"loglog_ln_neck_cm\":0.21877,\"loglog_smearing_factor\":1.00018,\"loglog_r2\":0.9868,\"loglog_rmse_kg\":1.634,\"loglog_cv10_rmse_kg\":1.639,\"loglog_rmse_pct\":1.91,\"loglog_resid_p5_kg\":-2.58,\"loglog_resid_p95_kg\":2.66,\"geom_c_chest\":0.000989,\"geom_c_waist_omphalion\":0.000721,\"geom_c_biceps_f … [1,473 more characters on this line; the full prompt is in prompts/a3baa330dbf2469be.txt]
    "sources": [
     {
      "title": "ANSUR II male CSV (OPEN Design Lab)",
@@ -512,7 +544,7 @@ FACTS:
    "key": "ansur2_weight_regression_female",
    "label": "Weight from height + 7 girths (chest, waist, flexed biceps, flexed forearm, thigh, calf, neck), females",
    "status": "derived",
-   "values": "{\"loglog_ln_intercept\":-8.37056,\"loglog_ln_stature_cm\":0.99109,\"loglog_ln_chest_cm\":0.33931,\"loglog_ln_waist_omphalion_cm\":0.2191,\"loglog_ln_biceps_flexed_cm\":0.15083,\"loglog_ln_forearm_flexed_cm\":0.08197,\"loglog_ln_thigh_upper_cm\":0.50976,\"loglog_ln_calf_cm\":0.34502,\"loglog_ln_neck_cm\":0.2518,\"loglog_smearing_factor\":1.00024,\"loglog_r2\":0.9813,\"loglog_rmse_kg\":1.502,\"loglog_cv10_rmse_kg\":1.509,\"loglog_rmse_pct\":2.19,\"loglog_resid_p5_kg\":-2.4,\"loglog_resid_p95_kg\":2.34,\"geom_c_chest\":0.000843,\"geom_c_waist_omphalion\":0.000511,\"geom_c_biceps_flexed\":0.002367,\"geom_c_forearm_flexed\":0.003555,\"geom_c_thigh_upper\":0.002832,\"geom_c_calf\":0.005472,\"geom_c_neck\":0.006242,\"geom_r2\":0.9804,\"geom_rmse_kg\":1.539,\"geom_cv10_rmse_kg\":1.546,\"linear_intercept\":-128.39031,\"linear_stature_cm\":0.41265,\"linear_chest_cm\":0.24671,\"linear_waist_omphalion_cm\":0.17197,\"linear_biceps_flexed_cm\":0.36305,\"linear_forearm_flexed_cm\":0.17757,\"linear_thigh_upper_cm\":0.55602,\"linear_calf_cm\":0.6294,\"linear_neck_cm\":0.52302,\"linear_r2\":0.9773,\"linear_rmse_kg\":1.656,\"linear_cv10_rmse_kg\":1.664,\"height_only_r2\":0.2846,\"height_only_rmse_kg\":9.289,\"orig\":\"LOG-LOG: W_kg = 1.00024 * exp(-8.3706) * H_cm^0.9911 * chest^0.3393 * waist^0.2191 * biceps^0.1508 * forearm^0.0820 * thigh^0.5098 * calf^0.3450 * neck^0.2518 (girths cm); R2 0.9813, RMSE 1.502 kg (2.19%), 10-fold CV RMSE 1.509 kg, 90% of residuals in [-2.4, 2.34] kg; sum of girth exponents 1.8978 (geometry predicts 2), height exponent 0.991 (geometry predicts 1). GEOMETRIC: W_kg = H_m * sum(c_i * G_i_cm^2), c = {chest: 0.00084, waist_omphalion: 0.00051, biceps_flexed: 0.00237, forearm_flexed: 0.00356, thigh_upper: 0.00283, calf: 0.00547, neck: 0.00624}; R2 0.9804, RMSE 1.539 kg, CV RMSE 1.546 kg. LINEAR: W_kg = -128.390 + 0.4127*H_cm + 0.2467*chest + 0.1720*waist + 0.3631*biceps + 0.1776*forearm + 0.5560*thigh + 0.6294*calf + 0.5230*neck; R2 0.9773, RMSE 1.656 kg, CV RMSE 1.664 kg. Height alone: R2 0.2846, RMSE 9.289 kg.\"}",
+   "values": "{\"loglog_ln_intercept\":-8.37056,\"loglog_ln_stature_cm\":0.99109,\"loglog_ln_chest_cm\":0.33931,\"loglog_ln_waist_omphalion_cm\":0.2191,\"loglog_ln_biceps_flexed_cm\":0.15083,\"loglog_ln_forearm_flexed_cm\":0.08197,\"loglog_ln_thigh_upper_cm\":0.50976,\"loglog_ln_calf_cm\":0.34502,\"loglog_ln_neck_cm\":0.2518,\"loglog_smearing_factor\":1.00024,\"loglog_r2\":0.9813,\"loglog_rmse_kg\":1.502,\"loglog_cv10_rmse_kg\":1.509,\"loglog_rmse_pct\":2.19,\"loglog_resid_p5_kg\":-2.4,\"loglog_resid_p95_kg\":2.34,\"geom_c_chest\":0.000843,\"geom_c_waist_omphalion\":0.000511,\"geom_c_biceps_fl … [1,472 more characters on this line; the full prompt is in prompts/a3baa330dbf2469be.txt]
    "sources": [
     {
      "title": "ANSUR II female CSV (OPEN Design Lab)",
@@ -551,7 +583,7 @@ FACTS:
    "key": "ansur2_segments_male",
    "label": "Segment lengths, heights and breadths for a volume model, males",
    "status": "measured",
-   "values": "{\"stature_p50_m\":1.755,\"cervicale_height_p50_m\":1.517,\"acromial_height_p50_m\":1.439,\"suprasternale_height_p50_m\":1.437,\"chest_height_p50_m\":1.289,\"waist_height_omphalion_p50_m\":1.055,\"trochanterion_height_p50_m\":0.899,\"crotch_height_p50_m\":0.845,\"knee_height_midpatella_p50_m\":0.487,\"lateral_femoral_epicondyle_height_p50_m\":0.491,\"tibiale_height_p50_m\":0.4675,\"lateral_malleolus_height_p50_m\":0.073,\"sitting_height_p50_m\":0.918,\"span_p50_m\":1.812,\"acromion_radiale_len_upperarm_p50_m\":0.335,\"radiale_stylion_len_forearm_p50_m\":0.267,\"hand_length_p50_m\":0.193,\"foot_length_p50_m\":0.271,\"head_length_p50_m\":0.2,\"head_breadth_p50_m\":0.154,\"biacromial_breadth_p50_m\":0.415,\"bideltoid_breadth_p50_m\":0.509,\"chest_breadth_p50_m\":0.289,\"chest_depth_p50_m\":0.253,\"waist_breadth_p50_m\":0.325,\"waist_depth_p50_m\":0.234,\"hip_breadth_p50_m\":0.344,\"thigh_len_trochanterion_to_lat_femoral_epicondyle_p50_m\":0.408,\"thigh_len_crotch_to_midpatella_p50_m\":0.357,\"shank_len_tibiale_to_lat_malleolus_p50_m\":0.3945,\"head_neck_len_stature_minus_cervicale_p50_m\":0.239,\"trunk_len_suprasternale_to_crotch_p50_m\":0.593,\"chest_breadth_over_depth_median\":1.1412,\"waist_breadth_over_depth_median\":1.3868,\"orig\":\"cm p5/p50/p95 (median ratio to stature): stature 164.8/175.5/187.0 (1.000); cervicale_height 141.6/151.7/162.3 (0.864); acromial_height 133.9/143.9/154.6 (0.821); suprasternale_height 134.1/143.7/154.0 (0.819); chest_height 120.0/128.9/138.7 (0.735); waist_height_omphalion 97.2/105.5/114.5 (0.602); trochanterion_height 82.4/89.9/98.5 (0.512); crotch_height 77.1/84.5/92.5 (0.481); knee_height_midpatella 44.3/48.7/53.6 (0.278); lateral_femoral_epicondyle_height 44.9/49.1/53.7 (0.280); tibiale_height 42.6/46.8/51.3 (0.266); lateral_malleolus_height 6.4/7.3/8.3 (0.042); sitting_height 86.0/91.8/97.7 (0.524); span 168.0/181.2/195.7 (1.031); acromion_radiale_len_upperarm 30.7/33.5/36.5 (0.191); radiale_stylion_len_forearm 24.4/26.7/29.5 (0.152); hand_length 17.7/19.3/21.0 (0.110); foot_length 25.0/27.1/29.3 (0.154); head_length 18.8/20.0/21.1 (0.114); head_breadth 14.6/15.4/16.3 (0.088); biacromial_breadth 38.4/41.5/44.7 (0.236); bideltoid_breadth 45.9/50.9/56.7 (0.290); chest_breadth 26.1/28.9/32.0 (0.165); chest_depth 21.1/25.3/29.8 (0.144); waist_breadth 27.2/32.5/38.5 (0.186); waist_depth 18.8/23.4/30.0 (0.134); hip_breadth 30.8/34.4/38.7 (0.196); thigh_len_trochanterion_to_lat_femoral_epicondyle 36.4/40.8/45.8 (0.233); thigh_len_crotch_to_midpatella 31.8/35.7/39.8 (0.204); shank_len_tibiale_to_lat_malleolus 35.7/39.5/43.7 (0.225); head_neck_len_stature_minus_cervicale 21.8/23.9/26.0 (0.136); trunk_len_suprasternale_to_crotch 54.2/59.3/64.5 (0.338)\"}",
+   "values": "{\"stature_p50_m\":1.755,\"cervicale_height_p50_m\":1.517,\"acromial_height_p50_m\":1.439,\"suprasternale_height_p50_m\":1.437,\"chest_height_p50_m\":1.289,\"waist_height_omphalion_p50_m\":1.055,\"trochanterion_height_p50_m\":0.899,\"crotch_height_p50_m\":0.845,\"knee_height_midpatella_p50_m\":0.487,\"lateral_femoral_epicondyle_height_p50_m\":0.491,\"tibiale_height_p50_m\":0.4675,\"lateral_malleolus_height_p50_m\":0.073,\"sitting_height_p50_m\":0.918,\"span_p50_m\":1.812,\"acromion_radiale_len_upperarm_p50_m\":0.335,\"radiale_stylion_len_forearm_p50_m\":0.267,\"hand_length_p50_m\ … [2,145 more characters on this line; the full prompt is in prompts/a3baa330dbf2469be.txt]
    "sources": [
     {
      "title": "ANSUR II male CSV (OPEN Design Lab)",
@@ -568,7 +600,7 @@ FACTS:
    "key": "ansur2_segments_female",
    "label": "Segment lengths, heights and breadths for a volume model, females",
    "status": "measured",
-   "values": "{\"stature_p50_m\":1.626,\"cervicale_height_p50_m\":1.393,\"acromial_height_p50_m\":1.332,\"suprasternale_height_p50_m\":1.3265,\"chest_height_p50_m\":1.169,\"waist_height_omphalion_p50_m\":0.9775,\"trochanterion_height_p50_m\":0.844,\"crotch_height_p50_m\":0.78,\"knee_height_midpatella_p50_m\":0.448,\"lateral_femoral_epicondyle_height_p50_m\":0.465,\"tibiale_height_p50_m\":0.437,\"lateral_malleolus_height_p50_m\":0.063,\"sitting_height_p50_m\":0.857,\"span_p50_m\":1.657,\"acromion_radiale_len_upperarm_p50_m\":0.311,\"radiale_stylion_len_forearm_p50_m\":0.2405,\"hand_length_p50_m\":0.18,\"foot_length_p50_m\":0.246,\"head_length_p50_m\":0.19,\"head_breadth_p50_m\":0.147,\"biacromial_breadth_p50_m\":0.365,\"bideltoid_breadth_p50_m\":0.45,\"chest_breadth_p50_m\":0.268,\"chest_depth_p50_m\":0.245,\"waist_breadth_p50_m\":0.298,\"waist_depth_p50_m\":0.209,\"hip_breadth_p50_m\":0.353,\"thigh_len_trochanterion_to_lat_femoral_epicondyle_p50_m\":0.379,\"thigh_len_crotch_to_midpatella_p50_m\":0.333,\"shank_len_tibiale_to_lat_malleolus_p50_m\":0.374,\"head_neck_len_stature_minus_cervicale_p50_m\":0.232,\"trunk_len_suprasternale_to_crotch_p50_m\":0.547,\"chest_breadth_over_depth_median\":1.0922,\"waist_breadth_over_depth_median\":1.4188,\"orig\":\"cm p5/p50/p95 (median ratio to stature): stature 152.5/162.6/174.0 (1.000); cervicale_height 130.0/139.3/149.8 (0.857); acromial_height 124.2/133.2/143.4 (0.820); suprasternale_height 123.6/132.7/142.8 (0.817); chest_height 108.0/116.9/126.6 (0.719); waist_height_omphalion 90.0/97.8/106.4 (0.602); trochanterion_height 77.4/84.4/91.9 (0.519); crotch_height 71.2/78.0/85.7 (0.480); knee_height_midpatella 40.8/44.8/49.3 (0.275); lateral_femoral_epicondyle_height 42.2/46.5/51.1 (0.286); tibiale_height 39.9/43.7/47.9 (0.269); lateral_malleolus_height 5.4/6.3/7.1 (0.039); sitting_height 80.3/85.7/91.2 (0.527); span 152.9/165.7/180.3 (1.018); acromion_radiale_len_upperarm 28.3/31.1/34.0 (0.191); radiale_stylion_len_forearm 21.8/24.1/26.8 (0.148); hand_length 16.5/18.0/19.9 (0.111); foot_length 22.6/24.6/26.8 (0.151); head_length 17.8/19.0/20.2 (0.117); head_breadth 14.0/14.7/15.6 (0.091); biacromial_breadth 33.5/36.5/39.6 (0.225); bideltoid_breadth 40.6/45.0/49.9 (0.276); chest_breadth 24.1/26.8/30.2 (0.165); chest_depth 20.5/24.5/29.6 (0.151); waist_breadth 25.0/29.8/35.6 (0.183); waist_depth 16.9/20.9/27.1 (0.128); hip_breadth 31.1/35.3/40.0 (0.217); thigh_len_trochanterion_to_lat_femoral_epicondyle 34.0/37.9/41.8 (0.233); thigh_len_crotch_to_midpatella 29.7/33.3/37.1 (0.205); shank_len_tibiale_to_lat_malleolus 33.8/37.4/41.5 (0.230); head_neck_len_stature_minus_cervicale 21.4/23.2/25.3 (0.143); trunk_len_suprasternale_to_crotch 50.1/54.7/59.3 (0.336)\"}",
+   "values": "{\"stature_p50_m\":1.626,\"cervicale_height_p50_m\":1.393,\"acromial_height_p50_m\":1.332,\"suprasternale_height_p50_m\":1.3265,\"chest_height_p50_m\":1.169,\"waist_height_omphalion_p50_m\":0.9775,\"trochanterion_height_p50_m\":0.844,\"crotch_height_p50_m\":0.78,\"knee_height_midpatella_p50_m\":0.448,\"lateral_femoral_epicondyle_height_p50_m\":0.465,\"tibiale_height_p50_m\":0.437,\"lateral_malleolus_height_p50_m\":0.063,\"sitting_height_p50_m\":0.857,\"span_p50_m\":1.657,\"acromion_radiale_len_upperarm_p50_m\":0.311,\"radiale_stylion_len_forearm_p50_m\":0.2405,\"hand_length_p50_m … [2,143 more characters on this line; the full prompt is in prompts/a3baa330dbf2469be.txt]
    "sources": [
     {
      "title": "ANSUR II female CSV (OPEN Design Lab)",
@@ -585,7 +617,7 @@ FACTS:
    "key": "ansur2_male_subgroups",
    "label": "ANSUR II male subgroups: lean-but-heavy vs big-waist vs normal BMI (medians)",
    "status": "derived",
-   "values": "{\"leanheavy_n\":39,\"leanheavy_weight_kg\":92.1,\"leanheavy_stature_m\":1.759,\"leanheavy_chest_m\":1.151,\"leanheavy_waist_omphalion_m\":0.93,\"leanheavy_biceps_flexed_m\":0.407,\"leanheavy_thigh_upper_m\":0.655,\"leanheavy_calf_m\":0.403,\"bigwaist_n\":589,\"bigwaist_weight_kg\":102.4,\"bigwaist_stature_m\":1.747,\"bigwaist_chest_m\":1.17,\"bigwaist_waist_omphalion_m\":1.103,\"bigwaist_biceps_flexed_m\":0.389,\"bigwaist_thigh_upper_m\":0.692,\"bigwaist_calf_m\":0.423,\"normalbmi_n\":1061,\"normalbmi_weight_kg\":70.7,\"normalbmi_stature_m\":1.758,\"normalbmi_chest_m\":0.963,\"normalbmi_waist_omphalion_m\":0.818,\"normalbmi_biceps_flexed_m\":0.324,\"normalbmi_thigh_upper_m\":0.563,\"normalbmi_calf_m\":0.364,\"orig\":\"leanheavy [BMI>=28 and chest-waist>=20 cm] n=39 medians: stature 175.9 cm, weight 92.1 kg, BMI 29.5, chest 115.1, waist 93.0, biceps 40.7, forearm 33.9, thigh 65.5, lower thigh 42.3, calf 40.3, neck 41.1 cm; k = chest 15.767, waist 12.702, biceps 5.52, forearm 4.607, thigh 8.973, lower thigh 5.711, calf 5.57, neck 5.643 || bigwaist [BMI>=30 and waist/height>=0.60] n=589 medians: stature 174.7, weight 102.4, BMI 33.5, chest 117.0, waist 110.3, biceps 38.9, forearm 32.7, thigh 69.2, lower thigh 44.3, calf 42.3, neck 42.6; k = chest 15.255, waist 14.426, biceps 5.088, forearm 4.279, thigh 9.047, lower thigh 5.779, calf 5.501, neck 5.562 || normalbmi [BMI 18.5-25] n=1061 medians: stature 175.8, weight 70.7, BMI 23.2, chest 96.3, waist 81.8, biceps 32.4, forearm 29.0, thigh 56.3, lower thigh 37.7, calf 36.4, neck 37.3; k = chest 15.179, waist 12.886, biceps 5.082, forearm 4.562, thigh 8.838, lower thigh 5.942, calf 5.734, neck 5.89\"}",
+   "values": "{\"leanheavy_n\":39,\"leanheavy_weight_kg\":92.1,\"leanheavy_stature_m\":1.759,\"leanheavy_chest_m\":1.151,\"leanheavy_waist_omphalion_m\":0.93,\"leanheavy_biceps_flexed_m\":0.407,\"leanheavy_thigh_upper_m\":0.655,\"leanheavy_calf_m\":0.403,\"bigwaist_n\":589,\"bigwaist_weight_kg\":102.4,\"bigwaist_stature_m\":1.747,\"bigwaist_chest_m\":1.17,\"bigwaist_waist_omphalion_m\":1.103,\"bigwaist_biceps_flexed_m\":0.389,\"bigwaist_thigh_upper_m\":0.692,\"bigwaist_calf_m\":0.423,\"normalbmi_n\":1061,\"normalbmi_weight_kg\":70.7,\"normalbmi_stature_m\":1.758,\"normalbmi_chest_m\":0.963,\"n … [1,088 more characters on this line; the full prompt is in prompts/a3baa330dbf2469be.txt]
    "sources": [
     {
      "title": "ANSUR II male CSV (OPEN Design Lab)",
@@ -611,7 +643,7 @@ FACTS:
    "key": "ansur2_female_subgroups",
    "label": "ANSUR II female subgroups: lean-but-heavy vs big-waist vs normal BMI (medians)",
    "status": "derived",
-   "values": "{\"leanheavy_n\":70,\"leanheavy_weight_kg\":76.7,\"leanheavy_stature_m\":1.644,\"leanheavy_chest_m\":1.053,\"leanheavy_waist_omphalion_m\":0.87,\"leanheavy_biceps_flexed_m\":0.326,\"leanheavy_thigh_upper_m\":0.65,\"leanheavy_calf_m\":0.391,\"bigwaist_n\":133,\"bigwaist_weight_kg\":85.2,\"bigwaist_stature_m\":1.626,\"bigwaist_chest_m\":1.09,\"bigwaist_waist_omphalion_m\":1.055,\"bigwaist_biceps_flexed_m\":0.36,\"bigwaist_thigh_upper_m\":0.702,\"bigwaist_calf_m\":0.409,\"normalbmi_n\":936,\"normalbmi_weight_kg\":60.1,\"normalbmi_stature_m\":1.626,\"normalbmi_chest_m\":0.892,\"normalbmi_waist_omphalion_m\":0.79,\"normalbmi_biceps_flexed_m\":0.285,\"normalbmi_thigh_upper_m\":0.58,\"normalbmi_calf_m\":0.357,\"orig\":\"leanheavy [BMI>=26 and chest-waist>=15 cm] n=70 medians: stature 164.4 cm, weight 76.7 kg, BMI 28.3, chest 105.3, waist 87.0, biceps 32.6, forearm 27.5, thigh 65.0, lower thigh 41.9, calf 39.1, neck 34.2 cm; k = chest 15.528, waist 12.941, biceps 4.787, forearm 4.039, thigh 9.537, lower thigh 6.239, calf 5.759, neck 5.004 || bigwaist [BMI>=30 and waist/height>=0.60] n=133 medians: stature 162.6, weight 85.2, BMI 32.6, chest 109.0, waist 105.5, biceps 36.0, forearm 28.9, thigh 70.2, lower thigh 44.8, calf 40.9, neck 35.5; k = chest 14.992, waist 14.514, biceps 4.929, forearm 3.995, thigh 9.653, lower thigh 6.217, calf 5.617, neck 4.902 || normalbmi [BMI 18.5-25] n=936 medians: stature 162.6, weight 60.1, BMI 22.9, chest 89.2, waist 79.0, biceps 28.5, forearm 25.3, thigh 58.0, lower thigh 38.0, calf 35.7, neck 31.8; k = chest 14.653, waist 12.974, biceps 4.69, forearm 4.164, thigh 9.487, lower thigh 6.246, calf 5.876, neck 5.248\"}",
+   "values": "{\"leanheavy_n\":70,\"leanheavy_weight_kg\":76.7,\"leanheavy_stature_m\":1.644,\"leanheavy_chest_m\":1.053,\"leanheavy_waist_omphalion_m\":0.87,\"leanheavy_biceps_flexed_m\":0.326,\"leanheavy_thigh_upper_m\":0.65,\"leanheavy_calf_m\":0.391,\"bigwaist_n\":133,\"bigwaist_weight_kg\":85.2,\"bigwaist_stature_m\":1.626,\"bigwaist_chest_m\":1.09,\"bigwaist_waist_omphalion_m\":1.055,\"bigwaist_biceps_flexed_m\":0.36,\"bigwaist_thigh_upper_m\":0.702,\"bigwaist_calf_m\":0.409,\"normalbmi_n\":936,\"normalbmi_weight_kg\":60.1,\"normalbmi_stature_m\":1.626,\"normalbmi_chest_m\":0.892,\"norma … [1,082 more characters on this line; the full prompt is in prompts/a3baa330dbf2469be.txt]
    "sources": [
     {
      "title": "ANSUR II female CSV (OPEN Design Lab)",
@@ -634,16 +666,22 @@ FACTS:
    "notes": "Individual anonymous rows of the public database. The largest female arms belong to high-BMI women, not to muscular ones. These rows mark the edge of the data."
   }
  ],
- "gaps": "1. Natural (narrowest) waist was not measured in ANSUR II. Only navel-level (omphalion) waist exists, so any tape number taken at the natural waist will run smaller and should not be compared directly. I did not derive a conversion between the two.\n2. Arm girths exist only flexed (maximal 'make a muscle', and forearm flexed at the elbow crease). There is no relaxed upper-arm or relaxed forearm girth in the public file. The 'mid-thigh' girth used in bodybuilding is not measured either; ANSUR has the gluteal-furrow (top) thigh and a just-above-the-knee lower thigh.\n3. The public file has no body-composition data (no body-fat % or DXA), so the fits cannot separate fat from muscle. The girth-scaling exponents and the girth predictor describe how soldiers differ, which is mostly fat. They are not a model of muscle gain.\n4. The population is US Army soldiers aged 17-58 (2010-2012). They are leaner and younger than the general US population, so a sample like NHANES would be a better 'average man/woman' baseline. I did not fetch NHANES; that is outside this topic.\n5. The data ceiling is a flexed arm of 49.0 cm (men) / 43.5 cm (women), chest 146.9 / 126.6 cm and weight 144.2 / 119.6 kg. Applying any regression to bodybuilders or comic characters beyond these sizes is extrapolation. The extrapolation tests here favour the log-log and geometric forms, but they only test within-sample tails. They have not been validated against measured bodybuilders.\n6. The 'lean-but-heavy' subgroups are my own selection rules with small n (39 men, 70 women). They are not an athlete sample.\n7. The frustum volume model and its calibration constant (about 1.04 kg per model-litre) are my construction, not a published model. The constant is not body density.\n8. The handbook says calf was read 3 times near the maximum. The public file has one value per subject, and the documents I read do not say whether it is the maximum or the mean.\n9. The http:// download links on the OPEN Lab page now serve an HTML shell; https:// works. I used the OPEN Lab mirrors of the TR PDFs rather than DTIC copies.\n10. Percentiles are numpy linear-interpolated and agree with the TR tables to within 0.1 cm, except female weight p95 (87.08 vs 87.10 kg).\n11. The 3D body scans are not public, so cross-section shapes beyond breadth/depth ratios are unknown."
+ "gaps": "1. Natural (narrowest) waist was not measured in ANSUR II. Only navel-level (omphalion) waist exists, so any tape number taken at the natural waist will run smaller and should not be compared directly. I did not derive a conversion between the two.\n2. Arm girths exist only flexed (maximal 'make a muscle', and forearm flexed at the elbow crease). There is no relaxed upper-arm or relaxed forearm girth in the public file. The 'mid-thigh' girth used in bodybuilding is not measured either; ANSUR has the gluteal-furrow (top) thigh and a just-above-the-knee lower thigh.\n3. The public file … [1,757 more characters on this line; the full prompt is in prompts/a3baa330dbf2469be.txt]
 }
 ```
 
 </details>
 
-<details>
-<summary>Subagent `verify:muscle` (build-calc-research, 2026-10-10 02:16:54 UTC): Mostly accurate. I re-fetched about 45 of the cited URLs: 12 Europe PMC abstracts, the Balshaw and Chappell full texts, the de Moraes table and full text, the Helms PDF, the McDonald page, the MuscleMemory table, 15 The Barbell/FLEX reports, 2 Iron Man pages, Guinness, 4 Olympedia pages, the Tokyo 2020 profile, the ... Returned checks: 40 (e.g. kouri1995_ffmi_natural_limit; kouri1995_group_means).</summary>
+**Subagent `verify:muscle`** · build-calc-research · started 2026-10-10 02:16:54 UTC
 
-Workflow run `wf_16409832-67f`, phase `Verify`, agent `a298526fbb4e4c04b`. Prompt, verbatim:
+- checks: 40 (35 ok, 5 not ok).
+- Not OK: kouri1995_ffmi_natural_limit; sukwong2022_thai_elite_bodybuilders; chappell2019_natural_pro_bodybuilders (+2 more).
+- Mostly accurate. I re-fetched about 45 of the cited URLs: 12 Europe PMC abstracts, the Balshaw and Chappell full texts, the de Moraes table and full text, the Helms PDF, the McDonald page, the MuscleMemory table, 15 The Barbell/FLEX reports, 2 Iron Man pages, Guinness, 4 Olympedia pages, the Tokyo ...
+
+<details>
+<summary>Prompt, verbatim (72,982 characters)</summary>
+
+Workflow run `wf_16409832-67f`, phase `Verify`, agent `a298526fbb4e4c04b`. Lines over 1,500 characters are cut here; the full prompt is in [prompts/a298526fbb4e4c04b.txt](prompts/a298526fbb4e4c04b.txt).
 
 ```text
 Project: a small web calculator. The user picks a BUILD (average man or woman, athlete, record bodybuilder, strongman, comic-book character, or two original characters) and a HEIGHT, and the page shows estimated body WEIGHT and GIRTHS: chest, waist, upper arm (flexed), forearm, thigh, calf and neck. Every number must be sourced or clearly labelled as an estimate. The owner values factual accuracy over flattery: say "unknown" rather than invent, and label magazine-reported or fan-wiki numbers as such.
@@ -653,8 +691,8 @@ You are a skeptical fact-checker for the topic "muscle". Below are the researche
 
 FACTS:
 {
- "summary": "Topic covered: record bodybuilders and strongmen (12 athletes plus a pre-steroid reference) and the peer-reviewed data on bodybuilder body composition and girths. Raw downloads are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/buildcalc/bodybuilders/dl/. The full fact set is at .../bodybuilders/facts.json, and derived FFMIs are at .../bodybuilders/derived_ffmi.txt. Scripts are in .../buildcalc/scripts/ (build_bb_facts.py, ffmi_bb.py, epmc.py, txt.py).\n\nKey findings:\n\n(1) Kouri et al. 1995. Abstract, verbatim: 157 male athletes (83 steroid users, 74 non-users). Normalized FFMI of non-users 'extended up to a well-defined limit of 25.0'. 20 pre-steroid Mr America winners (1939-1959) had a mean of 25.4. Some users exceeded 30. The authors called the findings preliminary. The abstract gives the height correction as 6.3 x (1.80 - h), but the common formula and McDonald's reading use 6.1, so I marked it disputed. The difference is negligible (<0.1 unit).\n\n(2) Peer-reviewed group data:\n- Graybeal 2020: male bodybuilders, 4-compartment FFMI 25.1 +/- 1.8 at 11.8% fat.\n- Withers 1997: 3 elite bodybuilders, FFM 88 kg at 92.8 kg and 5% fat.\n- McInnis 1999: 99 kg, 1.80 m, 8% fat, FFM 91 kg.\n- Kraemer 2020: 18 elite strongmen by DXA, 1.874 m, 152.9 kg, lean 118 kg, 18.7% fat.\n- Balshaw 2024: lab-measured World's Strongest Man, identifiable as Eddie Hall, 1.90 m and 172.0 kg. MRI leg-muscle volume about 2x untrained controls.\n- Girth surveys: de Moraes 2019 (Brazilian national competitors on contest day: arm about 42.5 cm, chest 112 cm, waist 78-79 cm, thigh 64-65 cm, calf 40-41 cm), Bamman 1993 (contest prep cuts the waist by 6.9 cm and leaves the chest unchanged), Sukwong 2022 and Fry 1991.\n- Natural athletes: Chappell 2019 (WNBF/DFAC pros, self-reported 1.77 m, about 82 kg on stage, FFMI about 25 if 5% fat), Mitchell 2018, and Rossow 2013 (IFPA pro case study, 4.5% fat; FFMI 24.9 per Helms's secondary reading).\n- Bauer 2023 review: male near-contest body fat 5.8-10.7%.\n\n(3) Pre-steroid girth reference: the 1956 Mr USA program table of Mr America winners at the time of their wins (neck, arm, forearm, chest, waist, thigh, calf, wrist, ankle). Arms were about 15.5-18 in and calves 15-17.5 in.\n\n(4) Athletes. Contest weights come mostly from FLEX and Iron Man contest reports (republished by The Barbell / Greg Merritt), which are better than profile sites:\n- Coleman: 249 lb (1998), 286 (2003), 296 (2004, his heaviest contest weight), 275 (2005). His own figure for his biggest off-season weight is 330 lb.\n- Yates: 242 lb (1992) and 257 lb (1993; Guinness gives 116.57 kg).\n- Cutler: 255 (1999), 273 (2004), 271 (2009), 260 (2010).\n- Heath: 227 (2009), 245 (2010), 248 (2011).\n- Elssbiay: 285 (2014), about 305-310 (2015). Self-reported off-season 341 lb (155 kg) in Jan 2022.\n- Arnold: 246 lb (1971), 235 (1975). His book lists 22/57/34/28.5/20 in at 235 lb and 6'2\".\n- Oliva: about 225 lb (1967), about 240 (1972).\n- Shaw: 174.5 kg at 17.6% fat (hydrostatic, Feb 2024).\n- Bjornsson: 152 kg at the 2022 boxing weigh-in; 200 kg self-reported in 2025; heaviest 210 kg in 2012.\n- Talakhadze: official Olympic weigh-ins of 157.34 kg (Rio), 177.00 kg (Tokyo) and 178.45 kg (Paris). Height 1.95 m (Tokyo official) vs 1.97 m elsewhere.\n\nGirths for the bodybuilders come only from fan or profile sites (GreatestPhysiques, FitnessVolt), conflict with each other and carry no measurement method, so they are marked disputed or reported. Derived stage FFMIs at an assumed 5% fat: Arnold 29-30, Oliva about 31, Yates about 35, Heath about 35, Cutler about 38, Coleman 38-39, Elssbiay 41-43. All are far above the natural limit of about 25.",
- "gaps": "- Kouri 1995 full text was not accessible. The group means and SDs, the Mr America table (max 28.0; SD 1.5), the 5% body-fat assumption for the Mr America winners, and the 6.1 vs 6.3 constant come only from secondary sources (Helms in AARR 2014, Lyle McDonald).\n- Paywalled girth numbers I could not read: Katch 1980 (bodybuilder arm, chest, forearm and shoulder girths), Huygens 2002 (Belgian bodybuilders' arm and thigh girths), Borms 1986 (world-class bodybuilders' somatotypes/girths) and the SciELO Brazilian elite study (HTTP 403).\n- Rossow 2013: no height or absolute mass. The FFMI 24.9 and the 16 kg loss are from Helms.\n- The Wayback Machine (archive.org) was blocked (429 / fetch refused). So I could not see:\n  - the old Bodybuilding.com pro profiles that Wikipedia cites for the Arnold, Coleman and Cutler stats;\n  - the archived World's Strongest Man athlete profiles (Shaw 6'8\", Bjornsson 205 cm). The current theworldsstrongestman.com athlete pages return 404.\n- Blocked or unreadable pages: the IWF 2021 results-book PDF (403) and the musclememory.org scans of the 1947 Muscle Power and Iron Man pages (script-rendered). The Muscle Power figures for Reeves are therefore unverified.\n- UNKNOWN (no credible source found): any girths for Big Ramy, Hafthor Bjornsson, Eddie Hall (MRI leg volumes only), Brian Shaw (only contradictory SEO pages) and Lasha Talakhadze.\n- Neck girth was not found for any modern pro. Forearm appears only in the Mr America table and the group studies.\n- Phil Heath's girths rest on a single fan site.\n- Stage weights not found in a fetchable source: Big Ramy at the 2020 and 2021 Olympias (a BarBend 'just under 300 lb' item was in search results only; that URL returned 410), and Arnold, Oliva and Yates off-season weights by year.\n- Heights disputed or unverified: Brian Shaw's 6'6.75\" (from a YouTube short I did not watch; cited via Wikipedia); Arnold 6'1.5\"-6'2\" (6'3\" on one site); Elssbiay 5'9\"-5'11\"; Cutler and Yates 5'9\"-5'10\".\n- Bjornsson's 205 kg at the Sept 2025 World Deadlift Championships appears only in a Wikipedia note; not verified.\n- Natural bodybuilder: I found no individually named drug-tested champion with both height and stage weight from a reliable source. Malcolm Cooper (2023 WNBF Pro Universe) has 174 lb stage weight but no height. Use the Chappell 2019 PRO group or the Rossow case instead.\n- Body-fat percentages for the pro bodybuilders are assumptions (5-6%), so all their FFMIs are derived estimates.\n- Talakhadze body fat is unknown, so no FFMI is given for him.\n- Eddie Hall body fat is unknown, so no FFMI is given for him.",
+ "summary": "Topic covered: record bodybuilders and strongmen (12 athletes plus a pre-steroid reference) and the peer-reviewed data on bodybuilder body composition and girths. Raw downloads are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/buildcalc/bodybuilders/dl/. The full fact set is at .../bodybuilders/facts.json, and derived FFMIs are at .../bodybuilders/derived_ffmi.txt. Scripts are in .../buildcalc/scripts/ (build_bb_facts.py, ffmi_bb.py, epmc.py, txt.py).\n\nKey findings:\n\n(1) Kouri et al. 1995. Abstract, verbatim: 157 male athletes (83 steroid users, 7 … [3,129 more characters on this line; the full prompt is in prompts/a298526fbb4e4c04b.txt]
+ "gaps": "- Kouri 1995 full text was not accessible. The group means and SDs, the Mr America table (max 28.0; SD 1.5), the 5% body-fat assumption for the Mr America winners, and the 6.1 vs 6.3 constant come only from secondary sources (Helms in AARR 2014, Lyle McDonald).\n- Paywalled girth numbers I could not read: Katch 1980 (bodybuilder arm, chest, forearm and shoulder girths), Huygens 2002 (Belgian bodybuilders' arm and thigh girths), Borms 1986 (world-class bodybuilders' somatotypes/girths) and the SciELO Brazilian elite study (HTTP 403).\n- Rossow 2013: no height or absolute mass. The FFM … [2,044 more characters on this line; the full prompt is in prompts/a298526fbb4e4c04b.txt]
  "facts": [
   {
    "key": "kouri1995_ffmi_natural_limit",
@@ -913,7 +951,7 @@ FACTS:
    "key": "mr_america_1938_1954_program_girths",
    "label": "Mr America winners' measurements when they won (1956 Mr USA contest program) - pre-steroid girth reference",
    "status": "reported",
-   "values": "{\"units\": \"inches / lb\", \"columns\": [\"year\", \"name\", \"height\", \"weight_lb\", \"neck\", \"arm\", \"forearm\", \"chest\", \"waist\", \"thigh\", \"calf\", \"wrist\", \"ankle\"], \"rows\": [[\"1938\", \"Bert Goodrich\", \"5'10.5\\\"\", 195, 17, 17, 14, 47, 33, 24, 17, 7.6, 9.2], [\"1940/41\", \"John Grimek\", \"5'8.5\\\"\", 195, 17, 17.5, 14, 47, 31, 25, 17, 8, 9.8], [\"1942\", \"Frank Leight\", \"5'11.5\\\"\", 209, 17.5, 17.5, 14, 48.5, 33, 24, 16, 8, 9.5], [\"1943\", \"Jules Bacon\", \"5'7\\\"\", 175, 15.5, 15.5, 12.5, 44, 31, 23, 15, 7, 9], [\"1944\", \"Steve Stanko\", \"5'11.5\\\"\", 223, 18, 18, 14.3, 48.5, 35.9, null, 17, 8, 10], [\"1945\", \"Clarence Ross\", \"5'9.5\\\"\", 185, 16.5, 17, 13.5, 47, 32, 24, 16, 7.5, 9.2], [\"1946\", \"Alan Stephan\", \"5'11.5\\\"\", 205, 17.1, 17, 14.2, 47.9, 32.4, 24.8, 16.1, 7.7, 9.7], [\"1947\", \"Steve Reeves\", \"6'1\\\"\", 213, 17.6, 17.5, 14, 48, 31, 25.3, 17.5, 7.9, 9.8], [\"1948\", \"George Eiferman\", \"5'7.5\\\"\", 195, 16.5, 16.7, 13.4, 47.5, 32, 25, 16, 7.3, 9.6], [\"1949\", \"Jack Delinger\", \"5'6\\\"\", 195, 16.8, 17.2, 13.8, 47.5, 32, 25, 16.6, 7.7, 9.5], [\"1950\", \"John Farbotnik\", \"5'9\\\"\", 195, 16.8, 17, 13.5, 47.5, 32, 24.5, 15.7, 7.5, 9.3], [\"1951\", \"Roy Hilligenn\", \"5'6\\\"\", 178, 16.6, 16.7, 13.4, 46, 32, 23.6, 15.4, 7.5, 9.2], [\"1952\", \"James Park\", \"5'7.5\\\"\", 190, 16.7, 17, 13.4, 47, 32.5, 24.2, 15.2, 7.3, 9], [\"1953\", \"Bill Pearl\", \"5'9\\\"\", 201, 17.5, 17.5, 14, 48, 32.5, 25, 16.2, 7.8, 9.5], [\"1954\", \"Dick Dubois\", \"6'1\\\"\", 220, 17.8, 18, 14.2, 49, 32.5, 25.5, 17.2, 8, 9.6]], \"later_from_magazines\": [[\"1965\", \"Jerry Daniels\", \"6'\", 215, null, 19, null, 52, 32, 26.75, 17], [\"1967\", \"Dennis Tinerino\", \"6'0\\\"\", 217, null, 19.75, null, 52, 32, 27, 18], [\"1975\", \"Dale Adrian\", \"5'8\\\"\", 200, 18, 19.25, 15, 53, 30, 26, 18], [\"1977\", \"Kalman Szkalak\", \"5'10\\\"\", 215, null, 20, null, 52, 30, 26.5, 17], [\"1981\", \"Tim Belknap\", \"5'4\\\"\", 225, null, 21, 17.5, null, 31, 29, 19.5]], \"SI_example_Reeves\": {\"height_m\": 1.854, \"mass_kg\": 96.6, \"neck_m\": 0.447, \"arm_m\": 0.445, \"forearm_m\": 0.356, \"chest_m\": 1.219, \"waist_m\": 0.787, \"thigh_m\": 0.643, \"calf_m\": 0.445}}",
+   "values": "{\"units\": \"inches / lb\", \"columns\": [\"year\", \"name\", \"height\", \"weight_lb\", \"neck\", \"arm\", \"forearm\", \"chest\", \"waist\", \"thigh\", \"calf\", \"wrist\", \"ankle\"], \"rows\": [[\"1938\", \"Bert Goodrich\", \"5'10.5\\\"\", 195, 17, 17, 14, 47, 33, 24, 17, 7.6, 9.2], [\"1940/41\", \"John Grimek\", \"5'8.5\\\"\", 195, 17, 17.5, 14, 47, 31, 25, 17, 8, 9.8], [\"1942\", \"Frank Leight\", \"5'11.5\\\"\", 209, 17.5, 17.5, 14, 48.5, 33, 24, 16, 8, 9.5], [\"1943\", \"Jules Bacon\", \"5'7\\\"\", 175, 15.5, 15.5, 12.5, 44, 31, 23, 15, 7, 9], [\"1944\", \"Steve Stanko\" … [1,669 more characters on this line; the full prompt is in prompts/a298526fbb4e4c04b.txt]
    "sources": [
     {
      "title": "MuscleMemory.org transcription: 'Measurements of Mr America winners taken when they won their titles, as listed in the program from the 1956 Mr USA contest' + later winners from magazines",
@@ -1498,10 +1536,16 @@ FACTS:
 
 </details>
 
-<details>
-<summary>Subagent `verify:comics` (build-calc-research, 2026-10-10 02:19:50 UTC): Mostly accurate. Every directly quoted number checks out against the source. Returned checks: 25 (e.g. superman; batman).</summary>
+**Subagent `verify:comics`** · build-calc-research · started 2026-10-10 02:19:50 UTC
 
-Workflow run `wf_16409832-67f`, phase `Verify`, agent `a62ced2642f99f67d`. Prompt, verbatim:
+- checks: 25 (20 ok, 5 not ok).
+- Not OK: superman; captain_america; kingpin (+2 more).
+- Mostly accurate. Every directly quoted number checks out against the source.
+
+<details>
+<summary>Prompt, verbatim (46,084 characters)</summary>
+
+Workflow run `wf_16409832-67f`, phase `Verify`, agent `a62ced2642f99f67d`. Lines over 1,500 characters are cut here; the full prompt is in [prompts/a62ced2642f99f67d.txt](prompts/a62ced2642f99f67d.txt).
 
 ```text
 Project: a small web calculator. The user picks a BUILD (average man or woman, athlete, record bodybuilder, strongman, comic-book character, or two original characters) and a HEIGHT, and the page shows estimated body WEIGHT and GIRTHS: chest, waist, upper arm (flexed), forearm, thigh, calf and neck. Every number must be sourced or clearly labelled as an estimate. The owner values factual accuracy over flattery: say "unknown" rather than invent, and label magazine-reported or fan-wiki numbers as such.
@@ -1511,7 +1555,7 @@ You are a skeptical fact-checker for the topic "comics". Below are the researche
 
 FACTS:
 {
- "summary": "I found stated heights and weights for all 15 requested characters, plus She-Hulk and Abomination. Hulk is split into four forms and Wolverine into with and without adamantium. Raw files are under /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/buildcalc/comics/: raw/marvel_*.html, raw/dc_*.html, raw/wiki/*.json and raw/wiki/revs/*.txt (fan-wiki revision samples), raw/ia_dk/*.txt (DK book OCR text) and raw/ia_fts_*.txt (archive.org search-inside snippets). Scripts are in scripts/ (metrics.py, revhist.py, revcomments.py, iafts.py, statctx.py, entry.py). Computed metrics are in out/metrics.json.\n\nSOURCES USED\n(1) Marvel.com character pages: official, and they show HEIGHT/WEIGHT. One exception: the Juggernaut page carries Marvel's own disclaimer that it is crowd-sourced content 'not yet verified for accuracy by our erudite editors'.\n(2) DC.com character pages: their 'Character Facts' give no height or weight for any of the five DC characters.\n(3) DK licensed encyclopedias, which are copyright DC Comics / Marvel and carry HEIGHT/WEIGHT factfiles. I treat them as official licensed references, not the Official Handbook of the Marvel Universe (OHOTMU) or DC's Who's Who:\n- DC Comics Encyclopedia New Edition (2021), full OCR read\n- DC Comics Encyclopedia (2008), archive.org search-inside snippets\n- DC Comics Universe Guide (2007), snippets\n- Batman Character Encyclopedia (2016), snippets\n- DC Comics Ultimate Character Guide New Edition (2019), full OCR read\n- Marvel Encyclopedia New Edition (2019), full OCR read\nThe full OCR texts come from third-party archive.org uploads of these books. OCR misreads were corrected by context (for example, 'Gft 3in' read as 6 ft 3 in).\n(4) Fan wikis (Marvel Database, DC Database), including their revision history and edit summaries. Status is always 'reported'.\n\nI could not open any OHOTMU edition directly. Archive.org's OHOTMU copies (1987, 2004, 2006, 2008) are lend-only: text download returned HTTP 401 and search-inside was refused. So every edition-specific OHOTMU claim below is reported second-hand by fan-wiki editors.\n\nDISAGREEMENTS (status 'disputed')\n- Juggernaut: 6 ft 10 in, 900 lb (DK 2019; the fan wiki's 2007 citation of marvel.com/universe; wiki editors say 'every handbook') vs 9 ft 5 in, 1,900 lb (current crowd-sourced Marvel.com page).\n- Doomsday: 7 ft 0 in, 615 lb (DK 2008) vs 7 ft 6 in, 915 lb (DK 2021) vs 8 ft 10 in, 915 lb (DK 2019 guide).\n- Savage Hulk: 7 ft, 1,040 lb (DK 2019) vs 7–8 ft, 1,040–1,400 lb (fan wiki citing handbooks).\n- She-Hulk: 650 lb (DK 2019) vs 700 lb (Marvel.com).\n- Wolverine: Marvel.com gives 300 lb with adamantium and 195 lb without. DK 2019 lists 195 lb while describing his adamantium skeleton.\n- Captain America: 240 lb (Marvel.com and DK 2019). A 220 lb figure for some handbooks is fan-reported only.\n\nGIRTHS: No official source gives chest, waist, arm, forearm, thigh, calf or neck measurements for any of these characters. They are 'unknown' throughout.\n\nPHYSICAL PLAUSIBILITY\nI computed BMI, weight/height^3 (ponderal index, PI) and an upper bound on Kouri-normalised fat-free mass index (FFMI) assuming 0% body fat. Human references:\n- WHO: obesity is BMI 30 or more. At 1.80 m, BMI 25 corresponds to PI 13.9 and BMI 30 to PI 16.7.\n- Kouri 1995: athletes who had not used steroids reached a normalised FFMI of at most 25.0; some steroid users exceeded 30.\nResults:\n- Within the human range: Batman, Black Panther and Superman. Captain America at 240 lb fits steroid-user values but not drug-free ones.\n- Beyond any human value in these references:\n  - Hulk forms: BMI 100–107, PI 44–53\n  - Abomination: BMI 108\n  - Darkseid: BMI 116\n  - Juggernaut: BMI 94–105\n  - Thor: BMI 74\n  - She-Hulk: BMI 73–79\n  - Thing: BMI 68\n  - Doomsday: BMI 57–79\n  - Kingpin and Luke Cage: BMI about 49–51\n  - Bane: BMI 38, or 47 on Venom\n  - Wolverine: BMI 34.5 even without adamantium, which means a normalised FFMI above 30 even at 15% body fat\n- Colossus: his stated 500 lb armoured weight is far below what a body of his size made of steel would weigh. Marvel.com says his armoured tissue is 'analogous to osmium and to carbon steel'.\nI do not offer explanations. Only the publishers' own statements are quoted: Kingpin's bulk 'mostly muscle', Luke Cage's 'dense muscle tissues', Colossus's steel-like tissue, and adamantium adding 105 lb.",
+ "summary": "I found stated heights and weights for all 15 requested characters, plus She-Hulk and Abomination. Hulk is split into four forms and Wolverine into with and without adamantium. Raw files are under /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/buildcalc/comics/: raw/marvel_*.html, raw/dc_*.html, raw/wiki/*.json and raw/wiki/revs/*.txt (fan-wiki revision samples), raw/ia_dk/*.txt (DK book OCR text) and raw/ia_fts_*.txt (archive.org search-inside snippets). Scripts are in scripts/ (metrics.py, revhist.py, revcomments.py, iafts.py, statctx.py, entry.py). Com … [3,831 more characters on this line; the full prompt is in prompts/a62ced2642f99f67d.txt]
  "facts": [
   {
    "key": "superman",
@@ -1996,7 +2040,7 @@ FACTS:
    "key": "plausibility_metrics",
    "label": "Derived: BMI, weight/height^3 and FFMI upper bound for each stated comic figure",
    "status": "derived",
-   "values": "{\"cols\":\"height_m,mass_kg,BMI,PI_kg_m3,FFMInorm_upper_0pct_fat,x_mass_of_BMI25_human\",\"batman\":[1.88,95.3,27.0,14.3,26.5,1.08],\"black_panther\":[1.829,90.7,27.1,14.8,26.9,1.08],\"superman\":[1.905,106.6,29.4,15.4,28.7,1.17],\"captain_america_240\":[1.88,108.9,30.8,16.4,30.3,1.23],\"colossus_human\":[1.981,113.4,28.9,14.6,27.7,1.16],\"wolverine_195\":[1.6,88.5,34.5,21.6,35.8,1.38],\"wolverine_300\":[1.6,136.1,53.1,33.2,54.4,2.13],\"bane\":[2.032,158.8,38.4,18.9,37.0,1.54],\"bane_venom\":[2.032,192.8,46.7,23.0,45.2,1.87],\"colossus_armored\":[2.261,226.8,44.4,19.6,41.5,1.78],\"luke_cage\":[1.981,192.8,49.1,24.8,48.0,1.96],\"kingpin\":[2.007,204.1,50.7,25.3,49.4,2.03],\"doomsday_2008\":[2.134,279.0,61.3,28.7,59.2,2.45],\"doomsday_2019_guide\":[2.692,415.0,57.3,21.3,51.6,2.29],\"doomsday_2021\":[2.286,415.0,79.4,34.7,76.4,3.18],\"thing\":[1.829,226.8,67.8,37.1,67.6,2.71],\"she_hulk_650\":[2.007,294.8,73.2,36.5,71.9,2.93],\"she_hulk_700\":[2.007,317.5,78.9,39.3,77.6,3.15],\"thor\":[1.981,290.3,74.0,37.3,72.8,2.96],\"juggernaut_6_10\":[2.083,408.2,94.1,45.2,92.3,3.76],\"juggernaut_9_5\":[2.87,861.8,104.6,36.4,97.9,4.18],\"hulk_marvelcom\":[2.286,521.6,99.8,43.7,96.8,3.99],\"hulk_savage_7ft\":[2.134,471.7,103.6,48.6,101.5,4.15],\"hulk_savage_8ft\":[2.438,635.0,106.8,43.8,102.8,4.27],\"hulk_grey\":[1.981,408.2,104.0,52.5,102.9,4.16],\"abomination\":[2.032,444.5,107.7,53.0,106.2,4.31],\"darkseid\":[2.667,823.3,115.7,43.4,110.3,4.63],\"banner\":[1.753,58.1,18.9,10.8,19.2,0.76],\"blake\":[1.753,68.0,22.2,12.6,22.4,0.89]}",
+   "values": "{\"cols\":\"height_m,mass_kg,BMI,PI_kg_m3,FFMInorm_upper_0pct_fat,x_mass_of_BMI25_human\",\"batman\":[1.88,95.3,27.0,14.3,26.5,1.08],\"black_panther\":[1.829,90.7,27.1,14.8,26.9,1.08],\"superman\":[1.905,106.6,29.4,15.4,28.7,1.17],\"captain_america_240\":[1.88,108.9,30.8,16.4,30.3,1.23],\"colossus_human\":[1.981,113.4,28.9,14.6,27.7,1.16],\"wolverine_195\":[1.6,88.5,34.5,21.6,35.8,1.38],\"wolverine_300\":[1.6,136.1,53.1,33.2,54.4,2.13],\"bane\":[2.032,158.8,38.4,18.9,37.0,1.54],\"bane_venom\":[2.032,192.8,46.7,23.0,45.2,1.87],\"colossus_armored\":[2.261,226.8,44.4,19.6,41.5,1.78] … [958 more characters on this line; the full prompt is in prompts/a62ced2642f99f67d.txt]
    "sources": [
     {
      "title": "Computed by scripts/metrics.py from the stated figures above (Marvel.com, DK encyclopedias)",
@@ -2007,7 +2051,7 @@ FACTS:
      "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A7496846+AND+SRC%3AMED&resultType=core&format=json&pageSize=1"
     }
    ],
-   "notes": "Conversions: 1 in = 0.0254 m, 1 lb = 0.45359237 kg. The FFMI upper bound assumes 0% body fat, so real FFMI would be lower. At 10% body fat the normalised FFMIs are: Batman 23.8, Black Panther 24.2, Superman 25.8, Captain America at 240 lb 27.2 (24.9 at 220 lb), Piotr Rasputin 24.9, Bane 33.1, Wolverine at 195 lb 32.4.\n\nComparison with the Kouri 1995 human values:\n- Batman and Black Panther fall within the drug-free range.\n- Superman is at the drug-free limit.\n- Captain America at 240 lb exceeds the drug-free limit but is within the steroid-user range.\n- Bane and Wolverine (even without adamantium) are above 30 at 10-15% body fat, the top of the reported human range.\n- Everything with BMI above about 45 is far beyond any value in the human references used here.\n\nIsometric scaling shows how far the stated weights depart from a scaled-up human (derived):\n- Banner's 128 lb scales to 231 lb at 7 ft and 345 lb at 8 ft; the Hulk is stated at 1,040-1,400 lb.\n- Blake's 150 lb scales to 217 lb at 6 ft 6 in; Thor is stated at 640 lb.\n- A 6 ft 2 in, 240 lb build (Captain America) scales to 327 lb at 6 ft 10 in, 855 lb at 9 ft 5 in, 686 lb at 8 ft 9 in and 432 lb at 7 ft 6 in. Compare Juggernaut at 900 or 1,900 lb, Darkseid at 1,815 lb and Hulk at 1,150 lb.\n\nI offer no explanations for these departures. Only Marvel's own wording is quoted where it exists: Luke Cage's 'dense muscle tissues' and 'Superdense Body Mass', Colossus's 'steel-like substance', and Kingpin's bulk being 'mostly muscle'."
+   "notes": "Conversions: 1 in = 0.0254 m, 1 lb = 0.45359237 kg. The FFMI upper bound assumes 0% body fat, so real FFMI would be lower. At 10% body fat the normalised FFMIs are: Batman 23.8, Black Panther 24.2, Superman 25.8, Captain America at 240 lb 27.2 (24.9 at 220 lb), Piotr Rasputin 24.9, Bane 33.1, Wolverine at 195 lb 32.4.\n\nComparison with the Kouri 1995 human values:\n- Batman and Black Panther fall within the drug-free range.\n- Superman is at the drug-free limit.\n- Captain America at 240 lb exceeds the drug-free limit but is within the steroid-user range.\n- Bane and Wolverine (e … [932 more characters on this line; the full prompt is in prompts/a62ced2642f99f67d.txt]
   },
   {
    "key": "colossus_density_check",
@@ -2023,16 +2067,22 @@ FACTS:
    "notes": "Method:\n1. Start from Marvel's stated human form, 6 ft 6 in and 250 lb.\n2. Assume a body density of 1,000-1,100 kg/m^3, roughly that of water. This is an assumption, not a fetched value.\n3. Scale the volume isometrically to 7 ft 5 in (factor 1.486).\n4. Apply a carbon-steel density of 7,850 kg/m^3. This is a standard handbook value that I did not fetch.\nResult: a steel body of that size would weigh about 1,200-1,320 kg (2,650-2,900 lb), against Marvel's stated 500 lb (227 kg). The stated weight implies a mean density of only about 1,350-1,480 kg/m^3, but Marvel.com calls the tissue 'analogous to osmium and to carbon steel'. These inputs are estimates; only the 6 ft 6 in / 250 lb and 7 ft 5 in / 500 lb figures and the quoted wording are official."
   }
  ],
- "gaps": "1. No OHOTMU edition was read directly. The archive.org copies are lend-only: 'officialhandbook04grue' (1987), 'officialhandbook0000unse_z5q7' (Avengers 2004), 'officialhandbook0001unse' (2006) and 'officialhandbook0000unse_i8k4' (A to Z 2008). Text download returned HTTP 401 and search-inside was refused. Edition-specific handbook claims therefore come only from Marvel Database edit summaries and are marked 'reported':\n   - Captain America at 220 lb in Avengers 2004 and Civil War: Battle Damage Report 2007, and 240 lb in 2006, 2008 and Avengers: Roll Call\n   - Juggernaut at 6 ft 10 in / 900 lb in 'every handbook'\n   - Hulk 7-8 ft / 1,040-1,400 lb (Savage), 6 ft 6 in / 900 lb (Joe Fixit) and 7 ft 6 in / 1,150 lb (Merged), with one edit attributing the Hulk profile to OHOTMU A to Z\n   - Kingpin '9 lb of fat' (OHOTMU: Daredevil 2004)\n   - Banner 5 ft 10 in (Avengers: Roll Call #1)\n   The 1983 (vol. 1), 1985-88 Deluxe and 1990s Master Edition values are therefore unconfirmed.\n2. DC Who's Who: the 1985-87 series and the 1990-92 loose-leaf were not found online. The archive.org 'Who's Who in the DC Universe #1-3' are Mayfair RPG books with no stats. All DC numbers come from DK's licensed encyclopedias (2007, 2008, 2016, 2019 guide, 2021). The often-repeated Superman '225 lbs' has no official source located.\n3. Two DK texts are third-party archive.org uploads of copyrighted books (DC Comics Encyclopedia New Edition 2021 and Marvel Encyclopedia New Edition 2019). I read them as OCR text, and some lines are illegible:\n   - Luke Cage's weight in DK 2019\n   - Abomination's height in DK 2019\n   The DK 2008, 2007 and 2016 books were seen only as search-inside snippets. The Bane height in the 2008 snippet was not visible.\n4. The 2006 first edition of DK's Marvel Encyclopedia is too garbled in OCR to attribute stats to characters.\n5. Wayback Machine and Google Books were blocked or out of quota here. I could not confirm when Marvel.com changed Juggernaut from 6 ft 10 in / 900 lb to 9 ft 5 in / 1,900 lb, or check older Marvel.com/universe pages directly.\n6. Marvel.com has no separate pages for Grey or Savage Hulk; the slugs I tried returned 404.\n7. Girths (chest, waist, upper arm, forearm, thigh, calf, neck): no official or licensed source gives any for these characters, so they are unknown. I did not estimate them here.\n8. Inputs to the plausibility checks that were not fetched: the human body density of 1,000-1,100 kg/m^3 and the steel density of 7,850 kg/m^3 are standard assumptions, labelled as estimates."
+ "gaps": "1. No OHOTMU edition was read directly. The archive.org copies are lend-only: 'officialhandbook04grue' (1987), 'officialhandbook0000unse_z5q7' (Avengers 2004), 'officialhandbook0001unse' (2006) and 'officialhandbook0000unse_i8k4' (A to Z 2008). Text download returned HTTP 401 and search-inside was refused. Edition-specific handbook claims therefore come only from Marvel Database edit summaries and are marked 'reported':\n   - Captain America at 220 lb in Avengers 2004 and Civil War: Battle Damage Report 2007, and 240 lb in 2006, 2008 and Avengers: Roll Call\n   - Juggernaut at 6 ft 1 … [1,966 more characters on this line; the full prompt is in prompts/a62ced2642f99f67d.txt]
 }
 ```
 
 </details>
 
-<details>
-<summary>Subagent `verify:model` (build-calc-research, 2026-10-10 02:26:23 UTC): Mostly accurate and reproducible. I re-downloaded the ANSUR II and Penrose/JSE data and recomputed everything independently. Returned checks: 41 (e.g. siri_equation; brozek_equation).</summary>
+**Subagent `verify:model`** · build-calc-research · started 2026-10-10 02:26:23 UTC
 
-Workflow run `wf_16409832-67f`, phase `Verify`, agent `a27f7e0f475a045f4`. Prompt, verbatim:
+- checks: 41 (34 ok, 7 not ok).
+- Not OK: summary_brozek_derivation; whole_body_density_sample; ansur_frustum_volume_model (+4 more).
+- Mostly accurate and reproducible. I re-downloaded the ANSUR II and Penrose/JSE data and recomputed everything independently.
+
+<details>
+<summary>Prompt, verbatim (54,058 characters)</summary>
+
+Workflow run `wf_16409832-67f`, phase `Verify`, agent `a27f7e0f475a045f4`. Lines over 1,500 characters are cut here; the full prompt is in [prompts/a27f7e0f475a045f4.txt](prompts/a27f7e0f475a045f4.txt).
 
 ```text
 Project: a small web calculator. The user picks a BUILD (average man or woman, athlete, record bodybuilder, strongman, comic-book character, or two original characters) and a HEIGHT, and the page shows estimated body WEIGHT and GIRTHS: chest, waist, upper arm (flexed), forearm, thigh, calf and neck. Every number must be sourced or clearly labelled as an estimate. The owner values factual accuracy over flattery: say "unknown" rather than invent, and label magazine-reported or fan-wiki numbers as such.
@@ -2042,7 +2092,7 @@ You are a skeptical fact-checker for the topic "model". Below are the researcher
 
 FACTS:
 {
- "summary": "TOPIC: the physics and physiology of turning a build into a weight and a set of girths. Raw downloads, scripts and outputs are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/buildcalc/physics/ (raw/, scripts/, out/). The new analyses are scripts/scaling_analysis.py, scripts/segment_volume.py, scripts/vtaper_check.py and scripts/derived_tables.py. Their results are in out/scaling_results.json, out/segment_volume_results.json, out/vtaper_results.json and out/derived_tables.json. They run on measured ANSUR II data (4,082 men and 1,986 women, US Army 2010-12) and on the Penrose 1985 densitometry set (252 men).\n\nKEY FINDINGS\n(1) The two-compartment model assumes fat at 0.900 g/cm3 (0.9007 in the Brozek revision) and fat-free mass (FFM) at 1.100 g/cm3. From these, Siri gives %fat = 495/D - 450 and Brozek gives %fat = 457/D - 414.2. Measured FFM density actually ranges from 1.075 to 1.127. In weight trainers it is 1.089, against 1.099 in controls, so the Siri equation overstates their fat by about 4 points. Whole-body density in 252 men ran from 0.995 to 1.109 g/cm3.\n(2) FFMI = FFM/H^2. Medians are 18.9 for young men and 15.4 for young women. Kouri found a limit of 25.0 in 74 non-users. College athletes measured by DXA reach a 97.5th percentile of about 28.1 to 28.3, with a maximum of 31.7. The Kouri height-correction coefficient is disputed: 6.3 in the abstract, 6.1 as later cited.\n(3) Weight across adults scales with about H^2, with exponents of 1.8 to 2.3 depending on sex and sample (Quetelet; Heymsfield 2007, 2011, 2014). Burton warns that this exponent depends on the statistical method; ANSUR gives 2.0 by ordinary regression and 4.2 by reduced major axis. In ANSUR the chest follows the geometric law girth ∝ sqrt(W/H) almost exactly (fitted W^0.508 H^-0.492). Thigh and upper arm come close. Waist (W^0.73 H^-0.82, matching Krakauer's W^0.68 H^-0.81) scales faster with weight because extra weight between people is mostly fat. Neck, forearm and calf scale slower.\n(4) Behnke and Katch's ponderal somatogram uses W ∝ girth^2 × stature, and total ponderal equivalent matched body weight within 1.5 kg (group means), including world-class bodybuilders. Fitting ANSUR without that constraint gives the same dimensions: ln W has coefficient 0.99 on ln H and the girth coefficients sum to 1.89 to 1.90. Errors from the 7 calculator girths plus height, on ANSUR (1 SD):\n- log-linear regression: 1.9% (men), 2.2% (women)\n- Behnke-type W = k·H·(ΣG)^2: 2.6% / 3.6%\n- circular-frustum volume × 1053 kg/m3: 2.1% / 2.4%\nPublished geometric segment models reach about 2 to 3% on whole-body mass (Yeadon about 2.1%; Jensen <2%; E-Zone body volume about 3% TEM), but error grows to 5 to 10% when subjects differ from the calibration (Williams 2013).\n\nDESIGN NOTE (all of it is an estimate unless a number is sourced)\n\nA. Data model. Store each build as a reference record: H0, W0, body-fat % if known, and the 7 girths. Give every number its own status and source.\n\nB. Same build at a new height H1. W1 = W0·(H1/H0)^p. Girths G1 = G0·sqrt((W1/W0)/(H1/H0)) = G0·(H1/H0)^((p-1)/2).\n- p = 3 is a scaled copy: shape is kept and W/H^3 is unchanged, but FFMI rises in proportion to H. It suits comic characters \"as drawn\".\n- p = 2 keeps BMI and FFMI fixed. It is how real adults differ (exponents 1.8 to 2.3).\n- p of about 2.2 to 2.45 is implied for muscular athletes by the Trexler and Kouri height corrections.\n- The choice matters more than anything else. Going from 1.80 m to 2.20 m multiplies weight by 1.49 at p = 2 and by 1.83 at p = 3, and girths by 1.11 versus 1.22.\n- Show the p = 2 to p = 3 band, or let the user pick p and label it.\n- For the same composition, use the geometric exponents 0.5 and -0.5. Use the ANSUR exponents (for example waist 0.73) only when the weight change is a population-typical change in fat.\n\nC. Weight from girths. Inside the human range, use the ANSUR log-linear equation for each sex:\n- men: ln W = 4.8101 + 0.9873 ln H + 0.4132 ln chest + 0.3061 ln waist + 0.1089 ln arm(flexed) + 0.1260 ln forearm(flexed) + 0.4389 ln thigh + 0.2780 ln calf + 0.2188 ln neck (W in kg, lengths in m)\n- error is about ±2% (1 SD) and ±4% (95%)\n- it held up on the heaviest 2.5% (bias -1.0%), the biggest arms (bias +0.1%) and the Penrose men (SD 2.9%)\nBeyond the data, regressions have no physical guarantee, so switch to volume × density:\n- sum circular frustums from girths and segment lengths (the lengths default to proportions of H)\n- multiply by k_eff = 1053 kg/m3, calibrated on ANSUR (it absorbs lung air and the shape bias)\n- then scale by the Siri density for the target fat % relative to the reference: a 5%-fat build is about 1.088 g/cm3 versus about 1.053 at 20% fat, so add about 3%\n- ANSUR's leanest V-shaped men were under-predicted by 1.3 to 2.1%, which is consistent with that correction\nShow all three estimators; their spread is an honest error bar.\n\nD. Errors to expect.\n- Within human data: about 2 to 4% on weight from a complete set of girths, and 3 to 6% from a single girth relation.\n- Density: ±2 to 4%. FFM density ranges 1.075 to 1.127, and the fat % is unknown.\n- Trunk cross-section: a circle overstates the area of a flattened torso. At a depth/breadth ratio of 0.5 the true area is 0.84 of the circle's; at 0.4 it is 0.75. The trunk is about 51% of body volume, so this alone can shift weight by 5 to 13%.\n- Girths read from comic art: W ∝ G^2, so a 5% error in reading girths gives about 10% on weight.\n- Geometric models drift with distance from their calibration (Williams 2013: r = -0.80 between mass and error, up to ±10%).\n- No dataset tests anything at bodybuilder or comic scale. The largest flexed arm in ANSUR is 49 cm.\n- So report comic characters as a range of about ±15 to 25%, labelled estimate.\n\nE. Plausibility flags. FFMI above 25 exceeds the Kouri non-user limit. Above about 28 it exceeds the athletes' 97.5th percentile. Above 31.7 it exceeds the maximum observed in Trexler. Label these \"beyond human data\". Do not treat a high FFMI as proof of muscle: an obese Penrose subject has FFMI 32.4 at 33.8% fat.",
+ "summary": "TOPIC: the physics and physiology of turning a build into a weight and a set of girths. Raw downloads, scripts and outputs are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/buildcalc/physics/ (raw/, scripts/, out/). The new analyses are scripts/scaling_analysis.py, scripts/segment_volume.py, scripts/vtaper_check.py and scripts/derived_tables.py. Their results are in out/scaling_results.json, out/segment_volume_results.json, out/vtaper_results.json and out/derived_tables.json. They run on measured ANSUR II data (4,082 men and 1,986 women, US Army 2010- … [5,581 more characters on this line; the full prompt is in prompts/a27f7e0f475a045f4.txt]
  "facts": [
   {
    "key": "siri_equation",
@@ -2639,7 +2689,7 @@ FACTS:
    "notes": "Pure arithmetic (out/derived_tables.json), with girths from the geometric law G proportional to sqrt(W/H). Choosing p (2 = same BMI/FFMI, about 2.2-2.45 = athlete FFM scaling implied by the height corrections, 3 = scaled copy) changes the result far more than any other modelling choice."
   }
  ],
- "gaps": "I could not reach these primary sources and used secondary statements instead:\n- Siri 1961 (NAS volume) and Brozek et al. 1963: only bibliographic records. The equations come from the JSE dataset documentation, the densities from Kuriyan 2018, and the Siri form is my algebraic derivation.\n- Behnke 1961 (J Appl Physiol 16:949 and 960) and the full Katch/Behnke 1987 PDF (Cloudflare-blocked). The k constants and the often-quoted 'W = D^2 x h x 0.0111' form are unverified; only the Katch 1987 abstract was read.\n- Jensen 1978, Hatze 1980, Hanavan 1964 (DTIC blocked) and Yeadon's own mass errors (Loughborough PDF blocked). Their accuracies come from a secondary ISBS 2013 table; Hatze's '<0.05' value is ambiguous.\n- Kouri 1995 full text. The height-correction coefficient is 6.3 in the abstract and 6.1 as cited by Trexler, and Kouri's body-fat method is unknown.\n- Benn 1971 is a scanned image and was not read; Burton 2007's abstract stands in for it.\n\nNot found or untested:\n- No dataset pairs measured weight with girths at elite-bodybuilder or comic scale, so extrapolation beyond ANSUR is untested. ANSUR's maximum flexed arm is 49.0 cm and BMI 43.5, and ANSUR has no body-fat measurement, so the fat percentage behind the calibrated k_eff = 1053 kg/m3 is unknown.\n- I found no source on how individual girths change when muscle, rather than fat, is added. The recommendation to use the geometric 0.5 exponent for muscle-driven change is an assumption.\n- I did not source lung-gas volumes; the 940 kg/m3 trunk density (Peyer 2015) and my empirical k_eff stand in for them.\n- The adipose-tissue density value was not sourced (only lipid at 0.9007).\n- The per-figure measurements of Pope et al. 1999 were not verified.\n\nCaveats on my own analyses (ANSUR II, Penrose/JSE):\n- These are derived estimates on military and convenience samples.\n- My frustum model's segment-level placements (calf level, head height, hand and foot shapes) are assumptions."
+ "gaps": "I could not reach these primary sources and used secondary statements instead:\n- Siri 1961 (NAS volume) and Brozek et al. 1963: only bibliographic records. The equations come from the JSE dataset documentation, the densities from Kuriyan 2018, and the Siri form is my algebraic derivation.\n- Behnke 1961 (J Appl Physiol 16:949 and 960) and the full Katch/Behnke 1987 PDF (Cloudflare-blocked). The k constants and the often-quoted 'W = D^2 x h x 0.0111' form are unverified; only the Katch 1987 abstract was read.\n- Jensen 1978, Hatze 1980, Hanavan 1964 (DTIC blocked) and Yeadon's own ma … [1,383 more characters on this line; the full prompt is in prompts/a27f7e0f475a045f4.txt]
 }
 ```
 
@@ -2677,19 +2727,28 @@ The final audit finished. Extracting the confirmed findings.
 - `Bash` Summarise confirmed audit findings: `cd /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387 && python3 - <<'EOF'` (+15 lines)
   - result: Exit code 1
   - result: Traceback (most recent call last):
-  - result:   File "<stdin>", line 10, in <module>
+  - result: File "&lt;stdin&gt;", line 10, in &lt;module&gt;
 - `Bash` Rebuild confirmed findings list from journal: `cd /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387 && head -c 300 tasks/wqvrczqx3.output; echo; python3 - <<'EOF'` (+27 lines)
 - `Bash` Parse audit output JSON and list findings: `cd /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387 && python3 - <<'EOF'` (+10 lines)
 - `Bash` Check mass estimate workflow progress: `python3 -c "` (+7 lines)
 - `Bash` Summarise the three mass estimates: `python3 -c "` (+11 lines)
 - `Bash` Set provisional picture-based builds: `cd /home/user/dino-strength-sim && python3 - <<'EOF'` (+11 lines)
+
+
+### Workflow `rex-audit-fixes` · 2026-10-10 02:27:51 UTC
+
 - `Workflow` rex-audit-fixes: Fix the 54 confirmed audit findings in four serial batches (density/weight, catch, collide/wrestle, arm/duo/misc), then re-verify every finding on the final build
   - run `wf_068bea6f-0e1`: 6 subagents, listed below
 
-<details>
-<summary>Subagent `fix:density-weight` (rex-audit-fixes, 2026-10-10 02:27:52 UTC): The full pipeline ends 'all checks passed': python3 build-data.py &amp;&amp; node build.js &amp;&amp; node test/shots.js &amp;&amp; node test/calibration.js. Files changed: src/engine.js, src/app.html, src/static-data.js, test/calibration.js, research/final-density.json; src/data.js and dist/ were regenerated. Returned items: 15 (e.g. p0; d6).</summary>
+**Subagent `fix:density-weight`** · rex-audit-fixes · started 2026-10-10 02:27:52 UTC
 
-Workflow run `wf_068bea6f-0e1`, phase `Fix`, agent `ad3de786a7f378869`. Prompt, verbatim:
+- tests pass; items: 15 (15 fixed).
+- The full pipeline ends 'all checks passed': python3 build-data.py && node build.js && node test/shots.js && node test/calibration.js. Files changed: src/engine.js, src/app.html, src/static-data.js, test/calibration.js, research/final-density.json; src/data.js and dist/ were regenerated.
+
+<details>
+<summary>Prompt, verbatim (2,706 characters)</summary>
+
+Workflow run `wf_068bea6f-0e1`, phase `Fix`, agent `ad3de786a7f378869`.
 
 ```text
 You are fixing confirmed audit findings in the "Rex Super-Strength Lab" physics simulator at /home/user/dino-strength-sim.
@@ -2711,10 +2770,16 @@ Weight tab, settle/fall-through, neutron-matter caveat, run/walk rules, Pull tab
 
 </details>
 
-<details>
-<summary>Subagent `fix:catch` (rex-audit-fixes, 2026-10-10 02:46:14 UTC): The full required chain passes: build-data.py, build.js, shots.js (no overflow, no errors), and calibration.js ends 'all checks passed'. Calibration now has 18 new regression checks. Returned items: 16 (e.g. p1; p3).</summary>
+**Subagent `fix:catch`** · rex-audit-fixes · started 2026-10-10 02:46:14 UTC
 
-Workflow run `wf_068bea6f-0e1`, phase `Fix`, agent `a53d9e16ee9ff0949`. Prompt, verbatim:
+- tests pass; items: 16 (13 fixed, 3 partly).
+- Not fully fixed: d4; r10; r5.
+- The full required chain passes: build-data.py, build.js, shots.js (no overflow, no errors), and calibration.js ends 'all checks passed'. Calibration now has 18 new regression checks.
+
+<details>
+<summary>Prompt, verbatim (2,839 characters)</summary>
+
+Workflow run `wf_068bea6f-0e1`, phase `Fix`, agent `a53d9e16ee9ff0949`.
 
 ```text
 You are fixing confirmed audit findings in the "Rex Super-Strength Lab" physics simulator at /home/user/dino-strength-sim.
@@ -2736,10 +2801,15 @@ Game of catch and the solo Throw release-angle issue (r0/r10 share a root cause)
 
 </details>
 
-<details>
-<summary>Subagent `fix:collide-wrestle` (rex-audit-fixes, 2026-10-10 03:40:05 UTC): Full sequence passes: python3 build-data.py, node build.js, node test/shots.js (0 overflow, no errors at both widths) and node test/calibration.js, which ends 'all checks passed'. Ten new regression checks are at the end of /home/user/dino-strength-sim/test/calibration.js, covering u0, r2, p4 and r1. Returned items: 11 (e.g. u0; r2).</summary>
+**Subagent `fix:collide-wrestle`** · rex-audit-fixes · started 2026-10-10 03:40:05 UTC
 
-Workflow run `wf_068bea6f-0e1`, phase `Fix`, agent `a7afded9878c51016`. Prompt, verbatim:
+- tests pass; items: 11 (11 fixed).
+- Full sequence passes: python3 build-data.py, node build.js, node test/shots.js (0 overflow, no errors at both widths) and node test/calibration.js, which ends 'all checks passed'. Ten new regression checks are at the end of /home/user/dino-strength-sim/test/calibration.js, covering u0, r2, p4 and ...
+
+<details>
+<summary>Prompt, verbatim (2,708 characters)</summary>
+
+Workflow run `wf_068bea6f-0e1`, phase `Fix`, agent `a7afded9878c51016`.
 
 ```text
 You are fixing confirmed audit findings in the "Rex Super-Strength Lab" physics simulator at /home/user/dino-strength-sim.
@@ -2761,10 +2831,16 @@ Unstoppable force vs immovable object (Push and Charge), Wrestle tab. u0 (three 
 
 </details>
 
-<details>
-<summary>Subagent `fix:arm-duo-misc` (rex-audit-fixes, 2026-10-10 04:08:28 UTC): The final run passed in full: python3 build-data.py, node build.js, node test/shots.js (no overflow or errors at 1280 light and 390 dark) and node test/calibration.js (106 ok, 'all checks passed'). I did not commit or push. Returned items: 12 (e.g. p2; p9).</summary>
+**Subagent `fix:arm-duo-misc`** · rex-audit-fixes · started 2026-10-10 04:08:28 UTC
 
-Workflow run `wf_068bea6f-0e1`, phase `Fix`, agent `a1d595a76492d3ebe`. Prompt, verbatim:
+- tests pass; items: 12 (11 fixed, 1 partly).
+- Not fully fixed: u13.
+- The final run passed in full: python3 build-data.py, node build.js, node test/shots.js (no overflow or errors at 1280 light and 390 dark) and node test/calibration.js (106 ok, 'all checks passed'). I did not commit or push.
+
+<details>
+<summary>Prompt, verbatim (2,623 characters)</summary>
+
+Workflow run `wf_068bea6f-0e1`, phase `Fix`, agent `a1d595a76492d3ebe`.
 
 ```text
 You are fixing confirmed audit findings in the "Rex Super-Strength Lab" physics simulator at /home/user/dino-strength-sim.
@@ -2786,10 +2862,16 @@ Arm wrestling, the duo gate and fighter cards, assumption cards, Lift tile label
 
 </details>
 
-<details>
-<summary>Subagent `reverify:1` (rex-audit-fixes, 2026-10-10 04:34:53 UTC): Rebuilt once (build-data, build, shots: 0 overflow and no errors at 1280 light / 390 dark). Calibration ends 'all checks passed' (106 ok). Returned items: 25 (e.g. p0; p1).</summary>
+**Subagent `reverify:1`** · rex-audit-fixes · started 2026-10-10 04:34:53 UTC
 
-Workflow run `wf_068bea6f-0e1`, phase `Re-verify`, agent `a3d55036d11a32c8d`. Prompt, verbatim:
+- items: 25 (23 fixed, 2 not fixed).
+- Not fixed: p5; r5.
+- Rebuilt once (build-data, build, shots: 0 overflow and no errors at 1280 light / 390 dark). Calibration ends 'all checks passed' (106 ok).
+
+<details>
+<summary>Prompt, verbatim (52,565 characters)</summary>
+
+Workflow run `wf_068bea6f-0e1`, phase `Re-verify`, agent `a3d55036d11a32c8d`. Lines over 1,500 characters are cut here; the full prompt is in [prompts/a3d55036d11a32c8d.txt](prompts/a3d55036d11a32c8d.txt).
 
 ```text
 You are fixing confirmed audit findings in the "Rex Super-Strength Lab" physics simulator at /home/user/dino-strength-sim.
@@ -2905,7 +2987,7 @@ Fixers' reports:
     }
    ],
    "testsPass": true,
-   "notes": "The full pipeline ends 'all checks passed': python3 build-data.py && node build.js && node test/shots.js && node test/calibration.js. Files changed: src/engine.js, src/app.html, src/static-data.js, test/calibration.js, research/final-density.json; src/data.js and dist/ were regenerated. Nothing committed or pushed.\n\nNot touched: BUILDS / DEFAULT_BODIES, the art and avatars, and the state.oSame = true line.\n\nThings the next agents should know:\n1. Some audit repro states are stale because the build volume changed since the audit. At the default height the Neutron star chip is now 1.049e18 kg, not 2.62e17, and the White dwarf chip is 7.06e9 kg. I verified against both the old states and the real chip values.\n2. The earth_surface_heat_flow research note quoted the old settling time ('23 TW over ~5,000 years'). The p0 fix changed that, so I refreshed it to about 50 TW over about 2,200 years. Notes are not exported to the page.\n3. Left alone, outside my batch:\n   - The Bondi 'air falls onto him' bullet still shows in the reshapes and earthFalls regimes, where he is at or near the centre.\n   - The 'White-dwarf matter is held up by electrons' sentence still shows for 1e14-1e17 kg/m3, which is neutron-drip territory.\n   - The 'outer core' label touches the outer-core boundary at phone width.\n\nScratch tools: /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/cutshot.js screenshots the cut-away. weightshot.js now honours MAXT for longer text dumps."
+   "notes": "The full pipeline ends 'all checks passed': python3 build-data.py && node build.js && node test/shots.js && node test/calibration.js. Files changed: src/engine.js, src/app.html, src/static-data.js, test/calibration.js, research/final-density.json; src/data.js and dist/ were regenerated. Nothing committed or pushed.\n\nNot touched: BUILDS / DEFAULT_BODIES, the art and avatars, and the state.oSame = true line.\n\nThings the next agents should know:\n1. Some audit repro states are stale because the build volume changed since the audit. At the default height the Neutron star chip is n … [909 more characters on this line; the full prompt is in prompts/a3d55036d11a32c8d.txt]
   }
  },
  {
@@ -3010,7 +3092,7 @@ Fixers' reports:
     }
    ],
    "testsPass": true,
-   "notes": "The full required chain passes: build-data.py, build.js, shots.js (no overflow, no errors), and calibration.js ends 'all checks passed'. Calibration now has 18 new regression checks. Nothing was committed or pushed.\n\nBehaviour changes later agents will see:\n- **New launch check (p3):** almost every fast heavy throw is now 'crushed-launch' rather than 'breaks-up'. Pushing an object to speed v over a 2.4 m stroke loads it about 25× more than the air does at that speed, so 'breaks-up' is now nearly unreachable. The old pyramid-across-the-planet check was updated to expect 'crushed-launch'.\n- **Slower default round trip (p5):** the default lob's round trip went from about 4.5 s to 33 s. Each least-force catch of the light ball now takes its true 14.5 s; a bullet on the page explains it.\n- **Wider page sweeps:** 960 engine legs showed no invariant violations, and 106 rendered catch states showed no 'Calculation failed', NaN or undefined. Phone width in dark mode has no overflow.\n\nAPI and data changes:\n- `P.tossPartner` takes an optional 6th argument for Ollie's anchor.\n- `P.catchReleaseTable` is newly exported.\n- New leg fields: `recoil`, `launchPush`, `launchRatio`, `launchStroke`, `armHold`, `airWall`, and fireball fields `Ehere`, `Eafter`, `Ecarry`, `Enear`, `Eblast`, `sweepOn`, `Lnear`.\n- New results: 'cant-move' and 'crushed-launch' (legs), and 'bolted' and 'cant-move' (toss).\n- `MATERIALS` gains `eVap`; `CATCH.E_VAP` is removed.\n\nFiles changed: /home/user/dino-strength-sim/src/engine.js, src/app.html, src/static-data.js (catch card), build-data.py, research/final-duo.json, test/calibration.js; src/data.js regenerated. BUILDS, DEFAULT_BODIES, the art and the oSame line are untouched. The pre-change snapshot is at /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/catch-base for diffing."
+   "notes": "The full required chain passes: build-data.py, build.js, shots.js (no overflow, no errors), and calibration.js ends 'all checks passed'. Calibration now has 18 new regression checks. Nothing was committed or pushed.\n\nBehaviour changes later agents will see:\n- **New launch check (p3):** almost every fast heavy throw is now 'crushed-launch' rather than 'breaks-up'. Pushing an object to speed v over a 2.4 m stroke loads it about 25× more than the air does at that speed, so 'breaks-up' is now nearly unreachable. The old pyramid-across-the-planet check was updated to expect 'crushed … [1,267 more characters on this line; the full prompt is in prompts/a3d55036d11a32c8d.txt]
   }
  },
  {
@@ -3020,7 +3102,7 @@ Fixers' reports:
     {
      "id": "u0",
      "status": "fixed",
-     "change": "One rule for an unlimited push between two holds that never let go, used on every tab. engine.js: new helper unlimitedClash(cA,cB) next to groundTear. Comic ground gives 'paradox': nothing moves and the force has no upper limit. Real rock gives 'rockGives': the rock around the bolts tears out (tearA/tearB), and the unlimited push then shoves both apart at just under light speed, each with a plug of rock. It is called from armWrestle (replaces outcome 'undefined'; on comic ground the unbreakable table carries the push, clash 'paradox' via 'table'), pushMatch (replaces undefinedPush/NaN), shoveOnce (replaces undefinedPush) and standoff. Why this is the physical choice: Newton's third law loads both anchors equally, and the rock is the only finite link, so both tear. After that, an unlimited force over the arm stroke acting on finite masses gives unbounded energy. The old 'Rex is carried off' wording was one-sided. app.html: new clashVerdict(kind,a,b,via) gives one shared wording, used by bayArm, wrestlePush, wrestleShove and collidePush. Hold chips now read 'X's rock tears loose' when the rock gives. The force tile reads 'no upper limit' (plus the tear-out force), never 'undefined'. Arm says 'Nobody pins anybody', and its 'feet still let go' clause only shows for an unlimited competitor who is not bolted. The Collide push four-case grid was reworded. Arm on comic ground with plain footing used to claim 'bolted down'; it now says the table carries the push, which is why it differs from Collide > Push for the same footing.",
+     "change": "One rule for an unlimited push between two holds that never let go, used on every tab. engine.js: new helper unlimitedClash(cA,cB) next to groundTear. Comic ground gives 'paradox': nothing moves and the force has no upper limit. Real rock gives 'rockGives': the rock around the bolts tears out (tearA/tearB), and the unlimited push then shoves both apart at just under light speed, each with a plug of rock. It is called from armWrestle (replaces outcome 'undefined'; on comic ground the unbreakable table carries the push, clash 'paradox' via 'table'), pushMatch (replaces undefinedP … [962 more characters on this line; the full prompt is in prompts/a3d55036d11a32c8d.txt]
      "verified": "New calibration checks: Arm, Shoving match, Shove and Collide > Push (both directions) give the same outcome, rockGives on real rock and paradox on comic ground; comic arms go through the table; the shove flings both off at c on rock and nobody moves on comic ground. These fail on the pre-fix engine. Rendered all four tabs for {inf, anchor bolted, oAnchor bolted} with groundHolds false and true: the wording is identical and the chips agree. Render sweep of 756 duo states found no 'undefined', 'NaN' or 'No answer'."
     },
     {
@@ -3166,7 +3248,7 @@ Fixers' reports:
     }
    ],
    "testsPass": true,
-   "notes": "The final run passed in full: python3 build-data.py, node build.js, node test/shots.js (no overflow or errors at 1280 light and 390 dark) and node test/calibration.js (106 ok, 'all checks passed'). I did not commit or push.\n\n**Conflict choice (p2):** The table-holds sub-claim asked only for the pad load to be compared with the table. I went further: if the dynamic elbow-pad load during a pin tops tableLat, the table breaks and the standing-up rules apply. That is physically correct, because the load peaks at the start of the pin and the table can't un-break. I also took the elbow reaction from torques about each elbow (P_loser + 1.12 × surplus for equal bodies). The finding's rough 'forearm mass × a_cm' leaves out the hand force. With oSame forced on the page, the arms are equal, so default outcomes change only where footing differs: bolted or dug-in Rex now drags Ollie instead of pinning him. Unequal arms appear only with a what-if strength.\n\n**Things left alone:**\n- BUILDS / DEFAULT_BODIES are unchanged (I diffed them).\n- The `state.oSame = true` line is intact.\n- The art is untouched.\n- The catch fact row '7.9 kg at 180 kg' is accurate as worded, so I left it.\n\n**Files changed:**\n- /home/user/dino-strength-sim/src/engine.js (armWrestle, liftPartner, tossPartner)\n- /home/user/dino-strength-sim/src/app.html (bayArm, duoGate, wrestleLift, wrestleThrow, catchPartner, formatting helpers, mass clamp, assumption-card fill)\n- /home/user/dino-strength-sim/src/static-data.js\n- /home/user/dino-strength-sim/build-data.py (Water chip)\n- /home/user/dino-strength-sim/research/final-duo.json (duo_gravity_distances)\n- /home/user/dino-strength-sim/test/calibration.js (new arm block)\n\n**Backups and test copies:** Pre-batch sources are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/src-before-armduo and research-before-armduo. What-if states were rendered from a scratch copy of the page that leaves oSame unforced, made by scratchpad/a3/mkwhatif.sh and rendered with scratchpad/a3/whatifshot.js."
+   "notes": "The final run passed in full: python3 build-data.py, node build.js, node test/shots.js (no overflow or errors at 1280 light and 390 dark) and node test/calibration.js (106 ok, 'all checks passed'). I did not commit or push.\n\n**Conflict choice (p2):** The table-holds sub-claim asked only for the pad load to be compared with the table. I went further: if the dynamic elbow-pad load during a pin tops tableLat, the table breaks and the standing-up rules apply. That is physically correct, because the load peaks at the start of the pin and the table can't un-break. I also took the elbo … [1,472 more characters on this line; the full prompt is in prompts/a3d55036d11a32c8d.txt]
   }
  }
 ]
@@ -3174,10 +3256,16 @@ Fixers' reports:
 
 </details>
 
-<details>
-<summary>Subagent `reverify:2` (rex-audit-fixes, 2026-10-10 04:34:54 UTC): Rebuilt once (build-data.py, build.js). Ran shots.js and calibration.js without edits: shots shows 0 overflow and no errors at 1280 light and 390 dark, and calibration ends 'all checks passed' with 0 FAIL. Returned items: 29 (e.g. d0; d1).</summary>
+**Subagent `reverify:2`** · rex-audit-fixes · started 2026-10-10 04:34:54 UTC
 
-Workflow run `wf_068bea6f-0e1`, phase `Re-verify`, agent `ac3d0facc1ca341bc`. Prompt, verbatim:
+- items: 29 (26 fixed, 3 not fixed).
+- Not fixed: u3; u9; u13.
+- Rebuilt once (build-data.py, build.js). Ran shots.js and calibration.js without edits: shots shows 0 overflow and no errors at 1280 light and 390 dark, and calibration ends 'all checks passed' with 0 FAIL.
+
+<details>
+<summary>Prompt, verbatim (52,581 characters)</summary>
+
+Workflow run `wf_068bea6f-0e1`, phase `Re-verify`, agent `ac3d0facc1ca341bc`. Lines over 1,500 characters are cut here; the full prompt is in [prompts/ac3d0facc1ca341bc.txt](prompts/ac3d0facc1ca341bc.txt).
 
 ```text
 You are fixing confirmed audit findings in the "Rex Super-Strength Lab" physics simulator at /home/user/dino-strength-sim.
@@ -3293,7 +3381,7 @@ Fixers' reports:
     }
    ],
    "testsPass": true,
-   "notes": "The full pipeline ends 'all checks passed': python3 build-data.py && node build.js && node test/shots.js && node test/calibration.js. Files changed: src/engine.js, src/app.html, src/static-data.js, test/calibration.js, research/final-density.json; src/data.js and dist/ were regenerated. Nothing committed or pushed.\n\nNot touched: BUILDS / DEFAULT_BODIES, the art and avatars, and the state.oSame = true line.\n\nThings the next agents should know:\n1. Some audit repro states are stale because the build volume changed since the audit. At the default height the Neutron star chip is now 1.049e18 kg, not 2.62e17, and the White dwarf chip is 7.06e9 kg. I verified against both the old states and the real chip values.\n2. The earth_surface_heat_flow research note quoted the old settling time ('23 TW over ~5,000 years'). The p0 fix changed that, so I refreshed it to about 50 TW over about 2,200 years. Notes are not exported to the page.\n3. Left alone, outside my batch:\n   - The Bondi 'air falls onto him' bullet still shows in the reshapes and earthFalls regimes, where he is at or near the centre.\n   - The 'White-dwarf matter is held up by electrons' sentence still shows for 1e14-1e17 kg/m3, which is neutron-drip territory.\n   - The 'outer core' label touches the outer-core boundary at phone width.\n\nScratch tools: /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/cutshot.js screenshots the cut-away. weightshot.js now honours MAXT for longer text dumps."
+   "notes": "The full pipeline ends 'all checks passed': python3 build-data.py && node build.js && node test/shots.js && node test/calibration.js. Files changed: src/engine.js, src/app.html, src/static-data.js, test/calibration.js, research/final-density.json; src/data.js and dist/ were regenerated. Nothing committed or pushed.\n\nNot touched: BUILDS / DEFAULT_BODIES, the art and avatars, and the state.oSame = true line.\n\nThings the next agents should know:\n1. Some audit repro states are stale because the build volume changed since the audit. At the default height the Neutron star chip is n … [909 more characters on this line; the full prompt is in prompts/ac3d0facc1ca341bc.txt]
   }
  },
  {
@@ -3398,7 +3486,7 @@ Fixers' reports:
     }
    ],
    "testsPass": true,
-   "notes": "The full required chain passes: build-data.py, build.js, shots.js (no overflow, no errors), and calibration.js ends 'all checks passed'. Calibration now has 18 new regression checks. Nothing was committed or pushed.\n\nBehaviour changes later agents will see:\n- **New launch check (p3):** almost every fast heavy throw is now 'crushed-launch' rather than 'breaks-up'. Pushing an object to speed v over a 2.4 m stroke loads it about 25× more than the air does at that speed, so 'breaks-up' is now nearly unreachable. The old pyramid-across-the-planet check was updated to expect 'crushed-launch'.\n- **Slower default round trip (p5):** the default lob's round trip went from about 4.5 s to 33 s. Each least-force catch of the light ball now takes its true 14.5 s; a bullet on the page explains it.\n- **Wider page sweeps:** 960 engine legs showed no invariant violations, and 106 rendered catch states showed no 'Calculation failed', NaN or undefined. Phone width in dark mode has no overflow.\n\nAPI and data changes:\n- `P.tossPartner` takes an optional 6th argument for Ollie's anchor.\n- `P.catchReleaseTable` is newly exported.\n- New leg fields: `recoil`, `launchPush`, `launchRatio`, `launchStroke`, `armHold`, `airWall`, and fireball fields `Ehere`, `Eafter`, `Ecarry`, `Enear`, `Eblast`, `sweepOn`, `Lnear`.\n- New results: 'cant-move' and 'crushed-launch' (legs), and 'bolted' and 'cant-move' (toss).\n- `MATERIALS` gains `eVap`; `CATCH.E_VAP` is removed.\n\nFiles changed: /home/user/dino-strength-sim/src/engine.js, src/app.html, src/static-data.js (catch card), build-data.py, research/final-duo.json, test/calibration.js; src/data.js regenerated. BUILDS, DEFAULT_BODIES, the art and the oSame line are untouched. The pre-change snapshot is at /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/catch-base for diffing."
+   "notes": "The full required chain passes: build-data.py, build.js, shots.js (no overflow, no errors), and calibration.js ends 'all checks passed'. Calibration now has 18 new regression checks. Nothing was committed or pushed.\n\nBehaviour changes later agents will see:\n- **New launch check (p3):** almost every fast heavy throw is now 'crushed-launch' rather than 'breaks-up'. Pushing an object to speed v over a 2.4 m stroke loads it about 25× more than the air does at that speed, so 'breaks-up' is now nearly unreachable. The old pyramid-across-the-planet check was updated to expect 'crushed … [1,267 more characters on this line; the full prompt is in prompts/ac3d0facc1ca341bc.txt]
   }
  },
  {
@@ -3408,7 +3496,7 @@ Fixers' reports:
     {
      "id": "u0",
      "status": "fixed",
-     "change": "One rule for an unlimited push between two holds that never let go, used on every tab. engine.js: new helper unlimitedClash(cA,cB) next to groundTear. Comic ground gives 'paradox': nothing moves and the force has no upper limit. Real rock gives 'rockGives': the rock around the bolts tears out (tearA/tearB), and the unlimited push then shoves both apart at just under light speed, each with a plug of rock. It is called from armWrestle (replaces outcome 'undefined'; on comic ground the unbreakable table carries the push, clash 'paradox' via 'table'), pushMatch (replaces undefinedPush/NaN), shoveOnce (replaces undefinedPush) and standoff. Why this is the physical choice: Newton's third law loads both anchors equally, and the rock is the only finite link, so both tear. After that, an unlimited force over the arm stroke acting on finite masses gives unbounded energy. The old 'Rex is carried off' wording was one-sided. app.html: new clashVerdict(kind,a,b,via) gives one shared wording, used by bayArm, wrestlePush, wrestleShove and collidePush. Hold chips now read 'X's rock tears loose' when the rock gives. The force tile reads 'no upper limit' (plus the tear-out force), never 'undefined'. Arm says 'Nobody pins anybody', and its 'feet still let go' clause only shows for an unlimited competitor who is not bolted. The Collide push four-case grid was reworded. Arm on comic ground with plain footing used to claim 'bolted down'; it now says the table carries the push, which is why it differs from Collide > Push for the same footing.",
+     "change": "One rule for an unlimited push between two holds that never let go, used on every tab. engine.js: new helper unlimitedClash(cA,cB) next to groundTear. Comic ground gives 'paradox': nothing moves and the force has no upper limit. Real rock gives 'rockGives': the rock around the bolts tears out (tearA/tearB), and the unlimited push then shoves both apart at just under light speed, each with a plug of rock. It is called from armWrestle (replaces outcome 'undefined'; on comic ground the unbreakable table carries the push, clash 'paradox' via 'table'), pushMatch (replaces undefinedP … [962 more characters on this line; the full prompt is in prompts/ac3d0facc1ca341bc.txt]
      "verified": "New calibration checks: Arm, Shoving match, Shove and Collide > Push (both directions) give the same outcome, rockGives on real rock and paradox on comic ground; comic arms go through the table; the shove flings both off at c on rock and nobody moves on comic ground. These fail on the pre-fix engine. Rendered all four tabs for {inf, anchor bolted, oAnchor bolted} with groundHolds false and true: the wording is identical and the chips agree. Render sweep of 756 duo states found no 'undefined', 'NaN' or 'No answer'."
     },
     {
@@ -3554,7 +3642,7 @@ Fixers' reports:
     }
    ],
    "testsPass": true,
-   "notes": "The final run passed in full: python3 build-data.py, node build.js, node test/shots.js (no overflow or errors at 1280 light and 390 dark) and node test/calibration.js (106 ok, 'all checks passed'). I did not commit or push.\n\n**Conflict choice (p2):** The table-holds sub-claim asked only for the pad load to be compared with the table. I went further: if the dynamic elbow-pad load during a pin tops tableLat, the table breaks and the standing-up rules apply. That is physically correct, because the load peaks at the start of the pin and the table can't un-break. I also took the elbow reaction from torques about each elbow (P_loser + 1.12 × surplus for equal bodies). The finding's rough 'forearm mass × a_cm' leaves out the hand force. With oSame forced on the page, the arms are equal, so default outcomes change only where footing differs: bolted or dug-in Rex now drags Ollie instead of pinning him. Unequal arms appear only with a what-if strength.\n\n**Things left alone:**\n- BUILDS / DEFAULT_BODIES are unchanged (I diffed them).\n- The `state.oSame = true` line is intact.\n- The art is untouched.\n- The catch fact row '7.9 kg at 180 kg' is accurate as worded, so I left it.\n\n**Files changed:**\n- /home/user/dino-strength-sim/src/engine.js (armWrestle, liftPartner, tossPartner)\n- /home/user/dino-strength-sim/src/app.html (bayArm, duoGate, wrestleLift, wrestleThrow, catchPartner, formatting helpers, mass clamp, assumption-card fill)\n- /home/user/dino-strength-sim/src/static-data.js\n- /home/user/dino-strength-sim/build-data.py (Water chip)\n- /home/user/dino-strength-sim/research/final-duo.json (duo_gravity_distances)\n- /home/user/dino-strength-sim/test/calibration.js (new arm block)\n\n**Backups and test copies:** Pre-batch sources are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/src-before-armduo and research-before-armduo. What-if states were rendered from a scratch copy of the page that leaves oSame unforced, made by scratchpad/a3/mkwhatif.sh and rendered with scratchpad/a3/whatifshot.js."
+   "notes": "The final run passed in full: python3 build-data.py, node build.js, node test/shots.js (no overflow or errors at 1280 light and 390 dark) and node test/calibration.js (106 ok, 'all checks passed'). I did not commit or push.\n\n**Conflict choice (p2):** The table-holds sub-claim asked only for the pad load to be compared with the table. I went further: if the dynamic elbow-pad load during a pin tops tableLat, the table breaks and the standing-up rules apply. That is physically correct, because the load peaks at the start of the pin and the table can't un-break. I also took the elbo … [1,472 more characters on this line; the full prompt is in prompts/ac3d0facc1ca341bc.txt]
   }
  }
 ]
@@ -3654,13 +3742,21 @@ Then rebuild, run all tests and sweeps, commit, push and republish.
 
 
 - `Bash` Summarise build-calculator research and checks: `cd /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387 && mkdir -p scratchpad/buildcalc && python3 - <<'EOF'` (+13 lines)
+
+
+### Workflow `build-calculator` · 2026-10-10 02:42:16 UTC
+
 - `Workflow` build-calculator: Compile verified build data, build the character build calculator page, then audit it from two angles and fix confirmed findings
   - run `wf_84d11c85-160`: 5 subagents, listed below
 
-<details>
-<summary>Subagent `data` (build-calculator, 2026-10-10 02:42:16 UTC): I wrote builds.json and NOTES.md in /home/user/build-calc/data/. A node check loads the file cleanly, with no errors. Every build with a missing girth has a template, and every template chain ends at a real girth.</summary>
+**Subagent `data`** · build-calculator · started 2026-10-10 02:42:16 UTC
 
-Workflow run `wf_84d11c85-160`, phase `Data`, agent `a74b2571360158b43`. Prompt, verbatim:
+- I wrote builds.json and NOTES.md in /home/user/build-calc/data/. A node check loads the file cleanly, with no errors. Every build with a missing girth has a template, and every template chain ends at a real girth.
+
+<details>
+<summary>Prompt, verbatim (4,040 characters)</summary>
+
+Workflow run `wf_84d11c85-160`, phase `Data`, agent `a74b2571360158b43`.
 
 ```text
 PROJECT: "Build calculator", a standalone web page. The user picks a BUILD and a HEIGHT; the page shows estimated WEIGHT and GIRTHS (chest, waist, flexed upper arm, forearm, thigh, calf, neck), in imperial or metric. The owner values factual accuracy over flattery: every number must say whether it is measured, official, reported, derived or an estimate, and the page must say "unknown" rather than invent. Writing style: plain, short sentences, no filler.
@@ -3677,10 +3773,14 @@ YOUR JOB (DATA): write /home/user/build-calc/data/builds.json and /home/user/bui
 
 </details>
 
-<details>
-<summary>Subagent `build` (build-calculator, 2026-10-10 03:11:09 UTC): The page is built and both test runs pass. The 14 node tests pass, and the headless Chromium check found no problems at 390 and 1280 px, light and dark. dist/index.html is about 505 KB.</summary>
+**Subagent `build`** · build-calculator · started 2026-10-10 03:11:09 UTC
 
-Workflow run `wf_84d11c85-160`, phase `Build`, agent `a8b23e906222fb830`. Prompt, verbatim:
+- The page is built and both test runs pass. The 14 node tests pass, and the headless Chromium check found no problems at 390 and 1280 px, light and dark. dist/index.html is about 505 KB.
+
+<details>
+<summary>Prompt, verbatim (9,686 characters)</summary>
+
+Workflow run `wf_84d11c85-160`, phase `Build`, agent `a8b23e906222fb830`.
 
 ```text
 PROJECT: "Build calculator", a standalone web page. The user picks a BUILD and a HEIGHT; the page shows estimated WEIGHT and GIRTHS (chest, waist, flexed upper arm, forearm, thigh, calf, neck), in imperial or metric. The owner values factual accuracy over flattery: every number must say whether it is measured, official, reported, derived or an estimate, and the page must say "unknown" rather than invent. Writing style: plain, short sentences, no filler.
@@ -3751,10 +3851,15 @@ Files are in /home/user/build-calc/data/:
 
 </details>
 
-<details>
-<summary>Subagent `audit:numbers` (build-calculator, 2026-10-10 03:37:20 UTC): Returned findings: 11 (e.g. Typing body fat or weight silently replaces the reference height, so measured/official/rep; FFMI scale plots a Kouri-normalised value against unadjusted reference ticks (badly for wo).</summary>
+**Subagent `audit:numbers`** · build-calculator · started 2026-10-10 03:37:20 UTC
 
-Workflow run `wf_84d11c85-160`, phase `Audit`, agent `a5fbb7a2c02080a6a`. Prompt, verbatim:
+- findings: 11 (2 major, 9 minor).
+- Most severe: Typing body fat or weight silently replaces the reference height, so…; FFMI scale plots a Kouri-normalised value against unadjusted….
+
+<details>
+<summary>Prompt, verbatim (3,474 characters)</summary>
+
+Workflow run `wf_84d11c85-160`, phase `Audit`, agent `a5fbb7a2c02080a6a`.
 
 ```text
 PROJECT: "Build calculator", a standalone web page. The user picks a BUILD and a HEIGHT; the page shows estimated WEIGHT and GIRTHS (chest, waist, flexed upper arm, forearm, thigh, calf, neck), in imperial or metric. The owner values factual accuracy over flattery: every number must say whether it is measured, official, reported, derived or an estimate, and the page must say "unknown" rather than invent. Writing style: plain, short sentences, no filler.
@@ -3772,10 +3877,15 @@ You are an adversarial AUDITOR of the finished build in /home/user/build-calc/ (
 
 </details>
 
-<details>
-<summary>Subagent `audit:page` (build-calculator, 2026-10-10 03:37:20 UTC): Returned findings: 20 (e.g. 'Other figure' weights lose their number in imperial mode; Note tells the reader to hide girths that the page shows by default, using internal 'comic).</summary>
+**Subagent `audit:page`** · build-calculator · started 2026-10-10 03:37:20 UTC
 
-Workflow run `wf_84d11c85-160`, phase `Audit`, agent `a238c446c4d7b4060`. Prompt, verbatim:
+- findings: 20 (7 major, 13 minor).
+- Most severe: 'Other figure' weights lose their number in imperial mode; Note tells the reader to hide girths that the page shows by default…; Heights far outside human range get no 'beyond data' flag; girths… (+4 more).
+
+<details>
+<summary>Prompt, verbatim (3,574 characters)</summary>
+
+Workflow run `wf_84d11c85-160`, phase `Audit`, agent `a238c446c4d7b4060`.
 
 ```text
 PROJECT: "Build calculator", a standalone web page. The user picks a BUILD and a HEIGHT; the page shows estimated WEIGHT and GIRTHS (chest, waist, flexed upper arm, forearm, thigh, calf, neck), in imperial or metric. The owner values factual accuracy over flattery: every number must say whether it is measured, official, reported, derived or an estimate, and the page must say "unknown" rather than invent. Writing style: plain, short sentences, no filler.
@@ -3793,10 +3903,14 @@ You are an adversarial AUDITOR of the finished build in /home/user/build-calc/ (
 
 </details>
 
-<details>
-<summary>Subagent `fix` (build-calculator, 2026-10-10 03:54:19 UTC): I fixed all 31 findings in /home/user/build-calc/ (two of them are the same "Average soldier" label issue). After rebuilding, node test/test.js passes 22 of 22: the 14 old tests and 8 new ones covering these fixes. The ANSUR II CSV checks still match the research.</summary>
+**Subagent `fix`** · build-calculator · started 2026-10-10 03:54:19 UTC
 
-Workflow run `wf_84d11c85-160`, phase `Fix`, agent `a822c8e7c8961a8a6`. Prompt, verbatim:
+- I fixed all 31 findings in /home/user/build-calc/ (two of them are the same "Average soldier" label issue). After rebuilding, node test/test.js passes 22 of 22: the 14 old tests and 8 new ones covering these fixes. The ANSUR II CSV checks still match the research.
+
+<details>
+<summary>Prompt, verbatim (28,071 characters)</summary>
+
+Workflow run `wf_84d11c85-160`, phase `Fix`, agent `a822c8e7c8961a8a6`.
 
 ```text
 PROJECT: "Build calculator", a standalone web page. The user picks a BUILD and a HEIGHT; the page shows estimated WEIGHT and GIRTHS (chest, waist, flexed upper arm, forearm, thigh, calf, neck), in imperial or metric. The owner values factual accuracy over flattery: every number must say whether it is measured, official, reported, derived or an estimate, and the page must say "unknown" rather than invent. Writing style: plain, short sentences, no filler.
@@ -4107,8 +4221,8 @@ It's well built. Two wording fixes before publishing:
 
 - `Bash` Inspect Rex and Ollie build entries: `python3 - <<'EOF'` (+9 lines)
   - result: Exit code 1
-  - result: {"id": "rex", "name": "Rex", "group": "Rex and Ollie", "sex": null, "description": "Original character measured from a reference picture. Lizard build with a large tail; wears a tank top and cargo pants.", "notes": ["All girths are derived 
-  - result: {"id": "ollie", "name": "Ollie", "group": "Rex and Ollie", "sex": null, "description": "Original character measured from a reference picture. Bull-headed build; wears cargo pants, boots and an open vest.", "notes": ["All girths are derived 
+  - result: {"id": "rex", "name": "Rex", "group": "Rex and Ollie", "sex": null, "description": "Original character measured from a reference picture. Lizard build with a large tail; wears a tank top and cargo pants.", "notes": ["All girths are derived…
+  - result: {"id": "ollie", "name": "Ollie", "group": "Rex and Ollie", "sex": null, "description": "Original character measured from a reference picture. Bull-headed build; wears cargo pants, boots and an open vest.", "notes": ["All girths are derived…
 - `Bash` Check how sex values are used: `python3 -c "` (+2 lines)
 - `Bash` Set Rex/Ollie as male, fix dinosaur wording: `python3 - <<'EOF'` (+15 lines)
 
@@ -4135,7 +4249,7 @@ Copying it into lodge-docs and committing; the Rex fix workflow doesn't touch th
 - `Write` /home/user/build-calc/README.md
 - `Bash` Copy calculator into lodge-docs: `cd /home/user/lodge-docs && git status --short | head -5; git fetch origin claude/dinosaur-strength-physics-8o13ft 2>&1 | tail -1; git log --oneline -1 origi...`
   - result: Exit code 127
-  - result:  * branch            claude/dinosaur-strength-physics-8o13ft -> FETCH_HEAD
+  - result: * branch claude/dinosaur-strength-physics-8o13ft -&gt; FETCH_HEAD
   - result: a5795ee Rex lab: fix third-review findings
 - `Bash` Copy calculator via tar and run its tests: `cd /home/user/lodge-docs && rm -rf build-calculator && mkdir -p build-calculator && cd /home/user/build-calc && tar --exclude=./shots --exclude=./node_module...`
 - `Bash` Commit and push the build calculator: `cd /home/user/lodge-docs && git add build-calculator && git status --short | head -20 && git commit -q -F - <<'EOF'` (+17 lines)

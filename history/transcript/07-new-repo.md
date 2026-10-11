@@ -4,7 +4,9 @@
 
 The owner asked to drop the old lodge material; they chose a separate repository. The two project folders were moved here with their history filtered, and deleting the old branch from lodge-docs was refused by GitHub (HTTP 403), so the owner was asked to delete it.
 
-### Owner · 2026-10-10 21:20:57 UTC
+Events are in the order they happened in the session; each workflow’s subagents are listed under the call that launched it, with their own start times.
+
+## Owner · 2026-10-10 21:20:57 UTC
 
 ```text
 Can we clear all of the old lodge stuff and JUST have the stuff we recently made?
@@ -78,7 +80,7 @@ It's waiting at `/home/user/rex-strength-lab-repo` on branch `main`. This contai
 
 **lodge-docs is unchanged.** Its `main` and all 588 old files are as they were. Our branch there still has the two folders, so nothing is lost before the push.
 
-### Owner · 2026-10-10 21:26:56 UTC
+## Owner · 2026-10-10 21:26:56 UTC
 
 ```text
 Added
@@ -117,7 +119,7 @@ The new repo is up with just the two projects: https://github.com/RoscoeRackham/
 
 Want me to delete that branch from lodge-docs, so the Rex and calculator work lives only in the new repo? Deleting it doesn't touch lodge-docs' `main`.
 
-### Owner · 2026-10-10 22:52:57 UTC
+## Owner · 2026-10-10 22:52:57 UTC
 
 ```text
 Yes please

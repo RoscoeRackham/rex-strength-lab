@@ -1,6 +1,6 @@
 # User prompts
 
-Every message the owner typed in this session, verbatim, in order (12 prompts). Times are UTC. Attached images are listed by their upload file name and what they became in this repository; image data is not included.
+Every message the owner typed in this session, verbatim, in order (12 prompts). Times are UTC: the time the message was typed, and, when it waited in the queue while Claude was working, when it was delivered. Attached images are listed by their upload file name and what they became in this repository; image data is not included.
 
 ## 1. 2026-10-09 03:52:36 UTC
 
@@ -10,12 +10,14 @@ Help me build a super strength simulator. I’ve got a dinosaur character (here 
 
 - Attached image: `bf4de929-image.jpg` → rex-strength-lab/assets/dino.jpg (resized; the header picture of Rex)
 
-## 2. 2026-10-09 04:24:11 UTC
+## 2. 2026-10-09 03:52:52 UTC
 
 ```text
 His name is Rex by the way. Basic I know but still.
 I’m going to bed so just get as far as you can.
 ```
+
+- Typed as 2 messages while Claude was working (“His name is Rex by the way. Basic I know but still.” at 2026-10-09 03:52:52 UTC; “I’m going to bed so just get as far as you can.” at 2026-10-09 03:55:09 UTC); delivered together at 2026-10-09 04:24:11 UTC.
 
 ## 3. 2026-10-09 22:01:15 UTC
 
@@ -55,14 +57,15 @@ More art also
 - Attached image: `2ec73892-image.jpg` → rex-strength-lab/assets/art-unstoppable.jpg and rex-strength-lab/assets/face-rex.jpg (crop)
 - Attached image: `ccd62227-image.jpg` → rex-strength-lab/assets/face-ollie.jpg (crop)
 - Attached image: `c1679e47-image.jpg` → rex-strength-lab/assets/art-arm.jpg (cropped banner)
-
 - In reply to Claude’s message of 2026-10-10 01:24:41 UTC, which ended: “a neutron-star Ollie's "can't hold it up" figure is really his own arm's weight, not the ball's. **Next:** when the mass estimate comes back, I'll fill in the numbers, update the text and density chips, re-run the tests and sweeps, then fix the audit findings.”
 
-## 8. 2026-10-10 01:30:03 UTC
+## 8. 2026-10-10 01:29:36 UTC
 
 ```text
 A similar secondary project: the ability to calculate a character’s weight and general measurements (chest, arms, thighs, calves, waist) based on certain builds (comic book characters, record bodybuilders, etc)
 ```
+
+- Typed at 2026-10-10 01:29:36 UTC while Claude was working; delivered at 2026-10-10 01:30:03 UTC.
 
 ## 9. 2026-10-10 21:20:57 UTC
 

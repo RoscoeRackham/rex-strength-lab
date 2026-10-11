@@ -2,7 +2,7 @@
 
 Working scripts from the session scratchpad that the repository cites (in README files, NOTES.md, fact notes and review records) but does not contain. They were written by Claude and its subagents to reproduce findings, measure the picture, compile data and sweep the pages. Paths inside them point at the session scratchpad and the old project folder (/home/user/dino-strength-sim), so most will not run as-is from here.
 
-Copied: scripts up to 300 KB, plus small JSON and text results in mass/ and bcdata/. Listed but not copied: copies of project code, raw downloads, larger files and binaries (table at the end).
+Copied: scripts up to 300 KB, plus JSON and text results up to 100 KB in mass/ and bcdata/. Listed but not copied: copies of project code, raw downloads, larger files and binaries (table at the end).
 
 Each folder lists the files whose purpose is known (from the file's own header comment, or a one-liner written for this index); the full file list is collapsed below it. Most of the remaining files are short single-purpose repro scripts named after the finding they test.
 
@@ -12,22 +12,22 @@ Review round 1 (engine audit, 9 Oct): the auditors' and verifiers' repro scripts
 
 364 files, 542 KB.
 
-- `audit/a16_satfix.js`: Proposed closed-form saturated limit (F0 -> infinity, relative speed pinned at vmax) that keeps the external resistances.
+- `audit/a16_satfix.js`: Proposed closed-form saturated limit (F0 -&gt; infinity, relative speed pinned at vmax) that keeps the external resistances.
 - `audit/a22_hillfix.js`: Patched copy of pushApartHill (scratch only) to validate the proposed fix.
 - `audit/a3.js`: Jump on yielding ground: engine vs momentum-conserving version of its own model
 - `audit/a4.js`: Jump on yielding ground with Poncelet resistance R(v) = A (q + k rho v^2), comic constant force,
 - `audit/a5_fv_jump.js`: Emulate a Samozino loaded-squat-jump force-velocity test on the engine's real-muscle leg at 511 kg strength.
 - `audit/bio3/repro.js`: Reproduce BIO-3 using the app's exact context (data.js objects, default surface concrete, friction anchor)
 - `audit/bio5v/repro.js`: Independent reproduction of BIO-5 against the ORIGINAL engine (no patches).
-- `audit/bio6/hilltest.js`: Hill (1950) premise: muscle STRESS constant across sizes => force ~ s^2. Does the engine,
+- `audit/bio6/hilltest.js`: Hill (1950) premise: muscle STRESS constant across sizes =&gt; force ~ s^2. Does the engine,
 - `audit/bio8_derive.js`: Weyand 2000 model: v = Lc/tc (Lc fixed), Favg/Wb = tstep/tc, tstep = (tsw + tc)/2, tsw ~ constant.
 - `audit/drive.js`: usage: node drive.js states.json out.json  (states: [[name, state], ...])
-- `audit/f12_isolate.js`: Isolate the anchor effect at exactly theta=0 (no slope term): current R vs R from the theta->0+ limit (0) vs friction capped at Nmax.
+- `audit/f12_isolate.js`: Isolate the anchor effect at exactly theta=0 (no slope term): current R vs R from the theta-&gt;0+ limit (0) vs friction capped at Nmax.
 - `audit/f14/anchor_scan.js`: Does the constant-bearing anchor (line 241) matter for throws/punches? Look for cases limited by
 - `audit/f14/jump_mono.js`: Jump height vs strength on loose sand: engine (constant qA) vs velocity-dependent resistance (k=0.5, 1).
 - `audit/f14/jump_pon.js`: Independent jump-on-yielding-ground model. Leg force F (comic: constant) pushes body A (mA, up, gravity)
 - `audit/f14/jump_real.js`: Real (Hill) mode: F = F0*hill((vA+vB)/vmax). Same ground laws as jump_pon.js. Semi-implicit midpoint like engine, tiny dt.
-- `audit/f14/jump_real_sat.js`: Real mode, saturated (F0 >> everything): leg extends at vmax; feet in quasi-equilibrium
+- `audit/f14/jump_real_sat.js`: Real mode, saturated (F0 &gt;&gt; everything): leg extends at vmax; feet in quasi-equilibrium
 - `audit/f14/stomp_pen.js`: Independent check of stomp hole depth: numerically integrate a rigid foot (mass m = legEff)
 - `audit/f14/throw_up.js`: Vertical (90 deg) throw on yielding ground: engine anchor = constant (Nmax - W)/sin, which is 0 when the
 - `audit/f1_indep.py`: Independent check: adaptive Dormand-Prince 5(4) through the atmosphere, exact Kepler coast above H_SW.
@@ -36,7 +36,7 @@ Review round 1 (engine audit, 9 Oct): the auditors' and verifiers' repro scripts
 - `audit/f2r/mom.js`: Momentum audit of P.jump: external impulse during the stroke vs momentum the engine hands the dino.
 - `audit/f2r/poncelet.js`: Independent check: feet resisted by Poncelet-type ground R(v) = A (q + k rho v^2), inelastic lock at full extension.
 - `audit/f3v/fix.js`: Proposed minimal fix for pushApartHill (scratch only). Differences from engine:
-- `audit/f3v/limit.js`: Analytic F0 -> infinity limit (singular perturbation): instantaneous ramp to w = vmax with momentum
+- `audit/f3v/limit.js`: Analytic F0 -&gt; infinity limit (singular perturbation): instantaneous ramp to w = vmax with momentum
 - `audit/f3v/ref.js`: Independent reference for pushApart real mode, no time stepping.
 - `audit/f3v/variants.js`: Scratch copies of pushApartHill with candidate fixes; compare against refHill across strengths.
 - `audit/f4_fixcheck.js`: Compare the auditor's minimal fix (RA = anc.R + RB) with the clamp-after-add fix where the ground
@@ -52,15 +52,15 @@ Review round 1 (engine audit, 9 Oct): the auditors' and verifiers' repro scripts
 - `audit/regr/drive.js`: usage: node drive.js states.json out.jsonl  (states: [[name, state], ...]); streams one JSON line per state
 - `audit/regr/drive2.js`: usage: node drive.js states.json out.jsonl  (states: [[name, state], ...]); streams one JSON line per state
 - `audit/regr/gen1.js`: Broad grid of page states.
-- `audit/regr/one.js`: node one.js '<json state>' [maxchars]
+- `audit/regr/one.js`: node one.js '&lt;json state&gt;' [maxchars]
 - `audit/t11_stagT.js`: Equilibrium-air stagnation temperature (N2,O2,N,O,N+,O+,e-; RRHO partition functions), vs engine's ideal-gas T0(1+0.2M^2).
-- `audit/t12_cdmach.js`: Constant-Cd vs Mach-dependent sphere drag (subcritical sphere 0.47 -> supersonic ~0.92-1.0; representative curve, cf. Hoerner 1965, Bailey & Hiatt 1972)
+- `audit/t12_cdmach.js`: Constant-Cd vs Mach-dependent sphere drag (subcritical sphere 0.47 -&gt; supersonic ~0.92-1.0; representative curve, cf. Hoerner 1965, Bailey & Hiatt 1972)
 - `audit/t2_kepler.js`: Analytic vacuum (Kepler) apex & range for launch from r0 = R+h0 with speed v at elevation theta (round Earth, GM).
-- `audit/ui.js`: Usage: node ui.js '<json state>' [tab]  -> prints bay text
+- `audit/ui.js`: Usage: node ui.js '&lt;json state&gt;' [tab]  -&gt; prints bay text
 - `audit/v_bio1_newhill.js`: Proposed replacement for pushApartHill: backward-Euler step, Hill force solved exactly (quadratic per linear piece).
 - `audit/v_bio1_ref.js`: Independent stiff-stable reference: backward Euler on velocities, exact scalar root for u each step.
 - `audit/v_f10.js`: Independent repro of F10: jump ground chip uses c.F instead of r.F
-- `audit/v_f2_sim.js`: Independent check: body A (up +) and feet B, internal leg force F while extension s < d,
+- `audit/v_f2_sim.js`: Independent check: body A (up +) and feet B, internal leg force F while extension s &lt; d,
 - `audit/v_f8_fix.js`: Proposed closed forms vs engine's own fly(Cd=0)
 - `audit/v_f8_refute.js`: Independent re-check of F8: flat-g "no-air" claims in jump and throw bays.
 - `audit/v_f9.js`: Independent re-check of F9: jump ground-status chip vs engine groundFails
@@ -75,11 +75,11 @@ Review round 1 (engine audit, 9 Oct): the auditors' and verifiers' repro scripts
 
 Review round 2 (page audit, 9 Oct): repro scripts, browser probes and checks.
 
-417 files, 693 KB.
+412 files, 682 KB.
 
 - `audit2/cal_m8.js`: Asserts the record-human calibration and core physics invariants. Run: node test/calibration.js
 - `audit2/calib_r5c.js`: Asserts the record-human calibration and core physics invariants. Run: node test/calibration.js
-- `audit2/claims/grid.js`: Usage: node grid.js <outfile> <json of config list filter>
+- `audit2/claims/grid.js`: Usage: node grid.js &lt;outfile&gt; &lt;json of config list filter&gt;
 - `audit2/claims/harness.js`: Shared Playwright harness: load page, drive controls, snapshot the bay.
 - `audit2/crop.js`: screenshot specific element: node crop.js width scheme selector outname [stateJSON]
 - `audit2/d11/copy/build-data.py`: Build src/data.js from the verified research datasets in research/final-.json.
@@ -96,8 +96,6 @@ Review round 2 (page audit, 9 Oct): repro scripts, browser probes and checks.
 - `audit2/m3/cal100.js`: Asserts the record-human calibration and core physics invariants. Run: node test/calibration.js
 - `audit2/m3/sweep100.js`: Sweep every action across strengths, sizes, surfaces, modes and anchors; flag NaN/undefined/negative outputs.
 - `audit2/m5/proj/build.js`: Inline the engine, data and image into one self-contained page.
-- `audit2/pwb/firefox-1495/firefox/browser/defaults/preferences/00-playwright-prefs.js`: Any comment. You must start the file with a single-line comment!
-- `audit2/pwb/firefox-1495/firefox/defaults/pref/channel-prefs.js`: This Source Code Form is subject to the terms of the Mozilla Public
 - `audit2/r15/hill3b.js`: Hill's approximation of the Sun-Earth restricted 3-body problem (rotating frame, x toward anti-Sun).
 - `audit2/r15/hill3b2.js`: Hill's approximation of the Sun-Earth restricted 3-body problem (rotating frame, x toward anti-Sun).
 - `audit2/r15/repo/build.js`: Inline the engine, data and image into one self-contained page.
@@ -117,12 +115,12 @@ Review round 2 (page audit, 9 Oct): repro scripts, browser probes and checks.
 - `audit2/regress/a1_2d.js`: 2-D check of the throw with a sliding anchor (comic constant force, classical speeds).
 - `audit2/regress/ref.js`: Reference integrator: same physics model as engine fly(), independent code.
 - `audit2/regress/stag_solver.js`: Equilibrium-air stagnation temperature (N2,O2,N,O,N+,O+,e-; RRHO partition functions), vs engine's ideal-gas T0(1+0.2M^2).
-- `audit2/regress/ui.js`: Usage: node ui.js '<json array of states>'   each state = localStorage 'rex-lab-v1' object (merged over defaults)
+- `audit2/regress/ui.js`: Usage: node ui.js '&lt;json array of states&gt;'   each state = localStorage 'rex-lab-v1' object (merged over defaults)
 - `audit2/t/cal.js`: Asserts the record-human calibration and core physics invariants. Run: node test/calibration.js
 
-<details><summary>All 417 files</summary>
+<details><summary>All 412 files</summary>
 
-`audit2/a11y.js`, `audit2/apex.js`, `audit2/apex2.js`, `audit2/atlas.js`, `audit2/build.js`, `audit2/c1_band.js`, `audit2/c1_browser.js`, `audit2/c1_engine.js`, `audit2/c2.js`, `audit2/cal_m8.js`, `audit2/calib_r5c.js`, `audit2/claims/buildcur.js`, `audit2/claims/extra.js`, `audit2/claims/feats.js`, `audit2/claims/grid.js`, `audit2/claims/harness.js`, `audit2/claims/jumpscan.js`, `audit2/claims/ladder.js`, `audit2/claims/ladderweb.js`, `audit2/claims/realcap.js`, `audit2/claims/repro.js`, `audit2/claims/scan.js`, `audit2/claims/scan2.js`, `audit2/claims/show.js`, `audit2/claims/t0.js`, `audit2/common.js`, `audit2/contrast.py`, `audit2/crop.js`, `audit2/d1.js`, `audit2/d10.js`, `audit2/d10pw.js`, `audit2/d10tip.js`, `audit2/d11/copy/build-data.py`, `audit2/d11/copy/build.js`, `audit2/d11/copy/test/calibration.js`, `audit2/d11/copy/test/fit-v2.js`, `audit2/d11/copy/test/fit.js`, `audit2/d11/copy/test/fit2.js`, `audit2/d11/copy/test/fit3.js`, `audit2/d11/copy/test/sanity.js`, `audit2/d11/copy/test/shots.js`, `audit2/d11/copy/test/sweep.js`, `audit2/d11/eng.js`, `audit2/d11/eng2.js`, `audit2/d11/repro.js`, `audit2/d12/d12_check.py`, `audit2/d12/ui.js`, `audit2/d12/ui2.js`, `audit2/d12/ui3.js`, `audit2/d12/ui4.js`, `audit2/d13.js`, `audit2/d13pw.js`, `audit2/d14.js`, `audit2/d14b.js`, `audit2/d15.js`, `audit2/d15b.js`, `audit2/d15c.js`, `audit2/d15d.js`, `audit2/d16.js`, `audit2/d16b.js`, `audit2/d16c.js`, `audit2/d16fix.js`, `audit2/d16pw.js`, `audit2/d17.js`, `audit2/d17b.js`, `audit2/d2.js`, `audit2/d2b.js`, `audit2/d3.js`, `audit2/d3fix/build-data.py`, `audit2/d4/card.js`, `audit2/d5.js`, `audit2/d6.js`, `audit2/d7/card.js`, `audit2/d8.js`, `audit2/d8fix.js`, `audit2/d9-browser.js`, `audit2/d9.js`, `audit2/d9b.js`, `audit2/drag.js`, `audit2/drag2.js`, `audit2/feat.js`, `audit2/feats.js`, `audit2/flick.js`, `audit2/harness.js`, `audit2/hit.js`, `audit2/kb.js`, `audit2/kb2.js`, `audit2/keys.js`, `audit2/l01.js`, `audit2/l02/m.js`, `audit2/l02/m2.js`, `audit2/l02/patch.js`, `audit2/l02/z.js`, `audit2/l03-fixed.js`, `audit2/l03-verify.js`, `audit2/l03.js`, `audit2/l04_check.js`, `audit2/l04_drag.js`, `audit2/l04_drag2.js`, `audit2/l04_drag2_fix.js`, `audit2/l04_drag_fix.js`, `audit2/l05v/cal_fix.js`, `audit2/l05v/pw.js`, `audit2/l05v/pw_fix.js`, `audit2/l05v/repro.js`, `audit2/l05v/shape.js`, `audit2/l05v/sweep.js`, `audit2/l06.js`, `audit2/l06_b2.js`, `audit2/l06_browser.js`, `audit2/l07.js`, `audit2/l07fix.js`, `audit2/l08_browser.js`, `audit2/l08_contrast.js`, `audit2/l08_fix.js`, `audit2/l08_shots.js`, `audit2/l09/measure.js`, `audit2/l09/midbreak.js`, `audit2/l09/patch.js`, `audit2/l09/shots.js`, `audit2/l09/tilechk.js`, `audit2/l09/widths.js`, `audit2/l10.js`, `audit2/l10b.js`, `audit2/l11.js`, `audit2/l11b.js`, `audit2/l11c.js`, `audit2/l12.js`, `audit2/l13.js`, `audit2/l13b.js`, `audit2/l13c.js`, `audit2/l14/fix.js`, `audit2/l14/repro.js`, `audit2/l14/repro2.js`, `audit2/l14/repro3.js`, `audit2/l15.js`, `audit2/l15b.js`, `audit2/l15c.js`, `audit2/l16/node_th.js`, `audit2/l16/patch.js`, `audit2/l16/prof.js`, `audit2/l16/pw.js`, `audit2/l16/pw2.js`, `audit2/l17.js`, `audit2/l17b.js`, `audit2/l18.js`, `audit2/l18b.js`, `audit2/l19.js`, `audit2/l19p.js`, `audit2/load.js`, `audit2/ls.js`, `audit2/m10.js`, `audit2/m10_check.js`, `audit2/m10_check2.js`, `audit2/m10fix.js`, `audit2/m11.js`, `audit2/m11pw.js`, `audit2/m11sweep.js`, `audit2/m12/browser.js`, `audit2/m12/browser2.js`, `audit2/m12/engine.js`, `audit2/m12/jumpthr.js`, `audit2/m12/throwangles.js`, `audit2/m13.js`, `audit2/m13_drag.js`, `audit2/m14.js`, `audit2/m14_browser.js`, `audit2/m14_browser2.js`, `audit2/m14_thr.js`, `audit2/m14_throw.js`, `audit2/m14_throw2.js`, `audit2/m1_browser.js`, `audit2/m1_browser_fix.js`, `audit2/m1_fix.js`, `audit2/m1_jump.js`, `audit2/m1_jumpmono.js`, `audit2/m1_stomp.js`, `audit2/m1_sweep.js`, `audit2/m1_tile.js`, `audit2/m2.js`, `audit2/m2_browser.js`, `audit2/m2b.js`, `audit2/m2c.js`, `audit2/m2d.js`, `audit2/m2e.js`, `audit2/m2f.js`, `audit2/m2pw.js`, `audit2/m3.js`, `audit2/m3/browser.js`, `audit2/m3/cal100.js`, `audit2/m3/jumpdetail.js`, `audit2/m3/precise.js`, `audit2/m3/repro.js`, `audit2/m3/sweep100.js`, `audit2/m3b.js`, `audit2/m3c.js`, `audit2/m3d.js`, `audit2/m3p.js`, `audit2/m4/br.js`, `audit2/m4/sweep.js`, `audit2/m4_browser.js`, `audit2/m4_calib.js`, `audit2/m5/eng.js`, `audit2/m5/eng2.js`, `audit2/m5/fix777.js`, `audit2/m5/math.js`, `audit2/m5/math2.js`, `audit2/m5/proj/build.js`, `audit2/m5/repro.js`, `audit2/m5/repro2.js`, `audit2/m5/repro3.js`, `audit2/m5/repro4.js`, `audit2/m5/run.js`, `audit2/m6.js`, `audit2/m6/fixtest.js`, `audit2/m6/fmt.js`, `audit2/m6/ladder.js`, `audit2/m6/repro.js`, `audit2/m6/scan.js`, `audit2/m6/tiles.js`, `audit2/m6b.js`, `audit2/m6c.js`, `audit2/m7.js`, `audit2/m7/b2.js`, `audit2/m7/browser.js`, `audit2/m7/fix.js`, `audit2/m7/repro.js`, `audit2/m7b.js`, `audit2/m7c.js`, `audit2/m7d.js`, `audit2/m8.js`, `audit2/m8/browser.js`, `audit2/m8/edge.js`, `audit2/m8/edge2.js`, `audit2/m8/links.js`, `audit2/m8/scan.js`, `audit2/m8b.js`, `audit2/m8c.js`, `audit2/m8d.js`, `audit2/m8e.js`, `audit2/m8f.js`, `audit2/m9/patch.js`, `audit2/m9/run.js`, `audit2/m9/run2.js`, `audit2/m9_browser.js`, `audit2/m9_browser_fixed.js`, `audit2/m9_engine.js`, `audit2/m9_fixcheck.js`, `audit2/now.js`, `audit2/patch.py`, `audit2/patch13.js`, `audit2/patch_m8.js`, `audit2/perf.js`, `audit2/perf2.js`, `audit2/pw.js`, `audit2/pwb/firefox-1495/firefox/browser/defaults/preferences/00-playwright-prefs.js`, `audit2/pwb/firefox-1495/firefox/defaults/pref/channel-prefs.js`, `audit2/pwb/webkit-2215/minibrowser-gtk/install-dependencies.sh`, `audit2/pwb/webkit-2215/minibrowser-wpe/install-dependencies.sh`, `audit2/pwb/webkit-2215/pw_run.sh`, `audit2/r1-count.js`, `audit2/r1-engine.js`, `audit2/r1.js`, `audit2/r10.js`, `audit2/r10_b.js`, `audit2/r10_ui.js`, `audit2/r10_ui_fix.js`, `audit2/r11/r11.py`, `audit2/r11/ui.js`, `audit2/r11/ui2.js`, `audit2/r11/ui3.js`, `audit2/r12.js`, `audit2/r12b.js`, `audit2/r12c.js`, `audit2/r12d.js`, `audit2/r12e.js`, `audit2/r12pw.js`, `audit2/r13.js`, `audit2/r13b.js`, `audit2/r13c.js`, `audit2/r13d.js`, `audit2/r14_fixcheck.js`, `audit2/r14_stomp.js`, `audit2/r14_throw.js`, `audit2/r14_ui.js`, `audit2/r15/ghost.js`, `audit2/r15/hill3b.js`, `audit2/r15/hill3b2.js`, `audit2/r15/jump.js`, `audit2/r15/jump2.js`, `audit2/r15/jump3.js`, `audit2/r15/patch.js`, `audit2/r15/repo/build.js`, `audit2/r15/repo/test/calibration.js`, `audit2/r15/repo/test/fit-v2.js`, `audit2/r15/repo/test/fit.js`, `audit2/r15/repo/test/fit2.js`, `audit2/r15/repo/test/fit3.js`, `audit2/r15/repo/test/sanity.js`, `audit2/r15/repo/test/shots.js`, `audit2/r15/repo/test/sweep.js`, `audit2/r15/repro.js`, `audit2/r15/throwscan.js`, `audit2/r15/ui.js`, `audit2/r15/ui2.js`, `audit2/r15/ui3.js`, `audit2/r15/ui4.js`, `audit2/r16.js`, `audit2/r2_browser.js`, `audit2/r2_comic.js`, `audit2/r2_granite.js`, `audit2/r2_node.js`, `audit2/r2_node_fixed.js`, `audit2/r2_others.js`, `audit2/r3v/browser.js`, `audit2/r3v/cal/test/calibration.js`, `audit2/r3v/cal/test/sweep.js`, `audit2/r3v/cases.js`, `audit2/r3v/cmp.js`, `audit2/r3v/jumpdbg.js`, `audit2/r3v/maxcheck.js`, `audit2/r3v/repro.js`, `audit2/r3v/repro2.js`, `audit2/r4_browser.js`, `audit2/r4_browser_patched.js`, `audit2/r4_patch_test.js`, `audit2/r4_ref.js`, `audit2/r4_repro.js`, `audit2/r4_sweep.js`, `audit2/r4tree/test/calibration.js`, `audit2/r5_after.js`, `audit2/r5_browser.js`, `audit2/r5_browser_fixed.js`, `audit2/r5_cold.js`, `audit2/r5_dbg.js`, `audit2/r5_inf.js`, `audit2/r5_kaiju.js`, `audit2/r5_repro.js`, `audit2/r5_scan.js`, `audit2/r5_subopt.js`, `audit2/r5_time.js`, `audit2/r5_verify.js`, `audit2/r6_cmp.js`, `audit2/r6_real.js`, `audit2/r6_real2.js`, `audit2/r6_repro.js`, `audit2/r6_scan.js`, `audit2/r6_scan2.js`, `audit2/r6_ui.js`, `audit2/r6_ui_fixed.js`, `audit2/r6t/test/calibration.js`, `audit2/r6t/test/sweep.js`, `audit2/r7/browser.js`, `audit2/r7/cmp.js`, `audit2/r7/repo/test/calibration.js`, `audit2/r7/repo/test/fit-v2.js`, `audit2/r7/repo/test/fit.js`, `audit2/r7/repo/test/fit2.js`, `audit2/r7/repo/test/fit3.js`, `audit2/r7/repo/test/sanity.js`, `audit2/r7/repo/test/shots.js`, `audit2/r7/repo/test/sweep.js`, `audit2/r7/repro.js`, `audit2/r7/twod.js`, `audit2/r7/variants.js`, `audit2/r8_browser.js`, `audit2/r8_fixcheck.js`, `audit2/r8_stomp.js`, `audit2/r9/eng.js`, `audit2/r9/thr.js`, `audit2/r9/throw.js`, `audit2/r9/ui.js`, `audit2/r9/ui_fixed.js`, `audit2/ref.js`, `audit2/regress/a1_2d.js`, `audit2/regress/build.js`, `audit2/regress/c1_crater.js`, `audit2/regress/common.js`, `audit2/regress/f1_heavy.js`, `audit2/regress/feats.js`, `audit2/regress/fmt1.js`, `audit2/regress/fmt_ui.js`, `audit2/regress/h1_overshoot.js`, `audit2/regress/h2_sweep.js`, `audit2/regress/h3_stall.js`, `audit2/regress/h4_ref.js`, `audit2/regress/h5_eground.js`, `audit2/regress/h6_patch.js`, `audit2/regress/j1_inf.js`, `audit2/regress/j2_granite.js`, `audit2/regress/j3_realjump.js`, `audit2/regress/j4_nonmono.js`, `audit2/regress/j5_comicbest.js`, `audit2/regress/k1_vac.js`, `audit2/regress/k2_jumpfly.js`, `audit2/regress/k3_kaiju.js`, `audit2/regress/k4_drag.js`, `audit2/regress/k5_kaijuTO.js`, `audit2/regress/m2_mono.js`, `audit2/regress/q1_quasi.js`, `audit2/regress/ref.js`, `audit2/regress/stag_solver.js`, `audit2/regress/t1_throwmono.js`, `audit2/regress/u1_trunc.js`, `audit2/regress/ui.js`, `audit2/regress/waitm2.sh`, `audit2/rot.js`, `audit2/shot2.js`, `audit2/sticky.js`, `audit2/sweepui.js`, `audit2/t/cal.js`, `audit2/tapdot.js`, `audit2/thprof.js`, `audit2/tiers.js`, `audit2/tip.js`, `audit2/tip2.js`, `audit2/w320.js`
+`audit2/a11y.js`, `audit2/apex.js`, `audit2/apex2.js`, `audit2/atlas.js`, `audit2/build.js`, `audit2/c1_band.js`, `audit2/c1_browser.js`, `audit2/c1_engine.js`, `audit2/c2.js`, `audit2/cal_m8.js`, `audit2/calib_r5c.js`, `audit2/claims/buildcur.js`, `audit2/claims/extra.js`, `audit2/claims/feats.js`, `audit2/claims/grid.js`, `audit2/claims/harness.js`, `audit2/claims/jumpscan.js`, `audit2/claims/ladder.js`, `audit2/claims/ladderweb.js`, `audit2/claims/realcap.js`, `audit2/claims/repro.js`, `audit2/claims/scan.js`, `audit2/claims/scan2.js`, `audit2/claims/show.js`, `audit2/claims/t0.js`, `audit2/common.js`, `audit2/contrast.py`, `audit2/crop.js`, `audit2/d1.js`, `audit2/d10.js`, `audit2/d10pw.js`, `audit2/d10tip.js`, `audit2/d11/copy/build-data.py`, `audit2/d11/copy/build.js`, `audit2/d11/copy/test/calibration.js`, `audit2/d11/copy/test/fit-v2.js`, `audit2/d11/copy/test/fit.js`, `audit2/d11/copy/test/fit2.js`, `audit2/d11/copy/test/fit3.js`, `audit2/d11/copy/test/sanity.js`, `audit2/d11/copy/test/shots.js`, `audit2/d11/copy/test/sweep.js`, `audit2/d11/eng.js`, `audit2/d11/eng2.js`, `audit2/d11/repro.js`, `audit2/d12/d12_check.py`, `audit2/d12/ui.js`, `audit2/d12/ui2.js`, `audit2/d12/ui3.js`, `audit2/d12/ui4.js`, `audit2/d13.js`, `audit2/d13pw.js`, `audit2/d14.js`, `audit2/d14b.js`, `audit2/d15.js`, `audit2/d15b.js`, `audit2/d15c.js`, `audit2/d15d.js`, `audit2/d16.js`, `audit2/d16b.js`, `audit2/d16c.js`, `audit2/d16fix.js`, `audit2/d16pw.js`, `audit2/d17.js`, `audit2/d17b.js`, `audit2/d2.js`, `audit2/d2b.js`, `audit2/d3.js`, `audit2/d3fix/build-data.py`, `audit2/d4/card.js`, `audit2/d5.js`, `audit2/d6.js`, `audit2/d7/card.js`, `audit2/d8.js`, `audit2/d8fix.js`, `audit2/d9-browser.js`, `audit2/d9.js`, `audit2/d9b.js`, `audit2/drag.js`, `audit2/drag2.js`, `audit2/feat.js`, `audit2/feats.js`, `audit2/flick.js`, `audit2/harness.js`, `audit2/hit.js`, `audit2/kb.js`, `audit2/kb2.js`, `audit2/keys.js`, `audit2/l01.js`, `audit2/l02/m.js`, `audit2/l02/m2.js`, `audit2/l02/patch.js`, `audit2/l02/z.js`, `audit2/l03-fixed.js`, `audit2/l03-verify.js`, `audit2/l03.js`, `audit2/l04_check.js`, `audit2/l04_drag.js`, `audit2/l04_drag2.js`, `audit2/l04_drag2_fix.js`, `audit2/l04_drag_fix.js`, `audit2/l05v/cal_fix.js`, `audit2/l05v/pw.js`, `audit2/l05v/pw_fix.js`, `audit2/l05v/repro.js`, `audit2/l05v/shape.js`, `audit2/l05v/sweep.js`, `audit2/l06.js`, `audit2/l06_b2.js`, `audit2/l06_browser.js`, `audit2/l07.js`, `audit2/l07fix.js`, `audit2/l08_browser.js`, `audit2/l08_contrast.js`, `audit2/l08_fix.js`, `audit2/l08_shots.js`, `audit2/l09/measure.js`, `audit2/l09/midbreak.js`, `audit2/l09/patch.js`, `audit2/l09/shots.js`, `audit2/l09/tilechk.js`, `audit2/l09/widths.js`, `audit2/l10.js`, `audit2/l10b.js`, `audit2/l11.js`, `audit2/l11b.js`, `audit2/l11c.js`, `audit2/l12.js`, `audit2/l13.js`, `audit2/l13b.js`, `audit2/l13c.js`, `audit2/l14/fix.js`, `audit2/l14/repro.js`, `audit2/l14/repro2.js`, `audit2/l14/repro3.js`, `audit2/l15.js`, `audit2/l15b.js`, `audit2/l15c.js`, `audit2/l16/node_th.js`, `audit2/l16/patch.js`, `audit2/l16/prof.js`, `audit2/l16/pw.js`, `audit2/l16/pw2.js`, `audit2/l17.js`, `audit2/l17b.js`, `audit2/l18.js`, `audit2/l18b.js`, `audit2/l19.js`, `audit2/l19p.js`, `audit2/load.js`, `audit2/ls.js`, `audit2/m10.js`, `audit2/m10_check.js`, `audit2/m10_check2.js`, `audit2/m10fix.js`, `audit2/m11.js`, `audit2/m11pw.js`, `audit2/m11sweep.js`, `audit2/m12/browser.js`, `audit2/m12/browser2.js`, `audit2/m12/engine.js`, `audit2/m12/jumpthr.js`, `audit2/m12/throwangles.js`, `audit2/m13.js`, `audit2/m13_drag.js`, `audit2/m14.js`, `audit2/m14_browser.js`, `audit2/m14_browser2.js`, `audit2/m14_thr.js`, `audit2/m14_throw.js`, `audit2/m14_throw2.js`, `audit2/m1_browser.js`, `audit2/m1_browser_fix.js`, `audit2/m1_fix.js`, `audit2/m1_jump.js`, `audit2/m1_jumpmono.js`, `audit2/m1_stomp.js`, `audit2/m1_sweep.js`, `audit2/m1_tile.js`, `audit2/m2.js`, `audit2/m2_browser.js`, `audit2/m2b.js`, `audit2/m2c.js`, `audit2/m2d.js`, `audit2/m2e.js`, `audit2/m2f.js`, `audit2/m2pw.js`, `audit2/m3.js`, `audit2/m3/browser.js`, `audit2/m3/cal100.js`, `audit2/m3/jumpdetail.js`, `audit2/m3/precise.js`, `audit2/m3/repro.js`, `audit2/m3/sweep100.js`, `audit2/m3b.js`, `audit2/m3c.js`, `audit2/m3d.js`, `audit2/m3p.js`, `audit2/m4/br.js`, `audit2/m4/sweep.js`, `audit2/m4_browser.js`, `audit2/m4_calib.js`, `audit2/m5/eng.js`, `audit2/m5/eng2.js`, `audit2/m5/fix777.js`, `audit2/m5/math.js`, `audit2/m5/math2.js`, `audit2/m5/proj/build.js`, `audit2/m5/repro.js`, `audit2/m5/repro2.js`, `audit2/m5/repro3.js`, `audit2/m5/repro4.js`, `audit2/m5/run.js`, `audit2/m6.js`, `audit2/m6/fixtest.js`, `audit2/m6/fmt.js`, `audit2/m6/ladder.js`, `audit2/m6/repro.js`, `audit2/m6/scan.js`, `audit2/m6/tiles.js`, `audit2/m6b.js`, `audit2/m6c.js`, `audit2/m7.js`, `audit2/m7/b2.js`, `audit2/m7/browser.js`, `audit2/m7/fix.js`, `audit2/m7/repro.js`, `audit2/m7b.js`, `audit2/m7c.js`, `audit2/m7d.js`, `audit2/m8.js`, `audit2/m8/browser.js`, `audit2/m8/edge.js`, `audit2/m8/edge2.js`, `audit2/m8/links.js`, `audit2/m8/scan.js`, `audit2/m8b.js`, `audit2/m8c.js`, `audit2/m8d.js`, `audit2/m8e.js`, `audit2/m8f.js`, `audit2/m9/patch.js`, `audit2/m9/run.js`, `audit2/m9/run2.js`, `audit2/m9_browser.js`, `audit2/m9_browser_fixed.js`, `audit2/m9_engine.js`, `audit2/m9_fixcheck.js`, `audit2/now.js`, `audit2/patch.py`, `audit2/patch13.js`, `audit2/patch_m8.js`, `audit2/perf.js`, `audit2/perf2.js`, `audit2/pw.js`, `audit2/r1-count.js`, `audit2/r1-engine.js`, `audit2/r1.js`, `audit2/r10.js`, `audit2/r10_b.js`, `audit2/r10_ui.js`, `audit2/r10_ui_fix.js`, `audit2/r11/r11.py`, `audit2/r11/ui.js`, `audit2/r11/ui2.js`, `audit2/r11/ui3.js`, `audit2/r12.js`, `audit2/r12b.js`, `audit2/r12c.js`, `audit2/r12d.js`, `audit2/r12e.js`, `audit2/r12pw.js`, `audit2/r13.js`, `audit2/r13b.js`, `audit2/r13c.js`, `audit2/r13d.js`, `audit2/r14_fixcheck.js`, `audit2/r14_stomp.js`, `audit2/r14_throw.js`, `audit2/r14_ui.js`, `audit2/r15/ghost.js`, `audit2/r15/hill3b.js`, `audit2/r15/hill3b2.js`, `audit2/r15/jump.js`, `audit2/r15/jump2.js`, `audit2/r15/jump3.js`, `audit2/r15/patch.js`, `audit2/r15/repo/build.js`, `audit2/r15/repo/test/calibration.js`, `audit2/r15/repo/test/fit-v2.js`, `audit2/r15/repo/test/fit.js`, `audit2/r15/repo/test/fit2.js`, `audit2/r15/repo/test/fit3.js`, `audit2/r15/repo/test/sanity.js`, `audit2/r15/repo/test/shots.js`, `audit2/r15/repo/test/sweep.js`, `audit2/r15/repro.js`, `audit2/r15/throwscan.js`, `audit2/r15/ui.js`, `audit2/r15/ui2.js`, `audit2/r15/ui3.js`, `audit2/r15/ui4.js`, `audit2/r16.js`, `audit2/r2_browser.js`, `audit2/r2_comic.js`, `audit2/r2_granite.js`, `audit2/r2_node.js`, `audit2/r2_node_fixed.js`, `audit2/r2_others.js`, `audit2/r3v/browser.js`, `audit2/r3v/cal/test/calibration.js`, `audit2/r3v/cal/test/sweep.js`, `audit2/r3v/cases.js`, `audit2/r3v/cmp.js`, `audit2/r3v/jumpdbg.js`, `audit2/r3v/maxcheck.js`, `audit2/r3v/repro.js`, `audit2/r3v/repro2.js`, `audit2/r4_browser.js`, `audit2/r4_browser_patched.js`, `audit2/r4_patch_test.js`, `audit2/r4_ref.js`, `audit2/r4_repro.js`, `audit2/r4_sweep.js`, `audit2/r4tree/test/calibration.js`, `audit2/r5_after.js`, `audit2/r5_browser.js`, `audit2/r5_browser_fixed.js`, `audit2/r5_cold.js`, `audit2/r5_dbg.js`, `audit2/r5_inf.js`, `audit2/r5_kaiju.js`, `audit2/r5_repro.js`, `audit2/r5_scan.js`, `audit2/r5_subopt.js`, `audit2/r5_time.js`, `audit2/r5_verify.js`, `audit2/r6_cmp.js`, `audit2/r6_real.js`, `audit2/r6_real2.js`, `audit2/r6_repro.js`, `audit2/r6_scan.js`, `audit2/r6_scan2.js`, `audit2/r6_ui.js`, `audit2/r6_ui_fixed.js`, `audit2/r6t/test/calibration.js`, `audit2/r6t/test/sweep.js`, `audit2/r7/browser.js`, `audit2/r7/cmp.js`, `audit2/r7/repo/test/calibration.js`, `audit2/r7/repo/test/fit-v2.js`, `audit2/r7/repo/test/fit.js`, `audit2/r7/repo/test/fit2.js`, `audit2/r7/repo/test/fit3.js`, `audit2/r7/repo/test/sanity.js`, `audit2/r7/repo/test/shots.js`, `audit2/r7/repo/test/sweep.js`, `audit2/r7/repro.js`, `audit2/r7/twod.js`, `audit2/r7/variants.js`, `audit2/r8_browser.js`, `audit2/r8_fixcheck.js`, `audit2/r8_stomp.js`, `audit2/r9/eng.js`, `audit2/r9/thr.js`, `audit2/r9/throw.js`, `audit2/r9/ui.js`, `audit2/r9/ui_fixed.js`, `audit2/ref.js`, `audit2/regress/a1_2d.js`, `audit2/regress/build.js`, `audit2/regress/c1_crater.js`, `audit2/regress/common.js`, `audit2/regress/f1_heavy.js`, `audit2/regress/feats.js`, `audit2/regress/fmt1.js`, `audit2/regress/fmt_ui.js`, `audit2/regress/h1_overshoot.js`, `audit2/regress/h2_sweep.js`, `audit2/regress/h3_stall.js`, `audit2/regress/h4_ref.js`, `audit2/regress/h5_eground.js`, `audit2/regress/h6_patch.js`, `audit2/regress/j1_inf.js`, `audit2/regress/j2_granite.js`, `audit2/regress/j3_realjump.js`, `audit2/regress/j4_nonmono.js`, `audit2/regress/j5_comicbest.js`, `audit2/regress/k1_vac.js`, `audit2/regress/k2_jumpfly.js`, `audit2/regress/k3_kaiju.js`, `audit2/regress/k4_drag.js`, `audit2/regress/k5_kaijuTO.js`, `audit2/regress/m2_mono.js`, `audit2/regress/q1_quasi.js`, `audit2/regress/ref.js`, `audit2/regress/stag_solver.js`, `audit2/regress/t1_throwmono.js`, `audit2/regress/u1_trunc.js`, `audit2/regress/ui.js`, `audit2/regress/waitm2.sh`, `audit2/rot.js`, `audit2/shot2.js`, `audit2/sticky.js`, `audit2/sweepui.js`, `audit2/t/cal.js`, `audit2/tapdot.js`, `audit2/thprof.js`, `audit2/tiers.js`, `audit2/tip.js`, `audit2/tip2.js`, `audit2/w320.js`
 
 </details>
 
@@ -132,15 +130,15 @@ Review round 3 (fix verification, 9 Oct): checks of each fix and regression hunt
 
 205 files, 365 KB.
 
-- `audit3/bay.js`: usage: node bay.js '<settings json>' [clickFeatTitle]
+- `audit3/bay.js`: usage: node bay.js '&lt;settings json&gt;' [clickFeatTitle]
 - `audit3/cal_fix.js`: Asserts the record-human calibration and core physics invariants. Run: node test/calibration.js
 - `audit3/calib-fixed.js`: Asserts the record-human calibration and core physics invariants. Run: node test/calibration.js
 - `audit3/calib_fix.js`: Asserts the record-human calibration and core physics invariants. Run: node test/calibration.js
 - `audit3/copy/build-data.py`: Build src/data.js from the verified research datasets in research/final-.json.
 - `audit3/n1/test/calibration.js`: Asserts the record-human calibration and core physics invariants. Run: node test/calibration.js
 - `audit3/n6v/calib-final.js`: Asserts the record-human calibration and core physics invariants. Run: node test/calibration.js
-- `audit3/pw.js`: usage: node pw.js '<settings json or "">' '<js to eval returning value>' [waitms]
-- `audit3/ui.js`: usage: node ui.js scenarios.json  -> prints bay text per scenario
+- `audit3/pw.js`: usage: node pw.js '&lt;settings json or ""&gt;' '&lt;js to eval returning value&gt;' [waitms]
+- `audit3/ui.js`: usage: node ui.js scenarios.json  -&gt; prints bay text per scenario
 
 <details><summary>All 205 files</summary>
 
@@ -172,7 +170,7 @@ Density and Rex + Ollie design (9-10 Oct): the designers' prototypes (density/ca
 - `duo/density-check/calc/gravdrag.js`: Order-of-magnitude: gravitational (Bondi-Hoyle-Lyttleton / dynamical-friction) drag on a dense Rex moving through rock,
 - `duo/density-check/calc/gravdrag2.js`: Gravitational drag (Ostriker 1999 gaseous-medium form) as an order-of-magnitude check:
 - `duo/density-check/calc/prem_check.js`: Independent PREM integration (numerical, not closed form). Coefficients from the GENIE listing (Dziewonski & Anderson 1981).
-- `duo/density/calc/prem.js`: PREM density (Dziewonski & Anderson 1981, Table 1; polynomial in x = r/6371 km), g/cm3 -> kg/m3
+- `duo/density/calc/prem.js`: PREM density (Dziewonski & Anderson 1981, Table 1; polynomial in x = r/6371 km), g/cm3 -&gt; kg/m3
 - `duo/density/calc/weight.js`: Prototype of the proposed engine additions for the "Weight" tab (density, self-gravity,
 
 <details><summary>All 75 files</summary>
@@ -185,12 +183,12 @@ Density and Rex + Ollie design (9-10 Oct): the designers' prototypes (density/ca
 
 The picture-based body estimate (10 Oct): method A pixel slices (seg.py, regions.py, volume.py, compute.py, final.py and friends), method_b/ segment solids, method_c/ anthropometric scaling, checker/ reconciliation. final.json is the reconciled result.
 
-47 files, 162 KB.
+48 files, 221 KB.
 
 - `mass/checker/ansur_k.py`: Checker: what cross-section area does ANSUR II imply, relative to (caliper breadth)^2?
 - `mass/checker/check_vol.py`: Checker: independent slicer on Method A's (visually verified) region masks.
 - `mass/checker/reconcile.py`: Checker's reconciled estimate.
-- `mass/compute.py`: Method A: silhouette slices -> elliptical cross-sections -> volume.
+- `mass/compute.py`: Method A: silhouette slices -&gt; elliptical cross-sections -&gt; volume.
 - `mass/final.py`: Method A final pass: slice volumes per body region with hand-set limb axis angles.
 - `mass/method_b/geom.py`: Shared geometry helpers for Method B (segment solids).
 - `mass/method_b/method_b.py`: METHOD B - segment solids for Rex and Ollie from the reference picture.
@@ -208,9 +206,9 @@ The picture-based body estimate (10 Oct): method A pixel slices (seg.py, regions
 - `mass/volume.py`: First-pass volume from the foreground mask, split into Rex and Ollie.
 - `mass/write_json.py`: Writes the Method A volume and mass ranges, scale and density to JSON.
 
-<details><summary>All 47 files</summary>
+<details><summary>All 48 files</summary>
 
-`mass/checker/A_recheck.json`, `mass/checker/ansur_k.json`, `mass/checker/ansur_k.py`, `mass/checker/check_vol.py`, `mass/checker/reconcile.py`, `mass/checker/reconcile_raw.json`, `mass/checker/results_checker.json`, `mass/checker/write_checker_json.py`, `mass/checker/zoom.py`, `mass/compute.py`, `mass/diag.py`, `mass/final.py`, `mass/grid.py`, `mass/method_b/ansur.py`, `mass/method_b/ansur_ratios.json`, `mass/method_b/crop.py`, `mass/method_b/dl/ansur_m.csv`, `mass/method_b/dl/t.csv`, `mass/method_b/geom.py`, `mass/method_b/method_b.py`, `mass/method_b/overlay.py`, `mass/method_b/results.json`, `mass/method_b/results_method_b.json`, `mass/method_b/seg3.py`, `mass/method_b/segdefs.py`, `mass/method_b/summarize.py`, `mass/method_c/annotate.py`, `mass/method_c/area.py`, `mass/method_c/area_px.json`, `mass/method_c/crop.py`, `mass/method_c/method_c.py`, `mass/method_c/method_c_raw.json`, `mass/method_c/method_c_results.json`, `mass/method_c/ov.py`, `mass/method_c/runs.py`, `mass/method_c/tail_scan.py`, `mass/method_c/write_results.py`, `mass/region_px.json`, `mass/regions.py`, `mass/report.py`, `mass/results_methodA.json`, `mass/run_all.py`, `mass/sanity.py`, `mass/seg.py`, `mass/viewcrop.py`, `mass/volume.py`, `mass/write_json.py`
+`mass/checker/A_recheck.json`, `mass/checker/ansur_k.json`, `mass/checker/ansur_k.py`, `mass/checker/check_vol.py`, `mass/checker/reconcile.py`, `mass/checker/reconcile_raw.json`, `mass/checker/results_checker.json`, `mass/checker/write_checker_json.py`, `mass/checker/zoom.py`, `mass/compute.py`, `mass/diag.py`, `mass/final.json`, `mass/final.py`, `mass/grid.py`, `mass/method_b/ansur.py`, `mass/method_b/ansur_ratios.json`, `mass/method_b/crop.py`, `mass/method_b/dl/ansur_m.csv`, `mass/method_b/dl/t.csv`, `mass/method_b/geom.py`, `mass/method_b/method_b.py`, `mass/method_b/overlay.py`, `mass/method_b/results.json`, `mass/method_b/results_method_b.json`, `mass/method_b/seg3.py`, `mass/method_b/segdefs.py`, `mass/method_b/summarize.py`, `mass/method_c/annotate.py`, `mass/method_c/area.py`, `mass/method_c/area_px.json`, `mass/method_c/crop.py`, `mass/method_c/method_c.py`, `mass/method_c/method_c_raw.json`, `mass/method_c/method_c_results.json`, `mass/method_c/ov.py`, `mass/method_c/runs.py`, `mass/method_c/tail_scan.py`, `mass/method_c/write_results.py`, `mass/region_px.json`, `mass/regions.py`, `mass/report.py`, `mass/results_methodA.json`, `mass/run_all.py`, `mass/sanity.py`, `mass/seg.py`, `mass/viewcrop.py`, `mass/volume.py`, `mass/write_json.py`
 
 </details>
 
@@ -226,8 +224,8 @@ Page render and sweep tools used throughout: weightshot.js renders page states a
 - `a3/bayweight.js`: ---------------------------------------------------------------- weight (density) tab
 - `a3/check.js`: Sweep UI states and look for broken text; check links, feats and slider render time.
 - `a3/check2.js`: Sweep solo and duo tabs over strength, density, ground and anchoring; flag broken text and errors.
-- `a3/contest_engine.js`: ---------------------------------------------------------------------------
-- `a3/density_engine.js`: ---------------------------------------------------------------------------
+- `a3/contest_engine.js`: Two-player contests: arm wrestling and wrestling (Rex vs Ollie). Each side is a full context
+- `a3/density_engine.js`: Density, weight and the planet under him
 - `a3/mkprev.js`: Same wrapper test/shots.js writes, without the screenshots; plus a what-if copy that doesn't force oSame.
 - `a3/weightshot.js`: Renders page states given as JSON and dumps their text, for checking wording.
 
@@ -276,7 +274,7 @@ Final verification of the leftover fixes (10 Oct): mysweep.js, p5.js and others.
 
 - `final-verify/mysweep.js`: Headless-browser sweep of the page at phone width, collecting page errors and broken text.
 - `final-verify/p5.js`: Engine check for one of the leftover fixes, run in node against the built data.
-- `final-verify/render.js`: usage: node render.js '[["name",width,{state},"light|dark"],...]'  -> writes out/<name>.txt and out/<name>.png
+- `final-verify/render.js`: usage: node render.js '[["name",width,{state},"light|dark"],...]'  -&gt; writes out/&lt;name&gt;.txt and out/&lt;name&gt;.png
 
 <details><summary>All 12 files</summary>
 
@@ -288,14 +286,8 @@ Final verification of the leftover fixes (10 Oct): mysweep.js, p5.js and others.
 
 Build Calculator data compile (10 Oct): scripts/compile.py builds data/builds.json; facts_fix.py applies the fact-check corrections; girths.py derives Rex and Ollie girths; resolve_test.py checks every template.
 
-20 files, 223 KB.
+23 files, 437 KB.
 
-- `bcdata/corr.md`: Anthro (23 entries)
-- `bcdata/dump_comics.txt`: superman
-- `bcdata/notes_gaps.md`: Gaps
-- `bcdata/notes_head.md`: Build calculator data: notes
-- `bcdata/notes_ro.md`: Rex and Ollie: how the girths were derived
-- `bcdata/notes_tail.md`: Judgement calls
 - `bcdata/scripts/ansur1_waist.py`: Compares natural and omphalion waist girths in ANSUR CSVs (ratio and difference).
 - `bcdata/scripts/compile.py`: Compile /home/user/build-calc/data/builds.json from the fact-checked research, the NHANES report and the picture measurements.
 - `bcdata/scripts/facts_fix.py`: Load research-all.json, parse fact values, apply verifier corrections, record each change.
@@ -303,9 +295,9 @@ Build Calculator data compile (10 Oct): scripts/compile.py builds data/builds.js
 - `bcdata/scripts/mra.py`: Averages the 1938-1954 Mr America programme heights, weights and girths from the research facts.
 - `bcdata/scripts/resolve_test.py`: Resolves the seven girths of every build in a compiled builds.json through its template chain, to check that each one resolves.
 
-<details><summary>All 20 files</summary>
+<details><summary>All 23 files</summary>
 
-`bcdata/corr.md`, `bcdata/dump_comics.txt`, `bcdata/girth/armline.py`, `bcdata/girth/grid.py`, `bcdata/girth/limbs.py`, `bcdata/girth/ovl.py`, `bcdata/girth/prof.py`, `bcdata/notes_gaps.md`, `bcdata/notes_head.md`, `bcdata/notes_ro.md`, `bcdata/notes_tail.md`, `bcdata/ro.md`, `bcdata/scripts/ansur1_waist.py`, `bcdata/scripts/compile.py`, `bcdata/scripts/facts_fix.py`, `bcdata/scripts/girths.py`, `bcdata/scripts/mra.py`, `bcdata/scripts/resolve_test.py`, `bcdata/scripts/rexollie_girths.json`, `bcdata/tmpl.md`
+`bcdata/corr.md`, `bcdata/dump_anthro.txt`, `bcdata/dump_comics.txt`, `bcdata/dump_model.txt`, `bcdata/dump_muscle.txt`, `bcdata/girth/armline.py`, `bcdata/girth/grid.py`, `bcdata/girth/limbs.py`, `bcdata/girth/ovl.py`, `bcdata/girth/prof.py`, `bcdata/notes_gaps.md`, `bcdata/notes_head.md`, `bcdata/notes_ro.md`, `bcdata/notes_tail.md`, `bcdata/ro.md`, `bcdata/scripts/ansur1_waist.py`, `bcdata/scripts/compile.py`, `bcdata/scripts/facts_fix.py`, `bcdata/scripts/girths.py`, `bcdata/scripts/mra.py`, `bcdata/scripts/resolve_test.py`, `bcdata/scripts/rexollie_girths.json`, `bcdata/tmpl.md`
 
 </details>
 
@@ -321,7 +313,7 @@ Build Calculator research (10 Oct): ANSUR II analysis and fits, model checks, co
 - `buildcalc/anthro_check/scripts/check_fits.py`: Independent re-fit of the researcher's derived ANSUR II models.
 - `buildcalc/comics/scripts/entry.py`: Print the stat block for an entry heading: find heading line (exact regex), then the next lines up to N containing HEIGHT/WEIGHT
 - `buildcalc/comics/scripts/metrics.py`: Derived metrics for stated comic heights/weights.
-- `buildcalc/comics/scripts/revhist.py`: usage: python3 -I revhist.py <api_base> <page> <outdir>
+- `buildcalc/comics/scripts/revhist.py`: usage: python3 -I revhist.py &lt;api_base&gt; &lt;page&gt; &lt;outdir&gt;
 - `buildcalc/comics/scripts/statctx.py`: print HEIGHT/WEIGHT lines that occur within N lines after a line matching the name regex
 - `buildcalc/model_check/scripts/svlib.py`: Crude segmental frustum volume model on ANSUR II, to measure how well a geometric (girths + lengths) body volume predicts scale weight, and how the implied ...
 - `buildcalc/physics/scripts/derived_tables.py`: Derived numbers used in the design note (pure arithmetic; no external data).
@@ -382,16 +374,17 @@ Copies of project code are earlier states of engine.js, data.js and the tests, k
 
 | Folder | Why | Files | Total size | Main types |
 |---|---|---|---|---|
-| audit2 | binary or output | 406 | 1066.9 MB | .0, .so, .json, .1 |
+| audit2 | third-party install | 104 | 844.7 MB | .0, .so, .1, .4 |
 | final-verify | binary or output | 221 | 783.1 MB | .png, .txt, .log, .json |
+| audit2 | binary or output | 307 | 222.2 MB | .json, .png, .html, .txt |
 | duo | binary or output | 271 | 200.7 MB | .pdf, .txt, .html, .json |
 | audit | binary or output | 223 | 147.2 MB | .json, .png, .jsonl, .pdf |
-| mass | binary or output | 106 | 141.7 MB | .npy, .png, .pkl, .csv |
+| mass | binary or output | 105 | 141.6 MB | .npy, .png, .pkl, .csv |
 | buildcalc | raw download | 366 | 94.1 MB | .txt, .pdf, .csv, .html |
 | buildcalc | binary or output | 416 | 78.8 MB | .html, .png, .txt, .json |
 | a3 | binary or output | 227 | 67.6 MB | .png, .html, .out |
 | audit3 | binary or output | 303 | 64.0 MB | .json, .png, .html, .txt |
-| bcdata | binary or output | 19 | 6.0 MB | .png, .pdf, .json, .txt |
+| bcdata | binary or output | 16 | 5.8 MB | .png, .pdf, .json, .txt |
 | audit | copy of project code | 36 | 3.3 MB | .js |
 | audit2 | copy of project code | 61 | 3.0 MB | .js, .html |
 | r4 | copy of project code | 30 | 2.9 MB | .json, .js, .html, .txt |

@@ -4,6 +4,8 @@
 
 The round-4 fixes landed, a final leftover-fix round updated the text for the 10 ft bodies, the sweeps passed, and the Rex lab was committed, pushed and republished.
 
+Events are in the order they happened in the session; each workflow’s subagents are listed under the call that launched it, with their own start times.
+
 
 - `TaskUpdate` #14 status=completed
 - `Bash` Check Rex fix workflow progress: `python3 -c "` (+10 lines)
@@ -57,13 +59,21 @@ The last batch, arm wrestle and the remaining items, is running. After it, two r
 
 
 - `Bash` Summarise fix reports and re-verification: `cd /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387 && python3 - <<'EOF'` (+17 lines)
+
+
+### Workflow `rex-final-fixes` · 2026-10-10 05:08:12 UTC
+
 - `Workflow` rex-final-fixes: Fix the leftovers from the audit re-verification and update the Rex lab text for the new 10 ft picture-based bodies, then re-verify
   - run `wf_47795ee8-097`: 2 subagents, listed below
 
-<details>
-<summary>Subagent `fix` (rex-final-fixes, 2026-10-10 05:08:13 UTC): Returned items: 11 (e.g. 1. p5 catch stroke time; 2. u3 'comes back up up to').</summary>
+**Subagent `fix`** · rex-final-fixes · started 2026-10-10 05:08:13 UTC
 
-Workflow run `wf_47795ee8-097`, phase `Fix`, agent `a20d5d306d9b6b47a`. Prompt, verbatim:
+- items: 11 (11 fixed).
+
+<details>
+<summary>Prompt, verbatim (7,465 characters)</summary>
+
+Workflow run `wf_47795ee8-097`, phase `Fix`, agent `a20d5d306d9b6b47a`.
 
 ```text
 Project: "Rex Super-Strength Lab" at /home/user/dino-strength-sim (src/engine.js physics, src/app.html page, src/static-data.js assumption cards, research/final-*.json sourced facts turned into src/data.js by build-data.py, test/calibration.js tests, README.md).
@@ -94,10 +104,15 @@ After all items: rebuild, run calibration (all checks passed), run node /tmp/cla
 
 </details>
 
-<details>
-<summary>Subagent `verify` (rex-final-fixes, 2026-10-10 06:16:09 UTC): All 11 items hold on the current build. The issues below are new or leftover and mostly minor; none blocks. Returned items: 18 (e.g. Rebuild and calibration; Default state of every tab (13 tabs x 390/1280 x light/dark = 52 renders)).</summary>
+**Subagent `verify`** · rex-final-fixes · started 2026-10-10 06:16:09 UTC
 
-Workflow run `wf_47795ee8-097`, phase `Verify`, agent `ae540eacb709e6e09`. Prompt, verbatim:
+- items: 18 (18 ok).
+- All 11 items hold on the current build. The issues below are new or leftover and mostly minor; none blocks.
+
+<details>
+<summary>Prompt, verbatim (19,629 characters)</summary>
+
+Workflow run `wf_47795ee8-097`, phase `Verify`, agent `ae540eacb709e6e09`. Lines over 1,500 characters are cut here; the full prompt is in [prompts/ae540eacb709e6e09.txt](prompts/ae540eacb709e6e09.txt).
 
 ```text
 Project: "Rex Super-Strength Lab" at /home/user/dino-strength-sim (src/engine.js physics, src/app.html page, src/static-data.js assumption cards, research/final-*.json sourced facts turned into src/data.js by build-data.py, test/calibration.js tests, README.md).
@@ -193,7 +208,7 @@ FIXER REPORT:
   {
    "item": "11. 10 ft bodies (a–e)",
    "status": "fixed",
-   "change": "(a) research/final-duo.json gets rex_ollie_picture_build (estimate: method, values, 2,300–3,000 kg range, checks) and density_bodybuilders_fry1987 (verified). I fetched and read the BISp abstract: 1.0812 ± 0.0099 g/mL, 12 men, 81.24 kg, 8.48% fat, underwater weighing corrected for residual lung volume. Stale 'at 2 m' and '180 kg' fact displays are updated to 10 ft numbers: lever, dig area, ground tear 697 kN, gravity distances 1.69/1.91/2.29 m, stroke 91 cm, squash 0.85 m, run-up, anchor spacing, hand mass 119 kg, and the black-hole density 2.24e26 kg/m³. The Water and human-density notes are corrected. (b) build-data.py: the Water note now describes water at 4 °C. Added chip 'His build (default)' at 1,060 kg/m³, keyed to both new facts, with the requested note. It asserts the engine's BUILDS rho is 1060. Model rows now use 10 ft values. (c) static-data.js cards updated: Rex’s body, Two muscle models, Density and weight (2.55 m³ at 10 ft), His own gravity (about 85 cm; computed 0.847 m), Pushes (strokes as shares of height and at 10 ft), Rex and Ollie, Game of catch. (d) README.md did not exist in the project, so I created it from the older lodge-docs copy. It covers the defaults, the picture estimate, the art on the page, the calibration-body chip and measured timings. (e) The Weight math line shows kV as 0.08995 with '2.55 m³ at 10 ft'. Extra: the human-sized feats (deadlift, shot put, Bolt, C-17, Cap, DeSoto) now Simulate on the calibration body. On the 10 ft body Bolt's run said 'too weak to sprint'. I also fixed '100%' to 'nearly all' in the first-contact bullet and added earrings to Ollie's alt text.",
+   "change": "(a) research/final-duo.json gets rex_ollie_picture_build (estimate: method, values, 2,300–3,000 kg range, checks) and density_bodybuilders_fry1987 (verified). I fetched and read the BISp abstract: 1.0812 ± 0.0099 g/mL, 12 men, 81.24 kg, 8.48% fat, underwater weighing corrected for residual lung volume. Stale 'at 2 m' and '180 kg' fact displays are updated to 10 ft numbers: lever, dig area, ground tear 697 kN, gravity distances 1.69/1.91/2.29 m, stroke 91 cm, squash 0.85 m, run-up, anchor spacing, hand mass 119 kg, and the black-hole density 2.24e26 kg/m³. The Water and human-dens … [1,049 more characters on this line; the full prompt is in prompts/ae540eacb709e6e09.txt]
    "verified": "A new calibration check confirms the cards quote 8 engine-derived default-body numbers, and another confirms the 1,060 density chip. A grep of app.html, static-data.js and data.js finds '2 m', '180 kg', '0.18 m³' and '35 cm' only where they describe the calibration body. Default Weight page: 'Volume = 0.08995 × height³ (… 2.55 m³ at 10 ft) = 2.55 m³'. The 'His build (default)' chip renders as pressed at 390 px."
   }
  ],
@@ -284,10 +299,10 @@ Commit, push and republish wait until both sweeps come back clean, since the REA
 Committing now with only the verified result in the README. The sweep results go in a follow-up commit once the sweeps finish.
 
 
-> **Commit** `64526fb` · 2026-10-10 06:54:40 UTC · Rex lab: density and weight, Ollie and two-player tests, 10 ft bodies  [made in lodge-docs as 64526fb; d9699e2 in rex-strength-lab after the move]
-
-
 - `Bash` Commit and push Rex lab update: `python3 - <<'EOF'` (+28 lines)
+
+
+> **Commit** `64526fb` · 2026-10-10 06:54:40 UTC · Rex lab: density and weight, Ollie and two-player tests, 10 ft bodies  [made in lodge-docs as 64526fb; d9699e2 in rex-strength-lab after the move]
 
 **Claude · 2026-10-10 06:54:46 UTC**
 

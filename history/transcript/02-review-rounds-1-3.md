@@ -1,17 +1,26 @@
 # Review rounds 1-3 and first release
 
-2026-10-09 04:21:56 UTC to 2026-10-09 14:23:24 UTC. 40 assistant events, 3 commit events, 1 compaction events, 179 subagent events, 202 tool call events, 1 user events, 10 wakeup events.
+2026-10-09 04:21:56 UTC to 2026-10-09 14:23:24 UTC. 40 assistant events, 3 commit events, 1 compaction events, 179 subagent events, 202 tool call events, 1 user events, 11 wakeup events.
 
-Unattended overnight work: three adversarial review rounds (engine audit, page audit, fix verification), the fixes after each, the first publish of the page and the first three commits. The first context compaction happened in this phase.
+Starts with the engine audit and the owner’s two queued messages. Then unattended overnight work: three adversarial review rounds (engine audit, page audit, fix verification), the fixes after each, the first publish of the page and the first three commits. The first context compaction happened in this phase.
 
+Events are in the order they happened in the session; each workflow’s subagents are listed under the call that launched it, with their own start times.
+
+
+### Workflow `dino-engine-audit` · 2026-10-09 04:21:56 UTC
 
 - `Workflow` dino-engine-audit: Adversarially audit the super-strength physics engine from four physics lenses, then verify each finding
   - run `wf_3ca2666a-955`: 50 subagents, listed below
 
-<details>
-<summary>Subagent `audit:mechanics` (dino-engine-audit, 2026-10-09 04:21:56 UTC): Returned findings: 12 (e.g. Strength-ladder thresholds are in newtons but labelled as kg, so every rung reads 9.81x to; jump(): when the ground fails, takeoff momentum ignores the feet's equal and opposite mome), verified_ok: 16.</summary>
+**Subagent `audit:mechanics`** · dino-engine-audit · started 2026-10-09 04:21:56 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Audit`, agent `a7189e67610730670`. Prompt, verbatim:
+- findings: 12 (3 critical, 5 major, 4 minor); verified ok: 16.
+- Most severe: Strength-ladder thresholds are in newtons but labelled as kg, so…; jump(): when the ground fails, takeoff momentum ignores the feet's…; The real-mode (Hill) integrator wrongly stalls and returns speed 0… (+5 more).
+
+<details>
+<summary>Prompt, verbatim (2,781 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Audit`, agent `a7189e67610730670`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -26,10 +35,15 @@ Under verified_ok, list the specific things you checked and found correct (with 
 
 </details>
 
-<details>
-<summary>Subagent `audit:muscle` (dino-engine-audit, 2026-10-09 04:21:57 UTC): Returned findings: 9 (e.g. Real-muscle integrator is unstable for stiff cases and returns zero speed for about 4.5 de; Saturated real-muscle shortcut ignores ground, gravity and friction impulses: at the Hulk,), verified_ok: 13.</summary>
+**Subagent `audit:muscle`** · dino-engine-audit · started 2026-10-09 04:21:57 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Audit`, agent `a69d57afc754c4169`. Prompt, verbatim:
+- findings: 9 (2 critical, 4 major, 3 minor); verified ok: 13.
+- Most severe: Real-muscle integrator is unstable for stiff cases and returns zero…; Saturated real-muscle shortcut ignores ground, gravity and friction…; 'Real-muscle mode, calibrated to these records' is false: the sim is… (+3 more).
+
+<details>
+<summary>Prompt, verbatim (2,839 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Audit`, agent `a69d57afc754c4169`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -44,10 +58,15 @@ Under verified_ok, list the specific things you checked and found correct (with 
 
 </details>
 
-<details>
-<summary>Subagent `audit:ground` (dino-engine-audit, 2026-10-09 04:40:02 UTC): Returned findings: 14 (e.g. Stomp hole depth E/(q_ult*A) gives holes deeper than the Earth at high strength. Constant ; Jump on yielding ground drops the feet's downward momentum. The jump grows without bound w), verified_ok: 13.</summary>
+**Subagent `audit:ground`** · dino-engine-audit · started 2026-10-09 04:40:02 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Audit`, agent `a40c63961ef6afb19`. Prompt, verbatim:
+- findings: 14 (2 critical, 5 major, 7 minor); verified ok: 13.
+- Most severe: Stomp hole depth E/(q_ult*A) gives holes deeper than the Earth at…; Jump on yielding ground drops the feet's downward momentum. The jump…; Every strength-ladder threshold is 9.81x too high: the bisection runs… (+4 more).
+
+<details>
+<summary>Prompt, verbatim (2,886 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Audit`, agent `a40c63961ef6afb19`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -62,10 +81,15 @@ Under verified_ok, list the specific things you checked and found correct (with 
 
 </details>
 
-<details>
-<summary>Subagent `audit:flight` (dino-engine-audit, 2026-10-09 04:42:34 UTC): Returned findings: 11 (e.g. Flights still in the air when fly() stops are reported as landed (timeout ignored by the U; Throw 'Without air it would have gone v^2/g' is the flat-Earth 45-degree formula, shown at), verified_ok: 17.</summary>
+**Subagent `audit:flight`** · dino-engine-audit · started 2026-10-09 04:42:34 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Audit`, agent `aab74c33d89ff8479`. Prompt, verbatim:
+- findings: 11 (8 major, 3 minor); verified ok: 17.
+- Most severe: Flights still in the air when fly() stops are reported as landed…; Throw 'Without air it would have gone v^2/g' is the flat-Earth…; Jump 'no-air' apex uses flat-gravity v^2/2g: 5x low at 10 km/s, and… (+5 more).
+
+<details>
+<summary>Prompt, verbatim (2,995 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Audit`, agent `aab74c33d89ff8479`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -80,10 +104,14 @@ Under verified_ok, list the specific things you checked and found correct (with 
 
 </details>
 
-<details>
-<summary>Subagent `verify:muscle:BIO-1` (dino-engine-audit, 2026-10-09 04:58:25 UTC): I could not refute BIO-1. I reproduced it independently with my own scripts and my own reference integrator, not the other auditor's files.</summary>
+**Subagent `verify:muscle:BIO-1`** · dino-engine-audit · started 2026-10-09 04:58:25 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a702a439e5c7cfe57`. Prompt, verbatim:
+- Confirmed (critical). I could not refute BIO-1. I reproduced it independently with my own scripts and my own reference integrator, not the other auditor's files.
+
+<details>
+<summary>Prompt, verbatim (5,001 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a702a439e5c7cfe57`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -107,10 +135,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:muscle:BIO-2` (dino-engine-audit, 2026-10-09 05:03:05 UTC): I tried to refute this and couldn't. The finding is real and I reproduced it on my own.</summary>
+**Subagent `verify:muscle:BIO-2`** · dino-engine-audit · started 2026-10-09 05:03:05 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `ac312199f79153498`. Prompt, verbatim:
+- Confirmed (critical). I tried to refute this and couldn't. The finding is real and I reproduced it on my own.
+
+<details>
+<summary>Prompt, verbatim (4,485 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `ac312199f79153498`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -134,10 +166,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:muscle:BIO-3` (dino-engine-audit, 2026-10-09 05:06:59 UTC): I could not refute the finding. Every number reproduces exactly, but I rate it minor rather than major.</summary>
+**Subagent `verify:muscle:BIO-3`** · dino-engine-audit · started 2026-10-09 05:06:59 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a08ae54fc52a0b84c`. Prompt, verbatim:
+- Confirmed (minor). I could not refute the finding. Every number reproduces exactly, but I rate it minor rather than major.
+
+<details>
+<summary>Prompt, verbatim (3,945 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a08ae54fc52a0b84c`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -161,10 +197,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:muscle:BIO-4` (dino-engine-audit, 2026-10-09 05:09:58 UTC): I tried to refute this and couldn't. I reproduced every number, both in the engine and in the rendered page.</summary>
+**Subagent `verify:muscle:BIO-4`** · dino-engine-audit · started 2026-10-09 05:09:58 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `aa27cb77451a9f98d`. Prompt, verbatim:
+- Confirmed (major). I tried to refute this and couldn't. I reproduced every number, both in the engine and in the rendered page.
+
+<details>
+<summary>Prompt, verbatim (4,246 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `aa27cb77451a9f98d`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -188,10 +228,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:muscle:BIO-5` (dino-engine-audit, 2026-10-09 05:13:04 UTC): I could not refute BIO-5. I reran it independently against the unmodified engine.</summary>
+**Subagent `verify:muscle:BIO-5`** · dino-engine-audit · started 2026-10-09 05:13:04 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `aba865be8732bd2a0`. Prompt, verbatim:
+- Confirmed (major). I could not refute BIO-5. I reran it independently against the unmodified engine.
+
+<details>
+<summary>Prompt, verbatim (4,185 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `aba865be8732bd2a0`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -215,10 +259,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:muscle:BIO-6` (dino-engine-audit, 2026-10-09 05:13:22 UTC): I reproduced every number in the finding, but only part of it holds up. The main claim, that linear vmax scaling is wrong physics, is refuted.</summary>
+**Subagent `verify:muscle:BIO-6`** · dino-engine-audit · started 2026-10-09 05:13:22 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `ae83e0f1f6f8764b0`. Prompt, verbatim:
+- Confirmed (minor). I reproduced every number in the finding, but only part of it holds up. The main claim, that linear vmax scaling is wrong physics, is refuted.
+
+<details>
+<summary>Prompt, verbatim (4,058 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `ae83e0f1f6f8764b0`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -242,10 +290,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:muscle:BIO-7` (dino-engine-audit, 2026-10-09 05:17:13 UTC): I could not refute this finding. I re-ran it with the engine and data.js: default body (2 m, 180 kg), concrete (qult 10 MPa, so RB = 10e6 x 2 x 0.045 = 9.0e5 N), real mode, P.jump() with groundHolds false and then true.</summary>
+**Subagent `verify:muscle:BIO-7`** · dino-engine-audit · started 2026-10-09 05:17:13 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a4857e1d5651228b6`. Prompt, verbatim:
+- Confirmed (minor). I could not refute this finding. I re-ran it with the engine and data.js: default body (2 m, 180 kg), concrete (qult 10 MPa, so RB = 10e6 x 2 x 0.045 = 9.0e5 N), real mode, P.jump() with groundHolds false and then true.
+
+<details>
+<summary>Prompt, verbatim (3,288 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a4857e1d5651228b6`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -269,10 +321,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:muscle:BIO-8` (dino-engine-audit, 2026-10-09 05:19:03 UTC): I tried to refute this and could not. 1.</summary>
+**Subagent `verify:muscle:BIO-8`** · dino-engine-audit · started 2026-10-09 05:19:03 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a8ee72ed2a607796f`. Prompt, verbatim:
+- Confirmed (minor). I tried to refute this and could not. 1.
+
+<details>
+<summary>Prompt, verbatim (3,390 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a8ee72ed2a607796f`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -296,10 +352,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:muscle:BIO-9` (dino-engine-audit, 2026-10-09 05:19:54 UTC): I could not refute it. The finding holds, and the problem reaches further than the original report says.</summary>
+**Subagent `verify:muscle:BIO-9`** · dino-engine-audit · started 2026-10-09 05:19:54 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a924147a97fbb46d5`. Prompt, verbatim:
+- Confirmed (major). I could not refute it. The finding holds, and the problem reaches further than the original report says.
+
+<details>
+<summary>Prompt, verbatim (3,347 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a924147a97fbb46d5`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -323,10 +383,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:mechanics:F1` (dino-engine-audit, 2026-10-09 05:21:04 UTC): I tried to refute this and could not. The finding is real.</summary>
+**Subagent `verify:mechanics:F1`** · dino-engine-audit · started 2026-10-09 05:21:04 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a307d58d297c838d8`. Prompt, verbatim:
+- Confirmed (critical). I tried to refute this and could not. The finding is real.
+
+<details>
+<summary>Prompt, verbatim (4,081 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a307d58d297c838d8`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -350,10 +414,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:mechanics:F2` (dino-engine-audit, 2026-10-09 05:22:29 UTC): I could not refute it. I reran the evidence and checked it with a separate simulation.</summary>
+**Subagent `verify:mechanics:F2`** · dino-engine-audit · started 2026-10-09 05:22:29 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a2fdfeaa08041a28f`. Prompt, verbatim:
+- Confirmed (critical). I could not refute it. I reran the evidence and checked it with a separate simulation.
+
+<details>
+<summary>Prompt, verbatim (4,595 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a2fdfeaa08041a28f`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -377,10 +445,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:mechanics:F3` (dino-engine-audit, 2026-10-09 05:23:02 UTC): I could not refute F3. I reproduced it with my own scripts in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/f3v/ (repro.js, scan.js, tiers.js, jumpref.js, variants.js, satjump.js, fixtest2.js).</summary>
+**Subagent `verify:mechanics:F3`** · dino-engine-audit · started 2026-10-09 05:23:02 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `af035053df6f1facd`. Prompt, verbatim:
+- Confirmed (critical). I could not refute F3. I reproduced it with my own scripts in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/f3v/ (repro.js, scan.js, tiers.js, jumpref.js, variants.js, satjump.js, fixtest2.js).
+
+<details>
+<summary>Prompt, verbatim (4,280 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `af035053df6f1facd`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -404,10 +476,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:mechanics:F4` (dino-engine-audit, 2026-10-09 05:26:18 UTC): I tried to refute this and couldn't. The finding is real.</summary>
+**Subagent `verify:mechanics:F4`** · dino-engine-audit · started 2026-10-09 05:26:18 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `ad7ac56fcdc47ee4f`. Prompt, verbatim:
+- Confirmed (major). I tried to refute this and couldn't. The finding is real.
+
+<details>
+<summary>Prompt, verbatim (3,618 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `ad7ac56fcdc47ee4f`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -431,10 +507,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:mechanics:F5` (dino-engine-audit, 2026-10-09 05:28:48 UTC): I tried to refute this and couldn't. The finding is real.</summary>
+**Subagent `verify:mechanics:F5`** · dino-engine-audit · started 2026-10-09 05:28:48 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a52efb68643149b27`. Prompt, verbatim:
+- Confirmed (major). I tried to refute this and couldn't. The finding is real.
+
+<details>
+<summary>Prompt, verbatim (3,762 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a52efb68643149b27`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -458,10 +538,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:mechanics:F6` (dino-engine-audit, 2026-10-09 05:33:21 UTC): I tried to refute F6 and could not. It reproduces exactly, and the problem reaches further than the finding says.</summary>
+**Subagent `verify:mechanics:F6`** · dino-engine-audit · started 2026-10-09 05:33:21 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a320c6773dcc7fac4`. Prompt, verbatim:
+- Confirmed (major). I tried to refute F6 and could not. It reproduces exactly, and the problem reaches further than the finding says.
+
+<details>
+<summary>Prompt, verbatim (3,511 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a320c6773dcc7fac4`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -485,10 +569,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:mechanics:F7` (dino-engine-audit, 2026-10-09 05:34:47 UTC): I could not refute this one. I reproduced it with my own scripts: /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/vf7.js and vf7scan.js.</summary>
+**Subagent `verify:mechanics:F7`** · dino-engine-audit · started 2026-10-09 05:34:47 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a31306335b5a7d693`. Prompt, verbatim:
+- Confirmed (major). I could not refute this one. I reproduced it with my own scripts: /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/vf7.js and vf7scan.js.
+
+<details>
+<summary>Prompt, verbatim (3,563 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a31306335b5a7d693`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -512,10 +600,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:mechanics:F8` (dino-engine-audit, 2026-10-09 05:36:34 UTC): I could not refute this finding. I reproduced it and found a little more wrong than reported.</summary>
+**Subagent `verify:mechanics:F8`** · dino-engine-audit · started 2026-10-09 05:36:34 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a94a66168c8c2e6a4`. Prompt, verbatim:
+- Confirmed (major). I could not refute this finding. I reproduced it and found a little more wrong than reported.
+
+<details>
+<summary>Prompt, verbatim (3,553 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a94a66168c8c2e6a4`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -539,10 +631,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:mechanics:F9` (dino-engine-audit, 2026-10-09 05:38:44 UTC): I reproduced this with my own script (scratchpad/audit/vf9.js). It loads engine.js and data.js directly and copies groundStatus, sig, big and fmtRatio verbatim from app.html.</summary>
+**Subagent `verify:mechanics:F9`** · dino-engine-audit · started 2026-10-09 05:38:44 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `af535f8e35279290f`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this with my own script (scratchpad/audit/vf9.js). It loads engine.js and data.js directly and copies groundStatus, sig, big and fmtRatio verbatim from app.html.
+
+<details>
+<summary>Prompt, verbatim (3,280 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `af535f8e35279290f`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -566,10 +662,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:mechanics:F10` (dino-engine-audit, 2026-10-09 05:39:59 UTC): I tried to refute this and couldn't. Every number reproduces, both in the engine and in the rendered page (I rebuilt app.html with engine.js and data.js inlined and loaded it in headless Chromium).</summary>
+**Subagent `verify:mechanics:F10`** · dino-engine-audit · started 2026-10-09 05:39:59 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a0c6ebb7e84cf0653`. Prompt, verbatim:
+- Confirmed (minor). I tried to refute this and couldn't. Every number reproduces, both in the engine and in the rendered page (I rebuilt app.html with engine.js and data.js inlined and loaded it in headless Chromium).
+
+<details>
+<summary>Prompt, verbatim (3,570 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a0c6ebb7e84cf0653`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -593,10 +693,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:mechanics:F11` (dino-engine-audit, 2026-10-09 05:42:23 UTC): I tried to refute this and couldn't. Every number reproduces exactly, using the app's own data.js objects and its default context (concrete, friction anchor, 2 m / 180 kg).</summary>
+**Subagent `verify:mechanics:F11`** · dino-engine-audit · started 2026-10-09 05:42:23 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a10c5d872f19328f9`. Prompt, verbatim:
+- Confirmed (minor). I tried to refute this and couldn't. Every number reproduces exactly, using the app's own data.js objects and its default context (concrete, friction anchor, 2 m / 180 kg).
+
+<details>
+<summary>Prompt, verbatim (3,620 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a10c5d872f19328f9`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -620,10 +724,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:mechanics:F12` (dino-engine-audit, 2026-10-09 05:43:42 UTC): I could not refute it. The evidence reproduces exactly (scripts f12refute.js, f12moon.js, f12common.js and f12isolate.js in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/).</summary>
+**Subagent `verify:mechanics:F12`** · dino-engine-audit · started 2026-10-09 05:43:42 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a639b0726c1ec5856`. Prompt, verbatim:
+- Confirmed (minor). I could not refute it. The evidence reproduces exactly (scripts f12refute.js, f12moon.js, f12common.js and f12isolate.js in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/).
+
+<details>
+<summary>Prompt, verbatim (3,409 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a639b0726c1ec5856`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -647,10 +755,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:ground:F1` (dino-engine-audit, 2026-10-09 05:44:13 UTC): I could not refute it. The finding is real, and I reproduced every number independently.</summary>
+**Subagent `verify:ground:F1`** · dino-engine-audit · started 2026-10-09 05:44:13 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `ac97b13bad3128728`. Prompt, verbatim:
+- Confirmed (critical). I could not refute it. The finding is real, and I reproduced every number independently.
+
+<details>
+<summary>Prompt, verbatim (4,433 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `ac97b13bad3128728`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -674,10 +786,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:ground:F2` (dino-engine-audit, 2026-10-09 05:47:32 UTC): I reproduced the core claim from the original src/ files. My scripts are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/f2r/: mom.js, ladder.js, poncelet.js, fixes.js, probe.js and ladderprobe.js.</summary>
+**Subagent `verify:ground:F2`** · dino-engine-audit · started 2026-10-09 05:47:32 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a9aae4b81555830be`. Prompt, verbatim:
+- Confirmed (major). I reproduced the core claim from the original src/ files. My scripts are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/f2r/: mom.js, ladder.js, poncelet.js, fixes.js, probe.js and ladderprobe.js.
+
+<details>
+<summary>Prompt, verbatim (5,085 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a9aae4b81555830be`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -701,10 +817,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:ground:F3` (dino-engine-audit, 2026-10-09 05:49:03 UTC): I could not refute this one. I reran it with my own script, /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/f3refute.js.</summary>
+**Subagent `verify:ground:F3`** · dino-engine-audit · started 2026-10-09 05:49:03 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a0b9ca7fbf79815f0`. Prompt, verbatim:
+- Confirmed (major). I could not refute this one. I reran it with my own script, /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/f3refute.js.
+
+<details>
+<summary>Prompt, verbatim (3,442 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a0b9ca7fbf79815f0`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -728,10 +848,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:ground:F4` (dino-engine-audit, 2026-10-09 05:50:17 UTC): I could not refute it. I reproduced the finding with my own script (scratchpad/audit/f4verify.js, f4sweep.js, f4fixcheck.js) and the algebra checks out.</summary>
+**Subagent `verify:ground:F4`** · dino-engine-audit · started 2026-10-09 05:50:17 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a254e1d9024e3f2ee`. Prompt, verbatim:
+- Confirmed (major). I could not refute it. I reproduced the finding with my own script (scratchpad/audit/f4verify.js, f4sweep.js, f4fixcheck.js) and the algebra checks out.
+
+<details>
+<summary>Prompt, verbatim (4,332 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a254e1d9024e3f2ee`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -755,10 +879,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:ground:F5` (dino-engine-audit, 2026-10-09 05:53:20 UTC): I tried to refute this finding and couldn't. It is real.</summary>
+**Subagent `verify:ground:F5`** · dino-engine-audit · started 2026-10-09 05:53:20 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a9e6fc57110e3896f`. Prompt, verbatim:
+- Confirmed (major). I tried to refute this finding and couldn't. It is real.
+
+<details>
+<summary>Prompt, verbatim (4,242 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a9e6fc57110e3896f`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -782,10 +910,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:ground:F6` (dino-engine-audit, 2026-10-09 05:55:10 UTC): I reproduced this finding and could not refute it. My script is /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/f6verify.js.</summary>
+**Subagent `verify:ground:F6`** · dino-engine-audit · started 2026-10-09 05:55:10 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a50e810fb3f1de1d4`. Prompt, verbatim:
+- Confirmed (major). I reproduced this finding and could not refute it. My script is /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/f6verify.js.
+
+<details>
+<summary>Prompt, verbatim (3,528 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a50e810fb3f1de1d4`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -809,10 +941,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:ground:F7` (dino-engine-audit, 2026-10-09 05:56:19 UTC): I reproduced this finding. The defect is real, and it is larger than the auditor reported.</summary>
+**Subagent `verify:ground:F7`** · dino-engine-audit · started 2026-10-09 05:56:19 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a80faf9e813bab88b`. Prompt, verbatim:
+- Confirmed (major). I reproduced this finding. The defect is real, and it is larger than the auditor reported.
+
+<details>
+<summary>Prompt, verbatim (3,500 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a80faf9e813bab88b`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -836,10 +972,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:ground:F8` (dino-engine-audit, 2026-10-09 05:56:40 UTC): Reproduced with my own scripts, /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/f8refute.js and f8plush.js. The shipped page uses data.js: dist/index.html contains id: 'sand' … shear: 20e3.</summary>
+**Subagent `verify:ground:F8`** · dino-engine-audit · started 2026-10-09 05:56:40 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a01c51a72318a3a41`. Prompt, verbatim:
+- Confirmed (minor). Reproduced with my own scripts, /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/f8refute.js and f8plush.js. The shipped page uses data.js: dist/index.html contains id: 'sand' … shear: 20e3.
+
+<details>
+<summary>Prompt, verbatim (3,353 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a01c51a72318a3a41`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -863,10 +1003,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:ground:F9` (dino-engine-audit, 2026-10-09 06:00:02 UTC): I reproduced this. Script: /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/f9verify.js.</summary>
+**Subagent `verify:ground:F9`** · dino-engine-audit · started 2026-10-09 06:00:02 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `aa5de77a649cc0416`. Prompt, verbatim:
+- Confirmed (major). I reproduced this. Script: /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/f9verify.js.
+
+<details>
+<summary>Prompt, verbatim (3,335 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `aa5de77a649cc0416`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -890,10 +1034,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:ground:F10` (dino-engine-audit, 2026-10-09 06:01:20 UTC): I reproduced the finding with my own script (scratchpad/audit/vf10.js) and could not refute it. The cause: engine.js jump() sets F = actionForce(ctx,'jump'), which is c.F × MUSCLE.jump.comicFrac (0.7108) in comic mode.</summary>
+**Subagent `verify:ground:F10`** · dino-engine-audit · started 2026-10-09 06:01:20 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a7f2fe151f0e79864`. Prompt, verbatim:
+- Confirmed (minor). I reproduced the finding with my own script (scratchpad/audit/vf10.js) and could not refute it. The cause: engine.js jump() sets F = actionForce(ctx,'jump'), which is c.F × MUSCLE.jump.comicFrac (0.7108) in comic mode.
+
+<details>
+<summary>Prompt, verbatim (3,188 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a7f2fe151f0e79864`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -917,10 +1065,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:ground:F11` (dino-engine-audit, 2026-10-09 06:03:00 UTC): I reran the evidence and the finding holds for the default body. The fix the auditor proposed is wrong, though.</summary>
+**Subagent `verify:ground:F11`** · dino-engine-audit · started 2026-10-09 06:03:00 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a7c9be6b193eb99a0`. Prompt, verbatim:
+- Confirmed (minor). I reran the evidence and the finding holds for the default body. The fix the auditor proposed is wrong, though.
+
+<details>
+<summary>Prompt, verbatim (3,169 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a7c9be6b193eb99a0`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -944,10 +1096,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:ground:F12` (dino-engine-audit, 2026-10-09 06:03:38 UTC): I could not refute this finding. I reran it with my own script, /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/f12refute.js, which does not use the other auditor's common.js.</summary>
+**Subagent `verify:ground:F12`** · dino-engine-audit · started 2026-10-09 06:03:38 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a09d45eb866558db4`. Prompt, verbatim:
+- Confirmed (major). I could not refute this finding. I reran it with my own script, /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/f12refute.js, which does not use the other auditor's common.js.
+
+<details>
+<summary>Prompt, verbatim (3,665 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a09d45eb866558db4`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -971,10 +1127,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:ground:F13` (dino-engine-audit, 2026-10-09 06:06:07 UTC): I reproduced the headline case with the shipped engine and data. My scripts are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/ (f13verify.js and f13pull.js).</summary>
+**Subagent `verify:ground:F13`** · dino-engine-audit · started 2026-10-09 06:06:07 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a82322f1720bbd1e8`. Prompt, verbatim:
+- Confirmed (minor). I reproduced the headline case with the shipped engine and data. My scripts are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/ (f13verify.js and f13pull.js).
+
+<details>
+<summary>Prompt, verbatim (3,333 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a82322f1720bbd1e8`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -998,10 +1158,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:ground:F14` (dino-engine-audit, 2026-10-09 06:06:33 UTC): I could not refute this finding. I reran it with my own code, and two parts need correcting.</summary>
+**Subagent `verify:ground:F14`** · dino-engine-audit · started 2026-10-09 06:06:33 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a5fecc70f94d0d38e`. Prompt, verbatim:
+- Confirmed (major). I could not refute this finding. I reran it with my own code, and two parts need correcting.
+
+<details>
+<summary>Prompt, verbatim (4,048 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a5fecc70f94d0d38e`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -1025,10 +1189,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:flight:F1` (dino-engine-audit, 2026-10-09 06:08:31 UTC): The core claim holds: a timed-out flight is shown as a landed one. One part of the finding is wrong, and the reach is much narrower than "major" implies.</summary>
+**Subagent `verify:flight:F1`** · dino-engine-audit · started 2026-10-09 06:08:31 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a0106ddaf77416b41`. Prompt, verbatim:
+- Confirmed (minor). The core claim holds: a timed-out flight is shown as a landed one. One part of the finding is wrong, and the reach is much narrower than "major" implies.
+
+<details>
+<summary>Prompt, verbatim (4,932 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a0106ddaf77416b41`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -1052,10 +1220,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:flight:F2` (dino-engine-audit, 2026-10-09 06:13:28 UTC): I tried to refute this and couldn't. The finding holds.</summary>
+**Subagent `verify:flight:F2`** · dino-engine-audit · started 2026-10-09 06:13:28 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `abececff0ef08d1f8`. Prompt, verbatim:
+- Confirmed (major). I tried to refute this and couldn't. The finding holds.
+
+<details>
+<summary>Prompt, verbatim (4,069 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `abececff0ef08d1f8`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -1079,10 +1251,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:flight:F3` (dino-engine-audit, 2026-10-09 06:15:48 UTC): I could not refute it. I reproduced it exactly with /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/f3jump.js, f3fly.js and f3tiers.js, using engine.js and data.js unmodified, with the UI's ctx (comic mode, concrete, 2 m / 180 kg).</summary>
+**Subagent `verify:flight:F3`** · dino-engine-audit · started 2026-10-09 06:15:48 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `ae53dca52c1a683c3`. Prompt, verbatim:
+- Confirmed (major). I could not refute it. I reproduced it exactly with /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/f3jump.js, f3fly.js and f3tiers.js, using engine.js and data.js unmodified, with the UI's ctx (comic mode, concrete, 2 m / 180 kg).
+
+<details>
+<summary>Prompt, verbatim (3,692 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `ae53dca52c1a683c3`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -1106,10 +1282,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:flight:F4` (dino-engine-audit, 2026-10-09 06:16:15 UTC): I reran the evidence and could not refute it. Scripts: /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/f4jump.js and f4indep.js.</summary>
+**Subagent `verify:flight:F4`** · dino-engine-audit · started 2026-10-09 06:16:15 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `ab67be2d7f113188a`. Prompt, verbatim:
+- Confirmed (major). I reran the evidence and could not refute it. Scripts: /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/f4jump.js and f4indep.js.
+
+<details>
+<summary>Prompt, verbatim (3,739 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `ab67be2d7f113188a`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -1133,10 +1313,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:flight:F5` (dino-engine-audit, 2026-10-09 06:17:40 UTC): I reproduced the finding in the engine and in the rendered UI. Its headline claim holds, but two pieces of its supporting evidence are wrong.</summary>
+**Subagent `verify:flight:F5`** · dino-engine-audit · started 2026-10-09 06:17:40 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `ac61cd1beb2bb896b`. Prompt, verbatim:
+- Confirmed (major). I reproduced the finding in the engine and in the rendered UI. Its headline claim holds, but two pieces of its supporting evidence are wrong.
+
+<details>
+<summary>Prompt, verbatim (4,002 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `ac61cd1beb2bb896b`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -1160,10 +1344,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:flight:F6` (dino-engine-audit, 2026-10-09 06:17:54 UTC): I could not refute this finding. I reran every piece of evidence myself.</summary>
+**Subagent `verify:flight:F6`** · dino-engine-audit · started 2026-10-09 06:17:54 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a808d2728a4f7d95d`. Prompt, verbatim:
+- Confirmed (major). I could not refute this finding. I reran every piece of evidence myself.
+
+<details>
+<summary>Prompt, verbatim (4,138 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a808d2728a4f7d95d`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -1187,10 +1375,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:flight:F7` (dino-engine-audit, 2026-10-09 06:20:49 UTC): I tried to refute F7 and could not. The finding is real.</summary>
+**Subagent `verify:flight:F7`** · dino-engine-audit · started 2026-10-09 06:20:49 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `ae55e5d972ff4d920`. Prompt, verbatim:
+- Confirmed (major). I tried to refute F7 and could not. The finding is real.
+
+<details>
+<summary>Prompt, verbatim (4,353 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `ae55e5d972ff4d920`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -1214,10 +1406,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:flight:F8` (dino-engine-audit, 2026-10-09 06:22:20 UTC): I tried to refute F8 and couldn't. Every number reproduces when I run the engine (scripts: /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/f8.js and f8b.js).</summary>
+**Subagent `verify:flight:F8`** · dino-engine-audit · started 2026-10-09 06:22:20 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a5f3cabfada6a9f2f`. Prompt, verbatim:
+- Confirmed (major). I tried to refute F8 and couldn't. Every number reproduces when I run the engine (scripts: /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/f8.js and f8b.js).
+
+<details>
+<summary>Prompt, verbatim (4,170 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a5f3cabfada6a9f2f`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -1241,10 +1437,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:flight:F9` (dino-engine-audit, 2026-10-09 06:25:31 UTC): The finding is real. Its core claim holds, but its "latent today" claim is wrong: the bug already shows up in the UI.</summary>
+**Subagent `verify:flight:F9`** · dino-engine-audit · started 2026-10-09 06:25:31 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a5ce172aa3b4de81e`. Prompt, verbatim:
+- Confirmed (minor). The finding is real. Its core claim holds, but its "latent today" claim is wrong: the bug already shows up in the UI.
+
+<details>
+<summary>Prompt, verbatim (3,309 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `a5ce172aa3b4de81e`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -1268,10 +1468,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:flight:F10` (dino-engine-audit, 2026-10-09 06:25:52 UTC): I reproduced this finding and could not refute it. Two corrections: the auditor understated its scope, and the code changed while I was auditing.</summary>
+**Subagent `verify:flight:F10`** · dino-engine-audit · started 2026-10-09 06:25:52 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `af1fe7f2814ce6f2e`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this finding and could not refute it. Two corrections: the auditor understated its scope, and the code changed while I was auditing.
+
+<details>
+<summary>Prompt, verbatim (3,668 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `af1fe7f2814ce6f2e`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -1295,10 +1499,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify:flight:F11` (dino-engine-audit, 2026-10-09 06:30:01 UTC): I reproduced the finding and could not refute it. The script is /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/f11fusion.js.</summary>
+**Subagent `verify:flight:F11`** · dino-engine-audit · started 2026-10-09 06:30:01 UTC
 
-Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `afa2cdb9fd4b91190`. Prompt, verbatim:
+- Confirmed (minor). I reproduced the finding and could not refute it. The script is /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit/f11fusion.js.
+
+<details>
+<summary>Prompt, verbatim (3,652 characters)</summary>
+
+Workflow run `wf_3ca2666a-955`, phase `Verify`, agent `afa2cdb9fd4b91190`.
 
 ```text
 You are auditing the physics engine of a "super-strength simulator": a cartoon dinosaur (indestructible, never tires, default 2 m tall / 180 kg) whose strength is set from world-record human (511 kg deadlift) up to effectively infinite. The engine computes lifts, throws (with recoil and 2-D drag flight over a round Earth), jumps, stomps, punches, claps, sprints and pulls, plus blast radii (Kinney-Graham), seismic magnitude (Gutenberg-Richter energy relation, efficiency 1e-4), crater size (Collins, Melosh & Marcus 2005) and stagnation temperature.
@@ -1357,12 +1565,14 @@ Status: step 2 of 5 underway.
 
 Next: when research lands I'll fill in the verified numbers and famous feats, fix whatever the audit confirms, then publish the page and send you the link.
 
-### Owner · 2026-10-09 04:24:11 UTC
+## Owner · 2026-10-09 03:52:52 UTC
 
 ```text
 His name is Rex by the way. Basic I know but still.
 I’m going to bed so just get as far as you can.
 ```
+
+- Typed as 2 messages while Claude was working (“His name is Rex by the way. Basic I know but still.” at 2026-10-09 03:52:52 UTC; “I’m going to bed so just get as far as you can.” at 2026-10-09 03:55:09 UTC); delivered together at 2026-10-09 04:24:11 UTC.
 
 **Claude · 2026-10-09 04:24:16 UTC**
 
@@ -1392,7 +1602,7 @@ Next: build the final dataset as soon as the research workflow completes.
 - `Bash` Save verified datasets and list fiction, objects, environment facts: `cd /home/user/dino-strength-sim/research && python3 - <<'EOF'` (+17 lines)
   - result: Exit code 1
   - result: Traceback (most recent call last):
-  - result:   File "<stdin>", line 7, in <module>
+  - result: File "&lt;stdin&gt;", line 7, in &lt;module&gt;
 - `Bash` Inspect workflow output format and journal results: `head -c 400 /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/tasks/w6jfyvk16.output; echo; f=$(find /root/.claude/projects -path "*wf_fb502a4a-d...` (+6 lines)
 - `Bash` Save final datasets and list fiction, objects, environment facts: `cd /home/user/dino-strength-sim/research && python3 - <<'EOF'` (+11 lines)
 - `Bash` Read details of the fiction facts used for feats and tiers: `python3 - <<'EOF'` (+6 lines)
@@ -1445,8 +1655,8 @@ Audit is complete: every critical and major finding was independently reproduced
 - `Bash` Scan shove vmax values for the shot-put fit: `sed -i 's/for (const vmax of \[17, 20, 25\])/for (const vmax of [30, 35, 40, 45, 55])/' test/fit-v2.js && node test/fit-v2.js`
 - `Bash` Apply fitted throw parameters and run the new assertion suite: `python3 - <<'EOF'` (+77 lines)
   - result: Exit code 1
-  - result: ok   real shot put range (m): 23.559 (want 23.56 ± 0.5)
-  - result: ok   real pitch speed (m/s): 47.304 (want 47.3 ± 0.6)
+  - result: ok real shot put range (m): 23.559 (want 23.56 ± 0.5)
+  - result: ok real pitch speed (m/s): 47.304 (want 47.3 ± 0.6)
 
 **Claude · 2026-10-09 06:37:30 UTC**
 
@@ -1503,13 +1713,20 @@ Engine sweep is clean across 5,184 setting combinations. Rewriting the result pa
 Checkpoint: engine rebuilt and page updated. Launching a second audit pass over the finished page (claims vs numbers, regression of the first audit's bugs, data/citations, and layout/accessibility).
 
 
+### Workflow `rex-page-audit` · 2026-10-09 06:55:09 UTC
+
 - `Workflow` rex-page-audit: Audit the finished Rex Super-Strength Lab page: claims vs numbers, fix regression, data/citations, layout/accessibility; verify each finding
   - run `wf_9deb3ae2-a54`: 82 subagents, listed below
 
-<details>
-<summary>Subagent `audit2:claims` (rex-page-audit, 2026-10-09 06:55:10 UTC): Returned findings: 26 (e.g. Speeds within about 5×10⁻⁹ of c are shown as "1% of light speed" in verdicts and tiles at ; The slider end label says 10³⁴ kg is 'heavier than 10,000 Suns'. It is about 5,000 Suns.), verified_ok: 9.</summary>
+**Subagent `audit2:claims`** · rex-page-audit · started 2026-10-09 06:55:10 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Audit`, agent `a6c252e61da4a1306`. Prompt, verbatim:
+- findings: 26 (2 critical, 14 major, 10 minor); verified ok: 9.
+- Most severe: Speeds within about 5×10⁻⁹ of c are shown as "1% of light speed" in…; The slider end label says 10³⁴ kg is 'heavier than 10,000 Suns'. It…; Real muscle at the ∞ preset jumps at light speed, while the same… (+13 more).
+
+<details>
+<summary>Prompt, verbatim (3,545 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Audit`, agent `a6c252e61da4a1306`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -1529,10 +1746,15 @@ Under verified_ok, list what you checked and found correct.
 
 </details>
 
-<details>
-<summary>Subagent `audit2:regression` (rex-page-audit, 2026-10-09 06:55:10 UTC): Returned findings: 16 (e.g. Speeds just under light speed are printed as "1% of light speed" (All-Star and Earth-bench; Real-muscle jump at the ∞ preset leaves at light speed, next to the page's own "tops out n), verified_ok: 15.</summary>
+**Subagent `audit2:regression`** · rex-page-audit · started 2026-10-09 06:55:10 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Audit`, agent `a2364d47e7238906a`. Prompt, verbatim:
+- findings: 16 (1 critical, 6 major, 9 minor); verified ok: 15.
+- Most severe: Speeds just under light speed are printed as "1% of light speed"…; Real-muscle jump at the ∞ preset leaves at light speed, next to the…; Implicit Hill integrator overshoots v_max when the anchor or ground… (+4 more).
+
+<details>
+<summary>Prompt, verbatim (3,632 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Audit`, agent `a2364d47e7238906a`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -1552,10 +1774,15 @@ Under verified_ok, list what you checked and found correct.
 
 </details>
 
-<details>
-<summary>Subagent `audit2:data` (rex-page-audit, 2026-10-09 07:18:34 UTC): Returned findings: 17 (e.g. All-Star Superman load is called '30 times the Moon's mass'. It is about 2.5 times; 'Without a suit, the record is 474.5 kg' is false. The raw (no-suit) record is 492.5 kg), verified_ok: 13.</summary>
+**Subagent `audit2:data`** · rex-page-audit · started 2026-10-09 07:18:34 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Audit`, agent `a237dce1728d6429f`. Prompt, verbatim:
+- findings: 17 (5 major, 12 minor); verified ok: 13.
+- Most severe: All-Star Superman load is called '30 times the Moon's mass'. It is…; 'Without a suit, the record is 474.5 kg' is false. The raw (no-suit)…; The 'Canon' badge sits on three figures that are only reported by… (+2 more).
+
+<details>
+<summary>Prompt, verbatim (3,423 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Audit`, agent `a237dce1728d6429f`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -1575,10 +1802,15 @@ Under verified_ok, list what you checked and found correct.
 
 </details>
 
-<details>
-<summary>Subagent `audit2:ux` (rex-page-audit, 2026-10-09 07:32:47 UTC): Returned findings: 19 (e.g. The slider end label says 10³⁴ kg is "heavier than 10,000 Suns". It is about 5,000 Suns.; At phone width the ladder cuts off 9 of 10 threshold labels, hides the "now" label, and it), verified_ok: 20.</summary>
+**Subagent `audit2:ux`** · rex-page-audit · started 2026-10-09 07:32:47 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Audit`, agent `a109f3226f1f0736d`. Prompt, verbatim:
+- findings: 19 (1 critical, 7 major, 11 minor); verified ok: 20.
+- Most severe: The slider end label says 10³⁴ kg is "heavier than 10,000 Suns". It…; At phone width the ladder cuts off 9 of 10 threshold labels, hides…; Tapping a ladder dot sets the strength of a different marker (+5 more).
+
+<details>
+<summary>Prompt, verbatim (3,603 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Audit`, agent `a109f3226f1f0736d`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -1598,10 +1830,14 @@ Under verified_ok, list what you checked and found correct.
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:C1` (rex-page-audit, 2026-10-09 07:34:48 UTC): I reproduced this in the browser and in the engine. Browser run (my script: /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/c1browser.js).</summary>
+**Subagent `verify2:claims:C1`** · rex-page-audit · started 2026-10-09 07:34:48 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ae3525c744445fb07`. Prompt, verbatim:
+- Confirmed (critical). I reproduced this in the browser and in the engine. Browser run (my script: /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/c1browser.js).
+
+<details>
+<summary>Prompt, verbatim (4,415 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ae3525c744445fb07`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -1630,10 +1866,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:C2` (rex-page-audit, 2026-10-09 07:36:50 UTC): I reproduced this. The slider in src/app.html:197 is &lt;input type="range" id="strength" min="1" max="34"&gt;.</summary>
+**Subagent `verify2:claims:C2`** · rex-page-audit · started 2026-10-09 07:36:50 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a535c8e1e7033142f`. Prompt, verbatim:
+- Confirmed (critical). I reproduced this. The slider in src/app.html:197 is &lt;input type="range" id="strength" min="1" max="34"&gt;.
+
+<details>
+<summary>Prompt, verbatim (3,364 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a535c8e1e7033142f`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -1662,10 +1902,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:M1` (rex-page-audit, 2026-10-09 07:37:29 UTC): I reproduced this in both the engine and the rendered page. Engine (scratchpad/audit2/m1jump.js, default 2 m / 180 kg body, real mode): - jump() at F = 1e20 kg·g and at 1e34 kg·g gives v = 11.652 m/s and apex 6.864 m on rigid ground.</summary>
+**Subagent `verify2:claims:M1`** · rex-page-audit · started 2026-10-09 07:37:29 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a97c7cf80d28069df`. Prompt, verbatim:
+- Confirmed (major). I reproduced this in both the engine and the rendered page. Engine (scratchpad/audit2/m1jump.js, default 2 m / 180 kg body, real mode): - jump() at F = 1e20 kg·g and at 1e34 kg·g gives v = 11.652 m/s and apex 6.864 m on rigid ground.
+
+<details>
+<summary>Prompt, verbatim (3,904 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a97c7cf80d28069df`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -1694,10 +1938,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:M2` (rex-page-audit, 2026-10-09 07:39:48 UTC): I tried to refute this and couldn't. I reproduced it in both the engine and the built page.</summary>
+**Subagent `verify2:claims:M2`** · rex-page-audit · started 2026-10-09 07:39:48 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ab7b804b0b904a9f9`. Prompt, verbatim:
+- Confirmed (major). I tried to refute this and couldn't. I reproduced it in both the engine and the built page.
+
+<details>
+<summary>Prompt, verbatim (4,509 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ab7b804b0b904a9f9`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -1726,10 +1974,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:M3` (rex-page-audit, 2026-10-09 07:44:38 UTC): I reproduced the finding in both the engine and the built page, and I could not refute it. What the page shows.</summary>
+**Subagent `verify2:claims:M3`** · rex-page-audit · started 2026-10-09 07:44:38 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a19618a017ee1c5d4`. Prompt, verbatim:
+- Confirmed (major). I reproduced the finding in both the engine and the built page, and I could not refute it. What the page shows.
+
+<details>
+<summary>Prompt, verbatim (4,291 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a19618a017ee1c5d4`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -1758,10 +2010,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:M4` (rex-page-audit, 2026-10-09 07:50:49 UTC): I reproduced this in the browser using dist/preview.html, with state set in localStorage under 'rex-lab-v1'. I also checked it against the engine in Node.</summary>
+**Subagent `verify2:claims:M4`** · rex-page-audit · started 2026-10-09 07:50:49 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a8e32dbf3cb4ef390`. Prompt, verbatim:
+- Confirmed (major). I reproduced this in the browser using dist/preview.html, with state set in localStorage under 'rex-lab-v1'. I also checked it against the engine in Node.
+
+<details>
+<summary>Prompt, verbatim (3,861 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a8e32dbf3cb4ef390`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -1790,10 +2046,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:M5` (rex-page-audit, 2026-10-09 07:52:30 UTC): I reproduced this in a browser against dist/preview.html, with state seeded through localStorage 'rex-lab-v1', and in Node against engine.js. Hulk (90,718 kg), Throw, car, 90°, Comic, concrete, Just standing - Verdict: "The car flies 0.000000000007 mm." - Distance tile: "0.000000000007 mm  top 31.8 m · 5.03 s" - ...</summary>
+**Subagent `verify2:claims:M5`** · rex-page-audit · started 2026-10-09 07:52:30 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a42192aeaa5c4c10f`. Prompt, verbatim:
+- Confirmed (major). I reproduced this in a browser against dist/preview.html, with state seeded through localStorage 'rex-lab-v1', and in Node against engine.js. Hulk (90,718 kg), Throw, car, 90°, Comic, concrete, Just standing - Verdict: "The car flies 0.000000000007 mm." - Distance tile: "0.000000000007 mm  top 31.8 m · 5.03 s" - ...
+
+<details>
+<summary>Prompt, verbatim (4,181 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a42192aeaa5c4c10f`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -1822,10 +2082,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:M6` (rex-page-audit, 2026-10-09 07:53:16 UTC): I reproduced this in both the engine and the browser. Engine (scratchpad/audit2/m6.js): default body, car, 45°, comic mode, concrete, friction footing, ground gives way.</summary>
+**Subagent `verify2:claims:M6`** · rex-page-audit · started 2026-10-09 07:53:16 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a0e3aa24a299f7e18`. Prompt, verbatim:
+- Confirmed (major). I reproduced this in both the engine and the browser. Engine (scratchpad/audit2/m6.js): default body, car, 45°, comic mode, concrete, friction footing, ground gives way.
+
+<details>
+<summary>Prompt, verbatim (3,821 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a0e3aa24a299f7e18`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -1854,10 +2118,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:M7` (rex-page-audit, 2026-10-09 07:55:16 UTC): I reproduced this in both the engine and the built page. My scripts are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/m7/: repro.js (engine), browser.js and b2.js (Playwright on dist/preview.html with localStorage state set), and fix.js (checks the fix).</summary>
+**Subagent `verify2:claims:M7`** · rex-page-audit · started 2026-10-09 07:55:16 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a65e73dcb21b33265`. Prompt, verbatim:
+- Confirmed (major). I reproduced this in both the engine and the built page. My scripts are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/m7/: repro.js (engine), browser.js and b2.js (Playwright on dist/preview.html with localStorage state set), and fix.js (checks the fix).
+
+<details>
+<summary>Prompt, verbatim (3,872 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a65e73dcb21b33265`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -1886,10 +2154,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:M8` (rex-page-audit, 2026-10-09 07:57:20 UTC): I tried to refute this and couldn't. It reproduces in both the engine and the rendered page.</summary>
+**Subagent `verify2:claims:M8`** · rex-page-audit · started 2026-10-09 07:57:20 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a0ada821808f994b7`. Prompt, verbatim:
+- Confirmed (major). I tried to refute this and couldn't. It reproduces in both the engine and the rendered page.
+
+<details>
+<summary>Prompt, verbatim (3,803 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a0ada821808f994b7`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -1918,10 +2190,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:M9` (rex-page-audit, 2026-10-09 07:57:54 UTC): I tried to refute this and couldn't. It reproduces in both the engine and the built page.</summary>
+**Subagent `verify2:claims:M9`** · rex-page-audit · started 2026-10-09 07:57:54 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a612995b753426940`. Prompt, verbatim:
+- Confirmed (major). I tried to refute this and couldn't. It reproduces in both the engine and the built page.
+
+<details>
+<summary>Prompt, verbatim (3,664 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a612995b753426940`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -1950,10 +2226,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:M10` (rex-page-audit, 2026-10-09 07:59:59 UTC): I reproduced this in the built page. My script is /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/m10.js.</summary>
+**Subagent `verify2:claims:M10`** · rex-page-audit · started 2026-10-09 07:59:59 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ae44f8a1d920ae7d9`. Prompt, verbatim:
+- Confirmed (major). I reproduced this in the built page. My script is /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/m10.js.
+
+<details>
+<summary>Prompt, verbatim (3,785 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ae44f8a1d920ae7d9`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -1982,10 +2262,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:M11` (rex-page-audit, 2026-10-09 08:00:24 UTC): I reproduced this in both the engine and the built page. I could not refute it.</summary>
+**Subagent `verify2:claims:M11`** · rex-page-audit · started 2026-10-09 08:00:24 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a8a5fc83b5ffb9d02`. Prompt, verbatim:
+- Confirmed (major). I reproduced this in both the engine and the built page. I could not refute it.
+
+<details>
+<summary>Prompt, verbatim (4,405 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a8a5fc83b5ffb9d02`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2014,10 +2298,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:M12` (rex-page-audit, 2026-10-09 08:01:16 UTC): I reproduced the finding with Node engine calls and in Playwright against dist/preview.html, using settings saved in localStorage plus real chip clicks. Scripts are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/m12/ (engine.js, browser.js, browser2.js, jumpthr.js, throwangles.js).</summary>
+**Subagent `verify2:claims:M12`** · rex-page-audit · started 2026-10-09 08:01:16 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `adf43fe178da566f5`. Prompt, verbatim:
+- Confirmed (major). I reproduced the finding with Node engine calls and in Playwright against dist/preview.html, using settings saved in localStorage plus real chip clicks. Scripts are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/m12/ (engine.js, browser.js, browser2.js, jumpthr.js, throwangles.js).
+
+<details>
+<summary>Prompt, verbatim (3,984 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `adf43fe178da566f5`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2046,10 +2334,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:M13` (rex-page-audit, 2026-10-09 08:05:35 UTC): I reproduced this in the browser. My script is /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/m13.js.</summary>
+**Subagent `verify2:claims:M13`** · rex-page-audit · started 2026-10-09 08:05:35 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a0914c7edc695e92f`. Prompt, verbatim:
+- Confirmed (major). I reproduced this in the browser. My script is /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/m13.js.
+
+<details>
+<summary>Prompt, verbatim (3,715 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a0914c7edc695e92f`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2078,10 +2370,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:M14` (rex-page-audit, 2026-10-09 08:08:31 UTC): I tried to refute this and couldn't. It reproduces in both the engine and the built page.</summary>
+**Subagent `verify2:claims:M14`** · rex-page-audit · started 2026-10-09 08:08:31 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `af4c47d962a5365ed`. Prompt, verbatim:
+- Confirmed (major). I tried to refute this and couldn't. It reproduces in both the engine and the built page.
+
+<details>
+<summary>Prompt, verbatim (3,655 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `af4c47d962a5365ed`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2110,10 +2406,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:m1` (rex-page-audit, 2026-10-09 08:11:30 UTC): I reproduced this in Chromium on dist/preview.html, with localStorage 'rex-lab-v1' = {action:'stomp', mode, logKg}. The scratch scripts are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/: m1stomp.js and m1sweep.js.</summary>
+**Subagent `verify2:claims:m1`** · rex-page-audit · started 2026-10-09 08:11:30 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a6f6d50c60016bea5`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this in Chromium on dist/preview.html, with localStorage 'rex-lab-v1' = {action:'stomp', mode, logKg}. The scratch scripts are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/: m1stomp.js and m1sweep.js.
+
+<details>
+<summary>Prompt, verbatim (3,661 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a6f6d50c60016bea5`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2142,10 +2442,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:m2` (rex-page-audit, 2026-10-09 08:11:48 UTC): I could not refute this. I reproduced it in the browser and checked it against conservation laws.</summary>
+**Subagent `verify2:claims:m2`** · rex-page-audit · started 2026-10-09 08:11:48 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a8e2c0efb9d593783`. Prompt, verbatim:
+- Confirmed (minor). I could not refute this. I reproduced it in the browser and checked it against conservation laws.
+
+<details>
+<summary>Prompt, verbatim (3,982 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a8e2c0efb9d593783`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2174,10 +2478,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:m3` (rex-page-audit, 2026-10-09 08:13:14 UTC): I reproduced this in both Node and Chromium (dist/preview.html with localStorage 'rex-lab-v1' set to {action:'jump', mode:'comic', surface:'concrete', groundHolds:false}). What the page shows: - logKg 14.3: "His feet punch into the ground at 2,450,000 m/s." - logKg 14.6, 20 and 34: "His feet punch into the ground at ...</summary>
+**Subagent `verify2:claims:m3`** · rex-page-audit · started 2026-10-09 08:13:14 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a7b335f59b550dabb`. Prompt, verbatim:
+- Confirmed (major). I reproduced this in both Node and Chromium (dist/preview.html with localStorage 'rex-lab-v1' set to {action:'jump', mode:'comic', surface:'concrete', groundHolds:false}). What the page shows: - logKg 14.3: "His feet punch into the ground at 2,450,000 m/s." - logKg 14.6, 20 and 34: "His feet punch into the ground at ...
+
+<details>
+<summary>Prompt, verbatim (3,501 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a7b335f59b550dabb`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2206,10 +2514,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:m4` (rex-page-audit, 2026-10-09 08:15:59 UTC): I reproduced this with the engine and in the built page (dist/preview.html in Playwright, with state seeded through localStorage 'rex-lab-v1'). The callout at src/app.html:781 checks only !state.inf and logKg ≈ log10(511).</summary>
+**Subagent `verify2:claims:m4`** · rex-page-audit · started 2026-10-09 08:15:59 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a8df71adea42d5c72`. Prompt, verbatim:
+- Confirmed (major). I reproduced this with the engine and in the built page (dist/preview.html in Playwright, with state seeded through localStorage 'rex-lab-v1'). The callout at src/app.html:781 checks only !state.inf and logKg ≈ log10(511).
+
+<details>
+<summary>Prompt, verbatim (3,601 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a8df71adea42d5c72`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2238,10 +2550,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:m5` (rex-page-audit, 2026-10-09 08:17:52 UTC): I reproduced both halves with Playwright on dist/preview.html by clicking each card's Simulate button, and checked the numbers in Node against engine.js. 1) "Superman catches a 777": with default settings, Simulate saves {logKg: 4.9577 (90.7 t), action: 'lift', obj: 'b777'}.</summary>
+**Subagent `verify2:claims:m5`** · rex-page-audit · started 2026-10-09 08:17:52 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a65dbad62dc7d111b`. Prompt, verbatim:
+- Confirmed (minor). I reproduced both halves with Playwright on dist/preview.html by clicking each card's Simulate button, and checked the numbers in Node against engine.js. 1) "Superman catches a 777": with default settings, Simulate saves {logKg: 4.9577 (90.7 t), action: 'lift', obj: 'b777'}.
+
+<details>
+<summary>Prompt, verbatim (4,010 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a65dbad62dc7d111b`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2271,10 +2587,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:m6` (rex-page-audit, 2026-10-09 08:19:54 UTC): I reproduced every part of the finding in dist/preview.html with Playwright, setting state through localStorage 'rex-lab-v1'. I also ran the formatter code from src/app.html directly in Node.</summary>
+**Subagent `verify2:claims:m6`** · rex-page-audit · started 2026-10-09 08:19:54 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ae26bfe548d58a6cf`. Prompt, verbatim:
+- Confirmed (minor). I reproduced every part of the finding in dist/preview.html with Playwright, setting state through localStorage 'rex-lab-v1'. I also ran the formatter code from src/app.html directly in Node.
+
+<details>
+<summary>Prompt, verbatim (4,245 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ae26bfe548d58a6cf`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2303,10 +2623,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:m7` (rex-page-audit, 2026-10-09 08:21:45 UTC): I reproduced this in the built page, dist/preview.html, using Playwright. I set state in localStorage 'rex-lab-v1' with inf:true, concrete, friction, H 2, m 180, then read bay innerText.</summary>
+**Subagent `verify2:claims:m7`** · rex-page-audit · started 2026-10-09 08:21:45 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a8ddd8c51ab9ee413`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this in the built page, dist/preview.html, using Playwright. I set state in localStorage 'rex-lab-v1' with inf:true, concrete, friction, H 2, m 180, then read bay innerText.
+
+<details>
+<summary>Prompt, verbatim (3,727 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a8ddd8c51ab9ee413`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2335,10 +2659,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:m8` (rex-page-audit, 2026-10-09 08:23:56 UTC): I reproduced this in Node and in the browser. 1) What the page says.</summary>
+**Subagent `verify2:claims:m8`** · rex-page-audit · started 2026-10-09 08:23:56 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `af1444c3a610a3f6f`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this in Node and in the browser. 1) What the page says.
+
+<details>
+<summary>Prompt, verbatim (3,521 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `af1444c3a610a3f6f`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2367,10 +2695,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:m9` (rex-page-audit, 2026-10-09 08:24:53 UTC): Confirmed it in Chromium using dist/preview.html. Settings: localStorage 'rex-lab-v1' with action 'pull', obj 'car', strength 100 short tons, 2 m / 180 kg.</summary>
+**Subagent `verify2:claims:m9`** · rex-page-audit · started 2026-10-09 08:24:53 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a3a9bbf6c47c9a670`. Prompt, verbatim:
+- Confirmed (minor). Confirmed it in Chromium using dist/preview.html. Settings: localStorage 'rex-lab-v1' with action 'pull', obj 'car', strength 100 short tons, 2 m / 180 kg.
+
+<details>
+<summary>Prompt, verbatim (3,577 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a3a9bbf6c47c9a670`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2399,10 +2731,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:claims:m10` (rex-page-audit, 2026-10-09 08:26:53 UTC): I reproduced this in the built page (dist/preview.html in Chromium, default state, scrolled to the Feats and Sources sections). Script: /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/m10check2.js.</summary>
+**Subagent `verify2:claims:m10`** · rex-page-audit · started 2026-10-09 08:26:53 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ac65890f267fcb458`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this in the built page (dist/preview.html in Chromium, default state, scrolled to the Feats and Sources sections). Script: /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/m10check2.js.
+
+<details>
+<summary>Prompt, verbatim (3,724 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ac65890f267fcb458`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2431,10 +2767,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:data:D1` (rex-page-audit, 2026-10-09 08:27:15 UTC): I reproduced the finding and could not refute it. Source text.</summary>
+**Subagent `verify2:data:D1`** · rex-page-audit · started 2026-10-09 08:27:15 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `aa1b446bca2299c6a`. Prompt, verbatim:
+- Confirmed (major). I reproduced the finding and could not refute it. Source text.
+
+<details>
+<summary>Prompt, verbatim (3,966 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `aa1b446bca2299c6a`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2463,10 +2803,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:data:D2` (rex-page-audit, 2026-10-09 08:27:54 UTC): I reproduced both strings in the built page, using Chromium on dist/preview.html with default settings. (1) The first 'Real humans' feat card reads: "Heaviest deadlift ever, in a deadlift suit with straps.</summary>
+**Subagent `verify2:data:D2`** · rex-page-audit · started 2026-10-09 08:27:54 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a8b89a4343d2da096`. Prompt, verbatim:
+- Confirmed (major). I reproduced both strings in the built page, using Chromium on dist/preview.html with default settings. (1) The first 'Real humans' feat card reads: "Heaviest deadlift ever, in a deadlift suit with straps.
+
+<details>
+<summary>Prompt, verbatim (4,258 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a8b89a4343d2da096`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2495,10 +2839,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:data:D3` (rex-page-audit, 2026-10-09 08:28:06 UTC): I reproduced this. In the browser (dist/preview.html, default state, Famous feats section), the intro says "Canon means the number is printed in the story." Seven cards carry the CANON badge, including the three named: "Hulk holds up a mountain range" (Secret Wars 4, linked to Screen Rant), "200 quintillion tons" ...</summary>
+**Subagent `verify2:data:D3`** · rex-page-audit · started 2026-10-09 08:28:06 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a3309928c79511198`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this. In the browser (dist/preview.html, default state, Famous feats section), the intro says "Canon means the number is printed in the story." Seven cards carry the CANON badge, including the three named: "Hulk holds up a mountain range" (Secret Wars 4, linked to Screen Rant), "200 quintillion tons" ...
+
+<details>
+<summary>Prompt, verbatim (4,818 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a3309928c79511198`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2527,10 +2875,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:data:D4` (rex-page-audit, 2026-10-09 08:29:06 UTC): I reproduced this finding and could not refute it. 1.</summary>
+**Subagent `verify2:data:D4`** · rex-page-audit · started 2026-10-09 08:29:06 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `afa1f3a64c15bd960`. Prompt, verbatim:
+- Confirmed (major). I reproduced this finding and could not refute it. 1.
+
+<details>
+<summary>Prompt, verbatim (4,195 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `afa1f3a64c15bd960`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2559,10 +2911,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:data:D5` (rex-page-audit, 2026-10-09 08:30:21 UTC): I reproduced this in Chromium using dist/preview.html with localStorage rex-lab-v1 = {logKg:12, mode:'comic', surface:'granite', action:'stomp'}. The page shows the chip 'Quake: magnitude 2' and the line 'Quake magnitude assumes 1 part in 10,000 ...</summary>
+**Subagent `verify2:data:D5`** · rex-page-audit · started 2026-10-09 08:30:21 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a10c2a31ed5ec6773`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this in Chromium using dist/preview.html with localStorage rex-lab-v1 = {logKg:12, mode:'comic', surface:'granite', action:'stomp'}. The page shows the chip 'Quake: magnitude 2' and the line 'Quake magnitude assumes 1 part in 10,000 ...
+
+<details>
+<summary>Prompt, verbatim (4,064 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a10c2a31ed5ec6773`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2591,10 +2947,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:data:D6` (rex-page-audit, 2026-10-09 08:31:45 UTC): I reproduced this, and it holds up. I ran Playwright on dist/preview.html with localStorage 'rex-lab-v1' = {logKg: log10(5.9724e24), action:'lift', obj:'earth'}.</summary>
+**Subagent `verify2:data:D6`** · rex-page-audit · started 2026-10-09 08:31:45 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a22b6c4bd56ddb2d6`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this, and it holds up. I ran Playwright on dist/preview.html with localStorage 'rex-lab-v1' = {logKg: log10(5.9724e24), action:'lift', obj:'earth'}.
+
+<details>
+<summary>Prompt, verbatim (4,073 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a22b6c4bd56ddb2d6`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2623,10 +2983,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:data:D7` (rex-page-audit, 2026-10-09 08:32:38 UTC): I reproduced this and tried to refute it. The labelling problem is real.</summary>
+**Subagent `verify2:data:D7`** · rex-page-audit · started 2026-10-09 08:32:38 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ad86dc1512a2ab4c2`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this and tried to refute it. The labelling problem is real.
+
+<details>
+<summary>Prompt, verbatim (3,723 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ad86dc1512a2ab4c2`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2655,10 +3019,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:data:D8` (rex-page-audit, 2026-10-09 08:33:43 UTC): I reproduced this myself and could not refute it. Data.</summary>
+**Subagent `verify2:data:D8`** · rex-page-audit · started 2026-10-09 08:33:43 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a92eb57beaf520fed`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this myself and could not refute it. Data.
+
+<details>
+<summary>Prompt, verbatim (3,594 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a92eb57beaf520fed`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2687,10 +3055,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:data:D9` (rex-page-audit, 2026-10-09 08:34:04 UTC): I reproduced all three parts. I loaded src/data.js in Node and rendered dist/preview.html in Chromium, reading each card's badge text from feat-groups and taking a screenshot (scratchpad/audit2/d9-feats.png).</summary>
+**Subagent `verify2:data:D9`** · rex-page-audit · started 2026-10-09 08:34:04 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ac9f44d962fe3b915`. Prompt, verbatim:
+- Confirmed (minor). I reproduced all three parts. I loaded src/data.js in Node and rendered dist/preview.html in Chromium, reading each card's badge text from feat-groups and taking a screenshot (scratchpad/audit2/d9-feats.png).
+
+<details>
+<summary>Prompt, verbatim (4,014 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ac9f44d962fe3b915`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2719,10 +3091,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:data:D10` (rex-page-audit, 2026-10-09 08:35:08 UTC): I reproduced this in Node and in Chromium. Node check.</summary>
+**Subagent `verify2:data:D10`** · rex-page-audit · started 2026-10-09 08:35:08 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ae3465a95fb9d654d`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this in Node and in Chromium. Node check.
+
+<details>
+<summary>Prompt, verbatim (4,077 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ae3465a95fb9d654d`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2751,10 +3127,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:data:D11` (rex-page-audit, 2026-10-09 08:37:18 UTC): I could not refute this. It reproduces in the data, the engine and the rendered page.</summary>
+**Subagent `verify2:data:D11`** · rex-page-audit · started 2026-10-09 08:37:18 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ac85c50d60c7b4c6b`. Prompt, verbatim:
+- Confirmed (minor). I could not refute this. It reproduces in the data, the engine and the rendered page.
+
+<details>
+<summary>Prompt, verbatim (3,530 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ac85c50d60c7b4c6b`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2783,10 +3163,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:data:D12` (rex-page-audit, 2026-10-09 08:37:35 UTC): I tried to refute D12 and could not. The finding is real, and minor is the right severity.</summary>
+**Subagent `verify2:data:D12`** · rex-page-audit · started 2026-10-09 08:37:35 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `af40b711db8b15486`. Prompt, verbatim:
+- Confirmed (minor). I tried to refute D12 and could not. The finding is real, and minor is the right severity.
+
+<details>
+<summary>Prompt, verbatim (3,906 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `af40b711db8b15486`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2815,10 +3199,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:data:D13` (rex-page-audit, 2026-10-09 08:38:51 UTC): I reproduced this two ways. My scratch script is /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/d13.js.</summary>
+**Subagent `verify2:data:D13`** · rex-page-audit · started 2026-10-09 08:38:51 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a2306a727d61bad1c`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this two ways. My scratch script is /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/d13.js.
+
+<details>
+<summary>Prompt, verbatim (3,376 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a2306a727d61bad1c`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2847,10 +3235,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:data:D14` (rex-page-audit, 2026-10-09 08:40:31 UTC): I reproduced both parts and could not refute either one. (a) In src/engine.js:57 the real-muscle jump uses jump: { vmax: 12, forceFrac: 1.4 }, and actionForce() at line 578 returns ctx.F × forceFrac.</summary>
+**Subagent `verify2:data:D14`** · rex-page-audit · started 2026-10-09 08:40:31 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a5e362c0b603283d7`. Prompt, verbatim:
+- Confirmed (minor). I reproduced both parts and could not refute either one. (a) In src/engine.js:57 the real-muscle jump uses jump: { vmax: 12, forceFrac: 1.4 }, and actionForce() at line 578 returns ctx.F × forceFrac.
+
+<details>
+<summary>Prompt, verbatim (3,930 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a5e362c0b603283d7`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2879,10 +3271,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:data:D15` (rex-page-audit, 2026-10-09 08:40:48 UTC): I reproduced this finding and could not refute it. Ladder reproduction.</summary>
+**Subagent `verify2:data:D15`** · rex-page-audit · started 2026-10-09 08:40:48 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `abdc48811e8fa3556`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this finding and could not refute it. Ladder reproduction.
+
+<details>
+<summary>Prompt, verbatim (3,957 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `abdc48811e8fa3556`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2911,10 +3307,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:data:D16` (rex-page-audit, 2026-10-09 08:44:22 UTC): I reproduced this in the engine and in the browser. Engine (/tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/d16.js, d16b.js) - The runFeat predicate (apex ≥ 60 m, escaped or relativistic) is solved with P.threshold over F = 10g to 1e45 N.</summary>
+**Subagent `verify2:data:D16`** · rex-page-audit · started 2026-10-09 08:44:22 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a45e2d31ed2c88af0`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this in the engine and in the browser. Engine (/tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/d16.js, d16b.js) - The runFeat predicate (apex ≥ 60 m, escaped or relativistic) is solved with P.threshold over F = 10g to 1e45 N.
+
+<details>
+<summary>Prompt, verbatim (3,699 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a45e2d31ed2c88af0`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2943,10 +3343,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:data:D17` (rex-page-audit, 2026-10-09 08:44:31 UTC): I reproduced both parts in Chromium using dist/preview.html with localStorage 'rex-lab-v1' set. (a) Blast label.</summary>
+**Subagent `verify2:data:D17`** · rex-page-audit · started 2026-10-09 08:44:31 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `aa25c2f74f6234815`. Prompt, verbatim:
+- Confirmed (minor). I reproduced both parts in Chromium using dist/preview.html with localStorage 'rex-lab-v1' set. (a) Blast label.
+
+<details>
+<summary>Prompt, verbatim (3,677 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `aa25c2f74f6234815`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -2975,10 +3379,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:regression:R1` (rex-page-audit, 2026-10-09 08:46:49 UTC): I reproduced this myself, in the browser and in the engine. Browser: /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/r1.js loads dist/preview.html with localStorage cleared, clicks the chip, then reads each bay.</summary>
+**Subagent `verify2:regression:R1`** · rex-page-audit · started 2026-10-09 08:46:49 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a1605cfe80aa04204`. Prompt, verbatim:
+- Confirmed (critical). I reproduced this myself, in the browser and in the engine. Browser: /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/r1.js loads dist/preview.html with localStorage cleared, clicks the chip, then reads each bay.
+
+<details>
+<summary>Prompt, verbatim (4,334 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a1605cfe80aa04204`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3007,10 +3415,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:regression:R2` (rex-page-audit, 2026-10-09 08:46:54 UTC): I reproduced the finding in Node and in the browser, using the built dist/preview.html. dist matches src: both still contain isFinite(F) ?</summary>
+**Subagent `verify2:regression:R2`** · rex-page-audit · started 2026-10-09 08:46:54 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a2f4a70d3d4193cef`. Prompt, verbatim:
+- Confirmed (major). I reproduced the finding in Node and in the browser, using the built dist/preview.html. dist matches src: both still contain isFinite(F) ?
+
+<details>
+<summary>Prompt, verbatim (4,034 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a2f4a70d3d4193cef`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3039,10 +3451,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:regression:R3` (rex-page-audit, 2026-10-09 08:48:32 UTC): I reproduced this independently in both the engine and the built page. My scripts are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/r3v/ (repro.js, repro2.js, maxcheck.js, cases.js, browser.js, cmp.js).</summary>
+**Subagent `verify2:regression:R3`** · rex-page-audit · started 2026-10-09 08:48:32 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `aaeb61ce8ed6a1ca5`. Prompt, verbatim:
+- Confirmed (major). I reproduced this independently in both the engine and the built page. My scripts are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/r3v/ (repro.js, repro2.js, maxcheck.js, cases.js, browser.js, cmp.js).
+
+<details>
+<summary>Prompt, verbatim (4,616 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `aaeb61ce8ed6a1ca5`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3071,10 +3487,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:regression:R4` (rex-page-audit, 2026-10-09 08:49:04 UTC): I reproduced every part of the finding, both in the built page and in the engine. One detail in the evidence is wrong: the page never shows "The feet sank 1.2 cm".</summary>
+**Subagent `verify2:regression:R4`** · rex-page-audit · started 2026-10-09 08:49:04 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `aeff62e1a8299e7ec`. Prompt, verbatim:
+- Confirmed (major). I reproduced every part of the finding, both in the built page and in the engine. One detail in the evidence is wrong: the page never shows "The feet sank 1.2 cm".
+
+<details>
+<summary>Prompt, verbatim (4,608 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `aeff62e1a8299e7ec`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3103,10 +3523,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:regression:R5` (rex-page-audit, 2026-10-09 08:53:38 UTC): I could not refute it. I reproduced it in Node and in the built page (dist/preview.html in Chromium, with state set through localStorage 'rex-lab-v1').</summary>
+**Subagent `verify2:regression:R5`** · rex-page-audit · started 2026-10-09 08:53:38 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a27edb903ede599b9`. Prompt, verbatim:
+- Confirmed (major). I could not refute it. I reproduced it in Node and in the built page (dist/preview.html in Chromium, with state set through localStorage 'rex-lab-v1').
+
+<details>
+<summary>Prompt, verbatim (4,062 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a27edb903ede599b9`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3135,10 +3559,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:regression:R6` (rex-page-audit, 2026-10-09 09:04:36 UTC): I reproduced this in the engine and in the browser. Scripts are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/ (r6repro.js, r6real.js, r6ui.js, r6scan2.js).</summary>
+**Subagent `verify2:regression:R6`** · rex-page-audit · started 2026-10-09 09:04:36 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a7b733e1e4fc1daa1`. Prompt, verbatim:
+- Confirmed (major). I reproduced this in the engine and in the browser. Scripts are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/ (r6repro.js, r6real.js, r6ui.js, r6scan2.js).
+
+<details>
+<summary>Prompt, verbatim (4,237 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a7b733e1e4fc1daa1`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3167,10 +3595,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:regression:R7` (rex-page-audit, 2026-10-09 09:19:50 UTC): I reproduced this in Node and in the browser, using my own scripts in scratchpad/audit2/r7/ (repro.js, twod.js, variants.js, cmp.js, browser.js). Engine behaviour.</summary>
+**Subagent `verify2:regression:R7`** · rex-page-audit · started 2026-10-09 09:19:50 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a78d247ba2dc81c0e`. Prompt, verbatim:
+- Confirmed (critical). I reproduced this in Node and in the browser, using my own scripts in scratchpad/audit2/r7/ (repro.js, twod.js, variants.js, cmp.js, browser.js). Engine behaviour.
+
+<details>
+<summary>Prompt, verbatim (4,820 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a78d247ba2dc81c0e`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3199,10 +3631,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:regression:R8` (rex-page-audit, 2026-10-09 09:29:00 UTC): I tried to refute this and couldn't. I reproduced it in the engine and in the built page.</summary>
+**Subagent `verify2:regression:R8`** · rex-page-audit · started 2026-10-09 09:29:00 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a7da0980c584b173e`. Prompt, verbatim:
+- Confirmed (minor). I tried to refute this and couldn't. I reproduced it in the engine and in the built page.
+
+<details>
+<summary>Prompt, verbatim (3,605 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a7da0980c584b173e`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3231,10 +3667,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:regression:R9` (rex-page-audit, 2026-10-09 09:31:41 UTC): I tried to refute this and couldn't. The finding is real, and I'd raise it from minor to major.</summary>
+**Subagent `verify2:regression:R9`** · rex-page-audit · started 2026-10-09 09:31:41 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a537562ff4cbd7c1e`. Prompt, verbatim:
+- Confirmed (major). I tried to refute this and couldn't. The finding is real, and I'd raise it from minor to major.
+
+<details>
+<summary>Prompt, verbatim (3,774 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a537562ff4cbd7c1e`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3263,10 +3703,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:regression:R10` (rex-page-audit, 2026-10-09 09:31:48 UTC): I tried to refute this and could not. Both parts reproduce in the engine and in the built page.</summary>
+**Subagent `verify2:regression:R10`** · rex-page-audit · started 2026-10-09 09:31:48 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a13db84340bf8490e`. Prompt, verbatim:
+- Confirmed (minor). I tried to refute this and could not. Both parts reproduce in the engine and in the built page.
+
+<details>
+<summary>Prompt, verbatim (4,044 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a13db84340bf8490e`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3295,10 +3739,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:regression:R11` (rex-page-audit, 2026-10-09 09:35:08 UTC): I tried to refute R11 and couldn't. It is real, and minor is the right severity.</summary>
+**Subagent `verify2:regression:R11`** · rex-page-audit · started 2026-10-09 09:35:08 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a6c255b987f9eec19`. Prompt, verbatim:
+- Confirmed (minor). I tried to refute R11 and couldn't. It is real, and minor is the right severity.
+
+<details>
+<summary>Prompt, verbatim (3,969 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a6c255b987f9eec19`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3327,10 +3775,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:regression:R12` (rex-page-audit, 2026-10-09 09:35:37 UTC): I reproduced this in the browser and in Node. It is real, and checking it turned up a crash in the same code.</summary>
+**Subagent `verify2:regression:R12`** · rex-page-audit · started 2026-10-09 09:35:37 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ae48674e6b7614e09`. Prompt, verbatim:
+- Confirmed (major). I reproduced this in the browser and in Node. It is real, and checking it turned up a crash in the same code.
+
+<details>
+<summary>Prompt, verbatim (3,645 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ae48674e6b7614e09`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3359,10 +3811,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:regression:R13` (rex-page-audit, 2026-10-09 09:37:21 UTC): I reproduced it in both the engine and the built page, and could not refute it. Browser (dist/preview.html, Playwright; script at /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/r13b.js): - Clicking Simulate on "Atlas holds up the heavens" shows the verdict "Rex can’t budge it.</summary>
+**Subagent `verify2:regression:R13`** · rex-page-audit · started 2026-10-09 09:37:21 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ac08a2b4d0c6ea680`. Prompt, verbatim:
+- Confirmed (major). I reproduced it in both the engine and the built page, and could not refute it. Browser (dist/preview.html, Playwright; script at /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/r13b.js): - Clicking Simulate on "Atlas holds up the heavens" shows the verdict "Rex can’t budge it.
+
+<details>
+<summary>Prompt, verbatim (3,674 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ac08a2b4d0c6ea680`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3391,10 +3847,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:regression:R14` (rex-page-audit, 2026-10-09 09:37:59 UTC): I reproduced this in the engine and in the rendered page. The defect is real, but part of the finding's evidence is overstated.</summary>
+**Subagent `verify2:regression:R14`** · rex-page-audit · started 2026-10-09 09:37:59 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a0d08ea4c1988fa24`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this in the engine and in the rendered page. The defect is real, but part of the finding's evidence is overstated.
+
+<details>
+<summary>Prompt, verbatim (3,858 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a0d08ea4c1988fa24`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3423,10 +3883,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:regression:R15` (rex-page-audit, 2026-10-09 09:39:47 UTC): I could not refute R15. The core claim holds, and it reaches further than the finding says.</summary>
+**Subagent `verify2:regression:R15`** · rex-page-audit · started 2026-10-09 09:39:47 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `afac71b8892707ba8`. Prompt, verbatim:
+- Confirmed (minor). I could not refute R15. The core claim holds, and it reaches further than the finding says.
+
+<details>
+<summary>Prompt, verbatim (4,302 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `afac71b8892707ba8`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3455,10 +3919,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:regression:R16` (rex-page-audit, 2026-10-09 09:44:18 UTC): I reproduced this in Chromium with preview.html, setting state through localStorage 'rex-lab-v1' and then clicking Simulate on the "Hurdle a twenty-story building" card. Script: /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/r16.js.</summary>
+**Subagent `verify2:regression:R16`** · rex-page-audit · started 2026-10-09 09:44:18 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a0014a8a4bd433383`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this in Chromium with preview.html, setting state through localStorage 'rex-lab-v1' and then clicking Simulate on the "Hurdle a twenty-story building" card. Script: /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/r16.js.
+
+<details>
+<summary>Prompt, verbatim (3,709 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a0014a8a4bd433383`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3487,10 +3955,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:ux:L-01` (rex-page-audit, 2026-10-09 09:45:19 UTC): I reproduced this and could not refute it. The slider in /home/user/dino-strength-sim/src/app.html:197 is &lt;input type="range" id="strength" min="1" max="34"&gt;, and its value is log10(kg).</summary>
+**Subagent `verify2:ux:L-01`** · rex-page-audit · started 2026-10-09 09:45:19 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ade16eaa70a1df2f0`. Prompt, verbatim:
+- Confirmed (critical). I reproduced this and could not refute it. The slider in /home/user/dino-strength-sim/src/app.html:197 is &lt;input type="range" id="strength" min="1" max="34"&gt;, and its value is log10(kg).
+
+<details>
+<summary>Prompt, verbatim (3,536 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ade16eaa70a1df2f0`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3519,10 +3991,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:ux:L-02` (rex-page-audit, 2026-10-09 09:45:54 UTC): I reproduced this with my own Playwright script on dist/preview.html, which has the same renderLadder as src/app.html. Scripts and screenshots are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/l02/ (m.js, m2.js, z.js, ladder-390-light.png, now-zoom-390.png, now-zoom-1280.png).</summary>
+**Subagent `verify2:ux:L-02`** · rex-page-audit · started 2026-10-09 09:45:54 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a49dbbf5b44c899ad`. Prompt, verbatim:
+- Confirmed (major). I reproduced this with my own Playwright script on dist/preview.html, which has the same renderLadder as src/app.html. Scripts and screenshots are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/l02/ (m.js, m2.js, z.js, ladder-390-light.png, now-zoom-390.png, now-zoom-1280.png).
+
+<details>
+<summary>Prompt, verbatim (4,820 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a49dbbf5b44c899ad`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3551,10 +4027,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:ux:L-03` (rex-page-audit, 2026-10-09 09:50:53 UTC): I reproduced this in Playwright, in both the built dist/preview.html and the src/app.html code (dist line 4972 matches src line 1086). Scripts are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/: l03.js does the reproduction and l03-verify.js checks the patched copy.</summary>
+**Subagent `verify2:ux:L-03`** · rex-page-audit · started 2026-10-09 09:50:53 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a97983b8f1f1081c4`. Prompt, verbatim:
+- Confirmed (major). I reproduced this in Playwright, in both the built dist/preview.html and the src/app.html code (dist line 4972 matches src line 1086). Scripts are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/: l03.js does the reproduction and l03-verify.js checks the patched copy.
+
+<details>
+<summary>Prompt, verbatim (3,985 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a97983b8f1f1081c4`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3583,10 +4063,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:ux:L-04` (rex-page-audit, 2026-10-09 09:54:14 UTC): I reproduced this in Chromium with Playwright, using dist/preview.html with localStorage rex-lab-v1 = {action:'throw', angle:45}. Scripts are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/l04drag.js, l04drag2.js and l04check.js.</summary>
+**Subagent `verify2:ux:L-04`** · rex-page-audit · started 2026-10-09 09:54:14 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a0147b0ca0e303a97`. Prompt, verbatim:
+- Confirmed (major). I reproduced this in Chromium with Playwright, using dist/preview.html with localStorage rex-lab-v1 = {action:'throw', angle:45}. Scripts are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/l04drag.js, l04drag2.js and l04check.js.
+
+<details>
+<summary>Prompt, verbatim (3,899 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a0147b0ca0e303a97`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3615,10 +4099,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:ux:L-05` (rex-page-audit, 2026-10-09 09:57:22 UTC): I reproduced this in Node and in the browser. I could not refute it.</summary>
+**Subagent `verify2:ux:L-05`** · rex-page-audit · started 2026-10-09 09:57:22 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a3f2a4172f65e0441`. Prompt, verbatim:
+- Confirmed (major). I reproduced this in Node and in the browser. I could not refute it.
+
+<details>
+<summary>Prompt, verbatim (4,146 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a3f2a4172f65e0441`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3647,10 +4135,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:ux:L-06` (rex-page-audit, 2026-10-09 10:00:41 UTC): I reproduced this in both the engine and the browser, and could not refute it. Engine (Node): feat "Atlas holds up the heavens" has run = {liftKg: 5.1e18, action: 'lift', obj: 'sky'}, and the sky object's m is exactly 5.1e18.</summary>
+**Subagent `verify2:ux:L-06`** · rex-page-audit · started 2026-10-09 10:00:41 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ae9e19eca432ed3a0`. Prompt, verbatim:
+- Confirmed (major). I reproduced this in both the engine and the browser, and could not refute it. Engine (Node): feat "Atlas holds up the heavens" has run = {liftKg: 5.1e18, action: 'lift', obj: 'sky'}, and the sky object's m is exactly 5.1e18.
+
+<details>
+<summary>Prompt, verbatim (4,126 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ae9e19eca432ed3a0`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3679,10 +4171,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:ux:L-07` (rex-page-audit, 2026-10-09 10:01:07 UTC): I reproduced this in the browser and it is real. I opened dist/preview.html in Playwright Chromium with colorScheme 'light' (the default for anyone without a dark OS preference) and read the computed styles of every .badge.</summary>
+**Subagent `verify2:ux:L-07`** · rex-page-audit · started 2026-10-09 10:01:07 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a92b3b847177be5be`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this in the browser and it is real. I opened dist/preview.html in Playwright Chromium with colorScheme 'light' (the default for anyone without a dark OS preference) and read the computed styles of every .badge.
+
+<details>
+<summary>Prompt, verbatim (3,738 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a92b3b847177be5be`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3711,10 +4207,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:ux:L-08` (rex-page-audit, 2026-10-09 10:02:34 UTC): I reproduced every number in the finding, both with a script and in the browser. I loaded dist/preview.html in Playwright with the light and dark colour schemes and the real fonts loaded, then measured each element's computed colour against its actual background.</summary>
+**Subagent `verify2:ux:L-08`** · rex-page-audit · started 2026-10-09 10:02:34 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `aa0b582a8db0eb8b9`. Prompt, verbatim:
+- Confirmed (minor). I reproduced every number in the finding, both with a script and in the browser. I loaded dist/preview.html in Playwright with the light and dark colour schemes and the real fonts loaded, then measured each element's computed colour against its actual background.
+
+<details>
+<summary>Prompt, verbatim (4,441 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `aa0b582a8db0eb8b9`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3743,10 +4243,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:ux:L-09` (rex-page-audit, 2026-10-09 10:02:37 UTC): I could not refute this finding. I reproduced it with my own Playwright run on dist/preview.html: viewport 390, IBM Plex Mono confirmed loaded, chart viewBox width 324 (chartW = bay width).</summary>
+**Subagent `verify2:ux:L-09`** · rex-page-audit · started 2026-10-09 10:02:37 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a6419a81aebb1c670`. Prompt, verbatim:
+- Confirmed (minor). I could not refute this finding. I reproduced it with my own Playwright run on dist/preview.html: viewport 390, IBM Plex Mono confirmed loaded, chart viewBox width 324 (chartW = bay width).
+
+<details>
+<summary>Prompt, verbatim (4,577 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a6419a81aebb1c670`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3775,10 +4279,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:ux:L-10` (rex-page-audit, 2026-10-09 10:05:29 UTC): I reproduced this in Playwright with dist/preview.html, using my own script at /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/l10.js and l10b.js. Cause: the charts take their width from chartW() (app.html:548), which reads bay.clientWidth only when the bay is rendered.</summary>
+**Subagent `verify2:ux:L-10`** · rex-page-audit · started 2026-10-09 10:05:29 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a0b6a409faa7c6036`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this in Playwright with dist/preview.html, using my own script at /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/l10.js and l10b.js. Cause: the charts take their width from chartW() (app.html:548), which reads bay.clientWidth only when the bay is rendered.
+
+<details>
+<summary>Prompt, verbatim (3,737 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a0b6a409faa7c6036`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3807,10 +4315,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:ux:L-11` (rex-page-audit, 2026-10-09 10:08:04 UTC): I reproduced this, and the real reach is wider than the finding says, though one of its browser claims is wrong. Scripts are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/ (l11.js, l11b.js, l11c.js).</summary>
+**Subagent `verify2:ux:L-11`** · rex-page-audit · started 2026-10-09 10:08:04 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `af52ecd6947083c90`. Prompt, verbatim:
+- Confirmed (major). I reproduced this, and the real reach is wider than the finding says, though one of its browser claims is wrong. Scripts are in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/ (l11.js, l11b.js, l11c.js).
+
+<details>
+<summary>Prompt, verbatim (4,132 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `af52ecd6947083c90`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3839,10 +4351,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:ux:L-12` (rex-page-audit, 2026-10-09 10:12:40 UTC): I reproduced every part of this in Chromium with Playwright, using /home/user/dino-strength-sim/dist/preview.html and my script at /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/l12.js. I could not refute any of it.</summary>
+**Subagent `verify2:ux:L-12`** · rex-page-audit · started 2026-10-09 10:12:40 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `aea093edf00c4a664`. Prompt, verbatim:
+- Confirmed (minor). I reproduced every part of this in Chromium with Playwright, using /home/user/dino-strength-sim/dist/preview.html and my script at /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/l12.js. I could not refute any of it.
+
+<details>
+<summary>Prompt, verbatim (4,010 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `aea093edf00c4a664`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3871,10 +4387,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:ux:L-13` (rex-page-audit, 2026-10-09 10:13:49 UTC): I reproduced this in Chromium using dist/preview.html with default settings, in both light and dark colour schemes (script: /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/l13.js). Focus loss: confirmed.</summary>
+**Subagent `verify2:ux:L-13`** · rex-page-audit · started 2026-10-09 10:13:49 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a56348dc6be8175a8`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this in Chromium using dist/preview.html with default settings, in both light and dark colour schemes (script: /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/l13.js). Focus loss: confirmed.
+
+<details>
+<summary>Prompt, verbatim (3,890 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a56348dc6be8175a8`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3903,10 +4423,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:ux:L-14` (rex-page-audit, 2026-10-09 10:15:52 UTC): I reproduced this with Playwright on dist/preview.html, using default state and viewports of 390x900 and 1280x900, so I could not refute it. I fired pointerenter (and, separately, real hover and focus) on each ladder marker and measured the tooltip against ladder-viz.</summary>
+**Subagent `verify2:ux:L-14`** · rex-page-audit · started 2026-10-09 10:15:52 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ab295ac99386e01f2`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this with Playwright on dist/preview.html, using default state and viewports of 390x900 and 1280x900, so I could not refute it. I fired pointerenter (and, separately, real hover and focus) on each ladder marker and measured the tooltip against ladder-viz.
+
+<details>
+<summary>Prompt, verbatim (3,656 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `ab295ac99386e01f2`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3935,10 +4459,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:ux:L-15` (rex-page-audit, 2026-10-09 10:19:01 UTC): I reproduced both halves in Chromium using dist/preview.html with prefers-reduced-motion set to no-preference. My scripts are in scratchpad/audit2/l15.js, l15b.js and l15c.js.</summary>
+**Subagent `verify2:ux:L-15`** · rex-page-audit · started 2026-10-09 10:19:01 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `adec0f54ed82889a8`. Prompt, verbatim:
+- Confirmed (minor). I reproduced both halves in Chromium using dist/preview.html with prefers-reduced-motion set to no-preference. My scripts are in scratchpad/audit2/l15.js, l15b.js and l15c.js.
+
+<details>
+<summary>Prompt, verbatim (3,911 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `adec0f54ed82889a8`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3967,10 +4495,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:ux:L-16` (rex-page-audit, 2026-10-09 10:20:54 UTC): I reproduced this with my own scripts in scratchpad/audit2/l16/ (nodeth.js, pw.js, pw2.js). The finding is real and minor is the right severity.</summary>
+**Subagent `verify2:ux:L-16`** · rex-page-audit · started 2026-10-09 10:20:54 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a49a146c33f5273eb`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this with my own scripts in scratchpad/audit2/l16/ (nodeth.js, pw.js, pw2.js). The finding is real and minor is the right severity.
+
+<details>
+<summary>Prompt, verbatim (4,143 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a49a146c33f5273eb`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -3999,10 +4531,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:ux:L-17` (rex-page-audit, 2026-10-09 10:27:28 UTC): I reproduced the measurements with Playwright on dist/preview.html. The scripts are l17.js and l17b.js in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/.</summary>
+**Subagent `verify2:ux:L-17`** · rex-page-audit · started 2026-10-09 10:27:28 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a344a6e2fef2cff11`. Prompt, verbatim:
+- Refuted (not a bug). I reproduced the measurements with Playwright on dist/preview.html. The scripts are l17.js and l17b.js in /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/.
+
+<details>
+<summary>Prompt, verbatim (4,385 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a344a6e2fef2cff11`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -4031,10 +4567,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:ux:L-18` (rex-page-audit, 2026-10-09 10:29:07 UTC): I reproduced this in headless Chromium against dist/preview.html. I set localStorage 'rex-lab-v1' = {logKg, inf:false, action:'stomp'} and read the "He gets launched" tile.</summary>
+**Subagent `verify2:ux:L-18`** · rex-page-audit · started 2026-10-09 10:29:07 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a540568ca97694967`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this in headless Chromium against dist/preview.html. I set localStorage 'rex-lab-v1' = {logKg, inf:false, action:'stomp'} and read the "He gets launched" tile.
+
+<details>
+<summary>Prompt, verbatim (3,420 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a540568ca97694967`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -4063,10 +4603,14 @@ FINDING:
 
 </details>
 
-<details>
-<summary>Subagent `verify2:ux:L-19` (rex-page-audit, 2026-10-09 10:29:57 UTC): I reproduced every case in Chromium against file:///home/user/dino-strength-sim/dist/preview.html. My script is /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/l19.js.</summary>
+**Subagent `verify2:ux:L-19`** · rex-page-audit · started 2026-10-09 10:29:57 UTC
 
-Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a165686db9ee9ce10`. Prompt, verbatim:
+- Confirmed (minor). I reproduced every case in Chromium against file:///home/user/dino-strength-sim/dist/preview.html. My script is /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit2/l19.js.
+
+<details>
+<summary>Prompt, verbatim (4,107 characters)</summary>
+
+Workflow run `wf_9deb3ae2-a54`, phase `Verify`, agent `a165686db9ee9ce10`.
 
 ```text
 You are auditing "Rex Super-Strength Lab", a single-page physics simulator: a plush-toy dinosaur named Rex (indestructible, never tires; default 2 m, 180 kg) whose strength is set from world-record human (511 kg deadlift) to infinite. It computes lift, throw (recoil, drag flight over a round Earth, Kepler arcs above 150 km), jump (ground bearing + inertial ground resistance, leg lock momentum), stomp, punch, clap, sprint and pull, plus blast radii, quake magnitude, crater size and air heating, and shows a strength ladder, famous feats with sources, assumptions and a sources table.
@@ -4250,13 +4794,19 @@ Sweep clean across all 5,184 setting combinations; tests pass. Publishing the fi
 Version 2 is live at the same link and pushed. Launching the final verification pass.
 
 
+### Workflow `rex-fix-verification` · 2026-10-09 10:50:25 UTC
+
 - `Workflow` rex-fix-verification: Check every confirmed second-audit finding is fixed in the current Rex lab build, and hunt for regressions from the fixes
   - run `wf_81cd9d92-dce`: 1 subagents, listed below
 
-<details>
-<summary>Subagent `check:__placeholder` (rex-fix-verification, 2026-10-09 10:50:26 UTC): No result recorded (the agent was stopped, skipped or failed).</summary>
+**Subagent `check:__placeholder`** · rex-fix-verification · started 2026-10-09 10:50:26 UTC
 
-Workflow run `wf_81cd9d92-dce`, phase `Check fixes`, agent `a30639eb71d6ef536`. Prompt, verbatim:
+- No result recorded (the agent was stopped, skipped or failed).
+
+<details>
+<summary>Prompt, verbatim (1,950 characters)</summary>
+
+Workflow run `wf_81cd9d92-dce`, phase `Check fixes`, agent `a30639eb71d6ef536`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4284,26 +4834,42 @@ I launched that with an empty findings list by mistake. Stopping it and relaunch
 - `TaskStop` wfa0zkt54
 - `Bash` Build the findings list to pass to the verification workflow: `cd /home/user/dino-strength-sim/research && python3 - <<'EOF'` (+12 lines)
 - `Bash` Point the verification script at the findings file: `F=/root/.claude/projects/-home-user-lodge-docs/6435a7db-fe21-5f3b-bca9-e49ba2609387/workflows/scripts/rex-fix-verification-wf_81cd9d92-dce.js; python3 - "$F"...` (+11 lines)
+
+
+### Workflow `rex-fix-verification` · 2026-10-09 10:50:48 UTC
+
 - `Workflow` rex-fix-verification: Check every confirmed second-audit finding is fixed in the current Rex lab build, and hunt for regressions from the fixes
-  - result: <tool_use_error>scriptPath must be a script path this tool returned, or a file you can already read (the working directory or a directory you have added): /root/.claude/projects/-home-user-lodge-docs/6435a7db-fe21-5f3b-bca9-e49ba2609387/wor
-  - result: A session that cannot call Read cannot load any scriptPath. Pass the whole script inline through Workflow's `script` input instead.</tool_use_error>
+  - result: &lt;tool_use_error&gt;scriptPath must be a script path this tool returned, or a file you can already read (the working directory or a directory you have added)…
+  - result: A session that cannot call Read cannot load any scriptPath. Pass the whole script inline through Workflow's `script` input instead.&lt;/tool_use_error&gt;
 - `Read` /root/.claude/projects/-home-user-lodge-docs/6435a7db-fe21-5f3b-bca9-e49ba2609387/workflows/scripts/rex-fix-verification-wf_81cd9d92-dce.js
+
+
+### Workflow `rex-fix-verification` · 2026-10-09 10:50:54 UTC
+
 - `Workflow` rex-fix-verification: Check every confirmed second-audit finding is fixed in the current Rex lab build, and hunt for regressions from the fixes
-  - result: <tool_use_error>scriptPath must be a script path this tool returned, or a file you can already read (the working directory or a directory you have added): /root/.claude/projects/-home-user-lodge-docs/6435a7db-fe21-5f3b-bca9-e49ba2609387/wor
-  - result: A session that cannot call Read cannot load any scriptPath. Pass the whole script inline through Workflow's `script` input instead.</tool_use_error>
+  - result: &lt;tool_use_error&gt;scriptPath must be a script path this tool returned, or a file you can already read (the working directory or a directory you have added)…
+  - result: A session that cannot call Read cannot load any scriptPath. Pass the whole script inline through Workflow's `script` input instead.&lt;/tool_use_error&gt;
 
 **Claude · 2026-10-09 10:50:56 UTC**
 
 Relaunching the verification pass inline (the saved-script path wasn't accepted).
 
 
+### Workflow `rex-fix-verification` · 2026-10-09 10:51:09 UTC
+
 - `Workflow` rex-fix-verification: Check every confirmed second-audit finding is fixed in the current Rex lab build, and hunt for regressions from the fixes
   - run `wf_e1c701fc-dbc`: 46 subagents, listed below
 
-<details>
-<summary>Subagent `check:claims` (rex-fix-verification, 2026-10-09 10:51:09 UTC): Returned fixed: 25, not_fixed: 1 (e.g. M5), new_problems: 10 (e.g. Real muscle at the ∞ preset throws worse than at any finite strength. Same class as M1: th; Real-mode throws claim the ground gives way, using the nominal isometric force: up to '140).</summary>
+**Subagent `check:claims`** · rex-fix-verification · started 2026-10-09 10:51:09 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Check fixes`, agent `a5caf7f39f456299d`. Prompt, verbatim:
+- fixed: 25; not fixed: 1; new problems: 10 (4 major, 6 minor).
+- Not fixed: M5.
+- New problems: Real muscle at the ∞ preset throws worse than at any finite strength.…; Real-mode throws claim the ground gives way, using the nominal…; Held-back throws say he holds back to the footing limit, then report… (+1 more).
+
+<details>
+<summary>Prompt, verbatim (2,057 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Check fixes`, agent `a5caf7f39f456299d`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4319,10 +4885,16 @@ The findings under the key "claims" in the JSON file /tmp/claude-0/-home-user/64
 
 </details>
 
-<details>
-<summary>Subagent `check:regression` (rex-fix-verification, 2026-10-09 10:51:11 UTC): Returned fixed: 14, not_fixed: 3 (e.g. R2; R10), new_problems: 6 (e.g. Real muscle at the ∞ chip throws heavy objects far worse than at any finite strength (the ; Held-back throws still report the full-strength grip: 'hands punch into it, only part of i).</summary>
+**Subagent `check:regression`** · rex-fix-verification · started 2026-10-09 10:51:11 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Check fixes`, agent `aa9830e8984c19738`. Prompt, verbatim:
+- fixed: 14; not fixed: 3; new problems: 6 (2 major, 4 minor).
+- Not fixed: R2; R10; R15.
+- New problems: Real muscle at the ∞ chip throws heavy objects far worse than at any…; Held-back throws still report the full-strength grip: 'hands punch….
+
+<details>
+<summary>Prompt, verbatim (2,061 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Check fixes`, agent `aa9830e8984c19738`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4338,10 +4910,16 @@ The findings under the key "regression" in the JSON file /tmp/claude-0/-home-use
 
 </details>
 
-<details>
-<summary>Subagent `check:data` (rex-fix-verification, 2026-10-09 11:15:02 UTC): Returned fixed: 15, not_fixed: 2 (e.g. D10; D13), new_problems: 6 (e.g. Sources table renders no links: every Source cell is ',https://… · ,https://…' text, so th; D14 fix states 'the jump drives with 1.4×' and lists 30%/52%/140% shares, but those are Re).</summary>
+**Subagent `check:data`** · rex-fix-verification · started 2026-10-09 11:15:02 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Check fixes`, agent `af2970401d2bbc024`. Prompt, verbatim:
+- fixed: 15; not fixed: 2; new problems: 6 (1 major, 5 minor).
+- Not fixed: D10; D13.
+- New problems: Sources table renders no links: every Source cell is ',https://… ·….
+
+<details>
+<summary>Prompt, verbatim (2,055 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Check fixes`, agent `af2970401d2bbc024`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4357,10 +4935,16 @@ The findings under the key "data" in the JSON file /tmp/claude-0/-home-user/6435
 
 </details>
 
-<details>
-<summary>Subagent `check:ux` (rex-fix-verification, 2026-10-09 11:25:35 UTC): Returned fixed: 12, not_fixed: 6 (e.g. L-02; L-03), new_problems: 8 (e.g. The throw chart labels a peak height ('top 155 km') for objects that escape Earth; Throw-chart y-axis labels of 8+ characters lose their first digit, so the axis reads '0,00).</summary>
+**Subagent `check:ux`** · rex-fix-verification · started 2026-10-09 11:25:35 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Check fixes`, agent `a0b5f0c88e159885e`. Prompt, verbatim:
+- fixed: 12; not fixed: 6; new problems: 8 (3 major, 5 minor).
+- Not fixed: L-02; L-03; L-08 (+3 more).
+- New problems: The throw chart labels a peak height ('top 155 km') for objects that…; Throw-chart y-axis labels of 8+ characters lose their first digit, so…; Regression: the strength slider on Throw now blocks the main thread….
+
+<details>
+<summary>Prompt, verbatim (2,053 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Check fixes`, agent `a0b5f0c88e159885e`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4376,10 +4960,14 @@ The findings under the key "ux" in the JSON file /tmp/claude-0/-home-user/6435a7
 
 </details>
 
-<details>
-<summary>Subagent `verify3:claims:M5` (rex-fix-verification, 2026-10-09 11:29:40 UTC): I could not refute this. It reproduces on the current dist/index.html, wrapped and run in Chromium with localStorage 'rex-lab-v1' set to {action:'throw', obj:'car', angle:90} and a 5 s wait.</summary>
+**Subagent `verify3:claims:M5`** · rex-fix-verification · started 2026-10-09 11:29:40 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a0b0d3760ef92076f`. Prompt, verbatim:
+- Confirmed (minor). I could not refute this. It reproduces on the current dist/index.html, wrapped and run in Chromium with localStorage 'rex-lab-v1' set to {action:'throw', obj:'car', angle:90} and a 5 s wait.
+
+<details>
+<summary>Prompt, verbatim (2,946 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a0b0d3760ef92076f`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4403,10 +4991,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:claims:N1` (rex-fix-verification, 2026-10-09 11:31:49 UTC): I reproduced this in the engine and on the built page (my own wrapper of dist/index.html in scratchpad/audit3/prev.html; localStorage set to mode 'real', concrete, groundHolds false). Every figure in the report matches.</summary>
+**Subagent `verify3:claims:N1`** · rex-fix-verification · started 2026-10-09 11:31:49 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `aacf51c7bbcf01e43`. Prompt, verbatim:
+- Confirmed (major). I reproduced this in the engine and on the built page (my own wrapper of dist/index.html in scratchpad/audit3/prev.html; localStorage set to mode 'real', concrete, groundHolds false). Every figure in the report matches.
+
+<details>
+<summary>Prompt, verbatim (3,108 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `aacf51c7bbcf01e43`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4432,10 +5024,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:claims:N2` (rex-fix-verification, 2026-10-09 11:49:15 UTC): I reproduced this against the current build in two ways: in Node with the engine, and in Chromium on dist/index.html with the settings put in localStorage. The engine code in dist/index.html matches src/engine.js.</summary>
+**Subagent `verify3:claims:N2`** · rex-fix-verification · started 2026-10-09 11:49:15 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a019c4380463e066f`. Prompt, verbatim:
+- Confirmed (major). I reproduced this against the current build in two ways: in Node with the engine, and in Chromium on dist/index.html with the settings put in localStorage. The engine code in dist/index.html matches src/engine.js.
+
+<details>
+<summary>Prompt, verbatim (3,315 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a019c4380463e066f`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4461,10 +5057,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:claims:N3` (rex-fix-verification, 2026-10-09 11:52:23 UTC): I reproduced this on the current build, both in Node against src/engine.js and in Chromium against a scratch copy of dist/index.html. The settings went into localStorage 'rex-lab-v1' and I waited 5 s after load.</summary>
+**Subagent `verify3:claims:N3`** · rex-fix-verification · started 2026-10-09 11:52:23 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a0fcfd828215ac5bc`. Prompt, verbatim:
+- Confirmed (major). I reproduced this on the current build, both in Node against src/engine.js and in Chromium against a scratch copy of dist/index.html. The settings went into localStorage 'rex-lab-v1' and I waited 5 s after load.
+
+<details>
+<summary>Prompt, verbatim (2,987 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a0fcfd828215ac5bc`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4490,10 +5090,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:claims:N4` (rex-fix-verification, 2026-10-09 12:00:11 UTC): I reproduced this against the current build, both in the engine and in the browser. Browser (dist/preview.html): I cleared localStorage, reloaded, waited 5 s and clicked the "Strongest human" ladder marker, which sets 511 kg, comic mode, the Throw tab, the Toyota Corolla and 45°.</summary>
+**Subagent `verify3:claims:N4`** · rex-fix-verification · started 2026-10-09 12:00:11 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a3d7bc4c98668ce89`. Prompt, verbatim:
+- Confirmed (major). I reproduced this against the current build, both in the engine and in the browser. Browser (dist/preview.html): I cleared localStorage, reloaded, waited 5 s and clicked the "Strongest human" ladder marker, which sets 511 kg, comic mode, the Throw tab, the Toyota Corolla and 45°.
+
+<details>
+<summary>Prompt, verbatim (2,976 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a3d7bc4c98668ce89`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4519,10 +5123,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:claims:N5` (rex-fix-verification, 2026-10-09 12:02:40 UTC): I reproduced every claim on the current build (dist/index.html, Playwright, default concrete, friction anchor, 2 m/180 kg unless noted) and in the engine under Node. Cause: comicAtLeastReal (src/engine.js:606-613) returns the real-muscle result tagged basis: 'real' when real muscle does better.</summary>
+**Subagent `verify3:claims:N5`** · rex-fix-verification · started 2026-10-09 12:02:40 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a2b406ac45dce0432`. Prompt, verbatim:
+- Confirmed (minor). I reproduced every claim on the current build (dist/index.html, Playwright, default concrete, friction anchor, 2 m/180 kg unless noted) and in the engine under Node. Cause: comicAtLeastReal (src/engine.js:606-613) returns the real-muscle result tagged basis: 'real' when real muscle does better.
+
+<details>
+<summary>Prompt, verbatim (3,068 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a2b406ac45dce0432`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4548,10 +5156,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:claims:N6` (rex-fix-verification, 2026-10-09 12:04:24 UTC): I reproduced this against the current build. I loaded /home/user/dino-strength-sim/dist/preview.html in Playwright, clicked each strength chip and then the Punch tab, and read the text in main.panel.</summary>
+**Subagent `verify3:claims:N6`** · rex-fix-verification · started 2026-10-09 12:04:24 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `ad59d8019e87717fb`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this against the current build. I loaded /home/user/dino-strength-sim/dist/preview.html in Playwright, clicked each strength chip and then the Punch tab, and read the text in main.panel.
+
+<details>
+<summary>Prompt, verbatim (2,693 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `ad59d8019e87717fb`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4577,10 +5189,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:claims:N7` (rex-fix-verification, 2026-10-09 12:05:16 UTC): I reproduced this on the current build. I wrapped a fresh copy of dist/index.html (the existing preview.html is a minute older), set localStorage 'rex-lab-v1' to {mode:'real', surface:'concrete', action:'jump'} at the default Hulk strength, and opened the Jump tab.</summary>
+**Subagent `verify3:claims:N7`** · rex-fix-verification · started 2026-10-09 12:05:16 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `ab8f1bc28dc75e68a`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this on the current build. I wrapped a fresh copy of dist/index.html (the existing preview.html is a minute older), set localStorage 'rex-lab-v1' to {mode:'real', surface:'concrete', action:'jump'} at the default Hulk strength, and opened the Jump tab.
+
+<details>
+<summary>Prompt, verbatim (2,807 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `ab8f1bc28dc75e68a`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4606,10 +5222,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:claims:N8` (rex-fix-verification, 2026-10-09 12:07:24 UTC): I reproduced this against the current dist/index.html, using a scratch wrapper and Playwright with localStorage 'rex-lab-v1' set to action 'jump' and groundHolds true. The verdict and the chip right under it say opposite things in every comic-ground case I tried: - All-Star strength, H=2: "Rex leaves at 99.999999962% ...</summary>
+**Subagent `verify3:claims:N8`** · rex-fix-verification · started 2026-10-09 12:07:24 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a6feebd14230f3c4e`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this against the current dist/index.html, using a scratch wrapper and Playwright with localStorage 'rex-lab-v1' set to action 'jump' and groundHolds true. The verdict and the chip right under it say opposite things in every comic-ground case I tried: - All-Star strength, H=2: "Rex leaves at 99.999999962% ...
+
+<details>
+<summary>Prompt, verbatim (2,345 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a6feebd14230f3c4e`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4635,10 +5255,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:claims:N9` (rex-fix-verification, 2026-10-09 12:08:23 UTC): I reproduced this against the current build, in both the engine and the built page. Engine: I ran stompOnce on concrete, comic mode, ground not holding (n9.js in the audit3 scratchpad).</summary>
+**Subagent `verify3:claims:N9`** · rex-fix-verification · started 2026-10-09 12:08:23 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `ae3ca553cb7d62dec`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this against the current build, in both the engine and the built page. Engine: I ran stompOnce on concrete, comic mode, ground not holding (n9.js in the audit3 scratchpad).
+
+<details>
+<summary>Prompt, verbatim (2,577 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `ae3ca553cb7d62dec`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4664,10 +5288,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:claims:N10` (rex-fix-verification, 2026-10-09 12:10:09 UTC): I reproduced this on the current dist/index.html. I loaded it in Chromium with fresh localStorage and waited 5 s.</summary>
+**Subagent `verify3:claims:N10`** · rex-fix-verification · started 2026-10-09 12:10:09 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a38509d835257bc45`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this on the current dist/index.html. I loaded it in Chromium with fresh localStorage and waited 5 s.
+
+<details>
+<summary>Prompt, verbatim (2,594 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a38509d835257bc45`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4693,10 +5321,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:regression:R2` (rex-fix-verification, 2026-10-09 12:11:00 UTC): I could not refute this. It reproduces in both the engine and the built page.</summary>
+**Subagent `verify3:regression:R2`** · rex-fix-verification · started 2026-10-09 12:11:00 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a4ab779fc91223ab8`. Prompt, verbatim:
+- Confirmed (major). I could not refute this. It reproduces in both the engine and the built page.
+
+<details>
+<summary>Prompt, verbatim (2,927 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a4ab779fc91223ab8`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4720,10 +5352,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:regression:R10` (rex-fix-verification, 2026-10-09 12:11:46 UTC): I reproduced this against the current dist/index.html. dist/index.html was built at 10:47:26, the same time as src/app.html.</summary>
+**Subagent `verify3:regression:R10`** · rex-fix-verification · started 2026-10-09 12:11:46 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `af2ed60b023c56dde`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this against the current dist/index.html. dist/index.html was built at 10:47:26, the same time as src/app.html.
+
+<details>
+<summary>Prompt, verbatim (2,675 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `af2ed60b023c56dde`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4747,10 +5383,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:regression:R15` (rex-fix-verification, 2026-10-09 12:15:04 UTC): I reproduced this on the current dist/preview.html. Playwright run with localStorage rex-lab-v1 = {logKg:16.91, obj:'pyramid', anchor:'bolted', angle:45, mode:'comic', H:2, m:180}, a 5 s wait, then the Throw tab.</summary>
+**Subagent `verify3:regression:R15`** · rex-fix-verification · started 2026-10-09 12:15:04 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a85ea02e0f258a12f`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this on the current dist/preview.html. Playwright run with localStorage rex-lab-v1 = {logKg:16.91, obj:'pyramid', anchor:'bolted', angle:45, mode:'comic', H:2, m:180}, a 5 s wait, then the Throw tab.
+
+<details>
+<summary>Prompt, verbatim (2,581 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a85ea02e0f258a12f`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4774,10 +5414,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:regression:N1` (rex-fix-verification, 2026-10-09 12:25:22 UTC): I reproduced this exactly against the current build, both in the engine and in the browser. Browser (my own wrapper of dist/index.html; settings seeded through localStorage 'rex-lab-v1'; real muscle, concrete, standing, Throw tab; waited 5 s): - Tank at 30°, Hulk (90,718 kg) and 10^34 kg: "The tank flies 1.8 m." The ...</summary>
+**Subagent `verify3:regression:N1`** · rex-fix-verification · started 2026-10-09 12:25:22 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `ac2f67ba1431f393c`. Prompt, verbatim:
+- Confirmed (major). I reproduced this exactly against the current build, both in the engine and in the browser. Browser (my own wrapper of dist/index.html; settings seeded through localStorage 'rex-lab-v1'; real muscle, concrete, standing, Throw tab; waited 5 s): - Tank at 30°, Hulk (90,718 kg) and 10^34 kg: "The tank flies 1.8 m." The ...
+
+<details>
+<summary>Prompt, verbatim (2,882 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `ac2f67ba1431f393c`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4803,10 +5447,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:regression:N2` (rex-fix-verification, 2026-10-09 12:31:43 UTC): I reproduced this against the current build: dist/index.html, loaded through Playwright with the settings in localStorage 'rex-lab-v1' and a 5 s wait. I also checked it in Node.</summary>
+**Subagent `verify3:regression:N2`** · rex-fix-verification · started 2026-10-09 12:31:43 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `aca1c87d87fa705be`. Prompt, verbatim:
+- Confirmed (major). I reproduced this against the current build: dist/index.html, loaded through Playwright with the settings in localStorage 'rex-lab-v1' and a 5 s wait. I also checked it in Node.
+
+<details>
+<summary>Prompt, verbatim (3,080 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `aca1c87d87fa705be`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4832,10 +5480,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:regression:N3` (rex-fix-verification, 2026-10-09 12:36:20 UTC): I reproduced this on the current dist/index.html with Playwright, using the default settings (comic mode, concrete, friction footing, 2 m / 180 kg). What the page shows: - "Hulk and Thor: Class 100" (tank at 30°): the verdict is "The tank flies 1.8 m." The math box says "Drive: 890 kN (17% of full strength per hand, ...</summary>
+**Subagent `verify3:regression:N3`** · rex-fix-verification · started 2026-10-09 12:36:20 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a31ff5cb7b6305e7a`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this on the current dist/index.html with Playwright, using the default settings (comic mode, concrete, friction footing, 2 m / 180 kg). What the page shows: - "Hulk and Thor: Class 100" (tank at 30°): the verdict is "The tank flies 1.8 m." The math box says "Drive: 890 kN (17% of full strength per hand, ...
+
+<details>
+<summary>Prompt, verbatim (2,997 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a31ff5cb7b6305e7a`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4861,10 +5513,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:regression:N4` (rex-fix-verification, 2026-10-09 12:36:35 UTC): I reproduced this on the built page (dist/index.html, Playwright, localStorage rex-lab-v1) and in the engine. The bug is real, and it reaches further than the report says.</summary>
+**Subagent `verify3:regression:N4`** · rex-fix-verification · started 2026-10-09 12:36:35 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `ac71361b81a69fca4`. Prompt, verbatim:
+- Confirmed (major). I reproduced this on the built page (dist/index.html, Playwright, localStorage rex-lab-v1) and in the engine. The bug is real, and it reaches further than the report says.
+
+<details>
+<summary>Prompt, verbatim (2,874 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `ac71361b81a69fca4`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4890,10 +5546,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:regression:N5` (rex-fix-verification, 2026-10-09 12:38:43 UTC): I reproduced this against the current build, both in the engine and on the rendered page. I could not refute it.</summary>
+**Subagent `verify3:regression:N5`** · rex-fix-verification · started 2026-10-09 12:38:43 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `ab35d910d2d062bb6`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this against the current build, both in the engine and on the rendered page. I could not refute it.
+
+<details>
+<summary>Prompt, verbatim (2,681 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `ab35d910d2d062bb6`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4919,10 +5579,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:regression:R9-residual` (rex-fix-verification, 2026-10-09 12:40:37 UTC): I reproduced this against the current dist/index.html, using a fresh wrapper in the scratchpad because dist/preview.html is a minute older than index.html. Settings: Comic, concrete, ground can break, friction anchor, Stomp, 5 s wait.</summary>
+**Subagent `verify3:regression:R9-residual`** · rex-fix-verification · started 2026-10-09 12:40:37 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `ac95feccec8310500`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this against the current dist/index.html, using a fresh wrapper in the scratchpad because dist/preview.html is a minute older than index.html. Settings: Comic, concrete, ground can break, friction anchor, Stomp, 5 s wait.
+
+<details>
+<summary>Prompt, verbatim (2,651 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `ac95feccec8310500`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4948,10 +5612,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:data:D10` (rex-fix-verification, 2026-10-09 12:44:41 UTC): I reproduced this against the current build (dist/index.html 10:47, data.js 10:42). 1.</summary>
+**Subagent `verify3:data:D10`** · rex-fix-verification · started 2026-10-09 12:44:41 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `aaf941409645a7d92`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this against the current build (dist/index.html 10:47, data.js 10:42). 1.
+
+<details>
+<summary>Prompt, verbatim (3,342 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `aaf941409645a7d92`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -4975,10 +5643,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:data:D13` (rex-fix-verification, 2026-10-09 12:46:16 UTC): I reproduced this on the current build, so the report stands. 1.</summary>
+**Subagent `verify3:data:D13`** · rex-fix-verification · started 2026-10-09 12:46:16 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a47929490ea32b135`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this on the current build, so the report stands. 1.
+
+<details>
+<summary>Prompt, verbatim (2,617 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a47929490ea32b135`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -5002,10 +5674,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:data:N1` (rex-fix-verification, 2026-10-09 12:46:36 UTC): I reproduced this against the current build, /home/user/dino-strength-sim/dist/index.html, loaded in Playwright Chromium with no page errors. - The sources table has 134 rows.</summary>
+**Subagent `verify3:data:N1`** · rex-fix-verification · started 2026-10-09 12:46:36 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a9f84b06332d3b100`. Prompt, verbatim:
+- Confirmed (major). I reproduced this against the current build, /home/user/dino-strength-sim/dist/index.html, loaded in Playwright Chromium with no page errors. - The sources table has 134 rows.
+
+<details>
+<summary>Prompt, verbatim (3,234 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a9f84b06332d3b100`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -5031,10 +5707,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:data:N2` (rex-fix-verification, 2026-10-09 12:47:40 UTC): I reproduced this against the current dist/index.html. I wrapped it in a scratch copy, loaded it in Playwright Chromium, waited 5 s and opened all details.</summary>
+**Subagent `verify3:data:N2`** · rex-fix-verification · started 2026-10-09 12:47:40 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `abe812addf088fb3d`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this against the current dist/index.html. I wrapped it in a scratch copy, loaded it in Playwright Chromium, waited 5 s and opened all details.
+
+<details>
+<summary>Prompt, verbatim (3,216 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `abe812addf088fb3d`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -5060,10 +5740,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:data:N3` (rex-fix-verification, 2026-10-09 12:48:30 UTC): I reproduced this against the current build and could not refute it. Data.</summary>
+**Subagent `verify3:data:N3`** · rex-fix-verification · started 2026-10-09 12:48:30 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `ac816e9a95da99cca`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this against the current build and could not refute it. Data.
+
+<details>
+<summary>Prompt, verbatim (2,645 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `ac816e9a95da99cca`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -5089,10 +5773,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:data:N4` (rex-fix-verification, 2026-10-09 12:49:26 UTC): I reproduced the report against the current build and could not refute it. Repro.</summary>
+**Subagent `verify3:data:N4`** · rex-fix-verification · started 2026-10-09 12:49:26 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a93bef6575d2e7f35`. Prompt, verbatim:
+- Confirmed (minor). I reproduced the report against the current build and could not refute it. Repro.
+
+<details>
+<summary>Prompt, verbatim (2,779 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a93bef6575d2e7f35`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -5118,10 +5806,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:data:N5` (rex-fix-verification, 2026-10-09 12:49:35 UTC): I reproduced this on the current dist/index.html, loaded through a fresh wrapper in Playwright with a 5 s wait. Tapping each strength chip sets the line under the dial (dial-who) as follows.</summary>
+**Subagent `verify3:data:N5`** · rex-fix-verification · started 2026-10-09 12:49:35 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `abef1558ad473ebe8`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this on the current dist/index.html, loaded through a fresh wrapper in Playwright with a 5 s wait. Tapping each strength chip sets the line under the dial (dial-who) as follows.
+
+<details>
+<summary>Prompt, verbatim (2,703 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `abef1558ad473ebe8`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -5147,10 +5839,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:data:N6` (rex-fix-verification, 2026-10-09 12:50:22 UTC): I reproduced this against the current dist/index.html with Playwright at 1280x900 and 390x844. Setup: rex-lab-v1 = {mode:'real', logKg:log10(511), surface:'concrete', anchor:'friction', H:2, m:180, ...}, reload, wait 5 s, then click Simulate on "Hurdle a twenty-story building".</summary>
+**Subagent `verify3:data:N6`** · rex-fix-verification · started 2026-10-09 12:50:22 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `ae3e64032efe6d9ac`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this against the current dist/index.html with Playwright at 1280x900 and 390x844. Setup: rex-lab-v1 = {mode:'real', logKg:log10(511), surface:'concrete', anchor:'friction', H:2, m:180, ...}, reload, wait 5 s, then click Simulate on "Hurdle a twenty-story building".
+
+<details>
+<summary>Prompt, verbatim (2,607 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `ae3e64032efe6d9ac`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -5176,10 +5872,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:ux:L-02` (rex-fix-verification, 2026-10-09 12:51:03 UTC): I could not refute it; both remaining defects reproduce on the current build. I tested a scratch copy of dist/index.html (same renderLadder as src/app.html) in Playwright Chromium at 320, 390, 768 and 1280 px, light and dark, waiting 5 s for thresholds.</summary>
+**Subagent `verify3:ux:L-02`** · rex-fix-verification · started 2026-10-09 12:51:03 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `ad42b63658f9cb62f`. Prompt, verbatim:
+- Confirmed (minor). I could not refute it; both remaining defects reproduce on the current build. I tested a scratch copy of dist/index.html (same renderLadder as src/app.html) in Playwright Chromium at 320, 390, 768 and 1280 px, light and dark, waiting 5 s for thresholds.
+
+<details>
+<summary>Prompt, verbatim (2,748 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `ad42b63658f9cb62f`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -5203,10 +5903,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:ux:L-03` (rex-fix-verification, 2026-10-09 12:52:00 UTC): I reproduced this on the current build, and it is a regression. Script: /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit3/l03v/repro.js.</summary>
+**Subagent `verify3:ux:L-03`** · rex-fix-verification · started 2026-10-09 12:52:00 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a07dd856ad1e6da72`. Prompt, verbatim:
+- Confirmed (major). I reproduced this on the current build, and it is a regression. Script: /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/audit3/l03v/repro.js.
+
+<details>
+<summary>Prompt, verbatim (2,873 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a07dd856ad1e6da72`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -5230,10 +5934,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:ux:L-08` (rex-fix-verification, 2026-10-09 12:59:13 UTC): The checker's contrast numbers are correct, but none of the three marks is a failure, and the parts of L-08 that did fail are now fixed. How I checked: I measured the current build, dist/preview.html, which matches src.</summary>
+**Subagent `verify3:ux:L-08`** · rex-fix-verification · started 2026-10-09 12:59:13 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a5ae6c8c1e3b4acdc`. Prompt, verbatim:
+- Refuted (not a bug). The checker's contrast numbers are correct, but none of the three marks is a failure, and the parts of L-08 that did fail are now fixed. How I checked: I measured the current build, dist/preview.html, which matches src.
+
+<details>
+<summary>Prompt, verbatim (2,536 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a5ae6c8c1e3b4acdc`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -5257,10 +5965,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:ux:L-09` (rex-fix-verification, 2026-10-09 13:02:24 UTC): I could not refute any of the three remaining items. I checked them with my own Playwright run against the current dist/preview.html, which is byte-identical to a fresh build of src.</summary>
+**Subagent `verify3:ux:L-09`** · rex-fix-verification · started 2026-10-09 13:02:24 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a70861c8267348236`. Prompt, verbatim:
+- Confirmed (minor). I could not refute any of the three remaining items. I checked them with my own Playwright run against the current dist/preview.html, which is byte-identical to a fresh build of src.
+
+<details>
+<summary>Prompt, verbatim (3,046 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a70861c8267348236`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -5284,10 +5996,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:ux:L-10` (rex-fix-verification, 2026-10-09 13:05:09 UTC): I reproduced this on the current build, dist/preview.html, which is the same as src/app.html. The cause is still in the code.</summary>
+**Subagent `verify3:ux:L-10`** · rex-fix-verification · started 2026-10-09 13:05:09 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a9e62e68b4a550197`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this on the current build, dist/preview.html, which is the same as src/app.html. The cause is still in the code.
+
+<details>
+<summary>Prompt, verbatim (2,401 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a9e62e68b4a550197`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -5311,10 +6027,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:ux:L-13` (rex-fix-verification, 2026-10-09 13:08:39 UTC): The report holds up. Only half of L-13 was fixed.</summary>
+**Subagent `verify3:ux:L-13`** · rex-fix-verification · started 2026-10-09 13:08:39 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a4be201a9af0e0ab8`. Prompt, verbatim:
+- Confirmed (minor). The report holds up. Only half of L-13 was fixed.
+
+<details>
+<summary>Prompt, verbatim (2,537 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a4be201a9af0e0ab8`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -5338,10 +6058,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:ux:N1` (rex-fix-verification, 2026-10-09 13:12:05 UTC): I reproduced this against the current dist/preview.html in Playwright, using localStorage 'rex-lab-v1' and the 1280x900 view. What the page shows: - Freight locomotive, logKg 18.7, 80°, comic, concrete, standing.</summary>
+**Subagent `verify3:ux:N1`** · rex-fix-verification · started 2026-10-09 13:12:05 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a16794b298358fb93`. Prompt, verbatim:
+- Confirmed (major). I reproduced this against the current dist/preview.html in Playwright, using localStorage 'rex-lab-v1' and the 1280x900 view. What the page shows: - Freight locomotive, logKg 18.7, 80°, comic, concrete, standing.
+
+<details>
+<summary>Prompt, verbatim (2,779 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a16794b298358fb93`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -5367,10 +6091,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:ux:N2` (rex-fix-verification, 2026-10-09 13:19:23 UTC): I reproduced this against the current build. dist/index.html and dist/preview.html both still have padL = 58 at line 4642, the same as src/app.html:593.</summary>
+**Subagent `verify3:ux:N2`** · rex-fix-verification · started 2026-10-09 13:19:23 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a3063b34efbe6734e`. Prompt, verbatim:
+- Confirmed (major). I reproduced this against the current build. dist/index.html and dist/preview.html both still have padL = 58 at line 4642, the same as src/app.html:593.
+
+<details>
+<summary>Prompt, verbatim (2,635 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a3063b34efbe6734e`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -5396,10 +6124,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:ux:N6` (rex-fix-verification, 2026-10-09 13:19:29 UTC): I reproduced this against the current build and it is a real regression. It also hits the page's opening view, which the report doesn't mention.</summary>
+**Subagent `verify3:ux:N6`** · rex-fix-verification · started 2026-10-09 13:19:29 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a9dc17f505e312a41`. Prompt, verbatim:
+- Confirmed (major). I reproduced this against the current build and it is a real regression. It also hits the page's opening view, which the report doesn't mention.
+
+<details>
+<summary>Prompt, verbatim (2,795 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a9dc17f505e312a41`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -5425,10 +6157,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:ux:N3` (rex-fix-verification, 2026-10-09 13:22:53 UTC): I reproduced it against the current dist/index.html (line 5296, the same code as app.html:1245-1248). I wrapped the build in a scratch preview, waited 5.5 s, focused each of the 18 .mk markers in turn and compared the tooltip's rect with the marker's circle, text and leader-path rects.</summary>
+**Subagent `verify3:ux:N3`** · rex-fix-verification · started 2026-10-09 13:22:53 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a9488049411ff1b08`. Prompt, verbatim:
+- Confirmed (minor). I reproduced it against the current dist/index.html (line 5296, the same code as app.html:1245-1248). I wrapped the build in a scratch preview, waited 5.5 s, focused each of the 18 .mk markers in turn and compared the tooltip's rect with the marker's circle, text and leader-path rects.
+
+<details>
+<summary>Prompt, verbatim (2,494 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a9488049411ff1b08`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -5454,10 +6190,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:ux:N4` (rex-fix-verification, 2026-10-09 13:26:46 UTC): The report holds up. I reproduced it in Chromium against the current dist/index.html, loaded through a scratch copy of the shots.js wrapper, with localStorage 'rex-lab-v1' set to action 'lift', 2 m, 180 kg, comic, concrete: - Grand piano (480 kg), logKg 2.68 (479 kg): the verdict says "Rex can’t budge it.</summary>
+**Subagent `verify3:ux:N4`** · rex-fix-verification · started 2026-10-09 13:26:46 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a169d79a2cc684ffa`. Prompt, verbatim:
+- Confirmed (minor). The report holds up. I reproduced it in Chromium against the current dist/index.html, loaded through a scratch copy of the shots.js wrapper, with localStorage 'rex-lab-v1' set to action 'lift', 2 m, 180 kg, comic, concrete: - Grand piano (480 kg), logKg 2.68 (479 kg): the verdict says "Rex can’t budge it.
+
+<details>
+<summary>Prompt, verbatim (2,374 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a169d79a2cc684ffa`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -5483,10 +6223,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:ux:N5` (rex-fix-verification, 2026-10-09 13:28:09 UTC): I reproduced this on the current build: dist/index.html, rendered in Chromium from my own wrapper in the scratch folder, with localStorage settings {mode: real, action: throw, obj: shot, angle: 45, concrete, friction, 2 m / 180 kg}. Node engine runs agree.</summary>
+**Subagent `verify3:ux:N5`** · rex-fix-verification · started 2026-10-09 13:28:09 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a12c1132daa73094b`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this on the current build: dist/index.html, rendered in Chromium from my own wrapper in the scratch folder, with localStorage settings {mode: real, action: throw, obj: shot, angle: 45, concrete, friction, 2 m / 180 kg}. Node engine runs agree.
+
+<details>
+<summary>Prompt, verbatim (2,662 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a12c1132daa73094b`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -5512,10 +6256,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:ux:N7` (rex-fix-verification, 2026-10-09 13:33:51 UTC): I reproduced this on the current build. dist/index.html is byte-identical to the build the checker used, and its fmtSpeed (index.html:4432, app.html:383-389) prints ceil(-log10(1-b))-1 decimals.</summary>
+**Subagent `verify3:ux:N7`** · rex-fix-verification · started 2026-10-09 13:33:51 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `ae0452a1d38e86439`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this on the current build. dist/index.html is byte-identical to the build the checker used, and its fmtSpeed (index.html:4432, app.html:383-389) prints ceil(-log10(1-b))-1 decimals.
+
+<details>
+<summary>Prompt, verbatim (2,695 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `ae0452a1d38e86439`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -5541,10 +6289,14 @@ REPORT:
 
 </details>
 
-<details>
-<summary>Subagent `verify3:ux:N8` (rex-fix-verification, 2026-10-09 13:36:52 UTC): I reproduced this on the current build (dist/preview.html) using Playwright Chromium with the Google web fonts loaded through the proxy. I confirmed Big Shoulders Display 800 is in use.</summary>
+**Subagent `verify3:ux:N8`** · rex-fix-verification · started 2026-10-09 13:36:52 UTC
 
-Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a31adede25581c833`. Prompt, verbatim:
+- Confirmed (minor). I reproduced this on the current build (dist/preview.html) using Playwright Chromium with the Google web fonts loaded through the proxy. I confirmed Big Shoulders Display 800 is in use.
+
+<details>
+<summary>Prompt, verbatim (2,312 characters)</summary>
+
+Workflow run `wf_e1c701fc-dbc`, phase `Verify`, agent `a31adede25581c833`.
 
 ```text
 You are checking fixes in "Rex Super-Strength Lab", a single-page physics simulator for an indestructible plush dinosaur named Rex (default 2 m, 180 kg; strength from 511 kg deadlift to infinite).
@@ -5763,8 +6515,8 @@ Continue the conversation from where it left off without asking the user any fur
 
 - `Bash` Locate key code sites for audit fixes: `cd /home/user/dino-strength-sim && wc -l src/engine.js src/app.html src/static-data.js build-data.py && grep -n "isFinite(F) && F > Rlim" src/engine.js && gr...`
   - result: Exit code 1
-  - result:    950 src/engine.js
-  - result:   1349 src/app.html
+  - result: 950 src/engine.js
+  - result: 1349 src/app.html
 - `Bash` Find relevant code sites: `cd /home/user/dino-strength-sim && grep -n "const el\b\|const el =\|function el\|Rlim > RB\|sinkRatio\|gripShare\|plate\|Fbest\|more strength\|basis" src/eng...`
 - `Bash` Read engine throw section: `sed -n 560,760p src/engine.js`
 - `Bash` List confirmed audit 3 problems with fixes: `python3 -c "` (+9 lines)
@@ -5896,10 +6648,13 @@ Ladder focus ring and tooltip placement work at 390 px (the tooltip no longer co
 *Woken · 2026-10-09 14:16:31 UTC · Background task bdkv1333y completed: Background command "Rebuild previews and sweep UI states for broken text" completed (exit code 0).*
 
 
-*Woken · 2026-10-09 14:16:32 UTC · Background task b539bhm04 event: Monitor event: "UI state sweep and engine sweep finishing".*
+*Woken · 2026-10-09 14:16:32 UTC · Background task b539bhm04 event: Monitor event: "UI state sweep and engine sweep finishing" Event: states 672 bad 0 ms per slider step (incl. frame): 31.7 errors [].*
 
 
 *Woken · 2026-10-09 14:18:06 UTC · Background task br1q6p1h8 completed: Background command "Run full engine sweep for NaN/negative values" completed (exit code 0).*
+
+
+*Woken · 2026-10-09 14:18:07 UTC · Background task b539bhm04 event: Monitor event: "UI state sweep and engine sweep finishing" Event: ENGINE: [exited with code 0].*
 
 
 *Woken · 2026-10-09 14:18:12 UTC · Background task b539bhm04 completed: Monitor "UI state sweep and engine sweep finishing" stream ended. Next: Final checks clean. Syncing to the repo, committing, pushing, and republishing the page.*
@@ -5922,7 +6677,7 @@ Final checks clean. Syncing to the repo, committing, pushing, and republishing t
 
 
 - `Artifact` publish /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/rex-strength-lab.html
-  - result: This is not a judgement against Artifact. Repeat the identical Artifact call once now; it will be reviewed against the artifact's current state. (The server-side auto mode classifier reviewed it against this artifact's sharing state as it s
+  - result: This is not a judgement against Artifact. Repeat the identical Artifact call once now; it will be reviewed against the artifact's current state. (The server-side auto mode classifier reviewed it against this artifact's sharing state as it…
 - `Artifact` publish /tmp/claude-0/-home-user/6435a7db-fe21-5f3b-bca9-e49ba2609387/scratchpad/rex-strength-lab.html
 - `ToolSearch` select:TaskUpdate
 - `TaskUpdate` #5 status=completed
