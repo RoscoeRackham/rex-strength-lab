@@ -11,9 +11,14 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## In progress
 
-- Build Comparison Step 1 (cloud session, branch `claude/hopeful-keller-vly1s9`, started 2026-10-11): research with verified facts, then design, build, review rounds, publish, pull request. Also claims root `README.md` (one row for the new page), `.github/workflows/test.yml` (build and test steps for the new project) and a new `history/` entry for this session.
+- Build Comparison Step 1 (cloud session, branch `claude/hopeful-keller-vly1s9`, started 2026-10-11). Also claims root `README.md` (one row for the new page), `.github/workflows/test.yml` (build and test steps for the new project) and a new `history/` entry for this session.
+  - Done: research (six topics, each verified; 26 corrections applied), design (three proposals, two judges, one spec: `build-comparison/research/reviews/design.md`), the page, the measuring tool (validated on duo.jpg), functional limits, tests (`test/test.js`, `test/duo.js`, `test/shots.js`), README and `data/NOTES.md`.
+  - In progress: adversarial review rounds and fixes; then publish as a new Artifact, open the pull request, and write the `history/` entry.
+  - `build-calculator/data/builds.json` and `src/calc.js` are claimed but have not been changed.
 
 ## Waiting on
+
+- Owner review of Build Comparison design decisions listed in `build-comparison/data/NOTES.md` ("Design decisions to review"): the edge marking, the brief's meatball sentence (false as geometry), the palette change, the stop edges, and Thor's treatment.
 
 - Step 2 (collaborator, after Step 1 merges): regenerate Rex's and Ollie's turnarounds to the model-sheet spec (fixes listed in BRIEF.md, "The turnarounds") and measure them; make gap-filler figures from target outlines with GPT Images 2.5.
 

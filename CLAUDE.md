@@ -57,6 +57,7 @@ From the repo root; each line ends back at the root, so they run one after the o
 ```
 cd rex-strength-lab && python build-data.py && node build.js && node test/calibration.js && node test/shots.js && cd ..
 cd build-calculator && node build.js && node test/test.js && node test/shots.js && cd ..
+cd build-comparison && node build.js && node test/test.js && node test/duo.js && node test/shots.js && cd ..
 ```
 
 - On macOS and Linux the Python command may be `python3`.
