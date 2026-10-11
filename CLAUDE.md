@@ -17,7 +17,8 @@ The owner is a professional critic. Factual accuracy and honest labelling come f
 
 - Rex: 10 ft (3.048 m) tall by the owner's ruling; about 2,700 kg (2,300–3,000 kg), measured from `rex-strength-lab/assets/duo.jpg`.
 - Ollie: as strong, tough and big as Rex. Plush bull-man: horns, nose ring, leather vest, cargo pants, laced boots, no visible claws. Measured at Rex's scale (3.06 m to his horn tips).
-- Both are male. Do not invent other canon for either; ask.
+- Both are male, and both are 5–10% body fat (7.5% as the working value), from their definition and occasional vascularity. Rex's tail does not count toward his muscle level.
+- Do not invent other canon for either; ask.
 - Art in `rex-strength-lab/assets/` is the owner's. Use it; don't redraw the characters.
 
 ## House pattern for a project
