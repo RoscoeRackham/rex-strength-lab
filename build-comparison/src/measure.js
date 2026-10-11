@@ -19,7 +19,7 @@
 (function (root, factory) {
   var api = factory();
   if (typeof module === 'object' && module.exports) module.exports = api;
-  if (typeof window !== 'undefined') window.Measure = api;
+  else if (root) root.Measure = api; // window.Measure in a page, self.Measure in a worker
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
 
@@ -238,8 +238,31 @@
       holes.sizes[k] = !touches && holes.sizes[k] <= maxHole ? -1 : holes.sizes[k];
     }
     for (i = 0; i < w * h; i++) if (!mask[i] && holes.sizes[holes.labels[i]] === -1) mask[i] = 1;
-    for (var pass = 0; pass < (opts.refine || 0); pass++) mask = refineMask(img, mask, opts);
+    if (opts.refine) mask = refineViews(img, mask, opts);
     return { mask: mask, width: w, height: h, bg: bg, lines: lines.map(function (l) { return (l.y0 + l.y1) / 2; }) };
+  }
+
+  /**
+   * The refinement passes, run on each view's own crop (its column band, with a margin that stops
+   * halfway to the next view) instead of the whole sheet: the same result for the figure, at a
+   * fraction of the time and memory on a large sheet.
+   */
+  function refineViews(img, mask, opts) {
+    var w = img.width, h = img.height, out = new Uint8Array(mask);
+    var vs = splitViews(mask, w, h), m = Math.max(16, Math.round(0.02 * Math.max(w, h)));
+    vs.forEach(function (v, i) {
+      var left = i > 0 ? Math.ceil((vs[i - 1].x1 + v.x0) / 2) : 0, right = i < vs.length - 1 ? Math.floor((v.x1 + vs[i + 1].x0) / 2) : w - 1;
+      var x0 = Math.max(left, v.x0 - m), x1 = Math.min(right, v.x1 + m), y0 = Math.max(0, v.y0 - m), y1 = Math.min(h - 1, v.y1 + m);
+      var cw = x1 - x0 + 1, ch = y1 - y0 + 1, cd = new Uint8ClampedArray(cw * ch * 4), cm = new Uint8Array(cw * ch);
+      for (var y = 0; y < ch; y++) {
+        cd.set(img.data.subarray(((y + y0) * w + x0) * 4, ((y + y0) * w + x1 + 1) * 4), y * cw * 4);
+        cm.set(mask.subarray((y + y0) * w + x0, (y + y0) * w + x1 + 1), y * cw);
+      }
+      var crop = { width: cw, height: ch, data: cd };
+      for (var pass = 0; pass < opts.refine; pass++) cm = refineMask(crop, cm, opts);
+      for (y = 0; y < ch; y++) out.set(cm.subarray(y * cw, (y + 1) * cw), (y + y0) * w + x0);
+    });
+    return out;
   }
 
   /**
@@ -692,7 +715,12 @@
     views = views.filter(function (v) { return bars.indexOf(v) < 0; });
     if (bars.length) out.heightBar = bars[0];
     var order = opts.order || SIDE_ORDER;
-    if (views.length < 2) { out.ok = false; out.errors.push('Found ' + views.length + ' view(s); a sheet needs a front and a side view (and ideally a back view).'); return out; }
+    if (views.length < 2) {
+      out.ok = false;
+      out.errors.push(views.length === 0 ? 'No figure stood out from the background. The tool needs the figure darker, warmer or a different colour than the sheet, and a clear margin at the left and right edges, where it samples the background.'
+        : 'Found 1 view; a sheet needs a front and a side view (and ideally a back view), side by side with a gap between them. Views that touch each other or the sheet edge read as one.');
+      return out;
+    }
     if (views.length !== order.length) out.warnings.push('Found ' + views.length + ' views; expected ' + order.length + ' (' + order.join(', ') + ').');
     var V = {};
     order.forEach(function (name, i) { if (views[i]) V[name] = views[i]; });
@@ -704,6 +732,17 @@
       for (var y = v.y0; y <= v.y1; y++) for (var x = v.x0; x <= v.x1; x++) if (mask[y * w + x]) { area++; if (y < y0) y0 = y; if (y > y1) y1 = y; }
       v.y0 = y0; v.y1 = y1; v.area = area; v.heightPx = y1 - y0 + 1;
     });
+    // Typed skull-top rows must lie in the head of their view: at or below the figure's top pixel
+    // (horns and crests rise above the skull) and within the top fifth of the figure.
+    if (opts.heightRef !== 'top' && opts.skullRows) {
+      Object.keys(V).forEach(function (name) {
+        var r = opts.skullRows[name], v = V[name];
+        if (r == null) return;
+        var lim = Math.round(v.y0 + 0.2 * (v.y1 - v.y0));
+        if (!(r >= v.y0 && r <= lim)) out.errors.push('The skull-top row for the ' + name + ' view, ' + r + ', is outside its head (rows ' + v.y0 + ' to ' + lim + ').');
+      });
+      if (out.errors.length) { out.ok = false; out.views = V; return out; }
+    }
     // Heights and scale
     var ref = opts.heightRef === 'top' ? 'top' : 'skull';
     var topOf = function (name) {
@@ -756,8 +795,21 @@
       var off = Math.abs((sn - shiftSide) - F.rows.neck);
       out.checks.push({ name: 'side-view neck lines up with the front view (within 3% of the height)', ok: off <= 0.03 * F.Hp, detail: 'front ' + F.rows.neck + ', side ' + sn + ' (' + (100 * off / F.Hp).toFixed(1) + '%)' });
     }
+    // The view in the side position must look like a side view. A back view taken as the side (a
+    // sheet with front and back views only) is as wide as the front, so its depth / width is near 1;
+    // a real side view gives about 0.7 at the waist and 0.6 at the hips.
+    var cx = (V.front.x0 + V.front.x1) / 2;
+    var ratioAt = function (y) {
+      if (y == null || isNaN(y)) return null;
+      y = Math.round(y);
+      var tw = 0; runs(mask, w, y, V.front.x0, V.front.x1).forEach(function (q) { if (q[0] <= cx && q[1] >= cx) tw = q[1] - q[0] + 1; });
+      var sd = sideDepth(mask, w, V.side, y + shiftSide);
+      return tw && sd ? sd / tw : null;
+    };
+    var rW = ratioAt(F.rows.waist), rH = F.rows.waist != null && F.rows.crotch != null ? ratioAt((F.rows.waist + 2 * F.rows.crotch) / 3) : null;
+    if (rW != null && rH != null) out.checks.push({ name: 'the side view is a side view (narrower than the front at the waist and hips)', ok: !(rW > 0.92 && rH > 0.92), detail: 'depth ÷ front width ' + rW.toFixed(2) + ' at the waist, ' + rH.toFixed(2) + ' at the hips; a front or back view in the side position gives about 1' });
     out.checks.forEach(function (c) { if (!c.ok) { out.ok = false; out.errors.push('Rejected: ' + c.name + ' failed. ' + c.detail); } });
-    out.landmarks = { front: F.rows, back: B ? B.rows : null, sideNeck: sn, arms: F.arms };
+    out.landmarks = { front: F.rows, back: B ? B.rows : null, sideNeck: sn, arms: F.arms, skull: ref === 'skull' ? topOf('front') : null };
     if (F.rows.armpit != null && F.rows.chest < F.rows.armpit - 0.02 * F.Hp) out.warnings.push('The arms touch the torso at the chest row, so the chest width there includes the arms: the chest girth reads high.');
     out.warnings.push('Side view: the depth at each row is the widest run. If the near arm overlaps the torso, chest and waist depths include it (the sheet spec asks for a side view without the near arm).');
 

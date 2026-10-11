@@ -31,10 +31,10 @@ jobs:
         run: node build.js
       - name: Build Comparison - build
         working-directory: build-comparison
-        run: node build.js
+        run: python tools/compile_facts.py && node build.js
       - name: Committed builds match the sources
         run: |
-          git diff --exit-code --stat -- rex-strength-lab/src/data.js '*/dist/index.html' \
+          git diff --exit-code --stat -- rex-strength-lab/src/data.js '*/dist/index.html' build-comparison/data/facts.json \
             || { echo "::error::Generated files are out of date. Rebuild and commit them."; exit 1; }
 
       - name: Rex lab - calibration and physics checks

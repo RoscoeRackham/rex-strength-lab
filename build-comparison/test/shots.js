@@ -24,10 +24,11 @@ const CHROME = [process.env.CHROME, '/opt/pw-browsers/chromium-1194/chrome-linux
 const shots = path.join(root, 'shots');
 fs.mkdirSync(shots, { recursive: true });
 
-// The artifact host wraps the page in a skeleton like this one.
+// The artifact host wraps the page in a skeleton like this one (without a [hidden] rule: the page
+// must hide its own hidden elements).
 const page = fs.readFileSync(path.join(root, 'dist', 'index.html'), 'utf8');
 const skeleton = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">' +
-  '<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>' +
+  '<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}</style>' +
   '</head><body>' + page + '</body></html>';
 const tmp = path.join(require('os').tmpdir(), 'build-comparison-preview.html');
 fs.writeFileSync(tmp, skeleton);
@@ -50,7 +51,10 @@ async function routeFonts(ctx) {
 /** Text checks that run in the page: bad values, small type, duplicate ids, horizontal scroll. */
 function audit(minPx) {
   const out = { bad: [], small: [], dupIds: [], sw: document.documentElement.scrollWidth, iw: window.innerWidth };
-  const text = document.body.innerText;
+  // All text, including closed <details> (the key, the sources) that innerText leaves out.
+  const parts = [], tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  for (let t; (t = tw.nextNode());) if (!t.parentElement.closest('script, style')) parts.push(t.textContent);
+  const text = parts.join(' ').replace(/\s+/g, ' ');
   const re = /.{0,40}\b(NaN|undefined|Infinity)\b.{0,40}/g;
   let m; while ((m = re.exec(text))) out.bad.push(m[0]);
   // Claims the page must never make (the meatball is a chosen end, not a maximum).
@@ -117,8 +121,9 @@ function report(where, a) {
       p.on('pageerror', (e) => errs.push(String(e)));
       await p.goto(pathToFileURL(tmp).href);
       await p.evaluate(() => document.fonts.ready);
-      // The measuring tool runs its example and the duo.jpg validation after load.
+      // The measuring tool runs its example and the duo.jpg validation when it comes near the screen.
       await p.addStyleTag({ content: 'html{scroll-behavior:auto!important}' });
+      await p.evaluate(() => { document.getElementById('tool').scrollIntoView(); });
       await p.waitForFunction(() => document.querySelectorAll('#results tr').length > 5 && /\b(pass|fail)\b/i.test(document.getElementById('validation').textContent), null, { timeout: 60000 })
         .catch(() => problems.push(`${w} ${scheme}: the measuring tool did not finish`));
       const font = await p.evaluate(() => document.fonts.check('800 40px "Big Shoulders Display"'));
@@ -134,6 +139,23 @@ function report(where, a) {
       errs.forEach((e) => problems.push(`${w} ${scheme}: console ${e}`));
       await ctx.close();
     }
+  }
+  // Tablet widths: the drawer's two-column layout must not push the page sideways.
+  for (const w of [720, 768, 820, 900]) {
+    const ctx = await browser.newContext({ viewport: { width: w, height: 900 } });
+    await routeFonts(ctx);
+    const p = await ctx.newPage();
+    await p.goto(pathToFileURL(tmp).href);
+    await p.evaluate(() => document.fonts.ready);
+    const wide = await p.evaluate(() => {
+      const out = [];
+      document.querySelectorAll('.fig[data-id]').forEach((c) => { c.click(); const sw = document.documentElement.scrollWidth; if (sw > window.innerWidth) out.push(c.getAttribute('data-id') + ' ' + sw); });
+      const d = document.getElementById('drawer'); document.querySelector('#drawer .close').click();
+      if (d.getBoundingClientRect().height > 0 || getComputedStyle(d).display !== 'none') out.push('closed drawer still takes space');
+      return out;
+    });
+    wide.forEach((x) => problems.push(`${w}: details ${x}`));
+    await ctx.close();
   }
   await browser.close();
   if (problems.length) { console.log('\nPROBLEMS\n' + problems.join('\n')); process.exit(1); }
@@ -189,7 +211,10 @@ async function sweep(p) {
   // A forest row opens the same details.
   await p.evaluate(() => document.querySelector('#fp [data-open="ronnie_coleman"]').click());
   if (await p.evaluate(() => document.getElementById('drawer').hidden || !/Coleman/.test(document.getElementById('drawerH').textContent))) problems.push('forest: a row did not open its details');
+  await p.evaluate(() => document.querySelector('#fp [data-open="ronnie_coleman"]').focus());
+  await p.keyboard.press('Enter');
   await p.keyboard.press('Escape');
+  if (!(await p.evaluate(() => document.activeElement && document.activeElement.getAttribute('data-open') === 'ronnie_coleman'))) problems.push('forest: closing the details did not return focus to the row');
   // The measuring tool with bad input says so instead of printing nonsense.
   await p.fill('#tH', '-3');
   await p.click('#measureBtn');
@@ -197,7 +222,28 @@ async function sweep(p) {
   await p.fill('#tH', '1.80');
   await p.click('#measureBtn');
   await p.waitForFunction(() => document.querySelectorAll('#results tr').length > 5 && !/Measuring/.test(document.getElementById('toolStatus').textContent), null, { timeout: 30000 }).catch(() => problems.push('tool: re-measure did not finish'));
-  // The target outline draws and reports its score.
+  // Fields changed after measuring: the copy waits for a new measurement.
+  await p.fill('#tH', '2.00');
+  await p.click('#copyBtn');
+  if (!/changed/.test(await p.evaluate(() => document.getElementById('toolStatus').textContent))) problems.push('tool: copy used results measured with other fields');
+  await p.fill('#tH', '1.80');
+  // A typed skull row outside the head is refused, not scored.
+  await p.evaluate(() => { document.querySelector('details.adv').open = true; });
+  await p.fill('#tSkull', '5000');
+  await p.click('#measureBtn');
+  await p.waitForFunction(() => !/Measuring/.test(document.getElementById('toolStatus').textContent), null, { timeout: 30000 });
+  if (!/outside its head/.test(await p.evaluate(() => document.getElementById('tool').innerText))) problems.push('tool: a skull row of 5000 was not refused');
+  await p.fill('#tSkull', '');
+  await p.click('#measureBtn');
+  await p.waitForFunction(() => document.querySelectorAll('#results tr').length > 5 && !/Measuring/.test(document.getElementById('toolStatus').textContent), null, { timeout: 30000 }).catch(() => problems.push('tool: re-measure did not finish'));
+  // The target outline draws and reports its score, on a shape and at a score where one sqrt step used to miss.
+  await p.selectOption('#tShape', 'ronnie_coleman');
+  await p.fill('#tTarget', '300');
+  await p.click('#targetBtn');
+  await p.waitForFunction(() => /measures/.test(document.getElementById('targetStatus').textContent), null, { timeout: 60000 }).catch(() => problems.push('tool: target outline did not finish'));
+  const t300 = Number(((await p.evaluate(() => document.getElementById('targetStatus').textContent)).match(/measures ([\d.,]+)/) || [])[1]);
+  if (!(Math.abs(t300 / 300 - 1) < 0.01)) problems.push('tool: target outline for 300 on Coleman measures ' + t300);
+  await p.selectOption('#tShape', 'ansur2_m_p50');
   await p.fill('#tTarget', '60');
   await p.click('#targetBtn');
   await p.waitForFunction(() => /measures/.test(document.getElementById('targetStatus').textContent), null, { timeout: 30000 }).catch(() => problems.push('tool: target outline did not finish'));

@@ -362,59 +362,6 @@
   }
 
   /**
-   * (a) The smallest angle from vertical at which the arm clears the torso in the front view.
-   * The arm swings about the shoulder joint; only the arm below the deltoid (from 30% of the upper
-   * arm down) and the torso below the armpit are tested. Returns degrees.
-   */
-  function armClearance(fig) {
-    var d = fig.dims, body = fig.front.filter(function (p) { return p.name === 'body'; })[0].poly;
-    var torso = body.filter(function (p) { return p[1] < d.levels.axilla && p[1] > d.levels.crotch; });
-    var sj = d.shoulderJoint, st = d.armStations;
-    for (var deg = 0; deg <= 90; deg += 0.25) {
-      var a = deg * Math.PI / 180, hit = false;
-      var dx = Math.sin(a), dy = -Math.cos(a), nx = -dy, ny = dx;
-      // inner edge of the upper arm and forearm (the side facing the body: -n)
-      for (var s = 0.3 * st.Lu; s <= st.Lu + st.Lf && !hit; s += (st.Lu + st.Lf) / 120) {
-        var r = s <= st.Lu ? radiusAt(st.upper, s) : radiusAt(st.fore, s - st.Lu);
-        var p = [sj[0] + dx * s - nx * r, sj[1] + dy * s - ny * r];
-        if (p[1] < d.levels.axilla && p[1] > d.levels.crotch && pointInPoly(p, body)) hit = true;
-      }
-      // and no torso edge point inside the arm band
-      if (!hit) for (var i = 0; i < torso.length && !hit; i++) {
-        var q = torso[i]; if (q[0] <= 0) continue;
-        var rx = q[0] - sj[0], ry = q[1] - sj[1];
-        var along = rx * dx + ry * dy, across = rx * nx + ry * ny;
-        if (along < 0.3 * st.Lu || along > st.Lu + st.Lf) continue;
-        var rr = along <= st.Lu ? radiusAt(st.upper, along) : radiusAt(st.fore, along - st.Lu);
-        if (Math.abs(across) < rr) hit = true;
-      }
-      if (!hit) return deg;
-    }
-    return 90;
-  }
-
-
-  /**
-   * (a') The smallest angle from vertical at which the upper-arm bone (the line from the shoulder
-   * joint to the elbow) stays outside the torso outline: the arm cannot hang closer even if all the
-   * soft tissue between arm and body were squashed flat. Returns degrees.
-   */
-  function armBoneClearance(fig) {
-    var d = fig.dims, body = fig.front.filter(function (p) { return p.name === 'body'; })[0].poly;
-    var sj = d.shoulderJoint, Lu = d.armStations.Lu;
-    for (var deg = 0; deg <= 90; deg += 0.25) {
-      var a = deg * Math.PI / 180, hit = false;
-      for (var s = 0.15 * Lu; s <= Lu && !hit; s += Lu / 100) {
-        var p = [sj[0] + Math.sin(a) * s, sj[1] - Math.cos(a) * s];
-        if (p[1] < d.levels.axilla && pointInPoly(p, body)) hit = true;
-      }
-      if (!hit) return deg;
-    }
-    return 90;
-  }
-
-
-  /**
    * (a) Arm rest angle: the smallest angle from vertical at which the arm hangs clear of the body
    * outline (torso, hips, thighs) in the front view, testing only below chest height (the armpit
    * folds join arm and torso above it). build(armDeg) returns the figure with its arms at armDeg.
@@ -561,5 +508,5 @@
     return { f: fl, score: scoreAt(fl) };
   }
 
-  return { sheetSkullRows: sheetSkullRows, solveTarget: solveTarget, SITES: SITES, armClearance: armClearance, armBoneClearance: armBoneClearance, armRestAngle: armRestAngle, armClearAt: armClearAt, thighContact: thighContact, elbowFlexion: elbowFlexion, solveScale: solveScale, pointInPoly: pointInPoly, fillParts: fillParts, renderSheet: renderSheet, bandEdges: bandEdges, spline: spline, symmetric: symmetric, limb: limb, ellipse: ellipse, human: human, traced: traced, bounds: bounds, pathData: pathData };
+  return { sheetSkullRows: sheetSkullRows, solveTarget: solveTarget, SITES: SITES, armRestAngle: armRestAngle, armClearAt: armClearAt, thighContact: thighContact, elbowFlexion: elbowFlexion, solveScale: solveScale, pointInPoly: pointInPoly, fillParts: fillParts, renderSheet: renderSheet, bandEdges: bandEdges, spline: spline, symmetric: symmetric, limb: limb, ellipse: ellipse, human: human, traced: traced, bounds: bounds, pathData: pathData };
 });

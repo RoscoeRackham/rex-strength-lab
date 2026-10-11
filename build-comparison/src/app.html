@@ -53,6 +53,9 @@ a { color: var(--chalk); text-underline-offset: 2px; }
 a:hover { text-decoration-thickness: 2px; }
 button, input, select { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--chalk); outline-offset: 2px; }
+[hidden] { display: none !important; }
+/* Rings drawn inside controls whose neighbours or containers would cover an outside ring. */
+.seg button:focus-visible, .fig:focus-visible { outline-offset: -4px; position: relative; z-index: 1; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .wrap { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block: 0 56px; }
 html { scroll-padding-top: 60px; }
@@ -150,7 +153,7 @@ html { scroll-padding-top: 60px; }
 .fig svg { display: block; width: 100%; height: var(--figh); }
 .fig:hover .plate, .fig:focus-visible .plate { background: var(--sheet); }
 .fig[aria-expanded="true"] .plate { box-shadow: inset 0 3px 0 var(--chalk); background: var(--sheet); }
-.plate { padding: 8px 8px 10px; display: grid; gap: 4px; align-content: start; border-top: 1px solid var(--floor-edge); min-width: 0; min-height: 124px; }
+.plate { padding: 8px 8px 10px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; align-content: start; border-top: 1px solid var(--floor-edge); min-width: 0; min-height: 124px; }
 @media (max-width: 719px) { .plate { padding: 6px 5px 8px; min-height: 120px; } }
 .plate .s { font-family: var(--font-display); font-weight: 800; font-size: 24px; line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: .01em; }
 @media (max-width: 719px) { .plate .s { font-size: 20px; } }
@@ -162,7 +165,7 @@ html { scroll-padding-top: 60px; }
 .flag { font: 500 11.5px/1.3 var(--font-body); color: var(--alarm); }
 .flag.plain { color: var(--ink-2); }
 .plate .chips { display: flex; flex-wrap: wrap; gap: 4px; }
-.plate .chip { padding-inline: 4px; white-space: normal; line-height: 1.15; max-width: 100%; }
+.plate .chip { padding-inline: 4px; white-space: normal; overflow-wrap: anywhere; line-height: 1.15; max-width: 100%; }
 
 /* gap tiles */
 .gaptile { position: relative; min-width: 0; background: var(--wall); }
@@ -186,7 +189,7 @@ html { scroll-padding-top: 60px; }
 
 /* ---------- the drawer ---------- */
 .drawer { background: var(--sheet); border: 1px solid var(--rule); border-top: 3px solid var(--chalk); border-radius: 0 0 4px 4px; padding: 16px; display: grid; gap: 18px; min-width: 0; position: relative; }
-@media (min-width: 720px) { .drawer { grid-template-columns: 280px minmax(0, 1fr); padding: 20px; gap: 28px; } }
+@media (min-width: 900px) { .drawer { grid-template-columns: 280px minmax(0, 1fr); padding: 20px; gap: 28px; } }
 .drawer h3 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.6rem, 4vw, 2.1rem); line-height: 1; padding-right: 80px; }
 .drawer h3:focus { outline: none; }
 .drawer .close { position: absolute; top: 12px; right: 12px; min-width: 44px; min-height: 32px; border: 1px solid var(--ink); border-radius: 3px; background: var(--sheet); font-weight: 600; font-size: 14px; cursor: pointer; padding: 0 10px; }
@@ -250,8 +253,8 @@ details.key > summary { cursor: pointer; font-weight: 600; font-size: 15px; }
 .fp-row.r-limit .nm { color: var(--chalk); }
 .fp-row.r-gap { min-height: 28px; }
 .fp-row.r-gap .nm { font: 500 12px/1.3 var(--font-mono); text-transform: uppercase; color: var(--ink-2); letter-spacing: .03em; }
-.fp-row .bar { position: absolute; top: 8px; height: 8px; border-radius: 4px; }
-.fp-row .bar.hollow { background: transparent !important; border: 1.5px solid; }
+.fp-row .bar { position: absolute; top: 8px; height: 8px; border-radius: 4px; box-shadow: 0 0 0 1px var(--ink-3); }
+.fp-row .bar.hollow { background: transparent !important; border: 1.5px solid; box-shadow: none; }
 .fp-row .tick { position: absolute; top: 5px; width: 2px; height: 14px; margin-left: -1px; background: var(--ink); box-shadow: 0 0 0 1px var(--sheet); }
 .fp-row .ring { position: absolute; top: 8px; width: 8px; height: 8px; margin-left: -4px; border-radius: 50%; border: 1.5px solid var(--ink); background: var(--sheet); }
 .fp-row .pill { position: absolute; top: 8px; height: 8px; border-radius: 4px; border: 1.5px solid var(--ink); }
@@ -269,6 +272,7 @@ details.key > summary { cursor: pointer; font-weight: 600; font-size: 15px; }
   .fp-bg { left: 0; right: 0; }
   .fp-row { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "nm vl" "tk tk"; min-height: 32px; row-gap: 1px; padding-block: 3px; }
   .fp-row .nm { grid-area: nm; } .fp-row .vl { grid-area: vl; } .fp-row .tk { grid-area: tk; height: 12px; }
+  .fp-row .vl { position: relative; z-index: 1; background: var(--sheet); padding-left: 4px; }
   .fp-row .bar { top: 3px; height: 6px; border-radius: 3px; }
   .fp-row .tick { top: 1px; height: 10px; }
   .fp-row .ring, .fp-row .pill { top: 2px; }
@@ -330,7 +334,8 @@ details.key > summary { cursor: pointer; font-weight: 600; font-size: 15px; }
 .fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 @media (max-width: 719px) { .fields { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .field { display: grid; gap: 5px; min-width: 0; align-content: start; }
-.field label { font: 600 11px/1.25 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
+.btnrow { display: flex; flex-wrap: wrap; gap: 6px; }
+.field label, .field .flab { font: 600 11px/1.25 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
 .field input, .field select { width: 100%; min-width: 0; height: 38px; padding: 0 10px; border: 1px solid var(--rule); border-radius: 3px; background: var(--paper); font-size: 16px; font-variant-numeric: tabular-nums; }
 .field .hint { font-size: 12px; color: var(--ink-2); line-height: 1.35; }
 .field input[aria-invalid="true"] { border-color: var(--alarm); }
@@ -473,7 +478,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
     <div class="tool" id="tool">
       <div>
         <div class="picker" id="picker">
-          <div class="field" style="flex:1 1 220px"><label for="tExample">Example</label><select id="tExample"><option value="soldier">Soldier sheet (drawn here)</option><option value="file">Choose a sheet…</option></select></div>
+          <div class="field" style="flex:1 1 220px"><span class="flab" id="sheetLab">Sheet</span><div class="btnrow" role="group" aria-labelledby="sheetLab"><button type="button" class="btn ghost" id="tSoldier">Soldier sheet (drawn here)</button><button type="button" class="btn ghost" id="tChoose">Choose a sheet…</button></div></div>
           <input type="file" id="file" accept="image/png,image/jpeg,image/webp" class="sr" tabindex="-1">
           <span id="sheetName"></span>
         </div>
@@ -491,7 +496,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
         <details class="adv"><summary>Sheet layout</summary>
           <div class="fields">
             <div class="field"><label for="tOrder">Views, left to right</label><select id="tOrder"><option value="front,side,back">front, side, back</option><option value="front,back,side">front, back, side</option><option value="side,front,back">side, front, back</option></select></div>
-            <div class="field"><label for="tSkull">Skull-top rows</label><input id="tSkull" placeholder="top of figure"><span class="hint">Pixel rows, front, side, back: e.g. 52, 57, 52</span></div>
+            <div class="field"><label for="tSkull">Skull-top rows</label><input id="tSkull" placeholder="top of figure"><span class="hint">Pixel rows, in the same order as “Views, left to right”: e.g. 52, 57, 52</span></div>
             <div class="field"><label for="tArmK">Arm depth ÷ width</label><input id="tArmK" inputmode="decimal" value="1.0"></div>
           </div></details>
         <div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn" id="measureBtn">Measure</button><button type="button" class="btn ghost" id="copyBtn">Copy results</button></div>
@@ -850,9 +855,9 @@ details.src summary { cursor: pointer; font-weight: 600; }
     btn.type = 'button'; btn.className = 'fig';
     btn.setAttribute('data-id', e.id); btn.setAttribute('aria-expanded', e.id === state.sel ? 'true' : 'false');
     var st = scoreStatus(e);
-    btn.setAttribute('aria-label', e.short + ', score ' + scr(e.score.lo, e.score.hi) + ', ' + st + '. Open details');
-    btn.appendChild(figureSvg(e, W));
     var fl = flagsOf(e);
+    btn.setAttribute('aria-label', e.short + ', score ' + scr(e.score.lo, e.score.hi) + ', ' + st + fl.chips.map(function (c) { return ', ' + c.replace(/<[^>]+>/g, ''); }).join('') + fl.lines.map(function (l) { return '. ' + l[1]; }).join('') + '. Open details');
+    btn.appendChild(figureSvg(e, W));
     var plate = document.createElement('span');
     plate.className = 'plate';
     plate.innerHTML = '<span class="s">' + scr(e.score.lo, e.score.hi) + '</span>' +
@@ -940,7 +945,12 @@ details.src summary { cursor: pointer; font-weight: 600; }
         if (L.headline === false) {
           // A band, not a line: shade the part of the stretch it covers.
           var a = X(Math.max(g.from, L.range[0])), b = X(Math.min(top, L.range[1]));
-          svgEl('rect', { x: a, y: head, width: Math.max(2, b - a), height: wallH - head, fill: 'var(--chalk-band)', stroke: 'var(--chalk)', 'stroke-width': 1 }, svg);
+          svgEl('rect', { x: a, y: head, width: Math.max(2, b - a), height: wallH - head, fill: 'var(--chalk-band)' }, svg);
+          // Edges only where the band really ends; where it runs on past the stretch, an arrow.
+          [[a, L.range[0] >= g.from, -1], [b, L.range[1] <= top, 1]].forEach(function (s2) {
+            if (s2[1]) svgEl('line', { x1: s2[0], x2: s2[0], y1: head, y2: wallH, stroke: 'var(--chalk)', 'stroke-width': 1 }, svg);
+            else svgEl('path', { d: 'M' + (s2[0] - s2[2] * 9).toFixed(1) + ' ' + (wallH - 14) + 'l' + (s2[2] * 7) + ' 5l' + (-s2[2] * 7) + ' 5', fill: 'none', stroke: 'var(--chalk)', 'stroke-width': 1.5 }, svg);
+          });
           x = a;
         } else {
           x = X(L.score);
@@ -1014,6 +1024,8 @@ details.src summary { cursor: pointer; font-weight: 600; }
     renderDrawer();
   }
   function openDrawer(id, fromElsewhere) {
+    var a = document.activeElement;
+    if (!state.sel || !$('drawer').contains(a)) state.opener = a && a !== document.body ? a : null;
     state.sel = id;
     Array.prototype.forEach.call(document.querySelectorAll('.fig[data-id]'), function (c) { c.setAttribute('aria-expanded', c.getAttribute('data-id') === id ? 'true' : 'false'); });
     placeDrawer();
@@ -1025,7 +1037,9 @@ details.src summary { cursor: pointer; font-weight: 600; }
     var id = state.sel; state.sel = null;
     Array.prototype.forEach.call(document.querySelectorAll('.fig[data-id]'), function (c) { c.setAttribute('aria-expanded', 'false'); });
     placeDrawer();
-    var c = id && document.querySelector('.fig[data-id="' + id + '"]'); if (c) c.focus();
+    var o = state.opener; state.opener = null;
+    var c = o && document.body.contains(o) ? o : id && document.querySelector('.fig[data-id="' + id + '"]');
+    if (c) c.focus();
   }
   /**
    * How far the drawing's volume is from the weight: the outline is drawn from girths, not fitted
@@ -1147,7 +1161,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
     var tickH = o.tickH, tapeY = tickH + 2, tapeH = o.tapeH, H = tapeY + tapeH;
     var s = '';
     GAPS.forEach(function (g) { s += '<rect x="' + X(g.from).toFixed(1) + '" y="0" width="' + (X(g.to) - X(g.from)).toFixed(1) + '" height="' + tickH + '" fill="url(#hatchVoid)"/>'; });
-    LIST.forEach(function (e) { s += '<rect x="' + (X(e.score.value) - o.tw / 2).toFixed(1) + '" y="' + (tickH - o.th) + '" width="' + o.tw + '" height="' + o.th + '" fill="var(' + GV[e.group].v + ')" stroke="var(--paper)" stroke-width="1" paint-order="stroke"/>'; });
+    LIST.forEach(function (e) { s += '<rect x="' + (X(e.score.value) - o.tw / 2).toFixed(1) + '" y="' + (tickH - o.th) + '" width="' + o.tw + '" height="' + o.th + '" fill="var(' + GV[e.group].v + ')" stroke="var(--ink-3)" stroke-width="1" paint-order="stroke"/>'; });
     s += '<rect x="0" y="' + tapeY + '" width="' + W + '" height="' + tapeH + '" fill="var(--tape)"/>';
     var labs = o.labels, html = '';
     for (var dec = 10; dec <= 1000; dec *= 10) for (var m = 1; m < 10; m++) {
@@ -1174,10 +1188,9 @@ details.src summary { cursor: pointer; font-weight: 600; }
     drawTape(host, { tickH: phone ? 20 : 22, th: 18, tw: 2, tapeH: phone ? 24 : 26, major: 9, minor: 5, labels: phone ? [15, 20, 30, 50, 100, 200, 500, 1000] : [12, 15, 20, 30, 40, 50, 70, 100, 150, 200, 300, 500, 1000] });
     var X = host._X; if (!X) return;
     var bands = STOPS.filter(function (s) { return s.kind === 'band'; });
-    var firstGap = GAPS[0] ? GAPS[0].from : HUMAN_TOP;
     var lowest = HUMANS.reduce(function (m, e) { return Math.min(m, e.score.lo); }, 1e9);
     var giants = bands.filter(function (s) { return s.id === 'giants'; })[0], duo = bands.filter(function (s) { return s.id === 'rex-and-ollie'; })[0];
-    var cl = [{ id: bands[0].id, name: phone ? 'Real men' : 'Every real man', range: sc(lowest) + '–' + sc(firstGap), a: lowest, b: firstGap }];
+    var cl = [{ id: bands[0].id, name: phone ? 'Real men' : 'Every real man', range: sc(lowest) + '–' + sc(HUMAN_TOP), a: lowest, b: HUMAN_TOP }];
     if (giants) cl.push({ id: giants.id, name: phone ? 'Giants' : 'Comic giants', range: sc(giants.lo) + '–' + sc(giants.hi), a: giants.lo, b: giants.hi });
     if (duo) cl.push({ id: duo.id, name: phone ? 'Rex, Ollie' : 'Rex and Ollie', range: sc(duo.lo) + '–' + sc(duo.hi), a: duo.lo, b: duo.hi });
     cl.push({ id: 'meatball', name: phone ? MEAT_TXT : 'End of scale', range: phone ? 'end' : MEAT_TXT, a: MEAT, b: MEAT, right: true });
@@ -1204,7 +1217,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
   function jump(id) { var el = $(id); if (el) el.scrollIntoView({ block: 'start' }); }
   function stopAt(score) {
     var best = null;
-    STOPS.forEach(function (s) { var d = score < s.lo ? Math.log(s.lo / score) : score > s.hi ? Math.log(score / s.hi) : 0; if (!best || d < best.d) best = { s: s, d: d }; });
+    STOPS.forEach(function (s) { var d = score < s.lo ? Math.log(s.lo / score) : score > s.hi ? Math.log(score / s.hi) : 0; if (!best || d <= best.d) best = { s: s, d: d }; });
     return best && best.s;
   }
   function currentStop() {
@@ -1236,12 +1249,21 @@ details.src summary { cursor: pointer; font-weight: 600; }
     var ticks = '', minor = [13, 14, 16, 17, 18, 19, 25, 35, 45, 60, 80, 90, 400, 600, 700, 800, 900];
     labels.concat(minor).forEach(function (v) { if (v < dom.lo || v > dom.hi) return; ticks += '<i style="left:' + P(v).toFixed(2) + '%;height:' + (labels.indexOf(v) >= 0 ? 10 : 5) + 'px"></i>'; });
     var last = -1e9;
-    labels.forEach(function (v) { var x = P(v) / 100 * trackW; if (x - last < 4 + fmt.sep(v, 0).length * 7) return; last = x; ticks += '<b style="left:' + P(v).toFixed(2) + '%">' + fmt.sep(v, 0) + '</b>'; });
+    labels.forEach(function (v) {
+      var x = P(v) / 100 * trackW, w = fmt.sep(v, 0).length * 7;
+      if (x - last < 4 + w) return; last = x;
+      // End labels stay inside the tape, as on the other two tapes.
+      var tf = x + w / 2 > trackW ? 'translateX(-100%)' : x - w / 2 < 0 ? 'translateX(0)' : '';
+      ticks += '<b style="left:' + P(v).toFixed(2) + '%' + (tf ? ';transform:' + tf : '') + '">' + fmt.sep(v, 0) + '</b>';
+    });
     var kx = P(25), ex = P(HUMAN_TOP), endTxt;
     var endPx = ex / 100 * trackW, msg = 'no real man past here →', msgW = msg.length * 6.8;
-    endTxt = endPx + 4 + msgW < trackW ? '<span style="left:calc(' + ex.toFixed(2) + '% + 4px);color:var(--alarm)">' + msg + '</span>' : '<span style="right:calc(' + (100 - ex).toFixed(2) + '% + 4px);color:var(--alarm)">← real men end here</span>';
+    var fits = endPx + 4 + msgW < trackW, alt = '← real men end here', altW = alt.length * 6.8;
+    endTxt = fits ? '<span style="left:calc(' + ex.toFixed(2) + '% + 4px);color:var(--alarm)">' + msg + '</span>' : '<span style="right:calc(' + (100 - ex).toFixed(2) + '% + 4px);color:var(--alarm)">' + alt + '</span>';
+    // The edges of the end label actually drawn, so 'Kouri 25' never prints over it.
+    var endL = fits ? endPx + 4 : endPx - 4 - altW, endR = fits ? endPx + 4 + msgW : endPx - 4;
     var kTxt = 'Kouri 25', kPx = kx / 100 * trackW;
-    var kHtml = (kPx + 30 < endPx - 4 || kPx - 30 > endPx + msgW) ? '<span style="left:' + kx.toFixed(2) + '%;transform:translateX(-50%);color:var(--ink-2)">' + kTxt + '</span>' : '';
+    var kHtml = (kPx + 30 < endL || kPx - 30 > endR) ? '<span style="left:' + kx.toFixed(2) + '%;transform:translateX(-50%);color:var(--ink-2)">' + kTxt + '</span>' : '';
     $('fpAxis').innerHTML = '<span class="h">Build</span><div class="trk"><div class="lbls">' + kHtml + endTxt + '</div><div class="tp">' + ticks + '</div></div><span class="h v">Score range</span>';
     // background layers
     var bg = '';
@@ -1271,7 +1293,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
             (nc && e.comparable !== 'uncertain' ? '<span class="arr' + (e.comparable === 'overstated' ? ' soft' : '') + '" style="left:' + a.toFixed(2) + '%"></span>' : '');
         }
         var x = e.comparable === 'no' ? ' <span class="x">' + esc((e.setting.flag || 'not muscle').toLowerCase()) + '</span>' : e.comparable === 'overstated' ? ' <span class="x">may be overstated</span>' : e.comparable === 'uncertain' ? ' <span class="x">composition unknown</span>' : '';
-        return '<div class="fp-row" data-row="' + e.id + '"><button type="button" class="nm" data-open="' + e.id + '" aria-label="' + esc(e.short + ', score ' + scr(e.score.lo, e.score.hi) + ', ' + st + (nc ? ', ' + ({ no: 'not comparable', overstated: 'may be overstated', uncertain: 'composition unknown' }[e.comparable]) : '')) + '"><span class="sw" style="background:' + col + '"></span>' + esc(e.short) + x + '</button>' +
+        return '<div class="fp-row" data-row="' + e.id + '"><button type="button" class="nm" data-open="' + e.id + '" aria-label="' + esc(e.short + ', score ' + scr(e.score.lo, e.score.hi) + ', ' + st + (nc ? ', ' + ({ no: 'not comparable', overstated: 'may be overstated', uncertain: 'composition unknown' }[e.comparable]) : '') + (beyond(e) ? ', beyond human data' : '')) + '"><span class="sw" style="background:' + col + '"></span>' + esc(e.short) + x + '</button>' +
           '<span class="tk">' + mark + off(e.score.lo, e.score.hi) + '</span><span class="vl">' + scr(e.score.lo, e.score.hi).replace(/^about /, '') + (st === 'derived' ? chip('derived') : '') + '</span></div>';
       }
       if (r.kind === 'anchor') {
@@ -1311,7 +1333,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
     var bb = Figure.bounds(parts), k = Hd / H;
     if ((bb[2] - bb[0]) * k > W - 8) k = (W - 8) / (bb[2] - bb[0]);
     var g = svgEl('g', {}, svg), ox = W / 2 - (bb[0] + bb[2]) / 2 * k, oy = head + Hd;
-    parts.forEach(function (p) { svgEl('path', { d: Figure.pathData(p.poly, k, ox, oy), 'class': 'geo' }, g); });
+    parts.forEach(function (p) { svgEl('path', { d: Figure.pathData(p.poly, k, ox, oy), 'class': 'geo', stroke: 'var(--ink-3)', 'stroke-width': 1, 'vector-effect': 'non-scaling-stroke' }, g); });
     parts.forEach(function (p) {
       if (!hot || !hot.test(p.name)) return;
       if (p.name === 'body') {
@@ -1395,7 +1417,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
   }
 
   // ---------- the measuring tool ----------
-  var tool = { img: null, name: 'Soldier sheet', res: null, example: true };
+  var tool = { img: null, name: 'Soldier sheet', res: null, example: true, run: 0 };
   function exampleSheet() {
     var e = byId('ansur2_m_p50');
     var g = {}; BuildCalc.SITES.forEach(function (s) { g[s] = e.girths[s].value; });
@@ -1413,8 +1435,9 @@ details.src summary { cursor: pointer; font-weight: 600; }
       var F = res.frontLandmarks, lw = Math.max(1, Math.round(img.width / 700));
       var line = function (y, col, w) { g.strokeStyle = col; g.lineWidth = w; g.beginPath(); g.moveTo(0, y + 0.5); g.lineTo(img.width, y + 0.5); g.stroke(); };
       line(F.ground, '#15181F', 1.5 * lw);
-      line(res.scale && res.scale.heightRef === 'skull' && res.landmarks && res.landmarks.skull ? res.landmarks.skull : F.top, '#1F4FA6', 1.5 * lw);
-      gut += '<span style="top:' + (100 * F.ground / img.height).toFixed(2) + '%">ground</span><span style="top:' + (100 * F.top / img.height).toFixed(2) + '%">' + (tool.example ? 'skull' : 'top') + '</span>';
+      var bySkull = res.scale && res.scale.heightRef === 'skull' && res.landmarks && res.landmarks.skull != null, topY = bySkull ? res.landmarks.skull : F.top;
+      line(topY, '#1F4FA6', 1.5 * lw);
+      gut += '<span style="top:' + (100 * F.ground / img.height).toFixed(2) + '%">ground</span><span style="top:' + (100 * topY / img.height).toFixed(2) + '%">' + (bySkull || tool.example ? 'skull' : 'top') + '</span>';
       ['chest', 'waist', 'crotch', 'knee'].forEach(function (k) {
         var yy = F.rows[k]; if (yy == null) return;
         line(yy, 'rgba(31,79,166,.75)', lw);
@@ -1434,16 +1457,43 @@ details.src summary { cursor: pointer; font-weight: 600; }
     var rows = String($('tSkull').value).split(',').map(function (s) { return Number(s.trim()); }).filter(function (v) { return isFinite(v) && v > 0; });
     var order = $('tOrder').value.split(','), skull = null;
     if (rows.length) { skull = {}; order.forEach(function (v, i) { skull[v] = rows[Math.min(i, rows.length - 1)]; }); }
-    $('toolStatus').textContent = 'Measuring…';
     $('measureBtn').disabled = true;
-    setTimeout(function () {
-      try {
-        var r = Measure.measureSheet(tool.img, { heightM: H, heightRef: skull ? 'skull' : 'top', skullRows: skull, order: order, density: rho, bodyFatPct: bf, armK: armK });
-        tool.res = r; writeResults(r);
-      } catch (err) { $('toolStatus').textContent = 'The tool could not read this sheet: ' + err.message; }
+    var inputs = { H: H, rho: rho, bf: bf, armK: armK, skull: skull, order: order }, run = ++tool.run;
+    measureAsync(tool.img, { heightM: H, heightRef: skull ? 'skull' : 'top', skullRows: skull, order: order, density: rho, bodyFatPct: bf, armK: armK }, function (err, r) {
+      if (run !== tool.run) return; // a newer measurement replaced this one
       $('measureBtn').disabled = false;
-    }, 30);
+      if (err) { tool.res = null; $('toolStatus').textContent = 'The tool could not read this sheet: ' + err; return; }
+      r.inputs = inputs; tool.res = r; writeResults(r);
+    });
   }
+  /**
+   * Measure a sheet off the main thread: a Web Worker built from the measuring tool's own inlined
+   * source, so a large sheet does not freeze the page. Falls back to the main thread if workers are
+   * not available. Shows the elapsed time while it runs.
+   */
+  var worker = null, workerJobs = {}, workerSeq = 0;
+  function measureAsync(img, opts, cb) {
+    var t0 = Date.now(), tick = setInterval(function () { $('toolStatus').textContent = 'Measuring… ' + Math.round((Date.now() - t0) / 1000) + ' s'; }, 1000);
+    $('toolStatus').textContent = 'Measuring…';
+    var done = function (err, r) { clearInterval(tick); cb(err, r); };
+    if (worker === null) {
+      try {
+        // The result holds helper functions (landmark finders) that cannot cross to the page: send data only.
+        var glue = '\nfunction plain(o) { if (typeof o === "function") return undefined; if (!o || typeof o !== "object" || ArrayBuffer.isView(o)) return o; if (Array.isArray(o)) return o.map(plain); var out = {}; for (var k in o) { var v = plain(o[k]); if (v !== undefined) out[k] = v; } return out; }' +
+          '\nself.onmessage = function (ev) { var d = ev.data, r; try { r = self.Measure.measureSheet(d.img, d.opts); delete r.mask; self.postMessage({ id: d.id, r: plain(r) }); } catch (e) { self.postMessage({ id: d.id, err: String(e && e.message || e) }); } };';
+        worker = new Worker(URL.createObjectURL(new Blob([$('measureSrc').textContent + glue], { type: 'text/javascript' })));
+        worker.onmessage = function (ev) { var j = workerJobs[ev.data.id]; delete workerJobs[ev.data.id]; if (j) j.done(ev.data.err || null, ev.data.r); };
+        // If the worker fails (a browser that blocks it), measure on the page instead.
+        worker.onerror = function (ev) { ev.preventDefault(); var jobs = workerJobs; workerJobs = {}; worker = false; Object.keys(jobs).forEach(function (k) { onPage(jobs[k]); }); };
+      } catch (e) { worker = false; }
+    }
+    var job = { img: img, opts: opts, done: done };
+    if (!worker) { onPage(job); return; }
+    var id = ++workerSeq, data = new Uint8ClampedArray(img.data);
+    workerJobs[id] = job;
+    worker.postMessage({ id: id, img: { width: img.width, height: img.height, data: data }, opts: opts }, [data.buffer]);
+  }
+  function onPage(job) { setTimeout(function () { try { var r = Measure.measureSheet(job.img, job.opts); delete r.mask; job.done(null, r); } catch (e) { job.done(e.message); } }, 30); }
   function capFirst(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
   function writeResults(r) {
     drawSheet(r);
@@ -1477,7 +1527,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
     var g = {}; BuildCalc.SITES.forEach(function (s) { var x = r.girths[s]; g[s] = x && x.value_m ? { value: +x.value_m.toFixed(4), status: 'derived', range: [+x.low_m.toFixed(4), +x.high_m.toFixed(4)], derived_from: 'model sheet', basis: 'measured from art, estimate: ' + (x.note || 'front width and side depth of the slice') } : { value: null, status: 'unknown' }; });
     return {
       id: 'new_build', name: tool.name, group: 'Measured from art', sex: 'M',
-      height_m: { value: num('tH'), status: 'estimate', basis: 'measured from art, estimate: ' + (r.scale.heightRef === 'skull' ? 'top of the skull' : 'top of the figure') },
+      height_m: { value: r.inputs.H, status: 'estimate', basis: 'measured from art, estimate: ' + (r.scale.heightRef === 'skull' ? 'top of the skull' : 'top of the figure') },
       weight_kg: { value: +r.mass_kg.value.toFixed(1), status: 'estimate', range: [+r.mass_kg.low.toFixed(1), +r.mass_kg.high.toFixed(1)], basis: 'measured from art, estimate: volume ' + r.volume_m3.value.toFixed(3) + ' m^3 x density ' + r.mass_kg.density + ' kg/m^3' },
       body_fat_pct: { value: r.score.bodyFatPct, status: 'estimate' },
       girths: g, notes: ['measured from art, estimate', 'score ' + r.score.value.toFixed(1) + ' (' + r.score.low.toFixed(1) + '-' + r.score.high.toFixed(1) + ') at ' + r.score.bodyFatPct + '% fat', 'frontal area ' + r.frontal_area_m2.toFixed(3) + ' m^2'].concat(r.checks.map(function (c) { return (c.ok ? 'pass: ' : 'FAIL: ') + c.name; })),
@@ -1495,6 +1545,7 @@ details.src summary { cursor: pointer; font-weight: 600; }
   }
   function copyResults() {
     if (!tool.res || !tool.res.volume_m3) { $('toolStatus').textContent = 'Measure a sheet first.'; return; }
+    if (tool.res.stale) { $('toolStatus').textContent = 'The fields changed since this measurement. Press Measure first, so the copy matches them.'; return; }
     var text = JSON.stringify(resultEntry(tool.res), null, 1);
     copyText(text, 'toolStatus', 'copyOut', 'Copied: ' + text.split('\n').length + ' lines, ready to paste as a build entry.');
   }
@@ -1506,12 +1557,16 @@ details.src summary { cursor: pointer; font-weight: 600; }
       im.onload = function () {
         var c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight;
         var g = c.getContext('2d', { willReadFrequently: true }); g.drawImage(im, 0, 0);
-        var d = g.getImageData(0, 0, c.width, c.height);
-        tool.img = { width: c.width, height: c.height, data: d.data }; tool.name = file.name; tool.example = false; tool.res = null;
+        var d = g.getImageData(0, 0, c.width, c.height), px = d.data, clear = 0;
+        for (var i = 3; i < px.length; i += 4) if (px[i] < 250) clear++;
+        // A transparent background reads as black on a canvas: take the figure from the alpha channel
+        // instead (black figure on white), whatever colour it is drawn in.
+        if (clear > 0.05 * px.length / 4) for (i = 0; i < px.length; i += 4) { var v = px[i + 3] >= 128 ? 0 : 255; px[i] = px[i + 1] = px[i + 2] = v; px[i + 3] = 255; }
+        tool.img = { width: c.width, height: c.height, data: px }; tool.name = file.name; tool.example = false; tool.res = null; tool.alpha = clear > 0.05 * px.length / 4;
         $('sheetName').textContent = file.name + ' (' + c.width + ' × ' + c.height + ' px)';
         $('tH').value = ''; $('tH').focus();
         drawSheet(null); $('results').innerHTML = ''; $('checks').innerHTML = '';
-        $('toolStatus').textContent = 'Loaded. Type the height to the top of the skull, the skull rows if you have them (Sheet layout), and press Measure.';
+        $('toolStatus').textContent = 'Loaded' + (tool.alpha ? ' (transparent background: the figure is read from its transparency)' : '') + '. Type the height to the top of the skull, the skull rows if you have them (Sheet layout), and press Measure.';
       };
       im.onerror = function () { $('toolStatus').textContent = 'That file is not an image this browser can read. Use a PNG or JPEG.'; };
       im.src = reader.result;
@@ -1571,15 +1626,13 @@ details.src summary { cursor: pointer; font-weight: 600; }
     drawSheet(null);
     $('measureBtn').addEventListener('click', measure);
     $('copyBtn').addEventListener('click', copyResults);
-    $('tExample').addEventListener('change', function () {
-      if (this.value === 'file') { $('file').click(); }
-      else { tool.img = exampleSheet(); tool.name = 'Soldier sheet'; tool.example = true; $('tH').value = '1.80'; $('sheetName').textContent = tool.img.width + ' × ' + tool.img.height + ' px'; measure(); }
-    });
+    $('tChoose').addEventListener('click', function () { $('file').click(); });
+    $('tSoldier').addEventListener('click', function () { tool.img = exampleSheet(); tool.name = 'Soldier sheet'; tool.example = true; $('tH').value = '1.80'; $('sheetName').textContent = tool.img.width + ' × ' + tool.img.height + ' px'; measure(); });
     $('file').addEventListener('change', function () { loadFile(this.files[0]); });
     var drop = $('picker');
     ['dragenter', 'dragover'].forEach(function (t) { drop.addEventListener(t, function (ev) { ev.preventDefault(); drop.classList.add('over'); }); });
     ['dragleave', 'drop'].forEach(function (t) { drop.addEventListener(t, function (ev) { ev.preventDefault(); drop.classList.remove('over'); }); });
-    drop.addEventListener('drop', function (ev) { if (ev.dataTransfer && ev.dataTransfer.files[0]) { $('tExample').value = 'file'; loadFile(ev.dataTransfer.files[0]); } });
+    drop.addEventListener('drop', function (ev) { if (ev.dataTransfer && ev.dataTransfer.files[0]) loadFile(ev.dataTransfer.files[0]); });
     $('tShape').innerHTML = (LIMITS ? LIMITS.templates.map(function (t) { return t.id; }) : ['ansur2_m_p50']).map(function (id) { var e = byId(id); return '<option value="' + id + '">' + esc(e.short) + '</option>'; }).join('');
     $('targetBtn').addEventListener('click', drawTarget);
     $('targetCopy').addEventListener('click', function () {
@@ -1587,9 +1640,20 @@ details.src summary { cursor: pointer; font-weight: 600; }
       var text = JSON.stringify(target, null, 1);
       copyText(text, 'targetStatus', 'targetOut', 'Copied the target numbers: ' + text.split('\n').length + ' lines.');
     });
-    measure();
-    setTimeout(drawTarget, 400);
-    // The tool test on duo.jpg, run live.
+    ['tH', 'tRho', 'tBf', 'tArmK', 'tSkull', 'tOrder'].forEach(function (id) {
+      $(id).addEventListener('input', function () { if (tool.res && !tool.res.stale) { tool.res.stale = true; $('toolStatus').textContent = 'The fields changed since this measurement: press Measure to update the results.'; } });
+      $(id).addEventListener('change', function () { if (tool.res && !tool.res.stale) { tool.res.stale = true; $('toolStatus').textContent = 'The fields changed since this measurement: press Measure to update the results.'; } });
+    });
+    // The example measurement, the target outline and the duo.jpg test run when the tool comes
+    // near the screen, so they do not hold up the lineup.
+    var started = false, start = function () { if (started) return; started = true; measure(); setTimeout(drawTarget, 400); validate(); };
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (es) { if (es.some(function (x) { return x.isIntersecting; })) { io.disconnect(); start(); } }, { rootMargin: '900px 0px' });
+      io.observe($('tool'));
+    } else setTimeout(start, 1500);
+  }
+  /** The tool test on duo.jpg, run live. */
+  function validate() {
     var im = new Image();
     im.onload = function () {
       var c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight;

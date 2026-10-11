@@ -103,6 +103,7 @@ function main() {
   if (V.front) png.write(path.join(outDir, name + '-front.png'), crop(sheet, Math.max(0, V.front.x0 - pad), Math.min(sheet.width, V.front.x1 + pad)));
   if (V.side) png.write(path.join(outDir, name + '-side.png'), crop(sheet, Math.max(0, V.side.x0 - pad), Math.min(sheet.width, V.side.x1 + pad)));
   console.log('measured score ' + result.score.value.toFixed(1) + ' (target ' + target + '); checks: ' + result.checks.map((c) => (c.ok ? 'ok' : 'FAIL') + ' ' + c.name).join('; '));
+  if (result.warnings.length) console.log('notes: ' + result.warnings.join(' | '));
   console.log('wrote ' + ['sheet', 'front', 'side'].map((k) => path.join(outDir, name + '-' + k + '.png')).join(', '));
 }
 

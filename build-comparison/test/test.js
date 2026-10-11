@@ -169,7 +169,13 @@ test('Rex and Ollie are drawn to their skull-top height, crest and horns above i
     }
   }
   assert.strictEqual(duo.characters.rex.views.side.facing, 'left');
-  assert.ok(Fig.traced(duo.characters.rex, 'side', 2.92).parts.some((p) => p.mark === 'tail'));
+  // Traced side views are mirrored to face right, so the tail sits behind, to the left (x < 0).
+  for (const [name, H] of [['rex', 2.92], ['ollie', 2.91]]) {
+    const tail = Fig.traced(duo.characters[name], 'side', H).parts.filter((p) => p.mark === 'tail');
+    assert.ok(tail.length, name + ' has a tail in the side view');
+    const xs = tail.flatMap((p) => p.poly.map((q) => q[0]));
+    assert.ok(xs.reduce((a, b) => a + b, 0) / xs.length < 0, name + ': the side-view tail is behind (facing right)');
+  }
 });
 
 // ---------- the measuring tool ----------
@@ -241,6 +247,33 @@ test('the current turnarounds fail the sheet checks (tail over the back view, lo
     const r = M.measureSheet(img, { heightM: 3, skullRows: skull, order: R.order, exclude: ex, seg: { ignore: R.ignore } });
     assert.ok(!r.ok, name + ' should be rejected');
     assert.ok(r.warnings.some((w) => /2,000 px/.test(w)), name + ': resolution warning');
+    const failed = r.checks.filter((c) => !c.ok).map((c) => c.name);
+    const want = { rex: ['front and back landmarks line up', 'side-view neck lines up'], ollie: ['front and back landmarks line up'] }[name];
+    assert.deepStrictEqual(failed.map((n) => want.find((w) => n.startsWith(w)) || n), want, name + ' fails ' + failed.join('; '));
+    // Their round bellies make the waist as deep as it is wide; the hips still mark the side view.
+    assert.ok(r.checks.find((c) => /side view is a side view/.test(c.name)).ok, name + ': a real side view is not mistaken for a back view');
+  }
+});
+
+test('a sheet with front and back views but no side view is refused (the back is not a depth)', () => {
+  const { templateViews } = require('../tools/export_targets.js');
+  const t = templateViews('ansur2_m_p50', 1.8, 1);
+  const good = M.measureSheet(Fig.renderSheet(t.views, 1.8, t.levels, { figurePx: 600 }), { heightM: 1.8, heightRef: 'top', seg: { refine: 0 } });
+  const frontBack = M.measureSheet(Fig.renderSheet({ front: t.views.front, side: t.views.front }, 1.8, t.levels, { figurePx: 600 }), { heightM: 1.8, heightRef: 'top', seg: { refine: 0 } });
+  assert.ok(good.ok, 'front and side pass');
+  assert.ok(!frontBack.ok && frontBack.checks.some((c) => /side view is a side view/.test(c.name) && !c.ok), 'front and back are refused');
+});
+
+test('typed skull rows outside the head are refused, not scored', () => {
+  const { templateViews } = require('../tools/export_targets.js');
+  const t = templateViews('ansur2_m_p50', 1.8, 1);
+  const img = Fig.renderSheet(t.views, 1.8, t.levels, { figurePx: 600 });
+  const rows = Fig.sheetSkullRows(img, 1.8);
+  const ok = M.measureSheet(img, { heightM: 1.8, skullRows: rows, seg: { refine: 0 } });
+  assert.ok(ok.ok && ok.landmarks.skull === rows.front, 'the true skull rows are used and reported');
+  for (const bad of [5000, rows.front + 400, rows.front - 40]) {
+    const r = M.measureSheet(img, { heightM: 1.8, skullRows: { front: bad, side: rows.side }, seg: { refine: 0 } });
+    assert.ok(!r.ok && !r.score && r.errors.some((e) => /outside its head/.test(e)), 'row ' + bad + ' refused');
   }
 });
 
