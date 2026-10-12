@@ -374,7 +374,6 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
           <input type="range" id="grow-s" min="0" max="1" step="0.01" value="0.5">
           <div class="scale-ends"><span>All density</span><span>All size</span></div>
           <div class="inline-num" id="grow-t-row" style="margin-top:8px"><label for="grow-t" class="hint" style="flex:none">Grows over (s)</label><input id="grow-t" type="number" min="0.001" step="any" value="60"></div>
-          <div id="half-row" style="margin-top:8px"><div class="inline-num"><label for="half-life" class="hint" style="flex:none">Half-life (s)</label><input id="half-life" type="number" min="0.001" step="any" value="1" aria-describedby="half-hint"></div><p class="hint" id="half-hint" style="margin:4px 0 0">If it runs away. It matters only inside his own event horizon.</p></div>
           <span class="hint">Growth is a what-if: the page resets to their canon size and mass next visit.</span>
         </div>
       </details>
@@ -3906,8 +3905,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   // rises at dH / 2t and his soles move down at the same speed. The air at his surface gets from the expanding-sphere
   // value (low end) to the flat-piston value at his head's speed (high end); the excess energy pushed into the air,
   // dp x dV, is a blast; on hard ground it counts double (an upper bound: it counts the downward share as air too).
-  // The ground: the lift its push would give him goes to the endless ocean (canon: the collaborator's ruling,
-  // 12 Oct 2026, owner to confirm), so his middle stays put.
+  // The ground: the lift its push would give him goes to the endless ocean (canon, 12 Oct 2026), so his middle
+  // stays put.
   // gnd (optional): { surface, groundHolds }. Real ground gives: his soles are driven dH/2 in at dH / 2t, and the ground
   // takes that work, its bearing plus the inertia of the soil pushed aside (the Poncelet rule the lab uses for feet
   // driven into the ground). Comic ground (or none given) doesn't give: he grows upward from his soles instead, his
@@ -3945,8 +3944,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   // Runaway: the side effects of the growth are paid from the energy absorbed and taken back as growth too (canon).
   // The air pushed back (p0 + dp over dV) and the ground driven in are spent and then returned: a round trip, so in the
   // end all of E becomes mass, no more. The binding energy his own gravity releases as he grows goes to the endless
-  // ocean (canon: the collaborator's ruling, 12 Oct 2026, owner to confirm), so it adds nothing. Loop ratio k = side effects / energy absorbed; each round returns k of
-  // the last, so the loop dies out at once and the half-life (a story choice) never has to act. The gravity share is
+  // ocean (canon, 12 Oct 2026), so it adds nothing. Loop ratio k = side effects / energy absorbed; each round returns k of
+  // the last, so the loop dies out at once and can never run away (so the page has no half-life control). The gravity share is
   // still reported: binding energy of a uniform ball, 3 G M^2 / (5 R), so 0.3 (2 - s/3) r_s / R in weak gravity.
   function runawayGrowth(body, E, form, gnd) {
     const inst = instantGrowth(body, E, form, gnd), g = inst.grown;
@@ -5205,7 +5204,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Absorbed energy and growth",
-   "d": "Canon: the energy they put out is theirs, so they can take it back. By default it returns to the endless store of power they draw on, and nothing changes. The growth modes are what-ifs that turn it into mass, m = E ÷ c². Growth form: the even mix grows volume and density each by the square root of the mass ratio (height by its sixth root); pure size keeps the density; pure density keeps the size. Gradual growth starts and stops smoothly (our choice); it is harmless if the air pulse 2 m from him (our choice of how close a bystander stands) stays under 100 Pa (134 dB, the US Bureau of Mines safe level) and the top of his head rises no faster than 0.25 m/s (the reduced robot speed OSHA’s Technical Manual calls slow enough for a person to get out of the way; borrowed from robot safety, not tested for this case). Instant growth takes the time sound needs to cross his new body (our choice); the blast is a range from a ball to flat pistons, doubled for the ground. He grows about his middle, all the way through (canon), so his soles are driven into the ground and the ground takes that work (its bearing plus the soil pushed aside; often more than the air). The lift the ground’s push would give him goes to the endless ocean (canon), so he is never thrown up; on comic ground, which doesn’t give, he grows upward from his soles instead and stops when the growth does. In the runaway mode the side effects (the air and ground pushed aside) are paid from the energy absorbed and taken back as growth too (canon): a round trip, so exactly the energy absorbed becomes mass and the loop dies out at once. The energy his own gravity releases as he grows goes to the endless ocean (canon), so nothing can make the loop run away, and the half-life never has to act."
+   "d": "Canon: the energy they put out is theirs, so they can take it back. By default it returns to the endless store of power they draw on, and nothing changes. The growth modes are what-ifs that turn it into mass, m = E ÷ c². Growth form: the even mix grows volume and density each by the square root of the mass ratio (height by its sixth root); pure size keeps the density; pure density keeps the size. Gradual growth starts and stops smoothly (our choice); it is harmless if the air pulse 2 m from him (our choice of how close a bystander stands) stays under 100 Pa (134 dB, the US Bureau of Mines safe level) and the top of his head rises no faster than 0.25 m/s (the reduced robot speed OSHA’s Technical Manual calls slow enough for a person to get out of the way; borrowed from robot safety, not tested for this case). Instant growth takes the time sound needs to cross his new body (our choice); the blast is a range from a ball to flat pistons, doubled for the ground. He grows about his middle, all the way through (canon), so his soles are driven into the ground and the ground takes that work (its bearing plus the soil pushed aside; often more than the air). The lift the ground’s push would give him goes to the endless ocean (canon), so he is never thrown up; on comic ground, which doesn’t give, he grows upward from his soles instead and stops when the growth does. In the runaway mode the side effects (the air and ground pushed aside) are paid from the energy absorbed and taken back as growth too (canon): a round trip, so exactly the energy absorbed becomes mass and the loop dies out at once. The energy his own gravity releases as he grows goes to the endless ocean (canon), so nothing can make the loop run away."
   },
   {
    "t": "Strength means force",
@@ -12409,7 +12408,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Growth: can the growth loop run away outside a black hole?",
-   "value": "No. Shoving the air returns about 10⁻¹⁵ of the energy (less for mix, none for pure density); pushing rock aside at most about 4 × 10⁻¹¹; any ordinary matter at most a few × 10⁻⁸. Their own gravity returns a share that reaches 1 only at the event horizon, so the half-life only matters once he is already a black hole. This covers energy feedback only, not the momentum of instant growth",
+   "value": "No. Shoving the air returns about 10⁻¹⁵ of the energy (less for mix, none for pure density); pushing rock aside at most about 4 × 10⁻¹¹; any ordinary matter at most a few × 10⁻⁸. Their own gravity returns a share that reaches 1 only at the event horizon, so the half-life only matters once he is already a black hole. This covers energy feedback only, not the momentum of instant growth. Under the canon (owner and collaborator, 12 Oct 2026) the energy gravity releases goes to the endless ocean, so the loop never runs away and the page has no half-life control.",
    "status": "derived",
    "sources": [
     {
@@ -12674,7 +12673,7 @@ window.DINO_DATA = {
     { id: 'custom', label: 'Custom (use the slider)' },
   ];
   // the ranges a number input accepts, shared by the inputs and by the checks on saved settings
-  const RANGES = { gThrow: [0.1, 1e9], gJump: [0.01, 1e9], gSprint: [0.1, 3e8], gPull: [0.01, 1e9], growT: [1e-3, 1e12], halfLife: [1e-3, 1e12], near: [0.5, 1000], walkD: [0.5, 10000] };
+  const RANGES = { gThrow: [0.1, 1e9], gJump: [0.01, 1e9], gSprint: [0.1, 3e8], gPull: [0.01, 1e9], growT: [1e-3, 1e12], near: [0.5, 1000], walkD: [0.5, 10000] };
   const inRange = (k, v) => isFinite(v) && v >= RANGES[k][0] && v <= RANGES[k][1];
   // a typed number outside its range is clamped to the nearest allowed value (as the height field is); blank or junk keeps the old one
   const setIn = (k, raw) => { const v = String(raw).trim() === '' ? NaN : Number(raw); if (isFinite(v)) state[k] = Math.min(RANGES[k][1], Math.max(RANGES[k][0], v)); update(); };
@@ -12693,7 +12692,7 @@ window.DINO_DATA = {
     gThrow: 30, gJump: 3, gSprint: 12.42, gPull: 10,
     // comic switches (off by default) and what absorbed energy does; growth form = share of growth into size
     gentleHold: false, safePassenger: false, silentStrike: false, softLanding: false, coolFlight: false,
-    absorb: 'ocean', growS: 0.5, growT: 60, halfLife: 1, growWhat: 'none',
+    absorb: 'ocean', growS: 0.5, growT: 60, growWhat: 'none',
     // Walk tab: who walks, the pace, the effort of each step (0 soft-footed, 0.5 ordinary, 1 a heavy stamp), the listener's distance (m)
     walker: 'rex', pace: 'walk', stepEffort: 0, walkD: 3,
     // two-player tests: one effort for both (least disruptive, all-out or custom), unless Ollie gets his own (what-if)
@@ -12737,7 +12736,7 @@ window.DINO_DATA = {
       gentleHold: (v) => typeof v === 'boolean', safePassenger: (v) => typeof v === 'boolean', silentStrike: (v) => typeof v === 'boolean', softLanding: (v) => typeof v === 'boolean', coolFlight: (v) => typeof v === 'boolean',
       duoEffort: (v) => ['least', 'allout', 'custom'].includes(v), duoLogKg: num(-3, 34), oEffortOwn: (v) => typeof v === 'boolean', oEffortLogKg: num(-3, 34),
       walker: (v) => ['rex', 'ollie', 'both'].includes(v), pace: (v) => ['stroll', 'walk', 'brisk', 'fast'].includes(v), stepEffort: num(0, 1), walkD: num(...RANGES.walkD),
-      absorb: (v) => ['ocean', 'gradual', 'instant', 'runaway'].includes(v), growS: num(0, 1), growT: num(...RANGES.growT), halfLife: num(...RANGES.halfLife), growWhat: (v) => ['none', 'krakatoa', 'chicxulub', 'sun'].includes(v),
+      absorb: (v) => ['ocean', 'gradual', 'instant', 'runaway'].includes(v), growS: num(0, 1), growT: num(...RANGES.growT), growWhat: (v) => ['none', 'krakatoa', 'chicxulub', 'sun'].includes(v),
     };
     for (const [k, ok] of Object.entries(VALID)) if (!ok(state[k])) state[k] = DEFAULTS[k];
     for (const k of Object.keys(state)) if (!(k in DEFAULTS)) delete state[k];
@@ -12851,7 +12850,6 @@ window.DINO_DATA = {
     for (const b of document.querySelectorAll('#grow-chips .chip')) b.setAttribute('aria-pressed', String(Math.abs(Number(b.dataset.s) - state.growS) < 1e-9));
     $('#grow-fields').hidden = state.absorb === 'ocean';
     $('#grow-t').value = state.growT; $('#grow-t-row').hidden = state.absorb !== 'gradual';
-    $('#half-life').value = state.halfLife; $('#half-row').hidden = state.absorb !== 'runaway';
     const sw = [state.gentleHold && 'gentle hold', state.safePassenger && 'safe passenger', state.silentStrike && 'silent strike', state.softLanding && 'soft landing', state.coolFlight && 'cool flight'].filter(Boolean);
     $('#comic-sum').textContent = (sw.length ? sw.join(' · ') : 'all off') + (state.absorb !== 'ocean' ? ' · ' + { gradual: 'gradual growth', instant: 'instant growth', runaway: 'runaway' }[state.absorb] : '');
     $('#grp-solo').setAttribute('aria-pressed', String(!isDuo()));
@@ -12910,7 +12908,7 @@ window.DINO_DATA = {
     $('#absorb').onchange = (e) => { state.absorb = e.target.value; update(); };
     for (const [lbl, v] of [['Mix (default)', 0.5], ['Pure size', 1], ['Pure density', 0]]) $('#grow-chips').append(el('button', { type: 'button', class: 'chip', 'data-s': v, onclick: () => { state.growS = v; update(); } }, lbl));
     $('#grow-s').addEventListener('input', (e) => { state.growS = Number(e.target.value); renderDial(); scheduleBay(); });
-    for (const [id, k] of [['grow-t', 'growT'], ['half-life', 'halfLife']]) {
+    for (const [id, k] of [['grow-t', 'growT']]) {
       $('#' + id).min = RANGES[k][0]; $('#' + id).max = RANGES[k][1];
       $('#' + id).onchange = (e) => setIn(k, e.target.value);
     }
@@ -13156,7 +13154,7 @@ window.DINO_DATA = {
     }
     if (state.absorb === 'runaway') {
       const RW = P.runawayGrowth(body, E, state.growS, { surface: sf, groundHolds: state.groundHolds });
-      items.push('Runaway loop: the side effects of the growth (' + (gB.dV > 0 ? 'pushing the air back' + (RW.kGround > 0 ? ' and driving the ground in' : '') : 'none here, since he doesn’t get bigger') + ') are paid from the energy he absorbed and taken back as growth too (canon). That is a round trip: each joule absorbed sends back ' + (RW.k > 0 ? 'about ' + sci(RW.k, 1) + ' J' : 'nothing') + ', which returns what was spent, so in the end exactly the energy absorbed becomes mass and the loop dies out at once. The half-life (' + fmtTime(state.halfLife) + ', a story choice) never has to act.');
+      items.push('Runaway loop: the side effects of the growth (' + (gB.dV > 0 ? 'pushing the air back' + (RW.kGround > 0 ? ' and driving the ground in' : '') : 'none here, since he doesn’t get bigger') + ') are paid from the energy he absorbed and taken back as growth too (canon). That is a round trip: each joule absorbed sends back ' + (RW.k > 0 ? 'about ' + sci(RW.k, 1) + ' J' : 'nothing') + ', which returns what was spent, so in the end exactly the energy absorbed becomes mass and the loop dies out at once: it can never run away.');
       items.push('The energy his own gravity releases as he grows tighter goes to the endless ocean (canon), so it doesn’t feed the loop: ' + (RW.Egrav > 0 ? fmtSI(RW.Egrav, 'J') + ' here (' + sci(RW.kGrav, 1) + ' of what he absorbed)' : 'none here') + '. Fed back, it would grow the loop as he nears his own event horizon (in weak gravity about 0.3 × (2 − s/3) × his event-horizon radius ÷ his radius, ' + sci(RW.kGravNow, 1) + ' at his final size, where s is the share of growth into size).');
     }
     if (!small) {
