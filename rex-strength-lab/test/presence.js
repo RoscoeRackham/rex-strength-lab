@@ -317,9 +317,9 @@ const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface
   { const person = obj('person'), r = P.throwObject(ctxOf(90718 * g, { mode: 'real', use: 350 * g }), person, 45), o = { obj: person, angle: 45 };
     const nAvg = P.PASSENGER.felt(r.launchG, 45), nPk = P.PASSENGER.felt(r.launchGPeak, 45), lim = P.PASSENGER.noHarm(r.launchT);
     ok('passenger hazard uses the launch peak', nAvg <= lim && nPk > lim && H('passenger').test(M.throw, r, o), sig2(nAvg) + ' g mean, ' + sig2(nPk) + ' g peak, limit ' + sig2(lim)); }
-  // instant growth: the ground's bearing caps the launch
+  // instant growth about his middle (canon): never thrown up; the lift goes to the endless ocean
   { const I = P.instantGrowth(rex, 4.2e23, 0.5, { surface: surf('concrete') }), I0 = P.instantGrowth(rex, 4.2e23, 0.5);
-    ok('instant growth (Chicxulub, mix) on concrete: the slab gives, so no 15 km launch', I0.launch > 1e4 && I.driven && I.launch < 1 && I.vLeave <= Math.max(0, I.Fmax - I.grown.m * g) * I.tau / I.grown.m + 1e-9, sig2(I0.launch) + ' m uncapped'); }
+    ok('instant growth (Chicxulub, mix): never launched, on concrete or comic ground, and the lift that went to the ocean is reported', I.launch === 0 && I0.launch === 0 && I0.launchWould > 1e4 && I.launchWould > 0, sig2(I0.launchWould) + ' m on comic ground'); }
   // gradual growth: the shortest harmless times in the research (growth_slow_tmin_examples)
   for (const [E, f, T] of [[4.2e23, 0.5, 86], [4.2e23, 1, 248], [3.828e26, 0.5, 824], [3.828e26, 1, 2560]]) ok('gradual growth shortest harmless time ' + T + ' s (' + E.toExponential(1) + ' J, s = ' + f + ')', near(P.gradualGrowth(rex, E, f).T, T, 0.02), P.gradualGrowth(rex, E, f).T.toFixed(1));
   ok('instant growth timescale: sound crossing his new body (6.7 ms for Chicxulub, mix)', near(P.instantGrowth(rex, 4.2e23, 0.5).tau, 0.0067, 0.02));
@@ -391,7 +391,55 @@ const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface
     ok('bus on ice: the courtesy ceiling stops before his recoil slides him past 5 m', ce.by === 'slide' && M.throw.slide(p.run(ce.below), p.opt) < 5 && M.throw.slide(p.run(ce.use), p.opt) >= 5, sig2(ce.below / g) + ' kg'); }
   // instant growth on ground that gives: the soles are driven in, and the ground takes that work
   { const I = P.instantGrowth(rex, 4.2e23, 0.5, { surface: surf('concrete') });
-    ok('instant growth (Chicxulub, mix) on concrete: the ground takes more than the air', I.driven && I.Eground > I.Ehi && near(I.uHead, I.vLeave + 0.5 * I.grown.dH / I.tau, 1e-9), sig2(I.Eground) + ' J vs ' + sig2(I.Ehi) + ' J'); }
+    ok('instant growth (Chicxulub, mix) on concrete: the ground takes more than the air', I.gives && I.Eground > I.Ehi && near(I.uHead, 0.5 * I.grown.dH / I.tau, 1e-9), sig2(I.Eground) + ' J vs ' + sig2(I.Ehi) + ' J'); }
+}
+
+// 9. The owners' answers (12 Oct 2026): growth about the middle, the runaway's round trip, the standing sink rule.
+{
+  // growth about his middle: on ground that gives, his middle stays put and his soles go in dH/2 at dH/2t
+  for (const [E, f] of [[2.7e20, 0.5], [4.2e23, 0.5], [4.2e23, 1], [3.828e26, 1]]) for (const id of ['sand', 'concrete', 'granite']) {
+    const I = P.instantGrowth(rex, E, f, { surface: surf(id) }), G = I.grown;
+    ok('about the middle (' + E.toExponential(1) + ' J, s ' + f + ', ' + id + '): soles driven dH/2 in, head rises dH/2t, no launch',
+      I.gives && near(I.sink, G.dH / 2, 1e-9) && near(I.uHead, G.dH / (2 * I.tau), 1e-9) && I.launch === 0 && I.rise === 0
+      && near(I.Eground, I.soles * (I.qGround + P.K.PONCELET_K * surf(id).rho * I.vSole * I.vSole) * I.sink, 1e-9)
+      && near(I.vWould, Math.max(0, I.Fground - G.m * g) * I.tau / G.m, 1e-9), sig2(I.sink) + ' m'); }
+  // comic ground doesn't give: he grows upward and stops; the head moves twice as fast; nothing goes into the ground
+  { const I = P.instantGrowth(rex, 4.2e23, 0.5, { surface: surf('concrete'), groundHolds: true }), G = I.grown;
+    ok('comic ground: he grows upward (middle rises dH/2), ends at rest, nothing into the ground', !I.gives && near(I.rise, G.dH / 2, 1e-9) && I.sink === 0 && I.Eground === 0 && near(I.uHead, G.dH / I.tau, 1e-9) && near(I.vWould, G.dH / (2 * I.tau), 1e-9)); }
+  { const I = P.instantGrowth(rex, 1e20, 0, { surface: surf('sand') });
+    ok('pure density: no growth in size, nothing driven in', I.sink === 0 && I.Eground === 0 && I.uHead === 0); }
+  // the runaway: a round trip, so exactly E becomes mass; gravity's release goes to the ocean, so the loop never runs away
+  for (const E of [1e12, 4.2e23, 1e40, 1e50]) for (const f of [0, 0.5, 1]) {
+    const RW = P.runawayGrowth(rex, E, f, { surface: surf('concrete') });
+    ok('runaway (' + E.toExponential(0) + ' J, s ' + f + '): total = E, never runs, gravity reported but not fed back', RW.total === E && RW.runs === false && RW.k === RW.kAir + RW.kGround && near(RW.Egrav, RW.kGrav * E, 1e-12) && RW.k < 1, 'k ' + RW.k.toExponential(1) + ', gravity ' + RW.kGrav.toExponential(1)); }
+  // the standing rule against the measured elephant print (Schanz 2013: 2,530 kg cow, forefoot 0.32 x 0.30 m, prints
+  // 20-26 mm; the authors' calibrated model 4 / 8 / 18 mm at 99 / 185 / 350 kPa)
+  const sand = surf('sand'), Bel = 0.274;
+  const el = (p) => P.standDepth(sand, p, Bel, 3);
+  ok('elephant: 350 kPa (its forefoot\'s dynamic stress) leaves 18 mm, no plunge (measured 20-26 mm)', near(el(350e3).depth, 0.018, 0.01) && el(350e3).plunge === 0, (el(350e3).depth * 1000).toFixed(1) + ' mm');
+  ok('elephant: 185 kPa leaves about 8 mm, 99 kPa about 4 mm (the authors\' model)', near(el(185e3).depth, 0.008, 0.15) && near(el(99e3).depth, 0.004, 0.25), (el(185e3).depth * 1000).toFixed(1) + ', ' + (el(99e3).depth * 1000).toFixed(1) + ' mm');
+  ok('elephant: the old rule\'s tenfold overprediction is gone (181 kPa, the force-plate peak: under 26 mm)', el(181e3).depth < 0.026, (el(181e3).depth * 1000).toFixed(1) + ' mm');
+  // continuity and monotony through the failure pressure, in sand and gravel
+  for (const id of ['sand', 'gravel']) {
+    const sf = surf(id), B = ollie.footB, qf = P.standDepth(sf, 1e3, B, 3).qFail;
+    let prev = 0, mono = true;
+    for (let p = 1e3; p < 1e9; p *= 1.05) { const d = P.standDepth(sf, p, B, 3).depth; if (d < prev) mono = false; prev = d; }
+    const below = P.standDepth(sf, qf * 0.999999, B, 3).depth, above = P.standDepth(sf, qf * 1.000001, B, 3).depth;
+    ok(id + ': standing depth rises with pressure and is continuous at the failure pressure', mono && near(above, below, 1e-3), sig2(qf) + ' Pa'); }
+  // at canon, standing is never deeper than walking: the Weight tab no longer contradicts the Walk tab
+  for (const [nm, b] of [['Rex', rex], ['Ollie', ollie]]) for (const id of ['sand', 'gravel']) {
+    const gu = P.groundUnderWeight(b, surf(id), false), w = P.presence(b, surf(id), { pace: 'walk', effort: 0 }).step.footprint;
+    ok(nm + ' on ' + id + ': stands, and the standing print is shallower than the walking one', gu.regime === 'stands' && gu.print > 0 && gu.print < w.depth, (gu.print * 1000).toFixed(1) + ' vs ' + (w.depth * 1000).toFixed(1) + ' mm'); }
+  // clay: the Weight tab uses the Walk tab's rule (bearing growing with depth)
+  { const b = P.makeBody({ build: 'rex', H: 3.048, m: 4 * 3007 }), sf = surf('softclay'), gu = P.groundUnderWeight(b, sf, false);
+    ok('soft clay at 4x density: sinks to where N_c(D) su + gamma D carries him (shallower than the old overburden-only rule)', gu.regime === 'sinks' && near(gu.sink, P.standDepth(sf, gu.footPressure, b.footB, b.H).depth, 1e-9) && gu.sink < (gu.footPressure - sf.qult) / (sf.rho * g), sig2(gu.sink) + ' m'); }
+  // denser always sinks at least as far
+  { let prev = 0, mono = true;
+    for (const k of [1, 2, 5, 10, 30, 100, 300]) { const gu = P.groundUnderWeight(P.makeBody({ build: 'ollie', H: 3.048, m: k * 3007 }), surf('sand'), false); const d = gu.regime === 'stands' ? gu.print : gu.regime === 'sinks' || gu.regime === 'outOfSight' ? gu.sink : Infinity; if (d < prev) mono = false; prev = d; }
+    ok('Ollie on sand: denser always sinks at least as far', mono); }
+  // the open questions are closed on the page
+  { const fs = require('fs'), pth = require('path'), src = fs.readFileSync(pth.join(__dirname, '../src/app.html'), 'utf8') + fs.readFileSync(pth.join(__dirname, '../src/static-data.js'), 'utf8');
+    ok('no open questions for the owners left on the page', !/open question/i.test(src) && !/grows from his soles/i.test(src)); }
 }
 
 console.log(n + ' checks, ' + (fails ? fails + ' FAILED' : 'all checks passed'));

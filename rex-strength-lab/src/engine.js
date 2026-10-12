@@ -778,28 +778,28 @@
       standNeedKg: m / LEG_SHARE(), walkNeedKg: W8.WALK_LOAD * m / LEG_SHARE(), runNeedKg: m,
     };
   }
-  // The ground under his own weight: stands, sinks a little, punches through a thin layer, or no rock can hold him.
+  // The ground under his own weight: stands (leaving a print in soil), sinks, punches through a thin layer, or no rock
+  // can hold him. Soil uses standDepth, the Walk tab's footprint rules at his standing pressure: first under his feet,
+  // then, once they are in past his leg length, under his whole underside.
   function groundUnderWeight(body, surface, groundHolds) {
     const Wt = body.m * K.g, Af = 2 * body.footArea, Ab = body.topArea, Lleg = 0.45 * body.H;
-    const p1 = Wt / Af, p2 = Wt / Ab, q0f = qultFor(surface, body.footB);
+    const p1 = Wt / Af, p2 = Wt / Ab, sd1 = standDepth(surface, p1, body.footB, body.H);
+    const q0f = sd1 ? sd1.qFail : qultFor(surface, body.footB);
     // once buried, the rock buoys him up: the same test fallThrough uses to decide he is held (PREM crust, surface gravity)
     const Wnet = (body.m - premRho(K.R_E - 1) * body.volume) * premG(K.R_E);
-    const out = { weight: Wt, footPressure: p1, bodyPressure: p2, q0: q0f, standRatio: p1 / q0f, rockRatio: Wnet / (W8.SIGMA_ROCK * Ab), rockCap: W8.SIGMA_ROCK * Ab, sink: 0, legLength: Lleg,
+    const out = { weight: Wt, footPressure: p1, bodyPressure: p2, q0: q0f, standRatio: p1 / q0f, rockRatio: Wnet / (W8.SIGMA_ROCK * Ab), rockCap: W8.SIGMA_ROCK * Ab, sink: 0, print: 0, legLength: Lleg,
       strongRockHolds: Wnet <= W8.SIGMA_HIGH * Ab, weakRockFails: Wnet > W8.SIGMA_LOW * Ab };
     if (groundHolds) return Object.assign(out, { regime: 'comic', standRatio: 0 });
     if (Wnet > W8.SIGMA_ROCK * Ab) return Object.assign(out, { regime: 'fallsThrough' });
-    if (p1 <= q0f) return Object.assign(out, { regime: 'stands' });
-    const soil = { sand: W8.NQ.sand, gravel: W8.NQ.gravel, softclay: 1, stiffclay: 1 }[surface.id];
-    if (soil) {
-      // bearing grows with depth: + gamma D N_q for sand and gravel, + gamma D (overburden only) for clay
-      const gN = (surface.rho || 1800) * K.g * soil;
-      const D1 = (p1 - q0f) / gN;
-      if (D1 <= Lleg) return Object.assign(out, { regime: 'sinks', sink: D1, stage: 'feet' });
-      const q0b = qultFor(surface, Math.sqrt(Ab));
-      const D2 = Math.max(Lleg, (p2 - q0b) / gN);
+    if (sd1) {
+      if (p1 <= q0f) return Object.assign(out, { regime: 'stands', print: sd1.depth, extrapolated: sd1.extrapolated });
+      if (sd1.depth <= Lleg) return Object.assign(out, { regime: 'sinks', sink: sd1.depth, stage: 'feet' });
+      const sd2 = standDepth(surface, p2, Math.sqrt(Ab), body.H);
+      const D2 = Math.max(Lleg, sd2.depth);
       if (D2 <= body.H) return Object.assign(out, { regime: 'sinks', sink: D2, stage: 'body' });
       return Object.assign(out, { regime: 'outOfSight', sink: D2, stage: 'body' });
     }
+    if (p1 <= q0f) return Object.assign(out, { regime: 'stands' });
     if (surface.id === 'granite') return Object.assign(out, { regime: 'sinks', sink: Lleg, stage: 'rock' });
     return Object.assign(out, { regime: 'punchesThrough', layer: surface.id });
   }
@@ -3005,32 +3005,63 @@
   // 1.46 at 0.5, 1, 2, 3 and 4 foot-widths: EM 1110-1-1905 Table 4-7; never past 9), carries it; past half his hip
   // height he is mired. A landing pulse past the ground's bearing also drives the foot in (as in a stomp: Poncelet
   // penetration), in clay; on paving, slabs, ice, steel and rock it breaks the surface. All estimates.
-  const PRINT = { d: 0.018, p: 350e3, n: 1.27, B: 0.274 };
+  const PRINT = { d: 0.018, p: 350e3, lo: 99e3, n: 1.27, B: 0.274 };
   const NC_DEPTH = [[0, 1], [0.5, 1.15], [1, 1.24], [2, 1.36], [3, 1.43], [4, 1.46]];
   const ncDepth = (x) => { const T = NC_DEPTH; if (x >= T[T.length - 1][0]) return T[T.length - 1][1]; for (let i = 1; i < T.length; i++) if (x <= T[i][0]) return T[i - 1][1] + (T[i][1] - T[i - 1][1]) * (x - T[i - 1][0]) / (T[i][0] - T[i - 1][0]); return 1; };
+  // Depth at which clay carries pressure p under a footing of width B (Infinity past hi).
+  function clayDepth(surface, p, B, hi) {
+    const q = qultFor(surface, B), su = surface.shear, Nc0 = q / su;
+    const Nc = (D) => Math.min(9, Nc0 * ncDepth(D / B));
+    const gam = (surface.rho || 1800) * K.g;
+    if (p <= q) return 0;
+    if (Nc(hi) * su + gam * hi < p) return Infinity;
+    let lo = 0;
+    for (let i = 0; i < 60; i++) { const mid = 0.5 * (lo + hi); if (Nc(mid) * su + gam * mid >= p) hi = mid; else lo = mid; }
+    return hi;
+  }
+  // Sand and gravel: the print the elephant rule gives at pressure p under a footing of width B.
+  const SAND_Q = 37e3 / 0.316;   // the loose sand's bearing per metre of foot width (the elephant print's sand)
+  function sandPrint(surface, p, B) {
+    const q = qultFor(surface, B), qSand = SAND_Q * B;
+    return { depth: PRINT.d * Math.pow(p / PRINT.p, PRINT.n) * (B / PRINT.B) * Math.min(1, qSand / q), extrapolated: p > PRINT.p * (1 + 1e-9) || p < PRINT.lo * (1 - 1e-9), qSand, q };
+  }
+  // Standing still, in soil (null on other surfaces). Sand and gravel: the elephant's sand carried its forefoot with
+  // only a 20-26 mm print, at 350 kPa by Schanz's calibrated model (181 kPa by force-plate peaks), so we take failure
+  // to start at qFail = 350 kPa x (B / 0.274 m), and more for gravel in proportion to its bearing (our estimate; a
+  // lower bound only if the 350 kPa is right). Below qFail the foot leaves the elephant rule's print; past it the foot plunges until the bearing,
+  // growing with depth as gamma D N_q (USACE EM 1110-1-1905), carries it, and never less than the print. Clay: the Walk
+  // tab's rule (bearing growing with depth, N_c up to 9; nothing until the bearing is passed). All estimates.
+  function standDepth(surface, p, B, H) {
+    if (surface.granular) {
+      const pr = sandPrint(surface, p, B), qFail = PRINT.p * (B / PRINT.B) * Math.max(1, pr.q / pr.qSand);
+      const Nq = W8.NQ[surface.id] || W8.NQ.sand;
+      const plunge = Math.max(0, (p - qFail) / ((surface.rho || 1800) * K.g * Nq));
+      return { depth: Math.max(pr.depth, plunge), print: pr.depth, plunge, qFail, extrapolated: plunge === 0 && pr.extrapolated };
+    }
+    if (surface.id === 'softclay' || surface.id === 'stiffclay') {
+      const q = qultFor(surface, B);
+      return { depth: clayDepth(surface, p, B, 10 * H), print: 0, plunge: 0, qFail: q, extrapolated: false };
+    }
+    return null;
+  }
   function footprint(body, surface, p, groundHolds, impact) {
     if (groundHolds) return { depth: 0, kind: 'comic' };
     const q = qultFor(surface, body.footB), B = body.footB;
     const pPeak = impact ? impact.p : p;
     if (surface.granular) {
-      const qSand = 37e3 * B / 0.316;   // the loose sand's bearing at this foot width (the elephant print's sand)
       // Schanz's anchor stress is the elephant's dynamic (peak) stress, so the print follows the step's peak
       // the rule was fitted from 99 to 350 kPa (Schanz's model): past that it is extrapolated
-      const pp = Math.max(p, pPeak);
-      return { depth: PRINT.d * Math.pow(pp / PRINT.p, PRINT.n) * (B / PRINT.B) * Math.min(1, qSand / q), kind: 'print', extrapolated: pp > PRINT.p * (1 + 1e-9) };
+      const pp = Math.max(p, pPeak), pr = sandPrint(surface, pp, B);
+      return { depth: pr.depth, kind: 'print', extrapolated: pp > PRINT.p * (1 + 1e-9) };
     }
     if (surface.id === 'softclay' || surface.id === 'stiffclay') {
       // the landing pulse, if it is past the clay's bearing, drives the foot in like a small stomp
       const dImp = impact && pPeak > q && impact.v > 0 ? penetrationDepth(impact.J / impact.v, body.footArea, impact.v, q, surface.rho || 1800) : 0;
       const mired = WALK.HIP * body.H / 2;   // a foot sunk past half the hip height: he is stuck
       if (p <= q) return dImp > mired ? { depth: Infinity, kind: 'mired' } : { depth: dImp, kind: dImp > 0 ? 'sinks' : 'holds' };
-      const su = surface.shear, Nc0 = q / su;
-      const Nc = (D) => Math.min(9, Nc0 * ncDepth(D / B));
-      const gam = (surface.rho || 1800) * K.g;
-      let lo = 0, hi = 10 * body.H;
-      if (Nc(hi) * su + gam * hi < p) return { depth: Infinity, kind: 'mired' };
-      for (let i = 0; i < 60; i++) { const mid = 0.5 * (lo + hi); if (Nc(mid) * su + gam * mid >= p) hi = mid; else lo = mid; }
-      const depth = Math.max(hi, dImp);
+      const d = clayDepth(surface, p, B, 10 * body.H);
+      if (!isFinite(d)) return { depth: Infinity, kind: 'mired' };
+      const depth = Math.max(d, dImp);
       return depth > mired ? { depth: Infinity, kind: 'mired' } : { depth, kind: 'sinks' };
     }
     return { depth: 0, kind: pPeak > q ? 'breaks' : 'holds' };
@@ -3426,8 +3457,9 @@
   // Gradual growth: the shortest duration that stays harmless to a bystander GAP metres from his final surface.
   // Air: the growing body is a compact source of volume flow; on rigid ground the pressure at r is rho0 V''/(2 pi r)
   // (twice the free-field monopole), peaking at rho0 k_V dV / (2 pi r T^2). Shove: the top of his head rises at up to
-  // k_H dH / T; anything above or beside him has to be able to get out of the way. Lift: his middle has to rise
-  // without leaving the ground, T >= sqrt(pi dH / g) (not binding next to the shove).
+  // k_H dH / T; anything above or beside him has to be able to get out of the way. Lift: a growth faster than
+  // sqrt(pi dH / g) would lift his middle off the ground, but that lift goes to the endless ocean (canon), so it sets
+  // no limit (Tl is reported only; it never set the time for growth the page shows, only below about 5 mm).
   function gradualGrowth(body, E, form, o) {
     const opt = o || {};
     const g = grownBody(body, E, form);
@@ -3436,65 +3468,69 @@
     const Tp = g.dV > 0 ? Math.sqrt(K.rho0 * sh.kV * g.dV / (2 * Math.PI * r * dpSafe)) : 0;
     const Tu = g.dH > 0 ? sh.kH * g.dH / uSafe : 0;
     const Tl = g.dH > 0 ? Math.sqrt(Math.PI * g.dH / K.g) : 0;
-    const T = Math.max(Tp, Tu, Tl);
+    const T = Math.max(Tp, Tu);
     const pAt = (Tc) => (g.dV > 0 ? K.rho0 * sh.kV * g.dV / (2 * Math.PI * r * Tc * Tc) : 0);
     const uAt = (Tc) => (g.dH > 0 ? sh.kH * g.dH / Tc : 0);
-    return { grown: g, shape: sh, T, Tp, Tu, Tl, by: T === Tu ? 'shove' : T === Tp ? 'pressure' : 'lift', r, pAt, uAt, compact: T > 10 * g.H / K.a0 };
+    return { grown: g, shape: sh, T, Tp, Tu, Tl, by: T === Tu ? 'shove' : 'pressure', r, pAt, uAt, compact: T > 10 * g.H / K.a0 };
   }
   // Instant growth: all at once, over the time sound takes to cross his new body (height / 1,540 m/s; an estimate).
-  // He grows from his soles, so his sides move out at about dR / t and the top of his head rises at dH / t. The air at
-  // his surface gets from the expanding-sphere value (low end) to the flat-piston value at his head's speed (high end);
-  // the excess energy pushed into the air, dp x dV, is a blast; on hard ground it counts double. Momentum: his middle
-  // rises dH/2 in t, so the ground has to push him up hard enough to give that speed, and nothing pulls him back: he is
-  // launched unless bolted to the planet.
-  // gnd (optional): { surface, groundHolds, bolted }. The ground can push his soles with at most its bearing: past
-  // that it gives, his soles are driven in, and he leaves only with the impulse it could supply in time tau.
+  // He grows about his middle, all the way through (canon): his sides move out at about dR / t, the top of his head
+  // rises at dH / 2t and his soles move down at the same speed. The air at his surface gets from the expanding-sphere
+  // value (low end) to the flat-piston value at his head's speed (high end); the excess energy pushed into the air,
+  // dp x dV, is a blast; on hard ground it counts double (an upper bound: it counts the downward share as air too).
+  // The ground: the lift its push would give him goes to the endless ocean (canon: the collaborator's ruling,
+  // 12 Oct 2026, owner to confirm), so his middle stays put.
+  // gnd (optional): { surface, groundHolds }. Real ground gives: his soles are driven dH/2 in at dH / 2t, and the ground
+  // takes that work, its bearing plus the inertia of the soil pushed aside (the Poncelet rule the lab uses for feet
+  // driven into the ground). Comic ground (or none given) doesn't give: he grows upward from his soles instead, his
+  // middle rising dH/2, and ends at rest (the lift goes to the endless ocean). Bolting stops sliding, not sinking.
   function instantGrowth(body, E, form, gnd) {
     const g = grownBody(body, E, form);
     const tau = g.H / GROW.TISSUE_C;
     const dR = g.R - g.R0;
     const u = dR / tau;
-    const vcm = 0.5 * g.dH / tau;                                // his middle's mean upward speed during the growth
-    const Fground = g.m * vcm / tau + g.m * K.g;                 // the ground's push that gives it
+    const vSole = 0.5 * g.dH / tau;                              // his soles' speed down, relative to his middle
     const soles = 2 * body.footArea * Math.exp(g.lnr * g.s * 2 / 3);
-    let launch = vcm * vcm / (2 * K.g), vLeave = vcm, Fmax = Infinity, qGround = Infinity, driven = false, sink = 0, Eground = 0;
-    if (gnd && gnd.surface && !gnd.groundHolds && !gnd.bolted) {
+    const gives = !!(gnd && gnd.surface && !gnd.groundHolds) && g.dH > 0;
+    let qGround = Infinity, Fground = 0, sink = 0, Eground = 0, rise = 0, Pocean = 0;
+    if (gives) {
       qGround = qultFor(gnd.surface, body.footB * Math.exp(g.lnr * g.s / 3));
-      Fmax = qGround * soles;
-      driven = Fground > Fmax;
-      vLeave = Math.min(vcm, Math.max(0, Fmax - g.m * K.g) * tau / g.m);
-      launch = vLeave * vLeave / (2 * K.g);
-      if (driven) {
-        // the rest of the growth drives his soles down: the ground takes that work, its bearing plus the inertia of
-        // the soil pushed aside (the Poncelet rule the lab uses for feet driven into the ground)
-        const vSole = vcm - vLeave;
-        sink = vSole * tau;
-        Eground = soles * (qGround + K.PONCELET_K * (gnd.surface.rho || 2000) * vSole * vSole) * sink;
-      }
+      Fground = soles * (qGround + K.PONCELET_K * (gnd.surface.rho || 2000) * vSole * vSole);
+      sink = 0.5 * g.dH;
+      Eground = Fground * sink;
+      Pocean = Math.max(0, Fground - g.m * K.g) * tau;           // the ground's upward impulse, beyond holding his weight
+    } else if (g.dH > 0) {
+      rise = 0.5 * g.dH;
+      Pocean = g.m * vSole;                                      // his rise, stopped when the growth ends
     }
-    // the head rises at his middle's speed plus half the growth rate (all of it from the soles when they stay put)
-    const uHead = vLeave + 0.5 * g.dH / tau;
+    // the lift he would have had: the speed that impulse gives him, and how high it would throw him (no drag)
+    const vWould = Pocean / g.m, launchWould = vWould * vWould / (2 * K.g);
+    // the head rises at the soles' speed relative to his middle, plus his middle's own rise when the ground holds
+    const uHead = vSole + (gives ? 0 : vSole);
     const dpLo = g.dV > 0 ? sphereOverpressure(u) : 0;
     const dpHi = g.dV > 0 ? pistonOverpressure(uHead) / 3 + 2 * pistonOverpressure(u) / 3 : 0;
     const Elo = 2 * dpLo * g.dV, Ehi = 2 * dpHi * g.dV;          // x2: rigid ground reflects it (equivalent free-air energy)
-    return { grown: g, tau, u, uHead, mach: u / K.a0, machHead: uHead / K.a0, dpLo, dpHi, Elo, Ehi, Eatm: K.p0 * g.dV, vcm, Fground, groundPressure: Fground / soles, soles, launch, vLeave, Fmax, qGround, driven, sink, Eground, quake: Eground > 0 ? seismicMagnitude(Eground) : null };
+    return { grown: g, tau, u, uHead, vSole, mach: u / K.a0, machHead: uHead / K.a0, dpLo, dpHi, Elo, Ehi, Eatm: K.p0 * g.dV, soles,
+      gives, qGround, Fground, groundPressure: gives ? Fground / soles : 0, sink, Eground, rise, Pocean, vWould, launchWould, launch: 0,
+      quake: Eground > 0 ? seismicMagnitude(Eground) : null };
   }
-  // Runaway: the side effects (the work done pushing the air back, p0 + dp over dV, and the gravitational binding
-  // energy his own pull releases as he grows) are absorbed as growth too. Loop ratio f = energy fed back / energy
-  // absorbed. f < 1: the loop dies out, and he absorbs E / (1 - f) in all. f >= 1: it runs away, and only the half-life
-  // (a story choice: no physics sets it) drains the extra into the endless ocean. Binding energy of a uniform ball:
-  // 3 G M^2 / (5 R), so the gravity share is 0.3 (2 - s/3) r_s / R in weak gravity (Newtonian); relativity raises it,
-  // reaching 1 only at his event horizon (growth_loop_gravity_gr).
-  function runawayGrowth(body, E, form) {
-    const inst = instantGrowth(body, E, form), g = inst.grown;
+  // Runaway: the side effects of the growth are paid from the energy absorbed and taken back as growth too (canon).
+  // The air pushed back (p0 + dp over dV) and the ground driven in are spent and then returned: a round trip, so in the
+  // end all of E becomes mass, no more. The binding energy his own gravity releases as he grows goes to the endless
+  // ocean (canon: the collaborator's ruling, 12 Oct 2026, owner to confirm), so it adds nothing. Loop ratio k = side effects / energy absorbed; each round returns k of
+  // the last, so the loop dies out at once and the half-life (a story choice) never has to act. The gravity share is
+  // still reported: binding energy of a uniform ball, 3 G M^2 / (5 R), so 0.3 (2 - s/3) r_s / R in weak gravity.
+  function runawayGrowth(body, E, form, gnd) {
+    const inst = instantGrowth(body, E, form, gnd), g = inst.grown;
     const bind = (m, R) => 0.6 * K.G * m * m / R;
-    const fAir = isFinite(E) && E > 0 ? (K.p0 + inst.dpHi) * g.dV / E : 0;
-    const fGrav = isFinite(E) && E > 0 ? Math.max(0, bind(g.m, g.R) - bind(body.m, g.R0)) / E : 0;
-    const k = fAir + fGrav;
+    const ok = isFinite(E) && E > 0;
+    const fAir = ok ? (K.p0 + inst.dpHi) * g.dV / E : 0;
+    const fGround = ok ? inst.Eground / E : 0;
+    const fGrav = ok ? Math.max(0, bind(g.m, g.R) - bind(body.m, g.R0)) / E : 0;
     const kGravNow = 0.3 * (2 - g.s / 3) * 2 * K.G * g.m / (g.R * K.c * K.c);
     const rs = 2 * K.G * g.m / (K.c * K.c);
-    return { instant: inst, grown: g, k, kAir: fAir, kGrav: fGrav, kSurround: fAir, kGravNow, runs: k >= 1 || rs >= g.R, total: k < 1 ? E / (1 - k) : Infinity,
-      rs, rsOverR: rs / g.R, kGravAtHorizon: 0.3 * (2 - g.s / 3) };
+    return { instant: inst, grown: g, k: fAir + fGround, kAir: fAir, kGround: fGround, kGrav: fGrav, Egrav: fGrav * E, kGravNow,
+      runs: false, total: E, rs, rsOverR: rs / g.R };
   }
 
   function threshold(pred, lo, hi) {
@@ -3552,6 +3588,6 @@
     kgRatio, overpressureAt, blastRadius, penetrationDepth,
     lift, throwObject, jump, stomp, punch, clap, sprint, pull, threshold, calibrateComic,
     throwOnce, jumpOnce, stompOnce, punchOnce, clapOnce,
-    driveStrength, PASSENGER, VIB, ppvAt, ppvNonlinear, groundOf, vibSource, elephantPPV, sphereOverpressure, growthShape, WALK, walkStep, walkThresholds, plasterOver, plasterReach, plasterLimitHz, footprint, presence, walkEffortFor, ppvReach, RESTRAINT, GROW, formShare, grownBody, grownMakeBody, pistonOverpressure, gradualGrowth, instantGrowth, runawayGrowth,
+    driveStrength, PASSENGER, VIB, ppvAt, ppvNonlinear, groundOf, vibSource, elephantPPV, sphereOverpressure, growthShape, WALK, walkStep, walkThresholds, plasterOver, plasterReach, plasterLimitHz, footprint, standDepth, presence, walkEffortFor, ppvReach, RESTRAINT, GROW, formShare, grownBody, grownMakeBody, pistonOverpressure, gradualGrowth, instantGrowth, runawayGrowth,
   };
 });
