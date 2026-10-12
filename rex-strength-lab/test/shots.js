@@ -123,7 +123,10 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
         await page.waitForTimeout(300);
         const cue = await page.evaluate(() => { const c = document.getElementById('more-below'), r = c.getBoundingClientRect(); return { shown: !document.getElementById('more-wrap').hidden && r.height > 0 && r.top >= 0 && r.bottom <= innerHeight, text: c.textContent }; });
         if (!cue.shown || !/Their powers/.test(cue.text)) texts.push('sidebar cue ' + JSON.stringify(cue));
-        if (cue.shown) await page.click('#more-below'); else await page.evaluate(() => { const a = document.querySelector('.panel-controls'); a.scrollTop = a.scrollHeight; });
+        // click where the cue is drawn, as a mouse does (page.click would first scroll it into view inside the sidebar's
+        // own scroll box, which scrolls the box to its end and hides the cue before the click lands)
+        if (cue.shown) { const at = await page.$eval('#more-below', (c) => { const b = c.getBoundingClientRect(); return { x: b.left + b.width / 2, y: b.top + b.height / 2 }; }); await page.mouse.click(at.x, at.y); }
+        else await page.evaluate(() => { const a = document.querySelector('.panel-controls'); a.scrollTop = a.scrollHeight; });
         await page.waitForTimeout(900);
         const reach = await page.evaluate(() => { const r = document.querySelector('#powers > summary').getBoundingClientRect(), b = document.getElementById('duo-bay').getBoundingClientRect(); return { top: r.top, bottom: r.bottom, vh: innerHeight, bayTop: b.top, cueHidden: document.getElementById('more-wrap').hidden }; });
         if (reach.top < 0 || reach.bottom > reach.vh || reach.bayTop > reach.vh || !reach.cueHidden) texts.push('Their powers out of reach while reading the Rex + Ollie element ' + JSON.stringify(reach));
