@@ -3478,8 +3478,8 @@
   // rises at dH / 2t and his soles move down at the same speed. The air at his surface gets from the expanding-sphere
   // value (low end) to the flat-piston value at his head's speed (high end); the excess energy pushed into the air,
   // dp x dV, is a blast; on hard ground it counts double (an upper bound: it counts the downward share as air too).
-  // The ground: the lift its push would give him goes to the endless ocean (canon: the collaborator's ruling,
-  // 12 Oct 2026, owner to confirm), so his middle stays put.
+  // The ground: the lift its push would give him goes to the endless ocean (canon, 12 Oct 2026), so his middle
+  // stays put.
   // gnd (optional): { surface, groundHolds }. Real ground gives: his soles are driven dH/2 in at dH / 2t, and the ground
   // takes that work, its bearing plus the inertia of the soil pushed aside (the Poncelet rule the lab uses for feet
   // driven into the ground). Comic ground (or none given) doesn't give: he grows upward from his soles instead, his
@@ -3517,8 +3517,8 @@
   // Runaway: the side effects of the growth are paid from the energy absorbed and taken back as growth too (canon).
   // The air pushed back (p0 + dp over dV) and the ground driven in are spent and then returned: a round trip, so in the
   // end all of E becomes mass, no more. The binding energy his own gravity releases as he grows goes to the endless
-  // ocean (canon: the collaborator's ruling, 12 Oct 2026, owner to confirm), so it adds nothing. Loop ratio k = side effects / energy absorbed; each round returns k of
-  // the last, so the loop dies out at once and the half-life (a story choice) never has to act. The gravity share is
+  // ocean (canon, 12 Oct 2026), so it adds nothing. Loop ratio k = side effects / energy absorbed; each round returns k of
+  // the last, so the loop dies out at once and can never run away (so the page has no half-life control). The gravity share is
   // still reported: binding energy of a uniform ball, 3 G M^2 / (5 R), so 0.3 (2 - s/3) r_s / R in weak gravity.
   function runawayGrowth(body, E, form, gnd) {
     const inst = instantGrowth(body, E, form, gnd), g = inst.grown;

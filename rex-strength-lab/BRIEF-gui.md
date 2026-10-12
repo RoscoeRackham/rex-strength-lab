@@ -10,7 +10,7 @@ For the Rex lab (`rex-strength-lab/`). Written by the collaborator's session, 12
 4. **Rex + Ollie gets its own element** below Rex's test bay, collapsed until opened; Rex's tabs are the page's centre.
 5. **Four new powers, on by default** (engine work): air resistance absorbed (a slider), things keep their form, unbreakable footing (the ground still shakes), and they take their own recoil.
 6. **More points of comparison for energy** (research first), so the page never says "300 hand grenades".
-7. One decision for the owner, and what is out of scope.
+7. What is decided, and what is out of scope.
 
 ## Order of work
 
@@ -25,10 +25,9 @@ Three pull requests, in this order, each with its own tests and review:
 - **Saved pages still load.** Keep the saved-state keys where a control only moves (`state.mode`, `state.anchor`, `state.oAnchor`, `state.absorb`, the switch keys, ...). Where a section retires a key (`state.group` in section 4; `groundHolds`, `gentleHold` and `coolFlight` in section 5; `'braced'` in section 3), migrate it as that section says.
 - **Same tests, both widths.** `test/shots.js` must pass at 390 and 1280 px, light and dark. Update its selectors where controls move (it uses `#absorb`, `#grp-solo` and `#grp-duo` today).
 
-## Needs the owner
+## Settled
 
-- **Confirm the canon the collaborator recorded** in CLAUDE.md: the Restraint wording (comic-book physics is their default), the four default powers, and in particular 5d (they take their own recoil). You already agreed to the two exceptions to the momentum rule (absorbed air resistance; the footing's push on weak ground).
-- **Decide** whether to raise the moves' bearing for sand (see "For the owner to decide").
+All canon in this brief is confirmed by the owner (12 Oct 2026): the Restraint wording, the four default powers (5d included), the growth rulings, and removing the half-life control (done). The moves' sand bearing stays as it is for now (see "Decided: left for now"). Nothing here waits on the owner.
 
 ## 1. One banner for their powers
 
@@ -49,7 +48,7 @@ Three pull requests, in this order, each with its own tests and review:
 | Silent strike, Soft landing | Comic switches | Unchanged, under the "Absorbed" heading |
 | Cool flight | Comic switches | Replaced by **Air resistance absorbed** (section 5) |
 | (new) Air resistance absorbed (a slider, 100% by default), Things keep their form, Unbreakable footing, They take their own recoil | — | Section 5; on by default |
-| Absorbed energy goes to, with growth form, duration and half-life | Comic switches | Unchanged |
+| Absorbed energy goes to, with growth form and duration | Comic switches | Unchanged (the half-life control was removed on 12 Oct 2026: under the canon the loop can never run away) |
 
 **Shared or per character.** Everything is shared by Rex and Ollie, as today, except Bolted, which stays one per character (a contest can bolt one side and not the other).
 
@@ -129,7 +128,7 @@ After sections 1 and 3, only the ground menu is left of Settings. If it looks th
 
 ## 5. Four new powers, on by default
 
-**Why.** By default Rex and Ollie should be able to throw, hold and stand on things without the side effects real physics would force on them, while what they do still reaches the world around them on purpose. Comic ground today makes the ground unbreakable, which sits badly with presets that measure harm done through the ground. On the Collide tab, with Comic ground a moving body's sinking carries no energy into the ground (`Eground: 0` when `cB.groundHolds`), though a held target still shows a quake estimate from the hit. And the two-player tests (Arm wrestle, Wrestle, Catch, Collide) never judge ground shaking at all: their effort search checks only the sound barrier, an air blast and sliding (the harm check above `duoPlanFor` in `app.html`), and they offer no not-so-heroic presets, only least disruptive, all-out and custom. So "risk cracking the plaster" means nothing in the unstoppable-force test. These powers replace Comic ground, Gentle hold and Cool flight. All four sit in Their powers, are **on by default** and can be turned off (5a by sliding it to 0%). **Canon** (recorded in CLAUDE.md, "Default powers" and Restraint): comic-book physics is their default, and they choose when not to use it. Absorbed air resistance and Unbreakable footing's push on weak ground are exceptions to "momentum is never absorbed", like the growth lift; **the owner agreed to these two exceptions** (12 Oct 2026). The rest of this section (the powers themselves, the Restraint wording, and 5d) is the collaborator's, for the owner to confirm. 5d keeps momentum (the planet takes it), so it is not an exception.
+**Why.** By default Rex and Ollie should be able to throw, hold and stand on things without the side effects real physics would force on them, while what they do still reaches the world around them on purpose. Comic ground today makes the ground unbreakable, which sits badly with presets that measure harm done through the ground. On the Collide tab, with Comic ground a moving body's sinking carries no energy into the ground (`Eground: 0` when `cB.groundHolds`), though a held target still shows a quake estimate from the hit. And the two-player tests (Arm wrestle, Wrestle, Catch, Collide) never judge ground shaking at all: their effort search checks only the sound barrier, an air blast and sliding (the harm check above `duoPlanFor` in `app.html`), and they offer no not-so-heroic presets, only least disruptive, all-out and custom. So "risk cracking the plaster" means nothing in the unstoppable-force test. These powers replace Comic ground, Gentle hold and Cool flight. All four sit in Their powers, are **on by default** and can be turned off (5a by sliding it to 0%). **Canon** (owner and collaborator, 12 Oct 2026; recorded in CLAUDE.md, "Default powers" and Restraint): comic-book physics is their default, and they choose when not to use it. Absorbed air resistance and Unbreakable footing's push on weak ground are exceptions to "momentum is never absorbed", like the growth lift. 5d keeps momentum (the planet takes it), so it is not an exception.
 
 **Its own pull request** (B in the order of work). Sections 1–4 change only the page. This section changes the engine, so build and review it separately, after sections 1–4, and run the review rounds on its physics.
 
@@ -227,9 +226,9 @@ After sections 1 and 3, only the ground menu is left of Settings. If it looks th
 - Each rung on the page has a fact with a status and a fetched source, shown in the sources table.
 - Rough-multiple wording for every rung marked uncertain.
 
-## For the owner to decide
+## Decided: left for now
 
-- The bearing the moves use for loose sand (37 kPa at 0.316 m, the textbook value) is about 5–10 times below what the elephant's sand bore (README, Known limits). Raising it would change all-out results across the moves and the baseline.
+- The bearing the moves use for loose sand (37 kPa at 0.316 m, the textbook value) is about 5–10 times below what the elephant's sand bore (README, Known limits). Raising it would change all-out results across the moves and the baseline. The owner's decision (12 Oct 2026): leave it for now; don't change it in this work.
 
 (The one wording correction found while writing this brief, instant growth "driven 3.66 m into the concrete slab", is already fixed in the follow-ups pull request.)
 
