@@ -42,6 +42,7 @@
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.5; }
 .wrap { max-width: 1180px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 64px; }
 h1, h2, h3 { font-family: var(--font-display); font-weight: 800; letter-spacing: 0.01em; line-height: 1.05; text-wrap: balance; margin: 0; }
@@ -66,7 +67,7 @@ button, select, input { font: inherit; color: inherit; }
 
 /* Main grid */
 .rig { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; margin-top: 20px; }
-@media (min-width: 920px) { .rig { grid-template-columns: 340px minmax(0, 1fr); align-items: start; } .panel-controls { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); } }
+@media (min-width: 920px) { .rig { grid-template-columns: 340px minmax(0, 1fr); align-items: start; } .panel-controls { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); max-height: calc(100vh - 24px - env(safe-area-inset-top, 0px)); overflow-y: auto; overscroll-behavior: contain; } }
 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; min-width: 0; }
 
 /* Strength dial */
@@ -94,8 +95,8 @@ select { width: 100%; padding: 9px 10px; border: 1px solid var(--line); border-r
 details.setup { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px; }
 details.setup summary { cursor: pointer; font-weight: 700; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 details.setup summary::-webkit-details-marker { display: none; }
-details.setup summary::after { content: "+"; font-family: var(--font-mono); color: var(--ink-3); }
-details.setup[open] summary::after { content: "–"; }
+details.setup summary::after { content: "+"; content: "+" / ""; font-family: var(--font-mono); color: var(--ink-3); }
+details.setup[open] summary::after { content: "–"; content: "–" / ""; }
 .inline-num { display: flex; gap: 8px; align-items: center; }
 .inline-num input { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
 
@@ -109,9 +110,10 @@ details.setup[open] summary::after { content: "–"; }
 .bay-col { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
 details.duo-panel > summary { cursor: pointer; list-style: none; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 4px 12px; }
 details.duo-panel > summary::-webkit-details-marker { display: none; }
-details.duo-panel > summary::after { content: "+"; font-family: var(--font-mono); font-size: 1.3rem; color: var(--ink-3); }
-details.duo-panel[open] > summary::after { content: "–"; }
+details.duo-panel > summary::after { content: "+"; content: "+" / ""; font-family: var(--font-mono); font-size: 1.3rem; color: var(--ink-3); }
+details.duo-panel[open] > summary::after { content: "–"; content: "–" / ""; }
 .duo-title { display: flex; flex-direction: column; gap: 2px; }
+.duo-title .eyebrow { line-height: 1.4; font-weight: 400; }
 details.duo-panel > summary h2 { font-size: clamp(1.4rem, 3.4vw, 1.8rem); }
 #duo-sum { font-size: 0.85rem; flex: 1 1 220px; }
 #duo-tabs { margin-top: 14px; }
@@ -323,7 +325,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
             <label class="check"><input type="checkbox" id="bolt-rex" aria-label="Bolted to the planet: Rex"><span>Rex</span></label>
             <label class="check"><input type="checkbox" id="bolt-ollie" aria-label="Bolted to the planet: Ollie"><span>Ollie</span></label>
           </div>
-          <span class="hint">On, nothing can push him along the ground: the push goes into the planet. Off, he is just standing, and friction holds him. One each, so a contest can bolt one side and not the other.</span>
+          <span class="hint">On, his feet are fixed to the planet: friction no longer limits how hard he can push or be pushed along, and the push goes into the ground. It doesn’t stop him sinking into weak ground. In the two-player contests the ground around his feet can still tear out under a big enough push (unless Comic ground is on), and a very fast hit is over before the bolts can help. Off, he is just standing, and friction holds him. One each, so a contest can bolt one side and not the other.</span>
         </div>
         <label class="check"><input type="checkbox" id="ground-holds"><span><b>Comic ground</b> — the floor never breaks</span></label>
         <div class="eyebrow" style="margin-top:12px">Material limit suspended</div>
@@ -363,7 +365,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       </main>
 
       <details class="panel duo-panel" id="duo">
-        <summary><span class="duo-title"><span class="eyebrow">Two-player tests</span><h2 id="duo-title">Rex + Ollie</h2></span><span class="muted" id="duo-sum"></span></summary>
+        <summary><h2 id="duo-title" class="duo-title"><span class="eyebrow">Two-player tests</span>Rex + Ollie</h2><span class="muted" id="duo-sum"></span></summary>
         <details class="setup" id="ollie-setup">
           <summary><span>Ollie</span> <span class="muted" id="ollie-sum" style="font-weight:400;font-size:.85rem"></span></summary>
           <div class="ollie-grid">
@@ -623,7 +625,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     duoAction: 'arm', duoOpen: false,
     // Ollie: strength linked to Rex's dial unless oSame is false
     oSame: true, oLogKg: Math.log10(100 * 907.18474), oInf: false, oH: P.DEFAULT_BODIES.ollie.H, oM: P.DEFAULT_BODIES.ollie.m, oAnchor: 'friction',
-    wrestleMove: 'push', wrestleWho: 'rex',
+    wrestleMove: 'push', wrestleWho: 'rex', wAngle: 45,
     cObj: 'baseball', cLogD: 1, cStyle: 'easy', cMiss: false,
     colMode: 'charge', colWho: 'ollie', colSrc: 'sprint', colGB: Math.log10(100 / 299792458), colInf: false, colBounce: 'splat', colImm: false,
     // effort: a preset (least disruptive by default), or a custom strength used (log10 kg); people and buildings this near (m)
@@ -641,7 +643,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   let state = Object.assign({}, DEFAULTS);
   // lightest density the slider and the mass boxes allow, kg/m³ (the slider's left end, 10^1)
   const RHO_MIN = 10;
-  try { const saved = JSON.parse(localStorage.getItem('rex-lab-v1') || 'null'); if (saved) state = Object.assign(state, saved); } catch (e) { /* storage unavailable */ }
+  // Wrestle's throw shared Rex's Throw angle while only one of them was ever on screen; a save from before it had its
+  // own angle (state.wAngle) starts it from Rex's
+  let savedWAngle = false;
+  try { const saved = JSON.parse(localStorage.getItem('rex-lab-v1') || 'null'); if (saved) { state = Object.assign(state, saved); savedWAngle = 'wAngle' in saved; } } catch (e) { /* storage unavailable */ }
   // The default mass was 2,700 kg until it was ruled to leave out the tails; a saved old default moves to the new one.
   if (state.m === 2700) state.m = DEFAULTS.m;
   if (state.oM === 2700) state.oM = DEFAULTS.oM;
@@ -653,6 +658,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   // Retired settings: a saved 'Rex + Ollie' view (state.group) opens the Rex + Ollie element once; 'Claws dug in'
   // ('braced') loads as just standing. Footing is now only standing or bolted.
   if (state.group === 'duo') state.duoOpen = true;
+  if (!savedWAngle) state.wAngle = state.angle;
   if (state.anchor === 'braced') state.anchor = 'friction';
   if (state.oAnchor === 'braced') state.oAnchor = 'friction';
   {
@@ -667,7 +673,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       oSame: (v) => typeof v === 'boolean', oInf: (v) => typeof v === 'boolean',
       oLogKg: num(1, 34), oH: num(0.1, 500), oM: (v) => typeof v === 'number' && isFinite(v) && v > 0,
       oAnchor: (v) => v === 'friction' || v === 'bolted',
-      wrestleMove: (v) => ['push', 'shove', 'lift', 'throw'].includes(v),
+      wrestleMove: (v) => ['push', 'shove', 'lift', 'throw'].includes(v), wAngle: num(0, 90),
       wrestleWho: (v) => ['rex', 'ollie', 'both'].includes(v),
       cObj: (v) => v === 'partner' || D.objects.some((x) => x.id === v && !x.noThrow),
       cLogD: num(0, 7.31), cStyle: (v) => v === 'easy' || v === 'hard', cMiss: (v) => typeof v === 'boolean',
@@ -878,10 +884,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     duoEl.addEventListener('toggle', () => {
       if (duoEl.open === state.duoOpen) return;
       state.duoOpen = duoEl.open; save();
-      if (state.duoOpen) { if (!$('#duo-bay').firstChild) $('#duo-bay').replaceChildren(el('p', { class: 'muted', text: 'Working it out…' })); scheduleDuo(false); }
-      else stopDuo();
+      if (state.duoOpen) scheduleDuo(false);
+      else { stopDuo(); duoPlaceholder(); }
     });
   }
+  // what the closed (or not yet drawn) Rex + Ollie element holds, so it never shows results for other settings
+  const duoPlaceholder = () => { $('#duo-bay').replaceChildren(el('p', { class: 'muted', text: 'Working it out…' })); BAY.duo.spoken = null; };
   // a tab picked in one bay redraws only that bay
   function pickTab(B, id) {
     B.set(id); save();
@@ -940,10 +948,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     f.append(s);
     return f;
   }
-  function angleControl() {
-    const f = el('div', { class: 'field' }, el('label', { for: 'angle', text: 'Launch angle: ' + state.angle + '°' }));
-    const r = el('input', { id: 'angle', type: 'range', min: '0', max: '90', step: '1', value: String(state.angle) });
-    r.oninput = (e) => { state.angle = Number(e.target.value); f.querySelector('label').textContent = 'Launch angle: ' + state.angle + '°'; scheduleBay(); };
+  // Rex's Throw uses state.angle (id 'angle'); Wrestle's throw in the Rex + Ollie element has its own (state.wAngle)
+  function angleControl(id, key) {
+    id = id || 'angle'; key = key || 'angle';
+    const f = el('div', { class: 'field' }, el('label', { for: id, text: 'Launch angle: ' + state[key] + '°' }));
+    const r = el('input', { id, type: 'range', min: '0', max: '90', step: '1', value: String(state[key]) });
+    r.oninput = (e) => { state[key] = Number(e.target.value); f.querySelector('label').textContent = 'Launch angle: ' + state[key] + '°'; if (key === 'angle') scheduleBay(); else scheduleBaySlow(); };
     f.append(r);
     return f;
   }
@@ -1592,13 +1602,14 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     out.push(logBars('Top speed vs reference speeds', refs, (x) => big(x, 2) + ' m/s'));
     const items = [];
     if (r.limit === 'friction') items.push('Running is pushing backward on the ground. The ground only grips as hard as he presses down, and averaged over a stride he presses down with just his weight (' + fmtSI(c.body.m * g, 'N') + '). Friction caps his push at ' + fmtSI(r.thrust, 'N') + ', about ' + sig(r.accelG, 2) + ' g. More strength just makes him bounce higher.');
-    if (r.limit === 'strength') items.push('He isn’t strong enough yet to use all the grip on offer, so strength sets his push-off: ' + fmtSI(r.thrust, 'N') + '.');
+    if (c.anchor === 'bolted' && (r.limit === 'strength' || r.limit === 'effort')) items.push('Bolted to the planet, his feet can’t slip, so friction doesn’t cap his push-off: ' + (r.limit === 'effort' ? 'the strength he uses' : 'his strength') + ' sets it, ' + fmtSI(r.thrust, 'N') + '.');
+    else if (r.limit === 'strength') items.push('He isn’t strong enough yet to use all the grip on offer, so strength sets his push-off: ' + fmtSI(r.thrust, 'N') + '.');
     if (r.limit === 'soft ground') items.push('Each stride puts about 2.5 times his weight on one foot, more than ' + c.surface.short + ' can carry, so every step sinks and his push-off is capped.');
     if (r.topLimit === 'air drag' && !r.relativistic) items.push('At top speed all of his push goes into shoving air out of the way.');
     if (r.topLimit === 'leg speed') items.push(state.mode === 'real' ? 'Real-muscle mode caps leg speed at ' + speedOnly(P.MUSCLE.run.cap * c.body.s) + ', the top of the 35–40 mph limit projected from Weyand et al. (2010), scaled for his size.' : 'His legs set the top speed. The calibration body (2 m, 180 kg) at record-human strength runs Bolt’s 12.4 m/s; here the speed grows with the square root of his strength above his own weight, per kilogram of him, and with his size.');
     if (r.mach >= 1 && !r.relativistic) items.push('Above Mach 1 he drags a shock wave down the street: a continuous sonic boom, close enough to break windows. The sim does not estimate its strength at street level.');
     out.push(happens(items));
-    out.push(math(['Push-off = min(strength, μ × his weight)', 'Top speed where drag = push-off: v = √(2F / (ρ Cd A)), A = ' + sig(c.body.frontArea, 2) + ' m², unless his legs cap it first.']));
+    out.push(math([c.anchor === 'bolted' ? 'Push-off = his strength (bolted: no friction limit)' : 'Push-off = min(strength, μ × his weight)', 'Top speed where drag = push-off: v = √(2F / (ρ Cd A)), A = ' + sig(c.body.frontArea, 2) + ' m², unless his legs cap it first.']));
     return out;
   }
 
@@ -2034,7 +2045,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const whoOpts = state.wrestleMove === 'push' ? [] : [['rex', 'Rex → Ollie'], ['ollie', 'Ollie → Rex']].concat(state.wrestleMove === 'shove' ? [['both', 'Both at once']] : []);
     const who = whoOpts.length ? el('div', { class: 'chips', role: 'group', 'aria-label': 'Who does it', style: 'margin-top:6px' },
       whoOpts.map(([id, label]) => el('button', { type: 'button', class: 'chip', id: 'ww-' + id, 'aria-pressed': String(state.wrestleWho === id), onclick: () => { state.wrestleWho = id; update(); } }, label))) : null;
-    return el('div', { class: 'bay-controls' }, el('div', { class: 'field', style: 'margin-top:0;flex:1 1 100%' }, el('span', { class: 'lbl', text: 'Move' }), moves, who), state.wrestleMove === 'throw' ? angleControl() : null);
+    return el('div', { class: 'bay-controls' }, el('div', { class: 'field', style: 'margin-top:0;flex:1 1 100%' }, el('span', { class: 'lbl', text: 'Move' }), moves, who), state.wrestleMove === 'throw' ? angleControl('w-angle', 'wAngle') : null);
   }
   function bayWrestle() {
     let cR = ctx(), cO = ctxOllie();
@@ -2091,7 +2102,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     ].filter(Boolean), (x) => fmtSI(x, 'N')));
     out.push(happens([
       'A shoving match is decided at the feet. To push forward, each one has to grip the ground; to stay put, each one has to grip it too. Strength past that grip just makes feet slide. (That assumes each leans into the push; upright, a body tips over at a few hundred newtons.)',
-      'Walking drive is friction under his own weight: ' + fmtSI(r.DA, 'N') + ' for Rex, ' + fmtSI(r.DB, 'N') + ' for Ollie. Holding still can use his full footing.',
+      'Walking drive is friction under his own weight, and none at all if he is bolted (he can’t step) or too heavy to walk: ' + fmtSI(r.DA, 'N') + ' for Rex, ' + fmtSI(r.DB, 'N') + ' for Ollie. Holding still can use his full footing.',
       'Equal bodies on equal ground stay equal at any strength. A heavier body wins.',
       r.outcome === 'bothBolted' ? 'Both bolted: the push runs from one through the ground to the other. ' + (cR.groundHolds ? 'Comic ground never breaks, so the push never leaves the two of them and the planet.' : 'The ground between their feet is stretched, and rock and concrete are weak in tension.') : null,
     ]));
@@ -2174,7 +2185,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     return out;
   }
   function wrestleThrow(cA, cB, nA, nB) {
-    const t = P.throwPartner(cA, cB, state.angle), out = [];
+    const t = P.throwPartner(cA, cB, state.wAngle), out = [];
     if (t.bolted) { out.push(verdict(nB + ' is bolted to the planet: there’s nothing to throw.')); return out; }
     const r = t.r, f = r.flight;
     let v;
@@ -2184,7 +2195,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     else if (f.escaped) v = nB + ' leaves the Earth for good.';
     else if (f.orbit) v = nB + ' goes into orbit.';
     else if (f.timedOut) v = nB + ' is still in the air after ' + fmtTime(f.time) + ', ' + fmtDist(f.apex) + ' up. The sim stops tracking him there, so this throw isn’t modelled to the end.';
-    else if (state.angle >= 90) v = nB + ' goes ' + fmtDist(f.apex) + ' straight up and comes back down on ' + nA + ' ' + fmtTime(f.time) + ' later.';
+    else if (state.wAngle >= 90) v = nB + ' goes ' + fmtDist(f.apex) + ' straight up and comes back down on ' + nA + ' ' + fmtTime(f.time) + ' later.';
     else v = nA + ' throws ' + nB + ' ' + fmtDist(f.range) + '.';
     if (r.canMove && r.recoilV > 1) v += ' ' + nA + ' gets shoved backward at ' + speedOnly(r.recoilV) + '.';
     if (t.sinks && f && f.landed && !t.fallsBack) v += ' No rock can hold ' + nB + ' at his weight, so where he lands he sinks into the planet (see Weight).';
@@ -2196,7 +2207,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         !f.relativistic && f.landed ? tile('Distance', fmtDist(f.range), 'top ' + fmtDist(f.apex) + ' · ' + fmtTime(f.time)) : null,
         !f.relativistic && f.landed ? tile('Lands at', speedOnly(f.vImpact), fmtTNT(r.Eimpact) + ' on impact') : null,
         tile(nA + '’s recoil', r.recoilV > 0.01 ? speedOnly(r.recoilV) : 'none', '')));
-      if (!f.relativistic && f.path && f.path.length > 1 && state.angle < 90) out.push(trajectoryChart(f.path, null, 'Flight path of ' + nB, f.apex, (f.landed || f.timedOut) ? null : (f.orbit ? 'in orbit →' : 'leaves Earth →')));
+      if (!f.relativistic && f.path && f.path.length > 1 && state.wAngle < 90) out.push(trajectoryChart(f.path, null, 'Flight path of ' + nB, f.apex, (f.landed || f.timedOut) ? null : (f.orbit ? 'in orbit →' : 'leaves Earth →')));
       const items = [];
       items.push(nB + ' is just an object here: ' + fmtMass(cB.body.m) + ' with a ' + sig(cB.body.frontArea, 2) + ' m² front. He doesn’t fight the throw; for that, see Shove.');
       if (r.heldBack) items.push('Pushing with everything would make ' + nA + '’s feet slide, so he holds back to what his footing can take (' + fmtSI(r.anchor.R, 'N') + ').');
@@ -3026,11 +3037,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   const onsetOf = (res) => (res.below > 0 && isFinite(res.below) && isFinite(res.use) ? Math.sqrt(res.below * res.use) : res.use);
   const fmtReach = (d) => (d >= Math.PI * K.R_E ? 'the whole planet' : fmtDist(d));
   const amountText = (use, F) => (!tinyShare(use, F) ? pctOf(use, F) + ' of his strength' + (use < F * (1 - 1e-9) ? ' (as hard as lifting ' + fmtMass(use / g) + ')' : '') : isFinite(use) ? 'as hard as lifting ' + fmtMass(use / g) : 'all of his unlimited strength');
-  let effortAdjOpen = false, hazOpen = false;
+  let hazOpen = false;
   // the distance the courtesy ceiling assumes (solo and two-player tabs)
-  const nearField = () => { const near = el('input', { id: 'near', type: 'number', min: String(RANGES.near[0]), max: String(RANGES.near[1]), step: 'any', value: String(state.near) });
+  // the distance box sits in both bays: each copy has its own id (and label)
+  const nearField = (id) => { id = id || 'near'; const near = el('input', { id, type: 'number', min: String(RANGES.near[0]), max: String(RANGES.near[1]), step: 'any', value: String(state.near) });
     near.onchange = (e) => setIn('near', e.target.value);
-    return el('div', { class: 'field near-field' }, el('label', { for: 'near', text: 'Nearest people and buildings (m)' }), el('div', { class: 'inline-num' }, near)); };
+    return el('div', { class: 'field near-field' }, el('label', { for: id, text: 'Nearest people and buildings (m)' }), el('div', { class: 'inline-num' }, near)); };
   // An effort slider in log10 kg on a 0.01 grid whose right end is exactly all-out. The browser builds the grid from
   // the min and max strings in decimal, so both get 6 decimals and the top is rounded up (the effort is capped at his
   // strength); the left end can sit up to 0.01 below the floor, so values shown are clamped to it.
@@ -3061,8 +3073,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     sl.oninput = (e) => { state.effort = 'custom'; state.effortLogKg = Number(e.target.value); e.target.setAttribute('aria-valuetext', vText(state.effortLogKg)); const s2 = $('#effort'); if (s2) s2.value = 'custom'; scheduleBay(); };
     adj.append(el('div', { class: 'field effort-slider' }, el('label', { for: 'effort-use', text: 'Effort (gentle ↔ all-out)' }), sl));
     const det = el('details', { class: 'effort-adjust' }, el('summary', { text: 'Adjust effort: ' + (G.key ? 'goal, ' : '') + 'distance, slider' }), adj);
-    det.open = effortAdjOpen;
-    det.addEventListener('toggle', () => { effortAdjOpen = det.open; });
+    det.open = BAY.solo.adjOpen;
+    det.addEventListener('toggle', () => { BAY.solo.adjOpen = det.open; });
     fields.push(det);
     return fields;
   }
@@ -3368,12 +3380,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       }
       if (move === 'throw') {
         const cA = state.wrestleWho === 'ollie' ? cO : cR, cB = state.wrestleWho === 'ollie' ? cR : cO;
-        const t = P.throwPartner(cA, cB, state.angle);
+        const t = P.throwPartner(cA, cB, state.wAngle);
         duoSig = fp(t.r && t.r.v, t.r && t.r.sinkRatio, t.r && t.r.recoilV);
         if (!t.r || !t.r.canMove) return null;
         // the solo throw's rules: a blast only past Mach 1, the landing's ground shaking, the ground under him (not in
         // soil, where his feet only sink in) and his own recoil slide
-        const M = P.RESTRAINT.MOVES.throw, mo = { obj: t.obj, surface: cA.surface, body: cA.body, anchor: cA.anchor, groundHolds: cA.groundHolds, angle: state.angle, near };
+        const M = P.RESTRAINT.MOVES.throw, mo = { obj: t.obj, surface: cA.surface, body: cA.body, anchor: cA.anchor, groundHolds: cA.groundHolds, angle: state.wAngle, near };
         if (t.r.v >= K.a0 || (t.r.recoilV || 0) >= K.a0) return 'the throw breaks the sound barrier';
         if (win(M.blast(t.r, mo))) return 'the landing’s air blast risks damage ' + fmtDist(near) + ' away';
         if (P.plasterOver(M.shake(t.r, mo), near)) return 'the landing shakes the ground enough that plaster may crack ' + fmtDist(near) + ' from where he lands';
@@ -3442,7 +3454,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (p) return p;
     return makeDuoPlan(act, key);
   }
-  const duoKey = (act) => { const FR = fullF('R'), FO = fullF('O'); return JSON.stringify([act, FR, FO, state.mode, state.H, state.m, state.build, state.oH, state.oM, state.surface, state.groundHolds, state.anchor, state.oAnchor, state.near, state.wrestleMove, state.wrestleWho, state.angle, state.cObj, state.cLogD, state.cStyle, state.colMode, state.colWho, state.colSrc, state.colGB, state.colInf, state.colBounce, state.colImm, state.oEffortOwn, state.oEffortLogKg, state.gentleHold, state.coolFlight, state.softLanding, state.silentStrike, state.safePassenger]); };
+  const duoKey = (act) => { const FR = fullF('R'), FO = fullF('O'); return JSON.stringify([act, FR, FO, state.mode, state.H, state.m, state.build, state.oH, state.oM, state.surface, state.groundHolds, state.anchor, state.oAnchor, state.near, state.wrestleMove, state.wrestleWho, state.wAngle, state.cObj, state.cLogD, state.cStyle, state.colMode, state.colWho, state.colSrc, state.colGB, state.colInf, state.colBounce, state.colImm, state.oEffortOwn, state.oEffortLogKg, state.gentleHold, state.coolFlight, state.softLanding, state.silentStrike, state.safePassenger]); };
   function makeDuoPlan(act, key) {
     const FR = fullF('R'), FO = fullF('O');
     let p;
@@ -3526,10 +3538,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const sl = el('input', { id: 'duo-effort-use', type: 'range', min: G2.min, max: G2.max, step: '0.01', value: String(Math.min(G2.top, Math.max(Number(G2.min), cur))), 'aria-valuetext': isFinite(eff.use) ? vText(cur) : 'All-out' });
     sl.oninput = (e) => { state.duoEffort = 'custom'; state.duoLogKg = Number(e.target.value); e.target.setAttribute('aria-valuetext', vText(state.duoLogKg)); const s2 = $('#duo-effort'); if (s2) s2.value = 'custom'; scheduleBaySlow(); };
     const own = el('label', { class: 'check', style: 'margin-top:0' }, el('input', { type: 'checkbox', id: 'o-effort-own', checked: state.oEffortOwn ? true : null, onchange: (e) => { state.oEffortOwn = e.target.checked; if (state.oEffortOwn) state.oEffortLogKg = Math.min(G2.top, nowLog()); update(); } }), el('span', { text: 'What-if: Ollie sets his own effort' }));
-    const adj = el('div', { class: 'bay-controls' }, el('div', { class: 'field effort-slider' }, el('label', { for: 'duo-effort-use', text: 'Effort (gentle ↔ all-out)' }), sl), nearField(), el('div', { class: 'field near-field' }, own));
+    const adj = el('div', { class: 'bay-controls' }, el('div', { class: 'field effort-slider' }, el('label', { for: 'duo-effort-use', text: 'Effort (gentle ↔ all-out)' }), sl), nearField('duo-near'), el('div', { class: 'field near-field' }, own));
     const det = el('details', { class: 'effort-adjust' }, el('summary', { text: 'Adjust effort: slider, distance, Ollie’s own' }), adj);
-    det.open = effortAdjOpen || state.oEffortOwn;
-    det.addEventListener('toggle', () => { effortAdjOpen = det.open; });
+    det.open = BAY.duo.adjOpen || state.oEffortOwn;
+    det.addEventListener('toggle', () => { BAY.duo.adjOpen = det.open; });
     const fields = [el('div', { class: 'field effort-field' }, el('label', { for: 'duo-effort', text: 'Effort (one for both)' }), sel), det];
     if (state.oEffortOwn) {
       const oText = (v) => 'Ollie as hard as lifting ' + fmtMass(G2.kg(v));
@@ -3567,8 +3579,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   // The two bays: Rex's (his moves, always shown) and the Rex + Ollie element's (the two-player tests, worked out only
   // while it is open). Each has its own tab row, result area, live region, kept controls and searches.
   const BAY = {
-    solo: { id: 'bay', tabs: 'tabs', live: 'bay-live', list: () => ACTIONS, act: () => state.action, set: (a) => { state.action = a; }, last: null, liveTimer: null, inputAt: -1e9, pending: false },
-    duo: { id: 'duo-bay', tabs: 'duo-tabs', live: 'duo-live', list: () => DUO_ACTIONS, act: () => state.duoAction, set: (a) => { state.duoAction = a; }, last: null, liveTimer: null, inputAt: -1e9, pending: false },
+    solo: { id: 'bay', tabs: 'tabs', live: 'bay-live', list: () => ACTIONS, act: () => state.action, set: (a) => { state.action = a; }, last: null, liveTimer: null, inputAt: -1e9, pending: false, adjOpen: false, spoken: null },
+    duo: { id: 'duo-bay', tabs: 'duo-tabs', live: 'duo-live', list: () => DUO_ACTIONS, act: () => state.duoAction, set: (a) => { state.duoAction = a; }, last: null, liveTimer: null, inputAt: -1e9, pending: false, adjOpen: false, spoken: null },
   };
   function renderInto(B, keepControls) {
     const duo = B === BAY.duo;
@@ -3638,12 +3650,13 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     } else bay.replaceChildren(...parts);
     if (focEl && !bay.contains(document.activeElement)) {
       const all = Array.from(bay.querySelectorAll(FOC));
-      const to = (focusId && document.getElementById(focusId)) || all.find((x) => focKey(x) === focusKey) || all[focusIdx];
+      const to = (focusId && bay.querySelector('#' + CSS.escape(focusId))) || all.find((x) => focKey(x) === focusKey) || all[focusIdx];
       if (to) to.focus({ preventScroll: true });
     }
     const vd = bay.querySelector('.verdict');
     clearTimeout(B.liveTimer);
-    if (!B.pending) B.liveTimer = setTimeout(() => { $('#' + B.live).textContent = vd ? vd.textContent : ''; }, 600);
+    // announce a bay's verdict only when it changes (a redraw caused by the other bay's settings stays quiet)
+    if (!B.pending) B.liveTimer = setTimeout(() => { const t = vd ? vd.textContent : ''; if (t === B.spoken) return; B.spoken = t; $('#' + B.live).textContent = t; }, 600);
   }
   // Rex's bay
   function renderSolo(keepControls) { renderInto(BAY.solo, keepControls); }
@@ -3909,6 +3922,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   buildControls();
   try { if (matchMedia('(min-width: 920px)').matches) $('#setup').open = true; } catch (e) { /* ignore */ }
   // the Rex + Ollie element opens as the reader left it
+  duoPlaceholder();
   $('#duo').open = state.duoOpen;
   renderFeats();
   renderModel();

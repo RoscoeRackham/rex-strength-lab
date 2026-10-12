@@ -24,7 +24,7 @@ const countDuoCalls = ({ names, delay }) => {
 const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoil: false };
 (async () => {
   const body = fs.readFileSync(path.join(__dirname, '..', 'dist', 'index.html'), 'utf8');
-  const wrapped = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui}img{max-width:100%}[hidden]{display:none!important}</style></head><body>' + body + '</body></html>';
+  const wrapped = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui}img{max-width:100%}</style></head><body>' + body + '</body></html>';
   const prev = path.join(__dirname, '..', 'dist', 'preview.html');
   fs.writeFileSync(prev, wrapped);
   const out = path.join(__dirname, '..', 'shots'); fs.mkdirSync(out, { recursive: true });
@@ -36,7 +36,7 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
   // 1280 px and 390 px, light and dark; every tab of both bays. Fails on horizontal scroll (on any tab), console
   // errors, broken numbers (NaN, undefined, a bare Infinity) or dug-in footing (retired) in the page text.
   const SOLO = ['walk', 'lift', 'throw', 'jump', 'stomp', 'punch', 'clap', 'sprint', 'pull', 'weight'], DUO = ['arm', 'wrestle', 'catch', 'collide'];
-  const bad = (t) => (t.match(/NaN|undefined|(?<![∞\w])Infinity/g) || []).concat(t.match(/dug[ -]in|claws dug|braced/gi) || []);
+  const bad = (t) => (t.match(/NaN|undefined|(?<![∞\w])Infinity/g) || []).concat(t.match(/dug[ -]in|claws dug|braced|comic switch|under Settings/gi) || []);
   // the sidebar, top to bottom (BRIEF-gui.md section 2) and what sits in Their powers (section 1)
   const SIDEBAR = ['strength', 'setup', 'ground-sec', 'powers'];
   const IN_POWERS = ['mode-comic', 'mode-real', 'mode-hint', 'bolt-rex', 'bolt-ollie', 'ground-holds', 'sw-gentle', 'sw-passenger', 'sw-silent', 'sw-soft', 'sw-cool', 'absorb', 'grow-chips', 'grow-s', 'grow-t'];
@@ -53,8 +53,19 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     const texts = [];
     // first load: the Rex + Ollie element is closed and nothing in it has been worked out
-    const first = await page.evaluate(() => ({ open: document.getElementById('duo').open, calls: window.__duoCalls, kids: document.getElementById('duo-bay').children.length }));
-    if (first.open || first.calls || first.kids) texts.push('first load: Rex + Ollie element ' + JSON.stringify(first));
+    const first = await page.evaluate(() => ({ open: document.getElementById('duo').open, calls: window.__duoCalls, drawn: !!document.querySelector('#duo-bay .verdict, #duo-bay .duo-head') }));
+    if (first.open || first.calls || first.drawn) texts.push('first load: Rex + Ollie element ' + JSON.stringify(first));
+    // Ollie's settings sit at the top of the Rex + Ollie element (before its tabs), and the sidebar holds only Rex's
+    // sections and the shared ones
+    const ol = await page.evaluate(() => { const duo = document.getElementById('duo'), tabs = document.getElementById('duo-tabs'), aside = document.querySelector('aside.panel-controls');
+      const misplaced = ['ollie-setup', 'o-same', 'o-own', 'o-strength', 'o-height', 'o-density', 'o-mass'].filter((id) => { const n = document.getElementById(id); return !n || !duo.contains(n) || aside.contains(n) || !(n.compareDocumentPosition(tabs) & Node.DOCUMENT_POSITION_FOLLOWING); });
+      const sections = Array.from(aside.querySelectorAll('details, .side-sec')).map((n) => n.id);
+      return { misplaced, sections }; });
+    if (ol.misplaced.length) texts.push('Ollie’s settings not at the top of the Rex + Ollie element: ' + ol.misplaced.join(', '));
+    if (ol.sections.join() !== 'setup,ground-sec,powers') texts.push('sidebar sections ' + ol.sections.join());
+    // anything carrying the hidden attribute takes no space (the host page has no [hidden] rule of its own)
+    const shown = await page.evaluate(() => Array.from(document.querySelectorAll('[hidden]')).filter((n) => n.getClientRects().length).map((n) => n.id || n.tagName));
+    if (shown.length) texts.push('hidden but shown: ' + shown.join(', '));
     // the sidebar's order, Size and density open on a wide screen, and every power inside Their powers only
     const side = await page.evaluate((ids) => {
       const aside = document.querySelector('aside.panel-controls'), pos = ids.map((id) => { const n = document.getElementById(id); return n && aside.contains(n) ? Array.from(aside.querySelectorAll('*')).indexOf(n) : -1; });
@@ -80,13 +91,37 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       if (b.length) texts.push(tab + ': ' + b.join(', '));
       const ovTab = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
       if (ovTab > 0) texts.push(tab + ': scrolls sideways ' + ovTab + ' px');
-      // a two-player result never lands in Rex's bay, nor a solo one in the Rex + Ollie element
+      // a two-player result never lands in Rex's bay, nor a solo one in the Rex + Ollie element; no id appears twice
       const mixed = await page.evaluate(() => !!document.querySelector('#bay .duo-head, #bay #duo-effort, #duo-bay #effort'));
       if (mixed) texts.push(tab + ': one bay shows the other’s result');
+      const dups = await page.evaluate(() => { const seen = {}; for (const n of document.querySelectorAll('[id]')) seen[n.id] = (seen[n.id] || 0) + 1; return Object.keys(seen).filter((k) => seen[k] > 1); });
+      if (dups.length) texts.push(tab + ': duplicate ids ' + dups.join(', '));
       const shot = await page.$(duo ? '#duo' : 'main.panel');
       if (scheme === 'light' || w === 390) await shot.screenshot({ path: path.join(out, `${tab}-${w}-${scheme}.png`) });
     }
     if (!only) await page.screenshot({ path: path.join(out, `full-open-${w}-${scheme}.png`), fullPage: true });
+    if (!only) {
+      // Rex's Throw and Wrestle's throw on screen together: separate controls (ids, labels) and separate angles
+      await page.click('#tab-throw'); await page.click('#tab-wrestle'); await page.click('#wm-throw'); await page.waitForTimeout(600);
+      const pair = await page.evaluate(() => { const seen = {}; for (const n of document.querySelectorAll('[id]')) seen[n.id] = (seen[n.id] || 0) + 1;
+        const lab = (id) => { const n = document.getElementById(id); return n && n.labels ? n.labels.length : -1; };
+        return { dups: Object.keys(seen).filter((k) => seen[k] > 1), labels: ['angle', 'w-angle'].map(lab) }; });
+      if (pair.dups.length || pair.labels.join() !== '1,1') texts.push('Throw + Wrestle throw: duplicate ids ' + pair.dups.join(', ') + '; labels ' + pair.labels.join());
+      const rexThrow = await page.$eval('#bay .verdict', (n) => n.textContent);
+      await page.focus('#w-angle'); for (let i = 0; i < 5; i++) await page.keyboard.press('ArrowRight');
+      await page.waitForTimeout(800);
+      const after = await page.evaluate(() => ({ rex: document.querySelector('#bay .verdict').textContent, focusIn: document.activeElement && document.activeElement.closest('#duo-bay') ? 'duo' : 'elsewhere' }));
+      if (after.rex !== rexThrow || after.focusIn !== 'duo') texts.push('Wrestle’s angle slider: Rex’s Throw ' + (after.rex === rexThrow ? 'unchanged' : 'CHANGED') + ', focus ' + after.focusIn);
+      await page.click('#wm-push');
+      // on a wide screen the sticky sidebar scrolls on its own, so Their powers is in reach while reading either bay
+      if (w >= 920) {
+        await page.evaluate(() => window.scrollTo(0, document.getElementById('duo-bay').getBoundingClientRect().top + window.scrollY - 20));
+        await page.focus('#powers > summary'); await page.waitForTimeout(200);
+        const reach = await page.evaluate(() => { const r = document.querySelector('#powers > summary').getBoundingClientRect(), b = document.getElementById('duo-bay').getBoundingClientRect(); return { top: r.top, bottom: r.bottom, vh: innerHeight, bayTop: b.top }; });
+        if (reach.top < 0 || reach.bottom > reach.vh || reach.bayTop > reach.vh || reach.bayTop < -reach.vh) texts.push('Their powers out of reach while reading the Rex + Ollie element ' + JSON.stringify(reach));
+        await page.evaluate(() => window.scrollTo(0, 0));
+      }
+    }
     // each growth mode, with Their powers open (the page always opens on the endless ocean)
     if (!only) {
       await page.click('#tab-weight');
@@ -107,9 +142,20 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
   if (!only) {
     // The page reorganisation leaves results unchanged (BRIEF-gui.md sections 1, 3 and 4): saved states and the Bolted
     // switches give the same verdict, status chips and tiles as main's page did (test/fixtures/page-before.json).
-    // One wording fix since: the shoving match no longer lower-cases a name at the start of its verdict.
-    const norm = (r) => JSON.stringify(Object.assign({}, r, { verdict: r.verdict && r.verdict.replace(/^(Pushing straight across: )(\w)/, (m, a, b) => a + b.toLowerCase()) }));
-    const same = (id, got) => { if (norm(got) === norm(BEFORE[id])) okLog(id + ': same result as before'); else fail(id + ': result changed\n  before ' + norm(BEFORE[id]) + '\n  now    ' + norm(got)); };
+    // The whole result text is compared: verdict, chips, tiles, the effort box, what happens, the callouts and the
+    // math. The only differences allowed are the intended text edits, applied to main's text first: dug-in footing
+    // removed, the bolted case of walking drive stated, and the shoving match no longer lower-casing a name.
+    const EDITS = [
+      [/^(Pushing straight across: )(rex|ollie)\b/, (m, a, b) => a + b.charAt(0).toUpperCase() + b.slice(1)],
+      [/ \(plus a little claw or boot bite if dug in\): /g, ', and none at all if he is bolted (he can’t step) or too heavy to walk: '],
+      [/A heavier body, or one dug in, wins\./g, 'A heavier body wins.'],
+      [/footing = μ m g \(\+ shear × buried area if dug in; unlimited if bolted\)\./g, 'footing = μ m g (unlimited if bolted).'],
+      [/Drive = min\(strength, μ m g \+ ¼ shear × buried area if dug in\);/g, 'Drive = min(strength, μ m g);'],
+    ];
+    const edit = (t) => EDITS.reduce((x, [re, to]) => x.replace(re, to), t);
+    const editAll = (r) => { const o = {}; for (const [k, v] of Object.entries(r)) o[k] = Array.isArray(v) ? v.map((x) => x && edit(x)) : v && edit(v); return JSON.stringify(o); };
+    const same = (id, got) => { const was = editAll(BEFORE[id]), now = JSON.stringify(Object.fromEntries(Object.keys(BEFORE[id]).map((k) => [k, got[k]])));
+      if (was === now) okLog(id + ': same result as before'); else fail(id + ': result changed\n  before ' + was + '\n  now    ' + now); };
     const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
     const errs = [];
     page.on('pageerror', (e) => errs.push('PAGEERROR ' + e.message));
@@ -153,23 +199,30 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     else okLog('Ollie’s height changes the arm wrestle (' + duoAfter.verdict.slice(0, 60) + '…) and leaves Rex’s throw alone');
     if (errs.length) fail('page errors: ' + errs.slice(0, 3).join(' | '));
     await page.close();
-    // closing the element stops its background search. Every two-player call is slowed to 60 ms here, so a search
-    // can't finish inside a render's budget and goes on in the background ('working it out').
-    const slow = await browser.newPage({ viewport: { width: 1280, height: 900 } });
-    await slow.addInitScript(countDuoCalls, { names: DUO_FNS, delay: 60 });
-    await slow.goto(pathToFileURL(prev).href);
-    await slow.evaluate(() => localStorage.setItem('rex-lab-v1', JSON.stringify({ duoOpen: true, duoAction: 'arm' })));
-    await slow.reload(); await slow.waitForTimeout(600);
-    const busy = await slow.evaluate(() => /working it out/i.test(document.getElementById('duo-bay').textContent));
-    await slow.click('#duo > summary');
-    const c0 = await slow.evaluate(() => window.__duoCalls);
-    await slow.waitForTimeout(3000);
-    const c1 = await slow.evaluate(() => window.__duoCalls);
-    // and Rex's bay keeps working meanwhile
-    const rexOk = await slow.evaluate(() => !!document.querySelector('#bay .verdict'));
-    if (!busy || c1 !== c0 || !rexOk) fail('closing the Rex + Ollie element: search ' + (busy ? 'was running' : 'NOT running') + ', ' + (c1 - c0) + ' two-player calls after closing, Rex’s bay ' + (rexOk ? 'fine' : 'EMPTY'));
-    else okLog('closing the element stops its background search (no two-player calls in 3 s after closing; Rex’s bay unaffected)');
-    await slow.close();
+    // Closing the element stops its background search. Every two-player call is slowed to 60 ms here, so a search
+    // can't finish inside a render's budget and goes on in the background ('working it out'). The page closes the
+    // element itself the moment it shows 'working it out', and the count of two-player calls is taken right then.
+    const slowPage = async (onBusy) => {
+      const pg = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+      await pg.addInitScript(countDuoCalls, { names: DUO_FNS, delay: 60 });
+      await pg.addInitScript((what) => {
+        document.addEventListener('toggle', (e) => { if (e.target.id === 'duo' && !e.target.open) window.__atClose = window.__duoCalls; }, true);
+        const iv = setInterval(() => { const b = document.getElementById('duo-bay'); if (b && /Effort: working it out/i.test(b.textContent)) { clearInterval(iv); window.__busyAt = window.__duoCalls;
+          if (what === 'close') document.getElementById('duo').open = false; else if (what === 'rex-tab') document.getElementById('tab-jump').click(); } }, 5);
+      }, onBusy);
+      await pg.goto(pathToFileURL(prev).href);
+      await pg.evaluate(() => localStorage.setItem('rex-lab-v1', JSON.stringify({ duoOpen: true, duoAction: 'arm' })));
+      await pg.reload(); await pg.waitForTimeout(4000);
+      const r = await pg.evaluate(() => ({ busyAt: window.__busyAt, atClose: window.__atClose, calls: window.__duoCalls, open: document.getElementById('duo').open, working: /working it out/i.test(document.getElementById('duo-bay').textContent), effort: /Effort: [\d.]+%/.test(document.getElementById('duo-bay').textContent), rex: !!document.querySelector('#bay .verdict') }));
+      await pg.close();
+      return r;
+    };
+    const left = await slowPage('none'), closed = await slowPage('close'), rexTab = await slowPage('rex-tab');
+    if (left.busyAt == null || closed.atClose == null || closed.calls !== closed.atClose || !(closed.atClose < left.calls) || !closed.rex) fail('closing the Rex + Ollie element mid-search: ' + JSON.stringify({ left, closed }));
+    else okLog('closing the element mid-search stops it (' + closed.atClose + ' two-player calls at closing and 4 s later; ' + left.calls + ' when left open); Rex’s bay unaffected');
+    // and a redraw of Rex's bay (here a tab click) while the two-player search runs doesn't stop it
+    if (rexTab.busyAt == null || rexTab.working || !rexTab.effort || rexTab.calls !== left.calls) fail('a Rex tab clicked mid-search: ' + JSON.stringify(rexTab));
+    else okLog('a Rex tab clicked during the two-player search leaves it to finish (' + rexTab.calls + ' calls, the effort shown)');
   }
   // the page shows what the engine computes: soft landing takes back the landing's impact on the ground, not its whole
   // energy; and the effort slider's right end is all-out

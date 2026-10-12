@@ -42,6 +42,7 @@
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.5; }
 .wrap { max-width: 1180px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 64px; }
 h1, h2, h3 { font-family: var(--font-display); font-weight: 800; letter-spacing: 0.01em; line-height: 1.05; text-wrap: balance; margin: 0; }
@@ -66,7 +67,7 @@ button, select, input { font: inherit; color: inherit; }
 
 /* Main grid */
 .rig { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; margin-top: 20px; }
-@media (min-width: 920px) { .rig { grid-template-columns: 340px minmax(0, 1fr); align-items: start; } .panel-controls { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); } }
+@media (min-width: 920px) { .rig { grid-template-columns: 340px minmax(0, 1fr); align-items: start; } .panel-controls { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); max-height: calc(100vh - 24px - env(safe-area-inset-top, 0px)); overflow-y: auto; overscroll-behavior: contain; } }
 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; min-width: 0; }
 
 /* Strength dial */
@@ -94,8 +95,8 @@ select { width: 100%; padding: 9px 10px; border: 1px solid var(--line); border-r
 details.setup { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px; }
 details.setup summary { cursor: pointer; font-weight: 700; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 details.setup summary::-webkit-details-marker { display: none; }
-details.setup summary::after { content: "+"; font-family: var(--font-mono); color: var(--ink-3); }
-details.setup[open] summary::after { content: "–"; }
+details.setup summary::after { content: "+"; content: "+" / ""; font-family: var(--font-mono); color: var(--ink-3); }
+details.setup[open] summary::after { content: "–"; content: "–" / ""; }
 .inline-num { display: flex; gap: 8px; align-items: center; }
 .inline-num input { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
 
@@ -109,9 +110,10 @@ details.setup[open] summary::after { content: "–"; }
 .bay-col { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
 details.duo-panel > summary { cursor: pointer; list-style: none; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 4px 12px; }
 details.duo-panel > summary::-webkit-details-marker { display: none; }
-details.duo-panel > summary::after { content: "+"; font-family: var(--font-mono); font-size: 1.3rem; color: var(--ink-3); }
-details.duo-panel[open] > summary::after { content: "–"; }
+details.duo-panel > summary::after { content: "+"; content: "+" / ""; font-family: var(--font-mono); font-size: 1.3rem; color: var(--ink-3); }
+details.duo-panel[open] > summary::after { content: "–"; content: "–" / ""; }
 .duo-title { display: flex; flex-direction: column; gap: 2px; }
+.duo-title .eyebrow { line-height: 1.4; font-weight: 400; }
 details.duo-panel > summary h2 { font-size: clamp(1.4rem, 3.4vw, 1.8rem); }
 #duo-sum { font-size: 0.85rem; flex: 1 1 220px; }
 #duo-tabs { margin-top: 14px; }
@@ -323,7 +325,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
             <label class="check"><input type="checkbox" id="bolt-rex" aria-label="Bolted to the planet: Rex"><span>Rex</span></label>
             <label class="check"><input type="checkbox" id="bolt-ollie" aria-label="Bolted to the planet: Ollie"><span>Ollie</span></label>
           </div>
-          <span class="hint">On, nothing can push him along the ground: the push goes into the planet. Off, he is just standing, and friction holds him. One each, so a contest can bolt one side and not the other.</span>
+          <span class="hint">On, his feet are fixed to the planet: friction no longer limits how hard he can push or be pushed along, and the push goes into the ground. It doesn’t stop him sinking into weak ground. In the two-player contests the ground around his feet can still tear out under a big enough push (unless Comic ground is on), and a very fast hit is over before the bolts can help. Off, he is just standing, and friction holds him. One each, so a contest can bolt one side and not the other.</span>
         </div>
         <label class="check"><input type="checkbox" id="ground-holds"><span><b>Comic ground</b> — the floor never breaks</span></label>
         <div class="eyebrow" style="margin-top:12px">Material limit suspended</div>
@@ -363,7 +365,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       </main>
 
       <details class="panel duo-panel" id="duo">
-        <summary><span class="duo-title"><span class="eyebrow">Two-player tests</span><h2 id="duo-title">Rex + Ollie</h2></span><span class="muted" id="duo-sum"></span></summary>
+        <summary><h2 id="duo-title" class="duo-title"><span class="eyebrow">Two-player tests</span>Rex + Ollie</h2><span class="muted" id="duo-sum"></span></summary>
         <details class="setup" id="ollie-setup">
           <summary><span>Ollie</span> <span class="muted" id="ollie-sum" style="font-weight:400;font-size:.85rem"></span></summary>
           <div class="ollie-grid">
@@ -5221,7 +5223,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Their powers",
-   "d": "All of their powers are their absorption at work, used on purpose. Each switch suspends one piece of real physics and is labelled wherever its effect shows. Gentle hold and safe passenger spread his push through the whole object or person in proportion to its mass, as gravity does, so his hands put no stress on it (a body pushed that way has no internal stress: Cauchy’s equation of motion). They don’t touch the ground under him, his recoil, the air or the landing. The absorbed switches (silent strike, soft landing, cool flight) take back the energy that would harm the surroundings. Momentum is never absorbed: it still goes into him, through his feet and into the ground. There is no “no recoil” switch."
+   "d": "All of their powers are their absorption at work, used on purpose. Each switch suspends one piece of real physics and is labelled wherever its effect shows. Gentle hold and safe passenger spread his push through the whole object or person in proportion to its mass, as gravity does, so his hands put no stress on it (a body pushed that way has no internal stress: Cauchy’s equation of motion). They don’t touch the ground under him, his recoil, the air or the landing. The absorbed switches (silent strike, soft landing, cool flight) take back the energy that would harm the surroundings. These switches never absorb momentum: it still goes into him, through his feet and into the ground. (The canon’s one exception so far, the lift from growth, is in the next card.) There is no “no recoil” switch."
   },
   {
    "t": "Absorbed energy and growth",
@@ -5241,7 +5243,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Newton’s third law stays on",
-   "d": "Every push pushes him back. He stays put only as far as friction and the ground’s bearing strength allow. “Bolted to the planet” and “Comic ground” switch those limits off."
+   "d": "Every push pushes him back. He stays put only as far as friction and the ground’s bearing strength allow. “Bolted to the planet” stops him being pushed along, whatever the friction (weak ground can still give way under him, and in the two-player contests the ground around his feet can tear out). “Comic ground” removes only the bearing limit, so friction still caps his footing."
   },
   {
    "t": "Two muscle models, one calibration",
@@ -11412,7 +11414,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: Cauchy's equation of motion for a solid (Newton's second law for every bit of a body)",
+   "label": "Their powers: Cauchy's equation of motion for a solid (Newton's second law for every bit of a body)",
    "value": "∇·σ + ρb = ρa (σ stress, ρ density, b body force per unit mass, a acceleration)",
    "status": "verified",
    "sources": [
@@ -11432,7 +11434,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: a push spread through a body in proportion to its mass accelerates it with no internal stress",
+   "label": "Their powers: a push spread through a body in proportion to its mass accelerates it with no internal stress",
    "value": "If every kilogram gets the same push (b = a everywhere) and nothing touches the surface, stress = 0",
    "status": "derived",
    "sources": [
@@ -11448,7 +11450,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: in free fall nothing feels its own weight: apparent weight P = m(a − g)",
+   "label": "Their powers: in free fall nothing feels its own weight: apparent weight P = m(a − g)",
    "value": "Apparent weight P = m(a_e − g); falling freely (a_e = g), P = 0: 'you are weightless'",
    "status": "verified",
    "sources": [
@@ -11460,7 +11462,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: only differences in the field (tides) stretch a freely falling body",
+   "label": "Their powers: only differences in the field (tides) stretch a freely falling body",
    "value": "Tidal acceleration along the line to a mass M at distance R: a_z = 2 z G M / R³ (z = offset from the centre of mass)",
    "status": "verified",
    "sources": [
@@ -11472,7 +11474,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: tidal stretch on a 4 m car: Earth's tide versus his spread push",
+   "label": "Their powers: tidal stretch on a 4 m car: Earth's tide versus his spread push",
    "value": "Earth's tide: about 2 mN through the middle of a 1,340 kg, 4 m car standing on end (1 part in 6 million of its weight). His push spread through it at 10 g: zero",
    "status": "derived",
    "sources": [
@@ -11496,7 +11498,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: spreading the force over the whole body is what raises tolerance (Eiband 1959)",
+   "label": "Their powers: spreading the force over the whole body is what raises tolerance (Eiband 1959)",
    "value": "'Survival of impact forces increases with increased distribution of the arresting force to the entire skeleton'; people cannot move against more than 2–3 g",
    "status": "verified",
    "sources": [
@@ -11508,7 +11510,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: amusement-ride acceleration limits for the general public (ASTM F2291-06a)",
+   "label": "Their powers: amusement-ride acceleration limits for the general public (ASTM F2291-06a)",
    "value": "Head-to-foot (+Gz) or pressed into the seat back (+Gx): 6 g for 0.2–1 s, 4 g for 2–4 s, 3 g for 5–11.8 s, then 2 g (+Gz) or 2.5 g (+Gx). Sideways 3 g → 2 g. Eyes-front (−Gx) 2 g at 0.2 s → 1.5 g. Eyes-up (−Gz) 2 g at 0.2 s → 1.5 g → 1.1 g from 7 s",
    "status": "derived",
    "sources": [
@@ -11520,7 +11522,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: NASA sustained acceleration limits for seated, restrained astronauts (upper bound, not for ordinary people)",
+   "label": "Their powers: NASA sustained acceleration limits for seated, restrained astronauts (upper bound, not for ordinary people)",
    "value": "Non-deconditioned seated crew: head-to-foot (+Az) 81.4 m/s² (8.3 g) at 0.5 s, 62.8 (6.4 g) at 5 s, 39.2 (4.0 g) at 1,200 s. Chest-to-back (+Ax) 186 (19 g) at 0.5 s, 157 (16 g) at 5 s, 73.5 (7.5 g) at 300 s",
    "status": "verified",
    "sources": [
@@ -11536,7 +11538,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: relaxed head-to-foot tolerance: 2–5 g standing, 7–9 g seated",
+   "label": "Their powers: relaxed head-to-foot tolerance: 2–5 g standing, 7–9 g seated",
    "value": "Non-straining standing +Gz tolerance 19.6–49.1 m/s² (2–5 g); seated 68.7–88.3 m/s² (7–9 g)",
    "status": "verified",
    "sources": [
@@ -11548,7 +11550,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: what steady g feels like, by direction (Fraser 1966 compilation)",
+   "label": "Their powers: what steady g feels like, by direction (Fraser 1966 compilation)",
    "value": "+Gz: 2 g heavier; 2.5 g hard to get up; 3–4 g vision dims after 3–4 s; 4.5–6 g blackout after about 5 s, then unconsciousness. +Gx: 2 g tolerable for at least 24 h, 4 g for at least 60 min",
    "status": "verified",
    "sources": [
@@ -11560,7 +11562,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: relaxed head-to-foot g at which vision and consciousness fail (means of a large group)",
+   "label": "Their powers: relaxed head-to-foot g at which vision and consciousness fail (means of a large group)",
    "value": "Loss of peripheral vision 4.1 ± 0.7 g (range 2.2–7.1); blackout 4.7 ± 0.8 g (2.7–7.8); unconsciousness 5.4 ± 0.9 g (3.0–8.4)",
    "status": "verified",
    "sources": [
@@ -11572,7 +11574,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: losing consciousness from g (G-LOC) took at least 5 s in 888 centrifuge episodes",
+   "label": "Their powers: losing consciousness from g (G-LOC) took at least 5 s in 888 centrifuge episodes",
    "value": "G-LOC did not occur earlier than 5 s; mean 9.1 s for onset ≥1 G/s; levels at G-LOC ranged +2.5 to +11.7 Gz (+4.7 Gz is the curve's defined minimum)",
    "status": "verified",
    "sources": [
@@ -11584,7 +11586,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: ordinary people (would-be space tourists) on a centrifuge: up to +6 Gx and +4 Gz tolerated",
+   "label": "Their powers: ordinary people (would-be space tourists) on a centrifuge: up to +6 Gx and +4 Gz tolerated",
    "value": "Screened, seated, strapped-in laypeople aged 18–88 (some with controlled medical conditions): peaks +3.5 to +4.0 Gz and +6.0 Gx (combined peaks about 5 s) tolerated; grey-out common (69–88%), one G-LOC in 24",
    "status": "verified",
    "sources": [
@@ -11608,7 +11610,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: brief jolts volunteers took uninjured in a full harness (Eiband 1959)",
+   "label": "Their powers: brief jolts volunteers took uninjured in a full harness (Eiband 1959)",
    "value": "Spineward, full harness: 45 g for 0.044 s, 40 g for 0.1 s, 25 g for 0.2 s, 13 g for 0.6 s, 10 g for 1.6 s. Animals survived (injury from none to severe shock and concussion) up to 56 g for 0.037 s and 43 g for 0.11 s (chimpanzees); hog 160 g for about 0.004 s marks Eiband's upper limit of moderate injury",
    "status": "verified",
    "sources": [
@@ -11620,7 +11622,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: impacts people survived with injury in harnessed sled tests",
+   "label": "Their powers: impacts people survived with injury in harnessed sled tests",
    "value": "25 g for 0.93 s: debilitated, back on duty in 5 days (Eiband). Severe shock at 38 g for 0.16 s with onset over 1,300 g per second; severe delayed effects at 45 g for 0.23 s (Stapp). 83 g for 0.04 s measured at the chest (applied input lower), rearward-facing, reversible injuries (Beeding & Mosely 1960). Air Force design limit for forward-facing (−Gx) impact in a double harness: about 45 g for 0.1 s, 25 g for 0.2 s",
    "status": "verified",
    "sources": [
@@ -11636,7 +11638,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: how fast g may build up: onset-rate limits for passengers",
+   "label": "Their powers: how fast g may build up: onset-rate limits for passengers",
    "value": "Ride standard: going from weightless (0 g) to 2 g or more, onset under 15 g per second; above 1.5 g with no headrest only if onset is under 5 g per second (then up to 2 g). Sled tests: 45 g for 0.09 s at 500 g/s caused no shock, but 38 g for 0.16 s at over 1,300 g/s caused severe shock",
    "status": "verified",
    "sources": [
@@ -11656,7 +11658,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: the g a passenger feels: the push from what holds them, net of gravity",
+   "label": "Their powers: the g a passenger feels: the push from what holds them, net of gravity",
    "value": "n = |a − g| / g (vectors). Standing still: 1 g. Lifted at 1 g: 2 g. Thrown (ballistic): 0 g plus drag. Under his spread push: 0 g",
    "status": "derived",
    "sources": [
@@ -11672,7 +11674,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: recommended 'no harm' limit for a passenger, by body axis (safe passenger switch off)",
+   "label": "Their powers: recommended 'no harm' limit for a passenger, by body axis (safe passenger switch off)",
    "value": "Orientation unknown (tumbling, a face-first catch, a push on the chest): eyes-front (−Gx) limit, 2 g at 0.2 s, 1.5 g from 0.5 s. Back-first cradle with head support (+Gx), or pushed up from below while seated upright (+Gz): 6 g to 1 s, 4 g at 2–4 s, 3 g at 5–11.8 s, then 2.5 g (+Gx) or 2 g (+Gz). Sideways 3 g → 2 g. Head-down (−Gz): as eyes-front to 4 s, then 1.1 g from 7 s. Pulses under 0.2 s: use the 0.2 s value",
    "status": "estimate",
    "sources": [
@@ -11688,7 +11690,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: recommended 'injury possible' band for a passenger (beyond what harnessed volunteers took uninjured)",
+   "label": "Their powers: recommended 'injury possible' band for a passenger (beyond what harnessed volunteers took uninjured)",
    "value": "Beyond Eiband's line for harnessed volunteers who were not injured (45 g at 0.044 s, 40 g at 0.1 s, 25 g at 0.2 s, 13 g at 0.6 s, 10 g at 1.6 s): injury possible; data sparse; worse at high onset rates. Human points survived with injury: 25 g for 0.93 s (applied); 83 g for 0.04 s measured at the chest (applied input lower). Held by hand with no harness: not measured",
    "status": "estimate",
    "sources": [
@@ -11708,7 +11710,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: fastest launch within the ride limit (landing not included)",
+   "label": "Their powers: fastest launch within the ride limit (landing not included)",
    "value": "Pushed along 45° over Rex's 2.4 m throwing stroke at 6 g felt: release at about 16 m/s in 0.3 s, landing about 26 m away (no drag). At 4 g: 12 m/s, 16 m. At 2 g: 7.5 m/s, 6 m. The landing is not included: at about 16 m/s it is like a 13 m fall, a serious injury risk unless he catches them",
    "status": "estimate",
    "sources": [
@@ -11720,7 +11722,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: air drag felt by a flying person, by speed (not removed by safe passenger once released)",
+   "label": "Their powers: air drag felt by a flying person, by speed (not removed by safe passenger once released)",
    "value": "For a 90 kg adult tumbling (area 0.67 m², C_d 1.1): drag decelerates them at 1 g at 44 m/s, 2 g at 63 m/s, 4 g at 89 m/s, 6 g at 108 m/s",
    "status": "estimate",
    "sources": [
@@ -11740,7 +11742,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: airblast at which people start to notice rattling: about 120 dB on a 6 Hz meter",
+   "label": "Their powers: airblast at which people start to notice rattling: about 120 dB on a 6 Hz meter",
    "value": "Rattling complaints above about 120 dB on the 6 Hz measuring system (20 Pa as read on that meter; about 36 Pa unfiltered, our conversion: see the row \"Rattling onset as an unfiltered peak pressure\"); at 134 dB (100 Pa; 0.1 Hz system) 5–10% of homes show rattling or fright disturbances",
    "status": "verified",
    "sources": [
@@ -11752,7 +11754,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: rattling onset as an unfiltered peak pressure (our conversion of USBM's 120 dB on a 6 Hz meter)",
+   "label": "Their powers: rattling onset as an unfiltered peak pressure (our conversion of USBM's 120 dB on a 6 Hz meter)",
    "value": "About 36 Pa (125 dB) unfiltered: USBM's 'about 120 dB (6 Hz)' rattling onset, shifted by the 5 dB between its safe levels on the two meters (129 dB on 6 Hz = 134 dB on 0.1 Hz)",
    "status": "derived",
    "sources": [
@@ -11764,7 +11766,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: airblast safe for houses (US mining regulation): 134 dB peak, about 100 Pa",
+   "label": "Their powers: airblast safe for houses (US mining regulation): 134 dB peak, about 100 Pa",
    "value": "134 dB (0.1 Hz system) = 100 Pa; 133 dB (2 Hz) = 89 Pa; 129 dB (6 Hz) = 56 Pa; 105 dBC (C-weighted, slow)",
    "status": "verified",
    "sources": [
@@ -11780,7 +11782,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: window sashes rattled at 0.03–0.05 psi (207–345 Pa) in small-charge tests: not a harmless level",
+   "label": "Their powers: window sashes rattled at 0.03–0.05 psi (207–345 Pa) in small-charge tests: not a harmless level",
    "value": "0.03–0.05 psi (141–145 dB): rattling of window sashes, in tests with small charges. Overlaps the start of glass damage",
    "status": "verified",
    "sources": [
@@ -11792,7 +11794,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: glass damage becomes improbable below about 0.030 psi (140 dB, ~200 Pa); single tests broke precracked panes from 364 Pa and stressed glass from 690 Pa",
+   "label": "Their powers: glass damage becomes improbable below about 0.030 psi (140 dB, ~200 Pa); single tests broke precracked panes from 364 Pa and stressed glass from 690 Pa",
    "value": "Damage improbable below about 0.030 psi (140 dB, about 207 Pa; studies' safe levels for glass 0.017–0.10 psi, 117–690 Pa). Precracked windows broke from 7.6 psf (364 Pa); glass under strain from 0.10 psi (690 Pa); good 3 × 3 ft panes none below 20 psf (958 Pa); properly mounted glass 0.75 psi (5.2 kPa)",
    "status": "verified",
    "sources": [
@@ -11804,7 +11806,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: what sonic booms do to houses (White Sands tests)",
+   "label": "Their powers: what sonic booms do to houses (White Sands tests)",
    "value": "2.5 psf (120 Pa) precludes damage; bric-a-brac falls and dishes rattle at 6–11 psf (290–530 Pa); plaster cracks 6.5–10 psf (310–480 Pa); nails pop 10.3 psf (490 Pa)",
    "status": "verified",
    "sources": [
@@ -11816,7 +11818,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: sonic booms people object to: 1.5–2 psf (72–96 Pa)",
+   "label": "Their powers: sonic booms people object to: 1.5–2 psf (72–96 Pa)",
    "value": "1 psf (48 Pa): no damage expected; 1.5–2 psf (72–96 Pa): some public reaction",
    "status": "verified",
    "sources": [
@@ -11828,7 +11830,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: hearing-safety limit for impulse noise: 140 dB peak (200 Pa)",
+   "label": "Their powers: hearing-safety limit for impulse noise: 140 dB peak (200 Pa)",
    "value": "140 dB peak sound pressure (200 Pa, 0.03 psi): US workplace limit for impulsive or impact noise",
    "status": "verified",
    "sources": [
@@ -11840,7 +11842,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: impulse–momentum: the same momentum change over a longer time needs less force",
+   "label": "Their powers: impulse–momentum: the same momentum change over a longer time needs less force",
    "value": "J = Δp; F_ave = Δp / Δt",
    "status": "verified",
    "sources": [
@@ -11852,7 +11854,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: soft landing: the momentum the ground must still take, and the least peak force his legs allow",
+   "label": "Their powers: soft landing: the momentum the ground must still take, and the least peak force his legs allow",
    "value": "Ground impulse J = m v. Time-mean ground force over a stop of T: J/T + W. Within a knee bend d, the peak force is at least m v²/(2d) + W. At 10 ft, a 0.76 m knee bend from 20 m/s needs a peak of at least 820 kN (28 × his weight)",
    "status": "derived",
    "sources": [
@@ -11868,7 +11870,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: momentum cannot be passed on with zero energy: at least p²/(2M) stays in whatever takes it",
+   "label": "Their powers: momentum cannot be passed on with zero energy: at least p²/(2M) stays in whatever takes it",
    "value": "Passing momentum p to a body of mass M leaves at least p²/(2M) in that body. For the Earth this is effectively nothing; for a small mass of air it can be large, though it shrinks as the moving air spreads",
    "status": "derived",
    "sources": [
@@ -12704,7 +12706,7 @@ window.DINO_DATA = {
     duoAction: 'arm', duoOpen: false,
     // Ollie: strength linked to Rex's dial unless oSame is false
     oSame: true, oLogKg: Math.log10(100 * 907.18474), oInf: false, oH: P.DEFAULT_BODIES.ollie.H, oM: P.DEFAULT_BODIES.ollie.m, oAnchor: 'friction',
-    wrestleMove: 'push', wrestleWho: 'rex',
+    wrestleMove: 'push', wrestleWho: 'rex', wAngle: 45,
     cObj: 'baseball', cLogD: 1, cStyle: 'easy', cMiss: false,
     colMode: 'charge', colWho: 'ollie', colSrc: 'sprint', colGB: Math.log10(100 / 299792458), colInf: false, colBounce: 'splat', colImm: false,
     // effort: a preset (least disruptive by default), or a custom strength used (log10 kg); people and buildings this near (m)
@@ -12722,7 +12724,10 @@ window.DINO_DATA = {
   let state = Object.assign({}, DEFAULTS);
   // lightest density the slider and the mass boxes allow, kg/m³ (the slider's left end, 10^1)
   const RHO_MIN = 10;
-  try { const saved = JSON.parse(localStorage.getItem('rex-lab-v1') || 'null'); if (saved) state = Object.assign(state, saved); } catch (e) { /* storage unavailable */ }
+  // Wrestle's throw shared Rex's Throw angle while only one of them was ever on screen; a save from before it had its
+  // own angle (state.wAngle) starts it from Rex's
+  let savedWAngle = false;
+  try { const saved = JSON.parse(localStorage.getItem('rex-lab-v1') || 'null'); if (saved) { state = Object.assign(state, saved); savedWAngle = 'wAngle' in saved; } } catch (e) { /* storage unavailable */ }
   // The default mass was 2,700 kg until it was ruled to leave out the tails; a saved old default moves to the new one.
   if (state.m === 2700) state.m = DEFAULTS.m;
   if (state.oM === 2700) state.oM = DEFAULTS.oM;
@@ -12734,6 +12739,7 @@ window.DINO_DATA = {
   // Retired settings: a saved 'Rex + Ollie' view (state.group) opens the Rex + Ollie element once; 'Claws dug in'
   // ('braced') loads as just standing. Footing is now only standing or bolted.
   if (state.group === 'duo') state.duoOpen = true;
+  if (!savedWAngle) state.wAngle = state.angle;
   if (state.anchor === 'braced') state.anchor = 'friction';
   if (state.oAnchor === 'braced') state.oAnchor = 'friction';
   {
@@ -12748,7 +12754,7 @@ window.DINO_DATA = {
       oSame: (v) => typeof v === 'boolean', oInf: (v) => typeof v === 'boolean',
       oLogKg: num(1, 34), oH: num(0.1, 500), oM: (v) => typeof v === 'number' && isFinite(v) && v > 0,
       oAnchor: (v) => v === 'friction' || v === 'bolted',
-      wrestleMove: (v) => ['push', 'shove', 'lift', 'throw'].includes(v),
+      wrestleMove: (v) => ['push', 'shove', 'lift', 'throw'].includes(v), wAngle: num(0, 90),
       wrestleWho: (v) => ['rex', 'ollie', 'both'].includes(v),
       cObj: (v) => v === 'partner' || D.objects.some((x) => x.id === v && !x.noThrow),
       cLogD: num(0, 7.31), cStyle: (v) => v === 'easy' || v === 'hard', cMiss: (v) => typeof v === 'boolean',
@@ -12959,10 +12965,12 @@ window.DINO_DATA = {
     duoEl.addEventListener('toggle', () => {
       if (duoEl.open === state.duoOpen) return;
       state.duoOpen = duoEl.open; save();
-      if (state.duoOpen) { if (!$('#duo-bay').firstChild) $('#duo-bay').replaceChildren(el('p', { class: 'muted', text: 'Working it out…' })); scheduleDuo(false); }
-      else stopDuo();
+      if (state.duoOpen) scheduleDuo(false);
+      else { stopDuo(); duoPlaceholder(); }
     });
   }
+  // what the closed (or not yet drawn) Rex + Ollie element holds, so it never shows results for other settings
+  const duoPlaceholder = () => { $('#duo-bay').replaceChildren(el('p', { class: 'muted', text: 'Working it out…' })); BAY.duo.spoken = null; };
   // a tab picked in one bay redraws only that bay
   function pickTab(B, id) {
     B.set(id); save();
@@ -13021,10 +13029,12 @@ window.DINO_DATA = {
     f.append(s);
     return f;
   }
-  function angleControl() {
-    const f = el('div', { class: 'field' }, el('label', { for: 'angle', text: 'Launch angle: ' + state.angle + '°' }));
-    const r = el('input', { id: 'angle', type: 'range', min: '0', max: '90', step: '1', value: String(state.angle) });
-    r.oninput = (e) => { state.angle = Number(e.target.value); f.querySelector('label').textContent = 'Launch angle: ' + state.angle + '°'; scheduleBay(); };
+  // Rex's Throw uses state.angle (id 'angle'); Wrestle's throw in the Rex + Ollie element has its own (state.wAngle)
+  function angleControl(id, key) {
+    id = id || 'angle'; key = key || 'angle';
+    const f = el('div', { class: 'field' }, el('label', { for: id, text: 'Launch angle: ' + state[key] + '°' }));
+    const r = el('input', { id, type: 'range', min: '0', max: '90', step: '1', value: String(state[key]) });
+    r.oninput = (e) => { state[key] = Number(e.target.value); f.querySelector('label').textContent = 'Launch angle: ' + state[key] + '°'; if (key === 'angle') scheduleBay(); else scheduleBaySlow(); };
     f.append(r);
     return f;
   }
@@ -13673,13 +13683,14 @@ window.DINO_DATA = {
     out.push(logBars('Top speed vs reference speeds', refs, (x) => big(x, 2) + ' m/s'));
     const items = [];
     if (r.limit === 'friction') items.push('Running is pushing backward on the ground. The ground only grips as hard as he presses down, and averaged over a stride he presses down with just his weight (' + fmtSI(c.body.m * g, 'N') + '). Friction caps his push at ' + fmtSI(r.thrust, 'N') + ', about ' + sig(r.accelG, 2) + ' g. More strength just makes him bounce higher.');
-    if (r.limit === 'strength') items.push('He isn’t strong enough yet to use all the grip on offer, so strength sets his push-off: ' + fmtSI(r.thrust, 'N') + '.');
+    if (c.anchor === 'bolted' && (r.limit === 'strength' || r.limit === 'effort')) items.push('Bolted to the planet, his feet can’t slip, so friction doesn’t cap his push-off: ' + (r.limit === 'effort' ? 'the strength he uses' : 'his strength') + ' sets it, ' + fmtSI(r.thrust, 'N') + '.');
+    else if (r.limit === 'strength') items.push('He isn’t strong enough yet to use all the grip on offer, so strength sets his push-off: ' + fmtSI(r.thrust, 'N') + '.');
     if (r.limit === 'soft ground') items.push('Each stride puts about 2.5 times his weight on one foot, more than ' + c.surface.short + ' can carry, so every step sinks and his push-off is capped.');
     if (r.topLimit === 'air drag' && !r.relativistic) items.push('At top speed all of his push goes into shoving air out of the way.');
     if (r.topLimit === 'leg speed') items.push(state.mode === 'real' ? 'Real-muscle mode caps leg speed at ' + speedOnly(P.MUSCLE.run.cap * c.body.s) + ', the top of the 35–40 mph limit projected from Weyand et al. (2010), scaled for his size.' : 'His legs set the top speed. The calibration body (2 m, 180 kg) at record-human strength runs Bolt’s 12.4 m/s; here the speed grows with the square root of his strength above his own weight, per kilogram of him, and with his size.');
     if (r.mach >= 1 && !r.relativistic) items.push('Above Mach 1 he drags a shock wave down the street: a continuous sonic boom, close enough to break windows. The sim does not estimate its strength at street level.');
     out.push(happens(items));
-    out.push(math(['Push-off = min(strength, μ × his weight)', 'Top speed where drag = push-off: v = √(2F / (ρ Cd A)), A = ' + sig(c.body.frontArea, 2) + ' m², unless his legs cap it first.']));
+    out.push(math([c.anchor === 'bolted' ? 'Push-off = his strength (bolted: no friction limit)' : 'Push-off = min(strength, μ × his weight)', 'Top speed where drag = push-off: v = √(2F / (ρ Cd A)), A = ' + sig(c.body.frontArea, 2) + ' m², unless his legs cap it first.']));
     return out;
   }
 
@@ -14115,7 +14126,7 @@ window.DINO_DATA = {
     const whoOpts = state.wrestleMove === 'push' ? [] : [['rex', 'Rex → Ollie'], ['ollie', 'Ollie → Rex']].concat(state.wrestleMove === 'shove' ? [['both', 'Both at once']] : []);
     const who = whoOpts.length ? el('div', { class: 'chips', role: 'group', 'aria-label': 'Who does it', style: 'margin-top:6px' },
       whoOpts.map(([id, label]) => el('button', { type: 'button', class: 'chip', id: 'ww-' + id, 'aria-pressed': String(state.wrestleWho === id), onclick: () => { state.wrestleWho = id; update(); } }, label))) : null;
-    return el('div', { class: 'bay-controls' }, el('div', { class: 'field', style: 'margin-top:0;flex:1 1 100%' }, el('span', { class: 'lbl', text: 'Move' }), moves, who), state.wrestleMove === 'throw' ? angleControl() : null);
+    return el('div', { class: 'bay-controls' }, el('div', { class: 'field', style: 'margin-top:0;flex:1 1 100%' }, el('span', { class: 'lbl', text: 'Move' }), moves, who), state.wrestleMove === 'throw' ? angleControl('w-angle', 'wAngle') : null);
   }
   function bayWrestle() {
     let cR = ctx(), cO = ctxOllie();
@@ -14172,7 +14183,7 @@ window.DINO_DATA = {
     ].filter(Boolean), (x) => fmtSI(x, 'N')));
     out.push(happens([
       'A shoving match is decided at the feet. To push forward, each one has to grip the ground; to stay put, each one has to grip it too. Strength past that grip just makes feet slide. (That assumes each leans into the push; upright, a body tips over at a few hundred newtons.)',
-      'Walking drive is friction under his own weight: ' + fmtSI(r.DA, 'N') + ' for Rex, ' + fmtSI(r.DB, 'N') + ' for Ollie. Holding still can use his full footing.',
+      'Walking drive is friction under his own weight, and none at all if he is bolted (he can’t step) or too heavy to walk: ' + fmtSI(r.DA, 'N') + ' for Rex, ' + fmtSI(r.DB, 'N') + ' for Ollie. Holding still can use his full footing.',
       'Equal bodies on equal ground stay equal at any strength. A heavier body wins.',
       r.outcome === 'bothBolted' ? 'Both bolted: the push runs from one through the ground to the other. ' + (cR.groundHolds ? 'Comic ground never breaks, so the push never leaves the two of them and the planet.' : 'The ground between their feet is stretched, and rock and concrete are weak in tension.') : null,
     ]));
@@ -14255,7 +14266,7 @@ window.DINO_DATA = {
     return out;
   }
   function wrestleThrow(cA, cB, nA, nB) {
-    const t = P.throwPartner(cA, cB, state.angle), out = [];
+    const t = P.throwPartner(cA, cB, state.wAngle), out = [];
     if (t.bolted) { out.push(verdict(nB + ' is bolted to the planet: there’s nothing to throw.')); return out; }
     const r = t.r, f = r.flight;
     let v;
@@ -14265,7 +14276,7 @@ window.DINO_DATA = {
     else if (f.escaped) v = nB + ' leaves the Earth for good.';
     else if (f.orbit) v = nB + ' goes into orbit.';
     else if (f.timedOut) v = nB + ' is still in the air after ' + fmtTime(f.time) + ', ' + fmtDist(f.apex) + ' up. The sim stops tracking him there, so this throw isn’t modelled to the end.';
-    else if (state.angle >= 90) v = nB + ' goes ' + fmtDist(f.apex) + ' straight up and comes back down on ' + nA + ' ' + fmtTime(f.time) + ' later.';
+    else if (state.wAngle >= 90) v = nB + ' goes ' + fmtDist(f.apex) + ' straight up and comes back down on ' + nA + ' ' + fmtTime(f.time) + ' later.';
     else v = nA + ' throws ' + nB + ' ' + fmtDist(f.range) + '.';
     if (r.canMove && r.recoilV > 1) v += ' ' + nA + ' gets shoved backward at ' + speedOnly(r.recoilV) + '.';
     if (t.sinks && f && f.landed && !t.fallsBack) v += ' No rock can hold ' + nB + ' at his weight, so where he lands he sinks into the planet (see Weight).';
@@ -14277,7 +14288,7 @@ window.DINO_DATA = {
         !f.relativistic && f.landed ? tile('Distance', fmtDist(f.range), 'top ' + fmtDist(f.apex) + ' · ' + fmtTime(f.time)) : null,
         !f.relativistic && f.landed ? tile('Lands at', speedOnly(f.vImpact), fmtTNT(r.Eimpact) + ' on impact') : null,
         tile(nA + '’s recoil', r.recoilV > 0.01 ? speedOnly(r.recoilV) : 'none', '')));
-      if (!f.relativistic && f.path && f.path.length > 1 && state.angle < 90) out.push(trajectoryChart(f.path, null, 'Flight path of ' + nB, f.apex, (f.landed || f.timedOut) ? null : (f.orbit ? 'in orbit →' : 'leaves Earth →')));
+      if (!f.relativistic && f.path && f.path.length > 1 && state.wAngle < 90) out.push(trajectoryChart(f.path, null, 'Flight path of ' + nB, f.apex, (f.landed || f.timedOut) ? null : (f.orbit ? 'in orbit →' : 'leaves Earth →')));
       const items = [];
       items.push(nB + ' is just an object here: ' + fmtMass(cB.body.m) + ' with a ' + sig(cB.body.frontArea, 2) + ' m² front. He doesn’t fight the throw; for that, see Shove.');
       if (r.heldBack) items.push('Pushing with everything would make ' + nA + '’s feet slide, so he holds back to what his footing can take (' + fmtSI(r.anchor.R, 'N') + ').');
@@ -15107,11 +15118,12 @@ window.DINO_DATA = {
   const onsetOf = (res) => (res.below > 0 && isFinite(res.below) && isFinite(res.use) ? Math.sqrt(res.below * res.use) : res.use);
   const fmtReach = (d) => (d >= Math.PI * K.R_E ? 'the whole planet' : fmtDist(d));
   const amountText = (use, F) => (!tinyShare(use, F) ? pctOf(use, F) + ' of his strength' + (use < F * (1 - 1e-9) ? ' (as hard as lifting ' + fmtMass(use / g) + ')' : '') : isFinite(use) ? 'as hard as lifting ' + fmtMass(use / g) : 'all of his unlimited strength');
-  let effortAdjOpen = false, hazOpen = false;
+  let hazOpen = false;
   // the distance the courtesy ceiling assumes (solo and two-player tabs)
-  const nearField = () => { const near = el('input', { id: 'near', type: 'number', min: String(RANGES.near[0]), max: String(RANGES.near[1]), step: 'any', value: String(state.near) });
+  // the distance box sits in both bays: each copy has its own id (and label)
+  const nearField = (id) => { id = id || 'near'; const near = el('input', { id, type: 'number', min: String(RANGES.near[0]), max: String(RANGES.near[1]), step: 'any', value: String(state.near) });
     near.onchange = (e) => setIn('near', e.target.value);
-    return el('div', { class: 'field near-field' }, el('label', { for: 'near', text: 'Nearest people and buildings (m)' }), el('div', { class: 'inline-num' }, near)); };
+    return el('div', { class: 'field near-field' }, el('label', { for: id, text: 'Nearest people and buildings (m)' }), el('div', { class: 'inline-num' }, near)); };
   // An effort slider in log10 kg on a 0.01 grid whose right end is exactly all-out. The browser builds the grid from
   // the min and max strings in decimal, so both get 6 decimals and the top is rounded up (the effort is capped at his
   // strength); the left end can sit up to 0.01 below the floor, so values shown are clamped to it.
@@ -15142,8 +15154,8 @@ window.DINO_DATA = {
     sl.oninput = (e) => { state.effort = 'custom'; state.effortLogKg = Number(e.target.value); e.target.setAttribute('aria-valuetext', vText(state.effortLogKg)); const s2 = $('#effort'); if (s2) s2.value = 'custom'; scheduleBay(); };
     adj.append(el('div', { class: 'field effort-slider' }, el('label', { for: 'effort-use', text: 'Effort (gentle ↔ all-out)' }), sl));
     const det = el('details', { class: 'effort-adjust' }, el('summary', { text: 'Adjust effort: ' + (G.key ? 'goal, ' : '') + 'distance, slider' }), adj);
-    det.open = effortAdjOpen;
-    det.addEventListener('toggle', () => { effortAdjOpen = det.open; });
+    det.open = BAY.solo.adjOpen;
+    det.addEventListener('toggle', () => { BAY.solo.adjOpen = det.open; });
     fields.push(det);
     return fields;
   }
@@ -15449,12 +15461,12 @@ window.DINO_DATA = {
       }
       if (move === 'throw') {
         const cA = state.wrestleWho === 'ollie' ? cO : cR, cB = state.wrestleWho === 'ollie' ? cR : cO;
-        const t = P.throwPartner(cA, cB, state.angle);
+        const t = P.throwPartner(cA, cB, state.wAngle);
         duoSig = fp(t.r && t.r.v, t.r && t.r.sinkRatio, t.r && t.r.recoilV);
         if (!t.r || !t.r.canMove) return null;
         // the solo throw's rules: a blast only past Mach 1, the landing's ground shaking, the ground under him (not in
         // soil, where his feet only sink in) and his own recoil slide
-        const M = P.RESTRAINT.MOVES.throw, mo = { obj: t.obj, surface: cA.surface, body: cA.body, anchor: cA.anchor, groundHolds: cA.groundHolds, angle: state.angle, near };
+        const M = P.RESTRAINT.MOVES.throw, mo = { obj: t.obj, surface: cA.surface, body: cA.body, anchor: cA.anchor, groundHolds: cA.groundHolds, angle: state.wAngle, near };
         if (t.r.v >= K.a0 || (t.r.recoilV || 0) >= K.a0) return 'the throw breaks the sound barrier';
         if (win(M.blast(t.r, mo))) return 'the landing’s air blast risks damage ' + fmtDist(near) + ' away';
         if (P.plasterOver(M.shake(t.r, mo), near)) return 'the landing shakes the ground enough that plaster may crack ' + fmtDist(near) + ' from where he lands';
@@ -15523,7 +15535,7 @@ window.DINO_DATA = {
     if (p) return p;
     return makeDuoPlan(act, key);
   }
-  const duoKey = (act) => { const FR = fullF('R'), FO = fullF('O'); return JSON.stringify([act, FR, FO, state.mode, state.H, state.m, state.build, state.oH, state.oM, state.surface, state.groundHolds, state.anchor, state.oAnchor, state.near, state.wrestleMove, state.wrestleWho, state.angle, state.cObj, state.cLogD, state.cStyle, state.colMode, state.colWho, state.colSrc, state.colGB, state.colInf, state.colBounce, state.colImm, state.oEffortOwn, state.oEffortLogKg, state.gentleHold, state.coolFlight, state.softLanding, state.silentStrike, state.safePassenger]); };
+  const duoKey = (act) => { const FR = fullF('R'), FO = fullF('O'); return JSON.stringify([act, FR, FO, state.mode, state.H, state.m, state.build, state.oH, state.oM, state.surface, state.groundHolds, state.anchor, state.oAnchor, state.near, state.wrestleMove, state.wrestleWho, state.wAngle, state.cObj, state.cLogD, state.cStyle, state.colMode, state.colWho, state.colSrc, state.colGB, state.colInf, state.colBounce, state.colImm, state.oEffortOwn, state.oEffortLogKg, state.gentleHold, state.coolFlight, state.softLanding, state.silentStrike, state.safePassenger]); };
   function makeDuoPlan(act, key) {
     const FR = fullF('R'), FO = fullF('O');
     let p;
@@ -15607,10 +15619,10 @@ window.DINO_DATA = {
     const sl = el('input', { id: 'duo-effort-use', type: 'range', min: G2.min, max: G2.max, step: '0.01', value: String(Math.min(G2.top, Math.max(Number(G2.min), cur))), 'aria-valuetext': isFinite(eff.use) ? vText(cur) : 'All-out' });
     sl.oninput = (e) => { state.duoEffort = 'custom'; state.duoLogKg = Number(e.target.value); e.target.setAttribute('aria-valuetext', vText(state.duoLogKg)); const s2 = $('#duo-effort'); if (s2) s2.value = 'custom'; scheduleBaySlow(); };
     const own = el('label', { class: 'check', style: 'margin-top:0' }, el('input', { type: 'checkbox', id: 'o-effort-own', checked: state.oEffortOwn ? true : null, onchange: (e) => { state.oEffortOwn = e.target.checked; if (state.oEffortOwn) state.oEffortLogKg = Math.min(G2.top, nowLog()); update(); } }), el('span', { text: 'What-if: Ollie sets his own effort' }));
-    const adj = el('div', { class: 'bay-controls' }, el('div', { class: 'field effort-slider' }, el('label', { for: 'duo-effort-use', text: 'Effort (gentle ↔ all-out)' }), sl), nearField(), el('div', { class: 'field near-field' }, own));
+    const adj = el('div', { class: 'bay-controls' }, el('div', { class: 'field effort-slider' }, el('label', { for: 'duo-effort-use', text: 'Effort (gentle ↔ all-out)' }), sl), nearField('duo-near'), el('div', { class: 'field near-field' }, own));
     const det = el('details', { class: 'effort-adjust' }, el('summary', { text: 'Adjust effort: slider, distance, Ollie’s own' }), adj);
-    det.open = effortAdjOpen || state.oEffortOwn;
-    det.addEventListener('toggle', () => { effortAdjOpen = det.open; });
+    det.open = BAY.duo.adjOpen || state.oEffortOwn;
+    det.addEventListener('toggle', () => { BAY.duo.adjOpen = det.open; });
     const fields = [el('div', { class: 'field effort-field' }, el('label', { for: 'duo-effort', text: 'Effort (one for both)' }), sel), det];
     if (state.oEffortOwn) {
       const oText = (v) => 'Ollie as hard as lifting ' + fmtMass(G2.kg(v));
@@ -15648,8 +15660,8 @@ window.DINO_DATA = {
   // The two bays: Rex's (his moves, always shown) and the Rex + Ollie element's (the two-player tests, worked out only
   // while it is open). Each has its own tab row, result area, live region, kept controls and searches.
   const BAY = {
-    solo: { id: 'bay', tabs: 'tabs', live: 'bay-live', list: () => ACTIONS, act: () => state.action, set: (a) => { state.action = a; }, last: null, liveTimer: null, inputAt: -1e9, pending: false },
-    duo: { id: 'duo-bay', tabs: 'duo-tabs', live: 'duo-live', list: () => DUO_ACTIONS, act: () => state.duoAction, set: (a) => { state.duoAction = a; }, last: null, liveTimer: null, inputAt: -1e9, pending: false },
+    solo: { id: 'bay', tabs: 'tabs', live: 'bay-live', list: () => ACTIONS, act: () => state.action, set: (a) => { state.action = a; }, last: null, liveTimer: null, inputAt: -1e9, pending: false, adjOpen: false, spoken: null },
+    duo: { id: 'duo-bay', tabs: 'duo-tabs', live: 'duo-live', list: () => DUO_ACTIONS, act: () => state.duoAction, set: (a) => { state.duoAction = a; }, last: null, liveTimer: null, inputAt: -1e9, pending: false, adjOpen: false, spoken: null },
   };
   function renderInto(B, keepControls) {
     const duo = B === BAY.duo;
@@ -15719,12 +15731,13 @@ window.DINO_DATA = {
     } else bay.replaceChildren(...parts);
     if (focEl && !bay.contains(document.activeElement)) {
       const all = Array.from(bay.querySelectorAll(FOC));
-      const to = (focusId && document.getElementById(focusId)) || all.find((x) => focKey(x) === focusKey) || all[focusIdx];
+      const to = (focusId && bay.querySelector('#' + CSS.escape(focusId))) || all.find((x) => focKey(x) === focusKey) || all[focusIdx];
       if (to) to.focus({ preventScroll: true });
     }
     const vd = bay.querySelector('.verdict');
     clearTimeout(B.liveTimer);
-    if (!B.pending) B.liveTimer = setTimeout(() => { $('#' + B.live).textContent = vd ? vd.textContent : ''; }, 600);
+    // announce a bay's verdict only when it changes (a redraw caused by the other bay's settings stays quiet)
+    if (!B.pending) B.liveTimer = setTimeout(() => { const t = vd ? vd.textContent : ''; if (t === B.spoken) return; B.spoken = t; $('#' + B.live).textContent = t; }, 600);
   }
   // Rex's bay
   function renderSolo(keepControls) { renderInto(BAY.solo, keepControls); }
@@ -15990,6 +16003,7 @@ window.DINO_DATA = {
   buildControls();
   try { if (matchMedia('(min-width: 920px)').matches) $('#setup').open = true; } catch (e) { /* ignore */ }
   // the Rex + Ollie element opens as the reader left it
+  duoPlaceholder();
   $('#duo').open = state.duoOpen;
   renderFeats();
   renderModel();

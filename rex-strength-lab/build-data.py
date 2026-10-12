@@ -386,7 +386,7 @@ USED_ABOVE = {d for d in ['density_plush_stuffing_estimate', 'density_water_4c',
                           'density_white_dwarf_sirius_b_mean', 'nuclear_saturation_density', 'density_neutron_star_mean', 'phobos_mass', 'deimos_mass']}
 # the presence brief's facts (effort, the Walk tab, comic switches, growth), each in its own row, labelled by area
 PRESENCE_AREA = {'presence_step': 'Walking', 'presence_attenuation': 'Ground shaking', 'presence_elephant': 'Elephants', 'presence_thresholds': 'Thresholds',
-                 'presence_ripple': 'Water glass', 'presence_comic': 'Comic switches', 'presence_growth': 'Growth'}
+                 'presence_ripple': 'Water glass', 'presence_comic': 'Their powers', 'presence_growth': 'Growth'}
 for topic, prefix in [('density', 'Weight'), ('duo', None), ('presence', None)]:
     for f in json.load(open(os.path.join(HERE, 'research', f'final-{topic}.json'), encoding='utf-8'))['facts']:
         if f['key'] in USED_ABOVE:

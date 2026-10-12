@@ -1,8 +1,10 @@
 // Records what the page shows for a set of saved states, so test/shots.js can check that the page reorganisation
-// (BRIEF-gui.md sections 1-4) leaves those results unchanged. Run on main's build before the change:
-//   node test/make-page-fixture.js [path/to/index.html]   -> test/fixtures/page-before.json
-// Each case saves a state in localStorage ('rex-lab-v1'), reloads, opens the tab and records the verdict, the status
-// chips and the tiles (the result), once no search is still 'working it out'.
+// (BRIEF-gui.md sections 1-4) leaves those results unchanged. Run it on main's build from before the change:
+//   git show <commit before the reorganisation>:rex-strength-lab/dist/index.html > /tmp/main.html
+//   node test/make-page-fixture.js /tmp/main.html 'main at <commit>'   -> test/fixtures/page-before.json
+// It refuses a page that already has the Rex + Ollie element. Each case saves a state in localStorage ('rex-lab-v1'),
+// reloads, opens the tab and records the result text (verdict, status chips, tiles, the effort box, what happens, the
+// callouts and the math), once no search is still 'working it out'.
 const fs = require('fs'), path = require('path'), { pathToFileURL } = require('url'), { execSync } = require('child_process');
 const loadPlaywright = () => {
   for (const p of [process.env.PLAYWRIGHT, '/opt/node22/lib/node_modules/playwright', 'playwright']) { if (p) try { return require(p); } catch (e) { /* next */ } }
@@ -27,7 +29,8 @@ async function readResult(page, bayId) {
   return page.evaluate((id) => {
     const bay = document.getElementById(id);
     const txt = (n) => (n ? n.textContent.replace(/\s+/g, ' ').trim() : null);
-    return { verdict: txt(bay.querySelector('.verdict')), status: Array.from(bay.querySelectorAll('.status-row')).map(txt), tiles: Array.from(bay.querySelectorAll('.tiles')).map(txt) };
+    const all = (sel) => Array.from(bay.querySelectorAll(sel)).map(txt);
+    return { verdict: txt(bay.querySelector('.verdict')), status: all('.status-row'), tiles: all('.tiles'), effort: all('.effort-read'), happens: all('.happens'), callouts: all('.callout'), math: all('details.math .eq') };
   }, bayId);
 }
 async function settle(page, bayId) {
@@ -40,7 +43,8 @@ async function settle(page, bayId) {
 }
 
 if (require.main === module) (async () => {
-  const file = process.argv[2] || path.join(__dirname, '..', 'dist', 'index.html');
+  const file = process.argv[2];
+  if (!file) { console.error('Give the path of main\'s build from before the page reorganisation (see the comment at the top).'); process.exit(1); }
   const body = fs.readFileSync(file, 'utf8');
   const wrapped = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body>' + body + '</body></html>';
   const tmp = path.join(__dirname, '..', 'dist', 'fixture-src.html');
@@ -48,6 +52,7 @@ if (require.main === module) (async () => {
   const browser = await chromium.launch({ executablePath: CHROME });
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
   await page.goto(pathToFileURL(tmp).href);
+  if (await page.evaluate(() => !!document.getElementById('duo-bay'))) { console.error('This page already has the Rex + Ollie element: run this on main\'s build from before the reorganisation.'); await browser.close(); fs.unlinkSync(tmp); process.exit(1); }
   const out = {};
   for (const c of CASES) {
     const duo = DUO.includes(c.tab);
@@ -61,7 +66,7 @@ if (require.main === module) (async () => {
   await browser.close();
   fs.unlinkSync(tmp);
   const dest = path.join(__dirname, 'fixtures', 'page-before.json');
-  fs.writeFileSync(dest, JSON.stringify({ note: 'Written by test/make-page-fixture.js from main\'s build before the page reorganisation (BRIEF-gui.md sections 1-4).', cases: CASES, results: out }, null, 1) + '\n');
+  fs.writeFileSync(dest, JSON.stringify({ note: 'Written by test/make-page-fixture.js from ' + (process.argv[3] || 'main\'s build') + ', before the page reorganisation (BRIEF-gui.md sections 1-4).', cases: CASES, results: out }, null, 1) + '\n');
   console.log('wrote ' + dest);
 })().catch((e) => { console.error(e); process.exit(1); });
 
