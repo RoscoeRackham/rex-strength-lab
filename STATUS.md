@@ -13,7 +13,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## Waiting on
 
-- Owner: republish the live Rex lab page from `main` (the follow-ups merged in #15). Please confirm two rulings the collaborator relayed and recorded in `CLAUDE.md`: growth never bounces them up (the lift goes to the endless ocean, an exception to "momentum is never absorbed"), and the energy their gravity releases goes to the endless ocean. With these, the runaway loop is a round trip and the half-life control never acts; say whether to keep that control.
+- Owner: please confirm two rulings the collaborator relayed and recorded in `CLAUDE.md`: growth never bounces them up (the lift goes to the endless ocean, an exception to "momentum is never absorbed"), and the energy their gravity releases goes to the endless ocean. With these, the runaway loop is a round trip and the half-life control never acts; say whether to keep that control.
 - Owner: build `rex-strength-lab/BRIEF-gui.md` (three pull requests in the order it gives: page organisation, the new powers, the energy comparisons). First confirm the canon the collaborator recorded in CLAUDE.md (marked "owner to confirm"): the Restraint wording, the default powers, and above all 5d (they take their own recoil). The owner already agreed to the powers' two exceptions to the momentum rule. The collaborator releases the claim on `rex-strength-lab/` once the follow-ups and brief pull requests merge; claim it then.
 - Owner, optional: the moves' quick-load bearing for sand (37 kPa at 0.316 m, the textbook value) sits about 5–10× below what the elephant's sand bore. Raising it would change all-out results across the moves; left unchanged (README, known limits).
 - Owner review of Build Comparison design decisions listed in `build-comparison/data/NOTES.md` ("Design decisions to review"): the edge marking, the palette change, the stop edges, Thor's and the Thing's treatment, the group colours' contrast, and figures drawn with their arms at their rest angle. (The meatball sentence is now reworded in the brief.)
@@ -23,6 +23,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## Done
 
+- 2026-10-12: live pages checked against `main` (`4da40f0`), each built from a clean checkout and tested first (Rex lab: calibration, presence 382 checks, shots; Build Calculator: 22 tests, shots; Build Comparison: 33 tests, duo, shots). Rex lab republished (version 9, with the follow-ups from #15). Build Calculator (version 3) and Build Comparison (version 4) already matched `main` byte for byte, so they were left as they are.
 - 2026-10-12: Rex lab page brief merged (pull request #16): `rex-strength-lab/BRIEF-gui.md` for the owner's agent, and CLAUDE.md canon (Restraint; Default powers, marked "owner to confirm" where the owner hasn't yet). The collaborator's claim on `rex-strength-lab/` is released.
 - 2026-10-12: Rex lab follow-ups merged (pull request #15, which also merged #13, the owner's STATUS tidy-up). CI passed on the pull request.
 - 2026-10-12: Rex lab page brief written (`BRIEF-gui.md`, `terantic/gui-brief`): one "Their powers" banner, sidebar order, binary footing, Rex + Ollie as its own element, four default powers (the owner agreed to their two momentum exceptions; the rest to confirm), more energy comparisons (research first), corrections.
