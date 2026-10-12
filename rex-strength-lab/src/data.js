@@ -1173,7 +1173,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Footprints",
-   "d": "In sand and gravel, footprint depth is scaled from the one large-animal print we found measured: a weighed 2,530 kg African elephant cow left forefoot prints 20–26 mm deep in loose-to-medium sand (Schanz et al. 2013). The lab anchors on the authors’ calibrated model of that sand (18 mm at 350 kPa), with depth rising as pressure to the power 1.27 and in proportion to foot width. The pressure is the step’s landing peak, as in the elephant’s print; the rule was fitted from 99 to 350 kPa, so a stamp that presses harder is extrapolated (the page says so). Loose sand is taken as that sand; gravel, which bears more, gets shallower prints in proportion. In clay a foot sinks until the clay’s bearing, which grows a little with depth, carries the step. Paving, slabs, ice, steel and rock show no print until they break. Standing still (the Weight tab) uses the same rules at his standing pressure. In sand and gravel, his feet plunge in deeper only past the pressure the elephant’s sand bore with that shallow print (350 kPa under a foot its width, scaled with foot width and more for gravel: a lower bound); from there the sand’s bearing grows with depth (USACE EM 1110-1-1905). All estimates."
+   "d": "In sand and gravel, footprint depth is scaled from the one large-animal print we found measured: a weighed 2,530 kg African elephant cow left forefoot prints 20–26 mm deep in loose-to-medium sand (Schanz et al. 2013). The lab anchors on the authors’ calibrated model of that sand (18 mm at 350 kPa), with depth rising as pressure to the power 1.27 and in proportion to foot width. The pressure is the step’s landing peak, as in the elephant’s print; the rule was fitted from 99 to 350 kPa, so a stamp that presses harder is extrapolated (the page says so). Loose sand is taken as that sand; gravel, which bears more, gets shallower prints in proportion. In clay a foot sinks until the clay’s bearing, which grows a little with depth, carries the step. Paving, slabs, ice, steel and rock show no print until they break. Standing still (the Weight tab) uses the same rules at his standing pressure. In sand and gravel, his feet plunge in deeper only past the pressure the elephant’s sand bore with that shallow print (350 kPa under a foot its width by the researchers’ model, 181 kPa by force-plate data; we use 350 kPa, scaled with foot width and more for gravel: an estimate); from there the sand’s bearing grows with depth (USACE EM 1110-1-1905). All estimates."
   },
   {
    "t": "Comic switches",
@@ -5074,7 +5074,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Walking: standing still in soil: how deep his feet go (the Weight tab's rule)",
-   "value": "Standing at canon, Rex's feet press about 3 mm into loose sand and Ollie's about 5 mm (the old rule sank Ollie 18 cm). Past about 350 kPa under a foot the elephant's width (scaled with width; more for gravel), sand starts to give and the foot plunges until the bearing growing with depth carries it. Estimate, checked against one measured elephant print",
+   "value": "Standing at canon, Rex's feet press about 3 mm into loose sand and Ollie's about 5 mm (the old rule sank Ollie 18 cm). Past about 350 kPa under a foot the elephant's width (scaled with width; more for gravel; our estimate, from the researchers' model of the elephant's stress), sand starts to give and the foot plunges until the bearing growing with depth carries it. Estimate, checked against one measured elephant print",
    "status": "estimate",
    "sources": [
     {
@@ -8249,7 +8249,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Growth: instant growth: the blast from shoving the air aside",
-   "value": "Chicxulub, pure size: 2–3 atm at his sides and 0.9–1.5 × 10⁹ J into the air (210–350 kg of TNT) if he grew about his centre; windows shatter out to 100–220 m. Anchored at his soles, the top of his head pushes about 24–30 atm and the total is 2–4 times larger (up to 6 × 10⁹ J, 1.5 t of TNT; windows to about 360 m). Mix: 3–6 kg of TNT, windows to 25–57 m (up to about 90 m anchored). Canon: he grows about his middle (the centred values)",
+   "value": "Chicxulub, pure size: 2–3 atm at his sides and 0.9–1.5 × 10⁹ J into the air (210–350 kg of TNT) if he grew about his centre; windows shatter out to 100–220 m. Anchored at his soles, the top of his head pushes about 24–30 atm and the total is 2–4 times larger (up to 6 × 10⁹ J, 1.5 t of TNT; windows to about 360 m). Mix: 3–6 kg of TNT, windows to 25–57 m (up to about 90 m anchored). Canon: he grows about his middle; the page's high end also counts the top of his head at its own speed (an upper bound)",
    "status": "estimate",
    "sources": [
     {
