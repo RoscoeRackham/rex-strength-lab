@@ -46,6 +46,9 @@ jobs:
       - name: Rex lab - page screenshots
         working-directory: rex-strength-lab
         run: node test/shots.js
+      - name: Rex lab - their four default powers (and every result with them off matching main's)
+        working-directory: rex-strength-lab
+        run: node test/powers.js
       - name: Build Calculator - model tests
         working-directory: build-calculator
         run: node test/test.js

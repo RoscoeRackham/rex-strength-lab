@@ -36,10 +36,11 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
   // 1280 px and 390 px, light and dark; every tab of both bays. Fails on horizontal scroll (on any tab), console
   // errors, broken numbers (NaN, undefined, a bare Infinity) or dug-in footing (retired) in the page text.
   const SOLO = ['walk', 'lift', 'throw', 'jump', 'stomp', 'punch', 'clap', 'sprint', 'pull', 'weight'], DUO = ['arm', 'wrestle', 'catch', 'collide'];
-  const bad = (t) => (t.match(/NaN|undefined|(?<![∞\w])Infinity/g) || []).concat(t.match(/dug[ -]in|claws dug|braced|comic switch|under Settings/gi) || []);
+  // (and the powers that section 5 of BRIEF-gui.md replaced: Comic ground, Gentle hold, Cool flight)
+  const bad = (t) => (t.match(/NaN|undefined|(?<![∞\w])Infinity/g) || []).concat(t.match(/dug[ -]in|claws dug|braced|comic switch|under Settings|comic ground|gentle hold|cool flight/gi) || []);
   // the sidebar, top to bottom (BRIEF-gui.md section 2) and what sits in Their powers (section 1)
   const SIDEBAR = ['strength', 'setup', 'ground-sec', 'powers'];
-  const IN_POWERS = ['mode-comic', 'mode-real', 'mode-hint', 'bolt-rex', 'bolt-ollie', 'ground-holds', 'sw-gentle', 'sw-passenger', 'sw-silent', 'sw-soft', 'sw-cool', 'absorb', 'grow-chips', 'grow-s', 'grow-t'];
+  const IN_POWERS = ['mode-comic', 'mode-real', 'mode-hint', 'bolt-rex', 'bolt-ollie', 'sw-unbreakable', 'sw-recoil', 'air-absorb', 'sw-keep', 'sw-passenger', 'sw-silent', 'sw-soft', 'absorb', 'grow-chips', 'grow-s', 'grow-t'];
   for (const [w, h, scheme] of [[1280, 900, 'light'], [1280, 900, 'dark'], [390, 844, 'light'], [390, 844, 'dark']]) {
     const page = await browser.newPage({ viewport: { width: w, height: h }, colorScheme: scheme });
     const errs = [];
@@ -168,6 +169,8 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       [/Equal bodies on equal ground stay equal at any strength\. A heavier body, or one dug in, wins\./g, 'Equal bodies (same weight and feet) on equal ground stay equal at any strength. On firm ground the heavier one wins; where the ground is too soft to carry a body’s weight, his grip is capped by what it bears under his feet, so bigger feet help; and if either is bolted, nobody walks the other out.'],
       [/Hold = min\(strength, footing\); footing = μ m g \(\+ shear × buried area if dug in; unlimited if bolted\)\./g, 'Hold = min(strength, footing), or the footing alone if he is too heavy to stand; footing = μ × min(m g, what the ground under his feet bears). Bolted: unlimited, whatever his strength (the bolts hold, not his muscles).'],
       [/Drive = min\(strength, μ m g \+ ¼ shear × buried area if dug in\);/g, 'Drive = min(strength, μ × min(m g, what the ground under his feet bears));'],
+      // B: Comic ground is now Unbreakable footing
+      [/only Comic ground keeps the floor whole/g, 'only Unbreakable footing keeps the floor whole'],
     ];
     const edit = (t) => EDITS.reduce((x, [re, to]) => x.replace(re, to), t);
     const editAll = (r) => { const o = {}; for (const [k, v] of Object.entries(r)) o[k] = Array.isArray(v) ? v.map((x) => x && edit(x)) : v && edit(v); return JSON.stringify(o); };
@@ -206,12 +209,12 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     const braced = await page.evaluate(() => { const s = JSON.parse(localStorage.getItem('rex-lab-v1')); return [s.anchor, s.oAnchor, document.getElementById('bolt-rex').checked, document.getElementById('bolt-ollie').checked]; });
     if (braced.join() !== 'friction,friction,false,false') fail('saved braced footing loads as ' + JSON.stringify(braced)); else okLog('saved braced footing loads as just standing, switches off');
     // section 4: a saved Rex + Ollie view opens the element once on its tab, then the old key is gone
-    await load({ group: 'duo', duoAction: 'catch' });
+    await load(Object.assign({ group: 'duo', duoAction: 'catch' }, POWERS_OFF));
     const s4 = await page.evaluate(() => ({ open: document.getElementById('duo').open, sel: (document.querySelector('#duo-tabs [aria-selected="true"]') || {}).id, saved: JSON.parse(localStorage.getItem('rex-lab-v1')) }));
     if (!s4.open || s4.sel !== 'tab-catch' || 'group' in s4.saved || s4.saved.duoOpen !== true) fail('saved group duo: ' + JSON.stringify({ open: s4.open, sel: s4.sel, group: s4.saved.group, duoOpen: s4.saved.duoOpen })); else okLog('saved group duo opens the element on Catch; the group key is dropped');
     same('s4-catch', await duoResult());
     // an older save (no wAngle) keeps its Wrestle throw: Wrestle's own angle starts from Rex's
-    await load({ angle: 30, wrestleMove: 'throw', duoOpen: true, duoAction: 'wrestle' });
+    await load(Object.assign({ angle: 30, wrestleMove: 'throw', duoOpen: true, duoAction: 'wrestle' }, POWERS_OFF));
     same('s4-wrestle-throw', await duoResult());
     // Ollie's settings inside the element change the two-player result and leave Rex's bay alone
     await load({ duoOpen: true, duoAction: 'arm', action: 'throw' });
@@ -274,7 +277,7 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
           if (what === 'close') document.getElementById('duo').open = false; else if (what.startsWith('rex-tab')) document.getElementById(what === 'rex-tab-weight' ? 'tab-weight' : 'tab-jump').click(); } }, 5);
       }, onBusy);
       await pg.goto(pathToFileURL(prev).href);
-      await pg.evaluate(() => localStorage.setItem('rex-lab-v1', JSON.stringify({ duoOpen: true, duoAction: 'arm' })));
+      await pg.evaluate((off) => localStorage.setItem('rex-lab-v1', JSON.stringify(Object.assign({ duoOpen: true, duoAction: 'arm' }, off))), POWERS_OFF);
       await pg.reload(); await pg.waitForTimeout(4000);
       const r = await pg.evaluate(() => ({ busyAt: window.__busyAt, atClose: window.__atClose, calls: window.__duoCalls, open: document.getElementById('duo').open, working: /working it out/i.test(document.getElementById('duo-bay').textContent), effort: /Effort: [\d.]+%/.test(document.getElementById('duo-bay').textContent), rex: !!document.querySelector('#bay .verdict'),
         effortText: ((document.querySelector('#duo-bay .effort-read') || {}).textContent || '').replace(/\s+/g, ' ').trim(), verdict: ((document.querySelector('#duo-bay .verdict') || {}).textContent || '').replace(/\s+/g, ' ').trim() }));
@@ -350,6 +353,93 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     const end = await page.evaluate(() => ({ spoken: document.getElementById('effort-use').getAttribute('aria-valuetext'), read: (document.querySelector('.effort-read b') || {}).textContent }));
     console.log('effort slider, End key: ' + JSON.stringify(end));
     if (end.spoken !== 'All-out' || !/100%|All-out/.test(end.read || '')) problems++;
+    await page.close();
+  }
+  // BRIEF-gui.md section 5: the four default powers on the page
+  if (!only) {
+    const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+    const errs = [];
+    page.on('pageerror', (e) => errs.push('PAGEERROR ' + e.message));
+    page.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()); });
+    await page.goto(pathToFileURL(prev).href);
+    const load = async (st) => { await page.evaluate((x) => localStorage.setItem('rex-lab-v1', JSON.stringify(x)), st); await page.reload(); await page.waitForTimeout(800); await settle(page, 'bay'); };
+    const saved = () => page.evaluate(() => JSON.parse(localStorage.getItem('rex-lab-v1')));
+    const bayText = () => page.evaluate(() => document.getElementById('bay').textContent.replace(/\s+/g, ' '));
+    const pick = async (sel, v) => { await page.selectOption(sel, v); await page.waitForTimeout(300); await settle(page, sel === '#duo-effort' ? 'duo-bay' : 'bay'); };
+    const chips = () => page.evaluate(() => Array.from(document.querySelectorAll('#bay .status-row .status, #bay .status-row > *')).map((n) => n.textContent.trim()));
+    // a save from before section 5 (Comic ground off, Gentle hold off, Cool flight on) loads with all four powers on
+    await load({ action: 'throw', groundHolds: false, gentleHold: false, coolFlight: true });
+    const mig = await page.evaluate(() => ({ ub: document.getElementById('sw-unbreakable').checked, rec: document.getElementById('sw-recoil').checked, keep: document.getElementById('sw-keep').checked, air: document.getElementById('air-absorb').value }));
+    const sv = await saved();
+    if (!mig.ub || !mig.rec || !mig.keep || mig.air !== '100' || 'groundHolds' in sv || 'gentleHold' in sv || 'coolFlight' in sv || sv.airAbsorb !== 1 || sv.unbreakable !== true) fail('an old save with the retired switches: ' + JSON.stringify({ mig, saved: { groundHolds: sv.groundHolds, gentleHold: sv.gentleHold, coolFlight: sv.coolFlight, airAbsorb: sv.airAbsorb, unbreakable: sv.unbreakable } }));
+    else okLog('an old save with Comic ground, Gentle hold and Cool flight loads with the four new powers on; the old keys are dropped');
+    // the slider reads its value and what it means
+    const readAir = () => page.evaluate(() => ({ big: document.getElementById('air-absorb-big').textContent, read: document.getElementById('air-absorb-read').textContent }));
+    const r100 = await readAir();
+    await page.evaluate(() => { document.getElementById('powers').open = true; const s = document.getElementById('air-absorb'); s.value = '30'; s.dispatchEvent(new Event('input', { bubbles: true })); s.dispatchEvent(new Event('change', { bubbles: true })); });
+    await page.waitForTimeout(400); await settle(page, 'bay');
+    const r30 = await readAir(), sv30 = await saved();
+    if (r100.big !== '100%' || !/drag-free/.test(r100.read) || r30.big !== '30%' || !/air takes 70%/.test(r30.read) || !/booms/.test(r30.read) || Math.abs(sv30.airAbsorb - 0.3) > 1e-9) fail('Air resistance absorbed read-out: ' + JSON.stringify({ r100, r30, saved: sv30.airAbsorb }));
+    else okLog('Air resistance absorbed reads ' + r100.big + ' (' + r100.read.slice(0, 40) + '…) and ' + r30.big + ' (' + r30.read.slice(0, 40) + '…)');
+    // the presets set effort only: they never move the slider
+    const moved = [];
+    for (const e of ['rattle', 'plaster', 'windows', 'ground', 'houses', 'block', 'ceiling', 'allout', 'least']) {
+      await pick('#effort', e);
+      const st = await saved(), v = await page.$eval('#air-absorb', (n) => n.value);
+      if (Math.abs(st.airAbsorb - 0.3) > 1e-9 || v !== '30') moved.push(e + ': ' + st.airAbsorb + '/' + v);
+    }
+    if (moved.length) fail('a preset moved the Air resistance absorbed slider: ' + moved.join('; ')); else okLog('no effort preset moves the Air resistance absorbed slider');
+    // windows across the street: a level baseball at 100% never shatters them (no blast from its flight; a landing
+    // fast enough to do it is past orbital speed, so it doesn't land), but with the air let through it does: the hint
+    // shows. At 10,000 t it can't at 0% either: no hint.
+    const hintRe = /Lower Air resistance absorbed/;
+    await load({ action: 'throw', obj: 'baseball', angle: 0, logKg: 9, mode: 'comic' }); await pick('#effort', 'windows');
+    const hintYes = await bayText();
+    await load({ action: 'throw', obj: 'baseball', angle: 0, logKg: 7, mode: 'comic' }); await pick('#effort', 'windows');
+    const hintNo = await bayText();
+    if (!hintRe.test(hintYes) || !/At 100% air resistance absorbed, a throw makes no blast/.test(hintYes) || hintRe.test(hintNo) || !/Even all-out/.test(hintNo)) fail('the lower-the-slider hint: ' + JSON.stringify({ yes: (hintYes.match(/Even all-out[^.]*\.[^.]*\.[^.]*\./) || [hintYes.slice(0, 200)])[0], no: (hintNo.match(/Even all-out[^.]*\./) || [hintNo.slice(0, 200)])[0] }));
+    else okLog('windows preset on a level baseball: the lower-the-slider hint at 10⁶ t (reachable at 0%), none at 10⁴ t (not reachable at 0% either)');
+    // each power says where it changed a result
+    await load({ action: 'throw' }); await pick('#effort', 'allout');
+    const thr = (await chips()).join(' | ');
+    await load({ action: 'stomp', logKg: 8 }); await pick('#effort', 'allout');
+    const stp = (await chips()).join(' | ');
+    const want = [[thr, 'No drag: their power'], [thr, 'His recoil goes into the planet: their power'], [thr, 'Held together by their power'], [stp, 'The ground holds: their power']];
+    const missing = want.filter(([t, w]) => !t.includes(w));
+    if (missing.length) fail('power labels missing: ' + missing.map(([t, w]) => w + ' in [' + t + ']').join('; ')); else okLog('the powers label their results: ' + want.map(([, w]) => w).join('; '));
+    // break the ground: the preset sets Unbreakable footing aside for the move, and the stomp breaks it
+    await load({ action: 'stomp' }); await pick('#effort', 'ground');
+    const brk = await bayText();
+    if (!/Unbreakable footing is set aside for this move/.test(brk) || /none: the ground holds/.test(brk) || !/The least effort that breaks the ground/.test(brk)) fail('break the ground with Unbreakable footing on: ' + brk.slice(0, 300));
+    else okLog('break the ground on the Stomp tab: Unbreakable footing set aside for the move, and the ground breaks');
+    // the All-Star Superman baseball, level, all-out: drag-free it leaves the Earth with no fireball; with the air at
+    // 0% and Things keep their form off, today's story (a fireball, the ball vaporized)
+    const allStar = { action: 'throw', obj: 'allstar', logKg: Math.log10(1.81436948e23) + 1e-12, angle: 0, mode: 'comic' };
+    await load(allStar); await pick('#effort', 'allout');
+    const as100 = await page.$eval('#bay .verdict', (n) => n.textContent);
+    await load(Object.assign({}, allStar, { airAbsorb: 0, keepForm: false })); await pick('#effort', 'allout');
+    const as0 = await page.$eval('#bay .verdict', (n) => n.textContent);
+    if (!/leaves the Earth/.test(as100) || !/there is no fireball/.test(as100) || !/turns into a fireball/.test(as0)) fail('All-Star baseball: 100% ' + as100.slice(0, 200) + ' | 0% ' + as0.slice(0, 200));
+    else okLog('All-Star baseball, level, all-out: at 100% "' + as100.slice(0, 70) + '…"; at 0% with Things keep their form off, a fireball');
+    // the two-player tests offer the not-so-heroic presets, and on Collide 'risk cracking the plaster' finds an effort
+    // (Rex bolted, Ollie charging: the hit's push into the unbreakable ground shakes it)
+    const duoOpts = [];
+    for (const tab of ['arm', 'wrestle', 'catch', 'collide']) {
+      await load({ duoOpen: true, duoAction: tab }); await settle(page, 'duo-bay');
+      const opts = await page.$$eval('#duo-effort option', (os) => os.map((o) => o.value));
+      if (!['rattle', 'plaster', 'windows', 'ground', 'houses', 'block'].every((e) => opts.includes(e))) duoOpts.push(tab + ': ' + opts.join(','));
+    }
+    if (duoOpts.length) fail('two-player presets missing: ' + duoOpts.join('; ')); else okLog('every two-player test offers the not-so-heroic presets');
+    // Rex bolted (the page's immovable object): the hit's momentum goes through his feet into the unbreakable ground.
+    // Standing, his feet slide and the ground takes only his friction, so the honest answer is that it never does.
+    const colRead = async (anchor) => { await load({ duoOpen: true, duoAction: 'collide', anchor }); await settle(page, 'duo-bay'); await pick('#duo-effort', 'plaster');
+      return page.evaluate(() => document.querySelector('#duo-bay .effort-read').textContent.replace(/\s+/g, ' ')); };
+    const colB = await colRead('bolted'), colF = await colRead('friction');
+    if (!/Effort: /.test(colB) || !/The least effort that shakes the ground enough that plaster may crack/.test(colB)) fail('Collide, plaster preset, Rex bolted: ' + colB.slice(0, 300));
+    else okLog('Collide, plaster preset, Rex bolted: ' + colB.slice(0, 90) + '…');
+    if (!/Even all-out, this test doesn’t shake the ground enough that plaster may crack/.test(colF)) fail('Collide, plaster preset, Rex standing: ' + colF.slice(0, 300));
+    else okLog('Collide, plaster preset, Rex standing: says it never does (his feet slide)');
+    if (errs.length) fail('page errors in the powers checks: ' + errs.slice(0, 3).join(' | '));
     await page.close();
   }
   await browser.close();

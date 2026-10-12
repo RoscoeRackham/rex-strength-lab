@@ -1221,6 +1221,14 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   }
   function capital(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
   const theSurf = (sf) => (/^the /.test(sf.short) ? sf.short : 'the ' + sf.short);
+  // A push into the ground that their powers send through their feet (toGround: momentum J over T): how far it
+  // shakes the ground, by the stomp's ground-wave model. null: no push; src null: no ground-wave model for this surface.
+  const groundShake = (sf, tg) => { if (!tg) return null; const src = P.impulseSource(sf, tg.J, Math.max(1e-9, tg.T)); return { src, plaster: src ? P.plasterReach(src) : 0, feel: src ? P.ppvReach(src, P.VIB.TH.feel) : 0 }; };
+  const groundShakeChip = (gs, sf, what) => (!gs ? null : !gs.src ? status('info', 'Ground shaking: no model for ' + sf.short)
+    : gs.plaster >= 0.05 ? status(gs.plaster >= state.near ? 'bad' : 'warn', what + ' shakes the ground: plaster may crack out to ' + fmtReach(gs.plaster))
+      : status('info', gs.feel >= 0.05 ? what + ' shakes the ground: felt out to ' + fmtReach(gs.feel) : 'The ground barely shakes'));
+  const groundShakeText = (gs, sf) => (!gs.src ? 'The lab has no ground-wave model for ' + theSurf(sf) + ', so it can’t say how far that shaking reaches.'
+    : 'That shakes the ground as real physics says: ' + (gs.plaster >= 0.05 ? 'enough that plaster may crack out to ' + fmtReach(gs.plaster) + ', and felt out to ' + fmtReach(gs.feel) + '.' : gs.feel >= 0.05 ? 'felt out to ' + fmtReach(gs.feel) + ', short of cracking plaster.' : 'too little to feel.'));
   const speedOnly = (v) => fmtSpeed(v).split(' · ')[0];
   const shareText = (key, mode) => sig(100 * ((mode || state.mode) === 'real' ? P.MUSCLE[key].forceFrac : P.MUSCLE[key].comicFrac), 2) + '%';
   // Comic mode uses the real-muscle result when that does better (slow, heavy pushes).
@@ -1762,7 +1770,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (pl.regime === 'blackHole') return { stop: true, text: 'At this density Rex is a black hole (see the Weight tab). Nothing he does can reach the outside world, so this move isn’t modelled.' };
     if (pl.regime !== 'none') return { stop: true, text: 'At ' + fmtMass(c.body.m) + ' his own gravity reshapes the planet (see the Weight tab). The move models assume a small Rex on a fixed Earth, so they stop here.' };
     if (grav.rCrushUnconfined >= 1000) return { stop: true, text: 'At ' + fmtMass(c.body.m) + ' his own gravity crushes the ground for ' + fmtDist(grav.rCrushUnconfined) + ' around him (see the Weight tab). The move models assume solid ground around him, so they stop here.' };
-    if (P.groundUnderWeight(c.body, c.surface, c.groundHolds, c.unbreakable).regime === 'fallsThrough') return { stop: false, text: 'No rock can hold him at this weight: he sinks into the planet (see the Weight tab). The results below assume he has something to push on. Turn on Unbreakable footing in Their powers for a fair test.' };
+    if (P.groundUnderWeight(c.body, c.surface, c.groundHolds, c.unbreakable).regime === 'fallsThrough') return { stop: false, text: 'No rock can hold him at this weight: he sinks into the planet (see the Weight tab). The results below assume he has something to push on.' + (state.unbreakable && !c.unbreakable ? ' Unbreakable footing is set aside here: this preset means to break the ground.' : ' Turn on Unbreakable footing in Their powers for a fair test.') };
     return null;
   }
   // ---------------------------------------------------------------- weight (density) tab
@@ -2115,6 +2123,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     else if (r.slamRatio > 1) chips.push(status('warn', 'Pin may crack the table'));
     else chips.push(status('good', 'Table holds'));
     // while the table holds it carries the push, not their feet, so the bolts can't tear out then
+    const pinShake = groundShake(cR.surface, r.toGround);
+    if (pinShake) chips.push(groundShakeChip(pinShake, cR.surface, 'The pin'));
     if (r.tableBreaks && r.tearA > 1) chips.push(status('bad', 'Ground around Rex’s bolts tears out'));
     if (r.tableBreaks && r.tearB > 1) chips.push(status('bad', 'Ground around Ollie’s bolts tears out'));
     if (r.grav.F > 1e-3 * Math.min(cR.body.m, cO.body.m) * g) chips.push(status('warn', 'Their own gravity: ' + fmtSI(r.grav.F, 'N')));
@@ -2131,7 +2141,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       r.outcome === 'drag' ? tile('Energy in ' + L, isFinite(drag.E) ? fmtSI(drag.E, 'J') : '∞', isFinite(drag.E) ? fmtTNT(drag.E) : 'unbounded') : null,
       sameTwist ? tile('Twist on each upper arm', fmtSI(r.torqueA, 'N·m'), fmtRatio(twistMax) + ' the ~190 N·m a healthy human upper-arm bone takes in theory (cadaver bones broke at 25–31 N·m)')
         : tile('Twist on the upper arms', fmtSI(r.torqueA, 'N·m') + ' / ' + fmtSI(r.torqueB, 'N·m'), 'Rex / Ollie; the larger is ' + fmtRatio(twistMax) + ' the ~190 N·m a healthy human upper-arm bone takes in theory (cadaver bones broke at 25–31 N·m)'),
-      r.clash === 'rockGives' ? tile('Bolts hold', 'until the rock tears', 'about ' + fmtSI(r.tearA, 'N') + ' / ' + fmtSI(r.tearB, 'N') + ', Rex / Ollie') : r.tableBreaks ? tile('Feet hold', fmtN(r.RA) + ' / ' + fmtN(r.RB), 'Rex / Ollie') : tile('Table carries', isFinite(r.tableLat) ? 'up to ' + fmtSI(r.tableLat, 'N') : 'any force', isFinite(r.tableLat) ? 'sideways, before its pegs tear out (estimate)' : (gate ? 'treating the ground as if it held them' : 'comic ground'))));
+      r.clash === 'rockGives' ? tile('Bolts hold', 'until the rock tears', 'about ' + fmtSI(r.tearA, 'N') + ' / ' + fmtSI(r.tearB, 'N') + ', Rex / Ollie') : r.tableBreaks ? tile('Feet hold', fmtN(r.RA) + ' / ' + fmtN(r.RB), 'Rex / Ollie') : tile('Table carries', isFinite(r.tableLat) ? 'up to ' + fmtSI(r.tableLat, 'N') : 'any force', isFinite(r.tableLat) ? 'sideways, before its pegs tear out (estimate)' : (cR.keepForm ? 'held together by their power' : gate ? 'treating the ground as if it held them' : 'ground treated as holding'))));
     const rows = [
       { label: 'Rex’s arm', value: r.PA, highlight: r.AA === r.PA },
       isFinite(r.RA) ? { label: 'Rex’s feet hold', value: r.RA, highlight: r.AA === r.RA } : null,
@@ -2142,7 +2152,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     ].filter(Boolean);
     out.push(logBars('Forces', rows, (x) => fmtSI(x, 'N')));
     const items = [];
-    items.push('Newton’s third law: the push between their hands is the same both ways. Under the rules each grips the table’s peg with his free hand and rests his elbow on a pad bolted to the table, so the table carries that push between them, not their feet. ' + (isFinite(r.tableLat) ? 'A regulation table scaled to their size takes roughly ' + fmtSI(r.tableLat, 'N') + ' sideways before a peg or pad tears out (an estimate).' : (gate ? 'Treating the ground as if it held them, ' : 'On comic ground ') + 'the table never breaks, so arm strength decides.'));
+    items.push('Newton’s third law: the push between their hands is the same both ways. Under the rules each grips the table’s peg with his free hand and rests his elbow on a pad bolted to the table, so the table carries that push between them, not their feet. ' + (isFinite(r.tableLat) ? 'A regulation table scaled to their size takes roughly ' + fmtSI(r.tableLat, 'N') + ' sideways before a peg or pad tears out (an estimate).' : (cR.keepForm ? 'Held together by their power (Things keep their form), ' : gate ? 'Treating the ground as if it held them, ' : 'On ground treated as holding ') + 'the table never breaks, so arm strength decides.'));
     if (r.padLoad > 0) items.push('Forcing an arm down takes more than holding it. The winner’s elbow pad holds the loser’s arm force plus what it takes to spin both forearms: about ' + fmtN(r.padLoad) + ' here, ' + (r.tableBreaksBy === 'pin' ? 'more than the table carries.' : 'within what the table carries.'));
     if (r.tableBreaks) {
       // unlimited strength is wasted only on a side whose feet still let go
@@ -2154,6 +2164,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (r.outcome === 'pin' && isFinite(r.slamCap) && r.slamRatio > 1) items.push('A regulation table (World Armwrestling Federation: plywood on a steel frame, scaled to their size) is built for people. This pin delivers ' + (isFinite(pin.E) ? fmtSI(pin.E, 'J') : 'unbounded energy') + ', ' + fmtRatio(r.slamRatio) + ' the impact a floor panel of that plywood is tested to survive.');
     items.push('In people, a full-force twist like this is how the upper arm snaps: in one series of 30 arm-wrestling fractures, all were spiral breaks of the humerus. A healthy humerus takes roughly 190 N·m in theory; cadaver bones broke at 25–31 N·m. Rex and Ollie are indestructible.');
     if (r.grav.F > 1e-3 * Math.min(cR.body.m, cO.body.m) * g) items.push('Across the table their gravity pulls them together with ' + fmtSI(r.grav.F, 'N') + ', ' + fmtRatio(r.grav.F / (Math.min(cR.body.m, cO.body.m) * g)) + ' the lighter one’s weight on Earth.');
+    if (pinShake) items.push('Unbreakable footing: the ground under the table doesn’t break, but the pin’s blow still goes in. Both forearms slam onto the pad, and the table hands their momentum (' + (isFinite(r.toGround.J) ? big(r.toGround.J, 2) + ' kg·m/s' : 'unbounded') + ') to the ground in about ' + fmtTime(r.toGround.T) + ' (a drill stamp’s contact time, scaled: an estimate). ' + groundShakeText(pinShake, cR.surface));
     if (r.tableBreaks && (r.tearA > 1 || r.tearB > 1)) items.push('Bolted to the planet holds, but the ground around the bolts doesn’t: ' + [['Rex', cR, r.tearA], ['Ollie', cO, r.tearB]].filter(([, , t]) => t > 1).map(([n, c]) => 'past about ' + fmtSI(groundTearOf(c), 'N') + ' it breaks up around ' + n + '’s feet').join(', and ') + '.');
     out.push(happens(items));
     out.push(el('figure', { class: 'art-wide' }, el('img', { src: ART.arm, alt: 'Arm wrestling: Ollie’s huge furry forearm and Rex’s scaly, clawed hand locked together in a grip, Rex’s bulging scaled arm on the right.' })));
@@ -2263,9 +2274,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     else v = target + ' flies back ' + slideText(r.vB, r.slideB) + (r.slideB > r.ring / 2 ? ', well out of the ring.' : ', still inside the ring.') + (movA ? ' ' + pusher + ' recoils at ' + speedOnly(r.vA) + '.' : '') + fire;
     if (!r.stalled && r.boundTogether) v += ' Their gravity pulls them straight back together.';
     out.push(verdict(v));
+    const cP = both ? (r.shover === 'A' ? cR : cO) : cA, ownP = cP.ownRecoil && cP.anchor !== 'bolted';
+    const shoveShake = groundShake(cP.surface, r.toGround);
     out.push(el('div', { class: 'status-row' }, basisChip(r), r.heldBack ? status('warn', pusher + ' holds back so his feet don’t slide') : null,
       !movB && !r.stalled ? status('info', target + (cT.anchor === 'bolted' ? ' is bolted: doesn’t move' : ' doesn’t move')) : null,
-      movA ? status('warn', !movB ? pusher + ' is thrown back' : pusher + ' recoils too') : status('good', pusher + ' stays put')));
+      movA ? status('warn', !movB ? pusher + ' is thrown back' : pusher + ' recoils too') : ownP && !r.stalled ? status('info', 'His recoil goes into the planet: their power') : status('good', pusher + ' stays put'),
+      r.stalled ? null : groundShakeChip(shoveShake, cP.surface, 'The shove')));
     if (r.stalled) {
       // nobody moves: no speeds, slides or energy to show
       out.push(tiles(
@@ -2290,6 +2304,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       r.heldBack ? 'Shoving with everything would make ' + pusher + '’s feet slide and waste the push, so he holds back to what his footing can take.' : null,
       sliders.length ? 'After the push, ' + (sliders.length === 2 ? 'each of them' : sliders[0]) + ' slides on his feet against friction and air drag, at least as far as shown (sliding friction is a bit lower than the grip used here). A real body would tumble; the sim keeps him upright.' : null,
       fliers.length ? 'Past about 1% of light speed the air ahead can’t get out of the way: it is shock-heated into plasma. ' + (fliers.length === 2 ? 'Both are indestructible; everything around them isn’t.' : fliers[0] + ' is indestructible; everything around him isn’t.') : null,
+      ownP ? 'They take their own recoil: the push back from ' + pusher + '’s shove goes through his feet into the planet, as if he were bolted, so he stays put. (Bolted to the planet is for being pushed by someone else; ' + target + ' doesn’t get this.)' : null,
+      shoveShake ? 'The push ' + pusher + '’s feet hand the ground (' + (isFinite(r.toGround.J) ? big(r.toGround.J, 2) + ' kg·m/s' : 'unbounded') + ' over ' + fmtTime(r.toGround.T) + ') ' + groundShakeText(shoveShake, cP.surface).replace(/^That shakes/, 'shakes') : null,
     ]));
     out.push(math(['Shove: two hands at ' + shareText('throwPush', r.basis || state.mode) + ' of strength each, capped at full strength, over a ' + fmtDist(r.d) + ' stroke; same two-body push as the throw, with ' + target + '’s footing resisting.', 'Slide: m v dv/dx = −(footing + ½ρ Cd A v²) → x = m/(2k) ln(1 + k v²/footing).']));
     return out;
@@ -2324,7 +2340,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     let v;
     if (!r.canHold || !r.canMove) v = nA + ' can’t throw ' + nB + ': his throwing push (' + fmtN(r.Fdrive) + ') can’t beat ' + nB + '’s weight plus his own arms (' + fmtSI(r.needed, 'N') + ').';
     else if (t.fallsBack) v = t.heavierPartner && cA.anchor !== 'bolted' ? 'Their gravity wins: ' + nA + ' is pulled after ' + nB + ' and they come back together.' : 'Their gravity pulls ' + nB + ' straight back to ' + nA + '.';
-    else if (f.relativistic) v = nB + ' leaves at ' + fmtSpeed(r.v) + '. The air in front of him turns into a fireball.';
+    else if (f.relativistic && airShareOf(cA) >= 1) v = nB + ' leaves at ' + fmtSpeed(r.v) + ' in a straight line' + (r.line && !r.line.leaves && isFinite(r.line.hitAt) ? ' and hits the ground ' + fmtDist(r.line.hitAt) + ' away.' : ' and leaves the Earth. Their power takes back all of the air’s drag on him, so there is no fireball.');
+    else if (f.relativistic) v = nB + ' leaves at ' + fmtSpeed(r.v) + '. The air in front of him turns into a fireball' + (airShareOf(cA) > 0 ? ', from the ' + pctAir(1 - airShareOf(cA)) + ' of the air’s drag their power lets through.' : '.');
     else if (f.escaped) v = nB + ' leaves the Earth for good.';
     else if (f.orbit) v = nB + ' goes into orbit.';
     else if (f.timedOut) v = nB + ' is still in the air after ' + fmtTime(f.time) + ', ' + fmtDist(f.apex) + ' up. The sim stops tracking him there, so this throw isn’t modelled to the end.';
@@ -2344,6 +2361,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       const items = [];
       items.push(nB + ' is just an object here: ' + fmtMass(cB.body.m) + ' with a ' + sig(cB.body.frontArea, 2) + ' m² front. He doesn’t fight the throw; for that, see Shove.');
       if (r.heldBack) items.push('Pushing with everything would make ' + nA + '’s feet slide, so he holds back to what his footing can take (' + fmtSI(r.anchor.R, 'N') + ').');
+      if (cA.ownRecoil && cA.anchor !== 'bolted') items.push('They take their own recoil: the push back from the throw goes through ' + nA + '’s feet into the planet, as if he were bolted, so he isn’t shoved backward.');
+      const thrShake = groundShake(cA.surface, r.toGround);
+      if (thrShake) items.push('The push ' + nA + '’s feet hand the ground as he throws (' + (isFinite(r.toGround.J) ? big(r.toGround.J, 2) + ' kg·m/s' : 'unbounded') + ' over ' + fmtTime(r.toGround.T) + ') ' + groundShakeText(thrShake, cA.surface).replace(/^That shakes/, 'shakes'));
       // only a throw that comes back down has a landing; Unbreakable footing (the user's setting, not the sinking gate)
       // keeps the ground under him whole
       if (f.landed && state.unbreakable) items.push('Landing: Unbreakable footing: the ground under him holds' + (r.Eimpact > 4.184e9 ? ' (' + fmtTNT(r.Eimpact) + ')' : '') + ', and nothing breaks; the landing still shakes it.');
@@ -2598,6 +2618,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         else chips.push(k.slide > 0.01 ? status('warn', 'Slides ' + fmtDist(k.slide)) : status('good', 'Feet hold'));
       }
     }
+    // the larger ground shaking of the throw's push and the catch's (their powers send both through their feet)
+    {
+      const sT = groundShake(cR.surface, a.toGroundT), sC = groundShake(cO.surface, a.toGroundC);
+      const sB = [[sT, 'The throw'], [sC, 'The catch']].filter(([x]) => x).sort(([x], [y]) => (y.plaster - x.plaster) || (y.feel - x.feel))[0];
+      if (sB && (sB[0].plaster >= 0.05 || sB[0].feel >= 0.05)) chips.push(groundShakeChip(sB[0], cR.surface, sB[1]));
+    }
     if (state.airAbsorb >= 1 && arrived && (a.vArrive >= K.a0 || a.fast)) chips.push(status('info', 'No drag: their power'));
     else if (showHeat(a)) chips.push(a.kept && a.heat && a.heat.kind !== 'warm' && a.heat.kind !== 'immune' ? status('info', 'Air heating; held together by their power') : heatChip(a.heat));
     if (a.gentleT && a.launchRatio > 1 && arrived) chips.push(status('info', 'Held together by their power: not crushed at launch'));
@@ -2660,8 +2686,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const rc = a.recoil;
     if (rc && rc.v > 0.01) {
       if (rc.fireball) items.push('Throwing it shoves Rex back at ' + fmtSpeed(rc.v) + ': the air in front of him turns into a fireball too. He’s fine, but there is no throw back.');
-      else items.push('Throwing it shoves Rex back at ' + speedOnly(rc.v) + (rc.slide > 0.01 ? ' and slides about ' + fmtDist(rc.slide) + ' before he stops' : '') + '.' + (rc.outOfRange ? ' That’s farther than the gap between them, so they aren’t in range for the throw back.' : '') + (cR.anchor === 'friction' ? ' To stay put he needs to be bolted: turn on Bolted to the planet for Rex in Their powers.' : ''));
-    }
+      else items.push('Throwing it shoves Rex back at ' + speedOnly(rc.v) + (rc.slide > 0.01 ? ' and slides about ' + fmtDist(rc.slide) + ' before he stops' : '') + '.' + (rc.outOfRange ? ' That’s farther than the gap between them, so they aren’t in range for the throw back.' : '') + (cR.anchor === 'friction' ? ' To stay put he needs to be bolted: turn on They take their own recoil, or Bolted to the planet for Rex, in Their powers.' : ''));
+    } else if (cR.ownRecoil && cR.anchor !== 'bolted' && a.aim && a.aim.vL > 0) items.push('They take their own recoil: the push back from the throw goes through Rex’s feet into the planet, as if he were bolted, so he stays put.');
+    // their powers send the throw's and the catch's pushes through their feet: the ground shakes from them
+    const shT = groundShake(cR.surface, a.toGroundT), shC = groundShake(cO.surface, a.toGroundC);
+    if (shT) items.push('Rex’s feet hand the ground the throw’s push (' + (isFinite(a.toGroundT.J) ? big(a.toGroundT.J, 2) + ' kg·m/s' : 'unbounded') + ' over ' + fmtTime(a.toGroundT.T) + '). ' + groundShakeText(shT, cR.surface));
+    if (shC) items.push('Unbreakable footing: Ollie’s feet hand the ground the catch’s push (' + (isFinite(a.toGroundC.J) ? big(a.toGroundC.J, 2) + ' kg·m/s' : 'unbounded') + ' over ' + fmtTime(a.toGroundC.T) + '). ' + groundShakeText(shC, cO.surface));
     if (round && strokesIn) items.push('The round trip counts the throws, the flights and each catch’s arm stroke: ' + (a.catch.slips || b.catch.slips ? 'his feet slide while he stops it' : 'stopping it takes most of his strength') + ', so the stroke takes a set time, ' + fmtDuration(a.catch.tStroke) + ' for Ollie' + (b !== a ? ' and ' + fmtDuration(b.catch.tStroke) + ' for Rex' : '') + '.');
     else if (round) items.push('The round trip counts the throws and the flights. With strength to spare, each catcher brings the ' + o.short + ' in to his chest as slowly as he likes, so that part has no set time.');
     if (a.wells && a.wells.GT > 0 && a.aim) items.push('Rex’s own pull grabs at it: it needs ' + speedOnly(Math.sqrt(2 * a.wells.barrier)) + ' just to get away from him' + (a.wells.wellDominated ? ', and more to push through the air' : '') + '.');
@@ -2904,7 +2934,11 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     else if (r.outcome === 'boltsLate') chips.push(status('bad', 'Too fast for the bolts to help'));
     else if (r.outcome === 'moved') chips.push(status('bad', Y + ' gives: holds ' + fmtN(r.hold.H) + ', needs ' + fmtN(r.Fheld)));
     chips.push(rockChip(r.rock));
-    if (r.held && splat && isFinite(h.Q) && h.Q > 0) chips.push(quakeChip(h.Q, r.quakeHeld));
+    // Unbreakable footing: the hit's push reaches the ground through the holder's feet and shakes it (the stomp's
+    // ground-wave model), in place of the quake estimate from all of the hit's energy
+    const gShake = groundShake(cB.surface, r.toGround);
+    if (gShake) chips.push(groundShakeChip(gShake, cB.surface, 'The hit'));
+    else if (r.held && splat && isFinite(h.Q) && h.Q > 0) chips.push(quakeChip(h.Q, r.quakeHeld));
     if (r.partial && r.hold.H / r.Fheld > 0.1) chips.push(status('info', 'His footing soaks up part of the blow'));
     if (!splat && r.elasticUpper) chips.push(status('info', 'Bounce ignores his footing (upper bound)'));
     out.push(el('div', { class: 'status-row' }, chips));
@@ -2943,7 +2977,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const items = [];
     items.push('Momentum is never lost. Whatever ' + X + ' brings in, the two of them (plus whatever holds ' + Y + ') carry away. A splat shares it and frees the rest of the energy as heat, sound and blast. A perfect bounce keeps all the energy as motion. Soft bodies sit near the splat end.');
     const hb = r.hold;
-    const whyText = { footing: ' Standing on ' + cB.surface.short + ', friction holds him with ' + fmtN(hb.R) + '. Stopping ' + X + ' dead takes ' + fmtN(r.Fheld) + ', so he ' + (r.held ? 'holds.' : 'gets knocked back.'), strength: ' His footing could hold ' + fmtN(hb.R) + ', but his muscles keep his stance against only ' + fmtN(cB.F) + '.', lying: ' At ' + fmtMass(cB.body.m) + ' he’s too heavy for his strength to stand, so he lies flat and friction alone holds him: ' + fmtN(hb.R) + '.', bearing: ' Bracing can’t help against a blow from above. Only the ground under his feet holds him up: ' + fmtN(hb.H) + ' on ' + cB.surface.short + '.', bolted: r.unlimitedVsBolted === 'rockGives' ? ' Bolted, he would be part of the planet, but the bolts hold only as well as the rock around them. The rock around his bolts tears out, so the Earth keeps almost none of the momentum.' : ' Bolted, he is part of the planet: the bolts hand the momentum to the Earth’s 5.97 × 10²⁴ kg.', comicGround: ' On comic ground nothing gives under him, so the Earth takes it.', immovable: ' Here he gets infinite mass, which no real setting allows. Even bolted to an unbreakable planet he would be only as immovable as the Earth’s 5.97 × 10²⁴ kg.' }[hb.why] || '';
+    const whyText = { footing: ' Standing on ' + cB.surface.short + ', friction holds him with ' + fmtN(hb.R) + '. Stopping ' + X + ' dead takes ' + fmtN(r.Fheld) + ', so he ' + (r.held ? 'holds.' : 'gets knocked back.'), strength: ' His footing could hold ' + fmtN(hb.R) + ', but his muscles keep his stance against only ' + fmtN(cB.F) + '.', lying: ' At ' + fmtMass(cB.body.m) + ' he’s too heavy for his strength to stand, so he lies flat and friction alone holds him: ' + fmtN(hb.R) + '.', bearing: ' Bracing can’t help against a blow from above. Only the ground under his feet holds him up: ' + fmtN(hb.H) + ' on ' + cB.surface.short + '.', bolted: r.unlimitedVsBolted === 'rockGives' ? ' Bolted, he would be part of the planet, but the bolts hold only as well as the rock around them. The rock around his bolts tears out, so the Earth keeps almost none of the momentum.' : ' Bolted, he is part of the planet: the bolts hand the momentum to the Earth’s 5.97 × 10²⁴ kg.', comicGround: ' On ground treated as holding nothing gives under him, so the Earth takes it.', unbreakable: ' With Unbreakable footing nothing gives under him, so the Earth takes it.', immovable: ' Here he gets infinite mass, which no real setting allows. Even bolted to an unbreakable planet he would be only as immovable as the Earth’s 5.97 × 10²⁴ kg.' }[hb.why] || '';
     items.push('“Immovable” only means what holds ' + Y + ' in place.' + whyText + (horiz && hb.why !== 'bolted' && hb.why !== 'immovable' && hb.why !== 'lying' ? ' (A standing body hit at chest height would tip over at a few hundred newtons long before his feet slide; the sim assumes he braces low.)' : ''));
     if (r.heldOnlyIfSquishy) items.push('That depends on the squash: he holds only if they’re as squishy as plush. Two ordinary solids would hit harder for a shorter time and knock him loose.');
     if (r.outcome === 'boltsLate') items.push('In ' + fmtTime(r.contact.soft.t) + ' a stress wave in rock travels only about ' + fmtDist(P.COL.C_ROCK * r.contact.soft.t) + ' (at about ' + sig(P.COL.C_ROCK / 1000, 2) + ' km/s, an estimate), so the planet can’t brace him during the hit. Momentum still ends up in the Earth once the bolts catch them, along with the rest of the energy: ' + (isFinite(r.bolts.Eground) ? fmtSI(r.bolts.Eground, 'J') : 'unbounded') + '.');
@@ -2958,6 +2992,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     // the rock figures come from the steady crush (the splat's force) in both modes
     const rb = rockBullet(r.rock, r.rock && r.rock.C, cB);
     items.push(rb && !splat && r.rock && isFinite(r.rock.rT) ? rb + ' (That is the steady crush; a perfect bounce peaks at twice it, briefly.)' : rb);
+    if (r.toGround) items.push('Unbreakable footing: the ground under ' + Y + ' doesn’t break, but the push still goes in. ' + (r.toGround.how === 'held' ? 'Held, he hands the hit’s momentum to the planet' : 'Knocked back, the ground takes what his footing held during the hit') + ': ' + (isFinite(r.toGround.J) ? big(r.toGround.J, 2) + ' kg·m/s' : 'unbounded momentum') + ' over ' + fmtTime(r.toGround.T) + '. ' + groundShakeText(gShake, cB.surface));
     out.push(happens(items));
     out.push(caseGrid('The four cases', ['Finite momentum', 'Unlimited momentum (light speed)'], ['Finite inertia (anything real, even bolted to the Earth)', 'Unlimited inertia (truly immovable)'],
       [['Both move. They share the momentum; the softer the hit, the more energy it frees.', 'The charger stops or bounces. The object doesn’t budge, so the force was stoppable.'], ['The object is knocked away at just under light speed (the planet too, but only if he’s bolted to unbreakable ground), so it was movable.', 'No answer: ∞ ÷ ∞. The two can’t exist in the same universe.']],
@@ -2973,7 +3008,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       state.colSrc === 'sprint' ? 'Run-up: m u du/dx = T − k u², so u = u_top √(1 − e^(−2kx/m)) over x = ' + fmtDist(sr.runUp || 0) + ', capped by his legs.' : null,
       'Slide: x = m/(2k)·ln(1 + kV²/R), k = ½ρ₀C_dA.',
       cB.anchor === 'bolted' ? 'Rock: a force C spread over a half-sphere of radius r averages C/(2πr²); granite pulls apart at 8.4 MPa and crushes at 200 MPa, so r = √(C/2πσ).' : null,
-      'Blast radii: Kinney & Graham (1985), as if all of Q became a blast (upper bound). Quake: 1 part in 10,000 of Q (the usual share, give or take ⅔ of a magnitude), as if all of Q reached the ground, which overstates it.',
+      'Blast radii: Kinney & Graham (1985), as if all of Q became a blast (upper bound). ' + (r.toGround ? 'Ground shaking (Unbreakable footing): the momentum the ground takes, J, as a pulse over the contact time T (peak force 2J/T), through the same ground-wave model as the stomp; plaster by the USBM RI 8507 safe level at the pulse’s frequency.' : 'Quake: 1 part in 10,000 of Q (the usual share, give or take ⅔ of a magnitude), as if all of Q reached the ground, which overstates it.'),
       X === 'Ollie' ? 'Ollie’s horns don’t change the momentum or the energy; they only put the force on a smaller patch.' : null,
     ]));
     return out;
@@ -3064,7 +3099,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   // while the strength dial is being dragged, searches wait: every position is a new plan
   let dialAt = -1e9;
   const dialMoving = () => performance.now() - dialAt < 300;
-  function stopPlan() { clearTimeout(planTimer); planRunning = null; planWaits = null; }
+  function stopPlan() { clearTimeout(planTimer); planRunning = null; planWaits = null; stopSide(); }
   function stepPlan(p, waits) {
     if (p.done) { if (planRunning && planRunning !== p) stopPlan(); planWaits = null; return; }
     if (waits) planWaits = waits;
@@ -3112,11 +3147,33 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     houses: () => 'could flatten houses ' + fmtDist(state.near) + fromW(true) + ' (an upper bound: all the energy into the air, judged by a long nuclear blast; a short blast this size does less)',
     block: () => 'could flatten houses ' + fmtDist(P.RESTRAINT.R.BLOCK) + fromW(true) + ', about a city block (the same upper bound)',
   };
-  // a move with no ground-shaking model: the shaking presets and hazards can't be judged for it
-  const noShake = (move) => !P.RESTRAINT.MOVES[move].shake;
+  // a move with no ground-shaking model: the shaking presets and hazards can't be judged for it. A punch shakes the
+  // ground only through their powers (his recoil taken, or the ground unbreakable): without them it has no model.
+  const noShake = (move) => { const M = P.RESTRAINT.MOVES[move]; return !M.shake || (!!M.shakeWithPower && !state.ownRecoil && !state.unbreakable); };
+  // the presets whose harm comes through the air (rattle partly): a throw's flight makes less blast with more absorbed
+  const AIR_PRESETS = new Set(['rattle', 'windows', 'houses', 'block']);
+  // the lower-the-slider check: one search at 0% absorbed, finished in the background (stepSide), then a redraw
+  let sideTimer = null, sideOn = null;
+  function stopSide() { clearTimeout(sideTimer); sideOn = null; }
+  function stepSide(p0, name) {
+    if (sideOn === p0) return;
+    stopSide();
+    sideOn = p0;
+    const tick = () => {
+      if (sideOn !== p0) return;
+      if (dialMoving()) { sideTimer = setTimeout(tick, 300); return; }
+      const t0 = performance.now();
+      while (performance.now() - t0 < 20) if (p0.stepJob(name)) { sideOn = null; renderSolo(true); return; }
+      sideTimer = setTimeout(tick, 0);
+    };
+    sideTimer = setTimeout(tick, 0);
+  }
   const NO_SHAKE = 'The lab doesn’t model the ground shaking from this move, so it can’t say when it would rattle windows or crack plaster through the ground.';
   // The strength he uses for this move, and why. use undefined = all-out.
   function resolveEffort(move, c, only) {
+    // Unbreakable footing: the 'break the ground' preset sets the power aside for this move (they mean to break it), so
+    // the whole effort, its search and the courtesy ceiling are worked out on real ground; the tab shows that run
+    if (!only && state.effort === 'ground' && c.unbreakable) return Object.assign(resolveEffort(move, Object.assign({}, c, { unbreakable: false }), 'ground'), { real: true });
     const p = planFor(move, c);
     const e = only || state.effort;
     const out = { p, preset: e, use: undefined, note: null };
@@ -3160,7 +3217,21 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (!ready(p, ['preset:' + e], t0)) return pending(['preset:' + e], 'that effort');
     const r = p.result('preset:' + e);
     // texts that name places are built when the readout is drawn, from the run it shows
-    if (r.never) { out.why = 'Everything he has.'; out.noteFn = () => (e === 'plaster' && noShake(move) ? NO_SHAKE : 'Even all-out, this move ' + (e === 'rattle' && noShake(move) ? 'through the air ' : '') + 'doesn’t ' + PRESET_WHAT[e]().replace(/^could /, '').replace(/^(\w+?)(e?s) /, (m, a, b) => a + (b === 'es' && !/(sh|ch|ss|x)$/.test(a) ? 'e' : '') + ' ').replace(/, through the ground or the air$/, '') + '.' + (e === 'rattle' && noShake(move) ? ' ' + NO_SHAKE : '')); }
+    if (r.never) {
+      out.why = 'Everything he has.';
+      // a throw's air preset out of reach at this share absorbed: say so when the same throw with the air let through
+      // (the slider at 0%) reaches it (BRIEF-gui.md 5a). The preset never moves the slider; that is the reader's choice.
+      let hint = null;
+      if (move === 'throw' && AIR_PRESETS.has(e) && airShareOf(c) > 0) {
+        const p0 = planFor(move, Object.assign({}, c, { airAbsorb: 0 }));
+        if (!ready(p0, ['preset:' + e], t0)) { out.side = { p: p0, name: 'preset:' + e }; out.sideWhy = 'Working out whether letting the air take some would do it…'; }
+        else if (!p0.result('preset:' + e).never) {
+          const M = P.RESTRAINT.MOVES[move], b = M.blastParts(p.run(undefined), p.opt);
+          hint = 'At ' + pctAir(airShareOf(c)) + ' air resistance absorbed, a throw makes ' + (b.path > 0 ? 'too little' : 'no') + ' blast from its flight to do this. Lower Air resistance absorbed (in Their powers) to let the air take some.';
+        }
+      }
+      out.noteFn = () => (e === 'plaster' && noShake(move) ? NO_SHAKE : 'Even all-out, this move ' + (e === 'rattle' && noShake(move) ? 'through the air ' : '') + 'doesn’t ' + PRESET_WHAT[e]().replace(/^could /, '').replace(/^(\w+?)(e?s) /, (m, a, b) => a + (b === 'es' && !/(sh|ch|ss|x)$/.test(a) ? 'e' : '') + ' ').replace(/, through the ground or the air$/, '') + '.' + (e === 'rattle' && noShake(move) ? ' ' + NO_SHAKE : '')) + (hint ? ' ' + hint : '');
+    }
     else {
       // a not-so-heroic preset is never gentler than the heroic default: if least disruptive already does it, use that
       const L = resolveEffort(move, c, 'least');
@@ -3234,6 +3305,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     box.append(el('p', {}, el('b', { text: eff.pending ? 'Effort: working it out.' : eff.use == null ? 'All-out.' : 'Effort: ' + amountText(use, c.F) + '.' }), ' ' + why));
     const note = eff.noteFn ? eff.noteFn() : eff.note;
     if (note) box.append(el('p', { class: 'warn-ink', text: note }));
+    if (eff.sideWhy) box.append(el('p', { class: 'muted', text: eff.sideWhy }));
+    if (eff.real) box.append(el('p', { text: 'Unbreakable footing is set aside for this move: they mean to break the ground, so the energy it would take back goes into it. Everything here, the courtesy ceiling too, is for real ground.' }));
     // the courtesy ceiling, once the hazard searches are done (or now, if the preset needed it)
     const haz = P.RESTRAINT.HAZARDS.map((h) => p.result('hazard:' + h.id));
     if (haz.every(Boolean)) {
@@ -3249,13 +3322,14 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       else if (!(ce.below > 0)) t = 'Courtesy ceiling: none. Even the gentlest try means ' + hazText(ce.by, move).what + '.';
       else t = 'Courtesy ceiling: ' + atText(onsetOf(ce), c.F) + '. Past that, ' + hazText(ce.by, move).what + (ce.by === 'air' ? ' ' + fmtDist(state.near) + ' ' + airFrom(p.run(ce.use)) : ce.by === 'plaster' ? ' ' + fmtDist(state.near) + ' ' + (M.where === 'where it lands' ? 'from where it lands' : 'away') : '') + '.';
       // a switch that rules a hazard out changes the ceiling, so name it here too, not only in the folded list
-      const offBy = { crush: move === 'throw' && state.gentleHold ? 'Gentle hold' : null, boom: (move === 'punch' || move === 'clap') && state.silentStrike ? 'Silent strike' : null, air: (move === 'punch' || move === 'clap') && state.silentStrike ? 'Silent strike' : null };
-      const OFF_NAME = { crush: 'a crushed object', boom: 'the sonic boom', air: 'the air blast' }, offs = {};
+      const offBy = { crush: M.crush && c.keepForm ? 'Things keep their form' : null, boom: (move === 'punch' || move === 'clap') && state.silentStrike ? 'Silent strike' : null, air: (move === 'punch' || move === 'clap') && state.silentStrike ? 'Silent strike' : null,
+        ground: M.ground && c.unbreakable ? 'Unbreakable footing' : null, slide: M.slide && c.ownRecoil ? 'They take their own recoil' : null };
+      const OFF_NAME = { crush: 'a crushed object', boom: 'the sonic boom', air: 'the air blast', ground: 'broken ground', slide: 'his recoil shoving him back' }, offs = {};
       for (const h of P.RESTRAINT.HAZARDS) if (offBy[h.id] && p.result('hazard:' + h.id).never) (offs[offBy[h.id]] = offs[offBy[h.id]] || []).push(OFF_NAME[h.id]);
       for (const [sw, hs] of Object.entries(offs)) t += ' ' + sw + ' is on, so it leaves out ' + hs.join(' and ') + '.';
       box.append(el('p', { text: t }));
       // only when a growth what-if is actually shown below
-      const grows = state.absorb !== 'ocean' && ((move === 'punch' || move === 'clap') && state.silentStrike && r.mach >= 1 || move === 'jump' && state.softLanding && r.landing && r.landing.landed || move === 'throw' && state.coolFlight && r.dragLoss != null);
+      const grows = state.absorb !== 'ocean' && ((move === 'punch' || move === 'clap') && state.silentStrike && r.mach >= 1 || move === 'jump' && state.softLanding && r.landing && r.landing.landed || move === 'stomp' && c.unbreakable && r.absorbed > 0);
       if (grows) box.append(el('p', { class: 'muted', text: 'The courtesy ceiling covers the move itself, not the growth what-if below.' }));
       if (move === 'throw' && objById(state.obj).passenger) box.append(el('p', { class: 'muted', text: 'For a person this covers the launch and the air in flight only. The landing is a fall unless someone catches them, and the lab doesn’t count it.' }));
       if (ce.by && use > ce.below * (1 + 1e-6)) box.append(status('warn', 'Above the courtesy ceiling'));
@@ -3296,6 +3370,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (parts[at] && parts[at].classList && parts[at].classList.contains('status-row')) at++;
     parts.splice(at, 0, effortReadout(move, c, eff));
     stepPlan(eff.p, eff.pending || null);
+    if (eff.side) stepSide(eff.side.p, eff.side.name); else stopSide();
   }
 
   // ---------------------------------------------------------------- walk (presence)
@@ -3506,84 +3581,135 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   // efforts means the test has saturated (something else caps it), so the search can stop.
   let duoSig = '';
   const fp = (...xs) => xs.map((x) => (typeof x === 'number' ? (isFinite(x) ? x.toPrecision(9) : String(x)) : String(x))).join('|');
-  function duoHarm(act) {
-    const cR = ctx(), cO = ctxOllie();
+  // What a two-player test does at the current cap. harm: the first harm the courtesy ceiling checks for (null if
+  // none). For the not-so-heroic presets: its ground-shaking sources (shake), the energy its air blast could carry
+  // (blast, J), whether the ground under them breaks (ground), and which of those the lab models in this test with
+  // these settings (models). over: settings changed for both of them (the presets' real-ground and 0%-absorbed runs).
+  function duoFacts(act, over) {
+    const cR = ctx(over), cO = ctxOllie(over);
     const slides = (d) => (d > state.near ? (isFinite(d) ? 'one of them slides ' + fmtDist(d) + ', past the nearest people ' + fmtDist(state.near) + ' away' : 'one of them slides until something stops him') : null);
-    duoSig = '';
     const near = state.near, win = (E) => isFinite(E) ? E > 0 && P.blastRadius(E, P.RESTRAINT.R.DP_HARM) >= near : E > 0;
+    // a push that goes through their feet into the planet (Unbreakable footing, or a mover taking his own recoil): the
+    // engine gives it (toGround) only with those powers on. It shakes the ground as real physics says.
+    const srcOf = (c, x) => (x ? P.impulseSource(c.surface, x.J, Math.max(1e-9, x.T)) : null);
+    const quakes = (c, x) => !!x && P.plasterOver(srcOf(c, x), near);
+    const shakeMsg = (who) => 'the push through ' + who + ' feet shakes the ground enough that plaster may crack ' + fmtDist(near) + ' away';
+    const out = { harm: null, sig: '', shake: [], blast: 0, ground: false, models: { shake: false, air: false, ground: false } };
+    const shakeOn = cR.unbreakable || cR.ownRecoil;
     if (act === 'arm') {
       const r = P.armWrestle(cR, cO);
-      duoSig = fp(r.slamRatio, r.quake, r.crater, r.relativistic, r.tableBreaks, r.blackHole);
-      if (r.blackHole) return null;
-      return r.tableBreaks ? 'the table tears apart' : r.slamRatio > 1 ? 'the pin cracks the table' : r.crater > 0 ? 'the pin makes a crater' : r.quake > 2 ? 'the pin shakes the ground like a quake' : r.relativistic ? 'the pin turns into a fireball' : null;
+      out.sig = fp(r.slamRatio, r.quake, r.crater, r.relativistic, r.tableBreaks, r.blackHole) + (r.toGround ? fp(r.toGround.J) : '');
+      out.models = { shake: !!cR.unbreakable, air: false, ground: true };
+      if (r.blackHole) return out;
+      out.shake = [srcOf(cR, r.toGround)].filter(Boolean);
+      out.ground = r.crater > 0;
+      out.harm = r.tableBreaks ? 'the table tears apart' : r.slamRatio > 1 ? 'the pin cracks the table' : r.crater > 0 ? 'the pin makes a crater' : r.quake > 2 ? 'the pin shakes the ground like a quake' : r.relativistic ? 'the pin turns into a fireball' : quakes(cR, r.toGround) ? 'the pin, pushed into the unbreakable ground, shakes it enough that plaster may crack ' + fmtDist(near) + ' away' : null;
+      return out;
     }
     if (act === 'wrestle') {
       const move = state.wrestleMove;
       if (move === 'shove') {
         const both = state.wrestleWho === 'both', cA = state.wrestleWho === 'ollie' ? cO : cR, cB = state.wrestleWho === 'ollie' ? cR : cO;
         const r = both ? P.shoveBoth(cR, cO) : P.shove(cA, cB);
-        duoSig = fp(r.vA || 0, r.vB || 0);
+        out.sig = fp(r.vA || 0, r.vB || 0) + (r.toGround ? fp(r.toGround.J) : '');
+        out.models = { shake: shakeOn, air: false, ground: false };
+        out.shake = [srcOf(cR, r.toGround)].filter(Boolean);
         const slid = Math.max(r.slideA || 0, r.slideB || 0);
-        return Math.max(r.vA || 0, r.vB || 0) >= K.a0 ? 'someone flies off faster than sound' : slides(slid);
+        out.harm = Math.max(r.vA || 0, r.vB || 0) >= K.a0 ? 'someone flies off faster than sound' : quakes(cR, r.toGround) ? shakeMsg('the shover’s') : slides(slid);
+        return out;
       }
       if (move === 'throw') {
         const cA = state.wrestleWho === 'ollie' ? cO : cR, cB = state.wrestleWho === 'ollie' ? cR : cO;
         const t = P.throwPartner(cA, cB, state.wAngle);
-        duoSig = fp(t.r && t.r.v, t.r && t.r.sinkRatio, t.r && t.r.recoilV);
-        if (!t.r || !t.r.canMove) return null;
+        out.sig = fp(t.r && t.r.v, t.r && t.r.sinkRatio, t.r && t.r.recoilV);
+        out.models = { shake: true, air: true, ground: true };
+        if (!t.r || !t.r.canMove) return out;
         // the solo throw's rules: a blast only past Mach 1, the landing's ground shaking, the ground under him (not in
         // soil, where his feet only sink in) and his own recoil slide
-        const M = P.RESTRAINT.MOVES.throw, mo = { obj: t.obj, surface: cA.surface, body: cA.body, anchor: cA.anchor, groundHolds: cA.groundHolds, angle: state.wAngle, near };
-        if (t.r.v >= K.a0 || (t.r.recoilV || 0) >= K.a0) return 'the throw breaks the sound barrier';
-        if (win(M.blast(t.r, mo))) return 'the landing’s air blast risks damage ' + fmtDist(near) + ' away';
-        if (P.plasterOver(M.shake(t.r, mo), near)) return 'the landing shakes the ground enough that plaster may crack ' + fmtDist(near) + ' from where he lands';
-        if (!cA.groundHolds && M.ground(t.r, mo)) return 'the ground gives way under the thrower';
-        return slides(M.slide(t.r, mo));
+        const M = P.RESTRAINT.MOVES.throw, mo = { obj: t.obj, surface: cA.surface, body: cA.body, anchor: cA.anchor, groundHolds: cA.groundHolds, angle: state.wAngle, near,
+          airAbsorb: cA.airAbsorb, keepForm: cA.keepForm, unbreakable: cA.unbreakable, ownRecoil: cA.ownRecoil };
+        const sh = M.shake(t.r, mo);
+        out.shake = (Array.isArray(sh) ? sh : [sh]).filter(Boolean);
+        out.blast = M.blast(t.r, mo);
+        out.ground = !P.holdsGround(cA) && M.ground(t.r, mo);
+        out.harm = t.r.v >= K.a0 || (t.r.recoilV || 0) >= K.a0 ? 'the throw breaks the sound barrier'
+          : win(out.blast) ? 'the landing’s air blast risks damage ' + fmtDist(near) + ' away'
+            : P.plasterOver(sh, near) ? (M.shakeFrom(t.r, mo) === 'him' ? shakeMsg('the thrower’s') : 'the landing shakes the ground enough that plaster may crack ' + fmtDist(near) + ' from where he lands')
+              : out.ground ? 'the ground gives way under the thrower' : slides(M.slide(t.r, mo));
+        return out;
       }
-      return null;
+      return out;
     }
     if (act === 'catch') {
-      if (state.cObj === 'partner') return null;
+      if (state.cObj === 'partner') return out;
       const o = objById(state.cObj), D0 = Math.pow(10, state.cLogD);
       const legs = [P.catchLeg(cR, cO, o, D0, state.cStyle), P.catchLeg(cO, cR, o, D0, state.cStyle)];
-      // the thrower is shoved back by his own throw
-      const recoil = Math.max(...legs.map((L) => (L && L.recoil && isFinite(L.recoil.slide) ? L.recoil.slide : 0)));
-      if (recoil > near) { duoSig = fp(...legs.flatMap((L) => (L ? [L.aim && L.aim.vL, L.vArrive, L.result, L.bursts] : ['none']))); return 'the thrower is shoved back ' + fmtDist(recoil) + ', past the nearest people'; }
-      duoSig = fp(...legs.flatMap((L) => (L ? [L.aim && L.aim.vL, L.vArrive, L.result, L.bursts] : ['none'])));
+      out.models = { shake: shakeOn, air: true, ground: true };
       for (const L of legs) {
         if (!L) continue;
-        if (L.aim && L.aim.vL >= K.a0) return 'a throw breaks the sound barrier';
-        if (['crushed-launch', 'breaks-up', 'burns-up', 'wreckage', 'fireball'].includes(L.result) || L.bursts) return 'the ' + o.short + ' is destroyed';
-        if (CAUGHT.includes(L.result) && L.catch && L.catch.gripRatio > 1 && !L.gentleC) return 'the catch crushes the ' + o.short + ' in his palms';
-        const pg = catchPassengerG(L, o);
-        if (pg && pg.over) return { throw: 'the throw presses the person harder than amusement rides allow', catch: 'the catch stops the person harder than amusement rides allow', drag: 'air drag presses the flying person harder than amusement rides allow' }[pg.where];
+        out.shake.push(srcOf(cR, L.toGroundT), srcOf(cR, L.toGroundC));
+        // the air's share of a throw past Mach 1 (all of a fireball's energy: an upper bound)
+        const Eair = L.result === 'fireball' ? (L.fireball && isFinite(L.fireball.E) ? L.fireball.E : Infinity) : L.aim && L.aim.vL >= K.a0 && L.drag ? L.drag.E || 0 : 0;
+        out.blast = Math.max(out.blast, Eair);
+        // the catcher's feet driven into hard ground (in soil they only sink in)
+        if (CAUGHT.includes(L.result) && L.catch && L.catch.sinkRatio > 1 && !P.RESTRAINT.SOIL.has(cR.surface.id)) out.ground = true;
       }
-      return null;
+      out.shake = out.shake.filter(Boolean);
+      // the thrower is shoved back by his own throw
+      const recoil = Math.max(...legs.map((L) => (L && L.recoil && isFinite(L.recoil.slide) ? L.recoil.slide : 0)));
+      if (recoil > near) { out.sig = fp(...legs.flatMap((L) => (L ? [L.aim && L.aim.vL, L.vArrive, L.result, L.bursts] : ['none']))); out.harm = 'the thrower is shoved back ' + fmtDist(recoil) + ', past the nearest people'; return out; }
+      out.sig = fp(...legs.flatMap((L) => (L ? [L.aim && L.aim.vL, L.vArrive, L.result, L.bursts].concat(L.toGroundT || L.toGroundC ? [L.toGroundT && L.toGroundT.J, L.toGroundC && L.toGroundC.J] : []) : ['none'])));
+      for (const L of legs) {
+        if (!L) continue;
+        if (L.aim && L.aim.vL >= K.a0) { out.harm = 'a throw breaks the sound barrier'; break; }
+        if (quakes(cR, L.toGroundT)) { out.harm = shakeMsg('the thrower’s'); break; }
+        if (quakes(cR, L.toGroundC)) { out.harm = shakeMsg('the catcher’s'); break; }
+        if (['crushed-launch', 'breaks-up', 'burns-up', 'wreckage', 'fireball'].includes(L.result) || L.bursts) { out.harm = 'the ' + o.short + ' is destroyed'; break; }
+        if (CAUGHT.includes(L.result) && L.catch && L.catch.gripRatio > 1 && !L.gentleC) { out.harm = 'the catch crushes the ' + o.short + ' in his palms'; break; }
+        const pg = catchPassengerG(L, o, cR);
+        if (pg && pg.over) { out.harm = { throw: 'the throw presses the person harder than amusement rides allow', catch: 'the catch stops the person harder than amusement rides allow', drag: 'air drag presses the flying person harder than amusement rides allow' }[pg.where]; break; }
+      }
+      return out;
     }
     if (act === 'collide') {
       const ollieX = state.colWho === 'ollie', cA = ollieX ? cO : cR, cB = ollieX ? cR : cO;
       const gb = state.colInf ? Infinity : Math.pow(10, state.colGB);
-      if (state.colMode === 'push') return null;
+      if (state.colMode === 'push') return out;
       const r = P.collide(cA, cB, { source: state.colSrc, gb, bounce: state.colBounce === 'bounce' });
-      duoSig = fp(r && r.v0, r && r.outcome);
-      if (!r || r.blackHole || r.planetScale || r.noCharge) return null;
+      out.sig = fp(r && r.v0, r && r.outcome) + (r && r.toGround ? fp(r.toGround.J) : '');
+      out.models = { shake: !!cR.unbreakable, air: true, ground: true };
+      if (!r || r.blackHole || r.planetScale || r.noCharge) return out;
       // the same rule as the Collide tab: a hit slower than sound crossing the damage zone is a loud thump, not a blast
       const splat = state.colBounce !== 'bounce', F = r.contact ? (splat ? r.contact.soft : r.contact.softEl) : null;
       const Q = r.Elocal != null && (r.relativistic || r.outcome === 'boltsLate') ? r.Elocal : r.h && splat ? r.h.Q : 0;
       const thump = isFinite(Q) && Q > 0 && (F ? F.t : 0) * K.a0 > Math.max(P.blastRadius(Q, 6900), 0.5);
+      out.shake = [srcOf(cB, r.toGround)].filter(Boolean);
+      out.blast = thump ? 0 : Q;
+      // the ground breaks: the rock around a bolted holder's feet cracks (the tab's rule), the bolts stop him too late
+      // and blast a crater, or a hit from above drives the holder into hard ground
+      const rk = r.rock, af = r.after, sp = af && (splat ? af.splat : af.bounce);
+      out.ground = !!(rk && !rk.comic && (rk.planet || !isFinite(rk.rT) || rk.rT >= 0.05)) || !!(r.bolts && r.bolts.crater > 0)
+        || !!(sp && (sp.D > 0 || (sp.depth >= 0.01 && !P.RESTRAINT.SOIL.has(cB.surface.id))));
       // a 3-tonne body sliding past the nearest people and buildings harms them too
-      const af = r.after, slid = af ? (splat ? af.splat && af.splat.moved : af.bounce && Math.max(af.bounce.slideA || 0, af.bounce.slideB || 0)) : 0;
-      return r.v0 >= K.a0 ? 'the charge breaks the sound barrier' : !thump && win(Q) ? 'the hit’s air blast risks damage ' + fmtDist(near) + ' away' : slides(slid);
+      const slid = af ? (splat ? af.splat && af.splat.moved : af.bounce && Math.max(af.bounce.slideA || 0, af.bounce.slideB || 0)) : 0;
+      out.harm = r.v0 >= K.a0 ? 'the charge breaks the sound barrier' : !thump && win(Q) ? 'the hit’s air blast risks damage ' + fmtDist(near) + ' away' : quakes(cB, r.toGround) ? 'the hit, carried into the unbreakable ground, shakes it enough that plaster may crack ' + fmtDist(near) + ' away' : slides(slid);
+      return out;
     }
-    return null;
+    return out;
+  }
+  function duoHarm(act) {
+    const f = duoFacts(act);
+    duoSig = f.sig;
+    return f.harm;
   }
   // A person in the game of catch: the throw's average push (release speed over the push time) and the catch, against
   // the ride limits the solo Throw uses. null when the object isn't a person or Safe passenger is on.
   const CAUGHT = ['caught', 'wreckage', 'slams', 'cant-hold-it'];
-  function catchPassengerG(L, o) {
+  function catchPassengerG(L, o, cT) {
     if (!o.passenger || !L || !L.aim) return null;
-    // air drag in flight is real whatever the switch (the Throw tab's rule): the held 1.5 g limit
-    const dg = P.PASSENGER.dragG(o, L.aim.vL);
+    // air drag in flight is real whatever Safe passenger says (the Throw tab's rule): the held 1.5 g limit, on the share
+    // of the drag that Air resistance absorbed leaves acting
+    const dg = P.PASSENGER.dragG(o, L.aim.vL) * P.dragFactor(cT || ctx());
     if (dg > P.PASSENGER.noHarm(1)) return { over: true, where: 'drag', n: dg, t: 1, limit: P.PASSENGER.noHarm(1) };
     if (state.safePassenger || !(L.tPush > 0)) return null;
     const nL = P.PASSENGER.felt(L.aim.vL / L.tPush / g, L.aim.thetaDeg || 0);
@@ -3603,79 +3729,160 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     return makeDuoPlan(act, key);
   }
   const duoKey = (act) => { const FR = fullF('R'), FO = fullF('O'); return JSON.stringify([act, FR, FO, state.mode, state.H, state.m, state.build, state.oH, state.oM, state.surface, state.anchor, state.oAnchor, state.near, state.wrestleMove, state.wrestleWho, state.wAngle, state.cObj, state.cLogD, state.cStyle, state.colMode, state.colWho, state.colSrc, state.colGB, state.colInf, state.colBounce, state.colImm, state.oEffortOwn, state.oEffortLogKg, state.airAbsorb, state.keepForm, state.unbreakable, state.ownRecoil, state.softLanding, state.silentStrike, state.safePassenger, state.duoEffort]); };
+  // the not-so-heroic presets in the two-player tests: the same tests as the solo tabs', on what the test does
+  // (duoFacts). Ground shaking and an air blast where the lab models them in that test.
+  const DUO_PRESET_TEST = {
+    rattle: (f, near) => f.shake.some((x) => P.ppvAt(x, near) >= P.VIB.TH.rattle) || P.blastRadius(f.blast, P.RESTRAINT.R.DP_RATTLE) >= near,
+    plaster: (f, near) => P.plasterOver(f.shake, near),
+    windows: (f) => P.blastRadius(f.blast, P.RESTRAINT.R.DP_WINDOWS) >= P.RESTRAINT.R.STREET,
+    ground: (f) => f.ground,
+    houses: (f, near) => P.blastRadius(f.blast, P.RESTRAINT.R.DP_HOUSES) >= near,
+    block: (f) => P.blastRadius(f.blast, P.RESTRAINT.R.DP_HOUSES) >= P.RESTRAINT.R.BLOCK,
+  };
+  const isDuoPreset = (e) => Object.prototype.hasOwnProperty.call(DUO_PRESET_TEST, e);
+  // a preset's runs: with Unbreakable footing on, 'break the ground' sets it aside (real ground), as on the solo tabs;
+  // 'air0' is the lower-the-slider check (the same throws with none of the air's drag absorbed)
+  const DUO_VARIANT = { '': null, real: { unbreakable: false }, air0: { airAbsorb: 0 } };
+  const duoVariant = (e) => (e === 'ground' && state.unbreakable ? 'real' : '');
   function makeDuoPlan(act, key) {
     const FR = fullF('R'), FO = fullF('O');
     let p;
     const need = (m) => P.W8.WALK_LOAD * m * g / P.MUSCLE.jump.forceFrac;
     const lo = Math.max(need(state.m), need(state.oM)), hiF = Math.max(FR, FO), hi = isFinite(hiF) ? hiF : 1e34 * g;
-    const memo = new Map(), sigs = new Map();
-    const harmAt = (u) => {
+    // per run variant: the facts at each effort, and their fingerprints
+    const memos = {}, sigMaps = {};
+    const factsAt = (u, v) => {
+      v = v || '';
+      const memo = memos[v] || (memos[v] = new Map()), sigs = sigMaps[v] || (sigMaps[v] = new Map());
       const k = u === Infinity ? 'inf' : u;
       if (!memo.has(k)) {
         // a probe is a two-player run wherever it is called from (a render, the background search, a control)
         const save = duoCap, saveMode = duoMode;
         duoCap = { R: Math.max(u, lo), O: state.oEffortOwn ? Math.max(Math.pow(10, state.oEffortLogKg) * g, lo) : Math.max(u, lo) };
         duoMode = true;
-        try { memo.set(k, duoHarm(act)); sigs.set(k, duoSig); } finally { duoCap = save; duoMode = saveMode; }
+        try { const f = duoFacts(act, DUO_VARIANT[v]); memo.set(k, f); sigs.set(k, f.sig); } finally { duoCap = save; duoMode = saveMode; }
       }
       return memo.get(k);
     };
+    const harmAt = (u) => factsAt(u).harm;
     // saturated only if all-out comes out the same too (a 'can't hold it' at low effort is not the top of the range)
-    const same = (u0, u1) => { harmAt(u0); harmAt(u1); harmAt(hi); const a = sigs.get(u0), b = sigs.get(u1); return !!a && a === b && b === sigs.get(hi); };
+    const sameIn = (v) => (u0, u1) => { factsAt(u0, v); factsAt(u1, v); factsAt(hi, v); const sg = sigMaps[v || '']; const a = sg.get(u0), b = sg.get(u1); return !!a && a === b && b === sg.get(hi); };
+    const same = sameIn('');
     // 5% is close enough for the shared effort: each probe runs the whole test
     const s = lo < hi ? P.RESTRAINT.search((u) => !!harmAt(u), lo, hi, !isFinite(hiF), same, 0.05) : null;
-    p = { act, key, lo, hi, s, harmAt, done: !s };
-    p.step = () => {
-      if (p.done) return true;
+    // the presets' searches, made when first asked for: name 'preset:<id>' or 'preset:<id>:<variant>'
+    const jobs = new Map();
+    const job = (name) => {
+      if (name === 'least') return s;
+      if (!jobs.has(name)) {
+        const [, e, v] = name.split(':');
+        jobs.set(name, lo < hi ? P.RESTRAINT.search((u) => !!DUO_PRESET_TEST[e](factsAt(u, v), state.near), lo, hi, !isFinite(hiF), sameIn(v), 0.05) : null);
+      }
+      return jobs.get(name);
+    };
+    p = { act, key, lo, hi, s, harmAt, factsAt, job, done: !s };
+    p.jobDone = (name) => { const j = job(name); return !j || j.use !== undefined; };
+    // one step of a job; true once it is done
+    p.stepJob = (name) => {
+      const j = job(name);
+      if (!j || j.use !== undefined) { if (name === 'least') p.done = true; return true; }
+      const v = name === 'least' ? '' : name.split(':')[2] || '';
       const t0 = performance.now();
       // the all-out probe that same() compares with, and the unlimited one, each get a step of their own, so no step
       // runs more than one full test
-      if (!s.bisect && s.i > 0 && !memo.has(hi)) harmAt(hi);
-      else if (!s.bisect && s.i > 0 && !isFinite(hiF) && !memo.has('inf')) harmAt(Infinity);
-      else { s.step(); if (s.use !== undefined) p.done = true; }
+      if (!j.bisect && j.i > 0 && !memos[v || ''].has(hi)) factsAt(hi, v);
+      else if (!j.bisect && j.i > 0 && !isFinite(hiF) && !memos[v || ''].has('inf')) factsAt(Infinity, v);
+      else j.step();
       duoStepMs[act] = performance.now() - t0;
-      return p.done;
+      const done = j.use !== undefined;
+      if (done && name === 'least') p.done = true;
+      return done;
     };
+    p.step = () => p.stepJob('least');
     duoPlans.set(key, p);
     if (duoPlans.size > 30) duoPlans.delete(duoPlans.keys().next().value);
     return p;
   }
   // finish a two-player search in the background (each probe runs the whole test, up to a second or so), then redraw
-  let duoRunning = null;
-  function stepDuoPlan(p) {
-    if (p.done || duoRunning === p) return;
-    duoRunning = p;
+  let duoRunning = null, duoRunJob = null;
+  function stepDuoPlan(p, name) {
+    name = name || 'least';
+    if (p.jobDone(name) || (duoRunning === p && duoRunJob === name)) return;
+    duoRunning = p; duoRunJob = name;
     const tick = () => {
-      if (duoRunning !== p || !state.duoOpen || duoKey(state.duoAction) !== p.key) { if (duoRunning === p) duoRunning = null; return; }
+      if (duoRunning !== p || duoRunJob !== name || !state.duoOpen || duoKey(state.duoAction) !== p.key) { if (duoRunning === p && duoRunJob === name) duoRunning = null; return; }
       if (dialMoving()) { setTimeout(tick, 300); return; }
       const t0 = performance.now();
-      while (performance.now() - t0 < 20) if (p.step()) { duoRunning = null; renderDuo(true); return; }
+      while (performance.now() - t0 < 20) if (p.stepJob(name)) { duoRunning = null; renderDuo(true); return; }
       setTimeout(tick, 0);
     };
     setTimeout(tick, 0);
+  }
+  // step jobs for this render's budget; false (and the rest in the background) if they aren't all done
+  function duoReady(p, act, names) {
+    const t0 = performance.now();
+    for (const n of names) while (!p.jobDone(n)) {
+      if (dialMoving() || performance.now() - t0 > EFFORT_BUDGET || (duoStepMs[act] || 0) > EFFORT_BUDGET) { stepDuoPlan(p, n); return false; }
+      p.stepJob(n);
+    }
+    return true;
   }
   // the cap for this render (Infinity = all-out) and what the readout says
   function resolveDuoEffort(act) {
     const p = duoPlanFor(act);
     if (duoRunning && duoRunning !== p) duoRunning = null;   // a search for other settings stops
     let use = Infinity, note = null;
-    if (state.duoEffort === 'custom') use = Math.max(Math.pow(10, state.duoLogKg) * g, p.lo);
-    else if (state.duoEffort === 'least' && p.s) {
-      const t0 = performance.now();
-      while (!p.done) {
-        if (dialMoving() || performance.now() - t0 > EFFORT_BUDGET || (duoStepMs[act] || 0) > EFFORT_BUDGET) { stepDuoPlan(p); return { p, use: Infinity, note: null, harm: null, pending: true }; }
-        p.step();
-      }
+    const e = state.duoEffort;
+    const leastUse = () => (p.s.never ? Infinity : !(p.s.below > 0) ? p.lo : p.s.below);
+    if (e === 'custom') use = Math.max(Math.pow(10, state.duoLogKg) * g, p.lo);
+    else if (e === 'least' && p.s) {
+      if (!duoReady(p, act, ['least'])) return { p, use: Infinity, note: null, harm: null, pending: true };
       if (p.s.never) use = Infinity;
       else if (!(p.s.below > 0)) { use = p.lo; note = state.oEffortOwn ? 'Ollie’s own what-if effort does it at any shared effort: ' + p.harmAt(p.lo) + '.' : 'Nothing is harmless here: even at the least they need to stand and walk, ' + p.harmAt(p.lo) + '.'; }
       else use = p.s.below;
+    } else if (isDuoPreset(e) && p.s) {
+      const v = duoVariant(e), name = 'preset:' + e + (v ? ':' + v : '');
+      if (!duoReady(p, act, [name, 'least'])) return { p, use: Infinity, note: null, harm: null, pending: true, preset: e };
+      const j = p.job(name), out = { p, preset: e, real: v === 'real' };
+      if (j.never) {
+        out.use = Infinity; out.never = true;
+        // a throw's air preset out of reach at this share absorbed: say so when the same throws with the air let
+        // through (the slider at 0%) reach it (BRIEF-gui.md 5a). The preset never moves the slider.
+        if (act === 'catch' && AIR_PRESETS.has(e) && airShareOf(ctx()) > 0) {
+          const n0 = 'preset:' + e + ':air0';
+          if (!duoReady(p, act, [n0])) return Object.assign(out, { pending: true, sideWhy: true });
+          if (!p.job(n0).never) out.airHint = !(p.factsAt(p.hi).blast > 0) ? 'no' : 'too little';
+        }
+      } else {
+        // a not-so-heroic preset is never gentler than the heroic default: if least disruptive already does it, use that
+        const lu = leastUse();
+        if (j.use < lu * (1 - 1e-9)) { out.use = lu; out.already = true; } else out.use = j.use;
+      }
+      out.harm = out.real ? p.factsAt(out.use, 'real').harm : p.harmAt(out.use);
+      return out;
     }
     const harm = p.harmAt(use);
     return { p, use, note, harm };
   }
+  // What a preset needs that the lab doesn't model in this test with these settings. gap: the sentence to say;
+  // all: nothing the preset looks at is modelled (say only the gap); via: the one channel left for rattle.
+  function duoNoModel(act, e, f) {
+    if (!f.models.shake && !f.models.air && !f.models.ground) return { gap: 'The lab doesn’t model what this test does to the surroundings.', all: true };
+    const shakeOnly = act === 'arm' || act === 'collide' ? 'Unbreakable footing' : 'Unbreakable footing or They take their own recoil';
+    const noShake = !f.models.shake ? 'The lab models the ground shaking in this test only through their powers (' + shakeOnly + '), and ' + (shakeOnly.includes(' or ') ? 'both are' : 'it is') + ' off.' : null;
+    const noAir = !f.models.air ? 'The lab doesn’t model an air blast in this test.' : null;
+    if (e === 'plaster') return noShake ? { gap: noShake, all: true } : null;
+    if (e === 'ground') return !f.models.ground ? { gap: 'The lab doesn’t model the ground breaking in this test.', all: true } : null;
+    if (e === 'rattle') return noShake && noAir ? { gap: noShake + ' ' + noAir, all: true } : noShake ? { gap: noShake, via: 'through the air ' } : noAir ? { gap: noAir, via: 'through the ground ' } : null;
+    return noAir ? { gap: noAir, all: true } : null;
+  }
   function duoEffortBox(act, eff) {
     const FR = fullF('R');
-    const sel = el('select', { id: 'duo-effort' }, [['least', 'Least disruptive (default)'], ['allout', 'All-out'], ['custom', 'Custom (use the slider)']].map(([v, t]) => el('option', { value: v, text: t })));
+    const opt = (x) => el('option', { value: x.id, text: x.label });
+    const sel = el('select', { id: 'duo-effort' },
+      el('optgroup', { label: 'Heroic' }, opt({ id: 'least', label: 'Least disruptive (default)' })),
+      el('optgroup', { label: 'Not so heroic' }, EFFORT_PRESETS.filter((x) => x.loud).map(opt)),
+      el('optgroup', { label: 'Other' }, EFFORT_PRESETS.filter((x) => x.id === 'allout' || x.id === 'custom').map(opt)));
     sel.value = state.duoEffort;
     // the shared effort the page shows now (the controls can be older than the last render)
     const nowLog = () => { const u = resolveDuoEffort(act).use; return Math.log10(Math.min(u, isFinite(FR) ? FR : 1e34 * g) / g); };
@@ -3703,7 +3910,29 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const each = state.oEffortOwn ? ' (Rex as hard as lifting ' + fmtMass(eff.use / g) + ', Ollie ' + fmtMass(oKg) + ')' : ' (each as hard as lifting ' + fmtMass(eff.use / g) + ')';
     const noCap = state.duoEffort === 'least' && eff.p.s && eff.p.s.never;
     if (eff.pending) {
-      read.append(el('p', {}, el('b', { text: 'Effort: working it out.' }), ' Working out the least disruptive effort… Showing all-out until then.'));
+      read.append(el('p', {}, el('b', { text: 'Effort: working it out.' }), ' ' + (eff.sideWhy ? 'Working out whether letting the air take some would do it…' : 'Working out ' + (eff.preset ? 'that effort' : 'the least disruptive effort') + '… Showing all-out until then.')));
+      return { fields, read };
+    }
+    if (eff.preset) {
+      // a not-so-heroic preset: the least shared effort that does it, as on the solo tabs
+      const e = eff.preset, what = PRESET_WHAT[e]().replace('his feet', 'their feet');
+      const head = el('p', {}, el('b', { text: eff.never ? 'All-out.' : capped ? 'Effort: ' + (!tinyShare(eff.use, FR) ? pctOf(eff.use, FR) + ' of their strength' : 'as hard as lifting ' + fmtMass(eff.use / g)) + (capped && !tinyShare(eff.use, FR) ? '' : '.') : 'All-out.' }),
+        capped && !tinyShare(eff.use, FR) ? each + '.' : '');
+      head.append(' ' + (eff.never ? 'Everything they have.' : eff.already ? 'Least disruptive already does this: it ' + what + '.' : 'The least effort that ' + what + '.'));
+      read.append(head);
+      if (eff.real) read.append(el('p', { text: 'Unbreakable footing is set aside for this test: they mean to break the ground, so the energy it would take back goes into it.' }));
+      if (eff.never) {
+        const nm = duoNoModel(act, e, eff.real ? eff.p.factsAt(eff.p.hi, 'real') : eff.p.factsAt(eff.p.hi));
+        const t = nm && nm.all ? nm.gap : 'Even all-out, this test ' + (nm ? nm.via : '') + 'doesn’t ' + what.replace(/^could /, '').replace(/^(\w+?)(e?s) /, (m, a, b) => a + (b === 'es' && !/(sh|ch|ss|x)$/.test(a) ? 'e' : '') + ' ').replace(/, through the ground or the air$/, '') + '.' + (nm ? ' ' + nm.gap : '');
+        read.append(el('p', { class: 'warn-ink', text: t + (eff.airHint ? ' At ' + pctAir(airShareOf(ctx())) + ' air resistance absorbed, a throw makes ' + eff.airHint + ' blast from its flight to do this. Lower Air resistance absorbed (in Their powers) to let the air take some.' : '') }));
+      }
+      if (eff.p.s && eff.p.done) {
+        const s0 = eff.p.s;
+        read.append(el('p', { text: s0.never ? 'Courtesy ceiling: none. Nothing in this test does harm' + (isFinite(fullF('R')) ? ', even all-out,' : '') + ' with the nearest people and buildings ' + fmtDist(state.near) + ' away.'
+          : !(s0.below > 0) ? 'Courtesy ceiling: none. Even at the least they need to stand and walk, ' + eff.p.harmAt(s0.use) + '.'
+            : 'Courtesy ceiling: ' + atText(s0.below, FR) + '. Past that, ' + eff.p.harmAt(s0.use) + '.' }));
+      }
+      if (eff.harm) read.append(status('warn', 'At this effort ' + eff.harm));
       return { fields, read };
     }
     const withEach = capped && !tinyShare(eff.use, FR) || state.oEffortOwn && capped;
@@ -3751,7 +3980,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     B.pending = false;
     try {
       // At planet-scale masses the move models (a small Rex on a fixed Earth) stop applying.
-      const gate = act === 'weight' || duo ? null : soloGate(ctx());
+      const gate = act === 'weight' || duo ? null : soloGate(isEffortMove(act) && state.effort === 'ground' && state.unbreakable ? ctx({ unbreakable: false }) : ctx());
       let duoEff = null;
       duoCap = { R: Infinity, O: Infinity };
       if (duo) {
@@ -3760,8 +3989,13 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       }
       const c0 = ctx();
       const eff = isEffortMove(act) && !(gate && gate.stop) ? resolveEffort(act, c0) : null;
-      parts = gate && gate.stop ? [callout(gate.text)] : BAYS[act](eff ? Object.assign({}, c0, { use: eff.use }) : c0);
-      if (eff) attachEffort(parts, act, c0, eff);
+      // the 'break the ground' preset sets Unbreakable footing aside for this move: the tab shows the real-ground run
+      // (the two-player tabs read the settings themselves, so for them the switch is set aside while they are drawn)
+      const cE = eff && eff.real ? Object.assign({}, c0, { unbreakable: false }) : c0;
+      const ub = state.unbreakable;
+      if (duoEff && duoEff.real) state.unbreakable = false;
+      try { parts = gate && gate.stop ? [callout(gate.text)] : BAYS[act](eff ? Object.assign({}, cE, { use: eff.use }) : cE); } finally { state.unbreakable = ub; }
+      if (eff) attachEffort(parts, act, cE, eff);
       else if (!duo) stopPlan();   // a solo tab without effort stops the solo search (never the two-player one)
       B.pending = !!(eff && eff.pending) || !!(duoEff && duoEff.pending);
       if (duoEff) {
@@ -3844,7 +4078,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   const LMIN = 1, LMAX = 34;
   const thCache = new Map();
   let thJob = null;
-  const thKey = () => JSON.stringify([state.mode, state.H, state.m, state.surface, state.anchor, state.groundHolds]);
+  const thKey = () => JSON.stringify([state.mode, state.H, state.m, state.surface, state.anchor, state.unbreakable, state.ownRecoil, state.airAbsorb, state.keepForm]);
   function thresholdDefs() {
     const base = ctx();
     const at = (kg, extra) => Object.assign({}, base, { F: kg * g }, extra || {});
@@ -3856,7 +4090,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       { id: 'boom', text: 'Fist breaks the sound barrier', pred: (kg) => P.punch(at(kg)).vFist >= K.a0 },
       { id: 'windows', text: 'Clap breaks windows 10 m away', pred: (kg) => P.blastRadius(P.clap(at(kg)).E, W('windows').Pa) >= 10 },
       { id: 'carmach3', text: 'Thrown car leaves at Mach 3', pred: (kg) => P.throwObject(at(kg), car, 45).v >= 3 * K.a0 },
-      { id: 'jumpliberty', text: 'Jump clears the Statue of Liberty', pred: jumpPred(), rigid: state.groundHolds ? null : jumpPred({ groundHolds: true }) },
+      { id: 'jumpliberty', text: 'Jump clears the Statue of Liberty', pred: jumpPred(), rigid: state.unbreakable ? null : jumpPred({ unbreakable: true }) },
       { id: 'quake3', text: 'Stomp felt as a magnitude 3 quake', pred: (kg) => P.stomp(at(kg)).quake >= 3 },
       { id: 'hiro', text: 'Punch carries a Hiroshima bomb', pred: (kg) => P.punch(at(kg)).E >= E('hiroshima') },
       { id: 'quake7', text: 'Stomp = magnitude 7 quake', pred: (kg) => P.stomp(at(kg)).quake >= 7 },
@@ -4001,7 +4235,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       nv.append(el('p', { text: 'Never happens at the current settings, even at 10³⁴ kg:' }));
       nv.append(el('ul', {}, never.map((t) => {
         let why = state.mode === 'real' ? ' (real muscle caps the speed)' : '';
-        if (t.id === 'jumpliberty' && isFinite(t.withRigid || Infinity)) why = ' (the ground gives way first; Comic ground or bedrock fixes it)';
+        if (t.id === 'jumpliberty' && isFinite(t.withRigid || Infinity)) why = ' (the ground gives way first; Unbreakable footing or bedrock fixes it)';
         return el('li', { text: t.text + why });
       })));
     }
