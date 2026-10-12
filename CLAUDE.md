@@ -21,6 +21,8 @@ The owner is a professional critic. Factual accuracy and honest labelling come f
 - **Turnarounds** (A-pose: front, back, side): `build-comparison/assets/rex-turnaround.png` and `ollie-turnaround.png`.
 - **Restraint:** they want to be seen as heroes, for the most part. By default each uses the least disruptive way to exist in the world: just enough force for the job, with comic-book physics used selectively and on purpose. Infinite might is a hazard to reality itself. Restrained, they are kaiju-like only locally (footsteps you can feel, water glasses rippling a few metres away). They can choose otherwise.
 - **Absorption:** the energy they put out is theirs, so they can take it back; it only looks as if it vanished. By default it returns to the store of infinite power they draw on but don't manifest ("a drop in an endless ocean"). They can instead absorb it as growth (mass = E ÷ c²) in size, density or both. Momentum is never absorbed. The modes, growth forms and worked figures are in `rex-strength-lab/BRIEF-presence.md`.
+- **Growth details** (owners, 12 Oct 2026): instant growth expands about his middle, all the way through (not from the soles), so his feet are driven into the ground rather than him being thrown up. In a runaway, the side effects of growth (the air pushed back, his own gravity) are paid from the energy they absorbed, not from the endless store, so the loop does feed itself until the half-life halts it.
+- **Gait:** they stride heel-first, like people. Hip height is 0.45 of their height, measured from the turnarounds (an estimate until Step 2 remeasures them).
 - Do not invent other canon for either; ask.
 - Art in `rex-strength-lab/assets/` is the owner's. Use it; don't redraw the characters.
 
