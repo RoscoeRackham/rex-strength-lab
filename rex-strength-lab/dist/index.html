@@ -3453,10 +3453,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const q = qultFor(surface, B), qSand = SAND_Q * B;
     return { depth: PRINT.d * Math.pow(p / PRINT.p, PRINT.n) * (B / PRINT.B) * Math.min(1, qSand / q), extrapolated: p > PRINT.p * (1 + 1e-9) || p < PRINT.lo * (1 - 1e-9), qSand, q };
   }
-  // Standing still, in soil (null on other surfaces). Sand and gravel: the elephant's sand carried its forefoot's
-  // 350 kPa (Schanz's dynamic stress; 181 kPa by force-plate peaks) with only a 20-26 mm print, so it fails no sooner
-  // than that: qFail = 350 kPa x (B / 0.274 m), and more for gravel in proportion to its bearing (a lower bound; our
-  // estimate). Below qFail the foot leaves the elephant rule's print; past it the foot plunges until the bearing,
+  // Standing still, in soil (null on other surfaces). Sand and gravel: the elephant's sand carried its forefoot with
+  // only a 20-26 mm print, at 350 kPa by Schanz's calibrated model (181 kPa by force-plate peaks), so we take failure
+  // to start at qFail = 350 kPa x (B / 0.274 m), and more for gravel in proportion to its bearing (our estimate; a
+  // lower bound only if the 350 kPa is right). Below qFail the foot leaves the elephant rule's print; past it the foot plunges until the bearing,
   // growing with depth as gamma D N_q (USACE EM 1110-1-1905), carries it, and never less than the print. Clay: the Walk
   // tab's rule (bearing growing with depth, N_c up to 9; nothing until the bearing is passed). All estimates.
   function standDepth(surface, p, B, H) {
@@ -3887,7 +3887,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   // (twice the free-field monopole), peaking at rho0 k_V dV / (2 pi r T^2). Shove: the top of his head rises at up to
   // k_H dH / T; anything above or beside him has to be able to get out of the way. Lift: a growth faster than
   // sqrt(pi dH / g) would lift his middle off the ground, but that lift goes to the endless ocean (canon), so it sets
-  // no limit (Tl is reported only; it was never binding next to the shove).
+  // no limit (Tl is reported only; it never set the time for growth the page shows, only below about 5 mm).
   function gradualGrowth(body, E, form, o) {
     const opt = o || {};
     const g = grownBody(body, E, form);
@@ -3906,7 +3906,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   // rises at dH / 2t and his soles move down at the same speed. The air at his surface gets from the expanding-sphere
   // value (low end) to the flat-piston value at his head's speed (high end); the excess energy pushed into the air,
   // dp x dV, is a blast; on hard ground it counts double (an upper bound: it counts the downward share as air too).
-  // The ground: the lift its push would give him goes to the endless ocean (canon, owners), so his middle stays put.
+  // The ground: the lift its push would give him goes to the endless ocean (canon: the collaborator's ruling,
+  // 12 Oct 2026, owner to confirm), so his middle stays put.
   // gnd (optional): { surface, groundHolds }. Real ground gives: his soles are driven dH/2 in at dH / 2t, and the ground
   // takes that work, its bearing plus the inertia of the soil pushed aside (the Poncelet rule the lab uses for feet
   // driven into the ground). Comic ground (or none given) doesn't give: he grows upward from his soles instead, his
@@ -3944,7 +3945,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   // Runaway: the side effects of the growth are paid from the energy absorbed and taken back as growth too (canon).
   // The air pushed back (p0 + dp over dV) and the ground driven in are spent and then returned: a round trip, so in the
   // end all of E becomes mass, no more. The binding energy his own gravity releases as he grows goes to the endless
-  // ocean (canon, owners), so it adds nothing. Loop ratio k = side effects / energy absorbed; each round returns k of
+  // ocean (canon: the collaborator's ruling, 12 Oct 2026, owner to confirm), so it adds nothing. Loop ratio k = side effects / energy absorbed; each round returns k of
   // the last, so the loop dies out at once and the half-life (a story choice) never has to act. The gravity share is
   // still reported: binding energy of a uniform ball, 3 G M^2 / (5 R), so 0.3 (2 - s/3) r_s / R in weak gravity.
   function runawayGrowth(body, E, form, gnd) {
@@ -5196,7 +5197,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Footprints",
-   "d": "In sand and gravel, footprint depth is scaled from the one large-animal print we found measured: a weighed 2,530 kg African elephant cow left forefoot prints 20–26 mm deep in loose-to-medium sand (Schanz et al. 2013). The lab anchors on the authors’ calibrated model of that sand (18 mm at 350 kPa), with depth rising as pressure to the power 1.27 and in proportion to foot width. The pressure is the step’s landing peak, as in the elephant’s print; the rule was fitted from 99 to 350 kPa, so a stamp that presses harder is extrapolated (the page says so). Loose sand is taken as that sand; gravel, which bears more, gets shallower prints in proportion. In clay a foot sinks until the clay’s bearing, which grows a little with depth, carries the step. Paving, slabs, ice, steel and rock show no print until they break. Standing still (the Weight tab) uses the same rules at his standing pressure. In sand and gravel, his feet plunge in deeper only past the pressure the elephant’s sand bore with that shallow print (350 kPa under a foot its width, scaled with foot width and more for gravel: a lower bound); from there the sand’s bearing grows with depth (USACE EM 1110-1-1905). All estimates."
+   "d": "In sand and gravel, footprint depth is scaled from the one large-animal print we found measured: a weighed 2,530 kg African elephant cow left forefoot prints 20–26 mm deep in loose-to-medium sand (Schanz et al. 2013). The lab anchors on the authors’ calibrated model of that sand (18 mm at 350 kPa), with depth rising as pressure to the power 1.27 and in proportion to foot width. The pressure is the step’s landing peak, as in the elephant’s print; the rule was fitted from 99 to 350 kPa, so a stamp that presses harder is extrapolated (the page says so). Loose sand is taken as that sand; gravel, which bears more, gets shallower prints in proportion. In clay a foot sinks until the clay’s bearing, which grows a little with depth, carries the step. Paving, slabs, ice, steel and rock show no print until they break. Standing still (the Weight tab) uses the same rules at his standing pressure. In sand and gravel, his feet plunge in deeper only past the pressure the elephant’s sand bore with that shallow print (350 kPa under a foot its width by the researchers’ model, 181 kPa by force-plate data; we use 350 kPa, scaled with foot width and more for gravel: an estimate); from there the sand’s bearing grows with depth (USACE EM 1110-1-1905). All estimates."
   },
   {
    "t": "Comic switches",
@@ -9097,7 +9098,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Walking: standing still in soil: how deep his feet go (the Weight tab's rule)",
-   "value": "Standing at canon, Rex's feet press about 3 mm into loose sand and Ollie's about 5 mm (the old rule sank Ollie 18 cm). Past about 350 kPa under a foot the elephant's width (scaled with width; more for gravel), sand starts to give and the foot plunges until the bearing growing with depth carries it. Estimate, checked against one measured elephant print",
+   "value": "Standing at canon, Rex's feet press about 3 mm into loose sand and Ollie's about 5 mm (the old rule sank Ollie 18 cm). Past about 350 kPa under a foot the elephant's width (scaled with width; more for gravel; our estimate, from the researchers' model of the elephant's stress), sand starts to give and the foot plunges until the bearing growing with depth carries it. Estimate, checked against one measured elephant print",
    "status": "estimate",
    "sources": [
     {
@@ -12272,7 +12273,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Growth: instant growth: the blast from shoving the air aside",
-   "value": "Chicxulub, pure size: 2–3 atm at his sides and 0.9–1.5 × 10⁹ J into the air (210–350 kg of TNT) if he grew about his centre; windows shatter out to 100–220 m. Anchored at his soles, the top of his head pushes about 24–30 atm and the total is 2–4 times larger (up to 6 × 10⁹ J, 1.5 t of TNT; windows to about 360 m). Mix: 3–6 kg of TNT, windows to 25–57 m (up to about 90 m anchored). Canon: he grows about his middle (the centred values)",
+   "value": "Chicxulub, pure size: 2–3 atm at his sides and 0.9–1.5 × 10⁹ J into the air (210–350 kg of TNT) if he grew about his centre; windows shatter out to 100–220 m. Anchored at his soles, the top of his head pushes about 24–30 atm and the total is 2–4 times larger (up to 6 × 10⁹ J, 1.5 t of TNT; windows to about 360 m). Mix: 3–6 kg of TNT, windows to 25–57 m (up to about 90 m anchored). Canon: he grows about his middle; the page's high end also counts the top of his head at its own speed (an upper bound)",
    "status": "estimate",
    "sources": [
     {
@@ -13149,7 +13150,7 @@ window.DINO_DATA = {
         items.push('The air at his surface jumps by ' + fmtSI(I.dpLo, 'Pa') + '–' + fmtSI(I.dpHi, 'Pa') + '. ' + (runaway ? 'In runaway mode that blast’s energy (' + fmtTNT(I.Elo) + ' to ' + fmtTNT(I.Ehi) + ') is taken back as growth too, so the air blast breaks no windows.' : 'As a blast that is ' + fmtTNT(I.Elo) + ' to ' + fmtTNT(I.Ehi) + winText) + ' Rough: the low end treats him as a ball, the high end as flat pistons.');
         const lift = 'The lift the ground’s push would give him (enough to throw him about ' + fmtDist(I.launchWould) + ' up) goes to the endless ocean (canon), so he is never thrown up.';
         items.push(I.gives
-          ? 'His soles are driven ' + fmtDist(I.sink) + ' into ' + theSurf(sf) + ' at ' + speedOnly(I.vSole) + ', while his middle stays put. ' + (runaway ? 'The ground’s share (' + fmtTNT(I.Eground) + ') is taken back as growth too, so it doesn’t shake; the hole stays. ' : 'That puts about ' + fmtTNT(I.Eground) + ' into the ground' + (I.quake > 2 ? ' (felt like a magnitude ' + sig(I.quake, 2) + ' quake)' : '') + (I.Eground > I.Ehi ? ', more than goes into the air' : '') + ' (rough: its bearing plus the soil pushed aside). ') + lift
+          ? (['asphalt', 'concrete', 'ice', 'steel'].includes(sf.id) ? 'His soles punch through ' + theSurf(sf) + ' and on into whatever is underneath, ' + fmtDist(I.sink) + ' down in all, at ' + speedOnly(I.vSole) + ', while his middle stays put (the page doesn’t know what is under it, so the energy below uses ' + theSurf(sf) + '’s own strength all the way down: rough). ' : 'His soles are driven ' + fmtDist(I.sink) + ' into ' + theSurf(sf) + ' at ' + speedOnly(I.vSole) + ', while his middle stays put. ') + (runaway ? 'The ground’s share (' + fmtTNT(I.Eground) + ') is taken back as growth too, so it doesn’t shake; the hole stays. ' : 'That puts about ' + fmtTNT(I.Eground) + ' into the ground' + (I.quake > 2 ? ' (felt like a magnitude ' + sig(I.quake, 2) + ' quake)' : '') + (I.Eground > I.Ehi ? ', more than goes into the air' : '') + ' (rough: its bearing plus the soil pushed aside). ') + lift
           : 'Comic ground doesn’t give, so he grows upward from his soles instead: his middle rises ' + fmtDist(I.rise) + ' and stops when the growth does. ' + lift);
       } else items.push('Pure density: he doesn’t get any bigger, so there is no blast. Only his weight changes.');
     }
@@ -13862,9 +13863,9 @@ window.DINO_DATA = {
       else if (Math.abs(Math.log10(r.rho / 1000)) > 0.005) items.push('Walking puts about 1.2× his weight on one leg at each step. The sim sets that against both legs’ 1.4× push (a rough rule: a near-straight leg is much stronger than one in a squat), and he has ' + fmtRatio(mv.legForce / (1.2 * mv.weight)) + ' what walking needs. Running uses the Sprint tab’s rough rule: strength above his weight. Real runners land with 2–2.9× their weight on one leg, on springy, near-straight legs the dial doesn’t model.');
     }
     if (pl.regime === 'none') {
-      if (gd.regime === 'stands') items.push('His feet press ' + fmtSI(gd.footPressure, 'Pa') + ' into ' + theSurf(c.surface) + ', which gives at about ' + fmtSI(gd.q0, 'Pa') + (c.surface.granular ? ' or more (a lower bound: a weighed elephant’s forefoot pressed sand like this that hard and left a print only about 2 cm deep; Schanz 2013).' : '.'));
+      if (gd.regime === 'stands') items.push('His feet press ' + fmtSI(gd.footPressure, 'Pa') + ' into ' + theSurf(c.surface) + ', which gives at about ' + fmtSI(gd.q0, 'Pa') + (c.surface.granular ? ' (our estimate: a weighed elephant’s forefoot left a print only about 2 cm deep in loose-to-medium sand at about 350 kPa by its researchers’ model, or 181 kPa by force-plate data; Schanz 2013. We scale that 350 kPa with foot width' + (c.surface.id === 'gravel' ? ', and up for gravel, which bears more' : '') + ').' : '.'));
       else if (gd.regime === 'sinks' && gd.stage === 'rock') items.push('Granite gives way under a foot at about 1.7 GPa (rough: 0.1–4 GPa). His feet press ' + fmtSI(gd.footPressure, 'Pa') + ', but his whole body spreads the load to ' + fmtSI(gd.bodyPressure, 'Pa') + ', which the rock can carry.');
-      else if (gd.regime === 'sinks') items.push(capital(theSurf(c.surface)) + ' gives way under him (' + fmtRatio(gd.standRatio) + ' its limit). Soil gets stronger the deeper he goes, because the soil above presses it down (sand and gravel much more than clay), so he stops at ' + fmtDist(gd.sink) + '.' + (gd.stage === 'body' ? ' His legs go in first; once his wider body reaches the ground, the load spreads out.' : ''));
+      else if (gd.regime === 'sinks') items.push(capital(theSurf(c.surface)) + ' gives way under him (' + fmtRatio(gd.standRatio) + ' its limit). Soil gets stronger the deeper he goes (sand and gravel because the soil above presses it down; clay mostly because a deeper foot has to shear more of it), so he stops at ' + fmtDist(gd.sink) + '.' + (gd.stage === 'body' ? ' His legs go in first; once his wider body reaches the ground, the load spreads out.' : ''));
       else if (gd.regime === 'outOfSight') items.push('Soil gets stronger with depth, but not fast enough to stop him near the surface. He goes down until deeper, stronger ground or bedrock stops him; bedrock carries up to about ' + fmtSI(gd.rockCap, 'N') + ' under his whole body, and he weighs ' + fmtSI(gd.weight, 'N') + '.');
       else if (gd.regime === 'punchesThrough') items.push(c.surface.id === 'ice' ? 'Lake ice gives at about ' + fmtSI(gd.q0, 'Pa') + ' under his feet; he presses ' + fmtSI(gd.footPressure, 'Pa') + '. At any weight that breaks the ice he is far denser than water, so he sinks to the bottom.' : capital(theSurf(c.surface)) + ' is a thin layer. Once it breaks he’s in whatever is underneath, and the sim doesn’t know what that is.');
       else if (gd.regime === 'fallsThrough') items.push((gd.strongRockHolds ? 'Most rock can’t hold him. ' : 'No rock can hold him. ') + 'Bedrock gives at about 1.7 GPa (a rough figure; real rock runs 0.1–4 GPa), and his weight presses ' + fmtSI(gd.bodyPressure, 'Pa') + ' on it.' + (gd.strongRockHolds ? ' Very strong rock might just hold him.' : '') + ' Strength doesn’t help: there’s nothing under him that can push back.');
@@ -13888,7 +13889,7 @@ window.DINO_DATA = {
     out.push(math([
       'Volume = ' + sig(P.BUILDS[c.body.build].kV, 4) + ' × height³ (' + (c.body.build === 'human' ? 'the 2 m, 180 kg calibration body: 0.18 m³ at 2 m' : 'his build, from his ruled mass at 1,060 kg/m³: ' + sig(P.bodyVolume(P.DEFAULT_BODIES.rex.H, c.body.build), 3) + ' m³ at 10 ft') + ') = ' + sig(r.V, 3) + ' m³; mass = density × volume = ' + fmtDensity(r.rho) + ' × ' + sig(r.V, 3) + ' m³ = ' + fmtMass(r.m) + '; weight W = m g = ' + fmtSI(r.W, 'N') + '.',
       'Both legs push up to 1.4 × strength = ' + fmtSI(mv.legForce, 'N') + '. Stand: ≥ W. Walk: ≥ 1.2 W, the load on one leg per step (Nilsson & Thorstensson 1989), set against both legs’ push (a rough rule). Run (the Sprint tab’s rough rule): strength > W; measured running peaks are 2–2.9 W per step.',
-      pl.regime !== 'none' ? null : 'Feet: W ÷ (2 × ' + sig(c.body.footArea, 2) + ' m²) = ' + fmtSI(gd.footPressure, 'Pa') + '. Whole underside: W ÷ ' + sig(c.body.topArea, 2) + ' m² = ' + fmtSI(gd.bodyPressure, 'Pa') + '. Sand and gravel: below the failure pressure his feet leave a print scaled from a weighed elephant’s (Schanz 2013: 18 mm at 350 kPa, rising as pressure^1.27 and with foot width). That elephant’s sand carried 350 kPa under its forefoot, so we take that as where it starts to fail (scaled with foot width, and more for gravel, which bears more): a lower bound. Past it the foot sinks until limit + γ·depth·N_q carries it (N_q 18.4 or 64.2; USACE EM 1110-1-1905). Clay: the bearing grows with depth (N_c up to 9; EM 1110-1-1905 Table 4-7) plus γ·depth. All estimates.',
+      pl.regime !== 'none' ? null : 'Feet: W ÷ (2 × ' + sig(c.body.footArea, 2) + ' m²) = ' + fmtSI(gd.footPressure, 'Pa') + '. Whole underside: W ÷ ' + sig(c.body.topArea, 2) + ' m² = ' + fmtSI(gd.bodyPressure, 'Pa') + '. Sand and gravel: below the failure pressure his feet leave a print scaled from a weighed elephant’s (Schanz 2013: 18 mm at 350 kPa, rising as pressure^1.27 and with foot width). That elephant’s sand carried its forefoot (350 kPa by the researchers’ calibrated model; force-plate data suggest nearer 181 kPa) with only a 2 cm print, so we take 350 kPa as where it starts to fail, scaled with foot width, and more for gravel, which bears more (our estimate; if 181 kPa is right, sinking starts sooner). Past it the foot sinks until limit + γ·depth·N_q carries it (N_q 18.4 or 64.2; USACE EM 1110-1-1905). Clay: the bearing grows with depth (N_c up to 9; EM 1110-1-1905 Table 4-7) plus γ·depth. All estimates.',
       pl.regime !== 'none' ? null : 'Bedrock carries up to 1.7 GPa × his underside = ' + fmtSI(gd.rockCap, 'N') + ' (estimate). Bolted to the planet stops sliding, not sinking; only Comic ground keeps the floor whole.',
       pl.regime !== 'none' ? null : 'Inside the Earth: PREM density and gravity (Dziewonski & Anderson 1981); resistance = area × (rock strength + ρv²) against his motion relative to the turning rock; no strength in the liquid outer core; 3-D RK4 for the first trip, Earth turning once per 23.93 h; later trips averaged.',
       'His gravity treats him as a ball of equal volume, radius ' + fmtDist(gr.R) + '. Surface gravity GM/R², escape speed √(2GM/R), G = 6.674 × 10⁻¹¹. His pull equals the Earth’s at √(GM/g) = ' + fmtDist(gr.dBeat) + '.',
