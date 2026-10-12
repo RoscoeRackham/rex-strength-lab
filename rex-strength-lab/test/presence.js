@@ -439,7 +439,9 @@ const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface
     ok('Ollie on sand: denser always sinks at least as far', mono); }
   // the open questions are closed on the page
   { const fs = require('fs'), pth = require('path'), src = fs.readFileSync(pth.join(__dirname, '../src/app.html'), 'utf8') + fs.readFileSync(pth.join(__dirname, '../src/static-data.js'), 'utf8');
-    ok('no open questions for the owners left on the page', !/open question/i.test(src) && !/grows from his soles/i.test(src)); }
+    ok('no open questions for the owners left on the page', !/open question/i.test(src) && !/grows from his soles/i.test(src));
+    // the half-life control was removed (12 Oct 2026): the runaway loop can never run away under the canon
+    ok('no half-life control on the page', !/half-life|halfLife|half-row/.test(src)); }
 }
 
 console.log(n + ' checks, ' + (fails ? fails + ' FAILED' : 'all checks passed'));

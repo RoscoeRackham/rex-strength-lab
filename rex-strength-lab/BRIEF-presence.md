@@ -50,7 +50,7 @@ These apply wherever an absorbed switch is on.
    - Rough first look, to verify: for ordinary blasts the feedback dies out at once, because shoving the surroundings aside returns roughly 10⁻¹⁵ of the energy the growth itself took.
    - A real runaway needs a feedback term comparable to their own mass-energy. Their own gravity is the candidate, and it approaches that only near black-hole density, which the Weight tab already computes. If that holds, the half-life matters only in that regime.
    - Show the loop's ratio and where it crosses 1.
-   - Settled by the owners (12 Oct 2026; CLAUDE.md): the side effects are paid from the absorbed energy (a round trip, which adds nothing), and the energy gravity releases goes to the endless ocean. So the loop never crosses 1 and the half-life never acts. Instant growth happens about his middle; the lift the ground's push would give him goes to the endless ocean, so he is never thrown up.
+   - Settled by the owners (12 Oct 2026; CLAUDE.md): the side effects are paid from the absorbed energy (a round trip, which adds nothing), and the energy gravity releases goes to the endless ocean. So the loop never crosses 1, and the half-life control was removed (owner, 12 Oct 2026). Instant growth happens about his middle; the lift the ground's push would give him goes to the endless ocean, so he is never thrown up.
 
 In the growth modes (2–4), show the mass gained once it is worth mentioning, and apply the Weight tab's physics (their own gravity, sinking) to the heavier body.
 
