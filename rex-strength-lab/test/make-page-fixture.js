@@ -22,6 +22,8 @@ for (const tab of ['weight', 'jump', 'collide']) CASES.push({ id: 's1-' + tab, t
 for (const tab of ['collide', 'wrestle']) for (const a of ['friction', 'bolted']) for (const b of ['friction', 'bolted']) CASES.push({ id: 's3-' + tab + '-' + a + '-' + b, tab, state: { anchor: a, oAnchor: b } });
 // section 4: a saved two-player tab
 CASES.push({ id: 's4-catch', tab: 'catch', state: { group: 'duo', duoAction: 'catch' } });
+// an older save's Wrestle throw at Rex's Throw angle (the new page gives Wrestle its own angle, started from this one)
+CASES.push({ id: 's4-wrestle-throw', tab: 'wrestle', state: { angle: 30, wrestleMove: 'throw' } });
 const DUO = ['arm', 'wrestle', 'catch', 'collide'];
 
 // what the result is: the verdict, the status chips and the tiles of the bay that shows the tab

@@ -1197,7 +1197,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Newton’s third law stays on",
-   "d": "Every push pushes him back. He stays put only as far as friction and the ground’s bearing strength allow. “Bolted to the planet” stops him being pushed along, whatever the friction (weak ground can still give way under him, and in some two-player tests the ground around his feet can tear out, unless Comic ground is on). “Comic ground” keeps the floor whole (no sinking, no tear-out) but adds no grip, so friction still caps his footing when he isn’t bolted."
+   "d": "Every push pushes him back. He stays put only as far as friction and the ground’s bearing strength allow. “Bolted to the planet” stops a push sliding his planted feet, whatever the friction; what else it changes depends on the move, and each tab says so (weak ground can still give way under him; in some two-player tests the ground around his feet can tear out, unless Comic ground is on, and a very fast hit can be over before the bolts help). “Comic ground” keeps the floor whole (no sinking, no tear-out) but adds no grip, so friction still caps his footing when he isn’t bolted."
   },
   {
    "t": "Two muscle models, one calibration",

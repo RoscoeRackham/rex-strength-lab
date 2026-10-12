@@ -115,10 +115,16 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       await page.click('#wm-push');
       // on a wide screen the sticky sidebar scrolls on its own, so Their powers is in reach while reading either bay
       if (w >= 920) {
-        await page.evaluate(() => window.scrollTo(0, document.getElementById('duo-bay').getBoundingClientRect().top + window.scrollY - 20));
-        await page.focus('#powers > summary'); await page.waitForTimeout(200);
-        const reach = await page.evaluate(() => { const r = document.querySelector('#powers > summary').getBoundingClientRect(), b = document.getElementById('duo-bay').getBoundingClientRect(); return { top: r.top, bottom: r.bottom, vh: innerHeight, bayTop: b.top }; });
-        if (reach.top < 0 || reach.bottom > reach.vh || reach.bayTop > reach.vh || reach.bayTop < -reach.vh) texts.push('Their powers out of reach while reading the Rex + Ollie element ' + JSON.stringify(reach));
+        // the sidebar's own scroll box says what is below its edge: the cue shows, names Their powers, and clicking it
+        // brings Their powers into view next to the Rex + Ollie element, then hides
+        await page.evaluate(() => { document.querySelector('.panel-controls').scrollTop = 0; window.scrollTo(0, document.getElementById('duo-bay').getBoundingClientRect().top + window.scrollY - 20); });
+        await page.waitForTimeout(300);
+        const cue = await page.evaluate(() => { const c = document.getElementById('more-below'), r = c.getBoundingClientRect(); return { shown: !c.hidden && r.height > 0 && r.top >= 0 && r.bottom <= innerHeight, text: c.textContent }; });
+        if (!cue.shown || !/Their powers/.test(cue.text)) texts.push('sidebar cue ' + JSON.stringify(cue));
+        if (cue.shown) await page.click('#more-below'); else await page.evaluate(() => { const a = document.querySelector('.panel-controls'); a.scrollTop = a.scrollHeight; });
+        await page.waitForTimeout(900);
+        const reach = await page.evaluate(() => { const r = document.querySelector('#powers > summary').getBoundingClientRect(), b = document.getElementById('duo-bay').getBoundingClientRect(); return { top: r.top, bottom: r.bottom, vh: innerHeight, bayTop: b.top, cueHidden: document.getElementById('more-below').hidden }; });
+        if (reach.top < 0 || reach.bottom > reach.vh || reach.bayTop > reach.vh || !reach.cueHidden) texts.push('Their powers out of reach while reading the Rex + Ollie element ' + JSON.stringify(reach));
         await page.evaluate(() => window.scrollTo(0, 0));
         // and the mouse wheel over the sidebar still scrolls the page once the sidebar is at its end
         const sb = await page.$eval('.panel-controls', (a) => { const r = a.getBoundingClientRect(); return { x: r.x, y: r.y }; });
@@ -153,10 +159,10 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     // removed, the bolted case of walking drive stated, and the shoving match no longer lower-casing a name.
     const EDITS = [
       [/^(Pushing straight across: )(rex|ollie)\b/, (m, a, b) => a + b.charAt(0).toUpperCase() + b.slice(1)],
-      [/ \(plus a little claw or boot bite if dug in\): /g, ', and none at all if he is bolted (the sim keeps a bolted wrestler planted: he holds but doesn’t walk the other out) or too heavy to walk: '],
-      [/A heavier body, or one dug in, wins\./g, 'A heavier body wins.'],
-      [/footing = μ m g \(\+ shear × buried area if dug in; unlimited if bolted\)\./g, 'footing = μ m g (unlimited if bolted).'],
-      [/Drive = min\(strength, μ m g \+ ¼ shear × buried area if dug in\);/g, 'Drive = min(strength, μ m g);'],
+      [/ \(plus a little claw or boot bite if dug in\): /g, ', or under what the ground bears beneath his feet where it is too soft to carry him, and none at all if he is bolted (the sim keeps a bolted wrestler planted: he holds but doesn’t walk the other out) or too heavy to walk: '],
+      [/Equal bodies on equal ground stay equal at any strength\. A heavier body, or one dug in, wins\./g, 'Equal bodies (same weight and feet) on equal ground stay equal at any strength. On firm ground the heavier one wins; where the ground is too soft to carry a body’s weight, his grip is capped by what it bears under his feet, so bigger feet help; and if either is bolted, nobody walks the other out.'],
+      [/Hold = min\(strength, footing\); footing = μ m g \(\+ shear × buried area if dug in; unlimited if bolted\)\./g, 'Hold = min(strength, footing), or the footing alone if he is too heavy to stand; footing = μ × min(m g, what the ground under his feet bears). Bolted: unlimited, whatever his strength (the bolts hold, not his muscles).'],
+      [/Drive = min\(strength, μ m g \+ ¼ shear × buried area if dug in\);/g, 'Drive = min(strength, μ × min(m g, what the ground under his feet bears));'],
     ];
     const edit = (t) => EDITS.reduce((x, [re, to]) => x.replace(re, to), t);
     const editAll = (r) => { const o = {}; for (const [k, v] of Object.entries(r)) o[k] = Array.isArray(v) ? v.map((x) => x && edit(x)) : v && edit(v); return JSON.stringify(o); };
@@ -174,6 +180,12 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     for (const tab of ['weight', 'jump']) { await load(Object.assign({ mode: 'real', anchor: 'bolted', oAnchor: 'bolted', action: tab }, POWERS_OFF)); await settle(page, 'bay'); same('s1-' + tab, await readResult(page, 'bay')); }
     await load(Object.assign({ mode: 'real', anchor: 'bolted', oAnchor: 'bolted', duoOpen: true, duoAction: 'collide' }, POWERS_OFF));
     same('s1-collide', await duoResult());
+    // a saved bolted footing loads with its switch on, each side on its own
+    const sw = async () => (await page.evaluate(() => [document.getElementById('bolt-rex').checked, document.getElementById('bolt-ollie').checked])).join();
+    const swBoth = await sw();
+    await load({ anchor: 'bolted', oAnchor: 'friction' }); const swRex = await sw();
+    await load({ anchor: 'friction', oAnchor: 'bolted' }); const swOllie = await sw();
+    if (swBoth !== 'true,true' || swRex !== 'true,false' || swOllie !== 'false,true') fail('saved bolted footing shows switches ' + [swBoth, swRex, swOllie].join(' | ')); else okLog('saved bolted footing loads with its Bolted switch on (both, Rex only, Ollie only)');
     // section 3: the Bolted switches give what the old menus gave, for each side, on Collide and Wrestle
     for (const tab of ['collide', 'wrestle']) {
       await load(Object.assign({ anchor: 'friction', oAnchor: 'friction', duoOpen: true, duoAction: tab }, POWERS_OFF));
@@ -193,6 +205,9 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     const s4 = await page.evaluate(() => ({ open: document.getElementById('duo').open, sel: (document.querySelector('#duo-tabs [aria-selected="true"]') || {}).id, saved: JSON.parse(localStorage.getItem('rex-lab-v1')) }));
     if (!s4.open || s4.sel !== 'tab-catch' || 'group' in s4.saved || s4.saved.duoOpen !== true) fail('saved group duo: ' + JSON.stringify({ open: s4.open, sel: s4.sel, group: s4.saved.group, duoOpen: s4.saved.duoOpen })); else okLog('saved group duo opens the element on Catch; the group key is dropped');
     same('s4-catch', await duoResult());
+    // an older save (no wAngle) keeps its Wrestle throw: Wrestle's own angle starts from Rex's
+    await load({ angle: 30, wrestleMove: 'throw', duoOpen: true, duoAction: 'wrestle' });
+    same('s4-wrestle-throw', await duoResult());
     // Ollie's settings inside the element change the two-player result and leave Rex's bay alone
     await load({ duoOpen: true, duoAction: 'arm', action: 'throw' });
     await settle(page, 'bay');
@@ -224,6 +239,22 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     await page.click('#duo > summary'); await page.waitForTimeout(400); await settle(page, 'duo-bay'); await page.waitForTimeout(900);
     const live = await page.evaluate(() => window.__live);
     if (before !== 0 || live.length < 1) fail('reopening the element: live region writes ' + JSON.stringify(live) + ' (' + before + ' while closed)'); else okLog('the element’s verdict is announced on reopening, not while it is closed');
+    // reopening after a change made while it was closed never shows the old settings' result
+    await page.click('#duo > summary'); await page.waitForTimeout(300);
+    await page.click('#tier-chips .chip[data-id="spidey"]'); await page.waitForTimeout(300);
+    await page.evaluate(() => { window.__atOpen = null; document.addEventListener('toggle', (e) => { if (e.target.id === 'duo' && e.target.open && window.__atOpen === null) window.__atOpen = document.getElementById('duo-bay').textContent.trim(); }, true); });
+    await page.click('#duo > summary'); await page.waitForTimeout(100); await settle(page, 'duo-bay');
+    const atOpen = await page.evaluate(() => window.__atOpen);
+    if (!/^Working it out/.test(atOpen || '')) fail('reopening after a change showed: ' + (atOpen || '').slice(0, 120)); else okLog('reopening after a change shows Working it out, not the old result');
+    // a typed, uncommitted distance in Rex's own box, then a resize: no page error, and the typed value is used
+    await load({ action: 'stomp' }); await settle(page, 'bay');
+    await page.evaluate(() => { const d = document.querySelector('#bay details.effort-adjust'); if (d) d.open = true; });
+    const errsBefore = errs.length;
+    await page.focus('#near'); await page.keyboard.press('Control+A'); await page.keyboard.type('50');
+    await page.setViewportSize({ width: 1000, height: 900 }); await page.waitForTimeout(800); await settle(page, 'bay');
+    const nearNow = await page.evaluate(() => JSON.parse(localStorage.getItem('rex-lab-v1')).near);
+    await page.setViewportSize({ width: 1280, height: 900 }); await page.waitForTimeout(300);
+    if (errs.length > errsBefore || nearNow !== 50) fail('a resize with a typed distance in Rex’s bay: ' + JSON.stringify({ errors: errs.slice(errsBefore), near: nearNow })); else okLog('a resize with a typed distance in Rex’s bay: no page error, the distance is taken');
     if (errs.length) fail('page errors: ' + errs.slice(0, 3).join(' | '));
     await page.close();
     // Closing the element stops its background search. Every two-player call is slowed to 60 ms here, so a search

@@ -104,6 +104,10 @@ details.setup[open] summary::after { content: "–"; content: "–" / ""; }
 .side-sec { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px; display: flex; flex-direction: column; gap: 6px; }
 .side-head { font-weight: 700; }
 .pair { display: flex; flex-wrap: wrap; gap: 0 24px; }
+/* On a wide screen the sticky sidebar scrolls on its own when it is taller than the window; this cue says what is
+   below its edge and scrolls there (scrollbars can be hidden until used) */
+.more-below { display: none; }
+@media (min-width: 920px) { .more-below:not([hidden]) { display: block; position: sticky; bottom: -16px; width: calc(100% + 32px); margin: 12px -16px -16px; padding: 22px 16px 10px; border: 0; border-radius: 0 0 var(--r) var(--r); background: linear-gradient(to bottom, transparent, var(--surface) 45%); font: inherit; font-size: 0.85rem; font-weight: 700; color: var(--ink); text-align: center; cursor: pointer; } }
 .pair .check { margin-top: 4px; }
 
 /* The test bays: Rex's, and the Rex + Ollie element below it (collapsed until opened) */
@@ -325,7 +329,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
             <label class="check"><input type="checkbox" id="bolt-rex" aria-label="Bolted to the planet: Rex"><span>Rex</span></label>
             <label class="check"><input type="checkbox" id="bolt-ollie" aria-label="Bolted to the planet: Ollie"><span>Ollie</span></label>
           </div>
-          <span class="hint">On, nothing can slide his planted feet: friction no longer limits how hard he can push or be pushed along, and the push goes into the ground. He still walks, runs and jumps, and on weak ground he still sinks when he stands, lifts, throws or lands. In some two-player tests the ground around his feet can still tear out under a big enough push (unless Comic ground is on), and a very fast hit is over before the bolts can help. Off, he is just standing, and friction holds him. One each, so a contest can bolt one side and not the other.</span>
+          <span class="hint">On, a push along the ground can’t slide his planted feet: it goes into the planet instead. He still walks, runs and jumps. What else it changes depends on the move, and each tab says so: weak ground can still give way under him, and in some two-player tests the ground around his feet can tear out (unless Comic ground is on) or a very fast hit is over before the bolts can help. Off, he is just standing, and friction holds him. One each, so a contest can bolt one side and not the other.</span>
         </div>
         <label class="check"><input type="checkbox" id="ground-holds"><span><b>Comic ground</b> — the floor never breaks</span></label>
         <div class="eyebrow" style="margin-top:12px">Material limit suspended</div>
@@ -355,6 +359,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
           <span class="hint">Growth is a what-if: the page resets to their canon size and mass next visit.</span>
         </div>
       </details>
+      <button type="button" class="more-below" id="more-below" tabindex="-1" aria-hidden="true" hidden></button>
     </aside>
 
     <div class="bay-col">
@@ -5243,7 +5248,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Newton’s third law stays on",
-   "d": "Every push pushes him back. He stays put only as far as friction and the ground’s bearing strength allow. “Bolted to the planet” stops him being pushed along, whatever the friction (weak ground can still give way under him, and in some two-player tests the ground around his feet can tear out, unless Comic ground is on). “Comic ground” keeps the floor whole (no sinking, no tear-out) but adds no grip, so friction still caps his footing when he isn’t bolted."
+   "d": "Every push pushes him back. He stays put only as far as friction and the ground’s bearing strength allow. “Bolted to the planet” stops a push sliding his planted feet, whatever the friction; what else it changes depends on the move, and each tab says so (weak ground can still give way under him; in some two-player tests the ground around his feet can tear out, unless Comic ground is on, and a very fast hit can be over before the bolts help). “Comic ground” keeps the floor whole (no sinking, no tear-out) but adds no grip, so friction still caps his footing when he isn’t bolted."
   },
   {
    "t": "Two muscle models, one calibration",
@@ -12699,7 +12704,10 @@ window.DINO_DATA = {
   const RANGES = { gThrow: [0.1, 1e9], gJump: [0.01, 1e9], gSprint: [0.1, 3e8], gPull: [0.01, 1e9], growT: [1e-3, 1e12], near: [0.5, 1000], walkD: [0.5, 10000] };
   const inRange = (k, v) => isFinite(v) && v >= RANGES[k][0] && v <= RANGES[k][1];
   // a typed number outside its range is clamped to the nearest allowed value (as the height field is); blank or junk keeps the old one
-  const setIn = (k, raw) => { const v = String(raw).trim() === '' ? NaN : Number(raw); if (isFinite(v)) state[k] = Math.min(RANGES[k][1], Math.max(RANGES[k][0], v)); update(); };
+  // A typed box commits on change, which also fires when a redraw removes it while focused: the state changes at once,
+  // and the page redraws after the current render ends, never inside it
+  let setInTimer = null;
+  const setIn = (k, raw) => { const v = String(raw).trim() === '' ? NaN : Number(raw); if (isFinite(v)) state[k] = Math.min(RANGES[k][1], Math.max(RANGES[k][0], v)); clearTimeout(setInTimer); setInTimer = setTimeout(update, 0); };
   const DEFAULTS = {
     logKg: Math.log10(100 * 907.18474), inf: false, mode: 'comic', surface: 'concrete', groundHolds: false, anchor: 'friction', H: P.DEFAULT_BODIES.rex.H, m: P.DEFAULT_BODIES.rex.m, build: 'rex', action: 'throw', obj: 'car', angle: 45,
     // two-player tests: the last tab picked in the Rex + Ollie element, and whether that element is open
@@ -13417,7 +13425,7 @@ window.DINO_DATA = {
     if (r.anchor.R !== Infinity && r.recoilV > 0.01) items.push('Newton’s third law: the ' + o.short + ' pushes back on Rex exactly as hard as he pushes it. His footing can only resist ' + fmtSI(r.anchor.R, 'N') + ', so he flies backward at ' + speedOnly(r.recoilV) + '.' + (r.recoilE > r.Eobj ? ' He ends up with more of the energy than the ' + o.short + ' does.' : '') + (state.anchor === 'friction' ? ' To stay put he needs to be bolted: turn on Bolted to the planet for Rex in Their powers.' : ''));
     // the footing model caps only the sideways part of the push; the sinking ground still takes the downward part,
     // so near vertical the cap grows as 1/cos(angle) and straight up there is none (the 89°-to-90° jump)
-    if (r.sinkRatio > 1) items.push('The throw also drives his feet down: the ground under him is carrying ' + fmtRatio(r.sinkRatio) + ' its limit, so he sinks while he throws.' + (state.angle >= 45 ? ' Even so, the sim lets the ground take the downward part of his push, as if the planet held him; only the sideways part is limited by his footing. The steeper the throw, the less his footing limits it, and straight up nothing does, so a near-vertical throw here is an upper bound.' : ''));
+    if (r.sinkRatio > 1) items.push('The throw also drives his feet down: the ground under him is carrying ' + fmtRatio(r.sinkRatio) + ' its limit, so he sinks while he throws.' + (c.anchor === 'bolted' ? ' Bolted, his footing limits no part of the push: the sim lets the ground take all of it, as if the planet held him, so at any angle this throw is an upper bound.' : state.angle >= 45 ? ' Even so, the sim lets the ground take the downward part of his push, as if the planet held him; only the sideways part is limited by his footing. The steeper the throw, the less his footing limits it, and straight up nothing does, so a near-vertical throw here is an upper bound.' : ''));
     if (vac && !f.relativistic) {
       if (vac.escaped && !f.escaped) items.push('Air is what brings it down. With no air, this launch would have escaped Earth.');
       else if (vac.orbit && !f.orbit) items.push('Air is what brings it down. With no air, this launch would have gone into orbit.');
@@ -13683,7 +13691,7 @@ window.DINO_DATA = {
     out.push(logBars('Top speed vs reference speeds', refs, (x) => big(x, 2) + ' m/s'));
     const items = [];
     if (r.limit === 'friction') items.push('Running is pushing backward on the ground. The ground only grips as hard as he presses down, and averaged over a stride he presses down with just his weight (' + fmtSI(c.body.m * g, 'N') + '). Friction caps his push at ' + fmtSI(r.thrust, 'N') + ', about ' + sig(r.accelG, 2) + ' g. More strength just makes him bounce higher.');
-    if (r.tooGentle) items.push('At this effort he pushes no harder than his own weight (' + fmtSI(c.body.m * g, 'N') + '), so he can’t get going: in this sim his speed comes only from the force he has beyond his own weight.');
+    if (r.tooGentle) items.push('At this effort he pushes no harder than his own weight (' + fmtSI(c.body.m * g, 'N') + '), so he can’t get going: in this sim a stride has to push harder than his weight before his legs build any speed, and here there is nothing to spare.');
     else if (c.anchor === 'bolted' && (r.limit === 'strength' || r.limit === 'effort')) items.push('Bolted to the planet, his strides can’t slip, and the sim doesn’t let a bolted stride sink either, so neither friction nor soft ground caps his push-off: ' + (r.limit === 'effort' ? 'the strength he uses' : 'his strength') + ' sets it, ' + fmtSI(r.thrust, 'N') + '.');
     else if (r.limit === 'strength') items.push('He isn’t strong enough yet to use all the grip on offer, so strength sets his push-off: ' + fmtSI(r.thrust, 'N') + '.');
     if (r.limit === 'soft ground') items.push('Each stride puts about 2.5 times his weight on one foot, more than ' + c.surface.short + ' can carry, so every step sinks and his push-off is capped.');
@@ -14104,12 +14112,12 @@ window.DINO_DATA = {
     if (r.outcome === 'pin' && isFinite(r.slamCap) && r.slamRatio > 1) items.push('A regulation table (World Armwrestling Federation: plywood on a steel frame, scaled to their size) is built for people. This pin delivers ' + (isFinite(pin.E) ? fmtSI(pin.E, 'J') : 'unbounded energy') + ', ' + fmtRatio(r.slamRatio) + ' the impact a floor panel of that plywood is tested to survive.');
     items.push('In people, a full-force twist like this is how the upper arm snaps: in one series of 30 arm-wrestling fractures, all were spiral breaks of the humerus. A healthy humerus takes roughly 190 N·m in theory; cadaver bones broke at 25–31 N·m. Rex and Ollie are indestructible.');
     if (r.grav.F > 1e-3 * Math.min(cR.body.m, cO.body.m) * g) items.push('Across the table their gravity pulls them together with ' + fmtSI(r.grav.F, 'N') + ', ' + fmtRatio(r.grav.F / (Math.min(cR.body.m, cO.body.m) * g)) + ' the lighter one’s weight on Earth.');
-    if (r.tableBreaks && (r.tearA > 1 || r.tearB > 1)) items.push('Bolted to the planet holds, but the ground around the bolts doesn’t: past about ' + fmtSI(Math.min(groundTearOf(cR), groundTearOf(cO)), 'N') + ' the surface breaks up around his feet.');
+    if (r.tableBreaks && (r.tearA > 1 || r.tearB > 1)) items.push('Bolted to the planet holds, but the ground around the bolts doesn’t: ' + [['Rex', cR, r.tearA], ['Ollie', cO, r.tearB]].filter(([, , t]) => t > 1).map(([n, c]) => 'past about ' + fmtSI(groundTearOf(c), 'N') + ' it breaks up around ' + n + '’s feet').join(', and ') + '.');
     out.push(happens(items));
     out.push(el('figure', { class: 'art-wide' }, el('img', { src: ART.arm, alt: 'Arm wrestling: Ollie’s huge furry forearm and Rex’s scaly, clawed hand locked together in a grip, Rex’s bulging scaled arm on the right.' })));
     out.push(math([
       'Arm force = 25% of strength in both muscle models (estimate, plausibly 10–40%: ordinary men’s measured arm force against an assumed 1–2× body-weight deadlift): Rex ' + fmtN(r.PA) + ', Ollie ' + fmtN(r.PB) + '.',
-      'The table carries the push while both arms stay under ' + (isFinite(r.tableLat) ? fmtSI(r.tableLat, 'N') : 'any limit (' + (gate ? 'ground treated as holding' : 'comic ground') + ')') + '. Once it breaks: usable = min(arm force, footing); footing = μ m g; unlimited if bolted. Standing up, the loser’s arm folds only if the winner presses harder than it; otherwise his feet give and he is dragged.',
+      'The table carries the push while both arms stay under ' + (isFinite(r.tableLat) ? fmtSI(r.tableLat, 'N') : 'any limit (' + (gate ? 'ground treated as holding' : 'comic ground') + ')') + '. Once it breaks: usable = min(arm force, footing); footing = μ × min(m g, what the ground under his feet bears); unlimited if bolted. Standing up, the loser’s arm folds only if the winner presses harder than it; otherwise his feet give and he is dragged.',
       r.padLoad > 0 ? 'Elbow pad during a pin, from torques about each elbow: loser’s arm + (winner’s arm − loser’s arm) × (0.0097 m_loser + 0.012 m_winner) / (0.0097 × (m_Rex + m_Ollie)) = ' + fmtN(r.padLoad) + '. The forearm and hand are 2.2% of body mass each, centred 0.55 of the way to the grip.' : null,
       r.outcome === 'pin' ? 'Pin: net ' + fmtSI(pin.dA, 'N') + ' (winner’s push − loser’s arm) on M = 0.0097 × (m_Rex + m_Ollie) = ' + fmtMass(pin.M) + ' over s = (π/2) × 0.19 × height = ' + fmtDist(pin.s) + '; relativistic momentum; real muscle force falls with hand speed (Hill, top hand speed borrowed from the punch). The losing arm’s extra strength while it is forced back (about 8% in people) is ignored.' : null,
       r.outcome === 'drag' ? 'Drag: net ' + fmtSI(drag.dA, 'N') + ' (winner’s push − loser’s footing) on M = m_' + L + ' + 0.0097 × m_' + W + ' = ' + fmtMass(drag.M) + ' over s = (π/2) × 0.19 × ' + W + '’s height = ' + fmtDist(drag.s) + '; relativistic momentum; real muscle force falls with hand speed as for a pin.' : null,
@@ -14185,11 +14193,11 @@ window.DINO_DATA = {
     ].filter(Boolean), (x) => fmtSI(x, 'N')));
     out.push(happens([
       'A shoving match is decided at the feet. To push forward, each one has to grip the ground; to stay put, each one has to grip it too. Strength past that grip just makes feet slide. (That assumes each leans into the push; upright, a body tips over at a few hundred newtons.)',
-      'Walking drive is friction under his own weight, and none at all if he is bolted (the sim keeps a bolted wrestler planted: he holds but doesn’t walk the other out) or too heavy to walk: ' + fmtSI(r.DA, 'N') + ' for Rex, ' + fmtSI(r.DB, 'N') + ' for Ollie. Holding still can use his full footing.',
-      'Equal bodies on equal ground stay equal at any strength. A heavier body wins.',
+      'Walking drive is friction under his own weight, or under what the ground bears beneath his feet where it is too soft to carry him, and none at all if he is bolted (the sim keeps a bolted wrestler planted: he holds but doesn’t walk the other out) or too heavy to walk: ' + fmtSI(r.DA, 'N') + ' for Rex, ' + fmtSI(r.DB, 'N') + ' for Ollie. Holding still can use his full footing.',
+      'Equal bodies (same weight and feet) on equal ground stay equal at any strength. On firm ground the heavier one wins; where the ground is too soft to carry a body’s weight, his grip is capped by what it bears under his feet, so bigger feet help; and if either is bolted, nobody walks the other out.',
       r.outcome === 'bothBolted' ? 'Both bolted: the push runs from one through the ground to the other. ' + (cR.groundHolds ? 'Comic ground never breaks, so the push never leaves the two of them and the planet.' : 'The ground between their feet is stretched, and rock and concrete are weak in tension.') : null,
     ]));
-    out.push(math(['Hold = min(strength, footing); footing = μ m g (unlimited if bolted).', 'Drive = min(strength, μ m g); 0 if bolted or too heavy to walk.', 'Winner: the one whose drive beats the other’s hold. Walk-out: a = (drive − hold) / (m_Rex + m_Ollie), capped at his running speed, over half the ring (' + fmtDist(r.ring / 2) + ').']));
+    out.push(math(['Hold = min(strength, footing), or the footing alone if he is too heavy to stand; footing = μ × min(m g, what the ground under his feet bears). Bolted: unlimited, whatever his strength (the bolts hold, not his muscles).', 'Drive = min(strength, μ × min(m g, what the ground under his feet bears)); 0 if bolted or too heavy to walk.', 'Winner: the one whose drive beats the other’s hold. Walk-out: a = (drive − hold) / (m_Rex + m_Ollie), capped at his running speed, over half the ring (' + fmtDist(r.ring / 2) + ').']));
     return out;
   }
   function wrestleShove(cR, cO, cA, cB, nA, nB) {
@@ -14901,7 +14909,9 @@ window.DINO_DATA = {
     if (!isFinite(cA.F) && r.outcome !== 'unstoppable' && r.outcome !== 'paradox' && state.colSrc === 'sprint') items.push('Infinite strength isn’t unstoppable: a charge needs grip. On ' + cA.surface.short + ' his feet push off with only ' + fmtSI(r.speed.run ? r.speed.run.thrust : 0, 'N') + ', so he tops out at ' + speedOnly(r.v0) + '.');
     if (!isFinite(cB.F) && r.outcome === 'moved') items.push('Infinite strength isn’t immovable either: holding still needs footing, and his feet give at ' + fmtN(hb.R) + '.');
     if (r.held && r.earth && isFinite(r.pA)) items.push('The Earth takes the momentum: its speed changes by ' + sci(splat ? r.earth.dvSplat : r.earth.dvBounce, 2) + ' m/s.' + (r.earth.runUpCancels ? ' And ' + X + ' got his speed by pushing on the Earth in the first place, so the Earth just gets its own momentum back and ends up exactly as still as it started.' : ' Arriving from outside, his momentum stays with the Earth' + (r.earth.dayChange > 0 ? '; if he hits along the equator, the day gets ' + fmtTime(r.earth.dayChange) + ' longer or shorter.' : '.')));
-    items.push(rockBullet(r.rock, F ? F.F : 0, cB));
+    // the rock figures come from the steady crush (the splat's force) in both modes
+    const rb = rockBullet(r.rock, r.rock && r.rock.C, cB);
+    items.push(rb && !splat && r.rock && isFinite(r.rock.rT) ? rb + ' (That is the steady crush; a perfect bounce peaks at twice it, briefly.)' : rb);
     out.push(happens(items));
     out.push(caseGrid('The four cases', ['Finite momentum', 'Unlimited momentum (light speed)'], ['Finite inertia (anything real, even bolted to the Earth)', 'Unlimited inertia (truly immovable)'],
       [['Both move. They share the momentum; the softer the hit, the more energy it frees.', 'The charger stops or bounces. The object doesn’t budge, so the force was stoppable.'], ['The object is knocked away at just under light speed (the planet too, but only if he’s bolted to unbreakable ground), so it was movable.', 'No answer: ∞ ÷ ∞. The two can’t exist in the same universe.']],
@@ -16009,6 +16019,24 @@ window.DINO_DATA = {
   // the Rex + Ollie element opens as the reader left it
   duoPlaceholder();
   $('#duo').open = state.duoOpen;
+  // the sidebar's 'more below' cue: names the sections whose headings sit below its visible edge
+  {
+    const aside = $('.panel-controls'), cue = $('#more-below');
+    const SECS = [['setup', 'Size and density'], ['ground-sec', 'Ground'], ['powers', 'Their powers']];
+    const upd = () => {
+      const box = aside.getBoundingClientRect(), scrolls = aside.scrollHeight - aside.clientHeight > 4;
+      const below = scrolls ? SECS.filter(([id]) => { const n = $('#' + id); return n.getBoundingClientRect().top + 24 > box.bottom; }).map(([, t]) => t) : [];
+      const more = scrolls && aside.scrollHeight - aside.clientHeight - aside.scrollTop > 4;
+      cue.hidden = !more;
+      cue.textContent = 'More below' + (below.length ? ': ' + below.join(', ') : '') + ' ↓';
+    };
+    cue.onclick = () => { aside.scrollTo({ top: aside.scrollHeight, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); };
+    aside.addEventListener('scroll', upd, { passive: true });
+    aside.addEventListener('toggle', () => requestAnimationFrame(upd), true);
+    window.addEventListener('resize', upd);
+    window.addEventListener('scroll', upd, { passive: true });
+    upd();
+  }
   renderFeats();
   renderModel();
   update();

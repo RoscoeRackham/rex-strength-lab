@@ -99,6 +99,14 @@
     "group": "duo",
     "duoAction": "catch"
    }
+  },
+  {
+   "id": "s4-wrestle-throw",
+   "tab": "wrestle",
+   "state": {
+    "angle": 30,
+    "wrestleMove": "throw"
+   }
   }
  ],
  "results": {
@@ -344,6 +352,21 @@
    "math": [
     "Aim: the gentlest throw is the angle needing the least launch speed, each speed solved so the arc comes down at Ollie’s hand height (2.74 m) where his hands meet it, 1.82 m in front of his centre. Same air and round-Earth model as Throw. Fastball: his full-strength speed at each angle; the flattest angle whose path passes Ollie’s hands. Catch: first contact with his hands (m_h = 132 kg): v₁ = v m/(m + m_h); energy lost ½ m m_h v²/(m + m_h), over a 3 cm–7.6 cm squash (1–2.5% of his height, an estimate). Then F = (m + m_h) v₁²/(2d) + m g sin(angle) if his feet hold (F ≤ R); otherwise F/(m + m_h) + (F − R_slide(F))/M = v_eff²/(2d) and he slides. d = 0.3 × his height = 91 cm. First contact lasts about 2 × squash / v. At the arm force F the stroke takes t = v₁/a, a = (F − m g sin(angle))/(m + m_h) (plus his own slide back); at the least force that works, t = 2d/v₁. The round trip counts that stroke only when it is forced (he slides or needs at least half his strength); otherwise he can take as long as he likes. Slide: the pair coasts to a stop against friction and air drag: x = (M+m)/(2k)·ln(1 + k u²/R)."
    ]
+  },
+  "s4-wrestle-throw": {
+   "verdict": "Rex throws Ollie 30.9 m. Rex gets shoved backward at 6.24 m/s.",
+   "status": [],
+   "tiles": [
+    "Launch speed17.6 m/sEnergy in Ollie466 kJ110 g TNTDistance30.9 mtop 6.65 m · 2.06 sLands at18.6 m/s120 g TNT on impactRex’s recoil6.24 m/s"
+   ],
+   "effort": [
+    "All-out: no cap needed. Nothing the lab checks in this test can do harm here (nearest people and buildings 5 m away), so they go all-out.Courtesy ceiling: none. Nothing in this test does harm, even all-out, with the nearest people and buildings 5 m away."
+   ],
+   "happens": [
+    "Ollie is just an object here: 3.01 t with a 4.5 m² front. He doesn’t fight the throw; for that, see Shove.Landing: Ollie is indestructible, so the landing is the ground’s problem."
+   ],
+   "callouts": [],
+   "math": []
   }
  }
 }
