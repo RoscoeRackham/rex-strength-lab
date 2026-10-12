@@ -10,13 +10,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## In progress
 
-- Rex lab follow-ups from the owners' answers (collaborator, `terantic/rex-followups`): built and tested; pull request open, waiting for the owner's review. Live page not yet republished (owner's account).
-- Rex lab, restraint and presence (owner's cloud session, `claude/rex-presence`): `rex-strength-lab/BRIEF-presence.md` is built. Pull request #11 (research, the build, review rounds 1 and 2) was merged at `b1916a8`. Pull request #12 (same branch) carries the rest:
-  - Round 2's code-lens fixes and its record (`research/reviews/presence-round2.json`).
-  - Review round 3 (it checked round 2's fixes): 60 findings, 59 confirmed; all fixed, one partly (documented in the README's known limits). Record: `rex-strength-lab/research/reviews/presence-round3.json`. Among them: three round 2 fixes had not fully held (soft landing's was in the engine but not on the page); a solo throw's recoil slide is now a hazard; the single-event plaster level follows RI 8507 Figure B-1; the 1 MJ crater line in soil is labelled as our estimate.
-  - CLAUDE.md's Rex lab build line now runs `node test/presence.js` (as CI does).
-  - The session's `history/` entry.
-  - Published this build to the live page (version 8). `history/2026-10-11-rex-presence/` written. Next: owner reviews and merges #12.
+- Rex lab follow-ups from the owners' answers (collaborator, `terantic/rex-followups`): built and tested; pull request open, waiting for the owner's review. Live page not yet republished (owner's account). The branch also carries the owner's pull request #13 (this file's tidy-up after #12), which conflicted with `main` after #14; merging the follow-ups merges #13 too.
 
 ## Waiting on
 
@@ -31,6 +25,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 - 2026-10-12: Rex lab follow-ups built (`terantic/rex-followups`): instant growth about his middle, never thrown up; the runaway as a round trip; heel-first gait canon; the Weight tab's standing sink rule replaced (elephant print 18 mm at 350 kPa, against 0.23 m before). Tests: calibration, presence (382 checks), shots, sweep.
 - 2026-10-12: the presence build's four open questions answered (instant growth about the middle; runaway side effects paid from absorbed energy; heel-first gait; revise the sinking rule). Canon in `CLAUDE.md`; the Rex lab changes are listed under Waiting on.
+- 2026-10-12: Rex lab presence build finished (pull request #12, merged by the collaborator at `e2a3062`): round 2's code fixes, review round 3 (60 findings, 59 confirmed, all fixed, one partly; `rex-strength-lab/research/reviews/presence-round3.json`), `node test/presence.js` in CLAUDE.md's build line, and the session's history (`history/2026-10-11-rex-presence/`). Live page version 8 matches `main`. `rex-strength-lab/` and the other presence claims released.
 - 2026-10-11: Rex lab presence build merged (pull request #11 at `b1916a8`, merged by the collaborator): effort and the courtesy ceiling, not-so-heroic presets, the Walk tab, comic switches, absorption and growth, research (268 facts), review rounds 1 and 2.
 - 2026-10-11: all three live pages republished from `main` (`43cf5e6`, after pull requests #8 and #9): Rex lab version 5, Build Calculator version 3, Build Comparison version 4. Each was built from a clean checkout of `main` and passed its tests first.
 - 2026-10-11: presence brief merged (pull request #9, collaborator, `terantic/presence-brief`, including `terantic/grip`): a "Hands and grip" assumption card in the Rex lab; new canon on restraint, absorption (four modes) and growth (three forms); `rex-strength-lab/BRIEF-presence.md`; `build-comparison/BRIEF.md` brought up to date; `compile_facts.py` writes LF line endings; the Rex lab sweep covers the default 10 ft Rex and Ollie; and a record of the session in `history/2026-10-11-collaborator-canon-and-planning.md`.
