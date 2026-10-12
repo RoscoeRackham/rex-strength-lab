@@ -10,7 +10,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## In progress
 
-- Owner's cloud session: building `rex-strength-lab/BRIEF-gui.md` in its three pull requests, one at a time. **A** (page organisation, sections 1–4; no engine change) on `claude/rex-gui-a`: built and tested (engine and existing tests unchanged; new page checks in `test/shots.js`). Review round 1: 27 findings, all confirmed and fixed (`rex-strength-lab/research/reviews/gui-a-round1.json`); round 2 (checking the fixes) next, then the pull request. B (the four new powers) and C (energy comparisons, research first) follow, each after the one before is merged.
+- Owner's cloud session: building `rex-strength-lab/BRIEF-gui.md` in its three pull requests, one at a time. **A** (page organisation, sections 1–4; no engine change) on `claude/rex-gui-a`: built and tested (engine and existing tests unchanged; new page checks in `test/shots.js`). Review rounds 1 and 2: 27 and 18 findings, all confirmed and fixed (`rex-strength-lab/research/reviews/gui-a-round1.json`, `gui-a-round2.json`); round 3 (checking round 2's fixes) next, then the pull request. B (the four new powers) and C (energy comparisons, research first) follow, each after the one before is merged.
 
 ## Waiting on
 

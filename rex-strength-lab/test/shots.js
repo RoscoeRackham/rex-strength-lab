@@ -120,6 +120,12 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
         const reach = await page.evaluate(() => { const r = document.querySelector('#powers > summary').getBoundingClientRect(), b = document.getElementById('duo-bay').getBoundingClientRect(); return { top: r.top, bottom: r.bottom, vh: innerHeight, bayTop: b.top }; });
         if (reach.top < 0 || reach.bottom > reach.vh || reach.bayTop > reach.vh || reach.bayTop < -reach.vh) texts.push('Their powers out of reach while reading the Rex + Ollie element ' + JSON.stringify(reach));
         await page.evaluate(() => window.scrollTo(0, 0));
+        // and the mouse wheel over the sidebar still scrolls the page once the sidebar is at its end
+        const sb = await page.$eval('.panel-controls', (a) => { const r = a.getBoundingClientRect(); return { x: r.x, y: r.y }; });
+        await page.mouse.move(sb.x + 100, Math.min(400, h - 50));
+        for (let i = 0; i < 8; i++) { await page.mouse.wheel(0, 400); await page.waitForTimeout(80); }
+        if (await page.evaluate(() => window.scrollY) === 0) texts.push('the mouse wheel over the sidebar does not scroll the page');
+        await page.evaluate(() => window.scrollTo(0, 0));
       }
     }
     // each growth mode, with Their powers open (the page always opens on the endless ocean)
@@ -147,7 +153,7 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     // removed, the bolted case of walking drive stated, and the shoving match no longer lower-casing a name.
     const EDITS = [
       [/^(Pushing straight across: )(rex|ollie)\b/, (m, a, b) => a + b.charAt(0).toUpperCase() + b.slice(1)],
-      [/ \(plus a little claw or boot bite if dug in\): /g, ', and none at all if he is bolted (he can’t step) or too heavy to walk: '],
+      [/ \(plus a little claw or boot bite if dug in\): /g, ', and none at all if he is bolted (the sim keeps a bolted wrestler planted: he holds but doesn’t walk the other out) or too heavy to walk: '],
       [/A heavier body, or one dug in, wins\./g, 'A heavier body wins.'],
       [/footing = μ m g \(\+ shear × buried area if dug in; unlimited if bolted\)\./g, 'footing = μ m g (unlimited if bolted).'],
       [/Drive = min\(strength, μ m g \+ ¼ shear × buried area if dug in\);/g, 'Drive = min(strength, μ m g);'],
@@ -197,6 +203,27 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     const rexAfter = await readResult(page, 'bay'), duoAfter = await duoResult();
     if (JSON.stringify(rexAfter) !== JSON.stringify(rexBefore) || JSON.stringify(duoAfter) === JSON.stringify(duoBefore)) fail('Ollie’s height: Rex’s bay ' + (JSON.stringify(rexAfter) === JSON.stringify(rexBefore) ? 'unchanged' : 'CHANGED') + ', two-player result ' + (JSON.stringify(duoAfter) === JSON.stringify(duoBefore) ? 'UNCHANGED' : 'changed'));
     else okLog('Ollie’s height changes the arm wrestle (' + duoAfter.verdict.slice(0, 60) + '…) and leaves Rex’s throw alone');
+    // Rex's bay comes out the same with the Rex + Ollie element open or closed (no two-player mode or cap leaks into it)
+    const rexWith = async (duoOpen) => { await load({ duoOpen, duoAction: 'arm', action: 'throw' }); await settle(page, 'bay'); if (duoOpen) await duoResult();
+      await page.click('#tab-jump'); await page.click('#tab-throw'); await page.waitForTimeout(400); await settle(page, 'bay'); return JSON.stringify(await readResult(page, 'bay')); };
+    const rexShut = await rexWith(false), rexOpen = await rexWith(true);
+    if (rexOpen !== rexShut) fail('Rex’s throw changes with the Rex + Ollie element open\n  closed ' + rexShut + '\n  open   ' + rexOpen); else okLog('Rex’s throw is the same with the Rex + Ollie element open or closed');
+    // a typed, uncommitted distance in the element commits when a redraw removes the box: Rex's bay must still be drawn as his
+    await load({ duoOpen: true, duoAction: 'catch', action: 'throw' }); await settle(page, 'bay'); await duoResult();
+    await page.evaluate(() => { const d = document.querySelector('#duo-bay details.effort-adjust'); if (d) d.open = true; });
+    await page.focus('#duo-near'); await page.keyboard.press('Control+A'); await page.keyboard.type('50');
+    await page.setViewportSize({ width: 1000, height: 900 }); await page.waitForTimeout(800); await settle(page, 'bay');
+    const afterResize = await page.evaluate(() => !!document.querySelector('#bay .effort-read'));
+    await page.setViewportSize({ width: 1280, height: 900 });
+    if (!afterResize) fail('a resize with a typed distance in the Rex + Ollie element drew Rex’s bay without its effort box'); else okLog('a resize with a typed distance in the element leaves Rex’s bay as his');
+    // the element announces its verdict again on reopening, even when closed right after a redraw
+    await load({ duoOpen: true, duoAction: 'arm' }); await duoResult();
+    await page.evaluate(() => { window.__live = []; new MutationObserver(() => window.__live.push(document.getElementById('duo-live').textContent)).observe(document.getElementById('duo-live'), { childList: true, characterData: true, subtree: true }); });
+    await page.click('#tab-collide'); await page.waitForTimeout(150); await page.click('#duo > summary'); await page.waitForTimeout(1200);
+    const before = await page.evaluate(() => window.__live.length);
+    await page.click('#duo > summary'); await page.waitForTimeout(400); await settle(page, 'duo-bay'); await page.waitForTimeout(900);
+    const live = await page.evaluate(() => window.__live);
+    if (before !== 0 || live.length < 1) fail('reopening the element: live region writes ' + JSON.stringify(live) + ' (' + before + ' while closed)'); else okLog('the element’s verdict is announced on reopening, not while it is closed');
     if (errs.length) fail('page errors: ' + errs.slice(0, 3).join(' | '));
     await page.close();
     // Closing the element stops its background search. Every two-player call is slowed to 60 ms here, so a search
@@ -208,7 +235,7 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       await pg.addInitScript((what) => {
         document.addEventListener('toggle', (e) => { if (e.target.id === 'duo' && !e.target.open) window.__atClose = window.__duoCalls; }, true);
         const iv = setInterval(() => { const b = document.getElementById('duo-bay'); if (b && /Effort: working it out/i.test(b.textContent)) { clearInterval(iv); window.__busyAt = window.__duoCalls;
-          if (what === 'close') document.getElementById('duo').open = false; else if (what === 'rex-tab') document.getElementById('tab-jump').click(); } }, 5);
+          if (what === 'close') document.getElementById('duo').open = false; else if (what.startsWith('rex-tab')) document.getElementById(what === 'rex-tab-weight' ? 'tab-weight' : 'tab-jump').click(); } }, 5);
       }, onBusy);
       await pg.goto(pathToFileURL(prev).href);
       await pg.evaluate(() => localStorage.setItem('rex-lab-v1', JSON.stringify({ duoOpen: true, duoAction: 'arm' })));
@@ -217,12 +244,14 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       await pg.close();
       return r;
     };
-    const left = await slowPage('none'), closed = await slowPage('close'), rexTab = await slowPage('rex-tab');
+    const left = await slowPage('none'), closed = await slowPage('close'), rexTab = await slowPage('rex-tab'), rexWeight = await slowPage('rex-tab-weight');
     if (left.busyAt == null || closed.atClose == null || closed.calls !== closed.atClose || !(closed.atClose < left.calls) || !closed.rex) fail('closing the Rex + Ollie element mid-search: ' + JSON.stringify({ left, closed }));
     else okLog('closing the element mid-search stops it (' + closed.atClose + ' two-player calls at closing and 4 s later; ' + left.calls + ' when left open); Rex’s bay unaffected');
     // and a redraw of Rex's bay (here a tab click) while the two-player search runs doesn't stop it
     if (rexTab.busyAt == null || rexTab.working || !rexTab.effort || rexTab.calls !== left.calls) fail('a Rex tab clicked mid-search: ' + JSON.stringify(rexTab));
     else okLog('a Rex tab clicked during the two-player search leaves it to finish (' + rexTab.calls + ' calls, the effort shown)');
+    if (rexWeight.busyAt == null || rexWeight.working || !rexWeight.effort || rexWeight.calls !== left.calls) fail('Rex’s Weight tab (no effort) clicked mid-search: ' + JSON.stringify(rexWeight));
+    else okLog('Rex’s Weight tab (no effort search) clicked during the two-player search leaves it to finish too');
   }
   // the page shows what the engine computes: soft landing takes back the landing's impact on the ground, not its whole
   // energy; and the effort slider's right end is all-out

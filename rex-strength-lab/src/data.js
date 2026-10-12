@@ -1177,7 +1177,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Their powers",
-   "d": "All of their powers are their absorption at work, used on purpose. Each switch suspends one piece of real physics and is labelled wherever its effect shows. Gentle hold and safe passenger spread his push through the whole object or person in proportion to its mass, as gravity does, so his hands put no stress on it (a body pushed that way has no internal stress: Cauchy’s equation of motion). They don’t touch the ground under him, his recoil, the air or the landing. The absorbed switches (silent strike, soft landing, cool flight) take back the energy that would harm the surroundings. These switches never absorb momentum: it still goes into him, through his feet and into the ground. (The canon’s one exception so far, the lift from growth, is in the next card.) There is no “no recoil” switch."
+   "d": "All of their powers are their absorption at work, used on purpose. Each switch suspends one piece of real physics and is labelled wherever its effect shows. Gentle hold and safe passenger spread his push through the whole object or person in proportion to its mass, as gravity does, so his hands put no stress on it (a body pushed that way has no internal stress: Cauchy’s equation of motion). They don’t touch the ground under him, his recoil, the air or the landing. The absorbed switches (silent strike, soft landing, cool flight) take back the energy that would harm the surroundings. These switches never absorb momentum: it still goes into him, through his feet and into the ground. (The canon makes a few exceptions; the one this page models so far, the lift from growth, is in the next card.) No switch deletes his recoil: Bolted to the planet hands it to the planet."
   },
   {
    "t": "Absorbed energy and growth",
@@ -1197,7 +1197,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Newton’s third law stays on",
-   "d": "Every push pushes him back. He stays put only as far as friction and the ground’s bearing strength allow. “Bolted to the planet” stops him being pushed along, whatever the friction (weak ground can still give way under him, and in the two-player contests the ground around his feet can tear out). “Comic ground” removes only the bearing limit, so friction still caps his footing."
+   "d": "Every push pushes him back. He stays put only as far as friction and the ground’s bearing strength allow. “Bolted to the planet” stops him being pushed along, whatever the friction (weak ground can still give way under him, and in some two-player tests the ground around his feet can tear out, unless Comic ground is on). “Comic ground” keeps the floor whole (no sinking, no tear-out) but adds no grip, so friction still caps his footing when he isn’t bolted."
   },
   {
    "t": "Two muscle models, one calibration",
