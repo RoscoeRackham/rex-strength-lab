@@ -43,7 +43,9 @@ B.PHASES = [
     ('04-review-round-2', 'Review round 2, the first publish and the pull request', ('after_commit', 'Rex lab: review round 1 fixes (physics and claims lenses)'),
      'The round 1 build was published to the live page (its version 6), main merged in, and pull request #11 opened. Review round 2 checked every round 1 fix: 68 findings, all confirmed. Among them, the round 1 saturation stop could end a search on a plateau that was not the top (goals and hazards reported as never when all-out reached them). Fixes and guard tests followed (313 checks), and the page was republished (version 7).'),
     ('05-review-round-3', 'Review round 3, the last publish and this history', ('after_commit', 'Rex lab: review round 2 fixes (code lens)'),
-     'Review round 3 looked for regressions from round 2.'),
+     'The round 2 build was published (version 7). Review round 3 checked round 2\'s fixes: 60 findings, 59 confirmed. Three round 2 fixes had not fully held (soft landing\'s was in the engine but not on the page). '
+     'Pull request #11 was merged by the collaborator at b1916a8 while the round ran, so main was merged in and the rest went to pull request #12. The fixes: a solo throw\'s recoil slide as a hazard, a supersonic throw\'s flight as a blast, the RI 8507 Figure B-1 plaster curve, '
+     'footprints vs craters in soil with the 1 MJ line labelled, unmodelled shaking stated, 344 checks with 18 one-line reverts caught. The page was republished (version 8) and this history written.'),
 ]
 
 B.DIRS = collections.OrderedDict([
@@ -161,14 +163,14 @@ def write_readme(out, events, starts, phase_lines, counts, compactions, scratch_
           '## Commits', '', '| When (UTC) | Commit | Subject |', '|---|---|---|']
     for c in commits:
         L.append(f'| {B.ts_fmt(c["ts"])[:16]} | `{c["commit"]}` | {c["text"].split("  [")[0]} |')
-    L += ['', 'All were made on branch `claude/rex-presence` and go to `main` through pull request #11. The commit that adds this history folder, and anything after it, is not in the transcript.', '',
+    L += ['', 'All were made on branch `claude/rex-presence`. Pull request #11 took them to `main` up to `b1916a8`; pull request #12 carries the rest. The commit that adds this history folder, and anything after it, is not in the transcript.', '',
           '## Context compactions', '']
     for c in compactions:
         L.append(f'- {B.ts_fmt(c["ts"])}: the context was replaced by a written summary (shown collapsed in the transcript at that point). The raw log keeps everything before it, so nothing in this history depends on the summaries.')
     L += ['', '## Overnight work', '',
           'The owner\'s one prompt ends “I\'m going to bed, so get as far as you can.” The whole session ran unattended. '
           'The session was re-invoked each time a background job finished (a workflow or a wait on one); those notifications are marked “Woken” in the transcript, with what it led to. '
-          'After the pull request opened, GitHub CI results also reached the session as queued notifications, read with the ReadNotifications tool (shown as tool calls), '
+          'After pull request #11 opened, GitHub events (CI results, and the merge of #11) also reached the session as queued notifications, read with the ReadNotifications tool (shown as tool calls), '
           'and the session armed one-off safety-net check-ins with `send_later` while the pull request waited on CI.', '',
           '## What could not be recovered, and what was left out on purpose', '',
           f'- Nothing had to be reconstructed: the raw main log and all {len(set(e["_wf"] for e in events if e.get("_wf")))} workflow folders were on disk, including everything before each compaction.',
