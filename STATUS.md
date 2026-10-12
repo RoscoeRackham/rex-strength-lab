@@ -6,10 +6,11 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 | Folder or file | Who | Branch | Since |
 |---|---|---|---|
+| `rex-strength-lab/` (all of it), and a new `history/` entry at the end | Owner's cloud session | `claude/rex-gui-a` (then `-b`, `-c`) | 2026-10-12 |
 
 ## In progress
 
-- Nothing right now.
+- Owner's cloud session: building `rex-strength-lab/BRIEF-gui.md` in its three pull requests, one at a time. **A** (page organisation, sections 1–4; no engine change) on `claude/rex-gui-a`. B (the four new powers) and C (energy comparisons, research first) follow, each after the one before is merged.
 
 ## Waiting on
 
