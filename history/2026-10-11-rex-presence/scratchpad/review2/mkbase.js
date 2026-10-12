@@ -1,0 +1,10 @@
+global.window = {};
+const path = require('path');
+const P = require(path.resolve(process.argv[2]));
+require(path.resolve(process.argv[3]));
+const D = window.DINO_DATA;
+const { cases, summarize } = require('/home/user/rex-strength-lab/rex-strength-lab/test/baseline-cases.js');
+const out = {};
+for (const c of cases(D)) out[c.key] = summarize(P, D, c);
+require('fs').writeFileSync(process.argv[4], JSON.stringify(out));
+console.log('wrote', Object.keys(out).length);

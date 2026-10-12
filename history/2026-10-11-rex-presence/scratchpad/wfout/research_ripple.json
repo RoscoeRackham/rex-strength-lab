@@ -1,0 +1,434 @@
+{
+ "summary": "I found no measured threshold for when a glass of water shows visible ripples at footstep frequencies (10–40 Hz). Searches covered physics-education journals, Leicester's Physics Special Topics (its own search returns no results), seismoscope and Mercalli literature, liquid-mirror telescopes, vibration-standard tables and smartphone experiments. So the page value is DERIVED, not measured.\n\nThe derivation uses sourced inputs:\n- Water surface tension, 72.74 mN/m at 20 °C (IAPWS).\n- The capillary-gravity dispersion relation (Wilson et al. 2022), which gives ripple wavelengths of 24, 12 and 7 mm at 10, 20 and 40 Hz.\n- Linear wavemaker theory: in deep water the wave amplitude is twice the wall's displacement amplitude (Karjanto 2010, after Dean & Dalrymple).\n- The meniscus-height law, z = l_c·sqrt(2(1−sin θ)) (Delon et al.).\n- Normal visual acuity of 1 arcmin (Webvision).\n\nTwo mechanisms make ripples:\n- **Side-to-side shaking.** The glass wall acts as a wavemaker. The pattern is not concentric.\n- **Up-and-down shaking.** The meniscus at the wall oscillates and sends out axisymmetric \"edge waves\": concentric rings, the Jurassic Park look. Shao et al. (2021, Exp. Fluids and J. Fluid Mech.) verified this in a 70-mm-wide tank. They also showed that a flat interface makes no edge waves, and that edge waves appear far below the Faraday threshold.\n\nVisibility thresholds (peak particle velocity, PPV):\n- **Ideal eye.** Reflected-image deflection of 1 arcmin; needs ripples of only 0.2–0.6 µm. About 0.01–0.04 mm/s at 10–40 Hz.\n- **Noticeable to an attentive viewer.** A 10-arcmin criterion (an estimate). About 0.1–0.4 mm/s.\n\nRecommended page value: 0.2 mm/s at the table top, labelled a derived estimate. Likely error is a factor of 3; the full plausible range is 0.02–1 mm/s.\n\nMeasured anchors:\n- Shao et al. got a clear ring pattern at about 0.5 m/s² vertical, 11.2 Hz (about 7 mm/s PPV), imaged with collimated light. That is consistent with the model, but it is not a threshold.\n- Mercalli 1931 grade IV, \"Disturbed liquids in open vessels slightly\", corresponds to PGV 1.41 cm/s on the USGS ShakeMap scale (Worden et al. 2012). That is earthquake sloshing at about 1 Hz and does not carry over to 10–40 Hz footsteps.\n\nCorrection to the task text: the Faraday instability does not need \"about g-level\" acceleration in a glass-sized container. Shao et al. measured onset at about 0.3–2.5 m/s² (3–25% of g) for water, at 10–20 Hz, in a brimful 70 mm tank. That is still about 10× the ripple threshold. Faraday waves also grow too slowly to be set off by single footsteps.\n\nHow the film did it (reported only): effects supervisor Michael Lantieri found the note by setting a glass on a guitar. On set, guitar strings were run through the car and plucked by a crew member. The \"under the dashboard\" detail comes from secondary accounts and is unverified.\n\nExisting key relied on: density_water_4c. I used 998 kg/m³ at 20 °C, consistent with its USGS note.\n\nRaw downloads are in /tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/research/ripple/. The calculation scripts are derive.py and final.py in /tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/research/ripple_scripts/.",
+ "facts": [
+  {
+   "key": "ripple_no_measured_threshold",
+   "category": "ripple",
+   "label": "Measured naked-eye threshold for visible ripples in a glass at footstep frequencies",
+   "status": "estimate",
+   "display": "Unknown: no measured value found",
+   "value_si": null,
+   "unit_si": "m/s",
+   "sources": [
+    {
+     "title": "University of Leicester Physics Special Topics: journal search for 'Jurassic Park' (returns No Results)",
+     "url": "https://journals.le.ac.uk/index.php/pst/search/search?query=Jurassic+Park"
+    }
+   ],
+   "notes": "This is a recorded negative result, not a number. Searches covered: physics-education journals (AJP, Physics Education, The Physics Teacher), Leicester PST (its search page shows 'No Results' for Jurassic Park), seismoscope and macroseismic sources, liquid-mirror telescope vibration papers (qualitative only: ripples from vibration noted, no threshold), construction, railway and blasting vibration tables, and smartphone or phyphox experiments. None gives a measured ground-vibration level at which ripples in a drinking glass become visible to the eye. The page must therefore present the water-glass threshold as derived (see ripple_threshold_recommended).",
+   "who_when": "This research, 2026"
+  },
+  {
+   "key": "ripple_mmi1931_liquids",
+   "category": "ripple",
+   "label": "Modified Mercalli scale (1931): what earthquakes do to liquids in open vessels",
+   "status": "verified",
+   "display": "MM IV: 'Disturbed liquids in open vessels slightly'; MM V: small spills from well-filled containers",
+   "value_si": null,
+   "unit_si": "",
+   "sources": [
+    {
+     "title": "Natural Resources Canada, Earthquakes Canada: The Modified Mercalli (MM) Intensity Scale (1931 version, after Wood & Neumann 1931, BSSA 21, 277-283)",
+     "url": "https://earthquakescanada.nrcan.gc.ca/info-gen/scales-echelles/mercalli-en.php"
+    }
+   ],
+   "notes": "As reproduced by NRCan. Exact text: MM II '...sometimes trees, structures, liquids, bodies of water, may sway...'. MM IV 'Felt indoors by many, outdoors by few. ... Rattling of dishes, windows, doors; glassware and crockery clink and clash. ... Disturbed liquids in open vessels slightly.' MM V 'Felt indoors by practically all ... Spilled liquids in small amounts from well-filled open containers.' MM VI 'Liquid set in strong motion.' MM VII 'Waves on ponds, lakes, and running water.' These are reported human observations in earthquakes. Ground motion there is dominated by low frequencies, so the liquid response is mostly whole-surface sloshing and tilt, not the short ripples footsteps would make. Use as context only.",
+   "who_when": "Wood & Neumann 1931, reproduced by NRCan",
+   "values_json": "{\"MM II\":\"sometimes ... liquids, bodies of water, may sway\",\"MM IV\":\"Disturbed liquids in open vessels slightly\",\"MM V\":\"Spilled liquids in small amounts from well-filled open containers\",\"MM VI\":\"Liquid set in strong motion\",\"MM VII\":\"Waves on ponds, lakes, and running water\"}"
+  },
+  {
+   "key": "ripple_shakemap_mmi_iv_pgv",
+   "category": "ripple",
+   "label": "Peak ground velocity at Mercalli intensity IV ('liquids slightly disturbed'), USGS ShakeMap scale",
+   "status": "verified",
+   "display": "Intensity IV (Light): PGV 1.41 cm/s, PGA 2.76 %g",
+   "value_si": 0.0141,
+   "unit_si": "m/s",
+   "sources": [
+    {
+     "title": "USGS ShakeMap, Macroseismic Intensity Map, 16 km SW of Ludlow CA (M7.1, 1999), legend 'Scale based on Worden et al. (2012)'",
+     "url": "https://earthquake.usgs.gov/product/shakemap/ci9108652/atlas/1594160205748/download/intensity.pdf"
+    }
+   ],
+   "notes": "Read from the map legend; the rendered legend was checked visually. Legend row 'PGV(cm/s): <0.0215 | 0.135 | 1.41 | 4.65 | 9.64 ...' under 'INTENSITY: I | II-III | IV | V | VI'. PGA row '<0.0464 | 0.297 | 2.76 | 6.2 | 11.5' (%g). Shaking 'Light', damage 'None' at IV. Worden et al. (2012) itself was not fetched. That these are the PGV values at each intensity is my reading; it agrees with the IV column. Caveats: earthquake shaking at roughly 0.5-5 Hz with long duration. At 1-2 Hz, 1.41 cm/s tilts a glass's surface quasi-statically by about 0.5-1 degree, which is sloshing rather than ripples. Not transferable to 10-40 Hz footsteps; context only. It shows casual observers notice disturbed liquids only around 'felt by many' shaking at low frequency.",
+   "who_when": "USGS ShakeMap, scale after Worden et al. 2012",
+   "values_json": "{\"II-III\":{\"PGV_cm_s\":0.135,\"PGA_pct_g\":0.297},\"IV\":{\"PGV_cm_s\":1.41,\"PGA_pct_g\":2.76},\"V\":{\"PGV_cm_s\":4.65,\"PGA_pct_g\":6.2}}"
+  },
+  {
+   "key": "ripple_shao2021_edge_wave_anchor",
+   "category": "ripple",
+   "label": "Lab anchor: concentric edge waves in a glass-sized tank shaken vertically (clearly imaged level)",
+   "status": "verified",
+   "display": "~0.5 m/s² vertical at 11.2 Hz (≈7 mm/s PPV) gave a clear ring pattern; R = 35 mm water tank",
+   "value_si": 0.5,
+   "unit_si": "m/s^2",
+   "sources": [
+    {
+     "title": "Shao, Gabbard, Bostwick & Saylor (2021), On the role of meniscus geometry in capillary wave generation, Experiments in Fluids 62:59, doi:10.1007/s00348-021-03161-3 (NSF public-access copy)",
+     "url": "https://par.nsf.gov/servlets/purl/10311610"
+    }
+   ],
+   "notes": "Quotes: 'a circular acrylic tank having a radius R = 35 mm and depth H = 22 mm'; 'The shaker ... provided vertical vibration of the tank'; 'we are interested in waves under resonant conditions, i.e., where the waves emanate from the tank edge, propagate inward, and are reflected back at the geometric center to create a standing wave field'; 'Herein we studied the resonant condition which existed at a driving frequency of 11.2 Hz. For the results presented here, the amplitude of tank acceleration was on the order of 0.5 m/s2.'; 'Our apparatus was not capable of measuring the actual wave height'. Viewing was wave-slope imaging with collimated white light (2 mm hole at 300 mm focal length) and a camera with a 1 s exposure, not the naked eye. Derived: PPV = A/(2πf) = 0.5/(2π·11.2) ≈ 7.1 mm/s; displacement ≈ 0.1 mm. It is NOT a threshold; it is a level that gave robust, clearly imaged rings at a tank resonance. Under the model in ripple_threshold_noticeable this gives a reflected-light deflection of about 20-40 arcmin, comparable to the imaging source's 23-arcmin angular size, so the two agree.",
+   "who_when": "Shao, Gabbard, Bostwick & Saylor 2021"
+  },
+  {
+   "key": "ripple_meniscus_mechanism",
+   "category": "ripple",
+   "label": "Why up-and-down shaking makes ring waves: the meniscus (a flat surface makes none)",
+   "status": "verified",
+   "display": "Edge waves need a meniscus; vibration makes g effectively time-varying and the meniscus shape oscillates",
+   "value_si": null,
+   "unit_si": "",
+   "sources": [
+    {
+     "title": "Shao, Gabbard, Bostwick & Saylor (2021), Experiments in Fluids 62:59 (NSF PAR copy)",
+     "url": "https://par.nsf.gov/servlets/purl/10311610"
+    }
+   ],
+   "notes": "Quotes: 'such a meniscus is needed to form capillary waves, that the lack of a meniscus (a flat interface at the wall) prevents the formation of these waves, and that a meniscus of either positive or negative curvature serves equally well'; 'When a tank is vibrated, g effectively becomes a time-varying value and the meniscus geometry must vary to accommodate the new value. The changing meniscus geometry is the oscillating change in the surface at the tank edge which causes waves to propagate. For the flat interface, the effective variation in g has no effect on the interface'. Also 'the greater the degree of under/overfilling, the greater the amplitude of a standing capillary wave field for a fixed amplitude of wave generator motion.' Implication: a glass that water wets (large meniscus) should ring more readily than a plastic cup whose contact angle is near 90 degrees.",
+   "who_when": "Shao et al. 2021"
+  },
+  {
+   "key": "ripple_edge_waves_below_faraday",
+   "category": "ripple",
+   "label": "Edge (meniscus) waves appear far below the Faraday threshold, at the drive frequency, and are concentric",
+   "status": "verified",
+   "display": "Edge waves: harmonic, axisymmetric (concentric), at amplitudes 'much smaller than the Faraday wave threshold'",
+   "value_si": null,
+   "unit_si": "",
+   "sources": [
+    {
+     "title": "Shao, Wilson, Saylor & Bostwick (2021), Surface wave pattern formation in a cylindrical container, J. Fluid Mech. 915, A19, doi:10.1017/jfm.2021.97 (NSF PAR copy)",
+     "url": "https://par.nsf.gov/servlets/purl/10311615"
+    }
+   ],
+   "notes": "Quotes (PDF text is letter-spaced; reconstructed): 'The presence of a meniscus at the contact line between the interface and vibrating container induces motions that are harmonic with respect to the driving frequency and are referred to as edge waves. These typically appear for driving amplitudes much lower than the Faraday wave threshold'; 'Harmonic edge waves can be excited by under-filling the container such that α < 90° wherein edge waves occur for driving amplitudes much smaller than the Faraday wave threshold. Edge waves are always axisymmetric ℓ = 0 and the radial mode number n increases with frequency.' Fig. 6 shows sharp edge-wave resonances (n = 1 to 6) between about 8 and 23 Hz in the R = 35 mm tank. No forcing amplitude is given for the edge waves. Derived from wall geometry (not from this paper): side-to-side shaking moves the wall's normal component as cos θ around the glass, so its waves are two-lobed, not concentric. The film's concentric rings point to up-and-down shaking.",
+   "who_when": "Shao, Wilson, Saylor & Bostwick 2021"
+  },
+  {
+   "key": "ripple_faraday_onset_small_tank",
+   "category": "ripple",
+   "label": "Faraday (parametric) wave onset for water in a 70 mm tank, vertical shaking 10-20 Hz",
+   "status": "verified",
+   "display": "Onset ≈0.3–2.5 m/s² (3–25% g); lowest ≈0.3–0.5 m/s² at mode resonances; waves at half the drive frequency",
+   "value_si": 0.4,
+   "low_si": 0.3,
+   "high_si": 2.5,
+   "unit_si": "m/s^2",
+   "sources": [
+    {
+     "title": "Shao, Wilson, Saylor & Bostwick (2021), J. Fluid Mech. 915, A19, Fig. 4 (NSF PAR copy)",
+     "url": "https://par.nsf.gov/servlets/purl/10311615"
+    }
+   ],
+   "notes": "Values read off Fig. 4 ('Acceleration A against driving frequency fd showing the Faraday wave tongues'; axis A (m s-2) 0 to 2.5, fd 10-20 Hz). Read-off uncertainty about ±0.1 m/s²; the authors' own increments were 0.2 m/s². Conditions: R = 35 mm, H = 22 mm, deionized water, brimful with a pinned contact line and a flat interface (α = 90°), which minimises contact-line damping. Quotes: 'For Faraday waves, the observed frequency fo is half the driving frequency fo = 0.5fd'; 'the interface is flat below the threshold acceleration'. This CORRECTS the task text's 'about g-level accelerations': in a glass-sized pinned container onset is a few to 25% of g. An ordinary part-filled glass has a moving, hysteretic contact line and more damping, so the threshold is probably higher (not measured here). In PPV terms, 0.3 m/s² at 20 Hz is 2.4 mm/s, about 10× the derived ripple threshold. The instability also grows over many cycles, so single footstep pulses are unlikely to trigger it.",
+   "who_when": "Shao, Wilson, Saylor & Bostwick 2021"
+  },
+  {
+   "key": "ripple_water_surface_tension_20c",
+   "category": "ripple",
+   "label": "Surface tension of water at 20 °C",
+   "status": "verified",
+   "display": "72.74 mN/m at 20 °C (71.98 at 25 °C)",
+   "value_si": 0.07274,
+   "low_si": 0.07198,
+   "high_si": 0.07274,
+   "unit_si": "N/m",
+   "sources": [
+    {
+     "title": "IAPWS R1-76(2014), Revised Release on Surface Tension of Ordinary Water Substance, Table 1",
+     "url": "https://iapws.org/technical-guidance/release/Surf-H2O.download"
+    }
+   ],
+   "notes": "Table 1 rows: '20 | 72.74 | 0.36 | 72.74 | 0.00' and '25 | 71.98 | 0.36 | 71.97 | 0.01' (t in °C, experimental, uncertainty, calculated, difference; mN/m). Uncertainty 0.36 mN/m. Tap water with surfactants or a film can be lower; that is not modelled. Water density: relies on existing key density_water_4c (USGS); 998 kg/m³ used at 20 °C.",
+   "who_when": "IAPWS 2014"
+  },
+  {
+   "key": "ripple_capillary_gravity_dispersion",
+   "category": "ripple",
+   "label": "Dispersion relation for ripples (capillary-gravity waves) on water",
+   "status": "verified",
+   "display": "ω² = (g k + σ k³/ρ) tanh(k h)",
+   "value_si": null,
+   "unit_si": "",
+   "sources": [
+    {
+     "title": "Wilson, Shao, Saylor & Bostwick (2022), Role of edge effects and fluid depth in azimuthal Faraday waves, Phys. Rev. Fluids 7, 014803, eq. (21) (NSF PAR copy)",
+     "url": "https://par.nsf.gov/servlets/purl/10391457"
+    },
+    {
+     "title": "Karjanto (2010), First- and second-order wave generation theory, Appl. Math. Comput. Sci. 1(2) 181-197, eq. (5)",
+     "url": "https://arxiv.org/pdf/1704.08416"
+    }
+   ],
+   "notes": "Wilson et al. eq. (21), dimensionless: 'λn = i Oh kn² ± sqrt[(Bo kn + kn³) tanh(kn h) + 2kn² Ec − Oh² kn⁴], where Re[λ] is the frequency and Im[λ] is the decay rate'. 'Lengths are scaled by the radius of the cylinder R, time with the capillary timescale sqrt(ρR³/σ)', with Bo = ρgR²/σ. For a liquid (Ec = 0) with weak viscosity (Oh → 0) this is the dimensional form above; the conversion is mine. Karjanto gives the gravity-only limit 'ω² = gk tanh kh. (5)'. For a glass (h ≈ 5-10 cm) tanh(kh) ≈ 1 at 10-40 Hz.",
+   "who_when": "Wilson et al. 2022; Karjanto 2010"
+  },
+  {
+   "key": "ripple_viscous_damping_rate",
+   "category": "ripple",
+   "label": "Viscous damping rate of small ripples",
+   "status": "verified",
+   "display": "Γ = 2νk² (weak damping)",
+   "value_si": null,
+   "unit_si": "1/s",
+   "sources": [
+    {
+     "title": "Denner, Paré & Zaleski (2017), Dispersion and viscous attenuation of capillary waves with finite amplitude, Eur. Phys. J. Special Topics (arXiv:1701.07613)",
+     "url": "https://arxiv.org/pdf/1701.07613"
+    },
+    {
+     "title": "Wilson et al. (2022), Phys. Rev. Fluids 7, 014803, Table I (water viscosity and density)",
+     "url": "https://par.nsf.gov/servlets/purl/10391457"
+    }
+   ],
+   "notes": "Denner et al.: 'The damping rate based on Eq. (3) is Γ = 2νk², applicable for k ≪ ω0/ν'. Water properties from Wilson et al. Table I, water:glycerol 1:0: surface tension 71.6 mN/m, viscosity 0.96 mPa s, density 997 kg/m³, giving ν ≈ 0.96 × 10⁻⁶ m²/s. Ignores the extra damping at the container wall and contact line, which dominates in small containers.",
+   "who_when": "Denner, Paré & Zaleski 2017"
+  },
+  {
+   "key": "ripple_wave_scales_derived",
+   "category": "ripple",
+   "label": "Ripple size and speed in a glass at 10, 20 and 40 Hz (computed)",
+   "status": "derived",
+   "display": "Wavelength 24 / 12 / 7 mm at 10 / 20 / 40 Hz; speed ≈ 24–28 cm/s",
+   "value_si": 0.0119,
+   "low_si": 0.0069,
+   "high_si": 0.0237,
+   "unit_si": "m",
+   "sources": [
+    {
+     "title": "IAPWS R1-76(2014) surface tension",
+     "url": "https://iapws.org/technical-guidance/release/Surf-H2O.download"
+    },
+    {
+     "title": "Wilson et al. (2022) Phys. Rev. Fluids, dispersion eq. (21)",
+     "url": "https://par.nsf.gov/servlets/purl/10391457"
+    },
+    {
+     "title": "Denner et al. (2017), damping Γ = 2νk²",
+     "url": "https://arxiv.org/pdf/1701.07613"
+    }
+   ],
+   "notes": "Formula: solve ω² = (gk + σk³/ρ) tanh(kh) for k with σ = 0.07274 N/m, ρ = 998 kg/m³, g = 9.80665 m/s², h = 0.08 m. Then λ = 2π/k, phase speed ω/k, group speed (g + 3σk²/ρ)/(2ω), decay rate Γ = 2νk² (ν = 0.96e-6 m²/s) and decay length c_group/Γ. value_si is the 20 Hz wavelength. Viscous decay lengths (≈1.5, 0.5, 0.24 m) are far larger than a glass, so bulk viscosity does not stop ripples crossing it; wall and contact-line damping are not included. Time for waves to cross a 35 mm radius: about 0.1-0.18 s, comparable to one footstep pulse. The capillary length l_c = sqrt(σ/ρg) = 2.73 mm.",
+   "who_when": "This research, 2026",
+   "values_json": "{\"10 Hz\":{\"k_per_m\":265,\"wavelength_mm\":23.7,\"phase_speed_cm_s\":23.7,\"group_speed_cm_s\":20.0,\"viscous_decay_length_m\":1.5},\"20 Hz\":{\"k_per_m\":526,\"wavelength_mm\":11.9,\"phase_speed_cm_s\":23.9,\"group_speed_cm_s\":28.0,\"viscous_decay_length_m\":0.5},\"40 Hz\":{\"k_per_m\":906,\"wavelength_mm\":6.9,\"phase_speed_cm_s\":27.7,\"group_speed_cm_s\":37.7,\"viscous_decay_length_m\":0.24}}"
+  },
+  {
+   "key": "ripple_wavemaker_deep_water_ratio",
+   "category": "ripple",
+   "label": "Wave made by a moving wall in deep water: amplitude vs wall displacement",
+   "status": "verified",
+   "display": "Wave amplitude → 2 × wall displacement amplitude as kh → ∞ (linear wavemaker theory)",
+   "value_si": 2,
+   "low_si": 1,
+   "high_si": 2,
+   "unit_si": "ratio",
+   "sources": [
+    {
+     "title": "Karjanto (2010), First- and second-order wave generation theory (arXiv:1704.08416), Remark 1",
+     "url": "https://arxiv.org/pdf/1704.08416"
+    }
+   ],
+   "notes": "Quotes: 'the first-order transfer function Tn is defined as the ratio between the surface wave amplitude of the propagating mode Cn0 as output and the maximum stroke |Sn| as input'; '...approaching the asymptotic limit of Tn(1) = 2 for kn0 h → ∞.'; 'This first-order theory can also be found in Dean and Dalrymple'. Derived for a hinged-flap wavemaker. In deep water only near-surface motion matters, so a glass wall translating as a piston gives the same limit; a projection argument gives a = 2X. Ignores surface tension at the wall, the meniscus and contact-line pinning. Cocciaro, Faetti & Nobili (1991, JFM 231, 325; abstract only, via TRID) report that the wetting boundary condition gives 'unusual' amplitude and phase in a horizontally shaken cylinder. So the model uses a = X to 2X (low_si 1).",
+   "who_when": "Karjanto 2010, after Dean & Dalrymple 1991"
+  },
+  {
+   "key": "ripple_meniscus_height",
+   "category": "ripple",
+   "label": "Height of the water meniscus at a vertical wall",
+   "status": "verified",
+   "display": "z = l_c·√(2(1 − sin θ)); max √2·l_c ≈ 3.9 mm for water",
+   "value_si": 0.00313,
+   "low_si": 0.00012,
+   "high_si": 0.00386,
+   "unit_si": "m",
+   "sources": [
+    {
+     "title": "Delon, Fermigier, Snoeijer & Andreotti, Relaxation of a dewetting contact line Part 2: Experiments (arXiv:0705.3583, J. Fluid Mech.), eq. (4.1)",
+     "url": "https://arxiv.org/pdf/0705.3583"
+    }
+   ],
+   "notes": "Quote: 'the liquid rises above the bath up to a height zcl ... according to the classical relation (Landau & Lifschitz 1959), zcl = lγ sqrt(2(1 − sin θ)), where θ is the equilibrium contact angle (receding or advancing). This relation implies that a perfectly wetting liquid can achieve a maximum rise of √2 times the capillary length lγ.' Derived with l_c = sqrt(σ/ρg) = 2.73 mm: θ = 0° gives 3.86 mm; 20° gives 3.13 mm (value_si); 50° gives 1.86 mm; 87.4° (polystyrene) gives 0.12 mm; 102.1° (polypropylene) gives a 0.57 mm depression. The contact angle of water on household glass is not sourced here (estimate 0-50°).",
+   "who_when": "Delon et al. (Landau & Lifshitz 1959)"
+  },
+  {
+   "key": "ripple_plastic_contact_angles",
+   "category": "ripple",
+   "label": "Water contact angle on common cup plastics",
+   "status": "reported",
+   "display": "Polypropylene 102°, polystyrene 87°, polycarbonate 82°",
+   "value_si": null,
+   "unit_si": "deg",
+   "sources": [
+    {
+     "title": "Diversified Enterprises (Accu Dyne Test), Critical Surface Tension and Contact Angle with Water for Various Polymers",
+     "url": "https://www.accudynetest.com/polytable_03_print.html"
+    }
+   ],
+   "notes": "Table rows: 'Polypropylene (PP) | 30.5 | 102.1'; 'Polystyrene (PS) | 9003-53-6 | 34 | 87.4'; 'Polycarbonate (PC) | 24936-68-3 | 44 | 82' (critical surface tension mN/m, water contact angle degrees). Vendor compilation of literature values: secondary, hence 'reported'. Relevance: angles near 90° give almost no meniscus and so weak ring (edge) waves under up-and-down shaking. Side-to-side wall-driven ripples still form.",
+   "who_when": "Diversified Enterprises, compilation (accessed 2026)"
+  },
+  {
+   "key": "ripple_visual_acuity_1arcmin",
+   "category": "ripple",
+   "label": "Normal visual acuity: minimum angle of resolution",
+   "status": "verified",
+   "display": "1 minute of arc (6/6, 20/20)",
+   "value_si": 0.000291,
+   "unit_si": "rad",
+   "sources": [
+    {
+     "title": "Kalloniatis & Luu, Visual Acuity, Webvision (University of Utah)",
+     "url": "https://webvision.med.utah.edu/book/part-viii-psychophysics-of-vision/visual-acuity/"
+    }
+   ],
+   "notes": "Quote: 'For a visual acuity of 6/6 (20/20), one of the strokes of the letter subtends one minute of arc at the eye. Therefore, the minimum angle of resolution (MAR) is one minute of arc and the logMAR is 0'. 1 arcmin = 2.91e-4 rad. Used as the best-case limit for seeing a reflected image shift or blur. A surface tilt s turns a reflected ray by 2s, so the threshold slope is 0.5 arcmin. Hyperacuity tasks (vernier) can do better on static targets; casual noticing needs much more (see ripple_threshold_noticeable).",
+   "who_when": "Kalloniatis & Luu, Webvision"
+  },
+  {
+   "key": "ripple_eye_temporal_resolution",
+   "category": "ripple",
+   "label": "Eye's flicker sensitivity (bears on 10-40 Hz ripples)",
+   "status": "verified",
+   "display": "Most sensitive at 15–20 Hz in bright light; cut-off ≈60 Hz (bright), ≈15 Hz (dim)",
+   "value_si": 60,
+   "low_si": 15,
+   "high_si": 60,
+   "unit_si": "Hz",
+   "sources": [
+    {
+     "title": "Kalloniatis & Luu, Temporal Resolution, Webvision (University of Utah)",
+     "url": "https://webvision.med.utah.edu/book/part-viii-psychophysics-of-vision/temporal-resolution/"
+    }
+   ],
+   "notes": "Quote: 'The eye appears to be most sensitive to a frequency of 15 to 20 Hz at high luminances (photopic vision). At photopic light levels, less than 1% contrast is required to detect the stimulus and the high temporal frequency cut off is close to 60 Hz. At low light levels the maximum contrast is about 20% and the high temporal frequency cut off is approximately 15 Hz.' Implication: in daylight, 10-40 Hz ripple flicker is visible. In dim light (the film's night scene) it fuses, and what you see is the time-averaged ring pattern, which is exactly what long-exposure slope imaging records.",
+   "who_when": "Kalloniatis & Luu, Webvision"
+  },
+  {
+   "key": "ripple_threshold_ideal_eye",
+   "category": "ripple",
+   "label": "Water-glass ripples: best-case visibility threshold (1-arcmin reflected-light criterion)",
+   "status": "derived",
+   "display": "≈0.02 mm/s PPV (0.01–0.04 mm/s at 10–40 Hz); ripples only 0.2–0.6 µm high",
+   "value_si": 2e-05,
+   "low_si": 1e-05,
+   "high_si": 4e-05,
+   "unit_si": "m/s",
+   "sources": [
+    {
+     "title": "Webvision: Visual Acuity (1 arcmin)",
+     "url": "https://webvision.med.utah.edu/book/part-viii-psychophysics-of-vision/visual-acuity/"
+    },
+    {
+     "title": "Karjanto (2010) wavemaker transfer function",
+     "url": "https://arxiv.org/pdf/1704.08416"
+    },
+    {
+     "title": "Wilson et al. (2022) dispersion relation",
+     "url": "https://par.nsf.gov/servlets/purl/10391457"
+    },
+    {
+     "title": "Delon et al. meniscus height",
+     "url": "https://arxiv.org/pdf/0705.3583"
+    },
+    {
+     "title": "IAPWS surface tension",
+     "url": "https://iapws.org/technical-guidance/release/Surf-H2O.download"
+    }
+   ],
+   "notes": "Assumption: a ripple is just visible when it turns a reflected image by 1 arcmin, the acuity limit; surface slope s = 0.5 arcmin = 1.45e-4 rad, so wave amplitude a = s/k. Side-to-side mechanism: wall displacement X = a/r with r = 2 (deep-water theory) to 1, so PPV = 2πf·X. Up-and-down (meniscus) mechanism, order-of-magnitude model: quasi-static meniscus height change δz = (A/2g)·z_m, emitted with source factor η = 1/sqrt(1 + (k·l_c)²) (my Fourier estimate for an exponential meniscus of width l_c), so PPV = a·2g/(z_m·η·2πf). Glass meniscus z_m = 3.13 mm (θ = 20°) to 1.86 mm (θ = 50°). The page threshold is the lower of the two (the glass responds to whichever component is stronger). The best-case threshold is about 0.02 mm/s, below any vibration a person feels. Error: the factor depends on lighting and viewer; it needs a sharp reflected edge or light and close, attentive viewing. Script: scratchpad/research/ripple_scripts/final.py.",
+   "who_when": "This research, 2026",
+   "values_json": "{\"10 Hz\":{\"wave_amp_um\":0.55,\"side_to_side_PPV_mm_s\":\"0.017-0.035\",\"up_down_PPV_mm_s_glass\":\"0.068-0.11\",\"threshold_mm_s\":0.017},\"20 Hz\":{\"wave_amp_um\":0.28,\"side_to_side_PPV_mm_s\":\"0.017-0.035\",\"up_down_PPV_mm_s_glass\":\"0.024-0.040\",\"threshold_mm_s\":0.017},\"40 Hz\":{\"wave_amp_um\":0.16,\"side_to_side_PPV_mm_s\":\"0.020-0.040\",\"up_down_PPV_mm_s_glass\":\"0.011-0.018\",\"threshold_mm_s\":0.011}}"
+  },
+  {
+   "key": "ripple_threshold_noticeable",
+   "category": "ripple",
+   "label": "Water-glass ripples: noticeable to an attentive viewer (10-arcmin criterion), per frequency",
+   "status": "estimate",
+   "display": "≈0.2 mm/s at 10 Hz, ≈0.2 mm/s at 20 Hz, ≈0.1 mm/s at 40 Hz (each within a factor of 2-3)",
+   "value_si": 0.0002,
+   "low_si": 0.0001,
+   "high_si": 0.0004,
+   "unit_si": "m/s",
+   "sources": [
+    {
+     "title": "Webvision: Visual Acuity",
+     "url": "https://webvision.med.utah.edu/book/part-viii-psychophysics-of-vision/visual-acuity/"
+    },
+    {
+     "title": "Shao et al. (2021) Exp. Fluids 62:59 (consistency anchor)",
+     "url": "https://par.nsf.gov/servlets/purl/10311610"
+    },
+    {
+     "title": "Karjanto (2010) wavemaker theory",
+     "url": "https://arxiv.org/pdf/1704.08416"
+    },
+    {
+     "title": "Wilson et al. (2022) dispersion relation",
+     "url": "https://par.nsf.gov/servlets/purl/10391457"
+    }
+   ],
+   "notes": "Same model as ripple_threshold_ideal_eye, but visibility set at a reflected-image swing of 10 arcmin: ten times the acuity limit, a third of the Moon's width. The 10× factor is an assumption, a reasoned guess for 'you notice it without hunting for it'. Results (PPV of the strongest component at the table top): 10 Hz side-to-side 0.17-0.35, up-and-down 0.68-1.1, lower 0.17 mm/s. 20 Hz side-to-side 0.17-0.35, up-and-down 0.24-0.40, lower 0.17 mm/s. 40 Hz side-to-side 0.20-0.40, up-and-down 0.11-0.18, lower 0.11 mm/s. Ripple amplitude needed: 5.5, 2.8, 1.6 µm. Consistency check: Shao et al.'s clearly imaged rings at 7 mm/s (11.2 Hz) come out at 20-40 arcmin in this model, so a few mm/s gives obvious, film-like rings. Ignores: table and floor amplification, glass resonances (sharp edge-wave peaks every few Hz could lower it several-fold at those frequencies), contact-line pinning and hysteresis at sub-micron amplitudes (could raise it), and pulse vs steady shaking (a footstep is a short burst of a few cycles).",
+   "who_when": "This research, 2026",
+   "values_json": "{\"criterion\":\"reflected-image deflection 10 arcmin\",\"10 Hz\":{\"wave_amp_um\":5.5,\"side_to_side_mm_s\":\"0.17-0.35\",\"up_down_glass_mm_s\":\"0.68-1.1\",\"threshold_mm_s\":0.17},\"20 Hz\":{\"wave_amp_um\":2.8,\"side_to_side_mm_s\":\"0.17-0.35\",\"up_down_glass_mm_s\":\"0.24-0.40\",\"threshold_mm_s\":0.17},\"40 Hz\":{\"wave_amp_um\":1.6,\"side_to_side_mm_s\":\"0.20-0.40\",\"up_down_glass_mm_s\":\"0.11-0.18\",\"threshold_mm_s\":0.11},\"obvious_film_like_rings\":\"a few mm/s (Shao 2021 anchor: 7 mm/s at 11.2 Hz)\"}"
+  },
+  {
+   "key": "ripple_threshold_recommended",
+   "category": "ripple",
+   "label": "Water glass visibly ripples (Jurassic Park test): value for the Walk tab",
+   "status": "estimate",
+   "display": "About 0.2 mm/s at the table (derived, not measured; range 0.02–1 mm/s)",
+   "value_si": 0.0002,
+   "low_si": 2e-05,
+   "high_si": 0.001,
+   "unit_si": "m/s",
+   "sources": [
+    {
+     "title": "Webvision: Visual Acuity (eye limit)",
+     "url": "https://webvision.med.utah.edu/book/part-viii-psychophysics-of-vision/visual-acuity/"
+    },
+    {
+     "title": "Shao et al. (2021) Exp. Fluids 62:59 (ring waves from the meniscus; lab anchor)",
+     "url": "https://par.nsf.gov/servlets/purl/10311610"
+    },
+    {
+     "title": "Shao et al. (2021) J. Fluid Mech. 915 A19 (edge waves far below Faraday onset)",
+     "url": "https://par.nsf.gov/servlets/purl/10311615"
+    },
+    {
+     "title": "Karjanto (2010) wavemaker theory",
+     "url": "https://arxiv.org/pdf/1704.08416"
+    },
+    {
+     "title": "IAPWS R1-76(2014) surface tension",
+     "url": "https://iapws.org/technical-guidance/release/Surf-H2O.download"
+    }
+   ],
+   "notes": "Single frequency-independent value for 10-40 Hz: the model's frequency dependence (0.11-0.17 mm/s at the 10-arcmin criterion) is smaller than its uncertainty. Rounded to 0.2 mm/s. Likely error: a factor of 3 either way. The full plausible range runs from 0.02 mm/s (sharp-eyed viewer watching a crisp reflection) to about 1 mm/s (casual glance, plastic cup, dim light). Obvious concentric rings like the film's: a few mm/s. Apply to the PPV of the strongest single component at the glass. Assumes a table on a ground-floor slab that moves with the ground; no floor or table amplification. Status 'estimate' because the visibility criterion is assumed; all physical inputs are sourced.",
+   "who_when": "This research, 2026"
+  },
+  {
+   "key": "ripple_film_effect_production",
+   "category": "ripple",
+   "label": "How the Jurassic Park water-glass shot was made (context only)",
+   "status": "reported",
+   "display": "Practical effect: guitar string(s) driving the cup, plucked off-camera (Michael Lantieri)",
+   "value_si": null,
+   "unit_si": "",
+   "sources": [
+    {
+     "title": "Koimoi (Heena Singh, 29 Oct 2024): Did you know the iconic water ripple scene in Jurassic Park was created with a guitar string?",
+     "url": "https://www.koimoi.com/hollywood-news/did-you-know-the-iconic-water-ripple-scene-in-jurassic-park-was-created-with-a-guitar-string-heres-how-they-did-it/"
+    },
+    {
+     "title": "Film Stories (Simon Brew, 27 Sep 2022): Jurassic Park: the simple genius behind its lowest tech, most effective effects shot",
+     "url": "https://filmstories.co.uk/features/jurassic-park-the-simple-genius-behind-its-lowest-tech-most-effective-effects-shot/"
+    }
+   ],
+   "notes": "Koimoi quotes Lantieri, without naming the interview: 'It was a tough thing to do ... finally, messing around with a guitar one night, I set a glass [on it] and started playing notes on a guitar and got to the right frequency, a right note, and it did exactly what I wanted it to do.' Film Stories (author's narration, no cited interview): the team 'ran guitar strings through' the car, and a crew member lying on the car's floor plucked them; no CGI. Other popular accounts say the string ran through the car floor or sat 'under the dashboard'; that detail was not verified, and the primary interviews (DVD or Blu-ray extras) were not fetched. Physics note: plucking a string touching the cup shakes it up and down, which matches the concentric edge-wave mechanism (ripple_edge_waves_below_faraday).",
+   "who_when": "Lantieri (1993 production), as reported 2022-2024"
+  }
+ ],
+ "model_recommendation": "Engine constant: RIPPLE_PPV = 2.0e-4 m/s (0.2 mm/s), with RIPPLE_PPV_LOW = 2e-5 and RIPPLE_PPV_HIGH = 1e-3 m/s for the uncertainty band. Use one value across 10–40 Hz: the model's frequency dependence is smaller than its error. Compare it with the predicted PPV of the strongest single component (as the vibration standards do; check the threshold topic's convention). The \"ripple radius\" is the distance where the walker's PPV falls to 0.2 mm/s. Report the band as the distances where PPV equals 1 mm/s and 0.02 mm/s.\n\nOptional frequency-dependent version (if the engine has a footstep frequency f), with ω = 2πf and k from ω² = gk + (σ/ρ)k³ (σ = 0.07274 N/m, ρ = 998 kg/m³, g = 9.80665 m/s²):\n- Visibility slope: s = θv/2, with θv = 10 arcmin (2.91e-3 rad) for \"noticeable\" and 1 arcmin for \"best case\". Wave amplitude a = s/k.\n- Side-to-side: PPV_h = ω·a/r, with r = 2 (deep-water wavemaker; range 1–2).\n- Up-and-down (meniscus): PPV_v = a·2g/(z_m·η·ω), with z_m = l_c·√(2(1 − sin θ)), l_c = 2.73 mm, glass θ ≈ 20° (z_m ≈ 3.1 mm), and η = 1/√(1 + (k·l_c)²).\n- Threshold = min(PPV_h, PPV_v). Expected: about 0.17, 0.17 and 0.11 mm/s at 10, 20 and 40 Hz.\n\nValid for small-amplitude linear ripples, a glass of 5–10 cm water depth, 5–50 Hz, and a table that moves with the ground.\n\nWhat it ignores:\n- Floor and table amplification (a suspended wooden floor could multiply it).\n- Glass resonances (sharp edge-wave peaks every few Hz could lower the threshold several-fold).\n- Contact-line pinning and hysteresis at sub-micron motion (could raise it).\n- That a footstep is a short pulse rather than steady shaking.\n- Lighting and viewer attention (dominant uncertainty, factor of 10).\n- Liquid colour.\n\nFaraday waves are not the mechanism. Their onset in a 70 mm pinned tank is 0.3–2.5 m/s² (about 2–40 mm/s PPV at 10–20 Hz), and they need many cycles to grow.\n\nPage label: \"derived, not measured\" with the status chip \"estimate\".\n\nSuggested page wording: \"Water glass ripples: about 0.2 mm/s. Nobody seems to have measured this, so we worked it out. Shaking makes the glass wall push out ripples about as tall as the wall's own movement. Up-and-down shaking also makes the curved edge of the water (the meniscus) pump out rings, which is the Jurassic Park look. The eye picks up a ripple once it bends a reflection by a small fraction of a degree. A sharp-eyed viewer studying a reflection might catch ripples at a tenth of this level; a casual glance may need several times more. Bold, film-style rings take a few mm/s.\"\n\nIf the threshold topic confirms people start to feel vibration at about 0.1–0.3 mm/s, the page can add: \"so the glass shows it at about the level you first feel it, and an attentive eye on the water can catch it sooner.\" Do not add this until those perception numbers are sourced.\n\nDo not show the Mercalli/ShakeMap number (1.4 cm/s) as the ripple threshold. If shown at all, label it \"earthquakes, low-frequency sloshing, context only\".",
+ "gaps": "No measured naked-eye threshold for visible ripples in a glass at footstep frequencies was found. Sources searched:\n- Physics-education journals: none on the scene.\n- Leicester Physics Special Topics: its search returns no results.\n- Seismoscope and Mercalli sources: qualitative only.\n- Liquid-mirror telescope papers: ripples from vibration described, no threshold.\n- Vibration-standard tables: no liquid-surface criterion.\n- Smartphone or phyphox experiments: none found.\n- The Clemson PDF of Shao et al. 2021 JFM returned 503; the NSF PAR copy was used instead.\n- APS DFD abstracts on horizontally vibrated containers returned 403.\n\nThe page should say \"derived, not measured\" and give the range.\n\nNot verified or assumed:\n- **Visibility criterion.** The 10-arcmin \"noticeable\" criterion is my assumption, ten times the sourced 1-arcmin acuity limit. It is the largest uncertainty (factor of about 10).\n- **Meniscus model.** The quasi-static amplitude (A/2g)·z_m and the source-width factor η are my own order-of-magnitude model. No paper gives edge-wave height against forcing; Shao et al. state their apparatus could not measure wave height.\n- **Wavemaker ratio.** The deep-water ratio of 2 assumes a freely sliding contact line and no meniscus. The 1–2 range covers wetting effects only roughly.\n- **Glass contact angle.** The contact angle of water on household glass is not sourced; 0–50° was assumed. The PMC table with one glass value (45°) could not be fetched past a captcha.\n- **Faraday onset.** Read off a figure (±0.1 m/s²), for a brimful pinned tank. An ordinary glass was not measured.\n- **ShakeMap PGV.** The 1.41 cm/s at intensity IV comes from the legend. Worden et al. (2012) itself was not fetched, and the reading of legend values as the PGV at each intensity is mine.\n- **Table transfer.** No source was found for how vibration passes from ground to tabletop (floor or table amplification). The page should say the value applies to a table that moves with the ground.\n- **Production history.** Primary Lantieri interviews (DVD or Blu-ray featurettes, Shay and Duncan's book) were not fetched. The \"under the dashboard\" detail is from unverified popular accounts; Film Stories says strings were run through the car and plucked by a crew member lying on the floor.\n- **Human perception.** Perception thresholds (BS 5228-2, ISO 2631-2 and so on) were left to the threshold topic and are not restated here."
+}

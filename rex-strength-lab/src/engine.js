@@ -2818,7 +2818,7 @@
       const stroke = (L) => (L.catch.forced ? L.catch.tStroke : 0);
       return ok(a) && ok(b) ? a.time + b.time + stroke(a) + stroke(b) + (a.tPush || 0) + (b.tPush || 0) : null;
     }
-    return { CATCH, MATERIALS, OBJ_MATERIAL, flyTo, aimEasy, aimHard, farthest, releaseTable, wells, wellRun, wellNeed, catchIt, heatVerdict, fireballAt, leg, tossPartner, game, roundTrip, partnerAsObject, pushStartRadius, meetRadius, chestRadius };
+    return { CATCH, MATERIALS, OBJ_MATERIAL, flyTo, aimEasy, aimHard, farthest, releaseTable, wells, wellRun, wellNeed, catchIt, heatVerdict, fireballAt, leg, tossPartner, game, roundTrip, partnerAsObject, pushStartRadius, meetRadius, chestRadius, coastDist };
   })();
 
   // ---------------------------------------------------------------------------
@@ -2832,7 +2832,7 @@
   //   ramp:       near = 0.1875 F / (rho cs^2 tau r), far = 0.181 F / (rho cs^2.5 tau^1.5 sqrt r)
   //   PPV (vertical) = max(near, far) x D(zeta), zeta = xi r / (0.919 cs T)
   // Checked against a 130 kg drop test at Pisa (within about 2x over 2.5-60 m, with the contact time fitted) and
-  // elephant footfalls (within about 2-4x, guessed inputs); one recorded person walking past at 53 m on sandy ground (Steinmann 2025) within about 2x. Uncertain by about 3-5x. Past 60 m, the furthest it was checked, its
+  // elephant footfalls (within about 2-4x, guessed inputs); one recorded person walking past at 53 m on sandy ground (Steinmann 2025) within about 3x (firm to loose sand). Uncertain by about 3-5x. Past 60 m, the furthest it was checked, its
   // damping makes a short pulse fade as r^-2 to r^-3, faster than any measured impact (r^-1.0 to r^-1.6: Pisa r^-1.28,
   // dropped weights r^-1.1 to r^-1.35), so there it falls no faster than r^-1.3 from its 60 m value (an estimate).
   // Sources and status: research/final-presence.json (vib_*).
@@ -2858,7 +2858,7 @@
     // thresholds, peak particle velocity at the ground, m/s (research/final-presence.json, thr_* and ripple_*):
     //   feel: just perceptible indoors (BS 5228-2 Table B.1, 0.3 mm/s; 0.14-1)
     //   feelOnce: one isolated event (a stomp) 'barely perceptible' (Caltrans 2020 Table 20, transient: 1.0 mm/s); the average
-    //     person needs about 2.4-3.3 mm/s for a jolt this short (USBM RI 8507 Table 15)
+    //     person needs more than 3 mm/s: 3.3 mm/s for a half-second jolt, more for a shorter one (USBM RI 8507 Table 15)
     //   shimmer: a glass of water visibly ripples (estimate: about 0.2 mm/s side to side, 0.02-1); compared with the
     //     horizontal shaking, not the vertical (see HV)
     //   rings: concentric rings in the glass, the film look (estimate from a ripple model: about 0.5-1 mm/s vertical)
@@ -2866,8 +2866,10 @@
     //   plasterWalk: cosmetic damage from repeated steps (Caltrans older homes, continuous: 7.6 mm/s)
     //   plaster: cosmetic damage from one event, a stomp or a landing (US Bureau of Mines RI 8507, plaster: 12.7 mm/s)
     //   footing: people lose their footing (estimate from earthquakes: about 300 mm/s, 80-600)
-    // plasterHigh: the same safe limit above 40 Hz (RI 8507: 2.0 in/s for all houses), for short single pulses
-    PLASTER_F: 40, plasterHigh: 2.0 * 0.0254,
+    // PLASTER_B1: one event's safe level for plaster houses against frequency (USBM RI 8507 Figure B-1,
+    // thr_usbm_ri8507_figure_b1_curve): 0.030 in displacement at the lowest frequencies, 0.50 in/s from about 2.7 Hz,
+    // 0.008 in displacement from about 10 Hz, 2.0 in/s from about 40 Hz
+    PLASTER_B1: { dLow: 0.030 * 0.0254, v: 0.50 * 0.0254, dMid: 0.008 * 0.0254, vHigh: 2.0 * 0.0254 },
     TH: { feel: 0.3e-3, feelOnce: 0.04 * 0.0254, shimmer: 0.2e-3, rings: 0.7e-3, rattle: 1e-3, plasterWalk: 7.6e-3, plaster: 12.7e-3, footing: 0.3 },
     // horizontal over vertical shaking at the surface of uniform ground (Poisson's ratio 1/4): 1/3 in the near field,
     // 0.68 for Rayleigh waves (vib_rayleigh_horizontal_and_resultant, derived). Only the water glass's shimmer uses it.
@@ -2916,10 +2918,13 @@
   // shaking is not known (yielding soaks up energy, softening lets it move more).
   const ppvNonlinear = (src, d) => { const list = Array.isArray(src) ? src : [src]; const r = Math.max(d, VIB.RMIN); return list.some((x) => x && Math.max(ppvAt(x, d) / x.ground.cs, 0.75 * x.F / (2 * Math.PI * x.ground.rho * x.ground.cs * x.ground.cs * r * r)) > VIB.STRAIN); };
   const elephantPPV = (d) => VIB.ELEPHANT.v * VIB.ELEPHANT.d / d;
-  // One event's plaster check (US Bureau of Mines RI 8507): 12.7 mm/s for a pulse of 40 Hz or less, 50.8 mm/s above.
-  // A pulse of length T is taken at frequency 1/T (a ramp: 1/(2 tau)). plasterOver: does any part reach its limit at d?
+  // One event's plaster check: the RI 8507 Figure B-1 safe level at the pulse's frequency (12.7 mm/s from about 2.7 to
+  // 10 Hz, rising as 0.2 mm of displacement to 50.8 mm/s at 40 Hz and above). It rises smoothly with frequency, so a
+  // harder push that shortens the pulse can't switch the hazard off. A pulse of length T is taken at frequency 1/T (a
+  // ramp: 1/(2 tau)); that is our estimate. plasterOver: does any part reach its limit at d?
   const pulseHz = (x) => (x.kind === 'ramp' ? 1 / (2 * x.tau) : 1 / x.T);
-  const plasterLimit = (x) => (pulseHz(x) > VIB.PLASTER_F ? VIB.plasterHigh : VIB.TH.plaster);
+  const plasterLimitHz = (f) => { const B = VIB.PLASTER_B1, w = 2 * Math.PI * f; return Math.min(B.vHigh, Math.max(Math.min(w * B.dLow, B.v), w * B.dMid)); };
+  const plasterLimit = (x) => plasterLimitHz(pulseHz(x));
   const plasterOver = (src, d) => { const list = Array.isArray(src) ? src : [src]; return list.some((x) => x && ppvAt(x, d) >= plasterLimit(x)); };
   const plasterReach = (src) => { const list = Array.isArray(src) ? src : [src]; return Math.max(0, ...list.filter(Boolean).map((x) => ppvReach(x, plasterLimit(x)))); };
 
@@ -3010,7 +3015,9 @@
     if (surface.granular) {
       const qSand = 37e3 * B / 0.316;   // the loose sand's bearing at this foot width (the elephant print's sand)
       // Schanz's anchor stress is the elephant's dynamic (peak) stress, so the print follows the step's peak
-      return { depth: PRINT.d * Math.pow(Math.max(p, pPeak) / PRINT.p, PRINT.n) * (B / PRINT.B) * Math.min(1, qSand / q), kind: 'print' };
+      // the rule was fitted from 99 to 350 kPa (Schanz's model): past that it is extrapolated
+      const pp = Math.max(p, pPeak);
+      return { depth: PRINT.d * Math.pow(pp / PRINT.p, PRINT.n) * (B / PRINT.B) * Math.min(1, qSand / q), kind: 'print', extrapolated: pp > PRINT.p * (1 + 1e-9) };
     }
     if (surface.id === 'softclay' || surface.id === 'stiffclay') {
       // the landing pulse, if it is past the clay's bearing, drives the foot in like a small stomp
@@ -3061,9 +3068,11 @@
       BLOCK: 100,    // a city block (m): estimate
       DP_HARM: 100,       // Pa, the most air blast that stays harmless at a house: 134 dB, USBM RI 8485's safe maximum (comic_airblast_safe_max)
       DP_RATTLE: 36,      // Pa, windows start to rattle: complaints from about 120 dB on a 6 Hz meter, roughly 36 Pa unfiltered (airblast_rattle_onset_unfiltered, derived)
-      DP_WINDOWS: 6900,   // Pa, windows shatter (data: blast_window_breakage)
+      DP_WINDOWS: 6900,   // Pa, the top of the 3.4-6.9 kPa band where windows usually shatter (data: blast_window_breakage)
       DP_HOUSES: 26800,   // Pa, houses collapse (data: blast_residential_collapse)
       TOL: 0.005,    // searches stop within 0.5%
+      // J into soil past which a jump's sinking feet leave craters, not deep footprints: our estimate (soil_crater_cutoff)
+      CRATER_E: 1e6,
     };
     const range = (f) => (f.relativistic || f.escaped || f.orbit || f.leavesHill || f.timedOut ? Infinity : f.landed ? f.range : 0);
     const momentumOf = (v, m) => (v >= K.c ? Infinity : vToMomentum(v, m));
@@ -3075,6 +3084,18 @@
     // Energy counts as an air blast only when it is let go faster than sound can carry it off: something moving
     // past Mach 1 (a shock wave), or a fireball. Slower, it is a thump or a crash, not a blast wave.
     const shock = (v, E) => (v >= K.a0 ? E : 0);
+    function throwBlast(r, o) {
+      if (!r.canMove || !r.flight) return { land: 0, path: 0 };
+      if (r.flight.relativistic) return { land: r.Eobj, path: 0 };
+      const land = r.flight.landed ? shock(r.flight.vImpact, r.Eimpact) : 0;
+      const drag = o && o.coolFlight ? 0 : shock(r.v, r.dragLoss != null ? r.dragLoss : r.Eobj);
+      return { land, path: drag + shock(r.recoilV || 0, r.recoilE || 0) };
+    }
+    function recoilSlide(r, o) {
+      if (!r.canMove || !(r.recoilV > 0) || o.anchor === 'bolted') return 0;
+      const Rs = anchorCapacity({ body: o.body, surface: o.surface, theta: 0, anchor: o.anchor, groundHolds: o.groundHolds }).R;
+      return (r.push && r.push.xA || 0) + CATCHGAME.coastDist(o.body.m, r.recoilV * Math.cos((o.angle || 0) * Math.PI / 180), Rs, 0.5 * K.rho0 * o.body.Cd * o.body.frontArea);
+    }
     const SOIL = new Set(['sand', 'gravel', 'softclay', 'stiffclay']);
     // Each move: run, what it is for (goal), the fastest thing it sets moving, and what it does to the ground and air.
     const MOVES = {
@@ -3086,7 +3107,13 @@
         boomSpeed: (r) => (r.canMove ? Math.max(r.v, r.recoilV || 0) : 0),
         ground: (r, o) => !SOIL.has(o.surface && o.surface.id) && r.canMove && r.sinkRatio > 1,
         crush: (r, o) => !o.gentleHold && r.canMove && r.gripRatio > 1,
-        blast: (r) => (!r.canMove || !r.flight ? 0 : r.flight.relativistic ? r.Eobj : r.flight.landed ? shock(r.flight.vImpact, r.Eimpact) : 0),
+        // the landing past Mach 1; and a launch past Mach 1, whose drag loss goes into the air along the first stretch
+        // of its path (all its energy if it never comes down; none with Cool flight), plus his own recoil past Mach 1.
+        // The larger counts: they happen in different places. blastFrom says which.
+        blast: (r, o) => { const b = throwBlast(r, o); return Math.max(b.land, b.path); },
+        blastFrom: (r, o) => { const b = throwBlast(r, o); return r.flight && r.flight.relativistic ? 'fire' : b.path > b.land ? 'path' : 'landing'; },
+        // his recoil: the lurch during the push, then the coast against his footing and the air (as Catch counts it)
+        slide: (r, o) => recoilSlide(r, o),
         // the object stops in about its own size: a pulse carrying its momentum over L / v
         shake: (r, o) => {
           if (!r.canMove || !r.flight || !r.flight.landed || !(r.flight.vImpact > 0)) return null;
@@ -3102,9 +3129,11 @@
         run: (c) => jump(c),
         goal: (r, o) => r.v > 0 && (r.relativistic || r.flight.escaped || r.flight.apex >= o.target),
         speed: (r) => r.v,
+        // the boom counts his feet driven into the ground too (the air blast below comes from them)
+        boomSpeed: (r) => Math.max(r.v, r.footSpeed || 0),
         // take-off or landing: on paving, slabs, rock, ice or steel the surface breaks; in soil his feet only sink in
         // (in soil only a crater counts: over a megajoule into the ground, the Jump tab's 'two craters')
-        ground: (r, o) => (SOIL.has(o.surface && o.surface.id) ? (r.groundFails && r.Eground >= 1e6) || !!(r.landing && r.landing.Eground >= 1e6)
+        ground: (r, o) => (SOIL.has(o.surface && o.surface.id) ? (r.groundFails && r.Eground >= R.CRATER_E) || !!(r.landing && r.landing.Eground >= R.CRATER_E)
           : r.groundFails || !!(r.landing && r.landing.ratio > 1)),
         blast: (r) => shock(r.footSpeed, r.Eground || 0),
         // the landing, if he comes back down (soft landing absorbs it)
@@ -3171,6 +3200,8 @@
       { id: 'ground', test: (m, r, o) => !!m.ground && !o.groundHolds && m.ground(r, o) },
       { id: 'crush', test: (m, r, o) => !!m.crush && m.crush(r, o) },
       { id: 'passenger', test: (m, r, o) => !!m.passenger && m.passenger(r, o) },
+      // his own body shoved back past the nearest people (the two-player Catch's rule)
+      { id: 'slide', test: (m, r, o) => !!m.slide && m.slide(r, o) >= o.near },
     ];
     MOVES.punch.silent = true; MOVES.clap.silent = true;
     // Not-so-heroic presets, at rising scales: each is the least effort that does what it says.
@@ -3231,7 +3262,7 @@
     // o: { obj, angle, target, near, gentleHold, silentStrike, softLanding, groundHolds, m }
     function plan(move, ctx, o) {
       const M = MOVES[move];
-      const opt = Object.assign({ near: R.NEAR, groundHolds: ctx.groundHolds, m: ctx.body.m, body: ctx.body, surface: ctx.surface }, o || {});
+      const opt = Object.assign({ near: R.NEAR, groundHolds: ctx.groundHolds, m: ctx.body.m, body: ctx.body, surface: ctx.surface, anchor: ctx.anchor, coolFlight: !!ctx.coolFlight }, o || {});
       const memo = new Map();
       const at = (u) => {
         const key = u === Infinity ? 'inf' : u;
@@ -3300,9 +3331,10 @@
         ground: !!M.ground && !opt.groundHolds && M.ground(r, opt),
         crush: !!M.crush && M.crush(r, opt),
         passenger: !!M.passenger && M.passenger(r, opt),
+        slide: M.slide ? M.slide(r, opt) : 0,
       };
     }
-    return { R, MOVES, HAZARDS, PRESETS, plan, planNow, reach, bounds, search };
+    return { R, SOIL, MOVES, HAZARDS, PRESETS, plan, planNow, reach, bounds, search };
   })();
 
   // ---------------------------------------------------------------------------
@@ -3421,22 +3453,31 @@
     const g = grownBody(body, E, form);
     const tau = g.H / GROW.TISSUE_C;
     const dR = g.R - g.R0;
-    const u = dR / tau, uHead = g.dH / tau;
-    const dpLo = g.dV > 0 ? sphereOverpressure(u) : 0;
-    const dpHi = g.dV > 0 ? pistonOverpressure(uHead) / 3 + 2 * pistonOverpressure(u) / 3 : 0;
-    const Elo = 2 * dpLo * g.dV, Ehi = 2 * dpHi * g.dV;          // x2: rigid ground reflects it (equivalent free-air energy)
+    const u = dR / tau;
     const vcm = 0.5 * g.dH / tau;                                // his middle's mean upward speed during the growth
     const Fground = g.m * vcm / tau + g.m * K.g;                 // the ground's push that gives it
     const soles = 2 * body.footArea * Math.exp(g.lnr * g.s * 2 / 3);
-    let launch = vcm * vcm / (2 * K.g), vLeave = vcm, Fmax = Infinity, qGround = Infinity, driven = false;
+    let launch = vcm * vcm / (2 * K.g), vLeave = vcm, Fmax = Infinity, qGround = Infinity, driven = false, sink = 0, Eground = 0;
     if (gnd && gnd.surface && !gnd.groundHolds && !gnd.bolted) {
       qGround = qultFor(gnd.surface, body.footB * Math.exp(g.lnr * g.s / 3));
       Fmax = qGround * soles;
       driven = Fground > Fmax;
       vLeave = Math.min(vcm, Math.max(0, Fmax - g.m * K.g) * tau / g.m);
       launch = vLeave * vLeave / (2 * K.g);
+      if (driven) {
+        // the rest of the growth drives his soles down: the ground takes that work, its bearing plus the inertia of
+        // the soil pushed aside (the Poncelet rule the lab uses for feet driven into the ground)
+        const vSole = vcm - vLeave;
+        sink = vSole * tau;
+        Eground = soles * (qGround + K.PONCELET_K * (gnd.surface.rho || 2000) * vSole * vSole) * sink;
+      }
     }
-    return { grown: g, tau, u, uHead, mach: u / K.a0, machHead: uHead / K.a0, dpLo, dpHi, Elo, Ehi, Eatm: K.p0 * g.dV, vcm, Fground, groundPressure: Fground / soles, soles, launch, vLeave, Fmax, qGround, driven };
+    // the head rises at his middle's speed plus half the growth rate (all of it from the soles when they stay put)
+    const uHead = vLeave + 0.5 * g.dH / tau;
+    const dpLo = g.dV > 0 ? sphereOverpressure(u) : 0;
+    const dpHi = g.dV > 0 ? pistonOverpressure(uHead) / 3 + 2 * pistonOverpressure(u) / 3 : 0;
+    const Elo = 2 * dpLo * g.dV, Ehi = 2 * dpHi * g.dV;          // x2: rigid ground reflects it (equivalent free-air energy)
+    return { grown: g, tau, u, uHead, mach: u / K.a0, machHead: uHead / K.a0, dpLo, dpHi, Elo, Ehi, Eatm: K.p0 * g.dV, vcm, Fground, groundPressure: Fground / soles, soles, launch, vLeave, Fmax, qGround, driven, sink, Eground, quake: Eground > 0 ? seismicMagnitude(Eground) : null };
   }
   // Runaway: the side effects (the work done pushing the air back, p0 + dp over dV, and the gravitational binding
   // energy his own pull releases as he grows) are absorbed as growth too. Loop ratio f = energy fed back / energy
@@ -3511,6 +3552,6 @@
     kgRatio, overpressureAt, blastRadius, penetrationDepth,
     lift, throwObject, jump, stomp, punch, clap, sprint, pull, threshold, calibrateComic,
     throwOnce, jumpOnce, stompOnce, punchOnce, clapOnce,
-    driveStrength, PASSENGER, VIB, ppvAt, ppvNonlinear, groundOf, vibSource, elephantPPV, sphereOverpressure, growthShape, WALK, walkStep, walkThresholds, plasterOver, plasterReach, footprint, presence, walkEffortFor, ppvReach, RESTRAINT, GROW, formShare, grownBody, grownMakeBody, pistonOverpressure, gradualGrowth, instantGrowth, runawayGrowth,
+    driveStrength, PASSENGER, VIB, ppvAt, ppvNonlinear, groundOf, vibSource, elephantPPV, sphereOverpressure, growthShape, WALK, walkStep, walkThresholds, plasterOver, plasterReach, plasterLimitHz, footprint, presence, walkEffortFor, ppvReach, RESTRAINT, GROW, formShare, grownBody, grownMakeBody, pistonOverpressure, gradualGrowth, instantGrowth, runawayGrowth,
   };
 });

@@ -27,6 +27,8 @@ const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface
 
 // 2. Least-disruptive effort reaches each move's goal and, where the courtesy ceiling allows it, stays under every hazard.
 {
+  // the goals that need more than the courtesy ceiling allows (on sand the car's crush window and the jump's craters)
+  const ABOVE = new Set(['throw 9.07e+4 sand', 'throw 1.00e+7 sand', 'jump 1.00e+7 sand', 'throw inf sand', 'jump inf sand']);
   const moves = [['throw', { obj: obj('car'), angle: 45, target: 30 }], ['jump', { target: 3 }], ['stomp', {}], ['punch', { target: 10.4 }], ['clap', { target: 6 }], ['sprint', { target: 12.42 }], ['pull', { obj: obj('bus'), target: 10 }]];
   for (const F of [90718 * g, 1e7 * g, Infinity]) for (const sid of ['concrete', 'sand']) for (const [mv, o] of moves) {
     const c = ctxOf(F, { surface: surf(sid) });
@@ -42,8 +44,11 @@ const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface
     ok(mv + ' least-disruptive reaches its goal (F ' + (F / g).toPrecision(3) + ' kg, ' + sid + ')', M.goal(r, p.opt));
     // and it is restrained: well under all-out, and a push a fifth gentler misses the goal (unless it is the least he can try)
     ok(mv + ' least-disruptive is gentler than all-out and the gentlest that works (' + sid + ')', gl.use < (isFinite(F) ? F : Infinity) && (gl.atLowest || !M.goal(p.run(gl.use * 0.8), p.opt)), (gl.use / g).toPrecision(3) + ' kg');
-    // under every hazard whenever the goal is below the ceiling
-    if (gl.use <= ce.below) {
+    // under every hazard whenever the goal is below the ceiling; the few goals above it are listed, so a regression
+    // can't drop checks silently
+    const above = gl.use > ce.below;
+    ok(mv + ' goal ' + (above ? 'above' : 'within') + ' the courtesy ceiling as expected (F ' + (F / g).toPrecision(3) + ' kg, ' + sid + ')', above === ABOVE.has([mv, F === Infinity ? 'inf' : (F / g).toPrecision(3), sid].join(' ')));
+    if (!above) {
       const bad = P.RESTRAINT.HAZARDS.filter((h) => h.test(P.RESTRAINT.MOVES[mv], r, p.opt));
       ok(mv + ' least-disruptive stays under every hazard (' + sid + ')', bad.length === 0, bad.map((h) => h.id).join(','));
     }
@@ -137,13 +142,36 @@ const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface
   same('air blast harmless', P.RESTRAINT.R.DP_HARM, 'comic_airblast_safe_max');
   same('air rattle', P.RESTRAINT.R.DP_RATTLE, 'airblast_rattle_onset_unfiltered');
   same('drill stamp peak', P.WALK.STAMP.kPeak, 'step_carden2015_drill_peak_force');
+  // the plaster curve (RI 8507 Figure B-1): 0.50 in/s flat part and 2.0 in/s above 40 Hz
+  same('plaster safe level, flat part', P.VIB.PLASTER_B1.v, 'thr_usbm_ri8507_figure_b1_curve');
+  ok('plaster safe level above 40 Hz matches thr_usbm_ri8507_figure_b1_curve', near(P.VIB.PLASTER_B1.vHigh, R.thr_usbm_ri8507_figure_b1_curve.high_si, 0.01));
+  ok('plaster curve displacements 0.030 in and 0.008 in (thr_usbm_ri8507_figure_b1_curve)', /0\.030 in/.test(R.thr_usbm_ri8507_figure_b1_curve.display) && /0\.008 in/.test(R.thr_usbm_ri8507_figure_b1_curve.display) && near(P.VIB.PLASTER_B1.dLow, 0.030 * 0.0254, 1e-9) && near(P.VIB.PLASTER_B1.dMid, 0.008 * 0.0254, 1e-9));
+  // the firm sand of the elephant range: the ground the elephant model check used (c_s about 280 m/s, 1,800 kg/m3, damping 0.03)
+  const gF = P.VIB.GROUND.firmsand, ve = R.vib_model_check_elephant.notes;
+  ok('firm sand matches vib_model_check_elephant (280 m/s, 1,800 kg/m3, 0.03)', gF.cs === 280 && gF.rho === 1800 && gF.xi === 0.03 && /280 m\/s/.test(ve) && /1,800 kg/.test(ve) && /0\.03/.test(ve));
+  // the elephant anchor and its band
+  same('elephant anchor 0.005 mm/s at 20 m', P.VIB.ELEPHANT.v, 'elephant_anchor_ppv_vs_distance');
+  ok('elephant band x0.15 to x8 matches elephant_anchor_ppv_vs_distance', JSON.parse(R.elephant_anchor_ppv_vs_distance.values_json).band === 'x' + P.VIB.ELEPHANT.lo + ' to x' + P.VIB.ELEPHANT.hi);
+  // blast levels (environment research) and the growth limits
+  const RE = Object.fromEntries(require('../research/final-environment.json').facts.map((f) => [f.key, f]));
+  ok('windows preset at the top of blast_window_breakage (6.9 kPa)', near(P.RESTRAINT.R.DP_WINDOWS, RE.blast_window_breakage.high_si, 0.01));
+  ok('growth window band matches blast_window_breakage (3.4-6.9 kPa)', near(P.GROW.DP_WIN[0], RE.blast_window_breakage.low_si, 0.02) && near(P.GROW.DP_WIN[1], RE.blast_window_breakage.high_si, 0.01));
+  ok('houses collapse at blast_residential_collapse (26.8 kPa)', near(P.RESTRAINT.R.DP_HOUSES, RE.blast_residential_collapse.value_si, 0.01));
+  same('tissue sound speed', P.GROW.TISSUE_C, 'growth_tissue_sound_speed');
+  same('growth air pulse limit', P.GROW.SAFE_DP, 'growth_airblast_usbm_ri8485');
+  same('growth surface speed limit', P.GROW.SAFE_U, 'growth_contact_speed_osha');
+  same('soil crater line', P.RESTRAINT.R.CRATER_E, 'soil_crater_cutoff');
   ok('soft-footed factor is the 48.7% cut at normal speed (Yoon 2025)', near(P.WALK.SOFT, 1 - 0.487, 0.01) && /48\.7%|49%/.test(R.step_yoon2025_quiet_walking.display + R.step_yoon2025_quiet_walking.notes));
   const eib = JSON.parse(R.comic_eiband_voluntary_limits.values_json)[Object.keys(JSON.parse(R.comic_eiband_voluntary_limits.values_json)).find((k) => k.startsWith('spineward, voluntary'))];
   ok('Eiband limits match comic_eiband_voluntary_limits', P.PASSENGER.EIBAND.every(([t, gl]) => eib[String(t)] === gl), JSON.stringify(eib));
   // a person walking past the elephant's station (Steinmann et al. 2025, sandy dry ground): about 0.002 mm/s at 53 m
   const hum = JSON.parse(R.elephant_steinmann2025_other_animals.values_json).rows.find((x) => x.animal === 'human');
-  const vHum = P.presence(P.makeBody({ build: 'human', H: 1.75, m: 76.7 }), surf('sand'), { effort: 0.5 }).ppv(hum.distance_m);
-  ok('a person walking 53 m away on sand: within 2x of the recorded 0.002 mm/s', vHum / (hum.ppv_mm_s / 1000) < 2 && (hum.ppv_mm_s / 1000) / vHum < 2, (vHum * 1000).toExponential(2) + ' mm/s');
+  // the station's ground stiffness is unknown (the elephant comparison spans firm to loose sand), so both ends
+  const firm = Object.assign({}, surf('sand'), { id: 'firmsand' });
+  for (const s0 of [firm, surf('sand')]) {
+    const vHum = P.presence(P.makeBody({ build: 'human', H: 1.75, m: 76.7 }), s0, { effort: 0.5 }).ppv(hum.distance_m);
+    ok('a person walking 53 m away on ' + (s0.id === 'sand' ? 'loose' : 'firm') + ' sand: within 3x of the recorded 0.002 mm/s', vHum / (hum.ppv_mm_s / 1000) < 3 && (hum.ppv_mm_s / 1000) / vHum < 3, (vHum * 1000).toExponential(2) + ' mm/s');
+  }
   // the Walk tab's footing threshold for an ordinary step is the 1 g cap at its pulse frequency, below the 300 mm/s earthquake value
   const st = P.walkStep(rex, surf('concrete'), { effort: 0.5 });
   const thw = P.walkThresholds(st);
@@ -244,7 +272,8 @@ const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface
 {
   const bad = [];
   const scan = (label, v, path) => {
-    if (typeof v === 'number') { if (Number.isNaN(v) || v < 0 && /\b(F|E|v|ppv|depth|ratio|pressure|T|t|m|H|rho)\b/i.test(path.split('.').pop())) bad.push(label + ' ' + path + ' = ' + v); return; }
+    // every negative number is a problem except a quake magnitude (which can be negative)
+    if (typeof v === 'number') { if (Number.isNaN(v) || v < 0 && !/quake/i.test(path.split('.').pop())) bad.push(label + ' ' + path + ' = ' + v); return; }
     if (v && typeof v === 'object' && !Array.isArray(v)) for (const k of Object.keys(v)) if (typeof v[k] !== 'function') scan(label, v[k], path + '.' + k);
   };
   for (const F of [1e3 * g, 90718 * g, 1e15 * g, Infinity]) for (const use of [1e-3, 1e2 * g, 1e6 * g, 1e20 * g, Infinity]) {
@@ -260,6 +289,109 @@ const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface
     scan('grown ' + E + ' ' + f, P.grownBody(rex, E, f), ''); scan('gradual ' + E + ' ' + f, P.gradualGrowth(rex, E, f), ''); scan('instant ' + E + ' ' + f, P.instantGrowth(rex, E, f), ''); scan('runaway ' + E + ' ' + f, P.runawayGrowth(rex, E, f), '');
   }
   ok('new paths: no NaN or negative values (moves at any effort, walking on every surface, growth over 60 decades)', bad.length === 0, bad.slice(0, 5).join('; '));
+}
+
+// 8. Guards for the review fixes: each check fails if one line of its fix is undone (review round 2, code lens).
+{
+  const H = (id) => P.RESTRAINT.HAZARDS.find((h) => h.id === id), M = P.RESTRAINT.MOVES;
+  // soil: sinking in is a footprint. On sand at the default dial, all-out, the throw's and sprint's feet sink and the
+  // jump's feet punch in (under a megajoule: no craters), and none of that counts as breaking the ground
+  { const c = ctxOf(90718 * g, { surface: surf('sand') }), o = { surface: c.surface, body: rex, m: rex.m, near: 5, obj: obj('car'), angle: 45 };
+    const t = P.throwObject(c, obj('car'), 45), j = P.jump(c), sp = P.sprint(c);
+    ok('on sand, sinking in is not broken ground (throw, jump, sprint)', t.sinkRatio > 1 && j.groundFails && j.Eground < 1e6 && sp.sinks && !H('ground').test(M.throw, t, o) && !H('ground').test(M.jump, j, o) && !H('ground').test(M.sprint, sp, o));
+    const j2 = P.jump(ctxOf(1e7 * g, { surface: surf('sand') }));
+    ok('on sand, a jump that leaves craters (over a megajoule into the ground) does break it', j2.Eground >= 1e6 && H('ground').test(M.jump, j2, o)); }
+  // a jump's landing breaks a slab when it is past the slab's bearing, even if the take-off didn't
+  { const c = ctxOf(3e6 * g, { surface: surf('concrete') }), r = P.jump(c), o = { surface: c.surface, body: rex, m: rex.m, near: 5 };
+    const landOnly = Object.assign({}, r, { groundFails: false });
+    ok('jump on concrete: a landing past the bearing sets the ground hazard', r.landing.ratio > 1 && H('ground').test(M.jump, landOnly, o) && !H('ground').test(M.jump, Object.assign({}, landOnly, { landing: Object.assign({}, r.landing, { ratio: 0.9 }) }), o), 'landing ratio ' + r.landing.ratio.toFixed(2)); }
+  // the Stomp tab's shaking at the drill stamp's leg speed equals the Walk tab's stamp
+  { const st = P.walkStep(rex, surf('concrete'), { effort: 1 }), vSt = Math.sqrt(2 * g * P.WALK.STAMP.thigh * rex.H);
+    const sh = M.stomp.shake({ vFoot: vSt, holeDepth: 0 }, { surface: surf('concrete'), body: rex });
+    ok('a stomp at the drill stamp\'s leg speed shakes the ground like the Walk tab\'s stamp', near(P.ppvAt(sh, 5), P.ppvAt(st.src[0], 5), 0.01), (P.ppvAt(sh, 5) * 1000).toPrecision(3) + ' vs ' + (P.ppvAt(st.src[0], 5) * 1000).toPrecision(3) + ' mm/s'); }
+  // the stomp's goal is the one-jolt level, not the walk-past level
+  { const c = ctxOf(90718 * g), p = P.RESTRAINT.planNow('stomp', c, { near: 5 }), r = p.run(p.goal().use);
+    ok('stomp goal is the 1 mm/s one-jolt level', near(P.ppvAt(M.stomp.shake(r, p.opt), 5), P.VIB.TH.feelOnce, 0.02)); }
+  // a person's launch is judged by the push's peak (real muscle pushes hardest at first)
+  // (at 350 kg of effort the average push is within the 1.5 g limit and the peak is past it)
+  { const person = obj('person'), r = P.throwObject(ctxOf(90718 * g, { mode: 'real', use: 350 * g }), person, 45), o = { obj: person, angle: 45 };
+    const nAvg = P.PASSENGER.felt(r.launchG, 45), nPk = P.PASSENGER.felt(r.launchGPeak, 45), lim = P.PASSENGER.noHarm(r.launchT);
+    ok('passenger hazard uses the launch peak', nAvg <= lim && nPk > lim && H('passenger').test(M.throw, r, o), sig2(nAvg) + ' g mean, ' + sig2(nPk) + ' g peak, limit ' + sig2(lim)); }
+  // instant growth: the ground's bearing caps the launch
+  { const I = P.instantGrowth(rex, 4.2e23, 0.5, { surface: surf('concrete') }), I0 = P.instantGrowth(rex, 4.2e23, 0.5);
+    ok('instant growth (Chicxulub, mix) on concrete: the slab gives, so no 15 km launch', I0.launch > 1e4 && I.driven && I.launch < 1 && I.vLeave <= Math.max(0, I.Fmax - I.grown.m * g) * I.tau / I.grown.m + 1e-9, sig2(I0.launch) + ' m uncapped'); }
+  // gradual growth: the shortest harmless times in the research (growth_slow_tmin_examples)
+  for (const [E, f, T] of [[4.2e23, 0.5, 86], [4.2e23, 1, 248], [3.828e26, 0.5, 824], [3.828e26, 1, 2560]]) ok('gradual growth shortest harmless time ' + T + ' s (' + E.toExponential(1) + ' J, s = ' + f + ')', near(P.gradualGrowth(rex, E, f).T, T, 0.02), P.gradualGrowth(rex, E, f).T.toFixed(1));
+  ok('instant growth timescale: sound crossing his new body (6.7 ms for Chicxulub, mix)', near(P.instantGrowth(rex, 4.2e23, 0.5).tau, 0.0067, 0.02));
+  ok('runaway air share about 2e-16 for Chicxulub (mix)', near(P.runawayGrowth(rex, 4.2e23, 0.5).kAir, 2.25e-16, 0.05));
+  // clap with silent strike, as for the punch
+  { const a = P.clap(ctxOf(1e9 * g)), b = P.clap(ctxOf(1e9 * g, { silentStrike: true }));
+    ok('silent strike keeps the clap and turns off its boom and air hazards', a.vHand === b.vHand && a.vHand >= P.K.a0 && H('boom').test(M.clap, a, { near: 5 }) && !H('boom').test(M.clap, b, { near: 5, silentStrike: true }) && !H('air').test(M.clap, b, { near: 5, silentStrike: true })); }
+  // a thrown object's landing shakes the ground
+  { const r = P.throwObject(ctxOf(90718 * g), obj('car'), 45);
+    ok('a landing car shakes the ground where it lands', P.ppvAt(M.throw.shake(r, { obj: obj('car'), surface: surf('concrete') }), 5) > 1e-4); }
+  // 'break windows across the street' is judged at 15 m
+  // (a punch whose 6.9 kPa radius is between 15 m and the 40 m nearest people: true only if judged at 15 m)
+  { const pw = P.RESTRAINT.PRESETS.find((x) => x.id === 'windows'), r = P.punch(ctxOf(Math.pow(10, 7.5) * g)), rad = P.blastRadius(M.punch.blast(r, {}), P.RESTRAINT.R.DP_WINDOWS);
+    ok('the windows preset is judged at the street (15 m)', P.RESTRAINT.R.STREET === 15 && rad > 15 && rad < 40 && pw.test(M.punch, r, { near: 40 }), sig2(rad) + ' m'); }
+  // Ollie's boots on soft clay: mired
+  ok('Ollie on soft clay is mired', P.walkStep(ollie, surf('softclay'), {}).footprint.kind === 'mired');
+}
+
+// 9. Guards for review round 3's fixes (each fails if one line of its fix is undone).
+{
+  const H = (id) => P.RESTRAINT.HAZARDS.find((h) => h.id === id), M = P.RESTRAINT.MOVES, PR = (id) => P.RESTRAINT.PRESETS.find((x) => x.id === id);
+  // the plaster safe level follows RI 8507 Figure B-1: 12.7 mm/s from about 2.7 to 10 Hz, 0.2 mm of displacement to
+  // 40 Hz, 50.8 mm/s above, and never falls as the frequency rises
+  const L = P.plasterLimitHz;
+  ok('plaster safe level: 12.7 mm/s at 5 Hz, 2 pi f x 0.2 mm at 20 Hz, 50.8 mm/s at 100 Hz', near(L(5), 0.0127, 1e-9) && near(L(20), 2 * Math.PI * 20 * 0.008 * 0.0254, 1e-9) && near(L(100), 0.0508, 1e-9) && near(L(1), 2 * Math.PI * 0.030 * 0.0254, 1e-9));
+  let mono = true; for (let f = 0.3, prev = 0; f < 300; f *= 1.05) { if (L(f) < prev * (1 - 1e-12)) mono = false; prev = L(f); }
+  ok('plaster safe level never falls as the frequency rises', mono);
+  // the hazard check uses the curve: a 5 ms jolt (200 Hz) of 20 mm/s at 5 m is under its 50.8 mm/s, one of 60 mm/s is over
+  { const gd = { rho: 2300, cs: 1500, xi: 0.01 }, unit = P.ppvAt({ kind: 'hann', F: 1, T: 0.005, ground: gd }, 5), src = (v) => ({ kind: 'hann', F: v / unit, T: 0.005, ground: gd });
+    ok('plaster check: a short jolt is judged at 50.8 mm/s, not 12.7', !P.plasterOver(src(0.020), 5) && P.plasterOver(src(0.060), 5)); }
+  // ... so on a hazard scan it stays on once on (the 2 m calibration body's jump used to switch off at 40 Hz)
+  { const cb = P.makeBody({}), c = { F: 1e6 * g, mode: 'comic', body: cb, surface: surf('concrete'), groundHolds: false, anchor: 'friction' }, o = { surface: c.surface, body: cb, m: cb.m, near: 5 };
+    let on = false, back = false; for (let u = 1e4; u < 1e6; u *= 1.02) { const x = H('plaster').test(M.jump, P.jump(Object.assign({}, c, { use: u * g })), o); if (on && !x) back = true; on = on || x; }
+    ok('calibration body jump: the plaster hazard stays on once on', on && !back); }
+  // the stomp's extra stamp share stops growing at the stamp's own leg speed
+  { const vs = Math.sqrt(2 * g * P.WALK.STAMP.thigh * rex.H), o = { surface: surf('concrete'), body: rex }, J = (v) => { const x = M.stomp.shake({ vFoot: v, holeDepth: 0 }, o); return x.F * x.T / 2; };
+    ok('stomp impulse past the stamp speed grows by the leg alone', near(J(2 * vs) - J(vs), rex.legEff * vs, 1e-6), sig2(J(2 * vs) - J(vs)) + ' vs ' + sig2(rex.legEff * vs)); }
+  // sand prints follow the landing peak: a stamp prints much deeper than an ordinary step, and is flagged as extrapolated
+  { const a = P.walkStep(rex, surf('sand'), { effort: 0.5 }).footprint, b = P.walkStep(rex, surf('sand'), { effort: 1 }).footprint;
+    ok('sand: a stamp prints over 3x deeper than an ordinary step, past the fitted range', b.depth > 3 * a.depth && b.extrapolated && !a.extrapolated, sig2(a.depth * 1000) + ' vs ' + sig2(b.depth * 1000) + ' mm'); }
+  // a throw's boom counts his recoil: a locomotive slower than sound with Rex recoiling past it
+  { let hit = null; for (let u = 1e6; u < 1e10 && !hit; u *= 1.1) { const r = P.throwObject(ctxOf(1e12 * g, { use: u * g }), obj('loco'), 45); if (r.canMove && r.v < P.K.a0 && r.recoilV >= P.K.a0) hit = r; }
+    ok('a locomotive thrown below Mach 1 with Rex recoiling past it: sonic boom', !!hit && H('boom').test(M.throw, hit, { near: 5 })); }
+  // a jump's boom counts his feet driven into the ground
+  { let hit = null; for (let u = 1e5; u < 1e9 && !hit; u *= 1.1) { const r = P.jump(ctxOf(1e12 * g, { use: u * g })); if (r.v < P.K.a0 && r.footSpeed >= P.K.a0) hit = r; }
+    ok('a jump whose feet pass Mach 1: sonic boom', !!hit && H('boom').test(M.jump, hit, { near: 5 })); }
+  // in soil a stomp's hole is a footprint: no crater, no broken ground
+  { const r = P.stomp(ctxOf(1e5 * g, { surface: surf('sand'), use: 1e4 * g })), o = { surface: surf('sand'), body: rex, near: 5 };
+    ok('sand: a stomp that dents the ground (no crater) does not break it', r.holeDepth >= 0.01 && !(r.crater > 0) && !H('ground').test(M.stomp, r, o), sig2(r.holeDepth * 100) + ' cm'); }
+  // the nearest-people distance moves the air and plaster onsets
+  { const on = (mv, id, nr) => P.RESTRAINT.planNow(mv, ctxOf(1e12 * g), { near: nr }).result('hazard:' + id).use;
+    ok('farther nearest people: the stomp\'s plaster onset rises', on('stomp', 'plaster', 40) > on('stomp', 'plaster', 5) * 1.5);
+    // (a punch's blast reaches past 40 m as soon as it passes Mach 1, so judge one blast at two distances)
+    const r = P.punch(ctxOf(1e9 * g)), rad = P.blastRadius(M.punch.blast(r, {}), P.RESTRAINT.R.DP_HARM);
+    ok('the air hazard is judged at the nearest-people distance', H('air').test(M.punch, r, { near: rad * 0.9 }) && !H('air').test(M.punch, r, { near: rad * 1.1 }), sig2(rad) + ' m'); }
+  // the rattle preset is judged at the rattle level (1 mm/s), not the feel level
+  { const p = P.RESTRAINT.planNow('stomp', ctxOf(1e6 * g), { near: 5 }), r = p.result('preset:rattle');
+    const at = (u) => P.ppvAt(M.stomp.shake(p.run(u), p.opt), 5);
+    ok('rattle preset starts at 1 mm/s', at(r.use) >= P.VIB.TH.rattle && at(r.below) < P.VIB.TH.rattle * 1.0001, (at(r.use) * 1000).toPrecision(3) + ' mm/s'); }
+  // a relativistic throw's fireball is a blast of all its energy
+  { const r = P.throwObject(ctxOf(Infinity), obj('baseball'), 45);
+    ok('an unlimited throw\'s fireball counts its whole energy', r.flight.relativistic && M.throw.blast(r, { obj: obj('baseball') }) === r.Eobj); }
+  // a throw past Mach 1: the air takes the energy in flight (the 'upper bound' presets can fire), unless Cool flight is on
+  { const c = ctxOf(1e15 * g), r = P.throwObject(c, obj('car'), 45), o = { obj: obj('car'), angle: 45, near: 5, surface: c.surface, body: rex };
+    ok('a car thrown far past Mach 1: its flight counts as a blast from him', r.v > P.K.a0 && r.dragLoss > 0 && M.throw.blast(r, o) >= r.dragLoss && M.throw.blastFrom(r, o) === 'path' && PR('windows').test(M.throw, r, o));
+    ok('... and with Cool flight only the landing and his own recoil count', M.throw.blast(r, Object.assign({ coolFlight: true }, o)) === Math.max(r.flight.vImpact >= P.K.a0 ? r.Eimpact : 0, r.recoilV >= P.K.a0 ? r.recoilE : 0)); }
+  // a solo throw's recoil slide past the nearest people is a hazard (a bus on ice at a 100 t dial)
+  { const c = ctxOf(1e5 * g, { surface: surf('ice') }), p = P.RESTRAINT.planNow('throw', c, { obj: obj('bus'), angle: 45, target: 30, near: 5 }), ce = p.ceiling();
+    ok('bus on ice: the courtesy ceiling stops before his recoil slides him past 5 m', ce.by === 'slide' && M.throw.slide(p.run(ce.below), p.opt) < 5 && M.throw.slide(p.run(ce.use), p.opt) >= 5, sig2(ce.below / g) + ' kg'); }
+  // instant growth on ground that gives: the soles are driven in, and the ground takes that work
+  { const I = P.instantGrowth(rex, 4.2e23, 0.5, { surface: surf('concrete') });
+    ok('instant growth (Chicxulub, mix) on concrete: the ground takes more than the air', I.driven && I.Eground > I.Ehi && near(I.uHead, I.vLeave + 0.5 * I.grown.dH / I.tau, 1e-9), sig2(I.Eground) + ' J vs ' + sig2(I.Ehi) + ' J'); }
 }
 
 console.log(n + ' checks, ' + (fails ? fails + ' FAILED' : 'all checks passed'));

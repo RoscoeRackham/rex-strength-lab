@@ -598,7 +598,7 @@
    "key": "step_ren2010_elephant_limb_forces",
    "category": "presence_step",
    "label": "Elephant walking: peak vertical force on each foot",
-   "status": "verified",
+   "status": "derived",
    "value_si": 0.55,
    "unit_si": "body weights (forefoot, normal walk, read from figure)",
    "low_si": 0.36,
@@ -614,7 +614,7 @@
      "url": "https://cdn.ncbi.nlm.nih.gov/pmc/blobs/63b2/2872429/ad359a354f36/pnas.0911396107fig01.jpg"
     }
    ],
-   "notes": "Quotes: 'peak vertical GRFs were ~50% higher for the forelimbs than for the hindlimbs (corresponding to a weight distribution of ~60% on the forelimbs)'. 'Maximal vertical GRFs were <1 body weight (BW) for each forelimb and <0.7 BW for each hindlimb.' 'Six juvenile Asian elephants (mean age, 8.5 ± 3.0 years; mean mass, 2,291 ± 669 kg; mean hip height, 1.52 ± 0.19 m'. Figure 1A: 'normal walking ... at dimensionless speeds ... of 0.30–0.35 ... and velocities of ~1.2'. Read from the figure: forelimb peak about 0.55 BW, hindlimb about 0.36 BW (±0.03; small image). 'compliant limbs dampen impact accelerations and keep peak GRFs low'. Verifier: re-read the figure (0.56 and 0.36). The '<1 BW' holds only over the speeds tested (0.64–4.83 m/s); Ren projects about 1.1 BW per forelimb near 7 m/s. Walking trials are at û 0.30–0.35 (Fr about 0.09–0.12). Juveniles, not 3-tonne adults.",
+   "notes": "Quotes: 'peak vertical GRFs were ~50% higher for the forelimbs than for the hindlimbs (corresponding to a weight distribution of ~60% on the forelimbs)'. 'Maximal vertical GRFs were <1 body weight (BW) for each forelimb and <0.7 BW for each hindlimb.' 'Six juvenile Asian elephants (mean age, 8.5 ± 3.0 years; mean mass, 2,291 ± 669 kg; mean hip height, 1.52 ± 0.19 m'. Figure 1A: 'normal walking ... at dimensionless speeds ... of 0.30–0.35 ... and velocities of ~1.2'. Read from the figure: forelimb peak about 0.55 BW, hindlimb about 0.36 BW (±0.03; small image). 'compliant limbs dampen impact accelerations and keep peak GRFs low'. Verifier: re-read the figure (0.56 and 0.36). The '<1 BW' holds only over the speeds tested (0.64–4.83 m/s); Ren projects about 1.1 BW per forelimb near 7 m/s. Walking trials are at û 0.30–0.35 (Fr about 0.09–0.12). Juveniles, not 3-tonne adults. Status derived: the numbers shown are our reading of a figure (the lab's rule for values read off a plot).",
    "who_when": "Ren, Miller, Lair & Hutchinson 2010"
   },
   {
@@ -969,19 +969,19 @@
    "key": "vib_mayne_law_low_energy_failure",
    "category": "presence_attenuation",
    "label": "Mayne/BS 5228 dynamic-compaction law at low drop energy: TRL finds it under-predicts by up to 10×",
-   "status": "verified",
+   "status": "derived",
    "value_si": 10,
    "unit_si": "ratio (measured / predicted, worst case)",
    "low_si": 1.4,
    "high_si": 10,
-   "display": "7 t weight dropped 1.2 m (82 kJ): measured PPV was 1.4–5× the Mayne (1985) prediction within 30 m and 2.5–10× at 50–100 m (TRL: 'up to an order of magnitude')",
+   "display": "7 t weight dropped 1.2 m (82 kJ): measured PPV was 1.4–5× the Mayne (1985) prediction within 30 m and 2.5–10× at 50–100 m (our reading of TRL 429's Fig. 44; TRL: 'up to an order of magnitude')",
    "sources": [
     {
      "title": "Hiller & Crabb (2000) TRL Report 429, Groundborne vibration caused by mechanised construction works (Transport Research Laboratory for the Highways Agency)",
      "url": "https://www.trl.co.uk/uploads/trl/documents/TRL429.pdf"
     }
    ],
-   "notes": "TRL 429 pp. 62–63 on the high-speed dynamic compactor ('a 7 tonne weight dropped from a height of up to 1.2m onto a metal plate, which remains in contact with the ground'): 'The predictor appears to be unreliable for this compaction process, under estimating the vibration level by up to an order of magnitude. It is possible that Mayne’s predictor is less reliable for low energy dynamic compaction than for more energetic compaction.' Also: 'the predictor becomes less conservative as the potential energy of the raised tamper decreases.' The 10 is TRL's wording; the 1.4–5 and 2.5–10 ranges are our reading of Fig. 44 (vib_trl429_hsdc_digitised). 82 kJ is 12 times below BS 5228's 1 MJ floor. Verifier: Fig. 44 distance axis was misread; low bound corrected from 2 to 1.4. Compiler: the verifier's '1.4–4× within 30 m' is given as 1.4–5× because its own table shows 2.3–4.9 at 30 m.",
+   "notes": "TRL 429 pp. 62–63 on the high-speed dynamic compactor ('a 7 tonne weight dropped from a height of up to 1.2m onto a metal plate, which remains in contact with the ground'): 'The predictor appears to be unreliable for this compaction process, under estimating the vibration level by up to an order of magnitude. It is possible that Mayne’s predictor is less reliable for low energy dynamic compaction than for more energetic compaction.' Also: 'the predictor becomes less conservative as the potential energy of the raised tamper decreases.' The 10 is TRL's wording; the 1.4–5 and 2.5–10 ranges are our reading of Fig. 44 (vib_trl429_hsdc_digitised). 82 kJ is 12 times below BS 5228's 1 MJ floor. Verifier: Fig. 44 distance axis was misread; low bound corrected from 2 to 1.4. Compiler: the verifier's '1.4–4× within 30 m' is given as 1.4–5× because its own table shows 2.3–4.9 at 30 m. Status derived: the numbers shown are our reading of a figure (the lab's rule for values read off a plot).",
    "who_when": "Hiller & Crabb 2000, data of Allen 1996"
   },
   {
@@ -1065,7 +1065,7 @@
    "key": "vib_lukas_scaled_energy_chart",
    "category": "presence_attenuation",
    "label": "FHWA chart: PPV against scaled energy factor √E / d, one line per soil type (Lukas 1986, 1995)",
-   "status": "verified",
+   "status": "derived",
    "value_si": null,
    "unit_si": "m/s",
    "low_si": null,
@@ -1081,7 +1081,7 @@
      "url": "https://rosap.ntl.bts.gov/view/dot/40768/dot_40768_DS1.pdf"
     }
    ],
-   "notes": "FHWA/RD-86/133 p. 99: 'The magnitude of ground vibration increases with the square root of the energy applied and decreases as the distance from the point of impact. This figure can be used for planning purposes.' Fig. 35: particle velocity (in/s) against 'scaled energy factor (√energy – foot pounds / distance – feet)'. GEC 1 (1995) Fig. 7 is the SI version: x 'SCALED ENERGY FACTOR, (√(ENERGY (kJ)/9.8) / DISTANCE (m))', y mm/s, eight soils (listed in vib_gec1_chart_digitised). GEC 1 p. 12: 'This chart is based on records taken from many sites and provides a good estimation of ground vibration levels for planning purposes.' The axis itself runs 0.001–100; the 0.07–6 and 1–250 mm/s spans are read off the figure (derived, not stated). A footstep of our assumed 10 J–10 kJ at 1–200 m has a factor of about 0.0002–1, mostly left of the data. Verifier: quotes and axes confirmed.",
+   "notes": "FHWA/RD-86/133 p. 99: 'The magnitude of ground vibration increases with the square root of the energy applied and decreases as the distance from the point of impact. This figure can be used for planning purposes.' Fig. 35: particle velocity (in/s) against 'scaled energy factor (√energy – foot pounds / distance – feet)'. GEC 1 (1995) Fig. 7 is the SI version: x 'SCALED ENERGY FACTOR, (√(ENERGY (kJ)/9.8) / DISTANCE (m))', y mm/s, eight soils (listed in vib_gec1_chart_digitised). GEC 1 p. 12: 'This chart is based on records taken from many sites and provides a good estimation of ground vibration levels for planning purposes.' The axis itself runs 0.001–100; the 0.07–6 and 1–250 mm/s spans are read off the figure (derived, not stated). A footstep of our assumed 10 J–10 kJ at 1–200 m has a factor of about 0.0002–1, mostly left of the data. Verifier: quotes and axes confirmed. Status derived: the numbers shown are our reading of a figure (the lab's rule for values read off a plot).",
    "who_when": "Lukas 1986 (Fig. 35); Lukas 1995 (GEC 1 Fig. 7)"
   },
   {
@@ -3542,7 +3542,7 @@
    "unit_si": "m/s",
    "low_si": 0.00014,
    "high_si": 0.001,
-   "display": "0.3 mm/s PPV for a walk past (range 0.14-1 mm/s). For one isolated step: the most sensitive notice from about 0.3 mm/s, Caltrans calls about 1 mm/s barely perceptible for one jolt, and the average person needs about 2-3 mm/s for a jolt this short (USBM RI 8507 Table 15)",
+   "display": "0.3 mm/s PPV for a walk past (range 0.14-1 mm/s). For one isolated step: the most sensitive notice from about 0.3 mm/s, Caltrans calls about 1 mm/s barely perceptible for one jolt, and the average person needs more than 3 mm/s (3.3 mm/s for a half-second jolt, USBM RI 8507 Table 15; shorter jolts need more)",
    "sources": [
     {
      "title": "BS 5228-2:2009 Code of practice for noise and vibration control on construction and open sites, Part 2: Vibration (licensed copy posted by Nottinghamshire County Council), Annex B",
@@ -3929,19 +3929,19 @@
    "key": "ripple_faraday_onset_small_tank",
    "category": "presence_ripple",
    "label": "Faraday (parametric) wave onset for water in a 70 mm tank shaken up and down at 10-20 Hz",
-   "status": "verified",
+   "status": "derived",
    "value_si": 0.4,
    "unit_si": "m/s^2",
    "low_si": 0.3,
    "high_si": 0.8,
-   "display": "Onset about 0.3-0.8 m/s² at the mode resonances (3-8% of g), about 3-7 mm/s peak velocity at 11-20 Hz; may be peak-to-peak",
+   "display": "Onset about 0.3-0.8 m/s² at the mode resonances (3-8% of g), about 3-7 mm/s peak velocity at 11-20 Hz (our conversion); may be peak-to-peak",
    "sources": [
     {
      "title": "Shao, Wilson, Saylor & Bostwick (2021), Surface wave pattern formation in a cylindrical container, J. Fluid Mech. 915, A19, doi:10.1017/jfm.2021.97 (NSF public-access copy)",
      "url": "https://par.nsf.gov/servlets/purl/10311615"
     }
    ],
-   "notes": "Read off Fig. 4 ('Acceleration A against driving frequency fd showing the Faraday wave tongues'). Verifier: the tongue minima, which are the onset at each resonance, are about 0.3 (1,2), 0.4 (1,0), 0.45 (1,3), 0.45 (2,1), 0.6 (2,2), 0.4 (2,0), 0.8 (1,5), 0.4 (2,3) m/s²; the plotted flanks reach about 2.5 m/s² off resonance, which is not an onset value. Text: 'the onset acceleration at resonance is relatively constant for all modes'. Threshold bracket 0.2 m/s². Amplitude defined as 'the average min–max of a', possibly peak-to-peak. Peak velocity A/(2πf) at the minima (frequencies read off by us, about 11-20 Hz): about 3-7 mm/s. Conditions: brimful, pinned contact line, flat interface (α = 90°). An ordinary part-filled glass was not measured. Faraday waves sit at half the drive frequency and grow over many cycles, so single steps are unlikely to set them off.",
+   "notes": "Read off Fig. 4 ('Acceleration A against driving frequency fd showing the Faraday wave tongues'). Verifier: the tongue minima, which are the onset at each resonance, are about 0.3 (1,2), 0.4 (1,0), 0.45 (1,3), 0.45 (2,1), 0.6 (2,2), 0.4 (2,0), 0.8 (1,5), 0.4 (2,3) m/s²; the plotted flanks reach about 2.5 m/s² off resonance, which is not an onset value. Text: 'the onset acceleration at resonance is relatively constant for all modes'. Threshold bracket 0.2 m/s². Amplitude defined as 'the average min–max of a', possibly peak-to-peak. Peak velocity A/(2πf) at the minima (frequencies read off by us, about 11-20 Hz): about 3-7 mm/s. Conditions: brimful, pinned contact line, flat interface (α = 90°). An ordinary part-filled glass was not measured. Faraday waves sit at half the drive frequency and grow over many cycles, so single steps are unlikely to set them off. Status derived: the numbers shown are our reading of a figure (the lab's rule for values read off a plot).",
    "who_when": "Shao, Wilson, Saylor & Bostwick 2021",
    "values_json": "{\"tongue_minima_m_s2\": {\"(1,2)\": 0.3, \"(1,0)\": 0.4, \"(1,3)\": 0.45, \"(2,1)\": 0.45, \"(2,2)\": 0.6, \"(2,0)\": 0.4, \"(1,5)\": 0.8, \"(2,3)\": 0.4}, \"flank_max_m_s2\": 2.5}"
   },
@@ -4461,7 +4461,7 @@
    "key": "comic_astm_f2291_ride_limits",
    "category": "presence_comic",
    "label": "Amusement-ride acceleration limits for the general public (ASTM F2291-06a)",
-   "status": "verified",
+   "status": "derived",
    "value_si": 58.84,
    "unit_si": "m/s^2",
    "low_si": 10.79,
@@ -4473,7 +4473,7 @@
      "url": "https://ia800607.us.archive.org/34/items/gov.law.astm.f2291.2006/astm.f2291.2006.pdf"
     }
    ],
-   "notes": "§3.1: impact means 'accelerations with duration of less than 200 ms'; §7.1.4.2: 'Impacts of less than 200 ms duration are not addressed by this practice.' §7.1.4.3: 'for patrons 48 in. in height and above'. §7.1.4.5: limits are 'for total net acceleration, inclusive of earth's gravity'. §7.1.4.6: over 90 s not addressed. Fig. 6 note: 'Must have headrest above 1.5 g unless onset rate is less than 5 g/sec; then 2.0 g is permissible. For no head rest case, max duration of above 1.5 g is 4 seconds.' §7.1.7.2: from 0 G to 2 G or more, onset 'less than 15 G/s'. §7.1.5.1: two axes at once are limited by an ellipse with radii 1.1 × the 200 ms limits. Values read from Figs. 6–10; the verifier rendered the figures and agrees. Assumes a designed seat and restraint. Verifier: later editions F2291-26 and 26a exist and were not checked. low_si is the lowest limit on any axis (1.1 g).",
+   "notes": "§3.1: impact means 'accelerations with duration of less than 200 ms'; §7.1.4.2: 'Impacts of less than 200 ms duration are not addressed by this practice.' §7.1.4.3: 'for patrons 48 in. in height and above'. §7.1.4.5: limits are 'for total net acceleration, inclusive of earth's gravity'. §7.1.4.6: over 90 s not addressed. Fig. 6 note: 'Must have headrest above 1.5 g unless onset rate is less than 5 g/sec; then 2.0 g is permissible. For no head rest case, max duration of above 1.5 g is 4 seconds.' §7.1.7.2: from 0 G to 2 G or more, onset 'less than 15 G/s'. §7.1.5.1: two axes at once are limited by an ellipse with radii 1.1 × the 200 ms limits. Values read from Figs. 6–10; the verifier rendered the figures and agrees. Assumes a designed seat and restraint. Verifier: later editions F2291-26 and 26a exist and were not checked. low_si is the lowest limit on any axis (1.1 g). Status derived: the numbers shown are our reading of a figure (the lab's rule for values read off a plot).",
    "who_when": "ASTM International, F2291-06a (2006)",
    "values_json": "{\"edition\":\"ASTM F2291-06a (2006), Figs. 6-10, base case unless stated\",\"units\":\"G (9.81 m/s^2), total net acceleration including Earth's gravity; duration in s; points read from the charts and joined by straight lines\",\"+Gz eyes down, all restraints (Fig. 10)\":[[0.2,6],[1,6],[2,4],[4,4],[5,3],[11.8,3],[12,2],[\"steady\",2]],\"+Gx eyes back, base case with headrest (Fig. 6)\":[[0.2,6],[1,6],[2,4],[4,4],[5,3],[11.8,3],[12,2.5],[\"steady\",2.5]],\"+-Gy eyes left or right (Fig. 8)\":[[0.2,3],[1,3],[2,2],[\"steady\",2]],\"-Gx eyes front, base case (Fig. 7)\":[[0.2,-2],[0.5,-1.5],[\"steady\",-1.5]],\"-Gx over-the-shoulder restraint (Fig. 7)\":[[\"all\",-2]],\"-Gx prone restraint (Fig. 7)\":[[0.2,-3.5],[2,-3.5],[3,-2.5],[4,-2.5],[5,-2],[\"steady\",-2]],\"-Gz eyes up, base case (Fig. 9)\":[[0.2,-2],[0.5,-1.5],[4,-1.5],[7,-1.1],[\"steady\",-1.1]],\"-Gz extended, special restraints (Fig. 9)\":[[0.2,-2.8],[1,-2.2],[3,-1.5]]}"
   },
@@ -5272,6 +5272,14 @@
     {
      "title": "Project canon: CLAUDE.md in this repository (3,007 kg; 3.048 m; 1,060 kg/m³)",
      "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/CLAUDE.md"
+    },
+    {
+     "title": "Harkrider & Press (1967) The Krakatoa air-sea waves: an example of pulse propagation in coupled systems, Geophys. J. R. astr. Soc. 13:149-159; Caltech Authors record with abstract",
+     "url": "https://authors.library.caltech.edu/records/r42n3-t2639"
+    },
+    {
+     "title": "Lobanovsky (2013) Acoustic Methods for Evaluation of High Energy Explosions, arXiv:1311.6565 (preprint, not peer reviewed), Annex IV",
+     "url": "https://arxiv.org/pdf/1311.6565"
     }
    ],
    "notes": "Recomputed with c exact, 3,007 kg, 1,060 kg/m³, 3.048 m. Krakatoa 9 kg OK. Chicxulub: 4,700 t OK; ×1,560 OK (1,555); mix ≈10 m OK (10.4); ≈42,000 OK (41,800); pure size ≈35 m OK (35.3); pure density 1.65e6, which is 1.6e6 to 2 figures (brief 1.7e6: wrong in the second figure). Sun: 4.3e6 t, ×1.4e6, mix 32 m, 1.3e6 (1.26e6), 340 m (342) and 1.5e9 all OK. Runaway: 'about 10^-15' for shoving the surroundings is right for pure size (1.06e-15 slow, 3–5e-15 instant); mix is 5e-16 for small growth, falling to 10^-17–10^-18 for big growth; pure density is 0. 'A real runaway needs their own gravity near black-hole density' is right; the loop reaches 1 only at the event horizon (growth_loop_gravity_gr). Scripts: research/growth/scripts/ (ours) and research/growth-check/scripts/ (verifier's) in the session scratchpad. Verifier: reproduced independently.",
@@ -5439,7 +5447,7 @@
      "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:9143432%20AND%20SRC:MED&resultType=core&format=json"
     }
    ],
-   "notes": "Bystander 5 m from his final surface, on rigid ground; p_safe 100 Pa (USBM safe level) or 36 Pa (rattle onset on the 0.1 Hz basis); u_safe 0.25 m/s (OSHA TM) or 1.4 m/s (walking). Head speed unless marked side. At the shove-limited duration the air pulse is tiny: Chicxulub pure size at 250 s gives 100 Pa × (1.9/250)² ≈ 0.006 Pa. Side values use the equivalent-ball factor 0.29 (an assumption); at a reach factor of 0.8 the Chicxulub pure-size side figure would be about 200 s, still under the head limit, so the shortest safe duration does not change. The window (3.4 kPa) and eardrum (34.5 kPa) levels are fast-blast thresholds, not tested for smooth pulses lasting seconds. Pure density changes no volume; its hazards are the Weight tab's. Verifier: every entry reproduced; the 20 Pa column was replaced with 36 Pa and the side column flagged. Review round 1 (data lens): status estimate (was derived): the durations use the equivalent-ball side factor and the 1 - cos growth profile (our choices).",
+   "notes": "Bystander 5 m from his final surface, on rigid ground; p_safe 100 Pa (USBM safe level) or 36 Pa (rattle onset on the 0.1 Hz basis); u_safe 0.25 m/s (OSHA TM) or 1.4 m/s (walking). Head speed unless marked side. At the shove-limited duration the air pulse is tiny: Chicxulub pure size at 250 s gives 100 Pa × (1.9/250)² ≈ 0.006 Pa. Side values use the equivalent-ball factor 0.29 (an assumption); at a reach factor of 0.8 the Chicxulub pure-size side figure would be about 200 s, still under the head limit, so the shortest safe duration does not change. The window (3.4 kPa) and eardrum (34.5 kPa) levels are fast-blast thresholds, not tested for smooth pulses lasting seconds. Pure density changes no volume; its hazards are the Weight tab's. Verifier: every entry reproduced; the 20 Pa column was replaced with 36 Pa and the side column flagged. Review round 1 (data lens): status estimate (was derived): the durations use the equivalent-ball side factor and the 1 - cos growth profile (our choices). The page judges the air pulse 2 m from him (our choice of how close a bystander stands, GROW.GAP): the shove-limited durations shown are the same at 2 m and 5 m; only the 'air alone would allow' time changes (Chicxulub mix 0.87 s at 2 m, 0.69 s at 5 m).",
    "who_when": "derived",
    "values_json": "{\"columns\": \"T_pressure at 100 Pa / 36 Pa; T_shove at 0.25 m/s (head / side, equivalent-ball factor 0.29); T_shove at 1.4 m/s (head); all seconds\", \"Krakatoa 8.4e17 J, mix\": [0.003, 0.005, 0.013, 0.0036, 0.0023], \"Krakatoa 8.4e17 J, pure size\": [0.0043, 0.0072, 0.025, 0.0073, 0.0045], \"Chicxulub 1e23 J, mix\": [0.44, 0.74, 53, 15, 9.4], \"Chicxulub 1e23 J, pure size\": [1.1, 1.8, 146, 42, 26], \"Chicxulub 4.2e23 J, mix\": [0.69, 1.2, 86, 25, 15], \"Chicxulub 4.2e23 J, pure size\": [1.9, 3.2, 250, 72, 44], \"Sun 1 s (3.8e26 J), mix\": [5.0, 8.4, 850, 240, 150], \"Sun 1 s (3.8e26 J), pure size\": [22, 37, 2600, 740, 460], \"any, pure density\": \"no volume change: no pressure pulse, no shove\"}"
   },
@@ -5838,6 +5846,26 @@
    ],
    "notes": "Summary of growth_loop_air_ratio, growth_ground_push_estimate, growth_loop_gravity_newtonian, growth_loop_gravity_gr and growth_bondi_infall_loop. With a constant ratio f < 1 the loop is a geometric series, total = E/(1 − f): 1 + 10^-15 for any everyday case, if the loop applies at all (an open canon question, growth_loop_air_ratio). The gravitational ratio is 1 or more only when R ≤ r_s (relativistic) or R ≤ 0.5–0.6 r_s (Newtonian), i.e. after the Weight tab has already declared a black hole. Seen from outside, his gravitational mass rises by exactly E/c²; the loop can only add rest mass bound ever more tightly. Verifier: supported by the checked component facts; the verdict is about energy feedback only and does not cover the momentum and ground load of instant growth (growth_ground_push_estimate). Matter bound restated for rock-density matter.",
    "who_when": "derived"
+  },
+  {
+   "key": "soil_crater_cutoff",
+   "category": "presence_thresholds",
+   "label": "Where a jump into soil counts as leaving craters, not deep footprints (our line)",
+   "status": "estimate",
+   "value_si": 1000000.0,
+   "unit_si": "J",
+   "low_si": null,
+   "high_si": null,
+   "display": "Over 1 MJ into sand, gravel or clay: craters; less: deep footprints. Our line, from no source: in soil the courtesy ceiling counts only craters as breaking the ground",
+   "sources": [
+    {
+     "title": "rex-strength-lab/src/engine.js in this repository (RESTRAINT.R.CRATER_E; the Jump tab has switched from footprints to craters at 1 MJ since the first lab)",
+     "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/rex-strength-lab/src/engine.js"
+    }
+   ],
+   "notes": "Estimate. No source gives an energy at which a footprint becomes a crater. 1 MJ is the Jump tab's existing switch between 'two deep footprints' and 'two craters'; round 2 made it the jump's ground hazard in soil, where sinking in is a footprint, not broken ground. On sand at a 1,000 t dial the feet sink about 0.68 m either side of the line, so it is about the energy, not the depth.",
+   "who_when": "this lab",
+   "values_json": null
   }
  ],
  "gaps": {

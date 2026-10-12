@@ -1,0 +1,115 @@
+SUMMARY: Growth-mode physics for BRIEF-presence.md, checked against fetched sources and recomputed from the canon figures (3,007 kg, 3.048 m, 1,060 kg/m³, 2.84 m³, equivalent ball radius 0.878 m).
+
+(1) Worked examples. The speed of light is exact (NIST CODATA 2022). The IAU 2015 solar luminosity of 3.828e26 W is confirmed from the PDF. For Chicxulub, Morgan et al. 2022 (Nat. Rev. Earth Environ.; NSF PAR copy) gives "about 10^23 J" in the abstract and "about 5 × 10^23 J" from the transient crater, so the brief's 4.2e23 J lies inside that range. For Krakatoa, the best primary figure is Harkrider & Press 1967: 100–150 Mt (4.2–6.3e17 J) as an air-wave equivalent. Total-energy estimates range from 1e17 to 4.6e18 J; the popular 200 Mt figure is weakly sourced.
+- Every worked number in the brief checks out to 2 significant figures, with one exception: Chicxulub at pure density is 1.65e6 kg/m³, which rounds to 1.6e6, not the brief's 1.7e6.
+- Krakatoa adds 9 kg (1–51 kg across all estimates), which is unnoticeable.
+- Chicxulub adds 4,700 t (×1,555): mix 10.4 m and 41,800 kg/m³; pure size 35 m.
+- One second of the Sun's output adds 4.3e6 t: mix 32 m and 1.3e6 kg/m³; pure size 342 m; pure density 1.5e9 kg/m³.
+
+(2) Gradual growth. A compact body whose volume changes radiates a pressure wave p = ρ0·V̈/(4πr) (Rienstra & Hirschberg, Curle's theorem). Standing on the ground doubles it (same text). The US Bureau of Mines (RI 8485) gives 134 dB, about 100 Pa, as the safe limit for houses, with rattle complaints above about 120 dB (20 Pa). OSHA allows robots 250 mm/s, a speed "slow enough for a person to avoid hazardous contact"; comfortable walking is 1.3–1.5 m/s (Bohannon 1997). With a smooth rate profile, the air pulse needs only about 2 s (Chicxulub, pure size) to 22 s (one solar second, pure size). The shove sets the real limit: about 1.5 min (Chicxulub, mix), 4 min (Chicxulub, pure size), 14 min (Sun, mix) and 43 min (Sun, pure size). Pure density has neither limit.
+
+(3) Instant growth. The chosen time is the final height ÷ 1,540 m/s (sound speed in soft tissue, from review-level PMC sources). Big growth then moves his sides at up to 444 m/s (Mach 1.3) and his head at up to 1,540 m/s. We solved Taylor's 1946 expanding-sphere problem ourselves and checked it with an independent hydro code (agreement within 1%). The result: the surface overpressure is about ρ0u² (within 2% above 0.8 times the speed of sound). Courant & Friedrichs reproduce Taylor's curve; the printed sphere-speed curve sits 0.04–0.05 c0 above ours. The flat-piston relation from the NASA normal-shock equations is the upper bound and matches the existing Collins relation. Baker et al. 1977 (NASA CR-134906) supply two rules: rigid ground doubles the equivalent energy (2E), and beyond R̄ ≈ 2 a high-explosive curve of equal energy is an upper limit. Instant Chicxulub growth at pure size is therefore 2–3 atm at his surface and 0.9–1.5e9 J into the air, like 210–350 kg of TNT. Windows break out to about 100–120 m.
+
+(4) Runaway loop. Pushing air returns p/(ρc²): about 1e-15 for pure size (3–5e-15 if instant), 1e-16 to 1e-18 for mix, and 0 for pure density. Rock returns at most about 4e-11, and any ordinary matter at most about 1.5e-8. For their own gravity, the Newtonian ratio d(3GM²/5R)/d(Mc²) is 0.6, 0.55 or 0.5 times r_s/R (pure density, mix, pure size). It would reach 1 only at 0.6, 0.55 or 0.5 r_s, which is inside the event horizon. The relativistic uniform ball (Lattimer & Prakash 2001, eq. 34) 
+
+MODEL: MASS AND FORM. Δm = E/c², with c = 299,792,458 m/s exact. k = 1 + Δm/3007. Volume V = V0·k^a, with V0 = 2.8368 m³ and a = 1 for pure size, 0.5 for mix (the default), 0 for pure density. A slider for a between 0 and 1 is fine. Height H = 3.048·(V/V0)^(1/3). Equivalent radius R = 0.8782·(V/V0)^(1/3). Density ρ = 3007k/V. Feed m = 3007k into the Weight tab. That gravitational mass rises by exactly E/c²; never add the loop's extra rest mass to it. Endless ocean: show the energy absorbed, with zero mass change. Label it canon.
+
+GRADUAL GROWTH. Profile: fraction of mass added s(t) = t/T − sin(2πt/T)/(2π), so the rate goes as 1 − cos(2πt/T). This is a choice; label it.
+- Sample s once per (form, k) to get k_V = max|V̈|·T²/ΔV (exactly 2π for pure size; 14–55 for mix) and k_H = max(dH/dt)·T/ΔH (about 1.9–2 for pure size; 2.6–7 for mix). Neither depends on T.
+- Air pulse at a bystander d metres from his final surface, on rigid ground: p = ρ0·k_V·ΔV / (2π·r·T²), with r = R_final + d and ρ0 = 1.225 kg/m³.
+- Pressure limit: T_p = √(ρ0·k_V·ΔV / (2π·r·p_safe)). Default p_safe = 100 Pa (USBM safe level). Offer 20 Pa ("nothing rattles"), 3.4 kPa (windows) and 34.5 kPa (eardrums) as the higher presets.
+- Shove limit: T_s = k_H·ΔH / u_safe, with u_safe = 0.25 m/s by default (OSHA) and 1.4 m/s (walking) as an option. Use ΔR instead of ΔH for people beside him.
+- Shortest safe duration = max(T_p, T_s). Say which limit sets it; it is almost always the shove.
+- Valid while c0·T is much greater than H and the surface speed is far below 340 m/s.
+- Ignores wind, buildings, terrain and anyone pinned against a wall (crushed at any speed). Pure density has no air or shove limit; show the Weight-tab hazards instead.
+
+INSTANT GROWTH. t_x = H_final / 1540 m/s; this is an estimate; say so. Side speed u = ΔR/t_x; head speed ΔH/t_x.
+- Surface overpressure is a range.
+  - Low end: the expanding-sphere value. Use the table k(u/c0) × ρ0u²: k = 1.16, 1.08, 1.04, 1.02, 1.01 and 1.00 at u/c0 = 0.3, 0.45, 0.6, 0.8, 1.0 and ≥ 1.5.
+  - High end: the flat piston. M = (γ+1)u/(4c0) + √(((γ+1)u/(4c0))² + 1); Δp = p0·(2γ/(γ+1))·(M² − 1), with γ = 1.4, c0 = 340.29 m/s, p0 = 101,325 Pa.
+  - For small u this tends to ρ0·c0·u (a thump, not a blast).
+- Excess energy into the air: E_x = Δp·ΔV. Report p0·ΔV separately as "atmosphere pushed back", not blast.
+- TNT mass W = E_x / 4.184e6 J/kg. On hard ground W_free = 2W. Then use the engine's Kinney–Graham curve for how far windows, eardrums and so on are affected.
+- Kinney–Graham is an upper limit only beyond R̄ = r·(p0/(2E_x))^(1/3) > 2. Closer in, cap the pressure at the surface Δp.
+- Anchor the growth at his soles, so no ground is driven into.
+- State that zero duration would need infinite energy (Δp grows as u²).
+
+RUNAWAY LOOP.
+- Air: f_air = (p0 + Δp)·ΔV / (Δm·c²), which is 0 for pure density.
+- Own gravity: Newtonian f_grav = 0.3·(2 − α)·r_s/R, with α = a/3. Or use relativity: f = 1 − dM/dM_p, with M_p = M(1 + g(β)), g from Lattimer & Prakash eq. 34, and β = GM/(Rc²).
+- Ground: about 0 when anchored at the soles.
+- Show f as a plain power of ten ("about 1 part in 10^15") and the multiplier 1/(1 − f).
+- Show where it crosses 1: only when R ≤ r_s, i.e. the Weight tab's black-hole state (for canon pure density, 5.9e26 kg, which takes 5.3e43 J).
+- Half-life: apply it only when f ≥ 1 (isBlackHole after growth). No physics sets its value, so label any default a story choice.
+- Bondi infall: per kg it releases GM/R = β·c² (1 − √(1 − 2β) in relativity). It only runs when r_B > R, which needs density above about 5e14 kg/m³ at canon size. Cap its total at the atmosphere's mass (5.1e18 kg).
+
+LABELS ON THE PAGE. The worked examples are "derived". Instant-growth numbers are "estimate", because of the time scale and the sphere/piston range. The Taylor table is "derived (our calculation, checked two ways)".
+--- growth_c_exact verified 299792458 m/s | 299,792,458 m/s, exact (c² = 8.988 × 10¹⁶ m²/s²)
+--- growth_krakatoa_airwave_harkrider_press verified 523000000000000000 J | 100–150 Mt TNT (4.2–6.3 × 10¹⁷ J); adds 4.7–7.0 kg as mass
+--- growth_krakatoa_energy_spread disputed None J | About 10¹⁷ J (24 Mt) to 4.6 × 10¹⁸ J (1.1 Gt); the popular 200 Mt (8.4 × 10¹⁷ J) is inside. Mass added: 1–50 kg
+--- growth_chicxulub_energy_morgan2022 verified 5e+23 J | About 10²³ J (abstract); about 5 × 10²³ J from the 80–100 km transient crater
+--- growth_sun_luminosity_check verified 3.828e+26 W | 3.828 × 10²⁶ W (IAU 2015 nominal); best estimate 3.8275 ± 0.0014 × 10²⁶ W
+--- growth_body_baseline derived 2.8368 m^3 | 2.84 m³; a ball of that volume has radius 0.878 m (0.288 of his 3.048 m height)
+--- growth_worked_krakatoa derived 9.346 kg | Adds about 9 kg (5–7 kg on the air-wave estimate): +0.3%. Height +1.6 mm (mix) or +3.2 mm (pure size); density 1,063 kg/m³ if pure density
+--- growth_worked_chicxulub derived 4673000 kg | 4.2 × 10²³ J adds 4,700 t (×1,600 his mass): mix 10 m and 42,000 kg/m³; pure size 35 m; pure density 1.6 × 10⁶ kg/m³ (the brief says 1.7 × 10⁶: a rounding slip)
+--- growth_worked_sun_second derived 4259000000 kg | Adds 4.3 × 10⁶ t (×1.4 × 10⁶): mix 32 m and 1.3 × 10⁶ kg/m³; pure size 340 m; pure density 1.5 × 10⁹ kg/m³ (about half Sirius B's average)
+--- growth_brief_number_check derived None  | All correct to 2 figures except Chicxulub pure density: 1.6 × 10⁶ kg/m³, not 1.7 × 10⁶. Krakatoa's 8.4 × 10¹⁷ J is weakly sourced; the conclusion holds anyway
+--- growth_monopole_compact_body verified None Pa | p(r, t) = ρ₀ V̈(t − r/c₀) / (4πr): the pressure set by the second time-derivative of the body's volume; steady expansion makes no sound in this approximation
+--- growth_monopole_ground_doubling verified 2 1 | Next to a rigid wall or ground a monopole's pressure is 2× its free-field value: p = ρ₀ V̈ / (2πr)
+--- growth_slow_pressure_peak derived None Pa | p_peak = ρ₀ k_V ΔV / (2π r T²); for pure size with a smooth start and stop, p_peak = ρ₀ ΔV / (r T²), so T_min = √(ρ₀ ΔV / (r p_safe))
+--- growth_airblast_usbm_ri8485 verified 100 Pa | Safe limit for houses: 134 dB (0.1 Hz system) = 0.0145 psi ≈ 100 Pa. Rattling complaints start above about 120 dB (≈20 Pa)
+--- growth_contact_speed_osha verified 0.25 m/s | 250 mm/s (10 in/s)
+--- growth_walking_speed_bohannon1997 verified 1.4 m/s | Comfortable 1.27–1.46 m/s (group means, ages 20–79); fastest 1.75–2.53 m/s
+--- growth_slow_tmin_shove derived None s | T_min = k_H ΔL / u_safe, with ΔL the growth of his height (top of head) or of his half-width (beside him); k_H = 2 for small growth, about 1.9 for large pure-size growth, 2.6–7 for mix
+--- growth_slow_tmin_examples derived None s | The shove sets the limit, not the air: Chicxulub about 1½ min (mix) or 4 min (pure size); one second of sunlight about 14 min (mix) or 43 min (pure size); Krakatoa a few hundredths of a second; pure density has no air or
+--- growth_tissue_sound_speed verified 1540 m/s | 1,540 m/s (the soft-tissue value ultrasound scanners assume); muscle 1,585 m/s; fat 1,450–1,465 m/s
+--- growth_instant_timescale estimate 0.0229 s | t = final height ÷ 1,540 m/s: 2 ms (Krakatoa), 7 ms (Chicxulub, mix), 23 ms (Chicxulub, pure size), 0.22 s (one solar second, pure size)
+--- growth_normal_shock_nasa verified None 1 | p₂/p₁ = [2γM² − (γ − 1)]/(γ + 1);  ρ₂/ρ₁ = (γ + 1)M²/[(γ − 1)M² + 2]
+--- growth_piston_shock_planar derived None Pa | Δp = p₀·(2γ/(γ+1))·(M² − 1), M = (γ+1)u/(4c₀) + √[((γ+1)u/(4c₀))² + 1]. Slow: Δp ≈ ρ₀c₀u. Fast: Δp ≈ 1.2 ρ₀u². At 405 m/s: 330 kPa
+--- growth_taylor1946_courant_friedrichs verified None  | A sphere expanding at constant speed drives a constant-speed shock; the air behind it keeps compressing up to the surface; the shock is much weaker than a flat piston's at the same speed
+--- growth_taylor_sphere_surface_pressure derived None Pa | Δp at the surface ≈ ρ₀u² (within 2% from 0.8 to 9 times the speed of sound; 1.16 ρ₀u² at 0.3 c₀). At u = c₀: 1.4 atm, against 2.5 atm for a flat piston
+--- growth_vessel_burst_he_equivalence verified 2 1 | Beyond a Sachs-scaled distance R̄ = R·(p_a/E)^(1/3) of about 2, the high-explosive (pentolite) curve for the same energy is an upper limit for a gas-vessel burst
+--- growth_ground_reflection_2E verified 2 1 | On perfectly rigid ground the equivalent free-air energy is 2E; on a perfect absorber, E
+--- growth_instant_blast_examples estimate 893000000 J | Chicxulub, pure size: 2–3 atm at his surface; 0.9–1.5 × 10⁹ J into the air, like 210–350 kg of TNT on the ground; windows shatter out to about 100–120 m. Mix: about 3–6 kg TNT, windows to about 30 m
+--- growth_ground_push_estimate estimate 4.3e-11 1 | Anchored at the soles (recommended), his feet spread along the surface and nothing is driven into the ground. If he grew about his middle, the work on the ground would be at most about 4 × 10⁻¹¹ of the absorbed energy (p
+--- growth_loop_air_ratio derived 1.06e-15 1 | Pure size: 1 × 10⁻¹⁵ slow, 3–5 × 10⁻¹⁵ instant. Mix: 10⁻¹⁶ to 10⁻¹⁸. Pure density: 0. Even pushing rock: below 10⁻¹⁰
+--- growth_binding_energy_uniform_sphere verified None J | Newtonian: 3GM²/(5R). Exact for a uniform ball in general relativity: BE/M = (3/4β)[sin⁻¹√(2β)/√(2β) − √(1 − 2β)] − 1 ≈ 3β/5 + 9β²/14 + …, β = GM/(Rc²)
+--- growth_binding_energy_fit_lp2001 verified None 1 | BE/M ≈ 0.6β/(1 − 0.5β)
+--- growth_loop_gravity_newtonian derived 3.05e-24 1 | d(3GM²/5R)/d(Mc²) = 0.6 r_s/R (pure density), 0.55 r_s/R (mix), 0.5 r_s/R (pure size). It reaches 1 only at R = 0.6, 0.55 or 0.5 r_s: inside the event horizon. At canon it is about 3 × 10⁻²⁴
+--- growth_loop_gravity_gr derived None 1 | Share of each absorbed joule released again by deeper binding: 1% at R = 50 r_s, 12% at 5 r_s, 73% at Buchdahl's limit (1.125 r_s), and 1 only as R → r_s
+--- growth_black_hole_thresholds derived 5.31e+43 J | Pure density: 5.9 × 10²⁶ kg at 2.1 × 10²⁶ kg/m³, needing 5.3 × 10⁴³ J (the Sun's output for 4.4 billion years). Mix: 2.7 × 10³¹ kg (14 Suns), 139 km tall. Pure size: 1.3 × 10⁸ Suns, 2.6 au in radius
+--- growth_bondi_infall_loop derived None 1 | Each kilogram of infalling air releases GM/R = (r_s/2R)c² (Newtonian; 1 − √(1 − r_s/R) of c² in relativity): below 1 outside the horizon. Infall only starts when the Bondi radius exceeds his size, at about 5 × 10¹⁴ kg/m³
+--- growth_runaway_verdict derived None  | No. Shoving the air returns about 10⁻¹⁵ of the energy, pushing rock at most about 10⁻¹¹, any ordinary matter at most about 10⁻⁸; their own gravity returns a share that reaches 1 only at the event horizon. The half-life o
+===== VERIFY
+X growth_krakatoa_energy_spread | The high end is wrong. Lobanovsky's annex (re-fetched) explicitly quotes 'another encyclopedic resource argues that the energy explosion of Krakatoa was 1.5 Gt' (6.3e18 J), above the stated 4.6e18 J high_si. From Tambora estimates he infers 5 to 6 Gt, then 'doubled up to 10-12 Gt', and says the extr || CORR: low_si 1e17 J; high_si 6.3e18 J (quoted 1.5 Gt), with Lobanovsky's inferred extreme of about 5e19 J (12 Gt) noted; mass added 1-70 kg (up to about 560 kg at the extreme); fix 'Institute' to 'Society'
+
+X growth_chicxulub_energy_morgan2022 | Both quotes are confirmed in the NSF PAR manuscript, and Crossref confirms Nat Rev Earth Environ 3:338-354 (2022). But 'about 10^23 joules' (abstract) and 'about 5 × 10^23 J' (main text, from the 80-100 km transient crater) are the same estimate, the first stated only to an order of magnitude. The r || CORR: value_si 5e23 J; drop low_si = 1e23 as a 'range', or label it 'the abstract rounds this to about 10^23 J'. The rows in growth_worked_chicxulub labelled 'over Morgan's range 1e23-5e23' should be relabelled the same way.
+
+X growth_worked_krakatoa | The numbers reproduce: 9.346 kg, k 1.00311, mix H +1.6 mm, size +3.2 mm, density 1,063. But the notes' claim that the result 'stays true across the whole published spread (1-51 kg)' is wrong (see growth_krakatoa_energy_spread). || CORR: notes: across the quoted spread the gain is 1-70 kg (under 3%, at most 2.3 cm taller); at Lobanovsky's 12 Gt extreme it is about 560 kg (+19% mass, +18 cm in pure size)
+
+X growth_airblast_usbm_ri8485 | The 134 dBL (0.1 Hz) safe level, the 0.0145 psi (= 99.97 Pa) table row and the p. 66 sentence are all confirmed. Three problems. (1) 'Complaints about rattling occur at airblast levels exceeding about 120 dB (6Hz)' is on the 6 Hz high-pass basis. The report treats 134 dBL (0.1 Hz) and 129 dB (6 Hz)  || CORR: Rattle onset: '120 dB on a 6 Hz high-pass meter, roughly 36 Pa unfiltered; not validated for slow pulses'. Never label it 'nothing rattles': the source says rattling still occurs below the safe level. 2 s applies to C-slow only.
+
+X growth_slow_tmin_shove | The k_H values reproduce: 2.000, 1.942, 1.925, 1.883 (size); 2.567, 2.944, 7.224 (mix). But 'someone beside him meets his side, which moves about 0.29 times as fast (equivalent-ball radius)' is unsupported for his real shape. With growth anchored at the soles, every point moves at (its distance from || CORR: Label 0.29 as an equivalent-ball assumption, or use his largest horizontal extent from the anchor (e.g. tail tip) ÷ H as the side factor for bystanders at ground level
+
+X growth_instant_blast_examples | The arithmetic reproduces exactly (e.g. Chicxulub pure size: 202-328 kPa, 8.9e8-1.45e9 J, 213-346 kg, W_free 427-692 kg). But: (1) 'Windows shatter out to about 100-120 m' uses only the 6.9 kPa end. The existing blast_window_breakage band is 3.4-6.9 kPa ('usually shatter'), giving 100-220 m (pure si || CORR: Windows 100-220 m (pure size) and 25-57 m (mix). With sole anchoring, E_x and TNT up to about 2-4× higher (Chicxulub pure size about 0.9-6e9 J, 0.2-1.5 t TNT), and window reach about 1.3-1.6× farther. Or state that the ball model assumes growth about the centre.
+
+X growth_ground_push_estimate | The q/(ρc²) arithmetic is right (4.1e9/(1060 × c²) = 4.3e-11; dynamic 3.4e-11). But 'anchored at the soles ... nothing is driven into the ground' holds only kinematically. Raising his centre of mass needs an upward push from the ground. For instant Chicxulub pure size, the centre of mass rises at ab || CORR: display: 'Sole anchoring avoids pushing the ground aside, but instant growth still loads the ground with the force needed to lift his centre of mass (GPa-level for Chicxulub-sized growth)'
+
+REC: 1. Instant growth: anchoring at the soles contradicts the blast model. The recommendation anchors growth at the soles but sizes the blast with a ball expanding about its centre. With sole anchoring, upward-moving surfaces sweep exactly 1/3 of the added volume at up to the head speed (Mach 3-4.5). Because Δp grows as u², energy into the air is about 2× (ball anchored at its base) to 4.3× (Rex-shaped column) the ball value. The local top pressure is about 2.4-2.9 MPa, not 2-3 atm. Either widen E_x, TNT and reach (reach ×1.3-1.6), or state that the ball model assumes growth about the centre.
+
+2. Instant growth: momentum is missing (canon: momentum is never absorbed). With the soles fixed, the centre of mass rises at about half the head speed: about 700 m/s for Chicxulub pure size, a momentum of 3.3e9 kg·m/s. The ground must push 3.9e11 N, 4.7 GPa on Rex's grown 83 m² soles (twice that for Ollie's boots), which exceeds any rock strength in the data. Nothing can then pull him back, so he would be launched about 25 km up unless 'bolted to the planet' is on. The alternative, anchoring at the centre of mass, drives his feet about ΔH/2 into the ground at about 700 m/s. Gradual growth needs a matching lift-off check: T ≥ about √(πΔH/g), about 3 s for Chicxulub pure size. It is never binding next to the shove limit, but it should be computed. 'Ground ≈ 0' is right for the loop ratio only, not for the hazard.
+
+3. Windows: use the existing 3.4-6.9 kPa band, not 6.9 kPa alone (100-220 m for Chicxulub pure size).
+
+4. The 20 Pa preset uses the wrong measurement basis and the wrong label. USBM's 120 dB is on the 6 Hz high-pass meter; on the 0.1 Hz basis it is about 125 dB, about 36 Pa. A seconds-long growth pulse barely registers on a 6 Hz meter, and the source says rattling still occurs below the safe level, so 'nothing rattles' is false. It is also a stricter preset, not a 'higher' one. The window (3.4 kPa) and eardrum (34.5 kPa) presets are fast-rising blast thresholds and are not validated for a smooth pulse lasting seconds; label them that way.
+
+5. Taylor k table: below about 0.3 c0 the surface factor rises toward the incompressible 1.5 ρ0u², not toward 1.16. The sphere value applies only when R_final ≫ R0 (growth time much longer than R0/c0 = 2.6 ms). Otherwise the planar ρ0c0u onset is the right estimate, as the researcher already uses for Krakatoa. Since t_x = 0.77 R_f/c0 always, say plainly that for modest k the planar value applies.
+
+6. Bystander shove factor: 0.
+VERDICT: Sources and arithmetic are sound. I re-fetched every cited source (NIST c and G, Harkrider & Press record and full PDF, Lobanovsky, Morgan 2022, IAU 2015, Rienstra & Hirschberg, USBM RI 8485, OSHA, Bohannon, both PMC reviews, NASA normal shock, Collins, Baker 1977, Lattimer & Prakash, the Courant & Friedrichs scan and OCR text, Trachenko, and Crossref for the three DOIs). All derived numbers reproduce to the stated precision, and my own Taylor solver matches theirs within 1%.
+
+Corrections needed before building:
+- Krakatoa energy spread: wrong high end (at least 6.3e18 J, extreme about 5e19 J, so up to 70 kg and possibly about 560 kg, not 'under 51 kg'), plus a misquote ('Society', not 'Institute').
+- USBM 20 Pa rattle preset: wrong meter basis and an overstated label.
+- Window reach: uses only the 6.9 kPa end of the 3.4-6.9 kPa band.
+- Morgan 2022: the 1e23-5e23 J 'range' is one estimat

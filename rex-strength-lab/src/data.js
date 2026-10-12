@@ -1153,27 +1153,27 @@ window.DINO_DATA = {
  "assumptions": [
   {
    "t": "Effort is not strength",
-   "d": "The dial sets how strong he is. Effort is how hard he chooses to push: the strength he puts into a move’s push, never more than the dial. Standing, walking and holding a load up still get his full strength. The page opens on the least disruptive effort, the gentlest push that still does what each move is for, but never past the courtesy ceiling (if the goal needs more, it shows the most he can do with nothing harmed and says so): throw the object to the goal distance, jump to the goal height, a stomp just perceptible at the chosen distance (1 mm/s, what Caltrans calls barely perceptible for one jolt; the average person needs about 3 mm/s for a jolt that short), a punch or clap as fast as the strongest human’s, run at the goal speed, drag the object 10 m in the goal time. Lift needs no effort setting: he only ever pushes as hard as the weight. All-out reproduces the lab’s earlier results exactly."
+   "d": "The dial sets how strong he is. Effort is how hard he chooses to push: the strength he puts into a move’s push, never more than the dial. Standing, walking and holding a load up still get his full strength. The page opens on the least disruptive effort, the gentlest push that still does what each move is for, but never past the courtesy ceiling (if the goal needs more, it shows the most he can do with nothing harmed and says so): throw the object to the goal distance, jump to the goal height, a stomp just perceptible at the chosen distance (1 mm/s, what Caltrans calls barely perceptible for one jolt; the average person needs more than 3 mm/s: 3.3 mm/s for a half-second jolt, and shorter ones need more), a punch or clap as fast as the strongest human’s, run at the goal speed, drag the object 10 m in the goal time. Lift needs no effort setting: he only ever pushes as hard as the weight. All-out reproduces the lab’s earlier results exactly."
   },
   {
    "t": "The courtesy ceiling and the not-so-heroic presets",
-   "d": "The courtesy ceiling is the most effort he can use before something nearby comes to harm. The lab checks six hazards: a sonic boom (anything he moves breaks the sound barrier), an air blast louder than 134 dB (100 Pa, the US Bureau of Mines safe maximum for houses) at the chosen distance (a blast counts only when something moves past the speed of sound or makes a fireball; slower, the air flows out of the way and the release is a thump), ground shaking there over 12.7 mm/s (the US Bureau of Mines safe limit for plaster: a few percent of houses may get hairline cracks; about half do by 64 mm/s, Siskind via Caltrans), the ground breaking under his feet, his hands crushing what he holds, and a thrown person pressed harder than amusement rides allow (ASTM F2291). A thrown person’s landing is not counted: it is a fall unless someone catches them. Each not-so-heroic preset is the least effort that does what its name says: windows rattle (1 mm/s of ground shaking, our estimate, or an air blast of about 36 Pa, where rattling complaints start: 120 dB on the 6 Hz meter the US Bureau of Mines used, which is about 125 dB, 36 Pa, unfiltered, by our conversion), plaster may crack, windows break across a 15 m street (6.9 kPa), the ground breaks under him, houses next door collapse (26.8 kPa), houses collapse 100 m away (a city block, our estimate). Blast radii use the Kinney–Graham curve as if all the energy went into the air, so they are upper bounds."
+   "d": "The courtesy ceiling is the most effort he can use before something nearby comes to harm. The lab checks seven hazards: a sonic boom (anything he moves, or he himself, breaks the sound barrier), an air blast louder than 134 dB (100 Pa, the US Bureau of Mines safe maximum for houses) at the chosen distance (a blast counts only when something moves past the speed of sound or makes a fireball; slower, the air flows out of the way and the release is a thump; for a throw past Mach 1 the air takes the object’s energy along its path, so that counts too), ground shaking there past the US Bureau of Mines safe level for plaster (12.7 mm/s for slow jolts, rising with frequency to 50.8 mm/s at 40 Hz and above, RI 8507 Figure B-1; a pulse lasting T is taken at frequency 1/T, our estimate; at the safe level a few percent of houses may get hairline cracks, and about half do by 64 mm/s, Siskind via Caltrans), the ground breaking under his feet (in sand, gravel and clay sinking in only makes footprints, so only a crater counts: for a jump, over 1 MJ into the ground, our line), his hands crushing what he holds, a thrown person pressed harder than amusement rides allow (ASTM F2291), and his own recoil shoving him back past the nearest people. Ground shaking isn’t modelled for a sprint, a pull, a punch or a clap. A thrown person’s landing is not counted: it is a fall unless someone catches them. Each not-so-heroic preset is the least effort that does what its name says: windows rattle (1 mm/s of ground shaking, our estimate, or an air blast of about 36 Pa, where rattling complaints start: 120 dB on the 6 Hz meter the US Bureau of Mines used, which is about 125 dB, 36 Pa, unfiltered, by our conversion), plaster may crack, windows shatter across a 15 m street (6.9 kPa, the top of the 3.4–6.9 kPa band where windows usually shatter; many break before), the ground breaks under him, houses next door collapse (26.8 kPa), houses collapse 100 m away (a city block, our estimate). Blast radii use the Kinney–Graham curve as if all the energy went into the air, so they are upper bounds."
   },
   {
    "t": "Two-player effort",
-   "d": "In the two-player tests they share one effort (Ollie can have his own as a what-if). Each uses at most that strength, but never less than he needs to stand and walk. A contest has no goal short of the test itself, so its least disruptive effort is the hardest both can go while nothing around them breaks: no torn table, no destroyed ball, no sonic boom, no air blast over 134 dB nearby."
+   "d": "In the two-player tests they share one effort (Ollie can have his own as a what-if). Each uses at most that strength, but never less than he needs to stand and walk. A contest has no goal short of the test itself, so its least disruptive effort is the hardest both can go while nothing around them breaks. The checks: no sonic boom, no air blast over 134 dB at the nearest people, no torn table or pin cracking it, no crater or quake, no destroyed or crushed object, no thrown person pressed past ride limits, no landing that may crack plaster nearby, no ground giving way under the thrower, and no one sliding past the nearest people (pushed, shoved or recoiling)."
   },
   {
    "t": "Walking: their gait",
-   "d": "Their gait is people’s gait scaled to their size at the same Froude number (speed² ÷ g × hip height), with hip height 0.45 of their height (our estimate from the turnarounds). A comfortable walk is Froude 0.18, about 1.6 m/s for them; at Froude 0.5 they would break into a run. Each step holds about 1.2× body weight (1.0–1.5 as the pace rises). The ground shaking comes from the force of each footfall (see the next card): an ordinary heel strike is a pulse of about 0.43× body weight over 37 ms, scaled from people; soft-footed is 0.51 of that (an estimate from the 48.7% cut in loading rate measured when people walk quietly at their normal speed; the 69% cut came with walking 23% slower); a drill stamp peaks at 6.5× body weight, as measured in soldiers. The foot itself also soaks up about 160 J per ordinary step (scaled from people); that energy stays in the foot and doesn’t shake the ground."
+   "d": "Their gait is people’s gait scaled to their size at the same Froude number (speed² ÷ g × hip height), with hip height 0.45 of their height (our estimate from the turnarounds). A comfortable walk is Froude 0.18, about 1.6 m/s for them; at Froude 0.5 they would break into a run. Each step holds about 1.2× body weight (1.0–1.5 as the pace rises). The ground shaking comes from the force of each footfall (see the next card): an ordinary heel strike is a pulse of about 0.43× body weight over 37 ms, scaled from people; soft-footed is 0.51 of that (an estimate from the 48.7% cut in loading rate measured when people walk quietly at their normal speed; the 69% cut came with walking 23% slower); a drill stamp peaks at 6.5× body weight, as measured in soldiers. The heel strike is the one measured at people’s preferred speed, used at every pace, so pace changes the load and the step rate but barely the shaking. The step-rate fit covers Froude 0.09–0.37, so the fastest pace (0.5) is extrapolated. The foot itself also soaks up about 160 J per ordinary step (scaled from people); that energy stays in the foot and doesn’t shake the ground."
   },
   {
    "t": "Walking: ground shaking",
-   "d": "Each footfall is a force on the ground: the weight coming onto the foot over about a sixth of a second, plus a short landing pulse (about 0.43× body weight over 37 ms for an ordinary heel strike, scaled from people; soft-footed 0.51 of that; a drill stamp 6.5× body weight). An elastic-ground model (Lamb’s problem) turns that into peak particle velocity (PPV) at a distance, using each surface’s density, shear-wave speed and damping (our estimates). It matched one drop test (130 kg at Pisa) within about 2× from 2.5 to 60 m, one recorded person walking past at 53 m on sandy ground within about 2×, and elephant footfalls roughly; read it as uncertain by about 3–5×, more past 60 m. Lake ice and a steel deck bend as plates and are not modelled. The numbers are for open ground: indoors, floors and walls can make the shaking 2–4× stronger. The thresholds come from construction and blasting standards (feel 0.3 mm/s for a walk past, 1 mm/s barely perceptible for one isolated jolt; plaster may crack above 7.6 mm/s for a walk past, 12.7 mm/s for a single stamp: safe limits, below which cracks are very unlikely) or are our estimates where no standard exists (a rippling glass, rattling windows, the 1 g at which loose things lift). The glass ripples with side-to-side shaking, about a third of the up-and-down close to the foot and two-thirds further out (uniform ground), so the page compares it with that."
+   "d": "Each footfall is a force on the ground: the weight coming onto the foot over about a sixth of a second, plus a short landing pulse (about 0.43× body weight over 37 ms for an ordinary heel strike, scaled from people; soft-footed 0.51 of that; a drill stamp 6.5× body weight). An elastic-ground model (Lamb’s problem) turns that into peak particle velocity (PPV) at a distance, using each surface’s density, shear-wave speed and damping (our estimates). It matched one drop test (130 kg at Pisa) within about 2× from 2.5 to 60 m, one recorded person walking past at 53 m on sandy ground within about 3× (firm to loose sand; the stiffness of that ground is unknown), and elephant footfalls roughly; read it as uncertain by about 3–5×, more past 60 m. Lake ice and a steel deck bend as plates and are not modelled. The numbers are for open ground: indoors, floors and walls can make the shaking 2–4× stronger. The thresholds come from construction and blasting standards (feel 0.3 mm/s for a walk past, 1 mm/s barely perceptible for one isolated jolt; plaster may crack above 7.6 mm/s for a walk past, 12.7 mm/s or more, by frequency, for a single stamp: safe limits, below which cracks are very unlikely) or are our estimates where no standard exists (a rippling glass, rattling windows, the 1 g at which loose things lift). The glass ripples with side-to-side shaking, about a third of the up-and-down close to the foot and two-thirds further out (uniform ground), so the page compares it with that."
   },
   {
    "t": "Footprints",
-   "d": "In sand and gravel, footprint depth is scaled from the one large-animal print we found measured: a weighed 2,530 kg African elephant cow left forefoot prints 20–26 mm deep in loose-to-medium sand (Schanz et al. 2013). The lab anchors on the authors’ calibrated model of that sand (18 mm at 350 kPa), with depth rising as pressure to the power 1.27 and in proportion to foot width. Loose sand is taken as that sand; gravel, which bears more, gets shallower prints in proportion. In clay a foot sinks until the clay’s bearing, which grows a little with depth, carries the step. Paving, slabs, ice, steel and rock show no print until they break. All estimates."
+   "d": "In sand and gravel, footprint depth is scaled from the one large-animal print we found measured: a weighed 2,530 kg African elephant cow left forefoot prints 20–26 mm deep in loose-to-medium sand (Schanz et al. 2013). The lab anchors on the authors’ calibrated model of that sand (18 mm at 350 kPa), with depth rising as pressure to the power 1.27 and in proportion to foot width. The pressure is the step’s landing peak, as in the elephant’s print; the rule was fitted from 99 to 350 kPa, so a stamp that presses harder is extrapolated (the page says so). Loose sand is taken as that sand; gravel, which bears more, gets shallower prints in proportion. In clay a foot sinks until the clay’s bearing, which grows a little with depth, carries the step. Paving, slabs, ice, steel and rock show no print until they break. All estimates."
   },
   {
    "t": "Comic switches",
@@ -1181,7 +1181,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Absorbed energy and growth",
-   "d": "Canon: the energy they put out is theirs, so they can take it back. By default it returns to the endless store of power they draw on, and nothing changes. The growth modes are what-ifs that turn it into mass, m = E ÷ c². Growth form: the even mix grows volume and density each by the square root of the mass ratio (height by its sixth root); pure size keeps the density; pure density keeps the size. Gradual growth starts and stops smoothly (our choice); it is harmless if the air pulse 2 m from him stays under 100 Pa (134 dB, the US Bureau of Mines safe level) and the top of his head rises no faster than 0.25 m/s (the reduced robot speed OSHA’s Technical Manual calls slow enough for a person to get out of the way; borrowed from robot safety, not tested for this case). Instant growth takes the time sound needs to cross his new body (our choice); the blast is a range from a ball to flat pistons, doubled for the ground, and his rising middle would throw him into the air unless he is bolted down. In the runaway mode the side effects are absorbed too; the loop dies out at once unless its ratio reaches 1, which his own gravity can’t do outside a black hole."
+   "d": "Canon: the energy they put out is theirs, so they can take it back. By default it returns to the endless store of power they draw on, and nothing changes. The growth modes are what-ifs that turn it into mass, m = E ÷ c². Growth form: the even mix grows volume and density each by the square root of the mass ratio (height by its sixth root); pure size keeps the density; pure density keeps the size. Gradual growth starts and stops smoothly (our choice); it is harmless if the air pulse 2 m from him (our choice of how close a bystander stands) stays under 100 Pa (134 dB, the US Bureau of Mines safe level) and the top of his head rises no faster than 0.25 m/s (the reduced robot speed OSHA’s Technical Manual calls slow enough for a person to get out of the way; borrowed from robot safety, not tested for this case). Instant growth takes the time sound needs to cross his new body (our choice); the blast is a range from a ball to flat pistons, doubled for the ground, and his rising middle would throw him into the air unless he is bolted down; where the ground can’t give that push, his soles are driven into it instead, and the ground takes that work (often more than the air). In the runaway mode the side effects are absorbed too; the loop dies out at once unless its ratio reaches 1, which his own gravity can’t do outside a black hole."
   },
   {
    "t": "Strength means force",
@@ -2753,7 +2753,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Blast: Windows shatter",
-   "value": "6.9 kPa",
+   "value": "3.4–6.9 kPa (the lab uses 6.9)",
    "status": "verified",
    "sources": [
     {
@@ -4740,6 +4740,10 @@ window.DINO_DATA = {
     {
      "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/build-comparison/assets/ollie-turnaround.png",
      "title": "Owner's turnaround art, front views, measured here: build-comparison/assets/ollie-turnaround.png"
+    },
+    {
+     "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/build-calculator/data/ansur2/ANSUR_II_MALE_Public.csv",
+     "title": "ANSUR II men (crotch-to-hip gap, step_ansur_leg_proportions), as stored in this repo"
     }
    ],
    "note": null
@@ -4883,7 +4887,7 @@ window.DINO_DATA = {
   {
    "label": "Walking: elephant walking: peak vertical force on each foot",
    "value": "Walking Asian elephants (juveniles, about 2.3 t): about 0.55 × body weight on a forefoot, 0.36 × on a hind foot (read from a figure); never above 1 × (fore) or 0.7 × (hind) at the speeds measured (up to 4.8 m/s); 60% of weight on the forelimbs",
-   "status": "verified",
+   "status": "derived",
    "sources": [
     {
      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2872429/",
@@ -5126,8 +5130,8 @@ window.DINO_DATA = {
   },
   {
    "label": "Ground shaking: Mayne/BS 5228 dynamic-compaction law at low drop energy: TRL finds it under-predicts by up to 10×",
-   "value": "7 t weight dropped 1.2 m (82 kJ): measured PPV was 1.4–5× the Mayne (1985) prediction within 30 m and 2.5–10× at 50–100 m (TRL: 'up to an order of magnitude')",
-   "status": "verified",
+   "value": "7 t weight dropped 1.2 m (82 kJ): measured PPV was 1.4–5× the Mayne (1985) prediction within 30 m and 2.5–10× at 50–100 m (our reading of TRL 429's Fig. 44; TRL: 'up to an order of magnitude')",
+   "status": "derived",
    "sources": [
     {
      "url": "https://www.trl.co.uk/uploads/trl/documents/TRL429.pdf",
@@ -5187,7 +5191,7 @@ window.DINO_DATA = {
   {
    "label": "Ground shaking: FHWA chart: PPV against scaled energy factor √E / d, one line per soil type (Lukas 1986, 1995)",
    "value": "PPV grows with √(energy)/distance; separate lines for 8 ground types. The plotted lines span a scaled energy factor of about 0.07–6 √(t·m)/m and PPV of about 1–250 mm/s (our reading of the chart)",
-   "status": "verified",
+   "status": "derived",
    "sources": [
     {
      "url": "https://rosap.ntl.bts.gov/view/dot/68405/dot_68405_DS1.pdf",
@@ -5296,6 +5300,10 @@ window.DINO_DATA = {
     {
      "url": "https://www.omegawestdocuments.com/media/documents/43/CD43.12%20-%204%20Code%20of%20practice%20for%20noise%20and%20vibration%20control%20on%20construction%20and%20open%20sites%20part%202%20vibration;.pdf",
      "title": "BS 5228-2:2009+A1:2014 Annex E, Tables E.1 and E.2 (licensed copy filed as public-inquiry core document CD43.12, Omega West)"
+    },
+    {
+     "url": "https://www.issmge.org/uploads/publications/84/52/GEO11Paper581.pdf",
+     "title": "Lauzon, Morel, Briet & Beaton (c. 2011) Ground Vibrations Induced by Dynamic Compaction and Rapid Impact Compaction (ISSMGE online library, GEO11 paper 581)"
     }
    ],
    "note": null
@@ -5372,6 +5380,10 @@ window.DINO_DATA = {
     {
      "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=11144599&rettype=abstract&retmode=text",
      "title": "O'Connell-Rodwell, Arnason & Hart (2000) Seismic properties of Asian elephant vocalizations and locomotion, J Acoust Soc Am 108(6):3066-72 (PubMed abstract, PMID 11144599, via NCBI E-utilities)"
+    },
+    {
+     "url": "https://www.omegawestdocuments.com/media/documents/43/CD43.12%20-%204%20Code%20of%20practice%20for%20noise%20and%20vibration%20control%20on%20construction%20and%20open%20sites%20part%202%20vibration;.pdf",
+     "title": "BS 5228-2:2009+A1:2014 Annex E, Tables E.1 and E.2 (licensed copy filed as public-inquiry core document CD43.12, Omega West)"
     }
    ],
    "note": null
@@ -5388,6 +5400,10 @@ window.DINO_DATA = {
     {
      "url": "https://dot.ca.gov/-/media/dot-media/programs/environmental-analysis/documents/env/tcvgm-apr2020-a11y.pdf",
      "title": "Caltrans (2020) Transportation and Construction Vibration Guidance Manual, April 2020 (Andrews, Buehler, Gill & Bender)"
+    },
+    {
+     "url": "https://www.trl.co.uk/uploads/trl/documents/TRL429.pdf",
+     "title": "Hiller & Crabb (2000) TRL Report 429, Groundborne vibration caused by mechanised construction works (Transport Research Laboratory for the Highways Agency)"
     }
    ],
    "note": null
@@ -5671,6 +5687,18 @@ window.DINO_DATA = {
     {
      "url": "https://pubs.usgs.gov/of/1997/0501/report.pdf",
      "title": "USGS Open-File Report 97-501 (NEHRP soil profile types by Vs30)"
+    },
+    {
+     "url": "https://iris.polito.it/bitstream/11583/2882762/1/Colombero_et_al_2015_sub.pdf",
+     "title": "Colombero, Kontoe, Foti & Potts (2015) Numerical modelling of wave attenuation through soil, XVI ECSMGE Edinburgh, pp. 3959-3964 (Politecnico di Torino repository)"
+    },
+    {
+     "url": "https://www.cambridge.org/core/services/aop-cambridge-core/content/view/0DAA1D118D8BC16DA025F8B300C442EA/S0022143000023467a.pdf/the-temperature-dependence-of-seismic-waves-in-ice.pdf",
+     "title": "Kohnen (1974) The temperature dependence of seismic waves in ice, Journal of Glaciology 13(67):144-147"
+    },
+    {
+     "url": "https://dot.ca.gov/-/media/dot-media/programs/environmental-analysis/documents/env/tcvgm-apr2020-a11y.pdf",
+     "title": "Caltrans (2020) Transportation and Construction Vibration Guidance Manual, April 2020 (Andrews, Buehler, Gill & Bender)"
     }
    ],
    "note": null
@@ -5699,6 +5727,14 @@ window.DINO_DATA = {
     {
      "url": "https://www.trl.co.uk/uploads/trl/documents/TRL429.pdf",
      "title": "Hiller & Crabb (2000) TRL Report 429, Groundborne vibration caused by mechanised construction works (Transport Research Laboratory for the Highways Agency)"
+    },
+    {
+     "url": "https://iris.polito.it/bitstream/11583/2882762/1/Colombero_et_al_2015_sub.pdf",
+     "title": "Colombero, Kontoe, Foti & Potts (2015) Numerical modelling of wave attenuation through soil, XVI ECSMGE Edinburgh, pp. 3959-3964 (Politecnico di Torino repository)"
+    },
+    {
+     "url": "https://rosap.ntl.bts.gov/view/dot/40768/dot_40768_DS1.pdf",
+     "title": "Lukas (1995) Geotechnical Engineering Circular No. 1: Dynamic Compaction, FHWA-SA-95-037 (USDOT ROSAP scan)"
     }
    ],
    "note": null
@@ -6151,6 +6187,10 @@ window.DINO_DATA = {
     {
      "url": "https://arxiv.org/pdf/2406.05140",
      "title": "Wijayaraja et al. (2024) arXiv 2406.05140 (quoting O'Connell-Rodwell 2000)"
+    },
+    {
+     "url": "https://gfzpublic.gfz.de/pubman/item/item_5034960_2/component/file_5034988/5034960.pdf",
+     "title": "Steinmann et al. (2025) Fig. 4b,c (GFZ repository)"
     }
    ],
    "note": null
@@ -6179,6 +6219,14 @@ window.DINO_DATA = {
     {
      "url": "https://arxiv.org/pdf/2406.05140",
      "title": "Wijayaraja et al. (2024) arXiv 2406.05140 (O'Connell-Rodwell stomp values; own data)"
+    },
+    {
+     "url": "https://discovery.ucl.ac.uk/id/eprint/10063309/1/1-s2.0-S0960982218304202-main.pdf",
+     "title": "Mortimer et al. (2018) Curr. Biol. 28:R547-R548 (close-range fast walk)"
+    },
+    {
+     "url": "https://crustal.stanford.edu/sites/g/files/sbiybj21541/files/media/file/wood.elecensus.jappliedecol.2005_0.pdf",
+     "title": "Wood et al. (2005) J. Appl. Ecol. 42:587-594 (decay and detection radius)"
     }
    ],
    "note": null
@@ -6307,6 +6355,10 @@ window.DINO_DATA = {
     {
      "url": "https://www.nottinghamshire.gov.uk/media/110052/british-standard-bs5228-2009.pdf",
      "title": "BS 5228-2:2009 Code of practice for noise and vibration control on construction and open sites, Part 2: Vibration (licensed copy posted by Nottinghamshire County Council), Annex B"
+    },
+    {
+     "url": "https://www.pleanala.ie/publicaccess/EIAR-NIS/314724/5_EIAR/Volume%205%20Appendices/Chapter%2014%20Ground-borne%20Noise%20and%20Vibration/A14.1%20Relevant%20guidance%20and%20standards.pdf",
+     "title": "MetroLink EIAR Vol. 5 Appendix A14.1 'Relevant guidance and standards' (Jacobs IDOM), hosted by An Bord Pleanala (Irish planning board); reproduces BS 5228-2:2009+A1:2014, BS 7385-2, DIN 4150-3:2016, HS2 tables and Irish EPA guidance"
     }
    ],
    "note": null
@@ -6475,6 +6527,10 @@ window.DINO_DATA = {
     {
      "url": "https://dot.ca.gov/-/media/dot-media/programs/environmental-analysis/documents/env/tcvgm-apr2020-a11y.pdf",
      "title": "Caltrans (2020) Transportation and Construction Vibration Guidance Manual, CT-HWANP-RT-20-365.01.01 (April 2020)"
+    },
+    {
+     "url": "https://www.nottinghamshire.gov.uk/media/110052/british-standard-bs5228-2009.pdf",
+     "title": "BS 5228-2:2009 Code of practice for noise and vibration control on construction and open sites, Part 2: Vibration (licensed copy posted by Nottinghamshire County Council), Annex B"
     }
    ],
    "note": null
@@ -6607,6 +6663,10 @@ window.DINO_DATA = {
     {
      "url": "https://files.dep.state.pa.us/Mining/BureauOfMiningPrograms/BMPPortalFiles/Blasting_Research_Papers/1980%20Siskind%20RI%208507%20Structure%20Response%20and%20Damage%20Produced%20by%20Ground%20Vibration%20from%20Surface%20Mine%20Blasting%20(No.%2018).pdf",
      "title": "Siskind, Stagg, Kopp & Dowding (1980) US Bureau of Mines Report of Investigations 8507, Structure Response and Damage Produced by Ground Vibration from Surface Mine Blasting (Pennsylvania DEP copy; scanned, read by OCR and page images)"
+    },
+    {
+     "url": "https://assets.watercare.co.nz/media/peter_millar_appendix_b_9d042ff732.pdf",
+     "title": "Watercare Services (Auckland) evidence, P. Millar, Appendix B 'Review of vibration standards' (reproduces DIN 4150-3:1999 Table 1 and Siskind et al. 1980)"
     }
    ],
    "note": null
@@ -6687,6 +6747,14 @@ window.DINO_DATA = {
     {
      "url": "https://dot.ca.gov/-/media/dot-media/programs/environmental-analysis/documents/env/tcvgm-apr2020-a11y.pdf",
      "title": "Caltrans (2020) Transportation and Construction Vibration Guidance Manual, CT-HWANP-RT-20-365.01.01 (April 2020)"
+    },
+    {
+     "url": "https://www.pleanala.ie/publicaccess/EIAR-NIS/314724/5_EIAR/Volume%205%20Appendices/Chapter%2014%20Ground-borne%20Noise%20and%20Vibration/A14.1%20Relevant%20guidance%20and%20standards.pdf",
+     "title": "MetroLink EIAR Vol. 5 Appendix A14.1 'Relevant guidance and standards' (Jacobs IDOM), hosted by An Bord Pleanala (Irish planning board); reproduces BS 5228-2:2009+A1:2014, BS 7385-2, DIN 4150-3:2016, HS2 tables"
+    },
+    {
+     "url": "https://pubs.usgs.gov/tm/2005/12A01/pdf/508TM12-A1.pdf",
+     "title": "Wald et al., ShakeMap Manual, USGS Techniques and Methods 12-A1 (version 1.0, 2006), section 2.5 and Figure 2.5 (reproduces Wald, Quitoriano, Heaton & Kanamori 1999, Earthquake Spectra 15(3):557-564)"
     }
    ],
    "note": null
@@ -6745,7 +6813,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Thresholds: recommended page value: people feel it",
-   "value": "0.3 mm/s PPV for a walk past (range 0.14-1 mm/s). For one isolated step: the most sensitive notice from about 0.3 mm/s, Caltrans calls about 1 mm/s barely perceptible for one jolt, and the average person needs about 2-3 mm/s for a jolt this short (USBM RI 8507 Table 15)",
+   "value": "0.3 mm/s PPV for a walk past (range 0.14-1 mm/s). For one isolated step: the most sensitive notice from about 0.3 mm/s, Caltrans calls about 1 mm/s barely perceptible for one jolt, and the average person needs more than 3 mm/s (3.3 mm/s for a half-second jolt, USBM RI 8507 Table 15; shorter jolts need more)",
    "status": "estimate",
    "sources": [
     {
@@ -7009,8 +7077,8 @@ window.DINO_DATA = {
   },
   {
    "label": "Water glass: Faraday (parametric) wave onset for water in a 70 mm tank shaken up and down at 10-20 Hz",
-   "value": "Onset about 0.3-0.8 m/s² at the mode resonances (3-8% of g), about 3-7 mm/s peak velocity at 11-20 Hz; may be peak-to-peak",
-   "status": "verified",
+   "value": "Onset about 0.3-0.8 m/s² at the mode resonances (3-8% of g), about 3-7 mm/s peak velocity at 11-20 Hz (our conversion); may be peak-to-peak",
+   "status": "derived",
    "sources": [
     {
      "url": "https://par.nsf.gov/servlets/purl/10311615",
@@ -7075,6 +7143,10 @@ window.DINO_DATA = {
     {
      "url": "https://par.nsf.gov/servlets/purl/10391457",
      "title": "Wilson, Shao, Saylor & Bostwick (2022), Role of edge effects and fluid depth in azimuthal Faraday waves, Phys. Rev. Fluids 7, 014803, eq. (21) and Table I (NSF public-access copy)"
+    },
+    {
+     "url": "https://arxiv.org/pdf/1701.07613",
+     "title": "Denner, Pare & Zaleski (2017), Dispersion and viscous attenuation of capillary waves with finite amplitude, Eur. Phys. J. Special Topics (arXiv:1701.07613)"
     }
    ],
    "note": null
@@ -7167,6 +7239,18 @@ window.DINO_DATA = {
     {
      "url": "https://arxiv.org/pdf/1704.08416",
      "title": "Karjanto (2010), First- and second-order wave generation theory, Appl. Math. Comput. Sci. 1(2) 181-197 (arXiv:1704.08416)"
+    },
+    {
+     "url": "https://par.nsf.gov/servlets/purl/10391457",
+     "title": "Wilson, Shao, Saylor & Bostwick (2022), Role of edge effects and fluid depth in azimuthal Faraday waves, Phys. Rev. Fluids 7, 014803, eq. (21) and Table I (NSF public-access copy)"
+    },
+    {
+     "url": "https://arxiv.org/pdf/0705.3583",
+     "title": "Delon, Fermigier, Snoeijer & Andreotti, Relaxation of a dewetting contact line. Part 2: Experiments, J. Fluid Mech. (arXiv:0705.3583), eq. (4.1)"
+    },
+    {
+     "url": "https://iapws.org/technical-guidance/release/Surf-H2O.download",
+     "title": "IAPWS R1-76(2014), Revised Release on Surface Tension of Ordinary Water Substance, Table 1"
     }
    ],
    "note": null
@@ -7183,6 +7267,18 @@ window.DINO_DATA = {
     {
      "url": "https://arxiv.org/pdf/1704.08416",
      "title": "Karjanto (2010), First- and second-order wave generation theory, Appl. Math. Comput. Sci. 1(2) 181-197 (arXiv:1704.08416)"
+    },
+    {
+     "url": "https://par.nsf.gov/servlets/purl/10391457",
+     "title": "Wilson, Shao, Saylor & Bostwick (2022), Role of edge effects and fluid depth in azimuthal Faraday waves, Phys. Rev. Fluids 7, 014803, eq. (21) and Table I (NSF public-access copy)"
+    },
+    {
+     "url": "https://arxiv.org/pdf/0705.3583",
+     "title": "Delon, Fermigier, Snoeijer & Andreotti, Relaxation of a dewetting contact line. Part 2: Experiments, J. Fluid Mech. (arXiv:0705.3583), eq. (4.1)"
+    },
+    {
+     "url": "https://iapws.org/technical-guidance/release/Surf-H2O.download",
+     "title": "IAPWS R1-76(2014), Revised Release on Surface Tension of Ordinary Water Substance, Table 1"
     }
    ],
    "note": null
@@ -7199,6 +7295,14 @@ window.DINO_DATA = {
     {
      "url": "https://arxiv.org/pdf/1704.08416",
      "title": "Karjanto (2010), First- and second-order wave generation theory, Appl. Math. Comput. Sci. 1(2) 181-197 (arXiv:1704.08416)"
+    },
+    {
+     "url": "https://par.nsf.gov/servlets/purl/10391457",
+     "title": "Wilson, Shao, Saylor & Bostwick (2022), Role of edge effects and fluid depth in azimuthal Faraday waves, Phys. Rev. Fluids 7, 014803, eq. (21) and Table I (NSF public-access copy)"
+    },
+    {
+     "url": "https://iapws.org/technical-guidance/release/Surf-H2O.download",
+     "title": "IAPWS R1-76(2014), Revised Release on Surface Tension of Ordinary Water Substance, Table 1"
     }
    ],
    "note": null
@@ -7215,6 +7319,18 @@ window.DINO_DATA = {
     {
      "url": "https://par.nsf.gov/servlets/purl/10311615",
      "title": "Shao, Wilson, Saylor & Bostwick (2021), Surface wave pattern formation in a cylindrical container, J. Fluid Mech. 915, A19, doi:10.1017/jfm.2021.97 (NSF public-access copy)"
+    },
+    {
+     "url": "https://webvision.med.utah.edu/book/part-viii-psychophysics-of-vision/visual-acuity/",
+     "title": "Kalloniatis & Luu, Visual Acuity, Webvision (University of Utah)"
+    },
+    {
+     "url": "https://arxiv.org/pdf/0705.3583",
+     "title": "Delon, Fermigier, Snoeijer & Andreotti, Relaxation of a dewetting contact line. Part 2: Experiments, J. Fluid Mech. (arXiv:0705.3583), eq. (4.1)"
+    },
+    {
+     "url": "https://iapws.org/technical-guidance/release/Surf-H2O.download",
+     "title": "IAPWS R1-76(2014), Revised Release on Surface Tension of Ordinary Water Substance, Table 1"
     }
    ],
    "note": null
@@ -7247,6 +7363,10 @@ window.DINO_DATA = {
     {
      "url": "https://www.solidmechanics.org/text/Chapter2_3/Chapter2_3_files/eq0006M.gif",
      "title": "Equation image for §2.3.1 (eq0006), from the page above"
+    },
+    {
+     "url": "https://www.solidmechanics.org/text/Chapter2_2/Chapter2_2.htm",
+     "title": "A. F. Bower, Applied Mechanics of Solids, §2.2.1 Surface traction and internal body force"
     }
    ],
    "note": null
@@ -7303,6 +7423,14 @@ window.DINO_DATA = {
     {
      "url": "https://arxiv.org/abs/1510.07674",
      "title": "IAU 2015 Resolution B3, nominal GM of Earth (existing key earth_gm)"
+    },
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+     "title": "NASA NSSDCA Earth Fact Sheet, mean radius 6,371 km and mass (existing keys collide_earth_inertia_rotation, earth_mass)"
+    },
+    {
+     "url": "https://www.kbb.com/toyota/corolla/2026/specs",
+     "title": "Kelley Blue Book, 2026 Toyota Corolla specs, LE curb weight 2,955 lb (existing key toyota_corolla_curb_mass)"
     }
    ],
    "note": null
@@ -7322,7 +7450,7 @@ window.DINO_DATA = {
   {
    "label": "Comic switches: amusement-ride acceleration limits for the general public (ASTM F2291-06a)",
    "value": "Head-to-foot (+Gz) or pressed into the seat back (+Gx): 6 g for 0.2–1 s, 4 g for 2–4 s, 3 g for 5–11.8 s, then 2 g (+Gz) or 2.5 g (+Gx). Sideways 3 g → 2 g. Eyes-front (−Gx) 2 g at 0.2 s → 1.5 g. Eyes-up (−Gz) 2 g at 0.2 s → 1.5 g → 1.1 g from 7 s",
-   "status": "verified",
+   "status": "derived",
    "sources": [
     {
      "url": "https://ia800607.us.archive.org/34/items/gov.law.astm.f2291.2006/astm.f2291.2006.pdf",
@@ -7407,6 +7535,14 @@ window.DINO_DATA = {
     {
      "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:25022160%20AND%20SRC:MED&format=json&resultType=core",
      "title": "Blue et al. (2014), Tolerance of centrifuge-simulated suborbital spaceflight by medical condition, Aviat Space Environ Med 85:721, doi:10.3357/asem.3956.2014 (abstract, Europe PMC)"
+    },
+    {
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:29046176%20AND%20SRC:MED&format=json&resultType=core",
+     "title": "Suresh et al. (2017), Dysrhythmias in laypersons during centrifuge-simulated suborbital spaceflight, Aerosp Med Hum Perform 88:1008, doi:10.3357/amhp.4910.2017 (abstract, Europe PMC)"
+    },
+    {
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:36757241%20AND%20SRC:MED&format=json&resultType=core",
+     "title": "Smith et al. (2022), Physiological effects of centrifuge-simulated suborbital spaceflight, Aerosp Med Hum Perform 93:830, doi:10.3357/amhp.6153.2022 (abstract, Europe PMC)"
     }
    ],
    "note": null
@@ -7451,6 +7587,10 @@ window.DINO_DATA = {
     {
      "url": "https://ntrs.nasa.gov/api/citations/19980228043/downloads/19980228043.pdf",
      "title": "Eiband (1959), Human Tolerance to Rapidly Applied Accelerations: A Summary of the Literature, NASA Memorandum 5-19-59E (NTRS 19980228043)"
+    },
+    {
+     "url": "https://ntrs.nasa.gov/api/citations/19730006364/downloads/19730006364.pdf",
+     "title": "Bioastronautics Data Book, NASA SP-3006 (1973), ch. 6 Impact, p. 229 (PDF p. 239)"
     }
    ],
    "note": null
@@ -7499,6 +7639,10 @@ window.DINO_DATA = {
     {
      "url": "https://ntrs.nasa.gov/api/citations/19730006364/downloads/19730006364.pdf",
      "title": "Bioastronautics Data Book, NASA SP-3006 (1973), ch. 6 Impact, p. 229 (PDF p. 239)"
+    },
+    {
+     "url": "https://ntrs.nasa.gov/api/citations/19730006364/downloads/19730006364.pdf",
+     "title": "Bioastronautics Data Book, NASA SP-3006 (1973), Table 4-4 'Range of Visual Thresholds in Relation to Unconsciousness' (after Cochran et al., 1954), p. 157 (PDF p. 167)"
     }
    ],
    "note": null
@@ -7527,6 +7671,10 @@ window.DINO_DATA = {
     {
      "url": "https://ntrs.nasa.gov/api/citations/20110016614/downloads/20110016614.pdf",
      "title": "Carter et al., cube drag data (existing key cd_bluff_body_tumbling_subsonic, an estimate)"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/International_Standard_Atmosphere",
+     "title": "Wikipedia: International Standard Atmosphere, 1.225 kg/m³ (existing key atm_isa_sea_level_density)"
     }
    ],
    "note": null
@@ -7695,6 +7843,10 @@ window.DINO_DATA = {
     {
      "url": "https://authors.library.caltech.edu/records/r42n3-t2639/files/Geophys._J._Int.-1967-Harkrider-149-59.pdf",
      "title": "Harkrider & Press (1967), full text PDF on the Caltech Authors record (p. 159)"
+    },
+    {
+     "url": "https://doi.org/10.1111/j.1365-246X.1967.tb02150.x",
+     "title": "Harkrider & Press (1967), DOI record"
     }
    ],
    "note": null
@@ -7763,6 +7915,18 @@ window.DINO_DATA = {
     {
      "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/CLAUDE.md",
      "title": "Project canon: CLAUDE.md in this repository (3,007 kg; 3.048 m; 1,060 kg/m³)"
+    },
+    {
+     "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/rex-strength-lab/BRIEF-presence.md",
+     "title": "rex-strength-lab/BRIEF-presence.md in this repository (the worked examples being checked)"
+    },
+    {
+     "url": "https://authors.library.caltech.edu/records/r42n3-t2639",
+     "title": "Harkrider & Press (1967) The Krakatoa air-sea waves: an example of pulse propagation in coupled systems, Geophys. J. R. astr. Soc. 13:149-159; Caltech Authors record with abstract"
+    },
+    {
+     "url": "https://arxiv.org/pdf/1311.6565",
+     "title": "Lobanovsky (2013) Acoustic Methods for Evaluation of High Energy Explosions, arXiv:1311.6565 (preprint, not peer reviewed), Annex IV"
     }
    ],
    "note": null
@@ -7779,6 +7943,14 @@ window.DINO_DATA = {
     {
      "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/CLAUDE.md",
      "title": "Project canon: CLAUDE.md in this repository (3,007 kg; 3.048 m; 1,060 kg/m³)"
+    },
+    {
+     "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/rex-strength-lab/BRIEF-presence.md",
+     "title": "rex-strength-lab/BRIEF-presence.md in this repository (the worked examples being checked)"
+    },
+    {
+     "url": "https://par.nsf.gov/servlets/purl/10349743",
+     "title": "Morgan, Bralower, Brugger & Wünnemann (2022) The Chicxulub impact and its environmental consequences, Nature Reviews Earth & Environment 3:338-354; accepted manuscript at NSF PAR"
     }
    ],
    "note": null
@@ -7795,6 +7967,14 @@ window.DINO_DATA = {
     {
      "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/CLAUDE.md",
      "title": "Project canon: CLAUDE.md in this repository (3,007 kg; 3.048 m; 1,060 kg/m³)"
+    },
+    {
+     "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/rex-strength-lab/BRIEF-presence.md",
+     "title": "rex-strength-lab/BRIEF-presence.md in this repository (the worked examples being checked)"
+    },
+    {
+     "url": "https://arxiv.org/pdf/1510.07674",
+     "title": "Prša et al. (2016) Nominal values for selected solar and planetary quantities: IAU 2015 Resolution B2 and B3, arXiv:1510.07674 (PDF)"
     }
    ],
    "note": null
@@ -7811,6 +7991,18 @@ window.DINO_DATA = {
     {
      "url": "https://physics.nist.gov/cgi-bin/cuu/Value?c",
      "title": "NIST CODATA 2022: speed of light in vacuum"
+    },
+    {
+     "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/CLAUDE.md",
+     "title": "Project canon: CLAUDE.md in this repository (3,007 kg; 3.048 m; 1,060 kg/m³)"
+    },
+    {
+     "url": "https://authors.library.caltech.edu/records/r42n3-t2639",
+     "title": "Harkrider & Press (1967) The Krakatoa air-sea waves: an example of pulse propagation in coupled systems, Geophys. J. R. astr. Soc. 13:149-159; Caltech Authors record with abstract"
+    },
+    {
+     "url": "https://arxiv.org/pdf/1311.6565",
+     "title": "Lobanovsky (2013) Acoustic Methods for Evaluation of High Energy Explosions, arXiv:1311.6565 (preprint, not peer reviewed), Annex IV"
     }
    ],
    "note": null
@@ -7915,6 +8107,10 @@ window.DINO_DATA = {
     {
      "url": "https://www.osha.gov/otm/section-4-safety-hazards/chapter-4",
      "title": "OSHA Technical Manual, Section IV Chapter 4: Industrial Robot Systems and Industrial Robot System Safety"
+    },
+    {
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:9143432%20AND%20SRC:MED&resultType=core&format=json",
+     "title": "Bohannon (1997) Comfortable and maximum walking speed of adults aged 20-79 years: reference values and determinants, Age and Ageing 26:15-19 (abstract read through the Europe PMC API)"
     }
    ],
    "note": null
@@ -7987,6 +8183,10 @@ window.DINO_DATA = {
     {
      "url": "https://archive.org/download/dli.ernet.177550/177550-Supersonic%20Flow%20And%20Shock%20Waves_djvu.txt",
      "title": "Courant & Friedrichs (1948), Internet Archive OCR text of the same scan (the quotes were read here; the scan PDF has no text layer)"
+    },
+    {
+     "url": "https://doi.org/10.1098/rspa.1946.0044",
+     "title": "Taylor, G. I. (1946) The air wave surrounding an expanding sphere, Proc. R. Soc. A 186:273-292 (bibliographic record only; full text not readable)"
     }
    ],
    "note": null
@@ -8107,6 +8307,10 @@ window.DINO_DATA = {
     {
      "url": "https://en.wikipedia.org/wiki/Schwarzschild_radius",
      "title": "Existing key schwarzschild_radius (r_s = 2GM/c²; cites Wikipedia only)"
+    },
+    {
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?bg",
+     "title": "NIST CODATA 2022: Newtonian constant of gravitation (existing key gravitational_constant)"
     }
    ],
    "note": null
@@ -8135,6 +8339,14 @@ window.DINO_DATA = {
     {
      "url": "https://physics.nist.gov/cgi-bin/cuu/Value?bg",
      "title": "NIST CODATA 2022: Newtonian constant of gravitation (existing key gravitational_constant)"
+    },
+    {
+     "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/CLAUDE.md",
+     "title": "Project canon: CLAUDE.md in this repository (3,007 kg; 3.048 m; 1,060 kg/m³)"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/Schwarzschild_radius",
+     "title": "Existing key schwarzschild_radius (r_s = 2GM/c²; cites Wikipedia only)"
     }
    ],
    "note": null
@@ -8163,6 +8375,18 @@ window.DINO_DATA = {
     {
      "url": "https://arxiv.org/pdf/astro-ph/0002232",
      "title": "Lattimer & Prakash (2001) Neutron Star Structure and the Equation of State, ApJ 550:426; arXiv:astro-ph/0002232, section 6, eqs. (33)-(35)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Thresholds: where a jump into soil counts as leaving craters, not deep footprints (our line)",
+   "value": "Over 1 MJ into sand, gravel or clay: craters; less: deep footprints. Our line, from no source: in soil the courtesy ceiling counts only craters as breaking the ground",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/rex-strength-lab/src/engine.js",
+     "title": "rex-strength-lab/src/engine.js in this repository (RESTRAINT.R.CRATER_E; the Jump tab has switched from footprints to craters at 1 MJ since the first lab)"
     }
    ],
    "note": null

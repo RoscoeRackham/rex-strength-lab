@@ -1,0 +1,244 @@
+{
+ "checks": [
+  {
+   "key": "thr_bs5228_2_table_b1_effects",
+   "ok": true,
+   "issue": "Re-fetched the Nottinghamshire PDF (it is stamped 'Licensed Copy: ... Atkins'). Table B.1 on p.36 has 0.14, 0.3, 1.0 and 10 mm/s with the quoted wording. The A1:2014 footnotes A-C and the added 'in most building environments' match An Bord Pleanala Table 14.12, which I also re-fetched. Status and units are right."
+  },
+  {
+   "key": "thr_bs5228_2_perception_range",
+   "ok": true,
+   "issue": "The B.2 sentence on p.35 ('threshold of perception being typically in the PPV range of 0.14 mm/s to 0.3 mm/s') is verbatim. So are the vertical/horizontal sentence and 'Loose fittings are prone to rattle and movement' on p.36."
+  },
+  {
+   "key": "thr_caltrans2020_table20_human_transient_continuous",
+   "ok": true,
+   "issue": "Table 20 (manual p.38) matches: 0.04/0.01, 0.25/0.04, 0.9/0.10, 2.0/0.4 in/s, with the transient/continuous note. The conversions are right (0.25 in/s = 6.35 mm/s). The 'not an official policy' disclaimer is present."
+  },
+  {
+   "key": "thr_caltrans2020_source_classes",
+   "ok": true,
+   "issue": "The section 7.3 quotes, including 'about half of the threshold for transient sources', are verbatim on pp.37-38. The note correctly says the footstep mapping is the researcher's reading."
+  },
+  {
+   "key": "thr_whiffin_leonard_1971_lr418_people",
+   "ok": true,
+   "issue": "TA V-04-01-R0201 Table 2 is in the Caltrans appendix. Every row, the vertical-PPV footnote and the LR418 citation are confirmed, as is the mismatch between the mm/s and in/s columns. The source spells it 'Whiffen'; the TRRL author is Whiffin, so keep the researcher's spelling but say Caltrans misspells it."
+  },
+  {
+   "key": "thr_wiss1974_transient_people",
+   "ok": true,
+   "issue": "Caltrans Table 6 (2.0/0.9/0.24/0.035 in/s) and Table 4 (Reiher: 0.012/0.035/0.10) are confirmed, and so are the conversions."
+  },
+  {
+   "key": "thr_ri8507_duration_dependence_table15",
+   "ok": false,
+   "issue": "Every PPV digit in Table 15 (report p.67) checks out against the 300-dpi image. The 'acceptable_Murray' entry, however, copies a misprint: Table 15 prints '<=0.415 tau^1.29', but the text that derives it (p.65) gives V <= 0.415 tau^-1.29. In the text, V is peak FLOOR vibration of damped concrete floors and tau is the decay time to -20 dB. With +1.29 the acceptable level would rise with duration, contradicting the rest of the table. Also, the 0.5 s and 1 s 'durations' were not separate tests: they are computed from the damping of Wiss & Parmelee's 5 s damped pulses (p.63: standing subjects on an open platform, vertical vibration, 2.5-25 Hz, 40 people). That setting is the closest analogue to an outdoor listener and should be stated. The p.62 and p.65 quotes are confirmed.",
+   "corrected": "acceptable_Murray: 'V <= 0.415 tau^-1.29 in/s peak FLOOR velocity (concrete floors), tau = time from peak to -20 dB, 0.2-4 s; Table 15 misprints the exponent as +1.29' (tau 0.2 s -> 84 mm/s; 1 s -> 10.5 mm/s; 4 s -> 1.7 mm/s). Add to notes: W&P subjects stood on an open platform under vertical damped sinusoidal pulses; the 0.5-1 s rows are durations derived from damping."
+  },
+  {
+   "key": "thr_iso2631_1989_building_criteria",
+   "ok": false,
+   "issue": "The Table 7 values (90/84/78-75/72 VdB; 0.032/0.016/0.008/0.004 in/s rms) and the 8-80 Hz quote are confirmed, and the VdB-to-in/s conversions recompute. But Caltrans dates this ISO 2631 guide to 1981 ('In 1981, the International Standards Organization (ISO) published Guide to the Evaluation of Human Exposure to Vibration and Shock in Buildings (1 Hz to 80 Hz)'). The '1989' label is the researcher's inference, not what the cited source says.",
+   "corrected": "Label: 'ISO 2631 building vibration criteria (8-80 Hz), rms velocity, as reproduced in Caltrans 2020 Table 7 (Caltrans dates the ISO guide 1981; the same multiples appear in ISO 2631-2:1989)'; who_when 'ISO 2631 (Caltrans: 1981) via Caltrans 2020'."
+  },
+  {
+   "key": "thr_iso2631_2_2003_no_limits",
+   "ok": true,
+   "issue": "Watercare Appendix B paras 1-2 are verbatim: 0.3 mm/s day, 5-10 mm/s transient, 0.14 mm/s night, and 'superseded in 2003 by an informative standard which contains no vibration limits'. 'Reported' is the right status for a consultant's evidence."
+  },
+  {
+   "key": "thr_iso_base_curve_link_to_bs5228",
+   "ok": true,
+   "issue": "Recomputed: 0.004 in/s x 25.4 x sqrt2 = 0.144 mm/s; 0.008 in/s gives 0.287 mm/s; x2-4 of the base curve gives 0.29-0.57 mm/s peak. It is correctly labelled an inference. The Irish EPA wording in the Pleanala appendix ('0.15mm/s - 0.3mm/s, at frequencies between 8Hz and 80Hz for continuous vibrations') could be added as support."
+  },
+  {
+   "key": "thr_fta2018_human_response_vdb",
+   "ok": true,
+   "issue": "Confirmed in the ROSA P PDF: p.113 (65 VdB threshold, 85 VdB strong annoyance), Table 5-5 on p.120 (65/75/85 VdB rows), the 100 VdB damage-risk sentence on p.118, and Table 6-2 (>70, 30-70, <30 events/day). The Caltrans Table 8 misprint ('fewer than 70') is real. Recomputed: 65 VdB = 0.0452 mm/s rms, x4 = 0.181, x5 = 0.226; 100 VdB = 2.54 mm/s rms, x4-5 = 10.2-12.7."
+  },
+  {
+   "key": "thr_fta2018_crest_factor",
+   "ok": true,
+   "issue": "Footnote viii (crest factor >1.41, 8 or more for impulsive signals, 4-5 for trains), the 'crest factor of 4' sentence and 'one-second period' are all verbatim. Table 7-5's VdB values recompute from PPV/4 (101.9, 97.5, 94.0, 89.5)."
+  },
+  {
+   "key": "thr_fta2018_outdoors",
+   "ok": true,
+   "issue": "The p.118 sentence and the p.117 list of effects (floors, rattling of windows, items on shelves) are verbatim."
+  },
+  {
+   "key": "thr_bs6472_1_vdv_hs2",
+   "ok": true,
+   "issue": "Pleanala Table 14.13 confirmed: LOAEL 0.2/0.1 and SOAEL 0.8/0.4 m/s^1.75, credited to HS2 Information Paper E21 based on BS 6472-1:2008."
+  },
+  {
+   "key": "thr_rattle_below_perception_caltrans",
+   "ok": true,
+   "issue": "All three quotes were found: Ch.5 'rattling of a china cabinet ... well below perception'; the TA 'neutral equilibrium ... exaggerated vibration complaints'; and the TA p.17 'roughly 0.25 mm/s (0.01 in/sec) ... slight rattling of doors, windows and dishes'."
+  },
+  {
+   "key": "thr_rattle_ri8507_midwall",
+   "ok": true,
+   "issue": "Confirmed by OCR and page image: the abstract (4-12 Hz and 10-25 Hz resonances; amplification 1.5 and 4; below unity above 40 Hz; 'aggravated by wall rattling'), the p.18 midwall sentence, the p.6 'continual complaints about severe rattling at levels below 0.5 in/sec' and the p.62 'wall-produced window, dish, and bric-a-brac rattling'."
+  },
+  {
+   "key": "thr_rattle_ems98",
+   "ok": true,
+   "issue": "EMS-98 III, IV and V wording is verbatim (printed pp.17-18)."
+  },
+  {
+   "key": "thr_usgs_mmi_abridged",
+   "ok": true,
+   "issue": "The II-VI descriptions on the USGS GIP page are verbatim. Note that MMI IV says 'Dishes, windows, doors disturbed', not 'rattle'; the Wald fact's display paraphrases it as 'rattle'."
+  },
+  {
+   "key": "thr_jma_intensity_descriptions",
+   "ok": true,
+   "issue": "The JMA table text is verbatim. Caution for thr_rec_rattle: the ShakeMap manual says JMA intensity 4 on the old 7-point scale is 'equivalent to MMI VI'. So 'dishes rattle' at JMA 3-4 roughly spans MMI IV-VI; it does not pin intensity IV."
+  },
+  {
+   "key": "thr_wald1999_shakemap_intensity_table",
+   "ok": true,
+   "issue": "Figure 2.5 (manual p.56), checked on a page image, matches every PGA and PGV band. The 'largest horizontal component' convention is stated on manual pp.30 and 64 (text lines 1712 and 2431). The claim to have reproduced the edges is only partly right:\n- The PGV edges from eq. 1.2 recompute (8.09, 15.7, 30.5, 59.2, 115 cm/s).\n- The IV/V PGV edge from eq. 1.4 is 3.34 cm/s; the figure prints 3.4.\n- The PGA edges above V do not follow eq. 1.1 (17.3, 32.4, 60.9, 114 %g against the printed 18, 34, 65, 124).\nThe page uses only the low PGA band and the VI-VIII PGV bands, so nothing material changes."
+  },
+  {
+   "key": "thr_wald1999_low_intensity_caveat",
+   "ok": true,
+   "issue": "The p.55 quotes ('imposed', 'approximately 1 to 2 cm/s/s', eqs. 1.3 and 1.4, 'people are more sensitive to ground acceleration than velocity') are verbatim. Eq. 1.3 at I = 1.5 gives 1.69 cm/s^2 = 0.17 %g, which checks."
+  },
+  {
+   "key": "thr_earthquake_frequency_vs_intensity",
+   "ok": true,
+   "issue": "The Sokolov sentence is verbatim. Recomputed a/(2 pi v) from the figure bands: II-III 2.0-2.65 Hz, IV 1.8-2.0 Hz, V-VIII 1.7-1.8 Hz, which matches the stated ranges. The researcher should add that the PGA and PGV peaks come from different parts of the spectrum, so this 'equivalent sine frequency' is only indicative."
+  },
+  {
+   "key": "thr_rattle_mmi4_accel_at_footstep_frequency",
+   "ok": false,
+   "issue": "The arithmetic recomputes (20 Hz: 1.09-3.04 mm/s; 10 Hz: 2.19-6.09; 30 Hz: 0.73-2.03). Status 'derived' overstates it, though, because two inputs are assumptions:\n- the 20 Hz frequency;\n- that the rattle threshold is a fixed acceleration carried from roughly 2 Hz, horizontal, indoor, building-amplified earthquake shaking to a vertical footstep pulse.\nThe 'check' against 0.14 mm/s is not a check either. It matches only at 20 Hz. If perception followed acceleration, it would scale as 1/f, whereas ISO 2631 (via Caltrans) says perception is constant in velocity from 8 to 80 Hz (at 40 Hz the method gives 0.07 mm/s). Finally, JMA 3-4 is not equivalent to MMI IV (see the JMA check).",
+   "corrected": "status: estimate. Notes: 'Assumes rattling follows a fixed acceleration across frequency; f is an assumption pending the attenuation research. The agreement with 0.14 mm/s at 20 Hz is coincidental, not a validation.' Remove the 'supports the method' sentence."
+  },
+  {
+   "key": "thr_one_g_vertical",
+   "ok": true,
+   "issue": "g/(2 pi f) recomputes: 156, 78.0, 52.0 and 39.0 mm/s at 10, 20, 30 and 40 Hz, and 780 mm/s at 2 Hz. Correctly labelled derived physics."
+  },
+  {
+   "key": "thr_bs7385_2_table1_cosmetic",
+   "ok": true,
+   "issue": "Table B.2, Notes 1-2 and the B.3.2 quotes are verbatim in BS 5228-2 (p.38), and Pleanala Table 14.1 matches. 0.6 mm at 4 Hz = 15.08 mm/s, which checks. Labelling it 'as reproduced in BS 5228-2' is correct."
+  },
+  {
+   "key": "thr_bs7385_2_multipliers_and_continuous",
+   "ok": true,
+   "issue": "The 2x and 4x paragraph and 'reduced by up to 50%' are verbatim. The BS 7385-2 note 'insufficient cases ...' is in Pleanala p.9. The A1:2014 text points the damage definitions to BS ISO 4866:2010 12.6, not BS 7385-1 9.9 (the 2009 text). This is minor."
+  },
+  {
+   "key": "thr_bs7385_2_damage_probability_zero",
+   "ok": true,
+   "issue": "The sentence is on BS 5228-2 p.39 and Pleanala p.3."
+  },
+  {
+   "key": "thr_din4150_3_1999_table1",
+   "ok": true,
+   "issue": "Watercare Table 2 matches: line 2 is 5, 5-15, 15-20 and 15 mm/s, and the >100 Hz footnote is confirmed. Two notes: 'intended to avoid even minor damage' is not in the cited source, so drop it or source it. Watercare para 10 adds the DIN 4150-3:1999 long-term (continuous) limit of 5 mm/s at the uppermost storey; the researcher did not record it."
+  },
+  {
+   "key": "thr_din4150_3_2016_table1",
+   "ok": true,
+   "issue": "A page image of Pleanala p.5 confirms the line-2, 50-100 Hz cell prints '40 to 50'. 'Disputed', and using the 1999 values instead, are both right."
+  },
+  {
+   "key": "thr_usbm_ri8507_safe_levels",
+   "ok": false,
+   "issue": "The values and quotes are confirmed: Conclusion 6 'Practical safe criteria' 0.75/0.50/2.0 in/s, Conclusion 7, Conclusion 8 ('5 pct for worst cases'), the abstract's threshold-damage definition and 219 blasts in 76 homes. But the label '(cosmetic cracking threshold)' misstates them. RI 8507 gives these as SAFE levels, below which threshold (cosmetic) damage is unlikely, not the level where cosmetic cracking begins.",
+   "corrected": "Label: 'USBM RI 8507: practical safe blasting vibration levels for houses (chosen so that cosmetic cracking is unlikely)'."
+  },
+  {
+   "key": "thr_usbm_ri8507_figure_b1_curve",
+   "ok": true,
+   "issue": "The Appendix B text on pp.73-74 and Figure B-1 (page images) are confirmed. Recomputed corner frequencies: 9.95, 14.9, 39.8, 2.65 and 3.98 Hz."
+  },
+  {
+   "key": "thr_siskind_damage_probabilities",
+   "ok": true,
+   "issue": "Caltrans Table 13 matches exactly. Watercare Appendix B Table 1 reproduces the same numbers in mm/s (13/18/64/228, 46/56/127/406, 64/76/152/430) but heads the last column '100' where Caltrans has 90%. Neither reproduction was checked against RI 8507 figs. 55-59; RI 8507 is listed as a source but only for the damage-class wording. Keep 'verified (as reproduced)' and note the 90%/100% disagreement."
+  },
+  {
+   "key": "thr_caltrans2020_table19_damage",
+   "ok": true,
+   "issue": "All six rows and the note match Table 19 (p.38)."
+  },
+  {
+   "key": "thr_fta2018_table7_5_damage",
+   "ok": true,
+   "issue": "Table 7-5 matches: 0.5/0.3/0.2/0.12 in/s and 102/98/94/90 VdB."
+  },
+  {
+   "key": "thr_whiffin_leonard_1971_buildings",
+   "ok": true,
+   "issue": "All TA quotes are confirmed: the 2.0, 2.5, 5.0 and 10-15 mm/s rows; 'one tenth of the maximum safe amplitude'; 'appears to be conservative even for sustained pile driving'; and 'should probably not be allowed to exceed 7.5 mm/s'. Caltrans Table 12 matches as well."
+  },
+  {
+   "key": "thr_other_damage_criteria_caltrans",
+   "ok": true,
+   "issue": "Chae (Table 9), Swiss (Table 10, with the 10-30 Hz assumption), Konan (Table 11), Dowding (Table 14) and AASHTO (Table 15) all match."
+  },
+  {
+   "key": "thr_everyday_household_equivalents",
+   "ok": true,
+   "issue": "The Stagg rows in Caltrans Table 22 (0.03, 0.3, 0.5, 0.1-0.5, 0.9, 1.2-3.0 in/s) and both caveat sentences are confirmed. The primary for this lives in RI 8507 pp.41-42 (Tables 5-6, 'Structure responses from everyday activities'): human activities produce 'localized strains equivalent to ground vibrations of up to 0.50 in/sec', and walking produced midfloor vibration up to 1.49 in/s. That shows indoor floor velocities far exceed ground PPV."
+  },
+  {
+   "key": "thr_measurement_point_conventions",
+   "ok": true,
+   "issue": "BS Note 1 ('base of the building'), 'peak component particle velocity', the Whiffin footnote, the A1:2014 footnotes A-B and the ShakeMap horizontal-component convention are all confirmed. One detail to add: the earthquake numbers (Wald) are the largest HORIZONTAL component, while Whiffin's are VERTICAL."
+  },
+  {
+   "key": "thr_blast_event_duration",
+   "ok": true,
+   "issue": "The section 11.4.1 quote is verbatim."
+  },
+  {
+   "key": "thr_footing_ems98",
+   "ok": true,
+   "issue": "The VI-IX wording is verbatim (printed pp.18-19)."
+  },
+  {
+   "key": "thr_footing_earthquake_pgv",
+   "ok": true,
+   "issue": "Arithmetic and status ('estimate') are right. The assumption the researcher called 'not checked' is supported by the same USGS manual (p.57): 'the European Macroseismic Scale 1998, which is more or less equivalent to the MMI'; cite it. EMS-98 VI 'A few persons lose their balance' is not restricted to indoors, so drop '(indoors)' from the low end in thr_rec_footing. The VI-VIII PGV bands are within the V-IX range that eq. 1.2 was fitted to."
+  },
+  {
+   "key": "thr_footing_takahashi2004_shake_table",
+   "ok": false,
+   "issue": "Table 1 velocities, the subject counts (15 + 15, 7 female) and the conclusion quotes are verbatim. Figure 8 checked at 400 dpi:\n- 5 Hz standing stays at 0 up to 0.477 m/s.\n- The values_json claim 'unbalanced ratio 0 up to about 0.16 m/s at all frequencies' is wrong for 0.3 and 0.6 Hz. Those frequencies were never tested below 0.265 m/s, and at that lowest velocity some subjects were already unbalanced (female 0.3 Hz, 0.33).\nSo the 0.26-0.31 m/s 'onset' is set by the test grid. The true onset is between 0.13-0.16 and 0.32 m/s at 1-2.5 Hz, and at or below 0.265 m/s at 0.3-0.6 Hz. Figure 10b also shows walking subjects unbalanced at 5 Hz (male, 0.5 ratio at 0.477 m/s), so 'nobody at 5 Hz' holds only for standing.",
+   "corrected": "display: 'Standing subjects: first loss of balance observed at the lowest or second-lowest tested velocity, 0.26-0.32 m/s (0.3-2.5 Hz). The onset lies between about 0.16 and 0.3 m/s and is set by the test grid. At 5 Hz no standing subject lost balance up to 0.48 m/s, but half the walking subjects (male, side to side) did at 0.48 m/s.' Fix the values_json line about 0.16 m/s accordingly."
+  },
+  {
+   "key": "thr_rec_feel",
+   "ok": true,
+   "issue": "Supported, and labelled an estimate. Add the Irish EPA wording in the already-fetched Pleanala appendix (p.2): perception '0.5mm/s - 1.5mm/s in the case of impulsive vibrations from blasting'. Also add Wiss & Parmelee's set-up (standing on an open platform, vertical pulses), which is closer to an outdoor listener than BS 5228-2's indoor values. Both support the line 'most people from about 1 mm/s' for one step."
+  },
+  {
+   "key": "thr_rec_rattle",
+   "ok": true,
+   "issue": "Correctly labelled an estimate, but its notes inherit the JMA-to-MMI IV equation (JMA 3-4 spans roughly MMI IV-VI) and the 'check' from the derived fact. Also, a central value of 1 mm/s, above feel at 0.3 mm/s, contradicts the cited Caltrans and TA statements that rattling happens at or below perception. The page must state that conflict rather than only hint at it."
+  },
+  {
+   "key": "thr_rec_cosmetic_damage",
+   "ok": false,
+   "issue": "The values are supported (12.7 transient, 7.6 repeated, range 5-50). The label 'cosmetic damage to buildings starts' overstates them, though. RI 8507 calls 12.7 mm/s a 'practical safe' level with at most a 5% chance of threshold damage in worst cases, and BS 7385-2 says damage probability 'tends towards zero at 12.5'. Siskind's 50% point for cosmetic cracks is about 64 mm/s.",
+   "corrected": "Label: 'Recommended page value: cosmetic-damage safe limit (below this, cracks are very unlikely)'. The page should give the 50% point (about 64 mm/s, Siskind via Caltrans) alongside it."
+  },
+  {
+   "key": "thr_rec_footing",
+   "ok": false,
+   "issue": "'Likely cautious for footsteps' is unsupported. All the anchors are HORIZONTAL motion at 0.3-6 Hz with centimetre displacements (Wald horizontal PGV, Takahashi horizontal sinusoids). A footstep's ground motion is mostly vertical and higher in frequency. At 20 Hz, 0.3 m/s means 3.8 g vertical and 2.4 mm displacement. Any vertical motion above 1 g (above 78 mm/s at 20 Hz, or above about 0.3 m/s for any f > 5.2 Hz) briefly unloads the feet. For vertical pulses the threshold could therefore lie well BELOW 300 mm/s. The direction of the error is unknown, not 'cautious'. The Takahashi onset is also censored (see that check), and EMS VI is not indoors-only.",
+   "corrected": "display: 'About 300 mm/s from horizontal earthquake shaking and one shake-table study. For a short vertical footstep pulse it is unknown whether people lose their footing sooner or later. Above 1 g vertical (g/(2 pi f): 78 mm/s at 20 Hz) the ground briefly lifts people and objects.' The engine should use footing = min(0.3, g/(2 pi f)) once f is known, or show both."
+  }
+ ],
+ "recommendation_issues": "The recommendation is mostly sound for 'feel' and 'cosmetic damage'. It has real problems for 'footing' and 'rattle':\n\n1. **Footing (0.3 m/s, \"probably cautious\"): wrong direction of certainty.**\n   - Every anchor is horizontal shaking at 0.3-6 Hz with centimetre displacement: Wald's PGV is the largest horizontal component, and Takahashi used horizontal sinusoids. Footstep ground motion is mostly vertical and higher in frequency.\n   - At 20 Hz, 0.3 m/s is 3.8 g vertical with 2.4 mm displacement. Vertical motion above 1 g lifts people and objects off the ground. That happens at g/(2 pi f), which is below 0.3 m/s for any f > 5.2 Hz (78 mm/s at 20 Hz). So the footstep threshold could be much lower than 300 mm/s.\n   - Takahashi's onset is set by the test grid: the lowest velocity tested at 0.3-0.6 Hz already unbalanced some subjects. Walking subjects lost balance at 0.16 m/s (1 Hz) and at 0.48 m/s even at 5 Hz.\n   - Fix: footing = min(0.3, g/(2 pi f)) once f is known, or show both. Say the direction of the error is unknown. Drop \"probably cautious\".\n\n2. **Rattle.**\n   - **Status:** the acceleration conversion is an estimate, not a derived value. Its \"validation\" (0.13 against 0.14 mm/s) holds only at 20 Hz. It conflicts with ISO 2631 (via Caltrans), which says perception is constant in velocity at 8-80 Hz; the method would give 0.07 mm/s at 40 Hz.\n   - **JMA is not intensity IV:** the USGS manual equates old-scale JMA 4 with MMI VI, so JMA 3-4 is not IV.\n   - **Ordering:** the default 1 mm/s sits above feel (0.3 mm/s). That contradicts the Caltrans and TA statements the researcher cites, that rattling happens at or below perception. The page must show this conflict, not only hint at it in one line.\n   - **Units of what is compared:** the earthquake accelerations are horizontal free-field values at about 2 Hz, while ppvAt is presumably vertical ground PPV.\n\n3. **Assumed frequency.** The 20 Hz worked example has no support, and every frequency-dependent option swings a lot with f:\n   - BS 7385-2 line 2: 15 mm/s at 4 Hz, 18.3 at 10 Hz, 26.2 at 20 Hz (log-log and linear interpolation differ by under 3%, so that choice does not matter).\n   - Rattle: 4.4 mm/s at 5 Hz, 1.1 at 20 Hz.\n   - 1 g: 312 mm/s at 5 Hz, 78 at 20 Hz.\n\n   The engine's law (k = 0.070 m/s, n = 1.4, E0 = 1 t·m) looks like a heavy-tamper dynamic-compaction law, and that kind of source may be low in frequency. I did not verify this. Take f from the attenuation research before choosing any default.\n\n4. **Cosmetic damage.** 12.7 and 7.6 mm/s are well supported, but they are minimal-risk \"safe\" levels: at most 5% chance of threshold damage in worst cases (RI 8507), and BS 7385-2 says the probability \"tends towards zero\" at 12.5. They are not where damage \"starts\". Show Siskind's 50% point (about 64 mm/s) alongside.\n   - Treating a walk past as \"continuous\" is a cautious reading. BS's up-to-50% reduction is for continuous vibration that causes resonance, and Caltrans's class means pile drivers with thousands of blows. Fine as an option if labelled.\n   - The presets (2x \"minor damage is possible\", 4x \"major damage can occur\") should keep the sources' \"possible/can\" wording.\n\n5. **Murray criterion.** The researcher's values_json copies Table 15's misprinted exponent (tau^+1.29). The p.65 text gives V <= 0.415 tau^-1.29 for peak FLOOR velocity. Do not use the printed form.\n\n6. **Feel (0.3 mm/s).** Fine for a walk past heard indoors. For one step outdoors, the closer evidence supports \"most people from about 1 mm/s, the average 2-3 mm/s\":\n   - Wiss & Parmelee: subjects standing on an open platform under vertical pulses.\n   - The Irish EPA: 0.5-1.5 mm/s for impulsive events (Pleanala p.2).\n\n7. **Arithmetic.** All the worked conversions and test values recompute correctly: 0.5 in/s = 12.7 mm/s; 65 VdB = 0.045 mm/s rms, 0.18 mm/s PPV at crest factor 4; 0.137 m/s² at 20 Hz = 1.09 mm/s; BS line 2 = 15, 20 and 50 mm/s at 4, 15 and 40 Hz. Script: /tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/research/thresholds-check/scripts/recompute.py.",
+ "missing": "1. **Footstep frequency and duration.** The dominant frequency and duration of a footstep's ground vibration are still the key missing inputs. The rattle, cosmetic-curve and footing values all depend on them, and the engine's ppvAt has no frequency at all.\n2. **Floor and impact studies.** RI 8507 pp.62-65 (already fetched) has the closest analogues to footsteps:\n   - Atherton's impact and walking floor tests: about 200 ms events at 19 Hz, with a \"disturbing\" mean of 3.5-4.4 in/s.\n   - Murray's damped-floor criterion, V <= 0.415 tau^-1.29 (Figs. 64-66).\n3. **Everyday activities, primary source.** RI 8507 pp.41-42 (Tables 5-6): house strains from jumps and door slams equal ground vibration of up to 0.5 in/s, and walking produced midfloor vibration up to 1.49 in/s. This is the primary behind Caltrans's \"Stagg 1980\" household equivalents.\n4. **Irish EPA guidance** (Pleanala A14.1 p.2, already fetched):\n   - perception 0.15-0.3 mm/s at 8-80 Hz for continuous vibration, and 0.5-1.5 mm/s for impulsive blasting;\n   - blasting limits 12 mm/s (once a week or less) and 8 mm/s (more often, or below 10 Hz).\n5. **USGS ShakeMap manual p.57:** \"EMS-98 ... more or less equivalent to the MMI\" supports the footing assumption, and \"JMA [old 7-point] intensity 4 is equivalent to MMI VI\" undercuts the JMA-to-IV link.\n6. **DIN 4150-3:1999 long-term limit:** 5 mm/s at the uppermost storey for buildings in lines 1 and 2, via Watercare para 10. It matters for a walk past treated as continuous.\n7. **Annoyance numbers for the not-so-heroic presets** (RI 8507): 5-10% of neighbours judge 0.5-0.75 in/s unacceptable (abstract), and complaints run up to 30% at 0.5 in/s (Conclusion 9).\n8. **Siskind probabilities** were not checked against RI 8507 figs. 55-59 (pp.57-58). The two reproductions also disagree on the last column: 90% (Caltrans) against 100% (Watercare).\n9. **Footing under vertical motion:** nothing covers loss of footing under vertical or impulsive ground motion. The 1 g lift-off criterion should be added as a physics marker for footing, not only for objects.\n10. **Components:** which component ppvAt predicts (vertical or largest) is still unstated. Earthquake values are the largest horizontal component, Whiffin's are vertical, and BS uses the peak component.",
+ "verdict": "The quoted numbers are accurate, but three recommended page values need fixing before they are used:\n- **Footing:** \"probably cautious\" is unsupported.\n- **Rattle:** it should be labelled an estimate, and its ordering conflicts with the sources.\n- **Cosmetic damage:** the label says damage \"starts\", but 12.7 mm/s is a safe limit.\n\n**What I re-fetched.** I fetched all 11 cited URLs: BS 5228-2, Caltrans 2020 including the TA appendix, FTA 2018 (ROSA P), the An Bord Pleanala appendix, Watercare, RI 8507 (via page images and OCR), EMS-98, USGS MMI, JMA, USGS TM 12-A1 and Takahashi 2004. I checked every quoted table and sentence and recomputed every conversion and derived number with a script.\n\n**What is right.** The quotes and table values are almost all accurate. The secondary reproductions are honestly flagged, and the DIN 2016 \"40 to 50\" cell really is printed that way.\n\n**Seven facts need correction:**\n- **ISO 2631:** Caltrans dates it 1981, not 1989.\n- **RI 8507 Table 15:** the Murray formula copies a misprinted exponent (+1.29; the text gives -1.29 for floor velocity).\n- **Safe levels:** USBM's 12.7 mm/s is mislabelled a \"cosmetic cracking threshold\"; it is a safe level.\n- **Rattle derivation:** should be an estimate, not derived, and its \"check\" is not a check.\n- **Takahashi:** the onset is set by the test grid and is misdescribed.\n- **Cosmetic-damage label:** says damage \"starts\" at what is a safe limit.\n- **Footing:** the \"probably cautious\" claim.\n\n**What the researcher should do.** Revise those seven facts. Add the missing items, especially the footstep frequency, the RI 8507 floor and impact studies and the 1 g vertical criterion. Then the thresholds can go into the engine."
+}

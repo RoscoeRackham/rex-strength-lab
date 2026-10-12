@@ -1,0 +1,166 @@
+You are reviewing new work in the Rex Super-Strength Lab (/home/user/rex-strength-lab/rex-strength-lab/), a self-contained HTML page (claude.ai Artifact) that simulates Rex and Ollie (canon in CLAUDE.md, already loaded). The work implements /home/user/rex-strength-lab/rex-strength-lab/BRIEF-presence.md: read it first. It adds (1) effort, separate from strength, on every solo tab (the strength used for a move's push; the page opens on the least disruptive effort: the gentlest push that reaches each move's stated goal), a courtesy ceiling (the most effort before a hazard: sonic boom, air blast over 100 Pa within the 'near' distance, ground shaking over 12.7 mm/s there, ground breaking under him, his hands crushing the object) and not-so-heroic presets, and one shared effort in the two-player tests; (2) a Walk tab on ground vibration from their footsteps (gait scaled by Froude number, heel-strike impact energy, a scaled-distance PPV law, thresholds for feeling, a rippling water glass, rattling, cosmetic damage, losing footing; footprints); (3) comic switches (gentle hold, safe passenger, silent strike, soft landing, cool flight) and (4) absorbed-energy modes (endless ocean, gradual, instant, runaway growth) with growth forms (mix, size, density) and a growth what-if on the Weight tab.
+Code: src/engine.js (search for driveStrength, RESTRAINT, VIB, WALK, walkStep, footprint, presence, PASSENGER, GROW, grownBody, gradualGrowth, instantGrowth, runawayGrowth; jump's landing; throw's gentleHold, launchG, dragLoss; catch's gentleT/gentleC/cool), src/app.html (search for EFFORT_PRESETS, resolveEffort, effortReadout, duoHarm, resolveDuoEffort, bayWalk, ppvChart, growthItems, absorbBlock, growthWhatIf, passengerText), src/static-data.js (assumption cards), build-data.py, research/final-presence.json (the new verified facts, with statuses and sources; the raw research and verifier outputs are in /tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/wfout/), README.md, test/presence.js, test/calibration.js, test/shots.js.
+Build: cd /home/user/rex-strength-lab/rex-strength-lab && python3 build-data.py && node build.js. Tests: node test/presence.js; node test/calibration.js (about 80 s); node test/shots.js (about 70 s; writes dist/preview.html and shots/). Render the page yourself with Playwright: require('/opt/node22/lib/node_modules/playwright'); chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' }); load dist/preview.html (after running test/shots.js once) from a file URL. Settings persist in localStorage key 'rex-lab-v1' (some reset on every load: effort, absorb, growWhat, stepEffort, duoEffort, oEffortOwn). window.DinoPhys is the engine and window.DINO_DATA the data.
+The owner is a professional critic: factual accuracy and honest labelling come first (see CLAUDE.md). Do NOT edit anything under /home/user/rex-strength-lab. Write scratch scripts and screenshots under /tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/review3/ (create it). Every finding must be reproduced: give the exact input or place, what the page or code does (quote it, or the script output), what is correct with your derivation or source, and a minimal fix. Report real defects only: wrong physics or formulas, wrong or unsupported claims, mislabelled status, contradictions between parts of the page, broken layout or controls, tests that don't test what they say. Skip style preferences.
+
+This is review round 3. Earlier rounds found and fixed the items summarised below; check that each fix holds and look for regressions and anything missed:
+Rounds 1 and 2 found 78 and 68 findings; records with each finding's outcome are in rex-strength-lab/research/reviews/presence-round1.json and presence-round2.json (fixes up to commit a62c4fd). This round: check that round 2's fixes hold on the current HEAD (rebuild first) and look hard for regressions they introduced. Round 2 changed: the search's early stop now requires the move to come out the same at two efforts AND at all-out; two-player searches use a 5% tolerance, a settings key, and pause while the dial moves; bodies sliding past the nearest people count as harm in the two-player tests; 'Nearest people and buildings' replaces 'within'; blast presets are worded as upper bounds; the stomp's ground impulse is the leg's momentum plus the drill stamp's extra body share at most at the stamp's leg speed; the single-event plaster limit is 12.7 mm/s up to 40 Hz and 50.8 mm/s above (per pulse); sand prints follow the peak pressure; soft landing absorbs the feet's impact energy (or the whole landing energy if the ground gives); a throw's boom counts his recoil; in soil a jump's ground hazard counts only craters (over 1 MJ); the elephant comparison is a range from firm sand (280 m/s) to loose sand (120 m/s); the Walk chart's threshold labels sit in a gutter (numbered keys on phones); kept slider controls are synced to fresh values; tiny effort shares give only a mass; a person's air drag counts in Catch whatever the switch. Two items are documented limits, not bugs: physics-real-jump-ground-flip, and a single search probe can block for about a second.
+
+Another reviewer (claims lens) reported the findings below. For EACH one, try hard to REFUTE it: reproduce it yourself with your own script or browser run, independently of theirs. Mark real=true only if you reproduced it. Confirm the severity and give the best minimal fix (exact code or text). Default to real=false if you cannot reproduce it.
+
+FINDINGS:
+[
+ {
+  "id": "claims-throw-flight-energy-not-blast",
+  "severity": "major",
+  "title": "Throw presets say even all-out breaks no windows while the air takes megatons from the car in flight; the 'upper bound' label is false",
+  "location": "src/engine.js RESTRAINT.MOVES.throw.blast (counts only a supersonic landing or a fireball at 1% of c); app.html PRESET_WHAT.windows/houses/block and the 'Even all-out, this move doesn't …' note in resolveEffort",
+  "evidence": "Dial 10^15 kg (logKg 15), Throw, car, 45°, concrete, effort 'Break windows across the street'. The page says: 'Even all-out, this move doesn’t break windows 15 m from where it lands, across a street (if all the energy went into the air: an upper bound).' 'Level a block' says: 'doesn’t flatten houses 100 m from where it lands'. The tiles on the same view: 'Energy in the car 5.83 PJ | 1.4 Mt TNT', 'Lands at 46.6 m/s | 350 g TNT on impact', chip 'Air heating: 360 million °C at the nose', 'Rex gets shoved backward at 592 km/s'. The hazard list has no air-blast line at all. claims/t_throw15.js: launch 2,949 km/s (0.98% of c, so not treated as a fireball). Drag loss 1.39 Mt TNT. Rex's recoil carries 126 kt. MOVES.throw.blast returns 0. Fed to the page's own blastRadius, the drag loss gives 6.9 kPa out to 15 km and 26.8 kPa out to 5.9 km. claims/t_throw2.js: at 10^9, 10^12 and 10^15 kg the windows, houses and block presets all come out 'never'. At 10^18 kg (≥1% c) they fire at once. At 10^9 kg the drag loss is already 1.4 t TNT.",
+  "expected": "Air drag turns almost all of the object's kinetic energy into hot, shocked air along its first km. The page's own card rule is that a blast counts when something moves past Mach 1, and here the car does. It should not claim no window damage under an 'upper bound' label. Rex's own Mach-1,700 recoil is also energy dumped into the air.",
+  "fix": "In MOVES.throw.blast, add the flight's drag loss when the launch is supersonic: shock(r.v, r.dragLoss), with the energy placed at the thrower or along the path. Add Rex's recoil energy when recoilV ≥ a0. Failing that, make the 'never' text say: 'the lab counts only the landing; the X t TNT the air takes in flight is not counted.'"
+ },
+ {
+  "id": "claims-no-shake-model-asserted-harmless",
+  "severity": "major",
+  "title": "Sprint, Pull, Punch and Clap claim no ground shaking or rattling, but they have no shaking model, and the Walk tab contradicts them",
+  "location": "engine.js RESTRAINT.MOVES.sprint/pull/punch/clap (no shake); app.html effortReadout 'Hazards checked' text, the 'Courtesy ceiling: none…' line and the preset 'never' text",
+  "evidence": "Sand, default strength, Sprint, preset 'Rattle the windows': 'Even all-out, this move doesn’t rattle windows and ornaments 5 m away, through the ground or the air.' Also: 'Courtesy ceiling: none. Nothing this move does harms anyone 5 m or more away, even all-out.' (top speed 41.7 m/s). Pull on sand, all-out (10 m in 2.27 s), gives the same rattle text. The 'Hazards checked' text lists 'ground shaking that may crack plaster' as checked. On the Walk tab on sand, Rex walking at an ordinary step gives 'Windows and ornaments rattle (1 mm/s): out to 8.48 m'. Stamping steps give 'Plaster may crack (7.6 mm/s): out to 9.32 m' (claims/walk1.txt; claims/t_walk.js: ordinary 1.58 mm/s at 5 m). Running footfalls (2–2.9× weight, the Weight tab's own figure) lie between an ordinary step and a stamp. README Known limits: 'Running steps (Sprint) are not checked for ground shaking.' The page never says this. Punch at 10^12 kg, plaster preset: 'Even all-out, this move doesn’t shake the ground enough that plaster may crack 5 m away' in the same readout as 'could flatten houses 100 m away'. Clap at 10^12 kg: the same text with 250 t TNT released.",
+  "expected": "With no shaking model, the page cannot assert that the move doesn't shake the ground. The Walk tab's own numbers show that a 3-tonne walker on sand rattles windows past 5 m.",
+  "fix": "When MOVES[move].shake is undefined, write 'The lab doesn’t model ground shaking for this move' in the preset never-text, in the 'Hazards checked' list and in the ceiling line, and print the README limit on the page. Better: give Sprint and Pull a step source (walkStep with a running load)."
+ },
+ {
+  "id": "claims-soil-ground-chip-vs-readout",
+  "severity": "major",
+  "title": "In soil, red 'Ground gives' chips sit beside readouts saying the ground doesn't break and nothing is harmed",
+  "location": "app.html bayThrow chip 'Ground gives way under his feet', bayJump gchip 'Ground gives: feet sink …', stomp hole tile; engine MOVES.throw/jump/stomp ground() soil rule",
+  "evidence": "Sand, default strength, Throw (car), least disruptive: chips 'Footing: feet slide, he recoils · Ground gives way under his feet'; readout 'The most he can do with nothing nearby harmed.' With preset 'Break the ground under him' the same chip shows next to 'Even all-out, this move doesn’t break the ground under his feet.' Jump on sand, default: 'Rex jumps 1.13 m high and leaves two deep footprints', chip 'Ground gives: feet sink 68 cm', with 'Even all-out, this move doesn’t break the ground under his feet.' Jump on sand at 10^12 kg, least: chip 'Ground gives: feet sink 68 cm', but the readout says 'past lifting 225 t the ground under his feet gives way'. At 227 t the verdict flips to 'leaves two craters behind' with the same 68 cm sink. Stomp on sand, all-out: 'Hole under his foot 61 cm deep' with 'doesn’t break the ground under his feet'. The soil rule ('only a crater counts') is in the README only. Nothing on the page says it (grep finds none).",
+  "expected": "The chip and the readout should use one definition. In soil, sinking is treated as a footprint and only more than 1 MJ into the ground counts as a crater, so the chips should not say the ground gives way, or the readout should explain the rule.",
+  "fix": "In soil, label the chip 'Feet sink 68 cm (footprints, not broken ground)'. Word the soil hazard and the 'ground' preset as 'he leaves craters (over 1 MJ into the ground)'. Add one line or card sentence stating the soil rule."
+ },
+ {
+  "id": "claims-soft-landing-absorbed-regressed",
+  "severity": "major",
+  "title": "Soft landing still reports the whole landing energy as absorbed, 8× the engine's figure (round 2 fix applied in the engine, not on the page)",
+  "location": "src/app.html line 1413: absorbBlock(L.E, 'Soft landing: the landing’s energy', …); engine landing.absorbed (engine.js ~1238)",
+  "evidence": "Default strength, Jump, least disruptive, Soft landing on, endless ocean: 'Soft landing: the landing’s energy: 88.7 kJ (21 g TNT) absorbed.' The landing tile reads '146 kN | 4.9× his weight for 200 ms; its energy taken back'. claims/t_soft.js: landing.E = 88.9 kJ, but landing.absorbed = 10.85 kJ (ratio 0.094, so the ground holds and only the feet's impact is absorbed). All-out: page 412 kJ vs engine 50.2 kJ. test/presence.js line 191 checks landing.absorbed, but the page never shows it. In the growth modes the 8× overstated energy becomes mass.",
+  "expected": "Round 2 (claims-soft-landing-absorbed-amount) ruled that soft landing absorbs what the landing would put into the ground: the feet's impact, or the whole landing energy if the ground gives.",
+  "fix": "Use L.absorbed and reword the heading: absorbBlock(L.absorbed, 'Soft landing: what the landing would put into the ground', …). Change the tile's 'its energy taken back' to 'the feet’s impact taken back'."
+ },
+ {
+  "id": "claims-wrestle-push-allout-skaters",
+  "severity": "major",
+  "title": "Wrestle (default view): verdict says pushing all-out sends them apart at 14.5 m/s, while the effort box says all-out harms nothing; the 'all-out' speeds also follow the effort slider",
+  "location": "app.html wrestlePush verdict (r.outcome === 'deadlock' && r.allOut) and duoHarm (push returns null)",
+  "evidence": "Default Wrestle tab (Shoving match), default strength: 'Pushing all-out, they’d just shove each other apart like skaters: Rex at 14.5 m/s, Ollie at 14.4 m/s.' Effort box: 'All-out: no cap needed. Nothing the lab checks in this test can do harm here, so they go all-out.' and 'Courtesy ceiling: none. Nothing in this test harms anything nearby, even all-out.' The Shove move with the same 14.5/14.4 m/s says: 'At this effort one of them slides 17.6 m, past the nearest people 5 m away' and sets a 25% ceiling. claims/t_push.js: with a custom effort of 3.5% the verdict still says 'Pushing all-out, … Rex at 2.24 m/s, Ollie at 2.01 m/s' (capped numbers labelled all-out).",
+  "expected": "The page should not say all-out is harmless while its verdict says all-out pushing sends them flying at a speed the Shove move counts as harmful. A sentence labelled 'all-out' should show all-out numbers.",
+  "fix": "Compute the skater line at full strength (bypass duoCap) and word it as a what-if ('If they shoved instead (see Shove), …'). Or have duoHarm('wrestle','push') return the slide when that line is shown."
+ },
+ {
+  "id": "claims-jump-blast-without-boom",
+  "severity": "minor",
+  "title": "Jump: the air blast is counted because the feet pass Mach 1, but the same list says there is no sonic boom",
+  "location": "engine.js MOVES.jump: blast = shock(r.footSpeed, …) but speed = r.v (body) for the boom hazard",
+  "evidence": "Dial 10^12 kg, Jump, concrete, preset 'Break windows across the street' (26,900 t): 'Rex jumps 485 m high and leaves two craters behind', chip 'Ground gives: feet sink 65 cm' (no boom chip). The list reads: 'Sonic boom from 0.031% (lifting 310,000 t); not now.' and 'Air blast loud enough to risk damage at 5 m from lifting 27,000 t; now out to 2.52 km from him.' claims/t_jump2.js: at 26,872 t footSpeed = 340 m/s and body speed = 101 m/s. The boom test is false and the air test true. The boom hazard is defined as 'something he moves, or he himself, breaks the sound barrier'.",
+  "expected": "The lab's rule is that an air blast exists only because something moved past Mach 1, so that same movement is a sonic boom. The two lines contradict each other.",
+  "fix": "Give MOVES.jump boomSpeed: (r) => Math.max(r.v, r.footSpeed || 0), as the stomp does with vFoot."
+ },
+ {
+  "id": "claims-also-list-vs-hazard-list",
+  "severity": "minor",
+  "title": "'At this effort it also …' lists hazards that the hazard list below says are 'not now' (plaster cracking '5 m from the fireball')",
+  "location": "app.html effortReadout: already = presets with x.use <= use (assumes a hazard stays on once it starts)",
+  "evidence": "Unlimited strength, Throw, car, concrete, All-out: 'At this effort it also … shakes the ground enough that plaster may crack 5 m from the fireball; …' The list below says 'Plaster may crack at 5 m from lifting 1,700 t; not now.' The car never lands, so it shakes nothing. The windows, houses and block presets give the same text. Jump at unlimited strength, all-out (chip 'Earth blown apart'): 'At this effort it also … shakes the ground enough that plaster may crack 5 m away' next to 'Plaster may crack at 5 m from lifting 130 t; not now.' (claims/sw_conc_hi.txt). The engine's own search comment says a hazard can turn off again (a thrown object that never lands).",
+  "expected": "The 'also' line should list only effects that happen at the shown effort, consistent with the hazard list.",
+  "fix": "Build the list by testing each PRESETS[i].test(M, p.run(eff.use), p.opt) at the current run instead of comparing onsets."
+ },
+ {
+  "id": "claims-runaway-ratio-below-its-part",
+  "severity": "minor",
+  "title": "Runaway: the loop ratio is printed smaller than its own gravity share, and pure density claims air is pushed back",
+  "location": "app.html growthItems (runaway) using RW.k and RW.kGravNow; engine runawayGrowth",
+  "evidence": "Weight tab, 'Dinosaur-killer impact', Runaway, Pure density: 'each joule absorbed sends back about 2 × 10⁻²¹ J of side effects (pushing the air back and his own gravity pulling him tighter)', then 'Only his own gravity can get there … That is 5 × 10⁻²¹ now'. Sun, pure density: 2 × 10⁻¹⁸ vs 4 × 10⁻¹⁸. Punch with Silent strike at 10^20 kg, pure density: 3 × 10⁻²⁴ vs 4 × 10⁻²⁴. The engine's k is the change in binding energy averaged over the growth. kGravNow is the marginal rate at the final size, about 2× larger at fixed radius. With s = 0 he does not grow, so no air is pushed (kAir = 0).",
+  "expected": "A total that includes the gravity share cannot be smaller than it. The two numbers measure different things and the text doesn't say so.",
+  "fix": "Write 'on average over the growth, each joule sends back …' and 'at his final size the last joule sends back 5 × 10⁻²¹'. Drop 'pushing the air back' when gB.dV = 0."
+ },
+ {
+  "id": "claims-throw-math-cap-full-strength",
+  "severity": "minor",
+  "title": "Throw 'Show the math' says the drive is capped at his full strength when it is capped at the strength he uses (round 2 fix incomplete)",
+  "location": "app.html bayThrow math line: '…, capped at his full strength' (r.hands × share > 1)",
+  "evidence": "Default page, Throw, car, least disruptive: 'Drive: 261 kN (52% of the strength he uses (261 kN) per hand, capped at his full strength, falling with speed per the Hill curve) …'. engine.js line 1093: Fdrive = min(driveStrength(ctx), actionForce × hands). driveStrength = min(F, use) = 261 kN. His full strength is 890 kN (Pull tab bar 'His strength 890 kN').",
+  "expected": "Round 2's fix (claims-math-share-of-dial-under-effort) says the math names the strength he uses. The cap here is 261 kN, not his full strength.",
+  "fix": "Use capped(c) ? ', capped at the strength he uses' : ', capped at his full strength'."
+ },
+ {
+  "id": "claims-stale-cards-plaster-and-duo",
+  "severity": "minor",
+  "title": "Assumption cards and README still describe the hazards from before round 2: plaster 'over 12.7 mm/s' only, and an incomplete two-player hazard list",
+  "location": "src/static-data.js cards 'The courtesy ceiling and the not-so-heroic presets' and 'Two-player effort'; README Known limits",
+  "evidence": "The card says 'ground shaking there over 12.7 mm/s (the US Bureau of Mines safe limit for plaster…)'. The README says 'ground shaking over 12.7 mm/s'. The engine (plasterLimit) uses 50.8 mm/s for pulses above 40 Hz. claims/t_plaster2.js: a thrown shot put sets off 'Plaster may crack' at 50.9 mm/s at 5 m (337 Hz pulse), and a bowling ball at 50.8 mm/s. The 'Two-player effort' card says 'no torn table, no destroyed ball, no sonic boom, no air blast over 134 dB nearby'. duoHarm also counts a body sliding past the nearest people, which sets the default ceiling on Shove and Collide ('Past that, one of them slides 5.18 m, past the nearest people 5 m away'). It also counts the thrower's recoil slide in Catch, the pin cracking the table, a crater or quake, a thrown person past ride limits, and the ground giving under the thrower.",
+  "expected": "The cards should state the rules the page applies: 12.7 mm/s up to 40 Hz and 50.8 mm/s above (RI 8507, verified in thr_usbm_ri8507_safe_levels), and the full two-player hazard list.",
+  "fix": "Update both cards and the README line to state the 40 Hz split and to list the sliding-body and other duo hazards."
+ },
+ {
+  "id": "claims-silent-strike-subsonic-absorb",
+  "severity": "minor",
+  "title": "Silent strike reports absorbing a subsonic punch's whole energy, which by the page's own rule is a thump and heat in his arm, not a blast",
+  "location": "app.html bayPunch/bayClap: absorbBlock(r.E, 'Silent strike: …') whenever the switch is on",
+  "evidence": "Default strength, Punch, least disruptive, Silent strike on: fist 10.4 m/s, chip 'Silent strike: no blast, no boom'. The callout says 'Silent strike: the punch’s energy: 3.58 kJ (860 mg TNT) absorbed.' The list on the same tab says 'Everything the arm put in … is released when the arm stops: below the speed of sound, as a thump and as heat in his arm.' and 'Silent strike absorbs the energy that would hit the air as a blast or a boom.' The Clap at 9.44 m/s gives 'Silent strike takes it back' (5.9 kJ). This is the same overstatement round 2 fixed for Soft landing.",
+  "expected": "Below Mach 1 the lab says no energy goes into a blast or boom, so the switch takes back nothing that would harm the surroundings.",
+  "fix": "Absorb r.E only when r.mach ≥ 1 (else say 'nothing to take back: below Mach 1 it is a thump'). Or widen the switch text to cover the thump and say so."
+ },
+ {
+  "id": "claims-walk-elephant-tile-distance",
+  "severity": "minor",
+  "title": "Walk: under 'Ground shaking at 3 m' the elephant ratio is computed at 20 m, and the sub line implies it was scaled to the listener",
+  "location": "app.html bayWalk: dE = D0 within [5,100] else EL.d; elSub adds ' to <d>' only when dE ≠ 20",
+  "evidence": "Default Walk (3 m, soft-footed, concrete): tiles 'Ground shaking at 3 m | 0.17 mm/s' and 'Compared with an elephant | 8–30× the elephant | estimate: … this puts Rex on firm to loose sand and scales it as 1 ÷ distance'. claims/t_eleph.js: 8.0–33.6× is the ratio at 20 m. At the listener's 3 m the same 1 ÷ distance rule gives 4.5–35×. The sub line names no distance.",
+  "expected": "When the listener is closer than the elephant formula's 5 m floor, the tile should say the comparison is made at 20 m.",
+  "fix": "When dE ≠ D0, append 'compared at 20 m (the elephant law holds from 5 to 100 m)'."
+ },
+ {
+  "id": "claims-walk-verdict-glass-unlabelled",
+  "severity": "minor",
+  "title": "Walk verdict 'Close to what a glass of water shows' states the never-measured glass threshold without its estimate label",
+  "location": "app.html bayWalk: vt += vH >= 0.5 * TH.shimmer ? ' Close to what a glass of water shows.'",
+  "evidence": "Default Walk tab (Rex, 3 m, soft-footed, concrete): 'At 3 m, Rex’s soft-footed steps shake the ground at 0.17 mm/s up and down. Close to what a glass of water shows.' The list on the same view says the glass threshold is 'our estimate from a ripple model, never measured, could be 10× either way'. research ripple_threshold_shimmer status is estimate and ripple_no_measured_threshold is not_quantified. Round 2 labelled the list and the canon sentence but not the verdict.",
+  "expected": "The verdict is the headline, so it should carry the estimate label.",
+  "fix": "'Close to what makes a glass of water ripple, by our estimate (never measured).'"
+ },
+ {
+  "id": "claims-walk-pace-no-effect-unstated",
+  "severity": "minor",
+  "title": "Walk: pace changes nothing in the shaking verdict, chart, list or canon sentence, and the page doesn't say the heel strike is held at preferred-speed values",
+  "location": "engine walkStep/presence (landing pulse from Baines at preferred speed, scaled only by hip height); app.html bayWalk math",
+  "evidence": "Concrete, Rex, 3 m (claims/walk1.txt). Stroll (1.16 m/s), Walk (1.56 m/s) and Fastest walk (2.59 m/s) all give 0.17 mm/s soft-footed, 0.33 mm/s ordinary and 3 mm/s stamping. The reach list and the canon sentence (46% / 43%) are the same at all three. Only the Pace and Load tiles change. claims/t_walk.js: walk/0.5 and fast/0.5 both give 0.24 mm/s at 5 m. step_baines2018_heel_strike measured 0.57 m/s heel speed 'at preferred walking speeds (≈ 1.3 m/s)'. The math line says the cadence fit covers 'Froude 0.09–0.37', but Fastest walk is Froude 0.5.",
+  "expected": "A visitor who picks a faster pace sees identical shaking with no explanation. The page should say the pulse is the preferred-speed measurement held fixed, and that the fastest pace extrapolates beyond the cadence fit.",
+  "fix": "Add a line to the math and the card: 'The landing pulse is the one measured at people’s preferred speed, used at every pace; pace changes only the load and the step rate.' Flag Froude 0.5 as outside the fitted range."
+ },
+ {
+  "id": "claims-ceiling-rounding-mismatch",
+  "severity": "minor",
+  "title": "Effort at the courtesy ceiling is printed above the ceiling it is supposed to sit under (3 figures vs 2)",
+  "location": "app.html effortReadout (amountText for the effort, atText2(onsetOf) for the ceiling) and the 'past X' note (atText(ce.below))",
+  "evidence": "Dial 10^12 kg, Jump, concrete, preset 'Courtesy ceiling': 'Effort: as hard as lifting 134 t. The most he can use before something nearby comes to harm.' and 'Courtesy ceiling: lifting 130 t.' Granite Stomp at 10^12 kg: effort 5,140 t vs ceiling 5,100 t. Throw 'A person', default strength, least: 'past 0.37% (lifting 333 kg) the person is pressed harder…' and on the next line 'Courtesy ceiling: 0.37% (lifting 330 kg).'",
+  "expected": "At the ceiling preset the effort should not read as larger than the ceiling, and one ceiling should not be quoted as two different numbers in adjacent lines.",
+  "fix": "Format the ceiling preset's effort and the 'past X' note with the same rounded onset (atText2(onsetOf(ce))), or show the ceiling to 3 figures."
+ },
+ {
+  "id": "claims-growth-line-without-block",
+  "severity": "minor",
+  "title": "'The courtesy ceiling covers the move itself, not the growth what-if below' shows when nothing is below",
+  "location": "app.html effortReadout line 3027 (condition ignores whether an absorb block renders)",
+  "evidence": "Jump at 10^22 kg, Soft landing on, Gradual growth, All-out: 'Rex leaves at 99.994% of light speed…', readout 'The courtesy ceiling covers the move itself, not the growth what-if below.', and no callout or growth block follows (claims/growsw.txt, CALLOUTS empty) because he never lands (landAbsorb is null).",
+  "expected": "The line should refer only to a growth block that exists.",
+  "fix": "Show the line only when the bay renders an absorb block (for jump: r.landing.landed && r.landing.soft)."
+ },
+ {
+  "id": "claims-stomp-goal-jolt-duration",
+  "severity": "minor",
+  "title": "Stomp goal applies the average person's threshold for a half-second jolt to a jolt about 64 ms long",
+  "location": "app.html GOALS.stomp text and the 'Effort is not strength' card",
+  "evidence": "Stomp, least disruptive: '1 mm/s, what Caltrans calls barely perceptible for one jolt: sensitive people notice it; the average person needs about 3 mm/s for a jolt this short'. research thr_ri8507_duration_dependence_table15 gives 3.3 mm/s for a 0.5 s event and 2.4 mm/s for 1 s, both derived from Wiss & Parmelee's 5 s pulses. The page's own stamp pulse is 64 ms (Walk tab: 'a landing pulse of 6.5× over 64 ms'). The table's trend is that shorter events need more, so the source does not support 'about 3 mm/s' for a jolt this short.",
+  "expected": "The sourced figure covers half-second jolts. For a jolt about 8× shorter, the average threshold is at least that and probably higher.",
+  "fix": "'… the average person needs about 3 mm/s for a half-second jolt, and more for one this short (USBM RI 8507).'"
+ }
+]
