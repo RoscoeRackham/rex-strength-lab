@@ -11,6 +11,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 ## In progress
 
 - Rex lab follow-ups from the owners' answers (collaborator, `terantic/rex-followups`): built and tested; pull request open, waiting for the owner's review. Live page not yet republished (owner's account).
+- Rex lab page brief (collaborator, `terantic/gui-brief`, stacked on `terantic/rex-followups`): `rex-strength-lab/BRIEF-gui.md` written for the owner's agent to build. CLAUDE.md canon: comic-book physics is their default; new "Default powers". Pull request open.
 - Rex lab, restraint and presence (owner's cloud session, `claude/rex-presence`): `rex-strength-lab/BRIEF-presence.md` is built. Pull request #11 (research, the build, review rounds 1 and 2) was merged at `b1916a8`. Pull request #12 (same branch) carries the rest:
   - Round 2's code-lens fixes and its record (`research/reviews/presence-round2.json`).
   - Review round 3 (it checked round 2's fixes): 60 findings, 59 confirmed; all fixed, one partly (documented in the README's known limits). Record: `rex-strength-lab/research/reviews/presence-round3.json`. Among them: three round 2 fixes had not fully held (soft landing's was in the engine but not on the page); a solo throw's recoil slide is now a hazard; the single-event plaster level follows RI 8507 Figure B-1; the 1 MJ crater line in soil is labelled as our estimate.
@@ -21,6 +22,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 ## Waiting on
 
 - Owner: review the Rex lab follow-ups pull request (`terantic/rex-followups`), then republish the live page. Please confirm two rulings the collaborator relayed and recorded in `CLAUDE.md`: growth never bounces them up (the lift goes to the endless ocean, an exception to "momentum is never absorbed"), and the energy their gravity releases goes to the endless ocean. With these, the runaway loop is a round trip and the half-life control never acts; say whether to keep that control.
+- Owner: build `rex-strength-lab/BRIEF-gui.md` (three pull requests in the order it gives: page organisation, the new powers, the energy comparisons). Confirm power 5d (they take their own recoil) first; it is marked "owner to confirm" in CLAUDE.md. The collaborator releases the claim on `rex-strength-lab/` once the follow-ups and brief pull requests merge; claim it then.
 - Owner, optional: the moves' quick-load bearing for sand (37 kPa at 0.316 m, the textbook value) sits about 5–10× below what the elephant's sand bore. Raising it would change all-out results across the moves; left unchanged (README, known limits).
 - Owner review of Build Comparison design decisions listed in `build-comparison/data/NOTES.md` ("Design decisions to review"): the edge marking, the palette change, the stop edges, Thor's and the Thing's treatment, the group colours' contrast, and figures drawn with their arms at their rest angle. (The meatball sentence is now reworded in the brief.)
 - Step 2 (collaborator): regenerate Rex's and Ollie's turnarounds to the model-sheet spec (fixes listed in BRIEF.md, "The turnarounds") and measure them; make gap-filler figures from target outlines with GPT Images 2.5.
@@ -29,6 +31,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## Done
 
+- 2026-10-12: Rex lab page brief written (`BRIEF-gui.md`, `terantic/gui-brief`): one "Their powers" banner, sidebar order, binary footing, Rex + Ollie as its own element, four default powers (agreed with the owner, recoil to confirm), more energy comparisons (research first), corrections.
 - 2026-10-12: Rex lab follow-ups built (`terantic/rex-followups`): instant growth about his middle, never thrown up; the runaway as a round trip; heel-first gait canon; the Weight tab's standing sink rule replaced (elephant print 18 mm at 350 kPa, against 0.23 m before). Tests: calibration, presence (382 checks), shots, sweep.
 - 2026-10-12: the presence build's four open questions answered (instant growth about the middle; runaway side effects paid from absorbed energy; heel-first gait; revise the sinking rule). Canon in `CLAUDE.md`; the Rex lab changes are listed under Waiting on.
 - 2026-10-11: Rex lab presence build merged (pull request #11 at `b1916a8`, merged by the collaborator): effort and the courtesy ceiling, not-so-heroic presets, the Walk tab, comic switches, absorption and growth, research (268 facts), review rounds 1 and 2.
