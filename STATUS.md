@@ -6,10 +6,11 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 | Folder or file | Who | Branch | Since |
 |---|---|---|---|
-| `rex-strength-lab/` (all of it), root `README.md` (Rex lab row only), `.github/workflows/test.yml` (Rex lab steps only), `CLAUDE.md` (the Rex lab build line only), `history/2026-10-11-rex-presence/` (new), `history/tools/build_history_presence.py` (new) | Owner (cloud session) | `claude/rex-presence` | 2026-10-11 |
+| `rex-strength-lab/` (all of it), root `README.md` (Rex lab row only), `history/` (a new entry for this session, if it runs long) | Collaborator | `terantic/rex-followups` | 2026-10-12 |
 
 ## In progress
 
+- Rex lab follow-ups from the owners' answers (collaborator, `terantic/rex-followups`): growth about the middle, runaway paid from absorbed energy, heel-first gait, a revised sinking rule for standing. Plan first, then build, tests, README.
 - Rex lab, restraint and presence (owner's cloud session, `claude/rex-presence`): `rex-strength-lab/BRIEF-presence.md` is built. Pull request #11 (research, the build, review rounds 1 and 2) was merged at `b1916a8`. Pull request #12 (same branch) carries the rest:
   - Round 2's code-lens fixes and its record (`research/reviews/presence-round2.json`).
   - Review round 3 (it checked round 2's fixes): 60 findings, 59 confirmed; all fixed, one partly (documented in the README's known limits). Record: `rex-strength-lab/research/reviews/presence-round3.json`. Among them: three round 2 fixes had not fully held (soft landing's was in the engine but not on the page); a solo throw's recoil slide is now a hazard; the single-event plaster level follows RI 8507 Figure B-1; the 1 MJ crater line in soil is labelled as our estimate.
