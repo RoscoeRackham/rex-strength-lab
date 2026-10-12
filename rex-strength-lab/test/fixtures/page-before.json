@@ -1,0 +1,214 @@
+{
+ "note": "Written by test/make-page-fixture.js from main's build before the page reorganisation (BRIEF-gui.md sections 1-4).",
+ "cases": [
+  {
+   "id": "s1-weight",
+   "tab": "weight",
+   "state": {
+    "mode": "real",
+    "anchor": "bolted",
+    "oAnchor": "bolted"
+   }
+  },
+  {
+   "id": "s1-jump",
+   "tab": "jump",
+   "state": {
+    "mode": "real",
+    "anchor": "bolted",
+    "oAnchor": "bolted"
+   }
+  },
+  {
+   "id": "s1-collide",
+   "tab": "collide",
+   "state": {
+    "mode": "real",
+    "anchor": "bolted",
+    "oAnchor": "bolted"
+   }
+  },
+  {
+   "id": "s3-collide-friction-friction",
+   "tab": "collide",
+   "state": {
+    "anchor": "friction",
+    "oAnchor": "friction"
+   }
+  },
+  {
+   "id": "s3-collide-friction-bolted",
+   "tab": "collide",
+   "state": {
+    "anchor": "friction",
+    "oAnchor": "bolted"
+   }
+  },
+  {
+   "id": "s3-collide-bolted-friction",
+   "tab": "collide",
+   "state": {
+    "anchor": "bolted",
+    "oAnchor": "friction"
+   }
+  },
+  {
+   "id": "s3-collide-bolted-bolted",
+   "tab": "collide",
+   "state": {
+    "anchor": "bolted",
+    "oAnchor": "bolted"
+   }
+  },
+  {
+   "id": "s3-wrestle-friction-friction",
+   "tab": "wrestle",
+   "state": {
+    "anchor": "friction",
+    "oAnchor": "friction"
+   }
+  },
+  {
+   "id": "s3-wrestle-friction-bolted",
+   "tab": "wrestle",
+   "state": {
+    "anchor": "friction",
+    "oAnchor": "bolted"
+   }
+  },
+  {
+   "id": "s3-wrestle-bolted-friction",
+   "tab": "wrestle",
+   "state": {
+    "anchor": "bolted",
+    "oAnchor": "friction"
+   }
+  },
+  {
+   "id": "s3-wrestle-bolted-bolted",
+   "tab": "wrestle",
+   "state": {
+    "anchor": "bolted",
+    "oAnchor": "bolted"
+   }
+  },
+  {
+   "id": "s4-catch",
+   "tab": "catch",
+   "state": {
+    "group": "duo",
+    "duoAction": "catch"
+   }
+  }
+ ],
+ "results": {
+  "s1-weight": {
+   "verdict": "Rex stands fine.",
+   "status": [
+    "Ground holds (1.9% of limit)Can walk and runJumps 5.72 m"
+   ],
+   "tiles": [
+    "Mass3.01 t1.3× Ford F-150 pickupWeight29.5 kNstrength is 30.2× his weightPressure under his feet47.6 kPaground limit 2.5 MPaGravity at his skin2.7 × 10⁻⁸ gas a ball of his volume, 88 cm radiusEscape speed from him0.000676 m/sEarth’s: 11.2 km/sHis pull beats Earth’s withinnowhere outside himit would take 0.14 mm from his middle"
+   ]
+  },
+  "s1-jump": {
+   "verdict": "Rex jumps 3 m high.",
+   "status": [
+    "Ground holds (31% of limit)"
+   ],
+   "tiles": [
+    "Takeoff speed7.68 m/sPeak height3 mHang time1.56 sComes back down at7.68 m/ssea-level terminal speed 263 m/sLanding on the ground146 kN4.9× his weight for 200 ms"
+   ]
+  },
+  "s1-collide": {
+   "verdict": "Rex doesn’t budge. Ollie stops dead against him, and the blow goes through his bolts into the planet.",
+   "status": [
+    "Charge: 25.2 m/s (his sprint after a 28.7 m run-up)Bolted: Earth takes the blowRock cracks 24 cm around his boltsNo noticeable quake"
+   ],
+   "tiles": [
+    "Charge speed25.2 m/shis sprint after a 28.7 m run-upEnergy freed at the hit957 kJ230 g TNT · 1.9× a Corolla at 100 km/hRex movesnot at allboltedForce of the hit3.04 MNover 25 ms (plush squash, estimate)Earth’s speed change1.3 × 10⁻²⁰ m/sit would take 2.5 billion years to move 1 mm"
+   ]
+  },
+  "s3-collide-friction-friction": {
+   "verdict": "Ollie hits Rex at 15.2 m/s. Rex is knocked back at 7.48 m/s and the two slide 4.9 m before they stop.",
+   "status": [
+    "Charge: 15.2 m/s (his sprint after a 28.7 m run-up)Rex gives: holds 17.7 kN, needs 1.1 MN"
+   ],
+   "tiles": [
+    "Charge speed15.2 m/shis sprint after a 28.7 m run-upEnergy freed at the hit177 kJ42 g TNT · 1,100× the fastest pitch on recordRex knocked back at7.48 m/smoves 4.9 m in allForce of the hit561 kNover 41 ms (plush squash, estimate)"
+   ]
+  },
+  "s3-collide-friction-bolted": {
+   "verdict": "Ollie hits Rex at 15.2 m/s. Rex is knocked back at 7.48 m/s and the two slide 4.9 m before they stop.",
+   "status": [
+    "Charge: 15.2 m/s (his sprint after a 28.7 m run-up)Rex gives: holds 17.7 kN, needs 1.1 MN"
+   ],
+   "tiles": [
+    "Charge speed15.2 m/shis sprint after a 28.7 m run-upEnergy freed at the hit177 kJ42 g TNT · 1,100× the fastest pitch on recordRex knocked back at7.48 m/smoves 4.9 m in allForce of the hit561 kNover 41 ms (plush squash, estimate)"
+   ]
+  },
+  "s3-collide-bolted-friction": {
+   "verdict": "Rex doesn’t budge. Ollie stops dead against him, and the blow goes through his bolts into the planet.",
+   "status": [
+    "Charge: 18.1 m/s (his sprint after a 28.7 m run-up)Bolted: Earth takes the blowRock cracks 17 cm around his boltsNo noticeable quake"
+   ],
+   "tiles": [
+    "Charge speed18.1 m/shis sprint after a 28.7 m run-up (his top speed, 61.1 m/s, takes about 1.27 km)Energy freed at the hit495 kJ120 g TNT · 3,000× the fastest pitch on recordRex movesnot at allboltedForce of the hit1.57 MNover 35 ms (plush squash, estimate)Earth’s speed change9.1 × 10⁻²¹ m/sit would take 3.5 billion years to move 1 mm"
+   ]
+  },
+  "s3-collide-bolted-bolted": {
+   "verdict": "Rex doesn’t budge. Ollie stops dead against him, and the blow goes through his bolts into the planet.",
+   "status": [
+    "Charge: 25.2 m/s (his sprint after a 28.7 m run-up)Bolted: Earth takes the blowRock cracks 24 cm around his boltsNo noticeable quake"
+   ],
+   "tiles": [
+    "Charge speed25.2 m/shis sprint after a 28.7 m run-upEnergy freed at the hit957 kJ230 g TNT · 1.9× a Corolla at 100 km/hRex movesnot at allboltedForce of the hit3.04 MNover 25 ms (plush squash, estimate)Earth’s speed change1.3 × 10⁻²⁰ m/sit would take 2.5 billion years to move 1 mm"
+   ]
+  },
+  "s3-wrestle-friction-friction": {
+   "verdict": "Pushing straight across: dead heat. Both are far stronger than their footing (each holds only 17.7 kN), so strength stops mattering. If they shoved instead, all-out (see Shove, where the courtesy ceiling keeps it gentle), they’d fly apart like skaters: Rex at 14.5 m/s, Ollie at 14.4 m/s.",
+   "status": [
+    "Rex holds 17.7 kN · drives 17.7 kNOllie holds 17.7 kN · drives 17.7 kN"
+   ],
+   "tiles": [
+    "WinnernobodystalematePush between them17.7 kNthe same both ways"
+   ]
+  },
+  "s3-wrestle-friction-bolted": {
+   "verdict": "Pushing straight across: ollie can’t be moved, and being bolted he can’t walk Rex out either. Stalemate (he can still shove him: see Shove).",
+   "status": [
+    "Rex holds 17.7 kN · drives 17.7 kNOllie holds unlimited · drives 0 N"
+   ],
+   "tiles": [
+    "WinnernobodystalematePush between them17.7 kNthe same both ways"
+   ]
+  },
+  "s3-wrestle-bolted-friction": {
+   "verdict": "Pushing straight across: rex can’t be moved, and being bolted he can’t walk Ollie out either. Stalemate (he can still shove him: see Shove).",
+   "status": [
+    "Rex holds unlimited · drives 0 NOllie holds 17.7 kN · drives 17.7 kN"
+   ],
+   "tiles": [
+    "WinnernobodystalematePush between them17.7 kNthe same both ways"
+   ]
+  },
+  "s3-wrestle-bolted-bolted": {
+   "verdict": "Neither moves: both are bolted to the planet. They press with 890 kN, and that stretches the ground between their feet: it tears up around the bolts (1.3× its limit).",
+   "status": [
+    "Rex holds unlimited · drives 0 NOllie holds unlimited · drives 0 NGround tears around the bolts"
+   ],
+   "tiles": [
+    "WinnernobodystalematePush between them890 kNthe same both ways"
+   ]
+  },
+  "s4-catch": {
+   "verdict": "Rex lobs the baseball at 8.62 m/s. It reaches Ollie 1.22 s later at 8.32 m/s. It hits his waiting hands with 65.9 N to 165 N, and his arms bring it in over 91 cm. One round trip takes about 3.99 s (the throws and flights).",
+   "status": [
+    "Gentle lob: 8.62 m/sHis arms then stop it: a sliver of his strengthFeet hold"
+   ],
+   "tiles": [
+    "Throw8.62 m/s44° up · gentle lobFlight1.22 stop 4.56 mArrives at8.32 m/s45° downHits his palms with65.9 N to 165 Nfirst contact, over in 7.3 ms to 18 ms · 46 g or more on the baseballOllie slidesnothingfeet hold up to 64.4 kNRound tripabout 3.99 sthrows and flights"
+   ]
+  }
+ }
+}

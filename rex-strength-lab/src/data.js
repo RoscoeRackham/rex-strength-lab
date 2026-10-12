@@ -1176,8 +1176,8 @@ window.DINO_DATA = {
    "d": "In sand and gravel, footprint depth is scaled from the one large-animal print we found measured: a weighed 2,530 kg African elephant cow left forefoot prints 20–26 mm deep in loose-to-medium sand (Schanz et al. 2013). The lab anchors on the authors’ calibrated model of that sand (18 mm at 350 kPa), with depth rising as pressure to the power 1.27 and in proportion to foot width. The pressure is the step’s landing peak, as in the elephant’s print; the rule was fitted from 99 to 350 kPa, so a stamp that presses harder is extrapolated (the page says so). Loose sand is taken as that sand; gravel, which bears more, gets shallower prints in proportion. In clay a foot sinks until the clay’s bearing, which grows a little with depth, carries the step. Paving, slabs, ice, steel and rock show no print until they break. Standing still (the Weight tab) uses the same rules at his standing pressure. In sand and gravel, his feet plunge in deeper only past the pressure the elephant’s sand bore with that shallow print (350 kPa under a foot its width by the researchers’ model, 181 kPa by force-plate data; we use 350 kPa, scaled with foot width and more for gravel: an estimate); from there the sand’s bearing grows with depth (USACE EM 1110-1-1905). All estimates."
   },
   {
-   "t": "Comic switches",
-   "d": "Each switch suspends one piece of real physics and is labelled wherever its effect shows. Gentle hold and safe passenger spread his push through the whole object or person in proportion to its mass, as gravity does, so his hands put no stress on it (a body pushed that way has no internal stress: Cauchy’s equation of motion). They don’t touch the ground under him, his recoil, the air or the landing. The absorbed switches (silent strike, soft landing, cool flight) take back the energy that would harm the surroundings. Momentum is never absorbed: it still goes into him, through his feet and into the ground. There is no “no recoil” switch."
+   "t": "Their powers",
+   "d": "All of their powers are their absorption at work, used on purpose. Each switch suspends one piece of real physics and is labelled wherever its effect shows. Gentle hold and safe passenger spread his push through the whole object or person in proportion to its mass, as gravity does, so his hands put no stress on it (a body pushed that way has no internal stress: Cauchy’s equation of motion). They don’t touch the ground under him, his recoil, the air or the landing. The absorbed switches (silent strike, soft landing, cool flight) take back the energy that would harm the surroundings. Momentum is never absorbed: it still goes into him, through his feet and into the ground. There is no “no recoil” switch."
   },
   {
    "t": "Absorbed energy and growth",
@@ -1197,7 +1197,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Newton’s third law stays on",
-   "d": "Every push pushes him back. He stays put only as far as friction, the ground’s bearing strength, or dug-in claws allow. “Bolted to the planet” and “Comic ground” switch those limits off."
+   "d": "Every push pushes him back. He stays put only as far as friction and the ground’s bearing strength allow. “Bolted to the planet” and “Comic ground” switch those limits off."
   },
   {
    "t": "Two muscle models, one calibration",
@@ -1241,7 +1241,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Rex and Ollie",
-   "d": "Ollie is as strong, tough and big as Rex unless his own settings say otherwise: by default 10 ft and 3,007 kg, the same weight as Rex in all (his own tail is only about 11 kg, so more of it is body). He wears boots, so his boots get the same grip as Rex’s feet; “dug in” for him means boots kicked into footholds. Nothing else about him is invented. The push between them is the same both ways. When they shove or wrestle, it goes through each body to his feet, so neither can use more force than his feet hold. Arm wrestling uses 25% of each one’s strength at the hands (an estimate; plausibly 10–40%). A regulation table, scaled to their size, carries the push between them until its pegs and pads tear out (about 5 kN at regulation size, an estimate). After that only their feet hold. Standing up, an arm folds only if the other presses harder than it; if not, the loser’s feet slide and he is dragged. A shove uses the throw’s two-handed push; afterwards they slide upright, where real bodies would tumble. Their own gravity is G m₁ m₂ / d², good to about a factor of 2 for tall bodies close together."
+   "d": "Ollie is as strong, tough and big as Rex unless his own settings say otherwise: by default 10 ft and 3,007 kg, the same weight as Rex in all (his own tail is only about 11 kg, so more of it is body). He wears boots, so his boots get the same grip as Rex’s feet. Nothing else about him is invented. The push between them is the same both ways. When they shove or wrestle, it goes through each body to his feet, so neither can use more force than his feet hold. Arm wrestling uses 25% of each one’s strength at the hands (an estimate; plausibly 10–40%). A regulation table, scaled to their size, carries the push between them until its pegs and pads tear out (about 5 kN at regulation size, an estimate). After that only their feet hold. Standing up, an arm folds only if the other presses harder than it; if not, the loser’s feet slide and he is dragged. A shove uses the throw’s two-handed push; afterwards they slide upright, where real bodies would tumble. Their own gravity is G m₁ m₂ / d², good to about a factor of 2 for tall bodies close together."
   },
   {
    "t": "Game of catch",
@@ -1702,7 +1702,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Claw shear strength used when “dug in”",
+   "label": "Ground shear strength (where the ground tears out around bolted feet)",
    "value": "sand 1 kPa · gravel 3 kPa (no cohesion: passive resistance only) · clays = undrained strength · asphalt 0.7 MPa · concrete 1.5 MPa · ice 1 MPa · steel 144 MPa · granite 36 MPa",
    "status": "estimate",
    "sources": [
@@ -3100,7 +3100,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Body shape and air (assumed)",
-   "value": "Areas scale with height², lengths with height. Drag Cd 1.0. Facing area from the build: 4.4 m² for the default 10 ft Rex (tail trailing), 4.5 m² for Ollie, 0.8 m² for the 2 m calibration body. Head-first when jumping or launched by a stomp: 0.3 m² at 2 m (0.7 m² at 10 ft). Claw dig area when braced: 0.2 m² at 2 m, 0.46 m² at 10 ft (a quarter of that per stride when sprinting). Release height 0.9 × height; each sprint stride puts about 2.5× his weight on one foot. Overarm whip: effective mass at the hand 0.3% of body mass, fitted with the whip speed to the 47.3 m/s pitch; that is smaller than Dempster’s hand alone (0.6%) and is not a measured segment.",
+   "value": "Areas scale with height², lengths with height. Drag Cd 1.0. Facing area from the build: 4.4 m² for the default 10 ft Rex (tail trailing), 4.5 m² for Ollie, 0.8 m² for the 2 m calibration body. Head-first when jumping or launched by a stomp: 0.3 m² at 2 m (0.7 m² at 10 ft). Ground gripped by bolted feet (where it tears out): 0.2 m² at 2 m, 0.46 m² at 10 ft. Release height 0.9 × height; each sprint stride puts about 2.5× his weight on one foot. Overarm whip: effective mass at the hand 0.3% of body mass, fitted with the whip speed to the 47.3 m/s pitch; that is smaller than Dempster’s hand alone (0.6%) and is not a measured segment.",
    "status": "estimate",
    "sources": [],
    "note": null
@@ -3967,7 +3967,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Arm wrestling and wrestling: Ollie's grip on the ground (boots, no claws)",
-   "value": "Same traction as Rex's feet on each surface. 'Dug in' for Ollie means boots kicked into footholds, given the same buried area as Rex's claws (0.2 × (height / 2 m)² m²: 0.46 m² at the default 10 ft).",
+   "value": "Same traction as Rex's feet on each surface. Bolted, the ground his boots grip tears out over the same area as Rex's (0.2 × (height / 2 m)² m²: 0.46 m² at the default 10 ft).",
    "status": "estimate",
    "sources": [],
    "note": null
