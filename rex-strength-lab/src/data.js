@@ -1197,7 +1197,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Newton’s third law stays on",
-   "d": "Every push pushes him back. He stays put only as far as friction and the ground’s bearing strength allow. “Bolted to the planet” stops a push sliding his planted feet, whatever the friction; what else it changes depends on the move, and each tab says so (weak ground can still give way under him; in some two-player tests the ground around his feet can tear out, unless Comic ground is on, and a very fast hit can be over before the bolts help). “Comic ground” keeps the floor whole (no sinking, no tear-out) but adds no grip, so friction still caps his footing when he isn’t bolted."
+   "d": "Every push pushes him back. He stays put only as far as friction and the ground’s bearing strength allow. “Bolted to the planet” stops a push sliding his planted feet, whatever the friction; what else it changes depends on the move, and each tab says so (weak ground can still give way under him; in some two-player tests the ground around his feet can tear out, and a very fast hit can be over before the bolts help). “Comic ground” keeps the floor whole (no sinking, no tear-out, and no hit too fast for the bolts) but adds no grip, so friction still caps his footing when he isn’t bolted."
   },
   {
    "t": "Two muscle models, one calibration",
@@ -1702,8 +1702,8 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Ground shear strength (where the ground tears out around bolted feet)",
-   "value": "sand 1 kPa · gravel 3 kPa (no cohesion: passive resistance only) · clays = undrained strength · asphalt 0.7 MPa · concrete 1.5 MPa · ice 1 MPa · steel 144 MPa · granite 36 MPa",
+   "label": "Ground shear strength (how far feet sink in clay; where the ground tears out around bolted feet)",
+   "value": "sand 1 kPa · gravel 3 kPa (no cohesion: passive resistance only) · soft clay 20 kPa · stiff clay 75 kPa (undrained strength) · asphalt 0.7 MPa · concrete 1.5 MPa · ice 1 MPa · steel 144 MPa · granite 36 MPa",
    "status": "estimate",
    "sources": [
     {

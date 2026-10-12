@@ -126,7 +126,7 @@ surfaces = [
 for s in surfaces:
     row('Ground limit: ' + s['name'], fact(s['k_q'])['display'], [s['k_q']])
     row('Grip (friction): ' + s['name'], 'μ ≈ ' + str(s['mu']) + ' (' + fact(s['k_mu'])['display'] + ')', [s['k_mu']])
-row('Ground shear strength (where the ground tears out around bolted feet)', 'sand 1 kPa · gravel 3 kPa (no cohesion: passive resistance only) · clays = undrained strength · asphalt 0.7 MPa · concrete 1.5 MPa · ice 1 MPa · steel 144 MPa · granite 36 MPa',
+row('Ground shear strength (how far feet sink in clay; where the ground tears out around bolted feet)', 'sand 1 kPa · gravel 3 kPa (no cohesion: passive resistance only) · soft clay 20 kPa · stiff clay 75 kPa (undrained strength) · asphalt 0.7 MPa · concrete 1.5 MPa · ice 1 MPa · steel 144 MPa · granite 36 MPa',
     ['ground_soft_clay_undrained_shear_strength', 'ground_granite_intact_cohesion_estimate', 'ground_steel_shear_yield', 'ground_concrete_punching_shear_stress_aci'], st='estimate')
 
 # ----------------------------------------------------------------------------- objects

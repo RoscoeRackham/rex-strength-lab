@@ -73,6 +73,8 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     }, SIDEBAR);
     if (side.pos.some((p) => p < 0) || side.pos.some((p, i) => i && p <= side.pos[i - 1])) texts.push('sidebar order ' + JSON.stringify(side.pos));
     if (w >= 920 && !side.setupOpen) texts.push('Size and density is closed on first load at ' + w + ' px');
+    const groundOk = await page.evaluate(() => { const s = document.getElementById('surface'); return !!s && document.getElementById('ground-sec').contains(s) && !document.getElementById('setup').contains(s) && !document.getElementById('powers').contains(s); });
+    if (!groundOk) texts.push('the Ground menu is not in the Ground section');
     const placed = await page.evaluate((ids) => ids.filter((id) => { const n = document.getElementById(id); return !n || !document.getElementById('powers').contains(n) || document.getElementById('setup').contains(n) || document.getElementById('ollie-setup').contains(n); }), IN_POWERS);
     if (placed.length) texts.push('not in Their powers (or also elsewhere): ' + placed.join(', '));
     const gone = await page.evaluate(() => ['anchor', 'o-anchor', 'grp-solo', 'grp-duo', 'comic-setup'].filter((id) => document.getElementById(id)));
@@ -119,11 +121,11 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
         // brings Their powers into view next to the Rex + Ollie element, then hides
         await page.evaluate(() => { document.querySelector('.panel-controls').scrollTop = 0; window.scrollTo(0, document.getElementById('duo-bay').getBoundingClientRect().top + window.scrollY - 20); });
         await page.waitForTimeout(300);
-        const cue = await page.evaluate(() => { const c = document.getElementById('more-below'), r = c.getBoundingClientRect(); return { shown: !c.hidden && r.height > 0 && r.top >= 0 && r.bottom <= innerHeight, text: c.textContent }; });
+        const cue = await page.evaluate(() => { const c = document.getElementById('more-below'), r = c.getBoundingClientRect(); return { shown: !document.getElementById('more-wrap').hidden && r.height > 0 && r.top >= 0 && r.bottom <= innerHeight, text: c.textContent }; });
         if (!cue.shown || !/Their powers/.test(cue.text)) texts.push('sidebar cue ' + JSON.stringify(cue));
         if (cue.shown) await page.click('#more-below'); else await page.evaluate(() => { const a = document.querySelector('.panel-controls'); a.scrollTop = a.scrollHeight; });
         await page.waitForTimeout(900);
-        const reach = await page.evaluate(() => { const r = document.querySelector('#powers > summary').getBoundingClientRect(), b = document.getElementById('duo-bay').getBoundingClientRect(); return { top: r.top, bottom: r.bottom, vh: innerHeight, bayTop: b.top, cueHidden: document.getElementById('more-below').hidden }; });
+        const reach = await page.evaluate(() => { const r = document.querySelector('#powers > summary').getBoundingClientRect(), b = document.getElementById('duo-bay').getBoundingClientRect(); return { top: r.top, bottom: r.bottom, vh: innerHeight, bayTop: b.top, cueHidden: document.getElementById('more-wrap').hidden }; });
         if (reach.top < 0 || reach.bottom > reach.vh || reach.bayTop > reach.vh || !reach.cueHidden) texts.push('Their powers out of reach while reading the Rex + Ollie element ' + JSON.stringify(reach));
         await page.evaluate(() => window.scrollTo(0, 0));
         // and the mouse wheel over the sidebar still scrolls the page once the sidebar is at its end
@@ -228,9 +230,9 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     await page.evaluate(() => { const d = document.querySelector('#duo-bay details.effort-adjust'); if (d) d.open = true; });
     await page.focus('#duo-near'); await page.keyboard.press('Control+A'); await page.keyboard.type('50');
     await page.setViewportSize({ width: 1000, height: 900 }); await page.waitForTimeout(800); await settle(page, 'bay');
-    const afterResize = await page.evaluate(() => !!document.querySelector('#bay .effort-read'));
+    const afterResize = await page.evaluate(() => ({ rex: !!document.querySelector('#bay .effort-read'), near: JSON.parse(localStorage.getItem('rex-lab-v1')).near }));
     await page.setViewportSize({ width: 1280, height: 900 });
-    if (!afterResize) fail('a resize with a typed distance in the Rex + Ollie element drew Rex’s bay without its effort box'); else okLog('a resize with a typed distance in the element leaves Rex’s bay as his');
+    if (!afterResize.rex || afterResize.near !== 50) fail('a resize with a typed distance in the Rex + Ollie element: ' + JSON.stringify(afterResize)); else okLog('a resize with a typed distance in the element: the distance is taken and Rex’s bay stays his');
     // the element announces its verdict again on reopening, even when closed right after a redraw
     await load({ duoOpen: true, duoAction: 'arm' }); await duoResult();
     await page.evaluate(() => { window.__live = []; new MutationObserver(() => window.__live.push(document.getElementById('duo-live').textContent)).observe(document.getElementById('duo-live'), { childList: true, characterData: true, subtree: true }); });
@@ -271,7 +273,8 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       await pg.goto(pathToFileURL(prev).href);
       await pg.evaluate(() => localStorage.setItem('rex-lab-v1', JSON.stringify({ duoOpen: true, duoAction: 'arm' })));
       await pg.reload(); await pg.waitForTimeout(4000);
-      const r = await pg.evaluate(() => ({ busyAt: window.__busyAt, atClose: window.__atClose, calls: window.__duoCalls, open: document.getElementById('duo').open, working: /working it out/i.test(document.getElementById('duo-bay').textContent), effort: /Effort: [\d.]+%/.test(document.getElementById('duo-bay').textContent), rex: !!document.querySelector('#bay .verdict') }));
+      const r = await pg.evaluate(() => ({ busyAt: window.__busyAt, atClose: window.__atClose, calls: window.__duoCalls, open: document.getElementById('duo').open, working: /working it out/i.test(document.getElementById('duo-bay').textContent), effort: /Effort: [\d.]+%/.test(document.getElementById('duo-bay').textContent), rex: !!document.querySelector('#bay .verdict'),
+        effortText: ((document.querySelector('#duo-bay .effort-read') || {}).textContent || '').replace(/\s+/g, ' ').trim(), verdict: ((document.querySelector('#duo-bay .verdict') || {}).textContent || '').replace(/\s+/g, ' ').trim() }));
       await pg.close();
       return r;
     };
@@ -283,6 +286,40 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     else okLog('a Rex tab clicked during the two-player search leaves it to finish (' + rexTab.calls + ' calls, the effort shown)');
     if (rexWeight.busyAt == null || rexWeight.working || !rexWeight.effort || rexWeight.calls !== left.calls) fail('Rex’s Weight tab (no effort) clicked mid-search: ' + JSON.stringify(rexWeight));
     else okLog('Rex’s Weight tab (no effort search) clicked during the two-player search leaves it to finish too');
+    // a search finished in the background settles where main's page did (its probes are two-player runs)
+    const want = BEFORE['s4-arm'], bgBad = [['left open', left], ['Rex tab', rexTab], ['Weight tab', rexWeight]].filter(([, r]) => r.verdict !== want.verdict || r.effortText !== want.effort[0]);
+    if (bgBad.length) fail('a background two-player search settled elsewhere than main: ' + bgBad.map(([n, r]) => n + ': ' + r.effortText.slice(0, 80) + ' | ' + r.verdict).join(' ; ') + ' (main: ' + want.effort[0].slice(0, 80) + ' | ' + want.verdict + ')');
+    else okLog('a background two-player search settles on main’s effort and result (' + want.effort[0].slice(0, 40) + '…)');
+    // the sidebar cue on wide screens: keyboard focus never lands under it; it hides once everything fits; it names
+    // Ground when Ground's heading is under it; it keeps an opaque backdrop in forced-colours mode
+    const cuePage = async (vw, vh, opts) => { const pg = await browser.newPage(Object.assign({ viewport: { width: vw, height: vh } }, opts || {})); await pg.goto(pathToFileURL(prev).href); await pg.evaluate(() => localStorage.clear()); await pg.reload(); await pg.waitForTimeout(1500); return pg; };
+    for (const [vw, vh] of [[1366, 768], [1280, 720]]) {
+      const pg = await cuePage(vw, vh);
+      const under = [];
+      for (let i = 0; i < 60; i++) {
+        await pg.keyboard.press('Tab');
+        // what the reader sees after the next paint (the cue updates on the scroll that focusing causes)
+        await pg.evaluate(() => new Promise((res) => requestAnimationFrame(() => requestAnimationFrame(res))));
+        const r = await pg.evaluate(() => { const a = document.activeElement, aside = document.querySelector('.panel-controls'); if (!a || !aside.contains(a)) return { inside: false }; const b = a.getBoundingClientRect(), hit = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2); return { inside: true, id: a.id || a.tagName, covered: !!hit && !!hit.closest('#more-wrap') }; });
+        if (r.inside && r.covered) under.push(r.id);
+        if (!r.inside && i > 20) break;
+      }
+      if (under.length) fail('at ' + vw + 'x' + vh + ' the sidebar cue covers focused controls: ' + under.join(', ')); else okLog('at ' + vw + 'x' + vh + ' no focused sidebar control sits under the cue');
+      await pg.close();
+    }
+    { const pg = await cuePage(1280, 700); await pg.evaluate(() => window.scrollTo(0, 400)); await pg.waitForTimeout(200);
+      await pg.click('#setup > summary'); await pg.waitForTimeout(400);
+      const r = await pg.evaluate(() => ({ hidden: document.getElementById('more-wrap').hidden, fits: document.querySelector('.panel-controls').scrollHeight <= document.querySelector('.panel-controls').clientHeight + 4 }));
+      if (r.fits && !r.hidden) fail('at 1280x700 the cue stays after everything fits'); else okLog('at 1280x700 the cue hides once the sidebar fits (' + JSON.stringify(r) + ')');
+      await pg.close(); }
+    { const pg = await cuePage(1920, 1080); await pg.evaluate(() => window.scrollTo(0, 400)); await pg.waitForTimeout(300);
+      const r = await pg.evaluate(() => { const c = document.getElementById('more-below'), g = document.querySelector('#ground-sec .side-head').getBoundingClientRect(); return { text: c.textContent, hidden: document.getElementById('more-wrap').hidden, groundBelow: g.top + 12 > c.getBoundingClientRect().top }; });
+      if (!r.hidden && r.groundBelow && !/Ground/.test(r.text)) fail('at 1920x1080 the cue leaves out Ground: ' + JSON.stringify(r)); else okLog('at 1920x1080 the cue names what is under it (' + r.text + ')');
+      await pg.close(); }
+    { const pg = await cuePage(1366, 768, { forcedColors: 'active' }); await pg.evaluate(() => window.scrollTo(0, 400)); await pg.waitForTimeout(300);
+      const bg = await pg.evaluate(() => getComputedStyle(document.getElementById('more-below')).backgroundColor);
+      if (/rgba\(\d+, \d+, \d+, 0\)|transparent/.test(bg)) fail('in forced colours the cue has no backdrop: ' + bg); else okLog('in forced colours the cue keeps an opaque backdrop (' + bg + ')');
+      await pg.close(); }
   }
   // the page shows what the engine computes: soft landing takes back the landing's impact on the ground, not its whole
   // energy; and the effort slider's right end is all-out

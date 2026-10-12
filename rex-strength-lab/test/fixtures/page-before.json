@@ -107,6 +107,11 @@
     "angle": 30,
     "wrestleMove": "throw"
    }
+  },
+  {
+   "id": "s4-arm",
+   "tab": "arm",
+   "state": {}
   }
  ],
  "results": {
@@ -367,6 +372,25 @@
    ],
    "callouts": [],
    "math": []
+  },
+  "s4-arm": {
+   "verdict": "Dead heat: 15 kN each way, arms locked upright.",
+   "status": [
+    "Usable push: Rex 15 kN · Ollie 15 kNTable holds"
+   ],
+   "tiles": [
+    "Pushing force15 kN vs 15 kNarm 25% of strength (estimate, 10–40%)Time to pinstalemateTwist on each upper arm8.68 kN·m46× the ~190 N·m a healthy human upper-arm bone takes in theory (cadaver bones broke at 25–31 N·m)Table carriesup to 15.1 kNsideways, before its pegs tear out (estimate)"
+   ],
+   "effort": [
+    "Effort: 6.7% of their strength (each as hard as lifting 6.11 t). The hardest both can go while nothing around them breaks.Courtesy ceiling: 6.7% (lifting 6.11 t). Past that, the table tears apart."
+   ],
+   "happens": [
+    "Newton’s third law: the push between their hands is the same both ways. Under the rules each grips the table’s peg with his free hand and rests his elbow on a pad bolted to the table, so the table carries that push between them, not their feet. A regulation table scaled to their size takes roughly 15.1 kN sideways before a peg or pad tears out (an estimate).In people, a full-force twist like this is how the upper arm snaps: in one series of 30 arm-wrestling fractures, all were spiral breaks of the humerus. A healthy humerus takes roughly 190 N·m in theory; cadaver bones broke at 25–31 N·m. Rex and Ollie are indestructible."
+   ],
+   "callouts": [],
+   "math": [
+    "Arm force = 25% of strength in both muscle models (estimate, plausibly 10–40%: ordinary men’s measured arm force against an assumed 1–2× body-weight deadlift): Rex 15 kN, Ollie 15 kN. The table carries the push while both arms stay under 15.1 kN. Once it breaks: usable = min(arm force, footing); footing = μ m g, plus shear × buried area if dug in; unlimited if bolted. Standing up, the loser’s arm folds only if the winner presses harder than it; otherwise his feet give and he is dragged. Twist on each upper arm = the force his own arm presses with × 0.19 × his height. A pinned arm still presses with all it has; an arm that holds carries the whole push. Gravity between them: F = G m₁ m₂ / d², d = 1.91 m across the table."
+   ]
   }
  }
 }

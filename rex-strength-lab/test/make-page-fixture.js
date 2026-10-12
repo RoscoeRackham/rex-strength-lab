@@ -24,6 +24,8 @@ for (const tab of ['collide', 'wrestle']) for (const a of ['friction', 'bolted']
 CASES.push({ id: 's4-catch', tab: 'catch', state: { group: 'duo', duoAction: 'catch' } });
 // an older save's Wrestle throw at Rex's Throw angle (the new page gives Wrestle its own angle, started from this one)
 CASES.push({ id: 's4-wrestle-throw', tab: 'wrestle', state: { angle: 30, wrestleMove: 'throw' } });
+// the default arm wrestle: the effort its search settles on (also when the search runs in the background)
+CASES.push({ id: 's4-arm', tab: 'arm', state: {} });
 const DUO = ['arm', 'wrestle', 'catch', 'collide'];
 
 // what the result is: the verdict, the status chips and the tiles of the bay that shows the tab
