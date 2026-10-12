@@ -69,6 +69,8 @@ function cases(P, D) {
       add('stomp-use' + use + '|' + k, (x) => P.stomp(C(Object.assign({ use }, x))));
       add('punch-use' + use + '|' + k, (x) => P.punch(C(Object.assign({ use }, x))));
     }
+    // a pull at an effort below all-out (review round 2): which limit it names, its pace and the push it uses
+    if (lg === '9' || lg === 'inf') for (const use of [1e2 * g, 1e4 * g]) add('pull-bus-use' + use + '|' + k, (x) => P.pull(C(Object.assign({ use }, x)), obj('bus')));
   }
   // dense and very dense bodies, and the Weight tab
   for (const bk of ['rex', 'dense', 'cal']) for (const sid of ['sand', 'concrete', 'granite']) for (const gh of [false, true]) for (const lg of ['4', '12']) {
@@ -151,6 +153,20 @@ function cases(P, D) {
       return { blast: M.blast(r, o), from: M.blastFrom(r, o), boom: M.boomSpeed(r, o), reach: P.RESTRAINT.reach('throw', r, o) };
     });
   }
+  // (review round 2) a catcher dense enough for the two wells to rule the throw: the straight line through their pull,
+  // the arrival his pull speeds up (past 1% of light speed for the 2 x 10^23 kg Ollie) and the catch; a game and the
+  // round trip; gradual growth
+  const leg0 = (L) => { if (L && L.flight) L.flight = Object.assign({}, L.flight, { path: L.flight.path ? L.flight.path.length : 0 }); return L; };
+  for (const mO of [2e23, 5.9e21]) for (const H of [3.048, 0.1]) for (const oid of ['shot', 'baseball']) for (const style of ['easy', 'hard']) {
+    const R = (x) => Object.assign({ F: 1e30 * g, mode: 'comic', body: bodies.rex(), surface: surf('granite'), groundHolds: false, anchor: 'bolted' }, x);
+    const O = (x) => Object.assign(R(x), { body: P.makeBody({ build: 'ollie', H, m: mO }) });
+    add(['catch-well', mO, H, oid, style].join('|'), (x) => leg0(P.catchLeg(R(x), O(x), obj(oid), 100, style)));
+  }
+  for (const lg of ['4', '9']) for (const oid of ['baseball', 'car']) {
+    const R = (x) => ctxOf('rex', 'comic', 'concrete', lg, 'friction', false, x), O = (x) => ctxOf('ollie', 'comic', 'concrete', lg, 'friction', false, x);
+    add(['catch-game', lg, oid].join('|'), (x) => { const G = P.catchGame(R(x), O(x), obj(oid), 30, 'hard'); return { a: leg0(G.a), b: leg0(G.b), trip: P.catchRoundTrip(G.a, G.b) }; });
+  }
+  for (const E of [1e6, 1e15, 4.2e23]) for (const form of [0, 0.5, 1]) add(['gradual', E, form].join('|'), (x) => P.gradualGrowth(bodies.rex(), E, form, Object.assign({}, x)));
   // walking and footprints
   for (const bk of ['rex', 'cal', 'kaiju', 'dense']) for (const sid of ['sand', 'gravel', 'softclay', 'stiffclay', 'concrete', 'granite']) for (const gh of [false, true]) for (const effort of [0, 0.5, 1]) for (const pace of ['stroll', 'fast']) {
     add(['walk', bk, sid, gh, effort, pace].join('|'), (x) => { const pr = P.presence(bodies[bk](), surf(sid), Object.assign({ pace, effort, groundHolds: gh }, x)); return { step: pr.step, reach: pr.reach, v5: pr.ppv(5), v50: pr.ppv(50) }; });

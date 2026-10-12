@@ -112,6 +112,43 @@
    "id": "s4-arm",
    "tab": "arm",
    "state": {}
+  },
+  {
+   "id": "s1-collide-allout",
+   "tab": "collide",
+   "state": {
+    "mode": "real",
+    "anchor": "bolted",
+    "oAnchor": "bolted"
+   },
+   "pick": "allout"
+  },
+  {
+   "id": "s3-collide-bolted-friction-allout",
+   "tab": "collide",
+   "state": {
+    "anchor": "bolted",
+    "oAnchor": "friction"
+   },
+   "pick": "allout"
+  },
+  {
+   "id": "s3-collide-bolted-bolted-allout",
+   "tab": "collide",
+   "state": {
+    "anchor": "bolted",
+    "oAnchor": "bolted"
+   },
+   "pick": "allout"
+  },
+  {
+   "id": "s3-wrestle-bolted-bolted-allout",
+   "tab": "wrestle",
+   "state": {
+    "anchor": "bolted",
+    "oAnchor": "bolted"
+   },
+   "pick": "allout"
   }
  ],
  "results": {
@@ -390,6 +427,84 @@
    "callouts": [],
    "math": [
     "Arm force = 25% of strength in both muscle models (estimate, plausibly 10–40%: ordinary men’s measured arm force against an assumed 1–2× body-weight deadlift): Rex 15 kN, Ollie 15 kN. The table carries the push while both arms stay under 15.1 kN. Once it breaks: usable = min(arm force, footing); footing = μ m g, plus shear × buried area if dug in; unlimited if bolted. Standing up, the loser’s arm folds only if the winner presses harder than it; otherwise his feet give and he is dragged. Twist on each upper arm = the force his own arm presses with × 0.19 × his height. A pinned arm still presses with all it has; an arm that holds carries the whole push. Gravity between them: F = G m₁ m₂ / d², d = 1.91 m across the table."
+   ]
+  },
+  "s1-collide-allout": {
+   "verdict": "Rex doesn’t budge. Ollie stops dead against him, and the blow goes through his bolts into the planet.",
+   "status": [
+    "Charge: 27.3 m/s (his sprint after a 28.7 m run-up)Bolted: Earth takes the blowRock cracks 26 cm around his boltsNo noticeable quake"
+   ],
+   "tiles": [
+    "Charge speed27.3 m/shis sprint after a 28.7 m run-upEnergy freed at the hit1.12 MJ270 g TNT · ≈ a hand grenadeRex movesnot at allboltedForce of the hit3.55 MNover 23 ms (plush squash, estimate)Earth’s speed change1.4 × 10⁻²⁰ m/sit would take 2.3 billion years to move 1 mm"
+   ],
+   "effort": [
+    "All-out. Everything they have.Courtesy ceiling: 20% (lifting 18 t). Past that, the hit’s air blast risks damage 5 m away.At this effort the hit’s air blast risks damage 5 m away"
+   ],
+   "happens": [
+    "Momentum is never lost. Whatever Ollie brings in, the two of them (plus whatever holds Rex) carry away. A splat shares it and frees the rest of the energy as heat, sound and blast. A perfect bounce keeps all the energy as motion. Soft bodies sit near the splat end.“Immovable” only means what holds Rex in place. Bolted, he is part of the planet: the bolts hand the momentum to the Earth’s 5.97 × 10²⁴ kg.How hard they hit depends on how squishy they are, which nobody knows for an indestructible plush. If they squash by a quarter of the smaller body’s thickness (32 cm in all), the hit lasts 23 ms and pushes with about 3.55 MN. A perfectly rigid body would make the force infinite, but relativity forbids one: no push travels through a body faster than light. Even the stiffest body physics allows takes 2.1 ns to stop, which limits the average force to about 39 TN.The Earth takes the momentum: its speed changes by 1.4 × 10⁻²⁰ m/s. And Ollie got his speed by pushing on the Earth in the first place, so the Earth just gets its own momentum back and ends up exactly as still as it started.The bolts are comic; the rock isn’t. The load on the rock around his bolts is 3.55 MN: granite pulls apart within about 26 cm and is crushed within about 5.3 cm, and the concrete slab on top tears at 5.1× its limit."
+   ],
+   "callouts": [],
+   "math": [
+    "Charge: his sprint after a 28.7 m run-up → v = 27.3 m/s; momentum p = γ m v = 82,000 kg·m/s. Splat: they move off as one body. Invariant mass M = √(m₁² + m₂² + 2m₂E₁/c²); energy freed Q = (M − m₁ − m₂)c² (½μv² below 1% of light speed, μ = m₁m₂/(m₁+m₂)). Perfect bounce: each body’s momentum reverses in the centre-of-momentum frame. Below 1% of light speed: v₁′ = (m₁−m₂)/(m₁+m₂)·v, v₂′ = 2m₁/(m₁+m₂)·v. Held: Rex and the Earth act as one body; Earth’s Δv = p/(m + M_Earth). Force: squash s = ½ × the smaller depth = 32 cm; F = Q/s (splat) or 2Q/s peak (bounce). Ordinary solids and liquids at everyday pressures can’t carry sound faster than about 36 km/s; nothing travels faster than light, which limits the average force. Run-up: m u du/dx = T − k u², so u = u_top √(1 − e^(−2kx/m)) over x = 28.7 m, capped by his legs. Slide: x = m/(2k)·ln(1 + kV²/R), k = ½ρ₀C_dA. Rock: a force C spread over a half-sphere of radius r averages C/(2πr²); granite pulls apart at 8.4 MPa and crushes at 200 MPa, so r = √(C/2πσ). Blast radii: Kinney & Graham (1985), as if all of Q became a blast (upper bound). Quake: 1 part in 10,000 of Q (the usual share, give or take ⅔ of a magnitude), as if all of Q reached the ground, which overstates it. Ollie’s horns don’t change the momentum or the energy; they only put the force on a smaller patch."
+   ]
+  },
+  "s3-collide-bolted-friction-allout": {
+   "verdict": "Rex doesn’t budge. Ollie stops dead against him, and the blow goes through his bolts into the planet.",
+   "status": [
+    "Charge: 18.1 m/s (his sprint after a 28.7 m run-up)Bolted: Earth takes the blowRock cracks 17 cm around his boltsNo noticeable quake"
+   ],
+   "tiles": [
+    "Charge speed18.1 m/shis sprint after a 28.7 m run-up (his top speed, 61.1 m/s, takes about 1.27 km)Energy freed at the hit495 kJ120 g TNT · 3,000× the fastest pitch on recordRex movesnot at allboltedForce of the hit1.57 MNover 35 ms (plush squash, estimate)Earth’s speed change9.1 × 10⁻²¹ m/sit would take 3.5 billion years to move 1 mm"
+   ],
+   "effort": [
+    "All-out. Everything they have.Courtesy ceiling: none. Nothing in this test does harm, even all-out, with the nearest people and buildings 5 m away."
+   ],
+   "happens": [
+    "Momentum is never lost. Whatever Ollie brings in, the two of them (plus whatever holds Rex) carry away. A splat shares it and frees the rest of the energy as heat, sound and blast. A perfect bounce keeps all the energy as motion. Soft bodies sit near the splat end.“Immovable” only means what holds Rex in place. Bolted, he is part of the planet: the bolts hand the momentum to the Earth’s 5.97 × 10²⁴ kg.How hard they hit depends on how squishy they are, which nobody knows for an indestructible plush. If they squash by a quarter of the smaller body’s thickness (32 cm in all), the hit lasts 35 ms and pushes with about 1.57 MN. A perfectly rigid body would make the force infinite, but relativity forbids one: no push travels through a body faster than light. Even the stiffest body physics allows takes 2.1 ns to stop, which limits the average force to about 26 TN.The Earth takes the momentum: its speed changes by 9.1 × 10⁻²¹ m/s. And Ollie got his speed by pushing on the Earth in the first place, so the Earth just gets its own momentum back and ends up exactly as still as it started.The bolts are comic; the rock isn’t. The load on the rock around his bolts is 1.57 MN: granite pulls apart within about 17 cm and is crushed within about 3.5 cm, and the concrete slab on top tears at 2.3× its limit."
+   ],
+   "callouts": [
+    "A loud thump: the hit lasts 35 ms, too slow to make a blast wave, so the 120 g TNT goes into heating and squashing them."
+   ],
+   "math": [
+    "Charge: his sprint after a 28.7 m run-up → v = 18.1 m/s; momentum p = γ m v = 54,600 kg·m/s. Splat: they move off as one body. Invariant mass M = √(m₁² + m₂² + 2m₂E₁/c²); energy freed Q = (M − m₁ − m₂)c² (½μv² below 1% of light speed, μ = m₁m₂/(m₁+m₂)). Perfect bounce: each body’s momentum reverses in the centre-of-momentum frame. Below 1% of light speed: v₁′ = (m₁−m₂)/(m₁+m₂)·v, v₂′ = 2m₁/(m₁+m₂)·v. Held: Rex and the Earth act as one body; Earth’s Δv = p/(m + M_Earth). Force: squash s = ½ × the smaller depth = 32 cm; F = Q/s (splat) or 2Q/s peak (bounce). Ordinary solids and liquids at everyday pressures can’t carry sound faster than about 36 km/s; nothing travels faster than light, which limits the average force. Run-up: m u du/dx = T − k u², so u = u_top √(1 − e^(−2kx/m)) over x = 28.7 m, capped by his legs. Slide: x = m/(2k)·ln(1 + kV²/R), k = ½ρ₀C_dA. Rock: a force C spread over a half-sphere of radius r averages C/(2πr²); granite pulls apart at 8.4 MPa and crushes at 200 MPa, so r = √(C/2πσ). Blast radii: Kinney & Graham (1985), as if all of Q became a blast (upper bound). Quake: 1 part in 10,000 of Q (the usual share, give or take ⅔ of a magnitude), as if all of Q reached the ground, which overstates it. Ollie’s horns don’t change the momentum or the energy; they only put the force on a smaller patch."
+   ]
+  },
+  "s3-collide-bolted-bolted-allout": {
+   "verdict": "Rex doesn’t budge. Ollie stops dead against him, and the blow goes through his bolts into the planet.",
+   "status": [
+    "Charge: 61.1 m/s (his sprint after a 28.7 m run-up)Bolted: Earth takes the blowRock cracks 58 cm around his boltsNo noticeable quake"
+   ],
+   "tiles": [
+    "Charge speed61.1 m/shis sprint after a 28.7 m run-upEnergy freed at the hit5.61 MJ1.3 kg TNT · 5.6× a hand grenadeRex movesnot at allboltedForce of the hit17.8 MNover 10 ms (plush squash, estimate)Earth’s speed change3.1 × 10⁻²⁰ m/sit would take 1 billion years to move 1 mm"
+   ],
+   "effort": [
+    "All-out. Everything they have.Courtesy ceiling: 20% (lifting 18 t). Past that, the hit’s air blast risks damage 5 m away.At this effort the hit’s air blast risks damage 5 m away"
+   ],
+   "happens": [
+    "Momentum is never lost. Whatever Ollie brings in, the two of them (plus whatever holds Rex) carry away. A splat shares it and frees the rest of the energy as heat, sound and blast. A perfect bounce keeps all the energy as motion. Soft bodies sit near the splat end.“Immovable” only means what holds Rex in place. Bolted, he is part of the planet: the bolts hand the momentum to the Earth’s 5.97 × 10²⁴ kg.How hard they hit depends on how squishy they are, which nobody knows for an indestructible plush. If they squash by a quarter of the smaller body’s thickness (32 cm in all), the hit lasts 10 ms and pushes with about 17.8 MN. A perfectly rigid body would make the force infinite, but relativity forbids one: no push travels through a body faster than light. Even the stiffest body physics allows takes 2.1 ns to stop, which limits the average force to about 87.3 TN.The Earth takes the momentum: its speed changes by 3.1 × 10⁻²⁰ m/s. And Ollie got his speed by pushing on the Earth in the first place, so the Earth just gets its own momentum back and ends up exactly as still as it started.The bolts are comic; the rock isn’t. The load on the rock around his bolts is 17.8 MN: granite pulls apart within about 58 cm and is crushed within about 12 cm, and the concrete slab on top tears at 26× its limit."
+   ],
+   "callouts": [],
+   "math": [
+    "Charge: his sprint after a 28.7 m run-up → v = 61.1 m/s; momentum p = γ m v = 184,000 kg·m/s. Splat: they move off as one body. Invariant mass M = √(m₁² + m₂² + 2m₂E₁/c²); energy freed Q = (M − m₁ − m₂)c² (½μv² below 1% of light speed, μ = m₁m₂/(m₁+m₂)). Perfect bounce: each body’s momentum reverses in the centre-of-momentum frame. Below 1% of light speed: v₁′ = (m₁−m₂)/(m₁+m₂)·v, v₂′ = 2m₁/(m₁+m₂)·v. Held: Rex and the Earth act as one body; Earth’s Δv = p/(m + M_Earth). Force: squash s = ½ × the smaller depth = 32 cm; F = Q/s (splat) or 2Q/s peak (bounce). Ordinary solids and liquids at everyday pressures can’t carry sound faster than about 36 km/s; nothing travels faster than light, which limits the average force. Run-up: m u du/dx = T − k u², so u = u_top √(1 − e^(−2kx/m)) over x = 28.7 m, capped by his legs. Slide: x = m/(2k)·ln(1 + kV²/R), k = ½ρ₀C_dA. Rock: a force C spread over a half-sphere of radius r averages C/(2πr²); granite pulls apart at 8.4 MPa and crushes at 200 MPa, so r = √(C/2πσ). Blast radii: Kinney & Graham (1985), as if all of Q became a blast (upper bound). Quake: 1 part in 10,000 of Q (the usual share, give or take ⅔ of a magnitude), as if all of Q reached the ground, which overstates it. Ollie’s horns don’t change the momentum or the energy; they only put the force on a smaller patch."
+   ]
+  },
+  "s3-wrestle-bolted-bolted-allout": {
+   "verdict": "Neither moves: both are bolted to the planet. They press with 890 kN, and that stretches the ground between their feet: it tears up around the bolts (1.3× its limit).",
+   "status": [
+    "Rex holds unlimited · drives 0 NOllie holds unlimited · drives 0 NGround tears around the bolts"
+   ],
+   "tiles": [
+    "WinnernobodystalematePush between them890 kNthe same both ways"
+   ],
+   "effort": [
+    "All-out. Everything they have.Courtesy ceiling: none. Nothing in this test does harm, even all-out, with the nearest people and buildings 5 m away."
+   ],
+   "happens": [
+    "A shoving match is decided at the feet. To push forward, each one has to grip the ground; to stay put, each one has to grip it too. Strength past that grip just makes feet slide. (That assumes each leans into the push; upright, a body tips over at a few hundred newtons.)Walking drive is friction under his own weight (plus a little claw or boot bite if dug in): 0 N for Rex, 0 N for Ollie. Holding still can use his full footing.Equal bodies on equal ground stay equal at any strength. A heavier body, or one dug in, wins.Both bolted: the push runs from one through the ground to the other. The ground between their feet is stretched, and rock and concrete are weak in tension."
+   ],
+   "callouts": [],
+   "math": [
+    "Hold = min(strength, footing); footing = μ m g (+ shear × buried area if dug in; unlimited if bolted). Drive = min(strength, μ m g + ¼ shear × buried area if dug in); 0 if bolted or too heavy to walk. Winner: the one whose drive beats the other’s hold. Walk-out: a = (drive − hold) / (m_Rex + m_Ollie), capped at his running speed, over half the ring (3.47 m)."
    ]
   }
  }

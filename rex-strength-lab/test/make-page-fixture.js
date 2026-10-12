@@ -26,6 +26,13 @@ CASES.push({ id: 's4-catch', tab: 'catch', state: { group: 'duo', duoAction: 'ca
 CASES.push({ id: 's4-wrestle-throw', tab: 'wrestle', state: { angle: 30, wrestleMove: 'throw' } });
 // the default arm wrestle: the effort its search settles on (also when the search runs in the background)
 CASES.push({ id: 's4-arm', tab: 'arm', state: {} });
+// Collide with Rex bolted, all-out (pull request B counts the rock cracking around his bolts as harm in the two-player
+// courtesy ceiling, which moves the least disruptive effort there; all-out, the rest of the result must not change)
+// (the old page starts every load at Least disruptive, so all-out is picked from the effort menu after loading)
+CASES.push({ id: 's1-collide-allout', tab: 'collide', state: { mode: 'real', anchor: 'bolted', oAnchor: 'bolted' }, pick: 'allout' });
+for (const b of ['friction', 'bolted']) CASES.push({ id: 's3-collide-bolted-' + b + '-allout', tab: 'collide', state: { anchor: 'bolted', oAnchor: b }, pick: 'allout' });
+// the shoving match with both bolted, all-out (B counts the ground tearing out around their bolts as harm too)
+CASES.push({ id: 's3-wrestle-bolted-bolted-allout', tab: 'wrestle', state: { anchor: 'bolted', oAnchor: 'bolted' }, pick: 'allout' });
 const DUO = ['arm', 'wrestle', 'catch', 'collide'];
 
 // what the result is: the verdict, the status chips and the tiles of the bay that shows the tab
@@ -64,6 +71,7 @@ if (require.main === module) (async () => {
     await page.evaluate((s) => localStorage.setItem('rex-lab-v1', JSON.stringify(s)), st);
     await page.reload(); await page.waitForTimeout(800);
     await settle(page, 'bay');
+    if (c.pick) { await page.selectOption('#duo-effort', c.pick); await page.waitForTimeout(400); await settle(page, 'bay'); }
     out[c.id] = await readResult(page, 'bay');
     console.log(c.id + ': ' + out[c.id].verdict);
   }

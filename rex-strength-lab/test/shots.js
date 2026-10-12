@@ -174,8 +174,24 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     ];
     const edit = (t) => EDITS.reduce((x, [re, to]) => x.replace(re, to), t);
     const editAll = (r) => { const o = {}; for (const [k, v] of Object.entries(r)) o[k] = Array.isArray(v) ? v.map((x) => x && edit(x)) : v && edit(v); return JSON.stringify(o); };
-    const same = (id, got) => { const was = editAll(BEFORE[id]), now = JSON.stringify(Object.fromEntries(Object.keys(BEFORE[id]).map((k) => [k, got[k]])));
-      if (was === now) okLog(id + ': same result as before'); else fail(id + ': result changed\n  before ' + was + '\n  now    ' + now); };
+    // Pull request B's corrections to the two-player courtesy ceiling (with the powers off too): where a test doesn't
+    // judge the ground shaking, a 'none' ceiling says so (as the solo tabs do); and broken ground counts as harm, so with
+    // Rex bolted on Collide the least disruptive effort stops where the rock around his bolts starts to crack (main's
+    // page called an effort harmless while showing that rock cracking). Those Collide cases are compared all-out, with
+    // the effort box checked on its own.
+    const CAVEAT = [/(Nothing in this test does harm, even all-out, with the nearest people and buildings 5 m away\.)/g, '$1 It doesn’t judge the ground shaking here.'];
+    const NO_SHAKE_JUDGED = new Set(['s3-wrestle-friction-friction', 's3-wrestle-friction-bolted', 's3-wrestle-bolted-friction', 's4-catch']);
+    const same = (id, got, skip) => { const b = BEFORE[id], keys = Object.keys(b).filter((k) => !(skip || []).includes(k));
+      const was = JSON.stringify(Object.fromEntries(keys.map((k) => { const v = JSON.parse(editAll({ [k]: b[k] }))[k]; return [k, NO_SHAKE_JUDGED.has(id) && k === 'effort' ? v.map((x) => x && x.replace(CAVEAT[0], CAVEAT[1])) : v]; }))), now = JSON.stringify(Object.fromEntries(keys.map((k) => [k, got[k]])));
+      if (was === now) okLog(id + ': same result as before' + (skip ? ' (all but ' + skip.join(', ') + ')' : '')); else fail(id + ': result changed\n  before ' + was + '\n  now    ' + now); };
+    // Collide with Rex bolted, and the shoving match with both bolted: the least disruptive effort now stops where the
+    // ground breaks (the rock cracks, or tears out around their bolts); all-out, the result is main's
+    const boltedCollide = async (id, re) => {
+      const least = (await readResult(page, 'duo-bay')).effort.join(' ');
+      if (!(re || /Past that, the ground breaks under Rex\./).test(least)) fail(id + ': the least disruptive effort should stop where the ground breaks: ' + least.slice(0, 200)); else okLog(id + ': least disruptive stops where the ground breaks');
+      await page.selectOption('#duo-effort', 'allout'); same(id + '-allout', await duoResult(), ['effort']);
+      await page.selectOption('#duo-effort', 'least'); await duoResult();
+    };
     const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
     const errs = [];
     page.on('pageerror', (e) => errs.push('PAGEERROR ' + e.message));
@@ -187,7 +203,7 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     // section 1: real muscle, both bolted, powers off
     for (const tab of ['weight', 'jump']) { await load(Object.assign({ mode: 'real', anchor: 'bolted', oAnchor: 'bolted', action: tab }, POWERS_OFF)); await settle(page, 'bay'); same('s1-' + tab, await readResult(page, 'bay')); }
     await load(Object.assign({ mode: 'real', anchor: 'bolted', oAnchor: 'bolted', duoOpen: true, duoAction: 'collide' }, POWERS_OFF));
-    same('s1-collide', await duoResult());
+    await duoResult(); await boltedCollide('s1-collide');
     // a saved bolted footing loads with its switch on, each side on its own
     const sw = async () => (await page.evaluate(() => [document.getElementById('bolt-rex').checked, document.getElementById('bolt-ollie').checked])).join();
     const swBoth = await sw();
@@ -200,7 +216,10 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       await page.evaluate(() => { document.getElementById('powers').open = true; });
       for (const [a, b] of [['friction', 'friction'], ['bolted', 'friction'], ['bolted', 'bolted'], ['friction', 'bolted'], ['friction', 'friction']]) {
         await page.setChecked('#bolt-rex', a === 'bolted'); await page.setChecked('#bolt-ollie', b === 'bolted');
-        same('s3-' + tab + '-' + a + '-' + b, await duoResult());
+        const got = await duoResult();
+        if (tab === 'collide' && a === 'bolted') await boltedCollide('s3-' + tab + '-' + a + '-' + b);
+        else if (tab === 'wrestle' && a === 'bolted' && b === 'bolted') await boltedCollide('s3-wrestle-bolted-bolted', /Past that, the ground tears out around their bolts\./);
+        else same('s3-' + tab + '-' + a + '-' + b, got);
       }
     }
     // a saved 'Claws dug in' loads as just standing, with no page errors
@@ -389,16 +408,31 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       if (Math.abs(st.airAbsorb - 0.3) > 1e-9 || v !== '30') moved.push(e + ': ' + st.airAbsorb + '/' + v);
     }
     if (moved.length) fail('a preset moved the Air resistance absorbed slider: ' + moved.join('; ')); else okLog('no effort preset moves the Air resistance absorbed slider');
-    // windows across the street: a level baseball at 100% never shatters them (no blast from its flight; a landing
-    // fast enough to do it is past orbital speed, so it doesn't land), but with the air let through it does: the hint
-    // shows. At 10,000 t it can't at 0% either: no hint.
+    // houses a block away: a level car at 100% goes into orbit at a 10⁷ t dial (no landing, no drag; only his hand's own
+    // air, too little), but with the air let through its drag does it: the hint shows. At 10⁶ t it can't at 0% either.
     const hintRe = /Lower Air resistance absorbed/;
-    await load({ action: 'throw', obj: 'baseball', angle: 0, logKg: 9, mode: 'comic' }); await pick('#effort', 'windows');
+    await load({ action: 'throw', obj: 'car', angle: 0, logKg: 10, mode: 'comic' }); await pick('#effort', 'block');
     const hintYes = await bayText();
-    await load({ action: 'throw', obj: 'baseball', angle: 0, logKg: 7, mode: 'comic' }); await pick('#effort', 'windows');
+    await load({ action: 'throw', obj: 'car', angle: 0, logKg: 9, mode: 'comic' }); await pick('#effort', 'block');
     const hintNo = await bayText();
-    if (!hintRe.test(hintYes) || !/At 100% air resistance absorbed, a throw makes no blast/.test(hintYes) || hintRe.test(hintNo) || !/Even all-out/.test(hintNo)) fail('the lower-the-slider hint: ' + JSON.stringify({ yes: (hintYes.match(/Even all-out[^.]*\.[^.]*\.[^.]*\./) || [hintYes.slice(0, 200)])[0], no: (hintNo.match(/Even all-out[^.]*\./) || [hintNo.slice(0, 200)])[0] }));
-    else okLog('windows preset on a level baseball: the lower-the-slider hint at 10⁶ t (reachable at 0%), none at 10⁴ t (not reachable at 0% either)');
+    if (!hintRe.test(hintYes) || !/At 100% air resistance absorbed, a throw’s air \(the share its flight still meets, and his throwing hand’s own\) makes too little blast/.test(hintYes) || hintRe.test(hintNo) || !/Even all-out/.test(hintNo)) fail('the lower-the-slider hint: ' + JSON.stringify({ yes: (hintYes.match(/Even all-out[^.]*\.[^.]*\.[^.]*\./) || [hintYes.slice(0, 200)])[0], no: (hintNo.match(/Even all-out[^.]*\./) || [hintNo.slice(0, 200)])[0] }));
+    else okLog('block preset on a level car: the lower-the-slider hint at 10⁷ t (reachable at 0%), none at 10⁶ t (not reachable at 0% either)');
+    // the same in the game of catch (a car fastball, 100 m)
+    const duoRead = () => page.evaluate(() => document.querySelector('#duo-bay .effort-read').textContent.replace(/\s+/g, ' '));
+    await load({ duoOpen: true, duoAction: 'catch', cObj: 'car', cStyle: 'hard', cLogD: 2, logKg: 10 }); await settle(page, 'duo-bay'); await pick('#duo-effort', 'block');
+    const cHintYes = await duoRead();
+    await load({ duoOpen: true, duoAction: 'catch', cObj: 'car', cStyle: 'hard', cLogD: 2, logKg: 9 }); await settle(page, 'duo-bay'); await pick('#duo-effort', 'block');
+    const cHintNo = await duoRead();
+    if (!hintRe.test(cHintYes) || hintRe.test(cHintNo) || !/Even all-out/.test(cHintNo)) fail('the two-player lower-the-slider hint: ' + JSON.stringify({ yes: cHintYes.slice(0, 300), no: cHintNo.slice(0, 200) }));
+    else okLog('game of catch, block preset on a car fastball: the hint at 10⁷ t, none at 10⁶ t');
+    // moving the slider with the element open changes the two-player result (airAbsorb is part of its key)
+    await load({ duoOpen: true, duoAction: 'catch', cObj: 'car', cStyle: 'hard', cLogD: 2, logKg: 10 }); await settle(page, 'duo-bay'); await pick('#duo-effort', 'block');
+    const before = await duoRead();
+    await page.evaluate(() => { document.getElementById('powers').open = true; const s = document.getElementById('air-absorb'); s.value = '0'; s.dispatchEvent(new Event('input', { bubbles: true })); s.dispatchEvent(new Event('change', { bubbles: true })); });
+    await page.waitForTimeout(600); await settle(page, 'duo-bay');
+    const after = await duoRead();
+    if (before === after || hintRe.test(after) || !/Effort: /.test(after)) fail('moving the slider with the element open: ' + JSON.stringify({ before: before.slice(0, 160), after: after.slice(0, 160) }));
+    else okLog('moving Air resistance absorbed to 0% redraws the two-player preset: ' + after.slice(0, 70) + '…');
     // each power says where it changed a result
     await load({ action: 'throw' }); await pick('#effort', 'allout');
     const thr = (await chips()).join(' | ');
@@ -434,7 +468,10 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     if (duoOpts.length) fail('two-player presets missing: ' + duoOpts.join('; ')); else okLog('every two-player test offers the not-so-heroic presets');
     // Rex bolted (the page's immovable object): the hit's momentum goes through his feet into the unbreakable ground.
     // Standing, his feet slide and the ground takes only his friction, so the honest answer is that it never does.
-    const colRead = async (anchor) => { await load({ duoOpen: true, duoAction: 'collide', anchor }); await settle(page, 'duo-bay'); await pick('#duo-effort', 'plaster');
+    // (Ollie jumping onto him at a 1,000 t dial: the hit's push reaches the ground through Rex's legs, over at least a
+    // limb's contact time)
+    // Standing, Ollie's sprint into him (sideways) just slides his feet: the ground takes only his friction.
+    const colRead = async (anchor) => { await load(Object.assign({ duoOpen: true, duoAction: 'collide', anchor }, anchor === 'bolted' ? { colSrc: 'jump', logKg: 6 } : {})); await settle(page, 'duo-bay'); await pick('#duo-effort', 'plaster');
       return page.evaluate(() => document.querySelector('#duo-bay .effort-read').textContent.replace(/\s+/g, ' ')); };
     const colB = await colRead('bolted'), colF = await colRead('friction');
     if (!/Effort: /.test(colB) || !/The least effort that shakes the ground enough that plaster may crack/.test(colB)) fail('Collide, plaster preset, Rex bolted: ' + colB.slice(0, 300));
@@ -457,7 +494,8 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     // the two-player 'Break the ground' sets Unbreakable footing aside, and its ceiling is on real ground too
     await load({ duoOpen: true, duoAction: 'collide', anchor: 'bolted' }); await settle(page, 'duo-bay'); await pick('#duo-effort', 'ground');
     const dg = await page.evaluate(() => document.querySelector('#duo-bay .effort-read').textContent.replace(/\s+/g, ' '));
-    if (!/set aside for this test/.test(dg) || /Least disruptive already does this/.test(dg) || (/Courtesy ceiling/.test(dg) && !/On real ground, courtesy ceiling/.test(dg))) fail('two-player break the ground: ' + dg.slice(0, 300)); else okLog('two-player break the ground: on real ground, ceiling included (' + dg.slice(0, 70) + '…)');
+    const dgBay = await page.evaluate(() => document.getElementById('duo-bay').textContent.replace(/\s+/g, ' '));
+    if (!/set aside for this test/.test(dg) || !/Effort: /.test(dg) || !/The least effort that breaks the ground/.test(dg) || /Least disruptive already does this/.test(dg) || /The ground holds: their power/.test(dgBay) || !/On real ground, courtesy ceiling: .*?Past that, the ground breaks under Rex/.test(dg)) fail('two-player break the ground: ' + dg.slice(0, 400)); else okLog('two-player break the ground: an effort on real ground, the bay drawn on real ground, its ceiling where the rock cracks (' + dg.slice(0, 70) + '…)');
     if (errs.length) fail('page errors in the powers checks: ' + errs.slice(0, 3).join(' | '));
     await page.close();
   }

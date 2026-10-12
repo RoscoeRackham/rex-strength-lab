@@ -676,15 +676,22 @@
       outweighs: x < 1 };
   }
 
-  // A throw past 1% of light speed: his throwing hand (with his forearm) meets real air too, since their own bodies do.
+  // A throw past the speed of sound: his throwing hand (with his forearm) meets real air too, since their own bodies do.
   // Over the throw stroke d it sweeps up the air in its path, rho0 x hand area x d, and drives it on at the release
-  // speed: the work that takes is gamma m_air v^2 (a piston pushing air; at low speed half heat, half motion). Taken
-  // at the release speed all the way, an upper bound, since the hand speeds up through the stroke. Our estimate.
-  function handAir(body, obj, v, gamma) {
-    const { style, hands } = throwStyle(obj);
-    const d = style === 'whip' ? body.strokes.whip : body.strokes.throw, area = hands * body.palmArea;
+  // speed. A piston at Lorentz factor gamma meets the air at gamma times its density with gamma times the momentum
+  // each, a ram pressure of gamma^2 rho v^2, so the work over the stroke is gamma^2 m_air v^2 (at low speed half heat,
+  // half motion). Taken at the release speed all the way, an upper bound, since the hand speeds up through the stroke.
+  // The air can't take more than his push supplies: cap (the work of his push) caps it, and capped says so (then his
+  // hand's own drag in real air would hold the throw far below this speed). Our estimate.
+  function limbAir(area, d, v, gamma, cap) {
     const mAir = K.rho0 * area * d, vv = Math.min(v, K.c);
-    return { mAir, area, d, E: isFinite(gamma) ? gamma * mAir * vv * vv : Infinity };
+    const E0 = isFinite(gamma) ? gamma * gamma * mAir * vv * vv : Infinity;
+    const capped = cap != null && E0 > cap;
+    return { mAir, area, d, E: capped ? cap : E0, Euncapped: E0, capped };
+  }
+  function handAir(body, obj, v, gamma, cap) {
+    const { style, hands } = throwStyle(obj);
+    return limbAir(hands * body.palmArea, style === 'whip' ? body.strokes.whip : body.strokes.throw, v, gamma, cap);
   }
 
   // Highest point of a vertical launch with no air, over a round Earth (Infinity = escapes).
@@ -1279,12 +1286,19 @@
     const extra = {};
     // Unbreakable footing: the load the ground would have carried, as a share of what it bears
     if (ctx.unbreakable) extra.sinkRatioRaw = Nfeet / (qultFor(ctx.surface, body.footB) * 2 * body.footArea);
-    // the push the ground gives him while he throws (the momentum it puts into the throw, less his own recoil), over
-    // the stroke: with his recoil taken (or the ground unbreakable) it reaches the ground, and shakes it
-    // (it reaches the ground through his legs, which spread it over at least a stamp's contact time: an estimate)
-    if ((ctx.ownRecoil || ctx.unbreakable) && !push.stalled && v > 0) extra.toGround = { J: push.pB === Infinity ? Infinity : Math.max(0, push.pB - push.pA), T: Math.max(limbPulse(body), push.t) };
+    // the push the ground gives him while he throws, over the stroke: with his recoil taken (or the ground
+    // unbreakable) it reaches the ground, and shakes it. It reaches the ground through his legs, which spread it over at
+    // least a stamp's contact time (an estimate); within that window the follow-through stops his arm and hands its
+    // momentum back, so the planet keeps the object's momentum less his own recoil (none when he takes it)
+    if ((ctx.ownRecoil || ctx.unbreakable) && !push.stalled && v > 0) extra.toGround = { J: pObj === Infinity ? Infinity : Math.max(0, pObj - pRecoil), T: Math.max(limbPulse(body), push.t) };
     // past 1% of light speed with some of the air's drag absorbed, or the object kept whole: a straight line out
     if (flight.relativistic && (dK < 1 || ctx.keepForm)) extra.line = straightThrow(v, thetaDeg, body.releaseHeight);
+    // part of the drag absorbed, past sound: what real air would take from the same throw (one more flight, at the full
+    // drag), for the blast near him (k times the real air's take: the share of the drag that acts where it starts)
+    if (dK > 0 && dK < 1 && !ctx.noFlight && !fallsBack && !flight.relativistic && v >= K.a0) {
+      const f0 = fly({ v0: vOut, thetaDeg, h0: body.releaseHeight, m: obj.m, A: obj.area, Cd: obj.Cd, CdSup: obj.CdSup });
+      extra.dragLoss0 = f0.landed && !f0.relativistic ? Math.max(0, Eobj + obj.m * (K.GM / K.R_E - K.GM / (K.R_E + body.releaseHeight)) - keFromV(f0.vImpact, obj.m)) : Eobj;
+    }
     return Object.assign(out, extra, {
       canMove: !push.stalled && v > 0,
       push, v, mach: v / K.a0, Eobj, heldBack, escapeNeeded, vOut, fallsBack, landsNear, rMax,
@@ -1377,15 +1391,15 @@
       // when the feet punch in, the ground takes the energy they lose doing it: the work against its bearing and inertia
       Eground: landRatio > 1 && !soft ? Eland : 0 };
     // Unbreakable footing: where real ground would have given way under the push-off or the landing, their power holds
-    // it; the push-off's momentum still goes into the ground (pushOff, over the push), and shakes it. Where the ground
-    // could bear the push-off, the landing (the same momentum, plus the feet's impact) is the larger jolt, as before.
+    // it. The push-off's momentum goes into the ground whether it bears it or their power holds it (pushOff, over the
+    // push, the foot's own push), and shakes it. With the power off the lab counts only the landing, as before.
     const extra = {};
     if (ctx.unbreakable) {
       const RBreal = qultFor(surface, body.footB) * A2;
       extra.groundLimitReal = RB === Infinity ? RBreal : RB;
       extra.overLimitReal = F > RBreal;
       extra.landRatioReal = landed ? landF / RBreal : 0;
-      if (v > 0 && (F > RBreal || !landed)) extra.pushOff = { J: p, T: finiteRun ? push.t : 0 };
+      if (v > 0) extra.pushOff = { J: p, T: finiteRun ? push.t : 0 };
     }
     return Object.assign(extra, {
       F, push, v, mach: v / K.a0, flight, vacuumApex: vacuumApex(v, 0),
@@ -1430,15 +1444,17 @@
     const share = !isFinite(push.EA + push.EB) ? 0.5 : ((push.EA + push.EB) > 0 ? push.EB / (push.EA + push.EB) : 1);
     const extra = {};
     if (ctx.unbreakable) {
-      // what the ground held off: in soil a dent is a footprint (a print stays), anything else would break it
+      // what the ground held off: in soil a print stays up to the one the Walk tab allows (sand and gravel: the print
+      // where it starts to fail; clay: none, nothing until the bearing is passed), anything deeper would sink into it
       const rr = real(), soil = !!surface.granular || surface.id === 'softclay' || surface.id === 'stiffclay';
-      extra.realHole = rr.hole; extra.realCrater = rr.crater.D;
-      // only where real ground would break (a crater, or a hole of 1 cm or more in hard ground: the ground hazard's own
-      // rule) does the power hold it, and the energy that would have broken it goes to the endless ocean. Short of
-      // that, the dent or the footprint is real and the energy goes into the ground as before.
-      extra.realBreaks = rr.crater.D > 0 || (!soil && rr.hole >= 0.01);
+      const printCap = surface.granular ? sandPrint(surface, standDepth(surface, 0, body.footB, body.H).qFail, body.footB).depth : 0;
+      extra.realHole = rr.hole; extra.realCrater = rr.crater.D; extra.printCap = soil ? printCap : undefined;
+      // only where real ground would break (a crater; a hole of 1 cm or more in hard ground, the ground hazard's own
+      // rule; in soil, sinking past that print) does the power hold it, and the energy that would have broken it goes
+      // to the endless ocean. Short of that, the dent or the footprint is real and the energy goes into the ground.
+      extra.realBreaks = rr.crater.D > 0 || (soil ? rr.hole > printCap : rr.hole >= 0.01);
       extra.absorbed = extra.realBreaks ? E : 0;
-      if (!extra.realBreaks && !ctx.groundHolds) holeDepth = rr.hole;
+      if (!ctx.groundHolds) holeDepth = !extra.realBreaks ? rr.hole : (soil && !(rr.crater.D > 0) ? printCap : 0);
     }
     return Object.assign(extra, {
       F, push, E, vFoot, footMach: vFoot / K.a0, vBody, bodyFlight, holeDepth, bolted,
@@ -1462,9 +1478,9 @@
     const push = pushApart({ F, d, mA, mB, RA: anc.R, RB: 0, mode: ctx.mode, vmax: sizeVmax('punch', body) });
     // Everything the arm put in (fist plus his own recoil) is released when the arm stops.
     const Etotal = push.EA + push.EB;
-    // the push the ground gives him while he punches (the fist's momentum less his own lurch), over the stroke
-    const extra = (ctx.ownRecoil || ctx.unbreakable) && push.vB > 0 ? { toGround: { J: push.pB === Infinity ? Infinity : Math.max(0, push.pB - push.pA), T: Math.max(limbPulse(body), push.t) } } : {};
-    return Object.assign(extra, {
+    // (with his recoil taken, the push back goes through his feet into the planet; but the arm's stop hands it straight
+    // back within the time his legs spread a push over, so the planet keeps no net momentum from a punch into air)
+    return Object.assign({}, {
       F, push, anchor: anc, vFist: push.vB, mach: push.vB / K.a0, Efist: push.EB, E: Etotal,
       lurch: push.xA, recoilV: push.vA, recoilE: push.EA,
       tnt: Etotal / K.TNT_J_per_kg,
@@ -1557,6 +1573,8 @@
       accel = Math.min(aLoad, aFeet);
       ownLimit.footLimited = aFeet < aLoad;
       if (accel > 0) net = accel * M;
+      // the rope's pull: as hard as keeps the load at his pace (all of his drive only when the load sets the pace)
+      ownLimit.ropeT = net > 0 ? obj.m * accel + resist : 0;
     }
     // Time to cover 10 m from rest under constant force, relativistically exact.
     const t10m = net > 0 ? Math.sqrt(2 * 10 / accel + (10 / K.c) ** 2) : Infinity;
@@ -1798,13 +1816,11 @@
       return b.m / (2 * k) * Math.log1p(k * v * v / f.R);
     };
     const vEsc = Math.sqrt(2 * K.G * (A.m + B.m) / (d0 + d));
-    // Unbreakable footing or his own recoil taken: the push the ground gives the shover (the momentum the shove puts
-    // into his partner, less his own recoil) reaches it over the push, and shakes it
-    // The shover's feet hand the ground the push his footing gives him: the push on his partner's chest over the
-    // push (his partner's momentum plus what his partner's footing took, or the whole push if his partner doesn't
-    // move) less his own recoil
+    // Unbreakable footing or his own recoil taken: the shover's feet hand the ground the push his footing gives him,
+    // over the push, and it shakes it: his partner's momentum (after the follow-through stops his arms) plus what his
+    // partner's footing took during the push, or the whole push if his partner doesn't move, less his own recoil
     const Fpush = push.xA + push.xB > 0 ? push.work / (push.xA + push.xB) : 0;
-    const Jfeet = push.pB === Infinity || push.pA === Infinity ? Infinity : Math.max(0, (push.pB > 0 ? push.pB + fB.R * push.t : Fpush * push.t) - push.pA);
+    const Jfeet = pB === Infinity || pA === Infinity ? Infinity : Math.max(0, (push.pB > 0 ? pB + fB.R * push.t : Fpush * push.t) - pA);
     const extra = (cA.unbreakable || cA.ownRecoil) && !push.stalled ? { toGround: { J: Jfeet, T: Math.max(limbPulse(A), push.t) } } : {};
     return Object.assign(extra, {
       Fdrive, d, push, heldBack, vA, vB, EA: momentumToKE(pA, A.m), EB: momentumToKE(pB, B.m),
@@ -1834,7 +1850,7 @@
     const pullOut = cB.anchor === 'bolted' ? Infinity : (cB.anchor === 'braced' ? (holdsGround(cB) ? Infinity : cB.surface.shear * B.digArea) : 0);
     const need = B.m * K.g + Fg + pullOut;
     return { weight: B.m * K.g, Fg, pullOut, need, can: cA.F >= need * (1 - 1e-9) && !l.cantStand, cantStand: l.cantStand, margin: cA.F / need,
-      groundRatio: l.groundRatio, pressure: l.pressure, qult: l.qult, dOver, dC, gPeakOnPath, bolted: cB.anchor === 'bolted' };
+      groundRatio: l.groundRatio, pressure: l.pressure, qult: l.qult, dOver, dC, gPeakOnPath, bolted: cB.anchor === 'bolted', ...(l.groundRatioRaw != null ? { groundRatioRaw: l.groundRatioRaw } : {}) };
   }
   function throwPartner(cA, cB, theta) {
     const A = cA.body, B = cB.body;
@@ -2185,11 +2201,13 @@
       out.outcome = !isFinite(pA) ? 'unstoppable' : (cB.immovable ? 'immovable' : (held ? 'held' : (boltsLate ? 'boltsLate' : 'moved')));
       // Unbreakable footing: the hit reaches the ground through the holder's feet. Held, the ground takes the momentum
       // the hit hands to him and the planet (splat or bounce) over the contact time; knocked back, it takes what his
-      // footing held during the hit. A truly immovable body needs no ground, so nothing reaches it then.
-      if ((cA.unbreakable || cB.unbreakable) && !cB.immovable && !h.undefinedResult) {
-        const splat = !o.bounce, cf = splat ? out.contact.soft : out.contact.softEl;
-        if (held) out.toGround = { J: splat ? h.inel.pT : h.el.pT, T: cf.t, how: 'held' };
-        else if (out.partial) out.toGround = { J: out.partial.Jearth, T: out.partial.tau, how: 'footing' };
+      // footing held during the hit. A truly immovable body needs no ground, so nothing reaches it then. It reaches the
+      // ground through his legs, which spread it over at least a stamp's contact time (an estimate), as for a throw.
+      // (o.toGround: the same push on real ground, for the page's 'break the ground' preset, which sets the power aside)
+      if ((cA.unbreakable || cB.unbreakable || o.toGround) && !cB.immovable && !h.undefinedResult) {
+        const splat = !o.bounce, cf = splat ? out.contact.soft : out.contact.softEl, Tl = limbPulse(bB);
+        if (held) out.toGround = { J: splat ? h.inel.pT : h.el.pT, T: Math.max(Tl, cf.t), how: 'held' };
+        else if (out.partial) out.toGround = { J: out.partial.Jearth, T: Math.max(Tl, out.partial.tau), how: 'footing' };
       }
       return out;
     }
@@ -2671,17 +2689,19 @@
       const mh = 2 * body.handEff, Mb = Math.max(M - mh, 1e-9);
       const pIn = vToMomentum(v, m), E0 = momentumToKE(pIn, m), gamma = 1 + E0 / (m * c2);
       const M1 = Math.sqrt(m * m + mh * mh + 2 * gamma * m * mh);
-      const E1 = Math.max(0, (M1 - m - mh) * c2), v1 = momentumToV(pIn, M1);
+      // first contact's heat (M1 - m - mh) c^2, written without the cancellation: M1^2 - (m + mh)^2 = 2 (gamma - 1) m mh
+      const E1 = 2 * E0 * mh / (M1 + m + mh), v1 = momentumToV(pIn, M1);
       const give = [CATCH.GIVE_LO * body.H, CATCH.GIVE_HI * body.H];
       const F1 = [E1 / give[1], E1 / give[0]];
       const E2 = momentumToKE(pIn, M1);                // the lump's motion energy, to stop over the stroke
       const anc = anchorCapacity({ body, surface: ctxC.surface, theta: gm, anchor: ctxC.anchor, groundHolds: holdsGround(ctxC), mA: M, mB: m });
       const R = anc.R, FA = E2 / d;
       const held = ctxC.anchor === 'bolted' || (isFinite(FA) && FA <= R);
-      // moving together afterwards (not held): energy and momentum kept
-      const Etot = E0 + m * c2 + M * c2, Mf = held ? Infinity : Math.sqrt(Math.max(0, Etot * Etot - pIn * pIn * c2)) / c2;
+      // moving together afterwards (not held): energy and momentum kept. With the lump (M1, motion energy E2) and the
+      // rest of him (Mb): Mf^2 = (M1 + Mb)^2 + 2 Mb E2 / c^2, so the heat (Mf - M1 - Mb) c^2 = 2 Mb E2 / (Mf + M1 + Mb)
+      const Mf = held ? Infinity : Math.sqrt((M1 + Mb) * (M1 + Mb) + 2 * Mb * E2 / c2);
       const uAfter = held ? 0 : momentumToV(pIn, Mf);
-      const Ediss = held ? E2 : Math.max(0, (Mf - M1 - Mb) * c2);
+      const Ediss = held ? E2 : 2 * Mb * E2 / (Mf + M1 + Mb);
       const Fneed = Math.max(Ediss / d, holdLoad);
       const clean = Fcap >= Fneed * (1 - 1e-9);
       const F = clean ? Ediss / d : Fcap;
@@ -2711,9 +2731,19 @@
         Ecatch: E1 + Ediss, Ediss, pIn,
       };
       if (ctxC.unbreakable) out.sinkRatioRaw = anc.N(F) / (qultFor(ctxC.surface, body.footB) * 2 * body.footArea);
+      if (carried) {
+        // carried off past 1% of light speed: his own body meets real air (their own bodies do). He and the lump ride
+        // on through the lower air, and the snowplow turns their motion to heat there, as fireballAt counts the ride
+        // below 100%: over about sqrt(2 R_E H_s), where the ground has curved one scale height away
+        const aa = Math.max(obj.area, body.frontArea), Ek = momentumToKE(pIn, Mf), g1 = Ek / (Mf * c2);
+        out.Eride = Ek; out.Lnear = Math.sqrt(2 * K.R_E * K.Hs);
+        const x2 = K.rho0 * aa * out.Lnear / Mf;
+        out.Enear = 2 * Ek * x2 / (Math.sqrt((1 + x2) * (1 + x2) + 2 * g1 * x2) + 1 + x2);
+        out.sweepOn = Mf / (K.rho0 * aa) * (1 + g1 / 4);
+      }
       return out;
     }
-    function catchIt(ctxC, obj, v, gammaDeg, w) {
+    function catchIt(ctxC, obj, v, gammaDeg, w, noAir) {
       const body = ctxC.body, M = body.m, m = obj.m;
       const d = CATCH.STROKE * body.H;
       const gm = gammaDeg * Math.PI / 180, sinG = Math.max(0, Math.sin(gm)), cosG = Math.cos(gm);
@@ -2721,9 +2751,10 @@
       const holdLoad = Math.hypot(m * K.g, m * gSelf);
       const Fcap = CATCH.ECC * ctxC.F;
       const mh = 2 * body.handEff, mS = m + mh, Mb = Math.max(M - mh, 1e-9);
-      // past 1% of light speed (only a throw that met no air arrives that fast) the catch is worked out with
-      // relativistic momentum (relCatch)
-      if (v >= 0.01 * K.c) return relCatch(ctxC, obj, v, gammaDeg, w);
+      // a throw that met no air (noAir: all its drag absorbed) arriving past 1% of light speed: the catch is worked out
+      // with relativistic momentum (relCatch). (A catcher's pull can speed a throw that met air past 1% of light too;
+      // that stays the catch it was.)
+      if (noAir && v >= 0.01 * K.c) return relCatch(ctxC, obj, v, gammaDeg, w);
       const v1 = v * m / mS;
       const E1 = 0.5 * m * mh / mS * v * v;
       const give = [CATCH.GIVE_LO * body.H, CATCH.GIVE_HI * body.H];
@@ -2893,6 +2924,10 @@
       let fast = null;
       // Things keep their form (either of them): the object survives a fireball of the air around it (5b)
       const keptFire = ctxT.keepForm || ctxC.keepForm ? { kept: true } : {};
+      // nearly all the drag absorbed, the object kept whole: when the air between them heats less than 1% of its energy
+      // and it reaches him, it arrives whole with a thin sheath of plasma, and he catches it as at 100% (the sheath's
+      // heat is added): the result tends to the 100% one instead of flipping there
+      const sheathOnly = (fb) => !!keptFire.kept && fb.kind !== 'before' && isFinite(fb.E) && fb.Egap <= 0.01 * fb.E;
       if (isBlackHole(bT)) return Object.assign(out, { result: 'thrower-black-hole' });
       const w = wells(bT, bC, obj, D);
       out.wells = w;
@@ -2906,6 +2941,19 @@
       out.holdNeeded = Math.hypot(tab.at45.needed, pullC);
       out.armHold = (tab.at45.armMass || 0) * K.g;     // the part that is his own hand and arm (dense thrower)
       if (!tab.at45.canHold || !(ctxT.F >= out.holdNeeded * (1 - 1e-9))) return Object.assign(out, { result: 'cant-hold' });
+      // the thrower's push into the ground (Unbreakable footing, or his recoil taken), for every throw he makes: the
+      // object's momentum less his recoil, over the longer of the push and a limb's contact time
+      // ... and, with some of the drag absorbed, his throwing hand's own air past sound (the Throw tab's rule)
+      const pushT = (thD, v, full) => {
+        const o = {};
+        if ((ctxT.unbreakable || ctxT.ownRecoil) && v > 0) o.toGroundT = { J: throwPushJ(ctxT, obj, thD, v, full, tab), T: Math.max(limbPulse(bT), 2 * strokeOf(bT, obj) / v) };
+        if (dK < 1 && v >= K.a0) {
+          const r = tab.at(thD), rel = r.canMove && r.v >= CATCH.V_FIREBALL && isFinite(r.Eobj);
+          const gamma = rel ? 1 + r.Eobj / (obj.m * K.c * K.c) : v >= K.c ? Infinity : 1 / Math.sqrt(1 - (v / K.c) * (v / K.c));
+          o.hand = handAir(bT, obj, v, gamma, r.canMove && r.push ? r.push.EA + r.push.EB : undefined);
+        }
+        return o;
+      };
       const vOfE = (th) => { const v = tab.vOf(th); const q = v * v - 2 * w.barrier; return q > 0 ? Math.sqrt(q) : 0; };
       const vTopE = Math.sqrt(Math.max(0, tab.vTop * tab.vTop - 2 * w.barrier));
       // he holds it but can't push it any faster than holding it up takes: no throw at all
@@ -2918,15 +2966,19 @@
         out.vNeed = need;
         if (cantMove && need > 0) return Object.assign(out, { result: 'cant-move' });
         if (style === 'hard' && vMax >= CATCH.V_FIREBALL && dK === 0) fast = { v: vMax, th: 0, E: tab.E0 };
-        else if (style === 'hard' && vMax >= CATCH.V_FIREBALL) return Object.assign(out, { result: 'fireball', vL: vMax, thetaDeg: 0, recoil: recoilOf(ctxT, obj, 0, vMax, true, tab, D), fireball: fireballAt(obj, vMax, Dfl, ctxC, tab.E0, dK) }, keptFire);
-        else if (!(vMax >= need * (1 - 1e-9))) return Object.assign(out, { result: 'falls-back', vL: vMax, vMax, escapeNeeded: need });
+        else if (style === 'hard' && vMax >= CATCH.V_FIREBALL) {
+          const fb = fireballAt(obj, vMax, Dfl, ctxC, tab.E0, dK);
+          if (sheathOnly(fb)) fast = { v: fb.vLumpAt, vL: vMax, th: 0, E: fb.Earr, sheath: fb };
+          else return Object.assign(out, { result: 'fireball', vL: vMax, thetaDeg: 0, recoil: recoilOf(ctxT, obj, 0, vMax, true, tab, D), fireball: fb }, keptFire, pushT(0, vMax, true));
+        }
+        else if (!(vMax >= need * (1 - 1e-9))) return Object.assign(out, { result: 'falls-back', vL: vMax, vMax, escapeNeeded: need }, pushT(0, vMax, true));
       }
       // a straight line at him, no air: it arrives at the speed it left his hand (his own and the catcher's pull
       // change a speed past 1% of light by a negligible amount). The line is the chord between their hands over the
       // round Earth: it leaves his hand aimed below level by about D / 2R and arrives rising by as much. Past about
       // sqrt(8 R h) (about 12 km for hands 2.7 m up) the chord runs underground, so it hits the ground first.
       const arriveFast = () => {
-        vE = vL = vMax = fast.v;
+        vE = vL = vMax = fast.vL != null ? fast.vL : fast.v;
         const R = K.R_E, a0 = R + h0, b0 = R + hStop, phi = Dfl / R;
         const bx = b0 * Math.sin(phi), by = b0 * Math.cos(phi) - a0, Lc = Math.hypot(bx, by);
         th = Math.atan2(by, bx) * 180 / Math.PI;
@@ -2944,6 +2996,7 @@
         }
         out.fast = true;
         out.drag = { E: 0, nearT: 0, nearC: 0, near: Math.min(NEAR, 0.5 * Dfl), share: 0 };
+        if (fast.sheath) out.sheath = { E: fast.sheath.Egap, share: fast.sheath.Egap / fast.sheath.E };
         out.qDynMax = 0;
         out.heat = heatVerdict(obj, 0, K.T0, fast.v, 0);
       };
@@ -2952,7 +3005,7 @@
         const need = out.vNeed;
         vL = style === 'easy' ? need : vMax;
         const run = wellRun(w, obj, vL);
-        if (!run.reached) return Object.assign(out, { result: 'falls-back', vL, vMax, escapeNeeded: need });
+        if (!run.reached) return Object.assign(out, { result: 'falls-back', vL, vMax, escapeNeeded: need }, pushT(0, vL, style === 'hard'));
         vE = vL;
         out.letsGo = vL === 0;
         out.aim = { thetaDeg: 0, vE, vL, vMax };
@@ -2993,11 +3046,12 @@
             // the speed and energy of the throw that is aimed at him (exact at that angle when it is relativistic)
             const r = tab.at(hd.thetaDeg), rel = r.canMove && r.v >= CATCH.V_FIREBALL;
             const v = rel ? r.v : hd.v;
-            if (dK > 0) return Object.assign(out, { result: 'fireball', vL: v, thetaDeg: hd.thetaDeg, recoil: recoilOf(ctxT, obj, hd.thetaDeg, v, true, tab, D), fireball: fireballAt(obj, v, Dfl, ctxC, rel ? r.Eobj : null, dK) }, keptFire);
-            fast = { v, th: hd.thetaDeg, E: rel ? r.Eobj : null };
+            const fb = dK > 0 ? fireballAt(obj, v, Dfl, ctxC, rel ? r.Eobj : null, dK) : null;
+            if (fb && !sheathOnly(fb)) return Object.assign(out, { result: 'fireball', vL: v, thetaDeg: hd.thetaDeg, recoil: recoilOf(ctxT, obj, hd.thetaDeg, v, true, tab, D), fireball: fb }, keptFire, pushT(hd.thetaDeg, v, true));
+            fast = fb ? { v: fb.vLumpAt, vL: v, th: hd.thetaDeg, E: fb.Earr, sheath: fb } : { v, th: hd.thetaDeg, E: rel ? r.Eobj : null };
             arriveFast();
           }
-          else if (hd.overshoots) return Object.assign(out, { result: 'overshoots', escaped: hd.escaped, orbit: hd.orbit, relativistic: !!hd.relativistic, thetaDeg: hd.thetaDeg, vL: hd.relativistic ? hd.v : tab.vOf(hd.thetaDeg), farthest: farthestCached(tab.key + '|' + w.barrier, obj, h0, hStop, vOfE) });
+          else if (hd.overshoots) { const vO = hd.relativistic ? hd.v : tab.vOf(hd.thetaDeg); return Object.assign(out, { result: 'overshoots', escaped: hd.escaped, orbit: hd.orbit, relativistic: !!hd.relativistic, thetaDeg: hd.thetaDeg, vL: vO, farthest: farthestCached(tab.key + '|' + w.barrier, obj, h0, hStop, vOfE) }, pushT(hd.thetaDeg, vO, true)); }
           else if (!hd.ok) {
             const far = farthestCached(tab.key + '|' + w.barrier, obj, h0, hStop, vOfE);
             // air, not strength, is the wall when no speed below 1% of light gets it there
@@ -3034,18 +3088,19 @@
       out.recoil = recoilOf(ctxT, obj, th, vL, style === 'hard', tab, D);
       // What reaches the ground under the thrower (Unbreakable footing, or his own recoil taken): the push of the
       // throw, the momentum he gives it and his throwing hand less his own recoil during the push, over the push
-      if (ctxT.unbreakable || ctxT.ownRecoil) out.toGroundT = { J: throwPushJ(ctxT, obj, th, vL, style === 'hard', tab), T: Math.max(limbPulse(bT), out.tPush) };
+      Object.assign(out, pushT(th, vL, style === 'hard'));
       if (out.hitsGround) {
         // the straight line to his hands runs underground: it hits the ground first, with all its energy
         const E = fast.E != null ? fast.E : momentumToKE(vToMomentum(fast.v, obj.m), obj.m);
         const L = obj.L || Math.cbrt(6 * obj.m / (Math.PI * (obj.rho || 1000)));
-        const cr = isFinite(E) ? craterDiameter({ L, v: fast.v, rhoI: obj.rho || 1000, rhoT: ctxC.surface.rho || 2000, angleDeg: Math.max(1e-3, -th), E }) : { D: Infinity };
+        // at the hit point the line meets the ground more shallowly than it left him: by the arc it covered
+        const cr = isFinite(E) ? craterDiameter({ L, v: fast.v, rhoI: obj.rho || 1000, rhoT: ctxC.surface.rho || 2000, angleDeg: Math.max(1e-3, -th - out.hitsGround.at / K.R_E * 180 / Math.PI), E }) : { D: Infinity };
         Object.assign(out.hitsGround, { E, crater: cr.D, craterExtrapolated: !!cr.extrapolated, quake: seismicMagnitude(E) });
         out.result = 'hits-ground';
         out.miss = { vImpact: fast.v, E, crater: cr.D, craterExtrapolated: !!cr.extrapolated, quake: seismicMagnitude(E), past: out.hitsGround.at - D, hits: true };
         return out;
       }
-      out.catch = catchIt(ctxC, obj, out.vArrive, out.angleDeg, w);
+      out.catch = catchIt(ctxC, obj, out.vArrive, out.angleDeg, w, !!fast);
       const k = out.catch;
       const breakable = !obj.indestructible;
       // survival gate: what reaches him has to be the object, whole, before anyone can catch it
@@ -3106,14 +3161,15 @@
       for (let i = 0; i < 100 && hi - lo > 1e-9 * hi; i++) { const mid = 0.5 * (lo + hi); if (run(mid).vB >= vL) hi = mid; else lo = mid; }
       return { p: run(hi), armMass, mB };
     }
-    // The push the ground gives the thrower during the throw (Unbreakable footing, or his own recoil taken): the
-    // momentum he gives the object and his throwing hand, less his own backward momentum during the push (as
-    // throwOnce counts it)
+    // The push the ground keeps from the thrower's throw (Unbreakable footing, or his own recoil taken): the
+    // object's momentum less his own recoil (as throwOnce counts it: the follow-through hands his arm's back)
     function throwPushJ(ctxT, obj, th, vL, full, tab) {
       if (full) { const r = tab.at(th); if (r.canMove && r.toGround) return r.toGround.J; }
       const e = easyPush(ctxT, obj, th, vL);
-      if (!e.p || ownAnchor(ctxT) === 'bolted') return vToMomentum(vL, e.mB);
-      return e.p.stalled ? 0 : e.p.pB === Infinity ? Infinity : Math.max(0, e.p.pB - e.p.pA);
+      if (!e.p || ownAnchor(ctxT) === 'bolted') return vToMomentum(vL, obj.m);
+      if (e.p.stalled) return 0;
+      if (e.p.pB === Infinity) return Infinity;
+      return Math.max(0, e.p.pB * obj.m / e.mB - Math.max(0, e.p.pA - e.p.pB * e.armMass / e.mB));
     }
     function recoilOf(ctxT, obj, th, vL, full, tab, D) {
       const body = ctxT.body;
@@ -3182,7 +3238,7 @@
     // of his strength); with strength to spare he brings it in as slowly as he likes, so that part has no set time.
     // None if a throw shoves the thrower out of range.
     function roundTrip(a, b) {
-      const ok = (L) => L && L.result === 'caught' && L.catch && !L.bursts && !(L.recoil && L.recoil.outOfRange);
+      const ok = (L) => L && L.result === 'caught' && L.catch && !L.catch.carried && !L.bursts && !(L.recoil && L.recoil.outOfRange);
       const stroke = (L) => (L.catch.forced ? L.catch.tStroke : 0);
       return ok(a) && ok(b) ? a.time + b.time + stroke(a) + stroke(b) + (a.tPush || 0) + (b.tPush || 0) : null;
     }
@@ -3504,21 +3560,26 @@
     // path. A fireball past 1% of light speed counts all its energy as before (an upper bound), times the share of
     // the energy the air takes when it sweeps the air at k times the rate, against all of the real air (fastAir; close
     // to light speed that is nearly all of it at any share below 100%). k = 1 is exactly the count before. Below that,
-    // his hand's own air counts too (handAir: their own bodies meet real air), as the path part.
+    // his hand's own air counts too, at any speed past sound (handAir: their own bodies meet real air), as the path part.
+    function throwHand(r, o) {
+      if (!o.body || !(r.v >= K.a0)) return null;
+      const gamma = !r.flight || !r.flight.relativistic ? 1 / Math.sqrt(Math.max(1e-300, 1 - (r.v / K.c) * (r.v / K.c)))
+        : isFinite(r.Eobj) ? 1 + r.Eobj / (o.obj.m * K.c * K.c) : Infinity;
+      return handAir(o.body, o.obj, r.v, gamma, r.push ? r.push.EA + r.push.EB : undefined);
+    }
     function throwBlast(r, o) {
       if (!r.canMove || !r.flight) return { land: 0, path: 0 };
       const k = dragFactor(o);
+      const h = k < 1 ? throwHand(r, o) : null, hand = h ? h.E : 0;
       if (r.flight.relativistic) {
         if (k >= 1) return { land: r.Eobj, path: 0 };
-        const gamma = isFinite(r.Eobj) ? 1 + r.Eobj / (o.obj.m * K.c * K.c) : Infinity;
-        const hand = o.body ? handAir(o.body, o.obj, r.v, gamma).E : 0;
-        if (!(k > 0)) return { land: 0, path: hand };
+        if (!(k > 0)) return { land: 0, path: hand, hand };
         const fa = fastAir(o.obj, r.Eobj, o.angle || 0, k);
-        return { land: isFinite(r.Eobj) ? r.Eobj * (fa.Eair0 > 0 ? fa.Eair / fa.Eair0 : k) : Infinity, path: hand };
+        return { land: isFinite(r.Eobj) ? r.Eobj * (fa.Eair0 > 0 ? fa.Eair / fa.Eair0 : k) : Infinity, path: hand, hand };
       }
       const land = r.flight.landed ? shock(r.flight.vImpact, r.Eimpact) : 0;
-      const drag = o && o.coolFlight ? 0 : shock(r.v, (r.dragLoss != null ? r.dragLoss : r.Eobj) * k);
-      return { land, path: drag + shock(r.recoilV || 0, r.recoilE || 0) };
+      const drag = o && o.coolFlight ? 0 : shock(r.v, (k < 1 && r.dragLoss0 != null ? r.dragLoss0 : r.dragLoss != null ? r.dragLoss : r.Eobj) * k);
+      return Object.assign({ land, path: drag + hand + shock(r.recoilV || 0, r.recoilE || 0) }, k < 1 ? { hand } : {});
     }
     function recoilSlide(r, o) {
       if (!r.canMove || !(r.recoilV > 0) || o.anchor === 'bolted' || o.ownRecoil) return 0;
@@ -3544,6 +3605,8 @@
         blastFrom: (r, o) => { const b = throwBlast(r, o); return r.flight && r.flight.relativistic ? (b.path > b.land ? 'path' : 'fire') : b.path > b.land ? 'path' : 'landing'; },
         // the two parts: the landing's, and the air's from its flight plus his recoil
         blastParts: (r, o) => throwBlast(r, o),
+        // his throwing hand's own air past sound (counted in the path part whenever some of the drag is absorbed)
+        hand: (r, o) => throwHand(r, o),
         // his recoil: the lurch during the push, then the coast against his footing and the air (as Catch counts it)
         slide: (r, o) => recoilSlide(r, o),
         // the object stops in about its own size: a pulse carrying its momentum over L / v. With his recoil taken (or the
@@ -3587,7 +3650,7 @@
           if (!L || !L.landed || !(L.v > 0)) return o.unbreakable && r.pushOff ? impulseSource(o.surface, r.pushOff.J, Math.max(1e-9, r.pushOff.T)) : null;
           // soft landing takes back the feet's impact energy; his body still stops over the leg stroke
           const list = [impulseSource(o.surface, momentumOf(L.v, o.m), L.t), L.soft ? null : impulseSource(o.surface, 2 * o.body.legEff * L.v, footPulse(o.body))].filter(Boolean);
-          // Unbreakable footing: a push-off the real ground couldn't bear (or one he never comes down from) goes into it whole
+          // Unbreakable footing: the push-off goes into the ground too (with the power off only the landing counts)
           if (o.unbreakable && r.pushOff) list.push(impulseSource(o.surface, r.pushOff.J, Math.max(1e-9, r.pushOff.T)));
           return list;
         },
@@ -3601,8 +3664,11 @@
         // paving, slabs, rock, ice and steel break when the foot punches a 1 cm hole; in soil a dent is only a
         // footprint, so only a crater counts there
         ground: (r, o) => r.crater > 0 || (!SOIL.has(o.surface && o.surface.id) && r.holeDepth >= 0.01),
-        // Unbreakable footing takes back the energy the hole or crater would have taken: no blast from it
-        blast: (r, o) => shock(r.vFoot, o && o.unbreakable ? r.E - (r.absorbed || 0) : r.E),
+        // Unbreakable footing takes back the energy the hole or crater would have taken: no blast from it. His foot
+        // still meets real air on the way down (their own bodies do): past sound, the air it drives ahead of it over the
+        // stomp counts (footAir, the same upper bound as his throwing hand's)
+        blast: (r, o) => shock(r.vFoot, o && o.unbreakable ? r.E - (r.absorbed || 0) + (MOVES.stomp.footAir(r, o) || { E: 0 }).E : r.E),
+        footAir: (r, o) => (o && o.body && r.vFoot >= K.a0 ? limbAir(o.body.footArea, o.body.strokes.stomp, r.vFoot, isFinite(r.E) ? 1 + r.E / (o.body.legEff * K.c * K.c) : Infinity, r.push ? r.push.EA + r.push.EB : undefined) : null),
         // the foot and shank stop on the ground: their momentum over a foot's contact time (or the time the hole takes)
         // A measured drill stamp (6.5 x body weight over about 52 ms, scaled) stops more than the leg: about 0.2 body-weight
         // seconds, as if half his body stopped from the leg's 3.7 m/s. The stomp takes the same effective mass, so the
@@ -3619,9 +3685,6 @@
         goal: (r, o) => r.vFist >= o.target,
         speed: (r) => r.vFist,
         blast: (r, o) => (o.silentStrike ? 0 : shock(r.vFist, r.E)),
-        // with his recoil taken (or the ground unbreakable), the punch's push reaches the ground through his feet
-        shake: (r, o) => ((o.ownRecoil || o.unbreakable) && r.toGround ? impulseSource(o.surface, r.toGround.J, Math.max(1e-9, r.toGround.T)) : null),
-        shakeWithPower: true,
         where: 'at his fist',
       },
       clap: {
@@ -3642,9 +3705,17 @@
         run: (c, o) => pull(c, o.obj),
         goal: (r, o) => r.canMove && r.t10m <= o.target,
         speed: (r) => r.vEnd,
+        // They take their own recoil: the rope's pull back on him goes through his feet into the planet over the pull
+        // (the load's momentum plus the rolling or sliding resistance it overcame), and shakes the ground. A steady
+        // pull over seconds, so it sets up far less ground wave than a blow. Bolted, or with the power off, it isn't counted.
+        shake: (r, o) => (o.ownRecoil && o.anchor !== 'bolted' && r.canMove && isFinite(r.t10m) && r.t10m > 0 ? impulseSource(o.surface, vToMomentum(r.vEnd, o.obj.m) + r.resist * r.t10m, r.t10m) : null),
+        shakeWithPower: 'ownRecoil',
         where: 'behind him',
       },
     };
+    // a move whose shaking exists only with a power on (shakeWithPower: true for either Unbreakable footing or They
+    // take their own recoil, or the one power's name), and that power is off
+    const shakeOff = (M, o) => !!M.shakeWithPower && (M.shakeWithPower === 'ownRecoil' ? !o.ownRecoil || o.anchor === 'bolted' : !o.ownRecoil && !o.unbreakable);
     // Hazards that set the courtesy ceiling: harm to people or property nearby.
     const HAZARDS = [
       { id: 'boom', test: (m, r, o) => !(o.silentStrike && m.silent) && (m.boomSpeed || m.speed)(r, o) >= K.a0 },
@@ -3789,7 +3860,7 @@
     // How far each hazard reaches at a given result (m), or 0 / null when it doesn't apply.
     function reach(move, r, o) {
       const M = MOVES[move], opt = Object.assign({ near: R.NEAR }, o || {});
-      if (M.shake && (!opt.surface || !opt.body) && !(M.shakeWithPower && !opt.ownRecoil && !opt.unbreakable)) throw new Error('RESTRAINT.reach needs o.surface and o.body');
+      if (M.shake && (!opt.surface || !opt.body) && !shakeOff(M, opt)) throw new Error('RESTRAINT.reach needs o.surface and o.body');
       const E = M.blast ? M.blast(r, opt) : 0, src = M.shake ? M.shake(r, opt) : null;
       return {
         air: E > 0 ? blastRadius(E, R.DP_HARM) : 0,
@@ -3807,7 +3878,7 @@
         slide: M.slide ? M.slide(r, opt) : 0,
       };
     }
-    return { R, SOIL, MOVES, HAZARDS, PRESETS, plan, planNow, reach, bounds, search };
+    return { R, SOIL, MOVES, HAZARDS, PRESETS, plan, planNow, reach, bounds, search, shakeOff };
   })();
 
   // ---------------------------------------------------------------------------
