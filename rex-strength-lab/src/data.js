@@ -1165,7 +1165,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Walking: their gait",
-   "d": "Their gait is people’s gait scaled to their size at the same Froude number (speed² ÷ g × hip height), with hip height 0.45 of their height (our estimate from the turnarounds). A comfortable walk is Froude 0.18, about 1.6 m/s for them; at Froude 0.5 they would break into a run. Each step holds about 1.2× body weight (1.0–1.5 as the pace rises). The ground shaking comes from the force of each footfall (see the next card): an ordinary heel strike is a pulse of about 0.43× body weight over 37 ms, scaled from people; soft-footed is 0.51 of that (an estimate from the 48.7% cut in loading rate measured when people walk quietly at their normal speed; the 69% cut came with walking 23% slower); a drill stamp peaks at 6.5× body weight, as measured in soldiers. The heel strike is the one measured at people’s preferred speed, used at every pace, so pace changes the load and the step rate but barely the shaking. The step-rate fit covers Froude 0.09–0.37, so the fastest pace (0.5) is extrapolated. The foot itself also soaks up about 160 J per ordinary step (scaled from people); that energy stays in the foot and doesn’t shake the ground."
+   "d": "They stride heel-first, like people (canon). Their gait is people’s gait scaled to their size at the same Froude number (speed² ÷ g × hip height), with hip height 0.45 of their height (our estimate from the turnarounds). A comfortable walk is Froude 0.18, about 1.6 m/s for them; at Froude 0.5 they would break into a run. Each step holds about 1.2× body weight (1.0–1.5 as the pace rises). The ground shaking comes from the force of each footfall (see the next card): an ordinary heel strike is a pulse of about 0.43× body weight over 37 ms, scaled from people; soft-footed is 0.51 of that (an estimate from the 48.7% cut in loading rate measured when people walk quietly at their normal speed; the 69% cut came with walking 23% slower); a drill stamp peaks at 6.5× body weight, as measured in soldiers. The heel strike is the one measured at people’s preferred speed, used at every pace, so pace changes the load and the step rate but barely the shaking. The step-rate fit covers Froude 0.09–0.37, so the fastest pace (0.5) is extrapolated. The foot itself also soaks up about 160 J per ordinary step (scaled from people); that energy stays in the foot and doesn’t shake the ground."
   },
   {
    "t": "Walking: ground shaking",
@@ -1173,7 +1173,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Footprints",
-   "d": "In sand and gravel, footprint depth is scaled from the one large-animal print we found measured: a weighed 2,530 kg African elephant cow left forefoot prints 20–26 mm deep in loose-to-medium sand (Schanz et al. 2013). The lab anchors on the authors’ calibrated model of that sand (18 mm at 350 kPa), with depth rising as pressure to the power 1.27 and in proportion to foot width. The pressure is the step’s landing peak, as in the elephant’s print; the rule was fitted from 99 to 350 kPa, so a stamp that presses harder is extrapolated (the page says so). Loose sand is taken as that sand; gravel, which bears more, gets shallower prints in proportion. In clay a foot sinks until the clay’s bearing, which grows a little with depth, carries the step. Paving, slabs, ice, steel and rock show no print until they break. All estimates."
+   "d": "In sand and gravel, footprint depth is scaled from the one large-animal print we found measured: a weighed 2,530 kg African elephant cow left forefoot prints 20–26 mm deep in loose-to-medium sand (Schanz et al. 2013). The lab anchors on the authors’ calibrated model of that sand (18 mm at 350 kPa), with depth rising as pressure to the power 1.27 and in proportion to foot width. The pressure is the step’s landing peak, as in the elephant’s print; the rule was fitted from 99 to 350 kPa, so a stamp that presses harder is extrapolated (the page says so). Loose sand is taken as that sand; gravel, which bears more, gets shallower prints in proportion. In clay a foot sinks until the clay’s bearing, which grows a little with depth, carries the step. Paving, slabs, ice, steel and rock show no print until they break. Standing still (the Weight tab) uses the same rules at his standing pressure. In sand and gravel, his feet plunge in deeper only past the pressure the elephant’s sand bore with that shallow print (350 kPa under a foot its width, scaled with foot width and more for gravel: a lower bound); from there the sand’s bearing grows with depth (USACE EM 1110-1-1905). All estimates."
   },
   {
    "t": "Comic switches",
@@ -1181,7 +1181,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Absorbed energy and growth",
-   "d": "Canon: the energy they put out is theirs, so they can take it back. By default it returns to the endless store of power they draw on, and nothing changes. The growth modes are what-ifs that turn it into mass, m = E ÷ c². Growth form: the even mix grows volume and density each by the square root of the mass ratio (height by its sixth root); pure size keeps the density; pure density keeps the size. Gradual growth starts and stops smoothly (our choice); it is harmless if the air pulse 2 m from him (our choice of how close a bystander stands) stays under 100 Pa (134 dB, the US Bureau of Mines safe level) and the top of his head rises no faster than 0.25 m/s (the reduced robot speed OSHA’s Technical Manual calls slow enough for a person to get out of the way; borrowed from robot safety, not tested for this case). Instant growth takes the time sound needs to cross his new body (our choice); the blast is a range from a ball to flat pistons, doubled for the ground, and his rising middle would throw him into the air unless he is bolted down; where the ground can’t give that push, his soles are driven into it instead, and the ground takes that work (often more than the air). In the runaway mode the side effects are absorbed too; the loop dies out at once unless its ratio reaches 1, which his own gravity can’t do outside a black hole."
+   "d": "Canon: the energy they put out is theirs, so they can take it back. By default it returns to the endless store of power they draw on, and nothing changes. The growth modes are what-ifs that turn it into mass, m = E ÷ c². Growth form: the even mix grows volume and density each by the square root of the mass ratio (height by its sixth root); pure size keeps the density; pure density keeps the size. Gradual growth starts and stops smoothly (our choice); it is harmless if the air pulse 2 m from him (our choice of how close a bystander stands) stays under 100 Pa (134 dB, the US Bureau of Mines safe level) and the top of his head rises no faster than 0.25 m/s (the reduced robot speed OSHA’s Technical Manual calls slow enough for a person to get out of the way; borrowed from robot safety, not tested for this case). Instant growth takes the time sound needs to cross his new body (our choice); the blast is a range from a ball to flat pistons, doubled for the ground. He grows about his middle, all the way through (canon), so his soles are driven into the ground and the ground takes that work (its bearing plus the soil pushed aside; often more than the air). The lift the ground’s push would give him goes to the endless ocean (canon), so he is never thrown up; on comic ground, which doesn’t give, he grows upward from his soles instead and stops when the growth does. In the runaway mode the side effects (the air and ground pushed aside) are paid from the energy absorbed and taken back as growth too (canon): a round trip, so exactly the energy absorbed becomes mass and the loop dies out at once. The energy his own gravity releases as he grows goes to the endless ocean (canon), so nothing can make the loop run away, and the half-life never has to act."
   },
   {
    "t": "Strength means force",
@@ -5058,7 +5058,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Walking: check: the engine's sinking rule against the measured elephant footprint",
-   "value": "For the weighed elephant, the engine's rule predicts a 0.23 m deep print (φ 35°) where 0.02 m was measured; elastic settlement predicts 2–9 mm",
+   "value": "For the weighed elephant, the Weight tab's old sinking rule predicted a 0.23 m deep print (φ 35°) where 0.02 m was measured; elastic settlement predicts 2–9 mm. The rule was replaced on 12 Oct 2026 (step_standing_sink_rule)",
    "status": "derived",
    "sources": [
     {
@@ -5068,6 +5068,22 @@ window.DINO_DATA = {
     {
      "url": "https://www.tugraz.at/fileadmin/user_upload/Institute/IAG/Files/18_Bearing_Capacity_of_Soils-USACE.pdf",
      "title": "USACE EM 1110-1-1905 (bearing factors used by the engine)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Walking: standing still in soil: how deep his feet go (the Weight tab's rule)",
+   "value": "Standing at canon, Rex's feet press about 3 mm into loose sand and Ollie's about 5 mm (the old rule sank Ollie 18 cm). Past about 350 kPa under a foot the elephant's width (scaled with width; more for gravel), sand starts to give and the foot plunges until the bearing growing with depth carries it. Estimate, checked against one measured elephant print",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC3812993/fullTextXML",
+     "title": "Schanz et al. (2013), Quantitative interpretation of tracks for determination of body mass, PLOS ONE 8:e77606 (anchor print and the authors' calibrated model)"
+    },
+    {
+     "url": "https://www.tugraz.at/fileadmin/user_upload/Institute/IAG/Files/18_Bearing_Capacity_of_Soils-USACE.pdf",
+     "title": "USACE EM 1110-1-1905, Bearing Capacity of Soils (N_q, and N_c growing with depth, Table 4-7)"
     }
    ],
    "note": null
@@ -8233,7 +8249,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Growth: instant growth: the blast from shoving the air aside",
-   "value": "Chicxulub, pure size: 2–3 atm at his sides and 0.9–1.5 × 10⁹ J into the air (210–350 kg of TNT) if he grew about his centre; windows shatter out to 100–220 m. Anchored at his soles, the top of his head pushes about 24–30 atm and the total is 2–4 times larger (up to 6 × 10⁹ J, 1.5 t of TNT; windows to about 360 m). Mix: 3–6 kg of TNT, windows to 25–57 m (up to about 90 m anchored)",
+   "value": "Chicxulub, pure size: 2–3 atm at his sides and 0.9–1.5 × 10⁹ J into the air (210–350 kg of TNT) if he grew about his centre; windows shatter out to 100–220 m. Anchored at his soles, the top of his head pushes about 24–30 atm and the total is 2–4 times larger (up to 6 × 10⁹ J, 1.5 t of TNT; windows to about 360 m). Mix: 3–6 kg of TNT, windows to 25–57 m (up to about 90 m anchored). Canon: he grows about his middle (the centred values)",
    "status": "estimate",
    "sources": [
     {
@@ -8249,7 +8265,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Growth: ground: pushed aside, and loaded by lifting his centre of mass",
-   "value": "Anchored at the soles, nothing is pushed aside, but instant growth still loads the ground with the force that lifts his centre of mass: GPa-level for Chicxulub-sized growth, more than rock can bear. Growing about his middle instead, the work on the ground is at most about 4 × 10⁻¹¹ of the absorbed energy (pure size)",
+   "value": "Anchored at the soles, nothing is pushed aside, but instant growth still loads the ground with the force that lifts his centre of mass: GPa-level for Chicxulub-sized growth, more than rock can bear. Growing about his middle instead, the work on the ground is at most about 4 × 10⁻¹¹ of the absorbed energy (pure size). Canon: he grows about his middle, so his feet are driven in, and the lift goes to the endless ocean: he is never thrown up",
    "status": "estimate",
    "sources": [
     {

@@ -10,7 +10,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## In progress
 
-- Rex lab follow-ups from the owners' answers (collaborator, `terantic/rex-followups`): growth about the middle, runaway paid from absorbed energy, heel-first gait, a revised sinking rule for standing. Plan first, then build, tests, README.
+- Rex lab follow-ups from the owners' answers (collaborator, `terantic/rex-followups`): built and tested; pull request open, waiting for the owner's review. Live page not yet republished (owner's account).
 - Rex lab, restraint and presence (owner's cloud session, `claude/rex-presence`): `rex-strength-lab/BRIEF-presence.md` is built. Pull request #11 (research, the build, review rounds 1 and 2) was merged at `b1916a8`. Pull request #12 (same branch) carries the rest:
   - Round 2's code-lens fixes and its record (`research/reviews/presence-round2.json`).
   - Review round 3 (it checked round 2's fixes): 60 findings, 59 confirmed; all fixed, one partly (documented in the README's known limits). Record: `rex-strength-lab/research/reviews/presence-round3.json`. Among them: three round 2 fixes had not fully held (soft landing's was in the engine but not on the page); a solo throw's recoil slide is now a hazard; the single-event plaster level follows RI 8507 Figure B-1; the 1 MJ crater line in soil is labelled as our estimate.
@@ -20,11 +20,8 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## Waiting on
 
-- Rex lab follow-ups from the owners' answers (12 Oct 2026; canon now in `CLAUDE.md`), to implement on a new branch:
-  - Instant growth expands about his middle, all the way through: his feet are driven into the ground (the page assumes the soles, which would throw him up).
-  - Runaway growth: the side effects of growth are paid from the absorbed energy, so the loop feeds itself until the half-life halts it (the page shows the loop ratio either way; make this the model and drop the open-question label).
-  - Gait: heel-first is canon; hip height 0.45 of height stays a measured estimate. Drop the open-question labels.
-  - The Weight tab's sinking rule for standing overpredicts a measured elephant footprint about tenfold: revise it (owners agreed), against the presence research's elephant print.
+- Owner: review the Rex lab follow-ups pull request (`terantic/rex-followups`), then republish the live page. Please confirm two rulings the collaborator relayed and recorded in `CLAUDE.md`: growth never bounces them up (the lift goes to the endless ocean, an exception to "momentum is never absorbed"), and the energy their gravity releases goes to the endless ocean. With these, the runaway loop is a round trip and the half-life control never acts; say whether to keep that control.
+- Owner, optional: the moves' quick-load bearing for sand (37 kPa at 0.316 m, the textbook value) sits about 5–10× below what the elephant's sand bore. Raising it would change all-out results across the moves; left unchanged (README, known limits).
 - Owner review of Build Comparison design decisions listed in `build-comparison/data/NOTES.md` ("Design decisions to review"): the edge marking, the palette change, the stop edges, Thor's and the Thing's treatment, the group colours' contrast, and figures drawn with their arms at their rest angle. (The meatball sentence is now reworded in the brief.)
 - Step 2 (collaborator): regenerate Rex's and Ollie's turnarounds to the model-sheet spec (fixes listed in BRIEF.md, "The turnarounds") and measure them; make gap-filler figures from target outlines with GPT Images 2.5.
   - **Blocker to solve first:** the measuring tool cannot follow arms that cannot hang clear of the body (rest angle near 90°; above about 100 on the median soldier, so most of the 88–170 and 220–924 stretches). It refuses such sheets. The target tool still draws and scores those outlines but says the tool cannot check art drawn from them. See `build-comparison/research/reviews/round2.md`, "Still open"; one way is to cut the arms at the shoulder line before slicing.
@@ -32,6 +29,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## Done
 
+- 2026-10-12: Rex lab follow-ups built (`terantic/rex-followups`): instant growth about his middle, never thrown up; the runaway as a round trip; heel-first gait canon; the Weight tab's standing sink rule replaced (elephant print 18 mm at 350 kPa, against 0.23 m before). Tests: calibration, presence (382 checks), shots, sweep.
 - 2026-10-12: the presence build's four open questions answered (instant growth about the middle; runaway side effects paid from absorbed energy; heel-first gait; revise the sinking rule). Canon in `CLAUDE.md`; the Rex lab changes are listed under Waiting on.
 - 2026-10-11: Rex lab presence build merged (pull request #11 at `b1916a8`, merged by the collaborator): effort and the courtesy ceiling, not-so-heroic presets, the Walk tab, comic switches, absorption and growth, research (268 facts), review rounds 1 and 2.
 - 2026-10-11: all three live pages republished from `main` (`43cf5e6`, after pull requests #8 and #9): Rex lab version 5, Build Calculator version 3, Build Comparison version 4. Each was built from a clean checkout of `main` and passed its tests first.

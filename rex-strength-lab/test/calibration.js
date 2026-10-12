@@ -143,7 +143,9 @@ check('stagnation T at 11 km/s (K, equilibrium)', P.stagnationT(11000), 16602, 1
   check('black-hole density at 2 m (10^27 kg/m^3)', P.blackHoleDensity(2) / 1e27, 1.310, 0.002);
   check('no-drag tunnel through the pole (min), real Earth ~38', (() => { const b = P.makeBody({ H: 2, m: 1e30 }); return P.fallThrough(b, { latDeg: 90, noDrag: true }).firstPass.t / 60; })(), 38.2, 0.3);
   const def = P.weight({ F: 511 * g, mode: 'comic', body: P.makeBody({}), surface: S2('sand'), groundHolds: false, anchor: 'friction' });
-  check('calibration body stands on loose sand (share of limit)', def.ground.standRatio, 0.79, 0.01);
+  // 180 kg on two 450 cm^2 feet: 19.6 kPa, against the sand's failure pressure under a 0.212 m foot, 350 kPa x 0.212 / 0.274
+  // (the elephant-print rule, 12 Oct 2026; it was 0.79 of the old textbook limit)
+  check('calibration body stands on loose sand (share of limit)', def.ground.standRatio, 0.0724, 0.01);
   for (const m of [5.201e7, 5.21e7]) {
     const w = P.weight({ F: 1e6, mode: 'comic', body: P.makeBody({ H: 2, m }), surface: S2('granite'), groundHolds: false, anchor: 'friction' });
     const ok = !w.fall.firstPass || (w.fall.firstPass.t > 1500 && Math.abs(w.fall.firstPass.dLonDeg) < 90);

@@ -1206,28 +1206,28 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       standNeedKg: m / LEG_SHARE(), walkNeedKg: W8.WALK_LOAD * m / LEG_SHARE(), runNeedKg: m,
     };
   }
-  // The ground under his own weight: stands, sinks a little, punches through a thin layer, or no rock can hold him.
+  // The ground under his own weight: stands (leaving a print in soil), sinks, punches through a thin layer, or no rock
+  // can hold him. Soil uses standDepth, the Walk tab's footprint rules at his standing pressure: first under his feet,
+  // then, once they are in past his leg length, under his whole underside.
   function groundUnderWeight(body, surface, groundHolds) {
     const Wt = body.m * K.g, Af = 2 * body.footArea, Ab = body.topArea, Lleg = 0.45 * body.H;
-    const p1 = Wt / Af, p2 = Wt / Ab, q0f = qultFor(surface, body.footB);
+    const p1 = Wt / Af, p2 = Wt / Ab, sd1 = standDepth(surface, p1, body.footB, body.H);
+    const q0f = sd1 ? sd1.qFail : qultFor(surface, body.footB);
     // once buried, the rock buoys him up: the same test fallThrough uses to decide he is held (PREM crust, surface gravity)
     const Wnet = (body.m - premRho(K.R_E - 1) * body.volume) * premG(K.R_E);
-    const out = { weight: Wt, footPressure: p1, bodyPressure: p2, q0: q0f, standRatio: p1 / q0f, rockRatio: Wnet / (W8.SIGMA_ROCK * Ab), rockCap: W8.SIGMA_ROCK * Ab, sink: 0, legLength: Lleg,
+    const out = { weight: Wt, footPressure: p1, bodyPressure: p2, q0: q0f, standRatio: p1 / q0f, rockRatio: Wnet / (W8.SIGMA_ROCK * Ab), rockCap: W8.SIGMA_ROCK * Ab, sink: 0, print: 0, legLength: Lleg,
       strongRockHolds: Wnet <= W8.SIGMA_HIGH * Ab, weakRockFails: Wnet > W8.SIGMA_LOW * Ab };
     if (groundHolds) return Object.assign(out, { regime: 'comic', standRatio: 0 });
     if (Wnet > W8.SIGMA_ROCK * Ab) return Object.assign(out, { regime: 'fallsThrough' });
-    if (p1 <= q0f) return Object.assign(out, { regime: 'stands' });
-    const soil = { sand: W8.NQ.sand, gravel: W8.NQ.gravel, softclay: 1, stiffclay: 1 }[surface.id];
-    if (soil) {
-      // bearing grows with depth: + gamma D N_q for sand and gravel, + gamma D (overburden only) for clay
-      const gN = (surface.rho || 1800) * K.g * soil;
-      const D1 = (p1 - q0f) / gN;
-      if (D1 <= Lleg) return Object.assign(out, { regime: 'sinks', sink: D1, stage: 'feet' });
-      const q0b = qultFor(surface, Math.sqrt(Ab));
-      const D2 = Math.max(Lleg, (p2 - q0b) / gN);
+    if (sd1) {
+      if (p1 <= q0f) return Object.assign(out, { regime: 'stands', print: sd1.depth, extrapolated: sd1.extrapolated });
+      if (sd1.depth <= Lleg) return Object.assign(out, { regime: 'sinks', sink: sd1.depth, stage: 'feet' });
+      const sd2 = standDepth(surface, p2, Math.sqrt(Ab), body.H);
+      const D2 = Math.max(Lleg, sd2.depth);
       if (D2 <= body.H) return Object.assign(out, { regime: 'sinks', sink: D2, stage: 'body' });
       return Object.assign(out, { regime: 'outOfSight', sink: D2, stage: 'body' });
     }
+    if (p1 <= q0f) return Object.assign(out, { regime: 'stands' });
     if (surface.id === 'granite') return Object.assign(out, { regime: 'sinks', sink: Lleg, stage: 'rock' });
     return Object.assign(out, { regime: 'punchesThrough', layer: surface.id });
   }
@@ -3433,32 +3433,63 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   // 1.46 at 0.5, 1, 2, 3 and 4 foot-widths: EM 1110-1-1905 Table 4-7; never past 9), carries it; past half his hip
   // height he is mired. A landing pulse past the ground's bearing also drives the foot in (as in a stomp: Poncelet
   // penetration), in clay; on paving, slabs, ice, steel and rock it breaks the surface. All estimates.
-  const PRINT = { d: 0.018, p: 350e3, n: 1.27, B: 0.274 };
+  const PRINT = { d: 0.018, p: 350e3, lo: 99e3, n: 1.27, B: 0.274 };
   const NC_DEPTH = [[0, 1], [0.5, 1.15], [1, 1.24], [2, 1.36], [3, 1.43], [4, 1.46]];
   const ncDepth = (x) => { const T = NC_DEPTH; if (x >= T[T.length - 1][0]) return T[T.length - 1][1]; for (let i = 1; i < T.length; i++) if (x <= T[i][0]) return T[i - 1][1] + (T[i][1] - T[i - 1][1]) * (x - T[i - 1][0]) / (T[i][0] - T[i - 1][0]); return 1; };
+  // Depth at which clay carries pressure p under a footing of width B (Infinity past hi).
+  function clayDepth(surface, p, B, hi) {
+    const q = qultFor(surface, B), su = surface.shear, Nc0 = q / su;
+    const Nc = (D) => Math.min(9, Nc0 * ncDepth(D / B));
+    const gam = (surface.rho || 1800) * K.g;
+    if (p <= q) return 0;
+    if (Nc(hi) * su + gam * hi < p) return Infinity;
+    let lo = 0;
+    for (let i = 0; i < 60; i++) { const mid = 0.5 * (lo + hi); if (Nc(mid) * su + gam * mid >= p) hi = mid; else lo = mid; }
+    return hi;
+  }
+  // Sand and gravel: the print the elephant rule gives at pressure p under a footing of width B.
+  const SAND_Q = 37e3 / 0.316;   // the loose sand's bearing per metre of foot width (the elephant print's sand)
+  function sandPrint(surface, p, B) {
+    const q = qultFor(surface, B), qSand = SAND_Q * B;
+    return { depth: PRINT.d * Math.pow(p / PRINT.p, PRINT.n) * (B / PRINT.B) * Math.min(1, qSand / q), extrapolated: p > PRINT.p * (1 + 1e-9) || p < PRINT.lo * (1 - 1e-9), qSand, q };
+  }
+  // Standing still, in soil (null on other surfaces). Sand and gravel: the elephant's sand carried its forefoot's
+  // 350 kPa (Schanz's dynamic stress; 181 kPa by force-plate peaks) with only a 20-26 mm print, so it fails no sooner
+  // than that: qFail = 350 kPa x (B / 0.274 m), and more for gravel in proportion to its bearing (a lower bound; our
+  // estimate). Below qFail the foot leaves the elephant rule's print; past it the foot plunges until the bearing,
+  // growing with depth as gamma D N_q (USACE EM 1110-1-1905), carries it, and never less than the print. Clay: the Walk
+  // tab's rule (bearing growing with depth, N_c up to 9; nothing until the bearing is passed). All estimates.
+  function standDepth(surface, p, B, H) {
+    if (surface.granular) {
+      const pr = sandPrint(surface, p, B), qFail = PRINT.p * (B / PRINT.B) * Math.max(1, pr.q / pr.qSand);
+      const Nq = W8.NQ[surface.id] || W8.NQ.sand;
+      const plunge = Math.max(0, (p - qFail) / ((surface.rho || 1800) * K.g * Nq));
+      return { depth: Math.max(pr.depth, plunge), print: pr.depth, plunge, qFail, extrapolated: plunge === 0 && pr.extrapolated };
+    }
+    if (surface.id === 'softclay' || surface.id === 'stiffclay') {
+      const q = qultFor(surface, B);
+      return { depth: clayDepth(surface, p, B, 10 * H), print: 0, plunge: 0, qFail: q, extrapolated: false };
+    }
+    return null;
+  }
   function footprint(body, surface, p, groundHolds, impact) {
     if (groundHolds) return { depth: 0, kind: 'comic' };
     const q = qultFor(surface, body.footB), B = body.footB;
     const pPeak = impact ? impact.p : p;
     if (surface.granular) {
-      const qSand = 37e3 * B / 0.316;   // the loose sand's bearing at this foot width (the elephant print's sand)
       // Schanz's anchor stress is the elephant's dynamic (peak) stress, so the print follows the step's peak
       // the rule was fitted from 99 to 350 kPa (Schanz's model): past that it is extrapolated
-      const pp = Math.max(p, pPeak);
-      return { depth: PRINT.d * Math.pow(pp / PRINT.p, PRINT.n) * (B / PRINT.B) * Math.min(1, qSand / q), kind: 'print', extrapolated: pp > PRINT.p * (1 + 1e-9) };
+      const pp = Math.max(p, pPeak), pr = sandPrint(surface, pp, B);
+      return { depth: pr.depth, kind: 'print', extrapolated: pp > PRINT.p * (1 + 1e-9) };
     }
     if (surface.id === 'softclay' || surface.id === 'stiffclay') {
       // the landing pulse, if it is past the clay's bearing, drives the foot in like a small stomp
       const dImp = impact && pPeak > q && impact.v > 0 ? penetrationDepth(impact.J / impact.v, body.footArea, impact.v, q, surface.rho || 1800) : 0;
       const mired = WALK.HIP * body.H / 2;   // a foot sunk past half the hip height: he is stuck
       if (p <= q) return dImp > mired ? { depth: Infinity, kind: 'mired' } : { depth: dImp, kind: dImp > 0 ? 'sinks' : 'holds' };
-      const su = surface.shear, Nc0 = q / su;
-      const Nc = (D) => Math.min(9, Nc0 * ncDepth(D / B));
-      const gam = (surface.rho || 1800) * K.g;
-      let lo = 0, hi = 10 * body.H;
-      if (Nc(hi) * su + gam * hi < p) return { depth: Infinity, kind: 'mired' };
-      for (let i = 0; i < 60; i++) { const mid = 0.5 * (lo + hi); if (Nc(mid) * su + gam * mid >= p) hi = mid; else lo = mid; }
-      const depth = Math.max(hi, dImp);
+      const d = clayDepth(surface, p, B, 10 * body.H);
+      if (!isFinite(d)) return { depth: Infinity, kind: 'mired' };
+      const depth = Math.max(d, dImp);
       return depth > mired ? { depth: Infinity, kind: 'mired' } : { depth, kind: 'sinks' };
     }
     return { depth: 0, kind: pPeak > q ? 'breaks' : 'holds' };
@@ -3854,8 +3885,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   // Gradual growth: the shortest duration that stays harmless to a bystander GAP metres from his final surface.
   // Air: the growing body is a compact source of volume flow; on rigid ground the pressure at r is rho0 V''/(2 pi r)
   // (twice the free-field monopole), peaking at rho0 k_V dV / (2 pi r T^2). Shove: the top of his head rises at up to
-  // k_H dH / T; anything above or beside him has to be able to get out of the way. Lift: his middle has to rise
-  // without leaving the ground, T >= sqrt(pi dH / g) (not binding next to the shove).
+  // k_H dH / T; anything above or beside him has to be able to get out of the way. Lift: a growth faster than
+  // sqrt(pi dH / g) would lift his middle off the ground, but that lift goes to the endless ocean (canon), so it sets
+  // no limit (Tl is reported only; it was never binding next to the shove).
   function gradualGrowth(body, E, form, o) {
     const opt = o || {};
     const g = grownBody(body, E, form);
@@ -3864,65 +3896,68 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const Tp = g.dV > 0 ? Math.sqrt(K.rho0 * sh.kV * g.dV / (2 * Math.PI * r * dpSafe)) : 0;
     const Tu = g.dH > 0 ? sh.kH * g.dH / uSafe : 0;
     const Tl = g.dH > 0 ? Math.sqrt(Math.PI * g.dH / K.g) : 0;
-    const T = Math.max(Tp, Tu, Tl);
+    const T = Math.max(Tp, Tu);
     const pAt = (Tc) => (g.dV > 0 ? K.rho0 * sh.kV * g.dV / (2 * Math.PI * r * Tc * Tc) : 0);
     const uAt = (Tc) => (g.dH > 0 ? sh.kH * g.dH / Tc : 0);
-    return { grown: g, shape: sh, T, Tp, Tu, Tl, by: T === Tu ? 'shove' : T === Tp ? 'pressure' : 'lift', r, pAt, uAt, compact: T > 10 * g.H / K.a0 };
+    return { grown: g, shape: sh, T, Tp, Tu, Tl, by: T === Tu ? 'shove' : 'pressure', r, pAt, uAt, compact: T > 10 * g.H / K.a0 };
   }
   // Instant growth: all at once, over the time sound takes to cross his new body (height / 1,540 m/s; an estimate).
-  // He grows from his soles, so his sides move out at about dR / t and the top of his head rises at dH / t. The air at
-  // his surface gets from the expanding-sphere value (low end) to the flat-piston value at his head's speed (high end);
-  // the excess energy pushed into the air, dp x dV, is a blast; on hard ground it counts double. Momentum: his middle
-  // rises dH/2 in t, so the ground has to push him up hard enough to give that speed, and nothing pulls him back: he is
-  // launched unless bolted to the planet.
-  // gnd (optional): { surface, groundHolds, bolted }. The ground can push his soles with at most its bearing: past
-  // that it gives, his soles are driven in, and he leaves only with the impulse it could supply in time tau.
+  // He grows about his middle, all the way through (canon): his sides move out at about dR / t, the top of his head
+  // rises at dH / 2t and his soles move down at the same speed. The air at his surface gets from the expanding-sphere
+  // value (low end) to the flat-piston value at his head's speed (high end); the excess energy pushed into the air,
+  // dp x dV, is a blast; on hard ground it counts double (an upper bound: it counts the downward share as air too).
+  // The ground: the lift its push would give him goes to the endless ocean (canon, owners), so his middle stays put.
+  // gnd (optional): { surface, groundHolds }. Real ground gives: his soles are driven dH/2 in at dH / 2t, and the ground
+  // takes that work, its bearing plus the inertia of the soil pushed aside (the Poncelet rule the lab uses for feet
+  // driven into the ground). Comic ground (or none given) doesn't give: he grows upward from his soles instead, his
+  // middle rising dH/2, and ends at rest (the lift goes to the endless ocean). Bolting stops sliding, not sinking.
   function instantGrowth(body, E, form, gnd) {
     const g = grownBody(body, E, form);
     const tau = g.H / GROW.TISSUE_C;
     const dR = g.R - g.R0;
     const u = dR / tau;
-    const vcm = 0.5 * g.dH / tau;                                // his middle's mean upward speed during the growth
-    const Fground = g.m * vcm / tau + g.m * K.g;                 // the ground's push that gives it
+    const vSole = 0.5 * g.dH / tau;                              // his soles' speed down, relative to his middle
     const soles = 2 * body.footArea * Math.exp(g.lnr * g.s * 2 / 3);
-    let launch = vcm * vcm / (2 * K.g), vLeave = vcm, Fmax = Infinity, qGround = Infinity, driven = false, sink = 0, Eground = 0;
-    if (gnd && gnd.surface && !gnd.groundHolds && !gnd.bolted) {
+    const gives = !!(gnd && gnd.surface && !gnd.groundHolds) && g.dH > 0;
+    let qGround = Infinity, Fground = 0, sink = 0, Eground = 0, rise = 0, Pocean = 0;
+    if (gives) {
       qGround = qultFor(gnd.surface, body.footB * Math.exp(g.lnr * g.s / 3));
-      Fmax = qGround * soles;
-      driven = Fground > Fmax;
-      vLeave = Math.min(vcm, Math.max(0, Fmax - g.m * K.g) * tau / g.m);
-      launch = vLeave * vLeave / (2 * K.g);
-      if (driven) {
-        // the rest of the growth drives his soles down: the ground takes that work, its bearing plus the inertia of
-        // the soil pushed aside (the Poncelet rule the lab uses for feet driven into the ground)
-        const vSole = vcm - vLeave;
-        sink = vSole * tau;
-        Eground = soles * (qGround + K.PONCELET_K * (gnd.surface.rho || 2000) * vSole * vSole) * sink;
-      }
+      Fground = soles * (qGround + K.PONCELET_K * (gnd.surface.rho || 2000) * vSole * vSole);
+      sink = 0.5 * g.dH;
+      Eground = Fground * sink;
+      Pocean = Math.max(0, Fground - g.m * K.g) * tau;           // the ground's upward impulse, beyond holding his weight
+    } else if (g.dH > 0) {
+      rise = 0.5 * g.dH;
+      Pocean = g.m * vSole;                                      // his rise, stopped when the growth ends
     }
-    // the head rises at his middle's speed plus half the growth rate (all of it from the soles when they stay put)
-    const uHead = vLeave + 0.5 * g.dH / tau;
+    // the lift he would have had: the speed that impulse gives him, and how high it would throw him (no drag)
+    const vWould = Pocean / g.m, launchWould = vWould * vWould / (2 * K.g);
+    // the head rises at the soles' speed relative to his middle, plus his middle's own rise when the ground holds
+    const uHead = vSole + (gives ? 0 : vSole);
     const dpLo = g.dV > 0 ? sphereOverpressure(u) : 0;
     const dpHi = g.dV > 0 ? pistonOverpressure(uHead) / 3 + 2 * pistonOverpressure(u) / 3 : 0;
     const Elo = 2 * dpLo * g.dV, Ehi = 2 * dpHi * g.dV;          // x2: rigid ground reflects it (equivalent free-air energy)
-    return { grown: g, tau, u, uHead, mach: u / K.a0, machHead: uHead / K.a0, dpLo, dpHi, Elo, Ehi, Eatm: K.p0 * g.dV, vcm, Fground, groundPressure: Fground / soles, soles, launch, vLeave, Fmax, qGround, driven, sink, Eground, quake: Eground > 0 ? seismicMagnitude(Eground) : null };
+    return { grown: g, tau, u, uHead, vSole, mach: u / K.a0, machHead: uHead / K.a0, dpLo, dpHi, Elo, Ehi, Eatm: K.p0 * g.dV, soles,
+      gives, qGround, Fground, groundPressure: gives ? Fground / soles : 0, sink, Eground, rise, Pocean, vWould, launchWould, launch: 0,
+      quake: Eground > 0 ? seismicMagnitude(Eground) : null };
   }
-  // Runaway: the side effects (the work done pushing the air back, p0 + dp over dV, and the gravitational binding
-  // energy his own pull releases as he grows) are absorbed as growth too. Loop ratio f = energy fed back / energy
-  // absorbed. f < 1: the loop dies out, and he absorbs E / (1 - f) in all. f >= 1: it runs away, and only the half-life
-  // (a story choice: no physics sets it) drains the extra into the endless ocean. Binding energy of a uniform ball:
-  // 3 G M^2 / (5 R), so the gravity share is 0.3 (2 - s/3) r_s / R in weak gravity (Newtonian); relativity raises it,
-  // reaching 1 only at his event horizon (growth_loop_gravity_gr).
-  function runawayGrowth(body, E, form) {
-    const inst = instantGrowth(body, E, form), g = inst.grown;
+  // Runaway: the side effects of the growth are paid from the energy absorbed and taken back as growth too (canon).
+  // The air pushed back (p0 + dp over dV) and the ground driven in are spent and then returned: a round trip, so in the
+  // end all of E becomes mass, no more. The binding energy his own gravity releases as he grows goes to the endless
+  // ocean (canon, owners), so it adds nothing. Loop ratio k = side effects / energy absorbed; each round returns k of
+  // the last, so the loop dies out at once and the half-life (a story choice) never has to act. The gravity share is
+  // still reported: binding energy of a uniform ball, 3 G M^2 / (5 R), so 0.3 (2 - s/3) r_s / R in weak gravity.
+  function runawayGrowth(body, E, form, gnd) {
+    const inst = instantGrowth(body, E, form, gnd), g = inst.grown;
     const bind = (m, R) => 0.6 * K.G * m * m / R;
-    const fAir = isFinite(E) && E > 0 ? (K.p0 + inst.dpHi) * g.dV / E : 0;
-    const fGrav = isFinite(E) && E > 0 ? Math.max(0, bind(g.m, g.R) - bind(body.m, g.R0)) / E : 0;
-    const k = fAir + fGrav;
+    const ok = isFinite(E) && E > 0;
+    const fAir = ok ? (K.p0 + inst.dpHi) * g.dV / E : 0;
+    const fGround = ok ? inst.Eground / E : 0;
+    const fGrav = ok ? Math.max(0, bind(g.m, g.R) - bind(body.m, g.R0)) / E : 0;
     const kGravNow = 0.3 * (2 - g.s / 3) * 2 * K.G * g.m / (g.R * K.c * K.c);
     const rs = 2 * K.G * g.m / (K.c * K.c);
-    return { instant: inst, grown: g, k, kAir: fAir, kGrav: fGrav, kSurround: fAir, kGravNow, runs: k >= 1 || rs >= g.R, total: k < 1 ? E / (1 - k) : Infinity,
-      rs, rsOverR: rs / g.R, kGravAtHorizon: 0.3 * (2 - g.s / 3) };
+    return { instant: inst, grown: g, k: fAir + fGround, kAir: fAir, kGround: fGround, kGrav: fGrav, Egrav: fGrav * E, kGravNow,
+      runs: false, total: E, rs, rsOverR: rs / g.R };
   }
 
   function threshold(pred, lo, hi) {
@@ -3980,7 +4015,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     kgRatio, overpressureAt, blastRadius, penetrationDepth,
     lift, throwObject, jump, stomp, punch, clap, sprint, pull, threshold, calibrateComic,
     throwOnce, jumpOnce, stompOnce, punchOnce, clapOnce,
-    driveStrength, PASSENGER, VIB, ppvAt, ppvNonlinear, groundOf, vibSource, elephantPPV, sphereOverpressure, growthShape, WALK, walkStep, walkThresholds, plasterOver, plasterReach, plasterLimitHz, footprint, presence, walkEffortFor, ppvReach, RESTRAINT, GROW, formShare, grownBody, grownMakeBody, pistonOverpressure, gradualGrowth, instantGrowth, runawayGrowth,
+    driveStrength, PASSENGER, VIB, ppvAt, ppvNonlinear, groundOf, vibSource, elephantPPV, sphereOverpressure, growthShape, WALK, walkStep, walkThresholds, plasterOver, plasterReach, plasterLimitHz, footprint, standDepth, presence, walkEffortFor, ppvReach, RESTRAINT, GROW, formShare, grownBody, grownMakeBody, pistonOverpressure, gradualGrowth, instantGrowth, runawayGrowth,
   };
 });
 
@@ -5153,7 +5188,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Walking: their gait",
-   "d": "Their gait is people’s gait scaled to their size at the same Froude number (speed² ÷ g × hip height), with hip height 0.45 of their height (our estimate from the turnarounds). A comfortable walk is Froude 0.18, about 1.6 m/s for them; at Froude 0.5 they would break into a run. Each step holds about 1.2× body weight (1.0–1.5 as the pace rises). The ground shaking comes from the force of each footfall (see the next card): an ordinary heel strike is a pulse of about 0.43× body weight over 37 ms, scaled from people; soft-footed is 0.51 of that (an estimate from the 48.7% cut in loading rate measured when people walk quietly at their normal speed; the 69% cut came with walking 23% slower); a drill stamp peaks at 6.5× body weight, as measured in soldiers. The heel strike is the one measured at people’s preferred speed, used at every pace, so pace changes the load and the step rate but barely the shaking. The step-rate fit covers Froude 0.09–0.37, so the fastest pace (0.5) is extrapolated. The foot itself also soaks up about 160 J per ordinary step (scaled from people); that energy stays in the foot and doesn’t shake the ground."
+   "d": "They stride heel-first, like people (canon). Their gait is people’s gait scaled to their size at the same Froude number (speed² ÷ g × hip height), with hip height 0.45 of their height (our estimate from the turnarounds). A comfortable walk is Froude 0.18, about 1.6 m/s for them; at Froude 0.5 they would break into a run. Each step holds about 1.2× body weight (1.0–1.5 as the pace rises). The ground shaking comes from the force of each footfall (see the next card): an ordinary heel strike is a pulse of about 0.43× body weight over 37 ms, scaled from people; soft-footed is 0.51 of that (an estimate from the 48.7% cut in loading rate measured when people walk quietly at their normal speed; the 69% cut came with walking 23% slower); a drill stamp peaks at 6.5× body weight, as measured in soldiers. The heel strike is the one measured at people’s preferred speed, used at every pace, so pace changes the load and the step rate but barely the shaking. The step-rate fit covers Froude 0.09–0.37, so the fastest pace (0.5) is extrapolated. The foot itself also soaks up about 160 J per ordinary step (scaled from people); that energy stays in the foot and doesn’t shake the ground."
   },
   {
    "t": "Walking: ground shaking",
@@ -5161,7 +5196,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Footprints",
-   "d": "In sand and gravel, footprint depth is scaled from the one large-animal print we found measured: a weighed 2,530 kg African elephant cow left forefoot prints 20–26 mm deep in loose-to-medium sand (Schanz et al. 2013). The lab anchors on the authors’ calibrated model of that sand (18 mm at 350 kPa), with depth rising as pressure to the power 1.27 and in proportion to foot width. The pressure is the step’s landing peak, as in the elephant’s print; the rule was fitted from 99 to 350 kPa, so a stamp that presses harder is extrapolated (the page says so). Loose sand is taken as that sand; gravel, which bears more, gets shallower prints in proportion. In clay a foot sinks until the clay’s bearing, which grows a little with depth, carries the step. Paving, slabs, ice, steel and rock show no print until they break. All estimates."
+   "d": "In sand and gravel, footprint depth is scaled from the one large-animal print we found measured: a weighed 2,530 kg African elephant cow left forefoot prints 20–26 mm deep in loose-to-medium sand (Schanz et al. 2013). The lab anchors on the authors’ calibrated model of that sand (18 mm at 350 kPa), with depth rising as pressure to the power 1.27 and in proportion to foot width. The pressure is the step’s landing peak, as in the elephant’s print; the rule was fitted from 99 to 350 kPa, so a stamp that presses harder is extrapolated (the page says so). Loose sand is taken as that sand; gravel, which bears more, gets shallower prints in proportion. In clay a foot sinks until the clay’s bearing, which grows a little with depth, carries the step. Paving, slabs, ice, steel and rock show no print until they break. Standing still (the Weight tab) uses the same rules at his standing pressure. In sand and gravel, his feet plunge in deeper only past the pressure the elephant’s sand bore with that shallow print (350 kPa under a foot its width, scaled with foot width and more for gravel: a lower bound); from there the sand’s bearing grows with depth (USACE EM 1110-1-1905). All estimates."
   },
   {
    "t": "Comic switches",
@@ -5169,7 +5204,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Absorbed energy and growth",
-   "d": "Canon: the energy they put out is theirs, so they can take it back. By default it returns to the endless store of power they draw on, and nothing changes. The growth modes are what-ifs that turn it into mass, m = E ÷ c². Growth form: the even mix grows volume and density each by the square root of the mass ratio (height by its sixth root); pure size keeps the density; pure density keeps the size. Gradual growth starts and stops smoothly (our choice); it is harmless if the air pulse 2 m from him (our choice of how close a bystander stands) stays under 100 Pa (134 dB, the US Bureau of Mines safe level) and the top of his head rises no faster than 0.25 m/s (the reduced robot speed OSHA’s Technical Manual calls slow enough for a person to get out of the way; borrowed from robot safety, not tested for this case). Instant growth takes the time sound needs to cross his new body (our choice); the blast is a range from a ball to flat pistons, doubled for the ground, and his rising middle would throw him into the air unless he is bolted down; where the ground can’t give that push, his soles are driven into it instead, and the ground takes that work (often more than the air). In the runaway mode the side effects are absorbed too; the loop dies out at once unless its ratio reaches 1, which his own gravity can’t do outside a black hole."
+   "d": "Canon: the energy they put out is theirs, so they can take it back. By default it returns to the endless store of power they draw on, and nothing changes. The growth modes are what-ifs that turn it into mass, m = E ÷ c². Growth form: the even mix grows volume and density each by the square root of the mass ratio (height by its sixth root); pure size keeps the density; pure density keeps the size. Gradual growth starts and stops smoothly (our choice); it is harmless if the air pulse 2 m from him (our choice of how close a bystander stands) stays under 100 Pa (134 dB, the US Bureau of Mines safe level) and the top of his head rises no faster than 0.25 m/s (the reduced robot speed OSHA’s Technical Manual calls slow enough for a person to get out of the way; borrowed from robot safety, not tested for this case). Instant growth takes the time sound needs to cross his new body (our choice); the blast is a range from a ball to flat pistons, doubled for the ground. He grows about his middle, all the way through (canon), so his soles are driven into the ground and the ground takes that work (its bearing plus the soil pushed aside; often more than the air). The lift the ground’s push would give him goes to the endless ocean (canon), so he is never thrown up; on comic ground, which doesn’t give, he grows upward from his soles instead and stops when the growth does. In the runaway mode the side effects (the air and ground pushed aside) are paid from the energy absorbed and taken back as growth too (canon): a round trip, so exactly the energy absorbed becomes mass and the loop dies out at once. The energy his own gravity releases as he grows goes to the endless ocean (canon), so nothing can make the loop run away, and the half-life never has to act."
   },
   {
    "t": "Strength means force",
@@ -9046,7 +9081,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Walking: check: the engine's sinking rule against the measured elephant footprint",
-   "value": "For the weighed elephant, the engine's rule predicts a 0.23 m deep print (φ 35°) where 0.02 m was measured; elastic settlement predicts 2–9 mm",
+   "value": "For the weighed elephant, the Weight tab's old sinking rule predicted a 0.23 m deep print (φ 35°) where 0.02 m was measured; elastic settlement predicts 2–9 mm. The rule was replaced on 12 Oct 2026 (step_standing_sink_rule)",
    "status": "derived",
    "sources": [
     {
@@ -9056,6 +9091,22 @@ window.DINO_DATA = {
     {
      "url": "https://www.tugraz.at/fileadmin/user_upload/Institute/IAG/Files/18_Bearing_Capacity_of_Soils-USACE.pdf",
      "title": "USACE EM 1110-1-1905 (bearing factors used by the engine)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Walking: standing still in soil: how deep his feet go (the Weight tab's rule)",
+   "value": "Standing at canon, Rex's feet press about 3 mm into loose sand and Ollie's about 5 mm (the old rule sank Ollie 18 cm). Past about 350 kPa under a foot the elephant's width (scaled with width; more for gravel), sand starts to give and the foot plunges until the bearing growing with depth carries it. Estimate, checked against one measured elephant print",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC3812993/fullTextXML",
+     "title": "Schanz et al. (2013), Quantitative interpretation of tracks for determination of body mass, PLOS ONE 8:e77606 (anchor print and the authors' calibrated model)"
+    },
+    {
+     "url": "https://www.tugraz.at/fileadmin/user_upload/Institute/IAG/Files/18_Bearing_Capacity_of_Soils-USACE.pdf",
+     "title": "USACE EM 1110-1-1905, Bearing Capacity of Soils (N_q, and N_c growing with depth, Table 4-7)"
     }
    ],
    "note": null
@@ -12221,7 +12272,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Growth: instant growth: the blast from shoving the air aside",
-   "value": "Chicxulub, pure size: 2–3 atm at his sides and 0.9–1.5 × 10⁹ J into the air (210–350 kg of TNT) if he grew about his centre; windows shatter out to 100–220 m. Anchored at his soles, the top of his head pushes about 24–30 atm and the total is 2–4 times larger (up to 6 × 10⁹ J, 1.5 t of TNT; windows to about 360 m). Mix: 3–6 kg of TNT, windows to 25–57 m (up to about 90 m anchored)",
+   "value": "Chicxulub, pure size: 2–3 atm at his sides and 0.9–1.5 × 10⁹ J into the air (210–350 kg of TNT) if he grew about his centre; windows shatter out to 100–220 m. Anchored at his soles, the top of his head pushes about 24–30 atm and the total is 2–4 times larger (up to 6 × 10⁹ J, 1.5 t of TNT; windows to about 360 m). Mix: 3–6 kg of TNT, windows to 25–57 m (up to about 90 m anchored). Canon: he grows about his middle (the centred values)",
    "status": "estimate",
    "sources": [
     {
@@ -12237,7 +12288,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Growth: ground: pushed aside, and loaded by lifting his centre of mass",
-   "value": "Anchored at the soles, nothing is pushed aside, but instant growth still loads the ground with the force that lifts his centre of mass: GPa-level for Chicxulub-sized growth, more than rock can bear. Growing about his middle instead, the work on the ground is at most about 4 × 10⁻¹¹ of the absorbed energy (pure size)",
+   "value": "Anchored at the soles, nothing is pushed aside, but instant growth still loads the ground with the force that lifts his centre of mass: GPa-level for Chicxulub-sized growth, more than rock can bear. Growing about his middle instead, the work on the ground is at most about 4 × 10⁻¹¹ of the absorbed energy (pure size). Canon: he grows about his middle, so his feet are driven in, and the lift goes to the endless ocean: he is never thrown up",
    "status": "estimate",
    "sources": [
     {
@@ -13083,31 +13134,29 @@ window.DINO_DATA = {
       if (G.T > 0) {
         const T = state.growT, dp = G.pAt(T), u = G.uAt(T);
         const safe = T >= G.T * (1 - 1e-9);
-        items.push('Shortest harmless time: ' + fmtTime(G.T) + ', set by ' + ({ shove: 'how fast the top of his head rises: anything above or beside him has to be able to get out of the way (0.25 m/s, the reduced robot speed OSHA’s Technical Manual calls slow enough for a person to get out of the way; borrowed from robot safety, not tested for this case)', pressure: 'the air he pushes aside: a pressure pulse on someone ' + fmtDist(P.GROW.GAP) + ' from him (our choice of how close a bystander stands), kept under 100 Pa (134 dB, the US Bureau of Mines’ safe level for houses)', lift: 'keeping his feet on the ground while his middle rises' }[G.by]) + '. The air alone would allow ' + fmtTime(G.Tp) + '.');
+        items.push('Shortest harmless time: ' + fmtTime(G.T) + ', set by ' + ({ shove: 'how fast the top of his head rises: anything above or beside him has to be able to get out of the way (0.25 m/s, the reduced robot speed OSHA’s Technical Manual calls slow enough for a person to get out of the way; borrowed from robot safety, not tested for this case)', pressure: 'the air he pushes aside: a pressure pulse on someone ' + fmtDist(P.GROW.GAP) + ' from him (our choice of how close a bystander stands), kept under 100 Pa (134 dB, the US Bureau of Mines’ safe level for houses)' }[G.by]) + '. The air alone would allow ' + fmtTime(G.Tp) + '.');
         items.push('Over ' + fmtTime(T) + (safe ? ' it is harmless: ' : ' it is not: ') + 'the air pulse ' + fmtDist(P.GROW.GAP) + ' from him (our choice of bystander distance) peaks at ' + fmtSI(dp, 'Pa') + ' (windows usually shatter from 3.4–6.9 kPa; weak or cracked panes from about 0.4 kPa) and the top of his head rises at up to ' + speedOnly(u) + '. The growth curve starts and stops smoothly (our choice).');
       } else items.push('Pure density: he doesn’t get any bigger, so nothing around him is pushed aside. Only his weight changes.');
     }
     if (state.absorb === 'instant' || state.absorb === 'runaway') {
-      const bolted = state.anchor === 'bolted';
-      const I = P.instantGrowth(body, E, state.growS, { surface: sf, groundHolds: state.groundHolds, bolted });
+      const runaway = state.absorb === 'runaway';
+      const I = P.instantGrowth(body, E, state.growS, { surface: sf, groundHolds: state.groundHolds });
       if (gB.dV > 0) {
         const win = (Ex, dp) => P.blastRadius(Ex, dp);
         const wLo = win(I.Elo, 6900), wHi = win(I.Ehi, 3400);
-        items.push('All at once: over ' + fmtTime(I.tau) + ', the time sound takes to cross his new body (our choice of timescale; truly instant would need unlimited energy). He grows from his soles (our choice; an open question for the owners): his sides move out at about ' + speedOnly(I.u) + ' and the top of his head rises at ' + speedOnly(I.uHead) + (I.uHead >= K.a0 ? ' (' + fmtMach(I.uHead) + ')' : '') + '.');
+        items.push('All at once: over ' + fmtTime(I.tau) + ', the time sound takes to cross his new body (our choice of timescale; truly instant would need unlimited energy). He grows about his middle, all the way through (canon): his sides move out at about ' + speedOnly(I.u) + ' and the top of his head rises at ' + speedOnly(I.uHead) + (I.uHead >= K.a0 ? ' (' + fmtMach(I.uHead) + ')' : '') + '.');
         const winText = I.dpHi < 3400 ? ', below the 3.4–6.9 kPa at which windows usually shatter (Glasstone & Dolan); weak or cracked panes can break from about 0.4–0.7 kPa (US Bureau of Mines).' : ': windows break out to about ' + fmtDist(wLo) + '–' + fmtDist(wHi) + ' from his middle.';
-        items.push('The air at his surface jumps by ' + fmtSI(I.dpLo, 'Pa') + '–' + fmtSI(I.dpHi, 'Pa') + '. ' + (state.absorb === 'runaway' ? 'In runaway mode that blast’s energy (' + fmtTNT(I.Elo) + ' to ' + fmtTNT(I.Ehi) + ') is taken back as growth too, so the air blast breaks no windows.' : 'As a blast that is ' + fmtTNT(I.Elo) + ' to ' + fmtTNT(I.Ehi) + winText) + ' Rough: the low end treats him as a ball, the high end as flat pistons.');
-        const push = 'Momentum isn’t absorbed: his middle rises ' + fmtDist(gB.dH / 2) + ' in that time, so the ground has to push him up with an extra ' + fmtSI(I.Fground - I.grown.m * g, 'N') + ' on top of his new weight (' + fmtSI(I.groundPressure, 'Pa') + ' under his feet in all). ';
-        items.push(push + (bolted ? 'Bolted to the planet, he stays put and the Earth takes it.'
-          : state.groundHolds ? 'Comic ground gives that push: nothing holds him down, so he is thrown about ' + fmtDist(I.launch) + ' up before falling back (no air drag).'
-            : I.driven ? capital(theSurf(sf)) + ' bears only ' + fmtSI(I.qGround, 'Pa') + ': it gives, and his soles are driven about ' + fmtDist(I.sink) + ' into it. That puts about ' + fmtTNT(I.Eground) + ' into the ground' + (I.quake > 2 ? ' (felt like a magnitude ' + sig(I.quake, 2) + ' quake)' : '') + (I.Eground > I.Ehi ? ', more than goes into the air' : '') + ' (rough: its bearing plus the soil pushed aside). ' + (I.launch > 0.01 ? 'He still leaves the ground at ' + speedOnly(I.vLeave) + ' and rises about ' + fmtDist(I.launch) + ' before falling back.' : 'He doesn’t leave the ground.')
-              : capital(theSurf(sf)) + ' can take it (it bears ' + fmtSI(I.qGround, 'Pa') + '): nothing holds him down, so he is thrown about ' + fmtDist(I.launch) + ' up before falling back (no air drag).'));
+        items.push('The air at his surface jumps by ' + fmtSI(I.dpLo, 'Pa') + '–' + fmtSI(I.dpHi, 'Pa') + '. ' + (runaway ? 'In runaway mode that blast’s energy (' + fmtTNT(I.Elo) + ' to ' + fmtTNT(I.Ehi) + ') is taken back as growth too, so the air blast breaks no windows.' : 'As a blast that is ' + fmtTNT(I.Elo) + ' to ' + fmtTNT(I.Ehi) + winText) + ' Rough: the low end treats him as a ball, the high end as flat pistons.');
+        const lift = 'The lift the ground’s push would give him (enough to throw him about ' + fmtDist(I.launchWould) + ' up) goes to the endless ocean (canon), so he is never thrown up.';
+        items.push(I.gives
+          ? 'His soles are driven ' + fmtDist(I.sink) + ' into ' + theSurf(sf) + ' at ' + speedOnly(I.vSole) + ', while his middle stays put. ' + (runaway ? 'The ground’s share (' + fmtTNT(I.Eground) + ') is taken back as growth too, so it doesn’t shake; the hole stays. ' : 'That puts about ' + fmtTNT(I.Eground) + ' into the ground' + (I.quake > 2 ? ' (felt like a magnitude ' + sig(I.quake, 2) + ' quake)' : '') + (I.Eground > I.Ehi ? ', more than goes into the air' : '') + ' (rough: its bearing plus the soil pushed aside). ') + lift
+          : 'Comic ground doesn’t give, so he grows upward from his soles instead: his middle rises ' + fmtDist(I.rise) + ' and stops when the growth does. ' + lift);
       } else items.push('Pure density: he doesn’t get any bigger, so there is no blast. Only his weight changes.');
     }
     if (state.absorb === 'runaway') {
-      const RW = P.runawayGrowth(body, E, state.growS);
-      items.push('Runaway loop: on average over the growth, each joule absorbed sends back about ' + (RW.k > 0 ? sci(RW.k, 1) : '0') + ' J of side effects (' + (gB.dV > 0 ? 'pushing the air back and ' : '') + 'his own gravity pulling him tighter), which are absorbed too. ' + (RW.runs ? 'That is 1 or more: it would run away, and the half-life (' + fmtTime(state.halfLife) + ', a story choice: no physics sets it) drains the extra into the endless ocean.' : 'That is far below 1, so the loop dies out at once: he absorbs ' + (RW.k < 1e-6 ? 'the same energy to within a millionth.' : fmtSI(RW.total, 'J') + ' in all.')));
-      items.push('Open question for the owners: whether those side effects are paid from the energy they absorbed or from the endless store. Only in the first case does the loop add anything, and here it is tiny either way.');
-      items.push('A real runaway needs side effects as big as the energy itself. Only his own gravity can get there: in weak gravity its share is about 0.3 × (2 − s/3) × (his event-horizon radius ÷ his radius), where s is the share of growth into size. At his final size the next joule would send back ' + sci(RW.kGravNow, 1) + ' J this way (the share grows as he does, so it is above the average); relativity raises it, but it reaches 1 only at his own event horizon. So outside a black hole the half-life never has to act.');
+      const RW = P.runawayGrowth(body, E, state.growS, { surface: sf, groundHolds: state.groundHolds });
+      items.push('Runaway loop: the side effects of the growth (' + (gB.dV > 0 ? 'pushing the air back' + (RW.kGround > 0 ? ' and driving the ground in' : '') : 'none here, since he doesn’t get bigger') + ') are paid from the energy he absorbed and taken back as growth too (canon). That is a round trip: each joule absorbed sends back ' + (RW.k > 0 ? 'about ' + sci(RW.k, 1) + ' J' : 'nothing') + ', which returns what was spent, so in the end exactly the energy absorbed becomes mass and the loop dies out at once. The half-life (' + fmtTime(state.halfLife) + ', a story choice) never has to act.');
+      items.push('The energy his own gravity releases as he grows tighter goes to the endless ocean (canon), so it doesn’t feed the loop: ' + (RW.Egrav > 0 ? fmtSI(RW.Egrav, 'J') + ' here (' + sci(RW.kGrav, 1) + ' of what he absorbed)' : 'none here') + '. Fed back, it would grow the loop as he nears his own event horizon (in weak gravity about 0.3 × (2 − s/3) × his event-horizon radius ÷ his radius, ' + sci(RW.kGravNow, 1) + ' at his final size, where s is the share of growth into size).');
     }
     if (!small) {
       const gb = P.grownMakeBody(body, E, state.growS);
@@ -13737,7 +13786,7 @@ window.DINO_DATA = {
     else if (gd.regime === 'outOfSight') v = 'Rex sinks out of sight, down until deeper, stronger ground or bedrock stops him. The sim can’t know how deep that is.';
     else if (gd.regime === 'punchesThrough') v = c.surface.id === 'ice' ? 'Rex breaks through the ice and sinks to the bottom of the lake.' : 'Rex goes straight through ' + c.surface.short + '.';
     else if (gd.regime === 'sinks') { const lv = (x) => (x <= 0.5 ? 'his hips' : x <= 0.7 ? 'his chest' : x <= 0.85 ? 'his shoulders' : 'his head'); v = gd.stage === 'rock' ? 'Rex’s feet punch into the granite. He sinks in up to his hips and stops.' : gd.stage === 'body' ? 'Rex sinks in up to ' + lv(gd.sink / c.body.H) + ' (' + fmtDist(gd.sink) + ') and stops.' : 'Rex sinks ' + fmtDist(gd.sink) + ' into ' + theSurf(c.surface) + ' and stops.'; }
-    else if (gd.regime === 'stands') v = 'Rex stands fine.';
+    else if (gd.regime === 'stands') v = gd.print >= 5e-4 ? 'Rex stands fine, his feet pressed about ' + fmtDist(gd.print) + ' into ' + theSurf(c.surface) + ' (scaled from an elephant’s print; an estimate' + (gd.extrapolated ? ', extrapolated past the pressures it was fitted to' : '') + ').' : 'Rex stands fine.';
     else v = 'Comic ground holds him up.';
     if (pl.regime === 'none' && ['comic', 'stands', 'sinks'].includes(gd.regime)) {
       // 'Rex stands fine' would contradict this, so say what holds and what doesn't
@@ -13813,7 +13862,7 @@ window.DINO_DATA = {
       else if (Math.abs(Math.log10(r.rho / 1000)) > 0.005) items.push('Walking puts about 1.2× his weight on one leg at each step. The sim sets that against both legs’ 1.4× push (a rough rule: a near-straight leg is much stronger than one in a squat), and he has ' + fmtRatio(mv.legForce / (1.2 * mv.weight)) + ' what walking needs. Running uses the Sprint tab’s rough rule: strength above his weight. Real runners land with 2–2.9× their weight on one leg, on springy, near-straight legs the dial doesn’t model.');
     }
     if (pl.regime === 'none') {
-      if (gd.regime === 'stands') items.push('His feet press ' + fmtSI(gd.footPressure, 'Pa') + ' into ' + theSurf(c.surface) + ', which gives at about ' + fmtSI(gd.q0, 'Pa') + '.');
+      if (gd.regime === 'stands') items.push('His feet press ' + fmtSI(gd.footPressure, 'Pa') + ' into ' + theSurf(c.surface) + ', which gives at about ' + fmtSI(gd.q0, 'Pa') + (c.surface.granular ? ' or more (a lower bound: a weighed elephant’s forefoot pressed sand like this that hard and left a print only about 2 cm deep; Schanz 2013).' : '.'));
       else if (gd.regime === 'sinks' && gd.stage === 'rock') items.push('Granite gives way under a foot at about 1.7 GPa (rough: 0.1–4 GPa). His feet press ' + fmtSI(gd.footPressure, 'Pa') + ', but his whole body spreads the load to ' + fmtSI(gd.bodyPressure, 'Pa') + ', which the rock can carry.');
       else if (gd.regime === 'sinks') items.push(capital(theSurf(c.surface)) + ' gives way under him (' + fmtRatio(gd.standRatio) + ' its limit). Soil gets stronger the deeper he goes, because the soil above presses it down (sand and gravel much more than clay), so he stops at ' + fmtDist(gd.sink) + '.' + (gd.stage === 'body' ? ' His legs go in first; once his wider body reaches the ground, the load spreads out.' : ''));
       else if (gd.regime === 'outOfSight') items.push('Soil gets stronger with depth, but not fast enough to stop him near the surface. He goes down until deeper, stronger ground or bedrock stops him; bedrock carries up to about ' + fmtSI(gd.rockCap, 'N') + ' under his whole body, and he weighs ' + fmtSI(gd.weight, 'N') + '.');
@@ -13839,7 +13888,7 @@ window.DINO_DATA = {
     out.push(math([
       'Volume = ' + sig(P.BUILDS[c.body.build].kV, 4) + ' × height³ (' + (c.body.build === 'human' ? 'the 2 m, 180 kg calibration body: 0.18 m³ at 2 m' : 'his build, from his ruled mass at 1,060 kg/m³: ' + sig(P.bodyVolume(P.DEFAULT_BODIES.rex.H, c.body.build), 3) + ' m³ at 10 ft') + ') = ' + sig(r.V, 3) + ' m³; mass = density × volume = ' + fmtDensity(r.rho) + ' × ' + sig(r.V, 3) + ' m³ = ' + fmtMass(r.m) + '; weight W = m g = ' + fmtSI(r.W, 'N') + '.',
       'Both legs push up to 1.4 × strength = ' + fmtSI(mv.legForce, 'N') + '. Stand: ≥ W. Walk: ≥ 1.2 W, the load on one leg per step (Nilsson & Thorstensson 1989), set against both legs’ push (a rough rule). Run (the Sprint tab’s rough rule): strength > W; measured running peaks are 2–2.9 W per step.',
-      pl.regime !== 'none' ? null : 'Feet: W ÷ (2 × ' + sig(c.body.footArea, 2) + ' m²) = ' + fmtSI(gd.footPressure, 'Pa') + '. Whole underside: W ÷ ' + sig(c.body.topArea, 2) + ' m² = ' + fmtSI(gd.bodyPressure, 'Pa') + '. Sand and gravel: limit + γ·depth·N_q (N_q 18.4 or 64.2; USACE EM 1110-1-1905). Clay: limit + γ·depth.',
+      pl.regime !== 'none' ? null : 'Feet: W ÷ (2 × ' + sig(c.body.footArea, 2) + ' m²) = ' + fmtSI(gd.footPressure, 'Pa') + '. Whole underside: W ÷ ' + sig(c.body.topArea, 2) + ' m² = ' + fmtSI(gd.bodyPressure, 'Pa') + '. Sand and gravel: below the failure pressure his feet leave a print scaled from a weighed elephant’s (Schanz 2013: 18 mm at 350 kPa, rising as pressure^1.27 and with foot width). That elephant’s sand carried 350 kPa under its forefoot, so we take that as where it starts to fail (scaled with foot width, and more for gravel, which bears more): a lower bound. Past it the foot sinks until limit + γ·depth·N_q carries it (N_q 18.4 or 64.2; USACE EM 1110-1-1905). Clay: the bearing grows with depth (N_c up to 9; EM 1110-1-1905 Table 4-7) plus γ·depth. All estimates.',
       pl.regime !== 'none' ? null : 'Bedrock carries up to 1.7 GPa × his underside = ' + fmtSI(gd.rockCap, 'N') + ' (estimate). Bolted to the planet stops sliding, not sinking; only Comic ground keeps the floor whole.',
       pl.regime !== 'none' ? null : 'Inside the Earth: PREM density and gravity (Dziewonski & Anderson 1981); resistance = area × (rock strength + ρv²) against his motion relative to the turning rock; no strength in the liquid outer core; 3-D RK4 for the first trip, Earth turning once per 23.93 h; later trips averaged.',
       'His gravity treats him as a ball of equal volume, radius ' + fmtDist(gr.R) + '. Surface gravity GM/R², escape speed √(2GM/R), G = 6.674 × 10⁻¹¹. His pull equals the Earth’s at √(GM/g) = ' + fmtDist(gr.dBeat) + '.',
