@@ -10,11 +10,10 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## In progress
 
-- Owner's cloud session: building `rex-strength-lab/BRIEF-gui.md` in its three pull requests, one at a time. **A** (page organisation, sections 1-4) is merged (#20) and live. **B** (the four new powers, section 5) starts when the owner says so, on `claude/rex-gui-b`; then C (the energy comparisons, research first). `rex-strength-lab/` stays claimed for them.
+- Owner's cloud session: building `rex-strength-lab/BRIEF-gui.md` in its three pull requests, one at a time. **A** (page organisation, sections 1-4) is merged (#20) and live. **B** (the four new powers, section 5) is in progress on `claude/rex-gui-b`: the engine is done (a powers-off check holds every result to `main`'s, 14,883 cases), the page is being reworked; then tests, review rounds and the pull request. Then C (the energy comparisons, research first). `rex-strength-lab/` stays claimed for them.
 
 ## Waiting on
 
-- Owner: merge the one-line test fix (`claude/rex-gui-shots-fix`: `test/shots.js` clicks the sidebar cue where it is drawn; the old click failed intermittently), then say when to start B.
 - Owner review of Build Comparison design decisions listed in `build-comparison/data/NOTES.md` ("Design decisions to review"): the edge marking, the palette change, the stop edges, Thor's and the Thing's treatment, the group colours' contrast, and figures drawn with their arms at their rest angle. (The meatball sentence is now reworded in the brief.)
 - Step 2 (collaborator): regenerate Rex's and Ollie's turnarounds to the model-sheet spec (fixes listed in BRIEF.md, "The turnarounds") and measure them; make gap-filler figures from target outlines with GPT Images 2.5.
   - **Blocker to solve first:** the measuring tool cannot follow arms that cannot hang clear of the body (rest angle near 90°; above about 100 on the median soldier, so most of the 88–170 and 220–924 stretches). It refuses such sheets. The target tool still draws and scores those outlines but says the tool cannot check art drawn from them. See `build-comparison/research/reviews/round2.md`, "Still open"; one way is to cut the arms at the shoulder line before slicing.
@@ -22,6 +21,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## Done
 
+- 2026-10-12: `test/shots.js` sidebar-cue click fix merged (#21).
 - 2026-10-12: Rex lab page organisation (`BRIEF-gui.md` sections 1-4) merged (#20, CI passed) and republished from `main` (`4ba59b4`) as version 11, after the full Rex lab test line passed on that build: Their powers panel, sidebar order (strength, Size and density, Ground, Their powers), footing standing or bolted, Rex + Ollie in its own element. Four review rounds (`rex-strength-lab/research/reviews/gui-a-round1.json` to `gui-a-round4.json`).
 - 2026-10-12: live pages checked against `main` (`f526ce1`), each built from a clean tree and tested first (Rex lab: calibration, presence, shots; Build Calculator: tests, shots; Build Comparison: tests, duo, shots). Rex lab republished (version 10, with the follow-ups from #15 and the half-life control's removal from #18). Build Calculator (version 3) and Build Comparison (version 4) already matched `main` byte for byte, so they were left as they are.
 - 2026-10-12: owner confirmed all the canon marked "owner to confirm" (the growth rulings, the Restraint wording, the default powers including their own recoil); the half-life control removed (the runaway loop can never run away); the moves' sand bearing left as it is for now. Recorded in CLAUDE.md, the README, the research facts and the brief (`terantic/canon-confirmed`; a test checks the control stays gone).

@@ -438,7 +438,8 @@ window.DINO_DATA = {
    "crush": 30000000.0,
    "rho": 2300,
    "noPull": true,
-   "liftNote": "Its core is natural bedrock, so part of the “pyramid” is the ground itself. Stacked blocks have almost no tensile strength: lifted from below, it would come apart."
+   "liftNote": "Its core is natural bedrock, so part of the “pyramid” is the ground itself. Stacked blocks have almost no tensile strength: lifted from below, it would come apart.",
+   "sags": true
   },
   {
    "id": "everest",
@@ -453,7 +454,8 @@ window.DINO_DATA = {
    "rho": 2700,
    "noPull": true,
    "noThrow": true,
-   "liftNote": "Everest isn’t a loose object. It’s part of the Earth’s crust, and its mass depends on where you decide the mountain ends (1.6 × 10¹⁴ to 1.4 × 10¹⁵ kg). Rock is weak in tension, so lifted from one spot it would break apart under its own weight."
+   "liftNote": "Everest isn’t a loose object. It’s part of the Earth’s crust, and its mass depends on where you decide the mountain ends (1.6 × 10¹⁴ to 1.4 × 10¹⁵ kg). Rock is weak in tension, so lifted from one spot it would break apart under its own weight.",
+   "sags": true
   },
   {
    "id": "cloud",
@@ -2855,6 +2857,38 @@ window.DINO_DATA = {
     {
      "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
      "title": "Computed from NASA/IAU GM and radius"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Speed to escape the Sun from Earth’s distance",
+   "value": "About 42.1 km/s, measured relative to the Sun (from the Sun’s GM and the astronomical unit)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://www.iau.org/common/Uploaded%20files/IAUGA2015-Resolution-B3-recommended-nominal-conversion.pdf",
+     "title": "IAU 2015 Resolution B3 (GM of the Sun), iau.org PDF"
+    },
+    {
+     "url": "https://iauarchive.eso.org/static/resolutions/IAU2012_English.pdf",
+     "title": "IAU 2012 Resolution B2 (astronomical unit), IAU archive PDF"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Speed to escape the Milky Way from the Sun’s position",
+   "value": "About 530 km/s; published estimates run from 445 to 580 km/s",
+   "status": "disputed",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/1309.4293",
+     "title": "Piffl et al. (2014) The RAVE survey: the Galactic escape speed and the mass of the Milky Way, A&A 562, A91; arXiv abstract page"
+    },
+    {
+     "url": "https://arxiv.org/pdf/1309.4293v3",
+     "title": "Piffl et al. (2014), arXiv v3 PDF (abstract on p. 1)"
     }
    ],
    "note": null
@@ -8484,5 +8518,12 @@ window.DINO_DATA = {
    "short": "Phobos",
    "m": 10618000000000000
   }
- ]
+ ],
+ "escape": {
+  "earth": 11186,
+  "sun": 42122,
+  "galaxy": 530000,
+  "galaxyLo": 445000,
+  "galaxyHi": 580000
+ }
 };
