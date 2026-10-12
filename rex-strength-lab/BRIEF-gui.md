@@ -10,12 +10,12 @@ For the Rex lab (`rex-strength-lab/`). Written by the collaborator's session, 12
 4. **Rex + Ollie gets its own element** below Rex's test bay, collapsed until opened; Rex's tabs are the page's centre.
 5. **Four new powers, on by default** (engine work): air resistance absorbed (a slider), things keep their form, unbreakable footing (the ground still shakes), and they take their own recoil.
 6. **More points of comparison for energy** (research first), so the page never says "300 hand grenades".
-7. Two corrections, and what is out of scope.
+7. One decision for the owner, and what is out of scope.
 
 ## Order of work
 
 Three pull requests, in this order, each with its own tests and review:
-- **A. Page organisation: sections 1–4 and correction 1.** No engine change. Until B lands, Comic ground, Gentle hold and Cool flight move into the banner as they are; B replaces them.
+- **A. Page organisation: sections 1–4.** No engine change. Until B lands, Comic ground, Gentle hold and Cool flight move into the banner as they are; B replaces them.
 - **B. The new powers: section 5.** Engine and page; review rounds on its physics.
 - **C. The energy comparisons: section 6.** Research, then data and page.
 
@@ -27,8 +27,8 @@ Three pull requests, in this order, each with its own tests and review:
 
 ## Needs the owner
 
-- **Confirm 5d** (they take their own recoil). It came after the owner agreed to the other powers, so it is the collaborator's call until confirmed; it is in CLAUDE.md marked that way.
-- **Decide** whether to raise the moves' bearing for sand (correction 2).
+- **Confirm the canon the collaborator recorded** in CLAUDE.md: the Restraint wording (comic-book physics is their default), the four default powers, and in particular 5d (they take their own recoil). You already agreed to the two exceptions to the momentum rule (absorbed air resistance; the footing's push on weak ground).
+- **Decide** whether to raise the moves' bearing for sand (see "For the owner to decide").
 
 ## 1. One banner for their powers
 
@@ -95,7 +95,7 @@ After sections 1 and 3, only the ground menu is left of Settings. If it looks th
 **Change.**
 - Remove both "holds his ground" menus. The only footing control is each character's **Bolted to the planet** switch in Their powers: off means just standing (friction, `anchor: 'friction'`), on means bolted (`anchor: 'bolted'`). The same for Ollie (`oAnchor`).
 - Saved states: `'bolted'` loads with the switch on; `'braced'` loads as `'friction'` (switch off). Afterwards the state validators (`anchor`, `oAnchor` in `app.html`) accept only `'friction'` and `'bolted'`.
-- Remove the page text that only applies to dug-in footing, now dead: the Sprint tab's 'shear' limit text and its push-off formula's claw term; the "dug in" wording in `holdText`, the wrestling and pull-out lines, the Collide footing lines and the footing formula on the Throw tab; `ANCHOR_SHORT.braced`; "claws dug in" in the summaries. Search `src/app.html` for `braced`, `dug in` and `claw` and check each hit. Keep claws as body parts (grip, the hands card).
+- Remove the page text that only applies to dug-in footing, now dead: the Sprint tab's 'shear' limit text and its push-off formula's claw term; the "dug in" wording in `holdText`, the wrestling and pull-out lines, the Collide footing lines and the footing formula on the Pull tab; `ANCHOR_SHORT.braced`; "claws dug in" in the summaries. Search `src/app.html` for `braced`, `dug in` and `claw` and check each hit. Keep claws as body parts (grip, the hands card).
 - Assumption card "Newton's third law stays on" (`src/static-data.js`): drop "or dug-in claws".
 - Sources table: drop the row "Claw shear strength used when dug in" (`build-data.py`), since nothing on the page uses it.
 - **Engine unchanged.** `src/engine.js` keeps `'braced'` (the tests and the all-out baseline use it); only the page stops offering it. Say so in the README.
@@ -129,7 +129,7 @@ After sections 1 and 3, only the ground menu is left of Settings. If it looks th
 
 ## 5. Four new powers, on by default
 
-**Why.** By default Rex and Ollie should be able to throw, hold and stand on things without the side effects real physics would force on them, while what they do still reaches the world around them on purpose. Comic ground today makes the ground unbreakable, which contradicts the effort presets: on the Collide tab it "takes the blow", the ground gets nothing, and a preset like "risk cracking the plaster" has nothing to work with. These powers replace Comic ground, Gentle hold and Cool flight. All four sit in Their powers, are **on by default** and can be turned off (5a by sliding it to 0%). **Canon** (owner and collaborator agreed, 12 Oct 2026; recorded in CLAUDE.md, "Default powers"): comic-book physics is their default, and they choose when not to use it. Absorbed air resistance and Unbreakable footing's push on weak ground are exceptions to "momentum is never absorbed", like the growth lift. 5d (their own recoil) was added afterwards by the collaborator and needs the owner's confirmation; it keeps momentum (the planet takes it), so it is not an exception.
+**Why.** By default Rex and Ollie should be able to throw, hold and stand on things without the side effects real physics would force on them, while what they do still reaches the world around them on purpose. Comic ground today makes the ground unbreakable, which sits badly with presets that measure harm done through the ground. On the Collide tab, with Comic ground a moving body's sinking carries no energy into the ground (`Eground: 0` when `cB.groundHolds`), though a held target still shows a quake estimate from the hit. And the two-player tests (Arm wrestle, Wrestle, Catch, Collide) never judge ground shaking at all: their effort search checks only the sound barrier, an air blast and sliding (the harm check above `duoPlanFor` in `app.html`), and they offer no not-so-heroic presets, only least disruptive, all-out and custom. So "risk cracking the plaster" means nothing in the unstoppable-force test. These powers replace Comic ground, Gentle hold and Cool flight. All four sit in Their powers, are **on by default** and can be turned off (5a by sliding it to 0%). **Canon** (recorded in CLAUDE.md, "Default powers" and Restraint): comic-book physics is their default, and they choose when not to use it. Absorbed air resistance and Unbreakable footing's push on weak ground are exceptions to "momentum is never absorbed", like the growth lift; **the owner agreed to these two exceptions** (12 Oct 2026). The rest of this section (the powers themselves, the Restraint wording, and 5d) is the collaborator's, for the owner to confirm. 5d keeps momentum (the planet takes it), so it is not an exception.
 
 **Its own pull request** (B in the order of work). Sections 1–4 change only the page. This section changes the engine, so build and review it separately, after sections 1–4, and run the review rounds on its physics.
 
@@ -161,7 +161,8 @@ After sections 1 and 3, only the ground menu is left of Settings. If it looks th
 - Where the ground couldn't bear the push a move needs (a big jump, a sprint start, a heavy lift, standing at huge density), their power holds the contact: they still get the full push, as with Comic ground now. Label it as their power where it matters.
 - Footprints in soil stay: a print is not breaking the ground. Sinking past the bearing, craters, broken slabs and punching through are what it prevents.
 - The "break the ground" preset (and any effort a reader sets past it) turns the absorption off for that move, so the ground can break when they mean it to; say so on the preset.
-- **Shaking must still reach the surroundings with it on**, on every tab. The Collide tab is the known case to fix: with Comic ground the blow goes into the ground with no energy and no shaking (`Eground: 0` in `COLLIDE` when `cB.groundHolds`). With Unbreakable footing, the ground still receives the blow's momentum, and its shaking (and the plaster, rattle and feel reaches) come from that, as for a stomp. Check every place that tests `groundHolds` in `src/engine.js` (65 today) and `src/app.html`: each must either keep its shaking or say why there is none.
+- **Shaking must still reach the surroundings with it on**, on every tab. With Unbreakable footing, the ground still receives each push's and blow's momentum, and its shaking (and the plaster, rattle and feel reaches) comes from that, as for a stomp. Check every place that tests `groundHolds` in `src/engine.js` (65 lines today) and `src/app.html`: each must either keep its shaking or say why there is none.
+- **The two-player tests are the known gap.** Give them a ground-shaking source (the Collide hit and a bolted or held side's push into the ground, from the momentum the ground receives; the wrestling and catch pushes likewise), add ground shaking to their effort search's checks, and offer the not-so-heroic presets there as the solo tabs do, so "risk cracking the plaster" works in the unstoppable-force test. Replace the held-target quake estimate (today all of the hit's energy, an upper bound) with the same source.
 - The Weight tab: with it on he stands at any density on any ground (as Comic ground does now), and the page says it is their power; with it off, today's ground physics.
 
 **5d. They take their own recoil.** The push back from their own moves (a throw, a punch, a clap, a pull) goes through their feet into the planet, as if bolted: they don't slide or get flung backwards. Otherwise an all-out throw at extreme strength is a way to launch into space (an All-Star Superman baseball shoves Rex back at about 99.7% of light speed today).
@@ -178,17 +179,17 @@ After sections 1 and 3, only the ground menu is left of Settings. If it looks th
 - With all four off (5a at 0%), every engine result matches today's (the all-out baseline, calibration, the sweep).
 - 5a: at 100% a thrown car and a baseball fly as in a vacuum (range and apex match the drag-free arc), and the reported ocean momentum equals what the air would have taken; at 0% every throw matches today's; in between, range rises and the air's energy falls steadily as the share rises; a supersonic throw at 50% still sets the boom hazard and its blast energy is about half the 0% value; their own sprint is unchanged at any share; at 100% the Throw tab's "windows shatter across the street" preset shows the lower-the-slider hint when the same throw at 0% reaches it, and doesn't when it can't; presets never change the slider.
 - 5b: Everest thrown hits a bird-sized object intact and breaks on the Moon (pick an engine case each); grip, launch and sag never break anything while it is on; impacts are unchanged.
-- 5c: on sand, concrete and ice, no move breaks or sinks into the ground with it on, while the ground shaking (ppv at 5 m and the plaster reach) matches the shaking with it off for the same push. The Collide charge into an immovable object shakes the ground, and the "risk cracking the plaster" preset finds an effort there. The "break the ground" preset still breaks it.
+- 5c: on sand, concrete and ice, no move breaks or sinks into the ground with it on, while the ground shaking (ppv at 5 m and the plaster reach) matches the shaking with it off for the same push. The Collide charge into an immovable object shakes the ground; the two-player tests offer the presets; and on Collide the "risk cracking the plaster" preset finds an effort. The "break the ground" preset still breaks it.
 - Page: each power shows where it changed a result ("held together by their power", "no drag: their power", "the ground holds: their power").
 
 ## 6. More points of comparison for energy (research first)
 
-**Why.** Energies are compared to a ladder of eleven references (`energy` in `build-data.py`, shown by `compareEnergy` in `app.html`): the fastest pitch, a Corolla at 100 km/h, a hand grenade, the MOAB, Hiroshima, Castle Bravo, the Tsar Bomba, Krakatoa, the dinosaur-killing asteroid, the Sun's output for a second, and the energy to blow Earth apart. The page names the nearest rung below and a multiple. The gaps are wide (46,000× from the grenade to the MOAB; a million from the Sun-second to Earth's binding energy), so it says things like "300 hand grenades", which nobody can picture.
+**Why.** Energies are compared to a ladder of eleven references (`energy` in `build-data.py`, shown by `compareEnergy` in `app.html`): the fastest pitch, a Corolla at 100 km/h, a hand grenade, the MOAB, Hiroshima, Castle Bravo, the Tsar Bomba, Krakatoa, the dinosaur-killing asteroid, the Sun's output for a second, and the energy to blow Earth apart. The page names the nearest rung below and a multiple. The gaps are wide (46,000× from the grenade to the MOAB; 650,000× from the Sun-second to Earth's binding energy), so it says things like "300 hand grenades", which nobody can picture.
 
 **This needs the full research process** (CLAUDE.md, house pattern; the owner's workflows in `history/scratchpad/workflows/`): each new reference researched, checked by a skeptic who fetches the source, and compiled as a fact in `research/` with key, status, sources and notes, before it reaches the page. Prefer primary or authoritative sources (government agencies, journals, standards bodies, the USGS and NASA for natural events). Where the literature gives a range, record the range and the value used, as the asteroid's fact does.
 
 **The display rule.**
-- A comparison never shows a multiple above about 10×, or a share below about 10% ("40% of a car crash" is fine; "0.1% of" isn't). If an energy falls in a gap wider than that, the ladder needs a rung there, and the review should find it: test every decade from 100 J to 10⁴⁴ J.
+- A comparison never shows a multiple above about 10×, or a share below about 10% ("40% of a car crash" is fine; "0.1% of" isn't). If an energy falls in a gap wider than that, the ladder needs a rung there, and the review should find it: test every decade between the bottom and top rungs.
 - A reference uncertain by more than about 2× (Tunguska, Tambora, the asteroid) gets only a rough multiple ("roughly 3×"), generalising today's special case for the asteroid.
 - The words stay plain: "about 1.5× a lightning bolt", not "1.5 lightning-bolt equivalents".
 
@@ -199,15 +200,15 @@ After sections 1 and 3, only the ground menu is left of Settings. If it looks th
 | ~2 kJ | a rifle bullet (for example 5.56 mm NATO) | pitch → car crash |
 | ~15–20 kJ | a .50-calibre round | pitch → car crash |
 | ~14 MJ | a loaded semi-truck at highway speed (kinetic energy) | grenade → MOAB |
+| ~1–2 GJ | a high-speed train at full speed (kinetic energy; about 400 t at 300 km/h) | grenade → MOAB |
 | ~1–5 GJ | a lightning bolt | grenade → MOAB |
 | 4.2 GJ | one tonne of TNT (by definition) | grenade → MOAB |
-| ~1 TJ | a high-speed train at full speed (kinetic energy) | MOAB → Hiroshima |
 | ~2–5 TJ | the Beirut port explosion, 2020 | MOAB → Hiroshima |
 | ~12 TJ | the Halifax explosion, 1917 | MOAB → Hiroshima |
 | ~2 PJ | the Chelyabinsk meteor, 2013 | Hiroshima → Castle Bravo |
-| ~10–60 PJ | Tunguska, 1908 | Hiroshima → Castle Bravo |
+| ~10–100 PJ (estimates vary widely) | Tunguska, 1908 | Hiroshima → Castle Bravo |
 | ~10¹⁷ J | Mount St Helens, 1980 | around Krakatoa |
-| ~10¹⁹ J | Tambora, 1815 | Krakatoa → asteroid |
+| ~10¹⁸–10¹⁹ J (estimates vary) | Tambora, 1815 | Krakatoa → asteroid |
 | ~6 × 10²⁰ J | a year of all human energy use | Krakatoa → asteroid |
 | ~1.5 × 10²² J | a day of sunlight reaching Earth | asteroid → Sun-second |
 | ~5 × 10²⁴ J | a year of sunlight reaching Earth | asteroid → Sun-second |
@@ -215,19 +216,22 @@ After sections 1 and 3, only the ground menu is left of Settings. If it looks th
 | ~10³⁴ J | the Sun's output for a year | above Earth |
 | ~10⁴⁴ J | a supernova | the top of the scale |
 
+**Gaps the candidates leave.** Even with all of these, some steps stay well over 10×: the MOAB to Beirut (about 40–100×), the Sun-second to the Moon (about 300×), the Moon to Earth (about 2,000×), and the Sun's year to a supernova (about 10¹⁰). The research needs more rungs there, and both ends need a rule: below the bottom rung and above the top one, the page gives the energy alone and says it is beyond the ladder.
+
 **One shared ladder** (decided 12 Oct 2026): a mix of kinds on one scale. Matching the comparison to the kind of event (impacts to meteors, blasts to explosions, shaking to earthquakes) is a possible later step.
 
 **Also check**, while researching: the existing rungs' values and sources, against the same standard.
 
 **Tests.**
-- Every decade from 100 J to 10⁴⁴ J compares with a multiple of at most about 10× (or a share of at least about 10%).
+- Every decade between the bottom and top rungs compares with a multiple of at most about 10× (or a share of at least about 10%); outside them the page says the energy is beyond the ladder.
 - Each rung on the page has a fact with a status and a fetched source, shown in the sources table.
 - Rough-multiple wording for every rung marked uncertain.
 
-## Corrections
+## For the owner to decide
 
-1. **Instant growth through a slab.** On concrete (a 10 cm slab), instant growth says his soles are "driven 3.66 m into the concrete slab". A thin layer should read that he punches through it into whatever is underneath, as the Weight tab already says (`groundUnderWeight`'s `punchesThrough`). Fix the wording in `growthItems` (`src/app.html`) for the thin layers (asphalt, concrete, ice, steel deck), which the Weight tab treats the same way.
-2. **For the owner to decide, not a fix:** the bearing the moves use for loose sand (37 kPa at 0.316 m, the textbook value) is about 5–10 times below what the elephant's sand bore (README, Known limits). Raising it would change all-out results across the moves and the baseline.
+- The bearing the moves use for loose sand (37 kPa at 0.316 m, the textbook value) is about 5–10 times below what the elephant's sand bore (README, Known limits). Raising it would change all-out results across the moves and the baseline.
+
+(The one wording correction found while writing this brief, instant growth "driven 3.66 m into the concrete slab", is already fixed in the follow-ups pull request.)
 
 ## Not in scope
 
