@@ -1,0 +1,160 @@
+SUMMARY: Topic "attenuation": how hard the ground shakes (peak particle velocity, PPV) at 1–200 m from a step of a 3 t body. 49 facts: 25 verified, 15 derived, 6 estimates, 3 reported.
+
+What I verified from the fetched documents:
+- **BS 5228-2 Table E.1, dynamic compaction row.** PPV_res ≤ 0.037 (√W_h/x)^1.7 mm/s, with W_h in J. Valid for 5–100 m and 1–12 MJ. Source: a licensed copy of the standard filed as a public-inquiry core document. Table E.2's k_p values are also verified.
+- **Mayne 1985 law.** v ≤ 92 (√(M·H)/x)^1.7 mm/s, as printed in TRL Report 429. It is the same law as the BS row in different units.
+- **TRL 429's own warning.** The law is "less reliable for low energy" and under-predicted a 7 t weight dropped 1.2 m (82 kJ) by "up to an order of magnitude".
+- **FHWA charts.** Lukas 1986 and GEC 1 (1995) plot PPV against scaled energy, with eight soil lines (both charts verified). Dropped-weight vibration is 3–10 Hz (Lukas) and 5–50 Hz at two Canadian sites (Lauzon et al.).
+- **The one in-range measurement found.** Colombero et al. 2015, Pisa: 130 kg dropped about 3 m (3.8 kJ) gave 9 mm/s at 2.5 m and 0.2 mm/s at 60 m. Fall-off r^-1.28, about 25 Hz, with the site's Vs and damping table.
+- **Fall-off exponents.** About 1.0 on sand to 1.6 on clay for drop tests (Auersch); 0.5–2.0 across source types (Auersch & Said).
+- **Wave energy split (Miller & Pursey).** Radiated power Π = 1.209 ω²P²/(π ρ c_p³), split 67.35% Rayleigh, 25.76% shear, 6.89% compressional, via Sánchez-Sesma et al. Caltrans and TRL confirm the two-thirds Rayleigh share.
+- **Caltrans 2020 tables.** Geometric spreading exponents (Rayleigh waves r^-0.5). Bornitz damping form and soil damping α values; three metric entries in that table have decimal slips. Woods & Jedele n by soil class. Construction vibration is typically 10–30 Hz.
+- **Frequencies and wave speeds from abstracts.** Elephant footfall signals travel at 248–264 m/s at about 20 Hz (PubMed abstract). Footstep ground velocity is mostly 20–90 Hz (Ekimov & Sabatier, PubMed abstract).
+- **Shear-wave speeds.** NEHRP Vs30 classes (USGS OFR 97-501); Turkish code Vs by soil type; ice Vs 1,934–1,960 m/s (Kohnen 1974).
+- **Building amplification.** Low-rise houses amplify ground shaking 2–4× (Lauzon et al.).
+
+What I derived and checked numerically:
+- **An exact elastic-ground (Lamb's problem) model.** Near field: (1−ν)Ḟ/(2π ρ c_s² r). Far field (Rayleigh wave): 0.0763 F ω^1.5/(ρ c_s^2.5 √r). Its Rayleigh power matches Miller & Pursey to 0.02%.
+- **Pekeris step-load formula.** I rebuilt the closed form from memory and checked it against an independent numerical calculation: they agree to 0.5–1.3% RMS.
+- **Closed-form PPV for smooth force pulses.** Covers a stamp (pulse) and a footstep (rising load), plus a damping factor for pulses; constants and tables are in the facts.
+- **Check against Pisa.** With plausible inputs the model is within 1.3× at 2.5–60 m; over the plausible range of contact times it is within about 2×.
+- **Extrapolation.** The empirical laws are 100–100,000× out of their energy range for footsteps. At 3.8 kJ they still match near the drop but are 5× low at 60 m.
+
+Reported only (secondary sources): Mayne 1984's 70(√WH/d)^1.4 and Mayne 1985's normalised form, both via Lauzon et al.; elephant stomp velocities via a 2024 arXiv paper.
+
+Existing keys I relied on: walking_running_peak_vertical_force (the 1.2 × body-weight step load), collide_rock_wave_speed_estimate (granite Vs), seismic_efficiency_impact (comparison only), density_structural_steel, and the data.js surface densities.
+
+Raw downloads and scripts are in /tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/research/attenuation/ (dl/, scripts/, out/facts.json). The scripts include engine_formula.py, ppv_table.py and lamb_check2.py.
+
+MODEL: Use the elastic-ground pulse model for the Walk tab (vib_physics_pulse_ppv_model). Do not use the dynamic-compaction energy laws as the main model: a walking step is a load that rises over 0.1–0.3 s with no free fall, so those laws have no clear input.
+
+INPUTS per footfall: peak vertical force F (N) and one time scale.
+- Walking: rise time τ, for a load that ramps up and is held. Toe-off unloading is a second, similar event; take the larger.
+- Stamp or impact: pulse length T (Hann shape).
+- Ground: ρ, c_s, ξ from vib_ground_wave_params_by_surface. Distance r in m.
+- The forces and rise times should come from the step-force topic. The engine's stomp model can supply a stamp's F and contact time.
+
+FORMULAS (Poisson ratio 1/4; c_R = 0.919 c_s):
+- Hann pulse:
+  - near = 0.375 F / (ρ c_s² T r)
+  - far = 0.620 F / (ρ c_s^2.5 T^1.5 √r)
+  - D = (1 + (ζ/0.224)^1.4)^(−2.5/1.4)
+- Ramp:
+  - near = 0.1875 F / (ρ c_s² τ r)
+  - far = 0.181 F / (ρ c_s^2.5 τ^1.5 √r)
+  - D = (1 + (ζ/0.195)^2.05)^(−1.5/2.05)
+- ζ = ξ r / (0.919 c_s T), with τ in place of T for the ramp.
+- PPV_vertical = max(near, far) × D. This is within 17% of the exact elastic result. Resultant (vector) PPV ≈ 1.1 × vertical.
+- General near-field form for any smooth force history: 0.119 (dF/dt)_max / (ρ c_s² r).
+- Dominant frequency to display: about 1/T for a pulse, 1/(2τ) to 1/τ for a ramp.
+
+The formula is monotone: PPV rises with F and falls with T, τ, r, c_s, ρ and ξ.
+
+GROUND CONSTANTS:
+
+| Surface | ρ (kg/m³) | c_s (m/s) | ξ | Notes |
+|---|---|---|---|---|
+| Loose sand | 1600 | 120 | 0.04 | |
+| Dense sand and gravel | 2000 | 300 | 0.03 | |
+| Soft clay | 1700 | 120 | 0.05 | If saturated, ν ≈ 0.45–0.5; PPV about a third lower |
+| Stiff clay | 1900 | 250 | 0.03 | |
+| Asphalt road | 2000 | 250 | 0.03 | Subgrade values; pavement ignored |
+| Concrete slab on grade | 2000 | 250 | 0.03 | Subgrade values; slab ignored |
+| Granite | 2700 | 3000 | 0.01 | |
+| Lake ice | — | — | — | Not modelled: floating plate |
+| Steel deck | — | — | — | Not modelled: plate on supports |
+
+ENERGY LINK: for the quake output use E_seismic = 0.148 ∫(dF/dt)² dt / (ρ c_s³), not 10⁻⁴ × energy. Example: a normal Rex step on loose sand radiates about 1.7 J.
+
+VALIDITY:
+- Distance from about 1 m (and more than 2 footprint radii) to 200 m.
+- Footprint radius below 0.2 c_s T.
+- Linear ground: PPV / c_s < 10⁻⁴, i.e. about 12 mm/s on loose sand and 25 mm/s on stiff clay. Flag or cap above that.
+- Homogeneous ground; vertical force; one foot. With both feet in walking, the far field may be up to 2× lower.
+
+IGNORES: soil yielding under the foot, layering and groundwater (dispersion), stiffening by slab or pavement, and building amplification (2–4× indoors).
+
+UNCERTAINTY:
+- About ×1.5–2 when the force history is known (Pisa check).
+- About a factor of 3 either way on soil in general: c_s ±40%, rise time ±50%, Poisson ratio, damping.
+- Larger beyond 100 m, where damping takes over, and on granite, where nothing was checked.
+
+PAGE LABEL: "Estimate: elastic-ground model (Lamb's problem), checked against a 130 kg drop test at Pisa and elephant footfalls; good to about a factor of 3. Not modelled on lake ice or steel deck."
+
+EMPIRICAL COMPARISON: show BS 5228's 0.037 (√W/x)^1.7 only for stamps that are true drops. Label it "outside the standard's range (1–12 MJ, 5–100 m)" and note it can under-predict by up to 10× at long range.
+
+TESTS:
+- Near-field limit: PPV·r → 0.375 F/(ρ c_s² T) for a Hann pulse.
+- Far-field asymptotes: 0.620/√x and 0.181/√x.
+- Pisa case: F = 2 × 997.4 / 0.03 N, T = 0.03 s, ρ = 1850, c_s = 150, ξ = 0.03 should give 9.3 / 6.1 / 0.65 / 0.21 mm/s at 2.5 / 5 / 35 / 60 m. Measured: 9 / 5 / 0.5 / 0.2.
+- Monotonicity in effort and distance.
+
+Reference implementation: scratchpad/research/attenuation/scripts/engine_formula.py.
+
+GAPS: Not fetched, so the page should cite only through what was fetched:
+- **Mayne, Jones & Dumas 1984** (ASCE, paywalled). Its 70(√WH/d)^1.4 law is only "reported", and its data range (energies, distances, number of sites, soils) is unknown. Say "as reproduced by Lauzon et al." or rely on the BS 5228/TRL form, which is verified.
+- **Mayne 1985** (convention paper): seen only through TRL 429 (verified) and Lauzon et al. (normalised form, reported).
+- **Lukas 1986's exact chart lines**: only figures, no fitted equations. The digitised values are "derived", ±25%.
+- **Miller & Pursey 1955 and Pekeris 1955**: not fetched. Their numbers are verified via Sánchez-Sesma et al. 2011 and Caltrans. The Pekeris closed form was rebuilt from memory and checked by our own independent numerical calculation; label it "derived (numerically verified)".
+- **Kausel 2012, Amick 1999/2000, Gutowski & Dym 1976, Woods & Jedele 1985 (original), Kim & Lee 2000**: not accessible (paywalls or captchas). There is no verified table of α by soil class at a stated frequency, only Caltrans' n values and its α compilation without frequencies.
+
+Measurement gaps:
+- **Footstep ground PPV against distance**: no primary measurement was found. Ekimov & Sabatier give only the 20–90 Hz band. Footstep-detection papers give geophone voltages or detection ranges. A search snippet saying footsteps "did not exceed 3 × 10⁻⁶ m/s at 3 m" could not be traced to its source and is NOT used.
+- **Elephant stomp amplitudes** (48.7 / 17.0 µm/s peak-to-peak): secondary, from arXiv 2024. The original paper's full text, the elephants' masses and the stomp forces were not seen. The elephant topic should fetch O'Connell-Rodwell 2000 in full.
+- **Low-energy drop data**: only one site in range (Pisa, 3.8 kJ), plus 82 kJ (TRL) and the 1–12 MJ compaction data. Nothing measured at 10 J–1 kJ on soil. Say "checked against one site".
+
+Ground-property gaps:
+- **Shear-wave speeds for the nine surfaces** are our picks inside verified class ranges, not site measurements. Label them estimates. The steel shear speed (3.2 km/s) is an unsourced textbook estimate.
+- **Lake ice (flexural-gravity waves) and steel deck (plate resonance)** were not researched. On the page say "ground shaking not modelled on lake ice or steel deck".
+- **Small-strain damping ratios and the 10⁻⁴ strain limit** are estimates anchored only on the Pisa site table; no soil-dynamics source was fetched for the strain thresholds.
+
+Inputs for the step-force topic: footstep rise times, heel-strike transients and stamp contact times are not researched here; the example step forces are placeholders. Walking's two-foot cancellation (up to 2× lower far away) is an unquantified estimate.
+--- vib_bs5228_dynamic_compaction_predictor verified 3.7e-05 m/s (coefficient k in PPV = k (sqrt(W_h)/x)^1.7, W_h in J, x in m) | PPV ≤ 0.037 (√W_h / x)^1.7 mm/s; W_h = potential energy of the raised tamper (J), x = distance along the ground (m); valid 5–100 m and 1–12 MJ
+--- vib_bs5228_percussive_piling_kp verified None mm/s per (J^0.5 m^-1.3) | k_p = 5 (piles at refusal), 3 (very stiff clay, dense granular), 1.5 (stiff clay, medium dense granular, compacted fill), 1 (soft clay, loose granular, loose fill, organic)
+--- vib_mayne1985_upper_bound_trl verified 0.092 m/s (coefficient; M in tonnes, H in m, x in m, exponent 1.7) | v_res ≤ 92 (√(M·H) / x)^1.7 mm/s (M tamper mass in t, H drop height in m, x distance in m)
+--- vib_mayne_law_low_energy_failure verified 10 ratio (measured / predicted, worst case) | For a 7 t weight dropped 1.2 m (82 kJ), measured PPV exceeded the Mayne (1985) prediction by up to an order of magnitude
+--- vib_trl429_hsdc_digitised derived None m/s | About 120–150 mm/s at 5.6 m, 22–30 at 10.5 m, 8–10 at 16 m, 4–8 at 35 m, 2–4 at 57–75 m, 1.3–1.5 mm/s at 120 m (three sites); Mayne (1985) predicts 30, 10, 5, 1.3, 0.4–0.6 and 0.16 mm/s
+--- vib_trl429_validity_100m verified 100 m | Valid up to about 100 m from the source; extrapolating much further is not recommended (usually conservative)
+--- vib_mayne1984_upper_bound reported 0.07 m/s (coefficient; W in tonnes, H in m, d in m, exponent 1.4) | PPV ≤ 70 (√(W·H) / d)^1.4 mm/s (W tamper in t, H drop in m, d in m)
+--- vib_mayne1985_normalised_law reported 0.2 1 (coefficient; PPV in the same units as impact speed) | PPV = 0.2 √(2gH) (d/r₀)^-1.7 (impact speed √(2gH), tamper radius r₀; based on 12 sites)
+--- vib_lukas_scaled_energy_chart verified None m/s | PPV grows with √(energy)/distance; separate lines for 8 ground types; data span scaled energy factor ≈ 0.07–6 √(t·m)/m and PPV ≈ 1–250 mm/s
+--- vib_gec1_chart_digitised derived None m/s | At √(E[kJ]/9.8)/d = 1: roughly 13 mm/s (decomposed garbage, loose sand fill) to 80 mm/s (very stiff silty clay); a factor of about 6 between ground types
+--- vib_dynamic_compaction_frequency verified None Hz | Crane dynamic compaction 3–10 Hz (FHWA) or 5–10 Hz / 25–35 Hz (two Canadian sites); rapid impact compaction (9 t hammer on a plate) 20–30 Hz and 40–50 Hz
+--- vib_repeat_drops_raise_ppv verified None ratio | 18.1 t from 30 m: 4 → 13 mm/s at 20 m over 21 drops; 11 t from 18 m: 1–2 → ~8 mm/s at 10 m over 6 drops
+--- vib_pisa_drop_test_ppv verified 0.009 m/s (PPV at 2.5 m) | 9 mm/s at 2.5 m falling to 0.2 mm/s at 60 m; fitted fall-off ∝ r^-1.28; central frequency about 25 Hz (≈3.8 kJ, momentum 997 kg·m/s)
+--- vib_pisa_soil_profile verified 170 m/s (typical Vs, top 10 m) | Vs 150–245 m/s in the upper layers (380 m/s deep sand), unit weight 16.75–20 kN/m³, damping ratio 2–7%
+--- vib_drop_test_exponent_by_soil verified 1.3 1 | q ≈ 1.0 (sandy soils) to 1.6 (clayey soils) for drop load tests; Pisa field fit 1.28
+--- vib_pisa_vs_empirical_laws derived 5 ratio (measured / BS 5228 predicted at 60 m) | BS 5228/Mayne 1985: 8.7 mm/s at 2.5 m (measured 9) but 0.04 mm/s at 60 m (measured 0.2, 5× low). Mayne 1984: 10 and 0.12 mm/s (1.7× low at 60 m)
+--- vib_caltrans_impact_pile_driver verified 0.01651 m/s (PPV_ref = 0.65 in/s at 25 ft for 36,000 ft·lb) | PPV = 0.65 in/s × (25/D[ft])^1.1 × (E/36,000 ft·lb)^0.5
+--- vib_woods_jedele_n_by_soil_class verified 1.1 1 | Class I weak/soft soils: suggested 1.4 (no data); II competent soils: measured 1.5, suggested 1.3; III hard soils: 1.1; IV hard rock: suggested 1.0 (no data)
+--- vib_construction_frequency_range verified 15 Hz | Usually 10–30 Hz, centred near 15 Hz; pile driving 4–30 Hz; ground wave speeds 61–610 m/s, wavelengths 3–152 m
+--- vib_footstep_frequency_band verified None Hz | Footstep force peaks at 1–4 Hz (walking rhythm); the seismic particle-velocity response is site-specific, characteristic band 20–90 Hz
+--- vib_elephant_seismic_speed_frequency verified 256 m/s (seismic propagation speed at the site) | Seismic signals travelled at 248–264 m/s, predominant frequency about 20 Hz, well above background at 40 m
+--- vib_elephant_stomp_ppv reported 4.87e-05 m/s peak-to-peak (at 3–12 m) | About 48.7 µm/s peak-to-peak at 3–12 m and 17.0 µm/s at 40 m (roughly 0.024 and 0.009 mm/s peak)
+--- vib_wave_energy_partition_miller_pursey verified 0.6735 1 (Rayleigh-wave share) | Mean power Π = 1.209 ω² P² / (π ρ c_p³) for a harmonic force P cos ωt (Poisson ratio 1/4); 67.35% Rayleigh, 25.76% shear, 6.89% compressional
+--- vib_geometric_spreading_exponents verified 0.5 1 (Rayleigh-wave exponent, surface source and receiver) | Surface source, surface receiver: Rayleigh waves ∝ r^-0.5, body waves ∝ r^-2; buried source: body waves ∝ r^-1
+--- vib_bornitz_damping_form verified 0.1 1/m (α used by Greenwood & Farmer 1971 and Heckman & Hagerty 1978) | A₁ = A₀ (r₀/r₁)^β e^{-α(r₁ - r₀)}, β = 0.5 for surface waves; α ≈ 0.03 ft⁻¹ (0.10 m⁻¹) has been used for all soils
+--- vib_material_damping_coefficients verified 0.1 1/m (typical) | α from 0.01 m⁻¹ (saturated fine sand) to about 0.65 m⁻¹ (dune sand); 0.02 m⁻¹ for a 4-inch concrete slab on compact granular fill
+--- vib_soil_p_to_s_speed_ratio verified 1.7 ratio c_p / c_s | c_p ≈ 1.7 c_s for (unsaturated) soils, close to the ν = 1/4 "Poisson solid" (√3 = 1.73) that the exact formulas assume
+--- vib_physics_nearfield_boussinesq derived 0.1194 1 (coefficient (1-ν)/2π at ν = 1/4) | PPV_near = (1 − ν) · (dF/dt)_max / (2π ρ c_s² r) ≈ 0.119 (dF/dt)_max / (ρ c_s² r)
+--- vib_physics_rayleigh_farfield derived 0.0763 1 (coefficient C1/√(2π ξ_R) at ν = 1/4) | Harmonic force F cos ωt: Rayleigh vertical velocity amplitude = 0.0763 F ω^1.5 / (ρ c_s^2.5 √r) (ν = 1/4); c_R = 0.919 c_s
+--- vib_physics_pekeris_step_response derived None m (displacement) | w(r,t) = (P/μr)·W(τ), τ = c_s t / r: zero before the P wave (τ < 1/√3); singular at the Rayleigh arrival τ_R = 1.0877; static 3P/(8πμr) afterwards
+--- vib_physics_pulse_ppv_model derived None m/s | PPV = max(near, far) × D; Hann pulse of peak F, length T: near = 0.375 F/(ρ c_s² T r), far = 0.620 F/(ρ c_s^2.5 T^1.5 √r); ramp of rise time τ: near = 0.1875 F/(ρ c_s² τ r), far = 0.181 F/(ρ c_s^2.5 τ^1.5 √r)
+--- vib_physics_damping_factor derived None 1 | D = (1 + (ζ/0.224)^1.4)^(−2.5/1.4) for a Hann pulse, D = (1 + (ζ/0.195)^2.05)^(−1.5/2.05) for a ramp; ζ = ξ r / (c_R T)
+--- vib_physics_seismic_energy_from_force derived 0.1481 1 (coefficient in E = k ∫(dF/dt)² dt / (ρ c_s³), ν = 1/4) | E_seismic = 2.418/(π ρ c_p³) ∫ (dF/dt)² dt = 0.148 ∫ (dF/dt)² dt / (ρ c_s³); two-thirds of it in Rayleigh waves
+--- vib_model_check_pisa derived 1.3 ratio (worst model/measured, best-guess inputs) | Inputs c_s 150 m/s, ρ 1,850 kg/m³, ξ 0.03, Hann pulse 0.03 s carrying the drop momentum (997 N·s): 9.3, 6.1, 0.65, 0.21 mm/s at 2.5, 5, 35, 60 m vs measured 9, 5, 0.5, 0.2
+--- vib_model_check_elephant derived None m/s | A 10 kN footfall with a 0.05–0.1 s ramp on ground with c_s 280 m/s gives 11–35 µm/s at 7.5–12 m and 4–9 µm/s at 40 m; reported about 24 and 8.5 µm/s (peak)
+--- vib_rayleigh_horizontal_and_resultant derived 1.1 ratio resultant/vertical | Resultant (vector) PPV ≈ 1.0–1.2 × the vertical PPV the model gives
+--- vib_building_amplification verified 3 ratio (structure / ground) | Resonance can raise vibration at the structure 2–4× above the ground level in low-rise residential buildings
+--- vib_nehrp_site_classes_vs30 verified None m/s | A hard rock > 1,500; B rock 760–1,500; C very dense soil and soft rock 360–760; D stiff soil 180–360; E < 180 m/s
+--- vib_soil_shear_speed_by_type verified None m/s | Loose sand < 200; medium dense sand and gravel 200–400; dense sand and gravel 400–700; soft clay < 200; stiff clay 200–300; very stiff clay 300–700; hard clay > 700 m/s
+--- vib_ice_seismic_speeds verified 1940 m/s (shear, −16 to −29 °C) | Shear waves 1,934–1,960 m/s; P waves 3,795 − 2.30·T m/s (T in °C); Poisson ratio about 0.33
+--- vib_granite_shear_speed derived 3000 m/s | About 3,000 m/s (2,100–3,500), from near-surface P speeds of 3.7–6.1 km/s divided by about √3
+--- vib_steel_shear_speed estimate 3200 m/s | About 3.2 km/s (from G ≈ 79 GPa and ρ = 7,850 kg/m³)
+--- vib_small_strain_damping_ratio estimate 0.03 1 | Soils about 2–5% (Pisa site: 2–7%); rock about 0.5–2%
+--- vib_ground_wave_params_by_surface estimate None m/s, kg/m³, 1 | c_s: loose sand 120, dense sand/gravel 300, soft clay 120, stiff clay 250, asphalt or concrete on grade 250 (subgrade), granite 3,000 m/s; lake ice and steel deck not modelled as ground
+--- vib_plate_surfaces_not_modelled estimate None  | Not modelled: on floating ice or a supported steel deck the step excites plate bending waves, not ground waves
+--- vib_extrapolation_to_footsteps derived 100000 ratio (BS 5228 lower energy limit / smallest footstep energy) | Footsteps (10 J–10 kJ) sit 100–100,000× below BS 5228's 1 MJ floor; at 82 kJ the law already under-predicts 2–10×, at 3.8 kJ about 5× at 60 m. Walking is a slow load, not a drop, so an energy law has no clear input at all
+--- vib_rex_step_examples derived None m/s | Normal walk (1.2 × weight, 0.1 s rise) on loose sand: about 3 mm/s at 1 m, 1 at 3 m, 0.3 at 10 m, 0.03 at 100 m; on stiff clay about 5× less; on granite about 1,000× less
+--- vib_linear_strain_limit estimate 0.0001 1 (shear strain ≈ PPV / c_s) | Trust the model while PPV/c_s < about 10⁻⁴ (e.g. below 12 mm/s on loose sand, 25 mm/s on stiff clay); closer in, soil softens and damps more, so the model over-estimates
+--- vib_walking_two_feet_caveat estimate 0.5 factor (possible reduction, far field, walking only) | While one foot loads, the other unloads; at distances and wavelengths much larger than the stride, the net force changes less, so walking PPV far away may be up to about 2× lower than a single-foot calculation

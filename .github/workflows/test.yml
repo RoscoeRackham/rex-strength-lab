@@ -40,6 +40,9 @@ jobs:
       - name: Rex lab - calibration and physics checks
         working-directory: rex-strength-lab
         run: node test/calibration.js
+      - name: Rex lab - restraint, presence, comic switches and growth checks
+        working-directory: rex-strength-lab
+        run: node test/presence.js
       - name: Rex lab - page screenshots
         working-directory: rex-strength-lab
         run: node test/shots.js

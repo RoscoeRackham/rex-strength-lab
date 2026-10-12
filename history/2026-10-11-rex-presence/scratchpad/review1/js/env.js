@@ -1,0 +1,12 @@
+global.window = {};
+const SNAP = require('path').join(__dirname, '..', 'snap' + (process.env.SNAP || 'B'));
+const P = require(SNAP + '/src/engine.js');
+require(SNAP + '/src/data.js');
+const D = window.DINO_DATA;
+const g = P.K.g;
+const surf = (id) => D.surfaces.find((s) => s.id === id);
+const obj = (id) => D.objects.find((o) => o.id === id);
+const rex = P.makeBody({ build: 'rex', H: P.DEFAULT_BODIES.rex.H, m: P.DEFAULT_BODIES.rex.m });
+const ollie = P.makeBody({ build: 'ollie', H: P.DEFAULT_BODIES.ollie.H, m: P.DEFAULT_BODIES.ollie.m });
+const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface: surf('concrete'), groundHolds: false, anchor: 'friction' }, extra || {});
+module.exports = { P, D, g, surf, obj, rex, ollie, ctxOf };

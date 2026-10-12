@@ -1,0 +1,121 @@
+You are reviewing new work in the Rex Super-Strength Lab (/home/user/rex-strength-lab/rex-strength-lab/), a self-contained HTML page (claude.ai Artifact) that simulates Rex and Ollie (canon in CLAUDE.md, already loaded). The work implements /home/user/rex-strength-lab/rex-strength-lab/BRIEF-presence.md: read it first. It adds (1) effort, separate from strength, on every solo tab (the strength used for a move's push; the page opens on the least disruptive effort: the gentlest push that reaches each move's stated goal), a courtesy ceiling (the most effort before a hazard: sonic boom, air blast over 100 Pa within the 'near' distance, ground shaking over 12.7 mm/s there, ground breaking under him, his hands crushing the object) and not-so-heroic presets, and one shared effort in the two-player tests; (2) a Walk tab on ground vibration from their footsteps (gait scaled by Froude number, heel-strike impact energy, a scaled-distance PPV law, thresholds for feeling, a rippling water glass, rattling, cosmetic damage, losing footing; footprints); (3) comic switches (gentle hold, safe passenger, silent strike, soft landing, cool flight) and (4) absorbed-energy modes (endless ocean, gradual, instant, runaway growth) with growth forms (mix, size, density) and a growth what-if on the Weight tab.
+Code: src/engine.js (search for driveStrength, RESTRAINT, VIB, WALK, walkStep, footprint, presence, PASSENGER, GROW, grownBody, gradualGrowth, instantGrowth, runawayGrowth; jump's landing; throw's gentleHold, launchG, dragLoss; catch's gentleT/gentleC/cool), src/app.html (search for EFFORT_PRESETS, resolveEffort, effortReadout, duoHarm, resolveDuoEffort, bayWalk, ppvChart, growthItems, absorbBlock, growthWhatIf, passengerText), src/static-data.js (assumption cards), build-data.py, research/final-presence.json (the new verified facts, with statuses and sources; the raw research and verifier outputs are in /tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/wfout/), README.md, test/presence.js, test/calibration.js, test/shots.js.
+Build: cd /home/user/rex-strength-lab/rex-strength-lab && python3 build-data.py && node build.js. Tests: node test/presence.js; node test/calibration.js (about 80 s); node test/shots.js (about 70 s; writes dist/preview.html and shots/). Render the page yourself with Playwright: require('/opt/node22/lib/node_modules/playwright'); chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' }); load dist/preview.html (after running test/shots.js once) from a file URL. Settings persist in localStorage key 'rex-lab-v1' (some reset on every load: effort, absorb, growWhat, stepEffort, duoEffort, oEffortOwn). window.DinoPhys is the engine and window.DINO_DATA the data.
+The owner is a professional critic: factual accuracy and honest labelling come first (see CLAUDE.md). Do NOT edit anything under /home/user/rex-strength-lab. Write scratch scripts and screenshots under /tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/review3/ (create it). Every finding must be reproduced: give the exact input or place, what the page or code does (quote it, or the script output), what is correct with your derivation or source, and a minimal fix. Report real defects only: wrong physics or formulas, wrong or unsupported claims, mislabelled status, contradictions between parts of the page, broken layout or controls, tests that don't test what they say. Skip style preferences.
+
+This is review round 3. Earlier rounds found and fixed the items summarised below; check that each fix holds and look for regressions and anything missed:
+Rounds 1 and 2 found 78 and 68 findings; records with each finding's outcome are in rex-strength-lab/research/reviews/presence-round1.json and presence-round2.json (fixes up to commit a62c4fd). This round: check that round 2's fixes hold on the current HEAD (rebuild first) and look hard for regressions they introduced. Round 2 changed: the search's early stop now requires the move to come out the same at two efforts AND at all-out; two-player searches use a 5% tolerance, a settings key, and pause while the dial moves; bodies sliding past the nearest people count as harm in the two-player tests; 'Nearest people and buildings' replaces 'within'; blast presets are worded as upper bounds; the stomp's ground impulse is the leg's momentum plus the drill stamp's extra body share at most at the stamp's leg speed; the single-event plaster limit is 12.7 mm/s up to 40 Hz and 50.8 mm/s above (per pulse); sand prints follow the peak pressure; soft landing absorbs the feet's impact energy (or the whole landing energy if the ground gives); a throw's boom counts his recoil; in soil a jump's ground hazard counts only craters (over 1 MJ); the elephant comparison is a range from firm sand (280 m/s) to loose sand (120 m/s); the Walk chart's threshold labels sit in a gutter (numbered keys on phones); kept slider controls are synced to fresh values; tiny effort shares give only a mass; a person's air drag counts in Catch whatever the switch; renderBay keeps bay controls for an input from inside the bay even before focus; one RANGES table for number inputs; shots.js reads textContent; presence.js now has 313 checks including guards. Two items are documented limits, not bugs: physics-real-jump-ground-flip, and a single search probe can block for about a second.
+
+Another reviewer (ux lens) reported the findings below. For EACH one, try hard to REFUTE it: reproduce it yourself with your own script or browser run, independently of theirs. Mark real=true only if you reproduced it. Confirm the severity and give the best minimal fix (exact code or text). Default to real=false if you cannot reproduce it.
+
+FINDINGS:
+[
+ {
+  "id": "ux-runaway-halflife-overflow",
+  "severity": "major",
+  "title": "Runaway growth breaks the layout. The page scrolls sideways 369 px on phones, and the half-life field ends up off-screen or outside its panel. Round 2's relabelling caused this.",
+  "location": "src/app.html:377. The label is `<label for=\"half-life\" class=\"hint\" style=\"flex:none\">Half-life if it runs away (s; matters only inside his own event horizon)</label>` inside `.inline-num`, and `.field label` makes it uppercase mono with letter-spacing. The round-2 fix for ux-half-life-inert lengthened this label.",
+  "evidence": "Script review3/ux/s30-runaway-overflow.js: open the Comic switches and set 'Absorbed energy goes to' to Runaway growth. Result: `360 runaway {\"ov\":369,\"wide\":[\"LABEL right=699\",\"INPUT#half-life right=729\",...],\"label\":666,\"panel\":294}` and `390 runaway {\"ov\":339,...}`. Gradual and instant give ov 0. Script s30b-runaway-shot.js at 1280 px: the label spans x 83–749 and the input x 757–779 (22 px wide), while the comic panel spans 83–389. Screenshot runaway-1280.png shows the uppercase label running about 360 px out of the panel into empty page, with a sliver of an input beside it. Screenshot runaway-360.png shows the label cut at the viewport edge, with the input at x 707 out of view. s13-growth.js gives the same overflow (ov 369) for runaway on the Weight tab with Krakatoa, Chicxulub and the Sun. test/shots.js cannot catch this, because absorb resets to 'ocean' on every load.",
+  "expected": "No horizontal scroll at 360 or 390 px, and a usable half-life input inside the comic panel at every width. Gradual mode's short 'Grows over (s)' row shows the intended layout.",
+  "fix": "Let the label wrap. Drop `flex:none` (or use `flex:1 1 auto; min-width:0`), or put the short label 'Half-life (s)' above the input and move '(matters only inside his own event horizon)' into a .hint span below it. Add a shots.js pass that selects each growth mode at 390 px and checks the scroll width."
+ },
+ {
+  "id": "ux-slider-end-not-allout-still",
+  "severity": "major",
+  "title": "Round 2's fix for ux-slider-end-not-allout does not hold at the default strength: the effort sliders' right end is 98% (88.7 t), not all-out.",
+  "location": "src/app.html:2996 (solo: `lo = hi - Math.ceil((hi - Math.log10(p.lo / g)) / 0.01) * 0.01`) and :3422 (two-player box, same formula). Affects #effort-use and #duo-effort-use.",
+  "evidence": "s4-slider-end.js (End key) at the default dial of 90.7 t, on Throw: min 1.4776957362252712, max 4.957695736225271; after End, value 4.94769573622527, aria-valuetext 'As hard as lifting 88.7 t', readout 'Effort: 98% of his strength (as hard as lifting 88.7 t). Set by hand.' Punch gives the same, and Arm wrestle gives 'Effort: 98% of their strength (each as hard as lifting 88.7 t)'. s34-right-end.js drags past the right end with the mouse: Throw 'The car flies 70.5 m.' against 71.7 m all-out; Stomp 98%; Arm 98%. It works only when hi is a round number (Jump at logKg 6 reaches 'All-out'). Cause: the browser computes the step grid from the min and max strings in decimal. (4.957695736225271 − 1.4776957362252712) / 0.01 = 347.99999999999998, which floors to 347 steps, so the last allowed value is max − 0.01.",
+  "expected": "Dragging to the right end, or pressing End, gives all-out (100%, 90.7 t, aria-valuetext 'All-out'), as round 2 recorded.",
+  "fix": "Put the slider on an integer scale: min 0, max n, step 1, where n = Math.ceil((hi − log10(lo)) / 0.01), and map v → hi − (n − v)·0.01. Or, in each oninput, treat `Number(value) >= Number(max) − 0.011` as all-out (state.effort = 'allout' / state.duoEffort = 'allout'). Add a test that presses End and expects 'All-out'."
+ },
+ {
+  "id": "ux-not-so-heroic-gentler-than-default",
+  "severity": "major",
+  "title": "On Throw and Stomp, the 'Not so heroic: Rattle the windows' preset is gentler than 'Least disruptive (default)', and the default's own readout says it already rattles windows.",
+  "location": "src/app.html effortFields :2979-2981 (the optgroups 'Heroic' and 'Not so heroic'), resolveEffort preset branch, and effortReadout ('At this effort it also …'). src/engine.js:3178 (the rattle preset is searched from p.lo upward, independent of the goal).",
+  "evidence": "s27-presets.js at the default settings. Throw: least = slider 4.43, 'Effort: 29% … (as hard as lifting 26.6 t) … lands the car 30 m away', verdict 'The car flies 30 m.'; rattle = 4.42, 'Effort: 29% … (as hard as lifting 26.3 t). The least effort that rattles windows and ornaments 5 m from where it lands', verdict 'The car flies 29.8 m.' (short of the goal). Stomp: least 127 kg, rattle 122 kg. On a fresh visit (s26-readouts.js), the default Throw readout says 'At this effort it also rattles windows and ornaments 5 m from where it lands, through the ground or the air.' Stomp says the same. Throw is the tab the page opens on.",
+  "expected": "Presets in the 'Not so heroic' group are described as louder than the heroic default, at rising scales. Choosing one should never make him gentler than least disruptive, and the heroic default should not already be doing the first not-so-heroic thing without the page saying so.",
+  "fix": "Search the loud presets only from the least-disruptive effort upward. When a preset's hazard already happens at the least-disruptive effort, say so ('Least disruptive already rattles windows here') and use that effort. Otherwise, take rattling out of the not-so-heroic group and present it as part of their canon presence."
+ },
+ {
+  "id": "ux-drag-lag-real-throw",
+  "severity": "minor",
+  "title": "Dragging the effort slider freezes for 0.5–1.1 s at some positions on Throw at unlimited strength in real-muscle mode. Round 2's 'max 39 ms' sample missed these positions.",
+  "location": "src/engine.js pushApartHill (:247 onward, the implicit integrator, up to 600,000 steps), called through throwObject → throwOnce → pushApart on every slider render (scheduleBay → renderBay → bayThrow).",
+  "evidence": "s23-drag-detail.js (mouse drag, 31 frames, two runs): slow frames [566 ms at slider 5.59, 538 ms at 7.32] and [524, 502] at the same positions, each at scheduleBay ← sl.oninput. s24-fine.js on a 0.05 grid: 1,141 ms at 7.00, 882 ms at 10.15, 1,049 ms at 10.30, and 43 of 651 positions over 50 ms. Engine alone (n1-throw-time.js): throwObject takes 296 ms at 5.59, 402 ms at 7.0 and 756 ms at 10.15, against 8 ms at 6.0. A CPU profile (n2-prof.js) puts 42% of self time in pushApartHill. The piano at unlimited strength is slow at 6 positions (n3-scan.js). Jump at unlimited real (s24): 102 of 131 positions over 50 ms, max 127–157 ms. The cost exists at dd459c6 too, so it is pre-existing. The README documents it only for search probes, not for slider drags.",
+  "expected": "The lens asks that dragging the effort slider not lag badly. Each frame of a drag should render in roughly 50 ms or less.",
+  "fix": "While the pointer is down, render from a memo keyed by the effort rounded to the slider's 0.01 step, plus a coarser integration (for example dt = tEst/300). Run the full integration on 'change' or pointerup. Or cap pushApartHill's steps adaptively. At minimum, add the drag case to the README's limits."
+ },
+ {
+  "id": "ux-focus-lost-after-search",
+  "severity": "minor",
+  "title": "Keyboard focus on anything in the bay below the controls is thrown back to <body> when a background effort search finishes.",
+  "location": "src/app.html renderBay :3514-3531. In the keep branch, `while (old.nextSibling) old.nextSibling.remove(); old.after(...)` replaces everything after the kept controls and never restores focus. The focusId restore runs only in the replaceChildren branch, and only for elements with an id; the summaries ('Show the math', 'Where each hazard starts') have none.",
+  "evidence": "s21b-focus-loss.js. Catch with a Fastball car, fresh load (busy at load: true): focus 'Show the math' while it reads 'working it out', and after the search focus is on 'BODY (focus lost)'. Throw at unlimited strength in real-muscle mode with the car gives the same: 'BODY (focus lost)'. Control case: Collide, where no search is pending, keeps focus on the summary.",
+  "expected": "A keyboard user who has tabbed past the controls while a search runs (up to about 5 s on Catch) keeps their place when the result redraws (WCAG 2.4.3, Focus Order).",
+  "fix": "Give the bay's summaries and other focusables stable ids (for example 'haz-sum', 'math-sum'), and restore focus by id after `old.after(...)` as the other branch does. Or record the focused element's index among the bay's focusables and refocus the same index."
+ },
+ {
+  "id": "ux-duo-near-hidden",
+  "severity": "minor",
+  "title": "The two-player courtesy ceiling depends on 'Nearest people and buildings', but the two-player tabs neither show that field nor state the distance when there is no cap.",
+  "location": "src/app.html duoEffortBox :3417-3460 (the 'Adjust effort' box has only the slider and Ollie's checkbox), duoHarm (uses state.near), and :3456 ('Courtesy ceiling: none. Nothing in this test harms anything nearby').",
+  "evidence": "s28-duo-near.js on Collide. With saved near 5: 'Effort: 9.3% … Courtesy ceiling: 9.3% (lifting 8.45 t). Past that, one of them slides 5.18 m, past the nearest people 5 m away.' With saved near 20: 'All-out: no cap needed … Courtesy ceiling: none. Nothing in this test harms anything nearby, even all-out.' In both cases the tab's labels are only ['Make Rex truly immovable…', 'Effort (one for both)', 'Effort (gentle ↔ all-out)', 'What-if: Ollie sets his own effort'], with no #near field. The only way to change the distance is on a solo tab. The solo wording was fixed in round 2 to '5 m or more away'; the duo line still says 'nearby'.",
+  "expected": "A reader on a two-player tab can see and set the distance the ceiling assumes, and the no-cap line names it, as the solo tabs do.",
+  "fix": "Add the same 'Nearest people and buildings (m)' input (RANGES.near) to the duo 'Adjust effort' box. Word the no-cap line 'Nothing in this test harms anyone ' + fmtDist(state.near) + ' or more away'. Make the same change to the solo 'Courtesy ceiling' preset's 'harms anyone nearby'."
+ },
+ {
+  "id": "ux-gentle-hold-ceiling-unlabelled",
+  "severity": "minor",
+  "title": "Round 2's fix for ux-gentle-hold-unlabelled-throw only partly holds. With Gentle hold on, the visible Throw ceiling changes, but the switch is named only in the folded hazard list.",
+  "location": "src/app.html effortReadout :3021-3027 (the ceiling line) and :3036-3039 (offBy is used only in the hazard list). bayThrow chip :1262 shows the Gentle hold chip only when gripRatioRaw > 1 at the current effort.",
+  "evidence": "s29-gentle-throw.js at the default Throw with the car, folded view. Off: 'Courtesy ceiling: 37% (lifting 34 t). Past that, his hands crush the object.' On: 'Courtesy ceiling: none. Nothing this move does harms anyone 5 m or more away, even all-out.' The chips still read 'Grip: object holds'. 'Gentle hold' appears only after opening 'Where each hazard starts (1)': 'He crushes the object: never, because Gentle hold is on.' At logKg 7 the ceiling moves from 0.34% (crush) to 6.5% (ground), again unlabelled.",
+  "expected": "The brief says to label every switch wherever its effect shows. Here the effect shows in the visible ceiling line.",
+  "fix": "When a hazard in offBy is 'never', and it would otherwise have set the ceiling, append it to the ceiling line, for example 'Courtesy ceiling: none (Gentle hold is on: his grip can't crush the car). …'. Do the same for Silent strike on Punch and Clap."
+ },
+ {
+  "id": "ux-duo-slider-below-floor",
+  "severity": "minor",
+  "title": "At the two-player sliders' left end, the spoken value and Ollie's readout say 2.56 t, while the model and the fighter cards use 2.58 t.",
+  "location": "src/app.html :3422 (the grid-aligned lo can sit below log10(p.lo/g)), :3425 vText, :3434 oText, :3441 `const oKg = Math.pow(10, state.oEffortLogKg)` (not clamped to p.lo, though duoCap.O is).",
+  "evidence": "s32-slider-min.js (Home key). Shared slider on Arm: aria-valuetext 'Each as hard as lifting 2.56 t', but readout 'Effort: 2.8% of their strength (each as hard as lifting 2.58 t)' and cards 'using 2.58 t'. Ollie's own slider: aria-valuetext 'Ollie as hard as lifting 2.56 t' and readout '(Rex as hard as lifting 2.77 t, Ollie 2.56 t)', but Ollie's card says 'using 2.58 t'. Collide gives the same. The floor is 1.2 × 3,007 kg ÷ 1.4 = 2.58 t, the least they need to stand.",
+  "expected": "The readout, the spoken value and the cards agree on the strength used.",
+  "fix": "Clamp the displayed values: vText/oText and the 'each' text use Math.max(10^v, p.lo/g). Or set the slider's min to log10(p.lo/g) and fix the top end as in ux-slider-end-not-allout-still."
+ },
+ {
+  "id": "ux-walk-axis-labels-collide",
+  "severity": "minor",
+  "title": "At 360 px the Walk chart's x-axis reads '1 km10 km', and '1 m' overlaps '1 µm/s' at the chart's corner at every width.",
+  "location": "src/app.html ppvChart :3089 (x labels at sx(d), '10 km' end-anchored at xR) and :3090 (y label for 1 µm/s at padL−6, sy(v0)+4).",
+  "evidence": "s11-walk-variants.js, gap between neighbouring x labels: 1.3 px at 360, 8.8 px at 390, 57 px at 768, 70 px at 1280. Overlap list at every width: '1 m X 1 µm/s (4x2)'. Zoomed crop crop-walk360-xaxis.png shows '1 km10 km' running together.",
+  "expected": "Axis labels are separate and readable at 360 px, a common phone width.",
+  "fix": "When chartW() < 380, label only 1 m, 100 m and 10 km (or drop the 1 km label). Start-anchor the '1 m' label at padL+2, or raise the 1 µm/s label a few px."
+ },
+ {
+  "id": "ux-number-fields-silent-revert",
+  "severity": "minor",
+  "title": "Typing an out-of-range number into the new fields silently puts back the old value, with no message and no visible range.",
+  "location": "src/app.html :2990 (goal), :2994 (#near), :3151 (#walk-d): `if (inRange(k, v)) state[k] = v; update();`",
+  "evidence": "s33-out-of-range.js at 390 px. Typing 2000 into 'Nearest people and buildings (m)' then Enter and Tab gives value '5', :invalid false, no validationMessage, saved 5. Typing 0.2 gives '5'. The throw goal 5e9 gives '30'. The listener distance 20000 gives '3'. Nothing in the controls mentions a range.",
+  "expected": "The visitor learns why the entry was refused, or the value is clamped to the nearest allowed one (the page's height field clamps to 0.1–500 m).",
+  "fix": "Clamp to RANGES[k] instead of ignoring the entry, as #height does. Or put the range in the label or hint (for example 'Nearest people and buildings (0.5–1,000 m)') and set aria-invalid with a short message."
+ },
+ {
+  "id": "ux-stomp-readout-heavy",
+  "severity": "minor",
+  "title": "First-screen judgement for an ADHD reader on a phone: the Stomp effort readout has grown to 87 words, with a 47-word first sentence, before the first number.",
+  "location": "src/app.html:2841 (GOALS.stomp.text carries a 33-word Caltrans parenthetical), shown in the readout's lead sentence (effortReadout :3014-3015).",
+  "evidence": "s26-readouts.js at 390×844 on a fresh visit. Stomp readout: 87 words, 327 px tall. The first tiles start 826 px below the tab row, against an 844 px screen. Text: 'Effort: 0.14% of his strength (as hard as lifting 127 kg). The gentlest push that makes a stomp just perceptible 5 m away (1 mm/s, what Caltrans calls barely perceptible for one jolt: sensitive people notice it; the average person needs about 3 mm/s for a jolt this short).' Round 2 measured 72 words. Other tabs: Throw 60, Punch 56, Clap 46, Jump and Sprint 37, the two-player tabs 31–43.",
+  "expected": "The verdict comes first, which holds on every tab. The effort box should stay short enough that the first numbers are on the first screen.",
+  "fix": "Shorten the goal text to 'makes a stomp just perceptible 5 m away (1 mm/s)'. Move the Caltrans and perception detail to the hazard list or 'Show the math'."
+ },
+ {
+  "id": "ux-safe-passenger-lift-noop",
+  "severity": "minor",
+  "title": "The Safe passenger switch says it covers 'a person he lifts', but the Lift tab with a person doesn't change at all.",
+  "location": "src/app.html:355 (switch text 'on a person he lifts, throws or catches') and bayLift (no passenger handling).",
+  "evidence": "s36-passenger-lift.js, Lift tab with object 'person': 'page text identical with Safe passenger off and on: true | mentions passenger: false'.",
+  "expected": "Each switch either visibly changes the tabs it claims to cover, with its name shown, or does not claim them.",
+  "fix": "Change the switch text to 'on a person he throws or catches'. Or add a line on Lift for a person, saying the slow lift's g-force and that Safe passenger spreads it."
+ }
+]

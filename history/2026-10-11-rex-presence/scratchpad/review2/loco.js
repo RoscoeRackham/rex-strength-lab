@@ -1,0 +1,10 @@
+const { P, D, g, surf, obj, rex, ollie, ctxOf } = require('./common.js');
+const R = P.RESTRAINT;
+const c = ctxOf(1e12 * g, { surface: surf('concrete') });
+const o = { near: 5, obj: obj('loco'), angle: 45, target: 30, surface: c.surface, body: rex };
+const p = R.planNow('throw', c, o);
+const r = p.run(undefined);
+console.log('all-out v', r.v, 'range', r.flight.range, 'vImpact', r.flight.vImpact, 'Eimpact', r.Eimpact.toExponential(3));
+console.log('reach all-out', JSON.stringify(R.reach('throw', r, p.opt)));
+console.log('preset results', R.PRESETS.map((x) => x.id + ':' + JSON.stringify(p.result('preset:' + x.id))).join('\n'));
+console.log('goal', JSON.stringify(p.goal()), 'goal true all-out?', R.MOVES.throw.goal(r, p.opt));

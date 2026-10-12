@@ -1,0 +1,12 @@
+global.window = {};
+const P = require('./head/engine.js');
+require('./head/data.js');
+const D = window.DINO_DATA, g = P.K.g;
+const rex = P.makeBody({ build: 'rex', H: 3.048, m: 3007 }), ol = P.makeBody({ build: 'ollie', H: 3.048, m: 3007 });
+const sf = D.surfaces.find((s) => s.id === 'concrete');
+const c = (b) => ({ F: 100 * 907.18474 * g, mode: 'comic', body: b, surface: sf, groundHolds: false, anchor: 'friction' });
+const r = P.shove(c(rex), c(ol));
+console.log(Object.keys(r).join(' '));
+console.log('vA', r.vA, 'vB', r.vB, JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k, v]) => typeof v === 'number'))).slice(0, 600));
+const k = P.collide(c(ol), c(rex), { source: 'sprint', gb: Math.pow(10, Math.log10(100 / 299792458)), bounce: false });
+console.log(Object.keys(k).join(' '));

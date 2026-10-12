@@ -1,0 +1,139 @@
+You are reviewing new work in the Rex Super-Strength Lab (/home/user/rex-strength-lab/rex-strength-lab/), a self-contained HTML page (claude.ai Artifact) that simulates Rex and Ollie (canon in CLAUDE.md, already loaded). The work implements /home/user/rex-strength-lab/rex-strength-lab/BRIEF-presence.md: read it first. It adds (1) effort, separate from strength, on every solo tab (the strength used for a move's push; the page opens on the least disruptive effort: the gentlest push that reaches each move's stated goal), a courtesy ceiling (the most effort before a hazard: sonic boom, air blast over 100 Pa within the 'near' distance, ground shaking over 12.7 mm/s there, ground breaking under him, his hands crushing the object) and not-so-heroic presets, and one shared effort in the two-player tests; (2) a Walk tab on ground vibration from their footsteps (gait scaled by Froude number, heel-strike impact energy, a scaled-distance PPV law, thresholds for feeling, a rippling water glass, rattling, cosmetic damage, losing footing; footprints); (3) comic switches (gentle hold, safe passenger, silent strike, soft landing, cool flight) and (4) absorbed-energy modes (endless ocean, gradual, instant, runaway growth) with growth forms (mix, size, density) and a growth what-if on the Weight tab.
+Code: src/engine.js (search for driveStrength, RESTRAINT, VIB, WALK, walkStep, footprint, presence, PASSENGER, GROW, grownBody, gradualGrowth, instantGrowth, runawayGrowth; jump's landing; throw's gentleHold, launchG, dragLoss; catch's gentleT/gentleC/cool), src/app.html (search for EFFORT_PRESETS, resolveEffort, effortReadout, duoHarm, resolveDuoEffort, bayWalk, ppvChart, growthItems, absorbBlock, growthWhatIf, passengerText), src/static-data.js (assumption cards), build-data.py, research/final-presence.json (the new verified facts, with statuses and sources; the raw research and verifier outputs are in /tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/wfout/), README.md, test/presence.js, test/calibration.js, test/shots.js.
+Build: cd /home/user/rex-strength-lab/rex-strength-lab && python3 build-data.py && node build.js. Tests: node test/presence.js; node test/calibration.js (about 80 s); node test/shots.js (about 70 s; writes dist/preview.html and shots/). Render the page yourself with Playwright: require('/opt/node22/lib/node_modules/playwright'); chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' }); load dist/preview.html (after running test/shots.js once) from a file URL. Settings persist in localStorage key 'rex-lab-v1' (some reset on every load: effort, absorb, growWhat, stepEffort, duoEffort, oEffortOwn). window.DinoPhys is the engine and window.DINO_DATA the data.
+The owner is a professional critic: factual accuracy and honest labelling come first (see CLAUDE.md). Do NOT edit anything under /home/user/rex-strength-lab. Write scratch scripts and screenshots under /tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/review2/ (create it). Every finding must be reproduced: give the exact input or place, what the page or code does (quote it, or the script output), what is correct with your derivation or source, and a minimal fix. Report real defects only: wrong physics or formulas, wrong or unsupported claims, mislabelled status, contradictions between parts of the page, broken layout or controls, tests that don't test what they say. Skip style preferences.
+
+This is review round 2. Earlier rounds found and fixed the items summarised below; check that each fix holds and look for regressions and anything missed:
+Round 1 found 78 findings (77 confirmed) across physics, claims, data, UX and code; fixes are in commits 0ab5706 and dd459c6 on branch claude/rex-presence. Read rex-strength-lab/research/reviews/presence-round1.json: every finding has an 'outcome' (status and the change made). Check that each fix holds on the current HEAD (rebuild first), and look hard for regressions the fixes introduced: the courtesy-ceiling search now scans seven points inside the onset bracket and stops when a move saturates; effort searches run in the background after a 40 ms budget (the page shows all-out labelled 'working it out' until done); a soil rule (sinking into sand, gravel or clay is a footprint, not broken ground) now applies to every move; soft landing keeps the landing force; the Stomp tab's shaking uses the drill stamp's effective mass; the Walk tab judges the water glass on side-to-side shaking; WALK.SOFT is 0.51; a 'passenger' hazard (launch peak g and air drag g); instant growth's launch is capped by the ground's bearing; subsonic punches and claps are shown as thumps. The one item left unfixed on purpose: physics-real-jump-ground-flip (documented in the README's known limits). New research-file changes to check: airblast_rattle_onset_unfiltered (new derived fact), statuses changed to estimate on three facts, the footprint fact's display, and every new number the round 1 fixes put on the page (drag g, ASTM ramp, 1 mm/s transient stomp goal, 0.51 soft factor, N_c table interpolation).
+
+Another reviewer (data lens) reported the findings below. For EACH one, try hard to REFUTE it: reproduce it yourself with your own script or browser run, independently of theirs. Mark real=true only if you reproduced it. Confirm the severity and give the best minimal fix (exact code or text). Default to real=false if you cannot reproduce it.
+
+FINDINGS:
+[
+ {
+  "id": "data-stomp-goal-most-people-feel",
+  "severity": "major",
+  "title": "The stomp goal says 'most people can just feel' 1 mm/s, but the cited data put the average person's threshold for a short jolt at about 2.4–3.3 mm/s",
+  "location": "src/app.html:2829 (GOALS.stomp text); src/static-data.js:14 ('Effort is not strength' card); src/engine.js:2853 (VIB.TH.feelOnce comment); research/final-presence.json thr_rec_feel (display)",
+  "evidence": "With default settings the Stomp tab says: 'Effort: 0.13% of his strength (as hard as lifting 122 kg). The gentlest push that makes a stomp most people can just feel 5 m away (1 mm/s, the level for one isolated jolt).' The card repeats the claim ('...1 mm/s, the level for one isolated jolt: Caltrans'). The engine comment calls it 'barely felt by most people'.\n\nThe sources, fetched:\n- Caltrans 2020 (tcvgm-apr2020-a11y.pdf) Table 20 lists 'Barely perceptible 0.04' in/s for transient sources. It gives no share of people.\n- Caltrans Table 6 says its transient scale is 'another study (Wiss 1974)', with 'Barely perceptible' at 0.035 in/s.\n- USBM RI 8507 Table 15 (PA DEP PDF, page image, report p. 67), rows for Wiss & Parmelee: 'Barely perceptible: Mean' is 0.130 in/s at 0.5 s, 0.095 at 1 s and 0.033 at 5 s. The 'Threshold' (most sensitive) is 0.011 at 5 s.\n\nSo 1 mm/s (0.04 in/s) is the average subject's 'barely perceptible' rating for a 5-second damped vibration. The stomp's pulse is about 64 ms long (RESTRAINT footPulse = 2 × 0.026 × √(0.45 × 3.048 / 0.9) s). For an event under 0.5 s, the mean is 3.3 mm/s or more.\n\nThe research file contradicts itself: thr_rec_feel shows 'For one isolated step: the most sensitive notice from about 0.3 mm/s, most people from about 1 mm/s, the average person 2-3 mm/s'. If the average person needs 2–3 mm/s, most people cannot feel 1 mm/s.\n\nThe same overstatement appears in the Walk tab, at lower weight. It labels 0.3 mm/s 'People feel it' and says 'people 3 m away feel ordinary steps'. BS 5228-2 Table B.1 (fetched) says only 'Vibration might be just perceptible in residential environments.'",
+  "expected": "1 mm/s is Caltrans's 'barely perceptible' level for one jolt. The data behind it (Wiss & Parmelee via USBM RI 8507) make that the average person's level only for 5 s events. For a jolt of a few tens of milliseconds, only sensitive people would notice 1 mm/s; the average person needs about 3 mm/s (0.5 s row, 0.130 in/s).",
+  "fix": "Reword the goal, card and engine comment, for example: 'a stomp at the level Caltrans calls barely perceptible for one jolt (1 mm/s); sensitive people notice it, the average person needs about 3 mm/s for a jolt this short (USBM RI 8507 Table 15)'. Alternatively, set VIB.TH.feelOnce = 3.3e-3 with that label. Correct the thr_rec_feel display so it no longer says 'most people from about 1 mm/s'. On the Walk tab, label 0.3 mm/s 'just perceptible (sensitive people, indoors)'."
+ },
+ {
+  "id": "data-windows-break-3p4kpa",
+  "severity": "minor",
+  "title": "Growth text says breaking windows 'takes about 3.4 kPa', against the project's own verified glass data; 'windows break' means three different pressures on the page",
+  "location": "src/app.html:1058 (instant growth winText), src/app.html:1048 (gradual growth '(windows break from 3.4 kPa)'), src/app.html:1056, src/engine.js:3047 (DP_WINDOWS 6900)",
+  "evidence": "Reproduction (scratchpad review2/win_check.js): instantGrowth(Rex, 1e19 J, mix, concrete) gives dpLo 1,098 Pa and dpHi 2,061 Pa. Since dpHi < 3400, the page prints ', too little to break windows (that takes about 3.4 kPa).'\n\nThe sources, fetched:\n- USBM RI 8485 (resolutionmineeis PDF), p. 60: 'there is a consensus that damage becomes improbable below approximately 0.030 lb/in2 (140 dB)'.\n- RI 8485 App. G: 'glass under strain could fail at overpressures as low as 0.10 lb/in2 (151 dB)', which is 690 Pa.\n- The project's verified fact comic_glass_breakage_low_end adds precracked panes failing from 364 Pa.\n- Glasstone Table 5.145 (fourmilab eonw_5.pdf): 'Glass windows, large and small | Shattering usually, occasional frame failure | 0.5-1.0' psi. So 3.4 kPa is where windows usually shatter, not where breaking starts.\n\nOn the same page:\n- The 'Break windows across the street' preset and the Stomp blast chart use 6.9 kPa ('Windows shatter').\n- Instant growth's 'windows break out to X–Y' uses 6.9 kPa at the low end and 3.4 kPa at the high end.\n- The gradual text says 'windows break from 3.4 kPa'.",
+  "expected": "At 1–2 kPa, weak or precracked panes near him can break (from about 364–690 Pa per RI 8485). 3.4–6.9 kPa is the band where windows usually shatter. One wording per threshold.",
+  "fix": "Replace 'too little to break windows (that takes about 3.4 kPa)' and '(windows break from 3.4 kPa)' with 'below the 3.4 kPa at which windows usually shatter (Glasstone & Dolan); weak or cracked panes can break from about 0.4–0.7 kPa (USBM RI 8485)'. Optionally, add a 'some panes may break' reach at 690 Pa. Name the 6.9 kPa threshold 'windows shatter' everywhere, preset included."
+ },
+ {
+  "id": "data-plaster-preset-name",
+  "severity": "minor",
+  "title": "Preset 'Crack the plaster next door' fires at the 12.7 mm/s safe limit (about a 5% worst-case chance of hairline cracks), and the page never shows the 50% point the verifier asked for",
+  "location": "src/app.html:587 (EFFORT_PRESETS label), src/engine.js RESTRAINT.PRESETS.plaster (VIB.TH.plaster)",
+  "evidence": "The select label reads 'Crack the plaster next door'. PRESETS.plaster fires when ppvAt(...) >= VIB.TH.plaster = 12.7 mm/s.\n\nThe sources, fetched:\n- Caltrans 2020 Table 13, after Siskind: 'Threshold damage: loosening of paint, small plaster cracks ... 0.5 [5%] 0.7 [10%] 2.5 [50%] 9.0 [90%]' in/s.\n- USBM RI 8507 Conclusion 6 calls 0.50 in/s a 'practical safe' level.\n\nThe verifier's correction for thr_rec_cosmetic_damage (wfout/verify_thresholds.json) says: 'The page should give the 50% point (about 64 mm/s, Siskind via Caltrans) alongside it.' grep '64 mm' over src/app.html and src/static-data.js finds nothing. The preset's own description ('plaster may crack') is accurate; the select label is not.",
+  "expected": "At 12.7 mm/s cracking is possible but unlikely (at most 5% of houses in the worst case). The least effort that actually cracks plaster in a typical house is nearer 64 mm/s (50%).",
+  "fix": "Rename the preset 'Risk cracking the plaster next door' (12.7 mm/s, the safe limit). Or move it to the 64 mm/s 50% point and say 'about half of houses get hairline cracks (Siskind 1980 via Caltrans)'. Show 64 mm/s next to the safe limit in the ceiling card or the hazard list."
+ },
+ {
+  "id": "data-merge-script-reverts-fixes",
+  "severity": "minor",
+  "title": "The documented build of final-presence.json would silently undo every round 1 data fix, and its inputs are not in the repo",
+  "location": "rex-strength-lab/research/merge_presence.py; README.md:64",
+  "evidence": "README.md:64: 'final-presence.json (267 facts ...) is assembled by research/merge_presence.py from the compiled research'.\n\nI copied the script with its output redirected to the scratchpad (review2/merge_copy.py) and ran it on scratchpad/compiled. It wrote '267 facts from 7 topics'. Compared with the committed file:\n- airblast_rattle_onset_unfiltered (the new derived fact) is missing.\n- 9 facts differ, including the status of step_rex_ollie_walking_foot_load, step_elephant_vs_rex_footfall and growth_slow_tmin_examples (back to 'derived'), the footprint display, the shimmer and rings displays, and comic_airblast_rattle_onset's label.\n\nThe compiled topic files exist only in the session scratchpad, not in the repo, so the collaborator cannot rerun the script at all. The committed file now has 268 facts, not 267.",
+  "expected": "The repo states which file is the source of truth, and its count is right. Rerunning a documented step must not lose reviewed corrections.",
+  "fix": "Either commit the compiled topic files and a patch step that applies the review fixes, or mark final-presence.json as the hand-maintained source of truth (in the script docstring and README) and stop documenting it as generated. Update '267 facts' to 268."
+ },
+ {
+  "id": "data-round1-status-notes-boilerplate",
+  "severity": "minor",
+  "title": "Round 1 status changes carry one pasted reason that is partly wrong for each fact, and the same rule was applied unevenly",
+  "location": "research/final-presence.json: step_rex_ollie_walking_foot_load, step_elephant_vs_rex_footfall, growth_slow_tmin_examples (notes); step_rex_ollie_stamp_load (status)",
+  "evidence": "All three notes end with: 'Review round 1 (data lens): status estimate (was derived): the numbers rest on estimated inputs (sole areas from the picture; the side factor and the growth profile).' The gradual-growth durations use no sole areas, and the two foot-load facts use neither a side factor nor a growth profile.\n\nstep_rex_ollie_stamp_load has the same structure as walking_foot_load: a force from canon mass times a measured multiple, plus pressures from the picture-estimated soles ('Rex's paw 420–620 kPa, Ollie's boot 870–1,280 kPa'). It is still 'derived', while walking_foot_load was moved to 'estimate' for exactly that reason.",
+  "expected": "Each note gives that fact's own reason, and facts with the same basis get the same status.",
+  "fix": "Write a separate reason per fact: 'sole areas from the picture' for the two foot facts, 'equivalent-ball side factor and the 1 − cos growth profile (our choices)' for growth_slow_tmin_examples. Set step_rex_ollie_stamp_load to estimate, or split it into a derived force and estimated pressures."
+ },
+ {
+  "id": "data-glass-threshold-unlabelled",
+  "severity": "minor",
+  "title": "Walk tab shows the water-glass thresholds (0.2 and 0.7 mm/s) and the canon result without saying they are model estimates",
+  "location": "src/app.html:3189-3192 (threshold list), 3166 (verdict), 3212 (canon sentence)",
+  "evidence": "Walk tab text at default settings:\n- 'A glass of water ripples (0.2 mm/s): not even 1 m away.'\n- 'Rings in the glass (the film look) (0.7 mm/s): not even 1 m away.'\n- Verdict: 'Close to what a glass of water shows.'\n- Canon sentence: 'a glass 3 m away ripples with ordinary steps (46% of the way from soft-footed to a stamp)'.\n\nNone of these carries a status. On the same tab, the 3 m tile says 'estimate, about 3–5× either way' and the rattle note says '1 mm/s is our estimate'.\n\nThe research: ripple_no_measured_threshold is 'Unknown: no measured value found'. ripple_threshold_shimmer and ripple_threshold_rings are estimates from a model with an assumed 10-arcmin visibility criterion, 'Likely error up to a factor of 10'. The brief requires: 'find a measured value or derive one, and label which'. Only the assumptions card mentions it.",
+  "expected": "Where the glass thresholds appear, the page says they are our estimates from a ripple model (no measurement exists), uncertain by up to 10×.",
+  "fix": "Add '(our estimate from a ripple model; nobody has measured it; could be 10× either way)' to the two glass lines and to the canon sentence's glass clause, as the rattle line already does."
+ },
+ {
+  "id": "data-threshold-tests-untested",
+  "severity": "minor",
+  "title": "presence.js claims to check each threshold's conversion, but most thresholds can change tenfold and every test still passes",
+  "location": "rex-strength-lab/test/presence.js:90, 111-117; README.md:57",
+  "evidence": "Section header (test/presence.js:90): 'reproduces its sourced anchors and each threshold's worked conversion'. README: tests check 'each threshold's conversion'.\n\nOnly plaster (0.5 in/s) and plasterWalk (0.3 in/s) are compared with their sources. Line 117 ('the other walking thresholds are the sourced ones') compares the engine with itself: thw.feel === P.VIB.TH.feel.\n\nMutation run on a copy in the scratchpad (review2/mut): VIB.TH set to feel 3e-3, feelOnce 3.3e-3, shimmer 2e-3, rings 7e-3, rattle 10e-3. Result: '239 checks, all checks passed'.",
+  "expected": "Each sourced or estimated threshold, and the other new constants, are pinned to the fact they come from.",
+  "fix": "Add checks that read value_si from research/final-presence.json:\n- feel 0.3 mm/s (thr_bs5228_2_table_b1_effects), feelOnce 0.04 in/s (thr_caltrans2020_table20...), shimmer and rings (ripple_threshold_*), rattle (thr_rec_rattle), footing (thr_rec_footing).\n- DP_RATTLE vs airblast_rattle_onset_unfiltered, DP_HARM vs comic_airblast_safe_max.\n- PASSENGER.EIBAND vs comic_eiband_voluntary_limits.\n- WALK.SOFT = 1 − 0.487 (step_yoon2025_quiet_walking).\n- NC_DEPTH vs step_em1110_clay_depth_factor."
+ },
+ {
+  "id": "data-sources-truncation-hides-basis",
+  "severity": "minor",
+  "title": "The Sources table keeps only two links per fact, so the rows for the recommended rattle and walk-past plaster values don't link the source that sets the number shown",
+  "location": "rex-strength-lab/build-data.py:48 (src(..., limit=2)) and :393",
+  "evidence": "thr_rec_rattle shows 'About 1 mm/s PPV (range 0.3-3 mm/s)'. Its sources are ordered Caltrans, FTA, RI 8507, EMS-98, ShakeMap, and the row links only Caltrans and FTA. Both of those say rattling happens at or below perception (about 0.25–0.3 mm/s). The 1 mm/s comes from 'the lower edge of intensity IV acceleration (1.4-3.9 %g, Wald 1999)' (the fact's notes), which is the dropped 5th source. I confirmed IV = 1.4–3.9 %g in ShakeMap Figure 2.5 (USGS TM 12-A1, p. 56).\n\nthr_rec_cosmetic_damage shows 'a walk past (repeated steps): 7.6 mm/s' but links RI 8507 and BS 5228. The 7.6 mm/s is Caltrans Table 19 ('Older residential structures ... 0.3' in/s continuous, fetched), its dropped 3rd source.",
+  "expected": "Each row links at least the source behind the number it displays.",
+  "fix": "In build-data.py, show all sources for thr_rec_* rows (as already done for heat_to_vaporise_per_kg). Or reorder those facts' sources so the value-setting source comes first: ShakeMap for rattle, Caltrans for cosmetic damage."
+ },
+ {
+  "id": "data-raw-keys-in-sources",
+  "severity": "minor",
+  "title": "Sources-table text points readers to a research key they cannot find on the page",
+  "location": "research/final-presence.json: comic_airblast_rattle_onset and growth_airblast_usbm_ri8485 (display), shown in the Sources table",
+  "evidence": "Rendered rows:\n- 'Comic switches: airblast at which people start to notice rattling ... (20 Pa as read on that meter; about 36 Pa unfiltered, our conversion: see airblast_rattle_onset_unfiltered)'.\n- 'Growth: airblast levels that rattle houses but do no damage | ... (about 36 Pa unfiltered by our conversion: airblast_rattle_onset_unfiltered)'.\n\nThe table shows labels, not keys. The row this refers to is labelled 'Comic switches: rattling onset as an unfiltered peak pressure (our conversion of USBM's 120 dB on a 6 Hz meter)'.",
+  "expected": "Cross-references in page text use names a reader can find.",
+  "fix": "Change both displays to 'see the row \"Rattling onset as an unfiltered peak pressure\"', or drop the pointer."
+ },
+ {
+  "id": "data-label-casing-names",
+  "severity": "minor",
+  "title": "The round 1 casing fix still lowercases names in Sources labels ('taylor's', 'sirius B', 'newtonian', 'schwarzschild')",
+  "location": "rex-strength-lab/build-data.py:28-39 (NAMES, lower_first)",
+  "evidence": "Rendered presence row: 'Growth: taylor's expanding sphere (1946), as described by Courant & Friedrichs'. NAMES has 'Taylor' but not \"Taylor's\".\n\nThe same function also lowercases these rows:\n- 'Weight: sirius B (white dwarf): mass and radius'\n- 'Weight: newtonian constant of gravitation'\n- 'Weight: schwarzschild radius ...'\n- \"Weight: buchdahl's limit ...\"\n- \"Weight: stevenson's proposal ...\"\n- 'Arm wrestling and wrestling: world Armwrestling Federation regulation table ...'\n- 'Arm wrestling and wrestling: newtonian constant of gravitation'",
+  "expected": "Proper names keep their capitals.",
+  "fix": "Strip a trailing ’s/'s before the NAMES lookup, and add Sirius, Newtonian, Schwarzschild, Buchdahl, Stevenson and World to NAMES. Or lowercase only words on an explicit list of common nouns."
+ },
+ {
+  "id": "data-stale-code-comments",
+  "severity": "minor",
+  "title": "Engine comments give a stale status and an old fact key for two new constants",
+  "location": "src/engine.js:2856, src/engine.js:3046",
+  "evidence": "engine.js:2856: '//   rings: concentric rings in the glass, the film look (derived: about 0.5-1 mm/s vertical)'. ripple_threshold_rings is 'estimate'; round 1 changed its display from 'derived, not measured' to 'estimate from a model'.\n\nengine.js:3046: 'DP_RATTLE: 36, // ... roughly 36 Pa unfiltered (growth_airblast_usbm_ri8485)'. Round 1 moved this number to its own derived fact, airblast_rattle_onset_unfiltered, which says it is 'Used by ... RESTRAINT.R.DP_RATTLE'.",
+  "expected": "Code comments name the right fact and status, because they are how a constant is traced to its source.",
+  "fix": "Change 'derived' to 'estimate' on line 2856, and cite airblast_rattle_onset_unfiltered (derived) on line 3046."
+ },
+ {
+  "id": "data-weak-energy-ranges-unlabelled",
+  "severity": "minor",
+  "title": "Growth what-if calls encyclopedia figures quoted in an unrefereed preprint 'published estimates' without saying so",
+  "location": "src/app.html:1657-1658 (growthWhatIf 'firm' texts)",
+  "evidence": "The page says: 'Claimed: 8.4 × 10¹⁷ J (200 Mt) is a popular figure. Published estimates run from about 10¹⁷ to 6.3 × 10¹⁸ J ...'.\n\nThat range comes from growth_krakatoa_energy_spread (status 'disputed'; notes: 'An unrefereed preprint by an outlier author'). I fetched Lobanovsky (arXiv:1311.6565). The 1.5 Gt (6.3 × 10¹⁸ J) is from 'another encyclopedic resource', the 200 Mt from Wikipedia, and 10¹⁷ J from 'a book published by the American Geological Society'.\n\nThe Chicxulub line 'Disputed: published estimates run from about 10²³ to 10²⁴ J' rests on energy_chicxulub_impact, which cites only Wikipedia and an arXiv preprint. CLAUDE.md: 'Fan sites and magazines only when nothing better exists, and then say so.'",
+  "expected": "The text says where the weak ranges come from.",
+  "fix": "Use 'Figures quoted in encyclopedias and a popular book run from about 10¹⁷ to 6.3 × 10¹⁸ J (as collected in an unrefereed preprint, Lobanovsky 2013)' and 'Wikipedia's summary of the literature: about 10²³ to 10²⁴ J'."
+ },
+ {
+  "id": "data-punch-goal-elite-boxers",
+  "severity": "minor",
+  "title": "The punch goal says 6.6–12.5 m/s was 'measured in elite boxers'; the source studied four experienced boxers, and the research had already removed 'elite'",
+  "location": "src/app.html:2830 (GOALS.punch text)",
+  "evidence": "Punch tab: '...throws a punch as fast as the strongest human’s (10.4 m/s in this model, inside the 6.6–12.5 m/s measured in elite boxers).'\n\nWhiting et al. 1988 abstract (Europe PMC, PMID 3377096, fetched): 'four experienced boxers were filmed ... peak velocities of 6.6 to 12.5 m/s'.\n\nThe research fact punch_fist_speed_elite_measured notes: 'Label corrected from 'elite': 11.95 is an amateur mean.'",
+  "expected": "'measured in experienced boxers (four, filmed; Whiting et al. 1988)'.",
+  "fix": "Replace 'elite boxers' with 'experienced boxers' in GOALS.punch."
+ },
+ {
+  "id": "data-footsteps-never-measured",
+  "severity": "minor",
+  "title": "Page says footsteps were never measured, but the research file holds a measured human walking record that the model matches within 2×",
+  "location": "src/static-data.js:18 ('nobody has measured footsteps this way'); src/app.html:3219 (Walk math 'footsteps themselves were never measured'); src/engine.js:2832; README.md:78",
+  "evidence": "elephant_steinmann2025_other_animals (derived, from Steinmann et al. 2025 Fig. 3c, fetched and viewed: 'human, NWP05, 53 m', displacement axis ×1e-8) gives a human at 53 m on the same sandy dry station as the elephant: about 0.002 mm/s (1.6e-8 m at 20 Hz).\n\nThe engine, for an ordinary step (effort 0.5, comfortable walk) of a 1.75 m, 76.7 kg person on 'sand' at 53 m, gives 1.19e-3 mm/s (scratchpad review2/human_check.js). That is within 2× of the record.\n\nSo a footstep was measured this way, and it checks the model directly. The page instead claims no footstep measurement exists and relies on a drop test and 'loosely' on elephants.",
+  "expected": "State the one human anchor and its result, with its caveats: one record, gait and mass unknown, camera-trap distance.",
+  "fix": "Replace 'footsteps themselves were never measured' with 'one recorded human walk (Steinmann et al. 2025, 53 m on sandy ground, about 0.002 mm/s) agrees within about 2× for an average adult'. Add it to test/presence.js as an anchor."
+ }
+]

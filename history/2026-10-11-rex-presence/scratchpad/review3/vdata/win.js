@@ -1,0 +1,10 @@
+global.window = {};
+const L = '/home/user/rex-strength-lab/rex-strength-lab/';
+const P = require(L + 'src/engine.js'); require(L + 'src/data.js');
+const D = window.DINO_DATA;
+const need = (dp) => { let lo = 1, hi = 1e12; for (let i = 0; i < 200; i++) { const m = Math.sqrt(lo * hi); if (P.blastRadius(m, dp) >= 15) hi = m; else lo = m; } return hi; };
+const a = need(6900), b = need(3400);
+console.log('6.9 kPa at 15 m needs', a.toExponential(2), 'J =', (a / 4.184e6).toFixed(2), 'kg TNT; 3.4 kPa needs', b.toExponential(2), 'J =', (b / 4.184e6).toFixed(2), 'kg TNT; ratio', (a / b).toFixed(1));
+const rows = D.sources ? D.sources : null;
+const all = JSON.stringify(window.DINO_DATA);
+const m = all.match(/.{200}Windows shatter.{300}/g); console.log(m && m.slice(0,3).join('\n---\n'));

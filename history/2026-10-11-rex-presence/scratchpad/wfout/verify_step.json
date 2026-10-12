@@ -1,0 +1,226 @@
+{
+ "checks": [
+  {
+   "key": "step_keller1996_walking_grf",
+   "ok": true,
+   "issue": "I re-fetched the Europe PMC abstract, and the quotes match word for word. Reading 1.2 BW as the value at 1.5 m/s, the slowest walking speed tested, is reasonable. The abstract does not define G(z): 8–30 BW/s is far below Carden's peak instantaneous marching rates (42–70 BW/s) and Munro's 77–113 BW/s, so it is almost certainly an average rate. The '0.15 s to first peak' figure rests on that and must stay labelled an inference. The same abstract also says slow jogging gave a '>50% higher F(z) and G(z)' than walking, which is worth adding to notes."
+  },
+  {
+   "key": "step_bohannon2011_normal_walking_speed",
+   "ok": true,
+   "issue": "The abstract quotes match (143.4 and 94.3 cm/s; 23,111 subjects; 41 articles). value_si 1.43 is the highest stratum mean (men aged 40–49), not a typical speed. If the page shows value_si under the label 'Normal walking speed', it overstates. Show the range, or put a typical young-adult value next to it."
+  },
+  {
+   "key": "step_tudorlocke2019_cadence_vs_speed",
+   "ok": true,
+   "issue": "Table 2 matches (96.1±6.5, 113.6±6.1, 129.0±7.6; n 76/74/62), and so do the leg-length method and the cohort heights. Minor correction to the notes: bouts also ended at more than 75% of predicted maximum heart rate or an RPE above 13, not only when people chose to run. Falling n at higher speeds is therefore not purely walk-to-run selection."
+  },
+  {
+   "key": "step_fukuchi2018_preferred_froude",
+   "ok": true,
+   "issue": "I recomputed it from WBDSinfo (n = 24 Young, overground C trials): v 1.243±0.145 m/s, L 0.877 m, Fr mean 0.182, sd 0.040, min 0.100, max 0.290, L/H 0.5127. All match. Caveat missing from the notes: the comfortable speed was timed over a 10 m walkway 'from start and end at rest', and the paper itself warns speeds 'might have been slightly underestimated'. Leg length is ASIS to medial malleolus, not hip-joint height. Fr 0.18 is therefore at the low end; CADENCE at 1.34 m/s gives 0.21, and Bohannon's ~1.4 m/s about 0.22."
+  },
+  {
+   "key": "step_alexander2004_dynamic_similarity",
+   "ok": false,
+   "issue": "I re-fetched the PMC page, and the quotes are confirmed (duty factor 0.7 to 0.55, hip-height length, step length 0.8–1.2 hip heights defined as distance travelled while a foot is down). value_si 0.6 is not in the source: it is the researcher's chosen midpoint, filed inside a 'verified' fact. Alexander 2004 gives no walk-to-run Froude number; that comes from Kram.",
+   "corrected": "Keep status verified for the range 0.55–0.7 only. Set value_si to null (or keep 0.6 but say in display and notes that it is 'our working value, estimate')."
+  },
+  {
+   "key": "step_kram1997_walk_run_froude",
+   "ok": true,
+   "issue": "The abstract quote matches. L is 'leg length', not explicitly hip height. That is close enough for this use."
+  },
+  {
+   "key": "step_human_stance_time",
+   "ok": true,
+   "issue": "Recomputed: stride 1.057 s; stance 0.58 / 0.63 / 0.74 s at duty 0.55 / 0.6 / 0.7. Correctly labelled derived."
+  },
+  {
+   "key": "step_baines2018_heel_strike",
+   "ok": true,
+   "issue": "Table 1 and the text match exactly: ŻH(t0) −0.57 (−0.78; −0.39), tp 17.5 (12.0; 23.3), te 29.8 (20.0; 45.2), W −3.8 (−6.9; −1.4), WZ −2.7, Me 11.1 (8.6; 19.5), Mp 17.6, Mp_CS 4.1. Add to notes: (a) the 'heel point' is a virtual point fixed to two tibia markers, located from the centre of pressure, with no marker on the foot; (b) W is work done by the ground force on the foot–ankle, i.e. energy dissipated or stored in the heel pad, foot and ankle. On a rigid plate essentially none of it enters the ground, so it is not the energy delivered to the ground."
+  },
+  {
+   "key": "step_chi_schmitt2005_effective_mass",
+   "ok": true,
+   "issue": "The abstract quotes match. One unsupported phrase: 'Published estimates span 4–18% of body mass' is the spread among Baines's own method variants (4.1% Mp_CS to 17.6% Mp), not a survey of the published literature.",
+   "corrected": "Say 'Baines et al. 2018 get 4–18% depending on method'."
+  },
+  {
+   "key": "step_winter1992_heel_contact_velocity",
+   "ok": true,
+   "issue": "The abstract quote matches, and 'disputed' is appropriate. 'Marker data smoothed through contact' is the researcher's speculation and should be labelled as such. A more concrete explanation is the different definitions: Winter used a heel marker, while Baines used a tibia-fixed virtual point under the centre of pressure."
+  },
+  {
+   "key": "step_verdini2006_hst_incidence",
+   "ok": true,
+   "issue": "The abstract quote matches (76%, 13.3%, 10.7%)."
+  },
+  {
+   "key": "step_blackburn2016_hst_timing",
+   "ok": true,
+   "issue": "The abstract quote matches (28 subjects; 11–16 ms Radin/Modified Hunt; 83–122 ms Hunt). value_si 0.0135 is a midpoint, which is fine."
+  },
+  {
+   "key": "step_yoon2025_quiet_walking",
+   "ok": true,
+   "issue": "The abstract quotes match (44.6%, 29.3%, 69.2%, 23.4%, 48.7%, 26 participants). Caveat: the 45% and 69% reductions come with 23–29% slower walking, so part of the cut is speed, not technique (48.7% at normal speed is the cleaner figure). The study measured loading rate only, so applying the factor to impact energy (as the recommendation and engine SOFT = 0.4 do) is an unsupported estimate."
+  },
+  {
+   "key": "step_carden2015_drill_peak_force",
+   "ok": true,
+   "issue": "Tables 1 and 3 and the quotes match exactly. Labelling problem for downstream use: 3.1–6.6 BW is the range of group means across manoeuvres, not individual values. SDs are 1.5–1.7 BW for trained men (upper 95% CL 7.7), so individuals exceeded 8 BW. Measured on rigid force plates in Combat Assault Boots; on soil the peak and rate would be lower."
+  },
+  {
+   "key": "step_carden2015_drill_loading_rate",
+   "ok": true,
+   "issue": "Table 4, the method text and the Munro sentence match. Tibial acceleration 207.2 (57) m/s² for trained men at the halt is confirmed."
+  },
+  {
+   "key": "step_rawcliffe2020_drill_time_to_peak",
+   "ok": true,
+   "issue": "The abstract matches, including the printed '0.016 to 0.036 ms'. The researcher's correction to seconds is physically consistent. The abstract also prints '350 bw·s' for what must be bw/s; note both unit slips. The status should say 'verified (unit corrected by inference)'. Subjects were recreationally active men, not soldiers."
+  },
+  {
+   "key": "step_decker2003_drop_landing",
+   "ok": true,
+   "issue": "Carden's sentence is confirmed. The Decker abstract re-fetched gives no force, so 'reported' is correct. √(2·9.81·0.6) = 3.43 m/s is confirmed."
+  },
+  {
+   "key": "step_ansur_leg_proportions",
+   "ok": true,
+   "issue": "Recomputed from the repo CSV (n = 4,082): crotch 0.4815 (0.0141), trochanterion 0.5128 (0.0152), lateral femoral epicondyle 0.2799 (0.0080), stature 1,756 mm. All match."
+  },
+  {
+   "key": "step_rex_ollie_hip_height_estimate",
+   "ok": true,
+   "issue": "I re-measured the front views with a pixel ruler. Rex: crest ~13 px, soles ~750, brief bottom ~445 gives 0.414 H. Ollie: horns ~18, soles ~778, crotch ~462 gives 0.416 H. Both agree. The 'estimate' status is correct. The ANSUR URL is a dataset home page, not a measurement source; the source is the turnaround PNGs."
+  },
+  {
+   "key": "step_rex_ollie_preferred_walk_speed",
+   "ok": true,
+   "issue": "Recomputed: 1.56 m/s at Fr 0.18 (1.50–1.61 across h), 1.16 at Fr 0.10, 1.97 at Fr 0.29, 1.68 at Fr 0.209. Inherits the Fukuchi start-from-rest underestimate; 1.6–1.7 m/s is a fair default."
+  },
+  {
+   "key": "step_rex_ollie_walk_run_speed",
+   "ok": true,
+   "issue": "Recomputed: 2.59 m/s (2.51–2.68)."
+  },
+  {
+   "key": "step_rex_ollie_step_frequency",
+   "ok": true,
+   "issue": "I refitted CADENCE 2.0–4.0 mph and get f̂ = 0.789 Fr^0.211. The table values reproduce (67, 78, 88, 91, 95, 109 per min). The fit spans only Fr 0.093–0.372 (treadmill), so the Fr 0.05 and Fr 0.5 rows are extrapolations and should be flagged."
+  },
+  {
+   "key": "step_rex_ollie_stance_time",
+   "ok": true,
+   "issue": "0.73–0.93 s is recomputed and correct. Cross-check: stance length v·t = 1.56 × 0.82 = 1.28 m = 0.93 hip heights, inside Alexander's 0.8–1.2."
+  },
+  {
+   "key": "step_rex_ollie_walking_foot_load",
+   "ok": true,
+   "issue": "Recomputed: 29.5 / 35.4 / 44.2 kN; Rex 95 / 114 / 143 kPa; Ollie 197 / 236 / 295 kPa. Minor error: the floor 1/(2β) is 0.71–0.91 BW for β 0.55–0.7 (0.83 at 0.6), not '0.85–1.0'. A peak floor of about 0.9–1.0 BW is a reasonable estimate, but it is not that formula.",
+   "corrected": "Mean stance load 1/(2β) = 0.71–0.91 BW; the peak must exceed it, so about 0.9–1.0 BW (estimate)."
+  },
+  {
+   "key": "step_rex_ollie_heel_strike_estimate",
+   "ok": false,
+   "issue": "The arithmetic reproduces (227 J total, 161 J vertical, 84–412 J; ½ m_e v² 31 / 82 / 131 J). Two problems. (1) The display '100–250 J' does not match the stated range of 80–410 J. (2) The physics label: W is energy dissipated in the walker's own heel pad, foot and ankle, not energy sent into the ground. Two proxies disagree about threefold (½ m_e v² is 1.4 J against W 3.8 J in Baines's own humans). Calling either one 'the source term for scaled-distance vibration laws' overstates what it is.",
+   "corrected": "Display 'about 80–230 J (rough; 30–410 J across methods and subjects)'. Label it 'energy absorbed by the foot at heel strike (proxy for impact severity)'. If a vibration law needs an impact energy, use ½ m_e v² (kinetic energy of the arrested mass, ~80 J, 30–130 J), the closest analogue of a hammer's rated energy, and say so."
+  },
+  {
+   "key": "step_stamp_contact_speed_estimate",
+   "ok": true,
+   "issue": "Recomputed: raise 0.419 m gives 2.87 m/s (man); 0.710 m gives 3.73 m/s (Rex). The half-sine impulse is 0.132–0.298 BW·s, giving Δv 0.99–2.22 m/s. Energies are 1.28 / 3.35 / 10.5 / 31.8 kJ. Correctly labelled estimate; the half-sine pulse shape is itself an assumption."
+  },
+  {
+   "key": "step_rex_ollie_stamp_load",
+   "ok": false,
+   "issue": "The numbers reproduce (100 / 130 / 192 kN; Rex 324 / 419 / 619 kPa; Ollie 669 / 865 / 1,278 kPa; 8.8–29.5 MN/s). The framing used in the fact and the recommendation, '6.5 = the human-effort ceiling measured', is wrong. It is a group mean (SD 1.5, upper 95% CL 7.4–7.7), measured on rigid force plates in boots.",
+   "corrected": "Describe 6.5 BW as 'trained soldiers' average drill stamp; individuals reach about 8+ BW'. Note the forces are rigid-plate values that soft ground would reduce."
+  },
+  {
+   "key": "step_elephant_body_mass_larramendi2016",
+   "ok": true,
+   "issue": "The PDF re-fetched, and every quote matches on pp. 550–551 (260 / 320 cm; 3,000 / 6,000 kg; 275 cm, 4,000 kg; 2,700 kg; 220 cm, 2,000 kg; obese captive data 60–85% heavier; Laws formula). These are 'good condition' averages. The 220 cm forest-elephant height is what it 'could reach' in good conditions; most sources give about 2 m. 'Hutchinson 2006's heaviest was a 4,632 kg African female' is not supported by what I fetched: the abstract gives only the mass range, with no species or sex."
+  },
+  {
+   "key": "step_elephant_match_3007kg",
+   "ok": true,
+   "issue": "Ratios recomputed (1.00, 1.11, 0.75, 0.50, 1.50). The wording advice is good."
+  },
+  {
+   "key": "step_ren2010_elephant_limb_forces",
+   "ok": true,
+   "issue": "Quotes confirmed via WebFetch. I downloaded the Figure 1A image: the larger trace peaks at about 0.56 BW, the smaller at about 0.36, which matches the reading. Correction to the display: '<1 BW at any speed' holds only over the speeds tested (0.64–4.83 m/s). Ren projects about 1.1 BW per forelimb at ~7 m/s. The walking trials are at û = v/√(gh) = 0.30–0.35 (Fr ≈ 0.09–0.12). Juveniles only.",
+   "corrected": "'never above 1 × (fore) or 0.7 × (hind) at the speeds measured (up to 4.8 m/s)'"
+  },
+  {
+   "key": "step_hutchinson2006_elephant_timing",
+   "ok": true,
+   "issue": "WebFetch confirms the Fig. 2 caption (1.2 m/s, t_st 1.5 s), the Christian et al. passage (1.6 m/s, Fr 0.18, β 0.66), the Table 3 coefficients and forms (log base not stated) and the Table 2 ranges. The study elicited speeds with trainers, so the speeds are not self-selected."
+  },
+  {
+   "key": "step_elephant_preferred_froude",
+   "ok": false,
+   "issue": "Mislabelled. The 'Fr ∼ 0.1' quote is in Panagiotopoulou 2016, but there it is a secondary paraphrase of Hutchinson et al. 2006 [ref 21]. Two WebFetch passes over the full Hutchinson 2006 journal page found no statement that elephants self-select any Froude number; that paper used trainer-elicited speeds. Its only nearby figure is Langman et al. 1995's minimum cost of transport at 1.0 m/s in three mid-sized African elephants. Panagiotopoulou's own Fr 0.05–0.08 was keeper-guided, so it is not self-selected either. The summary's 'Elephants self-select Fr of about 0.1' is overstated.",
+   "corrected": "Split the fact. 'Five keeper-guided African elephants walked 1.1–1.3 m/s, Fr 0.05–0.08' is verified (Panagiotopoulou Table 1). 'Elephants often self-select Fr ~0.1' is reported: Panagiotopoulou's citation of Hutchinson 2006, not found in Hutchinson 2006."
+  },
+  {
+   "key": "step_panagiotopoulou2016_elephant_feet",
+   "ok": true,
+   "issue": "Table 1 matches exactly (masses keepers' estimates; circumferences; Fr; speeds; pressures). Also confirmed: Zebris at 100 Hz, ~0.55 sensors/cm², 0.5 mm rubber matting. The 946 kPa versus 224–318 kPa inconsistency is real and correctly flagged. The table values are means of per-step maximum pressure for each foot; the coarse sensors and matting may smooth local peaks."
+  },
+  {
+   "key": "step_elephant_forefoot_area",
+   "ok": true,
+   "issue": "Recomputed: 0.089 / 0.117 / 0.128 m² from circumference; the 0.32 × 0.30 m ellipse gives 0.075 m². Schanz's own FEA used a 0.32 m circle (0.080 m²)."
+  },
+  {
+   "key": "step_elephant_vs_rex_footfall",
+   "ok": false,
+   "issue": "Force ratio recomputed: 16.2 kN and 1.2/0.55 = 2.18. Elephant pressure 126–216 kPa. 'At similar pressure for Rex' is wrong: Rex's 114 kPa is 0.53–0.90 of the elephant's average.",
+   "corrected": "'about 2.2 × the force; Rex's average sole pressure is lower (0.5–0.9 ×), Ollie's 1.1–1.9 ×'. The stance comparison should be made at equal speed: at 1.2 m/s (Fr 0.1) Rex's stance is about 0.9–1.0 s against the elephant's 1.5 s."
+  },
+  {
+   "key": "step_schanz2013_elephant_footprint",
+   "ok": true,
+   "issue": "Full text confirmed (2,530 / 1,125 / 1,530 / 1,390 kg; 0.32 × 0.30 m; 0.020 / 0.021 / 0.026 m; Dr 0.30–0.47; three layers, hand-pulled roller; FEA u = 0.003 / 0.004 / 0.007 / 0.008 / 0.018 m; factors 3.5 and 1.6). The equation and σ = 93 images were re-downloaded and read. My σ = f·m·g/A recomputes 93 / 99 / 167 / 185 kPa, and 3.5 × 99 ≈ 350. Dr 0.30–0.47 is loose-to-medium sand, not 'firm'."
+  },
+  {
+   "key": "step_schanz2013_touchdown_speed",
+   "ok": true,
+   "issue": "Eq. 1 image confirmed: σ_dyn = m·v1²/(2·s·A). The back-calculation is recomputed at v1 = 1.04 m/s. The tension with Ren (1.12 against ~0.55 BW) is correctly stated."
+  },
+  {
+   "key": "step_falkingham2011_goldilocks",
+   "ok": true,
+   "issue": "The abstract quote matches."
+  },
+  {
+   "key": "step_fhwa_soil_modulus_table",
+   "ok": true,
+   "issue": "The PDF re-fetched, and Table 8–10 matches as transcribed. Conversions are right (1 ksi = 6.895 MPa: loose sand 9.6–28.8 MPa, soft sensitive clay 2.4–14.3 MPa). The Eq. 8.16 wording is confirmed; the equation is an image. The researcher's settlement check used I = π/4, which is the rigid-plate centre factor; a flexible load gives I = 1 at the centre. Small effect."
+  },
+  {
+   "key": "step_em1110_clay_depth_factor",
+   "ok": true,
+   "issue": "The PDF re-fetched: Table 4-7 (1.00 / 1.15 / 1.24 / 1.36 / 1.43 / 1.46), Ncp = 6[1 + 0.2(L/Bb)] ≤ 9, 'assumed 9 for general shear and 7 for local', the punching and local-shear sentences and the D/B = 4 critical depth all match. The table belongs to two-layer clay or wall-footing context. Applying it to a sinking foot is an analogy and should be labelled estimate."
+  },
+  {
+   "key": "step_footprint_model_check",
+   "ok": true,
+   "issue": "Reproduced: φ30 0.530 m, φ35 0.230 m, φ40 0.041 m (0.59 m with 1.12 BW). Loose sand: person 0.213 m, Rex 0.170 m, Ollie 0.660 m. The conclusion holds. Using general-shear factors for Dr 0.3–0.47 sand, where EM 1110 expects local or punching shear, would make the rule's overprediction worse, not better."
+  },
+  {
+   "key": "step_rex_ollie_footprint_estimate",
+   "ok": false,
+   "issue": "The linear arithmetic reproduces (Rex 0.015–0.028 m, Ollie 0.021–0.041 m), but the model has three faults. (1) The display says 'firm-ish medium sand'; Schanz's sand was Dr 0.30–0.47, loose to medium. (2) The 181 kPa anchor contradicts Schanz's own calibrated FEA, which gives only 8 mm at 185 kPa and 18 mm at 350 kPa. (3) Depth is not linear in pressure: their FEA gives 4 / 8 / 18 mm at 99 / 185 / 350 kPa, i.e. depth ∝ p^1.1–1.3. With the 350 kPa anchor and that exponent, Rex comes out about 1.2 cm and Ollie about 2 cm. Downstream defect: engine.js PRINT treats this sand as 'dense sand and gravel' (qRef 240 kPa) and uses p_e 265 kPa. Both are inconsistent with the paper.",
+   "corrected": "'In loose-to-medium sand like the elephant's: Rex about 1–1.5 cm, Ollie about 2 cm (estimate; up to about 3 and 4 cm if the force-plate load of 0.55 BW made the print)'. Anchor the sand to a loose-to-medium bearing, not dense gravel."
+  }
+ ],
+ "recommendation_issues": "I re-fetched the sources and recomputed every derived number (scripts in /tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/research/step-check/scripts/). The arithmetic reproduces throughout. The problems are in the physics, the labels and where constants are used:\n\n1. **Impact energy as the vibration source term (§3).** E_hs = 5.6e-3·M·g·h is work done on the walker's own heel pad, foot and ankle (Baines's force-integral W). It is not energy delivered to the ground, and on a rigid plate almost none of it is. Within Baines's own data it differs about threefold from the closer analogue of a hammer's impact energy, the arrested mass's ½·m_e·v² (1.4 J against 3.8 J in people; ~80 J against 160–230 J for Rex). Scaled-distance PPV laws are fitted to pile-driver or dynamic-compaction energies of roughly 10^4–10^7 J. A 10^2 J heel strike sits 2–5 orders below the fitted range, so any 'footstep vibration' number from such a law is an extrapolation and must be labelled so.\n   - Walking-induced vibration is normally modelled as a periodic force (dynamic load factors per harmonic of the step rate, plus a heel-impact effective impulse). The recommendation never mentions this.\n\n2. **Duty factor (§1).** The stated linear interpolation, β 0.7 at the slowest to 0.55 at Fr 0.4, gives β = 0.64 and stance 0.88 s at Fr 0.18. The recommendation instead quotes 0.6 and 0.82 s. Pick one. Mapping Alexander's 'very slow' 0.7 to Fr 0.05 is itself an estimate.\n\n3. **Cadence fit (§1).** The fit spans Fr 0.093–0.372 (CADENCE 2.0–4.0 mph, treadmill). The slider runs Fr 0.05–0.5, so both ends are extrapolation; flag that on the page. The weight-bearing load rule (Keller 1.2 BW at 1.5 m/s plus a slope) is likewise used outside walking speeds it was measured at, once Fr is mapped to a human-equivalent speed below 1.0 m/s.\n\n4. **Floor on the step force (§2).** '1/(2β) ≈ 0.85–1.0' is wrong: 1/(2β) = 0.71–0.91 BW for β 0.55–0.7. The 0.9–1.0 BW floor on the peak is a separate estimate.\n\n5. **Soft-footed walking (§3).** Applying Yoon's 45–69% loading-rate cut to impact energy is unsupported; Yoon measured only loading rate, partly through walking 23–29% slower. Keep it as an explicit estimate. The engine currently applies 0.4 to energy and stretches the rise time by 1/0.4.\n\n6. **Stamp ceiling (§4).** 6.5 BW is the trained men's group mean (SD 1.5; individuals beyond 8 BW), not 'the human-effort ceiling'. All Carden and Rawcliffe forces are on rigid force plates; on sand, turf or mud the peak and loading rate would be lower. That caveat matters on a page about ground. Scaling body-weight multiples to a 3 t body assumes contact stiffness scales with M/h, which a heel pad or boot does not.\n\n7. **Elephant comparison (§5).**\n   - 'Elephants self-select Fr ≈ 0.1' is a secondary paraphrase. It is not found in Hutchinson 2006, which used trainer-elicited speeds; Panagiotopoulou's 0.05–0.08 were keeper-guided.\n   - 'Similar pressure' for Rex is really 0.5–0.9× the elephant's average.\n   - Ren's '<1 BW' holds only up to 4.8 m/s.\n\n8. **Footprints (§6).** Abandoning the failure-based sinking rule is right, and the check is reproduced. The replacement has three faults:\n   - It is linear in pressure, but Schanz's own validated FEA is superlinear (4 / 8 / 18 mm at 99 / 185 / 350 kPa).\n   - The 181 kPa anchor contradicts that FEA.\n   - The display calls Dr 0.30–0.47 sand 'firm-ish' or 'compacted medium'; it is loose to medium. Downstream, engine.js PRINT equates this sand with 'dense sand and gravel' (240 kPa) and then multiplies depth by qMed/q (×6.5 on loose sand). That rule has no source.\n   - Applying EM 1110 Table 4-7, a two-layer-clay footing-depth factor, to a foot sinking into mud is a reasonable analogy but should be labelled estimate.\n\n9. **Minor:**\n   - The heel-strike display (100–250 J) does not match its range (80–410 J).\n   - Alexander's value_si 0.6 sits inside a 'verified' fact.\n   - Rawcliffe also misprints bw·s for bw/s.\n   - Fukuchi's comfortable speeds were timed from rest over 10 m, so Fr 0.18 is likely a little low (CADENCE gives 0.21).",
+ "missing": "1. **Footfall force model used in vibration engineering.** The standard Fourier-series walking load: first-harmonic dynamic load factor about 0.4–0.5 BW at the step rate, smaller higher harmonics, plus an effective heel-impact impulse for stiff, high-frequency structures (ISO 10137, AISC Design Guide 11, SCI P354, CCIP-016). Cite it from an open agency or journal reproduction, e.g. the Živanović et al. 2005 J Sound Vib review if accessible. Without it the step is not expressed in the form vibration methods actually use.\n\n2. **Frequency content of a footstep force.** Step rate about 1.1–1.8 Hz for Rex, and heel-impact content up to about 1/(tp), i.e. tens of Hz. Also measured seismic or vibration signatures of human footsteps (e.g. Ekimov & Sabatier, JASA, footstep vibration in buildings and on ground). These would give a human anchor for 'footsteps you can feel'; the brief needs one.\n\n3. **Effect of compliant ground on walking forces and loading rates.** Force-plate values are rigid-ground values. Open JEB work on walking on sand (Lejeune et al. 1998, 1.6–2.5× energy cost) and any measured GRF or loading rate on sand or turf are missing.\n\n4. **A measured human footprint depth in dry or loose sand** (D'Août et al. 2010; Bennett/Morse experiments). This would test the engine's loose-sand rule and anchor prints at a second size; currently there is one elephant only.\n\n5. **Langman et al. 1995 elephant minimum cost of transport at 1.0 m/s** (cited in Hutchinson 2006). This is a primary basis for a 'comfortable elephant pace' instead of the unsupported 'Fr ~0.1 self-selected'.\n\n6. **Individual (not group-mean) maximum drill-stamp forces**, and a measured foot speed for a stamp. Without these the stamp ceiling and effective mass stay estimates.\n\n7. **A directly measured human stance time at preferred speed**, to replace the duty-factor derivation.\n\n8. **Boot attenuation for Ollie**, quantified. Rawcliffe's three-footwear comparison reports significant differences, but the abstract gives no numbers; the full text might.\n\n9. **Elephant hip heights for Panagiotopoulou's Fr** (implied h ≈ 2.1 m) and adult (not juvenile) elephant limb forces.",
+ "verdict": "The sourcing is mostly sound. I re-fetched more than 25 sources (12 Europe PMC abstracts, 6 full texts, the Fukuchi CSV, the Alexander, Ren and Hutchinson pages, the Ren Fig. 1 image, the Larramendi, EM 1110-1-1905 and FHWA GEC 5 PDFs, and the Schanz equation images). Every quoted number and table matches its source, and every derived number reproduces with my own scripts.\n\nCorrections needed before the page leans on these facts:\n- **Elephant 'Fr ~0.1 self-selected':** a secondary paraphrase marked verified, not found in Hutchinson 2006. Split it: the measured 0.05–0.08 is verified, the 0.1 is reported.\n- **'6.5 BW = human-effort ceiling':** it is a group mean on rigid plates.\n- **Rex's pressure 'similar' to an elephant's:** it is 0.5–0.9× the elephant's average.\n- **Footprint estimate:**\n  - It is linear in pressure, but Schanz's own FEA is superlinear.\n  - The 181 kPa anchor contradicts that FEA.\n  - 'Firm-ish' sand is really loose to medium (Dr 0.30–0.47). The engine wrongly equates it with dense sand and gravel.\n- **Heel-strike energy as the vibration source:** it is energy absorbed in the foot, ambiguous by about 3×. Any scaled-distance vibration law would be used 2–5 orders of magnitude below its fitted energies.\n- **Minor internal inconsistencies:**\n  - The default duty factor is 0.6, but the stated interpolation gives 0.64.\n  - The 1/(2β) range is misstated.\n  - The heel-strike display does not match its range.\n  - The cadence fit is extrapolated to Fr 0.05 and 0.5.\n  - Alexander's 0.6 sits in a verified fact.\n\nBiggest gap: the standard walking-force (dynamic load factor) model and any measured footstep vibration anchor."
+}

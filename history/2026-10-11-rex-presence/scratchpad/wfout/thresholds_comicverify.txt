@@ -1,0 +1,206 @@
+SUMMARY: Research topic "thresholds" (vibration levels at which people feel it, things rattle, cosmetic damage starts, and people lose their footing), for the Walk tab. 46 facts. I fetched and read every primary table myself, apart from the paywalled standards:
+- Caltrans (2020): Tables 4-7, 13, 19-22, plus its appended 2004 Technical Advisory reproducing Whiffin & Leonard (1971) LR 418.
+- FTA (2018): Report 0123, via the ROSA P copy, because transit.dot.gov returned 403.
+- BS 5228-2:2009 Annex B: a licensed copy posted by a county council. It reproduces BS 7385-2 Table 1. The A1:2014 footnotes come from an An Bord Pleanala appendix.
+- DIN 4150-3: the 1999 table via Watercare (Auckland); the 2016 table via An Bord Pleanala.
+- USBM RI 8507: scanned, read by OCR and page images. Covers safe levels, the Figure B-1 curve, the Table 15 duration table, and the wall-amplification and rattling statements.
+- Earthquake scales: EMS-98, the USGS abridged MMI and the JMA intensity table.
+- Wald et al. (1999) PGV/PGA by intensity, as reproduced in the USGS ShakeMap manual (TM 12-A1). I re-derived the band edges from its equations.
+- Takahashi et al. (2004): a shake-table test of when standing people lose balance.
+
+Main findings:
+- **(a) People feel it:** about 0.14-0.3 mm/s PPV for people indoors (BS 5228-2; Whiffin; ISO 2631:1989 via Caltrans; FTA 65 VdB ≈ 0.2 mm/s PPV). A single isolated transient needs more: Caltrans gives 1.0 mm/s, and USBM Table 15 shows the average person needs 2.4-3.3 mm/s for a 0.5-1 s event.
+- **(b) Rattling:** no standard gives a number. Caltrans and FTA say dishes and windows can rattle at or below perception. Earthquake scales put rattling at intensity IV (PGA 1.4-3.9 %g). Converted by acceleration, that is about 1-3 mm/s at 20 Hz; this is my derivation.
+- **(c) Cosmetic damage:**
+  - BS 7385-2, homes: 15 mm/s at 4 Hz, 20 mm/s at 15 Hz, 50 mm/s from 40 Hz. Probability of damage "tends towards zero at 12.5 mm/s". Minor damage above 2x these values, major above 4x; up to 50% lower for continuous vibration.
+  - USBM: 12.7 mm/s plaster, 19 mm/s drywall below 40 Hz, 51 mm/s above 40 Hz.
+  - Caltrans, older homes: 12.7 mm/s transient, 7.6 mm/s continuous.
+  - DIN 4150-3, dwellings: 5 mm/s below 10 Hz.
+  - FTA, non-engineered timber: 5.1 mm/s.
+- **(d) Footing:** no standard covers this. Earthquake intensities VI-VIII ("a few lose balance" to "difficult to stand even outdoors") match PGV 81-600 mm/s. On the shake table, standing people first lost balance at about 0.3 m/s at 0.3-2.5 Hz, and nobody did at 5 Hz up to 0.48 m/s.
+
+Recommended page values:
+- feel 0.3 mm/s (range 0.14-1)
+- rattle about 1 mm/s (range 0.3-3; estimate)
+- cosmetic damage 12.7 mm/s for one step (7.6 mm/s for a walk past; range 5-50)
+- losing footing about 300 mm/s (range 80-600; estimate from the earthquake analogy, probably cautious for footsteps)
+
+I did not rely on any existing final-*.json key; none covers ground-vibration thresholds. The existing blast_window_breakage key is air overpressure, not ground vibration.
+
+MODEL: 1) THRESHOLDS FOR VIB.TH (m/s, compared with the engine's free-field ground PPV from ppvAt):
+- feel = 0.3e-3 (keep the placeholder). Set by BS 5228-2 Table B.1, "might be just perceptible in residential environments", for construction vibration (about 8-80 Hz) felt indoors.
+  - Show the range 0.14e-3 (most sensitive, BS 5228-2) to 1.0e-3 (Caltrans Table 20: barely perceptible for a single isolated transient).
+  - Use 0.3e-3 for a walk past, which is a train of steps.
+  - For one isolated step, the page may say "the most sensitive notice from about 0.3 mm/s; most people from about 1 mm/s".
+- rattle = 1.0e-3 (keep the placeholder), but label it an ESTIMATE; no standard gives it.
+  - Better, if the engine has a dominant step frequency f (from the attenuation/elephant research): v_rattle = max(0.3e-3, 0.137 / (2 pi f)). Here 0.137 m/s^2 is the bottom of intensity IV, "china, glasses, windows and doors rattle", per the Wald 1999 acceleration band.
+  - Show the range 0.3e-3 to 3e-3.
+- plaster (call it "cosmetic damage" on the page) = 12.7e-3 for a single step or stomp, i.e. transient (USBM RI 8507 plaster limit below 40 Hz; Caltrans older homes, transient; BS 7385-2 "tends towards zero at 12.5 mm/s").
+  - For a walk past (repeated steps, like an impact pile driver), use 7.6e-3 (Caltrans older homes, continuous/frequent intermittent).
+  - The current placeholder of 5e-3 equals the strictest sources (DIN 4150-3 dwellings below 10 Hz; FTA timber; Whiffin & Leonard continuous). It is defensible as a "fragile building" option, but not as the default.
+  - Optional frequency curve, BS 7385-2 line 2 (homes, transient). The interpolation is my assumption: straight lines on the standard's log-log Figure B.1.
+    - f < 4 Hz: v = 2 pi f x 0.6e-3
+    - 4-15 Hz: v = 15e-3 x (f/4)^0.2177
+    - 15-40 Hz: v = 20e-3 x (f/15)^0.934
+    - f >= 40 Hz: v = 50e-3
+    - Halve it for continuous vibration if the walk is treated as continuous.
+- footing = 0.3 (currently 0.2), labelled an ESTIMATE from earthquakes. It is where EMS-98 VIII ("Many people find it difficult to stand, even outdoors") starts on Wald's PGV scale (310 mm/s), and where Takahashi 2004's standing subjects first lost balance (about 0.26-0.31 m/s at 0.3-2.5 Hz). Range 0.08 (EMS VI, "a few persons lose their balance", indoors) to 0.6. Say it probably overstates the risk for footsteps.
+- Optional extra marker (derived physics, not a standard): loose objects hop when the vertical acceleration exceeds 1 g, i.e. v = 9.80665 / (2 pi f) (78 mm/s at 20 Hz).
+
+2) NOT-SO-HEROIC PRESETS (property damage):
+- "rattle the windows" = rattle threshold.
+- "crack the plaster" = cosmetic (12.7 mm/s, or the BS 7385-2 curve).
+- "real cracks" = 2x the BS 7385-2 value (minor damage: loose plaster, hairline-to-3 mm cracks; about 30-100 mm/s depending on frequency).
+- "structural damage" = 4x the BS 7385-2 value (major damage).
+- Cross-check against Siskind's 50% probabilities: cosmetic 64 mm/s, minor 127, major 152 (blasting, homes). These presets are thresholds; the reach distance comes from ppvReach.
+
+3) WHAT EACH THRESHOLD IGNORES (put on the page):
+- All of them are PPV at the ground or the building base, as the largest single component. The damage criteria use that point by definition. The human criteria were set for people inside buildings, where floors and walls can amplify (USBM: about 1.5x for the whole house at 4-12 Hz, about 4x for midwalls at 10-25 Hz, below 1x above 40 Hz). For an indoor listener, rattling and feeling start at lower ground PPV. FTA: ground vibration is "almost never a problem outdoors".
+- The damage criteria come from blasting (1-2 s events, 4-40+ Hz) and construction. A single step fits Caltrans's "transient" class (like a "drop ball"); a walk fits "continuous/frequent intermittent" (like an impact pile driver). That mapping is our reading.
+- The earthquake-based numbers (rattling, footing) come from shaking at about 1-6 Hz lasting many seconds with centimetre displacements. A footstep is one short, higher-frequency pulse with sub-millimetre displacement. People respond to acceleration below about 8 Hz, so velocity thresholds do not transfer directly. That is why rattling is converted by acceleration, and why the footing value is called cautious.
+- Short events are harder to notice (USBM Table 15: the mean barely-perceptible level is 0.51 mm/s for 300 s, 2.4 mm/s for 1 s, and 3.3 mm/s for 0.5 s). The page uses steady-vibration values, so it may say people notice a step sooner than they would.
+
+4) SUGGESTED PAGE WORDING, one line per threshold:
+- Feel: "0.3 mm/s, BS 5228-2, for people indoors near construction; outdoors, and for one short step, people notice less."
+- Rattle: "About 1 mm/s, our estimate: no standard sets it. Earthquake reports place 'dishes and windows rattle' at intensity IV; we convert that shaking to footstep frequencies. Loose items can buzz before people feel anything."
+- Cosmetic damage: "12.7 mm/s at the house for a single step (7.6 mm/s for a walk past): the US Bureau of Mines and Caltrans limits for plaster cracks; a minimal-risk level, not a point where cracks are certain."
+- Footing: "About 300 mm/s, estimated from earthquakes and one shake-table test; real footsteps are shorter and faster, so this is probably cautious."
+
+5) TESTS: each threshold's reach must fall monotonically with distance and rise with effort (they are constants, so this follows from ppvAt). Reproduce the worked conversions:
+- 0.5 in/s = 12.7 mm/s
+- 65 VdB = 0.045 mm/s rms (PPV about 0.18 mm/s with crest factor 4)
+- intensity IV PGA 0.137 m/s^2 at 20 Hz = 1.09 mm/s
+- BS 7385-2 line 2 at 4/15/40 Hz = 15/20/50 mm/s
+
+GAPS: What I could not find or verify, and what the page should say instead:
+- **Rattling:** I found no standard, agency guide or measurement giving a ground-vibration PPV at which windows, crockery or ornaments rattle. Caltrans, FTA and USBM say only that rattling happens at or below the level people feel. The number offered here (about 1 mm/s, 0.3-3) is my conversion of earthquake intensity IV acceleration to footstep frequencies. The page must label it an estimate and say no standard sets it.
+- **Losing footing:** no standard covers footing loss from ground vibration, and nothing covers short, high-frequency pulses. The values come from earthquake intensity descriptions (EMS-98, JMA, which give no numbers) joined to Wald 1999's California PGV bands, plus one small shake-table study (Takahashi 2004; about 30 young subjects; sinusoids; "have not find clear limit value"; values read from a graph). That EMS-98 and California MMI are about equal at VI-VIII is assumed, not verified. The page should say "estimate from earthquakes; probably cautious for footsteps".
+- **Paywalled standards:** I did not open BS 7385-2, DIN 4150-3, ISO 2631-2 or BS 6472-1.
+  - BS 7385-2 Table 1 comes from BS 5228-2:2009 itself, a council-posted licensed copy, which reproduces it.
+  - DIN 4150-3:1999 comes from Watercare's reproduction.
+  - DIN 4150-3:2016 comes from An Bord Pleanala's reproduction. Its dwellings 50-100 Hz cell reads "40 to 50", against "15 to 20" in 1999, so I marked it disputed.
+  - The ISO 2631 (1989) criteria come only via Caltrans Table 7. That the 2003 edition has no limits is from a consultant's evidence (reported).
+  - BS 6472-1 appears only as HS2's VDV criteria (VDV does not convert to a single PPV).
+  - The BS 5228-2 A1:2014 footnotes were seen only in the Pleanala reproduction.
+- **Wald 1999:** the paper is paywalled and was not opened; I used USGS's reproduction in the ShakeMap manual. Below intensity V its PGV relation was "imposed", not fitted. ShakeMap now uses Worden et al. (2012), whose ranges differ; I did not fetch it.
+- **Other secondary reproductions:**
+  - Siskind's damage-probability numbers (Caltrans Table 13) were not cross-checked against RI 8507's probability plots.
+  - Whiffin & Leonard (LR 418), Wiss (1974), Wiss & Parmelee (1974) and Reiher & Meister (1931) were seen only as reproduced by Caltrans or USBM.
+  - The FTA manual's official URL (transit.dot.gov) returned 403. I used the identical report on the US DOT ROSA P repository.
+- **Footstep frequency:** the dominant frequency and duration of a footstep's ground vibration are not part of this topic; they must come from the attenuation/elephant research. Until then, the page should show the frequency-dependent values at a stated assumed frequency (for example 20 Hz) and say it is an assumption. Caltrans assumes 10-30 Hz for construction and traffic sources.
+- **Indoor amplification and direction:** the frequency-specific amplification for an indoor listener (floors, walls) is sourced only as typical USBM factors (1.5 for the whole house, 4 for midwalls). The page should say that indoors people and objects respond at lower ground PPV. Damage criteria use peak component PPV; the attenuation law's component (vertical or largest) should be checked against this.
+--- thr_bs5228_2_table_b1_effects verified 0.0003 m/s | 0.14 mm/s just perceptible (most sensitive); 0.3 mm/s just perceptible in homes; 1.0 mm/s likely complaint; 10 mm/s intolerable beyond a very brief exposure
+--- thr_bs5228_2_perception_range verified 0.0003 m/s | Threshold of perception typically 0.14-0.3 mm/s PPV
+--- thr_caltrans2020_table20_human_transient_continuous verified 0.001016 m/s | Barely perceptible: 0.04 in/s (1.0 mm/s) transient, 0.01 in/s (0.25 mm/s) continuous; distinctly 0.25/0.04 in/s; strongly 0.9/0.10 in/s; severe 2.0/0.4 in/s
+--- thr_caltrans2020_source_classes verified None  | Transient = a single isolated event (blasting, drop balls); continuous/frequent intermittent = repeated impacts or vibratory plant (impact pile drivers, compactors)
+--- thr_whiffin_leonard_1971_lr418_people verified 0.0003 m/s | Threshold of perception 0.15-0.30 mm/s (0.006-0.019 in/s); readily perceptible 2.0 mm/s; begins to annoy 2.5 mm/s; annoying 5 mm/s; unpleasant 10-15 mm/s
+--- thr_wiss1974_transient_people verified 0.000889 m/s | Barely perceptible 0.035 in/s (0.9 mm/s); distinctly 0.24 in/s (6.1 mm/s); strongly 0.9 in/s (22.9 mm/s); severe 2.0 in/s (50.8 mm/s)
+--- thr_ri8507_duration_dependence_table15 verified 0.003302 m/s | Barely perceptible (mean): 0.130 in/s (3.3 mm/s) for a 0.5 s event, 0.095 (2.4) at 1 s, 0.033 (0.84) at 5 s, 0.020 (0.51) at 300 s; most-sensitive threshold 0.011 in/s (0.28 mm/s)
+--- thr_iso2631_1989_building_criteria verified 0.0002032 m/s | Residence 78 VdB day / 75 night = 0.008 in/s rms (0.20 mm/s rms); operating room 72 VdB = 0.004 in/s rms (0.10 mm/s rms); office 0.016 in/s; workshop 0.032 in/s
+--- thr_iso2631_2_2003_no_limits reported 0.0003 m/s | 1989 edition: about 0.3 mm/s PPV for continuous vibration by day, 0.14 mm/s at night, 5-10 mm/s for transient events; 2003 edition has no vibration limits
+--- thr_iso_base_curve_link_to_bs5228 derived 0.0001414 m/s | ISO base curve 0.10 mm/s rms x 1.41 = 0.14 mm/s peak; residence x2-4 = 0.28-0.57 mm/s peak
+--- thr_fta2018_human_response_vdb verified None dB re 1 micro-in/s (rms) | 65 VdB approximate threshold of perception (about 0.045 mm/s rms, about 0.2 mm/s PPV); 75 VdB barely-to-distinctly perceptible boundary; 85 VdB tolerable only if infrequent; 100 VdB damage threshold for typical buildings
+--- thr_fta2018_crest_factor verified 4 1 | Typically above 1.41; 4-5 for train vibration; 8 or more is not unusual for impulsive signals; FTA uses 4 to convert PPV limits to rms
+--- thr_fta2018_outdoors verified None  | 'Ground-borne vibration is almost never a problem outdoors' (no number)
+--- thr_bs6472_1_vdv_hs2 verified 0.2 m/s^1.75 | Lowest observed adverse effect: VDV 0.2 m/s^1.75 by day, 0.1 at night; significant adverse effect: 0.8 by day, 0.4 at night
+--- thr_rattle_below_perception_caltrans verified None  | Rattling of a china cabinet 'can also occur, even when vibration levels are well below perception' (no number)
+--- thr_rattle_ri8507_midwall verified 4 1 | Midwall motion causes 'window sashes rattling, picture frames tilting, dishes jiggling, and knick-knacks falling'; typical amplification 1.5 (whole house, 4-12 Hz) and 4 (midwalls, 10-25 Hz) at resonance; below 1 above 40 Hz
+--- thr_rattle_ems98 verified None  | IV 'Largely observed': china, glasses, windows and doors rattle; V 'Strong': china and glasses clatter, small top-heavy objects may fall, liquids oscillate
+--- thr_usgs_mmi_abridged verified None  | IV: 'Dishes, windows, doors disturbed; walls make cracking sound. Sensation like heavy truck striking building.' V: 'some dishes, windows broken. Unstable objects overturned.'
+--- thr_jma_intensity_descriptions verified None  | 3: dishes in cupboards may rattle; 4: dishes rattle, unstable ornaments may fall; 5 Upper: walking difficult without holding on; 6 Lower: difficult to remain standing; 6 Upper: impossible to remain standing
+--- thr_wald1999_shakemap_intensity_table verified 0.011 m/s | MMI IV (dishes, windows rattle): PGV 1.1-3.4 cm/s (11-34 mm/s), PGA 1.4-3.9 %g; VI 8.1-16 cm/s; VII 16-31 cm/s; VIII 31-60 cm/s
+--- thr_wald1999_low_intensity_caveat verified None m/s^2 | Felt/not-felt boundary about 1-2 cm/s^2 peak acceleration; the low-intensity PGV relation was imposed to join it
+--- thr_earthquake_frequency_vs_intensity verified None Hz | Intensity V-VII best matches 3-6 Hz shaking; the lowest intensities 7-8 Hz; above VIII 0.7-1.0 Hz. The Wald 1999 PGA/PGV bands imply about 1.7-2.7 Hz
+--- thr_rattle_mmi4_accel_at_footstep_frequency derived 0.0011 m/s | MMI IV acceleration (1.4-3.9 %g = 0.14-0.38 m/s^2) equals PPV 1.1-3.0 mm/s at 20 Hz, 2.2-6.1 mm/s at 10 Hz, 0.7-2.0 mm/s at 30 Hz
+--- thr_one_g_vertical derived 0.078 m/s | PPV = g / (2 pi f): 156 mm/s at 10 Hz, 78 mm/s at 20 Hz, 52 mm/s at 30 Hz, 39 mm/s at 40 Hz
+--- thr_bs7385_2_table1_cosmetic verified 0.015 m/s | Homes and light commercial (line 2): 15 mm/s at 4 Hz rising to 20 mm/s at 15 Hz and 50 mm/s at 40 Hz and above; below 4 Hz, 0.6 mm displacement. Framed and industrial (line 1): 50 mm/s at 4 Hz and above
+--- thr_bs7385_2_multipliers_and_continuous verified 2 1 | Minor damage possible above 2x Table B.2; major damage above 4x; for continuous vibration with resonance, reduce guide values by up to 50%
+--- thr_bs7385_2_damage_probability_zero verified 0.0125 m/s | 12.5 mm/s peak component particle velocity
+--- thr_din4150_3_1999_table1 verified 0.005 m/s | Dwellings: 5 mm/s below 10 Hz, 5-15 mm/s at 10-50 Hz, 15-20 mm/s at 50-100 Hz (foundation); 15 mm/s top floor. Sensitive or listed: 3, 3-8, 8-10, 8. Commercial: 20, 20-40, 40-50, 40
+--- thr_din4150_3_2016_table1 disputed 0.005 m/s | 2016 reproduction matches 1999 except dwellings at 50-100 Hz read '40 to 50' (1999: '15 to 20'); adds floor slabs, vertical, 20 mm/s at all frequencies
+--- thr_usbm_ri8507_safe_levels verified 0.0127 m/s | Below 40 Hz: 0.50 in/s (12.7 mm/s) for plaster-on-lath, 0.75 in/s (19 mm/s) for drywall; above 40 Hz: 2.0 in/s (51 mm/s)
+--- thr_usbm_ri8507_figure_b1_curve verified 0.0127 m/s | 0.030 in (0.76 mm) displacement below about 2.7-4 Hz; 0.50 in/s plaster or 0.75 in/s drywall up to about 10-15 Hz; then 0.008 in (0.2 mm) displacement to 40 Hz; 2.0 in/s above 40 Hz
+--- thr_siskind_damage_probabilities verified 0.0127 m/s | Threshold (cosmetic) damage: 5% at 0.5 in/s (13 mm/s), 50% at 2.5 in/s (64 mm/s); minor: 5% at 1.8 (46), 50% at 5.0 (127); major: 5% at 2.5 (64), 50% at 6.0 in/s (152 mm/s)
+--- thr_caltrans2020_table19_damage verified 0.0127 m/s | Older homes: 0.5 in/s (12.7 mm/s) transient, 0.3 in/s (7.6 mm/s) continuous; new homes 1.0/0.5 in/s; fragile 0.2/0.1 in/s; ruins 0.12/0.08 in/s; modern commercial 2.0/0.5 in/s
+--- thr_fta2018_table7_5_damage verified 0.00508 m/s | I reinforced concrete/steel/timber 0.5 in/s (12.7 mm/s); II engineered concrete and masonry 0.3 (7.6); III non-engineered timber and masonry 0.2 (5.1); IV extremely susceptible 0.12 (3.0)
+--- thr_whiffin_leonard_1971_buildings verified 0.005 m/s | 5 mm/s (0.2 in/s): threshold of risk of 'architectural' damage to plastered houses; 2.5 mm/s virtually no risk; 10-15 mm/s architectural and possibly minor structural damage; 2 mm/s upper limit for ruins
+--- thr_other_damage_criteria_caltrans verified None m/s | Range 0.1-4 in/s (2.5-102 mm/s) depending on building and whether single or repeated; Swiss criteria assume 10-30 Hz
+--- thr_everyday_household_equivalents verified 0.000762 m/s | Walking on the floor 0.03 in/s (0.8 mm/s); normal family activity 0.1-0.5 in/s (2.5-13 mm/s); jumping on the floor 0.3 (7.6); door slam 0.5 (12.7); nail driving 0.9 (23); daily environmental changes 1.2-3.0 in/s (30-76 mm/s)
+--- thr_measurement_point_conventions verified None  | Damage values: ground or building foundation, peak component PPV; human values: where the person is (inside, often on an amplifying floor)
+--- thr_blast_event_duration verified None s | Millisecond-delayed blasts: 1-2 s; longer and higher-frequency events bother people more
+--- thr_footing_ems98 verified None  | VI: 'A few persons lose their balance'; VII: 'Many find it difficult to stand, especially on upper floors'; VIII: 'Many people find it difficult to stand, even outdoors'; IX: 'People may be forcibly thrown to the ground'
+--- thr_footing_earthquake_pgv estimate 0.31 m/s | A few lose balance (VI): 81-160 mm/s; many find standing hard indoors (VII): 160-310 mm/s; even outdoors (VIII): 310-600 mm/s
+--- thr_footing_takahashi2004_shake_table verified 0.3 m/s | Standing subjects first judged unbalanced at about 0.26-0.31 m/s sine shaking (0.3-2.5 Hz); at 5 Hz nobody was, up to 0.48 m/s
+--- thr_rec_feel estimate 0.0003 m/s | 0.3 mm/s PPV (range 0.14-1 mm/s)
+--- thr_rec_rattle estimate 0.001 m/s | About 1 mm/s PPV (range 0.3-3 mm/s); no standard sets this
+--- thr_rec_cosmetic_damage estimate 0.0127 m/s | One step or stomp: 12.7 mm/s (0.5 in/s) at the house; a walk past (repeated steps): 7.6 mm/s (0.3 in/s); range 5-50 mm/s by building and frequency
+--- thr_rec_footing estimate 0.3 m/s | About 300 mm/s PPV (range 80-600 mm/s), from earthquake shaking and one shake-table study; likely cautious for footsteps
+
+===== COMIC VERIFY
+X comic_gloc_not_before_5s | The quotes match the Europe PMC full text, but the fact is mislabelled and overstated. (1) The paper is about G-LOC (loss of consciousness), not 'blacking out'. Blackout is loss of vision, and Fraser has vision dimming from 3–4 s. (2) '+4.7 Gz' is the defined minimum threshold of the fitted curve, not the lowest level observed: the dataset's G-LOC levels ranged from +2.5 to +11.7 Gz. (3) 'Cannot knock a passenger out' overstates an observation: the data are 888 episodes, mostly experienced fighter pilots, with straining and anti-G suits mixed in. || CORR: Label: 'Losing consciousness from g (G-LOC) took at least 5 s in 888 centrifuge episodes'. Display: 'G-LOC did not occur earlier than 5 s; mean 9.1 s for onset ≥1 G/s; levels at G-LOC ranged +2.5 to +11.7 Gz (+4.7 Gz is the curve's defined minimum)'. Use: 'under 5 s, loss of consciousness is unlikely (none seen in 888 episodes); vision may still dim'.
+
+X comic_layperson_centrifuge_tolerance | The abstract quotes match all four Europe PMC records, but two details are off. The age range is wrong: Smith 2022 was 18–80 and Blue 2012 was 22–88, so 18–88, not 20–88. Blue 2014 also deliberately recruited people with hypertension, cardiovascular disease, diabetes, lung disease or back and neck problems, so 'screened' is right but 'healthy' is not. || CORR: Display: 'Screened, seated, strapped-in laypeople aged 18–88 (some with controlled medical conditions)...'. The rest stands.
+
+X comic_eiband_voluntary_limits | The human numbers all match pp. 6–7 and the headward and sternumward passages: 45/0.044, 40/0.1, 25/0.2, 13/0.6, 10/1.6; sternumward 30/0.12 and 21/0.19; 20 g for 0.005–0.5 s from vertebra strength. The animal line is mislabelled. Eiband says the hog and chimpanzee injuries 'ranged from moderate or none to severe shock and concussion, depending upon the severity of the exposure'. || CORR: 'Animals survived (injury from none to severe shock and concussion) up to 56 g for 0.037 s and 43 g for 0.11 s (chimpanzees); hog 160 g for about 0.004 s marks Eiband's upper limit of moderate injury'.
+
+X comic_impact_survived_with_injury | Both quotes match: Eiband p. 7, and SP-3006 p. 229, which I re-fetched. The labelling mixes bases. The 83 g is 'chest acceleration, not actual input', which is the body's response; the applied (sled) acceleration was lower, so it cannot sit on the same axis as the g a passenger is given. The USAF figures of 45 g for 0.1 s and 25 g for 0.2 s are for forward-facing (−Gx, eyes-out) impact in a double harness, which the display does not say. The same page also reports severe shock from 38 g for 0.16 s at onset >1300 G/s (Stapp), and severe delayed effects from 45 g for 0.23 s. || CORR: Display the 83 g as '83 g measured at the chest (input lower), rearward-facing, 0.04 s, reversible injuries'. Mark the USAF line as forward-facing (−Gx). Add the Stapp severe-shock points from the same page.
+
+X comic_passenger_no_harm_limit | The ASTM transcription is right, but the default is applied to every phase. A catch of someone flying toward him face-first, or a push on the chest, is −Gx (eyes front), where ASTM's base limit is only 2 g at 0.2 s and 1.5 g sustained. Rotating to back-first needs a cradle and is not automatic. ASTM also requires a headrest above 1.5 g (unless onset <5 g/s) and allows at most 4 s above 1.5 g with no headrest. It requires onset <15 G/s from 0 g. It excludes pulses <200 ms entirely. A throw stroke of 0.3 s implies onset rates far above these. || CORR: Make the curve depend on axis. When orientation is unknown (tumbling flight, an unplanned catch), default to the worst axis, −Gx: 2 g at 0.2 s, 1.5 g sustained. Use 6 g only with a stated back-first cradle and head support. Carry an onset-rate caveat. Keep the status as estimate.
+
+X comic_passenger_injury_level | 'Injury likely above Eiband's voluntary line' is overstated. The line is the upper edge of exposures that harnessed volunteers took uninjured; above it lies a sparse 'moderate injury' zone, not a measured probability. Eiband: 'Exposures that fatally injure human subjects have not been measured'. 'Tolerable magnitude decreases as onset rate increases' is ignored, and SP-3006 p. 229 reports severe shock at 38 g for 0.16 s at >1300 G/s, near the line. The 83 g chest-response point is mixed with applied-g points. 'Far lower' for an unharnessed person is unsourced; Eiband supports only 'worse'. || CORR: Band (c): 'beyond what harnessed volunteers took uninjured; injury possible; data sparse; worse at high onset rates'. Drop 'far lower' or mark it unknown. Plot the 83 g separately as chest-measured.
+
+X comic_passenger_gentlest_throw | Recomputed. The numbers use the horizontal-push felt-g formula but a 45° range formula, which is inconsistent. For a push along 45°, |a(cos45, sin45) + (0, g)| = n g gives a = 5.25 g at n=6, so v = 15.9 m/s, t = 0.31 s, range 26 m. At n=4: a = 3.23 g, 12.4 m/s, 16 m. At n=2: 7.5 m/s, 5.7 m. Worse, the label 'stays inside the no-harm limit' is misleading. The passenger lands at about 16 m/s, which is like a 13 m fall onto the ground; that is not no-harm, and it is not covered. It also assumes a back-first push with head support. || CORR: Use 45°-consistent values: 6 g gives ≈16 m/s and ≈26 m; 4 g ≈12 m/s, 16 m; 2 g ≈7.5 m/s, 6 m. Rename it 'Fastest launch within the ride limit (landing not included)', and state that the landing at ≈16 m/s (≈13 m fall) is a serious injury risk unless he catches them.
+
+X comic_airblast_sash_rattle_small_shots | The numbers are right as reproduced: 0.03 psi = 207 Pa and 0.05 psi = 345 Pa. The notes call this 'the better rattle target', but the same paragraph says these levels 'do not provide realistic guidelines for either blast design or environmental regulation'. App. H (Wiggins) adds: 'Much of the glass damage was attributed to impact of the severely rattling window sashes'. So sash rattling at 207–345 Pa overlaps the start of glass damage. || CORR: Notes: quote the 'do not provide realistic guidelines' sentence and the Wiggins sash-impact sentence. Do not use 207–345 Pa as a harmless rattle target.
+
+X comic_glass_breakage_low_end | The individual quotes are correct: Windes, Perkins & Jackson and Sutherland, with conversions 364, 689, 958 and 5,171 Pa. The label 'Lowest airblast that breaks flawed glass: about 360–690 Pa' is wrong. The same report's main text (Airblast Damage Summary, Table 12) says 'there is a consensus that damage becomes improbable below approximately 0.030 lb/in2 (140 dB)', about 207 Pa. Table 12's maximum safe levels for glass run from 0.017 psi (136 dB, 117 Pa; Reed, large windows, 1 in 10³) through Blume 0.026 psi (139 dB) and Poulter 0.032 psi (141 dB, 221 Pa) to 0.10 psi (151 dB). || CORR: Label: 'Glass damage becomes improbable below about 0.030 psi (140 dB, ~200 Pa); single tests broke precracked panes from 364 Pa and stressed glass from 690 Pa'. value_si ≈ 207 Pa; low_si ≈ 117 Pa (Reed, large windows); high_si 690 Pa. Source: RI 8485 pp. 60–61 (Table 12) plus App. G/H.
+
+REC ISSUES: 1. Window presets (biggest defect). 'Rattle the windows' set at about 200 Pa, which 'stays under flawed-glass breakage at 364 Pa', is wrong by RI 8485's own consensus. Glass damage becomes improbable only below about 0.030 psi (140 dB, 207 Pa). Table 12's glass safe levels go as low as 117 Pa (Reed, large windows). 200 Pa is therefore at the start of glass damage, not under it. Rattling sashes are themselves a cause of breakage (Wiggins).
+   - Fix: a no-damage rattle preset between 120 dB (20 Pa, onset) and 134 dB (100 Pa, safe maximum).
+   - Optional 'some windows may crack' step: 140–151 dB (200–690 Pa).
+   - Keep 6,900 Pa for 'break windows'.
+   - The courtesy ceiling of 100 Pa at houses and 200 Pa at people is fine.
+
+2. Safe passenger by body axis. The default +Gx/+Gz curve (6 g) is applied to every phase. A catch of someone flying toward him face-first, or a push on the chest, is −Gx: 2 g at 0.2 s, 1.5 g sustained. 'A catch is the throw in reverse' holds only for a back-first cradle.
+   - Use the axis-specific curve, and default to −Gx when orientation is unknown (tumbling flight).
+   - Treat ASTM's headrest requirement (>1.5 g) and its onset-rate rules (headrest note at 5 g/s; <15 G/s from 0 g) as conditions, not footnotes.
+   - Use ASTM's combined-axis ellipse rather than comparing magnitude n with one axis's curve.
+
+3. Worked anchor. The 'no-harm throw at about 17 m/s lands about 29 m away' mixes a horizontal-push g formula with a 45° range. The consistent figures are about 16 m/s and about 26 m. More importantly, it lands the passenger at about 16 m/s, like a 13 m fall, which is not 'no harm'. The page must show the landing hazard, or present the throw only together with his catch.
+
+4. Injury band.
+   - 'Injury likely; survivable only fully strapped in' overstates Eiband's line. That line is the edge of uninjured volunteer exposures; above it is a sparse moderate-injury zone, with no measured probability and no fatality data.
+   - Onset rate matters: Stapp had 38 g for 0.16 s at >1300 G/s give severe shock (SP-3006 p. 229).
+   - The 83 g point is chest response, not applied g.
+   - Reword the band as 'beyond what harnessed volunteers took uninjured; injury possible'.
+
+5. G-LOC. 'Never under 5 s' is an observation in 888 mostly pilot episodes, not a law, and it concerns consciousness, not blackout (vision can dim in 3–4 s). '+4.7 g' is the curve's defined minimum; G-LOC was seen at levels as low as +2.5 Gz.
+
+6. Cool flight. 'Absorbing all the drag energy is impossible because the air keeps at least p²/(2 m_air)' is overstated. The mass of air sharing the wake's momentum keeps growing, so the bound tends to zero as the wake spreads; the bulk kinetic energy becomes heat, which the canon lets them absorb. A fair statement: 'at any moment the air carrying the momentum holds at least p²/(2 m_air); it shrinks as the wake spreads'.
+
+7. Silent strike 'clean'. This holds for the fist's own momentum. The drag impulse the fist gives the air still go
+MISSING: - RI 8485's main-text consensus and Table 12 (pp. 60–61). 'Damage becomes improbable below approximately 0.030 lb/in2 (140 dB)', with per-study glass safe levels from 0.017 to 0.10 psi. Make this its own verified key. It is the correct lower bound for window damage, and the presets need it.
+- Onset-rate (jerk) limits for passengers. ASTM §7.1.7.2 (<15 G/s from 0 g) and the Fig. 6 headrest note (5 g/s), plus Eiband's 'tolerable magnitude decreases as onset rate increases'. Rex's grip and throw imply very high onsets, and none of this is modelled.
+- −Gx and −Gz (eyes-front and eyes-up) limits as the defaults for catches and tumbling passengers, from ASTM Figs. 7 and 9, which are already in the fact.
+- Ground-landing injury for a thrown, uncaught passenger, i.e. injury against impact speed or fall height. There is no source, so any uncaught throw has an unquantified landing hazard.
+- A windblast injury threshold for an unprotected person at 1–7 kPa dynamic pressure (44–108 m/s).
+- Head and neck support (whiplash) when held without a headrest. Only ASTM's headrest rule covers it.
+- Current ASTM edition. The ASTM store lists F2291-26 (June 2026) as active, and a reseller lists 26a; neither was checked.
+- Primary sources still read only second-hand: Cochran 1954, Perkins & Jackson, Windes, Sutherland, Poulter, Reed, Beeding & Mosely, Stapp.
+- Children under 48 in, elderly or pregnant passengers: the ride limits do not cover them.
+
+Fetched and checked this round (my own downloads):
+
+VERDICT: The sourcing is strong. Every quote I re-fetched matched its source, the ASTM chart readings agree with my own renders, and every derived number recomputes. Before design, fix four problems that change what the page would say:
+
+- The 'lowest glass breakage 364–690 Pa' fact is wrong. The same USBM report gives a consensus onset of about 207 Pa (140 dB), which breaks the proposed 200 Pa 'rattle the windows' preset. Move that preset to 20–100 Pa.
+- The safe-passenger envelope uses the +Gx/+Gz curve (6 g) for every phase. A face-first catch is −Gx, limited to 1.5–2 g. Default to the worst axis and add the headrest and onset-rate conditions.
+- The 'no-harm throw' anchor mixes formulas (about 26 m, not 29 m) and lands the person at about 16 m/s, like a 13 m fall. It is not no-harm.
+- The G-LOC fact is mislabelled: it is unconsciousness, not blackout, and +4.7 g is a curve parameter, not the lowest level observed.
+
+Smaller fixes:
+- Reword the injury band as 'injury possible', and plot the 83 g chest-measured point apart from applied g.
+- Soften 'impossible' for cool flight.
+- Correct the centrifuge age range to 18–88.
+- Fix the Eiband animal-injury wording.
+- Note that newer ASTM editions (F2291-26 and 26a) exist.

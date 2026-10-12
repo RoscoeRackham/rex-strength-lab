@@ -1,0 +1,266 @@
+{
+ "checks": [
+  {
+   "key": "vib_bs5228_dynamic_compaction_predictor",
+   "ok": true,
+   "issue": "Re-fetched BS 5228-2 (byte-identical copy). The Table E.1 dynamic compaction row (0.037 [√Wh/x]^1.7), the ranges 5–100 m and 1.0–12 MJ, and the key (Wh in J, x along the surface, v_res is resultant PPV) all match. My recomputation gives 0.037 × 9806.65^0.85 = 91.4. I also confirmed the York Potash caution: their sheet's 85 kJ, k_p = 1.5 percussive case gives 0.3 mm/s at 19.0 m, which only works with W in kJ. With W in J the same calculation gives 271 m."
+  },
+  {
+   "key": "vib_bs5228_percussive_piling_kp",
+   "ok": true,
+   "issue": "Table E.2 values 5/3/1.5/1 confirmed. The BS copy does print 'Pile toe not being driven through' on the 1.5 row, and TRL 429 Table 9 reads 'being driven through'. TRL eq. 19 definitions and the 10 m calibration sentence confirmed."
+  },
+  {
+   "key": "vib_mayne1985_upper_bound_trl",
+   "ok": true,
+   "issue": "TRL 429 p. 62 eq. 21 and the Coventry text (8.5 t from 10 and 12 m, measured 5–120 m, over-predicts close in and under-estimates beyond 60 m) confirmed. Minor: 'identical to the BS row' should read 'the same within 1%' (91.4 vs 92).",
+   "corrected": "Same law as the BS 5228 row to within 1% (0.037 × 9806.65^0.85 = 91.4 vs 92)."
+  },
+  {
+   "key": "vib_mayne_law_low_energy_failure",
+   "ok": false,
+   "issue": "Quote confirmed verbatim. But low_si = 2 rests on the misread Figure 44 (see vib_trl429_hsdc_digitised). Re-digitised with the correct axis, measured/predicted is 1.4–4 at 5–30 m and 2.5–10 at 50–100 m.",
+   "corrected": "low_si 1.4, high_si 10. Display: 'measured PPV 1.4–4× the Mayne (1985) prediction within 30 m, 2.5–10× at 50–100 m'."
+  },
+  {
+   "key": "vib_trl429_hsdc_digitised",
+   "ok": false,
+   "issue": "Distance axis misread. In TRL 429 Fig. 44 (PDF page 68) the right edge of the plot is 100 m, not 120 m: the minor ticks 2–9 and the major tick at 10 m put x = 100 at the frame edge. The magenta Mayne line confirms this: it reads 36 mm/s at the first point and 0.22 at the edge, exactly 92(√8.4/x)^1.7 at x = 5 m and x = 100 m. The data columns sit at 5, 10, 15, 20, 30, 50, 70 and 100 m, not 5.6–120 m. So the predictions and ratios in display and values_json are wrong, and the ratios at long range are inflated.",
+   "corrected": "distance_m [5,10,15,20,30,50,70,100]; measured ≈ [120–145, 21–30, 8–10, 6.4–9.5, 3.9–8.4, 1.8–4.1, 2.6–4.3, 1.2–1.5] mm/s; Mayne 1985 = [36, 11.2, 5.6, 3.4, 1.7, 0.73, 0.41, 0.22]; ratio 3.3–4.0, 1.9–2.7, 1.4–1.8, 1.9–2.8, 2.3–4.9, 2.5–5.6, 6–10, 5.5–6.6. Measured fall-off ≈ x^-1.35 over 5–100 m (x^-1.1 over 10–100 m). Script: attenuation-check/scripts (Figure 44 digitised from the 200 dpi render)."
+  },
+  {
+   "key": "vib_trl429_validity_100m",
+   "ok": false,
+   "issue": "The 100 m and extrapolation quotes are confirmed (p. 73). The material-damping quote is cut off in a way that changes its meaning. TRL compares the slopes with geometric attenuation of body waves in a homogeneous medium, not with geometric attenuation in general (which would include Rayleigh r^-0.5).",
+   "corrected": "'...The slopes of the attenuation curves are, however, steeper than those expected theoretically from geometric attenuation of body waves in a homogeneous [medium]...'"
+  },
+  {
+   "key": "vib_mayne1984_upper_bound",
+   "ok": true,
+   "issue": "Lauzon et al. eq. [2], PPV ≤ 70(√(WH)/d)^1.4 with W in tonnes, confirmed from a page image. Status 'reported' is correct. The Pisa comparison numbers recompute: 10.0 and 0.117 mm/s."
+  },
+  {
+   "key": "vib_mayne1985_normalised_law",
+   "ok": true,
+   "issue": "Eq. [4], PPV = 0.2 √(2gH)(d/r0)^-1.7, '12 different sites' and 'consistent units' confirmed from the page image. Status 'reported' is correct."
+  },
+  {
+   "key": "vib_lukas_scaled_energy_chart",
+   "ok": true,
+   "issue": "Both PDFs re-fetched. The Lukas 1986 pp. 98–99 quote, the Fig. 35 axes and the GEC 1 Fig. 7 axes, soil legend and 'good estimation ... for planning purposes' are all confirmed. Note: the chart's own x-axis runs 0.001–100. The 0.07–6 span of the plotted lines (I read 0.07–5.6) and the PPV span of 1–250 mm/s are read off the figure, so they are derived, not stated."
+  },
+  {
+   "key": "vib_gec1_chart_digitised",
+   "ok": true,
+   "issue": "I re-read the eight marker points independently. All agree within about 5% (for example clayey mine spoil 4.0 and 152; building rubble 0.148 and 4.6). The extrapolation to x = 1 is the researcher's own and is labelled derived."
+  },
+  {
+   "key": "vib_dynamic_compaction_frequency",
+   "ok": true,
+   "issue": "Lukas 'range of 3 to 10 Hertz' and Lauzon's 5–10, 20–30, 25–35 and 40–50 Hz quotes are confirmed, as are the 9 t RIC hammer with a 1.5 m base and the 11 t tamper from 18 m."
+  },
+  {
+   "key": "vib_repeat_drops_raise_ppv",
+   "ok": true,
+   "issue": "Dumas & Beaton via Lukas (.16 to .51 in/s at 66 ft, 20 ton from 98 ft) and Lauzon (1–2 to about 8 mm/s after 6 blows) are confirmed. The cross-check recomputes: 18.1 t × 30 m = 5.33 MJ gives 118.5 mm/s at 20 m."
+  },
+  {
+   "key": "vib_pisa_drop_test_ppv",
+   "ok": false,
+   "issue": "The 9 mm/s at 2.5 m and 0.2 mm/s at 60 m quote, q = 1.282, the 130 kg and 3 m drop and the 24 geophones are confirmed. Three problems. (1) At 35 m the field circles in Fig. 6 read 0.37–0.41 mm/s, not 0.5; at 5 m they read 4.7, and the quoted values themselves read 8.7 and 0.19. (2) '25 Hz central frequency' is the frequency of the synthetic source signal Colombero used in the numerical model ('a synthetic source signal based on a single central frequency (25 Hz)'), not a measured value. (3) T_S = 0.04 s is the period of a modified Gabor velocity wavelet calibrated on the first geophone, not a contact time. C_b = 997.4 kg·m/s equals the computed drop momentum, 130 × 7.67 m/s.",
+   "corrected": "values_json ppv_mm_s ≈ [8.7 (quoted 9), 4.7, 0.4, 0.19 (quoted 0.2)] at [2.5, 5, 35, 60] m. More Fig. 6 field readings (±10%): 10 m 1.8, 15 m 1.1, 20 m 0.77, 30 m 0.45 mm/s. Say '25 Hz central frequency of the authors' synthetic source pulse (fitted to the first geophone)', not a measured frequency."
+  },
+  {
+   "key": "vib_pisa_soil_profile",
+   "ok": true,
+   "issue": "Table 1 (Vs, γ, ξ*, ν = 0.33) and the 1.3 m water table confirmed. value_si 170 is our pick: the layer depths are only in Fig. 3."
+  },
+  {
+   "key": "vib_drop_test_exponent_by_soil",
+   "ok": true,
+   "issue": "The Colombero sentence is confirmed, and the TRID abstract is confirmed (q 0.5–2.0 by source type; layering 'yields an additional exponent of 0.5' for impulsive loads; 'the sum of the exponential laws also yields a power law'). Two caveats: Auersch 2010's 1.0/1.6 is seen only through Colombero, and value_si 1.3 is a midpoint, not a source number."
+  },
+  {
+   "key": "vib_pisa_vs_empirical_laws",
+   "ok": true,
+   "issue": "Recomputed: BS 5228 gives 8.65 and 0.039 mm/s; Mayne 1984 gives 10.0 and 0.117. Using the measured 0.19–0.2, the ratios of about 5× and 1.7× hold."
+  },
+  {
+   "key": "vib_caltrans_impact_pile_driver",
+   "ok": true,
+   "issue": "Eq. 9, PPV_ref 0.65 in/s at 25 ft, E_ref 36,000 ft-lb, n = 1.1 ('generally 1 to 1.5'), Eq. 8 and the 20,000–300,000 and 300 ft-lb energies are confirmed. Also 0.65 in/s = 0.01651 m/s."
+  },
+  {
+   "key": "vib_woods_jedele_n_by_soil_class",
+   "ok": true,
+   "issue": "Table 17 (p. 32) confirmed word for word, including 'Data not available' and the suggested values 1.4/1.3/1.1/1.0. Caltrans Table 3 (p. 17) is the measured-only version, 'Source: Wood 1997'."
+  },
+  {
+   "key": "vib_construction_frequency_range",
+   "ok": true,
+   "issue": "10–30 Hz centred near 15 Hz (Hendriks 2002), 1–80 and 8–80 Hz, and 4–30 Hz, 61–610 m/s and 3–152 m all confirmed."
+  },
+  {
+   "key": "vib_footstep_frequency_band",
+   "ok": true,
+   "issue": "Abstract confirmed. Caveat: the abstract states the 20–90 Hz band as an earlier finding ('was shown to be site specific'); the paper itself studies building floors and the band above 500 Hz. Cite it as 'as summarised in Ekimov & Sabatier 2006'."
+  },
+  {
+   "key": "vib_elephant_seismic_speed_frequency",
+   "ok": true,
+   "issue": "Abstract confirmed: 248–264 m/s, about 20 Hz, 40 m, 16 and 32 km model estimates. Calling the waves Rayleigh, and the implied Vs of 270–287 m/s, is our interpretation; the abstract does not say it."
+  },
+  {
+   "key": "vib_elephant_stomp_ppv",
+   "ok": true,
+   "issue": "The arXiv quote is confirmed (Section III; ref [44] is the JASA 108(6):3066 paper; vertical geophone). Status 'reported' is correct. BS 5228 Table B.1 gives 0.14 and 0.3 mm/s, confirmed."
+  },
+  {
+   "key": "vib_wave_energy_partition_miller_pursey",
+   "ok": true,
+   "issue": "Sánchez-Sesma quote confirmed (1.209ω²P²/πρα³; 6.89/25.76/67.35%; ν = 1/4). Caltrans '67%... 26%... 7%' and TRL 'approximately two thirds' confirmed."
+  },
+  {
+   "key": "vib_geometric_spreading_exponents",
+   "ok": true,
+   "issue": "Caltrans Table 1 (Amick 2000) and the TRL p. 5 sentence on 1/r and 1/r^0.5 confirmed."
+  },
+  {
+   "key": "vib_bornitz_damping_form",
+   "ok": true,
+   "issue": "TRL eq. 5, Mintrop β = 0.5, Greenwood & Farmer α of 0.03 ft⁻¹ (0.10 m⁻¹), Massarsch 0.05 m⁻¹ and Caltrans Eq. 6 are all confirmed."
+  },
+  {
+   "key": "vib_material_damping_coefficients",
+   "ok": true,
+   "issue": "Table 2, including the investigator column, confirmed. The three decimal slips are real: 0.079 ft⁻¹ = 0.26 m⁻¹ and 0.076 ft⁻¹ = 0.25 m⁻¹, but 0.026 and 0.025 are printed."
+  },
+  {
+   "key": "vib_soil_p_to_s_speed_ratio",
+   "ok": true,
+   "issue": "TRL's '1.7 times' confirmed. ν = 0.235 recomputed. The coefficient drops at ν = 0.45–0.49 recompute as far −35 to −40% and near −27 to −32%."
+  },
+  {
+   "key": "vib_physics_nearfield_boussinesq",
+   "ok": true,
+   "issue": "Independently confirmed: the small-k_s limit of the Lamb integrand gives −(1−ν)/(2π). Analytic Hann and ramp peaks of Ḟ give exactly 0.375 and 0.1875. The near-to-far crossovers sit at x = 0.37 (Hann) and 1.07 (ramp)."
+  },
+  {
+   "key": "vib_physics_rayleigh_farfield",
+   "ok": true,
+   "issue": "Reproduced by my own pole residue plus a separate eigenfunction energy-flux integral: c_R/c_s 0.91940, C1 0.19957, coefficient 0.07634 and H/V 0.681. Rayleigh power is 0.04989 against Miller–Pursey's 0.04988. The ν = 0.45 row matches (0.0498, 0.1282, 0.574, 0.0875)."
+  },
+  {
+   "key": "vib_physics_pekeris_step_response",
+   "ok": true,
+   "issue": "I checked the reconstructed closed form: W is continuous at the P arrival (→0) and at τ = 1 (both branches 7.464 terms), the static value is 3/(8π) = (1−ν)/2π, and the singular coefficient √(3√3+5)/16 equals my independent C1. Keep the label 'derived (numerically verified), original not fetched'."
+  },
+  {
+   "key": "vib_physics_pulse_ppv_model",
+   "ok": true,
+   "issue": "I recomputed Π(x) by convolving the Pekeris kernel (integrated by parts, no numerical differentiation). Near asymptotes 0.375/0.1875 and far asymptotes 0.620/0.181 are confirmed, the far ones also through fractional-derivative peaks 8.119 and 2.368 × 0.07634. max(near, far) error: +15% (Hann, x ≈ 1.3) and −12 to −16% (ramp, x ≈ 0.9–1.1). Minor: some table entries are up to 7% off, more than the stated 3% (x = 43.8: Hann 0.100 vs 0.0936, ramp 0.0287 vs 0.0273).",
+   "corrected": "Π_hann(43.8) ≈ 0.094, Π_ramp(43.8) ≈ 0.027; state table error ≤7%."
+  },
+  {
+   "key": "vib_physics_damping_factor",
+   "ok": true,
+   "issue": "D(ζ) reproduced by FFT for both shapes, and the fit errors match (Hann ≤1.08, ramp ≤1.20). Pisa example: ζ 0.43 gives D 0.116. The physics concern about its long-range behaviour is under recommendation issues."
+  },
+  {
+   "key": "vib_physics_seismic_energy_from_force",
+   "ok": true,
+   "issue": "Admittance and Parseval derivation checked: 2.418/(π·3√3) = 0.1481. Recomputed: Rex step 1.65 J on loose sand, 0.154 J on stiff clay, 6.3e-5 J on granite; Pisa 6.0–24.5 J (0.16–0.64% of 3.8 kJ). Valid for ν = 1/4 only."
+  },
+  {
+   "key": "vib_model_check_pisa",
+   "ok": false,
+   "issue": "I reproduced the model numbers (9.34, 6.08, 0.65, 0.21 mm/s). The 'worst ratio 1.3' is wrong. Measured 35 m is about 0.4 (ratio 1.6), and the check used only 4 of the roughly 20 field points. I compared all the Fig. 6 field circles; with the best-guess inputs (T 0.03 s, c_s 150) the model is 1.1–2.1× high, about 2× at 10–30 m. No single plausible input set fits all points within 1.3×: T 0.04 s with c_s 150 gives 0.5–1.4×. T was effectively tuned between 0.025 and 0.04 s, so this is partly a one-parameter fit. The '25 Hz measured central frequency' is a model input (see vib_pisa_drop_test_ppv).",
+   "corrected": "value_si about 2 (worst model/measured, best-guess inputs). Display: 'model 9.3, 6.1, 3.5, 1.6, 0.65, 0.21 vs measured about 8.7, 4.7, 1.8, 0.77, 0.4, 0.19 mm/s at 2.5, 5, 10, 20, 35, 60 m: within about 2× across 2.5–60 m (contact time chosen within 0.025–0.04 s)'."
+  },
+  {
+   "key": "vib_model_check_elephant",
+   "ok": false,
+   "issue": "Numbers reproduced: 11–35 µm/s at 7.5–12 m and 3.7–9.4 at 40 m. But the reported band is 3–12 m, and the check uses only its far end. At 3 m the same inputs give 44–89 µm/s against about 24 reported (2–4× high). The force, rise time and conversion from peak-to-peak to peak are all guesses, so this is a weak consistency check, and the page should not present it as validation.",
+   "corrected": "Add: 'at 3 m the model gives 44–89 µm/s (ramp 0.05–0.1 s), 2–4× above the reported value; overall it agrees within a factor of about 2–4 for guessed inputs.'"
+  },
+  {
+   "key": "vib_rayleigh_horizontal_and_resultant",
+   "ok": true,
+   "issue": "H/V 0.681 and the near-field radial/vertical ratio of 1/3 (resultant 1.054) are confirmed. Caveat: this holds for a homogeneous half-space. TRL 429 notes from field data that the vertical component 'is often not the largest component', so field resultant/vertical can exceed 1.2."
+  },
+  {
+   "key": "vib_building_amplification",
+   "ok": false,
+   "issue": "The quote is confirmed, but it is an unsourced generalisation in a ground-improvement contractor's conference paper (no reference is given for the 2–4). By the house standard it should be 'reported', or cite the origin (USBM RI 8507, Siskind et al. 1980) after fetching it.",
+   "corrected": "status: reported"
+  },
+  {
+   "key": "vib_nehrp_site_classes_vs30",
+   "ok": true,
+   "issue": "USGS OFR 97-501 Table 1 confirmed."
+  },
+  {
+   "key": "vib_soil_shear_speed_by_type",
+   "ok": true,
+   "issue": "IISEE Table 12-1 confirmed, including 'grovel' [sic] and the qu and N columns. The page gives no edition year; do not add one without a source."
+  },
+  {
+   "key": "vib_ice_seismic_speeds",
+   "ok": true,
+   "issue": "Kohnen eq. 1 (−2.30 T + 3795), Table II Vs 1934 (Bentley 1971, −28 °C) to 1960, ν 0.327–0.332, dVs/dT −1.2 m/s per degree and 'constant Poisson's ratio of 0.329' all confirmed."
+  },
+  {
+   "key": "vib_granite_shear_speed",
+   "ok": false,
+   "issue": "Mislabelled 'derived'. Its input, collide_rock_wave_speed_estimate, has status 'estimate' in final-duo.json, and the cited USGS OFR 97-501 gives only NEHRP class A > 1,500 m/s, nothing on granite. The arithmetic 3.7–6.1 km/s ÷ √3 = 2.1–3.5 km/s is correct. Weathered or jointed surface granite can be much slower.",
+   "corrected": "status: estimate"
+  },
+  {
+   "key": "vib_steel_shear_speed",
+   "ok": true,
+   "issue": "Honestly labelled estimate. Not used by the model."
+  },
+  {
+   "key": "vib_small_strain_damping_ratio",
+   "ok": true,
+   "issue": "Estimate. The conversions ξ = αc/(2πf) recompute: 0.02 m⁻¹ gives 2.4%, 0.26 gives 31% and 0.65 gives 78% at 20 Hz with c 150 m/s. Colombero k = 0.302 gives ξ = 4.8%, confirmed."
+  },
+  {
+   "key": "vib_ground_wave_params_by_surface",
+   "ok": false,
+   "issue": "Estimate status is right, but two statements are wrong. (1) 'Shear speeds are near-surface picks inside the verified class ranges' is false for gravel: 300 m/s is below the code's 400–700 m/s for 'Dense sand and gravel' and inside the 'medium dense' 200–400 class. The same wording is in src/engine.js VIB.GROUND. (2) 'c_s alone gives a factor of about 2 either way' understates it. With c_s ±40%, near-field PPV ∝ c_s⁻² runs ×0.51 to ×2.8 and far-field ∝ c_s^-2.5 runs ×0.43 to ×3.6.",
+   "corrected": "'Gravel 300 m/s: below the code range for dense sand and gravel (400–700 m/s at depth), our near-surface pick.' 'c_s ±40% alone moves PPV by ×0.5 to ×2.8 (near) and ×0.4 to ×3.6 (far).'"
+  },
+  {
+   "key": "vib_plate_surfaces_not_modelled",
+   "ok": true,
+   "issue": "Reasonable assessment, honestly labelled."
+  },
+  {
+   "key": "vib_extrapolation_to_footsteps",
+   "ok": false,
+   "issue": "'At 82 kJ the law already under-predicts 2–10×' should read 1.4–10× (corrected Fig. 44 reading). Status should be 'estimate': the 10 J–10 kJ 'footstep energy' is an assumed range, not a verified input, so the 100–100,000× ratio is not derived from verified inputs. The conclusion (use the elastic model, not the energy laws) stands.",
+   "corrected": "status: estimate; '82 kJ: under-predicts 1.4–4× within 30 m and 2.5–10× at 50–100 m'."
+  },
+  {
+   "key": "vib_rex_step_examples",
+   "ok": false,
+   "issue": "Every number in values_json is reproduced exactly by my own implementation. But 'derived' means computed from verified inputs, and here the step forces and rise times are placeholders and all the ground constants are estimates.",
+   "corrected": "status: estimate (illustrative output of the model with placeholder step forces)"
+  },
+  {
+   "key": "vib_linear_strain_limit",
+   "ok": false,
+   "issue": "Two physics problems. (1) PPV/c_s is a wave-strain proxy. Near the foot the strain is quasi-static, about (1−ν)F/(2πμr²), which is larger by about 2c_sτ/(πr) for a ramp. For a normal 1.2 × weight step (35.4 kN) on loose sand that strain is 1.8e-4 at 1 m (7.6× PPV/c_s) and 4.6e-5 at 2 m, so ordinary walking already exceeds the proposed 1e-4 flag within about 1.4 m, which the PPV/c_s test misses. (2) 'Closer in, soil softens... so the model over-estimates' is not established for the quasi-static near field, where lower stiffness raises displacement and velocity (u ∝ 1/μ). Also, for sands the linear threshold strain is usually nearer 1e-5; 1e-4 is the permissive end (unsourced either way).",
+   "corrected": "Flag when max(PPV/c_s, (1−ν)F/(2πρc_s²r²)) > about 1e-4. Say the direction of the error near the foot is unknown (yielding absorbs energy but softening raises quasi-static motion)."
+  },
+  {
+   "key": "vib_walking_two_feet_caveat",
+   "ok": true,
+   "issue": "An honestly labelled, unquantified estimate. It correctly notes the cited abstract does not support the cancellation argument."
+  }
+ ],
+ "recommendation_issues": "I re-fetched 16 sources and re-derived the physics myself (scripts in /tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/research/attenuation-check/scripts/). The core elastic physics is right: the Boussinesq near field; the Lamb/Rayleigh far-field coefficient 0.0763, checked by a separate energy-flux integral against Miller & Pursey (0.02%); the Pekeris kernel; the pulse constants 0.375/0.620/0.1875/0.181; the D(ζ) fits; the E_seismic = 0.148∫Ḟ²dt/(ρc_s³) link; and the whole Rex example table. Choosing it over the dynamic-compaction energy laws is well argued. The problems are in validation, range and certainty:\n\n1. **The Pisa check is overstated.** '9.3/6.1/0.65/0.21 vs measured 9/5/0.5/0.2, within 1.3×' leans on a misread 35 m value (Fig. 6 shows about 0.4) and on only 4 of the roughly 20 field points. Against all the Fig. 6 field circles, the best-guess inputs are 1.1–2.1× high, about 2× at 10–30 m. The model's shape does not match the data: near-field 1/r, then √r, then damping, against a measured straight r^-1.3. The contact time T was effectively tuned (0.025–0.04 s), and T = 0.04 s gives 0.5–1.4×. Say 'within about 2× over 2.5–60 m at one site, with the contact time fitted'. The test case can keep 9.3/6.1/0.65/0.21 as regression numbers, but the measured comparison should read 8.7/4.7/0.4/0.19. The engine.js comment '(within 1.3x)' needs the same fix.\n\n2. **Validity to 200 m is unsupported, and the error likely runs in the unsafe direction.** The model is checked only to 60 m. For impulsive (Hann) pulses on soft ground, the constant-ξ damping factor makes PPV fall as r^-2 to r^-3 beyond about 30 m: Pisa inputs give a local slope of 2.1 at 35–60 m, 2.5 at 60–100 m and 2.7 at 100–200 m; a Rex stamp on sand gives 2.5–2.9. Every measured impact trend found is r^-1.0 to r^-1.6: Pisa r^-1.28 to 60 m, the TRL Fig. 44 dropped weights r^-1.1 to r^-1.35 to 100 m, Auersch's drop tests 1.0–1.6. So at 100–200 m the model probably under-predicts stamps, by roughly 3–10× at 200 m if the measured exponents hold. A page that says 'not felt beyond N m' could be wrong in the unsafe direction. Fixes: limit stated validity to about 60–100 m; or show a band from the model up to an empirical r^-1.3 continuation from 30 m; or lower ξ for long range. Label distances beyond 60 m as untested. The walking ramp is less affected (slope about 1.3–1.5).\n\n3. **'PPV falls with T' is false.** At long range far × D tends to impulse (∝ F·T) for a Hann pulse. For a fixed peak force on loose sand, PPV rises with T at 100 m and beyond: a stamp at 200 m gives 0.017 mm/s at T 0.02 s and 0.082 mm/s at T 0.2 s. At 30 m it is non-monotone. For a ramp it is flat at 200 m. A test that asserts PPV decreases with T (or with effort, if effort also shortens T) will fail at long range. Restate monotonicity as 'in F at fixed T, and in r'.\n\n4. **The linearity flag uses the wrong strain near the foot.** Use max(PPV/c_s, quasi-static (1−ν)F/(2πμr²)); the static strain under a normal step on loose sand is 1.8e-4 at 1 m. Do not claim the model over-estimates there, since softening raises quasi-static motion. The 1e-4 threshold is unsourced.\n\n5. **Uncertainty is overstated as 'about a factor of 3'.** c_s ±40% alone gives ×2.8 (near) to ×3.6 (far) upward. Adding rise time ±50% (×2 near, ×2.8 far) and layering, it is more like a factor of 3–5. The walking (slow ramp, quasi-static) regime, the main use, has no measured check at all: Pisa is a drop, the elephant data are stomps with unknown force, and the elephant check is 2–4× high at 3 m. The page label 'checked against a 130 kg drop test at Pisa and elephant footfalls; good to about a factor of 3' should become something like: 'elastic-ground model; checked against one drop test (within about 2× to 60 m) and loosely against elephant stomps; walking steps unchecked; uncertain by a factor of 3–5, more beyond 60 m'.\n\n6. **Smaller points.** The ground constants are estimates and gravel sits outside its stated class range. ν = 1/4 throughout, so saturated soft clay needs the −30 to −40% noted. The BS 5228 comparison for true drops is fine as an out-of-range comparison, provided the 1.4–10× under-prediction from the corrected TRL reading is shown.",
+ "missing": "- **A measured check of the slow-loading (walking) regime.** For example, ground PPV against distance for human or animal footsteps, horses, or the quasi-static component of vehicles or trains (Auersch has train quasi-static data). The ramp/near-field branch is the Walk tab's main case and is untested.\n- **Measured impact or drop vibration beyond 60 m at low energy (about 1–100 kJ).** This is needed to decide between the model's steep damped fall-off and the empirical r^-1.0 to -1.6.\n- **A source for the small-strain thresholds.** For example Vucetic 1994 (linear and volumetric threshold strains), or Darendeli 2001 / Seed & Idriss for G/Gmax and damping at 1e-5 to 1e-3. Small-strain damping ratios by soil type also lack a source.\n- **USBM RI 8507** (Siskind et al. 1980; a public US Bureau of Mines report) for the building amplification factors, instead of Lauzon's unsourced 2–4.\n- **Near-surface Vs for the specific surfaces.** For example SASW/MASW profiles of loose sand, road subgrade, or soft clay crusts. The current values are picks inside 30 m class ranges. Layering effects (a soft layer over stiff ground, a water table at 1–2 m) on surface-wave dispersion and amplitude are also missing.\n- **Primary sources not fetched:** Pekeris 1955 or Kausel 2012 for the closed form; Miller & Pursey 1955; Mayne et al. 1984 and Mayne 1985 for their data ranges; Woods & Jedele 1985.\n- **The physical basis for the 10 J–10 kJ 'footstep energy' range** used in the extrapolation argument.\n- **Lake ice (flexural-gravity waves) and steel deck response:** acknowledged, not researched.",
+ "verdict": "Sources and physics are largely sound; fix the figure misreading, the overstated validation and the labels before building on it. I re-fetched all 16 cited URLs, and every quoted sentence and table value checks out against the source: BS 5228-2 E.1/E.2, TRL 429, Lauzon, Lukas/GEC 1, Colombero, TRID, Caltrans tables, both PubMed abstracts, arXiv, Sánchez-Sesma, USGS, the Turkish code and Kohnen. I reproduced the elastic model independently: the Rayleigh coefficient (with an energy cross-check), the Pekeris-based Π table, the pulse constants, D(ζ), the seismic energy and the Rex example table. Errors found: (1) TRL Fig. 44 was digitised with the wrong distance axis (100 m, not 120 m, at the frame edge), so the measured/predicted ratios are 1.4–10, not 2–12. (2) The Pisa model check claims 1.3× but is about 2× once all field points and the correct 35 m value (about 0.4 mm/s) are used, with the contact time effectively fitted. (3) The validity claimed to 200 m is unsupported: the model falls far faster than any measured impact trend beyond 30–60 m, so it likely under-predicts there. (4) 'PPV falls with T' is false at long range. (5) The strain flag misses the quasi-static near-field strain. Status fixes: vib_granite_shear_speed, vib_rex_step_examples and vib_extrapolation_to_footsteps should be 'estimate'; vib_building_amplification should be 'reported'. Recommendation: adopt the elastic model, but state 'within about 2× at one drop-test site to 60 m; walking unchecked; factor 3–5', and cap or band the distances beyond about 60–100 m."
+}

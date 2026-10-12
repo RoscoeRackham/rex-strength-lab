@@ -1,0 +1,10 @@
+global.window = {};
+const L = '/home/user/rex-strength-lab/rex-strength-lab/';
+const P = require(L + 'src/engine.js'); require(L + 'src/data.js');
+const D = window.DINO_DATA, g = P.K.g;
+const surf = (id) => D.surfaces.find((s) => s.id === id);
+const rex = P.makeBody({ build: 'rex', H: 3.048, m: 3007 });
+const c = { F: 90718 * g, mode: 'comic', body: rex, surface: surf('concrete'), groundHolds: false, anchor: 'friction' };
+const p = P.RESTRAINT.planNow('stomp', c, { near: 5 });
+const gl = p.goal(); const r = p.run(gl.use); const src = P.RESTRAINT.MOVES.stomp.shake(r, p.opt);
+console.log('stomp least use', (gl.use / g).toPrecision(3), 'kg; pulse T', src.T.toFixed(4), 's (', (1 / src.T).toFixed(1), 'Hz); ppv 5 m', (P.ppvAt(src, 5) * 1000).toFixed(3), 'mm/s; feelOnce', P.VIB.TH.feelOnce * 1000);

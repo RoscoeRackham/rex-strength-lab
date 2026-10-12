@@ -1,0 +1,22 @@
+global.window = {};
+const P = require('/home/user/rex-strength-lab/rex-strength-lab/src/engine.js');
+require('/home/user/rex-strength-lab/rex-strength-lab/src/data.js');
+const D = window.DINO_DATA, g = P.K.g;
+const rex = P.makeBody({ build: 'rex', H: 3.048, m: 3007 }), ollie = P.makeBody({ build: 'ollie', H: 3.06, m: 3007 });
+const surf = D.surfaces.find((s) => s.id === 'concrete'), o = D.objects.find((x) => x.id === 'car');
+const need = (m) => P.W8.WALK_LOAD * m * g / P.MUSCLE.jump.forceFrac;
+const lo = need(3007), hi = 1e34 * g;
+const fp = (...xs) => xs.map((x) => (typeof x === 'number' ? (isFinite(x) ? x.toPrecision(9) : String(x)) : String(x))).join('|');
+const sigs = new Map();
+const harmAt = (u) => {
+  const mk = (b) => ({ F: u, mode: 'comic', body: b, surface: surf, groundHolds: false, anchor: 'friction' });
+  const legs = [P.catchLeg(mk(rex), mk(ollie), o, 1000, 'hard'), P.catchLeg(mk(ollie), mk(rex), o, 1000, 'hard')];
+  sigs.set(u, fp(...legs.flatMap((L) => (L ? [L.aim && L.aim.vL, L.vArrive, L.result, L.bursts] : ['none']))));
+  return legs.some((L) => L && (['crushed-launch', 'breaks-up', 'burns-up', 'wreckage', 'fireball'].includes(L.result) || (L.aim && L.aim.vL >= P.K.a0)));
+};
+const same = (u0, u1) => { harmAt(u0); harmAt(u1); const a = sigs.get(u0), b = sigs.get(u1); return !!a && a === b; };
+const s = P.RESTRAINT.search((u) => harmAt(u), lo, hi, true, same);
+while (s.use === undefined) s.step();
+console.log('lo', (lo / g).toFixed(0), 'kg; search: use', s.use, 'below', s.below / g, 'kg; saturated', s.saturated, 'onlyUnlimited', s.onlyUnlimited, 'grid i', s.i);
+for (const u of [lo, lo * Math.sqrt(10), lo * 10]) console.log((u / g).toPrecision(3), 'kg', sigs.get(u));
+for (const lg of [6, 8, 10, 11, 12]) console.log('1e' + lg + ' kg harmful?', harmAt(Math.pow(10, lg) * g), sigs.get(Math.pow(10, lg) * g));

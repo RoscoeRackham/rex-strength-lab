@@ -11,15 +11,33 @@ import subprocess
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FACTS = {}
-for topic in ['humans', 'fiction', 'objects', 'environment', 'density', 'duo']:
-    for f in json.load(open(os.path.join(HERE, 'research', f'final-{topic}.json')))['facts']:
+for topic in ['humans', 'fiction', 'objects', 'environment', 'density', 'duo', 'presence']:
+    for f in json.load(open(os.path.join(HERE, 'research', f'final-{topic}.json'), encoding='utf-8'))['facts']:
         FACTS[f['key']] = f
 
 ST = 907.18474  # US short ton, kg (Marvel handbook tons read as short tons)
 G = 9.80665
-RANK = {'verified': 0, 'canon_stated': 1, 'reported': 2, 'estimate': 3, 'claimed': 4, 'disputed': 5, 'not_quantified': 6}
+RANK = {'verified': 0, 'canon_stated': 1, 'derived': 2, 'reported': 3, 'estimate': 4, 'claimed': 5, 'disputed': 6, 'not_quantified': 7}
 # Canon only per press accounts or reviews; the page itself was not seen (see research notes).
 REPORTED = {'secret_wars_4_hulk_mountain', 'all_star_superman_200_quintillion', 'superman_v3_13_earth_bench'}
+
+
+
+# Lowercase a label's first letter after "Area: ", unless the first word is an acronym, a code (BS 5228-2, RI 8507)
+# or a name (Rex's, Krakatoa, Caltrans).
+NAMES = {'Rex', "Rex's", 'Ollie', "Ollie's", 'Krakatoa', 'Chicxulub', 'Caltrans', 'Eiband', 'Baines', 'Keller', 'Carden', 'Schanz', 'Steinmann',
+         'Wood', 'Panagiotopoulou', 'Larramendi', 'Alexander', 'Kram', 'Yoon', 'Rawcliffe', 'Bohannon', 'Nilsson', 'Tudor-Locke', 'Fukuchi',
+         'Harkrider', 'Morgan', 'Taylor', 'Siskind', 'Murray', 'Wald', 'Fraser', 'Cochran', 'Stapp', 'Kinney', 'Lamb', 'Lamb’s', "Lamb's",
+         'Mortimer', 'Wijayaraja', 'Hiller', 'Whiffen', 'Reiher', 'Wiss', 'Takahashi', 'Pisa', 'Etosha', 'Africa', 'African', 'Asian', 'Sri',
+         'Cauchy', "Cauchy's", 'Mayne', 'Bornitz', 'Sutton', 'Woods', 'Whiffin', 'Irish', 'Atherton', 'Sirius', 'Newtonian', 'Schwarzschild', 'Buchdahl', 'Stevenson', 'World', 'Taylor', 'Newton', "Newton's", 'Faraday', 'Rayleigh', 'Bondi', 'Jurassic', 'Earth', "Earth's", 'Mach', 'Froude', 'OSHA', 'ASTM', 'NASA'}
+
+
+def lower_first(t):
+    w = t.split(' ')[0].rstrip(':,;')
+    w = w[:-2] if w.endswith("'s") or w.endswith('’s') else w
+    if w in NAMES or w.split('/')[0] in NAMES or w.split('–')[0] in NAMES or '/' in w or (len(w) > 1 and (w[1].isupper() or w[1].isdigit())) or any(ch.isdigit() for ch in w) or w[0] in '“"(':
+        return t
+    return t[0].lower() + t[1:]
 
 
 def fact(key):
@@ -134,6 +152,8 @@ def obj(id, name, short, group, m, area, cd, crush=None, rho=None, L=None, crr=N
 objects = [
     obj('baseball', 'Baseball', 'baseball', 'Everyday', 0.1453, 0.00427, (0.35, 0.92), rho=680, keys=['baseball_mass', 'baseball_cross_section_area', 'cd_baseball_subsonic']),
     obj('shot', 'Shot put (men’s, 7.26 kg)', 'shot', 'Everyday', 7.26, 0.0113, SPHERE, crush=750e6, crushWhole=True, rho=8000, keys=['shot_put_men_mass', 'shot_put_cross_section_area', 'mat_grey_cast_iron']),
+    obj('person', 'A person (average US man, 90 kg)', 'person', 'People', fact('human_us_adult_male_mass')['value_si'], fact('human_projected_area')['value_si'], TUMBLE, rho=985, passenger=True,
+        keys=['human_us_adult_male_mass', 'human_projected_area']),
     obj('bowling', 'Bowling ball (16 lb)', 'bowling ball', 'Everyday', 7.257, 0.037, SPHERE, rho=1340, keys=['bowling_ball_max_mass', 'bowling_ball_cross_section_area']),
     obj('piano', 'Steinway Model D grand piano', 'piano', 'Everyday', 480, 4.3, TUMBLE, crush=10e6, rho=110, keys=['steinway_model_d_mass', 'steinway_model_d_projected_area', 'mat_hard_maple']),
     obj('motorcycle', 'Motorcycle', 'motorcycle', 'Vehicles', 183, 2.4, TUMBLE, crush=3e6, rho=100, crr=0.012, keys=['motorcycle_typical_mass', 'motorcycle_projected_area']),
@@ -220,7 +240,8 @@ overpressure = [
 ]
 for o in overpressure:
     k = o.pop('k')
-    row('Blast: ' + o['label'], '%g kPa' % (o['Pa'] / 1000), [k])
+    # windows: the band where they usually shatter; the lab uses its top
+    row('Blast: ' + o['label'], ('3.4–6.9 kPa (the lab uses 6.9)' if o['id'] == 'windows' else '%g kPa' % (o['Pa'] / 1000)), [k])
 
 # ----------------------------------------------------------------------------- reference speeds / heights / calibration
 speeds = [
@@ -363,13 +384,18 @@ row('Mass: Phobos and Deimos', '1.06 × 10^16 kg and 1.44 × 10^15 kg', ['phobos
 # Every other fact behind the Weight tab and the two-player tests gets its own row, labelled by area.
 USED_ABOVE = {d for d in ['density_plush_stuffing_estimate', 'density_water_4c', 'density_bodybuilders_fry1987', 'density_human_body_measured', 'density_structural_steel', 'density_osmium',
                           'density_white_dwarf_sirius_b_mean', 'nuclear_saturation_density', 'density_neutron_star_mean', 'phobos_mass', 'deimos_mass']}
-for topic, prefix in [('density', 'Weight'), ('duo', None)]:
-    for f in json.load(open(os.path.join(HERE, 'research', f'final-{topic}.json')))['facts']:
+# the presence brief's facts (effort, the Walk tab, comic switches, growth), each in its own row, labelled by area
+PRESENCE_AREA = {'presence_step': 'Walking', 'presence_attenuation': 'Ground shaking', 'presence_elephant': 'Elephants', 'presence_thresholds': 'Thresholds',
+                 'presence_ripple': 'Water glass', 'presence_comic': 'Comic switches', 'presence_growth': 'Growth'}
+for topic, prefix in [('density', 'Weight'), ('duo', None), ('presence', None)]:
+    for f in json.load(open(os.path.join(HERE, 'research', f'final-{topic}.json'), encoding='utf-8'))['facts']:
         if f['key'] in USED_ABOVE:
             continue
-        label = (prefix or f.get('category', 'Rex and Ollie')) + ': ' + f['label'][0].lower() + f['label'][1:] if f['label'] else f['key']
-        # the vaporisation row draws on more than two sources (one per material): show them all
-        row(label, f['display'], [f['key']], note=None, extra_sources=[{'url': x['url'], 'title': x.get('title') or ''} for x in f['sources'][2:]] if f['key'] in ('heat_to_vaporise_per_kg',) else None)
+        area = PRESENCE_AREA.get(f.get('category'), f.get('category', 'Rex and Ollie')) if topic == 'presence' else f.get('category', 'Rex and Ollie')
+        label = (prefix or area) + ': ' + lower_first(f['label']) if f['label'] else f['key']
+        # rows that draw on more than two sources (the vaporisation row, one per material; the presence facts, which
+        # show numbers from each): show them all
+        row(label, f['display'], [f['key']], note=None, extra_sources=[{'url': x['url'], 'title': x.get('title') or ''} for x in f['sources'][2:]] if f['key'] in ('heat_to_vaporise_per_kg',) or topic == 'presence' else None)
 
 data = dict(tiers=tiers, surfaces=[{k: v for k, v in s.items() if not k.startswith('k_')} for s in surfaces], objects=objects,
             energyRefs=energy, overpressure=overpressure, heights=heights, speeds=speeds, calibration=calibration,
@@ -382,5 +408,5 @@ def js(v):
 
 text = json.dumps(data, ensure_ascii=False, indent=1, allow_nan=True)
 out = '/* Generated by build-data.py from research/final-*.json. Do not edit by hand. */\nwindow.DINO_DATA = ' + text + ';\n'
-open(os.path.join(HERE, 'src', 'data.js'), 'w').write(out)
+open(os.path.join(HERE, 'src', 'data.js'), 'w', encoding='utf-8', newline='\n').write(out)
 print('objects', len(objects), 'feats', len(feats), 'source rows', len(rows), 'bytes', len(out))
