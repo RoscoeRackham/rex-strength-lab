@@ -42,6 +42,7 @@
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.5; }
 .wrap { max-width: 1180px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 64px; }
 h1, h2, h3 { font-family: var(--font-display); font-weight: 800; letter-spacing: 0.01em; line-height: 1.05; text-wrap: balance; margin: 0; }
@@ -66,7 +67,7 @@ button, select, input { font: inherit; color: inherit; }
 
 /* Main grid */
 .rig { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; margin-top: 20px; }
-@media (min-width: 920px) { .rig { grid-template-columns: 340px minmax(0, 1fr); align-items: start; } .panel-controls { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); } }
+@media (min-width: 920px) { .rig { grid-template-columns: 340px minmax(0, 1fr); align-items: start; } .panel-controls { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); max-height: calc(100vh - 24px - env(safe-area-inset-top, 0px)); overflow-y: auto; } }
 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; min-width: 0; }
 
 /* Strength dial */
@@ -94,14 +95,45 @@ select { width: 100%; padding: 9px 10px; border: 1px solid var(--line); border-r
 details.setup { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px; }
 details.setup summary { cursor: pointer; font-weight: 700; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 details.setup summary::-webkit-details-marker { display: none; }
-details.setup summary::after { content: "+"; font-family: var(--font-mono); color: var(--ink-3); }
-details.setup[open] summary::after { content: "–"; }
+details.setup summary::after { content: "+"; content: "+" / ""; font-family: var(--font-mono); color: var(--ink-3); }
+details.setup[open] summary::after { content: "–"; content: "–" / ""; }
 .inline-num { display: flex; gap: 8px; align-items: center; }
 .inline-num input { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
 
+/* Sidebar sections that aren't collapsible (the ground), and the Bolted pair in Their powers */
+.side-sec { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+.side-head { font-weight: 700; }
+.pair { display: flex; flex-wrap: wrap; gap: 0 24px; }
+/* On a wide screen the sticky sidebar scrolls on its own when it is taller than the window; this cue says what is
+   below its edge and scrolls there (scrollbars can be hidden until used) */
+.more-wrap { display: none; }
+@media (min-width: 920px) {
+  /* focus scrolling stops above the cue, so it never covers the focused control */
+  .panel-controls { scroll-padding-bottom: 64px; }
+  /* a zero-height sticky holder at the end of the content: it takes no room in the box, so it can't keep itself showing */
+  .more-wrap:not([hidden]) { display: block; position: sticky; bottom: -16px; height: 0; margin: 0 -16px; }
+  .more-below { position: absolute; left: 0; right: 0; bottom: 0; border: 0; border-radius: 0 0 var(--r) var(--r); padding: 6px 16px 10px; background: var(--surface); font: inherit; font-size: 0.85rem; font-weight: 700; color: var(--ink); text-align: center; cursor: pointer; }
+  /* the fade above it lets clicks through to what shows beneath */
+  .more-below::before { content: ""; position: absolute; left: 0; right: 0; bottom: 100%; height: 20px; background: linear-gradient(to bottom, transparent, var(--surface)); pointer-events: none; }
+}
+@media (forced-colors: active) { .more-below { background: Canvas; border-top: 1px solid CanvasText; } .more-below::before { display: none; } }
+.pair .check { margin-top: 4px; }
+
+/* The test bays: Rex's, and the Rex + Ollie element below it (collapsed until opened) */
+.bay-col { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+details.duo-panel > summary { cursor: pointer; list-style: none; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 4px 12px; }
+details.duo-panel > summary::-webkit-details-marker { display: none; }
+details.duo-panel > summary::after { content: "+"; content: "+" / ""; font-family: var(--font-mono); font-size: 1.3rem; color: var(--ink-3); }
+details.duo-panel[open] > summary::after { content: "–"; content: "–" / ""; }
+.duo-title { display: flex; flex-direction: column; gap: 2px; }
+.duo-title .eyebrow { line-height: 1.4; font-weight: 400; }
+details.duo-panel > summary h2 { font-size: clamp(1.4rem, 3.4vw, 1.8rem); }
+#duo-sum { font-size: 0.85rem; flex: 1 1 220px; }
+#duo-tabs { margin-top: 14px; }
+.ollie-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 20px; }
+@media (min-width: 640px) { .ollie-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; } }
+
 /* Tabs */
-.group-seg { margin: 0 0 12px; }
-.group-seg button { font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; letter-spacing: 0.03em; text-transform: uppercase; padding: 8px; }
 .tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
 .tabs.n4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .dens-read { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
@@ -144,7 +176,7 @@ table.cases td.on { outline: 2px solid var(--accent); outline-offset: -2px; back
 @media (min-width: 640px) { .tabs { display: flex; flex-wrap: wrap; } }
 .tab { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 9px 14px; cursor: pointer; font-family: var(--font-display); font-weight: 800; font-size: 1.15rem; letter-spacing: 0.03em; text-transform: uppercase; }
 .tab[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: #000; }
-@media (max-width: 359px) { #tabs .tab { padding-left: 4px; padding-right: 4px; font-size: 1rem; } }
+@media (max-width: 359px) { .tabs .tab { padding-left: 4px; padding-right: 4px; font-size: 1rem; } }
 .bay { margin-top: 12px; display: flex; flex-direction: column; gap: 16px; }
 .bay-controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
 .bay-controls .field { margin-top: 0; flex: 1 1 220px; min-width: 0; }
@@ -232,7 +264,7 @@ details.src-details > summary { cursor: pointer; font-weight: 700; padding: 10px
 .assume div { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 0.92rem; }
 .assume b { display: block; margin-bottom: 2px; }
 footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 1px solid var(--line); padding-top: 14px; }
-@media (prefers-reduced-motion: no-preference) { #bay.enter .verdict, #bay.enter .tiles { animation: rise 0.25s ease-out; } @keyframes rise { from { opacity: 0.4; transform: translateY(3px); } to { opacity: 1; transform: none; } } }
+@media (prefers-reduced-motion: no-preference) { .bay.enter .verdict, .bay.enter .tiles { animation: rise 0.25s ease-out; } @keyframes rise { from { opacity: 0.4; transform: translateY(3px); } to { opacity: 1; transform: none; } } }
 </style>
 
 <div class="wrap">
@@ -260,21 +292,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       <div class="chips" id="tier-chips" role="group" aria-label="Strength presets"></div>
 
       <details class="setup" id="setup">
-        <summary><span>Settings</span> <span class="muted" id="setup-sum" style="font-weight:400;font-size:.85rem"></span></summary>
-        <div class="field">
-          <span class="lbl" id="mode-lbl">Muscle physics</span>
-          <div class="seg" role="group" aria-labelledby="mode-lbl">
-            <button type="button" id="mode-comic" aria-pressed="true">Comic book</button>
-            <button type="button" id="mode-real" aria-pressed="false">Real muscle</button>
-          </div>
-          <span class="hint" id="mode-hint"></span>
-        </div>
-
-        <div class="field">
-          <label for="surface">Ground under his feet</label>
-          <select id="surface"></select>
-        </div>
-        <label class="check"><input type="checkbox" id="ground-holds"><span><b>Comic ground</b> — the floor never breaks</span></label>
+        <summary><span>Size and density</span> <span class="muted" id="setup-sum" style="font-weight:400;font-size:.85rem"></span></summary>
         <div class="field">
           <span class="lbl" id="size-lbl">Size</span>
           <div class="chips" id="size-chips" role="group" aria-labelledby="size-lbl"></div>
@@ -294,62 +312,35 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
           <div class="inline-num"><input id="mass" type="number" min="0" step="any" value="180"></div>
           <span class="hint">Mass and density move together. Changing height keeps his density.</span>
         </div>
-        <div class="field">
-          <label for="anchor">How he holds his ground</label>
-          <select id="anchor">
-            <option value="friction">Just standing (friction only)</option>
-            <option value="braced">Claws dug in (ground shear)</option>
-            <option value="bolted">Bolted to the planet (comic)</option>
-          </select>
-        </div>
       </details>
 
-      <details class="setup" id="ollie-setup">
-        <summary><span>Ollie</span> <span class="muted" id="ollie-sum" style="font-weight:400;font-size:.85rem"></span></summary>
-        <img class="duo-img" src="__DUO_IMG__" alt="Ollie and Rex side by side. Ollie is a muscular bull-man with horns, a nose ring, earrings and a tufted tail, in a leather vest, dark cargo pants and laced boots. Rex is a dark, scaly dinosaur with a spiky crest, clawed hands and feet and a long tail, in a black tank top, belted cargo pants and knee pads.">
-        <p class="hint" style="margin-top:8px">Rex’s boyfriend: just as strong and just as indestructible. He joins the two-player tests, on the same ground with the same muscle setting.</p>
-        <div class="field">
-          <span class="lbl" id="o-str-lbl">Ollie’s strength</span>
-          <div class="seg" role="group" aria-labelledby="o-str-lbl">
-            <button type="button" id="o-same" aria-pressed="true">Same as Rex</button>
-            <button type="button" id="o-own" aria-pressed="false">What-if: his own</button>
-          </div>
-          <div id="o-dial" class="o-dial" hidden>
-            <p class="hint" style="margin:0 0 6px">Ollie is as strong as Rex. This dial is only for what-if tests, and it resets to Rex’s strength next time the page opens.</p>
-            <div class="o-big" id="o-big">Lifts 90.7 t</div>
-            <label for="o-strength" style="position:absolute;left:-9999px">Ollie’s strength, log scale</label>
-            <input type="range" id="o-strength" min="1" max="34" step="0.01" value="4.96">
-            <div class="scale-ends"><span>10 kg</span><span>10³⁴ kg</span></div>
-            <label class="check" style="margin-top:4px"><input type="checkbox" id="o-inf"><span>Unlimited (∞)</span></label>
-          </div>
-        </div>
-        <div class="field">
-          <label for="o-height">Ollie’s height (m)</label>
-          <div class="inline-num"><input id="o-height" type="number" min="0.1" max="500" step="any" value="3.048"></div>
-        </div>
-        <div class="field">
-          <label for="o-density">Ollie’s density</label>
-          <div class="dens-read"><b id="o-density-big">1,000 kg/m³</b><span id="o-density-cmp"></span></div>
-          <input type="range" id="o-density" min="1" max="30" step="0.01" value="3" aria-describedby="o-density-cmp">
-          <div class="chips" id="o-density-chips" role="group" aria-label="Ollie’s density presets"></div>
-        </div>
-        <div class="field">
-          <label for="o-mass">Ollie’s mass (kg)</label>
-          <div class="inline-num"><input id="o-mass" type="number" min="0" step="any" value="180"></div>
-        </div>
-        <div class="field">
-          <label for="o-anchor">How Ollie holds his ground</label>
-          <select id="o-anchor">
-            <option value="friction">Just standing (friction only)</option>
-            <option value="braced">Boots dug in (ground shear)</option>
-            <option value="bolted">Bolted to the planet (comic)</option>
-          </select>
-        </div>
-      </details>
+      <div class="side-sec" id="ground-sec">
+        <label for="surface" class="side-head">Ground</label>
+        <select id="surface" aria-describedby="ground-hint"></select>
+        <span class="hint" id="ground-hint">The ground under their feet, for every move and test.</span>
+      </div>
 
-      <details class="setup" id="comic-setup">
-        <summary><span>Comic switches</span> <span class="muted" id="comic-sum" style="font-weight:400;font-size:.85rem"></span></summary>
-        <p class="hint" style="margin-top:8px">Each switch suspends one piece of real physics, on purpose. Everything else stays real. They are off by default. <b>Comic ground</b> and <b>Bolted to the planet</b> are under Settings.</p>
+      <details class="setup" id="powers">
+        <summary><span>Their powers</span> <span class="muted" id="powers-sum" style="font-weight:400;font-size:.85rem"></span></summary>
+        <p class="hint" style="margin-top:8px">All of these are their absorption at work, used on purpose. Each switch suspends one piece of real physics, on purpose. Everything else stays real. The switches are off by default. (The Collide tab’s two thought experiments, Truly immovable and Light speed, stay on that tab: they are about the test, not their powers.)</p>
+        <div class="field">
+          <span class="lbl" id="mode-lbl">Muscle physics</span>
+          <div class="seg" role="group" aria-labelledby="mode-lbl">
+            <button type="button" id="mode-comic" aria-pressed="true">Comic book</button>
+            <button type="button" id="mode-real" aria-pressed="false">Real muscle</button>
+          </div>
+          <span class="hint" id="mode-hint"></span>
+        </div>
+        <div class="eyebrow" style="margin-top:14px">Holding their ground</div>
+        <div class="field" style="margin-top:6px">
+          <span class="lbl" id="bolt-lbl">Bolted to the planet</span>
+          <div class="pair" role="group" aria-labelledby="bolt-lbl">
+            <label class="check"><input type="checkbox" id="bolt-rex" aria-label="Bolted to the planet: Rex"><span>Rex</span></label>
+            <label class="check"><input type="checkbox" id="bolt-ollie" aria-label="Bolted to the planet: Ollie"><span>Ollie</span></label>
+          </div>
+          <span class="hint">On, a push along the ground can’t slide his planted feet: it goes into the planet instead. He still walks, runs and jumps. What else it changes depends on the move, and each tab says so: weak ground can still give way under him, and in some two-player tests the ground around his feet can tear out or a very fast hit is over before the bolts can help (Comic ground rules out both). Off, he is just standing, and friction holds him. One each, so a contest can bolt one side and not the other.</span>
+        </div>
+        <label class="check"><input type="checkbox" id="ground-holds"><span><b>Comic ground</b> — the floor never breaks</span></label>
         <div class="eyebrow" style="margin-top:12px">Material limit suspended</div>
         <label class="check"><input type="checkbox" id="sw-gentle"><span><b>Gentle hold</b> (tactile telekinesis): his push is spread through whatever he holds, in proportion to its mass, so his grip never crushes it. Air, landing and his own recoil stay real.</span></label>
         <label class="check"><input type="checkbox" id="sw-passenger"><span><b>Safe passenger</b>: the same spread push on a person he throws or catches, so his push puts no g-force on them. Air drag in flight and the landing stay real.</span></label>
@@ -377,17 +368,63 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
           <span class="hint">Growth is a what-if: the page resets to their canon size and mass next visit.</span>
         </div>
       </details>
+      <div class="more-wrap" id="more-wrap" hidden><button type="button" class="more-below" id="more-below" tabindex="-1" aria-hidden="true"></button></div>
     </aside>
 
-    <main class="panel" aria-label="Test bay">
-      <div class="seg group-seg" role="group" aria-label="Who is in the test">
-        <button type="button" id="grp-solo" aria-pressed="true">Rex alone</button>
-        <button type="button" id="grp-duo" aria-pressed="false">Rex + Ollie</button>
-      </div>
-      <div class="tabs" role="tablist" id="tabs" aria-label="Moves"></div>
-      <div class="bay" id="bay" role="tabpanel" tabindex="-1"></div>
-      <div id="bay-live" class="sr-only" aria-live="polite"></div>
-    </main>
+    <div class="bay-col">
+      <main class="panel" aria-label="Rex’s test bay">
+        <div class="tabs" role="tablist" id="tabs" aria-label="Rex’s moves"></div>
+        <div class="bay" id="bay" role="tabpanel" tabindex="-1"></div>
+        <div id="bay-live" class="sr-only" aria-live="polite"></div>
+      </main>
+
+      <details class="panel duo-panel" id="duo">
+        <summary><h2 id="duo-title" class="duo-title"><span class="eyebrow">Two-player tests</span>Rex + Ollie</h2><span class="muted" id="duo-sum"></span></summary>
+        <details class="setup" id="ollie-setup">
+          <summary><span>Ollie</span> <span class="muted" id="ollie-sum" style="font-weight:400;font-size:.85rem"></span></summary>
+          <div class="ollie-grid">
+            <div>
+              <img class="duo-img" src="__DUO_IMG__" alt="Ollie and Rex side by side. Ollie is a muscular bull-man with horns, a nose ring, earrings and a tufted tail, in a leather vest, dark cargo pants and laced boots. Rex is a dark, scaly dinosaur with a spiky crest, clawed hands and feet and a long tail, in a black tank top, belted cargo pants and knee pads.">
+              <p class="hint" style="margin-top:8px">Rex’s boyfriend: just as strong and just as indestructible. He joins the two-player tests, on the same ground with the same muscle setting and powers. His Bolted switch is in Their powers, next to Rex’s.</p>
+            </div>
+            <div>
+              <div class="field">
+                <span class="lbl" id="o-str-lbl">Ollie’s strength</span>
+                <div class="seg" role="group" aria-labelledby="o-str-lbl">
+                  <button type="button" id="o-same" aria-pressed="true">Same as Rex</button>
+                  <button type="button" id="o-own" aria-pressed="false">What-if: his own</button>
+                </div>
+                <div id="o-dial" class="o-dial" hidden>
+                  <p class="hint" style="margin:0 0 6px">Ollie is as strong as Rex. This dial is only for what-if tests, and it resets to Rex’s strength next time the page opens.</p>
+                  <div class="o-big" id="o-big">Lifts 90.7 t</div>
+                  <label for="o-strength" style="position:absolute;left:-9999px">Ollie’s strength, log scale</label>
+                  <input type="range" id="o-strength" min="1" max="34" step="0.01" value="4.96">
+                  <div class="scale-ends"><span>10 kg</span><span>10³⁴ kg</span></div>
+                  <label class="check" style="margin-top:4px"><input type="checkbox" id="o-inf"><span>Unlimited (∞)</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label for="o-height">Ollie’s height (m)</label>
+                <div class="inline-num"><input id="o-height" type="number" min="0.1" max="500" step="any" value="3.048"></div>
+              </div>
+              <div class="field">
+                <label for="o-density">Ollie’s density</label>
+                <div class="dens-read"><b id="o-density-big">1,000 kg/m³</b><span id="o-density-cmp"></span></div>
+                <input type="range" id="o-density" min="1" max="30" step="0.01" value="3" aria-describedby="o-density-cmp">
+                <div class="chips" id="o-density-chips" role="group" aria-label="Ollie’s density presets"></div>
+              </div>
+              <div class="field">
+                <label for="o-mass">Ollie’s mass (kg)</label>
+                <div class="inline-num"><input id="o-mass" type="number" min="0" step="any" value="180"></div>
+              </div>
+            </div>
+          </div>
+        </details>
+        <div class="tabs n4" role="tablist" id="duo-tabs" aria-label="Rex and Ollie’s tests"></div>
+        <div class="bay" id="duo-bay" role="tabpanel" tabindex="-1"></div>
+        <div id="duo-live" class="sr-only" aria-live="polite"></div>
+      </details>
+    </div>
   </div>
 
   <section class="block" id="ladder">
@@ -595,14 +632,17 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   const RANGES = { gThrow: [0.1, 1e9], gJump: [0.01, 1e9], gSprint: [0.1, 3e8], gPull: [0.01, 1e9], growT: [1e-3, 1e12], near: [0.5, 1000], walkD: [0.5, 10000] };
   const inRange = (k, v) => isFinite(v) && v >= RANGES[k][0] && v <= RANGES[k][1];
   // a typed number outside its range is clamped to the nearest allowed value (as the height field is); blank or junk keeps the old one
-  const setIn = (k, raw) => { const v = String(raw).trim() === '' ? NaN : Number(raw); if (isFinite(v)) state[k] = Math.min(RANGES[k][1], Math.max(RANGES[k][0], v)); update(); };
+  // A typed box commits on change, which also fires when a redraw removes it while focused: the state changes at once,
+  // and the page redraws after the current render ends, never inside it
+  let setInTimer = null;
+  const setIn = (k, raw) => { const v = String(raw).trim() === '' ? NaN : Number(raw); if (isFinite(v)) state[k] = Math.min(RANGES[k][1], Math.max(RANGES[k][0], v)); clearTimeout(setInTimer); setInTimer = setTimeout(update, 0); };
   const DEFAULTS = {
     logKg: Math.log10(100 * 907.18474), inf: false, mode: 'comic', surface: 'concrete', groundHolds: false, anchor: 'friction', H: P.DEFAULT_BODIES.rex.H, m: P.DEFAULT_BODIES.rex.m, build: 'rex', action: 'throw', obj: 'car', angle: 45,
-    // two-player tests: which group of tabs is showing, and the last tab picked in the Rex + Ollie group
-    group: 'solo', duoAction: 'arm',
+    // two-player tests: the last tab picked in the Rex + Ollie element, and whether that element is open
+    duoAction: 'arm', duoOpen: false,
     // Ollie: strength linked to Rex's dial unless oSame is false
     oSame: true, oLogKg: Math.log10(100 * 907.18474), oInf: false, oH: P.DEFAULT_BODIES.ollie.H, oM: P.DEFAULT_BODIES.ollie.m, oAnchor: 'friction',
-    wrestleMove: 'push', wrestleWho: 'rex',
+    wrestleMove: 'push', wrestleWho: 'rex', wAngle: 45,
     cObj: 'baseball', cLogD: 1, cStyle: 'easy', cMiss: false,
     colMode: 'charge', colWho: 'ollie', colSrc: 'sprint', colGB: Math.log10(100 / 299792458), colInf: false, colBounce: 'splat', colImm: false,
     // effort: a preset (least disruptive by default), or a custom strength used (log10 kg); people and buildings this near (m)
@@ -620,7 +660,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   let state = Object.assign({}, DEFAULTS);
   // lightest density the slider and the mass boxes allow, kg/m³ (the slider's left end, 10^1)
   const RHO_MIN = 10;
-  try { const saved = JSON.parse(localStorage.getItem('rex-lab-v1') || 'null'); if (saved) state = Object.assign(state, saved); } catch (e) { /* storage unavailable */ }
+  // Wrestle's throw shared Rex's Throw angle while only one of them was ever on screen; a save from before it had its
+  // own angle (state.wAngle) starts it from Rex's
+  let savedWAngle = false;
+  try { const saved = JSON.parse(localStorage.getItem('rex-lab-v1') || 'null'); if (saved) { state = Object.assign(state, saved); savedWAngle = 'wAngle' in saved; } } catch (e) { /* storage unavailable */ }
   // The default mass was 2,700 kg until it was ruled to leave out the tails; a saved old default moves to the new one.
   if (state.m === 2700) state.m = DEFAULTS.m;
   if (state.oM === 2700) state.oM = DEFAULTS.oM;
@@ -629,20 +672,25 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   state.absorb = 'ocean'; state.growWhat = 'none';   // growth is a what-if: canon size and mass on every visit
   state.stepEffort = 0;   // they walk soft-footed unless the visitor chooses otherwise
   state.duoEffort = 'least'; state.oEffortOwn = false;
+  // Retired settings: a saved 'Rex + Ollie' view (state.group) opens the Rex + Ollie element once; 'Claws dug in'
+  // ('braced') loads as just standing. Footing is now only standing or bolted.
+  if (state.group === 'duo') state.duoOpen = true;
+  if (!savedWAngle) state.wAngle = state.angle;
+  if (state.anchor === 'braced') state.anchor = 'friction';
+  if (state.oAnchor === 'braced') state.oAnchor = 'friction';
   {
     const num = (lo, hi) => (v) => typeof v === 'number' && isFinite(v) && v >= lo && v <= hi;
     const VALID = {
       logKg: num(1, 34), H: num(0.1, 500), m: (v) => typeof v === 'number' && isFinite(v) && v > 0, angle: num(0, 90), build: (v) => v === 'rex' || v === 'human',
       inf: (v) => typeof v === 'boolean', groundHolds: (v) => typeof v === 'boolean',
       mode: (v) => v === 'comic' || v === 'real',
-      anchor: (v) => v === 'friction' || v === 'braced' || v === 'bolted',
+      anchor: (v) => v === 'friction' || v === 'bolted',
       action: (v) => ['walk', 'lift', 'throw', 'jump', 'stomp', 'punch', 'clap', 'sprint', 'pull', 'weight'].includes(v),
-      group: (v) => v === 'solo' || v === 'duo',
-      duoAction: (v) => ['arm', 'wrestle', 'catch', 'collide'].includes(v),
+      duoAction: (v) => ['arm', 'wrestle', 'catch', 'collide'].includes(v), duoOpen: (v) => typeof v === 'boolean',
       oSame: (v) => typeof v === 'boolean', oInf: (v) => typeof v === 'boolean',
       oLogKg: num(1, 34), oH: num(0.1, 500), oM: (v) => typeof v === 'number' && isFinite(v) && v > 0,
-      oAnchor: (v) => v === 'friction' || v === 'braced' || v === 'bolted',
-      wrestleMove: (v) => ['push', 'shove', 'lift', 'throw'].includes(v),
+      oAnchor: (v) => v === 'friction' || v === 'bolted',
+      wrestleMove: (v) => ['push', 'shove', 'lift', 'throw'].includes(v), wAngle: num(0, 90),
       wrestleWho: (v) => ['rex', 'ollie', 'both'].includes(v),
       cObj: (v) => v === 'partner' || D.objects.some((x) => x.id === v && !x.noThrow),
       cLogD: num(0, 7.31), cStyle: (v) => v === 'easy' || v === 'hard', cMiss: (v) => typeof v === 'boolean',
@@ -692,8 +740,11 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const F = Math.min(state.oSame ? (state.inf ? Infinity : Math.pow(10, state.logKg) * g) : (state.oInf ? Infinity : Math.pow(10, state.oLogKg) * g), isDuo() ? duoCap.O : Infinity);
     return Object.assign(ctx(), { F, body, anchor: state.oAnchor }, overrides || {});
   }
-  const isDuo = () => state.group === 'duo';
-  // the effort cap in the two-player tests (strength used, N), set by renderBay before a two-player bay runs
+  // true only while the Rex + Ollie element is being worked out (its render, or a probe of its effort search): the
+  // two-player effort cap applies then and nowhere else
+  let duoMode = false;
+  const isDuo = () => duoMode;
+  // the effort cap in the two-player tests (strength used, N), set before a two-player test runs
   let duoCap = { R: Infinity, O: Infinity };
   const curAction = () => (isDuo() ? state.duoAction : state.action);
   const objById = (id) => D.objects.find((o) => o.id === id);
@@ -717,8 +768,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   const tile = (k, v, s) => el('div', { class: 'tile' }, el('div', { class: 'k', text: k }), el('div', { class: 'v', text: nb(v) }), s ? el('div', { class: 's', text: nb(s) }) : null);
   const tiles = (...ts) => el('div', { class: 'tiles' }, ts.filter(Boolean));
   const happens = (items, max) => el('ul', { class: 'happens' }, items.filter(Boolean).slice(0, max || 5).map((t) => el('li', { text: nb(t) })));
-  let mathOpen = false;
-  const math = (lines) => { const d = el('details', { class: 'math' }, el('summary', { text: 'Show the math' })); d.append(el('div', { class: 'eq', text: lines.filter(Boolean).join('\n') })); d.open = mathOpen; d.addEventListener('toggle', () => { mathOpen = d.open; }); return d; };
+  // each bay keeps its own 'Show the math' state (the Rex + Ollie element draws with isDuo() true)
+  const math = (lines) => { const B = isDuo() ? BAY.duo : BAY.solo; const d = el('details', { class: 'math' }, el('summary', { text: 'Show the math' })); d.append(el('div', { class: 'eq', text: lines.filter(Boolean).join('\n') })); d.open = B.mathOpen; d.addEventListener('toggle', () => { B.mathOpen = d.open; }); return d; };
   const verdict = (t) => el('p', { class: 'verdict', text: nb(t) });
   const callout = (t) => el('p', { class: 'callout', text: nb(t) });
 
@@ -749,7 +800,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       : 'Muscles lose force as they speed up (Hill force–velocity curve). Matches real athletes at record-human strength; above that, more strength buys force, not speed.';
     $('#surface').value = state.surface;
     $('#ground-holds').checked = state.groundHolds;
-    $('#anchor').value = state.anchor;
+    $('#bolt-rex').checked = state.anchor === 'bolted';
+    $('#bolt-ollie').checked = state.oAnchor === 'bolted';
     $('#height').value = state.H;
     renderDensity('', state.H, state.m);
     renderDensity('o-', state.oH, state.oM);
@@ -761,7 +813,6 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     $('#o-big').textContent = state.oInf ? 'Unlimited' : 'Lifts ' + fmtMass(Math.pow(10, state.oLogKg));
     $('#o-strength').setAttribute('aria-valuetext', state.oInf ? 'Unlimited' : 'Lifts ' + fmtMass(Math.pow(10, state.oLogKg)));
     $('#o-height').value = state.oH;
-    $('#o-anchor').value = state.oAnchor;
     $('#sw-gentle').checked = state.gentleHold; $('#sw-passenger').checked = state.safePassenger; $('#sw-silent').checked = state.silentStrike; $('#sw-soft').checked = state.softLanding; $('#sw-cool').checked = state.coolFlight;
     $('#absorb').value = state.absorb;
     $('#grow-s').value = state.growS;
@@ -769,20 +820,21 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     for (const b of document.querySelectorAll('#grow-chips .chip')) b.setAttribute('aria-pressed', String(Math.abs(Number(b.dataset.s) - state.growS) < 1e-9));
     $('#grow-fields').hidden = state.absorb === 'ocean';
     $('#grow-t').value = state.growT; $('#grow-t-row').hidden = state.absorb !== 'gradual';
-    const sw = [state.gentleHold && 'gentle hold', state.safePassenger && 'safe passenger', state.silentStrike && 'silent strike', state.softLanding && 'soft landing', state.coolFlight && 'cool flight'].filter(Boolean);
-    $('#comic-sum').textContent = (sw.length ? sw.join(' · ') : 'all off') + (state.absorb !== 'ocean' ? ' · ' + { gradual: 'gradual growth', instant: 'instant growth', runaway: 'runaway' }[state.absorb] : '');
-    $('#grp-solo').setAttribute('aria-pressed', String(!isDuo()));
-    $('#grp-duo').setAttribute('aria-pressed', String(isDuo()));
-    $('#ollie-sum').textContent = [state.oSame ? 'Rex’s strength' : 'what-if: ' + (state.oInf ? 'unlimited' : 'lifts ' + fmtMass(Math.pow(10, state.oLogKg))), sig(state.oH, 3) + ' m', fmtMass(state.oM), { friction: 'standing', braced: 'dug in', bolted: 'bolted' }[state.oAnchor]].join(' · ');
+    // Their powers: the muscle model, then the switches that are on, Bolted with who, and the growth mode
+    const sw = [state.groundHolds && 'comic ground', state.gentleHold && 'gentle hold', state.safePassenger && 'safe passenger', state.silentStrike && 'silent strike', state.softLanding && 'soft landing', state.coolFlight && 'cool flight'].filter(Boolean);
+    const bolted = state.anchor === 'bolted' && state.oAnchor === 'bolted' ? 'bolted: Rex and Ollie' : state.anchor === 'bolted' ? 'bolted: Rex' : state.oAnchor === 'bolted' ? 'bolted: Ollie' : null;
+    $('#powers-sum').textContent = [state.mode === 'real' ? 'Real muscle' : 'Comic book'].concat(sw.length || bolted ? sw : ['switches off'], bolted ? [bolted] : [], state.absorb !== 'ocean' ? [{ gradual: 'gradual growth', instant: 'instant growth', runaway: 'runaway' }[state.absorb]] : []).join(' · ');
+    const oStr = state.oSame ? 'Rex’s strength' : 'what-if: ' + (state.oInf ? 'unlimited' : 'lifts ' + fmtMass(Math.pow(10, state.oLogKg)));
+    $('#ollie-sum').textContent = [oStr, sig(state.oH, 3) + ' m', fmtMass(state.oM)].join(' · ');
+    $('#duo-sum').textContent = ['Ollie: ' + oStr, sig(state.oH, 3) + ' m', fmtMass(state.oM), DUO_ACTIONS.find((a) => a.id === state.duoAction).label].join(' · ');
     for (const b of document.querySelectorAll('#size-chips .chip')) b.setAttribute('aria-pressed', String(b.id === 'size-cal' ? state.build === 'human' : state.build === 'rex' && Math.abs(Number(b.dataset.h) - state.H) < 1e-9));
-    const surf = D.surfaces.find((x) => x.id === state.surface);
     const rhoRex = state.m / volRex(state.H);
-    $('#setup-sum').textContent = [state.mode === 'real' ? 'Real muscle' : 'Comic book', state.groundHolds ? 'comic ground' : surf.name.replace(/ \(.*\)$/, ''), { friction: 'standing', braced: 'claws dug in', bolted: 'bolted' }[state.anchor], sig(state.H, 3) + ' m', Math.abs(Math.log10(rhoRex / P.BUILDS[state.build].rho)) > 0.005 ? fmtDensity(rhoRex) : null, state.build === 'human' ? 'calibration body' : null].filter(Boolean).join(' · ');
+    $('#setup-sum').textContent = [sig(state.H, 3) + ' m', fmtMass(state.m), Math.abs(Math.log10(rhoRex / P.BUILDS[state.build].rho)) > 0.005 ? fmtDensity(rhoRex) : null, state.build === 'human' ? 'calibration body' : null].filter(Boolean).join(' · ');
   }
 
   function buildControls() {
-    // an input inside the bay keeps the bay's controls through the re-render, even before the control has focus
-    $('#bay').addEventListener('input', () => { bayInputAt = performance.now(); }, true);
+    // an input inside a bay keeps that bay's controls through the re-render, even before the control has focus
+    for (const B of Object.values(BAY)) $('#' + B.id).addEventListener('input', () => { B.inputAt = performance.now(); }, true);
     const chips = $('#tier-chips');
     for (const t of D.tiers.filter((x) => x.chip)) {
       chips.append(el('button', { type: 'button', class: 'chip', 'data-id': t.id, 'aria-pressed': 'false', title: t.who || '', onclick: () => {
@@ -804,7 +856,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     for (const s of D.surfaces) sel.append(el('option', { value: s.id, text: s.name }));
     sel.onchange = (e) => { state.surface = e.target.value; update(); };
     $('#ground-holds').onchange = (e) => { state.groundHolds = e.target.checked; update(); };
-    $('#anchor').onchange = (e) => { state.anchor = e.target.value; update(); };
+    // footing is binary: just standing (friction) or bolted to the planet, one switch each
+    $('#bolt-rex').onchange = (e) => { state.anchor = e.target.checked ? 'bolted' : 'friction'; update(); };
+    $('#bolt-ollie').onchange = (e) => { state.oAnchor = e.target.checked ? 'bolted' : 'friction'; update(); };
     const sizes = [{ h: 0.4, label: 'Plush (40 cm)' }, { h: P.DEFAULT_BODIES.rex.H, label: 'Rex (10 ft)' }, { h: 50, label: 'Kaiju (50 m)' }];
     // changing height keeps the current density (and leaves the calibration body for his own build)
     const setH = (h) => { const rho = state.m / volRex(state.H); state.build = 'rex'; state.H = h; state.m = rho * volRex(h); update(); };
@@ -820,7 +874,6 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     $('#o-inf').onchange = (e) => { state.oInf = e.target.checked; update(); };
     $('#o-height').onchange = (e) => { const h = Math.min(500, Math.max(0.1, Number(e.target.value) || DEFAULTS.oH)); const rho = state.oM / volOllie(state.oH); state.oH = h; state.oM = rho * volOllie(h); update(); };
     $('#o-mass').onchange = (e) => { const m = Number(e.target.value); if (m > 0 && isFinite(m)) state.oM = Math.max(m, RHO_MIN * volOllie(state.oH)); update(); };
-    $('#o-anchor').onchange = (e) => { state.oAnchor = e.target.value; update(); };
     densityControl('o-', () => state.oH, (m) => { state.oM = m; });
     // comic switches
     for (const [id, key] of [['sw-gentle', 'gentleHold'], ['sw-passenger', 'safePassenger'], ['sw-silent', 'silentStrike'], ['sw-soft', 'softLanding'], ['sw-cool', 'coolFlight']]) $('#' + id).onchange = (e) => { state[key] = e.target.checked; update(); };
@@ -831,26 +884,37 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       $('#' + id).min = RANGES[k][0]; $('#' + id).max = RANGES[k][1];
       $('#' + id).onchange = (e) => setIn(k, e.target.value);
     }
-    // Rex alone / Rex + Ollie
-    $('#grp-solo').onclick = () => { state.group = 'solo'; buildTabs(); update(); };
-    $('#grp-duo').onclick = () => { state.group = 'duo'; buildTabs(); update(); };
-    buildTabs();
-    $('#tabs').addEventListener('keydown', (e) => {
-      const step = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
-      if (step === undefined && e.key !== 'Home' && e.key !== 'End') return;
-      e.preventDefault();
-      const list = tabList(), i = list.findIndex((a) => a.id === curAction()), n = list.length;
-      const j = e.key === 'Home' ? 0 : e.key === 'End' ? n - 1 : (i + step + n) % n;
-      setAction(list[j].id); update(); $('#tab-' + curAction()).focus();
+    // two tab rows, one per bay, each with its own arrow keys
+    for (const B of Object.values(BAY)) {
+      buildTabs(B);
+      $('#' + B.tabs).addEventListener('keydown', (e) => {
+        const step = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+        if (step === undefined && e.key !== 'Home' && e.key !== 'End') return;
+        e.preventDefault();
+        const list = B.list(), i = list.findIndex((a) => a.id === B.act()), n = list.length;
+        const j = e.key === 'Home' ? 0 : e.key === 'End' ? n - 1 : (i + step + n) % n;
+        pickTab(B, list[j].id); $('#tab-' + B.act()).focus();
+      });
+    }
+    // the Rex + Ollie element: opening it works out its current tab; closing it stops its search
+    const duoEl = $('#duo');
+    duoEl.addEventListener('toggle', () => {
+      if (duoEl.open === state.duoOpen) return;
+      state.duoOpen = duoEl.open; save();
+      if (state.duoOpen) scheduleDuo(false);
+      else { stopDuo(); duoPlaceholder(); }
     });
   }
-  const tabList = () => (isDuo() ? DUO_ACTIONS : ACTIONS);
-  const setAction = (id) => { if (isDuo()) state.duoAction = id; else state.action = id; };
-  function buildTabs() {
-    const tabs = $('#tabs'), list = tabList();
-    tabs.replaceChildren(...list.map((a) => el('button', { type: 'button', class: 'tab', role: 'tab', id: 'tab-' + a.id, 'aria-selected': 'false', 'aria-controls': 'bay', tabindex: '-1', title: a.title || null, onclick: () => { setAction(a.id); update(); } }, a.label)));
-    tabs.classList.toggle('n4', list.length === 4);
-    tabs.setAttribute('aria-label', isDuo() ? 'Two-player tests' : 'Moves');
+  // what the closed (or not yet drawn) Rex + Ollie element holds, so it never shows results for other settings
+  const duoPlaceholder = () => { clearTimeout(BAY.duo.liveTimer); $('#duo-bay').replaceChildren(el('p', { class: 'muted', text: 'Working it out…' })); BAY.duo.spoken = null; };
+  // a tab picked in one bay redraws only that bay
+  function pickTab(B, id) {
+    B.set(id); save();
+    if (B === BAY.duo) { renderDial(); renderDuo(false); } else renderSolo(false);
+  }
+  function buildTabs(B) {
+    const tabs = $('#' + B.tabs);
+    tabs.replaceChildren(...B.list().map((a) => el('button', { type: 'button', class: 'tab', role: 'tab', id: 'tab-' + a.id, 'aria-selected': 'false', 'aria-controls': B.id, tabindex: '-1', title: a.title || null, onclick: () => pickTab(B, a.id) }, a.label)));
   }
 
   // ---------------------------------------------------------------- density
@@ -901,17 +965,19 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     f.append(s);
     return f;
   }
-  function angleControl() {
-    const f = el('div', { class: 'field' }, el('label', { for: 'angle', text: 'Launch angle: ' + state.angle + '°' }));
-    const r = el('input', { id: 'angle', type: 'range', min: '0', max: '90', step: '1', value: String(state.angle) });
-    r.oninput = (e) => { state.angle = Number(e.target.value); f.querySelector('label').textContent = 'Launch angle: ' + state.angle + '°'; scheduleBay(); };
+  // Rex's Throw uses state.angle (id 'angle'); Wrestle's throw in the Rex + Ollie element has its own (state.wAngle)
+  function angleControl(id, key) {
+    id = id || 'angle'; key = key || 'angle';
+    const f = el('div', { class: 'field' }, el('label', { for: id, text: 'Launch angle: ' + state[key] + '°' }));
+    const r = el('input', { id, type: 'range', min: '0', max: '90', step: '1', value: String(state[key]) });
+    r.oninput = (e) => { state[key] = Number(e.target.value); f.querySelector('label').textContent = 'Launch angle: ' + state[key] + '°'; if (key === 'angle') scheduleBay(); else scheduleBaySlow(); };
     f.append(r);
     return f;
   }
 
   // ---------------------------------------------------------------- charts
   // Charts are drawn at the bay's real pixel width so text stays at its set size on phones.
-  const chartW = () => Math.max(240, Math.min(760, ($('#bay') && $('#bay').clientWidth) || 640));
+  const chartW = () => { const b = $(isDuo() ? '#duo-bay' : '#bay'); return Math.max(240, Math.min(760, (b && b.clientWidth) || 640)); };
   function logMeter(label, ratio) {
     // Ratio of demand to capacity on a log scale from 1/100 to 10^12.
     const w = chartW(), h = 58, pad = 10;
@@ -1284,10 +1350,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (r.escapeNeeded > 0.01 * r.v) items.push('Climbing out of his own gravity costs it speed: it leaves his hand at ' + speedOnly(r.v) + ' and keeps ' + speedOnly(r.vOut) + ' once it is clear of him (escaping him takes ' + speedOnly(r.escapeNeeded) + ').');
     if (r.heldBack) items.push('Pushing with everything would make his feet slide and waste the throw, so he holds back to what his footing can take (' + fmtSI(r.anchor.R, 'N') + ').');
     if (r.basis === 'real' && state.mode === 'comic') items.push('Comic mode’s fixed ' + shareText(key, 'comic') + ' share of strength would throw this slower than real muscle does at this load, so the result shown is real muscle’s.');
-    if (r.anchor.R !== Infinity && r.recoilV > 0.01) items.push('Newton’s third law: the ' + o.short + ' pushes back on Rex exactly as hard as he pushes it. His footing can only resist ' + fmtSI(r.anchor.R, 'N') + ', so he flies backward at ' + speedOnly(r.recoilV) + '.' + (r.recoilE > r.Eobj ? ' He ends up with more of the energy than the ' + o.short + ' does.' : '') + (state.anchor === 'friction' ? ' To stay put he needs to dig in: try “Claws dug in” or “Bolted to the planet” under Settings.' : ''));
+    if (r.anchor.R !== Infinity && r.recoilV > 0.01) items.push('Newton’s third law: the ' + o.short + ' pushes back on Rex exactly as hard as he pushes it. His footing can only resist ' + fmtSI(r.anchor.R, 'N') + ', so he flies backward at ' + speedOnly(r.recoilV) + '.' + (r.recoilE > r.Eobj ? ' He ends up with more of the energy than the ' + o.short + ' does.' : '') + (state.anchor === 'friction' ? ' To stay put he needs to be bolted: turn on Bolted to the planet for Rex in Their powers.' : ''));
     // the footing model caps only the sideways part of the push; the sinking ground still takes the downward part,
     // so near vertical the cap grows as 1/cos(angle) and straight up there is none (the 89°-to-90° jump)
-    if (r.sinkRatio > 1) items.push('The throw also drives his feet down: the ground under him is carrying ' + fmtRatio(r.sinkRatio) + ' its limit, so he sinks while he throws.' + (state.angle >= 45 ? ' Even so, the sim lets the ground take the downward part of his push, as if the planet held him; only the sideways part is limited by his footing. The steeper the throw, the less his footing limits it, and straight up nothing does, so a near-vertical throw here is an upper bound.' : ''));
+    if (r.sinkRatio > 1) items.push('The throw also drives his feet down: the ground under him is carrying ' + fmtRatio(r.sinkRatio) + ' its limit, so he sinks while he throws.' + (c.anchor === 'bolted' ? ' Bolted, his footing limits no part of the push: the sim lets the ground take all of it, as if the planet held him, so at any angle this throw is an upper bound.' : state.angle >= 45 ? ' Even so, the sim lets the ground take the downward part of his push, as if the planet held him; only the sideways part is limited by his footing. The steeper the throw, the less his footing limits it, and straight up nothing does, so a near-vertical throw here is an upper bound.' : ''));
     if (vac && !f.relativistic) {
       if (vac.escaped && !f.escaped) items.push('Air is what brings it down. With no air, this launch would have escaped Earth.');
       else if (vac.orbit && !f.orbit) items.push('Air is what brings it down. With no air, this launch would have gone into orbit.');
@@ -1537,7 +1603,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     let v = 'Top speed: ' + (r.relativistic ? fmtSpeed(r.vTop) : speedOnly(r.vTop)) + '.';
     if (r.limit === 'friction' && !r.relativistic && r.vTop > 27.78) v += ' 0–100 km/h in ' + fmtTime(r.t100) + (r.t100 <= 6 ? ', sports-car pace,' : '') + ' however strong he is.';
     out.push(verdict(v));
-    const limitText = { strength: 'his strength', friction: 'friction', shear: 'ground shear (claws dug in)', 'soft ground': 'soft ground (each stride sinks)' }[r.limit] || r.limit;
+    const limitText = { strength: 'his strength', friction: 'friction', 'soft ground': 'soft ground (each stride sinks)' }[r.limit] || r.limit;
     out.push(el('div', { class: 'status-row' },
       status('info', 'Push-off limited by ' + limitText),
       status('info', 'Top speed limited by ' + r.topLimit),
@@ -1553,19 +1619,20 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     out.push(logBars('Top speed vs reference speeds', refs, (x) => big(x, 2) + ' m/s'));
     const items = [];
     if (r.limit === 'friction') items.push('Running is pushing backward on the ground. The ground only grips as hard as he presses down, and averaged over a stride he presses down with just his weight (' + fmtSI(c.body.m * g, 'N') + '). Friction caps his push at ' + fmtSI(r.thrust, 'N') + ', about ' + sig(r.accelG, 2) + ' g. More strength just makes him bounce higher.');
-    if (r.limit === 'strength') items.push('He isn’t strong enough yet to use all the grip on offer, so strength sets his push-off: ' + fmtSI(r.thrust, 'N') + '.');
-    if (r.limit === 'shear') items.push('Claws dug in let him push against the ground’s shear strength instead of friction. He tears up the surface every stride.');
+    if (r.tooGentle) items.push('At this effort he pushes no harder than his own weight (' + fmtSI(c.body.m * g, 'N') + '), so he can’t get going: in this sim a stride has to push harder than his weight before his legs build any speed, and here there is nothing to spare.');
+    else if (c.anchor === 'bolted' && (r.limit === 'strength' || r.limit === 'effort')) items.push('Bolted to the planet, his strides can’t slip, and the sim doesn’t let a bolted stride sink either, so neither friction nor soft ground caps his push-off: ' + (r.limit === 'effort' ? 'the strength he uses' : 'his strength') + ' sets it, ' + fmtSI(r.thrust, 'N') + '.');
+    else if (r.limit === 'strength') items.push('He isn’t strong enough yet to use all the grip on offer, so strength sets his push-off: ' + fmtSI(r.thrust, 'N') + '.');
     if (r.limit === 'soft ground') items.push('Each stride puts about 2.5 times his weight on one foot, more than ' + c.surface.short + ' can carry, so every step sinks and his push-off is capped.');
     if (r.topLimit === 'air drag' && !r.relativistic) items.push('At top speed all of his push goes into shoving air out of the way.');
     if (r.topLimit === 'leg speed') items.push(state.mode === 'real' ? 'Real-muscle mode caps leg speed at ' + speedOnly(P.MUSCLE.run.cap * c.body.s) + ', the top of the 35–40 mph limit projected from Weyand et al. (2010), scaled for his size.' : 'His legs set the top speed. The calibration body (2 m, 180 kg) at record-human strength runs Bolt’s 12.4 m/s; here the speed grows with the square root of his strength above his own weight, per kilogram of him, and with his size.');
     if (r.mach >= 1 && !r.relativistic) items.push('Above Mach 1 he drags a shock wave down the street: a continuous sonic boom, close enough to break windows. The sim does not estimate its strength at street level.');
     out.push(happens(items));
-    out.push(math(['Push-off = min(strength, μ × his weight' + (state.anchor === 'braced' ? ' + shear × claw area' : '') + ')', 'Top speed where drag = push-off: v = √(2F / (ρ Cd A)), A = ' + sig(c.body.frontArea, 2) + ' m², unless his legs cap it first.']));
+    out.push(math([(c.anchor === 'bolted' ? 'Push-off = the strength he uses (bolted: no friction or soft-ground limit)' : 'Push-off = min(the strength he uses, μ × min(his weight, what the ground under one foot bears ÷ 2.5))') + ', and none if that strength is no more than his weight', 'Top speed where drag = push-off: v = √(2F / (ρ Cd A)), A = ' + sig(c.body.frontArea, 2) + ' m², unless his legs cap it first.']));
     return out;
   }
 
   // Two-player tests: a compact side-by-side of who is in the test.
-  const ANCHOR_SHORT = { friction: 'just standing', braced: 'dug in', bolted: 'bolted to the planet' };
+  const ANCHOR_SHORT = { friction: 'just standing', bolted: 'bolted to the planet' };
   function fighterCard(who, c) {
     // the dial's strength, and the effort he is using in this test when it is less
     const F = fullF(who === 'Rex' ? 'R' : 'O'), kg = F / g, using = c.F < F * (1 - 1e-9) ? c.F / g : null;
@@ -1655,7 +1722,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   function growthWhatIf(c) {
     const box = el('div', { class: 'growth-whatif' });
     box.append(el('h3', { text: 'What if he absorbed it as growth?' }));
-    box.append(el('p', { class: 'muted', style: 'margin:0', text: 'Canon: energy they absorb goes back into the endless ocean they draw on, and nothing changes. The growth modes (under Comic switches) turn it into mass instead, m = E ÷ c². A what-if: the page resets to their canon size and mass next visit.' }));
+    box.append(el('p', { class: 'muted', style: 'margin:0', text: 'Canon: energy they absorb goes back into the endless ocean they draw on, and nothing changes. The growth modes (under Their powers) turn it into mass instead, m = E ÷ c². A what-if: the page resets to their canon size and mass next visit.' }));
     box.append(chipRow('Absorb the energy of', 'grow-what', GROW_WHAT.map((x) => [x.id, x.label]), state.growWhat, (v) => { state.growWhat = v; }));
     if (state.growWhat === 'none') return box;
     const ref = D.energyRefs.find((e) => e.id === state.growWhat);
@@ -1674,7 +1741,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     box.append(el('div', { class: 'cases-wrap' }, el('table', { class: 'cases' }, el('thead', {}, el('tr', {}, el('th', { text: 'Growth form' }), el('th', { text: 'Mass' }), el('th', { text: 'Height' }), el('th', { text: 'Density' }))), el('tbody', {}, rows))));
     const items = growthItems(E, c.body, c.surface);
     if (items) box.append(el('p', { style: 'margin:0', text: { gradual: 'Gradual growth', instant: 'Instant growth', runaway: 'Runaway' }[state.absorb] + ', ' + growFormText(state.growS) + ':' }), happens(items, 8));
-    else box.append(el('p', { class: 'muted', style: 'margin:0', text: 'Pick a growth mode under Comic switches to see how fast he can grow without harming anyone, and what growing all at once would do.' }));
+    else box.append(el('p', { class: 'muted', style: 'margin:0', text: 'Pick a growth mode under Their powers to see how fast he can grow without harming anyone, and what growing all at once would do.' }));
     return box;
   }
   function bayWeight(c) {
@@ -1841,7 +1908,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     }
     return null;
   }
-  const holdText = (c, R) => (c.anchor === 'bolted' ? 'bolted to the planet' : (c.groundHolds ? 'comic ground' : (c.anchor === 'braced' ? 'dug in on ' : 'standing on ') + c.surface.short) + (isFinite(R) ? ', holds ' + fmtSI(R, 'N') : ''));
+  const holdText = (c, R) => (c.anchor === 'bolted' ? 'bolted to the planet' : (c.groundHolds ? 'comic ground' : 'standing on ' + c.surface.short) + (isFinite(R) ? ', holds ' + fmtSI(R, 'N') : ''));
   // One wording, shared by Arm, Wrestle and Collide, for an unlimited push between two holds that never let go
   // (engine: unlimitedClash). via: what closes the loop between them on comic ground.
   function clashVerdict(kind, a, b, via) {
@@ -1933,8 +2000,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     else if (r.slamRatio > 10) chips.push(status('bad', 'Pin smashes the table'));
     else if (r.slamRatio > 1) chips.push(status('warn', 'Pin may crack the table'));
     else chips.push(status('good', 'Table holds'));
-    if (r.tearA > 1) chips.push(status('bad', 'Ground around Rex’s bolts tears out'));
-    if (r.tearB > 1) chips.push(status('bad', 'Ground around Ollie’s bolts tears out'));
+    // while the table holds it carries the push, not their feet, so the bolts can't tear out then
+    if (r.tableBreaks && r.tearA > 1) chips.push(status('bad', 'Ground around Rex’s bolts tears out'));
+    if (r.tableBreaks && r.tearB > 1) chips.push(status('bad', 'Ground around Ollie’s bolts tears out'));
     if (r.grav.F > 1e-3 * Math.min(cR.body.m, cO.body.m) * g) chips.push(status('warn', 'Their own gravity: ' + fmtSI(r.grav.F, 'N')));
     if (Math.max(cR.body.H, cO.body.H) / Math.min(cR.body.H, cO.body.H) > 1.5) chips.push(status('info', 'Sizes too different for a fair table'));
     out.push(el('div', { class: 'status-row' }, chips));
@@ -1972,12 +2040,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (r.outcome === 'pin' && isFinite(r.slamCap) && r.slamRatio > 1) items.push('A regulation table (World Armwrestling Federation: plywood on a steel frame, scaled to their size) is built for people. This pin delivers ' + (isFinite(pin.E) ? fmtSI(pin.E, 'J') : 'unbounded energy') + ', ' + fmtRatio(r.slamRatio) + ' the impact a floor panel of that plywood is tested to survive.');
     items.push('In people, a full-force twist like this is how the upper arm snaps: in one series of 30 arm-wrestling fractures, all were spiral breaks of the humerus. A healthy humerus takes roughly 190 N·m in theory; cadaver bones broke at 25–31 N·m. Rex and Ollie are indestructible.');
     if (r.grav.F > 1e-3 * Math.min(cR.body.m, cO.body.m) * g) items.push('Across the table their gravity pulls them together with ' + fmtSI(r.grav.F, 'N') + ', ' + fmtRatio(r.grav.F / (Math.min(cR.body.m, cO.body.m) * g)) + ' the lighter one’s weight on Earth.');
-    if (r.tearA > 1 || r.tearB > 1) items.push('Bolted to the planet holds, but the ground around the bolts doesn’t: past about ' + fmtSI(Math.min(groundTearOf(cR), groundTearOf(cO)), 'N') + ' the surface breaks up around his feet.');
+    if (r.tableBreaks && (r.tearA > 1 || r.tearB > 1)) items.push('Bolted to the planet holds, but the ground around the bolts doesn’t: ' + [['Rex', cR, r.tearA], ['Ollie', cO, r.tearB]].filter(([, , t]) => t > 1).map(([n, c]) => 'past about ' + fmtSI(groundTearOf(c), 'N') + ' it breaks up around ' + n + '’s feet').join(', and ') + '.');
     out.push(happens(items));
     out.push(el('figure', { class: 'art-wide' }, el('img', { src: ART.arm, alt: 'Arm wrestling: Ollie’s huge furry forearm and Rex’s scaly, clawed hand locked together in a grip, Rex’s bulging scaled arm on the right.' })));
     out.push(math([
       'Arm force = 25% of strength in both muscle models (estimate, plausibly 10–40%: ordinary men’s measured arm force against an assumed 1–2× body-weight deadlift): Rex ' + fmtN(r.PA) + ', Ollie ' + fmtN(r.PB) + '.',
-      'The table carries the push while both arms stay under ' + (isFinite(r.tableLat) ? fmtSI(r.tableLat, 'N') : 'any limit (' + (gate ? 'ground treated as holding' : 'comic ground') + ')') + '. Once it breaks: usable = min(arm force, footing); footing = μ m g, plus shear × buried area if dug in; unlimited if bolted. Standing up, the loser’s arm folds only if the winner presses harder than it; otherwise his feet give and he is dragged.',
+      'The table carries the push while both arms stay under ' + (isFinite(r.tableLat) ? fmtSI(r.tableLat, 'N') : 'any limit (' + (gate ? 'ground treated as holding' : 'comic ground') + ')') + '. Once it breaks: usable = min(arm force, footing); footing = μ × min(m g, what the ground under his feet bears); unlimited if bolted. Standing up, the loser’s arm folds only if the winner presses harder than it; otherwise his feet give and he is dragged.',
       r.padLoad > 0 ? 'Elbow pad during a pin, from torques about each elbow: loser’s arm + (winner’s arm − loser’s arm) × (0.0097 m_loser + 0.012 m_winner) / (0.0097 × (m_Rex + m_Ollie)) = ' + fmtN(r.padLoad) + '. The forearm and hand are 2.2% of body mass each, centred 0.55 of the way to the grip.' : null,
       r.outcome === 'pin' ? 'Pin: net ' + fmtSI(pin.dA, 'N') + ' (winner’s push − loser’s arm) on M = 0.0097 × (m_Rex + m_Ollie) = ' + fmtMass(pin.M) + ' over s = (π/2) × 0.19 × height = ' + fmtDist(pin.s) + '; relativistic momentum; real muscle force falls with hand speed (Hill, top hand speed borrowed from the punch). The losing arm’s extra strength while it is forced back (about 8% in people) is ignored.' : null,
       r.outcome === 'drag' ? 'Drag: net ' + fmtSI(drag.dA, 'N') + ' (winner’s push − loser’s footing) on M = m_' + L + ' + 0.0097 × m_' + W + ' = ' + fmtMass(drag.M) + ' over s = (π/2) × 0.19 × ' + W + '’s height = ' + fmtDist(drag.s) + '; relativistic momentum; real muscle force falls with hand speed as for a pin.' : null,
@@ -1996,7 +2064,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const whoOpts = state.wrestleMove === 'push' ? [] : [['rex', 'Rex → Ollie'], ['ollie', 'Ollie → Rex']].concat(state.wrestleMove === 'shove' ? [['both', 'Both at once']] : []);
     const who = whoOpts.length ? el('div', { class: 'chips', role: 'group', 'aria-label': 'Who does it', style: 'margin-top:6px' },
       whoOpts.map(([id, label]) => el('button', { type: 'button', class: 'chip', id: 'ww-' + id, 'aria-pressed': String(state.wrestleWho === id), onclick: () => { state.wrestleWho = id; update(); } }, label))) : null;
-    return el('div', { class: 'bay-controls' }, el('div', { class: 'field', style: 'margin-top:0;flex:1 1 100%' }, el('span', { class: 'lbl', text: 'Move' }), moves, who), state.wrestleMove === 'throw' ? angleControl() : null);
+    return el('div', { class: 'bay-controls' }, el('div', { class: 'field', style: 'margin-top:0;flex:1 1 100%' }, el('span', { class: 'lbl', text: 'Move' }), moves, who), state.wrestleMove === 'throw' ? angleControl('w-angle', 'wAngle') : null);
   }
   function bayWrestle() {
     let cR = ctx(), cO = ctxOllie();
@@ -2033,7 +2101,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     else if (r.outcome === 'deadlock') v = 'Dead heat at ' + fmtSI(r.contact, 'N') + '.';
     else { const W = WHO[r.winner], L = WHO[r.winner === 'A' ? 'B' : 'A']; const Hl = r.winner === 'A' ? r.HB : r.HA, cl = r.winner === 'A' ? cO : cR; v = W + ' walks ' + L + ' out of the ring in ' + fmtTime(r.t) + (r.v >= 5 ? ', hitting ' + speedOnly(r.v) : '') + '. ' + L + '’s ' + (cl.F < (r.winner === 'A' ? r.holdB : r.holdA) ? 'muscles give at ' : 'feet only hold ') + fmtSI(Hl, 'N') + '.'; }
     if (r.gravityLock) v += ' Their gravity holds them together with ' + fmtSI(r.grav.F, 'N') + '; neither can push the other away.';
-    if (r.outcome !== 'bothBolted') v = 'Pushing straight across: ' + v.charAt(0).toLowerCase() + v.slice(1);
+    if (r.outcome !== 'bothBolted') v = 'Pushing straight across: ' + (/^(Rex|Ollie)\b/.test(v) ? v : v.charAt(0).toLowerCase() + v.slice(1));
     out.push(verdict(v));
     if (r.outcome !== 'bothBolted' && (r.canLiftA || r.canLiftB)) out.push(callout(r.canLiftA && r.canLiftB ? 'Each is strong enough to lift the other, so a real bout goes to whoever gets lower first and pushes upward, taking the weight off the other’s feet. The sim can’t model that.' : (r.canLiftA ? 'Rex' : 'Ollie') + ' is strong enough to lift ' + (r.canLiftA ? 'Ollie' : 'Rex') + ', so by getting under him and pushing upward he takes the weight off ' + (r.canLiftA ? 'Ollie' : 'Rex') + '’s feet and wins (see Lift).'));
     const rockOut = r.clash === 'rockGives';
@@ -2053,11 +2121,11 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     ].filter(Boolean), (x) => fmtSI(x, 'N')));
     out.push(happens([
       'A shoving match is decided at the feet. To push forward, each one has to grip the ground; to stay put, each one has to grip it too. Strength past that grip just makes feet slide. (That assumes each leans into the push; upright, a body tips over at a few hundred newtons.)',
-      'Walking drive is friction under his own weight (plus a little claw or boot bite if dug in): ' + fmtSI(r.DA, 'N') + ' for Rex, ' + fmtSI(r.DB, 'N') + ' for Ollie. Holding still can use his full footing.',
-      'Equal bodies on equal ground stay equal at any strength. A heavier body, or one dug in, wins.',
+      'Walking drive is friction under his own weight, or under what the ground bears beneath his feet where it is too soft to carry him, and none at all if he is bolted (the sim keeps a bolted wrestler planted: he holds but doesn’t walk the other out) or too heavy to walk: ' + fmtSI(r.DA, 'N') + ' for Rex, ' + fmtSI(r.DB, 'N') + ' for Ollie. Holding still can use his full footing.',
+      'Equal bodies (same weight and feet) on equal ground stay equal at any strength. On firm ground the heavier one wins; where the ground is too soft to carry a body’s weight, his grip is capped by what it bears under his feet, so bigger feet help; and if either is bolted, nobody walks the other out.',
       r.outcome === 'bothBolted' ? 'Both bolted: the push runs from one through the ground to the other. ' + (cR.groundHolds ? 'Comic ground never breaks, so the push never leaves the two of them and the planet.' : 'The ground between their feet is stretched, and rock and concrete are weak in tension.') : null,
     ]));
-    out.push(math(['Hold = min(strength, footing); footing = μ m g (+ shear × buried area if dug in; unlimited if bolted).', 'Drive = min(strength, μ m g + ¼ shear × buried area if dug in); 0 if bolted or too heavy to walk.', 'Winner: the one whose drive beats the other’s hold. Walk-out: a = (drive − hold) / (m_Rex + m_Ollie), capped at his running speed, over half the ring (' + fmtDist(r.ring / 2) + ').']));
+    out.push(math(['Hold = min(strength, footing), or the footing alone if he is too heavy to stand; footing = μ × min(m g, what the ground under his feet bears). Bolted: unlimited, whatever his strength (the bolts hold, not his muscles).', 'Drive = min(strength, μ × min(m g, what the ground under his feet bears)); 0 if bolted or too heavy to walk.', 'Winner: the one whose drive beats the other’s hold. Walk-out: a = (drive − hold) / (m_Rex + m_Ollie), capped at his running speed, over half the ring (' + fmtDist(r.ring / 2) + ').']));
     return out;
   }
   function wrestleShove(cR, cO, cA, cB, nA, nB) {
@@ -2119,7 +2187,6 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     else if (r.cantStand) v = nA + ' can’t lift ' + nB + ': ' + nA + ' is too heavy to get up himself (see Weight).';
     else if (r.can) {
       v = nA + ' lifts ' + nB + ' overhead with ' + fmtRatio(r.margin) + ' the force needed.';
-      if (r.pullOut > 0 && isFinite(r.pullOut)) v += ' First he tears ' + nB + '’s ' + (nB === 'Rex' ? 'claws' : 'boots') + ' out of the ground (' + fmtSI(r.pullOut, 'N') + ').';
       if (r.Fg > 0.01 * r.weight) v += ' Their gravity adds ' + fmtSI(r.Fg, 'N') + ', ' + fmtRatio(r.Fg / r.weight) + ' ' + nB + '’s weight.';
       if (r.groundRatio > 1) v += ' ' + nA + '’s feet sink: both their weights press ' + fmtSI(r.pressure, 'Pa') + ' into ground that holds ' + fmtSI(r.qult, 'Pa') + '.';
     } else v = nA + ' can’t lift ' + nB + ': it takes ' + fmtN(r.need) + ', he has ' + fmtN(cA.F) + '.';
@@ -2127,7 +2194,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     out.push(tiles(
       tile(nB + '’s weight', fmtSI(r.weight, 'N'), fmtMass(cB.body.m)),
       r.Fg > 1e-6 && !r.cantStand && !r.bolted ? tile('Their gravity', fmtSI(r.Fg, 'N'), r.gPeakOnPath ? 'peak during the lift, from side by side (centres ' + fmtDist(r.dC) + ' apart)' : 'overhead, centres ' + fmtDist(r.dOver) + ' apart') : null,
-      r.pullOut > 0 ? tile('Pulling him out of the ground', fmtN(r.pullOut), cB.anchor === 'bolted' ? 'bolted' : 'dug in') : null,
+      r.pullOut > 0 ? tile('Pulling him out of the ground', fmtN(r.pullOut), 'bolted') : null,
       tile('Total needed', fmtN(r.need), nA + ' has ' + fmtN(cA.F))));
     out.push(happens([
       nB + ' can’t make himself heavier by pushing down on ' + nA + ': that push stays between the two of them. Only his grip on the ground counts.',
@@ -2137,7 +2204,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     return out;
   }
   function wrestleThrow(cA, cB, nA, nB) {
-    const t = P.throwPartner(cA, cB, state.angle), out = [];
+    const t = P.throwPartner(cA, cB, state.wAngle), out = [];
     if (t.bolted) { out.push(verdict(nB + ' is bolted to the planet: there’s nothing to throw.')); return out; }
     const r = t.r, f = r.flight;
     let v;
@@ -2147,7 +2214,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     else if (f.escaped) v = nB + ' leaves the Earth for good.';
     else if (f.orbit) v = nB + ' goes into orbit.';
     else if (f.timedOut) v = nB + ' is still in the air after ' + fmtTime(f.time) + ', ' + fmtDist(f.apex) + ' up. The sim stops tracking him there, so this throw isn’t modelled to the end.';
-    else if (state.angle >= 90) v = nB + ' goes ' + fmtDist(f.apex) + ' straight up and comes back down on ' + nA + ' ' + fmtTime(f.time) + ' later.';
+    else if (state.wAngle >= 90) v = nB + ' goes ' + fmtDist(f.apex) + ' straight up and comes back down on ' + nA + ' ' + fmtTime(f.time) + ' later.';
     else v = nA + ' throws ' + nB + ' ' + fmtDist(f.range) + '.';
     if (r.canMove && r.recoilV > 1) v += ' ' + nA + ' gets shoved backward at ' + speedOnly(r.recoilV) + '.';
     if (t.sinks && f && f.landed && !t.fallsBack) v += ' No rock can hold ' + nB + ' at his weight, so where he lands he sinks into the planet (see Weight).';
@@ -2159,7 +2226,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         !f.relativistic && f.landed ? tile('Distance', fmtDist(f.range), 'top ' + fmtDist(f.apex) + ' · ' + fmtTime(f.time)) : null,
         !f.relativistic && f.landed ? tile('Lands at', speedOnly(f.vImpact), fmtTNT(r.Eimpact) + ' on impact') : null,
         tile(nA + '’s recoil', r.recoilV > 0.01 ? speedOnly(r.recoilV) : 'none', '')));
-      if (!f.relativistic && f.path && f.path.length > 1 && state.angle < 90) out.push(trajectoryChart(f.path, null, 'Flight path of ' + nB, f.apex, (f.landed || f.timedOut) ? null : (f.orbit ? 'in orbit →' : 'leaves Earth →')));
+      if (!f.relativistic && f.path && f.path.length > 1 && state.wAngle < 90) out.push(trajectoryChart(f.path, null, 'Flight path of ' + nB, f.apex, (f.landed || f.timedOut) ? null : (f.orbit ? 'in orbit →' : 'leaves Earth →')));
       const items = [];
       items.push(nB + ' is just an object here: ' + fmtMass(cB.body.m) + ' with a ' + sig(cB.body.frontArea, 2) + ' m² front. He doesn’t fight the throw; for that, see Shove.');
       if (r.heldBack) items.push('Pushing with everything would make ' + nA + '’s feet slide, so he holds back to what his footing can take (' + fmtSI(r.anchor.R, 'N') + ').');
@@ -2181,7 +2248,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   let slowPending = false;
   function scheduleBaySlow() {
     if (slowTimer) { slowPending = true; return; }
-    save(); renderBay(true);
+    save(); renderDuo(true);
     slowTimer = setTimeout(function done() { slowTimer = null; if (slowPending) { slowPending = false; scheduleBaySlow(); } }, 180);
   }
   function catchControls(Dmin) {
@@ -2475,7 +2542,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const rc = a.recoil;
     if (rc && rc.v > 0.01) {
       if (rc.fireball) items.push('Throwing it shoves Rex back at ' + fmtSpeed(rc.v) + ': the air in front of him turns into a fireball too. He’s fine, but there is no throw back.');
-      else items.push('Throwing it shoves Rex back at ' + speedOnly(rc.v) + (rc.slide > 0.01 ? ' and slides about ' + fmtDist(rc.slide) + ' before he stops' : '') + '.' + (rc.outOfRange ? ' That’s farther than the gap between them, so they aren’t in range for the throw back.' : '') + (cR.anchor === 'friction' ? ' To stay put he needs to dig in: try “Claws dug in” or “Bolted to the planet” under Settings.' : ''));
+      else items.push('Throwing it shoves Rex back at ' + speedOnly(rc.v) + (rc.slide > 0.01 ? ' and slides about ' + fmtDist(rc.slide) + ' before he stops' : '') + '.' + (rc.outOfRange ? ' That’s farther than the gap between them, so they aren’t in range for the throw back.' : '') + (cR.anchor === 'friction' ? ' To stay put he needs to be bolted: turn on Bolted to the planet for Rex in Their powers.' : ''));
     }
     if (round && strokesIn) items.push('The round trip counts the throws, the flights and each catch’s arm stroke: ' + (a.catch.slips || b.catch.slips ? 'his feet slide while he stops it' : 'stopping it takes most of his strength') + ', so the stroke takes a set time, ' + fmtDuration(a.catch.tStroke) + ' for Ollie' + (b !== a ? ' and ' + fmtDuration(b.catch.tStroke) + ' for Rex' : '') + '.');
     else if (round) items.push('The round trip counts the throws and the flights. With strength to spare, each catcher brings the ' + o.short + ' in to his chest as slowly as he likes, so that part has no set time.');
@@ -2693,7 +2760,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     else if (horiz && splat) {
       const s = af.splat || {};
       if (s.V >= 0.01 * K.c) v = X + ' hits ' + Y + ' at ' + fmtSpeed(r.vRel) + '. The two of them carry on together at ' + fmtSpeed(s.V) + ', a fireball.';
-      else if (s.moved < 1) v = X + ' hits ' + Y + ' at ' + speedOnly(r.vRel) + '. ' + Y + '’s ' + (cB.anchor === 'braced' ? (Y === 'Ollie' ? 'dug-in boots' : 'claws') : 'footing') + ' take most of it: he’s shoved back ' + fmtDist(s.moved) + '.';
+      else if (s.moved < 1) v = X + ' hits ' + Y + ' at ' + speedOnly(r.vRel) + '. ' + Y + '’s footing takes most of it: he’s shoved back ' + fmtDist(s.moved) + '.';
       else v = X + ' hits ' + Y + ' at ' + speedOnly(r.vRel) + '. ' + Y + ' is knocked back at ' + speedOnly(s.V) + ' and the two slide ' + (isFinite(s.moved) ? fmtDist(s.moved) : 'until something stops them') + ' before they stop.';
     } else if (horiz) {
       const b = af.bounce || {};
@@ -2758,7 +2825,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const items = [];
     items.push('Momentum is never lost. Whatever ' + X + ' brings in, the two of them (plus whatever holds ' + Y + ') carry away. A splat shares it and frees the rest of the energy as heat, sound and blast. A perfect bounce keeps all the energy as motion. Soft bodies sit near the splat end.');
     const hb = r.hold;
-    const whyText = { footing: ' Standing on ' + cB.surface.short + ', friction' + (cB.anchor === 'braced' ? ' and his ' + (Y === 'Ollie' ? 'dug-in boots' : 'claws') + ' hold' : ' holds') + ' him with ' + fmtN(hb.R) + '. Stopping ' + X + ' dead takes ' + fmtN(r.Fheld) + ', so he ' + (r.held ? 'holds.' : 'gets knocked back.'), strength: ' His footing could hold ' + fmtN(hb.R) + ', but his muscles keep his stance against only ' + fmtN(cB.F) + '.', lying: ' At ' + fmtMass(cB.body.m) + ' he’s too heavy for his strength to stand, so he lies flat and friction alone holds him: ' + fmtN(hb.R) + '.', bearing: ' Bracing can’t help against a blow from above. Only the ground under his feet holds him up: ' + fmtN(hb.H) + ' on ' + cB.surface.short + '.', bolted: r.unlimitedVsBolted === 'rockGives' ? ' Bolted, he would be part of the planet, but the bolts hold only as well as the rock around them. The rock around his bolts tears out, so the Earth keeps almost none of the momentum.' : ' Bolted, he is part of the planet: the bolts hand the momentum to the Earth’s 5.97 × 10²⁴ kg.', comicGround: ' On comic ground nothing gives under him, so the Earth takes it.', immovable: ' Here he gets infinite mass, which no real setting allows. Even bolted to an unbreakable planet he would be only as immovable as the Earth’s 5.97 × 10²⁴ kg.' }[hb.why] || '';
+    const whyText = { footing: ' Standing on ' + cB.surface.short + ', friction holds him with ' + fmtN(hb.R) + '. Stopping ' + X + ' dead takes ' + fmtN(r.Fheld) + ', so he ' + (r.held ? 'holds.' : 'gets knocked back.'), strength: ' His footing could hold ' + fmtN(hb.R) + ', but his muscles keep his stance against only ' + fmtN(cB.F) + '.', lying: ' At ' + fmtMass(cB.body.m) + ' he’s too heavy for his strength to stand, so he lies flat and friction alone holds him: ' + fmtN(hb.R) + '.', bearing: ' Bracing can’t help against a blow from above. Only the ground under his feet holds him up: ' + fmtN(hb.H) + ' on ' + cB.surface.short + '.', bolted: r.unlimitedVsBolted === 'rockGives' ? ' Bolted, he would be part of the planet, but the bolts hold only as well as the rock around them. The rock around his bolts tears out, so the Earth keeps almost none of the momentum.' : ' Bolted, he is part of the planet: the bolts hand the momentum to the Earth’s 5.97 × 10²⁴ kg.', comicGround: ' On comic ground nothing gives under him, so the Earth takes it.', immovable: ' Here he gets infinite mass, which no real setting allows. Even bolted to an unbreakable planet he would be only as immovable as the Earth’s 5.97 × 10²⁴ kg.' }[hb.why] || '';
     items.push('“Immovable” only means what holds ' + Y + ' in place.' + whyText + (horiz && hb.why !== 'bolted' && hb.why !== 'immovable' && hb.why !== 'lying' ? ' (A standing body hit at chest height would tip over at a few hundred newtons long before his feet slide; the sim assumes he braces low.)' : ''));
     if (r.heldOnlyIfSquishy) items.push('That depends on the squash: he holds only if they’re as squishy as plush. Two ordinary solids would hit harder for a shorter time and knock him loose.');
     if (r.outcome === 'boltsLate') items.push('In ' + fmtTime(r.contact.soft.t) + ' a stress wave in rock travels only about ' + fmtDist(P.COL.C_ROCK * r.contact.soft.t) + ' (at about ' + sig(P.COL.C_ROCK / 1000, 2) + ' km/s, an estimate), so the planet can’t brace him during the hit. Momentum still ends up in the Earth once the bolts catch them, along with the rest of the energy: ' + (isFinite(r.bolts.Eground) ? fmtSI(r.bolts.Eground, 'J') : 'unbounded') + '.');
@@ -2770,7 +2837,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (!isFinite(cA.F) && r.outcome !== 'unstoppable' && r.outcome !== 'paradox' && state.colSrc === 'sprint') items.push('Infinite strength isn’t unstoppable: a charge needs grip. On ' + cA.surface.short + ' his feet push off with only ' + fmtSI(r.speed.run ? r.speed.run.thrust : 0, 'N') + ', so he tops out at ' + speedOnly(r.v0) + '.');
     if (!isFinite(cB.F) && r.outcome === 'moved') items.push('Infinite strength isn’t immovable either: holding still needs footing, and his feet give at ' + fmtN(hb.R) + '.');
     if (r.held && r.earth && isFinite(r.pA)) items.push('The Earth takes the momentum: its speed changes by ' + sci(splat ? r.earth.dvSplat : r.earth.dvBounce, 2) + ' m/s.' + (r.earth.runUpCancels ? ' And ' + X + ' got his speed by pushing on the Earth in the first place, so the Earth just gets its own momentum back and ends up exactly as still as it started.' : ' Arriving from outside, his momentum stays with the Earth' + (r.earth.dayChange > 0 ? '; if he hits along the equator, the day gets ' + fmtTime(r.earth.dayChange) + ' longer or shorter.' : '.')));
-    items.push(rockBullet(r.rock, F ? F.F : 0, cB));
+    // the rock figures come from the steady crush (the splat's force) in both modes
+    const rb = rockBullet(r.rock, r.rock && r.rock.C, cB);
+    items.push(rb && !splat && r.rock && isFinite(r.rock.rT) ? rb + ' (That is the steady crush; a perfect bounce peaks at twice it, briefly.)' : rb);
     out.push(happens(items));
     out.push(caseGrid('The four cases', ['Finite momentum', 'Unlimited momentum (light speed)'], ['Finite inertia (anything real, even bolted to the Earth)', 'Unlimited inertia (truly immovable)'],
       [['Both move. They share the momentum; the softer the hit, the more energy it frees.', 'The charger stops or bounces. The object doesn’t budge, so the force was stoppable.'], ['The object is knocked away at just under light speed (the planet too, but only if he’s bolted to unbreakable ground), so it was movable.', 'No answer: ∞ ÷ ∞. The two can’t exist in the same universe.']],
@@ -2821,9 +2890,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (o.crrNote) items.push(o.crrNote);
     items.push('Record pullers lean into a harness with the rope angled down to the load, which presses them into the ground and raises their grip. The sim pulls level, so it is a little pessimistic.');
     out.push(happens(items));
-    const a = r.anchor, claws = state.anchor === 'braced';
+    const a = r.anchor;
     const footing = state.anchor === 'bolted' ? 'Footing (bolted to the planet): unlimited, a comic anchor'
-      : 'Footing (' + (claws ? 'claws dug in' : 'just standing') + ') = μ × ' + (a.normalCapped ? 'the most the ground can bear' : 'his weight') + (claws ? ' + shear × claw area' : '') + ' = ' + sig(c.surface.mu, 2) + ' × ' + (a.normalCapped ? fmtSI(a.Nmax, 'N') : sig(c.body.m, 3) + ' kg × 9.81') + (claws ? ' + ' + fmtSI(c.surface.shear, 'Pa') + ' × ' + sig(c.body.digArea, 3) + ' m²' : '') + ' = ' + fmtSI(a.R, 'N');
+      : 'Footing (just standing) = μ × ' + (a.normalCapped ? 'the most the ground can bear' : 'his weight') + ' = ' + sig(c.surface.mu, 2) + ' × ' + (a.normalCapped ? fmtSI(a.Nmax, 'N') : sig(c.body.m, 3) + ' kg × 9.81') + ' = ' + fmtSI(a.R, 'N');
     out.push(math(['Resistance = ' + (r.rolling ? 'Crr' : 'μ_slide') + ' × m g = ' + r.crr + ' × ' + fmtMass(o.m) + ' × 9.81 = ' + fmtSI(r.resist, 'N'), footing, 'Time for 10 m from rest under constant force, relativistic: t = √(2x/a + (x/c)²).']));
     return out;
   }
@@ -2883,8 +2952,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       if (planRunning !== p) return;
       if (dialMoving()) { planTimer = setTimeout(tick, 300); return; }
       const t0 = performance.now();
-      while (performance.now() - t0 < 20) if (p.step()) { planRunning = null; planWaits = null; renderBay(true); return; }
-      if (planWaits && planWaits.every((n) => p.result(n))) { planWaits = null; renderBay(true); }
+      while (performance.now() - t0 < 20) if (p.step()) { planRunning = null; planWaits = null; renderSolo(true); return; }
+      if (planWaits && planWaits.every((n) => p.result(n))) { planWaits = null; renderSolo(true); }
       planTimer = setTimeout(tick, 0);
     };
     planTimer = setTimeout(tick, 0);
@@ -2989,11 +3058,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   const onsetOf = (res) => (res.below > 0 && isFinite(res.below) && isFinite(res.use) ? Math.sqrt(res.below * res.use) : res.use);
   const fmtReach = (d) => (d >= Math.PI * K.R_E ? 'the whole planet' : fmtDist(d));
   const amountText = (use, F) => (!tinyShare(use, F) ? pctOf(use, F) + ' of his strength' + (use < F * (1 - 1e-9) ? ' (as hard as lifting ' + fmtMass(use / g) + ')' : '') : isFinite(use) ? 'as hard as lifting ' + fmtMass(use / g) : 'all of his unlimited strength');
-  let effortAdjOpen = false, hazOpen = false;
+  let hazOpen = false;
   // the distance the courtesy ceiling assumes (solo and two-player tabs)
-  const nearField = () => { const near = el('input', { id: 'near', type: 'number', min: String(RANGES.near[0]), max: String(RANGES.near[1]), step: 'any', value: String(state.near) });
+  // the distance box sits in both bays: each copy has its own id (and label)
+  const nearField = (id) => { id = id || 'near'; const near = el('input', { id, type: 'number', min: String(RANGES.near[0]), max: String(RANGES.near[1]), step: 'any', value: String(state.near) });
     near.onchange = (e) => setIn('near', e.target.value);
-    return el('div', { class: 'field near-field' }, el('label', { for: 'near', text: 'Nearest people and buildings (m)' }), el('div', { class: 'inline-num' }, near)); };
+    return el('div', { class: 'field near-field' }, el('label', { for: id, text: 'Nearest people and buildings (m)' }), el('div', { class: 'inline-num' }, near)); };
   // An effort slider in log10 kg on a 0.01 grid whose right end is exactly all-out. The browser builds the grid from
   // the min and max strings in decimal, so both get 6 decimals and the top is rounded up (the effort is capped at his
   // strength); the left end can sit up to 0.01 below the floor, so values shown are clamped to it.
@@ -3024,8 +3094,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     sl.oninput = (e) => { state.effort = 'custom'; state.effortLogKg = Number(e.target.value); e.target.setAttribute('aria-valuetext', vText(state.effortLogKg)); const s2 = $('#effort'); if (s2) s2.value = 'custom'; scheduleBay(); };
     adj.append(el('div', { class: 'field effort-slider' }, el('label', { for: 'effort-use', text: 'Effort (gentle ↔ all-out)' }), sl));
     const det = el('details', { class: 'effort-adjust' }, el('summary', { text: 'Adjust effort: ' + (G.key ? 'goal, ' : '') + 'distance, slider' }), adj);
-    det.open = effortAdjOpen;
-    det.addEventListener('toggle', () => { effortAdjOpen = det.open; });
+    det.open = BAY.solo.adjOpen;
+    det.addEventListener('toggle', () => { BAY.solo.adjOpen = det.open; });
     fields.push(det);
     return fields;
   }
@@ -3203,7 +3273,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (mired.length) {
       out.push(verdict(mired.map((x) => x.n).join(' and ') + (mired.length > 1 ? ' sink' : ' sinks') + ' into ' + theSurf(c.surface) + ' more than ' + fmtDist(P.WALK.HIP * mired[0].b.H / 2) + ' (half the hip height) at every step and ' + (mired.length > 1 ? 'get' : 'gets') + ' stuck: no walking here.'));
       out.push(el('div', { class: 'status-row' }, status('bad', 'Mired')));
-      out.push(happens(mired.map((x) => x.n + '’s ' + (x.n === 'Ollie' ? 'boot presses ' : 'paw presses ') + fmtSI(x.pr.step.pressure, 'Pa') + ' (and the landing peaks at ' + fmtSI(x.pr.step.peakPressure, 'Pa') + ') into ground that bears ' + fmtSI(x.pr.step.q, 'Pa') + '. The clay gets stronger with depth, but not enough: the foot would sink past half his hip height (an estimate; see Footprints in the assumptions).').concat(['Pick firmer ground under Settings, or turn on Comic ground.'])));
+      out.push(happens(mired.map((x) => x.n + '’s ' + (x.n === 'Ollie' ? 'boot presses ' : 'paw presses ') + fmtSI(x.pr.step.pressure, 'Pa') + ' (and the landing peaks at ' + fmtSI(x.pr.step.peakPressure, 'Pa') + ') into ground that bears ' + fmtSI(x.pr.step.q, 'Pa') + '. The clay gets stronger with depth, but not enough: the foot would sink past half his hip height (an estimate; see Footprints in the assumptions).').concat(['Pick firmer ground under Ground, or turn on Comic ground in Their powers.'])));
       return out;
     }
     const D0 = state.walkD;
@@ -3225,7 +3295,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       out.push(verdict('On ' + sf.short + ' the lab doesn’t model ground shaking.'));
       out.push(el('div', { class: 'status-row' }, printChip(pres.map((x) => x.pr.step.footprint))));
       out.push(tiles(...groundTiles));
-      out.push(happens([capital(theSurf(sf)) + ' bends as a plate under each step rather than carrying ground waves, and the lab has no model for that. Pick soil, paving or rock under Settings to see the shaking.']));
+      out.push(happens([capital(theSurf(sf)) + ' bends as a plate under each step rather than carrying ground waves, and the lab has no model for that. Pick soil, paving or rock under Ground to see the shaking.']));
       return out;
     }
     const ppvAtD = (d) => (both ? 2 : 1) * Math.max(...pres.map((x) => x.pr.ppv(d)));
@@ -3331,12 +3401,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       }
       if (move === 'throw') {
         const cA = state.wrestleWho === 'ollie' ? cO : cR, cB = state.wrestleWho === 'ollie' ? cR : cO;
-        const t = P.throwPartner(cA, cB, state.angle);
+        const t = P.throwPartner(cA, cB, state.wAngle);
         duoSig = fp(t.r && t.r.v, t.r && t.r.sinkRatio, t.r && t.r.recoilV);
         if (!t.r || !t.r.canMove) return null;
         // the solo throw's rules: a blast only past Mach 1, the landing's ground shaking, the ground under him (not in
         // soil, where his feet only sink in) and his own recoil slide
-        const M = P.RESTRAINT.MOVES.throw, mo = { obj: t.obj, surface: cA.surface, body: cA.body, anchor: cA.anchor, groundHolds: cA.groundHolds, angle: state.angle, near };
+        const M = P.RESTRAINT.MOVES.throw, mo = { obj: t.obj, surface: cA.surface, body: cA.body, anchor: cA.anchor, groundHolds: cA.groundHolds, angle: state.wAngle, near };
         if (t.r.v >= K.a0 || (t.r.recoilV || 0) >= K.a0) return 'the throw breaks the sound barrier';
         if (win(M.blast(t.r, mo))) return 'the landing’s air blast risks damage ' + fmtDist(near) + ' away';
         if (P.plasterOver(M.shake(t.r, mo), near)) return 'the landing shakes the ground enough that plaster may crack ' + fmtDist(near) + ' from where he lands';
@@ -3405,7 +3475,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (p) return p;
     return makeDuoPlan(act, key);
   }
-  const duoKey = (act) => { const FR = fullF('R'), FO = fullF('O'); return JSON.stringify([act, FR, FO, state.mode, state.H, state.m, state.build, state.oH, state.oM, state.surface, state.groundHolds, state.anchor, state.oAnchor, state.near, state.wrestleMove, state.wrestleWho, state.angle, state.cObj, state.cLogD, state.cStyle, state.colMode, state.colWho, state.colSrc, state.colGB, state.colInf, state.colBounce, state.colImm, state.oEffortOwn, state.oEffortLogKg, state.gentleHold, state.coolFlight, state.softLanding, state.silentStrike, state.safePassenger]); };
+  const duoKey = (act) => { const FR = fullF('R'), FO = fullF('O'); return JSON.stringify([act, FR, FO, state.mode, state.H, state.m, state.build, state.oH, state.oM, state.surface, state.groundHolds, state.anchor, state.oAnchor, state.near, state.wrestleMove, state.wrestleWho, state.wAngle, state.cObj, state.cLogD, state.cStyle, state.colMode, state.colWho, state.colSrc, state.colGB, state.colInf, state.colBounce, state.colImm, state.oEffortOwn, state.oEffortLogKg, state.gentleHold, state.coolFlight, state.softLanding, state.silentStrike, state.safePassenger]); };
   function makeDuoPlan(act, key) {
     const FR = fullF('R'), FO = fullF('O');
     let p;
@@ -3415,9 +3485,11 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const harmAt = (u) => {
       const k = u === Infinity ? 'inf' : u;
       if (!memo.has(k)) {
-        const save = duoCap;
+        // a probe is a two-player run wherever it is called from (a render, the background search, a control)
+        const save = duoCap, saveMode = duoMode;
         duoCap = { R: Math.max(u, lo), O: state.oEffortOwn ? Math.max(Math.pow(10, state.oEffortLogKg) * g, lo) : Math.max(u, lo) };
-        try { memo.set(k, duoHarm(act)); sigs.set(k, duoSig); } finally { duoCap = save; }
+        duoMode = true;
+        try { memo.set(k, duoHarm(act)); sigs.set(k, duoSig); } finally { duoCap = save; duoMode = saveMode; }
       }
       return memo.get(k);
     };
@@ -3447,10 +3519,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (p.done || duoRunning === p) return;
     duoRunning = p;
     const tick = () => {
-      if (duoRunning !== p || !isDuo() || duoKey(curAction()) !== p.key) { if (duoRunning === p) duoRunning = null; return; }
+      if (duoRunning !== p || !state.duoOpen || duoKey(state.duoAction) !== p.key) { if (duoRunning === p) duoRunning = null; return; }
       if (dialMoving()) { setTimeout(tick, 300); return; }
       const t0 = performance.now();
-      while (performance.now() - t0 < 20) if (p.step()) { duoRunning = null; if (isDuo()) renderBay(true); return; }
+      while (performance.now() - t0 < 20) if (p.step()) { duoRunning = null; renderDuo(true); return; }
       setTimeout(tick, 0);
     };
     setTimeout(tick, 0);
@@ -3487,10 +3559,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const sl = el('input', { id: 'duo-effort-use', type: 'range', min: G2.min, max: G2.max, step: '0.01', value: String(Math.min(G2.top, Math.max(Number(G2.min), cur))), 'aria-valuetext': isFinite(eff.use) ? vText(cur) : 'All-out' });
     sl.oninput = (e) => { state.duoEffort = 'custom'; state.duoLogKg = Number(e.target.value); e.target.setAttribute('aria-valuetext', vText(state.duoLogKg)); const s2 = $('#duo-effort'); if (s2) s2.value = 'custom'; scheduleBaySlow(); };
     const own = el('label', { class: 'check', style: 'margin-top:0' }, el('input', { type: 'checkbox', id: 'o-effort-own', checked: state.oEffortOwn ? true : null, onchange: (e) => { state.oEffortOwn = e.target.checked; if (state.oEffortOwn) state.oEffortLogKg = Math.min(G2.top, nowLog()); update(); } }), el('span', { text: 'What-if: Ollie sets his own effort' }));
-    const adj = el('div', { class: 'bay-controls' }, el('div', { class: 'field effort-slider' }, el('label', { for: 'duo-effort-use', text: 'Effort (gentle ↔ all-out)' }), sl), nearField(), el('div', { class: 'field near-field' }, own));
+    const adj = el('div', { class: 'bay-controls' }, el('div', { class: 'field effort-slider' }, el('label', { for: 'duo-effort-use', text: 'Effort (gentle ↔ all-out)' }), sl), nearField('duo-near'), el('div', { class: 'field near-field' }, own));
     const det = el('details', { class: 'effort-adjust' }, el('summary', { text: 'Adjust effort: slider, distance, Ollie’s own' }), adj);
-    det.open = effortAdjOpen || state.oEffortOwn;
-    det.addEventListener('toggle', () => { effortAdjOpen = det.open; });
+    det.open = BAY.duo.adjOpen || state.oEffortOwn;
+    det.addEventListener('toggle', () => { BAY.duo.adjOpen = det.open; });
     const fields = [el('div', { class: 'field effort-field' }, el('label', { for: 'duo-effort', text: 'Effort (one for both)' }), sel), det];
     if (state.oEffortOwn) {
       const oText = (v) => 'Ollie as hard as lifting ' + fmtMass(G2.kg(v));
@@ -3525,32 +3597,37 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
 
   const BAYS = { walk: bayWalk, lift: bayLift, throw: bayThrow, jump: bayJump, stomp: bayStomp, punch: bayPunch, clap: bayClap, sprint: baySprint, pull: bayPull, weight: bayWeight, arm: bayArm, wrestle: bayWrestle, catch: bayCatch, collide: bayCollide };
 
-  let lastBayAction = null, liveTimer = null, bayInputAt = -1e9, bayPending = false;
-  function renderBay(keepControls) {
-    const act = curAction();
-    if (!$('#tab-' + act)) buildTabs();
-    for (const a of tabList()) {
+  // The two bays: Rex's (his moves, always shown) and the Rex + Ollie element's (the two-player tests, worked out only
+  // while it is open). Each has its own tab row, result area, live region, kept controls and searches.
+  const BAY = {
+    solo: { id: 'bay', tabs: 'tabs', live: 'bay-live', list: () => ACTIONS, act: () => state.action, set: (a) => { state.action = a; }, last: null, liveTimer: null, inputAt: -1e9, pending: false, adjOpen: false, mathOpen: false, spoken: null },
+    duo: { id: 'duo-bay', tabs: 'duo-tabs', live: 'duo-live', list: () => DUO_ACTIONS, act: () => state.duoAction, set: (a) => { state.duoAction = a; }, last: null, liveTimer: null, inputAt: -1e9, pending: false, adjOpen: false, mathOpen: false, spoken: null },
+  };
+  function renderInto(B, keepControls) {
+    const duo = B === BAY.duo;
+    const act = B.act();
+    for (const a of B.list()) {
       const tb = $('#tab-' + a.id);
       tb.setAttribute('aria-selected', String(a.id === act));
       tb.setAttribute('tabindex', a.id === act ? '0' : '-1');
     }
-    const bay = $('#bay');
+    const bay = $('#' + B.id);
     bay.setAttribute('aria-labelledby', 'tab-' + act);
-    bay.classList.toggle('enter', lastBayAction !== act);
-    lastBayAction = act;
+    bay.classList.toggle('enter', B.last !== act);
+    B.last = act;
     // where keyboard focus is, to put it back after the redraw: by id, else by what the control is (a summary has no id)
     const FOC = 'summary, input, select, button, a[href]';
     const focKey = (x) => (x.id ? '#' + x.id : x.tagName + '|' + (x.parentElement ? x.parentElement.className : '') + '|' + x.textContent.replace(/\(\d+\)/g, '').slice(0, 24));
     const focEl = document.activeElement && document.activeElement !== bay && bay.contains(document.activeElement) ? document.activeElement : null;
     const focusId = focEl ? focEl.id : null, focusKey = focEl ? focKey(focEl) : null, focusIdx = focEl ? Array.from(bay.querySelectorAll(FOC)).indexOf(focEl) : -1;
     let parts;
-    bayPending = false;
+    B.pending = false;
     try {
       // At planet-scale masses the move models (a small Rex on a fixed Earth) stop applying.
-      const gate = act === 'weight' || isDuo() ? null : soloGate(ctx());
+      const gate = act === 'weight' || duo ? null : soloGate(ctx());
       let duoEff = null;
       duoCap = { R: Infinity, O: Infinity };
-      if (isDuo()) {
+      if (duo) {
         duoEff = resolveDuoEffort(act);
         duoCap = { R: Math.max(duoEff.use, duoEff.p.lo), O: state.oEffortOwn ? Math.max(Math.pow(10, state.oEffortLogKg) * g, duoEff.p.lo) : Math.max(duoEff.use, duoEff.p.lo) };
       }
@@ -3558,9 +3635,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       const eff = isEffortMove(act) && !(gate && gate.stop) ? resolveEffort(act, c0) : null;
       parts = gate && gate.stop ? [callout(gate.text)] : BAYS[act](eff ? Object.assign({}, c0, { use: eff.use }) : c0);
       if (eff) attachEffort(parts, act, c0, eff);
-      else stopPlan();
-      if (!isDuo()) duoRunning = null;
-      bayPending = !!(eff && eff.pending) || !!(duoEff && duoEff.pending);
+      else if (!duo) stopPlan();   // a solo tab without effort stops the solo search (never the two-player one)
+      B.pending = !!(eff && eff.pending) || !!(duoEff && duoEff.pending);
       if (duoEff) {
         const box = duoEffortBox(act, duoEff);
         let ctl = parts[0] && parts[0].classList && parts[0].classList.contains('bay-controls') ? parts[0] : null;
@@ -3575,9 +3651,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       if (gate && !gate.stop) parts.splice(parts[0] && parts[0].classList && parts[0].classList.contains('bay-controls') ? (eff ? 2 : 1) : 0, 0, callout(gate.text));
     }
     catch (e) { parts = [callout('Calculation failed: ' + e.message)]; console.error(e); }
+    finally { duoCap = { R: Infinity, O: Infinity }; }
     // Keep the live controls in place during a slider drag; replacing them ends the drag.
     // (only while a control in the bay has focus: a change from outside, like the strength dial, rebuilds them)
-    const fromBay = bay.contains(document.activeElement) || performance.now() - bayInputAt < 1000;
+    const fromBay = bay.contains(document.activeElement) || performance.now() - B.inputAt < 1000;
     const old = keepControls && fromBay ? bay.querySelector(':scope > .bay-controls') : null;
     if (old && parts[0] && parts[0].classList && parts[0].classList.contains('bay-controls')) {
       // the kept controls take the fresh range, value and spoken value (a search finished, another control moved),
@@ -3594,13 +3671,44 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     } else bay.replaceChildren(...parts);
     if (focEl && !bay.contains(document.activeElement)) {
       const all = Array.from(bay.querySelectorAll(FOC));
-      const to = (focusId && document.getElementById(focusId)) || all.find((x) => focKey(x) === focusKey) || all[focusIdx];
+      const to = (focusId && bay.querySelector('#' + CSS.escape(focusId))) || all.find((x) => focKey(x) === focusKey) || all[focusIdx];
       if (to) to.focus({ preventScroll: true });
     }
     const vd = bay.querySelector('.verdict');
-    clearTimeout(liveTimer);
-    if (!bayPending) liveTimer = setTimeout(() => { $('#bay-live').textContent = vd ? vd.textContent : ''; }, 600);
+    clearTimeout(B.liveTimer);
+    // announce a bay's verdict only when it changes (a redraw caused by the other bay's settings stays quiet)
+    if (!B.pending) B.liveTimer = setTimeout(() => { const t = vd ? vd.textContent : ''; if (t === B.spoken) return; B.spoken = t; $('#' + B.live).textContent = t; }, 600);
   }
+  // Rex's bay
+  // Rex's bay, always in solo mode: a redraw of it can start while the element is mid-draw (a typed, uncommitted value
+  // in the element's distance box commits when the box is removed), and must not inherit two-player mode
+  function renderSolo(keepControls) { const was = duoMode; duoMode = false; try { renderInto(BAY.solo, keepControls); } finally { duoMode = was; } }
+  // The Rex + Ollie element, only while it is open. Its tests can take a second or more, so a change that redraws
+  // both bays draws Rex's first and this one after the next paint (and not while the strength dial is being dragged).
+  function renderDuo(keepControls) {
+    if (!state.duoOpen) return;
+    duoMode = true;
+    try { renderInto(BAY.duo, keepControls); } finally { duoMode = false; }
+  }
+  let duoQueued = false, duoKeepAll = true, duoGen = 0;
+  function scheduleDuo(keepControls) {
+    if (!state.duoOpen) return;
+    if (!keepControls) duoKeepAll = false;
+    if (duoQueued) return;
+    duoQueued = true;
+    const gen = duoGen;
+    const run = () => {
+      if (gen !== duoGen) return;
+      if (dialMoving()) { setTimeout(run, 300); return; }
+      duoQueued = false;
+      const k = duoKeepAll; duoKeepAll = true;
+      renderDuo(k);
+    };
+    requestAnimationFrame(() => setTimeout(run, 0));
+  }
+  // closing the element: a queued redraw and its background search both stop
+  function stopDuo() { duoGen++; duoQueued = false; duoKeepAll = true; duoRunning = null; }
+  function renderBay(keepControls) { renderSolo(keepControls); scheduleDuo(keepControls); }
   let bayTimer = null;
   // one render per animation frame while a slider moves, so the result follows the thumb
   function scheduleBay() { if (bayTimer) return; bayTimer = requestAnimationFrame(() => { bayTimer = null; save(); renderBay(true); }); }
@@ -3807,11 +3915,11 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       const kg = P.threshold((F) => { const j = P.jump(Object.assign({}, base, { F })); return j.v > 0 && (j.flight.apex >= 60 || j.flight.escaped || j.flight.relativistic); }, 10 * g, 1e45) / g;
       if (isFinite(kg)) { state.inf = false; state.logKg = Math.min(LMAX, Math.log10(kg) + 0.0005); }
     }
-    if (r.action) { state.action = r.action; if (state.group !== 'solo') { state.group = 'solo'; buildTabs(); } }
+    if (r.action) state.action = r.action;
     if (r.obj) state.obj = r.obj;
     if (r.angle != null) state.angle = r.angle;
     update();
-    document.querySelector('.rig').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+    document.querySelector('main.panel').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   }
 
   // ---------------------------------------------------------------- model + sources
@@ -3836,6 +3944,30 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   function update() { save(); renderDial(); renderBay(); scheduleLadder(); }
   buildControls();
   try { if (matchMedia('(min-width: 920px)').matches) $('#setup').open = true; } catch (e) { /* ignore */ }
+  // the Rex + Ollie element opens as the reader left it
+  duoPlaceholder();
+  $('#duo').open = state.duoOpen;
+  // the sidebar's 'more below' cue: names the sections whose headings sit below its visible edge (above the cue)
+  {
+    const aside = $('.panel-controls'), wrap = $('#more-wrap'), cue = $('#more-below');
+    const SECS = [['setup', 'Size and density'], ['ground-sec', 'Ground'], ['powers', 'Their powers']];
+    const upd = () => {
+      const more = aside.scrollHeight - aside.clientHeight - aside.scrollTop > 4;
+      wrap.hidden = !more;
+      if (!more) return;
+      const edge = cue.getBoundingClientRect().top;
+      const below = SECS.filter(([id]) => $('#' + id).getBoundingClientRect().top + 24 > edge).map(([, t]) => t);
+      cue.textContent = 'More below' + (below.length ? ': ' + below.join(', ') : '') + ' ↓';
+    };
+    cue.onclick = () => { aside.scrollTo({ top: aside.scrollHeight, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); };
+    aside.addEventListener('scroll', upd, { passive: true });
+    aside.addEventListener('toggle', () => requestAnimationFrame(upd), true);
+    window.addEventListener('resize', upd);
+    window.addEventListener('scroll', upd, { passive: true });
+    // content that changes height (a hint, a panel's contents) changes what is below the edge
+    try { const ro = new ResizeObserver(upd); for (const c of aside.children) if (c !== wrap) ro.observe(c); } catch (e) { /* no ResizeObserver: the events above still update it */ }
+    upd();
+  }
   renderFeats();
   renderModel();
   update();

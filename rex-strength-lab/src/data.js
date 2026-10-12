@@ -1176,8 +1176,8 @@ window.DINO_DATA = {
    "d": "In sand and gravel, footprint depth is scaled from the one large-animal print we found measured: a weighed 2,530 kg African elephant cow left forefoot prints 20–26 mm deep in loose-to-medium sand (Schanz et al. 2013). The lab anchors on the authors’ calibrated model of that sand (18 mm at 350 kPa), with depth rising as pressure to the power 1.27 and in proportion to foot width. The pressure is the step’s landing peak, as in the elephant’s print; the rule was fitted from 99 to 350 kPa, so a stamp that presses harder is extrapolated (the page says so). Loose sand is taken as that sand; gravel, which bears more, gets shallower prints in proportion. In clay a foot sinks until the clay’s bearing, which grows a little with depth, carries the step. Paving, slabs, ice, steel and rock show no print until they break. Standing still (the Weight tab) uses the same rules at his standing pressure. In sand and gravel, his feet plunge in deeper only past the pressure the elephant’s sand bore with that shallow print (350 kPa under a foot its width by the researchers’ model, 181 kPa by force-plate data; we use 350 kPa, scaled with foot width and more for gravel: an estimate); from there the sand’s bearing grows with depth (USACE EM 1110-1-1905). All estimates."
   },
   {
-   "t": "Comic switches",
-   "d": "Each switch suspends one piece of real physics and is labelled wherever its effect shows. Gentle hold and safe passenger spread his push through the whole object or person in proportion to its mass, as gravity does, so his hands put no stress on it (a body pushed that way has no internal stress: Cauchy’s equation of motion). They don’t touch the ground under him, his recoil, the air or the landing. The absorbed switches (silent strike, soft landing, cool flight) take back the energy that would harm the surroundings. Momentum is never absorbed: it still goes into him, through his feet and into the ground. There is no “no recoil” switch."
+   "t": "Their powers",
+   "d": "All of their powers are their absorption at work, used on purpose. Each switch suspends one piece of real physics and is labelled wherever its effect shows. Gentle hold and safe passenger spread his push through the whole object or person in proportion to its mass, as gravity does, so his hands put no stress on it (a body pushed that way has no internal stress: Cauchy’s equation of motion). They don’t touch the ground under him, his recoil, the air or the landing. The absorbed switches (silent strike, soft landing, cool flight) take back the energy that would harm the surroundings. These switches never absorb momentum: it still goes into him, through his feet and into the ground. (The canon makes a few exceptions; the one this page models so far, the lift from growth, is in the next card.) No switch deletes his recoil: Bolted to the planet hands it to the planet."
   },
   {
    "t": "Absorbed energy and growth",
@@ -1197,7 +1197,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Newton’s third law stays on",
-   "d": "Every push pushes him back. He stays put only as far as friction, the ground’s bearing strength, or dug-in claws allow. “Bolted to the planet” and “Comic ground” switch those limits off."
+   "d": "Every push pushes him back. He stays put only as far as friction and the ground’s bearing strength allow. “Bolted to the planet” stops a push sliding his planted feet, whatever the friction; what else it changes depends on the move, and each tab says so (weak ground can still give way under him; in some two-player tests the ground around his feet can tear out, and a very fast hit can be over before the bolts help). “Comic ground” keeps the floor whole (no sinking, no tear-out, and no hit too fast for the bolts) but adds no grip, so friction still caps his footing when he isn’t bolted."
   },
   {
    "t": "Two muscle models, one calibration",
@@ -1241,7 +1241,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Rex and Ollie",
-   "d": "Ollie is as strong, tough and big as Rex unless his own settings say otherwise: by default 10 ft and 3,007 kg, the same weight as Rex in all (his own tail is only about 11 kg, so more of it is body). He wears boots, so his boots get the same grip as Rex’s feet; “dug in” for him means boots kicked into footholds. Nothing else about him is invented. The push between them is the same both ways. When they shove or wrestle, it goes through each body to his feet, so neither can use more force than his feet hold. Arm wrestling uses 25% of each one’s strength at the hands (an estimate; plausibly 10–40%). A regulation table, scaled to their size, carries the push between them until its pegs and pads tear out (about 5 kN at regulation size, an estimate). After that only their feet hold. Standing up, an arm folds only if the other presses harder than it; if not, the loser’s feet slide and he is dragged. A shove uses the throw’s two-handed push; afterwards they slide upright, where real bodies would tumble. Their own gravity is G m₁ m₂ / d², good to about a factor of 2 for tall bodies close together."
+   "d": "Ollie is as strong, tough and big as Rex unless his own settings say otherwise: by default 10 ft and 3,007 kg, the same weight as Rex in all (his own tail is only about 11 kg, so more of it is body). He wears boots, so his boots get the same grip as Rex’s feet. Nothing else about him is invented. The push between them is the same both ways. When they shove or wrestle, it goes through each body to his feet, so neither can use more force than his feet hold. Arm wrestling uses 25% of each one’s strength at the hands (an estimate; plausibly 10–40%). A regulation table, scaled to their size, carries the push between them until its pegs and pads tear out (about 5 kN at regulation size, an estimate). After that only their feet hold. Standing up, an arm folds only if the other presses harder than it; if not, the loser’s feet slide and he is dragged. A shove uses the throw’s two-handed push; afterwards they slide upright, where real bodies would tumble. Their own gravity is G m₁ m₂ / d², good to about a factor of 2 for tall bodies close together."
   },
   {
    "t": "Game of catch",
@@ -1702,8 +1702,8 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Claw shear strength used when “dug in”",
-   "value": "sand 1 kPa · gravel 3 kPa (no cohesion: passive resistance only) · clays = undrained strength · asphalt 0.7 MPa · concrete 1.5 MPa · ice 1 MPa · steel 144 MPa · granite 36 MPa",
+   "label": "Ground shear strength (how far feet sink in clay; where the ground tears out around bolted feet)",
+   "value": "sand 1 kPa · gravel 3 kPa (no cohesion: passive resistance only) · soft clay 20 kPa · stiff clay 75 kPa (undrained strength) · asphalt 0.7 MPa · concrete 1.5 MPa · ice 1 MPa · steel 144 MPa · granite 36 MPa",
    "status": "estimate",
    "sources": [
     {
@@ -3100,7 +3100,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Body shape and air (assumed)",
-   "value": "Areas scale with height², lengths with height. Drag Cd 1.0. Facing area from the build: 4.4 m² for the default 10 ft Rex (tail trailing), 4.5 m² for Ollie, 0.8 m² for the 2 m calibration body. Head-first when jumping or launched by a stomp: 0.3 m² at 2 m (0.7 m² at 10 ft). Claw dig area when braced: 0.2 m² at 2 m, 0.46 m² at 10 ft (a quarter of that per stride when sprinting). Release height 0.9 × height; each sprint stride puts about 2.5× his weight on one foot. Overarm whip: effective mass at the hand 0.3% of body mass, fitted with the whip speed to the 47.3 m/s pitch; that is smaller than Dempster’s hand alone (0.6%) and is not a measured segment.",
+   "value": "Areas scale with height², lengths with height. Drag Cd 1.0. Facing area from the build: 4.4 m² for the default 10 ft Rex (tail trailing), 4.5 m² for Ollie, 0.8 m² for the 2 m calibration body. Head-first when jumping or launched by a stomp: 0.3 m² at 2 m (0.7 m² at 10 ft). Ground gripped by bolted feet (where it tears out): 0.2 m² at 2 m, 0.46 m² at 10 ft. Release height 0.9 × height; each sprint stride puts about 2.5× his weight on one foot. Overarm whip: effective mass at the hand 0.3% of body mass, fitted with the whip speed to the 47.3 m/s pitch; that is smaller than Dempster’s hand alone (0.6%) and is not a measured segment.",
    "status": "estimate",
    "sources": [],
    "note": null
@@ -3967,7 +3967,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Arm wrestling and wrestling: Ollie's grip on the ground (boots, no claws)",
-   "value": "Same traction as Rex's feet on each surface. 'Dug in' for Ollie means boots kicked into footholds, given the same buried area as Rex's claws (0.2 × (height / 2 m)² m²: 0.46 m² at the default 10 ft).",
+   "value": "Same traction as Rex's feet on each surface. Bolted, the ground his boots grip tears out over the same area as Rex's (0.2 × (height / 2 m)² m²: 0.46 m² at the default 10 ft).",
    "status": "estimate",
    "sources": [],
    "note": null
@@ -7368,7 +7368,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: Cauchy's equation of motion for a solid (Newton's second law for every bit of a body)",
+   "label": "Their powers: Cauchy's equation of motion for a solid (Newton's second law for every bit of a body)",
    "value": "∇·σ + ρb = ρa (σ stress, ρ density, b body force per unit mass, a acceleration)",
    "status": "verified",
    "sources": [
@@ -7388,7 +7388,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: a push spread through a body in proportion to its mass accelerates it with no internal stress",
+   "label": "Their powers: a push spread through a body in proportion to its mass accelerates it with no internal stress",
    "value": "If every kilogram gets the same push (b = a everywhere) and nothing touches the surface, stress = 0",
    "status": "derived",
    "sources": [
@@ -7404,7 +7404,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: in free fall nothing feels its own weight: apparent weight P = m(a − g)",
+   "label": "Their powers: in free fall nothing feels its own weight: apparent weight P = m(a − g)",
    "value": "Apparent weight P = m(a_e − g); falling freely (a_e = g), P = 0: 'you are weightless'",
    "status": "verified",
    "sources": [
@@ -7416,7 +7416,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: only differences in the field (tides) stretch a freely falling body",
+   "label": "Their powers: only differences in the field (tides) stretch a freely falling body",
    "value": "Tidal acceleration along the line to a mass M at distance R: a_z = 2 z G M / R³ (z = offset from the centre of mass)",
    "status": "verified",
    "sources": [
@@ -7428,7 +7428,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: tidal stretch on a 4 m car: Earth's tide versus his spread push",
+   "label": "Their powers: tidal stretch on a 4 m car: Earth's tide versus his spread push",
    "value": "Earth's tide: about 2 mN through the middle of a 1,340 kg, 4 m car standing on end (1 part in 6 million of its weight). His push spread through it at 10 g: zero",
    "status": "derived",
    "sources": [
@@ -7452,7 +7452,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: spreading the force over the whole body is what raises tolerance (Eiband 1959)",
+   "label": "Their powers: spreading the force over the whole body is what raises tolerance (Eiband 1959)",
    "value": "'Survival of impact forces increases with increased distribution of the arresting force to the entire skeleton'; people cannot move against more than 2–3 g",
    "status": "verified",
    "sources": [
@@ -7464,7 +7464,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: amusement-ride acceleration limits for the general public (ASTM F2291-06a)",
+   "label": "Their powers: amusement-ride acceleration limits for the general public (ASTM F2291-06a)",
    "value": "Head-to-foot (+Gz) or pressed into the seat back (+Gx): 6 g for 0.2–1 s, 4 g for 2–4 s, 3 g for 5–11.8 s, then 2 g (+Gz) or 2.5 g (+Gx). Sideways 3 g → 2 g. Eyes-front (−Gx) 2 g at 0.2 s → 1.5 g. Eyes-up (−Gz) 2 g at 0.2 s → 1.5 g → 1.1 g from 7 s",
    "status": "derived",
    "sources": [
@@ -7476,7 +7476,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: NASA sustained acceleration limits for seated, restrained astronauts (upper bound, not for ordinary people)",
+   "label": "Their powers: NASA sustained acceleration limits for seated, restrained astronauts (upper bound, not for ordinary people)",
    "value": "Non-deconditioned seated crew: head-to-foot (+Az) 81.4 m/s² (8.3 g) at 0.5 s, 62.8 (6.4 g) at 5 s, 39.2 (4.0 g) at 1,200 s. Chest-to-back (+Ax) 186 (19 g) at 0.5 s, 157 (16 g) at 5 s, 73.5 (7.5 g) at 300 s",
    "status": "verified",
    "sources": [
@@ -7492,7 +7492,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: relaxed head-to-foot tolerance: 2–5 g standing, 7–9 g seated",
+   "label": "Their powers: relaxed head-to-foot tolerance: 2–5 g standing, 7–9 g seated",
    "value": "Non-straining standing +Gz tolerance 19.6–49.1 m/s² (2–5 g); seated 68.7–88.3 m/s² (7–9 g)",
    "status": "verified",
    "sources": [
@@ -7504,7 +7504,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: what steady g feels like, by direction (Fraser 1966 compilation)",
+   "label": "Their powers: what steady g feels like, by direction (Fraser 1966 compilation)",
    "value": "+Gz: 2 g heavier; 2.5 g hard to get up; 3–4 g vision dims after 3–4 s; 4.5–6 g blackout after about 5 s, then unconsciousness. +Gx: 2 g tolerable for at least 24 h, 4 g for at least 60 min",
    "status": "verified",
    "sources": [
@@ -7516,7 +7516,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: relaxed head-to-foot g at which vision and consciousness fail (means of a large group)",
+   "label": "Their powers: relaxed head-to-foot g at which vision and consciousness fail (means of a large group)",
    "value": "Loss of peripheral vision 4.1 ± 0.7 g (range 2.2–7.1); blackout 4.7 ± 0.8 g (2.7–7.8); unconsciousness 5.4 ± 0.9 g (3.0–8.4)",
    "status": "verified",
    "sources": [
@@ -7528,7 +7528,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: losing consciousness from g (G-LOC) took at least 5 s in 888 centrifuge episodes",
+   "label": "Their powers: losing consciousness from g (G-LOC) took at least 5 s in 888 centrifuge episodes",
    "value": "G-LOC did not occur earlier than 5 s; mean 9.1 s for onset ≥1 G/s; levels at G-LOC ranged +2.5 to +11.7 Gz (+4.7 Gz is the curve's defined minimum)",
    "status": "verified",
    "sources": [
@@ -7540,7 +7540,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: ordinary people (would-be space tourists) on a centrifuge: up to +6 Gx and +4 Gz tolerated",
+   "label": "Their powers: ordinary people (would-be space tourists) on a centrifuge: up to +6 Gx and +4 Gz tolerated",
    "value": "Screened, seated, strapped-in laypeople aged 18–88 (some with controlled medical conditions): peaks +3.5 to +4.0 Gz and +6.0 Gx (combined peaks about 5 s) tolerated; grey-out common (69–88%), one G-LOC in 24",
    "status": "verified",
    "sources": [
@@ -7564,7 +7564,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: brief jolts volunteers took uninjured in a full harness (Eiband 1959)",
+   "label": "Their powers: brief jolts volunteers took uninjured in a full harness (Eiband 1959)",
    "value": "Spineward, full harness: 45 g for 0.044 s, 40 g for 0.1 s, 25 g for 0.2 s, 13 g for 0.6 s, 10 g for 1.6 s. Animals survived (injury from none to severe shock and concussion) up to 56 g for 0.037 s and 43 g for 0.11 s (chimpanzees); hog 160 g for about 0.004 s marks Eiband's upper limit of moderate injury",
    "status": "verified",
    "sources": [
@@ -7576,7 +7576,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: impacts people survived with injury in harnessed sled tests",
+   "label": "Their powers: impacts people survived with injury in harnessed sled tests",
    "value": "25 g for 0.93 s: debilitated, back on duty in 5 days (Eiband). Severe shock at 38 g for 0.16 s with onset over 1,300 g per second; severe delayed effects at 45 g for 0.23 s (Stapp). 83 g for 0.04 s measured at the chest (applied input lower), rearward-facing, reversible injuries (Beeding & Mosely 1960). Air Force design limit for forward-facing (−Gx) impact in a double harness: about 45 g for 0.1 s, 25 g for 0.2 s",
    "status": "verified",
    "sources": [
@@ -7592,7 +7592,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: how fast g may build up: onset-rate limits for passengers",
+   "label": "Their powers: how fast g may build up: onset-rate limits for passengers",
    "value": "Ride standard: going from weightless (0 g) to 2 g or more, onset under 15 g per second; above 1.5 g with no headrest only if onset is under 5 g per second (then up to 2 g). Sled tests: 45 g for 0.09 s at 500 g/s caused no shock, but 38 g for 0.16 s at over 1,300 g/s caused severe shock",
    "status": "verified",
    "sources": [
@@ -7612,7 +7612,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: the g a passenger feels: the push from what holds them, net of gravity",
+   "label": "Their powers: the g a passenger feels: the push from what holds them, net of gravity",
    "value": "n = |a − g| / g (vectors). Standing still: 1 g. Lifted at 1 g: 2 g. Thrown (ballistic): 0 g plus drag. Under his spread push: 0 g",
    "status": "derived",
    "sources": [
@@ -7628,7 +7628,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: recommended 'no harm' limit for a passenger, by body axis (safe passenger switch off)",
+   "label": "Their powers: recommended 'no harm' limit for a passenger, by body axis (safe passenger switch off)",
    "value": "Orientation unknown (tumbling, a face-first catch, a push on the chest): eyes-front (−Gx) limit, 2 g at 0.2 s, 1.5 g from 0.5 s. Back-first cradle with head support (+Gx), or pushed up from below while seated upright (+Gz): 6 g to 1 s, 4 g at 2–4 s, 3 g at 5–11.8 s, then 2.5 g (+Gx) or 2 g (+Gz). Sideways 3 g → 2 g. Head-down (−Gz): as eyes-front to 4 s, then 1.1 g from 7 s. Pulses under 0.2 s: use the 0.2 s value",
    "status": "estimate",
    "sources": [
@@ -7644,7 +7644,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: recommended 'injury possible' band for a passenger (beyond what harnessed volunteers took uninjured)",
+   "label": "Their powers: recommended 'injury possible' band for a passenger (beyond what harnessed volunteers took uninjured)",
    "value": "Beyond Eiband's line for harnessed volunteers who were not injured (45 g at 0.044 s, 40 g at 0.1 s, 25 g at 0.2 s, 13 g at 0.6 s, 10 g at 1.6 s): injury possible; data sparse; worse at high onset rates. Human points survived with injury: 25 g for 0.93 s (applied); 83 g for 0.04 s measured at the chest (applied input lower). Held by hand with no harness: not measured",
    "status": "estimate",
    "sources": [
@@ -7664,7 +7664,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: fastest launch within the ride limit (landing not included)",
+   "label": "Their powers: fastest launch within the ride limit (landing not included)",
    "value": "Pushed along 45° over Rex's 2.4 m throwing stroke at 6 g felt: release at about 16 m/s in 0.3 s, landing about 26 m away (no drag). At 4 g: 12 m/s, 16 m. At 2 g: 7.5 m/s, 6 m. The landing is not included: at about 16 m/s it is like a 13 m fall, a serious injury risk unless he catches them",
    "status": "estimate",
    "sources": [
@@ -7676,7 +7676,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: air drag felt by a flying person, by speed (not removed by safe passenger once released)",
+   "label": "Their powers: air drag felt by a flying person, by speed (not removed by safe passenger once released)",
    "value": "For a 90 kg adult tumbling (area 0.67 m², C_d 1.1): drag decelerates them at 1 g at 44 m/s, 2 g at 63 m/s, 4 g at 89 m/s, 6 g at 108 m/s",
    "status": "estimate",
    "sources": [
@@ -7696,7 +7696,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: airblast at which people start to notice rattling: about 120 dB on a 6 Hz meter",
+   "label": "Their powers: airblast at which people start to notice rattling: about 120 dB on a 6 Hz meter",
    "value": "Rattling complaints above about 120 dB on the 6 Hz measuring system (20 Pa as read on that meter; about 36 Pa unfiltered, our conversion: see the row \"Rattling onset as an unfiltered peak pressure\"); at 134 dB (100 Pa; 0.1 Hz system) 5–10% of homes show rattling or fright disturbances",
    "status": "verified",
    "sources": [
@@ -7708,7 +7708,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: rattling onset as an unfiltered peak pressure (our conversion of USBM's 120 dB on a 6 Hz meter)",
+   "label": "Their powers: rattling onset as an unfiltered peak pressure (our conversion of USBM's 120 dB on a 6 Hz meter)",
    "value": "About 36 Pa (125 dB) unfiltered: USBM's 'about 120 dB (6 Hz)' rattling onset, shifted by the 5 dB between its safe levels on the two meters (129 dB on 6 Hz = 134 dB on 0.1 Hz)",
    "status": "derived",
    "sources": [
@@ -7720,7 +7720,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: airblast safe for houses (US mining regulation): 134 dB peak, about 100 Pa",
+   "label": "Their powers: airblast safe for houses (US mining regulation): 134 dB peak, about 100 Pa",
    "value": "134 dB (0.1 Hz system) = 100 Pa; 133 dB (2 Hz) = 89 Pa; 129 dB (6 Hz) = 56 Pa; 105 dBC (C-weighted, slow)",
    "status": "verified",
    "sources": [
@@ -7736,7 +7736,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: window sashes rattled at 0.03–0.05 psi (207–345 Pa) in small-charge tests: not a harmless level",
+   "label": "Their powers: window sashes rattled at 0.03–0.05 psi (207–345 Pa) in small-charge tests: not a harmless level",
    "value": "0.03–0.05 psi (141–145 dB): rattling of window sashes, in tests with small charges. Overlaps the start of glass damage",
    "status": "verified",
    "sources": [
@@ -7748,7 +7748,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: glass damage becomes improbable below about 0.030 psi (140 dB, ~200 Pa); single tests broke precracked panes from 364 Pa and stressed glass from 690 Pa",
+   "label": "Their powers: glass damage becomes improbable below about 0.030 psi (140 dB, ~200 Pa); single tests broke precracked panes from 364 Pa and stressed glass from 690 Pa",
    "value": "Damage improbable below about 0.030 psi (140 dB, about 207 Pa; studies' safe levels for glass 0.017–0.10 psi, 117–690 Pa). Precracked windows broke from 7.6 psf (364 Pa); glass under strain from 0.10 psi (690 Pa); good 3 × 3 ft panes none below 20 psf (958 Pa); properly mounted glass 0.75 psi (5.2 kPa)",
    "status": "verified",
    "sources": [
@@ -7760,7 +7760,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: what sonic booms do to houses (White Sands tests)",
+   "label": "Their powers: what sonic booms do to houses (White Sands tests)",
    "value": "2.5 psf (120 Pa) precludes damage; bric-a-brac falls and dishes rattle at 6–11 psf (290–530 Pa); plaster cracks 6.5–10 psf (310–480 Pa); nails pop 10.3 psf (490 Pa)",
    "status": "verified",
    "sources": [
@@ -7772,7 +7772,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: sonic booms people object to: 1.5–2 psf (72–96 Pa)",
+   "label": "Their powers: sonic booms people object to: 1.5–2 psf (72–96 Pa)",
    "value": "1 psf (48 Pa): no damage expected; 1.5–2 psf (72–96 Pa): some public reaction",
    "status": "verified",
    "sources": [
@@ -7784,7 +7784,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: hearing-safety limit for impulse noise: 140 dB peak (200 Pa)",
+   "label": "Their powers: hearing-safety limit for impulse noise: 140 dB peak (200 Pa)",
    "value": "140 dB peak sound pressure (200 Pa, 0.03 psi): US workplace limit for impulsive or impact noise",
    "status": "verified",
    "sources": [
@@ -7796,7 +7796,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: impulse–momentum: the same momentum change over a longer time needs less force",
+   "label": "Their powers: impulse–momentum: the same momentum change over a longer time needs less force",
    "value": "J = Δp; F_ave = Δp / Δt",
    "status": "verified",
    "sources": [
@@ -7808,7 +7808,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: soft landing: the momentum the ground must still take, and the least peak force his legs allow",
+   "label": "Their powers: soft landing: the momentum the ground must still take, and the least peak force his legs allow",
    "value": "Ground impulse J = m v. Time-mean ground force over a stop of T: J/T + W. Within a knee bend d, the peak force is at least m v²/(2d) + W. At 10 ft, a 0.76 m knee bend from 20 m/s needs a peak of at least 820 kN (28 × his weight)",
    "status": "derived",
    "sources": [
@@ -7824,7 +7824,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: momentum cannot be passed on with zero energy: at least p²/(2M) stays in whatever takes it",
+   "label": "Their powers: momentum cannot be passed on with zero energy: at least p²/(2M) stays in whatever takes it",
    "value": "Passing momentum p to a body of mass M leaves at least p²/(2M) in that body. For the Earth this is effectively nothing; for a small mass of air it can be large, though it shrinks as the moving air spreads",
    "status": "derived",
    "sources": [

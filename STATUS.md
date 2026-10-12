@@ -6,14 +6,15 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 | Folder or file | Who | Branch | Since |
 |---|---|---|---|
+| `rex-strength-lab/` (all of it), one line of the root `README.md` (the Rex lab row), and a new `history/` entry at the end | Owner's cloud session | `claude/rex-gui-a` (then `-b`, `-c`) | 2026-10-12 |
 
 ## In progress
 
-- Nothing right now.
+- Owner's cloud session: building `rex-strength-lab/BRIEF-gui.md` in its three pull requests, one at a time. **A** (page organisation, sections 1–4; no engine change) on `claude/rex-gui-a`: built and tested (engine and existing tests unchanged; new page checks in `test/shots.js`). Review rounds 1-4: 27, 18, 19 (one refuted) and 10 findings, every confirmed one fixed (`rex-strength-lab/research/reviews/gui-a-round1.json` to `gui-a-round4.json`). Pull request open for the owner to merge once CI passes. B (the four new powers) and C (energy comparisons, research first) follow, each after the one before is merged.
 
 ## Waiting on
 
-- Owner: build `rex-strength-lab/BRIEF-gui.md` (three pull requests in the order it gives: page organisation, the new powers, the energy comparisons). All its canon is confirmed; nothing in it waits on a decision.
+- Owner: merge pull request A for `rex-strength-lab/BRIEF-gui.md` (page organisation, `claude/rex-gui-a`) once CI passes. The owner's session then republishes the live Rex lab and starts B (the new powers), then C (the energy comparisons).
 - Owner review of Build Comparison design decisions listed in `build-comparison/data/NOTES.md` ("Design decisions to review"): the edge marking, the palette change, the stop edges, Thor's and the Thing's treatment, the group colours' contrast, and figures drawn with their arms at their rest angle. (The meatball sentence is now reworded in the brief.)
 - Step 2 (collaborator): regenerate Rex's and Ollie's turnarounds to the model-sheet spec (fixes listed in BRIEF.md, "The turnarounds") and measure them; make gap-filler figures from target outlines with GPT Images 2.5.
   - **Blocker to solve first:** the measuring tool cannot follow arms that cannot hang clear of the body (rest angle near 90°; above about 100 on the median soldier, so most of the 88–170 and 220–924 stretches). It refuses such sheets. The target tool still draws and scores those outlines but says the tool cannot check art drawn from them. See `build-comparison/research/reviews/round2.md`, "Still open"; one way is to cut the arms at the shoulder line before slicing.
