@@ -10,7 +10,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## In progress
 
-- Owner's cloud session: building `rex-strength-lab/BRIEF-gui.md` in its three pull requests, one at a time. **A** (page organisation, sections 1-4) is merged (#20) and live. **B** (the four new powers, section 5) is in progress on `claude/rex-gui-b`: the engine and the page are done and the full Rex lab test line passes (with the new `test/powers.js`: a powers-off check holds 14,883 engine results to `main`'s, then each power's checks); adversarial review rounds are next, then the pull request. Then C (the energy comparisons, research first). `rex-strength-lab/` stays claimed for them.
+- Owner's cloud session: building `rex-strength-lab/BRIEF-gui.md` in its three pull requests, one at a time. **A** (page organisation, sections 1-4) is merged (#20) and live. **B** (the four new powers, section 5) is in progress on `claude/rex-gui-b`: the engine and the page are done and the full Rex lab test line passes (with the new `test/powers.js`: a powers-off check holds 14,936 engine results to `main`'s, then each power's checks). Review round 1: 52 findings, all confirmed and fixed or recorded as decisions (`rex-strength-lab/research/reviews/gui-b-round1.json`). Round 2 is next, then the pull request. Then C (the energy comparisons, research first). `rex-strength-lab/` stays claimed for them.
 
 ## Waiting on
 
