@@ -352,7 +352,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         <p class="hint" style="margin-top:8px">Each switch suspends one piece of real physics, on purpose. Everything else stays real. They are off by default. <b>Comic ground</b> and <b>Bolted to the planet</b> are under Settings.</p>
         <div class="eyebrow" style="margin-top:12px">Material limit suspended</div>
         <label class="check"><input type="checkbox" id="sw-gentle"><span><b>Gentle hold</b> (tactile telekinesis): his push is spread through whatever he holds, in proportion to its mass, so his grip never crushes it. Air, landing and his own recoil stay real.</span></label>
-        <label class="check"><input type="checkbox" id="sw-passenger"><span><b>Safe passenger</b>: the same spread push on a person he lifts, throws or catches, so his push puts no g-force on them. Air drag in flight and the landing stay real.</span></label>
+        <label class="check"><input type="checkbox" id="sw-passenger"><span><b>Safe passenger</b>: the same spread push on a person he throws or catches, so his push puts no g-force on them. Air drag in flight and the landing stay real.</span></label>
         <div class="eyebrow" style="margin-top:12px">Absorbed (energy goes back into him; momentum doesn’t)</div>
         <label class="check"><input type="checkbox" id="sw-silent"><span><b>Silent strike</b>: no blast and no sonic boom from a punch or a clap.</span></label>
         <label class="check"><input type="checkbox" id="sw-soft"><span><b>Soft landing</b>: no crater or quake when he lands: the impact’s energy is taken back. The ground still takes the same push as his legs stop him, so it can still give way or shake.</span></label>
@@ -374,7 +374,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
           <input type="range" id="grow-s" min="0" max="1" step="0.01" value="0.5">
           <div class="scale-ends"><span>All density</span><span>All size</span></div>
           <div class="inline-num" id="grow-t-row" style="margin-top:8px"><label for="grow-t" class="hint" style="flex:none">Grows over (s)</label><input id="grow-t" type="number" min="0.001" step="any" value="60"></div>
-          <div class="inline-num" id="half-row" style="margin-top:8px"><label for="half-life" class="hint" style="flex:none">Half-life if it runs away (s; matters only inside his own event horizon)</label><input id="half-life" type="number" min="0.001" step="any" value="1"></div>
+          <div id="half-row" style="margin-top:8px"><div class="inline-num"><label for="half-life" class="hint" style="flex:none">Half-life (s)</label><input id="half-life" type="number" min="0.001" step="any" value="1" aria-describedby="half-hint"></div><p class="hint" id="half-hint" style="margin:4px 0 0">If it runs away. It matters only inside his own event horizon.</p></div>
           <span class="hint">Growth is a what-if: the page resets to their canon size and mass next visit.</span>
         </div>
       </details>
@@ -595,6 +595,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   // the ranges a number input accepts, shared by the inputs and by the checks on saved settings
   const RANGES = { gThrow: [0.1, 1e9], gJump: [0.01, 1e9], gSprint: [0.1, 3e8], gPull: [0.01, 1e9], growT: [1e-3, 1e12], halfLife: [1e-3, 1e12], near: [0.5, 1000], walkD: [0.5, 10000] };
   const inRange = (k, v) => isFinite(v) && v >= RANGES[k][0] && v <= RANGES[k][1];
+  // a typed number outside its range is clamped to the nearest allowed value (as the height field is); blank or junk keeps the old one
+  const setIn = (k, raw) => { const v = String(raw).trim() === '' ? NaN : Number(raw); if (isFinite(v)) state[k] = Math.min(RANGES[k][1], Math.max(RANGES[k][0], v)); update(); };
   const DEFAULTS = {
     logKg: Math.log10(100 * 907.18474), inf: false, mode: 'comic', surface: 'concrete', groundHolds: false, anchor: 'friction', H: P.DEFAULT_BODIES.rex.H, m: P.DEFAULT_BODIES.rex.m, build: 'rex', action: 'throw', obj: 'car', angle: 45,
     // two-player tests: which group of tabs is showing, and the last tab picked in the Rex + Ollie group
@@ -829,7 +831,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     $('#grow-s').addEventListener('input', (e) => { state.growS = Number(e.target.value); renderDial(); scheduleBay(); });
     for (const [id, k] of [['grow-t', 'growT'], ['half-life', 'halfLife']]) {
       $('#' + id).min = RANGES[k][0]; $('#' + id).max = RANGES[k][1];
-      $('#' + id).onchange = (e) => { const v = Number(e.target.value); if (inRange(k, v)) state[k] = v; update(); };
+      $('#' + id).onchange = (e) => setIn(k, e.target.value);
     }
     // Rex alone / Rex + Ollie
     $('#grp-solo').onclick = () => { state.group = 'solo'; buildTabs(); update(); };
@@ -1052,8 +1054,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       if (G.T > 0) {
         const T = state.growT, dp = G.pAt(T), u = G.uAt(T);
         const safe = T >= G.T * (1 - 1e-9);
-        items.push('Shortest harmless time: ' + fmtTime(G.T) + ', set by ' + ({ shove: 'how fast the top of his head rises: anything above or beside him has to be able to get out of the way (0.25 m/s, the reduced robot speed OSHA’s Technical Manual calls slow enough for a person to get out of the way; borrowed from robot safety, not tested for this case)', pressure: 'the air he pushes aside: a pressure pulse on someone ' + fmtDist(P.GROW.GAP) + ' from him, kept under 100 Pa (134 dB, the US Bureau of Mines’ safe level for houses)', lift: 'keeping his feet on the ground while his middle rises' }[G.by]) + '. The air alone would allow ' + fmtTime(G.Tp) + '.');
-        items.push('Over ' + fmtTime(T) + (safe ? ' it is harmless: ' : ' it is not: ') + 'the air pulse ' + fmtDist(P.GROW.GAP) + ' from him peaks at ' + fmtSI(dp, 'Pa') + ' (windows usually shatter from 3.4–6.9 kPa; weak or cracked panes from about 0.4 kPa) and the top of his head rises at up to ' + speedOnly(u) + '. The growth curve starts and stops smoothly (our choice).');
+        items.push('Shortest harmless time: ' + fmtTime(G.T) + ', set by ' + ({ shove: 'how fast the top of his head rises: anything above or beside him has to be able to get out of the way (0.25 m/s, the reduced robot speed OSHA’s Technical Manual calls slow enough for a person to get out of the way; borrowed from robot safety, not tested for this case)', pressure: 'the air he pushes aside: a pressure pulse on someone ' + fmtDist(P.GROW.GAP) + ' from him (our choice of how close a bystander stands), kept under 100 Pa (134 dB, the US Bureau of Mines’ safe level for houses)', lift: 'keeping his feet on the ground while his middle rises' }[G.by]) + '. The air alone would allow ' + fmtTime(G.Tp) + '.');
+        items.push('Over ' + fmtTime(T) + (safe ? ' it is harmless: ' : ' it is not: ') + 'the air pulse ' + fmtDist(P.GROW.GAP) + ' from him (our choice of bystander distance) peaks at ' + fmtSI(dp, 'Pa') + ' (windows usually shatter from 3.4–6.9 kPa; weak or cracked panes from about 0.4 kPa) and the top of his head rises at up to ' + speedOnly(u) + '. The growth curve starts and stops smoothly (our choice).');
       } else items.push('Pure density: he doesn’t get any bigger, so nothing around him is pushed aside. Only his weight changes.');
     }
     if (state.absorb === 'instant' || state.absorb === 'runaway') {
@@ -1068,15 +1070,15 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         const push = 'Momentum isn’t absorbed: his middle rises ' + fmtDist(gB.dH / 2) + ' in that time, so the ground has to push him up with an extra ' + fmtSI(I.Fground - I.grown.m * g, 'N') + ' on top of his new weight (' + fmtSI(I.groundPressure, 'Pa') + ' under his feet in all). ';
         items.push(push + (bolted ? 'Bolted to the planet, he stays put and the Earth takes it.'
           : state.groundHolds ? 'Comic ground gives that push: nothing holds him down, so he is thrown about ' + fmtDist(I.launch) + ' up before falling back (no air drag).'
-            : I.driven ? capital(theSurf(sf)) + ' bears only ' + fmtSI(I.qGround, 'Pa') + ': it gives, and his soles are driven into it. ' + (I.launch > 0.01 ? 'He still leaves the ground at ' + speedOnly(I.vLeave) + ' and rises about ' + fmtDist(I.launch) + ' before falling back.' : 'He doesn’t leave the ground.')
+            : I.driven ? capital(theSurf(sf)) + ' bears only ' + fmtSI(I.qGround, 'Pa') + ': it gives, and his soles are driven about ' + fmtDist(I.sink) + ' into it. That puts about ' + fmtTNT(I.Eground) + ' into the ground' + (I.quake > 2 ? ' (felt like a magnitude ' + sig(I.quake, 2) + ' quake)' : '') + (I.Eground > I.Ehi ? ', more than goes into the air' : '') + ' (rough: its bearing plus the soil pushed aside). ' + (I.launch > 0.01 ? 'He still leaves the ground at ' + speedOnly(I.vLeave) + ' and rises about ' + fmtDist(I.launch) + ' before falling back.' : 'He doesn’t leave the ground.')
               : capital(theSurf(sf)) + ' can take it (it bears ' + fmtSI(I.qGround, 'Pa') + '): nothing holds him down, so he is thrown about ' + fmtDist(I.launch) + ' up before falling back (no air drag).'));
       } else items.push('Pure density: he doesn’t get any bigger, so there is no blast. Only his weight changes.');
     }
     if (state.absorb === 'runaway') {
       const RW = P.runawayGrowth(body, E, state.growS);
-      items.push('Runaway loop: each joule absorbed sends back about ' + (RW.k > 0 ? sci(RW.k, 1) : '0') + ' J of side effects (pushing the air back and his own gravity pulling him tighter), which are absorbed too. ' + (RW.runs ? 'That is 1 or more: it would run away, and the half-life (' + fmtTime(state.halfLife) + ', a story choice: no physics sets it) drains the extra into the endless ocean.' : 'That is far below 1, so the loop dies out at once: he absorbs ' + (RW.k < 1e-6 ? 'the same energy to within a millionth.' : fmtSI(RW.total, 'J') + ' in all.')));
+      items.push('Runaway loop: on average over the growth, each joule absorbed sends back about ' + (RW.k > 0 ? sci(RW.k, 1) : '0') + ' J of side effects (' + (gB.dV > 0 ? 'pushing the air back and ' : '') + 'his own gravity pulling him tighter), which are absorbed too. ' + (RW.runs ? 'That is 1 or more: it would run away, and the half-life (' + fmtTime(state.halfLife) + ', a story choice: no physics sets it) drains the extra into the endless ocean.' : 'That is far below 1, so the loop dies out at once: he absorbs ' + (RW.k < 1e-6 ? 'the same energy to within a millionth.' : fmtSI(RW.total, 'J') + ' in all.')));
       items.push('Open question for the owners: whether those side effects are paid from the energy they absorbed or from the endless store. Only in the first case does the loop add anything, and here it is tiny either way.');
-      items.push('A real runaway needs side effects as big as the energy itself. Only his own gravity can get there: in weak gravity its share is about 0.3 × (2 − s/3) × (his event-horizon radius ÷ his radius), where s is the share of growth into size. That is ' + sci(RW.kGravNow, 1) + ' now; relativity raises it, but it reaches 1 only at his own event horizon. So outside a black hole the half-life never has to act.');
+      items.push('A real runaway needs side effects as big as the energy itself. Only his own gravity can get there: in weak gravity its share is about 0.3 × (2 − s/3) × (his event-horizon radius ÷ his radius), where s is the share of growth into size. At his final size the next joule would send back ' + sci(RW.kGravNow, 1) + ' J this way (the share grows as he does, so it is above the average); relativity raises it, but it reaches 1 only at his own event horizon. So outside a black hole the half-life never has to act.');
     }
     if (!small) {
       const gb = P.grownMakeBody(body, E, state.growS);
@@ -1258,7 +1260,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (basisChip(r)) chips.push(basisChip(r));
     chips.push(status(r.v >= K.a0 ? 'warn' : 'good', 'Launch: ' + speedOnly(r.v) + (fmtMach(r.v) && r.v >= K.a0 ? ' (' + fmtMach(r.v) + ')' : '')));
     if (r.anchor.R !== Infinity) chips.push(r.recoilV > 0.01 ? status('bad', 'Footing: feet slide, he recoils') : status('good', 'Footing holds'));
-    if (r.sinkRatio > 1) chips.push(status('bad', 'Ground gives way under his feet'));
+    // in soil sinking in is a footprint, not broken ground (the courtesy ceiling's rule)
+    if (r.sinkRatio > 1) chips.push(P.RESTRAINT.SOIL.has(c.surface.id) ? status('warn', 'His feet sink in (footprints)') : status('bad', 'Ground gives way under his feet'));
     if (o.crush) chips.push(r.gentle && r.gripRatioRaw > 1 ? status('info', 'Gentle hold: his grip can’t crush it') : r.gripRatio > 1 ? status('bad', 'Grip: hands punch into it') : status('good', 'Grip: object holds'));
     if (f.maxStagT > 1200 && !f.relativistic) chips.push(c.coolFlight ? status('info', 'Cool flight: drag heat absorbed') : status('warn', 'Air heating: ' + fmtTemp(f.maxStagT) + ' at the nose'));
     if (o.passenger) chips.push(passengerChip(r, c));
@@ -1335,7 +1338,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       out.push(callout('Reality check for the 2 m, 180 kg calibration body at record-human strength (both muscle settings are tuned to match these): ' + rows.join(' | ')));
     }
     out.push(math([
-      'Drive: ' + fmtSI(r.Fdrive, 'N') + ' (' + shareText(key, mode) + ' ' + (capped(c) ? 'of the strength he uses (' + fmtSI(c.use, 'N') + ')' : 'of full strength') + ' per hand' + (r.hands * (mode === 'real' ? P.MUSCLE[key].forceFrac : P.MUSCLE[key].comicFrac) > 1 ? ', capped at his full strength' : '') + (mode === 'real' ? ', falling with speed per the Hill curve' : ', constant') + (r.heldBack ? '; he holds back to ' + fmtSI(r.anchor.R, 'N') + ' so his feet don’t slide' : '') + ') over a ' + sig(r.style === 'whip' ? c.body.strokes.whip : c.body.strokes.throw, 2) + ' m ' + (r.style === 'whip' ? 'overarm whip' : 'shove') + ' with ' + r.hands + ' hand' + (r.hands > 1 ? 's' : '') + '; holding it up against gravity leaves ' + fmtSI(r.F, 'N') + ' along the throw.',
+      'Drive: ' + fmtSI(r.Fdrive, 'N') + ' (' + shareText(key, mode) + ' ' + (capped(c) ? 'of the strength he uses (' + fmtSI(c.use, 'N') + ')' : 'of full strength') + ' per hand' + (r.hands * (mode === 'real' ? P.MUSCLE[key].forceFrac : P.MUSCLE[key].comicFrac) > 1 ? (capped(c) ? ', capped at the strength he uses' : ', capped at his full strength') : '') + (mode === 'real' ? ', falling with speed per the Hill curve' : ', constant') + (r.heldBack ? '; he holds back to ' + fmtSI(r.anchor.R, 'N') + ' so his feet don’t slide' : '') + ') over a ' + sig(r.style === 'whip' ? c.body.strokes.whip : c.body.strokes.throw, 2) + ' m ' + (r.style === 'whip' ? 'overarm whip' : 'shove') + ' with ' + r.hands + ' hand' + (r.hands > 1 ? 's' : '') + '; holding it up against gravity leaves ' + fmtSI(r.F, 'N') + ' along the throw.',
       'Rex and the ' + o.short + ' get equal and opposite momentum while the push lasts; ' + (isFinite(r.anchor.R) ? 'his footing absorbs up to ' + fmtSI(r.anchor.R, 'N') : 'his footing never gives (' + (state.anchor === 'bolted' ? 'bolted to the planet' : 'push aimed so steeply down his feet can’t slide') + ')') + '.',
       'Speeds use relativistic momentum: v = p c² / √(m²c⁴ + p²c²).',
       'Flight: RK4 over a round Earth, exponential atmosphere (ρ₀ = 1.225 kg/m³, H = 8.4 km), drag ½ρv²·Cd·A with Cd ' + o.Cd + ' below Mach 0.8 and ' + o.CdSup + ' above Mach 1.2, A = ' + sig(o.area, 2) + ' m². Above 150 km the arc is solved exactly as an Earth-only Kepler arc (no Moon or Sun pull).',
@@ -1363,7 +1366,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     else if (f.leavesHill) v = 'Rex jumps past 1.5 million km, where the Sun’s pull beats Earth’s, and doesn’t come back.';
     else if (f.escaped) v = 'Rex jumps clean off the planet.';
     else if (f.timedOut) v = 'Rex is still going up after ' + fmtTime(f.time) + ', ' + fmtDist(f.apex) + ' high.';
-    else v = 'Rex jumps ' + fmtDist(f.apex) + ' high' + (r.groundFails ? (r.Eground >= 1e6 ? ' and leaves two craters behind.' : ' and leaves two deep footprints.') : '.');
+    else v = 'Rex jumps ' + fmtDist(f.apex) + ' high' + (r.groundFails ? (r.Eground >= P.RESTRAINT.R.CRATER_E ? ' and leaves two craters behind.' : ' and leaves two deep footprints.') : '.');
     if (up && f.landed && f.apex > 3.844e8) v += ' His arc goes past the Moon’s orbit (384,400 km). The sim counts only Earth’s pull; the Moon and Sun would bend an arc this long, so where it lands is rough.';
     out.push(verdict(v));
     let gchip;
@@ -1371,7 +1374,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     else if (groundBinds) gchip = status('warn', 'Ground at its limit: he holds back');
     else if (r.heldBack) gchip = status('good', 'Ground holds: he keeps under its limit');
     else if (r.groundDisrupts) gchip = status('bad', 'Earth blown apart');
-    else if (r.groundFails) gchip = status('bad', 'Ground gives: feet sink ' + fmtDist(r.sink));
+    else if (r.groundFails) gchip = P.RESTRAINT.SOIL.has(c.surface.id) && !(r.Eground >= P.RESTRAINT.R.CRATER_E) ? status('warn', 'Feet sink ' + fmtDist(r.sink) + ' (footprints)') : status('bad', 'Ground gives: feet sink ' + fmtDist(r.sink));
     else gchip = status('good', r.F > RB ? 'Ground holds: his feet barely dent it' : 'Ground holds (' + sig(100 * r.F / RB, 2) + '% of limit)');
     out.push(el('div', { class: 'status-row' }, basisChip(r), gchip, r.v >= K.a0 && !r.relativistic ? status('warn', 'Sonic boom at takeoff') : null));
     const ref = heightRefs().filter((h) => h.m <= f.apex).pop();
@@ -1381,7 +1384,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       up && f.landed ? tile('Hang time', fmtTime(f.time), '') : null,
       r.groundFails ? tile('Energy into the ground', fmtSI(r.Eground, 'J'), r.groundDisrupts ? 'enough to blow Earth apart' : fmtTNT(r.Eground)) : null,
       up && f.landed ? tile('Comes back down at', speedOnly(f.vImpact), 'sea-level terminal speed ' + speedOnly(r.vTerminal)) : null,
-      r.landing.landed ? tile('Landing on the ground', fmtSI(r.landing.F, 'N'), sig(r.landing.F / (c.body.m * g), 2) + '× his weight for ' + fmtTime(r.landing.t) + (r.landing.soft ? '; its energy taken back' : '')) : null));
+      r.landing.landed ? tile('Landing on the ground', fmtSI(r.landing.F, 'N'), sig(r.landing.F / (c.body.m * g), 2) + '× his weight for ' + fmtTime(r.landing.t) + (r.landing.soft ? '; what it would put into the ground taken back' : '')) : null));
     if (up && f.landed && f.apex > 0.01) {
       const rows = heightRefs().filter((h) => h.m < f.apex * 30 && h.m > f.apex / 300).map((h) => ({ label: h.label, value: h.m }));
       rows.push({ label: 'Rex’s jump', value: f.apex, highlight: true });
@@ -1410,7 +1413,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (L.landed && !L.soft && !c.groundHolds) {
       items.push('He lands on bent legs and stops over the same ' + fmtDist(c.body.strokes.leg) + ' leg stroke he jumped with, so the ground takes ' + sig(L.F / (c.body.m * g), 2) + '× his weight for ' + fmtTime(L.t) + (L.ratio > 1 ? ': ' + fmtRatio(L.ratio) + ' what ' + c.surface.short + ' can bear, so his feet punch in, up to ' + fmtDist(L.sink) + ' (rigid feet; bent legs make it less).' : ' (' + sig(100 * L.ratio, 2) + '% of what ' + c.surface.short + ' can bear).'));
     }
-    const landAbsorb = L.landed && L.soft ? absorbBlock(L.E, 'Soft landing: the landing’s energy', c.body, c.surface) : null;
+    // what the switch takes back is what the landing would put into the ground (the feet's impact, or all of it if the
+    // ground gives); his bent legs stop the rest either way
+    const landAbsorb = L.landed && L.soft ? absorbBlock(L.absorbed, 'Soft landing: what the landing would put into the ground', c.body, c.surface) : null;
     if (f.maxStagT > 1200 && !r.relativistic) items.push('He leaves with a shock wave, and the air at his head heats to about ' + fmtTemp(f.maxStagT) + '. He doesn’t care. Windows nearby would.');
     out.push(happens(items));
     if (landAbsorb) out.push(landAbsorb);
@@ -1491,7 +1496,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       tile('Compared with', compareEnergy(r.E), ''),
       r.recoilE > 0.01 * r.E ? tile('His own recoil', fmtSI(r.recoilE, 'J'), sig(100 * r.recoilE / r.E, 2) + '% of the total') : null,
       !silent && r.vFist < 0.01 * K.c && r.vFist > 1000 ? tile('Air at the knuckles', fmtTemp(r.stagT), 'equilibrium air (ideal-gas formula: ' + fmtTemp(r.stagTIdeal) + ')') : null));
-    out.push(silent ? absorbBlock(r.E, 'Silent strike: the punch’s energy', c.body, c.surface) : r.mach < 1 ? callout(THUMP('his fist')) : blastBlock(r.E, 'at his fist'));
+    // Silent strike takes back what would hit the air as a blast or a boom: below Mach 1 there is none, only a thump
+    out.push(silent && r.mach >= 1 ? absorbBlock(r.E, 'Silent strike: the punch’s energy', c.body, c.surface) : r.mach < 1 ? callout(THUMP('his fist') + (silent ? ' Silent strike has nothing to take back below the speed of sound.' : '')) : blastBlock(r.E, 'at his fist'));
     const items = [];
     items.push('A punch into empty air does no work on anything but the air. Everything the arm put in, the fist’s energy plus his own recoil, is released when the arm stops' + (r.mach < 1 ? ': below the speed of sound, as a thump and as heat in his arm.' : '.'));
     if (r.recoilE > 0.5 * r.E) items.push('His footing can only hold ' + fmtSI(r.anchor.R, 'N') + '. Past that, the fist and Rex push apart like two skaters, and at extreme strength the light fist can’t go faster than light, so his own body takes most of the energy.');
@@ -1508,13 +1514,13 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const r = P.clap(c);
     const out = [];
     const silent = !!c.silentStrike;
-    out.push(verdict((r.vHand >= 0.01 * K.c ? 'The clap releases ' + fmtTNT(r.E) + ' between his palms.' : 'His hands meet at ' + speedOnly(r.vHand) + ' and release ' + fmtTNT(r.E) + '.') + (silent ? ' Silent strike takes it back.' : '')));
+    out.push(verdict((r.vHand >= 0.01 * K.c ? 'The clap releases ' + fmtTNT(r.E) + ' between his palms.' : 'His hands meet at ' + speedOnly(r.vHand) + ' and release ' + fmtTNT(r.E) + '.') + (silent && r.mach >= 1 ? ' Silent strike takes it back.' : '')));
     out.push(el('div', { class: 'status-row' }, silent ? status('info', 'Silent strike: no blast, no boom') : r.vHand >= 0.01 * K.c ? status('bad', 'Fireball between his hands') : r.mach >= 1 ? status('warn', 'Hands break the sound barrier') : status('good', 'Subsonic hands'), status('info', 'Recoil cancels: left and right push equally'), basisChip(r)));
     out.push(tiles(
       speedTile('Hand speed', r.vHand, fmtMach(r.vHand)),
       tile('Energy released', fmtSI(r.E, 'J'), fmtTNT(r.E)),
       tile('Compared with', compareEnergy(r.E), '')));
-    out.push(silent ? absorbBlock(r.E, 'Silent strike: the clap’s energy', c.body, c.surface) : r.mach < 1 ? callout(THUMP('his hands')) : blastBlock(r.E, 'between his hands'));
+    out.push(silent && r.mach >= 1 ? absorbBlock(r.E, 'Silent strike: the clap’s energy', c.body, c.surface) : r.mach < 1 ? callout(THUMP('his hands') + (silent ? ' Silent strike has nothing to take back below the speed of sound.' : '')) : blastBlock(r.E, 'between his hands'));
     out.push(happens([
       'The clap is the one move with no recoil problem: both arms push on his chest equally and opposite, so he stays put however strong he is.',
       !silent && r.mach >= 1 ? 'Past the speed of sound that makes a comic “thunderclap” fair physics: two hands’ worth of energy, released in a small space.' : null,
@@ -2026,7 +2032,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     }
     let v;
     if (r.outcome === 'bothBolted') v = r.clash ? clashVerdict(r.clash, 'Rex', 'Ollie') : 'Neither moves: both are bolted to the planet. They press with ' + fmtSI(r.contact, 'N') + ', and that stretches the ground between their feet' + (r.tear > 1 ? ': it tears up around the bolts (' + fmtRatio(r.tear) + ' its limit).' : ', which holds.');
-    else if (r.outcome === 'deadlock' && r.allOut) { const s = P.shoveBoth(cR, cO); v = 'Dead heat. Both are far stronger than their footing (each holds only ' + fmtSI(Math.min(r.holdA, r.holdB), 'N') + '), so strength stops mattering. Pushing all-out, they’d just shove each other apart like skaters: Rex at ' + speedOnly(s.shover === 'A' ? s.vA : s.vB) + ', Ollie at ' + speedOnly(s.shover === 'A' ? s.vB : s.vA) + '.'; }
+    else if (r.outcome === 'deadlock' && r.allOut) { const s = P.shoveBoth(Object.assign({}, cR, { F: fullF('R') }), Object.assign({}, cO, { F: fullF('O') })); v = 'Dead heat. Both are far stronger than their footing (each holds only ' + fmtSI(Math.min(r.holdA, r.holdB), 'N') + '), so strength stops mattering. If they shoved instead, all-out (see Shove, where the courtesy ceiling keeps it gentle), they’d fly apart like skaters: Rex at ' + speedOnly(s.shover === 'A' ? s.vA : s.vB) + ', Ollie at ' + speedOnly(s.shover === 'A' ? s.vB : s.vA) + '.'; }
     else if (r.outcome === 'deadlock' && (cR.anchor === 'bolted' || cO.anchor === 'bolted')) { const b = cR.anchor === 'bolted' ? 'Rex' : 'Ollie', o = b === 'Rex' ? 'Ollie' : 'Rex'; v = b + ' can’t be moved, and being bolted he can’t walk ' + o + ' out either. Stalemate (he can still shove him: see Shove).'; }
     else if (r.outcome === 'deadlock') v = 'Dead heat at ' + fmtSI(r.contact, 'N') + '.';
     else { const W = WHO[r.winner], L = WHO[r.winner === 'A' ? 'B' : 'A']; const Hl = r.winner === 'A' ? r.HB : r.HA, cl = r.winner === 'A' ? cO : cR; v = W + ' walks ' + L + ' out of the ring in ' + fmtTime(r.t) + (r.v >= 5 ? ', hitting ' + speedOnly(r.v) : '') + '. ' + L + '’s ' + (cl.F < (r.winner === 'A' ? r.holdB : r.holdA) ? 'muscles give at ' : 'feet only hold ') + fmtSI(Hl, 'N') + '.'; }
@@ -2252,7 +2258,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       case 'too-weak': {
         const best = L.farthest && isFinite(L.farthest.range) ? (L.farthest.range >= 0.01 ? 'goes ' + fmtDist(L.farthest.range) : 'barely leaves his hand') : 'doesn’t get far enough';
         if (L.heat && L.heat.kind === 'destroyed' && L.easyNeed) return T + ' can’t throw ' + s + ' ' + fmtDist(L.D) + ': his best throw ' + best + '. Air is the wall. It would need about ' + speedOnly(L.easyNeed.vL) + ', and at that speed it would ' + verbAway(L.heat) + ' long before it got there.';
-        return T + ' can’t throw ' + s + ' that far. His best throw ' + best + '.' + (L.needFactor && isFinite(L.needFactor) ? ' It needs ' + fmtRatio(L.needFactor) + ' the speed he has.' : '');
+        return T + ' can’t throw ' + s + ' that far. His best throw ' + best + '.' + (L.needFactor && isFinite(L.needFactor) ? (L.needFactor < 2 ? ' It needs about ' + sig(100 * (L.needFactor - 1), 1) + '% more speed than he has.' : ' It needs ' + fmtRatio(L.needFactor) + ' the speed he has.') : '');
       }
       case 'no-arc': return 'No thrown arc comes down ' + fmtDist(L.D) + ' away: anything fast enough to get there goes into orbit or leaves the Earth, unless it skims the whole way through the air, which no object survives. ' + C + ' would have to stand closer.';
       case 'overshoots': return 'Thrown as hard as ' + T + ' can, ' + s + ' can’t come down on ' + C + ': kept low, it burns its speed in the air; aimed higher, it ' + (L.relativistic ? 'passes 1% of light speed and turns into a fireball heading up, not toward him' : L.escaped ? 'leaves Earth for good' : 'goes into orbit') + '. Switch to Gentle lob.';
@@ -2838,7 +2844,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   const GOALS = {
     throw: { key: 'gThrow', unit: 'm', label: 'Goal: throw it (m)', text: (t) => (state.angle >= 90 ? 'throws the ' + objById(state.obj).short + ' ' + fmtDist(t) + ' straight up' : 'lands the ' + objById(state.obj).short + ' ' + fmtDist(t) + ' away') },
     jump: { key: 'gJump', unit: 'm', label: 'Goal: jump this high (m)', text: (t) => 'jumps ' + fmtDist(t) + ' high' },
-    stomp: { text: () => 'makes a stomp just perceptible ' + fmtDist(state.near) + ' away (1 mm/s, what Caltrans calls barely perceptible for one jolt: sensitive people notice it; the average person needs about 3 mm/s for a jolt this short)' },
+    stomp: { text: () => 'makes a stomp just perceptible ' + fmtDist(state.near) + ' away (1 mm/s, what Caltrans calls barely perceptible for one jolt: sensitive people notice it; the average person needs more than 3 mm/s: 3.3 mm/s for a half-second jolt, and shorter ones need more)' },
     punch: { fixed: CAL_PUNCH, text: (t) => 'throws a punch as fast as the strongest human’s (' + speedOnly(t) + ' in this model, inside the 6.6–12.5 m/s measured in four experienced boxers)' },
     clap: { fixed: CAL_CLAP, text: (t) => 'claps as fast as the strongest human would in this model (' + speedOnly(t) + ')' },
     sprint: { key: 'gSprint', unit: 'm/s', label: 'Goal: run at (m/s)', text: (t) => 'runs at ' + speedOnly(t) },
@@ -2901,25 +2907,33 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     ground: { name: 'The ground breaks', what: 'the ground under his feet gives way' },
     crush: { name: 'He crushes the object', what: 'his hands crush the object' },
     passenger: { name: 'Past ride limits for the person', what: 'the person is pressed harder than amusement rides allow (ASTM F2291), by the launch or by air drag in flight' },
+    slide: { name: 'His recoil shoves him past the nearest people', what: 'his recoil shoves him back past the nearest people' },
   };
-  // distances count from where the harm starts: for a throw, where the object lands
-  let fromFire = false;   // set by the Throw tab when the object never lands (it turns into a fireball in flight)
-  const fromW = () => (isEffortMove(curAction()) && P.RESTRAINT.MOVES[curAction()].where === 'where it lands' ? (fromFire ? ' from the fireball' : ' from where it lands') : ' away');
+  const inSoil = () => P.RESTRAINT.SOIL.has(ctx().surface.id);
+  // in soil, sinking in is a footprint: only a crater counts as breaking the ground (for a jump, our 1 MJ line)
+  const hazText = (id, move) => (id === 'ground' && inSoil() ? { name: 'He leaves craters', what: move === 'jump' ? 'his feet leave craters, not just deep footprints (over 1 MJ into the ground: our line between the two)' : 'he leaves a crater' } : EFF_HAZ[id]);
+  // distances count from where the harm starts: for a throw, where the object lands, or for a blast from the throw
+  // itself (the air taking the energy of a launch past Mach 1, and his recoil), from him
+  let fromFire = false, fromPath = false;   // set from the run shown: a fireball in flight; a blast from his throw, not the landing
+  const fromW = (air) => (isEffortMove(curAction()) && P.RESTRAINT.MOVES[curAction()].where === 'where it lands' ? (fromFire ? ' from the fireball' : air && fromPath ? ' from him' : ' from where it lands') : ' away');
   const PRESET_WHAT = {
     rattle: () => 'rattles windows and ornaments ' + fmtDist(state.near) + fromW() + ', through the ground or the air',
     plaster: () => 'shakes the ground enough that plaster may crack ' + fmtDist(state.near) + fromW(),
-    windows: () => 'could break windows ' + fmtDist(P.RESTRAINT.R.STREET) + fromW() + ', across a street (if all the energy went into the air: an upper bound)',
-    ground: () => 'breaks the ground under his feet',
-    houses: () => 'could flatten houses ' + fmtDist(state.near) + fromW() + ' (an upper bound: all the energy into the air, judged by a long nuclear blast; a short blast this size does less)',
-    block: () => 'could flatten houses ' + fmtDist(P.RESTRAINT.R.BLOCK) + fromW() + ', about a city block (the same upper bound)',
+    windows: () => 'could shatter windows ' + fmtDist(P.RESTRAINT.R.STREET) + fromW(true) + ', across a street (6.9 kPa, the top of the 3.4–6.9 kPa band where windows usually shatter; if all the energy went into the air: an upper bound)',
+    ground: () => (inSoil() ? (curAction() === 'jump' ? 'leaves craters, not just deep footprints (over 1 MJ into the ground: our line between the two)' : 'leaves a crater under his feet') : 'breaks the ground under his feet'),
+    houses: () => 'could flatten houses ' + fmtDist(state.near) + fromW(true) + ' (an upper bound: all the energy into the air, judged by a long nuclear blast; a short blast this size does less)',
+    block: () => 'could flatten houses ' + fmtDist(P.RESTRAINT.R.BLOCK) + fromW(true) + ', about a city block (the same upper bound)',
   };
+  // a move with no ground-shaking model: the shaking presets and hazards can't be judged for it
+  const noShake = (move) => !P.RESTRAINT.MOVES[move].shake;
+  const NO_SHAKE = 'The lab doesn’t model the ground shaking from this move, so it can’t say when it would rattle windows or crack plaster through the ground.';
   // The strength he uses for this move, and why. use undefined = all-out.
-  function resolveEffort(move, c) {
+  function resolveEffort(move, c, only) {
     const p = planFor(move, c);
-    const e = state.effort;
+    const e = only || state.effort;
     const out = { p, preset: e, use: undefined, note: null };
     if (e === 'allout') return out;
-    if (e === 'custom') { out.use = Math.min(c.F, Math.pow(10, state.effortLogKg) * g); return out; }
+    if (e === 'custom') { out.use = Math.min(c.F, Math.max(p.lo, Math.pow(10, state.effortLogKg) * g)); return out; }
     // a search that needs more than this render's time budget: show all-out for now, and redraw when it's done
     const t0 = performance.now();
     const pending = (names, what) => { out.pending = names; out.why = 'Working out ' + what + '… Showing all-out until then.'; return out; };
@@ -2943,22 +2957,30 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       out.capped = true;
       out.use = ce.below > 0 ? ce.below : p.lo;
       out.why = ce.below > 0 ? 'The most he can do with nothing nearby harmed.' : 'The gentlest try he can make.';
-      out.note = (gl.reached ? 'To ' + goalText + ' he would need more, and ' : 'Even all-out he can’t ' + goalText + ', and ') + (ce.below > 0 ? 'past ' + atText(ce.below, c.F) + ' ' : 'even the gentlest try means ') + EFF_HAZ[ce.by].what + '.';
+      out.note = (gl.reached ? 'To ' + goalText + ' he would need more, and ' : 'Even all-out he can’t ' + goalText + ', and ') + (ce.below > 0 ? 'past ' + atText(onsetOf(ce), c.F) + ' ' : 'even the gentlest try means ') + hazText(ce.by, move).what + '.';
       return out;
     }
     if (e === 'ceiling') {
       if (!ready(p, HAZ_JOBS(), t0)) return pending(HAZ_JOBS(), 'the courtesy ceiling');
       const ce = p.ceiling();
       out.ceiling = ce;
-      if (!ce.by) { out.why = 'Nothing this move does harms anyone nearby, so he can go all-out.'; return out; }
+      if (!ce.by) { out.why = 'Nothing this move does harms anyone ' + fmtDist(state.near) + ' or more away, so he can go all-out.'; return out; }
       out.use = ce.below > 0 ? ce.below : p.lo;
-      if (!(ce.below > 0)) { out.why = 'The gentlest try he can make.'; out.note = 'Nothing here is harmless: even the gentlest try means ' + EFF_HAZ[ce.by].what + '.'; }
+      if (!(ce.below > 0)) { out.why = 'The gentlest try he can make.'; out.note = 'Nothing here is harmless: even the gentlest try means ' + hazText(ce.by, move).what + '.'; }
       return out;
     }
     if (!ready(p, ['preset:' + e], t0)) return pending(['preset:' + e], 'that effort');
     const r = p.result('preset:' + e);
-    if (r.never) { out.why = 'Everything he has.'; out.note = 'Even all-out, this move doesn’t ' + PRESET_WHAT[e]().replace(/^could /, '').replace(/^(\w+?)(e?s) /, (m, a, b) => a + (b === 'es' && !/(sh|ch|ss|x)$/.test(a) ? 'e' : '') + ' ') + '.'; }
-    else out.use = r.use;
+    // texts that name places are built when the readout is drawn, from the run it shows
+    if (r.never) { out.why = 'Everything he has.'; out.noteFn = () => (e === 'plaster' && noShake(move) ? NO_SHAKE : 'Even all-out, this move ' + (e === 'rattle' && noShake(move) ? 'through the air ' : '') + 'doesn’t ' + PRESET_WHAT[e]().replace(/^could /, '').replace(/^(\w+?)(e?s) /, (m, a, b) => a + (b === 'es' && !/(sh|ch|ss|x)$/.test(a) ? 'e' : '') + ' ').replace(/, through the ground or the air$/, '') + '.' + (e === 'rattle' && noShake(move) ? ' ' + NO_SHAKE : '')); }
+    else {
+      // a not-so-heroic preset is never gentler than the heroic default: if least disruptive already does it, use that
+      const L = resolveEffort(move, c, 'least');
+      if (L.pending) return pending(L.pending.concat(['preset:' + e]), 'that effort');
+      const lu = L.use == null ? c.F : L.use;
+      if (r.use < lu * (1 - 1e-9)) { out.use = L.use; out.whyFn = () => 'Least disruptive already does this: it ' + PRESET_WHAT[e]() + '.'; }
+      else out.use = r.use;
+    }
     return out;
   }
   const pctOf = (use, F) => (use >= F * (1 - 1e-9) ? '100%' : sig(100 * use / F, 2) + '%');
@@ -2966,13 +2988,21 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   const tinyShare = (use, F) => !isFinite(F) || use / F < 1e-4;
   // how hard: a share of his strength and the mass it would lift; at unlimited strength only the mass means anything
   const atText = (use, F) => (!tinyShare(use, F) ? pctOf(use, F) + (isFinite(use) && use < F * (1 - 1e-9) ? ' (lifting ' + fmtMass(use / g) + ')' : '') : isFinite(use) ? 'lifting ' + fmtMass(use / g) : 'unlimited strength');
-  // a hazard's onset: the middle of the search's last bracket, to two figures, so the ceiling and the list agree
+  // a hazard's onset: the middle of the search's last bracket. Shown to the same figures as the effort (atText), so an
+  // onset never reads lower than an effort the same box calls harmless, and the ceiling and the list agree.
   const onsetOf = (res) => (res.below > 0 && isFinite(res.below) && isFinite(res.use) ? Math.sqrt(res.below * res.use) : res.use);
-  const r2 = (x) => (isFinite(x) && x > 0 ? Number(x.toPrecision(2)) : x);
-  const atText2 = (use, F) => (!tinyShare(use, F) ? pctOf(use, F) + (isFinite(use) && use < F * (1 - 1e-9) ? ' (lifting ' + fmtMass(r2(use / g)) + ')' : '') : isFinite(use) ? 'lifting ' + fmtMass(r2(use / g)) : 'unlimited strength');
   const fmtReach = (d) => (d >= Math.PI * K.R_E ? 'the whole planet' : fmtDist(d));
   const amountText = (use, F) => (!tinyShare(use, F) ? pctOf(use, F) + ' of his strength' + (use < F * (1 - 1e-9) ? ' (as hard as lifting ' + fmtMass(use / g) + ')' : '') : isFinite(use) ? 'as hard as lifting ' + fmtMass(use / g) : 'all of his unlimited strength');
   let effortAdjOpen = false, hazOpen = false;
+  // the distance the courtesy ceiling assumes (solo and two-player tabs)
+  const nearField = () => { const near = el('input', { id: 'near', type: 'number', min: String(RANGES.near[0]), max: String(RANGES.near[1]), step: 'any', value: String(state.near) });
+    near.onchange = (e) => setIn('near', e.target.value);
+    return el('div', { class: 'field near-field' }, el('label', { for: 'near', text: 'Nearest people and buildings (m)' }), el('div', { class: 'inline-num' }, near)); };
+  // An effort slider in log10 kg on a 0.01 grid whose right end is exactly all-out. The browser builds the grid from
+  // the min and max strings in decimal, so both get 6 decimals and the top is rounded up (the effort is capped at his
+  // strength); the left end can sit up to 0.01 below the floor, so values shown are clamped to it.
+  const effortGrid = (hi, floorKg) => { const top = Math.ceil(hi * 1e6 - 1e-6) / 1e6, n = Math.max(1, Math.ceil((top - Math.log10(floorKg)) / 0.01 - 1e-9));
+    return { top, min: (top - n * 0.01).toFixed(6), max: top.toFixed(6), kg: (v) => Math.max(Math.pow(10, v), floorKg) }; };
   function effortFields(move, c, eff) {
     const p = eff.p;
     const sel = el('select', { id: 'effort' },
@@ -2980,23 +3010,21 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       el('optgroup', { label: 'Not so heroic' }, EFFORT_PRESETS.filter((x) => x.loud).map((x) => el('option', { value: x.id, text: x.label }))),
       el('optgroup', { label: 'Other' }, EFFORT_PRESETS.filter((x) => x.id === 'allout' || x.id === 'custom').map((x) => el('option', { value: x.id, text: x.label }))));
     sel.value = state.effort;
-    sel.onchange = (e) => { if (e.target.value === 'custom') state.effortLogKg = Math.log10((eff.use == null ? c.F : eff.use) / g); state.effort = e.target.value; update(); };
+    sel.onchange = (e) => { if (e.target.value === 'custom') { const c1 = ctx(), u = resolveEffort(move, c1).use; state.effortLogKg = Math.log10(Math.min(u == null ? c1.F : u, isFinite(c1.F) ? c1.F : 1e34 * g) / g); } state.effort = e.target.value; update(); };
     const fields = [el('div', { class: 'field effort-field' }, el('label', { for: 'effort', text: 'Effort' }), sel)];
     // the goal, the slider and the distance sit in a collapsed box, so the result comes first
     const adj = el('div', { class: 'bay-controls' });
     const G = GOALS[move];
     if (G.key) {
       const inp = el('input', { id: 'goal', type: 'number', min: String(RANGES[G.key][0]), max: String(RANGES[G.key][1]), step: 'any', value: String(state[G.key]) });
-      inp.onchange = (e) => { const v = Number(e.target.value); if (inRange(G.key, v)) state[G.key] = v; update(); };
+      inp.onchange = (e) => setIn(G.key, e.target.value);
       adj.append(el('div', { class: 'field goal-field' }, el('label', { for: 'goal', text: G.label }), el('div', { class: 'inline-num' }, inp)));
     }
-    const near = el('input', { id: 'near', type: 'number', min: '0.5', max: '1000', step: 'any', value: String(state.near) });
-    near.onchange = (e) => { const v = Number(e.target.value); if (inRange('near', v)) state.near = v; update(); };
-    adj.append(el('div', { class: 'field near-field' }, el('label', { for: 'near', text: 'Nearest people and buildings (m)' }), el('div', { class: 'inline-num' }, near)));
-    const hi = isFinite(c.F) ? Math.log10(c.F / g) : 34, lo = hi - Math.ceil((hi - Math.log10(p.lo / g)) / 0.01) * 0.01;   // the 0.01 grid ends at all-out
-    const cur = eff.use == null ? hi : Math.log10(Math.min(eff.use, isFinite(c.F) ? c.F : 1e34 * g) / g);
-    const vText = (v) => (v >= hi - 1e-9 && isFinite(c.F) ? 'All-out' : 'As hard as lifting ' + fmtMass(Math.pow(10, v)));
-    const sl = el('input', { id: 'effort-use', type: 'range', min: String(lo), max: String(hi), step: '0.01', value: String(Math.min(hi, Math.max(lo, cur))), 'aria-valuetext': eff.use == null ? 'All-out' : vText(cur) });
+    adj.append(nearField());
+    const hi = isFinite(c.F) ? Math.log10(c.F / g) : 34, G2 = effortGrid(hi, p.lo / g);
+    const cur = eff.use == null ? G2.top : Math.log10(Math.min(eff.use, isFinite(c.F) ? c.F : 1e34 * g) / g);
+    const vText = (v) => (v >= hi - 1e-9 && isFinite(c.F) ? 'All-out' : 'As hard as lifting ' + fmtMass(G2.kg(v)));
+    const sl = el('input', { id: 'effort-use', type: 'range', min: G2.min, max: G2.max, step: '0.01', value: String(Math.min(G2.top, Math.max(Number(G2.min), cur))), 'aria-valuetext': eff.use == null ? 'All-out' : vText(cur) });
     sl.oninput = (e) => { state.effort = 'custom'; state.effortLogKg = Number(e.target.value); e.target.setAttribute('aria-valuetext', vText(state.effortLogKg)); const s2 = $('#effort'); if (s2) s2.value = 'custom'; scheduleBay(); };
     adj.append(el('div', { class: 'field effort-slider' }, el('label', { for: 'effort-use', text: 'Effort (gentle ↔ all-out)' }), sl));
     const det = el('details', { class: 'effort-adjust' }, el('summary', { text: 'Adjust effort: ' + (G.key ? 'goal, ' : '') + 'distance, slider' }), adj);
@@ -3009,44 +3037,59 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const p = eff.p, M = P.RESTRAINT.MOVES[move];
     const box = el('div', { class: 'effort-read' });
     const use = eff.use == null ? c.F : eff.use;
-    fromFire = move === 'throw' && !!(p.run(eff.use).flight && p.run(eff.use).flight.relativistic);
-    const why = eff.why || { least: 'The gentlest push that ' + GOALS[move].text(goalTarget(move)) + '.', ceiling: 'The most he can use before something nearby comes to harm.', allout: 'Everything he has.', custom: 'Set by hand.' }[state.effort]
+    const r = p.run(eff.use);
+    fromFire = move === 'throw' && !!(r.flight && r.flight.relativistic);
+    fromPath = move === 'throw' && M.blastFrom(r, p.opt) === 'path';
+    const why = (eff.whyFn ? eff.whyFn() : eff.why) || { least: 'The gentlest push that ' + GOALS[move].text(goalTarget(move)) + '.', ceiling: 'The most he can use before something nearby comes to harm.', allout: 'Everything he has.', custom: 'Set by hand.' }[state.effort]
       || (PRESET_WHAT[state.effort] ? 'The least effort that ' + PRESET_WHAT[state.effort]() + '.' : '');
     box.append(el('p', {}, el('b', { text: eff.pending ? 'Effort: working it out.' : eff.use == null ? 'All-out.' : 'Effort: ' + amountText(use, c.F) + '.' }), ' ' + why));
-    if (eff.note) box.append(el('p', { class: 'warn-ink', text: eff.note }));
+    const note = eff.noteFn ? eff.noteFn() : eff.note;
+    if (note) box.append(el('p', { class: 'warn-ink', text: note }));
     // the courtesy ceiling, once the hazard searches are done (or now, if the preset needed it)
     const haz = P.RESTRAINT.HAZARDS.map((h) => p.result('hazard:' + h.id));
     if (haz.every(Boolean)) {
-      const r = p.run(eff.use), rc = P.RESTRAINT.reach(move, r, p.opt);
+      const rc = P.RESTRAINT.reach(move, r, p.opt);
       const ce = p.ceiling();
+      // a hazard the search called 'never' can still happen in a narrow window of efforts between its grid points
+      const missed = P.RESTRAINT.HAZARDS.filter((h) => p.result('hazard:' + h.id).never && h.test(M, r, p.opt));
+      // where an air blast at the ceiling comes from: for a throw, the landing or his throw itself
+      const airFrom = (rr) => (M.where !== 'where it lands' ? 'away' : rr.flight && rr.flight.relativistic ? 'from the fireball' : M.blastFrom(rr, p.opt) === 'path' ? 'from him' : 'from where it lands');
       let t;
-      if (!ce.by) t = 'Courtesy ceiling: none. Nothing this move does harms anyone ' + fmtDist(state.near) + ' or more away' + (isFinite(c.F) ? ', even all-out.' : ' at any finite strength.');
-      else if (!(ce.below > 0)) t = 'Courtesy ceiling: none. Even the gentlest try means ' + EFF_HAZ[ce.by].what + '.';
-      else t = 'Courtesy ceiling: ' + atText2(onsetOf(ce), c.F) + '. Past that, ' + EFF_HAZ[ce.by].what + (ce.by === 'air' || ce.by === 'plaster' ? ' ' + fmtDist(state.near) + ' ' + (M.where === 'where it lands' ? 'from where it lands' : 'away') : '') + '.';
+      if (!ce.by && missed.length) t = 'Courtesy ceiling: none found by the search, but at this effort ' + hazText(missed[0].id, move).what + ' (a narrow window of efforts between the points the search tries).';
+      else if (!ce.by) t = 'Courtesy ceiling: none. Nothing the lab checks for this move harms anyone ' + fmtDist(state.near) + ' or more away' + (isFinite(c.F) ? ', even all-out.' : ' at any finite strength.') + (noShake(move) ? ' It doesn’t model the ground shaking from this move.' : '');
+      else if (!(ce.below > 0)) t = 'Courtesy ceiling: none. Even the gentlest try means ' + hazText(ce.by, move).what + '.';
+      else t = 'Courtesy ceiling: ' + atText(onsetOf(ce), c.F) + '. Past that, ' + hazText(ce.by, move).what + (ce.by === 'air' ? ' ' + fmtDist(state.near) + ' ' + airFrom(p.run(ce.use)) : ce.by === 'plaster' ? ' ' + fmtDist(state.near) + ' ' + (M.where === 'where it lands' ? 'from where it lands' : 'away') : '') + '.';
+      // a switch that rules a hazard out changes the ceiling, so name it here too, not only in the folded list
+      const offBy = { crush: move === 'throw' && state.gentleHold ? 'Gentle hold' : null, boom: (move === 'punch' || move === 'clap') && state.silentStrike ? 'Silent strike' : null, air: (move === 'punch' || move === 'clap') && state.silentStrike ? 'Silent strike' : null };
+      const OFF_NAME = { crush: 'a crushed object', boom: 'the sonic boom', air: 'the air blast' }, offs = {};
+      for (const h of P.RESTRAINT.HAZARDS) if (offBy[h.id] && p.result('hazard:' + h.id).never) (offs[offBy[h.id]] = offs[offBy[h.id]] || []).push(OFF_NAME[h.id]);
+      for (const [sw, hs] of Object.entries(offs)) t += ' ' + sw + ' is on, so it leaves out ' + hs.join(' and ') + '.';
       box.append(el('p', { text: t }));
-      if (state.absorb !== 'ocean' && ((move === 'punch' || move === 'clap') && state.silentStrike || move === 'jump' && state.softLanding || move === 'throw' && state.coolFlight)) box.append(el('p', { class: 'muted', text: 'The courtesy ceiling covers the move itself, not the growth what-if below.' }));
+      // only when a growth what-if is actually shown below
+      const grows = state.absorb !== 'ocean' && ((move === 'punch' || move === 'clap') && state.silentStrike && r.mach >= 1 || move === 'jump' && state.softLanding && r.landing && r.landing.landed || move === 'throw' && state.coolFlight && r.dragLoss != null);
+      if (grows) box.append(el('p', { class: 'muted', text: 'The courtesy ceiling covers the move itself, not the growth what-if below.' }));
       if (move === 'throw' && objById(state.obj).passenger) box.append(el('p', { class: 'muted', text: 'For a person this covers the launch and the air in flight only. The landing is a fall unless someone catches them, and the lab doesn’t count it.' }));
       if (ce.by && use > ce.below * (1 + 1e-6)) box.append(status('warn', 'Above the courtesy ceiling'));
-      const pres = P.RESTRAINT.PRESETS.map((x) => [x.id, p.result('preset:' + x.id)]);
-      if (pres.every(([, x]) => x)) {
-        const already = pres.filter(([id, x]) => id !== state.effort && !x.never && x.use <= use * (1 + 1e-6) && !(x.onlyUnlimited && isFinite(use)));
-        if (already.length) box.append(el('p', { text: 'At this effort it also ' + already.map(([id]) => PRESET_WHAT[id]()).join('; ') + '.' }));
-      }
+      // what this effort does, tested on the run shown (a hazard can switch off again at higher effort)
+      const already = P.RESTRAINT.PRESETS.filter((x) => x.id !== state.effort && x.test(M, r, p.opt));
+      if (already.length) box.append(el('p', { text: 'At this effort it also ' + already.map((x) => PRESET_WHAT[x.id]()).join('; ') + '.' }));
       const items = [];
-      const offBy = { crush: move === 'throw' && state.gentleHold ? 'Gentle hold' : null, boom: (move === 'punch' || move === 'clap') && state.silentStrike ? 'Silent strike' : null, air: (move === 'punch' || move === 'clap') && state.silentStrike ? 'Silent strike' : null };
       for (const h of P.RESTRAINT.HAZARDS) {
-        const res = p.result('hazard:' + h.id);
-        if (res.never && offBy[h.id]) { items.push(el('li', {}, el('b', { text: EFF_HAZ[h.id].name }), ': never, because ' + offBy[h.id] + ' is on.')); continue; }
+        const res = p.result('hazard:' + h.id), H = hazText(h.id, move);
+        if (res.never && offBy[h.id]) { items.push(el('li', {}, el('b', { text: H.name }), ': never, because ' + offBy[h.id] + ' is on.')); continue; }
+        if (res.never && missed.includes(h)) { items.push(el('li', {}, el('b', { text: H.name }), ': happens now, though the search found no start for it (a narrow window of efforts between the points it tries).')); continue; }
         if (res.never) continue;
-        const from = res.onlyUnlimited ? 'only at unlimited strength' : res.atLowest ? 'at any effort' : 'from ' + atText2(onsetOf(res), c.F);
+        const from = res.onlyUnlimited ? 'only at unlimited strength' : res.atLowest ? 'at any effort' : 'from ' + atText(onsetOf(res), c.F);
         let now;
-        if (h.id === 'air') now = rc.air > 0.05 ? 'now out to ' + fmtReach(rc.air) + (rc.air >= Math.PI * K.R_E ? '' : ' ' + (M.where === 'where it lands' ? (fromFire ? 'from the fireball' : 'from where it lands') : 'from him')) : 'not now';
+        if (h.id === 'air') now = rc.air > 0.05 ? 'now out to ' + fmtReach(rc.air) + (rc.air >= Math.PI * K.R_E ? '' : ' ' + (M.where === 'where it lands' ? airFrom(r) : 'from him')) : 'not now';
         else if (h.id === 'plaster') now = rc.plaster > 0.05 ? 'now out to ' + fmtReach(rc.plaster) + (M.where === 'where it lands' && rc.plaster < Math.PI * K.R_E ? ' from where it lands' : '') : 'not now';
+        else if (h.id === 'slide') now = rc.slide >= state.near ? 'now he slides ' + fmtDist(rc.slide) : 'not now';
         else now = rc[h.id] ? 'happens now' : 'not now';
-        items.push(el('li', {}, el('b', { text: EFF_HAZ[h.id].name }), ' ' + (h.id === 'air' || h.id === 'plaster' ? 'at ' + fmtDist(state.near) + ' ' : '') + from + '; ' + now + '.'));
+        items.push(el('li', {}, el('b', { text: H.name }), ' ' + (h.id === 'air' || h.id === 'plaster' ? 'at ' + fmtDist(state.near) + ' ' : '') + from + '; ' + now + '.'));
       }
+      if (noShake(move)) items.push(el('li', {}, el('b', { text: 'Ground shaking' }), ': not modelled for this move.'));
       const det = el('details', { class: 'haz-list' }, el('summary', { text: items.length ? 'Where each hazard starts (' + items.length + ')' : 'Hazards checked' }),
-        items.length ? el('ul', {}, items) : el('p', { class: 'muted', text: 'None of the hazards the lab checks (a sonic boom, an air blast loud enough to risk damage, ground shaking that may crack plaster, broken ground, a crushed object, a thrown person pressed past ride limits) can happen in this move at this strength.' }));
+        items.length ? el('ul', {}, items) : el('p', { class: 'muted', text: 'The searches found none of the hazards the lab checks (a sonic boom, an air blast loud enough to risk damage, ground shaking that may crack plaster, broken ground, a crushed object, a thrown person pressed past ride limits, his recoil shoving him past the nearest people) in this move at this strength.' }));
       det.open = hazOpen;
       det.addEventListener('toggle', () => { hazOpen = det.open; });
       box.append(det);
@@ -3086,7 +3129,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const sy = (v) => h - padB - (Math.log10(Math.min(v1, Math.max(v0, v))) - Math.log10(v0)) / (Math.log10(v1) - Math.log10(v0)) * (h - padT - padB);
     const svg = sv('svg', { viewBox: `0 0 ${w} ${h}`, role: 'img', 'aria-label': 'Ground shaking against distance, with the thresholds' });
     const xR = w - padR;
-    for (const d of [1, 10, 100, 1000, 10000]) { svg.append(sv('line', { x1: sx(d), x2: sx(d), y1: padT, y2: h - padB, class: 'axis' })); svg.append(sv('text', { x: sx(d), y: h - padB + 16, 'text-anchor': d === 10000 ? 'end' : 'middle' }, fmtDist(d))); }
+    // on a narrow phone '1 km' would run into the end-anchored '10 km': its gridline stays, its label goes
+    for (const d of [1, 10, 100, 1000, 10000]) { svg.append(sv('line', { x1: sx(d), x2: sx(d), y1: padT, y2: h - padB, class: 'axis' })); if (d !== 1000 || w >= 380) svg.append(sv('text', { x: sx(d), y: h - padB + 16, 'text-anchor': d === 10000 ? 'end' : 'middle' }, fmtDist(d))); }
     for (const v of [1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1]) { svg.append(sv('line', { x1: padL, x2: xR, y1: sy(v), y2: sy(v), class: 'axis' })); svg.append(sv('text', { x: padL - 6, y: sy(v) + 4, 'text-anchor': 'end' }, fmtPPV(v))); }
     svg.append(sv('text', { x: xR, y: h - 4, 'text-anchor': 'end' }, 'distance from his foot →'));
     const ths = walkOrder(THc);
@@ -3148,7 +3192,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     sl.oninput = (e) => { state.stepEffort = Number(e.target.value); slLbl.textContent = 'Effort per step: ' + stepWord(state.stepEffort); e.target.setAttribute('aria-valuetext', stepWord(state.stepEffort) + ' steps'); scheduleBay(); };
     ctl.append(el('div', { class: 'field effort-slider' }, slLbl, sl, el('div', { class: 'scale-ends' }, el('span', { text: 'Soft-footed (least disruptive)' }), el('span', { text: 'Heavy, stamping' }))));
     const dIn = el('input', { id: 'walk-d', type: 'number', min: '0.5', max: '10000', step: 'any', value: String(state.walkD) });
-    dIn.onchange = (e) => { const v = Number(e.target.value); if (inRange('walkD', v)) state.walkD = v; update(); };
+    dIn.onchange = (e) => setIn('walkD', e.target.value);
     ctl.append(el('div', { class: 'field near-field' }, el('label', { for: 'walk-d', text: 'Listener’s distance from his foot (m)' }), el('div', { class: 'inline-num' }, dIn)));
     out.push(ctl);
     // can they walk at all?
@@ -3179,7 +3223,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       tile('Pace', speedOnly(st.v), sig(st.stepRate, 2) + ' steps a second'),
       tile('Load on each step', sig(st.kLoad, 2) + '× his weight', 'plus a landing pulse of ' + sig(st.Fpulse / st.W, 2) + '× over ' + fmtTime(st.Tpulse)),
       tile('Ground under each step', fmtSI(st.pressure, 'Pa'), (c.groundHolds ? 'comic ground' : (st.ratio > 1 ? fmtRatio(st.ratio) : sig(100 * st.ratio, 2) + '% of') + ' what ' + sf.short + ' bears' + (st.ratio > 1 && sf.granular ? ' by the textbook rule; sand takes shallow prints instead (see Footprint)' : '')) + (st.peakRatio > 1 && !c.groundHolds && st.peakRatio > st.ratio * 1.2 ? '; the landing peaks at ' + fmtSI(st.peakPressure, 'Pa') : '') + (both ? ' (Rex)' : '')),
-      tile('Footprint', printText(st.footprint), 'estimate' + (both ? ' (Rex)' : '')),
+      tile('Footprint', printText(st.footprint), (st.footprint.extrapolated ? 'estimate, extrapolated: the step presses harder than the 350 kPa of the measured elephant print the rule is fitted to' : 'estimate') + (both ? ' (Rex)' : '')),
     ];
     if (!st.modelled) {
       out.push(verdict('On ' + sf.short + ' the lab doesn’t model ground shaking.'));
@@ -3195,7 +3239,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const hit = WALK_TH.filter(over).sort((a, b) => TH[a] - TH[b]);
     let vt = 'At ' + fmtDist(D0) + ', ' + (both ? 'their' : walkers[0][0] + '’s') + ' ' + stepWord(state.stepEffort) + ' steps shake the ground at ' + fmtPPV(v) + ' up and down.';
     const SHORT_LABEL = (k) => (k === 'footing' ? 'Loose things hop off the ground (1 g up and down)' : VIB_LABEL[k]);
-    vt += hit.length ? ' ' + SHORT_LABEL(hit[hit.length - 1]) + '.' : vH >= 0.5 * TH.shimmer ? ' Close to what a glass of water shows.' : ' Too little to notice.';
+    vt += hit.length ? ' ' + SHORT_LABEL(hit[hit.length - 1]) + '.' : vH >= 0.5 * TH.shimmer ? ' Close to what makes a glass of water ripple, by our estimate (never measured).' : ' Too little to notice.';
     out.push(verdict(vt));
     out.push(el('div', { class: 'status-row' }, hit.map((k) => status(k === 'plasterWalk' || k === 'footing' ? 'bad' : k === 'rattle' ? 'warn' : 'info', SHORT_LABEL(k))),
       printChip(pres.map((x) => x.pr.step.footprint))));
@@ -3206,9 +3250,11 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const sandSf = D.surfaces.find((x) => x.id === 'sand'), firmSf = Object.assign({}, sandSf, { id: 'firmsand' });
     const ratioOn = (s0) => (both ? 2 : 1) * Math.max(...pres.map((x) => P.presence(x.b, s0, o).ppv(dE))) / P.elephantPPV(dE);
     const rLo = ratioOn(firmSf), rHi = ratioOn(sandSf);
+    // the model's check against the person recorded at the same station (Steinmann 2025: about 0.002 mm/s at 53 m)
+    const manB = P.makeBody({ build: 'human', H: 1.75, m: objById('person').m }), manAt53 = [firmSf, sandSf].map((s0) => P.presence(manB, s0, { effort: 0.5 }).ppv(53));
     const xTimes = (r) => (r >= 1 ? sig(r, 1) + '×' : sig(1 / r, 1) + '× quieter than');
     const elText = rLo >= 0.7 && rHi <= 1.5 ? 'about the same' : rLo >= 1 ? sig(rLo, 1) + '–' + sig(rHi, 1) + '× the elephant' : rHi <= 1 ? sig(1 / rHi, 1) + '–' + sig(1 / rLo, 1) + '× quieter' : xTimes(rLo) + ' to ' + xTimes(rHi) + ' the elephant';
-    const elSub = 'estimate: the elephant was measured at 20 m on sandy ground of unknown stiffness; this puts ' + (both ? 'them' : walkers[0][0]) + ' on firm to loose sand and scales it as 1 ÷ distance' + (dE !== EL.d ? ' to ' + fmtDist(dE) : '');
+    const elSub = 'estimate: the elephant was measured at 20 m on sandy ground of unknown stiffness; this puts ' + (both ? 'them' : walkers[0][0]) + ' on firm to loose sand and scales it as 1 ÷ distance' + (dE !== EL.d ? ' to ' + fmtDist(dE) : '') + (dE !== D0 ? '; compared at ' + fmtDist(dE) + ', since the elephant rule holds only from ' + fmtDist(EL.dMin) + ' to ' + fmtDist(EL.dMax) : '');
     out.push(tiles(
       tile('Ground shaking at ' + fmtDist(D0), fmtPPV(v), 'peak, up and down' + (both ? '; both in step' : '') + ' · estimate, about 3–5× either way'),
       tile('Compared with an elephant', elText, elSub),
@@ -3251,9 +3297,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     out.push(callout(tgt.join(' ')));
     const gd = P.groundOf(sf);
     out.push(math([
-      'Pace: people’s gait scaled to his size at the same Froude number v²/(g h), hip height h = ' + sig(st.h, 3) + ' m (0.45 of his height, our estimate). Froude ' + st.Fr + ' → ' + speedOnly(st.v) + ', ' + sig(st.stepRate, 2) + ' steps a second (0.789 Fr^0.211 √(g/h), fitted to people at Froude 0.09–0.37), each foot down ' + fmtTime(st.stance) + '.',
-      'Load: ' + sig(st.kLoad, 2) + '× body weight comes onto the foot over ' + fmtTime(st.tRamp) + ' (people: 1.2 at 1.5 m/s, rising 0.25 per m/s; Keller 1996, Nilsson & Thorstensson 1989). The landing adds a pulse of ' + sig(st.Fpulse / st.W, 2) + '× his weight lasting ' + fmtTime(st.Tpulse) + ': an ordinary heel strike stops 11% of him at ' + speedOnly(st.heelV) + ' in ' + fmtTime(st.heelT) + ' (Baines 2018: 0.57 m/s in 30 ms for people, scaled by √(hip height ÷ 0.9 m)); soft-footed 0.51 of that (Yoon 2025, walking quietly at the same speed); a drill stamp 6.5× (Carden 2015).',
-      'Ground shaking (elastic ground, Lamb’s problem): for a pulse of peak F lasting T, PPV = max(0.375 F/(ρ c² T r), 0.620 F/(ρ c^2.5 T^1.5 √r)) × damping, with ρ = ' + gd.rho + ' kg/m³, shear-wave speed c = ' + gd.cs + ' m/s and damping ' + gd.xi + ' for ' + sf.short + ' (estimates). Checked against one drop test (130 kg at Pisa: within about 2× from 2.5 to 60 m, contact time fitted), against one recorded person walking past (Steinmann 2025: about 0.002 mm/s at 53 m on sandy ground; the model gives 0.0012 for an average man) and loosely against elephant footfalls. Uncertain by about 3–5× either way, more past 60 m.',
+      'Pace: people’s gait scaled to his size at the same Froude number v²/(g h), hip height h = ' + sig(st.h, 3) + ' m (0.45 of his height, our estimate). Froude ' + st.Fr + ' → ' + speedOnly(st.v) + ', ' + sig(st.stepRate, 2) + ' steps a second (0.789 Fr^0.211 √(g/h), fitted to people at Froude 0.09–0.37' + (st.Fr > 0.37 ? '; this pace is past that range, so it is extrapolated' : '') + '), each foot down ' + fmtTime(st.stance) + '.',
+      'Load: ' + sig(st.kLoad, 2) + '× body weight comes onto the foot over ' + fmtTime(st.tRamp) + ' (people: 1.2 at 1.5 m/s, rising 0.25 per m/s; Keller 1996, Nilsson & Thorstensson 1989). The landing adds a pulse of ' + sig(st.Fpulse / st.W, 2) + '× his weight lasting ' + fmtTime(st.Tpulse) + ': an ordinary heel strike stops 11% of him at ' + speedOnly(st.heelV) + ' in ' + fmtTime(st.heelT) + ' (Baines 2018: 0.57 m/s in 30 ms for people, scaled by √(hip height ÷ 0.9 m)); soft-footed 0.51 of that (Yoon 2025, walking quietly at the same speed); a drill stamp 6.5× (Carden 2015). The heel strike is the one measured at people’s preferred speed (about 1.3 m/s), used at every pace: pace changes only the load and the step rate, so the shaking barely changes with it.',
+      'Ground shaking (elastic ground, Lamb’s problem): for a pulse of peak F lasting T, PPV = max(0.375 F/(ρ c² T r), 0.620 F/(ρ c^2.5 T^1.5 √r)) × damping, with ρ = ' + gd.rho + ' kg/m³, shear-wave speed c = ' + gd.cs + ' m/s and damping ' + gd.xi + ' for ' + sf.short + ' (estimates). Checked against one drop test (130 kg at Pisa: within about 2× from 2.5 to 60 m, contact time fitted), against one recorded person walking past (Steinmann 2025: about 0.002 mm/s at 53 m on sandy ground; the model gives ' + manAt53.map((x) => sig(x * 1000, 2)).join('–') + ' mm/s for an ordinary step by a ' + fmtMass(objById('person').m) + ' man, the lab’s average US man, on firm to loose sand: within ' + sig(Math.max(...manAt53.map((x) => Math.max(x / 2e-6, 2e-6 / x))), 2) + '× of it) and loosely against elephant footfalls. Uncertain by about 3–5× either way, more past 60 m.',
     ]));
     return out;
   }
@@ -3290,10 +3336,16 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       if (move === 'throw') {
         const cA = state.wrestleWho === 'ollie' ? cO : cR, cB = state.wrestleWho === 'ollie' ? cR : cO;
         const t = P.throwPartner(cA, cB, state.angle);
-        duoSig = fp(t.r && t.r.v, t.r && t.r.sinkRatio);
+        duoSig = fp(t.r && t.r.v, t.r && t.r.sinkRatio, t.r && t.r.recoilV);
         if (!t.r || !t.r.canMove) return null;
-        // the landing counts as a blast only if it is supersonic (the solo throw's rule)
-        return t.r.v >= K.a0 ? 'the throw breaks the sound barrier' : win(P.RESTRAINT.MOVES.throw.blast(t.r)) ? 'the landing’s air blast risks damage ' + fmtDist(near) + ' away' : t.r.sinkRatio > 1 ? 'the ground gives way under the thrower' : null;
+        // the solo throw's rules: a blast only past Mach 1, the landing's ground shaking, the ground under him (not in
+        // soil, where his feet only sink in) and his own recoil slide
+        const M = P.RESTRAINT.MOVES.throw, mo = { obj: t.obj, surface: cA.surface, body: cA.body, anchor: cA.anchor, groundHolds: cA.groundHolds, angle: state.angle, near };
+        if (t.r.v >= K.a0 || (t.r.recoilV || 0) >= K.a0) return 'the throw breaks the sound barrier';
+        if (win(M.blast(t.r, mo))) return 'the landing’s air blast risks damage ' + fmtDist(near) + ' away';
+        if (P.plasterOver(M.shake(t.r, mo), near)) return 'the landing shakes the ground enough that plaster may crack ' + fmtDist(near) + ' from where he lands';
+        if (!cA.groundHolds && M.ground(t.r, mo)) return 'the ground gives way under the thrower';
+        return slides(M.slide(t.r, mo));
       }
       return null;
     }
@@ -3349,6 +3401,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     return { over: n > P.PASSENGER.noHarm(t), where: 'catch', n, t, limit: P.PASSENGER.noHarm(t) };
   }
   const duoPlans = new Map();
+  // how long the last search step took, per test: when one takes longer than a render's budget, searches start in the background
+  const duoStepMs = {};
   function duoPlanFor(act) {
     const key = duoKey(act);
     let p = duoPlans.get(key);
@@ -3376,7 +3430,17 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     // 5% is close enough for the shared effort: each probe runs the whole test
     const s = lo < hi ? P.RESTRAINT.search((u) => !!harmAt(u), lo, hi, !isFinite(hiF), same, 0.05) : null;
     p = { act, key, lo, hi, s, harmAt, done: !s };
-    p.step = () => { if (p.done) return true; s.step(); if (s.use !== undefined) p.done = true; return p.done; };
+    p.step = () => {
+      if (p.done) return true;
+      const t0 = performance.now();
+      // the all-out probe that same() compares with, and the unlimited one, each get a step of their own, so no step
+      // runs more than one full test
+      if (!s.bisect && s.i > 0 && !memo.has(hi)) harmAt(hi);
+      else if (!s.bisect && s.i > 0 && !isFinite(hiF) && !memo.has('inf')) harmAt(Infinity);
+      else { s.step(); if (s.use !== undefined) p.done = true; }
+      duoStepMs[act] = performance.now() - t0;
+      return p.done;
+    };
     duoPlans.set(key, p);
     if (duoPlans.size > 30) duoPlans.delete(duoPlans.keys().next().value);
     return p;
@@ -3404,11 +3468,11 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     else if (state.duoEffort === 'least' && p.s) {
       const t0 = performance.now();
       while (!p.done) {
-        if (dialMoving() || performance.now() - t0 > EFFORT_BUDGET) { stepDuoPlan(p); return { p, use: Infinity, note: null, harm: null, pending: true }; }
+        if (dialMoving() || performance.now() - t0 > EFFORT_BUDGET || (duoStepMs[act] || 0) > EFFORT_BUDGET) { stepDuoPlan(p); return { p, use: Infinity, note: null, harm: null, pending: true }; }
         p.step();
       }
       if (p.s.never) use = Infinity;
-      else if (!(p.s.below > 0)) { use = p.lo; note = state.oEffortOwn ? 'Ollie’s own what-if effort does it at any shared effort: ' + p.harmAt(p.lo) + '.' : 'Nothing is harmless here: even at the least they need to stand, ' + p.harmAt(p.lo) + '.'; }
+      else if (!(p.s.below > 0)) { use = p.lo; note = state.oEffortOwn ? 'Ollie’s own what-if effort does it at any shared effort: ' + p.harmAt(p.lo) + '.' : 'Nothing is harmless here: even at the least they need to stand and walk, ' + p.harmAt(p.lo) + '.'; }
       else use = p.s.below;
     }
     const harm = p.harmAt(use);
@@ -3418,27 +3482,29 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const FR = fullF('R');
     const sel = el('select', { id: 'duo-effort' }, [['least', 'Least disruptive (default)'], ['allout', 'All-out'], ['custom', 'Custom (use the slider)']].map(([v, t]) => el('option', { value: v, text: t })));
     sel.value = state.duoEffort;
-    sel.onchange = (e) => { if (e.target.value === 'custom') state.duoLogKg = Math.log10(Math.min(eff.use, isFinite(FR) ? FR : 1e34 * g) / g); state.duoEffort = e.target.value; update(); };
-    const hi = Math.log10(eff.p.hi / g), lo = hi - Math.ceil((hi - Math.log10(eff.p.lo / g)) / 0.01) * 0.01;   // the 0.01 grid ends at all-out
-    const cur = isFinite(eff.use) ? Math.log10(eff.use / g) : hi;
-    const vText = (v) => (v >= hi - 1e-9 && isFinite(eff.p.hi) && hi >= Math.log10(FR / g) - 1e-9 ? 'All-out' : 'Each as hard as lifting ' + fmtMass(Math.pow(10, v)));
-    const sl = el('input', { id: 'duo-effort-use', type: 'range', min: String(lo), max: String(Math.max(hi, lo + 0.01)), step: '0.01', value: String(Math.min(hi, Math.max(lo, cur))), 'aria-valuetext': isFinite(eff.use) ? vText(cur) : 'All-out' });
+    // the shared effort the page shows now (the controls can be older than the last render)
+    const nowLog = () => { const u = resolveDuoEffort(act).use; return Math.log10(Math.min(u, isFinite(FR) ? FR : 1e34 * g) / g); };
+    sel.onchange = (e) => { if (e.target.value === 'custom') state.duoLogKg = nowLog(); state.duoEffort = e.target.value; update(); };
+    const hi = Math.log10(eff.p.hi / g), G2 = effortGrid(hi, eff.p.lo / g);
+    const cur = isFinite(eff.use) ? Math.log10(eff.use / g) : G2.top;
+    const vText = (v) => (v >= hi - 1e-9 && isFinite(eff.p.hi) && hi >= Math.log10(FR / g) - 1e-9 ? 'All-out' : 'Each as hard as lifting ' + fmtMass(G2.kg(v)));
+    const sl = el('input', { id: 'duo-effort-use', type: 'range', min: G2.min, max: G2.max, step: '0.01', value: String(Math.min(G2.top, Math.max(Number(G2.min), cur))), 'aria-valuetext': isFinite(eff.use) ? vText(cur) : 'All-out' });
     sl.oninput = (e) => { state.duoEffort = 'custom'; state.duoLogKg = Number(e.target.value); e.target.setAttribute('aria-valuetext', vText(state.duoLogKg)); const s2 = $('#duo-effort'); if (s2) s2.value = 'custom'; scheduleBaySlow(); };
-    const own = el('label', { class: 'check', style: 'margin-top:0' }, el('input', { type: 'checkbox', id: 'o-effort-own', checked: state.oEffortOwn ? true : null, onchange: (e) => { state.oEffortOwn = e.target.checked; if (state.oEffortOwn) state.oEffortLogKg = cur; update(); } }), el('span', { text: 'What-if: Ollie sets his own effort' }));
-    const adj = el('div', { class: 'bay-controls' }, el('div', { class: 'field effort-slider' }, el('label', { for: 'duo-effort-use', text: 'Effort (gentle ↔ all-out)' }), sl), el('div', { class: 'field near-field' }, own));
-    const det = el('details', { class: 'effort-adjust' }, el('summary', { text: 'Adjust effort: slider, Ollie’s own' }), adj);
+    const own = el('label', { class: 'check', style: 'margin-top:0' }, el('input', { type: 'checkbox', id: 'o-effort-own', checked: state.oEffortOwn ? true : null, onchange: (e) => { state.oEffortOwn = e.target.checked; if (state.oEffortOwn) state.oEffortLogKg = Math.min(G2.top, nowLog()); update(); } }), el('span', { text: 'What-if: Ollie sets his own effort' }));
+    const adj = el('div', { class: 'bay-controls' }, el('div', { class: 'field effort-slider' }, el('label', { for: 'duo-effort-use', text: 'Effort (gentle ↔ all-out)' }), sl), nearField(), el('div', { class: 'field near-field' }, own));
+    const det = el('details', { class: 'effort-adjust' }, el('summary', { text: 'Adjust effort: slider, distance, Ollie’s own' }), adj);
     det.open = effortAdjOpen || state.oEffortOwn;
     det.addEventListener('toggle', () => { effortAdjOpen = det.open; });
     const fields = [el('div', { class: 'field effort-field' }, el('label', { for: 'duo-effort', text: 'Effort (one for both)' }), sel), det];
     if (state.oEffortOwn) {
-      const oText = (v) => 'Ollie as hard as lifting ' + fmtMass(Math.pow(10, v));
-      const so = el('input', { id: 'o-effort-use', type: 'range', min: String(lo), max: String(Math.max(hi, lo + 0.01)), step: '0.01', value: String(Math.min(hi, Math.max(lo, state.oEffortLogKg))), 'aria-valuetext': oText(state.oEffortLogKg) });
+      const oText = (v) => 'Ollie as hard as lifting ' + fmtMass(G2.kg(v));
+      const so = el('input', { id: 'o-effort-use', type: 'range', min: G2.min, max: G2.max, step: '0.01', value: String(Math.min(G2.top, Math.max(Number(G2.min), state.oEffortLogKg))), 'aria-valuetext': oText(state.oEffortLogKg) });
       so.oninput = (e) => { state.oEffortLogKg = Number(e.target.value); e.target.setAttribute('aria-valuetext', oText(state.oEffortLogKg)); scheduleBaySlow(); };
       adj.append(el('div', { class: 'field effort-slider' }, el('label', { for: 'o-effort-use', text: 'Ollie’s effort (what-if)' }), so));
     }
     const read = el('div', { class: 'effort-read' });
     const capped = isFinite(eff.use) && eff.use < FR * (1 - 1e-9);
-    const oKg = Math.pow(10, state.oEffortLogKg);
+    const oKg = G2.kg(state.oEffortLogKg);
     const each = state.oEffortOwn ? ' (Rex as hard as lifting ' + fmtMass(eff.use / g) + ', Ollie ' + fmtMass(oKg) + ')' : ' (each as hard as lifting ' + fmtMass(eff.use / g) + ')';
     const noCap = state.duoEffort === 'least' && eff.p.s && eff.p.s.never;
     if (eff.pending) {
@@ -3448,13 +3514,13 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const withEach = capped && !tinyShare(eff.use, FR) || state.oEffortOwn && capped;
     const head = el('p', {}, el('b', { text: noCap ? 'All-out: no cap needed.' : capped ? 'Effort: ' + (!tinyShare(eff.use, FR) ? pctOf(eff.use, FR) + ' of their strength' : 'as hard as lifting ' + fmtMass(eff.use / g)) + (withEach ? '' : '.') : 'All-out.' }),
       withEach ? each + '.' : '');
-    head.append(' ' + (noCap ? 'Nothing the lab checks in this test can do harm here, so they go all-out.' : eff.note ? 'The least they need to stand; nothing gentler exists.' : { least: 'The hardest both can go while nothing around them breaks.', allout: 'Everything they have.', custom: 'Set by hand.' }[state.duoEffort]));
+    head.append(' ' + (noCap ? 'Nothing the lab checks in this test can do harm here (nearest people and buildings ' + fmtDist(state.near) + ' away), so they go all-out.' : eff.note ? 'The least they need to stand and walk; nothing gentler exists.' : { least: 'The hardest both can go while nothing around them breaks.', allout: 'Everything they have.', custom: 'Set by hand.' }[state.duoEffort]));
     read.append(head);
     if (eff.note) read.append(el('p', { class: 'warn-ink', text: eff.note }));
     if (eff.p.s && eff.p.done) {
       const s0 = eff.p.s;
-      read.append(el('p', { text: s0.never ? 'Courtesy ceiling: none. Nothing in this test harms anything nearby' + (isFinite(fullF('R')) ? ', even all-out.' : '.')
-        : !(s0.below > 0) ? 'Courtesy ceiling: none. ' + (state.oEffortOwn ? 'With Ollie’s own effort, ' : 'Even at the least they need to stand, ') + eff.p.harmAt(s0.use) + '.'
+      read.append(el('p', { text: s0.never ? 'Courtesy ceiling: none. Nothing in this test does harm' + (isFinite(fullF('R')) ? ', even all-out,' : '') + ' with the nearest people and buildings ' + fmtDist(state.near) + ' away.'
+        : !(s0.below > 0) ? 'Courtesy ceiling: none. ' + (state.oEffortOwn ? 'With Ollie’s own effort, ' : 'Even at the least they need to stand and walk, ') + eff.p.harmAt(s0.use) + '.'
           : 'Courtesy ceiling: ' + atText(s0.below, FR) + '. Past that, ' + eff.p.harmAt(s0.use) + '.' }));
     }
     if (eff.harm) read.append(status('warn', 'At this effort ' + eff.harm));
@@ -3476,7 +3542,11 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     bay.setAttribute('aria-labelledby', 'tab-' + act);
     bay.classList.toggle('enter', lastBayAction !== act);
     lastBayAction = act;
-    const focusId = document.activeElement && bay.contains(document.activeElement) ? document.activeElement.id : null;
+    // where keyboard focus is, to put it back after the redraw: by id, else by what the control is (a summary has no id)
+    const FOC = 'summary, input, select, button, a[href]';
+    const focKey = (x) => (x.id ? '#' + x.id : x.tagName + '|' + (x.parentElement ? x.parentElement.className : '') + '|' + x.textContent.replace(/\(\d+\)/g, '').slice(0, 24));
+    const focEl = document.activeElement && document.activeElement !== bay && bay.contains(document.activeElement) ? document.activeElement : null;
+    const focusId = focEl ? focEl.id : null, focusKey = focEl ? focKey(focEl) : null, focusIdx = focEl ? Array.from(bay.querySelectorAll(FOC)).indexOf(focEl) : -1;
     let parts;
     bayPending = false;
     try {
@@ -3525,9 +3595,11 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       }
       while (old.nextSibling) old.nextSibling.remove();
       old.after(...parts.slice(1));
-    } else {
-      bay.replaceChildren(...parts);
-      if (focusId && document.getElementById(focusId)) document.getElementById(focusId).focus();
+    } else bay.replaceChildren(...parts);
+    if (focEl && !bay.contains(document.activeElement)) {
+      const all = Array.from(bay.querySelectorAll(FOC));
+      const to = (focusId && document.getElementById(focusId)) || all.find((x) => focKey(x) === focusKey) || all[focusIdx];
+      if (to) to.focus({ preventScroll: true });
     }
     const vd = bay.querySelector('.verdict');
     clearTimeout(liveTimer);

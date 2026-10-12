@@ -16,8 +16,8 @@ const CHROME = [process.env.CHROME, '/opt/pw-browsers/chromium-1194/chrome-linux
   const browser = await chromium.launch({ executablePath: CHROME });
   const only = process.argv[2];
   let problems = 0;
-  // 1280 px and 390 px, light and dark; every tab. Fails on horizontal scroll, console errors, or broken numbers
-  // (NaN, undefined, a bare Infinity) in the page text.
+  // 1280 px and 390 px, light and dark; every tab. Fails on horizontal scroll (on any tab), console errors, or broken
+  // numbers (NaN, undefined, a bare Infinity) in the page text.
   const SOLO = ['walk', 'lift', 'throw', 'jump', 'stomp', 'punch', 'clap', 'sprint', 'pull', 'weight'], DUO = ['arm', 'wrestle', 'catch', 'collide'];
   const bad = (t) => (t.match(/NaN|undefined|(?<![∞\w])Infinity/g) || []);
   for (const [w, h, scheme] of [[1280, 900, 'light'], [1280, 900, 'dark'], [390, 844, 'light'], [390, 844, 'dark']]) {
@@ -39,12 +39,55 @@ const CHROME = [process.env.CHROME, '/opt/pw-browsers/chromium-1194/chrome-linux
       const t = await page.evaluate(() => { const b = document.body.cloneNode(true); b.querySelectorAll('script, style').forEach((x) => x.remove()); return b.textContent; });
       const b = bad(t);
       if (b.length) texts.push(tab + ': ' + b.join(', '));
+      const ovTab = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      if (ovTab > 0) texts.push(tab + ': scrolls sideways ' + ovTab + ' px');
       const bay = await page.$('main.panel');
       if (scheme === 'light' || w === 390) await bay.screenshot({ path: path.join(out, `${tab}-${w}-${scheme}.png`) });
+    }
+    // each growth mode, with the comic switches open (the page always opens on the endless ocean)
+    if (!only) {
+      await page.click('#grp-solo'); await page.click('#tab-weight');
+      await page.evaluate(() => { document.getElementById('comic-setup').open = true; });
+      for (const mode of ['gradual', 'instant', 'runaway']) {
+        await page.selectOption('#absorb', mode); await page.waitForTimeout(300);
+        const ov = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+        if (ov > 0) texts.push('growth ' + mode + ': scrolls sideways ' + ov + ' px');
+      }
+      await page.selectOption('#absorb', 'ocean');
+      await page.evaluate(() => { document.getElementById('comic-setup').open = false; });
     }
     const ov2 = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     console.log(`${w}x${h} ${scheme}: overflow=${Math.max(overflow, ov2)}px errors=${JSON.stringify(errs.slice(0, 5))} broken-text=${JSON.stringify(texts)}`);
     if (overflow > 0 || ov2 > 0 || errs.length || texts.length) problems++;
+    await page.close();
+  }
+  // the page shows what the engine computes: soft landing takes back the landing's impact on the ground, not its whole
+  // energy; and the effort slider's right end is all-out
+  if (!only) {
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+    await page.goto(pathToFileURL(prev).href);
+    await page.evaluate(() => { localStorage.setItem('rex-lab-v1', JSON.stringify({ action: 'jump', softLanding: true })); });
+    await page.reload(); await page.waitForTimeout(2500);
+    const soft = await page.evaluate(() => {
+      const t = document.getElementById('bay').textContent, m = t.match(/Soft landing: what the landing would put into the ground: ([\d.,]+)\s(k?)J/);
+      const P = window.DinoPhys, g = P.K.g, s = JSON.parse(localStorage.getItem('rex-lab-v1'));
+      return { shown: m ? Number(m[1].replace(/,/g, '')) * (m[2] === 'k' ? 1e3 : 1) : null, text: m ? m[0] : t.slice(0, 200) };
+    });
+    // the engine at the effort the page shows (its readout gives the mass lifted)
+    const eff = await page.evaluate(() => { const m = document.getElementById('bay').textContent.match(/as hard as lifting ([\d.,]+)\s(t|kg)/); return m ? Number(m[1].replace(/,/g, '')) * (m[2] === 't' ? 1000 : 1) : null; });
+    const want = await page.evaluate((kg) => { const P = window.DinoPhys, D = window.DINO_DATA, g = P.K.g; const body = P.makeBody({ build: 'rex', H: 3.048, m: 3007 });
+      const c = { F: 100 * 907.18474 * g, mode: 'comic', body, surface: D.surfaces.find((x) => x.id === 'concrete'), groundHolds: false, anchor: 'friction', softLanding: true, use: kg * g };
+      const L = P.jump(c).landing; return { absorbed: L.absorbed, E: L.E }; }, eff);
+    const okSoft = soft.shown && want.absorbed > 0 && Math.abs(soft.shown / want.absorbed - 1) < 0.02 && want.E > 2 * want.absorbed;
+    console.log('soft landing on the page: ' + soft.text + ' (engine ' + (want.absorbed / 1e3).toPrecision(3) + ' kJ of ' + (want.E / 1e3).toPrecision(3) + ' kJ landing energy)');
+    if (!okSoft) problems++;
+    await page.evaluate(() => { localStorage.setItem('rex-lab-v1', JSON.stringify({ action: 'throw' })); });
+    await page.reload(); await page.waitForTimeout(2500);
+    await page.evaluate(() => { document.querySelector('details.effort-adjust').open = true; });
+    await page.focus('#effort-use'); await page.keyboard.press('End'); await page.waitForTimeout(400);
+    const end = await page.evaluate(() => ({ spoken: document.getElementById('effort-use').getAttribute('aria-valuetext'), read: (document.querySelector('.effort-read b') || {}).textContent }));
+    console.log('effort slider, End key: ' + JSON.stringify(end));
+    if (end.spoken !== 'All-out' || !/100%|All-out/.test(end.read || '')) problems++;
     await page.close();
   }
   await browser.close();

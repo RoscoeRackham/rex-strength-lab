@@ -240,7 +240,8 @@ overpressure = [
 ]
 for o in overpressure:
     k = o.pop('k')
-    row('Blast: ' + o['label'], '%g kPa' % (o['Pa'] / 1000), [k])
+    # windows: the band where they usually shatter; the lab uses its top
+    row('Blast: ' + o['label'], ('3.4–6.9 kPa (the lab uses 6.9)' if o['id'] == 'windows' else '%g kPa' % (o['Pa'] / 1000)), [k])
 
 # ----------------------------------------------------------------------------- reference speeds / heights / calibration
 speeds = [
@@ -392,8 +393,9 @@ for topic, prefix in [('density', 'Weight'), ('duo', None), ('presence', None)]:
             continue
         area = PRESENCE_AREA.get(f.get('category'), f.get('category', 'Rex and Ollie')) if topic == 'presence' else f.get('category', 'Rex and Ollie')
         label = (prefix or area) + ': ' + lower_first(f['label']) if f['label'] else f['key']
-        # the vaporisation row draws on more than two sources (one per material): show them all
-        row(label, f['display'], [f['key']], note=None, extra_sources=[{'url': x['url'], 'title': x.get('title') or ''} for x in f['sources'][2:]] if f['key'] in ('heat_to_vaporise_per_kg',) or f['key'].startswith('thr_rec_') else None)
+        # rows that draw on more than two sources (the vaporisation row, one per material; the presence facts, which
+        # show numbers from each): show them all
+        row(label, f['display'], [f['key']], note=None, extra_sources=[{'url': x['url'], 'title': x.get('title') or ''} for x in f['sources'][2:]] if f['key'] in ('heat_to_vaporise_per_kg',) or topic == 'presence' else None)
 
 data = dict(tiers=tiers, surfaces=[{k: v for k, v in s.items() if not k.startswith('k_')} for s in surfaces], objects=objects,
             energyRefs=energy, overpressure=overpressure, heights=heights, speeds=speeds, calibration=calibration,
