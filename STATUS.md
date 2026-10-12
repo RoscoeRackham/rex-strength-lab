@@ -19,12 +19,11 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## Waiting on
 
-- Owners (canon questions from the presence build; the page labels both as open):
-  - Instant growth: does he grow from his soles (then the push that lifts his middle would throw him into the air unless he is bolted down) or about his middle (then his feet are driven into the ground)? The page assumes the soles.
-  - Runaway growth: are the side effects of growth (air pushed back, his own gravity) paid from the energy they absorbed or from the endless store? Only the first makes the runaway loop add anything; the page shows the loop ratio either way.
-  - Rex's and Ollie's gait (heel-first, like people, is assumed) and hip height (0.45 of height, measured from the turnarounds) are not canon.
-- Owner: the Weight tab's sinking rule for standing overpredicts a measured elephant footprint about tenfold (found by the presence research); left unchanged, decide whether to revise it.
-- Owner: review and merge pull request #12 (`claude/rex-presence`: round 2's code fixes, round 3, the history entry).
+- Rex lab follow-ups from the owners' answers (12 Oct 2026; canon now in `CLAUDE.md`), to implement on a new branch:
+  - Instant growth expands about his middle, all the way through: his feet are driven into the ground (the page assumes the soles, which would throw him up).
+  - Runaway growth: the side effects of growth are paid from the absorbed energy, so the loop feeds itself until the half-life halts it (the page shows the loop ratio either way; make this the model and drop the open-question label).
+  - Gait: heel-first is canon; hip height 0.45 of height stays a measured estimate. Drop the open-question labels.
+  - The Weight tab's sinking rule for standing overpredicts a measured elephant footprint about tenfold: revise it (owners agreed), against the presence research's elephant print.
 - Owner review of Build Comparison design decisions listed in `build-comparison/data/NOTES.md` ("Design decisions to review"): the edge marking, the palette change, the stop edges, Thor's and the Thing's treatment, the group colours' contrast, and figures drawn with their arms at their rest angle. (The meatball sentence is now reworded in the brief.)
 - Step 2 (collaborator): regenerate Rex's and Ollie's turnarounds to the model-sheet spec (fixes listed in BRIEF.md, "The turnarounds") and measure them; make gap-filler figures from target outlines with GPT Images 2.5.
   - **Blocker to solve first:** the measuring tool cannot follow arms that cannot hang clear of the body (rest angle near 90°; above about 100 on the median soldier, so most of the 88–170 and 220–924 stretches). It refuses such sheets. The target tool still draws and scores those outlines but says the tool cannot check art drawn from them. See `build-comparison/research/reviews/round2.md`, "Still open"; one way is to cut the arms at the shoulder line before slicing.
@@ -32,6 +31,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## Done
 
+- 2026-10-12: the presence build's four open questions answered (instant growth about the middle; runaway side effects paid from absorbed energy; heel-first gait; revise the sinking rule). Canon in `CLAUDE.md`; the Rex lab changes are listed under Waiting on.
 - 2026-10-11: Rex lab presence build merged (pull request #11 at `b1916a8`, merged by the collaborator): effort and the courtesy ceiling, not-so-heroic presets, the Walk tab, comic switches, absorption and growth, research (268 facts), review rounds 1 and 2.
 - 2026-10-11: all three live pages republished from `main` (`43cf5e6`, after pull requests #8 and #9): Rex lab version 5, Build Calculator version 3, Build Comparison version 4. Each was built from a clean checkout of `main` and passed its tests first.
 - 2026-10-11: presence brief merged (pull request #9, collaborator, `terantic/presence-brief`, including `terantic/grip`): a "Hands and grip" assumption card in the Rex lab; new canon on restraint, absorption (four modes) and growth (three forms); `rex-strength-lab/BRIEF-presence.md`; `build-comparison/BRIEF.md` brought up to date; `compile_facts.py` writes LF line endings; the Rex lab sweep covers the default 10 ft Rex and Ollie; and a record of the session in `history/2026-10-11-collaborator-canon-and-planning.md`.
