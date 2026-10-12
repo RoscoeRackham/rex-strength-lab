@@ -6,11 +6,10 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 | Folder or file | Who | Branch | Since |
 |---|---|---|---|
-| `rex-strength-lab/` (all of it), root `README.md` (Rex lab row only), `history/` (a new entry for this session, if it runs long) | Collaborator | `terantic/gui-brief` | 2026-10-12 |
 
 ## In progress
 
-- Rex lab page brief (collaborator, `terantic/gui-brief`): `rex-strength-lab/BRIEF-gui.md` written for the owner's agent to build. CLAUDE.md canon: comic-book physics is their default; new "Default powers". Pull request open.
+- Nothing right now.
 
 ## Waiting on
 
@@ -24,6 +23,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## Done
 
+- 2026-10-12: Rex lab page brief merged (pull request #16): `rex-strength-lab/BRIEF-gui.md` for the owner's agent, and CLAUDE.md canon (Restraint; Default powers, marked "owner to confirm" where the owner hasn't yet). The collaborator's claim on `rex-strength-lab/` is released.
 - 2026-10-12: Rex lab follow-ups merged (pull request #15, which also merged #13, the owner's STATUS tidy-up). CI passed on the pull request.
 - 2026-10-12: Rex lab page brief written (`BRIEF-gui.md`, `terantic/gui-brief`): one "Their powers" banner, sidebar order, binary footing, Rex + Ollie as its own element, four default powers (the owner agreed to their two momentum exceptions; the rest to confirm), more energy comparisons (research first), corrections.
 - 2026-10-12: Rex lab follow-ups built (`terantic/rex-followups`): instant growth about his middle, never thrown up; the runaway as a round trip; heel-first gait canon; the Weight tab's standing sink rule replaced (elephant print 18 mm at 350 kPa, against 0.23 m before). Tests: calibration, presence (382 checks), shots, sweep.
