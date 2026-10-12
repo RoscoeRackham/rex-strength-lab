@@ -13,7 +13,6 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## Waiting on
 
-- Owner: republish the live Rex lab page from `main` (the follow-ups merged in #15, and the half-life control's removal, #18 or later).
 - Owner: build `rex-strength-lab/BRIEF-gui.md` (three pull requests in the order it gives: page organisation, the new powers, the energy comparisons). All its canon is confirmed; nothing in it waits on a decision.
 - Owner review of Build Comparison design decisions listed in `build-comparison/data/NOTES.md` ("Design decisions to review"): the edge marking, the palette change, the stop edges, Thor's and the Thing's treatment, the group colours' contrast, and figures drawn with their arms at their rest angle. (The meatball sentence is now reworded in the brief.)
 - Step 2 (collaborator): regenerate Rex's and Ollie's turnarounds to the model-sheet spec (fixes listed in BRIEF.md, "The turnarounds") and measure them; make gap-filler figures from target outlines with GPT Images 2.5.
@@ -22,6 +21,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## Done
 
+- 2026-10-12: live pages checked against `main` (`f526ce1`), each built from a clean tree and tested first (Rex lab: calibration, presence, shots; Build Calculator: tests, shots; Build Comparison: tests, duo, shots). Rex lab republished (version 10, with the follow-ups from #15 and the half-life control's removal from #18). Build Calculator (version 3) and Build Comparison (version 4) already matched `main` byte for byte, so they were left as they are.
 - 2026-10-12: owner confirmed all the canon marked "owner to confirm" (the growth rulings, the Restraint wording, the default powers including their own recoil); the half-life control removed (the runaway loop can never run away); the moves' sand bearing left as it is for now. Recorded in CLAUDE.md, the README, the research facts and the brief (`terantic/canon-confirmed`; a test checks the control stays gone).
 - 2026-10-12: Rex lab page brief merged (pull request #16): `rex-strength-lab/BRIEF-gui.md` for the owner's agent, and CLAUDE.md canon (Restraint; Default powers, marked "owner to confirm" where the owner hasn't yet). The collaborator's claim on `rex-strength-lab/` is released.
 - 2026-10-12: Rex lab follow-ups merged (pull request #15, which also merged #13, the owner's STATUS tidy-up). CI passed on the pull request.
