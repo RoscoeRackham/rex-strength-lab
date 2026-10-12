@@ -6,16 +6,15 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 | Folder or file | Who | Branch | Since |
 |---|---|---|---|
-| `rex-strength-lab/` (all of it), root `README.md` (Rex lab row only), `history/` (a new entry for this session, if it runs long) | Collaborator | `terantic/rex-followups` | 2026-10-12 |
+| `rex-strength-lab/` (all of it), root `README.md` (Rex lab row only), `history/` (a new entry for this session, if it runs long) | Collaborator | `terantic/gui-brief` | 2026-10-12 |
 
 ## In progress
 
-- Rex lab follow-ups from the owners' answers (collaborator, `terantic/rex-followups`): built and tested; pull request open, waiting for the owner's review. Live page not yet republished (owner's account). The branch also carries the owner's pull request #13 (this file's tidy-up after #12), which conflicted with `main` after #14; merging the follow-ups merges #13 too.
-- Rex lab page brief (collaborator, `terantic/gui-brief`, stacked on `terantic/rex-followups`): `rex-strength-lab/BRIEF-gui.md` written for the owner's agent to build. CLAUDE.md canon: comic-book physics is their default; new "Default powers". Pull request open.
+- Rex lab page brief (collaborator, `terantic/gui-brief`): `rex-strength-lab/BRIEF-gui.md` written for the owner's agent to build. CLAUDE.md canon: comic-book physics is their default; new "Default powers". Pull request open.
 
 ## Waiting on
 
-- Owner: review the Rex lab follow-ups pull request (`terantic/rex-followups`), then republish the live page. Please confirm two rulings the collaborator relayed and recorded in `CLAUDE.md`: growth never bounces them up (the lift goes to the endless ocean, an exception to "momentum is never absorbed"), and the energy their gravity releases goes to the endless ocean. With these, the runaway loop is a round trip and the half-life control never acts; say whether to keep that control.
+- Owner: republish the live Rex lab page from `main` (the follow-ups merged in #15). Please confirm two rulings the collaborator relayed and recorded in `CLAUDE.md`: growth never bounces them up (the lift goes to the endless ocean, an exception to "momentum is never absorbed"), and the energy their gravity releases goes to the endless ocean. With these, the runaway loop is a round trip and the half-life control never acts; say whether to keep that control.
 - Owner: build `rex-strength-lab/BRIEF-gui.md` (three pull requests in the order it gives: page organisation, the new powers, the energy comparisons). First confirm the canon the collaborator recorded in CLAUDE.md (marked "owner to confirm"): the Restraint wording, the default powers, and above all 5d (they take their own recoil). The owner already agreed to the powers' two exceptions to the momentum rule. The collaborator releases the claim on `rex-strength-lab/` once the follow-ups and brief pull requests merge; claim it then.
 - Owner, optional: the moves' quick-load bearing for sand (37 kPa at 0.316 m, the textbook value) sits about 5–10× below what the elephant's sand bore. Raising it would change all-out results across the moves; left unchanged (README, known limits).
 - Owner review of Build Comparison design decisions listed in `build-comparison/data/NOTES.md` ("Design decisions to review"): the edge marking, the palette change, the stop edges, Thor's and the Thing's treatment, the group colours' contrast, and figures drawn with their arms at their rest angle. (The meatball sentence is now reworded in the brief.)
@@ -25,6 +24,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## Done
 
+- 2026-10-12: Rex lab follow-ups merged (pull request #15, which also merged #13, the owner's STATUS tidy-up). CI passed on the pull request.
 - 2026-10-12: Rex lab page brief written (`BRIEF-gui.md`, `terantic/gui-brief`): one "Their powers" banner, sidebar order, binary footing, Rex + Ollie as its own element, four default powers (the owner agreed to their two momentum exceptions; the rest to confirm), more energy comparisons (research first), corrections.
 - 2026-10-12: Rex lab follow-ups built (`terantic/rex-followups`): instant growth about his middle, never thrown up; the runaway as a round trip; heel-first gait canon; the Weight tab's standing sink rule replaced (elephant print 18 mm at 350 kPa, against 0.23 m before). Tests: calibration, presence (382 checks), shots, sweep.
 - 2026-10-12: the presence build's four open questions answered (instant growth about the middle; runaway side effects paid from absorbed energy; heel-first gait; revise the sinking rule). Canon in `CLAUDE.md`; the Rex lab changes are listed under Waiting on.
