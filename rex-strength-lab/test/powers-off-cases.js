@@ -38,7 +38,7 @@ function cases(P, D) {
     kaiju: () => P.makeBody({ build: 'rex', H: 50, m: 1060 * P.bodyVolume(50, 'rex') }),
     dense: () => P.makeBody({ build: 'rex', H: 3.048, m: 1e9 }),
   };
-  const Fs = { 2.7: Math.pow(10, 2.7) * g, 4: 1e4 * g, 6: 1e6 * g, 9: 1e9 * g, 12: 1e12 * g, 20: 1e20 * g, inf: Infinity };
+  const Fs = { 2.7: Math.pow(10, 2.7) * g, 4: 1e4 * g, 6: 1e6 * g, 9: 1e9 * g, 12: 1e12 * g, 14: 1e14 * g, 14.5: Math.pow(10, 14.5) * g, 14.75: Math.pow(10, 14.75) * g, 15: 1e15 * g, 16: 1e16 * g, 20: 1e20 * g, 22: 1e22 * g, inf: Infinity };
   const add = (key, run) => out.push({ key, run });
   const ctxOf = (bk, mode, sid, lg, anchor, gh, extra) => Object.assign({ F: Fs[lg], mode, body: bodies[bk](), surface: surf(sid), groundHolds: gh, anchor }, extra || {});
 
@@ -128,6 +128,28 @@ function cases(P, D) {
   for (const lg of ['4', '9', 'inf']) for (const style of ['easy', 'hard']) {
     const R = (x) => ctxOf('rex', 'comic', 'concrete', lg, 'friction', false, x);
     add(['toss', lg, style].join('|'), (x) => P.tossPartner(R(x), bodies.ollie(), 'Ollie', style, 10, 'friction'));
+  }
+  // paths the powers touched that the grids above miss (review round 1): catch throws past 1% of light speed (the
+  // fireball), dense partners (the straight line through their pull), the toss either side of 1% of light speed, and
+  // the relativistic throw's blast and reach
+  for (const lg of ['14', '16', '20']) for (const [oid, D0] of [['baseball', 30], ['baseball', 1000], ['car', 30], ['car', 1000]]) for (const kf of [false, true]) {
+    const R = (x) => ctxOf('rex', 'comic', 'concrete', lg, 'friction', false, Object.assign(kf ? { gentleHold: true } : {}, x)), O = (x) => ctxOf('ollie', 'comic', 'concrete', lg, 'friction', false, Object.assign(kf ? { gentleHold: true } : {}, x));
+    add(['catch-fast', oid, D0, lg, kf].join('|'), (x) => { const L = P.catchLeg(R(x), O(x), obj(oid), D0, 'hard'); if (L && L.flight) L.flight = Object.assign({}, L.flight, { path: L.flight.path ? L.flight.path.length : 0 }); return L; });
+  }
+  for (const lg of ['12', '20', '22']) for (const D0 of [10, 1e4]) for (const style of ['easy', 'hard']) {
+    const R = (x) => ctxOf('dense', 'comic', 'granite', lg, 'bolted', false, x), O = (x) => ctxOf('dense', 'comic', 'granite', lg, 'bolted', false, x);
+    add(['catch-dense', D0, style, lg].join('|'), (x) => { const L = P.catchLeg(R(x), O(x), obj('baseball'), D0, style); if (L && L.flight) L.flight = Object.assign({}, L.flight, { path: L.flight.path ? L.flight.path.length : 0 }); return L; });
+  }
+  for (const lg of ['14', '14.5', '14.75', '15']) for (const style of ['easy', 'hard']) {
+    const R = (x) => ctxOf('rex', 'comic', 'concrete', lg, 'friction', false, x);
+    add(['toss-fast', lg, style].join('|'), (x) => P.tossPartner(R(x), bodies.ollie(), 'Ollie', style, 10, 'friction'));
+  }
+  for (const ang of [0, 30, 90]) for (const lg of ['16', '20', 'inf']) {
+    const C = (x) => ctxOf('rex', 'comic', 'concrete', lg, 'friction', false, x);
+    add(['throw-rel-blast', ang, lg].join('|'), (x) => {
+      const r = P.throwObject(C(x), obj('baseball'), ang), c = C(x), o = Object.assign({ near: 5, obj: obj('baseball'), angle: ang, body: c.body, surface: c.surface, anchor: c.anchor }, x), M = P.RESTRAINT.MOVES.throw;
+      return { blast: M.blast(r, o), from: M.blastFrom(r, o), boom: M.boomSpeed(r, o), reach: P.RESTRAINT.reach('throw', r, o) };
+    });
   }
   // walking and footprints
   for (const bk of ['rex', 'cal', 'kaiju', 'dense']) for (const sid of ['sand', 'gravel', 'softclay', 'stiffclay', 'concrete', 'granite']) for (const gh of [false, true]) for (const effort of [0, 0.5, 1]) for (const pace of ['stroll', 'fast']) {

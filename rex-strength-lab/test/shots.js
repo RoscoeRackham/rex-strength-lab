@@ -419,8 +419,10 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     const as100 = await page.$eval('#bay .verdict', (n) => n.textContent);
     await load(Object.assign({}, allStar, { airAbsorb: 0, keepForm: false })); await pick('#effort', 'allout');
     const as0 = await page.$eval('#bay .verdict', (n) => n.textContent);
-    if (!/leaves the Earth/.test(as100) || !/there is no fireball/.test(as100) || !/turns into a fireball/.test(as0)) fail('All-Star baseball: 100% ' + as100.slice(0, 200) + ' | 0% ' + as0.slice(0, 200));
-    else okLog('All-Star baseball, level, all-out: at 100% "' + as100.slice(0, 70) + '…"; at 0% with Things keep their form off, a fireball');
+    const as0text = await bayText();
+    // at 0% with Things keep their form off, the page's text from before the powers (main)
+    if (!/leaves the Earth/.test(as100) || !/there is no fireball/.test(as100) || !/turns into a fireball/.test(as0) || !/comes out as a fireball over roughly the first 27\.8 m of its path, about where it has swept up its own mass of air/.test(as0text)) fail('All-Star baseball: 100% ' + as100.slice(0, 200) + ' | 0% ' + as0.slice(0, 200));
+    else okLog('All-Star baseball, level, all-out: at 100% "' + as100.slice(0, 70) + '…"; at 0% with Things keep their form off, main\'s fireball text');
     // the two-player tests offer the not-so-heroic presets, and on Collide 'risk cracking the plaster' finds an effort
     // (Rex bolted, Ollie charging: the hit's push into the unbreakable ground shakes it)
     const duoOpts = [];
@@ -439,6 +441,23 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     else okLog('Collide, plaster preset, Rex bolted: ' + colB.slice(0, 90) + '…');
     if (!/Even all-out, this test doesn’t shake the ground enough that plaster may crack/.test(colF)) fail('Collide, plaster preset, Rex standing: ' + colF.slice(0, 300));
     else okLog('Collide, plaster preset, Rex standing: says it never does (his feet slide)');
+    // with Things keep their form on, the game of catch never says the ball bursts or is destroyed (default fastball)
+    await load({ duoOpen: true, duoAction: 'catch', cStyle: 'hard' }); await settle(page, 'duo-bay');
+    const kf = await page.evaluate(() => document.getElementById('duo-bay').textContent.replace(/\s+/g, ' '));
+    if (/probably bursts|is destroyed/.test(kf.replace(/a real ball would probably burst/g, ''))) fail('catch with Things keep their form on says it bursts: ' + (kf.match(/[^.]*bursts[^.]*\./) || [''])[0]); else okLog('catch fastball with Things keep their form on: no burst or destroyed ball');
+    // the plaster preset on the other two-player tests: the shove's, the throw's and the catch's pushes into the ground
+    // find an effort; an even arm wrestle is a dead heat (no pin, so no blow into the ground): a definite 'never'
+    const dp = [];
+    for (const [tab, extra, finds] of [['arm', { logKg: 12 }, false], ['wrestle', { wrestleMove: 'shove', logKg: 8 }, true], ['wrestle', { wrestleMove: 'throw', logKg: 8 }, true], ['catch', { cObj: 'car', cStyle: 'hard', logKg: 9 }, true]]) {
+      await load(Object.assign({ duoOpen: true, duoAction: tab }, extra)); await settle(page, 'duo-bay'); await pick('#duo-effort', 'plaster');
+      const t = await page.evaluate(() => document.querySelector('#duo-bay .effort-read').textContent.replace(/\s+/g, ' '));
+      if (!(finds ? /Effort: .*The least effort that shakes the ground enough that plaster may crack/ : /Even all-out, this test doesn’t shake the ground/).test(t) || /undefined|NaN/.test(t)) dp.push(tab + (extra.wrestleMove || '') + ': ' + t.slice(0, 160));
+    }
+    if (dp.length) fail('two-player plaster presets: ' + dp.join(' ; ')); else okLog('the plaster preset finds an effort on Wrestle shove and throw and on Catch, and says never for an even arm wrestle');
+    // the two-player 'Break the ground' sets Unbreakable footing aside, and its ceiling is on real ground too
+    await load({ duoOpen: true, duoAction: 'collide', anchor: 'bolted' }); await settle(page, 'duo-bay'); await pick('#duo-effort', 'ground');
+    const dg = await page.evaluate(() => document.querySelector('#duo-bay .effort-read').textContent.replace(/\s+/g, ' '));
+    if (!/set aside for this test/.test(dg) || /Least disruptive already does this/.test(dg) || (/Courtesy ceiling/.test(dg) && !/On real ground, courtesy ceiling/.test(dg))) fail('two-player break the ground: ' + dg.slice(0, 300)); else okLog('two-player break the ground: on real ground, ceiling included (' + dg.slice(0, 70) + '…)');
     if (errs.length) fail('page errors in the powers checks: ' + errs.slice(0, 3).join(' | '));
     await page.close();
   }
