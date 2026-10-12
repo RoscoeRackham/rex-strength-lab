@@ -73,7 +73,7 @@ The usual run is `python build-data.py && node build.js && node test/calibration
 - The 10 ft body estimate: three independent methods and a checker (`body-estimate-from-picture.json`).
 - Final checks on the round 4 build: `test/calibration.js` all 117 checks pass; `test/sweep.js` 5,184 setting combinations with no problems (about 5 min); a browser sweep of 1,512 page states across every tab with no broken text, slow renders or page errors.
 - Presence rounds 1-3 (effort, the Walk tab, comic switches, growth; `BRIEF-presence.md`): five lenses (physics, claims, data, UX, code), each finding reproduced or refuted by a skeptic. Round 1: 78 findings, 77 confirmed. Round 2 checked round 1's fixes: 68, all confirmed. Round 3 checked round 2's: 60, 59 confirmed (among them three round 2 fixes that had reached the engine but not the page, or not held). Records with each finding's outcome: `presence-round1.json` to `presence-round3.json`.
-- Final checks on the presence build: `test/calibration.js` all pass; `test/presence.js` 344 checks pass; `test/shots.js` passes in all four views.
+- Final checks on the presence build: `test/calibration.js` all pass; `test/presence.js` 344 checks pass; `test/shots.js` passes in all four views; `test/sweep.js` 7,776 setting combinations with no problems.
 
 ## Known limits
 

@@ -1,0 +1,16 @@
+global.window = {};
+const L = '/home/user/rex-strength-lab/rex-strength-lab/';
+const P = require(L + 'src/engine.js'); require(L + 'src/data.js');
+const D = window.DINO_DATA, g = P.K.g;
+console.log(D.objects.map(o=>o.id).join(' '));
+const surf = (id) => D.surfaces.find((s) => s.id === id);
+const obj = D.objects.find((o) => /bowl/.test(o.id));
+const rex = P.makeBody({ build: 'rex', H: 3.048, m: 3007 });
+const c = { F: 1e5 * g, mode: 'comic', body: rex, surface: surf('concrete'), groundHolds: false, anchor: 'friction' };
+const run = () => { const p = P.RESTRAINT.planNow('throw', c, { obj, angle: 45, target: 30, near: 5 }); const ce = p.ceiling(); const r = p.run(ce.use); const M = P.RESTRAINT.MOVES.throw; const src = M.shake(r, p.opt);
+  const rb = p.run(ce.below); const sb = M.shake(rb, p.opt);
+  console.log('ceiling by', ce.by, 'below', (ce.below/g).toPrecision(3), 'kg; pulse T', sb.T.toPrecision(3), 's =', (1/sb.T).toFixed(0), 'Hz; ppv at 5 m', (P.ppvAt(sb, 5)*1000).toFixed(1), 'mm/s'); return ce; };
+run();
+const keep = P.VIB.plasterHigh; P.VIB.plasterHigh = P.VIB.TH.plaster;
+run();
+P.VIB.plasterHigh = keep;

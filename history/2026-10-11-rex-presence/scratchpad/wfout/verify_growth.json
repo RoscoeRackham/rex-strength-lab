@@ -1,0 +1,196 @@
+{
+ "checks": [
+  {
+   "key": "growth_c_exact",
+   "ok": true,
+   "issue": "Re-fetched NIST: 299 792 458 m/s, exact, 2022 CODATA. Correct."
+  },
+  {
+   "key": "growth_krakatoa_airwave_harkrider_press",
+   "ok": true,
+   "issue": "The abstract sentence is confirmed on the Caltech record, which also hosts the full PDF. The PDF (p. 159) shows the basis: 'Using the scaling methods of Harkrider (1964) and data from nuclear explosions, we estimate that a surface explosion amounting to about 100-150 megatons would produce pressure pulses equivalent to those observed'. The conversion (4.18 to 6.28e17 J, 4.7 to 7.0 kg) is correct. The notes should say it is a nuclear surface-burst yield equivalent, not 'fitted to barograph records' in general.",
+   "corrected": "notes: add the p. 159 quote; source URL for full text: https://authors.library.caltech.edu/records/r42n3-t2639/files/Geophys._J._Int.-1967-Harkrider-149-59.pdf"
+  },
+  {
+   "key": "growth_krakatoa_energy_spread",
+   "ok": false,
+   "issue": "The high end is wrong. Lobanovsky's annex (re-fetched) explicitly quotes 'another encyclopedic resource argues that the energy explosion of Krakatoa was 1.5 Gt' (6.3e18 J), above the stated 4.6e18 J high_si. From Tambora estimates he infers 5 to 6 Gt, then 'doubled up to 10-12 Gt', and says the extreme estimates 'differ by almost 500 times' (24 Mt x 500, about 12 Gt, about 5e19 J). So 'mass added 1-50 kg' is wrong: 1.5 Gt adds 70 kg, and 12 Gt adds 559 kg (+19% mass; pure size +18 cm, mix +9 cm). There is also a misquote: the source says 'a book published by the American Geological Society', not 'Institute'. Lobanovsky is an outlier author (his Chelyabinsk figure is 57 Mt; arXiv shows no journal reference), so 'disputed/reported' is right.",
+   "corrected": "low_si 1e17 J; high_si 6.3e18 J (quoted 1.5 Gt), with Lobanovsky's inferred extreme of about 5e19 J (12 Gt) noted; mass added 1-70 kg (up to about 560 kg at the extreme); fix 'Institute' to 'Society'"
+  },
+  {
+   "key": "growth_chicxulub_energy_morgan2022",
+   "ok": false,
+   "issue": "Both quotes are confirmed in the NSF PAR manuscript, and Crossref confirms Nat Rev Earth Environ 3:338-354 (2022). But 'about 10^23 joules' (abstract) and 'about 5 × 10^23 J' (main text, from the 80-100 km transient crater) are the same estimate, the first stated only to an order of magnitude. The review does not give 1e23 as a lower bound. Check: 12.2-14.4 km impactors at 18 km/s give about 4-7e23 J.",
+   "corrected": "value_si 5e23 J; drop low_si = 1e23 as a 'range', or label it 'the abstract rounds this to about 10^23 J'. The rows in growth_worked_chicxulub labelled 'over Morgan's range 1e23-5e23' should be relabelled the same way."
+  },
+  {
+   "key": "growth_sun_luminosity_check",
+   "ok": true,
+   "issue": "IAU PDF re-fetched: '1 L N⊙ = 3.828 × 10^26 W' and 3.8275 (± 0.0014) × 10^26 W. Correct."
+  },
+  {
+   "key": "growth_body_baseline",
+   "ok": true,
+   "issue": "Recomputed: V0 2.8368 m^3, R 0.8782 m, R/H 0.2881."
+  },
+  {
+   "key": "growth_worked_krakatoa",
+   "ok": false,
+   "issue": "The numbers reproduce: 9.346 kg, k 1.00311, mix H +1.6 mm, size +3.2 mm, density 1,063. But the notes' claim that the result 'stays true across the whole published spread (1-51 kg)' is wrong (see growth_krakatoa_energy_spread).",
+   "corrected": "notes: across the quoted spread the gain is 1-70 kg (under 3%, at most 2.3 cm taller); at Lobanovsky's 12 Gt extreme it is about 560 kg (+19% mass, +18 cm in pure size)"
+  },
+  {
+   "key": "growth_worked_chicxulub",
+   "ok": true,
+   "issue": "Reproduced: 4.673e6 kg, k 1,555.1, mix 10.37 m and 41,800 kg/m^3, size 35.31 m, density 1.648e6 (so 1.6e6 at 2 s.f.; the brief's 1.7e6 is the slip). Morgan-range rows reproduce, but the 1e23 lower row inherits the range-framing problem."
+  },
+  {
+   "key": "growth_worked_sun_second",
+   "ok": true,
+   "issue": "Reproduced: 4.259e9 kg, k 1.416e6, mix 32.3 m and 1.26e6, size 342.3 m (R 98.6), density 1.50e9. 'About half Sirius B's average' is fine against the existing 2.77e9 estimate."
+  },
+  {
+   "key": "growth_brief_number_check",
+   "ok": true,
+   "issue": "All checks reproduced independently, including the 1.65e6 to 1.6e6 rounding point."
+  },
+  {
+   "key": "growth_monopole_compact_body",
+   "ok": true,
+   "issue": "Re-fetched the R&H PDF. Eq. (2.61) and the pulsating-sphere text on p. 150 are quoted correctly ('the second derivative to time of the volume of the sphere is the source of sound'; steady expansion makes no sound). The explicit p = ρ0 V̈/(4πr) is the researcher's step from (2.61) plus the Green's function. That step is standard; label the formula 'from R&H eq. 2.61'. A line-source check for a body 3.5 times taller than R_eq shows r = R_eq + d is mildly conservative."
+  },
+  {
+   "key": "growth_monopole_ground_doubling",
+   "ok": true,
+   "issue": "Exercise (f) quote confirmed: 'increases by a factor 2 in comparison with free field conditions'."
+  },
+  {
+   "key": "growth_slow_pressure_peak",
+   "ok": true,
+   "issue": "Formula and k_V reproduced: pure size exactly 2π; mix 14.28, 17.86 and 54.66; the half-sine π²/2 is also correct. Minor: the dropped Bernoulli/wind term is not always negligible. At T_p for the Sun-second (pure size), wind at r is about 5.4 m/s and ½ρu² about 18 Pa (18% of 100 Pa); for Chicxulub (pure size) it is about 3 m/s and 6 Pa."
+  },
+  {
+   "key": "growth_airblast_usbm_ri8485",
+   "ok": false,
+   "issue": "The 134 dBL (0.1 Hz) safe level, the 0.0145 psi (= 99.97 Pa) table row and the p. 66 sentence are all confirmed. Three problems. (1) 'Complaints about rattling occur at airblast levels exceeding about 120 dB (6Hz)' is on the 6 Hz high-pass basis. The report treats 134 dBL (0.1 Hz) and 129 dB (6 Hz) as equivalent, so 120 dB (6 Hz) is about 125 dB, about 36 Pa, on the 0.1 Hz basis, not 20 Pa. A seconds-long growth pulse has almost no content above 6 Hz, so a 6 Hz-weighted criterion does not transfer at all. (2) The '2 s' duration limit is stated only for the C-slow criterion. (3) The 0.0145 psi row is from Table 13, an annoyance-acceptability table, not the structural table (it still matches 134 dBL).",
+   "corrected": "Rattle onset: '120 dB on a 6 Hz high-pass meter, roughly 36 Pa unfiltered; not validated for slow pulses'. Never label it 'nothing rattles': the source says rattling still occurs below the safe level. 2 s applies to C-slow only."
+  },
+  {
+   "key": "growth_contact_speed_osha",
+   "ok": true,
+   "issue": "OSHA TM IV-4 quotes confirmed verbatim. Note the context: the 250 mm/s teach mode relies on the person also holding an enabling (stop) device. 'OSHA allows' in the summary overstates a technical manual's description. Keep the page label 'borrowed from robot safety'."
+  },
+  {
+   "key": "growth_walking_speed_bohannon1997",
+   "ok": true,
+   "issue": "Europe PMC abstract re-fetched: 127.2-146.2 cm/s comfortable; 174.9-253.3 cm/s maximum; n = 230; 7.62 m walkway. Correct."
+  },
+  {
+   "key": "growth_slow_tmin_shove",
+   "ok": false,
+   "issue": "The k_H values reproduce: 2.000, 1.942, 1.925, 1.883 (size); 2.567, 2.944, 7.224 (mix). But 'someone beside him meets his side, which moves about 0.29 times as fast (equivalent-ball radius)' is unsupported for his real shape. With growth anchored at the soles, every point moves at (its distance from the anchor ÷ H) × head speed. A same-volume column has a half-width of only 0.18 H, while the tail tip, snout or outstretched arms, far from the anchor, move outward at roughly 0.5-0.8 of the head speed at ground and hip level.",
+   "corrected": "Label 0.29 as an equivalent-ball assumption, or use his largest horizontal extent from the anchor (e.g. tail tip) ÷ H as the side factor for bystanders at ground level"
+  },
+  {
+   "key": "growth_slow_tmin_examples",
+   "ok": true,
+   "issue": "Every table entry reproduces (e.g. Chicxulub pure size: 1.887, 4.218, 248.4, 71.57 and 44.36 s; Sun pure size 21.8, 48.7, 2555, 736 and 456 s). The 'side' column inherits the 0.29 factor problem above."
+  },
+  {
+   "key": "growth_tissue_sound_speed",
+   "ok": true,
+   "issue": "Both PMC full texts re-fetched; quotes and the Table 3 values (1540, 1585, 1450/1465) are confirmed. These are review-level sources, labelled honestly. Adequate for an estimate-only time scale."
+  },
+  {
+   "key": "growth_instant_timescale",
+   "ok": true,
+   "issue": "Reproduced: 1.98, 6.74, 22.9, 21.0 and 222 ms. Side speeds 0.46, 313, 405, 402 and 440 m/s; heads 1.6, 1088, 1407, 1395 and 1526 m/s. Correctly labelled estimate."
+  },
+  {
+   "key": "growth_normal_shock_nasa",
+   "ok": true,
+   "issue": "NASA GRC equations confirmed verbatim."
+  },
+  {
+   "key": "growth_piston_shock_planar",
+   "ok": true,
+   "issue": "Inversion and table reproduced (M 1.0018 to 5.609; Δp 0.418 to 3,601 kPa). The algebraic identity with Collins eq. 59* is confirmed (Collins PDF re-fetched). Minor: the brief contains no 'strong-shock form', so drop 'the brief's'."
+  },
+  {
+   "key": "growth_taylor1946_courant_friedrichs",
+   "ok": true,
+   "issue": "Quotes confirmed in the archive.org OCR text; the scan PDF has no text layer. I rendered Fig. 12 (book p. 428) and digitised it: the printed ξ0 curve reads 0.04-0.06 c0 above my independent solution, and the u_s curve reads 0.011-0.019 above exact Rankine-Hugoniot. That suggests a real gap of about 0.03-0.04 c0, consistent with the researcher's claim. Crossref confirms Taylor 1946, Proc R Soc A 186:273-292."
+  },
+  {
+   "key": "growth_taylor_sphere_surface_pressure",
+   "ok": true,
+   "issue": "Reproduced with my own RK4 similarity solver: u = c0 gives shock 1.328 c0 and Δp 1.414 p0 (ratio 1.010); 0.6 gives 1.051 and 0.526 (1.044); 0.8 gives 1.019; 1.5 gives 1.003; 2.0 gives 2.264 and 5.61 (1.001). Missing: the shock-fitted solution cannot be continued below about u = 0.31 c0 (M−1 below 1e-8), and as u → 0 the surface value tends to the incompressible 1.5 ρ0u² (2ρ0u² − ½ρ0u²), consistent with Taylor's remark that sound theory gives too high a near-surface pressure at 0.2 c0.",
+   "corrected": "Extend the k table: k rises from 1.15 at 0.3 c0 to 1.5 as u → 0. Use the sphere value only when R_final is much larger than R0; otherwise use the planar ρ0c0u onset."
+  },
+  {
+   "key": "growth_vessel_burst_he_equivalence",
+   "ok": true,
+   "issue": "Baker NASA CR-134906 re-fetched. PDF p. 71: 'For R greater than about 2, Figure 2-19, Ps versus R for pentolite (a high explosive) can be used as an upper limit for Ps'. PDF p. 86 has the 25% impulse statement. Confirmed."
+  },
+  {
+   "key": "growth_ground_reflection_2E",
+   "ok": true,
+   "issue": "PDF p. 21: 'perfectly rigid surface ... E' = 2E ... perfect absorber, for which E' = E'. PDF p. 86 has 'twice as much energy'. Confirmed."
+  },
+  {
+   "key": "growth_instant_blast_examples",
+   "ok": false,
+   "issue": "The arithmetic reproduces exactly (e.g. Chicxulub pure size: 202-328 kPa, 8.9e8-1.45e9 J, 213-346 kg, W_free 427-692 kg). But: (1) 'Windows shatter out to about 100-120 m' uses only the 6.9 kPa end. The existing blast_window_breakage band is 3.4-6.9 kPa ('usually shatter'), giving 100-220 m (pure size) and 25-57 m (mix). (2) The ball model expands about its centre, but the recommendation anchors at the soles. Then upward-moving surfaces sweep exactly 1/3 of the added volume (divergence theorem) at up to the head speed (1,407 m/s, Mach 4.1). Energy into the air is roughly 2× (ball anchored at its base) to 4.3× (same-volume column) the ball value, and the local top pressure is about 2.4-2.9 MPa. So 'the head sweeps little volume' is false. (3) It ignores the momentum and ground loading (see recommendation_issues).",
+   "corrected": "Windows 100-220 m (pure size) and 25-57 m (mix). With sole anchoring, E_x and TNT up to about 2-4× higher (Chicxulub pure size about 0.9-6e9 J, 0.2-1.5 t TNT), and window reach about 1.3-1.6× farther. Or state that the ball model assumes growth about the centre."
+  },
+  {
+   "key": "growth_ground_push_estimate",
+   "ok": false,
+   "issue": "The q/(ρc²) arithmetic is right (4.1e9/(1060 × c²) = 4.3e-11; dynamic 3.4e-11). But 'anchored at the soles ... nothing is driven into the ground' holds only kinematically. Raising his centre of mass needs an upward push from the ground. For instant Chicxulub pure size, the centre of mass rises at about 700 m/s; ground force at the end of growth is 3.9e11 N over 83 m² of grown paw soles (4.7 GPa, above any rock in deep_rock_strength_assumption, and twice that for Ollie's 0.15 m² boots). So the feet are driven in anyway. The loop ratio (about 1e12 J against 4e23 J) stays negligible.",
+   "corrected": "display: 'Sole anchoring avoids pushing the ground aside, but instant growth still loads the ground with the force needed to lift his centre of mass (GPa-level for Chicxulub-sized growth)'"
+  },
+  {
+   "key": "growth_loop_air_ratio",
+   "ok": true,
+   "issue": "Reproduced: size 1.06e-15 (slow), 3.2-4.5e-15 and 3.6-5.0e-15 (instant); mix 2.6e-17, 5.8-8.4e-17, 8.9e-19 and 2.6-3.8e-18. Minor: at small absorptions mix is about 5e-16 (half the pure-size value), so '10^-16 to 10^-18' omits that. The matter bound 1.45e-8 assumes surroundings no denser than him; rock at 2,700 kg/m^3 allows about 2.5× more. The trachenko 36.1 km/s source is re-fetched and confirmed."
+  },
+  {
+   "key": "growth_binding_energy_uniform_sphere",
+   "ok": true,
+   "issue": "LP2001 eq. (34) and β ≡ GM/Rc² confirmed. I checked independently that (3/4β)[asin√(2β)/√(2β) − √(1−2β)] equals the proper-mass integral ∫ρ dV_proper / M for uniform density, so the M_p = M(1+g) use is correct. Series at β = 0.01 gives 0.0060651. Canon 3GM²/5R = 4.1e-4 J."
+  },
+  {
+   "key": "growth_binding_energy_fit_lp2001",
+   "ok": true,
+   "issue": "Eq. (33) and the ±20% Lattimer-Yahil remark are confirmed."
+  },
+  {
+   "key": "growth_loop_gravity_newtonian",
+   "ok": true,
+   "issue": "(3/10)(2−α) r_s/R is reproduced; canon β 2.543e-24 gives 3.05e-24; Chicxulub density 4.75e-21; Sun 4.3e-18; Buchdahl values 0.533, 0.489, 0.444."
+  },
+  {
+   "key": "growth_loop_gravity_gr",
+   "ok": true,
+   "issue": "Whole table reproduced (e.g. β 4/9: 0.728, 0.701, 0.667; β 0.4999: 0.990, 0.989, 0.986). The small-β slopes are 1.2005, 1.1005 and 1.0004. The energy-books interpretation is self-consistent (gravitational mass rises by exactly E/c²) but unsourced, as the researcher says."
+  },
+  {
+   "key": "growth_black_hole_thresholds",
+   "ok": true,
+   "issue": "Reproduced: pure density 5.913e26 kg, 2.084e26 kg/m^3, 5.314e43 J, 4.4e9 yr; mix 2.695e31 kg (13.6 Suns), R 40 km, H 139 km; size 2.62e38 kg, 2.6 au. The stale-key flag is right: the old 2.54 m^3 gives 2.24e26 and 5.70e26. The 'black hole when r_s ≥ equivalent-ball radius' rule is the engine's convention; a 3 m-tall body would need a larger mass by hoop-conjecture reasoning (not verified here). Label it a convention."
+  },
+  {
+   "key": "growth_bondi_infall_loop",
+   "ok": true,
+   "issue": "Reproduced: onset 1.52e15 kg (5.4e14 kg/m^3); Ṁ 2.5e3 kg/s; 2.9e8 W; e-fold 4.7e23 s; near the horizon Ṁ 9.5e25 kg/s; atmosphere gone in 5e-8 s. The cap M_atm·βc² is at most 2.3e35 J, so '< 5e35' is loose but true."
+  },
+  {
+   "key": "growth_runaway_verdict",
+   "ok": true,
+   "issue": "Supported by the checked component facts. The verdict concerns energy feedback only; it does not cover the momentum consequences of instant growth."
+  }
+ ],
+ "recommendation_issues": "1. Instant growth: anchoring at the soles contradicts the blast model. The recommendation anchors growth at the soles but sizes the blast with a ball expanding about its centre. With sole anchoring, upward-moving surfaces sweep exactly 1/3 of the added volume at up to the head speed (Mach 3-4.5). Because Δp grows as u², energy into the air is about 2× (ball anchored at its base) to 4.3× (Rex-shaped column) the ball value. The local top pressure is about 2.4-2.9 MPa, not 2-3 atm. Either widen E_x, TNT and reach (reach ×1.3-1.6), or state that the ball model assumes growth about the centre.\n\n2. Instant growth: momentum is missing (canon: momentum is never absorbed). With the soles fixed, the centre of mass rises at about half the head speed: about 700 m/s for Chicxulub pure size, a momentum of 3.3e9 kg·m/s. The ground must push 3.9e11 N, 4.7 GPa on Rex's grown 83 m² soles (twice that for Ollie's boots), which exceeds any rock strength in the data. Nothing can then pull him back, so he would be launched about 25 km up unless 'bolted to the planet' is on. The alternative, anchoring at the centre of mass, drives his feet about ΔH/2 into the ground at about 700 m/s. Gradual growth needs a matching lift-off check: T ≥ about √(πΔH/g), about 3 s for Chicxulub pure size. It is never binding next to the shove limit, but it should be computed. 'Ground ≈ 0' is right for the loop ratio only, not for the hazard.\n\n3. Windows: use the existing 3.4-6.9 kPa band, not 6.9 kPa alone (100-220 m for Chicxulub pure size).\n\n4. The 20 Pa preset uses the wrong measurement basis and the wrong label. USBM's 120 dB is on the 6 Hz high-pass meter; on the 0.1 Hz basis it is about 125 dB, about 36 Pa. A seconds-long growth pulse barely registers on a 6 Hz meter, and the source says rattling still occurs below the safe level, so 'nothing rattles' is false. It is also a stricter preset, not a 'higher' one. The window (3.4 kPa) and eardrum (34.5 kPa) presets are fast-rising blast thresholds and are not validated for a smooth pulse lasting seconds; label them that way.\n\n5. Taylor k table: below about 0.3 c0 the surface factor rises toward the incompressible 1.5 ρ0u², not toward 1.16. The sphere value applies only when R_final ≫ R0 (growth time much longer than R0/c0 = 2.6 ms). Otherwise the planar ρ0c0u onset is the right estimate, as the researcher already uses for Krakatoa. Since t_x = 0.77 R_f/c0 always, say plainly that for modest k the planar value applies.\n\n6. Bystander shove factor: 0.29 (equivalent-ball radius over height) is not Rex's geometry. Under sole anchoring, any point's outward speed is (its horizontal distance from the anchor ÷ H) × head speed; the tail tip, snout or arms may reach 0.5-0.8×.\n\n7. Runaway multiplier: whether 1/(1 − f) applies at all depends on canon not yet given: is the work done on the air paid from the absorbed energy, or from the endless store? CLAUDE.md says to ask the owners rather than invent canon. Present it as an open question, not a computed multiplier.\n\n8. The low end of Morgan 2022's 'range' (1e23 J) is the abstract's order-of-magnitude rounding of the same 5e23 J estimate, not a separate lower bound.\n\n9. Krakatoa: 'any estimate adds under 51 kg' is wrong. The figures the researcher quotes go to 1.5 Gt (70 kg), and the source's extreme is about 12 Gt (about 560 kg).\n\n10. The horizon crossing uses the engine's equivalent-ball radius. Label it a convention: a 3 m-tall body would plausibly need more mass to sit inside its own horizon.\n\n11. Wording: 'OSHA allows' should be 'OSHA's Technical Manual describes'. 'The brief's strong-shock form' does not exist in the brief.\n\nThe core physics is otherwise sound: E/c² growth forms, the k_V/k_H sampling, the monopole with ground doubling, Baker's 2E rule and the pentolite upper limit beyond R̄ ≈ 2, the Newtonian and GR loop ratios, and the Bondi gate. All formulas are used within their stated validity apart from the points above.",
+ "missing": "- Momentum and centre-of-mass lift in instant growth, and the ground load under the soles. This is the biggest gap; see recommendation_issues 2.\n- A clear-space precondition for gradual growth. The shove limit protects only people who can step away. Buildings, vehicles or trees inside the final footprint (equivalent radius 10 m for Chicxulub pure size, 99 m for the Sun-second; actual footprint shape unknown) are pushed over or crushed at any speed. Pinned people are already noted.\n- Wind from displaced air during gradual growth: about 3-5 m/s at the pressure-limited durations, negligible at the shove-limited ones. Worth one line.\n- The Taylor table below u/c0 = 0.3, and when to switch from the sphere value to the planar value (finite R0).\n- Ollie-specific inputs: 3.06 m tall and 0.15 m² boot soles, so ground stresses are twice Rex's.\n- Height and shape factors (centre-of-mass fraction, horizontal extent of tail and snout) for the canon bodies. These are needed for the shove and lift-off checks; measure them from the turnarounds rather than assuming.\n- A source note: the Courant & Friedrichs quotes come from the archive.org OCR text (https://archive.org/download/dli.ernet.177550/177550-Supersonic%20Flow%20And%20Shock%20Waves_djvu.txt), since the cited scan PDF has no text layer.\n\nMy scripts (independent of the researcher's) are in /tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/research/growth-check/scripts/:\n- taylor_mine.py: Taylor similarity solution, RK4\n- check_all.py: worked examples, k_V/k_H, T_p/T_s, instant blast with Kinney-Graham reach, loop ratios\n- gr_check.py: GR loop and black-hole thresholds\n- anchor_check.py: anchoring energy factor, momentum and lift-off, Krakatoa spread, dB conversions\n\nFetched copies are in ../dl/: 20+ sources, including the Harkrider & Press full PDF and a 300 dpi render of CF Fig. 12.",
+ "verdict": "Sources and arithmetic are sound. I re-fetched every cited source (NIST c and G, Harkrider & Press record and full PDF, Lobanovsky, Morgan 2022, IAU 2015, Rienstra & Hirschberg, USBM RI 8485, OSHA, Bohannon, both PMC reviews, NASA normal shock, Collins, Baker 1977, Lattimer & Prakash, the Courant & Friedrichs scan and OCR text, Trachenko, and Crossref for the three DOIs). All derived numbers reproduce to the stated precision, and my own Taylor solver matches theirs within 1%.\n\nCorrections needed before building:\n- Krakatoa energy spread: wrong high end (at least 6.3e18 J, extreme about 5e19 J, so up to 70 kg and possibly about 560 kg, not 'under 51 kg'), plus a misquote ('Society', not 'Institute').\n- USBM 20 Pa rattle preset: wrong meter basis and an overstated label.\n- Window reach: uses only the 6.9 kPa end of the 3.4-6.9 kPa band.\n- Morgan 2022: the 1e23-5e23 J 'range' is one estimate quoted two ways.\n- Instant-growth model:\n  - It anchors at the soles but sizes the blast as a ball growing about its centre, so the energy into the air is 2-4× too low and 'the head sweeps little volume' is false.\n  - It omits the momentum needed to lift his centre of mass: GPa-level ground load, and a launch of about 25 km for Chicxulub pure size unless he is bolted down.\n\nGradual-growth and runaway conclusions stand: the shove sets the limit, and the loop ratio reaches 1 only at the horizon. Keep the instant-growth figures as labelled estimates once these fixes are in."
+}

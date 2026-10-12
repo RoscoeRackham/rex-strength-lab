@@ -15,7 +15,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
   - Review round 3 (it checked round 2's fixes): 60 findings, 59 confirmed; all fixed, one partly (documented in the README's known limits). Record: `rex-strength-lab/research/reviews/presence-round3.json`. Among them: three round 2 fixes had not fully held (soft landing's was in the engine but not on the page); a solo throw's recoil slide is now a hazard; the single-event plaster level follows RI 8507 Figure B-1; the 1 MJ crater line in soil is labelled as our estimate.
   - CLAUDE.md's Rex lab build line now runs `node test/presence.js` (as CI does).
   - The session's `history/` entry.
-  - Next: the live page is republished from this branch's final build; owner reviews and merges #12.
+  - Published this build to the live page (version 8). `history/2026-10-11-rex-presence/` written. Next: owner reviews and merges #12.
 
 ## Waiting on
 

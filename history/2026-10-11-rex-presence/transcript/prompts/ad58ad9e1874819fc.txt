@@ -1,0 +1,627 @@
+Project: the Rex Super-Strength Lab (/home/user/rex-strength-lab/rex-strength-lab/), a single-page physics simulator for Rex and Ollie (canon in CLAUDE.md, already loaded: each is 3.048 m tall and 3,007 kg in all; Rex's paw sole is 0.31 m^2 per foot, Ollie's boot sole 0.15 m^2 per foot; density 1,060 kg/m^3, 2.84 m^3). We are building /home/user/rex-strength-lab/rex-strength-lab/BRIEF-presence.md: read it first (10 minutes). It adds effort and restraint, a new Walk tab about ground vibration from their footsteps ("presence"), comic-physics switches, and what happens to energy they absorb (growth modes). This is the RESEARCH stage for one topic.
+The engine (/home/user/rex-strength-lab/rex-strength-lab/src/engine.js) already has: Kinney-Graham blast overpressure, Gutenberg-Richter magnitude with seismic efficiency 1e-4, Collins et al. craters, Poncelet penetration, bearing capacities for nine surfaces (loose sand, dense sand and gravel, soft clay, stiff clay, asphalt, a 10 cm concrete slab, lake ice, steel deck, granite), W8.WALK_LOAD = 1.2 x body weight per step, stagnation heating, and the Weight tab's self-gravity physics. Existing verified facts live in /home/user/rex-strength-lab/rex-strength-lab/research/final-*.json (humans, fiction, objects, environment, density, duo): read the keys and labels of the ones near your topic before you start, do NOT re-research a fact that already exists unless the brief needs a number it lacks, and say when you rely on an existing key.
+The owner is a professional critic: factual accuracy and honest labelling come first. Say "unknown" rather than invent. A number is "verified" only if you fetched the page or PDF yourself and saw the number there; give the exact URL you fetched (DOI landing pages, PubMed, PMC, publisher or agency PDFs, standards bodies). Many standards (BS, DIN, ISO) are paywalled: then cite the government or agency document that reproduces the table (e.g. Caltrans, FTA, HS2, Transport Scotland, US Bureau of Mines) with its URL and say "as reproduced in". Prefer primary or authoritative sources; use fan sites, magazines or Wikipedia only when nothing better exists, and label them "reported". Quote the exact sentence or table cell behind each number in notes.
+Load web tools with ToolSearch query "select:WebSearch,WebFetch". For PDFs, curl them into /tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/research/<topic>/ and extract text with python (pypdf may need pip install --user pypdf) or pdftotext if present. Write raw downloads and any scripts under /tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/research/<topic>/ (create it). Do not edit anything under /home/user/rex-strength-lab.
+Fact fields (the Rex lab's research format): key (snake_case, prefix with the topic, e.g. vib_mayne1984_ppv_law), category (the topic), label, status (verified = number seen in a fetched primary or authoritative source | derived = computed by you from verified inputs, with the formula in notes | estimate = a reasoned assumption | reported = secondary or weak source | disputed), value_si (number, SI), unit_si, low_si and high_si when there is a range, display (short human text with original units), sources (title + exact URL fetched), notes (exact quote, sample, conditions, caveats, how good the evidence is, and for derived numbers the formula and inputs), who_when (author and year). Put any multi-number table (e.g. a threshold table) in values_json as a JSON object string, with each row's original units. Prefer several small facts to one big one.
+
+You are a skeptical fact-checker for the topic "comic". Below are the researcher's facts and model recommendation. Re-fetch the cited URLs for every fact the page is likely to lean on (at least 12 fetches; all of them if there are fewer) and check each value, unit conversion, quotation and status against what the source actually says; recompute every derived number with your own script. Mark ok=false with a correction for anything wrong, mislabelled (a secondary summary presented as the primary paper, an estimate or a fan source marked verified, a sample maximum called a limit, the wrong units or wrong peak/RMS basis), or unsupported. Judge the model recommendation: wrong physics, wrong formula, constants used outside the range they were fitted to, overstated certainty? List important missing items.
+
+RESEARCH:
+{
+ "summary": "Research for the comic switches. All 30 facts are new and use the category \"comic\"; status counts are given below. Existing keys I rely on are named in the notes and in the recommendation: human_us_adult_male_mass, human_us_adult_female_mass, human_global_adult_mean_mass, human_projected_area, cd_bluff_body_tumbling_subsonic, earth_gm, earth_standard_gravity, collide_earth_inertia_rotation, toyota_corolla_curb_mass, atm_isa_sea_level_density, walking_running_peak_vertical_force, catch_breakup_ram_pressure, blast_window_breakage, blast_eardrum_rupture_threshold and blast_sonic_boom_concorde. I re-fetched Glasstone Tables 5.145 and 12.38, and both existing values are confirmed.\n\n(1) Gentle hold. Cauchy's equation of motion (∇·σ + ρb = ρa) is verified from Bower's Applied Mechanics of Solids. Free fall removing apparent weight, P = m(a − g), is verified from NASA's microgravity teacher's guide. \"Tidal effects arise from spatial variations of the gravitational field\" is verified from Benedetto 2026 (RBEF, a peer-reviewed physics-teaching journal). Eiband 1959 adds a verified practical point: survival improves as the arresting force is spread over the whole skeleton. Derived: the Earth's tidal tension through a 4 m, 1,340 kg car is about 2 mN, against a weight of 13 kN. His push, spread in proportion to mass at 10 g, adds zero stress; the same 10 g through a grip puts 131 kN through his hands.\n\n(2) Safe passenger. Verified sources:\n- ASTM F2291-06a acceleration charts for the general public: 6 g for 0.2–1 s, down to 2 g sustained head-to-foot; read from the edition posted by Public.Resource.Org.\n- NASA-STD-3001 Vol 2 Rev F seated crew tables, and NASA TM-20205008196: relaxed standing +Gz tolerance is only 2–5 g.\n- Relaxed +Gz thresholds from the Bioastronautics Data Book: grey-out 4.1, blackout 4.7, unconsciousness 5.4 g (means).\n- Whinnery 2013: G-LOC never in under 5 s.\n- Layperson centrifuge studies: up to +6 Gx and +4 Gz tolerated by screened, seated volunteers.\n- Eiband voluntary harnessed limits (45 g for 0.044 s down to 10 g for 1.6 s) and survived-with-injury human points (25 g for 0.93 s; 83 g for 0.04 s).\n\nRecommended: a no-harm envelope from ASTM, and an injury level at Eiband's voluntary line.\n\n(3) Passenger mass: reuse the existing human mass keys.\n\n(4) Airblast and sonic boom. Verified from USBM RI 8485 and 30 CFR 816.67:\n- rattling complaints from about 120 dB (20 Pa);\n- safe maximum 134 dB (100 Pa);\n- window sashes rattle at 207–345 Pa for small, sharp shots;\n- flawed glass breaks at 364–690 Pa;\n- sonic-boom effects in psf from the White Sands tests, and NASA's public-reaction level (1.5–2 psf);\n- OSHA's 140 dB (200 Pa) peak limit for impulse noise, far below eardrum rupture.\n\n(5) Soft landing. Impulse–momentum is verified from OpenStax. The landing-force formulas are derived, including the kinematic limit: the force can be no gentler than m v²/(2 × his leg bend).\n\nStatus counts: 21 verified, 5 derived, 4 estimate.",
+ "facts": [
+  {
+   "key": "comic_cauchy_equation_of_motion",
+   "category": "comic",
+   "label": "Cauchy's equation of motion for a solid (Newton's second law for every bit of a body)",
+   "status": "verified",
+   "value_si": null,
+   "unit_si": "",
+   "display": "∇·σ + ρb = ρa (σ stress, ρ density, b body force per unit mass, a acceleration)",
+   "sources": [
+    {
+     "title": "A. F. Bower, Applied Mechanics of Solids, §2.3.1 Linear momentum balance in terms of Cauchy stress (online text)",
+     "url": "https://www.solidmechanics.org/text/Chapter2_3/Chapter2_3.htm"
+    },
+    {
+     "title": "Equation image for §2.3.1 (eq0006), from the page above",
+     "url": "https://www.solidmechanics.org/text/Chapter2_3/Chapter2_3_files/eq0006M.gif"
+    },
+    {
+     "title": "A. F. Bower, Applied Mechanics of Solids, §2.2.1 Surface traction and internal body force",
+     "url": "https://www.solidmechanics.org/text/Chapter2_2/Chapter2_2.htm"
+    }
+   ],
+   "notes": "§2.3.1: 'Newton's third [sic] law of motion (F=ma) can be expressed as' ∇y·σ + ρb = ρa, or ∂σij/∂yi + ρbj = ρaj (equation shown as an image, which I downloaded and read). §2.2.1 separates the two ways forces reach a solid: '(i) A force can be applied to its boundary: examples include fluid pressure, wind loading, or forces arising from contact with another solid. (ii) The solid can be subjected to body forces, which act on the interior of the solid. Examples include gravitational loading, or electromagnetic forces.' Why it matters here: a grip, the ground and air pressure are boundary forces (tractions), and they are what stress a body. Gentle hold turns his push into a body force.",
+   "who_when": "Bower, Applied Mechanics of Solids (CRC Press 2009; online edition)"
+  },
+  {
+   "key": "comic_uniform_body_force_no_stress",
+   "category": "comic",
+   "label": "A push spread through a body in proportion to its mass accelerates it with no internal stress",
+   "status": "derived",
+   "value_si": 0,
+   "unit_si": "Pa",
+   "display": "If every kilogram gets the same push (b = a everywhere) and nothing touches the surface, stress = 0",
+   "sources": [
+    {
+     "title": "Bower, Applied Mechanics of Solids §2.3.1 (equation of motion)",
+     "url": "https://www.solidmechanics.org/text/Chapter2_3/Chapter2_3.htm"
+    },
+    {
+     "title": "NASA EG-1997-08-110-HQ, Microgravity: A Teacher's Guide (apparent weight in free fall)",
+     "url": "https://ntrs.nasa.gov/api/citations/19980007787/downloads/19980007787.pdf"
+    }
+   ],
+   "notes": "Derivation from comic_cauchy_equation_of_motion. Let the total body force per unit mass be gravity plus his spread push: b = g + f/m, the same at every point (his push is in proportion to mass). The whole body then has the uniform acceleration a = b. Put σ = 0 into ∇·σ + ρb = ρa and you get ρb = ρa, which holds everywhere. The surface condition σ·n = t is also met, because no grip or support acts on the surface (t = 0). For a linear elastic body this solution is the only one (Kirchhoff's uniqueness theorem). That theorem is standard but I did not fetch a source for it. Gentle hold therefore adds no stress, and it removes the stress of the body's own weight too: held this way, a car does not sag, just as in orbit. What stays: (a) stresses already locked inside it that balance themselves, such as tyre pressure, bolt preload and residual stress; (b) loose contents not covered by the push, which would slide or slosh; (c) every surface force once it acts, such as air pressure on the front in flight, the ground at landing, or his hands if he grips normally. This is the same physics as free fall (comic_free_fall_apparent_weight). Eiband's finding that spreading the arresting force over the whole skeleton raises tolerance is the real-world direction of the same idea (comic_eiband_restraint_spreads_force).",
+   "who_when": "This research, 2026"
+  },
+  {
+   "key": "comic_free_fall_apparent_weight",
+   "category": "comic",
+   "label": "In free fall nothing feels its own weight: apparent weight P = m(a − g)",
+   "status": "verified",
+   "value_si": 0,
+   "unit_si": "N",
+   "display": "Apparent weight P = m(a_e − g); falling freely (a_e = g), P = 0: 'you are weightless'",
+   "sources": [
+    {
+     "title": "NASA EG-1997-08-110-HQ, Microgravity: A Teacher's Guide with Activities in Science, Mathematics, and Technology (Rogers, Vogt & Wargo 1997), PDF pp. 14 and 17",
+     "url": "https://ntrs.nasa.gov/api/citations/19980007787/downloads/19980007787.pdf"
+    }
+   ],
+   "notes": "Elevator example (PDF p. 14): 'Your apparent weight P=m(ae-g)=(60 kg)(-9.8 m/s2-(-9.8 m/s2)) = 0 kg m/s2; you are weightless. The elevator car, the scale, and you would all be accelerating downward at the same rate, which is due to gravity alone.' PDF p. 17: 'the effects of gravity (apparent weight) can be removed quite easily by putting anything (a person, an object, an experiment) into a state of freefall.' The guide also quotes Einstein: 'If a person falls freely, he will not feel his own weight.' Use P = m(a − g) as the passenger's felt load: standing still gives 1 g, ballistic flight gives 0 g (plus drag), and his spread push gives 0 g while it acts.",
+   "who_when": "NASA, 1997"
+  },
+  {
+   "key": "comic_tidal_effects_from_gradients",
+   "category": "comic",
+   "label": "Only differences in the field (tides) stretch a freely falling body",
+   "status": "verified",
+   "value_si": null,
+   "unit_si": "",
+   "display": "Tidal acceleration along the line to a mass M at distance R: a_z = 2 z G M / R³ (z = offset from the centre of mass)",
+   "sources": [
+    {
+     "title": "Benedetto (2026), Tidal forces and centrifugal gradients: a pedagogical clarification on the role of free fall and curvature, Revista Brasileira de Ensino de Física 48, doi:10.1590/1806-9126-RBEF-2026-0148",
+     "url": "https://scielo.br/j/rbef/a/ynX4q9MB3HrTrVByNLW38HD/?lang=en"
+    }
+   ],
+   "notes": "Quotes: 'tidal effects arise from spatial variations of the gravitational field rather than from the field itself'; in a uniform field 'neighboring freely falling particles experience no relative acceleration, and therefore no tidal effects are present'. Eq. 1: a_x = −xGM/R³, a_y = −yGM/R³, a_z = 2zGM/R³. This is the equivalence-principle half of the gentle-hold argument: a uniform push (or field) cannot stress a body, only its gradient can. RBEF is a peer-reviewed physics-teaching journal; this is a 2026 paper. Read through WebFetch.",
+   "who_when": "Benedetto, RBEF 2026"
+  },
+  {
+   "key": "comic_tidal_stress_car",
+   "category": "comic",
+   "label": "Tidal stretch on a 4 m car: Earth's tide versus his spread push",
+   "status": "derived",
+   "value_si": 0.0021,
+   "unit_si": "N",
+   "display": "Earth's tide: about 2 mN through the middle of a 1,340 kg, 4 m car standing on end (1 part in 6 million of its weight). His push spread through it at 10 g: zero",
+   "sources": [
+    {
+     "title": "Benedetto 2026 (tidal formula)",
+     "url": "https://scielo.br/j/rbef/a/ynX4q9MB3HrTrVByNLW38HD/?lang=en"
+    },
+    {
+     "title": "Existing keys earth_gm, collide_earth_inertia_rotation (radius), toyota_corolla_curb_mass, earth_standard_gravity (research/final-*.json)",
+     "url": "https://www.kbb.com/toyota/corolla/2026/specs"
+    }
+   ],
+   "notes": "Inputs: GM = 3.986004e14 m³/s² (earth_gm), R = 6.371e6 m (collide_earth_inertia_rotation), m = 1,340.4 kg (toyota_corolla_curb_mass), L = 4 m. The gradient 2GM/R³ is 3.08e-6 s⁻². End to end, the tidal acceleration difference is 1.2e-5 m/s² (1.3e-6 g). For a uniform rod along the vertical, the tension at its middle is m L GM/(4R³) = 2.1e-3 N, against a weight of 13,145 N (ratio 1.6e-7). His push, spread in proportion to mass, gives the same acceleration to every kilogram, so its gradient is zero and so is the stress it adds, whatever the acceleration (10 g or 10⁶ g). For contrast, 10 g delivered through a grip puts m × 10 g = 131 kN through his hands, plus the 13 kN weight. The 4 m length is the task's round figure; the Corolla is 4.63 m. Script: scratchpad research/comic/scripts/derive.py.",
+   "who_when": "This research, 2026"
+  },
+  {
+   "key": "comic_eiband_restraint_spreads_force",
+   "category": "comic",
+   "label": "Spreading the force over the whole body is what raises tolerance (Eiband 1959)",
+   "status": "verified",
+   "value_si": null,
+   "unit_si": "",
+   "display": "'Survival of impact forces increases with increased distribution of the arresting force to the entire skeleton'; people cannot move against more than 2–3 g",
+   "sources": [
+    {
+     "title": "Eiband (1959), Human Tolerance to Rapidly Applied Accelerations: A Summary of the Literature, NASA Memorandum 5-19-59E (NTRS 19980228043)",
+     "url": "https://ntrs.nasa.gov/api/citations/19980228043/downloads/19980228043.pdf"
+    }
+   ],
+   "notes": "Conclusions: 'complete torso and extremity support is the primary variable in increasing survival of rapidly applied accelerations. Therefore, survival of impact forces increases with increased distribution of the arresting force to the entire skeleton, for blows from all directions.' 'Voluntary muscular restraint demonstrated in live experiments': 'muscular effort is inadequate for resisting anything but the mildest of impacts' and 'human beings unable to move their bodies against forces exceeding 2 or 3 times normal body weight (2 or 3 G's).' Real-world support for gentle hold and safe passenger: a perfectly spread push is the limiting case. It also warns that a person held only by hands, with no seat or harness, is far worse off than the harnessed volunteers behind the tolerance numbers.",
+   "who_when": "Eiband, NASA Lewis, 1959"
+  },
+  {
+   "key": "comic_astm_f2291_ride_limits",
+   "category": "comic",
+   "label": "Amusement-ride acceleration limits for the general public (ASTM F2291-06a)",
+   "status": "verified",
+   "value_si": 58.84,
+   "low_si": 19.61,
+   "high_si": 58.84,
+   "unit_si": "m/s^2",
+   "display": "Head-to-foot (+Gz) or pressed into the seat back (+Gx): 6 g for 0.2–1 s, 4 g for 2–4 s, 3 g for 5–11.8 s, then 2 g (+Gz) or 2.5 g (+Gx). Sideways 3 g → 2 g. Eyes-front 1.5 g. Eyes-up 1.5 g → 1.1 g",
+   "values_json": "{\"edition\":\"ASTM F2291-06a (2006), Figs. 6-10, base case unless stated\",\"units\":\"G (9.81 m/s^2), total net acceleration including Earth's gravity; duration in s; points read from the charts and joined by straight lines\",\"+Gz eyes down, all restraints (Fig. 10)\":[[0.2,6],[1,6],[2,4],[4,4],[5,3],[11.8,3],[12,2],[\"steady\",2]],\"+Gx eyes back, base case with headrest (Fig. 6)\":[[0.2,6],[1,6],[2,4],[4,4],[5,3],[11.8,3],[12,2.5],[\"steady\",2.5]],\"+-Gy eyes left or right (Fig. 8)\":[[0.2,3],[1,3],[2,2],[\"steady\",2]],\"-Gx eyes front, base case (Fig. 7)\":[[0.2,-2],[0.5,-1.5],[\"steady\",-1.5]],\"-Gx over-the-shoulder restraint (Fig. 7)\":[[\"all\",-2]],\"-Gx prone restraint (Fig. 7)\":[[0.2,-3.5],[2,-3.5],[3,-2.5],[4,-2.5],[5,-2],[\"steady\",-2]],\"-Gz eyes up, base case (Fig. 9)\":[[0.2,-2],[0.5,-1.5],[4,-1.5],[7,-1.1],[\"steady\",-1.1]],\"-Gz extended, special restraints (Fig. 9)\":[[0.2,-2.8],[1,-2.2],[3,-1.5]]}",
+   "sources": [
+    {
+     "title": "ASTM F2291-06a Standard Practice for Design of Amusement Rides and Devices, as incorporated by reference (Indiana 685 IAC 1-2-9) and posted by Public.Resource.Org",
+     "url": "https://ia800607.us.archive.org/34/items/gov.law.astm.f2291.2006/astm.f2291.2006.pdf"
+    }
+   ],
+   "notes": "Text, §3.1.1–3.1.2: impact means 'accelerations with duration of less than 200 ms'; sustained means 'greater than or equal to 200 ms'. §7.1.4.2: 'Impacts of less than 200 ms duration are not addressed by this practice.' §7.1.4.3: limits are 'for patrons 48 in. in height and above'. §7.1.4.4: 'do not address patrons with specific physical limitations.' §7.1.4.5: 'The limits specified for all axes are for total net acceleration, inclusive of earth's gravity. A motionless body would therefore have a magnitude of 1 G measured in the axis perpendicular to the earth's surface'. §7.1.4.6: 'Sustained exposure in excess of 90 s has not been addressed'. Fig. 6 note: 'Must have headrest above 1.5 g unless onset rate is less than 5 g/sec; then 2.0 g is permissible. For no head rest case, max duration of above 1.5 g is 4 seconds.' Fig. 10 note: 'Design must assure that Patron is properly seated in upright position.' §7.1.7.1: after more than 3 s of negative Gz, the +Gz limits are lowered for 6 s (a separate curve in Fig. 10). §7.1.7.2: going from sustained weightlessness (0 G) or below to 2 G or more, 'the effective onset of positive G shall be less than 15 G/s.' §7.1.5: combined axes are limited by an ellipse with radii 1.1 × the 200 ms limits. These limits assume a seated rider in a designed restraint. I read the values off the chart images at 220 dpi; the -2 G start of the eyes-front and eyes-up base cases at 0.2 s is a chart reading. Edition caveat: this is the 2006 edition, the newest free copy. The current F2291-26 is paywalled and was not checked. ASTM work item WK97865 restructures §7.1 with 'No change in accepted technical standards content', and EN 13814:2019 is reported harmonised with these limits (not fetched).",
+   "who_when": "ASTM International, F2291-06a (2006)"
+  },
+  {
+   "key": "comic_nasa_std3001_seated_limits",
+   "category": "comic",
+   "label": "NASA sustained acceleration limits for seated, restrained astronauts (upper bound, not for ordinary people)",
+   "status": "verified",
+   "value_si": 81.4,
+   "low_si": 39.2,
+   "high_si": 186,
+   "unit_si": "m/s^2",
+   "display": "Non-deconditioned seated crew: head-to-foot (+Az) 81.4 m/s² (8.3 g) at 0.5 s, 62.8 (6.4 g) at 5 s, 39.2 (4.0 g) at 1,200 s. Chest-to-back (+Ax) 186 (19 g) at 0.5 s, 157 (16 g) at 5 s, 73.5 (7.5 g) at 300 s",
+   "values_json": "{\"source\":\"NASA-STD-3001 Vol 2 Rev F, Tables 6.5-1 to 6.5-3 (seated)\",\"units\":\"duration s : acceleration m/s^2\",\"Ax non-deconditioned upper\":{\"0.5\":186,\"5\":157,\"300\":73.5},\"Ax non-deconditioned lower\":{\"0.5\":-216,\"5\":-147,\"120\":-58.8,\"400\":-39.2},\"Ax emergency upper\":{\"0.5\":373,\"120\":86.3,\"300\":73.5,\"1200\":49.0},\"Az non-deconditioned upper\":{\"0.5\":81.4,\"5\":62.8,\"1200\":39.2},\"Az non-deconditioned lower\":{\"0.5\":-58.8,\"5\":-37.3,\"60\":-21.6,\"1200\":-9.81},\"Az emergency upper\":{\"0.5\":167,\"120\":58.8,\"1200\":37.3},\"Ay non-deconditioned (both signs)\":{\"0.5\":29.4,\"1000\":19.6}}",
+   "sources": [
+    {
+     "title": "NASA-STD-3001 Volume 2 Revision F (approved 2026-07-14), §6.5.1 [V2 6064], Tables 6.5-1 to 6.5-3",
+     "url": "https://standards.nasa.gov/system/files/tmp/NASA-STD-3001%20Vol%202%20Rev%20F.pdf"
+    },
+    {
+     "title": "NASA OCHMO Technical Brief OCHMO-TB-024 Occupant Protection (sustained >0.5 s; transient ≤0.5 s)",
+     "url": "https://www.nasa.gov/sites/default/files/atoms/files/acceleration_technical_brief_ochmo.pdf"
+    }
+   ],
+   "notes": "[V2 6064]: 'The system shall limit the magnitude, direction, and duration of crew exposure to sustained (> 0.5 seconds) translational acceleration by staying below the limits in Figures 6.5-(2-7) and Tables 6.5-(1-6) for seated and standing postures.' Rationale: 'The limits in these figures represent safe levels of sustained translational acceleration'; 'All limits further assume adequate restraint(s)'; 'Unless stated otherwise, all limits also assume the crew is wearing a lower body compression garment'. Axes: '+X: Body accelerations forward/Eyes back'; '+Z: Body accelerations up/Eyes down'. Use only as context: these are for trained, screened, strapped-in astronauts in compression garments. An ordinary person held by Rex has none of that. The Rev D PDF link on nasa.gov returned 404; Rev F (whose history says §6.5.1 [V2 6064] changed) is the copy I fetched. The standards site's path ('system/files/tmp') is odd, but the document is NASA's own and signed off as approved.",
+   "who_when": "NASA OCHMO, Rev F 2026"
+  },
+  {
+   "key": "comic_nasa_standing_vs_seated_gz",
+   "category": "comic",
+   "label": "Relaxed head-to-foot tolerance: 2–5 g standing, 7–9 g seated",
+   "status": "verified",
+   "value_si": 19.62,
+   "low_si": 19.62,
+   "high_si": 49.05,
+   "unit_si": "m/s^2",
+   "display": "Non-straining standing +Gz tolerance 19.6–49.1 m/s² (2–5 g); seated 68.7–88.3 m/s² (7–9 g)",
+   "sources": [
+    {
+     "title": "Pattarini et al. (2020), Artemis Sustained Translational Acceleration Limits: Human Tolerance Evidence from Apollo to International Space Station, NASA/TM-20205008196, pp. 1–2",
+     "url": "https://www.nasa.gov/wp-content/uploads/2023/03/tm-20205008196.pdf"
+    }
+   ],
+   "notes": "Quote: 'The range of non-straining, standing +Gz (head-to-foot) tolerance ranges from 19.62-49.05 m/s2 for healthy subjects, contrasted with 68.67-88.29 m/s2 for seated subjects of both sexes (33, 13, 5, 3, 4, 7).' Also: 'Humans experience a 10% to 20% decrease in cardiac output with a shift from seated to standing posture'. Use: a passenger carried upright (standing or dangling) tolerates far less head-to-foot g than a seated rider. The seated figures are higher than Cochran's relaxed unconsciousness mean of 5.4 g (comic_relaxed_gz_thresholds_cochran), probably because of different end points; the TM does not define its tolerance end point. Use the range for direction and posture, not as an injury limit.",
+   "who_when": "NASA JSC, 2020"
+  },
+  {
+   "key": "comic_gz_symptoms_fraser",
+   "category": "comic",
+   "label": "What steady g feels like, by direction (Fraser 1966 compilation)",
+   "status": "verified",
+   "value_si": null,
+   "unit_si": "",
+   "display": "+Gz: 2 g heavier; 2.5 g hard to get up; 3–4 g vision dims after 3–4 s; 4.5–6 g blackout after about 5 s, then unconsciousness. +Gx: 2 g tolerable for at least 24 h, 4 g for at least 60 min",
+   "values_json": "{\"+Gz (head-to-foot)\":{\"1 G\":\"Equivalent to the erect or seated terrestrial posture\",\"2 G\":\"Increase in weight, increased pressure on buttocks, drooping of face and soft body tissues\",\"2.5 G\":\"Difficult to raise oneself\",\"3-4 G\":\"Impossible to raise oneself ... progressive dimming of vision after 3 to 4 seconds, progressing to tunneling of vision\",\"4.5-6 G\":\"Diminution of vision, progressive to blackout after about 5 seconds; hearing and then consciousness lost if exposure continued\"},\"-Gz (foot-to-head)\":{\"-1 G\":\"Unpleasant but tolerable facial suffusion and congestion\",\"-2 to -3 G\":\"Severe facial congestion, throbbing headache ... after 5 seconds\",\"-5 G\":\"Five seconds, limit of tolerance, rarely reached by most subjects\"},\"+Gx (chest-to-back)\":{\"2-3 G\":\"2 Gx tolerable at least to 24 hours, 4 Gx up to at least 60 minutes\",\"3-6 G\":\"Progressive tightness in chest (6 Gx, 5 minutes), chest pain, loss of peripheral vision, difficulty in breathing and speaking\",\"6-9 G\":\"Increased chest pain and pressure; breathing difficult\",\"15 G\":\"Extreme difficulty in breathing and speaking; severe vise-like chest pain\"},\"+Gy (lateral)\":{\"3 G\":\"Discomfort after 10 seconds ... petechiae and bruising\",\"5 G (14.5 s)\":\"External hemorrhage, severe postrun headache\"}}",
+   "sources": [
+    {
+     "title": "Parker & West (eds.), Bioastronautics Data Book, 2nd ed., NASA SP-3006 (1973), ch. 4 Sustained Linear Acceleration, pp. 150–152 (PDF pp. 160–162)",
+     "url": "https://ntrs.nasa.gov/api/citations/19730006364/downloads/19730006364.pdf"
+    }
+   ],
+   "notes": "'The following compilation is derived from the study by Fraser (1966).' The quotes are in values_json. Subjects were centrifuge volunteers, mostly seated and restrained; the onset rates are not given. Use for page wording, such as 'feels twice as heavy' or 'vision dims after a few seconds', not as limits.",
+   "who_when": "Fraser 1966, in NASA SP-3006, 1973"
+  },
+  {
+   "key": "comic_relaxed_gz_thresholds_cochran",
+   "category": "comic",
+   "label": "Relaxed head-to-foot g at which vision and consciousness fail (means of a large group)",
+   "status": "verified",
+   "value_si": 52.96,
+   "low_si": 40.21,
+   "high_si": 52.96,
+   "unit_si": "m/s^2",
+   "display": "Loss of peripheral vision 4.1 ± 0.7 g (range 2.2–7.1); blackout 4.7 ± 0.8 g (2.7–7.8); unconsciousness 5.4 ± 0.9 g (3.0–8.4)",
+   "values_json": "{\"units\":\"G, +Gz (head-to-foot), mean / standard deviation / range\",\"Loss of peripheral vision\":[4.1,0.7,\"2.2-7.1\"],\"Blackout\":[4.7,0.8,\"2.7-7.8\"],\"Unconsciousness\":[5.4,0.9,\"3.0-8.4\"]}",
+   "sources": [
+    {
+     "title": "Bioastronautics Data Book, NASA SP-3006 (1973), Table 4-4 'Range of Visual Thresholds in Relation to Unconsciousness' (after Cochran et al., 1954), p. 157 (PDF p. 167)",
+     "url": "https://ntrs.nasa.gov/api/citations/19730006364/downloads/19730006364.pdf"
+    }
+   ],
+   "notes": "Checked on the rendered page image: 'Loss of peripheral vision 4.1 ±0.7 2.2 – 7.1; Blackout 4.7 ±0.8 2.7 – 7.8; Unconsciousness 5.4 ±0.9 3.0 – 8.4 (After Cochran et al., 1954)'. The table does not state onset rate, posture or exposure time. Cochran et al. tested relaxed seated subjects on a centrifuge, but I did not fetch that paper. These thresholds apply only to head-to-foot g held for several seconds (blood drains from the head). They do not apply to brief pulses (comic_gloc_not_before_5s), to chest-to-back g, or to a passenger under his spread push (no felt g, so no blood shift).",
+   "who_when": "Cochran et al. 1954, in NASA SP-3006, 1973"
+  },
+  {
+   "key": "comic_gloc_not_before_5s",
+   "category": "comic",
+   "label": "Blacking out from g takes at least 5 seconds",
+   "status": "verified",
+   "value_si": 5,
+   "unit_si": "s",
+   "display": "In 888 centrifuge G-LOC episodes, no one lost consciousness in under 5 s (mean about 9 s for onset ≥1 g/s); lowest threshold level +4.7 g",
+   "sources": [
+    {
+     "title": "Whinnery & Forster (2013), The +Gz-induced loss of consciousness curve, Extreme Physiology & Medicine 2:19, doi:10.1186/2046-7648-2-19 (full text via Europe PMC)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC3710154/fullTextXML"
+    }
+   ],
+   "notes": "Abstract: 'for onset rates ≥ 1.0 G/s, G-LOC will occur in a mean time of 9.10 s and is independent of the onset rate'; 'The minimum +Gz-level threshold tolerance was defined as +4.7 Gz'; 'When +Gz onset rates are gradual, ≤ 0.2 G/s, G-LOC occurs in a mean time of 74.41 s. G-LOC did not occur earlier than 5 s for any acceleration exposure.' Caveat from the paper: the episodes were 'mostly in experienced military fighter pilots', and 'There was no separation of relaxed subjects, subjects performing an anti-G straining maneuver (AGSM), subjects wearing or without anti-G suits'. Across the whole set, +Gz at G-LOC ranged from +2.5 to +11.7. Use: a throw or catch lasting under 5 s cannot knock a passenger out through blood loss to the head, even at high head-to-foot g; injury from force is the limit there.",
+   "who_when": "Whinnery & Forster 2013"
+  },
+  {
+   "key": "comic_layperson_centrifuge_tolerance",
+   "category": "comic",
+   "label": "Ordinary people (would-be space tourists) on a centrifuge: up to +6 Gx and +4 Gz tolerated",
+   "status": "verified",
+   "value_si": 58.84,
+   "low_si": 34.32,
+   "high_si": 58.84,
+   "unit_si": "m/s^2",
+   "display": "Screened, seated, restrained laypeople aged 20–88: peaks +3.5 to +4.0 Gz and +6.0 Gx (combined peaks about 5 s) tolerated; grey-out common (69–88%), one G-LOC in 24",
+   "sources": [
+    {
+     "title": "Blue et al. (2012), Commercial spaceflight participant G-force tolerance during centrifuge-simulated suborbital flight, Aviat Space Environ Med 83:929, doi:10.3357/asem.3351.2012 (abstract, Europe PMC)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:23066613%20AND%20SRC:MED&format=json&resultType=core"
+    },
+    {
+     "title": "Blue et al. (2014), Tolerance of centrifuge-simulated suborbital spaceflight by medical condition, Aviat Space Environ Med 85:721, doi:10.3357/asem.3956.2014 (abstract, Europe PMC)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:25022160%20AND%20SRC:MED&format=json&resultType=core"
+    },
+    {
+     "title": "Suresh et al. (2017), Dysrhythmias in laypersons during centrifuge-simulated suborbital spaceflight, Aerosp Med Hum Perform 88:1008, doi:10.3357/amhp.4910.2017 (abstract, Europe PMC)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:29046176%20AND%20SRC:MED&format=json&resultType=core"
+    },
+    {
+     "title": "Smith et al. (2022), Physiological effects of centrifuge-simulated suborbital spaceflight, Aerosp Med Hum Perform 93:830, doi:10.3357/amhp.6153.2022 (abstract, Europe PMC)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:36757241%20AND%20SRC:MED&format=json&resultType=core"
+    }
+   ],
+   "notes": "Blue 2012: '77 individuals (65 men, 12 women), 22-88 yr old ... two +Gz runs (peak = 3.5+Gz, run 2) and two +Gx runs (peak = 6.0+Gx, run 4)'; 'most individuals with well-controlled medical conditions can withstand acceleration forces involved in launch/landing profiles'. Blue 2014: '86 (63 men, 23 women, age 20-78 yr)'; combined profiles 'peak = +6.0 G(x)/+4.0 G(z)'; complaints 'grayout (69%), nausea (20%), and chest discomfort (6%)'; 'no subject experienced significant adverse physiological responses'. Suresh 2017: 148 subjects; 'peak +4.0 Gz, +6.0 Gx, duration 5 s'; dysrhythmias were seen but 'None were associated with subjective symptoms or objective signs of acceleration intolerance'. Smith 2022: 24 healthy subjects aged 18–80; '88% of subjects reporting greyout and 29% reporting blackout. There was one episode of G-LOC'. These are abstracts only. Everyone was medically screened, briefed, seated in a centrifuge seat and strapped in: a best case for an untrained person, not a person held in someone's arms. value_si is the +6 Gx peak; low_si is +3.5 Gz.",
+   "who_when": "UTMB / NASTAR and UK centrifuge groups, 2012–2022"
+  },
+  {
+   "key": "comic_eiband_voluntary_limits",
+   "category": "comic",
+   "label": "Brief jolts volunteers took uninjured in a full harness (Eiband 1959)",
+   "status": "verified",
+   "value_si": 392.3,
+   "low_si": 98.07,
+   "high_si": 441.3,
+   "unit_si": "m/s^2",
+   "display": "Spineward, full harness: 45 g for 0.044 s, 40 g for 0.1 s, 25 g for 0.2 s, 13 g for 0.6 s, 10 g for 1.6 s. Animals survived with moderate injury up to 56 g for 0.037 s and 43 g for 0.11 s (chimpanzees), 160 g for 0.004 s (hog)",
+   "values_json": "{\"units\":\"G and seconds; trapezoidal pulses; onset about 500 G/s unless stated\",\"spineward, voluntary uninjured (lap, shoulder, thigh straps; the longer ones also chest, arm, leg, helmet straps)\":{\"0.044\":45,\"0.1\":40,\"0.2\":25,\"0.6\":13,\"1.6\":10},\"sternumward, voluntary\":{\"0.12\":30,\"0.19\":21},\"headward (ejection seat)\":\"20 G for 0.005-0.5 s assumed tolerable (from cadaver vertebra strength); 16 G for up to 0.04 s endured with lap, shoulder straps and face curtain\",\"moderate injury, animals (spineward)\":{\"chimpanzee\":\"56 G for 0.037 s; 43 G for 0.110 s\",\"hog\":\"160 G for about 0.004 s (upper limit of moderate injury)\"},\"moderate injury, human\":\"25 G for 0.93 s (Stapp): debilitated, normal duty in five days\"}",
+   "sources": [
+    {
+     "title": "Eiband (1959), NASA Memorandum 5-19-59E, pp. 6–7 and 'Survival of Headward Accelerations' (NTRS 19980228043)",
+     "url": "https://ntrs.nasa.gov/api/citations/19980228043/downloads/19980228043.pdf"
+    }
+   ],
+   "notes": "Memo p. 6: 'subjects have endured maximum uniform accelerations of 45 G's for 0.044 second with no injurious or debilitating (weakening) effects'; 'the upper limit of voluntary tolerance decreases to a magnitude of 40 G's for intervals of 0.1-second duration and to 25 G's when the interval is increased to 0.2 second'; 'When the subject was restrained by chest, arm, leg, and helmet straps in addition to the experimental lap, shoulder, and thigh straps, exposures of 13 G's for 0.6 second and 10 G's for 1.6 seconds could be tolerated'; 'all straps were drawn up tighter than a person usually would wear them'. Memo p. 7, checked on the page image: 'chimpanzee subjects have endured plateau accelerations of 56 G's for 0.037 second and 43 G's for 0.110 second'; hog 160 G for about 0.004 s. Headward: 'a 20-G acceleration of 0.005- to 0.5-second duration would be tolerable'. 'Tolerable' is defined as 'one in which the subject is not debilitated or traumatically injured'. Every number assumes a full harness on a rigid seat, which is the opposite of a person held by hand.",
+   "who_when": "Eiband, NASA Lewis, 1959"
+  },
+  {
+   "key": "comic_impact_survived_with_injury",
+   "category": "comic",
+   "label": "Impacts people survived with injury: 25 g for 0.93 s; 83 g for 0.04 s",
+   "status": "verified",
+   "value_si": 814,
+   "low_si": 245.2,
+   "high_si": 814,
+   "unit_si": "m/s^2",
+   "display": "25 g for 0.93 s: debilitated, back on duty in 5 days (Eiband). 83 g chest acceleration for 0.04 s: survived 'with reversible injuries' (Beeding & Mosely 1960). Air Force design limit about 45 g for 0.1 s, 25 g for 0.2 s",
+   "sources": [
+    {
+     "title": "Eiband (1959), NASA Memorandum 5-19-59E, p. 7",
+     "url": "https://ntrs.nasa.gov/api/citations/19980228043/downloads/19980228043.pdf"
+    },
+    {
+     "title": "Bioastronautics Data Book, NASA SP-3006 (1973), ch. 6 Impact, p. 229 (PDF p. 239)",
+     "url": "https://ntrs.nasa.gov/api/citations/19730006364/downloads/19730006364.pdf"
+    }
+   ],
+   "notes": "Eiband p. 7 (from the page image): 'The single human exposure to 25 G's for 0.93 second (fig. 2) completes the limit of the moderate-injury area ... the subject was debilitated but conscious ... he could neither see nor maintain a standing posture. The subject returned to normal duty in five days.' SP-3006 p. 229: 'Humans have survived impact, with reversible injuries, at a level of 83 G (chest acceleration, not actual input) at 3800 G/sec for 0.04 second's duration (Beeding & Mosely, 1960).' Also: 'Air Force design recommendations are approximately 45 G for a duration of 0.1 second and 25 G for a duration of 0.2 second (U.S. Air Force, 1969). Restraint in the experiments establishing these limits was by means of a double harness with 3 inch wide shoulder straps, a seat belt with thigh straps, and a chest belt. With a less adequate restraint system, some debilitation and injury may occur at these levels'. All harnessed; nothing comparable exists for a person held in hands.",
+   "who_when": "Eiband 1959; Parker & West (NASA SP-3006) 1973"
+  },
+  {
+   "key": "comic_passenger_felt_g",
+   "category": "comic",
+   "label": "The g a passenger feels: the push from what holds them, net of gravity",
+   "status": "derived",
+   "value_si": 9.80665,
+   "unit_si": "m/s^2",
+   "display": "n = |a − g| / g (vectors). Standing still: 1 g. Lifted at 1 g: 2 g. Thrown (ballistic): 0 g plus drag. Under his spread push: 0 g",
+   "sources": [
+    {
+     "title": "ASTM F2291-06a §7.1.4.5 (limits are total net acceleration including gravity)",
+     "url": "https://ia800607.us.archive.org/34/items/gov.law.astm.f2291.2006/astm.f2291.2006.pdf"
+    },
+    {
+     "title": "NASA EG-1997-08-110-HQ (apparent weight P = m(a − g))",
+     "url": "https://ntrs.nasa.gov/api/citations/19980007787/downloads/19980007787.pdf"
+    }
+   ],
+   "notes": "Formula: felt acceleration = (sum of contact forces)/m = a − g, with g pointing down. A horizontal push of a gives n = √(a² + g²)/g, so a felt 2, 4 or 6 g needs a horizontal acceleration of 1.73, 3.87 or 5.92 g. A vertical launch at a gives n = a/g + 1. Air drag in flight is a contact force on the front, so it is felt: n_drag = ½ρv²C_dA/(m g) (comic_passenger_drag_g). Compare this n with the ASTM, NASA, Cochran and Eiband limits, all of which are net g.",
+   "who_when": "This research, 2026"
+  },
+  {
+   "key": "comic_passenger_no_harm_limit",
+   "category": "comic",
+   "label": "Recommended 'no harm' limit for a passenger (safe passenger switch off)",
+   "status": "estimate",
+   "value_si": 58.84,
+   "low_si": 19.61,
+   "high_si": 58.84,
+   "unit_si": "m/s^2",
+   "display": "Supported on back or seat, pushed from behind or below: 6 g net for up to 1 s, 4 g at 2–4 s, 3 g at 5–11.8 s, 2 g after. Sideways 3 g → 2 g. Eyes-front 1.5 g. Eyes-up 1.1 g sustained. Pulses under 0.2 s: keep 6 g (conservative)",
+   "values_json": "{\"basis\":\"ASTM F2291-06a base case (comic_astm_f2291_ride_limits)\",\"units\":\"G net (including gravity), duration s, linear between points\",\"default: supported back or seat (+Gz / +Gx)\":[[0,6],[1,6],[2,4],[4,4],[5,3],[11.8,3],[12,2],[90,2]],\"sideways (Gy)\":[[0,3],[1,3],[2,2],[90,2]],\"eyes front (-Gx)\":[[0,2],[0.2,2],[0.5,1.5],[90,1.5]],\"eyes up (-Gz)\":[[0,2],[0.2,2],[0.5,1.5],[4,1.5],[7,1.1],[90,1.1]],\"no head support\":\"above 1.5 G for at most 4 s (ASTM Fig. 6 note)\"}",
+   "sources": [
+    {
+     "title": "ASTM F2291-06a Figs. 6–10",
+     "url": "https://ia800607.us.archive.org/34/items/gov.law.astm.f2291.2006/astm.f2291.2006.pdf"
+    },
+    {
+     "title": "Eiband 1959 (shorter pulses are tolerated at higher g)",
+     "url": "https://ntrs.nasa.gov/api/citations/19980228043/downloads/19980228043.pdf"
+    }
+   ],
+   "notes": "Recommendation, built from verified sources. Why ASTM: it is the only published design limit for the general public (any healthy rider 48 in or taller, with no training), and it sits well inside the layperson centrifuge results (comic_layperson_centrifuge_tolerance) and the NASA crew limits. Choices I made, each an estimate: (1) ASTM does not cover pulses under 200 ms. I keep the 0.2 s value (6 g) for them, which is conservative, because Eiband shows tolerance rises as pulses get shorter. (2) +Gz takes 2 g from 12 s and +Gx takes 2.5 g; the default uses 2 g. (3) ASTM assumes a seat, restraint and headrest. If Rex cradles the passenger, his arms and chest stand in for them, but a grip on soft tissue is not a seat. Treat the envelope as best case and say so on the page. ASTM's own note for riders with no headrest is 'max duration of above 1.5 g is 4 seconds'. (4) Children under 48 in are not covered.",
+   "who_when": "This research, 2026"
+  },
+  {
+   "key": "comic_passenger_injury_level",
+   "category": "comic",
+   "label": "Recommended 'survivable but injurious' level for a passenger",
+   "status": "estimate",
+   "value_si": 392.3,
+   "low_si": 98.07,
+   "high_si": 814,
+   "unit_si": "m/s^2",
+   "display": "Injury likely above Eiband's voluntary line even in a full harness: 45 g at 0.044 s, 40 g at 0.1 s, 25 g at 0.2 s, 13 g at 0.6 s, 10 g at 1.6 s. People have survived, injured, 25 g for 0.93 s and 83 g for 0.04 s. Held by hands, with no harness: unknown, and far lower",
+   "values_json": "{\"units\":\"G net, duration s\",\"injury-likely line (harnessed volunteers' limit)\":[[0.044,45],[0.1,40],[0.2,25],[0.6,13],[1.6,10]],\"survived with injury (humans, harnessed)\":[[0.04,83,\"reversible injuries, chest acceleration\"],[0.93,25,\"debilitated, back on duty in 5 days\"]],\"head-to-foot held over 5 s\":\"grey-out from about 4.1 G, unconsciousness about 5.4 G (means)\"}",
+   "sources": [
+    {
+     "title": "Eiband 1959, NASA Memo 5-19-59E",
+     "url": "https://ntrs.nasa.gov/api/citations/19980228043/downloads/19980228043.pdf"
+    },
+    {
+     "title": "Bioastronautics Data Book, NASA SP-3006 (1973), p. 229 and Table 4-4",
+     "url": "https://ntrs.nasa.gov/api/citations/19730006364/downloads/19730006364.pdf"
+    }
+   ],
+   "notes": "Recommendation. Page bands, in order: (a) under comic_passenger_no_harm_limit means 'no harm'. (b) Between that and Eiband's voluntary line means 'beyond what rides allow; bruising or worse for anyone not strapped into a proper seat'. Nothing is sourced for an unrestrained person in this band, so call it unknown. (c) Above Eiband's line means 'injury likely; survivable only with full support' (25 g for 0.93 s and 83 g for 0.04 s are the human survived-with-injury points). (d) Head-to-foot g held for more than 5 s: also flag grey-out, blackout and unconsciousness (comic_relaxed_gz_thresholds_cochran, comic_gloc_not_before_5s). I found no source for where death begins for an unrestrained person, so the page should not claim one. Interpolate on log-log axes between points.",
+   "who_when": "This research, 2026"
+  },
+  {
+   "key": "comic_passenger_gentlest_throw",
+   "category": "comic",
+   "label": "Fastest throw of a person that stays inside the no-harm limit (switch off)",
+   "status": "estimate",
+   "value_si": 16.8,
+   "low_si": 9.1,
+   "high_si": 16.8,
+   "unit_si": "m/s",
+   "display": "Over Rex's 2.4 m throwing stroke at 6 g felt: release at about 17 m/s in 0.3 s, which carries about 29 m on flat ground (no drag). At 4 g: 14 m/s, 19 m. At 2 g: 9 m/s, 8 m",
+   "sources": [
+    {
+     "title": "Engine body.strokes.throw = 1.6 × (H/2 m) (rex-strength-lab/src/engine.js makeBody), with comic_passenger_no_harm_limit",
+     "url": "https://ia800607.us.archive.org/34/items/gov.law.astm.f2291.2006/astm.f2291.2006.pdf"
+    }
+   ],
+   "notes": "Formula: for a horizontal push, a = g√(n² − 1); v = √(2 a d); push time t = 2d/v; flat-ground range at 45° with no drag is v²/g (release height ignored). Here d = 1.6 × 3.048/2 = 2.44 m, the engine's throw stroke for a 10 ft body, itself an estimate. At n = 6: a = 5.92 g, v = 16.8 m/s, t = 0.29 s, range 29 m. At n = 4: 13.6 m/s, 0.36 s, 19 m. At n = 2: 9.1 m/s, 0.54 s, 8 m. Catching them back at the same limit needs the same stroke (a catch is the throw in reverse); a landing on the ground is a separate impact. Status is estimate because the stroke and the 6 g rule are estimates. Script: scratchpad research/comic/scripts/derive.py.",
+   "who_when": "This research, 2026"
+  },
+  {
+   "key": "comic_passenger_drag_g",
+   "category": "comic",
+   "label": "Air drag felt by a flying person, by speed (not removed by safe passenger once released)",
+   "status": "estimate",
+   "value_si": 108,
+   "low_si": 44,
+   "high_si": 108,
+   "unit_si": "m/s",
+   "display": "For a 90 kg adult tumbling (area 0.67 m², C_d 1.1): drag decelerates them at 1 g at 44 m/s, 2 g at 63 m/s, 4 g at 89 m/s, 6 g at 108 m/s",
+   "sources": [
+    {
+     "title": "Existing keys human_us_adult_male_mass (CDC), human_projected_area (estimate), cd_bluff_body_tumbling_subsonic (estimate), atm_isa_sea_level_density",
+     "url": "https://www.cdc.gov/nchs/fastats/body-measurements.htm"
+    }
+   ],
+   "notes": "Formula: v = √(2 n g m / (ρ C_d A)), with m = 90.26 kg, A = 0.67 m² (orientation mean, an estimate), C_d = 1.1 (estimate), ρ = 1.225 kg/m³. The deceleration scales as A·C_d/m: falling head first (0.11 m² box face), 6 g comes only at about 270 m/s; broadside (0.79 m²), at about 100 m/s. The 1 g speed (44 m/s) is the tumbling terminal velocity. Drag acts on the front surface, so it is felt; safe passenger stops when he lets go. Wind-blast injury to an unprotected person at high dynamic pressure was not researched (see gaps). Status is estimate because A and C_d are estimates.",
+   "who_when": "This research, 2026"
+  },
+  {
+   "key": "comic_airblast_rattle_onset",
+   "category": "comic",
+   "label": "Airblast at which people start to notice rattling: about 120 dB (20 Pa)",
+   "status": "verified",
+   "value_si": 20,
+   "low_si": 20,
+   "high_si": 100,
+   "unit_si": "Pa",
+   "display": "Rattling complaints above about 120 dB (20 Pa, 0.003 psi); at 134 dB (100 Pa) 5–10% of homes show rattling or fright disturbances",
+   "sources": [
+    {
+     "title": "Siskind, Stachura, Stagg & Kopp (1980), Structure Response and Damage Produced by Airblast from Surface Mining, US Bureau of Mines RI 8485, pp. 56 and 66–67 (PDF pp. 64, 72); copy hosted in the Resolution Copper EIS reference library",
+     "url": "https://www.resolutionmineeis.us/sites/default/files/references/siskind-et-al-1980.pdf"
+    }
+   ],
+   "notes": "'complaints about rattling occur at airblast levels exceeding about 120 dB (6Hz), roughly corresponding to wall acceleration of 0.1 to 0.2 g'. Also: 'Accelerations that cause something to rattle, move, and tilt, vary from 0.1 to 1.0 g ... A wall acceleration of 0.5 g is sufficient to shake most items'. Conclusions: 'Levels exceeding 120 dB will produce some annoyance from rattling and fright, with as much as 5 to 10 pct of homes exhibiting such disturbances at the maximum level of 134 dBL (0.1-Hz high-pass).' Midwall motions 'are primarily responsible for window sashes rattling, picture frames tilting, dishes jiggling, and knick-knacks falling.' Conversion: p = 20 µPa × 10^(dB/20), so 120 dB = 20 Pa and 134 dB = 100 Pa. The same formula reproduces RI 8485's own pairs (0.10 psi = 151 dB). Caveat: these are mine and quarry blasts, which are low frequency and long. A short, sharp pulse such as a clap needs a higher peak to rattle a house (comic_airblast_sash_rattle_small_shots).",
+   "who_when": "US Bureau of Mines, 1980"
+  },
+  {
+   "key": "comic_airblast_safe_max",
+   "category": "comic",
+   "label": "Airblast safe for houses (US mining regulation): 134 dB peak, about 100 Pa",
+   "status": "verified",
+   "value_si": 100.2,
+   "low_si": 56.4,
+   "high_si": 100.2,
+   "unit_si": "Pa",
+   "display": "134 dB (0.1 Hz system) = 100 Pa; 133 dB (2 Hz) = 89 Pa; 129 dB (6 Hz) = 56 Pa; 105 dBC (C-weighted, slow)",
+   "values_json": "{\"units\":\"lower frequency limit of measuring system : maximum peak level\",\"0.1 Hz or lower, flat\":\"134 dB peak (100 Pa)\",\"2 Hz or lower, flat\":\"133 dB peak (89 Pa)\",\"6 Hz or lower, flat\":\"129 dB peak (56 Pa)\",\"C-weighted, slow\":\"105 dBC peak\"}",
+   "sources": [
+    {
+     "title": "30 CFR 816.67(b)(1) Use of explosives: control of adverse effects, Airblast limits (govinfo, CFR 2024 edition)",
+     "url": "https://www.govinfo.gov/content/pkg/CFR-2024-title30-vol3/xml/CFR-2024-title30-vol3-sec816-67.xml"
+    },
+    {
+     "title": "USBM RI 8485 (1980), Conclusions, pp. 66–67",
+     "url": "https://www.resolutionmineeis.us/sites/default/files/references/siskind-et-al-1980.pdf"
+    }
+   ],
+   "notes": "30 CFR 816.67(b)(1)(i): 'Airblast shall not exceed the maximum limits listed below at the location of any dwelling, public building, school, church, or community or institutional building outside the permit area': '0.1 Hz or lower—flat response 134 peak. 2 Hz or lower—flat response 133 peak. 6 Hz or lower—flat response 129 peak. C-weighted—slow response 105 peak dBC.' RI 8485 is the basis: 'Based on a minimal probability of the most superficial type of damage in residential-type structures, any of the following represent safe maximum airblast levels', with the same four numbers. Also: 'These criteria could be lowered at locations with many large plate glass windows.' NASA's sonic-boom sheet agrees: 'At one pound overpressure [48 Pa], no damage to structures would be expected' and 'Rare minor damage may occur with 2 to 5 pounds' (96–239 Pa). The second is already in blast_sonic_boom_concorde.",
+   "who_when": "OSMRE regulation (current); USBM 1980"
+  },
+  {
+   "key": "comic_airblast_sash_rattle_small_shots",
+   "category": "comic",
+   "label": "Window sashes rattle at 0.03–0.05 psi (207–345 Pa) for small, sharp blasts",
+   "status": "verified",
+   "value_si": 207,
+   "low_si": 207,
+   "high_si": 345,
+   "unit_si": "Pa",
+   "display": "0.03–0.05 psi (141–145 dB): rattling of window sashes, in tests with small charges",
+   "sources": [
+    {
+     "title": "USBM RI 8485 (1980), Appendix G 'Other airblast damage research', p. 93 (PDF p. 101), reproducing Perkins & Jackson",
+     "url": "https://www.resolutionmineeis.us/sites/default/files/references/siskind-et-al-1980.pdf"
+    }
+   ],
+   "notes": "As reproduced in RI 8485, App. G: 'Perkins and Jackson (36) conducted extensive tests on glass panes mounted in frames ... They also noted that rattling of window sashes occurred at 0.03 to 0.05 lb/in2 (141 to 145 dB).' RI 8485 adds: 'these levels are too high for continuous use in urban areas ... The likely reasons for their high damage thresholds are the small high-frequency shots and small panes studied.' Use: a punch or clap airblast is a small, high-frequency source, so this is the better rattle target for Rex's moves. comic_airblast_rattle_onset (20 Pa) is the conservative onset for long, low-frequency blasts. 0.03 psi = 207 Pa; 0.05 psi = 345 Pa. Primary report (Perkins & Jackson, Ballistic Research Laboratories) not fetched.",
+   "who_when": "Perkins & Jackson (BRL), as reproduced in USBM RI 8485, 1980"
+  },
+  {
+   "key": "comic_glass_breakage_low_end",
+   "category": "comic",
+   "label": "Lowest airblast that breaks flawed glass: about 360–690 Pa",
+   "status": "verified",
+   "value_si": 689,
+   "low_si": 364,
+   "high_si": 5171,
+   "unit_si": "Pa",
+   "display": "Precracked windows from 7.6 psf (364 Pa); glass under strain from 0.10 psi (690 Pa); good 3 × 3 ft panes none below 20 psf (958 Pa); properly mounted glass 0.75 psi (5.2 kPa)",
+   "values_json": "{\"units\":\"original units (Pa)\",\"precracked windows, sonic boom (Sutherland)\":\"7.6 lb/ft2 (364 Pa, 145 dB)\",\"poorly mounted glass under stress (Windes; Perkins & Jackson)\":\"0.10 lb/in2 (689 Pa, 151 dB)\",\"3 ft x 3 ft x 1/8 in windows, no failures below (Sutherland)\":\"20 lb/ft2 (958 Pa, 154 dB)\",\"properly mounted glass, damage threshold (Perkins & Jackson)\":\"0.75 lb/in2 (5,171 Pa, 168 dB)\",\"small open-air shots: damage / none (Windes)\":\"0.88-1.10 lb/in2 damage (6.1-7.6 kPa); none at 0.62-0.72 lb/in2 (4.3-5.0 kPa)\"}",
+   "sources": [
+    {
+     "title": "USBM RI 8485 (1980), Appendix G (PDF p. 101) and Appendix H 'Sonic boom damage' (PDF p. 104)",
+     "url": "https://www.resolutionmineeis.us/sites/default/files/references/siskind-et-al-1980.pdf"
+    }
+   ],
+   "notes": "App. G: 'Damage occurred at overpressures of 0.88 to 1.10 lb/in2 (170 to 172 dB); none was observed at 0.62 to 0.72 lb/in2 (167 to 168 dB). These levels apply to properly mounted glass; however, glass under strain could fail at overpressures as low as 0.10 lb/in2 (151 dB).' Perkins & Jackson 'defined damage threshold for properly mounted glass of 0.75 lb/in2 (168 dB), and for poorly mounted glass under stress of 0.10 lb/in2 (151 dB)'. App. H (Sutherland): 'In a study of 24 windows 3 ft x 3 ft x 1/8 in, no failures were observed below 20 lb/ft2 (0.139 lb/in2, 154 dB). However, precracked windows failed at levels as low as 7.6 lb/ft2 (0.053 lb/in2, 145 dB).' This fills the gap noted in blast_window_breakage ('Occasional breakage occurs at lower pressures, but no figure was verified'). It agrees with that key's Glasstone 0.5–1.0 psi 'shattering usually', which I re-fetched and confirmed in Table 5.145.",
+   "who_when": "Windes; Perkins & Jackson; Sutherland, as reproduced in USBM RI 8485, 1980"
+  },
+  {
+   "key": "comic_sonic_boom_house_effects",
+   "category": "comic",
+   "label": "What sonic booms do to houses (White Sands tests)",
+   "status": "verified",
+   "value_si": 287,
+   "low_si": 120,
+   "high_si": 527,
+   "unit_si": "Pa",
+   "display": "2.5 psf (120 Pa) precludes damage; bric-a-brac falls and dishes rattle at 6–11 psf (290–530 Pa); plaster cracks 6.5–10 psf (310–480 Pa); nails pop 10.3 psf (490 Pa)",
+   "values_json": "{\"units\":\"lb/ft2 (Pa)\",\"precludes damage (theory)\":\"2.5 (120)\",\"falling bric-a-brac and rattling dishes\":\"6-11 (287-527)\",\"cracks in plaster on wood lath\":\"6.5-10 (311-479)\",\"nail popping, 1/2-inch gypsum board\":\"10.3 (493)\"}",
+   "sources": [
+    {
+     "title": "USBM RI 8485 (1980), Appendix H 'Sonic boom damage', p. 96 (PDF p. 104), reproducing Sutherland",
+     "url": "https://www.resolutionmineeis.us/sites/default/files/references/siskind-et-al-1980.pdf"
+    }
+   ],
+   "notes": "As reproduced in RI 8485: 'Sutherland (63) ... notes that a sonic boom overpressure of 2.5 lb/ft2 (0.0174 lb/in2, 136 dB) would preclude damage'. 'The results of experimental sonic boom tolerance tests at White Sands were-- Cracks in plaster on wood lath 6.5-10 lb/ft2 ... Nail popping--1/2-inch gypsum board 10.3 lb/ft2 ... Falling bric-a-brac and rattling dishes 6-11 lb/ft2 (0.0417-0.0764 lb/in2, 143-148 dB).' Left out: a 'paint flaking' row whose psf and psi disagree in the scan (4.0 psf against 0.0625 psi). Sonic booms are long-wavelength N-waves, so these thresholds suit booms and big blasts, not a hand clap. Primary (Sutherland 1968) not fetched.",
+   "who_when": "Sutherland, as reproduced in USBM RI 8485, 1980"
+  },
+  {
+   "key": "comic_sonic_boom_public_reaction",
+   "category": "comic",
+   "label": "Sonic booms people object to: 1.5–2 psf (72–96 Pa)",
+   "status": "verified",
+   "value_si": 72,
+   "low_si": 72,
+   "high_si": 96,
+   "unit_si": "Pa",
+   "display": "1 psf (48 Pa): no damage expected; 1.5–2 psf (72–96 Pa): some public reaction",
+   "sources": [
+    {
+     "title": "NASA Dryden Fact Sheet FS-2003-11-016, Sonic Booms",
+     "url": "https://www.nasa.gov/wp-content/uploads/2021/09/120274main_fs-016-dfrc.pdf"
+    }
+   ],
+   "notes": "Quotes: 'At one pound overpressure, no damage to structures would be expected.' 'Overpressures of 1 to 2 pounds are produced by supersonic aircraft flying at normal operating altitudes. Some public reaction could be expected between 1.5 and 2 pounds.' The rest of the sheet is already in blast_sonic_boom_concorde: rare minor damage at 2–5 psf, sound structures undamaged up to 11 psf, and 20–144 psf experienced without injury. Re-fetched; the figures there match. 1 psf = 47.88 Pa.",
+   "who_when": "NASA DFRC, 2003"
+  },
+  {
+   "key": "comic_impulse_noise_limit",
+   "category": "comic",
+   "label": "Hearing-safety limit for impulse noise: 140 dB peak (200 Pa)",
+   "status": "verified",
+   "value_si": 200,
+   "unit_si": "Pa",
+   "display": "140 dB peak sound pressure (200 Pa, 0.03 psi): US workplace limit for impulsive or impact noise",
+   "sources": [
+    {
+     "title": "OSHA 29 CFR 1910.95(b), Occupational noise exposure",
+     "url": "https://www.osha.gov/laws-regs/regulations/standardnumber/1910/1910.95"
+    }
+   ],
+   "notes": "After Table G-16: 'Exposure to impulsive or impact noise should not exceed 140 dB peak sound pressure level.' 140 dB = 20 µPa × 10^7 = 200 Pa. That is about 170 times below the existing eardrum-rupture threshold (34.5 kPa, blast_eardrum_rupture_threshold), so it is the right 'people nearby come to no harm' line for a clap or punch blast. Secondary sources say NIOSH (1998) and ISO/EU documents use the same 140 dB ceiling (not fetched). The OSHA wording is 'should', a guideline. Read through WebFetch.",
+   "who_when": "OSHA, current regulation"
+  },
+  {
+   "key": "comic_impulse_momentum_theorem",
+   "category": "comic",
+   "label": "Impulse–momentum: the same momentum change over a longer time needs less force",
+   "status": "verified",
+   "value_si": null,
+   "unit_si": "",
+   "display": "J = Δp; F_ave = Δp / Δt",
+   "sources": [
+    {
+     "title": "OpenStax University Physics Volume 1, §9.2 Impulse and Collisions",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/9-2-impulse-and-collisions"
+    }
+   ],
+   "notes": "Quotes: 'An impulse applied to a system changes the system's momentum, and that change of momentum is exactly equal to the impulse that was applied'; 'the average force applied to an object is equal to the change of the momentum that the force causes, divided by the time interval over which this change of momentum occurs'; 'The change of momentum in a crash is the same, with or without an airbag; the force, however, is vastly different.' Read through WebFetch.",
+   "who_when": "OpenStax, University Physics Vol. 1"
+  },
+  {
+   "key": "comic_soft_landing_force",
+   "category": "comic",
+   "label": "Soft landing: the momentum the ground must still take, and the gentlest force allowed",
+   "status": "derived",
+   "value_si": null,
+   "unit_si": "N",
+   "display": "Ground impulse J = m v. Mean ground force F = J/T + W. A constant-force stop needs travel d = vT/2, so F ≥ m v²/(2d) + W. At 10 ft, a 0.76 m knee bend from 20 m/s gives 820 kN (28 × his weight)",
+   "values_json": "{\"units\":\"Rex 3,007 kg; W = 29.5 kN; leg stroke 0.76 m (engine strokes.leg)\",\"5 m/s\":{\"J (N s)\":15035,\"F over 0.1 s (kN)\":180,\"F over 0.5 s (kN)\":60,\"F over 2 s (kN)\":37,\"travel for 2 s stop (m)\":5,\"F within leg stroke (kN)\":79},\"20 m/s\":{\"J (N s)\":60140,\"F over 0.1 s (kN)\":631,\"F over 0.5 s (kN)\":150,\"F over 2 s (kN)\":60,\"travel for 2 s stop (m)\":20,\"F within leg stroke (kN)\":819},\"100 m/s\":{\"J (N s)\":300700,\"F over 0.1 s (kN)\":3036,\"F over 2 s (kN)\":180,\"travel for 2 s stop (m)\":100,\"F within leg stroke (kN)\":19760}}",
+   "sources": [
+    {
+     "title": "OpenStax University Physics Vol. 1 §9.2 (J = Δp, F_ave = Δp/Δt)",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/9-2-impulse-and-collisions"
+    },
+    {
+     "title": "Existing keys walking_running_peak_vertical_force (1.2 × body weight), collide_earth_inertia_rotation (Earth mass), earth_standard_gravity",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/2782094/"
+    }
+   ],
+   "notes": "Formulas: J = m v (add any caught object's m v); F = J/T + W over stop time T; for a constant force the travel is d = vT/2, so T can be no longer than 2d/v. Absorbing energy removes the crater and the quake, but not this limit: with his feet on the ground he can only stop over the distance his legs bend (engine strokes.leg = 0.5 × H/2 = 0.76 m at 10 ft) or the ground gives. So F ≥ m v²/(2d) + W. On two paw soles (0.62 m²) that is 1.3 MPa at 20 m/s and 32 MPa at 100 m/s; on Ollie's boot soles (0.30 m²), 2.7 and 66 MPa. Above the surface's bearing capacity he still sinks, unless comic ground is on. Holding the force to the walking load (1.2 W) needs T = v/(0.2 g): 2.5 s from 5 m/s and 10 s from 20 m/s, which a landing on his feet cannot give. Earth's recoil energy J²/(2M_E) is 2e-17 to 8e-15 J, so absorbing the energy while passing the momentum is consistent. Script: scratchpad research/comic/scripts/derive.py.",
+   "who_when": "This research, 2026"
+  },
+  {
+   "key": "comic_absorb_residual_energy",
+   "category": "comic",
+   "label": "Momentum cannot be passed on with zero energy: at least p²/(2M) stays in whatever takes it",
+   "status": "derived",
+   "value_si": null,
+   "unit_si": "J",
+   "display": "Passing momentum p to a body of mass M leaves at least p²/(2M) in that body. For the Earth this is effectively nothing; for a small mass of air it is not",
+   "sources": [
+    {
+     "title": "OpenStax University Physics Vol. 1 §9.2 (impulse and momentum)",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/9-2-impulse-and-collisions"
+    }
+   ],
+   "notes": "Derivation: a body of mass M at rest given momentum p moves at p/M and carries kinetic energy p²/(2M). That is the least energy any receiver can end up with, so an absorbed switch can absorb everything except this. Examples: a 3,007 kg Rex landing at 100 m/s passes p = 3.0e5 N s to the Earth (5.97e24 kg), which keeps 7.6e-15 J. That is why soft landing can absorb the energy and still pass on the momentum. For cool flight, where the momentum goes into the air, the remainder depends on how much air takes it. Silent strike is clean, because the fist's momentum returns through his arm and feet to the Earth, not to the air.",
+   "who_when": "This research, 2026"
+  }
+ ],
+ "model_recommendation": "GENERAL. Every switch changes only its own named results and shows what it suspended or how many joules it absorbed. Momentum is always conserved: whatever a switch does, the impulse still reaches his feet and the ground. Test that every non-named number is identical with the switch on and off.\n\nGENTLE HOLD (material limit suspended)\n- Physics: his push becomes a body force, the same per kilogram everywhere in the held object, including its contents (passengers, fuel, cargo), and it also carries the object's weight. By ∇·σ + ρb = ρa with no surface traction, the object's added internal stress is zero (comic_uniform_body_force_no_stress, comic_tidal_stress_car). It is held like something in orbit.\n- Remove only these, and only while he is touching it:\n  - grip crushing in Lift, Throw and Catch (gripRatio > 1 → crush; the engine's crush test already checks !o.gentleHold);\n  - hands punching through at launch (plateNeeded, wholeFront);\n  - sag under its own weight;\n  - for a gentle-hold catch, the crush at his hands.\n- Leave alone:\n  - ground load under him: N = (M + m)g + the vertical share of m·a, with bearing, sinking and footprint;\n  - his recoil and slip (the friction check; the bolted switch handles slip);\n  - launch speed and flight (drag, the in-flight break-up check ρv² > strength in catch_breakup_ram_pressure, stagnation heating);\n  - the landing impact (crater, quake, impact crush);\n  - stresses already locked inside the object (tyre pressure, bolt preload).\n- Label: \"Gentle hold: his push is spread through the whole object like gravity, so his grip doesn't stress it. The ground, recoil, air and landing are real.\"\n\nSAFE PASSENGER (material limit suspended)\n- Passenger: reuse the existing keys. Default human_us_adult_male_mass (90.26 kg, 1.75 m); offer human_us_adult_female_mass (77.93 kg) and human_global_adult_mean_mass (62 kg). Area: human_projected_area (0.67 m², estimate); C_d: cd_bluff_body_tumbling_subsonic (1.1). The g limits do not depend on mass. Mass sets the load on his feet and the drag deceleration (∝ 1/m).\n- Felt g: n = |a − g|/g, net of gravity (comic_passenger_felt_g; ASTM §7.1.4.5). Compute peak n and its duration for each phase:\n  - launch: t = 2d/v over the throw stroke;\n  - the catch, over his catch stroke;\n  - flight: drag only, n = ½ρv²C_dA/(m g);\n  - landing on the ground (an impact; stopping distance unknown, see gaps).\n- Switch off: compare (n, t) with comic_passenger_no_harm_limit. Default curve: supported along the back or in a seat, i.e. ASTM +Gz/+Gx: 6 g up to 1 s, 4 g at 2–4 s, 3 g at 5–11.8 s, 2 g after; for pulses under 0.2 s keep 6 g. Then:\n  - Above that, label \"beyond what rides allow\".\n  - Above Eiband's harnessed line (45 g at 0.044 s, 40 g at 0.1 s, 25 g at 0.2 s, 13 g at 0.6 s, 10 g at 1.6 s), label \"injury likely; survivable only fully strapped in\".\n  - Cite the survived-with-injury points: 25 g for 0.93 s and 83 g for 0.04 s.\n  - Head-to-foot g held for more than 5 s also gets grey-out, blackout and unconsciousness: means 4.1, 4.7 and 5.4 g (Cochran), and never under 5 s (Whinnery).\n  - Say plainly that every source assumes a seat or harness; a person held in hands is worse off, by an amount nobody has measured.\n  - Worked anchor: a no-harm throw (6 g over his 2.44 m stroke) releases at about 17 m/s and lands about 29 m away (comic_passenger_gentlest_throw).\n- Switch on: n = 0 while his spread push acts. The passenger floats as in free fall, with no blood shift, so there is no grey-out.\n- Still applies with the switch on, once he lets go: drag in flight (1 g at 44 m/s, 6 g at about 108 m/s for the orientation-mean area), the landing (unless he catches them with the switch on), heating at high speed, and any boom or blast around them. The momentum still goes through his feet.\n- ASTM §7.1.7.2: from weightless (0 g) to 2 g or more, onset must stay under 15 g/s. Apply this when the switch hands back to normal support. Setting them down gently at 1 g is fine.\n\nSILENT STRIKE (absorbed)\n- Punch and clap: set the airblast energy to 0 and show it as absorbed (the engine's r.E). Remove the boom from a supersonic fist or hands (m.silent; already wired).\n- Leave alone:\n  - the fist's or hands' momentum, back through his arm and feet to the ground: recoil and footing load;\n  - anything he actually hits (momentum and crush on the target);\n  - ground vibration from his stance.\n- Hazard lines to show with the switch off (Kinney–Graham peak overpressure at distance):\n  - people: 200 Pa (140 dB; comic_impulse_noise_limit), well before eardrum rupture at 34.5 kPa;\n  - houses safe: about 100 Pa (134 dB; comic_airblast_safe_max), with NASA's 1 psf (48 Pa) no damage and 2 psf (96 Pa) rare minor damage as a cross-check;\n  - rattle onset: 20 Pa for long blasts; window sashes rattle at 207–345 Pa for sharp, small sources;\n  - flawed glass cracks: 364–690 Pa;\n  - plaster cracks and dishes rattle: 290–530 Pa (booms);\n  - windows usually shatter: 3.4–6.9 kPa (existing blast_window_breakage).\n- Engine changes:\n  - Courtesy ceiling: replace R.DP_WINDOWS = 6,900 Pa ('shatter usually') as the harm line with about 100 Pa at houses and 200 Pa at people, since 6,900 Pa is far past harm.\n  - Presets: 'rattle the windows' becomes an airblast target of about 200 Pa (0.03 psi) at the street, which stays under flawed-glass breakage at 364 Pa (keep the ground-PPV rattle as a second route). Optional middle step 'some windows crack' at about 690 Pa. 'Break windows on the street' stays at 6,900 Pa.\n  - Label all dB-based thresholds as approximate: they depend on pulse length, and the engine gives only peak overpressure.\n\nSOFT LANDING (absorbed)\n- Set the crater and the quake from the landing or catch energy to 0. Show the absorbed energy: ½ m v² at touchdown, plus m g d over the stop.\n- Keep the momentum: ground impulse J = m v, the sum of everything caught.\n- Mean ground force over the stop: F = J/T + W.\n- T cannot be chosen freely when he lands on his feet. A constant-force stop needs travel d = vT/2, so T ≤ 2d/v, with d = his leg stroke (engine strokes.leg, 0.76 m at 10 ft) and F ≥ m v²/(2d) + W.\n  - Compare F/(sole area) with the surface's bearing capacity. If it is exceeded, he still sinks; with comic ground on, he doesn't.\n  - Feed the force pulse (F over T) into the Walk tab's footstep model for the small vibration a gentle stop still makes. It should be small, not zero.\n- For a catch, use the same rule with the object's momentum, through his hands to his feet, over his catch stroke.\n- Label: \"Soft landing takes the energy, not the push. The ground still takes his momentum, as a force of about m v²/(2 × knee bend).\"\n- An even gentler landing would need something to push against before touchdown. That is a new power, so propose it to the owners before building it.\n\nCOOL FLIGHT (not researched in depth here)\n- Remove the heat that enters the object; keep drag, its deceleration and the momentum given to the air.\n- Flag on the page: absorbing all the drag energy is impossible, because the air that takes the momentum keeps at least p²/(2 m_air) (comic_absorb_residual_energy).\n\nENDLESS OCEAN: for every absorbed switch, show the joules absorbed. Add no mass and change nothing outside.\n\nVALIDITY\n- The ASTM and NASA limits are for seated, restrained, healthy people 48 in tall or more. No source covers a person held by hand.\n- dB thresholds depend on frequency.\n- The gentle-hold zero-stress result assumes his push really is uniform per kilogram. It is canon, not real physics, and the page should say so.",
+ "gaps": "Could not find or verify:\n- The current ASTM F2291 edition (F2291-26). It is paywalled; I used the 2006 edition (F2291-06a) posted by Public.Resource.Org. I also did not fetch EN 13814:2019. Say \"ASTM F2291-06a (later editions may differ)\".\n- Any measured tolerance for an unrestrained person held or carried by hand, or for soft tissue squeezed by a grip. Every limit found (ASTM, NASA, Eiband, the centrifuge studies) assumes a seat or harness. On the page: \"for someone held in his hands, nobody has measured it; these limits are a best case\".\n- Accelerations shorter than 200 ms for ordinary, unrestrained people. ASTM does not cover them, and Eiband's numbers are for fully harnessed volunteers. The recommended 6 g for short pulses is an estimate.\n- How far a person's body gives on landing after a throw, so the landing g is unknown unless he catches them.\n- Wind-blast injury thresholds for unprotected people at high speed (only the drag g is derived).\n- Primary papers read only as reproduced or summarised in other sources: Cochran et al. 1954 (read via NASA SP-3006 Table 4-4, which does not state onset rate or posture); Perkins & Jackson, Windes and Sutherland (read via USBM RI 8485); Beeding & Mosely 1960 (via SP-3006). NIOSH 1998's 140 dB limit was not fetched (OSHA's was).\n- Kirchhoff's uniqueness theorem (the stress-free solution is the only one) is standard but was not fetched.\n- The sonic boom from a supersonic fist or hand, and the airblast from a clap in dB with its frequency content. The engine gives only peak overpressure, and rattle and damage thresholds depend on pulse length: say \"approximate\".\n- For cool flight, the share of drag energy that heats the object rather than the air.\n- Motion sickness or discomfort from the few seconds of weightlessness that safe passenger produces. Not quantified; say \"people feel weightless, as on a drop ride; some find it unpleasant\".\n\nNotes on access and sources:\n- The NASA-STD-3001 Vol 2 Rev D link on nasa.gov returned 404. I used Rev F (approved 2026-07-14), fetched from a standards.nasa.gov 'system/files/tmp' path.\n- NCBI Bookshelf and StatPearls blocked automated fetches, so G-LOC numbers come from NASA SP-3006 and Whinnery & Forster 2013 instead.\n- The VDV background paper on ride limits (Rohde 2024) could not be fetched: the site's TLS certificate had expired.\n- The centrifuge studies were read as abstracts only (Europe PMC), and their subjects were medically screened and seated.\n\nOn the page, call the passenger limits \"the limits used for fairground rides\", not \"safe for anyone\". Give dB-based rattle thresholds as rough bands."
+}

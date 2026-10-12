@@ -1,0 +1,12 @@
+const { P, D, g, surf, obj, ctx } = require('./lib.js');
+const c = ctx();
+const o = { near: 5, target: 30, obj: obj('car'), angle: 45 };
+const p = P.RESTRAINT.planNow('throw', c, o);
+const gl = p.goal(); const M = P.RESTRAINT.MOVES.throw;
+const r = p.run(gl.use);
+const src = M.shake(r, p.opt);
+console.log('goal kg', (gl.use / g).toFixed(0), 'range', r.flight.range.toFixed(2), 'vImpact', r.flight.vImpact.toFixed(2), 'PPV@5 mm/s', (1e3 * P.ppvAt(src, 5)).toFixed(3), 'rattle preset test at goal', P.RESTRAINT.PRESETS[0].test(M, r, p.opt));
+const pr = p.presets();
+for (const x of pr) console.log('preset', x.id, 'use kg', (x.use / g).toFixed(0), x.never ? 'never' : '', x.use < gl.use ? 'BELOW GOAL' : '');
+const rr = p.run(pr[0].use); console.log('at rattle preset: range', rr.flight.range.toFixed(2));
+const rc = P.RESTRAINT.reach('throw', r, p.opt); console.log('reach at goal', JSON.stringify(rc));

@@ -1,0 +1,127 @@
+{
+ "checks": [
+  {
+   "key": "ripple_no_measured_threshold",
+   "ok": false,
+   "issue": "The cited evidence for the negative result is invalid. I fetched https://journals.le.ac.uk/index.php/pst/search/search?query=X and it shows 'No Results' for every query, including 'physics', 'gravity', 'Earth', 'dinosaur', 'ripple' and 'water glass'. In a plain fetch the journal's search does not work, so a 'No Results' page proves nothing. The conclusion itself may still be right: my own two web searches also found no measured naked-eye threshold. Status 'estimate' is the wrong label for a null result.",
+   "corrected": "Drop the Leicester search URL as evidence, or describe it as 'search page non-functional in a plain fetch'. Record the search terms and dates actually used. Keep value_si null and display 'Unknown: no measured value found'. A qualitative fact worth adding: Terwagne & Bush 2011, 'Tibetan singing bowls' (https://arxiv.org/pdf/1106.6348), says small wall-driven capillary waves are 'almost invisible to the naked eye, they can be readily detected by appropriate lighting of the liquid surface'. That supports 'lighting dominates', though it is at bowl frequencies (hundreds of Hz), not footstep frequencies."
+  },
+  {
+   "key": "ripple_mmi1931_liquids",
+   "ok": true,
+   "issue": "Re-fetched the NRCan page. Every quoted phrase is there word for word: MM IV 'Disturbed liquids in open vessels slightly', MM V 'Spilled liquids in small amounts from well-filled open containers', MM VI 'Liquid set in strong motion', MM VII 'Waves on ponds, lakes, and running water'. The page credits Wood & Neumann 1931, BSSA 21, 277-283. Minor: MM I also says 'liquids, bodies of water, may sway', so liquids appear at the lowest grades too.",
+   "corrected": ""
+  },
+  {
+   "key": "ripple_shakemap_mmi_iv_pgv",
+   "ok": true,
+   "issue": "Legend values confirmed in the fetched PDF: PGV 1.41 cm/s and PGA 2.76 %g under 'Light', with 'Scale based on Worden et al. (2012)'. Two corrections are needed. (1) I reproduced every legend value with the Worden et al. (2012) conversion: PGV 0.135, 1.41, 4.65, 9.64, 20, 41.4, 85.8 and 178 cm/s, and PGA 0.297, 2.76, 6.2 ... 139 %g, at MMI 2.5, 4, 5 ... 10. The coefficients came from memory (3.78/1.47 and 2.89/3.16 for PGV; 1.78/1.55 and -1.60/3.70 for PGA) and were not fetched. So 1.41 cm/s is the regression value at MMI exactly 4.0, not a threshold. The intensity IV band (3.5-4.5) spans about 0.65-3.1 cm/s. (2) The note says 'casual observers notice disturbed liquids only around felt by many'. That overstates it: the scale lists swaying liquids from MM I-II (PGV of order 0.1 cm/s). The quasi-static tilt figures (0.52 deg at 1 Hz, 1.04 deg at 2 Hz) recompute correctly. 'Context only' is the right use.",
+   "corrected": "Add to notes: '1.41 cm/s is the Worden et al. (2012) conversion value at MMI 4.0; band IV ≈ 0.65-3.1 cm/s; conversion scatter is large (σ of order 0.6 MMI units). Not a liquid threshold.'"
+  },
+  {
+   "key": "ripple_shao2021_edge_wave_anchor",
+   "ok": false,
+   "issue": "Verified in the NSF PAR PDF: R = 35 mm, H = 22 mm, vertical shaker, 11.2 Hz resonance, 'on the order of 0.5 m/s2', 1 s exposure, 2 mm hole at 300 mm focal length (22.9 arcmin), and 'not capable of measuring the actual wave height'. Derived PPV 7.1 mm/s and displacement 0.10 mm are correct. Problems: (1) The consistency claim is wrong. The researcher's own final model (θ = 20-50°, η factor) gives a reflected-ray deflection of 76-128 arcmin (1.3-2.1°) at 0.5 m/s² and 11.2 Hz, not 20-40 arcmin. The 26 arcmin in derive.py is a SLOPE, not a deflection, computed with a 1 mm meniscus and no η. (2) The anchor is a standing wave at a tank resonance, amplified by the mode's Q. The model is a single non-resonant pass, so the two cannot be compared. (3) The meniscus in this tank is pinned at the rim and set by over- or underfilling (angle δ), not a wall contact-angle meniscus. (4) Peak-or-peak-to-peak basis: the companion JFM paper defines 'the acceleration amplitude as A, which is the average min–max of a', which may mean peak-to-peak. If so, peak acceleration is about 0.25 m/s² and PPV about 3.6 mm/s.",
+   "corrected": "Keep 0.5 m/s² as verified ('order of', possibly peak-to-peak; PPV 3.6-7.1 mm/s). Delete 'comes out at 20-40 arcmin, so the two agree'. Replace with: 'A clearly imaged resonant pattern; not a threshold and not a calibration of the model (resonant standing wave, pinned-rim meniscus, slope imaging with collimated light).'"
+  },
+  {
+   "key": "ripple_meniscus_mechanism",
+   "ok": true,
+   "issue": "All quotes found verbatim in the Exp. Fluids 62:59 PDF ('such a meniscus is needed...', 'g effectively becomes a time-varying value...', 'the greater the degree of under/overfilling...'). The glass-versus-plastic implication is the researcher's inference, not the paper's. The paper's menisci were pinned at the rim and set by fill volume, not by wall contact angle. The paper also says either curvature 'serves equally well', so polypropylene's 0.57 mm depression should still make rings. Only near-90° angles, such as polystyrene's 0.12 mm meniscus, suppress them.",
+   "corrected": "Label the glass-versus-plastic sentence 'inference (not tested in the paper)'."
+  },
+  {
+   "key": "ripple_edge_waves_below_faraday",
+   "ok": true,
+   "issue": "JFM 915 A19 quotes confirmed: 'typically appear for driving amplitudes much lower than the Faraday wave threshold', 'Edge waves are always axisymmetric ℓ = 0'. One minor correction: in Fig. 6, the six edge-wave peaks sit at about 6, 8.5, 11, 14, 17.5 and 21.5 Hz, i.e. about 6-22 Hz, not 8-23 Hz. The first peak is the (1,0) mode; I estimate (1,0) at about 5.4 Hz with a free contact line. The paper also says these edge waves come from underfilling a container pinned at the rim (α < 90°).",
+   "corrected": "Fig. 6 range: about 6-22 Hz (six peaks, n = 1-6), underfilled pinned-rim tank."
+  },
+  {
+   "key": "ripple_faraday_onset_small_tank",
+   "ok": false,
+   "issue": "I viewed Fig. 4 directly. The plotted points run from about 0.3 to 2.45 m/s², but that is the range along each tongue's flanks, not an onset range. The tongue minima (the actual onset at each mode resonance) are about 0.3 (1,2), 0.4 (1,0), 0.45 (1,3), 0.45 (2,1), about 0.6 (2,2), about 0.4 (2,0), about 0.8 (1,5) and about 0.4 (2,3) m/s². The upper value of 2.5 is just where the authors stopped plotting the flanks; thresholds between tongues are not reported. The bracket criterion is quoted correctly: iterate until 'A u and A l is smaller than 0.2 m s−2', then report the average. α = 90° and a pinned contact line are confirmed. Same peak-to-peak ambiguity as the anchor ('average min–max of a'). The PPV arithmetic is right: 0.3 m/s² at 20 Hz is 2.39 mm/s.",
+   "corrected": "Display: 'Onset at mode resonances ≈0.3–0.8 m/s² (3–8% g), i.e. about 2.4–8 mm/s PPV at 10–20 Hz; possibly peak-to-peak'. value_si 0.4, low_si 0.3, high_si 0.8. The flanks reach 2.5 m/s² off resonance. The correction to the task's 'g-level' claim still holds."
+  },
+  {
+   "key": "ripple_water_surface_tension_20c",
+   "ok": true,
+   "issue": "Confirmed in IAPWS R1-76(2014), Table 1: '20 | 72.74 | 0.36 | 72.74 | 0.00' and '25 | 71.98 | 0.36 | 71.97 | 0.01', in mN/m.",
+   "corrected": ""
+  },
+  {
+   "key": "ripple_capillary_gravity_dispersion",
+   "ok": true,
+   "issue": "Wilson et al. 2022 eq. (21) confirmed. My conversion to dimensional form is the same: ω² = (gk + σk³/ρ) tanh(kh). Karjanto eq. (5), ω² = gk tanh kh, confirmed. Aside: eq. (21) implies a decay rate of νk², half of Denner's 2νk²; this does not affect the dispersion relation.",
+   "corrected": ""
+  },
+  {
+   "key": "ripple_viscous_damping_rate",
+   "ok": true,
+   "issue": "Denner et al. quote confirmed: 'Γ = 2νk², applicable for k ≪ ω0/ν'. Wilson Table I water values confirmed: 71.6 mN/m, 0.96 mPa s, 997 kg/m³. Γ is an amplitude decay rate; energy decays at 4νk². The ignored wall and contact-line damping is correctly flagged.",
+   "corrected": ""
+  },
+  {
+   "key": "ripple_wave_scales_derived",
+   "ok": true,
+   "issue": "Recomputed independently: k = 264.7, 526.4 and 906.4 /m; λ = 23.7, 11.9 and 6.9 mm; c_phase 23.7, 23.9 and 27.7 cm/s; c_group 20.0, 28.0 and 37.7 cm/s; decay lengths 1.48, 0.53 and 0.24 m; crossing 35 mm takes 0.09-0.18 s; l_c = 2.73 mm. All match.",
+   "corrected": ""
+  },
+  {
+   "key": "ripple_wavemaker_deep_water_ratio",
+   "ok": false,
+   "issue": "Karjanto confirmed: 'maximum stroke |Sn| from an equilibrium position', 'approaching the asymptotic limit of Tn = 2 for kn0 h → ∞', 'This first-order theory can also be found in Dean and Dalrymple'. The ratio is for amplitude over displacement amplitude, so a = 2X is the right basis. Two problems. (1) The result is for gravity waves only (eq. 5 has no surface tension). At 20-40 Hz the ripples are capillary-dominated (k·l_c = 1.4-2.5), so the constant is being used outside its derivation. (2) The meniscus carried by the moving wall adds a source of the same order. Tilting effective gravity by Ẍ/g changes the wall meniscus height by about 3.6X at 20 Hz (θ = 20°); its radiated part is about 0.9X, with unknown phase. So the true ratio could plausibly be 1 to 3, and low_si = 1 is an unsourced assumption. As a sanity check, my 2D closed-tank solution reproduces the 2X scale, multiplied by a tan(kL) resonance factor.",
+   "corrected": "Status: verified for the value 2, with scope 'deep-water gravity waves, no surface tension'. Put the 1-3 range in a separate estimate for capillary ripples with a meniscus (Hocking & Mahdmina 1991, JFM 224, and Cocciaro et al. 1991 are relevant but were not fetched)."
+  },
+  {
+   "key": "ripple_meniscus_height",
+   "ok": false,
+   "issue": "The formula is quoted correctly: Delon et al. eq. (4.1), 'zcl = lγ sqrt(2(1 − sin θ))', maximum √2·lγ. My recomputed heights match: 3.86, 3.13, 1.86, 0.12 and 0.57 mm. But value_si = 3.13 mm rests on an ASSUMED glass contact angle of 20°, and low_si/high_si mix in reported plastic angles. Only the formula is verified; the numbers are derived from an assumption. The formula is for a flat vertical wall, which is fine for glass radius ≫ l_c. The exponential small-slope profile used downstream is crude at θ = 20°, where the wall slope is about 70°.",
+   "corrected": "Status: derived (formula verified; θ = 20° assumed). Display: 'about 2-4 mm for water on glass, depending on the unsourced contact angle (0-50°)'."
+  },
+  {
+   "key": "ripple_plastic_contact_angles",
+   "ok": true,
+   "issue": "Accu Dyne table rows confirmed: PP 30.5 / 102.1, PS 34 / 87.4, PC 44 / 82. 'Reported' is the right status for a vendor compilation.",
+   "corrected": ""
+  },
+  {
+   "key": "ripple_visual_acuity_1arcmin",
+   "ok": true,
+   "issue": "Webvision quote confirmed: 'one of the strokes of the letter subtends one minute of arc ... the minimum angle of resolution (MAR) is one minute of arc'. 1 arcmin = 2.909e-4 rad. Using MAR as a ripple-detection limit is an assumption; see the ideal-eye entry.",
+   "corrected": ""
+  },
+  {
+   "key": "ripple_eye_temporal_resolution",
+   "ok": true,
+   "issue": "Quote confirmed verbatim, with 15-20 Hz peak sensitivity, about 60 Hz photopic cut-off and about 15 Hz at low light. One nuance on the implication: these are full-field flicker figures at maximum contrast. Long-exposure imaging blurs travelling waves out and shows only standing (resonant) patterns (Shao: 'traveling waves ... blurred over'). So in dim light a single footstep's travelling ripple may vanish rather than show a ring pattern.",
+   "corrected": "Soften the implication: 'in dim light, travelling ripples may blur away; only standing patterns stay visible'."
+  },
+  {
+   "key": "ripple_threshold_ideal_eye",
+   "ok": false,
+   "issue": "Recomputed. The side-to-side figures are right: 0.017-0.035, 0.017-0.035 and 0.020-0.040 mm/s. The up-and-down figures rest on the heuristic η = 1/√(1+(k·l_c)²), which overstates the radiated wave. I modelled vertical shaking as the surface pressure ρA·ζ0(x) acting on an exponential meniscus, used the linear capillary-gravity Green's function, and checked it by numerical inverse transform. The radiated amplitude is a = A·z_m·k·l_c/((1+(k·l_c)²)·ω·c_g). This reduces exactly to the researcher's quasi-static (A/2g)·z_m at the wall as ω → 0 (numerically 162 vs 159 µm per m/s²). The heuristic gives 1.1×, 2.2× and 5.2× too much wave at 10, 20 and 40 Hz. Corrected up-and-down PPV at 1 arcmin: 0.074-0.12, 0.053-0.088 and 0.056-0.093 mm/s (θ = 20-50°, free contact angle). The minimum is then 0.017, 0.017 and 0.020 mm/s, set by side-to-side at every frequency. The headline 0.02 mm/s survives. Status is wrong: the criterion 'acuity = detection threshold for a vibrating reflection' is an assumption, and it is not a true best case, because motion and vernier hyperacuity can go below 1 arcmin.",
+   "corrected": "Status: estimate. Display: '≈0.02 mm/s (about 0.017-0.04 mm/s); illustrative best case, not a hard floor'. Use the corrected up-and-down column in values_json."
+  },
+  {
+   "key": "ripple_threshold_noticeable",
+   "ok": false,
+   "issue": "At the 10-arcmin criterion, side-to-side recomputes correctly: 0.17-0.35, 0.17-0.35 and 0.20-0.40 mm/s. Up-and-down, using the corrected radiation formula: 0.74-1.24, 0.53-0.89 and 0.56-0.93 mm/s (θ = 20-50°, free contact line). With a pinned contact line it is about 1.0-1.7, 0.37-0.62 and 0.23-0.38 mm/s. So the 40 Hz threshold is about 0.2 mm/s (side-to-side), not 0.11. The consistency check is also wrong: by the researcher's own model, the Shao anchor gives 76-128 arcmin, not 20-40, and it is a resonant standing wave anyway (see the anchor entry).",
+   "corrected": "Display: '≈0.2 mm/s at 10, 20 and 40 Hz, side-to-side shimmer (within a factor of 2-3). Concentric rings from up-and-down shaking: ≈0.5-1 mm/s vertical (0.2-1.7 across the contact-line assumptions).' Remove the Shao consistency sentence."
+  },
+  {
+   "key": "ripple_threshold_recommended",
+   "ok": false,
+   "issue": "0.2 mm/s survives as an estimate, but only for the side-to-side mechanism, which makes two-lobed shimmer, not rings. The label 'Jurassic Park test' and the suggested page wording tie 0.2 mm/s to the concentric-ring look. By the corrected model, rings need about 0.5-1 mm/s VERTICAL at the 10-arcmin criterion. A casual viewer (which sets the 1 mm/s top of the range) would need several mm/s for rings. The note says to apply this to 'the PPV of the strongest single component'. But the two mechanisms respond to different components, and footstep Rayleigh waves are usually vertical-dominant, so the engine must say which component it compares.",
+   "corrected": "Two values. (a) 'Water surface visibly shimmers': about 0.2 mm/s horizontal PPV at the table (range 0.02-1). (b) 'Concentric rings (the film look)': about 0.5-1 mm/s vertical PPV (range about 0.05 to a few mm/s); bold rings take a few mm/s. Both are estimates, derived, not measured."
+  },
+  {
+   "key": "ripple_film_effect_production",
+   "ok": false,
+   "issue": "Film Stories confirmed: 'They simply ran guitar strings through the car ... one lucky recruit got to lie on the floor of the car and be that day's chosen plucker'. Koimoi returns 403 to curl, so I fetched it with WebFetch. It has the Lantieri quote, unattributed ('a behind-the-scenes treasure trove'). It also says 'He attached a guitar string to the dashboard of the Ford Explorer' and does not mention the floor. So the 'dashboard' detail is in one of the cited sources, not only in 'other popular accounts'. The two cited sources disagree on dashboard versus floor.",
+   "corrected": "Notes: 'Koimoi says the string was attached to the dashboard; Film Stories says strings ran through the car and were plucked by a crew member lying on the floor. The sources conflict, and no primary interview was fetched.' Status: reported."
+  }
+ ],
+ "recommendation_issues": "1. **The up-and-down (meniscus) formula overstates the radiated wave.** It is PPV_v = a·2g/(z_m·η·ω), with η = 1/√(1+(k·l_c)²), and it overstates the wave by 1.1×, 2.2× and 5.2× at 10, 20 and 40 Hz.\n   - Treat vertical shaking as the oscillating surface pressure ρA·z_m·e^(−x/l_c) on the meniscus. The linear capillary-gravity Green's function then gives a = A·z_m·k·l_c/((1+(k·l_c)²)·ω·c_g), with a free contact angle; multiply by about k·l_c for a pinned line.\n   - So PPV_v = A/ω = a·c_g·(1+(k·l_c)²)/(z_m·k·l_c), with a = s/k.\n   - I checked this by numerical inverse transform. It reduces exactly to the researcher's quasi-static (A/2g)·z_m at the wall as ω → 0.\n   - It is still a small-slope model of a steep meniscus. Label it an estimate.\n\n2. **The expected values change at 40 Hz.** They were 0.17, 0.17 and 0.11 mm/s. Corrected, they are 0.17, 0.17 and 0.20 mm/s. Side-to-side sets all three.\n   - That threshold has a simple closed form: PPV_h = (θv/2)·c_phase/r. With c_phase near the 23-28 cm/s capillary-gravity minimum, this explains why it is flat with frequency. Use it directly.\n\n3. **The concentric-ring threshold is higher than the shimmer threshold.** Rings (vertical) need about 0.5-1 mm/s at 10 arcmin.\n   - The page wording ('Up-and-down shaking ... pump out rings, which is the Jurassic Park look' next to 0.2 mm/s) conflates the two.\n   - Give two numbers, and compare horizontal ground PPV with 0.2 mm/s and vertical with about 0.5-1 mm/s. Taking 'the strongest single component' is wrong, because the mechanisms respond to different components.\n   - If the engine only has one component (usually vertical), state the H/V assumption. For Rayleigh waves, horizontal is about 0.7× vertical in a uniform half-space; this is textbook and not sourced here.\n\n4. **The wavemaker ratio of 2 is used outside its derivation.** It comes from gravity-wave theory with no surface tension, applied to capillary-dominated 20-40 Hz ripples. The meniscus carried by the wall adds an O(1) source, so a range of about 1-3 is more honest than 1-2.\n\n5. **Faraday wording.** '0.3-2.5 m/s² (about 2-40 mm/s)' mixes the tongue minima with the plotted flanks. Use 'onset about 0.3-0.8 m/s² at resonances (about 2.4-8 mm/s)'. The acceleration may be peak-to-peak ('average min–max of a').\n\n6. **The Shao anchor is not a calibration.** Do not cite it as 'consistent': the arcmin figure was miscomputed (it is 76-128 arcmin in their own model, not 20-40), and it is a resonant standing wave in a pinned-rim tank.\n\n7. **Statuses.** The ideal-eye threshold should be an 'estimate', not 'derived', because the criterion is assumed. The meniscus height value should be 'derived', because θ is assumed.\n\n8. **Range.** The overall 0.02-1 mm/s range is fine for shimmer. For rings it should run to a few mm/s for a casual viewer. The factor-of-3 'likely error' is optimistic, given the factor-of-10 uncertainty in the criterion that the researcher acknowledges.\n\n9. **Mercalli.** Keeping it as context only is right. Add that 1.41 cm/s is the conversion value at MMI 4.0 (the band is about 0.65-3.1 cm/s).",
+ "missing": "1. **The negative result needs evidence that holds up.** The cited Leicester search returns 'No Results' for every query, even 'physics', so it proves nothing. Record the real search strings and databases used.\n2. **Glass contact angle.** No source for water on household soda-lime glass, clean versus used. The vertical (ring) threshold scales with the meniscus height.\n3. **Floor and table transfer.** No source for amplification from the ground to a table top. Suspended floors and tables often resonate at 10-30 Hz and can amplify several-fold. This matters more than most of the model's internal factors. Floor-vibration design guides were not fetched; AISC Design Guide 11 and SCI P354 are candidates to check.\n4. **Pulse versus steady shaking.** The thresholds are for steady sinusoids. A footstep is a burst of a few cycles, so it cannot build up the glass's resonant edge-wave peaks; meanwhile the travelling ripple crosses the glass in 0.09-0.18 s. The model should state this.\n5. **Better perceptual criterion.** The 10-arcmin 'noticeable' factor is a guess. Sources on motion and oscillation detection, and on hyperacuity (Webvision has a hyperacuity chapter), could tighten or replace it.\n6. **Capillary wavemaker theory.** Hocking & Mahdmina 1991 (JFM 224) and Cocciaro, Faetti & Nobili 1991 (full text, not the abstract) would replace the gravity-only ratio of 2 for capillary ripples.\n7. **Which ground component the engine supplies.** The threshold topic's PPV convention (peak component, resultant, or vector sum) needs settling, along with an H/V ratio if only vertical PPV is modelled.\n8. **Optional qualitative fact.** Terwagne & Bush 2011 (https://arxiv.org/pdf/1106.6348): small wall-driven capillary waves are 'almost invisible to the naked eye' but 'readily detected by appropriate lighting'. This supports the lighting caveat.\n9. **Primary production source for the film effect.** No Lantieri interview or DVD featurette was fetched, and the cited secondary sources conflict.",
+ "verdict": "The research is careful, and nearly all quoted numbers and sentences match the re-fetched sources. I fetched 16 URLs and recomputed with my own scripts: the IAPWS table, the Mercalli wording, the ShakeMap legend, the Shao et al. quotes and figures, Karjanto, Denner, Delon, Wilson, Webvision, Accu Dyne and Film Stories all check out. The wave-scale table recomputes exactly. The recommended 0.2 mm/s survives, because the side-to-side wavemaker mechanism sets it at 10, 20 and 40 Hz.\n\nFix several things before use:\n- **Meniscus model.** The η heuristic overstates up-and-down (concentric-ring) radiation by up to about 5× at 40 Hz. Corrected ring thresholds are about 0.5-1 mm/s, so 0.2 mm/s means 'visible shimmer', not 'Jurassic Park rings'. The page needs two numbers and a component convention.\n- **Shao anchor.** The 'consistency check' is miscomputed and is in any case a resonant standing wave, so it is not a check.\n- **Negative result.** The Leicester search page is non-functional, so it is not evidence.\n- **Faraday range.** It quotes the tongue flanks as onset values, and the acceleration may be peak-to-peak.\n- **Statuses.** The ideal-eye threshold should be 'estimate' and the meniscus height 'derived'.\n- **Wavemaker ratio.** The ratio of 2 is a gravity-wave constant applied to capillary ripples.\n- **Film sources.** The cited sources disagree on dashboard versus floor.\n\nNone of these overturns the headline, but the ring label, the 40 Hz value and the statuses must change."
+}

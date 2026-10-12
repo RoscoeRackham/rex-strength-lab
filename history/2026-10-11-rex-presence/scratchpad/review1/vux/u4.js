@@ -1,0 +1,21 @@
+const { open, tab, bayText } = require('./lib');
+(async () => {
+  const { browser, page, errs } = await open({});
+  await tab(page, 'throw', false, 2500);
+  await page.focus('#effort-use');
+  for (let i = 0; i < 60; i++) await page.keyboard.press('ArrowLeft');
+  await page.waitForTimeout(800);
+  console.log(await page.evaluate(() => { const s = document.querySelector('#effort-use'); return { focused: document.activeElement.id, value: s.value, vt: s.getAttribute('aria-valuetext'), label: s.getAttribute('aria-label'), head: document.querySelector('#bay .effort-read p').innerText.slice(0, 80) }; }));
+  const ax = await page.accessibility.snapshot({ root: await page.$('#effort-use') }).catch((e) => e.message);
+  console.log('AX', JSON.stringify(ax));
+  await tab(page, 'walk', false, 1500);
+  await page.focus('#step-effort');
+  for (let i = 0; i < 70; i++) await page.keyboard.press('ArrowRight');
+  await page.waitForTimeout(800);
+  console.log(await page.evaluate(() => { const s = document.querySelector('#step-effort'); return { focused: document.activeElement.id, value: s.value, vt: s.getAttribute('aria-valuetext'), verdict: document.querySelector('#bay .verdict').innerText }; }));
+  await tab(page, 'arm', true, 2500);
+  console.log(await page.evaluate(() => { const s = document.querySelector('#duo-effort-use'); return { vt: s.getAttribute('aria-valuetext'), label: s.getAttribute('aria-label'), value: s.value }; }));
+  const ax2 = await page.accessibility.snapshot({ root: await page.$('#duo-effort-use') }).catch((e) => e.message);
+  console.log('AX duo', JSON.stringify(ax2));
+  await browser.close();
+})();

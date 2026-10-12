@@ -1,0 +1,791 @@
+Project: the Rex Super-Strength Lab (/home/user/rex-strength-lab/rex-strength-lab/), a single-page physics simulator for Rex and Ollie (canon in CLAUDE.md, already loaded: each is 3.048 m tall and 3,007 kg in all; Rex's paw sole is 0.31 m^2 per foot, Ollie's boot sole 0.15 m^2 per foot; density 1,060 kg/m^3, 2.84 m^3). We are building /home/user/rex-strength-lab/rex-strength-lab/BRIEF-presence.md: read it first (10 minutes). It adds effort and restraint, a new Walk tab about ground vibration from their footsteps ("presence"), comic-physics switches, and what happens to energy they absorb (growth modes). This is the RESEARCH stage for one topic.
+The engine (/home/user/rex-strength-lab/rex-strength-lab/src/engine.js) already has: Kinney-Graham blast overpressure, Gutenberg-Richter magnitude with seismic efficiency 1e-4, Collins et al. craters, Poncelet penetration, bearing capacities for nine surfaces (loose sand, dense sand and gravel, soft clay, stiff clay, asphalt, a 10 cm concrete slab, lake ice, steel deck, granite), W8.WALK_LOAD = 1.2 x body weight per step, stagnation heating, and the Weight tab's self-gravity physics. Existing verified facts live in /home/user/rex-strength-lab/rex-strength-lab/research/final-*.json (humans, fiction, objects, environment, density, duo): read the keys and labels of the ones near your topic before you start, do NOT re-research a fact that already exists unless the brief needs a number it lacks, and say when you rely on an existing key.
+The owner is a professional critic: factual accuracy and honest labelling come first. Say "unknown" rather than invent. A number is "verified" only if you fetched the page or PDF yourself and saw the number there; give the exact URL you fetched (DOI landing pages, PubMed, PMC, publisher or agency PDFs, standards bodies). Many standards (BS, DIN, ISO) are paywalled: then cite the government or agency document that reproduces the table (e.g. Caltrans, FTA, HS2, Transport Scotland, US Bureau of Mines) with its URL and say "as reproduced in". Prefer primary or authoritative sources; use fan sites, magazines or Wikipedia only when nothing better exists, and label them "reported". Quote the exact sentence or table cell behind each number in notes.
+Load web tools with ToolSearch query "select:WebSearch,WebFetch". For PDFs, curl them into /tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/research/<topic>/ and extract text with python (pypdf may need pip install --user pypdf) or pdftotext if present. Write raw downloads and any scripts under /tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/research/<topic>/ (create it). Do not edit anything under /home/user/rex-strength-lab.
+Fact fields (the Rex lab's research format): key (snake_case, prefix with the topic, e.g. vib_mayne1984_ppv_law), category (the topic), label, status (verified = number seen in a fetched primary or authoritative source | derived = computed by you from verified inputs, with the formula in notes | estimate = a reasoned assumption | reported = secondary or weak source | disputed), value_si (number, SI), unit_si, low_si and high_si when there is a range, display (short human text with original units), sources (title + exact URL fetched), notes (exact quote, sample, conditions, caveats, how good the evidence is, and for derived numbers the formula and inputs), who_when (author and year). Put any multi-number table (e.g. a threshold table) in values_json as a JSON object string, with each row's original units. Prefer several small facts to one big one.
+
+You are a skeptical fact-checker for the topic "growth". Below are the researcher's facts and model recommendation. Re-fetch the cited URLs for every fact the page is likely to lean on (at least 12 fetches; all of them if there are fewer) and check each value, unit conversion, quotation and status against what the source actually says; recompute every derived number with your own script. Mark ok=false with a correction for anything wrong, mislabelled (a secondary summary presented as the primary paper, an estimate or a fan source marked verified, a sample maximum called a limit, the wrong units or wrong peak/RMS basis), or unsupported. Judge the model recommendation: wrong physics, wrong formula, constants used outside the range they were fitted to, overstated certainty? List important missing items.
+
+RESEARCH:
+{
+ "summary": "Growth-mode physics for BRIEF-presence.md, checked against fetched sources and recomputed from the canon figures (3,007 kg, 3.048 m, 1,060 kg/m³, 2.84 m³, equivalent ball radius 0.878 m).\n\n(1) Worked examples. The speed of light is exact (NIST CODATA 2022). The IAU 2015 solar luminosity of 3.828e26 W is confirmed from the PDF. For Chicxulub, Morgan et al. 2022 (Nat. Rev. Earth Environ.; NSF PAR copy) gives \"about 10^23 J\" in the abstract and \"about 5 × 10^23 J\" from the transient crater, so the brief's 4.2e23 J lies inside that range. For Krakatoa, the best primary figure is Harkrider & Press 1967: 100–150 Mt (4.2–6.3e17 J) as an air-wave equivalent. Total-energy estimates range from 1e17 to 4.6e18 J; the popular 200 Mt figure is weakly sourced.\n- Every worked number in the brief checks out to 2 significant figures, with one exception: Chicxulub at pure density is 1.65e6 kg/m³, which rounds to 1.6e6, not the brief's 1.7e6.\n- Krakatoa adds 9 kg (1–51 kg across all estimates), which is unnoticeable.\n- Chicxulub adds 4,700 t (×1,555): mix 10.4 m and 41,800 kg/m³; pure size 35 m.\n- One second of the Sun's output adds 4.3e6 t: mix 32 m and 1.3e6 kg/m³; pure size 342 m; pure density 1.5e9 kg/m³.\n\n(2) Gradual growth. A compact body whose volume changes radiates a pressure wave p = ρ0·V̈/(4πr) (Rienstra & Hirschberg, Curle's theorem). Standing on the ground doubles it (same text). The US Bureau of Mines (RI 8485) gives 134 dB, about 100 Pa, as the safe limit for houses, with rattle complaints above about 120 dB (20 Pa). OSHA allows robots 250 mm/s, a speed \"slow enough for a person to avoid hazardous contact\"; comfortable walking is 1.3–1.5 m/s (Bohannon 1997). With a smooth rate profile, the air pulse needs only about 2 s (Chicxulub, pure size) to 22 s (one solar second, pure size). The shove sets the real limit: about 1.5 min (Chicxulub, mix), 4 min (Chicxulub, pure size), 14 min (Sun, mix) and 43 min (Sun, pure size). Pure density has neither limit.\n\n(3) Instant growth. The chosen time is the final height ÷ 1,540 m/s (sound speed in soft tissue, from review-level PMC sources). Big growth then moves his sides at up to 444 m/s (Mach 1.3) and his head at up to 1,540 m/s. We solved Taylor's 1946 expanding-sphere problem ourselves and checked it with an independent hydro code (agreement within 1%). The result: the surface overpressure is about ρ0u² (within 2% above 0.8 times the speed of sound). Courant & Friedrichs reproduce Taylor's curve; the printed sphere-speed curve sits 0.04–0.05 c0 above ours. The flat-piston relation from the NASA normal-shock equations is the upper bound and matches the existing Collins relation. Baker et al. 1977 (NASA CR-134906) supply two rules: rigid ground doubles the equivalent energy (2E), and beyond R̄ ≈ 2 a high-explosive curve of equal energy is an upper limit. Instant Chicxulub growth at pure size is therefore 2–3 atm at his surface and 0.9–1.5e9 J into the air, like 210–350 kg of TNT. Windows break out to about 100–120 m.\n\n(4) Runaway loop. Pushing air returns p/(ρc²): about 1e-15 for pure size (3–5e-15 if instant), 1e-16 to 1e-18 for mix, and 0 for pure density. Rock returns at most about 4e-11, and any ordinary matter at most about 1.5e-8. For their own gravity, the Newtonian ratio d(3GM²/5R)/d(Mc²) is 0.6, 0.55 or 0.5 times r_s/R (pure density, mix, pure size). It would reach 1 only at 0.6, 0.55 or 0.5 r_s, which is inside the event horizon. The relativistic uniform ball (Lattimer & Prakash 2001, eq. 34) gives a ratio of 1 exactly at R = r_s. No runaway is possible outside a black hole, so the half-life only matters once the Weight tab already reports a black hole. For pure density at canon size that needs 5.3e43 J, about 4.4 billion years of the Sun's output.\n\nTwo existing facts need attention:\n- density_black_hole_rex_2m is stale: it uses the old 2.54 m³ volume. With the canon 2.84 m³ the figures are 2.08e26 kg/m³ and 5.9e26 kg.\n- energy_chicxulub_impact can now cite Morgan 2022.\n\nScripts and data are in /tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/research/growth/ (scripts/, out/growth-facts.json, and dl/ for the fetched sources).",
+ "model_recommendation": "MASS AND FORM. Δm = E/c², with c = 299,792,458 m/s exact. k = 1 + Δm/3007. Volume V = V0·k^a, with V0 = 2.8368 m³ and a = 1 for pure size, 0.5 for mix (the default), 0 for pure density. A slider for a between 0 and 1 is fine. Height H = 3.048·(V/V0)^(1/3). Equivalent radius R = 0.8782·(V/V0)^(1/3). Density ρ = 3007k/V. Feed m = 3007k into the Weight tab. That gravitational mass rises by exactly E/c²; never add the loop's extra rest mass to it. Endless ocean: show the energy absorbed, with zero mass change. Label it canon.\n\nGRADUAL GROWTH. Profile: fraction of mass added s(t) = t/T − sin(2πt/T)/(2π), so the rate goes as 1 − cos(2πt/T). This is a choice; label it.\n- Sample s once per (form, k) to get k_V = max|V̈|·T²/ΔV (exactly 2π for pure size; 14–55 for mix) and k_H = max(dH/dt)·T/ΔH (about 1.9–2 for pure size; 2.6–7 for mix). Neither depends on T.\n- Air pulse at a bystander d metres from his final surface, on rigid ground: p = ρ0·k_V·ΔV / (2π·r·T²), with r = R_final + d and ρ0 = 1.225 kg/m³.\n- Pressure limit: T_p = √(ρ0·k_V·ΔV / (2π·r·p_safe)). Default p_safe = 100 Pa (USBM safe level). Offer 20 Pa (\"nothing rattles\"), 3.4 kPa (windows) and 34.5 kPa (eardrums) as the higher presets.\n- Shove limit: T_s = k_H·ΔH / u_safe, with u_safe = 0.25 m/s by default (OSHA) and 1.4 m/s (walking) as an option. Use ΔR instead of ΔH for people beside him.\n- Shortest safe duration = max(T_p, T_s). Say which limit sets it; it is almost always the shove.\n- Valid while c0·T is much greater than H and the surface speed is far below 340 m/s.\n- Ignores wind, buildings, terrain and anyone pinned against a wall (crushed at any speed). Pure density has no air or shove limit; show the Weight-tab hazards instead.\n\nINSTANT GROWTH. t_x = H_final / 1540 m/s; this is an estimate; say so. Side speed u = ΔR/t_x; head speed ΔH/t_x.\n- Surface overpressure is a range.\n  - Low end: the expanding-sphere value. Use the table k(u/c0) × ρ0u²: k = 1.16, 1.08, 1.04, 1.02, 1.01 and 1.00 at u/c0 = 0.3, 0.45, 0.6, 0.8, 1.0 and ≥ 1.5.\n  - High end: the flat piston. M = (γ+1)u/(4c0) + √(((γ+1)u/(4c0))² + 1); Δp = p0·(2γ/(γ+1))·(M² − 1), with γ = 1.4, c0 = 340.29 m/s, p0 = 101,325 Pa.\n  - For small u this tends to ρ0·c0·u (a thump, not a blast).\n- Excess energy into the air: E_x = Δp·ΔV. Report p0·ΔV separately as \"atmosphere pushed back\", not blast.\n- TNT mass W = E_x / 4.184e6 J/kg. On hard ground W_free = 2W. Then use the engine's Kinney–Graham curve for how far windows, eardrums and so on are affected.\n- Kinney–Graham is an upper limit only beyond R̄ = r·(p0/(2E_x))^(1/3) > 2. Closer in, cap the pressure at the surface Δp.\n- Anchor the growth at his soles, so no ground is driven into.\n- State that zero duration would need infinite energy (Δp grows as u²).\n\nRUNAWAY LOOP.\n- Air: f_air = (p0 + Δp)·ΔV / (Δm·c²), which is 0 for pure density.\n- Own gravity: Newtonian f_grav = 0.3·(2 − α)·r_s/R, with α = a/3. Or use relativity: f = 1 − dM/dM_p, with M_p = M(1 + g(β)), g from Lattimer & Prakash eq. 34, and β = GM/(Rc²).\n- Ground: about 0 when anchored at the soles.\n- Show f as a plain power of ten (\"about 1 part in 10^15\") and the multiplier 1/(1 − f).\n- Show where it crosses 1: only when R ≤ r_s, i.e. the Weight tab's black-hole state (for canon pure density, 5.9e26 kg, which takes 5.3e43 J).\n- Half-life: apply it only when f ≥ 1 (isBlackHole after growth). No physics sets its value, so label any default a story choice.\n- Bondi infall: per kg it releases GM/R = β·c² (1 − √(1 − 2β) in relativity). It only runs when r_B > R, which needs density above about 5e14 kg/m³ at canon size. Cap its total at the atmosphere's mass (5.1e18 kg).\n\nLABELS ON THE PAGE. The worked examples are \"derived\". Instant-growth numbers are \"estimate\", because of the time scale and the sphere/piston range. The Taylor table is \"derived (our calculation, checked two ways)\".",
+ "gaps": "Could not read, or only partly verified:\n1. **Taylor (1946) itself.** The publisher page sits behind a bot check and PubMed has no abstract. What it says comes from Courant & Friedrichs 1948 (text and Fig. 12, seen in the archive.org scan) plus our own similarity solution, checked with an independent hydro code. Our sphere-speed curve sits 0.04–0.05 c0 below the printed figure; the gas-speed curve matches it exactly. Page: \"Taylor's result as reproduced by Courant & Friedrichs; surface pressures from our own calculation.\"\n2. **Kinsler et al. and Pierce.** Not opened (Springer blocked the request). The monopole formula is cited from Rienstra & Hirschberg's TU Eindhoven text instead.\n3. **The 250 mm/s safe speed.** ANSI/RIA R15.06 and ISO 10218 are paywalled; the value is quoted from the OSHA Technical Manual, which does not name the standard. No source gives a measured harmless speed for a person pushed by a massive moving surface; the robot speed limit is the nearest authoritative number. Page: \"borrowed from robot safety; not tested for this case.\"\n4. **1,540 m/s in soft tissue.** Taken from review-level PMC articles (Lieu 2025; Moyano 2022). The IEC/ICRU originals were not fetched. Canon does not say what Rex's body is made of inside.\n5. **Krakatoa's total energy.** No primary source was found for the total (8.4e17 J is a popular figure). Only the Harkrider & Press air-wave equivalent is primary. Page: \"estimates differ a lot; any of them adds under 51 kg.\"\n6. **Long, smooth pressure pulses.** No threshold was found for pulses lasting seconds or longer. The USBM levels are for blast pulses under about 2 s, so they are conservative here. Page: \"slow growth is infrasound: felt as a pressure change, not heard.\"\n7. **Energy-to-TNT equivalence.** For a piston-driven blast this is sourced only as an upper limit beyond R̄ ≈ 2 (Baker 1977, for gas-vessel bursts). The near field uses the surface pressure.\n8. **Relativistic loop.** It uses the uniform-density result, valid for a perfect fluid only up to β = 4/9 (Buchdahl). Beyond that it holds only because Rex is indestructible. The rest-mass versus gravitational-mass reading of the loop is our own reasoning; it is not sourced.\n9. **The 1 − √(1 − 2β) infall energy.** This is the standard redshift factor; it was not separately sourced.\n\nExisting data needing fixes (outside this topic's write scope):\n- **density_black_hole_rex_2m:** the display uses the old 2.54 m³ volume. With canon 2.84 m³ it should read 2.08e26 kg/m³ and 5.9e26 kg.\n- **energy_chicxulub_impact (disputed):** can now cite Morgan et al. 2022 for 1e23–5e23 J.\n- **energy_krakatoa_1883 (claimed):** should note the Harkrider & Press air-wave figure of 100–150 Mt.\n- **blast_kinney_graham_peak_overpressure:** its open ground-reflection question is answered by Baker 1977 (E' = 2E on rigid ground).\n- **schwarzschild_radius:** still cites Wikipedia only.\n\nChoices that are ours, not sourced, and should be labelled on the page:\n- the instant time scale (final height ÷ 1,540 m/s)\n- the 1 − cos rate profile\n- anchoring growth at the soles\n- measuring the bystander's distance from his final surface\n- using the top of the head as the fastest shove point.",
+ "facts": [
+  {
+   "key": "growth_c_exact",
+   "label": "Speed of light in vacuum (exact by definition)",
+   "status": "verified",
+   "value_si": 299792458,
+   "unit_si": "m/s",
+   "display": "299,792,458 m/s, exact (c² = 8.988 × 10¹⁶ m²/s²)",
+   "sources": [
+    {
+     "title": "NIST CODATA 2022: speed of light in vacuum",
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?c"
+    }
+   ],
+   "notes": "NIST page: \"Numerical value 299 792 458 m s-1\", \"Standard uncertainty (exact)\", \"Source: 2022 CODATA\". Exact because the metre is defined from it. The engine already uses K.c = 299792458. Mass added = E / c² = E / 8.987551787e16 kg per joule.",
+   "who_when": "CODATA 2022 (NIST)",
+   "category": "growth"
+  },
+  {
+   "key": "growth_krakatoa_airwave_harkrider_press",
+   "label": "Krakatoa 1883: explosion needed to reproduce its air pressure wave",
+   "status": "verified",
+   "value_si": 523000000000000000,
+   "low_si": 418400000000000000,
+   "high_si": 627600000000000000,
+   "unit_si": "J",
+   "display": "100–150 Mt TNT (4.2–6.3 × 10¹⁷ J); adds 4.7–7.0 kg as mass",
+   "sources": [
+    {
+     "title": "Harkrider & Press (1967) The Krakatoa air-sea waves: an example of pulse propagation in coupled systems, Geophys. J. R. astr. Soc. 13:149-159; Caltech Authors record with abstract",
+     "url": "https://authors.library.caltech.edu/records/r42n3-t2639"
+    },
+    {
+     "title": "DOI landing page (not opened)",
+     "url": "https://doi.org/10.1111/j.1365-246X.1967.tb02150.x"
+    }
+   ],
+   "notes": "Abstract (Caltech repository record): \"An explosion of 100–150 megatons is required to produce the equivalent of the Krakatoa pressure disturbance.\" This is a blast (air-wave) equivalent fitted to the barograph records, not the eruption's total thermal energy. Converted at 4.184e15 J per Mt (existing key energy_tnt_equivalent_per_tonne). It is a better primary source than the existing energy_krakatoa_1883 (status claimed: 200 Mt via Wikipedia and a popular book), which sits above this range. Value_si is the midpoint (125 Mt).",
+   "who_when": "Harkrider & Press 1967",
+   "category": "growth"
+  },
+  {
+   "key": "growth_krakatoa_energy_spread",
+   "label": "Krakatoa 1883: spread of published energy estimates",
+   "status": "disputed",
+   "value_si": null,
+   "low_si": 100000000000000000,
+   "high_si": 4600000000000000000,
+   "unit_si": "J",
+   "display": "About 10¹⁷ J (24 Mt) to 4.6 × 10¹⁸ J (1.1 Gt); the popular 200 Mt (8.4 × 10¹⁷ J) is inside. Mass added: 1–50 kg",
+   "sources": [
+    {
+     "title": "Lobanovsky (2013) Acoustic Methods for Evaluation of High Energy Explosions, arXiv:1311.6565, Annex IV",
+     "url": "https://arxiv.org/pdf/1311.6565"
+    }
+   ],
+   "notes": "Lobanovsky's annex: Wikipedia \"said that the explosion energy of volcano Krakatoa was, ostensibly, 200 Mt (0.2 Gt)\"; \"another encyclopedic resource argues that the energy explosion of Krakatoa was 1.5 Gt\"; an American Geological Institute book: \"estimated to be 10^24 erg [38], that is 10^17 joules, or 24 Mt\"; his own acoustic estimate \"Ee = 1.09 ± 0.05 Gt\"; he notes extreme estimates \"differ by almost 500 times\". Preprint by an aerospace engineer, not peer reviewed: reported quality for his own number; the quoted spread is the useful part. Whatever the true value, the growth is unnoticeable: 1e17 J adds 1.1 kg, 8.4e17 J adds 9.3 kg, 4.6e18 J adds 51 kg (1.7% of his mass; pure size would add 1.7 cm of height).",
+   "who_when": "compiled by Lobanovsky 2013",
+   "category": "growth"
+  },
+  {
+   "key": "growth_chicxulub_energy_morgan2022",
+   "label": "Chicxulub impact energy (2022 review)",
+   "status": "verified",
+   "value_si": 5e+23,
+   "low_si": 1e+23,
+   "high_si": 5e+23,
+   "unit_si": "J",
+   "display": "About 10²³ J (abstract); about 5 × 10²³ J from the 80–100 km transient crater",
+   "sources": [
+    {
+     "title": "Morgan, Bralower, Brugger & Wünnemann (2022) The Chicxulub impact and its environmental consequences, Nature Reviews Earth & Environment 3:338; accepted manuscript at NSF PAR",
+     "url": "https://par.nsf.gov/servlets/purl/10349743"
+    },
+    {
+     "title": "DOI landing page (not opened)",
+     "url": "https://doi.org/10.1038/s43017-022-00283-y"
+    }
+   ],
+   "notes": "Abstract: \"The Chicxulub crater's asymmetric shape and size suggest an oblique impact and an impact energy of about 10^23 joules\". Main text: \"the apparent diameter of the transient crater ... is estimated to be between 80 km and 100 km ... and the impact energy is estimated to be about 5 × 10^23 J\"; \"For an asteroid speed of around 18 km s–1 and impact angles of between 45° and 60°, impactor diameters of around 12.2–14.4 km are required\". The brief's 4.2 × 10^23 J (100 teratonnes of TNT) lies inside this range. Suggest the existing energy_chicxulub_impact (disputed, via Wikipedia, up to 5.8e25 J from a 2014 preprint) cite this peer-reviewed review for its main range.",
+   "who_when": "Morgan et al. 2022",
+   "category": "growth"
+  },
+  {
+   "key": "growth_sun_luminosity_check",
+   "label": "Nominal solar luminosity (check of the existing fact)",
+   "status": "verified",
+   "value_si": 3.828e+26,
+   "unit_si": "W",
+   "display": "3.828 × 10²⁶ W (IAU 2015 nominal); best estimate 3.8275 ± 0.0014 × 10²⁶ W",
+   "sources": [
+    {
+     "title": "Prša et al. (2016) Nominal values for selected solar and planetary quantities: IAU 2015 Resolution B2 and B3, arXiv:1510.07674 (PDF)",
+     "url": "https://arxiv.org/pdf/1510.07674"
+    }
+   ],
+   "notes": "PDF: \"1 L N⊙ = 3.828 × 10^26 W\"; and \"Sun's mean radiative luminosity of L⊙ = 4π(1 au)² S⊙ = 3.8275 (± 0.0014) × 10^26 W\". Confirms the existing key energy_sun_luminosity unchanged; rely on it. One second of output, 3.828e26 J, is 4.259e9 kg as mass.",
+   "who_when": "IAU 2015 Resolution B3",
+   "category": "growth"
+  },
+  {
+   "key": "growth_body_baseline",
+   "label": "Canon body used for growth: volume and equivalent ball radius",
+   "status": "derived",
+   "value_si": 2.8368,
+   "unit_si": "m^3",
+   "display": "2.84 m³; a ball of that volume has radius 0.878 m (0.288 of his 3.048 m height)",
+   "sources": [
+    {
+     "title": "Project canon: CLAUDE.md in this repository (3,007 kg, 3.048 m, 1,060 kg/m^3)",
+     "url": "CLAUDE.md"
+    }
+   ],
+   "notes": "V0 = 3,007 / 1,060 = 2.8368 m^3. Equivalent radius R = (3V/4π)^(1/3) = 0.8782 m, the same convention as the engine's eqRadius(). R/H = 0.2881. Growth forms with mass ratio k = m/m0: volume V = V0·k^a with a = 1 (pure size), 1/2 (mix), 0 (pure density); height and R scale as (V/V0)^(1/3), i.e. k^(1/3), k^(1/6), 1; density = 1,060·k^(1-a).",
+   "who_when": "derived from canon",
+   "category": "growth"
+  },
+  {
+   "key": "growth_worked_krakatoa",
+   "label": "Worked example: absorbing Krakatoa's energy as growth",
+   "status": "derived",
+   "value_si": 9.346,
+   "unit_si": "kg",
+   "low_si": 4.66,
+   "high_si": 9.35,
+   "display": "Adds about 9 kg (5–7 kg on the air-wave estimate): +0.3%. Height +1.6 mm (mix) or +3.2 mm (pure size); density 1,063 kg/m³ if pure density",
+   "sources": [
+    {
+     "title": "NIST CODATA 2022: speed of light in vacuum",
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?c"
+    },
+    {
+     "title": "Project canon: CLAUDE.md in this repository (3,007 kg, 3.048 m, 1,060 kg/m^3)",
+     "url": "CLAUDE.md"
+    },
+    {
+     "title": "rex-strength-lab/BRIEF-presence.md (worked examples being checked)",
+     "url": "rex-strength-lab/BRIEF-presence.md"
+    }
+   ],
+   "notes": "Δm = E/c². E = 8.4e17 J (brief; existing claimed key energy_krakatoa_1883): Δm = 9.346 kg, k = 1.00311. Mix: H = 3.048·k^(1/6) = 3.0496 m (+1.6 mm), ρ = 1,060·k^(1/2) = 1,061.6. Pure size: H = 3.048·k^(1/3) (+3.2 mm). Pure density: 1,063.3 kg/m^3. With the verified 100–150 Mt air-wave figure: 4.7–7.0 kg. Brief's \"about 9 kg: unnoticeable in any form\" is correct, and stays true across the whole published spread (1–51 kg).",
+   "values_json": "{\"E_J\": {\"8.4e17 (brief)\": {\"dm_kg\": 9.35, \"k\": 1.0031, \"mix_H_m\": 3.0496, \"mix_rho\": 1061.6, \"size_H_m\": 3.0512, \"density_rho\": 1063.3}, \"4.18e17-6.28e17 (Harkrider & Press)\": {\"dm_kg\": \"4.7-7.0\"}}}",
+   "who_when": "derived",
+   "category": "growth"
+  },
+  {
+   "key": "growth_worked_chicxulub",
+   "label": "Worked example: absorbing Chicxulub's energy as growth",
+   "status": "derived",
+   "value_si": 4673000,
+   "unit_si": "kg",
+   "low_si": 1113000,
+   "high_si": 5563000,
+   "display": "4.2 × 10²³ J adds 4,700 t (×1,600 his mass): mix 10 m and 42,000 kg/m³; pure size 35 m; pure density 1.6 × 10⁶ kg/m³ (the brief says 1.7 × 10⁶: a rounding slip)",
+   "sources": [
+    {
+     "title": "NIST CODATA 2022: speed of light in vacuum",
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?c"
+    },
+    {
+     "title": "Project canon: CLAUDE.md in this repository (3,007 kg, 3.048 m, 1,060 kg/m^3)",
+     "url": "CLAUDE.md"
+    },
+    {
+     "title": "rex-strength-lab/BRIEF-presence.md (worked examples being checked)",
+     "url": "rex-strength-lab/BRIEF-presence.md"
+    },
+    {
+     "title": "Morgan et al. 2022 (energy range)",
+     "url": "https://par.nsf.gov/servlets/purl/10349743"
+    }
+   ],
+   "notes": "E = 4.2e23 J: Δm = 4.673e6 kg, k = 1,555.3. Mix: H = 3.048·k^(1/6) = 10.38 m, ρ = 1,060·k^(1/2) = 41,800 kg/m^3, R_eq = 2.99 m. Pure size: H = 3.048·k^(1/3) = 35.3 m, R_eq = 10.2 m. Pure density: 1,060·k = 1.649e6 kg/m^3, which rounds to 1.6e6 at 2 significant figures (brief: 1.7e6). Brief's \"about 4,700 t (×1,560)\" is right (k = 1,555.3, which is 1,560 to 3 figures and 1,600 to 2). Over Morgan 2022's range (1e23 to 5e23 J): Δm 1,110–5,560 t; mix 8.2–10.7 m and 20,000–46,000 kg/m^3; pure size 22–37 m; pure density 3.9e5–2.0e6 kg/m^3.",
+   "values_json": "{\"1e23 J\": {\"dm_t\": 1113, \"k\": 371, \"mix_H_m\": 8.17, \"mix_rho\": 20400, \"size_H_m\": 21.9, \"density_rho\": 393000.0}, \"4.2e23 J (brief)\": {\"dm_t\": 4673, \"k\": 1555, \"mix_H_m\": 10.4, \"mix_rho\": 41800, \"size_H_m\": 35.3, \"density_rho\": 1650000.0}, \"5e23 J\": {\"dm_t\": 5563, \"k\": 1851, \"mix_H_m\": 10.7, \"mix_rho\": 45600, \"size_H_m\": 37.4, \"density_rho\": 1960000.0}}",
+   "who_when": "derived",
+   "category": "growth"
+  },
+  {
+   "key": "growth_worked_sun_second",
+   "label": "Worked example: absorbing one second of the Sun's output as growth",
+   "status": "derived",
+   "value_si": 4259000000,
+   "unit_si": "kg",
+   "display": "Adds 4.3 × 10⁶ t (×1.4 × 10⁶): mix 32 m and 1.3 × 10⁶ kg/m³; pure size 340 m; pure density 1.5 × 10⁹ kg/m³ (about half Sirius B's average)",
+   "sources": [
+    {
+     "title": "NIST CODATA 2022: speed of light in vacuum",
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?c"
+    },
+    {
+     "title": "Project canon: CLAUDE.md in this repository (3,007 kg, 3.048 m, 1,060 kg/m^3)",
+     "url": "CLAUDE.md"
+    },
+    {
+     "title": "rex-strength-lab/BRIEF-presence.md (worked examples being checked)",
+     "url": "rex-strength-lab/BRIEF-presence.md"
+    },
+    {
+     "title": "IAU 2015 B3 (via existing key energy_sun_luminosity)",
+     "url": "https://arxiv.org/pdf/1510.07674"
+    }
+   ],
+   "notes": "E = 3.828e26 J: Δm = 4.259e9 kg, k = 1.416e6. Mix: H = 32.3 m, ρ = 1.26e6 kg/m^3, R_eq = 9.31 m. Pure size: H = 342 m, R_eq = 98.6 m. Pure density: 1.50e9 kg/m^3. All brief figures check out. \"White-dwarf matter\" is fair: the existing estimate density_white_dwarf_sirius_b_mean is 2.8e9 kg/m^3, so this is about half Sirius B's average density.",
+   "values_json": "{\"dm_kg\": 4259000000.0, \"k\": 1416000.0, \"mix_H_m\": 32.3, \"mix_rho\": 1260000.0, \"size_H_m\": 342, \"density_rho\": 1500000000.0}",
+   "who_when": "derived",
+   "category": "growth"
+  },
+  {
+   "key": "growth_brief_number_check",
+   "label": "Check of every growth number in the brief",
+   "status": "derived",
+   "value_si": null,
+   "unit_si": "",
+   "display": "All correct to 2 figures except Chicxulub pure density: 1.6 × 10⁶ kg/m³, not 1.7 × 10⁶. Krakatoa's 8.4 × 10¹⁷ J is weakly sourced; the conclusion holds anyway",
+   "sources": [
+    {
+     "title": "rex-strength-lab/BRIEF-presence.md (worked examples being checked)",
+     "url": "rex-strength-lab/BRIEF-presence.md"
+    },
+    {
+     "title": "Our scripts (scratchpad): growth_calc.py, taylor_sphere.py, piston_hydro.py, hydro_check.py, kg.py",
+     "url": "/tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/research/growth/scripts/"
+    }
+   ],
+   "notes": "Recomputed with c exact, 3,007 kg, 1,060 kg/m^3, 3.048 m (growth_calc.py). Krakatoa 9 kg OK. Chicxulub: 4,700 t OK, ×1,560 OK (1,555), mix ≈10 m OK (10.4), ≈42,000 OK (41,800), pure size ≈35 m OK (35.3), pure density 1.65e6 → 1.6e6 at 2 s.f. (brief 1.7e6: wrong in the second figure). Sun: 4.3e6 t OK, ×1.4e6 OK, mix 32 m OK, 1.3e6 OK (1.26e6), 340 m OK (342), 1.5e9 OK. Runaway claims: \"about 10^-15\" for shoving the surroundings is right for pure size (1.06e-15 slow, 3–5e-15 instant) but smaller for mix (1e-16 to 1e-18) and zero for pure density; \"a real runaway needs their own gravity near black-hole density\" is right, and more exactly the loop reaches 1 only at the event horizon (see growth_loop_gravity_gr).",
+   "who_when": "derived",
+   "category": "growth"
+  },
+  {
+   "key": "growth_monopole_compact_body",
+   "label": "Sound from a body whose volume changes (acoustic monopole)",
+   "status": "verified",
+   "value_si": null,
+   "unit_si": "Pa",
+   "display": "p(r, t) = ρ₀ V̈(t − r/c₀) / (4πr): the pressure set by the second time-derivative of the body's volume; steady expansion makes no sound in this approximation",
+   "sources": [
+    {
+     "title": "Rienstra & Hirschberg, An Introduction to Acoustics (Eindhoven University of Technology lecture text, PDF version dated 6 Sep 2026)",
+     "url": "https://www.win.tue.nl/~sjoerdr/papers/boek.pdf"
+    }
+   ],
+   "notes": "Rienstra & Hirschberg eq. (2.61) and p. 24: \"mass injection is a source of sound, primarily because of the displacement of a volume fraction β of the original fluid\". Section 6.2, p. 150 (PDF p. 159), pulsating sphere: \"If (∂a/∂t)/c0 ≪ 1, we can use linear acoustics\"; \"For a compact sphere the first term is dominating (a(∂²a/∂t²)/c0² ≪ 1). We find exactly the result which we could anticipate from (2.61), the second derivative to time of the volume of the sphere is the source of sound. A steady expansion of the sphere (∂a/∂t = constant) does not (in this approximation) generate sound. The second term of (6.9) is dominating for large sphere radii (a(∂²a/∂t²)/c0² ≫ 1). In such a case the action of the wall movement is that of a piston which generates plane waves.\" Curle's theorem (6.85), p. 170 (PDF p. 179): the surface term −(1/4πc0²) ∂/∂t ∬[ρ v_i n_i / r] dσ \"is important when the body is pulsating. For a compact body we have then a simple volume source term\"; with the free-field Green's function G0 = δ(t − τ − r/c0)/(4π r c0²) (6.37) this gives p' = c0² ρ' = ρ0 V̈(t − r/c0)/(4πr) for any compact body shape. Valid when the body is small compared with c0 × (growth time) and its surface moves much slower than sound. Kinsler et al. and Pierce were not opened (Springer blocked).",
+   "who_when": "Rienstra & Hirschberg (TU Eindhoven), after Lighthill and Curle",
+   "category": "growth"
+  },
+  {
+   "key": "growth_monopole_ground_doubling",
+   "label": "A volume source on the ground: pressure doubled",
+   "status": "verified",
+   "value_si": 2,
+   "unit_si": "1",
+   "display": "Next to a rigid wall or ground a monopole's pressure is 2× its free-field value: p = ρ₀ V̈ / (2πr)",
+   "sources": [
+    {
+     "title": "Rienstra & Hirschberg, An Introduction to Acoustics (Eindhoven University of Technology lecture text, PDF version dated 6 Sep 2026)",
+     "url": "https://www.win.tue.nl/~sjoerdr/papers/boek.pdf"
+    }
+   ],
+   "notes": "Rienstra & Hirschberg, exercises to chapter 6, p. 172 (PDF p. 181), item f: \"The acoustic pressure p′ generated by a monopole close to a wall increases by a factor 2 in comparison with free field conditions.\" Applied to Rex standing on the ground. Real ground is not perfectly rigid, so 2 is the conservative (upper) factor.",
+   "who_when": "Rienstra & Hirschberg",
+   "category": "growth"
+  },
+  {
+   "key": "growth_slow_pressure_peak",
+   "label": "Gradual growth: peak air pressure at a bystander, and the shortest duration that keeps it harmless",
+   "status": "derived",
+   "value_si": null,
+   "unit_si": "Pa",
+   "display": "p_peak = ρ₀ k_V ΔV / (2π r T²); for pure size with a smooth start and stop, p_peak = ρ₀ ΔV / (r T²), so T_min = √(ρ₀ ΔV / (r p_safe))",
+   "sources": [
+    {
+     "title": "Rienstra & Hirschberg, An Introduction to Acoustics (Eindhoven University of Technology lecture text, PDF version dated 6 Sep 2026)",
+     "url": "https://www.win.tue.nl/~sjoerdr/papers/boek.pdf"
+    },
+    {
+     "title": "Our scripts (scratchpad): growth_calc.py, taylor_sphere.py, piston_hydro.py, hydro_check.py, kg.py",
+     "url": "/tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/research/growth/scripts/"
+    }
+   ],
+   "notes": "Inputs: monopole on rigid ground p = ρ0 V̈/(2πr) (growth_monopole_compact_body, growth_monopole_ground_doubling); ρ0 = 1.225 kg/m^3 (existing atm_isa_sea_level_density). Growth profile chosen: the fraction of the absorbed mass added by time t is s(t) = t/T − sin(2πt/T)/(2π), so the rate ∝ 1 − cos(2πt/T) starts and ends at zero with zero acceleration (no jolt). Pure size: V = V0 + ΔV·s, V̈max = 2πΔV/T² (k_V = 2π = 6.28). Mix: V = V0·(1 + (k−1)s)^(1/2) grows fastest early, so k_V is larger: 14.3 (k = 371), 17.9 (k = 1,555), 54.7 (k = 1.4e6), found numerically. Pure density: ΔV = 0, no pulse. A half-sine rate profile gives k_V = π²/2 = 4.93 but a pressure step at the start. r is measured from the body's centre; take r = R_eq(final) + d for a bystander d from the final surface (conservative for a tall body). Valid while c0·T is much larger than his height and the surface speed is far below 340 m/s; the Bernoulli near-field term −½ρ0u² is then negligible. Ignores wind, temperature layers, terrain and buildings. For T longer than about 0.05 s the pulse is infrasound: felt as a pressure change, not heard as a bang.",
+   "who_when": "derived",
+   "category": "growth"
+  },
+  {
+   "key": "growth_airblast_usbm_ri8485",
+   "label": "Airblast levels that rattle houses but do no damage (US Bureau of Mines)",
+   "status": "verified",
+   "value_si": 100,
+   "low_si": 20,
+   "high_si": 100,
+   "unit_si": "Pa",
+   "display": "Safe limit for houses: 134 dB (0.1 Hz system) = 0.0145 psi ≈ 100 Pa. Rattling complaints start above about 120 dB (≈20 Pa)",
+   "sources": [
+    {
+     "title": "Siskind, Stachura, Stagg & Kopp (1980) Structure Response and Damage Produced by Airblast from Surface Mining, US Bureau of Mines Report of Investigations 8485 (copy hosted by the Resolution Copper Mine EIS)",
+     "url": "https://www.resolutionmineeis.us/sites/default/files/references/siskind-et-al-1980.pdf"
+    }
+   ],
+   "notes": "Abstract: \"Safe levels of airblast were found to be 134 dBL (0.1 Hz), 133 dBL (2Hz), 129 dBL (6Hz), and 105 dB C-slow.\" \"The human response and annoyance problem from airblast is probably caused primarily by wall rattling and the resulting secondary noises. Although these will not entirely be precluded by the recommended levels, they are low enough to preclude damage to residential structures and any possible human injury over the long term.\" p. 66: \"Levels exceeding 120 dB will produce some annoyance from rattling and fright, with as much as 5 to 10 pct of homes exhibiting such disturbances at the maximum level of 134 dBL (0.1-Hz high-pass).\" Text: \"complaints about rattling occur at airblast levels exceeding about 120 dB (6Hz)\". A table lists 0.0145 psi beside 134 dBL. Conversion p = 20 µPa × 10^(L/20): 134 dB = 100 Pa, 120 dB = 20 Pa. These are for blast pulses lasting under about 2 s; a growth pulse is smoother and longer, so these limits are conservative for it. Higher thresholds already in the data: blast_window_breakage (3.4–6.9 kPa), blast_eardrum_rupture_threshold (34.5 kPa), and NASA sonic-boom figures in blast_sonic_boom_concorde (rare minor damage at 96–239 Pa).",
+   "values_json": "{\"134 dBL (0.1 Hz high-pass)\": \"safe maximum for houses; 0.0145 psi = 100 Pa\", \"133 dBL (2 Hz)\": \"equivalent safe level\", \"129 dBL (5-6 Hz)\": \"equivalent safe level\", \"105 dB C-slow\": \"equivalent safe level (events ≤ 2 s)\", \"above ~120 dB (6 Hz)\": \"rattling complaints begin; ≈ 20 Pa\", \"at 134 dBL\": \"5-10% of homes rattle\"}",
+   "who_when": "Siskind et al. 1980 (USBM RI 8485)",
+   "category": "growth"
+  },
+  {
+   "key": "growth_contact_speed_osha",
+   "label": "A harmless pushing speed: robot speed slow enough for a person to avoid hazardous contact",
+   "status": "verified",
+   "value_si": 0.25,
+   "unit_si": "m/s",
+   "display": "250 mm/s (10 in/s)",
+   "sources": [
+    {
+     "title": "OSHA Technical Manual, Section IV Chapter 4: Industrial Robot Systems and Industrial Robot System Safety",
+     "url": "https://www.osha.gov/otm/section-4-safety-hazards/chapter-4"
+    }
+   ],
+   "notes": "OSHA Technical Manual IV-4, section VIII.1: \"In this mode, the robot system operates at a reduced speed, slow enough for a person to avoid hazardous contact,\" ... \"but not greater than 10 inches/second (250mm/second)\". Section VI.4: \"robot speeds should be placed at a reduced speed of 10 inches per second (250 mm/second) or less on any part\" of the application. The page does not name the consensus standard behind the sentence (ANSI/RIA R15.06 and ISO 10218 are paywalled and were not opened). Used here as the speed at which his growing surface may push someone: they can simply step away, since walking pace is about 5 times faster. Not covered: someone pinned between his growing body and a wall is crushed at any speed; growth must stop or go around them.",
+   "who_when": "OSHA (US Dept of Labor), current web edition",
+   "category": "growth"
+  },
+  {
+   "key": "growth_walking_speed_bohannon1997",
+   "label": "Comfortable walking speed of adults",
+   "status": "verified",
+   "value_si": 1.4,
+   "low_si": 1.272,
+   "high_si": 1.462,
+   "unit_si": "m/s",
+   "display": "Comfortable 1.27–1.46 m/s (group means, ages 20–79); fastest 1.75–2.53 m/s",
+   "sources": [
+    {
+     "title": "Bohannon (1997) Comfortable and maximum walking speed of adults aged 20-79 years: reference values and determinants, Age and Ageing 26:15-19 (abstract read through the Europe PMC API)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:9143432%20AND%20SRC:MED&resultType=core&format=json"
+    },
+    {
+     "title": "PubMed 9143432",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/9143432/"
+    }
+   ],
+   "notes": "Abstract: 230 healthy volunteers timed over 7.62 m. \"mean comfortable gait speed ranged from 127.2 cm/s for women in their seventies to 146.2 cm/s for men in their forties. Mean maximum gait speed ranged from 174.9 cm/s for women in their seventies to 253.3 cm/s for men in their twenties.\" Used as a second, less cautious shove speed (being pushed at walking pace), and to show that at 0.25 m/s anyone can step away.",
+   "who_when": "Bohannon 1997",
+   "category": "growth"
+  },
+  {
+   "key": "growth_slow_tmin_shove",
+   "label": "Gradual growth: shortest duration so his surface never pushes faster than a safe speed",
+   "status": "derived",
+   "value_si": null,
+   "unit_si": "s",
+   "display": "T_min = k_H ΔL / u_safe, with ΔL the growth of his height (top of head) or of his half-width (beside him); k_H = 2 for small growth, about 1.9 for large pure-size growth, 2.6–7 for mix",
+   "sources": [
+    {
+     "title": "OSHA Technical Manual, Section IV Chapter 4: Industrial Robot Systems and Industrial Robot System Safety",
+     "url": "https://www.osha.gov/otm/section-4-safety-hazards/chapter-4"
+    },
+    {
+     "title": "Our scripts (scratchpad): growth_calc.py, taylor_sphere.py, piston_hydro.py, hydro_check.py, kg.py",
+     "url": "/tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/research/growth/scripts/"
+    }
+   ],
+   "notes": "Same profile s(t) as growth_slow_pressure_peak. Height H(t) = H0·(V(t)/V0)^(1/3); peak dH/dt = k_H·ΔH/T, with k_H computed numerically: pure size 2.00 (k ≈ 1), 1.94 (k = 371), 1.93 (k = 1,555), 1.88 (k = 1.4e6); mix 2.57 (k = 371), 2.94 (k = 1,555), 7.22 (k = 1.4e6), because with V ∝ m^(1/2) the height grows fastest early. Assumes his soles stay put and he grows upward and outward, so the top of his head is the fastest point; someone beside him meets his side, which moves about 0.29 times as fast (equivalent-ball radius). Engine: compute k_V and k_H once per form and mass ratio by sampling the profile (they do not depend on T).",
+   "who_when": "derived",
+   "category": "growth"
+  },
+  {
+   "key": "growth_slow_tmin_examples",
+   "label": "Gradual growth: shortest harmless durations for the worked examples",
+   "status": "derived",
+   "value_si": null,
+   "unit_si": "s",
+   "display": "The shove sets the limit, not the air: Chicxulub about 1½ min (mix) or 4 min (pure size); one second of sunlight about 14 min (mix) or 43 min (pure size); Krakatoa a few hundredths of a second; pure density has no air or shove limit",
+   "sources": [
+    {
+     "title": "Our scripts (scratchpad): growth_calc.py, taylor_sphere.py, piston_hydro.py, hydro_check.py, kg.py",
+     "url": "/tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/research/growth/scripts/"
+    },
+    {
+     "title": "Siskind, Stachura, Stagg & Kopp (1980) Structure Response and Damage Produced by Airblast from Surface Mining, US Bureau of Mines Report of Investigations 8485 (copy hosted by the Resolution Copper Mine EIS)",
+     "url": "https://www.resolutionmineeis.us/sites/default/files/references/siskind-et-al-1980.pdf"
+    },
+    {
+     "title": "OSHA Technical Manual, Section IV Chapter 4: Industrial Robot Systems and Industrial Robot System Safety",
+     "url": "https://www.osha.gov/otm/section-4-safety-hazards/chapter-4"
+    }
+   ],
+   "notes": "Bystander 5 m from his final surface, on rigid ground; p_safe 100 Pa (USBM safe) or 20 Pa (rattle onset); u_safe 0.25 m/s (OSHA) or 1.4 m/s (walking); top-of-head speed unless marked side. At the shove-limited duration the air pulse is tiny: e.g. Chicxulub pure size at 250 s gives 100 Pa × (1.9/250)² ≈ 0.006 Pa, far below hearing. Pure density changes no volume, so neither limit applies; its hazards are the Weight tab ones (ground load, sinking, own gravity).",
+   "values_json": "{\"columns\": \"T_pressure at 100 Pa / 20 Pa; T_shove at 0.25 m/s (head / side); T_shove at 1.4 m/s (head); all seconds\", \"Krakatoa 8.4e17 J, mix\": [0.003, 0.0068, 0.013, 0.0036, 0.0023], \"Krakatoa 8.4e17 J, pure size\": [0.0043, 0.0096, 0.025, 0.0073, 0.0045], \"Chicxulub 1e23 J, mix\": [0.44, 0.99, 53, 15, 9.4], \"Chicxulub 1e23 J, pure size\": [1.1, 2.4, 146, 42, 26], \"Chicxulub 4.2e23 J, mix\": [0.69, 1.5, 86, 25, 15], \"Chicxulub 4.2e23 J, pure size\": [1.9, 4.2, 250, 72, 44], \"Sun 1 s (3.8e26 J), mix\": [5.0, 11, 850, 240, 150], \"Sun 1 s (3.8e26 J), pure size\": [22, 49, 2600, 740, 460], \"any, pure density\": \"no volume change: no pressure pulse, no shove\"}",
+   "who_when": "derived",
+   "category": "growth"
+  },
+  {
+   "key": "growth_tissue_sound_speed",
+   "label": "Speed of sound in soft tissue",
+   "status": "verified",
+   "value_si": 1540,
+   "low_si": 1450,
+   "high_si": 1585,
+   "unit_si": "m/s",
+   "display": "1,540 m/s (the soft-tissue value ultrasound scanners assume); muscle 1,585 m/s; fat 1,450–1,465 m/s",
+   "sources": [
+    {
+     "title": "Lieu (2025) Ultrasound fundamentals and their clinical implications for interventional cytopathologists, Cytopathology (PMC12150002; full text read through the Europe PMC API)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12150002/fullTextXML"
+    },
+    {
+     "title": "Moyano, Paraiso & González-Lezcano (2022) Possible Effects on Health of Ultrasound Exposure..., Healthcare 10:423, Table 3 (PMC8954895; full text read through the Europe PMC API)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC8954895/fullTextXML"
+    }
+   ],
+   "notes": "Lieu 2025: \"sound travels about 330 m/s through air, 1540 m/s through human soft tissue and 4500 m/s through bone\"; \"Ultrasound machines assume that sound transmitted in the human body travels 1540 m/s through soft tissue\". Moyano 2022 Table 3 \"Speed of sound in different substances or organs\": Human soft tissue 1540; Muscle 1585; Fat 1450/1465; Blood 1570/1584; Cortical bone 3635. Both are review-level secondary sources; the IEC/ICRU documents behind the 1,540 convention were not fetched (paywalled). Canon does not say what Rex is made of inside; a muscular body at 1,060 kg/m^3 sits between soft tissue and muscle, so 1,540 is used (muscle would shorten the time by 3%).",
+   "who_when": "Lieu 2025; Moyano et al. 2022",
+   "category": "growth"
+  },
+  {
+   "key": "growth_instant_timescale",
+   "label": "Instant growth: the time it takes (sound crossing his final body)",
+   "status": "estimate",
+   "value_si": 0.0229,
+   "unit_si": "s",
+   "low_si": 0.00198,
+   "high_si": 0.222,
+   "display": "t = final height ÷ 1,540 m/s: 2 ms (Krakatoa), 7 ms (Chicxulub, mix), 23 ms (Chicxulub, pure size), 0.22 s (one solar second, pure size)",
+   "sources": [
+    {
+     "title": "Speed of sound in soft tissue (growth_tissue_sound_speed)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12150002/fullTextXML"
+    },
+    {
+     "title": "Our scripts (scratchpad): growth_calc.py, taylor_sphere.py, piston_hydro.py, hydro_check.py, kg.py",
+     "url": "/tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/research/growth/scripts/"
+    }
+   ],
+   "notes": "Our choice, per the brief's suggestion. Reason: no part of a body can respond before a stress wave reaches it, and the far end of the final body is H_final away; using the starting height would need parts to move faster than sound in his own body. Consequences: the top of his head moves at ΔH/t = 1,540·(1 − H0/H1) m/s, approaching 1,540 m/s (Mach 4.5 in air) for large growth; his sides (equivalent ball radius) move at 0.288·1,540·(1 − H0/H1), at most 444 m/s (Mach 1.3). Examples (side speed, Mach): Krakatoa 0.46 m/s; Chicxulub mix 313 m/s (0.92); Chicxulub pure size 405 m/s (1.19); Sun-second mix 402 m/s (1.18); Sun-second pure size 440 m/s (1.29). So big instant growth is supersonic and drives a shock. Speeds are constant through the growth (sudden start and stop).",
+   "values_json": "{\"Krakatoa 8.4e17, pure size\": {\"t_ms\": 2.0, \"head_m_s\": 1.6, \"side_m_s\": 0.46}, \"Chicxulub 4.2e23, mix\": {\"t_ms\": 6.7, \"head_m_s\": 1090, \"side_m_s\": 313, \"side_Mach\": 0.92}, \"Chicxulub 4.2e23, pure size\": {\"t_ms\": 22.9, \"head_m_s\": 1410, \"side_m_s\": 405, \"side_Mach\": 1.19}, \"Sun 1 s, mix\": {\"t_ms\": 21, \"head_m_s\": 1395, \"side_m_s\": 402, \"side_Mach\": 1.18}, \"Sun 1 s, pure size\": {\"t_ms\": 222, \"head_m_s\": 1530, \"side_m_s\": 440, \"side_Mach\": 1.29}}",
+   "who_when": "estimate (our choice)",
+   "category": "growth"
+  },
+  {
+   "key": "growth_normal_shock_nasa",
+   "label": "Normal-shock pressure and density jumps (Rankine–Hugoniot)",
+   "status": "verified",
+   "value_si": null,
+   "unit_si": "1",
+   "display": "p₂/p₁ = [2γM² − (γ − 1)]/(γ + 1);  ρ₂/ρ₁ = (γ + 1)M²/[(γ − 1)M² + 2]",
+   "sources": [
+    {
+     "title": "NASA Glenn Research Center, Beginner's Guide to Aeronautics: Normal Shock Wave",
+     "url": "https://www.grc.nasa.gov/www/k-12/airplane/normal.html"
+    }
+   ],
+   "notes": "NASA page: \"p1 / p0 = [2* gam * M^2 - (gam - 1)] / (gam + 1)\" and \"r1 / r0 = [(gam + 1) * M^2 ] / [(gam -1 ) * M^2 + 2]\" (M = upstream Mach number in the shock frame). γ = 1.4 (existing atm_ratio_specific_heats_air).",
+   "who_when": "NASA GRC",
+   "category": "growth"
+  },
+  {
+   "key": "growth_piston_shock_planar",
+   "label": "Air pressure in front of a flat surface pushed suddenly at speed u (piston shock)",
+   "status": "derived",
+   "value_si": null,
+   "unit_si": "Pa",
+   "display": "Δp = p₀·(2γ/(γ+1))·(M² − 1), M = (γ+1)u/(4c₀) + √[((γ+1)u/(4c₀))² + 1]. Slow: Δp ≈ ρ₀c₀u. Fast: Δp ≈ 1.2 ρ₀u². At 405 m/s: 330 kPa",
+   "sources": [
+    {
+     "title": "NASA Glenn Research Center, Beginner's Guide to Aeronautics: Normal Shock Wave",
+     "url": "https://www.grc.nasa.gov/www/k-12/airplane/normal.html"
+    },
+    {
+     "title": "Collins et al. 2005 Eq. 59* (existing key blast_collins_peak_wind_speed), the same relation written for γ = 1.4",
+     "url": "https://impact.ese.ic.ac.uk/static/effects.pdf"
+    }
+   ],
+   "notes": "From the normal-shock relations: gas behind a shock moving at M·c0 into still air moves at u = M·c0·(1 − ρ1/ρ2) = (2c0/(γ+1))(M − 1/M); invert for M and use the pressure jump. Weak limit (u ≪ c0): Δp → ρ0 c0 u (the acoustic piston). Strong limit: Δp → ((γ+1)/2) ρ0 u² = 1.2 ρ0 u² (the brief's strong-shock form). Cross-check: for γ = 1.4 this is algebraically identical to the existing verified Collins/Glasstone wind relation u = (5p/7P0)c0/√(1 + 6p/7P0). Table (ISA air): u = 10 m/s → 4.2 kPa; 100 → 50 kPa; 340 → 250 kPa; 405 → 330 kPa; 1,000 → 1.58 MPa; 1,540 → 3.6 MPa. Use: the pressure on a large body's surface just after it suddenly starts moving (Rienstra & Hirschberg: a large, fast-accelerated sphere acts as a plane piston), and an upper bound afterwards, because a sphere lets the air escape sideways.",
+   "values_json": "{\"u_m_s\": [1, 10, 100, 340.3, 405, 1000, 1540], \"shock_Mach\": [1.002, 1.018, 1.192, 1.766, 1.943, 3.79, 5.61], \"dp_kPa\": [0.42, 4.2, 50, 250, 330, 1580, 3600]}",
+   "who_when": "derived",
+   "category": "growth"
+  },
+  {
+   "key": "growth_taylor1946_courant_friedrichs",
+   "label": "Taylor's expanding sphere (1946), as described by Courant & Friedrichs",
+   "status": "verified",
+   "value_si": null,
+   "unit_si": "",
+   "display": "A sphere expanding at constant speed drives a constant-speed shock; the air behind it keeps compressing up to the surface; the shock is much weaker than a flat piston's at the same speed",
+   "sources": [
+    {
+     "title": "Courant & Friedrichs (1948) Supersonic Flow and Shock Waves, Interscience; scan at the Internet Archive (dli.ernet.177550), sections 158 and 162, pp. 416-428, Fig. 12",
+     "url": "https://archive.org/download/dli.ernet.177550/177550-Supersonic%20Flow%20And%20Shock%20Waves.pdf"
+    },
+    {
+     "title": "Taylor, G. I. (1946) The air wave surrounding an expanding sphere, Proc. R. Soc. A 186:273-292 (bibliographic record only; full text not readable)",
+     "url": "https://doi.org/10.1098/rspa.1946.0044"
+    }
+   ],
+   "notes": "Courant & Friedrichs p. 417: \"The simplest model is that of a 'spherical piston' pushing at constant velocity into an infinite surrounding medium ... in three-dimensional space an energy supply at an increasing rate is required to maintain constant speed of the piston.\" Section 162, p. 427: \"the shock speed Ξ can be determined as function of the prescribed velocity ξ0 of the surface of the sphere. The solution of the problem, first worked out by G. I. Taylor, is thus established.\" \"the gas particles ... are further accelerated during their motion and attain asymptotically the velocity of the expanding sphere; at the same time the sound speed c ... increases, which indicates that the gas suffers a further compression in its motion behind the shock front.\" p. 428: \"Taylor has compared the flow calculated by the theory just discussed with the flow calculated on the basis of sonic approximation as treated in the theory of sound in case the speed of the sphere is 0.2c0. He found the agreement very good except for the distribution of the pressure near the surface of the sphere, for which the theory of sound gave too high a value.\" Fig. 12 plots sphere speed ξ0/c0 and gas speed behind the shock u_s/c0 against shock speed Ξ/c0; read from the scan: ξ0 = c0 at Ξ ≈ 1.3 c0, ξ0 = 2c0 at Ξ ≈ 2.2 c0, and ξ0 rises almost vertically to about 0.5 c0 at Ξ = c0 (very weak shocks below that). Taylor's paper itself was not readable (publisher page behind a bot check; PubMed 20998734 has no abstract), so his surface-pressure tables were not seen.",
+   "who_when": "Taylor 1946 via Courant & Friedrichs 1948",
+   "category": "growth"
+  },
+  {
+   "key": "growth_taylor_sphere_surface_pressure",
+   "label": "Surface pressure on a sphere expanding at constant speed (our solution of Taylor's problem)",
+   "status": "derived",
+   "value_si": null,
+   "unit_si": "Pa",
+   "display": "Δp at the surface ≈ ρ₀u² (within 2% from 0.8 to 9 times the speed of sound; 1.16 ρ₀u² at 0.3 c₀). At u = c₀: 1.4 atm, against 2.5 atm for a flat piston",
+   "sources": [
+    {
+     "title": "Courant & Friedrichs (1948) Supersonic Flow and Shock Waves, Interscience; scan at the Internet Archive (dli.ernet.177550), sections 158 and 162, pp. 416-428, Fig. 12",
+     "url": "https://archive.org/download/dli.ernet.177550/177550-Supersonic%20Flow%20And%20Shock%20Waves.pdf"
+    },
+    {
+     "title": "Our scripts (scratchpad): growth_calc.py, taylor_sphere.py, piston_hydro.py, hydro_check.py, kg.py",
+     "url": "/tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/research/growth/scripts/"
+    },
+    {
+     "title": "NASA Glenn Research Center, Beginner's Guide to Aeronautics: Normal Shock Wave",
+     "url": "https://www.grc.nasa.gov/www/k-12/airplane/normal.html"
+    }
+   ],
+   "notes": "We integrated the self-similar equations for isentropic flow behind a constant-speed shock (η = r/t): u' = 2c²u/[η((u−η)² − c²)], c' = −(γ−1)(u−η)u'/(2c), from the Rankine–Hugoniot state at η = Ξ inward until u = η (the sphere surface); surface pressure from the isentrope p ∝ c^(2γ/(γ−1)) (taylor_sphere.py). Independent check: a 1-D spherical Lagrangian hydro code with artificial viscosity, piston started from 0.05 and run 20-fold (piston_hydro.py): u = 0.6 c0 → shock 1.053 c0, Δp 0.526 p0 (similarity 1.050, 0.522); u = c0 → 1.328 c0, 1.412 p0 (1.329, 1.417); u = 2c0 → 2.263 c0, 5.60 p0 (2.264, 5.66); u = 0.3 c0 → Δp 0.146 p0 (0.149). The gas-speed curve we compute overlays the printed Fig. 12 exactly; our sphere-speed curve lies 0.04–0.05 c0 below the printed one (about 5% near Mach 1). We could not see Taylor's tables to tell whether the gap is in his 1946 integration or in the drawing; our two methods agree within 1%. Surface pressure / (ρ0 u²): 1.16 (u = 0.3 c0), 1.08 (0.45), 1.04 (0.6), 1.02 (0.8), 1.01 (1.0), 1.005 (1.2), 1.00 (1.5 and above). Limits: starts from zero size (self-similar); a body of finite size started suddenly sees the flat-piston pressure first (growth_piston_shock_planar), relaxing toward this within roughly R/c0; ideal gas γ = 1.4 (fine below about Mach 3).",
+   "values_json": "{\"u_over_c0\": [0.3, 0.45, 0.6, 0.8, 0.98, 1.22, 1.45, 1.95, 2.73, 3.7, 5.61, 9.4], \"shock_Mach\": [null, 1.005, 1.05, 1.17, 1.31, 1.52, 1.73, 2.21, 3.0, 4.0, 6.0, 10.0], \"surface_dp_over_p0\": [0.146, 0.307, 0.522, 0.914, 1.36, 2.1, 2.95, 5.33, 10.4, 19.1, 44.0, 124], \"flat_piston_dp_over_p0\": [0.5, 0.82, 1.19, 1.78, 2.4, 3.37, 4.45, 7.4, 13.6, 24.1, 54.0, 150]}",
+   "who_when": "derived (this research, 2026)",
+   "category": "growth"
+  },
+  {
+   "key": "growth_vessel_burst_he_equivalence",
+   "label": "A pressure-driven blast is no worse, far out, than high explosive of the same energy",
+   "status": "verified",
+   "value_si": 2,
+   "unit_si": "1",
+   "display": "Beyond a Sachs-scaled distance R̄ = R·(p_a/E)^(1/3) of about 2, the high-explosive (pentolite) curve for the same energy is an upper limit for a gas-vessel burst",
+   "sources": [
+    {
+     "title": "Baker, Kulesz, Ricker, Bessey, Westine, Parr & Oldham (1977) Workbook for Predicting Pressure Wave and Fragment Effects of Exploding Propellant Tanks and Gas Storage Vessels, NASA CR-134906 (Southwest Research Institute)",
+     "url": "https://ntrs.nasa.gov/api/citations/19760012208/downloads/19760012208.pdf"
+    }
+   ],
+   "notes": "Baker et al. 1977, p. 58 (PDF p. 71): \"For R greater than about 2, Figure 2-19, Ps versus R for pentolite (a high explosive) can be used as an upper limit for Ps.\" Appendix 2A (PDF p. 82): nondimensional distance R̄ = r·p_a^(1/3)/E^(1/3) (eq. 2A-3). PDF p. 86: for impulse, \"For R greater than about 0.5, all of the curves lie within about 25% of the high explosive (pentolite) curve.\" Their burst curves came from a 1-D spherical Lagrangian finite-difference code with artificial viscosity (the same method we used to check growth_taylor_sphere_surface_pressure). Use: turn the energy his growth pushes into the air into a TNT mass (existing key energy_tnt_equivalent_per_tonne) and feed the engine's Kinney–Graham curve, as an upper limit beyond R̄ ≈ 2; nearer, use the surface pressure.",
+   "who_when": "Baker et al. 1977 (NASA CR-134906)",
+   "category": "growth"
+  },
+  {
+   "key": "growth_ground_reflection_2E",
+   "label": "Blast source on the ground: double the energy for free-air curves",
+   "status": "verified",
+   "value_si": 2,
+   "unit_si": "1",
+   "low_si": 1,
+   "high_si": 2,
+   "display": "On perfectly rigid ground the equivalent free-air energy is 2E; on a perfect absorber, E",
+   "sources": [
+    {
+     "title": "Baker, Kulesz, Ricker, Bessey, Westine, Parr & Oldham (1977) Workbook for Predicting Pressure Wave and Fragment Effects of Exploding Propellant Tanks and Gas Storage Vessels, NASA CR-134906 (Southwest Research Institute)",
+     "url": "https://ntrs.nasa.gov/api/citations/19760012208/downloads/19760012208.pdf"
+    }
+   ],
+   "notes": "Baker et al. 1977, section 1-1.2, pp. 8-9 (PDF p. 21): \"If the ground were a perfectly rigid surface, then the equivalent free-air energy driving the air blast wave would be E' = 2E. The other extreme case is that of a perfect absorber, for which E' = E. All actual tests will have equivalent free-air energies lying between these limits.\" Section 2A.6 (PDF p. 86): for a vessel burst on the ground \"assume that twice as much energy is released\". This fills the gap noted in the existing blast_kinney_graham_peak_overpressure (\"NOT verified: the usual surface-burst reflection factor\"). His growth all happens above the ground, so the factor 2 applies in full when the ground is hard.",
+   "who_when": "Baker et al. 1977",
+   "category": "growth"
+  },
+  {
+   "key": "growth_instant_blast_examples",
+   "label": "Instant growth: the blast from shoving the air aside",
+   "status": "estimate",
+   "value_si": 893000000,
+   "low_si": 893000000,
+   "high_si": 1450000000,
+   "unit_si": "J",
+   "display": "Chicxulub, pure size: 2–3 atm at his surface; 0.9–1.5 × 10⁹ J into the air, like 210–350 kg of TNT on the ground; windows shatter out to about 100–120 m. Mix: about 3–6 kg TNT, windows to about 30 m",
+   "sources": [
+    {
+     "title": "Our scripts (scratchpad): growth_calc.py, taylor_sphere.py, piston_hydro.py, hydro_check.py, kg.py",
+     "url": "/tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/research/growth/scripts/"
+    },
+    {
+     "title": "Baker, Kulesz, Ricker, Bessey, Westine, Parr & Oldham (1977) Workbook for Predicting Pressure Wave and Fragment Effects of Exploding Propellant Tanks and Gas Storage Vessels, NASA CR-134906 (Southwest Research Institute)",
+     "url": "https://ntrs.nasa.gov/api/citations/19760012208/downloads/19760012208.pdf"
+    },
+    {
+     "title": "Courant & Friedrichs (1948) Supersonic Flow and Shock Waves, Interscience; scan at the Internet Archive (dli.ernet.177550), sections 158 and 162, pp. 416-428, Fig. 12",
+     "url": "https://archive.org/download/dli.ernet.177550/177550-Supersonic%20Flow%20And%20Shock%20Waves.pdf"
+    }
+   ],
+   "notes": "Method: equivalent ball expanding at constant side speed u = ΔR/t (growth_instant_timescale). Surface overpressure between Taylor's sphere value ≈ ρ0u² (growth_taylor_sphere_surface_pressure) and the flat-piston value (growth_piston_shock_planar, upper bound). Energy sent into the air beyond the quasi-static push: E_x = ∫(p_s − p0) dV ≈ Δp_s·ΔV. The extra p0·ΔV only pushes the atmosphere back (it ends up lifting it slightly), not into the blast. TNT mass W = E_x / 4.184e6 J/kg; ground doubling W_free = 2W (growth_ground_reflection_2E); then the engine's Kinney–Graham curve, valid as an upper limit beyond R̄ = 2. Reaches below are for W_free (low to high). Truly zero duration would need infinite energy because Δp grows as u²; the stated timescale is what keeps it finite. The top of his head moves faster (Mach 3–4.5) but sweeps little volume. Assumes he is anchored at the soles; ignores turbulence, real-gas effects and the head's own shock.",
+   "values_json": "{\"Krakatoa 8.4e17 J, pure size\": {\"surface_dp_kPa\": \"≤ 0.19 (≈ ρ0 c0 u)\", \"E_x_J\": \"< 2\", \"p0_dV_J\": 890, \"note\": \"a thump, no blast\"}, \"Chicxulub 4.2e23 J, mix\": {\"surface_dp_kPa\": \"120-220\", \"E_x_J\": \"1.3e7-2.4e7\", \"TNT_kg\": \"3.2-5.8\", \"W_free_kg\": \"6.4-12\", \"windows_6.9kPa_m\": \"25-30\", \"windows_3.4kPa_m\": \"46-57\"}, \"Chicxulub 1e23 J, pure size\": {\"surface_dp_kPa\": \"180-300\", \"E_x_J\": \"1.9e8-3.1e8\", \"TNT_kg\": \"45-75\", \"W_free_kg\": \"90-150\", \"windows_6.9kPa_m\": \"60-72\", \"windows_3.4kPa_m\": \"110-130\"}, \"Chicxulub 4.2e23 J, pure size\": {\"surface_dp_kPa\": \"200-330\", \"E_x_J\": \"8.9e8-1.45e9\", \"TNT_kg\": \"210-350\", \"W_free_kg\": \"430-690\", \"windows_6.9kPa_m\": \"100-120\", \"windows_3.4kPa_m\": \"190-220\"}, \"Sun 1 s, mix\": {\"surface_dp_kPa\": \"200-320\", \"E_x_J\": \"6.7e8-1.1e9\", \"TNT_kg\": \"160-260\", \"W_free_kg\": \"320-520\", \"windows_6.9kPa_m\": \"90-110\", \"windows_3.4kPa_m\": \"170-200\"}, \"Sun 1 s, pure size\": {\"surface_dp_kPa\": \"240-370\", \"E_x_J\": \"9.6e11-1.5e12\", \"TNT_t\": \"230-360\", \"W_free_t\": \"460-720\", \"windows_6.9kPa_m\": \"1000-1200\", \"windows_3.4kPa_m\": \"1900-2200\"}, \"any, pure density\": \"no volume change, no air blast\"}",
+   "who_when": "estimate (this research)",
+   "category": "growth"
+  },
+  {
+   "key": "growth_ground_push_estimate",
+   "label": "Ground pushed aside by feet that grow into it",
+   "status": "estimate",
+   "value_si": 4.3e-11,
+   "unit_si": "1",
+   "display": "Anchored at the soles (recommended), his feet spread along the surface and nothing is driven into the ground. If he grew about his middle, the work on the ground would be at most about 4 × 10⁻¹¹ of the absorbed energy (pure size)",
+   "sources": [
+    {
+     "title": "Existing key deep_rock_strength_assumption (rock strength 0.1–4.1 GPa) in research/final-density.json",
+     "url": "rex-strength-lab/research/final-density.json"
+    }
+   ],
+   "notes": "Work to push ground of strength q aside by volume V_g: W ≈ q·V_g. Pure size, centred growth: about half the added volume goes below ground, so W/E ≈ q/(2ρ_body c²) ≤ 4.1e9/(2 × 1,060 × 8.99e16) ≈ 2e-11 (static, strongest rock); dynamic, instant (ρ_rock u² with 2,700 kg/m^3 and 1,540 m/s = 6.4 GPa): ≈ 3e-11. The display uses the larger whole-volume form q/(ρ c²) = 4.3e-11 as a round upper value. Feet growing into soil also raise the bearing load; the Weight tab already handles sinking. Choosing the soles as the fixed point avoids the question and is the least disruptive reading.",
+   "who_when": "estimate",
+   "category": "growth"
+  },
+  {
+   "key": "growth_loop_air_ratio",
+   "label": "Runaway loop, surroundings: energy pushed into the air per energy absorbed",
+   "status": "derived",
+   "value_si": 1.06e-15,
+   "low_si": 0,
+   "high_si": 5e-15,
+   "unit_si": "1",
+   "display": "Pure size: 1 × 10⁻¹⁵ slow, 3–5 × 10⁻¹⁵ instant. Mix: 10⁻¹⁶ to 10⁻¹⁸. Pure density: 0. Even pushing rock: below 10⁻¹⁰",
+   "sources": [
+    {
+     "title": "Our scripts (scratchpad): growth_calc.py, taylor_sphere.py, piston_hydro.py, hydro_check.py, kg.py",
+     "url": "/tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/research/growth/scripts/"
+    },
+    {
+     "title": "Existing key collide_sound_speed_upper_bound (36.1 km/s) in research/final-duo.json",
+     "url": "https://arxiv.org/abs/2004.04818"
+    }
+   ],
+   "notes": "Ratio = (p0 + Δp_s)·ΔV / (Δm c²). Pure size: ΔV = Δm/ρ_body, so ratio = (p0 + Δp_s)/(ρ_body c²); slow growth (Δp_s ≈ 0): 101,325/(1,060 × 8.99e16) = 1.06e-15; instant: (p0 + 2–3.5e5 Pa)/(ρ c²) = 3–5e-15 (max with surface speed 444 m/s). Mix: ΔV/Δm = 1/(ρ0(√k + 1)), so the ratio falls as growth proceeds: Chicxulub 2.6e-17 slow, 5.8–8.4e-17 instant; Sun-second 9e-19 slow, 2.6–3.8e-18 instant. Pure density: no volume change, 0. The brief's \"about 10^-15\" is right for pure size and generous for the others. Bound for any ordinary matter: pushing matter aside takes at most about its stiffness ρ c_s², and c_s ≤ 36.1 km/s (existing key), so the ratio is at most about (36.1 km/s / c)² = 1.5e-8 even for matter as dense as he is. Whether the loop multiplies energy at all depends on canon: if the shove is paid from the absorbed energy, re-absorbing it only returns what was spent (net growth still E/c²); if the shove is powered from the endless store, the loop adds a factor 1/(1 − ratio), i.e. 1 + 10^-15.",
+   "values_json": "{\"Krakatoa, pure size\": {\"slow\": 1.06e-15, \"instant\": 1.06e-15}, \"Chicxulub 4.2e23, mix\": {\"slow\": 2.6e-17, \"instant\": \"5.8e-17 to 8.4e-17\"}, \"Chicxulub 4.2e23, pure size\": {\"slow\": 1.06e-15, \"instant\": \"3.2e-15 to 4.5e-15\"}, \"Sun 1 s, mix\": {\"slow\": 8.9e-19, \"instant\": \"2.6e-18 to 3.8e-18\"}, \"Sun 1 s, pure size\": {\"slow\": 1.06e-15, \"instant\": \"3.6e-15 to 5.0e-15\"}, \"pure density\": 0, \"rock, upper bound\": 4.3e-11, \"any ordinary matter, bound\": 1.5e-08}",
+   "who_when": "derived",
+   "category": "growth"
+  },
+  {
+   "key": "growth_binding_energy_uniform_sphere",
+   "label": "Gravitational binding energy of a uniform ball (Newtonian and general-relativistic)",
+   "status": "verified",
+   "value_si": null,
+   "unit_si": "J",
+   "display": "Newtonian: 3GM²/(5R). Exact for a uniform ball in general relativity: BE/M = (3/4β)[sin⁻¹√(2β)/√(2β) − √(1 − 2β)] − 1 ≈ 3β/5 + 9β²/14 + …, β = GM/(Rc²)",
+   "sources": [
+    {
+     "title": "Lattimer & Prakash (2001) Neutron Star Structure and the Equation of State, ApJ 550:426; arXiv:astro-ph/0002232, section 6, eqs. (33)-(35)",
+     "url": "https://arxiv.org/pdf/astro-ph/0002232"
+    }
+   ],
+   "notes": "Lattimer & Prakash section 6 (arXiv text p. 29-30): \"The binding energy formally represents the energy gained by assembling N baryons ... BE = N m_b − M in mass units.\" \"In the cases of the incompressible fluid and the Buchdahl solution, analytic results for the binding energy can be found\", eq. (34): BE_Inc/M = (3/4β)[sin⁻¹√(2β)/√(2β) − √(1 − 2β)] − 1 ≈ 3β/5 + 9β²/14 + 5β³/6 + ···, with β ≡ GM/Rc² (defined on PDF p. 17). Its leading term 3β/5 times Mc² is the Newtonian uniform-sphere 3GM²/(5R); we checked the series numerically (β = 0.01 gives 0.0060651). The existing key energy_earth_gravitational_binding uses the same 3/5 formula via Wikipedia; this is a primary citation for it. For Rex at canon: 3GM²/(5R) = 4.1e-4 J; β = 2.5e-24.",
+   "who_when": "Lattimer & Prakash 2001",
+   "category": "growth"
+  },
+  {
+   "key": "growth_binding_energy_fit_lp2001",
+   "label": "Binding energy of real neutron stars (fit)",
+   "status": "verified",
+   "value_si": null,
+   "unit_si": "1",
+   "display": "BE/M ≈ 0.6β/(1 − 0.5β)",
+   "sources": [
+    {
+     "title": "Lattimer & Prakash (2001) Neutron Star Structure and the Equation of State, ApJ 550:426; arXiv:astro-ph/0002232, section 6, eqs. (33)-(35)",
+     "url": "https://arxiv.org/pdf/astro-ph/0002232"
+    }
+   ],
+   "notes": "Eq. (33): \"Here, we propose a more accurate representation of the binding energy: BE/M ≃ 0.6β/(1 − 0.5β)\". Fitted to neutron-star models with realistic equations of state; the older Lattimer & Yahil form \"BE ≈ 1.5·10^51 (M/M⊙)² ergs\" is \"accurate at best to about ±20%\". Context only: shows that real compact stars release 10-20% of their mass as binding energy, the regime where the gravitational loop stops being negligible.",
+   "who_when": "Lattimer & Prakash 2001",
+   "category": "growth"
+  },
+  {
+   "key": "growth_loop_gravity_newtonian",
+   "label": "Runaway loop, own gravity (Newtonian): binding energy released per energy absorbed",
+   "status": "derived",
+   "value_si": 3.05e-24,
+   "unit_si": "1",
+   "display": "d(3GM²/5R)/d(Mc²) = 0.6 r_s/R (pure density), 0.55 r_s/R (mix), 0.5 r_s/R (pure size). It reaches 1 only at R = 0.6, 0.55 or 0.5 r_s: inside the event horizon. At canon it is about 3 × 10⁻²⁴",
+   "sources": [
+    {
+     "title": "Lattimer & Prakash (2001) Neutron Star Structure and the Equation of State, ApJ 550:426; arXiv:astro-ph/0002232, section 6, eqs. (33)-(35)",
+     "url": "https://arxiv.org/pdf/astro-ph/0002232"
+    },
+    {
+     "title": "Existing key schwarzschild_radius (r_s = 2GM/c²)",
+     "url": "https://en.wikipedia.org/wiki/Schwarzschild_radius"
+    }
+   ],
+   "notes": "U = 3GM²/(5R) with R ∝ M^α (α = 0 pure density, 1/6 mix, 1/3 pure size, from V ∝ M^a). U ∝ M^(2−α), so dU/dM = (2−α)U/M = (2−α)(3/5)GM/R. Divide by c² and use r_s = 2GM/c²: ratio = (3/10)(2−α)·r_s/R = 0.6 r_s/R (α = 0), 0.55 r_s/R (α = 1/6), 0.5 r_s/R (α = 1/3). Ratio = 1 at R = 0.6 r_s, 0.55 r_s, 0.5 r_s, all inside r_s; at R = r_s the ratio is only 0.6, 0.55, 0.5; at Buchdahl's 9/8 r_s (existing key buchdahl_bound) 0.53, 0.49, 0.44. At canon (β = GM/Rc² = 2.54e-24): 3.05e-24, 2.79e-24, 2.54e-24. After a Chicxulub in pure density: 4.7e-21; after a Sun-second in pure density (white-dwarf matter): 4.3e-18. Newtonian gravity fails near r_s; see growth_loop_gravity_gr.",
+   "who_when": "derived",
+   "category": "growth"
+  },
+  {
+   "key": "growth_loop_gravity_gr",
+   "label": "Runaway loop, own gravity (general relativity, uniform ball): reaches 1 exactly at the event horizon",
+   "status": "derived",
+   "value_si": null,
+   "unit_si": "1",
+   "display": "Share of each absorbed joule released again by deeper binding: 1% at R = 50 r_s, 12% at 5 r_s, 73% at Buchdahl's limit (1.125 r_s), and 1 only as R → r_s",
+   "sources": [
+    {
+     "title": "Lattimer & Prakash (2001) Neutron Star Structure and the Equation of State, ApJ 550:426; arXiv:astro-ph/0002232, section 6, eqs. (33)-(35)",
+     "url": "https://arxiv.org/pdf/astro-ph/0002232"
+    },
+    {
+     "title": "Our scripts (scratchpad): growth_calc.py, taylor_sphere.py, piston_hydro.py, hydro_check.py, kg.py",
+     "url": "/tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/research/growth/scripts/"
+    }
+   ],
+   "notes": "Rest (proper) mass M_p = M(1 + g(β)) with g from Lattimer & Prakash eq. (34). Adding rest mass dM_p raises the gravitational mass by dM; the rest is released: loop ratio f = 1 − dM/dM_p, dM_p/dM = 1 + g + (1−α)βg'(β). g'(β) diverges only as β → 1/2 (R → r_s), because of the √(1 − 2β) term, so f → 1 exactly at the horizon for every growth form. Values (pure density / mix / pure size): β = 0.01 (R = 50 r_s) 0.012/0.011/0.010; β = 0.1 (5 r_s) 0.125/0.116/0.106; β = 0.3 (1.67 r_s) 0.42/0.40/0.37; β = 4/9 (Buchdahl) 0.73/0.70/0.67; β = 0.49 (1.02 r_s) 0.90/0.88/0.86; β = 0.4999 0.991/0.989/0.986. Small β matches the Newtonian 1.2β, 1.1β, β. Caveat: a static uniform perfect fluid cannot exist beyond β = 4/9; an indestructible body with arbitrary internal stresses can go further (Andréasson, existing key buchdahl_bound). Energy books: seen from outside, absorbing E always raises his gravitational mass by exactly E/c²; the loop only turns released binding energy into more rest mass, which is why it can diverge only at the horizon.",
+   "values_json": "{\"beta\": [0.01, 0.1, 0.2, 0.3, 0.4444, 0.49, 0.499, 0.4999], \"R_over_rs\": [50, 5, 2.5, 1.667, 1.125, 1.02, 1.002, 1.0002], \"f_density\": [0.012, 0.125, 0.264, 0.423, 0.728, 0.896, 0.969, 0.991], \"f_mix\": [0.011, 0.116, 0.245, 0.396, 0.701, 0.88, 0.964, 0.989], \"f_size\": [0.01, 0.106, 0.225, 0.368, 0.667, 0.859, 0.955, 0.986], \"BE_over_M\": [0.0061, 0.067, 0.155, 0.279, 0.641, 0.993, 1.229, 1.314]}",
+   "who_when": "derived",
+   "category": "growth"
+  },
+  {
+   "key": "growth_black_hole_thresholds",
+   "label": "How much absorbed energy would make him a black hole, for each growth form",
+   "status": "derived",
+   "value_si": 5.31e+43,
+   "unit_si": "J",
+   "display": "Pure density: 5.9 × 10²⁶ kg at 2.1 × 10²⁶ kg/m³, needing 5.3 × 10⁴³ J (the Sun's output for 4.4 billion years). Mix: 2.7 × 10³¹ kg (14 Suns), 139 km tall. Pure size: 1.3 × 10⁸ Suns, 2.6 au in radius",
+   "sources": [
+    {
+     "title": "NIST CODATA 2022: speed of light in vacuum",
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?c"
+    },
+    {
+     "title": "NIST CODATA G (existing key gravitational_constant)",
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?bg"
+    },
+    {
+     "title": "Project canon: CLAUDE.md in this repository (3,007 kg, 3.048 m, 1,060 kg/m^3)",
+     "url": "CLAUDE.md"
+    }
+   ],
+   "notes": "Horizon when r_s = 2GM/c² equals R. Pure density (R = 0.8782 m): M = Rc²/(2G) = 5.91e26 kg, ρ = 2.08e26 kg/m^3; energy (M − m0)c² = 5.31e43 J = 1.39e17 s of solar output = 4.4e9 years. Mix: R = R0(M/m0)^(1/6) = 2GM/c² gives M = 2.69e31 kg, R = 40 km, H = 139 km, ρ = 1.0e17 kg/m^3; E = 2.4e48 J (2e14 years of sunlight). Pure size at 1,060 kg/m^3: M = √(3c⁶/(32πG³ρ)) = 2.62e38 kg (1.3e8 solar masses), R = 3.9e11 m. Flag: the existing estimate density_black_hole_rex_2m says 2.24e26 kg/m^3 and 5.7e26 kg for the default 10 ft Rex; that matches the old 2.54 m^3 front-only volume. With the canon 2.84 m^3 it is 2.08e26 kg/m^3 and 5.9e26 kg.",
+   "who_when": "derived",
+   "category": "growth"
+  },
+  {
+   "key": "growth_bondi_infall_loop",
+   "label": "Runaway loop, air falling onto a dense body",
+   "status": "derived",
+   "value_si": null,
+   "unit_si": "1",
+   "display": "Each kilogram of infalling air releases GM/R = (r_s/2R)c² (Newtonian; 1 − √(1 − r_s/R) of c² in relativity): below 1 outside the horizon. Infall only starts when the Bondi radius exceeds his size, at about 5 × 10¹⁴ kg/m³, and is capped by the atmosphere's mass",
+   "sources": [
+    {
+     "title": "Existing key bondi_radius_and_rate (Edgar 2004, arXiv:astro-ph/0406166)",
+     "url": "https://arxiv.org/abs/astro-ph/0406166"
+    },
+    {
+     "title": "Lattimer & Prakash (2001) Neutron Star Structure and the Equation of State, ApJ 550:426; arXiv:astro-ph/0002232, section 6, eqs. (33)-(35)",
+     "url": "https://arxiv.org/pdf/astro-ph/0002232"
+    },
+    {
+     "title": "Our scripts (scratchpad): growth_calc.py, taylor_sphere.py, piston_hydro.py, hydro_check.py, kg.py",
+     "url": "/tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/research/growth/scripts/"
+    }
+   ],
+   "notes": "Engine: heatPerKg = GM/R, Bondi rate Ṁ = 4πλG²M²ρ/c_s³ with λ = 0.625, only when r_B = GM/c_s² > R. Converting infall energy to mass gives dM/dt = Ṁ·GM/(Rc²) = Ṁ·β. Onset for R = 0.878 m: M = R c_s²/G = 1.5e15 kg (ρ = 5.4e14 kg/m^3); there Ṁ = 2.5e3 kg/s, infall power 2.9e8 W, mass growth from it 3e-9 kg/s, e-folding time 5e23 s: negligible. Near the horizon (pure density, half the black-hole mass) Ṁ ≈ 1e26 kg/s would swallow the whole atmosphere (5.1e18 kg, existing atm_total_mass) in about 5e-8 s, so the total infall energy is capped at about M_atm·βc² < 5e35 J (adds < 5e18 kg). The GR form 1 − √(1 − 2β) is the standard redshifted energy release for matter at rest on a static surface (same factor as Lattimer & Prakash eq. 1), not separately sourced.",
+   "who_when": "derived",
+   "category": "growth"
+  },
+  {
+   "key": "growth_runaway_verdict",
+   "label": "Can the growth loop run away outside a black hole?",
+   "status": "derived",
+   "value_si": null,
+   "unit_si": "",
+   "display": "No. Shoving the air returns about 10⁻¹⁵ of the energy, pushing rock at most about 10⁻¹¹, any ordinary matter at most about 10⁻⁸; their own gravity returns a share that reaches 1 only at the event horizon. The half-life only matters once he is already a black hole",
+   "sources": [
+    {
+     "title": "Our scripts (scratchpad): growth_calc.py, taylor_sphere.py, piston_hydro.py, hydro_check.py, kg.py",
+     "url": "/tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/research/growth/scripts/"
+    },
+    {
+     "title": "Lattimer & Prakash (2001) Neutron Star Structure and the Equation of State, ApJ 550:426; arXiv:astro-ph/0002232, section 6, eqs. (33)-(35)",
+     "url": "https://arxiv.org/pdf/astro-ph/0002232"
+    }
+   ],
+   "notes": "Summary of growth_loop_air_ratio, growth_ground_push_estimate, growth_loop_gravity_newtonian, growth_loop_gravity_gr and growth_bondi_infall_loop. With a constant ratio f < 1 the loop is a geometric series: total = E/(1 − f), i.e. 1 + 10^-15 for any everyday case. The gravitational ratio is ≥ 1 only when R ≤ r_s (relativistic) or R ≤ 0.5–0.6 r_s (Newtonian), i.e. after the Weight tab has already declared a black hole. Energy conservation: seen from outside, his gravitational mass rises by exactly E/c²; the loop can only add rest mass bound ever more tightly.",
+   "who_when": "derived",
+   "category": "growth"
+  }
+ ]
+}

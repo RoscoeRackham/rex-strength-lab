@@ -1,0 +1,14 @@
+global.window = {};
+const P = require('./head/engine.js');
+require('./head/data.js');
+const D = window.DINO_DATA, g = P.K.g;
+const rex = P.makeBody({ build: 'rex', H: 3.048, m: 3007 });
+const surf = (id) => D.surfaces.find((s) => s.id === id);
+const c = { F: 511 * g, mode: 'comic', body: rex, surface: surf('sand'), groundHolds: false, anchor: 'friction' };
+const M = P.RESTRAINT.MOVES.stomp;
+const opt = { near: 5, groundHolds: false, m: 3007, body: rex, surface: c.surface };
+const r = M.run(Object.assign({}, c, { use: c.F }), opt);
+const rc = P.RESTRAINT.reach('stomp', r, opt);
+console.log('sand 511kg allout reach', JSON.stringify(rc));
+const src = M.shake(r, opt);
+for (const d of [1, 2, 3, 4, 5]) console.log(d, 'm ppv mm/s', (1000 * P.ppvAt(src, d)).toFixed(2));

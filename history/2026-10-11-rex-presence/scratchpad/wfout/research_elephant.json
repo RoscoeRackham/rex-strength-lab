@@ -1,0 +1,609 @@
+{
+ "summary": "Topic \"elephant\": measured ground vibration from elephant footsteps, plus a few other animals, to support the line \"about like an elephant walking past\". Seven primary studies were fetched and read: Steinmann et al. 2025 (MEE, full text), Mortimer et al. 2018 (Curr Biol, main text and supplement), Wood et al. 2005 (J Appl Ecol), O'Connell-Rodwell et al. 2006 (Behav Ecol Sociobiol), Wijayaraja et al. 2024 and 2025 (arXiv versions of IEEE Access papers) and Ren & Hutchinson 2008 (masses). Abstracts only were available for O'Connell-Rodwell et al. 2000 (PubMed), Szenicer et al. 2022 (Crossref) and the SICB abstract.\n\nThe only calibrated record of a walking elephant at a known distance is Steinmann et al. 2025, Fig. 3f: a wild African bush elephant 20 m from a broadband seismometer on sandy dry ground in Kenya. Measured from the printed figure, the peak vertical displacement is about 4 × 10⁻⁸ m (typical step 2 × 10⁻⁸ m) at a dominant 19 Hz. That makes the peak vertical velocity about 0.005 mm/s (derived; 0.002–0.006 mm/s).\n\nThe other studies agree on order of magnitude but spread widely:\n- O'Connell-Rodwell 2000 (reported via a secondary quote): mock-charge foot stomps by Asian elephants at 48.7 µm/s peak-to-peak at 3–12 m (about 0.024 mm/s zero-to-peak) and 17.0 µm/s peak-to-peak at 40 m (about 0.0085 mm/s).\n- Mortimer 2018: an African elephant fast walk at 0.21–0.36 mm/s, with the geophone 2–30 m away (exact distance not given), mostly on loose river sand.\n- Wijayaraja 2024 (derived from ADC counts, low confidence): about 0.004 mm/s somewhere within 0–50 m.\n\nSteinmann's own figures show the giraffe signal changing by about ×100 between stations at 20–34 m. A group of four elephants at the same station and nominal 20 m was about 8× weaker than the single elephant. The authors call the elephant's cushioned feet a reason its signal is weaker than a giraffe's.\n\nSingle-geophone detection ranges are about 100 m (Etosha), 140–156 m (Sri Lanka) and up to 150 m (Kenya). Mortimer's source functions give a seismic-band step force of only 125–946 N for walks (1,190 N for a climbing step). That is roughly 0.5–4% of body weight, far below the full ground reaction force.\n\nRecommended page anchor: about 0.005 mm/s at 20 m for an elephant walking past, scaling roughly as 1/D from 5 to 100 m. Show the band ×0.15 to ×8 (0.0007–0.04 mm/s at 20 m), and label it measured-and-converted, order of magnitude only.",
+ "facts": [
+  {
+   "key": "elephant_steinmann2025_walk_20m_displacement",
+   "category": "elephant",
+   "label": "Walking African bush elephant 20 m away: peak vertical ground displacement (Kenya, sandy dry ground)",
+   "status": "derived",
+   "value_si": 4e-08,
+   "unit_si": "m",
+   "low_si": 1.9e-08,
+   "high_si": 4e-08,
+   "display": "Largest step about 4 × 10⁻⁸ m (40 nanometres); a typical step about 2 × 10⁻⁸ m",
+   "sources": [
+    {
+     "title": "Steinmann, Nissen-Meyer, Cotton, Tilmann & Mortimer (2025) Decoding the footsteps of the African savanna: classifying wildlife using seismic signals and machine learning. Methods Ecol. Evol. 16(4):819-836, doi:10.1111/2041-210X.70021 (published version, GFZ repository)",
+     "url": "https://gfzpublic.gfz.de/pubman/item/item_5034960_2/component/file_5034988/5034960.pdf"
+    }
+   ],
+   "notes": "Read from Figure 3f, titled 'elephant, NWP05, 20 m'. Its y-axis is 'Displacement [m]' at scale 1e-8, with dashed gridlines at ±2.5. Page 5 was rendered at 400 dpi and the grey trace measured in pixels against the printed gridlines (script: scratchpad research/elephant/scripts/digitize.py). Largest peak: +4.0e-8 m (minimum −3.1e-8 m). Median of the 12 largest separate peaks: 1.9e-8 m. Several steps visibly reach the 2.5e-8 m gridline. Reading error is about ±0.1e-8 m. Conditions: 'station NWP05, which is located on sandy dry ground'. 'Taxonomic labels and estimated distances to animals were derived from the camera trap images using software-assisted visual inspection', so the 20 m is an estimate. One 10 s record of one wild animal, vertical component, broadband seismometers (Mpala Research Centre, Kenya, Feb–Mar 2019). The paper says 'the data is at 200 Hz and the data is high-pass filtered with a 5 Hz corner frequency'. It does not describe the instrument correction; the axis label says displacement. The animal's mass is not reported. Footfalls 'are visible as impulses in the seismograms above 10 Hz'.",
+   "who_when": "Steinmann et al., 2025 (data recorded 2019)"
+  },
+  {
+   "key": "elephant_steinmann2025_walk_20m_ppv",
+   "category": "elephant",
+   "label": "Walking African bush elephant 20 m away: peak vertical ground velocity (converted from displacement)",
+   "status": "derived",
+   "value_si": 4.7e-06,
+   "unit_si": "m/s",
+   "low_si": 2.2e-06,
+   "high_si": 6.1e-06,
+   "display": "About 0.005 mm/s (0.002–0.006 mm/s) at 20 m",
+   "sources": [
+    {
+     "title": "Steinmann et al. (2025) Methods Ecol. Evol. 16:819-836, Fig. 3f (published version, GFZ repository)",
+     "url": "https://gfzpublic.gfz.de/pubman/item/item_5034960_2/component/file_5034988/5034960.pdf"
+    }
+   ],
+   "notes": "Formula: peak velocity ≈ 2π f × peak displacement, treating each footfall as a narrow-band wavelet at its dominant frequency. Inputs: largest-step displacement 4.0e-8 m and typical step 1.9e-8 m (key elephant_steinmann2025_walk_20m_displacement), f = 18.7 Hz (key elephant_steinmann2025_footfall_frequency). Results: largest step 2π × 18.7 × 4.0e-8 = 4.7e-6 m/s; typical step 2.2e-6 m/s. Over the energy quartiles 13.8–24.3 Hz the largest step gives 3.5e-6 to 6.1e-6 m/s. An impulsive wavelet's true peak velocity can differ from this by tens of percent. Vertical component only: for Rayleigh waves in a Poisson solid (ν = 0.25), horizontal/vertical = 0.68 (our calculation), so the three-component vector peak would be up to about 1.2× this. Best single anchor because it is the only calibrated, peer-reviewed, open-access record of a walking elephant at a stated distance. Still one animal, one site, one record.",
+   "who_when": "Derived here (2026) from Steinmann et al., 2025"
+  },
+  {
+   "key": "elephant_steinmann2025_footfall_frequency",
+   "category": "elephant",
+   "label": "Dominant frequency of a walking elephant's footfalls at 20 m",
+   "status": "derived",
+   "value_si": 19,
+   "unit_si": "Hz",
+   "low_si": 14,
+   "high_si": 24,
+   "display": "About 19 Hz (most energy 14–24 Hz)",
+   "sources": [
+    {
+     "title": "Steinmann et al. (2025) Methods Ecol. Evol. 16:819-836, Fig. 3f scalogram (GFZ repository)",
+     "url": "https://gfzpublic.gfz.de/pubman/item/item_5034960_2/component/file_5034988/5034960.pdf"
+    }
+   ],
+   "notes": "Brightness-weighted frequency of the printed scalogram (log axis 10–100 Hz, ticks found in pixels; script scratchpad research/elephant/scripts/scal.py). Brightest row 20.4 Hz, weighted median 18.7 Hz, quartiles 13.8 and 24.3 Hz. This matches the other studies: Wood et al. 2005, 'All species have a peak around 25 Hz' and most footfall energy in 10–40 Hz. O'Connell-Rodwell et al. 2000 (PubMed abstract): 'predominant frequencies in the range of 20 Hz'. Wijayaraja et al. 2024: power-spectrum peaks at 26–29 Hz. Mortimer et al. 2018 Table S1: dominant ranges of 5–10 Hz to 20–25 Hz for walks. Ground type changes it: Steinmann says giraffe footfalls on muddy ground near the waterhole 'exhibit almost no energy above 30 Hz', while on rocky ground they show 'little energy below 20 Hz'.",
+   "who_when": "Derived here (2026) from Steinmann et al., 2025"
+  },
+  {
+   "key": "elephant_steinmann2025_running_38m",
+   "category": "elephant",
+   "label": "Running African bush elephant 38 m away: peak vertical displacement and converted velocity",
+   "status": "derived",
+   "value_si": 4.4e-06,
+   "unit_si": "m/s",
+   "low_si": 3e-06,
+   "high_si": 5.8e-06,
+   "display": "Displacement about 2.5 × 10⁻⁸ m; about 0.004 mm/s at 38 m",
+   "sources": [
+    {
+     "title": "Steinmann et al. (2025) Methods Ecol. Evol. 16:819-836, Fig. 3g 'running elephant, NTA02, 38 m' (GFZ repository)",
+     "url": "https://gfzpublic.gfz.de/pubman/item/item_5034960_2/component/file_5034988/5034960.pdf"
+    }
+   ],
+   "notes": "Pixel reading of Fig. 3g (y-axis 1e-8 m, gridline at +2.5): largest peak +2.5e-8 m, minimum −1.9e-8 m, median of the 12 largest peaks 1.3e-8 m. Scalogram: weighted median 27.8 Hz (quartiles 19.2–36.8 Hz). v = 2π × 27.8 × 2.5e-8 = 4.4e-6 m/s (3.0e-6 to 5.8e-6 over the quartiles). The text says running gives 'smaller time intervals between individual footfalls'. Station NTA02 is near the waterhole; the paper says most stations there share 'similar site conditions'. Its ground is not described beyond that.",
+   "who_when": "Derived here (2026) from Steinmann et al., 2025"
+  },
+  {
+   "key": "elephant_steinmann2025_group_20m",
+   "category": "elephant",
+   "label": "Group of four walking elephants at the same station and nominal 20 m: peak vertical displacement and velocity",
+   "status": "derived",
+   "value_si": 7.5e-07,
+   "unit_si": "m/s",
+   "low_si": 6e-07,
+   "high_si": 1e-06,
+   "display": "Displacement about 5 × 10⁻⁹ m; about 0.0008 mm/s, about 8× weaker than the single elephant",
+   "sources": [
+    {
+     "title": "Steinmann et al. (2025) Methods Ecol. Evol. 16:819-836, Fig. 3h 'elephant group, NWP05, 20 m' (GFZ repository)",
+     "url": "https://gfzpublic.gfz.de/pubman/item/item_5034960_2/component/file_5034988/5034960.pdf"
+    }
+   ],
+   "notes": "Pixel reading of Fig. 3h (y-axis 1e-9 m, gridlines ±5): largest peak 5.3e-9 m, median of the 12 largest 3.0e-9 m. Weighted frequency 22.5 Hz, so v = 2π × 22.5 × 5.3e-9 = 7.5e-7 m/s. The paper says 'Figure 3h shows a group of four elephants in locomotion, resulting in a tremor-like signal.' The same station and the same labelled distance as the single elephant (Fig. 3f) give 8× less, so steps and estimated distances vary a lot. The camera-trap distance may refer to the nearest animal, or the group may have walked more softly. Use this to widen the uncertainty band, not as a separate anchor.",
+   "who_when": "Derived here (2026) from Steinmann et al., 2025"
+  },
+  {
+   "key": "elephant_steinmann2025_other_animals",
+   "category": "elephant",
+   "label": "Other savanna animals (giraffe, zebra, human, hyena, warthog): peak vertical displacement and converted velocity at stated distances",
+   "status": "derived",
+   "value_si": null,
+   "unit_si": "m/s",
+   "display": "Giraffe at 20 m about 0.04 mm/s; zebra at 47 m about 0.003; human at 53 m about 0.002; warthog at 32 m about 0.0006; hyena at 17 m about 0.0002 (all on one station except warthog)",
+   "sources": [
+    {
+     "title": "Steinmann et al. (2025) Methods Ecol. Evol. 16:819-836, Figs 3 and 4 (GFZ repository)",
+     "url": "https://gfzpublic.gfz.de/pubman/item/item_5034960_2/component/file_5034988/5034960.pdf"
+    }
+   ],
+   "notes": "Same method as the elephant facts: pixel readings of the printed seismograms and scalograms, then v = 2π f u. For Fig. 4, f = 20 Hz is assumed because the scalograms were not measured. The paper reports no masses, and the human's mass and gait are unknown. The authors' ranking: 'The giraffe produces the footfall signals with the largest amplitudes for individual animals, followed by the elephant, zebra and human.' Distances are camera-trap estimates. These are single 10 s records, so treat each as one example, not an average.",
+   "values_json": "{\"source\":\"Steinmann et al. 2025, Figs 3 and 4, digitized\",\"rows\":[{\"animal\":\"giraffe walking\",\"station\":\"NWP05 (sandy dry ground)\",\"distance_m\":20,\"peak_disp_m\":2.5e-7,\"dominant_Hz\":24,\"ppv_mm_s\":0.038},{\"animal\":\"zebra\",\"station\":\"NWP05\",\"distance_m\":47,\"peak_disp_m\":2.3e-8,\"dominant_Hz\":24,\"ppv_mm_s\":0.0034},{\"animal\":\"human\",\"station\":\"NWP05\",\"distance_m\":53,\"peak_disp_m\":1.6e-8,\"dominant_Hz\":20,\"ppv_mm_s\":0.002},{\"animal\":\"hyena\",\"station\":\"NWP05\",\"distance_m\":17,\"peak_disp_m\":1.7e-9,\"dominant_Hz\":21,\"ppv_mm_s\":0.0002},{\"animal\":\"warthog\",\"station\":\"NTA02\",\"distance_m\":32,\"peak_disp_m\":2.7e-9,\"dominant_Hz\":33,\"ppv_mm_s\":0.0006},{\"animal\":\"giraffe walking (Fig 4a)\",\"station\":\"NNL62 (rocky ground)\",\"distance_m\":34,\"peak_disp_m\":2.3e-9,\"dominant_Hz\":\"20 assumed\",\"ppv_mm_s\":0.0003},{\"animal\":\"giraffe walking (Fig 4b)\",\"station\":\"ETA00 (near waterhole)\",\"distance_m\":26,\"peak_disp_m\":3.5e-9,\"dominant_Hz\":\"20 assumed\",\"ppv_mm_s\":0.0004},{\"animal\":\"giraffe walking (Fig 4c)\",\"station\":\"ETA00\",\"distance_m\":103,\"peak_disp_m\":2.2e-10,\"dominant_Hz\":\"20 assumed\",\"ppv_mm_s\":0.00003}]}",
+   "who_when": "Derived here (2026) from Steinmann et al., 2025"
+  },
+  {
+   "key": "elephant_steinmann2025_site_spread",
+   "category": "elephant",
+   "label": "How much the ground changes the signal: walking giraffes at 20–34 m on three stations",
+   "status": "derived",
+   "value_si": 100,
+   "unit_si": "ratio",
+   "low_si": 70,
+   "high_si": 110,
+   "display": "About ×100 between stations at similar distances; ×16 drop from 26 m to 103 m at one station",
+   "sources": [
+    {
+     "title": "Steinmann et al. (2025) Methods Ecol. Evol. 16:819-836, Figs 3e and 4a–c (GFZ repository)",
+     "url": "https://gfzpublic.gfz.de/pubman/item/item_5034960_2/component/file_5034988/5034960.pdf"
+    }
+   ],
+   "notes": "Peak displacements (pixel readings): NWP05 (sandy dry ground) at 20 m, 2.5e-7 m; ETA00 at 26 m, 3.5e-9 m; NNL62 (rocky ground) at 34 m, 2.3e-9 m. Ratios: 2.5e-7/3.5e-9 = 71; 2.5e-7/2.3e-9 = 109. The paper puts frequency differences down to site: 'NNL62 is located on hard-rock terrain ... ETB00 is situated on muddy ground with high water content, which attenuates high-frequency seismic waves'. (The text says ETB00; the figure is labelled ETA00.) Part of the ×100 may come from individual animals and estimated distances, not ground alone. We could not tell whether stations used different instruments. At ETA00, 26 m → 103 m drops 3.5e-9 → 2.2e-10 m (×16). The 103 m trace looks close to the noise floor, so that decay may be overstated.",
+   "who_when": "Derived here (2026) from Steinmann et al., 2025"
+  },
+  {
+   "key": "elephant_steinmann2025_soft_feet_finding",
+   "category": "elephant",
+   "label": "Elephants' cushioned feet send a weaker, less sharp signal than hooves (authors' observation)",
+   "status": "verified",
+   "value_si": null,
+   "unit_si": "",
+   "display": "The heaviest animal gave smaller signals than a giraffe and similar ones to a more distant zebra",
+   "sources": [
+    {
+     "title": "Steinmann et al. (2025) Methods Ecol. Evol. 16:819-836 (GFZ repository)",
+     "url": "https://gfzpublic.gfz.de/pubman/item/item_5034960_2/component/file_5034988/5034960.pdf"
+    }
+   ],
+   "notes": "Quotes: 'While hoofed animals such as giraffes, zebras and warthogs produce clear and sharp impulses (Figure 3a,b,e), elephant with its soft cushion-like feet and hyena with its paws do not show these clear impulses (Figure 3d,f).' 'It is surprising to see that the elephant, having the largest average weight compared to the other animals, produces smaller amplitudes than the giraffe and similar amplitudes to the zebra, which is even more distant.' 'The giraffe, for instance, generates a distinct double impulse every second.' What this means for the model: seismic output depends on how sharply the foot lands, not only on mass. A 3 t animal with a hard heel or hoof could beat an elephant at the same mass.",
+   "who_when": "Steinmann et al., 2025"
+  },
+  {
+   "key": "elephant_steinmann2025_classification_distance",
+   "category": "elephant",
+   "label": "Distances at which savanna footfalls were still classified (elephant, giraffe, hyena, zebra)",
+   "status": "verified",
+   "value_si": 150,
+   "unit_si": "m",
+   "low_si": 50,
+   "high_si": 150,
+   "display": "87% balanced accuracy up to 50 m; 77% up to 150 m",
+   "sources": [
+    {
+     "title": "Steinmann et al. (2025) Methods Ecol. Evol. 16:819-836 (GFZ repository)",
+     "url": "https://gfzpublic.gfz.de/pubman/item/item_5034960_2/component/file_5034988/5034960.pdf"
+    },
+    {
+     "title": "Steinmann et al., EGU General Assembly 2025 abstract EGU25-2842",
+     "url": "https://meetingorganizer.copernicus.org/EGU25/EGU25-2842.html"
+    }
+   ],
+   "notes": "Quote: 'The machine learning model achieves a balanced accuracy of 87% with a maximum animal-sensor distance of 50 m and 77% with a maximum animal-sensor distance of 150 m'. Recordings were taken only from 'seismic stations that are not further away than 150 m from the localized animals'. The dataset (SeisSavanna) has 70,637 three-component 10 s seismograms from 11 wildlife categories, over 62,000 of them labelled elephant. This is a detection and classification range for a sensitive seismometer, not a range at which people could feel anything.",
+   "who_when": "Steinmann et al., 2025"
+  },
+  {
+   "key": "elephant_szenicer2022_detection_100m",
+   "category": "elephant",
+   "label": "Elephants detected seismically up to 100 m away (machine learning, Kenyan savanna)",
+   "status": "verified",
+   "value_si": 100,
+   "unit_si": "m",
+   "display": "80–90% balanced accuracy for elephants up to 100 m",
+   "sources": [
+    {
+     "title": "Szenicer et al. (2022) Seismic savanna: machine learning for classifying wildlife and behaviours using ground-based vibration field recordings. Remote Sens. Ecol. Conserv. 8(2):236-250 — abstract via Crossref",
+     "url": "https://api.crossref.org/works/10.1002/rse2.242"
+    }
+   ],
+   "notes": "Abstract quote: 'Our classifiers ... achieved 80%–90% balanced accuracy in detecting elephants up to 100 m away, and over 90% balanced accuracy in recognising running and rumbling behaviours'. Data: '8000 h seismic recordings and 250 k camera trap pictures'. The full text was blocked (publisher bot check), so it gives no amplitudes here. It is the same Mpala dataset as Steinmann et al. 2025.",
+   "who_when": "Szenicer et al., 2022 (online 2021)"
+  },
+  {
+   "key": "elephant_mortimer2018_fastwalk_velocity",
+   "category": "elephant",
+   "label": "Fast-walking wild African elephant: peak vertical ground velocity at the geophone (2–30 m, mostly river sand)",
+   "status": "derived",
+   "value_si": 0.00036,
+   "unit_si": "m/s",
+   "low_si": 0.00021,
+   "high_si": 0.00037,
+   "display": "0.2–0.36 mm/s for three footfalls; the geophone was 2–30 m away (exact distance not given)",
+   "sources": [
+    {
+     "title": "Mortimer, Rees, Koelemeijer & Nissen-Meyer (2018) Classifying elephant behaviour through seismic vibrations. Curr. Biol. 28(9):R547-R548, Fig. 1D (UCL repository)",
+     "url": "https://discovery.ucl.ac.uk/id/eprint/10063309/1/1-s2.0-S0960982218304202-main.pdf"
+    },
+    {
+     "title": "Mortimer et al. (2018) Supplemental Information (Elsevier CDN)",
+     "url": "https://ars.els-cdn.com/content/image/1-s2.0-S0960982218304202-mmc1.pdf"
+    }
+   ],
+   "notes": "Fig. 1D is labelled 'Fast walk' with the y-axis 'Velocity (m s-1)', ticks at ±4×10^-4. The caption calls it 'recorded vertical ground velocity'. A 600 dpi pixel reading gives positive peaks 3.6e-4, 3.4e-4 and 2.1e-4 m/s and negative peaks 2.6e-4, 2.6e-4 and 2.1e-4 m/s. The main text links the fast walk to a 946 N source force. Setup (supplement): 'One geophone (RTC-4.5Hz-395 vertical, USA)'; 'Sampling frequency was 600 Hz'; 'we positioned the geophone close (range of 2 to 30 m) to a focal individual'; 'elephants were mostly on river sands, but we also obtained recordings from elephants on gneiss'. Samburu and Buffalo Springs, Kenya; masses not given. Caution 1: the supplement says voltage was 'converted to velocity by multiplying by a calibration factor (set by hardware) of 23.4 V m-1 s-1'. Taken literally the units imply division, so the wording is loose. An elastic half-space check with the paper's own 946 N force on loose sand gives 1–3×10^-4 m/s at 2–10 m (key elephant_halfspace_check), so the scale is plausible. Caution 2: these values are 40–80× the Steinmann value at 20 m. That fits only if the elephant was within a few metres and/or on soft sand.",
+   "who_when": "Mortimer et al., 2018"
+  },
+  {
+   "key": "elephant_mortimer2018_source_forces",
+   "category": "elephant",
+   "label": "Seismic source force of elephant behaviours (peak of the deconvolved force, 4.5–25 Hz band)",
+   "status": "verified",
+   "value_si": 946,
+   "unit_si": "N",
+   "low_si": 125,
+   "high_si": 1190,
+   "display": "Walks 125–946 N (fast walk 946 N); a climbing step 1,190 N; rumbles 69–2,546 N",
+   "sources": [
+    {
+     "title": "Mortimer et al. (2018) Supplemental Table S1 (Elsevier CDN)",
+     "url": "https://ars.els-cdn.com/content/image/1-s2.0-S0960982218304202-mmc1.pdf"
+    },
+    {
+     "title": "Mortimer et al. (2018) Curr. Biol. 28:R547-R548 (UCL repository)",
+     "url": "https://discovery.ucl.ac.uk/id/eprint/10063309/1/1-s2.0-S0960982218304202-main.pdf"
+    }
+   ],
+   "notes": "Table S1 'Max. force (N)'. A source function is 'the force strength and pattern generated by the elephant at the source'. It was found by deconvolution against on-site weight drops: 'We calibrated the force generated through the weight dropping by using high-speed camera footage and force-motion equations'. Main text: 'maximum seismological force 2546 N versus 946 N' for rumble versus fast walk. This is the dynamic force in the seismic band only, not the full ground reaction force. For comparison, the existing key walking_running_peak_vertical_force puts walking at 1.0–1.5× body weight, about 30–45 kN for a 3 t animal. 'Walks were chosen as they included the maximum, minimum and median maximum forces during that recording.'",
+   "values_json": "{\"unit\":\"N (max of source function); dominant frequency range in Hz\",\"rows\":[{\"behaviour\":\"Walk 1 (adult 1)\",\"max_force_N\":279,\"dominant_Hz\":\"10-15\"},{\"behaviour\":\"Walk 2 (young 1)\",\"max_force_N\":273,\"dominant_Hz\":\"10-15\"},{\"behaviour\":\"Walk 3 (adult 2)\",\"max_force_N\":125,\"dominant_Hz\":\"20-25\"},{\"behaviour\":\"Walk 4 (adult 3), the fast walk of Fig. 1\",\"max_force_N\":946,\"dominant_Hz\":\"5-10\"},{\"behaviour\":\"Walk 5 (young 2)\",\"max_force_N\":289,\"dominant_Hz\":\"10-15\"},{\"behaviour\":\"Climbing step\",\"max_force_N\":1190,\"dominant_Hz\":\"20-25\"},{\"behaviour\":\"Bull 1 rumbles 1-3\",\"max_force_N\":\"1314, 2546, 2100\"},{\"behaviour\":\"Cow rumbles\",\"max_force_N\":\"69, 2238, 1401\"},{\"behaviour\":\"Car (about 10 mph, closest 4 m)\",\"max_force_N\":88,\"dominant_Hz\":\"20-25\"}]}",
+   "who_when": "Mortimer et al., 2018"
+  },
+  {
+   "key": "elephant_mortimer2018_source_force_vs_weight",
+   "category": "elephant",
+   "label": "Elephant step: seismic-band source force as a share of body weight",
+   "status": "estimate",
+   "value_si": 0.03,
+   "unit_si": "ratio",
+   "low_si": 0.004,
+   "high_si": 0.05,
+   "display": "About 0.5–4% of body weight (if the elephants weighed 2.5–3.5 t)",
+   "sources": [
+    {
+     "title": "Mortimer et al. (2018) Supplemental Table S1 (forces)",
+     "url": "https://ars.els-cdn.com/content/image/1-s2.0-S0960982218304202-mmc1.pdf"
+    },
+    {
+     "title": "Ren & Hutchinson (2008) J. R. Soc. Interface 5:195-211, Table 1 (masses of comparable elephants)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2705974/"
+    }
+   ],
+   "notes": "Formula: F_seis / (m g). The Kenyan elephants were not weighed, so we assumed 2,500–3,500 kg, in line with key elephant_ren2008_masses. Adult walks: 125 N → 0.4–0.5%; 279 N → 0.8–1.1%; 946 N (fast walk) → 2.8–3.9%. Climbing step 1,190 N → 3.5–4.9%. Adult bulls can weigh much more, which would lower the shares. Use: an elephant-like soft step puts only a few percent of body weight into the 5–25 Hz band that makes ground vibration. Feeding the full ground reaction force (1.2 × body weight, W8.WALK_LOAD) into a seismic formula would overstate it by about 30–200×.",
+   "who_when": "Estimate here (2026) from Mortimer et al., 2018"
+  },
+  {
+   "key": "elephant_mortimer2018_modelled_range",
+   "category": "elephant",
+   "label": "Modelled range at which an elephant fast walk stays detectable over background noise",
+   "status": "verified",
+   "value_si": 3600,
+   "unit_si": "m",
+   "low_si": 0,
+   "high_si": 3600,
+   "display": "Up to 3.6 km in a model (sand, quiet, 10–15 Hz band); not detectable at 1 km in high noise",
+   "sources": [
+    {
+     "title": "Mortimer et al. (2018) Curr. Biol. 28:R547-R548 (UCL repository)",
+     "url": "https://discovery.ucl.ac.uk/id/eprint/10063309/1/1-s2.0-S0960982218304202-main.pdf"
+    },
+    {
+     "title": "Mortimer et al. (2018) Supplemental Table S1",
+     "url": "https://ars.els-cdn.com/content/image/1-s2.0-S0960982218304202-mmc1.pdf"
+    }
+   ],
+   "notes": "Main text: 'Maximum propagation range estimates were 6.4 km for cow rumble versus 3.6 km for fast elephant walk'. Higher noise cut ranges by '84 ± 16% lower under higher noise on average'. Fig. 1 caption: 'Only fast walk at 1000 m is not detectable over background noise'. Detection used STA/LTA (short-term over long-term average, threshold 1.6) on modelled waveforms for a sensitive geophone. This is instrument detectability, not human feeling. Table S1 walk ranges run from 0 to 3,600 m depending on ground, noise and band.",
+   "who_when": "Mortimer et al., 2018"
+  },
+  {
+   "key": "elephant_oconnell2000_stomp_pp_velocity",
+   "category": "elephant",
+   "label": "Asian elephant foot stomps: peak-to-peak vertical ground velocity at 3–12 m and at 40 m (as quoted by a later paper)",
+   "status": "reported",
+   "value_si": 4.87e-05,
+   "unit_si": "m/s (peak-to-peak)",
+   "low_si": 1.7e-05,
+   "high_si": 4.87e-05,
+   "display": "48.7 µm/s peak-to-peak at 3–12 m; 17.0 µm/s at 40 m",
+   "sources": [
+    {
+     "title": "Wijayaraja, Wijekoon, Wijesundara & Wickramasinghe (2024) Toward long range detection of elephants using seismic signals: a geophone-sensor interface for embedded systems (arXiv 2406.05140; published IEEE Access 12:72210-72223), quoting O'Connell-Rodwell et al. 2000",
+     "url": "https://arxiv.org/pdf/2406.05140"
+    }
+   ],
+   "notes": "Secondary quote of O'Connell-Rodwell, Arnason & Hart (2000) J. Acoust. Soc. Am. 108:3066-3072: 'According to [44], the RMS velocity of elephant rumbles is 0.437 µm/s at a distance of 3-12 m and is 0.264 µm/s at a distance of 40 m. For the corresponding distances, experimental peak-to-peak velocities for stomps were 48.7 µm/s and 17.0 µm/s, respectively.' The same paper quotes from [44]: 'The footfall signature of the elephant (i.e., stomp) has a mean frequency of 24.03 Hz (±2.98)'. Its Table 1 lists the 2000 study's geophone as 10 Hz vertical at 8000 samples/s. The primary paper was paywalled and blocked, so these numbers are not confirmed against it; hence 'reported'. Captive Asian elephants; masses unknown; ground type unknown here.",
+   "values_json": "{\"stomp_peak_to_peak_um_s\":{\"3-12 m\":48.7,\"40 m\":17.0},\"rumble_rms_um_s\":{\"3-12 m\":0.437,\"40 m\":0.264},\"stomp_mean_frequency_Hz\":\"24.03 (+/-2.98)\",\"rumble_mean_frequency_Hz\":20.66}",
+   "who_when": "O'Connell-Rodwell, Arnason & Hart, 2000 (quoted by Wijayaraja et al., 2024)"
+  },
+  {
+   "key": "elephant_oconnell2000_stomp_ppv",
+   "category": "elephant",
+   "label": "Asian elephant foot stomps: zero-to-peak vertical velocity (half of the quoted peak-to-peak)",
+   "status": "derived",
+   "value_si": 2.4e-05,
+   "unit_si": "m/s",
+   "low_si": 8.5e-06,
+   "high_si": 4.9e-05,
+   "display": "About 0.024 mm/s at 3–12 m and 0.0085 mm/s at 40 m",
+   "sources": [
+    {
+     "title": "Wijayaraja et al. (2024) arXiv 2406.05140, quoting O'Connell-Rodwell et al. 2000",
+     "url": "https://arxiv.org/pdf/2406.05140"
+    }
+   ],
+   "notes": "Formula: zero-to-peak ≈ peak-to-peak / 2, assuming a waveform symmetric about zero. The true peak lies between p-p/2 and p-p. 48.7/2 = 24.4 µm/s (up to 48.7) at 3–12 m; 17.0/2 = 8.5 µm/s at 40 m. These are deliberate stomps, probably from a mock charge (key elephant_oconnell_stomp_mock_charge), so they likely overstate an ordinary walking step. Decay between the two distances gives an exponent n = 0.4–0.9 (key elephant_decay_exponent_from_data).",
+   "who_when": "Derived here (2026) from O'Connell-Rodwell et al., 2000 (secondary)"
+  },
+  {
+   "key": "elephant_oconnell_stomp_mock_charge",
+   "category": "elephant",
+   "label": "The O'Connell-Rodwell 'foot stomps' came from a mock charge, not ordinary walking",
+   "status": "verified",
+   "value_si": 32000,
+   "unit_si": "m",
+   "display": "'foot stomps from a mock charge could possibly travel up to 32 kilometers' (modelled, instrumental)",
+   "sources": [
+    {
+     "title": "O'Connell-Rodwell, Arnason & Hart, SICB meeting abstract 'Exploring the Possibility of Low-Frequency Seismic Communication in Elephants and Other Large Mammals'",
+     "url": "https://sicb.org/?p=37257"
+    },
+    {
+     "title": "O'Connell-Rodwell, Arnason & Hart (2000) J. Acoust. Soc. Am. 108:3066-72, PubMed abstract (PMID 11144599)",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=11144599,12083604&rettype=abstract&retmode=text"
+    }
+   ],
+   "notes": "SICB quote: 'Using seismic modeling, we estimated that the elephant rumbles that we recorded could potentially travel up to 16.7 km in the ground and foot stomps from a mock charge could possibly travel up to 32 kilometers.' The 2000 JASA abstract: 'up to 16 km' for vocalizations and 'up to 32 km for locomotion generated signals'. The matching 32 km suggests the 2000 paper's 'foot stomps' are these mock-charge stomps. That is our inference, not stated in the 2000 abstract. The SICB page shows no meeting year; its archive entry was migrated in 2021. 32 km is a model of instrument detectability, not a measurement.",
+   "who_when": "O'Connell-Rodwell, Arnason & Hart (SICB abstract, c. 2001; JASA 2000)"
+  },
+  {
+   "key": "elephant_oconnell2000_abstract_measurements",
+   "category": "elephant",
+   "label": "Asian elephant rumbles and stomps: seismic wave speed, frequency and distance recorded",
+   "status": "verified",
+   "value_si": 40,
+   "unit_si": "m",
+   "display": "Clearly above background at 40 m; ground waves at 248–264 m/s; frequencies near 20 Hz",
+   "sources": [
+    {
+     "title": "O'Connell-Rodwell, Arnason & Hart (2000) Seismic properties of Asian elephant (Elephas maximus) vocalizations and locomotion. J. Acoust. Soc. Am. 108(6):3066-72, PubMed abstract",
+     "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=11144599,12083604&rettype=abstract&retmode=text"
+    }
+   ],
+   "notes": "Abstract quotes: 'elephant generated signals associated with rumbles and \"foot stomps\" propagated at different velocities in the two media, the acoustic signals traveling at 309 m/s and the seismic signals at 248-264 m/s. Both types of signals had predominant frequencies in the range of 20 Hz. Seismic signal amplitudes considerably above background noise were recorded at 40 m from the generating elephants for both the rumble and the stomp.' A 1998 JASA meeting abstract (doi:10.1121/1.423611, read via OpenAlex) describes geophones at about 30 m intervals out to 120 m. The full paper was not available.",
+   "values_json": "{\"seismic_speed_m_s\":\"248-264\",\"acoustic_speed_m_s\":309,\"predominant_frequency_Hz\":\"about 20\",\"recorded_above_noise_at_m\":40,\"modelled_instrumental_range_km\":{\"rumble\":16,\"locomotion\":32}}",
+   "who_when": "O'Connell-Rodwell, Arnason & Hart, 2000"
+  },
+  {
+   "key": "elephant_oconnell_rumble_ground_velocity",
+   "category": "elephant",
+   "label": "Seismic part of a natural elephant rumble at 10 m (for contrast with footsteps)",
+   "status": "verified",
+   "value_si": 2.76e-07,
+   "unit_si": "m/s (RMS, 40–60 Hz band)",
+   "display": "Mean 0.276 µm/s RMS at 10 m, about 100× weaker than a stomp nearby",
+   "sources": [
+    {
+     "title": "O'Connell-Rodwell et al. (2006) Wild elephant (Loxodonta africana) breeding herds respond to artificially transmitted seismic stimuli. Behav. Ecol. Sociobiol. 59:842-850 (author PDF, UCLA)",
+     "url": "https://bec.ucla.edu/wp-content/uploads/sites/108/archive/papers/OConnellRodwell_4.16.07.pdf"
+    }
+   ],
+   "notes": "Quote: playback was raised 'to peak presentation velocities ranging from 0.44 to 1.1 μm/s root mean square (RMS) at 10 m from the elephants, approximating the velocity of a naturally occurring seismic elephant rumble (40–60 Hz) at this distance (mean 0.276 μm/s; O'Connell-Rodwell et al. 2000a)'. The 2024 secondary quote gives 0.437 µm/s RMS at 3–12 m and 0.264 at 40 m for rumbles. Band-limited RMS values are not peak values. Only here to show that rumbles are much weaker than footfalls in these Asian elephant data. Mortimer 2018 found the reverse in source force (rumbles up to 2,546 N), so the two groups differ.",
+   "who_when": "O'Connell-Rodwell et al., 2006 (citing 2000a)"
+  },
+  {
+   "key": "elephant_oconnell2006_surface_wave_attenuation",
+   "category": "elephant",
+   "label": "Measured surface-wave attenuation fitted near an elephant waterhole (Etosha calcrete, 40–60 Hz)",
+   "status": "verified",
+   "value_si": 0.018,
+   "unit_si": "1/m",
+   "low_si": 0.018,
+   "high_si": 0.05,
+   "display": "L = L0 · e^(−αr) / √r, with α = 0.018 per m (elephant-generated background) to 0.05 per m (buried shakers)",
+   "sources": [
+    {
+     "title": "O'Connell-Rodwell et al. (2006) Behav. Ecol. Sociobiol. 59:842-850, Eq. 1 and Table 1 (author PDF, UCLA)",
+     "url": "https://bec.ucla.edu/wp-content/uploads/sites/108/archive/papers/OConnellRodwell_4.16.07.pdf"
+    }
+   ],
+   "notes": "Quotes: 'we used the standard surface wave attenuation rate model (White 1965)'. Eq. (1) 'relates the velocity level L (m/s) at distance r based on a source signal level L0 and propagation constant α'. Fitted values: 'α=0.05/m and L0=25.5×10−6 m3/2/s ... for shaker-induced motions'; background 'α=0.018/m and L0=4×10−7 m3/2/s'. 'It was assumed that the noise was produced by a single source at the water hole (i.e., the elephants) as their footfalls create seismic noise'. Ground: 'the substrate environment in Etosha National Park is relatively homogeneous calcrete'. The background at the elephants' position, 5 m from the waterhole, was '−12 dB re 1 μm/s' (0.25 µm/s RMS, 40–60 Hz band). That is band-limited RMS of many animals' footfalls, not a single-step peak. The fit used only two geophones (10 m and 90 m). The 1/√r spreading plus e^(−αr) damping is the physically expected form for surface waves. At 20 m it gives e^(−0.36) to e^(−1.0) on top of spreading.",
+   "who_when": "O'Connell-Rodwell et al., 2006"
+  },
+  {
+   "key": "elephant_wood2005_detection_radius",
+   "category": "elephant",
+   "label": "Range at which a single geophone picked up elephant footfalls at an Etosha waterhole",
+   "status": "verified",
+   "value_si": 100,
+   "unit_si": "m",
+   "display": "About 100 m",
+   "sources": [
+    {
+     "title": "Wood, O'Connell-Rodwell & Klemperer (2005) Using seismic sensors to detect elephants and other large mammals: a potential census technique. J. Appl. Ecol. 42:587-594 (Stanford CRUSTAL PDF)",
+     "url": "https://crustal.stanford.edu/sites/g/files/sbiybj21541/files/media/file/wood.elecensus.jappliedecol.2005_0.pdf"
+    }
+   ],
+   "notes": "Quote: 'Given that the duration of the recording in which footfalls are visible is 166 s, the radius of detection is roughly 100 m.' Speed: 'we estimated its speed at 1·2 m s−1'. Discussion: 'the detection radius for an elephant footfall is roughly 100 m in Etosha National Park. This will vary depending on the soil type'. Setup: 'a single 4·5 Hz vertical geophone ... buried 1 m from a major path leading to the waterhole, at a depth of 15 cm'; 31 bull and 12 herd recordings at Mushara waterhole, June 2002. The figures show no absolute amplitudes ('Amplitude normalized by maximum dynamic range of recording equipment'). Wild African elephants, masses not given.",
+   "who_when": "Wood, O'Connell-Rodwell & Klemperer, 2005"
+  },
+  {
+   "key": "elephant_wood2005_overhead_vs_20m",
+   "category": "elephant",
+   "label": "How much weaker a bull's footfalls were at 20 m than directly over the geophone",
+   "status": "verified",
+   "value_si": 10,
+   "unit_si": "amplitude ratio",
+   "display": "About 20 dB (×10 in amplitude) weaker at 20 m",
+   "sources": [
+    {
+     "title": "Wood et al. (2005) J. Appl. Ecol. 42:587-594, Fig. 4 and text (Stanford CRUSTAL PDF)",
+     "url": "https://crustal.stanford.edu/sites/g/files/sbiybj21541/files/media/file/wood.elecensus.jappliedecol.2005_0.pdf"
+    }
+   ],
+   "notes": "Quote: 'we can use Fig. 4 to estimate the maximum amplitude for an elephant that passed 20 m from the geophone. As indicated on the figure, this is considerably lower (∼20 dB) than when the elephant passed directly over the geophone.' Conversion: 20 dB = 10^(20/20) = ×10 in amplitude, because the amplitude envelope is an amplitude, not a power. If 'directly over' means 1–2 m, the decay exponent is n = ln 10 / ln(20/r0) = 0.77–1.0. This is an estimate from one bull's envelope and speed, not a calibrated pair of measurements.",
+   "who_when": "Wood, O'Connell-Rodwell & Klemperer, 2005"
+  },
+  {
+   "key": "elephant_wood2005_spectrum_and_gait",
+   "category": "elephant",
+   "label": "Elephant footfall spectrum and step timing (Etosha)",
+   "status": "verified",
+   "value_si": 25,
+   "unit_si": "Hz",
+   "low_si": 10,
+   "high_si": 40,
+   "display": "Most energy 10–40 Hz, peak near 25 Hz; a front-foot strike about every 1.5 s at 1.2 m/s",
+   "sources": [
+    {
+     "title": "Wood et al. (2005) J. Appl. Ecol. 42:587-594 (Stanford CRUSTAL PDF)",
+     "url": "https://crustal.stanford.edu/sites/g/files/sbiybj21541/files/media/file/wood.elecensus.jappliedecol.2005_0.pdf"
+    }
+   ],
+   "notes": "Quotes: 'All species have a peak around 25 Hz but the shape of the spectra are different, with the elephant spectrum having the most pronounced low-frequency component'. 'A25Hz /A50Hz ∼ 1000 for elephants, but ≤ 100 for the other measured species.' Band-pass 10–40 Hz was used 'as most of the energy of the footfalls fell within this band pass range'. 'a large amplitude event (a front foot striking the ground) every ∼1·5 s, preceded by a smaller amplitude event (a rear foot striking the ground)'. Speed 1.2 m/s for the bull in Fig. 4. Species recorded: elephant, gemsbok, giraffe, human, kudu, lion. Amplitudes are normalized only.",
+   "values_json": "{\"energy_band_Hz\":\"10-40\",\"spectral_peak_Hz\":25,\"A25_over_A50\":{\"elephant\":\"about 1000\",\"other species\":\"100 or less\"},\"front_footfall_interval_s\":1.5,\"walking_speed_m_s\":1.2}",
+   "who_when": "Wood, O'Connell-Rodwell & Klemperer, 2005"
+  },
+  {
+   "key": "elephant_wijayaraja2024_detection_and_masses",
+   "category": "elephant",
+   "label": "Weighed Sri Lankan elephants walking past a geophone: masses and detection range",
+   "status": "verified",
+   "value_si": 155.6,
+   "unit_si": "m",
+   "display": "Elephants of 2,700–3,500 kg; a 2,700 kg elephant detected walking 155.6 m away",
+   "sources": [
+    {
+     "title": "Wijayaraja et al. (2024) arXiv 2406.05140 (published IEEE Access 12:72210-72223)",
+     "url": "https://arxiv.org/pdf/2406.05140"
+    }
+   ],
+   "notes": "Table 5 (Pinnawala Elephant Orphanage, partly tamed): E1 56 y, 3,500 kg, 233 cm; E2 25 y, 3,100 kg, 237 cm; E3 16 y, 2,700 kg, 222 cm. Quote: 'The maximum distance was reported when the gain setting was S2: Av(total) = 25,911, and the reported maximum distance was 155.6 m. The detection range was limited only by the available physical space'. Gain 580: detected 0–50 m; gain 940: 50–100 m. Geophone: 'RGI-HS 10' vertical, 'sensitivity of 85.8 V/m/s', 10 Hz. Power-spectrum peaks for E3 walking: 28.4, 29.3 and 26.28 Hz. Human subjects of 60–90 kg were also recorded. The figures show only ADC readings: 'The figures depict amplitudes corresponding to ADC readings; as such, specific units were not provided.'",
+   "who_when": "Wijayaraja, Wijekoon, Wijesundara & Wickramasinghe, 2024"
+  },
+  {
+   "key": "elephant_wijayaraja2024_derived_velocity",
+   "category": "elephant",
+   "label": "2,700 kg Sri Lankan elephant walking 0–50 m from the geophone: rough peak vertical velocity from ADC counts",
+   "status": "derived",
+   "value_si": 4e-06,
+   "unit_si": "m/s",
+   "low_si": 3.4e-06,
+   "high_si": 4.9e-06,
+   "display": "About 0.004 mm/s somewhere within 0–50 m (low confidence)",
+   "sources": [
+    {
+     "title": "Wijayaraja et al. (2024) arXiv 2406.05140, Figs 18a and 21 (gain S0 = 580)",
+     "url": "https://arxiv.org/pdf/2406.05140"
+    }
+   ],
+   "notes": "Formula: v = counts × ADC step / (gain × geophone sensitivity). Inputs stated in the paper: 10-bit ADC 'with a resolution of 4.88 mV'; overall gain 580 (setting S0); sensitivity 85.8 V/(m/s). Fig. 21 (elephant E3, location 2, gain S0) peaks at about 35–50 counts from the mean (read by eye). Result: 35–50 × 4.88e-3 / (580 × 85.8) = 3.4e-6 to 4.9e-6 m/s. The distance within the 0–50 m track is unknown. Filter and amplifier response near 25 Hz are assumed flat. Weak, but it agrees in size with the Steinmann 20 m value.",
+   "who_when": "Derived here (2026) from Wijayaraja et al., 2024"
+  },
+  {
+   "key": "elephant_wijayaraja2025_wild_range",
+   "category": "elephant",
+   "label": "Wild Sri Lankan elephants detected by footfall vibration up to 140 m",
+   "status": "verified",
+   "value_si": 140,
+   "unit_si": "m",
+   "low_si": 66.9,
+   "high_si": 155.6,
+   "display": "155.6 m in controlled conditions; 140 m in the wild",
+   "sources": [
+    {
+     "title": "Wijayaraja, Wijekoon & Wijesundara (2025) Event detection and classification for long range sensing of elephants using seismic signals (arXiv 2509.02920)",
+     "url": "https://arxiv.org/pdf/2509.02920"
+    }
+   ],
+   "notes": "Abstract: 'the maximum validated detection range was 155.6 m in controlled conditions and 140 m in natural environments'. Text: footfalls were recorded 'from wild elephants at distances ranging from 66.9 meters to 140 meters'. Acquiring footfall signals 'was challenging, particularly over long distances, due to their very low amplitudes and high susceptibility to noise'. Same 85.8 V/(m/s) 10 Hz geophone with a high-gain amplifier, so this is an instrument range.",
+   "who_when": "Wijayaraja, Wijekoon & Wijesundara, 2025"
+  },
+  {
+   "key": "elephant_ren2008_masses",
+   "category": "elephant",
+   "label": "Weighed elephants of about Rex and Ollie's mass (biomechanics study)",
+   "status": "verified",
+   "value_si": null,
+   "unit_si": "kg",
+   "low_si": 2550,
+   "high_si": 3230,
+   "display": "2,550–3,230 kg (five elephants aged 12–14, weighed on a truck scale)",
+   "sources": [
+    {
+     "title": "Ren & Hutchinson (2008) The three-dimensional locomotor dynamics of African (Loxodonta africana) and Asian (Elephas maximus) elephants reveal a smooth gait transition at moderate speed. J. R. Soc. Interface 5:195-211, Table 1 (PMC)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2705974/"
+    }
+   ],
+   "notes": "Table 1: Chandrika, Asian F, 14 y, 3,000 kg; Damini, Asian F, 12 y, 2,840 kg; Five, African F, 14 y, 2,780 kg; Jack, African M, 13 y, 3,230 kg; Latabe, African F, 13 y, 2,550 kg. Methods: 'All elephants had known body masses (mb) from placing all four limbs on a truck scale (±2 kg).' Read with WebFetch on the PMC page; a direct curl returned only a page shell. Rex and Ollie at 3,007 kg each sit inside this range. Adult bulls are much heavier (not sourced here). None of the seismic studies weighed their elephants except Wijayaraja et al. 2024 (2,700–3,500 kg).",
+   "who_when": "Ren & Hutchinson, 2008 (published online 2007)"
+  },
+  {
+   "key": "elephant_decay_exponent_from_data",
+   "category": "elephant",
+   "label": "How fast elephant footfall vibration falls with distance: exponent n in PPV ∝ D^−n, from the elephant studies",
+   "status": "derived",
+   "value_si": 1,
+   "unit_si": "dimensionless",
+   "low_si": 0.4,
+   "high_si": 2,
+   "display": "n about 1 (0.4–2): halving the distance roughly doubles the vibration",
+   "sources": [
+    {
+     "title": "Wood et al. (2005) J. Appl. Ecol. 42:587-594",
+     "url": "https://crustal.stanford.edu/sites/g/files/sbiybj21541/files/media/file/wood.elecensus.jappliedecol.2005_0.pdf"
+    },
+    {
+     "title": "Wijayaraja et al. (2024) arXiv 2406.05140 (quoting O'Connell-Rodwell 2000)",
+     "url": "https://arxiv.org/pdf/2406.05140"
+    },
+    {
+     "title": "Steinmann et al. (2025) Fig. 4b,c (GFZ repository)",
+     "url": "https://gfzpublic.gfz.de/pubman/item/item_5034960_2/component/file_5034988/5034960.pdf"
+    }
+   ],
+   "notes": "Formula: n = ln(A1/A2) / ln(D2/D1). (1) O'Connell-Rodwell stomps: 24.4 → 8.5 µm/s from '3–12 m' to 40 m gives n = 0.41 (D1 = 3), 0.55 (D1 = 6), 0.87 (D1 = 12). (2) Wood: ×10 from 'directly over' (taken as 1–2 m) to 20 m gives n = 0.77–1.0. (3) Steinmann giraffes at ETA00: 3.5e-9 → 2.2e-10 m from 26 to 103 m gives n = 2.0. That pair is probably steepened by the far trace sitting near the noise floor, and the two may be different animals. Theory: surface waves spread as D^−0.5, and soil damping steepens the decay with distance (key elephant_oconnell2006_surface_wave_attenuation). n = 1 is a reasonable single value for 5–100 m.",
+   "who_when": "Derived here (2026)"
+  },
+  {
+   "key": "elephant_halfspace_check",
+   "category": "elephant",
+   "label": "Physics check: ground velocity from a footfall-sized force on an elastic half-space",
+   "status": "estimate",
+   "value_si": 1.2e-05,
+   "unit_si": "m/s",
+   "low_si": 1e-06,
+   "high_si": 0.0003,
+   "display": "With Mortimer's 125–946 N forces at 20 Hz: about 0.001–0.01 mm/s at 20 m on firm soil, up to 0.1–0.3 mm/s within a few metres on loose sand",
+   "sources": [
+    {
+     "title": "Mortimer et al. (2018) Supplemental Table S1 (source forces used as inputs)",
+     "url": "https://ars.els-cdn.com/content/image/1-s2.0-S0960982218304202-mmc1.pdf"
+    }
+   ],
+   "notes": "Formula: Lamb's problem, the Rayleigh-wave far field from a vertical harmonic point force F on a Poisson half-space (ν = 0.25). u_z(r) = (F k_s / (2μ)) × G × sqrt(2 / (π k_R r)), with k_s = 2πf/Vs, μ = ρVs², k_R = k_s/0.9194 and G = 0.1996, found from the residue at the Rayleigh pole. Velocity v = 2πf u_z. Check: the same spectral integral reduces to Boussinesq's static w = F(1−ν)/(2πμr) as f → 0 (script scratchpad research/elephant/scripts/lamb.py). Results at 20 Hz: (a) loose sand, ρ 1,700, Vs 120 m/s: F = 946 N gives 0.27 mm/s at 2 m, 0.12 at 10 m, 0.085 at 20 m; F = 125 N gives 0.035, 0.016, 0.011 mm/s. (b) Firmer soil, ρ 1,900, Vs 250 m/s: 946 N gives 0.038, 0.017, 0.012 mm/s; 125 N gives 0.005, 0.0023, 0.0016 mm/s. (c) Soft rock, Vs 600 m/s: 946 N gives 0.0012 mm/s at 20 m. So the measured spread (0.005 mm/s at 20 m in Steinmann; 0.2–0.36 mm/s close in on river sand in Mortimer) fits forces of a few hundred newtons on ground of different stiffness. It also suggests Mortimer's velocity scale is right despite the loose 'multiplying' wording. Ignores: soil damping (factor e^(−αr), α about 0.02–0.05 per m), layering, the near field within about one wavelength (7–30 m at 20 Hz), and the finite foot size. The soil densities and shear-wave speeds are assumed typical values, not sourced here.",
+   "who_when": "Estimate here (2026)"
+  },
+  {
+   "key": "elephant_anchor_ppv_vs_distance",
+   "category": "elephant",
+   "label": "Recommended page anchor: an elephant walking past at D metres (peak vertical ground velocity)",
+   "status": "estimate",
+   "value_si": 5e-06,
+   "unit_si": "m/s (at D = 20 m)",
+   "low_si": 7e-07,
+   "high_si": 4e-05,
+   "display": "About 0.005 mm/s at 20 m (range 0.0007–0.04); about 0.01 mm/s at 10 m; about 0.02 mm/s at 5 m",
+   "sources": [
+    {
+     "title": "Steinmann et al. (2025) Methods Ecol. Evol. 16:819-836 (central value)",
+     "url": "https://gfzpublic.gfz.de/pubman/item/item_5034960_2/component/file_5034988/5034960.pdf"
+    },
+    {
+     "title": "Wijayaraja et al. (2024) arXiv 2406.05140 (O'Connell-Rodwell stomp values; own data)",
+     "url": "https://arxiv.org/pdf/2406.05140"
+    },
+    {
+     "title": "Mortimer et al. (2018) Curr. Biol. 28:R547-R548 (close-range fast walk)",
+     "url": "https://discovery.ucl.ac.uk/id/eprint/10063309/1/1-s2.0-S0960982218304202-main.pdf"
+    },
+    {
+     "title": "Wood et al. (2005) J. Appl. Ecol. 42:587-594 (decay and detection radius)",
+     "url": "https://crustal.stanford.edu/sites/g/files/sbiybj21541/files/media/file/wood.elecensus.jappliedecol.2005_0.pdf"
+    }
+   ],
+   "notes": "Formula: PPV_elephant(D) = 0.005 mm/s × (20 m / D) for 5 ≤ D ≤ 100 m, band ×0.15 to ×8. Central value: Steinmann walk at 20 m, 0.0047 mm/s. Exponent n = 1 from key elephant_decay_exponent_from_data. Band: the low end covers Steinmann's typical step (0.0022) and the four-elephant group (0.00075). The high end covers O'Connell-Rodwell stomps scaled to 20 m (0.004–0.019) and Steinmann running (0.006–0.008). It also covers Mortimer's 0.2–0.36 mm/s fast walk, but only if that was within about 2–3 m: 0.005 × 20/2 × 8 = 0.4. Wijayaraja's rough 0.004 mm/s at 0–50 m also fits. Vertical component only; the three-component vector peak would be up to about 1.2×. Beyond about 100–150 m single footfalls sink into background noise for good seismometers (Wood about 100 m; Steinmann data to 150 m; Wijayaraja 140–156 m). Below about 5 m it depends strongly on soil; up to 0.2–0.4 mm/s has been recorded within a few metres on loose sand. A walking elephant is cushion-footed; a deliberate stomp runs about 2–4× higher.",
+   "values_json": "{\"formula\":\"PPV(D) = 0.005 mm/s x (20 m / D), valid 5-100 m, vertical component\",\"band\":\"x0.15 to x8\",\"rows\":[{\"D_m\":5,\"central_mm_s\":0.02,\"low_mm_s\":0.003,\"high_mm_s\":0.16},{\"D_m\":10,\"central_mm_s\":0.01,\"low_mm_s\":0.0015,\"high_mm_s\":0.08},{\"D_m\":20,\"central_mm_s\":0.005,\"low_mm_s\":0.0007,\"high_mm_s\":0.04},{\"D_m\":50,\"central_mm_s\":0.002,\"low_mm_s\":0.0003,\"high_mm_s\":0.016},{\"D_m\":100,\"central_mm_s\":0.001,\"low_mm_s\":0.00015,\"high_mm_s\":0.008}],\"checks\":{\"Steinmann walk 20 m\":0.0047,\"Steinmann running 38 m\":0.0044,\"O'Connell-Rodwell stomp 3-12 m (0-pk)\":0.024,\"O'Connell-Rodwell stomp 40 m (0-pk)\":0.0085,\"Mortimer fast walk 2-30 m\":\"0.21-0.36\",\"Wijayaraja 0-50 m\":0.004}}",
+   "who_when": "Estimate here (2026) from the studies above"
+  }
+ ],
+ "model_recommendation": "1. Elephant comparison on the Walk tab\n   - Use PPV_elephant(D) = 0.005 mm/s × (20 m / D), valid for 5–100 m, vertical component (key elephant_anchor_ppv_vs_distance).\n   - Show the band ×0.15 to ×8 (0.0007–0.04 mm/s at 20 m) as a shaded range, not a single line.\n   - Below 5 m, show \"rises steeply; depends on ground. Up to 0.2–0.4 mm/s measured within a few metres on loose sand (Mortimer 2018)\". Do not extrapolate the formula there.\n   - Beyond about 100–150 m, show \"below background noise; only sensitive instruments detect it\" (Wood 2005; Steinmann 2025; Wijayaraja 2024/2025).\n   - Label: \"Measured in the field (wild African elephant, Kenya; Steinmann et al. 2025), converted from ground displacement to velocity by us. Real values vary about 3× either way with the animal and gait, and up to about 100× between sites. Order of magnitude only.\"\n   - For a ratio readout (\"Rex's step ≈ N elephants\"), divide the engine's PPV at D by PPV_elephant(D) and round to one significant figure. If the ratio falls inside the band, say \"about like an elephant\".\n\n2. Do not drive a seismic formula with the full ground reaction force\n   - W8.WALK_LOAD (1.2 × body weight) and the existing key walking_running_peak_vertical_force (1.0–1.5 BW) are the quasi-static load: right for bearing pressure and footprints.\n   - What radiates ground vibration is the fast transient in about 5–40 Hz. For elephants that is only about 0.5–4% of body weight (Mortimer 2018 source functions: walks 125–946 N, climbing step 1,190 N; key elephant_mortimer2018_source_force_vs_weight).\n   - Two consistent ways to model a step:\n     - (a) Drop-weight scaled-distance law (e.g. Mayne et al. 1984, verified by the attenuation topic). Use it for deliberate heavy steps and stamps (a short drop of the body). Check it against the elephant anchor at \"ordinary\" effort. If the attenuation topic confirms PPV ≈ 70 (√(WH)/d)^1.4 mm/s (WH in Mg·m), reproducing 0.005 mm/s at 20 m needs a drop energy of only about 5 J. Compaction-drop laws therefore overpredict soft, cushioned footfalls by one to two orders of magnitude if fed the whole leg's energy. Calibrate the \"soft-footed\" end of the effort dial to the elephant band, not to Mayne.\n     - (b) Force-based surface-wave model (key elephant_halfspace_check): v(r) ≈ 2πf × (F k_s / (2ρVs²)) × 0.20 × sqrt(2 / (π k_R r)) × e^(−αr), with k_s = 2πf/Vs, k_R = k_s/0.919, f about 20 Hz, α about 0.02–0.05 per m (O'Connell-Rodwell 2006, calcrete). F is the seismic-band force, about 0.01–0.04 × body weight for an elephant-like soft step, rising with effort. It ignores the near field within about one wavelength (7–30 m at 20 Hz), layering and foot size; label it \"simple elastic-ground model\".\n   - Whichever is used, the presence functions must be monotone in effort and in 1/D. Two tests:\n     - A 3,000 kg walker at the lowest (soft-footed) effort on medium ground gives 0.0007–0.04 mm/s at 20 m.\n     - At 5 m it does not exceed 0.4 mm/s.\n\n3. Ground-type dependence\n   - The surface selector should change vibration amplitude, not only bearing capacity: loose sand gives larger velocity for the same force than firm soil or rock (×7–10 between Vs 120 and 250 m/s; ×100 between sand and rock in the half-space check). Steinmann saw about ×100 between stations.\n   - Rock and stiff ground should carry less vibration close in but keep higher frequencies further out.\n   - Leave the canon surfaces' vibration multipliers to the attenuation topic, but keep the elephant band wide enough to cover them.\n\n4. Components and metrics\n   - All elephant numbers here are vertical, zero-to-peak velocity (O'Connell-Rodwell's were peak-to-peak and are halved).\n   - Damage and comfort standards (thresholds topic) use either the largest single component (BS 7385, DIN 4150) or a vector sum. For Rayleigh waves horizontal/vertical = 0.68 (ν = 0.25), so the vector peak is about 1.2× the vertical. Note that the comparison uses vertical values.\n   - RMS levels (the rumble numbers) are not peaks; do not mix them in.\n\n5. Canon reading for the page\n   - An elephant walking past at 20 m (about 0.005 mm/s) sits far below the perception thresholds from the thresholds topic. Even very close it reaches only tenths of a mm/s, on soft sand.\n   - So the canon \"footsteps you can feel, water glasses rippling a few metres away\" means Rex and Ollie at restrained effort are well above an elephant at the same distance. Report that as the result (an effort level and a ratio to the elephant), not as an assumption.\n   - Note that the elephant's cushioned feet are why it is so quiet seismically (Steinmann 2025). Ollie's boots and Rex's feet would plausibly give a sharper, stronger transient at the same mass; that is our inference, label it as such.",
+ "gaps": "1. Primary paper not available: O'Connell-Rodwell, Arnason & Hart (2000), JASA 108:3066-72.\n   - Paywalled; the publisher site and ResearchGate returned 403 and no open copy exists (OpenAlex/Unpaywall: closed). Only the PubMed abstract was read.\n   - The stomp values (48.7 and 17.0 µm/s peak-to-peak at 3–12 m and 40 m), the rumble RMS values (0.437 and 0.264 µm/s) and the 24.03 Hz stomp frequency come from a secondary quote (Wijayaraja et al. 2024), so they are \"reported\".\n   - Unknown: the exact distances inside \"3–12 m\", the ground type, the elephants' masses, and whether \"foot stomps\" were mock-charge stomps (likely, from the authors' SICB abstract, but not confirmed in the paper).\n   - On the page say \"reported by a later paper\", not \"measured\".\n\n2. Other papers with text unavailable:\n   - Szenicer et al. 2022 (Remote Sens. Ecol. Conserv.): Wiley bot check; only the abstract (via Crossref) was read.\n   - Günther et al. 2004 (GRL): rumbles only; abstract via OpenAlex.\n   - O'Connell-Rodwell 2001 (Am. Zool.) and 2007 (Physiology): paywalled or bot-checked; abstracts carry no numbers.\n   - Reinwald et al. 2021 (J. R. Soc. Interface) was read in full (Europe PMC). It is about locating rumbles and gives no footfall amplitudes.\n\n3. Mortimer et al. 2018:\n   - The distance for the Fig. 1D fast walk is not given (only \"2 to 30 m\" for all recordings), and no elephant masses.\n   - The supplement's wording \"multiplying by a calibration factor of 23.4 V m-1 s-1\" is unclear. Our elastic half-space check suggests the velocity scale is plausible, but this could not be confirmed.\n\n4. Steinmann et al. 2025 (main anchor):\n   - All amplitudes were read from printed figures (pixel measurement against the printed gridlines) and converted to velocity with one dominant frequency. Both steps are ours, so the values are \"derived\". Expect ±30–50% from the conversion alone.\n   - Each panel is a single 10 s record of one animal. Distances are camera-trap estimates.\n   - The paper does not describe instrument correction or say whether stations used identical sensors. The ×100 giraffe difference between stations may be partly instrumental.\n   - The authors' Methods Blog post says giraffe footsteps shake the ground \"in the order of tens of micrometers\". That conflicts with the paper's figures (about 0.1 µm at most), so the blog was not used.\n\n5. Masses:\n   - None of the field seismic studies weighed their wild elephants. Only Wijayaraja et al. 2024 (2,700–3,500 kg, captive Sri Lankan) and the non-seismic Ren & Hutchinson 2008 (2,550–3,230 kg) give weighed masses.\n   - We found no sourced typical adult African elephant mass (the Shrader et al. 2006 growth study reports shoulder height, and its full text was unavailable). The brief's \"about as much as an African elephant\" should say \"about as much as a typical 12–14-year-old or female elephant (2.5–3.5 t, weighed)\". Do not imply bulls, which are heavier.\n\n6. Other animals:\n   - No absolute ground-velocity measurements of horses or cattle were found. Wood 2005 recorded giraffe, gemsbok, kudu, lion and human, but with normalized amplitudes only.\n   - Calibrated giraffe, zebra, human, hyena and warthog examples exist only in Steinmann's figures, with no masses or gaits reported (the human may have been walking or not).\n   - Human footstep geophone work (Ekimov & Sabatier 2006/2011; Pakhomov et al. 2003 SPIE; ARL and DTIC reports) was found only as abstracts or paywalled. No physical amplitude was verified, so none is included. Secondary search snippets mention 15–30 m detection ranges for footsteps, but they were not verified and are left out.\n   - If the page needs a human comparison, use Steinmann's human at 53 m (about 0.002 mm/s, derived, mass unknown) or the thresholds topic.\n\n7. Not covered:\n   - No study gives a footfall amplitude against distance for one elephant on one site with calibrated sensors. The 1/D decay and the ×0.15–×8 band are our synthesis (\"estimate\").\n   - Perception and damage thresholds, and the Mayne attenuation constants, belong to other topics. The ~5 J equivalent drop energy in the recommendation depends on constants not verified here.\n\n8. Scratch files: raw downloads and the digitizing scripts (digitize.py, scal.py, derive.py, lamb.py) are under /tmp/claude-0/-home-user-rex-strength-lab/ba090f8f-9962-5883-b4ec-f77afa579575/scratchpad/research/elephant/ for re-checking."
+}
