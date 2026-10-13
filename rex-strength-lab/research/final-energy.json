@@ -187,7 +187,7 @@
    "status": "derived",
    "value_si": 0.9905,
    "unit_si": "J",
-   "display": "about 1 J (0.101 kg x 9.80665 m/s^2 x 1 m)",
+   "display": "about 1 J (0.101 kg × 9.81 m/s² × 1 m)",
    "sources": [
     {
      "title": "USDA FoodData Central, SR Legacy FDC 171688 'Apples, raw, with skin' (NDB 09003): portion weights, JSON behind the FDC food page",
@@ -275,9 +275,9 @@
      "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9"
     }
    ],
-   "notes": "SI 1969/47 rule 2(1): 'kinetic energy in excess, in the case of an air pistol, of 6 ft. lb. or, in the case of an air weapon other than an air pistol, of 12 ft. lb.'; rule 3 makes these 'specially dangerous' (firearm certificate needed); rule 1(2): 'shall not extend to Scotland' (Scotland not checked). Home Office guide, para 2.46: 'An air rifle with a muzzle energy in excess of 12 foot-pounds must be held on a firearm certificate.' 12 x 1.355818 J = 16.27 J. A cap: licence-free rifles shoot at or below it. Skeptic: key, label and page phrase changed from 'UK', because Northern Ireland (Firearms (NI) Order 2004, Sch 1 Pt 9 para 9(2)) licenses air guns above 1 J; Home Office guide added to show the 12 ft-lb line is current.",
+   "notes": "SI 1969/47 rule 2(1): 'kinetic energy in excess, in the case of an air pistol, of 6 ft. lb. or, in the case of an air weapon other than an air pistol, of 12 ft. lb.'; rule 3 makes these 'specially dangerous' (firearm certificate needed); rule 1(2): 'shall not extend to Scotland' (Scotland not checked). Home Office guide, para 2.46: 'An air rifle with a muzzle energy in excess of 12 foot-pounds must be held on a firearm certificate.' 12 x 1.355818 J = 16.27 J. A cap: licence-free rifles shoot at or below it. Skeptic: key, label and page phrase changed from 'UK', because Northern Ireland (Firearms (NI) Order 2004, Sch 1 Pt 9 para 9(2)) licenses air guns above 1 J; Home Office guide added to show the 12 ft-lb line is current. Page phrase reworded in review round 1.",
    "who_when": "SI 1969/47, in force 1 May 1969; Home Office guide updated 18 Sep 2026; fetched Oct 2026",
-   "page_short": "an air-rifle pellet at the legal limit in England and Wales",
+   "page_short": "an air-rifle pellet at the licence-free limit in England and Wales",
    "research_topic": "small"
   },
   {
@@ -667,7 +667,7 @@
    "status": "derived",
    "value_si": 68040,
    "unit_si": "J",
-   "display": "about 68 kJ (16 kcal, i.e. 16 food Calories) per level teaspoon",
+   "display": "about 68 kJ (16 food Calories) per level teaspoon",
    "sources": [
     {
      "title": "USDA FoodData Central, SR Legacy FDC 169655 'Sugars, granulated' (NDB 19335): energy and portion weights, JSON behind the FDC food page",
@@ -753,7 +753,7 @@
    "unit_si": "J",
    "low_si": 864000,
    "high_si": 1025000,
-   "display": "about 0.9 MJ (0.184 kg of Comp B x 5.02 MJ/kg); 1.0 MJ by the Army's ballistic-mortar TNT equivalence",
+   "display": "about 0.9 MJ (0.184 kg of Composition B, its explosive filler, × 5.02 MJ/kg); 1.0 MJ by the Army's TNT equivalence from a ballistic-mortar test (the work a charge does, compared with TNT)",
    "sources": [
     {
      "title": "Filler mass: US Army TC 3-23.30, Fig. 3-15",
@@ -926,7 +926,7 @@
    "status": "derived",
    "value_si": 251000000.0,
    "unit_si": "J",
-   "display": "about 0.25 GJ (30 days x 2,000 Calories)",
+   "display": "about 0.25 GJ (30 days × 2,000 Calories)",
    "sources": [
     {
      "title": "FDA: How to Understand and Use the Nutrition Facts Label ('2,000 calories a day is used as a general guide for nutrition advice')",
@@ -1047,7 +1047,7 @@
    "status": "verified",
    "value_si": 4184000000,
    "unit_si": "J",
-   "display": "1 ton of TNT = 4.184 x 10^9 J by definition; 1 kt = 4.184 x 10^12 J; 1 Mt = 4.184 x 10^15 J",
+   "display": "1 ton of TNT = 4.184 × 10⁹ J by definition; 1 kt = 4.184 × 10¹² J; 1 Mt = 4.184 × 10¹⁵ J",
    "sources": [
     {
      "title": "NIST SP 811, Appendix B.9 (energy conversion factors)",
@@ -1188,7 +1188,7 @@
    "unit_si": "J",
    "low_si": 1255200000000.0,
    "high_si": 4686080000000.0,
-   "display": "about 0.3-1.1 kt TNT in published estimates (0.13-2 kt at the extremes); 0.5 kt (2.1 TJ) used, Rigby et al.'s best estimate",
+   "display": "about 0.3–1.1 kt of TNT in published estimates (0.13–2 kt at the extremes); 0.5 kt (2.1 TJ) used, Rigby et al.'s best estimate",
    "sources": [
     {
      "title": "Rigby et al. (2020) Preliminary yield estimation of the 2020 Beirut explosion using video footage from social media, Shock Waves 30:671-675, doi:10.1007/s00193-020-00970-z (published version, White Rose repository)",
@@ -1260,7 +1260,7 @@
    "unit_si": "J",
    "low_si": 50210000000000,
    "high_si": 75310000000000,
-   "display": "15 kilotons of TNT (6.3 x 10^13 J); DOE official; latest dosimetry estimate 16 +/- 2 kt",
+   "display": "15 kilotons of TNT (6.3 × 10¹³ J), the US Department of Energy's figure; a 2002 study of the radiation doses gives 16 ± 2 kt",
    "sources": [
     {
      "title": "Malik (1985) The Yields of the Hiroshima and Nagasaki Nuclear Explosions, LA-8819, Los Alamos (OSTI 1489669)",
@@ -1338,7 +1338,7 @@
    "unit_si": "J",
    "low_si": 1673600000000000.0,
    "high_si": 2510400000000000.0,
-   "display": "about 500 +/- 100 kt TNT (1.7-2.5 PJ); NASA's fireball table: 441 kt",
+   "display": "about 500 ± 100 kt of TNT (1.7–2.5 PJ); NASA's fireball table: 441 kt",
    "sources": [
     {
      "title": "Brown et al. (2013) A 500-kiloton airburst over Chelyabinsk and an enhanced hazard from small impactors, Nature 503:238-241, doi:10.1038/nature12741",
@@ -1385,7 +1385,7 @@
    "status": "verified",
    "value_si": 62760000000000000,
    "unit_si": "J",
-   "display": "15 megatons of TNT (6.3 x 10^16 J); the highest-yield US nuclear test",
+   "display": "15 megatons of TNT (6.3 × 10¹⁶ J); the highest-yield US nuclear test",
    "sources": [
     {
      "title": "US DOE/NNSA Nevada, DOE/NV-209 Rev. 16 (Sep 2015) United States Nuclear Tests, July 1945 through September 1992",
@@ -1473,7 +1473,7 @@
    "unit_si": "J",
    "low_si": 209200000000000000,
    "high_si": 238500000000000000,
-   "display": "50 megatons of TNT (2.1 x 10^17 J) per its Soviet designers; US 1961 estimate 57 Mt",
+   "display": "50 megatons of TNT (2.1 × 10¹⁷ J) per its Soviet designers; US 1961 estimate 57 Mt",
    "sources": [
     {
      "title": "Adamsky & Smirnov (1994) 'Moscow's Biggest Bomb: The 50-Megaton Test of October 1961', Cold War International History Project Bulletin 4 (Fall 1994), pp. 3, 19-21 (Wilson Center)",
@@ -1523,7 +1523,7 @@
    "unit_si": "J",
    "low_si": 418400000000000000,
    "high_si": 6.276e+17,
-   "display": "about 100-150 megatons (4.2-6.3 x 10^17 J) judged from its air wave (Harkrider & Press); 125 Mt used. A tsunami paper gives 200 Mt (8.4 x 10^17 J) for the third blast's total energy, with no source; other published figures run from about 10^17 to 6.3 x 10^18 J",
+   "display": "about 100–150 megatons of TNT (4.2–6.3 × 10¹⁷ J) judged from its air wave (Harkrider & Press); 125 Mt used. A tsunami paper gives 200 Mt (8.4 × 10¹⁷ J) for the third blast's total energy, with no source; other published figures run from about 10¹⁷ to 6.3 × 10¹⁸ J",
    "sources": [
     {
      "title": "Harkrider & Press (1967) The Krakatoa air-sea waves, Geophys. J. R. Astr. Soc. 13:149-159, p. 159 (Caltech repository PDF)",
@@ -1594,7 +1594,7 @@
    "status": "verified",
    "value_si": 5.2e+19,
    "unit_si": "J",
-   "display": "about 5.2 × 10¹⁹ J per day (6.0 × 10¹⁴ W), NOAA's worked figure for an average hurricane; rough, a factor of a few either way",
+   "display": "about 5.2 × 10¹⁹ J per day (6.0 × 10¹⁴ W), NOAA's worked figure for an average hurricane. NOAA gives no range; the lab treats it as rough (our estimate: real storms differ in size and rain rate by a factor of a few)",
    "sources": [
     {
      "title": "NOAA AOML Hurricane Research Division, Hurricane FAQ (revised 10 Sep 2025): 'How Much Energy does a Hurricane Produce?'",
@@ -1639,7 +1639,7 @@
    "unit_si": "J",
    "low_si": 6e+20,
    "high_si": 6.73e+20,
-   "display": "637.8 quadrillion Btu in 2022 = 6.7 × 10²⁰ J (US EIA); the Energy Institute's figure for 2025, reported second-hand, is just over 600 EJ (6.0 × 10²⁰ J)",
+   "display": "637.8 quadrillion Btu (British thermal units) in 2022 = 6.7 × 10²⁰ J (US EIA); the Energy Institute's figure for 2025, reported second-hand, is just over 600 EJ (6.0 × 10²⁰ J)",
    "sources": [
     {
      "title": "US EIA, International Energy Outlook 2023, Table A1 'World total primary energy consumption by region, Reference case' (PDF; World, 2022: 637.8 quadrillion Btu)",
@@ -1716,7 +1716,7 @@
    "value_si": 5e+23,
    "unit_si": "J",
    "high_si": 1.674e+25,
-   "display": "about 5 x 10^23 J (2022 review); an older estimate from a larger crater goes up to 1.7 x 10^25 J",
+   "display": "about 5 × 10²³ J (2022 review); an older estimate from a larger crater goes up to 1.7 × 10²⁵ J",
    "sources": [
     {
      "title": "Morgan, Bralower, Brugger & Wunnemann (2022) The Chicxulub impact and its environmental consequences, Nat. Rev. Earth Environ. 3:338-354, published version (NSF PAR; doi:10.1038/s43017-022-00283-y)",
@@ -1822,7 +1822,7 @@
    "status": "verified",
    "value_si": 3.828e+26,
    "unit_si": "W",
-   "display": "3.828 x 10^26 W, so 3.8 x 10^26 J each second",
+   "display": "3.828 × 10²⁶ W, so 3.8 × 10²⁶ J each second",
    "sources": [
     {
      "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)",
@@ -1844,7 +1844,7 @@
    "unit_si": "J",
    "low_si": 5.72e+27,
    "high_si": 6.7e+27,
-   "display": "about 6.5 x 10^27 J (layered models 6.3-6.7 x 10^27 J; 5.7 x 10^27 J if Pluto were uniform)",
+   "display": "about 6.5 × 10²⁷ J (layered models 6.3–6.7 × 10²⁷ J; 5.7 × 10²⁷ J if Pluto were uniform)",
    "sources": [
     {
      "title": "NASA NSSDCA Pluto Fact Sheet (last updated 11 Jan 2024)",
@@ -1859,8 +1859,8 @@
      "url": "https://physics.nist.gov/cgi-bin/cuu/Value?bg"
     }
    ],
-   "page_short": "the energy to blow Pluto apart",
-   "notes": "Energy to scatter all of Pluto to infinity. Uniform ball 3GM^2/(5R), G = 6.6743e-11 (existing gravitational_constant), M = 1.303e22 kg, R = 1,188.3 km: 5.72e27 J, a strict lower bound. Pluto is 65.5% rock by mass with an ice mantle of \"~300 km\" (Stern et al.). A two-layer model with an 888-900 km core (2,800-3,100 kg/m^3; hydrated rock) under ice or water at 950-1,100 kg/m^3 gives 6.32-6.50e27 J; packing all the anhydrous rock into a denser 820-850 km core gives up to 6.71e27. Value 6.5e27 J. Ice density assumed, not sourced; ignores porosity and compression. Spread under 20%: firm enough for a plain multiple. Skeptic: value lowered from 6.6e27 to match the source's 300 km mantle.",
+   "page_short": "the energy to blow Pluto apart for good",
+   "notes": "Energy to scatter all of Pluto to infinity. Uniform ball 3GM^2/(5R), G = 6.6743e-11 (existing gravitational_constant), M = 1.303e22 kg, R = 1,188.3 km: 5.72e27 J, a strict lower bound. Pluto is 65.5% rock by mass with an ice mantle of \"~300 km\" (Stern et al.). A two-layer model with an 888-900 km core (2,800-3,100 kg/m^3; hydrated rock) under ice or water at 950-1,100 kg/m^3 gives 6.32-6.50e27 J; packing all the anhydrous rock into a denser 820-850 km core gives up to 6.71e27. Value 6.5e27 J. Ice density assumed, not sourced; ignores porosity and compression. Spread under 20%: firm enough for a plain multiple. Skeptic: value lowered from 6.6e27 to match the source's 300 km mantle. Page phrase reworded in review round 1.",
    "who_when": "estimate, 13 Oct 2026",
    "research_topic": "planetary"
   },
@@ -1896,7 +1896,7 @@
    "unit_si": "J",
    "low_si": 3.43e+28,
    "high_si": 4.44e+28,
-   "display": "3.8 x 10^28 J (7.346 x 10^22 kg at a mean 1.022 km/s; 3.4-4.4 x 10^28 J over a year)",
+   "display": "3.8 × 10²⁸ J (7.346 × 10²² kg at a mean 1.022 km/s; 3.4–4.4 × 10²⁸ J between the slowest and fastest points of its orbit)",
    "sources": [
     {
      "title": "NASA NSSDCA Moon Fact Sheet (last updated 11 Jan 2024)",
@@ -1946,7 +1946,7 @@
    "unit_si": "J",
    "low_si": 2.13e+29,
    "high_si": 2.14e+29,
-   "display": "2.1 x 10^29 J (C = 8.04 x 10^37 kg m², one turn per 23.9345 h)",
+   "display": "2.1 × 10²⁹ J (its moment of inertia, 8.04 × 10³⁷ kg m², turning once every 23.9345 h)",
    "sources": [
     {
      "title": "Vilcu (2009) On the elements of the Earth's ellipsoid of inertia, An. Univ. Bucuresti Mat. 58(2):183-198, arXiv:1104.1033 (PDF)",
@@ -1973,7 +1973,7 @@
    "status": "derived",
    "value_si": 1.37808e+30,
    "unit_si": "J",
-   "display": "1.4 x 10^30 J (3.828 x 10^26 W for 3,600 s)",
+   "display": "1.4 × 10³⁰ J (3.828 × 10²⁶ W for 3,600 s)",
    "sources": [
     {
      "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)",
@@ -1998,7 +1998,7 @@
    "unit_si": "J",
    "low_si": 4.86e+30,
    "high_si": 5.12e+30,
-   "display": "5.1 x 10^30 J (4.9 x 10^30 J for a uniform Mars)",
+   "display": "5.1 × 10³⁰ J (4.9 × 10³⁰ J for a uniform Mars)",
    "sources": [
     {
      "title": "NASA NSSDCA Mars Fact Sheet (last updated 19 May 2025)",
@@ -2009,8 +2009,8 @@
      "url": "https://physics.nist.gov/cgi-bin/cuu/Value?bg"
     }
    ],
-   "page_short": "the energy to blow Mars apart",
-   "notes": "Uniform ball: 3GM^2/(5R), G = 6.6743e-11, M = 6.4169e23 kg, R = 3,389.5 km: 4.865e30 J (a lower bound). Mars is denser at the centre (I/MR^2 = 0.366). A two-layer Mars fitted to the mass and that factor gives 5.10-5.12e30 J for any core radius 1,500-2,000 km (core 5,900-8,300, mantle 3,420-3,520 kg/m^3); at NASA's listed 1,830 km core, 5.107e30. Value 5.1e30 J, good to a few percent. Ignores flattening and finer layering. Skeptic confirmed.",
+   "page_short": "the energy to blow Mars apart for good",
+   "notes": "Uniform ball: 3GM^2/(5R), G = 6.6743e-11, M = 6.4169e23 kg, R = 3,389.5 km: 4.865e30 J (a lower bound). Mars is denser at the centre (I/MR^2 = 0.366). A two-layer Mars fitted to the mass and that factor gives 5.10-5.12e30 J for any core radius 1,500-2,000 km (core 5,900-8,300, mantle 3,420-3,520 kg/m^3); at NASA's listed 1,830 km core, 5.107e30. Value 5.1e30 J, good to a few percent. Ignores flattening and finer layering. Skeptic confirmed. Page phrase reworded in review round 1.",
    "who_when": "derived 13 Oct 2026",
    "research_topic": "planetary"
   },
@@ -2021,7 +2021,7 @@
    "status": "derived",
    "value_si": 3.307392e+31,
    "unit_si": "J",
-   "display": "3.3 x 10^31 J (3.828 x 10^26 W for 86,400 s)",
+   "display": "3.3 × 10³¹ J (3.828 × 10²⁶ W for 86,400 s)",
    "sources": [
     {
      "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)",
@@ -2064,11 +2064,11 @@
   },
   {
    "key": "energy_earth_gravitational_binding",
-   "label": "Earth's gravitational binding energy (integrated over PREM)",
+   "label": "Earth's gravitational binding energy (from PREM, a standard model of Earth's interior)",
    "status": "derived",
    "value_si": 2.489e+32,
    "unit_si": "J",
-   "display": "about 2.49 x 10^32 J (2.24 x 10^32 J if Earth had uniform density)",
+   "display": "about 2.49 × 10³² J (2.24 × 10³² J if Earth had uniform density)",
    "sources": [
     {
      "title": "Dziewonski & Anderson (1981) Preliminary reference Earth model, PEPI 25:297-356, Table I (doi:10.1016/0031-9201(81)90046-7); PDF copy at Harvard CfA",
@@ -2090,7 +2090,7 @@
    "unit_si": "J",
    "low_si": 2.56e+33,
    "high_si": 2.74e+33,
-   "display": "2.6 x 10^33 J (5.9722 x 10^24 kg at a mean 29.78 km/s)",
+   "display": "2.6 × 10³³ J (5.9722 × 10²⁴ kg at a mean 29.78 km/s)",
    "sources": [
     {
      "title": "NASA NSSDCA Earth Fact Sheet (last updated 15 Nov 2024)",
@@ -2109,7 +2109,7 @@
    "status": "derived",
    "value_si": 1.208044772352e+34,
    "unit_si": "J",
-   "display": "1.2 x 10^34 J (3.828 x 10^26 W for one sidereal year, 365.256 days)",
+   "display": "1.2 × 10³⁴ J (3.828 × 10²⁶ W for one year, 365.256 days)",
    "sources": [
     {
      "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)",
@@ -2159,7 +2159,7 @@
    "unit_si": "J",
    "low_si": 1.47e+35,
    "high_si": 1.79e+35,
-   "display": "1.6 x 10^35 J (1.898 x 10^27 kg at a mean 13.06 km/s)",
+   "display": "1.6 × 10³⁵ J (1.898 × 10²⁷ kg at a mean 13.06 km/s)",
    "sources": [
     {
      "title": "NASA NSSDCA Jupiter Fact Sheet (last updated 2 Oct 2024)",
@@ -2178,7 +2178,7 @@
    "status": "derived",
    "value_si": 1.208044772352e+36,
    "unit_si": "J",
-   "display": "1.2 x 10^36 J (3.828 x 10^26 W for 100 sidereal years)",
+   "display": "1.2 × 10³⁶ J (3.828 × 10²⁶ W for 100 years)",
    "sources": [
     {
      "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)",
@@ -2238,7 +2238,7 @@
    "status": "derived",
    "value_si": 1.208e+37,
    "unit_si": "J",
-   "display": "about 1.2 × 10^37 J (1,000 years at 3.828 × 10^26 W)",
+   "display": "about 1.2 × 10³⁷ J (1,000 years at 3.828 × 10²⁶ W)",
    "sources": [
     {
      "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)",
@@ -2262,7 +2262,7 @@
    "value_si": 1e+38,
    "unit_si": "J",
    "high_si": 1.208e+39,
-   "display": "about 10^38 J (~10^45 erg, Hernanz & José 2000); models give 'a few times 10^45 erg' of nuclear energy (Hillman & Gerbi 2022); NASA outreach: 'up to 100,000 times the annual energy output of our sun' (about 1.2 × 10^39 J)",
+   "display": "about 10³⁸ J (Hernanz & José 2000); models give a few times 10³⁸ J of nuclear energy (Hillman & Gerbi 2022); NASA outreach: 'up to 100,000 times the annual energy output of our sun' (about 1.2 × 10³⁹ J)",
    "sources": [
     {
      "title": "Hernanz & José (2000) Thermonuclear runaways on accreting white dwarfs: models of classical novae explosions, AIP Conf. Proc. (DOI 10.1063/1.1291734); arXiv PDF",
@@ -2291,7 +2291,7 @@
    "unit_si": "J",
    "low_si": 4.608e+38,
    "high_si": 7.073e+39,
-   "display": "about 2 × 10^39 J in a fraction of a second; 0.5-7 × 10^39 J depending on the distance, which is still disputed (8.7 kpc, Bibby 2008; 9.4-18.6 kpc, Svirski 2011)",
+   "display": "about 2 × 10³⁹ J in a fraction of a second; 0.5–7 × 10³⁹ J depending on its distance, which is still disputed (about 28,000 light-years, Bibby 2008; 31,000–61,000 light-years, Svirski 2011)",
    "sources": [
     {
      "title": "Palmer et al. (2005) Gamma-ray observations of a giant flare from the magnetar SGR 1806-20, Nature 434, 1107 (DOI 10.1038/nature03525); arXiv abstract",
@@ -2326,7 +2326,7 @@
    "status": "derived",
    "value_si": 6.6023e+39,
    "unit_si": "J",
-   "display": "about 6.6 × 10^39 J (7.346 × 10^22 kg × c²)",
+   "display": "about 6.6 × 10³⁹ J (7.346 × 10²² kg × c²)",
    "sources": [
     {
      "title": "NASA NSSDCA Moon Fact Sheet (mass 0.07346e24 kg; existing fact moon_mass)",
@@ -2374,7 +2374,7 @@
    "unit_si": "J",
    "low_si": 5.8707e+40,
    "high_si": 6.2636e+40,
-   "display": "about 6 × 10^40 J (½ × 1.9884 × 10^30 kg × (247 km/s)^2)",
+   "display": "about 6 × 10⁴⁰ J (½ × 1.9884 × 10³⁰ kg × (247 km/s)²)",
    "sources": [
     {
      "title": "Reid et al. (2019) ApJ 885, 131; arXiv abstract (To + Vsun = 247 ± 4 km/s)",
@@ -2397,7 +2397,7 @@
    "status": "derived",
    "value_si": 5.3675e+41,
    "unit_si": "J",
-   "display": "about 5.4 × 10^41 J (5.9722 × 10^24 kg × c²)",
+   "display": "about 5.4 × 10⁴¹ J (5.9722 × 10²⁴ kg × c²)",
    "sources": [
     {
      "title": "NASA NSSDCA Earth Fact Sheet (mass 5.9722e24 kg; existing fact earth_mass)",
@@ -2422,7 +2422,7 @@
    "unit_si": "J",
    "low_si": 1e+42,
    "high_si": 1e+43,
-   "display": "about 10^42 J (~10^49 erg) for a core-collapse supernova; (1-10) × 10^49 erg across such events; Type Ia about 6 × 10^49 erg",
+   "display": "about 10⁴² J for a core-collapse supernova; 10⁴²–10⁴³ J across such events; Type Ia about 6 × 10⁴² J",
    "sources": [
     {
      "title": "Nadyozhin & Imshennik (2005) Physics of supernovae, Int. J. Mod. Phys. A (DOI 10.1142/S0217751X05029630); arXiv PDF",
@@ -2445,7 +2445,7 @@
    "status": "derived",
    "value_si": 1.208e+43,
    "unit_si": "J",
-   "display": "about 1.2 × 10^43 J (10^9 years at 3.828 × 10^26 W)",
+   "display": "about 1.2 × 10⁴³ J (10⁹ years at 3.828 × 10²⁶ W)",
    "sources": [
     {
      "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)",
@@ -2470,7 +2470,7 @@
    "unit_si": "J",
    "low_si": 5e+43,
    "high_si": 2e+44,
-   "display": "about 10^44 J (~10^51 erg, 'one Bethe'); core collapse typically (0.5-2) × 10^51 erg",
+   "display": "about 10⁴⁴ J; typically (0.5–2) × 10⁴⁴ J, and single events from about 10⁴³ J to a few times 10⁴⁴ J",
    "sources": [
     {
      "title": "Burrows & Vartanyan (2021) Core-collapse supernova explosion theory, Nature 589, 29 (DOI 10.1038/s41586-020-03059-w); arXiv PDF v3",
@@ -2485,7 +2485,7 @@
      "url": "https://arxiv.org/pdf/1206.2503"
     }
    ],
-   "notes": "Burrows & Vartanyan: 'supernova explosion energies are “typically” one Bethe'; abstract: 'A 10^51-erg (one “Bethe”) explosion'. Nadyozhin & Imshennik: core collapse 'typically of (0.5 − 2)×10^51 erg'; Type Ia 'Eexp ≈ 10^51 erg ... almost all Eexp turns out to be converted into the kinetic energy'. Janka: kinetic energies 'ranging from ≳10^50 erg to some 10^51 erg for SNe and up to several 10^52 erg for HNe'. The low and high values are the typical range (0.5-2e51 erg); ordinary single events range from about 10^50 to a few 10^51 erg (Janka 2012). Skeptic: that sentence replaces 'single events span about 10x either side'. Typical value known to about 2x: at the edge of the rough-wording rule. Rough by judgement (field rough): the typical value is known to about 2x, but ordinary core-collapse events span about 10^50 to a few 10^51 erg (Janka 2012, p. 12), as supernova light spans 10x across events (review round 1).",
+   "notes": "Burrows & Vartanyan: 'supernova explosion energies are “typically” one Bethe'; abstract: 'A 10^51-erg (one “Bethe”) explosion'. Nadyozhin & Imshennik: core collapse 'typically of (0.5 − 2)×10^51 erg'; Type Ia 'Eexp ≈ 10^51 erg ... almost all Eexp turns out to be converted into the kinetic energy'. Janka: kinetic energies 'ranging from ≳10^50 erg to some 10^51 erg for SNe and up to several 10^52 erg for HNe'. The low and high values are the typical range (0.5-2e51 erg); ordinary single events range from about 10^50 to a few 10^51 erg (Janka 2012). Skeptic: that sentence replaces 'single events span about 10x either side'. Typical value known to about 2x: at the edge of the rough-wording rule. Rough by judgement (field rough): the typical value is known to about 2x, but ordinary core-collapse events span about 10^50 to a few 10^51 erg (Janka 2012, p. 12), as supernova light spans 10x across events (review round 1). Burrows & Vartanyan's models range from 0.09 to 2.3 Bethes (review round 1).",
    "who_when": "Burrows & Vartanyan 2021; Nadyozhin & Imshennik 2005; Janka 2012",
    "page_short": "a supernova’s blast (its flying debris)",
    "research_topic": "stellar",
@@ -2498,7 +2498,7 @@
    "status": "derived",
    "value_si": 1.706e+44,
    "unit_si": "J",
-   "display": "about 1.7 × 10^44 J (1.89813 × 10^27 kg × c²)",
+   "display": "about 1.7 × 10⁴⁴ J (1.89813 × 10²⁷ kg × c²)",
    "sources": [
     {
      "title": "NASA NSSDCA Jupiter Fact Sheet (mass 1,898.13e24 kg)",
@@ -2517,13 +2517,13 @@
   {
    "key": "energy_hypernova_sn1998bw",
    "category": "energy_reference",
-   "label": "SN 1998bw, an unusually energetic supernova linked to a gamma-ray burst; one model gives 3 × 10^52 erg (a 'hypernova'), an aspherical model about 15 times less",
+   "label": "SN 1998bw, an unusually energetic supernova linked to a gamma-ray burst; one model gives 3 × 10⁴⁵ J (a 'hypernova'), an aspherical model about 15 times less",
    "status": "disputed",
    "value_si": 3e+45,
    "unit_si": "J",
    "low_si": 2e+44,
    "high_si": 5e+45,
-   "display": "about 3 × 10^45 J in one spherical model (3 × 10^52 erg; 2-5 × 10^52 erg); an aspherical model gives 2 × 10^51 erg (2 × 10^44 J)",
+   "display": "about 3 × 10⁴⁵ J in one spherical model (2–5 × 10⁴⁵ J); an aspherical model gives 2 × 10⁴⁴ J",
    "sources": [
     {
      "title": "Iwamoto et al. (1998) A 'hypernova' model for SN 1998bw associated with gamma-ray burst of 25 April 1998, Nature 395, 672 (DOI 10.1038/27155); arXiv abstract",
@@ -2560,7 +2560,7 @@
    "unit_si": "J",
    "low_si": 3e+46,
    "high_si": 5e+46,
-   "display": "about 3 × 10^46 J (~3 × 10^53 erg in neutrinos; (3-5) × 10^53 erg depending on core mass)",
+   "display": "about 3 × 10⁴⁶ J, almost all of it in neutrinos ((3–5) × 10⁴⁶ J depending on the core's mass)",
    "sources": [
     {
      "title": "Burrows & Vartanyan (2021) Core-collapse supernova explosion theory, Nature 589, 29 (DOI 10.1038/s41586-020-03059-w); arXiv PDF v3",
@@ -2575,9 +2575,9 @@
      "url": "https://arxiv.org/pdf/0804.4350"
     }
    ],
-   "notes": "Burrows & Vartanyan: 'a hot and lepton-rich PNS radiates ∼3×10^53 ergs in neutrinos as it transitions into a tightly bound, cold neutron star'. Nadyozhin & Imshennik: '(3 − 5)×10^53 erg = (10 − 15)% MFe c² radiated in form of neutrinos and antineutrinos'. Nadyozhin 2008: 'Eν = (3 − 5)×10^53 erg depending on the core mass'. The blast (about 10^51 erg) and the light (about 10^49 erg) add under 1%. Uncertain under 2x: plain multiple. Skeptic: values confirmed; page phrase reworded from 'a supernova, neutrinos included', which was unclear.",
+   "notes": "Burrows & Vartanyan: 'a hot and lepton-rich PNS radiates ∼3×10^53 ergs in neutrinos as it transitions into a tightly bound, cold neutron star'. Nadyozhin & Imshennik: '(3 − 5)×10^53 erg = (10 − 15)% MFe c² radiated in form of neutrinos and antineutrinos'. Nadyozhin 2008: 'Eν = (3 − 5)×10^53 erg depending on the core mass'. The blast (about 10^51 erg) and the light (about 10^49 erg) add under 1%. Uncertain under 2x: plain multiple. Skeptic: values confirmed; page phrase reworded from 'a supernova, neutrinos included', which was unclear. Page phrase reworded in review round 1.",
    "who_when": "Burrows & Vartanyan 2021; Nadyozhin & Imshennik 2005",
-   "page_short": "a supernova’s total energy (nearly all in neutrinos)",
+   "page_short": "the total energy of a massive star’s supernova (nearly all in neutrinos)",
    "research_topic": "stellar"
   },
   {
@@ -2587,7 +2587,7 @@
    "status": "derived",
    "value_si": 1.7871e+47,
    "unit_si": "J",
-   "display": "about 1.8 × 10^47 J (1.9884 × 10^30 kg × c²)",
+   "display": "about 1.8 × 10⁴⁷ J (1.9884 × 10³⁰ kg × c²)",
    "sources": [
     {
      "title": "NASA NSSDCA Sun Fact Sheet (mass 1,988,400e24 kg; 'Mass conversion rate (10^6 kg/s) 4260.')",
@@ -2612,7 +2612,7 @@
    "unit_si": "J",
    "low_si": 4.4677e+47,
    "high_si": 6.2548e+47,
-   "display": "3.0 ± 0.5 solar masses × c² ≈ 5.4 × 10^47 J, released in a fraction of a second",
+   "display": "3.0 ± 0.5 solar masses × c², about 5.4 × 10⁴⁷ J, given off in a fraction of a second",
    "sources": [
     {
      "title": "Abbott et al. (LIGO/Virgo, 2016) Observation of gravitational waves from a binary black hole merger, Phys. Rev. Lett. 116, 061102 (DOI 10.1103/PhysRevLett.116.061102); arXiv abstract",

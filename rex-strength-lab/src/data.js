@@ -621,7 +621,7 @@ window.DINO_DATA = {
   },
   {
    "id": "airrifle",
-   "short": "an air-rifle pellet at the legal limit in England and Wales",
+   "short": "an air-rifle pellet at the licence-free limit in England and Wales",
    "J": 16.27,
    "rough": false,
    "key": "energy_air_rifle_england_wales_limit",
@@ -877,7 +877,7 @@ window.DINO_DATA = {
   },
   {
    "id": "pluto",
-   "short": "the energy to blow Pluto apart",
+   "short": "the energy to blow Pluto apart for good",
    "J": 6.5e+27,
    "rough": false,
    "key": "energy_pluto_gravitational_binding",
@@ -909,7 +909,7 @@ window.DINO_DATA = {
   },
   {
    "id": "mars",
-   "short": "the energy to blow Mars apart",
+   "short": "the energy to blow Mars apart for good",
    "J": 5.1e+30,
    "rough": false,
    "key": "energy_mars_gravitational_binding",
@@ -929,7 +929,7 @@ window.DINO_DATA = {
    "J": 2.489e+32,
    "rough": false,
    "key": "energy_earth_gravitational_binding",
-   "label": "Earth's gravitational binding energy (integrated over PREM)"
+   "label": "Earth's gravitational binding energy (from PREM, a standard model of Earth's interior)"
   },
   {
    "id": "earthorbit",
@@ -1049,11 +1049,11 @@ window.DINO_DATA = {
    "J": 3e+45,
    "rough": true,
    "key": "energy_hypernova_sn1998bw",
-   "label": "SN 1998bw, an unusually energetic supernova linked to a gamma-ray burst; one model gives 3 × 10^52 erg (a 'hypernova'), an aspherical model about 15 times less"
+   "label": "SN 1998bw, an unusually energetic supernova linked to a gamma-ray burst; one model gives 3 × 10⁴⁵ J (a 'hypernova'), an aspherical model about 15 times less"
   },
   {
    "id": "sntotal",
-   "short": "a supernova’s total energy (nearly all in neutrinos)",
+   "short": "the total energy of a massive star’s supernova (nearly all in neutrinos)",
    "J": 3e+46,
    "rough": false,
    "key": "energy_supernova_total_neutrinos",
@@ -2984,7 +2984,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: Lifting a 100 g apple one metre (energy it gains)",
-   "value": "about 1 J (0.101 kg x 9.80665 m/s^2 x 1 m)",
+   "value": "about 1 J (0.101 kg × 9.81 m/s² × 1 m)",
    "status": "derived",
    "sources": [
     {
@@ -3072,7 +3072,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: Food energy in a level teaspoon of sugar",
-   "value": "about 68 kJ (16 kcal, i.e. 16 food Calories) per level teaspoon",
+   "value": "about 68 kJ (16 food Calories) per level teaspoon",
    "status": "derived",
    "sources": [
     {
@@ -3100,7 +3100,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: M67 hand grenade: chemical energy of its filler",
-   "value": "about 0.9 MJ (0.184 kg of Comp B x 5.02 MJ/kg); 1.0 MJ by the Army's ballistic-mortar TNT equivalence",
+   "value": "about 0.9 MJ (0.184 kg of Composition B, its explosive filler, × 5.02 MJ/kg); 1.0 MJ by the Army's TNT equivalence from a ballistic-mortar test (the work a charge does, compared with TNT)",
    "status": "derived",
    "sources": [
     {
@@ -3164,7 +3164,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: A month's food at the 2,000-Calorie reference diet (30 days)",
-   "value": "about 0.25 GJ (30 days x 2,000 Calories)",
+   "value": "about 0.25 GJ (30 days × 2,000 Calories)",
    "status": "derived",
    "sources": [
     {
@@ -3228,7 +3228,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: TNT equivalent: energy per ton of TNT",
-   "value": "1 ton of TNT = 4.184 x 10^9 J by definition; 1 kt = 4.184 x 10^12 J; 1 Mt = 4.184 x 10^15 J",
+   "value": "1 ton of TNT = 4.184 × 10⁹ J by definition; 1 kt = 4.184 × 10¹² J; 1 Mt = 4.184 × 10¹⁵ J",
    "status": "verified",
    "sources": [
     {
@@ -3292,7 +3292,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: Beirut port explosion, 4 Aug 2020: TNT-equivalent yield",
-   "value": "about 0.3-1.1 kt TNT in published estimates (0.13-2 kt at the extremes); 0.5 kt (2.1 TJ) used, Rigby et al.'s best estimate",
+   "value": "about 0.3–1.1 kt of TNT in published estimates (0.13–2 kt at the extremes); 0.5 kt (2.1 TJ) used, Rigby et al.'s best estimate",
    "status": "disputed",
    "sources": [
     {
@@ -3320,7 +3320,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: Hiroshima bomb (Little Boy) yield",
-   "value": "15 kilotons of TNT (6.3 x 10^13 J); DOE official; latest dosimetry estimate 16 +/- 2 kt",
+   "value": "15 kilotons of TNT (6.3 × 10¹³ J), the US Department of Energy's figure; a 2002 study of the radiation doses gives 16 ± 2 kt",
    "status": "verified",
    "sources": [
     {
@@ -3340,7 +3340,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: Chelyabinsk meteor airburst, 15 Feb 2013: energy",
-   "value": "about 500 +/- 100 kt TNT (1.7-2.5 PJ); NASA's fireball table: 441 kt",
+   "value": "about 500 ± 100 kt of TNT (1.7–2.5 PJ); NASA's fireball table: 441 kt",
    "status": "verified",
    "sources": [
     {
@@ -3372,7 +3372,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: Castle Bravo yield (1 Mar 1954 local; 28 Feb GMT)",
-   "value": "15 megatons of TNT (6.3 x 10^16 J); the highest-yield US nuclear test",
+   "value": "15 megatons of TNT (6.3 × 10¹⁶ J); the highest-yield US nuclear test",
    "status": "verified",
    "sources": [
     {
@@ -3384,7 +3384,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: Tsar Bomba yield (30 Oct 1961)",
-   "value": "50 megatons of TNT (2.1 x 10^17 J) per its Soviet designers; US 1961 estimate 57 Mt",
+   "value": "50 megatons of TNT (2.1 × 10¹⁷ J) per its Soviet designers; US 1961 estimate 57 Mt",
    "status": "verified",
    "sources": [
     {
@@ -3400,7 +3400,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: Krakatoa 1883: energy of the great explosion (air-wave equivalent)",
-   "value": "about 100-150 megatons (4.2-6.3 x 10^17 J) judged from its air wave (Harkrider & Press); 125 Mt used. A tsunami paper gives 200 Mt (8.4 x 10^17 J) for the third blast's total energy, with no source; other published figures run from about 10^17 to 6.3 x 10^18 J",
+   "value": "about 100–150 megatons of TNT (4.2–6.3 × 10¹⁷ J) judged from its air wave (Harkrider & Press); 125 Mt used. A tsunami paper gives 200 Mt (8.4 × 10¹⁷ J) for the third blast's total energy, with no source; other published figures run from about 10¹⁷ to 6.3 × 10¹⁸ J",
    "status": "disputed",
    "sources": [
     {
@@ -3432,7 +3432,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: Heat released by an average hurricane in one day (NOAA worked example)",
-   "value": "about 5.2 × 10¹⁹ J per day (6.0 × 10¹⁴ W), NOAA's worked figure for an average hurricane; rough, a factor of a few either way",
+   "value": "about 5.2 × 10¹⁹ J per day (6.0 × 10¹⁴ W), NOAA's worked figure for an average hurricane. NOAA gives no range; the lab treats it as rough (our estimate: real storms differ in size and rain rate by a factor of a few)",
    "status": "verified",
    "sources": [
     {
@@ -3444,7 +3444,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: World primary energy consumption in one year (2022)",
-   "value": "637.8 quadrillion Btu in 2022 = 6.7 × 10²⁰ J (US EIA); the Energy Institute's figure for 2025, reported second-hand, is just over 600 EJ (6.0 × 10²⁰ J)",
+   "value": "637.8 quadrillion Btu (British thermal units) in 2022 = 6.7 × 10²⁰ J (US EIA); the Energy Institute's figure for 2025, reported second-hand, is just over 600 EJ (6.0 × 10²⁰ J)",
    "status": "verified",
    "sources": [
     {
@@ -3480,7 +3480,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: Chicxulub impact energy (the dinosaur-killing asteroid)",
-   "value": "about 5 x 10^23 J (2022 review); an older estimate from a larger crater goes up to 1.7 x 10^25 J",
+   "value": "about 5 × 10²³ J (2022 review); an older estimate from a larger crater goes up to 1.7 × 10²⁵ J",
    "status": "disputed",
    "sources": [
     {
@@ -3516,7 +3516,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: Nominal solar luminosity (rung: the Sun's output in one second)",
-   "value": "3.828 x 10^26 W, so 3.8 x 10^26 J each second",
+   "value": "3.828 × 10²⁶ W, so 3.8 × 10²⁶ J each second",
    "status": "verified",
    "sources": [
     {
@@ -3528,7 +3528,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: Pluto's gravitational binding energy (the energy to blow Pluto apart)",
-   "value": "about 6.5 x 10^27 J (layered models 6.3-6.7 x 10^27 J; 5.7 x 10^27 J if Pluto were uniform)",
+   "value": "about 6.5 × 10²⁷ J (layered models 6.3–6.7 × 10²⁷ J; 5.7 × 10²⁷ J if Pluto were uniform)",
    "status": "estimate",
    "sources": [
     {
@@ -3548,7 +3548,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: The Moon's kinetic energy in its orbit around Earth",
-   "value": "3.8 x 10^28 J (7.346 x 10^22 kg at a mean 1.022 km/s; 3.4-4.4 x 10^28 J over a year)",
+   "value": "3.8 × 10²⁸ J (7.346 × 10²² kg at a mean 1.022 km/s; 3.4–4.4 × 10²⁸ J between the slowest and fastest points of its orbit)",
    "status": "derived",
    "sources": [
     {
@@ -3560,7 +3560,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: Earth's rotational kinetic energy (the energy of its daily spin)",
-   "value": "2.1 x 10^29 J (C = 8.04 x 10^37 kg m², one turn per 23.9345 h)",
+   "value": "2.1 × 10²⁹ J (its moment of inertia, 8.04 × 10³⁷ kg m², turning once every 23.9345 h)",
    "status": "derived",
    "sources": [
     {
@@ -3580,7 +3580,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: The Sun's output for one hour",
-   "value": "1.4 x 10^30 J (3.828 x 10^26 W for 3,600 s)",
+   "value": "1.4 × 10³⁰ J (3.828 × 10²⁶ W for 3,600 s)",
    "status": "derived",
    "sources": [
     {
@@ -3596,7 +3596,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: Mars's gravitational binding energy (the energy to blow Mars apart)",
-   "value": "5.1 x 10^30 J (4.9 x 10^30 J for a uniform Mars)",
+   "value": "5.1 × 10³⁰ J (4.9 × 10³⁰ J for a uniform Mars)",
    "status": "derived",
    "sources": [
     {
@@ -3612,7 +3612,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: The Sun's output for one day",
-   "value": "3.3 x 10^31 J (3.828 x 10^26 W for 86,400 s)",
+   "value": "3.3 × 10³¹ J (3.828 × 10²⁶ W for 86,400 s)",
    "status": "derived",
    "sources": [
     {
@@ -3627,8 +3627,8 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Energy: Earth's gravitational binding energy (integrated over PREM)",
-   "value": "about 2.49 x 10^32 J (2.24 x 10^32 J if Earth had uniform density)",
+   "label": "Energy: Earth's gravitational binding energy (from PREM, a standard model of Earth's interior)",
+   "value": "about 2.49 × 10³² J (2.24 × 10³² J if Earth had uniform density)",
    "status": "derived",
    "sources": [
     {
@@ -3640,7 +3640,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: Earth's kinetic energy in its orbit around the Sun",
-   "value": "2.6 x 10^33 J (5.9722 x 10^24 kg at a mean 29.78 km/s)",
+   "value": "2.6 × 10³³ J (5.9722 × 10²⁴ kg at a mean 29.78 km/s)",
    "status": "derived",
    "sources": [
     {
@@ -3652,7 +3652,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: The Sun's output for one year",
-   "value": "1.2 x 10^34 J (3.828 x 10^26 W for one sidereal year, 365.256 days)",
+   "value": "1.2 × 10³⁴ J (3.828 × 10²⁶ W for one year, 365.256 days)",
    "status": "derived",
    "sources": [
     {
@@ -3672,7 +3672,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: Jupiter's kinetic energy in its orbit around the Sun",
-   "value": "1.6 x 10^35 J (1.898 x 10^27 kg at a mean 13.06 km/s)",
+   "value": "1.6 × 10³⁵ J (1.898 × 10²⁷ kg at a mean 13.06 km/s)",
    "status": "derived",
    "sources": [
     {
@@ -3684,7 +3684,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: The Sun's output for one hundred years",
-   "value": "1.2 x 10^36 J (3.828 x 10^26 W for 100 sidereal years)",
+   "value": "1.2 × 10³⁶ J (3.828 × 10²⁶ W for 100 years)",
    "status": "derived",
    "sources": [
     {
@@ -3704,7 +3704,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: The Sun's total output for 1,000 years",
-   "value": "about 1.2 × 10^37 J (1,000 years at 3.828 × 10^26 W)",
+   "value": "about 1.2 × 10³⁷ J (1,000 years at 3.828 × 10²⁶ W)",
    "status": "derived",
    "sources": [
     {
@@ -3720,7 +3720,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: A classical nova (a thermonuclear explosion on the surface of a white dwarf, a dead star)",
-   "value": "about 10^38 J (~10^45 erg, Hernanz & José 2000); models give 'a few times 10^45 erg' of nuclear energy (Hillman & Gerbi 2022); NASA outreach: 'up to 100,000 times the annual energy output of our sun' (about 1.2 × 10^39 J)",
+   "value": "about 10³⁸ J (Hernanz & José 2000); models give a few times 10³⁸ J of nuclear energy (Hillman & Gerbi 2022); NASA outreach: 'up to 100,000 times the annual energy output of our sun' (about 1.2 × 10³⁹ J)",
    "status": "verified",
    "sources": [
     {
@@ -3740,7 +3740,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: Giant flare of the magnetar SGR 1806-20, 27 Dec 2004 (a magnetar is a dead star with an extreme magnetic field): energy of its first fraction of a second",
-   "value": "about 2 × 10^39 J in a fraction of a second; 0.5-7 × 10^39 J depending on the distance, which is still disputed (8.7 kpc, Bibby 2008; 9.4-18.6 kpc, Svirski 2011)",
+   "value": "about 2 × 10³⁹ J in a fraction of a second; 0.5–7 × 10³⁹ J depending on its distance, which is still disputed (about 28,000 light-years, Bibby 2008; 31,000–61,000 light-years, Svirski 2011)",
    "status": "disputed",
    "sources": [
     {
@@ -3768,7 +3768,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: The Moon's whole mass turned into energy (E = mc²)",
-   "value": "about 6.6 × 10^39 J (7.346 × 10^22 kg × c²)",
+   "value": "about 6.6 × 10³⁹ J (7.346 × 10²² kg × c²)",
    "status": "derived",
    "sources": [
     {
@@ -3784,7 +3784,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: Kinetic energy of the Sun's motion around the centre of the Milky Way",
-   "value": "about 6 × 10^40 J (½ × 1.9884 × 10^30 kg × (247 km/s)^2)",
+   "value": "about 6 × 10⁴⁰ J (½ × 1.9884 × 10³⁰ kg × (247 km/s)²)",
    "status": "derived",
    "sources": [
     {
@@ -3800,7 +3800,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: Earth's whole mass turned into energy (E = mc²)",
-   "value": "about 5.4 × 10^41 J (5.9722 × 10^24 kg × c²)",
+   "value": "about 5.4 × 10⁴¹ J (5.9722 × 10²⁴ kg × c²)",
    "status": "derived",
    "sources": [
     {
@@ -3816,7 +3816,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: All the light a supernova gives off (typical core-collapse supernova, the explosion of a massive star; Type Ia supernovae give a few times more)",
-   "value": "about 10^42 J (~10^49 erg) for a core-collapse supernova; (1-10) × 10^49 erg across such events; Type Ia about 6 × 10^49 erg",
+   "value": "about 10⁴² J for a core-collapse supernova; 10⁴²–10⁴³ J across such events; Type Ia about 6 × 10⁴² J",
    "status": "verified",
    "sources": [
     {
@@ -3832,7 +3832,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: The Sun's total output for a billion years (at today's output)",
-   "value": "about 1.2 × 10^43 J (10^9 years at 3.828 × 10^26 W)",
+   "value": "about 1.2 × 10⁴³ J (10⁹ years at 3.828 × 10²⁶ W)",
    "status": "derived",
    "sources": [
     {
@@ -3848,7 +3848,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: A supernova's blast: the kinetic energy of its flying debris (typical; core-collapse and Type Ia alike)",
-   "value": "about 10^44 J (~10^51 erg, 'one Bethe'); core collapse typically (0.5-2) × 10^51 erg",
+   "value": "about 10⁴⁴ J; typically (0.5–2) × 10⁴⁴ J, and single events from about 10⁴³ J to a few times 10⁴⁴ J",
    "status": "verified",
    "sources": [
     {
@@ -3868,7 +3868,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: Jupiter's whole mass turned into energy (E = mc²)",
-   "value": "about 1.7 × 10^44 J (1.89813 × 10^27 kg × c²)",
+   "value": "about 1.7 × 10⁴⁴ J (1.89813 × 10²⁷ kg × c²)",
    "status": "derived",
    "sources": [
     {
@@ -3883,8 +3883,8 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Energy: SN 1998bw, an unusually energetic supernova linked to a gamma-ray burst; one model gives 3 × 10^52 erg (a 'hypernova'), an aspherical model about 15 times less",
-   "value": "about 3 × 10^45 J in one spherical model (3 × 10^52 erg; 2-5 × 10^52 erg); an aspherical model gives 2 × 10^51 erg (2 × 10^44 J)",
+   "label": "Energy: SN 1998bw, an unusually energetic supernova linked to a gamma-ray burst; one model gives 3 × 10⁴⁵ J (a 'hypernova'), an aspherical model about 15 times less",
+   "value": "about 3 × 10⁴⁵ J in one spherical model (2–5 × 10⁴⁵ J); an aspherical model gives 2 × 10⁴⁴ J",
    "status": "disputed",
    "sources": [
     {
@@ -3912,7 +3912,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: Everything a core-collapse supernova (the explosion of a massive star) releases, about 99% of it as neutrinos (ghostly particles that pass through almost everything)",
-   "value": "about 3 × 10^46 J (~3 × 10^53 erg in neutrinos; (3-5) × 10^53 erg depending on core mass)",
+   "value": "about 3 × 10⁴⁶ J, almost all of it in neutrinos ((3–5) × 10⁴⁶ J depending on the core's mass)",
    "status": "verified",
    "sources": [
     {
@@ -3932,7 +3932,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: The Sun's whole mass turned into energy (E = mc²)",
-   "value": "about 1.8 × 10^47 J (1.9884 × 10^30 kg × c²)",
+   "value": "about 1.8 × 10⁴⁷ J (1.9884 × 10³⁰ kg × c²)",
    "status": "derived",
    "sources": [
     {
@@ -3948,7 +3948,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: GW150914: the energy two colliding black holes gave off as gravitational waves (ripples in space), the first such collision detected (14 Sep 2015)",
-   "value": "3.0 ± 0.5 solar masses × c² ≈ 5.4 × 10^47 J, released in a fraction of a second",
+   "value": "3.0 ± 0.5 solar masses × c², about 5.4 × 10⁴⁷ J, given off in a fraction of a second",
    "status": "verified",
    "sources": [
     {
@@ -9145,7 +9145,7 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://arxiv.org/pdf/1510.07674",
-     "title": "Prša et al. (2016) Nominal values for selected solar and planetary quantities: IAU 2015 Resolution B2 and B3, arXiv:1510.07674 (PDF)"
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674"
     }
    ],
    "note": null
@@ -9233,7 +9233,7 @@ window.DINO_DATA = {
     },
     {
      "url": "https://arxiv.org/pdf/1510.07674",
-     "title": "Prša et al. (2016) Nominal values for selected solar and planetary quantities: IAU 2015 Resolution B2 and B3, arXiv:1510.07674 (PDF)"
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674"
     }
    ],
    "note": null

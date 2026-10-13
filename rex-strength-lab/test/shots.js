@@ -550,7 +550,8 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       m = t.match(/^([\d.,]+) ([kMGTPE]?)J$/);
       return m ? Number(m[1].replace(/,/g, '')) * ({ '': 1, k: 1e3, M: 1e6, G: 1e9, T: 1e12, P: 1e15, E: 1e18 })[m[2]] : NaN;
     };
-    const ladderText = (J) => page.evaluate((x) => [0.995, 1, 1.005].map((f) => window.EnergyLadder.compare(x * f, window.DINO_DATA.energyRefs).text), J);
+    // the energy tile shows 3 figures (2 above 10²¹ J), so any energy within 5% of it is allowed
+    const ladderText = (J) => page.evaluate((x) => Array.from({ length: 41 }, (_, i) => window.EnergyLadder.compare(x * (0.95 + 0.0025 * i), window.DINO_DATA.energyRefs).text), J);
     // any 'N× <rung>' or 'N% of <rung>' anywhere in a text that breaks the rule (Weight tab, catch, Collide)
     const shorts = await page.evaluate(() => window.DINO_DATA.energyRefs.map((e) => e.short));
     const esc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -574,13 +575,20 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     else okLog('each Compared with tile is the ladder’s wording for the energy shown beside it');
     // the Weight tab's own comparisons (dense matter, the Earth falling onto him) and the growth what-if keep to the rule
     const weightBad = [];
-    for (const st of [{ action: 'weight', H: 10, m: 1e27 }, { action: 'weight', H: 0.1, m: 1.1e13 }, { action: 'weight', m: 1e21 }, { action: 'weight', m: 1e24 }, { action: 'weight', growWhat: 'krakatoa' }, { action: 'weight', growWhat: 'chicxulub' }]) {
+    // (growth what-ifs reset on every load, so those are clicked)
+    const growHead = {};
+    for (const st of [{ action: 'weight', H: 10, m: 1e27 }, { action: 'weight', H: 0.1, m: 1.1e13 }, { action: 'weight', m: 1e21 }, { action: 'weight', m: 1e24 }, { action: 'weight', grow: 'krakatoa' }, { action: 'weight', grow: 'chicxulub' }]) {
       await load(st, false);
+      if (st.grow) { await page.click('#grow-what-' + st.grow); await page.waitForTimeout(400); await settle(page, 'bay'); growHead[st.grow] = await page.evaluate(() => (Array.from(document.querySelectorAll('#bay .growth-whatif p')).find((n) => /which becomes/.test(n.textContent)) || {}).textContent || ''); }
       const t = await page.evaluate(() => document.getElementById('bay').textContent.replace(/\u00a0/g, ' ').replace(/\s+/g, ' '));
       const off = offRule(t).concat(Array.from(t.matchAll(/[\d.,]+(?: [a-z]+illion)?(?:×|% of) the energy (?:it takes to blow|that holds) the Earth/g)).map((m) => m[0]));
       if (off.length) weightBad.push(JSON.stringify(st) + ': ' + off.join(' | '));
     }
     if (weightBad.length) fail('Weight tab energy comparisons outside the ladder rule: ' + weightBad.slice(0, 3).join(' || ')); else okLog('the Weight tab’s energy comparisons (dense matter, the Earth falling in, growth) keep to the ladder rule');
+    // a rough rung's energy, and the mass it makes, is given to one figure in the growth what-if
+    const oneFig = /: about \d(?: × 10[⁰¹²³⁴⁵⁶⁷⁸⁹]+)? J, which becomes about \d+(?:,0+)* (?:kg|t) of mass/;
+    if (!oneFig.test(growHead.krakatoa || '') || !oneFig.test(growHead.chicxulub || '')) fail('growth what-if: rough energies should be given to one figure: ' + JSON.stringify(growHead));
+    else okLog('growth what-if gives the rough Krakatoa and dinosaur-killer energies to one figure: ' + growHead.krakatoa.slice(0, 90) + '…');
     // the sources table lists every rung with its status and a link
     const rows = await page.evaluate(() => Array.from(document.querySelectorAll('#src-table tbody tr')).map((tr) => ({ label: tr.cells[0].textContent, status: tr.cells[2].textContent, links: tr.cells[3].querySelectorAll('a').length })));
     const want = await page.evaluate(() => window.DINO_DATA.energyRefs.map((e) => 'Energy: ' + e.label));

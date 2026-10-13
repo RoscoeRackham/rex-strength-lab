@@ -26,6 +26,7 @@ for (const r of R) {
   ok('rung ' + r.id + ': the fact has a status and at least one web source', STATUSES.includes(f.status) && f.sources.length > 0 && f.sources.every((s) => /^https?:\/\//.test(s.url)), f.status + ', ' + f.sources.length + ' sources');
   ok('rung ' + r.id + ': its page phrase is the fact’s page_short', r.short === String(f.page_short).replace(/'/g, '’'), r.short);
   const row = D.sourceRows.find((x) => x.label === 'Energy: ' + r.label);
+  ok('rung ' + r.id + ': its sources-table row uses plain notation (no ^, x for ×, +/-, ~, ≈, erg, kpc or Bethe)', !!row && !/\^|\d x \d|\+\/-|~|≈|\berg\b|\bkpc\b|Bethe/.test(row.label + ' ' + row.value), row && row.value);
   ok('rung ' + r.id + ': shown in the sources table with the fact’s status and its first source', !!row && row.status === f.status && row.sources.some((s) => s.url === f.sources[0].url), row ? row.status : 'no row');
   // uncertain by more than about 2× either way: rough wording only
   const wide = (f.high_si > 0 && f.high_si / f.value_si > 2) || (f.low_si > 0 && f.value_si / f.low_si > 2);

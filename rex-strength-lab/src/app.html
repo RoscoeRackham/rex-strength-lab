@@ -1958,7 +1958,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       const gB = P.grownBody(c.body, E, s0);
       return el('tr', {}, el('th', { text: lbl }), el('td', { 'data-col': 'Mass', text: fmtMass(gB.m) + ' (' + (gB.ratio < 1.01 ? 'unnoticeable: +' + sig(100 * (gB.ratio - 1), 1) + '%' : gB.ratio < 1.1 ? '+' + sig(100 * (gB.ratio - 1), 2) + '%' : fmtRatio(gB.ratio)) + ')' }), el('td', { 'data-col': 'Height', text: fmtDist(gB.H) }), el('td', { 'data-col': 'Density', text: fmtDensity2(gB.rho) }));
     });
-    box.append(el('p', { style: 'margin:0', text: capital(ref.short) + ': ' + fmtSI(E, 'J') + ', which becomes ' + fmtMass(E / (K.c * K.c)) + ' of mass. From ' + fmtMass(c.body.m) + ' and ' + fmtDist(c.body.H) + ':' }));
+    // a rough rung's energy, and the mass it makes, to one figure
+    const mE = E / (K.c * K.c);
+    const eTxt = ref.rough ? 'about ' + sci(E, 1) + ' J' : fmtSI(E, 'J'), mTxt = ref.rough ? 'about ' + (mE < 1000 ? sig(mE, 1) + ' kg' : big(Number(mE.toPrecision(1)) / 1000) + ' t') : fmtMass(mE);
+    box.append(el('p', { style: 'margin:0', text: capital(ref.short) + ': ' + eTxt + ', which becomes ' + mTxt + ' of mass. From ' + fmtMass(c.body.m) + ' and ' + fmtDist(c.body.H) + ':' }));
     // how firm each energy is (research/final-energy.json and final-presence.json)
     const firm = {
       krakatoa: 'Disputed: the lab uses 125 Mt (5.2 × 10¹⁷ J), the middle of the one refereed estimate with a stated method, 100–150 Mt from its air wave (Harkrider & Press 1967). 200 Mt (8.4 × 10¹⁷ J) is often quoted, with no method. Other figures, in encyclopedias and a 1982 Geological Society of America volume, run from about 10¹⁷ to 6.3 × 10¹⁸ J (as collected in an unrefereed preprint, Lobanovsky 2013).',
