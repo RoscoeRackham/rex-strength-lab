@@ -11,8 +11,9 @@ import subprocess
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FACTS = {}
-for topic in ['humans', 'fiction', 'objects', 'environment', 'density', 'duo', 'presence']:
+for topic in ['humans', 'fiction', 'objects', 'environment', 'density', 'duo', 'presence', 'energy']:
     for f in json.load(open(os.path.join(HERE, 'research', f'final-{topic}.json'), encoding='utf-8'))['facts']:
+        assert f['key'] not in FACTS, 'fact key in two research files: ' + f['key']
         FACTS[f['key']] = f
 
 ST = 907.18474  # US short ton, kg (Marvel handbook tons read as short tons)
@@ -214,21 +215,54 @@ row('Thrown-object area', 'Orientation-averaged projected area (a tumbling objec
 row('Rolling resistance (cars, trucks, trains)', 'cars 0.012 · trucks/buses 0.007–0.008 · locomotive on rail 0.0015', [], st='estimate', extra_sources=[WIKI_RR])
 
 # ----------------------------------------------------------------------------- energy references
-energy = [
-    dict(id='pitch', short='the fastest pitch on record', J=0.5 * 0.1453 * 47.297 ** 2, keys=['fastest_baseball_pitch', 'baseball_mass'], label='Fastest pitch (kinetic energy)'),
-    dict(id='carcrash', short='a Corolla at 100 km/h', J=0.5 * 1340 * (100 / 3.6) ** 2, keys=['toyota_corolla_curb_mass'], label='Corolla at 100 km/h (kinetic energy)'),
-    dict(id='grenade', short='a hand grenade', J=1.0e6, keys=['energy_m67_tnt_equivalent_estimate', 'energy_m67_grenade_explosive_mass'], label='M67 hand grenade'),
-    dict(id='moab', short='the MOAB bomb', J=4.6024e10, keys=['energy_moab_yield'], label='GBU-43 MOAB'),
-    dict(id='hiroshima', short='the Hiroshima bomb', J=6.276e13, keys=['energy_hiroshima_yield'], label='Hiroshima bomb'),
-    dict(id='bravo', short='Castle Bravo', J=6.276e16, keys=['energy_castle_bravo_yield'], label='Castle Bravo (15 Mt)'),
-    dict(id='tsar', short='the Tsar Bomba', J=2.092e17, keys=['energy_tsar_bomba_yield'], label='Tsar Bomba (50 Mt)'),
-    dict(id='krakatoa', short='the 1883 Krakatoa eruption', J=8.4e17, keys=['energy_krakatoa_1883'], label='Krakatoa 1883'),
-    dict(id='chicxulub', short='the dinosaur-killing asteroid', J=4.2e23, keys=['energy_chicxulub_impact'], label='Chicxulub impact (sim uses 4.2 × 10²³ J, inside the published 10²³–10²⁴ J)'),
-    dict(id='sun', short='the Sun’s output for one second', J=3.828e26, keys=['energy_sun_luminosity'], label='Sun’s output in one second'),
-    dict(id='earthbind', short='the energy to blow Earth apart', J=2.49e32, keys=['energy_earth_gravitational_binding'], label='Earth’s gravitational binding energy'),
+# The energy ladder (BRIEF-gui.md section 6; research/final-energy.json). Each rung is one research fact: its energy is
+# the fact's value, its page phrase the fact's page_short. A rung is rough (rough multiples only) when its fact's range
+# runs more than 2x either side of the value, or when the fact says so (field rough, with the reason in its notes).
+# Neighbouring rungs are at most 100x apart (src/ladder.js names the nearest: at most 10x, or at least 10%).
+# The ids of the first eleven are kept: the growth what-if and the milestones use krakatoa, chicxulub, sun, hiroshima,
+# tsar and earthbind.
+LADDER = [
+    ('apple', 'energy_apple_small_lift_one_metre'), ('airrifle', 'energy_air_rifle_england_wales_limit'),
+    ('pitch', 'energy_fastest_pitch_kinetic'), ('rifle', 'energy_rifle_bullet_556'), ('bolt', 'energy_usain_bolt_top_speed'),
+    ('sugar', 'energy_sugar_teaspoon_food_energy'), ('carcrash', 'energy_corolla_100kmh_kinetic'), ('grenade', 'energy_m67_tnt_equivalent_estimate'),
+    ('food', 'energy_day_of_food_2000_calories'), ('truck', 'energy_semi_truck_100kmh'), ('homeday', 'energy_us_home_electricity_day'),
+    ('foodmonth', 'energy_month_of_food_2000_calories'), ('lightning', 'energy_lightning_flash'), ('train', 'energy_high_speed_train_full_speed'),
+    ('tnt', 'energy_tnt_equivalent_per_tonne'), ('a380', 'energy_a380_cruise'), ('moab', 'energy_moab_yield'),
+    ('hubble', 'energy_hubble_orbit_kinetic'), ('beirut', 'energy_beirut_explosion_2020'), ('iss', 'energy_iss_orbit_kinetic'),
+    ('hiroshima', 'energy_hiroshima_yield'), ('chelyabinsk', 'energy_chelyabinsk_meteor_2013'), ('hoover', 'energy_hoover_dam_year'),
+    ('bravo', 'energy_castle_bravo_yield'), ('tsar', 'energy_tsar_bomba_yield'), ('krakatoa', 'energy_krakatoa_1883'),
+    ('worldday', 'energy_world_energy_use_day'), ('hurricane', 'energy_hurricane_heat_per_day'), ('worldyear', 'energy_world_energy_use_year'),
+    ('sunlightday', 'energy_sunlight_on_earth_day'), ('chicxulub', 'energy_chicxulub_impact'), ('sunlightyear', 'energy_sunlight_on_earth_year'),
+    ('sun', 'energy_sun_luminosity'), ('pluto', 'energy_pluto_gravitational_binding'), ('moonorbit', 'energy_moon_orbital_kinetic'),
+    ('earthspin', 'energy_earth_rotational_kinetic'), ('sunhour', 'energy_sun_output_hour'), ('mars', 'energy_mars_gravitational_binding'),
+    ('sunday', 'energy_sun_output_day'), ('earthbind', 'energy_earth_gravitational_binding'), ('earthorbit', 'energy_earth_orbital_kinetic'),
+    ('sunyear', 'energy_sun_output_year'), ('jupiterorbit', 'energy_jupiter_orbital_kinetic'), ('suncentury', 'energy_sun_output_century'),
+    ('sunmillennium', 'energy_sun_output_millennium'), ('nova', 'energy_classical_nova'), ('magnetar', 'energy_magnetar_flare_2004'),
+    ('moonmass', 'energy_moon_mass_energy'), ('sungalaxy', 'energy_sun_galactic_orbit_kinetic'), ('earthmass', 'energy_earth_mass_energy'),
+    ('snlight', 'energy_supernova_light'), ('sunbillion', 'energy_sun_output_billion_years'), ('snblast', 'energy_supernova_blast'),
+    ('jupitermass', 'energy_jupiter_mass_energy'), ('sn1998bw', 'energy_hypernova_sn1998bw'), ('sntotal', 'energy_supernova_total_neutrinos'),
+    ('sunmass', 'energy_sun_mass_energy'), ('gw150914', 'energy_gw150914'),
 ]
-for e in energy:
-    row('Energy: ' + e.pop('label'), '%.3g J' % e['J'], e.pop('keys'))
+
+
+def rough_fact(f):
+    v, lo, hi = f['value_si'], f.get('low_si'), f.get('high_si')
+    return bool(f.get('rough')) or bool(hi and hi / v > 2) or bool(lo and v / lo > 2)
+
+
+energy = []
+for rid, k in LADDER:
+    f = fact(k)
+    if k == 'energy_sun_luminosity':
+        J = f['value_si'] * 1.0  # watts for one second
+    else:
+        assert f['unit_si'] == 'J', k
+        J = f['value_si']
+    energy.append(dict(id=rid, short=f['page_short'].replace("'", '’'), J=J, rough=rough_fact(f), key=k, label=f['label']))
+    row('Energy: ' + f['label'], f['display'], [k], extra_sources=[{'url': x['url'], 'title': x.get('title') or ''} for x in f['sources'][2:]])
+energy.sort(key=lambda e: e['J'])
+for a_, b_ in zip(energy, energy[1:]):
+    assert b_['J'] / a_['J'] <= 100, 'energy ladder step wider than 100x: %s to %s' % (a_['id'], b_['id'])
 
 # ----------------------------------------------------------------------------- blast thresholds
 overpressure = [
@@ -309,7 +343,7 @@ feats = [
          run=dict(liftKg=511, action='pull', obj='cc177')),
     feat('human', 'Shot put, 23.56 m', 'Ryan Crouser · 2023', 'World record with the 7.26 kg men’s shot. Used to calibrate the throw model.', ['shot_put_wr'],
          run=dict(liftKg=511, action='throw', obj='shot', angle=37)),
-    feat('human', 'Fastest pitch, 105.8 mph', 'Aroldis Chapman · 2010', '47.3 m/s as the ball leaves the hand.', ['fastest_baseball_pitch'],
+    feat('human', 'Fastest pitch, 105.8 mph', 'Aroldis Chapman · 2010', '47.3 m/s, the ball speed MLB lists. The lab takes it as the speed leaving the hand.', ['fastest_baseball_pitch'],
          run=dict(liftKg=511, action='throw', obj='baseball', angle=2)),
     feat('human', 'Top speed 12.42 m/s', 'Usain Bolt · Berlin, 2009', 'Average over his fastest 20 m in the 9.58 s world record.', ['bolt_peak_running_speed'],
          run=dict(liftKg=511, action='sprint')),

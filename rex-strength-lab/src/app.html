@@ -472,6 +472,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
 /*__ENGINE__*/
 </script>
 <script>
+/*__LADDER__*/
+</script>
+<script>
 /*__DATA__*/
 </script>
 <script>
@@ -560,20 +563,13 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (t < 1e12) return sig(t / 1e9, 2) + ' Gt TNT';
     return sci(t, 2) + ' t TNT';
   }
-  function compareEnergy(J) {
-    if (!isFinite(J)) return 'more than any finite amount';
-    const refs = D.energyRefs.slice().sort((a, b) => a.J - b.J);
-    let best = null;
-    for (const r of refs) if (r.J <= J) best = r;
-    if (!best) {
-      const r = refs[0];
-      return sig(J / r.J * 100, 2) + '% of ' + r.short;
-    }
-    const ratio = J / best.J;
-    if (ratio < 1.15) return '≈ ' + best.short;
-    // the dinosaur-killer's energy is uncertain by about 10x: give only a rough multiple
-    if (best.id === 'chicxulub') return 'roughly ' + sig(ratio, 1) + '× ' + best.short;
-    return big(ratio, 2) + '× ' + best.short;
+  // the energy ladder's wording (src/ladder.js; BRIEF-gui.md section 6)
+  function compareEnergy(J) { return window.EnergyLadder.compare(J, D.energyRefs).text; }
+  // the same, then whether it would blow the Earth apart: said once, in words, with no multiple (unless the ladder
+  // already named that rung)
+  function compareWithEarth(J, more) {
+    const c = window.EnergyLadder.compare(J, D.energyRefs);
+    return c.text + (J >= K.EARTH_BIND && !(c.ref && c.ref.id === 'earthbind') ? ', ' + more : '');
   }
   function fmtSpeed(v) {
     if (!isFinite(v) || v >= K.c * (1 - 1e-12)) return 'light speed (to the last digit)';
@@ -1144,13 +1140,17 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   const growFormText = (s0) => (Math.abs(s0 - 0.5) < 1e-9 ? 'the even mix of size and density' : s0 >= 1 ? 'pure size' : s0 <= 0 ? 'pure density' : sig(100 * s0, 2) + '% of the growth into size');
   const fmtDensity2 = (rho) => (rho < 1e6 ? sig(rho, 3) : sci(rho, 2)) + ' kg/m³';
   // What absorbed energy E does to the body in the current growth mode (list items), or null in the endless ocean.
-  function growthItems(E, body, sf) {
+  function growthItems(E, body, sf, opts) {
+    const rough = !!(opts && opts.rough);   // a rough rung's energy: its mass to one figure
     if (state.absorb === 'ocean') return null;
     const items = [];
     if (!isFinite(E)) { items.push('The energy is unbounded, so the growth has no limit. The page can’t size it.'); return items; }
     const gB = P.grownBody(body, E, state.growS);
     const small = gB.lnr < 0.01;
-    items.push('It becomes ' + fmtMass(gB.dm) + ' of new mass (energy ÷ c²)' + (small ? ', ' + (gB.lnr < 1e-3 ? 'less than a thousandth' : 'about ' + sig(100 * (gB.ratio - 1), 1) + '%') + ' of his mass: unnoticeable.' : ': ' + (gB.ratio < 1.1 ? sig(100 * (gB.ratio - 1), 2) + '% more than his mass' : fmtRatio(gB.ratio) + ' his mass') + ', so he is ' + fmtDist(gB.H) + ' tall at ' + fmtDensity2(gB.rho) + ' (' + growFormText(gB.s) + ').'));
+    // a rough rung's growth: each figure the growth changes by 10% or more to two figures, marked 'about'
+    const r2 = (x, x0) => (rough && x / x0 >= 1.1 ? Number(x.toPrecision(2)) : x), ab = (x, x0) => (rough && x / x0 >= 1.1 ? 'about ' : '');
+    items.push('It becomes ' + (rough ? 'about ' + (gB.dm < 1000 ? sig(gB.dm, 1) + ' kg' : big(Number(gB.dm.toPrecision(1)) / 1000) + ' t') : fmtMass(gB.dm)) + ' of new mass (energy ÷ c²)' + (small ? ', ' + (gB.lnr < 1e-3 ? 'less than a thousandth' : 'about ' + sig(100 * (gB.ratio - 1), 1) + '%') + ' of his mass: unnoticeable.' : ': ' + (gB.ratio < 1.1 ? sig(100 * (gB.ratio - 1), rough ? 1 : 2) + '% more than his mass' : (rough ? 'about ' + big(Number(gB.ratio.toPrecision(1))) + '×' : fmtRatio(gB.ratio)) + ' his mass') + ', so he is ' + ab(gB.H, body.H) + fmtDist(r2(gB.H, body.H)) + ' tall at ' + ab(gB.rho, body.rho) + fmtDensity2(r2(gB.rho, body.rho)) + ' (' + growFormText(gB.s) + ').'));
+    if (rough && !small) items.push('Every figure below follows from that energy, which is uncertain by more than 10×, so each is rough too.');
     if (small) return items;   // nothing else would show
     if (state.absorb === 'gradual') {
       const G = P.gradualGrowth(body, E, state.growS);
@@ -1944,7 +1944,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
 
   // Neutron-matter caveat. Hebeler et al. (2010) give the pressure and energy at nuclear density only.
   function nmText(nm) {
-    const Ptxt = sig(nm.P[0] / 1e32, 2) + '–' + sig(nm.P[1] / 1e32, 2) + ' × 10³² Pa', share = (nm.J >= K.EARTH_BIND ? fmtRatio(nm.J / K.EARTH_BIND) + ' the energy' : sig(100 * nm.J / K.EARTH_BIND, 2) + '% of the energy') + ' it takes to blow the Earth apart';
+    const Ptxt = sig(nm.P[0] / 1e32, 2) + '–' + sig(nm.P[1] / 1e32, 2) + ' × 10³² Pa', share = compareWithEarth(nm.J, 'more than it takes to blow the Earth apart');
     if (nm.beyondNS) return ' He is denser than any known matter, even the core of a neutron star (up to about 10 times nuclear density). Nothing known could hold matter this dense together: it would take far more than the ' + Ptxt + ' that holds neutron-star matter in at nuclear density. Freed, it would give up at least as much as neutron-star matter, about 16 MeV per neutron (370 kt of TNT per kilogram). For this Rex that’s at least ' + fmtSI(nm.J, 'J') + ', ' + share + '. In the sim his indestructibility holds it together.';
     return ' In bulk, matter this dense exists only inside neutron stars, held in by their gravity. At nuclear density (' + fmtDensity(nm.rhoNuc) + ') that takes a pressure of about ' + Ptxt + ', and more when denser. Freed, it expands violently into neutron-rich nuclei that then decay. At nuclear density that gives up about 16 ± 2 MeV per neutron (about 370 kt of TNT per kilogram), and the nuclei that form and decay add more. For this Rex that’s roughly ' + fmtSI(nm.J, 'J') + ', ' + share + ' (an estimate). In the sim his indestructibility holds it together.';
   }
@@ -1960,17 +1960,23 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const E = ref.J;
     const rows = [['Mix (default)', 0.5], ['Pure size', 1], ['Pure density', 0]].map(([lbl, s0]) => {
       const gB = P.grownBody(c.body, E, s0);
-      return el('tr', {}, el('th', { text: lbl }), el('td', { 'data-col': 'Mass', text: fmtMass(gB.m) + ' (' + (gB.ratio < 1.01 ? 'unnoticeable: +' + sig(100 * (gB.ratio - 1), 1) + '%' : gB.ratio < 1.1 ? '+' + sig(100 * (gB.ratio - 1), 2) + '%' : fmtRatio(gB.ratio)) + ')' }), el('td', { 'data-col': 'Height', text: fmtDist(gB.H) }), el('td', { 'data-col': 'Density', text: fmtDensity2(gB.rho) }));
+      // a rough rung's growth: each figure the growth changes by 10% or more to two figures (the ones it barely
+      // changes stay his body's own)
+      const r2 = (x, x0) => (ref.rough && x / x0 >= 1.1 ? Number(x.toPrecision(2)) : x);
+      return el('tr', {}, el('th', { text: lbl }), el('td', { 'data-col': 'Mass', text: fmtMass(r2(gB.m, c.body.m)) + ' (' + (gB.ratio < 1.01 ? 'unnoticeable: +' + sig(100 * (gB.ratio - 1), 1) + '%' : gB.ratio < 1.1 ? '+' + sig(100 * (gB.ratio - 1), ref.rough ? 1 : 2) + '%' : fmtRatio(r2(gB.ratio, 1))) + ')' }), el('td', { 'data-col': 'Height', text: fmtDist(r2(gB.H, c.body.H)) }), el('td', { 'data-col': 'Density', text: fmtDensity2(r2(gB.rho, c.body.rho)) }));
     });
-    box.append(el('p', { style: 'margin:0', text: capital(ref.short) + ': ' + fmtSI(E, 'J') + ', which becomes ' + fmtMass(E / (K.c * K.c)) + ' of mass. From ' + fmtMass(c.body.m) + ' and ' + fmtDist(c.body.H) + ':' }));
-    // how firm each energy is (research/final-environment.json and final-presence.json)
+    // a rough rung's energy, and the mass it makes, to one figure
+    const mE = E / (K.c * K.c);
+    const eTxt = ref.rough ? 'about ' + sci(E, 1) + ' J' : fmtSI(E, 'J'), mTxt = ref.rough ? 'about ' + (mE < 1000 ? sig(mE, 1) + ' kg' : big(Number(mE.toPrecision(1)) / 1000) + ' t') : fmtMass(mE);
+    box.append(el('p', { style: 'margin:0', text: capital(ref.short) + ': ' + eTxt + ', which becomes ' + mTxt + ' of mass. From ' + fmtMass(c.body.m) + ' and ' + fmtDist(c.body.H) + ':' }));
+    // how firm each energy is (research/final-energy.json and final-presence.json)
     const firm = {
-      krakatoa: 'Claimed: 8.4 × 10¹⁷ J (200 Mt) is a popular figure. Figures quoted in encyclopedias and a popular book run from about 10¹⁷ to 6.3 × 10¹⁸ J (as collected in an unrefereed preprint, Lobanovsky 2013); a refereed study of the air wave alone needed 100–150 Mt, 4.2–6.3 × 10¹⁷ J (Harkrider & Press 1967).',
-      chicxulub: 'Disputed: Wikipedia’s summary of the literature gives about 10²³ to 10²⁴ J; Morgan et al. (2022) give about 5 × 10²³ J from the crater. The lab uses 4.2 × 10²³ J, as the brief does.',
+      krakatoa: 'Disputed: the lab uses 125 Mt (5.2 × 10¹⁷ J), the middle of the one refereed estimate with a stated method, 100–150 Mt from its air wave (Harkrider & Press 1967). 200 Mt (8.4 × 10¹⁷ J) is often quoted, with no method. Other figures, in encyclopedias and a 1982 Geological Society of America volume, run from about 10¹⁷ to 6.3 × 10¹⁸ J (as collected in an unrefereed preprint, Lobanovsky 2013).',
+      chicxulub: 'Disputed: the lab uses about 5 × 10²³ J, the 2022 review’s figure from the crater (Morgan et al.). An older estimate from a larger crater runs up to 1.7 × 10²⁵ J (Sharpton & Marin 1997).',
     }[ref.id];
     if (firm) box.append(el('p', { class: 'muted', style: 'margin:0', text: firm }));
     box.append(el('div', { class: 'cases-wrap' }, el('table', { class: 'cases' }, el('thead', {}, el('tr', {}, el('th', { text: 'Growth form' }), el('th', { text: 'Mass' }), el('th', { text: 'Height' }), el('th', { text: 'Density' }))), el('tbody', {}, rows))));
-    const items = growthItems(E, c.body, c.surface);
+    const items = growthItems(E, c.body, c.surface, { rough: ref.rough });
     if (items) box.append(el('p', { style: 'margin:0', text: { gradual: 'Gradual growth', instant: 'Instant growth', runaway: 'Runaway' }[state.absorb] + ', ' + growFormText(state.growS) + ':' }), happens(items, 8));
     else box.append(el('p', { class: 'muted', style: 'margin:0', text: 'Pick a growth mode under Their powers to see how fast he can grow without harming anyone, and what growing all at once would do.' }));
     return box;
@@ -2074,7 +2080,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
 
     const items = [];
     if (pl.regime === 'blackHole') items.push('Squeezed this hard, his mass fits inside its own event horizon, r = 2GM/c² (the sim treats him as a ball of his volume). A ball of ordinary fluid can’t support itself inside 9/8 of that radius (Buchdahl’s limit), and even the stiffest matter relativity allows can’t get closer than 49/48 of it; only his indestructibility keeps him in one piece up to the horizon. The Earth collapses onto him within about ' + fmtTime(pl.tff) + '. How fast the hole then swallows it, and how much energy comes out (at least ' + fmtSI(pl.eLow, 'J') + ', possibly far more), is not modelled.');
-    if (pl.regime === 'earthFalls') items.push('Rock can’t hold itself up against his pull. The Earth falls onto him in about ' + fmtTime(pl.tff) + ', releasing at least ' + fmtSI(pl.eLow, 'J') + ', ' + fmtRatio(pl.eLow / K.EARTH_BIND) + ' the energy that holds the Earth together, and likely much more as matter is crushed close to him.');
+    if (pl.regime === 'earthFalls') items.push('Rock can’t hold itself up against his pull. The Earth falls onto him in about ' + fmtTime(pl.tff) + ', releasing at least ' + fmtSI(pl.eLow, 'J') + ', ' + compareWithEarth(pl.eLow, 'more than the energy that holds the Earth together') + ', and likely much more as matter is crushed close to him.');
     if (pl.regime === 'reshapes') items.push('Past 1/1,000 of Earth’s mass his pull reshapes the planet around him: rock can’t hold itself up near him. Sinking to the centre alone releases ' + fmtSI(pl.eLow, 'J') + ', and the planet squeezing in around him adds more. The sim stops modelling the fall and the moves in detail.');
     if (pl.regime === 'none' && gd.regime === 'held') items.push('His feet press ' + fmtSI(gd.footPressure, 'Pa') + ' into ' + theSurf(c.surface) + ', ' + fmtRatio(gd.standRatio) + ' what it bears' + (gd.realRegime === 'fallsThrough' ? ', and his whole weight is more than any rock can carry' : '') + '. Unbreakable footing: the ground doesn’t give; their power holds him on it. A print in soil stays; sinking past it doesn’t. Turn the power off to see what the ground alone would do.');
     if (pl.regime === 'none' && ['comic', 'held', 'stands', 'sinks'].includes(gd.regime)) {
@@ -4483,7 +4489,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       { id: 'hiro', text: 'Punch carries a Hiroshima bomb', pred: (kg) => P.punch(at(kg)).E >= E('hiroshima') },
       { id: 'quake7', text: 'Stomp = magnitude 7 quake' + (state.unbreakable ? ' (on real ground)' : ''), pred: (kg) => P.stomp(at(kg)).quake >= 7 },
       { id: 'tsar', text: 'Clap = Tsar Bomba', pred: (kg) => P.clap(at(kg)).E >= E('tsar') },
-      { id: 'chix', text: 'Punch out-hits the dinosaur-killer impact', pred: (kg) => P.punch(at(kg)).E >= E('chicxulub') },
+      { id: 'chix', text: 'Punch out-hits the dinosaur-killer impact', pred: (kg) => P.punch(at(kg)).E >= E('chicxulub'), rough: D.energyRefs.find((e) => e.id === 'chicxulub').rough },
       { id: 'earth', text: 'Punch could blow Earth apart', pred: (kg) => P.punch(at(kg)).E >= E('earthbind') },
     ];
   }
@@ -4502,7 +4508,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       while (performance.now() - t0 < 25) {
         if (i >= defs.length) { thCache.set(key, list); thJob = null; if (thKey() === key) renderLadder(); return; }
         const d = defs[i];
-        if (phase === 'start') { cur = { id: d.id, text: d.text }; pred = d.pred; lo = L0; hi = L1; phase = 'ends'; continue; }
+        if (phase === 'start') { cur = { id: d.id, text: d.text, rough: d.rough }; pred = d.pred; lo = L0; hi = L1; phase = 'ends'; continue; }
         if (phase === 'ends' || phase === 'endsRigid') {
           const rigid = phase === 'endsRigid';
           let res = null;
@@ -4547,7 +4553,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       svg.append(sv('line', { x1: axisX - (e % 3 === 0 ? 6 : 3), x2: axisX + (e % 3 === 0 ? 6 : 3), y1: yy, y2: yy, stroke: 'var(--ink-3)', 'stroke-width': 1 }));
     }
     const tierItems = D.tiers.filter((t) => isFinite(t.liftKg)).map((t) => ({ key: 'L:' + t.id, lg: Math.log10(t.liftKg), text: t.chip || t.label, sub: fmtMass(t.liftKg) + (t.lift ? ' · ' + t.lift : ''), detail: (t.who ? t.who + '. ' : '') + (t.note || ''), side: 'L', color: 'var(--olive)', set: () => { setKg(t.liftKg); update(); } }));
-    const thItems = (th || []).filter((t) => isFinite(t.kg)).map((t) => ({ key: 'R:' + t.id, lg: Math.log10(t.kg), text: t.text, sub: fmtMass(t.kg), detail: 'Needs a lift strength of ' + fmtMass(t.kg) + ' at the current size, ground and muscle settings.', side: 'R', color: 'var(--accent)', set: () => { state.inf = false; state.logKg = Math.min(LMAX, Math.log10(t.kg) + 0.0005); update(); } }));
+    const thItems = (th || []).filter((t) => isFinite(t.kg)).map((t) => ({ key: 'R:' + t.id, lg: Math.log10(t.kg), text: t.text, sub: t.rough ? 'about ' + big(Number((t.kg / 1000).toPrecision(1))) + ' t' : fmtMass(t.kg), detail: (t.rough ? 'Roughly: the lab uses about 5 × 10²³ J for the asteroid (a 2022 review); an older estimate from a larger crater runs up to 1.7 × 10²⁵ J, about 30× more, so this point could sit much higher. ' : '') + 'Needs a lift strength of ' + (t.rough ? 'about ' + big(Number((t.kg / 1000).toPrecision(1))) + ' t' : fmtMass(t.kg)) + ' at the current size, ground and muscle settings.', side: 'R', color: 'var(--accent)', set: () => { state.inf = false; state.logKg = Math.min(LMAX, Math.log10(t.kg) + 0.0005); update(); } }));
     // wrap labels to the space on their side of the axis
     const wrapLbl = (it) => {
       const room = (it.side === 'L' ? axisX - 30 : W - axisX - 30) - 4;

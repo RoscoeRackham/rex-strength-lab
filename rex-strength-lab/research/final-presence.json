@@ -4454,7 +4454,7 @@
      "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"
     },
     {
-     "title": "Kelley Blue Book, 2026 Toyota Corolla specs, LE curb weight 2,955 lb (existing key toyota_corolla_curb_mass)",
+     "title": "Kelley Blue Book, 2026 Toyota Corolla specs, LE curb weight 2,955 lb (existing key toyota_corolla_curb_mass, since sourced to toyota.com’s own spec table: the same 2,955 lb)",
      "url": "https://www.kbb.com/toyota/corolla/2026/specs"
     }
    ],
@@ -5147,7 +5147,7 @@
    "display": "3.828 × 10²⁶ W (IAU 2015 nominal); best estimate 3.8275 ± 0.0014 × 10²⁶ W",
    "sources": [
     {
-     "title": "Prša et al. (2016) Nominal values for selected solar and planetary quantities: IAU 2015 Resolution B2 and B3, arXiv:1510.07674 (PDF)",
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674",
      "url": "https://arxiv.org/pdf/1510.07674"
     }
    ],
@@ -5178,11 +5178,11 @@
    "category": "presence_growth",
    "label": "Worked example: absorbing Krakatoa's energy as growth",
    "status": "derived",
-   "value_si": 9.346,
+   "value_si": 5.82,
    "unit_si": "kg",
    "low_si": 1.11,
    "high_si": 70,
-   "display": "About 9 kg at the brief's 8.4 × 10¹⁷ J (+0.3%): height +1.6 mm (mix) or +3.2 mm (pure size); 1,063 kg/m³ if pure density. Across the quoted estimates 1–70 kg; about 560 kg at the highest inferred one",
+   "display": "About 6 kg at the lab's 125 Mt (5.2 × 10¹⁷ J; +0.2%): height +1 mm (mix) or +2 mm (pure size); 1,062 kg/m³ if pure density. The often-quoted 200 Mt (8.4 × 10¹⁷ J, the brief's) gives about 9 kg. Across the quoted estimates 1–70 kg; about 560 kg at the highest inferred one",
    "sources": [
     {
      "title": "NIST CODATA 2022: speed of light in vacuum",
@@ -5205,7 +5205,7 @@
      "url": "https://arxiv.org/pdf/1311.6565"
     }
    ],
-   "notes": "Δm = E/c². E = 8.4e17 J (brief; existing claimed key energy_krakatoa_1883): Δm = 9.346 kg, k = 1.00311. Mix: H = 3.048·k^(1/6) = 3.0496 m, ρ = 1,061.6 kg/m³. Pure size: H = 3.0512 m. Pure density: 1,063.3 kg/m³. The Harkrider & Press 100–150 Mt air-wave equivalent gives 4.7–7.0 kg. Across the quoted spread (1e17 to 6.3e18 J): 1–70 kg, under 3% of his mass and at most 2.3 cm taller (pure size), so the brief's 'unnoticeable in any form' holds. At Lobanovsky's inferred 12 Gt extreme it is about 560 kg (+19% mass; pure size +18 cm, mix +9 cm): noticeable. low_si/high_si are the quoted spread. Verifier: the earlier '1–51 kg across the whole spread' was wrong; widened.",
+   "notes": "Δm = E/c². E = 8.4e17 J (brief; existing claimed key energy_krakatoa_1883): Δm = 9.346 kg, k = 1.00311. Mix: H = 3.048·k^(1/6) = 3.0496 m, ρ = 1,061.6 kg/m³. Pure size: H = 3.0512 m. Pure density: 1,063.3 kg/m³. The Harkrider & Press 100–150 Mt air-wave equivalent gives 4.7–7.0 kg. Across the quoted spread (1e17 to 6.3e18 J): 1–70 kg, under 3% of his mass and at most 2.3 cm taller (pure size), so the brief's 'unnoticeable in any form' holds. At Lobanovsky's inferred 12 Gt extreme it is about 560 kg (+19% mass; pure size +18 cm, mix +9 cm): noticeable. low_si/high_si are the quoted spread. Verifier: the earlier '1–51 kg across the whole spread' was wrong; widened. Pull request C (decision 9): the page now uses 5.23e17 J (125 Mt, energy_krakatoa_1883): Δm = 5.82 kg, k = 1.00194, mix H 3.0490 m, pure size 3.0500 m, pure density 1,062 kg/m³ (lab engine, grownBody). value_si moved from the brief's 9.346 kg.",
    "who_when": "derived",
    "values_json": "{\"8.4e17 J (brief)\": {\"dm_kg\": 9.35, \"k\": 1.0031, \"mix_H_m\": 3.0496, \"mix_rho\": 1061.6, \"size_H_m\": 3.0512, \"density_rho\": 1063.3}, \"4.18e17-6.28e17 J (Harkrider & Press)\": {\"dm_kg\": \"4.7-7.0\"}, \"1e17 J (lowest quoted)\": {\"dm_kg\": 1.1}, \"6.3e18 J (1.5 Gt, highest quoted)\": {\"dm_kg\": 70, \"mass_pct\": 2.3, \"size_dH_cm\": 2.3, \"mix_dH_cm\": 1.2}, \"5.0e19 J (12 Gt, Lobanovsky's inferred extreme)\": {\"dm_kg\": 560, \"mass_pct\": 18.6, \"size_dH_cm\": 17.8, \"mix_dH_cm\": 8.8}}"
   },
@@ -5214,11 +5214,11 @@
    "category": "presence_growth",
    "label": "Worked example: absorbing Chicxulub's energy as growth",
    "status": "derived",
-   "value_si": 4673000,
+   "value_si": 5563000,
    "unit_si": "kg",
    "low_si": 4673000,
    "high_si": 5563000,
-   "display": "4.2 × 10²³ J adds about 4,700 t (1,560 times his mass): mix 10 m tall at 42,000 kg/m³; pure size 35 m; pure density 1.6 × 10⁶ kg/m³. At the review's 5 × 10²³ J: 5,600 t; mix 11 m; pure size 37 m",
+   "display": "About 5 × 10²³ J (the lab's value, Morgan et al. 2022) adds about 5,600 t (1,850 times his mass): mix about 11 m tall at about 46,000 kg/m³; pure size about 37 m; pure density about 2 × 10⁶ kg/m³. At the brief's 4.2 × 10²³ J: 4,700 t; mix 10 m; pure size 35 m",
    "sources": [
     {
      "title": "NIST CODATA 2022: speed of light in vacuum",
@@ -5237,7 +5237,7 @@
      "url": "https://par.nsf.gov/servlets/purl/10349743"
     }
    ],
-   "notes": "E = 4.2e23 J: Δm = 4.673e6 kg, k = 1,555. Mix: H = 3.048·k^(1/6) = 10.38 m, ρ = 1,060·k^(1/2) = 41,800 kg/m³, R_eq = 2.99 m. Pure size: H = 35.3 m, R_eq = 10.2 m. Pure density: 1,060·k = 1.65e6 kg/m³, which is 1.6e6 to 2 figures; the brief's 1.7e6 is a rounding slip. At 5e23 J (Morgan 2022): Δm 5,560 t, mix 10.7 m and 45,600 kg/m³, pure size 37.4 m, pure density 2.0e6 kg/m³. The abstract's 'about 10^23 J' is the order of magnitude of the same estimate, not a lower bound; it would give 1,110 t, mix 8.2 m, pure size 22 m. low_si/high_si: the brief's 4.2e23 J and the review's 5e23 J. Verifier: reproduced (k 1,555.1); the 10^23 row relabelled.",
+   "notes": "E = 4.2e23 J: Δm = 4.673e6 kg, k = 1,555. Mix: H = 3.048·k^(1/6) = 10.38 m, ρ = 1,060·k^(1/2) = 41,800 kg/m³, R_eq = 2.99 m. Pure size: H = 35.3 m, R_eq = 10.2 m. Pure density: 1,060·k = 1.65e6 kg/m³, which is 1.6e6 to 2 figures; the brief's 1.7e6 is a rounding slip. At 5e23 J (Morgan 2022): Δm 5,560 t, mix 10.7 m and 45,600 kg/m³, pure size 37.4 m, pure density 2.0e6 kg/m³. The abstract's 'about 10^23 J' is the order of magnitude of the same estimate, not a lower bound; it would give 1,110 t, mix 8.2 m, pure size 22 m. low_si/high_si: the brief's 4.2e23 J and the review's 5e23 J. Verifier: reproduced (k 1,555.1); the 10^23 row relabelled. Pull request C (decision 9): the page now uses 5e23 J (energy_chicxulub_impact): Δm = 5,563 t, k = 1,851, mix H 10.68 m at 45,600 kg/m³, pure size 37.4 m, pure density 1.96e6 kg/m³ (lab engine, grownBody). value_si moved from the brief's 4,673 t.",
    "who_when": "derived",
    "values_json": "{\"4.2e23 J (brief)\": {\"dm_t\": 4673, \"k\": 1555, \"mix_H_m\": 10.4, \"mix_rho\": 41800, \"size_H_m\": 35.3, \"density_rho\": 1650000.0}, \"5e23 J (Morgan 2022 estimate)\": {\"dm_t\": 5563, \"k\": 1851, \"mix_H_m\": 10.7, \"mix_rho\": 45600, \"size_H_m\": 37.4, \"density_rho\": 1960000.0}, \"1e23 J (abstract's order-of-magnitude rounding, not a lower bound)\": {\"dm_t\": 1113, \"k\": 371, \"mix_H_m\": 8.17, \"mix_rho\": 20400, \"size_H_m\": 21.9, \"density_rho\": 393000.0}}"
   },
@@ -5265,7 +5265,7 @@
      "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/rex-strength-lab/BRIEF-presence.md"
     },
     {
-     "title": "Prša et al. (2016) Nominal values for selected solar and planetary quantities: IAU 2015 Resolution B2 and B3, arXiv:1510.07674 (PDF)",
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674",
      "url": "https://arxiv.org/pdf/1510.07674"
     }
    ],
@@ -5455,7 +5455,7 @@
    "unit_si": "s",
    "low_si": null,
    "high_si": null,
-   "display": "The shove sets the limit, not the air: Chicxulub about 1½ min (mix) or 4 min (pure size); one second of sunlight about 14 min (mix) or 43 min (pure size); Krakatoa a few hundredths of a second. Pure density has no air or shove limit",
+   "display": "The shove sets the limit, not the air: Chicxulub about 1½ min (mix) or 4 min (pure size); one second of sunlight about 14 min (mix) or 43 min (pure size); Krakatoa a few hundredths of a second. Pure density has no air or shove limit (worked at the brief’s 4.2 × 10²³ J for Chicxulub; the page now uses 5 × 10²³ J, about 20% more, and gives its own figures)",
    "sources": [
     {
      "title": "Siskind, Stachura, Stagg & Kopp (1980) Structure Response and Damage Produced by Airblast from Surface Mining, US Bureau of Mines Report of Investigations 8485 (copy hosted by the Resolution Copper Mine EIS)",
@@ -5470,7 +5470,7 @@
      "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:9143432%20AND%20SRC:MED&resultType=core&format=json"
     }
    ],
-   "notes": "Bystander 5 m from his final surface, on rigid ground; p_safe 100 Pa (USBM safe level) or 36 Pa (rattle onset on the 0.1 Hz basis); u_safe 0.25 m/s (OSHA TM) or 1.4 m/s (walking). Head speed unless marked side. At the shove-limited duration the air pulse is tiny: Chicxulub pure size at 250 s gives 100 Pa × (1.9/250)² ≈ 0.006 Pa. Side values use the equivalent-ball factor 0.29 (an assumption); at a reach factor of 0.8 the Chicxulub pure-size side figure would be about 200 s, still under the head limit, so the shortest safe duration does not change. The window (3.4 kPa) and eardrum (34.5 kPa) levels are fast-blast thresholds, not tested for smooth pulses lasting seconds. Pure density changes no volume; its hazards are the Weight tab's. Verifier: every entry reproduced; the 20 Pa column was replaced with 36 Pa and the side column flagged. Review round 1 (data lens): status estimate (was derived): the durations use the equivalent-ball side factor and the 1 - cos growth profile (our choices). The page judges the air pulse 2 m from him (our choice of how close a bystander stands, GROW.GAP): the shove-limited durations shown are the same at 2 m and 5 m; only the 'air alone would allow' time changes (Chicxulub mix 0.87 s at 2 m, 0.69 s at 5 m).",
+   "notes": "Bystander 5 m from his final surface, on rigid ground; p_safe 100 Pa (USBM safe level) or 36 Pa (rattle onset on the 0.1 Hz basis); u_safe 0.25 m/s (OSHA TM) or 1.4 m/s (walking). Head speed unless marked side. At the shove-limited duration the air pulse is tiny: Chicxulub pure size at 250 s gives 100 Pa × (1.9/250)² ≈ 0.006 Pa. Side values use the equivalent-ball factor 0.29 (an assumption); at a reach factor of 0.8 the Chicxulub pure-size side figure would be about 200 s, still under the head limit, so the shortest safe duration does not change. The window (3.4 kPa) and eardrum (34.5 kPa) levels are fast-blast thresholds, not tested for smooth pulses lasting seconds. Pure density changes no volume; its hazards are the Weight tab's. Verifier: every entry reproduced; the 20 Pa column was replaced with 36 Pa and the side column flagged. Review round 1 (data lens): status estimate (was derived): the durations use the equivalent-ball side factor and the 1 - cos growth profile (our choices). The page judges the air pulse 2 m from him (our choice of how close a bystander stands, GROW.GAP): the shove-limited durations shown are the same at 2 m and 5 m; only the 'air alone would allow' time changes (Chicxulub mix 0.87 s at 2 m, 0.69 s at 5 m). Pull request C: these examples stay at the brief’s energies; the page computes its own at the ladder’s 5e23 J (decision 9).",
    "who_when": "derived",
    "values_json": "{\"columns\": \"T_pressure at 100 Pa / 36 Pa; T_shove at 0.25 m/s (head / side, equivalent-ball factor 0.29); T_shove at 1.4 m/s (head); all seconds\", \"Krakatoa 8.4e17 J, mix\": [0.003, 0.005, 0.013, 0.0036, 0.0023], \"Krakatoa 8.4e17 J, pure size\": [0.0043, 0.0072, 0.025, 0.0073, 0.0045], \"Chicxulub 1e23 J, mix\": [0.44, 0.74, 53, 15, 9.4], \"Chicxulub 1e23 J, pure size\": [1.1, 1.8, 146, 42, 26], \"Chicxulub 4.2e23 J, mix\": [0.69, 1.2, 86, 25, 15], \"Chicxulub 4.2e23 J, pure size\": [1.9, 3.2, 250, 72, 44], \"Sun 1 s (3.8e26 J), mix\": [5.0, 8.4, 850, 240, 150], \"Sun 1 s (3.8e26 J), pure size\": [22, 37, 2600, 740, 460], \"any, pure density\": \"no volume change: no pressure pulse, no shove\"}"
   },
@@ -5502,18 +5502,18 @@
    "category": "presence_growth",
    "label": "Instant growth: the time it takes (sound crossing his final body)",
    "status": "estimate",
-   "value_si": 0.0229,
+   "value_si": 0.0243,
    "unit_si": "s",
    "low_si": 0.00198,
    "high_si": 0.222,
-   "display": "t = final height ÷ 1,540 m/s: 2 ms (Krakatoa), 7 ms (Chicxulub, mix), 23 ms (Chicxulub, pure size), 0.22 s (one solar second, pure size)",
+   "display": "t = final height ÷ 1,540 m/s: 2 ms (Krakatoa), 7 ms (Chicxulub, mix), 24 ms (Chicxulub, pure size), 0.22 s (one solar second, pure size)",
    "sources": [
     {
      "title": "Lieu (2025) Ultrasound fundamentals and their clinical implications for interventional cytopathologists, Cytopathology (PMC12150002; full text read through the Europe PMC API)",
      "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12150002/fullTextXML"
     }
    ],
-   "notes": "Our choice, per the brief's suggestion. Reason: no part of a body can respond before a stress wave reaches it, and the far end of the final body is H_final away. Then the top of his head moves at ΔH/t = 1,540·(1 − H0/H1) m/s, up to 1,540 m/s (Mach 4.5 in air); his sides (equivalent-ball radius) at 0.288 of that, at most 444 m/s (Mach 1.3). Side speeds: Krakatoa 0.46 m/s; Chicxulub mix 313 m/s (Mach 0.92); Chicxulub pure size 405 m/s (1.19); Sun-second mix 402 m/s (1.18); Sun-second pure size 440 m/s (1.29). So big instant growth is supersonic and drives a shock. Speeds are constant through the growth (sudden start and stop). value_si is Chicxulub pure size. Verifier: all times and speeds reproduced; correctly an estimate.",
+   "notes": "Our choice, per the brief's suggestion. Reason: no part of a body can respond before a stress wave reaches it, and the far end of the final body is H_final away. Then the top of his head moves at ΔH/t = 1,540·(1 − H0/H1) m/s, up to 1,540 m/s (Mach 4.5 in air); his sides (equivalent-ball radius) at 0.288 of that, at most 444 m/s (Mach 1.3). Side speeds: Krakatoa 0.14-0.29 m/s; Chicxulub mix 317 m/s (Mach 0.93); Chicxulub pure size 407 m/s (1.20); Sun-second mix 402 m/s (1.18); Sun-second pure size 440 m/s (1.29). So big instant growth is supersonic and drives a shock. Speeds are constant through the growth (sudden start and stop). value_si is Chicxulub pure size. Verifier: all times and speeds reproduced; correctly an estimate. Pull request C (decision 9): recomputed at the lab's 125 Mt (5.23e17 J) and 5e23 J with the engine (Chicxulub pure size 37.42 m, so 24.3 ms; mix 10.68 m, 6.9 ms); at the brief's 4.2e23 J it was 23 ms.",
    "who_when": "estimate (our choice)",
    "values_json": "{\"Krakatoa 8.4e17, pure size\": {\"t_ms\": 2.0, \"head_m_s\": 1.6, \"side_m_s\": 0.46}, \"Chicxulub 4.2e23, mix\": {\"t_ms\": 6.7, \"head_m_s\": 1090, \"side_m_s\": 313, \"side_Mach\": 0.92}, \"Chicxulub 4.2e23, pure size\": {\"t_ms\": 22.9, \"head_m_s\": 1410, \"side_m_s\": 405, \"side_Mach\": 1.19}, \"Sun 1 s, mix\": {\"t_ms\": 21, \"head_m_s\": 1395, \"side_m_s\": 402, \"side_Mach\": 1.18}, \"Sun 1 s, pure size\": {\"t_ms\": 222, \"head_m_s\": 1530, \"side_m_s\": 440, \"side_Mach\": 1.29}}"
   },
@@ -5658,7 +5658,7 @@
    "unit_si": "J",
    "low_si": 893000000,
    "high_si": 6200000000.0,
-   "display": "Chicxulub, pure size: 2–3 atm at his sides and 0.9–1.5 × 10⁹ J into the air (210–350 kg of TNT) if he grew about his centre; windows shatter out to 100–220 m. Anchored at his soles, the top of his head pushes about 24–30 atm and the total is 2–4 times larger (up to 6 × 10⁹ J, 1.5 t of TNT; windows to about 360 m). Mix: 3–6 kg of TNT, windows to 25–57 m (up to about 90 m anchored). Canon: he grows about his middle; the page's high end also counts the top of his head at its own speed (an upper bound)",
+   "display": "Chicxulub, pure size: 2–3 atm at his sides and 0.9–1.5 × 10⁹ J into the air (210–350 kg of TNT) if he grew about his centre; windows shatter out to 100–220 m. Anchored at his soles, the top of his head pushes about 24–30 atm and the total is 2–4 times larger (up to 6 × 10⁹ J, 1.5 t of TNT; windows to about 360 m). Mix: 3–6 kg of TNT, windows to 25–57 m (up to about 90 m anchored). Canon: he grows about his middle; the page's high end also counts the top of his head at its own speed (an upper bound) (worked at the brief’s 4.2 × 10²³ J for Chicxulub; the page now uses 5 × 10²³ J, about 20% more, and gives its own figures)",
    "sources": [
     {
      "title": "Baker, Kulesz, Ricker, Bessey, Westine, Parr & Oldham (1977) Workbook for Predicting Pressure Wave and Fragment Effects of Exploding Propellant Tanks and Gas Storage Vessels, NASA CR-134906 (Southwest Research Institute)",
@@ -5669,7 +5669,7 @@
      "url": "https://archive.org/download/dli.ernet.177550/177550-Supersonic%20Flow%20And%20Shock%20Waves.pdf"
     }
    ],
-   "notes": "Ball model: equivalent ball growing about its centre at side speed u = ΔR/t (growth_instant_timescale). Surface Δp between Taylor's sphere value ≈ ρ0u² and the flat piston (upper bound). Energy into the air beyond the quasi-static push: E_x ≈ Δp·ΔV; p0·ΔV only pushes the atmosphere back. TNT W = E_x/4.184e6 J/kg, doubled on hard ground (growth_ground_reflection_2E), then Kinney–Graham, an upper limit beyond R̄ ≈ 2. Windows: the 3.4–6.9 kPa band (blast_window_breakage). Zero duration needs infinite energy (Δp ∝ u²). Verifier: arithmetic reproduced; reach widened from the 6.9 kPa end alone. With soles fixed, upward surfaces sweep 1/3 of added volume at up to the head speed (Mach 4), so E_x is 2× (ball on its base) to 4.3× (same-volume column) the ball value and reach 1.3–1.6× farther; 'the head sweeps little volume' was false. Ignores momentum and ground load (growth_ground_push_estimate).",
+   "notes": "Ball model: equivalent ball growing about its centre at side speed u = ΔR/t (growth_instant_timescale). Surface Δp between Taylor's sphere value ≈ ρ0u² and the flat piston (upper bound). Energy into the air beyond the quasi-static push: E_x ≈ Δp·ΔV; p0·ΔV only pushes the atmosphere back. TNT W = E_x/4.184e6 J/kg, doubled on hard ground (growth_ground_reflection_2E), then Kinney–Graham, an upper limit beyond R̄ ≈ 2. Windows: the 3.4–6.9 kPa band (blast_window_breakage). Zero duration needs infinite energy (Δp ∝ u²). Verifier: arithmetic reproduced; reach widened from the 6.9 kPa end alone. With soles fixed, upward surfaces sweep 1/3 of added volume at up to the head speed (Mach 4), so E_x is 2× (ball on its base) to 4.3× (same-volume column) the ball value and reach 1.3–1.6× farther; 'the head sweeps little volume' was false. Ignores momentum and ground load (growth_ground_push_estimate). Pull request C: these examples stay at the brief’s energies; the page computes its own at the ladder’s 5e23 J (decision 9).",
    "who_when": "estimate (this research)",
    "values_json": "{\"Krakatoa 8.4e17 J, pure size\": {\"surface_dp_kPa\": \"≤ 0.19 (≈ ρ0 c0 u)\", \"E_x_J\": \"< 2\", \"p0_dV_J\": 890, \"note\": \"a thump, no blast\"}, \"Chicxulub 4.2e23 J, mix (ball)\": {\"surface_dp_kPa\": \"120-220\", \"E_x_J\": \"1.3e7-2.4e7\", \"TNT_kg\": \"3.2-5.8\", \"W_free_kg\": \"6.4-12\", \"windows_6.9kPa_m\": \"25-30\", \"windows_3.4kPa_m\": \"46-57\"}, \"Chicxulub 4.2e23 J, mix (anchored at soles, x2 to x4.3)\": {\"E_x_J\": \"2.7e7-1.0e8\", \"TNT_kg\": \"6.4-25\", \"windows_m\": \"31-92\"}, \"Chicxulub 1e23 J, pure size (ball)\": {\"surface_dp_kPa\": \"180-300\", \"E_x_J\": \"1.9e8-3.1e8\", \"TNT_kg\": \"45-75\", \"W_free_kg\": \"90-150\", \"windows_6.9kPa_m\": \"60-72\", \"windows_3.4kPa_m\": \"110-130\"}, \"Chicxulub 4.2e23 J, pure size (ball)\": {\"surface_dp_kPa\": \"200-330\", \"E_x_J\": \"8.9e8-1.45e9\", \"TNT_kg\": \"210-350\", \"W_free_kg\": \"430-690\", \"windows_6.9kPa_m\": \"100-120\", \"windows_3.4kPa_m\": \"190-220\"}, \"Chicxulub 4.2e23 J, pure size (anchored at soles, x2 to x4.3)\": {\"head_dp_MPa\": \"2.4-3.0\", \"E_x_J\": \"1.8e9-6.2e9\", \"TNT_kg\": \"430-1500\", \"W_free_kg\": \"850-3000\", \"windows_6.9kPa_m\": \"130-190\", \"windows_3.4kPa_m\": \"240-360\"}, \"Sun 1 s, mix (ball)\": {\"surface_dp_kPa\": \"200-320\", \"E_x_J\": \"6.7e8-1.1e9\", \"TNT_kg\": \"160-260\", \"W_free_kg\": \"320-520\", \"windows_6.9kPa_m\": \"90-110\", \"windows_3.4kPa_m\": \"170-200\"}, \"Sun 1 s, pure size (ball)\": {\"surface_dp_kPa\": \"240-370\", \"E_x_J\": \"9.6e11-1.5e12\", \"TNT_t\": \"230-360\", \"W_free_t\": \"460-720\", \"windows_6.9kPa_m\": \"1000-1200\", \"windows_3.4kPa_m\": \"1900-2200\"}, \"Sun 1 s, pure size (anchored at soles, x2 to x4.3)\": {\"E_x_J\": \"1.9e12-6.4e12\", \"TNT_t\": \"460-1500\", \"windows_m\": \"1300-3600\"}, \"any, pure density\": \"no volume change, no air blast\"}"
   },
