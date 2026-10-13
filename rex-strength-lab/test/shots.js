@@ -173,6 +173,16 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       [/only Comic ground keeps the floor whole/g, 'only Unbreakable footing keeps the floor whole'],
     ];
     const edit = (t) => EDITS.reduce((x, [re, to]) => x.replace(re, to), t);
+    // C (BRIEF-gui.md section 6) rewrote the energy comparisons: a new ladder of rungs and new wording. Both sides'
+    // comparisons are set aside here; the ladder has its own checks (test/ladder.js and the section 6 block below).
+    const OLD_SHORTS = ['the fastest pitch on record', 'a Corolla at 100 km/h', 'a hand grenade', 'the MOAB bomb', 'the Hiroshima bomb', 'Castle Bravo', 'the Tsar Bomba', 'the 1883 Krakatoa eruption', 'the dinosaur-killing asteroid', 'the Sun’s output for one second', 'the energy to blow Earth apart'];
+    let CMP = null;
+    const setAsideComparisons = (t) => (CMP ? t.replace(CMP, '‹compared›') : t);
+    const makeCMP = (shorts) => {
+      const any = OLD_SHORTS.concat(shorts).sort((a, b) => b.length - a.length).map((x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+      const NUM = '(?:[\\d.,]+(?: (?:million|billion|trillion|quadrillion|quintillion|sextillion|septillion))?(?: × 10[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]+)?|10[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]+)';
+      return new RegExp('(?:≈ |about the same as |roughly the same as |(?:roughly )?' + NUM + '(?:×|% of) )(?:' + any + ')|beyond the ladder: (?:less|more) than its (?:smallest|top) rung \\((?:' + any + ')\\)', 'g');
+    };
     const editAll = (r) => { const o = {}; for (const [k, v] of Object.entries(r)) o[k] = Array.isArray(v) ? v.map((x) => x && edit(x)) : v && edit(v); return JSON.stringify(o); };
     // Pull request B's corrections to the two-player courtesy ceiling (with the powers off too): where a test doesn't
     // judge the ground shaking, a 'none' ceiling says so (as the solo tabs do); and broken ground counts as harm, so with
@@ -185,7 +195,7 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       ['s4-catch', ' The lab models the ground shaking in this test only through their powers (Unbreakable footing or They take their own recoil), and both are off.']]);
     const CAVEAT = [/(Nothing in this test does harm, even all-out, with the nearest people and buildings 5 m away\.)/g, (id) => '$1' + NO_SHAKE_JUDGED.get(id)];
     const same = (id, got, skip) => { const b = BEFORE[id], keys = Object.keys(b).filter((k) => !(skip || []).includes(k));
-      const was = JSON.stringify(Object.fromEntries(keys.map((k) => { const v = JSON.parse(editAll({ [k]: b[k] }))[k]; return [k, NO_SHAKE_JUDGED.has(id) && k === 'effort' ? v.map((x) => x && x.replace(CAVEAT[0], CAVEAT[1](id))) : v]; }))), now = JSON.stringify(Object.fromEntries(keys.map((k) => [k, got[k]])));
+      const was = setAsideComparisons(JSON.stringify(Object.fromEntries(keys.map((k) => { const v = JSON.parse(editAll({ [k]: b[k] }))[k]; return [k, NO_SHAKE_JUDGED.has(id) && k === 'effort' ? v.map((x) => x && x.replace(CAVEAT[0], CAVEAT[1](id))) : v]; })))), now = setAsideComparisons(JSON.stringify(Object.fromEntries(keys.map((k) => [k, got[k]]))));
       if (was === now) okLog(id + ': same result as before' + (skip ? ' (all but ' + skip.join(', ') + ')' : '')); else fail(id + ': result changed\n  before ' + was + '\n  now    ' + now); };
     // Collide with Rex bolted, and the shoving match with both bolted: the least disruptive effort now stops where the
     // ground breaks (the rock cracks, or tears out around their bolts); all-out, the result is main's
@@ -201,6 +211,7 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     page.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()); });
     await page.addInitScript(countDuoCalls, { names: DUO_FNS });
     await page.goto(pathToFileURL(prev).href);
+    CMP = makeCMP(await page.evaluate(() => window.DINO_DATA.energyRefs.map((e) => e.short)));
     const load = async (st) => { await page.evaluate((s) => localStorage.setItem('rex-lab-v1', JSON.stringify(s)), st); await page.reload(); await page.waitForTimeout(800); };
     const duoResult = async () => { await page.waitForTimeout(400); await settle(page, 'duo-bay'); return readResult(page, 'duo-bay'); };
     // section 1: real muscle, both bolted, powers off
