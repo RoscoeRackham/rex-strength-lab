@@ -579,7 +579,13 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     const growHead = {};
     for (const st of [{ action: 'weight', H: 10, m: 1e27 }, { action: 'weight', H: 0.1, m: 1.1e13 }, { action: 'weight', m: 1e21 }, { action: 'weight', m: 1e24 }, { action: 'weight', grow: 'krakatoa' }, { action: 'weight', grow: 'chicxulub' }]) {
       await load(st, false);
-      if (st.grow) { await page.evaluate(() => { document.getElementById('powers').open = true; }); await page.selectOption('#absorb', 'gradual'); await page.waitForTimeout(300); await page.click('#grow-what-' + st.grow); await page.waitForTimeout(400); await settle(page, 'bay'); growHead[st.grow] = await page.evaluate(() => (Array.from(document.querySelectorAll('#bay .growth-whatif p')).find((n) => /which becomes/.test(n.textContent)) || {}).textContent || '').replace(/\u00a0/g, ' '); growHead[st.grow + 'Table'] = await page.evaluate(() => Array.from(document.querySelectorAll('#bay .growth-whatif td[data-col="Mass"]')).map((n) => n.textContent.replace(/\u00a0/g, ' ')).join(' | ')); growHead[st.grow + 'Item'] = await page.evaluate(() => (Array.from(document.querySelectorAll('#bay .growth-whatif li, #bay .growth-whatif p')).find((n) => /^It becomes/.test(n.textContent)) || {}).textContent || '').replace(/\u00a0/g, ' '); }
+      if (st.grow) {
+        await page.evaluate(() => { document.getElementById('powers').open = true; }); await page.selectOption('#absorb', 'gradual'); await page.waitForTimeout(300); await page.click('#grow-what-' + st.grow); await page.waitForTimeout(400); await settle(page, 'bay');
+        const textOf = (sel, re) => page.evaluate(([q, r]) => { const n = Array.from(document.querySelectorAll(q)).filter((x) => new RegExp(r).test(x.textContent)); return n.map((x) => x.textContent.replace(/\u00a0/g, ' ')).join(' | '); }, [sel, re]);
+        growHead[st.grow] = await textOf('#bay .growth-whatif p', 'which becomes');
+        growHead[st.grow + 'Table'] = await textOf('#bay .growth-whatif td[data-col="Mass"]', '.');
+        growHead[st.grow + 'Item'] = await textOf('#bay .growth-whatif li, #bay .growth-whatif p', '^It becomes');
+      }
       const t = await page.evaluate(() => document.getElementById('bay').textContent.replace(/\u00a0/g, ' ').replace(/\s+/g, ' '));
       const off = offRule(t).concat(Array.from(t.matchAll(/[\d.,]+(?: [a-z]+illion)?(?:×|% of) the energy (?:it takes to blow|that holds) the Earth/g)).map((m) => m[0]));
       if (off.length) weightBad.push(JSON.stringify(st) + ': ' + off.join(' | '));
