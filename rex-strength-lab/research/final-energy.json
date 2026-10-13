@@ -946,8 +946,8 @@
    "value_si": 1000000000.0,
    "unit_si": "J",
    "low_si": 100000000.0,
-   "high_si": 7000000000.0,
-   "display": "about 1 GJ per flash (published estimates 0.1 to 7 GJ)",
+   "high_si": 10000000000.0,
+   "display": "about 1 GJ per flash (published estimates 0.1 to 10 GJ)",
    "sources": [
     {
      "title": "Maggio, Marshall & Stolzenburg (2009) Estimations of charge transferred and energy released by lightning flashes, JGR 114, D14, doi:10.1029/2008JD011506 (abstract via Crossref)",
@@ -964,9 +964,17 @@
     {
      "title": "US EPA AP-42 section 14.3 Lightning Emissions (9/96)",
      "url": "https://www.epa.gov/sites/production/files/2020-11/documents/c14s03.pdf"
+    },
+    {
+     "title": "Review: Physics and technology of Laser Lightning Control (2024), arXiv:2404.10020, citing Rakov & Uman (2003)",
+     "url": "https://arxiv.org/pdf/2404.10020"
+    },
+    {
+     "title": "Salinas, Bruning, Mansell & Brothers (2021) Modeling the electrical energy discharged by lightning flashes using capacitors, J. Atmos. Sci. 78:3909-3924, section 6a",
+     "url": "https://journals.ametsoc.org/view/journals/atsc/78/12/JAS-D-21-0073.1.pdf"
     }
    ],
-   "notes": "Maggio 2009: 'IC flashes released an average of 1.6 GJ ... CG flashes was about half as much ... 2 x 10^8 to 7 x 10^9 J' (40 flashes, New Mexico mountain storms). Borucki & Chameides 1984: '4 x 10^8 J per flash'. EPA AP-42: '1.0 E+08 joules/flash to 8.0 E+08 joules/flash', citing Borucki & Chameides (its ref. 5), so not independent. Koshak (NASA; conference abstract, modelled 'VCM-derived total electrostatic' energy): 'typically measured in giga-joules'; ground 5.3 GJ, cloud 2.7 GJ, all flashes 3.9 GJ. Sources differ on which kind is larger and span 70x. 1 GJ is a round middle value, not a measured mean: rough multiples only. Skeptic: added the independence, peer-review, sample and all-flash caveats.",
+   "notes": "Maggio 2009: 'IC flashes released an average of 1.6 GJ ... CG flashes was about half as much ... 2 x 10^8 to 7 x 10^9 J' (40 flashes, New Mexico mountain storms). Borucki & Chameides 1984: '4 x 10^8 J per flash'. EPA AP-42: '1.0 E+08 joules/flash to 8.0 E+08 joules/flash', citing Borucki & Chameides (its ref. 5), so not independent. Koshak (NASA; conference abstract, modelled 'VCM-derived total electrostatic' energy): 'typically measured in giga-joules'; ground 5.3 GJ, cloud 2.7 GJ, all flashes 3.9 GJ. A 2024 review (arXiv:2404.10020, citing Rakov & Uman, Lightning: Physics and Effects, 2003): a flash bears '10^9 to 10^10 J in total'. Salinas et al. 2021 (capacitor model): flashes 'most frequently <1 GJ', estimates spanning 10^4 to 10^10 J, the low end biased by their single adjustment factor (their words), so not used as the low bound. Sources differ on which kind is larger and span about 100x (0.1 to 10 GJ). Review round 1: high_si raised from 7 GJ to 10 GJ. 1 GJ is a round middle value, not a measured mean: rough multiples only. Skeptic: added the independence, peer-review, sample and all-flash caveats.",
    "who_when": "Journals 1984 and 2009; NASA 2021; EPA AP-42 (9/96)",
    "page_short": "a lightning bolt",
    "research_topic": "explosive"
@@ -975,7 +983,7 @@
    "key": "energy_car_fuel_tank_petrol",
    "category": "energy_reference",
    "label": "A car's full tank of petrol (Corolla, 13.2 gal): chemical energy",
-   "status": "reported",
+   "status": "derived",
    "value_si": 1670000000.0,
    "unit_si": "J",
    "low_si": 1560000000.0,
@@ -999,7 +1007,7 @@
      "url": "https://afdc.energy.gov/files/u/publication/fuel_comparison_chart.pdf"
     }
    ],
-   "notes": "13.2 gal (toyota_corolla_fuel_tank) x 120,214 Btu/gal (gasoline_heat_content) x 1,055.056 J/Btu = 1.674e9 J; the AFDC range (112,114 lower to 124,340 higher) gives 1.56e9 to 1.73e9 J. Heat from burning the whole tank; an engine turns only part of it into motion. Arithmetic checked by the skeptic, but the tank volume is 'reported' (KBB trade guide), so this is 'reported', not 'derived' (derived needs verified inputs). Spare, not a recommended rung: within 1.1x of the high-speed train.",
+   "notes": "13.2 gal (toyota_corolla_fuel_tank) x 120,214 Btu/gal (gasoline_heat_content) x 1,055.056 J/Btu = 1.674e9 J; the AFDC range (112,114 lower to 124,340 higher) gives 1.56e9 to 1.73e9 J. Heat from burning the whole tank; an engine turns only part of it into motion. Arithmetic checked by the skeptic, but the tank volume is 'reported' (KBB trade guide), so this is 'reported', not 'derived' (derived needs verified inputs). Spare, not a recommended rung: within 1.1x of the high-speed train. Review round 1: status back to derived, its tank input now verified from Toyota.",
    "who_when": "Computed 2026-10-13 from KBB, EIA and AFDC",
    "page_short": "a car's full tank of petrol",
    "research_topic": "explosive"
@@ -1171,7 +1179,7 @@
    "key": "energy_beirut_explosion_2020",
    "category": "energy_reference",
    "label": "Beirut port explosion, 4 Aug 2020: TNT-equivalent yield",
-   "status": "verified",
+   "status": "disputed",
    "value_si": 2092000000000.0,
    "unit_si": "J",
    "low_si": 1255200000000.0,
@@ -1187,7 +1195,7 @@
      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8266808/"
     }
    ],
-   "notes": "Rigby abstract: 'The best estimate and reasonable upper limit ... are 0.50 kt TNT and 1.12 kt TNT, respectively'; about 2,750 t of ammonium nitrate. Pilger: yield 'determined within 0.13 to 2 kt TNT'; video studies give 'the range from 0.3 to 1.12 kt TNT'; infrasound (LANL relation) 'about 0.5 kt TNT ... (0.14-1.12 kt TNT)'; near-source damage 'best explained by a yield of 0.8-1.1 kt TNT'; seismic 0.13-0.34 kt is 'a lower bound'. Value 0.50 kt, Rigby's published best estimate (Pilger's infrasound figure agrees). low/high: the published video range, 0.3-1.12 kt. 1 kt = 4.184e12 J. High/value = 2.2, so rough multiple only. Skeptic: the earlier 0.75 kt was a chosen midpoint, not a published estimate, and the 0.5-1.1 kt range left out lower published estimates; value, range and display corrected.",
+   "notes": "Rigby abstract: 'The best estimate and reasonable upper limit ... are 0.50 kt TNT and 1.12 kt TNT, respectively'; about 2,750 t of ammonium nitrate. Pilger: yield 'determined within 0.13 to 2 kt TNT'; video studies give 'the range from 0.3 to 1.12 kt TNT'; infrasound (LANL relation) 'about 0.5 kt TNT ... (0.14-1.12 kt TNT)'; near-source damage 'best explained by a yield of 0.8-1.1 kt TNT'; seismic 0.13-0.34 kt is 'a lower bound'. Value 0.50 kt, Rigby's published best estimate. Pilger's retained infrasound averages are 0.86-1.06 kt and its damage fit 0.8-1.1 kt; it gives a 0.5 kt LANL+ECMWF variant only for comparison and sets it aside. So the central estimates differ by about 2x: disputed (review round 1; was verified). low/high: the published video range, 0.3-1.12 kt. 1 kt = 4.184e12 J. High/value = 2.2, so rough multiple only. Skeptic: the earlier 0.75 kt was a chosen midpoint, not a published estimate, and the 0.5-1.1 kt range left out lower published estimates; value, range and display corrected.",
    "who_when": "Rigby et al. 2020; Pilger et al. 2021",
    "page_short": "the Beirut port explosion of 2020",
    "research_topic": "disaster"
@@ -1356,9 +1364,13 @@
     {
      "title": "US Bureau of Reclamation: Hoover Dam - Frequently Asked Questions: Hydropower (last updated 1 Aug 2018)",
      "url": "https://www.usbr.gov/lc/hooverdam/faqs/powerfaq.html"
+    },
+    {
+     "title": "US EIA, Form EIA-923 plant generation, Hoover Dam (plants 154 and 8902), API query",
+     "url": "https://api.eia.gov/v2/electricity/facility-fuel/data/?frequency=annual&data[0]=generation&facets[plantCode][]=154&facets[plantCode][]=8902&facets[fuel2002][]=ALL"
     }
    ],
-   "notes": "USBR: 'Hoover Dam generates, on average, about 4 billion kilowatt-hours of hydroelectric power each year for use in Nevada, Arizona, and California - enough to serve 1.3 million people.' Also: 'The average annual net generation for Hoover Powerplant for 1947 through 2008 was about 4.2 billion kilowatt-hours' (1999-2008: also about 4.2 billion). Single years vary: maximum 10,348,020,500 kWh in 1984 (3.7e16 J), minimum since 1940 2,648,224,700 kWh in 1956 (9.5e15 J). 4.0e9 kWh x 3.6e6 J/kWh = 1.44e16 J; low/high are USBR's two stated averages. The page's data run only to 2008; drought-era output since was not checked. Skeptic: confirmed word for word; page phrase changed to 'an average year'.",
+   "notes": "USBR: 'Hoover Dam generates, on average, about 4 billion kilowatt-hours of hydroelectric power each year for use in Nevada, Arizona, and California - enough to serve 1.3 million people.' Also: 'The average annual net generation for Hoover Powerplant for 1947 through 2008 was about 4.2 billion kilowatt-hours' (1999-2008: also about 4.2 billion). Single years vary: maximum 10,348,020,500 kWh in 1984 (3.7e16 J), minimum since 1940 2,648,224,700 kWh in 1956 (9.5e15 J). 4.0e9 kWh x 3.6e6 J/kWh = 1.44e16 J; low/high are USBR's two stated averages. USBR's averages run to 2008. EIA-923 (plants 154 and 8902) gives about 3.2 billion kWh a year for 2016-2025 (2.7 billion in 2023, a drought year); with USBR's 1947-2008 average the long-run 1947-2025 average is still about 4.0 billion kWh (review round 1). Skeptic: confirmed word for word; page phrase changed to 'an average year'.",
    "who_when": "US Bureau of Reclamation (FAQ, data to 2008)",
    "page_short": "an average year of the Hoover Dam's electricity",
    "research_topic": "disaster"
@@ -1507,7 +1519,7 @@
    "unit_si": "J",
    "low_si": 418400000000000000,
    "high_si": 836800000000000000,
-   "display": "roughly 100-200 megatons (4-8 x 10^17 J) judged from its air wave; other published figures run from 10^17 J to over 10^18 J",
+   "display": "about 100-150 megatons (4.2-6.3 x 10^17 J) judged from its air wave (Harkrider & Press); 125 Mt used. A tsunami paper gives 200 Mt (8.4 x 10^17 J) for the third blast's total energy, with no source; other published figures run from about 10^17 to 6.3 x 10^18 J",
    "sources": [
     {
      "title": "Harkrider & Press (1967) The Krakatoa air-sea waves, Geophys. J. R. Astr. Soc. 13:149-159, p. 159 (Caltech repository PDF)",
@@ -1522,7 +1534,7 @@
      "url": "https://www.vliz.be/imisdocs/publications/381958.pdf"
     }
    ],
-   "notes": "Harkrider & Press: 'we estimate that a surface explosion amounting to about 100-150 megatons would produce pressure pulses equivalent to those observed from Krakatoa.' Science abstract: '100 to 150 megatons would be required to duplicate the Krakatoa atmospheric pressure pulse'. Choi et al., with no source in that sentence: 'equivalent to 200 megatons atomic bomb (8.4x10^17 joules)'. Value 125 Mt, the middle of the only primary estimate (5.23e17 J); range 100 to 200 Mt. Weaker sources span about 1e17 to 6.3e18 J (growth_krakatoa_energy_spread), so the page gives only a rough multiple even though this fact's own range is under 2x. The heat of the erupted rock was far larger. Value lowered from 8.4e17 J (Wikipedia, 200 Mt). Skeptic: quotes exact; disputed and rough-only confirmed. Rough by judgement (field rough): this fact's own range is the only primary estimate, but published figures span about 60x (growth_krakatoa_energy_spread).",
+   "notes": "Harkrider & Press: 'we estimate that a surface explosion amounting to about 100-150 megatons would produce pressure pulses equivalent to those observed from Krakatoa.' Science abstract: '100 to 150 megatons would be required to duplicate the Krakatoa atmospheric pressure pulse'. Choi et al., with no source in that sentence: 'equivalent to 200 megatons atomic bomb (8.4x10^17 joules)'. Value 125 Mt, the middle of the only primary estimate (5.23e17 J); range 100 to 200 Mt. Weaker sources span about 1e17 to 6.3e18 J (growth_krakatoa_energy_spread), so the page gives only a rough multiple even though this fact's own range is under 2x. The heat of the erupted rock was far larger. Value lowered from 8.4e17 J (Wikipedia, 200 Mt). Skeptic: quotes exact; disputed and rough-only confirmed. Rough by judgement (field rough): this fact's own range is the only primary estimate, but published figures span about 60x (growth_krakatoa_energy_spread). Review round 1: the top of this fact's range (200 Mt) is Choi et al.'s unsourced total, not an air-wave figure; the display says so. The 10^17 J low of the wider spread is from Jones & Kodis in a 1982 Geological Society of America volume (Special Paper 190), not a popular book; 'the one refereed estimate' means the one with a stated method.",
    "who_when": "Press & Harkrider 1966-67; Choi et al. 2003",
    "page_short": "the great blast of Krakatoa in 1883",
    "category": "energy_reference",
@@ -1680,7 +1692,7 @@
    "display": "about 1.5 × 10²² J per day at the top of the atmosphere (1361 W/m² × Earth's disc × 86,400 s)",
    "sources": [
     {
-     "title": "Prša et al., IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties (arXiv:1510.07674v1, 2015; PDF)",
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)",
      "url": "https://arxiv.org/pdf/1510.07674"
     },
     {
@@ -1758,7 +1770,7 @@
    "display": "about 5.5 × 10²⁴ J per year at the top of the atmosphere",
    "sources": [
     {
-     "title": "Prša et al., IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties (arXiv:1510.07674v1, 2015; PDF)",
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)",
      "url": "https://arxiv.org/pdf/1510.07674"
     },
     {
@@ -1809,7 +1821,7 @@
    "display": "3.828 x 10^26 W, so 3.8 x 10^26 J each second",
    "sources": [
     {
-     "title": "Prsa et al. (2016) Nominal values for selected solar and planetary quantities: IAU 2015 Resolution B3, AJ 152:41 (doi:10.3847/0004-6256/152/2/41); arXiv:1510.07674 PDF",
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)",
      "url": "https://arxiv.org/pdf/1510.07674"
     }
    ],
@@ -1858,7 +1870,7 @@
    "display": "2.3 x 10^28 J (3.828 x 10^26 W for 60 s)",
    "sources": [
     {
-     "title": "Mamajek, Prsa, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (PDF)",
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)",
      "url": "https://arxiv.org/pdf/1510.07674"
     },
     {
@@ -1960,7 +1972,7 @@
    "display": "1.4 x 10^30 J (3.828 x 10^26 W for 3,600 s)",
    "sources": [
     {
-     "title": "Mamajek, Prsa, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (PDF)",
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)",
      "url": "https://arxiv.org/pdf/1510.07674"
     },
     {
@@ -2008,7 +2020,7 @@
    "display": "3.3 x 10^31 J (3.828 x 10^26 W for 86,400 s)",
    "sources": [
     {
-     "title": "Mamajek, Prsa, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (PDF)",
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)",
      "url": "https://arxiv.org/pdf/1510.07674"
     },
     {
@@ -2096,7 +2108,7 @@
    "display": "1.2 x 10^34 J (3.828 x 10^26 W for one sidereal year, 365.256 days)",
    "sources": [
     {
-     "title": "Mamajek, Prsa, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (PDF)",
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)",
      "url": "https://arxiv.org/pdf/1510.07674"
     },
     {
@@ -2165,7 +2177,7 @@
    "display": "1.2 x 10^36 J (3.828 x 10^26 W for 100 sidereal years)",
    "sources": [
     {
-     "title": "Mamajek, Prsa, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (PDF)",
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)",
      "url": "https://arxiv.org/pdf/1510.07674"
     },
     {
@@ -2225,7 +2237,7 @@
    "display": "about 1.2 × 10^37 J (1,000 years at 3.828 × 10^26 W)",
    "sources": [
     {
-     "title": "Prša et al. (2016), IAU 2015 Resolution B3, AJ 152, 41; arXiv:1510.07674 PDF (nominal solar luminosity 3.828e26 W)",
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)",
      "url": "https://arxiv.org/pdf/1510.07674"
     },
     {
@@ -2336,7 +2348,7 @@
    "display": "about 1.2 × 10^40 J (10^6 years at 3.828 × 10^26 W)",
    "sources": [
     {
-     "title": "Prša et al. (2016), IAU 2015 Resolution B3, AJ 152, 41; arXiv:1510.07674 PDF (nominal solar luminosity 3.828e26 W)",
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)",
      "url": "https://arxiv.org/pdf/1510.07674"
     },
     {
@@ -2432,7 +2444,7 @@
    "display": "about 1.2 × 10^43 J (10^9 years at 3.828 × 10^26 W)",
    "sources": [
     {
-     "title": "Prša et al. (2016), IAU 2015 Resolution B3, AJ 152, 41; arXiv:1510.07674 PDF (nominal solar luminosity 3.828e26 W)",
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)",
      "url": "https://arxiv.org/pdf/1510.07674"
     },
     {
@@ -2644,17 +2656,21 @@
    "key": "toyota_corolla_fuel_tank",
    "category": "object_volume",
    "label": "Toyota Corolla sedan fuel tank capacity (2026 model year)",
-   "status": "reported",
+   "status": "verified",
    "value_si": 0.049967,
    "unit_si": "m^3",
-   "display": "13.2 US gallons (50.0 L), all three trims (KBB)",
+   "display": "13.2 US gallons (50.0 L), gasoline LE, SE and XSE (Toyota); hybrids 11.3 gal",
    "sources": [
+    {
+     "title": "Toyota USA, 2026 Corolla features and specs (spec table embedded in the page)",
+     "url": "https://www.toyota.com/corolla/2026/features/"
+    },
     {
      "title": "Kelley Blue Book: 2026 Toyota Corolla specs (trade guide, secondary)",
      "url": "https://www.kbb.com/toyota/corolla/2026/specs"
     }
    ],
-   "notes": "KBB row 'Fuel Capacity': '13.2 gallons' for LE, SE and XSE, beside 'Curb Weight 2955 pounds 3110 pounds 3150 pounds' (matching toyota_corolla_curb_mass). 13.2 x 3.785411784 L = 49.97 L. KBB is a trade guide, not Toyota; toyota.com renders by script and gave no readable spec, and a search found the same figure only on secondary sites. Skeptic: status verified -> reported; row label corrected from 'Fuel tank capacity' to 'Fuel Capacity'.",
+   "notes": "KBB row 'Fuel Capacity': '13.2 gallons' for LE, SE and XSE, beside 'Curb Weight 2955 pounds 3110 pounds 3150 pounds' (matching toyota_corolla_curb_mass). 13.2 x 3.785411784 L = 49.97 L. Toyota's own spec data, embedded in the page (fetched with curl, as for toyota_corolla_curb_mass): 'Fuel tank (gal.)' 13.2 for codes 1852 (LE), 1864 (SE) and 1866 (XSE); 11.3 for the hybrid codes. Review round 1: status reported -> verified, Toyota added as the first source. Skeptic: status verified -> reported; row label corrected from 'Fuel tank capacity' to 'Fuel Capacity'.",
    "who_when": "KBB, 2026 model year, accessed 2026-10-13",
    "research_topic": "explosive"
   },
@@ -2878,7 +2894,7 @@
    "display": "1361 W/m² (± 1 W/m²), the IAU 2015 nominal value; NASA's Earth fact sheet gives 1361.0 W/m²",
    "sources": [
     {
-     "title": "Prša et al., IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties (arXiv:1510.07674v1, 2015; PDF)",
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)",
      "url": "https://arxiv.org/pdf/1510.07674"
     },
     {

@@ -1955,7 +1955,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     box.append(el('p', { style: 'margin:0', text: capital(ref.short) + ': ' + fmtSI(E, 'J') + ', which becomes ' + fmtMass(E / (K.c * K.c)) + ' of mass. From ' + fmtMass(c.body.m) + ' and ' + fmtDist(c.body.H) + ':' }));
     // how firm each energy is (research/final-energy.json and final-presence.json)
     const firm = {
-      krakatoa: 'Disputed: the lab uses 125 Mt (5.2 × 10¹⁷ J), the middle of the one refereed estimate, 100–150 Mt from its air wave (Harkrider & Press 1967). A popular figure is 200 Mt (8.4 × 10¹⁷ J). Figures quoted in encyclopedias and a popular book run from about 10¹⁷ to 6.3 × 10¹⁸ J (as collected in an unrefereed preprint, Lobanovsky 2013).',
+      krakatoa: 'Disputed: the lab uses 125 Mt (5.2 × 10¹⁷ J), the middle of the one refereed estimate with a stated method, 100–150 Mt from its air wave (Harkrider & Press 1967). 200 Mt (8.4 × 10¹⁷ J) is often quoted, with no method. Other figures, in encyclopedias and a 1982 Geological Society of America volume, run from about 10¹⁷ to 6.3 × 10¹⁸ J (as collected in an unrefereed preprint, Lobanovsky 2013).',
       chicxulub: 'Disputed: the lab uses about 5 × 10²³ J, the 2022 review’s figure from the crater (Morgan et al.). An older estimate from a larger crater runs up to 1.7 × 10²⁵ J (Sharpton & Marin 1997).',
     }[ref.id];
     if (firm) box.append(el('p', { class: 'muted', style: 'margin:0', text: firm }));

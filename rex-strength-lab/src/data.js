@@ -3180,7 +3180,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: A lightning flash: total energy",
-   "value": "about 1 GJ per flash (published estimates 0.1 to 7 GJ)",
+   "value": "about 1 GJ per flash (published estimates 0.1 to 10 GJ)",
    "status": "disputed",
    "sources": [
     {
@@ -3198,6 +3198,14 @@ window.DINO_DATA = {
     {
      "url": "https://www.epa.gov/sites/production/files/2020-11/documents/c14s03.pdf",
      "title": "US EPA AP-42 section 14.3 Lightning Emissions (9/96)"
+    },
+    {
+     "url": "https://arxiv.org/pdf/2404.10020",
+     "title": "Review: Physics and technology of Laser Lightning Control (2024), arXiv:2404.10020, citing Rakov & Uman (2003)"
+    },
+    {
+     "url": "https://journals.ametsoc.org/view/journals/atsc/78/12/JAS-D-21-0073.1.pdf",
+     "title": "Salinas, Bruning, Mansell & Brothers (2021) Modeling the electrical energy discharged by lightning flashes using capacitors, J. Atmos. Sci. 78:3909-3924, section 6a"
     }
    ],
    "note": null
@@ -3285,7 +3293,7 @@ window.DINO_DATA = {
   {
    "label": "Energy: Beirut port explosion, 4 Aug 2020: TNT-equivalent yield",
    "value": "about 0.3-1.1 kt TNT in published estimates (0.13-2 kt at the extremes); 0.5 kt (2.1 TJ) used, Rigby et al.'s best estimate",
-   "status": "verified",
+   "status": "disputed",
    "sources": [
     {
      "url": "https://eprints.whiterose.ac.uk/id/eprint/165010/8/Rigby2020_Article_PreliminaryYieldEstimationOfTh.pdf",
@@ -3354,6 +3362,10 @@ window.DINO_DATA = {
     {
      "url": "https://www.usbr.gov/lc/hooverdam/faqs/powerfaq.html",
      "title": "US Bureau of Reclamation: Hoover Dam - Frequently Asked Questions: Hydropower (last updated 1 Aug 2018)"
+    },
+    {
+     "url": "https://api.eia.gov/v2/electricity/facility-fuel/data/?frequency=annual&data[0]=generation&facets[plantCode][]=154&facets[plantCode][]=8902&facets[fuel2002][]=ALL",
+     "title": "US EIA, Form EIA-923 plant generation, Hoover Dam (plants 154 and 8902), API query"
     }
    ],
    "note": null
@@ -3388,7 +3400,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: Krakatoa 1883: energy of the great explosion (air-wave equivalent)",
-   "value": "roughly 100-200 megatons (4-8 x 10^17 J) judged from its air wave; other published figures run from 10^17 J to over 10^18 J",
+   "value": "about 100-150 megatons (4.2-6.3 x 10^17 J) judged from its air wave (Harkrider & Press); 125 Mt used. A tsunami paper gives 200 Mt (8.4 x 10^17 J) for the third blast's total energy, with no source; other published figures run from about 10^17 to 6.3 x 10^18 J",
    "status": "disputed",
    "sources": [
     {
@@ -3457,7 +3469,7 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://arxiv.org/pdf/1510.07674",
-     "title": "Prša et al., IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties (arXiv:1510.07674v1, 2015; PDF)"
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)"
     },
     {
      "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
@@ -3493,7 +3505,7 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://arxiv.org/pdf/1510.07674",
-     "title": "Prša et al., IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties (arXiv:1510.07674v1, 2015; PDF)"
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)"
     },
     {
      "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
@@ -3509,7 +3521,7 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://arxiv.org/pdf/1510.07674",
-     "title": "Prsa et al. (2016) Nominal values for selected solar and planetary quantities: IAU 2015 Resolution B3, AJ 152:41 (doi:10.3847/0004-6256/152/2/41); arXiv:1510.07674 PDF"
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)"
     }
    ],
    "note": null
@@ -3573,7 +3585,7 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://arxiv.org/pdf/1510.07674",
-     "title": "Mamajek, Prsa, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (PDF)"
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)"
     },
     {
      "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
@@ -3605,7 +3617,7 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://arxiv.org/pdf/1510.07674",
-     "title": "Mamajek, Prsa, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (PDF)"
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)"
     },
     {
      "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
@@ -3645,7 +3657,7 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://arxiv.org/pdf/1510.07674",
-     "title": "Mamajek, Prsa, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (PDF)"
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)"
     },
     {
      "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
@@ -3677,7 +3689,7 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://arxiv.org/pdf/1510.07674",
-     "title": "Mamajek, Prsa, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (PDF)"
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)"
     },
     {
      "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
@@ -3697,7 +3709,7 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://arxiv.org/pdf/1510.07674",
-     "title": "Prša et al. (2016), IAU 2015 Resolution B3, AJ 152, 41; arXiv:1510.07674 PDF (nominal solar luminosity 3.828e26 W)"
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)"
     },
     {
      "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b8",
@@ -3825,7 +3837,7 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://arxiv.org/pdf/1510.07674",
-     "title": "Prša et al. (2016), IAU 2015 Resolution B3, AJ 152, 41; arXiv:1510.07674 PDF (nominal solar luminosity 3.828e26 W)"
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)"
     },
     {
      "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b8",
