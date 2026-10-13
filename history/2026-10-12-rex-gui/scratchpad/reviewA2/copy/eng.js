@@ -1,0 +1,28 @@
+global.window = global;
+const path = require('path');
+const R = path.join(__dirname, 'proj/rex-strength-lab/src/');
+require(R + 'data.js');
+const P = require(R + 'engine.js');
+const D = window.DINO_DATA;
+const g = 9.80665;
+const surf = (id) => D.surfaces.find((s) => s.id === id);
+const B = P.DEFAULT_BODIES;
+const mk = (who, anchor, s, extra) => Object.assign({ F: 100 * 907.18474 * g, mode: 'comic', body: P.makeBody({ H: B[who].H, m: B[who].m, build: who }), surface: surf(s), groundHolds: false, anchor }, extra || {});
+console.log('makeBody sig', P.makeBody.length);
+const rS = mk('rex', 'bolted', 'sand'), oS = mk('ollie', 'friction', 'sand');
+console.log('tear limit sand', rS.surface.shear * rS.body.digArea);
+const sh = P.shove(rS, oS);
+console.log('shove Rex bolted -> Ollie standing: Fdrive', sh.Fdrive, 'vB', sh.vB, 'vA', sh.vA, 'keys with tear', Object.keys(sh).filter(k=>/tear|clash/.test(k)));
+const sh2 = P.shove(rS, mk('ollie','bolted','sand'));
+console.log('shove both bolted finite: stalled', sh2.stalled, 'clash', sh2.clash, Object.keys(sh2).filter(k=>/tear/.test(k)));
+const pm = P.pushMatch(rS, oS);
+console.log('push Rex bolted vs standing:', pm.outcome, 'contact', pm.contact, 'tear', pm.tear);
+const sp1 = P.sprint(mk('rex','friction','sand', {use: undefined}));
+const sp2 = P.sprint(mk('rex','bolted','sand'));
+console.log('sprint sand standing', sp1.limit, sp1.thrust, 'bolted', sp2.limit, sp2.thrust);
+for (const id of ['softclay','stiffclay']) { const s = surf(id); const b = P.makeBody({ H: B.rex.H, m: B.rex.m, build: 'rex' }); const q = P.qultFor ? P.qultFor(s, b.footB) : null; console.log(id, 'qult', q, 'su', s.shear, 'Nc0', q && q / s.shear); }
+console.log(Object.keys(P).filter(k=>/qult|ground|Ground/.test(k)));
+const spc = P.sprint(mk('rex','friction','sand',{groundHolds:true}));
+console.log('sprint sand comic ground', spc.limit, spc.thrust, 'mu W', 0.58*B.rex.m*9.80665);
+const ap = P.armWrestle(mk('rex','bolted','sand',{F:6.11e3*9.80665}), mk('ollie','friction','sand',{F:6.11e3*9.80665}));
+console.log('arm bolted sand 6.11 t: tableBreaks', ap.tableBreaks, 'tearA', ap.tearA, 'outcome', ap.outcome);

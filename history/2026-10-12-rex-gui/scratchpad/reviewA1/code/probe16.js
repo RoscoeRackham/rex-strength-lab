@@ -1,0 +1,20 @@
+const { launch, url, settle, text, S } = require('./lib.js');
+(async () => {
+  const br = await launch();
+  const page = await br.newPage({ viewport: { width: 1280, height: 900 } });
+  const errs = []; page.on('pageerror', (e) => errs.push(e.message));
+  await page.goto(url('branch.html'));
+  await page.evaluate(() => localStorage.setItem('rex-lab-v1', JSON.stringify({ duoOpen: true, duoAction: 'arm', action: 'walk' })));
+  await page.reload(); await page.waitForTimeout(300); await settle(page, 'duo-bay');
+  const where = () => page.evaluate(() => ({ focus: document.activeElement.id, duoSel: document.querySelector('#duo-tabs [aria-selected=true]').id, soloSel: document.querySelector('#tabs [aria-selected=true]').id, labels: [document.getElementById('tabs').getAttribute('aria-label'), document.getElementById('duo-tabs').getAttribute('aria-label')], tabindex0: Array.from(document.querySelectorAll('.tab[tabindex="0"]')).map((x) => x.id) }));
+  await page.focus('#tab-arm'); await page.keyboard.press('ArrowLeft'); await page.waitForTimeout(300);
+  console.log('arm + Left:', JSON.stringify(await where()));
+  await page.keyboard.press('Home'); await page.waitForTimeout(300);
+  console.log('Home:', JSON.stringify(await where()));
+  await page.focus('#tab-walk'); await page.keyboard.press('ArrowLeft'); await page.waitForTimeout(300);
+  console.log('walk + Left:', JSON.stringify(await where()));
+  await page.keyboard.press('End'); await page.waitForTimeout(300);
+  console.log('End:', JSON.stringify(await where()));
+  console.log('errors', errs);
+  await br.close();
+})();

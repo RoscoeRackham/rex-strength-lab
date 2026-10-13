@@ -1,0 +1,13 @@
+const L = require('./lib.js');
+(async () => {
+  const s = JSON.parse(process.argv[2]);
+  const b = await L.chromium.launch({ executablePath: L.CHROME });
+  const p = await L.open(b, L.MAIN(), Object.assign({ group: 'duo' }, s), { wait: 500 });
+  await L.waitSettled(p, '#bay', 30000);
+  if (process.env.EFF) { await p.selectOption('#duo-effort', process.env.EFF); await p.waitForTimeout(500); await L.waitSettled(p, '#bay', 30000); }
+  await p.evaluate(() => { for (const d of document.querySelectorAll('#bay details')) d.open = true; });
+  const t = await p.evaluate(() => document.querySelector('#bay').innerText);
+  const re = process.argv[3] ? new RegExp(process.argv[3], 'i') : null;
+  console.log(re ? t.split('\n').filter((l) => re.test(l)).join('\n') : t);
+  await b.close();
+})();

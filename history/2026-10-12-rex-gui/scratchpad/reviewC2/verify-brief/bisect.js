@@ -1,0 +1,11 @@
+global.window = {}; require('/home/user/rex-strength-lab/rex-strength-lab/src/data.js'); const D = window.DINO_DATA;
+const P = require('/home/user/rex-strength-lab/rex-strength-lab/src/engine.js');
+const body = P.makeBody({ build: 'rex', H: P.DEFAULT_BODIES.rex.H, m: P.DEFAULT_BODIES.rex.m });
+const surface = D.surfaces.find((s) => s.id === 'concrete');
+const g = 9.80665;
+const base = { mode: 'comic', body, surface, anchor: 'friction', airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true, safePassenger: false, silentStrike: false, softLanding: false };
+const at = (kg) => Object.assign({}, base, { F: kg * g });
+const thr = (E) => { let lo = 10, hi = 1e34; for (let i = 0; i < 300 && hi / lo > 1 + 1e-6; i++) { const mid = Math.sqrt(lo * hi); if (P.punch(at(mid)).E >= E) hi = mid; else lo = mid; } return hi; };
+const r = D.energyRefs.find((e) => e.id === 'chicxulub');
+console.log('rung', r.J, 'rough', r.rough);
+for (const E of [1e23, 4.2e23, 5e23, 1.674e25]) console.log(E.toExponential(3), 'J ->', (thr(E) / 1000).toExponential(3), 't');

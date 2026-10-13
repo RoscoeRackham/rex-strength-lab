@@ -1,0 +1,179 @@
+{
+ "dropped": [
+  {
+   "key": "energy_fastest_pitch",
+   "topic": [
+    "small"
+   ],
+   "why": "duplicate of audit energy_fastest_pitch_kinetic (same 162 J)"
+  },
+  {
+   "key": "energy_corolla_100kmh",
+   "topic": [
+    "small"
+   ],
+   "why": "duplicate of audit energy_corolla_100kmh_kinetic (same 517 kJ)"
+  },
+  {
+   "key": "comp_b3_heat_of_detonation",
+   "topic": [
+    "explosive"
+   ],
+   "why": "superseded by audit energy_comp_b_heat_of_detonation (same table, Comp B Grade A row)"
+  },
+  {
+   "key": "energy_m67_grenade_heat_of_detonation",
+   "topic": [
+    "explosive"
+   ],
+   "why": "superseded by audit energy_m67_tnt_equivalent_estimate: LLNL UCRL-52997 (1981) Table 5-2 does list Comp B Grade A, experimental 1.20 kcal/g (5.02 MJ/kg), checked on the page image (PDF p. 56); the Comp B-3 stand-in is not needed"
+  },
+  {
+   "key": "energy_moab_h6_fill_cross_check",
+   "topic": [
+    "explosive"
+   ],
+   "why": "duplicate of the cross-checks inside audit energy_moab_yield (fill 8,482 kg x 1.35 = 47.9 GJ)"
+  }
+ ],
+ "duplicates": [
+  {
+   "key": "energy_hiroshima_yield",
+   "kept": "audit",
+   "also_in": [
+    "disaster"
+   ],
+   "values": {
+    "audit": 62760000000000,
+    "disaster": 62760000000000.0
+   }
+  },
+  {
+   "key": "energy_castle_bravo_yield",
+   "kept": "audit",
+   "also_in": [
+    "disaster"
+   ],
+   "values": {
+    "audit": 62760000000000000,
+    "disaster": 6.276e+16
+   }
+  },
+  {
+   "key": "energy_earth_gravitational_binding",
+   "kept": "audit",
+   "also_in": [
+    "planetary"
+   ],
+   "values": {
+    "audit": 2.489e+32,
+    "planetary": 2.49e+32
+   }
+  },
+  {
+   "key": "earth_mean_orbital_speed",
+   "kept": "planetary",
+   "also_in": [
+    "stellar"
+   ],
+   "values": {
+    "planetary": 29780,
+    "stellar": 29780
+   }
+  },
+  {
+   "key": "jupiter_mass",
+   "kept": "planetary",
+   "also_in": [
+    "stellar"
+   ],
+   "values": {
+    "planetary": 1.89813e+27,
+    "stellar": 1.89813e+27
+   }
+  },
+  {
+   "key": "jupiter_mean_orbital_speed",
+   "kept": "planetary",
+   "also_in": [
+    "stellar"
+   ],
+   "values": {
+    "planetary": 13060,
+    "stellar": 13060
+   }
+  },
+  {
+   "key": "energy_sun_output_year",
+   "kept": "planetary",
+   "also_in": [
+    "stellar"
+   ],
+   "values": {
+    "planetary": 1.208044772352e+34,
+    "stellar": 1.208e+34
+   }
+  },
+  {
+   "key": "energy_sun_output_century",
+   "kept": "planetary",
+   "also_in": [
+    "stellar"
+   ],
+   "values": {
+    "planetary": 1.208044772352e+36,
+    "stellar": 1.208e+36
+   }
+  },
+  {
+   "key": "energy_earth_orbital_kinetic",
+   "kept": "planetary",
+   "also_in": [
+    "stellar"
+   ],
+   "values": {
+    "planetary": 2.65e+33,
+    "stellar": 2.6482e+33
+   }
+  },
+  {
+   "key": "energy_jupiter_orbital_kinetic",
+   "kept": "planetary",
+   "also_in": [
+    "stellar"
+   ],
+   "values": {
+    "planetary": 1.62e+35,
+    "stellar": 1.6188e+35
+   }
+  }
+ ],
+ "elsewhere": [
+  {
+   "key": "fastest_baseball_pitch",
+   "file": "final-humans.json"
+  },
+  {
+   "key": "baseball_mass",
+   "file": "final-objects.json"
+  },
+  {
+   "key": "toyota_corolla_curb_mass",
+   "file": "final-objects.json"
+  }
+ ],
+ "moved": [
+  "energy_tnt_equivalent_per_tonne",
+  "energy_m67_grenade_explosive_mass",
+  "energy_comp_b_re_factor",
+  "energy_m67_tnt_equivalent_estimate",
+  "energy_moab_yield",
+  "energy_hiroshima_yield",
+  "energy_castle_bravo_yield",
+  "energy_tsar_bomba_yield",
+  "energy_krakatoa_1883",
+  "energy_chicxulub_impact",
+  "energy_sun_luminosity",
+  "energy_earth_gravitational_binding"
+ ]
+}

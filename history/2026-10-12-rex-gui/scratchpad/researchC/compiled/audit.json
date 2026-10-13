@@ -1,0 +1,516 @@
+{
+ "facts": [
+  {
+   "key": "fastest_baseball_pitch",
+   "category": "speed_record",
+   "label": "Fastest recorded baseball pitch (ball speed, as MLB lists it)",
+   "status": "verified",
+   "value_si": 47.297,
+   "unit_si": "m/s",
+   "display": "105.8 mph (47.3 m/s); Aroldis Chapman, 24 Sep 2010",
+   "sources": [
+    {
+     "title": "MLB.com, Sarah Langs (9 Sep 2026): '105.7 mph throw? 122.9 mph HR? This is the Statcast speed Hall of Fame'",
+     "url": "https://www.mlb.com/news/speediest-plays-in-statcast-history"
+    },
+    {
+     "title": "MLB Glossary: Velocity (VELO), Statcast",
+     "url": "https://www.mlb.com/glossary/statcast/velocity"
+    }
+   ],
+   "notes": "MLB.com: 'Fastest pitch: 105.8 mph, Aroldis Chapman, Sept. 24, 2010'; 'Pitch velocity goes back to 2008'. 105.8 x 0.44704 = 47.297 m/s. Ball speed, not hand speed. Misiorowski's 105.5 mph (27 Jun 2026) is the fastest pitch by a starter and 'the third-fastest pitch recorded in the Statcast Era', so the record stands. The glossary says Statcast velocity is the maximum speed 'with the max speed always being at the release point'; that describes Statcast (from 2015), and the 2010 pitch was tracked by PITCHf/x, so 'at release' is our inference, as is the idea that the earlier 105.1 mph (SABR) was the same pitch measured farther from the hand. MLB does not say how the 105.8 was derived. Skeptic: misquote of Misiorowski fixed; 'at release' removed from label and display; inferences labelled.",
+   "who_when": "MLB (Statcast data), page dated 9 Sep 2026",
+   "page_short": "the fastest baseball pitch on record"
+  },
+  {
+   "key": "baseball_mass",
+   "category": "object_mass",
+   "label": "Baseball mass (MLB Official Baseball Rules 3.01)",
+   "status": "verified",
+   "value_si": 0.14529,
+   "unit_si": "kg",
+   "low_si": 0.14175,
+   "high_si": 0.14883,
+   "display": "5 to 5.25 oz (141.7 to 148.8 g); midpoint 145.3 g used",
+   "sources": [
+    {
+     "title": "MLB Official Baseball Rules, 2026 edition (PDF linked from mlb.com/glossary/rules), Rule 3.01 The Ball",
+     "url": "https://mktg.mlbstatic.com/mlb/official-information/2026-official-baseball-rules.pdf"
+    }
+   ],
+   "notes": "Rule 3.01: 'It shall weigh not less than five nor more than 5¼ ounces avoirdupois'. 1 oz = 28.3495 g, so 141.75 to 148.83 g; midpoint 145.29 g. Replaces the UmpireBible and Baseball Rules Academy reproductions with MLB's own 2026 rulebook. Other notes in the existing fact (circumference, grip, drag) unchanged. Skeptic: confirmed.",
+   "who_when": "Office of the Commissioner of Baseball, 2026 edition",
+   "page_short": "a baseball"
+  },
+  {
+   "key": "energy_fastest_pitch_kinetic",
+   "label": "Fastest pitch on record: kinetic energy of the ball",
+   "status": "derived",
+   "value_si": 162.5,
+   "unit_si": "J",
+   "low_si": 158.5,
+   "high_si": 166.5,
+   "display": "about 160 J (a 145 g ball at 105.8 mph)",
+   "sources": [
+    {
+     "title": "Speed: MLB.com Statcast speed Hall of Fame (105.8 mph)",
+     "url": "https://www.mlb.com/news/speediest-plays-in-statcast-history"
+    },
+    {
+     "title": "Mass: MLB Official Baseball Rules 2026, Rule 3.01",
+     "url": "https://mktg.mlbstatic.com/mlb/official-information/2026-official-baseball-rules.pdf"
+    }
+   ],
+   "notes": "KE = 1/2 m v^2 = 0.5 x 0.14529 kg x (47.297 m/s)^2 = 162.5 J. Range from the rule's mass limits only: 158.5 J (5 oz) to 166.5 J (5.25 oz), about +/-2.5%; speed-measurement error not included. Ignores the ball's spin: at an assumed 2,400 rpm (Chapman's own spin rate not looked up) spin adds about 2.5 J, under 2%. Inputs: fastest_baseball_pitch, baseball_mass. Same value the page already uses (162 J). Skeptic: recomputed, confirmed.",
+   "who_when": "derived 2026-10-13",
+   "page_short": "the fastest baseball pitch on record",
+   "category": "energy_reference"
+  },
+  {
+   "key": "toyota_corolla_curb_mass",
+   "category": "object_mass",
+   "label": "Toyota Corolla gasoline sedan curb mass (2026 model year)",
+   "status": "verified",
+   "value_si": 1340.4,
+   "unit_si": "kg",
+   "low_si": 1340.4,
+   "high_si": 1428.8,
+   "display": "2,955 lb (LE) to 3,150 lb (XSE); 1,340 to 1,429 kg (gasoline sedans)",
+   "sources": [
+    {
+     "title": "Toyota USA, 2026 Corolla features and specs page (spec table embedded in the page)",
+     "url": "https://www.toyota.com/corolla/2026/features/"
+    }
+   ],
+   "notes": "Manufacturer's figures from the spec data embedded in toyota.com's 2026 Corolla page (fetched with curl; WebFetch got HTTP 403). Curb Weight (lb.), gasoline: LE 2,955; SE 3,110; XSE 3,150. 2,955 lb x 0.45359 = 1,340.4 kg. Hybrids, same table: LE 2,850 (code 1882) and 3,080 (1883); SE 3,140 (1886) and 3,250 (1887); XLE 3,130. The heavier hybrid codes are probably the all-wheel-drive versions (our inference). So the whole 2026 sedan lineup runs 2,850 to 3,250 lb (1,293 to 1,474 kg). Curb weight: no driver, passengers or cargo. Replaces KBB and iSeeCars as the primary source. Skeptic: label narrowed to gasoline sedans (range unchanged) and the hybrid configurations listed.",
+   "who_when": "Toyota Motor Sales USA, 2026 MY, accessed 2026-10-13",
+   "page_short": "a Toyota Corolla"
+  },
+  {
+   "key": "energy_corolla_100kmh_kinetic",
+   "label": "Toyota Corolla at 100 km/h: kinetic energy",
+   "status": "derived",
+   "value_si": 517100,
+   "unit_si": "J",
+   "low_si": 517100,
+   "high_si": 551200,
+   "display": "about 0.52 MJ (1,340 kg at 100 km/h); 0.55 MJ for the heaviest gasoline trim",
+   "sources": [
+    {
+     "title": "Mass: Toyota USA 2026 Corolla features and specs",
+     "url": "https://www.toyota.com/corolla/2026/features/"
+    }
+   ],
+   "notes": "KE = 1/2 m v^2 with m = 1,340.4 kg (LE curb mass) and v = 100 km/h = 27.78 m/s (a chosen round speed, not a sourced one): 5.171e5 J. XSE (1,428.8 kg): 5.51e5 J. Across the whole 2026 lineup including hybrids (1,293 to 1,474 kg): 4.99e5 to 5.69e5 J. A 75 kg driver would add about 29 kJ (6%), not counted. Input: toyota_corolla_curb_mass. Same value the page already uses (0.52 MJ). Only 1.8x below the hand grenade (0.93 MJ). Skeptic: recomputed, confirmed; lineup range noted.",
+   "who_when": "derived 2026-10-13",
+   "page_short": "a Toyota Corolla at 100 km/h",
+   "category": "energy_reference"
+  },
+  {
+   "key": "energy_m67_grenade_explosive_mass",
+   "label": "M67 fragmentation grenade: explosive filler mass",
+   "status": "verified",
+   "value_si": 0.18427,
+   "unit_si": "kg",
+   "display": "6.5 oz of Composition B (0.184 kg); total weight 16.0 oz (0.454 kg)",
+   "sources": [
+    {
+     "title": "US Army TC 3-23.30 Grenades and Pyrotechnic Signals (17 Aug 2021, Change 1 of 1 Feb 2023), Figure 3-15",
+     "url": "https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN37340-TC_3-23.30-001-WEB-3.pdf"
+    }
+   ],
+   "notes": "Figure 3-15, M67 fragmentation hand grenade: 'Total Weight 16.0 ounces'; 'Filler 6.5 ounces of Composition B'; 'M213 Fuze - 4.0 to 5.5 seconds'. 6.5 avoirdupois oz = 0.18427 kg. Unchanged from the existing fact. Skeptic: confirmed.",
+   "who_when": "US Army, 2021/2023",
+   "page_short": "a hand grenade",
+   "category": "energy_reference"
+  },
+  {
+   "key": "energy_comp_b_heat_of_detonation",
+   "label": "Composition B: measured heat of detonation",
+   "status": "verified",
+   "value_si": 5020000,
+   "unit_si": "J/kg",
+   "low_si": 4690000,
+   "high_si": 5190000,
+   "display": "1.20 kcal/g (5.02 MJ/kg), water as liquid (LLNL calorimeter); 1.12 kcal/g (4.69 MJ/kg) water as gas, Comp B-3 only",
+   "sources": [
+    {
+     "title": "Dobratz (1981) LLNL Explosives Handbook, UCRL-52997, Table 5-2 'Heats of detonation', p. 5-7 (OSTI 6530310, scanned PDF, page 56)",
+     "url": "https://www.osti.gov/servlets/purl/6530310"
+    },
+    {
+     "title": "US Army Materiel Command AMCP 706-177 (1971) Properties of Explosives of Military Interest, Composition B data sheet, p. 47 (PDF p. 55) (EverySpec copy; DTIC refused access)",
+     "url": "https://everyspec.com/ARMY/ARMY-General/download.php?spec=AMCP_706-177_JAN1971.050916.pdf"
+    }
+   ],
+   "notes": "LLNL Table 5-2, read from the page image: 'Comp B, Grade A', experimental, water as liquid: 1.20 (5.02); water as gas: '--'; 25 C, charge 8.47 mm, density 1.69. 'Comp B-3': 1.20 (5.02) and 1.12 (4.69). Calculated maximum for both: 1.54 kcal/g (6.44 MJ/kg). TNT (p. 5-10): 1.09 (4.56) and 1.02 (4.27). So the water-as-gas value (4.69 MJ/kg, low_si) is listed only for Comp B-3. AMCP 706-177 Comp B: 'Heat of: ... Explosion, cal/gm 1240' (5.19 MJ/kg, high_si); TNT 1080. By measured energy Comp B is about 1.10x TNT (1.20/1.09), and 1.20x the 4.184 MJ/kg TNT-equivalent convention. Skeptic: quotes confirmed from the page images; Comp B-3 qualifier added.",
+   "who_when": "LLNL 1981; US Army 1971",
+   "page_short": "Composition B explosive",
+   "category": "energy_reference"
+  },
+  {
+   "key": "energy_m67_tnt_equivalent_estimate",
+   "label": "M67 hand grenade: chemical energy of its filler",
+   "status": "derived",
+   "value_si": 925000,
+   "unit_si": "J",
+   "low_si": 864000,
+   "high_si": 1025000,
+   "display": "about 0.9 MJ (0.184 kg of Comp B x 5.02 MJ/kg); 1.0 MJ by the Army's ballistic-mortar TNT equivalence",
+   "sources": [
+    {
+     "title": "Filler mass: US Army TC 3-23.30, Fig. 3-15",
+     "url": "https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN37340-TC_3-23.30-001-WEB-3.pdf"
+    },
+    {
+     "title": "Heat of detonation: LLNL Explosives Handbook UCRL-52997, Table 5-2",
+     "url": "https://www.osti.gov/servlets/purl/6530310"
+    },
+    {
+     "title": "Heat of explosion and 'Ballistic Mortar, % TNT: 133': AMCP 706-177, Composition B sheet pp. 46-47 (PDF pp. 54-55)",
+     "url": "https://everyspec.com/ARMY/ARMY-General/download.php?spec=AMCP_706-177_JAN1971.050916.pdf"
+    }
+   ],
+   "notes": "Energy = filler mass x measured heat of detonation: 0.18427 kg x 5.02 MJ/kg = 0.925 MJ. Low 0.864 MJ (water as gas, 4.69 MJ/kg, Comp B-3). AMCP's heat of explosion (1,240 cal/g) gives 0.956 MJ. High 1.03 MJ: the page's old value is the ballistic-mortar TNT equivalence (AMCP 706-177 Comp B, 'Ballistic Mortar, % TNT: 133'): 0.18427 x 1.33 x 4.184 MJ/kg. That is a work ratio, not a heat release, so 0.93 MJ (about 10% lower) is the better energy figure; both round to about 1 MJ. The MOAB rung rests on the same kind of ratio (H-6, 135%), so the two rungs differ in basis by about 10%. The fuze and steel body add no energy. Key kept. Skeptic: the claim that 1.33 was unsourced was wrong; high_si set to 1.03 MJ, note reworded.",
+   "who_when": "derived 2026-10-13",
+   "page_short": "a hand grenade",
+   "category": "energy_reference"
+  },
+  {
+   "key": "energy_comp_b_re_factor",
+   "label": "Composition B: strength relative to TNT, by test",
+   "status": "verified",
+   "value_si": 1.16,
+   "unit_si": "1",
+   "low_si": 1.1,
+   "high_si": 1.33,
+   "display": "1.10-1.16x TNT in air blast; 1.30-1.33x in the Trauzl, plate-dent and ballistic-mortar tests",
+   "sources": [
+    {
+     "title": "US Army Materiel Command AMCP 706-177 (1971), Composition B data sheet, pp. 46 and 48 (PDF pp. 54 and 56)",
+     "url": "https://everyspec.com/ARMY/ARMY-General/download.php?spec=AMCP_706-177_JAN1971.050916.pdf"
+    }
+   ],
+   "notes": "Read from the page images. p. 46: 'Ballistic Mortar, % TNT: 133'; 'Trauzl Test, % TNT: 130'; 'Plate Dent ... Brisance, % TNT 132'. p. 48, 'Blast (Relative to TNT)': 'Air: Peak Pressure 110, Impulse 110, Energy 116; Air, Confined: Impulse 75; Under Water: Peak Pressure 110, Impulse 108, Energy 121; Underground: 104, 97, crater radius cubed 107'. Relative strength depends on the test. Value 1.16 is the air-blast energy ratio; range 1.10 (air peak pressure and impulse) to 1.33 (ballistic mortar). Replaces the earlier 'claimed' 1.33 from a Wikipedia table tagged 'citation needed': the Army handbook is a primary source for 1.33, by ballistic mortar. Not needed for the grenade rung, which uses the heat of detonation. Skeptic: 'does not support 1.33' deleted; range widened to 1.10-1.33; value 1.16.",
+   "who_when": "US Army Materiel Command, Jan 1971",
+   "page_short": "Composition B vs TNT",
+   "category": "energy_reference"
+  },
+  {
+   "key": "energy_moab_fill_mass",
+   "label": "GBU-43/B MOAB: explosive fill",
+   "status": "reported",
+   "value_si": 8482,
+   "unit_si": "kg",
+   "display": "18,700 lb (8,480 kg) of H-6; bomb 21,600 lb",
+   "sources": [
+    {
+     "title": "Air Force Armament Museum (Eglin AFB), GBU-43/B MOAB artifact page (website of the Air Force Armament Museum Foundation)",
+     "url": "https://afarmamentmuseum.com/artifact/gbu43/"
+    },
+    {
+     "title": "AFP via Arab News, 14 Apr 2017: 'US strike in Afghanistan: What is the Mother of All Bombs?'",
+     "url": "https://www.arabnews.com/node/1084336"
+    }
+   ],
+   "notes": "Museum page: 'Weight 21,600 lbs'; 'Armament 18,700 lbs of H6 Composition (1.35 times more powerful than TNT)'. AFP, citing GlobalSecurity.org: 'containing 18,700 pounds (8,480 kilogrammes) of the explosive H6'; AFP gives the bomb as '9.8-ton'. 18,700 lb = 8,482 kg. Wikipedia's infobox gives 18,739 lb (8,500 kg) without a citation; its body text says 18,700 lb. 'Reported': no Air Force or DoD page with the fill could be read (af.mil and eglin.af.mil returned 403; GlobalSecurity returned 402). Skeptic: display's '22,000 lb' was in no fetched source, now 21,600 lb; high_si 8,500 kg (uncited Wikipedia infobox) dropped, so no range.",
+   "who_when": "museum foundation page and AFP 2017, accessed 2026-10-13",
+   "page_short": "the MOAB's explosive",
+   "category": "energy_reference"
+  },
+  {
+   "key": "energy_h6_heat_of_explosion",
+   "label": "H-6 explosive: heat of explosion and heat of combustion",
+   "status": "verified",
+   "value_si": 3862000,
+   "unit_si": "J/kg",
+   "display": "923 cal/g (3.86 MJ/kg) heat of explosion; 3,972 cal/g (16.6 MJ/kg) if fully burned in air",
+   "sources": [
+    {
+     "title": "US Army Materiel Command AMCP 706-177 (1971), H-6 data sheet pp. 146-147 (PDF pp. 154-155)",
+     "url": "https://everyspec.com/ARMY/ARMY-General/download.php?spec=AMCP_706-177_JAN1971.050916.pdf"
+    }
+   ],
+   "notes": "Read from the page images. p. 147: 'Heat of: Combustion, cal/gm 3972; Explosion, cal/gm 923; Gas Volume, cc/gm 733'. p. 146: RDX 45, TNT 30, aluminium 20, D-2 wax 5 (calcium chloride 0.5 added); 'Ballistic Mortar, % TNT: 135'. The same handbook gives TNT 1,080 and Composition B 1,240 cal/g. The museum's '1.35 times more powerful than TNT' matches AMCP's ballistic mortar 135% TNT, a work ratio, not an air-blast or energy ratio; AMCP gives no air-blast ratio for H-6. In open air the aluminium keeps burning, so the MOAB's energy lies between the heat of explosion and the full-combustion figure. Skeptic: page citation corrected from p. 146 to pp. 146-147; ballistic-mortar origin of 1.35 added.",
+   "who_when": "US Army Materiel Command, Jan 1971",
+   "page_short": "H-6 explosive",
+   "category": "energy_reference"
+  },
+  {
+   "key": "energy_moab_yield",
+   "label": "GBU-43/B MOAB: blast yield",
+   "status": "reported",
+   "value_si": 46024000000,
+   "unit_si": "J",
+   "low_si": 32760000000,
+   "high_si": 47910000000,
+   "display": "about 11 tons of TNT (46 GJ); 33 GJ from the fill's heat of explosion alone",
+   "sources": [
+    {
+     "title": "AFP via Arab News, 14 Apr 2017 (citing GlobalSecurity.org): 'a blast yield equivalent to 11 tons of TNT'",
+     "url": "https://www.arabnews.com/node/1084336"
+    },
+    {
+     "title": "Air Force Armament Museum, GBU-43/B (18,700 lb H6, '1.35 times more powerful than TNT')",
+     "url": "https://afarmamentmuseum.com/artifact/gbu43/"
+    },
+    {
+     "title": "AMCP 706-177 (1971), H-6 sheet pp. 146-147: ballistic mortar 135% TNT; heat of explosion 923 cal/g",
+     "url": "https://everyspec.com/ARMY/ARMY-General/download.php?spec=AMCP_706-177_JAN1971.050916.pdf"
+    }
+   ],
+   "notes": "Value: 11 t TNT x 4.184 GJ/t = 46.0 GJ (GlobalSecurity via AFP; GlobalSecurity returned HTTP 402). Cross-checks: fill 8,482 kg x 1.35 = 11.45 t TNT = 47.9 GJ (high_si); 1.35 is AMCP's ballistic-mortar ratio for H-6 (135% TNT), a work ratio, the same kind as the 133% for Comp B that the grenade rung no longer uses. Fill x H-6 heat of explosion 3.86 MJ/kg = 32.8 GJ (low_si, before the aluminium afterburns in air). Full combustion of the fill would be 141 GJ, an upper bound not reached. Range -29% to +4%, so ordinary wording is fine. The grenade rung is on a heat-of-detonation basis, this one on a TNT-equivalence basis: about 10% apart in method. 'Reported': no official US yield found. Skeptic: confirmed; ballistic-mortar note added.",
+   "who_when": "GlobalSecurity via AFP 2017; cross-checks derived 2026-10-13",
+   "page_short": "the MOAB, a giant US non-nuclear bomb",
+   "category": "energy_reference"
+  },
+  {
+   "key": "energy_hiroshima_yield",
+   "label": "Hiroshima bomb (Little Boy) yield",
+   "status": "verified",
+   "value_si": 62760000000000,
+   "unit_si": "J",
+   "low_si": 50210000000000,
+   "high_si": 75310000000000,
+   "display": "15 kilotons of TNT (6.3 x 10^13 J); DOE official; latest dosimetry estimate 16 +/- 2 kt",
+   "sources": [
+    {
+     "title": "Malik (1985) The Yields of the Hiroshima and Nagasaki Nuclear Explosions, LA-8819, Los Alamos (OSTI 1489669)",
+     "url": "https://www.osti.gov/servlets/purl/1489669"
+    },
+    {
+     "title": "US DOE/NNSA Nevada, DOE/NV-209 Rev. 16 (Sep 2015) United States Nuclear Tests, July 1945 through September 1992",
+     "url": "https://nnss.gov/wp-content/uploads/2023/08/DOE_NV-209_Rev16.pdf"
+    },
+    {
+     "title": "RERF DS02 report (2005), Chapter 1 'Bomb Parameters' (Kerr, Young, Cullings, Christy)",
+     "url": "https://www.rerf.or.jp/library/scidata/scids/ds02/pdf/chapter01/cha01-p42-61.pdf"
+    }
+   ],
+   "notes": "Malik abstract: 'The current best estimates for the yield of these explosions are the following: Hiroshima 15 kt, Nagasaki 21 kt. The outside limits of uncertainties in these values are believed to be 20 percent for Hiroshima'. DOE/NV-209 (PDF p. 15): 'The first combat detonation was a 15-kt weapon airdropped August 6, 1945, at Hiroshima'. DS02: 'the currently calculated yield of 16 kt, with an overall uncertainty of about +/-2 kt, is considered to be the most technically defensible estimate'; 14 to 18 kt at 99% confidence. Value 15 kt (the DOE figure); range 12 to 18 kt. Upgrade from 'claimed' (Wikipedia) to primary sources. Skeptic: all three quotes exact; verified justified.",
+   "who_when": "LANL 1985; DOE 2015; RERF 2005",
+   "page_short": "the Hiroshima bomb",
+   "category": "energy_reference"
+  },
+  {
+   "key": "energy_castle_bravo_yield",
+   "label": "Castle Bravo yield (1 Mar 1954 local; 28 Feb GMT)",
+   "status": "verified",
+   "value_si": 62760000000000000,
+   "unit_si": "J",
+   "display": "15 megatons of TNT (6.3 x 10^16 J); the highest-yield US nuclear test",
+   "sources": [
+    {
+     "title": "US DOE/NNSA Nevada, DOE/NV-209 Rev. 16 (Sep 2015) United States Nuclear Tests, July 1945 through September 1992",
+     "url": "https://nnss.gov/wp-content/uploads/2023/08/DOE_NV-209_Rev16.pdf"
+    }
+   ],
+   "notes": "Official list (PDF pp. 30 and 91): '44 Bravo ... Experimental thermonuclear device ... 02/28/1954 LANL Bikini Atoll ... Surface 18:45:00.00 ... 15 Mt', annotated 'Highest-yield U.S. nuclear test'. Dates in the list are GMT, so 1 March local. 15 x 4.184e15 = 6.276e16 J. Upgrade from 'claimed' (Nuclear Weapon Archive, Wikipedia); the old DOE URL is dead, Rev. 16 is on nnss.gov. The page phrase explains the name, since few readers know it; the DOE annotation supports 'the biggest US H-bomb test'. Skeptic: confirmed.",
+   "who_when": "US DOE/NNSA Nevada Field Office, 2015",
+   "page_short": "Castle Bravo, the biggest US H-bomb test",
+   "category": "energy_reference"
+  },
+  {
+   "key": "energy_tsar_bomba_yield",
+   "label": "Tsar Bomba yield (30 Oct 1961)",
+   "status": "verified",
+   "value_si": 209200000000000000,
+   "unit_si": "J",
+   "low_si": 209200000000000000,
+   "high_si": 238500000000000000,
+   "display": "50 megatons of TNT (2.1 x 10^17 J) per its Soviet designers; US 1961 estimate 57 Mt",
+   "sources": [
+    {
+     "title": "Adamsky & Smirnov (1994) 'Moscow's Biggest Bomb: The 50-Megaton Test of October 1961', Cold War International History Project Bulletin 4 (Fall 1994), pp. 3, 19-21 (Wilson Center)",
+     "url": "https://www.wilsoncenter.org/sites/default/files/media/documents/publication/CWIHP_Bulletin_4.pdf"
+    },
+    {
+     "title": "Nuclear Weapon Archive (Carey Sublette's site, no byline; updated 3 Sep 2007): The Tsar Bomba",
+     "url": "https://nuclearweaponarchive.org/Russia/TsarBomba.html"
+    }
+   ],
+   "notes": "Adamsky and Smirnov, two of the bomb's designers, p. 3: 'at 11:32 AM (Moscow time), there was a 50-megaton (MT) explosion over Novaya Zemlya ... at an altitude of 4,000 meters'; p. 20: 'Ninety-seven percent of the power of the 50-MT bomb derived from thermonuclear fusion'; p. 21: 'the most powerful of all tests conducted either by us or the USA'. Nuclear Weapon Archive: 'Shortly after the 30 October test the U.S. estimated the yield at 57 megatons'; 'all Russian sources since 1991 have consistently used a figure of 50 megatons'. Value 50 Mt (2.092e17 J); high_si 57 Mt (2.385e17 J). Upgraded from 'disputed' to verified for 50 Mt. Skeptic: the 97% quote is on p. 20, not p. 3; citation now pp. 3, 19-21 (compiler located the p. 21 quote).",
+   "who_when": "Adamsky & Smirnov 1994; US estimate 1961",
+   "page_short": "the Tsar Bomba, the biggest bomb ever set off",
+   "category": "energy_reference"
+  },
+  {
+   "key": "energy_krakatoa_1883",
+   "label": "Krakatoa 1883: energy of the great explosion (air-wave equivalent)",
+   "status": "disputed",
+   "value_si": 523000000000000000,
+   "unit_si": "J",
+   "low_si": 418400000000000000,
+   "high_si": 836800000000000000,
+   "display": "roughly 100-200 megatons (4-8 x 10^17 J) judged from its air wave; other published figures run from 10^17 J to over 10^18 J",
+   "sources": [
+    {
+     "title": "Harkrider & Press (1967) The Krakatoa air-sea waves, Geophys. J. R. Astr. Soc. 13:149-159, p. 159 (Caltech repository PDF)",
+     "url": "https://authors.library.caltech.edu/records/r42n3-t2639/files/Geophys._J._Int.-1967-Harkrider-149-59.pdf?download=1"
+    },
+    {
+     "title": "Press & Harkrider (1966) Air-sea waves from the explosion of Krakatoa, Science 154:1325 (doi:10.1126/science.154.3754.1325; Caltech record with abstract)",
+     "url": "https://authors.library.caltech.edu/records/xvvaz-4pv10"
+    },
+    {
+     "title": "Choi, Pelinovsky, Kim & Lee (2003) Simulation of the trans-oceanic tsunami propagation due to the 1883 Krakatau volcanic eruption, NHESS 3:321-332 (doi:10.5194/nhess-3-321-2003)",
+     "url": "https://www.vliz.be/imisdocs/publications/381958.pdf"
+    }
+   ],
+   "notes": "Harkrider & Press: 'we estimate that a surface explosion amounting to about 100-150 megatons would produce pressure pulses equivalent to those observed from Krakatoa.' Science abstract: '100 to 150 megatons would be required to duplicate the Krakatoa atmospheric pressure pulse'. Choi et al., with no source in that sentence: 'equivalent to 200 megatons atomic bomb (8.4x10^17 joules)'. Value 125 Mt, the middle of the only primary estimate (5.23e17 J); range 100 to 200 Mt. Weaker sources span about 1e17 to 6.3e18 J (growth_krakatoa_energy_spread), so the page gives only a rough multiple even though this fact's own range is under 2x. The heat of the erupted rock was far larger. Value lowered from 8.4e17 J (Wikipedia, 200 Mt). Skeptic: quotes exact; disputed and rough-only confirmed.",
+   "who_when": "Press & Harkrider 1966-67; Choi et al. 2003",
+   "page_short": "the great blast of Krakatoa in 1883",
+   "category": "energy_reference"
+  },
+  {
+   "key": "energy_chicxulub_impact",
+   "label": "Chicxulub impact energy (the dinosaur-killing asteroid)",
+   "status": "disputed",
+   "value_si": 5e+23,
+   "unit_si": "J",
+   "high_si": 1.674e+25,
+   "display": "about 5 x 10^23 J (2022 review); an older estimate from a larger crater goes up to 1.7 x 10^25 J",
+   "sources": [
+    {
+     "title": "Morgan, Bralower, Brugger & Wunnemann (2022) The Chicxulub impact and its environmental consequences, Nat. Rev. Earth Environ. 3:338-354, published version (NSF PAR; doi:10.1038/s43017-022-00283-y)",
+     "url": "https://par.nsf.gov/servlets/purl/10349743"
+    },
+    {
+     "title": "Sharpton & Marin (1997) The Cretaceous-Tertiary impact crater and the cosmic projectile that produced it, Ann. N.Y. Acad. Sci. 822 (NASA NTRS record)",
+     "url": "https://ntrs.nasa.gov/citations/19970030228"
+    },
+    {
+     "title": "Collins et al. (2020) A steeply-inclined trajectory for the Chicxulub impact, Nat. Commun. 11:1480 (NSF PAR copy)",
+     "url": "https://par.nsf.gov/servlets/purl/10160782"
+    }
+   ],
+   "notes": "Morgan et al. main text: transient crater 'between 80 km and 100 km' and 'the impact energy is estimated to be about 5 x 10^23 J'; 'impactor diameters of around 12.2-14.4 km' at 'around 18 km s-1': 4.0e23 to 6.7e23 J at an assumed 2,630 kg/m3 (our arithmetic). The abstract's 'about 10^23 joules' rounds the same estimate, so it is not a low bound. Sharpton & Marin: 'between 4 x 10^8 and 4 x 10^9 megatons of TNT' = 1.7e24 to 1.7e25 J (high_si), from a ~300 km crater with a ~130 km transient crater, sizes since revised down. Collins et al. model runs (12 km/s, chosen 'for computational expediency') give 4.9e23 to 9.2e23 J. Rough multiple only. Skeptic: low_si 1e23 dropped; cross-check now Morgan's own impactor sizes; source is the published version, not a manuscript.",
+   "who_when": "Morgan et al. 2022; Sharpton & Marin 1997; Collins et al. 2020",
+   "page_short": "the asteroid that killed the dinosaurs",
+   "category": "energy_reference"
+  },
+  {
+   "key": "energy_sun_luminosity",
+   "label": "Nominal solar luminosity (rung: the Sun's output in one second)",
+   "status": "verified",
+   "value_si": 3.828e+26,
+   "unit_si": "W",
+   "display": "3.828 x 10^26 W, so 3.8 x 10^26 J each second",
+   "sources": [
+    {
+     "title": "Prsa et al. (2016) Nominal values for selected solar and planetary quantities: IAU 2015 Resolution B3, AJ 152:41 (doi:10.3847/0004-6256/152/2/41); arXiv:1510.07674 PDF",
+     "url": "https://arxiv.org/pdf/1510.07674"
+    }
+   ],
+   "notes": "Resolution text: '1 L N(sun) = 3.828 x 10^26 W'; 'L(sun) = 4 pi (1 au)^2 S(sun) = 3.8275 (+/- 0.0014) x 10^26 W'. Published version confirmed through Crossref: The Astronomical Journal 152, article 41 (Aug 2016). The rung is this power times one second: 3.828e26 J. Unchanged. Skeptic: confirmed.",
+   "who_when": "IAU 2015 Resolution B3",
+   "page_short": "the Sun's output for one second",
+   "category": "energy_reference"
+  },
+  {
+   "key": "energy_earth_gravitational_binding",
+   "label": "Earth's gravitational binding energy (integrated over PREM)",
+   "status": "derived",
+   "value_si": 2.489e+32,
+   "unit_si": "J",
+   "display": "about 2.49 x 10^32 J (2.24 x 10^32 J if Earth had uniform density)",
+   "sources": [
+    {
+     "title": "Dziewonski & Anderson (1981) Preliminary reference Earth model, PEPI 25:297-356, Table I (doi:10.1016/0031-9201(81)90046-7); PDF copy at Harvard CfA",
+     "url": "https://www.cfa.harvard.edu/~lzeng/papers/PREM.pdf"
+    }
+   ],
+   "notes": "U = integral of G M(r) dm / r from the centre out, using the density polynomials of PREM Table I (read in the original paper) and G = 6.6743e-11: 2.489e32 J. Checks: integrated mass 5.973e24 kg (accepted 5.972e24) and moment of inertia factor 0.3308, both matching PREM. A uniform sphere, 3GM^2/(5R), gives 2.24e32 J; the real Earth is denser at the centre, so more. Meaning: the energy needed to scatter all of Earth's mass so that none of it falls back. Status changes from 'claimed' (Wikipedia) to derived from a primary model; good to well under 1%. Skeptic: independent integration gives 2.4889e32 J, 5.9732e24 kg, 0.3308; page phrase changed to say 'for good'.",
+   "who_when": "derived 2026-10-13 from PREM (1981)",
+   "page_short": "the energy to blow Earth apart for good",
+   "category": "energy_reference"
+  },
+  {
+   "key": "energy_tnt_equivalent_per_tonne",
+   "label": "TNT equivalent: energy per ton of TNT",
+   "status": "verified",
+   "value_si": 4184000000,
+   "unit_si": "J",
+   "display": "1 ton of TNT = 4.184 x 10^9 J by definition; 1 kt = 4.184 x 10^12 J; 1 Mt = 4.184 x 10^15 J",
+   "sources": [
+    {
+     "title": "NIST SP 811, Appendix B.9 (energy conversion factors)",
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9"
+    }
+   ],
+   "notes": "'ton of TNT (energy equivalent) ... joule (J) 4.184 E+09'. A defined convention (10^9 thermochemical calories), used for every bomb and blast rung. Real TNT releases a little more in a calorimeter (4.56 MJ/kg with liquid water, LLNL Table 5-2), so 'tons of TNT' is a unit, not a measurement of TNT. Unchanged. Skeptic: confirmed; every conversion in this set uses 4.184e9 J/t.",
+   "who_when": "NIST SP 811",
+   "page_short": "a ton of TNT",
+   "category": "energy_reference"
+  }
+ ],
+ "rungs": [
+  {
+   "key": "energy_fastest_pitch_kinetic",
+   "J": 162.5,
+   "page_short": "the fastest baseball pitch on record",
+   "rough": false
+  },
+  {
+   "key": "energy_corolla_100kmh_kinetic",
+   "J": 517100,
+   "page_short": "a Toyota Corolla at 100 km/h",
+   "rough": false
+  },
+  {
+   "key": "energy_m67_tnt_equivalent_estimate",
+   "J": 925000,
+   "page_short": "a hand grenade",
+   "rough": false
+  },
+  {
+   "key": "energy_moab_yield",
+   "J": 46024000000,
+   "page_short": "the MOAB, a giant US non-nuclear bomb",
+   "rough": false
+  },
+  {
+   "key": "energy_hiroshima_yield",
+   "J": 62760000000000,
+   "page_short": "the Hiroshima bomb",
+   "rough": false
+  },
+  {
+   "key": "energy_castle_bravo_yield",
+   "J": 62760000000000000,
+   "page_short": "Castle Bravo, the biggest US H-bomb test",
+   "rough": false
+  },
+  {
+   "key": "energy_tsar_bomba_yield",
+   "J": 209200000000000000,
+   "page_short": "the Tsar Bomba, the biggest bomb ever set off",
+   "rough": false
+  },
+  {
+   "key": "energy_krakatoa_1883",
+   "J": 523000000000000000,
+   "page_short": "the great blast of Krakatoa in 1883",
+   "rough": true
+  },
+  {
+   "key": "energy_chicxulub_impact",
+   "J": 5e+23,
+   "page_short": "the asteroid that killed the dinosaurs",
+   "rough": true
+  },
+  {
+   "key": "energy_sun_luminosity",
+   "J": 3.828e+26,
+   "page_short": "the Sun's output for one second",
+   "rough": false
+  },
+  {
+   "key": "energy_earth_gravitational_binding",
+   "J": 2.489e+32,
+   "page_short": "the energy to blow Earth apart for good",
+   "rough": false
+  }
+ ],
+ "gaps": "With only these eleven rungs, energies in these bands have no rung within 10x on either side (neither a multiple of at most 10x of the rung below nor a share of at least 10% of the rung above): 1.0e0 to 1.6e1 J; 1.6e3 to 5.2e4 J; 9.2e6 to 4.6e9 J; 4.6e11 to 6.3e12 J; 6.3e14 to 6.3e15 J; 5.2e18 to 5.0e22 J; 5.0e24 to 3.8e25 J; 3.8e27 to 2.5e31 J; 2.5e33 to 1.0e44 J. By the stricter test (a multiple of at most 10x of the nearest rung below), the uncovered stretches are: 1 to 162 J; 1.6e3 to 5.2e5 J; 9.3e6 to 4.6e10 J; 4.6e11 to 6.3e13 J; 6.3e14 to 6.3e16 J; 5.2e18 to 5e23 J; 5e24 to 3.8e26 J; 3.8e27 to 2.5e32 J; and everything above 2.5e33 J (the page reaches above 1e40 J; a supernova is near 1e44 J). Neighbour gaps over 10x: pitch to Corolla 3,200x; grenade to MOAB 50,000x; MOAB to Hiroshima 1,400x; Hiroshima to Bravo 1,000x; Krakatoa to Chicxulub about 1,000,000x; Chicxulub to Sun-second 770x; Sun-second to Earth 650,000x. These must be filled from the other topics (small, explosive, disaster, geophysical, planetary, stellar). Not reviewed here: energy_tunguska_1908 (4.2e16 J, only 1.5x below Bravo, so it does not fill Hiroshima to Bravo) and energy_xkcd_relativistic_baseball."
+}

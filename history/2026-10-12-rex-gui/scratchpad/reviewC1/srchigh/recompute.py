@@ -1,0 +1,21 @@
+import math
+G=6.67430e-11; c=299792458.0; L=3.828e26
+def uni(M,R): return 3*G*M*M/(5*R)
+print('pluto uniform R=1188.3', uni(1.303e22,1188.3e3), 'R=1188', uni(1.303e22,1188e3))
+print('moon KE', 0.5*7.346e22*1022**2, 0.5*7.346e22*966**2, 0.5*7.346e22*1100**2)
+print('moon GMm/2a', 3.986004418e14*7.346e22/(2*3.844e8))
+Om=2*math.pi/(23.9345*3600); print('Omega',Om,'spin',0.5*8.035e37*Om**2, 'C from 0.3308', 0.3308*5.9722e24*6378137**2)
+print('sun hour',L*3600,'day',L*86400,'year sid',L*31558118.4,'century',L*100*31558118.4,'millennium trop',L*1000*31556930,'billion',L*1e9*31556930)
+print('mars uniform', uni(6.4169e23,3389.5e3))
+print('earth uniform', uni(5.9722e24,6371e3))
+print('earth orbit', 0.5*5.9722e24*29780**2, 0.5*5.9722e24*29290**2, 0.5*5.9722e24*30290**2, 'GMm/2a',1.32712440018e20*5.9722e24/(2*149.598e9))
+print('jupiter orbit', 0.5*1.89813e27*13060**2, 0.5*1.89813e27*12440**2, 0.5*1.89813e27*13720**2, 'GMm/2a',1.32712440018e20*1.89813e27/(2*778.479e9))
+print('saturn orbit', 0.5*5.6832e26*9670**2, 0.5*5.6832e26*9140**2, 0.5*5.6832e26*10140**2, 'GMm/2a',1.32712440018e20*5.6832e26/(2*1432.041e9))
+print('moon mc2',7.346e22*c*c,'earth',5.9722e24*c*c,'jupiter',1.89813e27*c*c,'sun',1.9884e30*c*c)
+print('sun galactic',0.5*1.9884e30*247e3**2,0.5*1.9884e30*243e3**2,0.5*1.9884e30*251e3**2)
+erg=1e-7
+print('magnetar palmer 15kpc',2e46*erg,'palmer 7.2',2e46*(7.2/15)**2*erg,'hurley hi 18.6',4.6e46*(18.6/15)**2*erg, 'geo mid', math.sqrt(2e46*(7.2/15)**2*erg*4.6e46*(18.6/15)**2*erg))
+print('magnetar at bibby 8.7: palmer',2e46*(8.7/15)**2*erg,'hurley',3.7e46*(8.7/15)**2*erg)
+print('magnetar at 12: palmer',2e46*(12/15)**2*erg,'hurley',3.7e46*(12/15)**2*erg)
+print('nasa nova', 1e5*L*31556930, 1e5*L*31558118.4)
+print('gw',3.0*1.9884e30*c*c,2.5*1.9884e30*c*c,3.5*1.9884e30*c*c)

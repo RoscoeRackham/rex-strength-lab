@@ -1,0 +1,10 @@
+global.window = {};
+const L = process.argv[2];
+const P = require(L + '/src/engine.js'); require(L + '/src/data.js'); const D = window.DINO_DATA;
+console.log(D.surfaces.map(s => s.id).join(','));
+const H = 10, m = 3007 * Math.pow(10 / 3.048, 3);
+const body = P.makeBody({ build: 'rex', H, m });
+const surface = D.surfaces.find(s => /soft/.test(s.id));
+const ctx = { F: 1e7 * P.K.g, mode: 'comic', body, surface, anchor: 'friction', airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true };
+const r = P.jump(ctx), Ld = r.landing;
+console.log(surface.id, { m, weight: m * P.K.g, RBreal: r.groundLimitReal, landBear: r.landBear, v: Ld.v, t: Ld.t, F_over_W: Ld.F / (m * P.K.g), J: P.vToMomentum(Ld.v, m), shake: P.RESTRAINT.MOVES.jump.shake(r, Object.assign({ m, body }, ctx)) });

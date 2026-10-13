@@ -1,0 +1,11 @@
+const P = require(process.cwd() + '/src/engine.js'); global.window = {}; require(process.cwd() + '/src/data.js'); const D = window.DINO_DATA;
+const body = P.makeBody({ build: 'rex', H: 3.048, m: 3007 });
+const sf = D.surfaces.find(s => s.id === 'concrete');
+const M = P.RESTRAINT.MOVES.throw;
+const obj = D.objects.find(o => o.id === 'bus');
+const F = Math.pow(10, 6) * P.K.g;
+const c = { F, use: 0.55 * F, mode: 'comic', body, surface: sf, anchor: 'friction', airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true };
+const r = P.throwObject(c, obj, 45);
+const o = Object.assign({ obj, angle: 45, near: 5 }, c);
+const land = M.landShake(r, o), own = P.impulseSource(sf, r.toGround.J, r.toGround.T);
+console.log('v', r.v, 'range', r.flight.range, 'land plaster', P.plasterReach(land), 'feet plaster', P.plasterReach(own), 'from', M.shakeFrom(r, o));

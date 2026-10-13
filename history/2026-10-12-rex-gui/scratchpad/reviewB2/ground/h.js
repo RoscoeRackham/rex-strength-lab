@@ -1,0 +1,11 @@
+const L = __dirname + '/lab';
+global.window = {};
+require(L + '/src/data.js');
+const P = require(L + '/src/engine.js');
+const D = window.DINO_DATA;
+const rex = (m, H) => P.makeBody({ build: 'rex', H: H || 3.048, m: m || 3007 });
+const surf = (id) => D.surfaces.find(s => s.id === id);
+const obj = (id) => D.objects.find(o => o.id === id);
+const ctx = (o) => Object.assign({ F: 1e5 * P.K.g, mode: 'comic', body: rex(), surface: surf('concrete'), anchor: 'friction' }, o);
+const ON = { airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true };
+module.exports = { P, D, rex, surf, obj, ctx, ON, K: P.K };
