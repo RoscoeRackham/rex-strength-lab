@@ -496,6 +496,11 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     const dg = await page.evaluate(() => document.querySelector('#duo-bay .effort-read').textContent.replace(/\s+/g, ' '));
     const dgBay = await page.evaluate(() => document.getElementById('duo-bay').textContent.replace(/\s+/g, ' '));
     if (!/set aside for this test/.test(dg) || !/Effort: /.test(dg) || !/The least effort that breaks the ground/.test(dg) || /Least disruptive already does this/.test(dg) || /The ground holds: their power/.test(dgBay) || !/On real ground, courtesy ceiling: .*?Past that, the ground breaks under Rex/.test(dg)) fail('two-player break the ground: ' + dg.slice(0, 400)); else okLog('two-player break the ground: an effort on real ground, the bay drawn on real ground, its ceiling where the rock cracks (' + dg.slice(0, 70) + '…)');
+    // ...and that real-ground run still carries the hit into the ground (Collide's toGround option): standing, Ollie
+    // jumps onto him, near people 3 m off, where the shaking comes before the rock cracks
+    await load({ duoOpen: true, duoAction: 'collide', anchor: 'friction', colSrc: 'jump', logKg: 6.25, near: 3 }); await settle(page, 'duo-bay'); await pick('#duo-effort', 'ground');
+    const dgR = await page.evaluate(() => document.querySelector('#duo-bay .effort-read').textContent.replace(/\s+/g, ' '));
+    if (!/On real ground, courtesy ceiling: .*?Past that, the hit, carried into the ground, shakes it/.test(dgR)) fail('two-player break the ground, standing: the real-ground ceiling should come from the hit carried into the ground: ' + dgR.slice(0, 400)); else okLog('two-player break the ground, standing: the real-ground run carries the hit into the ground (its shaking sets the ceiling)');
     // the break-the-ground preset sets Unbreakable footing aside only while it draws: switching tabs (which saves)
     // must leave the switch on and saved on
     await page.click('#tab-stomp'); await page.waitForTimeout(400); await settle(page, 'bay');

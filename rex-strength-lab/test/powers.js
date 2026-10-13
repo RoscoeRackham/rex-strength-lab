@@ -155,10 +155,11 @@ const sig = (x) => Number(x).toPrecision(3);
   // the sheath catch keeps the throw's momentum and energy (the lump's rest mass counts the swept air and its heat), at
   // the All-Star dial where gamma x is large; and at 100% the catch is exact far past where the speed rounds to c
   { const ob = obj('baseball'), bad = [];
-    for (const sh of [0.5, 0.99, 1]) {
-      const cR = ctxOf(200e18 * 907.18474 * g, Object.assign({}, ON, { airAbsorb: sh, anchor: 'bolted' })), L = P.catchLeg(cR, Object.assign({}, cR, { body: ollie }), ob, 1000, 'hard');
+    // (and at 10^16 kg and 99%, where the sheath holds a quarter of its energy, so the lump's rest mass matters)
+    for (const [F, sh] of [[200e18 * 907.18474 * g, 0.5], [200e18 * 907.18474 * g, 0.99], [200e18 * 907.18474 * g, 1], [1e16 * g, 0.99]]) {
+      const cR = ctxOf(F, Object.assign({}, ON, { airAbsorb: sh, anchor: 'bolted' })), L = P.catchLeg(cR, Object.assign({}, cR, { body: ollie }), ob, 1000, 'hard');
       const E = P.throwObject(cR, ob, 0).Eobj, Ein = L.sheath ? E - L.sheath.E : E;
-      if (!(L.result === 'caught' && L.catch && near(L.catch.Ecatch, Ein, 0.01) && near(L.toGroundC ? L.toGroundC.J : NaN, Math.sqrt(E * E + 2 * E * ob.m * P.K.c * P.K.c) / P.K.c, 0.01))) bad.push(sh + ': ' + L.result + ' ' + (L.catch ? sig(L.catch.Ecatch / Ein) : '') + (L.toGroundC ? ' J ' + sig(L.toGroundC.J) : ''));
+      if (!(L.result === 'caught' && L.catch && near(L.catch.Ecatch, Ein, 1e-6) && near(L.toGroundC ? L.toGroundC.J : NaN, Math.sqrt(E * E + 2 * E * ob.m * P.K.c * P.K.c) / P.K.c, 1e-6))) bad.push(sh + ': ' + L.result + ' ' + (L.catch ? sig(L.catch.Ecatch / Ein) : '') + (L.toGroundC ? ' J ' + sig(L.toGroundC.J) : ''));
     }
     ok('5a: a catch near light speed (the sheath at 50% and 99%, and 100%) frees the energy that arrives and hands the planet the throw\'s momentum', !bad.length, bad.join('; '));
     const bad2 = [];
@@ -203,10 +204,14 @@ const sig = (x) => Number(x).toPrecision(3);
     const cR = ctxOf(F), cO = Object.assign({}, cR, { body: ollie });
     const a = P.catchLeg(cR, cO, obj(oid), Dd, style), b = P.catchLeg(Object.assign({}, cR, { keepForm: true }), Object.assign({}, cO, { keepForm: true }), obj(oid), Dd, style);
     if (broke.includes(a.result) || a.bursts || a.result === 'fireball') offBroke++;
-    if (b.result === 'fireball') firesOn++;
+    if (b.result === 'fireball' || b.sheath) firesOn++;
     if (broke.includes(b.result) || b.bursts || (b.catch && b.catch.gripRatio > 1) || b.breakAtLaunch || (b.result === 'fireball' && !b.kept)) onBroke.push(oid + ' ' + style + ' ' + (F / g).toPrecision(1) + ': ' + b.result);
   }
-  ok('5b: past 1% of light speed with it on, the object comes through the fireball whole (' + firesOn + ' fireballs, all kept)', firesOn > 0 && !onBroke.some((x) => /fireball/.test(x)));
+  ok('5b: past 1% of light speed with it on, the object comes through the fireball whole (' + firesOn + ' fireballs, all kept: those that reach him arrive inside a plasma sheath and are caught)', firesOn > 0 && !onBroke.some((x) => /fireball/.test(x)));
+  // no cliff: with it on, a throw that reaches him arrives as itself at any sheath size (round 4: the 1% line is gone)
+  { const bad = [];
+    for (const sh of [0.99, 0.9993, 0.99935, 0.9999]) { const c = ctxOf(1e20 * g, Object.assign({}, ON, { airAbsorb: sh })), L = P.catchLeg(c, Object.assign({}, c, { body: ollie }), obj('baseball'), 1000, 'hard'); if (L.result === 'fireball' && L.fireball && L.fireball.kind !== 'before') bad.push(sh + ': ' + L.result); }
+    ok('5b: with Things keep their form a throw that reaches him is caught inside its sheath at any share (no flip at a 1% sheath)', !bad.length, bad.join('; ')); }
   ok('5b: in the game of catch nothing is crushed, broken up, burned or wrecked while it is on (' + offBroke + ' would have been)', offBroke > 3 && !onBroke.length, onBroke.slice(0, 4).join('; '));
   // the arm-wrestling table is something they hold: it never breaks
   { const cA = ctxOf(1e9 * g, { keepForm: true }), cB = Object.assign({}, cA, { body: ollie }), r = P.armWrestle(cA, cB), r0 = P.armWrestle(ctxOf(1e9 * g), Object.assign({}, ctxOf(1e9 * g), { body: ollie }));
@@ -242,8 +247,9 @@ const sig = (x) => Number(x).toPrecision(3);
     for (const sid of ['sand', 'softclay', 'concrete', 'granite']) for (const H of [3.048, 50]) for (const lg of [3, 4.5, 6, 6.25, 8]) {
       const b = P.makeBody({ build: 'rex', H, m: 1060 * P.bodyVolume(H, 'rex') }), c = { F: Math.pow(10, lg) * g, mode: 'comic', body: b, surface: surf(sid), anchor: 'friction' }, cu = Object.assign({ unbreakable: true }, c);
       const o = { surface: c.surface, body: b }, ou = Object.assign({ unbreakable: true }, o);
-      const s0 = M.stomp.shake(P.stomp(c), o), s1 = M.stomp.shake(P.stomp(cu), ou);
-      if (!near(P.ppvAt(s1, 5), P.ppvAt(s0, 5), 1e-12) || !near(P.plasterReach(s1) || 1e-300, P.plasterReach(s0) || 1e-300, 1e-9)) diffs.push('stomp ' + sid + ' H' + H + ' 1e' + lg + ': ' + P.ppvAt(s1, 5).toPrecision(3) + ' vs ' + P.ppvAt(s0, 5).toPrecision(3));
+      // (where real ground would break, the ground takes only what it bears under his foot: no more than with it off)
+      const st1 = P.stomp(cu), s0 = M.stomp.shake(P.stomp(c), o), s1 = M.stomp.shake(st1, ou);
+      if (st1.realBreaks ? !(P.ppvAt(s1, 5) <= P.ppvAt(s0, 5) * (1 + 1e-12)) : (!near(P.ppvAt(s1, 5), P.ppvAt(s0, 5), 1e-12) || !near(P.plasterReach(s1) || 1e-300, P.plasterReach(s0) || 1e-300, 1e-9))) diffs.push('stomp ' + sid + ' H' + H + ' 1e' + lg + ': ' + P.ppvAt(s1, 5).toPrecision(3) + ' vs ' + P.ppvAt(s0, 5).toPrecision(3));
       const w0 = P.presence(b, c.surface, { effort: 1 }), w1 = P.presence(b, c.surface, { effort: 1, unbreakable: true });
       if (w0.ppv(5) !== w1.ppv(5) || w0.reach.plaster !== w1.reach.plaster) diffs.push('walk ' + sid);
     }
@@ -252,7 +258,7 @@ const sig = (x) => Number(x).toPrecision(3);
       // the landing shakes the ground as with it off; the push-off adds its own (with the power off it isn't counted)
       const a = M.jump.shake(j0, o), b2 = M.jump.shake(Object.assign({}, j1, { pushOff: undefined }), Object.assign({ unbreakable: true }, o)), b3 = M.jump.shake(j1, Object.assign({ unbreakable: true }, o));
       if (P.ppvAt(a, 5) !== P.ppvAt(b2, 5) || P.plasterReach(a) !== P.plasterReach(b2) || (j1.v > 0 && !j1.pushOff) || !(P.ppvAt(b3, 5) >= P.ppvAt(a, 5))) diffs.push('jump 1e' + lg); }
-    ok('5c: the ground shakes as with it off, for the same push (ppv at 5 m and the plaster reach: stomps up to a 50 m Rex on soft clay, walking, a jump\'s landing where the ground bears it; its push-off is added)', !diffs.length, diffs.slice(0, 4).join('; '));
+    ok('5c: the ground shakes as with it off, for the same push (ppv at 5 m and the plaster reach: stomps up to a 50 m Rex on soft clay where the ground bears them, no more where it would break, walking, a jump\'s landing where the ground bears it; its push-off is added)', !diffs.length, diffs.slice(0, 4).join('; '));
   }
   // their own bodies meet real air: with a power on, a supersonic jump counts what the air takes from his flight
   { const c = ctxOf(1e9 * g), j0 = P.jump(c), j1 = P.jump(Object.assign({}, c, ON)), o = { surface: c.surface, body: rex, m: rex.m };
@@ -330,7 +336,7 @@ const sig = (x) => Number(x).toPrecision(3);
     const plB = P.pull(Object.assign({}, cr, { anchor: 'bolted' }), obj('bus')), plBS = M.pull.shake(plB, { surface: c.surface, body: rex, obj: obj('bus'), ownRecoil: true, anchor: 'bolted' });
     ok('5d: a bolted pull with They take their own recoil on: the rope\'s pull goes through his bolts into the planet and shakes the ground', plB.canMove && !!plBS && P.ppvAt(plBS, 2) > 0 && plB.ropeT > 0);
     const plS = M.pull.shake(pl, { surface: c.surface, body: rex, obj: obj('bus'), ownRecoil: true, anchor: 'friction' }), plS0 = M.pull.shake(pl0, { surface: c.surface, body: rex, obj: obj('bus'), anchor: 'friction' });
-    ok('5d: a pull with it on: the rope\'s pull back goes into the planet over the pull (the bus\'s momentum and the rolling resistance), and shakes the ground; off, not counted', plS && P.ppvAt(plS, 2) > 0 && !plS0 && near(pl.ropeT, obj('bus').m * pl.accel + pl.resist, 1e-12) && pl.ropeT < pl.usable, 'rope ' + sig(pl.ropeT) + ' N of ' + sig(pl.usable) + ' N; ' + sig(P.ppvAt(plS, 2) * 1000) + ' mm/s at 2 m');
+    ok('5d: a pull with it on: the rope\'s pull back goes into the planet over the pull (the bus\'s momentum and the rolling resistance), and shakes the ground; off, not counted', plS && P.ppvAt(plS, 2) > 0 && near(P.ppvAt(plS, 2), P.ppvAt(P.impulseSource(c.surface, P.vToMomentum(pl.vEnd, obj('bus').m) + pl.resist * pl.t10m, pl.t10m), 2), 1e-12) && !plS0 && near(pl.ropeT, obj('bus').m * pl.accel + pl.resist, 1e-12) && pl.ropeT < pl.usable, 'rope ' + sig(pl.ropeT) + ' N of ' + sig(pl.usable) + ' N; ' + sig(P.ppvAt(plS, 2) * 1000) + ' mm/s at 2 m');
     ok('5d: a pull: the load\'s pull back goes into the planet (his whole drive pulls it); his own legs still walk on friction', pl.usable === c.F && pl0.usable === pl0.anchor.R && pl.accel <= pl.anchor.R / rex.m * (1 + 1e-12) && pl.accel > pl0.accel && pl.footLimited, 'a ' + sig(pl.accel) + ' vs ' + sig(pl0.accel) + ' m/s2, feet allow ' + sig(pl.anchor.R / rex.m));
     const cl = P.clap(cr), cl0 = P.clap(c), j = P.jump(cr), j0 = P.jump(c), sp = P.sprint(cr), sp0 = P.sprint(c);
     ok('5d: a clap, a jump and a sprint are unchanged', cl.vHand === cl0.vHand && j.v === j0.v && sp.vTop === sp0.vTop);
@@ -359,6 +365,39 @@ const sig = (x) => Number(x).toPrecision(3);
     // a throw that ends in a fireball: the thrower still pushed (the Throw tab's push)
     const cRf = ctxOf(1e20 * g, { airAbsorb: 0.5, ownRecoil: true }), Lf = P.catchLeg(cRf, Object.assign({}, cRf, { body: ollie }), obj('baseball'), 1000, 'hard'), tf = Lf.result === 'fireball' ? P.throwObject(cRf, obj('baseball'), Lf.thetaDeg) : null;
     ok('5d: a catch throw that becomes a fireball still pushes the ground under the thrower (the Throw tab\'s push)', Lf.result === 'fireball' && Lf.toGroundT && tf && near(Lf.toGroundT.J, tf.toGround.J, 1e-9), Lf.result); }
+}
+
+// Round 4 of the review: canon's weak-ground cap on every push, the orbit at 100%, the unbounded jump
+{
+  const sand = surf('sand'), qf = (sf) => P.qultFor(sf, rex.footB);
+  // a throw straight up that escapes, on concrete: the ground takes its bearing beyond his weight and the car's, over the pulse
+  { const c = ctxOf(1e11 * g, ON), r = P.throwObject(c, obj('car'), 90), RB = qf(c.surface) * 2 * rex.footArea, tg = r.toGround;
+    ok('5c: a car thrown straight up past escape speed: the ground takes (its bearing - his weight and the car\'s) x the pulse, and their power supplies the rest', r.flight.escaped && tg && near(tg.J, (RB - (rex.m + obj('car').m) * g) * tg.T, 1e-9) && near(tg.J + tg.supplied, tg.whole, 1e-12), tg ? sig(tg.J) + ' of ' + sig(tg.whole) + ' kg m/s' : 'none'); }
+  // a gentle toss on sand never hands the ground more than it bears (here none: Rex and Ollie together already weigh
+  // more than loose sand bears under his feet), and never more than the all-out toss
+  { const c = ctxOf(1e7 * g, Object.assign({}, ON, { surface: sand })), te = P.tossPartner(c, ollie, 'Ollie', 'easy', 1000, 'friction'), th = P.tossPartner(c, ollie, 'Ollie', 'hard', 1000, 'friction');
+    const bear = Math.max(0, qf(sand) * 2 * rex.footArea - (rex.m + ollie.m) * g);
+    ok('5c: a gentle toss on sand hands the ground no more than it bears, and no more than the all-out toss; the rest is supplied', te.toGroundT && te.toGroundT.J <= bear * te.toGroundT.T + 1e-9 && te.toGroundT.J <= th.toGroundT.J + 1e-9 && near(te.toGroundT.J + te.toGroundT.supplied, te.toGroundT.whole, 1e-12) && th.toGroundT.supplied > 0, te.toGroundT ? 'gentle ' + sig(te.toGroundT.J) + ', all-out ' + sig(th.toGroundT.J) + ' kg m/s' : 'none'); }
+  // a stomp on sand: their power stops the foot at the print over a foot's contact time; the ground takes what it
+  // bears under that foot, and shakes less than real ground
+  { const c = ctxOf(1e5 * g, Object.assign({}, ON, { surface: sand })), r = P.stomp(c), r0 = P.stomp(ctxOf(1e5 * g, { surface: sand }));
+    const b = M.stomp.blow(r, Object.assign({ surface: sand, body: rex }, ON)), s1 = M.stomp.shake(r, Object.assign({ surface: sand, body: rex }, ON)), s0 = M.stomp.shake(r0, { surface: sand, body: rex });
+    ok('5c: a stomp on sand with Unbreakable footing: the ground takes its bearing under the foot over the foot\'s contact time; their power supplies the rest; it shakes less than real ground', r.realBreaks && b && near(b.J, qf(sand) * rex.footArea * b.T, 1e-12) && near(b.J + b.supplied, b.whole, 1e-12) && P.ppvAt(s1, 5) < P.ppvAt(s0, 5), b ? sig(b.J) + ' of ' + sig(b.whole) + ' kg m/s; ' + sig(P.ppvAt(s1, 5) * 1000) + ' vs ' + sig(P.ppvAt(s0, 5) * 1000) + ' mm/s at 5 m' : 'none'); }
+  // an unbounded jump has no push time: the ground takes none of it, so it shakes nothing (he never lands)
+  { const c = ctxOf(Infinity, ON), j = P.jump(c), src = M.jump.shake(j, Object.assign({ surface: c.surface, body: rex, m: rex.m }, ON));
+    ok('5c: an unbounded jump: the ground takes none of the push-off and nothing shakes (their power supplies it all)', j.pushOff && j.pushOff.J === 0 && j.pushOff.supplied === Infinity && !src, j.pushOff ? 'J ' + j.pushOff.J : 'no push-off'); }
+  // Collide's real-ground run (the 'break the ground' preset sets the power aside) still carries the hit into the ground
+  { const cA = ctxOf(Math.pow(10, 6.25) * g), cB = Object.assign({}, cA, { body: ollie });
+    const r1 = P.collide(cA, cB, { source: 'jump', toGround: true }), r0 = P.collide(cA, cB, { source: 'jump' });
+    ok('5c: Collide on real ground with the toGround option hands the ground the hit; without it, nothing (the powers off, as main)', r1.toGround && r1.toGround.J > 0 && !r0.toGround, r1.toGround ? sig(r1.toGround.J) + ' kg m/s' : 'none'); }
+  // at 100% a level throw at orbital speed goes into orbit at once (not 3 million steps and 'still in flight')
+  { const c = ctxOf(Math.pow(10, 8.2) * g, ON), t0 = Date.now(), r = P.throwObject(c, obj('baseball'), 0), ms = Date.now() - t0;
+    const f8 = P.fly({ v0: 8000, thetaDeg: 0, h0: 2.7, m: obj('car').m, A: obj('car').area, Cd: obj('car').Cd, CdSup: obj('car').CdSup, dragK: 0 });
+    ok('5a: at 100% a level throw past orbital speed goes into orbit, found at once', r.flight.orbit && !r.flight.timedOut && f8.orbit && !f8.timedOut && ms < 1000, sig(r.v) + ' m/s; ' + ms + ' ms'); }
+  // the partner toss at 50%: what real air would take from the same toss (the blast near him counts half of it)
+  { const c5 = ctxOf(1e8 * g, Object.assign({}, ON, { airAbsorb: 0.5 })), c0 = ctxOf(1e8 * g, Object.assign({}, ON, { airAbsorb: 0 }));
+    const t5 = P.tossPartner(c5, ollie, 'Ollie', 'hard', 10, 'friction'), t0 = P.tossPartner(c0, ollie, 'Ollie', 'hard', 10, 'friction');
+    ok('5a: a supersonic partner toss at 50%: the engine gives what real air takes from the same toss (the Throw tab\'s near-field rule)', t5.v === t0.v && t5.v >= P.K.a0 && t0.flight && near(t5.dragLoss0, P.keFromV(t0.v, ollie.m) - P.keFromV(t0.flight.vImpact, ollie.m), 1e-9), sig(t5.dragLoss0) + ' J'); }
 }
 
 console.log('\n' + (n - fails) + '/' + n + ' passed');
