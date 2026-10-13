@@ -1953,10 +1953,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       return el('tr', {}, el('th', { text: lbl }), el('td', { 'data-col': 'Mass', text: fmtMass(gB.m) + ' (' + (gB.ratio < 1.01 ? 'unnoticeable: +' + sig(100 * (gB.ratio - 1), 1) + '%' : gB.ratio < 1.1 ? '+' + sig(100 * (gB.ratio - 1), 2) + '%' : fmtRatio(gB.ratio)) + ')' }), el('td', { 'data-col': 'Height', text: fmtDist(gB.H) }), el('td', { 'data-col': 'Density', text: fmtDensity2(gB.rho) }));
     });
     box.append(el('p', { style: 'margin:0', text: capital(ref.short) + ': ' + fmtSI(E, 'J') + ', which becomes ' + fmtMass(E / (K.c * K.c)) + ' of mass. From ' + fmtMass(c.body.m) + ' and ' + fmtDist(c.body.H) + ':' }));
-    // how firm each energy is (research/final-environment.json and final-presence.json)
+    // how firm each energy is (research/final-energy.json and final-presence.json)
     const firm = {
-      krakatoa: 'Claimed: 8.4 × 10¹⁷ J (200 Mt) is a popular figure. Figures quoted in encyclopedias and a popular book run from about 10¹⁷ to 6.3 × 10¹⁸ J (as collected in an unrefereed preprint, Lobanovsky 2013); a refereed study of the air wave alone needed 100–150 Mt, 4.2–6.3 × 10¹⁷ J (Harkrider & Press 1967).',
-      chicxulub: 'Disputed: Wikipedia’s summary of the literature gives about 10²³ to 10²⁴ J; Morgan et al. (2022) give about 5 × 10²³ J from the crater. The lab uses 4.2 × 10²³ J, as the brief does.',
+      krakatoa: 'Disputed: the lab uses 125 Mt (5.2 × 10¹⁷ J), the middle of the one refereed estimate, 100–150 Mt from its air wave (Harkrider & Press 1967). A popular figure is 200 Mt (8.4 × 10¹⁷ J). Figures quoted in encyclopedias and a popular book run from about 10¹⁷ to 6.3 × 10¹⁸ J (as collected in an unrefereed preprint, Lobanovsky 2013).',
+      chicxulub: 'Disputed: the lab uses about 5 × 10²³ J, the 2022 review’s figure from the crater (Morgan et al.). An older estimate from a larger crater runs up to 1.7 × 10²⁵ J (Sharpton & Marin 1997).',
     }[ref.id];
     if (firm) box.append(el('p', { class: 'muted', style: 'margin:0', text: firm }));
     box.append(el('div', { class: 'cases-wrap' }, el('table', { class: 'cases' }, el('thead', {}, el('tr', {}, el('th', { text: 'Growth form' }), el('th', { text: 'Mass' }), el('th', { text: 'Height' }), el('th', { text: 'Density' }))), el('tbody', {}, rows))));

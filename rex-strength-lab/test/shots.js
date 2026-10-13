@@ -517,6 +517,37 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     if (errs.length) fail('page errors in the powers checks: ' + errs.slice(0, 3).join(' | '));
     await page.close();
   }
+  // BRIEF-gui.md section 6: the energy comparisons on the page
+  if (!only) {
+    const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+    const errs = [];
+    page.on('pageerror', (e) => errs.push('PAGEERROR ' + e.message));
+    page.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()); });
+    await page.goto(pathToFileURL(prev).href);
+    const load = async (st) => { await page.evaluate((x) => localStorage.setItem('rex-lab-v1', JSON.stringify(x)), st); await page.reload(); await page.waitForTimeout(600); await settle(page, 'bay'); };
+    const compared = () => page.evaluate(() => Array.from(document.querySelectorAll('#bay .tile')).filter((t) => t.querySelector('.k') && t.querySelector('.k').textContent === 'Compared with').map((t) => t.querySelector('.v').textContent));
+    // every Compared with tile, across the strength dial, keeps to the rule: at most 10×, at least 10%, or beyond the ladder
+    const bad = [], seen = new Set();
+    for (const action of ['punch', 'clap', 'stomp']) for (const logKg of [1, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 34]) {
+      await load({ action, logKg, mode: 'comic' });
+      for (const t of await compared()) {
+        seen.add(t.replace(/[\d.]+/g, '#'));
+        const m = t.match(/^(?:roughly )?([\d.]+)× /), sh = t.match(/^(?:roughly )?([\d.]+)% of /);
+        const good = /^(about|roughly) the same as /.test(t) || /^beyond the ladder: /.test(t) || (m && Number(m[1]) <= 10) || (sh && Number(sh[1]) >= 10);
+        if (!good || /≈/.test(t)) bad.push(action + ' at 10^' + logKg + ' kg: ' + t);
+      }
+    }
+    if (bad.length || !seen.size) fail('Compared with tiles break the ladder rule: ' + (bad.slice(0, 4).join(' | ') || 'no tiles found'));
+    else okLog('every Compared with tile on Punch, Clap and Stomp from 10 kg to 10³⁴ kg keeps to at most 10× or at least 10% (' + seen.size + ' wordings)');
+    // the sources table lists every rung with its status and a link
+    const rows = await page.evaluate(() => Array.from(document.querySelectorAll('#src-table tbody tr')).map((tr) => ({ label: tr.cells[0].textContent, status: tr.cells[2].textContent, links: tr.cells[3].querySelectorAll('a').length })));
+    const want = await page.evaluate(() => window.DINO_DATA.energyRefs.map((e) => 'Energy: ' + e.label));
+    const missing = want.filter((l) => !rows.some((r) => r.label.startsWith(l) && r.status && r.links > 0));
+    if (missing.length) fail('energy rungs missing from the sources table (or without a status or link): ' + missing.slice(0, 4).join(' | '));
+    else okLog('the sources table lists all ' + want.length + ' energy rungs, each with a status and at least one link');
+    if (errs.length) fail('page errors in the energy comparison checks: ' + errs.slice(0, 3).join(' | '));
+    await page.close();
+  }
   await browser.close();
   if (problems) { console.log('PROBLEMS: see above'); process.exit(1); }
 })().catch((e) => { console.error(e); process.exit(1); });

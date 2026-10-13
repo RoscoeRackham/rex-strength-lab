@@ -612,59 +612,468 @@ window.DINO_DATA = {
  ],
  "energyRefs": [
   {
+   "id": "apple",
+   "short": "the energy to lift a 100 g apple one metre",
+   "J": 0.9905,
+   "rough": false,
+   "key": "energy_apple_small_lift_one_metre",
+   "label": "Lifting a 100 g apple one metre (energy it gains)"
+  },
+  {
+   "id": "airrifle",
+   "short": "an air-rifle pellet at the legal limit in England and Wales",
+   "J": 16.27,
+   "rough": false,
+   "key": "energy_air_rifle_england_wales_limit",
+   "label": "Air rifle: most pellet energy allowed without a firearm certificate (England and Wales)"
+  },
+  {
    "id": "pitch",
-   "short": "the fastest pitch on record",
-   "J": 162.51850108385
+   "short": "the fastest baseball pitch on record",
+   "J": 162.5,
+   "rough": false,
+   "key": "energy_fastest_pitch_kinetic",
+   "label": "Fastest pitch on record: kinetic energy of the ball"
+  },
+  {
+   "id": "rifle",
+   "short": "a rifle bullet (5.56 mm NATO)",
+   "J": 1707.7,
+   "rough": false,
+   "key": "energy_rifle_bullet_556",
+   "label": "Rifle bullet, 5.56 mm NATO (M855): kinetic energy"
+  },
+  {
+   "id": "bolt",
+   "short": "Usain Bolt at top speed",
+   "J": 7327,
+   "rough": false,
+   "key": "energy_usain_bolt_top_speed",
+   "label": "Usain Bolt at top speed: kinetic energy"
+  },
+  {
+   "id": "sugar",
+   "short": "the food energy in a teaspoon of sugar",
+   "J": 68040,
+   "rough": false,
+   "key": "energy_sugar_teaspoon_food_energy",
+   "label": "Food energy in a level teaspoon of sugar"
   },
   {
    "id": "carcrash",
-   "short": "a Corolla at 100 km/h",
-   "J": 516975.30864197534
+   "short": "a Toyota Corolla at 100 km/h",
+   "J": 517100,
+   "rough": false,
+   "key": "energy_corolla_100kmh_kinetic",
+   "label": "Toyota Corolla at 100 km/h: kinetic energy"
   },
   {
    "id": "grenade",
    "short": "a hand grenade",
-   "J": 1000000.0
+   "J": 925000,
+   "rough": false,
+   "key": "energy_m67_tnt_equivalent_estimate",
+   "label": "M67 hand grenade: chemical energy of its filler"
+  },
+  {
+   "id": "food",
+   "short": "a day’s food (2,000 Calories)",
+   "J": 8368000.0,
+   "rough": false,
+   "key": "energy_day_of_food_2000_calories",
+   "label": "A day's food: the 2,000-Calorie reference diet (FDA)"
+  },
+  {
+   "id": "truck",
+   "short": "a fully loaded semi-truck at 100 km/h",
+   "J": 14000000.0,
+   "rough": false,
+   "key": "energy_semi_truck_100kmh",
+   "label": "Fully loaded US semi-truck (80,000 lb) at 100 km/h: kinetic energy"
+  },
+  {
+   "id": "homeday",
+   "short": "a day’s electricity for an American home",
+   "J": 106400000.0,
+   "rough": false,
+   "key": "energy_us_home_electricity_day",
+   "label": "Average US home's electricity purchases in a day (2022 yearly average / 365)"
+  },
+  {
+   "id": "foodmonth",
+   "short": "a month’s food (2,000 Calories a day)",
+   "J": 251000000.0,
+   "rough": false,
+   "key": "energy_month_of_food_2000_calories",
+   "label": "A month's food at the 2,000-Calorie reference diet (30 days)"
+  },
+  {
+   "id": "lightning",
+   "short": "a lightning bolt",
+   "J": 1000000000.0,
+   "rough": true,
+   "key": "energy_lightning_flash",
+   "label": "A lightning flash: total energy"
+  },
+  {
+   "id": "train",
+   "short": "a high-speed train at full speed",
+   "J": 1790000000.0,
+   "rough": false,
+   "key": "energy_high_speed_train_full_speed",
+   "label": "High-speed train (ICE 3 Velaro D, 454 t) at 320 km/h: kinetic energy"
+  },
+  {
+   "id": "tnt",
+   "short": "a ton of TNT",
+   "J": 4184000000,
+   "rough": false,
+   "key": "energy_tnt_equivalent_per_tonne",
+   "label": "TNT equivalent: energy per ton of TNT"
+  },
+  {
+   "id": "a380",
+   "short": "a fully loaded A380 at cruising speed",
+   "J": 18100000000.0,
+   "rough": false,
+   "key": "energy_a380_cruise",
+   "label": "Fully loaded Airbus A380 at cruising speed: kinetic energy"
   },
   {
    "id": "moab",
-   "short": "the MOAB bomb",
-   "J": 46024000000.0
+   "short": "the MOAB, a giant US non-nuclear bomb",
+   "J": 46024000000,
+   "rough": false,
+   "key": "energy_moab_yield",
+   "label": "GBU-43/B MOAB: blast yield"
+  },
+  {
+   "id": "hubble",
+   "short": "the Hubble Space Telescope’s energy of motion in orbit",
+   "J": 354000000000.0,
+   "rough": false,
+   "key": "energy_hubble_orbit_kinetic",
+   "label": "Hubble Space Telescope: kinetic energy (energy of motion) in orbit"
+  },
+  {
+   "id": "beirut",
+   "short": "the Beirut port explosion of 2020",
+   "J": 2092000000000.0,
+   "rough": true,
+   "key": "energy_beirut_explosion_2020",
+   "label": "Beirut port explosion, 4 Aug 2020: TNT-equivalent yield"
+  },
+  {
+   "id": "iss",
+   "short": "the International Space Station’s energy of motion in orbit",
+   "J": 12580000000000.0,
+   "rough": false,
+   "key": "energy_iss_orbit_kinetic",
+   "label": "International Space Station: kinetic energy (energy of motion) in orbit"
   },
   {
    "id": "hiroshima",
    "short": "the Hiroshima bomb",
-   "J": 62760000000000.0
+   "J": 62760000000000,
+   "rough": false,
+   "key": "energy_hiroshima_yield",
+   "label": "Hiroshima bomb (Little Boy) yield"
+  },
+  {
+   "id": "chelyabinsk",
+   "short": "the Chelyabinsk meteor of 2013",
+   "J": 2092000000000000.0,
+   "rough": false,
+   "key": "energy_chelyabinsk_meteor_2013",
+   "label": "Chelyabinsk meteor airburst, 15 Feb 2013: energy"
+  },
+  {
+   "id": "hoover",
+   "short": "an average year of the Hoover Dam’s electricity",
+   "J": 1.44e+16,
+   "rough": false,
+   "key": "energy_hoover_dam_year",
+   "label": "Hoover Dam: electricity generated in an average year"
   },
   {
    "id": "bravo",
-   "short": "Castle Bravo",
-   "J": 6.276e+16
+   "short": "Castle Bravo, the biggest US H-bomb test",
+   "J": 62760000000000000,
+   "rough": false,
+   "key": "energy_castle_bravo_yield",
+   "label": "Castle Bravo yield (1 Mar 1954 local; 28 Feb GMT)"
   },
   {
    "id": "tsar",
-   "short": "the Tsar Bomba",
-   "J": 2.092e+17
+   "short": "the Tsar Bomba, the biggest bomb ever set off",
+   "J": 209200000000000000,
+   "rough": false,
+   "key": "energy_tsar_bomba_yield",
+   "label": "Tsar Bomba yield (30 Oct 1961)"
   },
   {
    "id": "krakatoa",
-   "short": "the 1883 Krakatoa eruption",
-   "J": 8.4e+17
+   "short": "the great blast of Krakatoa in 1883",
+   "J": 523000000000000000,
+   "rough": true,
+   "key": "energy_krakatoa_1883",
+   "label": "Krakatoa 1883: energy of the great explosion (air-wave equivalent)"
+  },
+  {
+   "id": "worldday",
+   "short": "a day of all the world’s energy use",
+   "J": 1.84e+18,
+   "rough": false,
+   "key": "energy_world_energy_use_day",
+   "label": "World primary energy consumption in one day (2022 rate)"
+  },
+  {
+   "id": "hurricane",
+   "short": "the heat an average hurricane releases in a day",
+   "J": 5.2e+19,
+   "rough": true,
+   "key": "energy_hurricane_heat_per_day",
+   "label": "Heat released by an average hurricane in one day (NOAA worked example)"
+  },
+  {
+   "id": "worldyear",
+   "short": "a year of all the world’s energy use",
+   "J": 6.73e+20,
+   "rough": false,
+   "key": "energy_world_energy_use_year",
+   "label": "World primary energy consumption in one year (2022)"
+  },
+  {
+   "id": "sunlightday",
+   "short": "a day of sunlight striking Earth",
+   "J": 1.5e+22,
+   "rough": false,
+   "key": "energy_sunlight_on_earth_day",
+   "label": "Sunlight intercepted by Earth in one day (top of the atmosphere)"
   },
   {
    "id": "chicxulub",
-   "short": "the dinosaur-killing asteroid",
-   "J": 4.2e+23
+   "short": "the asteroid that killed the dinosaurs",
+   "J": 5e+23,
+   "rough": true,
+   "key": "energy_chicxulub_impact",
+   "label": "Chicxulub impact energy (the dinosaur-killing asteroid)"
+  },
+  {
+   "id": "sunlightyear",
+   "short": "a year of sunlight striking Earth",
+   "J": 5.48e+24,
+   "rough": false,
+   "key": "energy_sunlight_on_earth_year",
+   "label": "Sunlight intercepted by Earth in one year (top of the atmosphere)"
   },
   {
    "id": "sun",
    "short": "the Sun’s output for one second",
-   "J": 3.828e+26
+   "J": 3.828e+26,
+   "rough": false,
+   "key": "energy_sun_luminosity",
+   "label": "Nominal solar luminosity (rung: the Sun's output in one second)"
+  },
+  {
+   "id": "pluto",
+   "short": "the energy to blow Pluto apart",
+   "J": 6.5e+27,
+   "rough": false,
+   "key": "energy_pluto_gravitational_binding",
+   "label": "Pluto's gravitational binding energy (the energy to blow Pluto apart)"
+  },
+  {
+   "id": "moonorbit",
+   "short": "the energy of the Moon’s motion around Earth",
+   "J": 3.84e+28,
+   "rough": false,
+   "key": "energy_moon_orbital_kinetic",
+   "label": "The Moon's kinetic energy in its orbit around Earth"
+  },
+  {
+   "id": "earthspin",
+   "short": "the energy of Earth’s spin",
+   "J": 2.14e+29,
+   "rough": false,
+   "key": "energy_earth_rotational_kinetic",
+   "label": "Earth's rotational kinetic energy (the energy of its daily spin)"
+  },
+  {
+   "id": "sunhour",
+   "short": "the Sun’s output for one hour",
+   "J": 1.37808e+30,
+   "rough": false,
+   "key": "energy_sun_output_hour",
+   "label": "The Sun's output for one hour"
+  },
+  {
+   "id": "mars",
+   "short": "the energy to blow Mars apart",
+   "J": 5.1e+30,
+   "rough": false,
+   "key": "energy_mars_gravitational_binding",
+   "label": "Mars's gravitational binding energy (the energy to blow Mars apart)"
+  },
+  {
+   "id": "sunday",
+   "short": "the Sun’s output for one day",
+   "J": 3.307392e+31,
+   "rough": false,
+   "key": "energy_sun_output_day",
+   "label": "The Sun's output for one day"
   },
   {
    "id": "earthbind",
-   "short": "the energy to blow Earth apart",
-   "J": 2.49e+32
+   "short": "the energy to blow Earth apart for good",
+   "J": 2.489e+32,
+   "rough": false,
+   "key": "energy_earth_gravitational_binding",
+   "label": "Earth's gravitational binding energy (integrated over PREM)"
+  },
+  {
+   "id": "earthorbit",
+   "short": "the energy of Earth’s motion around the Sun",
+   "J": 2.65e+33,
+   "rough": false,
+   "key": "energy_earth_orbital_kinetic",
+   "label": "Earth's kinetic energy in its orbit around the Sun"
+  },
+  {
+   "id": "sunyear",
+   "short": "the Sun’s output for one year",
+   "J": 1.208044772352e+34,
+   "rough": false,
+   "key": "energy_sun_output_year",
+   "label": "The Sun's output for one year"
+  },
+  {
+   "id": "jupiterorbit",
+   "short": "the energy of Jupiter’s motion around the Sun",
+   "J": 1.62e+35,
+   "rough": false,
+   "key": "energy_jupiter_orbital_kinetic",
+   "label": "Jupiter's kinetic energy in its orbit around the Sun"
+  },
+  {
+   "id": "suncentury",
+   "short": "the Sun’s output for a century",
+   "J": 1.208044772352e+36,
+   "rough": false,
+   "key": "energy_sun_output_century",
+   "label": "The Sun's output for one hundred years"
+  },
+  {
+   "id": "sunmillennium",
+   "short": "the Sun’s output for 1,000 years",
+   "J": 1.208e+37,
+   "rough": false,
+   "key": "energy_sun_output_millennium",
+   "label": "The Sun's total output for 1,000 years"
+  },
+  {
+   "id": "nova",
+   "short": "a nova (an explosion on a dead star)",
+   "J": 1e+38,
+   "rough": true,
+   "key": "energy_classical_nova",
+   "label": "A classical nova (a thermonuclear explosion on the surface of a white dwarf, a dead star)"
+  },
+  {
+   "id": "magnetar",
+   "short": "the 2004 magnetar flare (a dead star’s outburst)",
+   "J": 2e+39,
+   "rough": true,
+   "key": "energy_magnetar_flare_2004",
+   "label": "Giant flare of the magnetar SGR 1806-20, 27 Dec 2004 (a magnetar is a dead star with an extreme magnetic field): energy of its first fraction of a second"
+  },
+  {
+   "id": "moonmass",
+   "short": "the Moon turned wholly into energy",
+   "J": 6.6023e+39,
+   "rough": false,
+   "key": "energy_moon_mass_energy",
+   "label": "The Moon's whole mass turned into energy (E = mc²)"
+  },
+  {
+   "id": "sungalaxy",
+   "short": "the energy of the Sun’s motion around the Milky Way’s centre",
+   "J": 6.0655e+40,
+   "rough": false,
+   "key": "energy_sun_galactic_orbit_kinetic",
+   "label": "Kinetic energy of the Sun's motion around the centre of the Milky Way"
+  },
+  {
+   "id": "earthmass",
+   "short": "Earth turned wholly into energy",
+   "J": 5.3675e+41,
+   "rough": false,
+   "key": "energy_earth_mass_energy",
+   "label": "Earth's whole mass turned into energy (E = mc²)"
+  },
+  {
+   "id": "snlight",
+   "short": "all the light of a supernova",
+   "J": 1e+42,
+   "rough": true,
+   "key": "energy_supernova_light",
+   "label": "All the light a supernova gives off (typical core-collapse supernova, the explosion of a massive star; Type Ia supernovae give a few times more)"
+  },
+  {
+   "id": "sunbillion",
+   "short": "the Sun’s output for a billion years at today’s rate",
+   "J": 1.208e+43,
+   "rough": false,
+   "key": "energy_sun_output_billion_years",
+   "label": "The Sun's total output for a billion years (at today's output)"
+  },
+  {
+   "id": "snblast",
+   "short": "a supernova’s blast (its flying debris)",
+   "J": 1e+44,
+   "rough": false,
+   "key": "energy_supernova_blast",
+   "label": "A supernova's blast: the kinetic energy of its flying debris (typical; core-collapse and Type Ia alike)"
+  },
+  {
+   "id": "jupitermass",
+   "short": "Jupiter turned wholly into energy",
+   "J": 1.706e+44,
+   "rough": false,
+   "key": "energy_jupiter_mass_energy",
+   "label": "Jupiter's whole mass turned into energy (E = mc²)"
+  },
+  {
+   "id": "sn1998bw",
+   "short": "SN 1998bw, an unusually energetic supernova",
+   "J": 3e+45,
+   "rough": true,
+   "key": "energy_hypernova_sn1998bw",
+   "label": "SN 1998bw, an unusually energetic supernova linked to a gamma-ray burst; one model gives 3 × 10^52 erg (a 'hypernova'), an aspherical model about 15 times less"
+  },
+  {
+   "id": "sntotal",
+   "short": "a supernova’s total energy (nearly all in neutrinos)",
+   "J": 3e+46,
+   "rough": false,
+   "key": "energy_supernova_total_neutrinos",
+   "label": "Everything a core-collapse supernova (the explosion of a massive star) releases, about 99% of it as neutrinos (ghostly particles that pass through almost everything)"
+  },
+  {
+   "id": "sunmass",
+   "short": "the Sun turned wholly into energy",
+   "J": 1.7871e+47,
+   "rough": false,
+   "key": "energy_sun_mass_energy",
+   "label": "The Sun's whole mass turned into energy (E = mc²)"
+  },
+  {
+   "id": "gw150914",
+   "short": "the first black-hole collision ever detected, in 2015",
+   "J": 5.3613e+47,
+   "rough": false,
+   "key": "energy_gw150914",
+   "label": "GW150914: the energy two colliding black holes gave off as gravitational waves (ripples in space), the first such collision detected (14 Sep 2015)"
   }
  ],
  "overpressure": [
@@ -853,10 +1262,10 @@ window.DINO_DATA = {
    "group": "human",
    "title": "Fastest pitch, 105.8 mph",
    "who": "Aroldis Chapman · 2010",
-   "claim": "47.3 m/s as the ball leaves the hand.",
+   "claim": "47.3 m/s, the ball speed MLB lists. The lab takes it as the speed leaving the hand.",
    "status": "verified",
    "source": {
-    "url": "http://www.guinnessworldrecords.com/world-records/fastest-baseball-pitch-male",
+    "url": "https://www.mlb.com/news/speediest-plays-in-statcast-history",
     "title": "Source"
    },
    "run": {
@@ -1228,6 +1637,10 @@ window.DINO_DATA = {
   {
    "t": "Blasts and craters are upper bounds; quakes are a middle estimate",
    "d": "Blast radii use the Kinney–Graham curve for TNT, as if all the energy became a blast; injury and death levels count the pressure wave alone. Quake magnitudes assume 1 part in 10,000 of the energy becomes shaking, the usual impact-study value (real range 10⁻⁵ to 10⁻³, so give or take about ⅔ of a magnitude). Craters use asteroid-impact scaling, which overstates small craters in rock or concrete."
+  },
+  {
+   "t": "Energy comparisons",
+   "d": "Each energy is set beside the nearest of a ladder of reference energies, from the energy to lift a 100 g apple one metre (about 1 J) to the first black-hole collision ever detected, in 2015 (about 5 × 10⁴⁷ J). Above the nearest reference the page gives a multiple of at most about 10×; below it, a share of at least about 10%. A reference uncertain by more than 2× either way (a lightning bolt, Krakatoa, the dinosaur-killing asteroid, a nova) gets only a rough figure, marked “roughly”. Past either end the page says the energy is beyond the ladder. Every reference, with its status and sources, is in the sources table under “Energy:”. The ladder mixes kinds of energy (blasts, motion, food, electricity, sunlight) on one scale: it shows size, not a like-for-like match."
   },
   {
    "t": "Density and weight",
@@ -1737,16 +2150,12 @@ window.DINO_DATA = {
   },
   {
    "label": "Mass: Baseball",
-   "value": "5 to 5.25 oz (141.7 to 148.8 g)",
+   "value": "5 to 5.25 oz (141.7 to 148.8 g); midpoint 145.3 g used",
    "status": "verified",
    "sources": [
     {
-     "url": "https://www.umpirebible.com/OBR16/3.0.htm",
-     "title": "UmpireBible reproduction of Official Baseball Rules 3.01 The Ball"
-    },
-    {
-     "url": "https://baseballrulesacademy.com/official-rule/mlb/3-01-the-ball/",
-     "title": "Baseball Rules Academy - 3.01 The Ball"
+     "url": "https://mktg.mlbstatic.com/mlb/official-information/2026-official-baseball-rules.pdf",
+     "title": "MLB Official Baseball Rules, 2026 edition (PDF linked from mlb.com/glossary/rules), Rule 3.01 The Ball"
     }
    ],
    "note": null
@@ -1864,16 +2273,12 @@ window.DINO_DATA = {
   },
   {
    "label": "Mass: Toyota Corolla",
-   "value": "2,955 lb (LE) to 3,150 lb (XSE)",
+   "value": "2,955 lb (LE) to 3,150 lb (XSE); 1,340 to 1,429 kg (gasoline sedans)",
    "status": "verified",
    "sources": [
     {
-     "url": "https://www.kbb.com/toyota/corolla/2026/specs",
-     "title": "Kelley Blue Book - 2026 Corolla specs (LE 2,955 lb; SE 3,110; XSE 3,150)"
-    },
-    {
-     "url": "https://www.iseecars.com/car/2026-toyota-corolla-specs",
-     "title": "iSeeCars - 2026 Corolla specs (LE 2,955 lb; GVWR 3,925 lb)"
+     "url": "https://www.toyota.com/corolla/2026/features/",
+     "title": "Toyota USA, 2026 Corolla features and specs page (spec table embedded in the page)"
     }
    ],
    "note": null
@@ -2578,177 +2983,969 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Energy: Fastest pitch (kinetic energy)",
-   "value": "163 J",
+   "label": "Energy: Lifting a 100 g apple one metre (energy it gains)",
+   "value": "about 1 J (0.101 kg x 9.80665 m/s^2 x 1 m)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://fdc.nal.usda.gov/portal-data/external/171688",
+     "title": "USDA FoodData Central, SR Legacy FDC 171688 'Apples, raw, with skin' (NDB 09003): portion weights, JSON behind the FDC food page"
+    },
+    {
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?gn",
+     "title": "NIST CODATA: standard acceleration of gravity, 9.806 65 m/s^2 exact (fact earth_standard_gravity; re-fetched Oct 2026)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Air rifle: most pellet energy allowed without a firearm certificate (England and Wales)",
+   "value": "12 ft-lb (16.3 J) at the muzzle; above this an air rifle needs a firearm certificate in England and Wales (air pistols: 6 ft-lb, 8.1 J). Northern Ireland's line is 1 J",
    "status": "verified",
    "sources": [
     {
-     "url": "http://www.guinnessworldrecords.com/world-records/fastest-baseball-pitch-male",
-     "title": "Guinness World Records: Fastest baseball pitch (male)"
+     "url": "https://www.legislation.gov.uk/uksi/1969/47/made",
+     "title": "The Firearms (Dangerous Air Weapons) Rules 1969, SI 1969/47, rule 2(1) (legislation.gov.uk, as made)"
     },
     {
-     "url": "https://sabr.org/gamesproj/game/september-24-2010-reds-aroldis-chapman-tops-105-mph-for-fastest-pitch-ever-recorded/",
-     "title": "SABR Games Project: Sept 24, 2010, Chapman tops 105 mph"
+     "url": "https://www.gov.uk/government/publications/firearms-law-guidance-to-the-police-2012/guide-on-firearms-licensing-law-accessible-version",
+     "title": "Home Office, Guide on Firearms Licensing Law (accessible version, last updated 18 Sep 2026), para 2.46"
     },
     {
-     "url": "https://www.umpirebible.com/OBR16/3.0.htm",
-     "title": "UmpireBible reproduction of Official Baseball Rules 3.01 The Ball"
-    },
-    {
-     "url": "https://baseballrulesacademy.com/official-rule/mlb/3-01-the-ball/",
-     "title": "Baseball Rules Academy - 3.01 The Ball"
-    }
-   ],
-   "note": null
-  },
-  {
-   "label": "Energy: Corolla at 100 km/h (kinetic energy)",
-   "value": "5.17e+05 J",
-   "status": "verified",
-   "sources": [
-    {
-     "url": "https://www.kbb.com/toyota/corolla/2026/specs",
-     "title": "Kelley Blue Book - 2026 Corolla specs (LE 2,955 lb; SE 3,110; XSE 3,150)"
-    },
-    {
-     "url": "https://www.iseecars.com/car/2026-toyota-corolla-specs",
-     "title": "iSeeCars - 2026 Corolla specs (LE 2,955 lb; GVWR 3,925 lb)"
-    }
-   ],
-   "note": null
-  },
-  {
-   "label": "Energy: M67 hand grenade",
-   "value": "1e+06 J",
-   "status": "estimate",
-   "sources": [
-    {
-     "url": "https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN37340-TC_3-23.30-001-WEB-3.pdf",
-     "title": "Filler mass: US Army TC 3-23.30 Fig. 3-15"
-    },
-    {
-     "url": "https://en.wikipedia.org/wiki/Relative_effectiveness_factor",
-     "title": "RE factor 1.33 (claimed): Wikipedia Relative effectiveness factor"
-    }
-   ],
-   "note": null
-  },
-  {
-   "label": "Energy: GBU-43 MOAB",
-   "value": "4.6e+10 J",
-   "status": "claimed",
-   "sources": [
-    {
-     "url": "https://en.wikipedia.org/wiki/GBU-43/B_MOAB",
-     "title": "Wikipedia: GBU-43/B MOAB (infobox '11 tons TNT (46 GJ)'; no inline citation for yield)"
+     "url": "https://www.legislation.gov.uk/nisi/2004/702/schedule/1/part/9",
+     "title": "Firearms (Northern Ireland) Order 2004, Schedule 1 Part 9 (legislation.gov.uk)"
     },
     {
      "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
-     "title": "TNT energy convention: NIST SP 811 B.9"
+     "title": "NIST SP 811 Appendix B.9 conversion factors (foot pound-force = 1.355 818 J)"
     }
    ],
    "note": null
   },
   {
-   "label": "Energy: Hiroshima bomb",
-   "value": "6.28e+13 J",
-   "status": "claimed",
+   "label": "Energy: Fastest pitch on record: kinetic energy of the ball",
+   "value": "about 160 J (a 145 g ball at 105.8 mph)",
+   "status": "derived",
    "sources": [
     {
-     "url": "https://en.wikipedia.org/wiki/Little_Boy",
-     "title": "Wikipedia: Little Boy (citing Malik 1985, Los Alamos LA-8819, p. 1)"
+     "url": "https://www.mlb.com/news/speediest-plays-in-statcast-history",
+     "title": "Speed: MLB.com Statcast speed Hall of Fame (105.8 mph)"
     },
     {
-     "url": "http://nuclearweaponarchive.org/Usa/Med/Lbfm.html",
-     "title": "Nuclear Weapon Archive: Little Boy ('Yield: 15 - 16 Kt')"
+     "url": "https://mktg.mlbstatic.com/mlb/official-information/2026-official-baseball-rules.pdf",
+     "title": "Mass: MLB Official Baseball Rules 2026, Rule 3.01"
     }
    ],
    "note": null
   },
   {
-   "label": "Energy: Castle Bravo (15 Mt)",
-   "value": "6.28e+16 J",
-   "status": "claimed",
+   "label": "Energy: Rifle bullet, 5.56 mm NATO (M855): kinetic energy",
+   "value": "about 1.7 kJ (4.02 g at 922 m/s, 78 ft from the muzzle)",
+   "status": "derived",
    "sources": [
     {
-     "url": "http://nuclearweaponarchive.org/Usa/Tests/Castle.html",
-     "title": "Nuclear Weapon Archive: Operation Castle"
+     "url": "https://bulletpicker.com/pdf/TM-43-0001-27.pdf",
+     "title": "US Army TM 43-0001-27, Army Ammunition Data Sheets: Small Caliber Ammunition (Apr 1994, changes to C7 of 14 Jul 2004; Distribution A), third-party PDF copy"
     },
     {
-     "url": "https://en.wikipedia.org/wiki/Castle_Bravo",
-     "title": "Wikipedia: Castle Bravo"
+     "url": "https://ciehub.info/ref/TM/43-0001-27_1994_C1-8.pdf",
+     "title": "US Army TM 43-0001-27 with changes 1-8 (to 18 Oct 2005), second third-party PDF copy"
     }
    ],
    "note": null
   },
   {
-   "label": "Energy: Tsar Bomba (50 Mt)",
-   "value": "2.09e+17 J",
-   "status": "disputed",
+   "label": "Energy: Usain Bolt at top speed: kinetic energy",
+   "value": "about 7.3 kJ (95 kg at 12.42 m/s)",
+   "status": "derived",
    "sources": [
     {
-     "url": "http://www.nuclearweaponarchive.org/Russia/TsarBomba.html",
-     "title": "Nuclear Weapon Archive: Tsar Bomba ('Was it 50 Megatons or 57?')"
+     "url": "https://casopisi.junis.ni.ac.rs/index.php/FUPhysEdSport/article/download/4984/3002",
+     "title": "Coh M. 2019, Usain Bolt: biomechanical model of sprint technique, Facta Universitatis PES 17(1):1-13 (PDF)"
     },
     {
-     "url": "https://en.wikipedia.org/wiki/Tsar_Bomba",
-     "title": "Wikipedia: Tsar Bomba"
+     "url": "https://ojs.srce.hr/kinesiology/article/view/5579",
+     "title": "Coh et al. 2018, The kinematics of Usain Bolt's maximal sprint velocity, Kinesiology 50(2):172-180 (abstract page)"
     }
    ],
    "note": null
   },
   {
-   "label": "Energy: Krakatoa 1883",
-   "value": "8.4e+17 J",
-   "status": "claimed",
+   "label": "Energy: Food energy in a level teaspoon of sugar",
+   "value": "about 68 kJ (16 kcal, i.e. 16 food Calories) per level teaspoon",
+   "status": "derived",
    "sources": [
     {
-     "url": "https://en.wikipedia.org/wiki/1883_eruption_of_Krakatoa",
-     "title": "Wikipedia: 1883 eruption of Krakatoa (citing Australian Bureau of Meteorology 2012, archived)"
+     "url": "https://fdc.nal.usda.gov/portal-data/external/169655",
+     "title": "USDA FoodData Central, SR Legacy FDC 169655 'Sugars, granulated' (NDB 19335): energy and portion weights, JSON behind the FDC food page"
     },
     {
-     "url": "https://en.wikipedia.org/wiki/Krakatoa",
-     "title": "Wikipedia: Krakatoa (citing Breining 2007, Super Volcano, Voyageur Press, p. 256)"
+     "url": "https://webbook.nist.gov/cgi/cbook.cgi?ID=C57501&Mask=2",
+     "title": "NIST Chemistry WebBook, Sucrose (CAS 57-50-1), condensed phase thermochemistry"
     }
    ],
    "note": null
   },
   {
-   "label": "Energy: Chicxulub impact (sim uses 4.2 × 10²³ J, inside the published 10²³–10²⁴ J)",
-   "value": "4.2e+23 J",
-   "status": "disputed",
+   "label": "Energy: Toyota Corolla at 100 km/h: kinetic energy",
+   "value": "about 0.52 MJ (1,340 kg at 100 km/h); 0.55 MJ for the heaviest gasoline trim",
+   "status": "derived",
    "sources": [
     {
-     "url": "https://en.wikipedia.org/wiki/Chicxulub_crater",
-     "title": "Wikipedia: Chicxulub crater (literature range ~1e23 J, Morgan et al. 2022, Richards et al. 2015, Kring 2007, Bralower et al. 1998; 1e24 J, Pope et al. 1997)"
-    },
-    {
-     "url": "https://arxiv.org/abs/1403.6391",
-     "title": "Durand-Manterola & Cordero-Tercero (2014) Assessments of the energy, mass and size of the Chicxulub impactor, arXiv:1403.6391"
+     "url": "https://www.toyota.com/corolla/2026/features/",
+     "title": "Mass: Toyota USA 2026 Corolla features and specs"
     }
    ],
    "note": null
   },
   {
-   "label": "Energy: Sun’s output in one second",
-   "value": "3.83e+26 J",
+   "label": "Energy: M67 hand grenade: chemical energy of its filler",
+   "value": "about 0.9 MJ (0.184 kg of Comp B x 5.02 MJ/kg); 1.0 MJ by the Army's ballistic-mortar TNT equivalence",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN37340-TC_3-23.30-001-WEB-3.pdf",
+     "title": "Filler mass: US Army TC 3-23.30, Fig. 3-15"
+    },
+    {
+     "url": "https://www.osti.gov/servlets/purl/6530310",
+     "title": "Heat of detonation: LLNL Explosives Handbook UCRL-52997, Table 5-2"
+    },
+    {
+     "url": "https://everyspec.com/ARMY/ARMY-General/download.php?spec=AMCP_706-177_JAN1971.050916.pdf",
+     "title": "Heat of explosion and 'Ballistic Mortar, % TNT: 133': AMCP 706-177, Composition B sheet pp. 46-47 (PDF pp. 54-55)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: A day's food: the 2,000-Calorie reference diet (FDA)",
+   "value": "2,000 Calories (kcal) a day = 8.4 MJ (FDA's general guide; needs vary)",
    "status": "verified",
    "sources": [
     {
-     "url": "https://arxiv.org/abs/1510.07674",
-     "title": "IAU 2015 Resolution B3 (arXiv:1510.07674)"
+     "url": "https://www.fda.gov/food/nutrition-facts-label/how-understand-and-use-nutrition-facts-label",
+     "title": "FDA: How to Understand and Use the Nutrition Facts Label ('2,000 calories a day is used as a general guide for nutrition advice')"
+    },
+    {
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
+     "title": "NIST SP 811 Appendix B.9: conversion factors"
     }
    ],
    "note": null
   },
   {
-   "label": "Energy: Earth’s gravitational binding energy",
-   "value": "2.49e+32 J",
-   "status": "claimed",
+   "label": "Energy: Fully loaded US semi-truck (80,000 lb) at 100 km/h: kinetic energy",
+   "value": "about 14 MJ (36,287 kg at 100 km/h = 27.8 m/s)",
+   "status": "derived",
    "sources": [
     {
-     "url": "https://en.wikipedia.org/wiki/Gravitational_binding_energy",
-     "title": "Wikipedia: Gravitational binding energy (PREM-based value; formula U = 3GM^2/(5R))"
+     "url": "https://www.law.cornell.edu/cfr/text/23/658.17",
+     "title": "23 CFR 658.17(b): 'The maximum gross vehicle weight shall be 80,000 pounds' (Cornell LII)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Average US home's electricity purchases in a day (2022 yearly average / 365)",
+   "value": "about 29.6 kWh = 0.11 GJ (10,791 kWh a year / 365); state averages 17 kWh (Hawaii) to 40 kWh (Louisiana) a day",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://www.eia.gov/tools/faqs/faq.php?id=97&t=3",
+     "title": "EIA FAQ: How much electricity does an American home use? (last updated 8 Jan 2024)"
+    },
+    {
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
+     "title": "NIST SP 811 Appendix B.9: conversion factors"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: A month's food at the 2,000-Calorie reference diet (30 days)",
+   "value": "about 0.25 GJ (30 days x 2,000 Calories)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://www.fda.gov/food/nutrition-facts-label/how-understand-and-use-nutrition-facts-label",
+     "title": "FDA: How to Understand and Use the Nutrition Facts Label ('2,000 calories a day is used as a general guide for nutrition advice')"
+    },
+    {
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
+     "title": "NIST SP 811 Appendix B.9: conversion factors"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: A lightning flash: total energy",
+   "value": "about 1 GJ per flash (published estimates 0.1 to 7 GJ)",
+   "status": "disputed",
+   "sources": [
+    {
+     "url": "https://api.crossref.org/works/10.1029/2008JD011506",
+     "title": "Maggio, Marshall & Stolzenburg (2009) Estimations of charge transferred and energy released by lightning flashes, JGR 114, D14, doi:10.1029/2008JD011506 (abstract via Crossref)"
+    },
+    {
+     "url": "https://api.crossref.org/works/10.1029/RG022i004p00363",
+     "title": "Borucki & Chameides (1984) Lightning: estimates of the rates of energy dissipation and nitrogen fixation, Rev. Geophys. 22:363-372 (abstract via Crossref)"
+    },
+    {
+     "url": "https://ntrs.nasa.gov/api/citations/20210000238/downloads/ams2021_paper_Koshak.pdf",
+     "title": "Koshak (2021) GLM estimates of LNOx over the continental US, NASA MSFC, AMS extended abstract J2A.8 (not peer-reviewed)"
+    },
+    {
+     "url": "https://www.epa.gov/sites/production/files/2020-11/documents/c14s03.pdf",
+     "title": "US EPA AP-42 section 14.3 Lightning Emissions (9/96)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: High-speed train (ICE 3 Velaro D, 454 t) at 320 km/h: kinetic energy",
+   "value": "about 1.8 GJ (454 t at 320 km/h); about 1.9 GJ full of passengers",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://assets.new.siemens.com/siemens/assets/api/uuid:f87cebe5-71ab-4224-985d-baa30a934ff0/factsheet-velaro-d-de.pdf",
+     "title": "Siemens Fact Sheet: Velaro D - Neuer ICE 3 (Baureihe 407), German"
+    },
+    {
+     "url": "https://assets.new.siemens.com/siemens/assets/api/uuid:2f82dc92-66be-40b7-be36-78bd0f1bd0b1/high-speed-train-velaro-d-data-sheet-en.pdf",
+     "title": "Siemens data sheet: Velaro D (Class 407), English"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: TNT equivalent: energy per ton of TNT",
+   "value": "1 ton of TNT = 4.184 x 10^9 J by definition; 1 kt = 4.184 x 10^12 J; 1 Mt = 4.184 x 10^15 J",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
+     "title": "NIST SP 811, Appendix B.9 (energy conversion factors)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Fully loaded Airbus A380 at cruising speed: kinetic energy",
+   "value": "about 18 GJ (575 t at Mach 0.85, 251 m/s, about 900 km/h)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://www.airbus.com/sites/g/files/jlcbta136/files/2022-01/EN-Airbus-A380-Facts-and-Figures-January-2022.pdf",
+     "title": "Airbus A380 Facts and Figures, January 2022"
+    },
+    {
+     "url": "https://www.grc.nasa.gov/www/k-12/airplane/atmosmet.html",
+     "title": "NASA Glenn: Earth Atmosphere Model, metric units"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: GBU-43/B MOAB: blast yield",
+   "value": "about 11 tons of TNT (46 GJ); 33 GJ from the fill's heat of explosion alone",
+   "status": "reported",
+   "sources": [
+    {
+     "url": "https://www.arabnews.com/node/1084336",
+     "title": "AFP via Arab News, 14 Apr 2017 (citing GlobalSecurity.org): 'a blast yield equivalent to 11 tons of TNT'"
+    },
+    {
+     "url": "https://afarmamentmuseum.com/artifact/gbu43/",
+     "title": "Air Force Armament Museum, GBU-43/B (18,700 lb H6, '1.35 times more powerful than TNT')"
+    },
+    {
+     "url": "https://everyspec.com/ARMY/ARMY-General/download.php?spec=AMCP_706-177_JAN1971.050916.pdf",
+     "title": "AMCP 706-177 (1971), H-6 sheet pp. 146-147: ballistic mortar 135% TNT; heat of explosion 923 cal/g"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Hubble Space Telescope: kinetic energy (energy of motion) in orbit",
+   "value": "about 350 GJ (12,250 kg at about 7.6 km/s; about 85 t of TNT)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://science.nasa.gov/missions/hubble/a-nasa-refresher-on-hubble-facts-for-the-25th-anniversary/",
+     "title": "NASA Science: A NASA Refresher on Hubble Facts for the 25th Anniversary (Goddard, 16 Apr 2015)"
+    },
+    {
+     "url": "https://science.nasa.gov/wp-content/uploads/2023/04/hst_overview_fact_sheet.pdf",
+     "title": "NASA Facts: Hubble Space Telescope - An Overview (fact sheet PDF)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Beirut port explosion, 4 Aug 2020: TNT-equivalent yield",
+   "value": "about 0.3-1.1 kt TNT in published estimates (0.13-2 kt at the extremes); 0.5 kt (2.1 TJ) used, Rigby et al.'s best estimate",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://eprints.whiterose.ac.uk/id/eprint/165010/8/Rigby2020_Article_PreliminaryYieldEstimationOfTh.pdf",
+     "title": "Rigby et al. (2020) Preliminary yield estimation of the 2020 Beirut explosion using video footage from social media, Shock Waves 30:671-675, doi:10.1007/s00193-020-00970-z (published version, White Rose repository)"
+    },
+    {
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8266808/",
+     "title": "Pilger et al. (2021) Yield estimation of the 2020 Beirut explosion using open access waveform and remote sensing data, Scientific Reports 11:14144, doi:10.1038/s41598-021-93690-y (PMC8266808)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: International Space Station: kinetic energy (energy of motion) in orbit",
+   "value": "about 12-14 TJ (420 t at 7.7-8.0 km/s; about 3 kt of TNT); 12.6 TJ used",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://www.nasa.gov/international-space-station/space-station-facts-and-figures/",
+     "title": "NASA: Space Station Facts and Figures"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Hiroshima bomb (Little Boy) yield",
+   "value": "15 kilotons of TNT (6.3 x 10^13 J); DOE official; latest dosimetry estimate 16 +/- 2 kt",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.osti.gov/servlets/purl/1489669",
+     "title": "Malik (1985) The Yields of the Hiroshima and Nagasaki Nuclear Explosions, LA-8819, Los Alamos (OSTI 1489669)"
+    },
+    {
+     "url": "https://nnss.gov/wp-content/uploads/2023/08/DOE_NV-209_Rev16.pdf",
+     "title": "US DOE/NNSA Nevada, DOE/NV-209 Rev. 16 (Sep 2015) United States Nuclear Tests, July 1945 through September 1992"
+    },
+    {
+     "url": "https://www.rerf.or.jp/library/scidata/scids/ds02/pdf/chapter01/cha01-p42-61.pdf",
+     "title": "RERF DS02 report (2005), Chapter 1 'Bomb Parameters' (Kerr, Young, Cullings, Christy)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Chelyabinsk meteor airburst, 15 Feb 2013: energy",
+   "value": "about 500 +/- 100 kt TNT (1.7-2.5 PJ); NASA's fireball table: 441 kt",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.nature.com/articles/nature12741",
+     "title": "Brown et al. (2013) A 500-kiloton airburst over Chelyabinsk and an enhanced hazard from small impactors, Nature 503:238-241, doi:10.1038/nature12741"
+    },
+    {
+     "url": "https://ssd-api.jpl.nasa.gov/fireball.api?date-min=2013-02-15&date-max=2013-02-16&req-alt=false",
+     "title": "NASA/JPL CNEOS Fireball Data API, 2013-02-15 event"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Hoover Dam: electricity generated in an average year",
+   "value": "about 4 billion kWh in an average year (14 PJ); 1947-2008 average 4.2 billion kWh",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.usbr.gov/lc/hooverdam/faqs/powerfaq.html",
+     "title": "US Bureau of Reclamation: Hoover Dam - Frequently Asked Questions: Hydropower (last updated 1 Aug 2018)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Castle Bravo yield (1 Mar 1954 local; 28 Feb GMT)",
+   "value": "15 megatons of TNT (6.3 x 10^16 J); the highest-yield US nuclear test",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://nnss.gov/wp-content/uploads/2023/08/DOE_NV-209_Rev16.pdf",
+     "title": "US DOE/NNSA Nevada, DOE/NV-209 Rev. 16 (Sep 2015) United States Nuclear Tests, July 1945 through September 1992"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Tsar Bomba yield (30 Oct 1961)",
+   "value": "50 megatons of TNT (2.1 x 10^17 J) per its Soviet designers; US 1961 estimate 57 Mt",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.wilsoncenter.org/sites/default/files/media/documents/publication/CWIHP_Bulletin_4.pdf",
+     "title": "Adamsky & Smirnov (1994) 'Moscow's Biggest Bomb: The 50-Megaton Test of October 1961', Cold War International History Project Bulletin 4 (Fall 1994), pp. 3, 19-21 (Wilson Center)"
+    },
+    {
+     "url": "https://nuclearweaponarchive.org/Russia/TsarBomba.html",
+     "title": "Nuclear Weapon Archive (Carey Sublette's site, no byline; updated 3 Sep 2007): The Tsar Bomba"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Krakatoa 1883: energy of the great explosion (air-wave equivalent)",
+   "value": "roughly 100-200 megatons (4-8 x 10^17 J) judged from its air wave; other published figures run from 10^17 J to over 10^18 J",
+   "status": "disputed",
+   "sources": [
+    {
+     "url": "https://authors.library.caltech.edu/records/r42n3-t2639/files/Geophys._J._Int.-1967-Harkrider-149-59.pdf?download=1",
+     "title": "Harkrider & Press (1967) The Krakatoa air-sea waves, Geophys. J. R. Astr. Soc. 13:149-159, p. 159 (Caltech repository PDF)"
+    },
+    {
+     "url": "https://authors.library.caltech.edu/records/xvvaz-4pv10",
+     "title": "Press & Harkrider (1966) Air-sea waves from the explosion of Krakatoa, Science 154:1325 (doi:10.1126/science.154.3754.1325; Caltech record with abstract)"
+    },
+    {
+     "url": "https://www.vliz.be/imisdocs/publications/381958.pdf",
+     "title": "Choi, Pelinovsky, Kim & Lee (2003) Simulation of the trans-oceanic tsunami propagation due to the 1883 Krakatau volcanic eruption, NHESS 3:321-332 (doi:10.5194/nhess-3-321-2003)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: World primary energy consumption in one day (2022 rate)",
+   "value": "about 1.8 × 10¹⁸ J (one day at the 2022 rate; about 21 TW on average)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://www.eia.gov/Outlooks/Ieo/data/pdf/A_A1_r_230822.081459.pdf",
+     "title": "US EIA, International Energy Outlook 2023, Table A1 'World total primary energy consumption by region, Reference case' (PDF; World, 2022: 637.8 quadrillion Btu)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Heat released by an average hurricane in one day (NOAA worked example)",
+   "value": "about 5.2 × 10¹⁹ J per day (6.0 × 10¹⁴ W), NOAA's worked figure for an average hurricane; rough, a factor of a few either way",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.aoml.noaa.gov/hrd-faq/",
+     "title": "NOAA AOML Hurricane Research Division, Hurricane FAQ (revised 10 Sep 2025): 'How Much Energy does a Hurricane Produce?'"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: World primary energy consumption in one year (2022)",
+   "value": "637.8 quadrillion Btu in 2022 = 6.7 × 10²⁰ J (US EIA); the Energy Institute's figure for 2025, reported second-hand, is just over 600 EJ (6.0 × 10²⁰ J)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.eia.gov/Outlooks/Ieo/data/pdf/A_A1_r_230822.081459.pdf",
+     "title": "US EIA, International Energy Outlook 2023, Table A1 'World total primary energy consumption by region, Reference case' (PDF; World, 2022: 637.8 quadrillion Btu)"
+    },
+    {
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
+     "title": "NIST SP 811 Appendix B.9: British thermal unit_IT = 1.055 056 E+03 J"
+    },
+    {
+     "url": "https://dieselnet.com/news/2026/07energyreview.php",
+     "title": "DieselNet news, 2 Jul 2026, reporting the Energy Institute 2026 Statistical Review (secondary)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Sunlight intercepted by Earth in one day (top of the atmosphere)",
+   "value": "about 1.5 × 10²² J per day at the top of the atmosphere (1361 W/m² × Earth's disc × 86,400 s)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/1510.07674",
+     "title": "Prša et al., IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties (arXiv:1510.07674v1, 2015; PDF)"
+    },
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+     "title": "NASA NSSDCA Earth Fact Sheet (last updated 15 Nov 2024): solar irradiance 1361.0 W/m²; mean radius 6371.000 km; Bond albedo 0.294"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Chicxulub impact energy (the dinosaur-killing asteroid)",
+   "value": "about 5 x 10^23 J (2022 review); an older estimate from a larger crater goes up to 1.7 x 10^25 J",
+   "status": "disputed",
+   "sources": [
+    {
+     "url": "https://par.nsf.gov/servlets/purl/10349743",
+     "title": "Morgan, Bralower, Brugger & Wunnemann (2022) The Chicxulub impact and its environmental consequences, Nat. Rev. Earth Environ. 3:338-354, published version (NSF PAR; doi:10.1038/s43017-022-00283-y)"
+    },
+    {
+     "url": "https://ntrs.nasa.gov/citations/19970030228",
+     "title": "Sharpton & Marin (1997) The Cretaceous-Tertiary impact crater and the cosmic projectile that produced it, Ann. N.Y. Acad. Sci. 822 (NASA NTRS record)"
+    },
+    {
+     "url": "https://par.nsf.gov/servlets/purl/10160782",
+     "title": "Collins et al. (2020) A steeply-inclined trajectory for the Chicxulub impact, Nat. Commun. 11:1480 (NSF PAR copy)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Sunlight intercepted by Earth in one year (top of the atmosphere)",
+   "value": "about 5.5 × 10²⁴ J per year at the top of the atmosphere",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/1510.07674",
+     "title": "Prša et al., IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties (arXiv:1510.07674v1, 2015; PDF)"
+    },
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+     "title": "NASA NSSDCA Earth Fact Sheet (last updated 15 Nov 2024): solar irradiance 1361.0 W/m²; mean radius 6371.000 km; Bond albedo 0.294"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Nominal solar luminosity (rung: the Sun's output in one second)",
+   "value": "3.828 x 10^26 W, so 3.8 x 10^26 J each second",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/1510.07674",
+     "title": "Prsa et al. (2016) Nominal values for selected solar and planetary quantities: IAU 2015 Resolution B3, AJ 152:41 (doi:10.3847/0004-6256/152/2/41); arXiv:1510.07674 PDF"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Pluto's gravitational binding energy (the energy to blow Pluto apart)",
+   "value": "about 6.5 x 10^27 J (layered models 6.3-6.7 x 10^27 J; 5.7 x 10^27 J if Pluto were uniform)",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/plutofact.html",
+     "title": "NASA NSSDCA Pluto Fact Sheet (last updated 11 Jan 2024)"
+    },
+    {
+     "url": "https://arxiv.org/pdf/1712.05669",
+     "title": "Stern et al. (2018) The Pluto System After New Horizons, Annu. Rev. Astron. Astrophys. 56 (DOI 10.1146/annurev-astro-081817-051935), arXiv:1712.05669 (PDF)"
+    },
+    {
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?bg",
+     "title": "NIST CODATA 2022: Newtonian constant of gravitation"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: The Moon's kinetic energy in its orbit around Earth",
+   "value": "3.8 x 10^28 J (7.346 x 10^22 kg at a mean 1.022 km/s; 3.4-4.4 x 10^28 J over a year)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+     "title": "NASA NSSDCA Moon Fact Sheet (last updated 11 Jan 2024)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Earth's rotational kinetic energy (the energy of its daily spin)",
+   "value": "2.1 x 10^29 J (C = 8.04 x 10^37 kg m², one turn per 23.9345 h)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/1104.1033",
+     "title": "Vilcu (2009) On the elements of the Earth's ellipsoid of inertia, An. Univ. Bucuresti Mat. 58(2):183-198, arXiv:1104.1033 (PDF)"
+    },
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+     "title": "NASA NSSDCA Earth Fact Sheet (last updated 15 Nov 2024)"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/Rotational_energy",
+     "title": "Wikipedia: Rotational energy (cross-check only: 2.14 x 10^29 J)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: The Sun's output for one hour",
+   "value": "1.4 x 10^30 J (3.828 x 10^26 W for 3,600 s)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/1510.07674",
+     "title": "Mamajek, Prsa, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (PDF)"
+    },
+    {
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
+     "title": "NIST SP 811 Appendix B.9: conversion factors (time: hour, day, year)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Mars's gravitational binding energy (the energy to blow Mars apart)",
+   "value": "5.1 x 10^30 J (4.9 x 10^30 J for a uniform Mars)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html",
+     "title": "NASA NSSDCA Mars Fact Sheet (last updated 19 May 2025)"
+    },
+    {
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?bg",
+     "title": "NIST CODATA 2022: Newtonian constant of gravitation"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: The Sun's output for one day",
+   "value": "3.3 x 10^31 J (3.828 x 10^26 W for 86,400 s)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/1510.07674",
+     "title": "Mamajek, Prsa, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (PDF)"
+    },
+    {
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
+     "title": "NIST SP 811 Appendix B.9: conversion factors (time: hour, day, year)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Earth's gravitational binding energy (integrated over PREM)",
+   "value": "about 2.49 x 10^32 J (2.24 x 10^32 J if Earth had uniform density)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://www.cfa.harvard.edu/~lzeng/papers/PREM.pdf",
+     "title": "Dziewonski & Anderson (1981) Preliminary reference Earth model, PEPI 25:297-356, Table I (doi:10.1016/0031-9201(81)90046-7); PDF copy at Harvard CfA"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Earth's kinetic energy in its orbit around the Sun",
+   "value": "2.6 x 10^33 J (5.9722 x 10^24 kg at a mean 29.78 km/s)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+     "title": "NASA NSSDCA Earth Fact Sheet (last updated 15 Nov 2024)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: The Sun's output for one year",
+   "value": "1.2 x 10^34 J (3.828 x 10^26 W for one sidereal year, 365.256 days)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/1510.07674",
+     "title": "Mamajek, Prsa, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (PDF)"
+    },
+    {
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
+     "title": "NIST SP 811 Appendix B.9: conversion factors (time: hour, day, year)"
+    },
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+     "title": "NASA NSSDCA Earth Fact Sheet (last updated 15 Nov 2024)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Jupiter's kinetic energy in its orbit around the Sun",
+   "value": "1.6 x 10^35 J (1.898 x 10^27 kg at a mean 13.06 km/s)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/jupiterfact.html",
+     "title": "NASA NSSDCA Jupiter Fact Sheet (last updated 2 Oct 2024)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: The Sun's output for one hundred years",
+   "value": "1.2 x 10^36 J (3.828 x 10^26 W for 100 sidereal years)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/1510.07674",
+     "title": "Mamajek, Prsa, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (PDF)"
+    },
+    {
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
+     "title": "NIST SP 811 Appendix B.9: conversion factors (time: hour, day, year)"
+    },
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+     "title": "NASA NSSDCA Earth Fact Sheet (last updated 15 Nov 2024)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: The Sun's total output for 1,000 years",
+   "value": "about 1.2 × 10^37 J (1,000 years at 3.828 × 10^26 W)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/1510.07674",
+     "title": "Prša et al. (2016), IAU 2015 Resolution B3, AJ 152, 41; arXiv:1510.07674 PDF (nominal solar luminosity 3.828e26 W)"
+    },
+    {
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b8",
+     "title": "NIST Guide to the SI (SP 811), Appendix B.8: Factors for units listed alphabetically (tropical year 3.155 693e7 s)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: A classical nova (a thermonuclear explosion on the surface of a white dwarf, a dead star)",
+   "value": "about 10^38 J (~10^45 erg, Hernanz & José 2000); models give 'a few times 10^45 erg' of nuclear energy (Hillman & Gerbi 2022); NASA outreach: 'up to 100,000 times the annual energy output of our sun' (about 1.2 × 10^39 J)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/astro-ph/0001189",
+     "title": "Hernanz & José (2000) Thermonuclear runaways on accreting white dwarfs: models of classical novae explosions, AIP Conf. Proc. (DOI 10.1063/1.1291734); arXiv PDF"
+    },
+    {
+     "url": "https://arxiv.org/pdf/2202.06894",
+     "title": "Hillman & Gerbi (2022) The effect of enriched accreted matter on the development of novae, MNRAS (DOI 10.1093/mnras/stac432); arXiv PDF"
+    },
+    {
+     "url": "https://svs.gsfc.nasa.gov/11608/",
+     "title": "NASA Scientific Visualization Studio 11608, 'Fermi Reveals Novae as a New Class of Gamma-Ray Sources' (31 Jul 2014; outreach text, used only for the upper bound)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Giant flare of the magnetar SGR 1806-20, 27 Dec 2004 (a magnetar is a dead star with an extreme magnetic field): energy of its first fraction of a second",
+   "value": "about 2 × 10^39 J in a fraction of a second; 0.5-7 × 10^39 J depending on the distance, which is still disputed (8.7 kpc, Bibby 2008; 9.4-18.6 kpc, Svirski 2011)",
+   "status": "disputed",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/astro-ph/0503030",
+     "title": "Palmer et al. (2005) Gamma-ray observations of a giant flare from the magnetar SGR 1806-20, Nature 434, 1107 (DOI 10.1038/nature03525); arXiv abstract"
+    },
+    {
+     "url": "https://arxiv.org/pdf/astro-ph/0503030",
+     "title": "Palmer et al. (2005), arXiv PDF ('2 × 10^46 d15^2 erg in the spike')"
+    },
+    {
+     "url": "https://arxiv.org/pdf/astro-ph/0502329",
+     "title": "Hurley et al. (2005) An exceptionally bright flare from SGR 1806-20..., Nature 434, 1098 (DOI 10.1038/nature03519); arXiv PDF"
+    },
+    {
+     "url": "https://arxiv.org/abs/0802.0815",
+     "title": "Bibby et al. (2008) A downward revision to the distance of the 1806-20 cluster and associated magnetar, MNRAS 386, L23 (DOI 10.1111/j.1745-3933.2008.00453.x); arXiv abstract"
+    },
+    {
+     "url": "https://arxiv.org/abs/1103.0006",
+     "title": "Svirski, Nakar & Ofek (2011) SGR 1806-20 distance and dust properties in molecular clouds by analysis of a flare x-ray echoes, MNRAS 415, 2485 (DOI 10.1111/j.1365-2966.2011.18872.x); arXiv abstract"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: The Moon's whole mass turned into energy (E = mc²)",
+   "value": "about 6.6 × 10^39 J (7.346 × 10^22 kg × c²)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+     "title": "NASA NSSDCA Moon Fact Sheet (mass 0.07346e24 kg; existing fact moon_mass)"
+    },
+    {
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?c",
+     "title": "NIST CODATA 2022: speed of light in vacuum, 299 792 458 m/s exact (existing fact growth_c_exact)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Kinetic energy of the Sun's motion around the centre of the Milky Way",
+   "value": "about 6 × 10^40 J (½ × 1.9884 × 10^30 kg × (247 km/s)^2)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/1910.03357",
+     "title": "Reid et al. (2019) ApJ 885, 131; arXiv abstract (To + Vsun = 247 ± 4 km/s)"
+    },
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html",
+     "title": "NASA NSSDCA Sun Fact Sheet (mass 1,988,400e24 kg; existing fact sun_mass)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Earth's whole mass turned into energy (E = mc²)",
+   "value": "about 5.4 × 10^41 J (5.9722 × 10^24 kg × c²)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+     "title": "NASA NSSDCA Earth Fact Sheet (mass 5.9722e24 kg; existing fact earth_mass)"
+    },
+    {
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?c",
+     "title": "NIST CODATA 2022: speed of light in vacuum, 299 792 458 m/s exact (existing fact growth_c_exact)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: All the light a supernova gives off (typical core-collapse supernova, the explosion of a massive star; Type Ia supernovae give a few times more)",
+   "value": "about 10^42 J (~10^49 erg) for a core-collapse supernova; (1-10) × 10^49 erg across such events; Type Ia about 6 × 10^49 erg",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/astro-ph/0501002",
+     "title": "Nadyozhin & Imshennik (2005) Physics of supernovae, Int. J. Mod. Phys. A (DOI 10.1142/S0217751X05029630); arXiv PDF"
+    },
+    {
+     "url": "https://arxiv.org/pdf/0804.4350",
+     "title": "Nadyozhin (2008) Physics of supernovae: theory, observations, unresolved problems, arXiv:0804.4350 PDF (lecture; no journal reference)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: The Sun's total output for a billion years (at today's output)",
+   "value": "about 1.2 × 10^43 J (10^9 years at 3.828 × 10^26 W)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/1510.07674",
+     "title": "Prša et al. (2016), IAU 2015 Resolution B3, AJ 152, 41; arXiv:1510.07674 PDF (nominal solar luminosity 3.828e26 W)"
+    },
+    {
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b8",
+     "title": "NIST Guide to the SI (SP 811), Appendix B.8: Factors for units listed alphabetically (tropical year 3.155 693e7 s)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: A supernova's blast: the kinetic energy of its flying debris (typical; core-collapse and Type Ia alike)",
+   "value": "about 10^44 J (~10^51 erg, 'one Bethe'); core collapse typically (0.5-2) × 10^51 erg",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/2009.14157",
+     "title": "Burrows & Vartanyan (2021) Core-collapse supernova explosion theory, Nature 589, 29 (DOI 10.1038/s41586-020-03059-w); arXiv PDF v3"
+    },
+    {
+     "url": "https://arxiv.org/pdf/astro-ph/0501002",
+     "title": "Nadyozhin & Imshennik (2005) Physics of supernovae, Int. J. Mod. Phys. A (DOI 10.1142/S0217751X05029630); arXiv PDF"
+    },
+    {
+     "url": "https://arxiv.org/pdf/1206.2503",
+     "title": "Janka (2012) Explosion mechanisms of core-collapse supernovae, Annu. Rev. Nucl. Part. Sci. 62 (DOI 10.1146/annurev-nucl-102711-094901); arXiv PDF"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Jupiter's whole mass turned into energy (E = mc²)",
+   "value": "about 1.7 × 10^44 J (1.89813 × 10^27 kg × c²)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/jupiterfact.html",
+     "title": "NASA NSSDCA Jupiter Fact Sheet (mass 1,898.13e24 kg)"
+    },
+    {
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?c",
+     "title": "NIST CODATA 2022: speed of light in vacuum, 299 792 458 m/s exact (existing fact growth_c_exact)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: SN 1998bw, an unusually energetic supernova linked to a gamma-ray burst; one model gives 3 × 10^52 erg (a 'hypernova'), an aspherical model about 15 times less",
+   "value": "about 3 × 10^45 J in one spherical model (3 × 10^52 erg; 2-5 × 10^52 erg); an aspherical model gives 2 × 10^51 erg (2 × 10^44 J)",
+   "status": "disputed",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/astro-ph/9806382",
+     "title": "Iwamoto et al. (1998) A 'hypernova' model for SN 1998bw associated with gamma-ray burst of 25 April 1998, Nature 395, 672 (DOI 10.1038/27155); arXiv abstract"
+    },
+    {
+     "url": "https://arxiv.org/pdf/astro-ph/9806382",
+     "title": "Iwamoto et al. (1998), arXiv PDF"
+    },
+    {
+     "url": "https://arxiv.org/abs/astro-ph/9808086",
+     "title": "Höflich, Wheeler & Wang (1999) Aspherical explosion models for SN 1998bw/GRB 980425, ApJ (DOI 10.1086/307521); arXiv abstract"
+    },
+    {
+     "url": "https://arxiv.org/abs/astro-ph/9807345",
+     "title": "Höflich, Wheeler & Wang (1998) SN 1998bw/GRB 980425: hypernova or aspherical explosion?, arXiv abstract"
+    },
+    {
+     "url": "https://arxiv.org/pdf/1206.2503",
+     "title": "Janka (2012) Annu. Rev. Nucl. Part. Sci.; arXiv PDF ('up to several 10^52 erg for HNe')"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Everything a core-collapse supernova (the explosion of a massive star) releases, about 99% of it as neutrinos (ghostly particles that pass through almost everything)",
+   "value": "about 3 × 10^46 J (~3 × 10^53 erg in neutrinos; (3-5) × 10^53 erg depending on core mass)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/2009.14157",
+     "title": "Burrows & Vartanyan (2021) Core-collapse supernova explosion theory, Nature 589, 29 (DOI 10.1038/s41586-020-03059-w); arXiv PDF v3"
+    },
+    {
+     "url": "https://arxiv.org/pdf/astro-ph/0501002",
+     "title": "Nadyozhin & Imshennik (2005) Physics of supernovae, Int. J. Mod. Phys. A (DOI 10.1142/S0217751X05029630); arXiv PDF"
+    },
+    {
+     "url": "https://arxiv.org/pdf/0804.4350",
+     "title": "Nadyozhin (2008) Physics of supernovae: theory, observations, unresolved problems, arXiv:0804.4350 PDF (lecture; no journal reference)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: The Sun's whole mass turned into energy (E = mc²)",
+   "value": "about 1.8 × 10^47 J (1.9884 × 10^30 kg × c²)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html",
+     "title": "NASA NSSDCA Sun Fact Sheet (mass 1,988,400e24 kg; 'Mass conversion rate (10^6 kg/s) 4260.')"
+    },
+    {
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?c",
+     "title": "NIST CODATA 2022: speed of light in vacuum, 299 792 458 m/s exact (existing fact growth_c_exact)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: GW150914: the energy two colliding black holes gave off as gravitational waves (ripples in space), the first such collision detected (14 Sep 2015)",
+   "value": "3.0 ± 0.5 solar masses × c² ≈ 5.4 × 10^47 J, released in a fraction of a second",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/1602.03837",
+     "title": "Abbott et al. (LIGO/Virgo, 2016) Observation of gravitational waves from a binary black hole merger, Phys. Rev. Lett. 116, 061102 (DOI 10.1103/PhysRevLett.116.061102); arXiv abstract"
+    },
+    {
+     "url": "https://arxiv.org/pdf/1602.03837v1",
+     "title": "Same paper, published PRL version (arXiv PDF v1)"
     }
    ],
    "note": null
@@ -2911,16 +4108,16 @@ window.DINO_DATA = {
   },
   {
    "label": "Fastest pitch",
-   "value": "105.8 mph (170.27 km/h, 47.30 m/s)",
+   "value": "105.8 mph (47.3 m/s); Aroldis Chapman, 24 Sep 2010",
    "status": "verified",
    "sources": [
     {
-     "url": "http://www.guinnessworldrecords.com/world-records/fastest-baseball-pitch-male",
-     "title": "Guinness World Records: Fastest baseball pitch (male)"
+     "url": "https://www.mlb.com/news/speediest-plays-in-statcast-history",
+     "title": "MLB.com, Sarah Langs (9 Sep 2026): '105.7 mph throw? 122.9 mph HR? This is the Statcast speed Hall of Fame'"
     },
     {
-     "url": "https://sabr.org/gamesproj/game/september-24-2010-reds-aroldis-chapman-tops-105-mph-for-fastest-pitch-ever-recorded/",
-     "title": "SABR Games Project: Sept 24, 2010, Chapman tops 105 mph"
+     "url": "https://www.mlb.com/glossary/statcast/velocity",
+     "title": "MLB Glossary: Velocity (VELO), Statcast"
     }
    ],
    "note": null
@@ -3052,7 +4249,7 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
-     "title": "NIST SP 811 Appendix B.9: ton of TNT (energy equivalent) = 4.184E+09 J"
+     "title": "NIST SP 811, Appendix B.9 (energy conversion factors)"
     }
    ],
    "note": null

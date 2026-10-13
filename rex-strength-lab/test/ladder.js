@@ -27,8 +27,8 @@ for (const r of R) {
   const row = D.sourceRows.find((x) => x.label === 'Energy: ' + r.label);
   ok('rung ' + r.id + ': shown in the sources table with the fact’s status and its first source', !!row && row.status === f.status && row.sources.some((s) => s.url === f.sources[0].url), row ? row.status : 'no row');
   // uncertain by more than about 2× either way: rough wording only
-  const wide = f.low_si > 0 && f.high_si > 0 && (f.high_si / f.value_si > 2 || f.value_si / f.low_si > 2);
-  ok('rung ' + r.id + ': marked rough exactly when its fact’s range is wider than 2× either way', !!r.rough === wide, (f.low_si || '-') + ' to ' + (f.high_si || '-'));
+  const wide = (f.high_si > 0 && f.high_si / f.value_si > 2) || (f.low_si > 0 && f.value_si / f.low_si > 2);
+  ok('rung ' + r.id + ': marked rough exactly when its fact’s range runs more than 2× from its value, or the fact says rough with its reason', !!r.rough === (wide || f.rough === true) && (f.rough !== true || /Rough by judgement/.test(f.notes)), (f.low_si || '-') + ' to ' + (f.high_si || '-') + (f.rough ? ', rough by judgement' : ''));
 }
 // the ids the page uses elsewhere (growth what-if, milestones)
 for (const id of ['krakatoa', 'chicxulub', 'sun', 'hiroshima', 'tsar', 'earthbind'])
@@ -79,6 +79,12 @@ for (const r of R) ok('rung ' + r.id + ': page phrase “' + r.short + '” fits
   const c = { F: 1e34 * P.K.g, mode: 'comic', body: rex, surface: surf, anchor: 'friction', airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true };
   for (const [name, E] of [['punch', P.punch(c).E], ['clap', P.clap(c).E], ['stomp', P.stomp(c).E]])
     ok('top of the dial: the ' + name + ' (' + fmt(E) + ') is on the ladder', !/beyond/.test(L.compare(E, R).text), L.compare(E, R).text);
+}
+
+// 8. The page's card on the comparisons names the two ends of the ladder
+{
+  const card = D.assumptions.find((a) => a.t === 'Energy comparisons');
+  ok('the Energy comparisons card names the bottom and top rungs', !!card && card.d.includes(R[0].short) && card.d.includes(R[R.length - 1].short));
 }
 
 console.log('\n' + (n - fails) + '/' + n + ' passed');

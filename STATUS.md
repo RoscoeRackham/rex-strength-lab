@@ -10,7 +10,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## In progress
 
-- Owner's cloud session: building `rex-strength-lab/BRIEF-gui.md` in its three pull requests, one at a time. **A** (page organisation, sections 1-4) and **B** (the four default powers, section 5) are merged and live. **C** (more points of comparison for energy, section 6) is in progress on `claude/rex-gui-c`: research first (each new rung researched, then checked by a skeptic who fetches its source), then the page's comparison wording. `rex-strength-lab/` stays claimed for it.
+- Owner's cloud session: building `rex-strength-lab/BRIEF-gui.md` in its three pull requests, one at a time. **A** (page organisation, sections 1-4) and **B** (the four default powers, section 5) are merged and live. **C** (more points of comparison for energy, section 6) is in progress on `claude/rex-gui-c`: the research is done (seven topics, each checked by a skeptic who fetched every source; `rex-strength-lab/research/final-energy.json`, record in `research/reviews/gui-c-research.json`), and the new 58-rung ladder, its wording (`src/ladder.js`) and its tests (`test/ladder.js`) are built. Review rounds next, then the pull request. `rex-strength-lab/` stays claimed for it.
 
 ## Waiting on
 
