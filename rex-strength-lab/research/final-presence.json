@@ -5178,11 +5178,11 @@
    "category": "presence_growth",
    "label": "Worked example: absorbing Krakatoa's energy as growth",
    "status": "derived",
-   "value_si": 9.346,
+   "value_si": 5.82,
    "unit_si": "kg",
    "low_si": 1.11,
    "high_si": 70,
-   "display": "About 9 kg at the brief's 8.4 × 10¹⁷ J (+0.3%): height +1.6 mm (mix) or +3.2 mm (pure size); 1,063 kg/m³ if pure density. Across the quoted estimates 1–70 kg; about 560 kg at the highest inferred one",
+   "display": "About 6 kg at the lab's 125 Mt (5.2 × 10¹⁷ J; +0.2%): height +1 mm (mix) or +2 mm (pure size); 1,062 kg/m³ if pure density. The often-quoted 200 Mt (8.4 × 10¹⁷ J, the brief's) gives about 9 kg. Across the quoted estimates 1–70 kg; about 560 kg at the highest inferred one",
    "sources": [
     {
      "title": "NIST CODATA 2022: speed of light in vacuum",
@@ -5205,7 +5205,7 @@
      "url": "https://arxiv.org/pdf/1311.6565"
     }
    ],
-   "notes": "Δm = E/c². E = 8.4e17 J (brief; existing claimed key energy_krakatoa_1883): Δm = 9.346 kg, k = 1.00311. Mix: H = 3.048·k^(1/6) = 3.0496 m, ρ = 1,061.6 kg/m³. Pure size: H = 3.0512 m. Pure density: 1,063.3 kg/m³. The Harkrider & Press 100–150 Mt air-wave equivalent gives 4.7–7.0 kg. Across the quoted spread (1e17 to 6.3e18 J): 1–70 kg, under 3% of his mass and at most 2.3 cm taller (pure size), so the brief's 'unnoticeable in any form' holds. At Lobanovsky's inferred 12 Gt extreme it is about 560 kg (+19% mass; pure size +18 cm, mix +9 cm): noticeable. low_si/high_si are the quoted spread. Verifier: the earlier '1–51 kg across the whole spread' was wrong; widened.",
+   "notes": "Δm = E/c². E = 8.4e17 J (brief; existing claimed key energy_krakatoa_1883): Δm = 9.346 kg, k = 1.00311. Mix: H = 3.048·k^(1/6) = 3.0496 m, ρ = 1,061.6 kg/m³. Pure size: H = 3.0512 m. Pure density: 1,063.3 kg/m³. The Harkrider & Press 100–150 Mt air-wave equivalent gives 4.7–7.0 kg. Across the quoted spread (1e17 to 6.3e18 J): 1–70 kg, under 3% of his mass and at most 2.3 cm taller (pure size), so the brief's 'unnoticeable in any form' holds. At Lobanovsky's inferred 12 Gt extreme it is about 560 kg (+19% mass; pure size +18 cm, mix +9 cm): noticeable. low_si/high_si are the quoted spread. Verifier: the earlier '1–51 kg across the whole spread' was wrong; widened. Pull request C (decision 9): the page now uses 5.23e17 J (125 Mt, energy_krakatoa_1883): Δm = 5.82 kg, k = 1.00194, mix H 3.0490 m, pure size 3.0500 m, pure density 1,062 kg/m³ (lab engine, grownBody). value_si moved from the brief's 9.346 kg.",
    "who_when": "derived",
    "values_json": "{\"8.4e17 J (brief)\": {\"dm_kg\": 9.35, \"k\": 1.0031, \"mix_H_m\": 3.0496, \"mix_rho\": 1061.6, \"size_H_m\": 3.0512, \"density_rho\": 1063.3}, \"4.18e17-6.28e17 J (Harkrider & Press)\": {\"dm_kg\": \"4.7-7.0\"}, \"1e17 J (lowest quoted)\": {\"dm_kg\": 1.1}, \"6.3e18 J (1.5 Gt, highest quoted)\": {\"dm_kg\": 70, \"mass_pct\": 2.3, \"size_dH_cm\": 2.3, \"mix_dH_cm\": 1.2}, \"5.0e19 J (12 Gt, Lobanovsky's inferred extreme)\": {\"dm_kg\": 560, \"mass_pct\": 18.6, \"size_dH_cm\": 17.8, \"mix_dH_cm\": 8.8}}"
   },
@@ -5214,11 +5214,11 @@
    "category": "presence_growth",
    "label": "Worked example: absorbing Chicxulub's energy as growth",
    "status": "derived",
-   "value_si": 4673000,
+   "value_si": 5563000,
    "unit_si": "kg",
    "low_si": 4673000,
    "high_si": 5563000,
-   "display": "4.2 × 10²³ J adds about 4,700 t (1,560 times his mass): mix 10 m tall at 42,000 kg/m³; pure size 35 m; pure density 1.6 × 10⁶ kg/m³. At the review's 5 × 10²³ J: 5,600 t; mix 11 m; pure size 37 m",
+   "display": "About 5 × 10²³ J (the lab's value, Morgan et al. 2022) adds about 5,600 t (1,850 times his mass): mix about 11 m tall at about 46,000 kg/m³; pure size about 37 m; pure density about 2 × 10⁶ kg/m³. At the brief's 4.2 × 10²³ J: 4,700 t; mix 10 m; pure size 35 m",
    "sources": [
     {
      "title": "NIST CODATA 2022: speed of light in vacuum",
@@ -5237,7 +5237,7 @@
      "url": "https://par.nsf.gov/servlets/purl/10349743"
     }
    ],
-   "notes": "E = 4.2e23 J: Δm = 4.673e6 kg, k = 1,555. Mix: H = 3.048·k^(1/6) = 10.38 m, ρ = 1,060·k^(1/2) = 41,800 kg/m³, R_eq = 2.99 m. Pure size: H = 35.3 m, R_eq = 10.2 m. Pure density: 1,060·k = 1.65e6 kg/m³, which is 1.6e6 to 2 figures; the brief's 1.7e6 is a rounding slip. At 5e23 J (Morgan 2022): Δm 5,560 t, mix 10.7 m and 45,600 kg/m³, pure size 37.4 m, pure density 2.0e6 kg/m³. The abstract's 'about 10^23 J' is the order of magnitude of the same estimate, not a lower bound; it would give 1,110 t, mix 8.2 m, pure size 22 m. low_si/high_si: the brief's 4.2e23 J and the review's 5e23 J. Verifier: reproduced (k 1,555.1); the 10^23 row relabelled.",
+   "notes": "E = 4.2e23 J: Δm = 4.673e6 kg, k = 1,555. Mix: H = 3.048·k^(1/6) = 10.38 m, ρ = 1,060·k^(1/2) = 41,800 kg/m³, R_eq = 2.99 m. Pure size: H = 35.3 m, R_eq = 10.2 m. Pure density: 1,060·k = 1.65e6 kg/m³, which is 1.6e6 to 2 figures; the brief's 1.7e6 is a rounding slip. At 5e23 J (Morgan 2022): Δm 5,560 t, mix 10.7 m and 45,600 kg/m³, pure size 37.4 m, pure density 2.0e6 kg/m³. The abstract's 'about 10^23 J' is the order of magnitude of the same estimate, not a lower bound; it would give 1,110 t, mix 8.2 m, pure size 22 m. low_si/high_si: the brief's 4.2e23 J and the review's 5e23 J. Verifier: reproduced (k 1,555.1); the 10^23 row relabelled. Pull request C (decision 9): the page now uses 5e23 J (energy_chicxulub_impact): Δm = 5,563 t, k = 1,851, mix H 10.68 m at 45,600 kg/m³, pure size 37.4 m, pure density 1.96e6 kg/m³ (lab engine, grownBody). value_si moved from the brief's 4,673 t.",
    "who_when": "derived",
    "values_json": "{\"4.2e23 J (brief)\": {\"dm_t\": 4673, \"k\": 1555, \"mix_H_m\": 10.4, \"mix_rho\": 41800, \"size_H_m\": 35.3, \"density_rho\": 1650000.0}, \"5e23 J (Morgan 2022 estimate)\": {\"dm_t\": 5563, \"k\": 1851, \"mix_H_m\": 10.7, \"mix_rho\": 45600, \"size_H_m\": 37.4, \"density_rho\": 1960000.0}, \"1e23 J (abstract's order-of-magnitude rounding, not a lower bound)\": {\"dm_t\": 1113, \"k\": 371, \"mix_H_m\": 8.17, \"mix_rho\": 20400, \"size_H_m\": 21.9, \"density_rho\": 393000.0}}"
   },

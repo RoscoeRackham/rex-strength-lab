@@ -1140,13 +1140,14 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   const growFormText = (s0) => (Math.abs(s0 - 0.5) < 1e-9 ? 'the even mix of size and density' : s0 >= 1 ? 'pure size' : s0 <= 0 ? 'pure density' : sig(100 * s0, 2) + '% of the growth into size');
   const fmtDensity2 = (rho) => (rho < 1e6 ? sig(rho, 3) : sci(rho, 2)) + ' kg/m³';
   // What absorbed energy E does to the body in the current growth mode (list items), or null in the endless ocean.
-  function growthItems(E, body, sf) {
+  function growthItems(E, body, sf, opts) {
+    const rough = !!(opts && opts.rough);   // a rough rung's energy: its mass to one figure
     if (state.absorb === 'ocean') return null;
     const items = [];
     if (!isFinite(E)) { items.push('The energy is unbounded, so the growth has no limit. The page can’t size it.'); return items; }
     const gB = P.grownBody(body, E, state.growS);
     const small = gB.lnr < 0.01;
-    items.push('It becomes ' + fmtMass(gB.dm) + ' of new mass (energy ÷ c²)' + (small ? ', ' + (gB.lnr < 1e-3 ? 'less than a thousandth' : 'about ' + sig(100 * (gB.ratio - 1), 1) + '%') + ' of his mass: unnoticeable.' : ': ' + (gB.ratio < 1.1 ? sig(100 * (gB.ratio - 1), 2) + '% more than his mass' : fmtRatio(gB.ratio) + ' his mass') + ', so he is ' + fmtDist(gB.H) + ' tall at ' + fmtDensity2(gB.rho) + ' (' + growFormText(gB.s) + ').'));
+    items.push('It becomes ' + (rough ? 'about ' + (gB.dm < 1000 ? sig(gB.dm, 1) + ' kg' : big(Number(gB.dm.toPrecision(1)) / 1000) + ' t') : fmtMass(gB.dm)) + ' of new mass (energy ÷ c²)' + (small ? ', ' + (gB.lnr < 1e-3 ? 'less than a thousandth' : 'about ' + sig(100 * (gB.ratio - 1), 1) + '%') + ' of his mass: unnoticeable.' : ': ' + (gB.ratio < 1.1 ? sig(100 * (gB.ratio - 1), rough ? 1 : 2) + '% more than his mass' : (rough ? 'about ' + big(Number(gB.ratio.toPrecision(1))) + '×' : fmtRatio(gB.ratio)) + ' his mass') + ', so he is ' + (rough ? 'about ' + (gB.H < 1000 ? sig(gB.H, 2) + ' m' : sig(gB.H / 1000, 2) + ' km') : fmtDist(gB.H)) + ' tall at ' + (rough ? 'about ' + (gB.rho < 1e6 ? sig(gB.rho, 2) : sci(gB.rho, 1)) + ' kg/m³' : fmtDensity2(gB.rho)) + ' (' + growFormText(gB.s) + ').'));
     if (small) return items;   // nothing else would show
     if (state.absorb === 'gradual') {
       const G = P.gradualGrowth(body, E, state.growS);
@@ -1969,7 +1970,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     }[ref.id];
     if (firm) box.append(el('p', { class: 'muted', style: 'margin:0', text: firm }));
     box.append(el('div', { class: 'cases-wrap' }, el('table', { class: 'cases' }, el('thead', {}, el('tr', {}, el('th', { text: 'Growth form' }), el('th', { text: 'Mass' }), el('th', { text: 'Height' }), el('th', { text: 'Density' }))), el('tbody', {}, rows))));
-    const items = growthItems(E, c.body, c.surface);
+    const items = growthItems(E, c.body, c.surface, { rough: ref.rough });
     if (items) box.append(el('p', { style: 'margin:0', text: { gradual: 'Gradual growth', instant: 'Instant growth', runaway: 'Runaway' }[state.absorb] + ', ' + growFormText(state.growS) + ':' }), happens(items, 8));
     else box.append(el('p', { class: 'muted', style: 'margin:0', text: 'Pick a growth mode under Their powers to see how fast he can grow without harming anyone, and what growing all at once would do.' }));
     return box;
@@ -4482,7 +4483,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       { id: 'hiro', text: 'Punch carries a Hiroshima bomb', pred: (kg) => P.punch(at(kg)).E >= E('hiroshima') },
       { id: 'quake7', text: 'Stomp = magnitude 7 quake' + (state.unbreakable ? ' (on real ground)' : ''), pred: (kg) => P.stomp(at(kg)).quake >= 7 },
       { id: 'tsar', text: 'Clap = Tsar Bomba', pred: (kg) => P.clap(at(kg)).E >= E('tsar') },
-      { id: 'chix', text: 'Punch out-hits the dinosaur-killer impact', pred: (kg) => P.punch(at(kg)).E >= E('chicxulub') },
+      { id: 'chix', text: 'Punch out-hits the dinosaur-killer impact', pred: (kg) => P.punch(at(kg)).E >= E('chicxulub'), rough: D.energyRefs.find((e) => e.id === 'chicxulub').rough },
       { id: 'earth', text: 'Punch could blow Earth apart', pred: (kg) => P.punch(at(kg)).E >= E('earthbind') },
     ];
   }
@@ -4501,7 +4502,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       while (performance.now() - t0 < 25) {
         if (i >= defs.length) { thCache.set(key, list); thJob = null; if (thKey() === key) renderLadder(); return; }
         const d = defs[i];
-        if (phase === 'start') { cur = { id: d.id, text: d.text }; pred = d.pred; lo = L0; hi = L1; phase = 'ends'; continue; }
+        if (phase === 'start') { cur = { id: d.id, text: d.text, rough: d.rough }; pred = d.pred; lo = L0; hi = L1; phase = 'ends'; continue; }
         if (phase === 'ends' || phase === 'endsRigid') {
           const rigid = phase === 'endsRigid';
           let res = null;
@@ -4546,7 +4547,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       svg.append(sv('line', { x1: axisX - (e % 3 === 0 ? 6 : 3), x2: axisX + (e % 3 === 0 ? 6 : 3), y1: yy, y2: yy, stroke: 'var(--ink-3)', 'stroke-width': 1 }));
     }
     const tierItems = D.tiers.filter((t) => isFinite(t.liftKg)).map((t) => ({ key: 'L:' + t.id, lg: Math.log10(t.liftKg), text: t.chip || t.label, sub: fmtMass(t.liftKg) + (t.lift ? ' · ' + t.lift : ''), detail: (t.who ? t.who + '. ' : '') + (t.note || ''), side: 'L', color: 'var(--olive)', set: () => { setKg(t.liftKg); update(); } }));
-    const thItems = (th || []).filter((t) => isFinite(t.kg)).map((t) => ({ key: 'R:' + t.id, lg: Math.log10(t.kg), text: t.text, sub: fmtMass(t.kg), detail: 'Needs a lift strength of ' + fmtMass(t.kg) + ' at the current size, ground and muscle settings.', side: 'R', color: 'var(--accent)', set: () => { state.inf = false; state.logKg = Math.min(LMAX, Math.log10(t.kg) + 0.0005); update(); } }));
+    const thItems = (th || []).filter((t) => isFinite(t.kg)).map((t) => ({ key: 'R:' + t.id, lg: Math.log10(t.kg), text: t.text, sub: t.rough ? 'about ' + big(Number((t.kg / 1000).toPrecision(1))) + ' t' : fmtMass(t.kg), detail: (t.rough ? 'Roughly: the asteroid’s energy is uncertain by more than 10×, so this point could sit far lower or higher. ' : '') + 'Needs a lift strength of ' + (t.rough ? 'about ' + big(Number((t.kg / 1000).toPrecision(1))) + ' t' : fmtMass(t.kg)) + ' at the current size, ground and muscle settings.', side: 'R', color: 'var(--accent)', set: () => { state.inf = false; state.logKg = Math.min(LMAX, Math.log10(t.kg) + 0.0005); update(); } }));
     // wrap labels to the space on their side of the axis
     const wrapLbl = (it) => {
       const room = (it.side === 'L' ? axisX - 30 : W - axisX - 30) - 4;

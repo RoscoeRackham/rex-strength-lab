@@ -937,7 +937,7 @@
      "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9"
     }
    ],
-   "notes": "30 x 8.368e6 J (energy_day_of_food_2000_calories) = 2.510e8 J. A 30-day month; an average calendar month (30.44 days) gives 2.547e8 J, 1.5% more. Inherits the day figure's caveat: 2,000 Calories is FDA's 'general guide', and real needs vary with age, sex, size and activity. Added at the compile stage on the skeptic's suggestion, as a firm rung between a day's home electricity (1.06e8 J) and the high-speed train (1.79e9 J), so that decade does not rest only on the lightning rung (uncertain by 70x).",
+   "notes": "30 x 8.368e6 J (energy_day_of_food_2000_calories) = 2.510e8 J. A 30-day month; an average calendar month (30.44 days) gives 2.547e8 J, 1.5% more. Inherits the day figure's caveat: 2,000 Calories is FDA's 'general guide', and real needs vary with age, sex, size and activity. Added at the compile stage on the skeptic's suggestion, as a firm rung between a day's home electricity (1.06e8 J) and the high-speed train (1.79e9 J), so that decade does not rest only on the lightning rung (uncertain by about 1,000x, 0.01 to 10 GJ).",
    "who_when": "Derived 2026-10-13 from FDA and NIST",
    "page_short": "a month's food (2,000 Calories a day)",
    "research_topic": "explosive"
@@ -949,9 +949,9 @@
    "status": "disputed",
    "value_si": 1000000000.0,
    "unit_si": "J",
-   "low_si": 100000000.0,
+   "low_si": 10000000.0,
    "high_si": 10000000000.0,
-   "display": "about 1 GJ per flash (published estimates 0.1 to 10 GJ)",
+   "display": "about 1 GJ per flash (published estimates 0.01 to 10 GJ)",
    "sources": [
     {
      "title": "Maggio, Marshall & Stolzenburg (2009) Estimations of charge transferred and energy released by lightning flashes, JGR 114, D14, doi:10.1029/2008JD011506 (abstract via Crossref)",
@@ -978,7 +978,7 @@
      "url": "https://journals.ametsoc.org/view/journals/atsc/78/12/JAS-D-21-0073.1.pdf"
     }
    ],
-   "notes": "Maggio 2009: 'IC flashes released an average of 1.6 GJ ... CG flashes was about half as much ... 2 x 10^8 to 7 x 10^9 J' (40 flashes, New Mexico mountain storms). Borucki & Chameides 1984: '4 x 10^8 J per flash'. EPA AP-42: '1.0 E+08 joules/flash to 8.0 E+08 joules/flash', citing Borucki & Chameides (its ref. 5), so not independent. Koshak (NASA; conference abstract, modelled 'VCM-derived total electrostatic' energy): 'typically measured in giga-joules'; ground 5.3 GJ, cloud 2.7 GJ, all flashes 3.9 GJ. A 2024 review (arXiv:2404.10020, citing Rakov & Uman, Lightning: Physics and Effects, 2003): a flash bears '10^9 to 10^10 J in total'. Salinas et al. 2021 (capacitor model): flashes 'most frequently <1 GJ', estimates spanning 10^4 to 10^10 J, the low end biased by their single adjustment factor (their words), so not used as the low bound. Sources differ on which kind is larger and span about 100x (0.1 to 10 GJ). Review round 1: high_si raised from 7 GJ to 10 GJ. 1 GJ is a round middle value, not a measured mean: rough multiples only. Skeptic: added the independence, peer-review, sample and all-flash caveats.",
+   "notes": "Maggio 2009: 'IC flashes released an average of 1.6 GJ ... CG flashes was about half as much ... 2 x 10^8 to 7 x 10^9 J' (40 flashes, New Mexico mountain storms). Borucki & Chameides 1984: '4 x 10^8 J per flash'. EPA AP-42: '1.0 E+08 joules/flash to 8.0 E+08 joules/flash', citing Borucki & Chameides (its ref. 5), so not independent. Koshak (NASA; conference abstract, modelled 'VCM-derived total electrostatic' energy): 'typically measured in giga-joules'; ground 5.3 GJ, cloud 2.7 GJ, all flashes 3.9 GJ. A 2024 review (arXiv:2404.10020, citing Rakov & Uman, Lightning: Physics and Effects, 2003): a flash bears '10^9 to 10^10 J in total'. Salinas et al. 2021 (refereed), section 6a: estimates from the charge moved and the potential difference 'have showed typical values ranging from 10^7 to 10^10 J of energy (Cooray 1997; Borovsky 1998; Marshall and Stolzenburg 2001)'; their simulated flashes were 'most frequently <1 GJ'; only their own capacitor estimates below 10^6 J are biased low by their single adjustment factor (their words). Sources differ on which kind is larger and span about 1,000x (0.01 to 10 GJ). Review round 1 raised high_si from 7 to 10 GJ; round 2 lowered low_si from 0.1 to 0.01 GJ. 1 GJ is a round value near the measured averages (Maggio 1.6 GJ for cloud flashes, Koshak 3.9 GJ, Salinas most often under 1 GJ), not a measured mean: rough multiples only. Skeptic: added the independence, peer-review, sample and all-flash caveats.",
    "who_when": "Journals 1984 and 2009; NASA 2021; EPA AP-42 (9/96)",
    "page_short": "a lightning bolt",
    "research_topic": "explosive"
@@ -994,6 +994,10 @@
    "high_si": 1730000000.0,
    "display": "about 1.7 GJ (50 L x 33.5 MJ/L)",
    "sources": [
+    {
+     "title": "Toyota USA, 2026 Corolla features and specs (spec table embedded in the page)",
+     "url": "https://www.toyota.com/corolla/2026/features/"
+    },
     {
      "title": "Kelley Blue Book: 2026 Toyota Corolla specs (trade guide, secondary)",
      "url": "https://www.kbb.com/toyota/corolla/2026/specs"
@@ -1011,8 +1015,8 @@
      "url": "https://afdc.energy.gov/files/u/publication/fuel_comparison_chart.pdf"
     }
    ],
-   "notes": "13.2 gal (toyota_corolla_fuel_tank) x 120,214 Btu/gal (gasoline_heat_content) x 1,055.056 J/Btu = 1.674e9 J; the AFDC range (112,114 lower to 124,340 higher) gives 1.56e9 to 1.73e9 J. Heat from burning the whole tank; an engine turns only part of it into motion. Arithmetic checked by the skeptic, but the tank volume is 'reported' (KBB trade guide), so this is 'reported', not 'derived' (derived needs verified inputs). Spare, not a recommended rung: within 1.1x of the high-speed train. Review round 1: status back to derived, its tank input now verified from Toyota.",
-   "who_when": "Computed 2026-10-13 from KBB, EIA and AFDC",
+   "notes": "13.2 gal (toyota_corolla_fuel_tank) x 120,214 Btu/gal (gasoline_heat_content) x 1,055.056 J/Btu = 1.674e9 J; the AFDC range (112,114 lower to 124,340 higher) gives 1.56e9 to 1.73e9 J. Heat from burning the whole tank; an engine turns only part of it into motion. Arithmetic checked by the skeptic. Both inputs verified (tank from Toyota, KBB agreeing), so 'derived'. Spare, not a recommended rung: within 1.1x of the high-speed train. Review rounds 1 and 2: status back to derived, the tank now from Toyota.",
+   "who_when": "Computed 2026-10-13 from Toyota, EIA and AFDC",
    "page_short": "a car's full tank of petrol",
    "research_topic": "explosive"
   },
@@ -1370,8 +1374,8 @@
      "url": "https://www.usbr.gov/lc/hooverdam/faqs/powerfaq.html"
     },
     {
-     "title": "US EIA, Form EIA-923 plant generation, Hoover Dam (plants 154 and 8902), API query",
-     "url": "https://api.eia.gov/v2/electricity/facility-fuel/data/?frequency=annual&data[0]=generation&facets[plantCode][]=154&facets[plantCode][]=8902&facets[fuel2002][]=ALL"
+     "title": "US EIA, Form EIA-923 plant generation, Hoover Dam (plants 154 and 8902), API query with EIA's public demo key (net generation in MWh; rate-limited)",
+     "url": "https://api.eia.gov/v2/electricity/facility-fuel/data/?frequency=annual&data[0]=generation&facets[plantCode][]=154&facets[plantCode][]=8902&facets[fuel2002][]=ALL&api_key=DEMO_KEY"
     }
    ],
    "notes": "USBR: 'Hoover Dam generates, on average, about 4 billion kilowatt-hours of hydroelectric power each year for use in Nevada, Arizona, and California - enough to serve 1.3 million people.' Also: 'The average annual net generation for Hoover Powerplant for 1947 through 2008 was about 4.2 billion kilowatt-hours' (1999-2008: also about 4.2 billion). Single years vary: maximum 10,348,020,500 kWh in 1984 (3.7e16 J), minimum since 1940 2,648,224,700 kWh in 1956 (9.5e15 J). 4.0e9 kWh x 3.6e6 J/kWh = 1.44e16 J; low/high are USBR's two stated averages. USBR's averages run to 2008. EIA-923 (plants 154 and 8902) gives about 3.2 billion kWh a year for 2016-2025 (2.7 billion in 2023, a drought year); with USBR's 1947-2008 average the long-run 1947-2025 average is still about 4.0 billion kWh (review round 1). Skeptic: confirmed word for word; page phrase changed to 'an average year'.",
@@ -2676,7 +2680,7 @@
     }
    ],
    "notes": "KBB row 'Fuel Capacity': '13.2 gallons' for LE, SE and XSE, beside 'Curb Weight 2955 pounds 3110 pounds 3150 pounds' (matching toyota_corolla_curb_mass). 13.2 x 3.785411784 L = 49.97 L. Toyota's own spec data, embedded in the page (fetched with curl, as for toyota_corolla_curb_mass): 'Fuel tank (gal.)' 13.2 for codes 1852 (LE), 1864 (SE) and 1866 (XSE); 11.3 for the hybrid codes. Review round 1: status reported -> verified, Toyota added as the first source. Skeptic: status verified -> reported; row label corrected from 'Fuel tank capacity' to 'Fuel Capacity'.",
-   "who_when": "KBB, 2026 model year, accessed 2026-10-13",
+   "who_when": "Toyota Motor Sales USA (KBB agrees), 2026 model year, accessed 2026-10-13",
    "research_topic": "explosive"
   },
   {

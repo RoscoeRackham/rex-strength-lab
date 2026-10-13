@@ -579,7 +579,7 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     const growHead = {};
     for (const st of [{ action: 'weight', H: 10, m: 1e27 }, { action: 'weight', H: 0.1, m: 1.1e13 }, { action: 'weight', m: 1e21 }, { action: 'weight', m: 1e24 }, { action: 'weight', grow: 'krakatoa' }, { action: 'weight', grow: 'chicxulub' }]) {
       await load(st, false);
-      if (st.grow) { await page.click('#grow-what-' + st.grow); await page.waitForTimeout(400); await settle(page, 'bay'); growHead[st.grow] = await page.evaluate(() => (Array.from(document.querySelectorAll('#bay .growth-whatif p')).find((n) => /which becomes/.test(n.textContent)) || {}).textContent || ''); }
+      if (st.grow) { await page.evaluate(() => { document.getElementById('powers').open = true; }); await page.selectOption('#absorb', 'gradual'); await page.waitForTimeout(300); await page.click('#grow-what-' + st.grow); await page.waitForTimeout(400); await settle(page, 'bay'); growHead[st.grow] = await page.evaluate(() => (Array.from(document.querySelectorAll('#bay .growth-whatif p')).find((n) => /which becomes/.test(n.textContent)) || {}).textContent || ''); growHead[st.grow + 'Item'] = await page.evaluate(() => (Array.from(document.querySelectorAll('#bay .growth-whatif li, #bay .growth-whatif p')).find((n) => /^It becomes/.test(n.textContent)) || {}).textContent || ''); }
       const t = await page.evaluate(() => document.getElementById('bay').textContent.replace(/\u00a0/g, ' ').replace(/\s+/g, ' '));
       const off = offRule(t).concat(Array.from(t.matchAll(/[\d.,]+(?: [a-z]+illion)?(?:×|% of) the energy (?:it takes to blow|that holds) the Earth/g)).map((m) => m[0]));
       if (off.length) weightBad.push(JSON.stringify(st) + ': ' + off.join(' | '));
@@ -587,8 +587,13 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     if (weightBad.length) fail('Weight tab energy comparisons outside the ladder rule: ' + weightBad.slice(0, 3).join(' || ')); else okLog('the Weight tab’s energy comparisons (dense matter, the Earth falling in, growth) keep to the ladder rule');
     // a rough rung's energy, and the mass it makes, is given to one figure in the growth what-if
     const oneFig = /: about \d(?: × 10[⁰¹²³⁴⁵⁶⁷⁸⁹]+)? J, which becomes about \d+(?:,0+)* (?:kg|t) of mass/;
-    if (!oneFig.test(growHead.krakatoa || '') || !oneFig.test(growHead.chicxulub || '')) fail('growth what-if: rough energies should be given to one figure: ' + JSON.stringify(growHead));
-    else okLog('growth what-if gives the rough Krakatoa and dinosaur-killer energies to one figure: ' + growHead.krakatoa.slice(0, 90) + '…');
+    const oneFigItem = /^It becomes about \d+(?:,0+)* (?:kg|t) of new mass/;
+    if (!oneFig.test(growHead.krakatoa || '') || !oneFig.test(growHead.chicxulub || '') || !oneFigItem.test(growHead.krakatoaItem || '') || !oneFigItem.test(growHead.chicxulubItem || '') || /\d,\d{3} t|\d\.\d+ m tall/.test(growHead.chicxulubItem || '')) fail('growth what-if: rough energies should be given to one figure: ' + JSON.stringify(growHead));
+    else okLog('growth what-if gives the rough Krakatoa and dinosaur-killer energies, and the masses they make, to one figure: ' + growHead.krakatoa.slice(0, 90) + '…');
+    // a milestone set by a rough rung (the dinosaur-killer) gives its dial point roughly
+    await load({ action: 'punch' }, false); await page.waitForTimeout(4000);
+    const chix = await page.evaluate(() => { const t = document.getElementById('ladder-viz').textContent; const i = t.indexOf('Punch out-hits the dinosaur-killer impact'); return i < 0 ? '' : t.slice(i, i + 80); });
+    if (!/impactabout \d /.test(chix)) fail('the dinosaur-killer milestone should be given roughly: ' + chix); else okLog('the dinosaur-killer milestone is given roughly: ' + chix.slice(0, 70));
     // the sources table lists every rung with its status and a link
     const rows = await page.evaluate(() => Array.from(document.querySelectorAll('#src-table tbody tr')).map((tr) => ({ label: tr.cells[0].textContent, status: tr.cells[2].textContent, links: tr.cells[3].querySelectorAll('a').length })));
     const want = await page.evaluate(() => window.DINO_DATA.energyRefs.map((e) => 'Energy: ' + e.label));

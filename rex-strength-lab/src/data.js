@@ -3180,7 +3180,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Energy: A lightning flash: total energy",
-   "value": "about 1 GJ per flash (published estimates 0.1 to 10 GJ)",
+   "value": "about 1 GJ per flash (published estimates 0.01 to 10 GJ)",
    "status": "disputed",
    "sources": [
     {
@@ -3364,8 +3364,8 @@ window.DINO_DATA = {
      "title": "US Bureau of Reclamation: Hoover Dam - Frequently Asked Questions: Hydropower (last updated 1 Aug 2018)"
     },
     {
-     "url": "https://api.eia.gov/v2/electricity/facility-fuel/data/?frequency=annual&data[0]=generation&facets[plantCode][]=154&facets[plantCode][]=8902&facets[fuel2002][]=ALL",
-     "title": "US EIA, Form EIA-923 plant generation, Hoover Dam (plants 154 and 8902), API query"
+     "url": "https://api.eia.gov/v2/electricity/facility-fuel/data/?frequency=annual&data[0]=generation&facets[plantCode][]=154&facets[plantCode][]=8902&facets[fuel2002][]=ALL&api_key=DEMO_KEY",
+     "title": "US EIA, Form EIA-923 plant generation, Hoover Dam (plants 154 and 8902), API query with EIA's public demo key (net generation in MWh; rate-limited)"
     }
    ],
    "note": null
@@ -9164,7 +9164,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Growth: worked example: absorbing Krakatoa's energy as growth",
-   "value": "About 9 kg at the brief's 8.4 × 10¹⁷ J (+0.3%): height +1.6 mm (mix) or +3.2 mm (pure size); 1,063 kg/m³ if pure density. Across the quoted estimates 1–70 kg; about 560 kg at the highest inferred one",
+   "value": "About 6 kg at the lab's 125 Mt (5.2 × 10¹⁷ J; +0.2%): height +1 mm (mix) or +2 mm (pure size); 1,062 kg/m³ if pure density. The often-quoted 200 Mt (8.4 × 10¹⁷ J, the brief's) gives about 9 kg. Across the quoted estimates 1–70 kg; about 560 kg at the highest inferred one",
    "status": "derived",
    "sources": [
     {
@@ -9192,7 +9192,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Growth: worked example: absorbing Chicxulub's energy as growth",
-   "value": "4.2 × 10²³ J adds about 4,700 t (1,560 times his mass): mix 10 m tall at 42,000 kg/m³; pure size 35 m; pure density 1.6 × 10⁶ kg/m³. At the review's 5 × 10²³ J: 5,600 t; mix 11 m; pure size 37 m",
+   "value": "About 5 × 10²³ J (the lab's value, Morgan et al. 2022) adds about 5,600 t (1,850 times his mass): mix about 11 m tall at about 46,000 kg/m³; pure size about 37 m; pure density about 2 × 10⁶ kg/m³. At the brief's 4.2 × 10²³ J: 4,700 t; mix 10 m; pure size 35 m",
    "status": "derived",
    "sources": [
     {
