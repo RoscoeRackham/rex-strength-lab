@@ -26,7 +26,8 @@ for (const r of R) {
   ok('rung ' + r.id + ': the fact has a status and at least one web source', STATUSES.includes(f.status) && f.sources.length > 0 && f.sources.every((s) => /^https?:\/\//.test(s.url)), f.status + ', ' + f.sources.length + ' sources');
   ok('rung ' + r.id + ': its page phrase is the fact’s page_short', r.short === String(f.page_short).replace(/'/g, '’'), r.short);
   const row = D.sourceRows.find((x) => x.label === 'Energy: ' + r.label);
-  ok('rung ' + r.id + ': its sources-table row uses plain notation (no ^, x for ×, +/-, ~, ≈, erg, kpc or Bethe)', !!row && !/\^|\d x \d|\+\/-|~|≈|\berg\b|\bkpc\b|Bethe/.test(row.label + ' ' + row.value), row && row.value);
+  const PLAIN = /\^|\d x \d|\de\d|\+\/-|~|≈|\berg\b|\bkpc\b|Bethe|\b[a-z]+_[a-z0-9_]+\b/;
+  ok('rung ' + r.id + ': its sources-table row (label, value and link titles) uses plain notation (no ^, x for ×, 1e24, +/-, ~, ≈, erg, kpc, Bethe or fact keys)', !!row && !PLAIN.test(row.label + ' ' + row.value + ' ' + row.sources.map((x) => x.title).join(' ')), row && [row.value].concat(row.sources.map((x) => x.title)).find((t) => PLAIN.test(t)));
   ok('rung ' + r.id + ': shown in the sources table with the fact’s status and its first source', !!row && row.status === f.status && row.sources.some((s) => s.url === f.sources[0].url), row ? row.status : 'no row');
   // uncertain by more than about 2× either way: rough wording only
   const wide = (f.high_si > 0 && f.high_si / f.value_si > 2) || (f.low_si > 0 && f.value_si / f.low_si > 2);
@@ -83,6 +84,8 @@ const want = (J) => {
     [id('hiroshima').J * 1.1, 'about the same as the Hiroshima bomb'], [id('hiroshima').J * 1.2, '1.2× the Hiroshima bomb'],
     [0.5, 'beyond the ladder: less than its smallest rung (the energy to lift a 100 g apple one metre)'],
     [1e48, 'beyond the ladder: more than its top rung (the first black-hole collision ever detected, in 2015)'],
+    [R[0].J / 1.1, 'about the same as ' + R[0].short], [R[R.length - 1].J * 1.1, 'about the same as ' + R[R.length - 1].short],
+    [R[0].J / 1.2, 'beyond the ladder: less than its smallest rung (' + R[0].short + ')'], [R[R.length - 1].J * 1.2, 'beyond the ladder: more than its top rung (' + R[R.length - 1].short + ')'],
   ];
   for (const [J, t] of pins) ok('pinned: ' + fmt(J) + ' reads “' + t + '”', L.compare(J, R).text === t, L.compare(J, R).text);
   for (const [x, n, t] of [[9.96, 2, '10'], [1.234, 2, '1.2'], [12.5, 2, '13'], [45.6, 2, '46'], [3.4, 1, '3'], [45, 1, '50'], [0.15, 2, '0.15']])

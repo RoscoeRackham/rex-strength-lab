@@ -437,7 +437,7 @@
   {
    "key": "energy_earth_binding_prem_computed",
    "label": "Earth's gravitational binding energy, integrated from PREM (check)",
-   "status": "estimate",
+   "status": "derived",
    "value_si": 2.4904e+32,
    "unit_si": "J",
    "display": "2.49 × 10³² J (our integral of G M(r) dm / r over PREM)",
@@ -447,7 +447,7 @@
      "url": "https://hep.ph.liv.ac.uk/~costasa/genie_doxygen/master/html/namespacegenie_1_1utils_1_1prem.html"
     }
    ],
-   "notes": "This reproduces the 2.49e32 J that data.js holds as 'claimed' (energy_earth_gravitational_binding). That row could cite this computation as an independent check.",
+   "notes": "This reproduces the 2.49e32 J that data.js holds as 'claimed' (energy_earth_gravitational_binding). That row could cite this computation as an independent check. Review round 2 (pull request C): an independent check of energy_earth_gravitational_binding (2.489e32 J, integrated from the original PREM Table I); the two agree to under 0.1%. Status estimate -> derived (computed from published data, as the README's status rule says).",
    "category": "density"
   },
   {

@@ -1957,7 +1957,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const E = ref.J;
     const rows = [['Mix (default)', 0.5], ['Pure size', 1], ['Pure density', 0]].map(([lbl, s0]) => {
       const gB = P.grownBody(c.body, E, s0);
-      return el('tr', {}, el('th', { text: lbl }), el('td', { 'data-col': 'Mass', text: fmtMass(gB.m) + ' (' + (gB.ratio < 1.01 ? 'unnoticeable: +' + sig(100 * (gB.ratio - 1), 1) + '%' : gB.ratio < 1.1 ? '+' + sig(100 * (gB.ratio - 1), 2) + '%' : fmtRatio(gB.ratio)) + ')' }), el('td', { 'data-col': 'Height', text: fmtDist(gB.H) }), el('td', { 'data-col': 'Density', text: fmtDensity2(gB.rho) }));
+      // a rough rung's growth: each figure the growth changes by 10% or more to two figures (the ones it barely
+      // changes stay his body's own)
+      const r2 = (x, x0) => (ref.rough && x / x0 >= 1.1 ? Number(x.toPrecision(2)) : x);
+      return el('tr', {}, el('th', { text: lbl }), el('td', { 'data-col': 'Mass', text: fmtMass(r2(gB.m, c.body.m)) + ' (' + (gB.ratio < 1.01 ? 'unnoticeable: +' + sig(100 * (gB.ratio - 1), 1) + '%' : gB.ratio < 1.1 ? '+' + sig(100 * (gB.ratio - 1), ref.rough ? 1 : 2) + '%' : fmtRatio(r2(gB.ratio, 1))) + ')' }), el('td', { 'data-col': 'Height', text: fmtDist(r2(gB.H, c.body.H)) }), el('td', { 'data-col': 'Density', text: fmtDensity2(r2(gB.rho, c.body.rho)) }));
     });
     // a rough rung's energy, and the mass it makes, to one figure
     const mE = E / (K.c * K.c);

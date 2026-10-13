@@ -1045,11 +1045,11 @@ window.DINO_DATA = {
   },
   {
    "id": "sn1998bw",
-   "short": "SN 1998bw, an unusually energetic supernova",
+   "short": "the blast of SN 1998bw, an unusually energetic supernova",
    "J": 3e+45,
    "rough": true,
    "key": "energy_hypernova_sn1998bw",
-   "label": "SN 1998bw, an unusually energetic supernova linked to a gamma-ray burst; one model gives 3 × 10⁴⁵ J (a 'hypernova'), an aspherical model about 15 times less"
+   "label": "The blast of SN 1998bw (the kinetic energy of its flying debris), an unusually energetic supernova linked to a gamma-ray burst; one model gives 3 × 10⁴⁵ J (a 'hypernova'), an aspherical model about 15 times less"
   },
   {
    "id": "sntotal",
@@ -2993,7 +2993,7 @@ window.DINO_DATA = {
     },
     {
      "url": "https://physics.nist.gov/cgi-bin/cuu/Value?gn",
-     "title": "NIST CODATA: standard acceleration of gravity, 9.806 65 m/s^2 exact (fact earth_standard_gravity; re-fetched Oct 2026)"
+     "title": "NIST CODATA: standard acceleration of gravity, 9.806 65 m/s² (exact)"
     }
    ],
    "note": null
@@ -3469,7 +3469,7 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://arxiv.org/pdf/1510.07674",
-     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)"
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 × 10²⁶ W)"
     },
     {
      "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
@@ -3505,7 +3505,7 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://arxiv.org/pdf/1510.07674",
-     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)"
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 × 10²⁶ W)"
     },
     {
      "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
@@ -3521,7 +3521,7 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://arxiv.org/pdf/1510.07674",
-     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)"
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 × 10²⁶ W)"
     }
    ],
    "note": null
@@ -3573,7 +3573,7 @@ window.DINO_DATA = {
     },
     {
      "url": "https://en.wikipedia.org/wiki/Rotational_energy",
-     "title": "Wikipedia: Rotational energy (cross-check only: 2.14 x 10^29 J)"
+     "title": "Wikipedia: Rotational energy (cross-check only: 2.14 × 10²⁹ J)"
     }
    ],
    "note": null
@@ -3585,7 +3585,7 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://arxiv.org/pdf/1510.07674",
-     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)"
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 × 10²⁶ W)"
     },
     {
      "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
@@ -3617,7 +3617,7 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://arxiv.org/pdf/1510.07674",
-     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)"
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 × 10²⁶ W)"
     },
     {
      "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
@@ -3657,7 +3657,7 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://arxiv.org/pdf/1510.07674",
-     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)"
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 × 10²⁶ W)"
     },
     {
      "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
@@ -3689,7 +3689,7 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://arxiv.org/pdf/1510.07674",
-     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)"
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 × 10²⁶ W)"
     },
     {
      "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
@@ -3709,11 +3709,11 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://arxiv.org/pdf/1510.07674",
-     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)"
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 × 10²⁶ W)"
     },
     {
      "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b8",
-     "title": "NIST Guide to the SI (SP 811), Appendix B.8: Factors for units listed alphabetically (tropical year 3.155 693e7 s)"
+     "title": "NIST Guide to the SI (SP 811), Appendix B.8: Factors for units listed alphabetically (tropical year 3.155 693 × 10⁷ s)"
     }
    ],
    "note": null
@@ -3749,7 +3749,7 @@ window.DINO_DATA = {
     },
     {
      "url": "https://arxiv.org/pdf/astro-ph/0503030",
-     "title": "Palmer et al. (2005), arXiv PDF ('2 × 10^46 d15^2 erg in the spike')"
+     "title": "Palmer et al. (2005), a giant gamma-ray flare from the magnetar SGR 1806-20 (Nature); arXiv PDF"
     },
     {
      "url": "https://arxiv.org/pdf/astro-ph/0502329",
@@ -3773,11 +3773,11 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
-     "title": "NASA NSSDCA Moon Fact Sheet (mass 0.07346e24 kg; existing fact moon_mass)"
+     "title": "NASA NSSDCA Moon Fact Sheet (mass 7.346 × 10²² kg)"
     },
     {
      "url": "https://physics.nist.gov/cgi-bin/cuu/Value?c",
-     "title": "NIST CODATA 2022: speed of light in vacuum, 299 792 458 m/s exact (existing fact growth_c_exact)"
+     "title": "NIST CODATA 2022: speed of light in vacuum, 299 792 458 m/s (exact)"
     }
    ],
    "note": null
@@ -3793,7 +3793,7 @@ window.DINO_DATA = {
     },
     {
      "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html",
-     "title": "NASA NSSDCA Sun Fact Sheet (mass 1,988,400e24 kg; existing fact sun_mass)"
+     "title": "NASA NSSDCA Sun Fact Sheet (mass 1.9884 × 10³⁰ kg)"
     }
    ],
    "note": null
@@ -3805,11 +3805,11 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
-     "title": "NASA NSSDCA Earth Fact Sheet (mass 5.9722e24 kg; existing fact earth_mass)"
+     "title": "NASA NSSDCA Earth Fact Sheet (mass 5.9722 × 10²⁴ kg)"
     },
     {
      "url": "https://physics.nist.gov/cgi-bin/cuu/Value?c",
-     "title": "NIST CODATA 2022: speed of light in vacuum, 299 792 458 m/s exact (existing fact growth_c_exact)"
+     "title": "NIST CODATA 2022: speed of light in vacuum, 299 792 458 m/s (exact)"
     }
    ],
    "note": null
@@ -3837,11 +3837,11 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://arxiv.org/pdf/1510.07674",
-     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 x 10^26 W)"
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 × 10²⁶ W)"
     },
     {
      "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b8",
-     "title": "NIST Guide to the SI (SP 811), Appendix B.8: Factors for units listed alphabetically (tropical year 3.155 693e7 s)"
+     "title": "NIST Guide to the SI (SP 811), Appendix B.8: Factors for units listed alphabetically (tropical year 3.155 693 × 10⁷ s)"
     }
    ],
    "note": null
@@ -3873,18 +3873,18 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/jupiterfact.html",
-     "title": "NASA NSSDCA Jupiter Fact Sheet (mass 1,898.13e24 kg)"
+     "title": "NASA NSSDCA Jupiter Fact Sheet (mass 1.89813 × 10²⁷ kg)"
     },
     {
      "url": "https://physics.nist.gov/cgi-bin/cuu/Value?c",
-     "title": "NIST CODATA 2022: speed of light in vacuum, 299 792 458 m/s exact (existing fact growth_c_exact)"
+     "title": "NIST CODATA 2022: speed of light in vacuum, 299 792 458 m/s (exact)"
     }
    ],
    "note": null
   },
   {
-   "label": "Energy: SN 1998bw, an unusually energetic supernova linked to a gamma-ray burst; one model gives 3 × 10⁴⁵ J (a 'hypernova'), an aspherical model about 15 times less",
-   "value": "about 3 × 10⁴⁵ J in one spherical model (2–5 × 10⁴⁵ J); an aspherical model gives 2 × 10⁴⁴ J",
+   "label": "Energy: The blast of SN 1998bw (the kinetic energy of its flying debris), an unusually energetic supernova linked to a gamma-ray burst; one model gives 3 × 10⁴⁵ J (a 'hypernova'), an aspherical model about 15 times less",
+   "value": "about 3 × 10⁴⁵ J of motion in its debris in one spherical model (2–5 × 10⁴⁵ J); an aspherical model gives 2 × 10⁴⁴ J",
    "status": "disputed",
    "sources": [
     {
@@ -3905,7 +3905,7 @@ window.DINO_DATA = {
     },
     {
      "url": "https://arxiv.org/pdf/1206.2503",
-     "title": "Janka (2012) Annu. Rev. Nucl. Part. Sci.; arXiv PDF ('up to several 10^52 erg for HNe')"
+     "title": "Janka (2012) Annu. Rev. Nucl. Part. Sci.; arXiv PDF"
     }
    ],
    "note": null
@@ -3937,11 +3937,11 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html",
-     "title": "NASA NSSDCA Sun Fact Sheet (mass 1,988,400e24 kg; 'Mass conversion rate (10^6 kg/s) 4260.')"
+     "title": "NASA NSSDCA Sun Fact Sheet (mass 1.9884 × 10³⁰ kg; mass turned into energy, 4.26 × 10⁹ kg each second)"
     },
     {
      "url": "https://physics.nist.gov/cgi-bin/cuu/Value?c",
-     "title": "NIST CODATA 2022: speed of light in vacuum, 299 792 458 m/s exact (existing fact growth_c_exact)"
+     "title": "NIST CODATA 2022: speed of light in vacuum, 299 792 458 m/s (exact)"
     }
    ],
    "note": null
@@ -4803,7 +4803,7 @@ window.DINO_DATA = {
   {
    "label": "Weight: Earth's gravitational binding energy, integrated from PREM (check)",
    "value": "2.49 × 10³² J (our integral of G M(r) dm / r over PREM)",
-   "status": "estimate",
+   "status": "derived",
    "sources": [
     {
      "url": "https://hep.ph.liv.ac.uk/~costasa/genie_doxygen/master/html/namespacegenie_1_1utils_1_1prem.html",
