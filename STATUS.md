@@ -6,7 +6,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 | Folder or file | Who | Branch | Since |
 |---|---|---|---|
-| `rex-strength-lab/` (all of it), one line of the root `README.md` (the Rex lab row), the Rex lab line of `CLAUDE.md`'s build commands and its step in `.github/workflows/test.yml` (adding `node test/powers.js`), and a new `history/` entry at the end | Owner's cloud session | `claude/rex-gui-c` (after `-a` and `-b`) | 2026-10-12 |
+| `rex-strength-lab/` (all of it), one line of the root `README.md` (the Rex lab row), the Rex lab line of `CLAUDE.md`'s build commands and its steps in `.github/workflows/test.yml` (adding `node test/powers.js`, then `node test/ladder.js`), and a new `history/` entry at the end | Owner's cloud session | `claude/rex-gui-c` (after `-a` and `-b`) | 2026-10-12 |
 
 ## In progress
 

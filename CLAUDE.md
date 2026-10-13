@@ -64,7 +64,7 @@ Neither can see the other's sessions, chats or memory. Anything the other person
 From the repo root; each line ends back at the root, so they run one after the other in the same shell:
 
 ```
-cd rex-strength-lab && python build-data.py && node build.js && node test/calibration.js && node test/presence.js && node test/shots.js && node test/powers.js && cd ..
+cd rex-strength-lab && python build-data.py && node build.js && node test/calibration.js && node test/presence.js && node test/shots.js && node test/powers.js && node test/ladder.js && cd ..
 cd build-calculator && node build.js && node test/test.js && node test/shots.js && cd ..
 cd build-comparison && node build.js && node test/test.js && node test/duo.js && node test/shots.js && cd ..
 ```
