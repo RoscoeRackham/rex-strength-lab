@@ -176,9 +176,9 @@ objects = [
     obj('esb', 'Empire State Building', 'building', 'Landmarks', 331.1e6, 18000, TUMBLE, crush=30e6, rho=316, noPull=True, keys=['empire_state_building_mass', 'mat_indiana_limestone'],
         liftNote='It is anchored to bedrock by its foundations; lifting it means tearing them out first.'),
     obj('pyramid', 'Great Pyramid of Giza', 'pyramid', 'Landmarks', 6e9, 34700, TUMBLE, crush=30e6, rho=2300, noPull=True, keys=['great_pyramid_mass', 'great_pyramid_projected_area', 'mat_limestone_generic'],
-        liftNote='Its core is natural bedrock, so part of the “pyramid” is the ground itself. Stacked blocks have almost no tensile strength: lifted from below, it would come apart.'),
+        liftNote='Its core is natural bedrock, so part of the “pyramid” is the ground itself. Stacked blocks have almost no tensile strength: lifted from below, it would come apart.', sags=True),
     obj('everest', 'Mount Everest', 'mountain', 'Nature', 3.7e14, 2.2e7, TUMBLE, crush=100e6, rho=2700, noPull=True, noThrow=True, keys=['mount_everest_mass', 'mount_everest_projected_area', 'mat_granite_ucs'],
-        liftNote='Everest isn’t a loose object. It’s part of the Earth’s crust, and its mass depends on where you decide the mountain ends (1.6 × 10¹⁴ to 1.4 × 10¹⁵ kg). Rock is weak in tension, so lifted from one spot it would break apart under its own weight.'),
+        liftNote='Everest isn’t a loose object. It’s part of the Earth’s crust, and its mass depends on where you decide the mountain ends (1.6 × 10¹⁴ to 1.4 × 10¹⁵ kg). Rock is weak in tension, so lifted from one spot it would break apart under its own weight.', sags=True),
     obj('cloud', 'A cumulus cloud', 'cloud', 'Nature', 5e5, 1e6, TUMBLE, rho=0.5, noPull=True, noThrow=True, keys=['cumulus_cloud_water_mass'],
         liftNote='A cumulus cloud is about 500 t of droplets spread through a cubic kilometre of air. There is nothing to grab.'),
     obj('moon', 'The Moon', 'Moon', 'Space', fact('moon_mass')['value_si'], 9.48e12, SPHERE, rho=3344, noPull=True, noThrow=True, keys=['moon_mass'],
@@ -252,6 +252,12 @@ speeds = [
 ]
 row('Usain Bolt peak speed', fact('bolt_peak_running_speed')['display'], ['bolt_peak_running_speed'])
 row('Speed of sound, orbital speed, escape velocity', '340.29 m/s · 7.905 km/s · 11.186 km/s', ['atm_isa_speed_of_sound', 'earth_circular_orbit_velocity_surface', 'earth_escape_velocity_surface'])
+# where a throw past 1% of light speed goes when the air can't stop it (Air resistance absorbed): out of the Earth, the
+# Solar System and the Milky Way
+escape = dict(earth=fact('earth_escape_velocity_surface')['value_si'], sun=fact('sun_escape_speed_at_1au')['value_si'],
+              galaxy=fact('milky_way_escape_speed_solar')['value_si'], galaxyLo=fact('milky_way_escape_speed_solar')['low_si'], galaxyHi=fact('milky_way_escape_speed_solar')['high_si'])
+row('Speed to escape the Sun from Earth’s distance', fact('sun_escape_speed_at_1au')['display'] + ' (from the Sun’s GM and the astronomical unit)', ['sun_escape_speed_at_1au', 'sun_gm', 'astronomical_unit'])
+row('Speed to escape the Milky Way from the Sun’s position', fact('milky_way_escape_speed_solar')['display'], ['milky_way_escape_speed_solar'])
 
 calibration = [
     dict(label='Shot put', obj='shot', angle=37, recordText='23.56 m (Crouser, 2023)', metric='range'),
@@ -399,7 +405,7 @@ for topic, prefix in [('density', 'Weight'), ('duo', None), ('presence', None)]:
 
 data = dict(tiers=tiers, surfaces=[{k: v for k, v in s.items() if not k.startswith('k_')} for s in surfaces], objects=objects,
             energyRefs=energy, overpressure=overpressure, heights=heights, speeds=speeds, calibration=calibration,
-            feats=feats, assumptions=static['assumptions'], sourceRows=rows, densities=densities, massRefs=massRefs)
+            feats=feats, assumptions=static['assumptions'], sourceRows=rows, densities=densities, massRefs=massRefs, escape=escape)
 
 
 def js(v):

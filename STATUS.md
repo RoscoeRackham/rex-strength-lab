@@ -6,15 +6,15 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 | Folder or file | Who | Branch | Since |
 |---|---|---|---|
-| `rex-strength-lab/` (all of it), one line of the root `README.md` (the Rex lab row), and a new `history/` entry at the end | Owner's cloud session | `claude/rex-gui-a` (then `-b`, `-c`) | 2026-10-12 |
+| `rex-strength-lab/` (all of it), one line of the root `README.md` (the Rex lab row), the Rex lab line of `CLAUDE.md`'s build commands and its step in `.github/workflows/test.yml` (adding `node test/powers.js`), and a new `history/` entry at the end | Owner's cloud session | `claude/rex-gui-a` (then `-b`, `-c`) | 2026-10-12 |
 
 ## In progress
 
-- Owner's cloud session: building `rex-strength-lab/BRIEF-gui.md` in its three pull requests, one at a time. **A** (page organisation, sections 1-4) is merged (#20) and live. **B** (the four new powers, section 5) starts when the owner says so, on `claude/rex-gui-b`; then C (the energy comparisons, research first). `rex-strength-lab/` stays claimed for them.
+- Owner's cloud session: building `rex-strength-lab/BRIEF-gui.md` in its three pull requests, one at a time. **A** (page organisation, sections 1-4) is merged (#20) and live. **B** (the four new powers, section 5) is in progress on `claude/rex-gui-b`: the engine and the page are done and the full Rex lab test line passes (with the new `test/powers.js`: a powers-off check holds 15,541 engine results to `main`'s, then each power's checks). Review rounds: 1 (52 findings, all confirmed; fixed or recorded as decisions), 2 (49, all confirmed and fixed), 3 (45, 43 confirmed and fixed, 2 refuted), 4 (32, 31 confirmed and fixed; one had no verdict and is covered by a confirmed finding on the same rule), 5 (35, all confirmed and fixed), and a focused re-check of round 5's fixes (26, all confirmed and fixed); records in `rex-strength-lab/research/reviews/gui-b-round1.json` to `gui-b-round5-recheck.json`. Pull request B is open; waiting on the owner's merge. Then C (the energy comparisons, research first). `rex-strength-lab/` stays claimed for them.
 
 ## Waiting on
 
-- Owner: merge the one-line test fix (`claude/rex-gui-shots-fix`: `test/shots.js` clicks the sidebar cue where it is drawn; the old click failed intermittently), then say when to start B.
+- Owner and collaborator (canon), for pull request B: with Unbreakable footing on, instant growth can't drive his soles into the ground, so the Rex lab grows him upward from them (as Comic ground did); canon has him grow about his middle with his feet driven in. Confirm, or rule otherwise (`rex-strength-lab/README.md` Known limits).
 - Owner review of Build Comparison design decisions listed in `build-comparison/data/NOTES.md` ("Design decisions to review"): the edge marking, the palette change, the stop edges, Thor's and the Thing's treatment, the group colours' contrast, and figures drawn with their arms at their rest angle. (The meatball sentence is now reworded in the brief.)
 - Step 2 (collaborator): regenerate Rex's and Ollie's turnarounds to the model-sheet spec (fixes listed in BRIEF.md, "The turnarounds") and measure them; make gap-filler figures from target outlines with GPT Images 2.5.
   - **Blocker to solve first:** the measuring tool cannot follow arms that cannot hang clear of the body (rest angle near 90°; above about 100 on the median soldier, so most of the 88–170 and 220–924 stretches). It refuses such sheets. The target tool still draws and scores those outlines but says the tool cannot check art drawn from them. See `build-comparison/research/reviews/round2.md`, "Still open"; one way is to cut the arms at the shoulder line before slicing.
@@ -22,6 +22,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## Done
 
+- 2026-10-12: `test/shots.js` sidebar-cue click fix merged (#21).
 - 2026-10-12: Rex lab page organisation (`BRIEF-gui.md` sections 1-4) merged (#20, CI passed) and republished from `main` (`4ba59b4`) as version 11, after the full Rex lab test line passed on that build: Their powers panel, sidebar order (strength, Size and density, Ground, Their powers), footing standing or bolted, Rex + Ollie in its own element. Four review rounds (`rex-strength-lab/research/reviews/gui-a-round1.json` to `gui-a-round4.json`).
 - 2026-10-12: live pages checked against `main` (`f526ce1`), each built from a clean tree and tested first (Rex lab: calibration, presence, shots; Build Calculator: tests, shots; Build Comparison: tests, duo, shots). Rex lab republished (version 10, with the follow-ups from #15 and the half-life control's removal from #18). Build Calculator (version 3) and Build Comparison (version 4) already matched `main` byte for byte, so they were left as they are.
 - 2026-10-12: owner confirmed all the canon marked "owner to confirm" (the growth rulings, the Restraint wording, the default powers including their own recoil); the half-life control removed (the runaway loop can never run away); the moves' sand bearing left as it is for now. Recorded in CLAUDE.md, the README, the research facts and the brief (`terantic/canon-confirmed`; a test checks the control stays gone).
