@@ -455,7 +455,7 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     const as0 = await page.$eval('#bay .verdict', (n) => n.textContent);
     const as0text = await bayText();
     // at 0% with Things keep their form off, the page's text from before the powers (main)
-    if (!/leaves the Earth/.test(as100) || !/there is no fireball/.test(as100) || !/turns into a fireball/.test(as0) || !/comes out as a fireball over roughly the first 27\.8 m of its path, about where it has swept up its own mass of air/.test(as0text)) fail('All-Star baseball: 100% ' + as100.slice(0, 200) + ' | 0% ' + as0.slice(0, 200));
+    if (!/leaves the Earth/.test(as100) || !/no fireball around it/.test(as100) || !/turns into a fireball/.test(as0) || !/comes out as a fireball over roughly the first 27\.8 m of its path, about where it has swept up its own mass of air/.test(as0text)) fail('All-Star baseball: 100% ' + as100.slice(0, 200) + ' | 0% ' + as0.slice(0, 200));
     else okLog('All-Star baseball, level, all-out: at 100% "' + as100.slice(0, 70) + '…"; at 0% with Things keep their form off, main\'s fireball text');
     // the two-player tests offer the not-so-heroic presets, and on Collide 'risk cracking the plaster' finds an effort
     // (Rex bolted, Ollie charging: the hit's push into the unbreakable ground shakes it)
@@ -496,6 +496,11 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     const dg = await page.evaluate(() => document.querySelector('#duo-bay .effort-read').textContent.replace(/\s+/g, ' '));
     const dgBay = await page.evaluate(() => document.getElementById('duo-bay').textContent.replace(/\s+/g, ' '));
     if (!/set aside for this test/.test(dg) || !/Effort: /.test(dg) || !/The least effort that breaks the ground/.test(dg) || /Least disruptive already does this/.test(dg) || /The ground holds: their power/.test(dgBay) || !/On real ground, courtesy ceiling: .*?Past that, the ground breaks under Rex/.test(dg)) fail('two-player break the ground: ' + dg.slice(0, 400)); else okLog('two-player break the ground: an effort on real ground, the bay drawn on real ground, its ceiling where the rock cracks (' + dg.slice(0, 70) + '…)');
+    // the break-the-ground preset sets Unbreakable footing aside only while it draws: switching tabs (which saves)
+    // must leave the switch on and saved on
+    await page.click('#tab-stomp'); await page.waitForTimeout(400); await settle(page, 'bay');
+    const ubAfter = await page.evaluate(() => ({ sw: document.getElementById('sw-unbreakable').checked, saved: JSON.parse(localStorage.getItem('rex-lab-v1')).unbreakable }));
+    if (!ubAfter.sw || ubAfter.saved !== true) fail('Unbreakable footing left off after the two-player break-the-ground preset: ' + JSON.stringify(ubAfter)); else okLog('after the two-player break-the-ground preset, Unbreakable footing is still on and saved on');
     if (errs.length) fail('page errors in the powers checks: ' + errs.slice(0, 3).join(' | '));
     await page.close();
   }
