@@ -3485,7 +3485,7 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://par.nsf.gov/servlets/purl/10349743",
-     "title": "Morgan, Bralower, Brugger & Wunnemann (2022) The Chicxulub impact and its environmental consequences, Nat. Rev. Earth Environ. 3:338-354, published version (NSF PAR; doi:10.1038/s43017-022-00283-y)"
+     "title": "Morgan, Bralower, Brugger & Wünnemann (2022) The Chicxulub impact and its environmental consequences, Nat. Rev. Earth Environ. 3:338-354, doi:10.1038/s43017-022-00283-y; accepted manuscript at NSF PAR (typeset)"
     },
     {
      "url": "https://ntrs.nasa.gov/citations/19970030228",
@@ -9356,7 +9356,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Growth: gradual growth: shortest harmless durations for the worked examples",
-   "value": "The shove sets the limit, not the air: Chicxulub about 1½ min (mix) or 4 min (pure size); one second of sunlight about 14 min (mix) or 43 min (pure size); Krakatoa a few hundredths of a second. Pure density has no air or shove limit",
+   "value": "The shove sets the limit, not the air: Chicxulub about 1½ min (mix) or 4 min (pure size); one second of sunlight about 14 min (mix) or 43 min (pure size); Krakatoa a few hundredths of a second. Pure density has no air or shove limit (worked at the brief’s 4.2 × 10²³ J for Chicxulub; the page now uses 5 × 10²³ J, about 20% more, and gives its own figures)",
    "status": "estimate",
    "sources": [
     {
@@ -9392,7 +9392,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Growth: instant growth: the time it takes (sound crossing his final body)",
-   "value": "t = final height ÷ 1,540 m/s: 2 ms (Krakatoa), 7 ms (Chicxulub, mix), 23 ms (Chicxulub, pure size), 0.22 s (one solar second, pure size)",
+   "value": "t = final height ÷ 1,540 m/s: 2 ms (Krakatoa), 7 ms (Chicxulub, mix), 24 ms (Chicxulub, pure size), 0.22 s (one solar second, pure size)",
    "status": "estimate",
    "sources": [
     {
@@ -9492,7 +9492,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Growth: instant growth: the blast from shoving the air aside",
-   "value": "Chicxulub, pure size: 2–3 atm at his sides and 0.9–1.5 × 10⁹ J into the air (210–350 kg of TNT) if he grew about his centre; windows shatter out to 100–220 m. Anchored at his soles, the top of his head pushes about 24–30 atm and the total is 2–4 times larger (up to 6 × 10⁹ J, 1.5 t of TNT; windows to about 360 m). Mix: 3–6 kg of TNT, windows to 25–57 m (up to about 90 m anchored). Canon: he grows about his middle; the page's high end also counts the top of his head at its own speed (an upper bound)",
+   "value": "Chicxulub, pure size: 2–3 atm at his sides and 0.9–1.5 × 10⁹ J into the air (210–350 kg of TNT) if he grew about his centre; windows shatter out to 100–220 m. Anchored at his soles, the top of his head pushes about 24–30 atm and the total is 2–4 times larger (up to 6 × 10⁹ J, 1.5 t of TNT; windows to about 360 m). Mix: 3–6 kg of TNT, windows to 25–57 m (up to about 90 m anchored). Canon: he grows about his middle; the page's high end also counts the top of his head at its own speed (an upper bound) (worked at the brief’s 4.2 × 10²³ J for Chicxulub; the page now uses 5 × 10²³ J, about 20% more, and gives its own figures)",
    "status": "estimate",
    "sources": [
     {

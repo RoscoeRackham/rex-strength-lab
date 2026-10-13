@@ -583,7 +583,8 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
         await page.evaluate(() => { document.getElementById('powers').open = true; }); await page.selectOption('#absorb', 'gradual'); await page.waitForTimeout(300); await page.click('#grow-what-' + st.grow); await page.waitForTimeout(400); await settle(page, 'bay');
         const textOf = (sel, re) => page.evaluate(([q, r]) => { const n = Array.from(document.querySelectorAll(q)).filter((x) => new RegExp(r).test(x.textContent)); return n.map((x) => x.textContent.replace(/\u00a0/g, ' ')).join(' | '); }, [sel, re]);
         growHead[st.grow] = await textOf('#bay .growth-whatif p', 'which becomes');
-        growHead[st.grow + 'Table'] = await textOf('#bay .growth-whatif td[data-col="Mass"]', '.');
+        growHead[st.grow + 'Table'] = await textOf('#bay .growth-whatif td[data-col]', '.');
+        growHead[st.grow + 'Note'] = await textOf('#bay .growth-whatif li, #bay .growth-whatif p', '^Every figure below follows from that energy');
         growHead[st.grow + 'Item'] = await textOf('#bay .growth-whatif li, #bay .growth-whatif p', '^It becomes');
       }
       const t = await page.evaluate(() => document.getElementById('bay').textContent.replace(/\u00a0/g, ' ').replace(/\s+/g, ' '));
@@ -595,9 +596,11 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     const oneFig = /: about \d(?: × 10[⁰¹²³⁴⁵⁶⁷⁸⁹]+)? J, which becomes about \d+(?:,0+)* (?:kg|t) of mass/;
     const oneFigItem = /^It becomes about \d+(?:,0+)* (?:kg|t) of new mass/;
     // the dinosaur-killer's table: each mass to two figures at most
-    const twoFig = (t) => Array.from(t.matchAll(/([\d.,]+)(?: [a-z]+illion)? t \(/g)).every((m) => m[1].replace(/[,.]/g, '').replace(/^0+/, '').replace(/0+$/, '').length <= 2);
-    if (!oneFig.test(growHead.krakatoa || '') || !oneFig.test(growHead.chicxulub || '') || !oneFigItem.test(growHead.krakatoaItem || '') || !oneFigItem.test(growHead.chicxulubItem || '') || /\d,\d*[1-9]\d* t|\d\.\d+ m tall/.test(growHead.chicxulubItem || '') || !growHead.chicxulubTable || !twoFig(growHead.chicxulubTable)) fail('growth what-if: rough energies should be given to one figure: ' + JSON.stringify(growHead));
-    else okLog('growth what-if gives the rough Krakatoa and dinosaur-killer energies, and the masses they make, to one figure: ' + growHead.krakatoa.slice(0, 90) + '…');
+    // every cell is his unchanged figure (3.05 m, 1,060 kg/m³) or at most two figures
+    const sigf = (x) => x.replace(/[,.]/g, '').replace(/^0+/, '').replace(/0+$/, '').length;
+    const twoFig = (t) => t.split(' | ').every((c) => c === '3.05 m' || c === '1,060 kg/m³' || !/^[\d.,]+/.test(c) || sigf(c.match(/^[\d.,]+/)[0]) <= 2);
+    if (!oneFig.test(growHead.krakatoa || '') || !oneFig.test(growHead.chicxulub || '') || !oneFigItem.test(growHead.krakatoaItem || '') || !oneFigItem.test(growHead.chicxulubItem || '') || /\d,\d*[1-9]\d* t|\d\.\d+ m tall|\d,\d*[1-9]\d* kg\/m³/.test(growHead.chicxulubItem || '') || !growHead.chicxulubTable || !twoFig(growHead.chicxulubTable) || !growHead.chicxulubNote) fail('growth what-if: rough energies should be given to one figure: ' + JSON.stringify(growHead));
+    else okLog('growth what-if gives the rough Krakatoa and dinosaur-killer energies and masses to one figure, changed sizes to two, and says the rest is rough: ' + growHead.krakatoa.slice(0, 90) + '…');
     // a milestone set by a rough rung (the dinosaur-killer) gives its dial point roughly
     await load({ action: 'punch' }, false); await page.waitForTimeout(4000);
     const chix = await page.evaluate(() => { const t = document.getElementById('ladder-viz').textContent; const i = t.indexOf('Punch out-hits the dinosaur-killer impact'); return i < 0 ? '' : t.slice(i, i + 80); });
