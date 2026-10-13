@@ -1915,12 +1915,12 @@
     // a partner no rock can hold sinks into the planet where he lands (see the Weight tab)
     const sinks = !holdsGround(cA) && groundUnderWeight(B, cA.surface, false).regime === 'fallsThrough';
     const out = { r, obj, vEsc, vApart, fallsBack, heavierPartner: B.m > A.m, sinks };
-    // where he lands on his own Unbreakable footing, the ground takes at most what it bears under him over the
-    // landing's pulse (canon's weak-ground exception; he lands on his feet, not bolted, so sideways at most its friction
-    // on what it bears); their power supplies the rest
+    // where he lands on his own Unbreakable footing, the ground takes at most what it bears under him, downward, over
+    // the landing's pulse (canon's weak-ground exception); their power supplies the rest. Sideways his landing goes in
+    // whole, as on real ground (he skids it out: nothing breaks for it)
     const f = r.flight;
     if (cB.unbreakable && r.canMove && !fallsBack && f && f.landed && f.vImpact > 0) {
-      const v = f.vImpact, T = Math.max(1e-3, obj.L / v), lt = weakGround(Object.assign({}, cB, { surface: cA.surface }), B, vToMomentum(v, B.m), (f.impactAngleDeg || 0) * Math.PI / 180, T, B.m * K.g, false);
+      const v = f.vImpact, T = Math.max(1e-3, obj.L / v), lt = weakGround(Object.assign({}, cB, { surface: cA.surface }), B, vToMomentum(v, B.m), (f.impactAngleDeg || 0) * Math.PI / 180, T, B.m * K.g, true);
       if (lt.supplied > 0) out.landToGround = Object.assign(lt, { T });
     }
     return out;
@@ -3062,6 +3062,8 @@
         out.vNeed = need;
         if (cantMove && need > 0) return Object.assign(out, { result: 'cant-move' });
         if (style === 'hard' && vMax >= CATCH.V_FIREBALL && dK === 0) fast = { v: vMax, th: 0, E: tab.E0 };
+        // with a power on, a straight line at any share: past about 12 km it runs underground and hits the ground
+        else if (style === 'hard' && vMax >= CATCH.V_FIREBALL && anyPower(ctxT) && chordUnder()) fast = { v: vMax, th: 0, E: tab.E0, airK: dK };
         else if (style === 'hard' && vMax >= CATCH.V_FIREBALL) {
           const fb = fireballAt(obj, vMax, Dfl, ctxC, tab.E0, dK, !!keptFire.kept);
           if (sheathOnly(fb)) fast = { v: fb.vLumpAt, vL: vMax, th: 0, E: fb.Earr, sheath: fb, fin: { p: fb.p, m: fb.mLump } };
@@ -3083,7 +3085,9 @@
         // the chord's closest approach to the Earth's centre, if it falls between the two hands
         const tStar = -(0 * bx + a0 * by) / (Lc * Lc), dMin = a0 * b0 * Math.sin(phi) / Lc;
         out.aim = { thetaDeg: th, vE, vL, vMax };
-        out.time = Lc / fast.v;
+        // (a sheath lump slows as it sweeps air: 1/v rises linearly along the path, so its time is the path times the
+        // mean of 1/v at the two ends)
+        out.time = fast.sheath && fast.vL > 0 ? 0.5 * Lc * (1 / fast.vL + 1 / fast.v) : Lc / fast.v;
         out.vArrive = fast.v;
         out.angleDeg = 0;   // it arrives rising slightly: no part of its weight along his stroke
         out.chord = Lc;
@@ -3244,7 +3248,12 @@
       }
       // if he misses: on to the ground beside him (a throw that met no air goes on in a straight line: aimed level or
       // up, the ground curves away beneath it and it leaves the Earth)
-      if (fast) out.miss = { vImpact: fast.v, E: fast.E != null ? fast.E : momentumToKE(vToMomentum(fast.v, obj.m), obj.m), crater: 0, craterExtrapolated: false, quake: -Infinity, past: Infinity, leaves: true };
+      if (fast) {
+        out.miss = { vImpact: fast.v, E: fast.E != null ? fast.E : momentumToKE(vToMomentum(fast.v, obj.m), obj.m), crater: 0, craterExtrapolated: false, quake: -Infinity, past: Infinity, leaves: true };
+        // below 100% the lump (object, swept air and heat) keeps sweeping air at the share of the drag that acts on its
+        // way out, level (the Throw tab's snowplow): the speed it leaves the air at, and the heat its sheath carries
+        if (fast.sheath && dK > 0 && fast.fin && isFinite(fast.fin.m)) { const fa = fastAir(Object.assign({}, obj, { m: fast.fin.m }), out.miss.E, 0, dK); out.miss.vOut = fa.vOut; out.miss.Eheat = fast.sheath.Egap; }
+      }
       else if (!w.wellDominated) {
         const fm = flight(obj, vE, th, h0, 0);
         const Eimp = keFromV(fm.vImpact, obj.m);
@@ -3533,8 +3542,9 @@
     const sn = Math.sin(th), cs = Math.abs(Math.cos(th));
     const Jd = sn > 1e-12 ? J * sn : 0, Jh = cs < 1e-9 ? 0 : J * cs;
     if (!(Jd > cap) && !(Jh > capH)) return { J };
-    const Jdg = Math.min(Jd, cap), Jhg = Math.min(Jh, capH);
-    return { J: Math.hypot(Jhg, Jdg), whole: J, supplied: (Jd - Jdg) + (Jh - Jhg), suppliedDown: Jd - Jdg, suppliedSide: Jh - Jhg };
+    // (guarded: an unbounded sideways part taken whole is not 'infinity minus infinity' supplied)
+    const Jdg = Math.min(Jd, cap), Jhg = Math.min(Jh, capH), sD = Jd > Jdg ? Jd - Jdg : 0, sH = Jh > Jhg ? Jh - Jhg : 0;
+    return { J: Math.hypot(Jhg, Jdg), whole: J, supplied: sD + sH, suppliedDown: sD, suppliedSide: sH, sideTaken: Jhg };
   }
   // the human-equivalent walking speed at Froude Fr (for the load rule)
   const walkLoad = (Fr) => { const L = WALK.LOAD, vh = Math.sqrt(Fr * K.g * L.hRef); return Math.min(L.hi, Math.max(L.lo, L.at + L.slope * (vh - L.vh))); };
@@ -3759,14 +3769,19 @@
         // of its path (all its energy if it never comes down; none with Cool flight), plus his own recoil past Mach 1.
         // The larger counts: they happen in different places. blastFrom says which.
         blast: (r, o) => { const b = throwBlast(r, o); return Math.max(b.land, b.path); },
-        // the energy a blast reaching d metres sees: past 1% of light speed with part of the drag absorbed, the air takes
-        // nearly all of it within a short stretch (fastAir's dHalf / k); a reach longer than that sees all of what the
-        // air took inside it as one release, not the (1 - s) share counted near him. null: the plain blast applies.
+        // the energy a blast reaching d metres sees: with part of the drag absorbed, a fast throw's air takes its energy
+        // within a short stretch (past 1% of light speed half of it within fastAir's dHalf, which already includes the
+        // 1/k); a reach longer than that sees all of what the air took inside it as one release, not the (1 - s) share
+        // counted near him. null: the plain blast applies.
+        // (below 1% of light speed too, for a supersonic throw: the slowed throw's own take, at most what the air takes
+        // within d by the same snowplow, plus his hand's air)
         blastAt: (r, o, d) => {
           const k = dragFactor(o);
-          if (!r.canMove || !r.flight || !r.flight.relativistic || !(k > 0 && k < 1) || !isFinite(r.Eobj)) return null;
-          const b = throwBlast(r, o);
-          return Math.max(b.land, b.path, fastAirWithin(o.obj, r.Eobj, o.angle || 0, k, d));
+          if (!r.canMove || !r.flight || !(k > 0 && k < 1) || !isFinite(r.Eobj)) return null;
+          const rel = r.flight.relativistic;
+          if (!rel && !(r.v >= K.a0 && r.dragLoss != null && !o.coolFlight)) return null;
+          const b = throwBlast(r, o), w = fastAirWithin(o.obj, r.Eobj, o.angle || 0, k, d);
+          return Math.max(b.land, b.path, rel ? w : Math.min(r.dragLoss, w) + (b.hand || 0));
         },
         blastFrom: (r, o) => { const b = throwBlast(r, o); return r.flight && r.flight.relativistic ? (b.path > b.land ? 'path' : 'fire') : b.path > b.land ? 'path' : 'landing'; },
         // the two parts: the landing's, and the air's from its flight plus his recoil
@@ -3820,7 +3835,8 @@
           // (Unbreakable footing: the ground takes at most what it bears beyond his weight over each pulse; their power
           // supplies the rest, canon's exception)
           // (the feet's blow: at least what it is at the landing real ground just bears, so the cap changes nothing
-          // where the ground holds the landing, and a harder landing never shakes it less)
+          // where the ground holds the landing and has no cliff there. The body's stop takes the bearing over a stop
+          // that shortens as he lands harder, so a harder landing can shake the ground less)
           const cap = (J, T, floor) => (o.unbreakable && r.landBear != null ? Math.min(J, Math.max(r.landBear * T, floor || 0)) : J);
           const list = [impulseSource(o.surface, cap(momentumOf(L.v, o.m), L.t), L.t), L.soft ? null : impulseSource(o.surface, cap(2 * o.body.legEff * L.v, footPulse(o.body), 2 * o.body.legEff * (r.landV1 || 0)), footPulse(o.body))].filter(Boolean);
           // Unbreakable footing: the push-off goes into the ground too (with the power off only the landing counts)
@@ -3859,7 +3875,8 @@
           const J = Jat(r.vFoot);
           if (o.unbreakable && r.realBreaks && !o.groundHolds) {
             // (the foot's momentum from its energy where its speed rounds to c: p = sqrt(E^2 + 2 E m c^2) / c)
-            const Jw = isFinite(J) || !isFinite(r.E) ? J : Jat(r.vFoot, Math.sqrt(r.E * r.E + 2 * r.E * o.body.legEff * K.c * K.c) / K.c);
+            // (past 1% of light speed always from the energy: near c the rounded speed freezes the momentum)
+            const Jw = isFinite(r.E) && (r.vFoot >= 0.01 * K.c || !isFinite(J)) ? Jat(r.vFoot, Math.sqrt(r.E * r.E + 2 * r.E * o.body.legEff * K.c * K.c) / K.c) : J;
             // the ground takes at least the blow real ground stops within the print it keeps (or the 1 cm dent that
             // counts as breaking hard ground): the foot speed whose real hole is that deep, from the hole's own law
             // (d = m/(2 k rho A) ln(1 + k rho v^2 / q)). So a harder stomp never hands it less than a softer one did.

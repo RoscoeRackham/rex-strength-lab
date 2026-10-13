@@ -475,7 +475,7 @@ const sig = (x) => Number(x).toPrecision(3);
   { const cA = ctxOf(1e9 * g, ON), cB = Object.assign({}, cA, { body: ollie }), t = P.throwPartner(cA, cB, 75), lt = t.landToGround, f = t.r.flight;
     const th = f.impactAngleDeg * Math.PI / 180, capD = (Nmax(conc, ollie) - ollie.m * g) * (lt ? lt.T : NaN), capH = conc.mu * Nmax(conc, ollie) * (lt ? lt.T : NaN);
     const Jd = P.vToMomentum(f.vImpact, ollie.m) * Math.sin(th), Jh = P.vToMomentum(f.vImpact, ollie.m) * Math.cos(th);
-    ok('5c: a thrown partner landing on unbreakable ground hands it at most its bearing beyond his weight (down) and its friction on that (sideways) over the landing\'s pulse', lt && near(lt.J, Math.hypot(Math.min(Jh, capH), Math.min(Jd, capD)), 1e-9) && lt.supplied > 0, lt ? sig(lt.J) + ' of ' + sig(lt.whole) : 'none'); }
+    ok('5c: a thrown partner landing on unbreakable ground hands it at most its bearing beyond his weight downward over the landing\'s pulse; sideways he skids it out whole (nothing breaks for it)', lt && near(lt.J, Math.hypot(Jh, Math.min(Jd, capD)), 1e-9) && lt.supplied > 0 && lt.suppliedSide === 0, lt ? sig(lt.J) + ' of ' + sig(lt.whole) : 'none'); }
   // the game of catch below 100% with a power on, past about 12 km: the straight line to his hands runs underground, so it
   // hits the ground near the thrower with all its energy, kept whole or not (no fireball reaching him through the planet)
   { const bad = [];
@@ -502,6 +502,48 @@ const sig = (x) => Number(x).toPrecision(3);
   { const f = P.fly({ v0: 8900, thetaDeg: 0, h0: 2.74, m: obj('baseball').m, A: obj('baseball').area, Cd: obj('baseball').Cd, CdSup: obj('baseball').CdSup, dragK: 0 });
     const fh = P.fly({ v0: 11170, thetaDeg: 0, h0: 2.74, m: obj('baseball').m, A: obj('baseball').area, Cd: obj('baseball').Cd, CdSup: obj('baseball').CdSup, dragK: 0 });
     ok('5a: a drag-free level orbit reports its perigee (2.74 m: it skims the air each orbit); one reaching past where the Sun\'s pull wins leaves Earth\'s pull', f.orbit && near(f.perigee, 2.74, 1e-6) && fh.escaped && fh.leavesHill, 'perigee ' + sig(f.perigee) + ' m'); }
+}
+
+// The re-check of round 5's fixes
+{
+  const conc = surf('concrete'), Nmax = (sf, B) => P.qultFor(sf, (B || rex).footB) * 2 * (B || rex).footArea;
+  // an angled unbounded push, bolted: the sideways part goes in whole, the downward part is capped; no NaN anywhere
+  { const r = P.throwObject(ctxOf(Infinity, ON), obj('car'), 45), tg = r.toGround, t = P.throwPartner(ctxOf(Infinity, ON), Object.assign(ctxOf(Infinity, ON), { body: ollie }), 45);
+    const noNaN = (x) => x && Object.values(x).every((v) => typeof v !== 'number' || !Number.isNaN(v));
+    ok('5c: an angled unbounded throw with their recoil taken: the ground takes the sideways part whole, their power supplies the downward part beyond its bearing; no NaN', tg && tg.J === Infinity && tg.supplied === Infinity && tg.suppliedDown === Infinity && tg.suppliedSide === 0 && noNaN(tg) && noNaN(t.r.toGround), JSON.stringify(tg)); }
+  // standing on friction on concrete, where the downward part is borne: the sideways grip is capped at mu x bearing x pulse
+  { const r = P.throwObject(ctxOf(1e6 * g, Object.assign({}, ON, { ownRecoil: false })), obj('car'), 30), tg = r.toGround;
+    ok('5c: on concrete, standing on friction, the downward part borne: the sideways grip is at most mu x bearing x pulse', tg && tg.suppliedDown === 0 && tg.suppliedSide > 0 && near(tg.J, Math.hypot(conc.mu * Nmax(conc) * tg.T, tg.whole * Math.sin(Math.PI / 6)), 1e-9), tg ? sig(tg.J) + ' of ' + sig(tg.whole) : 'none'); }
+  // the bolted partner's push at a dial where the push is shorter than a limb's contact time
+  { const cR = ctxOf(1e8 * g, { unbreakable: true }), sh = P.shove(cR, Object.assign({}, cR, { body: ollie, anchor: 'bolted' }));
+    ok('5c: at 10^8 kg the bolted partner\'s bolts still hand the planet the whole push (about the shover\'s recoil momentum)', sh.toGroundB && near(sh.toGroundB.J, P.vToMomentum(sh.vA, rex.m), 0.02), sh.toGroundB ? sig(sh.toGroundB.J) + ' vs ' + sig(P.vToMomentum(sh.vA, rex.m)) : 'none'); }
+  // the far blast reach is capped by the air in the column (the Great Pyramid straight up at 90%)
+  { const o = obj('pyramid') || obj('pyramids'), E = 1e22, fa = P.fastAir(o, E, 90, 0.1);
+    ok('5a: what the air takes within any reach is at most the whole column\'s take', near(P.fastAirWithin(o, E, 90, 0.1, 1e12), fa.Eair, 1e-9) && P.fastAirWithin(o, E, 90, 0.1, 1e12) < 0.5 * E, sig(fa.Eair / E) + ' of its energy'); }
+  // the far reach is continuous across 1% of light speed (90%, a car)
+  { const reach = (lg) => { const c = ctxOf(Math.pow(10, lg) * g, Object.assign({}, ON, { airAbsorb: 0.9 })), r = P.throwObject(c, obj('car'), 0); return { R: P.RESTRAINT.reach('throw', r, Object.assign({ obj: obj('car'), angle: 0, surface: conc, body: rex, near: 5 }, c)).air, rel: r.flight.relativistic }; };
+    const a = reach(14.9), b = reach(14.95);
+    ok('5a: at 90% the far blast reach is continuous across 1% of light speed', !a.rel && b.rel && b.R / a.R < 1.2, sig(a.R / 1000) + ' km below, ' + sig(b.R / 1000) + ' km above'); }
+  // the game of catch with a dense catcher (his pull rules): past 12 km it still hits the ground with all its energy
+  { const bad = [];
+    for (const kf of [true, false]) for (const sh of [0.5, 0.99]) {
+      const c = ctxOf(1e17 * g, Object.assign({}, ON, { airAbsorb: sh, keepForm: kf, anchor: 'bolted' })), cO = Object.assign({}, c, { body: P.makeBody({ build: 'ollie', H: 3.048, m: 1e20 }) });
+      const L = P.catchLeg(c, cO, obj('baseball'), 15000, 'hard'), E = P.throwObject(c, obj('baseball'), 0).Eobj;
+      if (!(L.wells && L.wells.wellDominated && L.result === 'hits-ground' && near(L.hitsGround.E, E, 1e-6) && L.hitsGround.airK > 0)) bad.push((kf ? 'kept ' : 'not kept ') + sh + ': ' + L.result);
+    }
+    ok('5a: with a dense catcher past 12 km, a fast throw below 100% hits the ground with all its energy (the straight line), kept or not', !bad.length, bad.join('; ')); }
+  // a sheath catch below 1% of light speed keeps the throw's momentum (relCatch at any speed), and its flight time is the
+  // path times the mean of 1/v at the two ends
+  { const c = ctxOf(1e14 * g, Object.assign({}, ON, { airAbsorb: 0.5 })), L = P.catchLeg(c, Object.assign({}, c, { body: ollie }), obj('baseball'), 1000, 'hard');
+    const tWant = L.chord ? 0.5 * L.chord * (1 / L.aim.vL + 1 / L.vArrive) : NaN;
+    ok('5a: a sheath lump caught below 1% of light speed keeps the throw\'s momentum; its flight time follows its slowing', L.result === 'caught' && L.sheath && L.vArrive < 0.01 * P.K.c && L.catch.relativistic && near(L.catch.pIn, P.vToMomentum(L.aim.vL, obj('baseball').m), 0.01) && near(L.time, tWant, 1e-9), sig(L.vArrive) + ' m/s; pIn ' + sig(L.catch.pIn)); }
+  // a missed sheath throw below 100% keeps sweeping air: it leaves the air at the snowplow's speed
+  { const c = ctxOf(1e15 * g, Object.assign({}, ON, { airAbsorb: 0.5 })), L = P.catchLeg(c, Object.assign({}, c, { body: ollie }), obj('baseball'), 1000, 'hard'), m = L.miss;
+    ok('5a: a missed sheath throw below 100% leaves the air at the snowplow\'s speed (here short of escape speed)', m && m.vOut > 0 && m.vOut < P.K.a0 * 50 && m.Eheat > 0 && m.vOut < 11186, m ? sig(m.vOut) + ' m/s' : 'none'); }
+  // the stomp's momentum near light speed follows its energy at every dial (no frozen figure)
+  { const bad = [];
+    for (let lg = 26; lg <= 33.5; lg += 0.01) { const r = P.stomp(ctxOf(Math.pow(10, lg) * g, ON)), b = M.stomp.blow(r, Object.assign({ surface: conc, body: rex }, ON)); const want = Math.sqrt(r.E * r.E + 2 * r.E * rex.legEff * P.K.c * P.K.c) / P.K.c; if (b && isFinite(r.E) && !(Math.abs(b.whole - want) <= 0.05 * want)) { bad.push(lg.toFixed(2)); if (bad.length > 3) break; } }
+    ok('5c: past 1% of light speed the stomp\'s momentum follows its energy at every dial', !bad.length, bad.join(', ')); }
 }
 
 console.log('\n' + (n - fails) + '/' + n + ' passed');
