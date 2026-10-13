@@ -541,7 +541,7 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       if (allout) { await page.selectOption('#effort', 'allout'); await page.waitForTimeout(400); await settle(page, 'bay'); }
     };
     // each Compared with tile, with the energy tile just before it (fmtSI: 3 figures, SI prefix or × 10ⁿ)
-    const tiles = () => page.evaluate(() => Array.from(document.querySelectorAll('#bay .tile')).map((t, i, all) => ({ k: (t.querySelector('.k') || {}).textContent, v: (t.querySelector('.v') || {}).textContent, prev: i ? (all[i - 1].querySelector('.v') || {}).textContent : '' })).filter((t) => t.k === 'Compared with'));
+    const tiles = () => page.evaluate(() => Array.from(document.querySelectorAll('#bay .tile')).map((t, i, all) => ({ k: (t.querySelector('.k') || {}).textContent, v: ((t.querySelector('.v') || {}).textContent || '').replace(/\u00a0/g, ' '), prev: i ? (all[i - 1].querySelector('.v') || {}).textContent : '' })).filter((t) => t.k === 'Compared with'));
     const SUPD = { '⁰': 0, '¹': 1, '²': 2, '³': 3, '⁴': 4, '⁵': 5, '⁶': 6, '⁷': 7, '⁸': 8, '⁹': 9 };
     const parseJ = (t) => {
       t = t.replace(/ /g, ' ').trim();
@@ -576,8 +576,8 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     const weightBad = [];
     for (const st of [{ action: 'weight', H: 10, m: 1e27 }, { action: 'weight', H: 0.1, m: 1.1e13 }, { action: 'weight', m: 1e21 }, { action: 'weight', m: 1e24 }, { action: 'weight', growWhat: 'krakatoa' }, { action: 'weight', growWhat: 'chicxulub' }]) {
       await load(st, false);
-      const t = await page.evaluate(() => document.getElementById('bay').textContent.replace(/\s+/g, ' '));
-      const off = offRule(t).concat(/billion×|trillion×|0\.0\d*% of the energy/.test(t) ? ['a huge ratio'] : []);
+      const t = await page.evaluate(() => document.getElementById('bay').textContent.replace(/\u00a0/g, ' ').replace(/\s+/g, ' '));
+      const off = offRule(t).concat(Array.from(t.matchAll(/[\d.,]+(?: [a-z]+illion)?(?:×|% of) the energy (?:it takes to blow|that holds) the Earth/g)).map((m) => m[0]));
       if (off.length) weightBad.push(JSON.stringify(st) + ': ' + off.join(' | '));
     }
     if (weightBad.length) fail('Weight tab energy comparisons outside the ladder rule: ' + weightBad.slice(0, 3).join(' || ')); else okLog('the Weight tab’s energy comparisons (dense matter, the Earth falling in, growth) keep to the ladder rule');
