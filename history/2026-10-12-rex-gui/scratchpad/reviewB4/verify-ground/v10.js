@@ -1,0 +1,11 @@
+const P = require('/home/user/rex-strength-lab/rex-strength-lab/src/engine.js');
+global.window = {}; require('/home/user/rex-strength-lab/rex-strength-lab/src/data.js');
+const D = window.DINO_DATA;
+const rex = P.makeBody({ build: 'rex', H: 3.048, m: 3007 }), ollie = P.makeBody({ build: 'ollie', H: 3.06, m: 3007 });
+const sand = D.surfaces.find(s => s.id === 'sand'), g = P.K.g;
+const ON = { airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true };
+const mk = (b) => Object.assign({ F: 100 * 907.18474 * g, mode: 'comic', body: b, surface: sand, anchor: 'friction' }, ON);
+const car = D.objects.find(o => o.id === 'car');
+const L = P.catchLeg(mk(rex), mk(ollie), car, 10, 'easy');
+console.log('result', L.result, 'vL', L.vLaunch || L.v, 'toGroundT', L.toGroundT, 'toGroundC', L.toGroundC, 'car p at launch', L.vLaunch ? (car.m * L.vLaunch).toFixed(0) : '');
+console.log(Object.keys(L).slice(0, 40).join(','));

@@ -1,0 +1,10 @@
+const R='/tmp/claude-0/-home-user-rex-strength-lab/70d4d2aa-c3a8-5eb5-9c7c-1c92e3162d09/scratchpad/reviewC1/copy/repo/rex-strength-lab';
+global.window = {}; require(R+'/src/data.js'); const D = window.DINO_DATA;
+const en = D.sourceRows.filter(r=>r.label.startsWith('Energy:'));
+const caret = en.filter(r => /\^/.test(r.value));
+const asciiX = en.filter(r => /\d x \d|\bx 10\^| x \(/.test(r.value) || / x [0-9]/.test(r.value));
+const sup = en.filter(r => /10[⁰¹²³⁴⁵⁶⁷⁸⁹]/.test(r.value));
+const jargon = en.filter(r => /\berg\b|Bethe|kpc|~|\+\/-/.test(r.value + r.label));
+console.log('rows with ^', caret.length, '; with ascii x for times', asciiX.length, '; with superscript powers', sup.length);
+console.log('ascii x rows:', asciiX.map(r=>r.label.slice(8,50)).join(' | '));
+console.log('jargon rows:'); for (const r of jargon) console.log('  ', r.label.slice(8,60), '=>', (r.value.match(/\berg\b|Bethe|kpc|~|\+\/-/g)||[]).join(','));

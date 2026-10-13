@@ -1,0 +1,12 @@
+const {P,D,obj,rex,surf}=require('./env.js');
+const K=P.K,c2=K.c*K.c;
+const ollie=P.makeBody({build:'ollie',H:3.048,m:3007});
+const o=obj('baseball');
+const mk=(b)=>({F:1.81436948e23*K.g,mode:'comic',body:b,surface:surf('concrete'),anchor:'friction',airAbsorb:1,keepForm:true,unbreakable:true,ownRecoil:true});
+const L=P.catchLeg(mk(rex()),mk(ollie),o,100,'hard'); const k=L.catch;
+const m=o.m, mh=2*ollie.handEff, E0=P.momentumToKE(P.vToMomentum(L.vArrive,m),m), gam=1+E0/(m*c2);
+const Mf=Math.sqrt(m*m+mh*mh+2*gam*m*mh), heat=(Mf-m-mh)*c2, gf=(gam*m+mh)/Mf;
+const pIn=P.vToMomentum(L.vArrive,m);
+console.log('E0',E0.toExponential(3),'code E1',k.E1.toExponential(3),'('+(100*k.E1/E0).toFixed(2)+'%)','| exact inelastic first contact: invariant mass',Mf.toFixed(0),'kg (code keeps',(m+mh).toFixed(1),'kg), CM heat',heat.toExponential(3),'('+(100*heat/E0).toFixed(1)+'%), composite gamma',gf.toFixed(2));
+console.log('code tStroke',k.tStroke.toExponential(3),'s; relativistic constant-force stop t = p d / KE =',(pIn*k.stroke/P.momentumToKE(pIn,m+mh)).toExponential(3),'s');
+console.log('code uAfter/c',(k.uAfter/K.c).toFixed(2),'slide',k.slide.toFixed(0),'m; momentum-conserving speed of Ollie+ball /c',(P.momentumToV(pIn,ollie.m+m)/K.c).toFixed(5),'-> his KE share',(P.momentumToKE(pIn,ollie.m+m)/E0*100).toFixed(1)+'%');

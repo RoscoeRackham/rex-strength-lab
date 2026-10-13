@@ -1,0 +1,163 @@
+You are reviewing a change to the Rex Super-Strength Lab (/home/user/rex-strength-lab/rex-strength-lab/), a self-contained HTML page (a claude.ai Artifact) that simulates Rex and Ollie (canon in CLAUDE.md, already loaded; read its "Default powers", "Absorption", "Growth details" and "Restraint" canon). The change is on branch claude/rex-gui-b and implements section 5 of /home/user/rex-strength-lab/rex-strength-lab/BRIEF-gui.md ("Four new powers, on by default"; read "Rules for every item" and section 5 first; section 6 is a later pull request). In short: four powers on by default replace Comic ground, Gentle hold and Cool flight: Air resistance absorbed (state.airAbsorb 0-1, a slider; engine ctx.airAbsorb, dragFactor = 1 - share on every flight of a thrown or held thing), Things keep their form (ctx.keepForm), Unbreakable footing (ctx.unbreakable: the ground never breaks but its push and shaking stay; engine holdsGround(c)), They take their own recoil (ctx.ownRecoil: recoil goes through the feet into the planet as if bolted). The engine keeps the legacy keys groundHolds/gentleHold/coolFlight unchanged for the old tests. With all four off, every engine result must equal main's (test/powers.js part 1 hashes 14,883 cases against test/fixtures/powers-off.json written from main's engine). New: pushes into the ground (toGround {J, T}) give ground shaking via the stomp's ground-wave model; the two-player tests gain ground shaking in their harm check and the six not-so-heroic presets (duoFacts, DUO_PRESET_TEST, makeDuoPlan jobs and variants); the Throw tab's very fast throws fly a straight line (straightThrow) with a relativistic snowplow (fastAir); the lower-the-slider hint; the break-the-ground preset on real ground.
+See the diff: git -C /home/user/rex-strength-lab diff main...claude/rex-gui-b (main's page build: git show main:rex-strength-lab/dist/index.html; main's engine: git show main:rex-strength-lab/src/engine.js). Code: src/engine.js (search holdsGround, airShare, dragFactor, gripSafe, ownAnchor, dragK, toGround, limbPulse, straightThrow, fastAir, fireballAt, arriveFast, catchLeg/leg, tossPartner, throwOnce, jumpOnce, stompOnce, punchOnce, pull, armWrestle, shoveOnce, collide, groundUnderWeight, footprint, RESTRAINT plan/atReal, MOVES, throwBlast), src/app.html (search airAbsorb, keepForm, unbreakable, ownRecoil, renderAirAbsorb, airMeaning, groundShake, duoFacts, makeDuoPlan, resolveDuoEffort, duoEffortBox, duoNoModel, resolveEffort, AIR_PRESETS, stepSide, effortReadout offBy, fastThrowText, bayThrow, bayCatch, legVerdict, catchPartner, wrestleThrow, wrestleShove, bayArm, bayCollide, bayStomp, bayWeight, the state migration near 'The four default powers replaced'), src/static-data.js (assumption cards), research/final-environment.json (sun/galaxy escape facts) and research/reviews/gui-b-escape-facts.json, build-data.py, README.md (Known limits), test/powers.js, test/powers-off-cases.js, test/make-powers-off.js, test/shots.js.
+Build: cd /home/user/rex-strength-lab/rex-strength-lab && python3 build-data.py && node build.js. Tests: node test/calibration.js (80 s), node test/presence.js (60 s), node test/shots.js (4 min; writes dist/preview.html and shots/), node test/powers.js (3 min; --skip-off skips the 75 s powers-off part). Engine in Node: const P = require('/home/user/rex-strength-lab/rex-strength-lab/src/engine.js'); data: global.window = {}; require('/home/user/rex-strength-lab/rex-strength-lab/src/data.js'); const D = window.DINO_DATA; bodies: P.makeBody({ build: 'rex', H: 3.048, m: 3007 }); a ctx is { F: kg * P.K.g, mode: 'comic'|'real', body, surface: D.surfaces.find(s => s.id === 'concrete'), anchor: 'friction'|'bolted', airAbsorb, keepForm, unbreakable, ownRecoil, use }. Render pages with Playwright: require('/opt/node22/lib/node_modules/playwright'); chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' }); wrap dist/index.html in '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body>' + html + '</body></html>' and load it from a file URL under your scratch folder. Settings persist in localStorage key 'rex-lab-v1' (these reset on every load: effort, absorb, growWhat, stepEffort, duoEffort, oEffortOwn, oSame; pick efforts with the #effort / #duo-effort selects). window.DinoPhys is the engine, window.DINO_DATA the data. Searches finish in the background: wait until no 'working it out' / 'Working out' text remains.
+The author's recorded decisions (check whether each is justified by the physics and the code, and stated where the owner will see it; do not report a decision as a defect just because it departs from the brief's letter, unless it is wrong or unjustified):
+1. Every new behaviour is gated by its power; with all four off the engine equals main (powers-off fingerprint) and the page's saved-state comparisons run with the powers off. New result fields appear only when a power is on.
+2. 'Break the ground' sets Unbreakable footing aside for that preset only (its search, effort, courtesy ceiling and the tab shown run on real ground). Not for a custom effort past it: all-out is past it, so every all-out result would break the ground, and the ceiling (worked out with the power on) could sit past the break. The two-player 'ground' preset does the same.
+3. The arm-wrestle table counts as a held thing (Things keep their form holds it).
+4. They take their own recoil covers his throw, punch, stomp (not Collide's stomp-launch), a pull (only the rope's pull back goes into the planet; his legs still need friction), a shove, the thrower in Catch and Wrestle; not arm wrestling, the push match or Collide (Bolted is for being pushed). A clap has no net recoil.
+5. At 100% absorbed his hand still breaks the sound barrier (their own bodies meet real air), so the boom hazard stays; only the object's flight stops booming.
+6. The near-field blast from a throw is (1 - share) x the drag loss of the slowed flight; the slowed flight's whole energy balance gives the air nearly the full drag loss at 50%, spread over a longer path; we judge the blast near him.
+7. Throws past 1% of light speed use the game of catch's relativistic snowplow, which is not linear in the share: at 50% the All-Star baseball's fireball carries about 74% of the 0% value, not half.
+8. The Throw tab's relativistic text was wrong at high gamma (it put all the energy into a fireball within tens of metres; the engine's own snowplow gives about 25% over the whole level path for the All-Star ball) and is gamma-corrected.
+9. Energy taken back from the air stays with the object; it doesn't feed growth.
+10. The ocean figures are the drag the air would have taken along the path actually flown.
+11. Not modelled: Everest hitting a bird / the Moon (no thrown-object collisions besides the landing); ice and a steel deck have no ground-wave model.
+12. 'The Collide charge into an immovable object shakes the ground' is tested with Rex bolted (the page's immovable object); the infinite-mass thought experiment needs no ground; standing Rex slides, the ground takes only his friction, and the plaster preset says it never does.
+13. Two-player ground shaking only with the powers on (toGround only then, to keep powers-off results identical); with them off the presets say the shaking isn't modelled; a thrown partner's landing stays a source as before.
+14. The lower-the-slider hint shows only on Throw and Catch, only for the air presets, only when the same search at 0% finds an effort.
+15. Old saves pick up all four on, even a saved Comic ground or Gentle hold that was off.
+16. CLAUDE.md's build line and CI gained node test/powers.js.
+17. Canon question for the owner: with Unbreakable footing on, instant growth can't drive his soles into the ground, so he grows upward from them (as on Comic ground).
+The owner is a professional critic: factual accuracy and honest labelling come first (see CLAUDE.md). Do NOT edit anything under /home/user/rex-strength-lab and do not commit; work on copies. Write scratch scripts and screenshots under /tmp/claude-0/-home-user-rex-strength-lab/70d4d2aa-c3a8-5eb5-9c7c-1c92e3162d09/scratchpad/reviewB1/ (create it; use a subfolder named for your lens). Every finding must be reproduced: give the exact input or place, what the page or code does (quote it, or the script output), what is correct and why (with numbers), and a minimal fix. Report real defects only: wrong physics or formulas, momentum or energy bookkeeping errors, behaviour the brief requires that is missing or wrong, results that changed when the powers are off, wrong or unsupported claims, contradictions between page text and engine numbers, broken layout or controls, accessibility failures, bugs in state handling or background searches, tests that don't test what they say. Skip style preferences.
+
+Another reviewer (copy lens) reported the findings below. For EACH one, try hard to REFUTE it: reproduce it yourself with your own script or browser run, independently of theirs (write it under /tmp/claude-0/-home-user-rex-strength-lab/70d4d2aa-c3a8-5eb5-9c7c-1c92e3162d09/scratchpad/reviewB1/verify-copy/). Mark real=true only if you reproduced it; put the command and its output in reproduction. Confirm the severity and give the best minimal fix (exact code or text). Default to real=false if you cannot reproduce it.
+
+FINDINGS:
+[
+ {
+  "id": "copy-collide-stomp-launch-blocked",
+  "severity": "major",
+  "title": "Collide's Stomp-launch charge is blocked by They take their own recoil, and the page blames Bolted",
+  "location": "src/engine.js:2019-2021 (chargeSpeed source 'stomp' calls stomp(cA) without stompLaunch); src/app.html:2893 (why.boltedStomp); test/powers.js:223,230",
+  "evidence": "Page, default powers, Rex + Ollie > Collide, charge source Stomp-launch (state {duoOpen:true,duoAction:'collide',colSrc:'stomp'}). The verdict reads: \"Bolted to the planet, Ollie’s stomp can’t launch him, so there’s nothing to land on Rex.\" Ollie is not bolted (oAnchor 'friction'). With ownRecoil:false the same settings give \"Charge: 1.51 m/s (falling back after a stomp-launch)\". Engine: P.collide(cO,cR,{source:'stomp',gb:1}) returns noCharge 'boltedStomp' with ownRecoil true, and v0 64.05 m/s / outcome 'held' with ownRecoil false (1e8 kg dial). stompOnce sets bolted = anchor==='bolted' || (ownRecoil && !ctx.stompLaunch), and collide never sets stompLaunch. Decision 4 and README Known limits both say own recoil does not cover 'Collide's stomp-launch'. test/powers.js:223 checks P.stomp({...stompLaunch:true}) directly and :230 checks Collide only with source 'sprint', so neither test exercises the Collide tab.",
+  "expected": "Decision 4: the stomp-launch is the charge itself, so own recoil leaves it alone and Ollie launches and lands as with the power off. And if a launch really were blocked, the text should not name Bolted when nobody is bolted.",
+  "fix": "In chargeSpeed's 'stomp' branch call stomp(Object.assign({}, cA, { stompLaunch: true })). Add a test that P.collide(..., {source:'stomp'}) gives the same v0 with ownRecoil on and off."
+ },
+ {
+  "id": "copy-throw-shake-said-to-come-from-landing",
+  "severity": "major",
+  "title": "Throw tab puts the throw's own push-into-the-ground shaking 'where it lands', even for throws that never land",
+  "location": "src/app.html:3141 (fromW), 3323 (ceiling 'plaster' text), 3348 (hazard list 'plaster now out to … from where it lands')",
+  "evidence": "Throw tab, level baseball, logKg 9, default powers, effort 'Break windows across the street'. The verdict says \"The baseball leaves Earth for good.\" The effort box says \"…shakes the ground enough that plaster may crack 5 m from where it lands\" and \"Plaster may crack at 5 m from 0.13% (lifting 1,350 t); now out to 25.1 m from where it lands.\" Engine for the same throw: flight.landed false, escaped true, MOVES.throw.shakeFrom(r,o) === 'him', and plaster reach 25.1 m comes from r.toGround (the push his feet hand the planet). The All-Star baseball at 100% does the same: \"Leaves the Earth\", and the hazard list says \"Plaster may crack … now out to the whole planet\", with the effort box saying \"from where it lands\". The duo code already uses shakeFrom (shakeMsg('the thrower’s')). The solo code ignores it.",
+  "expected": "With They take their own recoil or Unbreakable footing on, the shaking source is his feet whenever shakeFrom says 'him'. The page should say 'from him' (or 'at his feet'). It should never place shaking where an object that leaves the Earth lands.",
+  "fix": "In fromW (for rattle and plaster), the ceiling's 'plaster' clause and the hazard list's plaster 'now' text, use M.shakeFrom(r, p.opt) === 'him' ? 'from him' : 'from where it lands'."
+ },
+ {
+  "id": "copy-ice-steel-shaking-claimed",
+  "severity": "major",
+  "title": "On ice and a steel deck the page says the effort box counts the ground shaking, but there is no ground-wave model there and the page never says so",
+  "location": "src/app.html:1452, 1562, 1636, 1676 ('the effort box counts it' / 'gives how far'); 3320-3364 (effortReadout: noShake ignores the surface)",
+  "evidence": "P.impulseSource returns null for ice and steel (all other surfaces return a source), and MOVES.throw.shake gives [] on ice. Throw tab, bus on ice, logKg 7, all-out: the bay says \"The planet takes the momentum, and the ground at his feet shakes from it (the effort box counts it).\" The effort box says only \"Courtesy ceiling: none. Nothing the lab checks for this move harms anyone 5 m or more away\". It lists 3 hazards with no plaster line and no 'not modelled' note. Stomp on steel, logKg 6: \"…so the ground shakes just as it would (the effort box gives how far)\", and the effort box gives nothing. Punch on ice, logKg 6: \"(the effort box counts it)\" alongside \"The searches found none of the hazards the lab checks (… ground shaking that may crack plaster …)\". Jump on ice has the same problem. README Known limits says \"Lake ice and a steel deck have no ground-wave model, so their shaking isn't given\", but the page doesn't say it. The brief (5c) asks every place to 'keep its shaking or say why there is none'.",
+  "expected": "On ice and steel the page should say that the lab has no ground-wave model for this surface, as groundShakeText already does on the two-player tabs. It must not claim the effort box counts the shaking, and it must not say a check found no shaking.",
+  "fix": "Make noShake(move) also true when !P.impulseSource(c.surface, 1, 0.05), with the effort-box note 'The lab has no ground-wave model for the ice/a steel deck, so it can’t judge ground shaking here'. On those surfaces, swap the '(the effort box counts it)' clauses for that sentence."
+ },
+ {
+  "id": "copy-stomp-dent-called-broken-ground",
+  "severity": "major",
+  "title": "Stomp says the ground 'would have broken' for sub-centimetre dents and soil footprints, and removes the footprint",
+  "location": "src/app.html:1601 (taken = c.unbreakable && r.absorbed > 0), 1603, 1617; src/engine.js:1395-1410 (absorbed = E whenever hole > 0; holeDepth 0 whenever holdsGround; realBreaks computed but never used)",
+  "evidence": "Default Stomp tab (least effort, concrete): verdict \"The ground doesn’t break: their power takes that energy back\". Tiles: \"Energy taken back 431 J – it would have broken the ground: 100 mg TNT\" next to \"Hole under his foot: barely a dent\". Item: \"The 100 mg TNT that would have driven his foot 0.56 mm in goes to the endless ocean.\" Sand, least effort: \"it would have broken the ground: 28 mg TNT\" with \"Hole under his foot: barely a dent\". With the power off the same stomp shows \"Energy into the ground 116 J … barely a dent\". The lab's own rule (MOVES.stomp.ground, and extra.realBreaks in stompOnce) counts breaking only for a crater, or a ≥1 cm hole on hard ground. In soil a dent is a footprint, and the switch label says \"Footprints in soil stay\". `grep realBreaks` finds it only where it is defined.",
+  "expected": "With Unbreakable footing on, only energy that would really break the ground (realBreaks) is taken back. A sub-centimetre dent, or any footprint in soil, stays as it is on real ground, with its energy into the ground, and no 'would have broken the ground' label.",
+  "fix": "Use taken = c.unbreakable && r.realBreaks on the page. In stompOnce, keep the real hole and set absorbed only when realBreaks."
+ },
+ {
+  "id": "copy-stomp-earth-breaks-with-power",
+  "severity": "major",
+  "title": "Stomp past Earth's binding energy says both 'the ground doesn't break' and 'Earth breaks up'",
+  "location": "src/app.html:1610 (holeTile checks r.disrupts before the unbreakable branches), 1630",
+  "evidence": "Stomp tab, logKg 33, all-out, default powers. Verdict: \"His stomp lands with 2.7 × 10²³ t TNT. The ground doesn’t break: their power takes that energy back, and the push still shakes it.\" Tile: \"Crater – none: Earth breaks up – more than Earth’s binding energy\". Items: \"That is more energy than it takes to blow Earth apart … A quake magnitude stops meaning anything.\" and \"Unbreakable footing: the ground under him doesn’t break. The 2.7 × 10²³ t TNT that would have blasted a crater goes to the endless ocean.\" The engine still returns disrupts/planetScale from E with holdsGround on.",
+  "expected": "With the energy taken back, the Earth doesn't break. The tile should read 'none: the ground holds (real ground: Earth breaks up)', and the binding-energy item should be in the conditional ('would have been').",
+  "fix": "Check `taken` before r.disrupts and r.planetScale in holeTile, and reword or skip the disrupts and planetScale items when taken."
+ },
+ {
+  "id": "copy-ladder-stomp-quake-with-power",
+  "severity": "major",
+  "title": "The strength ladder still gives stomp quake magnitudes while the default Unbreakable footing makes the Stomp tab disown them",
+  "location": "src/app.html:4094, 4096 (thresholdDefs quake3/quake7 use P.stomp(at(kg)).quake)",
+  "evidence": "Default page ladder: \"Stomp felt as a magnitude 3 quake – 17.5 billion t\" and \"Stomp = magnitude 7 quake – 17.5 quadrillion t\". Its tooltip says \"Needs a lift strength of … at the current size, ground and muscle settings.\" At those strengths the Stomp tab (same default powers) says \"The ground doesn’t break: their power takes that energy back … The page gives no quake magnitude here: that rule counts the energy of a crater.\" The quake chip is replaced by 'The ground holds: their power'. stompOnce still returns quake = seismicMagnitude(E) with unbreakable on, and thKey includes state.unbreakable while the definitions ignore it.",
+  "expected": "Under the current settings the ladder should not claim a stomp quake that the Stomp tab says doesn't happen. Either work these two rungs out on real ground and label them, or replace them with the ground-shaking reach.",
+  "fix": "For quake3/quake7 pass at(kg, { unbreakable: false }) and add '(on real ground)' to the text when state.unbreakable. Or switch them to a ppv or plaster-reach threshold from MOVES.stomp.shake."
+ },
+ {
+  "id": "copy-catch-ball-bursts-with-keep-form",
+  "severity": "major",
+  "title": "Game of catch says 'The ball probably bursts' while Things keep their form holds it together",
+  "location": "src/app.html:2482 (catch verdict), 2500, 2674",
+  "evidence": "Catch, baseball, fastball, logKg 12, default powers. Verdict: \"…his arms bring it in over 91 cm. The ball probably bursts.\" Item: \"…that first hit squeezes the ball 24,000,000–59 million× as hard as … Past that it probably bursts\". Yet the chip says \"Held together by their power\", and another item says \"Things keep their form: Ollie’s stop is spread through the whole baseball, so his hands put no load on it\". The engine sets L.bursts = … && !out.gentleC (false). The 'Game of catch' assumption card says \"With Things keep their form on (the default), the throw, the air and the catch can’t break it\".",
+  "expected": "With Things keep their form on, the verdict and the springy-hit item should say the ball holds (their power), not that it probably bursts.",
+  "fix": "Add && !L.gentleC to the verdict's baseballRatio branch, and to the 'Past that it probably bursts' clause (or replace it with 'Things keep their form holds it together')."
+ },
+ {
+  "id": "copy-catch-drag-when-drag-free",
+  "severity": "minor",
+  "title": "Default Catch view blames drag for the extra speed while the same panel says the flight is drag-free",
+  "location": "src/app.html:2652-2657",
+  "evidence": "Default Catch tab (baseball lob, 100% absorbed): \"With no air it would be 45° at 8.46 m/s; drag asks for 0.085% more.\" A few lines later: \"Air resistance absorbed: their power takes back all of the air’s drag on it, so it flies drag-free: no slowing, no heating and no boom from its flight.\"",
+  "expected": "At 100% absorbed there is no drag to ask for more speed. The small difference comes from somewhere else (the aim search, or the geometry against the flat-Earth formula), or the line should be left out.",
+  "fix": "Skip this item when state.airAbsorb >= 1. Or, at a share, scale the comparison and say 'the X% of the drag their power leaves asks for …'."
+ },
+ {
+  "id": "copy-catch-airwall-ignores-share",
+  "severity": "minor",
+  "title": "Catch 'air is the wall' sentence uses the full drag's slowing length at any share",
+  "location": "src/app.html:2660",
+  "evidence": "Catch, baseball, cLogD 4 (10 km), all-out, at 50% and at 0% absorbed. Both print \"Above the speed of sound it loses 63% of its speed every 60.4 m of air\". The verdicts differ: \"Air stops it within about 1.93 km\" at 50% against 1.01 km at 0%. The length is 2m/(ρ₀·Cd·A), with no share factor.",
+  "expected": "With only (1 − share) of the drag acting, the e-folding length is 2m/(ρ₀·Cd·A·(1 − share)). At 50% that is about 121 m.",
+  "fix": "Divide by (1 − airAbsorb) and add '(at the 50% of the drag their power leaves)' when the share is above 0."
+ },
+ {
+  "id": "copy-power-credited-where-it-changed-nothing",
+  "severity": "minor",
+  "title": "Several 'their power' labels appear where the power changed no result",
+  "location": "src/app.html:3493 (Walk 'Ground under each step'), 1608 and 1626 (Stomp recoil chip and item), 1291 (Lift grip tile), 980 and 2995 (Collide chips and item), 2694 (Catch 'Unbreakable footing: Ollie’s feet…')",
+  "evidence": "Walk on loose sand: the power-on tile reads \"their power holds it: 1.7× what loose sand bears\". Power off: \"1.7× … by the textbook rule; sand takes shallow prints instead\". The engine gives an identical 8.3 mm 'print' and ratio 1.663 either way. Stomp at the default least effort: the chip says \"His recoil goes into the planet: their power\", but with ownRecoil off vBody is also 0 and E is identical (431.98 J; 'his weight holds him down'). Lift, car (grip 189 kPa vs 3 MPa): the chip says \"Grip: object holds\" while the tile says \"none needed – held together by their power (Things keep their form)\". Collide, Stomp-launch landing at 1.51 m/s: \"The ground holds the blow: their power\". Default Collide (Rex standing, 17.7 kN friction): \"Unbreakable footing: the ground under Rex doesn’t break, but the push still goes in.\" These loads would not break concrete anyway. The brief asks that each power show 'where it changed a result'.",
+  "expected": "Show the label only when the result without the power differs: a real ratio above 1 and fp.held, rOwn0.vBody > 0.5, gripRatioRaw > 1, real rock rT ≥ 0.05 or a real hole.",
+  "fix": "Gate each label on the raw or real result the engine already returns: groundRatioRaw, rOwn0, gripRatioRaw, rock.rT, realHole."
+ },
+ {
+  "id": "copy-air-energy-two-places",
+  "severity": "minor",
+  "title": "The drag energy Air resistance absorbed takes back is said to go to the endless ocean and also to stay with the object",
+  "location": "src/app.html:354 (slider hint), 366 (absorb hint), 1459 (Throw 'No drag' item)",
+  "evidence": "Slider hint: \"The share of the air’s drag on what they throw that they take back (to the endless ocean, its momentum too).\" Absorb hint: \"(The drag that Air resistance absorbed takes back is energy the thrown thing keeps, so nothing grows from it.)\" The default Throw item says \"…and taken 42.5 kJ: that goes to the endless ocean. The car keeps its own energy\". That counts the same 42.5 kJ in two places, though the car's energy is unchanged by the drag-free flight.",
+  "expected": "Bookkeeping that adds up. Either the power cancels the drag, so the car keeps the 42.5 kJ and the ocean only records the momentum and energy the air would have exchanged, or the energy goes to the ocean. Not both.",
+  "fix": "Use one wording everywhere, for example: 'Their power cancels the air’s drag on it (to the endless ocean, canon), so the 42.5 kJ the air would have taken stays in the car; nothing grows from it.'"
+ },
+ {
+  "id": "copy-bolted-hint-pull",
+  "severity": "minor",
+  "title": "Bolted hint says own recoil 'does the same job' as Bolted for pulls; it doesn't",
+  "location": "src/app.html:341",
+  "evidence": "Hint: \"For their own throws, punches, stomps and pulls, They take their own recoil does the same job.\" Engine, car at a 100 t dial on concrete: P.pull with ownRecoil gives t10m 1.84 s (footLimited: 'his footing (17.7 kN) … sets the pace'). Bolted gives 0.298 s. Decision 4 and README: for a pull 'his legs still need friction'.",
+  "expected": "For a pull, own recoil sends only the rope's pull back into the planet. Walking still runs on friction, so it is not the same as Bolted.",
+  "fix": "'For their own throws, punches, stomps and shoves, They take their own recoil does the same job; for a pull it takes only the rope’s pull back (his legs still walk on friction).'"
+ },
+ {
+  "id": "copy-ocean-or-growth-wording",
+  "severity": "minor",
+  "title": "Stomp text says the energy 'goes to the endless ocean (here: growth, below)'",
+  "location": "src/app.html:1636",
+  "evidence": "Stomp, logKg 8, all-out, Absorbed energy goes to: Instant growth: \"The 27 kg TNT that would have driven his foot 87 cm in goes to the endless ocean (here: growth, below).\"",
+  "expected": "In a growth mode the energy becomes growth, not ocean. The sentence contradicts itself.",
+  "fix": "'…is taken back' + (state.absorb !== 'ocean' ? ' as growth (below)' : ' to the endless ocean')."
+ },
+ {
+  "id": "copy-escape-speeds-frame",
+  "severity": "minor",
+  "title": "Straight-line text gives the Sun-escape speed without saying it is measured from the Sun",
+  "location": "src/app.html:1329",
+  "evidence": "All-Star baseball at 100%: \"…the 42.1 km/s needed to leave the Sun from here, and the 445 km/s–580 km/s that published estimates give for leaving the Milky Way from the Sun’s position\". The fact sun_escape_speed_at_1au displays \"About 42.1 km/s, measured relative to the Sun\". Its notes say a throw from the ground needs about 16.7 km/s in the best direction and about 72 km/s against Earth's motion. The arithmetic checks: √(2 × 1.3271244e20 / 1.495978707e11) = 42,122 m/s.",
+  "expected": "Keep the 'relative to the Sun' qualifier the research fact carries. The conclusion ('far past') still holds at 3,000 km/s and above, whatever the direction.",
+  "fix": "'…the 42.1 km/s needed to leave the Sun from Earth’s distance (measured from the Sun) …'."
+ },
+ {
+  "id": "copy-plain-numbers-new-sentences",
+  "severity": "minor",
+  "title": "New sentences put mixed or rounded-away numbers side by side",
+  "location": "src/app.html:1341-1342 (fastThrowText), 1481 (Throw 'Things keep their form' item)",
+  "evidence": "All-Star baseball, 0%, Things keep their form off: \"…taking much of its energy (1.6 × 10¹² t TNT) with it. The fireball along its way takes about 280 Gt TNT (18% of it).\" The parenthesis is its whole energy, not what it keeps, and the two figures are in units a reader can't compare (1.6 × 10¹² t is 1,600 Gt). Default Throw view (car at 24%): \"Without it, the force on his palms would be 1× what it can take.\" The engine gives gripRatioRaw 1.037, which reads as 'exactly at the limit'.",
+  "expected": "Same unit within a sentence, and the kept share stated ('keeps about 82%, 1,300 Gt TNT'). For ratios just over 1, say 'about 4% more than it can take'.",
+  "fix": "In fastThrowText, give what it keeps (E − fa.E) with the same fmtTNT scale as fa.E. For ratios below 2 in this item, use a percentage ('X% more than')."
+ }
+]

@@ -1,0 +1,10 @@
+const run = require('./h.js');
+const OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoil: false };
+const cases = [];
+cases.push({ id: 'col-def', tab: 'collide', state: {} });
+cases.push({ id: 'col-def-allout', tab: 'collide', state: {}, pick: 'allout' });
+cases.push({ id: 'col-off-allout', tab: 'collide', state: OFF, pick: 'allout' });
+cases.push({ id: 'col-bolted', tab: 'collide', state: { anchor: 'bolted' } });
+for (const p of ['plaster', 'ground', 'rattle', 'windows']) cases.push({ id: 'col-bolted-' + p, tab: 'collide', state: { anchor: 'bolted' }, pick: p });
+cases.push({ id: 'col-bolted-off-plaster', tab: 'collide', state: { anchor: 'bolted', ...OFF }, pick: 'plaster' });
+run(cases).then(()=>{});

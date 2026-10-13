@@ -1,0 +1,11 @@
+const { P, D, body, surf, ctx } = require('./eng.js');
+const o = D.objects.find((x) => x.id === 'baseball');
+const c = ctx(1e15, { airAbsorb: 0.92 });
+const r = P.throwObject(c, o, 45);
+const fa = P.fastAir(o, r.Eobj, 45, 0.08);
+console.log('v/c', r.v / P.K.c, 'vOut km/s', fa.vOut / 1000);
+const h = body.releaseHeight;
+const as = (x) => (x * 180 / Math.PI * 3600);
+console.log('bendMax at r.v (arcsec)', as(P.straightThrow(r.v, 45, h).bendMax));
+console.log('bendMax at vOut (arcsec)', as(P.straightThrow(fa.vOut, 45, h).bendMax), 'deg', as(P.straightThrow(fa.vOut, 45, h).bendMax) / 3600);
+console.log('ratio', P.straightThrow(fa.vOut, 45, h).bendMax / P.straightThrow(r.v, 45, h).bendMax);

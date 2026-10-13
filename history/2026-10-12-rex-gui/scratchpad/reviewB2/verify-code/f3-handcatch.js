@@ -1,0 +1,18 @@
+global.window = {}; require('/home/user/rex-strength-lab/rex-strength-lab/src/data.js'); const D = window.DINO_DATA;
+const P = require('/home/user/rex-strength-lab/rex-strength-lab/src/engine.js');
+const g = 9.80665, c = 299792458;
+const surf = (id) => D.surfaces.find((s) => s.id === id), obj = (id) => D.objects.find((o) => o.id === id);
+const PW = { airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true };
+const rex = P.makeBody({ build: 'rex', H: 3.048, m: 3007 }), ollie = P.makeBody({ build: 'ollie', H: 3.048, m: 3007 });
+const C = Object.assign({ F: 1e14 * g, mode: 'comic', body: rex, surface: surf('concrete'), anchor: 'friction' }, PW);
+const r = P.throwObject(C, obj('baseball'), 0);
+const o = Object.assign({ near: 5, obj: obj('baseball'), angle: 0, body: rex, surface: C.surface, anchor: C.anchor }, PW);
+const M = P.RESTRAINT.MOVES.throw;
+const bp = M.blastParts(r, o);
+console.log('Throw tab: v', (r.v / c * 100).toFixed(2) + '%c', 'blastParts', JSON.stringify(bp), 'window radius', P.blastRadius(M.blast(r, o), P.RESTRAINT.R.DP_WINDOWS).toFixed(0), 'm; street', P.RESTRAINT.R.STREET);
+const O = Object.assign({ F: 1e14 * g, mode: 'comic', body: ollie, surface: surf('concrete'), anchor: 'friction' }, PW);
+const L = P.catchLeg(C, O, obj('baseball'), 100, 'hard');
+const Eair = L.result === 'fireball' ? L.fireball.E : L.result === 'hits-ground' ? L.hitsGround.E : L.aim && L.aim.vL >= P.K.a0 && L.drag ? P.dragFactor(C) * (L.drag.E || 0) : 0;
+console.log('Catch leg: result', L.result, 'fast', L.fast, 'vL', (L.aim.vL / c * 100).toFixed(2) + '%c', 'drag.E', L.drag.E, 'duoFacts Eair', Eair);
+const gamma = 1 + r.Eobj / (obj('baseball').m * c * c);
+console.log('handAir E at same vL', P.handAir ? P.handAir(rex, obj('baseball'), L.aim.vL, gamma).E.toExponential(3) : 'not exported');

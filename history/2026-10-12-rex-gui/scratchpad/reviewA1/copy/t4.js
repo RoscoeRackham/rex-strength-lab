@@ -1,0 +1,23 @@
+const { open, settle } = require('./lib');
+(async () => {
+  const which = process.argv[2] || 'new';
+  const st = JSON.parse(process.argv[3] || '{}');
+  const tab = process.argv[4] || 'throw';
+  const duo = ['arm','wrestle','catch','collide'].includes(tab);
+  const s = Object.assign({}, st, duo ? { duoAction: tab, duoOpen: true, group: 'duo' } : { action: tab, group: 'solo' });
+  const { browser, page, errs } = await open(which, s);
+  const sel = which === 'new' && duo ? '#duo-bay' : '#bay';
+  await settle(page, sel, 30000);
+  const btn = process.argv[5] || 'All-out';
+  const clicked = await page.evaluate(([sel, btn]) => { const e = document.querySelector(sel === '#duo-bay' || document.querySelector('#duo-effort') ? '#duo-effort' : '#effort'); if (!e) return 'nosel'; e.value = btn; e.dispatchEvent(new Event('change', { bubbles: true })); return e.id + '=' + e.value; }, [sel, btn]);
+  await page.waitForTimeout(1500);
+  await settle(page, sel, 30000);
+  await page.evaluate((sel) => { for (const d of document.querySelectorAll(sel + ' details')) d.open = true; }, sel);
+  const txt = await page.evaluate((sel) => document.querySelector(sel).innerText, sel);
+  const grep = process.argv[6];
+  console.log('clicked', clicked);
+  if (grep) console.log(txt.split('\n').filter((l) => new RegExp(grep, 'i').test(l)).join('\n'));
+  else console.log(txt);
+  console.log('errs', errs);
+  await browser.close();
+})();

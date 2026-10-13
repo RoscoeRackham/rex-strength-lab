@@ -1,0 +1,315 @@
+"""Compile the 'disaster' band (about 1e11 to 1e17 J) from the researcher's
+output and the skeptic's checks. Writes compiled/disaster.json."""
+import json, math, sys
+
+OUT = sys.argv[1]
+KT = 4.184e12  # J per kt TNT (NIST SP 811 B.9, existing fact energy_tnt_equivalent_per_tonne)
+
+HST_REFRESH = {"title": "NASA Science: A NASA Refresher on Hubble Facts for the 25th Anniversary (Goddard, 16 Apr 2015)",
+               "url": "https://science.nasa.gov/missions/hubble/a-nasa-refresher-on-hubble-facts-for-the-25th-anniversary/"}
+HST_SHEET = {"title": "NASA Facts: Hubble Space Telescope - An Overview (fact sheet PDF)",
+             "url": "https://science.nasa.gov/wp-content/uploads/2023/04/hst_overview_fact_sheet.pdf"}
+ISS_FF = {"title": "NASA: Space Station Facts and Figures",
+          "url": "https://www.nasa.gov/international-space-station/space-station-facts-and-figures/"}
+NV209 = "https://www.osti.gov/servlets/purl/1351809"
+
+facts = []
+
+def add(**kw):
+    n = kw.get("notes", "")
+    assert len(n) <= 950, (kw["key"], len(n))
+    facts.append(kw)
+
+# ---------- Hubble ----------
+add(key="energy_input_hubble_mass", category="energy_reference",
+    label="Hubble Space Telescope: mass (after the 2009 servicing mission)",
+    status="verified", value_si=12247, unit_si="kg",
+    display="about 27,000 lb (12,250 kg); about 24,000 lb at launch",
+    sources=[HST_REFRESH, HST_SHEET],
+    notes=("NASA refresher: 'Hubble weighed about 24,000 pounds at launch and currently weighs about 27,000 pounds "
+           "following the final servicing mission in 2009.' Its spec list: 'Post SM4: ~27,000 lbs. (~12,247 kg)', so "
+           "12,247 kg is NASA's own conversion. Fact sheet: 'Weighing about 27,000 pounds, the telescope is approximately "
+           "the same size and weight as a school bus.' A NASA round figure, good to a few per cent. Input to "
+           "energy_hubble_orbit_kinetic, not a rung. Skeptic: confirmed (and found NASA's 12,247 kg in the spec list)."),
+    who_when="NASA (2015 refresher; fact sheet)")
+
+add(key="energy_input_hubble_speed", category="energy_reference",
+    label="Hubble Space Telescope: orbital speed",
+    status="verified", value_si=7600, unit_si="m/s", low_si=7583, high_si=7600,
+    display="about 17,000 mph (27,300 km/h, 7.6 km/s) at 340 miles (547 km) up",
+    sources=[HST_REFRESH, HST_SHEET],
+    notes=("NASA refresher: 'Altitude of 340 miles (295 nautical miles, 547 km ... Time to Complete One Orbit: ~95 minutes "
+           "Speed: ~17,000 mph (27,300 kph)'. Fact sheet: 'the speed of about 5 miles (8 km) per second' (rounder). "
+           "17,000 mph = 7,600 m/s; 27,300 km/h = 7,583 m/s. Check: circular-orbit speed sqrt(GM/r) at 547 km "
+           "(GM = 3.986e14 m^3/s^2, R = 6,371 km) is 7,591 m/s. Speed relative to Earth's centre. Input to "
+           "energy_hubble_orbit_kinetic, not a rung. Skeptic: confirmed; 547 km is the 2015 height, and Hubble has since "
+           "sunk somewhat lower (skeptic's figure, not sourced), which raises the speed by under 0.3%."),
+    who_when="NASA (2015)")
+
+add(key="energy_hubble_orbit_kinetic", category="energy_reference",
+    label="Hubble Space Telescope: kinetic energy (energy of motion) in orbit",
+    status="derived", value_si=3.54e11, unit_si="J",
+    display="about 350 GJ (12,250 kg at about 7.6 km/s; about 85 t of TNT)",
+    sources=[HST_REFRESH, HST_SHEET],
+    notes=("KE = 1/2 m v^2 with m = 12,247 kg (energy_input_hubble_mass) and v = 7,600 m/s (energy_input_hubble_speed) "
+           "= 3.54e11 J (84.5 t TNT). At the circular-orbit speed for 547 km (7,591 m/s): 3.53e11 J. NASA round inputs, "
+           "so about +/-5%. Speed measured from Earth's centre; relative to the ground below it is up to about 5% lower "
+           "(about 10% less energy). This is the energy to stop Hubble, or to bring it up to speed; lifting it to its "
+           "height takes about 6.1e10 J more (17%), from GM m (1/R - 1/(R+h)). Skeptic: arithmetic confirmed; page phrase "
+           "changed to say 'energy of motion', since 'the Hubble Space Telescope in orbit' does not explain itself."),
+    who_when="Derived 2026-10 from NASA figures",
+    page_short="the Hubble Space Telescope's energy of motion in orbit")
+
+# ---------- Tianjin ----------
+add(key="energy_tianjin_explosions_2015", category="energy_reference",
+    label="Tianjin port explosions, 12 Aug 2015: total TNT-equivalent energy (official investigation)",
+    status="verified", value_si=450 * 4.184e9, unit_si="J",
+    display="about 450 t TNT in all (1.9 TJ); the two main blasts about 15 t and 430 t",
+    sources=[{"title": "State Council investigation team (Feb 2016): 天津港“8·12”瑞海公司危险品仓库特别重大火灾爆炸事故调查报告 (official report, gov.cn PDF), pp. 17-18",
+              "url": "https://www.gov.cn/foot/2016-02/05/5039788/files/460731d8cb4c4488be3bb0c218f8b527.pdf"}],
+    notes=("Report p. 17: '第一次爆炸的能量约为 15 吨 TNT 当量，第二次爆炸的能量约为 430 吨 TNT 当量' (from simulations by the "
+           "State Key Laboratory of Explosion Science and Technology: first blast about 15 t TNT, second about 430 t). "
+           "p. 18: '确定本次事故中爆炸总能量约为 450 吨 TNT 当量' (allowing for several smaller blasts, total about 450 t TNT). "
+           "450 t x 4.184e9 J = 1.88e12 J. No range given. The report also lists 800 t of ammonium nitrate in storage. "
+           "An academic estimate of about 500 t (Fang et al. 2017) was seen only in a search summary, not opened. "
+           "Alternative to Beirut for the 1e12 J slot (one official number, not rough; less known in the West). "
+           "Skeptic: confirmed word for word; citation corrected from p. 17 to pp. 17-18."),
+    who_when="Chinese State Council investigation team, Feb 2016",
+    page_short="the Tianjin port explosions of 2015")
+
+# ---------- Beirut (corrected) ----------
+add(key="energy_beirut_explosion_2020", category="energy_reference",
+    label="Beirut port explosion, 4 Aug 2020: TNT-equivalent yield",
+    status="verified", value_si=0.50 * KT, unit_si="J", low_si=0.30 * KT, high_si=1.12 * KT,
+    display="about 0.3-1.1 kt TNT in published estimates (0.13-2 kt at the extremes); 0.5 kt (2.1 TJ) used, Rigby et al.'s best estimate",
+    sources=[{"title": "Rigby et al. (2020) Preliminary yield estimation of the 2020 Beirut explosion using video footage from social media, Shock Waves 30:671-675, doi:10.1007/s00193-020-00970-z (published version, White Rose repository)",
+              "url": "https://eprints.whiterose.ac.uk/id/eprint/165010/8/Rigby2020_Article_PreliminaryYieldEstimationOfTh.pdf"},
+             {"title": "Pilger et al. (2021) Yield estimation of the 2020 Beirut explosion using open access waveform and remote sensing data, Scientific Reports 11:14144, doi:10.1038/s41598-021-93690-y (PMC8266808)",
+              "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8266808/"}],
+    notes=("Rigby abstract: 'The best estimate and reasonable upper limit ... are 0.50 kt TNT and 1.12 kt TNT, "
+           "respectively'; about 2,750 t of ammonium nitrate. Pilger: yield 'determined within 0.13 to 2 kt TNT'; video "
+           "studies give 'the range from 0.3 to 1.12 kt TNT'; infrasound (LANL relation) 'about 0.5 kt TNT ... "
+           "(0.14-1.12 kt TNT)'; near-source damage 'best explained by a yield of 0.8-1.1 kt TNT'; seismic 0.13-0.34 kt "
+           "is 'a lower bound'. Value 0.50 kt, Rigby's published best estimate (Pilger's infrasound figure agrees). "
+           "low/high: the published video range, 0.3-1.12 kt. 1 kt = 4.184e12 J. High/value = 2.2, so rough multiple "
+           "only. Skeptic: the earlier 0.75 kt was a chosen midpoint, not a published estimate, and the 0.5-1.1 kt range "
+           "left out lower published estimates; value, range and display corrected."),
+    who_when="Rigby et al. 2020; Pilger et al. 2021",
+    page_short="the Beirut port explosion of 2020")
+
+# ---------- Halifax ----------
+add(key="energy_halifax_explosion_1917", category="energy_reference",
+    label="Halifax explosion, 6 Dec 1917: TNT-equivalent energy",
+    status="verified", value_si=2.9 * KT, unit_si="J",
+    display="about 2.9 kt TNT (12 TJ); approximate, no published error bar",
+    sources=[{"title": "Parks Canada backgrounder: The Halifax Explosion (Government of Canada, 2016)",
+              "url": "https://www.canada.ca/en/parks-canada/news/2016/07/the-halifax-explosion.html"},
+             {"title": "NATO Munitions Safety Information Analysis Center (MSIAC): accident poster 07, Halifax, Nova Scotia, 6 Dec 1917",
+              "url": "https://www.msiac.nato.int/app/uploads/2023/01/msiac_accident_poster_07_-_halifax_nova_scotia_6_dec_1917.pdf"},
+             {"title": "Wikipedia: Halifax Explosion (cites Ruffman & Howell 1994, Ground Zero, p. 276, for 2.9 kt)",
+              "url": "https://en.wikipedia.org/wiki/Halifax_Explosion"}],
+    notes=("Parks Canada: 'With a force equivalent to 2.9 kilotons of TNT' (read only through a fetch tool; curl fails). "
+           "MSIAC: 'The SS Mont Blanc was carrying 2.3 million kg of explosives, the majority of which was picric acid' and "
+           "'The energy released was estimated to be roughly equivalent to 2.9 million kg of TNT.' Both trace to Ruffman & "
+           "Howell (eds) 1994, Ground Zero, p. 276 (via Wikipedia; book not opened). No error bar published; treat as "
+           "approximate. 2.9 x 4.184e12 = 1.21e13 J. Skeptic: confirmed; 'verified' is defensible (a Canadian government "
+           "agency and NATO MSIAC), though both summarise one book; the cargo size supports roughly 2.5-3 kt (skeptic's "
+           "reasoning, not sourced). Not the recommended rung: the Space Station's energy of motion sits within 4% of it, "
+           "is better constrained and is not a disaster."),
+    who_when="Ruffman & Howell 1994, via Parks Canada 2016 and NATO MSIAC",
+    page_short="the Halifax explosion of 1917")
+
+# ---------- ISS ----------
+add(key="energy_input_iss_mass", category="energy_reference",
+    label="International Space Station: mass",
+    status="verified", value_si=419725, unit_si="kg",
+    display="925,335 lb (419,725 kg)",
+    sources=[ISS_FF],
+    notes=("NASA: 'Mass: 925,335 pounds (419,725 kilograms)'. 925,335 lb x 0.45359237 = 419,725 kg. The station's mass "
+           "changes a little as vehicles dock and leave; the page gives no date for the figure. Input to "
+           "energy_iss_orbit_kinetic, not a rung. Skeptic: confirmed."),
+    who_when="NASA, accessed 2026-10")
+
+add(key="energy_input_iss_speed", category="energy_reference",
+    label="International Space Station: orbital speed",
+    status="derived", value_si=7741, unit_si="m/s", low_si=7660, high_si=8047,
+    display="about 7.7 km/s (from NASA's 90-minute orbit); NASA rounds it to 'five miles per second' (8.0 km/s); about 7.66 km/s at its real height",
+    sources=[ISS_FF],
+    notes=("NASA: crew 'traveling at a speed of five miles per second, orbiting Earth about every 90 minutes'; 'In 24 "
+           "hours, the space station makes 16 orbits of Earth'. Circular orbit: v = (2 pi GM / T)^(1/3) with T = 5,400 s "
+           "and GM = 3.986e14 m^3/s^2 gives 7,741 m/s. high_si: NASA's rounder 'five miles per second' (8,047 m/s). "
+           "low_si: circular speed at about 420 km, 7,660 m/s (physics; the height is not sourced). Skeptic: the 90-minute "
+           "period is rounded and implies an orbit only about 280 km up, so 7,741 m/s is about 1% high; low_si added. "
+           "Speed relative to Earth's centre. Input to energy_iss_orbit_kinetic, not a rung."),
+    who_when="Derived 2026-10 from NASA figures")
+
+m_iss = 419725
+ke = lambda v: 0.5 * m_iss * v * v
+add(key="energy_iss_orbit_kinetic", category="energy_reference",
+    label="International Space Station: kinetic energy (energy of motion) in orbit",
+    status="derived", value_si=round(ke(7741), -10), unit_si="J",
+    low_si=round(ke(7660), -10), high_si=round(ke(8046.72), -10),
+    display="about 12-14 TJ (420 t at 7.7-8.0 km/s; about 3 kt of TNT); 12.6 TJ used",
+    sources=[ISS_FF],
+    notes=("KE = 1/2 m v^2 with m = 419,725 kg (energy_input_iss_mass) and v = 7,741 m/s (energy_input_iss_speed) = "
+           "1.258e13 J (3.0 kt TNT). With NASA's 'five miles per second': 1.359e13 J (high_si); at the realistic "
+           "7.66 km/s: 1.231e13 J (low_si). Good to about 10%. Speed relative to Earth's centre. Within 4% of the Halifax "
+           "explosion (energy_halifax_explosion_1917), which it replaces as the 1e13 J rung: better constrained, known "
+           "worldwide, not a disaster. Skeptic: arithmetic confirmed; low_si added and display widened to 12-14 TJ; page "
+           "phrase says 'energy of motion'."),
+    who_when="Derived 2026-10 from NASA figures",
+    page_short="the International Space Station's energy of motion in orbit")
+
+# ---------- Hiroshima (update of existing key) ----------
+add(key="energy_hiroshima_yield", category="energy_reference",
+    label="Hiroshima (Little Boy) yield",
+    status="verified", value_si=15 * KT, unit_si="J", low_si=12 * KT, high_si=18 * KT,
+    display="15 kt (LANL: outside limits +/-20%, so 12-18 kt) = 6.3 x 10^13 J; DS02 dosimetry: 16 +/- 2 kt",
+    sources=[{"title": "Malik (1985) Yields of the Hiroshima and Nagasaki nuclear explosions, LANL report LA-8819, OSTI 1489669 (abstract)",
+              "url": "https://www.osti.gov/biblio/1489669"},
+             {"title": "DOE/NV-209 Rev 16 (Sept 2015) United States Nuclear Tests, July 1945 through September 1992, NNSA Nevada Field Office, PDF p. 15",
+              "url": NV209},
+             {"title": "RERF DS02 report, Chapter 1 Bomb Parameters (Kerr, Young, Cullings, Christy)",
+              "url": "https://www.rerf.or.jp/library/scidata/scids/ds02/pdf/chapter01/cha01-p42-61.pdf"}],
+    notes=("Update of the existing fact (same key and values): status claimed -> verified, now from LANL/DOE/RERF "
+           "sources instead of Wikipedia. Malik (OSTI abstract): 'Hiroshima 15 kt Nagasaki 21 kt The outside limits of "
+           "uncertainties in these values are believed to be 20 percent for Hiroshima and 10 percent for Nagasaki.' "
+           "DOE/NV-209 (PDF p. 15): 'The first combat detonation was a 15-kt weapon airdropped August 6, 1945, at "
+           "Hiroshima, Japan.' DS02 Ch. 1: 'The calculated yield for the Hiroshima device is currently 16 +/- 2 kt', "
+           "with 14 and 18 kt at 99% confidence. All within 12-18 kt. Skeptic: all three confirmed; DS02's 99% range "
+           "added."),
+    who_when="Malik (LANL) 1985; DOE/NV-209 Rev 16, 2015; RERF DS02",
+    page_short="the Hiroshima bomb")
+
+# ---------- Sedan ----------
+add(key="energy_sedan_test_1962", category="energy_reference",
+    label="Sedan nuclear cratering test, 6 Jul 1962 (Nevada): yield",
+    status="verified", value_si=104 * KT, unit_si="J",
+    display="104 kt = 4.4 x 10^14 J; dug a crater 1,280 ft (390 m) wide and 320 ft (98 m) deep",
+    sources=[{"title": "NNSS fact sheet: Sedan Crater (NNSS-SEDN-U-0047, Rev 01)",
+              "url": "https://nnss.gov/wp-content/uploads/2023/04/NNSS-SEDN-U-0047-Rev01-1.pdf"},
+             {"title": "DOE/NV-209 Rev 16 (Sept 2015) United States Nuclear Tests (Sedan entry, PDF p. 41)",
+              "url": NV209}],
+    notes=("NNSS: 'an excavation experiment using a 104-kiloton thermonuclear device. The test, detonated 635 feet "
+           "underground ... displaced about 12 million tons of earth, creating a crater 1,280 feet in diameter and 320 "
+           "feet deep.' DOE/NV-209 (PDF p. 41): Sedan, 07/06/1962, Crater, Plowshare, 104 kt; the by-name list and text "
+           "agree. One official value, no range. 104 x 4.184e12 = 4.35e14 J. A peaceful earth-moving experiment, no "
+           "casualties. Skeptic: confirmed, but obscure as a yardstick (a general reader won't know it); usable only "
+           "with a gloss, hence the long phrase. Not a recommended rung: Hiroshima (up to 10x) and Chelyabinsk (down to "
+           "10%) already cover its decade; kept as the fallback if a tighter step is wanted there."),
+    who_when="US AEC test; DOE/NNSA 2015, NNSS fact sheet",
+    page_short="the 1962 Sedan nuclear test, which dug a crater 390 m wide")
+
+# ---------- M7 earthquake ----------
+add(key="energy_earthquake_magnitude_7", category="energy_reference",
+    label="Seismic energy radiated by a magnitude 7 earthquake (rough)",
+    status="estimate", value_si=2.0e15, unit_si="J", low_si=7.1e14, high_si=2.1e15,
+    display="about 2 x 10^15 J of shaking (USGS formulas give 0.7-2.1 x 10^15 J); real quakes vary more",
+    sources=[{"title": "USGS: Earthquake Magnitude, Energy Release, and Shaking Intensity",
+              "url": "https://www.usgs.gov/programs/earthquake-hazards/earthquake-magnitude-energy-release-and-shaking-intensity"},
+             {"title": "USGS: Magnitude Types (Me entry)",
+              "url": "https://www.usgs.gov/programs/earthquake-hazards/magnitude-types"}],
+    notes=("USGS energy page: 'log E = 5.24 + 1.44Mw' (units not stated; joules fits) -> 2.1e15 J at M7. Magnitude "
+           "Types: 'log10E = 11.8 + 1.5MS' with E 'in ergs' -> 2.0e15 J at M7, the relation the page's seismic model "
+           "uses (seismic_gutenberg_richter_energy_magnitude). Same entry: 'Me = 2/3 log10E - 2.9'; read with E in "
+           "joules, Me 7 means 7.1e14 J (low_si). Radiated shaking only, a small part of all the energy released. "
+           "Skeptic: formulas confirmed; the value sits at the top of the range (geometric middle 1.2e15 J), and the "
+           "spread is only the formulas' disagreement: real M7 quakes vary more in what they radiate (about 5x; general "
+           "seismology, not checked). Rough multiple only. Not a recommended rung (Chelyabinsk covers 1e15 J)."),
+    who_when="Gutenberg-Richter via USGS; estimate 2026-10",
+    page_short="the shaking from a magnitude 7 earthquake")
+
+# ---------- Chelyabinsk ----------
+add(key="energy_chelyabinsk_meteor_2013", category="energy_reference",
+    label="Chelyabinsk meteor airburst, 15 Feb 2013: energy",
+    status="verified", value_si=500 * 4.184e12, unit_si="J", low_si=400 * 4.184e12, high_si=600 * 4.184e12,
+    display="about 500 +/- 100 kt TNT (1.7-2.5 PJ); NASA's fireball table: 441 kt",
+    sources=[{"title": "Brown et al. (2013) A 500-kiloton airburst over Chelyabinsk and an enhanced hazard from small impactors, Nature 503:238-241, doi:10.1038/nature12741",
+              "url": "https://www.nature.com/articles/nature12741"},
+             {"title": "NASA/JPL CNEOS Fireball Data API, 2013-02-15 event",
+              "url": "https://ssd-api.jpl.nasa.gov/fireball.api?date-min=2013-02-15&date-max=2013-02-16&req-alt=false"}],
+    notes=("Brown et al. abstract: 'the airburst of an asteroid about 19 metres (17 to 20 metres) in diameter ... "
+           "estimated to have an energy equivalent of approximately 500 (+/-100) kilotons of trinitrotoluene (TNT, where 1 "
+           "kiloton of TNT = 4.185x10^12 joules)'. Nature's editor summary: '400 to 600 kilotons of TNT'. JPL fireball API "
+           "row: 2013-02-15 03:20:26, radiated energy 37500 (x10^10 J), impact-e 441 (kt), altitude 23.3 km, speed "
+           "18.6 km/s; 441 kt sits inside 400-600 kt. Value 500 kt x 4.184e12 J = 2.09e15 J (Brown's 4.185e12 changes "
+           "it by 0.02%). About +/-20%. Skeptic: all confirmed; the Popova et al. 2013 abstract (PubMed) gives no energy "
+           "figure."),
+    who_when="Brown et al. 2013 (Nature); NASA JPL CNEOS",
+    page_short="the Chelyabinsk meteor of 2013")
+
+# ---------- Hoover Dam ----------
+add(key="energy_hoover_dam_year", category="energy_reference",
+    label="Hoover Dam: electricity generated in an average year",
+    status="verified", value_si=4.0e9 * 3.6e6, unit_si="J", low_si=4.0e9 * 3.6e6, high_si=4.2e9 * 3.6e6,
+    display="about 4 billion kWh in an average year (14 PJ); 1947-2008 average 4.2 billion kWh",
+    sources=[{"title": "US Bureau of Reclamation: Hoover Dam - Frequently Asked Questions: Hydropower (last updated 1 Aug 2018)",
+              "url": "https://www.usbr.gov/lc/hooverdam/faqs/powerfaq.html"}],
+    notes=("USBR: 'Hoover Dam generates, on average, about 4 billion kilowatt-hours of hydroelectric power each year for "
+           "use in Nevada, Arizona, and California - enough to serve 1.3 million people.' Also: 'The average annual net "
+           "generation for Hoover Powerplant for 1947 through 2008 was about 4.2 billion kilowatt-hours' (1999-2008: also "
+           "about 4.2 billion). Single years vary: maximum 10,348,020,500 kWh in 1984 (3.7e16 J), minimum since 1940 "
+           "2,648,224,700 kWh in 1956 (9.5e15 J). 4.0e9 kWh x 3.6e6 J/kWh = 1.44e16 J; low/high are USBR's two stated "
+           "averages. The page's data run only to 2008; drought-era output since was not checked. Skeptic: confirmed "
+           "word for word; page phrase changed to 'an average year'."),
+    who_when="US Bureau of Reclamation (FAQ, data to 2008)",
+    page_short="an average year of the Hoover Dam's electricity")
+
+# ---------- Castle Bravo (update of existing key) ----------
+add(key="energy_castle_bravo_yield", category="energy_reference",
+    label="Castle Bravo yield (28 Feb 1954 GMT; 1 Mar local)",
+    status="verified", value_si=15000 * 4.184e12, unit_si="J",
+    display="15 Mt = 6.3 x 10^16 J",
+    sources=[{"title": "DOE/NV-209 Rev 16 (Sept 2015) United States Nuclear Tests, July 1945 through September 1992, NNSA Nevada Field Office (Bravo entries, PDF pp. 30 and 91)",
+              "url": NV209},
+             {"title": "Nuclear Weapon Archive: Operation Castle",
+              "url": "http://nuclearweaponarchive.org/Usa/Tests/Castle.html"}],
+    notes=("Update of the existing fact (same key and value): status claimed -> verified. DOE/NV-209 Rev 16, the "
+           "official US test list the earlier research could not retrieve, PDF p. 30: 'Bravo / 44 Experimental "
+           "thermonuclear device 02/28/1954 LANL Bikini Atoll ---- Surface 18:45:00.00 ... Weapons Related 15 Mt'. NWA: "
+           "'18:45:00.0 28 February 1954 (GMT) 06:45:00.0 1 March 1954 (local) ... Yield: 15 Mt'; NWA lists 10 Mt of it as "
+           "fission. Sources differ on the predicted yield (NWA 6 Mt, Wikipedia 5 Mt); that does not affect the 15 Mt "
+           "actual. 15,000 x 4.184e12 = 6.28e16 J. Skeptic: value and status confirmed; page citation corrected from "
+           "PDF p. 60 to p. 91 (the by-name listing)."),
+    who_when="DOE/NNSA 2015; Nuclear Weapon Archive",
+    page_short="the Castle Bravo H-bomb test")
+
+# ---------- rungs ----------
+by = {f["key"]: f for f in facts}
+rung_keys = ["energy_hubble_orbit_kinetic", "energy_beirut_explosion_2020", "energy_iss_orbit_kinetic",
+             "energy_hiroshima_yield", "energy_chelyabinsk_meteor_2013", "energy_hoover_dam_year",
+             "energy_castle_bravo_yield"]
+rungs = []
+for k in rung_keys:
+    f = by[k]
+    v = f["value_si"]
+    rough = (f.get("high_si", v) / v > 2) or (v / f.get("low_si", v) > 2)
+    rungs.append({"key": k, "J": v, "page_short": f["page_short"], "rough": rough})
+rungs.sort(key=lambda r: r["J"])
+
+MOAB, TSAR = 4.6024e10, 2.092e17
+chain = [("MOAB", MOAB)] + [(r["key"], r["J"]) for r in rungs] + [("Tsar Bomba", TSAR)]
+steps = []
+for (a, x), (b, y) in zip(chain, chain[1:]):
+    steps.append(f"{b} {y/x:.1f}x")
+print("steps:", "; ".join(steps))
+for r in rungs:
+    print(r)
+
+gaps = ("None in this band. With the recommended rungs, the steps from the MOAB (4.6e10 J, explosive band) to the Tsar "
+        "Bomba (2.1e17 J, geophysical band) are: Hubble's energy of motion 7.7x, Beirut 5.9x, the Space Station's "
+        "energy of motion 6.0x, Hiroshima 5.0x, Chelyabinsk 33x, an average Hoover Dam year 6.9x, Castle Bravo 4.4x, "
+        "the Tsar Bomba 3.3x. One decade has no rung inside it: 1e14 to 1e15 J (Hiroshima 6.3e13 to Chelyabinsk "
+        "2.1e15, 33x). It is covered from both sides (at most 10x Hiroshima up to 6.3e14 J, at least 10% of "
+        "Chelyabinsk from 2.1e14 J; worst case about 6x Hiroshima or 17% of Chelyabinsk), but it is the widest step. "
+        "Fallback for it: the Sedan test (4.4e14 J, verified, obscure, needs its gloss). On firm (non-rough) rungs "
+        "only, Hubble to the Space Station is 36x, still covered from both sides. If the MOAB (still 'claimed', "
+        "Wikipedia only) is dropped, the A380 (1.8e10 J, explosive band) to Hubble is 20x, also covered from both "
+        "sides.")
+
+out = {"facts": facts, "rungs": rungs, "gaps": gaps}
+with open(OUT, "w", encoding="utf-8") as fh:
+    json.dump(out, fh, ensure_ascii=False, indent=1)
+print(len(facts), "facts written to", OUT)
+for f in facts:
+    print(f["key"], f["status"], f["value_si"], f.get("low_si"), f.get("high_si"), len(f["notes"]))
