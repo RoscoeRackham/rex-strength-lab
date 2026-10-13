@@ -179,10 +179,13 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     // Rex bolted on Collide the least disruptive effort stops where the rock around his bolts starts to crack (main's
     // page called an effort harmless while showing that rock cracking). Those Collide cases are compared all-out, with
     // the effort box checked on its own.
-    const CAVEAT = [/(Nothing in this test does harm, even all-out, with the nearest people and buildings 5 m away\.)/g, '$1 It doesn’t judge the ground shaking here.'];
-    const NO_SHAKE_JUDGED = new Set(['s3-wrestle-friction-friction', 's3-wrestle-friction-bolted', 's3-wrestle-bolted-friction', 's4-catch']);
+    // (each with the reason the page now gives: the shoving match's physics, or the powers being off)
+    const PUSH_WHY = ' In a shoving match their pushes reach the ground equal and opposite, so no net push goes in to shake it, and nothing moves fast enough to make a blast.';
+    const NO_SHAKE_JUDGED = new Map([['s3-wrestle-friction-friction', PUSH_WHY], ['s3-wrestle-friction-bolted', PUSH_WHY], ['s3-wrestle-bolted-friction', PUSH_WHY],
+      ['s4-catch', ' The lab models the ground shaking in this test only through their powers (Unbreakable footing or They take their own recoil), and both are off.']]);
+    const CAVEAT = [/(Nothing in this test does harm, even all-out, with the nearest people and buildings 5 m away\.)/g, (id) => '$1' + NO_SHAKE_JUDGED.get(id)];
     const same = (id, got, skip) => { const b = BEFORE[id], keys = Object.keys(b).filter((k) => !(skip || []).includes(k));
-      const was = JSON.stringify(Object.fromEntries(keys.map((k) => { const v = JSON.parse(editAll({ [k]: b[k] }))[k]; return [k, NO_SHAKE_JUDGED.has(id) && k === 'effort' ? v.map((x) => x && x.replace(CAVEAT[0], CAVEAT[1])) : v]; }))), now = JSON.stringify(Object.fromEntries(keys.map((k) => [k, got[k]])));
+      const was = JSON.stringify(Object.fromEntries(keys.map((k) => { const v = JSON.parse(editAll({ [k]: b[k] }))[k]; return [k, NO_SHAKE_JUDGED.has(id) && k === 'effort' ? v.map((x) => x && x.replace(CAVEAT[0], CAVEAT[1](id))) : v]; }))), now = JSON.stringify(Object.fromEntries(keys.map((k) => [k, got[k]])));
       if (was === now) okLog(id + ': same result as before' + (skip ? ' (all but ' + skip.join(', ') + ')' : '')); else fail(id + ': result changed\n  before ' + was + '\n  now    ' + now); };
     // Collide with Rex bolted, and the shoving match with both bolted: the least disruptive effort now stops where the
     // ground breaks (the rock cracks, or tears out around their bolts); all-out, the result is main's
@@ -500,7 +503,12 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     // jumps onto him, near people 3 m off, where the shaking comes before the rock cracks
     await load({ duoOpen: true, duoAction: 'collide', anchor: 'friction', colSrc: 'jump', logKg: 6.25, near: 3 }); await settle(page, 'duo-bay'); await pick('#duo-effort', 'ground');
     const dgR = await page.evaluate(() => document.querySelector('#duo-bay .effort-read').textContent.replace(/\s+/g, ' '));
-    if (!/On real ground, courtesy ceiling: .*?Past that, the hit, carried into the ground, shakes it/.test(dgR)) fail('two-player break the ground, standing: the real-ground ceiling should come from the hit carried into the ground: ' + dgR.slice(0, 400)); else okLog('two-player break the ground, standing: the real-ground run carries the hit into the ground (its shaking sets the ceiling)');
+    const dgRBay = await page.evaluate(() => document.getElementById('duo-bay').textContent.replace(/\s+/g, ' '));
+    if (!/On real ground, courtesy ceiling: .*?Past that, the hit, carried into the ground, shakes it/.test(dgR) || !/The hit shakes the ground/.test(dgRBay)) fail('two-player break the ground, standing: the real-ground ceiling should come from the hit carried into the ground, and the tab drawn on real ground should show that shaking: ' + dgR.slice(0, 300) + ' | ' + dgRBay.slice(0, 300)); else okLog('two-player break the ground, standing: the real-ground run carries the hit into the ground (its shaking sets the ceiling, and the tab shows it)');
+    // a missed catch past 1% of light speed flies on with its energy (it doesn't 'land ∞ behind him at 0 m/s')
+    await load({ duoOpen: true, duoAction: 'catch', cObj: 'baseball', cStyle: 'hard', cLogD: 3, logKg: 15, cMiss: true }); await settle(page, 'duo-bay'); await pick('#duo-effort', 'allout');
+    const missT = await page.evaluate(() => document.getElementById('duo-bay').textContent.replace(/\s+/g, ' '));
+    if (!/If Ollie misses, it flies on with all of its energy/.test(missT) || /∞ behind/.test(missT)) fail('fast catch miss: ' + (missT.match(/If Ollie misses[^.]*\./) || ['(no miss text)'])[0]); else okLog('a missed throw past 1% of light speed flies on with its energy');
     // the break-the-ground preset sets Unbreakable footing aside only while it draws: switching tabs (which saves)
     // must leave the switch on and saved on
     await page.click('#tab-stomp'); await page.waitForTimeout(400); await settle(page, 'bay');
