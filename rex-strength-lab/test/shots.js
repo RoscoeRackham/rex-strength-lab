@@ -535,21 +535,52 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     page.on('pageerror', (e) => errs.push('PAGEERROR ' + e.message));
     page.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()); });
     await page.goto(pathToFileURL(prev).href);
-    const load = async (st) => { await page.evaluate((x) => localStorage.setItem('rex-lab-v1', JSON.stringify(x)), st); await page.reload(); await page.waitForTimeout(600); await settle(page, 'bay'); };
-    const compared = () => page.evaluate(() => Array.from(document.querySelectorAll('#bay .tile')).filter((t) => t.querySelector('.k') && t.querySelector('.k').textContent === 'Compared with').map((t) => t.querySelector('.v').textContent));
-    // every Compared with tile, across the strength dial, keeps to the rule: at most 10×, at least 10%, or beyond the ladder
-    const bad = [], seen = new Set();
-    for (const action of ['punch', 'clap', 'stomp']) for (const logKg of [1, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 34]) {
-      await load({ action, logKg, mode: 'comic' });
-      for (const t of await compared()) {
-        seen.add(t.replace(/[\d.]+/g, '#'));
-        const m = t.match(/^(?:roughly )?([\d.]+)× /), sh = t.match(/^(?:roughly )?([\d.]+)% of /);
-        const good = /^(about|roughly) the same as /.test(t) || /^beyond the ladder: /.test(t) || (m && Number(m[1]) <= 10) || (sh && Number(sh[1]) >= 10);
-        if (!good || /≈/.test(t)) bad.push(action + ' at 10^' + logKg + ' kg: ' + t);
+    // the page always opens on the least disruptive effort: each check picks all-out after loading
+    const load = async (st, allout) => {
+      await page.evaluate((x) => localStorage.setItem('rex-lab-v1', JSON.stringify(x)), st); await page.reload(); await page.waitForTimeout(600); await settle(page, 'bay');
+      if (allout) { await page.selectOption('#effort', 'allout'); await page.waitForTimeout(400); await settle(page, 'bay'); }
+    };
+    // each Compared with tile, with the energy tile just before it (fmtSI: 3 figures, SI prefix or × 10ⁿ)
+    const tiles = () => page.evaluate(() => Array.from(document.querySelectorAll('#bay .tile')).map((t, i, all) => ({ k: (t.querySelector('.k') || {}).textContent, v: (t.querySelector('.v') || {}).textContent, prev: i ? (all[i - 1].querySelector('.v') || {}).textContent : '' })).filter((t) => t.k === 'Compared with'));
+    const SUPD = { '⁰': 0, '¹': 1, '²': 2, '³': 3, '⁴': 4, '⁵': 5, '⁶': 6, '⁷': 7, '⁸': 8, '⁹': 9 };
+    const parseJ = (t) => {
+      t = t.replace(/ /g, ' ').trim();
+      let m = t.match(/^([\d.,]+)? ?(?:× )?10([⁻⁰¹²³⁴⁵⁶⁷⁸⁹]+) J$/);
+      if (m) return (m[1] ? Number(m[1].replace(/,/g, '')) : 1) * Math.pow(10, (m[2][0] === '⁻' ? -1 : 1) * Number(m[2].replace('⁻', '').split('').map((c) => SUPD[c]).join('')));
+      m = t.match(/^([\d.,]+) ([kMGTPE]?)J$/);
+      return m ? Number(m[1].replace(/,/g, '')) * ({ '': 1, k: 1e3, M: 1e6, G: 1e9, T: 1e12, P: 1e15, E: 1e18 })[m[2]] : NaN;
+    };
+    const ladderText = (J) => page.evaluate((x) => [0.995, 1, 1.005].map((f) => window.EnergyLadder.compare(x * f, window.DINO_DATA.energyRefs).text), J);
+    // any 'N× <rung>' or 'N% of <rung>' anywhere in a text that breaks the rule (Weight tab, catch, Collide)
+    const shorts = await page.evaluate(() => window.DINO_DATA.energyRefs.map((e) => e.short));
+    const esc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const RUNG_RE = new RegExp('(roughly )?([\\d.,]+)(?: ([a-z]+illion))?(×|% of) (?:' + shorts.map(esc).join('|') + ')', 'g');
+    const offRule = (t) => Array.from(t.matchAll(RUNG_RE)).filter((m) => m[3] || (m[4] === '×' ? Number(m[2].replace(/,/g, '')) > 10 : Number(m[2].replace(/,/g, '')) < 10)).map((m) => m[0]);
+    const bad = [], wrongRung = [], seen = new Set();
+    for (const action of ['punch', 'clap', 'stomp']) for (const logKg of [1, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 34]) for (const mode of logKg >= 20 ? ['comic'] : ['comic', 'real']) {
+      await load({ action, logKg, mode }, true);
+      for (const t of await tiles()) {
+        seen.add(t.v.replace(/[\d.]+/g, '#'));
+        const m = t.v.match(/^(?:roughly )?([\d.]+)× /), sh = t.v.match(/^(?:roughly )?([\d.]+)% of /);
+        const good = /^(about|roughly) the same as /.test(t.v) || /^beyond the ladder: /.test(t.v) || (m && Number(m[1]) <= 10) || (sh && Number(sh[1]) >= 10);
+        if (!good || /≈/.test(t.v)) bad.push(action + ' at 10^' + logKg + ' kg (' + mode + '): ' + t.v);
+        const J = parseJ(t.prev);
+        if (!(J > 0) || !(await ladderText(J)).includes(t.v)) wrongRung.push(action + ' ' + logKg + ': ' + t.prev + ' → ' + t.v);
       }
     }
-    if (bad.length || !seen.size) fail('Compared with tiles break the ladder rule: ' + (bad.slice(0, 4).join(' | ') || 'no tiles found'));
-    else okLog('every Compared with tile on Punch, Clap and Stomp from 10 kg to 10³⁴ kg keeps to at most 10× or at least 10% (' + seen.size + ' wordings)');
+    if (bad.length || seen.size < 15 || ![...seen].some((x) => /^roughly /.test(x))) fail('Compared with tiles break the ladder rule, or cover too little of it: ' + (bad.slice(0, 4).join(' | ') || seen.size + ' wordings: ' + [...seen].join(' | ')));
+    else okLog('every Compared with tile on Punch, Clap and Stomp, all-out from 10 kg to 10³⁴ kg, keeps to at most 10× or at least 10% (' + seen.size + ' wordings, rough ones included)');
+    if (wrongRung.length) fail('a Compared with tile does not match the ladder for the energy beside it: ' + wrongRung.slice(0, 4).join(' | '));
+    else okLog('each Compared with tile is the ladder’s wording for the energy shown beside it');
+    // the Weight tab's own comparisons (dense matter, the Earth falling onto him) and the growth what-if keep to the rule
+    const weightBad = [];
+    for (const st of [{ action: 'weight', H: 10, m: 1e27 }, { action: 'weight', H: 0.1, m: 1.1e13 }, { action: 'weight', m: 1e21 }, { action: 'weight', m: 1e24 }, { action: 'weight', growWhat: 'krakatoa' }, { action: 'weight', growWhat: 'chicxulub' }]) {
+      await load(st, false);
+      const t = await page.evaluate(() => document.getElementById('bay').textContent.replace(/\s+/g, ' '));
+      const off = offRule(t).concat(/billion×|trillion×|0\.0\d*% of the energy/.test(t) ? ['a huge ratio'] : []);
+      if (off.length) weightBad.push(JSON.stringify(st) + ': ' + off.join(' | '));
+    }
+    if (weightBad.length) fail('Weight tab energy comparisons outside the ladder rule: ' + weightBad.slice(0, 3).join(' || ')); else okLog('the Weight tab’s energy comparisons (dense matter, the Earth falling in, growth) keep to the ladder rule');
     // the sources table lists every rung with its status and a link
     const rows = await page.evaluate(() => Array.from(document.querySelectorAll('#src-table tbody tr')).map((tr) => ({ label: tr.cells[0].textContent, status: tr.cells[2].textContent, links: tr.cells[3].querySelectorAll('a').length })));
     const want = await page.evaluate(() => window.DINO_DATA.energyRefs.map((e) => 'Energy: ' + e.label));

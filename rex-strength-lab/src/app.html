@@ -565,6 +565,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   }
   // the energy ladder's wording (src/ladder.js; BRIEF-gui.md section 6)
   function compareEnergy(J) { return window.EnergyLadder.compare(J, D.energyRefs).text; }
+  // the same, then whether it would blow the Earth apart: said once, in words, with no multiple (unless the ladder
+  // already named that rung)
+  function compareWithEarth(J, more) {
+    const c = window.EnergyLadder.compare(J, D.energyRefs);
+    return c.text + (J >= K.EARTH_BIND && !(c.ref && c.ref.id === 'earthbind') ? ', ' + more : '');
+  }
   function fmtSpeed(v) {
     if (!isFinite(v) || v >= K.c * (1 - 1e-12)) return 'light speed (to the last digit)';
     if (v >= 0.01 * K.c) {
@@ -1934,7 +1940,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
 
   // Neutron-matter caveat. Hebeler et al. (2010) give the pressure and energy at nuclear density only.
   function nmText(nm) {
-    const Ptxt = sig(nm.P[0] / 1e32, 2) + '–' + sig(nm.P[1] / 1e32, 2) + ' × 10³² Pa', share = (nm.J >= K.EARTH_BIND ? fmtRatio(nm.J / K.EARTH_BIND) + ' the energy' : sig(100 * nm.J / K.EARTH_BIND, 2) + '% of the energy') + ' it takes to blow the Earth apart';
+    const Ptxt = sig(nm.P[0] / 1e32, 2) + '–' + sig(nm.P[1] / 1e32, 2) + ' × 10³² Pa', share = compareWithEarth(nm.J, 'more than it takes to blow the Earth apart');
     if (nm.beyondNS) return ' He is denser than any known matter, even the core of a neutron star (up to about 10 times nuclear density). Nothing known could hold matter this dense together: it would take far more than the ' + Ptxt + ' that holds neutron-star matter in at nuclear density. Freed, it would give up at least as much as neutron-star matter, about 16 MeV per neutron (370 kt of TNT per kilogram). For this Rex that’s at least ' + fmtSI(nm.J, 'J') + ', ' + share + '. In the sim his indestructibility holds it together.';
     return ' In bulk, matter this dense exists only inside neutron stars, held in by their gravity. At nuclear density (' + fmtDensity(nm.rhoNuc) + ') that takes a pressure of about ' + Ptxt + ', and more when denser. Freed, it expands violently into neutron-rich nuclei that then decay. At nuclear density that gives up about 16 ± 2 MeV per neutron (about 370 kt of TNT per kilogram), and the nuclei that form and decay add more. For this Rex that’s roughly ' + fmtSI(nm.J, 'J') + ', ' + share + ' (an estimate). In the sim his indestructibility holds it together.';
   }
@@ -2064,7 +2070,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
 
     const items = [];
     if (pl.regime === 'blackHole') items.push('Squeezed this hard, his mass fits inside its own event horizon, r = 2GM/c² (the sim treats him as a ball of his volume). A ball of ordinary fluid can’t support itself inside 9/8 of that radius (Buchdahl’s limit), and even the stiffest matter relativity allows can’t get closer than 49/48 of it; only his indestructibility keeps him in one piece up to the horizon. The Earth collapses onto him within about ' + fmtTime(pl.tff) + '. How fast the hole then swallows it, and how much energy comes out (at least ' + fmtSI(pl.eLow, 'J') + ', possibly far more), is not modelled.');
-    if (pl.regime === 'earthFalls') items.push('Rock can’t hold itself up against his pull. The Earth falls onto him in about ' + fmtTime(pl.tff) + ', releasing at least ' + fmtSI(pl.eLow, 'J') + ', ' + fmtRatio(pl.eLow / K.EARTH_BIND) + ' the energy that holds the Earth together, and likely much more as matter is crushed close to him.');
+    if (pl.regime === 'earthFalls') items.push('Rock can’t hold itself up against his pull. The Earth falls onto him in about ' + fmtTime(pl.tff) + ', releasing at least ' + fmtSI(pl.eLow, 'J') + ', ' + compareWithEarth(pl.eLow, 'more than the energy that holds the Earth together') + ', and likely much more as matter is crushed close to him.');
     if (pl.regime === 'reshapes') items.push('Past 1/1,000 of Earth’s mass his pull reshapes the planet around him: rock can’t hold itself up near him. Sinking to the centre alone releases ' + fmtSI(pl.eLow, 'J') + ', and the planet squeezing in around him adds more. The sim stops modelling the fall and the moves in detail.');
     if (pl.regime === 'none' && gd.regime === 'held') items.push('His feet press ' + fmtSI(gd.footPressure, 'Pa') + ' into ' + theSurf(c.surface) + ', ' + fmtRatio(gd.standRatio) + ' what it bears' + (gd.realRegime === 'fallsThrough' ? ', and his whole weight is more than any rock can carry' : '') + '. Unbreakable footing: the ground doesn’t give; their power holds him on it. A print in soil stays; sinking past it doesn’t. Turn the power off to see what the ground alone would do.');
     if (pl.regime === 'none' && ['comic', 'held', 'stands', 'sinks'].includes(gd.regime)) {

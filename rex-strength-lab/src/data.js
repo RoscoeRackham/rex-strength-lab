@@ -1031,7 +1031,7 @@ window.DINO_DATA = {
    "id": "snblast",
    "short": "a supernova’s blast (its flying debris)",
    "J": 1e+44,
-   "rough": false,
+   "rough": true,
    "key": "energy_supernova_blast",
    "label": "A supernova's blast: the kinetic energy of its flying debris (typical; core-collapse and Type Ia alike)"
   },
@@ -8689,7 +8689,7 @@ window.DINO_DATA = {
     },
     {
      "url": "https://www.kbb.com/toyota/corolla/2026/specs",
-     "title": "Kelley Blue Book, 2026 Toyota Corolla specs, LE curb weight 2,955 lb (existing key toyota_corolla_curb_mass)"
+     "title": "Kelley Blue Book, 2026 Toyota Corolla specs, LE curb weight 2,955 lb (existing key toyota_corolla_curb_mass, since sourced to toyota.com’s own spec table: the same 2,955 lb)"
     }
    ],
    "note": null

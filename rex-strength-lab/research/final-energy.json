@@ -693,11 +693,15 @@
    "display": "about 130 kJ (1,340 kg at 50 km/h)",
    "sources": [
     {
+     "title": "Toyota USA, 2026 Corolla features and specs (curb weight; spec table embedded in the page)",
+     "url": "https://www.toyota.com/corolla/2026/features/"
+    },
+    {
      "title": "Kelley Blue Book 2026 Corolla specs, curb weight 2955 / 3110 / 3150 lb (fact toyota_corolla_curb_mass; re-fetched Oct 2026; secondary source)",
      "url": "https://www.kbb.com/toyota/corolla/2026/specs"
     }
    ],
-   "notes": "KE = 1/2 m v^2 = 0.5 x 1,340.4 kg x (13.889 m/s)^2 = 129.3 kJ, using toyota_corolla_curb_mass (2026 LE, 2,955 lb, from KBB and iSeeCars, both secondary; Toyota's own spec page not reached). Empty car; a 90 kg driver adds about 7%. A quarter of the 100 km/h rung (doubling speed quadruples energy). Not a recommended rung: the same car 4x apart from the existing rung, so redundant under nearest-rung matching. Skeptic: value confirmed; redundant.",
+   "notes": "KE = 1/2 m v^2 = 0.5 x 1,340.4 kg x (13.889 m/s)^2 = 129.3 kJ, using toyota_corolla_curb_mass (2026 LE, 2,955 lb, now from toyota.com's own spec table; review round 1). Empty car; a 90 kg driver adds about 7%. A quarter of the 100 km/h rung (doubling speed quadruples energy). Not a recommended rung: the same car 4x apart from the existing rung, so redundant under nearest-rung matching. Skeptic: value confirmed; redundant.",
    "who_when": "Derived Oct 2026",
    "page_short": "a Corolla at 50 km/h",
    "research_topic": "small"
@@ -1518,7 +1522,7 @@
    "value_si": 523000000000000000,
    "unit_si": "J",
    "low_si": 418400000000000000,
-   "high_si": 836800000000000000,
+   "high_si": 6.276e+17,
    "display": "about 100-150 megatons (4.2-6.3 x 10^17 J) judged from its air wave (Harkrider & Press); 125 Mt used. A tsunami paper gives 200 Mt (8.4 x 10^17 J) for the third blast's total energy, with no source; other published figures run from about 10^17 to 6.3 x 10^18 J",
    "sources": [
     {
@@ -1534,7 +1538,7 @@
      "url": "https://www.vliz.be/imisdocs/publications/381958.pdf"
     }
    ],
-   "notes": "Harkrider & Press: 'we estimate that a surface explosion amounting to about 100-150 megatons would produce pressure pulses equivalent to those observed from Krakatoa.' Science abstract: '100 to 150 megatons would be required to duplicate the Krakatoa atmospheric pressure pulse'. Choi et al., with no source in that sentence: 'equivalent to 200 megatons atomic bomb (8.4x10^17 joules)'. Value 125 Mt, the middle of the only primary estimate (5.23e17 J); range 100 to 200 Mt. Weaker sources span about 1e17 to 6.3e18 J (growth_krakatoa_energy_spread), so the page gives only a rough multiple even though this fact's own range is under 2x. The heat of the erupted rock was far larger. Value lowered from 8.4e17 J (Wikipedia, 200 Mt). Skeptic: quotes exact; disputed and rough-only confirmed. Rough by judgement (field rough): this fact's own range is the only primary estimate, but published figures span about 60x (growth_krakatoa_energy_spread). Review round 1: the top of this fact's range (200 Mt) is Choi et al.'s unsourced total, not an air-wave figure; the display says so. The 10^17 J low of the wider spread is from Jones & Kodis in a 1982 Geological Society of America volume (Special Paper 190), not a popular book; 'the one refereed estimate' means the one with a stated method.",
+   "notes": "Harkrider & Press: 'we estimate that a surface explosion amounting to about 100-150 megatons would produce pressure pulses equivalent to those observed from Krakatoa.' Science abstract: '100 to 150 megatons would be required to duplicate the Krakatoa atmospheric pressure pulse'. Choi et al., with no source in that sentence: 'equivalent to 200 megatons atomic bomb (8.4x10^17 joules)'. Value 125 Mt, the middle of the only primary estimate (5.23e17 J); range 100 to 150 Mt (Harkrider & Press; Choi et al.'s unsourced 200 Mt is outside it, high_si lowered from 200 Mt in review round 1). Weaker sources span about 1e17 to 6.3e18 J (growth_krakatoa_energy_spread), so the page gives only a rough multiple even though this fact's own range is under 2x. The heat of the erupted rock was far larger. Value lowered from 8.4e17 J (Wikipedia, 200 Mt). Skeptic: quotes exact; disputed and rough-only confirmed. Rough by judgement (field rough): this fact's own range is the only primary estimate, but published figures span about 60x (growth_krakatoa_energy_spread). Review round 1: the top of this fact's range (200 Mt) is Choi et al.'s unsourced total, not an air-wave figure; the display says so. The 10^17 J low of the wider spread is from Jones & Kodis in a 1982 Geological Society of America volume (Special Paper 190), not a popular book; 'the one refereed estimate' means the one with a stated method.",
    "who_when": "Press & Harkrider 1966-67; Choi et al. 2003",
    "page_short": "the great blast of Krakatoa in 1883",
    "category": "energy_reference",
@@ -2481,10 +2485,11 @@
      "url": "https://arxiv.org/pdf/1206.2503"
     }
    ],
-   "notes": "Burrows & Vartanyan: 'supernova explosion energies are “typically” one Bethe'; abstract: 'A 10^51-erg (one “Bethe”) explosion'. Nadyozhin & Imshennik: core collapse 'typically of (0.5 − 2)×10^51 erg'; Type Ia 'Eexp ≈ 10^51 erg ... almost all Eexp turns out to be converted into the kinetic energy'. Janka: kinetic energies 'ranging from ≳10^50 erg to some 10^51 erg for SNe and up to several 10^52 erg for HNe'. The low and high values are the typical range (0.5-2e51 erg); ordinary single events range from about 10^50 to a few 10^51 erg (Janka 2012). Skeptic: that sentence replaces 'single events span about 10x either side'. Typical value known to about 2x: at the edge of the rough-wording rule.",
+   "notes": "Burrows & Vartanyan: 'supernova explosion energies are “typically” one Bethe'; abstract: 'A 10^51-erg (one “Bethe”) explosion'. Nadyozhin & Imshennik: core collapse 'typically of (0.5 − 2)×10^51 erg'; Type Ia 'Eexp ≈ 10^51 erg ... almost all Eexp turns out to be converted into the kinetic energy'. Janka: kinetic energies 'ranging from ≳10^50 erg to some 10^51 erg for SNe and up to several 10^52 erg for HNe'. The low and high values are the typical range (0.5-2e51 erg); ordinary single events range from about 10^50 to a few 10^51 erg (Janka 2012). Skeptic: that sentence replaces 'single events span about 10x either side'. Typical value known to about 2x: at the edge of the rough-wording rule. Rough by judgement (field rough): the typical value is known to about 2x, but ordinary core-collapse events span about 10^50 to a few 10^51 erg (Janka 2012, p. 12), as supernova light spans 10x across events (review round 1).",
    "who_when": "Burrows & Vartanyan 2021; Nadyozhin & Imshennik 2005; Janka 2012",
    "page_short": "a supernova’s blast (its flying debris)",
-   "research_topic": "stellar"
+   "research_topic": "stellar",
+   "rough": true
   },
   {
    "key": "energy_jupiter_mass_energy",
