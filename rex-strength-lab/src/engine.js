@@ -53,6 +53,7 @@
   //   recoilAbsorbed  { J, T, thetaDeg }   throwObject (and throwPartner's r), stomp, punch, pull, shove, armWrestle (pin)
   //   recoilAbsorbedT { J, T, thetaDeg }   the thrower's push in the game of catch (catchLeg) and the partner toss
   //   recoilAbsorbedC { J, T, angleDeg }   the catcher's stop in the game of catch and the partner toss
+  //   (pull also gives walkPush { J, T }: his own steps' push on the ground, which is the move, not recoil, and real)
   //   J: kg m/s, a magnitude >= 0 (Infinity for an unbounded push). T: s, how long the push (or stop) lasts.
   //   thetaDeg: the angle of HIS push in degrees above level, measured as the move measures it (the throw's angle; 0 for
   //     a punch, a shove and a pull, whose forward is the way he punches, shoves or walks; -90 for a stomp and the arm
@@ -1646,11 +1647,13 @@
     const M = obj.m + body.m;
     let accel = net > 0 ? net / M : 0;
     // his own pull: taking his own recoil, the load's pull back on him (the rope) goes to his source, not his feet, so
-    // he pulls with his whole drive; his own body still walks on friction, so it can speed up only as fast as his
-    // footing moves his own weight (pulling is walking with it; walking is the move itself, not recoil, and its push
-    // into the ground stays real, as does the load's rolling or sliding resistance where the load meets the ground)
+    // he pulls with his whole drive; his own body still walks, so it can speed up only as fast as his footing moves his
+    // own weight (pulling is walking with it; walking is the move itself, not recoil, and its push into the ground stays
+    // real, as does the load's rolling or sliding resistance where the load meets the ground). The power wins over
+    // Bolted for his own moves (review round 2 of pull request 2), so bolted too: there anc.R is Infinity, his feet never
+    // limit his own body (aFeet Infinity) and the load sets the pace: accel = (drive - resistance) / the load's mass.
     const ownLimit = { };
-    if (ctx.ownRecoil && ctx.anchor !== 'bolted') {
+    if (ctx.ownRecoil) {
       usable = driveStrength(ctx);
       net = move.walk ? usable - resist : 0;
       const aLoad = net > 0 ? net / obj.m : 0, aFeet = anc.R / body.m;
@@ -1666,6 +1669,12 @@
     // recoilAbsorbed { J: ropeT x t10m (kg m/s: the load's momentum plus the resistance it overcame), T: t10m (s),
     // thetaDeg 0: he pulls level, the way he walks; the momentum taken back points back toward the load }
     if (ctx.ownRecoil && net > 0) ownLimit.recoilAbsorbed = { J: ownLimit.ropeT * t10m, T: t10m, thetaDeg: 0 };
+    // ... and his own steps, which aren't recoil: walking with the load is the move, so his feet push the ground back
+    // (against the way he walks) with his own body's momentum over the pull, real: walkPush { J (kg m/s), T: t10m (s) }.
+    // With the power on that is the pull's shaking source (MOVES.pull.shake). On friction his grip caps it (at most his
+    // footing, anc.R); bolted nothing does. (His body's share of the pair's momentum net x t10m, exact near light speed.)
+    // With the power off it isn't reported: the lab counts no pull's shaking then, as before the power existed.
+    if (ctx.ownRecoil && net > 0) ownLimit.walkPush = { J: isFinite(net) ? net * t10m * body.m / M : Infinity, T: t10m };
     return Object.assign({
       resist, crr, rolling: obj.crr != null, anchor: anc, usable,
       canMove: net > 0, accel, t10m, vEnd: net > 0 ? momentumToV(net * t10m, M) : 0,
@@ -4046,16 +4055,19 @@
         run: (c, o) => pull(c, o.obj),
         goal: (r, o) => r.canMove && r.t10m <= o.target,
         speed: (r) => r.vEnd,
-        // No shaking source, as for the punch: with They take their own recoil the rope's pull back on him goes to his
-        // source (pull's recoilAbsorbed), not into the ground; with it off it goes through his feet as a steady pull
-        // over seconds, which the lab doesn't count (it sets up far less ground wave than a blow). His walking and the
-        // load's rolling or sliding resistance push the ground too, gently and over the whole pull: not counted either.
+        // With They take their own recoil on, the rope's pull back on him goes to his source (pull's recoilAbsorbed), not
+        // into the ground; the shaking is his own steps' (pull's walkPush: his own body's momentum over the pull, the move
+        // itself, real). On friction his grip caps them, so it is small; bolted (the power wins over Bolted for his own
+        // moves) nothing caps them, and a quick, hard pull shakes the ground. With the power off the lab counts no pull's
+        // shaking, as before the power existed (the rope's pull back through his feet or bolts, and his steps). The load's
+        // rolling or sliding resistance pushes the ground too, a steady drag over the whole pull: not counted.
+        shake: (r, o) => (o.ownRecoil && r.walkPush && r.walkPush.J > 0 && r.walkPush.T > 0 && isFinite(r.walkPush.T) ? impulseSource(o.surface, r.walkPush.J, r.walkPush.T) : null),
+        shakeWithPower: 'ownRecoil',
         where: 'behind him',
       },
     };
     // a move whose shaking exists only with a power on (shakeWithPower: true for either Unbreakable footing or They
-    // take their own recoil, or the one power's name), and that power is off. (No move sets shakeWithPower now: the
-    // pull's, the only one, went when its rope's pull back moved to their source. Kept for the page, which asks.)
+    // take their own recoil, or the one power's name), and that power is off (the pull: its steps, 'ownRecoil')
     const shakeOff = (M, o) => !!M.shakeWithPower && (M.shakeWithPower === 'ownRecoil' ? !o.ownRecoil : !o.ownRecoil && !o.unbreakable);
     // how far a move's blast reaches at overpressure dp: its blast energy, or where the energy depends on the reach
     // (blastAt: a fast throw's air takes its energy within a short stretch), the reach R with R = radius(E within R)
