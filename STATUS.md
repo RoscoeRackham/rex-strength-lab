@@ -11,7 +11,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 ## In progress
 
 - Owner's session: pull request 3 of `rex-strength-lab/BRIEF-canon.md` (Safe passenger on by default, covering the landing and the drag; stacked on #33) is built on `claude/canon-3-passenger`, with the full Rex lab test line and `test/sweep.js` passing. Its two review rounds are next (physics and claims; code, layout and the migration).
-- Owner's session: pull requests 2–5 of `rex-strength-lab/BRIEF-canon.md` on stacked branches (RUN-canon.md). Pull request 2 (their recoil into their source, the catches, the momentum ledger, the new tagline) is built and reviewed (three rounds and a re-check; records `rex-strength-lab/research/reviews/canon-2-round1.json` to `canon-2-round3-recheck.json`), open as #33 on `claude/canon-2-recoil`. Pull request 3 (Safe passenger) is next, on `claude/canon-3-passenger`.
+- Owner's session: pull requests 2–5 of `rex-strength-lab/BRIEF-canon.md` on stacked branches (RUN-canon.md). Pull request 2 (their recoil into their source, the catches, the momentum ledger, the new tagline) is built and reviewed (three rounds and a re-check; records `rex-strength-lab/research/reviews/canon-2-round1.json` to `canon-2-round3-recheck.json`), open as #33 on `claude/canon-2-recoil`. CI passed on it (run 60, at `68ecb9b`).
 
 ## Waiting on
 
