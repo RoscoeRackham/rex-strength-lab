@@ -11,7 +11,7 @@ Unless a run says otherwise: the default 10 ft Rex, on concrete, comic muscle, j
 1. **Mass:** 3,000 kg each, 300 kg of it Rex's tail (was 3,007 and 307). Results move by about 0.2%, mostly below the figures the page shows.
 2. **They take their own recoil:** the push back now goes into their source, not the planet. The ground no longer shakes from their own recoil.
 3. **Momentum rule:** an audit of every place the engine absorbs momentum, against the canon's list. Two gaps (items 2 and 4) and a wrong engine comment.
-4. **Never knocked back, and contests:** every Rex + Ollie test is a contest, where force moves: the other's push is real and only each one's own push back is absorbed. A charger doesn't slow, so he carries the one he hits along; a hit's energy is absorbed unless he means it. Never knocked back itself acts on no test the page has yet.
+4. **Never knocked back, and contests:** every Rex + Ollie test is a contest, where force moves: the other's push is real and only each one's own push back is absorbed. A charger doesn't slow, so he carries the one he hits along; a hit's energy is absorbed unless he means it. Never knocked back gets its two switches now, each with a note that no current test uses it.
 5. **Safe passenger on by default**, now covering the landing and the air's drag too. It moves the person-throw's courtesy ceiling.
 6. **The absorption shimmer:** a glow that scales with the energy taken back, on a log scale from a car crash to the dinosaur-killer, drawn on his eyes, feather tips and mouth.
 7. **Copy:** the tagline becomes "Indestructible · never tires · unlimited"; the "momentum is never absorbed" wording goes.
@@ -220,7 +220,12 @@ Review records in `research/reviews/` (all three projects) keep the old figures:
 - A hit's freed energy is absorbed by default, and real only when he means it (**Q3**).
 - A catch is absorbed, unless he chooses otherwise (**Q5**).
 
-**What this leaves for Never knocked back.** Every test in the Rex + Ollie element is a contest. A catch is absorbed anyway, because the catcher's stop is the push back of his own push (They take their own recoil, item 2). So no test the page has today has anything hit them that Never knocked back would stop. **Q1** asked for a switch each, but a switch that changes nothing on any tab would puzzle readers. Proposal, which needs your yes because it holds back part of Q1's answer: say in the "Their powers" card that in their contests they let force move and nothing else in the lab hits them yet, and add the two switches with the first test they change (for example the deferred collisions of thrown objects).
+**What this leaves for Never knocked back.** Every test in the Rex + Ollie element is a contest. A catch is absorbed anyway, because the catcher's stop is the push back of his own push (They take their own recoil, item 2). So no test the page has today has anything hit them that Never knocked back would stop. Even so, the switches go in now (collaborator, 14 Oct 2026), to be revisited later:
+- Two switches in Their powers, next to the Bolted pair: "Never knocked back: Rex" and "Never knocked back: Ollie" (a screen reader hears each name). Both on by default.
+- Each carries a short note: in their contests (every test here) they let force move, and catches are taken back through They take their own recoil, so no test here uses this switch yet.
+- The "Their powers" card says the same in one sentence.
+- New state keys (for example `noKnockback` and `oNoKnockback`, default true). Old saves have neither key, so they load with both on; no marker needed. The summary line lists them with the other powers.
+- They are revisited when a test first has something hit them outside a contest (for example the deferred collisions of thrown objects).
 
 **What changes in the contests.** Each one's own push back goes to his source (item 2's rule, applied to every contest move). The other's push on him is real.
 
@@ -251,9 +256,9 @@ So the default Collide gives an answer for a sprint or a set speed (Rex is carri
 - `pushMatch`: with `ownRecoil`, no walking-grip cap on the drive; each is held by his footing against the other's push; the new outcome.
 - `armWrestle`: as in "Arm wrestling" above.
 - `liftPartner`, `throwPartner`, `shoveOnce`, `CATCHGAME.tossPartner` and the catch: item 2's rule.
-- Never knocked back: nothing in the engine until a test needs it (above).
+- Never knocked back: the page passes the two switches into each one's context, but no engine function reads them yet (above).
 
-**Page.** The Collide verdicts for the carried-along and paradox outcomes; the items "Momentum is never lost…" (the charger's source now supplies momentum) and "'Immovable' only means what holds … in place…"; the shoving match's new outcome and its item "A shoving match is decided at the feet…"; in `duoFacts`, the harms for both sliding in the shoving match and for the one hit carried along in Collide. The "Truly immovable" thought experiment stays as it is.
+**Page.** The Collide verdicts for the carried-along and paradox outcomes; the items "Momentum is never lost…" (the charger's source now supplies momentum) and "'Immovable' only means what holds … in place…"; the shoving match's new outcome and its item "A shoving match is decided at the feet…"; in `duoFacts`, the harms for both sliding in the shoving match and for the one hit carried along in Collide. The "Truly immovable" thought experiment stays as it is. Their powers gains the two Never knocked back switches and their notes (above).
 
 **The two-player effort search.** Bodies move in the contests again, so the slide harm ("one of them slides past the nearest people") stays, now with both sliding in the shoving match and the one hit carried at the charger's speed in Collide. The hit's energy is absorbed by default, so its air blast counts only with a blast preset.
 
@@ -277,7 +282,7 @@ With They take their own recoil off, every row is today's physics.
 - arm wrestling as above;
 - with They take their own recoil off, every result as now.
 
-`test/shots.js`: the Collide and Wrestle verdicts with the power on and off.
+`test/shots.js`: the Collide and Wrestle verdicts with the power on and off. The two Never knocked back switches are in Their powers, on by default, each with its note; turning either off changes no result on any tab (so the check fails, on purpose, once a test starts using them); an old save loads with both on.
 
 **Interacts with.** Item 2 (the same rule, in contests; the catches now come under item 2). Item 3 (every hit in the lab is part of a contest, so the audit's second gap closes through each one's own push back, not through Never knocked back). Item 6 (the hit's energy). Bolted to the planet and Unbreakable footing (they make the paradox cases).
 
@@ -392,7 +397,7 @@ The collaborator answered on 14 Oct 2026. The answers that are canon are recorde
 
 | Question | Answer | What it means for the plan |
 |---|---|---|
-| **Q1.** Is Ollie never knocked back too? | C, on by default | A switch each, both on by default. Since every two-player test is a contest (**Q13**, **Q14**), the switches would change nothing on the page yet: item 4 proposes adding them with the first test they affect (needs your yes) |
+| **Q1.** Is Ollie never knocked back too? | C, on by default | A switch each, both on by default. Every two-player test is a contest (**Q13**, **Q14**), so the switches change nothing on the page yet; they go in now with a note saying so, to be revisited (item 4) |
 | **Q2.** What counts as an incoming hit? | All of them: a charge, a steady push, a shove, the shoving match, being lifted or thrown by the other, a caught object, a partner landing on him | In contests these are set aside (**Q12**–**Q15**); what's left on the page is catches, absorbed through item 2 |
 | **Q3.** The hit's freed energy | B: absorbed by default, real only when he means it | It is shimmer (item 6). This plan reads "when he means it" as the blast presets (item 4); confirm in review |
 | **Q4.** The charger's push back | B: his own recoil, so he doesn't slow | A charger with They take their own recoil on acts as a body of unbounded mass: he carries the one he hits along, and meets a paradox only where their powers hold the one hit without limit (item 4) |
@@ -409,7 +414,7 @@ The collaborator answered on 14 Oct 2026. The answers that are canon are recorde
 | **Q15.** Own push back in contests | The arm-wrestle rule: the other's push is real, only his own push back is absorbed | The shove stays as now; in the shoving match two equal pushers both get shoved apart; the steady push isn't capped by the pusher's footing; a charger doesn't slow (item 4) |
 
 **Still open.**
-- **Never knocked back's switches** (item 4). Every test on the page is a contest, so the switches would change nothing yet. The plan proposes adding them with the first test they change; that holds back part of Q1's answer, so it needs your yes.
+- **Never knocked back's switches** (item 4): added now with a note that no current test uses them; the collaborator will revisit them later.
 - **The owner** confirms the rulings in CLAUDE.md, and says yes or no to the glow drawn on the art.
 - **Review** confirms the plan's readings: "when he means it" as the blast presets; "unless Rex enables otherwise" as They take their own recoil turned off; a person's landing with its momentum real and its energy taken back; the arm-wrestling consequences, the shoving match's new outcome, holding a partner up not counted as recoil, and the paradox cases (item 4); the shimmer's floor; and the drag figure the shimmer uses.
 
@@ -439,7 +444,7 @@ Each pull request records its review rounds in `research/reviews/` (for example 
 | 1 | **Mass** (item 1), all three projects | the claim on `builds.json` and `calc.js` (held on `terantic/canon-followups`) | Two. Data and claims: every figure that quotes the mass, in all three projects, against the canon and the research. Code and tests: the pinned comparisons (remove the pin and see them fail), the migration, the rebuilt `dist` files |
 | 2 | **Recoil into their source** (item 2), the catches included, with item 3's ledger test, the recoil copy and the new tagline (item 7) | 1 | Three and a re-check, as for pull request B. Physics: each move's momentum, the ledger. Code and tests: mutants that put the push back into the ground one move at a time. Copy and layout |
 | 3 | **Safe passenger by default**, covering the landing and the drag (item 5) | 1 | Two. Physics and claims, including the landing's split (momentum real, energy taken back). Code, layout and the migration |
-| 4 | **Contests** (item 4) | 2 (the same rule, in contests) | Three and a re-check. Physics: the charger of unbounded mass, the paradox cases, the shoving match, the standing arm wrestle. The two-player tests: every row of item 4's table, and the search's time. Copy, including how the Collide tab explains the paradox |
+| 4 | **Contests** (item 4), with the two Never knocked back switches and their notes | 2 (the same rule, in contests) | Three and a re-check. Physics: the charger of unbounded mass, the paradox cases, the shoving match, the standing arm wrestle. The two-player tests: every row of item 4's table, and the search's time. Copy, including how the Collide tab explains the paradox |
 | 5 | **The shimmer** (item 6) | 3 and 4 (a person's landing and a hit's energy are shimmer sources); the owner's yes to drawing on the art | Two. Design, copy and accessibility, including the glow's placement on the art. Code and data, including the drag figure and the floor |
 
 The optional items (section 8) each need their own brief.
