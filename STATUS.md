@@ -15,7 +15,6 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 ## Waiting on
 
 - Owner: once pull request 1 (the 3,000 kg mass) merges, republish all three live pages: the mass changes each of them.
-- Owner: confirm running CI only by choice, or rule otherwise (pull request #27, merged by the collaborator 14 Oct 2026, `terantic/ci-on-demand`: CLAUDE.md rule 3 and `.github/workflows/test.yml`). It is heavy (Chromium and every test), so the collaborator would rather run it before a big change than on every pull request and every push to `main`.
 - Page follow-ups for the canon update from pull request #25 (`claude/canon-sync-theoreticals`; agreed by the collaborator 14 Oct 2026; claimed on `terantic/canon-followups`): Rex 3,000 kg with a 300 kg tail (was 3,007 kg) in all three projects and the shared `builds.json`; They take their own recoil sends the push into their source instead of the planet (engine, tests, Known limits, every "the planet takes the push back" sentence); Safe passenger on by default; never knocked back by a hit (needs an Ollie ruling for the two-player tests); the absorption shimmer; the tagline "still obeys Newton". Until then the pages lag the canon.
 
 - Owner and collaborator (canon), from pull request B (merged; the page is live with the interim behaviour; nobody is working on it): with Unbreakable footing on, instant growth can't drive his soles into the ground, so the Rex lab grows him upward from them (as Comic ground did); canon has him grow about his middle with his feet driven in. Confirm, or rule otherwise (`rex-strength-lab/README.md` Known limits).
@@ -26,6 +25,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## Done
 
+- 2026-10-14: the owner confirmed running CI only by choice (pull request #27: CLAUDE.md rule 3 and `.github/workflows/test.yml`; start it by hand before merging a big change).
 - 2026-10-14: the owner confirmed the collaborator's canon rulings of 14 Oct 2026 (CLAUDE.md, "Rulings of 14 Oct 2026", answering `rex-strength-lab/BRIEF-canon.md`) and the shimmer's glow drawn over the art.
 - 2026-10-14: the plan for the canon follow-ups merged (#30, `terantic/brief-canon`): `rex-strength-lab/BRIEF-canon.md` (eight items, each with old and new results from `research/brief-canon/runs.js`; five pull requests in order), with the collaborator's answers to its questions Q1–Q15 and the canon among them in CLAUDE.md's "Rulings of 14 Oct 2026" (owner to confirm). The brief's claim is released.
 - 2026-10-14: collaborator agreed to the canon update from pull request #25 (CLAUDE.md's Rex canon in line with the owner's Rex Theoreticals project). The page follow-ups are under Waiting on.
