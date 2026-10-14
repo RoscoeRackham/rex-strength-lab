@@ -120,6 +120,21 @@ for (const [label, F, src, gb] of [['sprint, default dial', F0, 'sprint'], ['jum
   }
 }
 
+// 4 (after Q13–Q15): Collide is a contest, so the one hit can be moved; a charger who takes his own recoil doesn't
+// slow (a body of unbounded mass at his speed). In the charger's frame the one hit arrives at the charger's speed and
+// meets an immovable body, so the engine's immovable sums apply with the roles swapped. Splat: he is carried along at
+// the charger's speed. Bounce: he leaves at twice it (relativistic velocity addition). The charger's source supplies
+// the momentum.
+const sprintV = P.collide(Object.assign(ctxOf(3007), { body: body('ollie') }), ctxOf(3007), { source: 'sprint' }).v0;
+for (const [label, v] of [['sprint, default dial', sprintV], ['set 0.1% of light speed', P.K.c * 1e-3 / Math.sqrt(1 + 1e-6)]]) {
+  const m = 3007, h = P.headOn(P.vToMomentum(v, m), m, Infinity), c = P.K.c;
+  const vBounce = 2 * v / (1 + (v / c) * (v / c));
+  out['4 collide after Q13, unbounded charger into Rex, ' + label] = {
+    splat: { rexCarriedAt_m_s: sig(v), fromChargersSource: sig(P.vToMomentum(v, m)), freed_J: sig(h.Q) },
+    bounce: { rexLeavesAt_m_s: sig(vBounce), fromChargersSource: sig(P.vToMomentum(vBounce, m)) },
+  };
+}
+
 // 5. Safe passenger: a person thrown 30 m at 45°
 for (const [tag, sp] of [['old, off', false], ['new, on', true]]) {
   out['5 safe passenger, ' + tag] = throwRun(3007, 'person', {}, { safePassenger: sp });

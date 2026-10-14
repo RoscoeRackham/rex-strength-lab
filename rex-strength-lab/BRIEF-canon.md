@@ -11,7 +11,7 @@ Unless a run says otherwise: the default 10 ft Rex, on concrete, comic muscle, j
 1. **Mass:** 3,000 kg each, 300 kg of it Rex's tail (was 3,007 and 307). Results move by about 0.2%, mostly below the figures the page shows.
 2. **They take their own recoil:** the push back now goes into their source, not the planet. The ground no longer shakes from their own recoil.
 3. **Momentum rule:** an audit of every place the engine absorbs momentum, against the canon's list. Two gaps (items 2 and 4) and a wrong engine comment.
-4. **Never knocked back:** a power for each of them, on by default. Incoming hits (a charge, a push, a shove, being lifted or thrown, a catch) don't move them, and a hit's energy is absorbed unless he means it. With both powers on, a charge has no physical answer.
+4. **Never knocked back, and contests:** every Rex + Ollie test is a contest, where force moves: the other's push is real and only each one's own push back is absorbed. A charger doesn't slow, so he carries the one he hits along; a hit's energy is absorbed unless he means it. Never knocked back itself acts on no test the page has yet.
 5. **Safe passenger on by default**, now covering the landing and the air's drag too. It moves the person-throw's courtesy ceiling.
 6. **The absorption shimmer:** a glow that scales with the energy taken back, on a log scale from a car crash to the dinosaur-killer, drawn on his eyes, feather tips and mouth.
 7. **Copy:** the tagline becomes "Indestructible · never tires · unlimited"; the "momentum is never absorbed" wording goes.
@@ -123,7 +123,8 @@ Review records in `research/reviews/` (all three projects) keep the old figures:
 | Shove | `shoveOnce` (`toGround`) | the shover's feet hand the ground his push | nothing from the shover. The bolted partner's bolts (`toGroundB`) stay; see item 4 |
 | Wrestle throw | `throwPartner` (through `throwObject`) | the thrower's push into the ground | none; the partner's landing (`landToGround`) stays |
 | Game of catch, thrower | `CATCHGAME.leg` (`pushT`, `toGroundT`), `throwPushJ`, `easyPush`, `recoilOf` | the thrower's push into the ground, every throw | none |
-| Partner toss | `CATCHGAME.tossPartner` (`toGroundT`) | his push as he tosses Ollie up | none. His catch (`toGroundC`) is absorbed too: a catch is an incoming hit (**Q2**, **Q5**). Ollie can't be tossed at all while his Never knocked back is on (item 4) |
+| Partner toss | `CATCHGAME.tossPartner` (`toGroundT`, `toGroundC`) | his push as he tosses Ollie up; with Unbreakable footing, his catch | none: the catch's stop is his own push back too (**Q5**) |
+| Game of catch, catcher | `CATCHGAME.leg` (`toGroundC`), `catchIt`, `relCatch` | with Unbreakable footing, the catcher's stop goes into the ground; past about 1% of light speed he can be carried off | his stop is his own push back: it goes to his source, so nothing goes into the ground and he is never carried off (**Q5**). With the power off, today's physics |
 | Arm wrestle | `armWrestle` (`toGround`) | not covered by the power today. A quick pin leaves no net push, because the swing's push back and the slam cancel | the pin is the winner's own move, so its push back goes to his source. Then nothing cancels the slam's blow on the table, and with Unbreakable footing it reaches the ground whole at any swing time. **Q12** confirms it: in arm wrestling only each one's own push back is absorbed |
 | Collide | `COLLIDE.chargeSpeed` | the charger's take-off is the move itself | the take-off is unchanged. The hit's push back on the charger is his own recoil too (**Q4**): item 4 |
 | Weak ground | `weakGround` (sideways, "as if bolted, their recoil taken: the planet takes it") | used wherever a recoil push reached the ground | keep it for catches, landings and a bolted body; drop the recoil case |
@@ -136,7 +137,7 @@ Review records in `research/reviews/` (all three projects) keep the old figures:
 - Wrestle (`wrestleShove`, `wrestleThrow`): the chips and items.
 - Catch (`bayCatch`, `catchPartner`): "…goes through Rex's feet into the planet…".
 - Their powers: the switch's hint (`#sw-recoil`).
-- `duoFacts`: with the power on, drop the thrower's and shover's push from `shake` and the harm text "the push through the shover's / thrower's feet shakes the ground…". The catcher's stop is absorbed too (**Q5**), so his line goes while his Never knocked back is on.
+- `duoFacts`: with the power on, drop the thrower's and shover's push from `shake` and the harm text "the push through the shover's / thrower's feet shakes the ground…". The catcher's stop is his own push back too (**Q5**), so his line goes.
 - The effort box (`effortReadout`, `offBy`): credit They take their own recoil with the plaster hazard where the same move with the power off cracks plaster from him. Today it is credited only with the slide.
 - Cards (`src/static-data.js`): "The courtesy ceiling and the not-so-heroic presets" (the rope's pull "into the planet over the pull, and that shaking counts"), "Their powers" ("the planet keeps the momentum, and the ground still shakes"), and "Newton's third law stays on" (item 7).
 - README: the intro's description of the power; Known limits: the hazard paragraph ("Pull without They take their own recoil (with it, … into the planet …)"), the paragraph "With Unbreakable footing and They take their own recoil both off…", and "They take their own recoil covers…".
@@ -188,7 +189,7 @@ Review records in `research/reviews/` (all three projects) keep the old figures:
 | A push with no push time | the jump's `pushOff` with `T = 0` (comic mode at unlimited strength), and any capped push with no time | the ground takes none; their power supplies all of it, unbounded | listed: a push in no time is one no ground can bear, so it is the ground's share it can't bear (**Q9**: yes) |
 | Growth lift | `instantGrowth` (`Pocean`) | the lift the ground's push would give him goes to the endless ocean | listed |
 | Their own recoil | item 2's table | goes into the planet | **not absorbed where the list says it is**: item 2 |
-| Incoming hits | `COLLIDE.collide`; `shoveOnce`; the catch (`relCatch`, `catchIt`) | a hit moves him, or goes through his feet or bolts into the planet | **not absorbed where the list says it is**: item 4 |
+| Incoming hits | `COLLIDE.collide`; `shoveOnce`; the catch (`relCatch`, `catchIt`) | a hit moves him, or goes through his feet or bolts into the planet | every hit in the lab is part of a contest (**Q13**, **Q14**), where the other's push is real; what the canon absorbs there is each one's own push back, the catcher's (item 2) and the charger's (item 4). **Not absorbed today** |
 | The air's drag on what they hold | — | no move carries or swings a held load fast enough for drag to matter (Pull ignores the load's drag) | nothing to do |
 | Soft landing, Silent strike, the sheath catch (Things keep their form), Safe passenger | `jumpOnce`; `MOVES.punch.blast`, `MOVES.clap.blast`; `relCatch`; `PASSENGER` | energy only; the momentum still reaches the ground or the catcher | consistent |
 | Truly immovable (Collide's thought experiment) | `headOn` with infinite mass | infinite inertia takes the momentum without moving | not one of their powers, and labelled a thought experiment. Item 4 reuses its sums |
@@ -196,7 +197,7 @@ Review records in `research/reviews/` (all three projects) keep the old figures:
 
 **Findings.**
 1. Their own recoil is not absorbed: item 2.
-2. Incoming hits are not absorbed: item 4.
+2. Incoming hits: every one in the lab is part of a contest, so what must be absorbed is each one's own push back, the catcher's (item 2) and the charger's (item 4). Neither is absorbed today.
 3. The push with no push time is within the list (**Q9**: yes). Nothing to change.
 4. The comment above `PASSENGER` in `src/engine.js` ("Momentum is never absorbed.") and the README's "an exception to 'momentum is never absorbed'" are wrong now: item 7.
 5. Cancelling his own pull (the Growth line: "absorption cancels his own pull on everything he doesn't mean to affect") cancels it both ways, so momentum is kept and the list needs no new case (**Q10**: B). The engine doesn't model the cancellation yet.
@@ -209,79 +210,80 @@ Review records in `research/reviews/` (all three projects) keep the old figures:
 - All-out car throw at a 10¹² kg dial. Old: 9.9 × 10⁷ kg·m/s in the ground and 9.9 × 10⁷ in the ocean (weak ground). New: all of his push in the ocean (recoil), nothing in the ground.
 - The comic jump at unlimited strength: the ground takes none and the ocean all of it, unbounded, both old and new (**Q9**: within the list).
 
-## 4. Never knocked back
+## 4. Never knocked back, and contests
 
 **Canon.** "Momentum: absorbed in the cases listed here …: … and incoming hits (he is never knocked back, RT 5.1)." And the rulings of 14 Oct 2026 (collaborator, answering this brief; owner to confirm; recorded in CLAUDE.md):
-- Never knocked back is a power for each of them, with a switch each, both on by default (**Q1**: C, on). It doesn't apply in arm wrestling, where both mean to tip the other (**Q12**).
-- Incoming hits are: a charge, a steady push, a shove, the shoving match, being lifted or thrown by the other, a caught object, and a partner landing on him (**Q2**: all).
-- A hit's freed energy is absorbed by default (it shows as his shimmer), and real only when he means it (**Q3**: B).
-- A charger's push back from his own hit is his own recoil, so it goes to his source and he doesn't slow (**Q4**: B).
-- A catch is absorbed, unless he chooses otherwise (**Q5**: A).
+- Never knocked back is a power for each of them, with a switch each, both on by default (**Q1**). Incoming hits are a charge, a steady push, a shove, the shoving match, being lifted or thrown by the other, a caught object, and a partner landing on him (**Q2**).
+- In contests, force moves, so Never knocked back is set aside. Contests are every Rex + Ollie test: arm wrestling, every Wrestle move, Collide's charge and steady push, and the partner toss (**Q12**, **Q13**, **Q14**).
+- In a contest the other's push is real. Only the push each puts on himself is absorbed: his own recoil (**Q12**, **Q15**).
+- A charger's push back from his own hit is his own recoil, so he doesn't slow (**Q4**).
+- A hit's freed energy is absorbed by default, and real only when he means it (**Q3**).
+- A catch is absorbed, unless he chooses otherwise (**Q5**).
 
-**What changes.** When something hits one of them and his Never knocked back is on, he doesn't move, and the hit's momentum goes to the endless ocean: not into his feet, the ground or his bolts.
-- **Against a charger whose push back is real** (They take their own recoil off), the sums are a truly immovable body's, which the engine already has (`headOn` with infinite mass). In a splat the charger stops dead. In a bounce he comes straight back at the speed he arrived, and the one hit takes twice his momentum.
-- **After the hit**: no slide and no sink, no push into the ground from it (so no shaking from it), no load on the rock around his bolts, no "bolts too late", and no change to the Earth's spin.
-- **The hit's energy.** In a splat, all of the charger's energy of motion is freed, as against a truly immovable body. For equal masses that is twice what a body that can be knocked back frees. By default it is absorbed and shows only as his shimmer (item 6). It is real only when he means it. On the page, that is when the reader picks a not-so-heroic preset whose hazard is the blast (rattle by air, the windows, the houses, a block), the way "break the ground" sets Unbreakable footing aside. That mapping is this plan's reading of "when he means it"; confirm it in review.
-- **The charger (Q4).** With They take their own recoil on, the hit's push back on the charger goes to his source, so he doesn't slow down: he acts as a body of unbounded mass moving at his own speed. Against someone who can be knocked back, he carries them along at his own speed (splat), or sends them off at twice it (bounce; near light speed, by relativistic velocity addition). The momentum they gain comes from his source. `headOn` handles an infinite target and an infinite momentum today, but not a charger of unbounded mass at a finite speed: add that case.
-- **Both on, the defaults.** The charger can't slow and the one he hits can't move: the unstoppable force meets the immovable object, and the collision has no physical answer. The page says exactly that, with no numbers, and offers the two ways out: turn off the Never knocked back of the one hit, or turn off They take their own recoil. The engine returns the outcome `'paradox'` (the Collide tab already has one, for two unlimited holds).
-- **A catch (Q5).** The catcher's stop is absorbed: he is never carried off, and nothing of it goes into the ground. With his Never knocked back off, today's physics. "Unless Rex enables otherwise" is read here as that switch; confirm it in review.
+**What this leaves for Never knocked back.** Every test in the Rex + Ollie element is a contest. A catch is absorbed anyway, because the catcher's stop is the push back of his own push (They take their own recoil, item 2). So no test the page has today has anything hit them that Never knocked back would stop. **Q1** asked for a switch each, but a switch that changes nothing on any tab would puzzle readers. Proposal, which needs your yes because it holds back part of Q1's answer: say in the "Their powers" card that in their contests they let force move and nothing else in the lab hits them yet, and add the two switches with the first test they change (for example the deferred collisions of thrown objects).
 
-**Test by test, with both switches on (the default):**
+**What changes in the contests.** Each one's own push back goes to his source (item 2's rule, applied to every contest move). The other's push on him is real.
 
-| Test | Today | New |
+| Test | Today (powers on) | New |
 |---|---|---|
-| Collide, a charge | the one hit is held by his footing or bolts, or knocked back | the paradox above. With They take their own recoil off: the table below |
-| Collide, a steady push | the push against his hold; the rock around bolts can tear out | he holds without limit and the push goes to his source; no rock load. The pusher's own push back is his recoil, to his source too |
-| Wrestle, the shove | the partner flies off and slides (Ollie at 21 m/s, 37 m, at the default dial) | neither moves: the shover's push back and the hit both go to their sources |
-| Wrestle, the shoving match | one walks the other out, or a deadlock | a deadlock: nobody can be moved (unless **Q13** says it follows arm wrestling) |
-| Wrestle, lift and throw | he lifts and throws his partner | he can't: being lifted or thrown is a hit, so the partner stays put |
-| Catch, an object | the catcher's stop goes into the ground; at a 10²⁰ kg dial he is carried off at 3,980 km/s | absorbed: never carried off, nothing into the ground |
-| Catch, the partner toss | Rex tosses Ollie up and catches him | Ollie can't be tossed while his switch is on |
-| A partner landing on him (the Wrestle throw, Collide from above) | the landing goes into the ground | absorbed |
-| Arm wrestle | the pin, and the drag once the table breaks | Never knocked back doesn't apply: both mean to tip the other (**Q12**). The pin and the drag stay real; only each one's own push back is absorbed (below) |
+| Arm wrestle | the pin, and the drag once the table breaks; the presses load the table through each one's elbow pad and peg | see "Arm wrestling" below |
+| Wrestle, the shove | the shover stays put (his recoil goes into the planet); Ollie flies off at 21 m/s and slides 37 m | the same, with nothing from the shover's feet into the ground (item 2) |
+| Wrestle, the shoving match | each pushes with what his walking grip gives and holds with his footing; two equal bodies deadlock | no push costs the pusher his grip, so each pushes with the effort he uses, and each is held only by his footing against the other's push. At the default dial a push (up to 890,000 N) is about 50 times either one's grip on concrete (17,700 N), so two equal pushers both get shoved apart and the match ends. A new outcome (for example `bothShoved`); one walks the other out only when just one push beats the other's grip |
+| Wrestle, lift and throw | he lifts and throws his partner | the same; the thrower's push back goes to his source (item 2). Holding the partner up is not counted as recoil: the partner's weight still rests on the ground through the lifter, as on the Lift tab (a reading; confirm in review) |
+| Collide, the charge | the one hit is held by his footing or bolts, or knocked back; the charger stops or bounces as physics says | the charger doesn't slow: he acts as a body of unbounded mass at his own speed. The one hit, on his footing, is carried along at the charger's speed (splat) or sent off at twice it (bounce; by relativistic velocity addition near light speed), and the charger's source supplies the momentum. Where their powers hold the one hit without limit (Bolted on Unbreakable footing, or landed on from above, where Unbreakable footing's weak-ground rule supplies whatever the ground can't bear), the charger can't slow and the one hit can't move: the collision has no physical answer, and the page says so (the outcome `'paradox'`) |
+| Collide, the steady push | the pusher pushes up to what his footing holds; the one pushed holds with his | the pusher's push isn't capped by his own footing (its push back goes to his source); the one pushed holds with his footing, or his bolts and the rock around them, as today |
+| Catch, the partner toss | Rex tosses Ollie up and catches him | the same; the toss's push and the catch's stop are Rex's own push back, so nothing goes into the ground (item 2) |
+| Catch, an object | the catcher's stop goes into the ground; at a 10²⁰ kg dial he is carried off at 3,980 km/s | his stop's push back goes to his source (item 2): never carried off, nothing into the ground (**Q5**). With They take their own recoil off ("unless he chooses otherwise"), today's physics |
 
-**Arm wrestling (Q12).** Never knocked back would make it a deadlock, and the point is two forces against each other: each means to tip the other. So the other's push on him is real, and the only absorption is the push each puts on himself (They take their own recoil). This plan reads that as follows; confirm it in review:
+So the default Collide gives an answer for a sprint or a set speed (Rex is carried along), and the paradox for the jump and stomp charges (Rex landed on from above, held up by Unbreakable footing) and for a bolted Rex.
+
+**Arm wrestling (Q12).** Never knocked back would make it a deadlock, and the point is two forces against each other: each means to tip the other. So the other's push on him is real, and the only absorption is the push each puts on himself. This plan reads that as follows; confirm it in review:
 - The pin and, once the table is gone, the drag stay as today: the stronger tips the other.
 - Each one's own push back goes to his source, so it no longer loads the table through his elbow pad and peg. The table then carries only the forearms' slam, and can't tear apart from the presses or from the pin's load on the winner's pad. (That only shows with Things keep their form off: with it on the table never breaks anyway.)
 - Standing, once the table is gone, each one's footing no longer caps his own press; the loser's footing still resists being dragged, because the winner's push on him is real.
 - The pin's slam reaches the ground whole at any swing time (item 2).
 
-So with the defaults, most of the Rex + Ollie element shows that nothing moves. That is the canon, but the element has to say so first and put each one's Never knocked back switch within reach, so a reader can run a contest in one click. It is a design point for pull request 4's review, not canon.
+**The hit's energy (Q3).** In a splat, the energy the hit frees is absorbed by default and shows only as his shimmer (item 6). It is real only when he means it. On the page, that is when the reader picks a not-so-heroic preset whose hazard is the blast (rattle by air, the windows, the houses, a block), the way "break the ground" sets Unbreakable footing aside. That mapping is this plan's reading of "when he means it"; confirm it in review.
 
-**Engine.** A per-character option, for example `noKnockback`, with a state key each (like `anchor` and `oAnchor`), both on by default. Old saves have neither key, so they pick up the defaults; no marker needed. In `COLLIDE.collide`:
-- the one hit, with the option on, takes the immovable branch's sums (`held = true`) and reports the momentum taken (`out.absorbed = { P }`: p in a splat, 2p in a bounce) instead of `out.earth`, `out.toGround`, `out.rock`, `out.bolts` and the motion in `out.after`;
-- a charger with `ownRecoil` is a body of unbounded mass at his own speed;
-- both together return `'paradox'`.
+**Engine.**
+- `COLLIDE.collide`: a charger with `ownRecoil` is a body of unbounded mass at his speed. `headOn` handles an infinite target and an infinite momentum today, but not this. In the charger's frame the one hit arrives at the charger's speed and meets an immovable body, so the immovable sums apply with the roles swapped (that is how `runs.js` works out the table below). Report the momentum the charger's source supplies. Where the one hit is held without limit, return `'paradox'`.
+- `standoff`: with `ownRecoil`, the pusher's push isn't capped by his own footing.
+- `pushMatch`: with `ownRecoil`, no walking-grip cap on the drive; each is held by his footing against the other's push; the new outcome.
+- `armWrestle`: as in "Arm wrestling" above.
+- `liftPartner`, `throwPartner`, `shoveOnce`, `CATCHGAME.tossPartner` and the catch: item 2's rule.
+- Never knocked back: nothing in the engine until a test needs it (above).
 
-`standoff`, `shoveOnce`, `pushMatch`, `liftPartner`, `throwPartner`, the catch (`CATCHGAME.relCatch` and `catchIt`, the catcher's stop), `tossPartner` and a thrown partner's landing follow the table. Keep "Truly immovable" as the thought experiment it is (infinite inertia, nothing to do with their powers), and say on the page that Never knocked back gives the one hit the same motion.
+**Page.** The Collide verdicts for the carried-along and paradox outcomes; the items "Momentum is never lost…" (the charger's source now supplies momentum) and "'Immovable' only means what holds … in place…"; the shoving match's new outcome and its item "A shoving match is decided at the feet…"; in `duoFacts`, the harms for both sliding in the shoving match and for the one hit carried along in Collide. The "Truly immovable" thought experiment stays as it is.
 
-**Page.** The verdicts in `collideCharge` and `collidePush` ("…doesn't budge… the blow goes through … into the ground"); the items "Momentum is never lost…" and "'Immovable' only means what holds … in place…"; the Collide footing lines; the Wrestle and Catch verdicts for a partner who won't move. In `duoFacts`: the harms "the hit, carried into the ground, shakes it…" and "one of them slides…" go while the one hit has the power on, and `models.shake` keeps only the charger's take-off. In Their powers: two switches, "Never knocked back: Rex" and "Never knocked back: Ollie", next to the Bolted pair; a screen reader hears each name.
+**The two-player effort search.** Bodies move in the contests again, so the slide harm ("one of them slides past the nearest people") stays, now with both sliding in the shoving match and the one hit carried at the charger's speed in Collide. The hit's energy is absorbed by default, so its air blast counts only with a blast preset.
 
-**The two-player effort search.** With the one hit unmoved and the hit's energy absorbed, the harms left in a charge are the charge breaking the sound barrier and the charger's take-off shaking the ground. Most presets become unreachable in those tests, and the page says so, as the solo tabs do. A blast preset makes the hit's energy real (above).
-
-**Old and new** (`runs.json`, "4 collide"; Ollie charges Rex). With both defaults on, the new result is the paradox in every row. The table shows the case with They take their own recoil off (so Ollie's push back is real) and Rex's Never knocked back on. The energy is what the hit frees; by default it is absorbed:
+**Old and new** (`runs.json`, "4 collide" and "4 collide after Q13"; Ollie charges Rex, the defaults on):
 
 | Run | Old | New |
 |---|---|---|
-| Ollie sprints into Rex, splat, default dial. Ollie arrives at 18 m/s (his run-up and grip set the speed, not the dial) | Rex is knocked back; they slide 7.0 m together, starting at 9.0 m/s. His footing hands the ground 615 kg·m/s. The splat frees 250 kJ | Rex doesn't move. Ollie stops dead. 54,600 kg·m/s goes to the endless ocean. The splat frees 495 kJ |
-| The same, bounce | Ollie stops; Rex flies off at 18 m/s and slides 27 m | Ollie comes back at 18 m/s. Rex takes 109,000 kg·m/s |
-| Ollie jumps onto Rex, splat, 10⁹ kg dial. He lands at 287 m/s; Unbreakable footing holds Rex | the ground takes 95,700 kg·m/s through Rex's feet and their power supplies the other 766,000. Plaster may crack out to 7.7 m. 124 MJ freed | nothing of the hit reaches the ground (Ollie's take-off still does). 862,000 kg·m/s to the endless ocean. 124 MJ freed |
-| All-out: a set speed of 0.1% of light speed (300 km/s), splat | they leave together at 150 km/s and slide 15.7 km. 68 TJ freed (about the Hiroshima bomb) | Rex doesn't move. 9.0 × 10⁸ kg·m/s to the endless ocean. 135 TJ freed (about twice the Hiroshima bomb) |
-| The same, bounce | Ollie stops; Rex flies off at 300 km/s and slides 9.2 km | Ollie comes back at 300 km/s. Rex takes 1.8 × 10⁹ kg·m/s |
+| Ollie sprints into Rex, splat, default dial. Ollie arrives at 18 m/s (his run-up and grip set the speed, not the dial) | Rex is knocked back; they slide 7.0 m together, starting at 9.0 m/s. His footing hands the ground 615 kg·m/s. The splat frees 250 kJ | Ollie doesn't slow. Rex is carried along at 18 m/s, and Ollie's source supplies 54,600 kg·m/s. The splat frees 495 kJ, absorbed by default |
+| The same, bounce | Ollie stops; Rex flies off at 18 m/s and slides 27 m | Rex flies off at 36 m/s; Ollie's source supplies 109,000 kg·m/s |
+| Ollie jumps onto Rex, 10⁹ kg dial. He lands at 287 m/s; Unbreakable footing holds Rex | the ground takes 95,700 kg·m/s through Rex's feet and their power supplies the other 766,000. Plaster may crack out to 7.7 m. 124 MJ freed | the paradox: Ollie can't slow and Rex can't sink |
+| All-out: a set speed of 0.1% of light speed (300 km/s), splat | they leave together at 150 km/s and slide 15.7 km. 68 TJ freed (about the Hiroshima bomb) | Rex is carried along at 300 km/s; Ollie's source supplies 9.0 × 10⁸ kg·m/s. 135 TJ freed (about twice the Hiroshima bomb), absorbed by default |
+| The same, bounce | Ollie stops; Rex flies off at 300 km/s and slides 9.2 km | Rex flies off at 600 km/s; Ollie's source supplies 1.8 × 10⁹ kg·m/s |
+
+With They take their own recoil off, every row is today's physics.
 
 **Tests.** `test/powers.js`, a new section:
-- with the option on, the one hit never moves (splat and bounce, every charge source, bolted or not, Unbreakable footing on or off); he takes p in a splat and 2p in a bounce; the hit puts nothing into the ground; in a splat the energy freed equals the charger's energy of motion;
-- a charger with his recoil taken keeps his speed, and moves someone without the option at his own speed (splat) or about twice it (bounce);
-- both on gives `'paradox'`;
-- each row of the test-by-test table.
+- a charger with his recoil taken keeps his speed; the one hit, on his footing, leaves at the charger's speed (splat) or about twice it (bounce), and the charger's source supplies exactly the momentum the one hit gains;
+- `'paradox'` where the one hit is held without limit (bolted on Unbreakable footing; landed on from above with it on);
+- the shoving match's new outcome at the default dial, and the walk-out where only one push beats the other's grip;
+- the steady push, uncapped by the pusher's own footing;
+- arm wrestling as above;
+- with They take their own recoil off, every result as now.
 
-With the options off, every result as now: the powers-off identity, and today's 5d check "Collide unchanged", which now holds only with them off. `test/shots.js`: the Collide, Wrestle and Catch verdicts with each switch on and off; an old save loads with both on.
+`test/shots.js`: the Collide and Wrestle verdicts with the power on and off.
 
-**Interacts with.** Item 2 (the charger's push back is his recoil). Item 3 (this closes the audit's second gap). Item 5 (a thrown person is not Ollie: Safe passenger covers people, this covers the two of them). Item 6 (an absorbed hit is the largest shimmer source). Bolted to the planet (redundant while the switch is on; still the setting with it off). Unbreakable footing (its Collide `toGround` path goes while the one hit has the switch on).
+**Interacts with.** Item 2 (the same rule, in contests; the catches now come under item 2). Item 3 (every hit in the lab is part of a contest, so the audit's second gap closes through each one's own push back, not through Never knocked back). Item 6 (the hit's energy). Bolted to the planet and Unbreakable footing (they make the paradox cases).
 
 **Risks.**
-- With the defaults, most two-player results are "nothing moves". Readers may take that for a broken page, so the element must explain it first.
-- "When he means it" (mapped to the blast presets) and "unless Rex enables otherwise" (mapped to the switch) are readings. Confirm them in review.
+- The paradox is the default for the jump and stomp charges. Readers may take it for a broken page, so the Collide tab must explain it first.
+- Readings to confirm in review: "when he means it" as the blast presets; holding a partner up not counted as recoil; the shoving match's new outcome; the paradox cases; the arm-wrestling consequences.
 - The two-player tests can take 2–3 s already. The new branches must not slow them.
 
 ## 5. Safe passenger on by default
@@ -348,7 +350,7 @@ With the options off, every result as now: the powers-off identity, and today's 
 | The same, all-out | 0.47 MJ of drag | a faint flicker, just under a flicker |
 | Stomp all-out (Unbreakable footing keeps the concrete whole) | 0.10 MJ | a faint flicker |
 | Stomp all-out at a 10⁹ kg dial | 1.1 GJ | 0.19: between a flicker and a faint glow |
-| Ollie hits Rex at 0.1% of light speed, with They take their own recoil off (with both defaults on there is no hit to absorb: item 4) | 135 TJ | 0.47: about a glow |
+| Ollie charges Rex at 0.1% of light speed (the defaults: Rex is carried along and the hit's energy is absorbed, item 4) | 135 TJ | 0.47: about a glow |
 
 **Risk: which drag figure.** The lab's tally for Air resistance absorbed is the drag the air would have taken along the path the object actually flies, drag-free. A drag-free object keeps its speed, so the tally can far exceed the object's own energy. A car thrown all-out at a 10⁹ kg dial carries 7.3 GJ, but the tally is 2.5 TJ. Fed to the shimmer, that would make a car throw glow like a nuclear test. Use instead what real air would have taken from that throw (the Throw tab's `dragLoss0`, at most the object's energy). That is a decision for review, not canon.
 
@@ -390,23 +392,26 @@ The collaborator answered on 14 Oct 2026. The answers that are canon are recorde
 
 | Question | Answer | What it means for the plan |
 |---|---|---|
-| **Q1.** Is Ollie never knocked back too? | C, on by default | A switch each, "Never knocked back", next to Bolted; both on by default (item 4) |
-| **Q2.** What counts as an incoming hit? | All of them: a charge, a steady push, a shove, the shoving match, being lifted or thrown by the other, a caught object, a partner landing on him | Item 4's test-by-test table. Arm wrestling wasn't on the list: **Q12** |
+| **Q1.** Is Ollie never knocked back too? | C, on by default | A switch each, both on by default. Since every two-player test is a contest (**Q13**, **Q14**), the switches would change nothing on the page yet: item 4 proposes adding them with the first test they affect (needs your yes) |
+| **Q2.** What counts as an incoming hit? | All of them: a charge, a steady push, a shove, the shoving match, being lifted or thrown by the other, a caught object, a partner landing on him | In contests these are set aside (**Q12**–**Q15**); what's left on the page is catches, absorbed through item 2 |
 | **Q3.** The hit's freed energy | B: absorbed by default, real only when he means it | It is shimmer (item 6). This plan reads "when he means it" as the blast presets (item 4); confirm in review |
-| **Q4.** The charger's push back | B: his own recoil, so he doesn't slow | A charger with They take their own recoil on acts as a body of unbounded mass; with both defaults on, a charge is the paradox (item 4) |
-| **Q5.** A catch | A: absorbed, unless Rex chooses otherwise | Never carried off, nothing into the ground. Read as tied to his Never knocked back switch (item 4); confirm in review |
+| **Q4.** The charger's push back | B: his own recoil, so he doesn't slow | A charger with They take their own recoil on acts as a body of unbounded mass: he carries the one he hits along, and meets a paradox only where their powers hold the one hit without limit (item 4) |
+| **Q5.** A catch | A: absorbed, unless Rex chooses otherwise | Never carried off, nothing into the ground: the catcher's stop is his own push back (item 2). "Unless he chooses otherwise" is They take their own recoil turned off |
 | **Q6.** The shimmer | (a) the dinosaur-killer; (b) a faint flicker below a car crash; (c) yes, in the growth what-ifs too; (d) yes, it may be drawn over the art | Item 6. The floor of the faint flicker is a proposal (7.3 kJ); drawing on the art needs the owner's yes, since the art is the owner's |
 | **Q7.** The tagline | A: "Indestructible · never tires · unlimited" | Item 7; it ships with pull request 2 |
 | **Q8.** Safe passenger and the landing | (a) Safe passenger covers the landing; (b) and the air's drag | Item 5. The landing's momentum stays real and its energy is taken back: a reading; confirm in review |
 | **Q9.** A push with no push time | Yes: the ground's share it can't bear | Nothing to change (item 3) |
 | **Q10.** Cancelling his own pull | B: both ways, so momentum is kept | No new case on the list; the engine doesn't model it yet (item 3, "Other canon") |
 | **Q11.** The optional items | Euphoria: 0 is his normal state, 100 "utterly mad with power". Flight: its push goes to the endless ocean; unlimited, so faster than light. The default run: 339 m/s | Item 8. Flight adds a sixth case to the momentum list (CLAUDE.md) |
-| **Q12.** Arm wrestling | Never knocked back doesn't apply: it would make a deadlock, and both mean to tip the other. The only absorption is the push each puts on himself | Item 4's arm-wrestle paragraph (the table no longer carries their presses; standing, a press isn't capped by his own footing). Readings; confirm in review |
+| **Q12.** Arm wrestling | Never knocked back doesn't apply: it would make a deadlock, and both mean to tip the other. The only absorption is the push each puts on himself | Item 4's arm-wrestling paragraph (the table no longer carries their presses; standing, a press isn't capped by his own footing). Readings; confirm in review |
+| **Q13.** The Wrestle contests | Contests should let force move in general | Never knocked back is set aside in every Wrestle move (item 4) |
+| **Q14.** Which other tests are contests | Collide's charge and steady push, and the partner toss | Every Rex + Ollie test is a contest; only catches of objects are left, and item 2 absorbs those |
+| **Q15.** Own push back in contests | The arm-wrestle rule: the other's push is real, only his own push back is absorbed | The shove stays as now; in the shoving match two equal pushers both get shoved apart; the steady push isn't capped by the pusher's footing; a charger doesn't slow (item 4) |
 
 **Still open.**
-- **Q13. The Wrestle contests** (item 4). Q12's reason (both mean to tip the other, so Never knocked back would only make a deadlock) fits the shoving match too, and maybe the shove, the lift and the throw. Q2 counted those as hits, so by default nobody moves in them. Do they follow arm wrestling (the other's push real, only each one's own push back absorbed), or stay as Q2 says?
+- **Never knocked back's switches** (item 4). Every test on the page is a contest, so the switches would change nothing yet. The plan proposes adding them with the first test they change; that holds back part of Q1's answer, so it needs your yes.
 - **The owner** confirms the rulings in CLAUDE.md, and says yes or no to the glow drawn on the art.
-- **Review** confirms the plan's readings: "when he means it" as the blast presets; "unless Rex enables otherwise" as his switch; a person's landing with its momentum real and its energy taken back; the arm-wrestle consequences (item 4); the shimmer's floor; and the drag figure the shimmer uses.
+- **Review** confirms the plan's readings: "when he means it" as the blast presets; "unless Rex enables otherwise" as They take their own recoil turned off; a person's landing with its momentum real and its energy taken back; the arm-wrestling consequences, the shoving match's new outcome, holding a partner up not counted as recoil, and the paradox cases (item 4); the shimmer's floor; and the drag figure the shimmer uses.
 
 ## Other canon in #25 that this plan doesn't cover
 
@@ -432,9 +437,9 @@ Each pull request records its review rounds in `research/reviews/` (for example 
 | Order | Pull request | Depends on | Review rounds |
 |---|---|---|---|
 | 1 | **Mass** (item 1), all three projects | the claim on `builds.json` and `calc.js` (held on `terantic/canon-followups`) | Two. Data and claims: every figure that quotes the mass, in all three projects, against the canon and the research. Code and tests: the pinned comparisons (remove the pin and see them fail), the migration, the rebuilt `dist` files |
-| 2 | **Recoil into their source** (item 2), with item 3's ledger test, the recoil copy and the new tagline (item 7) | 1 | Three and a re-check, as for pull request B. Physics: each move's momentum, the ledger. Code and tests: mutants that put the push back into the ground one move at a time. Copy and layout |
+| 2 | **Recoil into their source** (item 2), the catches included, with item 3's ledger test, the recoil copy and the new tagline (item 7) | 1 | Three and a re-check, as for pull request B. Physics: each move's momentum, the ledger. Code and tests: mutants that put the push back into the ground one move at a time. Copy and layout |
 | 3 | **Safe passenger by default**, covering the landing and the drag (item 5) | 1 | Two. Physics and claims, including the landing's split (momentum real, energy taken back). Code, layout and the migration |
-| 4 | **Never knocked back** (item 4) | 2 (the charger's push back is his recoil); **Q13** for the Wrestle contests only | Three and a re-check. The physics of the hit, the charger of unbounded mass and the paradox. The two-player tests: every row of item 4's table, the search's time, and how the element explains "nothing moves". Copy |
+| 4 | **Contests** (item 4) | 2 (the same rule, in contests) | Three and a re-check. Physics: the charger of unbounded mass, the paradox cases, the shoving match, the standing arm wrestle. The two-player tests: every row of item 4's table, and the search's time. Copy, including how the Collide tab explains the paradox |
 | 5 | **The shimmer** (item 6) | 3 and 4 (a person's landing and a hit's energy are shimmer sources); the owner's yes to drawing on the art | Two. Design, copy and accessibility, including the glow's placement on the art. Code and data, including the drag figure and the floor |
 
 The optional items (section 8) each need their own brief.
