@@ -59,10 +59,10 @@ Neither can see the other's sessions, chats or memory. Anything the other person
 
 1. **Start from a fresh `main`.** Pull first. Read `STATUS.md` before changing anything.
 2. **Work on a branch, never on `main`.** Cloud sessions use their own `claude/...` branches; the collaborator uses `terantic/...`. Merge `main` into a long-running branch at least daily.
-3. **Merge through a pull request.** The PR says what changed, how it was tested, and what it needs from the other person. CI (`.github/workflows/test.yml`) must pass before merging.
+3. **Merge through a pull request.** The PR says what changed, how it was tested, and what it needs from the other person. CI (`.github/workflows/test.yml`) is heavy, so it runs only when someone starts it: from the repo's Actions tab ("Run workflow", pick the branch) or with `gh workflow run test.yml --ref <branch>`. Run it, and see it pass, before merging a big change (code, data or generated files). Small changes, such as STATUS or notes, can merge without it.
 4. **Stay inside the folders you've claimed in `STATUS.md`.** Shared files need care:
    - `build-calculator/data/builds.json` and `src/calc.js` are shared by the Build Calculator and Build Comparison. Only one open branch changes them at a time; claim them in `STATUS.md`.
-   - Generated files (`*/dist/index.html`, `rex-strength-lab/src/data.js`) are never merged by hand. On a conflict, take either side, rebuild, and commit the result. CI fails if they don't match their sources.
+   - Generated files (`*/dist/index.html`, `rex-strength-lab/src/data.js`) are never merged by hand. On a conflict, take either side, rebuild, and commit the result. CI, when run, fails if they don't match their sources.
    - Keep root `README.md` and this file's changes small, and merge them quickly. Changes to this file's standards are agreed by both people.
 5. **Before pushing, update `STATUS.md`:** what you finished, what's in progress, and what you're waiting on.
 6. **Publishing:** only the owner's account can update the live Artifacts. After a merge to `main`, the owner's session rebuilds and republishes to the existing URLs (listed in the root README). The collaborator may publish separate preview pages for review and link them in the PR, and must say they are previews.
