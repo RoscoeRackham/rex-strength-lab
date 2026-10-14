@@ -11,7 +11,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## Waiting on
 
-- Collaborator (canon), from `claude/canon-sync-theoreticals`: agree to the CLAUDE.md canon update that brings Rex's canon in line with the owner's Rex Theoreticals project (newest ruling wins, owner's ruling 14 Oct 2026). Then the pages need follow-up work, not done in that pull request: Rex 3,000 kg with a 300 kg tail (was 3,007 kg) in all three projects and the shared `builds.json`; They take their own recoil sends the push into their source instead of the planet (engine, tests, Known limits, every "the planet takes the push back" sentence); Safe passenger on by default; never knocked back by a hit (needs an Ollie ruling for the two-player tests); the absorption shimmer; the tagline "still obeys Newton". Until then the pages lag the canon.
+- Page follow-ups for the canon update from pull request #25 (`claude/canon-sync-theoreticals`; agreed by the collaborator 14 Oct 2026; not claimed yet): Rex 3,000 kg with a 300 kg tail (was 3,007 kg) in all three projects and the shared `builds.json`; They take their own recoil sends the push into their source instead of the planet (engine, tests, Known limits, every "the planet takes the push back" sentence); Safe passenger on by default; never knocked back by a hit (needs an Ollie ruling for the two-player tests); the absorption shimmer; the tagline "still obeys Newton". Until then the pages lag the canon.
 
 - Owner and collaborator (canon), from pull request B (merged; the page is live with the interim behaviour; nobody is working on it): with Unbreakable footing on, instant growth can't drive his soles into the ground, so the Rex lab grows him upward from them (as Comic ground did); canon has him grow about his middle with his feet driven in. Confirm, or rule otherwise (`rex-strength-lab/README.md` Known limits).
 - Owner review of Build Comparison design decisions listed in `build-comparison/data/NOTES.md` ("Design decisions to review"): the edge marking, the palette change, the stop edges, Thor's and the Thing's treatment, the group colours' contrast, and figures drawn with their arms at their rest angle. (The meatball sentence is now reworded in the brief.)
@@ -21,6 +21,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## Done
 
+- 2026-10-14: collaborator agreed to the canon update from pull request #25 (CLAUDE.md's Rex canon in line with the owner's Rex Theoreticals project). The page follow-ups are under Waiting on.
 - 2026-10-14: CLAUDE.md canon synced with the owner's Rex Theoreticals project (`claude/canon-sync-theoreticals`): knowledge × intention, bystanders, the shimmer, momentum exceptions, growth and euphoria steps, anatomy, movement, setting, 3,000 kg; page work listed under Waiting on.
 
 - 2026-10-13: the session's history: `history/2026-10-12-rex-gui/` (the owner's prompts, the transcript of the three pull requests, the workflows' subagents, the scratchpad scripts), built with `history/tools/build_history_gui.py` the same way as the earlier entries. The claim on `rex-strength-lab/` (and the root README's Rex lab row, CLAUDE.md's build line and CI's steps) is released.
