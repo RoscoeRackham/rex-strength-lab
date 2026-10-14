@@ -1,0 +1,625 @@
+{
+ "1 mass, old, 3,007 kg": {
+  "throwCar30m": {
+   "volume_m3": 2.836,
+   "least": {
+    "effort": "22100 kg-force",
+    "capped": false,
+    "v": 16.4,
+    "range": 30.1,
+    "leaves": false,
+    "toGroundJ": 22000,
+    "toGroundSupplied": 0,
+    "ppv5_hisPush": 0.434,
+    "ppv5_landing": 1.18,
+    "plasterReach_m": 0,
+    "airTakenBack_J": 42500,
+    "Eobj_J": 181000
+   },
+   "ceiling": "none",
+   "allout": {
+    "v": 30.9,
+    "range": 100,
+    "leaves": false,
+    "toGroundJ": 41400,
+    "toGroundSupplied": 0,
+    "ppv5_hisPush": 1.99,
+    "ppv5_landing": 6.43,
+    "plasterReach_m": 2.25,
+    "airTakenBack_J": 470000,
+    "Eobj_J": 641000
+   },
+   "presets": "rattle: 18800 kg-force, plaster: never, windows: never, ground: never, houses: never, block: never"
+  },
+  "jump3m": {
+   "least": "23000 kg-force",
+   "alloutApex_m": 14,
+   "alloutV": 16.6
+  },
+  "walkSoft_ppv3_mm_s": 0.169,
+  "standing_kPa": 47.6,
+  "kV": 0.1002
+ },
+ "1 mass, new, 3,000 kg": {
+  "throwCar30m": {
+   "volume_m3": 2.83,
+   "least": {
+    "effort": "22100 kg-force",
+    "capped": false,
+    "v": 16.4,
+    "range": 30,
+    "leaves": false,
+    "toGroundJ": 22000,
+    "toGroundSupplied": 0,
+    "ppv5_hisPush": 0.433,
+    "ppv5_landing": 1.18,
+    "plasterReach_m": 0,
+    "airTakenBack_J": 42400,
+    "Eobj_J": 181000
+   },
+   "ceiling": "none",
+   "allout": {
+    "v": 30.9,
+    "range": 100,
+    "leaves": false,
+    "toGroundJ": 41500,
+    "toGroundSupplied": 0,
+    "ppv5_hisPush": 1.99,
+    "ppv5_landing": 6.44,
+    "plasterReach_m": 2.25,
+    "airTakenBack_J": 470000,
+    "Eobj_J": 641000
+   },
+   "presets": "rattle: 18800 kg-force, plaster: never, windows: never, ground: never, houses: never, block: never"
+  },
+  "jump3m": {
+   "least": "22900 kg-force",
+   "alloutApex_m": 14,
+   "alloutV": 16.6
+  },
+  "walkSoft_ppv3_mm_s": 0.168,
+  "standing_kPa": 47.4,
+  "kV": 0.09995
+ },
+ "2 recoil, old, into the planet": {
+  "throwCar30m": {
+   "volume_m3": 2.836,
+   "least": {
+    "effort": "22100 kg-force",
+    "capped": false,
+    "v": 16.4,
+    "range": 30.1,
+    "leaves": false,
+    "toGroundJ": 22000,
+    "toGroundSupplied": 0,
+    "ppv5_hisPush": 0.434,
+    "ppv5_landing": 1.18,
+    "plasterReach_m": 0,
+    "airTakenBack_J": 42500,
+    "Eobj_J": 181000
+   },
+   "ceiling": "none",
+   "allout": {
+    "v": 30.9,
+    "range": 100,
+    "leaves": false,
+    "toGroundJ": 41400,
+    "toGroundSupplied": 0,
+    "ppv5_hisPush": 1.99,
+    "ppv5_landing": 6.43,
+    "plasterReach_m": 2.25,
+    "airTakenBack_J": 470000,
+    "Eobj_J": 641000
+   },
+   "presets": "rattle: 18800 kg-force, plaster: never, windows: never, ground: never, houses: never, block: never"
+  },
+  "throwCar30m_dial1e12": {
+   "volume_m3": 2.836,
+   "least": {
+    "effort": "22100 kg-force",
+    "capped": false,
+    "v": 16.4,
+    "range": 30.1,
+    "leaves": false,
+    "toGroundJ": 22000,
+    "toGroundSupplied": 0,
+    "ppv5_hisPush": 0.434,
+    "ppv5_landing": 1.18,
+    "plasterReach_m": 0,
+    "airTakenBack_J": 42500,
+    "Eobj_J": 181000
+   },
+   "ceiling": "plaster at 209000 kg-force",
+   "allout": {
+    "v": 105000,
+    "range": 151000,
+    "leaves": true,
+    "toGroundJ": 99000000,
+    "toGroundSupplied": 98900000,
+    "ppv5_hisPush": 28200,
+    "ppv5_landing": 0,
+    "plasterReach_m": 3600,
+    "airTakenBack_J": 1980000000000000,
+    "Eobj_J": 7320000000000
+   },
+   "presets": "rattle: 18800 kg-force, plaster: 209000 kg-force, windows: 10600000 kg-force, ground: 652000 kg-force, houses: 10600000 kg-force, block: 3960000000 kg-force"
+  },
+  "throwBusUp1km_dial1e9": {
+   "volume_m3": 2.836,
+   "least": {
+    "effort": "588000 kg-force",
+    "capped": true,
+    "v": 30.5,
+    "range": 1.18e-14,
+    "leaves": false,
+    "toGroundJ": 228000,
+    "toGroundSupplied": 62500,
+    "ppv5_hisPush": 10.6,
+    "ppv5_landing": 12.7,
+    "plasterReach_m": 5,
+    "airTakenBack_J": 1150000,
+    "Eobj_J": 4430000
+   },
+   "ceiling": "plaster at 590000 kg-force",
+   "allout": {
+    "v": 1290,
+    "range": 2.08e-11,
+    "leaves": false,
+    "toGroundJ": 91600,
+    "toGroundSupplied": 12200000,
+    "ppv5_hisPush": 26.1,
+    "ppv5_landing": 1370000,
+    "plasterReach_m": 1720,
+    "airTakenBack_J": 953000000000,
+    "Eobj_J": 7930000000
+   },
+   "presets": "rattle: 65800 kg-force, plaster: 590000 kg-force, windows: 69700000 kg-force, ground: 463000 kg-force, houses: 69700000 kg-force, block: never"
+  },
+  "pullCar10s": {
+   "least": "43.5 kg-force",
+   "allout_ppv5": 0.00523,
+   "ceiling": "none"
+  }
+ },
+ "2 recoil, new, into their source": {
+  "throwCar30m": {
+   "volume_m3": 2.836,
+   "least": {
+    "effort": "22100 kg-force",
+    "capped": false,
+    "v": 16.4,
+    "range": 30.1,
+    "leaves": false,
+    "toGroundJ": 0,
+    "toGroundSupplied": 0,
+    "ppv5_hisPush": 0,
+    "ppv5_landing": 1.18,
+    "plasterReach_m": 0,
+    "airTakenBack_J": 42500,
+    "Eobj_J": 181000
+   },
+   "ceiling": "none",
+   "allout": {
+    "v": 30.9,
+    "range": 100,
+    "leaves": false,
+    "toGroundJ": 0,
+    "toGroundSupplied": 0,
+    "ppv5_hisPush": 0,
+    "ppv5_landing": 6.43,
+    "plasterReach_m": 2.25,
+    "airTakenBack_J": 470000,
+    "Eobj_J": 641000
+   },
+   "presets": "rattle: 18800 kg-force, plaster: never, windows: never, ground: never, houses: never, block: never"
+  },
+  "throwCar30m_dial1e12": {
+   "volume_m3": 2.836,
+   "least": {
+    "effort": "22100 kg-force",
+    "capped": false,
+    "v": 16.4,
+    "range": 30.1,
+    "leaves": false,
+    "toGroundJ": 0,
+    "toGroundSupplied": 0,
+    "ppv5_hisPush": 0,
+    "ppv5_landing": 1.18,
+    "plasterReach_m": 0,
+    "airTakenBack_J": 42500,
+    "Eobj_J": 181000
+   },
+   "ceiling": "plaster at 209000 kg-force",
+   "allout": {
+    "v": 105000,
+    "range": 151000,
+    "leaves": true,
+    "toGroundJ": 0,
+    "toGroundSupplied": 0,
+    "ppv5_hisPush": 0,
+    "ppv5_landing": 0,
+    "plasterReach_m": 0,
+    "airTakenBack_J": 1980000000000000,
+    "Eobj_J": 7320000000000
+   },
+   "presets": "rattle: 18800 kg-force, plaster: 209000 kg-force, windows: 10600000 kg-force, ground: 652000 kg-force, houses: 10600000 kg-force, block: 3960000000 kg-force"
+  },
+  "throwBusUp1km_dial1e9": {
+   "volume_m3": 2.836,
+   "least": {
+    "effort": "588000 kg-force",
+    "capped": true,
+    "v": 30.5,
+    "range": 1.18e-14,
+    "leaves": false,
+    "toGroundJ": 0,
+    "toGroundSupplied": 0,
+    "ppv5_hisPush": 0,
+    "ppv5_landing": 12.7,
+    "plasterReach_m": 5,
+    "airTakenBack_J": 1150000,
+    "Eobj_J": 4430000
+   },
+   "ceiling": "plaster at 590000 kg-force",
+   "allout": {
+    "v": 1290,
+    "range": 2.08e-11,
+    "leaves": false,
+    "toGroundJ": 0,
+    "toGroundSupplied": 0,
+    "ppv5_hisPush": 0,
+    "ppv5_landing": 1370000,
+    "plasterReach_m": 1720,
+    "airTakenBack_J": 953000000000,
+    "Eobj_J": 7930000000
+   },
+   "presets": "rattle: 65800 kg-force, plaster: 590000 kg-force, windows: 69700000 kg-force, ground: 463000 kg-force, houses: 69700000 kg-force, block: never"
+  },
+  "pullCar10s": {
+   "least": "43.5 kg-force",
+   "allout_ppv5": 0,
+   "ceiling": "none"
+  }
+ },
+ "2 recoil, Rex shoves Ollie (old; new drops the push)": {
+  "ollieV": 21.1,
+  "ollieSlide_m": 36.7,
+  "rexV": 0,
+  "toGroundJ": 66800,
+  "ppv5": 2.29
+ },
+ "2 recoil, game of catch, fastball 10 m, dial 1e9 (old; new drops the thrower's push)": {
+  "result": "caught",
+  "throwV": 22300,
+  "throwerPushJ": 3250,
+  "throwerPPV5": 0.923,
+  "catcherStopJ": 1320,
+  "catcherPPV5": 0.279
+ },
+ "5Q catch, fastball 10 m, dial 1e20: is the catcher carried off?": {
+  "result": "caught",
+  "carried": true,
+  "carriedAt_m_s": 3980000
+ },
+ "3 audit, unlimited comic jump push-off": {
+  "groundTakes": 0,
+  "pushTime": 0,
+  "supplied": "Infinity"
+ },
+ "4 collide, Ollie into Rex, sprint, default dial, splat": {
+  "old": {
+   "arrives_m_s": 18.1,
+   "outcome": "moved",
+   "heldBy": "footing",
+   "rex": {
+    "moves_m": 6.97,
+    "pairSpeed_m_s": 8.97
+   },
+   "groundTakesJ": 615,
+   "supplied": 0,
+   "plasterReach_m": 0,
+   "freed_J": 250000
+  },
+  "new": {
+   "rexMoves": 0,
+   "ollieAfter_m_s": 0,
+   "toEndlessOcean": 54600,
+   "freed_J": 495000
+  }
+ },
+ "4 collide, Ollie into Rex, sprint, default dial, bounce": {
+  "old": {
+   "arrives_m_s": 18.1,
+   "outcome": "moved",
+   "heldBy": "footing",
+   "rex": {
+    "flies_m_s": 18.1,
+    "slides_m": 27.3
+   },
+   "groundTakesJ": 615,
+   "supplied": 0,
+   "plasterReach_m": 0,
+   "freed_J": 250000
+  },
+  "new": {
+   "rexMoves": 0,
+   "ollieAfter_m_s": -18.1,
+   "toEndlessOcean": 109000,
+   "freed_J": 495000
+  }
+ },
+ "4 collide, Ollie into Rex, jump, dial 1e9, splat": {
+  "old": {
+   "arrives_m_s": 287,
+   "outcome": "held",
+   "heldBy": "unbreakable",
+   "rex": {
+    "moves_m": 0,
+    "pairSpeed_m_s": "undefined"
+   },
+   "groundTakesJ": 95700,
+   "supplied": 766000,
+   "plasterReach_m": 7.68,
+   "freed_J": 124000000
+  },
+  "new": {
+   "rexMoves": 0,
+   "ollieAfter_m_s": 0,
+   "toEndlessOcean": 862000,
+   "freed_J": 124000000
+  }
+ },
+ "4 collide, Ollie into Rex, jump, dial 1e9, bounce": {
+  "old": {
+   "arrives_m_s": 287,
+   "outcome": "held",
+   "heldBy": "unbreakable",
+   "rex": {
+    "flies_m_s": "undefined",
+    "slides_m": "undefined"
+   },
+   "groundTakesJ": 95700,
+   "supplied": 1630000,
+   "plasterReach_m": 7.68,
+   "freed_J": 124000000
+  },
+  "new": {
+   "rexMoves": 0,
+   "ollieAfter_m_s": -287,
+   "toEndlessOcean": 1720000,
+   "freed_J": 124000000
+  }
+ },
+ "4 collide, Ollie into Rex, set 0.1% of light speed, splat": {
+  "old": {
+   "arrives_m_s": 300000,
+   "outcome": "moved",
+   "heldBy": "footing",
+   "rex": {
+    "moves_m": 15700,
+    "pairSpeed_m_s": 150000
+   },
+   "groundTakesJ": 0.0372,
+   "supplied": 0,
+   "plasterReach_m": 0,
+   "freed_J": 67600000000000
+  },
+  "new": {
+   "rexMoves": 0,
+   "ollieAfter_m_s": 0,
+   "toEndlessOcean": 901000000,
+   "freed_J": 135000000000000
+  }
+ },
+ "4 collide, Ollie into Rex, set 0.1% of light speed, bounce": {
+  "old": {
+   "arrives_m_s": 300000,
+   "outcome": "moved",
+   "heldBy": "footing",
+   "rex": {
+    "flies_m_s": 300000,
+    "slides_m": 9170
+   },
+   "groundTakesJ": 0.0372,
+   "supplied": 0,
+   "plasterReach_m": 0,
+   "freed_J": 67600000000000
+  },
+  "new": {
+   "rexMoves": 0,
+   "ollieAfter_m_s": -300000,
+   "toEndlessOcean": 1800000000,
+   "freed_J": 135000000000000
+  }
+ },
+ "5 safe passenger, old, off": {
+  "volume_m3": 2.836,
+  "least": {
+   "effort": "333 kg-force",
+   "capped": true,
+   "v": 3.96,
+   "range": 3.04,
+   "leaves": false,
+   "toGroundJ": 357,
+   "toGroundSupplied": 0,
+   "ppv5_hisPush": 0.000378,
+   "ppv5_landing": 0.196,
+   "plasterReach_m": 0,
+   "airTakenBack_J": 70.4,
+   "Eobj_J": 707
+  },
+  "ceiling": "passenger at 335 kg-force",
+  "allout": {
+   "v": 80.8,
+   "range": 667,
+   "leaves": false,
+   "toGroundJ": 7290,
+   "toGroundSupplied": 0,
+   "ppv5_hisPush": 2.07,
+   "ppv5_landing": 326,
+   "plasterReach_m": 16.7,
+   "airTakenBack_J": 1600000,
+   "Eobj_J": 294000
+  },
+  "presets": "rattle: 1500 kg-force, plaster: 27000 kg-force, windows: never, ground: never, houses: never, block: never"
+ },
+ "5 safe passenger, old, off, all four powers off": {
+  "volume_m3": 2.836,
+  "least": {
+   "effort": "333 kg-force",
+   "capped": true,
+   "v": 3.96,
+   "range": 3.01,
+   "leaves": false,
+   "toGroundJ": 0,
+   "toGroundSupplied": 0,
+   "ppv5_hisPush": 0,
+   "ppv5_landing": 0.19,
+   "plasterReach_m": 0,
+   "airTakenBack_J": 0,
+   "Eobj_J": 707
+  },
+  "ceiling": "passenger at 335 kg-force",
+  "allout": {
+   "v": 80.3,
+   "range": 214,
+   "leaves": false,
+   "toGroundJ": 0,
+   "toGroundSupplied": 0,
+   "ppv5_hisPush": 0,
+   "ppv5_landing": 22.4,
+   "plasterReach_m": 1.36,
+   "airTakenBack_J": 0,
+   "Eobj_J": 291000
+  },
+  "presets": "rattle: 1800 kg-force, plaster: never, windows: never, ground: never, houses: never, block: never"
+ },
+ "5 safe passenger, new, on": {
+  "volume_m3": 2.836,
+  "least": {
+   "effort": "3350 kg-force",
+   "capped": false,
+   "v": 16.4,
+   "range": 30.1,
+   "leaves": false,
+   "toGroundJ": 1480,
+   "toGroundSupplied": 0,
+   "ppv5_hisPush": 0.0293,
+   "ppv5_landing": 2.52,
+   "plasterReach_m": 0,
+   "airTakenBack_J": 3280,
+   "Eobj_J": 12200
+  },
+  "ceiling": "plaster at 27000 kg-force",
+  "allout": {
+   "v": 80.8,
+   "range": 667,
+   "leaves": false,
+   "toGroundJ": 7290,
+   "toGroundSupplied": 0,
+   "ppv5_hisPush": 2.07,
+   "ppv5_landing": 326,
+   "plasterReach_m": 16.7,
+   "airTakenBack_J": 1600000,
+   "Eobj_J": 294000
+  },
+  "presets": "rattle: 1500 kg-force, plaster: 27000 kg-force, windows: never, ground: never, houses: never, block: never"
+ },
+ "5 safe passenger, new, on, all four powers off": {
+  "volume_m3": 2.836,
+  "least": {
+   "effort": "3940 kg-force",
+   "capped": false,
+   "v": 17.5,
+   "range": 30.1,
+   "leaves": false,
+   "toGroundJ": 0,
+   "toGroundSupplied": 0,
+   "ppv5_hisPush": 0,
+   "ppv5_landing": 2.07,
+   "plasterReach_m": 0,
+   "airTakenBack_J": 0,
+   "Eobj_J": 13900
+  },
+  "ceiling": "passenger at 39800 kg-force",
+  "allout": {
+   "v": 80.3,
+   "range": 214,
+   "leaves": false,
+   "toGroundJ": 0,
+   "toGroundSupplied": 0,
+   "ppv5_hisPush": 0,
+   "ppv5_landing": 22.4,
+   "plasterReach_m": 1.36,
+   "airTakenBack_J": 0,
+   "Eobj_J": 291000
+  },
+  "presets": "rattle: 1800 kg-force, plaster: never, windows: never, ground: never, houses: never, block: never"
+ },
+ "5 safe passenger, the person's landing at the new least effort": {
+  "v": 16.5,
+  "lands_m_s": 18,
+  "likeAFallOf_m": 16.5
+ },
+ "6 shimmer": {
+  "flicker_J": 517100,
+  "flares_J": {
+   "dinosaurKiller": 5e+23,
+   "earthApart": 2.489e+32
+  },
+  "stepsAtQuarterHalfThreeQuarters": {
+   "dinosaurKiller": [
+    16000000000,
+    510000000000000,
+    16000000000000000000
+   ],
+   "earthApart": [
+    2400000000000,
+    11000000000000000000,
+    5.3e+25
+   ]
+  },
+  "cases": {
+   "throw car 30 m, least": {
+    "E_J": 42400,
+    "level_dinosaurKiller": -0.06,
+    "level_earthApart": -0.041
+   },
+   "throw car, all-out, default dial": {
+    "E_J": 470000,
+    "level_dinosaurKiller": -0.0023,
+    "level_earthApart": -0.0016
+   },
+   "stomp, all-out, default dial (absorbed by Unbreakable footing)": {
+    "E_J": 103000,
+    "level_dinosaurKiller": -0.039,
+    "level_earthApart": -0.026
+   },
+   "stomp, all-out, dial 1e9": {
+    "E_J": 1140000000,
+    "level_dinosaurKiller": 0.19,
+    "level_earthApart": 0.13
+   },
+   "Ollie into Rex at 0.1% c, if the hit is absorbed": {
+    "E_J": 135000000000000,
+    "level_dinosaurKiller": 0.47,
+    "level_earthApart": 0.32
+   }
+  },
+  "risk: car all-out at dial 1e9": {
+   "airTally_J": 2500000000000,
+   "carEnergy_J": 7320000000
+  }
+ },
+ "8 sprint": {
+  "defaultDial": {
+   "vTop": 61.1,
+   "limit": "leg speed"
+  },
+  "dial1e9_friction": {
+   "concrete": 81,
+   "granite": 74
+  },
+  "bolted330_from_kg": 2560000
+ }
+}

@@ -7,13 +7,16 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 | Folder or file | Who | Branch | Since |
 |---|---|---|---|
 | `rex-strength-lab/` (all of it); `build-calculator/` and `build-comparison/` (the canon follow-ups from pull request #25, such as Rex 3,000 kg), including the shared `build-calculator/data/builds.json` and `src/calc.js` | Collaborator | `terantic/canon-followups` | 2026-10-14 |
+| `rex-strength-lab/BRIEF-canon.md` and `rex-strength-lab/research/brief-canon/` (new: the plan for the canon follow-ups and the runs behind its figures) | Collaborator | `terantic/brief-canon` | 2026-10-14 |
 
 ## In progress
 
-- Canon follow-ups from pull request #25 (collaborator, `terantic/canon-followups`): folders claimed; the work starts from the collaborator's instructions.
+- Canon follow-ups from pull request #25 (collaborator, `terantic/canon-followups`): folders claimed; the build follows `rex-strength-lab/BRIEF-canon.md` once the owner has read it.
+- The plan for those follow-ups (collaborator, `terantic/brief-canon`, draft pull request): `rex-strength-lab/BRIEF-canon.md`, eight items (mass, recoil into their source, the momentum audit, never knocked back, Safe passenger by default, the shimmer, copy, optional extras), each with old and new results from `research/brief-canon/runs.js`, and a proposed order of six pull requests with their review rounds.
 
 ## Waiting on
 
+- Owner: read `rex-strength-lab/BRIEF-canon.md` (draft pull request from `terantic/brief-canon`), answer its questions Q1–Q11 (Ollie and hits, what counts as a hit, the hit's energy, the charger's push back, catches, the shimmer, the tagline, Safe passenger and a thrown person's landing, a push with no push time, cancelling his own pull, the optional items) and agree the order of pull requests. Pull request 1 (mass) needs none of the answers.
 - Owner: confirm running CI only by choice, or rule otherwise (pull request #27, merged by the collaborator 14 Oct 2026, `terantic/ci-on-demand`: CLAUDE.md rule 3 and `.github/workflows/test.yml`). It is heavy (Chromium and every test), so the collaborator would rather run it before a big change than on every pull request and every push to `main`.
 - Page follow-ups for the canon update from pull request #25 (`claude/canon-sync-theoreticals`; agreed by the collaborator 14 Oct 2026; claimed on `terantic/canon-followups`): Rex 3,000 kg with a 300 kg tail (was 3,007 kg) in all three projects and the shared `builds.json`; They take their own recoil sends the push into their source instead of the planet (engine, tests, Known limits, every "the planet takes the push back" sentence); Safe passenger on by default; never knocked back by a hit (needs an Ollie ruling for the two-player tests); the absorption shimmer; the tagline "still obeys Newton". Until then the pages lag the canon.
 
