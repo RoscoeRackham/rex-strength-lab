@@ -1,0 +1,10 @@
+global.window = {};
+const H = '/tmp/claude-0/-home-user-rex-strength-lab/70d4d2aa-c3a8-5eb5-9c7c-1c92e3162d09/scratchpad/understand/head';
+const P = require(H + '/src/engine.js'); require(H + '/src/data.js'); const D = window.DINO_DATA;
+const g = P.K.g;
+const surf = (id) => D.surfaces.find((s) => s.id === id);
+const obj = (id) => D.objects.find((o) => o.id === id);
+const rex = P.makeBody({ build: 'rex', H: P.DEFAULT_BODIES.rex.H, m: P.DEFAULT_BODIES.rex.m });
+const ollie = P.makeBody({ build: 'ollie', H: P.DEFAULT_BODIES.ollie.H, m: P.DEFAULT_BODIES.ollie.m });
+const ctx = (kg, x) => Object.assign({ F: kg * g, mode: 'comic', body: rex, surface: surf('concrete'), groundHolds: false, anchor: 'friction' }, x || {});
+module.exports = { P, D, g, surf, obj, rex, ollie, ctx };

@@ -30,25 +30,21 @@
   {
    "key": "baseball_mass",
    "category": "object_mass",
-   "label": "Baseball (MLB Official Baseball Rules 3.01)",
+   "label": "Baseball mass (MLB Official Baseball Rules 3.01)",
+   "status": "verified",
    "value_si": 0.14529,
+   "unit_si": "kg",
    "low_si": 0.14175,
    "high_si": 0.14883,
-   "unit_si": "kg",
-   "display": "5 to 5.25 oz (141.7 to 148.8 g)",
-   "status": "verified",
+   "display": "5 to 5.25 oz (141.7 to 148.8 g); midpoint 145.3 g used",
    "sources": [
     {
-     "url": "https://www.umpirebible.com/OBR16/3.0.htm",
-     "title": "UmpireBible reproduction of Official Baseball Rules 3.01 The Ball"
-    },
-    {
-     "url": "https://baseballrulesacademy.com/official-rule/mlb/3-01-the-ball/",
-     "title": "Baseball Rules Academy - 3.01 The Ball"
+     "title": "MLB Official Baseball Rules, 2026 edition (PDF linked from mlb.com/glossary/rules), Rule 3.01 The Ball",
+     "url": "https://mktg.mlbstatic.com/mlb/official-information/2026-official-baseball-rules.pdf"
     }
    ],
-   "notes": "Rule text: 'not less than five nor more than 5-1/4 ounces avoirdupois', circumference 'not less than nine nor more than 9-1/4 inches' (diameter 72.8 to 74.8 mm). Construction: yarn wound around a small cork/rubber core, covered by two strips of white horsehide or cowhide. Grip material: leather cover over wound yarn; crush/compressive strength not quantified (no source found). Structural note: the ball fits in the hand; grip stress at 1 g is ~142 Pa, trivial; it survives any lift. Deformation threshold at extreme throw accelerations not quantified. Drag: cd_baseball_subsonic, then cd_sphere_mach_fit above ~M 0.7. Area: baseball_cross_section_area. Both verifiers confirmed.",
-   "who_when": "MLB Official Baseball Rules (renumbered 1.09 to 3.01 in 2015), current edition"
+   "notes": "Rule 3.01: 'It shall weigh not less than five nor more than 5¼ ounces avoirdupois'. 1 oz = 28.3495 g, so 141.75 to 148.83 g; midpoint 145.29 g. Replaces the UmpireBible and Baseball Rules Academy reproductions with MLB's own 2026 rulebook. Skeptic: confirmed. Circumference 'not less than nine nor more than 9-1/4 inches' (diameter 72.8 to 74.8 mm). Construction: yarn wound around a small cork/rubber core, covered by two strips of white horsehide or cowhide. Grip material: leather cover over wound yarn; crush/compressive strength not quantified (no source found). Structural note: the ball fits in the hand; grip stress at 1 g is ~142 Pa, trivial; it survives any lift. Deformation threshold at extreme throw accelerations not quantified. Drag: cd_baseball_subsonic, then cd_sphere_mach_fit above ~M 0.7. Area: baseball_cross_section_area. (Restored in review round 1 from the fact before the energy-ladder audit.)",
+   "who_when": "Office of the Commissioner of Baseball, 2026 edition"
   },
   {
    "key": "baseball_cross_section_area",
@@ -334,25 +330,21 @@
   {
    "key": "toyota_corolla_curb_mass",
    "category": "object_mass",
-   "label": "Toyota Corolla sedan curb mass (2026 MY)",
+   "label": "Toyota Corolla gasoline sedan curb mass (2026 model year)",
+   "status": "verified",
    "value_si": 1340.4,
+   "unit_si": "kg",
    "low_si": 1340.4,
    "high_si": 1428.8,
-   "unit_si": "kg",
-   "display": "2,955 lb (LE) to 3,150 lb (XSE)",
-   "status": "verified",
+   "display": "2,955 lb (LE) to 3,150 lb (XSE); 1,340 to 1,429 kg (gasoline sedans)",
    "sources": [
     {
-     "url": "https://www.kbb.com/toyota/corolla/2026/specs",
-     "title": "Kelley Blue Book - 2026 Corolla specs (LE 2,955 lb; SE 3,110; XSE 3,150)"
-    },
-    {
-     "url": "https://www.iseecars.com/car/2026-toyota-corolla-specs",
-     "title": "iSeeCars - 2026 Corolla specs (LE 2,955 lb; GVWR 3,925 lb)"
+     "title": "Toyota USA, 2026 Corolla features and specs page (spec table embedded in the page)",
+     "url": "https://www.toyota.com/corolla/2026/features/"
     }
    ],
-   "notes": "KBB and iSeeCars agree (both verifiers confirmed). EDITOR: the Auto123 source (2,965 lb outlier) now returns 404 and was dropped. toyota.com was not reached. Dimensions: length 182.3 in (4.630 m), width 70.1 in (1.781 m; one verifier reports KBB labels this 'with mirrors', not resolved), height 56.5 in (1.435 m, dealer listings, unverified), wheelbase 106.3 in. Grip material: mostly mild/drawing-quality sheet steel panels (DC04-class yield 140 to 210 MPa, mat_dc04_mild_steel) plus higher-strength steels in pillars and sills (not quantified). Structural note: grip stress at 1 g ~1.3 MPa, ~1% of sheet yield in pure bearing, but thin panels work only as part of the welded shell; a hand grip on a door or fender pulls the panel out of plane and dents or tears it (not quantified). Grip a sill, pillar or suspension mount to lift intact. Drag: cd_bluff_body_tumbling_subsonic for a tumbling car.",
-   "who_when": "2026 model year, specs accessed 2026-10"
+   "notes": "Manufacturer's figures from the spec data embedded in toyota.com's 2026 Corolla page (fetched with curl; WebFetch got HTTP 403). Curb Weight (lb.), gasoline: LE 2,955; SE 3,110; XSE 3,150. 2,955 lb x 0.45359 = 1,340.4 kg. Hybrids, same table: LE 2,850 (code 1882) and 3,080 (1883); SE 3,140 (1886) and 3,250 (1887); XLE 3,130. The heavier hybrid codes are probably the all-wheel-drive versions (our inference). So the whole 2026 sedan lineup runs 2,850 to 3,250 lb (1,293 to 1,474 kg). Curb weight: no driver, passengers or cargo. Replaces KBB and iSeeCars as the primary source. Skeptic: label narrowed to gasoline sedans (range unchanged) and the hybrid configurations listed. Dimensions (KBB): length 182.3 in (4.630 m), width 70.1 in (1.781 m; one verifier reports KBB labels this 'with mirrors', not resolved), height 56.5 in (1.435 m, dealer listings, unverified), wheelbase 106.3 in. Grip material: mostly mild/drawing-quality sheet steel panels (DC04-class yield 140 to 210 MPa, mat_dc04_mild_steel) plus higher-strength steels in pillars and sills (not quantified). Structural note: grip stress at 1 g ~1.3 MPa, ~1% of sheet yield in pure bearing, but thin panels work only as part of the welded shell; a hand grip on a door or fender pulls the panel out of plane and dents or tears it (not quantified). Grip a sill, pillar or suspension mount to lift intact. Drag: cd_bluff_body_tumbling_subsonic for a tumbling car. (Restored in review round 1 from the fact before the energy-ladder audit.)",
+   "who_when": "Toyota Motor Sales USA, 2026 MY, accessed 2026-10-13"
   },
   {
    "key": "toyota_corolla_projected_area",

@@ -1,0 +1,21 @@
+const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+const path=require('path');
+(async()=>{
+  const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome'});
+  const p=await b.newPage({viewport:{width:1280,height:900}});
+  await p.goto('file://'+path.resolve('branch.html'));
+  await p.evaluate(()=>localStorage.setItem('rex-lab-v1',JSON.stringify({anchor:'bolted',gentleHold:true,mode:'real'})));
+  await p.reload(); await p.waitForTimeout(1500);
+  await p.evaluate(()=>{document.getElementById('powers').open=true; document.getElementById('setup').open=false;});
+  await p.waitForTimeout(300);
+  await (await p.$('aside')).screenshot({path:'aside-1280.png'});
+  const p2=await b.newPage({viewport:{width:390,height:844}});
+  await p2.goto('file://'+path.resolve('branch.html'));
+  await p2.evaluate(()=>localStorage.setItem('rex-lab-v1',JSON.stringify({duoOpen:true,duoAction:'collide'})));
+  await p2.reload(); await p2.waitForTimeout(2500);
+  await p2.evaluate(()=>{document.getElementById('ollie-setup').open=true;});
+  await p2.waitForTimeout(300);
+  const el=await p2.$('#duo'); const bb=await el.boundingBox();
+  await p2.screenshot({path:'duo-390.png', clip:{x:0,y:bb.y,width:390,height:Math.min(1600,bb.height)}, fullPage:true});
+  await b.close();
+})();

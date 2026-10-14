@@ -438,7 +438,8 @@ window.DINO_DATA = {
    "crush": 30000000.0,
    "rho": 2300,
    "noPull": true,
-   "liftNote": "Its core is natural bedrock, so part of the “pyramid” is the ground itself. Stacked blocks have almost no tensile strength: lifted from below, it would come apart."
+   "liftNote": "Its core is natural bedrock, so part of the “pyramid” is the ground itself. Stacked blocks have almost no tensile strength: lifted from below, it would come apart.",
+   "sags": true
   },
   {
    "id": "everest",
@@ -453,7 +454,8 @@ window.DINO_DATA = {
    "rho": 2700,
    "noPull": true,
    "noThrow": true,
-   "liftNote": "Everest isn’t a loose object. It’s part of the Earth’s crust, and its mass depends on where you decide the mountain ends (1.6 × 10¹⁴ to 1.4 × 10¹⁵ kg). Rock is weak in tension, so lifted from one spot it would break apart under its own weight."
+   "liftNote": "Everest isn’t a loose object. It’s part of the Earth’s crust, and its mass depends on where you decide the mountain ends (1.6 × 10¹⁴ to 1.4 × 10¹⁵ kg). Rock is weak in tension, so lifted from one spot it would break apart under its own weight.",
+   "sags": true
   },
   {
    "id": "cloud",
@@ -610,59 +612,468 @@ window.DINO_DATA = {
  ],
  "energyRefs": [
   {
+   "id": "apple",
+   "short": "the energy to lift a 100 g apple one metre",
+   "J": 0.9905,
+   "rough": false,
+   "key": "energy_apple_small_lift_one_metre",
+   "label": "Lifting a 100 g apple one metre (energy it gains)"
+  },
+  {
+   "id": "airrifle",
+   "short": "an air-rifle pellet at the licence-free limit in England and Wales",
+   "J": 16.27,
+   "rough": false,
+   "key": "energy_air_rifle_england_wales_limit",
+   "label": "Air rifle: most pellet energy allowed without a firearm certificate (England and Wales)"
+  },
+  {
    "id": "pitch",
-   "short": "the fastest pitch on record",
-   "J": 162.51850108385
+   "short": "the fastest baseball pitch on record",
+   "J": 162.5,
+   "rough": false,
+   "key": "energy_fastest_pitch_kinetic",
+   "label": "Fastest pitch on record: kinetic energy of the ball"
+  },
+  {
+   "id": "rifle",
+   "short": "a rifle bullet (5.56 mm NATO)",
+   "J": 1707.7,
+   "rough": false,
+   "key": "energy_rifle_bullet_556",
+   "label": "Rifle bullet, 5.56 mm NATO (M855): kinetic energy"
+  },
+  {
+   "id": "bolt",
+   "short": "Usain Bolt at top speed",
+   "J": 7327,
+   "rough": false,
+   "key": "energy_usain_bolt_top_speed",
+   "label": "Usain Bolt at top speed: kinetic energy"
+  },
+  {
+   "id": "sugar",
+   "short": "the food energy in a teaspoon of sugar",
+   "J": 68040,
+   "rough": false,
+   "key": "energy_sugar_teaspoon_food_energy",
+   "label": "Food energy in a level teaspoon of sugar"
   },
   {
    "id": "carcrash",
-   "short": "a Corolla at 100 km/h",
-   "J": 516975.30864197534
+   "short": "a Toyota Corolla at 100 km/h",
+   "J": 517100,
+   "rough": false,
+   "key": "energy_corolla_100kmh_kinetic",
+   "label": "Toyota Corolla at 100 km/h: kinetic energy"
   },
   {
    "id": "grenade",
    "short": "a hand grenade",
-   "J": 1000000.0
+   "J": 925000,
+   "rough": false,
+   "key": "energy_m67_tnt_equivalent_estimate",
+   "label": "M67 hand grenade: chemical energy of its filler"
+  },
+  {
+   "id": "food",
+   "short": "a day’s food (2,000 Calories)",
+   "J": 8368000.0,
+   "rough": false,
+   "key": "energy_day_of_food_2000_calories",
+   "label": "A day's food: the 2,000-Calorie reference diet (FDA)"
+  },
+  {
+   "id": "truck",
+   "short": "a fully loaded semi-truck at 100 km/h",
+   "J": 14000000.0,
+   "rough": false,
+   "key": "energy_semi_truck_100kmh",
+   "label": "Fully loaded US semi-truck (80,000 lb) at 100 km/h: kinetic energy"
+  },
+  {
+   "id": "homeday",
+   "short": "a day’s electricity for an American home",
+   "J": 106400000.0,
+   "rough": false,
+   "key": "energy_us_home_electricity_day",
+   "label": "Average US home's electricity purchases in a day (2022 yearly average / 365)"
+  },
+  {
+   "id": "foodmonth",
+   "short": "a month’s food (2,000 Calories a day)",
+   "J": 251000000.0,
+   "rough": false,
+   "key": "energy_month_of_food_2000_calories",
+   "label": "A month's food at the 2,000-Calorie reference diet (30 days)"
+  },
+  {
+   "id": "lightning",
+   "short": "a lightning bolt",
+   "J": 1000000000.0,
+   "rough": true,
+   "key": "energy_lightning_flash",
+   "label": "A lightning flash: total energy"
+  },
+  {
+   "id": "train",
+   "short": "a high-speed train at full speed",
+   "J": 1790000000.0,
+   "rough": false,
+   "key": "energy_high_speed_train_full_speed",
+   "label": "High-speed train (ICE 3 Velaro D, 454 t) at 320 km/h: kinetic energy"
+  },
+  {
+   "id": "tnt",
+   "short": "a ton of TNT",
+   "J": 4184000000,
+   "rough": false,
+   "key": "energy_tnt_equivalent_per_tonne",
+   "label": "TNT equivalent: energy per ton of TNT"
+  },
+  {
+   "id": "a380",
+   "short": "a fully loaded A380 at cruising speed",
+   "J": 18100000000.0,
+   "rough": false,
+   "key": "energy_a380_cruise",
+   "label": "Fully loaded Airbus A380 at cruising speed: kinetic energy"
   },
   {
    "id": "moab",
-   "short": "the MOAB bomb",
-   "J": 46024000000.0
+   "short": "the MOAB, a giant US non-nuclear bomb",
+   "J": 46024000000,
+   "rough": false,
+   "key": "energy_moab_yield",
+   "label": "GBU-43/B MOAB: blast yield"
+  },
+  {
+   "id": "hubble",
+   "short": "the Hubble Space Telescope’s energy of motion in orbit",
+   "J": 354000000000.0,
+   "rough": false,
+   "key": "energy_hubble_orbit_kinetic",
+   "label": "Hubble Space Telescope: kinetic energy (energy of motion) in orbit"
+  },
+  {
+   "id": "beirut",
+   "short": "the Beirut port explosion of 2020",
+   "J": 2092000000000.0,
+   "rough": true,
+   "key": "energy_beirut_explosion_2020",
+   "label": "Beirut port explosion, 4 Aug 2020: TNT-equivalent yield"
+  },
+  {
+   "id": "iss",
+   "short": "the International Space Station’s energy of motion in orbit",
+   "J": 12580000000000.0,
+   "rough": false,
+   "key": "energy_iss_orbit_kinetic",
+   "label": "International Space Station: kinetic energy (energy of motion) in orbit"
   },
   {
    "id": "hiroshima",
    "short": "the Hiroshima bomb",
-   "J": 62760000000000.0
+   "J": 62760000000000,
+   "rough": false,
+   "key": "energy_hiroshima_yield",
+   "label": "Hiroshima bomb (Little Boy) yield"
+  },
+  {
+   "id": "chelyabinsk",
+   "short": "the Chelyabinsk meteor of 2013",
+   "J": 2092000000000000.0,
+   "rough": false,
+   "key": "energy_chelyabinsk_meteor_2013",
+   "label": "Chelyabinsk meteor airburst, 15 Feb 2013: energy"
+  },
+  {
+   "id": "hoover",
+   "short": "an average year of the Hoover Dam’s electricity",
+   "J": 1.44e+16,
+   "rough": false,
+   "key": "energy_hoover_dam_year",
+   "label": "Hoover Dam: electricity generated in an average year"
   },
   {
    "id": "bravo",
-   "short": "Castle Bravo",
-   "J": 6.276e+16
+   "short": "Castle Bravo, the biggest US H-bomb test",
+   "J": 62760000000000000,
+   "rough": false,
+   "key": "energy_castle_bravo_yield",
+   "label": "Castle Bravo yield (1 Mar 1954 local; 28 Feb GMT)"
   },
   {
    "id": "tsar",
-   "short": "the Tsar Bomba",
-   "J": 2.092e+17
+   "short": "the Tsar Bomba, the biggest bomb ever set off",
+   "J": 209200000000000000,
+   "rough": false,
+   "key": "energy_tsar_bomba_yield",
+   "label": "Tsar Bomba yield (30 Oct 1961)"
   },
   {
    "id": "krakatoa",
-   "short": "the 1883 Krakatoa eruption",
-   "J": 8.4e+17
+   "short": "the great blast of Krakatoa in 1883",
+   "J": 523000000000000000,
+   "rough": true,
+   "key": "energy_krakatoa_1883",
+   "label": "Krakatoa 1883: energy of the great explosion (air-wave equivalent)"
+  },
+  {
+   "id": "worldday",
+   "short": "a day of all the world’s energy use",
+   "J": 1.84e+18,
+   "rough": false,
+   "key": "energy_world_energy_use_day",
+   "label": "World primary energy consumption in one day (2022 rate)"
+  },
+  {
+   "id": "hurricane",
+   "short": "the heat an average hurricane releases in a day",
+   "J": 5.2e+19,
+   "rough": true,
+   "key": "energy_hurricane_heat_per_day",
+   "label": "Heat released by an average hurricane in one day (NOAA worked example)"
+  },
+  {
+   "id": "worldyear",
+   "short": "a year of all the world’s energy use",
+   "J": 6.73e+20,
+   "rough": false,
+   "key": "energy_world_energy_use_year",
+   "label": "World primary energy consumption in one year (2022)"
+  },
+  {
+   "id": "sunlightday",
+   "short": "a day of sunlight striking Earth",
+   "J": 1.5e+22,
+   "rough": false,
+   "key": "energy_sunlight_on_earth_day",
+   "label": "Sunlight intercepted by Earth in one day (top of the atmosphere)"
   },
   {
    "id": "chicxulub",
-   "short": "the dinosaur-killing asteroid",
-   "J": 4.2e+23
+   "short": "the asteroid that killed the dinosaurs",
+   "J": 5e+23,
+   "rough": true,
+   "key": "energy_chicxulub_impact",
+   "label": "Chicxulub impact energy (the dinosaur-killing asteroid)"
+  },
+  {
+   "id": "sunlightyear",
+   "short": "a year of sunlight striking Earth",
+   "J": 5.48e+24,
+   "rough": false,
+   "key": "energy_sunlight_on_earth_year",
+   "label": "Sunlight intercepted by Earth in one year (top of the atmosphere)"
   },
   {
    "id": "sun",
    "short": "the Sun’s output for one second",
-   "J": 3.828e+26
+   "J": 3.828e+26,
+   "rough": false,
+   "key": "energy_sun_luminosity",
+   "label": "Nominal solar luminosity (rung: the Sun's output in one second)"
+  },
+  {
+   "id": "pluto",
+   "short": "the energy to blow Pluto apart for good",
+   "J": 6.5e+27,
+   "rough": false,
+   "key": "energy_pluto_gravitational_binding",
+   "label": "Pluto's gravitational binding energy (the energy to blow Pluto apart)"
+  },
+  {
+   "id": "moonorbit",
+   "short": "the energy of the Moon’s motion around Earth",
+   "J": 3.84e+28,
+   "rough": false,
+   "key": "energy_moon_orbital_kinetic",
+   "label": "The Moon's kinetic energy in its orbit around Earth"
+  },
+  {
+   "id": "earthspin",
+   "short": "the energy of Earth’s spin",
+   "J": 2.14e+29,
+   "rough": false,
+   "key": "energy_earth_rotational_kinetic",
+   "label": "Earth's rotational kinetic energy (the energy of its daily spin)"
+  },
+  {
+   "id": "sunhour",
+   "short": "the Sun’s output for one hour",
+   "J": 1.37808e+30,
+   "rough": false,
+   "key": "energy_sun_output_hour",
+   "label": "The Sun's output for one hour"
+  },
+  {
+   "id": "mars",
+   "short": "the energy to blow Mars apart for good",
+   "J": 5.1e+30,
+   "rough": false,
+   "key": "energy_mars_gravitational_binding",
+   "label": "Mars's gravitational binding energy (the energy to blow Mars apart)"
+  },
+  {
+   "id": "sunday",
+   "short": "the Sun’s output for one day",
+   "J": 3.307392e+31,
+   "rough": false,
+   "key": "energy_sun_output_day",
+   "label": "The Sun's output for one day"
   },
   {
    "id": "earthbind",
-   "short": "the energy to blow Earth apart",
-   "J": 2.49e+32
+   "short": "the energy to blow Earth apart for good",
+   "J": 2.489e+32,
+   "rough": false,
+   "key": "energy_earth_gravitational_binding",
+   "label": "Earth's gravitational binding energy (from PREM, a standard model of Earth's interior)"
+  },
+  {
+   "id": "earthorbit",
+   "short": "the energy of Earth’s motion around the Sun",
+   "J": 2.65e+33,
+   "rough": false,
+   "key": "energy_earth_orbital_kinetic",
+   "label": "Earth's kinetic energy in its orbit around the Sun"
+  },
+  {
+   "id": "sunyear",
+   "short": "the Sun’s output for one year",
+   "J": 1.208044772352e+34,
+   "rough": false,
+   "key": "energy_sun_output_year",
+   "label": "The Sun's output for one year"
+  },
+  {
+   "id": "jupiterorbit",
+   "short": "the energy of Jupiter’s motion around the Sun",
+   "J": 1.62e+35,
+   "rough": false,
+   "key": "energy_jupiter_orbital_kinetic",
+   "label": "Jupiter's kinetic energy in its orbit around the Sun"
+  },
+  {
+   "id": "suncentury",
+   "short": "the Sun’s output for a century",
+   "J": 1.208044772352e+36,
+   "rough": false,
+   "key": "energy_sun_output_century",
+   "label": "The Sun's output for one hundred years"
+  },
+  {
+   "id": "sunmillennium",
+   "short": "the Sun’s output for 1,000 years",
+   "J": 1.208e+37,
+   "rough": false,
+   "key": "energy_sun_output_millennium",
+   "label": "The Sun's total output for 1,000 years"
+  },
+  {
+   "id": "nova",
+   "short": "a nova (an explosion on a dead star)",
+   "J": 1e+38,
+   "rough": true,
+   "key": "energy_classical_nova",
+   "label": "A classical nova (a thermonuclear explosion on the surface of a white dwarf, a dead star)"
+  },
+  {
+   "id": "magnetar",
+   "short": "the 2004 magnetar flare (a dead star’s outburst)",
+   "J": 2e+39,
+   "rough": true,
+   "key": "energy_magnetar_flare_2004",
+   "label": "Giant flare of the magnetar SGR 1806-20, 27 Dec 2004 (a magnetar is a dead star with an extreme magnetic field): energy of its first fraction of a second"
+  },
+  {
+   "id": "moonmass",
+   "short": "the Moon turned wholly into energy",
+   "J": 6.6023e+39,
+   "rough": false,
+   "key": "energy_moon_mass_energy",
+   "label": "The Moon's whole mass turned into energy (E = mc²)"
+  },
+  {
+   "id": "sungalaxy",
+   "short": "the energy of the Sun’s motion around the Milky Way’s centre",
+   "J": 6.0655e+40,
+   "rough": false,
+   "key": "energy_sun_galactic_orbit_kinetic",
+   "label": "Kinetic energy of the Sun's motion around the centre of the Milky Way"
+  },
+  {
+   "id": "earthmass",
+   "short": "Earth turned wholly into energy",
+   "J": 5.3675e+41,
+   "rough": false,
+   "key": "energy_earth_mass_energy",
+   "label": "Earth's whole mass turned into energy (E = mc²)"
+  },
+  {
+   "id": "snlight",
+   "short": "all the light of a supernova",
+   "J": 1e+42,
+   "rough": true,
+   "key": "energy_supernova_light",
+   "label": "All the light a supernova gives off (typical core-collapse supernova, the explosion of a massive star; Type Ia supernovae give a few times more)"
+  },
+  {
+   "id": "sunbillion",
+   "short": "the Sun’s output for a billion years at today’s rate",
+   "J": 1.208e+43,
+   "rough": false,
+   "key": "energy_sun_output_billion_years",
+   "label": "The Sun's total output for a billion years (at today's output)"
+  },
+  {
+   "id": "snblast",
+   "short": "a supernova’s blast (its flying debris)",
+   "J": 1e+44,
+   "rough": true,
+   "key": "energy_supernova_blast",
+   "label": "A supernova's blast: the kinetic energy of its flying debris (typical; core-collapse and Type Ia alike)"
+  },
+  {
+   "id": "jupitermass",
+   "short": "Jupiter turned wholly into energy",
+   "J": 1.706e+44,
+   "rough": false,
+   "key": "energy_jupiter_mass_energy",
+   "label": "Jupiter's whole mass turned into energy (E = mc²)"
+  },
+  {
+   "id": "sn1998bw",
+   "short": "the blast of SN 1998bw, an unusually energetic supernova",
+   "J": 3e+45,
+   "rough": true,
+   "key": "energy_hypernova_sn1998bw",
+   "label": "The blast of SN 1998bw (the kinetic energy of its flying debris), an unusually energetic supernova linked to a gamma-ray burst; one model gives 3 × 10⁴⁵ J (a 'hypernova'), an aspherical model about 15 times less"
+  },
+  {
+   "id": "sntotal",
+   "short": "the total energy of a massive star’s supernova (nearly all in neutrinos)",
+   "J": 3e+46,
+   "rough": false,
+   "key": "energy_supernova_total_neutrinos",
+   "label": "Everything a core-collapse supernova (the explosion of a massive star) releases, about 99% of it as neutrinos (ghostly particles that pass through almost everything)"
+  },
+  {
+   "id": "sunmass",
+   "short": "the Sun turned wholly into energy",
+   "J": 1.7871e+47,
+   "rough": false,
+   "key": "energy_sun_mass_energy",
+   "label": "The Sun's whole mass turned into energy (E = mc²)"
+  },
+  {
+   "id": "gw150914",
+   "short": "the first black-hole collision ever detected, in 2015",
+   "J": 5.3613e+47,
+   "rough": false,
+   "key": "energy_gw150914",
+   "label": "GW150914: the energy two colliding black holes gave off as gravitational waves (ripples in space), the first such collision detected (14 Sep 2015)"
   }
  ],
  "overpressure": [
@@ -851,10 +1262,10 @@ window.DINO_DATA = {
    "group": "human",
    "title": "Fastest pitch, 105.8 mph",
    "who": "Aroldis Chapman · 2010",
-   "claim": "47.3 m/s as the ball leaves the hand.",
+   "claim": "47.3 m/s, the ball speed MLB lists. The lab takes it as the speed leaving the hand.",
    "status": "verified",
    "source": {
-    "url": "http://www.guinnessworldrecords.com/world-records/fastest-baseball-pitch-male",
+    "url": "https://www.mlb.com/news/speediest-plays-in-statcast-history",
     "title": "Source"
    },
    "run": {
@@ -1157,15 +1568,15 @@ window.DINO_DATA = {
   },
   {
    "t": "The courtesy ceiling and the not-so-heroic presets",
-   "d": "The courtesy ceiling is the most effort he can use before something nearby comes to harm. The lab checks seven hazards: a sonic boom (anything he moves, or he himself, breaks the sound barrier), an air blast louder than 134 dB (100 Pa, the US Bureau of Mines safe maximum for houses) at the chosen distance (a blast counts only when something moves past the speed of sound or makes a fireball; slower, the air flows out of the way and the release is a thump; for a throw past Mach 1 the air takes the object’s energy along its path, so that counts too), ground shaking there past the US Bureau of Mines safe level for plaster (12.7 mm/s for slow jolts, rising with frequency to 50.8 mm/s at 40 Hz and above, RI 8507 Figure B-1; a pulse lasting T is taken at frequency 1/T, our estimate; at the safe level a few percent of houses may get hairline cracks, and about half do by 64 mm/s, Siskind via Caltrans), the ground breaking under his feet (in sand, gravel and clay sinking in only makes footprints, so only a crater counts: for a jump, over 1 MJ into the ground, our line), his hands crushing what he holds, a thrown person pressed harder than amusement rides allow (ASTM F2291), and his own recoil shoving him back past the nearest people. Ground shaking isn’t modelled for a sprint, a pull, a punch or a clap. A thrown person’s landing is not counted: it is a fall unless someone catches them. Each not-so-heroic preset is the least effort that does what its name says: windows rattle (1 mm/s of ground shaking, our estimate, or an air blast of about 36 Pa, where rattling complaints start: 120 dB on the 6 Hz meter the US Bureau of Mines used, which is about 125 dB, 36 Pa, unfiltered, by our conversion), plaster may crack, windows shatter across a 15 m street (6.9 kPa, the top of the 3.4–6.9 kPa band where windows usually shatter; many break before), the ground breaks under him, houses next door collapse (26.8 kPa), houses collapse 100 m away (a city block, our estimate). Blast radii use the Kinney–Graham curve as if all the energy went into the air, so they are upper bounds."
+   "d": "The courtesy ceiling is the most effort he can use before something nearby comes to harm. The lab checks seven hazards: a sonic boom (anything he moves, or he himself, breaks the sound barrier), an air blast louder than 134 dB (100 Pa, the US Bureau of Mines safe maximum for houses) at the chosen distance (a blast counts only when something moves past the speed of sound or makes a fireball; slower, the air flows out of the way and the release is a thump; for a throw past Mach 1 the air takes the object’s energy along its path, so that counts too), ground shaking there past the US Bureau of Mines safe level for plaster (12.7 mm/s for slow jolts, rising with frequency to 50.8 mm/s at 40 Hz and above, RI 8507 Figure B-1; a pulse lasting T is taken at frequency 1/T, our estimate; at the safe level a few percent of houses may get hairline cracks, and about half do by 64 mm/s, Siskind via Caltrans), the ground breaking under his feet (in sand, gravel and clay sinking in only makes footprints, so only a crater counts: for a jump, over 1 MJ into the ground, our line), his hands crushing what he holds, a thrown person pressed harder than amusement rides allow (ASTM F2291), and his own recoil shoving him back past the nearest people. Ground shaking isn’t modelled for a sprint (the footstep model covers walking paces only), a clap (two hands push on his chest equally and oppositely, so no net push reaches the ground) or a punch (a punch into air leaves the ground no net push: the arm’s stop hands it straight back), or for a pull without They take their own recoil (with it, the rope’s pull back goes through his feet, or his bolts, into the planet over the pull, and that shaking counts). Their powers change what counts: with Unbreakable footing on, the ground under him never breaks, so that hazard never counts, but the push still goes in and its shaking does; with They take their own recoil on, his recoil never shoves him, and its push into the ground counts as shaking; with Things keep their form on, nothing he holds is crushed; and with Air resistance absorbed, a throw’s flight makes a blast only from the share of the drag left (the landing counts in full, and his hand still breaks the sound barrier when it moves that fast). With any of their powers on, their own bodies’ air counts as a blast near him too: his hand’s past the speed of sound in a throw, a foot’s in a stomp, his body’s in a supersonic jump. A thrown person’s landing is not counted: it is a fall unless someone catches them. Each not-so-heroic preset is the least effort that does what its name says: windows rattle (1 mm/s of ground shaking, our estimate, or an air blast of about 36 Pa, where rattling complaints start: 120 dB on the 6 Hz meter the US Bureau of Mines used, which is about 125 dB, 36 Pa, unfiltered, by our conversion), plaster may crack, windows shatter across a 15 m street (6.9 kPa, the top of the 3.4–6.9 kPa band where windows usually shatter; many break before), the ground breaks under him, houses next door collapse (26.8 kPa), houses collapse 100 m away (a city block, our estimate). The presets set the effort only; they never move the Air resistance absorbed slider. When a throw’s air preset can’t be reached at the slider’s setting but could with the air let through, the page says so. With Unbreakable footing on, the break-the-ground preset sets it aside for that move (they mean to break it), and its effort and courtesy ceiling are worked out on real ground. Blast radii use the Kinney–Graham curve as if all the energy went into the air, so they are upper bounds."
   },
   {
    "t": "Two-player effort",
-   "d": "In the two-player tests they share one effort (Ollie can have his own as a what-if). Each uses at most that strength, but never less than he needs to stand and walk. A contest has no goal short of the test itself, so its least disruptive effort is the hardest both can go while nothing around them breaks. The checks: no sonic boom, no air blast over 134 dB at the nearest people, no torn table or pin cracking it, no crater or quake, no destroyed or crushed object, no thrown person pressed past ride limits, no landing that may crack plaster nearby, no ground giving way under the thrower, and no one sliding past the nearest people (pushed, shoved or recoiling)."
+   "d": "In the two-player tests they share one effort (Ollie can have his own as a what-if). Each uses at most that strength, but never less than he needs to stand and walk. A contest has no goal short of the test itself, so its least disruptive effort is the hardest both can go while nothing around them breaks. The checks: no sonic boom, no air blast over 134 dB at the nearest people, no torn table or pin cracking it, no crater or quake, no destroyed or crushed object, no thrown person pressed past ride limits, no landing that may crack plaster nearby, no ground giving way under the thrower, no push through their feet that shakes the ground enough to crack plaster nearby (the pin, a shove, a throw, a catch and the Collide hit, when Unbreakable footing or They take their own recoil sends it into the ground; without them the lab doesn’t model that shaking), and no one sliding past the nearest people (pushed, shoved or recoiling). The not-so-heroic presets work here as on the solo tabs, each the least shared effort that does what its name says, judged on what the test does: its ground shaking (where the lab models it), its air blast (a thrown partner’s landing or flight past Mach 1, a thrown object’s flight past Mach 1 in the game of catch with all of a fireball’s energy as an upper bound, the Collide hit), and the ground breaking (a pin’s crater, the ground under a thrower or a catcher, the rock around a bolted holder, a holder driven into hard ground). Where a test has no model for what a preset needs, the page says so."
   },
   {
    "t": "Walking: their gait",
-   "d": "Their gait is people’s gait scaled to their size at the same Froude number (speed² ÷ g × hip height), with hip height 0.45 of their height (our estimate from the turnarounds). A comfortable walk is Froude 0.18, about 1.6 m/s for them; at Froude 0.5 they would break into a run. Each step holds about 1.2× body weight (1.0–1.5 as the pace rises). The ground shaking comes from the force of each footfall (see the next card): an ordinary heel strike is a pulse of about 0.43× body weight over 37 ms, scaled from people; soft-footed is 0.51 of that (an estimate from the 48.7% cut in loading rate measured when people walk quietly at their normal speed; the 69% cut came with walking 23% slower); a drill stamp peaks at 6.5× body weight, as measured in soldiers. The heel strike is the one measured at people’s preferred speed, used at every pace, so pace changes the load and the step rate but barely the shaking. The step-rate fit covers Froude 0.09–0.37, so the fastest pace (0.5) is extrapolated. The foot itself also soaks up about 160 J per ordinary step (scaled from people); that energy stays in the foot and doesn’t shake the ground."
+   "d": "They stride heel-first, like people (canon). Their gait is people’s gait scaled to their size at the same Froude number (speed² ÷ g × hip height), with hip height 0.45 of their height (our estimate from the turnarounds). A comfortable walk is Froude 0.18, about 1.6 m/s for them; at Froude 0.5 they would break into a run. Each step holds about 1.2× body weight (1.0–1.5 as the pace rises). The ground shaking comes from the force of each footfall (see the next card): an ordinary heel strike is a pulse of about 0.43× body weight over 37 ms, scaled from people; soft-footed is 0.51 of that (an estimate from the 48.7% cut in loading rate measured when people walk quietly at their normal speed; the 69% cut came with walking 23% slower); a drill stamp peaks at 6.5× body weight, as measured in soldiers. The heel strike is the one measured at people’s preferred speed, used at every pace, so pace changes the load and the step rate but barely the shaking. The step-rate fit covers Froude 0.09–0.37, so the fastest pace (0.5) is extrapolated. The foot itself also soaks up about 160 J per ordinary step (scaled from people); that energy stays in the foot and doesn’t shake the ground."
   },
   {
    "t": "Walking: ground shaking",
@@ -1173,31 +1584,31 @@ window.DINO_DATA = {
   },
   {
    "t": "Footprints",
-   "d": "In sand and gravel, footprint depth is scaled from the one large-animal print we found measured: a weighed 2,530 kg African elephant cow left forefoot prints 20–26 mm deep in loose-to-medium sand (Schanz et al. 2013). The lab anchors on the authors’ calibrated model of that sand (18 mm at 350 kPa), with depth rising as pressure to the power 1.27 and in proportion to foot width. The pressure is the step’s landing peak, as in the elephant’s print; the rule was fitted from 99 to 350 kPa, so a stamp that presses harder is extrapolated (the page says so). Loose sand is taken as that sand; gravel, which bears more, gets shallower prints in proportion. In clay a foot sinks until the clay’s bearing, which grows a little with depth, carries the step. Paving, slabs, ice, steel and rock show no print until they break. All estimates."
+   "d": "In sand and gravel, footprint depth is scaled from the one large-animal print we found measured: a weighed 2,530 kg African elephant cow left forefoot prints 20–26 mm deep in loose-to-medium sand (Schanz et al. 2013). The lab anchors on the authors’ calibrated model of that sand (18 mm at 350 kPa), with depth rising as pressure to the power 1.27 and in proportion to foot width. The pressure is the step’s landing peak, as in the elephant’s print; the rule was fitted from 99 to 350 kPa, so a stamp that presses harder is extrapolated (the page says so). Loose sand is taken as that sand; gravel, which bears more, gets shallower prints in proportion. In clay a foot sinks until the clay’s bearing, which grows a little with depth, carries the step. Paving, slabs, ice, steel and rock show no print until they break. Standing still (the Weight tab) uses the same rules at his standing pressure. In sand and gravel, his feet plunge in deeper only past the pressure the elephant’s sand bore with that shallow print (350 kPa under a foot its width by the researchers’ model, 181 kPa by force-plate data; we use 350 kPa, scaled with foot width and more for gravel: an estimate); from there the sand’s bearing grows with depth (USACE EM 1110-1-1905). All estimates."
   },
   {
-   "t": "Comic switches",
-   "d": "Each switch suspends one piece of real physics and is labelled wherever its effect shows. Gentle hold and safe passenger spread his push through the whole object or person in proportion to its mass, as gravity does, so his hands put no stress on it (a body pushed that way has no internal stress: Cauchy’s equation of motion). They don’t touch the ground under him, his recoil, the air or the landing. The absorbed switches (silent strike, soft landing, cool flight) take back the energy that would harm the surroundings. Momentum is never absorbed: it still goes into him, through his feet and into the ground. There is no “no recoil” switch."
+   "t": "Their powers",
+   "d": "All of their powers are their absorption at work, used on purpose. Canon: comic-book physics is their default, and they choose when not to use it, so four powers are on unless the reader turns them off. Each suspends one piece of real physics and is labelled wherever its effect shows. Air resistance absorbed (a slider, 0–100%, default 100%) takes back that share of the air’s drag on what they throw or hold; the share taken goes to the endless ocean, energy and momentum both (a canon exception to the momentum rule), and the rest acts as real drag, so a throw past the speed of sound still booms and blasts with what is left. Their own bodies still meet real air. Things keep their form: what they hold or throw can’t be broken by them (grip, launch, its own weight) or by the air; any other collision is real physics. Unbreakable footing: the ground under them never breaks; the energy that would break it goes to the endless ocean (or to growth in the growth modes), but the push still goes in, so the ground shakes as real physics says. Where the ground couldn’t bear the push a move needs, their power supplies it (a canon exception). They take their own recoil: the push back from their own moves (a throw, a punch, a stomp, a pull’s rope, a shove) goes through their feet into the planet, as if bolted; the planet keeps the momentum, and the ground still shakes. A jump or a sprint start is the move itself, not recoil, so it is unchanged. Safe passenger spreads his push through a thrown person in proportion to their mass, as gravity does, so his hands put no stress on them (a body pushed that way has no internal stress: Cauchy’s equation of motion). Silent strike and Soft landing take back the energy that would harm the surroundings. Apart from the exceptions named (and the lift from growth, in the next card), no power absorbs momentum: it still goes into him, through his feet and into the ground. Bolted to the planet is for being pushed by someone or something else."
   },
   {
    "t": "Absorbed energy and growth",
-   "d": "Canon: the energy they put out is theirs, so they can take it back. By default it returns to the endless store of power they draw on, and nothing changes. The growth modes are what-ifs that turn it into mass, m = E ÷ c². Growth form: the even mix grows volume and density each by the square root of the mass ratio (height by its sixth root); pure size keeps the density; pure density keeps the size. Gradual growth starts and stops smoothly (our choice); it is harmless if the air pulse 2 m from him (our choice of how close a bystander stands) stays under 100 Pa (134 dB, the US Bureau of Mines safe level) and the top of his head rises no faster than 0.25 m/s (the reduced robot speed OSHA’s Technical Manual calls slow enough for a person to get out of the way; borrowed from robot safety, not tested for this case). Instant growth takes the time sound needs to cross his new body (our choice); the blast is a range from a ball to flat pistons, doubled for the ground, and his rising middle would throw him into the air unless he is bolted down; where the ground can’t give that push, his soles are driven into it instead, and the ground takes that work (often more than the air). In the runaway mode the side effects are absorbed too; the loop dies out at once unless its ratio reaches 1, which his own gravity can’t do outside a black hole."
+   "d": "Canon: the energy they put out is theirs, so they can take it back. By default it returns to the endless store of power they draw on, and nothing changes. The growth modes are what-ifs that turn it into mass, m = E ÷ c². Growth form: the even mix grows volume and density each by the square root of the mass ratio (height by its sixth root); pure size keeps the density; pure density keeps the size. Gradual growth starts and stops smoothly (our choice); it is harmless if the air pulse 2 m from him (our choice of how close a bystander stands) stays under 100 Pa (134 dB, the US Bureau of Mines safe level) and the top of his head rises no faster than 0.25 m/s (the reduced robot speed OSHA’s Technical Manual calls slow enough for a person to get out of the way; borrowed from robot safety, not tested for this case). Instant growth takes the time sound needs to cross his new body (our choice); the blast is a range from a ball to flat pistons, doubled for the ground. He grows about his middle, all the way through (canon), so his soles are driven into the ground and the ground takes that work (its bearing plus the soil pushed aside; often more than the air). The lift the ground’s push would give him goes to the endless ocean (canon), so he is never thrown up; with Unbreakable footing on, the ground doesn’t give, so he grows upward from his soles instead and stops when the growth does (our reading of the two together, not settled canon: a question for the owners). In the runaway mode the side effects (the air and ground pushed aside) are paid from the energy absorbed and taken back as growth too (canon): a round trip, so exactly the energy absorbed becomes mass and the loop dies out at once. The energy his own gravity releases as he grows goes to the endless ocean (canon), so nothing can make the loop run away."
   },
   {
    "t": "Strength means force",
    "d": "The dial sets the heaviest weight Rex can hold up. That times g is his maximum force. Each move drives with a set share of it, and the shares differ between the two muscle models (Show the math gives each one). With real muscle the share is the most the limb can push from a standstill, falling as the limb speeds up; the legs get up to 1.4× because they also carry his body (a lifting record counts only the bar). Comic mode keeps one smaller share per move at every speed, fitted so both modes match record athletes (66% for the jump)."
   },
   {
-   "t": "Only Rex is indestructible",
-   "d": "The ground, the objects and the air follow real material limits. Rex never breaks, tires, or overheats."
+   "t": "Only Rex and Ollie are indestructible",
+   "d": "The ground, the objects and the air follow real material limits, except where their powers say otherwise (Things keep their form, Unbreakable footing). Rex and Ollie never break, tire, or overheat."
   },
   {
    "t": "Hands and grip",
-   "d": "His hands never slip, tire or give way, so his grip never limits a move. The dial’s 511 kg deadlift record allows lifting straps, so it measures pulling strength, not grip. Where the page says “grip”, it means the object: his palms press the load into it (150 cm² per palm at 2 m, scaled with height squared), and if that pressure beats what the object can take, his hands punch into it. A lift carries the load on his palms from below. Holding it by squeezing its sides would press harder, by 1 over the friction between skin and the object (about 2–3× on dry metal, an estimate), and is not modelled. In arm wrestling the clasp never fails; the table, an elbow, an arm or the footing gives first."
+   "d": "His hands never slip, tire or give way, so his grip never limits a move. The dial’s 511 kg deadlift record allows lifting straps, so it measures pulling strength, not grip. Where the page says “grip”, it means the object: his palms press the load into it (150 cm² per palm at 2 m, scaled with height squared), and if that pressure beats what the object can take, his hands punch into it (unless Things keep their form is on). A lift carries the load on his palms from below. Holding it by squeezing its sides would press harder, by 1 over the friction between skin and the object (about 2–3× on dry metal, an estimate), and is not modelled. In arm wrestling the clasp never fails; the table, an elbow, an arm or the footing gives first."
   },
   {
    "t": "Newton’s third law stays on",
-   "d": "Every push pushes him back. He stays put only as far as friction, the ground’s bearing strength, or dug-in claws allow. “Bolted to the planet” and “Comic ground” switch those limits off."
+   "d": "Every push pushes him back. He stays put only as far as friction and the ground’s bearing strength allow. “Bolted to the planet” stops a push sliding his planted feet, whatever the friction; what else it changes depends on the move, and each tab says so (weak ground can still give way under him; in some two-player tests the ground around his feet can tear out, and a very fast hit can be over before the bolts help). Unbreakable footing keeps the floor whole (no sinking, no tear-out, and no hit too fast for the bolts) but adds no grip, so friction still caps his footing when he isn’t bolted. They take their own recoil hands the push back from his own moves to the planet, as if he were bolted; the planet keeps it."
   },
   {
    "t": "Two muscle models, one calibration",
@@ -1213,11 +1624,11 @@ window.DINO_DATA = {
   },
   {
    "t": "Relativity is built in",
-   "d": "Speeds come from momentum, so nothing passes light speed. Above 1% of light speed the sim stops tracking flight: the air ahead is shock-heated into plasma and the object becomes a fireball."
+   "d": "Speeds come from momentum, so nothing passes light speed. Above 1% of light speed a throw flies in a straight line: gravity bends it by far less than a degree. With all of the air’s drag absorbed it meets no air, so a level or upward throw leaves the Earth and a downward one hits the ground where the line meets it. With less absorbed, it sweeps up air at that share of the rate, and the air it sweeps is shock-heated into plasma, a fireball (a snowplow model with relativity: the swept air moves with it and momentum is kept). Close to light speed even a small share of the air takes almost all of its energy. With Things keep their form on the object comes through the fireball whole; with it off, it vaporizes. His throwing hand meets real air too, so a release that fast also makes a fireball at his hand."
   },
   {
    "t": "Air",
-   "d": "Exponential atmosphere, drag coefficient that rises past the sound barrier, no lift, no wind, non-rotating round Earth; above 150 km the arc is solved exactly as an Earth-only Kepler arc (no Moon or Sun pull, so arcs past the Moon’s orbit are rough). Heating is reported with an equilibrium-air estimate, not modelled: real thrown objects would melt or burn at the speeds shown."
+   "d": "Exponential atmosphere, drag coefficient that rises past the sound barrier, no lift, no wind, non-rotating round Earth; above 150 km the arc is solved exactly as an Earth-only Kepler arc (no Moon or Sun pull, so arcs past the Moon’s orbit are rough). Heating is reported with an equilibrium-air estimate, not modelled: real thrown objects would melt or burn at the speeds shown (Things keep their form stops that). Air resistance absorbed scales the drag, its heating and the air’s push on the object by the share left; at 100% the flight is the drag-free arc."
   },
   {
    "t": "Ground",
@@ -1226,6 +1637,10 @@ window.DINO_DATA = {
   {
    "t": "Blasts and craters are upper bounds; quakes are a middle estimate",
    "d": "Blast radii use the Kinney–Graham curve for TNT, as if all the energy became a blast; injury and death levels count the pressure wave alone. Quake magnitudes assume 1 part in 10,000 of the energy becomes shaking, the usual impact-study value (real range 10⁻⁵ to 10⁻³, so give or take about ⅔ of a magnitude). Craters use asteroid-impact scaling, which overstates small craters in rock or concrete."
+  },
+  {
+   "t": "Energy comparisons",
+   "d": "Each energy is set beside the nearest of a ladder of reference energies, from the energy to lift a 100 g apple one metre (about 1 J) to the first black-hole collision ever detected, in 2015 (about 5 × 10⁴⁷ J). Above the nearest reference the page gives a multiple of at most about 10×; below it, a share of at least about 10%. A reference uncertain by more than 2× either way (a lightning bolt, Krakatoa, the dinosaur-killing asteroid, a nova) gets only a rough figure, marked “roughly”. Past either end the page says the energy is beyond the ladder. Every reference, with its status and sources, is in the sources table under “Energy:”. The ladder mixes kinds of energy (blasts, motion, food, electricity, sunlight) on one scale: it shows size, not a like-for-like match."
   },
   {
    "t": "Density and weight",
@@ -1241,11 +1656,11 @@ window.DINO_DATA = {
   },
   {
    "t": "Rex and Ollie",
-   "d": "Ollie is as strong, tough and big as Rex unless his own settings say otherwise: by default 10 ft and 3,007 kg, the same weight as Rex in all (his own tail is only about 11 kg, so more of it is body). He wears boots, so his boots get the same grip as Rex’s feet; “dug in” for him means boots kicked into footholds. Nothing else about him is invented. The push between them is the same both ways. When they shove or wrestle, it goes through each body to his feet, so neither can use more force than his feet hold. Arm wrestling uses 25% of each one’s strength at the hands (an estimate; plausibly 10–40%). A regulation table, scaled to their size, carries the push between them until its pegs and pads tear out (about 5 kN at regulation size, an estimate). After that only their feet hold. Standing up, an arm folds only if the other presses harder than it; if not, the loser’s feet slide and he is dragged. A shove uses the throw’s two-handed push; afterwards they slide upright, where real bodies would tumble. Their own gravity is G m₁ m₂ / d², good to about a factor of 2 for tall bodies close together."
+   "d": "Ollie is as strong, tough and big as Rex unless his own settings say otherwise: by default 10 ft and 3,007 kg, the same weight as Rex in all (his own tail is only about 11 kg, so more of it is body). He wears boots, so his boots get the same grip as Rex’s feet. Nothing else about him is invented. The push between them is the same both ways. When they shove or wrestle, it goes through each body to his feet, so neither can use more force than his feet hold. Arm wrestling uses 25% of each one’s strength at the hands (an estimate; plausibly 10–40%). A regulation table, scaled to their size, carries the push between them until its pegs and pads tear out (about 5 kN at regulation size, an estimate). After that only their feet hold. Standing up, an arm folds only if the other presses harder than it; if not, the loser’s feet slide and he is dragged. A shove uses the throw’s two-handed push; afterwards they slide upright, where real bodies would tumble. Their own gravity is G m₁ m₂ / d², good to about a factor of 2 for tall bodies close together."
   },
   {
    "t": "Game of catch",
-   "d": "Each throw is aimed: the gentle lob is the slowest throw that reaches the catcher’s hands, the fastball his hardest along the flattest path. His hands wait at full reach, so a light object first collides with his hands and forearms (4.4% of his mass) and spends most of its energy squashing his palms and itself by 1–2.5% of his height (3–7.6 cm at 10 ft, an estimate). That first contact is the catch, over in milliseconds. His arms then bring hands and object to rest over 0.3 × his height (full reach to chest, from US Army body measurements), with the least force that works. With strength to spare he can take as long as he likes over that, so the round trip counts only the throws and the flights; when he slides or needs at least half his strength, the stroke takes a set time and is counted. His strength caps the arm force and his footing decides whether he slides; sliding friction grows with the load. The thrower recoils just as on the Throw tab. Before anything counts as caught it has to arrive whole: his throwing push spread over its cross-section must not crush it, air pressure must not tear it apart (ρv² above its strength, the rule meteor models use), air heating must not burn it up, it must not be bigger than the catcher, and the hardest push of the catch, first hit included, must not crush it. Only the shot put, deadlift bar and Ruyi staff have a whole-object strength; for the rest the sim uses its grip limit, a local value, so these checks err toward it surviving. Air heating uses NASA’s stagnation-point formula, shown as a range up to a blackbody ceiling for glowing air below 30 km; both ends are rough. Above 1% of light speed a snowplow model with relativity keeps the momentum and turns swept air into heat that rides along with it; stopping it at the catcher frees nearly all its energy where he stands. Dense partners are points with their mass at the centre, and drag is included on the straight line between them. The Earth doesn’t spin here, and there is no ball spin or wind."
+   "d": "Each throw is aimed: the gentle lob is the slowest throw that reaches the catcher’s hands, the fastball his hardest along the flattest path. His hands wait at full reach, so a light object first collides with his hands and forearms (4.4% of his mass) and spends most of its energy squashing his palms and itself by 1–2.5% of his height (3–7.6 cm at 10 ft, an estimate). That first contact is the catch, over in milliseconds. His arms then bring hands and object to rest over 0.3 × his height (full reach to chest, from US Army body measurements), with the least force that works. With strength to spare he can take as long as he likes over that, so the round trip counts only the throws and the flights; when he slides or needs at least half his strength, the stroke takes a set time and is counted. His strength caps the arm force and his footing decides whether he slides; sliding friction grows with the load. The thrower recoils just as on the Throw tab. Before anything counts as caught it has to arrive whole: his throwing push spread over its cross-section must not crush it, air pressure must not tear it apart (ρv² above its strength, the rule meteor models use), air heating must not burn it up, it must not be bigger than the catcher, and the hardest push of the catch, first hit included, must not crush it. With Things keep their form on (the default), the throw, the air and the catch can’t break it, so only its size can stop a catch. Only the shot put, deadlift bar and Ruyi staff have a whole-object strength; for the rest the sim uses its grip limit, a local value, so these checks err toward it surviving. Air heating uses NASA’s stagnation-point formula, shown as a range up to a blackbody ceiling for glowing air below 30 km; both ends are rough. Above 1% of light speed a snowplow model with relativity keeps the momentum and turns swept air into heat that rides along with it; stopping it at the catcher frees nearly all its energy where he stands. With all of the air’s drag absorbed, a throw that fast flies the straight chord between their hands; past about 12 km that chord runs underground, so the throw hits the ground first. A catch that fast keeps momentum too: unless his footing holds, he is carried off with it. Dense partners are points with their mass at the centre, and drag is included on the straight line between them. The Earth doesn’t spin here, and there is no ball spin or wind."
   },
   {
    "t": "Unstoppable force vs immovable object",
@@ -1702,8 +2117,8 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Claw shear strength used when “dug in”",
-   "value": "sand 1 kPa · gravel 3 kPa (no cohesion: passive resistance only) · clays = undrained strength · asphalt 0.7 MPa · concrete 1.5 MPa · ice 1 MPa · steel 144 MPa · granite 36 MPa",
+   "label": "Ground shear strength (how far feet sink in clay; where the ground tears out around bolted feet)",
+   "value": "sand 1 kPa · gravel 3 kPa (no cohesion: passive resistance only) · soft clay 20 kPa · stiff clay 75 kPa (undrained strength) · asphalt 0.7 MPa · concrete 1.5 MPa · ice 1 MPa · steel 144 MPa · granite 36 MPa",
    "status": "estimate",
    "sources": [
     {
@@ -1735,16 +2150,12 @@ window.DINO_DATA = {
   },
   {
    "label": "Mass: Baseball",
-   "value": "5 to 5.25 oz (141.7 to 148.8 g)",
+   "value": "5 to 5.25 oz (141.7 to 148.8 g); midpoint 145.3 g used",
    "status": "verified",
    "sources": [
     {
-     "url": "https://www.umpirebible.com/OBR16/3.0.htm",
-     "title": "UmpireBible reproduction of Official Baseball Rules 3.01 The Ball"
-    },
-    {
-     "url": "https://baseballrulesacademy.com/official-rule/mlb/3-01-the-ball/",
-     "title": "Baseball Rules Academy - 3.01 The Ball"
+     "url": "https://mktg.mlbstatic.com/mlb/official-information/2026-official-baseball-rules.pdf",
+     "title": "MLB Official Baseball Rules, 2026 edition (PDF linked from mlb.com/glossary/rules), Rule 3.01 The Ball"
     }
    ],
    "note": null
@@ -1862,16 +2273,12 @@ window.DINO_DATA = {
   },
   {
    "label": "Mass: Toyota Corolla",
-   "value": "2,955 lb (LE) to 3,150 lb (XSE)",
+   "value": "2,955 lb (LE) to 3,150 lb (XSE); 1,340 to 1,429 kg (gasoline sedans)",
    "status": "verified",
    "sources": [
     {
-     "url": "https://www.kbb.com/toyota/corolla/2026/specs",
-     "title": "Kelley Blue Book - 2026 Corolla specs (LE 2,955 lb; SE 3,110; XSE 3,150)"
-    },
-    {
-     "url": "https://www.iseecars.com/car/2026-toyota-corolla-specs",
-     "title": "iSeeCars - 2026 Corolla specs (LE 2,955 lb; GVWR 3,925 lb)"
+     "url": "https://www.toyota.com/corolla/2026/features/",
+     "title": "Toyota USA, 2026 Corolla features and specs page (spec table embedded in the page)"
     }
    ],
    "note": null
@@ -2576,177 +2983,981 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Energy: Fastest pitch (kinetic energy)",
-   "value": "163 J",
+   "label": "Energy: Lifting a 100 g apple one metre (energy it gains)",
+   "value": "about 1 J (0.101 kg × 9.81 m/s² × 1 m)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://fdc.nal.usda.gov/portal-data/external/171688",
+     "title": "USDA FoodData Central, SR Legacy FDC 171688 'Apples, raw, with skin' (NDB 09003): portion weights, JSON behind the FDC food page"
+    },
+    {
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?gn",
+     "title": "NIST CODATA: standard acceleration of gravity, 9.806 65 m/s² (exact)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Air rifle: most pellet energy allowed without a firearm certificate (England and Wales)",
+   "value": "12 ft-lb (16.3 J) at the muzzle; above this an air rifle needs a firearm certificate in England and Wales (air pistols: 6 ft-lb, 8.1 J). Northern Ireland's line is 1 J",
    "status": "verified",
    "sources": [
     {
-     "url": "http://www.guinnessworldrecords.com/world-records/fastest-baseball-pitch-male",
-     "title": "Guinness World Records: Fastest baseball pitch (male)"
+     "url": "https://www.legislation.gov.uk/uksi/1969/47/made",
+     "title": "The Firearms (Dangerous Air Weapons) Rules 1969, SI 1969/47, rule 2(1) (legislation.gov.uk, as made)"
     },
     {
-     "url": "https://sabr.org/gamesproj/game/september-24-2010-reds-aroldis-chapman-tops-105-mph-for-fastest-pitch-ever-recorded/",
-     "title": "SABR Games Project: Sept 24, 2010, Chapman tops 105 mph"
+     "url": "https://www.gov.uk/government/publications/firearms-law-guidance-to-the-police-2012/guide-on-firearms-licensing-law-accessible-version",
+     "title": "Home Office, Guide on Firearms Licensing Law (accessible version, last updated 18 Sep 2026), para 2.46"
     },
     {
-     "url": "https://www.umpirebible.com/OBR16/3.0.htm",
-     "title": "UmpireBible reproduction of Official Baseball Rules 3.01 The Ball"
-    },
-    {
-     "url": "https://baseballrulesacademy.com/official-rule/mlb/3-01-the-ball/",
-     "title": "Baseball Rules Academy - 3.01 The Ball"
-    }
-   ],
-   "note": null
-  },
-  {
-   "label": "Energy: Corolla at 100 km/h (kinetic energy)",
-   "value": "5.17e+05 J",
-   "status": "verified",
-   "sources": [
-    {
-     "url": "https://www.kbb.com/toyota/corolla/2026/specs",
-     "title": "Kelley Blue Book - 2026 Corolla specs (LE 2,955 lb; SE 3,110; XSE 3,150)"
-    },
-    {
-     "url": "https://www.iseecars.com/car/2026-toyota-corolla-specs",
-     "title": "iSeeCars - 2026 Corolla specs (LE 2,955 lb; GVWR 3,925 lb)"
-    }
-   ],
-   "note": null
-  },
-  {
-   "label": "Energy: M67 hand grenade",
-   "value": "1e+06 J",
-   "status": "estimate",
-   "sources": [
-    {
-     "url": "https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN37340-TC_3-23.30-001-WEB-3.pdf",
-     "title": "Filler mass: US Army TC 3-23.30 Fig. 3-15"
-    },
-    {
-     "url": "https://en.wikipedia.org/wiki/Relative_effectiveness_factor",
-     "title": "RE factor 1.33 (claimed): Wikipedia Relative effectiveness factor"
-    }
-   ],
-   "note": null
-  },
-  {
-   "label": "Energy: GBU-43 MOAB",
-   "value": "4.6e+10 J",
-   "status": "claimed",
-   "sources": [
-    {
-     "url": "https://en.wikipedia.org/wiki/GBU-43/B_MOAB",
-     "title": "Wikipedia: GBU-43/B MOAB (infobox '11 tons TNT (46 GJ)'; no inline citation for yield)"
+     "url": "https://www.legislation.gov.uk/nisi/2004/702/schedule/1/part/9",
+     "title": "Firearms (Northern Ireland) Order 2004, Schedule 1 Part 9 (legislation.gov.uk)"
     },
     {
      "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
-     "title": "TNT energy convention: NIST SP 811 B.9"
+     "title": "NIST SP 811 Appendix B.9 conversion factors (foot pound-force = 1.355 818 J)"
     }
    ],
    "note": null
   },
   {
-   "label": "Energy: Hiroshima bomb",
-   "value": "6.28e+13 J",
-   "status": "claimed",
+   "label": "Energy: Fastest pitch on record: kinetic energy of the ball",
+   "value": "about 160 J (a 145 g ball at 105.8 mph)",
+   "status": "derived",
    "sources": [
     {
-     "url": "https://en.wikipedia.org/wiki/Little_Boy",
-     "title": "Wikipedia: Little Boy (citing Malik 1985, Los Alamos LA-8819, p. 1)"
+     "url": "https://www.mlb.com/news/speediest-plays-in-statcast-history",
+     "title": "Speed: MLB.com Statcast speed Hall of Fame (105.8 mph)"
     },
     {
-     "url": "http://nuclearweaponarchive.org/Usa/Med/Lbfm.html",
-     "title": "Nuclear Weapon Archive: Little Boy ('Yield: 15 - 16 Kt')"
+     "url": "https://mktg.mlbstatic.com/mlb/official-information/2026-official-baseball-rules.pdf",
+     "title": "Mass: MLB Official Baseball Rules 2026, Rule 3.01"
     }
    ],
    "note": null
   },
   {
-   "label": "Energy: Castle Bravo (15 Mt)",
-   "value": "6.28e+16 J",
-   "status": "claimed",
+   "label": "Energy: Rifle bullet, 5.56 mm NATO (M855): kinetic energy",
+   "value": "about 1.7 kJ (4.02 g at 922 m/s, 78 ft from the muzzle)",
+   "status": "derived",
    "sources": [
     {
-     "url": "http://nuclearweaponarchive.org/Usa/Tests/Castle.html",
-     "title": "Nuclear Weapon Archive: Operation Castle"
+     "url": "https://bulletpicker.com/pdf/TM-43-0001-27.pdf",
+     "title": "US Army TM 43-0001-27, Army Ammunition Data Sheets: Small Caliber Ammunition (Apr 1994, changes to C7 of 14 Jul 2004; Distribution A), third-party PDF copy"
     },
     {
-     "url": "https://en.wikipedia.org/wiki/Castle_Bravo",
-     "title": "Wikipedia: Castle Bravo"
+     "url": "https://ciehub.info/ref/TM/43-0001-27_1994_C1-8.pdf",
+     "title": "US Army TM 43-0001-27 with changes 1-8 (to 18 Oct 2005), second third-party PDF copy"
     }
    ],
    "note": null
   },
   {
-   "label": "Energy: Tsar Bomba (50 Mt)",
-   "value": "2.09e+17 J",
-   "status": "disputed",
+   "label": "Energy: Usain Bolt at top speed: kinetic energy",
+   "value": "about 7.3 kJ (95 kg at 12.42 m/s)",
+   "status": "derived",
    "sources": [
     {
-     "url": "http://www.nuclearweaponarchive.org/Russia/TsarBomba.html",
-     "title": "Nuclear Weapon Archive: Tsar Bomba ('Was it 50 Megatons or 57?')"
+     "url": "https://casopisi.junis.ni.ac.rs/index.php/FUPhysEdSport/article/download/4984/3002",
+     "title": "Coh M. 2019, Usain Bolt: biomechanical model of sprint technique, Facta Universitatis PES 17(1):1-13 (PDF)"
     },
     {
-     "url": "https://en.wikipedia.org/wiki/Tsar_Bomba",
-     "title": "Wikipedia: Tsar Bomba"
+     "url": "https://ojs.srce.hr/kinesiology/article/view/5579",
+     "title": "Coh et al. 2018, The kinematics of Usain Bolt's maximal sprint velocity, Kinesiology 50(2):172-180 (abstract page)"
     }
    ],
    "note": null
   },
   {
-   "label": "Energy: Krakatoa 1883",
-   "value": "8.4e+17 J",
-   "status": "claimed",
+   "label": "Energy: Food energy in a level teaspoon of sugar",
+   "value": "about 68 kJ (16 food Calories) per level teaspoon",
+   "status": "derived",
    "sources": [
     {
-     "url": "https://en.wikipedia.org/wiki/1883_eruption_of_Krakatoa",
-     "title": "Wikipedia: 1883 eruption of Krakatoa (citing Australian Bureau of Meteorology 2012, archived)"
+     "url": "https://fdc.nal.usda.gov/portal-data/external/169655",
+     "title": "USDA FoodData Central, SR Legacy FDC 169655 'Sugars, granulated' (NDB 19335): energy and portion weights, JSON behind the FDC food page"
     },
     {
-     "url": "https://en.wikipedia.org/wiki/Krakatoa",
-     "title": "Wikipedia: Krakatoa (citing Breining 2007, Super Volcano, Voyageur Press, p. 256)"
+     "url": "https://webbook.nist.gov/cgi/cbook.cgi?ID=C57501&Mask=2",
+     "title": "NIST Chemistry WebBook, Sucrose (CAS 57-50-1), condensed phase thermochemistry"
     }
    ],
    "note": null
   },
   {
-   "label": "Energy: Chicxulub impact (sim uses 4.2 × 10²³ J, inside the published 10²³–10²⁴ J)",
-   "value": "4.2e+23 J",
-   "status": "disputed",
+   "label": "Energy: Toyota Corolla at 100 km/h: kinetic energy",
+   "value": "about 0.52 MJ (1,340 kg at 100 km/h); 0.55 MJ for the heaviest gasoline trim",
+   "status": "derived",
    "sources": [
     {
-     "url": "https://en.wikipedia.org/wiki/Chicxulub_crater",
-     "title": "Wikipedia: Chicxulub crater (literature range ~1e23 J, Morgan et al. 2022, Richards et al. 2015, Kring 2007, Bralower et al. 1998; 1e24 J, Pope et al. 1997)"
-    },
-    {
-     "url": "https://arxiv.org/abs/1403.6391",
-     "title": "Durand-Manterola & Cordero-Tercero (2014) Assessments of the energy, mass and size of the Chicxulub impactor, arXiv:1403.6391"
+     "url": "https://www.toyota.com/corolla/2026/features/",
+     "title": "Mass: Toyota USA 2026 Corolla features and specs"
     }
    ],
    "note": null
   },
   {
-   "label": "Energy: Sun’s output in one second",
-   "value": "3.83e+26 J",
+   "label": "Energy: M67 hand grenade: chemical energy of its filler",
+   "value": "about 0.9 MJ (0.184 kg of Composition B, its explosive filler, × 5.02 MJ/kg); 1.0 MJ by the Army's TNT equivalence from a ballistic-mortar test (the work a charge does, compared with TNT)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN37340-TC_3-23.30-001-WEB-3.pdf",
+     "title": "Filler mass: US Army TC 3-23.30, Fig. 3-15"
+    },
+    {
+     "url": "https://www.osti.gov/servlets/purl/6530310",
+     "title": "Heat of detonation: LLNL Explosives Handbook UCRL-52997, Table 5-2"
+    },
+    {
+     "url": "https://everyspec.com/ARMY/ARMY-General/download.php?spec=AMCP_706-177_JAN1971.050916.pdf",
+     "title": "Heat of explosion and 'Ballistic Mortar, % TNT: 133': AMCP 706-177, Composition B sheet pp. 46-47 (PDF pp. 54-55)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: A day's food: the 2,000-Calorie reference diet (FDA)",
+   "value": "2,000 Calories (kcal) a day = 8.4 MJ (FDA's general guide; needs vary)",
    "status": "verified",
    "sources": [
     {
-     "url": "https://arxiv.org/abs/1510.07674",
-     "title": "IAU 2015 Resolution B3 (arXiv:1510.07674)"
+     "url": "https://www.fda.gov/food/nutrition-facts-label/how-understand-and-use-nutrition-facts-label",
+     "title": "FDA: How to Understand and Use the Nutrition Facts Label ('2,000 calories a day is used as a general guide for nutrition advice')"
+    },
+    {
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
+     "title": "NIST SP 811 Appendix B.9: conversion factors"
     }
    ],
    "note": null
   },
   {
-   "label": "Energy: Earth’s gravitational binding energy",
-   "value": "2.49e+32 J",
-   "status": "claimed",
+   "label": "Energy: Fully loaded US semi-truck (80,000 lb) at 100 km/h: kinetic energy",
+   "value": "about 14 MJ (36,287 kg at 100 km/h = 27.8 m/s)",
+   "status": "derived",
    "sources": [
     {
-     "url": "https://en.wikipedia.org/wiki/Gravitational_binding_energy",
-     "title": "Wikipedia: Gravitational binding energy (PREM-based value; formula U = 3GM^2/(5R))"
+     "url": "https://www.law.cornell.edu/cfr/text/23/658.17",
+     "title": "23 CFR 658.17(b): 'The maximum gross vehicle weight shall be 80,000 pounds' (Cornell LII)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Average US home's electricity purchases in a day (2022 yearly average / 365)",
+   "value": "about 29.6 kWh = 0.11 GJ (10,791 kWh a year / 365); state averages 17 kWh (Hawaii) to 40 kWh (Louisiana) a day",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://www.eia.gov/tools/faqs/faq.php?id=97&t=3",
+     "title": "EIA FAQ: How much electricity does an American home use? (last updated 8 Jan 2024)"
+    },
+    {
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
+     "title": "NIST SP 811 Appendix B.9: conversion factors"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: A month's food at the 2,000-Calorie reference diet (30 days)",
+   "value": "about 0.25 GJ (30 days × 2,000 Calories)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://www.fda.gov/food/nutrition-facts-label/how-understand-and-use-nutrition-facts-label",
+     "title": "FDA: How to Understand and Use the Nutrition Facts Label ('2,000 calories a day is used as a general guide for nutrition advice')"
+    },
+    {
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
+     "title": "NIST SP 811 Appendix B.9: conversion factors"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: A lightning flash: total energy",
+   "value": "about 1 GJ per flash (published estimates 0.01 to 10 GJ)",
+   "status": "disputed",
+   "sources": [
+    {
+     "url": "https://api.crossref.org/works/10.1029/2008JD011506",
+     "title": "Maggio, Marshall & Stolzenburg (2009) Estimations of charge transferred and energy released by lightning flashes, JGR 114, D14, doi:10.1029/2008JD011506 (abstract via Crossref)"
+    },
+    {
+     "url": "https://api.crossref.org/works/10.1029/RG022i004p00363",
+     "title": "Borucki & Chameides (1984) Lightning: estimates of the rates of energy dissipation and nitrogen fixation, Rev. Geophys. 22:363-372 (abstract via Crossref)"
+    },
+    {
+     "url": "https://ntrs.nasa.gov/api/citations/20210000238/downloads/ams2021_paper_Koshak.pdf",
+     "title": "Koshak (2021) GLM estimates of LNOx over the continental US, NASA MSFC, AMS extended abstract J2A.8 (not peer-reviewed)"
+    },
+    {
+     "url": "https://www.epa.gov/sites/production/files/2020-11/documents/c14s03.pdf",
+     "title": "US EPA AP-42 section 14.3 Lightning Emissions (9/96)"
+    },
+    {
+     "url": "https://arxiv.org/pdf/2404.10020",
+     "title": "Review: Physics and technology of Laser Lightning Control (2024), arXiv:2404.10020, citing Rakov & Uman (2003)"
+    },
+    {
+     "url": "https://journals.ametsoc.org/view/journals/atsc/78/12/JAS-D-21-0073.1.pdf",
+     "title": "Salinas, Bruning, Mansell & Brothers (2021) Modeling the electrical energy discharged by lightning flashes using capacitors, J. Atmos. Sci. 78:3909-3924, section 6a"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: High-speed train (ICE 3 Velaro D, 454 t) at 320 km/h: kinetic energy",
+   "value": "about 1.8 GJ (454 t at 320 km/h); about 1.9 GJ full of passengers",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://assets.new.siemens.com/siemens/assets/api/uuid:f87cebe5-71ab-4224-985d-baa30a934ff0/factsheet-velaro-d-de.pdf",
+     "title": "Siemens Fact Sheet: Velaro D - Neuer ICE 3 (Baureihe 407), German"
+    },
+    {
+     "url": "https://assets.new.siemens.com/siemens/assets/api/uuid:2f82dc92-66be-40b7-be36-78bd0f1bd0b1/high-speed-train-velaro-d-data-sheet-en.pdf",
+     "title": "Siemens data sheet: Velaro D (Class 407), English"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: TNT equivalent: energy per ton of TNT",
+   "value": "1 ton of TNT = 4.184 × 10⁹ J by definition; 1 kt = 4.184 × 10¹² J; 1 Mt = 4.184 × 10¹⁵ J",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
+     "title": "NIST SP 811, Appendix B.9 (energy conversion factors)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Fully loaded Airbus A380 at cruising speed: kinetic energy",
+   "value": "about 18 GJ (575 t at Mach 0.85, 251 m/s, about 900 km/h)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://www.airbus.com/sites/g/files/jlcbta136/files/2022-01/EN-Airbus-A380-Facts-and-Figures-January-2022.pdf",
+     "title": "Airbus A380 Facts and Figures, January 2022"
+    },
+    {
+     "url": "https://www.grc.nasa.gov/www/k-12/airplane/atmosmet.html",
+     "title": "NASA Glenn: Earth Atmosphere Model, metric units"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: GBU-43/B MOAB: blast yield",
+   "value": "about 11 tons of TNT (46 GJ); 33 GJ from the fill's heat of explosion alone",
+   "status": "reported",
+   "sources": [
+    {
+     "url": "https://www.arabnews.com/node/1084336",
+     "title": "AFP via Arab News, 14 Apr 2017 (citing GlobalSecurity.org): 'a blast yield equivalent to 11 tons of TNT'"
+    },
+    {
+     "url": "https://afarmamentmuseum.com/artifact/gbu43/",
+     "title": "Air Force Armament Museum, GBU-43/B (18,700 lb H6, '1.35 times more powerful than TNT')"
+    },
+    {
+     "url": "https://everyspec.com/ARMY/ARMY-General/download.php?spec=AMCP_706-177_JAN1971.050916.pdf",
+     "title": "AMCP 706-177 (1971), H-6 sheet pp. 146-147: ballistic mortar 135% TNT; heat of explosion 923 cal/g"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Hubble Space Telescope: kinetic energy (energy of motion) in orbit",
+   "value": "about 350 GJ (12,250 kg at about 7.6 km/s; about 85 t of TNT)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://science.nasa.gov/missions/hubble/a-nasa-refresher-on-hubble-facts-for-the-25th-anniversary/",
+     "title": "NASA Science: A NASA Refresher on Hubble Facts for the 25th Anniversary (Goddard, 16 Apr 2015)"
+    },
+    {
+     "url": "https://science.nasa.gov/wp-content/uploads/2023/04/hst_overview_fact_sheet.pdf",
+     "title": "NASA Facts: Hubble Space Telescope - An Overview (fact sheet PDF)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Beirut port explosion, 4 Aug 2020: TNT-equivalent yield",
+   "value": "about 0.3–1.1 kt of TNT in published estimates (0.13–2 kt at the extremes); 0.5 kt (2.1 TJ) used, Rigby et al.'s best estimate",
+   "status": "disputed",
+   "sources": [
+    {
+     "url": "https://eprints.whiterose.ac.uk/id/eprint/165010/8/Rigby2020_Article_PreliminaryYieldEstimationOfTh.pdf",
+     "title": "Rigby et al. (2020) Preliminary yield estimation of the 2020 Beirut explosion using video footage from social media, Shock Waves 30:671-675, doi:10.1007/s00193-020-00970-z (published version, White Rose repository)"
+    },
+    {
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8266808/",
+     "title": "Pilger et al. (2021) Yield estimation of the 2020 Beirut explosion using open access waveform and remote sensing data, Scientific Reports 11:14144, doi:10.1038/s41598-021-93690-y (PMC8266808)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: International Space Station: kinetic energy (energy of motion) in orbit",
+   "value": "about 12-14 TJ (420 t at 7.7-8.0 km/s; about 3 kt of TNT); 12.6 TJ used",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://www.nasa.gov/international-space-station/space-station-facts-and-figures/",
+     "title": "NASA: Space Station Facts and Figures"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Hiroshima bomb (Little Boy) yield",
+   "value": "15 kilotons of TNT (6.3 × 10¹³ J), the US Department of Energy's figure; a 2002 study of the radiation doses gives 16 ± 2 kt",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.osti.gov/servlets/purl/1489669",
+     "title": "Malik (1985) The Yields of the Hiroshima and Nagasaki Nuclear Explosions, LA-8819, Los Alamos (OSTI 1489669)"
+    },
+    {
+     "url": "https://nnss.gov/wp-content/uploads/2023/08/DOE_NV-209_Rev16.pdf",
+     "title": "US DOE/NNSA Nevada, DOE/NV-209 Rev. 16 (Sep 2015) United States Nuclear Tests, July 1945 through September 1992"
+    },
+    {
+     "url": "https://www.rerf.or.jp/library/scidata/scids/ds02/pdf/chapter01/cha01-p42-61.pdf",
+     "title": "RERF DS02 report (2005), Chapter 1 'Bomb Parameters' (Kerr, Young, Cullings, Christy)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Chelyabinsk meteor airburst, 15 Feb 2013: energy",
+   "value": "about 500 ± 100 kt of TNT (1.7–2.5 PJ); NASA's fireball table: 441 kt",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.nature.com/articles/nature12741",
+     "title": "Brown et al. (2013) A 500-kiloton airburst over Chelyabinsk and an enhanced hazard from small impactors, Nature 503:238-241, doi:10.1038/nature12741"
+    },
+    {
+     "url": "https://ssd-api.jpl.nasa.gov/fireball.api?date-min=2013-02-15&date-max=2013-02-16&req-alt=false",
+     "title": "NASA/JPL CNEOS Fireball Data API, 2013-02-15 event"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Hoover Dam: electricity generated in an average year",
+   "value": "about 4 billion kWh in an average year (14 PJ); 1947-2008 average 4.2 billion kWh",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.usbr.gov/lc/hooverdam/faqs/powerfaq.html",
+     "title": "US Bureau of Reclamation: Hoover Dam - Frequently Asked Questions: Hydropower (last updated 1 Aug 2018)"
+    },
+    {
+     "url": "https://api.eia.gov/v2/electricity/facility-fuel/data/?frequency=annual&data[0]=generation&facets[plantCode][]=154&facets[plantCode][]=8902&facets[fuel2002][]=ALL&api_key=DEMO_KEY",
+     "title": "US EIA, Form EIA-923 plant generation, Hoover Dam (plants 154 and 8902), API query with EIA's public demo key (net generation in MWh; rate-limited)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Castle Bravo yield (1 Mar 1954 local; 28 Feb GMT)",
+   "value": "15 megatons of TNT (6.3 × 10¹⁶ J); the highest-yield US nuclear test",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://nnss.gov/wp-content/uploads/2023/08/DOE_NV-209_Rev16.pdf",
+     "title": "US DOE/NNSA Nevada, DOE/NV-209 Rev. 16 (Sep 2015) United States Nuclear Tests, July 1945 through September 1992"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Tsar Bomba yield (30 Oct 1961)",
+   "value": "50 megatons of TNT (2.1 × 10¹⁷ J) per its Soviet designers; US 1961 estimate 57 Mt",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.wilsoncenter.org/sites/default/files/media/documents/publication/CWIHP_Bulletin_4.pdf",
+     "title": "Adamsky & Smirnov (1994) 'Moscow's Biggest Bomb: The 50-Megaton Test of October 1961', Cold War International History Project Bulletin 4 (Fall 1994), pp. 3, 19-21 (Wilson Center)"
+    },
+    {
+     "url": "https://nuclearweaponarchive.org/Russia/TsarBomba.html",
+     "title": "Nuclear Weapon Archive (Carey Sublette's site, no byline; updated 3 Sep 2007): The Tsar Bomba"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Krakatoa 1883: energy of the great explosion (air-wave equivalent)",
+   "value": "about 100–150 megatons of TNT (4.2–6.3 × 10¹⁷ J) judged from its air wave (Harkrider & Press); 125 Mt used. A tsunami paper gives 200 Mt (8.4 × 10¹⁷ J) for the third blast's total energy, with no source; other published figures run from about 10¹⁷ to 6.3 × 10¹⁸ J",
+   "status": "disputed",
+   "sources": [
+    {
+     "url": "https://authors.library.caltech.edu/records/r42n3-t2639/files/Geophys._J._Int.-1967-Harkrider-149-59.pdf?download=1",
+     "title": "Harkrider & Press (1967) The Krakatoa air-sea waves, Geophys. J. R. Astr. Soc. 13:149-159, p. 159 (Caltech repository PDF)"
+    },
+    {
+     "url": "https://authors.library.caltech.edu/records/xvvaz-4pv10",
+     "title": "Press & Harkrider (1966) Air-sea waves from the explosion of Krakatoa, Science 154:1325 (doi:10.1126/science.154.3754.1325; Caltech record with abstract)"
+    },
+    {
+     "url": "https://www.vliz.be/imisdocs/publications/381958.pdf",
+     "title": "Choi, Pelinovsky, Kim & Lee (2003) Simulation of the trans-oceanic tsunami propagation due to the 1883 Krakatau volcanic eruption, NHESS 3:321-332 (doi:10.5194/nhess-3-321-2003)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: World primary energy consumption in one day (2022 rate)",
+   "value": "about 1.8 × 10¹⁸ J (one day at the 2022 rate; about 21 TW on average)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://www.eia.gov/Outlooks/Ieo/data/pdf/A_A1_r_230822.081459.pdf",
+     "title": "US EIA, International Energy Outlook 2023, Table A1 'World total primary energy consumption by region, Reference case' (PDF; World, 2022: 637.8 quadrillion Btu)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Heat released by an average hurricane in one day (NOAA worked example)",
+   "value": "about 5.2 × 10¹⁹ J per day (6.0 × 10¹⁴ W), NOAA's worked figure for an average hurricane. NOAA gives no range; the lab treats it as rough (our estimate: real storms differ in size and rain rate by a factor of a few)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.aoml.noaa.gov/hrd-faq/",
+     "title": "NOAA AOML Hurricane Research Division, Hurricane FAQ (revised 10 Sep 2025): 'How Much Energy does a Hurricane Produce?'"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: World primary energy consumption in one year (2022)",
+   "value": "637.8 quadrillion Btu (British thermal units) in 2022 = 6.7 × 10²⁰ J (US EIA); the Energy Institute's figure for 2025, reported second-hand, is just over 600 EJ (6.0 × 10²⁰ J)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://www.eia.gov/Outlooks/Ieo/data/pdf/A_A1_r_230822.081459.pdf",
+     "title": "US EIA, International Energy Outlook 2023, Table A1 'World total primary energy consumption by region, Reference case' (PDF; World, 2022: 637.8 quadrillion Btu)"
+    },
+    {
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
+     "title": "NIST SP 811 Appendix B.9: British thermal unit_IT = 1.055 056 E+03 J"
+    },
+    {
+     "url": "https://dieselnet.com/news/2026/07energyreview.php",
+     "title": "DieselNet news, 2 Jul 2026, reporting the Energy Institute 2026 Statistical Review (secondary)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Sunlight intercepted by Earth in one day (top of the atmosphere)",
+   "value": "about 1.5 × 10²² J per day at the top of the atmosphere (1361 W/m² × Earth's disc × 86,400 s)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/1510.07674",
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 × 10²⁶ W)"
+    },
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+     "title": "NASA NSSDCA Earth Fact Sheet (last updated 15 Nov 2024): solar irradiance 1361.0 W/m²; mean radius 6371.000 km; Bond albedo 0.294"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Chicxulub impact energy (the dinosaur-killing asteroid)",
+   "value": "about 5 × 10²³ J (2022 review); an older estimate from a larger crater goes up to 1.7 × 10²⁵ J",
+   "status": "disputed",
+   "sources": [
+    {
+     "url": "https://par.nsf.gov/servlets/purl/10349743",
+     "title": "Morgan, Bralower, Brugger & Wünnemann (2022) The Chicxulub impact and its environmental consequences, Nat. Rev. Earth Environ. 3:338-354, doi:10.1038/s43017-022-00283-y; accepted manuscript at NSF PAR (typeset)"
+    },
+    {
+     "url": "https://ntrs.nasa.gov/citations/19970030228",
+     "title": "Sharpton & Marin (1997) The Cretaceous-Tertiary impact crater and the cosmic projectile that produced it, Ann. N.Y. Acad. Sci. 822 (NASA NTRS record)"
+    },
+    {
+     "url": "https://par.nsf.gov/servlets/purl/10160782",
+     "title": "Collins et al. (2020) A steeply-inclined trajectory for the Chicxulub impact, Nat. Commun. 11:1480 (NSF PAR copy)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Sunlight intercepted by Earth in one year (top of the atmosphere)",
+   "value": "about 5.5 × 10²⁴ J per year at the top of the atmosphere",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/1510.07674",
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 × 10²⁶ W)"
+    },
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+     "title": "NASA NSSDCA Earth Fact Sheet (last updated 15 Nov 2024): solar irradiance 1361.0 W/m²; mean radius 6371.000 km; Bond albedo 0.294"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Nominal solar luminosity (rung: the Sun's output in one second)",
+   "value": "3.828 × 10²⁶ W, so 3.8 × 10²⁶ J each second",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/1510.07674",
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 × 10²⁶ W)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Pluto's gravitational binding energy (the energy to blow Pluto apart)",
+   "value": "about 6.5 × 10²⁷ J (layered models 6.3–6.7 × 10²⁷ J; 5.7 × 10²⁷ J if Pluto were uniform)",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/plutofact.html",
+     "title": "NASA NSSDCA Pluto Fact Sheet (last updated 11 Jan 2024)"
+    },
+    {
+     "url": "https://arxiv.org/pdf/1712.05669",
+     "title": "Stern et al. (2018) The Pluto System After New Horizons, Annu. Rev. Astron. Astrophys. 56 (DOI 10.1146/annurev-astro-081817-051935), arXiv:1712.05669 (PDF)"
+    },
+    {
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?bg",
+     "title": "NIST CODATA 2022: Newtonian constant of gravitation"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: The Moon's kinetic energy in its orbit around Earth",
+   "value": "3.8 × 10²⁸ J (7.346 × 10²² kg at a mean 1.022 km/s; 3.4–4.4 × 10²⁸ J between the slowest and fastest points of its orbit)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+     "title": "NASA NSSDCA Moon Fact Sheet (last updated 11 Jan 2024)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Earth's rotational kinetic energy (the energy of its daily spin)",
+   "value": "2.1 × 10²⁹ J (its moment of inertia, 8.04 × 10³⁷ kg m², turning once every 23.9345 h)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/1104.1033",
+     "title": "Vilcu (2009) On the elements of the Earth's ellipsoid of inertia, An. Univ. Bucuresti Mat. 58(2):183-198, arXiv:1104.1033 (PDF)"
+    },
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+     "title": "NASA NSSDCA Earth Fact Sheet (last updated 15 Nov 2024)"
+    },
+    {
+     "url": "https://en.wikipedia.org/wiki/Rotational_energy",
+     "title": "Wikipedia: Rotational energy (cross-check only: 2.14 × 10²⁹ J)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: The Sun's output for one hour",
+   "value": "1.4 × 10³⁰ J (3.828 × 10²⁶ W for 3,600 s)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/1510.07674",
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 × 10²⁶ W)"
+    },
+    {
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
+     "title": "NIST SP 811 Appendix B.9: conversion factors (time: hour, day, year)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Mars's gravitational binding energy (the energy to blow Mars apart)",
+   "value": "5.1 × 10³⁰ J (4.9 × 10³⁰ J for a uniform Mars)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html",
+     "title": "NASA NSSDCA Mars Fact Sheet (last updated 19 May 2025)"
+    },
+    {
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?bg",
+     "title": "NIST CODATA 2022: Newtonian constant of gravitation"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: The Sun's output for one day",
+   "value": "3.3 × 10³¹ J (3.828 × 10²⁶ W for 86,400 s)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/1510.07674",
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 × 10²⁶ W)"
+    },
+    {
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
+     "title": "NIST SP 811 Appendix B.9: conversion factors (time: hour, day, year)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Earth's gravitational binding energy (from PREM, a standard model of Earth's interior)",
+   "value": "about 2.49 × 10³² J (2.24 × 10³² J if Earth had uniform density)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://www.cfa.harvard.edu/~lzeng/papers/PREM.pdf",
+     "title": "Dziewonski & Anderson (1981) Preliminary reference Earth model, PEPI 25:297-356, Table I (doi:10.1016/0031-9201(81)90046-7); PDF copy at Harvard CfA"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Earth's kinetic energy in its orbit around the Sun",
+   "value": "2.6 × 10³³ J (5.9722 × 10²⁴ kg at a mean 29.78 km/s)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+     "title": "NASA NSSDCA Earth Fact Sheet (last updated 15 Nov 2024)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: The Sun's output for one year",
+   "value": "1.2 × 10³⁴ J (3.828 × 10²⁶ W for one year, 365.256 days)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/1510.07674",
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 × 10²⁶ W)"
+    },
+    {
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
+     "title": "NIST SP 811 Appendix B.9: conversion factors (time: hour, day, year)"
+    },
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+     "title": "NASA NSSDCA Earth Fact Sheet (last updated 15 Nov 2024)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Jupiter's kinetic energy in its orbit around the Sun",
+   "value": "1.6 × 10³⁵ J (1.898 × 10²⁷ kg at a mean 13.06 km/s)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/jupiterfact.html",
+     "title": "NASA NSSDCA Jupiter Fact Sheet (last updated 2 Oct 2024)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: The Sun's output for one hundred years",
+   "value": "1.2 × 10³⁶ J (3.828 × 10²⁶ W for 100 years)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/1510.07674",
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 × 10²⁶ W)"
+    },
+    {
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
+     "title": "NIST SP 811 Appendix B.9: conversion factors (time: hour, day, year)"
+    },
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+     "title": "NASA NSSDCA Earth Fact Sheet (last updated 15 Nov 2024)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: The Sun's total output for 1,000 years",
+   "value": "about 1.2 × 10³⁷ J (1,000 years at 3.828 × 10²⁶ W)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/1510.07674",
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 × 10²⁶ W)"
+    },
+    {
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b8",
+     "title": "NIST Guide to the SI (SP 811), Appendix B.8: Factors for units listed alphabetically (tropical year 3.155 693 × 10⁷ s)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: A classical nova (a thermonuclear explosion on the surface of a white dwarf, a dead star)",
+   "value": "about 10³⁸ J (Hernanz & José 2000); models give a few times 10³⁸ J of nuclear energy (Hillman & Gerbi 2022); NASA outreach: 'up to 100,000 times the annual energy output of our sun' (about 1.2 × 10³⁹ J)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/astro-ph/0001189",
+     "title": "Hernanz & José (2000) Thermonuclear runaways on accreting white dwarfs: models of classical novae explosions, AIP Conf. Proc. (DOI 10.1063/1.1291734); arXiv PDF"
+    },
+    {
+     "url": "https://arxiv.org/pdf/2202.06894",
+     "title": "Hillman & Gerbi (2022) The effect of enriched accreted matter on the development of novae, MNRAS (DOI 10.1093/mnras/stac432); arXiv PDF"
+    },
+    {
+     "url": "https://svs.gsfc.nasa.gov/11608/",
+     "title": "NASA Scientific Visualization Studio 11608, 'Fermi Reveals Novae as a New Class of Gamma-Ray Sources' (31 Jul 2014; outreach text, used only for the upper bound)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Giant flare of the magnetar SGR 1806-20, 27 Dec 2004 (a magnetar is a dead star with an extreme magnetic field): energy of its first fraction of a second",
+   "value": "about 2 × 10³⁹ J in a fraction of a second; 0.5–7 × 10³⁹ J depending on its distance, which is still disputed (about 28,000 light-years, Bibby 2008; 31,000–61,000 light-years, Svirski 2011)",
+   "status": "disputed",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/astro-ph/0503030",
+     "title": "Palmer et al. (2005) Gamma-ray observations of a giant flare from the magnetar SGR 1806-20, Nature 434, 1107 (DOI 10.1038/nature03525); arXiv abstract"
+    },
+    {
+     "url": "https://arxiv.org/pdf/astro-ph/0503030",
+     "title": "Palmer et al. (2005), a giant gamma-ray flare from the magnetar SGR 1806-20 (Nature); arXiv PDF"
+    },
+    {
+     "url": "https://arxiv.org/pdf/astro-ph/0502329",
+     "title": "Hurley et al. (2005) An exceptionally bright flare from SGR 1806-20..., Nature 434, 1098 (DOI 10.1038/nature03519); arXiv PDF"
+    },
+    {
+     "url": "https://arxiv.org/abs/0802.0815",
+     "title": "Bibby et al. (2008) A downward revision to the distance of the 1806-20 cluster and associated magnetar, MNRAS 386, L23 (DOI 10.1111/j.1745-3933.2008.00453.x); arXiv abstract"
+    },
+    {
+     "url": "https://arxiv.org/abs/1103.0006",
+     "title": "Svirski, Nakar & Ofek (2011) SGR 1806-20 distance and dust properties in molecular clouds by analysis of a flare x-ray echoes, MNRAS 415, 2485 (DOI 10.1111/j.1365-2966.2011.18872.x); arXiv abstract"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: The Moon's whole mass turned into energy (E = mc²)",
+   "value": "about 6.6 × 10³⁹ J (7.346 × 10²² kg × c²)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+     "title": "NASA NSSDCA Moon Fact Sheet (mass 7.346 × 10²² kg)"
+    },
+    {
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?c",
+     "title": "NIST CODATA 2022: speed of light in vacuum, 299 792 458 m/s (exact)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Kinetic energy of the Sun's motion around the centre of the Milky Way",
+   "value": "about 6 × 10⁴⁰ J (½ × 1.9884 × 10³⁰ kg × (247 km/s)²)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/1910.03357",
+     "title": "Reid et al. (2019) ApJ 885, 131; arXiv abstract (To + Vsun = 247 ± 4 km/s)"
+    },
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html",
+     "title": "NASA NSSDCA Sun Fact Sheet (mass 1.9884 × 10³⁰ kg)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Earth's whole mass turned into energy (E = mc²)",
+   "value": "about 5.4 × 10⁴¹ J (5.9722 × 10²⁴ kg × c²)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+     "title": "NASA NSSDCA Earth Fact Sheet (mass 5.9722 × 10²⁴ kg)"
+    },
+    {
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?c",
+     "title": "NIST CODATA 2022: speed of light in vacuum, 299 792 458 m/s (exact)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: All the light a supernova gives off (typical core-collapse supernova, the explosion of a massive star; Type Ia supernovae give a few times more)",
+   "value": "about 10⁴² J for a core-collapse supernova; 10⁴²–10⁴³ J across such events; Type Ia about 6 × 10⁴² J",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/astro-ph/0501002",
+     "title": "Nadyozhin & Imshennik (2005) Physics of supernovae, Int. J. Mod. Phys. A (DOI 10.1142/S0217751X05029630); arXiv PDF"
+    },
+    {
+     "url": "https://arxiv.org/pdf/0804.4350",
+     "title": "Nadyozhin (2008) Physics of supernovae: theory, observations, unresolved problems, arXiv:0804.4350 PDF (lecture; no journal reference)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: The Sun's total output for a billion years (at today's output)",
+   "value": "about 1.2 × 10⁴³ J (10⁹ years at 3.828 × 10²⁶ W)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/1510.07674",
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (nominal solar luminosity 3.828 × 10²⁶ W)"
+    },
+    {
+     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b8",
+     "title": "NIST Guide to the SI (SP 811), Appendix B.8: Factors for units listed alphabetically (tropical year 3.155 693 × 10⁷ s)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: A supernova's blast: the kinetic energy of its flying debris (typical; core-collapse and Type Ia alike)",
+   "value": "about 10⁴⁴ J; typically (0.5–2) × 10⁴⁴ J, and single events from about 10⁴³ J to a few times 10⁴⁴ J",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/2009.14157",
+     "title": "Burrows & Vartanyan (2021) Core-collapse supernova explosion theory, Nature 589, 29 (DOI 10.1038/s41586-020-03059-w); arXiv PDF v3"
+    },
+    {
+     "url": "https://arxiv.org/pdf/astro-ph/0501002",
+     "title": "Nadyozhin & Imshennik (2005) Physics of supernovae, Int. J. Mod. Phys. A (DOI 10.1142/S0217751X05029630); arXiv PDF"
+    },
+    {
+     "url": "https://arxiv.org/pdf/1206.2503",
+     "title": "Janka (2012) Explosion mechanisms of core-collapse supernovae, Annu. Rev. Nucl. Part. Sci. 62 (DOI 10.1146/annurev-nucl-102711-094901); arXiv PDF"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Jupiter's whole mass turned into energy (E = mc²)",
+   "value": "about 1.7 × 10⁴⁴ J (1.89813 × 10²⁷ kg × c²)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/jupiterfact.html",
+     "title": "NASA NSSDCA Jupiter Fact Sheet (mass 1.89813 × 10²⁷ kg)"
+    },
+    {
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?c",
+     "title": "NIST CODATA 2022: speed of light in vacuum, 299 792 458 m/s (exact)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: The blast of SN 1998bw (the kinetic energy of its flying debris), an unusually energetic supernova linked to a gamma-ray burst; one model gives 3 × 10⁴⁵ J (a 'hypernova'), an aspherical model about 15 times less",
+   "value": "about 3 × 10⁴⁵ J of motion in its debris in one spherical model (2–5 × 10⁴⁵ J); an aspherical model gives 2 × 10⁴⁴ J",
+   "status": "disputed",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/astro-ph/9806382",
+     "title": "Iwamoto et al. (1998) A 'hypernova' model for SN 1998bw associated with gamma-ray burst of 25 April 1998, Nature 395, 672 (DOI 10.1038/27155); arXiv abstract"
+    },
+    {
+     "url": "https://arxiv.org/pdf/astro-ph/9806382",
+     "title": "Iwamoto et al. (1998), arXiv PDF"
+    },
+    {
+     "url": "https://arxiv.org/abs/astro-ph/9808086",
+     "title": "Höflich, Wheeler & Wang (1999) Aspherical explosion models for SN 1998bw/GRB 980425, ApJ (DOI 10.1086/307521); arXiv abstract"
+    },
+    {
+     "url": "https://arxiv.org/abs/astro-ph/9807345",
+     "title": "Höflich, Wheeler & Wang (1998) SN 1998bw/GRB 980425: hypernova or aspherical explosion?, arXiv abstract"
+    },
+    {
+     "url": "https://arxiv.org/pdf/1206.2503",
+     "title": "Janka (2012) Annu. Rev. Nucl. Part. Sci.; arXiv PDF"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: Everything a core-collapse supernova (the explosion of a massive star) releases, about 99% of it as neutrinos (ghostly particles that pass through almost everything)",
+   "value": "about 3 × 10⁴⁶ J, almost all of it in neutrinos ((3–5) × 10⁴⁶ J depending on the core's mass)",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/pdf/2009.14157",
+     "title": "Burrows & Vartanyan (2021) Core-collapse supernova explosion theory, Nature 589, 29 (DOI 10.1038/s41586-020-03059-w); arXiv PDF v3"
+    },
+    {
+     "url": "https://arxiv.org/pdf/astro-ph/0501002",
+     "title": "Nadyozhin & Imshennik (2005) Physics of supernovae, Int. J. Mod. Phys. A (DOI 10.1142/S0217751X05029630); arXiv PDF"
+    },
+    {
+     "url": "https://arxiv.org/pdf/0804.4350",
+     "title": "Nadyozhin (2008) Physics of supernovae: theory, observations, unresolved problems, arXiv:0804.4350 PDF (lecture; no journal reference)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: The Sun's whole mass turned into energy (E = mc²)",
+   "value": "about 1.8 × 10⁴⁷ J (1.9884 × 10³⁰ kg × c²)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html",
+     "title": "NASA NSSDCA Sun Fact Sheet (mass 1.9884 × 10³⁰ kg; mass turned into energy, 4.26 × 10⁹ kg each second)"
+    },
+    {
+     "url": "https://physics.nist.gov/cgi-bin/cuu/Value?c",
+     "title": "NIST CODATA 2022: speed of light in vacuum, 299 792 458 m/s (exact)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Energy: GW150914: the energy two colliding black holes gave off as gravitational waves (ripples in space), the first such collision detected (14 Sep 2015)",
+   "value": "3.0 ± 0.5 solar masses × c², about 5.4 × 10⁴⁷ J, given off in a fraction of a second",
+   "status": "verified",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/1602.03837",
+     "title": "Abbott et al. (LIGO/Virgo, 2016) Observation of gravitational waves from a binary black hole merger, Phys. Rev. Lett. 116, 061102 (DOI 10.1103/PhysRevLett.116.061102); arXiv abstract"
+    },
+    {
+     "url": "https://arxiv.org/pdf/1602.03837v1",
+     "title": "Same paper, published PRL version (arXiv PDF v1)"
     }
    ],
    "note": null
@@ -2860,6 +4071,38 @@ window.DINO_DATA = {
    "note": null
   },
   {
+   "label": "Speed to escape the Sun from Earth’s distance",
+   "value": "About 42.1 km/s, measured relative to the Sun (from the Sun’s GM and the astronomical unit)",
+   "status": "derived",
+   "sources": [
+    {
+     "url": "https://www.iau.org/common/Uploaded%20files/IAUGA2015-Resolution-B3-recommended-nominal-conversion.pdf",
+     "title": "IAU 2015 Resolution B3 (GM of the Sun), iau.org PDF"
+    },
+    {
+     "url": "https://iauarchive.eso.org/static/resolutions/IAU2012_English.pdf",
+     "title": "IAU 2012 Resolution B2 (astronomical unit), IAU archive PDF"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Speed to escape the Milky Way from the Sun’s position",
+   "value": "About 530 km/s; published estimates run from 445 to 580 km/s",
+   "status": "disputed",
+   "sources": [
+    {
+     "url": "https://arxiv.org/abs/1309.4293",
+     "title": "Piffl et al. (2014) The RAVE survey: the Galactic escape speed and the mass of the Milky Way, A&A 562, A91; arXiv abstract page"
+    },
+    {
+     "url": "https://arxiv.org/pdf/1309.4293v3",
+     "title": "Piffl et al. (2014), arXiv v3 PDF (abstract on p. 1)"
+    }
+   ],
+   "note": null
+  },
+  {
    "label": "Shot put world record",
    "value": "23.56 m",
    "status": "verified",
@@ -2877,16 +4120,16 @@ window.DINO_DATA = {
   },
   {
    "label": "Fastest pitch",
-   "value": "105.8 mph (170.27 km/h, 47.30 m/s)",
+   "value": "105.8 mph (47.3 m/s); Aroldis Chapman, 24 Sep 2010",
    "status": "verified",
    "sources": [
     {
-     "url": "http://www.guinnessworldrecords.com/world-records/fastest-baseball-pitch-male",
-     "title": "Guinness World Records: Fastest baseball pitch (male)"
+     "url": "https://www.mlb.com/news/speediest-plays-in-statcast-history",
+     "title": "MLB.com, Sarah Langs (9 Sep 2026): '105.7 mph throw? 122.9 mph HR? This is the Statcast speed Hall of Fame'"
     },
     {
-     "url": "https://sabr.org/gamesproj/game/september-24-2010-reds-aroldis-chapman-tops-105-mph-for-fastest-pitch-ever-recorded/",
-     "title": "SABR Games Project: Sept 24, 2010, Chapman tops 105 mph"
+     "url": "https://www.mlb.com/glossary/statcast/velocity",
+     "title": "MLB Glossary: Velocity (VELO), Statcast"
     }
    ],
    "note": null
@@ -3018,7 +4261,7 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9",
-     "title": "NIST SP 811 Appendix B.9: ton of TNT (energy equivalent) = 4.184E+09 J"
+     "title": "NIST SP 811, Appendix B.9 (energy conversion factors)"
     }
    ],
    "note": null
@@ -3100,7 +4343,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Body shape and air (assumed)",
-   "value": "Areas scale with height², lengths with height. Drag Cd 1.0. Facing area from the build: 4.4 m² for the default 10 ft Rex (tail trailing), 4.5 m² for Ollie, 0.8 m² for the 2 m calibration body. Head-first when jumping or launched by a stomp: 0.3 m² at 2 m (0.7 m² at 10 ft). Claw dig area when braced: 0.2 m² at 2 m, 0.46 m² at 10 ft (a quarter of that per stride when sprinting). Release height 0.9 × height; each sprint stride puts about 2.5× his weight on one foot. Overarm whip: effective mass at the hand 0.3% of body mass, fitted with the whip speed to the 47.3 m/s pitch; that is smaller than Dempster’s hand alone (0.6%) and is not a measured segment.",
+   "value": "Areas scale with height², lengths with height. Drag Cd 1.0. Facing area from the build: 4.4 m² for the default 10 ft Rex (tail trailing), 4.5 m² for Ollie, 0.8 m² for the 2 m calibration body. Head-first when jumping or launched by a stomp: 0.3 m² at 2 m (0.7 m² at 10 ft). Ground gripped by bolted feet (where it tears out): 0.2 m² at 2 m, 0.46 m² at 10 ft. Release height 0.9 × height; each sprint stride puts about 2.5× his weight on one foot. Overarm whip: effective mass at the hand 0.3% of body mass, fitted with the whip speed to the 47.3 m/s pitch; that is smaller than Dempster’s hand alone (0.6%) and is not a measured segment.",
    "status": "estimate",
    "sources": [],
    "note": null
@@ -3560,7 +4803,7 @@ window.DINO_DATA = {
   {
    "label": "Weight: Earth's gravitational binding energy, integrated from PREM (check)",
    "value": "2.49 × 10³² J (our integral of G M(r) dm / r over PREM)",
-   "status": "estimate",
+   "status": "derived",
    "sources": [
     {
      "url": "https://hep.ph.liv.ac.uk/~costasa/genie_doxygen/master/html/namespacegenie_1_1utils_1_1prem.html",
@@ -3967,7 +5210,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Arm wrestling and wrestling: Ollie's grip on the ground (boots, no claws)",
-   "value": "Same traction as Rex's feet on each surface. 'Dug in' for Ollie means boots kicked into footholds, given the same buried area as Rex's claws (0.2 × (height / 2 m)² m²: 0.46 m² at the default 10 ft).",
+   "value": "Same traction as Rex's feet on each surface. Bolted, the ground his boots grip tears out over the same area as Rex's (0.2 × (height / 2 m)² m²: 0.46 m² at the default 10 ft).",
    "status": "estimate",
    "sources": [],
    "note": null
@@ -5058,7 +6301,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Walking: check: the engine's sinking rule against the measured elephant footprint",
-   "value": "For the weighed elephant, the engine's rule predicts a 0.23 m deep print (φ 35°) where 0.02 m was measured; elastic settlement predicts 2–9 mm",
+   "value": "For the weighed elephant, the Weight tab's old sinking rule predicted a 0.23 m deep print (φ 35°) where 0.02 m was measured; elastic settlement predicts 2–9 mm. The rule was replaced on 12 Oct 2026 (step_standing_sink_rule)",
    "status": "derived",
    "sources": [
     {
@@ -5068,6 +6311,22 @@ window.DINO_DATA = {
     {
      "url": "https://www.tugraz.at/fileadmin/user_upload/Institute/IAG/Files/18_Bearing_Capacity_of_Soils-USACE.pdf",
      "title": "USACE EM 1110-1-1905 (bearing factors used by the engine)"
+    }
+   ],
+   "note": null
+  },
+  {
+   "label": "Walking: standing still in soil: how deep his feet go (the Weight tab's rule)",
+   "value": "Standing at canon, Rex's feet press about 3 mm into loose sand and Ollie's about 5 mm (the old rule sank Ollie 18 cm). Past about 350 kPa under a foot the elephant's width (scaled with width; more for gravel; our estimate, from the researchers' model of the elephant's stress), sand starts to give and the foot plunges until the bearing growing with depth carries it. Estimate, checked against one measured elephant print",
+   "status": "estimate",
+   "sources": [
+    {
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC3812993/fullTextXML",
+     "title": "Schanz et al. (2013), Quantitative interpretation of tracks for determination of body mass, PLOS ONE 8:e77606 (anchor print and the authors' calibrated model)"
+    },
+    {
+     "url": "https://www.tugraz.at/fileadmin/user_upload/Institute/IAG/Files/18_Bearing_Capacity_of_Soils-USACE.pdf",
+     "title": "USACE EM 1110-1-1905, Bearing Capacity of Soils (N_q, and N_c growing with depth, Table 4-7)"
     }
    ],
    "note": null
@@ -7352,7 +8611,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: Cauchy's equation of motion for a solid (Newton's second law for every bit of a body)",
+   "label": "Their powers: Cauchy's equation of motion for a solid (Newton's second law for every bit of a body)",
    "value": "∇·σ + ρb = ρa (σ stress, ρ density, b body force per unit mass, a acceleration)",
    "status": "verified",
    "sources": [
@@ -7372,7 +8631,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: a push spread through a body in proportion to its mass accelerates it with no internal stress",
+   "label": "Their powers: a push spread through a body in proportion to its mass accelerates it with no internal stress",
    "value": "If every kilogram gets the same push (b = a everywhere) and nothing touches the surface, stress = 0",
    "status": "derived",
    "sources": [
@@ -7388,7 +8647,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: in free fall nothing feels its own weight: apparent weight P = m(a − g)",
+   "label": "Their powers: in free fall nothing feels its own weight: apparent weight P = m(a − g)",
    "value": "Apparent weight P = m(a_e − g); falling freely (a_e = g), P = 0: 'you are weightless'",
    "status": "verified",
    "sources": [
@@ -7400,7 +8659,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: only differences in the field (tides) stretch a freely falling body",
+   "label": "Their powers: only differences in the field (tides) stretch a freely falling body",
    "value": "Tidal acceleration along the line to a mass M at distance R: a_z = 2 z G M / R³ (z = offset from the centre of mass)",
    "status": "verified",
    "sources": [
@@ -7412,7 +8671,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: tidal stretch on a 4 m car: Earth's tide versus his spread push",
+   "label": "Their powers: tidal stretch on a 4 m car: Earth's tide versus his spread push",
    "value": "Earth's tide: about 2 mN through the middle of a 1,340 kg, 4 m car standing on end (1 part in 6 million of its weight). His push spread through it at 10 g: zero",
    "status": "derived",
    "sources": [
@@ -7430,13 +8689,13 @@ window.DINO_DATA = {
     },
     {
      "url": "https://www.kbb.com/toyota/corolla/2026/specs",
-     "title": "Kelley Blue Book, 2026 Toyota Corolla specs, LE curb weight 2,955 lb (existing key toyota_corolla_curb_mass)"
+     "title": "Kelley Blue Book, 2026 Toyota Corolla specs, LE curb weight 2,955 lb (existing key toyota_corolla_curb_mass, since sourced to toyota.com’s own spec table: the same 2,955 lb)"
     }
    ],
    "note": null
   },
   {
-   "label": "Comic switches: spreading the force over the whole body is what raises tolerance (Eiband 1959)",
+   "label": "Their powers: spreading the force over the whole body is what raises tolerance (Eiband 1959)",
    "value": "'Survival of impact forces increases with increased distribution of the arresting force to the entire skeleton'; people cannot move against more than 2–3 g",
    "status": "verified",
    "sources": [
@@ -7448,7 +8707,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: amusement-ride acceleration limits for the general public (ASTM F2291-06a)",
+   "label": "Their powers: amusement-ride acceleration limits for the general public (ASTM F2291-06a)",
    "value": "Head-to-foot (+Gz) or pressed into the seat back (+Gx): 6 g for 0.2–1 s, 4 g for 2–4 s, 3 g for 5–11.8 s, then 2 g (+Gz) or 2.5 g (+Gx). Sideways 3 g → 2 g. Eyes-front (−Gx) 2 g at 0.2 s → 1.5 g. Eyes-up (−Gz) 2 g at 0.2 s → 1.5 g → 1.1 g from 7 s",
    "status": "derived",
    "sources": [
@@ -7460,7 +8719,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: NASA sustained acceleration limits for seated, restrained astronauts (upper bound, not for ordinary people)",
+   "label": "Their powers: NASA sustained acceleration limits for seated, restrained astronauts (upper bound, not for ordinary people)",
    "value": "Non-deconditioned seated crew: head-to-foot (+Az) 81.4 m/s² (8.3 g) at 0.5 s, 62.8 (6.4 g) at 5 s, 39.2 (4.0 g) at 1,200 s. Chest-to-back (+Ax) 186 (19 g) at 0.5 s, 157 (16 g) at 5 s, 73.5 (7.5 g) at 300 s",
    "status": "verified",
    "sources": [
@@ -7476,7 +8735,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: relaxed head-to-foot tolerance: 2–5 g standing, 7–9 g seated",
+   "label": "Their powers: relaxed head-to-foot tolerance: 2–5 g standing, 7–9 g seated",
    "value": "Non-straining standing +Gz tolerance 19.6–49.1 m/s² (2–5 g); seated 68.7–88.3 m/s² (7–9 g)",
    "status": "verified",
    "sources": [
@@ -7488,7 +8747,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: what steady g feels like, by direction (Fraser 1966 compilation)",
+   "label": "Their powers: what steady g feels like, by direction (Fraser 1966 compilation)",
    "value": "+Gz: 2 g heavier; 2.5 g hard to get up; 3–4 g vision dims after 3–4 s; 4.5–6 g blackout after about 5 s, then unconsciousness. +Gx: 2 g tolerable for at least 24 h, 4 g for at least 60 min",
    "status": "verified",
    "sources": [
@@ -7500,7 +8759,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: relaxed head-to-foot g at which vision and consciousness fail (means of a large group)",
+   "label": "Their powers: relaxed head-to-foot g at which vision and consciousness fail (means of a large group)",
    "value": "Loss of peripheral vision 4.1 ± 0.7 g (range 2.2–7.1); blackout 4.7 ± 0.8 g (2.7–7.8); unconsciousness 5.4 ± 0.9 g (3.0–8.4)",
    "status": "verified",
    "sources": [
@@ -7512,7 +8771,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: losing consciousness from g (G-LOC) took at least 5 s in 888 centrifuge episodes",
+   "label": "Their powers: losing consciousness from g (G-LOC) took at least 5 s in 888 centrifuge episodes",
    "value": "G-LOC did not occur earlier than 5 s; mean 9.1 s for onset ≥1 G/s; levels at G-LOC ranged +2.5 to +11.7 Gz (+4.7 Gz is the curve's defined minimum)",
    "status": "verified",
    "sources": [
@@ -7524,7 +8783,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: ordinary people (would-be space tourists) on a centrifuge: up to +6 Gx and +4 Gz tolerated",
+   "label": "Their powers: ordinary people (would-be space tourists) on a centrifuge: up to +6 Gx and +4 Gz tolerated",
    "value": "Screened, seated, strapped-in laypeople aged 18–88 (some with controlled medical conditions): peaks +3.5 to +4.0 Gz and +6.0 Gx (combined peaks about 5 s) tolerated; grey-out common (69–88%), one G-LOC in 24",
    "status": "verified",
    "sources": [
@@ -7548,7 +8807,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: brief jolts volunteers took uninjured in a full harness (Eiband 1959)",
+   "label": "Their powers: brief jolts volunteers took uninjured in a full harness (Eiband 1959)",
    "value": "Spineward, full harness: 45 g for 0.044 s, 40 g for 0.1 s, 25 g for 0.2 s, 13 g for 0.6 s, 10 g for 1.6 s. Animals survived (injury from none to severe shock and concussion) up to 56 g for 0.037 s and 43 g for 0.11 s (chimpanzees); hog 160 g for about 0.004 s marks Eiband's upper limit of moderate injury",
    "status": "verified",
    "sources": [
@@ -7560,7 +8819,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: impacts people survived with injury in harnessed sled tests",
+   "label": "Their powers: impacts people survived with injury in harnessed sled tests",
    "value": "25 g for 0.93 s: debilitated, back on duty in 5 days (Eiband). Severe shock at 38 g for 0.16 s with onset over 1,300 g per second; severe delayed effects at 45 g for 0.23 s (Stapp). 83 g for 0.04 s measured at the chest (applied input lower), rearward-facing, reversible injuries (Beeding & Mosely 1960). Air Force design limit for forward-facing (−Gx) impact in a double harness: about 45 g for 0.1 s, 25 g for 0.2 s",
    "status": "verified",
    "sources": [
@@ -7576,7 +8835,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: how fast g may build up: onset-rate limits for passengers",
+   "label": "Their powers: how fast g may build up: onset-rate limits for passengers",
    "value": "Ride standard: going from weightless (0 g) to 2 g or more, onset under 15 g per second; above 1.5 g with no headrest only if onset is under 5 g per second (then up to 2 g). Sled tests: 45 g for 0.09 s at 500 g/s caused no shock, but 38 g for 0.16 s at over 1,300 g/s caused severe shock",
    "status": "verified",
    "sources": [
@@ -7596,7 +8855,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: the g a passenger feels: the push from what holds them, net of gravity",
+   "label": "Their powers: the g a passenger feels: the push from what holds them, net of gravity",
    "value": "n = |a − g| / g (vectors). Standing still: 1 g. Lifted at 1 g: 2 g. Thrown (ballistic): 0 g plus drag. Under his spread push: 0 g",
    "status": "derived",
    "sources": [
@@ -7612,7 +8871,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: recommended 'no harm' limit for a passenger, by body axis (safe passenger switch off)",
+   "label": "Their powers: recommended 'no harm' limit for a passenger, by body axis (safe passenger switch off)",
    "value": "Orientation unknown (tumbling, a face-first catch, a push on the chest): eyes-front (−Gx) limit, 2 g at 0.2 s, 1.5 g from 0.5 s. Back-first cradle with head support (+Gx), or pushed up from below while seated upright (+Gz): 6 g to 1 s, 4 g at 2–4 s, 3 g at 5–11.8 s, then 2.5 g (+Gx) or 2 g (+Gz). Sideways 3 g → 2 g. Head-down (−Gz): as eyes-front to 4 s, then 1.1 g from 7 s. Pulses under 0.2 s: use the 0.2 s value",
    "status": "estimate",
    "sources": [
@@ -7628,7 +8887,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: recommended 'injury possible' band for a passenger (beyond what harnessed volunteers took uninjured)",
+   "label": "Their powers: recommended 'injury possible' band for a passenger (beyond what harnessed volunteers took uninjured)",
    "value": "Beyond Eiband's line for harnessed volunteers who were not injured (45 g at 0.044 s, 40 g at 0.1 s, 25 g at 0.2 s, 13 g at 0.6 s, 10 g at 1.6 s): injury possible; data sparse; worse at high onset rates. Human points survived with injury: 25 g for 0.93 s (applied); 83 g for 0.04 s measured at the chest (applied input lower). Held by hand with no harness: not measured",
    "status": "estimate",
    "sources": [
@@ -7648,7 +8907,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: fastest launch within the ride limit (landing not included)",
+   "label": "Their powers: fastest launch within the ride limit (landing not included)",
    "value": "Pushed along 45° over Rex's 2.4 m throwing stroke at 6 g felt: release at about 16 m/s in 0.3 s, landing about 26 m away (no drag). At 4 g: 12 m/s, 16 m. At 2 g: 7.5 m/s, 6 m. The landing is not included: at about 16 m/s it is like a 13 m fall, a serious injury risk unless he catches them",
    "status": "estimate",
    "sources": [
@@ -7660,7 +8919,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: air drag felt by a flying person, by speed (not removed by safe passenger once released)",
+   "label": "Their powers: air drag felt by a flying person, by speed (not removed by safe passenger once released)",
    "value": "For a 90 kg adult tumbling (area 0.67 m², C_d 1.1): drag decelerates them at 1 g at 44 m/s, 2 g at 63 m/s, 4 g at 89 m/s, 6 g at 108 m/s",
    "status": "estimate",
    "sources": [
@@ -7680,7 +8939,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: airblast at which people start to notice rattling: about 120 dB on a 6 Hz meter",
+   "label": "Their powers: airblast at which people start to notice rattling: about 120 dB on a 6 Hz meter",
    "value": "Rattling complaints above about 120 dB on the 6 Hz measuring system (20 Pa as read on that meter; about 36 Pa unfiltered, our conversion: see the row \"Rattling onset as an unfiltered peak pressure\"); at 134 dB (100 Pa; 0.1 Hz system) 5–10% of homes show rattling or fright disturbances",
    "status": "verified",
    "sources": [
@@ -7692,7 +8951,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: rattling onset as an unfiltered peak pressure (our conversion of USBM's 120 dB on a 6 Hz meter)",
+   "label": "Their powers: rattling onset as an unfiltered peak pressure (our conversion of USBM's 120 dB on a 6 Hz meter)",
    "value": "About 36 Pa (125 dB) unfiltered: USBM's 'about 120 dB (6 Hz)' rattling onset, shifted by the 5 dB between its safe levels on the two meters (129 dB on 6 Hz = 134 dB on 0.1 Hz)",
    "status": "derived",
    "sources": [
@@ -7704,7 +8963,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: airblast safe for houses (US mining regulation): 134 dB peak, about 100 Pa",
+   "label": "Their powers: airblast safe for houses (US mining regulation): 134 dB peak, about 100 Pa",
    "value": "134 dB (0.1 Hz system) = 100 Pa; 133 dB (2 Hz) = 89 Pa; 129 dB (6 Hz) = 56 Pa; 105 dBC (C-weighted, slow)",
    "status": "verified",
    "sources": [
@@ -7720,7 +8979,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: window sashes rattled at 0.03–0.05 psi (207–345 Pa) in small-charge tests: not a harmless level",
+   "label": "Their powers: window sashes rattled at 0.03–0.05 psi (207–345 Pa) in small-charge tests: not a harmless level",
    "value": "0.03–0.05 psi (141–145 dB): rattling of window sashes, in tests with small charges. Overlaps the start of glass damage",
    "status": "verified",
    "sources": [
@@ -7732,7 +8991,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: glass damage becomes improbable below about 0.030 psi (140 dB, ~200 Pa); single tests broke precracked panes from 364 Pa and stressed glass from 690 Pa",
+   "label": "Their powers: glass damage becomes improbable below about 0.030 psi (140 dB, ~200 Pa); single tests broke precracked panes from 364 Pa and stressed glass from 690 Pa",
    "value": "Damage improbable below about 0.030 psi (140 dB, about 207 Pa; studies' safe levels for glass 0.017–0.10 psi, 117–690 Pa). Precracked windows broke from 7.6 psf (364 Pa); glass under strain from 0.10 psi (690 Pa); good 3 × 3 ft panes none below 20 psf (958 Pa); properly mounted glass 0.75 psi (5.2 kPa)",
    "status": "verified",
    "sources": [
@@ -7744,7 +9003,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: what sonic booms do to houses (White Sands tests)",
+   "label": "Their powers: what sonic booms do to houses (White Sands tests)",
    "value": "2.5 psf (120 Pa) precludes damage; bric-a-brac falls and dishes rattle at 6–11 psf (290–530 Pa); plaster cracks 6.5–10 psf (310–480 Pa); nails pop 10.3 psf (490 Pa)",
    "status": "verified",
    "sources": [
@@ -7756,7 +9015,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: sonic booms people object to: 1.5–2 psf (72–96 Pa)",
+   "label": "Their powers: sonic booms people object to: 1.5–2 psf (72–96 Pa)",
    "value": "1 psf (48 Pa): no damage expected; 1.5–2 psf (72–96 Pa): some public reaction",
    "status": "verified",
    "sources": [
@@ -7768,7 +9027,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: hearing-safety limit for impulse noise: 140 dB peak (200 Pa)",
+   "label": "Their powers: hearing-safety limit for impulse noise: 140 dB peak (200 Pa)",
    "value": "140 dB peak sound pressure (200 Pa, 0.03 psi): US workplace limit for impulsive or impact noise",
    "status": "verified",
    "sources": [
@@ -7780,7 +9039,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: impulse–momentum: the same momentum change over a longer time needs less force",
+   "label": "Their powers: impulse–momentum: the same momentum change over a longer time needs less force",
    "value": "J = Δp; F_ave = Δp / Δt",
    "status": "verified",
    "sources": [
@@ -7792,7 +9051,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: soft landing: the momentum the ground must still take, and the least peak force his legs allow",
+   "label": "Their powers: soft landing: the momentum the ground must still take, and the least peak force his legs allow",
    "value": "Ground impulse J = m v. Time-mean ground force over a stop of T: J/T + W. Within a knee bend d, the peak force is at least m v²/(2d) + W. At 10 ft, a 0.76 m knee bend from 20 m/s needs a peak of at least 820 kN (28 × his weight)",
    "status": "derived",
    "sources": [
@@ -7808,7 +9067,7 @@ window.DINO_DATA = {
    "note": null
   },
   {
-   "label": "Comic switches: momentum cannot be passed on with zero energy: at least p²/(2M) stays in whatever takes it",
+   "label": "Their powers: momentum cannot be passed on with zero energy: at least p²/(2M) stays in whatever takes it",
    "value": "Passing momentum p to a body of mass M leaves at least p²/(2M) in that body. For the Earth this is effectively nothing; for a small mass of air it can be large, though it shrinks as the moving air spreads",
    "status": "derived",
    "sources": [
@@ -7886,7 +9145,7 @@ window.DINO_DATA = {
    "sources": [
     {
      "url": "https://arxiv.org/pdf/1510.07674",
-     "title": "Prša et al. (2016) Nominal values for selected solar and planetary quantities: IAU 2015 Resolution B2 and B3, arXiv:1510.07674 (PDF)"
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674"
     }
    ],
    "note": null
@@ -7905,7 +9164,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Growth: worked example: absorbing Krakatoa's energy as growth",
-   "value": "About 9 kg at the brief's 8.4 × 10¹⁷ J (+0.3%): height +1.6 mm (mix) or +3.2 mm (pure size); 1,063 kg/m³ if pure density. Across the quoted estimates 1–70 kg; about 560 kg at the highest inferred one",
+   "value": "About 6 kg at the lab's 125 Mt (5.2 × 10¹⁷ J; +0.2%): height +1 mm (mix) or +2 mm (pure size); 1,062 kg/m³ if pure density. The often-quoted 200 Mt (8.4 × 10¹⁷ J, the brief's) gives about 9 kg. Across the quoted estimates 1–70 kg; about 560 kg at the highest inferred one",
    "status": "derived",
    "sources": [
     {
@@ -7933,7 +9192,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Growth: worked example: absorbing Chicxulub's energy as growth",
-   "value": "4.2 × 10²³ J adds about 4,700 t (1,560 times his mass): mix 10 m tall at 42,000 kg/m³; pure size 35 m; pure density 1.6 × 10⁶ kg/m³. At the review's 5 × 10²³ J: 5,600 t; mix 11 m; pure size 37 m",
+   "value": "About 5 × 10²³ J (the lab's value, Morgan et al. 2022) adds about 5,600 t (1,850 times his mass): mix about 11 m tall at about 46,000 kg/m³; pure size about 37 m; pure density about 2 × 10⁶ kg/m³. At the brief's 4.2 × 10²³ J: 4,700 t; mix 10 m; pure size 35 m",
    "status": "derived",
    "sources": [
     {
@@ -7974,7 +9233,7 @@ window.DINO_DATA = {
     },
     {
      "url": "https://arxiv.org/pdf/1510.07674",
-     "title": "Prša et al. (2016) Nominal values for selected solar and planetary quantities: IAU 2015 Resolution B2 and B3, arXiv:1510.07674 (PDF)"
+     "title": "Mamajek, Prša, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674"
     }
    ],
    "note": null
@@ -8097,7 +9356,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Growth: gradual growth: shortest harmless durations for the worked examples",
-   "value": "The shove sets the limit, not the air: Chicxulub about 1½ min (mix) or 4 min (pure size); one second of sunlight about 14 min (mix) or 43 min (pure size); Krakatoa a few hundredths of a second. Pure density has no air or shove limit",
+   "value": "The shove sets the limit, not the air: Chicxulub about 1½ min (mix) or 4 min (pure size); one second of sunlight about 14 min (mix) or 43 min (pure size); Krakatoa a few hundredths of a second. Pure density has no air or shove limit (worked at the brief’s 4.2 × 10²³ J for Chicxulub; the page now uses 5 × 10²³ J, about 20% more, and gives its own figures)",
    "status": "estimate",
    "sources": [
     {
@@ -8133,7 +9392,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Growth: instant growth: the time it takes (sound crossing his final body)",
-   "value": "t = final height ÷ 1,540 m/s: 2 ms (Krakatoa), 7 ms (Chicxulub, mix), 23 ms (Chicxulub, pure size), 0.22 s (one solar second, pure size)",
+   "value": "t = final height ÷ 1,540 m/s: 2 ms (Krakatoa), 7 ms (Chicxulub, mix), 24 ms (Chicxulub, pure size), 0.22 s (one solar second, pure size)",
    "status": "estimate",
    "sources": [
     {
@@ -8233,7 +9492,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Growth: instant growth: the blast from shoving the air aside",
-   "value": "Chicxulub, pure size: 2–3 atm at his sides and 0.9–1.5 × 10⁹ J into the air (210–350 kg of TNT) if he grew about his centre; windows shatter out to 100–220 m. Anchored at his soles, the top of his head pushes about 24–30 atm and the total is 2–4 times larger (up to 6 × 10⁹ J, 1.5 t of TNT; windows to about 360 m). Mix: 3–6 kg of TNT, windows to 25–57 m (up to about 90 m anchored)",
+   "value": "Chicxulub, pure size: 2–3 atm at his sides and 0.9–1.5 × 10⁹ J into the air (210–350 kg of TNT) if he grew about his centre; windows shatter out to 100–220 m. Anchored at his soles, the top of his head pushes about 24–30 atm and the total is 2–4 times larger (up to 6 × 10⁹ J, 1.5 t of TNT; windows to about 360 m). Mix: 3–6 kg of TNT, windows to 25–57 m (up to about 90 m anchored). Canon: he grows about his middle; the page's high end also counts the top of his head at its own speed (an upper bound) (worked at the brief’s 4.2 × 10²³ J for Chicxulub; the page now uses 5 × 10²³ J, about 20% more, and gives its own figures)",
    "status": "estimate",
    "sources": [
     {
@@ -8249,7 +9508,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Growth: ground: pushed aside, and loaded by lifting his centre of mass",
-   "value": "Anchored at the soles, nothing is pushed aside, but instant growth still loads the ground with the force that lifts his centre of mass: GPa-level for Chicxulub-sized growth, more than rock can bear. Growing about his middle instead, the work on the ground is at most about 4 × 10⁻¹¹ of the absorbed energy (pure size)",
+   "value": "Anchored at the soles, nothing is pushed aside, but instant growth still loads the ground with the force that lifts his centre of mass: GPa-level for Chicxulub-sized growth, more than rock can bear. Growing about his middle instead, the work on the ground is at most about 4 × 10⁻¹¹ of the absorbed energy (pure size). Canon: he grows about his middle, so his feet are driven in, and the lift goes to the endless ocean: he is never thrown up",
    "status": "estimate",
    "sources": [
     {
@@ -8369,7 +9628,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Growth: can the growth loop run away outside a black hole?",
-   "value": "No. Shoving the air returns about 10⁻¹⁵ of the energy (less for mix, none for pure density); pushing rock aside at most about 4 × 10⁻¹¹; any ordinary matter at most a few × 10⁻⁸. Their own gravity returns a share that reaches 1 only at the event horizon, so the half-life only matters once he is already a black hole. This covers energy feedback only, not the momentum of instant growth",
+   "value": "No. Shoving the air returns about 10⁻¹⁵ of the energy (less for mix, none for pure density); pushing rock aside at most about 4 × 10⁻¹¹; any ordinary matter at most a few × 10⁻⁸. Their own gravity returns a share that reaches 1 only at the event horizon, so the half-life only matters once he is already a black hole. This covers energy feedback only, not the momentum of instant growth. Under the canon (owner and collaborator, 12 Oct 2026) the energy gravity releases goes to the endless ocean, so the loop never runs away and the page has no half-life control.",
    "status": "derived",
    "sources": [
     {
@@ -8468,5 +9727,12 @@ window.DINO_DATA = {
    "short": "Phobos",
    "m": 10618000000000000
   }
- ]
+ ],
+ "escape": {
+  "earth": 11186,
+  "sun": 42122,
+  "galaxy": 530000,
+  "galaxyLo": 445000,
+  "galaxyHi": 580000
+ }
 };

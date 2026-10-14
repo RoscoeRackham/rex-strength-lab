@@ -11,8 +11,9 @@ import subprocess
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FACTS = {}
-for topic in ['humans', 'fiction', 'objects', 'environment', 'density', 'duo', 'presence']:
+for topic in ['humans', 'fiction', 'objects', 'environment', 'density', 'duo', 'presence', 'energy']:
     for f in json.load(open(os.path.join(HERE, 'research', f'final-{topic}.json'), encoding='utf-8'))['facts']:
+        assert f['key'] not in FACTS, 'fact key in two research files: ' + f['key']
         FACTS[f['key']] = f
 
 ST = 907.18474  # US short ton, kg (Marvel handbook tons read as short tons)
@@ -126,7 +127,7 @@ surfaces = [
 for s in surfaces:
     row('Ground limit: ' + s['name'], fact(s['k_q'])['display'], [s['k_q']])
     row('Grip (friction): ' + s['name'], 'μ ≈ ' + str(s['mu']) + ' (' + fact(s['k_mu'])['display'] + ')', [s['k_mu']])
-row('Claw shear strength used when “dug in”', 'sand 1 kPa · gravel 3 kPa (no cohesion: passive resistance only) · clays = undrained strength · asphalt 0.7 MPa · concrete 1.5 MPa · ice 1 MPa · steel 144 MPa · granite 36 MPa',
+row('Ground shear strength (how far feet sink in clay; where the ground tears out around bolted feet)', 'sand 1 kPa · gravel 3 kPa (no cohesion: passive resistance only) · soft clay 20 kPa · stiff clay 75 kPa (undrained strength) · asphalt 0.7 MPa · concrete 1.5 MPa · ice 1 MPa · steel 144 MPa · granite 36 MPa',
     ['ground_soft_clay_undrained_shear_strength', 'ground_granite_intact_cohesion_estimate', 'ground_steel_shear_yield', 'ground_concrete_punching_shear_stress_aci'], st='estimate')
 
 # ----------------------------------------------------------------------------- objects
@@ -176,9 +177,9 @@ objects = [
     obj('esb', 'Empire State Building', 'building', 'Landmarks', 331.1e6, 18000, TUMBLE, crush=30e6, rho=316, noPull=True, keys=['empire_state_building_mass', 'mat_indiana_limestone'],
         liftNote='It is anchored to bedrock by its foundations; lifting it means tearing them out first.'),
     obj('pyramid', 'Great Pyramid of Giza', 'pyramid', 'Landmarks', 6e9, 34700, TUMBLE, crush=30e6, rho=2300, noPull=True, keys=['great_pyramid_mass', 'great_pyramid_projected_area', 'mat_limestone_generic'],
-        liftNote='Its core is natural bedrock, so part of the “pyramid” is the ground itself. Stacked blocks have almost no tensile strength: lifted from below, it would come apart.'),
+        liftNote='Its core is natural bedrock, so part of the “pyramid” is the ground itself. Stacked blocks have almost no tensile strength: lifted from below, it would come apart.', sags=True),
     obj('everest', 'Mount Everest', 'mountain', 'Nature', 3.7e14, 2.2e7, TUMBLE, crush=100e6, rho=2700, noPull=True, noThrow=True, keys=['mount_everest_mass', 'mount_everest_projected_area', 'mat_granite_ucs'],
-        liftNote='Everest isn’t a loose object. It’s part of the Earth’s crust, and its mass depends on where you decide the mountain ends (1.6 × 10¹⁴ to 1.4 × 10¹⁵ kg). Rock is weak in tension, so lifted from one spot it would break apart under its own weight.'),
+        liftNote='Everest isn’t a loose object. It’s part of the Earth’s crust, and its mass depends on where you decide the mountain ends (1.6 × 10¹⁴ to 1.4 × 10¹⁵ kg). Rock is weak in tension, so lifted from one spot it would break apart under its own weight.', sags=True),
     obj('cloud', 'A cumulus cloud', 'cloud', 'Nature', 5e5, 1e6, TUMBLE, rho=0.5, noPull=True, noThrow=True, keys=['cumulus_cloud_water_mass'],
         liftNote='A cumulus cloud is about 500 t of droplets spread through a cubic kilometre of air. There is nothing to grab.'),
     obj('moon', 'The Moon', 'Moon', 'Space', fact('moon_mass')['value_si'], 9.48e12, SPHERE, rho=3344, noPull=True, noThrow=True, keys=['moon_mass'],
@@ -214,21 +215,54 @@ row('Thrown-object area', 'Orientation-averaged projected area (a tumbling objec
 row('Rolling resistance (cars, trucks, trains)', 'cars 0.012 · trucks/buses 0.007–0.008 · locomotive on rail 0.0015', [], st='estimate', extra_sources=[WIKI_RR])
 
 # ----------------------------------------------------------------------------- energy references
-energy = [
-    dict(id='pitch', short='the fastest pitch on record', J=0.5 * 0.1453 * 47.297 ** 2, keys=['fastest_baseball_pitch', 'baseball_mass'], label='Fastest pitch (kinetic energy)'),
-    dict(id='carcrash', short='a Corolla at 100 km/h', J=0.5 * 1340 * (100 / 3.6) ** 2, keys=['toyota_corolla_curb_mass'], label='Corolla at 100 km/h (kinetic energy)'),
-    dict(id='grenade', short='a hand grenade', J=1.0e6, keys=['energy_m67_tnt_equivalent_estimate', 'energy_m67_grenade_explosive_mass'], label='M67 hand grenade'),
-    dict(id='moab', short='the MOAB bomb', J=4.6024e10, keys=['energy_moab_yield'], label='GBU-43 MOAB'),
-    dict(id='hiroshima', short='the Hiroshima bomb', J=6.276e13, keys=['energy_hiroshima_yield'], label='Hiroshima bomb'),
-    dict(id='bravo', short='Castle Bravo', J=6.276e16, keys=['energy_castle_bravo_yield'], label='Castle Bravo (15 Mt)'),
-    dict(id='tsar', short='the Tsar Bomba', J=2.092e17, keys=['energy_tsar_bomba_yield'], label='Tsar Bomba (50 Mt)'),
-    dict(id='krakatoa', short='the 1883 Krakatoa eruption', J=8.4e17, keys=['energy_krakatoa_1883'], label='Krakatoa 1883'),
-    dict(id='chicxulub', short='the dinosaur-killing asteroid', J=4.2e23, keys=['energy_chicxulub_impact'], label='Chicxulub impact (sim uses 4.2 × 10²³ J, inside the published 10²³–10²⁴ J)'),
-    dict(id='sun', short='the Sun’s output for one second', J=3.828e26, keys=['energy_sun_luminosity'], label='Sun’s output in one second'),
-    dict(id='earthbind', short='the energy to blow Earth apart', J=2.49e32, keys=['energy_earth_gravitational_binding'], label='Earth’s gravitational binding energy'),
+# The energy ladder (BRIEF-gui.md section 6; research/final-energy.json). Each rung is one research fact: its energy is
+# the fact's value, its page phrase the fact's page_short. A rung is rough (rough multiples only) when its fact's range
+# runs more than 2x either side of the value, or when the fact says so (field rough, with the reason in its notes).
+# Neighbouring rungs are at most 100x apart (src/ladder.js names the nearest: at most 10x, or at least 10%).
+# The ids of the first eleven are kept: the growth what-if and the milestones use krakatoa, chicxulub, sun, hiroshima,
+# tsar and earthbind.
+LADDER = [
+    ('apple', 'energy_apple_small_lift_one_metre'), ('airrifle', 'energy_air_rifle_england_wales_limit'),
+    ('pitch', 'energy_fastest_pitch_kinetic'), ('rifle', 'energy_rifle_bullet_556'), ('bolt', 'energy_usain_bolt_top_speed'),
+    ('sugar', 'energy_sugar_teaspoon_food_energy'), ('carcrash', 'energy_corolla_100kmh_kinetic'), ('grenade', 'energy_m67_tnt_equivalent_estimate'),
+    ('food', 'energy_day_of_food_2000_calories'), ('truck', 'energy_semi_truck_100kmh'), ('homeday', 'energy_us_home_electricity_day'),
+    ('foodmonth', 'energy_month_of_food_2000_calories'), ('lightning', 'energy_lightning_flash'), ('train', 'energy_high_speed_train_full_speed'),
+    ('tnt', 'energy_tnt_equivalent_per_tonne'), ('a380', 'energy_a380_cruise'), ('moab', 'energy_moab_yield'),
+    ('hubble', 'energy_hubble_orbit_kinetic'), ('beirut', 'energy_beirut_explosion_2020'), ('iss', 'energy_iss_orbit_kinetic'),
+    ('hiroshima', 'energy_hiroshima_yield'), ('chelyabinsk', 'energy_chelyabinsk_meteor_2013'), ('hoover', 'energy_hoover_dam_year'),
+    ('bravo', 'energy_castle_bravo_yield'), ('tsar', 'energy_tsar_bomba_yield'), ('krakatoa', 'energy_krakatoa_1883'),
+    ('worldday', 'energy_world_energy_use_day'), ('hurricane', 'energy_hurricane_heat_per_day'), ('worldyear', 'energy_world_energy_use_year'),
+    ('sunlightday', 'energy_sunlight_on_earth_day'), ('chicxulub', 'energy_chicxulub_impact'), ('sunlightyear', 'energy_sunlight_on_earth_year'),
+    ('sun', 'energy_sun_luminosity'), ('pluto', 'energy_pluto_gravitational_binding'), ('moonorbit', 'energy_moon_orbital_kinetic'),
+    ('earthspin', 'energy_earth_rotational_kinetic'), ('sunhour', 'energy_sun_output_hour'), ('mars', 'energy_mars_gravitational_binding'),
+    ('sunday', 'energy_sun_output_day'), ('earthbind', 'energy_earth_gravitational_binding'), ('earthorbit', 'energy_earth_orbital_kinetic'),
+    ('sunyear', 'energy_sun_output_year'), ('jupiterorbit', 'energy_jupiter_orbital_kinetic'), ('suncentury', 'energy_sun_output_century'),
+    ('sunmillennium', 'energy_sun_output_millennium'), ('nova', 'energy_classical_nova'), ('magnetar', 'energy_magnetar_flare_2004'),
+    ('moonmass', 'energy_moon_mass_energy'), ('sungalaxy', 'energy_sun_galactic_orbit_kinetic'), ('earthmass', 'energy_earth_mass_energy'),
+    ('snlight', 'energy_supernova_light'), ('sunbillion', 'energy_sun_output_billion_years'), ('snblast', 'energy_supernova_blast'),
+    ('jupitermass', 'energy_jupiter_mass_energy'), ('sn1998bw', 'energy_hypernova_sn1998bw'), ('sntotal', 'energy_supernova_total_neutrinos'),
+    ('sunmass', 'energy_sun_mass_energy'), ('gw150914', 'energy_gw150914'),
 ]
-for e in energy:
-    row('Energy: ' + e.pop('label'), '%.3g J' % e['J'], e.pop('keys'))
+
+
+def rough_fact(f):
+    v, lo, hi = f['value_si'], f.get('low_si'), f.get('high_si')
+    return bool(f.get('rough')) or bool(hi and hi / v > 2) or bool(lo and v / lo > 2)
+
+
+energy = []
+for rid, k in LADDER:
+    f = fact(k)
+    if k == 'energy_sun_luminosity':
+        J = f['value_si'] * 1.0  # watts for one second
+    else:
+        assert f['unit_si'] == 'J', k
+        J = f['value_si']
+    energy.append(dict(id=rid, short=f['page_short'].replace("'", '’'), J=J, rough=rough_fact(f), key=k, label=f['label']))
+    row('Energy: ' + f['label'], f['display'], [k], extra_sources=[{'url': x['url'], 'title': x.get('title') or ''} for x in f['sources'][2:]])
+energy.sort(key=lambda e: e['J'])
+for a_, b_ in zip(energy, energy[1:]):
+    assert b_['J'] / a_['J'] <= 100, 'energy ladder step wider than 100x: %s to %s' % (a_['id'], b_['id'])
 
 # ----------------------------------------------------------------------------- blast thresholds
 overpressure = [
@@ -252,6 +286,12 @@ speeds = [
 ]
 row('Usain Bolt peak speed', fact('bolt_peak_running_speed')['display'], ['bolt_peak_running_speed'])
 row('Speed of sound, orbital speed, escape velocity', '340.29 m/s · 7.905 km/s · 11.186 km/s', ['atm_isa_speed_of_sound', 'earth_circular_orbit_velocity_surface', 'earth_escape_velocity_surface'])
+# where a throw past 1% of light speed goes when the air can't stop it (Air resistance absorbed): out of the Earth, the
+# Solar System and the Milky Way
+escape = dict(earth=fact('earth_escape_velocity_surface')['value_si'], sun=fact('sun_escape_speed_at_1au')['value_si'],
+              galaxy=fact('milky_way_escape_speed_solar')['value_si'], galaxyLo=fact('milky_way_escape_speed_solar')['low_si'], galaxyHi=fact('milky_way_escape_speed_solar')['high_si'])
+row('Speed to escape the Sun from Earth’s distance', fact('sun_escape_speed_at_1au')['display'] + ' (from the Sun’s GM and the astronomical unit)', ['sun_escape_speed_at_1au', 'sun_gm', 'astronomical_unit'])
+row('Speed to escape the Milky Way from the Sun’s position', fact('milky_way_escape_speed_solar')['display'], ['milky_way_escape_speed_solar'])
 
 calibration = [
     dict(label='Shot put', obj='shot', angle=37, recordText='23.56 m (Crouser, 2023)', metric='range'),
@@ -277,7 +317,7 @@ row('Crater size', 'Collins, Melosh & Marcus (2005): final = 1.25 × transient b
 row('Air heating', 'Below 1 km/s: T₀ = T (1 + 0.2 M²). Above: equilibrium-air table computed for this sim at sea-level stagnation pressure (ρ₀v², about 1,500 atm at 11 km/s), dissociation and ionization included, radiation ignored, so an upper bound. Check: the same solver at ~0.9 atm gives ~11,700 K for Anderson’s Apollo case (11 km/s at 53 km; textbook ~11,600 K). At sea-level pressure dissociation is held back, so the table gives ~16,400 K at 11 km/s.', ['aero_stagnation_temperature_formula', 'aero_real_gas_validity_caution', 'aero_shuttle_shock_layer_air_temperature'], st='estimate',
     extra_sources=[{'url': 'https://doi.org/10.2514/4.861956', 'title': 'Anderson, Hypersonic and High-Temperature Gas Dynamics, 2nd ed. (AIAA, 2006)'}])
 row('Muscle model (fitted, not measured)', 'Unloaded limb speed at the 2 m calibration size (scales with height, so 1.5× at the default 10 ft): shove throw 35 m/s, overarm whip 84.6, punch and clap 17, leg drive 12, stomp 16. Real muscle, share of full strength from a standstill: shove 52% per hand, whip/punch/clap 30%, stomp 50%, legs 140% (they also carry his body weight). Comic book, fixed shares fitted so both modes match record athletes: shove 17% per hand, whip 7%, punch 6%, clap 7%, stomp 13%, legs 66%.', [], st='estimate')
-row('Body shape and air (assumed)', 'Areas scale with height², lengths with height. Drag Cd 1.0. Facing area from the build: 4.4 m² for the default 10 ft Rex (tail trailing), 4.5 m² for Ollie, 0.8 m² for the 2 m calibration body. Head-first when jumping or launched by a stomp: 0.3 m² at 2 m (0.7 m² at 10 ft). Claw dig area when braced: 0.2 m² at 2 m, 0.46 m² at 10 ft (a quarter of that per stride when sprinting). Release height 0.9 × height; each sprint stride puts about 2.5× his weight on one foot. Overarm whip: effective mass at the hand 0.3% of body mass, fitted with the whip speed to the 47.3 m/s pitch; that is smaller than Dempster’s hand alone (0.6%) and is not a measured segment.', [], st='estimate')
+row('Body shape and air (assumed)', 'Areas scale with height², lengths with height. Drag Cd 1.0. Facing area from the build: 4.4 m² for the default 10 ft Rex (tail trailing), 4.5 m² for Ollie, 0.8 m² for the 2 m calibration body. Head-first when jumping or launched by a stomp: 0.3 m² at 2 m (0.7 m² at 10 ft). Ground gripped by bolted feet (where it tears out): 0.2 m² at 2 m, 0.46 m² at 10 ft. Release height 0.9 × height; each sprint stride puts about 2.5× his weight on one foot. Overarm whip: effective mass at the hand 0.3% of body mass, fitted with the whip speed to the 47.3 m/s pitch; that is smaller than Dempster’s hand alone (0.6%) and is not a measured segment.', [], st='estimate')
 row('Ground resisting a fast foot', 'Bearing strength plus inertia: R = A (q + ρ v²) (Poncelet form; Forrestal & Luk 1992 cavity expansion)', [], st='estimate', extra_sources=[{'url': 'https://scholar.google.com/scholar?q=Forrestal+Luk+1992+%22Penetration+into+soil+targets%22', 'title': 'Forrestal & Luk (1992), Int. J. Impact Eng. 12(3):427–444'}])
 row('Granular ground strength grows with foot width', 'q_ult ∝ B for sand and gravel (Terzaghi ½γBN_γ term); research value is for a 0.1 m² footing', ['ground_loose_sand_ultimate_bearing_small_footing'], st='estimate')
 
@@ -303,7 +343,7 @@ feats = [
          run=dict(liftKg=511, action='pull', obj='cc177')),
     feat('human', 'Shot put, 23.56 m', 'Ryan Crouser · 2023', 'World record with the 7.26 kg men’s shot. Used to calibrate the throw model.', ['shot_put_wr'],
          run=dict(liftKg=511, action='throw', obj='shot', angle=37)),
-    feat('human', 'Fastest pitch, 105.8 mph', 'Aroldis Chapman · 2010', '47.3 m/s as the ball leaves the hand.', ['fastest_baseball_pitch'],
+    feat('human', 'Fastest pitch, 105.8 mph', 'Aroldis Chapman · 2010', '47.3 m/s, the ball speed MLB lists. The lab takes it as the speed leaving the hand.', ['fastest_baseball_pitch'],
          run=dict(liftKg=511, action='throw', obj='baseball', angle=2)),
     feat('human', 'Top speed 12.42 m/s', 'Usain Bolt · Berlin, 2009', 'Average over his fastest 20 m in the 9.58 s world record.', ['bolt_peak_running_speed'],
          run=dict(liftKg=511, action='sprint')),
@@ -386,7 +426,7 @@ USED_ABOVE = {d for d in ['density_plush_stuffing_estimate', 'density_water_4c',
                           'density_white_dwarf_sirius_b_mean', 'nuclear_saturation_density', 'density_neutron_star_mean', 'phobos_mass', 'deimos_mass']}
 # the presence brief's facts (effort, the Walk tab, comic switches, growth), each in its own row, labelled by area
 PRESENCE_AREA = {'presence_step': 'Walking', 'presence_attenuation': 'Ground shaking', 'presence_elephant': 'Elephants', 'presence_thresholds': 'Thresholds',
-                 'presence_ripple': 'Water glass', 'presence_comic': 'Comic switches', 'presence_growth': 'Growth'}
+                 'presence_ripple': 'Water glass', 'presence_comic': 'Their powers', 'presence_growth': 'Growth'}
 for topic, prefix in [('density', 'Weight'), ('duo', None), ('presence', None)]:
     for f in json.load(open(os.path.join(HERE, 'research', f'final-{topic}.json'), encoding='utf-8'))['facts']:
         if f['key'] in USED_ABOVE:
@@ -399,7 +439,7 @@ for topic, prefix in [('density', 'Weight'), ('duo', None), ('presence', None)]:
 
 data = dict(tiers=tiers, surfaces=[{k: v for k, v in s.items() if not k.startswith('k_')} for s in surfaces], objects=objects,
             energyRefs=energy, overpressure=overpressure, heights=heights, speeds=speeds, calibration=calibration,
-            feats=feats, assumptions=static['assumptions'], sourceRows=rows, densities=densities, massRefs=massRefs)
+            feats=feats, assumptions=static['assumptions'], sourceRows=rows, densities=densities, massRefs=massRefs, escape=escape)
 
 
 def js(v):

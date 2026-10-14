@@ -1,0 +1,20 @@
+const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+const path=require('path');
+const NAMES=['armWrestle','pushMatch','shove','shoveBoth','liftPartner','throwPartner','catchGame','catchLeg','tossPartner','catchIt','collide','headOn','standoff'];
+(async()=>{
+  const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome'});
+  const p=await b.newPage({viewport:{width:1280,height:900}});
+  const errs=[]; p.on('pageerror',e=>errs.push(e.message));
+  await p.addInitScript(({names,delay})=>{ window.__duoCalls=0; let v; Object.defineProperty(window,'DinoPhys',{configurable:true,get:()=>v,set:(x)=>{for(const k of names){const f=x[k]; if(typeof f==='function') x[k]=function(){window.__duoCalls++; const t=performance.now(); while(performance.now()-t<delay){} return f.apply(this,arguments);};} v=x;}});
+    const iv=setInterval(()=>{const b=document.getElementById('duo-bay'); if(b&&/Effort: working it out/i.test(b.textContent)){clearInterval(iv); window.__busy=window.__duoCalls; document.getElementById('duo').open=false;}},5);
+  },{names:NAMES,delay:60});
+  await p.goto('file://'+path.resolve('branch.html'));
+  await p.evaluate(()=>localStorage.setItem('rex-lab-v1',JSON.stringify({duoOpen:true,duoAction:'arm'})));
+  await p.reload(); await p.waitForTimeout(2500);
+  const mid=await p.evaluate(()=>({busy:window.__busy, calls:window.__duoCalls, open:document.getElementById('duo').open, txt:document.getElementById('duo-bay').textContent.slice(0,40)}));
+  console.log('after close', mid);
+  await p.click('#duo > summary'); await p.waitForTimeout(6000);
+  const end=await p.evaluate(()=>({calls:window.__duoCalls, open:document.getElementById('duo').open, working:/working it out/i.test(document.getElementById('duo-bay').textContent), eff:(document.getElementById('duo-bay').textContent.match(/Effort: [^.]*\./)||[''])[0]}));
+  console.log('after reopen', end, errs);
+  await b.close();
+})();

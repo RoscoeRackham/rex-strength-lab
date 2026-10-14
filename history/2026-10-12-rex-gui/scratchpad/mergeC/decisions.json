@@ -1,0 +1,38 @@
+[
+ {
+  "about": "Display rule",
+  "decision": "src/ladder.js names the nearest rung on a log scale. Above it the page gives a multiple (2 figures), below it a share (2 figures). Rungs are never more than 100x apart (build-data.py asserts it), so the multiple is at most 10x and the share at least 10%. Within 15% of a firm rung: 'about the same as'. A rough rung gets 1 figure and 'roughly', and 'roughly the same as' within 1.5x. Past either end: 'beyond the ladder', naming the end rung, with no number. Energies within the 'same' band just outside an end rung still count as on the ladder."
+ },
+ {
+  "about": "Rough rungs",
+  "decision": "A rung is rough when its fact's range runs more than 2x from its value (lightning, Beirut, Chicxulub, the nova, the magnetar flare, supernova light, SN 1998bw), or when the fact says so with its reason (field rough): Krakatoa (its own range is the one refereed estimate with a stated method, but published figures span about 60x), an average hurricane's heat (an illustrative figure with no stated range; storms differ by a factor of a few) and a supernova's blast (typical value known to about 2x, but ordinary events span about 10x; review round 1)."
+ },
+ {
+  "about": "Grenade: Comp B Grade A",
+  "decision": "The explosive topic said LLNL's handbook has no measured heat of detonation for Comp B Grade A and used Comp B-3 instead (0.89 MJ). The audit cited the 1981 edition (UCRL-52997, OSTI 6530310), Table 5-2, p. 5-7. Checked on the page image (PDF p. 56): 'Comp B, Grade A', experimental, H2O(l): 1.20 kcal/g (5.02 MJ/kg), 25 C, 8.47 mm charge, density 1.69. The audit is right: the grenade is 0.184 kg x 5.02 MJ/kg = 0.925 MJ. The explosive topic's grenade and Comp B-3 facts are dropped."
+ },
+ {
+  "about": "Duplicates across topics",
+  "decision": "Hiroshima, Castle Bravo and Earth's binding energy: the audit's versions (Earth's integrates the original PREM paper; the planetary one used a code transcription of it). Facts shared by the planetary and stellar topics (Jupiter's mass and orbital speed, Earth's orbital speed and motion, the Sun's year and century): the planetary versions; they differ from the stellar ones by under 0.1%. Small's pitch and Corolla facts duplicate the audit's: the audit's keys are kept."
+ },
+ {
+  "about": "Facts kept in their own files",
+  "decision": "fastest_baseball_pitch (final-humans.json), baseball_mass and toyota_corolla_curb_mass (final-objects.json) are updated in place with the audit's versions, keeping their categories. The twelve old energy facts move from final-environment.json to final-energy.json in the audit's versions. Tunguska and the xkcd baseball stay in final-environment.json, unchanged (not rungs). build-data.py now fails if a key is in two research files."
+ },
+ {
+  "about": "Pitch wording",
+  "decision": "The audit found that 'at release' is our inference for Chapman's 2010 pitch (MLB lists 105.8 mph; Statcast measures at release, but this pitch was tracked by PITCHf/x). The Fastest pitch card now says '47.3 m/s, the ball speed MLB lists. The lab takes it as the speed leaving the hand.'"
+ },
+ {
+  "about": "Rung choice",
+  "decision": "58 rungs from the energy to lift a 100 g apple one metre (0.99 J) to GW150914 (5.4e47 J). Widest steps: a year of sunlight to the Sun's second (70x), Hiroshima to Chelyabinsk (33x), a day of sunlight to Chicxulub (33x), a day of world energy use to a hurricane's day (28x). Left out as redundant (within 2x of a kept rung, or covering a decade already covered): badminton, the 9 mm and .50-calibre bullets, a Corolla at 50 km/h, Tianjin (Beirut kept: better known), Halifax (the ISS kept: within 4%, better constrained), the Sedan test (obscure), a magnitude-7 quake (an estimate), Mount St Helens, Tunguska, the two earthquakes, a hurricane's wind, Tambora (a magazine figure), Earth's internal heat, Vredefort, the 2003 solar flare, the Sun's minute, the Moon's binding energy, the Moon-forming impact, Saturn's motion, Jupiter's binding energy, the Sun's million years and GW190521. The blast of SN 1998bw is kept, rough (its kinetic energy; the phrase says so since review round 2), because without it the step from Jupiter's mass-energy to a supernova's total energy is 176x."
+ },
+ {
+  "about": "Top of the ladder",
+  "decision": "The page compares energies up to about 1.5e44 J: the Weight tab's dense-matter sentence just short of a black hole at the largest height, 500 m (about 9e41 J at his own height). Collide reaches about 4e40 J with two partners whose combined mass is just under the planet-reshaping limit (1/1,000 of Earth's mass), and about 5e42 J with one partner made truly immovable (the other's whole kinetic energy freed), both at the top speed setting, and the Weight tab's Energy released tile stops near 4e34 J at his height and 6e36 J at 500 m, where he becomes a black hole. The ladder runs on to the first black-hole collision detected (5.4e47 J) so that it ends at a well-measured event and still holds if the page's reach grows; no page energy reaches the rungs above Jupiter's mass-energy (1.7e44 J) today. Above the top rung the page says the energy is beyond the ladder. (Corrected in review rounds 1 to 3, which measured these reaches.)"
+ },
+ {
+  "about": "Growth what-if",
+  "decision": "Krakatoa and the dinosaur-killer use the ladder's values: 125 Mt (5.2e17 J, the middle of the one refereed estimate with a stated method, from the air wave) instead of the popular 200 Mt, and 5e23 J (Morgan et al. 2022) instead of the brief's 4.2e23 J. The notes under the what-if say so. The engine tests that use 8.4e17 and 4.2e23 J pass those numbers in directly and are unchanged."
+ }
+]

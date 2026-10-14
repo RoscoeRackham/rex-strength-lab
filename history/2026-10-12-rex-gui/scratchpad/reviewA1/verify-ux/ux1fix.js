@@ -1,0 +1,23 @@
+const { open, launch, S } = require('./lib');
+const where = () => { const a = document.activeElement; return a.tagName + '#' + a.id + ' in ' + (a.closest('#bay') ? 'bay' : a.closest('#duo-bay') ? 'duo-bay' : 'neither'); };
+(async () => {
+  const b = await launch();
+  const { page, ctx, errs } = await open(b, 'file://' + S + '/branch-fix1.html', { duoOpen: true, duoAction: 'arm', action: 'throw' });
+  await page.waitForTimeout(2500);
+  for (const sel of ['#bay details.effort-adjust', '#duo-bay details.effort-adjust']) await page.evaluate((q) => { document.querySelector(q).open = true; }, sel);
+  await page.waitForTimeout(300);
+  const cdp = await ctx.newCDPSession(page);
+  let { nodes } = await cdp.send('Accessibility.getFullAXTree');
+  console.log('spinbutton AX names', JSON.stringify(nodes.filter((n) => n.role && n.role.value === 'spinbutton').map((n) => n.name && n.name.value)));
+  console.log('dups', JSON.stringify(await page.evaluate(() => { const ids = {}; document.querySelectorAll('[id]').forEach((e) => { ids[e.id] = (ids[e.id] || 0) + 1; }); return Object.entries(ids).filter(([k, v]) => v > 1); })));
+  const dn = page.locator('#duo-near'); await dn.focus(); await dn.fill('40'); await dn.press('Enter'); await page.waitForTimeout(3000);
+  console.log('after 40+Enter in duo near:', await page.evaluate(where), await page.evaluate(() => [document.querySelector('#near').value, document.querySelector('#duo-near').value]));
+  await page.evaluate(() => { const s = JSON.parse(localStorage.getItem('rex-lab-v1')); s.duoAction = 'wrestle'; s.wrestleMove = 'throw'; localStorage.setItem('rex-lab-v1', JSON.stringify(s)); });
+  await page.reload(); await page.waitForTimeout(3000);
+  ({ nodes } = await cdp.send('Accessibility.getFullAXTree'));
+  console.log('slider AX names', JSON.stringify(nodes.filter((n) => n.role && n.role.value === 'slider').map((n) => n.name && n.name.value)));
+  await page.focus('#w-angle'); await page.keyboard.press('ArrowRight'); await page.waitForTimeout(2500);
+  console.log('after ArrowRight on w-angle:', await page.evaluate(where));
+  console.log('errs', errs);
+  await ctx.close(); await b.close();
+})();

@@ -1,0 +1,213 @@
+import json, os
+OUT='/tmp/claude-0/-home-user-rex-strength-lab/70d4d2aa-c3a8-5eb5-9c7c-1c92e3162d09/scratchpad/researchC/compiled/planetary.json'
+S={
+ 'moon':{"title":"NASA NSSDCA Moon Fact Sheet (last updated 11 Jan 2024)","url":"https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html"},
+ 'notes':{"title":"NASA NSSDCA Notes on the fact sheets (parameter definitions)","url":"https://nssdc.gsfc.nasa.gov/planetary/factsheet/fact_notes.html"},
+ 'earth':{"title":"NASA NSSDCA Earth Fact Sheet (last updated 15 Nov 2024)","url":"https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"},
+ 'nist':{"title":"NIST SP 811 Appendix B.9: conversion factors (time: hour, day, year)","url":"https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9"},
+ 'vilcu':{"title":"Vilcu (2009) On the elements of the Earth's ellipsoid of inertia, An. Univ. Bucuresti Mat. 58(2):183-198, arXiv:1104.1033 (PDF)","url":"https://arxiv.org/pdf/1104.1033"},
+ 'mars':{"title":"NASA NSSDCA Mars Fact Sheet (last updated 19 May 2025)","url":"https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html"},
+ 'pluto':{"title":"NASA NSSDCA Pluto Fact Sheet (last updated 11 Jan 2024)","url":"https://nssdc.gsfc.nasa.gov/planetary/factsheet/plutofact.html"},
+ 'stern':{"title":"Stern et al. (2018) The Pluto System After New Horizons, Annu. Rev. Astron. Astrophys. 56 (DOI 10.1146/annurev-astro-081817-051935), arXiv:1712.05669 (PDF)","url":"https://arxiv.org/pdf/1712.05669"},
+ 'jup':{"title":"NASA NSSDCA Jupiter Fact Sheet (last updated 2 Oct 2024)","url":"https://nssdc.gsfc.nasa.gov/planetary/factsheet/jupiterfact.html"},
+ 'helled':{"title":"Helled, Anderson, Schubert & Stevenson (2011) Jupiter's moment of inertia: a possible determination by Juno, Icarus (DOI 10.1016/j.icarus.2011.09.016), arXiv:1109.1627 (PDF)","url":"https://arxiv.org/pdf/1109.1627"},
+ 'sat':{"title":"NASA NSSDCA Saturn Fact Sheet (last updated 18 Mar 2025)","url":"https://nssdc.gsfc.nasa.gov/planetary/factsheet/saturnfact.html"},
+ 'lbo':{"title":"Lynden-Bell & O'Dwyer (2001) One mass-radius relation for planets, white dwarfs and neutron stars, arXiv:astro-ph/0104450 (PDF; preprint, states Ritter's formula)","url":"https://arxiv.org/pdf/astro-ph/0104450"},
+ 'iau':{"title":"Mamajek, Prsa, Torres et al. (2015) IAU 2015 Resolution B3 on recommended nominal conversion constants for selected solar and planetary properties, arXiv:1510.07674 (PDF)","url":"https://arxiv.org/pdf/1510.07674"},
+ 'codata':{"title":"NIST CODATA 2022: Newtonian constant of gravitation","url":"https://physics.nist.gov/cgi-bin/cuu/Value?bg"},
+ 'carter':{"title":"Carter, Lock & Stewart (2020) The energy budgets of giant impacts, JGR Planets 125, e2019JE006042, arXiv:1912.04936 (PDF, accepted version)","url":"https://arxiv.org/pdf/1912.04936"},
+ 'caltech':{"title":"Caltech Authors record for Carter et al. 2020 (journal citation, DOI 10.1029/2019JE006042)","url":"https://authors.library.caltech.edu/100357"},
+ 'genie':{"title":"GENIE source documentation: PREM density coefficients (Dziewonski & Anderson 1981, transcribed in code)","url":"https://hep.ph.liv.ac.uk/~costasa/genie_doxygen/master/html/namespacegenie_1_1utils_1_1prem.html"},
+ 'wiki_rot':{"title":"Wikipedia: Rotational energy (cross-check only: 2.14 x 10^29 J)","url":"https://en.wikipedia.org/wiki/Rotational_energy"},
+ 'wiki_bind':{"title":"Wikipedia: Gravitational binding energy (cross-check only: PREM value 2.49 x 10^32 J)","url":"https://en.wikipedia.org/wiki/Gravitational_binding_energy"},
+}
+def src(*k): return [S[x] for x in k]
+LUM_NOTE=("E = L x t with L = 3.828e26 W, the IAU 2015 nominal solar luminosity (PDF: \"1LN⊙ = 3.828 × 10^26 W\"; existing verified key energy_sun_luminosity), and t = {t}. "
+ "The same paper gives the measured mean as \"3.8275 (± 0.0014) × 10^26 W\" and says the Sun's irradiance \"is variable at the ∼0.08%\" level, so the value is good to about 0.1%. "
+ "Luminosity is the Sun's radiated power (light and heat). Firm: the page can give a plain multiple. "
+ "Skeptic: source title corrected (arXiv:1510.07674 is Mamajek et al. 2015, not Prsa et al. 2016); the unsourced '2% to neutrinos' sentence dropped.")
+F=[]
+def add(**d): F.append(d)
+
+add(key="moon_mean_radius",category="space",label="Moon: volumetric mean radius",status="verified",value_si=1737400,unit_si="m",
+ display="1,737.4 km",sources=src('moon','notes'),
+ notes="Fact sheet row \"Volumetric mean radius (km) 1737.4\" (equatorial 1738.1, polar 1736.0). The notes page defines it as \"Radius of a sphere with the same volume as the body\". Input for energy_moon_gravitational_binding. Mass reuses the existing verified moon_mass (7.346e22 kg, same sheet). Skeptic confirmed.",
+ who_when="NASA NSSDCA, fetched 13 Oct 2026")
+add(key="moon_moment_of_inertia_factor",category="space",label="Moon: moment of inertia factor",status="verified",value_si=0.394,unit_si="1",
+ display="I/MR² = 0.394 (a uniform ball is 0.4)",sources=src('moon','notes'),
+ notes="Fact sheet row \"Moment of inertia (I/MR2) 0.394\" (the notes page labels the row C/MR2). The notes page: \"A hollow spherical shell has a moment of inertia of 2/3, a homogeneous sphere 0.4\". So the Moon is close to uniform. Used only to size the correction to the uniform-ball binding energy. Skeptic: a two-layer Moon fitted to 0.394 needs an unphysically dense core (7,600-13,300 kg/m^3 for 300-500 km), but the binding energy moves by under 0.1%.",
+ who_when="NASA NSSDCA, fetched 13 Oct 2026")
+add(key="moon_mean_orbital_speed",category="space",label="Moon: mean orbital speed around Earth",status="verified",value_si=1022,unit_si="m/s",low_si=966,high_si=1100,
+ display="1.022 km/s mean (0.970-1.082 at mean apogee and perigee; 0.966-1.100 at the year's extremes)",sources=src('moon','notes'),
+ notes="Fact sheet, orbit about the Earth: \"Mean orbital velocity (km/s) 1.022\", \"Max. orbital velocity (km/s) 1.082\", \"Min. orbital velocity (km/s) 0.970\" (max and min use mean perigee and apogee). Footnote: the distance \"roughly ranges from 357,000 km to 407,000 km, giving velocities ranging from 1.100 to 0.966 km/s\". The notes page: \"The average speed of the body in elliptical orbit\". Speed relative to Earth's centre. Skeptic: display and range widened to the footnote's full 0.966-1.100 km/s.",
+ who_when="NASA NSSDCA, fetched 13 Oct 2026")
+add(key="earth_mean_orbital_speed",category="space",label="Earth: mean orbital speed around the Sun",status="verified",value_si=29780,unit_si="m/s",low_si=29290,high_si=30290,
+ display="29.78 km/s mean (29.29 at aphelion to 30.29 at perihelion)",sources=src('earth'),
+ notes="Fact sheet, Orbital parameters: \"Mean orbital velocity (km/s) 29.78\", \"Max. orbital velocity (km/s) 30.29\", \"Min. orbital velocity (km/s) 29.29\". Semimajor axis 149.598 x 10^6 km (same sheet). Mass reuses the existing verified earth_mass (5.9722e24 kg). Skeptic confirmed.",
+ who_when="NASA NSSDCA, fetched 13 Oct 2026")
+add(key="earth_sidereal_year",category="space",label="Earth: sidereal orbit period (one year)",status="verified",value_si=31558118.4,unit_si="s",
+ display="365.256 days = 3.1558 x 10^7 s (NIST: year, sidereal = 3.155 815 x 10^7 s)",sources=src('earth','nist'),
+ notes="Earth fact sheet: \"Sidereal orbit period (days) 365.256\" (tropical 365.242). 365.256 x 86,400 s = 31,558,118.4 s. NIST SP 811 B.9: \"year (sidereal) second (s) 3.155 815 E+07\", \"day (d) 8.64 E+04\", \"hour (h) 3.6 E+03\", \"minute (min) 6.0 E+01\". Which year is used (365, 365.242, 365.25 or 365.256 days) changes a year of sunlight by under 0.1%. Skeptic confirmed (agrees with NIST to 1 part in a million).",
+ who_when="NASA NSSDCA; NIST SP 811")
+add(key="earth_polar_moment_of_inertia",category="space",label="Earth: moment of inertia about its spin axis (C)",status="derived",value_si=8.035e37,unit_si="kg m^2",low_si=8.034e37,high_si=8.037e37,
+ display="C = 8.035 x 10^37 kg m² (EGM96 gravity model, rescaled to CODATA G); good to about 0.1%",sources=src('vilcu','earth','codata'),
+ notes="Vilcu, Table 4.a, EGM96: \"C′ · 10^-37 [kg · m2] 8.037308375\"; mean over eight models (GEM-5 excluded) \"C = 8.037333747 · 10^37 kg · m2\". Vilcu turned GM into mass with G = 6.672e-11 (IAU 1976), so his C is 0.034% high; with CODATA 2022 G = 6.6743e-11 it is 8.0345e37. NASA's \"Moment of inertia (I/MR2) 0.3308\" times 5.9722e24 kg times the equatorial radius squared (6,378.137 km) gives 8.034-8.037e37 (0.3307-0.3308). Skeptic: corrected from 8.0373e37 ('nine' models was wrong; old G not mentioned); status verified to derived (rescaled); the earlier 8.019e37 'low end' dropped, as it came from using the notes page's mean radius with a factor normalised to the equatorial radius.",
+ who_when="Vilcu 2009 (EGM96), rescaled 13 Oct 2026; NASA NSSDCA")
+add(key="mars_mass",category="space",label="Mars: mass",status="verified",value_si=6.4169e23,unit_si="kg",
+ display="0.64169 x 10^24 kg",sources=src('mars','notes'),
+ notes="Fact sheet row \"Mass (10^24 kg) 0.64169\"; GM 0.042828 x 10^6 km^3/s^2. The notes page: mass is \"GM(measured)/G(CODATA 2018)\". Skeptic confirmed.",
+ who_when="NASA NSSDCA, fetched 13 Oct 2026")
+add(key="mars_mean_radius",category="space",label="Mars: volumetric mean radius",status="verified",value_si=3389500,unit_si="m",
+ display="3,389.5 km (equatorial 3,396.2, polar 3,376.2)",sources=src('mars'),
+ notes="Fact sheet row \"Volumetric mean radius (km) 3389.5\". Mean density 3,934 kg/m^3. Skeptic confirmed.",
+ who_when="NASA NSSDCA, fetched 13 Oct 2026")
+add(key="mars_moment_of_inertia_factor",category="space",label="Mars: moment of inertia factor",status="verified",value_si=0.366,unit_si="1",
+ display="I/MR² = 0.366 (uniform ball 0.4)",sources=src('mars'),
+ notes="Fact sheet row \"Moment of inertia (I/MR2) 0.366\". The sheet also lists a core radius of 1,830 km, with a footnote that it \"may only be 1650 - 1675 km\"; both lie inside the 1,500-2,000 km range tested for energy_mars_gravitational_binding. Skeptic confirmed.",
+ who_when="NASA NSSDCA, fetched 13 Oct 2026")
+add(key="pluto_mass",category="space",label="Pluto: mass",status="verified",value_si=1.303e22,unit_si="kg",
+ display="0.01303 x 10^24 kg = (1.303 ± 0.003) x 10^22 kg",sources=src('pluto','stern'),
+ notes="NASA sheet \"Mass (10^24 kg) 0.01303\". Stern et al. 2018, Table 1 (New Horizons): \"Mass (kg) (1.303 ± 0.003) × 10^22\", \"Density (kg m–3) 1854 ± 6\". The two agree. Skeptic confirmed.",
+ who_when="NASA NSSDCA; Stern et al. 2018")
+add(key="pluto_mean_radius",category="space",label="Pluto: radius",status="verified",value_si=1188300,unit_si="m",
+ display="1,188 km (New Horizons: 1,188.3 ± 0.8 km)",sources=src('pluto','stern'),
+ notes="NASA sheet \"Volumetric mean radius (km) 1188\"; Stern et al. 2018 Table 1 \"Radius (km) 1188.3 ± 0.8\". Oblateness \"<6%\". Skeptic confirmed.",
+ who_when="NASA NSSDCA; Stern et al. 2018")
+add(key="pluto_rock_mass_fraction",category="space",label="Pluto: share of rock by mass (rock core under an ice mantle)",status="verified",value_si=0.655,unit_si="1",low_si=0.65,high_si=0.66,
+ display="65.5 ± 0.5% rock by mass (anhydrous basis)",sources=src('stern'),
+ notes="Stern et al. 2018 Table 1: \"Percent rock(b) by mass 65.5 ± 0.5\", footnote \"Calculated on an anhydrous basis\". Text: Pluto and Charon are \"about 2/3 and 3/5 rock by mass\" if differentiated (rock cores, ice mantles). Section 2.3.2: \"Fully differentiated structures imply ice mantles of ~300 km\" for Pluto (McKinnon et al. 2017), so a core radius near 890 km. A model-based figure, not a direct measurement. Skeptic: added the ~300 km mantle, which energy_pluto_gravitational_binding now uses.",
+ who_when="Stern et al. 2018 (McKinnon et al. 2017)")
+add(key="jupiter_mass",category="space",label="Jupiter: mass",status="verified",value_si=1.89813e27,unit_si="kg",
+ display="1,898.13 x 10^24 kg",sources=src('jup'),
+ notes="Fact sheet row \"Mass (10^24 kg) 1,898.13\" (317.83 Earths). GM 126.687 x 10^6 km^3/s^2. Skeptic confirmed.",
+ who_when="NASA NSSDCA, fetched 13 Oct 2026")
+add(key="jupiter_mean_radius",category="space",label="Jupiter: volumetric mean radius",status="verified",value_si=69911000,unit_si="m",
+ display="69,911 km (to the 1-bar level; equatorial 71,492, polar 66,854)",sources=src('jup','notes'),
+ notes="Fact sheet row \"Volumetric mean radius (km) 69,911\"; equatorial radius given at the \"(1 bar level)\". The notes page: for Jupiter the diameter is \"approximately to the visible cloud tops\". Mean density 1,326 kg/m^3. Skeptic confirmed.",
+ who_when="NASA NSSDCA, fetched 13 Oct 2026")
+add(key="jupiter_moment_of_inertia_factor",category="space",label="Jupiter: moment of inertia factor (NASA, probably per equatorial radius)",status="verified",value_si=0.254,unit_si="1",
+ display="I/MR² = 0.254 as NASA prints it (uniform ball 0.4); about 0.263 per mean radius",sources=src('jup','helled'),
+ notes="Fact sheet row \"Moment of inertia (I/MR2) 0.254\". Caveat: NASA's value is probably normalised to the equatorial radius. Helled et al. 2011 give 0.2629-0.2645 per mean radius, and 0.2637 x (69,911/71,492)^2 = 0.252; Earth's 0.3308 on the same sheets behaves the same way. So binding-energy fits should use jupiter_moment_of_inertia_mean_radius, not 0.254. Skeptic: caveat added; value kept as NASA's printed figure.",
+ who_when="NASA NSSDCA, fetched 13 Oct 2026")
+add(key="jupiter_moment_of_inertia_mean_radius",category="space",label="Jupiter: moment of inertia factor per mean radius (interior models)",status="verified",value_si=0.2637,unit_si="1",low_si=0.2629,high_si=0.2645,
+ display="C/MR² = 0.2629 to 0.2645 (R = mean radius; models fitted to Jupiter's gravity field)",sources=src('helled'),
+ notes="Helled et al. 2011 define \"NMoI=C/MR2 ... M and R are Jupiter's mass and mean radius\" and conclude: \"Our results suggest that Jupiter's NMoI is between 0.2629 and 0.2645, a range that depends\" on the model. Core/envelope models fitted to J2 and J4, cores up to about 40 Earth masses; they use R = 69,940 km. A model range, not a measurement. Wikipedia lists a Juno-era 0.2756 (Ni 2018, A&A 613 A32), not fetched (403), so unconfirmed. Value 0.2637 is the middle. Added at compile from the skeptic's source; the compiler re-fetched the PDF and saw both quotes.",
+ who_when="Helled et al. 2011, fetched 13 Oct 2026")
+add(key="jupiter_mean_orbital_speed",category="space",label="Jupiter: mean orbital speed around the Sun",status="verified",value_si=13060,unit_si="m/s",low_si=12440,high_si=13720,
+ display="13.06 km/s mean (12.44 to 13.72)",sources=src('jup'),
+ notes="Fact sheet: \"Mean orbital velocity (km/s) 13.06\", \"Max. orbital velocity (km/s) 13.72\", \"Min. orbital velocity (km/s) 12.44\". Semimajor axis 778.479 x 10^6 km (same sheet). Skeptic confirmed.",
+ who_when="NASA NSSDCA, fetched 13 Oct 2026")
+add(key="saturn_mass",category="space",label="Saturn: mass",status="verified",value_si=5.6832e26,unit_si="kg",
+ display="568.32 x 10^24 kg",sources=src('sat'),
+ notes="Fact sheet (\"Last Updated: 18 March 2025\") row \"Mass (10^24 kg) 568.32\" (95.16 Earths). Input for energy_saturn_orbital_kinetic, a filler the skeptic proposed from this sheet; the compiler fetched the sheet itself and saw the row.",
+ who_when="NASA NSSDCA, fetched 13 Oct 2026")
+add(key="saturn_mean_orbital_speed",category="space",label="Saturn: mean orbital speed around the Sun",status="verified",value_si=9670,unit_si="m/s",low_si=9140,high_si=10140,
+ display="9.67 km/s mean (9.14 to 10.14)",sources=src('sat'),
+ notes="Fact sheet: \"Mean orbital velocity (km/s) 9.67\", \"Max. orbital velocity (km/s) 10.14\", \"Min. orbital velocity (km/s) 9.14\"; \"Semimajor axis (10^6 km) 1,432.041\". Seen by the skeptic and re-fetched by the compiler.",
+ who_when="NASA NSSDCA, fetched 13 Oct 2026")
+add(key="polytrope_binding_energy_formula",category="space",label="Ritter's formula: binding energy of a polytrope",status="verified",value_si=0.75,unit_si="1",
+ display="U = 3/(5 − n) × GM²/R; n = 0 (uniform) gives 0.6, n = 1 gives 0.75",sources=src('lbo'),
+ notes="Lynden-Bell & O'Dwyer, section 3: \"The gravitational potential energy is −αGM^2/R where Ritter's formula tells us that for polytropes α = 3/(5−n)\", with \"n = 0 corresponding to the homogeneous case\". A classical textbook result (Ritter 1880; Chandrasekhar 1939); the source fetched is an arXiv preprint with no journal reference. Lane-Emden integration (researcher, skeptic and compiler): n = 0.98 gives α 0.746 and I/MR^2 0.2638; n = 1 gives 0.7500 and 0.2614; n = 1.1 gives 0.769 and 0.2494. Skeptic confirmed.",
+ who_when="Ritter 1880, via Lynden-Bell & O'Dwyer 2001")
+
+# energies
+add(key="energy_sun_output_minute",category="energy_reference",label="The Sun's output for one minute",status="derived",value_si=2.2968e28,unit_si="J",
+ display="2.3 x 10^28 J (3.828 x 10^26 W for 60 s)",sources=src('iau','nist'),page_short="the Sun's output for one minute",
+ notes=LUM_NOTE.format(t="60 s")+" Alternative, not a recommended rung.",who_when="derived 13 Oct 2026")
+add(key="energy_sun_output_hour",category="energy_reference",label="The Sun's output for one hour",status="derived",value_si=1.37808e30,unit_si="J",
+ display="1.4 x 10^30 J (3.828 x 10^26 W for 3,600 s)",sources=src('iau','nist'),page_short="the Sun's output for one hour",
+ notes=LUM_NOTE.format(t="3,600 s"),who_when="derived 13 Oct 2026")
+add(key="energy_sun_output_day",category="energy_reference",label="The Sun's output for one day",status="derived",value_si=3.307392e31,unit_si="J",
+ display="3.3 x 10^31 J (3.828 x 10^26 W for 86,400 s)",sources=src('iau','nist'),page_short="the Sun's output for one day",
+ notes=LUM_NOTE.format(t="86,400 s"),who_when="derived 13 Oct 2026")
+add(key="energy_sun_output_year",category="energy_reference",label="The Sun's output for one year",status="derived",value_si=1.208044772352e34,unit_si="J",
+ display="1.2 x 10^34 J (3.828 x 10^26 W for one sidereal year, 365.256 days)",sources=src('iau','nist','earth'),page_short="the Sun's output for one year",
+ notes=LUM_NOTE.format(t="31,558,118.4 s (earth_sidereal_year)"),who_when="derived 13 Oct 2026")
+add(key="energy_sun_output_century",category="energy_reference",label="The Sun's output for one hundred years",status="derived",value_si=1.208044772352e36,unit_si="J",
+ display="1.2 x 10^36 J (3.828 x 10^26 W for 100 sidereal years)",sources=src('iau','nist','earth'),page_short="the Sun's output for a century",
+ notes="E = L x t with L = 3.828e26 W (IAU 2015 nominal; PDF: \"1LN⊙ = 3.828 × 10^26 W\"; existing energy_sun_luminosity) and t = 100 x 31,558,118.4 s (earth_sidereal_year). 100 Julian years gives 1.20802e36 J, the same to 0.002%. The paper notes the Sun's irradiance \"may be variable at slightly larger amplitudes over timescales of centuries\" than its ~0.08% cycle; still good to well under 1%. Filler proposed by the skeptic (who computed 1.21e36 J) for the 16x step from Jupiter's orbit to Jupiter's binding energy, and a stepping stone to the stellar band; compiled by the compiler, arithmetic not separately re-checked by a skeptic.",
+ who_when="derived 13 Oct 2026")
+add(key="energy_pluto_gravitational_binding",category="energy_reference",label="Pluto's gravitational binding energy (the energy to blow Pluto apart)",status="estimate",value_si=6.5e27,unit_si="J",low_si=5.72e27,high_si=6.7e27,
+ display="about 6.5 x 10^27 J (layered models 6.3-6.7 x 10^27 J; 5.7 x 10^27 J if Pluto were uniform)",sources=src('pluto','stern','codata'),page_short="the energy to blow Pluto apart",
+ notes="Energy to scatter all of Pluto to infinity. Uniform ball 3GM^2/(5R), G = 6.6743e-11 (existing gravitational_constant), M = 1.303e22 kg, R = 1,188.3 km: 5.72e27 J, a strict lower bound. Pluto is 65.5% rock by mass with an ice mantle of \"~300 km\" (Stern et al.). A two-layer model with an 888-900 km core (2,800-3,100 kg/m^3; hydrated rock) under ice or water at 950-1,100 kg/m^3 gives 6.32-6.50e27 J; packing all the anhydrous rock into a denser 820-850 km core gives up to 6.71e27. Value 6.5e27 J. Ice density assumed, not sourced; ignores porosity and compression. Spread under 20%: firm enough for a plain multiple. Skeptic: value lowered from 6.6e27 to match the source's 300 km mantle.",
+ who_when="estimate, 13 Oct 2026")
+add(key="energy_moon_gravitational_binding",category="energy_reference",label="The Moon's gravitational binding energy (the energy to blow the Moon apart)",status="derived",value_si=1.25e29,unit_si="J",low_si=1.244e29,high_si=1.255e29,
+ display="1.25 x 10^29 J (1.24 x 10^29 J for a uniform Moon)",sources=src('moon','codata','notes'),page_short="the energy to blow the Moon apart",
+ notes="Uniform ball: U = 3GM^2/(5R), G = 6.6743e-11, M = 7.346e22 kg (existing moon_mass), R = 1,737.4 km: 1.244e29 J (1.243e29 with the sheet's GM). The Moon is nearly uniform (I/MR^2 = 0.394 vs 0.4). A two-layer Moon fitted to that value, core radius 200-500 km, gives 1.254-1.255e29 J (the fitted cores, 7,600-13,300 kg/m^3, are implausibly dense, but the result barely moves). Value 1.25e29 J, good to about 1%. Ignores flattening and compression. Skeptic confirmed. Alternative to energy_earth_rotational_kinetic (1.7x apart); not a recommended rung.",
+ who_when="derived 13 Oct 2026")
+add(key="energy_mars_gravitational_binding",category="energy_reference",label="Mars's gravitational binding energy (the energy to blow Mars apart)",status="derived",value_si=5.1e30,unit_si="J",low_si=4.86e30,high_si=5.12e30,
+ display="5.1 x 10^30 J (4.9 x 10^30 J for a uniform Mars)",sources=src('mars','codata'),page_short="the energy to blow Mars apart",
+ notes="Uniform ball: 3GM^2/(5R), G = 6.6743e-11, M = 6.4169e23 kg, R = 3,389.5 km: 4.865e30 J (a lower bound). Mars is denser at the centre (I/MR^2 = 0.366). A two-layer Mars fitted to the mass and that factor gives 5.10-5.12e30 J for any core radius 1,500-2,000 km (core 5,900-8,300, mantle 3,420-3,520 kg/m^3); at NASA's listed 1,830 km core, 5.107e30. Value 5.1e30 J, good to a few percent. Ignores flattening and finer layering. Skeptic confirmed.",
+ who_when="derived 13 Oct 2026")
+add(key="energy_jupiter_gravitational_binding",category="energy_reference",label="Jupiter's gravitational binding energy (the energy to blow Jupiter apart)",status="estimate",value_si=2.6e36,unit_si="J",low_si=2.06e36,high_si=2.7e36,
+ display="about 2.6 x 10^36 J (realistic range 2.5-2.7 x 10^36 J; 2.1 x 10^36 J if Jupiter were uniform)",sources=src('jup','helled','codata','lbo'),page_short="the energy to blow Jupiter apart",
+ notes="Ritter's formula U = 3/(5-n) GM^2/R, M = 1.89813e27 kg, R = 69,911 km: GM^2/R = 3.44e36 J. Uniform (n = 0): 2.06e36 J, a strict lower bound. A single polytrope matched to the mean-radius factor 0.2629-0.2645 (Helled et al. 2011) has n ≈ 0.98 and gives 2.57e36 J; matched to NASA's 0.254 it is n = 1.06, 2.62e36 J. Value 2.6e36 J. A single polytrope stands in for a planet with a core (up to ~40 Earth masses in Helled's models), which may add binding; the 2.5-2.7e36 range is a judgement, not a measurement, and no published integrated value was found. Firm enough for a plain multiple. Skeptic: status derived to estimate; NASA's 0.254 is probably per equatorial radius.",
+ who_when="estimate, 13 Oct 2026")
+add(key="energy_moon_orbital_kinetic",category="energy_reference",label="The Moon's kinetic energy in its orbit around Earth",status="derived",value_si=3.84e28,unit_si="J",low_si=3.43e28,high_si=4.44e28,
+ display="3.8 x 10^28 J (7.346 x 10^22 kg at a mean 1.022 km/s; 3.4-4.4 x 10^28 J over a year)",sources=src('moon'),page_short="the energy of the Moon's motion around Earth",
+ notes="KE = mv^2/2 with m = 7.346e22 kg (existing moon_mass) and v = 1.022 km/s mean, relative to Earth (moon_mean_orbital_speed): 3.84e28 J. It runs from 3.43e28 J (0.966 km/s) to 4.44e28 J (1.100 km/s) at the year's extremes. Measured from the Earth-Moon centre of mass (reduced mass) it is 3.79e28 J, 1% less. For a near-circular orbit, freeing the Moon from Earth would take about the same energy (GMm/2a ≈ 3.8e28 J, a = 384,400 km). Firm. Skeptic: range widened from 3.46-4.30e28 (mean apogee and perigee); the sentence saying this is not the energy to free the Moon was misleading and is replaced.",
+ who_when="derived 13 Oct 2026")
+add(key="energy_earth_rotational_kinetic",category="energy_reference",label="Earth's rotational kinetic energy (the energy of its daily spin)",status="derived",value_si=2.14e29,unit_si="J",low_si=2.13e29,high_si=2.14e29,
+ display="2.1 x 10^29 J (C = 8.04 x 10^37 kg m², one turn per 23.9345 h)",sources=src('vilcu','earth','wiki_rot'),page_short="the energy of Earth's spin",
+ notes="KE = CΩ^2/2. C = 8.035e37 kg m^2 (earth_polar_moment_of_inertia, EGM96 rescaled to CODATA G); Ω = 2π/(23.9345 h x 3,600) = 7.2921e-5 rad/s (existing earth_sidereal_rotation). Gives 2.136e29 J (2.137e29 with Vilcu's unrescaled C; 2.132e29 with NASA's factor on the mean radius). Wikipedia's Rotational energy page gives the same 2.14e29 J (cross-check only). Spin relative to the stars. Tidal friction slowly drains it (not quantified here). Firm. Skeptic confirmed; notes updated for the corrected C.",
+ who_when="derived 13 Oct 2026")
+add(key="energy_earth_orbital_kinetic",category="energy_reference",label="Earth's kinetic energy in its orbit around the Sun",status="derived",value_si=2.65e33,unit_si="J",low_si=2.56e33,high_si=2.74e33,
+ display="2.6 x 10^33 J (5.9722 x 10^24 kg at a mean 29.78 km/s)",sources=src('earth'),page_short="the energy of Earth's motion around the Sun",
+ notes="KE = mv^2/2 with m = 5.9722e24 kg (existing earth_mass) and v = 29.78 km/s (earth_mean_orbital_speed): 2.648e33 J. Over a year it runs from 2.56e33 J (29.29 km/s, aphelion) to 2.74e33 J (30.29 km/s, perihelion). Speed relative to the Sun; adding the Moon, which travels with Earth, gives 2.68e33 J. For a near-circular orbit, the energy to set Earth free of the Sun is the same, about 2.65e33 J (GMm/2a, existing sun_gm, a = 149.598e6 km). Firm. Skeptic: the sentence saying this is not the energy to free Earth was misleading and is replaced.",
+ who_when="derived 13 Oct 2026")
+add(key="energy_saturn_orbital_kinetic",category="energy_reference",label="Saturn's kinetic energy in its orbit around the Sun",status="derived",value_si=2.66e34,unit_si="J",low_si=2.37e34,high_si=2.92e34,
+ display="2.7 x 10^34 J (5.6832 x 10^26 kg at a mean 9.67 km/s)",sources=src('sat'),page_short="the energy of Saturn's motion around the Sun",
+ notes="KE = mv^2/2 with m = 5.6832e26 kg (saturn_mass) and v = 9.67 km/s (saturn_mean_orbital_speed): 2.657e34 J. It runs from 2.37e34 J (9.14 km/s) to 2.92e34 J (10.14 km/s) over Saturn's 29-year orbit. GMm/2a with sun_gm and a = 1,432.041e6 km gives 2.63e34 J, so freeing Saturn from the Sun takes about the same. Speed relative to the Sun. Firm. Filler proposed by the skeptic (who computed 2.66e34 J from the same sheet) for the 13x step from the Sun-year to Jupiter's orbit; compiled by the compiler.",
+ who_when="derived 13 Oct 2026")
+add(key="energy_jupiter_orbital_kinetic",category="energy_reference",label="Jupiter's kinetic energy in its orbit around the Sun",status="derived",value_si=1.62e35,unit_si="J",low_si=1.47e35,high_si=1.79e35,
+ display="1.6 x 10^35 J (1.898 x 10^27 kg at a mean 13.06 km/s)",sources=src('jup'),page_short="the energy of Jupiter's motion around the Sun",
+ notes="KE = mv^2/2 with m = 1.89813e27 kg (jupiter_mass) and v = 13.06 km/s (jupiter_mean_orbital_speed): 1.619e35 J. It runs from 1.47e35 J (12.44 km/s) to 1.79e35 J (13.72 km/s) over Jupiter's 12-year orbit. Speed relative to the Sun; the Sun's own wobble is ignored. GMm/2a with sun_gm and a = 778.479e6 km gives 1.618e35 J, so freeing Jupiter from the Sun takes the same energy. Firm. Skeptic confirmed; the GMm/2a check added at the skeptic's suggestion.",
+ who_when="derived 13 Oct 2026")
+add(key="energy_moon_forming_impact",category="energy_reference",label="The giant impact that formed the Moon: collision energy (four proposed impacts)",status="disputed",value_si=4.8e31,unit_si="J",low_si=2.9e31,high_si=8.2e31,
+ display="roughly 3 to 8 x 10^31 J for four proposed impacts in one study",sources=src('carter','caltech'),page_short="the impact that made the Moon",
+ notes="Centre-of-mass collision energy 0.5 μ v^2, μ = mM/(m+M), from Carter et al. Table 1 (Earth masses of 5.9722e24 kg): canonical 0.90 + 0.13 at 9.2 km/s = 2.9e31 J; similar-mass 0.57 + 0.47 at 9.7 = 7.2e31; spinning proto-Earth 1.05 + 0.05 at 20 = 5.7e31; partial accretion 0.75 + 0.30 at 11.3 = 8.2e31. These reproduce the paper's Q_S within 1%. Abstract: \"the specific impact parameters are under debate\". Value 4.8e31 is the geometric middle, not a best estimate. Leaves out the gravitational energy released as the bodies merge (Table 1 Epot,0−Epot,min = 1.2-5.0e31 J). Skeptic: display now says four example impacts from one study, not every proposal. Alternative only (rough, sits on the Sun-day).",
+ who_when="Carter, Lock & Stewart 2020; derived 13 Oct 2026")
+add(key="energy_earth_gravitational_binding",category="energy_reference",label="Earth's gravitational binding energy (the energy to blow Earth apart)",status="derived",value_si=2.49e32,unit_si="J",low_si=2.24e32,high_si=2.49e32,
+ display="2.49 x 10^32 J (PREM density model); 2.24 x 10^32 J for uniform density",sources=src('genie','earth','codata','wiki_bind'),page_short="the energy to blow Earth apart",
+ notes="Update of the existing key in final-environment.json (status claimed to derived). U = ∫G m(r) dm / r over PREM's 13 layers: integrated from the GENIE coefficients by the researcher (2.488e32 J) and the skeptic (2.4889e32 J; 2.488e32 scaled to NASA's 5.9722e24 kg), as in the existing energy_earth_binding_prem_computed (2.4904e32). PREM's own mass comes out 5.9732e24 kg and I/MR^2 0.3308, matching NASA. Uniform 3GM^2/(5R) = 2.24e32 J is a strict lower bound. Caveat: the coefficients are a code transcription of Dziewonski & Anderson 1981; the paper was not fetched. Skeptic: upgrade confirmed; the CitcomS cross-check had no URL and is dropped. Wikipedia kept as a cross-check only.",
+ who_when="derived 13 Oct 2026 (PREM, Dziewonski & Anderson 1981)")
+
+for f in F:
+    assert len(f['notes'])<=950, (f['key'],len(f['notes']))
+R=[("energy_sun_luminosity",3.828e26,"the Sun's output for one second"),
+   ("energy_pluto_gravitational_binding",6.5e27,"the energy to blow Pluto apart"),
+   ("energy_moon_orbital_kinetic",3.84e28,"the energy of the Moon's motion around Earth"),
+   ("energy_earth_rotational_kinetic",2.14e29,"the energy of Earth's spin"),
+   ("energy_sun_output_hour",1.37808e30,"the Sun's output for one hour"),
+   ("energy_mars_gravitational_binding",5.1e30,"the energy to blow Mars apart"),
+   ("energy_sun_output_day",3.307392e31,"the Sun's output for one day"),
+   ("energy_earth_gravitational_binding",2.49e32,"the energy to blow Earth apart"),
+   ("energy_earth_orbital_kinetic",2.65e33,"the energy of Earth's motion around the Sun"),
+   ("energy_sun_output_year",1.208044772352e34,"the Sun's output for one year"),
+   ("energy_saturn_orbital_kinetic",2.66e34,"the energy of Saturn's motion around the Sun"),
+   ("energy_jupiter_orbital_kinetic",1.62e35,"the energy of Jupiter's motion around the Sun"),
+   ("energy_sun_output_century",1.208044772352e36,"the Sun's output for a century"),
+   ("energy_jupiter_gravitational_binding",2.6e36,"the energy to blow Jupiter apart")]
+fk={f['key']:f for f in F}
+rungs=[]
+prev=None
+for k,J,ps in R:
+    f=fk.get(k)
+    rough=False
+    if f:
+        assert abs(f['value_si']-J)/J<1e-9, k
+        assert f['page_short']==ps, k
+        lo=f.get('low_si'); hi=f.get('high_si')
+        rough=bool((hi and hi/J>2) or (lo and J/lo>2))
+    rungs.append({"key":k,"J":J,"page_short":ps,"rough":rough})
+    if prev: print('%-40s %.3g  step %.1fx'%(k,J,J/prev))
+    prev=J
+gaps=("None within the band from the Sun-second (3.8e26 J) to Jupiter's binding energy (2.6e36 J) if the page shows either a multiple of the rung below or a share of the rung above: every step is at most 17x. "
+ "Steps over about 10x (they break the rule only if the page shows multiples of the rung below alone): the Sun-second to Pluto (17x; an energy of 4-6.5e27 J would need 10-17x), and Earth's binding energy to Earth's orbit (10.6x, marginal). "
+ "A cheap fix for the first: the Sun's output for ten seconds (3.8e27 J, luminosity x 10 s), not compiled. "
+ "Below the band: Chicxulub (4.2e23) to the Sun-second (3.8e26) is about 900x; another band must fill it. "
+ "Above the band: nothing past 2.6e36 J here. The next rung must be within about 10x (2.6e37 J) and no further than 100x (2.6e38 J); the Sun's output for a thousand years (1.2e37 J) would serve if the stellar band leaves a hole.")
+out={"facts":F,"rungs":rungs,"gaps":gaps}
+os.makedirs(os.path.dirname(OUT),exist_ok=True)
+json.dump(out,open(OUT,'w',encoding='utf-8'),ensure_ascii=False,indent=1)
+print(len(F),'facts', max(len(f['notes']) for f in F),'max notes')

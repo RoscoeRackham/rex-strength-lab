@@ -1117,172 +1117,6 @@
    "who_when": "Derived"
   },
   {
-   "key": "energy_tnt_equivalent_per_tonne",
-   "category": "energy_reference",
-   "label": "TNT equivalent: energy per ton of TNT",
-   "status": "verified",
-   "value_si": 4184000000,
-   "unit_si": "J",
-   "display": "1 ton TNT = 4.184 x 10^9 J (exact by convention); 1 kt = 4.184e12 J; 1 Mt = 4.184e15 J",
-   "sources": [
-    {
-     "title": "NIST SP 811 Appendix B.9: ton of TNT (energy equivalent) = 4.184E+09 J",
-     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9"
-    }
-   ],
-   "notes": "Conventional definition (10^9 thermochemical calories), so the short/long/metric 'ton' question does not arise for TNT-equivalent yields. Equivalently 4.184e6 J per kg TNT. Use exactly 4.184e9 J.",
-   "who_when": "NIST SP 811"
-  },
-  {
-   "key": "energy_m67_grenade_explosive_mass",
-   "category": "energy_reference",
-   "label": "M67 fragmentation grenade: explosive filler mass",
-   "status": "verified",
-   "value_si": 0.18427,
-   "unit_si": "kg",
-   "display": "6.5 oz Composition B (0.184 kg); total weight 16.0 oz (0.454 kg)",
-   "sources": [
-    {
-     "title": "US Army TC 3-23.30 Grenades and Pyrotechnic Signals, Fig. 3-15 (C1, 1 Feb 2023)",
-     "url": "https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN37340-TC_3-23.30-001-WEB-3.pdf"
-    }
-   ],
-   "notes": "6.5 avoirdupois oz = 0.18427 kg of Composition B, not TNT. See energy_comp_b_re_factor and energy_m67_tnt_equivalent_estimate for a flagged TNT conversion. Wikipedia lists total weight as 14 oz (not checked); the Army manual says 16.0 oz.",
-   "who_when": "US Army 2021/2023"
-  },
-  {
-   "key": "energy_comp_b_re_factor",
-   "category": "energy_reference",
-   "label": "Composition B: relative effectiveness (RE) factor vs TNT",
-   "status": "claimed",
-   "value_si": 1.33,
-   "unit_si": "1",
-   "display": "RE ~1.33 (Comp B 63% RDX / 36% TNT / 1% wax; density 1.72 g/cm^3; detonation velocity 7,840 m/s)",
-   "sources": [
-    {
-     "title": "Wikipedia: Relative effectiveness factor (table tagged 'citation needed')",
-     "url": "https://en.wikipedia.org/wiki/Relative_effectiveness_factor"
-    }
-   ],
-   "notes": "Added by editor to fill a verifier-listed gap. Single secondary source whose table carries a [citation needed] tag, hence 'claimed'. The same page warns 'Calculating a single RE factor for an explosive is, however, impossible. It depends on the specific case or use', and that the table 'should be taken as an example and not as a precise source of data'. Pressure- and impulse-based equivalences differ; treat as approximate.",
-   "who_when": "Wikipedia, accessed 2026-10"
-  },
-  {
-   "key": "energy_m67_tnt_equivalent_estimate",
-   "category": "energy_reference",
-   "label": "M67 grenade: approximate TNT-equivalent energy",
-   "status": "estimate",
-   "value_si": 1025000,
-   "unit_si": "J",
-   "low_si": 771000,
-   "high_si": 1025000,
-   "display": "~0.25 kg TNT equivalent ~ 1.0 MJ (0.77 MJ if the filler is counted 1:1 as TNT)",
-   "sources": [
-    {
-     "title": "Filler mass: US Army TC 3-23.30 Fig. 3-15",
-     "url": "https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN37340-TC_3-23.30-001-WEB-3.pdf"
-    },
-    {
-     "title": "RE factor 1.33 (claimed): Wikipedia Relative effectiveness factor",
-     "url": "https://en.wikipedia.org/wiki/Relative_effectiveness_factor"
-    },
-    {
-     "title": "TNT energy convention: NIST SP 811 B.9",
-     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9"
-    }
-   ],
-   "notes": "Editor calculation: 0.18427 kg x 1.33 = 0.245 kg TNT eq x 4.184e6 J/kg = 1.03e6 J. Low end treats the filler 1:1 as TNT (0.18427 x 4.184e6 = 7.71e5 J). The RE factor is only 'claimed', so this inherits that uncertainty. For blast formulas use W = 0.18-0.25 kg TNT.",
-   "who_when": "Derived 2026-10"
-  },
-  {
-   "key": "energy_moab_yield",
-   "category": "energy_reference",
-   "label": "GBU-43/B MOAB: blast yield",
-   "status": "claimed",
-   "value_si": 46024000000,
-   "unit_si": "J",
-   "display": "~11 tons TNT equivalent = 4.6 x 10^10 J (unsourced claim); fill ~8,500 kg H-6",
-   "sources": [
-    {
-     "title": "Wikipedia: GBU-43/B MOAB (infobox '11 tons TNT (46 GJ)'; no inline citation for yield)",
-     "url": "https://en.wikipedia.org/wiki/GBU-43/B_MOAB"
-    },
-    {
-     "title": "TNT energy convention: NIST SP 811 B.9",
-     "url": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9"
-    }
-   ],
-   "notes": "Both verifiers agree the researcher's 'short vs metric ton' range was an artifact: a TNT-equivalent yield uses the ton of TNT as a defined energy unit (4.184e9 J), and Wikipedia's own 46 GJ = 11 x 4.184 GJ. So 11 t TNT = 4.6024e10 J; low/high removed. No primary or official source for the 11-ton figure was found (GlobalSecurity returned HTTP 402). Fill 18,739 lb (8,500 kg) of H-6, a TNT-based aluminized explosive; the consistency of fill mass with ~11 t TNT eq is reasoning, not sourced.",
-   "who_when": "Wikipedia, accessed 2026-10"
-  },
-  {
-   "key": "energy_hiroshima_yield",
-   "category": "energy_reference",
-   "label": "Hiroshima (Little Boy) yield",
-   "status": "claimed",
-   "value_si": 62760000000000,
-   "unit_si": "J",
-   "low_si": 50210000000000,
-   "high_si": 75310000000000,
-   "display": "15 kt +/- 20% (12-18 kt) = 6.3 x 10^13 J",
-   "sources": [
-    {
-     "title": "Wikipedia: Little Boy (citing Malik 1985, Los Alamos LA-8819, p. 1)",
-     "url": "https://en.wikipedia.org/wiki/Little_Boy"
-    },
-    {
-     "title": "Nuclear Weapon Archive: Little Boy ('Yield: 15 - 16 Kt')",
-     "url": "http://nuclearweaponarchive.org/Usa/Med/Lbfm.html"
-    }
-   ],
-   "notes": "Malik (1985) best estimate 15 kt with 20% uncertainty, via Wikipedia; the LANL report itself was not opened (request form / connection reset). Earlier Penney estimate 12 +/- 1 kt. Nuclear Weapon Archive independently gives 15-16 kt, and the Wikipedia infobox now shows 13-16 kt; both fall inside 12-18 kt. A verifier recalls the DS02 dosimetry re-evaluation used ~16 kt; not verified.",
-   "who_when": "Malik (LANL) 1985"
-  },
-  {
-   "key": "energy_castle_bravo_yield",
-   "category": "energy_reference",
-   "label": "Castle Bravo yield (1 Mar 1954 local)",
-   "status": "claimed",
-   "value_si": 62760000000000000,
-   "unit_si": "J",
-   "display": "15 Mt = 6.3 x 10^16 J (predicted 6 Mt, range 4-8, per NWA; Wikipedia says 5 Mt predicted)",
-   "sources": [
-    {
-     "title": "Nuclear Weapon Archive: Operation Castle",
-     "url": "http://nuclearweaponarchive.org/Usa/Tests/Castle.html"
-    },
-    {
-     "title": "Wikipedia: Castle Bravo",
-     "url": "https://en.wikipedia.org/wiki/Castle_Bravo"
-    }
-   ],
-   "notes": "15 Mt confirmed by both NWA and Wikipedia; NWA lists 10 Mt (66.7%) fission. Sources disagree on the predicted yield (NWA 6 Mt, range 4-8; Wikipedia 5 Mt); this does not affect the 15 Mt actual. Date is 1 March local (28 Feb GMT). The official DOE/NV-209 test list was not retrieved (old URL 404; nnss.gov path also 404), so status stays 'claimed'.",
-   "who_when": "NWA (Sublette); Wikipedia"
-  },
-  {
-   "key": "energy_tsar_bomba_yield",
-   "category": "energy_reference",
-   "label": "Tsar Bomba yield (30 Oct 1961)",
-   "status": "disputed",
-   "value_si": 209200000000000000,
-   "unit_si": "J",
-   "low_si": 209200000000000000,
-   "high_si": 242700000000000000,
-   "display": "50 Mt official (2.09 x 10^17 J); US 1961 estimate 57 Mt; Wikipedia 50-58 Mt",
-   "sources": [
-    {
-     "title": "Nuclear Weapon Archive: Tsar Bomba ('Was it 50 Megatons or 57?')",
-     "url": "http://www.nuclearweaponarchive.org/Russia/TsarBomba.html"
-    },
-    {
-     "title": "Wikipedia: Tsar Bomba",
-     "url": "https://en.wikipedia.org/wiki/Tsar_Bomba"
-    }
-   ],
-   "notes": "Russian sources since 1991 use 50 Mt; the US estimated 57 Mt shortly after the test; Wikipedia gives 50-58 Mt (attributing 58 Mt to bhangmeter data). About 1.5 Mt fission (97% fusion). Use 50 Mt as the value and 58 Mt as the high end.",
-   "who_when": "Soviet/Russian 1991 disclosure; US 1961 estimate"
-  },
-  {
    "key": "energy_tunguska_1908",
    "category": "energy_reference",
    "label": "Tunguska airburst energy (1908)",
@@ -1304,85 +1138,6 @@
    ],
    "notes": "Sandia: 'what scientists had thought to be an explosion between 10 and 20 megatons was more likely only three to five megatons.' Wikipedia: estimates 3-30 Mt; a 2019 paper ~20-30 Mt. The 10 Mt value_si is a conventional midpoint chosen by the researcher, not a consensus figure.",
    "who_when": "Various; Sandia 2007"
-  },
-  {
-   "key": "energy_krakatoa_1883",
-   "category": "energy_reference",
-   "label": "1883 Krakatoa eruption energy",
-   "status": "claimed",
-   "value_si": 836800000000000000,
-   "unit_si": "J",
-   "display": "~200 Mt TNT (8.4 x 10^17 J); VEI 6; no sourced range",
-   "sources": [
-    {
-     "title": "Wikipedia: 1883 eruption of Krakatoa (citing Australian Bureau of Meteorology 2012, archived)",
-     "url": "https://en.wikipedia.org/wiki/1883_eruption_of_Krakatoa"
-    },
-    {
-     "title": "Wikipedia: Krakatoa (citing Breining 2007, Super Volcano, Voyageur Press, p. 256)",
-     "url": "https://en.wikipedia.org/wiki/Krakatoa"
-    }
-   ],
-   "notes": "Single point estimate only. Editor found the main Krakatoa article repeats 'equivalent to 200 megatons of TNT (840 PJ)', citing a popular-science book (Breining 2007), so there are now two weak, non-primary citations for the same figure and still no range. Volcanic 'energy' figures mix thermal and explosive energy; do not treat as a blast yield.",
-   "who_when": "BoM / Breining via Wikipedia"
-  },
-  {
-   "key": "energy_chicxulub_impact",
-   "category": "energy_reference",
-   "label": "Chicxulub impactor kinetic energy",
-   "status": "disputed",
-   "unit_si": "J",
-   "low_si": 1e+23,
-   "high_si": 5.8e+25,
-   "display": "~10^23 to ~10^24 J in most published estimates; up to 5.8 x 10^25 J in one arXiv preprint (Durand-Manterola & Cordero-Tercero 2014)",
-   "sources": [
-    {
-     "title": "Wikipedia: Chicxulub crater (literature range ~1e23 J, Morgan et al. 2022, Richards et al. 2015, Kring 2007, Bralower et al. 1998; 1e24 J, Pope et al. 1997)",
-     "url": "https://en.wikipedia.org/wiki/Chicxulub_crater"
-    },
-    {
-     "title": "Durand-Manterola & Cordero-Tercero (2014) Assessments of the energy, mass and size of the Chicxulub impactor, arXiv:1403.6391",
-     "url": "https://arxiv.org/abs/1403.6391"
-    }
-   ],
-   "notes": "Both verifiers corrected this entry. The researcher's 1.3e24-5.8e25 J is accurately quoted from the preprint, but (1) the arXiv page shows no journal reference, so 'peer-reviewed' was unsupported, and (2) it is the high end of the literature (and favors a comet). Wikipedia summarizes published estimates as ~1e23 J to 1e24 J, with that preprint up to 1e25 J. A 10 km impactor at 20 km/s also gives ~1e23 J. Status changed verified -> disputed; low_si lowered to 1e23 J. No single value_si given. The underlying papers (Morgan 2022 etc.) were seen only through Wikipedia.",
-   "who_when": "Various; corrected 2026-10"
-  },
-  {
-   "key": "energy_sun_luminosity",
-   "category": "energy_reference",
-   "label": "Nominal solar luminosity",
-   "status": "verified",
-   "value_si": 3.828e+26,
-   "unit_si": "W",
-   "display": "3.828 x 10^26 W",
-   "sources": [
-    {
-     "title": "IAU 2015 Resolution B3 (arXiv:1510.07674)",
-     "url": "https://arxiv.org/abs/1510.07674"
-    }
-   ],
-   "notes": "Nominal solar radius 6.957e8 m (same resolution).",
-   "who_when": "IAU 2015"
-  },
-  {
-   "key": "energy_earth_gravitational_binding",
-   "category": "energy_reference",
-   "label": "Earth gravitational binding energy",
-   "status": "claimed",
-   "value_si": 2.49e+32,
-   "unit_si": "J",
-   "low_si": 2.24e+32,
-   "high_si": 2.49e+32,
-   "display": "~2.49 x 10^32 J (PREM density); 2.24 x 10^32 J for uniform density",
-   "sources": [
-    {
-     "title": "Wikipedia: Gravitational binding energy (PREM-based value; formula U = 3GM^2/(5R))",
-     "url": "https://en.wikipedia.org/wiki/Gravitational_binding_energy"
-    }
-   ],
-   "notes": "Uniform-sphere value computed (and reproduced by a verifier): 3GM^2/(5R) with M = 5.972e24 kg, R = 6.371e6 m gives 2.24e32 J. The 2.49e32 J PREM value is quoted by Wikipedia, which cites only the PREM model (Dziewonski & Anderson 1981); the integral was not reproduced. Plausible because a centrally condensed Earth must exceed the uniform value.",
-   "who_when": "Wikipedia (derived from PREM 1981)"
   },
   {
    "key": "energy_xkcd_relativistic_baseball",
@@ -1851,6 +1606,116 @@
    ],
    "notes": "CAIB: 'The air immediately around the leading edge surface can reach 10,000 degrees Fahrenheit; however, the boundary layer shields the Orbiter so that the actual temperature is only approximately 3,000 degrees Fahrenheit at the leading edge.' A real-world cap for comparison with the perfect-gas formula.",
    "who_when": "CAIB 2003"
+  },
+  {
+   "key": "sun_gm",
+   "category": "space",
+   "label": "Sun's gravitational parameter GM (IAU nominal value)",
+   "status": "verified",
+   "value_si": 132712440000000000000,
+   "unit_si": "m^3/s^2",
+   "display": "1.3271244 × 10^20 m^3/s^2 (exact by definition)",
+   "sources": [
+    {
+     "title": "IAU 2015 Resolution B3, on recommended nominal conversion constants for selected solar and planetary properties (XXIX General Assembly), PDF on iau.org",
+     "url": "https://www.iau.org/common/Uploaded%20files/IAUGA2015-Resolution-B3-recommended-nominal-conversion.pdf"
+    }
+   ],
+   "notes": "Fetched the iau.org PDF on 2026-10-12 and read its text with pdftotext. The SOLAR CONVERSION CONSTANTS table in the Recommends section gives the nominal solar mass parameter (GM)^N_sun = 1.327 124 4 × 10^20 m^3 s^-2. Recommends 1 says the nominal values 'are by definition exact and are expressed in SI units'. It adds that they 'should be understood as conversion factors only — chosen to be close to the current best estimates (see table below) — not as the true solar properties'. Explanation, item 1, says the value 'is adopted as an exact number, given with a precision within which its TCB and TDB values agree'. So it is a standard value chosen close to the best measured estimate, not a measurement itself. It is given to 8 figures, far more precise than this page needs. The same table gives Earth's nominal GM, 3.986 004 × 10^14 m^3 s^-2, which matches the existing earth_gm fact. Existing facts cite this resolution as arXiv:1510.07674; that copy was not re-fetched here. Use: input for the solar escape speed (sun_escape_speed_at_1au). Quote: Table row: \"1 (GM)^N_sun = 1.327 124 4 × 10^20 m3 s−2\". pdftotext drops the Sun symbol: \"1(GM)N = 1.327 124 4 × 1020 m3 s−2\". The leading 1 is part of the table, as in the planetary rows. Text: \"the nominal values RN, SN, LN, TeffN, and (GM)N, be used, respectively, which are by definition exact and are expressed in SI units.\" Researched and checked by a skeptic who fetched every source, 12 Oct 2026 (BRIEF-gui.md 5a; review record research/reviews/gui-b-escape-facts.json).",
+   "who_when": "IAU XXIX General Assembly, 2015"
+  },
+  {
+   "key": "astronomical_unit",
+   "category": "space",
+   "label": "Astronomical unit (au)",
+   "status": "verified",
+   "value_si": 149597870700,
+   "unit_si": "m",
+   "display": "About 149.6 million km (exactly 149,597,870,700 m by definition)",
+   "sources": [
+    {
+     "title": "IAU 2012 Resolution B2, on the re-definition of the astronomical unit of length (XXVIII General Assembly), English PDF on the IAU's archived site",
+     "url": "https://iauarchive.eso.org/static/resolutions/IAU2012_English.pdf"
+    },
+    {
+     "title": "IAU 2015 Resolution B3, endnote 4, restating the 2012 definition (iau.org PDF)",
+     "url": "https://www.iau.org/common/Uploaded%20files/IAUGA2015-Resolution-B3-recommended-nominal-conversion.pdf"
+    }
+   ],
+   "notes": "Fetched both PDFs on 2026-10-12 and read them with pdftotext. 2012 B2, 'recommends' clause 1, defines the au as exactly 149 597 870 700 m. 2015 B3 endnote 4 says: 'Resolution B2 of the XXVIII General Assembly of the IAU in 2012 defined the astronomical unit to be a conventional unit of length equal to 149 597 870 700 m exactly.' The au is a defined unit close to Earth's average distance from the Sun. It is not Earth's actual distance on a given day, which varies by about ±1.7% over a year (eccentricity about 0.017; not verified here). That would shift the solar escape speed by less than 1%. The iau.org 'List of Resolutions' page now links the 2012 resolutions only in French (via Google Drive). The English text came from the IAU's archived static site at iauarchive.eso.org, the old www.iau.org/static/resolutions/ path, which now returns 404. Quote: \"1. that the astronomical unit be re-defined to be a conventional unit of length equal to 149 597 870 700 m exactly, in agreement with the value adopted in IAU 2009 Resolution B2,\" Researched and checked by a skeptic who fetched every source, 12 Oct 2026 (BRIEF-gui.md 5a; review record research/reviews/gui-b-escape-facts.json).",
+   "who_when": "IAU XXVIII General Assembly, 2012"
+  },
+  {
+   "key": "sun_escape_speed_at_1au",
+   "category": "space",
+   "label": "Speed needed to escape the Sun from Earth's distance (1 au)",
+   "status": "derived",
+   "value_si": 42122,
+   "unit_si": "m/s",
+   "display": "About 42.1 km/s, measured relative to the Sun",
+   "sources": [
+    {
+     "title": "IAU 2015 Resolution B3 (GM of the Sun), iau.org PDF",
+     "url": "https://www.iau.org/common/Uploaded%20files/IAUGA2015-Resolution-B3-recommended-nominal-conversion.pdf"
+    },
+    {
+     "title": "IAU 2012 Resolution B2 (astronomical unit), IAU archive PDF",
+     "url": "https://iauarchive.eso.org/static/resolutions/IAU2012_English.pdf"
+    }
+   ],
+   "notes": "Arithmetic: v = sqrt(2 GM_sun / au) = sqrt(2 × 1.3271244e20 / 1.495978707e11) = sqrt(1.7742557e9 m^2/s^2) = 42,121.9 m/s, about 42.1 km/s. Check: the circular orbit speed at 1 au, sqrt(GM_sun / au) = 29,785 m/s, is Earth's familiar mean orbital speed of about 29.8 km/s, and escape speed is sqrt(2) times it. What it ignores: (1) It is measured relative to the Sun, not Earth. Earth already moves at about 29.8 km/s, so once clear of Earth's gravity a throw along Earth's motion needs only about 12.3 km/s more, and a throw straight against it needs about 71.9 km/s. (2) Earth's own pull: from the ground, in the best direction, the speed needed is about sqrt(12.34^2 + 11.19^2), roughly 16.7 km/s, using the existing earth_escape_velocity_surface fact. This ignores air, Earth's spin and the other planets. (3) The other planets' pulls. (4) Relativity, which is negligible: 42 km/s is about 0.014% of light speed. For the page's threshold: 3,000 km/s is about 70 times this speed, so none of these corrections matter there. Rough check, an estimate rather than a sourced figure: at 3,000 km/s the Sun's pull bends a path that never comes closer than 1 au by at most about 2 GM_sun / (b v^2) = 2 × 1.327e20 / (1.496e11 × 9e12), about 2 × 10^-4 rad (0.01°). It also slows the object by about 0.01%. So 'flies off in a straight line' holds, unless it is aimed close to the Sun. Researched and checked by a skeptic who fetched every source, 12 Oct 2026 (BRIEF-gui.md 5a; review record research/reviews/gui-b-escape-facts.json).",
+   "who_when": "Derived 2026-10-12 from IAU 2012 B2 and IAU 2015 B3"
+  },
+  {
+   "key": "milky_way_escape_speed_solar",
+   "category": "space",
+   "label": "Speed needed to escape the Milky Way from the Sun's position",
+   "status": "disputed",
+   "value_si": 530000,
+   "unit_si": "m/s",
+   "low_si": 445000,
+   "high_si": 580000,
+   "display": "About 530 km/s; published estimates run from 445 to 580 km/s",
+   "sources": [
+    {
+     "title": "Piffl et al. (2014) The RAVE survey: the Galactic escape speed and the mass of the Milky Way, A&A 562, A91; arXiv abstract page",
+     "url": "https://arxiv.org/abs/1309.4293"
+    },
+    {
+     "title": "Piffl et al. (2014), arXiv v3 PDF (abstract on p. 1)",
+     "url": "https://arxiv.org/pdf/1309.4293v3"
+    },
+    {
+     "title": "Piffl et al. (2014), published abstract on Macquarie University's research portal (A&A 562, A91, DOI 10.1051/0004-6361/201322531)",
+     "url": "https://researchers.mq.edu.au/en/publications/the-rave-survey-the-galactic-escape-speed-and-the-mass-of-the-mil/"
+    },
+    {
+     "title": "Deason et al. (2019) The local high velocity tail and the Galactic escape speed, MNRAS 485, 3514-3526; arXiv abstract page",
+     "url": "https://arxiv.org/abs/1901.02016"
+    },
+    {
+     "title": "Monari et al. (2018) The escape speed curve of the Galaxy obtained from Gaia DR2 implies a heavy Milky Way, A&A 616, L9; arXiv abstract page",
+     "url": "https://arxiv.org/abs/1807.04565"
+    },
+    {
+     "title": "Koppelman & Helmi (2021) Determination of the escape velocity of the Milky Way using a proper motion selected halo sample, A&A 649, A136; arXiv abstract page",
+     "url": "https://arxiv.org/abs/2006.16283"
+    },
+    {
+     "title": "Necib & Lin (2022) Substructure at High Speed. II. The Local Escape Velocity and Milky Way Mass with Gaia eDR3, ApJ 926, 189; Caltech repository record",
+     "url": "https://authors.library.caltech.edu/records/0tydh-nvr82"
+    },
+    {
+     "title": "Necib & Lin, arXiv v1 abstract (Gaia DR2 version: 484.6 km/s; assumes v_c = 230 ± 10 km/s)",
+     "url": "https://arxiv.org/abs/2102.02211v1"
+    },
+    {
+     "title": "Wu, Li, Huang, Xue & Zhao (2025) Milky Way Mass Through Escape Velocity Curve from LAMOST K Giants, ApJ 990, 182 (DOI 10.3847/1538-4357/adf2a4); arXiv abstract page",
+     "url": "https://arxiv.org/abs/2510.18227"
+    }
+   ],
+   "notes": "All pages fetched 2026-10-12. Measurements: (1) Piffl et al. 2014, from RAVE survey stars: 533 (+54, -41) km/s at 90% confidence, plus a 4% systematic uncertainty. Here 'escape' means reaching three virial radii (3 R340). Wording discrepancy: the arXiv listing's abstract says '5% systematic'. That text is left over from v1, which gave 537 (+59, -43) with 5%. The v3 PDF abstract and the published abstract both say 4%, so 4% is used. (2) Deason et al. 2019, from 6-D Gaia data plus cosmological simulations: 528 (+24, -25) km/s at 8.3 kpc from the Galactic centre, with the boundary at 2 r200. The abstract does not say what confidence level these errors are, or which Gaia release. (3) Monari et al. 2018, from Gaia DR2 (about 2,850 counter-rotating halo stars): 580 ± 63 km/s, boundary at three virial radii. It shares authors (Piffl, Steinmetz, Wyse) and method with (1), so it is not counted as independent. (4) Koppelman & Helmi 2021, from Gaia (a sample of about 10^7 halo stars, tangential velocities): 497 ± 8 km/s. The authors call this 'most likely biased low, our best guess is by 10%' and say the true value 'most likely is closer to 550 km/s'. (5) Necib & Lin 2022, from Gaia eDR3 with a multi-component fit: 445 (+25, -8) km/s with two components (preferred), and 472 (+17, -12) km/s with one. Their arXiv v1 used Gaia DR2 and gave 484.6 (+17.8, -7.4); the published eDR3 value is used here. (6) Wu et al. 2025 (ApJ 990, 182), LAMOST DR8 K giants cross-matched with Gaia DR3: 523.74 (+12.83, -13.47) km/s. Why 'disputed': the published values disagree by more than their stated errors (Necib & Lin's upper bound of 470 km/s is below Piffl's lower bound of 492 and Deason's of 503). No source states 530. Value used: 530 km/s, rounding (1) and (2), which come from different surveys, teams and methods and agree within their errors; (6) also lies close. Range: the published central values run from 445 km/s (Necib & Lin 2022) to 580 km/s (Monari 2018). With error bars the span is about 437 to 643 km/s; the intervals are not all the same kind (Piffl's are 90% confidence, most others are unstated). Recent Gaia analyses (2021 to 2025) give 445 to 525 km/s, though Koppelman & Helmi put the true value nearer 550. The spread comes from how the tail of the fastest stars is modelled and from where 'escape' is set. The Galaxy has no sharp edge, so 'escape' means reaching a chosen far radius (3 R340 or 2 r200), and the Local Group (Andromeda) is ignored. What it ignores for the page: the speed is relative to the Galaxy's centre, not to the Sun or Earth. The papers assume the Sun circles the Galaxy at about 230 to 240 km/s (Necib & Lin v1 230 ± 10, Koppelman & Helmi 232.8, Monari 240 or 228). So a throw along the Sun's orbit needs roughly 300 km/s relative to the Sun, and one straight against it roughly 765 km/s. The Sun's and Earth's pulls add only a little. These are rough figures, not sourced. A 3,000 km/s throw is about 6 times 530 km/s, and about 4 times even the worst case against the Sun's motion. So in this model it leaves the Galaxy in any direction, unless it hits something. Rough estimate, not sourced: the Galaxy's pull bends such a path by roughly (v_c / v)^2 ≈ (235/3000)^2 ≈ 0.006 rad, times a factor of a few, about a degree at most. Quote: Piffl et al. (v3 PDF): \"Our best estimate of the local Galactic escape speed, which we define as the minimum speed required to reach three virial radii R340, is 533+54−41 km s−1 (90% confidence) with an additional 4% systematic uncertainty\" (the published abstract has the same text with a comma after '(90% confidence)'). Deason et al.: \"After applying our methodology to the Gaia data, we find a local (r_0=8.3 kpc) escape speed of v_esc(r_0) = 528(+24,-25) km/s.\" Researched and checked by a skeptic who fetched every source, 12 Oct 2026 (BRIEF-gui.md 5a; review record research/reviews/gui-b-escape-facts.json).",
+   "who_when": "Piffl et al. 2014 and Deason et al. 2019; range from Necib & Lin 2022 (low) to Monari et al. 2018 (high); also Koppelman & Helmi 2021 and Wu et al. 2025"
   }
  ],
  "gaps": [
@@ -1858,16 +1723,16 @@
   "Sea ice compressive strength: still no value. Timco & Weeks (2010) is closed access (ScienceDirect 403, no abstract retrievable); Wikipedia's Sea ice article cites it without a number.",
   "Reinforced-concrete building SEVERE-damage overpressure (request F): not quantified. Glasstone gives it only as distances in the Fig. 5.140 nomograph; the OTA 1979 'Effects of Nuclear War' report (likely tabulated alternative) could not be fetched (FAS mirror empty, Princeton mirror 403). Only the 10 psi light-damage figure for Glasstone's blast-resistant Type 1 building was added.",
   "Kinney & Graham (1985): stated validity range of scaled distance Z and the standard surface-burst reflection multiplier (~1.8-2 x W) not verified; the book was not opened.",
-  "Krakatoa 1883: no sourced energy RANGE; only the single ~200 Mt figure via Wikipedia (citing a removed BoM page and a 2007 popular book).",
-  "GBU-43 MOAB yield: no primary/official source; only an uncited Wikipedia infobox.",
+  "Krakatoa 1883: no sourced energy RANGE; only the single ~200 Mt figure via Wikipedia (citing a removed BoM page and a 2007 popular book). Closed in pull request C (13 Oct 2026): see energy_krakatoa_1883 in final-energy.json.",
+  "GBU-43 MOAB yield: still no official source; now GlobalSecurity's 11 t of TNT via AFP, cross-checked with the H-6 fill (energy_moab_yield in final-energy.json, status reported; pull request C, 13 Oct 2026).",
   "Shear strength in Pa for asphalt concrete and for freshwater/sea ice (requested per surface in A): not found. Asphalt ultimate punch capacity (1-5 MPa) is an order-of-magnitude estimate.",
   "Keratin claw/scale friction on every surface: no measured data; all traction coefficients are reasoned estimates. Dai, Gorb & Schwarz (2002, beetle claws) is cited for the interlocking-vs-roughness mechanism only.",
   "ACI 318 primary code text not opened: the bearing cap sqrt(A2/A1) <= 2 is confirmed only by a university lecture's worked example; the ACI 318-19 two-way shear size-effect factor lambda_s, the plain-concrete two-way shear limit (~2.66 sqrt(f'c) psi, used for the slab punch-through low bound), and ACI 360 slab-on-ground methods were not verified.",
-  "Composition B TNT equivalence: only Wikipedia's RE factor table (1.33, tagged 'citation needed'); the M67 TNT-equivalent energy (~1.0 MJ) is therefore an estimate.",
+  "Composition B TNT equivalence: only Wikipedia's RE factor table (1.33, tagged 'citation needed'); the M67 TNT-equivalent energy (~1.0 MJ) is therefore an estimate. Closed in pull request C (13 Oct 2026): see energy_comp_b_heat_of_detonation and energy_m67_tnt_equivalent_estimate in final-energy.json.",
   "Dissociation onset temperatures for O2 and N2 (commonly quoted ~2,000-2,500 K and ~4,000 K at 1 atm) not verified; Wikipedia's ~2000 K for nitrogen is citation-needed and was not used.",
-  "Hiroshima primary source (Malik 1985, LA-8819) not opened; the DS02 re-evaluation (~16 kt) not verified. Castle Bravo official DOE/NV-209 list not retrieved (404 at old and nnss.gov paths).",
-  "Chicxulub mainstream estimates (~1e23-1e24 J; Morgan 2022, Richards 2015, Kring 2007, Pope 1997) seen only via Wikipedia's summary; the papers were not opened.",
-  "Earth gravitational binding energy: PREM-based 2.49e32 J not reproduced (Wikipedia only).",
+  "Hiroshima primary source (Malik 1985, LA-8819) not opened; the DS02 re-evaluation (~16 kt) not verified. Castle Bravo official DOE/NV-209 list not retrieved (404 at old and nnss.gov paths). Closed in pull request C (13 Oct 2026): see energy_hiroshima_yield and energy_castle_bravo_yield in final-energy.json.",
+  "Chicxulub mainstream estimates (~1e23-1e24 J; Morgan 2022, Richards 2015, Kring 2007, Pope 1997) seen only via Wikipedia's summary; the papers were not opened. Closed in pull request C (13 Oct 2026): see energy_chicxulub_impact in final-energy.json.",
+  "Earth gravitational binding energy: PREM-based 2.49e32 J not reproduced (Wikipedia only). Closed in pull request C (13 Oct 2026): see energy_earth_gravitational_binding in final-energy.json.",
   "Collins et al. (2017) revised airblast model not checked; the 2005 fits are used.",
   "Intact granite friction angle (45-55 deg) used for the rock bearing confinement factor and cohesion is an unsourced assumption; Goodman (1989) attribution and the Carter & Kulhawy Hoek-Brown bearing formula not verified.",
   "A36 steel properties and indentation constraint factor from secondary sources (Wikipedia citing AISC Manual and Fischer-Cripps 2007); AISC 0.6 Fy shear convention not verified.",

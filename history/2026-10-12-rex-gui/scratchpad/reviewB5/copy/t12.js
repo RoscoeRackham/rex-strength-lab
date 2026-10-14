@@ -1,0 +1,12 @@
+const run = require('./h.js');
+const OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoil: false };
+const cases = [];
+cases.push({ id: 'catch-def', tab: 'catch', state: {} });
+cases.push({ id: 'catch-def-allout', tab: 'catch', state: {}, pick: 'allout' });
+cases.push({ id: 'catch-hard-allout', tab: 'catch', state: { cStyle: 'hard' }, pick: 'allout' });
+cases.push({ id: 'catch-hard-50-allout', tab: 'catch', state: { cStyle: 'hard', airAbsorb: 0.5 }, pick: 'allout' });
+cases.push({ id: 'catch-off-hard-allout', tab: 'catch', state: { cStyle: 'hard', ...OFF }, pick: 'allout' });
+cases.push({ id: 'catch-partner-def', tab: 'catch', state: { cObj: 'partner' } });
+cases.push({ id: 'catch-partner-allout', tab: 'catch', state: { cObj: 'partner', cStyle: 'hard' }, pick: 'allout' });
+cases.push({ id: 'catch-partner-off-allout', tab: 'catch', state: { cObj: 'partner', cStyle: 'hard', ...OFF }, pick: 'allout' });
+run(cases).then(()=>{});

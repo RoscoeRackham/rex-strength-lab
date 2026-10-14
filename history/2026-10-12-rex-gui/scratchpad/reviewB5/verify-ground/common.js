@@ -1,0 +1,12 @@
+const ROOT = '/home/user/rex-strength-lab/rex-strength-lab/src/';
+const P = require(ROOT + 'engine.js');
+global.window = {}; require(ROOT + 'data.js');
+const D = window.DINO_DATA;
+const rex = P.makeBody({ build: 'rex', H: 3.048, m: 3007 });
+const surf = (id) => D.surfaces.find(s => s.id === id);
+const obj = (id) => D.objects.find(o => o.id === id);
+const ctxOf = (o) => Object.assign({ F: 100000 * P.K.g, mode: 'comic', body: rex, surface: surf('concrete'), anchor: 'friction', airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true }, o);
+const src = (s, x) => x && x.J > 0 ? P.impulseSource(s, x.J, x.T) : null;
+const ppv5 = (s, x, d) => P.ppvAt(src(s, x), d || 5) * 1000;
+const plaster = (s, x) => P.plasterReach(src(s, x));
+module.exports = { P, D, rex, surf, obj, ctxOf, src, ppv5, plaster };

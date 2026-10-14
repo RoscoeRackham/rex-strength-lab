@@ -1,0 +1,138 @@
+The Rex strength lab (/home/user/rex-strength-lab/rex-strength-lab) needs a few facts for its Throw tab: when something is thrown faster than 1% of light speed (about 3,000 km/s), the page will say it flies off in a straight line and where it goes. It needs, as research facts in the house format (see research/final-environment.json for examples; keys, category, label, status, value_si, unit_si, low_si, high_si, display, sources with exact URLs, notes, who_when):
+1. The Sun's gravitational parameter GM_sun (the IAU 2015 Resolution B3 nominal value, 1.3271244e20 m^3/s^2) and the astronomical unit (IAU 2012 Resolution B2, exactly 149,597,870,700 m), so the page can derive the speed needed to escape the Sun from Earth's distance, sqrt(2 GM_sun / au) (about 42.1 km/s). Give that derived speed as a third fact with status 'derived' and the arithmetic in its notes.
+2. The escape speed from the Milky Way at the Sun's position (for example Piffl et al. 2014, A&A 562, A91, from RAVE: 533 (+54, -41) km/s; or a later measurement such as Monari et al. 2018 or Deason et al. 2019). Record the range the literature gives and the value used, as the existing asteroid fact does (search research/ for 'chicxulub' to see that style).
+Prefer primary sources: the IAU resolution PDFs on iau.org, the journal article pages (A&A, MNRAS, arXiv abstract pages are fine as the open copy). 'Sourced' means you fetched the page and saw the number on it; give the exact URL and quote the sentence or table cell that carries the number. If a page cannot be fetched, say so in gaps and do not mark the fact verified. Use WebFetch and WebSearch (load them with ToolSearch if needed). Do not edit any file in the repo.
+
+You are the skeptic. A researcher returned the facts below. For EVERY source URL in every fact, fetch it yourself (WebFetch) and check that the page carries the number, the range and the wording the fact claims, and that the status is right (official for the IAU constants; reported/verified for measurements; derived for arithmetic, which you must redo). Look for: wrong numbers, wrong units, a range the source does not give, a quote not on the page, a URL that does not resolve or is not the source named, a status stronger than the evidence. Default to confirmed=false if you could not fetch a source. Give a corrected fact where needed.
+
+FACTS:
+{
+ "facts": [
+  {
+   "key": "sun_gm",
+   "category": "space",
+   "label": "Sun's gravitational parameter GM (IAU nominal value)",
+   "status": "official",
+   "value_si": 132712440000000000000,
+   "unit_si": "m^3/s^2",
+   "low_si": null,
+   "high_si": null,
+   "display": "1.3271244 × 10^20 m^3/s^2 (exact by definition)",
+   "sources": [
+    {
+     "title": "IAU 2015 Resolution B3, on recommended nominal conversion constants for selected solar and planetary properties (XXIX General Assembly), PDF on iau.org",
+     "url": "https://www.iau.org/common/Uploaded%20files/IAUGA2015-Resolution-B3-recommended-nominal-conversion.pdf"
+    }
+   ],
+   "notes": "Fetched the iau.org PDF on 2026-10-12 and read its text with pdftotext. Table in the 'resolves' section: nominal solar mass parameter (GM)^N_sun = 1.327 124 4 × 10^20 m^3 s^-2. The resolution says the nominal values 'are by definition exact and are expressed in SI units' and 'should be understood as conversion factors only — chosen to be close to the current best estimates ... not as the true solar ... properties'. Endnote 1: the value is 'adopted as an exact number, given with a precision within which its TCB and TDB values agree'. So it is a standard value, not a measurement, but it matches the measured GM of the Sun to all 8 figures shown, which is far more precise than this page needs. The same table gives Earth's nominal GM, 3.986 004 × 10^14 m^3 s^-2, which matches the existing earth_gm fact. Existing facts cite this resolution as arXiv:1510.07674; that copy was not re-fetched here. Use: input for the solar escape speed (sun_escape_speed_at_1au).",
+   "quote": "Table cell: \"(GM)^N_sun = 1.327 124 4 × 10^20 m3 s−2\" (pdftotext renders the Sun symbol as '1': \"1(GM)N = 1.327 124 4 × 1020 m3 s−2\"); text: \"the nominal values RN, SN, LN, TeffN, and (GM)N, be used, respectively, which are by definition exact and are expressed in SI units.\"",
+   "who_when": "IAU XXIX General Assembly, 2015"
+  },
+  {
+   "key": "astronomical_unit",
+   "category": "space",
+   "label": "Astronomical unit (au)",
+   "status": "official",
+   "value_si": 149597870700,
+   "unit_si": "m",
+   "low_si": null,
+   "high_si": null,
+   "display": "About 149.6 million km (exactly 149,597,870,700 m by definition)",
+   "sources": [
+    {
+     "title": "IAU 2012 Resolution B2, on the re-definition of the astronomical unit of length (XXVIII General Assembly), English PDF on the IAU's archived site",
+     "url": "https://iauarchive.eso.org/static/resolutions/IAU2012_English.pdf"
+    },
+    {
+     "title": "IAU 2015 Resolution B3, endnote 4, restating the 2012 definition (iau.org PDF)",
+     "url": "https://www.iau.org/common/Uploaded%20files/IAUGA2015-Resolution-B3-recommended-nominal-conversion.pdf"
+    }
+   ],
+   "notes": "Fetched both PDFs on 2026-10-12 and read them with pdftotext. 2012 B2, 'recommends' clause 1, defines the au as exactly 149 597 870 700 m. 2015 B3 endnote 4 says: 'Resolution B2 of the XXVIII General Assembly of the IAU in 2012 defined the astronomical unit to be a conventional unit of length equal to 149 597 870 700 m exactly.' The au is a defined unit close to Earth's average distance from the Sun. It is not Earth's actual distance on a given day, which varies by about ±1.7% over a year (eccentricity about 0.017; not verified here). That would shift the solar escape speed by less than 1%. The iau.org 'List of Resolutions' page now links the 2012 resolutions only in French (via Google Drive). The English text came from the IAU's archived static site at iauarchive.eso.org, the old www.iau.org/static/resolutions/ path, which now returns 404.",
+   "quote": "\"1. that the astronomical unit be re-defined to be a conventional unit of length equal to 149 597 870 700 m exactly, in agreement with the value adopted in IAU 2009 Resolution B2,\"",
+   "who_when": "IAU XXVIII General Assembly, 2012"
+  },
+  {
+   "key": "sun_escape_speed_at_1au",
+   "category": "space",
+   "label": "Speed needed to escape the Sun from Earth's distance (1 au)",
+   "status": "derived",
+   "value_si": 42122,
+   "unit_si": "m/s",
+   "low_si": null,
+   "high_si": null,
+   "display": "About 42.1 km/s, measured relative to the Sun",
+   "sources": [
+    {
+     "title": "IAU 2015 Resolution B3 (GM of the Sun), iau.org PDF",
+     "url": "https://www.iau.org/common/Uploaded%20files/IAUGA2015-Resolution-B3-recommended-nominal-conversion.pdf"
+    },
+    {
+     "title": "IAU 2012 Resolution B2 (astronomical unit), IAU archive PDF",
+     "url": "https://iauarchive.eso.org/static/resolutions/IAU2012_English.pdf"
+    }
+   ],
+   "notes": "Arithmetic: v = sqrt(2 GM_sun / au) = sqrt(2 × 1.3271244e20 / 1.495978707e11) = sqrt(1.7742557e9 m^2/s^2) = 42,121.9 m/s, about 42.1 km/s. Check: the circular orbit speed at 1 au, sqrt(GM_sun / au) = 29,785 m/s, is Earth's familiar mean orbital speed of about 29.8 km/s, and escape speed is sqrt(2) times it. What it ignores: (1) It is measured relative to the Sun, not Earth. Earth already moves at about 29.8 km/s, so once clear of Earth's gravity a throw along Earth's motion needs only about 12.3 km/s more, and a throw straight against it needs about 71.9 km/s. (2) Earth's own pull: from the ground, in the best direction, the speed needed is about sqrt(12.34^2 + 11.19^2), roughly 16.7 km/s, using the existing earth_escape_velocity_surface fact. This ignores air, Earth's spin and the other planets. (3) The other planets' pulls. (4) Relativity, which is negligible: 42 km/s is about 0.014% of light speed. For the page's threshold: 3,000 km/s is about 70 times this speed, so none of these corrections matter there. Rough check, an estimate rather than a sourced figure: at 3,000 km/s the Sun's pull bends a path that never comes closer than 1 au by at most about 2 GM_sun / (b v^2) = 2 × 1.327e20 / (1.496e11 × 9e12), about 2 × 10^-4 rad (0.01°). It also slows the object by about 0.01%. So 'flies off in a straight line' holds, unless it is aimed close to the Sun.",
+   "quote": "Derived; no fetched page carries this number. Inputs as quoted: \"(GM)^N_sun = 1.327 124 4 × 10^20 m3 s−2\" (IAU 2015 B3) and \"a conventional unit of length equal to 149 597 870 700 m exactly\" (IAU 2012 B2).",
+   "who_when": "Derived 2026-10-12 from IAU 2012 B2 and IAU 2015 B3"
+  },
+  {
+   "key": "milky_way_escape_speed_solar",
+   "category": "space",
+   "label": "Speed needed to escape the Milky Way from the Sun's position",
+   "status": "verified",
+   "value_si": 530000,
+   "unit_si": "m/s",
+   "low_si": 445000,
+   "high_si": 580000,
+   "display": "About 530 km/s; published estimates run from 445 to 580 km/s",
+   "sources": [
+    {
+     "title": "Piffl et al. (2014) The RAVE survey: the Galactic escape speed and the mass of the Milky Way, A&A 562, A91; arXiv abstract page",
+     "url": "https://arxiv.org/abs/1309.4293"
+    },
+    {
+     "title": "Piffl et al. (2014), arXiv v3 PDF (abstract on p. 1)",
+     "url": "https://arxiv.org/pdf/1309.4293v3"
+    },
+    {
+     "title": "Piffl et al. (2014), published abstract on Macquarie University's research portal (A&A 562, A91, DOI 10.1051/0004-6361/201322531)",
+     "url": "https://researchers.mq.edu.au/en/publications/the-rave-survey-the-galactic-escape-speed-and-the-mass-of-the-mil/"
+    },
+    {
+     "title": "Deason et al. (2019) The local high velocity tail and the Galactic escape speed, MNRAS 485, 3514-3526; arXiv abstract page",
+     "url": "https://arxiv.org/abs/1901.02016"
+    },
+    {
+     "title": "Monari et al. (2018) The escape speed curve of the Galaxy obtained from Gaia DR2 implies a heavy Milky Way, A&A 616, L9; arXiv abstract page",
+     "url": "https://arxiv.org/abs/1807.04565"
+    },
+    {
+     "title": "Koppelman & Helmi (2021) Determination of the escape velocity of the Milky Way using a proper motion selected halo sample, A&A 649, A136; arXiv abstract page",
+     "url": "https://arxiv.org/abs/2006.16283"
+    },
+    {
+     "title": "Necib & Lin (2022) Substructure at High Speed. II. The Local Escape Velocity and Milky Way Mass with Gaia eDR3, ApJ 926, 189; Caltech repository record",
+     "url": "https://authors.library.caltech.edu/records/0tydh-nvr82"
+    },
+    {
+     "title": "Milky Way Mass Through Escape Velocity Curve from LAMOST K Giants (2025 preprint, arXiv:2510.18227)",
+     "url": "https://arxiv.org/abs/2510.18227"
+    }
+   ],
+   "notes": "All pages fetched 2026-10-12. Measurements: (1) Piffl et al. 2014, from RAVE survey stars: 533 (+54, -41) km/s at 90% confidence, plus a 4% systematic uncertainty. Here 'escape' means reaching three virial radii (3 R340). Wording discrepancy: the arXiv listing's abstract says '5% systematic'. That text is left over from v1, which gave 537 (+59, -43). The v3 PDF abstract and the published abstract both say 4%, so 4% is used. (2) Deason et al. 2019, from Gaia DR2 data plus cosmological simulations: 528 (+24, -25) km/s at 8.3 kpc from the Galactic centre, with the boundary at 2 r200. The abstract does not say what confidence level these errors are. (3) Monari et al. 2018, from Gaia DR2 (about 2,850 counter-rotating halo stars): 580 ± 63 km/s, boundary at three virial radii. It shares authors (Piffl, Steinmetz) and method with (1), so it is not counted as independent. (4) Koppelman & Helmi 2021, from Gaia (about 10^7 halo stars, sideways motions only): 497 ± 8 km/s. The authors call this 'most likely biased low, our best guess is by 10%' and say the true value 'most likely is closer to 550 km/s'. (5) Necib & Lin 2022, from Gaia eDR3 with a multi-component fit: 445 (+25, -8) km/s with two components (preferred), and 472 (+17, -12) km/s with one. Their arXiv v1 used Gaia DR2 and gave 484.6 (+17.8, -7.4); the published eDR3 value is used here. (6) 2025 LAMOST K-giant preprint, using Gaia DR3: 523.74 (+12.83, -13.47) km/s. The arXiv page shows no journal reference. Why 'verified': (1) and (2) come from different surveys (RAVE versus Gaia), teams and methods, and they agree within their errors (533 versus 528). (6) also agrees. Value used: 530 km/s, rounding (1) and (2). Range: the published central values run from 445 km/s (Necib & Lin 2022) to 580 km/s (Monari 2018). With error bars the span is about 437 to 643 km/s. Newer Gaia analyses tend to sit lower, at 445 to 525 km/s. The spread comes from how the tail of the fastest stars is modelled and from where 'escape' is set. The Galaxy has no sharp edge, so 'escape' means reaching a chosen far radius (3 R340 or 2 r200), and the Local Group (Andromeda) is ignored. What it ignores for the page: the speed is relative to the Galaxy's centre, not to the Sun or Earth. The papers assume the Sun circles the Galaxy at 230 to 240 km/s (Necib & Lin 230 ± 10, Koppelman & Helmi 232.8, Monari 240). So a throw along the Sun's orbit needs roughly 300 km/s relative to the Sun, and one straight against it roughly 765 km/s. The Sun's and Earth's pulls add only a little. These are rough figures, not sourced. A 3,000 km/s throw is about 6 times 530 km/s, and about 4 times even the worst case against the Sun's motion. So in this model it leaves the Galaxy in any direction, unless it hits something. Rough estimate, not sourced: the Galaxy's pull bends such a path by roughly (v_c / v)^2 ≈ (235/3000)^2 ≈ 0.006 rad, times a factor of a few, about a degree at most.",
+   "quote": "Piffl et al. (v3 PDF and published abstract): \"Our best estimate of the local Galactic escape speed, which we define as the minimum speed required to reach three virial radii R340, is 533+54−41 km s−1 (90% confidence) with an additional 4% systematic uncertainty\"; Deason et al.: \"After applying our methodology to the Gaia data, we find a local (r_0=8.3 kpc) escape speed of v_esc(r_0) = 528(+24,-25) km/s.\"",
+   "who_when": "Piffl et al. 2014 and Deason et al. 2019; range from Monari et al. 2018 to Necib & Lin 2022 and a 2025 preprint"
+  }
+ ],
+ "gaps": [
+  "iau.org's current 'List of Resolutions' page links the 2012 resolutions only in French (via Google Drive). The English IAU 2012 B2 text was read from the IAU's archived site (iauarchive.eso.org); the old www.iau.org/static/resolutions/ URLs return 404. The au value is also restated in IAU 2015 B3 endnote 4, which was fetched from iau.org.",
+  "Both IAU PDFs were read by extracting their text locally with pdftotext. The Sun symbol in the B3 table comes out as '1' in the extracted text.",
+  "aanda.org (A&A journal pages) returned HTTP 403 and ADS returned 405. Piffl et al.'s published abstract was read on Macquarie University's research-portal record. Monari et al. and Koppelman & Helmi were read only on arXiv (the journal references come from the arXiv pages). Volumes and pages for Piffl (A&A 562, A91), Deason (MNRAS 485, 3514-3526) and Necib & Lin (ApJ 926, 189) were cross-checked with Crossref metadata.",
+  "Piffl et al.: the arXiv listing's abstract says '5% systematic' (left over from v1), while the v3 PDF and the published abstract say 4%. 4% is used.",
+  "Deason et al.'s abstract does not say what confidence level its +24/-25 km/s errors are.",
+  "Roche et al. 2024 (ApJ 972, 70, Gaia DR3 escape-speed profile from 4 to 11 kpc): the abstract gives no solar-position value, and none appeared in the part of the HTML that was read, so it is not in the range.",
+  "The 2025 LAMOST preprint (arXiv:2510.18227) has no journal reference on its arXiv page, and its authors were not recorded.",
+  "Not verified here: Earth's orbital eccentricity (about 0.017) in the au notes, and the Sun's circular speed of 230-240 km/s, which is taken from the papers' own assumptions rather than a dedicated source. The two 'rough check' path-bending figures are order-of-magnitude estimates, not sourced."
+ ]
+}

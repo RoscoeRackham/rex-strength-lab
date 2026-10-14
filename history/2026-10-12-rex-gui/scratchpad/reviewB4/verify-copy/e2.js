@@ -1,0 +1,10 @@
+const R = __dirname + '/repo/rex-strength-lab/src/';
+const P = require(R + 'engine.js'); global.window = {}; require(R + 'data.js'); const D = window.DINO_DATA;
+const g = P.K.g;
+const mk = (b, kg, o) => Object.assign({ F: kg * g, mode: 'comic', body: P.makeBody({ build: b, H: b === 'rex' ? 3.048 : 3.06, m: 3007 }), surface: D.surfaces.find(s => s.id === (o && o.sf || 'concrete')), anchor: 'friction', airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true }, o || {});
+const A = mk('rex', 1e20), B = mk('ollie', 1e20);
+const r = P.throwPartner(A, B, 45).r;
+const tg = r.toGround; console.log('wrestle throw 45deg toGround', tg, 'sinkRatioRaw', r.sinkRatioRaw || (r.t && r.t.sinkRatioRaw));
+const J = tg.J + tg.supplied; const Jh = J * Math.cos(Math.PI / 4), Jv = J * Math.sin(Math.PI / 4);
+console.log('|J| = J+supplied =', J.toExponential(3), ' horizontal', Jh.toExponential(3), ' vertical', Jv.toExponential(3));
+console.log('vertical supplied by power (vector) ~', Jv.toExponential(3), 'vs page "supplied"', tg.supplied.toExponential(3));

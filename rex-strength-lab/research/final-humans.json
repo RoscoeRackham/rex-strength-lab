@@ -854,27 +854,23 @@
   {
    "key": "fastest_baseball_pitch",
    "category": "speed_record",
-   "label": "Fastest recorded baseball pitch (ball speed at release)",
+   "label": "Fastest recorded baseball pitch (ball speed, as MLB lists it)",
    "status": "verified",
    "value_si": 47.297,
    "unit_si": "m/s",
-   "display": "105.8 mph (170.27 km/h, 47.30 m/s)",
-   "who_when": "Aroldis Chapman (Cincinnati Reds), 24 Sep 2010, PETCO Park, San Diego",
-   "notes": "Listed by Guinness. PITCHf/x first recorded it at 105.1 mph. SABR explains the revision to 105.8 mph: Statcast measures speed as the ball leaves the pitcher's hand, while PITCHf/x measured at a fixed distance from the plate. So 105.8 mph is a release speed, the right input for the sim. Guinness's credit to 'Statcast, which began recording velocities in 2008' is loose wording. 105.8 x 0.44704 = 47.297 m/s. This is ball speed, not hand speed. Fastest pitch of 2026: 105.5 mph by Jacob Misiorowski (26 Jun 2026, Screwball). The researcher's 'record for a starter' label and the Chapman 105.7 (2016) and Ben Joyce 105.5 (2024) figures were not verified. No pitch of 106 mph or more is on record.",
+   "display": "105.8 mph (47.3 m/s); Aroldis Chapman, 24 Sep 2010",
    "sources": [
     {
-     "title": "Guinness World Records: Fastest baseball pitch (male)",
-     "url": "http://www.guinnessworldrecords.com/world-records/fastest-baseball-pitch-male"
+     "title": "MLB.com, Sarah Langs (9 Sep 2026): '105.7 mph throw? 122.9 mph HR? This is the Statcast speed Hall of Fame'",
+     "url": "https://www.mlb.com/news/speediest-plays-in-statcast-history"
     },
     {
-     "title": "SABR Games Project: Sept 24, 2010, Chapman tops 105 mph",
-     "url": "https://sabr.org/gamesproj/game/september-24-2010-reds-aroldis-chapman-tops-105-mph-for-fastest-pitch-ever-recorded/"
-    },
-    {
-     "title": "Screwball: Fastest pitches thrown in MLB 2026",
-     "url": "https://www.screwball.com/mlb/fastest-pitches-in-2026"
+     "title": "MLB Glossary: Velocity (VELO), Statcast",
+     "url": "https://www.mlb.com/glossary/statcast/velocity"
     }
-   ]
+   ],
+   "notes": "MLB.com: 'Fastest pitch: 105.8 mph, Aroldis Chapman, Sept. 24, 2010'; 'Pitch velocity goes back to 2008'. 105.8 x 0.44704 = 47.297 m/s. Ball speed, not hand speed. Misiorowski's 105.5 mph (27 Jun 2026) is the fastest pitch by a starter and 'the third-fastest pitch recorded in the Statcast Era', so the record stands. The glossary says Statcast velocity is the maximum speed 'with the max speed always being at the release point'; that describes Statcast (from 2015), and the 2010 pitch was tracked by PITCHf/x, so 'at release' is our inference, as is the idea that the earlier 105.1 mph (SABR) was the same pitch measured farther from the hand. MLB does not say how the 105.8 was derived. Skeptic: misquote of Misiorowski fixed; 'at release' removed from label and display; inferences labelled.",
+   "who_when": "MLB (Statcast data), page dated 9 Sep 2026"
   },
   {
    "key": "fastest_punch_guinness_claim",
