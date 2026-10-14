@@ -3376,34 +3376,41 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     else if (r.limitedBy === 'effort') v = 'At this effort Rex doesn’t pull hard enough to start it moving.';
     else v = 'Rex is strong enough, but his feet slide before it moves.';
     out.push(verdict(v));
-    // ownPull: his power changed how hard he can pull (credited only off Bolted; bolted, the item says the load sets the
-    // pace); pa: what his source takes back (the power wins over Bolted for his own moves, so bolted too)
+    // ownPull: his power changed how hard he can pull (credited only off Bolted; bolted, the item says what sets the
+    // pace); pa: what his source takes back (the power wins over Bolted for his own moves, so bolted too). With the power
+    // on his feet move his own body with at most the smaller of his footing (anc.R: Infinity bolted) and his legs' push
+    // (LEG x the strength he uses, the leg rule the cantWalk item states; review round 3: Bolted removes the footing
+    // limit, not the muscle limit); legsSet: his legs, not his grip, are the smaller
     const ownPull = !!r.ownRecoil && state.anchor !== 'bolted', pa = r.recoilAbsorbed;
+    const LEG = P.MUSCLE.jump.forceFrac, legsR = r.ownRecoil ? LEG * r.usable : 0, legsSet = !!r.ownRecoil && legsR < r.anchor.R, legX = sig(LEG, 2) + '×';
     out.push(el('div', { class: 'status-row' },
       r.cantWalk ? status('bad', r.cantStand ? 'Too heavy to get up' : 'Too heavy to walk') : null,
       c.F >= r.resist ? status('good', 'Strength enough') : status('bad', 'Too weak'),
       ownPull ? status('info', 'The load’s pull back goes to the endless ocean: their power') : r.anchor.R >= r.resist ? status('good', 'Footing holds') : status('bad', 'Footing fails (' + r.anchor.limit + ')'),
-      ownPull && r.footLimited && r.canMove ? status('warn', 'His own footing sets the pace') : null,
+      r.ownRecoil && r.footLimited && r.canMove ? status('warn', legsSet ? 'His legs set the pace' : 'His own footing sets the pace') : null,
       r.rolling ? (o.crrStatus === 'estimate' ? status('warn', 'Rolling resistance: rough estimate') : status('info', 'Rolls on wheels')) : status('info', 'Slides (no wheels)')));
     out.push(logBars('Forces', [
       { label: 'Needed to keep it moving', value: r.resist },
       { label: ownPull ? 'His footing (moves his own body)' : 'His footing can hold', value: r.anchor.R },
-      ownPull && r.canMove ? { label: 'The rope’s pull', value: r.ropeT } : null,
+      r.ownRecoil ? { label: 'His legs (move his own body)', value: legsR } : null,
+      r.ownRecoil && r.canMove ? { label: 'The rope’s pull', value: r.ropeT } : null,
       { label: 'His strength', value: c.F, highlight: true },
     ].filter(Boolean), (x) => fmtSI(x, 'N'), { padL: 190 }));
     const items = [];
     if (r.cantWalk) items.push('Dragging a load means walking with it. Each step puts about 1.2× his weight on one leg, and his legs push with at most 1.4× the dial’s force (a rough rule; see the Weight tab). At ' + fmtMass(c.body.m) + ' he can’t ' + (r.cantStand ? 'even get up' : 'take a step') + '.');
-    if (ownPull) items.push('They take their own recoil: the load’s pull back on him goes into their source, the endless ocean, so grip no longer limits how hard he can pull' + (r.footLimited && r.canMove ? ', but his own footing sets the pace: he pulls with ' + fmtSI(r.ropeT, 'N') + ' of the ' + fmtSI(r.usable, 'N') + ' he could, as hard as keeps the load at his pace. He still walks with it, and walking runs on friction: his footing (' + fmtSI(r.anchor.R, 'N') + ') can speed his own body up by at most ' + sig(r.anchor.R / c.body.m, 2) + ' m/s².' : ': he pulls with all of the strength he uses, and the load sets the pace. He still walks with it, and walking runs on friction: his footing (' + fmtSI(r.anchor.R, 'N') + ') can speed his own body up by at most ' + sig(r.anchor.R / c.body.m, 2) + ' m/s².'));
+    if (ownPull) items.push('They take their own recoil: the load’s pull back on him goes into their source, the endless ocean, so grip no longer limits how hard he can pull' + (r.footLimited && r.canMove ? ', but ' + (legsSet ? 'his own legs set' : 'his own footing sets') + ' the pace: he pulls with ' + fmtSI(r.ropeT, 'N') + ' of the ' + fmtSI(r.usable, 'N') + ' he could, as hard as keeps the load at his pace.' : ': he pulls with all of the strength he uses, and the load sets the pace.')
+      + ' He still walks with it: his feet move his own body with at most the smaller of his footing (' + fmtSI(r.anchor.R, 'N') + '; walking runs on friction) and his legs’ push (' + fmtSI(legsR, 'N') + ', at most ' + legX + ' the strength he uses), so they can speed it up by at most ' + sig(Math.min(r.anchor.R, legsR) / c.body.m, 2) + ' m/s².');
     // They take their own recoil (bolted too): the rope's pull back goes to his source, so none of it reaches the ground
     // (the engine's recoilAbsorbed: the rope's impulse over the pull). His own steps do push the ground: walking with the
     // load is the move, not recoil (the engine's walkPush: his own body's momentum over the pull, the pull's shaking
-    // source with the power on). On friction his grip caps them; bolted nothing does. The load's rolling or sliding
-    // resistance presses on the ground too, a steady drag over the whole pull: not counted as shaking.
+    // source with the power on). His legs cap them (LEG x the strength he uses); on friction his grip too, and the
+    // smaller of the two is named. The load's rolling or sliding resistance presses on the ground too, a steady drag over
+    // the whole pull: not counted as shaking.
     const rs = r.rolling ? 'rolling' : 'sliding';
     if (pa && r.canMove) {
       const wp = r.walkPush, ws = wp ? groundShake(c.surface, wp) : null;
-      items.push((state.anchor === 'bolted' ? 'Bolted, his feet can’t slide, so grip limits neither his pull nor his own steps: he pulls with all of the strength he uses, and the load alone sets the pace (his bolted feet keep his own body with it). ' : '') + 'Nothing of the rope’s pull back reaches the ground: it goes to the endless ocean (' + momFig(pa) + ' over ' + fmtTime(pa.T) + ', the load’s momentum plus the ' + rs + ' resistance it overcame).'
-        + (wp ? ' His own steps still push on the ground: walking with the load is the move, not recoil, so that push is real. It is his own body’s momentum, ' + momFig(wp) + ' over ' + fmtTime(wp.T) + (state.anchor === 'bolted' ? ' (bolted, nothing caps it: the quicker the pull, the harder his feet push).' : ' (his grip caps it: his footing, ' + fmtSI(r.anchor.R, 'N') + ', is the most his steps can push with).') + ' ' + groundShakeText(ws, c.surface) : '')
+      items.push((state.anchor === 'bolted' ? 'Bolted, his feet can’t slide, so grip doesn’t limit his pull. His legs still move his own body, with at most ' + legX + ' the strength he uses (' + fmtSI(legsR, 'N') + ')' + (r.footLimited ? ', so his own body sets the pace: he pulls with ' + fmtSI(r.ropeT, 'N') + ' of the ' + fmtSI(r.usable, 'N') + ' he could, as hard as keeps the load at his pace. ' : '; here they keep up, so he pulls with all of the strength he uses and the load sets the pace. ') : '') + 'Nothing of the rope’s pull back reaches the ground: it goes to the endless ocean (' + momFig(pa) + ' over ' + fmtTime(pa.T) + ', the load’s momentum plus the ' + rs + ' resistance it overcame).'
+        + (wp ? ' His own steps still push on the ground: walking with the load is the move, not recoil, so that push is real. It is his own body’s momentum, ' + momFig(wp) + ' over ' + fmtTime(wp.T) + (legsSet ? ' (his legs cap it: at most ' + legX + ' the strength he uses, ' + fmtSI(legsR, 'N') + (state.anchor === 'bolted' ? '' : ', less than his footing, ' + fmtSI(r.anchor.R, 'N')) + ').' : ' (his grip caps it: his footing, ' + fmtSI(r.anchor.R, 'N') + ', is the most his steps can push with).') + ' ' + groundShakeText(ws, c.surface) : '')
         + ' (The load’s ' + rs + ' presses on the ground too, a steady drag over the whole pull; the lab doesn’t count that as shaking.)');
     }
     else if (!r.ownRecoil) items.push('Pulling needs two things: enough strength, and enough grip on the ground not to get dragged instead.' + (r.anchor.R < r.resist ? ' Here grip runs out first: he can only hold ' + fmtSI(r.anchor.R, 'N') + ' before his feet slide.' : ''));
@@ -3411,8 +3418,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     items.push('Record pullers lean into a harness with the rope angled down to the load, which presses them into the ground and raises their grip. The sim pulls level, so it is a little pessimistic.');
     out.push(happens(items));
     const a = r.anchor;
-    const footing = state.anchor === 'bolted' ? 'Footing (bolted to the planet): unlimited, a comic anchor' + (r.ownRecoil ? '. They take their own recoil: the rope’s pull back goes to the endless ocean, so pull = the strength he uses; acceleration = (pull − resistance) ÷ load mass (his bolted feet keep his own body at that pace); his steps push the ground with his own body’s momentum, m v, over the pull' : '')
-      : ownPull ? 'They take their own recoil: pull = the strength he uses; acceleration = min((pull − resistance) ÷ load mass, footing ÷ his mass), footing = μ × his weight = ' + fmtSI(a.R, 'N') + '; his steps push the ground with his own body’s momentum, m v, over the pull'
+    const footing = state.anchor === 'bolted' ? 'Footing (bolted to the planet): unlimited, a comic anchor' + (r.ownRecoil ? '. They take their own recoil: the rope’s pull back goes to the endless ocean; acceleration = the smaller of (the strength he uses − resistance) ÷ load mass and his legs’ push ÷ his mass, legs’ push = ' + sig(LEG, 2) + ' × the strength he uses = ' + fmtSI(legsR, 'N') + '; the rope pulls as hard as keeps the load at that pace; his steps push the ground with his own body’s momentum, m v, over the pull' : '')
+      : ownPull ? 'They take their own recoil: acceleration = the smaller of (the strength he uses − resistance) ÷ load mass and his feet’s push ÷ his mass; his feet push with the smaller of his footing, μ × his weight = ' + fmtSI(a.R, 'N') + ', and his legs’ push, ' + sig(LEG, 2) + ' × the strength he uses = ' + fmtSI(legsR, 'N') + '; the rope pulls as hard as keeps the load at that pace; his steps push the ground with his own body’s momentum, m v, over the pull'
       : 'Footing (just standing) = μ × ' + (a.normalCapped ? 'the most the ground can bear' : 'his weight') + ' = ' + sig(c.surface.mu, 2) + ' × ' + (a.normalCapped ? fmtSI(a.Nmax, 'N') : sig(c.body.m, 3) + ' kg × 9.81') + ' = ' + fmtSI(a.R, 'N');
     out.push(math(['Resistance = ' + (r.rolling ? 'Crr' : 'μ_slide') + ' × m g = ' + r.crr + ' × ' + fmtMass(o.m) + ' × 9.81 = ' + fmtSI(r.resist, 'N'), footing, 'Time for 10 m from rest under constant force, relativistic: t = √(2x/a + (x/c)²).']));
     return out;
@@ -3540,21 +3547,23 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   }
   // a pull's ground shaking. With They take their own recoil on (bolted too: it wins for his own moves) the rope's pull
   // back goes to their source, and the shaking the lab counts is his own steps' (walking with the load is the move: the
-  // engine's walkPush, MOVES.pull.shake): on friction his grip caps them, so it stays small; bolted nothing does
-  // (pullOnWhy). With the power off the lab counts no pull's shaking, as before the power existed (the powers-off
-  // results stay main's): his footing takes the rope's pull back, a steady load over seconds, or his bolts do, over the
-  // pull (a fraction of a second all-out); his steps push the ground too. pullNoShake says so, and that a bolted one may
-  // be understated. Its times and forces are all-out (ctx() carries no effort), and it says so.
+  // engine's walkPush, MOVES.pull.shake): his legs cap them (1.4x the strength he uses; review round 3), and on friction
+  // his grip does too, so it stays small; bolted only his legs do (pullOnWhy). With the power off the lab counts no
+  // pull's shaking, as before the power existed (the powers-off results stay main's; the page doesn't say that, review
+  // round 3): his footing takes the rope's pull back, a steady load over seconds, or his bolts do, over the pull (it can
+  // be quick all-out); his steps push the ground too. pullNoShake says so, and that a bolted one may be understated. Its
+  // times and forces are all-out (ctx() carries no effort), and it says so.
   const pullOnWhy = () => {
-    const o = objById(state.obj), rs = o.crr != null ? 'rolling' : 'sliding';
+    const o = objById(state.obj), rs = o.crr != null ? 'rolling' : 'sliding', pr = P.pull(ctx(), o), legs = P.MUSCLE.jump.forceFrac * pr.usable, legX = sig(P.MUSCLE.jump.forceFrac, 2) + '×';
     return 'They take their own recoil: the rope’s pull back on him goes to the endless ocean, so none of it reaches the ground. The shaking the lab counts is from his own steps: walking with the load is the move, not recoil, so their push is real. '
-      + (state.anchor === 'bolted' ? 'Bolted, nothing caps it, so a quick, hard pull shakes the ground.' : 'His grip caps it (his footing, about ' + fmtSI(P.pull(ctx(), o).anchor.R, 'N') + ' here), so it stays small.')
+      + (state.anchor === 'bolted' ? 'Bolted, his legs cap it: they push his own body with at most ' + legX + ' the strength he uses (about ' + fmtSI(legs, 'N') + ' here), so only a strong, quick pull shakes the ground.'
+        : legs < pr.anchor.R ? 'His legs cap it (at most ' + legX + ' the strength he uses, about ' + fmtSI(legs, 'N') + ' here, less than his footing), so it stays small.' : 'His grip caps it (his footing, about ' + fmtSI(pr.anchor.R, 'N') + ' here), so it stays small.')
       + ' (The load’s ' + rs + ' presses on the ground too, a steady drag; the lab doesn’t count that.)';
   };
   const pullNoShake = () => {
     if (state.ownRecoil) return pullOnWhy();
     const o = objById(state.obj), r = P.pull(ctx(), o), rope = r.canMove ? o.m * r.accel + r.resist : 0;
-    if (state.anchor === 'bolted') return 'Bolted, the rope’s pull back goes through his bolts into the planet' + (r.canMove && isFinite(r.t10m) && r.t10m > 0 ? ', over the ' + fmtTime(r.t10m) + ' the pull takes all-out' : '') + ', and his steps push his own body along. With They take their own recoil off the lab doesn’t count a pull’s ground shaking (as before the power existed), so a quick, hard pull may shake the ground more than the effort box says.';
+    if (state.anchor === 'bolted') return 'Bolted, the rope’s pull back goes through his bolts into the planet' + (r.canMove && isFinite(r.t10m) && r.t10m > 0 ? ', over the ' + fmtTime(r.t10m) + ' the pull takes all-out' : '') + ', and his steps push his own body along. With They take their own recoil off the lab doesn’t count a pull’s ground shaking, so a quick, hard pull may shake the ground more than the effort box says.';
     if (!r.canMove) return 'Without They take their own recoil, his footing caps the rope’s pull at about ' + fmtSI(r.anchor.R, 'N') + ' here, a steady load: far too little to shake the ground, so the lab doesn’t count it.';
     // his footing sets his pace (the rope gets part of its push; the rest speeds his own body), or a chosen effort does
     if (r.usable >= r.anchor.R * (1 - 1e-9)) return 'Without They take their own recoil, all-out his footing (about ' + fmtSI(r.anchor.R, 'N') + ') sets his pace: the rope gets about ' + fmtSI(rope, 'N') + ' of it over ' + fmtTime(r.t10m) + ' (the rest speeds his own body), a steady load, which sets up far less ground wave than a blow of the same size; the lab doesn’t count it, nor his steps.';
@@ -3775,9 +3784,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         else now = rc[h.id] ? 'happens now' : 'not now';
         items.push(el('li', {}, el('b', { text: H.name }), ' ' + (h.id === 'air' || h.id === 'plaster' ? 'at ' + fmtDist(state.near) + ' ' : '') + from + '; ' + now + '.'));
       }
-      if (noShake(move)) items.push(el('li', {}, el('b', { text: 'Ground shaking' }), noWaves() ? ': no ground-wave model for ' + theSurf(ctx().surface) + '.' : move === 'pull' ? ': not counted with They take their own recoil off (as before the power existed).' : ': not modelled for this move.'));
+      if (noShake(move)) items.push(el('li', {}, el('b', { text: 'Ground shaking' }), noWaves() ? ': no ground-wave model for ' + theSurf(ctx().surface) + '.' : move === 'pull' ? ': not counted with They take their own recoil off.' : ': not modelled for this move.'));
       // the pull with the power on: its only shaking source is his own steps (the rope's pull back goes to the ocean)
-      else if (move === 'pull') items.push(el('li', {}, el('b', { text: 'Ground shaking' }), ': from his own steps only (the move itself); the rope’s pull back goes to the endless ocean, so none of it reaches the ground. The load’s ' + (objById(state.obj).crr != null ? 'rolling' : 'sliding') + ' presses on it too, a steady drag the lab doesn’t count.'));
+      else if (move === 'pull') items.push(el('li', {}, el('b', { text: 'Ground shaking' }), ': from his own steps only (the move itself: his legs push his own body with at most ' + sig(P.MUSCLE.jump.forceFrac, 2) + '× the strength he uses' + (state.anchor === 'bolted' ? '' : ', and his grip caps that too') + '); the rope’s pull back goes to the endless ocean, so none of it reaches the ground. The load’s ' + (objById(state.obj).crr != null ? 'rolling' : 'sliding') + ' presses on it too, a steady drag the lab doesn’t count.'));
       const det = el('details', { class: 'haz-list' }, el('summary', { text: items.length ? 'Where each hazard starts (' + items.length + ')' : 'Hazards checked' }),
         items.length ? el('ul', {}, items) : el('p', { class: 'muted', text: 'The searches found none of the hazards the lab checks (a sonic boom, an air blast loud enough to risk damage, ground shaking that may crack plaster, broken ground, a crushed object, a thrown person pressed past ride limits, his recoil shoving him past the nearest people) in this move at this strength.' }));
       det.open = hazOpen;
@@ -4131,11 +4140,14 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       const o = objById(state.cObj), D0 = Math.pow(10, state.cLogD);
       const legs = [P.catchLeg(cR, cO, o, D0, state.cStyle), P.catchLeg(cO, cR, o, D0, state.cStyle)];
       out.models = { shake: shakeOn, air: true, ground: true };
-      // every leg's object reaches the catcher (caught, a slam, wreckage, a catch he can't hold), so with their recoil
-      // taken all its momentum goes to their source; otherwise it lands on or around him, or hits the ground, which the
-      // lab doesn't judge as shaking in this test. thrown: some leg's thrower pushed (with the power on, to his source)
-      out.allReach = legs.some(Boolean) && legs.every((L) => !L || CAUGHT.includes(L.result));
-      out.thrown = legs.some((L) => !!(L && (L.recoilAbsorbedT || L.toGroundT)));
+      // every thrown leg's object reaches the catcher (caught, a slam, wreckage, a catch he can't hold), so with their
+      // recoil taken all its momentum goes to their source; otherwise it lands on or around him, or hits the ground,
+      // which the lab doesn't judge as shaking in this test. A leg too weak to throw, or whose thrower can't hold or
+      // reach it, throws nothing, so it lands nowhere (review round 3). thrown: some leg's thrower pushed (with the power
+      // on, to his source)
+      const thrownLegs = legs.filter((L) => !!(L && (L.recoilAbsorbedT || L.toGroundT)));
+      out.allReach = thrownLegs.length > 0 && thrownLegs.every((L) => CAUGHT.includes(L.result));
+      out.thrown = thrownLegs.length > 0;
       for (const L of legs) {
         if (!L) continue;
         out.shake.push(srcOf(cR, ownGround(cR, L.toGroundT)), srcOf(cR, ownGround(cR, L.toGroundC)));
@@ -4495,7 +4507,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         capped && !tinyShare(eff.use, FR) ? each + '.' : '');
       head.append(' ' + (eff.never ? 'Everything they have.' : eff.already ? 'Least disruptive already does this: it ' + what + '.' : 'The least effort that ' + what + '.'));
       read.append(head);
-      if (eff.real && eff.p.factsAt(eff.p.hi, 'real').models.ground) read.append(el('p', { text: 'Unbreakable footing is set aside for this test: they mean to break the ground, so the energy it would take back goes into it.' }));
+      // (judged at unlimited strength at an unlimited dial, as the rest of the box is: review round 3, code-1)
+      if (eff.real && factsTop('real').models.ground) read.append(el('p', { text: 'Unbreakable footing is set aside for this test: they mean to break the ground, so the energy it would take back goes into it.' }));
       if (eff.never) {
         const fAll = eff.real ? factsTop('real') : factsTop(), nm = duoNoModel(act, e, fAll);
         // why nothing shakes the ground where their recoil leaves no push on it; and why the ground doesn't break where

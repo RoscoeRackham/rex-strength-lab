@@ -1647,16 +1647,19 @@
     const M = obj.m + body.m;
     let accel = net > 0 ? net / M : 0;
     // his own pull: taking his own recoil, the load's pull back on him (the rope) goes to his source, not his feet, so
-    // he pulls with his whole drive; his own body still walks, so it can speed up only as fast as his footing moves his
-    // own weight (pulling is walking with it; walking is the move itself, not recoil, and its push into the ground stays
-    // real, as does the load's rolling or sliding resistance where the load meets the ground). The power wins over
-    // Bolted for his own moves (review round 2 of pull request 2), so bolted too: there anc.R is Infinity, his feet never
-    // limit his own body (aFeet Infinity) and the load sets the pace: accel = (drive - resistance) / the load's mass.
+    // he pulls with his whole drive; his own body still walks, so it can speed up only as fast as his feet move his own
+    // weight (pulling is walking with it; walking is the move itself, not recoil, and its push into the ground stays
+    // real, as does the load's rolling or sliding resistance where the load meets the ground). His legs cap that push:
+    // they push with at most LEG_SHARE (1.4x) the strength he uses (moveCheck's leg rule; the Pull tab states it), and on
+    // friction his grip (anc.R) caps it too. The power wins over Bolted for his own moves (review round 2 of pull request
+    // 2), so bolted too: there anc.R is Infinity, so only his legs cap his feet's push (Bolted removes the footing limit,
+    // not the muscle limit: review round 3). The pace is the smaller of the load's, (drive - resistance) / the load's
+    // mass, and his own body's, his feet's push / his mass (footLimited: his body sets it, on either footing).
     const ownLimit = { };
     if (ctx.ownRecoil) {
       usable = driveStrength(ctx);
       net = move.walk ? usable - resist : 0;
-      const aLoad = net > 0 ? net / obj.m : 0, aFeet = anc.R / body.m;
+      const aLoad = net > 0 ? net / obj.m : 0, aFeet = Math.min(anc.R, LEG_SHARE() * usable) / body.m;
       accel = Math.min(aLoad, aFeet);
       ownLimit.footLimited = aFeet < aLoad;
       if (accel > 0) net = accel * M;
@@ -1671,9 +1674,10 @@
     if (ctx.ownRecoil && net > 0) ownLimit.recoilAbsorbed = { J: ownLimit.ropeT * t10m, T: t10m, thetaDeg: 0 };
     // ... and his own steps, which aren't recoil: walking with the load is the move, so his feet push the ground back
     // (against the way he walks) with his own body's momentum over the pull, real: walkPush { J (kg m/s), T: t10m (s) }.
-    // With the power on that is the pull's shaking source (MOVES.pull.shake). On friction his grip caps it (at most his
-    // footing, anc.R); bolted nothing does. (His body's share of the pair's momentum net x t10m, exact near light speed.)
-    // With the power off it isn't reported: the lab counts no pull's shaking then, as before the power existed.
+    // With the power on that is the pull's shaking source (MOVES.pull.shake). His legs cap it (at most LEG_SHARE x the
+    // strength he uses); on friction his grip too (at most his footing, anc.R). (His body's share of the pair's momentum
+    // net x t10m, exact near light speed.) With the power off it isn't reported: the lab counts no pull's shaking then,
+    // as before the power existed.
     if (ctx.ownRecoil && net > 0) ownLimit.walkPush = { J: isFinite(net) ? net * t10m * body.m / M : Infinity, T: t10m };
     return Object.assign({
       resist, crr, rolling: obj.crr != null, anchor: anc, usable,
@@ -4057,10 +4061,11 @@
         speed: (r) => r.vEnd,
         // With They take their own recoil on, the rope's pull back on him goes to his source (pull's recoilAbsorbed), not
         // into the ground; the shaking is his own steps' (pull's walkPush: his own body's momentum over the pull, the move
-        // itself, real). On friction his grip caps them, so it is small; bolted (the power wins over Bolted for his own
-        // moves) nothing caps them, and a quick, hard pull shakes the ground. With the power off the lab counts no pull's
-        // shaking, as before the power existed (the rope's pull back through his feet or bolts, and his steps). The load's
-        // rolling or sliding resistance pushes the ground too, a steady drag over the whole pull: not counted.
+        // itself, real). His legs cap them (at most 1.4x the strength he uses: LEG_SHARE); on friction his grip does too,
+        // so it is small; bolted (the power wins over Bolted for his own moves) only his legs do, so only a strong, quick
+        // pull shakes the ground. With the power off the lab counts no pull's shaking, as before the power existed (the
+        // rope's pull back through his feet or bolts, and his steps). The load's rolling or sliding resistance pushes the
+        // ground too, a steady drag over the whole pull: not counted.
         shake: (r, o) => (o.ownRecoil && r.walkPush && r.walkPush.J > 0 && r.walkPush.T > 0 && isFinite(r.walkPush.T) ? impulseSource(o.surface, r.walkPush.J, r.walkPush.T) : null),
         shakeWithPower: 'ownRecoil',
         where: 'behind him',
