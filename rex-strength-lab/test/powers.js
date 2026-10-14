@@ -1066,6 +1066,25 @@ const sig = (x) => Number(x).toPrecision(3);
     near(gOn.use / g, 3342, 0.005) && near(rLeast.v, 16.4, 0.005) && near(rLeast.flight.range, 30, 0.005) && near(rLeast.flight.vImpact, 18.0, 0.005) && near(plLeast.absorbed, 14600, 0.01)
       && cOn.by === 'plaster' && near(onset(cOn), 27000, 0.01) && M.throw.shakeFrom(pOn.run(cOn.use), pOn.opt) === 'landing' && cOff.by === 'passenger' && near(onset(cOff), 333.4, 0.005) && !c4.by && near(P.plasterReach(M.throw.shake(all4, p4.opt)), 1.36, 0.01),
     'least ' + sig(gOn.use / g) + ' kg-force; ceiling ' + cOn.by + ' at ' + sig(onset(cOn)) + '; off ' + cOff.by + ' at ' + sig(onset(cOff)) + '; four off: ' + (c4.by || 'none') + ', plaster reach ' + sig(P.plasterReach(M.throw.shake(all4, p4.opt))) + ' m');
+  // review round 1 of pull request 3 (physics-fast-landing-bearing): the landing's push stays real and whole; past what
+  // the ground bears over the person's facing area (less their weight) it gives way where they land. landGround's push is
+  // landShake's mean push (a Hann pulse: half its peak), and the speeds where the ground just bears it are the ones the
+  // README and the Their powers card give: about 100 m/s on the concrete slab and asphalt, 140 m/s on ice, 5.6 km/s on
+  // steel, 13 km/s on granite, 20-50 m/s on sand, gravel and clay
+  {
+    const lgOf = (rr, sid) => P.PASSENGER.landGround(person, rr.flight.vImpact, surf(sid || 'concrete'));
+    const allD = P.throwObject(cOf(F0, { safePassenger: true }), person, 45), all9 = P.throwObject(cOf(Math.pow(10, 9.15) * g, { safePassenger: true }), person, 45);
+    const vb = (sid) => P.PASSENGER.landGround(person, 1, surf(sid)).vBear, r2 = (x) => Number(x.toPrecision(2));
+    const at = (sid, f) => P.PASSENGER.landGround(person, vb(sid) * f, surf(sid)).gives;
+    const soils = ['sand', 'gravel', 'softclay', 'stiffclay'].map(vb);
+    const bad = [];
+    for (const rr of [r, allD, all9]) { const ls1 = M.throw.landShake(rr, on); if (!near(lgOf(rr).push, ls1.F / 2, 1e-12)) bad.push('push ' + sig(lgOf(rr).push) + ' vs ' + sig(ls1.F / 2)); }
+    for (const sid of D.surfaces.map((x) => x.id)) if (at(sid, 0.999) || !at(sid, 1.001)) bad.push('threshold ' + sid);
+    ok('7: past what the ground bears (its bearing over the person\'s facing area, less their weight) a Safe-passenger landing gives way: about 100 m/s on the slab and asphalt, 140 m/s on ice, 5.6 km/s on steel, 13 km/s on granite, 20-50 m/s in soil; not at the default dial all-out (81 m/s), 545 times past it at a 10^9.15 kg dial; the push is landShake\'s, whole',
+      !bad.length && r2(vb('concrete')) === 100 && r2(vb('asphalt')) === 100 && r2(vb('ice')) === 140 && r2(vb('steel')) === 5600 && r2(vb('granite')) === 13000 && Math.min(...soils) >= 19.5 && Math.max(...soils) <= 51
+        && !lgOf(allD).gives && lgOf(all9).gives && near(lgOf(all9).push / lgOf(all9).bear, 545, 0.01) && !lgOf(all9, 'granite').gives && JSON.stringify(M.throw.landShake(all9, on)) === JSON.stringify(M.throw.landShake(all9, off)),
+      bad.join('; ') + ' slab ' + sig(vb('concrete')) + ', ice ' + sig(vb('ice')) + ', steel ' + sig(vb('steel')) + ', granite ' + sig(vb('granite')) + ', soils ' + soils.map(sig).join('/') + ' m/s; 10^9.15: ' + sig(lgOf(all9).push / lgOf(all9).bear) + 'x');
+  }
 }
 
 console.log('\n' + (n - fails) + '/' + n + ' passed');

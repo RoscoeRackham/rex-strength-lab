@@ -4312,6 +4312,23 @@
     dragG: (o, v) => (v > 0 ? 0.5 * K.rho0 * v * v * (v >= K.a0 ? (o.CdSup || o.Cd || 1) : (o.Cd || 1)) * (o.area || 0.67) / (o.m * K.g) : 0),
     // what the person feels: the push plus holding them up against gravity, n = |a + g| / g with a along the throw
     felt: (aG, thetaDeg) => { const th = thetaDeg * Math.PI / 180; return Math.hypot(aG * Math.cos(th), aG * Math.sin(th) + 1); },
+    // A person landing at v with Safe passenger on (pull request 3, review round 1): its energy is taken back, but its
+    // momentum p still reaches the ground, whole, over their own quick stop, T = max(1 ms, L / v) with L about their size
+    // (landShake's pulse): a mean push of p / T. The ground bears at most its bearing pressure over the person's whole
+    // facing area (a generous contact patch; on sand and gravel the bearing grows with the patch's width, taken as the
+    // square root of that area), less their weight. Past that (gives) the push is more than the ground bears, so it
+    // gives way where they land, as his own feet punch in with Soft landing ('soft landing takes back the energy, not
+    // the force'). The lab doesn't size that hole, and its shaking figures there (the elastic model) are rough.
+    // vBear: the landing speed where the mean push just equals what the ground bears (about 100 m/s on the concrete
+    // slab). An estimate: no new canon; the momentum is never sent anywhere but the ground.
+    landGround(o, v, surface) {
+      const L = o.L || Math.cbrt(6 * o.m / (Math.PI * (o.rho || 1000))), A = o.area || 0.67;
+      const bear = Math.max(0, qultFor(surface, Math.sqrt(A)) * A - o.m * K.g);
+      const T = v > 0 ? Math.max(1e-3, L / v) : Infinity, push = v > 0 ? (v >= K.c ? Infinity : vToMomentum(v, o.m)) / T : 0;
+      // below L / 1 ms the push is m v^2 / L; above it, p / 1 ms (non-relativistic there: the bearing ends far below 1% of c)
+      const v1 = Math.sqrt(bear * L / o.m), vBear = v1 <= L / 1e-3 ? v1 : bear * 1e-3 / o.m;
+      return { push, bear, gives: push > bear, vBear, T };
+    },
   };
   const GROW = {
     TISSUE_C: 1540,   // speed of sound in soft tissue, m/s: instant growth takes the time sound needs to cross the body (estimate of the timescale)
