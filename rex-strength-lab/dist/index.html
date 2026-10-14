@@ -537,12 +537,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   // mass at the build density (see research/final-duo.json).
   const BUILDS = {
     human: { kV: BASE_V / 8, kFront: 0.2, kFoot: 0.01125, rho: 1000 },
-    rex: { kV: 0.10017, kFront: 0.4736, kFoot: 0.03337, rho: 1060 },   // 2.84 m^3, 4.4 m^2 (tail trailing), 0.31 m^2 paws at 10 ft
-    ollie: { kV: 0.10017, kFront: 0.4844, kFoot: 0.01615, rho: 1060 }, // 2.84 m^3, 4.5 m^2, 0.15 m^2 boots at 10 ft
+    rex: { kV: 0.099947, kFront: 0.4736, kFoot: 0.03337, rho: 1060 },   // 2.83 m^3, 4.4 m^2 (tail trailing), 0.31 m^2 paws at 10 ft
+    ollie: { kV: 0.099947, kFront: 0.4844, kFoot: 0.01615, rho: 1060 }, // 2.83 m^3, 4.5 m^2, 0.15 m^2 boots at 10 ft
   };
-  // Default bodies on the page: 10 ft by the owners' ruling. Mass by ruling too: Rex is 2,700 kg without
-  // his tail (307 kg, measured from the picture), and Ollie weighs the same in all.
-  const DEFAULT_BODIES = { rex: { H: 3.048, m: 3007 }, ollie: { H: 3.048, m: 3007 } };
+  // Default bodies on the page: 10 ft by the owners' ruling. Mass by ruling too: 3,000 kg each in all, 300 kg of
+  // it Rex's tail (RT, 13 Oct 2026; it replaced 2,700 kg plus a 307 kg tail measured from the picture).
+  const DEFAULT_BODIES = { rex: { H: 3.048, m: 3000 }, ollie: { H: 3.048, m: 3000 } };
   const buildOf = (b) => (typeof b === 'string' ? BUILDS[b] : b) || BUILDS.human;
   function bodyVolume(H, build) { const h = H || BASE_H; return buildOf(build).kV * h * h * h; }
 
@@ -6510,7 +6510,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Density and weight",
-   "d": "Density sets his mass at his size. His volume follows from his mass, set by ruling, at 1,060 kg/m³: 2.84 m³ at 10 ft with his tail, scaling with height cubed (the 2 m calibration body has 0.18 m³). Heavier limbs need more strength to move, so every move uses his mass. Both legs together push up to 1.4× the dial’s force. Standing up needs that to beat his weight. Walking needs it to beat about 1.2× his weight, the load on one leg per step (a rough rule: one near-straight leg is taken to match both legs’ squat push). Running uses the Sprint tab’s rough rule: strength above his weight. Nothing denser than osmium exists at everyday pressure; it is found only under enormous pressure, deep inside giant planets, stars and dead stars. In the sim his indestructibility holds it together."
+   "d": "Density sets his mass at his size. His volume follows from his mass, set by ruling, at 1,060 kg/m³: 2.83 m³ at 10 ft with his tail, scaling with height cubed (the 2 m calibration body has 0.18 m³). Heavier limbs need more strength to move, so every move uses his mass. Both legs together push up to 1.4× the dial’s force. Standing up needs that to beat his weight. Walking needs it to beat about 1.2× his weight, the load on one leg per step (a rough rule: one near-straight leg is taken to match both legs’ squat push). Running uses the Sprint tab’s rough rule: strength above his weight. Nothing denser than osmium exists at everyday pressure; it is found only under enormous pressure, deep inside giant planets, stars and dead stars. In the sim his indestructibility holds it together."
   },
   {
    "t": "His own gravity",
@@ -6522,7 +6522,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Rex and Ollie",
-   "d": "Ollie is as strong, tough and big as Rex unless his own settings say otherwise: by default 10 ft and 3,007 kg, the same weight as Rex in all (his own tail is only about 11 kg, so more of it is body). He wears boots, so his boots get the same grip as Rex’s feet. Nothing else about him is invented. The push between them is the same both ways. When they shove or wrestle, it goes through each body to his feet, so neither can use more force than his feet hold. Arm wrestling uses 25% of each one’s strength at the hands (an estimate; plausibly 10–40%). A regulation table, scaled to their size, carries the push between them until its pegs and pads tear out (about 5 kN at regulation size, an estimate). After that only their feet hold. Standing up, an arm folds only if the other presses harder than it; if not, the loser’s feet slide and he is dragged. A shove uses the throw’s two-handed push; afterwards they slide upright, where real bodies would tumble. Their own gravity is G m₁ m₂ / d², good to about a factor of 2 for tall bodies close together."
+   "d": "Ollie is as strong, tough and big as Rex unless his own settings say otherwise: by default 10 ft and 3,000 kg, the same weight as Rex in all (his own tail is only about 11 kg, so more of it is body). He wears boots, so his boots get the same grip as Rex’s feet. Nothing else about him is invented. The push between them is the same both ways. When they shove or wrestle, it goes through each body to his feet, so neither can use more force than his feet hold. Arm wrestling uses 25% of each one’s strength at the hands (an estimate; plausibly 10–40%). A regulation table, scaled to their size, carries the push between them until its pegs and pads tear out (about 5 kN at regulation size, an estimate). After that only their feet hold. Standing up, an arm folds only if the other presses harder than it; if not, the loser’s feet slide and he is dragged. A shove uses the throw’s two-handed push; afterwards they slide upright, where real bodies would tumble. Their own gravity is G m₁ m₂ / d², good to about a factor of 2 for tall bodies close together."
   },
   {
    "t": "Game of catch",
@@ -6534,7 +6534,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Rex’s body",
-   "d": "By default {DEFAULT_BODY}: 10 ft tall by his owner’s ruling, and 2,700 kg without his tail, also by ruling. His tail adds about 307 kg (an estimate from his picture: 0.29 m³ at 1,060 kg/m³, the density of a lean bodybuilder less some lung air), so he is 3,007 kg and 2.84 m³ in all. Ollie measures the same 10 ft to his horn tips and weighs the same in all. The picture alone gave less: sliced into thin ovals whose depth comes from US Army body measurements, it measured 2.55 m³, tail included. At the same density the ruled mass needs both bodies about 12% bigger, most likely deeper front to back than those borrowed depths; side views will check it. The picture also gives the area each one shows the air (4.4 m² for Rex with his tail trailing, 4.5 m² for Ollie) and the sole of each foot ({DEFAULT_FOOT} for each of Rex’s paws, 0.15 m² for each of Ollie’s boots). The calibration body (the Calibration body chip) is 2 m and 180 kg, with 450 cm² per foot. Segment masses from Dempster’s tables (hand 0.6%, forearm 1.6%, foot 1.45%, shank 4.65% of body mass). The palm is 150 cm² at 2 m (about 350 cm² at 10 ft). All areas scale with height squared. The calibration foot and the palm are assumptions."
+   "d": "By default {DEFAULT_BODY}: 10 ft tall by his owner’s ruling, and 3,000 kg in all, also by ruling, 300 kg of it his tail (ruled on 13 Oct 2026; his picture had given the tail about 307 kg). At 1,060 kg/m³, the density of a lean bodybuilder less some lung air, he is 2.83 m³ in all. Ollie measures the same 10 ft to his horn tips and weighs the same in all. The picture alone gave less: sliced into thin ovals whose depth comes from US Army body measurements, it measured 2.55 m³, tail included. At the same density the ruled mass needs both bodies about 11–12% bigger, most likely deeper front to back than those borrowed depths; side views will check it. The picture also gives the area each one shows the air (4.4 m² for Rex with his tail trailing, 4.5 m² for Ollie) and the sole of each foot ({DEFAULT_FOOT} for each of Rex’s paws, 0.15 m² for each of Ollie’s boots). The calibration body (the Calibration body chip) is 2 m and 180 kg, with 450 cm² per foot. Segment masses from Dempster’s tables (hand 0.6%, forearm 1.6%, foot 1.45%, shank 4.65% of body mass). The palm is 150 cm² at 2 m (about 350 cm² at 10 ft). All areas scale with height squared. The calibration foot and the palm are assumptions."
   }
  ],
  "sourceRows": [
@@ -10571,7 +10571,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Game of catch: catch: first contact with the catcher's hands",
-   "value": "Both hands and forearms, 4.4% of body mass (132 kg at 3,007 kg), start at rest; palm and object squash 1–2.5% of his height (3–7.6 cm at 10 ft)",
+   "value": "Both hands and forearms, 4.4% of body mass (132 kg at 3,000 kg), start at rest; palm and object squash 1–2.5% of his height (3–7.6 cm at 10 ft)",
    "status": "estimate",
    "sources": [
     {
@@ -10595,7 +10595,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Rex and Ollie: mass (by ruling); body volume, tail, facing area and foot soles (from their reference picture)",
-   "value": "Rex at 10 ft (3.048 m): 2,700 kg without his tail, by ruling, plus a tail of about 307 kg (measured from the picture), so 3,007 kg and 2.84 m³ at 1,060 kg/m³; facing area 4.4 m² with his tail trailing (4.9 m² as drawn, tail out to the side); one paw’s sole 0.31 m². Ollie: 3.06 m to his horn tips (the same 10 ft within measuring error), the same 3,007 kg in all by ruling, of which his tail is about 11 kg; facing area 4.5 m²; one boot’s sole 0.15 m². The picture alone measured 2.55 m³ (Rex) and 2.53 m³ (Ollie), tails included: the ruled mass makes both bodies about 12% bigger at the same density.",
+   "value": "Rex at 10 ft (3.048 m): 3,000 kg in all, by ruling, 300 kg of it his tail (the picture had measured the tail at about 307 kg), so 2.83 m³ at 1,060 kg/m³; facing area 4.4 m² with his tail trailing (4.9 m² as drawn, tail out to the side); one paw’s sole 0.31 m². Ollie: 3.06 m to his horn tips (the same 10 ft within measuring error), the same 3,000 kg in all by ruling, of which his tail is about 11 kg; facing area 4.5 m²; one boot’s sole 0.15 m². The picture alone measured 2.55 m³ (Rex) and 2.53 m³ (Ollie), tails included: the ruled mass makes both bodies about 11–12% bigger at the same density.",
    "status": "estimate",
    "sources": [
     {
@@ -10915,7 +10915,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Walking: load on one foot at each walking step, and pressure under it",
-   "value": "35 kN (about 3.6 tonnes-force) per step at 1.2 × body weight; Rex's paw 114 kPa, Ollie's boot 236 kPa",
+   "value": "35 kN (about 3.6 tonnes-force) per step at 1.2 × body weight; Rex's paw 114 kPa, Ollie's boot 235 kPa",
    "status": "estimate",
    "sources": [
     {
@@ -10983,7 +10983,7 @@ window.DINO_DATA = {
   },
   {
    "label": "Walking: which elephant weighs as much as Rex or Ollie",
-   "value": "3,007 kg = an average adult female African elephant; 1.1 × an Asian cow, 0.75 × an Asian bull, half an African bull",
+   "value": "3,000 kg = an average adult female African elephant; 1.1 × an Asian cow, 0.75 × an Asian bull, half an African bull",
    "status": "derived",
    "sources": [
     {
@@ -14018,12 +14018,12 @@ window.DINO_DATA = {
   },
   {
    "label": "Growth: canon body used for growth: volume and equivalent ball radius",
-   "value": "2.84 m³; a ball of that volume has a radius of 0.878 m (0.288 of his 3.048 m height)",
+   "value": "2.83 m³; a ball of that volume has a radius of 0.877 m (0.288 of his 3.048 m height)",
    "status": "derived",
    "sources": [
     {
      "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/CLAUDE.md",
-     "title": "Project canon: CLAUDE.md in this repository (3,007 kg; 3.048 m; 1,060 kg/m³)"
+     "title": "Project canon: CLAUDE.md in this repository (3,000 kg; 3.048 m; 1,060 kg/m³)"
     }
    ],
    "note": null
@@ -14039,7 +14039,7 @@ window.DINO_DATA = {
     },
     {
      "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/CLAUDE.md",
-     "title": "Project canon: CLAUDE.md in this repository (3,007 kg; 3.048 m; 1,060 kg/m³)"
+     "title": "Project canon: CLAUDE.md in this repository (3,000 kg; 3.048 m; 1,060 kg/m³)"
     },
     {
      "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/rex-strength-lab/BRIEF-presence.md",
@@ -14067,7 +14067,7 @@ window.DINO_DATA = {
     },
     {
      "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/CLAUDE.md",
-     "title": "Project canon: CLAUDE.md in this repository (3,007 kg; 3.048 m; 1,060 kg/m³)"
+     "title": "Project canon: CLAUDE.md in this repository (3,000 kg; 3.048 m; 1,060 kg/m³)"
     },
     {
      "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/rex-strength-lab/BRIEF-presence.md",
@@ -14091,7 +14091,7 @@ window.DINO_DATA = {
     },
     {
      "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/CLAUDE.md",
-     "title": "Project canon: CLAUDE.md in this repository (3,007 kg; 3.048 m; 1,060 kg/m³)"
+     "title": "Project canon: CLAUDE.md in this repository (3,000 kg; 3.048 m; 1,060 kg/m³)"
     },
     {
      "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/rex-strength-lab/BRIEF-presence.md",
@@ -14119,7 +14119,7 @@ window.DINO_DATA = {
     },
     {
      "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/CLAUDE.md",
-     "title": "Project canon: CLAUDE.md in this repository (3,007 kg; 3.048 m; 1,060 kg/m³)"
+     "title": "Project canon: CLAUDE.md in this repository (3,000 kg; 3.048 m; 1,060 kg/m³)"
     },
     {
      "url": "https://authors.library.caltech.edu/records/r42n3-t2639",
@@ -14467,7 +14467,7 @@ window.DINO_DATA = {
     },
     {
      "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/CLAUDE.md",
-     "title": "Project canon: CLAUDE.md in this repository (3,007 kg; 3.048 m; 1,060 kg/m³)"
+     "title": "Project canon: CLAUDE.md in this repository (3,000 kg; 3.048 m; 1,060 kg/m³)"
     },
     {
      "url": "https://en.wikipedia.org/wiki/Schwarzschild_radius",
@@ -14537,7 +14537,7 @@ window.DINO_DATA = {
    "chip": "His build (default)",
    "short": "his build",
    "rho": 1060,
-   "note": "The default Rex and Ollie: 10 ft and 3,007 kg each, by ruling (Rex: 2,700 kg without his tail). 1,060 kg/m³: lean bodybuilders (1,081 kg/m³ with lung air removed; Fry, Cisar & Housh 1987) less some air in the lungs."
+   "note": "The default Rex and Ollie: 10 ft and 3,000 kg each in all, by ruling (Rex: 300 kg of it his tail). 1,060 kg/m³: lean bodybuilders (1,081 kg/m³ with lung air removed; Fry, Cisar & Housh 1987) less some air in the lungs."
   },
   {
    "id": "human",
@@ -14789,17 +14789,27 @@ window.DINO_DATA = {
     walker: 'rex', pace: 'walk', stepEffort: 0, walkD: 3,
     // two-player tests: one effort for both (least disruptive, all-out or custom), unless Ollie gets his own (what-if)
     duoEffort: 'least', duoLogKg: 4, oEffortOwn: false, oEffortLogKg: 4,
+    // the save's version: 2 since the canon follow-ups (BRIEF-canon.md). A save without it is older and gets the
+    // migrations below once; a save with it is taken as the visitor's own choices
+    saveV: 2,
   };
   let state = Object.assign({}, DEFAULTS);
   // lightest density the slider and the mass boxes allow, kg/m³ (the slider's left end, 10^1)
   const RHO_MIN = 10;
   // Wrestle's throw shared Rex's Throw angle while only one of them was ever on screen; a save from before it had its
   // own angle (state.wAngle) starts it from Rex's
-  let savedWAngle = false;
-  try { const saved = JSON.parse(localStorage.getItem('rex-lab-v1') || 'null'); if (saved) { state = Object.assign(state, saved); savedWAngle = 'wAngle' in saved; } } catch (e) { /* storage unavailable */ }
+  let savedWAngle = false, savedV = 2;
+  try { const saved = JSON.parse(localStorage.getItem('rex-lab-v1') || 'null'); if (saved) { state = Object.assign(state, saved); savedWAngle = 'wAngle' in saved; savedV = saved.saveV === 2 ? 2 : 1; } } catch (e) { /* storage unavailable */ }
   // The default mass was 2,700 kg until it was ruled to leave out the tails; a saved old default moves to the new one.
   if (state.m === 2700) state.m = DEFAULTS.m;
   if (state.oM === 2700) state.oM = DEFAULTS.oM;
+  // ... and 3,007 kg until 14 Oct 2026 (3,000 kg in all by ruling since). Only an older save's 3,007 kg is that old
+  // default; in a save with the version mark it is the visitor's own mass.
+  if (savedV < 2) {
+    if (state.m === 3007) state.m = DEFAULTS.m;
+    if (state.oM === 3007) state.oM = DEFAULTS.oM;
+  }
+  state.saveV = 2;
   state.oSame = true;   // Ollie is as strong as Rex; a what-if strength lasts only for this visit
   state.effort = 'least';   // the page always opens on the heroic default; anything louder is chosen each visit
   state.absorb = 'ocean'; state.growWhat = 'none';   // growth is a what-if: canon size and mass on every visit
@@ -14841,6 +14851,7 @@ window.DINO_DATA = {
       duoEffort: (v) => ['least', 'allout', 'custom'].includes(v), duoLogKg: num(-3, 34), oEffortOwn: (v) => typeof v === 'boolean', oEffortLogKg: num(-3, 34),
       walker: (v) => ['rex', 'ollie', 'both'].includes(v), pace: (v) => ['stroll', 'walk', 'brisk', 'fast'].includes(v), stepEffort: num(0, 1), walkD: num(...RANGES.walkD),
       absorb: (v) => ['ocean', 'gradual', 'instant', 'runaway'].includes(v), growS: num(0, 1), growT: num(...RANGES.growT), growWhat: (v) => ['none', 'krakatoa', 'chicxulub', 'sun'].includes(v),
+      saveV: (v) => v === 2,
     };
     for (const [k, ok] of Object.entries(VALID)) if (!ok(state[k])) state[k] = DEFAULTS[k];
     for (const k of Object.keys(state)) if (!(k in DEFAULTS)) delete state[k];
@@ -17963,7 +17974,7 @@ window.DINO_DATA = {
     }
     out.push(happens(items, 8));
     const notes = [];
-    notes.push('An elephant walking past ' + fmtDist(dE) + ' away shakes the ground at about ' + fmtPPV(P.elephantPPV(dE)) + ' (a wild African elephant measured 20 m from a seismometer, falling about as 1 ÷ distance; real ones vary from ' + EL.lo + '× to ' + EL.hi + '× that). ' + (pres.every((x) => Math.abs(x.b.m - 3007) < 1) ? 'At 3,007 kg, Rex and Ollie each weigh about as much as an adult female African elephant. ' : '') + 'Elephant footfalls lack sharp impulses, which the researchers link to their cushioned feet, and were surprisingly faint. The model gives Rex and Ollie people’s heel strikes scaled up, not an elephant’s cushioned foot; whether their feet cushion a step is not canon.');
+    notes.push('An elephant walking past ' + fmtDist(dE) + ' away shakes the ground at about ' + fmtPPV(P.elephantPPV(dE)) + ' (a wild African elephant measured 20 m from a seismometer, falling about as 1 ÷ distance; real ones vary from ' + EL.lo + '× to ' + EL.hi + '× that). ' + (pres.every((x) => Math.abs(x.b.m - P.DEFAULT_BODIES.rex.m) < 1) ? 'At ' + P.DEFAULT_BODIES.rex.m.toLocaleString('en-US') + ' kg, Rex and Ollie each weigh about as much as an adult female African elephant. ' : '') + 'Elephant footfalls lack sharp impulses, which the researchers link to their cushioned feet, and were surprisingly faint. The model gives Rex and Ollie people’s heel strikes scaled up, not an elephant’s cushioned foot; whether their feet cushion a step is not canon.');
     notes.push('Nobody has measured when a glass of water visibly ripples: 0.2 mm/s side to side (rings 0.7 mm/s up and down) is our estimate from a ripple model, good to about 10× either way.');
     if (pres.some((x) => x.pr.nonlinear(Math.max(D0, P.VIB.RMIN)))) notes.push('This close, each step strains the ground past its elastic range (about 1 part in 10,000), so the soil starts to yield. Which way that moves the number isn’t known: yielding soaks up energy, but softer ground also moves more.');
     if (D0 > P.VIB.RFIT) notes.push('Past 60 m, the furthest the model was checked, it is extended with the fall-off measured for dropped weights (about distance^−1.3). Rough.');

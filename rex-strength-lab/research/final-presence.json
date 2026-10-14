@@ -475,18 +475,18 @@
    "category": "presence_step",
    "label": "Load on one foot at each walking step, and pressure under it",
    "status": "estimate",
-   "value_si": 35400,
+   "value_si": 35300,
    "unit_si": "N",
    "low_si": 29500,
    "high_si": 44200,
-   "display": "35 kN (about 3.6 tonnes-force) per step at 1.2 × body weight; Rex's paw 114 kPa, Ollie's boot 236 kPa",
+   "display": "35 kN (about 3.6 tonnes-force) per step at 1.2 × body weight; Rex's paw 114 kPa, Ollie's boot 235 kPa",
    "sources": [
     {
      "title": "Keller et al. (1996) and the existing key walking_running_peak_vertical_force (1.0–1.5 BW)",
      "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:11415629%20AND%20SRC:MED&resultType=core&format=json"
     }
    ],
-   "notes": "1.2 × 3,007 kg × 9.81 = 35.4 kN; range 1.0–1.5 BW (29.5–44.2 kN). Pressure = force / sole area (rex_ollie_picture_build, an estimate from the picture: Rex 0.31 m², Ollie 0.15 m²): Rex 95 / 114 / 143 kPa; Ollie 197 / 236 / 295 kPa at 1.0 / 1.2 / 1.5 BW. These are sole averages; real soles load unevenly (an elephant's local peaks are about twice its average). A walking biped carries its whole weight on one foot at a time. Floor: averaged over its stance, each foot carries 1/(2 × duty factor) of body weight, 0.71–0.91 BW for duty 0.55–0.7 (0.83 at 0.6); the peak must exceed that, so even soft-footed walking cannot drop the peak much below about 0.9–1.0 BW (estimate). Verifier: recomputed; corrected the floor range (the recommendation's '0.85–1.0' was wrong). Review round 1 (data lens): status estimate (was derived): the pressures use the sole areas measured from the picture (an estimate).",
+   "notes": "1.2 × 3,000 kg × 9.81 = 35.3 kN; range 1.0–1.5 BW (29.4–44.1 kN). Pressure = force / sole area (rex_ollie_picture_build, an estimate from the picture: Rex 0.31 m², Ollie 0.15 m²): Rex 95 / 114 / 142 kPa; Ollie 196 / 235 / 294 kPa at 1.0 / 1.2 / 1.5 BW. These are sole averages; real soles load unevenly (an elephant's local peaks are about twice its average). A walking biped carries its whole weight on one foot at a time. Floor: averaged over its stance, each foot carries 1/(2 × duty factor) of body weight, 0.71–0.91 BW for duty 0.55–0.7 (0.83 at 0.6); the peak must exceed that, so even soft-footed walking cannot drop the peak much below about 0.9–1.0 BW (estimate). Verifier: recomputed; corrected the floor range (the recommendation's '0.85–1.0' was wrong). Review round 1 (data lens): status estimate (was derived): the pressures use the sole areas measured from the picture (an estimate).",
    "who_when": "Computed 2026"
   },
   {
@@ -505,9 +505,9 @@
      "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6023236/fullTextXML"
     }
    ],
-   "notes": "Scaled at equal Froude number, energy goes as M g h. Baines: 3.8 J total, 2.7 J vertical for 76.7 kg; we assumed a 0.90 m hip (not reported), so E/(M g h) = 5.6e-3 total, 4.0e-3 vertical. Rex/Ollie (3,007 kg, h 1.37 m): 228 J total (84–413), 162 J vertical. Second method, ½ m_e v²: heel 0.57 × √(1.37/0.90) = 0.70 m/s (0.48–0.96), m_e 4–18% of M: 31–131 J (83 J at 11%). Timing (peak ~22 ms, end ~37 ms) is uncertain: heel-pad stiffness does not scale. Heel-first walking is canon (owners, 12 Oct 2026); boots unquantified. Verifier: arithmetic reproduces; display fixed (was '100–250 J' against an 80–410 J range). W is energy absorbed in the walker's own heel pad, foot and ankle, not energy into the ground; the two proxies differ about threefold. If a vibration law needs an impact energy, use ½ m_e v² (about 80 J, 30–130 J) and say so.",
+   "notes": "Scaled at equal Froude number, energy goes as M g h. Baines: 3.8 J total, 2.7 J vertical for 76.7 kg; we assumed a 0.90 m hip (not reported), so E/(M g h) = 5.6e-3 total, 4.0e-3 vertical. Rex/Ollie (3,000 kg, h 1.37 m): 227 J total (84–412), 162 J vertical. Second method, ½ m_e v²: heel 0.57 × √(1.37/0.90) = 0.70 m/s (0.48–0.96), m_e 4–18% of M: 31–131 J (83 J at 11%). Timing (peak ~22 ms, end ~37 ms) is uncertain: heel-pad stiffness does not scale. Heel-first walking is canon (owners, 12 Oct 2026); boots unquantified. Verifier: arithmetic reproduces; display fixed (was '100–250 J' against an 80–410 J range). W is energy absorbed in the walker's own heel pad, foot and ankle, not energy into the ground; the two proxies differ about threefold. If a vibration law needs an impact energy, use ½ m_e v² (about 80 J, 30–130 J) and say so.",
    "who_when": "Estimated 2026",
-   "values_json": "{\"absorbed_by_foot_total_J\": [228, 84, 413], \"absorbed_by_foot_vertical_J\": 162, \"arrested_mass_kinetic_energy_J_half_me_v2\": [83, 31, 131], \"_format\": \"[central, low, high]\", \"heel_speed_m_s\": [0.7, 0.48, 0.96], \"effective_mass_fraction\": [0.11, 0.04, 0.18], \"for_vibration_laws_use\": \"arrested_mass_kinetic_energy_J_half_me_v2, labelled estimate and extrapolated\"}"
+   "values_json": "{\"absorbed_by_foot_total_J\": [227, 84, 412], \"absorbed_by_foot_vertical_J\": 162, \"arrested_mass_kinetic_energy_J_half_me_v2\": [83, 31, 131], \"_format\": \"[central, low, high]\", \"heel_speed_m_s\": [0.7, 0.48, 0.96], \"effective_mass_fraction\": [0.11, 0.04, 0.18], \"for_vibration_laws_use\": \"arrested_mass_kinetic_energy_J_half_me_v2, labelled estimate and extrapolated\"}"
   },
   {
    "key": "step_stamp_contact_speed_estimate",
@@ -584,14 +584,14 @@
    "unit_si": "ratio to an average African bush elephant cow",
    "low_si": null,
    "high_si": null,
-   "display": "3,007 kg = an average adult female African elephant; 1.1 × an Asian cow, 0.75 × an Asian bull, half an African bull",
+   "display": "3,000 kg = an average adult female African elephant; 1.1 × an Asian cow, 0.75 × an Asian bull, half an African bull",
    "sources": [
     {
      "title": "Larramendi (2016) Acta Palaeontol Pol",
      "url": "https://app.pan.pl/archive/published/app61/app001362014.pdf"
     }
    ],
-   "notes": "3,007 / 3,000 = 1.00 (African bush cow); / 2,700 = 1.11 (Asian cow); / 4,000 = 0.75 (Asian bull); / 6,000 = 0.50 (African bull); / 2,000 = 1.50 (forest bull). The accurate phrase is 'as heavy as a female African elephant', not 'an African elephant' (people picture a bull, twice as heavy).",
+   "notes": "3,000 / 3,000 = 1.00 (African bush cow); / 2,700 = 1.11 (Asian cow); / 4,000 = 0.75 (Asian bull); / 6,000 = 0.50 (African bull); / 2,000 = 1.50 (forest bull). The accurate phrase is 'as heavy as a female African elephant', not 'an African elephant' (people picture a bull, twice as heavy). The key keeps 3,007 kg, the mass before the ruling of 13 Oct 2026, in its name: renaming it would break references.",
    "who_when": "Computed 2026"
   },
   {
@@ -1934,7 +1934,7 @@
      "url": "https://www.isterre.fr/IMG/pdf/Sanchez_Sema_BSSA.pdf"
     }
    ],
-   "notes": "Computed with vib_physics_pulse_ppv_model, vib_physics_damping_factor and the estimated ground values (vib_ground_wave_params_by_surface); mass 3,007 kg (canon). Step forces are placeholders: 1.2 × body weight is the lab's W8.WALK_LOAD (existing key walking_running_peak_vertical_force); the rise times (0.1, 0.2 s), 'heavy step' (3 ×, 0.05 s) and 'stamp' (10 ×, 0.03 s) are illustrations pending the step-force topic. Ollie gives the same numbers. Limits: nothing is checked beyond 60 m, and the stamp values at 100–200 m are probably too low (vib_physics_damping_factor). Within about 1.4 m of a normal step on loose sand the quasi-static strain already passes 10⁻⁴ (1.8 × 10⁻⁴ at 1 m), and stamps within 1–3 m on soft soil are far past it; the error's direction there is unknown (vib_linear_strain_limit). Verifier: every number reproduced; status lowered from derived to estimate (placeholder inputs).",
+   "notes": "Computed with vib_physics_pulse_ppv_model, vib_physics_damping_factor and the estimated ground values (vib_ground_wave_params_by_surface); mass 3,007 kg, the canon before 13 Oct 2026; at 3,000 kg (the ground model is linear in the force) no figure here changes at two figures. Step forces are placeholders: 1.2 × body weight is the lab's W8.WALK_LOAD (existing key walking_running_peak_vertical_force); the rise times (0.1, 0.2 s), 'heavy step' (3 ×, 0.05 s) and 'stamp' (10 ×, 0.03 s) are illustrations pending the step-force topic. Ollie gives the same numbers. Limits: nothing is checked beyond 60 m, and the stamp values at 100–200 m are probably too low (vib_physics_damping_factor). Within about 1.4 m of a normal step on loose sand the quasi-static strain already passes 10⁻⁴ (1.8 × 10⁻⁴ at 1 m), and stamps within 1–3 m on soft soil are far past it; the error's direction there is unknown (vib_linear_strain_limit). Verifier: every number reproduced; status lowered from derived to estimate (placeholder inputs).",
    "who_when": "our calculation 2026",
    "values_json": "{\"distance_m\": [1, 3, 10, 30, 100, 200], \"units\": \"vertical PPV mm/s\", \"walk_1.2BW_ramp_0.1s\": {\"sand\": [2.9, 0.96, 0.28, 0.12, 0.026, 0.0075], \"gravel\": [0.37, 0.12, 0.037, 0.012, 0.0054, 0.0025], \"softclay\": [2.7, 0.9, 0.26, 0.1, 0.019, 0.0052], \"stiffclay\": [0.56, 0.19, 0.056, 0.019, 0.0083, 0.0036], \"asphalt_or_concrete_subgrade\": [0.53, 0.18, 0.053, 0.018, 0.0079, 0.0034], \"granite\": [0.0027, 0.00091, 0.00027, 9.1e-05, 2.7e-05, 1.4e-05]}, \"walk_1.2BW_ramp_0.2s\": {\"sand\": [1.4, 0.48, 0.14, 0.049, 0.018, 0.0066], \"gravel\": [0.18, 0.061, 0.018, 0.0061, 0.0022, 0.0013], \"softclay\": [1.4, 0.45, 0.13, 0.045, 0.014, 0.0047], \"stiffclay\": [0.28, 0.093, 0.028, 0.0093, 0.0035, 0.0021], \"asphalt_or_concrete_subgrade\": [0.27, 0.088, 0.027, 0.0088, 0.0034, 0.002], \"granite\": [0.0014, 0.00046, 0.00014, 4.6e-05, 1.4e-05, 6.8e-06]}, \"heavy_3BW_hann_0.05s\": {\"sand\": [28.0, 10.0, 4.4, 1.1, 0.075, 0.011], \"gravel\": [3.7, 1.2, 0.47, 0.21, 0.047, 0.012], \"softclay\": [27.0, 9.6, 3.7, 0.75, 0.044, 0.0063], \"stiffclay\": [5.6, 1.8, 0.76, 0.33, 0.062, 0.014], \"asphalt_or_concrete_subgrade\": [5.3, 1.7, 0.72, 0.31, 0.059, 0.013], \"granite\": [0.027, 0.0091, 0.0027, 0.00091, 0.00036, 0.00025]}, \"stamp_10BW_hann_0.03s\": {\"sand\": [160.0, 70.0, 24.0, 3.7, 0.18, 0.024], \"gravel\": [20.0, 6.7, 3.1, 1.2, 0.16, 0.031], \"softclay\": [140.0, 63.0, 18.0, 2.3, 0.099, 0.013], \"stiffclay\": [31.0, 10.0, 5.0, 1.7, 0.2, 0.035], \"asphalt_or_concrete_subgrade\": [29.0, 9.9, 4.7, 1.6, 0.19, 0.033], \"granite\": [0.15, 0.051, 0.015, 0.005, 0.0026, 0.0017]}, \"note\": \"step forces are placeholders pending the step-force topic\"}"
   },
@@ -1954,7 +1954,7 @@
      "url": "https://iris.polito.it/bitstream/11583/2882762/1/Colombero_et_al_2015_sub.pdf"
     }
    ],
-   "notes": "Wave strain is about particle velocity / wave speed. Near the foot the strain is quasi-static, (1 − ν)F/(2π μ r²) with μ = ρ c_s², larger than PPV/c_s by about 2 c_s τ/(π r) for a ramp. For a normal step (1.2 × 3,007 kg × g = 35.4 kN) on loose sand it is 1.8 × 10⁻⁴ at 1 m (7.6 × PPV/c_s) and 4.6 × 10⁻⁵ at 2 m, so ordinary walking passes 10⁻⁴ within about 1.4 m. Soil stiffness falls and damping rises from somewhere around 10⁻⁵–10⁻⁴ strain, and soils yield near 10⁻³ (typical soil-dynamics ranges; no source fetched). Where the flag trips, the direction of the model error is unknown: yielding absorbs energy, but softening raises quasi-static motion (u ∝ 1/μ). Pisa: 9 mm/s at 2.5 m on 150 m/s ground is 6 × 10⁻⁵ wave strain. Verifier: the flag now includes the quasi-static strain; the earlier claim that the model over-estimates close in is withdrawn.",
+   "notes": "Wave strain is about particle velocity / wave speed. Near the foot the strain is quasi-static, (1 − ν)F/(2π μ r²) with μ = ρ c_s², larger than PPV/c_s by about 2 c_s τ/(π r) for a ramp. For a normal step (1.2 × 3,000 kg × g = 35.3 kN) on loose sand it is 1.8 × 10⁻⁴ at 1 m (7.6 × PPV/c_s) and 4.6 × 10⁻⁵ at 2 m, so ordinary walking passes 10⁻⁴ within about 1.4 m. Soil stiffness falls and damping rises from somewhere around 10⁻⁵–10⁻⁴ strain, and soils yield near 10⁻³ (typical soil-dynamics ranges; no source fetched). Where the flag trips, the direction of the model error is unknown: yielding absorbs energy, but softening raises quasi-static motion (u ∝ 1/μ). Pisa: 9 mm/s at 2.5 m on 150 m/s ground is 6 × 10⁻⁵ wave strain. Verifier: the flag now includes the quasi-static strain; the earlier claim that the model over-estimates close in is withdrawn.",
    "who_when": "our estimate 2026"
   },
   {
@@ -2585,7 +2585,7 @@
      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2705974/"
     }
    ],
-   "notes": "Table 1: Chandrika, Asian F, 14 y, 3,000 kg; Damini, Asian F, 12 y, 2,840 kg; Five, African F, 14 y, 2,780 kg; Jack, African M, 13 y, 3,230 kg; Latabe, African F, 13 y, 2,550 kg. Methods: 'All elephants had known body masses (mb) from placing all four limbs on a truck scale (±2 kg).' Read on the PMC page. Rex and Ollie at 3,007 kg each sit inside this range. Adult averages are in the step topic (step_elephant_body_mass_larramendi2016: African bush cow about 3.0 t, bull about 6.0 t). None of the seismic studies weighed their elephants except Wijayaraja et al. 2024 (2,700–3,500 kg).",
+   "notes": "Table 1: Chandrika, Asian F, 14 y, 3,000 kg; Damini, Asian F, 12 y, 2,840 kg; Five, African F, 14 y, 2,780 kg; Jack, African M, 13 y, 3,230 kg; Latabe, African F, 13 y, 2,550 kg. Methods: 'All elephants had known body masses (mb) from placing all four limbs on a truck scale (±2 kg).' Read on the PMC page. Rex and Ollie at 3,000 kg each sit inside this range. Adult averages are in the step topic (step_elephant_body_mass_larramendi2016: African bush cow about 3.0 t, bull about 6.0 t). None of the seismic studies weighed their elephants except Wijayaraja et al. 2024 (2,700–3,500 kg).",
    "who_when": "Ren & Hutchinson, 2008 (published online 2007)"
   },
   {
@@ -5026,7 +5026,7 @@
    ],
    "notes": "J = m v (add any caught object's m v). The time-mean force over a stop of T is J/T + W. Work–energy: the distance-average ground force over a stop within travel d is m v²/(2d) + W, so the PEAK force is at least that, whatever the profile. 'T ≤ 2d/v' holds only for a constant force; a long-tailed profile can have a lower time-mean but a higher peak. Absorbing the energy (½mv² + m g d) removes crater and quake, not this. d = engine strokes.leg = 0.5 × H/2 = 0.76 m at 10 ft. On two paw soles (0.62 m², engine estimate) that is 1.3 MPa at 20 m/s; on Ollie's boot soles (0.30 m²), 2.7 MPa. Above the ground's bearing capacity he still sinks unless comic ground is on. Holding it to the walking load (1.2 W) needs T = v/(0.2 g): 2.5 s from 5 m/s, impossible on his feet. Earth's recoil energy J²/(2M_E) is 2e-17 to 8e-15 J. Verifier: peak-force rule stated; impossible cells flagged.",
    "who_when": "This research, 2026",
-   "values_json": "{\"units\":\"Rex 3,007 kg; W = 29.5 kN; knee bend d = 0.76 m (engine strokes.leg, an estimate). mean F = J/T + W over stop time T; a constant-force stop of length T needs travel vT/2\",\"5 m/s\":{\"J (N s)\":15035,\"mean F over 0.1 s (kN)\":180,\"constant-force travel for 0.1 s (m)\":0.25,\"mean F over 0.5 s (kN)\":60,\"constant-force travel for 0.5 s (m)\":1.25,\"mean F over 2 s (kN)\":37,\"constant-force travel for 2 s (m)\":5.0,\"minimum peak F within a 0.76 m knee bend (kN)\":79,\"longest constant-force stop on his legs (s)\":0.305},\"20 m/s\":{\"J (N s)\":60140,\"mean F over 0.1 s (kN)\":631,\"constant-force travel for 0.1 s (m)\":1.0,\"mean F over 0.5 s (kN)\":150,\"constant-force travel for 0.5 s (m)\":5.0,\"mean F over 2 s (kN)\":60,\"constant-force travel for 2 s (m)\":20.0,\"minimum peak F within a 0.76 m knee bend (kN)\":819,\"longest constant-force stop on his legs (s)\":0.076},\"100 m/s\":{\"J (N s)\":300700,\"mean F over 0.1 s (kN)\":3036,\"constant-force travel for 0.1 s (m)\":5.0,\"mean F over 0.5 s (kN)\":631,\"constant-force travel for 0.5 s (m)\":25.0,\"mean F over 2 s (kN)\":180,\"constant-force travel for 2 s (m)\":100.0,\"minimum peak F within a 0.76 m knee bend (kN)\":19760,\"longest constant-force stop on his legs (s)\":0.015},\"not possible on his legs (constant-force travel over 0.76 m)\":[\"5 m/s: 0.5 s, 2 s\",\"20 m/s: 0.1 s, 0.5 s, 2 s\",\"100 m/s: 0.1 s, 0.5 s, 2 s\"]}"
+   "values_json": "{\"units\":\"Rex 3,000 kg; W = 29.4 kN; knee bend d = 0.76 m (engine strokes.leg, an estimate). mean F = J/T + W over stop time T; a constant-force stop of length T needs travel vT/2\",\"5 m/s\":{\"J (N s)\":15000,\"mean F over 0.1 s (kN)\":179,\"constant-force travel for 0.1 s (m)\":0.25,\"mean F over 0.5 s (kN)\":59,\"constant-force travel for 0.5 s (m)\":1.25,\"mean F over 2 s (kN)\":37,\"constant-force travel for 2 s (m)\":5.0,\"minimum peak F within a 0.76 m knee bend (kN)\":79,\"longest constant-force stop on his legs (s)\":0.305},\"20 m/s\":{\"J (N s)\":60000,\"mean F over 0.1 s (kN)\":629,\"constant-force travel for 0.1 s (m)\":1.0,\"mean F over 0.5 s (kN)\":149,\"constant-force travel for 0.5 s (m)\":5.0,\"mean F over 2 s (kN)\":59,\"constant-force travel for 2 s (m)\":20.0,\"minimum peak F within a 0.76 m knee bend (kN)\":817,\"longest constant-force stop on his legs (s)\":0.076},\"100 m/s\":{\"J (N s)\":300000,\"mean F over 0.1 s (kN)\":3029,\"constant-force travel for 0.1 s (m)\":5.0,\"mean F over 0.5 s (kN)\":629,\"constant-force travel for 0.5 s (m)\":25.0,\"mean F over 2 s (kN)\":179,\"constant-force travel for 2 s (m)\":100.0,\"minimum peak F within a 0.76 m knee bend (kN)\":19714,\"longest constant-force stop on his legs (s)\":0.015},\"not possible on his legs (constant-force travel over 0.76 m)\":[\"5 m/s: 0.5 s, 2 s\",\"20 m/s: 0.1 s, 0.5 s, 2 s\",\"100 m/s: 0.1 s, 0.5 s, 2 s\"]}"
   },
   {
    "key": "comic_absorb_residual_energy",
@@ -5044,7 +5044,7 @@
      "url": "https://openstax.org/books/university-physics-volume-1/pages/9-2-impulse-and-collisions"
     }
    ],
-   "notes": "A body of mass M at rest given momentum p moves at p/M and carries kinetic energy p²/(2M) (its centre-of-mass energy), the least any receiver can end up with, so an absorbed switch can absorb everything except this. Example: a 3,007 kg Rex landing at 100 m/s passes p = 3.0e5 N s to the Earth (5.97e24 kg), which keeps 7.6e-15 J. That is why soft landing can absorb the energy and still pass on the momentum. Cool flight: at any moment the air carrying the momentum holds at least p²/(2 m_air); that bound shrinks as the wake spreads and more air shares the momentum, and the bulk motion ends as heat. Silent strike: the fist's own momentum returns through his arm and feet to the Earth; the small drag impulse the fist gives the air still goes to the air. Verifier: 'impossible' for cool flight was overstated; reworded.",
+   "notes": "A body of mass M at rest given momentum p moves at p/M and carries kinetic energy p²/(2M) (its centre-of-mass energy), the least any receiver can end up with, so an absorbed switch can absorb everything except this. Example: a 3,000 kg Rex landing at 100 m/s passes p = 3.0e5 N s to the Earth (5.97e24 kg), which keeps 7.5e-15 J. That is why soft landing can absorb the energy and still pass on the momentum. Cool flight: at any moment the air carrying the momentum holds at least p²/(2 m_air); that bound shrinks as the wake spreads and more air shares the momentum, and the bulk motion ends as heat. Silent strike: the fist's own momentum returns through his arm and feet to the Earth; the small drag impulse the fist gives the air still goes to the air. Verifier: 'impossible' for cool flight was overstated; reworded.",
    "who_when": "This research, 2026"
   },
   {
@@ -5159,18 +5159,18 @@
    "category": "presence_growth",
    "label": "Canon body used for growth: volume and equivalent ball radius",
    "status": "derived",
-   "value_si": 2.8368,
+   "value_si": 2.8302,
    "unit_si": "m^3",
    "low_si": null,
    "high_si": null,
-   "display": "2.84 m³; a ball of that volume has a radius of 0.878 m (0.288 of his 3.048 m height)",
+   "display": "2.83 m³; a ball of that volume has a radius of 0.877 m (0.288 of his 3.048 m height)",
    "sources": [
     {
-     "title": "Project canon: CLAUDE.md in this repository (3,007 kg; 3.048 m; 1,060 kg/m³)",
+     "title": "Project canon: CLAUDE.md in this repository (3,000 kg; 3.048 m; 1,060 kg/m³)",
      "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/CLAUDE.md"
     }
    ],
-   "notes": "V0 = 3,007 / 1,060 = 2.8368 m³. Equivalent radius R = (3V/4π)^(1/3) = 0.8782 m, the same convention as the engine's eqRadius(). R/H = 0.2881. Growth forms with mass ratio k = m/m0: volume V = V0·k^a with a = 1 (pure size), 1/2 (mix), 0 (pure density); height and R scale as k^(a/3), i.e. k^(1/3), k^(1/6) or 1; density = 1,060·k^(1−a). Verifier: reproduced.",
+   "notes": "V0 = 3,000 / 1,060 = 2.8302 m³. Equivalent radius R = (3V/4π)^(1/3) = 0.8775 m, the same convention as the engine's eqRadius(). R/H = 0.2879. Growth forms with mass ratio k = m/m0: volume V = V0·k^a with a = 1 (pure size), 1/2 (mix), 0 (pure density); height and R scale as k^(a/3), i.e. k^(1/3), k^(1/6) or 1; density = 1,060·k^(1−a). Verifier: reproduced.",
    "who_when": "derived from canon"
   },
   {
@@ -5189,7 +5189,7 @@
      "url": "https://physics.nist.gov/cgi-bin/cuu/Value?c"
     },
     {
-     "title": "Project canon: CLAUDE.md in this repository (3,007 kg; 3.048 m; 1,060 kg/m³)",
+     "title": "Project canon: CLAUDE.md in this repository (3,000 kg; 3.048 m; 1,060 kg/m³)",
      "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/CLAUDE.md"
     },
     {
@@ -5207,7 +5207,7 @@
    ],
    "notes": "Δm = E/c². E = 8.4e17 J (brief; existing claimed key energy_krakatoa_1883): Δm = 9.346 kg, k = 1.00311. Mix: H = 3.048·k^(1/6) = 3.0496 m, ρ = 1,061.6 kg/m³. Pure size: H = 3.0512 m. Pure density: 1,063.3 kg/m³. The Harkrider & Press 100–150 Mt air-wave equivalent gives 4.7–7.0 kg. Across the quoted spread (1e17 to 6.3e18 J): 1–70 kg, under 3% of his mass and at most 2.3 cm taller (pure size), so the brief's 'unnoticeable in any form' holds. At Lobanovsky's inferred 12 Gt extreme it is about 560 kg (+19% mass; pure size +18 cm, mix +9 cm): noticeable. low_si/high_si are the quoted spread. Verifier: the earlier '1–51 kg across the whole spread' was wrong; widened. Pull request C (decision 9): the page now uses 5.23e17 J (125 Mt, energy_krakatoa_1883): Δm = 5.82 kg, k = 1.00194, mix H 3.0490 m, pure size 3.0500 m, pure density 1,062 kg/m³ (lab engine, grownBody). value_si moved from the brief's 9.346 kg.",
    "who_when": "derived",
-   "values_json": "{\"8.4e17 J (brief)\": {\"dm_kg\": 9.35, \"k\": 1.0031, \"mix_H_m\": 3.0496, \"mix_rho\": 1061.6, \"size_H_m\": 3.0512, \"density_rho\": 1063.3}, \"4.18e17-6.28e17 J (Harkrider & Press)\": {\"dm_kg\": \"4.7-7.0\"}, \"1e17 J (lowest quoted)\": {\"dm_kg\": 1.1}, \"6.3e18 J (1.5 Gt, highest quoted)\": {\"dm_kg\": 70, \"mass_pct\": 2.3, \"size_dH_cm\": 2.3, \"mix_dH_cm\": 1.2}, \"5.0e19 J (12 Gt, Lobanovsky's inferred extreme)\": {\"dm_kg\": 560, \"mass_pct\": 18.6, \"size_dH_cm\": 17.8, \"mix_dH_cm\": 8.8}}"
+   "values_json": "{\"8.4e17 J (brief)\": {\"dm_kg\": 9.35, \"k\": 1.0031, \"mix_H_m\": 3.0496, \"mix_rho\": 1061.6, \"size_H_m\": 3.0512, \"density_rho\": 1063.3}, \"4.18e17-6.28e17 J (Harkrider & Press)\": {\"dm_kg\": \"4.7-7.0\"}, \"1e17 J (lowest quoted)\": {\"dm_kg\": 1.1}, \"6.3e18 J (1.5 Gt, highest quoted)\": {\"dm_kg\": 70, \"mass_pct\": 2.3, \"size_dH_cm\": 2.3, \"mix_dH_cm\": 1.2}, \"5.0e19 J (12 Gt, Lobanovsky's inferred extreme)\": {\"dm_kg\": 560, \"mass_pct\": 18.6, \"size_dH_cm\": 17.9, \"mix_dH_cm\": 8.8}}"
   },
   {
    "key": "growth_worked_chicxulub",
@@ -5225,7 +5225,7 @@
      "url": "https://physics.nist.gov/cgi-bin/cuu/Value?c"
     },
     {
-     "title": "Project canon: CLAUDE.md in this repository (3,007 kg; 3.048 m; 1,060 kg/m³)",
+     "title": "Project canon: CLAUDE.md in this repository (3,000 kg; 3.048 m; 1,060 kg/m³)",
      "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/CLAUDE.md"
     },
     {
@@ -5237,9 +5237,9 @@
      "url": "https://par.nsf.gov/servlets/purl/10349743"
     }
    ],
-   "notes": "E = 4.2e23 J: Δm = 4.673e6 kg, k = 1,555. Mix: H = 3.048·k^(1/6) = 10.38 m, ρ = 1,060·k^(1/2) = 41,800 kg/m³, R_eq = 2.99 m. Pure size: H = 35.3 m, R_eq = 10.2 m. Pure density: 1,060·k = 1.65e6 kg/m³, which is 1.6e6 to 2 figures; the brief's 1.7e6 is a rounding slip. At 5e23 J (Morgan 2022): Δm 5,560 t, mix 10.7 m and 45,600 kg/m³, pure size 37.4 m, pure density 2.0e6 kg/m³. The abstract's 'about 10^23 J' is the order of magnitude of the same estimate, not a lower bound; it would give 1,110 t, mix 8.2 m, pure size 22 m. low_si/high_si: the brief's 4.2e23 J and the review's 5e23 J. Verifier: reproduced (k 1,555.1); the 10^23 row relabelled. Pull request C (decision 9): the page now uses 5e23 J (energy_chicxulub_impact): Δm = 5,563 t, k = 1,851, mix H 10.68 m at 45,600 kg/m³, pure size 37.4 m, pure density 1.96e6 kg/m³ (lab engine, grownBody). value_si moved from the brief's 4,673 t.",
+   "notes": "E = 4.2e23 J: Δm = 4.673e6 kg, k = 1,559. Mix: H = 3.048·k^(1/6) = 10.38 m, ρ = 1,060·k^(1/2) = 41,800 kg/m³, R_eq = 2.99 m. Pure size: H = 35.3 m, R_eq = 10.2 m. Pure density: 1,060·k = 1.65e6 kg/m³, which is 1.6e6 to 2 figures; the brief's 1.7e6 is a rounding slip. At 5e23 J (Morgan 2022): Δm 5,560 t, mix 10.7 m and 45,700 kg/m³, pure size 37.5 m, pure density 2.0e6 kg/m³. The abstract's 'about 10^23 J' is the order of magnitude of the same estimate, not a lower bound; it would give 1,110 t, mix 8.2 m, pure size 22 m. low_si/high_si: the brief's 4.2e23 J and the review's 5e23 J. Verifier: reproduced (k 1,555.1 at the 3,007 kg of the time); the 10^23 row relabelled. Pull request C (decision 9): the page now uses 5e23 J (energy_chicxulub_impact): Δm = 5,563 t, k = 1,855, mix H 10.68 m at 45,700 kg/m³, pure size 37.5 m, pure density 1.97e6 kg/m³ (lab engine, grownBody; at 3,000 kg since 14 Oct 2026). value_si moved from the brief's 4,673 t.",
    "who_when": "derived",
-   "values_json": "{\"4.2e23 J (brief)\": {\"dm_t\": 4673, \"k\": 1555, \"mix_H_m\": 10.4, \"mix_rho\": 41800, \"size_H_m\": 35.3, \"density_rho\": 1650000.0}, \"5e23 J (Morgan 2022 estimate)\": {\"dm_t\": 5563, \"k\": 1851, \"mix_H_m\": 10.7, \"mix_rho\": 45600, \"size_H_m\": 37.4, \"density_rho\": 1960000.0}, \"1e23 J (abstract's order-of-magnitude rounding, not a lower bound)\": {\"dm_t\": 1113, \"k\": 371, \"mix_H_m\": 8.17, \"mix_rho\": 20400, \"size_H_m\": 21.9, \"density_rho\": 393000.0}}"
+   "values_json": "{\"4.2e23 J (brief)\": {\"dm_t\": 4673, \"k\": 1559, \"mix_H_m\": 10.4, \"mix_rho\": 41800, \"size_H_m\": 35.3, \"density_rho\": 1650000.0}, \"5e23 J (Morgan 2022 estimate)\": {\"dm_t\": 5563, \"k\": 1855, \"mix_H_m\": 10.7, \"mix_rho\": 45700, \"size_H_m\": 37.5, \"density_rho\": 1970000.0}, \"1e23 J (abstract's order-of-magnitude rounding, not a lower bound)\": {\"dm_t\": 1113, \"k\": 372, \"mix_H_m\": 8.17, \"mix_rho\": 20400, \"size_H_m\": 21.9, \"density_rho\": 394000.0}}"
   },
   {
    "key": "growth_worked_sun_second",
@@ -5257,7 +5257,7 @@
      "url": "https://physics.nist.gov/cgi-bin/cuu/Value?c"
     },
     {
-     "title": "Project canon: CLAUDE.md in this repository (3,007 kg; 3.048 m; 1,060 kg/m³)",
+     "title": "Project canon: CLAUDE.md in this repository (3,000 kg; 3.048 m; 1,060 kg/m³)",
      "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/CLAUDE.md"
     },
     {
@@ -5269,9 +5269,9 @@
      "url": "https://arxiv.org/pdf/1510.07674"
     }
    ],
-   "notes": "E = 3.828e26 J (IAU nominal luminosity × 1 s): Δm = 4.259e9 kg, k = 1.416e6. Mix: H = 32.3 m, ρ = 1.26e6 kg/m³, R_eq = 9.31 m. Pure size: H = 342 m, R_eq = 98.6 m. Pure density: 1.50e9 kg/m³. All brief figures check out. 'White-dwarf matter' is fair: the existing estimate density_white_dwarf_sirius_b_mean is 2.8e9 kg/m³, so this is about half Sirius B's average. Verifier: reproduced.",
+   "notes": "E = 3.828e26 J (IAU nominal luminosity × 1 s): Δm = 4.259e9 kg, k = 1.420e6. Mix: H = 32.3 m, ρ = 1.26e6 kg/m³, R_eq = 9.30 m. Pure size: H = 343 m, R_eq = 98.6 m. Pure density: 1.50e9 kg/m³. All brief figures check out. 'White-dwarf matter' is fair: the existing estimate density_white_dwarf_sirius_b_mean is 2.8e9 kg/m³, so this is about half Sirius B's average. Verifier: reproduced.",
    "who_when": "derived",
-   "values_json": "{\"dm_kg\": 4259000000.0, \"k\": 1416000.0, \"mix_H_m\": 32.3, \"mix_rho\": 1260000.0, \"size_H_m\": 342, \"density_rho\": 1500000000.0}"
+   "values_json": "{\"dm_kg\": 4259000000.0, \"k\": 1420000.0, \"mix_H_m\": 32.3, \"mix_rho\": 1260000.0, \"size_H_m\": 343, \"density_rho\": 1500000000.0}"
   },
   {
    "key": "growth_brief_number_check",
@@ -5293,7 +5293,7 @@
      "url": "https://physics.nist.gov/cgi-bin/cuu/Value?c"
     },
     {
-     "title": "Project canon: CLAUDE.md in this repository (3,007 kg; 3.048 m; 1,060 kg/m³)",
+     "title": "Project canon: CLAUDE.md in this repository (3,000 kg; 3.048 m; 1,060 kg/m³)",
      "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/CLAUDE.md"
     },
     {
@@ -5305,7 +5305,7 @@
      "url": "https://arxiv.org/pdf/1311.6565"
     }
    ],
-   "notes": "Recomputed with c exact, 3,007 kg, 1,060 kg/m³, 3.048 m. Krakatoa 9 kg OK. Chicxulub: 4,700 t OK; ×1,560 OK (1,555); mix ≈10 m OK (10.4); ≈42,000 OK (41,800); pure size ≈35 m OK (35.3); pure density 1.65e6, which is 1.6e6 to 2 figures (brief 1.7e6: wrong in the second figure). Sun: 4.3e6 t, ×1.4e6, mix 32 m, 1.3e6 (1.26e6), 340 m (342) and 1.5e9 all OK. Runaway: 'about 10^-15' for shoving the surroundings is right for pure size (1.06e-15 slow, 3–5e-15 instant); mix is 5e-16 for small growth, falling to 10^-17–10^-18 for big growth; pure density is 0. 'A real runaway needs their own gravity near black-hole density' is right; the loop reaches 1 only at the event horizon (growth_loop_gravity_gr). Scripts: research/growth/scripts/ (ours) and research/growth-check/scripts/ (verifier's) in the session scratchpad. Verifier: reproduced independently.",
+   "notes": "Recomputed with c exact, 3,007 kg, 1,060 kg/m³, 3.048 m. Krakatoa 9 kg OK. Chicxulub: 4,700 t OK; ×1,560 OK (1,555); mix ≈10 m OK (10.4); ≈42,000 OK (41,800); pure size ≈35 m OK (35.3); pure density 1.65e6, which is 1.6e6 to 2 figures (brief 1.7e6: wrong in the second figure). Sun: 4.3e6 t, ×1.4e6, mix 32 m, 1.3e6 (1.26e6), 340 m (342) and 1.5e9 all OK. Runaway: 'about 10^-15' for shoving the surroundings is right for pure size (1.06e-15 slow, 3–5e-15 instant); mix is 5e-16 for small growth, falling to 10^-17–10^-18 for big growth; pure density is 0. 'A real runaway needs their own gravity near black-hole density' is right; the loop reaches 1 only at the event horizon (growth_loop_gravity_gr). Scripts: research/growth/scripts/ (ours) and research/growth-check/scripts/ (verifier's) in the session scratchpad. Verifier: reproduced independently. This check was made at 3,007 kg, the mass then; at the 3,000 kg ruled on 13 Oct 2026 every figure moves by about 0.2% (Chicxulub's k becomes 1,559) and no verdict changes.",
    "who_when": "derived"
   },
   {
@@ -5817,7 +5817,7 @@
      "url": "https://physics.nist.gov/cgi-bin/cuu/Value?bg"
     },
     {
-     "title": "Project canon: CLAUDE.md in this repository (3,007 kg; 3.048 m; 1,060 kg/m³)",
+     "title": "Project canon: CLAUDE.md in this repository (3,000 kg; 3.048 m; 1,060 kg/m³)",
      "url": "https://github.com/RoscoeRackham/rex-strength-lab/blob/main/CLAUDE.md"
     },
     {
@@ -5825,7 +5825,7 @@
      "url": "https://en.wikipedia.org/wiki/Schwarzschild_radius"
     }
    ],
-   "notes": "Horizon when r_s = 2GM/c² equals the equivalent-ball radius R (the engine's convention; a 3 m tall body would plausibly need more mass to sit inside its own horizon, by hoop-conjecture reasoning, not verified). Pure density (R = 0.8782 m): M = Rc²/(2G) = 5.91e26 kg, ρ = 2.08e26 kg/m³; energy (M − m0)c² = 5.31e43 J = 1.39e17 s of solar output = 4.4e9 years. Mix: R = R0(M/m0)^(1/6) = 2GM/c² gives M = 2.69e31 kg, R = 40 km, H = 139 km, ρ = 1.0e17 kg/m³; E = 2.4e48 J (2e14 years of sunlight). Pure size at 1,060 kg/m³: M = √(3c⁶/(32πG³ρ)) = 2.62e38 kg (1.3e8 solar masses), R = 3.9e11 m. The existing estimate density_black_hole_rex_2m (2.24e26 kg/m³, 5.7e26 kg) uses the old 2.54 m³ volume; with the canon 2.84 m³ it is 2.08e26 kg/m³ and 5.9e26 kg. Verifier: reproduced; convention label added.",
+   "notes": "Horizon when r_s = 2GM/c² equals the equivalent-ball radius R (the engine's convention; a 3 m tall body would plausibly need more mass to sit inside its own horizon, by hoop-conjecture reasoning, not verified). Pure density (R = 0.8775 m): M = Rc²/(2G) = 5.91e26 kg, ρ = 2.09e26 kg/m³; energy (M − m0)c² = 5.31e43 J = 1.39e17 s of solar output = 4.4e9 years. Mix: R = R0(M/m0)^(1/6) = 2GM/c² gives M = 2.69e31 kg, R = 40 km, H = 139 km, ρ = 1.0e17 kg/m³; E = 2.4e48 J (2e14 years of sunlight). Pure size at 1,060 kg/m³: M = √(3c⁶/(32πG³ρ)) = 2.62e38 kg (1.3e8 solar masses), R = 3.9e11 m. The existing estimate density_black_hole_rex_2m (2.24e26 kg/m³, 5.7e26 kg) uses the old 2.54 m³ volume; with the canon 2.83 m³ it is 2.09e26 kg/m³ and 5.9e26 kg. Verifier: reproduced; convention label added.",
    "who_when": "derived"
   },
   {

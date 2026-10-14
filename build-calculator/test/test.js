@@ -363,9 +363,10 @@ test('data: midpoints are derived, editions print what the books print, Ollie is
   for (const e of cap.editions) assert.strictEqual(BC.fmt.height(e.height_m, 'imperial'), '6 ft 2 in', e.label);
   const ol = M.byId.ollie;
   assert.strictEqual(ol.height_m.value, 3.063);
-  // Mass by ruling: 3,007 kg each in all; volume follows at the build density, and the picture's own volume is kept beside it.
+  // Mass by ruling: 3,000 kg each in all (13 Oct 2026); volume follows at the build density, and the picture's own volume is kept beside it.
   for (const b of [M.byId.rex, ol]) {
-    assert.strictEqual(b.weight_kg.value, 3007, b.id + ' weight');
+    assert.strictEqual(b.weight_kg.value, 3000, b.id + ' weight');
+    near(b.derived.bmi, b.weight_kg.value / (b.height_m.value * b.height_m.value), 0.05, b.id + ' stored BMI = weight / height^2 (to one decimal)');
     near(b.volume_m3.value, b.weight_kg.value / b.density_kg_m3.value, 0.005, b.id + ' volume = weight / density');
   }
   near(F.rex_ollie_picture_mass.values.volume_central_m3.ollie, ol.volume_m3.picture_m3, 0.005, 'Ollie picture volume');

@@ -60,6 +60,9 @@ In the growth modes (2–4), show the mass gained once it is worth mentioning, a
 - **Pure density:** same size, denser; the Weight tab's physics applies (ground failure, sinking, their own gravity).
 
 Worked examples to check against (mass ratio from 3,007 kg, at 10 ft):
+
+(Note, 14 Oct 2026: this brief was written at 3,007 kg each. The canon has been 3,000 kg since 13 Oct 2026, which moves these figures by about 0.2%; the research facts and the page use 3,000 kg.)
+
 - Krakatoa's energy (8.4 × 10¹⁷ J) adds about 9 kg: unnoticeable in any form.
 - Chicxulub's (4.2 × 10²³ J) adds about 4,700 t (×1,560): mix ≈10 m and ≈42,000 kg/m³; pure size ≈35 m; pure density ≈1.7 × 10⁶ kg/m³.
 - One second of the Sun's output (3.8 × 10²⁶ J) adds about 4.3 × 10⁶ t (×1.4 × 10⁶): mix ≈32 m and ≈1.3 × 10⁶ kg/m³; pure size ≈340 m; pure density ≈1.5 × 10⁹ kg/m³ (white-dwarf matter).

@@ -17,11 +17,16 @@ const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface
 {
   const { cases, summarize } = require('./baseline-cases.js');
   const base = require('./fixtures/allout-baseline.json');
+  // the fixture was written with the 3,007 kg bodies of 11 Oct 2026 (volume 0.10017 x height^3); since 13 Oct 2026
+  // the canon is 3,000 kg (BRIEF-canon.md item 1), so this comparison runs on the build it was written with
+  const kV0 = [P.BUILDS.rex.kV, P.BUILDS.ollie.kV];
+  P.BUILDS.rex.kV = P.BUILDS.ollie.kV = 0.10017;
   let diff = 0, first = null;
   for (const c of cases(D)) for (const use of [undefined, Infinity]) {
     const now = JSON.stringify(summarize(P, D, c, { use }));
     if (now !== JSON.stringify(base[c.key])) { diff++; if (!first) first = c.key + ' use=' + use + '\n   now  ' + now + '\n   base ' + JSON.stringify(base[c.key]); }
   }
+  [P.BUILDS.rex.kV, P.BUILDS.ollie.kV] = kV0;
   ok('all-out effort reproduces the pre-effort engine (' + Object.keys(base).length + ' setting combinations x 2)', diff === 0, diff ? diff + ' differ; first: ' + first : null);
 }
 
@@ -253,13 +258,15 @@ const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface
     ['Chicxulub', 4.2e23, { ratio: 1560, mixH: 10, mixRho: 42000, sizeH: 35, densRho: 1.65e6 }],   // the brief's 1.7e6 is a rounding slip (growth_brief_number_check)
     ['the Sun for 1 s', 3.828e26, { ratio: 1.4e6, mixH: 32, mixRho: 1.3e6, sizeH: 340, densRho: 1.5e9 }],
   ];
+  // (on the default body: the canon's 3,000 kg since 13 Oct 2026; the brief's figures were worked out at 3,007 kg, 0.2% off)
+  const rexD = P.makeBody(Object.assign({ build: 'rex' }, P.DEFAULT_BODIES.rex));
   for (const [nm, E, w] of ex) {
-    const mix = P.grownBody(rex, E, 'mix'), size = P.grownBody(rex, E, 'size'), dens = P.grownBody(rex, E, 'density');
+    const mix = P.grownBody(rexD, E, 'mix'), size = P.grownBody(rexD, E, 'size'), dens = P.grownBody(rexD, E, 'density');
     if (w.dm) ok(nm + ': adds about ' + w.dm + ' kg', near(mix.dm, w.dm, 0.05), mix.dm.toFixed(2));
     if (w.ratio) ok(nm + ': mass ratio about ' + w.ratio, near(mix.ratio, w.ratio, 0.03), mix.ratio.toPrecision(4));
     if (w.mixH) ok(nm + ': mix about ' + w.mixH + ' m and ' + w.mixRho + ' kg/m3', near(mix.H, w.mixH, 0.05) && near(mix.rho, w.mixRho, 0.05), mix.H.toFixed(1) + ' m, ' + mix.rho.toPrecision(3));
     if (w.sizeH) ok(nm + ': pure size about ' + w.sizeH + ' m', near(size.H, w.sizeH, 0.03), size.H.toFixed(1));
-    if (w.densRho) ok(nm + ': pure density about ' + w.densRho + ' kg/m3', near(dens.rho, w.densRho, 0.02) && dens.H === rex.H, dens.rho.toPrecision(3));
+    if (w.densRho) ok(nm + ': pure density about ' + w.densRho + ' kg/m3', near(dens.rho, w.densRho, 0.02) && dens.H === rexD.H, dens.rho.toPrecision(3));
   }
   const rw = P.runawayGrowth(rex, 4.2e23, 'mix');
   ok('runaway loop ratio reported and far below 1 for Chicxulub', rw.k > 0 && rw.k < 1e-6, rw.k.toExponential(2));

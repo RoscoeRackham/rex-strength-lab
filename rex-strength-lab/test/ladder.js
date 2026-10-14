@@ -113,7 +113,7 @@ for (const r of R) ok('rung ' + r.id + ': page phrase “' + r.short + '” fits
 
 // 7. The strength dial's own extremes land on the ladder (comic ground, the top of the dial, all four powers on)
 {
-  const rex = P.makeBody({ build: 'rex', H: 3.048, m: 3007 }), surf = D.surfaces.find((x) => x.id === 'concrete');
+  const rex = P.makeBody(Object.assign({ build: 'rex' }, P.DEFAULT_BODIES.rex)), surf = D.surfaces.find((x) => x.id === 'concrete');
   const c = { F: 1e34 * P.K.g, mode: 'comic', body: rex, surface: surf, anchor: 'friction', airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true };
   for (const [name, E] of [['punch', P.punch(c).E], ['clap', P.clap(c).E], ['stomp', P.stomp(c).E]])
     ok('top of the dial: the ' + name + ' (' + fmt(E) + ') is on the ladder', !/beyond/.test(L.compare(E, R).text), L.compare(E, R).text);
