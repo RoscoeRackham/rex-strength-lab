@@ -6,13 +6,16 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 | Folder or file | Who | Branch | Since |
 |---|---|---|---|
+| `rex-strength-lab/` (all of it); `build-calculator/` and `build-comparison/` (the canon follow-ups from pull request #25, such as Rex 3,000 kg), including the shared `build-calculator/data/builds.json` and `src/calc.js` | Collaborator | `terantic/canon-followups` | 2026-10-14 |
 
 ## In progress
 
+- Canon follow-ups from pull request #25 (collaborator, `terantic/canon-followups`): folders claimed; the work starts from the collaborator's instructions.
+
 ## Waiting on
 
-- Owner: agree to running CI only by choice (pull request #27, `terantic/ci-on-demand`: CLAUDE.md rule 3 and `.github/workflows/test.yml`). It is heavy (Chromium and every test), so the collaborator would rather run it before a big change than on every pull request and every push to `main`.
-- Page follow-ups for the canon update from pull request #25 (`claude/canon-sync-theoreticals`; agreed by the collaborator 14 Oct 2026; not claimed yet): Rex 3,000 kg with a 300 kg tail (was 3,007 kg) in all three projects and the shared `builds.json`; They take their own recoil sends the push into their source instead of the planet (engine, tests, Known limits, every "the planet takes the push back" sentence); Safe passenger on by default; never knocked back by a hit (needs an Ollie ruling for the two-player tests); the absorption shimmer; the tagline "still obeys Newton". Until then the pages lag the canon.
+- Owner: confirm running CI only by choice, or rule otherwise (pull request #27, merged by the collaborator 14 Oct 2026, `terantic/ci-on-demand`: CLAUDE.md rule 3 and `.github/workflows/test.yml`). It is heavy (Chromium and every test), so the collaborator would rather run it before a big change than on every pull request and every push to `main`.
+- Page follow-ups for the canon update from pull request #25 (`claude/canon-sync-theoreticals`; agreed by the collaborator 14 Oct 2026; claimed on `terantic/canon-followups`): Rex 3,000 kg with a 300 kg tail (was 3,007 kg) in all three projects and the shared `builds.json`; They take their own recoil sends the push into their source instead of the planet (engine, tests, Known limits, every "the planet takes the push back" sentence); Safe passenger on by default; never knocked back by a hit (needs an Ollie ruling for the two-player tests); the absorption shimmer; the tagline "still obeys Newton". Until then the pages lag the canon.
 
 - Owner and collaborator (canon), from pull request B (merged; the page is live with the interim behaviour; nobody is working on it): with Unbreakable footing on, instant growth can't drive his soles into the ground, so the Rex lab grows him upward from them (as Comic ground did); canon has him grow about his middle with his feet driven in. Confirm, or rule otherwise (`rex-strength-lab/README.md` Known limits).
 - Owner review of Build Comparison design decisions listed in `build-comparison/data/NOTES.md` ("Design decisions to review"): the edge marking, the palette change, the stop edges, Thor's and the Thing's treatment, the group colours' contrast, and figures drawn with their arms at their rest angle. (The meatball sentence is now reworded in the brief.)
