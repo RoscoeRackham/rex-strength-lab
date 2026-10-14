@@ -6,16 +6,13 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 | Folder or file | Who | Branch | Since |
 |---|---|---|---|
-| `rex-strength-lab/` (all of it); `build-calculator/` and `build-comparison/` (the canon follow-ups from pull request #25, such as Rex 3,000 kg), including the shared `build-calculator/data/builds.json` and `src/calc.js` | Collaborator | `terantic/canon-followups` | 2026-10-14 |
 
 ## In progress
-
-- Canon follow-ups from pull request #25 (collaborator, `terantic/canon-followups`): the build follows `rex-strength-lab/BRIEF-canon.md` (merged in #30), in its order of five pull requests. Pull request 1, the 3,000 kg mass in all three projects, is built and tested and open for review (two review passes recorded in `rex-strength-lab/research/reviews/canon-1-round1.json` and `canon-1-round2.json`). Next: pull request 2, their recoil going into their source.
 
 ## Waiting on
 
 - Owner: once pull request 1 (the 3,000 kg mass) merges, republish all three live pages: the mass changes each of them.
-- Page follow-ups for the canon update from pull request #25 (`claude/canon-sync-theoreticals`; agreed by the collaborator 14 Oct 2026; claimed on `terantic/canon-followups`): Rex 3,000 kg with a 300 kg tail (was 3,007 kg) in all three projects and the shared `builds.json`; They take their own recoil sends the push into their source instead of the planet (engine, tests, Known limits, every "the planet takes the push back" sentence); Safe passenger on by default; never knocked back by a hit (needs an Ollie ruling for the two-player tests); the absorption shimmer; the tagline "still obeys Newton". Until then the pages lag the canon.
+- Owner: build pull requests 2–5 of `rex-strength-lab/BRIEF-canon.md` in one session by following `rex-strength-lab/RUN-canon.md` (stacked branches, the full review rounds, the owner merges the four in order at the end; the prompt to paste is at its top), in the brief's order (2: their recoil into their source, the catches included, with the momentum ledger test and the new tagline; 3: Safe passenger on by default, covering the landing and the drag; 4: contests and the two Never knocked back switches; 5: the shimmer). The collaborator handed them over on 14 Oct 2026 and has released the claim; claim `rex-strength-lab/` (and, for anything that touches them, `build-calculator/data/builds.json` and `src/calc.js`) before starting. Pull request 1 (the 3,000 kg mass) is merged (#31). The brief's item 4 now notes one case found since: the fireball's push in the game of catch is an incoming hit outside a contest, so Never knocked back does act on a current test.
 
 - Owner and collaborator (canon), from pull request B (merged; the page is live with the interim behaviour; nobody is working on it): with Unbreakable footing on, instant growth can't drive his soles into the ground, so the Rex lab grows him upward from them (as Comic ground did); canon has him grow about his middle with his feet driven in. Confirm, or rule otherwise (`rex-strength-lab/README.md` Known limits).
 - Owner review of Build Comparison design decisions listed in `build-comparison/data/NOTES.md` ("Design decisions to review"): the edge marking, the palette change, the stop edges, Thor's and the Thing's treatment, the group colours' contrast, and figures drawn with their arms at their rest angle. (The meatball sentence is now reworded in the brief.)
@@ -25,6 +22,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## Done
 
+- 2026-10-14: pull request 1 of `rex-strength-lab/BRIEF-canon.md` merged (#31, CI passed): the 3,000 kg mass in all three projects (two self-review passes in `rex-strength-lab/research/reviews/canon-1-round1.json` and `canon-1-round2.json`). The collaborator handed pull requests 2–5 to the owner's session and released the claim on `rex-strength-lab/`, `build-calculator/` and `build-comparison/` (a partial start on pull request 2 was discarded, not pushed).
 - 2026-10-14: the owner confirmed running CI only by choice (pull request #27: CLAUDE.md rule 3 and `.github/workflows/test.yml`; start it by hand before merging a big change).
 - 2026-10-14: the owner confirmed the collaborator's canon rulings of 14 Oct 2026 (CLAUDE.md, "Rulings of 14 Oct 2026", answering `rex-strength-lab/BRIEF-canon.md`) and the shimmer's glow drawn over the art.
 - 2026-10-14: the plan for the canon follow-ups merged (#30, `terantic/brief-canon`): `rex-strength-lab/BRIEF-canon.md` (eight items, each with old and new results from `research/brief-canon/runs.js`; five pull requests in order), with the collaborator's answers to its questions Q1–Q15 and the canon among them in CLAUDE.md's "Rulings of 14 Oct 2026" (owner to confirm). The brief's claim is released.

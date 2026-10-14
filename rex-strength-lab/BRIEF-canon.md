@@ -220,7 +220,7 @@ Review records in `research/reviews/` (all three projects) keep the old figures:
 - A hit's freed energy is absorbed by default, and real only when he means it (**Q3**).
 - A catch is absorbed, unless he chooses otherwise (**Q5**).
 
-**What this leaves for Never knocked back.** Every test in the Rex + Ollie element is a contest. A catch is absorbed anyway, because the catcher's stop is the push back of his own push (They take their own recoil, item 2). So no test the page has today has anything hit them that Never knocked back would stop. Even so, the switches go in now (collaborator, 14 Oct 2026), to be revisited later:
+**What this leaves for Never knocked back.** Every test in the Rex + Ollie element is a contest. A catch is absorbed anyway, because the catcher's stop is the push back of his own push (They take their own recoil, item 2). So no test the page has today has anything hit them that Never knocked back would stop, with one exception, found on 14 Oct 2026 while starting pull request 2: in the game of catch, a throw that turns into a fireball before it reaches the catcher pushes him (`CATCHGAME.fireballAt`, its `push`, and the Catch tab's `pushText`). That push is an incoming hit outside a contest, so with Never knocked back on he isn't moved and its momentum goes to the endless ocean; with it off, today's physics (he and the lump move off together, or the Earth takes it if he is bolted). The switches go in now (collaborator, 14 Oct 2026), to be revisited later; their notes should name this case:
 - Two switches in Their powers, next to the Bolted pair: "Never knocked back: Rex" and "Never knocked back: Ollie" (a screen reader hears each name). Both on by default.
 - Each carries a short note: in their contests (every test here) they let force move, and catches are taken back through They take their own recoil, so no test here uses this switch yet.
 - The "Their powers" card says the same in one sentence.
@@ -435,6 +435,8 @@ Each needs its own decision before it becomes work.
 | Ollie and Rex "share one infinite source: alone, Rex is pure radiance and Ollie pure absorption" | — | Nothing to build; Ollie's Never knocked back is now ruled (**Q1**) |
 
 ## Order of pull requests and review rounds
+
+Pull request 1 is merged (#31). Pull requests 2–5 are for the owner's session (the collaborator's decision, 14 Oct 2026), in one run that follows `RUN-canon.md`: stacked branches, these review rounds in full, and the owner merging the four in order at the end.
 
 Each pull request records its review rounds in `research/reviews/` (for example `canon-1-round1.json`), counts a finding only once it is reproduced with code, updates the README's review history and known limits, and has CI started by hand before it merges. After each merge the owner rebuilds and republishes. A long run ends with a `history/` entry.
 
