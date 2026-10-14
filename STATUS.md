@@ -6,11 +6,10 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 | Folder or file | Who | Branch | Since |
 |---|---|---|---|
-| `build-comparison/` (Step 2: the measuring tool, the exporter, the duo's measurements, gap-filler figures), `build-calculator/data/builds.json` and `src/calc.js` (for the duo's measured girths and the new figures) | Collaborator | `terantic/step2` | 2026-10-11 |
 
 ## In progress
 
-- Build Comparison Step 2 (collaborator, `terantic/step2`): the working checklist is `build-comparison/STEP2.md`. Decisions: art drawn over canon-volume control outlines; gap fillers are featureless bodies; targets 50, 56, 100, 125, 150, 280, 450, 700. First: the measuring-tool fixes (arms cut at the shoulder, tails, armless side view, skull mark, masks).
+- Build Comparison Step 2 (collaborator, `terantic/step2`), paused and unclaimed since 2026-10-14 (see Done): the working checklist is `build-comparison/STEP2.md`. Decisions: art drawn over canon-volume control outlines; gap fillers are featureless bodies; targets 50, 56, 100, 125, 150, 280, 450, 700. First: the measuring-tool fixes (arms cut at the shoulder, tails, armless side view, skull mark, masks).
 
 ## Waiting on
 
@@ -22,6 +21,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## Done
 
+- 2026-10-14: Step 2 claim released (`build-comparison/`, `build-calculator/data/builds.json` and `src/calc.js`) so the canon follow-ups from pull request #25 (Rex 3,000 kg in all three projects and the shared `builds.json`, and the Rex lab changes) can go first. Step 2 is paused on `terantic/step2`; it will claim again before resuming.
 - 2026-10-14: CLAUDE.md canon synced with the owner's Rex Theoreticals project (`claude/canon-sync-theoreticals`): knowledge × intention, bystanders, the shimmer, momentum exceptions, growth and euphoria steps, anatomy, movement, setting, 3,000 kg; page work listed under Waiting on.
 
 - 2026-10-13: the session's history: `history/2026-10-12-rex-gui/` (the owner's prompts, the transcript of the three pull requests, the workflows' subagents, the scratchpad scripts), built with `history/tools/build_history_gui.py` the same way as the earlier entries. The claim on `rex-strength-lab/` (and the root README's Rex lab row, CLAUDE.md's build line and CI's steps) is released.
