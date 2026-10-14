@@ -650,11 +650,12 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       // copy-1: a bolted pull with the power on: his steps push his own body along and that is counted (it is the move,
       // not recoil): all-out at the default dial it cracks plaster near him, and at a 10⁶ kg dial the courtesy ceiling is
       // under the dial; no 'gently' and no 'Ground shaking: none'. On friction his grip caps them and nothing cracks.
-      // (Review round 3 capped his steps by his legs, bolted too, 1.4× the strength he uses: so at the default dial the
-      // car's steps crack plaster only out to about 2.7 m, short of the nearest people, and it has no ceiling there.)
+      // (Review round 3 capped his steps by his legs, bolted too, and its re-check set that cap at the strength he uses, as
+      // in a sprint: so at the default dial the car's steps crack plaster only out to about 1.6 m, short of the nearest
+      // people, and it has no ceiling there.)
       await load({ action: 'pull', anchor: 'bolted' }); await pick('#effort', 'allout');
       const pbH = await soloTxt('.happens'), pbE = await soloTxt('.effort-read');
-      const pbW = pbH.match(/It is his own body’s momentum, ([\d,]+) kg·m\/s over ([\d.,]+ m?s) \(his legs cap it: at most 1\.4× the strength he uses/);
+      const pbW = pbH.match(/It is his own body’s momentum, ([\d,]+) kg·m\/s over ([\d.,]+ m?s) \(his legs cap it: at most the strength he uses, /);
       if (!pbW || /gently/.test(pbH + pbE) || /Ground shaking: none/.test(pbE) || /nothing caps it/i.test(pbH + pbE) || !/enough that plaster may crack out to/.test(pbH)) r2.push('copy-1, the bolted pull: ' + ((pbH.match(/Bolted, his feet[^/]*?(?=Record pullers|$)/) || [pbH.slice(0, 300)])[0]) + ' | ' + pbE.slice(0, 200));
       await load({ action: 'pull', anchor: 'bolted', logKg: 6 });
       const pb6 = await soloTxt('.effort-read');
@@ -731,10 +732,10 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       const pfH = await soloTxt('.happens');
       if (!/It is his own body’s momentum, [\d,]+ kg·m\/s over [\d.,]+ m?s \(his grip caps it: his footing, [\d.,]+ kN, is the most his steps can push with\)/.test(pfH) || /bolted, nothing caps it|his legs cap it/.test(pfH)) r2.push('code-2 (b), the friction pull\'s steps: ' + ((pfH.match(/It is his own body’s momentum[^)]*\)/) || [pfH.slice(0, 300)])[0]));
       // (c) a bolted bus with the plaster preset: the effort box's reason is the bolted one (pullOnWhy), not his grip
-      // (round 3 rewords it: his legs cap his steps)
+      // (round 3 rewords it: his legs cap his steps; its re-check: at most the strength he uses, as in a bolted sprint)
       await load({ action: 'pull', obj: 'bus', anchor: 'bolted' }); await pick('#effort', 'plaster');
       const pbuE = await soloTxt('.effort-read');
-      if (!/Bolted, his legs cap it: they push his own body with at most 1\.4× the strength he uses \(about [\d.,]+ MN here\), so only a strong, quick pull shakes the ground\./.test(pbuE) || /His grip caps it|nothing caps it/.test(pbuE)) r2.push('code-2 (c), the bolted bus\'s reason: ' + pbuE.slice(0, 400));
+      if (!/Bolted, his legs cap it: they push his own body with at most the strength he uses \(about [\d.,]+ [kM]N here, as in a bolted sprint\), so only a strong, quick pull shakes the ground\./.test(pbuE) || /His grip caps it|nothing caps it/.test(pbuE)) r2.push('code-2 (c), the bolted bus\'s reason: ' + pbuE.slice(0, 400));
       // (d) the courtesy-ceiling card: a pull's shaking counts only with the power on; not 'the lab counts neither'
       const cardTxt = await page.evaluate(() => { const b = document.body.cloneNode(true); b.querySelectorAll('script, style').forEach((x) => x.remove()); return b.textContent.replace(/\s+/g, ' '); });
       if (!/A pull’s counts only with They take their own recoil on: the rope’s pull back then goes to the endless ocean, and the shaking is from his own steps/.test(cardTxt) || /the lab counts neither/.test(cardTxt)) r2.push('code-2 (d), the card: ' + ((cardTxt.match(/[^.]*or a pull \([^)]*\)[^.]*\./) || cardTxt.match(/A pull’s counts[^.]*\./) || ['(no pull sentence)'])[0]).slice(0, 300));
@@ -754,27 +755,47 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       const num = (x) => Number(String(x).replace(/,/g, ''));
       const r3 = [];
       // physics-bolted-pull-legs-unbounded: Bolted removes the footing limit, not the muscle limit. With the power on his
-      // legs move his own body with at most 1.4× the strength he uses, so a light load is pulled at his own body's pace:
+      // legs move his own body with at most the strength he uses (its re-check, fixes-pull-legs-vs-sprint: the Sprint
+      // tab's push-off, not the 1.4× leg rule for carrying weight up), so a light load is pulled at his own body's pace:
       // the bolted baseball's least disruptive pull takes 10 s (not 100 ms) and shakes nothing near him
       await load({ action: 'pull', obj: 'baseball', anchor: 'bolted' });
       const bbV = await soloTxt('.verdict'), bbS = await soloTxt('.status-row'), bbH = await soloTxt('.happens'), bbE = await soloTxt('.effort-read');
-      if (!/Rex drags it 10 m in 9\.\d+ s\./.test(bbV) || !/His legs set the pace/.test(bbS) || !/His legs still move his own body, with at most 1\.4× the strength he uses \([\d.,]+ N\), so his own body sets the pace: he pulls with [\d.,]+ N of the [\d.,]+ N he could/.test(bbH) || !/Courtesy ceiling: none\./.test(bbE) || /plaster may crack|nothing caps it/i.test(bbE + bbH)) r3.push('legs, the bolted baseball at least effort: ' + bbV + ' | ' + bbS + ' | ' + bbE.slice(0, 220));
+      if (!/Rex drags it 10 m in 9\.\d+ s\./.test(bbV) || !/His legs set the pace/.test(bbS) || !/His legs still move his own body, with at most the strength he uses \([\d.,]+ N\), as in a bolted sprint, so his own body sets the pace: he pulls with [\d.,]+ N of the [\d.,]+ N he could/.test(bbH) || !/Courtesy ceiling: none\./.test(bbE) || /plaster may crack|nothing caps it|1\.4×/i.test(bbE + bbH)) r3.push('legs, the bolted baseball at least effort: ' + bbV + ' | ' + bbS + ' | ' + bbE.slice(0, 220));
       // ... and all-out the bolted car: the engine's time; his steps' push (his body's momentum over the pull) at most
-      // 1.4× the dial (889.6 kN), not 2.2×; the math line names his legs' push
+      // the dial (889.6 kN: all-out he uses all of it), not 1.4× (round 3) or 2.2× (round 2); his pace is the Sprint
+      // tab's bolted push-off ÷ his mass; the math line names his legs' push; and the page says the pull has no
+      // leg-speed limit, so he ends past his top sprint speed (the engine's figures)
       await load({ action: 'pull', anchor: 'bolted' }); await pick('#effort', 'allout');
       const bcV = await soloTxt('.verdict'), bcH = await soloTxt('.happens'), bcM = await soloTxt('details.math'), bcE = await soloTxt('.effort-read');
       const bcT = await page.evaluate(() => { const P = window.DinoPhys, D = window.DINO_DATA, g = P.K.g, body = P.makeBody(Object.assign({ build: 'rex' }, P.DEFAULT_BODIES.rex));
-        const r = P.pull({ F: 100 * 907.18474 * g, mode: 'comic', body, surface: D.surfaces.find((x) => x.id === 'concrete'), anchor: 'bolted', airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true }, D.objects.find((x) => x.id === 'car'));
-        return { t: r.t10m, legs: r.walkPush.J / r.walkPush.T / r.usable }; });
-      const bcW = bcH.match(/It is his own body’s momentum, ([\d,]+) kg·m\/s over ([\d.]+) ms \(his legs cap it: at most 1\.4× the strength he uses, [\d.,]+ MN\)/), bcVt = bcV.match(/in ([\d.]+) ms\./);
-      if (!bcW || !bcVt || Math.abs(num(bcVt[1]) / (1000 * bcT.t) - 1) > 0.03 || num(bcW[1]) / (num(bcW[2]) / 1000) > 1.4 * 100 * 907.18474 * 9.80665 * 1.03 || !(bcT.legs <= 1.4 * (1 + 1e-12)) || !/his legs’ push ÷ his mass, legs’ push = 1\.4 × the strength he uses = [\d.,]+ MN/.test(bcM) || /nothing caps it/i.test(bcH + bcE + bcM)) r3.push('legs, the bolted car all-out: ' + bcV + ' (engine ' + (1000 * bcT.t).toFixed(0) + ' ms, legs ' + bcT.legs.toFixed(3) + '×) | ' + ((bcH.match(/It is his own body’s momentum[^)]*\)/) || [bcH.slice(0, 200)])[0]) + ' | ' + bcM.slice(-300));
-      // ... and on friction at the least disruptive effort his legs, not his grip, set the car's pace
+        const c = { F: 100 * 907.18474 * g, mode: 'comic', body, surface: D.surfaces.find((x) => x.id === 'concrete'), anchor: 'bolted', airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true }, r = P.pull(c, D.objects.find((x) => x.id === 'car')), sp = P.sprint(c);
+        return { t: r.t10m, legs: r.walkPush.J / r.walkPush.T / r.usable, a: r.accel, aSprint: sp.accel, vEnd: r.vEnd, vTop: sp.vTop }; });
+      const bcW = bcH.match(/It is his own body’s momentum, ([\d,]+) kg·m\/s over ([\d.]+) ms \(his legs cap it: at most the strength he uses, [\d.,]+ kN\)/), bcVt = bcV.match(/in ([\d.]+) ms\./);
+      const bcS = bcH.match(/the pull leaves out two limits the Sprint tab has: how fast his legs can move, and the air’s drag on him\. So he ends the 10 m at ([\d.]+) m\/s, past his top sprint speed at this effort \(([\d.]+) m\/s\)/);
+      if (!bcW || !bcVt || Math.abs(num(bcVt[1]) / (1000 * bcT.t) - 1) > 0.03 || num(bcW[1]) / (num(bcW[2]) / 1000) > 100 * 907.18474 * 9.80665 * 1.03 || !(bcT.legs <= 1 + 1e-12) || Math.abs(bcT.a / bcT.aSprint - 1) > 1e-9 || !/his legs’ push ÷ his mass, legs’ push = the strength he uses = [\d.,]+ kN \(the Sprint tab’s bolted push-off\)/.test(bcM) || /nothing caps it|1\.4×|1\.4 ×/i.test(bcH + bcE + bcM)
+        || !bcS || Math.abs(num(bcS[1]) / bcT.vEnd - 1) > 0.03 || Math.abs(num(bcS[2]) / bcT.vTop - 1) > 0.03) r3.push('legs, the bolted car all-out: ' + bcV + ' (engine ' + (1000 * bcT.t).toFixed(0) + ' ms, legs ' + bcT.legs.toFixed(3) + '×, a ' + bcT.a.toFixed(1) + ' vs the sprint\'s ' + bcT.aSprint.toFixed(1) + ') | ' + ((bcH.match(/It is his own body’s momentum[^)]*\)/) || [bcH.slice(0, 200)])[0]) + ' | ' + (bcS ? bcS[0] : '(no leg-speed note)') + ' | ' + bcM.slice(-300));
+      // ... and on friction at the least disruptive effort his legs, not his grip, set the car's pace; the walk sentence
+      // gives his legs' push and the acceleration it allows (the legs' push ÷ his 3,000 kg, under 1 m/s², not his
+      // footing's 5.9 m/s²: re-check, fixes-friction-walk-sentence-unchecked), and the math line names both caps, not
+      // 54fadb8's min((pull − resistance) ÷ load mass, footing ÷ his mass) (re-check, fixes-friction-math-line-unchecked)
       await load({ action: 'pull' });
-      const fcS = await soloTxt('.status-row'), fcH = await soloTxt('.happens');
-      if (!/His legs set the pace/.test(fcS) || !/but his own legs set the pace: he pulls with/.test(fcH) || !/\(his legs cap it: at most 1\.4× the strength he uses, [\d.,]+ N, less than his footing, [\d.,]+ kN\)/.test(fcH)) r3.push('legs, the friction car at least effort: ' + fcS + ' | ' + ((fcH.match(/It is his own body’s momentum[^)]*\)/) || [fcH.slice(0, 200)])[0]));
+      const fcS = await soloTxt('.status-row'), fcH = await soloTxt('.happens'), fcM = await soloTxt('details.math');
+      const fcW = fcH.match(/his legs’ push \(at most the strength he uses, ([\d.,]+) N, as in a sprint\), so they can speed it up by at most ([\d.]+) m\/s²/);
+      if (!/His legs set the pace/.test(fcS) || !/but his own legs set the pace: he pulls with/.test(fcH) || !/\(his legs cap it: at most the strength he uses, [\d.,]+ N, less than his footing, [\d.,]+ kN\)/.test(fcH) || /1\.4×/.test(fcH)) r3.push('legs, the friction car at least effort: ' + fcS + ' | ' + ((fcH.match(/It is his own body’s momentum[^)]*\)/) || [fcH.slice(0, 200)])[0]));
+      if (!fcW || !(num(fcW[2]) < 1) || Math.abs(num(fcW[2]) / (num(fcW[1]) / 3000) - 1) > 0.05 || /his footing \([\d.,]+ kN\) can speed his own body up/.test(fcH)) r3.push('legs, the friction walk sentence: ' + ((fcH.match(/He still walks[^²]*²/) || [fcH.slice(0, 200)])[0]));
+      if (!/his feet push with the smaller of his footing, μ × his weight = [\d.,]+ kN, and his legs’ push, the strength he uses = [\d.,]+ N \(the Sprint tab’s push-off\)/.test(fcM) || /min\(\(pull − resistance\)|1\.4 ×/.test(fcM)) r3.push('legs, the friction math line: ' + fcM.slice(0, 400));
+      // ... and at unlimited strength, bolted, all-out, his steps are still his legs' (re-check,
+      // fixes-unlimited-bolted-steps-say-grip): never his grip or '∞ N' in a sentence
+      await load({ action: 'pull', inf: true, anchor: 'bolted' }); await pick('#effort', 'allout');
+      const uiH = await soloTxt('.happens');
+      if (/his grip caps it/.test(uiH) || !/\(his legs cap it: at most the strength he uses, unbounded at unlimited strength\)/.test(uiH) || /∞ N/.test(uiH)) r3.push('legs, the unlimited bolted pull: ' + ((uiH.match(/It is his own body’s momentum[^)]*\)/) || [uiH.slice(0, 300)])[0]));
+      // (on friction his footing sets the pace there: what he pulls with is of his unbounded strength, not '∞ N')
+      await load({ action: 'pull', inf: true }); await pick('#effort', 'allout');
+      const ufH = await soloTxt('.happens');
+      if (/∞ N/.test(ufH) || !/his own footing sets the pace: he pulls with [\d.,]+ kN of his unbounded strength/.test(ufH) || !/\(his grip caps it: his footing, [\d.,]+ kN, is the most his steps can push with\)/.test(ufH)) r3.push('legs, the unlimited friction pull: ' + ufH.slice(0, 400));
       // ... and the courtesy-ceiling card says so
       const card = await visText();
-      if (!/bolted, only his legs cap them, so only a strong, quick pull shakes the ground/.test(card) || /bolted, nothing does/.test(card)) r3.push('legs, the card: ' + ((card.match(/A pull’s counts[^.]*\./) || ['(none)'])[0]));
+      if (!/his legs push his own body with at most the strength he uses, as in a sprint, and on friction his grip caps them too, so it stays small; bolted, only his legs cap them, so only a strong, quick pull shakes the ground/.test(card) || /bolted, nothing does|at most 1\.4× the strength he uses/.test(card)) r3.push('legs, the card: ' + ((card.match(/A pull’s counts[^.]*\./) || ['(none)'])[0]));
       // physics-catch-allreach-unthrown-leg: a leg too weak to throw back throws nothing, so it lands nowhere: Ollie at a
       // 2,000 kg what-if strength, the car lobbed 30 m: everything thrown reaches the catcher, so nothing pushes on the
       // ground (not 'the lab doesn't judge where the car lands or hits')
@@ -804,7 +825,7 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
         const c = { F: 100 * 907.18474 * g, mode: 'comic', body, surface: D.surfaces.find((x) => x.id === 'concrete'), anchor: 'bolted' };
         return ['car', 'loco'].map((id) => P.pull(c, D.objects.find((x) => x.id === id)).t10m); });
       if (!qk || /all-out takes a fraction of a second/.test(vhF) || num(qk[1]) !== Number(qkT[0].toFixed(2)) || num(qk[2]) !== Math.round(qkT[1])) r3.push('the card\'s bolted pull times: ' + (qk ? qk[0] : ((vhF.match(/or his bolts do over the pull[^.]*\./) || ['(none)'])[0])) + ' (engine ' + qkT.map((x) => x.toFixed(2) + ' s').join(', ') + ')');
-      if (r3.length) fail('review round 3 (pull request 2): ' + r3.join(' ;; ')); else okLog('review round 3 (pull request 2): his legs cap a pull\'s steps, bolted too (the bolted baseball and car, the friction car, the card); a leg too weak to throw lands nowhere; the unlimited shove\'s break-the-ground box sets Unbreakable footing aside; no version-history phrase; the card\'s bolted pull times');
+      if (r3.length) fail('review round 3 (pull request 2): ' + r3.join(' ;; ')); else okLog('review round 3 (pull request 2): his legs cap a pull\'s steps at the strength he uses, as in a sprint, bolted too (the bolted baseball and car, the friction car\'s steps, walk sentence and math, the unlimited bolted pull, the card; the pull\'s missing leg-speed limit); a leg too weak to throw lands nowhere; the unlimited shove\'s break-the-ground box sets Unbreakable footing aside; no version-history phrase; the card\'s bolted pull times');
     }
     // ---- end of review round 3 of pull request 2
     // the two-player 'Break the ground' sets Unbreakable footing aside, and its ceiling is on real ground too
