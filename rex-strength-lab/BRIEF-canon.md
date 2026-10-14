@@ -1,6 +1,6 @@
 # Brief: the canon follow-ups (14 Oct 2026)
 
-For the Rex lab (`rex-strength-lab/`), and for item 1 also the Build Calculator and Build Comparison. Written by the collaborator's session, 14 Oct 2026, from the canon update in pull request #25 (agreed in #26), for whichever session builds it. It plans the page work #25 listed under Waiting on. Each item says what changes, why (the canon line, quoted from CLAUDE.md), the files and functions it touches, the tests, the risks, and what changes on concrete runs. Questions only the owner can answer are marked **Q1**, **Q2**, … and collected in "Questions for the owner". Nothing here adds canon. Work in the house pattern (CLAUDE.md): research where needed, build, tests, adversarial review rounds, README.
+For the Rex lab (`rex-strength-lab/`), and for item 1 also the Build Calculator and Build Comparison. Written by the collaborator's session, 14 Oct 2026, from the canon update in pull request #25 (agreed in #26), for whichever session builds it. It plans the page work #25 listed under Waiting on. Each item says what changes, why (the canon line, quoted from CLAUDE.md), the files and functions it touches, the tests, the risks, and what changes on concrete runs. The questions the plan couldn't answer alone are marked **Q1**, **Q2**, …. The collaborator answered them on 14 Oct 2026 (see "Answers"), and the items below follow those answers. The answers that are canon are also recorded in CLAUDE.md, marked "owner to confirm". Nothing else here adds canon. Work in the house pattern (CLAUDE.md): research where needed, build, tests, adversarial review rounds, README.
 
 **Where the numbers come from.** Every old and new result below is an engine run on `main` at `f57d440`, made by `research/brief-canon/runs.js` (run it from `rex-strength-lab/`; its output is saved beside it as `runs.json`). "Old" is the engine as it is. "New" changes the script's own copy of the engine to do what the item says (the body volume, where the recoil goes, Safe passenger), so it shows the size of each change before anyone builds it. The build must reproduce these figures or say why not. For item 4, "new" uses the engine's existing sums for a truly immovable body, with the momentum sent to the endless ocean.
 
@@ -10,18 +10,18 @@ Unless a run says otherwise: the default 10 ft Rex, on concrete, comic muscle, j
 
 1. **Mass:** 3,000 kg each, 300 kg of it Rex's tail (was 3,007 and 307). Results move by about 0.2%, mostly below the figures the page shows.
 2. **They take their own recoil:** the push back now goes into their source, not the planet. The ground no longer shakes from their own recoil.
-3. **Momentum rule:** an audit of every place the engine absorbs momentum, against the canon's list. Two gaps (items 2 and 4), one borderline case, and a wrong engine comment.
-4. **Never knocked back:** incoming hits don't move Rex. Collide and the two-player tests change. Ollie needs a ruling.
-5. **Safe passenger on by default.** It moves the person-throw's courtesy ceiling, and exposes a gap: the lab doesn't count where a thrown person lands.
-6. **The absorption shimmer:** a glow that scales with the energy taken back, on a log scale between two rungs of the energy ladder.
-7. **Copy:** the "still obeys Newton" tagline and the "momentum is never absorbed" wording.
-8. **Optional:** euphoria steps, flight, a just-under-sonic run on Sprint.
+3. **Momentum rule:** an audit of every place the engine absorbs momentum, against the canon's list. Two gaps (items 2 and 4) and a wrong engine comment.
+4. **Never knocked back:** a power for each of them, on by default. Incoming hits (a charge, a push, a shove, being lifted or thrown, a catch) don't move them, and a hit's energy is absorbed unless he means it. With both powers on, a charge has no physical answer.
+5. **Safe passenger on by default**, now covering the landing and the air's drag too. It moves the person-throw's courtesy ceiling.
+6. **The absorption shimmer:** a glow that scales with the energy taken back, on a log scale from a car crash to the dinosaur-killer, drawn on his eyes, feather tips and mouth.
+7. **Copy:** the tagline becomes "Indestructible · never tires · unlimited"; the "momentum is never absorbed" wording goes.
+8. **Optional:** euphoria steps, flight, a default run of 339 m/s on Sprint.
 
 The proposed order of pull requests and their review rounds is at the end.
 
 ## Rules for every item
 
-- **Powers off, nothing changes.** With every power off (the four default powers, Safe passenger, Silent strike, Soft landing), every engine result stays exactly what `main` gives for the same body. The powers-off fixture (`test/powers.js`) and the all-out baseline (`test/presence.js`) keep passing. The new canon changes only the runs with powers on, and the default mass.
+- **Powers off, nothing changes.** With every power off (the four default powers, Safe passenger, Never knocked back, Silent strike, Soft landing), every engine result stays exactly what `main` gives for the same body. The powers-off fixture (`test/powers.js`) and the all-out baseline (`test/presence.js`) keep passing. The new canon changes only the runs with powers on, and the default mass.
 - **The frozen comparisons keep the body they were written with**: 3,007 kg, volume 0.10017 × height³. How: item 1, Tests.
 - **Saved pages still load.** This work adds one save marker (for example `saveV: 2`), written on every save. A save without it gets the migrations in items 1 and 5. A save with it is taken as the reader's choice.
 - **Same tests, both widths.** `test/shots.js` passes at 390 and 1280 px, light and dark.
@@ -123,9 +123,9 @@ Review records in `research/reviews/` (all three projects) keep the old figures:
 | Shove | `shoveOnce` (`toGround`) | the shover's feet hand the ground his push | nothing from the shover. The bolted partner's bolts (`toGroundB`) stay; see item 4 |
 | Wrestle throw | `throwPartner` (through `throwObject`) | the thrower's push into the ground | none; the partner's landing (`landToGround`) stays |
 | Game of catch, thrower | `CATCHGAME.leg` (`pushT`, `toGroundT`), `throwPushJ`, `easyPush`, `recoilOf` | the thrower's push into the ground, every throw | none |
-| Partner toss | `CATCHGAME.tossPartner` (`toGroundT`) | his push as he tosses Ollie up | none. His catch (`toGroundC`) follows **Q5** |
+| Partner toss | `CATCHGAME.tossPartner` (`toGroundT`) | his push as he tosses Ollie up | none. His catch (`toGroundC`) is absorbed too: a catch is an incoming hit (**Q2**, **Q5**). Ollie can't be tossed at all while his Never knocked back is on (item 4) |
 | Arm wrestle | `armWrestle` (`toGround`) | not covered by the power today. A quick pin leaves no net push, because the swing's push back and the slam cancel | the pin is the winner's own move, so its push back goes to his source. Then nothing cancels the slam's blow on the table, and with Unbreakable footing it reaches the ground whole at any swing time. This follows from the canon; confirm it in review |
-| Collide | `COLLIDE.chargeSpeed` | the charger's take-off is the move itself | unchanged. The hit is item 4 (and **Q4**) |
+| Collide | `COLLIDE.chargeSpeed` | the charger's take-off is the move itself | the take-off is unchanged. The hit's push back on the charger is his own recoil too (**Q4**): item 4 |
 | Weak ground | `weakGround` (sideways, "as if bolted, their recoil taken: the planet takes it") | used wherever a recoil push reached the ground | keep it for catches, landings and a bolted body; drop the recoil case |
 
 **Every page sentence that sends recoil into the planet** (`src/app.html` unless named):
@@ -136,7 +136,7 @@ Review records in `research/reviews/` (all three projects) keep the old figures:
 - Wrestle (`wrestleShove`, `wrestleThrow`): the chips and items.
 - Catch (`bayCatch`, `catchPartner`): "…goes through Rex's feet into the planet…".
 - Their powers: the switch's hint (`#sw-recoil`).
-- `duoFacts`: with the power on, drop the thrower's and shover's push from `shake` and the harm text "the push through the shover's / thrower's feet shakes the ground…". The catcher's line follows **Q5**.
+- `duoFacts`: with the power on, drop the thrower's and shover's push from `shake` and the harm text "the push through the shover's / thrower's feet shakes the ground…". The catcher's stop is absorbed too (**Q5**), so his line goes while his Never knocked back is on.
 - The effort box (`effortReadout`, `offBy`): credit They take their own recoil with the plaster hazard where the same move with the power off cracks plaster from him. Today it is credited only with the slide.
 - Cards (`src/static-data.js`): "The courtesy ceiling and the not-so-heroic presets" (the rope's pull "into the planet over the pull, and that shaking counts"), "Their powers" ("the planet keeps the momentum, and the ground still shakes"), and "Newton's third law stays on" (item 7).
 - README: the intro's description of the power; Known limits: the hazard paragraph ("Pull without They take their own recoil (with it, … into the planet …)"), the paragraph "With Unbreakable footing and They take their own recoil both off…", and "They take their own recoil covers…".
@@ -157,11 +157,11 @@ Review records in `research/reviews/` (all three projects) keep the old figures:
 | All-out at a 10¹² kg dial: the car leaves the Earth at 105 km/s | the ground takes 9.9 × 10⁷ kg·m/s sideways; their power supplies another 9.9 × 10⁷ downward (the weak-ground rule); plaster may crack out to 3.6 km | no ground shaking at all. The courtesy ceiling (plaster, from the landing, at 209,000 kg-force) and every preset are unchanged |
 | A bus thrown 1 km straight up, 10⁹ kg dial, least disruptive (588,000 kg-force, held at the ceiling) | his push 11 mm/s; the landing 13 mm/s | his push: nothing. The ceiling stays at 590,000 kg-force: the landing set it |
 | Rex shoves Ollie | Ollie flies off at 21 m/s and slides 37 m. Rex's feet hand the ground 66,800 kg·m/s: 2.3 mm/s, enough to rattle windows (our estimate: from 1 mm/s) | the same shove. Nothing from Rex's feet |
-| Game of catch, a fastball 10 m apart, 10⁹ kg dial (thrown at 22 km/s) | the thrower's push 3,250 kg·m/s: 0.92 mm/s | nothing from the thrower. The catcher's stop (0.28 mm/s) follows **Q5** |
+| Game of catch, a fastball 10 m apart, 10⁹ kg dial (thrown at 22 km/s) | the thrower's push 3,250 kg·m/s: 0.92 mm/s | nothing from the thrower, and nothing from the catcher either: his stop (0.28 mm/s today) is absorbed (**Q5**) |
 | Pull a car, all-out | the rope's pull: 0.005 mm/s | nothing |
 
 **Tests to change.**
-- `test/powers.js`, section 5 (5d). These change: "…and its push goes into the planet…" and "on concrete that push alone shakes the ground…" (now no `toGround`, no shaking from his push, and the momentum taken back equals the object's momentum); "a bolted pull … shakes the ground" and "a pull with it on … shakes the ground" (now no shaking); "with only They take their own recoil on, the shove hands the ground his push" (now none); the partner toss's "the toss's push … go into the ground" (now only the catch, per **Q5**); "the catch thrower's push into the ground matches the Throw tab's" and "a catch throw that becomes a fireball still pushes the ground" (now none). These stay: no slide, no lurch, no hop; the All-Star baseball doesn't move Rex; the stomp-launch is unchanged; the clap, jump and sprint are unchanged.
+- `test/powers.js`, section 5 (5d). These change: "…and its push goes into the planet…" and "on concrete that push alone shakes the ground…" (now no `toGround`, no shaking from his push, and the momentum taken back equals the object's momentum); "a bolted pull … shakes the ground" and "a pull with it on … shakes the ground" (now no shaking); "with only They take their own recoil on, the shove hands the ground his push" (now none); the partner toss's "the toss's push … go into the ground" (now none: his catch is absorbed too, **Q5**); "the catch thrower's push into the ground matches the Throw tab's" and "a catch throw that becomes a fireball still pushes the ground" (now none). These stay: no slide, no lurch, no hop; the All-Star baseball doesn't move Rex; the stomp-launch is unchanged; the clap, jump and sprint are unchanged.
 - `test/powers.js`, the round 4 and round 5 weak-ground checks. The throw checks that run with `ownRecoil: true` (for example the car on sand at 30°) move to Unbreakable footing alone (`ownRecoil: false`), where his footing's push still reaches the ground. The checks already at `ownRecoil: false` stay.
 - `test/presence.js` runs with the powers off, so its recoil checks (the bus-on-ice slide hazard, the locomotive's boom from his recoil) don't change.
 - New: the momentum ledger (item 3), for each move with the power on and off.
@@ -185,7 +185,7 @@ Review records in `research/reviews/` (all three projects) keep the old figures:
 | Air resistance absorbed | `fly`, `CATCHGAME.flyTo` (`out.ocean.P`) | the share of the drag taken back goes to the endless ocean | listed: the air's drag on what they throw |
 | Weak ground, downward | `weakGround` (`suppliedDown`); the jump's `pushOff`; the stomp's `blow` cap; Collide's `toGround.supplied`; the thrown partner's `landToGround`; `instantGrowth`'s `toGround` | the ground takes its bearing over the pulse; their power supplies the rest | listed: the ground's share it can't bear |
 | Weak ground, sideways | `weakGround` (`suppliedSide`) | standing on friction, the ground takes at most its friction on what it bears; their power supplies the rest | listed, read as the same share sideways |
-| A push with no push time | the jump's `pushOff` with `T = 0` (comic mode at unlimited strength), and any capped push with no time | the ground takes none; their power supplies all of it, unbounded | borderline. A push in no time is one no ground can bear, so it fits "the ground's share it can't bear". **Q9** |
+| A push with no push time | the jump's `pushOff` with `T = 0` (comic mode at unlimited strength), and any capped push with no time | the ground takes none; their power supplies all of it, unbounded | listed: a push in no time is one no ground can bear, so it is the ground's share it can't bear (**Q9**: yes) |
 | Growth lift | `instantGrowth` (`Pocean`) | the lift the ground's push would give him goes to the endless ocean | listed |
 | Their own recoil | item 2's table | goes into the planet | **not absorbed where the list says it is**: item 2 |
 | Incoming hits | `COLLIDE.collide`; `shoveOnce`; the catch (`relCatch`, `catchIt`) | a hit moves him, or goes through his feet or bolts into the planet | **not absorbed where the list says it is**: item 4 |
@@ -197,67 +197,101 @@ Review records in `research/reviews/` (all three projects) keep the old figures:
 **Findings.**
 1. Their own recoil is not absorbed: item 2.
 2. Incoming hits are not absorbed: item 4.
-3. The push with no push time is borderline: **Q9**.
+3. The push with no push time is within the list (**Q9**: yes). Nothing to change.
 4. The comment above `PASSENGER` in `src/engine.js` ("Momentum is never absorbed.") and the README's "an exception to 'momentum is never absorbed'" are wrong now: item 7.
-5. A tension inside the canon, not in the engine. The Growth line says "absorption cancels his own pull on everything he doesn't mean to affect". If his pull on a thing is cancelled but its pull on him isn't, momentum isn't kept, and that case isn't on the list (**Q10**). The engine doesn't model the cancellation yet.
+5. Cancelling his own pull (the Growth line: "absorption cancels his own pull on everything he doesn't mean to affect") cancels it both ways, so momentum is kept and the list needs no new case (**Q10**: B). The engine doesn't model the cancellation yet.
+6. Flight is now canon with its own momentum case: a flying brick's push goes to the endless ocean (**Q11**). That is a sixth case on the list, recorded in CLAUDE.md. The lab has no flight yet (item 8), so the engine has nothing to check.
 
-**The ledger test (new, in `test/powers.js`).** For each move (a throw at 0°, 45° and 90°, a stomp, punch, clap, jump, pull, shove, the wrestle throw, a catch leg, a Collide splat and bounce, instant growth), at three dials, with the powers on and off, add up the momentum along each axis: the object, his body, what the ground takes, and what the endless ocean takes (the air's share, the supplied push, the growth lift, the recoil, a hit). The total must be zero to a part in a million. With the powers off the ocean's share is zero; with them on, every share in the ocean is one of the five on the list. Where the engine doesn't report a figure the ledger needs (a direction, a split), add it.
+**The ledger test (new, in `test/powers.js`).** For each move (a throw at 0°, 45° and 90°, a stomp, punch, clap, jump, pull, shove, the wrestle throw, a catch leg, a Collide splat and bounce, instant growth), at three dials, with the powers on and off, add up the momentum along each axis: the object, his body, what the ground takes, and what the endless ocean takes (the air's share, the supplied push, the growth lift, the recoil, a hit). The total must be zero to a part in a million. With the powers off the ocean's share is zero; with them on, every share in the ocean is one of the cases on the list. Where the engine doesn't report a figure the ledger needs (a direction, a split), add it.
 
 **Old and new.**
 - Least-disruptive car throw. Old: the ledger closes with the planet taking his 22,000 kg·m/s of recoil, and nothing in the ocean. New: 22,000 kg·m/s in the ocean (recoil), nothing in the ground.
 - All-out car throw at a 10¹² kg dial. Old: 9.9 × 10⁷ kg·m/s in the ground and 9.9 × 10⁷ in the ocean (weak ground). New: all of his push in the ocean (recoil), nothing in the ground.
-- The comic jump at unlimited strength: the ground takes none and the ocean all of it, unbounded, both old and new, pending **Q9**.
+- The comic jump at unlimited strength: the ground takes none and the ocean all of it, unbounded, both old and new (**Q9**: within the list).
 
 ## 4. Never knocked back
 
-**Canon.** "Momentum: absorbed in the cases listed here …: … and incoming hits (he is never knocked back, RT 5.1)." This is in Rex's canon. Ollie's isn't ruled (**Q1**).
+**Canon.** "Momentum: absorbed in the cases listed here …: … and incoming hits (he is never knocked back, RT 5.1)." And the rulings of 14 Oct 2026 (collaborator, answering this brief; owner to confirm; recorded in CLAUDE.md):
+- Never knocked back is a power for each of them, with a switch each, both on by default (**Q1**: C, on).
+- Incoming hits are: a charge, a steady push, a shove, the shoving match, being lifted or thrown by the other, a caught object, and a partner landing on him (**Q2**: all).
+- A hit's freed energy is absorbed by default (it shows as his shimmer), and real only when he means it (**Q3**: B).
+- A charger's push back from his own hit is his own recoil, so it goes to his source and he doesn't slow (**Q4**: B).
+- A catch is absorbed, unless he chooses otherwise (**Q5**: A).
 
-**What changes for Rex.** When something hits Rex, he doesn't move, and the hit's momentum goes to the endless ocean: not into his feet, the ground or his bolts. The charger meets him as he would meet a truly immovable body, and the engine already has those sums (`headOn` with infinite mass):
-- In a splat the charger stops dead. In a bounce he comes straight back at the speed he arrived, and Rex takes twice his momentum.
-- After the hit: no slide and no sink, no push into the ground from the hit (so no shaking from it), no load on the rock around his bolts, no "bolts too late", and no change to the Earth's spin.
-- The hit's energy. In a splat, all of the charger's energy of motion is freed at the contact, as against a truly immovable body. A body that can be knocked back frees less. For equal masses it is twice what the page shows now. Whether that energy is real or absorbed (showing only as his shimmer) is **Q3**.
-- What counts as an incoming hit is **Q2**. This plan covers the Collide charge for certain and lists the rest.
+**What changes.** When something hits one of them and his Never knocked back is on, he doesn't move, and the hit's momentum goes to the endless ocean: not into his feet, the ground or his bolts.
+- **Against a charger whose push back is real** (They take their own recoil off), the sums are a truly immovable body's, which the engine already has (`headOn` with infinite mass). In a splat the charger stops dead. In a bounce he comes straight back at the speed he arrived, and the one hit takes twice his momentum.
+- **After the hit**: no slide and no sink, no push into the ground from it (so no shaking from it), no load on the rock around his bolts, no "bolts too late", and no change to the Earth's spin.
+- **The hit's energy.** In a splat, all of the charger's energy of motion is freed, as against a truly immovable body. For equal masses that is twice what a body that can be knocked back frees. By default it is absorbed and shows only as his shimmer (item 6). It is real only when he means it. On the page, that is when the reader picks a not-so-heroic preset whose hazard is the blast (rattle by air, the windows, the houses, a block), the way "break the ground" sets Unbreakable footing aside. That mapping is this plan's reading of "when he means it"; confirm it in review.
+- **The charger (Q4).** With They take their own recoil on, the hit's push back on the charger goes to his source, so he doesn't slow down: he acts as a body of unbounded mass moving at his own speed. Against someone who can be knocked back, he carries them along at his own speed (splat), or sends them off at twice it (bounce; near light speed, by relativistic velocity addition). The momentum they gain comes from his source. `headOn` handles an infinite target and an infinite momentum today, but not a charger of unbounded mass at a finite speed: add that case.
+- **Both on, the defaults.** The charger can't slow and the one he hits can't move: the unstoppable force meets the immovable object, and the collision has no physical answer. The page says exactly that, with no numbers, and offers the two ways out: turn off the Never knocked back of the one hit, or turn off They take their own recoil. The engine returns the outcome `'paradox'` (the Collide tab already has one, for two unlimited holds).
+- **A catch (Q5).** The catcher's stop is absorbed: he is never carried off, and nothing of it goes into the ground. With his Never knocked back off, today's physics. "Unless Rex enables otherwise" is read here as that switch; confirm it in review.
 
-**Engine.** In `COLLIDE.collide`, a holder option (for example `noKnockback`, per character, so Ollie's follows **Q1**). It takes the immovable branch's sums (`headOn` with infinite mass, `held = true`). It reports the momentum taken (`out.absorbed = { P }`: p in a splat, 2p in a bounce) instead of `out.earth`, `out.toGround`, `out.rock`, `out.bolts` and the motion in `out.after`. `standoff`, `shoveOnce`, `pushMatch`, `throwPartner`, `liftPartner`, `armWrestle` and the catch follow **Q2**. Keep "Truly immovable" as the thought experiment it is (infinite inertia, nothing to do with their powers). With Rex as the holder it now gives the same motion, so the page should say so, or offer it only for Ollie (**Q1**).
+**Test by test, with both switches on (the default):**
 
-**Page.** The verdicts in `collideCharge` and `collidePush` ("…doesn't budge… the blow goes through … into the ground"); the items "Momentum is never lost…" and "'Immovable' only means what holds … in place…"; the Collide footing lines. In `duoFacts` for Collide, the harms "the hit, carried into the ground, shakes it…" and "one of them slides…" go when Rex is the one hit; `models.shake` keeps only the charger's take-off.
-
-**The two-player effort search.** With Rex unmoved, the harms left in an Ollie-into-Rex charge are the charge breaking the sound barrier, the hit's air blast (**Q3**) and Ollie's take-off shaking the ground. The rattle and plaster presets may become unreachable there. The page must say so, as the solo tabs do.
-
-**Old and new** (`runs.json`, "4 collide"; Ollie charges Rex):
-
-| Run | Old | New: Rex never knocked back |
+| Test | Today | New |
 |---|---|---|
-| Ollie sprints into Rex, splat, default dial. Ollie arrives at 18 m/s (his run-up and grip set the speed, not the dial) | Rex is knocked back; they slide 7.0 m together, starting at 9.0 m/s. His footing hands the ground 615 kg·m/s. The splat frees 250 kJ | Rex doesn't move. Ollie stops dead. 54,600 kg·m/s goes to the endless ocean. The splat frees 495 kJ, real or absorbed (**Q3**) |
+| Collide, a charge | the one hit is held by his footing or bolts, or knocked back | the paradox above. With They take their own recoil off: the table below |
+| Collide, a steady push | the push against his hold; the rock around bolts can tear out | he holds without limit and the push goes to his source; no rock load. The pusher's own push back is his recoil, to his source too |
+| Wrestle, the shove | the partner flies off and slides (Ollie at 21 m/s, 37 m, at the default dial) | neither moves: the shover's push back and the hit both go to their sources |
+| Wrestle, the shoving match | one walks the other out, or a deadlock | a deadlock: nobody can be moved |
+| Wrestle, lift and throw | he lifts and throws his partner | he can't: being lifted or thrown is a hit, so the partner stays put |
+| Catch, an object | the catcher's stop goes into the ground; at a 10²⁰ kg dial he is carried off at 3,980 km/s | absorbed: never carried off, nothing into the ground |
+| Catch, the partner toss | Rex tosses Ollie up and catches him | Ollie can't be tossed while his switch is on |
+| A partner landing on him (the Wrestle throw, Collide from above) | the landing goes into the ground | absorbed |
+| Arm wrestle | the pin, and the drag once the table breaks | not on the list: **Q12** |
+
+So with the defaults, most of the Rex + Ollie element shows that nothing moves. That is the canon, but the element has to say so first and put each one's Never knocked back switch within reach, so a reader can run a contest in one click. It is a design point for pull request 4's review, not canon.
+
+**Engine.** A per-character option, for example `noKnockback`, with a state key each (like `anchor` and `oAnchor`), both on by default. Old saves have neither key, so they pick up the defaults; no marker needed. In `COLLIDE.collide`:
+- the one hit, with the option on, takes the immovable branch's sums (`held = true`) and reports the momentum taken (`out.absorbed = { P }`: p in a splat, 2p in a bounce) instead of `out.earth`, `out.toGround`, `out.rock`, `out.bolts` and the motion in `out.after`;
+- a charger with `ownRecoil` is a body of unbounded mass at his own speed;
+- both together return `'paradox'`.
+
+`standoff`, `shoveOnce`, `pushMatch`, `liftPartner`, `throwPartner`, the catch (`CATCHGAME.relCatch` and `catchIt`, the catcher's stop), `tossPartner` and a thrown partner's landing follow the table. Keep "Truly immovable" as the thought experiment it is (infinite inertia, nothing to do with their powers), and say on the page that Never knocked back gives the one hit the same motion.
+
+**Page.** The verdicts in `collideCharge` and `collidePush` ("…doesn't budge… the blow goes through … into the ground"); the items "Momentum is never lost…" and "'Immovable' only means what holds … in place…"; the Collide footing lines; the Wrestle and Catch verdicts for a partner who won't move. In `duoFacts`: the harms "the hit, carried into the ground, shakes it…" and "one of them slides…" go while the one hit has the power on, and `models.shake` keeps only the charger's take-off. In Their powers: two switches, "Never knocked back: Rex" and "Never knocked back: Ollie", next to the Bolted pair; a screen reader hears each name.
+
+**The two-player effort search.** With the one hit unmoved and the hit's energy absorbed, the harms left in a charge are the charge breaking the sound barrier and the charger's take-off shaking the ground. Most presets become unreachable in those tests, and the page says so, as the solo tabs do. A blast preset makes the hit's energy real (above).
+
+**Old and new** (`runs.json`, "4 collide"; Ollie charges Rex). With both defaults on, the new result is the paradox in every row. The table shows the case with They take their own recoil off (so Ollie's push back is real) and Rex's Never knocked back on. The energy is what the hit frees; by default it is absorbed:
+
+| Run | Old | New |
+|---|---|---|
+| Ollie sprints into Rex, splat, default dial. Ollie arrives at 18 m/s (his run-up and grip set the speed, not the dial) | Rex is knocked back; they slide 7.0 m together, starting at 9.0 m/s. His footing hands the ground 615 kg·m/s. The splat frees 250 kJ | Rex doesn't move. Ollie stops dead. 54,600 kg·m/s goes to the endless ocean. The splat frees 495 kJ |
 | The same, bounce | Ollie stops; Rex flies off at 18 m/s and slides 27 m | Ollie comes back at 18 m/s. Rex takes 109,000 kg·m/s |
 | Ollie jumps onto Rex, splat, 10⁹ kg dial. He lands at 287 m/s; Unbreakable footing holds Rex | the ground takes 95,700 kg·m/s through Rex's feet and their power supplies the other 766,000. Plaster may crack out to 7.7 m. 124 MJ freed | nothing of the hit reaches the ground (Ollie's take-off still does). 862,000 kg·m/s to the endless ocean. 124 MJ freed |
 | All-out: a set speed of 0.1% of light speed (300 km/s), splat | they leave together at 150 km/s and slide 15.7 km. 68 TJ freed (about the Hiroshima bomb) | Rex doesn't move. 9.0 × 10⁸ kg·m/s to the endless ocean. 135 TJ freed (about twice the Hiroshima bomb) |
 | The same, bounce | Ollie stops; Rex flies off at 300 km/s and slides 9.2 km | Ollie comes back at 300 km/s. Rex takes 1.8 × 10⁹ kg·m/s |
 
-**Options for Ollie (Q1).** Listed, not chosen.
-- **A. The same as Rex: never knocked back.** Symmetric with "as strong, tough and big as Rex", and the canon calls Ollie "pure absorption". The one being hit in Collide then never moves, whoever charges. If pushes count as hits (**Q2**), the shove, the shoving match's walk-out and the standing arm-wrestle drag can't move either of them. And if a charger's push back counts as his own recoil (**Q4**), a charge into Ollie has no physical answer: both keep their momentum.
-- **B. Real physics for Ollie, as today.** Rex charging into Ollie is unchanged; Ollie charging into Rex follows the table above. Asymmetric.
-- **C. A per-character switch, "Never knocked back", in Their powers next to Bolted.** Rex's is on by canon; Ollie's default is your ruling. A reader can still run today's contest. It costs one more control and a saved-state key.
+**Tests.** `test/powers.js`, a new section:
+- with the option on, the one hit never moves (splat and bounce, every charge source, bolted or not, Unbreakable footing on or off); he takes p in a splat and 2p in a bounce; the hit puts nothing into the ground; in a splat the energy freed equals the charger's energy of motion;
+- a charger with his recoil taken keeps his speed, and moves someone without the option at his own speed (splat) or about twice it (bounce);
+- both on gives `'paradox'`;
+- each row of the test-by-test table.
 
-**Tests.** `test/powers.js`, a new section: with the option on, the holder in Collide never moves (splat and bounce, every charge source, bolted or not, Unbreakable footing on or off); the momentum taken is p in a splat and 2p in a bounce; the hit puts nothing into the ground; in a splat the energy freed equals the charger's energy of motion. With it off, every result as now (the powers-off identity, and today's 5d check "Collide unchanged"). The two-player presets say when they are out of reach. `test/shots.js`: the Collide verdicts and items.
+With the options off, every result as now: the powers-off identity, and today's 5d check "Collide unchanged", which now holds only with them off. `test/shots.js`: the Collide, Wrestle and Catch verdicts with each switch on and off; an old save loads with both on.
 
-**Interacts with.** Item 2 (**Q4**, the charger's push back). Item 3 (this closes the audit's second gap). Item 6 (an absorbed hit is the largest shimmer source, **Q3**). Bolted to the planet (redundant for Rex when he is hit; still the setting for Ollie under option B). Unbreakable footing (its Collide `toGround` path goes for Rex as the holder).
+**Interacts with.** Item 2 (the charger's push back is his recoil). Item 3 (this closes the audit's second gap). Item 5 (a thrown person is not Ollie: Safe passenger covers people, this covers the two of them). Item 6 (an absorbed hit is the largest shimmer source). Bolted to the planet (redundant while the switch is on; still the setting with it off). Unbreakable footing (its Collide `toGround` path goes while the one hit has the switch on).
 
 **Risks.**
-- Doubling the energy freed in a splat lowers Collide's least disruptive effort wherever the blast sets it, if **Q3** says the energy is real.
+- With the defaults, most two-player results are "nothing moves". Readers may take that for a broken page, so the element must explain it first.
+- "When he means it" (mapped to the blast presets) and "unless Rex enables otherwise" (mapped to the switch) are readings. Confirm them in review.
 - The two-player tests can take 2–3 s already. The new branches must not slow them.
 
 ## 5. Safe passenger on by default
 
-**Canon.** "*Safe passenger* (RT 4.2): someone he throws or catches feels a manageable force unless he knows they can take it." It is listed under Default powers: "On unless they choose otherwise".
+**Canon.** "*Safe passenger* (RT 4.2): someone he throws or catches feels a manageable force unless he knows they can take it." It is listed under Default powers: "On unless they choose otherwise". And the ruling of 14 Oct 2026 (collaborator; owner to confirm; recorded in CLAUDE.md): Safe passenger also covers where the person lands, and the air's drag on them (**Q8**: a 1, b yes).
 
 **What changes.**
 - On by default (`DEFAULTS.safePassenger: true`). The switch moves from the "Material limit suspended" heading to the default powers in Their powers. The summary line lists it with them.
 - **Saved states.** Every save stores `safePassenger`, false by default until now, so the key alone can't tell an old default from a choice. Use the save marker: an unmarked save loads with it on.
-- **"Unless he knows they can take it."** Only the person object is a passenger (`passenger=True` in `build-data.py`). Ollie, thrown or caught, never is. That is already so.
-- **The engine doesn't change.** `MOVES.throw.passenger` and the page's `catchPassengerG` already skip the launch and the catch when the switch is on. They still judge the air's drag in flight against the held 1.5 g limit, times the share of the drag that acts. At the default 100% Air resistance absorbed there is no drag, so by default the passenger hazard never fires.
-- **Copy.** The switch says the launch "puts no load on them; they float as if falling". The canon says "a manageable force". Say they feel the push, spread through them, within the ride limits.
+- **"Unless he knows they can take it."** Only the person object is a passenger (`passenger=True` in `build-data.py`). Ollie, thrown or caught, never is: the two of them are covered by item 4 instead. That is already so.
+- **The engine changes a little.** `MOVES.throw.passenger` and the page's `catchPassengerG` already skip the launch and the catch while the switch is on. Now they skip the air's drag in flight too, so with Safe passenger on the passenger hazard never fires.
+- **The landing.** With the switch on, the person comes down unharmed. The landing's momentum still reaches the ground, so its shaking stays real (it is what now sets the person throw's ceiling). Its energy, the harm a fall would do, is taken back, as Soft landing does for his own landings, and counts in the shimmer (item 6). That split (momentum real, energy taken back) is this plan's reading of "covers the landing"; confirm it in review. With the switch off, the landing stays a fall the lab doesn't judge, as today, and the page says so.
+- **Copy.** The switch says the launch "puts no load on them; they float as if falling". The canon says "a manageable force". Say they feel a manageable push, spread through them, at the launch, in the air and when they land.
 - **The effort box** credits Safe passenger where the same throw with it off presses the person past the ride limits.
+
+**Why the landing matters.** At the new least-disruptive effort (below), the person lands at 18 m/s, like a fall of about 16 m. Before this ruling the page would have called that harmless without covering it.
 
 **The effort search and the courtesy ceiling.** For a thrown person, the passenger hazard set the ceiling at a few hundred kg-force. With Safe passenger on, the ceiling moves to the next hazard: the shaking from the person's landing, then the boom.
 
@@ -265,55 +299,56 @@ Review records in `research/reviews/` (all three projects) keep the old figures:
 
 | | Old: off | New: on |
 |---|---|---|
-| Least disruptive | held at 333 kg-force: the person goes 3.0 m (the 30 m goal is out of reach without harm) | 3,350 kg-force: the person goes 30 m, released at 16 m/s |
+| Least disruptive | held at 333 kg-force: the person goes 3.0 m (the 30 m goal is out of reach without harm) | 3,350 kg-force: the person goes 30 m, released at 16 m/s, and lands unharmed |
 | Courtesy ceiling | 335 kg-force, set by the person's g-force | 27,000 kg-force, set by plaster cracking (from the person's landing) |
-| All-out | 81 m/s; lands 670 m away; the launch is past the ride limits | the same throw; the launch no longer counts |
-| All four powers off | ceiling 335 kg-force (the launch) | ceiling 39,800 kg-force (air drag past 1.5 g in flight, which Safe passenger doesn't cover) |
+| All-out | 81 m/s; lands 670 m away; the launch is past the ride limits | the same throw; the launch, the drag and the landing no longer count as harm to the person |
+| All four powers off | ceiling 335 kg-force (the launch) | no ceiling: nothing harms anyone 5 m away even all-out (plaster may crack only within 1.4 m of where the person lands) |
 
-**Risk, and a question (Q8).** The lab doesn't count where a thrown person lands ("The landing is a fall unless someone catches them, and the lab doesn't count it"). With Safe passenger on by default, the least disruptive throw of a person lands them at 18 m/s, like a fall of about 16 m, and the page would call it harmless. The canon also says "he never kills" (Bystanders). There are three ways out: Safe passenger covers the landing too (canon); the lab counts the landing as a hazard (research first: a sourced fall-injury threshold); or a person's goal becomes a catch. Until one is chosen, the person throw must say plainly that the landing isn't covered.
+**Tests.** `test/shots.js`: a fresh page has Safe passenger on; an unmarked old save with it off loads with it on; a marked save with it off keeps it off; the person throw's least effort and ceiling move as in the table; the landing's text with the switch on and off. `test/presence.js`: the check "all-out, the air drag on them is past the held limit too, and Safe passenger can't take that away" turns round (now it does take it away); the launch check stays. `test/powers.js` or `test/presence.js`, new: with the switch on, a thrown person's landing energy is taken back and its momentum still reaches the ground.
 
-**Tests.** `test/shots.js`: a fresh page has Safe passenger on; an unmarked old save with it off loads with it on; a marked save with it off keeps it off; the person throw's least effort and ceiling move as in the table. `test/presence.js`'s Safe passenger checks (the launch hazard removed, the drag kept) stay.
-
-**Interacts with.** Air resistance absorbed (the drag on a person below 100%). The game of catch with a person. Item 7 (copy). **Q8**.
+**Interacts with.** Air resistance absorbed (with the drag covered, the slider no longer matters for a person's safety). The game of catch with a person. Item 6 (the landing's energy is shimmer). Item 7 (copy).
 
 ## 6. The absorption shimmer
 
-**Canon.** "*Where absorbed energy goes* (RT 2, 4.4): back into the store of infinite power they draw on ('a drop in an endless ocean'). It shows: his eyes, feather tips and mouth-glow shimmer in proportion to what he takes in (a flicker for a car crash, a blinding flare for a planet-scale hit). His glow is gently warm, never scalding."
+**Canon.** "*Where absorbed energy goes* (RT 2, 4.4): back into the store of infinite power they draw on ('a drop in an endless ocean'). It shows: his eyes, feather tips and mouth-glow shimmer in proportion to what he takes in (a flicker for a car crash, a blinding flare for a planet-scale hit). His glow is gently warm, never scalding." And the rulings of 14 Oct 2026 (collaborator; owner to confirm; recorded in CLAUDE.md): the planet-scale hit is the dinosaur-killer; below a car crash he still shows a faint flicker; he shimmers in the growth what-ifs too (**Q6**: a 1, b 2, c yes). The glow may be drawn over the art (**Q6** d); the art is the owner's, so the owner confirms that one.
 
 **Proposal.**
-- **Engine: one tally per run**, for example `RESTRAINT.absorbedEnergy(move, r, o)`: the energy taken back in that run, by part. The parts: the air's drag on what he throws (but see the risk below); what Unbreakable footing takes back to keep the ground whole (the stomp's `absorbed`, and the jump's where real ground would have taken energy); Soft landing (`landing.absorbed`); Silent strike (the blast energy it takes: a punch's or clap's energy past Mach 1); an incoming hit, if absorbed (**Q3**); and the energy the growth what-ifs turn into mass (**Q6**). Momentum taken back without motion (his recoil, the weak ground's supplied push) carries almost no energy and adds nothing.
-- **Page: a "Shimmer" tile** on each tab whose run takes energy back. It has a swatch with a warm CSS glow whose strength follows the level, a word for the level, the energy, and its ladder comparison (`src/ladder.js`). It is not drawn over the art, because the art is the owner's (CLAUDE.md); the glow sits beside it unless you say otherwise (**Q6**).
-- **The level** runs on a log scale between the canon's two anchors. A linear scale would make a car crash 10⁻²⁶ of a planet-scale flare, which is invisible. Both anchors are ladder rungs with sourced facts:
+- **Engine: one tally per run**, for example `RESTRAINT.absorbedEnergy(move, r, o)`: the energy taken back in that run, by part. The parts: the air's drag on what he throws (but see the risk below); what Unbreakable footing takes back to keep the ground whole (the stomp's `absorbed`, and the jump's where real ground would have taken energy); Soft landing (`landing.absorbed`); Silent strike (the blast energy it takes: a punch's or clap's energy past Mach 1); a hit's freed energy, which is absorbed by default (item 4); a thrown person's landing with Safe passenger on (item 5); and, in the growth what-ifs, the energy that becomes mass. Momentum taken back without motion (his recoil, the weak ground's supplied push, a hit's momentum) carries almost no energy and adds nothing.
+- **On the art.** A warm glow drawn over his eyes, feather tips and mouth on the header picture (`assets/dino.jpg`) and the Collide picture (`assets/art-unstoppable.jpg`, where his eyes already glow), as a CSS layer positioned on those features. The image files stay untouched; the positions are measured from the pictures and kept with them. The glow's strength follows the level.
+- **A "Shimmer" tile** beside the results on each tab whose run takes energy back: a word for the level, the energy, and its ladder comparison (`src/ladder.js`). The tile carries the numbers and is what a screen reader hears; the glow on the art is decoration.
+- **The level** runs on a log scale between the canon's two anchors. A linear scale would make a car crash 10⁻¹⁸ of the flare, which is invisible. Both anchors are ladder rungs with sourced facts:
   - a flicker: a car crash, the rung `energy_corolla_100kmh_kinetic` (a Toyota Corolla at 100 km/h, 517 kJ);
-  - a blinding flare: a planet-scale hit. Either `energy_chicxulub_impact` (the asteroid that killed the dinosaurs, 5 × 10²³ J, a rough rung) or `energy_earth_gravitational_binding` (the energy to blow Earth apart, 2.5 × 10³² J). **Q6**.
-  - Below a flicker: nothing visible, or a faint flicker down to some floor (**Q6**). Above the flare: the flare. It doesn't grow brighter, because the canon gives no step past it.
+  - a blinding flare: the dinosaur-killer, the rung `energy_chicxulub_impact` (5 × 10²³ J). It is a rough rung (uncertain by more than 2×), so the page says "about" for the flare and the steps near it.
+  - Below a flicker: a faint flicker, fading to nothing at a floor. Proposal (a design choice for review, not canon): the floor is the rung `energy_usain_bolt_top_speed` (Usain Bolt at top speed, 7.3 kJ), about 70 times below a car crash.
+  - Above the flare: the flare. It doesn't grow brighter, because the canon gives no step past it.
 - **Named steps** at a quarter, a half and three quarters of the log span, each beside its nearest rung:
 
-| Level | Flare at the dinosaur-killer | Flare at blowing Earth apart |
+| Level | Energy | The nearest rung |
 |---|---|---|
-| flicker | 517 kJ: a car crash | 517 kJ: a car crash |
-| faint glow (¼) | about 2 × 10¹⁰ J: a loaded A380 at cruising speed | about 2 × 10¹² J: the Beirut explosion (a rough rung) |
-| glow (½) | about 5 × 10¹⁴ J: between the Hiroshima bomb and the Chelyabinsk meteor | about 1 × 10¹⁹ J: an average hurricane's heat for a day (a rough rung) |
-| bright (¾) | about 2 × 10¹⁹ J: an average hurricane's heat for a day (a rough rung) | about 5 × 10²⁵ J: between a year of sunlight on Earth and the Sun's output for a second |
-| blinding flare | 5 × 10²³ J | 2.5 × 10³² J |
+| faint flicker | 7.3 kJ to 517 kJ | Usain Bolt at top speed, up to a car crash |
+| flicker | 517 kJ | a car crash (a Corolla at 100 km/h) |
+| faint glow (¼) | about 2 × 10¹⁰ J | a loaded A380 at cruising speed |
+| glow (½) | about 5 × 10¹⁴ J | between the Hiroshima bomb and the Chelyabinsk meteor |
+| bright (¾) | about 2 × 10¹⁹ J | an average hurricane's heat for a day (a rough rung) |
+| blinding flare | about 5 × 10²³ J | the asteroid that killed the dinosaurs (a rough rung) |
 
 - **"Gently warm, never scalding":** the glow is never a heat hazard. The tile's note says so once.
 
 **Old and new.** The page shows no shimmer today. New (`runs.json`, "6 shimmer"; level from 0, a flicker, to 1, the flare):
 
-| Run | Energy taken back | Level (flare at the dinosaur-killer / at Earth) |
+| Run | Energy taken back | Level |
 |---|---|---|
-| Throw a car 30 m, least disruptive | about 42 kJ of drag | below a flicker |
-| The same, all-out | 0.47 MJ of drag | just under a flicker |
-| Stomp all-out (Unbreakable footing keeps the concrete whole) | 0.10 MJ | below a flicker |
-| Stomp all-out at a 10⁹ kg dial | 1.1 GJ | 0.19 / 0.13: between a flicker and a faint glow |
-| Ollie hits Rex at 0.1% of light speed, if the hit is absorbed (**Q3**) | 135 TJ | 0.47 / 0.32: about a glow / a faint glow |
+| Throw a car 30 m, least disruptive | about 42 kJ of drag | a faint flicker |
+| The same, all-out | 0.47 MJ of drag | a faint flicker, just under a flicker |
+| Stomp all-out (Unbreakable footing keeps the concrete whole) | 0.10 MJ | a faint flicker |
+| Stomp all-out at a 10⁹ kg dial | 1.1 GJ | 0.19: between a flicker and a faint glow |
+| Ollie hits Rex at 0.1% of light speed, with They take their own recoil off (with both defaults on there is no hit to absorb: item 4) | 135 TJ | 0.47: about a glow |
 
 **Risk: which drag figure.** The lab's tally for Air resistance absorbed is the drag the air would have taken along the path the object actually flies, drag-free. A drag-free object keeps its speed, so the tally can far exceed the object's own energy. A car thrown all-out at a 10⁹ kg dial carries 7.3 GJ, but the tally is 2.5 TJ. Fed to the shimmer, that would make a car throw glow like a nuclear test. Use instead what real air would have taken from that throw (the Throw tab's `dragLoss0`, at most the object's energy). That is a decision for review, not canon.
 
-**Tests.** The anchors and steps come from the ladder facts by key, with no copied numbers. The tile appears only when energy is taken back. The level never falls as the energy rises. The swatch has a text alternative. Both themes; no sideways scroll at 390 px.
+**Tests.** The anchors, the floor and the steps come from the ladder facts by key, with no copied numbers. The tile appears only when energy is taken back. The level never falls as the energy rises. The glow sits on the features at both widths (screenshots). The tile is read by screen readers; the glow layer is hidden from them. Both themes; no sideways scroll at 390 px.
 
-**Interacts with.** Items 2 and 4 (recoil adds nothing; an absorbed hit adds the most). Air resistance absorbed, Unbreakable footing, Soft landing, Silent strike. The growth what-ifs (**Q6**).
+**Interacts with.** Items 2 and 4 (recoil and a hit's momentum add nothing; a hit's energy adds the most). Item 5 (a person's landing). Air resistance absorbed, Unbreakable footing, Soft landing, Silent strike. The growth what-ifs.
 
 ## 7. Copy
 
@@ -321,11 +356,11 @@ Review records in `research/reviews/` (all three projects) keep the old figures:
 
 | Where | Now | Change |
 |---|---|---|
-| The header's eyebrow (`src/app.html`) | "Indestructible · never tires · still obeys Newton" | No longer true: their recoil and incoming hits are absorbed. The new wording is yours (**Q7**). Plain options, not canon: "Indestructible · never tires · unlimited"; "Indestructible · never tires · takes back what he doesn't mean" |
+| The header's eyebrow (`src/app.html`) | "Indestructible · never tires · still obeys Newton" | "Indestructible · never tires · unlimited" (**Q7**: A). The old line is no longer true: their recoil and incoming hits are absorbed |
 | `suppliedText` (`src/app.html`) | "(canon: an exception to 'momentum is never absorbed'; it goes to the endless ocean)" | "(canon: one of the few cases where momentum is absorbed; it goes to the endless ocean)" |
 | `src/engine.js`, the comment above `PASSENGER` | "Momentum is never absorbed." | the canon's list |
 | The card "Newton's third law stays on" (`src/static-data.js`) | "Every push pushes him back. …" | retitle (for example "Newton's third law, except where they take it back") and list where momentum goes to the endless ocean |
-| Collide's items (`collideCharge`) | "Momentum is never lost…"; "'Immovable' only means what holds … in place…" | rewrite for a Rex who is never knocked back (item 4) |
+| Collide's items (`collideCharge`) | "Momentum is never lost…"; "'Immovable' only means what holds … in place…" | rewrite for Never knocked back and the paradox (item 4) |
 | Recoil "into the planet" | about 20 page sentences, two cards, the switch's hint, the README | item 2's list |
 | README | the intro's description of the powers; Known limits: "an exception to 'momentum is never absorbed'" (under Unbreakable footing and Growth) | as above |
 
@@ -339,23 +374,32 @@ Briefs (`BRIEF-gui.md`, `BRIEF-presence.md`) and review records keep their wordi
 
 | Item | Canon | What it takes | Size | Worth doing now? |
 |---|---|---|---|---|
-| Euphoria steps, and a 0–100 euphoria score on the Weight tab | "Under rising load, each new ×10 past his best is one strain, breakthrough and euphoria cycle, and he chooses to triple his mass; breadth ramps up to strong by the Sun-mass step and caps at 2× his height, after which growth goes into density." And "Strain and euphoria (RT 6.5, 10.6, 10.7, 13.5)" | A load ladder on the Weight tab in ×10 steps, with his mass tripling each step and the breadth ramp and cap, tied to the growth forms. The score's definition is in Rex Theoreticals, not CLAUDE.md, so that text is needed first (**Q11**). No run is possible: the engine has none of it | Large | Not yet. It is character more than physics, and it needs the score's definition |
-| Flight | "flies as a 'flying brick', from a hover up to faster than light" | A Fly tab: hover, cruise, the air's heating and booms (the Sprint and Throw air models), and what pushes him. A flying brick pushes on nothing, so its momentum comes from somewhere the canon's list doesn't name (**Q11**). Faster than light breaks the lab's relativity (nothing passes light speed). No run is possible | Large to very large | Not until **Q11**. The lab's air and blast models would carry much of it |
-| A just-under-sonic default on Sprint | "default run just under the speed of sound, unlimited when he pushes" | Today (`runs.json`, "8 sprint"): at the default dial his legs cap him at 61 m/s; on friction he tops out at about 81 m/s on concrete (74 m/s on granite) at any strength, where his grip balances the air's drag. A run just under the speed of sound (330 m/s, say; the number is yours, **Q11**) needs about 2,600 tonnes-force on the dial and a grip only their power gives (the weak-ground exception, sideways). It also needs a footfall model for running, because Sprint has no ground-shaking model, and a 3-tonne body at 330 m/s should show one | Medium | Worth doing after items 1–5: it makes the default run the canon's |
+| Euphoria steps, and a 0–100 euphoria score on the Weight tab | "Under rising load, each new ×10 past his best is one strain, breakthrough and euphoria cycle, and he chooses to triple his mass; breadth ramps up to strong by the Sun-mass step and caps at 2× his height, after which growth goes into density." "Strain and euphoria (RT 6.5, 10.6, 10.7, 13.5)". The score (**Q11**): 0 is his normal state; 100 is "utterly mad with power" | A load ladder on the Weight tab in ×10 steps, with his mass tripling each step and the breadth ramp and cap, tied to the growth forms; and the score. The canon gives the score's two ends, not the rule between them (how far one cycle moves it, and whether it falls back), so that item's own brief proposes a rule for the owner to confirm. No run is possible: the engine has none of it | Large | Not yet. It is character more than physics |
+| Flight | "flies as a 'flying brick', from a hover up to faster than light". Ruled (**Q11**): its push goes to the endless ocean; flight is unlimited, so faster than light is in | A Fly tab: hover, cruise, the air's heating and booms (the Sprint and Throw air models), with his push going to the endless ocean (a sixth case on the momentum list). Faster than light is beyond the lab's physics, which gets every speed from momentum, so nothing passes light speed. The page can work out everything up to light speed, then say plainly that past it he leaves physics behind (no numbers past it). No run is possible | Large | After items 1–5. The lab's air and blast models would carry the part below light speed |
+| A default run of 339 m/s on Sprint | "default run just under the speed of sound, unlimited when he pushes". Ruled (**Q11**): 339 m/s, just under the 340.29 m/s the lab uses for sea level | Today (`runs.json`, "8 sprint"): at the page's default dial his legs cap him at 61 m/s; on friction he tops out at about 81 m/s on concrete (74 m/s on granite) at any strength, where his grip balances the air's drag. 339 m/s needs about 2,700 tonnes-force on the dial and a grip only their power gives (the weak-ground exception, sideways). So the canon's default run is out of reach at the page's default dial: either Sprint says so at that dial, or the default dial rises (a decision for that brief). It also needs a footfall model for running: Sprint has no ground-shaking model, and a 3-tonne body at 339 m/s should show one | Medium | Worth doing after items 1–5: it makes the default run the canon's |
 
-## Questions for the owner
+## Answers
 
-- **Q1. Ollie and hits** (item 4). Is Ollie never knocked back too (A), real physics as today (B), or a per-character switch with your default (C)?
-- **Q2. What counts as an incoming hit** (item 4)? Collide's charge only, or also: a static push (Collide's push reading), a shove, the shoving match, being lifted or thrown by Ollie, a caught object, a thrown partner landing on him?
-- **Q3. The hit's freed energy** (items 4 and 6). Is it real (heat, sound and blast near him), or absorbed by default and real only when he means it (knowledge × intention)? For equal masses, never being knocked back doubles it in a splat: at 0.1% of light speed, 68 TJ becomes 135 TJ.
-- **Q4. The charger's push back** (items 2 and 4). When Rex charges, is the hit's push back on him his own recoil (to his source, so he doesn't slow down) or real (he stops or bounces)? If his recoil is absorbed and the one he hits is never knocked back, a charge has no physical answer.
-- **Q5. A catch** (items 2 and 4). Is the catcher's stop absorbed (as his own move's push back, or as an incoming hit), so he is never carried off and nothing goes into the ground? Or is it real, as today: the ground takes the stop, and a fast enough throw carries him off (at a 10²⁰ kg dial, at 3,980 km/s)?
-- **Q6. The shimmer** (item 6). (a) Which planet-scale anchor: the dinosaur-killer or blowing Earth apart? (b) Below a car crash: nothing, or a faint flicker? (c) In the growth what-ifs, does he still shimmer when the energy becomes mass? (d) May the glow be drawn over the art, or only beside it?
-- **Q7. The tagline** (item 7).
-- **Q8. Safe passenger and the landing** (item 5). Does it cover where a thrown person lands, or should the lab count the landing, or make a person's goal a catch? And does it cover the air's drag on them when Air resistance absorbed is below 100%?
-- **Q9. A push with no push time** (item 3). In comic mode at unlimited strength, the ground takes none of it and their power supplies all of it, unbounded. Is that "the ground's share it can't bear"?
-- **Q10. Cancelling his own pull** (item 3). If absorption cancels his gravity on things he doesn't mean to affect, momentum isn't kept. Is that a sixth case on the momentum list, or does it work some other way?
-- **Q11. The optional items** (item 8): the euphoria score's definition; where a flying brick's momentum goes, and whether faster than light is in the lab; the number for "just under the speed of sound".
+The collaborator answered on 14 Oct 2026. The answers that are canon are recorded in CLAUDE.md, marked "owner to confirm".
+
+| Question | Answer | What it means for the plan |
+|---|---|---|
+| **Q1.** Is Ollie never knocked back too? | C, on by default | A switch each, "Never knocked back", next to Bolted; both on by default (item 4) |
+| **Q2.** What counts as an incoming hit? | All of them: a charge, a steady push, a shove, the shoving match, being lifted or thrown by the other, a caught object, a partner landing on him | Item 4's test-by-test table. Arm wrestling wasn't on the list: **Q12** |
+| **Q3.** The hit's freed energy | B: absorbed by default, real only when he means it | It is shimmer (item 6). This plan reads "when he means it" as the blast presets (item 4); confirm in review |
+| **Q4.** The charger's push back | B: his own recoil, so he doesn't slow | A charger with They take their own recoil on acts as a body of unbounded mass; with both defaults on, a charge is the paradox (item 4) |
+| **Q5.** A catch | A: absorbed, unless Rex chooses otherwise | Never carried off, nothing into the ground. Read as tied to his Never knocked back switch (item 4); confirm in review |
+| **Q6.** The shimmer | (a) the dinosaur-killer; (b) a faint flicker below a car crash; (c) yes, in the growth what-ifs too; (d) yes, it may be drawn over the art | Item 6. The floor of the faint flicker is a proposal (7.3 kJ); drawing on the art needs the owner's yes, since the art is the owner's |
+| **Q7.** The tagline | A: "Indestructible · never tires · unlimited" | Item 7; it ships with pull request 2 |
+| **Q8.** Safe passenger and the landing | (a) Safe passenger covers the landing; (b) and the air's drag | Item 5. The landing's momentum stays real and its energy is taken back: a reading; confirm in review |
+| **Q9.** A push with no push time | Yes: the ground's share it can't bear | Nothing to change (item 3) |
+| **Q10.** Cancelling his own pull | B: both ways, so momentum is kept | No new case on the list; the engine doesn't model it yet (item 3, "Other canon") |
+| **Q11.** The optional items | Euphoria: 0 is his normal state, 100 "utterly mad with power". Flight: its push goes to the endless ocean; unlimited, so faster than light. The default run: 339 m/s | Item 8. Flight adds a sixth case to the momentum list (CLAUDE.md) |
+
+**Still open.**
+- **Q12. Arm wrestling** (item 4). It wasn't in Q2's list. Does Never knocked back stop his arm being pinned, and stop him being dragged once the table breaks? Pull request 4 leaves arm wrestling as today until this is answered.
+- **The owner** confirms the rulings in CLAUDE.md, and says yes or no to the glow drawn on the art.
+- **Review** confirms the plan's readings: "when he means it" as the blast presets; "unless Rex enables otherwise" as his switch; a person's landing with its momentum real and its energy taken back; the arm-wrestle slam no longer cancelled (item 2); the shimmer's floor; and the drag figure the shimmer uses.
 
 ## Other canon in #25 that this plan doesn't cover
 
@@ -364,15 +408,15 @@ Each needs its own decision before it becomes work.
 | Canon | The lab today | Note |
 |---|---|---|
 | Knowledge × intention (RT 2, 4, 10.3): "a consequence Rex foresees and doesn't want is absorbed" | absorption happens only through the named switches; the courtesy ceiling and presets assume harm happens unless a power stops it | Under this canon, harm he foresees and doesn't want wouldn't happen, and a preset is what he means. That changes what the courtesy ceiling means |
-| Bystanders (RT 4.3, 10.4): he never kills; harm stays short of permanent; people can be knocked off their feet | the presets go up to "flatten the houses next door" and "level a block" without saying whether people are there | Decide how the presets present people (and see **Q8**) |
+| Bystanders (RT 4.3, 10.4): he never kills; harm stays short of permanent; people can be knocked off their feet | the presets go up to "flatten the houses next door" and "level a block" without saying whether people are there | Decide how the presets present people |
 | The floor (RT 7.2, 7.4): never smaller or less dense than his standard build | Rex's height box goes down to 0.1 m and his density slider to 10 kg/m³ (the calibration body is a separate body) | Clamp Rex's controls at the floor, or label lower values as not Rex |
 | Never collapses (RT 7): "Up to black-hole density and at any size he warps space like a black hole but never collapses" | the two-player tests return `blackHole` and stop; the Weight tab has black-hole outcomes | Review those outcomes |
-| Cancelling his own pull (Growth) | not modelled | **Q10** |
+| Cancelling his own pull (Growth), both ways, so momentum is kept (**Q10**: B) | not modelled | Model it with the Weight tab's self-gravity, his lifts and throws out of his own well, and the two-player pulls |
 | "At kaiju sizes his footsteps always cause minor quakes" | the Walk tab scales the step with size | Check at kaiju sizes |
 | Things keep their form: a thrown thing falls back into real physics when it hits something comparable or larger, unless going through it is the point (RT 13.2); whatever a lifted thing was attached to tears normally (RT 5.5); grip has no size limit (RT 5.4) | no thrown-object collisions besides the landing (deferred in `BRIEF-gui.md`); the Lift tab's grip works through palm contact | The deferred collision work now has canon to follow |
 | Unbreakable footing: "Landings leave a claw print or a few cracks, not a crater" | a print in soil; hard ground held only where it would break by the hazard's rule (a hole of 1 cm or more) | A copy check, and maybe "a few cracks" on hard ground |
 | Body (RT 9): four clawed fingers and a thumb, three clawed toes, a tail as strong as his arms, unlimited bite | the footprint and grip models don't use these; the tail is not a limb | — |
-| Ollie and Rex "share one infinite source: alone, Rex is pure radiance and Ollie pure absorption" | — | May bear on **Q1** |
+| Ollie and Rex "share one infinite source: alone, Rex is pure radiance and Ollie pure absorption" | — | Nothing to build; Ollie's Never knocked back is now ruled (**Q1**) |
 
 ## Order of pull requests and review rounds
 
@@ -381,10 +425,9 @@ Each pull request records its review rounds in `research/reviews/` (for example 
 | Order | Pull request | Depends on | Review rounds |
 |---|---|---|---|
 | 1 | **Mass** (item 1), all three projects | the claim on `builds.json` and `calc.js` (held on `terantic/canon-followups`) | Two. Data and claims: every figure that quotes the mass, in all three projects, against the canon and the research. Code and tests: the pinned comparisons (remove the pin and see them fail), the migration, the rebuilt `dist` files |
-| 2 | **Recoil into their source** (item 2), with item 3's ledger test and the recoil copy from item 7 | 1 | Three and a re-check, as for pull request B. Physics: each move's momentum, the ledger. Code and tests: mutants that put the push back into the ground one move at a time. Copy and layout |
-| 3 | **Safe passenger by default** (item 5) | 1; **Q8** only for the landing's text | One or two: claims and layout; code and the migration |
-| 4 | **Never knocked back** (item 4) | 2; **Q1**–**Q5** | Three and a re-check. Physics of the hit and the two-player tests. Code and tests, including the two-player search's time. Copy |
-| 5 | **The shimmer** (item 6) | 4 (for an absorbed hit); **Q6** | Two. Design, copy and accessibility. Code and data, including the drag figure |
-| 6 | **The tagline and the remaining copy** (item 7) | **Q7**; can ride with 4 or 5 | One: copy |
+| 2 | **Recoil into their source** (item 2), with item 3's ledger test, the recoil copy and the new tagline (item 7) | 1 | Three and a re-check, as for pull request B. Physics: each move's momentum, the ledger. Code and tests: mutants that put the push back into the ground one move at a time. Copy and layout |
+| 3 | **Safe passenger by default**, covering the landing and the drag (item 5) | 1 | Two. Physics and claims, including the landing's split (momentum real, energy taken back). Code, layout and the migration |
+| 4 | **Never knocked back** (item 4) | 2 (the charger's push back is his recoil); **Q12** for arm wrestling only | Three and a re-check. The physics of the hit, the charger of unbounded mass and the paradox. The two-player tests: every row of item 4's table, the search's time, and how the element explains "nothing moves". Copy |
+| 5 | **The shimmer** (item 6) | 3 and 4 (a person's landing and a hit's energy are shimmer sources); the owner's yes to drawing on the art | Two. Design, copy and accessibility, including the glow's placement on the art. Code and data, including the drag figure and the floor |
 
-The optional items (section 8) each need their own brief, after **Q11**.
+The optional items (section 8) each need their own brief.

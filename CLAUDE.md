@@ -37,6 +37,13 @@ Rex's canon is shared with the Rex Theoreticals project (Kyle, 14 Oct 2026). Whe
 - **Movement** (RT 6): default run just under the speed of sound, unlimited when he pushes; flies as a "flying brick", from a hover up to faster than light; clears a building casually and can leap out of orbit. His perception keeps pace with any speed. They stride heel-first, like people; hip height is 0.45 of their height (an estimate).
 - **Strain and euphoria** (RT 6.5, 10.6, 10.7, 13.5): no fatigue, but he strains on a new extreme feat until the breakthrough, then the euphoria hits like an addiction and he shows off, even just for himself. He's extremely vain and easily distracted by his reflection. The hunger changes how big and showy he goes, never whom he protects.
 - **Setting** (RT 11): a near-future alternate Earth (Earth constants). Rex lives in Teronai, at Aldrias Beach.
+- **Rulings of 14 Oct 2026** (collaborator, answering `rex-strength-lab/BRIEF-canon.md`; owner to confirm):
+  - *Never knocked back* is a default power for each of them, with a switch each, both on by default. Incoming hits are a charge, a steady push, a shove, the shoving match, being lifted or thrown by the other, a caught object and a partner landing on him. A hit's freed energy is absorbed by default (it shows in his shimmer) and is real only when he means it. A catch is absorbed (he is never carried off, and nothing goes into the ground) unless he chooses otherwise.
+  - A charger's push back from his own hit is his own recoil: it goes to his source, so he doesn't slow. When a charger who takes his recoil meets someone never knocked back, the collision has no physical answer.
+  - *Safe passenger* also covers where the person lands and the air's drag on them.
+  - The shimmer: a faint flicker below a car crash; the blinding flare is a dinosaur-killer-scale hit (about 5 × 10²³ J); he shimmers in the growth what-ifs too.
+  - Momentum: a push with no push time (comic, at unlimited strength) is the ground's share it can't bear. Cancelling his own pull cancels it both ways, so momentum is kept. Flight's push goes to the endless ocean, a sixth case on the momentum list; flight is unlimited, so faster than light.
+  - The default run is 339 m/s. The euphoria score runs from 0, his normal state, to 100, "utterly mad with power".
 - Do not invent other canon for either; ask.
 - Art in `rex-strength-lab/assets/` is the owner's. Use it; don't redraw the characters.
 

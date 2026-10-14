@@ -125,6 +125,14 @@ for (const [tag, sp] of [['old, off', false], ['new, on', true]]) {
   out['5 safe passenger, ' + tag] = throwRun(3007, 'person', {}, { safePassenger: sp });
   out['5 safe passenger, ' + tag + ', all four powers off'] = throwRun(3007, 'person', { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoil: false }, { safePassenger: sp });
 }
+// Q8 answered: Safe passenger also covers the air's drag on the person (and the landing, which no hazard counts)
+{
+  const oldPassenger = R.MOVES.throw.passenger;
+  R.MOVES.throw.passenger = (r, o) => (o.safePassenger ? false : oldPassenger(r, o));
+  out['5 safe passenger, new, on and covering drag, all four powers off'] = throwRun(3007, 'person', { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoil: false }, { safePassenger: true });
+  out['5 safe passenger, new, on and covering drag'] = throwRun(3007, 'person', {}, { safePassenger: true });
+  R.MOVES.throw.passenger = oldPassenger;
+}
 { const t = P.throwObject(ctxOf(3007, { use: 3350 * g }), ob('person'), 45);
   out['5 safe passenger, the person\'s landing at the new least effort'] = { v: sig(t.v), lands_m_s: sig(t.flight.vImpact), likeAFallOf_m: sig(t.flight.vImpact * t.flight.vImpact / (2 * g)) }; }
 
@@ -151,9 +159,9 @@ for (const [tag, sp] of [['old, off', false], ['new, on', true]]) {
 // 8. Sprint: today's top speeds, and the dial a bolted stride needs for 330 m/s
 {
   const sp = (F, sid, anchor) => P.sprint(Object.assign(ctxOf(3007, { F, surface: sf(sid) }), { anchor }));
-  let lo = 1e5, hi = 1e9;
-  for (let i = 0; i < 60; i++) { const m = Math.sqrt(lo * hi); if (sp(m * g, 'concrete', 'bolted').vTop >= 330) hi = m; else lo = m; }
+  const dialFor = (v) => { let lo = 1e5, hi = 1e9; for (let i = 0; i < 60; i++) { const m = Math.sqrt(lo * hi); if (sp(m * g, 'concrete', 'bolted').vTop >= v) hi = m; else lo = m; } return hi; };
   out['8 sprint'] = { defaultDial: { vTop: sig(sp(F0, 'concrete', 'friction').vTop), limit: sp(F0, 'concrete', 'friction').topLimit },
-    dial1e9_friction: { concrete: sig(sp(1e9 * g, 'concrete', 'friction').vTop), granite: sig(sp(1e9 * g, 'granite', 'friction').vTop) }, bolted330_from_kg: sig(hi) };
+    dial1e9_friction: { concrete: sig(sp(1e9 * g, 'concrete', 'friction').vTop), granite: sig(sp(1e9 * g, 'granite', 'friction').vTop) },
+    bolted330_from_kg: sig(dialFor(330)), bolted339_from_kg: sig(dialFor(339)), speedOfSound_m_s: P.K.a0 };
 }
 console.log(JSON.stringify(out, null, 1));

@@ -556,6 +556,68 @@
   },
   "presets": "rattle: 1800 kg-force, plaster: never, windows: never, ground: never, houses: never, block: never"
  },
+ "5 safe passenger, new, on and covering drag, all four powers off": {
+  "volume_m3": 2.836,
+  "least": {
+   "effort": "3940 kg-force",
+   "capped": false,
+   "v": 17.5,
+   "range": 30.1,
+   "leaves": false,
+   "toGroundJ": 0,
+   "toGroundSupplied": 0,
+   "ppv5_hisPush": 0,
+   "ppv5_landing": 2.07,
+   "plasterReach_m": 0,
+   "airTakenBack_J": 0,
+   "Eobj_J": 13900
+  },
+  "ceiling": "none",
+  "allout": {
+   "v": 80.3,
+   "range": 214,
+   "leaves": false,
+   "toGroundJ": 0,
+   "toGroundSupplied": 0,
+   "ppv5_hisPush": 0,
+   "ppv5_landing": 22.4,
+   "plasterReach_m": 1.36,
+   "airTakenBack_J": 0,
+   "Eobj_J": 291000
+  },
+  "presets": "rattle: 1800 kg-force, plaster: never, windows: never, ground: never, houses: never, block: never"
+ },
+ "5 safe passenger, new, on and covering drag": {
+  "volume_m3": 2.836,
+  "least": {
+   "effort": "3350 kg-force",
+   "capped": false,
+   "v": 16.4,
+   "range": 30.1,
+   "leaves": false,
+   "toGroundJ": 1480,
+   "toGroundSupplied": 0,
+   "ppv5_hisPush": 0.0293,
+   "ppv5_landing": 2.52,
+   "plasterReach_m": 0,
+   "airTakenBack_J": 3280,
+   "Eobj_J": 12200
+  },
+  "ceiling": "plaster at 27000 kg-force",
+  "allout": {
+   "v": 80.8,
+   "range": 667,
+   "leaves": false,
+   "toGroundJ": 7290,
+   "toGroundSupplied": 0,
+   "ppv5_hisPush": 2.07,
+   "ppv5_landing": 326,
+   "plasterReach_m": 16.7,
+   "airTakenBack_J": 1600000,
+   "Eobj_J": 294000
+  },
+  "presets": "rattle: 1500 kg-force, plaster: 27000 kg-force, windows: never, ground: never, houses: never, block: never"
+ },
  "5 safe passenger, the person's landing at the new least effort": {
   "v": 16.5,
   "lands_m_s": 18,
@@ -620,6 +682,8 @@
    "concrete": 81,
    "granite": 74
   },
-  "bolted330_from_kg": 2560000
+  "bolted330_from_kg": 2560000,
+  "bolted339_from_kg": 2710000,
+  "speedOfSound_m_s": 340.29
  }
 }
