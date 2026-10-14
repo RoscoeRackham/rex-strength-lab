@@ -4802,7 +4802,7 @@
   {
    "key": "comic_passenger_drag_g",
    "category": "presence_comic",
-   "label": "Air drag felt by a flying person, by speed (not removed by safe passenger once released)",
+   "label": "Air drag felt by a flying person, by speed (judged with Safe passenger off; since 14 Oct 2026 it covers the drag)",
    "status": "estimate",
    "value_si": 108,
    "unit_si": "m/s",
@@ -4823,7 +4823,7 @@
      "url": "https://en.wikipedia.org/wiki/International_Standard_Atmosphere"
     }
    ],
-   "notes": "v = √(2 n g m / (ρ C_d A)), with m = 90.26 kg (human_us_adult_male_mass), A = 0.67 m² (human_projected_area, orientation mean, an estimate), C_d = 1.1 (cd_bluff_body_tumbling_subsonic, an estimate), ρ = 1.225 kg/m³. Deceleration scales as A·C_d/m: head first (0.11 m²), 6 g comes only at about 270 m/s; broadside (0.79 m²), at about 100 m/s. The 1 g speed (44 m/s) is the tumbling terminal velocity. Drag acts on the front surface, so it is felt; safe passenger stops when he lets go. Dynamic pressure at 44–108 m/s is 1.2–7.2 kPa (windblast); no injury threshold for an unprotected person was sourced. Status estimate because A and C_d are estimates. Verifier recomputed all speeds.",
+   "notes": "v = √(2 n g m / (ρ C_d A)), with m = 90.26 kg (human_us_adult_male_mass), A = 0.67 m² (human_projected_area, orientation mean, an estimate), C_d = 1.1 (cd_bluff_body_tumbling_subsonic, an estimate), ρ = 1.225 kg/m³. Deceleration scales as A·C_d/m: head first (0.11 m²), 6 g comes only at about 270 m/s; broadside (0.79 m²), at about 100 m/s. The 1 g speed (44 m/s) is the tumbling terminal velocity. Drag acts on the front surface, so it is felt. These speeds judge it with Safe passenger off: by the ruling of 14 Oct 2026 (CLAUDE.md, Rulings; BRIEF-canon.md item 5, Q8 b), Safe passenger, on by default since then, covers the air's drag on a person they throw too (and the landing), spreading it through them, so with it on the drag is never a hazard. (Before the ruling the lab read Safe passenger as stopping when he lets go.) Dynamic pressure at 44–108 m/s is 1.2–7.2 kPa (windblast); no injury threshold for an unprotected person was sourced. Status estimate because A and C_d are estimates. Verifier recomputed all speeds.",
    "who_when": "This research, 2026"
   },
   {

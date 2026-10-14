@@ -235,7 +235,9 @@ const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface
   const person = obj('person'), pz = P.RESTRAINT.HAZARDS.find((h) => h.id === 'passenger');
   const tp = P.throwObject(ctxOf(90718 * g, { use: 4000 * g }), person, 45), tAll = P.throwObject(ctxOf(90718 * g), person, 45);
   ok('a 30 m throw of a person is past the ride limits at launch; Safe passenger removes that', pz.test(P.RESTRAINT.MOVES.throw, tp, { obj: person, angle: 45 }) && !pz.test(P.RESTRAINT.MOVES.throw, tp, { obj: person, angle: 45, safePassenger: true }), sig2(tp.v) + ' m/s');
-  ok('all-out, the air drag on them is past the held limit too, and Safe passenger can’t take that away', P.PASSENGER.dragG(person, tAll.v) > 1.5 && pz.test(P.RESTRAINT.MOVES.throw, tAll, { obj: person, angle: 45, safePassenger: true }), P.PASSENGER.dragG(person, tAll.v).toFixed(1) + ' g at ' + sig2(tAll.v) + ' m/s');
+  // (BRIEF-canon.md item 5, the ruling of 14 Oct 2026: Safe passenger covers the air's drag on them too, so it now
+  // takes that away; before, this check said it couldn't)
+  ok('all-out, the air drag on them is past the held limit too, and Safe passenger takes that away as well', P.PASSENGER.dragG(person, tAll.v) > 1.5 && P.RESTRAINT.MOVES.throw.passengerDrag(tAll, { obj: person, angle: 45 }) && pz.test(P.RESTRAINT.MOVES.throw, tAll, { obj: person, angle: 45 }) && !pz.test(P.RESTRAINT.MOVES.throw, tAll, { obj: person, angle: 45, safePassenger: true }), P.PASSENGER.dragG(person, tAll.v).toFixed(1) + ' g at ' + sig2(tAll.v) + ' m/s');
   ok('real muscle: the push on a thrown person peaks above its average', (() => { const r = P.throwObject(ctxOf(90718 * g, { use: 4000 * g, mode: 'real' }), person, 45); return r.launchGPeak > r.launchG; })());
   ok('ride limit follows ASTM F2291: 2 g at 0.2 s, 1.75 g at 0.35 s, 1.5 g from 0.5 s', P.PASSENGER.noHarm(0.1) === 2 && near(P.PASSENGER.noHarm(0.35), 1.75, 1e-9) && P.PASSENGER.noHarm(0.8) === 1.5);
   // presets: each fires, and the bigger version of the same harm needs more (a punch, 10^12 kg dial): rattling before

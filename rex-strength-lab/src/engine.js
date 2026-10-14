@@ -45,6 +45,11 @@
   //     planet for their own moves; Bolted stays the setting for being pushed by someone else. A catch's stop is the
   //     catcher's own push back too (canon: "A catch is absorbed ... unless he chooses otherwise"), so a catcher with it
   //     on is planted and never carried off. Their own walking and running push the ground as before: that is the move.
+  // Canon lists Safe passenger (safePassenger) with these, and since 14 Oct 2026 the page turns it on by default too
+  // (BRIEF-canon.md item 5). It acts only on a person he throws or catches (RESTRAINT.MOVES.throw.passenger,
+  // passengerLanding, throwBlast's landing; the page's game of catch), so it is not one of the keys anyPower reads: those
+  // switch on counts that apply to every move (their own bodies' air past sound, the game of catch's straight chord), and
+  // leaving it out keeps every result with these four off exactly as it was.
   // The older switches they replace still work as before, for the tests: groundHolds (Comic ground: the same footing as
   // unbreakable, without its prints and shaking), gentleHold (the grip part of keepForm), coolFlight.
   //
@@ -3888,7 +3893,10 @@
         if (!h) return { land: k >= 1 ? r.Eobj : r.Eobj * k, path: 0 };
         return { land: isFinite(r.Eobj) ? r.Eobj * k : (k > 0 ? Infinity : 0), path: hand, hand };
       }
-      const land = r.flight.landed ? shock(r.flight.vImpact, r.Eimpact) : 0;
+      // Safe passenger: a thrown person's landing energy is taken back (passengerLanding), so it makes no blast; its push
+      // still reaches the ground (landShake). (Past 1% of light speed, above, 'land' is the fireball in the air, not a
+      // landing: Safe passenger leaves that alone.)
+      const land = r.flight.landed && !(o && o.safePassenger && o.obj && o.obj.passenger) ? shock(r.flight.vImpact, r.Eimpact) : 0;
       const drag = o && o.coolFlight ? 0 : shock(r.v, (k < 1 && r.dragLoss0 != null ? r.dragLoss0 : r.dragLoss != null ? r.dragLoss : r.Eobj) * k);
       return Object.assign({ land, path: drag + hand + shock(r.recoilV || 0, r.recoilE || 0) }, h ? { hand } : {});
     }
@@ -3954,10 +3962,24 @@
           const own = impulseSource(o.surface, r.toGround.J, Math.max(1e-9, r.toGround.T));
           return ppvAt(own, o.near) > ppvAt(MOVES.throw.landShake(r, o), o.near) ? 'him' : 'landing';
         },
-        // a person thrown without the safe-passenger switch: the launch presses them past the ride limits
-        // ... and air drag in flight, which Safe passenger can't take away (it lasts the flight: the held 1.5 g limit)
-        // (Air resistance absorbed: the drag they feel is the share of it that still acts)
-        passenger: (r, o) => !!o.obj.passenger && r.canMove && ((!o.safePassenger && r.launchG > 0 && PASSENGER.felt(Math.max(r.launchG, r.launchGPeak || 0), o.angle) > PASSENGER.noHarm(r.launchT)) || PASSENGER.dragG(o.obj, r.v) * dragFactor(o) > PASSENGER.noHarm(1)),
+        // a thrown person (only the person object is a passenger; Ollie never is): the launch presses them past the ride
+        // limits, or the air's drag in flight does (it lasts the flight: the held 1.5 g limit; with Air resistance
+        // absorbed, the drag they feel is the share of it that still acts)
+        passengerLaunch: (r, o) => !!o.obj.passenger && r.canMove && r.launchG > 0 && PASSENGER.felt(Math.max(r.launchG, r.launchGPeak || 0), o.angle) > PASSENGER.noHarm(r.launchT),
+        passengerDrag: (r, o) => !!o.obj.passenger && r.canMove && PASSENGER.dragG(o.obj, r.v) * dragFactor(o) > PASSENGER.noHarm(1),
+        // Safe passenger (canon, RT 4.2, a default power; the ruling of 14 Oct 2026: it also covers where the person
+        // lands and the air's drag on them) spreads the launch, the drag and the landing through them, so with it on
+        // this hazard never fires. With it off this is exactly the rule from before (the launch or the drag).
+        passenger: (r, o) => !o.safePassenger && (MOVES.throw.passengerLaunch(r, o) || MOVES.throw.passengerDrag(r, o)),
+        // ... and the landing, with Safe passenger on: the person comes down unharmed. Its energy (absorbed, J: what a
+        // fall would do) is taken back, as Soft landing does for his own landings, and goes to the endless ocean; its
+        // momentum (J, kg m/s) still reaches the ground, over the same stop in about their own size (landShake: Safe
+        // passenger spreads the push through them, it doesn't make a slow, gentle stop), so the landing still shakes
+        // the ground (at the default settings that shaking sets the person throw's courtesy ceiling). null with it off,
+        // for anything that isn't a person, for a throw that doesn't come down, and past 1% of light speed. Reported
+        // here, not in throwOnce's result, so no result gains a key.
+        passengerLanding: (r, o) => (o && o.safePassenger && o.obj && o.obj.passenger && r.canMove && r.flight && r.flight.landed && !r.flight.relativistic && r.Eimpact > 0
+          ? { absorbed: r.Eimpact, J: momentumOf(r.flight.vImpact, o.obj.m) } : null),
         where: 'where it lands',
       },
       jump: {
@@ -4269,6 +4291,8 @@
   // ---------------------------------------------------------------------------
   // A person he throws: the most acceleration an ordinary, unprepared person takes with no harm, and the level
   // that starts to injure (research/final-presence.json: comic_passenger_no_harm_limit, comic_passenger_injury_level).
+  // These judge a thrown or caught person with Safe passenger off; with it on (the default) the launch, the drag in
+  // flight, the catch and the landing are spread through them and never count (RESTRAINT.MOVES.throw.passenger).
   // Ride-design limits are for seated, supported riders; nobody has measured them for someone held in hands, so these
   // are a best case. Unknown orientation (a tumbling throw, a catch face-first) takes the worst axis, eyes-front (-Gx):
   // ASTM F2291-06a Fig. 7 runs from 2 g at 0.2 s to 1.5 g at 0.5 s, then 1.5 g held. The standard doesn't cover pushes

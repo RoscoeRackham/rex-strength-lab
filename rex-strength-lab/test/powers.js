@@ -19,20 +19,37 @@ if (!process.argv.includes('--skip-off')) {
   // the fixture was written with the 3,007 kg bodies of 11 Oct 2026 (volume 0.10017 x height^3); since 13 Oct 2026
   // the canon is 3,000 kg (BRIEF-canon.md item 1), so these comparisons run on the build they were written with
   const FIXTURE_KV = 0.10017;
+  // BRIEF-canon.md item 5 (pull request 3): Safe passenger now covers the air's drag in flight too, so with it on the
+  // passenger hazard never fires. Eight of the planner cases run with Safe passenger on (powers-off-cases.js's second
+  // switch set, a person thrown at unlimited strength: plan|throw|person|inf|...|5), so they are not powers-off cases.
+  // They are compared through a test-side shim that restores the passenger rule from before (the drag counted whatever
+  // Safe passenger says), and without the shim exactly these eight must differ, with the hazard now never. The fixture
+  // is not regenerated.
+  const SP_KEYS = [];
+  for (const sid of ['concrete', 'sand']) for (const anchor of ['friction', 'bolted']) for (const gh of [false, true]) SP_KEYS.push(['plan', 'throw', 'person', 'inf', sid, anchor, gh, 5].join('|'));
+  const oldPassenger = (E) => (r, o) => !!o.obj.passenger && r.canMove && ((!o.safePassenger && r.launchG > 0 && E.PASSENGER.felt(Math.max(r.launchG, r.launchGPeak || 0), o.angle) > E.PASSENGER.noHarm(r.launchT)) || E.PASSENGER.dragG(o.obj, r.v) * E.dragFactor(o) > E.PASSENGER.noHarm(1));
   const check = (label, extra) => {
     // a fresh copy of the engine for each pass, so no cache carries results from one pass into the other
     delete require.cache[require.resolve(ENGINE)];
     P = require(ENGINE);
     P.BUILDS.rex.kV = P.BUILDS.ollie.kV = FIXTURE_KV;
     let diff = 0, missing = 0, first = null;
-    const list = cases(P, D);
+    const list = cases(P, D), spDiff = [], spNever = [];
     for (const c of list) {
       const want = base[c.key];
       if (!want) { missing++; continue; }
-      const got = hash(canon(c.run(extra)));
-      if (got !== want) { diff++; if (!first) first = c.key; }
+      const res = c.run(extra), got = hash(canon(res));
+      if (SP_KEYS.includes(c.key)) { if (got !== want) spDiff.push(c.key); if (res.hazards.find((h) => h.id === 'passenger').never && res.reachAll.passenger === false && res.reachLeast.passenger === false) spNever.push(c.key); }
+      else if (got !== want) { diff++; if (!first) first = c.key; }
     }
-    ok('powers ' + label + ': every engine result matches the engine before them (' + list.length + ' cases)', diff === 0 && missing === 0, diff || missing ? diff + ' differ, ' + missing + ' missing; first: ' + first : null);
+    ok('powers ' + label + ': every engine result matches the engine before them (' + (list.length - SP_KEYS.length) + ' cases, all but the ' + SP_KEYS.length + ' with Safe passenger on)', diff === 0 && missing === 0, diff || missing ? diff + ' differ, ' + missing + ' missing; first: ' + first : null);
+    // the eight with Safe passenger on: the same results through the shim, and without it exactly they differ
+    const T = P.RESTRAINT.MOVES.throw, rule = T.passenger;
+    T.passenger = oldPassenger(P);
+    const shimDiff = list.filter((c) => SP_KEYS.includes(c.key) && hash(canon(c.run(extra))) !== base[c.key]).map((c) => c.key);
+    T.passenger = rule;
+    ok('powers ' + label + ': the ' + SP_KEYS.length + ' planner cases run with Safe passenger on match the engine before them with its passenger rule restored; without it exactly those ' + SP_KEYS.length + ' differ, their passenger hazard now never (pull request 3)',
+      shimDiff.length === 0 && spDiff.length === SP_KEYS.length && spNever.length === SP_KEYS.length && SP_KEYS.every((k) => list.some((c) => c.key === k)), shimDiff.length + ' differ through the shim; ' + spDiff.length + ' differ without it; ' + spNever.length + ' never');
   };
   check('left out', {});
   check('explicitly off (airAbsorb 0, keepForm, unbreakable and ownRecoil false)', OFF);
@@ -93,8 +110,13 @@ const sig = (x) => Number(x).toPrecision(3);
   { const a = P.sprint(ctxOf(1e6 * g)), b = P.sprint(ctxOf(1e6 * g, { airAbsorb: 1 })); ok('5a: their own sprint is unchanged at any share', a.vTop === b.vTop && a.dragPower === b.dragPower); }
   { const r = P.throwObject(ctxOf(7e4 * g, { airAbsorb: 0.6, safePassenger: true }), obj('person'), 30), o = { obj: obj('person'), angle: 30, safePassenger: true };
     const dg = P.PASSENGER.dragG(obj('person'), r.v);
-    // real drag between 1.5 g and 1.5 / 0.4 g: harmful at 0%, harmless at 60%
-    ok('5a: a thrown person feels 40% of the real drag at 60% absorbed (the held 1.5 g limit)', dg > P.PASSENGER.noHarm(1) && 0.4 * dg < P.PASSENGER.noHarm(1) && M.throw.passenger(r, Object.assign({ airAbsorb: 0.6 }, o)) === false && M.throw.passenger(r, Object.assign({ airAbsorb: 0 }, o)) === true && M.throw.passenger(r, Object.assign({ airAbsorb: 1 }, o)) === false, 'drag ' + sig(dg) + ' g real'); }
+    // real drag between 1.5 g and 1.5 / 0.4 g: harmful at 0%, harmless at 60% (the drag on its own, switch or no switch)
+    ok('5a: a thrown person feels 40% of the real drag at 60% absorbed (the held 1.5 g limit)', dg > P.PASSENGER.noHarm(1) && 0.4 * dg < P.PASSENGER.noHarm(1) && M.throw.passengerDrag(r, Object.assign({ airAbsorb: 0.6 }, o)) === false && M.throw.passengerDrag(r, Object.assign({ airAbsorb: 0 }, o)) === true && M.throw.passengerDrag(r, Object.assign({ airAbsorb: 1 }, o)) === false, 'drag ' + sig(dg) + ' g real');
+    // BRIEF-canon.md item 5: Safe passenger covers the drag too, so with it on the hazard never fires, even at 0% where
+    // the drag alone is past the limit; with it off the hazard is the launch or the drag, as before
+    const off = Object.assign({}, o, { safePassenger: false });
+    ok('5a: with Safe passenger on the passenger hazard never fires (the drag at 0% included); with it off it is the launch or the drag', [0, 0.6, 1].every((s) => M.throw.passenger(r, Object.assign({ airAbsorb: s }, o)) === false)
+      && [0, 0.6, 1].every((s) => { const x = Object.assign({ airAbsorb: s }, off); return M.throw.passenger(r, x) === (M.throw.passengerLaunch(r, x) || M.throw.passengerDrag(r, x)); }) && M.throw.passenger(r, Object.assign({ airAbsorb: 0 }, off)) === true && M.throw.passengerLaunch(r, off) === true); }
   // past 1% of light speed: the All-Star baseball (1.8 x 10^23 kg dial, comic, level)
   {
     const allstar = 200e18 * 907.18474 * g;
@@ -1004,6 +1026,46 @@ const sig = (x) => Number(x).toPrecision(3);
     if (!(x0.clash === 'rockGives' && !x0.oneSided && x0.tearA > 0 && x0.vA === P.K.c && !x0.recoilAbsorbed)) bad.push('powers off, both bolted: ' + x0.clash + (x0.oneSided ? ' (one-sided)' : ''));
     ok('6b: an unlimited shove into a bolted partner with the shover\'s recoil taken (standing or bolted): one-sided (only the partner is held; the page words it so), he stays put with no energy and nothing tears around his feet, his source takes the unbounded push back, and only the rock around the partner\'s bolts tears out (he leaves at just under light speed); with the partner\'s ground held, nothing gives; with the powers off and both bolted, the rock gives around both as before (not one-sided)', !bad.length, bad.join('; ')); }
   ok('6b: the comic jump at unlimited strength (Q9): unbounded upward, and their power supplies all of it, unbounded (the ground takes none: no push time)', j.v === P.K.c && j.pushOff && j.pushOff.whole === Infinity && j.pushOff.supplied === Infinity && j.pushOff.J === 0 && j.pushOff.T === 0 && jU.pushOff && jU.pushOff.supplied === Infinity);
+}
+
+// 7. Safe passenger on by default (BRIEF-canon.md item 5, pull request 3; canon, RT 4.2, and the ruling of 14 Oct 2026:
+// it also covers where the person lands and the air's drag on them). With it on the passenger hazard never fires (5a,
+// above); a thrown person's landing energy is taken back and its momentum still reaches the ground; the landing makes no
+// blast; with it off nothing changes. The brief's figures are at the 3,000 kg Rex, a person thrown 30 m at 45 degrees
+// at the page's default dial (100 short tons), the four powers on.
+{
+  const person = obj('person'), R0 = P.makeBody(Object.assign({ build: 'rex' }, P.DEFAULT_BODIES.rex)), F0 = 100 * 907.18474 * g;
+  const cOf = (F, x) => Object.assign({ F, mode: 'comic', body: R0, surface: surf('concrete'), anchor: 'friction' }, ON, x || {});
+  const oOf = (x) => Object.assign({ obj: person, angle: 45, near: 5, body: R0, surface: surf('concrete') }, ON, x || {});
+  // the landing at the least disruptive effort with the switch on (3,342 kg-force): energy taken back, momentum on
+  const r = P.throwObject(cOf(F0, { use: 3342 * g, safePassenger: true }), person, 45), on = oOf({ safePassenger: true }), off = oOf({ safePassenger: false });
+  const pl = M.throw.passengerLanding(r, on), ls = M.throw.landShake(r, on), ls0 = M.throw.landShake(r, off);
+  ok('7: with Safe passenger on, a thrown person\'s landing energy is taken back (all of it: the engine\'s impact energy, about 14,600 J at the least effort), and its momentum still reaches the ground (the landing\'s pulse carries it, the same with the switch off)',
+    !!pl && !!ls && pl.absorbed === r.Eimpact && r.Eimpact > 0 && near(pl.absorbed, 14600, 0.01) && near(pl.J, P.vToMomentum(r.flight.vImpact, person.m), 1e-12) && near(ls.F * ls.T / 2, pl.J, 1e-12) && JSON.stringify(ls) === JSON.stringify(ls0)
+      && JSON.stringify(M.throw.shake(r, on)) === JSON.stringify(M.throw.shake(r, off)) && near(pl.J, 1630, 0.01), pl && ls ? sig(pl.absorbed) + ' J taken back, ' + sig(pl.J) + ' kg m/s to the ground over ' + sig(ls.T) + ' s' : 'landing ' + JSON.stringify(pl) + ', pulse ' + JSON.stringify(ls));
+  // null with the switch off, for anything that isn't a person, and for a throw that doesn't land
+  const car = P.throwObject(cOf(F0, { safePassenger: true }), obj('car'), 45), esc = P.throwObject(cOf(1e10 * g, { safePassenger: true }), person, 45), rel = P.throwObject(cOf(1e20 * g, { safePassenger: true }), person, 45);
+  ok('7: no landing taken back with Safe passenger off, for a car, or for a person who never lands (escapes, or past 1% of light speed)', M.throw.passengerLanding(r, off) === null && M.throw.passengerLanding(car, oOf({ obj: obj('car'), safePassenger: true })) === null
+    && esc.flight.escaped && !esc.flight.landed && M.throw.passengerLanding(esc, on) === null && rel.flight.relativistic && M.throw.passengerLanding(rel, on) === null);
+  // the landing blast: a person landing past Mach 1 (10^7 kg-force at a 10^9 kg dial) makes none with the switch on, and
+  // the same as before with it off; a car's is unchanged; a call with no object (as some checks make) still works
+  const fast = P.throwObject(cOf(1e9 * g, { use: 1e7 * g, safePassenger: true }), person, 45), bOn = M.throw.blastParts(fast, on), bOff = M.throw.blastParts(fast, off);
+  const carF = P.throwObject(cOf(1e10 * g, { use: 1e8 * g }), obj('car'), 45), carOn = M.throw.blastParts(carF, oOf({ obj: obj('car'), safePassenger: true })), carOff = M.throw.blastParts(carF, oOf({ obj: obj('car'), safePassenger: false }));
+  ok('7: a person landing past Mach 1 makes no landing blast with Safe passenger on (its energy is taken back) and the same as before with it off; a car\'s is unchanged',
+    fast.flight.landed && fast.flight.vImpact >= P.K.a0 && bOn.land === 0 && bOff.land === fast.Eimpact && bOn.path === bOff.path && carF.flight.vImpact >= P.K.a0 && carOn.land === carF.Eimpact && carOn.land === carOff.land && M.throw.blastParts(fast, { airAbsorb: 1, safePassenger: true }).land === fast.Eimpact,
+    'lands at ' + sig(fast.flight.vImpact) + ' m/s; landing blast ' + sig(bOff.land) + ' J with it off');
+  // no result gains a key, and Safe passenger is not one of the powers anyPower reads
+  const k1 = Object.keys(P.throwObject(cOf(F0, { use: 3342 * g, safePassenger: true }), person, 45)).sort().join(), k0 = Object.keys(P.throwObject(cOf(F0, { use: 3342 * g }), person, 45)).sort().join();
+  ok('7: Safe passenger adds no key to a throw\'s result, and anyPower leaves it out', k1 === k0 && P.anyPower({ safePassenger: true }) === false);
+  // the brief's figures (BRIEF-canon.md item 5, at 3,000 kg): the planner as the page runs it
+  const planOf = (x, sp) => P.RESTRAINT.planNow('throw', cOf(F0, Object.assign({ safePassenger: sp }, x)), { near: 5, target: 30, obj: person, angle: 45, safePassenger: sp, silentStrike: false, softLanding: false });
+  const pOn = planOf({}, true), pOff = planOf({}, false), p4 = planOf({ airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoil: false }, true);
+  const gOn = pOn.goal(), cOn = pOn.ceiling(), cOff = pOff.ceiling(), c4 = p4.ceiling(), onset = (ce) => Math.sqrt(ce.below * ce.use) / g;
+  const rLeast = pOn.run(gOn.use), plLeast = M.throw.passengerLanding(rLeast, pOn.opt), all4 = p4.run(undefined);
+  ok('7: the brief\'s figures: with the switch on, least disruptive 3,342 kg-force (released at 16.4 m/s, 30 m, lands at 18.0 m/s, 14,600 J taken back), ceiling about 27,000 kg-force from the landing\'s plaster; off, ceiling 334 kg-force (the person\'s g-force); all four powers off, Safe passenger on: no ceiling, plaster within 1.4 m of the landing all-out',
+    near(gOn.use / g, 3342, 0.005) && near(rLeast.v, 16.4, 0.005) && near(rLeast.flight.range, 30, 0.005) && near(rLeast.flight.vImpact, 18.0, 0.005) && near(plLeast.absorbed, 14600, 0.01)
+      && cOn.by === 'plaster' && near(onset(cOn), 27000, 0.01) && M.throw.shakeFrom(pOn.run(cOn.use), pOn.opt) === 'landing' && cOff.by === 'passenger' && near(onset(cOff), 333.4, 0.005) && !c4.by && near(P.plasterReach(M.throw.shake(all4, p4.opt)), 1.36, 0.01),
+    'least ' + sig(gOn.use / g) + ' kg-force; ceiling ' + cOn.by + ' at ' + sig(onset(cOn)) + '; off ' + cOff.by + ' at ' + sig(onset(cOff)) + '; four off: ' + (c4.by || 'none') + ', plaster reach ' + sig(P.plasterReach(M.throw.shake(all4, p4.opt))) + ' m');
 }
 
 console.log('\n' + (n - fails) + '/' + n + ' passed');
