@@ -10,7 +10,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## In progress
 
-- Owner's session: pull request 2 of `rex-strength-lab/BRIEF-canon.md` (their recoil into their source, the catches included, the momentum ledger test, the new tagline) on `claude/canon-2-recoil`. Pull requests 3–5 follow on stacked branches.
+- Owner's session: pull request 2 of `rex-strength-lab/BRIEF-canon.md` (their recoil into their source, the catches included, the momentum ledger test, the new tagline) built on `claude/canon-2-recoil` and open; its review rounds (three and a re-check) are running. Pull requests 3–5 follow on stacked branches.
 
 ## Waiting on
 
