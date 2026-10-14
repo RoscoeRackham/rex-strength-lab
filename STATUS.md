@@ -11,6 +11,8 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## Waiting on
 
+- Collaborator (canon), from `claude/canon-sync-theoreticals`: agree to the CLAUDE.md canon update that brings Rex's canon in line with the owner's Rex Theoreticals project (newest ruling wins, owner's ruling 14 Oct 2026). Then the pages need follow-up work, not done in that pull request: Rex 3,000 kg with a 300 kg tail (was 3,007 kg) in all three projects and the shared `builds.json`; They take their own recoil sends the push into their source instead of the planet (engine, tests, Known limits, every "the planet takes the push back" sentence); Safe passenger on by default; never knocked back by a hit (needs an Ollie ruling for the two-player tests); the absorption shimmer; the tagline "still obeys Newton". Until then the pages lag the canon.
+
 - Owner and collaborator (canon), from pull request B (merged; the page is live with the interim behaviour; nobody is working on it): with Unbreakable footing on, instant growth can't drive his soles into the ground, so the Rex lab grows him upward from them (as Comic ground did); canon has him grow about his middle with his feet driven in. Confirm, or rule otherwise (`rex-strength-lab/README.md` Known limits).
 - Owner review of Build Comparison design decisions listed in `build-comparison/data/NOTES.md` ("Design decisions to review"): the edge marking, the palette change, the stop edges, Thor's and the Thing's treatment, the group colours' contrast, and figures drawn with their arms at their rest angle. (The meatball sentence is now reworded in the brief.)
 - Step 2 (collaborator): regenerate Rex's and Ollie's turnarounds to the model-sheet spec (fixes listed in BRIEF.md, "The turnarounds") and measure them; make gap-filler figures from target outlines with GPT Images 2.5.
@@ -18,6 +20,8 @@ Who is working on what. Update it before every push (see "Two people, two accoun
   - The tool also reads raised arms a few percent (35°) to about 20% (near level) high on any sheet, because it counts each arm at torso depth where it meets the shoulder.
 
 ## Done
+
+- 2026-10-14: CLAUDE.md canon synced with the owner's Rex Theoreticals project (`claude/canon-sync-theoreticals`): knowledge × intention, bystanders, the shimmer, momentum exceptions, growth and euphoria steps, anatomy, movement, setting, 3,000 kg; page work listed under Waiting on.
 
 - 2026-10-13: the session's history: `history/2026-10-12-rex-gui/` (the owner's prompts, the transcript of the three pull requests, the workflows' subagents, the scratchpad scripts), built with `history/tools/build_history_gui.py` the same way as the earlier entries. The claim on `rex-strength-lab/` (and the root README's Rex lab row, CLAUDE.md's build line and CI's steps) is released.
 - 2026-10-13: Rex lab energy comparisons (`BRIEF-gui.md` section 6) merged (#23, CI passed) and republished from `main` (`6b445a9`) as version 13, after the full Rex lab test line passed on that build (calibration, presence 383 checks, shots, powers 122, ladder 562). A researched 58-rung ladder (`research/final-energy.json`, 140 facts from seven topics, each checked by a skeptic who fetched every source), `src/ladder.js` and `test/ladder.js`. Three review rounds (`research/reviews/gui-c-round1.json` to `gui-c-round3.json`: 59 findings, 51 confirmed and fixed, 8 refuted). With A (#20) and B (#22), `BRIEF-gui.md` is built.
