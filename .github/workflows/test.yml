@@ -1,10 +1,10 @@
 # Rebuild every page, run every test, and check the committed builds are current.
+# It is heavy (Chromium and every test), so it runs only when started by hand:
+# the Actions tab's "Run workflow", or `gh workflow run test.yml --ref <branch>`.
 name: test
 
 on:
-  pull_request:
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 jobs:
   test:

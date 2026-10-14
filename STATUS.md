@@ -11,6 +11,7 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## Waiting on
 
+- Owner: agree to running CI only by choice (`terantic/ci-on-demand`: CLAUDE.md rule 3 and `.github/workflows/test.yml`). It is heavy (Chromium and every test), so the collaborator would rather run it before a big change than on every pull request and every push to `main`.
 - Collaborator (canon), from `claude/canon-sync-theoreticals`: agree to the CLAUDE.md canon update that brings Rex's canon in line with the owner's Rex Theoreticals project (newest ruling wins, owner's ruling 14 Oct 2026). Then the pages need follow-up work, not done in that pull request: Rex 3,000 kg with a 300 kg tail (was 3,007 kg) in all three projects and the shared `builds.json`; They take their own recoil sends the push into their source instead of the planet (engine, tests, Known limits, every "the planet takes the push back" sentence); Safe passenger on by default; never knocked back by a hit (needs an Ollie ruling for the two-player tests); the absorption shimmer; the tagline "still obeys Newton". Until then the pages lag the canon.
 
 - Owner and collaborator (canon), from pull request B (merged; the page is live with the interim behaviour; nobody is working on it): with Unbreakable footing on, instant growth can't drive his soles into the ground, so the Rex lab grows him upward from them (as Comic ground did); canon has him grow about his middle with his feet driven in. Confirm, or rule otherwise (`rex-strength-lab/README.md` Known limits).
