@@ -436,7 +436,7 @@ Each needs its own decision before it becomes work.
 
 ## Order of pull requests and review rounds
 
-Pull request 1 is merged (#31). Pull requests 2–5 are for the owner's session (the collaborator's decision, 14 Oct 2026).
+Pull request 1 is merged (#31). Pull requests 2–5 are for the owner's session (the collaborator's decision, 14 Oct 2026), in one run that follows `RUN-canon.md`: stacked branches, these review rounds in full, and the owner merging the four in order at the end.
 
 Each pull request records its review rounds in `research/reviews/` (for example `canon-1-round1.json`), counts a finding only once it is reproduced with code, updates the README's review history and known limits, and has CI started by hand before it merges. After each merge the owner rebuilds and republishes. A long run ends with a `history/` entry.
 
