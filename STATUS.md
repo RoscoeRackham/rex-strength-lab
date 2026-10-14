@@ -6,8 +6,11 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 | Folder or file | Who | Branch | Since |
 |---|---|---|---|
+| `rex-strength-lab/` (all of it) | Owner's cloud session, building pull requests 2–5 of `BRIEF-canon.md` by `RUN-canon.md` | `claude/canon-2-recoil`, then `claude/canon-3-passenger`, `claude/canon-4-contests`, `claude/canon-5-shimmer` (stacked) | 2026-10-14 |
 
 ## In progress
+
+- Owner's session: pull request 2 of `rex-strength-lab/BRIEF-canon.md` (their recoil into their source, the catches included, the momentum ledger test, the new tagline) on `claude/canon-2-recoil`. Pull requests 3–5 follow on stacked branches.
 
 ## Waiting on
 
