@@ -16,10 +16,14 @@ const ONLY = process.argv.includes('--off-only');
 if (!process.argv.includes('--skip-off')) {
   const { cases, canon, hash, OFF } = require('./powers-off-cases.js');
   const base = require('./fixtures/powers-off.json').fingerprints;
+  // the fixture was written with the 3,007 kg bodies of 11 Oct 2026 (volume 0.10017 x height^3); since 13 Oct 2026
+  // the canon is 3,000 kg (BRIEF-canon.md item 1), so these comparisons run on the build they were written with
+  const FIXTURE_KV = 0.10017;
   const check = (label, extra) => {
     // a fresh copy of the engine for each pass, so no cache carries results from one pass into the other
     delete require.cache[require.resolve(ENGINE)];
     P = require(ENGINE);
+    P.BUILDS.rex.kV = P.BUILDS.ollie.kV = FIXTURE_KV;
     let diff = 0, missing = 0, first = null;
     const list = cases(P, D);
     for (const c of list) {
@@ -32,6 +36,9 @@ if (!process.argv.includes('--skip-off')) {
   };
   check('left out', {});
   check('explicitly off (airAbsorb 0, keepForm, unbreakable and ownRecoil false)', OFF);
+  // the rest of the checks run on a fresh engine with today's build
+  delete require.cache[require.resolve(ENGINE)];
+  P = require(ENGINE);
 }
 if (ONLY) { console.log('\n' + (n - fails) + '/' + n + ' passed'); process.exit(fails ? 1 : 0); }
 

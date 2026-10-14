@@ -379,7 +379,7 @@ feats = [
 ]
 
 # Feats by human-sized people run on the 2 m, 180 kg calibration body: at those strengths the default
-# 10 ft, 3,007 kg Rex is too heavy to get up, so the result would say nothing about the feat.
+# 10 ft, 3,000 kg Rex is too heavy to get up, so the result would say nothing about the feat.
 HUMAN_SIZED = {'511 kg deadlift', '2,422 kg back lift', 'Pulled a 188.83 t C-17', 'Shot put, 23.56 m', 'Fastest pitch, 105.8 mph',
                'Top speed 12.42 m/s', 'The car on the cover', 'Captain America presses 800 lb'}
 for f in feats:
@@ -402,7 +402,7 @@ densities = [
          note='Our estimate for a stuffed toy: no measured value found. Loose fibrefill batts are 6–21 kg/m³.'),
     dict(id='water', chip='Water', short='water', rho=1000, keys=['density_water_4c'], note='Fresh water at 4 °C: 1,000 kg/m³. The 2 m, 180 kg calibration body has this density.'),
     dict(id='build', chip='His build (default)', short='his build', rho=1060, keys=['rex_ollie_picture_build', 'density_bodybuilders_fry1987'],
-         note='The default Rex and Ollie: 10 ft and 3,007 kg each, by ruling (Rex: 2,700 kg without his tail). 1,060 kg/m³: lean bodybuilders (1,081 kg/m³ with lung air removed; Fry, Cisar & Housh 1987) less some air in the lungs.'),
+         note='The default Rex and Ollie: 10 ft and 3,000 kg each in all, by ruling (Rex: 300 kg of it his tail). 1,060 kg/m³: lean bodybuilders (1,081 kg/m³ with lung air removed; Fry, Cisar & Housh 1987) less some air in the lungs.'),
     dict(id='human', chip=None, short='a human body', rho=fact('density_human_body_measured')['value_si'], keys=['density_human_body_measured'], note=None),
     dict(id='steel', chip='Steel', short='steel', rho=fact('density_structural_steel')['value_si'], keys=['density_structural_steel'], note=None),
     dict(id='osmium', chip='Osmium', short='osmium', rho=fact('density_osmium')['value_si'], keys=['density_osmium'], note='The densest element at everyday pressure.'),

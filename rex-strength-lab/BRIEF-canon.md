@@ -1,6 +1,6 @@
 # Brief: the canon follow-ups (14 Oct 2026)
 
-For the Rex lab (`rex-strength-lab/`), and for item 1 also the Build Calculator and Build Comparison. Written by the collaborator's session, 14 Oct 2026, from the canon update in pull request #25 (agreed in #26), for whichever session builds it. It plans the page work #25 listed under Waiting on. Each item says what changes, why (the canon line, quoted from CLAUDE.md), the files and functions it touches, the tests, the risks, and what changes on concrete runs. The questions the plan couldn't answer alone are marked **Q1**, **Q2**, …. The collaborator answered them on 14 Oct 2026 (see "Answers"), and the items below follow those answers. The answers that are canon are also recorded in CLAUDE.md, marked "owner to confirm". Nothing else here adds canon. Work in the house pattern (CLAUDE.md): research where needed, build, tests, adversarial review rounds, README.
+For the Rex lab (`rex-strength-lab/`), and for item 1 also the Build Calculator and Build Comparison. Written by the collaborator's session, 14 Oct 2026, from the canon update in pull request #25 (agreed in #26), for whichever session builds it. It plans the page work #25 listed under Waiting on. Each item says what changes, why (the canon line, quoted from CLAUDE.md), the files and functions it touches, the tests, the risks, and what changes on concrete runs. The questions the plan couldn't answer alone are marked **Q1**, **Q2**, …. The collaborator answered them on 14 Oct 2026 (see "Answers"), and the items below follow those answers. The answers that are canon are also recorded in CLAUDE.md; the owner confirmed them on 14 Oct 2026. Nothing else here adds canon. Work in the house pattern (CLAUDE.md): research where needed, build, tests, adversarial review rounds, README.
 
 **Where the numbers come from.** Every old and new result below is an engine run on `main` at `f57d440`, made by `research/brief-canon/runs.js` (run it from `rex-strength-lab/`; its output is saved beside it as `runs.json`). "Old" is the engine as it is. "New" changes the script's own copy of the engine to do what the item says (the body volume, where the recoil goes, Safe passenger), so it shows the size of each change before anyone builds it. The build must reproduce these figures or say why not. For item 4, "new" uses the engine's existing sums for a truly immovable body, with the momentum sent to the endless ocean.
 
@@ -212,7 +212,7 @@ Review records in `research/reviews/` (all three projects) keep the old figures:
 
 ## 4. Never knocked back, and contests
 
-**Canon.** "Momentum: absorbed in the cases listed here …: … and incoming hits (he is never knocked back, RT 5.1)." And the rulings of 14 Oct 2026 (collaborator, answering this brief; owner to confirm; recorded in CLAUDE.md):
+**Canon.** "Momentum: absorbed in the cases listed here …: … and incoming hits (he is never knocked back, RT 5.1)." And the rulings of 14 Oct 2026 (collaborator, answering this brief; confirmed by the owner; recorded in CLAUDE.md):
 - Never knocked back is a power for each of them, with a switch each, both on by default (**Q1**). Incoming hits are a charge, a steady push, a shove, the shoving match, being lifted or thrown by the other, a caught object, and a partner landing on him (**Q2**).
 - In contests, force moves, so Never knocked back is set aside. Contests are every Rex + Ollie test: arm wrestling, every Wrestle move, Collide's charge and steady push, and the partner toss (**Q12**, **Q13**, **Q14**).
 - In a contest the other's push is real. Only the push each puts on himself is absorbed: his own recoil (**Q12**, **Q15**).
@@ -293,7 +293,7 @@ With They take their own recoil off, every row is today's physics.
 
 ## 5. Safe passenger on by default
 
-**Canon.** "*Safe passenger* (RT 4.2): someone he throws or catches feels a manageable force unless he knows they can take it." It is listed under Default powers: "On unless they choose otherwise". And the ruling of 14 Oct 2026 (collaborator; owner to confirm; recorded in CLAUDE.md): Safe passenger also covers where the person lands, and the air's drag on them (**Q8**: a 1, b yes).
+**Canon.** "*Safe passenger* (RT 4.2): someone he throws or catches feels a manageable force unless he knows they can take it." It is listed under Default powers: "On unless they choose otherwise". And the ruling of 14 Oct 2026 (collaborator; confirmed by the owner; recorded in CLAUDE.md): Safe passenger also covers where the person lands, and the air's drag on them (**Q8**: a 1, b yes).
 
 **What changes.**
 - On by default (`DEFAULTS.safePassenger: true`). The switch moves from the "Material limit suspended" heading to the default powers in Their powers. The summary line lists it with them.
@@ -323,7 +323,7 @@ With They take their own recoil off, every row is today's physics.
 
 ## 6. The absorption shimmer
 
-**Canon.** "*Where absorbed energy goes* (RT 2, 4.4): back into the store of infinite power they draw on ('a drop in an endless ocean'). It shows: his eyes, feather tips and mouth-glow shimmer in proportion to what he takes in (a flicker for a car crash, a blinding flare for a planet-scale hit). His glow is gently warm, never scalding." And the rulings of 14 Oct 2026 (collaborator; owner to confirm; recorded in CLAUDE.md): the planet-scale hit is the dinosaur-killer; below a car crash he still shows a faint flicker; he shimmers in the growth what-ifs too (**Q6**: a 1, b 2, c yes). The glow may be drawn over the art (**Q6** d); the art is the owner's, so the owner confirms that one.
+**Canon.** "*Where absorbed energy goes* (RT 2, 4.4): back into the store of infinite power they draw on ('a drop in an endless ocean'). It shows: his eyes, feather tips and mouth-glow shimmer in proportion to what he takes in (a flicker for a car crash, a blinding flare for a planet-scale hit). His glow is gently warm, never scalding." And the rulings of 14 Oct 2026 (collaborator; confirmed by the owner; recorded in CLAUDE.md): the planet-scale hit is the dinosaur-killer; below a car crash he still shows a faint flicker; he shimmers in the growth what-ifs too (**Q6**: a 1, b 2, c yes). The glow may be drawn over the art (**Q6** d); the art is the owner's, and the owner confirmed it.
 
 **Proposal.**
 - **Engine: one tally per run**, for example `RESTRAINT.absorbedEnergy(move, r, o)`: the energy taken back in that run, by part. The parts: the air's drag on what he throws (but see the risk below); what Unbreakable footing takes back to keep the ground whole (the stomp's `absorbed`, and the jump's where real ground would have taken energy); Soft landing (`landing.absorbed`); Silent strike (the blast energy it takes: a punch's or clap's energy past Mach 1); a hit's freed energy, which is absorbed by default (item 4); a thrown person's landing with Safe passenger on (item 5); and, in the growth what-ifs, the energy that becomes mass. Momentum taken back without motion (his recoil, the weak ground's supplied push, a hit's momentum) carries almost no energy and adds nothing.
@@ -393,7 +393,7 @@ Briefs (`BRIEF-gui.md`, `BRIEF-presence.md`) and review records keep their wordi
 
 ## Answers
 
-The collaborator answered on 14 Oct 2026. The answers that are canon are recorded in CLAUDE.md, marked "owner to confirm".
+The collaborator answered on 14 Oct 2026. The answers that are canon are recorded in CLAUDE.md; the owner confirmed them, and the glow drawn over the art, on 14 Oct 2026.
 
 | Question | Answer | What it means for the plan |
 |---|---|---|
@@ -402,7 +402,7 @@ The collaborator answered on 14 Oct 2026. The answers that are canon are recorde
 | **Q3.** The hit's freed energy | B: absorbed by default, real only when he means it | It is shimmer (item 6). This plan reads "when he means it" as the blast presets (item 4); confirm in review |
 | **Q4.** The charger's push back | B: his own recoil, so he doesn't slow | A charger with They take their own recoil on acts as a body of unbounded mass: he carries the one he hits along, and meets a paradox only where their powers hold the one hit without limit (item 4) |
 | **Q5.** A catch | A: absorbed, unless Rex chooses otherwise | Never carried off, nothing into the ground: the catcher's stop is his own push back (item 2). "Unless he chooses otherwise" is They take their own recoil turned off |
-| **Q6.** The shimmer | (a) the dinosaur-killer; (b) a faint flicker below a car crash; (c) yes, in the growth what-ifs too; (d) yes, it may be drawn over the art | Item 6. The floor of the faint flicker is a proposal (7.3 kJ); drawing on the art needs the owner's yes, since the art is the owner's |
+| **Q6.** The shimmer | (a) the dinosaur-killer; (b) a faint flicker below a car crash; (c) yes, in the growth what-ifs too; (d) yes, it may be drawn over the art | Item 6. The floor of the faint flicker is a proposal (7.3 kJ); the owner confirmed drawing on the art (the art is the owner's) |
 | **Q7.** The tagline | A: "Indestructible · never tires · unlimited" | Item 7; it ships with pull request 2 |
 | **Q8.** Safe passenger and the landing | (a) Safe passenger covers the landing; (b) and the air's drag | Item 5. The landing's momentum stays real and its energy is taken back: a reading; confirm in review |
 | **Q9.** A push with no push time | Yes: the ground's share it can't bear | Nothing to change (item 3) |
@@ -415,7 +415,6 @@ The collaborator answered on 14 Oct 2026. The answers that are canon are recorde
 
 **Still open.**
 - **Never knocked back's switches** (item 4): added now with a note that no current test uses them; the collaborator will revisit them later.
-- **The owner** confirms the rulings in CLAUDE.md, and says yes or no to the glow drawn on the art.
 - **Review** confirms the plan's readings: "when he means it" as the blast presets; "unless Rex enables otherwise" as They take their own recoil turned off; a person's landing with its momentum real and its energy taken back; the arm-wrestling consequences, the shoving match's new outcome, holding a partner up not counted as recoil, and the paradox cases (item 4); the shimmer's floor; and the drag figure the shimmer uses.
 
 ## Other canon in #25 that this plan doesn't cover
@@ -445,6 +444,6 @@ Each pull request records its review rounds in `research/reviews/` (for example 
 | 2 | **Recoil into their source** (item 2), the catches included, with item 3's ledger test, the recoil copy and the new tagline (item 7) | 1 | Three and a re-check, as for pull request B. Physics: each move's momentum, the ledger. Code and tests: mutants that put the push back into the ground one move at a time. Copy and layout |
 | 3 | **Safe passenger by default**, covering the landing and the drag (item 5) | 1 | Two. Physics and claims, including the landing's split (momentum real, energy taken back). Code, layout and the migration |
 | 4 | **Contests** (item 4), with the two Never knocked back switches and their notes | 2 (the same rule, in contests) | Three and a re-check. Physics: the charger of unbounded mass, the paradox cases, the shoving match, the standing arm wrestle. The two-player tests: every row of item 4's table, and the search's time. Copy, including how the Collide tab explains the paradox |
-| 5 | **The shimmer** (item 6) | 3 and 4 (a person's landing and a hit's energy are shimmer sources); the owner's yes to drawing on the art | Two. Design, copy and accessibility, including the glow's placement on the art. Code and data, including the drag figure and the floor |
+| 5 | **The shimmer** (item 6) | 3 and 4 (a person's landing and a hit's energy are shimmer sources) | Two. Design, copy and accessibility, including the glow's placement on the art. Code and data, including the drag figure and the floor |
 
 The optional items (section 8) each need their own brief.

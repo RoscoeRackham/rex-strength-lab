@@ -11,15 +11,20 @@ const { readResult, settle } = require('./make-page-fixture.js');
 const BEFORE = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'page-before.json'), 'utf8')).results;
 // the two-player engine calls: none may run while the Rex + Ollie element is closed
 const DUO_FNS = ['armWrestle', 'pushMatch', 'shove', 'shoveBoth', 'liftPartner', 'throwPartner', 'catchGame', 'catchLeg', 'tossPartner', 'catchIt', 'collide', 'headOn', 'standoff'];
-// counts the page's calls to them (and can slow each one down, to force a search into the background)
-const countDuoCalls = ({ names, delay }) => {
+// counts the page's calls to them (and can slow each one down, to force a search into the background). pin: run the
+// page on an older build of the default bodies (OLD_BUILD), for comparisons with a page fixture written on it
+const countDuoCalls = ({ names, delay, pin }) => {
   window.__duoCalls = 0;
   let v;
   Object.defineProperty(window, 'DinoPhys', { configurable: true, get: () => v, set: (x) => {
+    if (pin) { x.BUILDS.rex.kV = x.BUILDS.ollie.kV = pin.kV; x.DEFAULT_BODIES.rex.m = x.DEFAULT_BODIES.ollie.m = pin.m; }
     for (const k of names) { const f = x[k]; if (typeof f === 'function') x[k] = function () { window.__duoCalls++; if (delay) { const t = performance.now(); while (performance.now() - t < delay) { /* slow */ } } return f.apply(this, arguments); }; }
     v = x;
   } });
 };
+// test/fixtures/page-before.json was written with the 3,007 kg bodies of 11 Oct 2026 (volume 0.10017 x height^3); the
+// canon has been 3,000 kg since 13 Oct 2026 (BRIEF-canon.md item 1), so the pages compared with it run on that build
+const OLD_BUILD = { kV: 0.10017, m: 3007 };
 // the section 5 powers, off (BRIEF-gui.md section 5; these keys don't exist before it and are dropped on load)
 const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoil: false };
 (async () => {
@@ -209,7 +214,7 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     const errs = [];
     page.on('pageerror', (e) => errs.push('PAGEERROR ' + e.message));
     page.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()); });
-    await page.addInitScript(countDuoCalls, { names: DUO_FNS });
+    await page.addInitScript(countDuoCalls, { names: DUO_FNS, pin: OLD_BUILD });
     await page.goto(pathToFileURL(prev).href);
     CMP = makeCMP(await page.evaluate(() => window.DINO_DATA.energyRefs.map((e) => e.short)));
     const load = async (st) => { await page.evaluate((s) => localStorage.setItem('rex-lab-v1', JSON.stringify(s)), st); await page.reload(); await page.waitForTimeout(800); };
@@ -298,12 +303,32 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     if (errs.length > errsBefore || nearNow !== 50) fail('a resize with a typed distance in Rex’s bay: ' + JSON.stringify({ errors: errs.slice(errsBefore), near: nearNow })); else okLog('a resize with a typed distance in Rex’s bay: no page error, the distance is taken');
     if (errs.length) fail('page errors: ' + errs.slice(0, 3).join(' | '));
     await page.close();
+    // The default mass moved from 3,007 kg to 3,000 kg (BRIEF-canon.md item 1): a fresh page uses 3,000 kg; a save from
+    // before the version mark (saveV) with the old default loads as 3,000 kg; a marked save keeps a visitor's own 3,007 kg
+    {
+      const pg = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+      await pg.goto(pathToFileURL(prev).href);
+      const after = async (st) => {
+        await pg.evaluate((x) => { if (x) localStorage.setItem('rex-lab-v1', JSON.stringify(x)); else localStorage.clear(); }, st);
+        await pg.reload(); await pg.waitForTimeout(500);
+        return pg.evaluate(() => { const s = JSON.parse(localStorage.getItem('rex-lab-v1')); return [s.m, s.oM, s.saveV].join(); });
+      };
+      const fresh = await after(null), old = await after({ m: 3007, oM: 3007 }), older = await after({ m: 2700, oM: 2700 }), marked = await after({ m: 3007, oM: 3007, saveV: 2 });
+      if (fresh !== '3000,3000,2' || old !== '3000,3000,2' || older !== '3000,3000,2' || marked !== '3007,3007,2') fail('the default mass and its migration: fresh ' + fresh + ', older save ' + old + ', a 2,700 kg save ' + older + ', marked save ' + marked);
+      else okLog('a fresh page and older saves with an old default (3,007 or 2,700 kg) use 3,000 kg; a marked save keeps a visitor’s own 3,007 kg');
+      // the Walk tab's elephant comparison follows the default mass (it once tested for 3,007 kg by hand)
+      await after({ action: 'walk', walker: 'both' }); await pg.waitForTimeout(300);
+      const walk = await pg.evaluate(() => document.getElementById('bay').textContent.replace(/\s+/g, ' '));   // (\s takes the page's non-breaking spaces too)
+      if (!/At 3,000 kg, Rex and Ollie each weigh about as much as an adult female African elephant\./.test(walk)) fail('the Walk tab at the default bodies lacks the elephant comparison at 3,000 kg');
+      else okLog('the Walk tab compares the default 3,000 kg bodies with an adult female African elephant');
+      await pg.close();
+    }
     // Closing the element stops its background search. Every two-player call is slowed to 60 ms here, so a search
     // can't finish inside a render's budget and goes on in the background ('working it out'). The page closes the
     // element itself the moment it shows 'working it out', and the count of two-player calls is taken right then.
     const slowPage = async (onBusy) => {
       const pg = await browser.newPage({ viewport: { width: 1280, height: 900 } });
-      await pg.addInitScript(countDuoCalls, { names: DUO_FNS, delay: 60 });
+      await pg.addInitScript(countDuoCalls, { names: DUO_FNS, delay: 60, pin: OLD_BUILD });
       await pg.addInitScript((what) => {
         document.addEventListener('toggle', (e) => { if (e.target.id === 'duo' && !e.target.open) window.__atClose = window.__duoCalls; }, true);
         const iv = setInterval(() => { const b = document.getElementById('duo-bay'); if (b && /Effort: working it out/i.test(b.textContent)) { clearInterval(iv); window.__busyAt = window.__duoCalls;
@@ -373,7 +398,7 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     });
     // the engine at the effort the page shows (its readout gives the mass lifted)
     const eff = await page.evaluate(() => { const m = document.getElementById('bay').textContent.match(/as hard as lifting ([\d.,]+)\s(t|kg)/); return m ? Number(m[1].replace(/,/g, '')) * (m[2] === 't' ? 1000 : 1) : null; });
-    const want = await page.evaluate((kg) => { const P = window.DinoPhys, D = window.DINO_DATA, g = P.K.g; const body = P.makeBody({ build: 'rex', H: 3.048, m: 3007 });
+    const want = await page.evaluate((kg) => { const P = window.DinoPhys, D = window.DINO_DATA, g = P.K.g; const body = P.makeBody(Object.assign({ build: 'rex' }, P.DEFAULT_BODIES.rex));
       const c = { F: 100 * 907.18474 * g, mode: 'comic', body, surface: D.surfaces.find((x) => x.id === 'concrete'), groundHolds: false, anchor: 'friction', softLanding: true, use: kg * g };
       const L = P.jump(c).landing; return { absorbed: L.absorbed, E: L.E }; }, eff);
     const okSoft = soft.shown && want.absorbed > 0 && Math.abs(soft.shown / want.absorbed - 1) < 0.02 && want.E > 2 * want.absorbed;

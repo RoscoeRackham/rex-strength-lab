@@ -1,0 +1,50 @@
+{
+ "round": 1,
+ "what": "Pull request 1 of BRIEF-canon.md (the 3,000 kg mass in all three projects), review of data and claims: every figure that quotes the mass, against the canon (CLAUDE.md: 3,000 kg in all, 300 kg of it Rex's tail, 2.83 m³ at 1,060 kg/m³) and the research. A self-review by the session that built the change (the collaborator's), not independent reviewers; each finding reproduced with code before it counted.",
+ "script": "scratchpad verify_mass.js (recomputes 80 figures from the files and the engine); growth_numbers.js (the growth facts at 3,000 and 3,007 kg); repository-wide search for 3,007, 3007, 2,996, 307 kg, 2.84 m, 0.10017, 2.8368 and 0.8782",
+ "counts": {
+  "findings": 4,
+  "confirmed": 4,
+  "refuted": [],
+  "no_verdict": []
+ },
+ "verified_ok": [
+  "80 recomputed figures match the files: the engine's default bodies (3,000 kg, 2.83 m³, 1,060 kg/m³); the walking foot load (35.3 kN; Rex 95 / 114 / 142 kPa, Ollie 196 / 235 / 294 kPa); the heel-strike energies (old × 3,000/3,007); every cell of the soft-landing table; the Earth's recoil example (7.5e-15 J); the growth baseline (2.8302 m³, radius 0.877 m) and the Chicxulub, Sun-second and Krakatoa rows against the engine's grownBody; the black-hole thresholds; the duo fact's ratios (Rex 1.127×, Ollie 1.119× the picture without tails); the Build Calculator's weights, volumes, BMI, ponderal index, tail and percentages; Build Comparison's 300 kg tail.",
+  "Every remaining 3,007 in the repository outside history and review records is intended: the old ruling recorded in notes, the pinned test fixtures (they keep the build they were written with), the page's migration of an older save, the fact key step_elephant_match_3007kg (kept, with a note: renaming breaks references) and the dated notes in BRIEF-presence.md and build-comparison/BRIEF.md.",
+  "Rex's muscle score is unchanged (2,700 kg without his tail either way: 180.6, range 170-189); Ollie's falls by 0.23% (2,996 to 2,989 kg: 202.0, range 189-216; was 189-217)."
+ ],
+ "findings": [
+  {
+   "id": "data-1",
+   "title": "The Walk tab tested for 3,007 kg by hand: at the new default its elephant comparison would vanish",
+   "location": "rex-strength-lab/src/app.html, bayWalk notes ('At 3,007 kg, Rex and Ollie each weigh about as much as an adult female African elephant')",
+   "evidence": "The sentence was shown only when every walker's mass was within 1 kg of 3,007: Math.abs(3000 - 3007) < 1 is false, so with the 3,000 kg default it silently disappears.",
+   "verdict": "confirmed",
+   "fix": "Tied to DEFAULT_BODIES (the condition and the figure in the text). test/shots.js now checks the Walk tab at the default bodies shows 'At 3,000 kg, Rex and Ollie each weigh about as much as an adult female African elephant.'"
+  },
+  {
+   "id": "data-2",
+   "title": "The Build Calculator's stored BMI and ponderal index for Rex and Ollie were stale since 11 Oct 2026 (worked out from 2,700 kg)",
+   "location": "build-calculator/data/builds.json, rex and ollie derived.bmi and derived.pi_kg_m3",
+   "evidence": "Stored 290.6 and 95.3 (Rex), 287.8 and 94.0 (Ollie): 290.6 × 3.048² = 2,700 kg. With the 3,007 kg of the time the BMI was 323.7. The page works BMI out from the weight, so only the data file was wrong.",
+   "verdict": "confirmed",
+   "fix": "Recomputed at 3,000 kg: Rex 322.9 and 105.9, Ollie 319.8 and 104.4. build-calculator/test/test.js now checks the stored BMI against weight / height²."
+  },
+  {
+   "id": "data-3",
+   "title": "The Build Calculator's volume note said Rex's ruled body is about 12% bigger than the picture measured; it was 11%",
+   "location": "build-calculator/data/builds.json, rex volume_m3.note and notes",
+   "evidence": "3,007 / 1,060 / 2.553 = 1.111 before; 3,000 / 1,060 / 2.553 = 1.109 now: 11%. Ollie's is 1.118: 12%.",
+   "verdict": "confirmed",
+   "fix": "Rex's notes say about 11% (and about 5% on the girths if the extra is depth); Ollie's keep 12% (6%). The cards and the duo fact say 11-12% for the two."
+  },
+  {
+   "id": "data-4",
+   "title": "A few research figures move in the third figure and had to be rewritten, not just rescaled",
+   "location": "rex-strength-lab/research/final-presence.json: step_rex_ollie_walking_foot_load, growth_worked_chicxulub, growth_worked_sun_second, growth_worked_krakatoa, growth_black_hole_thresholds, comic_absorb_residual_energy",
+   "evidence": "Ollie's boot pressure 236 to 235 kPa; Chicxulub k 1,851 to 1,855 (5e23 J) and 1,555 to 1,559 (4.2e23 J), pure size 37.4 to 37.5 m, density 1.96e6 to 1.97e6; the Sun-second's k 1.416e6 to 1.420e6 and pure size 342 to 343 m; Krakatoa's 12 Gt pure size +17.8 to +17.9 cm; pure-density black-hole ρ 2.08e26 to 2.09e26; the Earth's recoil example 7.6e-15 to 7.5e-15 J. Every displayed headline (35 kN, 820 kN, about 46,000 kg/m³, 37 m, 340 m, 2.1e26) is unchanged at the figures it shows.",
+   "verdict": "confirmed",
+   "fix": "Each value rewritten from the recomputation; verify_mass.js checks them. The vibration examples (vib_rex_step_examples) don't change at two figures, and their note says so."
+  }
+ ]
+}

@@ -413,10 +413,10 @@ check('stagnation T at 11 km/s (K, equilibrium)', P.stagnationT(11000), 16602, 1
   const cards = require('../src/static-data.js').assumptions.map((a) => a.d).join(' ');
   const cm = (x) => Math.round(x * 100) + ' cm', m1 = (x) => x.toFixed(1) + ' m';
   const want = [rexB.volume.toFixed(2) + ' m³ at 10 ft', 'about ' + cm(P.eqRadius(rexB)) + ' radius at 10 ft', rexB.frontArea.toFixed(1) + ' m² for Rex', olB.frontArea.toFixed(1) + ' m² for Ollie',
-    olB.footArea.toFixed(2) + ' m² for each of Ollie', 'about ' + Math.round(rexB.palmArea * 1e3) * 10 + ' cm² at 10 ft', '3,007 kg',
+    olB.footArea.toFixed(2) + ' m² for each of Ollie', 'about ' + Math.round(rexB.palmArea * 1e3) * 10 + ' cm² at 10 ft', '3,000 kg',
     [rexB.strokes.throw, rexB.strokes.whip, rexB.strokes.punch].map(m1).concat([rexB.strokes.leg, rexB.strokes.stomp, rexB.strokes.clap].map(cm)).join(', ').replace(/, ([^,]*)$/, ' and $1')];
   const missing = want.filter((x) => !cards.includes(x));
-  yes('cards quote the engine’s default bodies (' + (missing.length ? 'missing: ' + missing.join(' | ') : want.length + ' numbers') + ')', !missing.length && rexB.H === 3.048 && rexB.m === 3007 && olB.m === 3007);
+  yes('cards quote the engine’s default bodies (' + (missing.length ? 'missing: ' + missing.join(' | ') : want.length + ' numbers') + ')', !missing.length && rexB.H === 3.048 && rexB.m === 3000 && olB.m === 3000);
   yes('default build density 1,060 kg/m³ for both', Math.abs(rexB.rho - 1060) < 1 && Math.abs(olB.rho - 1060) < 1 && D.densities.some((d) => d.id === 'build' && d.rho === 1060));
   // u8/p7: a run that swings through the centre before it sticks stops on the far side: no east/west drift
   const wd = P.weight({ F: 1e6, mode: 'comic', body: P.makeBody({ H: 3.048, m: 7.06e9, build: 'rex' }), surface: S2('concrete'), groundHolds: false, anchor: 'friction' });

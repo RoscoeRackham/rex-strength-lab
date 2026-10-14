@@ -11,7 +11,7 @@ Live page: https://claude.ai/artifact/9aKMVmtGqXXT2kGMYvZb5E (private until shar
 - **Bodybuilders:** seven pros (mostly magazine-reported) and five study groups.
 - **Strongmen and lifters:** five.
 - **Comic characters:** 21, with official heights and weights from Marvel.com, DC.com and DK licensed guides. Publishers give no girths, so those are derived from the closest measured build.
-- **Rex and Ollie:** measured from their reference picture (10 ft); mass by ruling, 3,007 kg each in all (Rex: 2,700 kg without his tail).
+- **Rex and Ollie:** measured from their reference picture (10 ft); mass by ruling, 3,000 kg each in all (Rex: 300 kg of it his tail).
 
 ## Model
 

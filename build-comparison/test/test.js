@@ -69,8 +69,8 @@ test('every build scores without NaN, with its central value inside its range', 
 test('Rex and Ollie: height to the top of the skull, tails out, 7.5% fat (5-10%)', () => {
   const rex = model.evaluate('rex'), ollie = model.evaluate('ollie');
   near(rex.height.value, 2.92, 1e-9); near(ollie.height.value, 2.91, 1e-9);
-  // mass by ruling: 3,007 kg each in all; Rex is 2,700 kg without his tail, Ollie about 2,996 kg without his
-  near(rex.mass.value, 3007 - 307, 1e-9); near(ollie.mass.value, 3007 - 11, 1e-9);
+  // mass by ruling: 3,000 kg each in all (13 Oct 2026); Rex is 2,700 kg without his 300 kg tail, Ollie about 2,989 kg without his
+  near(rex.mass.value, 3000 - 300, 1e-9); near(ollie.mass.value, 3000 - 11, 1e-9);
   assert.deepStrictEqual([rex.bodyFat.lo, rex.bodyFat.value, rex.bodyFat.hi], [5, 7.5, 10]);
   near(rex.score.value, 1.8 * 2700 * 0.925 / Math.pow(2.92, 3), 1e-9);
   // the range covers skull height and body fat together (the ruled mass has no range)

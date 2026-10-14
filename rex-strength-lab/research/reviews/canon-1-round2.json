@@ -1,0 +1,42 @@
+{
+ "round": 2,
+ "what": "Pull request 1 of BRIEF-canon.md (the 3,000 kg mass), review of code and tests: that each frozen comparison still compares like with like, that the save migration does what it says, and that the full test line passes. A self-review by the session that built the change (the collaborator's), not independent reviewers; each finding reproduced with code before it counted.",
+ "script": "scratch copies of test/powers.js, test/presence.js and test/shots.js with their pins removed (deleted after the runs); the full build and test line of all three projects; test/sweep.js",
+ "counts": {
+  "findings": 3,
+  "confirmed": 3,
+  "refuted": [],
+  "no_verdict": []
+ },
+ "verified_ok": [
+  "The pins matter. test/powers.js without its pin: 6,667 of the 15,541 powers-off results differ (the first a kaiju body, whose mass is set from its volume). test/shots.js without its pin: 13 of its 16 comparisons with page-before.json change (all but three Wrestle cases).",
+  "The full line passes on this branch: Rex lab calibration (all checks passed), presence (383), shots (64 ok, 0 problems), powers (122/122), ladder (562/562), sweep (7,776 setting combinations, 0 problems); Build Calculator test (22/22) and shots; Build Comparison test (33/33), duo and shots. Rebuilding each project left its generated files unchanged.",
+  "The migration: a fresh page, an older save with 3,007 kg and one with 2,700 kg all load at 3,000 kg; a save with the version mark keeps a visitor's 3,007 kg (test/shots.js). A save with a malformed mark counts as older (it isn't 2), so it gets the migration and then the mark."
+ ],
+ "findings": [
+  {
+   "id": "code-1",
+   "title": "test/presence.js's all-out baseline doesn't need the pin: its outputs don't depend on the body's volume",
+   "location": "rex-strength-lab/test/presence.js, section 1",
+   "evidence": "With the pin removed the comparison still passes (432 combinations × 2): baseline-cases.js gives explicit 3,007 kg bodies and summarizes throws, jumps, stomps, punches, claps, sprints and pulls, none of which read the volume.",
+   "verdict": "confirmed",
+   "fix": "Kept the pin, with its comment: it costs nothing and keeps the comparison on the build the fixture was written with if a summarized output ever reads the volume."
+  },
+  {
+   "id": "code-2",
+   "title": "The page puts non-breaking spaces between figures and units, so a test written with plain spaces misses the Walk tab's sentence",
+   "location": "rex-strength-lab/test/shots.js, the Walk tab check",
+   "evidence": "The first run reported the elephant comparison missing although the page showed it ('At 3,000 kg, Rex and Ollie each weigh about as much as an adult female African elephant.', read from the page with a Playwright script).",
+   "verdict": "confirmed",
+   "fix": "The check normalises whitespace first (\\s takes the non-breaking spaces)."
+  },
+  {
+   "id": "code-3",
+   "title": "An older save whose visitor-set mass happens to be exactly 3,007 kg moves to 3,000 kg",
+   "location": "rex-strength-lab/src/app.html, the migration",
+   "evidence": "Without the version mark the page can't tell the old default from a visitor's own 3,007 kg.",
+   "verdict": "confirmed",
+   "fix": "Decision: accepted, as the earlier 2,700 kg migration did. Saves made from now on carry the mark, so a visitor's 3,007 kg is kept."
+  }
+ ]
+}

@@ -4,7 +4,7 @@ Men's builds on one scale of muscle level, with height taken out: from ordinary 
 
 Live page: https://claude.ai/artifact/DBtZrixDeZnvRwDhZMsCDn (private until shared)
 
-Step 1 of the plan in [BRIEF.md](BRIEF.md). Rex's and Ollie's mass is canon, set by ruling: 3,007 kg each in all (Rex 2,700 kg without his tail). Step 2 remeasures their shape from their turnarounds.
+Step 1 of the plan in [BRIEF.md](BRIEF.md). Rex's and Ollie's mass is canon, set by ruling: 3,000 kg each in all (Rex 2,700 kg without his 300 kg tail). Step 2 remeasures their shape from their turnarounds.
 
 ## What it shows
 
