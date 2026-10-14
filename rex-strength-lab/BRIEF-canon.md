@@ -124,7 +124,7 @@ Review records in `research/reviews/` (all three projects) keep the old figures:
 | Wrestle throw | `throwPartner` (through `throwObject`) | the thrower's push into the ground | none; the partner's landing (`landToGround`) stays |
 | Game of catch, thrower | `CATCHGAME.leg` (`pushT`, `toGroundT`), `throwPushJ`, `easyPush`, `recoilOf` | the thrower's push into the ground, every throw | none |
 | Partner toss | `CATCHGAME.tossPartner` (`toGroundT`) | his push as he tosses Ollie up | none. His catch (`toGroundC`) is absorbed too: a catch is an incoming hit (**Q2**, **Q5**). Ollie can't be tossed at all while his Never knocked back is on (item 4) |
-| Arm wrestle | `armWrestle` (`toGround`) | not covered by the power today. A quick pin leaves no net push, because the swing's push back and the slam cancel | the pin is the winner's own move, so its push back goes to his source. Then nothing cancels the slam's blow on the table, and with Unbreakable footing it reaches the ground whole at any swing time. This follows from the canon; confirm it in review |
+| Arm wrestle | `armWrestle` (`toGround`) | not covered by the power today. A quick pin leaves no net push, because the swing's push back and the slam cancel | the pin is the winner's own move, so its push back goes to his source. Then nothing cancels the slam's blow on the table, and with Unbreakable footing it reaches the ground whole at any swing time. **Q12** confirms it: in arm wrestling only each one's own push back is absorbed |
 | Collide | `COLLIDE.chargeSpeed` | the charger's take-off is the move itself | the take-off is unchanged. The hit's push back on the charger is his own recoil too (**Q4**): item 4 |
 | Weak ground | `weakGround` (sideways, "as if bolted, their recoil taken: the planet takes it") | used wherever a recoil push reached the ground | keep it for catches, landings and a bolted body; drop the recoil case |
 
@@ -212,7 +212,7 @@ Review records in `research/reviews/` (all three projects) keep the old figures:
 ## 4. Never knocked back
 
 **Canon.** "Momentum: absorbed in the cases listed here …: … and incoming hits (he is never knocked back, RT 5.1)." And the rulings of 14 Oct 2026 (collaborator, answering this brief; owner to confirm; recorded in CLAUDE.md):
-- Never knocked back is a power for each of them, with a switch each, both on by default (**Q1**: C, on).
+- Never knocked back is a power for each of them, with a switch each, both on by default (**Q1**: C, on). It doesn't apply in arm wrestling, where both mean to tip the other (**Q12**).
 - Incoming hits are: a charge, a steady push, a shove, the shoving match, being lifted or thrown by the other, a caught object, and a partner landing on him (**Q2**: all).
 - A hit's freed energy is absorbed by default (it shows as his shimmer), and real only when he means it (**Q3**: B).
 - A charger's push back from his own hit is his own recoil, so it goes to his source and he doesn't slow (**Q4**: B).
@@ -233,12 +233,18 @@ Review records in `research/reviews/` (all three projects) keep the old figures:
 | Collide, a charge | the one hit is held by his footing or bolts, or knocked back | the paradox above. With They take their own recoil off: the table below |
 | Collide, a steady push | the push against his hold; the rock around bolts can tear out | he holds without limit and the push goes to his source; no rock load. The pusher's own push back is his recoil, to his source too |
 | Wrestle, the shove | the partner flies off and slides (Ollie at 21 m/s, 37 m, at the default dial) | neither moves: the shover's push back and the hit both go to their sources |
-| Wrestle, the shoving match | one walks the other out, or a deadlock | a deadlock: nobody can be moved |
+| Wrestle, the shoving match | one walks the other out, or a deadlock | a deadlock: nobody can be moved (unless **Q13** says it follows arm wrestling) |
 | Wrestle, lift and throw | he lifts and throws his partner | he can't: being lifted or thrown is a hit, so the partner stays put |
 | Catch, an object | the catcher's stop goes into the ground; at a 10²⁰ kg dial he is carried off at 3,980 km/s | absorbed: never carried off, nothing into the ground |
 | Catch, the partner toss | Rex tosses Ollie up and catches him | Ollie can't be tossed while his switch is on |
 | A partner landing on him (the Wrestle throw, Collide from above) | the landing goes into the ground | absorbed |
-| Arm wrestle | the pin, and the drag once the table breaks | not on the list: **Q12** |
+| Arm wrestle | the pin, and the drag once the table breaks | Never knocked back doesn't apply: both mean to tip the other (**Q12**). The pin and the drag stay real; only each one's own push back is absorbed (below) |
+
+**Arm wrestling (Q12).** Never knocked back would make it a deadlock, and the point is two forces against each other: each means to tip the other. So the other's push on him is real, and the only absorption is the push each puts on himself (They take their own recoil). This plan reads that as follows; confirm it in review:
+- The pin and, once the table is gone, the drag stay as today: the stronger tips the other.
+- Each one's own push back goes to his source, so it no longer loads the table through his elbow pad and peg. The table then carries only the forearms' slam, and can't tear apart from the presses or from the pin's load on the winner's pad. (That only shows with Things keep their form off: with it on the table never breaks anyway.)
+- Standing, once the table is gone, each one's footing no longer caps his own press; the loser's footing still resists being dragged, because the winner's push on him is real.
+- The pin's slam reaches the ground whole at any swing time (item 2).
 
 So with the defaults, most of the Rex + Ollie element shows that nothing moves. That is the canon, but the element has to say so first and put each one's Never knocked back switch within reach, so a reader can run a contest in one click. It is a design point for pull request 4's review, not canon.
 
@@ -395,11 +401,12 @@ The collaborator answered on 14 Oct 2026. The answers that are canon are recorde
 | **Q9.** A push with no push time | Yes: the ground's share it can't bear | Nothing to change (item 3) |
 | **Q10.** Cancelling his own pull | B: both ways, so momentum is kept | No new case on the list; the engine doesn't model it yet (item 3, "Other canon") |
 | **Q11.** The optional items | Euphoria: 0 is his normal state, 100 "utterly mad with power". Flight: its push goes to the endless ocean; unlimited, so faster than light. The default run: 339 m/s | Item 8. Flight adds a sixth case to the momentum list (CLAUDE.md) |
+| **Q12.** Arm wrestling | Never knocked back doesn't apply: it would make a deadlock, and both mean to tip the other. The only absorption is the push each puts on himself | Item 4's arm-wrestle paragraph (the table no longer carries their presses; standing, a press isn't capped by his own footing). Readings; confirm in review |
 
 **Still open.**
-- **Q12. Arm wrestling** (item 4). It wasn't in Q2's list. Does Never knocked back stop his arm being pinned, and stop him being dragged once the table breaks? Pull request 4 leaves arm wrestling as today until this is answered.
+- **Q13. The Wrestle contests** (item 4). Q12's reason (both mean to tip the other, so Never knocked back would only make a deadlock) fits the shoving match too, and maybe the shove, the lift and the throw. Q2 counted those as hits, so by default nobody moves in them. Do they follow arm wrestling (the other's push real, only each one's own push back absorbed), or stay as Q2 says?
 - **The owner** confirms the rulings in CLAUDE.md, and says yes or no to the glow drawn on the art.
-- **Review** confirms the plan's readings: "when he means it" as the blast presets; "unless Rex enables otherwise" as his switch; a person's landing with its momentum real and its energy taken back; the arm-wrestle slam no longer cancelled (item 2); the shimmer's floor; and the drag figure the shimmer uses.
+- **Review** confirms the plan's readings: "when he means it" as the blast presets; "unless Rex enables otherwise" as his switch; a person's landing with its momentum real and its energy taken back; the arm-wrestle consequences (item 4); the shimmer's floor; and the drag figure the shimmer uses.
 
 ## Other canon in #25 that this plan doesn't cover
 
@@ -427,7 +434,7 @@ Each pull request records its review rounds in `research/reviews/` (for example 
 | 1 | **Mass** (item 1), all three projects | the claim on `builds.json` and `calc.js` (held on `terantic/canon-followups`) | Two. Data and claims: every figure that quotes the mass, in all three projects, against the canon and the research. Code and tests: the pinned comparisons (remove the pin and see them fail), the migration, the rebuilt `dist` files |
 | 2 | **Recoil into their source** (item 2), with item 3's ledger test, the recoil copy and the new tagline (item 7) | 1 | Three and a re-check, as for pull request B. Physics: each move's momentum, the ledger. Code and tests: mutants that put the push back into the ground one move at a time. Copy and layout |
 | 3 | **Safe passenger by default**, covering the landing and the drag (item 5) | 1 | Two. Physics and claims, including the landing's split (momentum real, energy taken back). Code, layout and the migration |
-| 4 | **Never knocked back** (item 4) | 2 (the charger's push back is his recoil); **Q12** for arm wrestling only | Three and a re-check. The physics of the hit, the charger of unbounded mass and the paradox. The two-player tests: every row of item 4's table, the search's time, and how the element explains "nothing moves". Copy |
+| 4 | **Never knocked back** (item 4) | 2 (the charger's push back is his recoil); **Q13** for the Wrestle contests only | Three and a re-check. The physics of the hit, the charger of unbounded mass and the paradox. The two-player tests: every row of item 4's table, the search's time, and how the element explains "nothing moves". Copy |
 | 5 | **The shimmer** (item 6) | 3 and 4 (a person's landing and a hit's energy are shimmer sources); the owner's yes to drawing on the art | Two. Design, copy and accessibility, including the glow's placement on the art. Code and data, including the drag figure and the floor |
 
 The optional items (section 8) each need their own brief.
