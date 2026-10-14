@@ -10,10 +10,11 @@ Who is working on what. Update it before every push (see "Two people, two accoun
 
 ## In progress
 
-- Owner's session: pull request 2 of `rex-strength-lab/BRIEF-canon.md` (their recoil into their source, the catches included, the momentum ledger test, the new tagline) built on `claude/canon-2-recoil` and open; its review rounds (three and a re-check) are running. Pull requests 3–5 follow on stacked branches.
+- Owner's session: pull requests 2–5 of `rex-strength-lab/BRIEF-canon.md` on stacked branches (RUN-canon.md). Pull request 2 (their recoil into their source, the catches, the momentum ledger, the new tagline) is built and reviewed (three rounds and a re-check; records `rex-strength-lab/research/reviews/canon-2-round1.json` to `canon-2-round3-recheck.json`), open as #33 on `claude/canon-2-recoil`. Pull request 3 (Safe passenger) is next, on `claude/canon-3-passenger`.
 
 ## Waiting on
 
+- Owner: confirm or overrule the four decisions in pull request #33's description (their own recoil wins over Bolted; his feet carry only the weights, so a throw no longer breaks the ground under him with the power on; every catch that reaches him is absorbed, so some catches become slams; the pull's steps capped at the strength he uses and counted as its shaking). Then merge #33 first, with a merge commit, after CI passes.
 - Owner: once pull request 1 (the 3,000 kg mass) merges, republish all three live pages: the mass changes each of them.
 - Owner: build pull requests 2–5 of `rex-strength-lab/BRIEF-canon.md` in one session by following `rex-strength-lab/RUN-canon.md` (stacked branches, the full review rounds, the owner merges the four in order at the end; the prompt to paste is at its top), in the brief's order (2: their recoil into their source, the catches included, with the momentum ledger test and the new tagline; 3: Safe passenger on by default, covering the landing and the drag; 4: contests and the two Never knocked back switches; 5: the shimmer). The collaborator handed them over on 14 Oct 2026 and has released the claim; claim `rex-strength-lab/` (and, for anything that touches them, `build-calculator/data/builds.json` and `src/calc.js`) before starting. Pull request 1 (the 3,000 kg mass) is merged (#31). The brief's item 4 now notes one case found since: the fireball's push in the game of catch is an incoming hit outside a contest, so Never knocked back does act on a current test.
 
