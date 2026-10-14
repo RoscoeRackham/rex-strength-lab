@@ -1813,10 +1813,13 @@
     // reach the ground together and cancel, so no net push goes in (the punch's rule): only a slower swing leaves the
     // slam's blow on its own.
     // The winner taking his own recoil (BRIEF-canon.md Q12: in arm wrestling only the push each puts on himself is
-    // absorbed): the swing's push back goes to his source, recoilAbsorbed { J kg m/s, T: the swing's time (s),
-    // thetaDeg -90: the slam drives the forearms straight down onto the pad; the momentum taken back points up }. Then
-    // nothing cancels the slam's blow, so with Unbreakable footing it reaches the ground whole at any swing time. Its
-    // momentum from its energy (p = sqrt(E^2 + 2 E M c^2) / c): near light speed the rounded speed would freeze it.
+    // absorbed): the swing's push backs go to their source, recoilAbsorbed { J kg m/s: the net of both arms' push backs,
+    // the winner's up (his push x the swing time) less the loser's down (his arm force x the swing time), both into the
+    // one source they share, which is the forearms' momentum at the slam; T: the swing's time (s); thetaDeg -90: the
+    // slam drives the forearms straight down onto the pad; the momentum taken back points up }. Then nothing cancels the
+    // slam's blow, so with Unbreakable footing it reaches the ground whole at any swing time. Its momentum from its
+    // energy (p = sqrt(E^2 + 2 E M c^2) / c): near light speed the rounded speed would freeze it. (Per-person switches
+    // and the presses, pull request 4, would report the two push backs separately.)
     // (The presses through the elbow pads and pegs, the drag once the table is gone and the standing footing are item 4
     // of BRIEF-canon.md, a later pull request: unchanged here.)
     const ownPin = !!cw.ownRecoil && pins && !tableBreaks && v > 0;
@@ -1883,9 +1886,22 @@
     const mA = A.m - armMass, mB = B.m + armMass;
     const fA = footingOf(cA, mA), fB = footingOf(cB), fAwhole = footingOf(cA);
     const d0 = eqRadius(A) + eqRadius(B);
+    if (cAin.ownRecoil && !isFinite(Fdrive) && !isFinite(fB.R)) {
+      // an unlimited shove into a partner held without limit (bolted), the shover taking his own recoil (bolted or not:
+      // for his own moves the power decides): his push back goes to his source, so he stays put and nothing loads or
+      // tears the ground under his feet. Only the partner's bolts meet the push. On real rock the rock around them tears
+      // out and he leaves at just under light speed with a plug of rock ('partnerTorn'; his source takes an unbounded
+      // push back, recoilAbsorbed { J: Infinity, T: 0, a push with no push time }). Where the ground under the partner
+      // holds (Unbreakable footing), nothing gives: an unlimited push against an unlimited hold has no physical answer
+      // ('paradox', stalled; the contests' case, item 4 of BRIEF-canon.md). oneSided: only the partner is held.
+      const go = !holdsGround(cB);
+      return Object.assign({ clash: go ? 'partnerTorn' : 'paradox', oneSided: true }, go ? { tearB: groundTear(cB), recoilAbsorbed: { J: Infinity, T: 0, thetaDeg: 0 } } : {}, {
+        Fdrive, d, stalled: !go, relativistic: go, vA: 0, vB: go ? K.c : 0, EA: 0, EB: go ? Infinity : 0, slideA: 0, slideB: go ? Infinity : 0, Fg: 0,
+        ring: RING_D * ((A.H + B.H) / 2) / 2 });
+    }
     if (!isFinite(Fdrive) && !isFinite(fA.R) && !isFinite(fB.R)) {
-      // both bolted, unlimited shove: the shared rule. Comic ground: nothing moves. Real rock: the rock around
-      // the bolts tears out and they fly apart at just under light speed.
+      // both bolted, unlimited shove, his recoil not taken: the shared rule. Comic ground: nothing moves. Real rock: the
+      // rock around the bolts tears out and they fly apart at just under light speed.
       const k = unlimitedClash(cA, cB), go = k.clash === 'rockGives';
       return Object.assign(k, { Fdrive, d, stalled: !go, relativistic: go, vA: go ? K.c : 0, vB: go ? K.c : 0, EA: go ? Infinity : 0, EB: go ? Infinity : 0,
         slideA: go ? Infinity : 0, slideB: go ? Infinity : 0, Fg: 0, ring: RING_D * ((A.H + B.H) / 2) / 2 });
@@ -1929,7 +1945,8 @@
       : cA.unbreakable ? { toGround: { J: Jfeet, T: Math.max(limbPulse(A), push.t) } } : {};
     // a bolted partner who doesn't move: his bolts hand the planet the whole push, over the push, a body width away
     // (both bolted, the shove stalls and nothing goes in; a shover taking his own recoil is planted, so against a bolted
-    // partner it always stalls: this arises only with Unbreakable footing on and his recoil not taken)
+    // partner a finite shove always stalls and an unlimited one is the one-sided case above: this arises only with
+    // Unbreakable footing on and his recoil not taken)
     if ((cA.unbreakable || cA.ownRecoil) && !push.stalled && cB.anchor === 'bolted' && !(push.pB > 0)) extra.toGroundB = { J: isFinite(Fpush) ? Fpush * push.t : Infinity, T: Math.max(limbPulse(B), push.t) };
     return Object.assign(extra, {
       Fdrive, d, push, heldBack, vA, vB, EA: momentumToKE(pA, A.m), EB: momentumToKE(pB, B.m),
