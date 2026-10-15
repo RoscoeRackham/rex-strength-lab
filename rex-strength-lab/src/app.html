@@ -2310,6 +2310,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const ownArm = !!(cR.ownRecoil || cO.ownRecoil);
     // (review round 2 of pull request 4: a one-sided unlimited press flings the one not held, draggedA / draggedB)
     const slidesOf = (side) => (r.outcome === 'pin' ? (r.winner === side ? !!r.winnerSlides : !!r.loserSlides) : r.outcome === 'stalemate' || r.oneSided ? !!(side === 'A' ? r.draggedA : r.draggedB) : r.clash === 'flungApart');
+    // (review round 3 of pull request 4: a bolted one on real rock whose rock tears out is held by his feet alone from then
+    // on, as in the shoving match: holdNow is what holds him, tornLine says so)
+    const tornOf = (side) => !!(side === 'A' ? r.tornA : r.tornB), holdNow = (side) => (tornOf(side) ? (side === 'A' ? r.holdAfterA : r.holdAfterB) : side === 'A' ? r.RA : r.RB);
+    const tornLine = (side) => 'the rock around ' + WHO[side] + '’s bolts tears out (it takes about ' + fmtSI(groundTearOf(side === 'A' ? cR : cO), 'N') + '), and from then on only his feet hold him (' + fmtSI(holdNow(side), 'N') + ')';
+    const sideW = r.winner, sideL = r.winner ? (r.winner === 'A' ? 'B' : 'A') : null;
+    const armHold = (side) => (tornOf(side) ? 'bolted to the planet, but on real rock: the rock around his bolts tears out (it takes about ' + fmtSI(groundTearOf(side === 'A' ? cR : cO), 'N') + '), and then his feet hold ' + fmtSI(holdNow(side), 'N') : holdText(side === 'A' ? cR : cO, side === 'A' ? r.RA : r.RB));
     let v;
     if (together) v = 'They never get to arm-wrestle. Their own gravity drags them together across the table: they meet at ' + speedOnly(r.fall.vRel) + ' within ' + fmtTime(r.fall.t) + ', releasing ' + fmtSI(r.fall.E, 'J') + ' (' + fmtTNT(r.fall.E) + ').';
     else if (!r.canHoldArmA || !r.canHoldArmB) {
@@ -2331,8 +2337,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     else if (r.clash) v = (r.clash === 'rockGives' ? 'The table breaks first: both arms are unlimited, and both are bolted, so the push goes through their bolts into the ground. ' : 'Both arms are unlimited, and ' + (gate ? 'treating the ground as if it held them' : 'with the table held together by their power') + ', the table never breaks. ') + clashVerdict(r.clash, 'Rex', 'Ollie', r.via === 'table' ? 'the table' : null) + ' Nobody pins anybody.';
     else if (r.tableBreaks && r.outcome === 'stalemate') v = broke + 'Arm-wrestling standing up, it’s a dead heat at ' + fmtSI(r.contact, 'N') + (r.footLimitedA && r.footLimitedB ? ': that’s all their feet hold, so strength stops mattering.' : ': their arms are locked.')
       // (their recoil taken: the other's press can beat his footing, so his feet slide; the lab doesn't follow it)
-      + (r.draggedA && r.draggedB ? ' But each one’s press beats the other’s footing (' + fmtSI(Math.min(r.RA, r.RB), 'N') + '), so both are pushed off their feet, opposite ways, turning about their clasped hands. The lab doesn’t follow that motion.'
-        : r.draggedA || r.draggedB ? ' But ' + (r.draggedA ? 'Ollie' : 'Rex') + '’s press beats ' + (r.draggedA ? 'Rex' : 'Ollie') + '’s footing (' + fmtSI(r.draggedA ? r.RA : r.RB, 'N') + '), so ' + (r.draggedA ? 'Rex' : 'Ollie') + ' is pushed off his feet. The lab doesn’t follow that motion.' : '');
+      + ['A', 'B'].filter(tornOf).map((x) => ' ' + capital(tornLine(x)) + '.').join('')
+      + (r.draggedA && r.draggedB ? ' But each one’s press beats the other’s footing (' + fmtSI(Math.min(holdNow('A'), holdNow('B')), 'N') + '), so both are pushed off their feet, opposite ways, turning about their clasped hands. The lab doesn’t follow that motion.'
+        : r.draggedA || r.draggedB ? ' But ' + (r.draggedA ? 'Ollie' : 'Rex') + '’s press beats ' + (r.draggedA ? 'Rex' : 'Ollie') + '’s footing (' + fmtSI(holdNow(r.draggedA ? 'A' : 'B'), 'N') + '), so ' + (r.draggedA ? 'Rex' : 'Ollie') + ' is pushed off his feet. The lab doesn’t follow that motion.' : '');
     else if (r.outcome === 'stalemate') v = 'Dead heat: ' + fmtN(r.contact) + ' each way, arms locked upright.';
     else if (r.outcome === 'drag') {
       // compare the loser's arm with the push the winner actually makes (capped by his footing), not with his arm
@@ -2340,7 +2347,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       if (drag.v >= 0.01 * K.c) v += ' ' + L + ' is flung sideways at ' + fmtSpeed(drag.v) + ': ' + (isFinite(drag.E) ? fmtTNT(drag.E) : 'unbounded energy') + '.';
       else v += ' ' + L + ' is moving at ' + speedOnly(drag.v) + ' when ' + W + '’s arm is down, ' + fmtTime(drag.t) + ' in.';
     } else {
-      v = r.tableBreaks ? broke + 'Standing up, ' + presses + '. That beats ' + L + '’s arm (' + fmtN(Pl) + '): he pins ' + L + ' in ' + fmtTime(pin.t) + (r.loserSlides ? ', dragging him along as he goes.' : '.') + (r.winnerSlides ? ' ' + L + '’s press is more than ' + W + '’s feet hold (' + fmtSI(Rw, 'N') + '), so ' + W + '’s feet slide too.' : '') : W + ' pins ' + L + ' in ' + fmtTime(pin.t) + '.';
+      v = r.tableBreaks ? broke + 'Standing up, ' + presses + '. That beats ' + L + '’s arm (' + fmtN(Pl) + '): he pins ' + L + ' in ' + fmtTime(pin.t) + (r.loserSlides ? ', dragging him along as he goes.' : '.') + (tornOf(sideL) ? ' ' + capital(tornLine(sideL)) + '.' : '')
+        + (r.winnerSlides ? ' ' + (tornOf(sideW) ? capital(tornLine(sideW)) + ', less than ' + L + '’s press, so ' + W + '’s feet slide too.' : L + '’s press is more than ' + W + '’s feet hold (' + fmtSI(Rw, 'N') + '), so ' + W + '’s feet slide too.') : '') : W + ' pins ' + L + ' in ' + fmtTime(pin.t) + '.';
       if (pin.v >= 0.01 * K.c) v += ' The back of ' + L + '’s hand ' + (r.tableBreaks ? 'swings down' : 'hits') + ' at ' + fmtSpeed(pin.v) + ': ' + (isFinite(pin.E) ? fmtTNT(pin.E) : 'unbounded energy') + '.';
       else if (pin.v >= 1) v += r.tableBreaks ? ' The back of ' + L + '’s hand swings down at ' + speedOnly(pin.v) + '.' : ' The back of ' + L + '’s hand hits the pad at ' + speedOnly(pin.v) + (r.slamRatio > 10 ? ' and goes through the table.' : r.slamRatio > 1 ? ', cracking the top.' : '.');
     }
@@ -2370,15 +2378,18 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       return out;
     }
     const chips = [status('info', 'Usable push: Rex ' + fmtN(r.AA) + ' · Ollie ' + fmtN(r.AB))];
-    if (r.tableBreaks) for (const [who, c, R, lim, side] of [['Rex', cR, r.RA, r.footLimitedA, 'A'], ['Ollie', cO, r.RB, r.footLimitedB, 'B']]) {
-      if (c.anchor === 'bolted') chips.push(status('info', who + ' bolted'));
-      else if (ownArm && r.clash === 'paradox' && !r.oneSided) continue;
+    if (r.tableBreaks) for (const [who, c, R0, lim, side] of [['Rex', cR, r.RA, r.footLimitedA, 'A'], ['Ollie', cO, r.RB, r.footLimitedB, 'B']]) {
+      // (review round 3 of pull request 4: bolted, his rock torn out, his feet slide like anyone's)
+      const R = ownArm ? holdNow(side) : R0;
+      if (c.anchor === 'bolted') { chips.push(status('info', who + ' bolted')); if (!(ownArm && tornOf(side))) continue; }
+      if (c.anchor !== 'bolted' && ownArm && r.clash === 'paradox' && !r.oneSided) continue;
       // (their recoil taken: his feet slide where the other's press beats them; in a pin the loser's feet carry what turns
       // his forearm about his elbow: review round 2 of pull request 4)
       else if (ownArm) chips.push(slidesOf(side) ? status('bad', who + '’s feet slide: ' + (r.clash ? 'the other’s unlimited press' : r.outcome === 'pin' && r.winner !== side && r.loserElbow != null ? (isFinite(r.loserElbow) ? 'what turns his forearm (' + fmtN(r.loserElbow) + ') beats ' : 'what turns his forearm, an unbounded force, beats ') + fmtSI(R, 'N') : 'the other’s press beats ' + fmtSI(R, 'N'))) : status('good', who + '’s feet hold'));
       else chips.push(lim ? status('bad', who + '’s feet slip above ' + fmtSI(R, 'N')) : status('good', who + '’s feet hold'));
     }
-    if (ownArm && r.clash === 'paradox' && r.tableBreaks) chips.push(status('warn', 'No physical answer'));
+    // (one-sided, only the press into the held one has no answer: review round 3 of pull request 4)
+    if (ownArm && r.clash === 'paradox' && r.tableBreaks) chips.push(status('warn', r.oneSided && r.noAnswer ? 'No physical answer for ' + WHO[r.noAnswer] + '’s press' : 'No physical answer'));
     if (cR.groundHolds || keepCredit) chips.push(status('info', gate && !cR.keepForm ? 'Treating the ground as if it held them: the table never breaks' : 'Held together by their power: the table never breaks'));
     else if (r.tableBreaks) chips.push(status('bad', 'Table tears apart (pegs and pads)'));
     else if (r.tableRatio > 1) chips.push(status('bad', 'Table crushed by their elbows'));
@@ -2406,7 +2417,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       r.outcome === 'drag' ? tile('Energy in ' + L, isFinite(drag.E) ? fmtSI(drag.E, 'J') : '∞', isFinite(drag.E) ? fmtTNT(drag.E) : 'unbounded') : null,
       sameTwist ? tile('Twist on each upper arm', fmtSI(r.torqueA, 'N·m'), fmtRatio(twistMax) + ' the ~190 N·m a healthy human upper-arm bone takes in theory (cadaver bones broke at 25–31 N·m)')
         : tile('Twist on the upper arms', fmtSI(r.torqueA, 'N·m') + ' / ' + fmtSI(r.torqueB, 'N·m'), 'Rex / Ollie; the larger is ' + fmtRatio(twistMax) + ' the ~190 N·m a healthy human upper-arm bone takes in theory (cadaver bones broke at 25–31 N·m)'),
-      r.clash === 'rockGives' ? tile('Bolts hold', 'until the rock tears', 'about ' + fmtSI(r.tearA, 'N') + ' / ' + fmtSI(r.tearB, 'N') + ', Rex / Ollie') : r.tableBreaks ? tile(ownArm ? 'Feet hold up to' : 'Feet hold', fmtN(r.RA) + ' / ' + fmtN(r.RB), 'Rex / Ollie') : (() => { const lat = tableLat; return tile('Table carries', isFinite(lat) ? 'up to ' + fmtSI(lat, 'N') : 'any force', isFinite(lat) ? 'sideways, before its pegs tear out (estimate)' : (cR.keepForm ? 'held together by their power' : gate ? 'treating the ground as if it held them' : 'ground treated as holding')); })()));
+      r.clash === 'rockGives' ? tile('Bolts hold', 'until the rock tears', 'about ' + fmtSI(r.tearA, 'N') + ' / ' + fmtSI(r.tearB, 'N') + ', Rex / Ollie') : r.tableBreaks ? tile(ownArm ? 'Feet hold up to' : 'Feet hold', fmtN(ownArm ? holdNow('A') : r.RA) + ' / ' + fmtN(ownArm ? holdNow('B') : r.RB), 'Rex / Ollie' + ['A', 'B'].filter(tornOf).map((x) => '; ' + WHO[x] + '’s bolts hold until the rock around them tears out').join('')) : (() => { const lat = tableLat; return tile('Table carries', isFinite(lat) ? 'up to ' + fmtSI(lat, 'N') : 'any force', isFinite(lat) ? 'sideways, before its pegs tear out (estimate)' : (cR.keepForm ? 'held together by their power' : gate ? 'treating the ground as if it held them' : 'ground treated as holding')); })()));
     const rows = [
       { label: 'Rex’s arm', value: r.PA, highlight: r.AA === r.PA },
       isFinite(r.RA) ? { label: 'Rex’s feet hold', value: r.RA, highlight: r.AA === r.RA } : null,
@@ -2428,7 +2439,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (r.tableBreaks) {
       // unlimited strength is wasted only on a side whose feet still let go
       const wasted = [['Rex', cR, r.RA], ['Ollie', cO, r.RB]].filter(([, c, R]) => !isFinite(c.F) && isFinite(R)).map(([who, , R]) => who + '’s unlimited strength doesn’t help here: his feet still let go at ' + fmtSI(R, 'N') + '.');
-      items.push(ownArm ? 'With the table gone they’re arm-wrestling standing up. Each one’s push back goes to his source, so his own footing doesn’t cap his press; but the other’s press on him is real, and only his feet hold against it: Rex ' + holdText(cR, r.RA) + '; Ollie ' + holdText(cO, r.RB) + '.' + (r.outcome === 'pin' && r.loserElbow != null ? ' In a pin the loser’s arm folds, so his own press only turns his forearm; what reaches his body is the force at his elbow that turns his forearm against ' + W + '’s hand, ' + aboutN(r.loserElbow) + ' (the force his elbow pad would carry on the table), and his ' + ((r.winner === 'A' ? cO : cR).anchor === 'bolted' ? 'bolts and the rock around them carry' : 'feet carry') + ' that.' : '') + ' That assumes they lean into the push; standing upright, a body tips over at a few hundred newtons.'
+      items.push(ownArm ? 'With the table gone they’re arm-wrestling standing up. Each one’s push back goes to his source, so his own footing doesn’t cap his press; but the other’s press on him is real, and only his feet hold against it: Rex ' + armHold('A') + '; Ollie ' + armHold('B') + '.' + (r.outcome === 'pin' && r.loserElbow != null ? ' In a pin the loser’s arm folds, so his own press only turns his forearm; what reaches his body is the force at his elbow that turns his forearm against ' + W + '’s hand, ' + aboutN(r.loserElbow) + ' (the force his elbow pad would carry on the table)' + (tornOf(sideL) ? ', more than the rock around his bolts takes, so only his feet hold him against it.' : ', and his ' + ((r.winner === 'A' ? cO : cR).anchor === 'bolted' ? 'bolts and the rock around them carry' : 'feet carry') + ' that.') : '') + ' That assumes they lean into the push; standing upright, a body tips over at a few hundred newtons.'
         : 'With the table gone they’re arm-wrestling standing up, and each can only press as hard as his feet hold: Rex ' + holdText(cR, r.RA) + '; Ollie ' + holdText(cO, r.RB) + '. That assumes they lean into the push; standing upright, a body tips over at a few hundred newtons. ' + (r.clash ? '' : wasted.length ? wasted.join(' ') : r.footLimitedA || r.footLimitedB ? 'Strength past that point buys nothing.' : ''));
     }
     if (r.outcome === 'pin') items.push(W + '’s ' + fmtSI(pin.dA, 'N') + ' surplus over ' + L + '’s arm spins both forearms (together they act like ' + fmtMass(pin.M) + ' at the hand) a quarter turn, ' + fmtDist(pin.s) + (r.tableBreaks ? '.' : ', down to the pad.') + (r.loserSlides ? ' ' + L + '’s feet hold less than ' + (r.loserElbow != null ? 'what turns his forearm about his elbow' : 'his arm') + ', so his body slides along too.' : '') + (r.winnerSlides ? ' ' + W + '’s feet hold less than ' + L + '’s press, so they slide too.' : '') + (cW.mode === 'real' ? ' With real muscle the arm’s force falls as it speeds up, so the hand tops out near ' + speedOnly(P.MUSCLE.punch.vmax * cW.body.s) + '.' : ''));
@@ -2446,11 +2457,16 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (r.tableBreaks && (r.tearA > 1 || r.tearB > 1)) items.push('Bolted to the planet holds, but the ground around the bolts doesn’t: ' + [['Rex', cR, r.tearA], ['Ollie', cO, r.tearB]].filter(([, , t]) => t > 1).map(([n, c]) => 'past about ' + fmtSI(groundTearOf(c), 'N') + ' it breaks up around ' + n + '’s feet').join(', and ') + '.');
     out.push(happens(items));
     out.push(el('figure', { class: 'art-wide' }, el('img', { src: ART.arm, alt: 'Arm wrestling: Ollie’s huge furry forearm and Rex’s scaly, clawed hand locked together in a grip, Rex’s bulging scaled arm on the right.' })));
+    // the loser's elbow force from the engine's own coefficients (forearm and hand 2.2% of body mass, centred 0.55 of the way
+    // to the grip): the difference of two nearly equal terms, so the net coefficient is printed too, and the figures shown
+    // follow from the formula as printed (review round 3 of pull request 4)
+    const elbowF = '|' + sig(P.AW.holdArm, 4) + ' m_loser a − (loser’s arm + ' + sig(P.AW.effMass, 3) + ' m_loser a)| = |' + sig(P.AW.holdArm - P.AW.effMass, 3) + ' m_loser a − loser’s arm|';
+    const aF = 'a = (winner’s arm − loser’s arm) / (' + sig(P.AW.effMass, 3) + ' × (m_Rex + m_Ollie))';
     out.push(math([
       'Arm force = 25% of strength in both muscle models (estimate, plausibly 10–40%: ordinary men’s measured arm force against an assumed 1–2× body-weight deadlift): Rex ' + fmtN(r.PA) + ', Ollie ' + fmtN(r.PB) + '.',
-      ownArm ? 'The table carries the push while both arms stay under ' + (isFinite(r.tableLat) ? fmtSI(r.tableLat, 'N') : 'any limit (' + (cR.keepForm ? 'Things keep their form: they hold it' : 'ground treated as holding') + ')') + ' (each pad holds the other’s press). Once it breaks they stand: each presses with his full arm force (his push back goes to his source, so his footing doesn’t cap it), and each one’s feet hold against the other’s press: footing = μ × min(m g, what the ground under his feet bears); unlimited if bolted. The stronger press pins the weaker arm; in a pin the loser’s feet (or bolts) carry the force at his elbow, |0.012 m_loser a − (loser’s arm + 0.0097 m_loser a)|.'
+      ownArm ? 'The table carries the push while both arms stay under ' + (isFinite(r.tableLat) ? fmtSI(r.tableLat, 'N') : 'any limit (' + (cR.keepForm ? 'Things keep their form: they hold it' : 'ground treated as holding') + ')') + ' (each pad holds the other’s press). Once it breaks they stand: each presses with his full arm force (his push back goes to his source, so his footing doesn’t cap it), and each one’s feet hold against the other’s press: footing = μ × min(m g, what the ground under his feet bears); unlimited if bolted, though on real rock only until the rock around his bolts tears out (its shear strength × the buried area of his feet), and then his feet hold. The stronger press pins the weaker arm; in a pin the loser’s feet (or bolts) carry the force at his elbow, ' + elbowF + ', ' + aF + '.'
         : 'The table carries the push while both arms stay under ' + (isFinite(r.tableLat) ? fmtSI(r.tableLat, 'N') : 'any limit (' + (cR.keepForm ? 'Things keep their form: they hold it' : 'ground treated as holding') + ')') + '. Once it breaks: usable = min(arm force, footing); footing = μ × min(m g, what the ground under his feet bears); unlimited if bolted. Standing up, the loser’s arm folds only if the winner presses harder than it; otherwise his feet give and he is dragged.',
-      r.padLoad > 0 && cW.ownRecoil && r.loserPadLoad != null ? 'Elbow pads during a pin: the winner’s holds the loser’s press, ' + fmtN(r.padLoad) + ' (the winner’s swing pushes back into his source, not his pad). The loser’s holds what turns his forearm about the elbow against the winner’s hand, from torques about his elbow: |0.012 m_loser a − (loser’s arm + 0.0097 m_loser a)|, a = (winner’s arm − loser’s arm) / (0.0097 × (m_Rex + m_Ollie)), = ' + fmtN(r.loserPadLoad) + '.' : r.padLoad > 0 ? 'Elbow pad during a pin, from torques about each elbow: loser’s arm + (winner’s arm − loser’s arm) × (0.0097 m_loser + 0.012 m_winner) / (0.0097 × (m_Rex + m_Ollie)) = ' + fmtN(r.padLoad) + '. The forearm and hand are 2.2% of body mass each, centred 0.55 of the way to the grip.' : null,
+      r.padLoad > 0 && cW.ownRecoil && r.loserPadLoad != null ? 'Elbow pads during a pin: the winner’s holds the loser’s press, ' + fmtN(r.padLoad) + ' (the winner’s swing pushes back into his source, not his pad). The loser’s holds what turns his forearm about the elbow against the winner’s hand, from torques about his elbow: ' + elbowF + ', ' + aF + ', = ' + fmtN(r.loserPadLoad) + '.' : r.padLoad > 0 ? 'Elbow pad during a pin, from torques about each elbow: loser’s arm + (winner’s arm − loser’s arm) × (0.0097 m_loser + 0.012 m_winner) / (0.0097 × (m_Rex + m_Ollie)) = ' + fmtN(r.padLoad) + '. The forearm and hand are 2.2% of body mass each, centred 0.55 of the way to the grip.' : null,
       r.outcome === 'pin' ? 'Pin: net ' + fmtSI(pin.dA, 'N') + ' (winner’s push − loser’s arm) on M = 0.0097 × (m_Rex + m_Ollie) = ' + fmtMass(pin.M) + ' over s = (π/2) × 0.19 × height = ' + fmtDist(pin.s) + '; relativistic momentum; real muscle force falls with hand speed (Hill, top hand speed borrowed from the punch). The losing arm’s extra strength while it is forced back (about 8% in people) is ignored.' : null,
       r.outcome === 'drag' ? 'Drag: net ' + fmtSI(drag.dA, 'N') + ' (winner’s push − loser’s footing) on M = m_' + L + ' + 0.0097 × m_' + W + ' = ' + fmtMass(drag.M) + ' over s = (π/2) × 0.19 × ' + W + '’s height = ' + fmtDist(drag.s) + '; relativistic momentum; real muscle force falls with hand speed as for a pin.' : null,
       'Twist on each upper arm = the force his own arm presses with × 0.19 × his height. A pinned arm still presses with all it has; an arm that holds carries the whole push.',
@@ -2571,8 +2587,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       // (review round 1 of pull request 4: the loser's unlimited push into bolts their power holds has no physical answer,
       // but the bolted one's own push on him is real; a loser bolted on real rock is torn loose)
       if (r.noAnswer) v = W + ' is bolted to ground that their power holds, so ' + L + '’s unlimited push into his bolts meets a hold without limit: that push has no physical answer (the canon’s ruling), and it moves nobody. ' + W + '’s own push on ' + L + ' is real (a contest lets force move), and ' + L + ' holds only ' + fmtN(Hl) + ', so ' + W + ' shoves him off at ' + fast(vl) + tail;
-      else if (tornL) v = W + '’s push (' + fmtN(Dw) + ') tears the rock out around ' + L + '’s bolts (about ' + fmtSI(tearOf(r.winner === 'A' ? 'B' : 'A'), 'N') + '), and from then on only ' + L + '’s feet hold him (' + fmtN(Hl) + '): ' + W + ' shoves him off with a plug of rock at ' + fast(vl) + tail + ' ' + L + '’s push (' + fmtN(Dl) + ') can’t move ' + W + '.';
-      else v = W + (cw.anchor === 'bolted' ? ' is bolted, so he can’t walk ' : ' can’t walk, so he can’t walk ') + L + ' out, but his push is real (a contest lets force move): he shoves ' + L + ' off at ' + fast(vl) + tail + ' ' + L + '’s push (' + fmtN(Dl) + ') can’t move ' + W + (cw.anchor === 'bolted' ? '’s bolts' + (!P.holdsGround(cw) ? ': the rock around them holds up to about ' + fmtSI(groundTearOf(cw), 'N') + '.' : '.') : '.');
+      // (review round 3 of pull request 4: once his rock tears, his feet's hold, holdAfter, not the bolts')
+      else if (tornL) v = W + '’s push (' + fmtN(Dw) + ') tears the rock out around ' + L + '’s bolts (about ' + fmtSI(tearOf(r.winner === 'A' ? 'B' : 'A'), 'N') + '), and from then on only ' + L + '’s feet hold him (' + fmtN(r.winner === 'A' ? r.holdAfterB : r.holdAfterA) + '): ' + W + ' shoves him off with a plug of rock at ' + fast(vl) + tail + ' ' + L + '’s push (' + fmtN(Dl) + ') can’t move ' + W + '.';
+      // (review round 3 of pull request 4: standing, the reason the engine has, can't walk or can't run)
+      else v = W + (cw.anchor === 'bolted' ? ' is bolted, so he can’t walk ' : P.moveCheck(cw.F, cw.body.m).walk ? ' can walk but not run (running takes strength above his weight; see Sprint). The lab caps a walk-out at his top running speed, so he can’t walk ' : ' can’t walk, so he can’t walk ') + L + ' out, but his push is real (a contest lets force move): he shoves ' + L + ' off at ' + fast(vl) + tail + ' ' + L + '’s push (' + fmtN(Dl) + ') can’t move ' + W + (cw.anchor === 'bolted' ? '’s bolts' + (!P.holdsGround(cw) ? ': the rock around them holds up to about ' + fmtSI(groundTearOf(cw), 'N') + '.' : '.') : '.');
     } else if (r.outcome === 'walkOut') {
       const Dw = r.winner === 'A' ? r.DA : r.DB, Dl = r.winner === 'A' ? r.DB : r.DA, Hl = r.winner === 'A' ? r.HB : r.HA, Hw = r.winner === 'A' ? r.HA : r.HB;
       // (review round 2 of pull request 4: the winner holds back to the walking pace, so his push is only what keeps the
@@ -2601,7 +2619,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     out.push(tiles(
       tile('Winner', r.outcome === 'walkOut' || r.outcome === 'shovedOff' ? W : 'nobody', r.outcome === 'walkOut' ? 'walks the other out' : r.outcome === 'bothShoved' ? 'both are shoved apart' : r.outcome === 'shovedOff' ? W + ' shoves ' + L + ' off' : rockOut ? 'they’re shoved apart' : r.outcome === 'paradox' || r.clash === 'paradox' ? 'no physical answer' : 'stalemate'),
       r.outcome === 'walkOut' ? tile('Time out of the ring', fmtTime(r.t), 'ring ' + fmtDist(r.ring) + ' across') : null,
-      r.outcome === 'walkOut' ? tile('Speed at the edge', speedOnly(r.v), r.v >= r.vCap * 0.999 ? 'his top running speed' : '') : null,
+      // (review round 3 of pull request 4: he slides on past the edge)
+      r.outcome === 'walkOut' ? tile('Speed at the edge', speedOnly(r.v), [r.v >= r.vCap * 0.999 ? 'his top running speed' : null, r.slideL != null ? 'then ' + L + ' slides ' + slideOf(r.slideL, r.v) : null].filter(Boolean).join('; ')) : null,
       moved ? leaves('Rex', r.vA, r.slideA) : null,
       moved ? leaves('Ollie', r.vB, r.slideB) : null,
       // (each push is real one way, on the other; its push back goes to the pusher's source: not the same both ways)
@@ -2619,8 +2638,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       items.push('Equal bodies on equal ground are always shoved apart with the power on: even the least effort the lab lets them use, enough to stand and walk (as hard as lifting ' + fmtMass(needKg) + ' each), is more than either one’s grip on any ground here (μ × his weight, μ at most 0.84, on gravel). So with the power on there is no dead heat between them.');
     }
     if (r.outcome === 'walkOut') {
-      const rw = r.winner === 'A' ? r.recoilAbsorbedA : r.recoilAbsorbedB;
-      items.push('Walking him out is paced by ' + W + '’s own feet, as on the Pull tab: he moves ' + L + ' no faster than the smaller of (his push − ' + L + '’s hold) ÷ ' + L + '’s mass and (his footing − ' + L + '’s push) ÷ his own mass, here ' + sig(r.accel, 2) + ' m/s². ' + (walkW ? 'So he holds back: his push is only what keeps ' + L + ' at that pace, ' + L + '’s hold plus his mass × that, ' + fmtN(r.walkPush) : 'His push, less ' + L + '’s hold, sets it: ' + fmtN(r.walkPush)) + (r.v >= r.vCap * 0.999 ? ' until he reaches his top running speed, then the hold alone' : '') + '. Its push back goes to his source (They take their own recoil): ' + (rw ? momFig(rw) : 'none') + ' over the walk-out, ' + L + '’s momentum plus what ' + L + '’s feet hand the ground.');
+      const rw = r.winner === 'A' ? r.recoilAbsorbedA : r.recoilAbsorbedB, HlW = r.winner === 'A' ? r.HB : r.HA;
+      items.push('Walking him out is paced by ' + W + '’s own feet, as on the Pull tab: he moves ' + L + ' no faster than the smaller of (his push − ' + L + '’s hold) ÷ ' + L + '’s mass and (his footing − ' + L + '’s push) ÷ his own mass, here ' + sig(r.accel, 2) + ' m/s². ' + (walkW ? 'So he holds back: his push is only what keeps ' + L + ' at that pace, ' + L + '’s hold plus his mass × that, ' + fmtN(r.walkPush) : 'His whole push sets it: ' + fmtN(r.walkPush) + ' (' + fmtN(r.walkPush - HlW) + ' more than ' + L + '’s hold)') + (r.v >= r.vCap * 0.999 ? ' until he reaches his top running speed, then the hold alone' : '') + '. Its push back goes to his source (They take their own recoil): ' + (rw ? momFig(rw) : 'none') + ' over the walk-out, ' + L + '’s momentum plus what ' + L + '’s feet hand the ground.'
+        // (review round 3 of pull request 4: past the edge he slides on, and the effort search judges where he ends up)
+        + (r.slideL != null && isFinite(r.endL) ? ' ' + W + ' only pushes, so past the ring’s edge ' + L + ' slides on from ' + speedOnly(r.v) + ' for ' + fmtDist(r.slideL) + ' on his feet, ending up ' + fmtDist(r.endL) + ' from where he stood.' : ''));
     }
     // (review round 2 of pull request 4: the push lasts until the gap between them has grown by the stroke, so when both are
     // shoved each moves about half of it; shoved off, only the loser moves, the whole stroke)
@@ -3770,7 +3791,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         + (cr.rockGives && splat ? ' The lab books the rock’s tear-out load for the whole squash, an estimate: real rock fails once, and then the plug slides along with him.' : ''));
       // how long the one hit is carried (decision 2): the charger's choice; the lab ends it at the end of the squash
       items.push(horiz && splat ? 'How far ' + X + ' carries him is up to ' + X + ': he never slows, so he could push on for as long as he likes. The lab ends the carry at the end of the squash, ' + fmtTime(cr.T) + ' in: ' + X + ' stops himself there (his own push, so its push back, ' + fig3p(cr.stop) + ', goes to his source too), and ' + Y + (cr.v >= 0.01 * K.c ? ' flies on at that speed, into the air as a fireball.' : ' slides on from ' + fmtV(cr.v) + '.')
-        : horiz ? 'In a perfect bounce ' + Y + ' leaves him as the hit ends. ' + X + ' never slows, so the lab has him stop himself then (his own push, so its push back, ' + fig3p(cr.stop) + ', goes to his source too).'
+        // (review round 3 of pull request 4: the bounce carries him too, while the squash closes and opens again)
+        : horiz ? 'In a perfect bounce ' + Y + ' leaves him as the hit ends' + (af.bounce && isFinite(af.bounce.during) && cr.vB < 0.01 * K.c ? ', having moved ' + fmtDist(af.bounce.during) + ' with him: the squash closes and opens again while ' + X + ' moves on, and the effort search counts that too' : '') + '. ' + X + ' never slows, so the lab has him stop himself then (his own push, so its push back, ' + fig3p(cr.stop) + ', goes to his source too).'
           : 'Unbreakable footing is off here, so the ground under ' + Y + ' is real: driven down at ' + X + '’s speed, he goes in as the lab drives any landing in (its penetration model, an estimate). ' + X + ' never slows, so the lab has him stop himself as the hit ends (his own push, its push back to his source).');
       // the hit's freed energy (decision 5)
       // (review round 2 of pull request 4: the force of the hit over the squash, so the hold's work over it counts too)
@@ -3812,7 +3834,11 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       state.colSrc === 'sprint' ? 'Run-up: m u du/dx = T − k u², so u = u_top √(1 − e^(−2kx/m)) over x = ' + fmtDist(sr.runUp || 0) + ', capped by his legs.' : null,
       'Slide: x = m/(2k)·ln(1 + kV²/R), k = ½ρ₀C_dA.',
       cr && cr.rockGives ? 'Rock: the rock around his bolts tears out at its shear strength × the buried area of his feet, about ' + fmtSI(cr.tear, 'N') + ' here (an estimate).' : cB.anchor === 'bolted' && !cr ? 'Rock: a force C spread over a half-sphere of radius r averages C/(2πr²); granite pulls apart at 8.4 MPa and crushes at 200 MPa, so r = √(C/2πσ).' : null,
-      'Blast radii: Kinney & Graham (1985), as if all of ' + (cr ? 'the real energy near the hit' : 'Q') + ' became a blast (upper bound). ' + (r.toGround ? 'Ground shaking (' + (duoRealDraw ? 'real ground: Break the ground sets Unbreakable footing aside' : 'Unbreakable footing') + '): the momentum the ground takes, J, as a pulse over the longer of the contact time and a limb’s contact time T (peak force 2J/T: his legs spread it), through the same ground-wave model as the stomp; plaster by the USBM RI 8507 safe level at the pulse’s frequency.' : cB.immovable ? 'A truly immovable body needs no ground, so nothing reaches it: no quake.' : 'Quake: 1 part in 10,000 of Q (the usual share, give or take ⅔ of a magnitude), as if all of Q reached the ground, which overstates it.'),
+      'Blast radii: Kinney & Graham (1985), as if all of ' + (cr ? 'the real energy near the hit' : 'Q') + ' became a blast (upper bound). ' + (r.toGround ? 'Ground shaking (' + (duoRealDraw ? 'real ground: Break the ground sets Unbreakable footing aside' : 'Unbreakable footing') + '): the momentum the ground takes, J, as a pulse over the longer of the contact time and a limb’s contact time T (peak force 2J/T: his legs spread it), through the same ground-wave model as the stomp; plaster by the USBM RI 8507 safe level at the pulse’s frequency.' : cB.immovable ? 'A truly immovable body needs no ground, so nothing reaches it: no quake.'
+        // (review round 3 of pull request 4: with Unbreakable footing on, the bounce books nothing in the ground, so the quake
+        // model, which is for real ground, doesn't apply)
+        : !splat && cB.unbreakable ? 'Ground: the perfect-bounce bound ignores what holds ' + Y + ', so nothing of the hit reaches the ground in it.'
+        : 'Quake: 1 part in 10,000 of Q (the usual share, give or take ⅔ of a magnitude), as if all of Q reached the ground, which overstates it.'),
       X === 'Ollie' ? 'Ollie’s horns don’t change the momentum or the energy; they only put the force on a smaller patch.' : null,
     ]));
     return out;
@@ -4597,6 +4623,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         // rock's tear load into a partner bolted on real rock tears the rock out around his bolts.
         const moved = r.outcome === 'bothShoved' || r.outcome === 'shovedOff';
         if (moved) out.sig += fp(r.vA, r.vB, r.slideA, r.slideB);
+        // (review round 3 of pull request 4: the walk-out with the power on; the loser leaves the ring at its speed and
+        // slides on, endL from where he stood)
+        const walked = r.outcome === 'walkOut' && r.endL != null;
+        if (walked) out.sig += fp(r.endL);
         const torn = !!(r.tornA || r.tornB);
         // (review round 1 of pull request 4: with the power on a single bolted wrestler's rock is checked at any strength,
         // and a bolted winner's bolts hand the ground the loser's push over the push, a pulse that shakes it, as the Shove
@@ -4612,10 +4642,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         const near2 = (d) => isFinite(d) ? fmtDist(d) : 'until something stops him';
         // (review round 2 of pull request 4: where each ends up, the push's travel while their hands stay on each other plus
         // his slide, as Collide's charge counts its carry)
-        const slA = moved && r.vA > 0 ? (r.xA || 0) + r.slideA : 0, slB = moved && r.vB > 0 ? (r.xB || 0) + r.slideB : 0;
+        const slA = moved && r.vA > 0 ? (r.xA || 0) + r.slideA : walked && r.winner === 'B' ? r.endL : 0, slB = moved && r.vB > 0 ? (r.xB || 0) + r.slideB : walked && r.winner === 'A' ? r.endL : 0;
         out.harm = out.ground ? (torn ? 'the rock tears out around ' + (r.tornA ? 'Rex' : 'Ollie') + '’s bolts' : 'the ground tears out around their bolts')
           : moved && Math.max(r.vA, r.vB) >= K.a0 ? (r.outcome === 'bothShoved' ? 'they fly apart faster than sound' : (r.winner === 'A' ? 'Ollie' : 'Rex') + ' is shoved off faster than sound')
             : boltSrc && quakes(wC, { J: wJ, T: Math.max(P.limbPulse(wC.body), r.t) }) ? 'the push through ' + wN + '’s bolts shakes the ground enough that plaster may crack ' + fmtDist(near) + ' away'
+            : walked && r.v >= K.a0 ? (r.winner === 'A' ? 'Ollie' : 'Rex') + ' is walked out of the ring faster than sound'
+            : walked && Math.max(slA, slB) > near ? (r.winner === 'A' ? 'Ollie' : 'Rex') + ' is walked out of the ring at ' + speedOnly(r.v) + ' and slides on, ending up ' + near2(r.endL) + ' from where he stood, past the nearest people ' + fmtDist(near) + ' away'
             : slA > near && slB > near ? 'both are shoved apart and end up past the nearest people ' + fmtDist(near) + ' away (Rex ' + near2(slA) + ', Ollie ' + near2(slB) + ' from where he stood)'
               : slA > near || slB > near ? (slA > near ? 'Rex' : 'Ollie') + ' is shoved off and ends up ' + near2(Math.max(slA, slB)) + ' from where he stood, past the nearest people ' + fmtDist(near) + ' away' : null;
         return out;
@@ -4749,7 +4781,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       // the charger who takes his own recoil against one held without limit: the hit has no physical answer, so the lab
       // can't judge its harm; it judges only the charge (its speed against sound) and his take-off (review round 1 of pull
       // request 4)
-      if (r.unbounded && r.outcome === 'paradox') { out.noAnswer = 'the hit'; out.judged = 'the charge (its speed against sound) and the charger’s take-off'; }
+      // (review round 3 of pull request 4: the take-off only where there is one, a jump's push-off or a stomp-launch)
+      if (r.unbounded && r.outcome === 'paradox') { out.noAnswer = 'the hit'; out.judged = 'the charge (its speed against sound)' + (tk ? ' and the charger’s take-off' : ''); if (!tk) out.judgedOne = 'the charge'; }
       // the same rule as the Collide tab: a hit slower than sound crossing the damage zone is a loud thump, not a blast
       const splat = state.colBounce !== 'bounce', F = r.contact ? (splat ? r.contact.soft : r.contact.softEl) : null;
       // (a charger who takes his own recoil: the real energy near the hit, Elocal, has the splat's only when he means it;
@@ -4766,9 +4799,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         || !!(sp && (sp.D > 0 || (sp.depth >= 0.01 && !P.RESTRAINT.SOIL.has(cB.surface.id)))) || !!(r.carry && r.carry.rockGives);
       // a 3-tonne body sliding past the nearest people and buildings harms them too (carried along at the charger's speed,
       // or sent off, by a charger who takes his own recoil: the one hit slides from that speed once the charger stops)
-      const slid = af ? (splat ? af.splat && af.splat.moved : af.bounce && Math.max(af.bounce.slideA || 0, af.bounce.slideB || 0)) : 0;
+      // (review round 3 of pull request 4: sent off, he has moved with the charger during the contact too, after.bounce.moved)
+      const slid = af ? (splat ? af.splat && af.splat.moved : af.bounce && (r.carry ? af.bounce.moved : Math.max(af.bounce.slideA || 0, af.bounce.slideB || 0))) : 0;
       const nameY = ollieX ? 'Rex' : 'Ollie', cr = r.carry;
-      const carriedSlide = cr && slid > near ? nameY + (splat ? ' is carried along at ' + speedOnly(cr.v) + ' and ends up ' : ' is sent off at ' + speedOnly(cr.vB) + ' and slides ') + (isFinite(slid) ? fmtDist(slid) + (splat ? ' away' : '') : 'until something stops him') + ', past the nearest people ' + fmtDist(near) + ' away' : null;
+      const carriedSlide = cr && slid > near ? nameY + (splat ? ' is carried along at ' + speedOnly(cr.v) + ' and ends up ' : ' is sent off at ' + speedOnly(cr.vB) + ' and ends up ') + (isFinite(slid) ? fmtDist(slid) + ' away' : 'wherever something stops him') + ', past the nearest people ' + fmtDist(near) + ' away' : null;
       // (sent off faster than sound below 1% of light speed, the one hit's ride heats the air for real: review round 2)
       const rideAir = !!(cr && cr.Eair > 0 && !(r.meanIt && splat));
       out.harm = r.v0 >= K.a0 ? 'the charge breaks the sound barrier' : !thump && win(Q) ? (rideAir ? nameY + ' is sent off faster than sound, and the air he heats as he slides off risks damage ' + fmtDist(near) + ' away' : 'the hit’s air blast risks damage ' + fmtDist(near) + ' away')
@@ -5047,6 +5081,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   // a push or hit with no physical answer (the canon's ruling; review round 1 of pull request 4): the lab can't judge its
   // harm, so the page never calls the test harmless there (f.noAnswer names it; f.judged, what the lab still judges)
   const noAnswerText = (f) => (f && f.noAnswer ? capital(f.noAnswer) + ' has no physical answer here (the canon’s ruling), so the lab can’t judge its harm' + (f.judged ? '; it judges only ' + f.judged : '') + '.' : null);
+  // what it judges, as a subject: 'those' for two things, or the one thing it is (f.judgedOne; review round 3 of pull request 4)
+  const judgedDo = (f, neg) => (f.judgedOne ? f.judgedOne + (neg ? ' doesn’t' : ' does') : 'those ' + (neg ? 'don’t' : 'do'));
   function duoEffortBox(act, eff) {
     const FR = fullF('R');
     const opt = (x) => el('option', { value: x.id, text: x.label });
@@ -5119,14 +5155,14 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         const verb = what.replace(/^could /, '').replace(/^(\w+?)(e?s) /, (m, a, b) => a + (b === 'es' && !/(sh|ch|ss|x)$/.test(a) ? 'e' : '') + ' ').replace(/, through the ground or the air$/, '') + (nm && nm.via ? ' ' + nm.via.trim() : '');
         // (no physical answer: the lab can't say the test doesn't do it; it says what it judges)
         const fN = naF(fAll, eff.real ? 'real' : ''), na = noAnswerText(fN);
-        const t = (na ? na + (nm && nm.all ? ' ' + nm.gap : fN.judged ? ' Even all-out, those don’t ' + verb + '.' + (nm ? ' ' + nm.gap : '') : '')
+        const t = (na ? na + (nm && nm.all ? ' ' + nm.gap : fN.judged ? ' Even all-out, ' + judgedDo(fN, true) + ' ' + verb + '.' + (nm ? ' ' + nm.gap : '') : '')
           : (nm && nm.all ? nm.gap : 'Even all-out, this test doesn’t ' + verb + '.' + (nm ? ' ' + nm.gap : '')) + (rw ? ' ' + rw : '')) + (gw ? ' ' + gw : '');
         read.append(el('p', { class: 'warn-ink', text: t + (eff.airHint ? ' At ' + pctAir(airShareOf(ctx())) + ' air resistance absorbed, ' + airHintText(eff.airHint) + ' Lower Air resistance absorbed (in Their powers) to let the air take some.' : '') }));
       }
       const s0 = eff.p.job(eff.leastJob);
       if (s0 && eff.p.jobDone(eff.leastJob)) {
         const fC = eff.real ? factsTop('real') : factsTop(), fCn = naF(fC, eff.real ? 'real' : ''), naC = noAnswerText(fCn);
-        read.append(el('p', { text: (eff.real ? 'On real ground, courtesy ceiling: ' : 'Courtesy ceiling: ') + (s0.never ? (naC ? 'none that the lab can judge. ' + naC + (fCn.judged ? ' Even all-out, those do no harm with the nearest people and buildings ' + fmtDist(state.near) + ' away.' + duoShakeCaveat(fC, act) : '') : 'none. Nothing in this test does harm' + (isFinite(fullF('R')) ? ', even all-out,' : '') + ' with the nearest people and buildings ' + fmtDist(state.near) + ' away.' + duoShakeCaveat(fC, act))
+        read.append(el('p', { text: (eff.real ? 'On real ground, courtesy ceiling: ' : 'Courtesy ceiling: ') + (s0.never ? (naC ? 'none that the lab can judge. ' + naC + (fCn.judged ? ' Even all-out, ' + judgedDo(fCn) + ' no harm with the nearest people and buildings ' + fmtDist(state.near) + ' away.' + duoShakeCaveat(fC, act) : '') : 'none. Nothing in this test does harm' + (isFinite(fullF('R')) ? ', even all-out,' : '') + ' with the nearest people and buildings ' + fmtDist(state.near) + ' away.' + duoShakeCaveat(fC, act))
           : !(s0.below > 0) ? 'none. Even at the least they need to stand and walk, ' + eff.harmAtV(s0.use) + '.' + (naC ? ' ' + naC : '')
             : atText(s0.below, FR) + '. Past that, ' + eff.harmAtV(s0.use) + '.' + (naC ? ' ' + naC : '')) }));
       }
@@ -5144,7 +5180,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (eff.note) read.append(el('p', { class: 'warn-ink', text: eff.note }));
     if (eff.p.s && eff.p.done) {
       const s0 = eff.p.s, fT = factsTop();
-      read.append(el('p', { text: s0.never ? (naT ? 'Courtesy ceiling: none that the lab can judge. ' + naT + (fTn && fTn.judged ? ' Even all-out, those do no harm with the nearest people and buildings ' + fmtDist(state.near) + ' away.' + duoShakeCaveat(fT, act) : '') : 'Courtesy ceiling: none. Nothing in this test does harm' + (isFinite(fullF('R')) ? ', even all-out,' : '') + ' with the nearest people and buildings ' + fmtDist(state.near) + ' away.' + duoShakeCaveat(fT, act))
+      read.append(el('p', { text: s0.never ? (naT ? 'Courtesy ceiling: none that the lab can judge. ' + naT + (fTn && fTn.judged ? ' Even all-out, ' + judgedDo(fTn) + ' no harm with the nearest people and buildings ' + fmtDist(state.near) + ' away.' + duoShakeCaveat(fT, act) : '') : 'Courtesy ceiling: none. Nothing in this test does harm' + (isFinite(fullF('R')) ? ', even all-out,' : '') + ' with the nearest people and buildings ' + fmtDist(state.near) + ' away.' + duoShakeCaveat(fT, act))
         : !(s0.below > 0) ? 'Courtesy ceiling: none. ' + (state.oEffortOwn ? 'With Ollie’s own effort, ' : 'Even at the least they need to stand and walk, ') + eff.p.harmAt(s0.use) + '.' + (naT ? ' ' + naT : '')
           : 'Courtesy ceiling: ' + atText(s0.below, FR) + '. Past that, ' + eff.p.harmAt(s0.use) + '.' + (naT ? ' ' + naT : '') }));
     }

@@ -1147,13 +1147,23 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     page.on('pageerror', (e) => errs.push('PAGEERROR ' + e.message));
     page.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()); });
     await page.goto(pathToFileURL(prev).href);
-    const load = async (st) => { await page.evaluate((x) => localStorage.setItem('rex-lab-v1', JSON.stringify(x)), st); await page.reload(); await page.waitForTimeout(800); await settle(page, 'bay'); if (st.duoOpen) { await page.waitForTimeout(300); await settle(page, 'duo-bay'); } };
-    const pick = async (v) => { await page.selectOption('#duo-effort', v); await page.waitForTimeout(300); await settle(page, 'duo-bay'); };
+    // (review round 3 of pull request 4: each read waits for the condition it needs, not a fixed time. settled: the bay is
+    // drawn and no search in it is still working (settle()'s test, polled more often); redrawn: the two-player bay has been
+    // drawn again since actDuo marked it and made a change, in one task of the page, so no earlier draw can pass for it)
+    const settled = (id) => page.waitForFunction((i) => { const b = document.getElementById(i); return !!b && b.children.length > 0 && !/working it out|Working out/i.test(b.textContent); }, id, { polling: 30, timeout: 30000 });
+    const actDuo = (code, arg) => page.evaluate(([c, a]) => { for (const n of document.getElementById('duo-bay').children) n.r3old = true; new Function('a', c)(a); }, [code, arg]);
+    const redrawn = () => page.waitForFunction(() => Array.from(document.getElementById('duo-bay').children).some((n) => !n.r3old), null, { polling: 30, timeout: 30000 });
+    const load = async (st) => { await page.evaluate((x) => localStorage.setItem('rex-lab-v1', JSON.stringify(x)), st); await page.reload(); await settled('bay'); if (st.duoOpen) await settled('duo-bay'); };
+    // (the effort menu as a reader sets it: its value, then its input and change events, as selectOption sends them)
+    const pick = async (v) => { if (await page.$eval('#duo-effort', (x) => x.value) === v) { await settled('duo-bay'); return; }
+      await actDuo("const x = document.getElementById('duo-effort'); x.value = a; x.dispatchEvent(new Event('input', { bubbles: true })); x.dispatchEvent(new Event('change', { bubbles: true }));", v); await redrawn(); await settled('duo-bay'); };
     const duoTxt = (sel) => page.evaluate((s) => Array.from(document.querySelectorAll('#duo-bay ' + s)).map((n) => n.textContent.replace(/\s+/g, ' ')).join(' / '), sel);
     const duoAll = () => page.evaluate(() => document.getElementById('duo-bay').textContent.replace(/\s+/g, ' '));
     // Ollie's own what-if strength (log10 kg), set as a reader does (the page resets it on every load)
-    const ollieKg = async (logKg) => { await page.evaluate(() => { document.getElementById('ollie-setup').open = true; }); await page.click('#o-own'); await page.waitForTimeout(300);
-      await page.evaluate((v) => { const s = document.getElementById('o-strength'); s.value = String(v); s.dispatchEvent(new Event('input', { bubbles: true })); s.dispatchEvent(new Event('change', { bubbles: true })); }, logKg); await page.waitForTimeout(800); await settle(page, 'duo-bay'); };
+    const ollieKg = async (logKg) => { await actDuo("document.getElementById('ollie-setup').open = true; document.getElementById('o-own').click();"); await redrawn();
+      await actDuo("const s = document.getElementById('o-strength'); s.value = String(a); s.dispatchEvent(new Event('input', { bubbles: true })); s.dispatchEvent(new Event('change', { bubbles: true }));", logKg); await redrawn(); await settled('duo-bay'); };
+    // the shared effort set by hand on its slider (log10 kg), as a reader drags it (review round 3 of pull request 4)
+    const effortKg = async (logKg) => { await actDuo("const s = document.getElementById('duo-effort-use'); s.value = String(a); s.dispatchEvent(new Event('input', { bubbles: true })); s.dispatchEvent(new Event('change', { bubbles: true }));", logKg); await redrawn(); await settled('duo-bay'); };
     const num = (x) => Number(String(x).replace(/,/g, ''));
     const near = (a, b, tol) => Math.abs(a / b - 1) <= (tol || 0.01);
     // the engine at the page's defaults (comic, concrete, standing, the four default powers on, all-out at the dial)
@@ -1307,7 +1317,7 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     // the two Never knocked back switches (decisions 12 and 15): in Their powers next to the Bolted pair, on by default,
     // each with its note; an old save loads with both on; the summary line lists them
     {
-      const sw = async (st) => { await page.evaluate((x) => { if (x) localStorage.setItem('rex-lab-v1', JSON.stringify(x)); else localStorage.clear(); }, st); await page.reload(); await page.waitForTimeout(800);
+      const sw = async (st) => { await page.evaluate((x) => { if (x) localStorage.setItem('rex-lab-v1', JSON.stringify(x)); else localStorage.clear(); }, st); await page.reload(); await settled('bay');
         return page.evaluate(() => { const r = document.getElementById('nkb-rex'), o = document.getElementById('nkb-ollie'), sv = JSON.parse(localStorage.getItem('rex-lab-v1') || '{}'); return r && o ? [r.checked, o.checked, sv.noKnockback, sv.oNoKnockback, document.getElementById('powers-sum').textContent].join('|') : 'missing'; }); };
       const fresh = await sw(null), old = await sw({ action: 'throw', saveV: 3 }), older = await sw({ action: 'throw' }), rexOff = await sw({ action: 'throw', noKnockback: false }), ollieOff = await sw({ action: 'throw', oNoKnockback: false });
       const place = await page.evaluate(() => { const r = document.getElementById('nkb-rex'), o = document.getElementById('nkb-ollie'), b = document.getElementById('bolt-ollie'), note = r && document.getElementById(r.getAttribute('aria-describedby') || 'x');
@@ -1379,8 +1389,9 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       const ep0 = await duoTxt('.effort-read'), hp0 = await duoTxt('.happens'), gp0 = await duoTxt('.case-grid td, .case-grid th, table td');
       await pick('windows');
       const ep1 = await duoTxt('.effort-read');
-      check('review round 1: the paradox is never called harmless, and the canon case isn\'t two settings that can\'t both hold', /^All-out\. Nothing the lab can judge in this test does harm here/.test(ep0) && /Courtesy ceiling: none that the lab can judge\. The hit has no physical answer here \(the canon’s ruling\), so the lab can’t judge its harm; it judges only the charge \(its speed against sound\) and the charger’s take-off\./.test(ep0)
-        && /The hit has no physical answer here \(the canon’s ruling\), so the lab can’t judge its harm; it judges only the charge \(its speed against sound\) and the charger’s take-off\. Even all-out, those don’t shatter windows 15 m away/.test(ep1) && !/Nothing in this test does harm|Even all-out, this test doesn’t|no cap needed/.test(ep0 + ep1)
+      // (review round 3 of pull request 4: a sprint has no take-off, so the box names the charge alone)
+      check('review round 1: the paradox is never called harmless, and the canon case isn\'t two settings that can\'t both hold', /^All-out\. Nothing the lab can judge in this test does harm here/.test(ep0) && /Courtesy ceiling: none that the lab can judge\. The hit has no physical answer here \(the canon’s ruling\), so the lab can’t judge its harm; it judges only the charge \(its speed against sound\)\. Even all-out, the charge does no harm/.test(ep0)
+        && /The hit has no physical answer here \(the canon’s ruling\), so the lab can’t judge its harm; it judges only the charge \(its speed against sound\)\. Even all-out, the charge doesn’t shatter windows 15 m away/.test(ep1) && !/take-off/.test(ep0 + ep1) && !/Nothing in this test does harm|Even all-out, this test doesn’t|no cap needed/.test(ep0 + ep1)
         && /so physics has no answer here \(the canon’s ruling\)\./.test(hp0) && !/can’t both hold|can’t exist in the same universe/.test(hp0 + gp0), ep0.slice(0, 300) + ' | ' + ep1.slice(0, 300));
       // duo-steady-push-no-harm and copy-push-harm: the one driven back is followed and judged; unlimited, he flies off
       await load(Object.assign({ colMode: 'push' }, COL));
@@ -1458,7 +1469,7 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       { const es = await duoTxt('.effort-read'); check('review round 1: the default set speed\'s ceiling is the carried slide, not the hit\'s blast', /Even at the least they need to stand and walk, Rex is carried along at 100 m\/s and ends up 516 m away, past the nearest people 5 m away\./.test(es) && !/air blast/.test(es), es.slice(0, 300)); }
       const FB2 = { duoOpen: true, duoAction: 'catch', cObj: 'baseball', cStyle: 'hard', logKg: 14, keepForm: false, airAbsorb: 0.5 };
       await load(FB2); await pick('windows');
-      await page.evaluate(() => { document.getElementById('nkb-ollie').click(); document.getElementById('nkb-rex').click(); }); await page.waitForTimeout(400); await settle(page, 'bay'); await page.waitForTimeout(300); await settle(page, 'duo-bay');
+      await actDuo("document.getElementById('nkb-ollie').click(); document.getElementById('nkb-rex').click();"); await redrawn(); await settled('bay'); await settled('duo-bay');
       const inPlace = JSON.stringify(await readResult(page, 'duo-bay'));
       await pick('allout');
       const vIn = await duoTxt('.verdict');
@@ -1512,7 +1523,9 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       await load(W); await ollieKg(3); await pick('allout');
       const wv = await duoTxt('.verdict'), wt = await duoTxt('.tiles'), ws = await duoTxt('.status-row'), wh = await duoTxt('.happens');
       const wpm = wt.match(/Rex’s push ?([\d.]+) kN ?real on Ollie: what keeps him at the walking pace \(Rex could push 890 kN\); its push back goes to Rex’s source/), wjm = wh.match(/Its push back goes to his source \(They take their own recoil\): ([\d,]+) kg·m\/s over the walk-out/);
-      check('review round 2: the walking winner holds back, and his push back is reported', ewk.o === 'walkOut' && wpm && near(num(wpm[1]) * 1000, ewk.wp, 0.005) && wjm && near(num(wjm[1]), ewk.J, 0.02) && /Rex holds 17\.7 kN · can push 890 kN/.test(ws) && /Rex could push with 890 kN/.test(wv) && !/Rex’s push \(890 kN\) beats/.test(wv) && !/Rex’s push ?890 kN ?real on Ollie/.test(wt), wv + ' | ' + wt + ' | ' + JSON.stringify(ewk));
+      // (review round 3 of pull request 4: duo-r2-fix-parts-unchecked, the chart says what he could push, not his push)
+      const wc = await page.$eval('#duo-bay svg[aria-label^="Strength, footing and push"]', (n) => n.getAttribute('aria-label')).catch(() => '');
+      check('review round 2: the walking winner holds back, and his push back is reported', /Rex could push 890 kN/.test(wc) && !/Rex’s push 890 kN/.test(wc) && ewk.o === 'walkOut' && wpm && near(num(wpm[1]) * 1000, ewk.wp, 0.005) && wjm && near(num(wjm[1]), ewk.J, 0.02) && /Rex holds 17\.7 kN · can push 890 kN/.test(ws) && /Rex could push with 890 kN/.test(wv) && !/Rex’s push \(890 kN\) beats/.test(wv) && !/Rex’s push ?890 kN ?real on Ollie/.test(wt), wv + ' | ' + wt + ' | ' + JSON.stringify(ewk));
       // copy-shoving-match-stroke-formula: both shoved, each moves about half the stroke; shoved off, the loser all of it
       await load(W); await pick('allout');
       const sh2 = await duoTxt('.happens'), sm2 = await duoTxt('details.math .eq');
@@ -1539,10 +1552,11 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       // stroke of his own real shove, a pulse into the ground (the shoving match's rule)
       const BB = { duoOpen: true, duoAction: 'wrestle', wrestleMove: 'shove', wrestleWho: 'both' };
       await load(Object.assign({ anchor: 'bolted', logKg: 6, oLogKg: 6 }, BB)); await pick('plaster');
-      const bp = await duoTxt('.effort-read'), bph = await duoTxt('.happens');
+      const bp = await duoTxt('.effort-read'), bph = await duoTxt('.happens'), bps = await duoTxt('.status-row');
       await load(Object.assign({ oAnchor: 'bolted' }, BB)); await pick('rattle');
       const br2 = await duoTxt('.effort-read');
-      check('review round 2: Both at once counts the shove pressing on the bolted one\'s bolts', /\(each as hard as lifting 3\d\d t\)\. The least effort that shakes the ground enough that plaster may crack 5 m away/.test(bp) && !/through his feet, a friction drag/.test(bp) && /Bolted, Rex doesn’t move: Ollie’s shove presses on his bolts for as long as Rex’s own shove drives Ollie off/.test(bph)
+      // (review round 3 of pull request 4: duo-r2-fix-parts-unchecked, the pulse's chip is shown, not only judged)
+      check('review round 2: Both at once counts the shove pressing on the bolted one\'s bolts', /The push through Rex’s bolts shakes the ground: plaster may crack out to/.test(bps) && /\(each as hard as lifting 3\d\d t\)\. The least effort that shakes the ground enough that plaster may crack 5 m away/.test(bp) && !/through his feet, a friction drag/.test(bp) && /Bolted, Rex doesn’t move: Ollie’s shove presses on his bolts for as long as Rex’s own shove drives Ollie off/.test(bph)
         && /\(each as hard as lifting 5\d\.\d t\)\. The least effort that rattles windows/.test(br2) && !/Even all-out, this test doesn’t rattle/.test(br2), bp.slice(0, 300) + ' | ' + br2.slice(0, 200));
       // duo-r2-mutant-survivors: (a) Both at once with Ollie bolted: one of them slides, not both; (b) no 'They mean it'
       // where nothing is meant (the paradox; a catch with no fireball)
@@ -1567,7 +1581,8 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       const pb7 = await duoTxt('.status-row');
       await load(Object.assign({ keepForm: false, inf: true }, A)); await ollieKg(3); await pick('allout');
       const pu = await duoAll();
-      check('review round 2: standing, the loser\'s feet carry the force at his elbow', /Ollie’s feet slide: what turns his forearm \(24\.2 kN\) beats 17\.7 kN/.test(ps) && !/Ollie’s feet hold/.test(ps) && /what reaches his body is the force at his elbow that turns his forearm against Rex’s hand, about 24\.2 kN/.test(ph)
+      // (review round 3 of pull request 4: duo-r2-fix-parts-unchecked, the pin item compares his feet with that force, not his arm)
+      check('review round 2: standing, the loser\'s feet carry the force at his elbow', /Ollie’s feet hold less than what turns his forearm about his elbow, so his body slides along too\./.test(ph) && !/Ollie’s feet hold less than his arm/.test(ph) && /Ollie’s feet slide: what turns his forearm \(24\.2 kN\) beats 17\.7 kN/.test(ps) && !/Ollie’s feet hold/.test(ps) && /what reaches his body is the force at his elbow that turns his forearm against Rex’s hand, about 24\.2 kN/.test(ph)
         && /Ground around Ollie’s bolts tears out/.test(pb7) && /loads Ollie’s elbow pad with an unbounded force/.test(pu) && /he presses with unlimited force/.test(pu) && !/NaN|about unlimited|his full unlimited/.test(pu), ps + ' | ' + pb7 + ' | ' + pu.slice(0, 400));
       // copy-arm-one-bolted-unlimited-no-answer: one held without limit, the press into him has no answer, his own flings the
       // other off
@@ -1580,6 +1595,97 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       await load({ duoOpen: true, duoAction: 'catch', cObj: 'baseball', cStyle: 'hard', logKg: 14, keepForm: false, airAbsorb: 0.5, noKnockback: false }); await pick('allout');
       const kv = await duoTxt('.verdict'), ka = await duoAll();
       check('review round 2: the game of catch with the two switches set apart', /Thrown back, it reaches Rex as plasma too, but Rex’s Never knocked back is off \(Their powers\)\. It carries Rex off at 343 m\/s/.test(kv) && !/hits Rex the same way/.test(kv) && /\(the return throw: what it frees at Rex and as he rides on through the lower air\)/.test(ka), kv.slice(-400) + ' | ' + (ka.match(/Damage radius[^)]*\)/g) || []).join(' / '));
+    }
+    // ---- review round 3 of pull request 4 (research/reviews/canon-4-round3.json): each check fails with its fix reverted
+    {
+      const W = { duoOpen: true, duoAction: 'wrestle' }, A = { duoOpen: true, duoAction: 'arm' };
+      const ollie = 'body: P.makeBody(Object.assign({ build: "ollie" }, P.DEFAULT_BODIES.ollie))';
+      // the shared effort the page uses now (log10 kg, as saved)
+      const savedLog = () => page.evaluate(() => JSON.parse(localStorage.getItem('rex-lab-v1') || '{}').duoLogKg);
+      // physics-arm-torn-rock-still-holds (copy-arm-torn-rock-still-unlimited): standing, a bolted Ollie on real rock whose
+      // rock tears out is held by his feet alone from then on: dragged along in the pin, pushed off his feet in a stalemate
+      const ea = await eng('const r = P.armWrestle(mk({ F: 1e7 * g, keepForm: false, unbreakable: false }), mk({ F: 1000 * g, keepForm: false, unbreakable: false, anchor: "bolted", ' + ollie + ' })); return { torn: r.tornB, after: r.holdAfterB, slides: r.loserSlides, elbow: r.loserElbow };');
+      await load(Object.assign({ keepForm: false, unbreakable: false, oAnchor: 'bolted', logKg: 7 }, A)); await ollieKg(3); await pick('allout');
+      const av = await duoTxt('.verdict'), as = await duoTxt('.status-row'), at = await duoTxt('.tiles'), ah = await duoTxt('.happens'), am = await duoTxt('details.math .eq');
+      await load(Object.assign({ keepForm: false, unbreakable: false, oAnchor: 'bolted', logKg: 6.5 }, A)); await pick('allout');
+      const sv = await duoTxt('.verdict'), ss = await duoTxt('.status-row');
+      check('review round 3: arm wrestling standing, a bolted wrestler whose rock tears out is held by his feet alone', ea.torn === true && ea.slides === true && near(ea.after, 17652, 0.001)
+        && /he pins Ollie in [\d.]+ ms, dragging him along as he goes\. The rock around Ollie’s bolts tears out \(it takes about 697 kN\), and from then on only his feet hold him \(17\.7 kN\)\./.test(av)
+        && /Ollie’s feet slide: what turns his forearm \(2\.97 MN\) beats 17\.7 kN/.test(as) && /Feet hold up to ?17\.7 kN \/ 17\.7 kN ?Rex \/ Ollie; Ollie’s bolts hold until the rock around them tears out/.test(at) && !/unlimited/.test(at)
+        && /\(the force his elbow pad would carry on the table\), more than the rock around his bolts takes, so only his feet hold him against it\./.test(ah) && !/his bolts and the rock around them carry that/.test(ah) && /on real rock only until the rock around his bolts tears out/.test(am)
+        && /The rock around Ollie’s bolts tears out \(it takes about 697 kN\), and from then on only his feet hold him \(17\.7 kN\)\. But each one’s press beats the other’s footing \(17\.7 kN\), so both are pushed off their feet/.test(sv) && /Ollie’s feet slide/.test(ss),
+        av + ' | ' + as + ' | ' + at.slice(-200) + ' | ' + sv);
+      // copy-arm-one-sided-chip-unqualified: one held without limit, the chip names the press with no answer
+      await load(Object.assign({ keepForm: false, anchor: 'bolted', inf: true }, A)); await pick('allout');
+      const oc1 = await duoTxt('.status-row');
+      await load(Object.assign({ keepForm: false, anchor: 'bolted', oAnchor: 'bolted', inf: true }, A)); await pick('allout');
+      const oc2 = await duoTxt('.status-row');
+      check('review round 3: arm wrestling at unlimited strength, one bolted, the chip names the press with no answer', /No physical answer for Ollie’s press/.test(oc1) && !/No physical answer(?! for)/.test(oc1) && /No physical answer(?! for)/.test(oc2), oc1 + ' | ' + oc2);
+      // copy-arm-elbow-formula-rounding: the formula, with the coefficients the page prints, gives the figure it shows
+      const ep = await eng('const r = P.armWrestle(mk({ keepForm: false }), mk({ F: 1000 * g, keepForm: false, ' + ollie + ' })); return { PA: r.PA, PB: r.PB, mR: 3000, mO: 3000, lp: r.loserPadLoad };');
+      await load(Object.assign({ keepForm: false }, A)); await ollieKg(3); await pick('allout');
+      const fm = await duoTxt('details.math .eq');
+      const fx = fm.match(/from torques about his elbow: \|([\d.]+) m_loser a − \(loser’s arm \+ ([\d.]+) m_loser a\)\| = \|([\d.]+) m_loser a − loser’s arm\|, a = \(winner’s arm − loser’s arm\) \/ \(([\d.]+) × \(m_Rex \+ m_Ollie\)\), = ([\d.]+) kN\./);
+      const fa = fx ? (ep.PA - ep.PB) / (num(fx[4]) * (ep.mR + ep.mO)) : NaN, f1 = fx ? Math.abs(num(fx[1]) * ep.mO * fa - (ep.PB + num(fx[2]) * ep.mO * fa)) : NaN, f3 = fx ? Math.abs(num(fx[3]) * ep.mO * fa - ep.PB) : NaN;
+      check('review round 3: the loser\'s elbow formula, as printed, gives the figure shown', fx && near(f1, num(fx[5]) * 1000, 0.003) && near(f3, num(fx[5]) * 1000, 0.003) && near(ep.lp, num(fx[5]) * 1000, 0.003) && /in a pin the loser’s feet \(or bolts\) carry the force at his elbow, \|[\d.]+ m_loser a − \(loser’s arm/.test(fm),
+        (fx ? fx[0] : fm.slice(0, 300)) + ' -> ' + f1 + ' / ' + f3);
+      // copy-rex-ollie-card-stale-pin-feet: the card says what the loser's feet carry in a pin
+      const cards3 = await page.evaluate(() => document.body.textContent.replace(/\s+/g, ' '));
+      check('review round 3: the Rex and Ollie card says the loser\'s feet carry only the force at his elbow in a pin', /so the stronger always pins\. In a stalemate each one’s feet hold against the other’s press; in a pin the loser’s arm folds, and his feet carry only the force at his elbow that turns his forearm against the winner’s hand\./.test(cards3) && !/so the stronger always pins, and each one’s feet hold against the other’s press/.test(cards3), '(card text)');
+      // physics-collide-bounce-contact-travel-uncounted: the bounce's ceiling counts how far Rex moves with Ollie during the
+      // contact (v x its time) as well as his slide; at the ceiling shown he ends up within the nearest people's 5 m
+      const COLB = Object.assign({ colBounce: 'bounce' }, COL);
+      await load(COLB);
+      const bb = await duoTxt('.effort-read'), bm = bb.match(/Courtesy ceiling: [\d.]+% \(lifting ([\d.]+) t\)\. Past that, Rex is sent off at [\d.]+ m\/s and ends up ([\d.]+) m away, past the nearest people 5 m away\./);
+      const bend = bm ? await eng('const r = P.collide(mk({ F: a * g, ' + ollie + ' }), mk({ F: a * g }), { source: "sprint", bounce: true }); return r.vRel * r.contact.softEl.t + r.after.bounce.slideB;', num(bm[1]) * 1000 * 0.995) : NaN;
+      await pick('allout');
+      const bi = await duoTxt('.happens'), bmath = await duoTxt('details.math .eq');
+      check('review round 3: Collide\'s bounce counts the travel during the contact', bm && bend <= 5 && num(bm[2]) > 5 && /In a perfect bounce Rex leaves him as the hit ends, having moved [\d.]+ c?m with him: the squash closes and opens again while Ollie moves on, and the effort search counts that too\./.test(bi),
+        bb.slice(0, 300) + ' | end at the ceiling ' + bend);
+      // copy-bounce-math-quake-line: with Unbreakable footing on, the bounce puts nothing into the ground, so no quake model
+      check('review round 3: Collide\'s bounce math has no quake model where nothing reaches the ground', /Ground: the perfect-bounce bound ignores what holds Rex, so nothing of the hit reaches the ground in it\./.test(bmath) && !/Quake: 1 part in 10,000/.test(bmath), bmath.slice(-400));
+      // copy-paradox-judges-takeoff-for-sprint: the box names the take-off only where there is one (a 10^9 kg jump)
+      await load(Object.assign({ colSrc: 'jump', logKg: 9 }, COL));
+      const jt = await duoTxt('.effort-read');
+      check('review round 3: the no-answer caveat names the take-off only where there is one', /it judges only the charge \(its speed against sound\) and the charger’s take-off\./.test(jt), jt.slice(0, 400));
+      // physics-walkout-end-position-unjudged: past the ring's edge the loser slides on, and the search judges where he ends up
+      // (Rex against Ollie lying flat at 1 t: all-out he ends up 6.92 m from where he stood)
+      const we = await eng('const r = P.pushMatch(mk(), mk({ F: 1000 * g, ' + ollie + ' })); return { o: r.outcome, v: r.v, slide: r.slideL, end: r.endL };');
+      await load(W); await ollieKg(3);
+      const wl = await duoTxt('.effort-read'), wm = wl.match(/Courtesy ceiling: [\d.]+% \(lifting ([\d.]+) t\)\. Past that, Ollie is walked out of the ring at [\d.]+ m\/s and slides on, ending up ([\d.]+) m from where he stood, past the nearest people 5 m away\./);
+      const wend = wm ? await eng('const r = P.pushMatch(mk({ F: a * g }), mk({ F: 1000 * g, ' + ollie + ' })); return r.outcome === "walkOut" ? r.endL : r.xB + r.slideB;', num(wm[1]) * 1000 * 0.995) : NaN;
+      await pick('allout');
+      const wi = await duoTxt('.happens'), wtl = await duoTxt('.tiles'), wim = wi.match(/Rex only pushes, so past the ring’s edge Ollie slides on from ([\d.]+) m\/s for ([\d.]+) m on his feet, ending up ([\d.]+) m from where he stood\./);
+      check('review round 3: the walk-out judges where the loser ends up past the ring\'s edge', we.o === 'walkOut' && wm && wend <= 5 && num(wm[2]) > 5 && wim && near(num(wim[1]), we.v, 0.005) && near(num(wim[2]), we.slide, 0.005) && near(num(wim[3]), we.end, 0.005) && /Speed at the edge ?6\.39 m\/s ?then Ollie slides 3\.46 m/.test(wtl),
+        wl.slice(0, 300) + ' | ' + (wim ? wim[0] : wi.slice(-300)) + ' | end at the ceiling ' + wend);
+      // duo-walkout-cant-walk: between the strength to walk and the strength to run he can walk, but the walk-out is capped at
+      // his running speed, so he shoves Ollie off; the verdict gives that reason, not 'can't walk'
+      await effortKg(Math.log10(2800));
+      const cw1 = await duoTxt('.verdict'), cwl = await savedLog(), cwe = await eng('const m = P.moveCheck(Math.pow(10, a) * g, 3000), r = P.pushMatch(mk({ F: Math.pow(10, a) * g }), mk({ F: 1000 * g, ' + ollie + ' })); return { walk: m.walk, run: m.run, o: r.outcome };', cwl);
+      check('review round 3: the shoving match says why a walker who can\'t run shoves the other off', cwe.walk && !cwe.run && cwe.o === 'shovedOff' && /^Rex can walk but not run \(running takes strength above his weight; see Sprint\)\. The lab caps a walk-out at his top running speed, so he can’t walk Ollie out, but his push is real/.test(cw1) && !/can’t walk, so he can’t walk/.test(cw1), cw1 + ' ' + JSON.stringify(cwe));
+      // duo-walkout-push-less-hold-label (and duo-r2-mutants-survive's N3 on the page): where Ollie's mass sets the pace, the
+      // figure is Rex's whole push, and at his running cap his push back is Ollie's momentum + his feet's share
+      await effortKg(3.544);
+      const pl = await savedLog(), ph3 = await duoTxt('.happens'), pt3 = await duoTxt('.tiles');
+      const pe = await eng('const r = P.pushMatch(mk({ F: Math.pow(10, a) * g }), mk({ F: 1000 * g, ' + ollie + ' })); return { o: r.outcome, wp: r.walkPush, hb: r.HB, cap: r.v === r.vCap, J: r.recoilAbsorbedA && r.recoilAbsorbedA.J, loser: r.aLoser < r.aFeet };', pl);
+      const pm3 = ph3.match(/His whole push sets it: ([\d.]+) kN \(([\d.]+) kN more than Ollie’s hold\)/), pj3 = ph3.match(/Its push back goes to his source \(They take their own recoil\): ([\d,]+) kg·m\/s over the walk-out/), ptm = pt3.match(/Rex’s push ?([\d.]+) kN/);
+      check('review round 3: the walk-out names Rex\'s whole push where Ollie\'s mass sets the pace', pe.o === 'walkOut' && pe.loser && pe.cap && pm3 && ptm && pm3[1] === ptm[1] && near(num(pm3[1]) * 1000, pe.wp, 0.002) && near(num(pm3[2]) * 1000, pe.wp - pe.hb, 0.004) && !/His push, less/.test(ph3) && pj3 && near(num(pj3[1]), pe.J, 0.02),
+        (pm3 ? pm3[0] : ph3.slice(0, 300)) + ' | ' + (pj3 ? pj3[0] : '') + ' ' + JSON.stringify(pe));
+      // duo-torn-shoveoff-unlimited-feet: once the rock around a bolted loser's bolts tears, his feet hold 17.7 kN, not 'unlimited'
+      await load(Object.assign({ unbreakable: false, oAnchor: 'bolted' }, W)); await ollieKg(3); await pick('allout');
+      const tv3 = await duoTxt('.verdict');
+      check('review round 3: a bolted loser torn loose is held by his feet\'s 17.7 kN', /tears the rock out around Ollie’s bolts \(about 697 kN\), and from then on only Ollie’s feet hold him \(17\.7 kN\): Rex shoves him off with a plug of rock/.test(tv3) && !/\(unlimited\)/.test(tv3), tv3);
+      // duo-r2-mutants-survive (N10, N12): a bolted Rex's shove-off judges where Ollie ends up, his travel over the stroke plus
+      // his slide (the least disruptive effort is where that reaches 5 m, within the search's 5%); at a 10^6 kg dial his bolts
+      // hand the ground Ollie's push over the push or a limb's contact time, whichever is longer
+      const sx = await eng('const at = (kg) => { const r = P.pushMatch(mk({ F: kg * g, anchor: "bolted" }), mk({ F: kg * g, ' + ollie + ' })); return r.xB + r.slideB; }; let lo = 2571, hi = 90718; for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; if (at(m) > 5) hi = m; else lo = m; } return lo;');
+      await load(Object.assign({ anchor: 'bolted' }, W));
+      const sb3 = await duoTxt('.effort-read'), sbm = sb3.match(/Courtesy ceiling: [\d.]+% \(lifting ([\d.]+) t\)\. Past that, Ollie is shoved off and ends up ([\d.]+) m from where he stood/);
+      const pu = await eng('const R = mk({ F: 1e6 * g, anchor: "bolted" }), r = P.pushMatch(R, mk({ F: 1e6 * g, ' + ollie + ' })), T = Math.max(P.limbPulse(R.body), r.t); return { T, t: r.t, reach: P.plasterReach(P.impulseSource(R.surface, r.footA, T)) };');
+      await load(Object.assign({ anchor: 'bolted', logKg: 6, oLogKg: 6 }, W)); await pick('allout');
+      const ph6 = await duoTxt('.happens'), ps6 = await duoTxt('.status-row'), pms = ph6.match(/Bolted, Rex hands the ground Ollie’s push through his bolts: [\d,]+ kg·m\/s over (\d+) ms/), pmr = ps6.match(/The push through Rex’s bolts shakes the ground: plaster may crack out to ([\d.]+) m/);
+      check('review round 3: a bolted Rex\'s shove-off ceiling counts Ollie\'s travel, and his bolts\' pulse lasts at least a limb\'s contact time', sbm && num(sbm[1]) * 1000 <= sx * 1.005 && num(sbm[1]) * 1000 >= 0.94 * sx && num(sbm[2]) > 5
+        && pu.t < pu.T && pms && Math.abs(num(pms[1]) - pu.T * 1000) <= 0.5 && pmr && near(num(pmr[1]), pu.reach, 0.005), (sbm ? sbm[0] : sb3.slice(0, 300)) + ' (engine ' + sx + ') | ' + (pms ? pms[0] : ph6.slice(-300)) + ' | ' + (pmr ? pmr[0] : ps6) + ' ' + JSON.stringify(pu));
     }
     if (errs.length) r4.push('page errors: ' + errs.slice(0, 3).join(' | '));
     if (r4.length) fail('pull request 4 (contests and Never knocked back): ' + r4.join(' ;; ')); else okLog('pull request 4: Collide carries the one hit along (on) or knocks him back (off), explains the paradox first (bolted, a 10⁹ kg jump and stomp), carries a Rex bolted on real rock with a plug of rock, takes the hit\'s energy back unless a blast preset means it, and its search stops at the carried slide; the steady push, the shoving match (both shoved apart, shoved off, a walk-out), Both at once, the Lift and arm wrestling (reading B) say what the engine does, on and off; the two Never knocked back switches are on by default, named, noted, saved and listed, change no tab but the fireball case, which shows each one; the cards');

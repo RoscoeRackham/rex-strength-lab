@@ -1209,6 +1209,10 @@ const sig = (x) => Number(x).toPrecision(3);
         // the source's work, F v T, is then the one hit's motion energy + the hold x his travel during the squash + Q
         if (!bounce && !(near(r.Q, k.F * r.contact.s, 1e-9) && r.h.Q === r.Q && r.hitAbsorbed.E === r.Q)) bad.push(tag + ': Q ' + sig(r.Q) + ' J is not F x s ' + sig(k.F * r.contact.s) + ' J');
         if (!bounce && v < 1e-5 * cl && !near(k.F * v * k.T, P.momentumToKE(k.pGain, mB) + k.hold * r.after.splat.during + r.Q, 1e-9)) bad.push(tag + ': the source\'s work ' + sig(k.F * v * k.T) + ' J does not balance');
+        // (review round 3 of pull request 4) sideways, the bounce carries him too: the squash closes and opens again while the
+        // charger, who never slows, moves v x its time (pi x the squash below 1% of light speed), so where he ends up is that
+        // travel plus his slide, as the splat's is its own
+        if (bounce && r.dir === 'h' && v < 0.01 * cl && !chk(() => near(r.after.bounce.during, v * r.contact.softEl.t, 1e-12) && near(r.after.bounce.during, Math.PI * r.contact.s, 1e-5) && near(r.after.bounce.moved, r.after.bounce.during + r.after.bounce.slideB, 1e-12))) bad.push(tag + ': the bounce\'s travel during the contact (' + sig(r.after.bounce.during) + ' m) and where he ends up (' + sig(r.after.bounce.moved) + ' m) are not v x T (' + sig(v * r.contact.softEl.t) + ' m) and that plus his slide');
         seen.push(tag + ' ' + sig(k.vB) + ' m/s, ' + sig(k.supplied) + ' kg m/s');
       }
     }
@@ -1351,11 +1355,20 @@ const sig = (x) => Number(x).toPrecision(3);
     // push back goes to his source, the loser's momentum + his feet's share (m_l v + H_l t = walkPush x t below his running
     // cap); a loser who pushes has his push x t taken by his own source; the momentum adds up (the ground takes the
     // winner's feet's push forward and the loser's feet's hold back)
+    // (a body sliding to a stop on his footing R against air drag, the shoving match's slide)
+    const slideOn = (v, R, b) => { const k = 0.5 * P.K.rho0 * b.Cd * b.frontArea; return b.m / (2 * k) * Math.log1p(k * v * v / R); };
     const wOk = (x, sfc) => chk(() => near(x.walkPush, x.HB + O3.m * x.accel, 1e-12) && near(x.recoilAbsorbedA.J, O3.m * x.v + x.HB * x.t, 1e-12) && x.recoilAbsorbedA.T === x.t && x.recoilAbsorbedA.thetaDeg === 0
       && (x.v < x.vCap ? near(x.walkPush * x.t, x.recoilAbsorbedA.J, 1e-9) : true) && (x.DB > 0 ? near(x.recoilAbsorbedB.J, x.DB * x.t, 1e-12) : !x.recoilAbsorbedB)
-      && Math.abs((R3.m + O3.m) * x.v - ((R3.m * x.accel + x.DB - x.HB) * x.t + x.recoilAbsorbedA.J - (x.recoilAbsorbedB ? x.recoilAbsorbedB.J : 0))) <= 1e-9 * x.recoilAbsorbedA.J);
-    ok('8g: the walk-out where only one push beats the other\'s grip, at the Pull tab\'s pace for the winner\'s own body, a = min((his push - the loser\'s hold) / the loser\'s mass, (his footing - the loser\'s push) / his own mass): Rex at the dial against Ollie at 2,200 kg-force on gravel (a ' + sig(w1.accel) + ' m/s2) and against Ollie lying flat at 1,000 kg-force on concrete (a ' + sig(w2.accel) + ' m/s2; with the power off a dead heat); the winner holds back to that pace (his push the loser\'s hold + his mass x a) and his push back goes to his source (review round 2)',
-      w1.outcome === 'walkOut' && w1.winner === 'A' && aOk(w1, gr) && near(w1.accel, 1.046, 0.002) && w2.outcome === 'walkOut' && aOk(w2, conc) && near(w2.accel, 5.88, 0.002) && w2o.outcome === 'deadlock'
+      && Math.abs((R3.m + O3.m) * x.v - (R3.m * x.v + (x.DB - x.HB) * x.t + x.recoilAbsorbedA.J - (x.recoilAbsorbedB ? x.recoilAbsorbedB.J : 0))) <= 1e-9 * x.recoilAbsorbedA.J
+      // (review round 3 of pull request 4) past the ring's edge the loser slides on from v on his own footing: endL = x + slideL
+      && near(x.slideL, slideOn(x.v, x.holdB, O3), 1e-12) && near(x.endL, x.x + x.slideL, 1e-12));
+    // (review round 3 of pull request 4) a walk-out at the winner's running cap (Rex at 3,500 kg-force against Ollie lying flat at
+    // 1 t: v is his top running speed), where the push back m_l v + H_l t is not (the loser's hold + his mass x a) x t; and
+    // where the loser ends up past the ring's edge (6.92 m from where he stood, against Ollie lying flat at 1 t)
+    const w3 = pm(3500 * g, 1000 * g);
+    const capOk = chk(() => w3.outcome === 'walkOut' && w3.v === w3.vCap && wOk(w3, conc) && near(w3.recoilAbsorbedA.J, 34438, 0.001) && !near(w3.recoilAbsorbedA.J, (w3.HB + O3.m * w3.accel) * w3.t, 0.01) && near(w2.endL, 6.923, 0.002) && near(w2.slideL, 3.456, 0.002));
+    ok('8g: the walk-out where only one push beats the other\'s grip, at the Pull tab\'s pace for the winner\'s own body, a = min((his push - the loser\'s hold) / the loser\'s mass, (his footing - the loser\'s push) / his own mass): Rex at the dial against Ollie at 2,200 kg-force on gravel (a ' + sig(w1.accel) + ' m/s2) and against Ollie lying flat at 1,000 kg-force on concrete (a ' + sig(w2.accel) + ' m/s2; with the power off a dead heat); the winner holds back to that pace (his push the loser\'s hold + his mass x a) and his push back goes to his source (review round 2), at his running cap too, and past the ring\'s edge the loser slides on (' + sig(w2.endL) + ' m from where he stood; review round 3)',
+      capOk && w1.outcome === 'walkOut' && w1.winner === 'A' && aOk(w1, gr) && near(w1.accel, 1.046, 0.002) && w2.outcome === 'walkOut' && aOk(w2, conc) && near(w2.accel, 5.88, 0.002) && w2o.outcome === 'deadlock'
         && wOk(w1, gr) && wOk(w2, conc) && near(w2.walkPush, 35304, 0.001) && w2.walkPush < 0.05 * w2.DA, w1.outcome + ' / ' + w2.outcome + ' / off ' + w2o.outcome + '; walking push ' + sig(w2.walkPush) + ' N (could push ' + sig(w2.DA) + ' N), push back ' + sig(w2.recoilAbsorbedA && w2.recoilAbsorbedA.J) + ' kg m/s');
     // a bolted wrestler with the power on: his push is real (pull request 2's decision 2), so he shoves the other off over
     // the stroke ('shovedOff'); unlimited against a partner bolted on ground that holds, the one-sided paradox; on real
@@ -1426,7 +1439,7 @@ const sig = (x) => Number(x).toPrecision(3);
     // (review round 2 of pull request 4) standing, in a pin with the winner's power on, the loser's feet (or his bolts and
     // the rock around them) carry the force at his elbow, the loser pad's load: they slide exactly where it beats his
     // footing, and a bolted loser's rock carries it (tear = elbow / the rock's tear load) instead of his own press
-    let stWrong = 0, stPins = 0, stSlide = 0, stBolt = 0; const stFirst = [];
+    let stWrong = 0, stPins = 0, stSlide = 0, stBolt = 0, stTorn = 0; const stFirst = [];
     for (const lg of [2.5, 3, 3.5, 4, 5, 6, 9, 12, 20]) for (const lo of [2, 2.5, 3, 4, 6, 9]) for (const sid of ['sand', 'concrete', 'ice', 'granite', 'softclay']) for (const anc of ['friction', 'bolted']) for (const kf of [false, true]) for (const ub of [false, true]) {
       const x = { keepForm: kf, unbreakable: ub, surface: surf(sid), anchor: anc }, r = P.armWrestle(c3(Math.pow(10, lg) * g, R3, on(x)), c3(Math.pow(10, lo) * g, O3, on(x)));
       runs++;
@@ -1445,7 +1458,11 @@ const sig = (x) => Number(x).toPrecision(3);
       // (the bolted one is Ollie unless flipped; the check reads the loser's rock only where the loser is the bolted one)
       const aW = r.winner === 'A', ml = aW ? O3.m : R3.m, Rl = aW ? r.RB : r.RA, elbow = loserPadOf(r, ml), loserBolted = anc === 'bolted' && aW !== flip;
       const tearWant = loserBolted && !ub ? elbow / ((aW ? O3 : R3).digArea * surf(sid).shear) : null, tearGot = aW ? r.tearB : r.tearA;
-      const okSt = near(r.loserElbow, elbow, 1e-12) && r.loserSlides === (Rl < elbow) && (tearWant == null || near(tearGot, tearWant, 1e-12));
+      // (review round 3 of pull request 4: a bolted loser whose rock tears out is held by his feet alone from then on)
+      const tornWant = tearWant != null && tearWant > 1 && !near(tearWant, 1, 1e-9), tornGot = !!(aW ? r.tornB : r.tornA), RlNow = tornGot ? (aW ? r.holdAfterB : r.holdAfterA) : Rl;
+      const holdLoose = P.anchorCapacity({ body: aW ? O3 : R3, surface: surf(sid), theta: 0, anchor: 'friction', groundHolds: false }).R;
+      const okSt = near(r.loserElbow, elbow, 1e-12) && r.loserSlides === (RlNow < elbow) && (tearWant == null || near(tearGot, tearWant, 1e-12)) && tornGot === tornWant && (!tornWant || near(RlNow, holdLoose, 1e-12));
+      if (tornWant) stTorn++;
       if (r.loserSlides) stSlide++;
       if (tearWant != null) stBolt++;
       if (!okSt) { stWrong++; if (stFirst.length < 2) stFirst.push([lg, lo, sid, anc, ub, flip, sig(r.loserElbow), sig(elbow), r.loserSlides, sig(Rl), sig(tearGot), tearWant == null ? '-' : sig(tearWant)].join(' ')); }
@@ -1471,9 +1488,18 @@ const sig = (x) => Number(x).toPrecision(3);
     const bl = P.armWrestle(c3(1e6 * g, R3, on({ keepForm: false, unbreakable: false })), c3(dial, O3, on({ keepForm: false, unbreakable: false, anchor: 'bolted' })));
     const be = aw(dial, dial, { keepForm: false, unbreakable: false, anchor: 'bolted' }), tear = R3.digArea * conc.shear;
     const b7 = P.armWrestle(c3(1e7 * g, R3, on({ keepForm: false, unbreakable: false })), c3(1000 * g, O3, on({ keepForm: false, unbreakable: false, anchor: 'bolted' })));
-    const tearOk = chk(() => bl.outcome === 'pin' && bl.winner === 'A' && near(bl.tearB, bl.loserElbow / tear, 1e-12) && near(bl.loserElbow, 47760, 0.002) && bl.tearB < 1 && b7.outcome === 'pin' && near(b7.tearB, 4.26, 0.005) && b7.loserSlides === false && be.outcome === 'stalemate' && near(be.tearA, be.PB / tear, 1e-12) && near(be.tearB, be.PA / tear, 1e-12));
-    ok('8i: standing, once the presses break the table (Things keep their form off): his own footing no longer caps his own press (both at the dial: a stalemate in the arms at ' + sig(st.AA) + ' N, each one\'s feet sliding under the other\'s press; with the power off a stalemate at the grip); 100 t against 200 t, Ollie pins Rex (with the power off a stalemate at the grip) and both one\'s feet slide; in a pin the loser\'s feet, or his bolts\' rock, carry the force at his elbow (review round 2: ' + stPins + ' standing pins, ' + stSlide + ' with his feet sliding, ' + stBolt + ' bolted on real rock; a bolted loser\'s rock at ' + sig(bl.tearB) + ' of its tear load, and ' + sig(b7.tearB) + ' times it at 10^7 kg against 1 t); both unlimited: flung apart, or the paradox bolted on Unbreakable footing (with only one so bolted, the press into him has no answer and his own flings the other off), or both rocks tear out on real rock; unlimited against 1 t, the loser\'s pad is unbounded and breaks the table',
-      tearOk && oneOk && stWrong === 0 && stPins > 100 && stSlide > 0 && stBolt > 0 && st.tableBreaks && st.tableBreaksBy === 'push' && st.outcome === 'stalemate' && st.AA === st.PA && !st.footLimitedA && st.draggedA === true && st.draggedB === true && st0.outcome === 'stalemate' && st0.AA === st0.RA && !('draggedA' in st0)
+    // (review round 3 of pull request 4) once his rock tears out only his feet hold him, as in the shoving match: at 10^7 kg
+    // against 1 t the bolted Ollie is dragged along in the pin (his feet hold 17.7 kN against 2.97 MN); equal presses at
+    // 10^6.5 kg tear his rock (11 times its load) and push both off their feet; a bolted winner whose rock the loser's press
+    // tears (Rex bolted at 10^7 kg against Ollie at 10^6.4 kg) slides too; with the power off, as before (no torn flags)
+    const e65 = P.armWrestle(c3(Math.pow(10, 6.5) * g, R3, on({ keepForm: false, unbreakable: false })), c3(Math.pow(10, 6.5) * g, O3, on({ keepForm: false, unbreakable: false, anchor: 'bolted' })));
+    const bw7 = P.armWrestle(c3(1e7 * g, R3, on({ keepForm: false, unbreakable: false, anchor: 'bolted' })), c3(Math.pow(10, 6.4) * g, O3, on({ keepForm: false, unbreakable: false })));
+    const b7o = P.armWrestle(c3(1e7 * g, R3, { keepForm: false, unbreakable: false }), c3(1000 * g, O3, { keepForm: false, unbreakable: false, anchor: 'bolted' }));
+    const tornOk = chk(() => b7.tornB === true && b7.holdAfterB === holdR && b7.loserSlides === true && e65.outcome === 'stalemate' && e65.tearB > 10 && e65.tornB === true && e65.holdAfterB === holdR && e65.draggedA === true && e65.draggedB === true
+      && bw7.outcome === 'pin' && bw7.winner === 'A' && bw7.tearA > 1 && bw7.tornA === true && bw7.winnerSlides === true && !('tornB' in b7o) && !('holdAfterB' in b7o) && !('tornA' in bl) && stTorn > 0);
+    const tearOk = chk(() => bl.outcome === 'pin' && bl.winner === 'A' && near(bl.tearB, bl.loserElbow / tear, 1e-12) && near(bl.loserElbow, 47760, 0.002) && bl.tearB < 1 && b7.outcome === 'pin' && near(b7.tearB, 4.26, 0.005) && be.outcome === 'stalemate' && near(be.tearA, be.PB / tear, 1e-12) && near(be.tearB, be.PA / tear, 1e-12));
+    ok('8i: standing, once the presses break the table (Things keep their form off): his own footing no longer caps his own press (both at the dial: a stalemate in the arms at ' + sig(st.AA) + ' N, each one\'s feet sliding under the other\'s press; with the power off a stalemate at the grip); 100 t against 200 t, Ollie pins Rex (with the power off a stalemate at the grip) and both one\'s feet slide; in a pin the loser\'s feet, or his bolts\' rock, carry the force at his elbow (review round 2: ' + stPins + ' standing pins, ' + stSlide + ' with his feet sliding, ' + stBolt + ' bolted on real rock; a bolted loser\'s rock at ' + sig(bl.tearB) + ' of its tear load, and ' + sig(b7.tearB) + ' times it at 10^7 kg against 1 t, where his rock tears out and only his feet hold him, so he is dragged along, as are a torn stalemate\'s and a torn bolted winner\'s feet (review round 3: ' + stTorn + ' torn standing pins in the grid)); both unlimited: flung apart, or the paradox bolted on Unbreakable footing (with only one so bolted, the press into him has no answer and his own flings the other off), or both rocks tear out on real rock; unlimited against 1 t, the loser\'s pad is unbounded and breaks the table',
+      tearOk && tornOk && oneOk && stWrong === 0 && stPins > 100 && stSlide > 0 && stBolt > 0 && st.tableBreaks && st.tableBreaksBy === 'push' && st.outcome === 'stalemate' && st.AA === st.PA && !st.footLimitedA && st.draggedA === true && st.draggedB === true && st0.outcome === 'stalemate' && st0.AA === st0.RA && !('draggedA' in st0)
         && sp.outcome === 'pin' && sp.winner === 'B' && sp.AB === sp.PB && sp.winnerSlides === true && sp.loserSlides === true && sp0.outcome === 'stalemate' && !('winnerSlides' in sp0)
         && u1.outcome === 'flungApart' && u1.ownRecoil && u2.outcome === 'paradox' && u2.oneSided === false && u3.outcome === 'rockGives' && u3.tearA > 0 && u3.tearB > 0, (stWrong ? stFirst.join('; ') + ' | ' : '') + [st.outcome, st0.outcome, sp.outcome, sp0.outcome, u1.outcome, u2.outcome, u3.outcome].join(' / '));
   }

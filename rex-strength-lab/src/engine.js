@@ -1804,7 +1804,10 @@
   //     past the winner's footing, so his feet slide too. A standing stalemate with presses past their grips: draggedA /
   //     draggedB (new): the other's press beats his footing, so his feet slide; the lab doesn't follow that motion (the two
   //     are pushed opposite ways and would turn about their clasped hands: a known limit). tearA / tearB (bolted): the
-  //     other's press on his bolts' rock. Both presses unlimited, standing: each body takes the other's unlimited press:
+  //     other's press on his bolts' rock. A bolted one on real rock whose rock tears out (tear past 1) is held by his feet
+  //     alone from then on, as in the shoving match: tornA / tornB true, holdAfterA / holdAfterB N his friction footing,
+  //     which draggedA / draggedB, loserSlides and winnerSlides then compare with (review round 3 of pull request 4).
+  //     Both presses unlimited, standing: each body takes the other's unlimited press:
   //     'paradox' if either is held without limit (bolted on ground that holds; oneSided unless both are), 'rockGives' if
   //     both are bolted on real rock (tearA, tearB), else 'flungApart' (their feet, or the rock around one's bolts, give:
   //     flung apart at just under light speed; tearA / tearB where bolted). Each with ownRecoil: true.
@@ -1885,11 +1888,23 @@
       return out;
     }
     out.tableRatio2 = Math.min(PA, PB) / tableLat;
+    // standing with their recoil taken (review round 3 of pull request 4): a bolted one on real rock whose rock tears out
+    // is held by his feet alone from then on, the torn-rock rule of the shoving match and the steady push (tornA / tornB,
+    // holdAfterA / holdAfterB N: his friction footing). The load on his rock is tearA / tearB's: the other's press in a
+    // stalemate, the force at the loser's elbow in a pin, the loser's press for the winner. Read only where his feet's
+    // slide is judged with the power on.
+    const holdAfter = (c, f, side) => {
+      const t = out['tear' + side];
+      if (!(tableBreaks && c.anchor === 'bolted' && t > 1 && !sameForce(t, 1))) return f.R;
+      const R = footingOf(Object.assign({}, c, { anchor: 'friction' })).R;
+      out['torn' + side] = true; out['holdAfter' + side] = R;
+      return R;
+    };
     if (sameForce(AA, AB)) {
       out.outcome = 'stalemate'; out.contact = AA;
       // standing with his recoil taken: the other's press, no longer capped by the other's grip, can beat his footing
-      if (tableBreaks && cA.ownRecoil) out.draggedA = AB > fA.R;
-      if (tableBreaks && cB.ownRecoil) out.draggedB = AA > fB.R;
+      if (tableBreaks && cA.ownRecoil) out.draggedA = AB > holdAfter(cA, fA, 'A');
+      if (tableBreaks && cB.ownRecoil) out.draggedB = AA > holdAfter(cB, fB, 'B');
       return out;
     }
     const aWins = AA > AB;
@@ -1916,7 +1931,8 @@
       // standing up, a loser whose feet hold less than his arm is also pulled along by it; with the winner's recoil taken
       // the loser's press is real on him and no longer capped by his own grip, so his feet can slide too
       out.loserSlides = tableBreaks && Rl < Pl;
-      if (tableBreaks && cw.ownRecoil) out.winnerSlides = Rw < Pl;
+      // (a bolted winner whose rock the loser's press tears out: his feet alone, review round 3 of pull request 4)
+      if (tableBreaks && cw.ownRecoil) out.winnerSlides = holdAfter(cw, aWins ? fA : fB, aWins ? 'A' : 'B') < Pl;
       // standing, the winner taking his own recoil (review round 2 of pull request 4): the loser's own press is a torque at
       // his elbow, not a net force on him; what reaches his body is the pivot force at his elbow, the force that loads his
       // pad in a pin on the table, |holdArm m_l a - (P_l + effMass m_l a)|, a = (the winner's press - P_l) / M (loserElbow
@@ -1926,8 +1942,9 @@
         const aP = (Aw - Pl) / out.pin.M;
         const elbow = !isFinite(aP) ? Infinity : Math.abs(AW.holdArm * bl.m * aP - (Pl + AW.effMass * bl.m * aP));
         out.loserElbow = elbow;
-        out.loserSlides = Rl < elbow;
         if (cl.anchor === 'bolted' && !holdsGround(cl)) out[aWins ? 'tearB' : 'tearA'] = elbow / groundTear(cl);
+        // (review round 3 of pull request 4: once his rock tears out, only his feet hold him)
+        out.loserSlides = holdAfter(cl, aWins ? fB : fA, aWins ? 'B' : 'A') < elbow;
       }
       out.slamRatio = tableBreaks ? 0 : push.EB / out.slamCap;
       // each upper arm carries its own owner's push: the loser's arm resists with all it has
@@ -2047,7 +2064,9 @@
   //     ring as before (x, t, v, vCap, winner, net: his push - the loser's hold); contact N: the push that keeps the loser
   //     at that pace (the loser's hold + his mass x a). The winner holds back: walkPush N (= contact) is all he pushes, not
   //     the push he could make (DA or DB); recoilAbsorbedA / B { J: the loser's momentum + his hold x t, T: t, thetaDeg 0 }
-  //     for the winner, and { J: his push x t } for a loser who pushes (review round 2 of pull request 4).
+  //     for the winner, and { J: his push x t } for a loser who pushes (review round 2 of pull request 4). The winner only
+  //     pushes, so the loser leaves the ring at v and slides on his footing: slideL m, endL m = x + slideL, where he ends
+  //     up from where he stood (review round 3 of pull request 4).
   //   'shovedOff': only one push beats the other's hold, and the winner is bolted or can't walk (decision 8: a bolted
   //     wrestler's push is real; pull request 2's decision 2): he shoves the loser off over the stroke and the loser slides.
   //     The same keys as 'bothShoved' (the winner's speed is 0) plus winner, contact: the winner's push.
@@ -2133,7 +2152,11 @@
           // its push back goes to his source: recoilAbsorbed{w} { J: the loser's momentum + his feet's share, m_l v + H_l t }.
           // The loser's own push is real on the winner (his feet carry it); its push back goes to the loser's source.
           const rw = { J: cl.body.m * v + Hl * t, T: t, thetaDeg: 0 };
-          return Object.assign(out, { outcome: 'walkOut', winner: w, net: Dw - Hl, accel: a, aLoser: aL, aFeet: aW, x, t, v, vCap, contact: Hl + cl.body.m * a, walkPush: Hl + cl.body.m * a },
+          // (review round 3 of pull request 4) the winner only pushes, so at the ring's edge the loser slides on from v on
+          // his own footing against air drag (slideL m, as a shoved wrestler slides), ending up endL = x + slideL m from
+          // where he stood
+          const slideL = slideStop(v, aBeats ? RB : RA, cl.body);
+          return Object.assign(out, { outcome: 'walkOut', winner: w, net: Dw - Hl, accel: a, aLoser: aL, aFeet: aW, x, t, v, vCap, contact: Hl + cl.body.m * a, walkPush: Hl + cl.body.m * a, slideL, endL: x + slideL },
             { ['recoilAbsorbed' + w]: rw }, Dl > 0 ? { ['recoilAbsorbed' + (w === 'A' ? 'B' : 'A')]: { J: Dl * t, T: t, thetaDeg: 0 } } : {});
         }
       }
@@ -2785,7 +2808,8 @@
     //       below it, sent off faster than sound, the air's share of his motion as he slides off (carry.Eair, real)
     //   after (sideways): splat { V: v, during m: how far the one hit moves during the squash, slide m: from v on his
     //       footing (on his own friction when torn loose with his bolts) once the charger stops, moved m: during + slide;
-    //       NaN past 1% of light speed, as today }, bounce { vA: v, vB, slideA: 0, slideB }
+    //       NaN past 1% of light speed, as today }, bounce { vA: v, vB, slideA: 0, slideB, during m: how far the one hit
+    //       moves with the charger during the contact (v x its time; review round 3), moved m: during + slideB }
     //   after (from above, only on real ground: Unbreakable footing off, e.g. the break-the-ground preset; decision 6):
     //       the one hit is driven into the ground at the charger's speed by today's sink model: splat { V: v, depth m,
     //       Eground J } (or a crater past 2 km/s: D, ...), bounce { vA: v, vB, depth, Eground }
@@ -2838,7 +2862,10 @@
       if (horiz) {
         const Rb = rockGives ? hb.anc.R : Math.min(hb.R, hb.H);
         const slide = slideTo(mB, v, Rb, bB.frontArea), slideB = slideTo(mB, vBb, Rb, bB.frontArea);
-        out.after = { splat: { V: v, during, slide, moved: during + slide }, bounce: { vA: v, vB: vBb, slideA: 0, slideB: out.bound ? null : slideB } };
+        // the bounce: the squash closes and reopens while the charger, who never slows, moves v T (pi s below 1% of light
+        // speed), and the one hit, touching him at both ends, moves that far with him (review round 3 of pull request 4)
+        const duringEl = v * cf.softEl.t;
+        out.after = { splat: { V: v, during, slide, moved: during + slide }, bounce: { vA: v, vB: vBb, slideA: 0, slideB: out.bound ? null : slideB, during: duringEl, moved: out.bound ? null : duringEl + slideB } };
       } else {
         // driven into the ground at the charger's speed, by today's sink model (penetration, or a crater past 2 km/s)
         const q = qultFor(cB.surface, bB.footB), rho = cB.surface.rho || 2000, A2 = 2 * bB.footArea;
