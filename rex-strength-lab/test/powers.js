@@ -1183,17 +1183,22 @@ const sig = (x) => Number(x).toPrecision(3);
   const holdR = P.anchorCapacity({ body: R3, surface: conc, theta: 0, anchor: 'friction', groundHolds: true, mA: R3.m }).R;
 
   // 8a. the charger keeps his speed; the one hit leaves at his speed (splat) or 2v/(1+v^2/c^2) (bounce); his source
-  // supplies the one hit's gain plus what the one hit's footing hands the ground (to 1e-9); the bounce bound ignores the
-  // footing (footJ 0), as the bounce's after-speeds do
+  // supplies the one hit's gain plus what the one hit's hold hands the ground (to 1e-9): the hold for the whole squash,
+  // uncapped (splatWithFooting as the charger's mass goes to infinity; review round 1 of pull request 4), so the hit's
+  // force is the squash's own plus the hold and force x time = what the source supplies; the bounce bound ignores the
+  // footing (footJ 0), as the bounce's after-speeds do. A charge at 1 m/s (the squash's own push below his footing) and a
+  // jump onto Rex on real ground (below the ground's bearing) book the whole hold too
   { const bad = [], seen = [];
     for (const [lab, F, o, xR, xO] of [['sprint', dial, { source: 'sprint' }], ['sprint at 10^9 kg', 1e9 * g, { source: 'sprint' }], ['0.1% of c', dial, { source: 'set', gb: gb1 }], ['50% of c', dial, { source: 'set', gb: gb50 }],
-      ['jump at 10^6.25 kg on real ground (own recoil only)', Math.pow(10, 6.25) * g, { source: 'jump' }, { ownRecoil: true }, { ownRecoil: true }], ['sprint, own recoil only', dial, { source: 'sprint' }, { ownRecoil: true }, { ownRecoil: true }]]) {
+      ['jump at 10^6.25 kg on real ground (own recoil only)', Math.pow(10, 6.25) * g, { source: 'jump' }, { ownRecoil: true }, { ownRecoil: true }], ['sprint, own recoil only', dial, { source: 'sprint' }, { ownRecoil: true }, { ownRecoil: true }],
+      ['1 m/s', dial, { source: 'set', gb: 1 / cl }], ['jump onto Rex on real ground', dial, { source: 'jump' }, on({ unbreakable: false }), on({ unbreakable: false })]]) {
       for (const bounce of [false, true]) {
         const r = charge(F, Object.assign({ bounce }, o), xR, xO), k = r.carry, v = r.vRel, tag = lab + (bounce ? ' bounce' : ' splat');
         if (r.outcome !== 'carried' || !k || r.unbounded !== true || r.held !== false) { bad.push(tag + ': ' + r.outcome); continue; }
         const gam = 1 / Math.sqrt(1 - (v / cl) * (v / cl)), mB = R3.m;
         const vWant = bounce ? 2 * v / (1 + (v / cl) * (v / cl)) : v, pWant = bounce ? 2 * gam * gam * mB * v : P.vToMomentum(v, mB);
-        const Fc = bounce ? r.contact.softEl : r.contact.soft, footWant = bounce ? 0 : Math.min(r.hold.H, Fc.F) * Fc.t;
+        const Fc = bounce ? r.contact.softEl : r.contact.soft, footWant = bounce ? 0 : r.hold.H * Fc.t;
+        if (!(k.hold === r.hold.H && k.T === Fc.t && (bounce ? k.F === Fc.F : near(k.F, Fc.F + r.hold.H, 1e-12) && near(k.F * k.T, k.supplied, 1e-9)))) bad.push(tag + ': the hit\'s force ' + sig(k.F) + ' N over ' + sig(k.T) + ' s is not the squash\'s ' + sig(Fc.F) + ' N plus the hold ' + sig(r.hold.H) + ' N (F x T ' + sig(k.F * k.T) + ' vs supplied ' + sig(k.supplied) + ')');
         if (!(k.v === v && r.h.el.vA === v && r.h.inel.V === v && k.stop.J === r.pA)) bad.push(tag + ': the charger slows (' + sig(r.h.el.vA) + ' of ' + sig(v) + ')');
         if (!near(k.vB, vWant, 1e-12) || !near(k.pGain, pWant, 1e-9)) bad.push(tag + ': leaves at ' + sig(k.vB) + ' (want ' + sig(vWant) + ') with ' + sig(k.pGain) + ' kg m/s (want ' + sig(pWant) + ')');
         if (!(near(k.supplied, k.pGain + k.footJ, 1e-9) && (k.footJ === 0 ? footWant === 0 : near(k.footJ, footWant, 1e-12)))) bad.push(tag + ': source ' + sig(k.supplied) + ' vs gain ' + sig(k.pGain) + ' + footing ' + sig(k.footJ) + ' (want ' + sig(footWant) + ')');
@@ -1204,7 +1209,11 @@ const sig = (x) => Number(x).toPrecision(3);
     }
     // at 50% of c the bounce's ground-frame momentum is 2 gamma^2 m v, not the immovable sums' 2 p (the brief's first runs)
     const r50 = charge(dial, { source: 'set', gb: gb50, bounce: true });
-    ok('8a: a charger with his recoil taken keeps his speed; the one hit, on his footing, leaves at his speed (splat) or 2v/(1+v^2/c^2) (bounce), and the charger\'s source supplies the one hit\'s gain plus his footing\'s share, to 1e-9 (sprint, 10^9 kg, 0.1% and 50% of c, a jump onto Rex on real ground; the bounce bound ignores the footing, as its speeds do)', !bad.length && r50.carry && r50.carry.pGain > 1.15 * 2 * P.vToMomentum(r50.vRel, R3.m), bad.length ? bad.join('; ') : seen.join('; '));
+    // the figures review round 1 found: at 1 m/s the footing's share is 17,652 N x 0.629 s = 11,100 kg m/s (14,100 in all,
+    // not 6,000), and a jump onto Rex on real ground books the ground's bearing, 57,700 (107,000 in all, not 99,400)
+    const s1 = charge(dial, { source: 'set', gb: 1 / cl }), jr = charge(dial, { source: 'jump' }, on({ unbreakable: false }), on({ unbreakable: false })), la = charge(4260 * g, { source: 'sprint' });
+    const figs = chk(() => near(s1.carry.footJ, 11100, 0.005) && near(s1.carry.supplied, 14100, 0.005) && near(s1.carry.F, 22420, 0.002) && near(jr.carry.footJ, 57700, 0.002) && near(jr.carry.supplied, 107400, 0.002) && near(jr.carry.F, 2.830e6, 0.002) && near(la.carry.F, 273800, 0.002));
+    ok('8a: a charger with his recoil taken keeps his speed; the one hit, on his footing, leaves at his speed (splat) or 2v/(1+v^2/c^2) (bounce), and the charger\'s source supplies the one hit\'s gain plus his hold x the hit\'s time, uncapped, to 1e-9; the hit\'s force is the squash\'s own plus the hold, so force x time = what the source supplies (sprint, 10^9 kg, 0.1% and 50% of c, 1 m/s, jumps onto Rex on real ground; the bounce bound ignores the footing, as its speeds do): at 1 m/s ' + sig(s1.carry && s1.carry.supplied) + ' kg m/s, a jump onto Rex on real ground ' + sig(jr.carry && jr.carry.supplied) + ' kg m/s, the least disruptive sprint pushes with ' + sig(la.carry && la.carry.F) + ' N', !bad.length && figs && r50.carry && r50.carry.pGain > 1.15 * 2 * P.vToMomentum(r50.vRel, R3.m), bad.length ? bad.join('; ') : seen.join('; '));
   }
   // 8b. the paradox: held without limit by their powers (bolted on Unbreakable footing, any charge; landed on from above
   // with Unbreakable footing or Comic ground holding him up): no h, contact, toGround or after; the charge itself kept.
@@ -1222,12 +1231,16 @@ const sig = (x) => Number(x).toPrecision(3);
       ['bolted on real rock', charge(dial, { source: 'sprint' }, on({ anchor: 'bolted', unbreakable: false }), on({ unbreakable: false })), 'carried'], ['standing at light speed', charge(dial, { source: 'set', gb: Infinity }), 'unstoppable']];
     for (const [lab, r, want] of notPara) if (r.outcome !== want) bad.push(lab + ': ' + r.outcome);
     const rr = notPara[2][1], k = rr.carry, tear = R3.digArea * conc.shear;
-    if (!(k && k.rockGives === true && near(k.tear, tear, 1e-12) && near(k.footJ, Math.min(tear, rr.contact.soft.F) * rr.contact.soft.t, 1e-12))) bad.push('real rock: ' + JSON.stringify(k));
+    if (!(k && k.rockGives === true && near(k.tear, tear, 1e-12) && k.hold === k.tear && near(k.footJ, tear * rr.contact.soft.t, 1e-12))) bad.push('real rock: ' + JSON.stringify(k));
+    // landed on from above, bolted on real ground: he and his bolts are driven into the ground his feet bear on, so his hold
+    // is the ground's bearing, as standing, not the rock's tear-out load (review round 1 of pull request 4)
+    const jb = charge(dial, { source: 'jump' }, on({ anchor: 'bolted', unbreakable: false }), on({ unbreakable: false })), js = charge(dial, { source: 'jump' }, on({ unbreakable: false }), on({ unbreakable: false }));
+    if (!chk(() => jb.outcome === 'carried' && jb.carry.rockGives === false && !('tear' in jb.carry) && jb.carry.hold === js.carry.hold && jb.carry.footJ === js.carry.footJ && jb.after.splat.depth === js.after.splat.depth && jb.carry.hold > 1.5e6)) bad.push('from above, bolted on real ground: ' + JSON.stringify(jb.carry));
     // he slides on his own friction once torn loose, as a standing Rex does
     if (!(near(rr.after.splat.slide, notPara[0][1].after.splat.slide, 1e-12))) bad.push('real rock slide ' + sig(rr.after.splat.slide) + ' vs standing ' + sig(notPara[0][1].after.splat.slide));
     const above = notPara[1][1];
     if (!(above.after.splat.depth > 0.01 && above.dir === 'v')) bad.push('from above on real ground: not driven in (' + JSON.stringify(above.after.splat) + ')');
-    ok('8b: the paradox where the one hit is held without limit by their powers (bolted on Unbreakable footing at a sprint, 0.1% of c and light speed; landed on from above where Unbreakable footing or Comic ground holds him up: the jump at ' + sig(j9.v0) + ' m/s and the stomp-launch at ' + sig(s9.v0) + ' m/s at 10^9 kg), with no h, contact, ground push or after, the charge kept; not where he isn\'t: standing he is carried, from above on real ground he is driven in (' + sig(above.after.splat.depth * 100) + ' cm), bolted on real rock the rock tears out (' + sig(tear) + ' N) and he slides on his own friction; at light speed today\'s unstoppable', !bad.length, bad.join('; '));
+    ok('8b: the paradox where the one hit is held without limit by their powers (bolted on Unbreakable footing at a sprint, 0.1% of c and light speed; landed on from above where Unbreakable footing or Comic ground holds him up: the jump at ' + sig(j9.v0) + ' m/s and the stomp-launch at ' + sig(s9.v0) + ' m/s at 10^9 kg), with no h, contact, ground push or after, the charge kept; not where he isn\'t: standing he is carried, from above on real ground he is driven in (' + sig(above.after.splat.depth * 100) + ' cm), bolted on real rock the rock tears out (' + sig(tear) + ' N, booked for the whole squash) and he slides on his own friction; from above, bolted on real ground, the ground\'s bearing holds him, as standing (not the rock\'s tear-out load); at light speed today\'s unstoppable', !bad.length, bad.join('; '));
   }
   // 8c. the hit's energy: absorbed by default (hitAbsorbed, the shimmer's figure), real only when he means it (meanIt:
   // the page's blast presets); a bounce frees none; past 1% of light speed the one hit, carried off, meets real air, and
@@ -1266,8 +1279,23 @@ const sig = (x) => Number(x).toPrecision(3);
     const pP = P.standoff(c3(Infinity, O3, on()), c3(dial, R3, on({ anchor: 'bolted' }))), pR = P.standoff(c3(Infinity, O3, on({ unbreakable: false })), c3(dial, R3, on({ anchor: 'bolted', unbreakable: false })));
     const bb = P.standoff(c3(1e8 * g, O3, on({ unbreakable: false, anchor: 'bolted' })), c3(1e8 * g, R3, on({ unbreakable: false, anchor: 'bolted' }))), bb0 = P.standoff(c3(1e8 * g, O3, { anchor: 'bolted' }), c3(1e8 * g, R3, { anchor: 'bolted' }));
     const rk = P.standoff(c3(dial, O3, on({ unbreakable: false })), c3(dial, R3, on({ anchor: 'bolted', unbreakable: false })));
-    ok('8f: the steady push with the pusher\'s recoil taken: his push is his strength (' + sig(so.DA) + ' N, not capped by his ' + sig(so.RA) + ' N footing), he never slips, and it beats Rex\'s hold (' + sig(so.HB) + ' N); with the power off, a dead heat at the footing; unlimited against Rex bolted on Unbreakable footing, the one-sided paradox; on real rock only the rock around Rex\'s bolts tears out (no tearA); bolted on real rock his push loads only Rex\'s rock (no dipole: out to ' + sig(rk.rock && rk.rock.rT) + ' m)',
-      so.ownRecoil === true && so.DA === dial && so.pusherSlips === false && so.outcome === 'forceWins' && so.contact === holdR && so0.outcome === 'stalemate' && so0.DA === so0.RA && so0.pusherSlips && !('ownRecoil' in so0)
+    // both bolted on real rock below the rock's tear load (50 t): the bolts hold, and the pusher's own rock carries none of
+    // his push (no dipole), where with the power off the two loads are equal and opposite (a dipole). (At 10^8 kg, bb above,
+    // the rock tears since review round 1, so this case keeps the rock's dipole flag checked on the holding path.)
+    const bbS = P.standoff(c3(5e4 * g, O3, on({ unbreakable: false, anchor: 'bolted' })), c3(5e4 * g, R3, on({ unbreakable: false, anchor: 'bolted' }))), bbS0 = P.standoff(c3(5e4 * g, O3, { anchor: 'bolted' }), c3(5e4 * g, R3, { anchor: 'bolted' }));
+    const dipOk = chk(() => bbS.outcome === 'objectHolds' && !bbS.rockGives && bbS.rock.dipole === false && bbS0.outcome === 'objectHolds' && bbS0.rock.dipole === true);
+    // (review round 1 of pull request 4) the one driven back is followed as the shoving match follows a shove-off: the same
+    // net push over the same stroke, so the same speed and slide as Ollie bolted shoving Rex off (37.6 m/s, 109 m); his
+    // feet hand the ground his hold x t and the pusher's source takes his push x t (the ledger closes); unbounded: just
+    // under light speed. Bolted on real rock, past the rock's tear load (about 697 kN) he is torn loose and driven back on
+    // his feet; below it (13.5 t) his bolts hold
+    const so1 = P.pushMatch(c3(dial, R3, on()), c3(dial, O3, on({ anchor: 'bolted' }))), dv = so.drive || {}, dvi = (P.standoff(c3(Infinity, O3, on()), c3(dial, R3, on())).drive) || {};
+    const rk13 = P.standoff(c3(13500 * g, O3, on({ unbreakable: false })), c3(13500 * g, R3, on({ anchor: 'bolted', unbreakable: false })));
+    const driveOk = chk(() => near(dv.vB, so1.vA, 1e-12) && near(dv.slideB, so1.slideA, 1e-12) && near(dv.t, so1.t, 1e-12) && near(dv.vB, 37.65, 0.001) && near(dv.slideB, 109.0, 0.001) && near(dv.pB, (so.DA - so.HB) * dv.t, 1e-12) && near(dv.footB, so.HB * dv.t, 1e-12)
+      && near(so.recoilAbsorbed.J, dv.pB + dv.footB, 1e-12) && dvi.vB === cl && dvi.slideB === Infinity && !('drive' in so0)
+      && rk.outcome === 'forceWins' && rk.rockGives === true && near(rk.tearB, R3.digArea * conc.shear, 1e-12) && rk.HB === holdR && near(rk.drive.vB, dv.vB, 1e-12) && rk.rock.tear > 1 && rk13.outcome === 'objectHolds' && !rk13.rockGives && !rk13.drive);
+    ok('8f: the steady push with the pusher\'s recoil taken: his push is his strength (' + sig(so.DA) + ' N, not capped by his ' + sig(so.RA) + ' N footing), he never slips, and it beats Rex\'s hold (' + sig(so.HB) + ' N); with the power off, a dead heat at the footing; unlimited against Rex bolted on Unbreakable footing, the one-sided paradox; on real rock only the rock around Rex\'s bolts tears out (no tearA); bolted on real rock his push loads only Rex\'s rock (no dipole: out to ' + sig(rk.rock && rk.rock.rT) + ' m), and past its tear load the rock tears out and Rex is driven back on his feet (below it, at 13.5 t, his bolts hold); the one driven back is followed as in the shoving match\'s shove-off (' + sig(dv.vB) + ' m/s, sliding ' + sig(dv.slideB) + ' m; unbounded, just under light speed)',
+      driveOk && dipOk && so.ownRecoil === true && so.DA === dial && so.pusherSlips === false && so.outcome === 'forceWins' && so.contact === holdR && so0.outcome === 'stalemate' && so0.DA === so0.RA && so0.pusherSlips && !('ownRecoil' in so0)
         && pP.outcome === 'paradox' && pP.oneSided === true && pR.outcome === 'rockGives' && pR.oneSided === true && near(pR.tearB, R3.digArea * conc.shear, 1e-12) && !('tearA' in pR)
         && rk.rock && rk.rock.dipole === false && near(rk.rock.rT, Math.sqrt(dial / (2 * Math.PI * P.COL.ROCK_T)), 1e-12) && bb.rock && !bb.rock.dipole && bb0.rock && bb0.rock.dipole && bb.rock.rT > bb0.rock.rT,
       so.outcome + ' / ' + so0.outcome + '; ' + pP.outcome + ', ' + pR.outcome + '; both bolted at 10^8 kg: ' + sig(bb.rock && bb.rock.rT) + ' m (power off, a dipole: ' + sig(bb0.rock && bb0.rock.rT) + ' m)');
@@ -1298,9 +1326,28 @@ const sig = (x) => Number(x).toPrecision(3);
     // rock his rock tears out and he leaves at just under light speed
     const sb = pm(dial, dial, { anchor: 'bolted' }), sbo = P.pushMatch(c3(dial, R3, { anchor: 'bolted', ownRecoil: false }), c3(dial, O3, { ownRecoil: false }));
     const up = pm(Infinity, dial, {}, { anchor: 'bolted' }), ur = pm(Infinity, dial, { unbreakable: false }, { anchor: 'bolted', unbreakable: false }), ui = pm(Infinity, Infinity);
-    ok('8g: a bolted Rex with the power on shoves Ollie off over the stroke (' + sig(sb.vB) + ' m/s, sliding ' + sig(sb.slideB) + ' m) and doesn\'t move; with it off he only holds (a dead heat); an unlimited push against Ollie bolted on Unbreakable footing is the one-sided paradox, on real rock his rock tears out and he leaves at just under light speed; both unlimited, they fly apart at just under light speed',
-      sb.outcome === 'shovedOff' && sb.winner === 'A' && sb.vA === 0 && sb.vB > 30 && near(sb.pB, (sb.DA - sb.HB) * sb.t, 1e-12) && sbo.outcome === 'deadlock' && up.outcome === 'paradox' && up.oneSided === true && ur.outcome === 'bothShoved' && ur.tornB === true && ur.vB === cl && ui.outcome === 'bothShoved' && ui.vA === cl && ui.vB === cl && ui.slideA === Infinity,
-      [sb.outcome, sbo.outcome, up.outcome, ur.outcome, ui.outcome].join(' / '));
+    // (review round 1 of pull request 4) only the push into bolts held without limit has no answer: Ollie bolted on
+    // Unbreakable footing still shoves Rex off with his own push (at the dial as a bolted Rex shoves Ollie; unlimited, at
+    // just under light speed); nothing moves only where Ollie's push can't beat Rex's hold (Ollie lying flat at 1 t)
+    const up2 = pm(Infinity, Infinity, {}, { anchor: 'bolted' }), upP = pm(Infinity, 1000 * g, {}, { anchor: 'bolted' });
+    const tear = R3.digArea * conc.shear;
+    ok('8g: a bolted Rex with the power on shoves Ollie off over the stroke (' + sig(sb.vB) + ' m/s, sliding ' + sig(sb.slideB) + ' m) and doesn\'t move; with it off he only holds (a dead heat); an unlimited push into Ollie bolted on Unbreakable footing has no physical answer, but Ollie\'s own push shoves Rex off (at the dial ' + sig(up.vA) + ' m/s; unlimited, just under light speed), and nothing moves only where Ollie\'s push can\'t beat Rex\'s hold; on real rock Ollie\'s rock tears out, he leaves at just under light speed and his feet hand the ground only their hold (' + sig(ur.footB) + ' kg m/s); both unlimited, they fly apart at just under light speed',
+      chk(() => sb.outcome === 'shovedOff' && sb.winner === 'A' && sb.vA === 0 && sb.vB > 30 && near(sb.pB, (sb.DA - sb.HB) * sb.t, 1e-12) && sbo.outcome === 'deadlock'
+        && up.outcome === 'shovedOff' && up.winner === 'B' && up.noAnswer === 'A' && up.vB === 0 && near(up.vA, sb.vB, 1e-9) && up.contact === Infinity && up2.outcome === 'shovedOff' && up2.noAnswer === 'A' && up2.vA === cl && up2.slideA === Infinity && upP.outcome === 'paradox' && upP.oneSided === true && !upP.noAnswer
+        && ur.outcome === 'bothShoved' && ur.tornB === true && ur.vB === cl && near(ur.tearB, tear, 1e-12) && ur.holdAfterB === holdR && near(ur.footB, holdR * ur.t, 1e-12) && ur.footB < 1e-3 && ui.outcome === 'bothShoved' && ui.vA === cl && ui.vB === cl && ui.slideA === Infinity),
+      [sb.outcome, sbo.outcome, up.outcome, up2.outcome, upP.outcome, ur.outcome, ui.outcome].join(' / '));
+    // (review round 1 of pull request 4) a single bolted wrestler on real rock: the rock around his bolts tears out once
+    // the other's push passes its tear load (about 697 kN), at any strength, and then only his feet hold him (both shoved
+    // apart at the dial, as two standing wrestlers are); below it (5.47 t) his bolts hold and he shoves the other off.
+    // Unequal pushes: each one's push back is his own push x t, and the ledger closes. One power on and one off: the
+    // old rule (a test-only case)
+    const real = { unbreakable: false }, ft = pm(dial, dial, Object.assign({ anchor: 'bolted' }, real), real), ft5 = pm(5470 * g, 5470 * g, Object.assign({ anchor: 'bolted' }, real), real);
+    const un = pm(dial, 2 * dial), unL = un.pB - un.pA + un.footB - un.footA - (un.recoilAbsorbedA || { J: NaN }).J + (un.recoilAbsorbedB || { J: NaN }).J;
+    const mix = P.pushMatch(c3(dial, R3, on()), c3(dial, O3, on({ ownRecoil: false })));
+    ok('8g: a single bolted wrestler on real rock: past the rock\'s tear load (' + sig(tear) + ' N) the rock around his bolts tears out and only his feet hold him (at the dial both are shoved apart at ' + sig(ft.vA) + ' m/s, as standing); below it (5.47 t) his bolts hold and he shoves Ollie off; unequal pushes (Ollie at twice the dial): each one\'s push back is his own push x t and the momentum adds up; one power on, one off: the old rule',
+      chk(() => ft.outcome === 'bothShoved' && ft.tornA === true && near(ft.tearA, tear, 1e-12) && ft.holdAfterA === holdR && near(ft.vA, r.vA, 1e-12) && near(ft.footA, holdR * ft.t, 1e-12) && ft5.outcome === 'shovedOff' && ft5.winner === 'A' && !ft5.tornA
+        && un.outcome === 'bothShoved' && near(un.recoilAbsorbedA.J, un.DA * un.t, 1e-12) && near(un.recoilAbsorbedB.J, un.DB * un.t, 1e-12) && un.recoilAbsorbedB.J > 1.9 * un.recoilAbsorbedA.J && Math.abs(unL) <= 1e-9 * un.recoilAbsorbedB.J
+        && mix.outcome === 'deadlock' && same(mix, r0)), [ft.outcome, ft5.outcome, un.outcome, mix.outcome].join(' / '));
   }
   // 8h. Both at once, their recoil taken: each is shoved by the other's shove, so equal bodies both fly apart (each at
   // what the Shove tab gives a planted shover's partner); with the power off, the stronger shove sets the push as before
@@ -1310,29 +1357,50 @@ const sig = (x) => Number(x).toPrecision(3);
     // (pull request 2's one-sided case, both at once: Rex standing, Ollie bolted on real rock, both unlimited: Ollie's rock
     // tears out and he leaves at just under light speed, and Ollie's unlimited shove sends Rex off too; no clash)
     const st1 = P.shoveBoth(c3(Infinity, R3, on({ unbreakable: false })), c3(Infinity, O3, real));
-    ok('8h: Both at once with their recoil taken: each is shoved by the other\'s shove (Rex at ' + sig(sb.vA) + ' m/s, Ollie at ' + sig(sb.vB) + ' m/s, each sliding about ' + sig(sb.slideA) + ' m), each one\'s push back to his own source; with the power off the stronger shove sets the push, as before; unlimited, both bolted on real rock, both rocks tear out (rockGives); Rex standing, Ollie bolted on real rock, Ollie\'s rock tears out and both fly off at just under light speed; into a partner bolted on Unbreakable footing, the one-sided paradox',
+    // (review round 1 of pull request 4) only the shove into bolts held without limit has no answer: the other shove is real
+    // (Rex bolted: Ollie's shove into his bolts has none, Rex's shoves Ollie off at just under light speed; Ollie bolted:
+    // the other way round); nothing moves only where both are bolted on Unbreakable footing
+    const po = P.shoveBoth(c3(Infinity, R3, on()), c3(Infinity, O3, on({ anchor: 'bolted' }))), pb = P.shoveBoth(c3(Infinity, R3, on({ anchor: 'bolted' })), c3(Infinity, O3, on({ anchor: 'bolted' })));
+    ok('8h: Both at once with their recoil taken: each is shoved by the other\'s shove (Rex at ' + sig(sb.vA) + ' m/s, Ollie at ' + sig(sb.vB) + ' m/s, each sliding about ' + sig(sb.slideA) + ' m), each one\'s push back to his own source; with the power off the stronger shove sets the push, as before; unlimited, both bolted on real rock, both rocks tear out (rockGives); Rex standing, Ollie bolted on real rock, Ollie\'s rock tears out and both fly off at just under light speed; one bolted on Unbreakable footing, the shove into his bolts has no physical answer but his own shove sends the other off at just under light speed; both bolted on it, the paradox (nothing moves)',
       chk(() => sb.both === true && sb.shover === 'A' && sb.vB === one.vB && sb.vA === back.vB && sb.slideA === back.slideB && sb.recoilAbsorbed && near(sb.recoilAbsorbed.J, one.recoilAbsorbed.J, 0) && sb.back.recoilAbsorbed && sb.vA > 20 && !sb.stalled && same(sb0, old0)
-        && rg.clash === 'rockGives' && rg.oneSided === false && rg.vA === cl && rg.vB === cl && rg.tearA > 0 && rg.tearB > 0 && pd.clash === 'paradox' && pd.oneSided === true && pd.stalled
+        && rg.clash === 'rockGives' && rg.oneSided === false && rg.vA === cl && rg.vB === cl && rg.tearA > 0 && rg.tearB > 0
+        && !pd.clash && pd.noAnswer === 'back' && pd.shover === 'A' && pd.vA === 0 && pd.vB === cl && !pd.stalled && !po.clash && po.noAnswer === 'shove' && po.vA === cl && po.vB === 0 && !po.stalled && pb.clash === 'paradox' && pb.stalled && pb.vA === 0 && pb.vB === 0
         && !st1.clash && st1.vA === cl && st1.vB === cl && st1.tearB > 0 && !(st1.tearA > 0) && st1.recoilAbsorbed && st1.recoilAbsorbed.J === Infinity), sig(sb.vA) + ' / ' + sig(sb.vB) + '; off: ' + sig(sb0.vA) + ' / ' + sig(sb0.vB));
   }
   // 8i. arm wrestling, reading B (decision 10; the brief's reading A is physically incoherent, see armWrestle): each pad
   // (standing, each one's feet) holds the OTHER's press. A pin on the table: the winner's pad holds the loser's press
-  // (spinning the forearms is his swing, to his source), so a pin never breaks the table with the power on; the presses
-  // still do; the pin itself is unchanged. Standing (Things keep their form off, the table broken by the presses): his
-  // own footing no longer caps his own press, so the stronger always pins; each one's feet hold the other's press
+  // (spinning the forearms is his swing, to his source); the loser's pad carries what turns his own forearm against the
+  // winner's hand, |holdArm m_l a - (P_l + effMass m_l a)| (review round 1 of pull request 4), and past what the table
+  // carries it breaks the table in the pin, as the winner's pad does with the power off; the presses still break it; the
+  // pin itself is unchanged. Standing (Things keep their form off, the table broken): his own footing no longer caps his
+  // own press, so the stronger always pins; each one's feet hold the other's press; a bolted one's rock carries the press
+  // that reaches him (the other's in a stalemate, the loser's in a pin)
   { const aw = (FR, FO, x) => P.armWrestle(c3(FR, R3, on(x)), c3(FO, O3, on(x))), aw0 = (FR, FO, x) => P.armWrestle(c3(FR, R3, on(Object.assign({ ownRecoil: false }, x))), c3(FO, O3, on(Object.assign({ ownRecoil: false }, x))));
     const p1 = aw(dial, 1000 * g), p0 = aw0(dial, 1000 * g), k1 = aw(dial, 1000 * g, { keepForm: false }), k0 = aw0(dial, 1000 * g, { keepForm: false });
-    let pinBreaks = 0, runs = 0;
+    const AW = P.AW, loserPadOf = (r, ml) => { const Pw = Math.max(r.PA, r.PB), Pl = Math.min(r.PA, r.PB), a = (Pw - Pl) / (AW.effMass * (R3.m + O3.m)); return Math.abs(AW.holdArm * ml * a - (Pl + AW.effMass * ml * a)); };
+    let wrong = 0, byLoser = 0, runs = 0; const firstWrong = [];
     for (const lg of [2.5, 3, 3.5, 4, 5, 6, 9, 12, 20]) for (const lo of [2, 2.5, 3, 4, 6, 9]) for (const sid of ['sand', 'concrete', 'ice', 'granite', 'softclay']) for (const anc of ['friction', 'bolted']) for (const kf of [false, true]) for (const ub of [false, true]) {
       const x = { keepForm: kf, unbreakable: ub, surface: surf(sid), anchor: anc }, r = P.armWrestle(c3(Math.pow(10, lg) * g, R3, on(x)), c3(Math.pow(10, lo) * g, O3, on(x)));
-      runs++; if (r.tableBreaksBy === 'pin' || (r.tableBreaks && !(Math.min(r.PA, r.PB) > r.tableLat))) pinBreaks++;
+      runs++;
+      // the presses alone break it ('push'); otherwise a pin on the table breaks it exactly where the larger pad passes it
+      if (r.blackHole || r.tableBreaksBy === 'push' || r.PA === r.PB) continue;
+      const lp = loserPadOf(r, r.PA > r.PB ? O3.m : R3.m), breaks = Math.max(r.padLoad, lp) > r.tableLat;
+      if (!(near(r.loserPadLoad, lp, 1e-12) && r.padLoad === Math.min(r.PA, r.PB) && (r.tableBreaksBy === 'pin') === breaks)) { wrong++; if (firstWrong.length < 2) firstWrong.push([lg, lo, sid, anc, kf, ub, r.tableBreaksBy, sig(lp), sig(r.tableLat)].join(' ')); }
+      if (r.tableBreaksBy === 'pin') byLoser++;
     }
-    ok('8i: arm wrestling on the table with the winner\'s recoil taken: his pad holds the loser\'s press (' + sig(p1.padLoad) + ' N, against ' + sig(p0.padLoad) + ' N with the power off), so a pin never breaks the table (0 of ' + runs + ' runs; only both presses past what it carries do); the pin itself is unchanged; with Things keep their form off the pin that broke the table with the power off stays on it',
-      p1.outcome === 'pin' && p1.padLoad === p1.PB && p0.padLoad > 50 * p1.padLoad && same(p1.pin, p0.pin) && p1.slamRatio === p0.slamRatio && pinBreaks === 0 && k1.outcome === 'pin' && !k1.tableBreaks && k0.tableBreaks && k0.tableBreaksBy === 'pin', 'power off with Things keep their form off: the table breaks by the ' + k0.tableBreaksBy);
+    ok('8i: arm wrestling on the table with the winner\'s recoil taken: his pad holds the loser\'s press (' + sig(p1.padLoad) + ' N, against ' + sig(p0.padLoad) + ' N with the power off), and the loser\'s pad what turns his forearm (' + sig(p1.loserPadLoad) + ' N); a pin breaks the table where the larger pad passes what it carries (' + byLoser + ' of ' + runs + ' runs, each by the loser\'s pad); the pin itself is unchanged; with Things keep their form off, Rex at the dial against Ollie at 1 t, the loser\'s pad (' + sig(k1.loserPadLoad) + ' N) breaks the table (' + sig(k1.tableLat) + ' N) and Rex pins standing, as with the power off (by the winner\'s pad there)',
+      chk(() => p1.outcome === 'pin' && p1.padLoad === p1.PB && near(p1.loserPadLoad, loserPadOf(p1, O3.m), 1e-12) && p0.padLoad > 50 * p1.padLoad && !('loserPadLoad' in p0) && same(p1.pin, p0.pin) && p1.slamRatio === p0.slamRatio && wrong === 0 && byLoser > 0
+        && k1.outcome === 'pin' && k1.tableBreaks && k1.tableBreaksBy === 'pin' && near(k1.loserPadLoad, 24206, 0.001) && k1.loserPadLoad > k1.tableLat && k1.padLoad < k1.tableLat && k1.slamRatio === 0 && k0.tableBreaks && k0.tableBreaksBy === 'pin'), wrong ? firstWrong.join('; ') : 'power off with Things keep their form off: the table breaks by the ' + k0.tableBreaksBy);
     const st = aw(dial, dial, { keepForm: false }), st0 = aw0(dial, dial, { keepForm: false }), sp = aw(1e5 * g, 2e5 * g, { keepForm: false }), sp0 = aw0(1e5 * g, 2e5 * g, { keepForm: false });
     const u1 = aw(Infinity, Infinity, { keepForm: false }), u2 = aw(Infinity, Infinity, { keepForm: false, anchor: 'bolted' }), u3 = aw(Infinity, Infinity, { keepForm: false, anchor: 'bolted', unbreakable: false });
-    ok('8i: standing, once the presses break the table (Things keep their form off): his own footing no longer caps his own press (both at the dial: a stalemate in the arms at ' + sig(st.AA) + ' N, each one\'s feet sliding under the other\'s press; with the power off a stalemate at the grip); 100 t against 200 t, Ollie pins Rex (with the power off a stalemate at the grip) and both one\'s feet slide; both unlimited: flung apart, or the paradox bolted on Unbreakable footing, or both rocks tear out on real rock',
-      st.tableBreaks && st.tableBreaksBy === 'push' && st.outcome === 'stalemate' && st.AA === st.PA && !st.footLimitedA && st.draggedA === true && st.draggedB === true && st0.outcome === 'stalemate' && st0.AA === st0.RA && !('draggedA' in st0)
+    // a bolted loser in a standing pin (Rex at 10^6 kg against Ollie at 100 short tons, bolted on real rock): his rock carries
+    // the loser's press, the push his folding arm resists (222 kN, 0.32 of its tear load), not Rex's 2.45 MN; equal presses
+    // load each one's bolts with the other's (review round 1 of pull request 4)
+    const bl = P.armWrestle(c3(1e6 * g, R3, on({ keepForm: false, unbreakable: false })), c3(dial, O3, on({ keepForm: false, unbreakable: false, anchor: 'bolted' })));
+    const be = aw(dial, dial, { keepForm: false, unbreakable: false, anchor: 'bolted' }), tear = R3.digArea * conc.shear;
+    const tearOk = chk(() => bl.outcome === 'pin' && bl.winner === 'A' && near(bl.tearB, bl.PB / tear, 1e-12) && bl.tearB < 1 && be.outcome === 'stalemate' && near(be.tearA, be.PB / tear, 1e-12) && near(be.tearB, be.PA / tear, 1e-12));
+    ok('8i: standing, once the presses break the table (Things keep their form off): his own footing no longer caps his own press (both at the dial: a stalemate in the arms at ' + sig(st.AA) + ' N, each one\'s feet sliding under the other\'s press; with the power off a stalemate at the grip); 100 t against 200 t, Ollie pins Rex (with the power off a stalemate at the grip) and both one\'s feet slide; a bolted loser\'s rock carries the loser\'s press (' + sig(bl.tearB) + ' of its tear load); both unlimited: flung apart, or the paradox bolted on Unbreakable footing, or both rocks tear out on real rock',
+      tearOk && st.tableBreaks && st.tableBreaksBy === 'push' && st.outcome === 'stalemate' && st.AA === st.PA && !st.footLimitedA && st.draggedA === true && st.draggedB === true && st0.outcome === 'stalemate' && st0.AA === st0.RA && !('draggedA' in st0)
         && sp.outcome === 'pin' && sp.winner === 'B' && sp.AB === sp.PB && sp.winnerSlides === true && sp.loserSlides === true && sp0.outcome === 'stalemate' && !('winnerSlides' in sp0)
         && u1.outcome === 'flungApart' && u1.ownRecoil && u2.outcome === 'paradox' && u2.oneSided === false && u3.outcome === 'rockGives' && u3.tearA > 0 && u3.tearB > 0, [st.outcome, st0.outcome, sp.outcome, sp0.outcome, u1.outcome, u2.outcome, u3.outcome].join(' / '));
   }

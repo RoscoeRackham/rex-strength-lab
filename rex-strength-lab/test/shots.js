@@ -1219,11 +1219,12 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     // Collide's steady push (decision 7): the pusher's own footing doesn't cap his push; the force between their hands is
     // the push that drives Rex back. Off: pull request 3's dead heat.
     {
-      await load(Object.assign({ colMode: 'push' }, COL));
+      // (all-out: with the power on the least disruptive effort now stops where Rex's slide reaches the people, 5.47 t)
+      await load(Object.assign({ colMode: 'push' }, COL)); await pick('allout');
       const v = await duoTxt('.verdict'), t = await duoTxt('.tiles'), h = await duoTxt('.happens');
       await load(Object.assign({ colMode: 'push', ownRecoil: false }, COL));
       const vo = await duoTxt('.verdict'), ho = await duoTxt('.happens');
-      check('Collide, the steady push on and off', /^Ollie wins\. He pushes with 890 kN and Rex can hold only 17\.7 kN, so Rex is driven back\. Ollie takes his own recoil, so his push back goes to his source and his own footing \(17\.7 kN\) doesn’t cap his push\.$/.test(v)
+      check('Collide, the steady push on and off', /^Ollie wins\. He pushes with 890 kN and Rex can hold only 17\.7 kN, so Rex is driven back\. Ollie takes his own recoil, so his push back goes to his source and his own footing \(17\.7 kN\) doesn’t cap his push\. Over the shove’s stroke \(2\.44 m\) that sends Rex off at 37\.6 m\/s, and he slides 109 m before he stops\.$/.test(v)
         && /Force between them ?890 kN ?the same both ways between their hands; Rex’s feet pass 17\.7 kN of it to the ground and the rest drives him back; Ollie’s side goes to his source/.test(t) && !/both forces end up in the ground/.test(h)
         && /^Dead heat\. Ollie pushes with 17\.7 kN and Rex holds 17\.7 kN\. Neither moves\./.test(vo) && /both forces end up in the ground/.test(ho), v + ' | ' + t.slice(-200) + ' | off ' + vo);
       // unlimited into a bolted Rex: the one-sided paradox (not 'one unbreakable system'); on real rock only Rex's rock tears
@@ -1282,14 +1283,17 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       await load(A);
       const h = await duoTxt('.happens');
       check('arm wrestling, each pad holds the other\'s press', /Each one’s own push back goes to his source \(They take their own recoil\), but the other’s press on him is real \(a contest lets force move\)\. Under the rules each grips the table’s peg with his free hand and rests his elbow on a pad bolted to the table, so each pad holds the other’s press/.test(h), h.slice(0, 300));
-      // Ollie at 1 t, Things keep their form off: the pin stays on the table (its pad holds only Ollie's press), slams
-      // through it at 83 m/s; with the power off the pin's pad load breaks the table and they stand
+      // Ollie at 1 t, Things keep their form off: Rex's pad holds only Ollie's press, but Ollie's pad carries what turns his
+      // forearm against Rex's hand (24.2 kN), past the table's 15.1 kN, so the pin breaks the table and they stand, as with
+      // the power off (by Rex's pad there); review round 1 of pull request 4
       await load(Object.assign({ keepForm: false }, A)); await ollieKg(3); await pick('allout');
-      const vp = await duoTxt('.verdict'), hp = await duoTxt('.happens');
+      const vp = await duoTxt('.verdict'), hp = await duoTxt('.happens'), mp = await duoTxt('details.math .eq');
       await load(Object.assign({ keepForm: false, ownRecoil: false }, A)); await ollieKg(3); await pick('allout');
       const vpo = await duoTxt('.verdict');
-      check('arm wrestling, a pin never breaks the table with the power on', /^Rex pins Ollie in 2\d(?:\.\d)? ms\. The back of Ollie’s hand hits the pad at 83 m\/s and goes through the table\./.test(vp) && /Forcing an arm down: the winner’s elbow pad holds the loser’s press, 2\.45 kN here\..*So with the power on a pin never breaks the table/.test(hp)
-        && /^The table can’t take the pin\./.test(vpo), vp + ' | off ' + vpo.slice(0, 120));
+      const ep = await eng('const r = P.armWrestle(mk({ keepForm: false }), mk({ keepForm: false, F: 1000 * g, body: P.makeBody(Object.assign({ build: "ollie" }, P.DEFAULT_BODIES.ollie)) })); return { by: r.tableBreaksBy, lp: r.loserPadLoad, lat: r.tableLat, v: r.pin && r.pin.v };');
+      check('arm wrestling, the loser\'s pad breaks the table in a pin with the power on', ep.by === 'pin' && ep.lp > ep.lat && /^The table can’t take the pin\. Rex’s arm \(222 kN\) beats Ollie’s \(2\.45 kN\), and forcing it down loads Ollie’s elbow pad with about 24\.2 kN \(what turns his forearm against Rex’s hand\), more than the 15\.1 kN the table carries\. It tears out\. Standing up, /.test(vp) && /he pins Ollie in 2\d(?:\.\d)? ms\. The back of Ollie’s hand swings down at 83 m\/s\./.test(vp)
+        && /Forcing an arm down: the winner’s elbow pad holds the loser’s press, 2\.45 kN here\..*The loser’s pad still carries what turns his own forearm against the winner’s hand, about 24\.2 kN: that is a force on the loser, not anyone’s push back, so no power takes it\. That is more than the table carries, so the pin breaks it\./.test(hp) && !/never breaks the table|never tears the table/.test(hp + vp)
+        && /= 24\.2 kN\./.test(mp) && /^The table can’t take the pin\. Rex’s arm \(222 kN\) beats Ollie’s \(2\.45 kN\), and forcing it down loads Rex’s elbow pad/.test(vpo), vp + ' | ' + hp.slice(0, 300) + ' | off ' + vpo.slice(0, 160));
       // standing (the table broken by both presses), equal: a dead heat at 222 kN, both pushed off their feet
       await load(Object.assign({ keepForm: false }, A)); await pick('allout');
       const vs = await duoTxt('.verdict'), ss = await duoTxt('.status-row');
@@ -1310,7 +1314,9 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       check('Never knocked back: on by default, an old save loads with both on, each switch named, next to Bolted, with its note', fresh === 'true|true|true|true|Comic book · default powers on' && old === 'true|true|true|true|Comic book · default powers on' && older === 'true|true|true|true|Comic book · default powers on'
         && rexOff === 'false|true|false|true|Comic book · unbreakable footing · own recoil · things keep their form · safe passenger · drag-free throws · never knocked back: Ollie' && ollieOff === 'true|false|true|false|Comic book · unbreakable footing · own recoil · things keep their form · safe passenger · drag-free throws · never knocked back: Rex'
         && place && place.names.join() === 'Never knocked back: Rex,Never knocked back: Ollie' && place.inPowers && place.afterBolted && place.sameNote
-        && /In their contests, every two-player test here, they let force move: the other’s push on him is real, and only his own push back is taken \(They take their own recoil\)\. A catch is his own push too, so that power takes it back\. So this switch acts in one case only: a throw that reaches the catcher as a fireball or plasma in the game of catch \(Things keep their form off, some of the air’s drag left\), which hits him rather than being caught\./.test(place.note),
+        && /In their contests \(arm wrestling, every Wrestle move, Collide, the partner toss\) they let force move: the other’s push on him is real, and only his own push back is taken \(They take their own recoil\)\. A catch is his own push too, so that power takes it back\. So this switch acts in one case only: a throw that reaches the catcher as a fireball or plasma in the game of catch \(Things keep their form off, some of the air’s drag left\), which hits him rather than being caught\./.test(place.note)
+        // (review round 1 of pull request 4: only the motion freed as it stops at him is taken back; the air's heat stays real)
+        && /the motion it frees as it stops at him is taken back unless he means it \(canon; the heat it made in the air on the way stays real\)/.test(place.note) && !/the energy it frees where he stands is taken back/.test(place.note),
         JSON.stringify({ fresh, old, older, rexOff, ollieOff, place }));
       // turning either off changes no result on any tab (each read at its default, least disruptive effort)
       const changed = [];
@@ -1341,10 +1347,125 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
         && /Never knocked back: it doesn’t move Ollie\./.test(vrex) && /Thrown back, it hits Rex the same way\. It carries Rex off at 343 m\/s\./.test(vrex), von + ' | off ' + voff.slice(-200) + ' | Rex off ' + vrex.slice(-200));
       // the cards: Their powers, Unstoppable force vs immovable object, Two-player effort, Game of catch
       const cards = await page.evaluate(() => document.body.textContent.replace(/\s+/g, ' '));
-      check('the cards for pull request 4', /Never knocked back \(one switch each, both on by default; canon, the rulings of 14 Oct 2026\) means a hit from outside a contest doesn’t move him: its momentum goes to the endless ocean, even if he is bolted/.test(cards)
+      check('the cards for pull request 4', /Never knocked back \(one switch each, both on by default; canon, the rulings of 14 Oct 2026\) means a hit from outside a contest doesn’t move him: its momentum goes to the endless ocean, even if he is bolted, and the motion it frees as it stops at him is taken back unless he means it \(the heat it made in the air on the way stays real\); in their contests \(arm wrestling, every Wrestle move, Collide, the partner toss\)/.test(cards)
+        // (review round 1 of pull request 4: six powers on by default; the Newton card names the contests)
+        && /so six powers are on unless the reader turns them off: Air resistance absorbed, Things keep their form, Unbreakable footing, They take their own recoil, Safe passenger and Never knocked back \(one switch each\)\./.test(cards) && !/five powers are on|every two-player test|the energy it frees where he stands is taken back/.test(cards)
+        && /Where a push or hit has no physical answer \(canon: one held without limit by their powers, against a charger who can’t slow or an unlimited push\), the lab can’t judge its harm, and the page says so rather than calling it harmless\./.test(cards)
         && /A charger who takes his own recoil \(the default\) doesn’t slow: canon sends the push back from his own hit to his source/.test(cards) && /one of them has to give and neither can: canon rules that the collision has no physical answer/.test(cards)
         && /both shoved apart in the shoving match, or carried along at the charger’s speed in Collide/.test(cards) && /count only for a blast preset \(rattle, windows, houses, a block\), which the lab reads as meaning it/.test(cards)
         && /Never knocked back does \(one switch each, on by default\): he isn’t moved, and its momentum goes to the endless ocean, bolted too/.test(cards) && !/Never knocked back, (?:not|which isn’t) in the lab yet/.test(cards), '(card text)');
+    }
+    // ---- review round 1 of pull request 4 (research/reviews/canon-4-round1.json): each check fails on 238f570's page
+    {
+      // physics-carry-force-omits-hold-and-cap: the hit pushes with the squash's own force plus Rex's hold for the whole
+      // squash, so force x time = what Ollie's source supplies; no cap, no 'the push rises until it gives'
+      await load(COL);
+      const t0 = await duoTxt('.tiles'), h0 = await duoTxt('.happens'), b0 = await duoTxt('svg text');
+      const e0 = await eng('const r = P.collide(mk({ F: 4260 * g, body: P.makeBody(Object.assign({ build: "ollie" }, P.DEFAULT_BODIES.ollie)) }), mk({ F: 4260 * g }), { source: "sprint" }); return { F: r.carry.F, T: r.carry.T, sup: r.carry.supplied, sq: r.contact.soft.F };');
+      await load(Object.assign({ colSrc: 'set', colGB: Math.log10(1 / 299792458) }, COL)); await pick('allout');
+      const h1 = await duoTxt('.happens'), t1 = await duoTxt('.tiles');
+      check('review round 1: the carried hit\'s force includes the hold, uncapped', Math.abs(e0.F * e0.T / e0.sup - 1) < 1e-9 && /Force of the hit ?273 kN ?over 86 ms: the plush squash plus his footing \(estimates\)/.test(t0) && /pushes with about 273 kN: the squash’s own 255 kN plus the 17\.7 kN with which his footing holds Rex back, since Ollie can’t slow\. That force over that time is what Ollie’s source supplies\./.test(h0)
+        && /The hit: squash plus his hold/.test(b0) && /Ollie’s source supplies ?14,000 kg·m\/s/.test(t1) && /what his footing hands the ground during the hit \(11,100 kg·m\/s\)/.test(h1) && /Force of the hit ?22\.4 kN/.test(t1) && !/the push rises until it gives|so here they are rough/.test(h0 + h1), t0.slice(0, 300) + ' | ' + t1.slice(-200));
+      // physics-from-above-bolted-real-rock: landed on from above, a bolted Rex on real ground is held by the ground's
+      // bearing (driven in, bolts and all), not torn loose with a plug of rock
+      await load(Object.assign({ colSrc: 'jump', anchor: 'bolted', unbreakable: false }, COL)); await pick('allout');
+      const sj = await duoTxt('.status-row'), hj = await duoTxt('.happens'), bj = await duoTxt('svg text'), tj = await duoTxt('.tiles');
+      check('review round 1: from above, a bolted Rex on real ground is held by the ground\'s bearing', /Rex driven into the ground/.test(sj) && !/torn loose with a plug of rock|tears out/.test(sj + hj) && /the ground under his feet, which bears 1\.52 MN on the concrete slab \(from above, his bolts go down into it with him/.test(hj) && /What holds Rex: the ground/.test(bj) && /Ollie’s source supplies ?110,000 kg·m\/s/.test(tj), sj + ' | ' + hj.slice(0, 400));
+      // duo-paradox-claimed-harmless and copy-paradox-coexist: a hit with no physical answer is never called harmless, and
+      // the canon case isn't 'two settings that can't both hold'
+      await load(Object.assign({ anchor: 'bolted' }, COL));
+      const ep0 = await duoTxt('.effort-read'), hp0 = await duoTxt('.happens'), gp0 = await duoTxt('.case-grid td, .case-grid th, table td');
+      await pick('windows');
+      const ep1 = await duoTxt('.effort-read');
+      check('review round 1: the paradox is never called harmless, and the canon case isn\'t two settings that can\'t both hold', /^All-out\. Nothing the lab can judge in this test does harm here/.test(ep0) && /Courtesy ceiling: none that the lab can judge\. The hit has no physical answer here \(the canon’s ruling\), so the lab can’t judge its harm; it judges only the charge \(its speed against sound\) and the charger’s take-off\./.test(ep0)
+        && /The hit has no physical answer here \(the canon’s ruling\), so the lab can’t judge its harm; it judges only the charge \(its speed against sound\) and the charger’s take-off\. Even all-out, those don’t shatter windows 15 m away/.test(ep1) && !/Nothing in this test does harm|Even all-out, this test doesn’t|no cap needed/.test(ep0 + ep1)
+        && /so physics has no answer here \(the canon’s ruling\)\./.test(hp0) && !/can’t both hold|can’t exist in the same universe/.test(hp0 + gp0), ep0.slice(0, 300) + ' | ' + ep1.slice(0, 300));
+      // duo-steady-push-no-harm and copy-push-harm: the one driven back is followed and judged; unlimited, he flies off
+      await load(Object.assign({ colMode: 'push' }, COL));
+      const sp0 = await duoTxt('.effort-read'), st0 = await duoTxt('.tiles');
+      await load(Object.assign({ colMode: 'push', inf: true }, COL)); await pick('allout');
+      const sp1 = await duoTxt('.effort-read');
+      // (and the presets' reasons with the power on: the one pushed hands the ground a friction drag; only he slides)
+      await load(Object.assign({ colMode: 'push' }, COL)); await pick('plaster');
+      const sp2 = await duoTxt('.effort-read');
+      await pick('ground');
+      const sp3 = await duoTxt('.effort-read');
+      check('review round 1: the steady push follows and judges the one driven back', /Courtesy ceiling: 6% \(lifting 5\.47 t\)\. Past that, Rex is driven back and slides 5\.\d+ m, past the nearest people 5 m away\./.test(sp0) && /Rex is driven off at ?7\.\d+ m\/s ?over the shove’s stroke; slides/.test(st0)
+        && /At this effort Rex is driven back faster than sound/.test(sp1) && !/Nothing in this test does harm|slow load, not a blow|no cap needed/.test(sp0 + sp1 + sp2)
+        && /In the steady push the pusher’s push back goes to the endless ocean \(They take their own recoil\), and the one pushed hands the ground only a steady push through his feet or bolts, or a friction drag while he is driven back and slides, not a blow/.test(sp2) && /Standing, the one pushed slides long before the ground under him could break/.test(sp3) && !/their feet slide/.test(sp3), sp0.slice(0, 300) + ' | ' + sp1.slice(-200) + ' | ' + sp2.slice(0, 200) + ' | ' + sp3.slice(0, 200));
+      // physics-steady-push-bolted-real-rock: past the rock's tear load Rex is torn loose and driven back, not held
+      await load(Object.assign({ colMode: 'push', anchor: 'bolted', unbreakable: false }, COL)); await pick('allout');
+      const vr1 = await duoTxt('.verdict'), sr1 = await duoTxt('.status-row');
+      await load(Object.assign({ colMode: 'push', anchor: 'bolted' }, COL)); await pick('ground');
+      const gr1 = await duoTxt('.effort-read');
+      check('review round 1: a steady push past the rock\'s tear load tears a bolted Rex loose', /^Rex is bolted, but on real rock: Ollie’s push \(890 kN\) is more than the rock around his bolts takes \(about 697 kN\), so it tears out, and Rex is driven back with a plug of rock, held only by his feet \(17\.7 kN\)\./.test(vr1) && /Over the shove’s stroke \(2\.44 m\) that sends Rex off at 37\.6 m\/s/.test(vr1) && /Rex’s rock tears loose/.test(sr1) && !/his bolts hold|Rex holds unlimited/.test(vr1 + sr1)
+        && /lifting 13\.5 t\)\. The least effort that breaks the rock around Rex’s bolts\./.test(gr1), vr1 + ' | ' + sr1 + ' | ' + gr1.slice(0, 200));
+      // copy-push-bars-390: the steady push's bar labels fit at 390 px
+      await page.setViewportSize({ width: 390, height: 844 });
+      await load(Object.assign({ colMode: 'push' }, COL));
+      const clip = await page.evaluate(() => Array.from(document.querySelectorAll('#duo-bay svg')).flatMap((s) => { const sr = s.getBoundingClientRect(); return Array.from(s.querySelectorAll('text')).filter((t) => t.getBoundingClientRect().right > sr.right + 0.5 || t.getBoundingClientRect().left < sr.left - 0.5).map((t) => t.textContent); }));
+      await page.setViewportSize({ width: 1280, height: 900 });
+      check('review round 1: the steady push\'s bar labels fit at 390 px', !clip.length, clip.join(' | '));
+      // copy-shovingmatch-paradox-nothing-moves and duo-one-sided-paradox-nothing-moves: at unlimited strength only the push
+      // into bolts held without limit has no answer; the bolted one's own push shoves the other off
+      const W = { duoOpen: true, duoAction: 'wrestle' };
+      await load(Object.assign({ inf: true, oAnchor: 'bolted' }, W)); await pick('allout');
+      const vw1 = await duoTxt('.verdict'), ew1 = await duoTxt('.effort-read');
+      await load(Object.assign({ wrestleMove: 'shove', wrestleWho: 'both', inf: true, anchor: 'bolted' }, W)); await pick('allout');
+      const vb1 = await duoTxt('.verdict'), eb1 = await duoTxt('.effort-read'), tb1 = await duoTxt('.tiles');
+      check('review round 1: one bolted at unlimited strength, the other\'s push has no answer but his own is real', /^Ollie is bolted to ground that their power holds, so Rex’s unlimited push into his bolts meets a hold without limit: that push has no physical answer \(the canon’s ruling\), and it moves nobody\. Ollie’s own push on Rex is real \(a contest lets force move\), and Rex holds only 17\.7 kN, so Ollie shoves him off at just under light speed/.test(vw1) && /At this effort Rex is shoved off faster than sound/.test(ew1)
+        && /^Rex is bolted to ground that their power holds, so Ollie’s unlimited shove into his bolts meets a hold without limit: that shove has no physical answer \(the canon’s ruling\), and it moves nobody\. Rex’s own shove on Ollie is real \(a contest lets force move\): Ollie leaves at just under light speed\./.test(vb1) && /At this effort someone flies off faster than sound/.test(eb1) && /Rex moves ?not at all ?bolted/.test(tb1) && !/Nothing moves/.test(vw1 + vb1), vw1 + ' | ' + vb1);
+      // duo-ratio-long-digits: the ratio rounded, with separators
+      await load(Object.assign({ logKg: 9, oLogKg: 9 }, W)); await pick('allout');
+      { const v9 = await duoTxt('.verdict'); check('review round 1: the shoving match\'s ratio is rounded', /about 560,000 times what holds the other/.test(v9) && !/\d{6}/.test(v9.replace(/[\d,.]+ (?:m|kN|GN|km)/g, '')), v9); }
+      // physics-shoving-match-bolted-rock-claim, copy-shovingmatch-torn-unbounded, duo-push-ground-preset-reason: a
+      // single bolted wrestler's rock is checked at any strength, his hold once torn is his feet's, and the ground preset
+      // names his bolts
+      await load(Object.assign({ anchor: 'bolted', unbreakable: false }, W)); await pick('allout');
+      const vk = await duoTxt('.verdict');
+      await load(Object.assign({ inf: true, oAnchor: 'bolted', unbreakable: false }, W)); await pick('allout');
+      const vk2 = await duoTxt('.verdict'), sk2 = await duoTxt('.status-row'), hk2 = await duoTxt('.happens');
+      await load(Object.assign({ anchor: 'bolted' }, W)); await pick('ground');
+      const gk = await duoTxt('.effort-read');
+      await load(Object.assign({ anchor: 'bolted', unbreakable: false }, W)); await pick('plaster');
+      const gk2 = await duoTxt('.effort-read');
+      check('review round 1: a single bolted wrestler\'s rock tears past its tear load, and then only his feet hold him', /more than what holds the other \(Rex the rock around his bolts, about 697 kN, Ollie 17\.7 kN\)\. The rock around Rex’s bolts tears out, and from then on only his feet hold him \(17\.7 kN\)\. They fly apart at 26\.6 m\/s each/.test(vk) && !/can’t move Rex’s bolts/.test(vk)
+        && /Ollie the rock around his bolts, about 697 kN/.test(vk2) && /Ollie holds 17\.7 kN once his rock tears/.test(sk2) && !/Ollie unbounded|Ollie holds unlimited/.test(vk2 + sk2 + hk2)
+        && /The least effort that tears the rock out around Rex’s bolts\./.test(gk) && !/Standing, their feet slide/.test(gk)
+        && /Even all-out, this test doesn’t shake the ground enough that plaster may crack 5 m away\. The lab counts a push through a bolted wrestler’s bolts as shaking where he shoves the other off over the stroke, a quick pulse\. None goes through them that way here/.test(gk2), vk + ' | ' + vk2.slice(0, 200) + ' | ' + gk.slice(0, 200) + ' | ' + gk2.slice(0, 300));
+      // duo-shoving-shake-reason: a bolted winner's bolts hand the ground the loser's push over the push, a pulse the lab
+      // counts (at a 10^6 kg dial it may crack plaster)
+      await load(Object.assign({ anchor: 'bolted', logKg: 6, oLogKg: 6 }, W)); await pick('plaster');
+      const pk = await duoTxt('.effort-read');
+      check('review round 1: the push through a bolted winner\'s bolts shakes the ground', /The least effort that shakes the ground enough that plaster may crack 5 m away/.test(pk) && /At this effort the push through Rex’s bolts shakes the ground enough that plaster may crack 5 m away/.test(pk) && !/not a blow/.test(pk), pk.slice(0, 300));
+      // copy-bothatonce-shove-tile: the shove that moves someone is the one shown, with its muscle basis
+      await load(Object.assign({ wrestleMove: 'shove', wrestleWho: 'both', oAnchor: 'bolted' }, W)); await pick('allout');
+      { const tb = await duoTxt('.tiles'), sb = await duoTxt('.status-row'); check('review round 1: Both at once shows the shove that moves Rex', /Ollie’s shove ?890 kN ?two hands/.test(tb) && !/Shove force ?299 kN/.test(tb) && /Comic mode: real muscle does better here/.test(sb), tb.slice(0, 200) + ' | ' + sb); }
+      // duo-arm-loser-bolts-tear: a bolted loser's rock carries the loser's press in a standing pin (no tear here)
+      await load({ duoOpen: true, duoAction: 'arm', keepForm: false, unbreakable: false, oAnchor: 'bolted', logKg: 6 }); await ollieKg(Math.log10(90718.474)); await pick('allout');
+      { const sa = await duoTxt('.status-row'), va = await duoTxt('.verdict'), ea = await eng('const r = P.armWrestle(mk({ F: 1e6 * g, keepForm: false, unbreakable: false }), mk({ keepForm: false, unbreakable: false, anchor: "bolted", body: P.makeBody(Object.assign({ build: "ollie" }, P.DEFAULT_BODIES.ollie)) })); return { o: r.outcome, tB: r.tearB, PB: r.PB };');
+        check('review round 1: a bolted loser\'s rock carries the loser\'s press in a standing pin', ea.o === 'pin' && ea.tB < 1 && /he pins Ollie in/.test(va) && !/Ground around Ollie’s bolts tears out/.test(sa), sa + ' | ' + JSON.stringify(ea)); }
+      // copy-fireball-before-split: a fireball made before it reaches Ollie gives the split its verdict points to
+      await load({ duoOpen: true, duoAction: 'catch', cObj: 'baseball', cStyle: 'hard', logKg: 14, keepForm: false, airAbsorb: 0.5, cLogD: 3 }); await pick('allout');
+      { const hf = await duoTxt('.happens'), vf = await duoTxt('.verdict'); check('review round 1: the fireball made on the way gives the split', /its motion as it reaches him is taken back: below/.test(vf) && /Stopping it at Ollie frees 3\.63 TJ \(870 t TNT\) where he stands\. 3\.44 TJ of it is heat already made in the air on the way: that is real\. The rest, 192 GJ, is its motion, freed as it stops at him/.test(hf), hf.slice(-500)); }
+      // duo-mutant-survivors: (a) decision 5's effect on the search (the default set speed: the slide, not the hit's air
+      // blast); (b) a switch turned over in place gives what a fresh load gives (the search's key carries the switches);
+      // (d) unequal strengths: each one's push back is his own push x t, as the engine gives it
+      await load(Object.assign({ colSrc: 'set' }, COL));
+      { const es = await duoTxt('.effort-read'); check('review round 1: the default set speed\'s ceiling is the carried slide, not the hit\'s blast', /Even at the least they need to stand and walk, Rex is carried along at 100 m\/s and ends up 516 m away, past the nearest people 5 m away\./.test(es) && !/air blast/.test(es), es.slice(0, 300)); }
+      const FB2 = { duoOpen: true, duoAction: 'catch', cObj: 'baseball', cStyle: 'hard', logKg: 14, keepForm: false, airAbsorb: 0.5 };
+      await load(FB2); await pick('windows');
+      await page.evaluate(() => { document.getElementById('nkb-ollie').click(); document.getElementById('nkb-rex').click(); }); await page.waitForTimeout(400); await settle(page, 'bay'); await page.waitForTimeout(300); await settle(page, 'duo-bay');
+      const inPlace = JSON.stringify(await readResult(page, 'duo-bay'));
+      await pick('allout');
+      const vIn = await duoTxt('.verdict');
+      await load(Object.assign({ noKnockback: false, oNoKnockback: false }, FB2)); await pick('windows');
+      const fresh = JSON.stringify(await readResult(page, 'duo-bay'));
+      check('review round 1: a Never knocked back switch turned over in place gives what a fresh load gives', inPlace === fresh && /It carries Ollie off at 343 m\/s/.test(vIn), inPlace.slice(0, 300) + ' || ' + fresh.slice(0, 300) + ' || ' + vIn.slice(-200));
+      const eu = await eng('const r = P.pushMatch(mk(), mk({ F: 1e5 * g, body: P.makeBody(Object.assign({ build: "ollie" }, P.DEFAULT_BODIES.ollie)) })); return { a: r.recoilAbsorbedA.J, b: r.recoilAbsorbedB.J, o: r.outcome };');
+      await load(W); await ollieKg(5); await pick('allout');
+      { const hu = await duoTxt('.happens'), mu = hu.match(/each one’s push back goes to the endless ocean \(Rex ([\d,]+) kg·m\/s, Ollie ([\d,]+) kg·m\/s, over the push\)/);
+        check('review round 1: unequal pushes, each one\'s push back is his own', eu.o === 'bothShoved' && mu && near(num(mu[1]), eu.a, 0.02) && near(num(mu[2]), eu.b, 0.02) && eu.b > 1.05 * eu.a, (mu ? mu[0] : hu.slice(0, 300)) + ' ' + JSON.stringify(eu)); }
     }
     if (errs.length) r4.push('page errors: ' + errs.slice(0, 3).join(' | '));
     if (r4.length) fail('pull request 4 (contests and Never knocked back): ' + r4.join(' ;; ')); else okLog('pull request 4: Collide carries the one hit along (on) or knocks him back (off), explains the paradox first (bolted, a 10⁹ kg jump and stomp), carries a Rex bolted on real rock with a plug of rock, takes the hit\'s energy back unless a blast preset means it, and its search stops at the carried slide; the steady push, the shoving match (both shoved apart, shoved off, a walk-out), Both at once, the Lift and arm wrestling (reading B) say what the engine does, on and off; the two Never knocked back switches are on by default, named, noted, saved and listed, change no tab but the fireball case, which shows each one; the cards');
