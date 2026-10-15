@@ -3332,7 +3332,23 @@
         Object.assign(out.hitsGround, { E, crater: cr.D, craterExtrapolated: !!cr.extrapolated, quake: seismicMagnitude(E) });
         // below 100% it meets the air on the way at the share of the drag that acts: the plasma it makes rides with it
         // into the ground (the snowplow over the path it flies; its heat is part of E, not lost)
-        if (fast.airK > 0) { const fb = fireballAt(obj, fast.v, out.hitsGround.path, ctxC, E, fast.airK, !!keptFire.kept); Object.assign(out.hitsGround, { airK: fast.airK, airHeat: fb.Egap, kept: !!keptFire.kept }); }
+        if (fast.airK > 0) {
+          const fb = fireballAt(obj, fast.v, out.hitsGround.path, ctxC, E, fast.airK, !!keptFire.kept);
+          Object.assign(out.hitsGround, { airK: fast.airK, airHeat: fb.Egap, kept: !!keptFire.kept });
+          // Things keep their form (a power, so never in a powers-off result): the object comes through whole, so its
+          // own share of E can be told from the swept air's (review round 2 of pull request 3: a person's own share is
+          // their landing, which Safe passenger covers). In the snowplow the lump (the object, the air it swept up, x
+          // times its mass, and that air's heat q m c^2) keeps the momentum p and the energy; the object moves with it,
+          // so its own energy is (gamma_lump - 1) m c^2 = m c^2 e (e + 2) / ((e + 2 + 2x + q)(1 + x + q)), e = E / m c^2
+          // (exact; at x = 0 it is E). rest: the swept air's heat and motion, with its crater and quake (rough: the
+          // same impact, extrapolated from the energy as the whole hit's is).
+          if (keptFire.kept) {
+            const mc2 = obj.m * K.c * K.c, e = E / mc2, x = out.hitsGround.path / fb.unit * fast.airK, q = fb.Egap / mc2;
+            const Eown = isFinite(E) ? mc2 * e * (e + 2) / ((e + 2 + 2 * x + q) * (1 + x + q)) : Infinity, rest = isFinite(E) ? Math.max(0, E - Eown) : Infinity;
+            const crR = isFinite(rest) ? craterDiameter({ L, v: fast.v, rhoI: obj.rho || 1000, rhoT: ctxC.surface.rho || 2000, angleDeg: Math.max(1e-3, -th - out.hitsGround.at / K.R_E * 180 / Math.PI), E: rest }) : { D: Infinity, extrapolated: true };
+            out.hitsGround.own = { E: Eown, rest, crater: crR.D, craterExtrapolated: !!crR.extrapolated, quake: seismicMagnitude(rest) };
+          }
+        }
         out.result = 'hits-ground';
         out.miss = { vImpact: fast.v, E, crater: cr.D, craterExtrapolated: !!cr.extrapolated, quake: seismicMagnitude(E), past: out.hitsGround.at - D, hits: true };
         return out;
@@ -3531,7 +3547,21 @@
       const stroke = (L) => (L.catch.forced ? L.catch.tStroke : 0);
       return ok(a) && ok(b) ? a.time + b.time + stroke(a) + stroke(b) + (a.tPush || 0) + (b.tPush || 0) : null;
     }
-    return { CATCH, MATERIALS, OBJ_MATERIAL, flyTo, aimEasy, aimHard, farthest, releaseTable, wells, wellRun, wellNeed, catchIt, heatVerdict, fireballAt, leg, tossPartner, game, roundTrip, partnerAsObject, pushStartRadius, meetRadius, chestRadius, coastDist };
+    // How steeply a missed throw comes down where it lands (degrees below level; review round 2 of pull request 3: a
+    // person's landing presses the ground with only the downward part of its push). Worked out again from the leg, not
+    // kept in its result, so no result gains a key: a throw that hits the ground meets it along the chord, more shallowly
+    // than it left him by the arc it covered (as its crater does); a miss below 1% of light speed flies on from his aim
+    // to the ground beside the catcher (the same flight as the leg's miss: vImpact matches it). null where it doesn't
+    // land (it leaves the Earth) or the leg has no miss. ctxT: the thrower's context (its Air resistance absorbed).
+    function missAngleDeg(L, objIn, ctxT) {
+      if (!L || !L.miss || L.miss.leaves) return null;
+      if (L.result === 'hits-ground' && L.hitsGround && L.aim) return { angleDeg: Math.max(1e-3, -L.aim.thetaDeg - L.hitsGround.at / K.R_E * 180 / Math.PI), vImpact: L.miss.vImpact };
+      if (!L.aim || !(L.aim.vE > 0)) return null;
+      const dK = dragFactor(ctxT), obj = dK < 1 ? Object.assign({}, objIn, { dragK: dK }) : objIn;
+      const fm = flight(obj, L.aim.vE, L.aim.thetaDeg, L.h0, 0);
+      return { angleDeg: fm.impactAngleDeg, vImpact: fm.vImpact };
+    }
+    return { CATCH, MATERIALS, OBJ_MATERIAL, flyTo, aimEasy, aimHard, farthest, releaseTable, wells, wellRun, wellNeed, catchIt, heatVerdict, fireballAt, leg, tossPartner, game, roundTrip, partnerAsObject, pushStartRadius, meetRadius, chestRadius, coastDist, missAngleDeg };
   })();
 
   // ---------------------------------------------------------------------------
@@ -4313,21 +4343,24 @@
     // what the person feels: the push plus holding them up against gravity, n = |a + g| / g with a along the throw
     felt: (aG, thetaDeg) => { const th = thetaDeg * Math.PI / 180; return Math.hypot(aG * Math.cos(th), aG * Math.sin(th) + 1); },
     // A person landing at v with Safe passenger on (pull request 3, review round 1): its energy is taken back, but its
-    // momentum p still reaches the ground, whole, over their own quick stop, T = max(1 ms, L / v) with L about their size
-    // (landShake's pulse): a mean push of p / T. The ground bears at most its bearing pressure over the person's whole
-    // facing area (a generous contact patch; on sand and gravel the bearing grows with the patch's width, taken as the
-    // square root of that area), less their weight. Past that (gives) the push is more than the ground bears, so it
-    // gives way where they land, as his own feet punch in with Soft landing ('soft landing takes back the energy, not
-    // the force'). The lab doesn't size that hole, and its shaking figures there (the elastic model) are rough.
-    // vBear: the landing speed where the mean push just equals what the ground bears (about 100 m/s on the concrete
-    // slab). An estimate: no new canon; the momentum is never sent anywhere but the ground.
-    landGround(o, v, surface) {
+    // momentum p still reaches the ground, whole, over their own quick stop, T = L / v with L about their size (README
+    // decision 4; review round 2: no 1 ms floor here, which belongs to landShake's shaking model, not to the stop). The
+    // ground bears the downward part, p sin(angle) / T (angleDeg: how steeply they come down, 90 straight down, the
+    // default; review round 2, as weakGround splits a landing: the sideways part is a skid, which breaks nothing). It
+    // bears at most its bearing pressure over the person's whole facing area (a generous contact patch; on sand and
+    // gravel the bearing grows with the patch's width, taken as the square root of that area), less their weight. Past
+    // that (gives) the push is more than the ground bears, so it gives way where they land, as his own feet punch in
+    // with Soft landing ('soft landing takes back the energy, not the force'). The lab doesn't size that hole, and its
+    // shaking figures there (the elastic model) are rough.
+    // vBear: the landing speed, at this angle, where the downward push just equals what the ground bears (straight down
+    // about 100 m/s on the concrete slab, 1.8 km/s on steel, 2.7 km/s on granite). An estimate: no new canon; the
+    // momentum is never sent anywhere but the ground. (Non-relativistic: every bearing ends far below 1% of c.)
+    landGround(o, v, surface, angleDeg) {
       const L = o.L || Math.cbrt(6 * o.m / (Math.PI * (o.rho || 1000))), A = o.area || 0.67;
       const bear = Math.max(0, qultFor(surface, Math.sqrt(A)) * A - o.m * K.g);
-      const T = v > 0 ? Math.max(1e-3, L / v) : Infinity, push = v > 0 ? (v >= K.c ? Infinity : vToMomentum(v, o.m)) / T : 0;
-      // below L / 1 ms the push is m v^2 / L; above it, p / 1 ms (non-relativistic there: the bearing ends far below 1% of c)
-      const v1 = Math.sqrt(bear * L / o.m), vBear = v1 <= L / 1e-3 ? v1 : bear * 1e-3 / o.m;
-      return { push, bear, gives: push > bear, vBear, T };
+      const sn = angleDeg == null ? 1 : Math.max(1e-9, Math.sin(Math.min(90, Math.max(0, angleDeg)) * Math.PI / 180));
+      const T = v > 0 ? L / v : Infinity, push = v > 0 ? (v >= K.c ? Infinity : vToMomentum(v, o.m) * sn) / T : 0;
+      return { push, bear, gives: push > bear, vBear: Math.sqrt(bear * L / (o.m * sn)), T, sn };
     },
   };
   const GROW = {
@@ -4522,7 +4555,7 @@
     W8, PREM, premRho, premG, premPhi, premSolid, bodyGravity, infallFrom, moveCheck, groundUnderWeight, fallThrough, settle, planetRegime, weight,
     selfPull, escapeSpeedFrom, vInfinity,
     AW, TABLE, RING_D, HUMERUS_NM, armWrestle, pushMatch, shove, shoveBoth, liftPartner, throwPartner,
-    CATCH: CATCHGAME.CATCH, flyTo: CATCHGAME.flyTo, catchGame: CATCHGAME.game, catchLeg: CATCHGAME.leg, tossPartner: CATCHGAME.tossPartner, catchIt: CATCHGAME.catchIt, partnerAsObject: CATCHGAME.partnerAsObject, catchMaterials: CATCHGAME.OBJ_MATERIAL, catchMinD: (bT, bC, obj) => CATCHGAME.pushStartRadius(bT) + CATCHGAME.meetRadius(bC, obj) + 1, catchRoundTrip: CATCHGAME.roundTrip, catchMeetRadius: CATCHGAME.meetRadius, catchWellNeed: CATCHGAME.wellNeed, catchReleaseTable: CATCHGAME.releaseTable,
+    CATCH: CATCHGAME.CATCH, flyTo: CATCHGAME.flyTo, catchGame: CATCHGAME.game, catchLeg: CATCHGAME.leg, tossPartner: CATCHGAME.tossPartner, catchIt: CATCHGAME.catchIt, partnerAsObject: CATCHGAME.partnerAsObject, catchMaterials: CATCHGAME.OBJ_MATERIAL, catchMinD: (bT, bC, obj) => CATCHGAME.pushStartRadius(bT) + CATCHGAME.meetRadius(bC, obj) + 1, catchRoundTrip: CATCHGAME.roundTrip, catchMeetRadius: CATCHGAME.meetRadius, catchWellNeed: CATCHGAME.wellNeed, catchReleaseTable: CATCHGAME.releaseTable, catchMissAngle: CATCHGAME.missAngleDeg,
     COL: COLLIDE.COL, headOn: COLLIDE.headOn, standoff: COLLIDE.standoff, chargeSpeed: COLLIDE.chargeSpeed, collide: COLLIDE.collide, holdOf: COLLIDE.holdOf, rockLoad: COLLIDE.rockLoad, contactForces: COLLIDE.contactForces,
     momentumToV, momentumToKE, vToMomentum, keFromV, xOfT,
     hill, pushApart, anchorCapacity,

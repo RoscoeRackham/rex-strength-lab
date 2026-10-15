@@ -3804,7 +3804,23 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         Object.assign(out.hitsGround, { E, crater: cr.D, craterExtrapolated: !!cr.extrapolated, quake: seismicMagnitude(E) });
         // below 100% it meets the air on the way at the share of the drag that acts: the plasma it makes rides with it
         // into the ground (the snowplow over the path it flies; its heat is part of E, not lost)
-        if (fast.airK > 0) { const fb = fireballAt(obj, fast.v, out.hitsGround.path, ctxC, E, fast.airK, !!keptFire.kept); Object.assign(out.hitsGround, { airK: fast.airK, airHeat: fb.Egap, kept: !!keptFire.kept }); }
+        if (fast.airK > 0) {
+          const fb = fireballAt(obj, fast.v, out.hitsGround.path, ctxC, E, fast.airK, !!keptFire.kept);
+          Object.assign(out.hitsGround, { airK: fast.airK, airHeat: fb.Egap, kept: !!keptFire.kept });
+          // Things keep their form (a power, so never in a powers-off result): the object comes through whole, so its
+          // own share of E can be told from the swept air's (review round 2 of pull request 3: a person's own share is
+          // their landing, which Safe passenger covers). In the snowplow the lump (the object, the air it swept up, x
+          // times its mass, and that air's heat q m c^2) keeps the momentum p and the energy; the object moves with it,
+          // so its own energy is (gamma_lump - 1) m c^2 = m c^2 e (e + 2) / ((e + 2 + 2x + q)(1 + x + q)), e = E / m c^2
+          // (exact; at x = 0 it is E). rest: the swept air's heat and motion, with its crater and quake (rough: the
+          // same impact, extrapolated from the energy as the whole hit's is).
+          if (keptFire.kept) {
+            const mc2 = obj.m * K.c * K.c, e = E / mc2, x = out.hitsGround.path / fb.unit * fast.airK, q = fb.Egap / mc2;
+            const Eown = isFinite(E) ? mc2 * e * (e + 2) / ((e + 2 + 2 * x + q) * (1 + x + q)) : Infinity, rest = isFinite(E) ? Math.max(0, E - Eown) : Infinity;
+            const crR = isFinite(rest) ? craterDiameter({ L, v: fast.v, rhoI: obj.rho || 1000, rhoT: ctxC.surface.rho || 2000, angleDeg: Math.max(1e-3, -th - out.hitsGround.at / K.R_E * 180 / Math.PI), E: rest }) : { D: Infinity, extrapolated: true };
+            out.hitsGround.own = { E: Eown, rest, crater: crR.D, craterExtrapolated: !!crR.extrapolated, quake: seismicMagnitude(rest) };
+          }
+        }
         out.result = 'hits-ground';
         out.miss = { vImpact: fast.v, E, crater: cr.D, craterExtrapolated: !!cr.extrapolated, quake: seismicMagnitude(E), past: out.hitsGround.at - D, hits: true };
         return out;
@@ -4003,7 +4019,21 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       const stroke = (L) => (L.catch.forced ? L.catch.tStroke : 0);
       return ok(a) && ok(b) ? a.time + b.time + stroke(a) + stroke(b) + (a.tPush || 0) + (b.tPush || 0) : null;
     }
-    return { CATCH, MATERIALS, OBJ_MATERIAL, flyTo, aimEasy, aimHard, farthest, releaseTable, wells, wellRun, wellNeed, catchIt, heatVerdict, fireballAt, leg, tossPartner, game, roundTrip, partnerAsObject, pushStartRadius, meetRadius, chestRadius, coastDist };
+    // How steeply a missed throw comes down where it lands (degrees below level; review round 2 of pull request 3: a
+    // person's landing presses the ground with only the downward part of its push). Worked out again from the leg, not
+    // kept in its result, so no result gains a key: a throw that hits the ground meets it along the chord, more shallowly
+    // than it left him by the arc it covered (as its crater does); a miss below 1% of light speed flies on from his aim
+    // to the ground beside the catcher (the same flight as the leg's miss: vImpact matches it). null where it doesn't
+    // land (it leaves the Earth) or the leg has no miss. ctxT: the thrower's context (its Air resistance absorbed).
+    function missAngleDeg(L, objIn, ctxT) {
+      if (!L || !L.miss || L.miss.leaves) return null;
+      if (L.result === 'hits-ground' && L.hitsGround && L.aim) return { angleDeg: Math.max(1e-3, -L.aim.thetaDeg - L.hitsGround.at / K.R_E * 180 / Math.PI), vImpact: L.miss.vImpact };
+      if (!L.aim || !(L.aim.vE > 0)) return null;
+      const dK = dragFactor(ctxT), obj = dK < 1 ? Object.assign({}, objIn, { dragK: dK }) : objIn;
+      const fm = flight(obj, L.aim.vE, L.aim.thetaDeg, L.h0, 0);
+      return { angleDeg: fm.impactAngleDeg, vImpact: fm.vImpact };
+    }
+    return { CATCH, MATERIALS, OBJ_MATERIAL, flyTo, aimEasy, aimHard, farthest, releaseTable, wells, wellRun, wellNeed, catchIt, heatVerdict, fireballAt, leg, tossPartner, game, roundTrip, partnerAsObject, pushStartRadius, meetRadius, chestRadius, coastDist, missAngleDeg };
   })();
 
   // ---------------------------------------------------------------------------
@@ -4785,21 +4815,24 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     // what the person feels: the push plus holding them up against gravity, n = |a + g| / g with a along the throw
     felt: (aG, thetaDeg) => { const th = thetaDeg * Math.PI / 180; return Math.hypot(aG * Math.cos(th), aG * Math.sin(th) + 1); },
     // A person landing at v with Safe passenger on (pull request 3, review round 1): its energy is taken back, but its
-    // momentum p still reaches the ground, whole, over their own quick stop, T = max(1 ms, L / v) with L about their size
-    // (landShake's pulse): a mean push of p / T. The ground bears at most its bearing pressure over the person's whole
-    // facing area (a generous contact patch; on sand and gravel the bearing grows with the patch's width, taken as the
-    // square root of that area), less their weight. Past that (gives) the push is more than the ground bears, so it
-    // gives way where they land, as his own feet punch in with Soft landing ('soft landing takes back the energy, not
-    // the force'). The lab doesn't size that hole, and its shaking figures there (the elastic model) are rough.
-    // vBear: the landing speed where the mean push just equals what the ground bears (about 100 m/s on the concrete
-    // slab). An estimate: no new canon; the momentum is never sent anywhere but the ground.
-    landGround(o, v, surface) {
+    // momentum p still reaches the ground, whole, over their own quick stop, T = L / v with L about their size (README
+    // decision 4; review round 2: no 1 ms floor here, which belongs to landShake's shaking model, not to the stop). The
+    // ground bears the downward part, p sin(angle) / T (angleDeg: how steeply they come down, 90 straight down, the
+    // default; review round 2, as weakGround splits a landing: the sideways part is a skid, which breaks nothing). It
+    // bears at most its bearing pressure over the person's whole facing area (a generous contact patch; on sand and
+    // gravel the bearing grows with the patch's width, taken as the square root of that area), less their weight. Past
+    // that (gives) the push is more than the ground bears, so it gives way where they land, as his own feet punch in
+    // with Soft landing ('soft landing takes back the energy, not the force'). The lab doesn't size that hole, and its
+    // shaking figures there (the elastic model) are rough.
+    // vBear: the landing speed, at this angle, where the downward push just equals what the ground bears (straight down
+    // about 100 m/s on the concrete slab, 1.8 km/s on steel, 2.7 km/s on granite). An estimate: no new canon; the
+    // momentum is never sent anywhere but the ground. (Non-relativistic: every bearing ends far below 1% of c.)
+    landGround(o, v, surface, angleDeg) {
       const L = o.L || Math.cbrt(6 * o.m / (Math.PI * (o.rho || 1000))), A = o.area || 0.67;
       const bear = Math.max(0, qultFor(surface, Math.sqrt(A)) * A - o.m * K.g);
-      const T = v > 0 ? Math.max(1e-3, L / v) : Infinity, push = v > 0 ? (v >= K.c ? Infinity : vToMomentum(v, o.m)) / T : 0;
-      // below L / 1 ms the push is m v^2 / L; above it, p / 1 ms (non-relativistic there: the bearing ends far below 1% of c)
-      const v1 = Math.sqrt(bear * L / o.m), vBear = v1 <= L / 1e-3 ? v1 : bear * 1e-3 / o.m;
-      return { push, bear, gives: push > bear, vBear, T };
+      const sn = angleDeg == null ? 1 : Math.max(1e-9, Math.sin(Math.min(90, Math.max(0, angleDeg)) * Math.PI / 180));
+      const T = v > 0 ? L / v : Infinity, push = v > 0 ? (v >= K.c ? Infinity : vToMomentum(v, o.m) * sn) / T : 0;
+      return { push, bear, gives: push > bear, vBear: Math.sqrt(bear * L / (o.m * sn)), T, sn };
     },
   };
   const GROW = {
@@ -4994,7 +5027,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     W8, PREM, premRho, premG, premPhi, premSolid, bodyGravity, infallFrom, moveCheck, groundUnderWeight, fallThrough, settle, planetRegime, weight,
     selfPull, escapeSpeedFrom, vInfinity,
     AW, TABLE, RING_D, HUMERUS_NM, armWrestle, pushMatch, shove, shoveBoth, liftPartner, throwPartner,
-    CATCH: CATCHGAME.CATCH, flyTo: CATCHGAME.flyTo, catchGame: CATCHGAME.game, catchLeg: CATCHGAME.leg, tossPartner: CATCHGAME.tossPartner, catchIt: CATCHGAME.catchIt, partnerAsObject: CATCHGAME.partnerAsObject, catchMaterials: CATCHGAME.OBJ_MATERIAL, catchMinD: (bT, bC, obj) => CATCHGAME.pushStartRadius(bT) + CATCHGAME.meetRadius(bC, obj) + 1, catchRoundTrip: CATCHGAME.roundTrip, catchMeetRadius: CATCHGAME.meetRadius, catchWellNeed: CATCHGAME.wellNeed, catchReleaseTable: CATCHGAME.releaseTable,
+    CATCH: CATCHGAME.CATCH, flyTo: CATCHGAME.flyTo, catchGame: CATCHGAME.game, catchLeg: CATCHGAME.leg, tossPartner: CATCHGAME.tossPartner, catchIt: CATCHGAME.catchIt, partnerAsObject: CATCHGAME.partnerAsObject, catchMaterials: CATCHGAME.OBJ_MATERIAL, catchMinD: (bT, bC, obj) => CATCHGAME.pushStartRadius(bT) + CATCHGAME.meetRadius(bC, obj) + 1, catchRoundTrip: CATCHGAME.roundTrip, catchMeetRadius: CATCHGAME.meetRadius, catchWellNeed: CATCHGAME.wellNeed, catchReleaseTable: CATCHGAME.releaseTable, catchMissAngle: CATCHGAME.missAngleDeg,
     COL: COLLIDE.COL, headOn: COLLIDE.headOn, standoff: COLLIDE.standoff, chargeSpeed: COLLIDE.chargeSpeed, collide: COLLIDE.collide, holdOf: COLLIDE.holdOf, rockLoad: COLLIDE.rockLoad, contactForces: COLLIDE.contactForces,
     momentumToV, momentumToKE, vToMomentum, keFromV, xOfT,
     hill, pushApart, anchorCapacity,
@@ -6651,7 +6684,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Their powers",
-   "d": "All of their powers are their absorption at work, used on purpose. Canon: comic-book physics is their default, and they choose when not to use it, so five powers are on unless the reader turns them off: Air resistance absorbed, Things keep their form, Unbreakable footing, They take their own recoil and Safe passenger. Each suspends one piece of real physics and is labelled wherever its effect shows. Air resistance absorbed (a slider, 0–100%, default 100%) takes back that share of the air’s drag on what they throw or hold; the share taken goes to the endless ocean, energy and momentum both (one of the canon’s cases where momentum is absorbed), and the rest acts as real drag, so a throw past the speed of sound still booms and blasts with what is left. Their own bodies still meet real air. Things keep their form: what they hold or throw can’t be broken by them (grip, launch, its own weight) or by the air; any other collision is real physics. Unbreakable footing: the ground under them never breaks; the energy that would break it goes to the endless ocean (or to growth in the growth modes), but the push still goes in, so the ground shakes as real physics says. Where the ground couldn’t bear the push a move needs, their power supplies it (another of those cases). They take their own recoil: the push back from their own moves (a throw, a punch, a stomp, a pull’s rope, a shove, the stop of a catch) goes into their source, the endless ocean, not into the planet. Their own moves and catches never shove them back, launch them or carry them off, and none of that push back reaches the ground, so it doesn’t shake the ground; it carries almost no energy, since they don’t move. An incoming hit isn’t their own push back: a throw that reaches the catcher as plasma hits him rather than being caught, so this power doesn’t stop it (canon’s Never knocked back, not in the lab yet). With Bolted to the planet on too, the push back from their own moves still goes to the endless ocean. A jump or a sprint start is the move itself, not recoil, so it is unchanged. Safe passenger (canon, and the ruling of 14 Oct 2026) covers a person they throw or catch: his push is spread through them in proportion to their mass, as gravity does, so his hands put no stress on them (a body pushed that way has no internal stress: Cauchy’s equation of motion), and the air’s drag in flight and the landing are spread through them too. They feel a manageable push throughout and come down unharmed. The landing’s energy, the harm a fall would do, is taken back, as Soft landing does for his own landings; its push still reaches the ground, over the same quick stop as any landing (Safe passenger spreads the push through them; it doesn’t make a slow, gentle stop), so the landing shakes the ground as a real one does. Past what the ground bears, even with that push spread over their whole facing area, the ground gives way where they land (taking back the energy doesn’t take back the force, as with Soft landing): from a landing at about 100 m/s on the concrete slab or asphalt, 140 m/s on ice, 5.6 km/s on steel and 13 km/s on granite, and at 20–50 m/s on sand, gravel and clay (estimates). The lab doesn’t size the hole, and its shaking figures are rough past that point. It doesn’t cover heating in flight (Things keep their form does), and only a person is a passenger: Ollie is as tough as Rex. Silent strike and Soft landing take back the energy that would harm the surroundings. Canon names the only cases where momentum is absorbed: their own recoil, the air’s drag on what they throw, the ground’s share it can’t bear, the lift from growth (next card), incoming hits (canon’s Never knocked back, not in the lab yet) and flight’s push (the lab has no flight). Everywhere else momentum still goes into him, through his feet and into the ground. Bolted to the planet is for being pushed by someone or something else."
+   "d": "All of their powers are their absorption at work, used on purpose. Canon: comic-book physics is their default, and they choose when not to use it, so five powers are on unless the reader turns them off: Air resistance absorbed, Things keep their form, Unbreakable footing, They take their own recoil and Safe passenger. Each suspends one piece of real physics and is labelled wherever its effect shows. Air resistance absorbed (a slider, 0–100%, default 100%) takes back that share of the air’s drag on what they throw or hold; the share taken goes to the endless ocean, energy and momentum both (one of the canon’s cases where momentum is absorbed), and the rest acts as real drag, so a throw past the speed of sound still booms and blasts with what is left. Their own bodies still meet real air. Things keep their form: what they hold or throw can’t be broken by them (grip, launch, its own weight) or by the air; any other collision is real physics. Unbreakable footing: the ground under them never breaks; the energy that would break it goes to the endless ocean (or to growth in the growth modes), but the push still goes in, so the ground shakes as real physics says. Where the ground couldn’t bear the push a move needs, their power supplies it (another of those cases). They take their own recoil: the push back from their own moves (a throw, a punch, a stomp, a pull’s rope, a shove, the stop of a catch) goes into their source, the endless ocean, not into the planet. Their own moves and catches never shove them back, launch them or carry them off, and none of that push back reaches the ground, so it doesn’t shake the ground; it carries almost no energy, since they don’t move. An incoming hit isn’t their own push back: a throw that reaches the catcher as plasma hits him rather than being caught, so this power doesn’t stop it (canon’s Never knocked back, not in the lab yet). With Bolted to the planet on too, the push back from their own moves still goes to the endless ocean. A jump or a sprint start is the move itself, not recoil, so it is unchanged. Safe passenger (canon, and the ruling of 14 Oct 2026) covers a person they throw or catch: his push is spread through them in proportion to their mass, as gravity does, so his hands put no stress on them (a body pushed that way has no internal stress: Cauchy’s equation of motion), and the air’s drag in flight and the landing are spread through them too. They feel a manageable push throughout and come down unharmed. The landing’s energy, the harm a fall would do, is taken back, as Soft landing does for his own landings; its push still reaches the ground, over the same quick stop as any landing (Safe passenger spreads the push through them; it doesn’t make a slow, gentle stop), so the landing shakes the ground as a real one does. Past what the ground bears under the downward part of that push, even spread over their whole facing area, the ground gives way where they land (taking back the energy doesn’t take back the force, as with Soft landing): from a landing straight down at about 100 m/s on the concrete slab or asphalt, 140 m/s on ice, 1.8 km/s on steel and 2.7 km/s on granite, and at 20–50 m/s on sand, gravel and clay (estimates; a slanting landing has to be faster, about 120 m/s at 45° on the slab, and one that skims in nearly level presses down far less). The lab doesn’t size the hole, and its shaking figures are rough past that point. It doesn’t cover heating in flight (Things keep their form does), and only a person is a passenger: Ollie is as tough as Rex. Silent strike and Soft landing take back the energy that would harm the surroundings. Canon names the only cases where momentum is absorbed: their own recoil, the air’s drag on what they throw, the ground’s share it can’t bear, the lift from growth (next card), incoming hits (canon’s Never knocked back, not in the lab yet) and flight’s push (the lab has no flight). Everywhere else momentum still goes into him, through his feet and into the ground. Bolted to the planet is for being pushed by someone or something else."
   },
   {
    "t": "Absorbed energy and growth",
@@ -6723,7 +6756,7 @@ window.DINO_DATA = {
   },
   {
    "t": "Game of catch",
-   "d": "Each throw is aimed: the gentle lob is the slowest throw that reaches the catcher’s hands, the fastball his hardest along the flattest path. His hands wait at full reach, so a light object first collides with his hands and forearms (4.4% of his mass) and spends most of its energy squashing his palms and itself by 1–2.5% of his height (3–7.6 cm at 10 ft, an estimate). That first contact is the catch, over in milliseconds. His arms then bring hands and object to rest over 0.3 × his height (full reach to chest, from US Army body measurements), with the least force that works. With strength to spare he can take as long as he likes over that, so the round trip counts only the throws and the flights; when he slides or needs at least half his strength, the stroke takes a set time and is counted. His strength caps the arm force. With They take their own recoil on (the default), stopping it is his own push, so its push back goes to the endless ocean: what he catches never makes him slide or carries him off, and his arms alone must stop it, so a catch they can’t stop slams into him instead. With it off, his footing decides whether he slides (sliding friction grows with the load). The thrower recoils just as on the Throw tab: not at all with the power on. Before anything counts as caught it has to arrive whole: his throwing push spread over its cross-section must not crush it, air pressure must not tear it apart (ρv² above its strength, the rule meteor models use), air heating must not burn it up, it must not be bigger than the catcher, and the hardest push of the catch, first hit included, must not crush it. With Things keep their form on (the default), the throw, the air and the catch can’t break it, so only its size can stop a catch. Only the shot put, deadlift bar and Ruyi staff have a whole-object strength; for the rest the sim uses its grip limit, a local value, so these checks err toward it surviving. Air heating uses NASA’s stagnation-point formula, shown as a range up to a blackbody ceiling for glowing air below 30 km; both ends are rough. Above 1% of light speed a snowplow model with relativity keeps the momentum and turns swept air into heat that rides along with it; stopping it at the catcher frees nearly all its energy where he stands. With all of the air’s drag absorbed, a throw that fast flies the straight chord between their hands; past about 12 km that chord runs underground, so the throw hits the ground first. A catch that fast keeps momentum too: with They take their own recoil off, unless his footing holds, he is carried off with it. A throw that reaches him as plasma (Things keep their form off, some of the air’s drag left) isn’t caught: it hits him. That is an incoming hit, not his own push back, so They take their own recoil doesn’t stop it (canon’s Never knocked back, not in the lab yet). It carries him off, or, bolted, his bolts hand it to the planet. A person thrown in the game of catch is covered by Safe passenger (on by default): the throw, the flight and the catch are spread through them (so the first hit squashes only his palms), and if the catch is missed they come down unharmed, the landing’s energy taken back and its push still reaching the ground. Past what the ground bears under that push (from a landing at about 100 m/s on the concrete slab, an estimate), the ground gives way where they land. It doesn’t cover heating in a very fast flight (Things keep their form does): with that off and some of the air’s drag left, the lab can’t say they come down unharmed. With all of the drag absorbed, a person thrown so fast that the straight chord runs underground is landing too: Safe passenger takes back the energy of that hit, so it makes no blast, but its push is far more than the ground bears, so the ground gives way there. With it off, each is judged against the ride limits the Throw tab uses. Dense partners are points with their mass at the centre, and drag is included on the straight line between them. The Earth doesn’t spin here, and there is no ball spin or wind."
+   "d": "Each throw is aimed: the gentle lob is the slowest throw that reaches the catcher’s hands, the fastball his hardest along the flattest path. His hands wait at full reach, so a light object first collides with his hands and forearms (4.4% of his mass) and spends most of its energy squashing his palms and itself by 1–2.5% of his height (3–7.6 cm at 10 ft, an estimate). That first contact is the catch, over in milliseconds. His arms then bring hands and object to rest over 0.3 × his height (full reach to chest, from US Army body measurements), with the least force that works. With strength to spare he can take as long as he likes over that, so the round trip counts only the throws and the flights; when he slides or needs at least half his strength, the stroke takes a set time and is counted. His strength caps the arm force. With They take their own recoil on (the default), stopping it is his own push, so its push back goes to the endless ocean: what he catches never makes him slide or carries him off, and his arms alone must stop it, so a catch they can’t stop slams into him instead. With it off, his footing decides whether he slides (sliding friction grows with the load). The thrower recoils just as on the Throw tab: not at all with the power on. Before anything counts as caught it has to arrive whole: his throwing push spread over its cross-section must not crush it, air pressure must not tear it apart (ρv² above its strength, the rule meteor models use), air heating must not burn it up, it must not be bigger than the catcher, and the hardest push of the catch, first hit included, must not crush it. With Things keep their form on (the default), the throw, the air and the catch can’t break it, so only its size can stop a catch. Only the shot put, deadlift bar and Ruyi staff have a whole-object strength; for the rest the sim uses its grip limit, a local value, so these checks err toward it surviving. Air heating uses NASA’s stagnation-point formula, shown as a range up to a blackbody ceiling for glowing air below 30 km; both ends are rough. Above 1% of light speed a snowplow model with relativity keeps the momentum and turns swept air into heat that rides along with it; stopping it at the catcher frees nearly all its energy where he stands. With all of the air’s drag absorbed, a throw that fast flies the straight chord between their hands; past about 12 km that chord runs underground, so the throw hits the ground first. A catch that fast keeps momentum too: with They take their own recoil off, unless his footing holds, he is carried off with it. A throw that reaches him as plasma (Things keep their form off, some of the air’s drag left) isn’t caught: it hits him. That is an incoming hit, not his own push back, so They take their own recoil doesn’t stop it (canon’s Never knocked back, not in the lab yet). It carries him off, or, bolted, his bolts hand it to the planet. A person thrown in the game of catch is covered by Safe passenger (on by default): the throw, the flight and the catch are spread through them (so the first hit squashes only his palms), and if the catch is missed they come down unharmed, the landing’s energy taken back and its push still reaching the ground. Past what the ground bears under the downward part of that push (from a landing at about 100 m/s straight down on the concrete slab, an estimate; a fastball’s miss skims in nearly level and presses down far less), the ground gives way where they land. It doesn’t cover heating in a very fast flight (Things keep their form does): with that off and some of the air’s drag left, the lab can’t say they come down unharmed. A person thrown so fast that the straight chord runs underground is landing too, wherever they come through whole (with all of the drag absorbed, or with Things keep their form on): Safe passenger takes back their own energy, but their push is far more than the ground bears, so the ground gives way there. Below 100% absorbed, the air they swept up (its heat and its motion) is real and blasts its own crater. A push big enough to move the whole Earth carries real energy too (at least what it gives the whole planet, counted as a blast), and an unbounded push has no physical answer. With it off, each is judged against the ride limits the Throw tab uses. Dense partners are points with their mass at the centre, and drag is included on the straight line between them. The Earth doesn’t spin here, and there is no ball spin or wind."
   },
   {
    "t": "Unstoppable force vs immovable object",
@@ -15654,16 +15687,19 @@ window.DINO_DATA = {
     const land = ' They land at ' + speedOnly(f.vImpact) + ', like falling ' + fmtDist(fall) + '. ';
     if (!pl) return launch + drag + land;
     return launch + drag + land + (burns ? 'Safe passenger takes back the landing’s energy (' + fmtSI(pl.absorbed, 'J') + ') and spreads its push through them, but it doesn’t cover the heating in flight (below), so the lab can’t say they come down unharmed.'
-      : 'Safe passenger spreads the landing through them too and takes back its energy (' + fmtSI(pl.absorbed, 'J') + '), so they come down unharmed.') + ' The landing’s push still reaches the ground, so it shakes the ground as a real landing does.' + landGivesText(o, f.vImpact, c.surface, !!P.groundOf(c.surface));
+      : 'Safe passenger spreads the landing through them too and takes back its energy (' + fmtSI(pl.absorbed, 'J') + '), so they come down unharmed.') + ' The landing’s push still reaches the ground, so it shakes the ground as a real landing does.' + landGivesText(o, f.vImpact, c.surface, !!P.groundOf(c.surface), f.impactAngleDeg);
   }
   // Safe passenger takes back a landing's energy, not its push (review round 1 of pull request 3): past what the ground
   // bears over the person's facing area, the ground gives way where they land, as his own feet punch in with Soft
   // landing. '' where the ground bears it.
   // (shakeFig: the tab gives the landing's shaking figures, which are rough there; none on ice or steel, which have no
-  // ground-wave model)
-  function landGivesText(o, v, surface, shakeFig) {
-    const lg = P.PASSENGER.landGround(o, v, surface);
-    return lg.gives ? ' But past a landing of about ' + speedOnly(Number(lg.vBear.toPrecision(2))) + ', that push is more than ' + surface.short + ' bears, even spread over their whole facing area, so the ground gives way where they land (the lab doesn’t size the hole' + (shakeFig ? ', and its shaking figures are rough there' : '') + ').' : '';
+  // ground-wave model. angleDeg: how steeply they come down; the ground bears the downward part of the push, review
+  // round 2. A slanting landing names its own speed and the straight-down one)
+  function landGivesText(o, v, surface, shakeFig, angleDeg) {
+    const lg = P.PASSENGER.landGround(o, v, surface, angleDeg), r2 = (x) => Number(x.toPrecision(2));
+    if (!lg.gives) return '';
+    const slant = angleDeg != null && angleDeg < 80;
+    return ' But past a landing of about ' + speedOnly(r2(lg.vBear)) + (slant ? ' coming down at ' + sig(angleDeg, 2) + '° (about ' + speedOnly(r2(P.PASSENGER.landGround(o, v, surface).vBear)) + ' straight down)' : '') + ', the downward part of that push is more than ' + surface.short + ' bears, even spread over their whole facing area, so the ground gives way where they land (the lab doesn’t size the hole' + (shakeFig ? ', and its shaking figures are rough there' : '') + ').';
   }
   // the share of the air's drag on what they throw that their power takes back (Air resistance absorbed)
   const airShareOf = (c) => (typeof c.airAbsorb === 'number' ? Math.min(1, Math.max(0, c.airAbsorb)) : 0);
@@ -15962,7 +15998,9 @@ window.DINO_DATA = {
     else if (f.escaped) items.push('It leaves the atmosphere faster than escape velocity (11.2 km/s at the surface), so gravity never brings it back.');
     // (review round 1 of pull request 3: the push still shakes the ground, so no 'no quake'; and past what the ground
     // bears it gives way where they land, so no 'no crater' there: passengerText says so above)
-    if (f.landed && r.Eimpact > 4.184e9 && spLand) items.push('Impact: ' + fmtTNT(r.Eimpact) + ', all of it taken back by Safe passenger, so no ' + (P.PASSENGER.landGround(o, f.vImpact, c.surface).gives ? 'blast where they land (the ground still gives way under its push: above)' : 'crater or blast where they land') + '. Its push still reaches the ground and shakes it (the effort box gives how far).');
+    // (review round 2: the ground bears the downward part of the push; and only grounds with a ground-wave model have
+    // shaking figures in the effort box)
+    if (f.landed && r.Eimpact > 4.184e9 && spLand) items.push('Impact: ' + fmtTNT(r.Eimpact) + ', all of it taken back by Safe passenger, so no ' + (P.PASSENGER.landGround(o, f.vImpact, c.surface, f.impactAngleDeg).gives ? 'blast where they land (the ground still gives way under its push: above)' : 'crater or blast where they land') + '. Its push still reaches the ground and shakes it' + boxShake(c, 'gives how far') + '.');
     else if (f.landed && r.Eimpact > 4.184e9) items.push('Impact: ' + fmtTNT(r.Eimpact) + (r.planetScale ? '. That is planet-scale: crater scaling no longer applies' : (r.crater > 0 ? ', crater up to ' + fmtDist(r.crater) + ' across' + (r.craterBeyondFit ? ' (far past the few-hundred-km range the scaling is fitted to; rough size only)' : ' (impact scaling; rock and concrete make smaller craters)') : '')) + (r.quake > 2 && !r.planetScale ? ', felt like a magnitude ' + sig(r.quake, 2) + ' quake' : '') + '.');
     out.push(happens(items, 10));
     const human = D.tiers.find((t) => t.id === 'human');
@@ -17051,12 +17089,25 @@ window.DINO_DATA = {
       case 'overshoots': return 'Thrown as hard as ' + T + ' can, ' + s + ' can’t come down on ' + C + ': kept low, it burns its speed in the air; aimed higher, it ' + (L.relativistic ? 'passes 1% of light speed and turns into a fireball heading up, not toward him' : L.escaped ? 'leaves Earth for good' : 'goes into orbit') + '. Switch to Gentle lob.';
       case 'hits-ground': {
         const hg = L.hitsGround;
-        // a person with no air on the way (Air resistance absorbed at 100%) and Safe passenger on: this is their landing,
-        // and Safe passenger covers where they land (review round 1 of pull request 3): its energy taken back, its push
-        // still reaching the ground (and past what the ground bears, the ground gives way)
+        // a person who comes through whole (no air on the way, Air resistance absorbed at 100%; or, below that, Things keep
+        // their form on) and Safe passenger on: this is their landing, and Safe passenger covers where they land (review
+        // round 1 of pull request 3): their own energy taken back, their push still reaching the ground (and past what the
+        // ground bears under its downward part, the ground gives way). Review round 2: below 100% the air it swept up (its
+        // heat and motion) is real and blasts its own crater; a push big enough to move the whole Earth carries at least
+        // p^2 / 2 M_E of real energy, and an unbounded one has no physical answer (spHitReal)
         if (spHitsGround(L, o, state.safePassenger)) {
-          const gl = landGivesText(o, L.miss.vImpact, ctx().surface);
-          return thrown() + ' in a straight line (no air: their power; Earth’s gravity bends a path this fast by less than ' + angleText(P.straightThrow(L.vArrive, L.aim.thetaDeg, 0).bendMax, true) + '). But ' + C + ' is ' + fmtDist(L.D) + ' away and the Earth curves: the straight line to his hands runs up to ' + fmtDist(hg.deepest) + ' underground. ' + S + ' hits the ground about ' + fmtDist(hg.at) + ' from ' + T + ', carrying ' + (isFinite(hg.E) ? fmtSI(hg.E, 'J') + ' (' + fmtTNT(hg.E) + ')' : 'unbounded energy') + '. That is their landing, and Safe passenger covers it: it takes back all of that energy, so ' + (gl ? 'no blast' : 'no crater or blast') + ', and spreads the stop through them, so they come down unharmed. Its push (' + momFig({ J: momOfE(hg.E, o.m) }) + ') still reaches the ground and shakes it.' + gl + ' No catch: thrown this fast, nothing reaches a catcher more than about ' + fmtDist(Math.sqrt(8 * K.R_E * L.h0)) + ' away.';
+          const hr = spHitReal(L, o), mA = P.catchMissAngle(L, o, null), ang = mA ? mA.angleDeg : null;
+          // (a push that moves the whole Earth noticeably: past the blast-block line, its least energy counts as the hit's
+          // blast, and the ground giving way under it goes without saying)
+          const bigPush = hr.Ee > 4.184e6, gl = bigPush ? '' : landGivesText(o, L.miss.vImpact, ctx().surface, false, ang), air = hg.airK > 0;
+          const head = thrown() + ' in a straight line (' + (air ? 'past 1% of light speed the air it meets turns to plasma around it, from the ' + pctAir(hg.airK) + ' of the drag that still acts, and their power keeps them whole; ' : 'no air: their power; ') + 'Earth’s gravity bends a path this fast by less than ' + angleText(P.straightThrow(L.vArrive, L.aim.thetaDeg, 0).bendMax, true) + '). But ' + C + ' is ' + fmtDist(L.D) + ' away and the Earth curves: the straight line to his hands runs up to ' + fmtDist(hg.deepest) + ' underground. ' + S + ' hits the ground about ' + fmtDist(hg.at) + ' from ' + T + ', carrying ';
+          const tail = ' No catch: thrown this fast, nothing reaches a catcher more than about ' + fmtDist(Math.sqrt(8 * K.R_E * L.h0)) + ' away.';
+          if (!isFinite(hr.p)) return head + 'unbounded energy. That is their landing: Safe passenger takes back its energy and spreads the stop through them. But its push is unbounded: no ground, and no planet, can take that, so this has no physical answer and the lab can’t model it.' + tail;
+          const own = air ? fmtSI(hg.E, 'J') + ' (' + fmtTNT(hg.E) + '), the heat of the air it swept up on the way included. Their own share, ' + fmtSI(hr.own, 'J') + ', is their landing, and Safe passenger covers it: it takes back that energy and spreads the stop through them, so they come down unharmed. The rest, ' + fmtSI(hr.rest, 'J') + ' (' + fmtTNT(hr.rest) + '), is the air it swept up, its heat and its motion, and that is real: it hits the ground with them' + craterClause(hr.rest, hg.own.crater, hg.own.craterExtrapolated, hg.own.quake) + '.'
+            : fmtSI(hg.E, 'J') + ' (' + fmtTNT(hg.E) + '). That is their landing, and Safe passenger covers it: it takes back ' + (bigPush ? 'their energy' : 'all of that energy, so ' + (gl ? 'no blast' : 'no crater or blast') + ',') + ' and spreads the stop through them, so they come down unharmed.';
+          const push = bigPush ? ' Its push (' + momFig({ J: hr.p }) + ') still reaches the ground, and it is far more than a shake: even taken by the whole Earth, it moves it at ' + speedOnly(hr.p / K.M_E) + ' and gives it at least ' + fmtSI(hr.Ee, 'J') + ' (' + fmtTNT(hr.Ee) + ')' + (hr.Ee >= K.EARTH_BIND ? ': planet-scale' : '') + '. That energy is real, not taken back (any smaller part of the ground would get more), so it counts as a blast at least that big where they land.'
+            : ' Its push (' + momFig({ J: hr.p }) + ') still reaches the ground and shakes it.';
+          return head + own + push + gl + tail;
         }
         // (below 100%: the air it meets turns to plasma at the share of the drag that acts, and rides with it into the ground)
         return thrown() + ' in a straight line (' + (hg.airK > 0 ? 'past 1% of light speed the air it meets turns to plasma around it, from the ' + pctAir(hg.airK) + ' of the drag that still acts, ' + (hg.kept ? 'and their power keeps it whole' : 'and it vaporizes into that fireball') + '; ' : 'no air: their power; ') + 'Earth’s gravity bends a path this fast by less than ' + angleText(P.straightThrow(L.vArrive, L.aim.thetaDeg, 0).bendMax, true) + '). But ' + C + ' is ' + fmtDist(L.D) + ' away and the Earth curves: the straight line to his hands runs up to ' + fmtDist(hg.deepest) + ' underground. ' + (hg.airK > 0 && !hg.kept ? 'Its plasma and debris hit' : S + ' hits') + ' the ground about ' + fmtDist(hg.at) + ' from ' + T + ', carrying ' + (isFinite(hg.E) ? fmtSI(hg.E, 'J') + ' (' + fmtTNT(hg.E) + ')' : 'unbounded energy') + (hg.airK > 0 ? ', the heat of the air it swept up on the way included'  : '') + (hg.E >= K.EARTH_BIND || hg.crater > K.R_E ? ': planet-scale, so crater scaling no longer applies' : hg.crater > 0 ? ', and blasts a crater up to ' + fmtDist(hg.crater) + ' across' + (hg.crater > 3e5 ? ' (far past the few-hundred-km range the scaling is fitted to; rough size only)' : hg.craterExtrapolated ? ' (extrapolated: the same energy at 20 km/s)' : '') : '') + (hg.quake > 2 && !(hg.E >= K.EARTH_BIND || hg.crater > K.R_E) ? ', felt like a magnitude ' + sig(hg.quake, 2) + ' quake' : '') + '. No catch: thrown this fast, nothing reaches a catcher more than about ' + fmtDist(Math.sqrt(8 * K.R_E * L.h0)) + ' away.';
@@ -17361,6 +17412,9 @@ window.DINO_DATA = {
       if (Eb > 4.184e6) out.push(blastBlock(Eb, fb.kind === 'before' ? 'the fireball' : fb.push.earthRecoilV > 0 ? 'everything it carried, released where Ollie stands' : 'what it frees at Ollie and as he rides on through the lower air'));
     }
     if (a.result === 'hits-ground' && isFinite(a.hitsGround.E) && a.hitsGround.E > 4.184e6 && !spHitsGround(a, o, state.safePassenger)) out.push(blastBlock(a.hitsGround.E, 'where it hits the ground'));
+    // a person's landing under Safe passenger: only what is real of it (review round 2: the air it swept up below 100%,
+    // and the least energy its push carries into the Earth)
+    else if (spHitsGround(a, o, state.safePassenger)) { const hr = spHitReal(a, o); if (isFinite(hr.E) && hr.E > 4.184e6) out.push(blastBlock(hr.E, hr.rest > hr.Ee ? 'the air it swept up, where it hits the ground' : 'its push into the Earth, at least')); }
     if (arrived && k && k.carried && isFinite(k.Enear) && k.Enear > 4.184e6) out.push(blastBlock(k.Enear, 'Ollie’s ride through the lower air, near the catch'));
     if (state.cMiss && a.miss && !a.miss.hits && !lostEarly(a)) {
       const m = a.miss;
@@ -17373,9 +17427,11 @@ window.DINO_DATA = {
       // (review round 1: not 'unharmed' where the flight heats them, decision 6; and past what the ground bears it gives
       // way where they land, so not 'no crater' there)
       else if (o.passenger && state.safePassenger) {
-        const givesM = P.PASSENGER.landGround(o, m.vImpact, cO.surface).gives, noHole = givesM ? 'with no blast' : 'with no crater or blast';
+        // (review round 2: the ground bears the downward part of the push; the miss's angle is worked out again from the leg)
+        const mA = P.catchMissAngle(a, o, cR), angM = mA ? mA.angleDeg : null;
+        const givesM = P.PASSENGER.landGround(o, m.vImpact, cO.surface, angM).gives, noHole = givesM ? 'with no blast' : 'with no crater or blast';
         out.push(callout('If Ollie misses, they land ' + fmtDist(Math.max(0, m.past)) + ' behind him at ' + speedOnly(m.vImpact) + '. ' + (hotC ? 'Safe passenger takes back the landing’s energy (' + fmtSI(m.E, 'J') + ') and spreads its push through them, ' + noHole + ', but it doesn’t cover the heating in flight (above), so the lab can’t say they come down unharmed.'
-          : 'Safe passenger spreads the landing through them and takes back its energy (' + fmtSI(m.E, 'J') + '), so they come down unharmed, ' + noHole + '.') + ' Its push still reaches the ground and shakes it.' + landGivesText(o, m.vImpact, cO.surface)));
+          : 'Safe passenger spreads the landing through them and takes back its energy (' + fmtSI(m.E, 'J') + '), so they come down unharmed, ' + noHole + '.') + ' Its push still reaches the ground and shakes it.' + landGivesText(o, m.vImpact, cO.surface, false, angM)));
       }
       else {
         out.push(callout('If Ollie misses, it lands ' + fmtDist(Math.max(0, m.past)) + ' behind him at ' + speedOnly(m.vImpact) + ': ' + fmtSI(m.E, 'J') + ' (' + fmtTNT(m.E) + ').' + (m.E > 4.184e9 && m.crater > 0 ? ' Crater up to ' + fmtDist(m.crater) + ' across.' : '') + (m.E > 4.184e9 && m.quake > 2 ? ' Felt like a magnitude ' + sig(m.quake, 2) + ' quake.' : '')));
@@ -18156,8 +18212,8 @@ window.DINO_DATA = {
       if (move === 'throw' && objById(state.obj).passenger) {
         const rf = r.flight, landsP = !!(rf && rf.landed && !rf.relativistic), hotP = !c.keepForm && airShareOf(c) < 1 && !!rf && (rf.relativistic || rf.maxStagT > 1200);
         box.append(el('p', { class: 'muted', text: c.safePassenger ? 'For a person, Safe passenger covers the launch, the air in flight and the landing' + (hotP ? ', but not the heating in a flight this fast (Things keep their form is off)' : '')
-          + (landsP ? '. The landing’s energy is taken back' + (hotP ? '' : ', so they come down unharmed') + '; its push still reaches the ground, and the shaking from it counts.' : '.')
-          : 'For a person this covers the launch and the air in flight only. The landing is a fall unless someone catches them, and with Safe passenger off the lab doesn’t judge it (its shaking still counts).' }));
+          + (landsP ? '. The landing’s energy is taken back' + (hotP ? '' : ', so they come down unharmed') + '; its push still reaches the ground' + (P.groundOf(c.surface) ? ', and the shaking from it counts.' : ' (the lab has no ground-wave model for ' + theSurf(c.surface) + ', so it can’t judge that shaking).') : '.')
+          : 'For a person this covers the launch and the air in flight only. The landing is a fall unless someone catches them, and with Safe passenger off the lab doesn’t judge it' + (P.groundOf(c.surface) ? ' (its shaking still counts).' : '.') }));
       }
       if (ce.by && use > ce.below * (1 + 1e-6)) box.append(status('warn', 'Above the courtesy ceiling'));
       // what this effort does, tested on the run shown (a hazard can switch off again at higher effort)
@@ -18552,7 +18608,7 @@ window.DINO_DATA = {
         // past sound counts too (with any of their powers on): beside a fireball the larger counts, beside the drag of a
         // flight they add up (both near him)
         const Eair = L.result === 'fireball' ? (L.fireball && isFinite(L.fireball.E) ? L.fireball.E : Infinity)
-          : L.result === 'hits-ground' ? (spHitsGround(L, o, cR.safePassenger) ? 0 : L.hitsGround.E)
+          : L.result === 'hits-ground' ? (spHitsGround(L, o, cR.safePassenger) ? spHitReal(L, o).E : L.hitsGround.E)
             : L.aim && L.aim.vL >= K.a0 && L.drag ? (L.drag.E || 0) : 0;
         const Ehand = L.hand ? L.hand.E : 0;
         out.blast = Math.max(out.blast, L.result === 'fireball' || L.result === 'hits-ground' ? Math.max(Eair, Ehand) : Eair + Ehand);
@@ -18576,7 +18632,15 @@ window.DINO_DATA = {
         if (quakes(cR, ownGround(cR, L.toGroundC))) { out.harm = shakeMsg('the catcher’s'); break; }
         if (['crushed-launch', 'breaks-up', 'burns-up', 'wreckage'].includes(L.result) || (L.result === 'fireball' && !L.kept) || L.bursts) { out.harm = 'the ' + o.short + ' is destroyed'; break; }
         if (L.result === 'fireball') { out.harm = 'the air around the ' + o.short + ' turns into a fireball'; break; }
-        if (L.result === 'hits-ground') { out.harm = spHitsGround(L, o, cR.safePassenger) ? 'the person hits the ground ' + fmtDist(L.hitsGround.at) + ' away' + (P.PASSENGER.landGround(o, L.miss.vImpact, cR.surface).gives ? ', and the ground gives way where they land' : '') : 'the throw hits the ground ' + fmtDist(L.hitsGround.at) + ' away'; break; }
+        if (L.result === 'hits-ground') {
+          // (review round 2: the ground bears the downward part of the push, along the chord; an unbounded push has no
+          // physical answer)
+          const mA = P.catchMissAngle(L, o, null);
+          out.harm = !spHitsGround(L, o, cR.safePassenger) ? 'the throw hits the ground ' + fmtDist(L.hitsGround.at) + ' away'
+            : !isFinite(spHitReal(L, o).p) ? 'the person hits the ground ' + fmtDist(L.hitsGround.at) + ' away with an unbounded push into the Earth'
+            : 'the person hits the ground ' + fmtDist(L.hitsGround.at) + ' away' + (P.PASSENGER.landGround(o, L.miss.vImpact, cR.surface, mA ? mA.angleDeg : null).gives ? ', and the ground gives way where they land' : '');
+          break;
+        }
         if (CAUGHT.includes(L.result) && L.catch && L.catch.gripRatio > 1 && !L.gentleC) { out.harm = 'the catch crushes the ' + o.short + ' in his palms'; break; }
         const pg = catchPassengerG(L, o, cR);
         if (pg && pg.over) { out.harm = { throw: 'the throw presses the person harder than amusement rides allow', catch: 'the catch stops the person harder than amusement rides allow', drag: 'air drag presses the flying person harder than amusement rides allow' }[pg.where]; break; }
@@ -18639,7 +18703,23 @@ window.DINO_DATA = {
   // of 14 Oct 2026: it covers where they land): its energy is taken back (no crater, quake or blast counts as harm), its
   // momentum reaches the ground. Below 100% the air it meets turns to plasma and rides with it into the ground, so the
   // fireball reading stays.
-  const spHitsGround = (L, o, sp) => !!(o && o.passenger && sp && L && L.result === 'hits-ground' && L.hitsGround && !(L.hitsGround.airK > 0));
+  // (review round 2: below 100% too, where Things keep their form keeps the person whole, hitsGround.own: their own
+  // share is their landing; the air it swept up stays real)
+  const spHitsGround = (L, o, sp) => !!(o && o.passenger && sp && L && L.result === 'hits-ground' && L.hitsGround && (!(L.hitsGround.airK > 0) || (L.hitsGround.kept && !!L.hitsGround.own)));
+  // What of that hit is real (review round 2 of pull request 3). p: its push, real and whole (decision 4); Ee: the least
+  // energy that push carries even if the whole Earth takes it, p^2 / 2 M_E (unbounded: no physical answer); rest: below
+  // 100% absorbed, the air it swept up, its heat and motion (the person's own share, own, is their landing, taken back).
+  // E: what counts as the hit's blast (Ee plus rest; unbounded with the push).
+  function spHitReal(L, o) {
+    const hg = L.hitsGround, p = momOfE(hg.E, o.m), Ee = isFinite(p) ? p * p / (2 * K.M_E) : Infinity, air = hg.airK > 0 && !!hg.own;
+    const rest = air ? hg.own.rest : 0;
+    return { p, Ee, rest, own: air ? hg.own.E : hg.E, E: isFinite(p) ? rest + Ee : Infinity };
+  }
+  // a hit's crater and quake, worded as the plain hits-ground verdict words them
+  function craterClause(E, crater, extrapolated, quake) {
+    const planet = E >= K.EARTH_BIND || crater > K.R_E;
+    return (planet ? ': planet-scale, so crater scaling no longer applies' : crater > 0 ? ', and blasts a crater up to ' + fmtDist(crater) + ' across' + (crater > 3e5 ? ' (far past the few-hundred-km range the scaling is fitted to; rough size only)' : extrapolated ? ' (extrapolated: the same energy at 20 km/s)' : '') : '') + (quake > 2 && !planet ? ', felt like a magnitude ' + sig(quake, 2) + ' quake' : '');
+  }
   function catchPassengerG(L, o, cT) {
     if (!o.passenger || !L || !L.aim || state.safePassenger) return null;
     // air drag in flight: the held 1.5 g limit, on the share of the drag that Air resistance absorbed leaves acting

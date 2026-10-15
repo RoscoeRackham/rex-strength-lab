@@ -1067,23 +1067,52 @@ const sig = (x) => Number(x).toPrecision(3);
       && cOn.by === 'plaster' && near(onset(cOn), 27000, 0.01) && M.throw.shakeFrom(pOn.run(cOn.use), pOn.opt) === 'landing' && cOff.by === 'passenger' && near(onset(cOff), 333.4, 0.005) && !c4.by && near(P.plasterReach(M.throw.shake(all4, p4.opt)), 1.36, 0.01),
     'least ' + sig(gOn.use / g) + ' kg-force; ceiling ' + cOn.by + ' at ' + sig(onset(cOn)) + '; off ' + cOff.by + ' at ' + sig(onset(cOff)) + '; four off: ' + (c4.by || 'none') + ', plaster reach ' + sig(P.plasterReach(M.throw.shake(all4, p4.opt))) + ' m');
   // review round 1 of pull request 3 (physics-fast-landing-bearing): the landing's push stays real and whole; past what
-  // the ground bears over the person's facing area (less their weight) it gives way where they land. landGround's push is
-  // landShake's mean push (a Hann pulse: half its peak), and the speeds where the ground just bears it are the ones the
-  // README and the Their powers card give: about 100 m/s on the concrete slab and asphalt, 140 m/s on ice, 5.6 km/s on
-  // steel, 13 km/s on granite, 20-50 m/s on sand, gravel and clay
+  // the ground bears over the person's facing area (less their weight) it gives way where they land. Review round 2
+  // (physics-landground-1ms-floor): the push is over the person's own stop, T = L / v (README decision 4), with no 1 ms
+  // floor (that belongs to landShake's shaking model): below L / 1 ms (559 m/s) it is landShake's mean push (a Hann
+  // pulse: half its peak), above it m v^2 / L. Straight down, the speeds where the ground just bears it are the ones the
+  // README and the Their powers card give: about 100 m/s on the concrete slab and asphalt, 140 m/s on ice, 1.8 km/s on
+  // steel, 2.7 km/s on granite, 20-50 m/s on sand, gravel and clay
   {
     const lgOf = (rr, sid) => P.PASSENGER.landGround(person, rr.flight.vImpact, surf(sid || 'concrete'));
     const allD = P.throwObject(cOf(F0, { safePassenger: true }), person, 45), all9 = P.throwObject(cOf(Math.pow(10, 9.15) * g, { safePassenger: true }), person, 45);
-    const vb = (sid) => P.PASSENGER.landGround(person, 1, surf(sid)).vBear, r2 = (x) => Number(x.toPrecision(2));
+    const vb = (sid, a) => P.PASSENGER.landGround(person, 1, surf(sid), a).vBear, r2 = (x) => Number(x.toPrecision(2));
     const at = (sid, f) => P.PASSENGER.landGround(person, vb(sid) * f, surf(sid)).gives;
-    const soils = ['sand', 'gravel', 'softclay', 'stiffclay'].map(vb);
-    const bad = [];
-    for (const rr of [r, allD, all9]) { const ls1 = M.throw.landShake(rr, on); if (!near(lgOf(rr).push, ls1.F / 2, 1e-12)) bad.push('push ' + sig(lgOf(rr).push) + ' vs ' + sig(ls1.F / 2)); }
+    const soils = ['sand', 'gravel', 'softclay', 'stiffclay'].map((x) => vb(x));
+    const L0 = Math.cbrt(6 * person.m / (Math.PI * (person.rho || 1000))), bad = [];
+    for (const rr of [r, allD]) { const ls1 = M.throw.landShake(rr, on); if (!(rr.flight.vImpact < L0 / 1e-3) || !near(lgOf(rr).push, ls1.F / 2, 1e-12)) bad.push('push ' + sig(lgOf(rr).push) + ' vs ' + sig(ls1.F / 2)); }
+    const v9 = all9.flight.vImpact, mv2L = P.vToMomentum(v9, person.m) * v9 / L0;
+    if (!(v9 > L0 / 1e-3) || !near(lgOf(all9).push, mv2L, 1e-12) || !(lgOf(all9).push > 9 * M.throw.landShake(all9, on).F / 2)) bad.push('10^9.15 push ' + sig(lgOf(all9).push) + ' vs m v^2/L ' + sig(mv2L));
     for (const sid of D.surfaces.map((x) => x.id)) if (at(sid, 0.999) || !at(sid, 1.001)) bad.push('threshold ' + sid);
-    ok('7: past what the ground bears (its bearing over the person\'s facing area, less their weight) a Safe-passenger landing gives way: about 100 m/s on the slab and asphalt, 140 m/s on ice, 5.6 km/s on steel, 13 km/s on granite, 20-50 m/s in soil; not at the default dial all-out (81 m/s), 545 times past it at a 10^9.15 kg dial; the push is landShake\'s, whole',
-      !bad.length && r2(vb('concrete')) === 100 && r2(vb('asphalt')) === 100 && r2(vb('ice')) === 140 && r2(vb('steel')) === 5600 && r2(vb('granite')) === 13000 && Math.min(...soils) >= 19.5 && Math.max(...soils) <= 51
-        && !lgOf(allD).gives && lgOf(all9).gives && near(lgOf(all9).push / lgOf(all9).bear, 545, 0.01) && !lgOf(all9, 'granite').gives && JSON.stringify(M.throw.landShake(all9, on)) === JSON.stringify(M.throw.landShake(all9, off)),
-      bad.join('; ') + ' slab ' + sig(vb('concrete')) + ', ice ' + sig(vb('ice')) + ', steel ' + sig(vb('steel')) + ', granite ' + sig(vb('granite')) + ', soils ' + soils.map(sig).join('/') + ' m/s; 10^9.15: ' + sig(lgOf(all9).push / lgOf(all9).bear) + 'x');
+    ok('7: past what the ground bears (its bearing over the person\'s facing area, less their weight) a Safe-passenger landing gives way, over their own stop L / v (no 1 ms floor): straight down about 100 m/s on the slab and asphalt, 140 m/s on ice, 1.8 km/s on steel, 2.7 km/s on granite, 20-50 m/s in soil; not at the default dial all-out (81 m/s), about 9,850 times past it at a 10^9.15 kg dial, and granite gives way there too (14 times); the push is landShake\'s below 559 m/s, whole',
+      !bad.length && r2(vb('concrete')) === 100 && r2(vb('asphalt')) === 100 && r2(vb('ice')) === 140 && r2(vb('steel')) === 1800 && r2(vb('granite')) === 2700 && Math.min(...soils) >= 19.5 && Math.max(...soils) <= 51
+        && !lgOf(allD).gives && lgOf(all9).gives && near(lgOf(all9).push / lgOf(all9).bear, 9850, 0.01) && lgOf(all9, 'granite').gives && near(lgOf(all9, 'granite').push / lgOf(all9, 'granite').bear, 14.5, 0.01) && JSON.stringify(M.throw.landShake(all9, on)) === JSON.stringify(M.throw.landShake(all9, off)),
+      bad.join('; ') + ' slab ' + sig(vb('concrete')) + ', ice ' + sig(vb('ice')) + ', steel ' + sig(vb('steel')) + ', granite ' + sig(vb('granite')) + ', soils ' + soils.map(sig).join('/') + ' m/s; 10^9.15: ' + sig(lgOf(all9).push / lgOf(all9).bear) + 'x, granite ' + sig(lgOf(all9, 'granite').push / lgOf(all9, 'granite').bear) + 'x');
+    // review round 2 (physics-landground-angle): the ground bears the downward part of the push, as weakGround splits a
+    // landing (the sideways part is a skid, which breaks nothing). At 45 degrees the slab gives way from about 120 m/s
+    // (a dial of about 202,000 kg all-out); a person skimming in at 2.8 degrees at 151 m/s (a 10^5.5 kg dial, thrown
+    // level all-out) presses down with about a tenth of what it bears. The game of catch's miss angle is worked out
+    // again from the leg (catchMissAngle: its speed matches the leg's miss); the level fastball's miss at 155 m/s
+    // (2.1 degrees) doesn't give way, the lob's at 176 m/s (45 degrees) does; a ground hit meets it along the chord
+    const lvl = P.throwObject(cOf(Math.pow(10, 5.5) * g, { safePassenger: true }), person, 0), a202 = P.throwObject(cOf(202500 * g, { safePassenger: true }), person, 45), a201 = P.throwObject(cOf(201500 * g, { safePassenger: true }), person, 45);
+    const lgA = (rr, sid) => P.PASSENGER.landGround(person, rr.flight.vImpact, surf(sid || 'concrete'), rr.flight.impactAngleDeg);
+    const O0 = P.makeBody(Object.assign({ build: 'ollie' }, P.DEFAULT_BODIES.ollie)), leg = (lk, Dm, style, air) => { const cT = cOf(Math.pow(10, lk) * g, { airAbsorb: air, safePassenger: true }); const L = P.catchLeg(cT, Object.assign({}, cT, { body: O0 }), person, Dm, style), ma = P.catchMissAngle(L, person, cT); return { L, ma, lg: ma && P.PASSENGER.landGround(person, L.miss.vImpact, surf('concrete'), ma.angleDeg) }; };
+    const fb = leg(8, 100, 'hard', 0), lob = leg(7, Math.pow(10, 3.5), 'easy', 1), hit = leg(16, Math.pow(10, 4.5), 'hard', 1), bad2 = [];
+    if (!(lvl.flight.impactAngleDeg < 3 && lvl.flight.vImpact > 150 && lgOf(lvl).gives && !lgA(lvl).gives && lgA(lvl).push / lgA(lvl).bear < 0.15)) bad2.push('level 10^5.5: ' + sig(lvl.flight.vImpact) + ' m/s at ' + sig(lvl.flight.impactAngleDeg) + ' deg, ' + sig(lgA(lvl).push / lgA(lvl).bear) + 'x');
+    if (r2(vb('concrete', 45)) !== 120 || !lgA(a202).gives || lgA(a201).gives) bad2.push('45 deg slab ' + sig(vb('concrete', 45)) + ' m/s; 202,500 kg ' + lgA(a202).gives + ', 201,500 kg ' + lgA(a201).gives);
+    if (!fb.ma || fb.ma.vImpact !== fb.L.miss.vImpact || !near(fb.L.miss.vImpact, 155, 0.01) || !(fb.ma.angleDeg < 3) || fb.lg.gives || !lob.ma || lob.ma.vImpact !== lob.L.miss.vImpact || !(lob.ma.angleDeg > 44) || !lob.lg.gives) bad2.push('catch misses: fastball ' + JSON.stringify(fb.ma) + ' ' + (fb.lg && fb.lg.gives) + ', lob ' + JSON.stringify(lob.ma) + ' ' + (lob.lg && lob.lg.gives));
+    if (hit.L.result !== 'hits-ground' || !hit.ma || !near(hit.ma.angleDeg, 0.132, 0.01) || !hit.lg.gives) bad2.push('ground hit along the chord: ' + hit.L.result + ' ' + JSON.stringify(hit.ma));
+    ok('7: the ground bears the downward part of a person\'s landing push (review round 2): about 120 m/s at 45 degrees on the slab (a dial of about 202,000 kg all-out), not a grazing landing at 151 m/s and 2.8 degrees; in the game of catch the miss angle is worked out again from the leg (the fastball\'s 155 m/s miss at 2 degrees bears, the lob\'s 176 m/s at 45 degrees gives way; a ground hit along its chord, 0.13 degrees)', !bad2.length, bad2.join('; '));
+    // review round 2 (physics-hits-ground-below-100): a person kept whole (Things keep their form on) who hits the ground
+    // below 100% absorbed: their own energy at the hit (the snowplow lump's motion, exact) is their landing; the rest, the
+    // swept air's heat and motion, is real. 97.9% their own at 99.9%, 82% at 99%, 24% at 90%; none of it is told apart
+    // where the person isn't kept (Things keep their form off) or meets no air (100%)
+    const hg = (air, kf) => { const cT = cOf(1e16 * g, { airAbsorb: air, keepForm: kf, safePassenger: true }); return P.catchLeg(cT, Object.assign({}, cT, { body: O0 }), person, Math.pow(10, 4.5), 'hard').hitsGround; };
+    const h999 = hg(0.999, true), h99 = hg(0.99, true), h9 = hg(0.9, true), h1 = hg(1, true), hOff = hg(0.999, false);
+    ok('7: below 100% absorbed, a person kept whole who hits the ground: their own share is told apart from the swept air\'s (97.9% at 99.9%, 82% at 99%, 24% at 90%), its crater and quake from the rest; not where they meet no air or aren\'t kept',
+      !!(h999 && h999.own && h99.own && h9.own) && near(h999.own.E / h999.E, 0.9794, 0.001) && near(h99.own.E / h99.E, 0.8198, 0.001) && near(h9.own.E / h9.E, 0.2395, 0.002) && near(h999.own.E + h999.own.rest, h999.E, 1e-12) && h999.own.rest > h999.airHeat
+        && h999.own.crater > 0 && h999.own.crater < h999.crater && near(h999.own.quake, P.seismicMagnitude(h999.own.rest), 1e-12) && !('own' in h1) && !('own' in hOff),
+      h999 && h999.own ? sig(h999.own.E / h999.E) + ' / ' + sig(h99.own.E / h99.E) + ' / ' + sig(h9.own.E / h9.E) + ' their own; rest ' + sig(h999.own.rest) + ' J, crater ' + sig(h999.own.crater) + ' m' : JSON.stringify(h999));
   }
 }
 
