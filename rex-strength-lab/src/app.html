@@ -513,14 +513,16 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   // picture (art-unstoppable.jpg, 480 × 640 px). Each glow's centre is a fraction of the picture (x across, y down), and
   // its half-width rx and half-height ry are fractions of the picture's width and height. Measured from the image files:
   // the eyes' irises, the teeth, and the tips of the crest's feathers (the header's orange tips, from the top of the
-  // crest down the back of his neck; the Collide picture's sunlit spike tips along the top edge). The glow stays off
+  // crest down the back of his neck; the Collide picture's sunlit spike tips along the top edge), each spot just inside
+  // its tip's end so that it lights the tip, not the background beside it (the header's: the centroid of the tan pixels
+  // within 9 px of each tip's end; review round 2 of pull request 5 moved them onto the feathers). The glow stays off
   // that picture's caption (y 0.88-0.93) and its background spires (x below 0.2 or above 0.8, upper half). Each picture
   // sits in a box of its own aspect ratio, so the fractions hold at every width.
   const ART_GLOW = {
     dino: [
       { x: 0.421, y: 0.192, rx: 0.037, ry: 0.029, f: 'eye' }, { x: 0.231, y: 0.194, rx: 0.023, ry: 0.018, f: 'eye' },
       { x: 0.310, y: 0.287, rx: 0.125, ry: 0.042, f: 'mouth' },
-      ...[[0.319, 0.029], [0.354, 0.007], [0.396, 0.002], [0.435, 0.018], [0.470, 0.029], [0.509, 0.075], [0.535, 0.125], [0.560, 0.170], [0.590, 0.215], [0.620, 0.255], [0.650, 0.300]]
+      ...[[0.327, 0.046], [0.359, 0.025], [0.395, 0.015], [0.432, 0.031], [0.473, 0.055], [0.516, 0.097], [0.538, 0.135], [0.570, 0.181], [0.598, 0.221], [0.628, 0.266], [0.653, 0.298]]
         .map(([x, y]) => ({ x, y, rx: 0.019, ry: 0.015, f: 'tip' })),
     ],
     unstoppable: [
@@ -1751,8 +1753,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       items.push('Air resistance absorbed: their power takes back ' + pctAir(share) + ' of the air’s drag on it, and the air takes the rest: ' + fmtSI(r.dragLoss != null ? r.dragLoss : f.air.E, 'J') + ' over its flight, at ' + pctAir(kAir) + ' of the real rate, so a fast throw still booms and heats. The share it cancels (' + fmtSI(f.ocean.P, 'N·s') + ' of push) goes to the endless ocean, so it slows less than in real air.' + (r.dragLoss0 != null && r.Eobj > 0 && Math.abs(r.dragLoss0 - r.Eobj) < 1e-9 * r.Eobj ? ' Real air wouldn’t bring this throw down, so the blast near him counts the ' + pctAir(kAir) + ' share of all its energy, an upper bound.'
         : r.dragLoss0 != null && r.v >= K.a0 ? ' The blast near him counts the ' + pctAir(kAir) + ' share of what real air would take from the same throw (' + fmtSI(r.dragLoss0, 'J') + '), so ' + fmtSI(kAir * r.dragLoss0, 'J') + (r.dragLoss >= 0.8 * r.dragLoss0 ? ': the slowed throw gives the air much the same energy over its whole flight, but spread over a longer path.' : ': near him only that share of the drag acts, and the slowed throw gives the air ' + fmtSI(r.dragLoss, 'J') + ' in all, landing with most of the rest.') + ' A reach longer than the stretch where the air takes its energy counts what the air took within it, at most ' + fmtSI(r.dragLoss, 'J') + '.' : '')
         // (review round 1: the shimmer's figure is the share of real air's take from the same throw, not the share their
-        // power cancels along the slowed flight, which this item gives; the two differ)
-        + (tb.parts.drag > 0 ? ' The shimmer (the Shimmer tile) counts a different figure, ' + fmtSI(tb.parts.drag, 'J') + ': the ' + pctAir(share) + ' share of what real air would take from this same throw at the full drag' + (tb.parts.passenger > 0 ? ', less what is still in their landing, which Safe passenger takes back' : '') + ', not the share their power cancels along the flight it actually flies, which slows less than in real air.'
+        // power cancels along the slowed flight, which this item gives. Review round 2, copy-1: at 50% it is the same
+        // figure as the blast's, the other share of the same take, so it is named by what it is, not as 'a different
+        // figure')
+        + (tb.parts.drag > 0 ? ' The shimmer (the Shimmer tile) counts their power’s ' + pctAir(share) + ' share of what real air would take from this same throw at the full drag' + (tb.parts.passenger > 0 ? ', less what is still in their landing, which Safe passenger takes back' : '') + ': ' + fmtSI(tb.parts.drag, 'J') + '. That is not what their power cancels along the flight it actually flies, which slows less than in real air.'
           : tb.parts.passenger > 0 ? ' The shimmer (the Shimmer tile) counts what real air would have taken from them once, inside their landing, which Safe passenger takes back.' : '') + handSay);
     } else if (share === 0 && handSay) items.push(handSay.trim());
     if (vac && !f.relativistic && share < 1) {
@@ -2405,6 +2409,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (gate && gate.stop) { out.push(callout(gate.text)); return out; }
     if (gate) { out.push(callout(gate.text)); cR = Object.assign({}, cR, { groundHolds: true }); cO = Object.assign({}, cO, { groundHolds: true }); }
     const r = P.armWrestle(cR, cO);
+    // the energy their powers take back: a pin whose slam real ground under the table would crater, held by Unbreakable
+    // footing (the Shimmer tile; review round 2 of pull request 5, code-1: the winner's take)
+    const tb = takenBack('arm', r, { A: cR, B: cO, whoA: 'rex' });
     // Things keep their form is credited with the table only where the same bout without it breaks the table
     const r0 = cR.keepForm && !cR.groundHolds && !r.blackHole ? P.armWrestle(Object.assign({}, cR, { keepForm: false }), Object.assign({}, cO, { keepForm: false })) : null;
     const keepCredit = !!r0 && !!(r0.tableBreaks || r0.tableRatio > 1 || r0.slamRatio > 1);
@@ -2545,7 +2552,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       r.outcome === 'drag' ? tile('Energy in ' + L, isFinite(drag.E) ? fmtSI(drag.E, 'J') : '∞', isFinite(drag.E) ? fmtTNT(drag.E) : 'unbounded') : null,
       sameTwist ? tile('Twist on each upper arm', fmtSI(r.torqueA, 'N·m'), fmtRatio(twistMax) + ' the ~190 N·m a healthy human upper-arm bone takes in theory (cadaver bones broke at 25–31 N·m)')
         : tile('Twist on the upper arms', fmtSI(r.torqueA, 'N·m') + ' / ' + fmtSI(r.torqueB, 'N·m'), 'Rex / Ollie; the larger is ' + fmtRatio(twistMax) + ' the ~190 N·m a healthy human upper-arm bone takes in theory (cadaver bones broke at 25–31 N·m)'),
-      r.clash === 'rockGives' ? tile('Bolts hold', 'until the rock tears', 'about ' + fmtSI(r.tearA, 'N') + ' / ' + fmtSI(r.tearB, 'N') + ', Rex / Ollie') : r.tableBreaks ? tile(ownArm ? 'Feet hold up to' : 'Feet hold', fmtN(ownArm ? holdNow('A') : r.RA) + ' / ' + fmtN(ownArm ? holdNow('B') : r.RB), 'Rex / Ollie' + ['A', 'B'].filter(tornOf).map((x) => '; ' + WHO[x] + '’s bolts hold until the rock around them tears out').join('')) : (() => { const lat = tableLat; return tile('Table carries', isFinite(lat) ? 'up to ' + fmtSI(lat, 'N') : 'any force', isFinite(lat) ? 'sideways, before its pegs tear out (estimate)' : (cR.keepForm ? 'held together by their power' : gate ? 'treating the ground as if it held them' : 'ground treated as holding')); })()));
+      r.clash === 'rockGives' ? tile('Bolts hold', 'until the rock tears', 'about ' + fmtSI(r.tearA, 'N') + ' / ' + fmtSI(r.tearB, 'N') + ', Rex / Ollie') : r.tableBreaks ? tile(ownArm ? 'Feet hold up to' : 'Feet hold', fmtN(ownArm ? holdNow('A') : r.RA) + ' / ' + fmtN(ownArm ? holdNow('B') : r.RB), 'Rex / Ollie' + ['A', 'B'].filter(tornOf).map((x) => '; ' + WHO[x] + '’s bolts hold until the rock around them tears out').join('')) : (() => { const lat = tableLat; return tile('Table carries', isFinite(lat) ? 'up to ' + fmtSI(lat, 'N') : 'any force', isFinite(lat) ? 'sideways, before its pegs tear out (estimate)' : (cR.keepForm ? 'held together by their power' : gate ? 'treating the ground as if it held them' : 'ground treated as holding')); })(),
+      shimmerTile(tb, { duo: true })));
     const rows = [
       { label: 'Rex’s arm', value: r.PA, highlight: r.AA === r.PA },
       isFinite(r.RA) ? { label: 'Rex’s feet hold', value: r.RA, highlight: r.AA === r.RA } : null,
@@ -2561,6 +2569,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     items.push((ownArm ? 'Newton’s third law: the push between their hands is the same both ways. Each one’s own push back goes to his source (They take their own recoil), but the other’s press on him is real (a contest lets force move). Under the rules each grips the table’s peg with his free hand and rests his elbow on a pad bolted to the table, so each pad holds the other’s press, and the table carries the push between them, not their feet. '
       : 'Newton’s third law: the push between their hands is the same both ways. Under the rules each grips the table’s peg with his free hand and rests his elbow on a pad bolted to the table, so the table carries that push between them, not their feet. ') + (isFinite(tableLat) ? 'A regulation table scaled to their size takes roughly ' + fmtSI(tableLat, 'N') + ' sideways before a peg or pad tears out (an estimate).' : (cR.keepForm ? 'Held together by their power (Things keep their form), ' : gate ? 'Treating the ground as if it held them, ' : 'On ground treated as holding ') + 'the table never breaks, so arm strength decides.'));
     if (r.crater > 0) items.push('The pin’s slam drives into the ground under the table: a crater up to ' + fmtDist(r.crater) + ' across' + (r.craterExtrapolated ? ' (extrapolated)' : '') + ' (impact scaling with their forearms as the impactor at ' + speedOnly(r.pin ? r.pin.v : 0) + ', an upper bound).');
+    // (review round 2 of pull request 5, code-1: where real ground would take that crater, Unbreakable footing holds it,
+    // and its energy is taken back, as the stomp's)
+    else if (tb.parts.footing > 0) items.push('Unbreakable footing: on real ground the pin’s slam would drive a crater into the ground under the table (at ' + speedOnly(pin.v) + '). Their power keeps the ground whole, and the energy that would have broken it, ' + fmtSI(tb.parts.footing, 'J') + ', goes to the endless ocean: ' + W + '’s take, since his swing drives the slam (the Shimmer tile counts it).');
     // (with the winner's power on, both pads: review round 1 of pull request 4)
     if (r.padLoad > 0) items.push(cW.ownRecoil && r.loserPadLoad != null ? 'Forcing an arm down: the winner’s elbow pad holds the loser’s press, ' + fmtN(r.padLoad) + ' here. Spinning both forearms is the winner’s swing, whose push back goes to his source (They take their own recoil), so it adds nothing to his pad. The loser’s pad still carries what turns his own forearm against the winner’s hand, ' + aboutN(r.loserPadLoad) + ': that is a force on the loser, not anyone’s push back, so no power takes it. ' + (r.tableBreaksBy === 'pin' ? 'That is more than the table carries, so the pin breaks it.' : 'Both are within what the table carries.')
       : 'Forcing an arm down takes more than holding it. The winner’s elbow pad holds the loser’s arm force plus what it takes to spin both forearms: about ' + fmtN(r.padLoad) + ' here, ' + (r.tableBreaksBy === 'pin' ? 'more than the table carries.' : 'within what the table carries.'));
@@ -2982,6 +2993,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         if (changed) items.push('Air resistance absorbed: their power takes back ' + pctAir(share) + ' of the air’s drag on ' + nB + ', so he flies ' + (share >= 1 ? 'drag-free' : 'with less drag') + (f.landed && f0.landed ? ' (' + fmtDist(reach(f)) + (up ? ' high' : '') + ' against ' + fmtDist(reach(f0)) + ' in real air, landing at ' + speedOnly(f0.vImpact) + ' there)' : '') + '.');
         if (changed && share >= 1) out.splice(1, 0, el('div', { class: 'status-row' }, status('info', 'No drag: their power')));
       }
+      // (review round 2 of pull request 5, copy-4: past 1% of light speed the shimmer counts all of his energy as real
+      // air's take, an upper bound, labelled here as on the Throw tab)
+      if (f.relativistic && tb.parts.drag > 0 && isFinite(tb.parts.drag)) items.push('The shimmer (the Shimmer tile) counts ' + (share >= 1 ? '' : 'the ' + pctAir(share) + ' share of ') + 'what real air would have taken, ' + fmtSI(tb.parts.drag, 'J') + ': past 1% of light speed the lab gives real air all of his energy, an upper bound.');
       const hand = P.anyPower(cA) ? P.RESTRAINT.MOVES.throw.hand(r, { body: cA.body, obj: t.obj }) : null;
       if (hand) items.push(nA + '’s hands still meet real air (their own bodies do): they break the sound barrier as he lets go, so the boom stays, and over the end of the throw they drive about ' + fmtMass(hand.mAir) + ' of air ahead of them, up to ' + fmtTNT(hand.E) + ' of blast at his hands (an upper bound' + (hand.capped ? '; capped at the work of his push, since in real air his hands’ own drag would hold the throw far below this speed' : ': his hands speed up through the throw') + ').');
       if (r.heldBack) items.push('Pushing with everything would make ' + nA + '’s feet slide, so he holds back to what his footing can take (' + fmtSI(r.anchor.R, 'N') + ').');
@@ -3403,6 +3417,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     else if (a.sheath && arrived) items.push('Past 1% of light speed the air can’t get out of the way: ' + (state.airAbsorb > 0 ? 'their power takes back ' + pctAir(state.airAbsorb) + ' of the drag, and ' : '') + 'the air it meets heats into the plasma sheath (above), ' + fmtSI(a.sheath.E, 'J') + '.' + handC);
     else if (state.airAbsorb > 0 && arrived && a.drag) items.push('Air resistance absorbed: their power takes back ' + pctAir(state.airAbsorb) + ' of the air’s drag on it; the air takes the rest (' + fmtSI(a.drag.E, 'J') + ' over the flight), so it slows less and heats at ' + pctAir(1 - state.airAbsorb) + ' of the real rate.' + handC);
     else if (handC) items.push(handC.trim());
+    // (review round 2 of pull request 5, copy-4, followed into the game of catch: past 1% of light speed the shimmer counts
+    // all of a throw's energy as real air's take, an upper bound, labelled as on the Throw tab: Rex's throw, and Ollie's
+    // throw back where he has one)
+    const pastC = (L) => !!L && (L.result === 'fireball' || !!L.fast || (L.result === 'overshoots' && (!!L.relativistic || L.vL >= P.CATCH.V_FIREBALL)));
+    const fastDrag = [[a, tb.by.rex.parts.drag, 'Rex'], [backThrow ? b : null, tb.by.ollie.parts.drag, 'Ollie']].filter(([L, d]) => pastC(L) && d > 0 && isFinite(d));
+    if (fastDrag.length) items.push('The shimmer (the Shimmer tile) counts ' + (airShareOf(cR) >= 1 ? '' : 'the ' + pctAir(airShareOf(cR)) + ' share of ') + 'what real air would have taken from ' + fastDrag.map(([, d, who]) => who + '’s throw, ' + fmtSI(d, 'J')).join(', and from ') + ': past 1% of light speed the lab gives real air all of its energy, an upper bound.');
     if (a.gentleT && a.launchRatio > 1) items.push('Things keep their form: Rex’s push of ' + fmtSI(a.launchPush, 'N') + ' is spread through the whole ' + o.short + ' like gravity, so it isn’t crushed at launch (without it: ' + fmtRatio(a.launchRatio) + ' what it can take).');
     if (a.gentleC && k && (k.gripRatioRaw > 1 || k.wholeFront > 1 || k.baseballRatio > 1)) items.push('Things keep their form: Ollie’s stop is spread through the whole ' + o.short + ', so his hands put no load on it (without it: ' + fmtRatio(Math.max(k.gripRatioRaw, k.wholeFront, k.baseballRatio)) + ' what it can take).');
     // Newton's third law, as on the Throw tab: the push on it pushes Rex back
@@ -3576,6 +3596,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         : 'Stopping him puts ' + fmtSI(t.catch.Ecatch, 'J') + ' (' + fmtTNT(t.catch.Ecatch) + ') into Rex’s arms, which ends up as heat in his plush.');
     if (shT) items.push('Rex’s feet hand the ground the toss’s push (' + pushFig(t.toGroundT) + ' over ' + fmtTime(t.toGroundT.T) + '). ' + suppliedText(t.toGroundT) + groundShakeText(shT, cR.surface));
     if (shC) items.push('Rex’s feet hand the ground the catch’s push (' + pushFig(t.toGroundC) + ' over ' + fmtTime(t.toGroundC.T) + '). ' + suppliedText(t.toGroundC) + groundShakeText(shC, cR.surface));
+    // (review round 2 of pull request 5, copy-4: past 1% of light speed the shimmer counts all of his energy as real
+    // air's take, an upper bound, labelled here as on the Throw tab)
+    if (t.v >= P.CATCH.V_FIREBALL && tb.parts.drag > 0 && isFinite(tb.parts.drag)) items.push('The shimmer (the Shimmer tile) counts ' + (airShareOf(cR) >= 1 ? '' : 'the ' + pctAir(airShareOf(cR)) + ' share of ') + 'what real air would have taken, ' + fmtSI(tb.parts.drag, 'J') + ': past 1% of light speed the lab gives real air all of his energy, an upper bound.');
     // his hands still meet real air (their own bodies do): past sound they boom, and the air they drive counts
     if (t.hand) items.push('Rex’s hands still meet real air (their own bodies do): they break the sound barrier as he lets go, so the boom stays, and over the end of the toss they drive about ' + fmtMass(t.hand.mAir) + ' of air ahead of them, up to ' + fmtTNT(t.hand.E) + ' of blast at his hands (an upper bound' + (t.hand.capped ? '; capped at the work of his push, since in real air his hands’ own drag would hold the toss far below this speed' : ': his hands speed up through the toss') + '). The effort and courtesy ceiling count it.');
     items.push(dragNote);

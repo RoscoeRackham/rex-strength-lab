@@ -159,6 +159,15 @@ for (const r of R) ok('rung ' + r.id + ': page phrase “' + r.short + '” fits
       [at(0.624), 'glow', 'about a glow'], [at(0.626), 'bright', 'roughly bright'], [at(0.874), 'bright', 'roughly bright'], [at(0.876), 'blinding flare', 'roughly a blinding flare'], [fx.J, 'blinding flare', 'roughly a blinding flare']];
     const bad = cases.filter(([J, w, t]) => { const g = G(J); return g.word !== w || g.text !== t || g.none; });
     ok('9: the word for each energy: too faint to see below the floor; a faint flicker from the floor up to a car crash; then the nearest step (flicker, faint glow, glow, bright, blinding flare), "roughly" for the rough ones', !bad.length, bad.map(([J, w]) => J.toExponential(2) + ' ' + G(J).word + ' (want ' + w + ')').join('; '));
+    // (review round 2 of pull request 5: at an exact tie, a level exactly halfway between two steps, the word is the lower
+    // step's, as src/ladder.js documents. The energies are found among the doubles next to each halfway point, where the
+    // level the ladder works out is exactly as far from both steps)
+    const ulp = (x, n) => { const b = new DataView(new ArrayBuffer(8)); b.setFloat64(0, x); b.setBigInt64(0, b.getBigInt64(0) + BigInt(n)); return b.getFloat64(0); };
+    const ties = [];
+    for (const [k, lo, hi] of [[0.125, 'flicker', 'faint glow'], [0.375, 'faint glow', 'glow'], [0.625, 'glow', 'bright'], [0.875, 'bright', 'blinding flare']]) {
+      for (let n = -400; n <= 400; n++) { const J = ulp(at(k), n), g = G(J); if (Math.abs(g.level - (k - 0.125)) === Math.abs(g.level - (k + 0.125))) { ties.push([J, g.word, lo, hi]); break; } }
+    }
+    ok('9: at an exact tie between two steps the word is the lower step\'s (' + ties.length + ' ties found: ' + ties.map(([, w, lo, hi]) => lo + '/' + hi + ': ' + w).join(', ') + ')', ties.length >= 2 && ties.every(([, w, lo]) => w === lo), ties.map(([J]) => J.toExponential(17)).join(', '));
   }
   // held at the flare above it; unbounded is the flare; nothing taken back is no tile
   { const a = G(fx.J * 10), u = G(Infinity);

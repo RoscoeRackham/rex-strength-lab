@@ -1801,23 +1801,37 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       ['the Wrestle throw at 10⁹ kg (all-out)', DUO({ duoAction: 'wrestle', wrestleMove: 'throw', wAngle: 45, logKg: 9 }), 'const A = mk({ F: 1e9 * g }), B = mk({ F: 1e9 * g, body: O() }); return tb(P.RESTRAINT.takenBack("wrestleThrow", P.throwPartner(A, B, 45), { A, B, whoA: "rex", angle: 45 }));', { ollie: 'the ground kept whole' }],
       // (a round trip: Ollie throws it back; each catch is too faint to see, so the tile carries the floor's note)
       ['the game of catch (a fastball, 10 m, all-out)', DUO({ duoAction: 'catch', cObj: 'baseball', cStyle: 'hard', cLogD: 1 }), 'const A = mk(), B = mk({ body: O() }), la = P.catchLeg(A, B, obj("baseball"), 10, "hard"); return tb(P.RESTRAINT.takenBack("catch", { a: la, b: la }, { A, B, whoA: "rex", obj: obj("baseball") }));', { rex: 'his catch', ollie: 'his catch' }],
+      // (review round 2: a gentle lob's round trip, so a return leg worked out at another style fails: Ollie throws it back
+      // as he caught it)
+      ['the game of catch (a baseball lobbed 10 m, all-out: a round trip)', DUO({ duoAction: 'catch', cObj: 'baseball', cStyle: 'easy', cLogD: 1 }), 'const A = mk(), B = mk({ body: O() }), la = P.catchLeg(A, B, obj("baseball"), 10, "easy"); return tb(P.RESTRAINT.takenBack("catch", { a: la, b: la }, { A, B, whoA: "rex", obj: obj("baseball") }));', { rex: 'his catch', ollie: 'his catch' }],
       // (review round 1: Ollie, his own recoil not taken, is carried off by the catch, so there is no throw back: leg a alone)
       ['the game of catch (a fastball 10 m apart at 10²⁰ kg, They take their own recoil off: Ollie is carried off)', DUO({ duoAction: 'catch', cObj: 'baseball', cStyle: 'hard', cLogD: 1, logKg: 20, ownRecoil: false }), 'const x = { F: 1e20 * g, ownRecoil: false }, A = mk(x), B = mk(Object.assign({ body: O() }, x)), la = P.catchLeg(A, B, obj("baseball"), 10, "hard"); return !(la.result === "caught" && la.catch && la.catch.carried) ? { error: "not carried off" } : tb(P.RESTRAINT.takenBack("catch", { a: la }, { A, B, whoA: "rex", obj: obj("baseball") }));', { rex: 'the air’s drag on what he threw' }],
       ['the partner toss (gentle, 10 m, all-out)', DUO({ duoAction: 'catch', cObj: 'partner', cStyle: 'easy', cLogD: 1 }), 'const A = mk(), B = mk({ body: O() }), t = P.tossPartner(A, B.body, "Ollie", "easy", 10, "friction"); return tb(P.RESTRAINT.takenBack("toss", t, { A, B, whoA: "rex" }));', { rex: 'his catch' }],
       // (leg a reaches Ollie as a fireball: there is nothing to throw back, so the tally is leg a's alone)
       ['the game of catch (a fastball 10 m apart at 10¹⁴ kg, Things keep their form off, half the drag: a fireball)', DUO({ duoAction: 'catch', cObj: 'baseball', cStyle: 'hard', cLogD: 1, logKg: 14, keepForm: false, airAbsorb: 0.5 }), 'const x = { F: 1e14 * g, keepForm: false, airAbsorb: 0.5 }, A = mk(x), B = mk(Object.assign({ body: O() }, x)), la = P.catchLeg(A, B, obj("baseball"), 10, "hard"); return la.result !== "fireball" ? { error: "not a fireball" } : tb(P.RESTRAINT.takenBack("catch", { a: la }, { A, B, whoA: "rex", obj: obj("baseball") }));', { ollie: 'the hit' }],
       ['Collide (Ollie\'s sprint, all-out)', DUO({ duoAction: 'collide' }), 'const A = mk({ body: O() }), B = mk(), r = P.collide(A, B, { source: "sprint" }); return tb(P.RESTRAINT.takenBack("collide", r, { A, B, whoA: "ollie" }));', { rex: 'the hit', ollie: 'his own stop after the hit' }],
+      // (review round 2, code-4: each charger and each thrower, so a tally that names the wrong one fails; and a run at the
+      // page's own two-player effort, least disruptive, with no effort picked: the engine at the effort on the slider
+      // (its value, a log of kg-force), which must differ from all-out's here, so a tally read at all-out fails)
+      ['Collide (Rex\'s sprint, all-out)', DUO({ duoAction: 'collide', colWho: 'rex' }), 'const A = mk(), B = mk({ body: O() }), r = P.collide(A, B, { source: "sprint" }); return tb(P.RESTRAINT.takenBack("collide", r, { A, B, whoA: "rex" }));', { rex: 'his own stop after the hit', ollie: 'the hit' }],
+      ['the Wrestle throw, Ollie throws (10⁹ kg, 30°, the page\'s least disruptive effort)', DUO({ duoAction: 'wrestle', wrestleMove: 'throw', wrestleWho: 'ollie', wAngle: 30, logKg: 9 }), 'const run = (F) => { const A = mk({ F, body: O() }), B = mk({ F }); return P.RESTRAINT.takenBack("wrestleThrow", P.throwPartner(A, B, 30), { A, B, whoA: "ollie", angle: 30 }); }; return Object.assign(tb(run(Math.min(1e9 * g, Math.pow(10, a) * g))), { allE: run(1e9 * g).E });', { ollie: 'the air’s drag on what he threw' }, 'least'],
     ];
+    const effBad = [];
     {
       const bad = [], who = [];
       let faint = 0;
-      for (const [lab, st, code, from] of DUO5) {
-        await load(st, 'allout');
-        const t = await tileOf('duo-bay'), e = await eng(code);
+      for (const [lab, st, code, from, effort] of DUO5) {
+        await load(st, effort === 'least' ? null : 'allout');
+        // (the page's own effort: the two-player slider's value, log10 of the kg-force each uses)
+        const lk = effort === 'least' ? await page.evaluate(() => { const s = document.getElementById('duo-effort-use'), e = document.getElementById('duo-effort'); return s && e && e.value === 'least' ? Number(s.getAttribute('value')) : NaN; }) : undefined;
+        const t = await tileOf('duo-bay'), e = await eng(code, lk);
+        if (effort === 'least' && (!(lk < 9) || !t || !nearJ(parseJ(t.s[0]), e.E) || nearJ(e.E, e.allE, 0.1))) effBad.push(lab + ': ' + JSON.stringify({ lk, t: t && t.s[0], engine: e.E, allOut: e.allE }));
         const lines = t ? t.s.slice(0, -1) : [];
         const ok = t && t.n === 1 && t.last && t.k === 'Shimmer' && e.E > 0 && t.v === 'Rex: ' + e.rexW.text && (t.text.match(/never scalding/g) || []).length === 1 && floorOk(t, e);
         if (e.rexW.text === 'too faint to see') faint++;
         if (st.duoAction === 'collide') seen5.collide = t;
+        // (the fastball at 10^20 kg, past 1% of light speed with the catch real: read again by [fast-label])
+        if (st.logKg === 20) seen5.catchFast = { t, e, text: await bayText('duo-bay') };
         if (!ok) bad.push(lab + ': ' + JSON.stringify(t) + ' engine ' + JSON.stringify(e && { E: e.E, rex: e.rex, w: e.rexW }));
         // who: one line each for Rex and Ollie where each takes something in, in that order
         const wantWho = ['rex', 'ollie'].filter((w) => e[w] > 0);
@@ -1828,6 +1842,7 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       if (!faint) bad.push('no run too faint to see, so the floor\'s note went unchecked');
       check('pr5 [duo-tiles]: the Shimmer tile on the two-player runs (the Wrestle throw, the game of catch, the partner toss, Collide) ends the row with Rex\'s level, the note once', !bad.length, bad.join(' ;; '));
       check('pr5 [duo-who]: the two-player tiles name who takes in each part (Rex, Ollie), with the engine\'s figures and the ladder\'s wording, and say canon gives the shimmer to Rex', !who.length, who.join(' ;; '));
+      check('pr5 [duo-effort]: a two-player tile reads the run at the effort on screen: the Wrestle throw at the page\'s least disruptive effort is the engine\'s figure at the effort on the slider, not all-out\'s', !effBad.length && DUO5.some((x) => x[4] === 'least'), effBad.join(' ;; '));
     }
     // review round 1 (code-4): the tile follows the effort on screen: the page's default (least disruptive; no effort picked)
     // and one set by hand on the slider (10^4.5 kg, 31.6 t, as the slider's steps give it), each against the engine at that effort (the page's least
@@ -1895,13 +1910,18 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     // what-if outside its 'each only with its power on' list, and the drag figure as the engine now works it out
     {
       const bad = [], cards = doc5.cards || '';
-      if (!/Where they stand still, the push back itself carries almost no energy\. But with this power on, what their own moves free goes to the endless ocean too, and the Shimmer tile counts it: a catch’s energy \(the game of catch and the partner toss; canon: a catch is absorbed\) and, in Collide’s charge, the hit’s freed energy \(the one hit takes it in\) and the charger’s own stop/.test(cards) || /it carries almost no energy, since they don’t move/.test(cards)) bad.push('Their powers card');
-      check('pr5 [recoil-card]: the Their powers card no longer says They take their own recoil takes back almost no energy: the catch, the hit and the charger\'s stop it takes back show in the shimmer', !bad.length, bad.join(' ;; '));
+      // (review round 2, copy-2: exactly the three parts this power is credited with, not 'what their own moves free')
+      if (!/Where they stand still, the push back itself carries almost no energy\. But with this power on, three things their own moves free go to the endless ocean too, and the Shimmer tile counts them: a catch’s energy \(the game of catch and the partner toss; canon: a catch is absorbed\) and, in Collide’s charge, the hit’s freed energy \(the one hit takes it in\) and the charger’s own stop, whose motion goes to his source with its push back\. Nothing else their moves free is this power’s to take back: a punch’s or clap’s blast is Silent strike’s, the ground a stomp would break is Unbreakable footing’s, and a throw’s energy stays in what is thrown\./.test(cards)
+        || /it carries almost no energy, since they don’t move|what their own moves free goes to the endless ocean/.test(cards)) bad.push('Their powers card: ' + ((cards.match(/Where they stand still[^]*?An incoming hit/) || ['(none)'])[0]));
+      check('pr5 [recoil-card]: the Their powers card no longer says They take their own recoil takes back almost no energy, or everything their moves free: exactly the catch, the hit and the charger\'s stop it takes back show in the shimmer', !bad.length, bad.join(' ;; '));
       const list = (cards.match(/What counts, each only with its power on: ([^]*?)\. Whatever the switches say/) || [])[1];
       const bad2 = [];
       if (!list || /growth what-if/.test(list) || !/and a catch, which canon absorbs \(They take their own recoil\)$/.test(list) || !/Whatever the switches say, the energy that becomes mass in the Weight tab’s growth what-if counts too: it is a what-if, not a power, so it is the one Shimmer tile left with every power off\./.test(cards)) bad2.push('what counts: ' + (list || '(no list)').slice(0, 300));
       if (!/Where that flight comes down, it is the energy lost on the way; where real air would never bring it down, the drag on its way out \(it leaves with the rest of its energy\); past 1% of light speed, all of its energy, an upper bound\./.test(cards) || /all of its energy where real air would never bring it down/.test(cards)) bad2.push('the drag figure');
-      check('pr5 [shimmer-card]: the shimmer card lists what counts only with its power on, and the growth what-if apart (a what-if, not a power); its drag figure is the one the engine counts (the drag on its way out where real air wouldn\'t bring it down, all of it only past 1% of light speed)', !bad2.length, bad2.join(' ;; '));
+      // (review round 2, copy-3: the drag counted is the share their power takes back; code-1: an arm-wrestling pin's slam)
+      if (!/The drag counted is the share their power takes back \(the Air resistance absorbed slider\) of what real air would have taken from the same throw: one more flight at the full drag/.test(cards) || /The drag counted is what real air would have taken/.test(cards)) bad2.push('the drag counted is the share their power takes back');
+      if (!list || !/what would have broken the ground \(Unbreakable footing: a stomp; an arm-wrestling pin’s slam, the winner’s take, and a thrown partner’s landing, each where real ground would take a crater\)/.test(list)) bad2.push('the arm-wrestling pin in what counts');
+      check('pr5 [shimmer-card]: the shimmer card lists what counts only with its power on (an arm-wrestling pin\'s slam among them), and the growth what-if apart (a what-if, not a power); its drag figure is the one the engine counts (the share their power takes back, the drag on its way out where real air wouldn\'t bring it down, all of it only past 1% of light speed)', !bad2.length, bad2.join(' ;; '));
     }
     // review round 1 (code-2, copy-4): the Throw tab's words for the shimmer's drag figure. A throw real air wouldn't bring
     // down (the Great Pyramid straight up at 10^17 kg): the drag on its way out, not all of its energy; past 1% of light
@@ -1918,9 +1938,18 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       const mr = xr.match(/The shimmer \(the Shimmer tile\) counts what real air would have taken, ([\d.,]+ [kMGTPE]?J): past 1% of light speed the lab gives real air all of its energy, an upper bound\./);
       if (!tr || !er.rel || er.E !== er.Eobj || !nearJ(parseJ(tr.s[0]), er.E) || !mr || !nearJ(parseJ(mr[1]), er.E)) bad.push('the car past 1% of light speed: ' + JSON.stringify({ t: tr && tr.s[0], E: er.E }) + ' | ' + ((xr.match(/The shimmer \(the Shimmer tile\)[^.]*\.[^.]*\./) || ['(no sentence)'])[0]));
       check('pr5 [real-air]: the Throw tab says what the shimmer\'s drag figure is where real air wouldn\'t bring the throw down (the drag on its way out, the engine\'s figure) and past 1% of light speed (all of its energy, an upper bound)', !bad.length, bad.join(' ;; '));
-      const th = seen5.throw || {}, x4 = th.text || '', d4 = th.e && th.e.parts ? th.e.parts.drag : NaN;
-      const m4 = x4.match(/The shimmer \(the Shimmer tile\) counts a different figure, ([\d.,]+ [kMGT]?J): the 50% share of what real air would take from this same throw at the full drag, not the share their power cancels along the flight it actually flies, which slows less than in real air\./);
-      check('pr5 [share-copy]: below 100% absorbed (half, the car at 20 degrees) the Throw tab says the shimmer counts the share of real air\'s take from the same throw, the tile\'s figure, not the share cancelled along the slowed flight', !!m4 && d4 > 0 && nearJ(parseJ(m4[1]), d4) && th.t && th.t.s[0].startsWith(m4[1] + ' taken in'), (m4 ? m4[0] : (x4.match(/Air resistance absorbed: their power takes back[^]*?\.[^.]*\.[^.]*\./) || ['(no item)'])[0]) + ' | ' + d4);
+      // (review round 2, copy-1: the sentence names the shimmer's figure by what it is, never 'a different figure', so it is
+      // true where the figures differ and where they are the same: half absorbed on a supersonic throw, the blast near him
+      // counts the air's half of real air's take and the shimmer their power's half, the same figure)
+      const shareRe = /The shimmer \(the Shimmer tile\) counts their power’s 50% share of what real air would take from this same throw at the full drag: ([\d.,]+ [kMGT]?J)\. That is not what their power cancels along the flight it actually flies, which slows less than in real air\./;
+      const sbad = [];
+      const th = seen5.throw || {}, x4 = th.text || '', d4 = th.e && th.e.parts ? th.e.parts.drag : NaN, m4 = x4.match(shareRe);
+      if (!m4 || !(d4 > 0) || !nearJ(parseJ(m4[1]), d4) || !th.t || !th.t.s[0].startsWith(m4[1] + ' taken in') || /a different figure, /.test(x4)) sbad.push('the car at 20 degrees: ' + (m4 ? m4[0] : (x4.match(/Air resistance absorbed: their power takes back[^]*?flight it actually flies[^.]*\./) || ['(no item)'])[0]) + ' | ' + d4);
+      await load({ action: 'throw', obj: 'baseball', angle: 45, logKg: 6, airAbsorb: 0.5 }, 'allout');
+      const tb5 = await tileOf('bay'), xb = await bayText('bay'), eb = await eng('const c = mk({ F: 1e6 * g, airAbsorb: 0.5 }), r = P.throwObject(c, obj("baseball"), 45); return tb(P.RESTRAINT.takenBack("throw", r, Object.assign({}, c, { obj: obj("baseball"), angle: 45 })));');
+      const mb = xb.match(shareRe), blast = xb.match(/The blast near him counts the 50% share of what real air would take from the same throw \([^)]+\), so ([\d.,]+ [kMGT]?J)/);
+      if (!mb || !blast || mb[1] !== blast[1] || !nearJ(parseJ(mb[1]), eb.parts.drag) || !tb5 || !tb5.s[0].startsWith(mb[1] + ' taken in') || /a different figure, /.test(xb)) sbad.push('the baseball at 45 degrees, 10^6 kg (supersonic): ' + ((xb.match(/The blast near him[^]*?flight it actually flies[^.]*\./) || ['(no item)'])[0]) + ' | ' + eb.parts.drag);
+      check('pr5 [share-copy]: below 100% absorbed (half: the car at 20 degrees, and a supersonic baseball, where the blast\'s figure is the same) the Throw tab says the shimmer counts their power\'s share of real air\'s take from the same throw, the tile\'s figure, never "a different figure"', !sbad.length, sbad.join(' ;; '));
     }
     // 5. unlimited strength: unbounded energy, said in words (no finite figure), never '∞' or 'Infinity'
     {
@@ -1999,6 +2028,42 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       if (!dm || !kt || !kt.s[0].startsWith(dm[1] + ' taken in, from the air’s drag')) bad.push('Throw: ' + (dm ? dm[0] : (th.match(/No drag:[^]*?\. /) || [''])[0]) + ' | ' + (kt && kt.s[0]));
       check('pr5 [copy]: the copy the shimmer made wrong is fixed (a catch\'s and the toss\'s energy taken back, heat only with the power off; no "not drawn yet"; the Throw tab names the shimmer\'s drag figure; the charger\'s stop gives the tile\'s figure)', !bad.length, bad.join(' ;; '));
     }
+    // review round 2 (code-1): arm wrestling. Rex at 10^9 kg pins Ollie at his what-if 10^8 kg at 8 km/s: with Unbreakable
+    // footing on, the slam real ground under the table would crater is held, and its energy is a footing part, the
+    // winner's (his swing drives the slam): the tile, Rex's line and the sentence that says so. With the power off the
+    // crater is real, and there is no tile
+    {
+      const bad = [];
+      const redrawDuo = async (fn) => { await page.evaluate(() => { for (const n of document.getElementById('duo-bay').children) n.r5old = true; }); await page.evaluate(fn); await page.waitForFunction(() => Array.from(document.getElementById('duo-bay').children).some((n) => !n.r5old), null, { polling: 30, timeout: 30000 }); await settledOn(page, 'duo-bay'); };
+      await load(DUO({ duoAction: 'arm', logKg: 9 }), 'allout');
+      await redrawDuo(() => document.getElementById('o-own').click());
+      await redrawDuo(() => { const sl = document.getElementById('o-strength'); sl.value = '8'; sl.dispatchEvent(new Event('input', { bubbles: true })); });
+      const t = await tileOf('duo-bay'), x = await bayText('duo-bay'), e = await eng('const A = mk({ F: 1e9 * g }), B = mk({ F: 1e8 * g, body: O() }), r = P.armWrestle(A, B); return Object.assign(tb(P.RESTRAINT.takenBack("arm", r, { A, B, whoA: "rex" })), { pinE: r.pin ? r.pin.E : NaN });');
+      const m = x.match(/Unbreakable footing: on real ground the pin’s slam would drive a crater into the ground under the table \(at [\d,]+ m\/s\)\. Their power keeps the ground whole, and the energy that would have broken it, ([\d.,]+ [kMGTPE]?J), goes to the endless ocean: Rex’s take, since his swing drives the slam \(the Shimmer tile counts it\)\./);
+      if (!t || t.n !== 1 || !t.last || t.v !== 'Rex: ' + e.rexW.text || !(e.rex > 0) || e.rex !== e.pinE || e.ollie !== 0 || t.s.length !== 2 || !/^Rex takes in /.test(t.s[0]) || !nearJ(parseJ(t.s[0]), e.rex) || !t.s[0].includes(', from the ground kept whole · ' + e.rexW.cmp) || !m || !nearJ(parseJ(m[1]), e.rex))
+        bad.push('the pin, the power on: ' + JSON.stringify({ t, e: { rex: e.rex, pinE: e.pinE, ollie: e.ollie, w: e.rexW.text } }) + ' | ' + (m ? m[0] : '(no sentence)'));
+      await redrawDuo(() => document.getElementById('sw-unbreakable').click());
+      const t0 = await tileOf('duo-bay'), x0 = await bayText('duo-bay');
+      if (t0 || !/The pin’s slam drives into the ground under the table: a crater up to /.test(x0)) bad.push('the power off: ' + JSON.stringify(t0) + ' | ' + ((x0.match(/The pin’s slam[^.]*\./) || ['(no crater)'])[0]));
+      check('pr5 [arm]: arm wrestling: a pin whose slam real ground would crater, held by Unbreakable footing, shows its energy in the tile as the winner\'s take (the ground kept whole), and the bay says so; with the power off the crater is real and there is no tile', !bad.length, bad.join(' ;; '));
+    }
+    // review round 2 (copy-4): past 1% of light speed the shimmer counts all of his energy as real air's take, an upper
+    // bound, and the Wrestle throw (a dense Ollie, 10^6 kg, at 3 x 10^18 kg) and the partner toss (hard, at 10^16 kg) say
+    // so, as the Throw tab does, with the tile's figure; so does the game of catch (the fastball at 10^20 kg above, its
+    // catch real: read from that load)
+    {
+      const bad = [], lab = /The shimmer \(the Shimmer tile\) counts what real air would have taken, ([\d.,]+ [kMGTPE]?J): past 1% of light speed the lab gives real air all of his energy, an upper bound\./;
+      const cf = seen5.catchFast || {}, mc = (cf.text || '').match(/The shimmer \(the Shimmer tile\) counts what real air would have taken from Rex’s throw, ([\d.,]+ [kMGTPE]?J): past 1% of light speed the lab gives real air all of its energy, an upper bound\./);
+      if (!mc || !cf.e || !(cf.e.parts && cf.e.parts.drag > 0) || !nearJ(parseJ(mc[1]), cf.e.parts.drag) || !cf.t || !nearJ(parseJ(cf.t.s[0]), cf.e.parts.drag)) bad.push('the game of catch (a fastball 10 m apart at 10^20 kg, the catch real): ' + (mc ? mc[0] : '(no label)') + ' | ' + (cf.t && cf.t.s[0]));
+      for (const [nm, st, code] of [
+        ['the Wrestle throw (Ollie at 10^6 kg, 3 × 10^18 kg, 45°)', DUO({ duoAction: 'wrestle', wrestleMove: 'throw', wAngle: 45, oM: 1e6, logKg: Math.log10(3e18) }), 'const F = Math.pow(10, a) * g, A = mk({ F }), B = mk({ F, body: P.makeBody({ build: "ollie", H: P.DEFAULT_BODIES.ollie.H, m: 1e6 }) }), t = P.throwPartner(A, B, 45); return Object.assign(tb(P.RESTRAINT.takenBack("wrestleThrow", t, { A, B, whoA: "rex", angle: 45 })), { rel: !!t.r.flight.relativistic });'],
+        ['the partner toss (hard, 10^16 kg)', DUO({ duoAction: 'catch', cObj: 'partner', cStyle: 'hard', logKg: 16 }), 'const F = Math.pow(10, a) * g, A = mk({ F }), t = P.tossPartner(A, O(), "Ollie", "hard", 10, "friction"); return Object.assign(tb(P.RESTRAINT.takenBack("toss", t, { A, B: mk({ F, body: O() }), whoA: "rex" })), { rel: t.v >= P.CATCH.V_FIREBALL });']]) {
+        await load(st, 'allout');
+        const t = await tileOf('duo-bay'), x = await bayText('duo-bay'), e = await eng(code, st.logKg), m = x.match(lab);
+        if (!e.rel || !(e.parts && e.parts.drag > 0) || !t || !m || !nearJ(parseJ(m[1]), e.parts.drag) || !/^Rex takes in /.test(t.s[0]) || !nearJ(parseJ(t.s[0]), e.parts.drag)) bad.push(nm + ': ' + JSON.stringify({ t: t && t.s[0], drag: e.parts && e.parts.drag, rel: e.rel }) + ' | ' + (m ? m[0] : '(no label)'));
+      }
+      check('pr5 [fast-label]: past 1% of light speed the Wrestle throw, the partner toss and the game of catch label the shimmer\'s drag figure (the tile\'s) as all of its energy, an upper bound, as the Throw tab does', !bad.length, bad.join(' ;; '));
+    }
     if (page.errs.length) r5.push('page errors: ' + page.errs.slice(0, 3).join(' | '));
     await page.close();
     // 9-11. the glow on the art, at 390 and 1280 px, light and dark, with reduced motion (a static glow): it sits on his
@@ -2010,19 +2075,21 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       // his features, as measured from the image files (not read from the page, so glows moved off them fail): dino.jpg
       // (432 x 558 px) and art-unstoppable.jpg (480 x 640 px), as fractions of each picture (x across, y down). The eyes'
       // irises, the middle of the teeth (the header) or points along the glowing teeth (the Collide picture), and the
-      // crest's tips: the header's orange feather tips from the top of the crest down the back of his neck, the Collide
-      // picture's spike tips just inside their ends. w: the sampling window's half-width, a fraction of the width.
+      // crest's tips: the header's orange feather tips from the top of the crest down the back of his neck (review round 2:
+      // just inside each tip's end, the centroid of the tan pixels within 9 px of it), the Collide picture's spike tips just
+      // inside their ends. w: the sampling window's half-width, a fraction of the width.
       const FEAT = {
         hero: [['eye', 0.421, 0.192, 0.012], ['eye', 0.231, 0.194, 0.008], ['mouth', 0.310, 0.287, 0.02]]
-          .concat([[0.319, 0.029], [0.354, 0.007], [0.396, 0.002], [0.435, 0.018], [0.470, 0.029], [0.509, 0.075], [0.535, 0.125], [0.560, 0.170], [0.590, 0.215], [0.620, 0.255], [0.650, 0.300]].map(([x, y]) => ['tip', x, y, 0.006])),
+          .concat([[0.327, 0.046], [0.359, 0.025], [0.395, 0.015], [0.432, 0.031], [0.473, 0.055], [0.516, 0.097], [0.538, 0.135], [0.570, 0.181], [0.598, 0.221], [0.628, 0.266], [0.653, 0.298]].map(([x, y]) => ['tip', x, y, 0.006])),
         col: [['eye', 0.558, 0.250, 0.015], ['eye', 0.192, 0.355, 0.012]]
           .concat([[0.240, 0.488], [0.313, 0.463], [0.396, 0.441], [0.479, 0.422], [0.563, 0.400], [0.667, 0.372]].map(([x, y]) => ['mouth', x, y, 0.015]))
           .concat([[0.304, 0.047], [0.331, 0.035], [0.362, 0.018], [0.394, 0.010], [0.431, 0.013], [0.452, 0.010], [0.494, 0.023], [0.527, 0.038], [0.560, 0.058], [0.619, 0.090]].map(([x, y]) => ['tip', x, y, 0.006])),
       };
       const spotsOf = (k) => FEAT[k].map(([f, x, y, w]) => ({ f, x, y, w }));
       // places away from his features: the header's grey background and his black tank top; the Collide picture's
-      // spires (left and right) and its caption
-      const CONTROL = { hero: [[0.08, 0.06], [0.92, 0.06], [0.85, 0.45], [0.5, 0.52]], col: [[0.06, 0.12], [0.93, 0.22], [0.42, 0.905], [0.62, 0.905]] };
+      // spires (left and right) and its caption. (Review round 2: and the header's background just beside the crest top,
+      // over a narrow window, a third value: glows on the background next to the feathers fail there)
+      const CONTROL = { hero: [[0.08, 0.06], [0.92, 0.06], [0.85, 0.45], [0.5, 0.52], [0.48, 0.02, 0.006]], col: [[0.06, 0.12], [0.93, 0.22], [0.42, 0.905], [0.62, 0.905]] };
       const shots = {}, layout = [], scroll = [];
       const VIEWS = [[1280, 900, 'light'], [1280, 900, 'dark'], [390, 844, 'light'], [390, 844, 'dark']];
       const lum = (b64, pts) => pg.evaluate(async ([b, ps]) => { const im = new Image(); im.src = 'data:image/png;base64,' + b; await im.decode(); const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const x = c.getContext('2d'); x.drawImage(im, 0, 0);
@@ -2064,17 +2131,33 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
         // (the places away from his features over a wider window, about 6% of the picture: the Collide picture sits at a
         // fractional offset that differs between the two runs' layouts, which can move a sharp edge by part of a pixel)
         if (!shots['none' + w + scheme] || !shots['full' + w + scheme]) { glowBad.push(pic + ' ' + w + ' ' + scheme + ': no glow layer or picture'); continue; }
-        const pts = spots.map((p) => [p.x, p.y, Math.round(p.w * W)]).concat(ctl.map(([x, y]) => [x, y, Math.max(2, Math.round(0.03 * W))]));
+        const pts = spots.map((p) => [p.x, p.y, Math.round(p.w * W)]).concat(ctl.map(([x, y, hw]) => [x, y, hw ? Math.max(1, Math.round(hw * W)) : Math.max(2, Math.round(0.03 * W))]));
         const a = await lum(shots['none' + w + scheme][pic], pts), b = await lum(shots['full' + w + scheme][pic], pts);
         const d = b.map((v, i) => v - a[i]), dS = d.slice(0, spots.length), dC = d.slice(spots.length);
         const by = (f) => dS.filter((x, i) => spots[i].f === f), mean = (xs) => xs.reduce((s, x) => s + x, 0) / xs.length;
         const eyes = by('eye'), mouth = by('mouth'), tips = by('tip');
-        // brighter on every eye and mouth glow, on the feather tips on average and on most of them; unchanged elsewhere
-        if (PR5_ONLY) console.log('     pr5 glow ' + pic + ' ' + w + ' ' + scheme + ': eyes +' + eyes.map((x) => x.toFixed(0)).join('/+') + ', mouth +' + mouth.map((x) => x.toFixed(0)).join('/+') + ', tips mean +' + mean(tips).toFixed(1) + ' (' + tips.filter((x) => x >= 6).length + ' of ' + tips.length + ' at least +6), elsewhere ' + dC.map((x) => x.toFixed(1)).join('/'));
-        if (!spots.length || !(Math.min(...eyes) >= 20) || !(Math.min(...mouth) >= 20) || !(mean(tips) >= 12) || !(tips.filter((x) => x >= 6).length >= 0.7 * tips.length) || !(Math.max(...dC.map(Math.abs)) <= 4))
+        // brighter on every eye and mouth glow, on the feather tips on average and on every one of them (review round 2);
+        // unchanged elsewhere
+        if (PR5_ONLY) console.log('     pr5 glow ' + pic + ' ' + w + ' ' + scheme + ': eyes +' + eyes.map((x) => x.toFixed(0)).join('/+') + ', mouth +' + mouth.map((x) => x.toFixed(0)).join('/+') + ', tips mean +' + mean(tips).toFixed(1) + ' (' + tips.filter((x) => x >= 6).length + ' of ' + tips.length + ' at least +6, the least +' + Math.min(...tips).toFixed(0) + '), elsewhere ' + dC.map((x) => x.toFixed(1)).join('/'));
+        if (!spots.length || !(Math.min(...eyes) >= 20) || !(Math.min(...mouth) >= 20) || !(mean(tips) >= 12) || !(Math.min(...tips) >= 6) || !(Math.max(...dC.map(Math.abs)) <= 4))
           glowBad.push(pic + ' ' + w + ' ' + scheme + ': eyes ' + eyes.map((x) => x.toFixed(0)).join('/') + ', mouth ' + mouth.map((x) => x.toFixed(0)).join('/') + ', tips mean ' + (tips.length ? mean(tips).toFixed(1) : 'none') + ', elsewhere ' + dC.map((x) => x.toFixed(1)).join('/'));
       }
-      check('pr5 [glow-features]: the glow sits on his eyes, mouth and feather tips on both pictures (brighter there at full than at none, unchanged on the background, spires and caption), at 390 and 1280 px, light and dark', !glowBad.length, glowBad.join(' ;; '));
+      check('pr5 [glow-features]: the glow sits on his eyes, mouth and feather tips on both pictures (brighter there at full than at none, on every tip, unchanged on the background, beside the crest too, the spires and caption), at 390 and 1280 px, light and dark', !glowBad.length, glowBad.join(' ;; '));
+      // review round 2 (design-crest-tips-off-feathers): every crest-tip spot on the header picture, the page's own glow
+      // layer's and this check's copy alike, sits on the feathers' tan or orange in the image file itself (assets/dino.jpg,
+      // read here: a warm hue, 12-50 degrees, saturation at least 0.28, value at least 0.45, over 3 x 3 pixels at its
+      // centre), not on the grey background beside them (saturation 0.10-0.18)
+      {
+        const jpg = fs.readFileSync(path.join(__dirname, '..', 'assets', 'dino.jpg')).toString('base64');
+        const pageTips = await pg.evaluate(() => Array.from(document.querySelectorAll('#hero-glow i[data-f="tip"]')).map((i) => [parseFloat(i.style.left) / 100, parseFloat(i.style.top) / 100]));
+        const ours = FEAT.hero.filter((f) => f[0] === 'tip').map(([, x, y]) => [x, y]);
+        const img = await pg.evaluate(async ([b, ps]) => { const im = new Image(); im.src = 'data:image/jpeg;base64,' + b; await im.decode(); const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const x = c.getContext('2d'); x.drawImage(im, 0, 0);
+          return { W: im.width, H: im.height, at: ps.map(([fx, fy]) => { const d = x.getImageData(Math.round(fx * im.width) - 1, Math.round(fy * im.height) - 1, 3, 3).data; const m = [0, 1, 2].map((k) => { let s = 0; for (let i = k; i < d.length; i += 4) s += d[i]; return s / 9; });
+            const mx = Math.max(...m), mn = Math.min(...m), v = mx / 255, sat = mx > 0 ? (mx - mn) / mx : 0; let h = 0; if (mx > mn) { h = mx === m[0] ? (m[1] - m[2]) / (mx - mn) : mx === m[1] ? 2 + (m[2] - m[0]) / (mx - mn) : 4 + (m[0] - m[1]) / (mx - mn); h = (h * 60 + 360) % 360; }
+            return { rgb: m.map(Math.round), h: Math.round(h), s: Number(sat.toFixed(2)), v: Number(v.toFixed(2)), crest: h >= 12 && h <= 50 && sat >= 0.28 && v >= 0.45 }; }) }; }, [jpg, pageTips.concat(ours)]);
+        const off = img.at.map((c, i) => Object.assign({ who: i < pageTips.length ? 'page' : 'check', at: (i < pageTips.length ? pageTips[i] : ours[i - pageTips.length]).map((z) => z.toFixed(3)).join(', ') }, c)).filter((c) => !c.crest);
+        check('pr5 [crest-tips]: every crest-tip glow on the header picture (the page\'s ' + pageTips.length + ' and this check\'s ' + ours.length + ') sits on a feather tip\'s tan or orange in the image file, not on the grey background beside it', img.W === 432 && img.H === 558 && pageTips.length === 11 && ours.length === 11 && !off.length, JSON.stringify(off).slice(0, 600));
+      }
       check('pr5 [layout]: each picture\'s box is its image\'s own (no layout shift; at 390 px the header image at the 16 px gutter), clips the glow, and the glow layer fills it', !layout.length, layout.join(' ;; '));
       check('pr5 [no-scroll]: with the Shimmer tile and the glow at full, nothing scrolls sideways at 390 px', !scroll.length && Object.keys(shots).length === 8, scroll.join(' ;; '));
       // reduced motion: the glow is still drawn, with no animation; with motion allowed it shimmers
@@ -2087,7 +2170,7 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       await pm.close();
       check('pr5 [motion]: reduced motion: the glow is static (no animation); with motion allowed it shimmers', still.length > 0 && still.every((x) => x === 'none') && moving.length > 0 && moving.every((x) => x === 'shimmer'), JSON.stringify({ still: [...new Set(still)], moving: [...new Set(moving)] }));
     }
-    if (r5.length) fail('pull request 5 (the shimmer): ' + r5.join(' ;; ')); else okLog('pull request 5: the Shimmer tile ends the row on Throw, Jump, Stomp, Punch, Clap, the Wrestle throw, the game of catch, the partner toss and Collide with the engine\'s energy, the ladder\'s wording and the level, names who takes each part in on the two-player runs, reads the effort and angle on screen, shows in the Weight what-if box (with every power off too), says "unbounded" in words at unlimited strength, is gone with every power off elsewhere and is what screen readers hear; the glow sits on his eyes, mouth and feather tips on both pictures at 390 and 1280 px, light and dark, at the square root of its strength, follows Rex\'s own take, is aria-hidden, static under reduced motion, shifts nothing and scrolls nothing; the copy it made wrong is fixed, and review round 1\'s copy (what absorbed energy does, the cards, the drag figure\'s words)');
+    if (r5.length) fail('pull request 5 (the shimmer): ' + r5.join(' ;; ')); else okLog('pull request 5: the Shimmer tile ends the row on Throw, Jump, Stomp, Punch, Clap, the Wrestle throw, the game of catch, the partner toss and Collide with the engine\'s energy, the ladder\'s wording and the level, names who takes each part in on the two-player runs, reads the effort and angle on screen, shows in the Weight what-if box (with every power off too), says "unbounded" in words at unlimited strength, is gone with every power off elsewhere and is what screen readers hear; the glow sits on his eyes, mouth and feather tips on both pictures at 390 and 1280 px, light and dark, at the square root of its strength, follows Rex\'s own take, is aria-hidden, static under reduced motion, shifts nothing and scrolls nothing; the copy it made wrong is fixed, and review round 1\'s copy (what absorbed energy does, the cards, the drag figure\'s words); review round 2: the crest-tip glows sit on the feathers in the image file, the arm-wrestling pin\'s footing, the two-player effort and each charger and thrower, the share sentence, the cards and the upper bound\'s label past 1% of light speed');
   }
   await browser.close();
   if (problems) { console.log('PROBLEMS: see above'); process.exit(1); }
