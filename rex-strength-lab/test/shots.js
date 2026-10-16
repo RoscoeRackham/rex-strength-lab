@@ -1389,9 +1389,11 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       const ep0 = await duoTxt('.effort-read'), hp0 = await duoTxt('.happens'), gp0 = await duoTxt('.case-grid td, .case-grid th, table td');
       await pick('windows');
       const ep1 = await duoTxt('.effort-read');
-      // (review round 3 of pull request 4: a sprint has no take-off, so the box names the charge alone)
+      // (review round 3 of pull request 4: a sprint has no take-off, so the box names the charge alone. Its re-check: the
+      // preset view's courtesy-ceiling line names the charge too, and neither view says 'those do' of the one thing judged)
       check('review round 1: the paradox is never called harmless, and the canon case isn\'t two settings that can\'t both hold', /^All-out\. Nothing the lab can judge in this test does harm here/.test(ep0) && /Courtesy ceiling: none that the lab can judge\. The hit has no physical answer here \(the canon’s ruling\), so the lab can’t judge its harm; it judges only the charge \(its speed against sound\)\. Even all-out, the charge does no harm/.test(ep0)
         && /The hit has no physical answer here \(the canon’s ruling\), so the lab can’t judge its harm; it judges only the charge \(its speed against sound\)\. Even all-out, the charge doesn’t shatter windows 15 m away/.test(ep1) && !/take-off/.test(ep0 + ep1) && !/Nothing in this test does harm|Even all-out, this test doesn’t|no cap needed/.test(ep0 + ep1)
+        && /Courtesy ceiling: none that the lab can judge\.[^]*Even all-out, the charge does no harm with the nearest people and buildings 5 m away\./.test(ep1) && !/those do/.test(ep0 + ep1)
         && /so physics has no answer here \(the canon’s ruling\)\./.test(hp0) && !/can’t both hold|can’t exist in the same universe/.test(hp0 + gp0), ep0.slice(0, 300) + ' | ' + ep1.slice(0, 300));
       // duo-steady-push-no-harm and copy-push-harm: the one driven back is followed and judged; unlimited, he flies off
       await load(Object.assign({ colMode: 'push' }, COL));
@@ -1609,12 +1611,17 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       const av = await duoTxt('.verdict'), as = await duoTxt('.status-row'), at = await duoTxt('.tiles'), ah = await duoTxt('.happens'), am = await duoTxt('details.math .eq');
       await load(Object.assign({ keepForm: false, unbreakable: false, oAnchor: 'bolted', logKg: 6.5 }, A)); await pick('allout');
       const sv = await duoTxt('.verdict'), ss = await duoTxt('.status-row');
+      // (re-check of review round 3: the fix's third branch, a bolted winner whose rock tears out: Rex bolted on real rock
+      // at 10^7 kg against Ollie at 10^6.4 kg. Rex's feet alone hold him, so they slide, and no '∞ N' hold is claimed)
+      await load(Object.assign({ keepForm: false, unbreakable: false, anchor: 'bolted', logKg: 7 }, A)); await ollieKg(6.4); await pick('allout');
+      const wv = await duoTxt('.verdict');
       check('review round 3: arm wrestling standing, a bolted wrestler whose rock tears out is held by his feet alone', ea.torn === true && ea.slides === true && near(ea.after, 17652, 0.001)
         && /he pins Ollie in [\d.]+ ms, dragging him along as he goes\. The rock around Ollie’s bolts tears out \(it takes about 697 kN\), and from then on only his feet hold him \(17\.7 kN\)\./.test(av)
         && /Ollie’s feet slide: what turns his forearm \(2\.97 MN\) beats 17\.7 kN/.test(as) && /Feet hold up to ?17\.7 kN \/ 17\.7 kN ?Rex \/ Ollie; Ollie’s bolts hold until the rock around them tears out/.test(at) && !/unlimited/.test(at)
         && /\(the force his elbow pad would carry on the table\), more than the rock around his bolts takes, so only his feet hold him against it\./.test(ah) && !/his bolts and the rock around them carry that/.test(ah) && /on real rock only until the rock around his bolts tears out/.test(am)
-        && /The rock around Ollie’s bolts tears out \(it takes about 697 kN\), and from then on only his feet hold him \(17\.7 kN\)\. But each one’s press beats the other’s footing \(17\.7 kN\), so both are pushed off their feet/.test(sv) && /Ollie’s feet slide/.test(ss),
-        av + ' | ' + as + ' | ' + at.slice(-200) + ' | ' + sv);
+        && /The rock around Ollie’s bolts tears out \(it takes about 697 kN\), and from then on only his feet hold him \(17\.7 kN\)\. But each one’s press beats the other’s footing \(17\.7 kN\), so both are pushed off their feet/.test(sv) && /Ollie’s feet slide/.test(ss)
+        && /he pins Ollie in [\d.]+ ms, dragging him along as he goes\. The rock around Rex’s bolts tears out \(it takes about 697 kN\), and from then on only his feet hold him \(17\.7 kN\), less than Ollie’s press, so Rex’s feet slide too\./.test(wv) && !/∞ N/.test(wv),
+        av + ' | ' + as + ' | ' + at.slice(-200) + ' | ' + sv + ' | ' + wv);
       // copy-arm-one-sided-chip-unqualified: one held without limit, the chip names the press with no answer
       await load(Object.assign({ keepForm: false, anchor: 'bolted', inf: true }, A)); await pick('allout');
       const oc1 = await duoTxt('.status-row');
