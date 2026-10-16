@@ -271,7 +271,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   <header class="hero">
     <img src="__DINO_IMG__" alt="Rex: a plush olive-green kaiju with orange-tipped spines, black tank top and studded cargo pants, flexing huge arms.">
     <div>
-      <div class="eyebrow">Indestructible · never tires · still obeys Newton</div>
+      <div class="eyebrow">Indestructible · never tires · unlimited</div>
       <h1 id="title-name">Rex Super-Strength Lab</h1>
       <p class="lede">Turn Rex’s strength from <strong>world-record human</strong> to <strong>effectively infinite</strong> and watch what the physics does. Strength is the easy part. <strong>The ground, the object, and his own body weight</strong> are what give out.</p>
       <div class="start"><span><b>1</b> Set his strength</span><span>→</span><span><b>2</b> Pick a move</span><span>→</span><span><b>3</b> Read what breaks</span></div>
@@ -338,10 +338,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
             <label class="check"><input type="checkbox" id="bolt-rex" aria-label="Bolted to the planet: Rex"><span>Rex</span></label>
             <label class="check"><input type="checkbox" id="bolt-ollie" aria-label="Bolted to the planet: Ollie"><span>Ollie</span></label>
           </div>
-          <span class="hint">On, a push along the ground can’t slide his planted feet: it goes into the planet instead. He still walks, runs and jumps. What else it changes depends on the move, and each tab says so: weak ground can still give way under him, and in some two-player tests the ground around his feet can tear out or a very fast hit is over before the bolts can help (Unbreakable footing rules out both). Off, he is just standing, and friction holds him. One each, so a contest can bolt one side and not the other. For their own throws, punches, stomps and shoves, They take their own recoil does the same job; for a pull it takes only the rope’s pull back (his legs still walk on friction).</span>
+          <span class="hint">On, a push along the ground can’t slide his planted feet: it goes into the planet instead. He still walks, runs and jumps. What else it changes depends on the move, and each tab says so: weak ground can still give way under him, and in some two-player tests the ground around his feet can tear out or a very fast hit is over before the bolts can help (Unbreakable footing rules out both). Off, he is just standing, and friction holds him. One each, so a contest can bolt one side and not the other. For their own throws, punches, stomps, pulls, shoves and catches, They take their own recoil keeps them planted too, but it sends the push back to their source, the endless ocean, and with both on that is where it goes. (For a pull it takes only the rope’s pull back: his own steps are the move, so they still push on the ground.)</span>
         </div>
-        <label class="check"><input type="checkbox" id="sw-unbreakable"><span><b>Unbreakable footing</b>: the ground under them never breaks: no craters, cracked slabs, sinking or punching through. They take back the energy that would break it. Each push still goes in, so the ground shakes as it would. Where the ground couldn’t bear a push (a big jump, a heavy lift, standing at huge density), their power holds it. Footprints in soil stay. The “Break the ground” effort turns it off for that move.</span></label>
-        <label class="check"><input type="checkbox" id="sw-recoil"><span><b>They take their own recoil</b>: the push back from their own throws, punches, stomps and pulls goes through their feet into the planet, as if bolted, so they aren’t shoved back or launched. The planet takes the push back: as much momentum as what they set moving carries, the other way (a punch into air leaves none: the arm’s stop hands it back). The ground shakes from it. A jump or a sprint start is the move itself, so it is unchanged. Being pushed by someone else (the two-player contests, Collide) is still what Bolted is for.</span></label>
+        <label class="check"><input type="checkbox" id="sw-unbreakable"><span><b>Unbreakable footing</b>: the ground under them never breaks: no craters, cracked slabs, sinking or punching through. They take back the energy that would break it. Each push that reaches the ground still goes in, so the ground shakes as it would. Where the ground couldn’t bear a push (a big jump, a heavy lift, standing at huge density), their power holds it. Footprints in soil stay. The “Break the ground” effort turns it off for that move.</span></label>
+        <label class="check"><input type="checkbox" id="sw-recoil"><span><b>They take their own recoil</b>: the push back from their own throws, punches, stomps, pulls and shoves, and from stopping what they catch, goes into their source, the endless ocean, not into the planet. So their own moves and catches don’t shove them back, launch them or carry them off, and none of that push back reaches the ground, so it doesn’t shake the ground. The endless ocean takes the whole push back of the move, the other way: the momentum of what they set moving or stop, plus whatever resists it while they push (a pulled load’s rolling or sliding, a shoved partner’s feet). The weight of what they hold up while they push stays on their feet, as on the Lift tab. A punch into air leaves none: when the arm stops, the fist’s momentum comes back. A jump, a sprint start or his steps as he pulls a load are the move itself, not recoil, so they still push on the ground. An incoming hit, such as a throw that reaches the catcher as plasma, isn’t their own push back, so this power doesn’t stop it (that is canon’s Never knocked back, not in the lab yet). Being pushed by someone else (the two-player contests, Collide) is still what Bolted is for.</span></label>
         <div class="eyebrow" style="margin-top:12px">Material limit suspended</div>
         <label class="check"><input type="checkbox" id="sw-keep"><span><b>Things keep their form</b>: what they hold or throw can’t be broken by them or the air: not by their grip, the launch, its own weight, the air’s push or heating in flight. Hitting anything else is real physics (its landing, a miss).</span></label>
         <label class="check"><input type="checkbox" id="sw-passenger"><span><b>Safe passenger</b>: the same spread push on a person he throws or catches, so his push puts no g-force on them. Air drag in flight and the landing stay real.</span></label>
@@ -1239,23 +1239,29 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   }
   function capital(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
   const theSurf = (sf) => (/^the /.test(sf.short) ? sf.short : 'the ' + sf.short);
-  // where the ground couldn't bear the push, their power supplies the rest (canon's momentum exception): say so
+  // where the ground couldn't bear the push, their power supplies the rest (one of canon's cases where momentum is
+  // absorbed: the ground's share it can't bear): say so
   // (x: { J: the ground's take, whole: the whole push, supplied: what their power supplies })
   const suppliedText = (x) => {
     if (!x || !(x.supplied > 0)) return '';
     const whole = x.whole != null ? x.whole : x.J + x.supplied, kgms = (v) => (isFinite(v) ? big(v, 2) + ' kg·m/s' : 'unbounded');
-    const canon = ' (canon: an exception to “momentum is never absorbed”; it goes to the endless ocean). ';
+    const canon = ' (canon: one of the few cases where momentum is absorbed; it goes to the endless ocean). ';
     // none of it: the weight on the ground already uses all it bears, or an unbounded push has no push time
     if (!(x.J > 0)) return (x.T > 0 ? 'The ground can bear none of that push (' + kgms(whole) + '): it already carries all it can bear of the weight standing on it.' : 'An unbounded push has no push time, so the ground takes none of it.') + ' Their power supplies all of it, ' + kgms(x.supplied) + canon;
     const dn = x.suppliedDown, sd = x.suppliedSide;
     // standing on friction: sideways the ground grips at most its friction on what it bears
     if (sd > 0) return 'Of that push (' + kgms(whole) + '), the ground takes only what it can bear, ' + kgms(x.J) + ' in all: standing on friction, its grip sideways is at most its friction on what it bears' + (dn > 0 ? ', and downward at most its bearing beyond the weight on it' : '') + '. Their power supplies the rest: ' + (dn > 0 ? kgms(dn) + ' of the downward part and ' : '') + kgms(sd) + ' of the sideways part' + canon;
-    // an angled push with their recoil taken: the planet takes the sideways part whole
+    // an angled push from a bolted foot (Bolted to the planet, or a catcher's own footing): the planet takes the
+    // sideways part whole
     if (x.whole != null && (x.sideTaken > 0 || Math.abs(x.whole - x.J - x.supplied) > 1e-6 * x.whole)) return 'Of that push (' + kgms(whole) + '), the ground takes the sideways part whole and only what it can bear of the downward part, ' + kgms(x.J) + ' in all; their power supplies the other ' + kgms(x.supplied) + ' of the downward part' + canon;
     return 'Of that push (' + kgms(whole) + '), the ground takes only what it can bear, ' + kgms(x.J) + '; their power supplies the other ' + kgms(x.supplied) + canon;
   };
   // the push's own figure for an item's lead: the whole push where their power supplies some of it
   const pushFig = (x) => { const v = x.whole != null ? x.whole : x.J; return isFinite(v) ? big(v, 2) + ' kg·m/s' : 'unbounded'; };
+  // the momentum their source takes back (They take their own recoil: the engine's recoilAbsorbed figures)
+  const momFig = (x) => (isFinite(x.J) ? big(x.J, 2) + ' kg·m/s' : 'unbounded');
+  // a body's momentum from its motion energy (exact near light speed, where the speed rounds to c): p = √(E² + 2 E m c²) / c
+  const momOfE = (E, m) => (E > 0 ? (isFinite(E) ? Math.sqrt(E * E + 2 * E * m * K.c * K.c) / K.c : Infinity) : 0);
   // A push into the ground that their powers send through their feet (toGround: momentum J over T): how far it
   // shakes the ground, by the stomp's ground-wave model. null: no push; src null: no ground-wave model for this surface.
   // (nonlinear: the ground strains past about 1 part in 10,000 at the nearest people's distance, where the elastic model
@@ -1484,12 +1490,13 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const pastMoon = !f.relativistic && !f.escaped && !f.orbit && f.apex > 3.844e8;
     const vac = f.relativistic ? null : P.fly({ v0: r.v, thetaDeg: state.angle, h0: c.body.releaseHeight, m: o.m, A: o.area, Cd: 0, record: true });
     // the powers' effects, shown against the same throw without them: Air resistance absorbed (rAir0: all the drag real)
-    // and They take their own recoil (rOwn0: the recoil his own)
+    // and They take their own recoil (rOwn0: the recoil his own). The power wins over Bolted to the planet for his own
+    // moves: with both on, the push back goes to his source, not through the bolts (ra: what it takes back)
     const share = airShareOf(c), kAir = 1 - share;
     const rAir0 = share > 0 && !f.relativistic ? P.throwObject(Object.assign({}, c, { airAbsorb: 0 }), o, state.angle) : null;
-    const ownOn = !!c.ownRecoil && state.anchor !== 'bolted';
+    const ownOn = !!c.ownRecoil, bolted = state.anchor === 'bolted', ra = r.recoilAbsorbed;
     const rOwn0 = ownOn ? P.throwObject(Object.assign({}, c, { ownRecoil: false }), o, state.angle) : null;
-    const ownSaved = rOwn0 && rOwn0.canMove && rOwn0.recoilV > 0.01;
+    const ownSaved = !bolted && rOwn0 && rOwn0.canMove && rOwn0.recoilV > 0.01;
     // past 1% of light speed: the air ahead (the snowplow, at the air's share of the drag)
     const fa = f.relativistic && isFinite(r.Eobj) && kAir > 0 ? P.fastAir(o, r.Eobj, state.angle, kAir) : null;
     const leaves = f.relativistic && (kAir === 0 || (c.keepForm && (!fa || fa.vOut >= D.escape.earth)));
@@ -1504,14 +1511,14 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     else if (straightUp) v = 'The ' + o.short + ' goes ' + fmtDist(f.apex) + ' straight up and comes back down on Rex ' + fmtTime(f.time) + ' later.';
     else v = 'The ' + o.short + ' flies ' + fmtDist(f.range) + '.';
     if (r.recoilV > 1) v += ' Rex gets shoved backward at ' + speedOnly(r.recoilV) + '.';
-    else if (ownSaved && rOwn0.recoilV > 1) v += ' His recoil goes into the planet, so he isn’t shoved back.';
+    else if (ownSaved && rOwn0.recoilV > 1) v += ' His recoil goes to the endless ocean, so he isn’t shoved back.';
     if (pastMoon) v += ' Its arc goes past the Moon’s orbit (384,400 km). The sim counts only Earth’s pull; the Moon and Sun would bend an arc this long, so where it lands is rough.';
     out.push(verdict(v));
     const chips = [];
     if (basisChip(r)) chips.push(basisChip(r));
     chips.push(status(r.v >= K.a0 ? 'warn' : 'good', 'Launch: ' + speedOnly(r.v) + (fmtMach(r.v) && r.v >= K.a0 ? ' (' + fmtMach(r.v) + ')' : '')));
     if (r.anchor.R !== Infinity) chips.push(r.recoilV > 0.01 ? status('bad', 'Footing: feet slide, he recoils') : status('good', 'Footing holds'));
-    else if (ownSaved) chips.push(status('info', 'His recoil goes into the planet: their power'));
+    else if (ownSaved) chips.push(status('info', 'His recoil goes to the endless ocean: their power'));
     // in soil sinking in is a footprint, not broken ground (the courtesy ceiling's rule)
     if (r.sinkRatio > 1) chips.push(P.RESTRAINT.SOIL.has(c.surface.id) ? status('warn', 'His feet sink in (footprints)') : status('bad', 'Ground gives way under his feet'));
     else if (r.sinkRatioRaw > 1) chips.push(status('info', 'The ground holds: their power'));
@@ -1537,7 +1544,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       tile('Energy in the ' + o.short, fmtSI(r.Eobj, 'J'), fmtTNT(r.Eobj)),
       distTile,
       f.landed && !f.relativistic ? tile('Lands at', speedOnly(f.vImpact), fmtTNT(r.Eimpact) + ' on impact') : null,
-      (r.recoilV > 0.01 ? speedTile : tile)('His recoil', r.recoilV > 0.01 ? r.recoilV : 'none', r.anchor.R !== Infinity ? 'footing gives at ' + fmtSI(r.anchor.R, 'N') : (state.anchor === 'bolted' ? 'bolted down' : ownSaved ? 'into the planet: their power (without it ' + speedOnly(rOwn0.recoilV) + ')' : ownOn && rOwn0 && rOwn0.canMove && isFinite(rOwn0.anchor.R) ? 'footing holds (up to ' + fmtSI(rOwn0.anchor.R, 'N') + ')' : 'push aimed so steeply down his feet can’t slide'))));
+      (r.recoilV > 0.01 ? speedTile : tile)('His recoil', r.recoilV > 0.01 ? r.recoilV : 'none', r.anchor.R !== Infinity ? 'footing gives at ' + fmtSI(r.anchor.R, 'N')
+        : ownOn ? 'to the endless ocean: their power' + (ownSaved ? ' (without it ' + speedOnly(rOwn0.recoilV) + ')' : bolted ? ' (bolted too)' : rOwn0 && rOwn0.canMove && rOwn0.push && rOwn0.push.xA >= 0.005 ? ' (without it a ' + fmtDist(rOwn0.push.xA) + ' lurch)' : rOwn0 && rOwn0.canMove && isFinite(rOwn0.anchor.R) ? ' (without it his footing holds, up to ' + fmtSI(rOwn0.anchor.R, 'N') + ')' : '')
+          : bolted ? 'bolted down' : 'push aimed so steeply down his feet can’t slide')));
     if (!f.relativistic && f.path && f.path.length > 1 && !straightUp) {
       const ghost = vac && vac.landed && vac.path && vac.range < 40 * Math.max(f.range, 1) ? vac.path : null;
       const endNote = (f.landed || f.timedOut) ? null : (f.orbit ? 'in orbit →' : 'leaves Earth →');
@@ -1548,11 +1557,25 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (r.heldBack) items.push('Pushing with everything would make his feet slide and waste the throw, so he holds back to what his footing can take (' + fmtSI(r.anchor.R, 'N') + ').');
     if (r.basis === 'real' && state.mode === 'comic') items.push('Comic mode’s fixed ' + shareText(key, 'comic') + ' share of strength would throw this slower than real muscle does at this load, so the result shown is real muscle’s.');
     if (r.anchor.R !== Infinity && r.recoilV > 0.01) items.push('Newton’s third law: the ' + o.short + ' pushes back on Rex exactly as hard as he pushes it. His footing can only resist ' + fmtSI(r.anchor.R, 'N') + ', so he flies backward at ' + speedOnly(r.recoilV) + '.' + (r.recoilE > r.Eobj ? ' He ends up with more of the energy than the ' + o.short + ' does.' : '') + (state.anchor === 'friction' ? ' To stay put he needs his own recoil taken (They take their own recoil, in Their powers) or to be bolted.' : ''));
-    if (ownSaved) items.push('They take their own recoil: the ' + o.short + ' pushes back on Rex exactly as hard as he pushes it, and that push goes through his feet into the planet, as if he were bolted. He isn’t shoved back (without it he would fly back at ' + speedOnly(rOwn0.recoilV) + '), and all of his push goes into the throw' + (rOwn0.v < r.v * (1 - 1e-6) ? ' (' + speedOnly(r.v) + ' against ' + speedOnly(rOwn0.v) + ')' : '') + '. The planet keeps the ' + o.short + '’s momentum (his arm’s comes back to him as the follow-through stops it), and the ground at his feet shakes from it' + boxShake(c) + '.');
-    if (r.sinkRatioRaw > 1) items.push('The throw drives his feet down with ' + fmtRatio(r.sinkRatioRaw) + ' what ' + c.surface.short + ' can carry. Unbreakable footing: it doesn’t give' + (pastPrint(c) ? pastPrint(c).txt : '') + '; their power holds it.' + (r.toGround && r.toGround.supplied > 0 ? ' His legs spread the push into the ground over ' + fmtTime(r.toGround.T) + ' (' + pushFig(r.toGround) + '). ' + suppliedText(r.toGround) + groundShakeText(groundShake(c.surface, r.toGround), c.surface) : r.toGround ? ' His legs spread the push into the ground over ' + fmtTime(r.toGround.T) + ', and over that time the ground can bear it, so it takes the whole push (' + pushFig(r.toGround) + '). ' + groundShakeText(groundShake(c.surface, r.toGround), c.surface) : ''));
+    // (said whenever he throws with the power on: where the push back goes, and how much, not only where it saves a slide)
+    // (the part of the push back that sets the object moving goes to his source; the weight he holds up while he pushes
+    // rests on his feet, as on the Lift tab: decision 3; a level throw holds nothing up along the push)
+    if (ra) items.push('They take their own recoil: the ' + o.short + ' pushes back on Rex exactly as hard as he pushes it, and the part of that push that sets it moving goes into their source, the endless ocean: ' + momFig(ra) + ', the ' + o.short + '’s momentum, back along the throw (his arm’s comes back to him as the follow-through stops it' + (state.angle > 0 ? '; the ' + o.short + '’s weight, which he holds up, rests on his feet' : '') + '). '
+      + (ownSaved ? 'He isn’t shoved back (without it he would fly back at ' + speedOnly(rOwn0.recoilV) + '), and all of his push goes into the throw' + (rOwn0.v < r.v * (1 - 1e-6) ? ' (' + speedOnly(r.v) + ' against ' + speedOnly(rOwn0.v) + ')' : '') + '. '
+        : bolted ? 'He is bolted too, but for his own moves the power decides where the push goes. '
+          : rOwn0 && !rOwn0.canMove ? 'Without it his footing couldn’t hold the throw at all. '
+            : rOwn0 && rOwn0.heldBack ? 'Without it he would hold back to what his footing can take, throwing it at ' + speedOnly(rOwn0.v) + ' instead of ' + speedOnly(r.v) + '. '
+              : rOwn0 && rOwn0.push && rOwn0.push.xA >= 0.005 ? 'Without it he would lurch back about ' + fmtDist(rOwn0.push.xA) + ' during the push' + (rOwn0.v < r.v * (1 - 1e-3) ? ', throwing it at ' + speedOnly(rOwn0.v) + ' instead of ' + speedOnly(r.v) : '') + '. '
+                : 'Here his footing would have held him anyway; the power changes only where the push goes. ')
+      + 'None of it reaches the ground, so his push doesn’t shake it' + (f.landed && !f.relativistic ? '; only the landing does' + boxShake(c) : '') + '.');
+    // the load on his feet: with the power on his push back goes to his source, so only his weight and the object's
+    // press on the ground (the engine's sinkRatio and sinkRatioRaw then count the weights alone)
+    const feetDown = (k) => (ownOn ? 'His weight and the ' + o.short + '’s press his feet down with ' + k + ' (his push back goes to the endless ocean, so only the weights count)' : 'The throw drives his feet down with ' + k);
+    if (r.sinkRatioRaw > 1) items.push(feetDown(fmtRatio(r.sinkRatioRaw) + ' what ' + c.surface.short + ' can carry') + '. Unbreakable footing: it doesn’t give' + (pastPrint(c) ? pastPrint(c).txt : '') + '; their power holds it.' + (r.toGround && r.toGround.supplied > 0 ? ' His legs spread the push into the ground over ' + fmtTime(r.toGround.T) + ' (' + pushFig(r.toGround) + '). ' + suppliedText(r.toGround) + groundShakeText(groundShake(c.surface, r.toGround), c.surface) : r.toGround ? ' His legs spread the push into the ground over ' + fmtTime(r.toGround.T) + ', and over that time the ground can bear it, so it takes the whole push (' + pushFig(r.toGround) + '). ' + groundShakeText(groundShake(c.surface, r.toGround), c.surface) : ''));
     // the footing model caps only the sideways part of the push; the sinking ground still takes the downward part,
     // so near vertical the cap grows as 1/cos(angle) and straight up there is none (the 89°-to-90° jump)
-    if (r.sinkRatio > 1) items.push('The throw also drives his feet down: the ground under him is carrying ' + fmtRatio(r.sinkRatio) + ' its limit, so he sinks while he throws.' + (c.anchor === 'bolted' ? ' Bolted, his footing limits no part of the push: the sim lets the ground take all of it, as if the planet held him, so at any angle this throw is an upper bound.' : state.angle >= 45 ? ' Even so, the sim lets the ground take the downward part of his push, as if the planet held him; only the sideways part is limited by his footing. The steeper the throw, the less his footing limits it, and straight up nothing does, so a near-vertical throw here is an upper bound.' : ''));
+    if (r.sinkRatio > 1) items.push((ownOn ? 'His weight and the ' + o.short + '’s are ' + fmtRatio(r.sinkRatio) + ' what the ground under him can carry, so he sinks while he throws. His push back goes to the endless ocean (They take their own recoil), so the sinking doesn’t weaken the throw.'
+      : 'The throw also drives his feet down: the ground under him is carrying ' + fmtRatio(r.sinkRatio) + ' its limit, so he sinks while he throws.' + (c.anchor === 'bolted' ? ' Bolted, his footing limits no part of the push: the sim lets the ground take all of it, as if the planet held him, so at any angle this throw is an upper bound.' : state.angle >= 45 ? ' Even so, the sim lets the ground take the downward part of his push, as if the planet held him; only the sideways part is limited by his footing. The steeper the throw, the less his footing limits it, and straight up nothing does, so a near-vertical throw here is an upper bound.' : '')));
     const handS = P.anyPower(c) && !f.relativistic ? P.RESTRAINT.MOVES.throw.hand(r, { body: c.body, obj: o }) : null;
     const handSay = handS ? ' His hand still meets real air (their own bodies do): it breaks the sound barrier as he lets go, so the boom stays, and over the end of his throw it drives about ' + fmtMass(handS.mAir) + ' of air ahead of it, up to ' + fmtTNT(handS.E) + ' of blast at his hand (an upper bound: the hand speeds up through the throw' + (handS.capped ? '; capped at the work of his push' : '') + '). The effort and courtesy ceiling count it.' : '';
     if (share >= 1 && !f.relativistic && f.ocean) {
@@ -1599,7 +1622,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     }
     out.push(math([
       'Drive: ' + fmtSI(r.Fdrive, 'N') + ' (' + shareText(key, mode) + ' ' + (capped(c) ? 'of the strength he uses (' + fmtSI(c.use, 'N') + ')' : 'of full strength') + ' per hand' + (r.hands * (mode === 'real' ? P.MUSCLE[key].forceFrac : P.MUSCLE[key].comicFrac) > 1 ? (capped(c) ? ', capped at the strength he uses' : ', capped at his full strength') : '') + (mode === 'real' ? ', falling with speed per the Hill curve' : ', constant') + (r.heldBack ? '; he holds back to ' + fmtSI(r.anchor.R, 'N') + ' so his feet don’t slide' : '') + ') over a ' + sig(r.style === 'whip' ? c.body.strokes.whip : c.body.strokes.throw, 2) + ' m ' + (r.style === 'whip' ? 'overarm whip' : 'shove') + ' with ' + r.hands + ' hand' + (r.hands > 1 ? 's' : '') + '; holding it up against gravity leaves ' + fmtSI(r.F, 'N') + ' along the throw.',
-      'Rex and the ' + o.short + ' get equal and opposite momentum while the push lasts; ' + (isFinite(r.anchor.R) ? 'his footing absorbs up to ' + fmtSI(r.anchor.R, 'N') : 'his footing never gives (' + (state.anchor === 'bolted' ? 'bolted to the planet' : ownOn ? 'his recoil goes into the planet: They take their own recoil' : 'push aimed so steeply down his feet can’t slide') + ')') + '.',
+      'Rex and the ' + o.short + ' get equal and opposite momentum while the push lasts; ' + (isFinite(r.anchor.R) ? 'his footing absorbs up to ' + fmtSI(r.anchor.R, 'N') : 'his footing never gives (' + (ownOn ? 'his share goes to the endless ocean: They take their own recoil' : bolted ? 'bolted to the planet' : 'push aimed so steeply down his feet can’t slide') + ')') + '.',
       'Speeds use relativistic momentum: v = p c² / √(m²c⁴ + p²c²).',
       f.relativistic && (share > 0 || c.keepForm) ? 'Flight past 1% of light speed: a straight line' + (r.line ? (state.angle >= 90 ? ' (straight up: gravity slows it but doesn’t bend it)' : ' (gravity bends it by under ' + angleText(r.line.bendMax, true) + ')') : '') + '. Air: a relativistic snowplow sweeping (1 − s) × the air in its path (s = the share absorbed), keeping (γ_f − 1)/(γ − 1) of its energy; the blast counts the largest of (1 − s) × its energy (near him), what the air took within the blast’s reach, and his hand’s air' + (P.RESTRAINT.MOVES.throw.hand(r, { body: c.body, obj: o }) ? '; his hand’s air: γ² m_air v², capped at the work of his push' : '') + '.'
         : 'Flight: RK4 over a round Earth, exponential atmosphere (ρ₀ = 1.225 kg/m³, H = 8.4 km), drag ' + (share > 0 ? '(1 − s) × ½ρv²·Cd·A, s = ' + pctAir(share) + ' absorbed,' : '½ρv²·Cd·A') + ' with Cd ' + o.Cd + ' below Mach 0.8 and ' + o.CdSup + ' above Mach 1.2, A = ' + sig(o.area, 2) + ' m². Above 150 km the arc is solved exactly as an Earth-only Kepler arc (no Moon or Sun pull).',
@@ -1675,7 +1698,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       items.push('He comes back down at ' + speedOnly(f.vImpact) + how);
     }
     const L = r.landing;
-    // canon's weak-ground exception on the landing: over the stop the ground takes at most what it bears beyond his
+    // canon's weak-ground case on the landing: over the stop the ground takes at most what it bears beyond his
     // weight (landBear, as MOVES.jump.shake counts it); their power supplies the rest
     const landSupplied = () => { const J = P.vToMomentum(L.v, c.body.m), Jg = Math.min(J, (r.landBear || 0) * L.t); return J > Jg ? suppliedText({ J: Jg, whole: J, supplied: J - Jg, T: L.t }).trim() : ''; };
     // (nothing of the landing reaches the ground when the weight on it already uses all it bears)
@@ -1710,14 +1733,16 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     // Unbreakable footing: the energy that would have broken the ground goes to the endless ocean (or growth)
     const taken = c.unbreakable && r.absorbed > 0;
     // the foot's push into unbreakable ground (MOVES.stomp.blow): their power stops the foot over a foot's contact time,
-    // and the ground takes only what it bears under that foot; their power supplies the rest (canon's exception)
+    // and the ground takes only what it bears under that foot; their power supplies the rest (canon: the ground's share it can't bear)
     const stompPush = () => {
       const b = P.RESTRAINT.MOVES.stomp.blow(r, { body: c.body, surface: c.surface, unbreakable: true, groundHolds: c.groundHolds });
       if (!b) return 'The foot’s push still goes in, so the ground shakes' + boxShake(c, 'gives how far') + '.';
       return 'The foot’s push still goes in: their power stops the foot ' + (r.printCap != null && r.holeDepth >= 0.01 ? 'at the kept print' : 'at the surface') + ' over a foot’s contact time, ' + fmtTime(b.T) + ' (' + pushFig(b) + '). ' + suppliedText(b) + groundShakeText(groundShake(c.surface, b), c.surface);
     };
-    // They take their own recoil: credited only where his recoil would have lifted him (a hop or more) without it
-    const sOwn0 = r.bolted && state.anchor !== 'bolted' ? P.stomp(Object.assign({}, c, { ownRecoil: false })) : null;
+    // They take their own recoil: credited only where his recoil would have lifted him (a hop or more) without it. With
+    // the power on (bolted too: it wins for his own moves) the upward push goes to his source (sa: what it takes back)
+    const sa = r.recoilAbsorbed;
+    const sOwn0 = sa && state.anchor !== 'bolted' ? P.stomp(Object.assign({}, c, { ownRecoil: false })) : null;
     const ownSavedS = !!(sOwn0 && sOwn0.vBody > 0.5);
     if (taken) v += ' The ground doesn’t break: their power takes that energy back, and the push still shakes it.';
     out.push(verdict(v));
@@ -1725,7 +1750,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       basisChip(r),
       taken ? status('info', 'The ground holds: their power') : quakeChip(r.E, r.quake),
       r.footMach >= 1 && r.vFoot < 0.01 * K.c ? status('warn', 'Foot breaks the sound barrier') : null,
-      r.vBody > 2 ? status('bad', 'Recoil launches him') : r.vBody > 0.5 ? status('warn', 'Recoil hops him ' + fmtDist(bf.apex) + ' up') : ownSavedS ? status('info', 'His recoil goes into the planet: their power') : status('good', 'He stays put')));
+      r.vBody > 2 ? status('bad', 'Recoil launches him') : r.vBody > 0.5 ? status('warn', 'Recoil hops him ' + fmtDist(bf.apex) + ' up') : ownSavedS ? status('info', 'His recoil goes to the endless ocean: their power') : status('good', 'He stays put')));
     let holeTile;
     if (taken && (r.disrupts || r.planetScale)) holeTile = tile('Crater', 'none: the ground holds', 'their power (real ground: ' + (r.disrupts ? 'Earth breaks up' : 'planet-scale') + ')');
     else if (r.disrupts) holeTile = tile('Crater', 'none: Earth breaks up', 'more than Earth’s binding energy');
@@ -1745,11 +1770,18 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       ? el('div', {}, callout('No blast from the impact: Unbreakable footing takes its energy back. His foot still meets real air on the way down (their own bodies do): it breaks the sound barrier, so there is a sonic boom, and over the stomp it drives about ' + fmtMass(footAir.mAir) + ' of air ahead of it, up to ' + fmtTNT(footAir.E) + ' of blast at his foot (an upper bound: the foot speeds up through the stomp' + (footAir.capped ? '; capped at the work of his push, since in real air the foot’s own drag would hold it far below this speed' : '') + ').'), blastBlock(footAir.E, 'at his foot'))
       : callout('No blast from the impact: Unbreakable footing takes its energy back.')) : blastBlock(r.E, 'ground-level'));
     const items = [];
-    if (r.bolted && state.anchor !== 'bolted') items.push(ownSavedS ? 'They take their own recoil: driving the foot down pushes the rest of him up just as hard, and that push goes through his standing foot into the planet, as if he were bolted. He stays put (without it he would rise at ' + speedOnly(sOwn0.vBody) + '), and the foot gets all the energy. The lab counts only the foot’s blow on the ground: the upward pull through his standing foot comes at almost the same moment and partly cancels it there, so the shaking shown is an upper bound.' : 'Newton’s third law again: driving the foot down pushes the rest of him up just as hard, but here his own weight holds him down, and the foot takes the energy.');
-    else if (r.bolted) items.push('Newton’s third law again: driving the foot down pushes the rest of him up just as hard, but he is bolted to the planet, so the bolts take that push and the foot gets all the energy.');
+    // (with the power on nothing pulls on the ground through his standing foot, so the foot's blow is all the ground
+    // takes; with it off, bolted or standing, the bolts' pull or the standing foot's unloading (by the part of the push
+    // that doesn't lift him, pB - pA) partly cancels the blow, so its shaking is an upper bound)
+    if (sa) items.push(ownSavedS ? 'They take their own recoil: driving the foot down pushes the rest of him up just as hard, and that push goes into their source, the endless ocean (' + momFig(sa) + ', straight up). He stays put (without it he would rise at ' + speedOnly(sOwn0.vBody) + '), and the foot gets all the energy. Nothing pulls on the ground through his standing foot, so the foot’s blow is all the ground takes.'
+      : 'Newton’s third law again: driving the foot down pushes the rest of him up just as hard. ' + (state.anchor === 'bolted' ? 'He is bolted too, but for his own moves They take their own recoil decides where that push goes: to' : (sOwn0 && sOwn0.vBody > 0.01 ? 'Without it he would barely leave the ground (' + speedOnly(sOwn0.vBody) + '); ' : 'His own weight would hold him down here anyway; ') + 'with They take their own recoil on, that push goes to') + ' the endless ocean (' + momFig(sa) + ', straight up), and the foot takes the energy. Nothing pulls on the ground through his standing foot, so the foot’s blow is all the ground takes.');
+    else if (r.bolted) items.push('Newton’s third law again: driving the foot down pushes the rest of him up just as hard, but he is bolted to the planet, so the bolts take that push and the foot gets all the energy. The lab counts only the foot’s blow on the ground: the bolts’ upward pull on it comes at almost the same moment and partly cancels it there, so the shaking it gives is an upper bound.');
     else {
       const pct = 100 * r.footShare;
-      items.push('Newton’s third law again: driving the foot down pushes the rest of him up just as hard. Only his own weight holds him down, so ' + ((r.basis || state.mode) === 'real' ? 'with real muscle the recoil never gets beyond a small hop.' : 'at high strength the stomp throws Rex into the sky.') + (pct >= 99.5 ? ' Here his weight holds him down and the foot takes all of the energy.' : ' Here the foot takes ' + sig(pct, 2) + '% of the energy and his body the rest.'));
+      // (his standing foot unloads by the push that doesn't lift him: worth saying where that is at least 1% of the blow)
+      const unload = r.push && r.push.pB > 0 && isFinite(r.push.pB) ? (r.push.pB - r.push.pA) / r.push.pB : 0;
+      items.push('Newton’s third law again: driving the foot down pushes the rest of him up just as hard. Only his own weight holds him down, so ' + ((r.basis || state.mode) === 'real' ? 'with real muscle the recoil never gets beyond a small hop.' : 'at high strength the stomp throws Rex into the sky.') + (pct >= 99.5 ? ' Here his weight holds him down and the foot takes all of the energy.' : ' Here the foot takes ' + sig(pct, 2) + '% of the energy and his body the rest.')
+        + (unload >= 0.01 && P.groundOf(c.surface) ? ' The lab counts only the foot’s blow on the ground: while he pushes, his standing foot presses on it less by the part of the push that doesn’t lift him (' + (unload >= 0.995 ? 'all of it here' : sig(100 * unload, 2) + '% of the foot’s momentum here') + '), at almost the same moment, and that partly cancels the blow there, so the shaking it gives is an upper bound.' : ''));
     }
     if (r.disrupts) items.push('That is more energy than it takes to blow Earth apart (its gravitational binding energy, 2.5 × 10³² J). ' + (taken ? 'On real ground Earth would break up; their power takes the energy back.' : 'A quake magnitude stops meaning anything.'));
     else if (r.quake > 2 && !taken) items.push('Quake magnitude assumes 1 part in 10,000 of the energy becomes ground shaking, the value impact studies use. The real share ranges 10⁻⁵ to 10⁻³, so read it as give or take about ⅔ of a magnitude.');
@@ -1762,7 +1794,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     out.push(happens(items, 10));
     if (taken && state.absorb !== 'ocean') out.push(absorbBlock(r.E, 'Unbreakable footing: what would have broken the ground', c.body, c.surface));
     out.push(math([
-      r.bolted ? 'Leg pushes foot+shank (' + sig(c.body.legEff, 2) + ' kg) down against his ' + (state.anchor === 'bolted' ? 'bolted body' : 'body, whose push back goes into the planet (They take their own recoil),') + ' with ' + fmtSI(r.F, 'N') + ' over ' + sig(c.body.strokes.stomp, 2) + ' m; all the work goes to the foot.' : 'Leg pushes foot+shank (' + sig(c.body.legEff, 2) + ' kg) down and body (' + sig(c.body.m - c.body.legEff, 3) + ' kg) up with ' + fmtSI(r.F, 'N') + ' over ' + sig(c.body.strokes.stomp, 2) + ' m.',
+      r.bolted ? 'Leg pushes foot+shank (' + sig(c.body.legEff, 2) + ' kg) down against his ' + (sa ? 'body, whose push back goes to the endless ocean (They take their own recoil),' : 'bolted body') + ' with ' + fmtSI(r.F, 'N') + ' over ' + sig(c.body.strokes.stomp, 2) + ' m; all the work goes to the foot.' : 'Leg pushes foot+shank (' + sig(c.body.legEff, 2) + ' kg) down and body (' + sig(c.body.m - c.body.legEff, 3) + ' kg) up with ' + fmtSI(r.F, 'N') + ' over ' + sig(c.body.strokes.stomp, 2) + ' m.',
       r.bolted ? null : 'Equal momenta; energies split by mass (relativistically at extreme strength).',
       c.groundHolds ? null : 'Hole: m v dv/dx = −A (q + ρ v²) → depth = m/(2ρA) · ln(1 + ρv²/q).',
       taken ? null : 'Quake: M = (log₁₀(10⁻⁴ × E) − 4.8) / 1.5 (Gutenberg–Richter energy relation).',
@@ -1778,6 +1810,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const silent = !!c.silentStrike;
     // They take their own recoil: the same punch without it, for what it saves him
     const rOwn0 = c.ownRecoil && state.anchor !== 'bolted' ? P.punch(Object.assign({}, c, { ownRecoil: false })) : null, ownSaved = rOwn0 && rOwn0.recoilV > 0.01;
+    // (with the power on the push back goes to his source during the stroke and comes back when his arm stops: pa)
+    const pa = r.recoilAbsorbed;
     let v = 'His fist reaches ' + speedOnly(r.vFist) + '.';
     if (r.vFist >= 0.01 * K.c) v = 'His fist moves at ' + fmtSpeed(r.vFist) + (silent ? '. Silent strike takes back the fireball.' : '. Every punch is a fireball.');
     else if (r.mach >= 1) v += silent ? ' Silent strike takes back the boom.' : ' Every punch cracks like a whip, only louder.';
@@ -1786,7 +1820,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     out.push(el('div', { class: 'status-row' },
       basisChip(r),
       silent ? status('info', 'Silent strike: no blast, no boom') : r.vFist >= 0.01 * K.c ? status('bad', 'Fireball at the fist') : r.mach >= 1 ? status('warn', 'Sonic boom from the fist') : status('good', 'Subsonic'),
-      r.recoilV > 0.01 ? status('warn', 'Body lurches back ' + fmtDist(r.lurch)) : ownSaved ? status('info', 'His recoil goes into the planet: their power') : status('good', 'Body stays planted')));
+      r.recoilV > 0.01 ? status('warn', 'Body lurches back ' + fmtDist(r.lurch)) : ownSaved ? status('info', 'His recoil goes to the endless ocean: their power') : status('good', 'Body stays planted')));
     out.push(tiles(
       speedTile('Fist speed', r.vFist, fmtMach(r.vFist)),
       tile('Energy in the punch', fmtSI(r.E, 'J'), fmtTNT(r.E)),
@@ -1798,13 +1832,13 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const items = [];
     items.push('A punch into empty air does no work on anything but the air. Everything the arm put in, the fist’s energy plus his own recoil, is released when the arm stops' + (r.mach < 1 ? ': below the speed of sound, as a thump and as heat in his arm.' : '.'));
     if (r.recoilE > 0.5 * r.E) items.push('His footing can only hold ' + fmtSI(r.anchor.R, 'N') + '. Past that, the fist and Rex push apart like two skaters, and at extreme strength the light fist can’t go faster than light, so his own body takes most of the energy.');
-    if (ownSaved) items.push('They take their own recoil: the punch’s push back goes through his feet into the planet, as if he were bolted. He doesn’t lurch (without it he would lurch back about ' + fmtDist(rOwn0.lurch) + ' during the punch, at up to ' + speedOnly(rOwn0.recoilV) + '), and the fist gets all of the push. The arm’s stop hands that push straight back within the time his legs spread a push over, so the planet keeps no net momentum from a punch into air, and his feet barely shake the ground.');
-    if (silent) items.push('Silent strike absorbs the energy that would hit the air as a blast or a boom. The momentum doesn’t go away: the recoil on his body and his footing is the same.');
+    if (ownSaved && pa) items.push('They take their own recoil: the punch’s push back (' + momFig(pa) + ') goes into their source, the endless ocean, while his arm drives the fist. He doesn’t lurch (without it he would lurch back about ' + fmtDist(rOwn0.lurch) + ' during the punch, at up to ' + speedOnly(rOwn0.recoilV) + '), and the fist gets all of the push. When his arm stops the fist, its momentum comes back to him and goes to the endless ocean too, cancelling what went before, so a punch into air leaves no net momentum anywhere, and nothing of it reaches the ground.');
+    if (silent) items.push('Silent strike absorbs the energy that would hit the air as a blast or a boom, not the momentum: the push back on his body is the same as without it.');
     if (r.mach >= 1 && r.vFist < 0.01 * K.c && !silent) items.push('Past Mach 1 the fist drags a shock wave, like a bullet. Bystanders get the bang even if he misses.');
     if (r.vFist >= 0.01 * K.c && !silent) items.push('At this speed the air ahead of the fist is shock-heated into plasma and the energy comes out as a blast at his knuckles.' + (r.vFist < 0.5 * K.c ? ' (Air only starts to fuse much closer to light speed: xkcd’s “Relativistic Baseball” is pitched at 90% of it.)' : ' This close to light speed, air nuclei start to fuse too, as in xkcd’s “Relativistic Baseball”.'));
     if ((r.basis || state.mode) === 'real') items.push('Real muscle caps fist speed near ' + speedOnly(P.MUSCLE.punch.vmax * c.body.s) + ' however strong he is. Strength buys force on contact, not speed in the air.');
     out.push(happens(items));
-    out.push(math(['Arm drives fist + forearm (' + sig(c.body.handEff, 2) + ' kg) with ' + fmtSI(r.F, 'N') + ' over ' + sig(c.body.strokes.punch, 2) + ' m; ' + (isFinite(r.anchor.R) ? 'his footing holds up to ' + fmtSI(r.anchor.R, 'N') : state.anchor === 'bolted' ? 'he is bolted to the planet, so his footing never gives' : 'his recoil goes into the planet (They take their own recoil), so his footing never gives') + '.', 'Blast radii: Kinney & Graham (1985) free-air overpressure curve, 1 kg TNT = 4.184 MJ.']));
+    out.push(math(['Arm drives fist + forearm (' + sig(c.body.handEff, 2) + ' kg) with ' + fmtSI(r.F, 'N') + ' over ' + sig(c.body.strokes.punch, 2) + ' m; ' + (isFinite(r.anchor.R) ? 'his footing holds up to ' + fmtSI(r.anchor.R, 'N') : pa ? 'his recoil goes to the endless ocean (They take their own recoil), so his footing never gives' : 'he is bolted to the planet, so his footing never gives') + '.', 'Blast radii: Kinney & Graham (1985) free-air overpressure curve, 1 kg TNT = 4.184 MJ.']));
     return out;
   }
 
@@ -2164,7 +2198,11 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   const holdText = (c, R) => (c.anchor === 'bolted' ? 'bolted to the planet' : (c.groundHolds ? 'on ground treated as holding' : 'standing on ' + c.surface.short) + (isFinite(R) ? ', holds ' + fmtSI(R, 'N') : ''));
   // One wording, shared by Arm, Wrestle and Collide, for an unlimited push between two holds that never let go
   // (engine: unlimitedClash). via: what closes the loop between them when nothing can break.
-  function clashVerdict(kind, a, b, via) {
+  // (partnerTorn, and a oneSided paradox: the shove at unlimited strength into a bolted partner, the shover taking his own
+  // recoil, so only the partner is held: a pushes, b is pushed)
+  function clashVerdict(kind, a, b, via, oneSided) {
+    if (kind === 'partnerTorn') return 'Unlimited push, real rock: the rock gives around ' + b + '’s bolts. The bolts are comic, the rock isn’t: it tears out, and ' + b + ' leaves at just under light speed with a plug of rock, with unlimited energy. ' + a + '’s push back goes to the endless ocean (They take their own recoil), so he stays put and nothing tears around his feet.';
+    if (kind === 'paradox' && oneSided) return 'Nothing moves: ' + b + ' is bolted to ground that their power holds, so nothing can move him, and ' + a + '’s push back goes to the endless ocean (They take their own recoil). An unlimited push against a hold without limit has no physical answer: the force between them has no upper limit.';
     if (kind === 'paradox') return 'Nothing moves: the push stays inside one unbreakable system (' + a + ', ' + b + ' and ' + (via || 'the planet') + '), and no internal push can move it. The force between them has no upper limit. Whether that counts as the force being “stopped” is a question about words, which is the paradox.';
     return 'Unlimited push, real rock: the rock gives. The bolts are comic, the rock isn’t: the ground around both sets of bolts tears out, and the unlimited push shoves ' + a + ' and ' + b + ' apart at just under light speed, each with a plug of rock, with unlimited energy.';
   }
@@ -2304,7 +2342,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     items.push('In people, a full-force twist like this is how the upper arm snaps: in one series of 30 arm-wrestling fractures, all were spiral breaks of the humerus. A healthy humerus takes roughly 190 N·m in theory; cadaver bones broke at 25–31 N·m. Rex and Ollie are indestructible.');
     if (r.grav.F > 1e-3 * Math.min(cR.body.m, cO.body.m) * g) items.push('Across the table their gravity pulls them together with ' + fmtSI(r.grav.F, 'N') + ', ' + fmtRatio(r.grav.F / (Math.min(cR.body.m, cO.body.m) * g)) + ' the lighter one’s weight on Earth.');
     if (cR.unbreakable && r.outcome === 'pin' && r.pin && !r.tableBreaks && !r.toGround && r.pin.v > 0) items.push('The pin’s swing pushes down through the winner’s body and feet, and the slam onto the pad pushes the other way through the table, within about ' + fmtTime(P.limbPulse(cR.body)) + ' (the time his legs spread a push over): in the ground the two cancel, so a pin this quick leaves it no net push to shake it.');
-    if (pinShake) items.push('Unbreakable footing: the ground under the table doesn’t break, but the pin’s blow still goes in. Both forearms slam onto the pad, and the table hands their momentum (' + (isFinite(r.toGround.J) ? big(r.toGround.J, 2) + ' kg·m/s' : 'unbounded') + ') to the ground in about ' + fmtTime(r.toGround.T) + ' (a drill stamp’s contact time, scaled: an estimate). ' + groundShakeText(pinShake, cR.surface));
+    // the winner taking his own recoil (BRIEF-canon.md Q12): the swing's push backs go to their source, so nothing cancels
+    // the slam's blow in the ground, however quick the swing (said where the swing is quicker than a limb's contact time).
+    // The figure is the net of both arms' push backs (the winner's up, the loser's resisting arm's down: they share one
+    // source, and on this page one setting), which is the forearms' momentum at the slam (engine recoilAbsorbed)
+    const pinOwn = pinShake && r.recoilAbsorbed && r.pin && r.pin.t < P.limbPulse(cW.body) ? ' The swing’s push backs, ' + W + '’s pushing and ' + L + '’s resisting, go into their source, the endless ocean (They take their own recoil): on balance it takes ' + momFig(r.recoilAbsorbed) + ', up, the forearms’ momentum, so nothing cancels the blow in the ground, however quick the swing.' : '';
+    if (pinShake) items.push('Unbreakable footing: the ground under the table doesn’t break, but the pin’s blow still goes in. Both forearms slam onto the pad, and the table hands their momentum (' + (isFinite(r.toGround.J) ? big(r.toGround.J, 2) + ' kg·m/s' : 'unbounded') + ') to the ground in about ' + fmtTime(r.toGround.T) + ' (a drill stamp’s contact time, scaled: an estimate). ' + groundShakeText(pinShake, cR.surface) + pinOwn);
     if (r.tableBreaks && (r.tearA > 1 || r.tearB > 1)) items.push('Bolted to the planet holds, but the ground around the bolts doesn’t: ' + [['Rex', cR, r.tearA], ['Ollie', cO, r.tearB]].filter(([, , t]) => t > 1).map(([n, c]) => 'past about ' + fmtSI(groundTearOf(c), 'N') + ' it breaks up around ' + n + '’s feet').join(', and ') + '.');
     out.push(happens(items));
     out.push(el('figure', { class: 'art-wide' }, el('img', { src: ART.arm, alt: 'Arm wrestling: Ollie’s huge furry forearm and Rex’s scaly, clawed hand locked together in a grip, Rex’s bulging scaled arm on the right.' })));
@@ -2361,7 +2404,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     }
     let v;
     if (r.outcome === 'bothBolted') v = r.clash ? clashVerdict(r.clash, 'Rex', 'Ollie') : 'Neither moves: both are bolted to the planet. They press with ' + fmtSI(r.contact, 'N') + ', and that stretches the ground between their feet' + (r.tear > 1 ? ': it tears up around the bolts (' + fmtRatio(r.tear) + ' its limit).' : ', which holds.');
-    else if (r.outcome === 'deadlock' && r.allOut) { const s = P.shoveBoth(Object.assign({}, cR, { F: fullF('R') }), Object.assign({}, cO, { F: fullF('O') })); v = 'Dead heat. Both are far stronger than their footing (each holds only ' + fmtSI(Math.min(r.holdA, r.holdB), 'N') + '), so strength stops mattering. If they shoved instead, all-out (see Shove, where the courtesy ceiling keeps it gentle), ' + (() => { const vR = s.shover === 'A' ? s.vA : s.vB, vO = s.shover === 'A' ? s.vB : s.vA; return vR === 0 || vO === 0 ? (vR === 0 ? 'Rex would stay put (his recoil goes through his feet into the planet: their power) and Ollie would fly off at ' + speedOnly(vO) : 'Ollie would stay put (his recoil goes through his feet into the planet: their power) and Rex would fly off at ' + speedOnly(vR)) + '.' : 'they’d fly apart like skaters: Rex at ' + speedOnly(vR) + ', Ollie at ' + speedOnly(vO) + '.'; })(); }
+    else if (r.outcome === 'deadlock' && r.allOut) { const s = P.shoveBoth(Object.assign({}, cR, { F: fullF('R') }), Object.assign({}, cO, { F: fullF('O') })); v = 'Dead heat. Both are far stronger than their footing (each holds only ' + fmtSI(Math.min(r.holdA, r.holdB), 'N') + '), so strength stops mattering. If they shoved instead, all-out (see Shove, where the courtesy ceiling keeps it gentle), ' + (() => { const vR = s.shover === 'A' ? s.vA : s.vB, vO = s.shover === 'A' ? s.vB : s.vA; return vR === 0 || vO === 0 ? (vR === 0 ? 'Rex would stay put (his recoil goes to the endless ocean: their power) and Ollie would fly off at ' + speedOnly(vO) : 'Ollie would stay put (his recoil goes to the endless ocean: their power) and Rex would fly off at ' + speedOnly(vR)) + '.' : 'they’d fly apart like skaters: Rex at ' + speedOnly(vR) + ', Ollie at ' + speedOnly(vO) + '.'; })(); }
     else if (r.outcome === 'deadlock' && (cR.anchor === 'bolted' || cO.anchor === 'bolted')) { const b = cR.anchor === 'bolted' ? 'Rex' : 'Ollie', o = b === 'Rex' ? 'Ollie' : 'Rex'; v = b + ' can’t be moved, and being bolted he can’t walk ' + o + ' out either. Stalemate (he can still shove him: see Shove).'; }
     else if (r.outcome === 'deadlock') v = 'Dead heat at ' + fmtSI(r.contact, 'N') + '.';
     else { const W = WHO[r.winner], L = WHO[r.winner === 'A' ? 'B' : 'A']; const Hl = r.winner === 'A' ? r.HB : r.HA, cl = r.winner === 'A' ? cO : cR; v = W + ' walks ' + L + ' out of the ring in ' + fmtTime(r.t) + (r.v >= 5 ? ', hitting ' + speedOnly(r.v) : '') + '. ' + L + '’s ' + (cl.F < (r.winner === 'A' ? r.holdB : r.holdA) ? 'muscles give at ' : 'feet only hold ') + fmtSI(Hl, 'N') + '.'; }
@@ -2399,7 +2442,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const pusher = both ? (r.shover === 'A' ? 'Rex' : 'Ollie') : nA, target = both ? (r.shover === 'A' ? 'Ollie' : 'Rex') : nB;
     const cT = both ? (r.shover === 'A' ? cO : cR) : cB;
     const out = [];
-    if (r.clash) return [verdict(clashVerdict(r.clash, pusher, target))];
+    if (r.clash) return [verdict(clashVerdict(r.clash, pusher, target, null, r.oneSided))];
     // which of them moves, and which passes 1% of light speed (vA: the shover's recoil, vB: the target's)
     const movA = r.vA > 0.01, movB = r.vB > 0.01, relA = r.vA > 0.01 * K.c, relB = r.vB > 0.01 * K.c;
     const slideText = (v, x) => 'at ' + speedOnly(v) + ' and slides ' + (isFinite(x) ? fmtDist(x) : 'until something stops him');
@@ -2407,28 +2450,32 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const fire = relA && relB ? ' The air in each one’s path turns into a fireball.' : relA || relB ? ' The air in ' + (relB ? target : pusher) + '’s path turns into a fireball.' : '';
     let v;
     if (r.stalled && r.gravityLock) v = target + ' is held to ' + pusher + ' by gravity (' + fmtSI(r.Fg, 'N') + '); ' + pusher + '’s shove (' + fmtSI(r.Fdrive, 'N') + ') can’t break it.';
-    else if (r.stalled) v = 'Nobody moves: ' + pusher + '’s shove (' + fmtSI(r.Fdrive, 'N') + ') can’t beat the footing on both sides.';
+    // (with the shover's recoil taken his own footing isn't loaded: only the one shoved holds)
+    else if (r.stalled) v = 'Nobody moves: ' + pusher + '’s shove (' + fmtSI(r.Fdrive, 'N') + ') can’t beat ' + ((both ? (r.shover === 'A' ? cR : cO) : cA).ownRecoil ? target + (cT.anchor === 'bolted' ? '’s bolts.' : '’s footing.') : 'the footing on both sides.');
     else if (!movB) v = (cT.anchor === 'bolted' ? target + ' is bolted to the planet and doesn’t move' : target + '’s footing holds and he doesn’t move') + ', so the shove throws ' + pusher + ' back instead. ' + goes(pusher, r.vA, r.slideA, relA) + '.' + fire;
     else if (both && movA) v = 'They shove each other apart. ' + goes(target, r.vB, r.slideB, relB) + '; ' + goes(pusher, r.vA, r.slideA, relA) + '.' + fire;
     else if (relB) v = target + ' leaves at ' + fmtSpeed(r.vB) + (movA ? ' and ' + pusher + ' recoils at ' + (relA ? fmtSpeed(r.vA) : speedOnly(r.vA)) : '') + '.' + fire;
     else v = target + ' flies back ' + slideText(r.vB, r.slideB) + (r.slideB > r.ring / 2 ? ', well out of the ring.' : ', still inside the ring.') + (movA ? ' ' + pusher + ' recoils at ' + speedOnly(r.vA) + '.' : '') + fire;
     if (!r.stalled && r.boundTogether) v += ' Their gravity pulls them straight back together.';
     out.push(verdict(v));
-    const cP = both ? (r.shover === 'A' ? cR : cO) : cA, ownP = cP.ownRecoil && cP.anchor !== 'bolted';
+    // ownP: the shover's power changed whether he moves (credited only off Bolted); sa: what his source takes back (the
+    // power wins over Bolted for his own moves, so bolted too)
+    const cP = both ? (r.shover === 'A' ? cR : cO) : cA, ownP = cP.ownRecoil && cP.anchor !== 'bolted', sa = r.recoilAbsorbed;
     const shoveShake = groundShake(cP.surface, r.toGround);
     // a bolted partner who doesn't move: his bolts hand the planet the whole push, a body width away
     const boltShake = groundShake(cT.surface, r.toGroundB), bigShake = boltShake && (!shoveShake || boltShake.plaster > shoveShake.plaster || (boltShake.plaster === shoveShake.plaster && boltShake.feel > shoveShake.feel));
     out.push(el('div', { class: 'status-row' }, basisChip(r), r.heldBack ? status('warn', pusher + ' holds back so his feet don’t slide') : null,
       !movB && !r.stalled ? status('info', target + (cT.anchor === 'bolted' ? ' is bolted: doesn’t move' : ' doesn’t move')) : null,
-      movA ? status('warn', !movB ? pusher + ' is thrown back' : pusher + ' recoils too') : ownP && !r.stalled ? status('info', 'His recoil goes into the planet: their power') : status('good', pusher + ' stays put'),
+      movA ? status('warn', !movB ? pusher + ' is thrown back' : pusher + ' recoils too') : ownP && !r.stalled ? status('info', 'His recoil goes to the endless ocean: their power') : status('good', pusher + ' stays put'),
       r.stalled ? null : bigShake ? groundShakeChip(boltShake, cT.surface, 'The push through ' + target + '’s bolts') : groundShakeChip(shoveShake, cP.surface, 'The shove')));
     if (r.stalled) {
       // nobody moves: no speeds, slides or energy to show
       out.push(tiles(
         tile('Shove force', fmtN(r.Fdrive), 'two hands, over ' + fmtDist(r.d)),
-        r.gravityLock ? tile('Their gravity', fmtSI(r.Fg, 'N'), 'holds them together') : tile('Nobody moves', 'stalemate', 'the shove is weaker than either one’s footing')));
-      out.push(happens(['Newton’s third law: ' + target + ' pushes back on ' + pusher + ' exactly as hard. ' + (r.gravityLock ? 'Their gravity holds them together harder than ' + pusher + ' can shove, so the push stays between them.' : 'Neither one’s footing gives, so the push just presses into the ground under their feet.')]));
-      out.push(math(['Shove: two hands at ' + shareText('throwPush', r.basis || state.mode) + ' of strength each, capped at full strength, over a ' + fmtDist(r.d) + ' stroke; same two-body push as the throw, with ' + target + '’s footing resisting. It moves nobody unless it beats the footing (plus their gravity) on both sides.']));
+        r.gravityLock ? tile('Their gravity', fmtSI(r.Fg, 'N'), 'holds them together') : tile('Nobody moves', 'stalemate', cP.ownRecoil ? 'the shove is weaker than ' + target + (cT.anchor === 'bolted' ? '’s bolts' : '’s footing') : 'the shove is weaker than either one’s footing')));
+      // (the shover's power decides where his push back goes, bolted or not: decision 2)
+      out.push(happens(['Newton’s third law: ' + target + ' pushes back on ' + pusher + ' exactly as hard. ' + (r.gravityLock ? 'Their gravity holds them together harder than ' + pusher + ' can shove, so the push stays between them.' : cP.ownRecoil ? 'Neither one moves: ' + target + (cT.anchor === 'bolted' ? '’s bolts hold' : '’s footing holds') + ', so the push presses into the ground under him, and ' + pusher + '’s push back goes to the endless ocean (They take their own recoil).' : 'Neither one’s footing gives, so the push just presses into the ground under their feet.')]));
+      out.push(math(['Shove: two hands at ' + shareText('throwPush', r.basis || state.mode) + ' of strength each, capped at full strength, over a ' + fmtDist(r.d) + ' stroke; same two-body push as the throw, with ' + target + '’s footing resisting. ' + (cP.ownRecoil ? 'It moves nobody unless it beats ' + target + '’s ' + (cT.anchor === 'bolted' ? 'bolts' : 'footing') + ' (plus their gravity); ' + pusher + '’s push back goes to the endless ocean, so his own footing plays no part.' : 'It moves nobody unless it beats the footing (plus their gravity) on both sides.')]));
       return out;
     }
     out.push(tiles(
@@ -2440,13 +2487,22 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       tile('Energy', fmtSI(r.EA + r.EB, 'J'), fmtTNT(r.EA + r.EB))));
     const sliders = [movB && !relB ? target : null, movA && !relA ? pusher : null].filter(Boolean);
     const fliers = [relB ? target : null, relA ? pusher : null].filter(Boolean);
+    // the shover's push back with his power on (the engine's recoilAbsorbed): his partner's momentum plus what the friction
+    // under his partner's sliding feet hands the ground while the push lasts (from the energy: exact near light speed)
+    const shoveSplit = () => {
+      if (!isFinite(sa.J)) return 'That push back on ' + pusher + ' is unbounded, and it goes to the endless ocean (below); ' + target + ' leaves with unbounded momentum.';
+      const pT = momOfE(r.EB, cT.body.m), rest = isFinite(pT) ? sa.J - pT : 0;
+      return 'That push back on ' + pusher + ' (' + momFig(sa) + ') goes to the endless ocean (below). ' + (rest > 0.01 * sa.J
+        ? target + ' leaves with ' + big(pT, 2) + ' kg·m/s of it; the friction under his sliding feet hands the ground the rest (' + big(rest, 2) + ' kg·m/s) while the push lasts.'
+        : target + ' leaves with nearly all of it (' + big(pT, 2) + ' kg·m/s).');
+    };
     out.push(happens([
-      'Newton’s third law: ' + target + ' pushes back on ' + pusher + ' exactly as hard, for exactly as long. Their momenta come out equal and opposite; the lighter or less anchored one moves faster.' + (!movB && !r.stalled && cT.anchor === 'bolted' ? ' Bolted, ' + target + ' hands his share to the planet' + (boltShake ? ': its speed barely changes, but the ground around his bolts shakes (below).' : ', which barely notices.') : ''),
+      'Newton’s third law: ' + target + ' pushes back on ' + pusher + ' exactly as hard, for exactly as long. ' + (sa && !movA ? shoveSplit() : 'Their momenta come out equal and opposite; the lighter or less anchored one moves faster.') + (!movB && !r.stalled && cT.anchor === 'bolted' ? ' Bolted, ' + target + ' hands his share to the planet' + (boltShake ? ': its speed barely changes, but the ground around his bolts shakes (below).' : ', which barely notices.') : ''),
       both ? 'Both shove at once: the stronger shove sets the push, because the weaker one’s arms can’t extend against it. Evenly matched, both arms would extend, so this is a low estimate.' : null,
       r.heldBack ? 'Shoving with everything would make ' + pusher + '’s feet slide and waste the push, so he holds back to what his footing can take.' : null,
       sliders.length ? 'After the push, ' + (sliders.length === 2 ? 'each of them' : sliders[0]) + ' slides on his feet against friction and air drag, at least as far as shown (sliding friction is a bit lower than the grip used here). A real body would tumble; the sim keeps him upright.' : null,
       fliers.length ? 'Past about 1% of light speed the air ahead can’t get out of the way: it is shock-heated into plasma. ' + (fliers.length === 2 ? 'Both are indestructible; everything around them isn’t.' : fliers[0] + ' is indestructible; everything around him isn’t.') : null,
-      ownP ? 'They take their own recoil: the push back from ' + pusher + '’s shove goes through his feet into the planet, as if he were bolted, so he stays put. (Bolted to the planet is for being pushed by someone else; ' + target + ' doesn’t get this.)' : null,
+      sa ? 'They take their own recoil: the push back from ' + pusher + '’s shove (' + momFig(sa) + ') goes into their source, the endless ocean, so he stays put and none of it reaches the ground. (Bolted to the planet is for being pushed by someone else; ' + target + ' doesn’t get this.)' : null,
       shoveShake ? 'The push ' + pusher + '’s feet hand the ground: ' + (isFinite(r.toGround.J) ? big(r.toGround.J, 2) + ' kg·m/s' : 'unbounded') + ' over ' + fmtTime(r.toGround.T) + '. ' + groundShakeText(shoveShake, cP.surface) : null,
       boltShake ? 'Bolted, ' + target + ' doesn’t move, so his bolts hand the planet the whole push: ' + pushFig(r.toGroundB) + ' over ' + fmtTime(r.toGroundB.T) + ', a body width from ' + pusher + '’s feet. ' + groundShakeText(boltShake, cT.surface) : null,
     ], 8));
@@ -2531,9 +2587,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       const hand = P.anyPower(cA) ? P.RESTRAINT.MOVES.throw.hand(r, { body: cA.body, obj: t.obj }) : null;
       if (hand) items.push(nA + '’s hands still meet real air (their own bodies do): they break the sound barrier as he lets go, so the boom stays, and over the end of the throw they drive about ' + fmtMass(hand.mAir) + ' of air ahead of them, up to ' + fmtTNT(hand.E) + ' of blast at his hands (an upper bound' + (hand.capped ? '; capped at the work of his push, since in real air his hands’ own drag would hold the throw far below this speed' : ': his hands speed up through the throw') + ').');
       if (r.heldBack) items.push('Pushing with everything would make ' + nA + '’s feet slide, so he holds back to what his footing can take (' + fmtSI(r.anchor.R, 'N') + ').');
-      if (cA.ownRecoil && cA.anchor !== 'bolted') {
-        const r0 = P.throwPartner(Object.assign({}, cA, { ownRecoil: false }), cB, state.wAngle).r;
-        if (r0 && r0.recoilV > 0.01) items.push('They take their own recoil: the push back from the throw goes through ' + nA + '’s feet into the planet, as if he were bolted, so he isn’t shoved backward (without it he would be, at ' + speedOnly(r0.recoilV) + ').');
+      // the push back goes to his source whenever his power is on (bolted too); his slide is credited only where it saves one
+      if (r.recoilAbsorbed) {
+        const r0 = cA.anchor !== 'bolted' ? P.throwPartner(Object.assign({}, cA, { ownRecoil: false }), cB, state.wAngle).r : null;
+        items.push('They take their own recoil: the push back from the throw (' + momFig(r.recoilAbsorbed) + ', ' + nB + '’s momentum the other way) goes into their source, the endless ocean, so none of it reaches the ground' + (r0 && r0.recoilV > 0.01 ? ' and ' + nA + ' isn’t shoved backward (without it he would be, at ' + speedOnly(r0.recoilV) + ')' : '') + '. Holding ' + nB + ' up is weight, not recoil: the ground under ' + nA + ' carries only their two weights.');
       }
       const thrShake = groundShake(cA.surface, r.toGround);
       if (thrShake) items.push('The push ' + nA + '’s feet hand the ground as he throws: ' + pushFig(r.toGround) + ' over ' + fmtTime(r.toGround.T) + '. ' + suppliedText(r.toGround) + groundShakeText(thrShake, cA.surface));
@@ -2545,7 +2602,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         if (r.Eimpact > 4.184e9 && !t.sinks) items.push('Impact: ' + fmtTNT(r.Eimpact) + (r.crater > 0 ? ', crater up to ' + fmtDist(r.crater) + ' across' : '') + '. ' + nB + ' is indestructible; the ground isn’t.');
         items.push('Landing: ' + nB + ' is indestructible, so the landing is the ground’s problem.');
       }
-      // his own Unbreakable footing where he lands: the ground takes only what it bears under him (canon's exception)
+      // his own Unbreakable footing where he lands: the ground takes only what it bears under him (canon: the ground's share it can't bear)
       if (t.landToGround) { const lS = groundShake(cA.surface, t.landToGround); items.push('Where he lands, his landing hands the ground ' + pushFig(t.landToGround) + ' over ' + fmtTime(t.landToGround.T) + '. ' + suppliedText(t.landToGround) + groundShakeText(lS, cA.surface)); }
       out.push(happens(items, 10));
     }
@@ -2786,6 +2843,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     out.push(verdict(v));
     const k = a.catch;
     const arrived = CATCH_ARRIVED.includes(a.result);
+    // They take their own recoil, the catcher's (canon: a catch is absorbed unless he chooses otherwise): planted in every
+    // outcome where it reaches him, his stop goes to his source (caC: what it takes back). a0C: the same leg with his power
+    // off, for what it saves him (a slide, being carried off, his stop pushed into the ground)
+    const caC = a.recoilAbsorbedC, reachesC = ['caught', 'wreckage', 'slams', 'cant-hold-it'].includes(a.result);
+    const a0C = caC && reachesC ? P.catchLeg(cR, Object.assign({}, cO, { ownRecoil: false }), o, Dd, state.cStyle) : null, k0C = a0C && a0C.catch;
+    const savedC = !!(k0C && ['caught', 'wreckage', 'slams', 'cant-hold-it'].includes(a0C.result) && (k0C.carried || k0C.slide > 0.01 || a0C.toGroundC));
     const chips = [];
     if (a.result === 'fireball') chips.push(status('bad', a.kept ? 'Fireball around it; it comes through whole (their power)' : a.fireball.kind === 'arrives' ? 'Hits him as plasma and debris' : 'Fireball, no ball arrives'));
     else if (a.result === 'hits-ground') chips.push(status('bad', 'Hits the ground ' + fmtDist(a.hitsGround.at) + ' away: no catch'));
@@ -2808,11 +2871,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         else {
           // Unbreakable footing: real ground would give under his feet here
           if (k.sinkRatioRaw > 1) chips.push(status('info', 'The ground holds: their power'));
-          chips.push(k.carried ? null : k.slide > 0.01 ? status('warn', 'Slides ' + fmtDist(k.slide)) : status('good', 'Feet hold'));
+          chips.push(k.carried ? null : k.slide > 0.01 ? status('warn', 'Slides ' + fmtDist(k.slide)) : savedC ? status('info', 'His stop goes to the endless ocean: their power') : status('good', 'Feet hold'));
         }
       }
     }
-    // the larger ground shaking of the throw's push and the catch's (their powers send both through their feet)
+    // the larger ground shaking of the throw's push and the catch's (Unbreakable footing with They take their own recoil
+    // off sends both through their feet; with it on both go to their source and the engine gives neither)
     {
       const sT = groundShake(cR.surface, a.toGroundT), sC = groundShake(cO.surface, a.toGroundC);
       const sB = [[sT, 'The throw'], [sC, 'The catch']].filter(([x]) => x).sort(([x], [y]) => (y.plaster - x.plaster) || (y.feel - x.feel))[0];
@@ -2839,7 +2903,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         caughtish ? (first
           ? tile('Hits his palms with', fmtRange(k.F1[0], k.F1[1], 'N'), 'first contact, over in ' + fmtTime(k.tContact[0]) + ' to ' + fmtTime(k.tContact[1]) + ' · ' + big(k.F1[0] / o.m / g, 2) + ' g or more on the ' + o.short + (o.passenger && state.safePassenger ? ' (Safe passenger: spread through them, no harm)' : ''))
           : tile('Catch force', fmtSI(k.Fpeak, 'N'), (isFinite(k.Fcap) ? sig(100 * k.Fpeak / k.Fcap, 2) + '% of Ollie’s strength · ' : '') + big(k.decelG, 2) + ' g on the ' + o.short)) : tile('Hits him with', fmtSI(k.Ecatch, 'J'), fmtTNT(k.Ecatch)),
-        caughtish ? (k.carried && cO.anchor !== 'bolted' ? tile('Ollie', 'carried off', 'at ' + fmtSpeed(k.uAfter) + ', with the ' + o.short) : tile('Ollie slides', cO.anchor === 'bolted' ? 'bolted' : (k.slide > 0.005 ? fmtDist(k.slide) : 'nothing'), cO.anchor === 'bolted' ? 'bolted to the planet' : 'feet hold up to ' + fmtN(k.R))) : null,
+        caughtish ? (k.carried && cO.anchor !== 'bolted' ? tile('Ollie', 'carried off', 'at ' + fmtSpeed(k.uAfter) + ', with the ' + o.short) : caC ? tile('Ollie slides', 'nothing', 'his stop goes to the endless ocean: their power') : tile('Ollie slides', cO.anchor === 'bolted' ? 'bolted' : (k.slide > 0.005 ? fmtDist(k.slide) : 'nothing'), cO.anchor === 'bolted' ? 'bolted to the planet' : 'feet hold up to ' + fmtN(k.R))) : null,
         round ? tile('Round trip', 'about ' + fmtTime(round), strokesIn ? 'throws, flights and catches' : 'throws and flights') : null));
     }
     if (a.flight && a.flight.path && a.flight.path.length > 1 && !(a.wells && a.wells.wellDominated) && !lostEarly(a)) out.push(trajectoryChart(a.flight.path, null, 'Flight path of the ' + o.short + ' from Rex to Ollie', a.flight.apex, null, dragLegend(cR)));
@@ -2864,7 +2928,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         items.push('Catching is stopping momentum. His hands give ' + fmtDist(k.stroke) + ', from full reach to his chest, but his feet hold only ' + fmtSI(k.R, 'N') + ' along that line, so ' + (k.slide > 0.01 ? 'he skids back while he stops it, the way you slide back catching a heavy medicine ball on ice. ' : 'they slip a little (' + fmtDist(k.slide) + ') while he stops it. ') + (presses ? 'It comes down steeply, and the more it presses him down, the harder his feet grip. ' : 'He and the ' + o.short + ' share the stopping, so ') + (presses ? 'His arms push ' : 'his arms push ') + fmtSI(k.F, 'N') + ', which takes ' + fmtDuration(k.tStroke) + '.');
       }
       else items.push('Catching is stopping momentum. His hands give ' + fmtDist(k.stroke) + ', from full reach to his chest, so the force is the ' + o.short + '’s energy spread over that distance: ½mv²/d' + (a.angleDeg > 1 ? ' plus its weight along the line' : '') + ' = ' + fmtSI(k.F, 'N') + '. At that force the catch takes ' + fmtDuration(k.tStroke) + (k.forced ? '.' : '; with strength to spare he could stop it quicker.'));
-      if (cO.anchor === 'bolted') items.push('Bolted to the planet, he doesn’t move: the Earth takes the momentum.');
+      if (cO.anchor === 'bolted' && !caC) items.push('Bolted to the planet, he doesn’t move: the Earth takes the momentum.');
       if (a.result === 'wreckage') items.push('Even spread over its average cross-section (' + m2(o.area) + '), the hardest push on it, ' + (k.F1[0] >= k.press[0] ? 'the first hit on his palms' : 'his arms stopping it') + ', presses ' + fmtSI(k.press[0] / o.area, 'Pa') + ' into it: ' + fmtRatio(k.wholeFront) + ' ' + strengthText(o) + '. No grip or plate saves it.');
       else if (k.gripRatio > 1) items.push('His palms press ' + fmtSI(k.press[0] / k.contact, 'Pa') + ' into the ' + o.short + ', which gives way at about ' + fmtSI(o.crush, 'Pa') + '. To catch it whole he’d need a plate ' + fmtArea(k.plateNeeded) + '.');
       if (o.id === 'baseball' && k.baseballRatioHi > 0.1) items.push('A springy hit peaks at about twice its average, so that first hit squeezes the ball ' + fmtRatioRange(k.baseballRatio, k.baseballRatioHi) + ' as hard as the ~40,000 N of a home-run hit, which baseballs survive.' + (k.baseballRatio > 1 ? (a.gentleC ? ' Past that a real ball would probably burst; Things keep their form holds this one together.' : ' Past that it probably bursts; the sim can’t say exactly when.') : ''));
@@ -2886,13 +2950,27 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const rc = a.recoil;
     if (rc && rc.v > 0.01) {
       if (rc.fireball) items.push('Throwing it shoves Rex back at ' + fmtSpeed(rc.v) + ': the air in front of him turns into a fireball too. He’s fine, but there is no throw back.');
-      else items.push('Throwing it shoves Rex back at ' + speedOnly(rc.v) + (rc.slide > 0.01 ? ' and slides about ' + fmtDist(rc.slide) + ' before he stops' : '') + '.' + (rc.outOfRange ? ' That’s farther than the gap between them, so they aren’t in range for the throw back.' : '') + (cR.anchor === 'friction' ? ' To stay put he needs to be bolted: turn on They take their own recoil, or Bolted to the planet for Rex, in Their powers.' : ''));
-    } else if (cR.ownRecoil && cR.anchor !== 'bolted' && a.aim && a.aim.vL > 0) {
-      // credited only where he would be shoved back without it
-      const a0 = P.catchLeg(Object.assign({}, cR, { ownRecoil: false }), cO, o, Dd, state.cStyle);
-      if (a0 && a0.recoil && a0.recoil.v > 0.01) items.push('They take their own recoil: the push back from the throw goes through Rex’s feet into the planet, as if he were bolted, so he stays put (without it he would be shoved back at ' + (a0.recoil.v >= 0.01 * K.c ? fmtSpeed(a0.recoil.v) : speedOnly(a0.recoil.v)) + ').');
+      else items.push('Throwing it shoves Rex back at ' + speedOnly(rc.v) + (rc.slide > 0.01 ? ' and slides about ' + fmtDist(rc.slide) + ' before he stops' : '') + '.' + (rc.outOfRange ? ' That’s farther than the gap between them, so they aren’t in range for the throw back.' : '') + (cR.anchor === 'friction' ? ' To stay put he needs They take their own recoil, or Bolted to the planet for Rex, in Their powers.' : ''));
+    } else if (a.recoilAbsorbedT) {
+      // whenever he throws with the power on (bolted too: it wins for his own moves), where the push back goes and how much;
+      // his being shoved back is credited only where it would happen without it
+      const a0 = cR.anchor !== 'bolted' ? P.catchLeg(Object.assign({}, cR, { ownRecoil: false }), cO, o, Dd, state.cStyle) : null;
+      items.push('They take their own recoil: the push back from the throw (' + momFig(a.recoilAbsorbedT) + ') goes into their source, the endless ocean, so none of it reaches the ground' + (a0 && a0.recoil && a0.recoil.v > 0.01 ? ' and Rex stays put (without it he would be shoved back at ' + (a0.recoil.v >= 0.01 * K.c ? fmtSpeed(a0.recoil.v) : speedOnly(a0.recoil.v)) + ')' : '') + '.');
     }
-    // their powers send the throw's and the catch's pushes through their feet: the ground shakes from them
+    // the catcher's stop with his power on (canon: a catch is absorbed): planted, never carried off; where the arms alone
+    // can't stop it, it slams into him instead of being caught
+    // (a slam: his arms stop part of it and his chest the rest; a catch he can't hold: his arms can't even hold it, so it
+    // ends against his chest; canon absorbs a catch whole either way, so his source takes it all)
+    if (caC && reachesC) items.push((a.result === 'slams' ? 'They take their own recoil: Ollie’s arms stop part of it and the rest slams into his chest. A catch is absorbed whole (canon), so all of the ' + o.short + '’s momentum (' + momFig(caC) + ') goes into their source, the endless ocean, and none of it reaches the ground.'
+      : a.result === 'cant-hold-it' ? 'They take their own recoil: Ollie’s arms can’t hold it, so it slams into his chest. A catch is absorbed whole (canon), so all of the ' + o.short + '’s momentum (' + momFig(caC) + ') goes into their source, the endless ocean, and none of it reaches the ground.'
+      : 'They take their own recoil: stopping it is Ollie’s own push, so its push back (' + momFig(caC) + ', the ' + o.short + '’s momentum) goes into their source, the endless ocean, and none of it reaches the ground.')
+      + (cO.anchor === 'bolted' ? ' He is bolted too, but for his own moves the power decides where the push goes.' : k0C && k0C.carried ? ' He isn’t carried off: without it the catch would carry him off at ' + fmtSpeed(k0C.uAfter) + '.' : k0C && k0C.slide > 0.01 ? ' He doesn’t slide: without it his feet would slide ' + fmtDist(k0C.slide) + '.' : '')
+      + (a.result === 'slams' && a0C && a0C.result === 'caught' ? ' Planted, his arms have to stop all of its speed themselves, and here that is more than they can, so it slams into him (without the power his slide would have shared the stopping, and he would have caught it).' : ''));
+    // a throw that reaches him as plasma (the fireball's push on him) isn't his catch: it is an incoming hit, canon's Never
+    // knocked back, not in the lab yet (pull request 4), so his power doesn't stop it
+    if (a.result === 'fireball' && a.fireball.kind !== 'before' && cO.ownRecoil) items.push('They take their own recoil doesn’t cover this: Ollie doesn’t catch it, it hits him. An incoming hit isn’t his own push back; that is canon’s Never knocked back, which isn’t in the lab yet. So ' + (!isFinite(a.fireball.p) ? 'its push is as above.' : a.fireball.push.earthRecoilV > 0 ? 'his bolts hand the hit to the whole Earth, as above.' : 'it carries him off, as above.'));
+    // Unbreakable footing with They take their own recoil off sends the throw's and the catch's pushes through their feet:
+    // the ground shakes from them
     const shT = groundShake(cR.surface, a.toGroundT), shC = groundShake(cO.surface, a.toGroundC);
     if (shT) items.push('Rex’s feet hand the ground the throw’s push (' + pushFig(a.toGroundT) + ' over ' + fmtTime(a.toGroundT.T) + '). ' + suppliedText(a.toGroundT) + groundShakeText(shT, cR.surface));
     if (shC) items.push('Ollie’s feet hand the ground the catch’s push (' + pushFig(a.toGroundC) + ' over ' + fmtTime(a.toGroundC.T) + '). ' + suppliedText(a.toGroundC) + groundShakeText(shC, cO.surface));
@@ -2933,9 +3011,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       'Aim: the gentlest throw is the angle needing the least launch speed, each speed solved so the arc comes down at Ollie’s hand height (' + fmtDist(cO.body.releaseHeight) + ') where his hands meet it, ' + fmtDist(P.catchMeetRadius(cO.body, o)) + ' in front of his centre. Same air and round-Earth model as Throw.',
       'Fastball: his full-strength speed at each angle; the flattest angle whose path passes Ollie’s hands.',
       // a catch past 1% of light speed is worked out with exact momentum and energy (relCatch)
-      k && k.relativistic && ['caught', 'wreckage', 'slams', 'cant-hold-it'].includes(a.result) ? (a.vArrive >= 0.01 * K.c ? 'Catch past 1% of light speed' : 'Catch of the sheath lump') + ' (exact momentum and energy): at first contact his hands (m_h = ' + fmtMass(2 * cO.body.handEff) + ') and the arriving ' + (a.sheath ? 'lump (the object, the air it swept up and its heat, rest mass m)' : 'object (m)') + ' make an invariant mass M₁ = √(m² + m_h² + 2γ m m_h); the squash heats by (M₁ − m − m_h)c², over a ' + (k.give ? fmtDist(k.give[0]) + '–' + fmtDist(k.give[1]) + ' ' : '') + 'squash. What moves on carries E₂ = √(p²c² + M₁²c⁴) − M₁c² of motion (p: the throw’s momentum): his arms stop it over d = 0.3 × his height = ' + fmtDist(0.3 * cO.body.H) + ' if his feet hold; if they slip, he and the lump move off together at pc²/E_total.'
-      : k && ['caught', 'wreckage', 'slams', 'cant-hold-it'].includes(a.result) ? 'Catch: first contact with his hands (m_h = ' + fmtMass(2 * cO.body.handEff) + '): v₁ = v m/(m + m_h); energy lost ½ m m_h v²/(m + m_h), over a ' + fmtDist(k.give[0]) + '–' + fmtDist(k.give[1]) + ' squash (1–2.5% of his height, an estimate). Then F = (m + m_h) v₁²/(2d) + m g sin(angle) if his feet hold (F ≤ R); otherwise F/(m + m_h) + (F − R_slide(F))/M = v_eff²/(2d) and he slides. d = 0.3 × his height = ' + fmtDist(0.3 * cO.body.H) + '. First contact lasts about 2 × squash / v. At the arm force F the stroke takes t = v₁/a, a = (F − m g sin(angle))/(m + m_h) (plus his own slide back); at the least force that works, t = 2d/v₁. The round trip counts that stroke only when it is forced (he slides or needs at least half his strength); otherwise he can take as long as he likes.' : null,
-      k && ['caught', 'wreckage', 'slams', 'cant-hold-it'].includes(a.result) && cO.anchor !== 'bolted' ? 'Slide: the pair coasts to a stop against friction and air drag: x = (M+m)/(2k)·ln(1 + k u²/R).' : null,
+      k && k.relativistic && ['caught', 'wreckage', 'slams', 'cant-hold-it'].includes(a.result) ? (a.vArrive >= 0.01 * K.c ? 'Catch past 1% of light speed' : 'Catch of the sheath lump') + ' (exact momentum and energy): at first contact his hands (m_h = ' + fmtMass(2 * cO.body.handEff) + ') and the arriving ' + (a.sheath ? 'lump (the object, the air it swept up and its heat, rest mass m)' : 'object (m)') + ' make an invariant mass M₁ = √(m² + m_h² + 2γ m m_h); the squash heats by (M₁ − m − m_h)c², over a ' + (k.give ? fmtDist(k.give[0]) + '–' + fmtDist(k.give[1]) + ' ' : '') + 'squash. What moves on carries E₂ = √(p²c² + M₁²c⁴) − M₁c² of motion (p: the throw’s momentum): his arms stop it over d = 0.3 × his height = ' + fmtDist(0.3 * cO.body.H) + (cO.ownRecoil ? '; he is planted (They take their own recoil), so he never slips, and what his arms can’t stop slams into him.' : ' if his feet hold; if they slip, he and the lump move off together at pc²/E_total.')
+      : k && ['caught', 'wreckage', 'slams', 'cant-hold-it'].includes(a.result) ? 'Catch: first contact with his hands (m_h = ' + fmtMass(2 * cO.body.handEff) + '): v₁ = v m/(m + m_h); energy lost ½ m m_h v²/(m + m_h), over a ' + fmtDist(k.give[0]) + '–' + fmtDist(k.give[1]) + ' squash (1–2.5% of his height, an estimate). ' + (cO.ownRecoil ? 'Then his feet hold (They take their own recoil: he is planted): F = (m + m_h) v₁²/(2d) + m g sin(angle), up to the most his arms can push; if that isn’t enough, it reaches his chest at v² = v₁² − 2d(F − m g sin(angle))/(m + m_h).' : 'Then F = (m + m_h) v₁²/(2d) + m g sin(angle) if his feet hold (F ≤ R); otherwise F/(m + m_h) + (F − R_slide(F))/M = v_eff²/(2d) and he slides.') + ' d = 0.3 × his height = ' + fmtDist(0.3 * cO.body.H) + '. First contact lasts about 2 × squash / v. ' + (cO.ownRecoil ? 'At the arm force F the stroke takes t = (v₁ − v)/a (v = 0 where his arms stop it), a = (F − m g sin(angle))/(m + m_h)' : 'At the arm force F the stroke takes t = v₁/a, a = (F − m g sin(angle))/(m + m_h) (plus his own slide back)') + '; at the least force that works, t = 2d/v₁. The round trip counts that stroke only when it is forced (' + (cO.ownRecoil ? 'his arms can’t stop it, or need at least half his strength' : 'he slides or needs at least half his strength') + '); otherwise he can take as long as he likes.' : null,
+      k && ['caught', 'wreckage', 'slams', 'cant-hold-it'].includes(a.result) && cO.anchor !== 'bolted' && !cO.ownRecoil ? 'Slide: the pair coasts to a stop against friction and air drag: x = (M+m)/(2k)·ln(1 + k u²/R).' : null,
       showHeat(a) && a.heat.mat ? 'Nose heating (Sutton–Graves): q = 1.74 × 10⁻⁴ √(ρ/rₙ) v³ W/m², added up along the path; radiation ceiling σ(T⁴ − T₀⁴) below 30 km only (higher up radiation is left out, so the top end runs low on high flights); share ≈ heat × frontal area / (mass × heat to ' + verbOf(a.heat) + ' 1 kg).' : null,
       o.crush && a.launchRatio > 0.1 ? 'Launch: his steady push m v²/(2 × stroke) spread over its average cross-section (' + m2(o.area) + '); here ' + fmtSI(a.launchPush / o.area, 'Pa') + ' against ' + fmtSI(o.crush, 'Pa') + '.' : null,
       o.crush && a.qDynMax ? 'Break-up in flight: ρ v² > its strength (as in Collins et al. 2005 for meteors); here up to ' + fmtSI(a.qDynMax, 'Pa') + ' against ' + fmtSI(o.crush, 'Pa') + (o.crushWhole ? ', its crush strength.' : ', its grip limit. That is a rough local value; the whole ' + o.short + ' gives way well below it, so this check and the wreckage check err toward it surviving.') : null,
@@ -2977,7 +3055,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       else if (t.catch.sinkRatioRaw > 1) v += ' On real ground, ' + theSurf(cR.surface) + ' would give under Rex’s feet here (' + fmtRatio(t.catch.sinkRatioRaw) + ' what it bears); Unbreakable footing holds it: their power.';
     }
     out.push(verdict(v));
-    // their powers send the toss's push and the catch's through his feet (BRIEF-gui.md 5c): the larger shaking as a chip
+    // Unbreakable footing with They take their own recoil off sends the toss's push and the catch's through his feet
+    // (BRIEF-gui.md 5c): the larger shaking as a chip. With the power on both are his own pushes and go to his source.
     const shT = groundShake(cR.surface, t.toGroundT), shC = groundShake(cR.surface, t.toGroundC);
     {
       const sB = [[shT, 'The toss'], [shC, 'The catch']].filter(([x]) => x).sort(([x], [y]) => (y.plaster - x.plaster) || (y.feel - x.feel))[0];
@@ -2999,8 +3078,11 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const items = [];
     if (t.catch) items.push(
       'Ollie is indestructible, so the only question is whether Rex’s arms and the ground can stop him: Rex’s hands give ' + fmtDist(0.3 * cR.body.H) + ' while he catches, and the force includes holding up Ollie’s weight.',
-      // canon's weak-ground exception: the ground takes what it bears, their power the rest
-      t.toGroundC && t.toGroundC.supplied > 0 ? 'Straight up, his feet can’t slide. Real ground would have to carry his own weight plus Ollie’s whole stopping force; with Unbreakable footing it takes only what it can bear, and their power supplies the rest (below).'
+      // They take their own recoil: the toss and the catch are his own pushes (their push back to his source); holding
+      // Ollie up is weight, not recoil
+      t.recoilAbsorbedT || t.recoilAbsorbedC ? 'Straight up, his feet can’t slide. They take their own recoil: the toss and the catch are Rex’s own pushes, so their push back goes into their source, the endless ocean (' + [t.recoilAbsorbedT && momFig(t.recoilAbsorbedT) + ' as he tosses him', t.recoilAbsorbedC && momFig(t.recoilAbsorbedC) + ' as he catches him'].filter(Boolean).join(', ') + '), and none of it reaches the ground. The ground under him carries only his own weight and Ollie’s.'
+      // canon's weak-ground case: the ground takes what it bears, their power the rest
+      : t.toGroundC && t.toGroundC.supplied > 0 ? 'Straight up, his feet can’t slide. Real ground would have to carry his own weight plus Ollie’s whole stopping force; with Unbreakable footing it takes only what it can bear, and their power supplies the rest (below).'
         : 'Straight up, his feet can’t slide, but the ground under them carries his own weight plus Ollie’s whole stopping force.',
       'Stopping him puts ' + fmtSI(t.catch.Ecatch, 'J') + ' (' + fmtTNT(t.catch.Ecatch) + ') into Rex’s arms, which ends up as heat in his plush.');
     if (shT) items.push('Rex’s feet hand the ground the toss’s push (' + pushFig(t.toGroundT) + ' over ' + fmtTime(t.toGroundT.T) + '). ' + suppliedText(t.toGroundT) + groundShakeText(shT, cR.surface));
@@ -3294,33 +3376,59 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     else if (r.limitedBy === 'effort') v = 'At this effort Rex doesn’t pull hard enough to start it moving.';
     else v = 'Rex is strong enough, but his feet slide before it moves.';
     out.push(verdict(v));
-    const ownPull = !!r.ownRecoil && state.anchor !== 'bolted';
+    // ownPull: his power changed how hard he can pull (credited only off Bolted; bolted, the item says what sets the
+    // pace); pa: what his source takes back (the power wins over Bolted for his own moves, so bolted too). With the power
+    // on his feet move his own body with at most the smaller of his footing (anc.R: Infinity bolted) and his legs' push
+    // (the strength he uses, as the Sprint tab's push-off: review round 3, Bolted removes the footing limit, not the
+    // muscle limit; its re-check, a level push, not the 1.4x the cantWalk item's legs carry weight up with); legsSet:
+    // his legs, not his grip, are the smaller (bolted always: there his grip is unlimited, even at unlimited strength);
+    // legsFig: their push, which is unbounded at unlimited strength (never '∞ N' in a sentence; couldFig likewise)
+    const ownPull = !!r.ownRecoil && state.anchor !== 'bolted', pa = r.recoilAbsorbed;
+    const legsR = r.ownRecoil ? r.usable : 0, legsSet = !!r.ownRecoil && (state.anchor === 'bolted' || legsR < r.anchor.R), legsFig = isFinite(legsR) ? fmtSI(legsR, 'N') : 'unbounded at unlimited strength';
+    const couldFig = isFinite(r.usable) ? ' of the ' + fmtSI(r.usable, 'N') + ' he could' : ' of his unbounded strength';
     out.push(el('div', { class: 'status-row' },
       r.cantWalk ? status('bad', r.cantStand ? 'Too heavy to get up' : 'Too heavy to walk') : null,
       c.F >= r.resist ? status('good', 'Strength enough') : status('bad', 'Too weak'),
-      ownPull ? status('info', 'The load’s pull back goes into the planet: their power') : r.anchor.R >= r.resist ? status('good', 'Footing holds') : status('bad', 'Footing fails (' + r.anchor.limit + ')'),
-      ownPull && r.footLimited && r.canMove ? status('warn', 'His own footing sets the pace') : null,
+      ownPull ? status('info', 'The load’s pull back goes to the endless ocean: their power') : r.anchor.R >= r.resist ? status('good', 'Footing holds') : status('bad', 'Footing fails (' + r.anchor.limit + ')'),
+      r.ownRecoil && r.footLimited && r.canMove ? status('warn', legsSet ? 'His legs set the pace' : 'His own footing sets the pace') : null,
       r.rolling ? (o.crrStatus === 'estimate' ? status('warn', 'Rolling resistance: rough estimate') : status('info', 'Rolls on wheels')) : status('info', 'Slides (no wheels)')));
     out.push(logBars('Forces', [
       { label: 'Needed to keep it moving', value: r.resist },
       { label: ownPull ? 'His footing (moves his own body)' : 'His footing can hold', value: r.anchor.R },
-      ownPull && r.canMove ? { label: 'The rope’s pull', value: r.ropeT } : null,
+      r.ownRecoil ? { label: 'His legs (move his own body)', value: legsR } : null,
+      r.ownRecoil && r.canMove ? { label: 'The rope’s pull', value: r.ropeT } : null,
       { label: 'His strength', value: c.F, highlight: true },
     ].filter(Boolean), (x) => fmtSI(x, 'N'), { padL: 190 }));
     const items = [];
     if (r.cantWalk) items.push('Dragging a load means walking with it. Each step puts about 1.2× his weight on one leg, and his legs push with at most 1.4× the dial’s force (a rough rule; see the Weight tab). At ' + fmtMass(c.body.m) + ' he can’t ' + (r.cantStand ? 'even get up' : 'take a step') + '.');
-    if (ownPull) items.push('They take their own recoil: the load’s pull back on him goes through his feet into the planet, as if he were bolted, so grip no longer limits how hard he can pull' + (r.footLimited && r.canMove ? ', but his own footing sets the pace: he pulls with ' + fmtSI(r.ropeT, 'N') + ' of the ' + fmtSI(r.usable, 'N') + ' he could, as hard as keeps the load at his pace. He still walks with it, and walking runs on friction: his footing (' + fmtSI(r.anchor.R, 'N') + ') can speed his own body up by at most ' + sig(r.anchor.R / c.body.m, 2) + ' m/s².' : ': he pulls with all of the strength he uses, and the load sets the pace. He still walks with it, and walking runs on friction: his footing (' + fmtSI(r.anchor.R, 'N') + ') can speed his own body up by at most ' + sig(r.anchor.R / c.body.m, 2) + ' m/s².'));
-    // the rope's pull back goes into the planet over the pull: a steady load, so it shakes the ground far less than a blow
-    // counted whenever They take their own recoil is on, bolted too (the engine's MOVES.pull.shake)
-    const pullShake = r.ownRecoil && r.canMove && isFinite(r.t10m) ? groundShake(c.surface, { J: P.vToMomentum(r.vEnd, o.m) + r.resist * r.t10m, T: r.t10m }) : null;
-    if (pullShake) items.push('The rope’s pull back goes through his ' + (state.anchor === 'bolted' ? 'bolts' : 'feet') + ' into the planet over the pull (' + big(P.vToMomentum(r.vEnd, o.m) + r.resist * r.t10m, 2) + ' kg·m/s over ' + fmtTime(r.t10m) + (r.t10m >= 0.5 ? ', a steady load rather than a blow' : '') + '). ' + groundShakeText(pullShake, c.surface));
-    else items.push('Pulling needs two things: enough strength, and enough grip on the ground not to get dragged instead.' + (r.anchor.R < r.resist ? ' Here grip runs out first: he can only hold ' + fmtSI(r.anchor.R, 'N') + ' before his feet slide.' : ''));
+    if (ownPull) items.push('They take their own recoil: the load’s pull back on him goes into their source, the endless ocean, so grip no longer limits how hard he can pull' + (r.footLimited && r.canMove ? ', but ' + (legsSet ? 'his own legs set' : 'his own footing sets') + ' the pace: he pulls with ' + fmtSI(r.ropeT, 'N') + couldFig + ', as hard as keeps the load at his pace.' : ': he pulls with all of the strength he uses, and the load sets the pace.')
+      + ' He still walks with it: his feet move his own body with at most the smaller of his footing (' + fmtSI(r.anchor.R, 'N') + '; walking runs on friction) and his legs’ push (at most the strength he uses, ' + legsFig + ', as in a sprint), so they can speed it up by at most ' + sig(Math.min(r.anchor.R, legsR) / c.body.m, 2) + ' m/s².');
+    // They take their own recoil (bolted too): the rope's pull back goes to his source, so none of it reaches the ground
+    // (the engine's recoilAbsorbed: the rope's impulse over the pull). His own steps do push the ground: walking with the
+    // load is the move, not recoil (the engine's walkPush: his own body's momentum over the pull, the pull's shaking
+    // source with the power on). His legs cap them (the strength he uses, as in a sprint); on friction his grip too, and
+    // the smaller of the two is named. The load's rolling or sliding resistance presses on the ground too, a steady drag over
+    // the whole pull: not counted as shaking.
+    const rs = r.rolling ? 'rolling' : 'sliding';
+    if (pa && r.canMove) {
+      const wp = r.walkPush, ws = wp ? groundShake(c.surface, wp) : null;
+      items.push((state.anchor === 'bolted' ? 'Bolted, his feet can’t slide, so grip doesn’t limit his pull. His legs still move his own body, with at most the strength he uses (' + legsFig + '), as in a bolted sprint' + (r.footLimited ? ', so his own body sets the pace: he pulls with ' + fmtSI(r.ropeT, 'N') + couldFig + ', as hard as keeps the load at his pace. ' : '; here they keep up, so he pulls with all of the strength he uses and the load sets the pace. ') : '') + 'Nothing of the rope’s pull back reaches the ground: it goes to the endless ocean (' + momFig(pa) + ' over ' + fmtTime(pa.T) + ', the load’s momentum plus the ' + rs + ' resistance it overcame).'
+        + (wp ? ' His own steps still push on the ground: walking with the load is the move, not recoil, so that push is real. It is his own body’s momentum, ' + momFig(wp) + ' over ' + fmtTime(wp.T) + (legsSet ? ' (his legs cap it: at most the strength he uses, ' + legsFig + (state.anchor === 'bolted' ? '' : ', less than his footing, ' + fmtSI(r.anchor.R, 'N')) + ').' : ' (his grip caps it: his footing, ' + fmtSI(r.anchor.R, 'N') + ', is the most his steps can push with).') + ' ' + groundShakeText(ws, c.surface) : '')
+        + ' (The load’s ' + rs + ' presses on the ground too, a steady drag over the whole pull; the lab doesn’t count that as shaking.)');
+    }
+    else if (!r.ownRecoil) items.push('Pulling needs two things: enough strength, and enough grip on the ground not to get dragged instead.' + (r.anchor.R < r.resist ? ' Here grip runs out first: he can only hold ' + fmtSI(r.anchor.R, 'N') + ' before his feet slide.' : ''));
+    // where his own body sets the pace, his legs push as on the Sprint tab, but the pull has neither the sprint's
+    // leg-speed cap nor air drag on him (review round 3's re-check): say so where he ends past his top sprint speed
+    if (r.ownRecoil && r.canMove && r.footLimited) {
+      const sp = P.sprint(c);
+      if (sp.vTop > 0 && r.vEnd > sp.vTop) items.push('His legs push as hard as in a sprint, but the pull leaves out two limits the Sprint tab has: how fast his legs can move, and the air’s drag on him. So he ends the 10 m at ' + speedOnly(r.vEnd) + ', past his top sprint speed at this effort (' + speedOnly(sp.vTop) + '). With those limits the pull would take longer.');
+    }
     if (o.crrNote) items.push(o.crrNote);
     items.push('Record pullers lean into a harness with the rope angled down to the load, which presses them into the ground and raises their grip. The sim pulls level, so it is a little pessimistic.');
     out.push(happens(items));
     const a = r.anchor;
-    const footing = state.anchor === 'bolted' ? 'Footing (bolted to the planet): unlimited, a comic anchor'
-      : ownPull ? 'They take their own recoil: pull = the strength he uses; acceleration = min((pull − resistance) ÷ load mass, footing ÷ his mass), footing = μ × his weight = ' + fmtSI(a.R, 'N')
+    const footing = state.anchor === 'bolted' ? 'Footing (bolted to the planet): unlimited, a comic anchor' + (r.ownRecoil ? '. They take their own recoil: the rope’s pull back goes to the endless ocean; acceleration = the smaller of (the strength he uses − resistance) ÷ load mass and his legs’ push ÷ his mass, legs’ push = the strength he uses = ' + fmtSI(legsR, 'N') + ' (the Sprint tab’s bolted push-off); the rope pulls as hard as keeps the load at that pace; his steps push the ground with his own body’s momentum, m v, over the pull' : '')
+      : ownPull ? 'They take their own recoil: acceleration = the smaller of (the strength he uses − resistance) ÷ load mass and his feet’s push ÷ his mass; his feet push with the smaller of his footing, μ × his weight = ' + fmtSI(a.R, 'N') + ', and his legs’ push, the strength he uses = ' + fmtSI(legsR, 'N') + ' (the Sprint tab’s push-off); the rope pulls as hard as keeps the load at that pace; his steps push the ground with his own body’s momentum, m v, over the pull'
       : 'Footing (just standing) = μ × ' + (a.normalCapped ? 'the most the ground can bear' : 'his weight') + ' = ' + sig(c.surface.mu, 2) + ' × ' + (a.normalCapped ? fmtSI(a.Nmax, 'N') : sig(c.body.m, 3) + ' kg × 9.81') + ' = ' + fmtSI(a.R, 'N');
     out.push(math(['Resistance = ' + (r.rolling ? 'Crr' : 'μ_slide') + ' × m g = ' + r.crr + ' × ' + fmtMass(o.m) + ' × 9.81 = ' + fmtSI(r.resist, 'N'), footing, 'Time for 10 m from rest under constant force, relativistic: t = √(2x/a + (x/c)²).']));
     return out;
@@ -3409,7 +3517,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   // distances count from where the harm starts: for a throw, where the object lands, or for a blast from the throw
   // itself (the air taking the energy of a launch past Mach 1, and his recoil), from him
   // set from the run shown: a fireball in flight; a blast from his throw, not the landing; ground shaking from his own
-  // push into the ground at his feet (their powers), not the landing
+  // push into the ground at his feet (Unbreakable footing with They take their own recoil off), not the landing
   // (fromNoLand: the run shown never comes down, so nothing happens 'where it lands')
   let fromFire = false, fromPath = false, fromShake = false, fromNoLand = false;
   const fromW = (air, shake) => (isEffortMove(curAction()) && P.RESTRAINT.MOVES[curAction()].where === 'where it lands'
@@ -3422,8 +3530,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     houses: () => 'could flatten houses ' + fmtDist(state.near) + fromW(true) + ' (an upper bound: all the energy into the air, judged by a long nuclear blast; a short blast this size does less)',
     block: () => 'could flatten houses ' + fmtDist(P.RESTRAINT.R.BLOCK) + fromW(true) + ', about a city block (the same upper bound)',
   };
-  // a move with no ground-shaking model: the shaking presets and hazards can't be judged for it. A punch shakes the
-  // ground only through their powers (his recoil taken, or the ground unbreakable): without them it has no model.
+  // a move with no ground-shaking source or model: the shaking presets and hazards can't be judged for it (a punch, a
+  // clap, a sprint: noShakeWhy says why). shakeOff: a move whose shaking needs a power that is off (the pull, whose steps
+  // count only with They take their own recoil on; pullNoShake says why).
   const noShake = (move) => { const M = P.RESTRAINT.MOVES[move]; return !M.shake || P.RESTRAINT.shakeOff(M, { ownRecoil: state.ownRecoil, unbreakable: state.unbreakable, anchor: state.anchor }) || !P.groundOf(ctx().surface); };
   // why: no shaking model for the move, or none for the ground (lake ice, a steel deck)
   const noWaves = () => !P.groundOf(ctx().surface);
@@ -3445,21 +3554,36 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     };
     sideTimer = setTimeout(tick, 0);
   }
-  // a pull with their recoil not taken: his footing caps the rope's pull, a steady load over seconds; bolted, the lab
-  // still leaves it out (main didn't count it, and the powers-off results stay main's)
+  // a pull's ground shaking. With They take their own recoil on (bolted too: it wins for his own moves) the rope's pull
+  // back goes to their source, and the shaking the lab counts is his own steps' (walking with the load is the move: the
+  // engine's walkPush, MOVES.pull.shake): his legs cap them (the strength he uses, as in a sprint; review round 3 and its
+  // re-check), and on friction his grip does too, so it stays small; bolted only his legs do (pullOnWhy). With the power
+  // off the lab counts no pull's shaking, as before the power existed (the powers-off results stay main's; the page
+  // doesn't say that, review round 3): his footing takes the rope's pull back, a steady load over seconds, or his bolts
+  // do, over the pull (it can be quick all-out); his steps push the ground too. pullNoShake says so, and that a bolted
+  // one may be understated. Its times and forces are all-out (ctx() carries no effort), and it says so.
+  const pullOnWhy = () => {
+    const o = objById(state.obj), rs = o.crr != null ? 'rolling' : 'sliding', pr = P.pull(ctx(), o), legs = pr.usable, legsAbout = isFinite(legs) ? 'about ' + fmtSI(legs, 'N') + ' here' : 'unbounded at unlimited strength';
+    return 'They take their own recoil: the rope’s pull back on him goes to the endless ocean, so none of it reaches the ground. The shaking the lab counts is from his own steps: walking with the load is the move, not recoil, so their push is real. '
+      + (state.anchor === 'bolted' ? 'Bolted, his legs cap it: they push his own body with at most the strength he uses (' + legsAbout + ', as in a bolted sprint), so only a strong, quick pull shakes the ground.'
+        : legs < pr.anchor.R ? 'His legs cap it (at most the strength he uses, ' + legsAbout + ', less than his footing), so it stays small.' : 'His grip caps it (his footing, about ' + fmtSI(pr.anchor.R, 'N') + ' here), so it stays small.')
+      + ' (The load’s ' + rs + ' presses on the ground too, a steady drag; the lab doesn’t count that.)';
+  };
   const pullNoShake = () => {
-    if (state.anchor === 'bolted') return 'Bolted, the rope’s pull back goes through his bolts into the planet, but the lab counts a pull’s ground shaking only with They take their own recoil on. It is a steady load over seconds, which sets up far less ground wave than a blow of the same size.';
+    if (state.ownRecoil) return pullOnWhy();
     const o = objById(state.obj), r = P.pull(ctx(), o), rope = r.canMove ? o.m * r.accel + r.resist : 0;
+    if (state.anchor === 'bolted') return 'Bolted, the rope’s pull back goes through his bolts into the planet' + (r.canMove && isFinite(r.t10m) && r.t10m > 0 ? ', over the ' + fmtTime(r.t10m) + ' the pull takes all-out' : '') + ', and his steps push his own body along. With They take their own recoil off the lab doesn’t count a pull’s ground shaking, so a quick, hard pull may shake the ground more than the effort box says.';
     if (!r.canMove) return 'Without They take their own recoil, his footing caps the rope’s pull at about ' + fmtSI(r.anchor.R, 'N') + ' here, a steady load: far too little to shake the ground, so the lab doesn’t count it.';
     // his footing sets his pace (the rope gets part of its push; the rest speeds his own body), or a chosen effort does
-    if (r.usable >= r.anchor.R * (1 - 1e-9)) return 'Without They take their own recoil, his footing (about ' + fmtSI(r.anchor.R, 'N') + ') sets his pace: the rope gets about ' + fmtSI(rope, 'N') + ' of it over ' + fmtTime(r.t10m) + ' (the rest speeds his own body), a steady load. The lab counts a pull’s ground shaking only with the power on.';
-    return 'The rope pulls about ' + fmtSI(rope, 'N') + ' here, at the effort he uses, over ' + fmtTime(r.t10m) + ', a steady load. The lab counts a pull’s ground shaking only with They take their own recoil on.';
+    if (r.usable >= r.anchor.R * (1 - 1e-9)) return 'Without They take their own recoil, all-out his footing (about ' + fmtSI(r.anchor.R, 'N') + ') sets his pace: the rope gets about ' + fmtSI(rope, 'N') + ' of it over ' + fmtTime(r.t10m) + ' (the rest speeds his own body), a steady load, which sets up far less ground wave than a blow of the same size; the lab doesn’t count it, nor his steps.';
+    return 'All-out, the rope pulls about ' + fmtSI(rope, 'N') + ' over ' + fmtTime(r.t10m) + ', a steady load, which sets up far less ground wave than a blow of the same size; the lab doesn’t count it, nor his steps.';
   };
   const NO_SHAKE_MOVE = 'The lab doesn’t model the ground shaking from this move, so it can’t say when it would rattle windows or crack plaster through the ground.';
   // why a move's ground shaking isn't judged, where the reason is known: a punch into air leaves the ground no net push
-  // (with their powers on, where the question arises); a pull's counts only with their recoil taken
+  // (with their powers on, where the question arises); a pull with They take their own recoil off isn't counted
+  // (pullNoShake)
   const noShakeWhy = (move) => (move === 'punch' && (state.ownRecoil || state.unbreakable) ? 'A punch into air leaves the ground no net push (the arm’s stop hands it straight back), so the lab counts no ground shaking from it.'
-    : move === 'pull' && !!P.RESTRAINT.MOVES.pull.shake ? pullNoShake()
+    : move === 'pull' ? pullNoShake()
       : move === 'clap' ? 'Both hands push on his chest equally and oppositely, so a clap sends no net push into the ground: there is no ground shaking from it to judge (its air blast is judged).'
         : move === 'sprint' ? 'The lab’s footstep model covers walking paces only, not a sprint’s strides, so it can’t say how hard his strides shake the ground.' : null);
   const noShakeText = () => (noWaves() ? 'The lab has no ground-wave model for ' + theSurf(ctx().surface) + ', so it can’t say when the ground shaking would rattle windows or crack plaster here.' : noShakeWhy(curAction()) || NO_SHAKE_MOVE);
@@ -3526,7 +3650,16 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
           hint = 'At ' + pctAir(airShareOf(c)) + ' air resistance absorbed, ' + airHintText(b.path > 0 ? 'too little' : 'no') + ' Lower Air resistance absorbed (in Their powers) to let the air take some.';
         }
       }
-      out.noteFn = () => (e === 'plaster' && noShake(move) ? noShakeText() : 'Even all-out, this move ' + (e === 'rattle' && noShake(move) ? 'through the air ' : '') + 'doesn’t ' + PRESET_WHAT[e]().replace(/^could /, '').replace(/^(\w+?)(e?s) /, (m, a, b) => a + (b === 'es' && !/(sh|ch|ss|x)$/.test(a) ? 'e' : '') + ' ').replace(/, through the ground or the air$/, '') + '.' + (e === 'rattle' && noShake(move) ? ' ' + noShakeText() : '')) + (hint ? ' ' + hint : '');
+      // a throw's break-the-ground preset with They take their own recoil on: his push back goes to his source, so his
+      // feet carry only the weights. Say so where the same throw all-out with the power off breaks the ground.
+      if (move === 'throw' && e === 'ground' && c.ownRecoil) {
+        try {
+          const M = P.RESTRAINT.MOVES.throw, sw = { ownRecoil: false, unbreakable: false }, c0 = Object.assign({}, c, sw), o0 = Object.assign({}, p.opt, sw);
+          delete c0.use;
+          if (P.RESTRAINT.PRESETS.find((x) => x.id === 'ground').test(M, M.run(c0, o0), o0)) hint = 'They take their own recoil is on: his push back goes to the endless ocean, so his feet carry only his weight and the ' + objById(state.obj).short + '’s, and that doesn’t break it. Turn the power off (in Their powers) to send his push back into the ground.';
+        } catch (x) { /* no hint */ }
+      }
+      out.noteFn = () => (e === 'plaster' && noShake(move) ? noShakeText() : 'Even all-out, this move ' + (e === 'rattle' && noShake(move) ? 'through the air ' : '') + 'doesn’t ' + PRESET_WHAT[e]().replace(/^could /, '').replace(/^(\w+?)(e?s) /, (m, a, b) => a + (b === 'es' && !/(sh|ch|ss|x)$/.test(a) ? 'e' : '') + ' ').replace(/, through the ground or the air$/, '') + '.' + (e === 'rattle' && noShake(move) ? ' ' + noShakeText() : '') + (move === 'pull' && !noShake(move) && (e === 'plaster' || e === 'rattle') ? ' ' + pullOnWhy() : '')) + (hint ? ' ' + hint : '');
     }
     else {
       // a not-so-heroic preset is never gentler than the heroic default: if least disruptive already does it, use that
@@ -3618,17 +3751,25 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       const airFrom = (rr) => (M.where !== 'where it lands' ? 'away' : rr.flight && rr.flight.relativistic && airShareOf(c) < 1 ? 'from the fireball' : M.blastFrom(rr, p.opt) === 'path' || (rr.flight && !rr.flight.landed) ? 'from him' : 'from where it lands');
       let t;
       if (!ce.by && missed.length) t = 'Courtesy ceiling: none found by the search, but at this effort ' + hazText(missed[0].id, move).what + ' (a narrow window of efforts between the points the search tries).';
-      else if (!ce.by) t = 'Courtesy ceiling: none. Nothing the lab checks for this move harms anyone ' + fmtDist(state.near) + ' or more away' + (isFinite(c.F) ? ', even all-out.' : ' at any finite strength.') + (noShake(move) ? (noWaves() ? ' It has no ground-wave model for ' + theSurf(ctx().surface) + ', so it can’t judge the ground shaking here.' : ' ' + (noShakeWhy(move) || 'It doesn’t model the ground shaking from this move.')) : '');
+      else if (!ce.by) t = 'Courtesy ceiling: none. Nothing the lab checks for this move harms anyone ' + fmtDist(state.near) + ' or more away' + (isFinite(c.F) ? ', even all-out.' : ' at any finite strength.') + (noShake(move) ? (noWaves() ? ' It has no ground-wave model for ' + theSurf(ctx().surface) + ', so it can’t judge the ground shaking here.' : ' ' + (noShakeWhy(move) || 'It doesn’t model the ground shaking from this move.')) : move === 'pull' ? ' ' + pullOnWhy() : '');
       else if (!(ce.below > 0)) t = 'Courtesy ceiling: none. Even the gentlest try means ' + hazText(ce.by, move).what + '.';
       else t = 'Courtesy ceiling: ' + atText(onsetOf(ce), c.F) + '. Past that, ' + hazText(ce.by, move).what + (ce.by === 'air' ? ' ' + fmtDist(state.near) + ' ' + airFrom(p.run(ce.use)) : ce.by === 'plaster' ? ' ' + fmtDist(state.near) + ' ' + (M.where === 'where it lands' ? (M.shakeFrom(p.run(ce.use), p.opt) === 'him' ? 'from him' : 'from where it lands') : 'away') : '') + '.';
       // a switch that rules a hazard out changes the ceiling, so name it here too, not only in the folded list
       // (their powers are credited only where the hazard happens with that power off: tested all-out)
-      const offHappens = (id, sw) => { const c0 = Object.assign({}, c, sw); delete c0.use; const o0 = Object.assign({}, p.opt, sw), H0 = P.RESTRAINT.HAZARDS.find((x) => x.id === id); try { return !!H0 && H0.test(M, M.run(c0, o0), o0); } catch (e) { return false; } };
+      const offMemo = new Map(), offRun = (sw) => { const key = JSON.stringify(sw); if (!offMemo.has(key)) { const c0 = Object.assign({}, c, sw); delete c0.use; const o0 = Object.assign({}, p.opt, sw); offMemo.set(key, { r: M.run(c0, o0), o: o0 }); } return offMemo.get(key); };
+      const offHappens = (id, sw) => { const H0 = P.RESTRAINT.HAZARDS.find((x) => x.id === id); try { const x = offRun(sw); return !!H0 && H0.test(M, x.r, x.o); } catch (e) { return false; } };
+      // They take their own recoil on a throw: the ground shaking from his own push at his feet (Unbreakable footing with
+      // the power off) is credited only where it, not the landing, cracks plaster with the power off
+      const offPlasterHim = () => { try { const x = offRun({ ownRecoil: false }); return P.RESTRAINT.HAZARDS.find((h) => h.id === 'plaster').test(M, x.r, x.o) && M.shakeFrom(x.r, x.o) === 'him'; } catch (e) { return false; } };
       const offBy = { crush: M.crush && c.keepForm && offHappens('crush', { keepForm: false }) ? 'Things keep their form' : null, boom: (move === 'punch' || move === 'clap') && state.silentStrike ? 'Silent strike' : null, air: (move === 'punch' || move === 'clap') && state.silentStrike ? 'Silent strike' : null,
-        ground: M.ground && c.unbreakable && offHappens('ground', { unbreakable: false }) ? 'Unbreakable footing' : null, slide: M.slide && c.ownRecoil && state.anchor !== 'bolted' && offHappens('slide', { ownRecoil: false }) ? 'They take their own recoil' : null };
-      const OFF_NAME = { crush: 'a crushed object', boom: 'the sonic boom', air: 'the air blast', ground: 'broken ground under him', slide: 'his recoil shoving him back' }, offs = {};
+        // (a throw's ground under him with Unbreakable footing off: with his recoil taken his feet carry only the weights)
+        ground: M.ground && c.unbreakable && offHappens('ground', { unbreakable: false }) ? 'Unbreakable footing' : M.ground && move === 'throw' && !c.unbreakable && c.ownRecoil && offHappens('ground', { ownRecoil: false }) ? 'They take their own recoil' : null,
+        plaster: move === 'throw' && c.ownRecoil && offPlasterHim() ? 'They take their own recoil' : null,
+        slide: M.slide && c.ownRecoil && offHappens('slide', { ownRecoil: false }) ? 'They take their own recoil' : null };
+      const OFF_NAME = { crush: 'a crushed object', boom: 'the sonic boom', air: 'the air blast', ground: 'broken ground under him', plaster: 'the ground shaking from his own push', slide: 'his recoil shoving him back' }, offs = {};
       for (const h of P.RESTRAINT.HAZARDS) if (offBy[h.id] && p.result('hazard:' + h.id).never) (offs[offBy[h.id]] = offs[offBy[h.id]] || []).push(OFF_NAME[h.id]);
-      for (const [sw, hs] of Object.entries(offs)) t += ' ' + sw + ' is on, so it leaves out ' + hs.join(' and ') + '.';
+      const andList = (xs) => (xs.length > 2 ? xs.slice(0, -1).join(', ') + ' and ' + xs[xs.length - 1] : xs.join(' and '));
+      for (const [sw, hs] of Object.entries(offs)) t += ' ' + sw + ' is on, so it leaves out ' + andList(hs) + '.';
       box.append(el('p', { text: t }));
       // only when a growth what-if is actually shown below
       const grows = state.absorb !== 'ocean' && ((move === 'punch' || move === 'clap') && state.silentStrike && r.mach >= 1 || move === 'jump' && state.softLanding && r.landing && r.landing.landed || move === 'stomp' && c.unbreakable && r.absorbed > 0);
@@ -3652,7 +3793,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         else now = rc[h.id] ? 'happens now' : 'not now';
         items.push(el('li', {}, el('b', { text: H.name }), ' ' + (h.id === 'air' || h.id === 'plaster' ? 'at ' + fmtDist(state.near) + ' ' : '') + from + '; ' + now + '.'));
       }
-      if (noShake(move)) items.push(el('li', {}, el('b', { text: 'Ground shaking' }), noWaves() ? ': no ground-wave model for ' + theSurf(ctx().surface) + '.' : ': not modelled for this move.'));
+      if (noShake(move)) items.push(el('li', {}, el('b', { text: 'Ground shaking' }), noWaves() ? ': no ground-wave model for ' + theSurf(ctx().surface) + '.' : move === 'pull' ? ': not counted with They take their own recoil off.' : ': not modelled for this move.'));
+      // the pull with the power on: its only shaking source is his own steps (the rope's pull back goes to the ocean)
+      else if (move === 'pull') items.push(el('li', {}, el('b', { text: 'Ground shaking' }), ': from his own steps only (the move itself: his legs push his own body with at most the strength he uses' + (state.anchor === 'bolted' ? '' : ', and his grip caps that too') + '); the rope’s pull back goes to the endless ocean, so none of it reaches the ground. The load’s ' + (objById(state.obj).crr != null ? 'rolling' : 'sliding') + ' presses on it too, a steady drag the lab doesn’t count.'));
       const det = el('details', { class: 'haz-list' }, el('summary', { text: items.length ? 'Where each hazard starts (' + items.length + ')' : 'Hazards checked' }),
         items.length ? el('ul', {}, items) : el('p', { class: 'muted', text: 'The searches found none of the hazards the lab checks (a sonic boom, an air blast loud enough to risk damage, ground shaking that may crack plaster, broken ground, a crushed object, a thrown person pressed past ride limits, his recoil shoving him past the nearest people) in this move at this strength.' }));
       det.open = hazOpen;
@@ -3896,9 +4039,13 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const cR = ctx(over), cO = ctxOllie(over);
     const slides = (d) => (d > state.near ? (isFinite(d) ? 'one of them slides ' + fmtDist(d) + ', past the nearest people ' + fmtDist(state.near) + ' away' : 'one of them slides until something stops him') : null);
     const near = state.near, win = (E) => isFinite(E) ? E > 0 && P.blastRadius(E, P.RESTRAINT.R.DP_HARM) >= near : E > 0;
-    // a push that goes through their feet into the planet (Unbreakable footing, or a mover taking his own recoil): the
-    // engine gives it (toGround) only with those powers on. It shakes the ground as real physics says.
+    // a push that goes through their feet into the ground (Unbreakable footing with They take their own recoil off; with
+    // it on, each one's own push back goes to the endless ocean and the engine gives none): the engine gives it
+    // (toGround) only with Unbreakable footing on. It shakes the ground as real physics says. (A bolted partner's bolts
+    // in a shove, toGroundB, are his being pushed, not his recoil.)
     const srcOf = (c, x) => (x ? P.impulseSource(c.surface, x.J, Math.max(1e-9, x.T)) : null);
+    // (a mover's own push into the ground counts only with his recoil not taken: explicit, though the engine gives none then)
+    const ownGround = (c, x) => (!c.ownRecoil && c.unbreakable ? x : null);
     const quakes = (c, x) => !!x && P.plasterOver(srcOf(c, x), near);
     const shakeMsg = (who) => 'the push through ' + who + ' feet shakes the ground enough that plaster may crack ' + fmtDist(near) + ' away';
     const out = { harm: null, sig: '', shake: [], blast: 0, ground: false, models: { shake: false, air: false, ground: false } };
@@ -3925,12 +4072,17 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         const both = state.wrestleWho === 'both', cA = state.wrestleWho === 'ollie' ? cO : cR, cB = state.wrestleWho === 'ollie' ? cR : cO;
         const r = both ? P.shoveBoth(cR, cO) : P.shove(cA, cB);
         out.sig = fp(r.vA || 0, r.vB || 0, r.clash) + (r.toGround ? fp(r.toGround.J) : '') + (r.toGroundB ? fp(r.toGroundB.J) : '');
-        // both bolted at unlimited strength: the rock around their bolts tears out (the shared clash rule)
-        out.models = { shake: shakeOn, air: false, ground: cR.anchor === 'bolted' && cO.anchor === 'bolted' };
-        out.shake = [srcOf(cA, r.toGround), srcOf(cB, r.toGroundB)].filter(Boolean);
-        out.ground = r.clash === 'rockGives';
+        // at unlimited strength into a bolted partner the rock tears out: around both sets of bolts when both are bolted
+        // and the shover's recoil isn't taken (the shared clash rule); with it taken, around the partner's bolts only (his
+        // push back goes to the endless ocean, so his own footing, bolted or not, is never loaded). (The both-bolted test
+        // keeps its flag at any strength, as before.)
+        const sA = both ? (r.shover === 'A' ? cR : cO) : cA, sB = both ? (r.shover === 'A' ? cO : cR) : cB, nameB = sB === cR ? 'Rex' : 'Ollie';
+        out.models = { shake: shakeOn, air: false, ground: (cR.anchor === 'bolted' && cO.anchor === 'bolted') || (sB.anchor === 'bolted' && !!sA.ownRecoil && !isFinite(sA.F)) };
+        out.shake = [srcOf(cA, ownGround(cA, r.toGround)), srcOf(cB, r.toGroundB)].filter(Boolean);
+        out.ground = r.clash === 'rockGives' || r.clash === 'partnerTorn';
+        out.stalled = !!r.stalled;
         const slid = Math.max(r.slideA || 0, r.slideB || 0);
-        out.harm = out.ground ? 'the rock tears out around their bolts' : Math.max(r.vA || 0, r.vB || 0) >= K.a0 ? 'someone flies off faster than sound' : quakes(cA, r.toGround) ? shakeMsg('the shover’s') : quakes(cB, r.toGroundB) ? 'the push through the bolted partner’s bolts shakes the ground enough that plaster may crack ' + fmtDist(near) + ' away' : slides(slid);
+        out.harm = out.ground ? (r.clash === 'partnerTorn' ? 'the rock tears out around ' + nameB + '’s bolts' : 'the rock tears out around their bolts') : Math.max(r.vA || 0, r.vB || 0) >= K.a0 ? 'someone flies off faster than sound' : quakes(cA, ownGround(cA, r.toGround)) ? shakeMsg('the shover’s') : quakes(cB, r.toGroundB) ? 'the push through the bolted partner’s bolts shakes the ground enough that plaster may crack ' + fmtDist(near) + ' away' : slides(slid);
         return out;
       }
       if (move === 'throw') {
@@ -3945,7 +4097,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
           airAbsorb: cA.airAbsorb, keepForm: cA.keepForm, unbreakable: cA.unbreakable, ownRecoil: cA.ownRecoil };
         // (where he lands on his own Unbreakable footing, the ground takes at most what it bears under him: landToGround)
         const landS = t.landToGround ? P.impulseSource(mo.surface, t.landToGround.J, t.landToGround.T) : M.landShake(t.r, mo);
-        const ownS = (mo.ownRecoil || mo.unbreakable) && t.r.toGround ? P.impulseSource(mo.surface, t.r.toGround.J, Math.max(1e-9, t.r.toGround.T)) : null;
+        const ownS = !mo.ownRecoil && mo.unbreakable && t.r.toGround ? P.impulseSource(mo.surface, t.r.toGround.J, Math.max(1e-9, t.r.toGround.T)) : null;
         const sh = [landS, ownS].filter(Boolean);
         out.shake = sh;
         out.sig += t.landToGround ? fp(t.landToGround.J) : '';
@@ -3972,13 +4124,17 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     }
     if (act === 'catch') {
       if (state.cObj === 'partner') {
-        // the partner toss: the thrower's push and the catch go through Rex's feet into the ground (with their powers);
-        // a toss past sound breaks the sound barrier (his hands' own air); past 1% of light speed a fireball
+        // the partner toss: the thrower's push and the catch go through Rex's feet into the ground (Unbreakable footing with
+        // They take their own recoil off; with it on, both go to his source); a toss past sound breaks the sound barrier
+        // (his hands' own air); past 1% of light speed a fireball
         const hT = Math.pow(10, Math.min(5, Math.max(Math.log10(3), state.cLogD)));
         const t = P.tossPartner(cR, cO.body, 'Ollie', state.cStyle, hT, cO.anchor);
         out.sig = fp(t.result, t.v, t.toGroundT && t.toGroundT.J, t.toGroundC && t.toGroundC.J);
+        out.tossed = t.v > 0;
+        // (a catch happens only where he comes back down: not where he escapes, orbits or becomes a fireball)
+        out.caught = !!t.catch;
         out.models = { shake: shakeOn, air: true, ground: true };
-        out.shake = [srcOf(cR, t.toGroundT), srcOf(cR, t.toGroundC)].filter(Boolean);
+        out.shake = [srcOf(cR, ownGround(cR, t.toGroundT)), srcOf(cR, ownGround(cR, t.toGroundC))].filter(Boolean);
         // the Throw tab's rule: the share of the drag that acts times what real air takes from the same toss (all of
         // its energy past 1% of light speed, or if real air never brings him down), plus his hands' own air
         const kT = 1 - airShareOf(cR), Ev = isFinite(t.v) ? P.momentumToKE(P.vToMomentum(t.v, t.obj.m), t.obj.m) : Infinity;
@@ -3987,15 +4143,23 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         out.blast = t.result === 'fireball' ? Math.max(Eh, Eair) : Eh + Eair;
         out.ground = !!(t.catch && t.catch.sinkRatio > 1 && !P.RESTRAINT.SOIL.has(cR.surface.id));
         out.harm = t.v >= K.a0 ? (airShareOf(cR) >= 1 ? 'the thrower’s hands break the sound barrier' : 'the toss breaks the sound barrier') : out.ground && !P.holdsGround(cR) ? 'the ground gives way under Rex’s feet'
-          : quakes(cR, t.toGroundC) ? shakeMsg('the catcher’s') : quakes(cR, t.toGroundT) ? shakeMsg('the thrower’s') : null;
+          : quakes(cR, ownGround(cR, t.toGroundC)) ? shakeMsg('the catcher’s') : quakes(cR, ownGround(cR, t.toGroundT)) ? shakeMsg('the thrower’s') : null;
         return out;
       }
       const o = objById(state.cObj), D0 = Math.pow(10, state.cLogD);
       const legs = [P.catchLeg(cR, cO, o, D0, state.cStyle), P.catchLeg(cO, cR, o, D0, state.cStyle)];
       out.models = { shake: shakeOn, air: true, ground: true };
+      // every thrown leg's object reaches the catcher (caught, a slam, wreckage, a catch he can't hold), so with their
+      // recoil taken all its momentum goes to their source; otherwise it lands on or around him, or hits the ground,
+      // which the lab doesn't judge as shaking in this test. A leg too weak to throw, or whose thrower can't hold or
+      // reach it, throws nothing, so it lands nowhere (review round 3). thrown: some leg's thrower pushed (with the power
+      // on, to his source)
+      const thrownLegs = legs.filter((L) => !!(L && (L.recoilAbsorbedT || L.toGroundT)));
+      out.allReach = thrownLegs.length > 0 && thrownLegs.every((L) => CAUGHT.includes(L.result));
+      out.thrown = thrownLegs.length > 0;
       for (const L of legs) {
         if (!L) continue;
-        out.shake.push(srcOf(cR, L.toGroundT), srcOf(cR, L.toGroundC));
+        out.shake.push(srcOf(cR, ownGround(cR, L.toGroundT)), srcOf(cR, ownGround(cR, L.toGroundC)));
         // the air's share of a throw past Mach 1, near the thrower as the Throw tab counts it: the share of the drag
         // that acts, times what the air takes in flight (all of a fireball's energy, or of a throw that hits the ground
         // on its way: upper bounds)
@@ -4024,8 +4188,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         if (!L) continue;
         if (L.aim && L.aim.vL >= K.a0) { out.harm = airShareOf(cR) >= 1 ? 'the thrower’s hand breaks the sound barrier' : 'a throw breaks the sound barrier'; break; }
         if (out.ground && !P.holdsGround(cR)) { out.harm = 'the ground gives way under the catcher’s feet'; break; }
-        if (quakes(cR, L.toGroundT)) { out.harm = shakeMsg('the thrower’s'); break; }
-        if (quakes(cR, L.toGroundC)) { out.harm = shakeMsg('the catcher’s'); break; }
+        if (quakes(cR, ownGround(cR, L.toGroundT))) { out.harm = shakeMsg('the thrower’s'); break; }
+        if (quakes(cR, ownGround(cR, L.toGroundC))) { out.harm = shakeMsg('the catcher’s'); break; }
         if (['crushed-launch', 'breaks-up', 'burns-up', 'wreckage'].includes(L.result) || (L.result === 'fireball' && !L.kept) || L.bursts) { out.harm = 'the ' + o.short + ' is destroyed'; break; }
         if (L.result === 'fireball') { out.harm = 'the air around the ' + o.short + ' turns into a fireball'; break; }
         if (L.result === 'hits-ground') { out.harm = 'the throw hits the ground ' + fmtDist(L.hitsGround.at) + ' away'; break; }
@@ -4122,7 +4286,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   const isDuoPreset = (e) => Object.prototype.hasOwnProperty.call(DUO_PRESET_TEST, e);
   // a preset's runs: with Unbreakable footing on, 'break the ground' sets it aside (real ground), as on the solo tabs;
   // 'air0' is the lower-the-slider check (the same throws with none of the air's drag absorbed)
-  const DUO_VARIANT = { '': null, real: { unbreakable: false }, air0: { airAbsorb: 0 } };
+  // 'realOff': real ground with They take their own recoil off too (the break-the-ground preset's note: would their own
+  // pushes, sent into the ground, break it?)
+  const DUO_VARIANT = { '': null, real: { unbreakable: false }, air0: { airAbsorb: 0 }, realOff: { unbreakable: false, ownRecoil: false } };
   const duoVariant = (e) => (e === 'ground' && state.unbreakable ? 'real' : '');
   function makeDuoPlan(act, key) {
     const FR = fullF('R'), FO = fullF('O');
@@ -4264,15 +4430,37 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const shakeOnly = act === 'arm' || act === 'collide' ? 'Unbreakable footing' : 'Unbreakable footing or They take their own recoil';
     const noShake = !f.models.shake ? (!P.groundOf(ctx().surface) ? 'The lab has no ground-wave model for ' + theSurf(ctx().surface) + ', so it can’t judge the shaking there.' : act === 'collide' && state.colImm ? 'A truly immovable body needs no ground, so in this thought experiment nothing reaches the ground.' : (act === 'arm' || act === 'collide' ? 'With Unbreakable footing off, the lab judges this test’s shaking only as a quake magnitude (as if all of the ' + (act === 'arm' ? 'pin’s' : 'hit’s') + ' energy reached the ground, 1 part in 10,000 of it as shaking), not against the plaster level, so it can’t say when plaster cracks.' : 'The lab models the ground shaking in this test only through their powers (' + shakeOnly + '), and ' + (shakeOnly.includes(' or ') ? 'both are' : 'it is') + ' off.')) : null;
     const noAir = !f.models.air ? 'The lab doesn’t model an air blast in this test.' : null;
+    // the game of catch with nothing pushing on the ground (their recoil taken) where the object doesn't all reach the
+    // catcher: where it lands on or around him, or hits the ground, the lab doesn't judge the shaking in this test, so it
+    // can't say that the test never shakes the ground
+    const landGap = !noShake && act === 'catch' && state.cObj !== 'partner' && f.models.shake && !f.shake.length && !f.allReach && f.thrown ? catchLandWhy() : null;
+    if (landGap) return e === 'plaster' ? { gap: landGap, all: true } : e === 'rattle' ? { gap: landGap, via: 'through the air ' } : null;
     if (e === 'plaster') return noShake ? { gap: noShake, all: true } : null;
     if (e === 'ground') return !f.models.ground ? { gap: 'The lab doesn’t model the ground breaking in this test.', all: true } : null;
     if (e === 'rattle') return noShake && noAir ? { gap: noShake + ' ' + noAir, all: true } : noShake ? { gap: noShake, via: 'through the air ' } : noAir ? { gap: noAir, via: 'through the ground ' } : null;
     return noAir ? { gap: noAir, all: true } : null;
   }
+  // a test whose own pushes all go to their source with They take their own recoil on (the shove, the game of catch, the
+  // partner toss): nothing is left to push on the ground, so its shaking presets find nothing. Why, as Punch says it.
+  // (Not where nothing is pushed: a partner toss with Ollie bolted, which can't be done, or the rock torn out around the
+  // bolts at unlimited strength. The one shoved still presses on the ground, through his feet or bolts: a steady push
+  // if the shove stalls, a friction drag while he slides, during the push and after; not a blow, so not counted.)
+  // (The game of catch: 'nothing in this test pushes on the ground' only where every leg's object reaches the catcher;
+  // where it lands on or around him, or hits the ground, the lab doesn't judge that shaking: catchLandWhy. The partner
+  // toss: a catch only where one happens.)
+  const catchLandWhy = () => (state.ownRecoil ? 'They take their own recoil: the thrower’s push back goes to the endless ocean, so none of it reaches the ground. ' : '') + 'The lab doesn’t judge the shaking where the ' + objById(state.cObj).short + ' lands or hits in this test.';
+  const duoRecoilWhy = (act, f) => {
+    if (!state.ownRecoil || !f || !f.models.shake || f.shake.length) return null;
+    if (act === 'wrestle' && state.wrestleMove === 'shove') return f.ground ? null : 'They take their own recoil: the shover’s push back goes to the endless ocean, so none of it reaches the ground to shake it. ' + (f.stalled ? 'The one shoved still presses on the ground through his feet or bolts, a steady push' : 'The one shoved still presses on the ground through his feet, a friction drag while he slides') + '; the lab doesn’t count that as shaking.';
+    if (act === 'catch' && state.cObj === 'partner') return !f.tossed ? null : f.caught ? 'They take their own recoil: the toss and the catch are Rex’s own pushes, so their push back goes to the endless ocean and nothing reaches the ground to shake it.' : 'They take their own recoil: the toss is Rex’s own push, so its push back goes to the endless ocean and none of it reaches the ground.';
+    if (act === 'catch') return f.allReach ? 'They take their own recoil: the thrower’s push back and the catcher’s stop go to the endless ocean, so nothing in this test pushes on the ground to shake it.' : f.thrown ? catchLandWhy() : null;
+    return null;
+  };
   // the solo ceiling's caveat: where this test's ground shaking isn't judged, say so beside 'nothing does harm'
-  // (with the reason where the lab gives one: duoNoModel's)
+  // (with the reason where the lab gives one: duoNoModel's, or their recoil's)
   const duoShakeCaveat = (f, act) => {
-    if (!f || f.models.shake) return '';
+    if (f && f.models.shake) { const rw = act ? duoRecoilWhy(act, f) : null; return rw ? ' ' + rw : ''; }
+    if (!f) return '';
     if (!P.groundOf(ctx().surface)) return ' The lab has no ground-wave model for ' + theSurf(ctx().surface) + ', so it doesn’t judge the shaking there.';
     const nm = act ? duoNoModel(act, 'plaster', f) : null;
     return nm && nm.gap ? ' ' + nm.gap : ' It doesn’t judge the ground shaking here.';
@@ -4314,23 +4502,35 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       read.append(el('p', {}, el('b', { text: 'Effort: working it out.' }), ' ' + (eff.sideWhy ? 'Working out whether letting the air take some would do it…' : 'Working out ' + (eff.preset ? 'that effort' : 'the least disruptive effort') + '… Showing all-out until then.')));
       return { fields, read };
     }
+    // what all-out does: at an unlimited dial the search's all-out probe is unlimited strength (factsAt(Infinity), the
+    // memo's 'inf'), not the top of its grid (10^34 kg-force, where a shove into a bolted partner still stalls)
+    const topU = isFinite(Math.max(fullF('R'), fullF('O'))) ? eff.p.hi : Infinity, factsTop = (v) => eff.p.factsAt(topU, v);
     if (eff.preset) {
       // a not-so-heroic preset: the least shared effort that does it, as on the solo tabs
-      // (arm wrestling breaks the ground where the pin's slam lands: under the table)
-      const e = eff.preset, what = act === 'arm' && e === 'ground' ? 'breaks the ground under the table' : PRESET_WHAT[e]().replace('his feet', 'their feet');
+      // (arm wrestling breaks the ground where the pin's slam lands: under the table; the shove with their recoil taken
+      // breaks it only where the rock tears out around the bolts of the one shoved: the shover's feet carry no push)
+      const e = eff.preset, what = act === 'arm' && e === 'ground' ? 'breaks the ground under the table'
+        : act === 'wrestle' && state.wrestleMove === 'shove' && e === 'ground' && state.ownRecoil ? 'tears the rock out around ' + (state.wrestleWho === 'rex' ? 'Ollie’s bolts' : state.wrestleWho === 'ollie' ? 'Rex’s bolts' : 'the bolts of the one shoved')
+          : PRESET_WHAT[e]().replace('his feet', 'their feet');
       const head = el('p', {}, el('b', { text: eff.never ? 'All-out.' : capped ? 'Effort: ' + (!tinyShare(eff.use, FR) ? pctOf(eff.use, FR) + ' of their strength' : 'as hard as lifting ' + fmtMass(eff.use / g)) + (capped && !tinyShare(eff.use, FR) ? '' : '.') : 'All-out.' }),
         capped && !tinyShare(eff.use, FR) ? each + '.' : '');
       head.append(' ' + (eff.never ? 'Everything they have.' : eff.already ? 'Least disruptive already does this: it ' + what + '.' : 'The least effort that ' + what + '.'));
       read.append(head);
-      if (eff.real && eff.p.factsAt(eff.p.hi, 'real').models.ground) read.append(el('p', { text: 'Unbreakable footing is set aside for this test: they mean to break the ground, so the energy it would take back goes into it.' }));
+      // (judged at unlimited strength at an unlimited dial, as the rest of the box is: review round 3, code-1)
+      if (eff.real && factsTop('real').models.ground) read.append(el('p', { text: 'Unbreakable footing is set aside for this test: they mean to break the ground, so the energy it would take back goes into it.' }));
       if (eff.never) {
-        const nm = duoNoModel(act, e, eff.real ? eff.p.factsAt(eff.p.hi, 'real') : eff.p.factsAt(eff.p.hi));
-        const t = nm && nm.all ? nm.gap : 'Even all-out, this test doesn’t ' + what.replace(/^could /, '').replace(/^(\w+?)(e?s) /, (m, a, b) => a + (b === 'es' && !/(sh|ch|ss|x)$/.test(a) ? 'e' : '') + ' ').replace(/, through the ground or the air$/, '') + (nm ? ' ' + nm.via.trim() : '') + '.' + (nm ? ' ' + nm.gap : '');
+        const fAll = eff.real ? factsTop('real') : factsTop(), nm = duoNoModel(act, e, fAll);
+        // why nothing shakes the ground where their recoil leaves no push on it; and why the ground doesn't break where
+        // only their own pushes, sent into it with the power off, would break it
+        const rw = !nm && (e === 'plaster' || e === 'rattle') ? duoRecoilWhy(act, fAll) : null;
+        const gw = e === 'ground' && state.ownRecoil && (act === 'catch' || (act === 'wrestle' && state.wrestleMove === 'throw')) && eff.p.factsAt(eff.p.hi, 'realOff').ground
+          ? 'They take their own recoil is on: their own pushes back go to the endless ocean, so the ground under them carries only the weights, and that doesn’t break it. Turn the power off (in Their powers) to send them into the ground.' : null;
+        const t = (nm && nm.all ? nm.gap : 'Even all-out, this test doesn’t ' + what.replace(/^could /, '').replace(/^(\w+?)(e?s) /, (m, a, b) => a + (b === 'es' && !/(sh|ch|ss|x)$/.test(a) ? 'e' : '') + ' ').replace(/, through the ground or the air$/, '') + (nm ? ' ' + nm.via.trim() : '') + '.' + (nm ? ' ' + nm.gap : '')) + (rw ? ' ' + rw : '') + (gw ? ' ' + gw : '');
         read.append(el('p', { class: 'warn-ink', text: t + (eff.airHint ? ' At ' + pctAir(airShareOf(ctx())) + ' air resistance absorbed, ' + airHintText(eff.airHint) + ' Lower Air resistance absorbed (in Their powers) to let the air take some.' : '') }));
       }
       const s0 = eff.p.job(eff.leastJob);
       if (s0 && eff.p.jobDone(eff.leastJob)) {
-        read.append(el('p', { text: (eff.real ? 'On real ground, courtesy ceiling: ' : 'Courtesy ceiling: ') + (s0.never ? 'none. Nothing in this test does harm' + (isFinite(fullF('R')) ? ', even all-out,' : '') + ' with the nearest people and buildings ' + fmtDist(state.near) + ' away.' + duoShakeCaveat(eff.real ? eff.p.factsAt(eff.p.hi, 'real') : eff.p.factsAt(eff.p.hi), act)
+        read.append(el('p', { text: (eff.real ? 'On real ground, courtesy ceiling: ' : 'Courtesy ceiling: ') + (s0.never ? 'none. Nothing in this test does harm' + (isFinite(fullF('R')) ? ', even all-out,' : '') + ' with the nearest people and buildings ' + fmtDist(state.near) + ' away.' + duoShakeCaveat(eff.real ? factsTop('real') : factsTop(), act)
           : !(s0.below > 0) ? 'none. Even at the least they need to stand and walk, ' + eff.harmAtV(s0.use) + '.'
             : atText(s0.below, FR) + '. Past that, ' + eff.harmAtV(s0.use) + '.') }));
       }
@@ -4345,7 +4545,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (eff.note) read.append(el('p', { class: 'warn-ink', text: eff.note }));
     if (eff.p.s && eff.p.done) {
       const s0 = eff.p.s;
-      read.append(el('p', { text: s0.never ? 'Courtesy ceiling: none. Nothing in this test does harm' + (isFinite(fullF('R')) ? ', even all-out,' : '') + ' with the nearest people and buildings ' + fmtDist(state.near) + ' away.' + duoShakeCaveat(eff.p.factsAt(eff.p.hi), act)
+      read.append(el('p', { text: s0.never ? 'Courtesy ceiling: none. Nothing in this test does harm' + (isFinite(fullF('R')) ? ', even all-out,' : '') + ' with the nearest people and buildings ' + fmtDist(state.near) + ' away.' + duoShakeCaveat(factsTop(), act)
         : !(s0.below > 0) ? 'Courtesy ceiling: none. ' + (state.oEffortOwn ? 'With Ollie’s own effort, ' : 'Even at the least they need to stand and walk, ') + eff.p.harmAt(s0.use) + '.'
           : 'Courtesy ceiling: ' + atText(s0.below, FR) + '. Past that, ' + eff.p.harmAt(s0.use) + '.' }));
     }

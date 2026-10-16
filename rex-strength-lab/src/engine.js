@@ -39,9 +39,33 @@
   //   airAbsorb (0-1): the share of the air's drag on what they throw that they take back (5a)
   //   keepForm: what they hold or throw can't be broken by them or the air (5b)
   //   unbreakable: the ground under them never breaks, but still takes every push, so it still shakes (5c)
-  //   ownRecoil: the push back from their own moves goes through their feet into the planet, as if bolted (5d)
+  //   ownRecoil: the push back from their own moves goes into their source (the endless ocean), not into the planet:
+  //     they stay planted (no slide, lurch or hop), and none of it reaches the ground, so none of it shakes the ground
+  //     (5d; canon, CLAUDE.md "They take their own recoil", RT A7; BRIEF-canon.md item 2). It wins over Bolted to the
+  //     planet for their own moves; Bolted stays the setting for being pushed by someone else. A catch's stop is the
+  //     catcher's own push back too (canon: "A catch is absorbed ... unless he chooses otherwise"), so a catcher with it
+  //     on is planted and never carried off. Their own walking and running push the ground as before: that is the move.
   // The older switches they replace still work as before, for the tests: groundHolds (Comic ground: the same footing as
   // unbreakable, without its prints and shaking), gentleHold (the grip part of keepForm), coolFlight.
+  //
+  // The momentum their source takes back with ownRecoil on (BRIEF-canon.md items 2 and 3), reported only with the power
+  // on (with it off no result carries these keys, so every powers-off result is exactly what it was):
+  //   recoilAbsorbed  { J, T, thetaDeg }   throwObject (and throwPartner's r), stomp, punch, pull, shove, armWrestle (pin)
+  //   recoilAbsorbedT { J, T, thetaDeg }   the thrower's push in the game of catch (catchLeg) and the partner toss
+  //   recoilAbsorbedC { J, T, angleDeg }   the catcher's stop in the game of catch and the partner toss
+  //   (pull also gives walkPush { J, T }: his own steps' push on the ground, which is the move, not recoil, and real)
+  //   J: kg m/s, a magnitude >= 0 (Infinity for an unbounded push). T: s, how long the push (or stop) lasts.
+  //   thetaDeg: the angle of HIS push in degrees above level, measured as the move measures it (the throw's angle; 0 for
+  //     a punch, a shove and a pull, whose forward is the way he punches, shoves or walks; -90 for a stomp and the arm
+  //     wrestle's slam, which push straight down). The momentum taken back points the opposite way: back along the
+  //     throw line (backward, and downward for an upward throw), backward for a punch or shove, back toward the load
+  //     for a pull, straight up for a stomp or a pin.
+  //   angleDeg (a catch): how steeply the object comes down as it reaches him, as the Catch tab measures it (0 = level,
+  //     90 = straight down). His stop pushes against it, so the momentum taken back points along its arrival: the way it
+  //     was moving.
+  // Momentum is absorbed in these cases and nowhere else (canon, CLAUDE.md "Momentum"): their own recoil, the air's drag
+  // on what they throw, the ground's share it can't bear, the lift from growth, incoming hits (Never knocked back), and
+  // flight's push. The lab models the first four; Never knocked back and flight have no move here yet.
   // ---------------------------------------------------------------------------
   const holdsGround = (c) => !!(c && (c.groundHolds || c.unbreakable));
   const airShare = (c) => { const s = c && c.airAbsorb; return typeof s === 'number' && s > 0 ? Math.min(1, s) : 0; };
@@ -49,7 +73,9 @@
   // any of the four powers on (with all four off every result equals the engine's before them)
   const anyPower = (c) => !!c && (airShare(c) > 0 || !!c.keepForm || !!c.unbreakable || !!c.ownRecoil);
   const gripSafe = (c) => !!(c && (c.gentleHold || c.keepForm));
-  // the footing for a push of his own on something else: bolted when he takes his own recoil
+  // the footing for a push of his own on something else: with They take their own recoil his footing never limits his
+  // own push and he never moves from it ('bolted' here means only that: unlimited footing, no slide). The push back
+  // itself goes to his source, not through bolts into the planet: each move reports it as recoilAbsorbed.
   const ownAnchor = (c) => (c.ownRecoil ? 'bolted' : c.anchor);
 
   // ---------------------------------------------------------------------------
@@ -1249,7 +1275,8 @@
     const perp = mB * K.g * Math.cos(th);
     const F = isFinite(Fdrive) ? Math.sqrt(Math.max(0, Fdrive * Fdrive - perp * perp)) : Infinity;
     const RB = mB * K.g * Math.sin(th);
-    // his own throw: with They take their own recoil the push back goes through his feet into the planet, as if bolted
+    // his own throw: with They take their own recoil his footing never gives (he stays planted), and the push back goes
+    // to his source (recoilAbsorbed below), not into the planet
     const anc = anchorCapacity({ body, surface: ctx.surface, theta: th, anchor: ownAnchor(ctx), groundHolds: holdsGround(ctx), mA, mB });
     const out = { F, Fdrive, style, hands, canHold, anchor: anc, mB, armMass, needed: holdLoad, selfPullG: gSelf / K.g };
     if (!canHold || !(F > RB)) {
@@ -1303,22 +1330,29 @@
     // Load on his feet: the mean push over the stroke (impulse / time). In comic mode this equals
     // the constant push; real muscle reaches its isometric peak only for an instant.
     const Fload = !push.stalled && push.t > 0 && isFinite(push.pB) ? Math.min(Fused, push.pB / push.t + RB) : Fused;
-    const Nfeet = isFinite(Fload) ? anc.N(Fload) : (Math.sin(th) > 1e-12 ? Infinity : anc.N(0));
+    // (They take their own recoil: the push back goes to his source, so his feet carry only the weights, his own and the
+    // load's he holds: anc.N(RB) = (mA + mB) g. Holding a load up is weight, not recoil, as on the Lift tab)
+    const Nfeet = ctx.ownRecoil ? (body.m + obj.m) * K.g : isFinite(Fload) ? anc.N(Fload) : (Math.sin(th) > 1e-12 ? Infinity : anc.N(0));
     // Peak force on his palms: the push he actually uses plus holding the load up.
     const handF = isFinite(Fused) ? Math.hypot(Fused, perp) : Fdrive;
     // What the powers add (only when they are on, so with them off the result is exactly as before):
     const extra = {};
     // Unbreakable footing: the load the ground would have carried, as a share of what it bears
     if (ctx.unbreakable) extra.sinkRatioRaw = Nfeet / (qultFor(ctx.surface, body.footB) * 2 * body.footArea);
-    // the push the ground gives him while he throws, over the stroke: with his recoil taken (or the ground
-    // unbreakable) it reaches the ground, and shakes it. It reaches the ground through his legs, which spread it over at
-    // least a stamp's contact time (an estimate); within that window the follow-through stops his arm and hands its
-    // momentum back, so the planet keeps the object's momentum less his own recoil (none when he takes it)
-    // (Unbreakable footing, where the ground couldn't bear the downward part: it takes only its bearing beyond his
-    // weight and the object's, which he holds, over the pulse; their power supplies the rest, canon's exception to 'momentum is never absorbed')
+    // the push back of the throw: the object's momentum less his own recoil (the follow-through stops his arm inside him
+    // and hands its momentum back, so the arm's share nets out).
+    // They take their own recoil (on, whatever his anchor): it goes to his source, the endless ocean, over the push:
+    // recoilAbsorbed { J: the object's momentum (kg m/s; he doesn't recoil), T: the push's time (s), thetaDeg: the throw's
+    // angle }. It points back along the throw line: backward, and downward for an upward throw. None of it reaches the
+    // ground (no toGround), so it shakes nothing; only the landing does.
+    // Unbreakable footing with the power off: the push the ground gives him reaches it through his legs, which spread it
+    // over at least a stamp's contact time (an estimate), and shakes it (toGround). Where the ground couldn't bear the
+    // downward part it takes only its bearing beyond his weight and the object's, which he holds, over the pulse; their
+    // power supplies the rest (canon's momentum case 'the ground's share it can't bear').
     if ((ctx.ownRecoil || ctx.unbreakable) && !push.stalled && v > 0) {
-      const J = pObj === Infinity ? Infinity : Math.max(0, pObj - pRecoil), T = Math.max(limbPulse(body), push.t);
-      extra.toGround = Object.assign(weakGround(ctx, body, J, th, T, (body.m + obj.m) * K.g), { T });
+      const J = pObj === Infinity ? Infinity : Math.max(0, pObj - pRecoil);
+      if (ctx.ownRecoil) extra.recoilAbsorbed = { J, T: push.t, thetaDeg };
+      else { const T = Math.max(limbPulse(body), push.t); extra.toGround = Object.assign(weakGround(ctx, body, J, th, T, (body.m + obj.m) * K.g), { T }); }
     }
     // past 1% of light speed with some of the air's drag absorbed, or the object kept whole: a straight line out
     if (flight.relativistic && (dK < 1 || ctx.keepForm)) extra.line = straightThrow(v, thetaDeg, body.releaseHeight);
@@ -1421,9 +1455,10 @@
       Eground: landRatio > 1 && !soft ? Eland : 0 };
     // Unbreakable footing: where real ground would have given way under the push-off or the landing, their power holds
     // it. The push-off goes into the ground (pushOff, over the push, the foot's own push) and shakes it, but the ground
-    // takes only what it can bear: past its bearing (less his weight) their power supplies the rest, canon's exception
-    // to 'momentum is never absorbed' (that part goes to the endless ocean: supplied). The same cap applies to his
-    // landing (landBear, in MOVES.jump.shake). With the power off the lab counts only the landing, as before.
+    // takes only what it can bear: past its bearing (less his weight) their power supplies the rest, one of canon's
+    // momentum cases, 'the ground's share it can't bear' (that part goes to the endless ocean: supplied). The same cap
+    // applies to his landing (landBear, in MOVES.jump.shake). With the power off the lab counts only the landing, as
+    // before. (A jump's push-off is the move itself, not recoil: They take their own recoil leaves it alone.)
     const extra = {};
     // their own bodies meet real air: with any power on, what the air takes from his flight (MOVES.jump.blast)
     if (anyPower(ctx) && v > 0) extra.airLoss = landed && isFinite(p) ? Math.max(0, momentumToKE(p, body.m) - Eland) : momentumToKE(p, body.m);
@@ -1460,8 +1495,10 @@
     const F = actionForce(ctx, 'stomp');
     const mB = body.legEff;
     const mA = body.m - mB;
-    // the stomp's push back lifts his body; taking his own recoil holds him down, as if bolted (ctx.stompLaunch: the
-    // Collide tab's stomp-launch, where the lift is the point, so the recoil switch leaves it alone)
+    // the stomp's push back lifts his body. Taking his own recoil, he stays put and that upward push goes to his source
+    // (recoilAbsorbed below), not through his standing foot into the planet; bolted without the power, his bolts take it
+    // into the planet. (ctx.stompLaunch: the Collide tab's stomp-launch, where the lift is the point, so the recoil switch
+    // leaves it alone)
     const bolted = ctx.anchor === 'bolted' || (!!ctx.ownRecoil && !ctx.stompLaunch);
     const push = pushApart({ F, d, mA, mB, RA: bolted ? Infinity : mA * K.g, RB: 0, mode: ctx.mode, vmax: sizeVmax('stomp', body) });
     const E = push.EB;
@@ -1483,6 +1520,11 @@
     }
     const share = !isFinite(push.EA + push.EB) ? 0.5 : ((push.EA + push.EB) > 0 ? push.EB / (push.EA + push.EB) : 1);
     const extra = {};
+    // They take their own recoil: the upward push on his body (equal to the foot's momentum, push.pB, since he is held)
+    // goes to his source over the push: recoilAbsorbed { J kg m/s, T s, thetaDeg -90: his foot's push points straight
+    // down; the momentum taken back points straight up }. The foot's blow on the ground is the move and stays
+    // (MOVES.stomp.blow); nothing of his recoil reaches the ground to cancel any of it.
+    if (ctx.ownRecoil && !ctx.stompLaunch) extra.recoilAbsorbed = { J: push.pB, T: push.t, thetaDeg: -90 };
     if (ctx.unbreakable) {
       // what the ground held off: in soil a print stays up to the one the Walk tab allows (sand and gravel: the print
       // where it starts to fail; clay: none, nothing until the bearing is passed), anything deeper would sink into it
@@ -1513,14 +1555,16 @@
     const F = actionForce(ctx, 'punch');
     const mB = body.handEff;
     const mA = body.m - mB;
-    // his own punch: taking his own recoil, its push back goes through his feet into the planet, as if bolted
+    // his own punch: taking his own recoil, he doesn't lurch, and its push back goes to his source
     const anc = anchorCapacity({ body, surface: ctx.surface, theta: 0, anchor: ownAnchor(ctx), groundHolds: holdsGround(ctx), mA });
     const push = pushApart({ F, d, mA, mB, RA: anc.R, RB: 0, mode: ctx.mode, vmax: sizeVmax('punch', body) });
     // Everything the arm put in (fist plus his own recoil) is released when the arm stops.
     const Etotal = push.EA + push.EB;
-    // (with his recoil taken, the push back goes through his feet into the planet; but the arm's stop hands it straight
-    // back within the time his legs spread a push over, so the planet keeps no net momentum from a punch into air)
-    return Object.assign({}, {
+    // (with his recoil taken, the push back goes to his source over the stroke: recoilAbsorbed { J kg m/s, T s,
+    // thetaDeg 0: the fist drives level, forward; the momentum taken back points backward, returned: true }. The arm's
+    // stop then hands the fist's momentum straight back to him, and his source returns the same, so neither the ocean
+    // nor the ground keeps any net momentum from a punch into air. With the power off his footing does the same job.)
+    return Object.assign(ctx.ownRecoil ? { recoilAbsorbed: { J: push.pB, T: push.t, thetaDeg: 0, returned: true } } : {}, {
       F, push, anchor: anc, vFist: push.vB, mach: push.vB / K.a0, Efist: push.EB, E: Etotal,
       lurch: push.xA, recoilV: push.vA, recoilE: push.EA,
       tnt: Etotal / K.TNT_J_per_kg,
@@ -1602,14 +1646,23 @@
     let net = move.walk ? usable - resist : 0;
     const M = obj.m + body.m;
     let accel = net > 0 ? net / M : 0;
-    // his own pull: taking his own recoil, the load's pull back on him (the rope) goes through his feet into the planet,
-    // so he pulls with his whole drive; his own body still walks on friction, so it can speed up only as fast as his
-    // footing moves his own weight (pulling is walking with it; walking is the move itself, not recoil)
+    // his own pull: taking his own recoil, the load's pull back on him (the rope) goes to his source, not his feet, so
+    // he pulls with his whole drive; his own body still walks, so it can speed up only as fast as his feet move his own
+    // weight (pulling is walking with it; walking is the move itself, not recoil, and its push into the ground stays
+    // real, as does the load's rolling or sliding resistance where the load meets the ground). His legs cap that push:
+    // they push his own body level with at most the strength he uses, as the sprint's bolted push-off does (thrust = the
+    // strength he uses; LEG_SHARE's 1.4x is moveCheck's rule for legs carrying weight up, not a level push: review round
+    // 3's re-check), and on friction his grip (anc.R) caps it too. The power wins over Bolted for his own moves (review
+    // round 2 of pull request 2), so bolted too: there anc.R is Infinity, so only his legs cap his feet's push (Bolted
+    // removes the footing limit, not the muscle limit: review round 3). The pace is the smaller of the load's, (drive -
+    // resistance) / the load's mass, and his own body's, his feet's push / his mass (footLimited: his body sets it, on
+    // either footing). Like the rest of the pull, his own body's pace has no leg-speed cap and no air drag (the sprint
+    // has both).
     const ownLimit = { };
-    if (ctx.ownRecoil && ctx.anchor !== 'bolted') {
+    if (ctx.ownRecoil) {
       usable = driveStrength(ctx);
       net = move.walk ? usable - resist : 0;
-      const aLoad = net > 0 ? net / obj.m : 0, aFeet = anc.R / body.m;
+      const aLoad = net > 0 ? net / obj.m : 0, aFeet = Math.min(anc.R, usable) / body.m;
       accel = Math.min(aLoad, aFeet);
       ownLimit.footLimited = aFeet < aLoad;
       if (accel > 0) net = accel * M;
@@ -1618,6 +1671,17 @@
     if (ctx.ownRecoil) ownLimit.ropeT = net > 0 ? obj.m * accel + resist : 0;
     // Time to cover 10 m from rest under constant force, relativistically exact.
     const t10m = net > 0 ? Math.sqrt(2 * 10 / accel + (10 / K.c) ** 2) : Infinity;
+    // They take their own recoil (bolted too): the rope's pull back on him over the 10 m goes to his source:
+    // recoilAbsorbed { J: ropeT x t10m (kg m/s: the load's momentum plus the resistance it overcame), T: t10m (s),
+    // thetaDeg 0: he pulls level, the way he walks; the momentum taken back points back toward the load }
+    if (ctx.ownRecoil && net > 0) ownLimit.recoilAbsorbed = { J: ownLimit.ropeT * t10m, T: t10m, thetaDeg: 0 };
+    // ... and his own steps, which aren't recoil: walking with the load is the move, so his feet push the ground back
+    // (against the way he walks) with his own body's momentum over the pull, real: walkPush { J (kg m/s), T: t10m (s) }.
+    // With the power on that is the pull's shaking source (MOVES.pull.shake). His legs cap it (at most the strength he
+    // uses); on friction his grip too (at most his footing, anc.R). (His body's share of the pair's momentum
+    // net x t10m, exact near light speed.) With the power off it isn't reported: the lab counts no pull's shaking then,
+    // as before the power existed.
+    if (ctx.ownRecoil && net > 0) ownLimit.walkPush = { J: isFinite(net) ? net * t10m * body.m / M : Infinity, T: t10m };
     return Object.assign({
       resist, crr, rolling: obj.crr != null, anchor: anc, usable,
       canMove: net > 0, accel, t10m, vEnd: net > 0 ? momentumToV(net * t10m, M) : 0,
@@ -1764,7 +1828,20 @@
     // pushed the other way through the winner's body and feet; when the swing is shorter than that contact time the two
     // reach the ground together and cancel, so no net push goes in (the punch's rule): only a slower swing leaves the
     // slam's blow on its own.
-    if (cA.unbreakable && pins && !tableBreaks && v > 0 && !(out.pin.t < limbPulse(bw))) out.toGround = { J: isFinite(E) ? vToMomentum(v, out.pin.M) : Infinity, T: limbPulse(bw) };
+    // The winner taking his own recoil (BRIEF-canon.md Q12: in arm wrestling only the push each puts on himself is
+    // absorbed): the swing's push backs go to their source, recoilAbsorbed { J kg m/s: the net of both arms' push backs,
+    // the winner's up (his push x the swing time) less the loser's down (his arm force x the swing time), both into the
+    // one source they share, which is the forearms' momentum at the slam; T: the swing's time (s); thetaDeg -90: the
+    // slam drives the forearms straight down onto the pad; the momentum taken back points up }. Then nothing cancels the
+    // slam's blow, so with Unbreakable footing it reaches the ground whole at any swing time. Its momentum from its
+    // energy (p = sqrt(E^2 + 2 E M c^2) / c): near light speed the rounded speed would freeze it. (Per-person switches
+    // and the presses, pull request 4, would report the two push backs separately.)
+    // (The presses through the elbow pads and pegs, the drag once the table is gone and the standing footing are item 4
+    // of BRIEF-canon.md, a later pull request: unchanged here.)
+    const ownPin = !!cw.ownRecoil && pins && !tableBreaks && v > 0;
+    const Jpin = !ownPin ? 0 : isFinite(E) ? Math.sqrt(E * E + 2 * E * out.pin.M * K.c * K.c) / K.c : Infinity;
+    if (cA.unbreakable && pins && !tableBreaks && v > 0 && (ownPin || !(out.pin.t < limbPulse(bw)))) out.toGround = { J: ownPin ? Jpin : isFinite(E) ? vToMomentum(v, out.pin.M) : Infinity, T: limbPulse(bw) };
+    if (ownPin) out.recoilAbsorbed = { J: Jpin, T: out.pin.t, thetaDeg: -90 };
     return out;
   }
 
@@ -1816,17 +1893,31 @@
 
   // Explosive two-handed shove of B by A (the throw's shove, with B on his footing as the "object").
   function shoveOnce(cAin, cB) {
-    // his own shove: taking his own recoil, its push back goes through his feet into the planet, as if bolted (the
-    // partner he shoves keeps his own footing: being pushed is what Bolted is for)
+    // his own shove: taking his own recoil, he stays planted (his footing never gives) and its push back goes to his
+    // source, not into the planet (recoilAbsorbed below). The partner he shoves keeps his own footing: being pushed is
+    // what Bolted is for.
     const cA = cAin.ownRecoil && cAin.anchor !== 'bolted' ? Object.assign({}, cAin, { anchor: 'bolted' }) : cAin;
     const A = cA.body, B = cB.body;
     const Fdrive = shoveDrive(cA), d = A.strokes.throw, armMass = 2 * A.handEff;
     const mA = A.m - armMass, mB = B.m + armMass;
     const fA = footingOf(cA, mA), fB = footingOf(cB), fAwhole = footingOf(cA);
     const d0 = eqRadius(A) + eqRadius(B);
+    if (cAin.ownRecoil && !isFinite(Fdrive) && !isFinite(fB.R)) {
+      // an unlimited shove into a partner held without limit (bolted), the shover taking his own recoil (bolted or not:
+      // for his own moves the power decides): his push back goes to his source, so he stays put and nothing loads or
+      // tears the ground under his feet. Only the partner's bolts meet the push. On real rock the rock around them tears
+      // out and he leaves at just under light speed with a plug of rock ('partnerTorn'; his source takes an unbounded
+      // push back, recoilAbsorbed { J: Infinity, T: 0, a push with no push time }). Where the ground under the partner
+      // holds (Unbreakable footing), nothing gives: an unlimited push against an unlimited hold has no physical answer
+      // ('paradox', stalled; the contests' case, item 4 of BRIEF-canon.md). oneSided: only the partner is held.
+      const go = !holdsGround(cB);
+      return Object.assign({ clash: go ? 'partnerTorn' : 'paradox', oneSided: true }, go ? { tearB: groundTear(cB), recoilAbsorbed: { J: Infinity, T: 0, thetaDeg: 0 } } : {}, {
+        Fdrive, d, stalled: !go, relativistic: go, vA: 0, vB: go ? K.c : 0, EA: 0, EB: go ? Infinity : 0, slideA: 0, slideB: go ? Infinity : 0, Fg: 0,
+        ring: RING_D * ((A.H + B.H) / 2) / 2 });
+    }
     if (!isFinite(Fdrive) && !isFinite(fA.R) && !isFinite(fB.R)) {
-      // both bolted, unlimited shove: the shared rule. Comic ground: nothing moves. Real rock: the rock around
-      // the bolts tears out and they fly apart at just under light speed.
+      // both bolted, unlimited shove, his recoil not taken: the shared rule. Comic ground: nothing moves. Real rock: the
+      // rock around the bolts tears out and they fly apart at just under light speed.
       const k = unlimitedClash(cA, cB), go = k.clash === 'rockGives';
       return Object.assign(k, { Fdrive, d, stalled: !go, relativistic: go, vA: go ? K.c : 0, vB: go ? K.c : 0, EA: go ? Infinity : 0, EB: go ? Infinity : 0,
         slideA: go ? Infinity : 0, slideB: go ? Infinity : 0, Fg: 0, ring: RING_D * ((A.H + B.H) / 2) / 2 });
@@ -1859,15 +1950,20 @@
       return b.m / (2 * k) * Math.log1p(k * v * v / f.R);
     };
     const vEsc = Math.sqrt(2 * K.G * (A.m + B.m) / (d0 + d));
-    // Unbreakable footing or his own recoil taken: the shover's feet hand the ground the push his footing gives him,
-    // over the push, and it shakes it: his partner's momentum (after the follow-through stops his arms) plus what his
-    // partner's footing took during the push, or the whole push if his partner doesn't move, less his own recoil
+    // The push back of the shove, over the push: his partner's momentum (after the follow-through stops his arms) plus
+    // what his partner's footing took during the push, or the whole push if his partner doesn't move, less his own recoil.
+    // His own recoil taken: it goes to his source, recoilAbsorbed { J kg m/s, T s: the push's time, thetaDeg 0: he
+    // shoves level, toward his partner; the momentum taken back points away from him }; none of it reaches the ground.
+    // Unbreakable footing with the power off: the shover's feet hand it to the ground (toGround), and it shakes it.
     const Fpush = push.xA + push.xB > 0 ? push.work / (push.xA + push.xB) : 0;
     const Jfeet = pB === Infinity || pA === Infinity ? Infinity : Math.max(0, (push.pB > 0 ? pB + fB.R * push.t : Fpush * push.t) - pA);
-    const extra = (cA.unbreakable || cA.ownRecoil) && !push.stalled ? { toGround: { J: Jfeet, T: Math.max(limbPulse(A), push.t) } } : {};
+    const extra = push.stalled ? {} : cA.ownRecoil ? { recoilAbsorbed: { J: Jfeet, T: push.t, thetaDeg: 0 } }
+      : cA.unbreakable ? { toGround: { J: Jfeet, T: Math.max(limbPulse(A), push.t) } } : {};
     // a bolted partner who doesn't move: his bolts hand the planet the whole push, over the push, a body width away
-    // (both bolted, the shove stalls and nothing goes in)
-    if (extra.toGround && cB.anchor === 'bolted' && !(push.pB > 0)) extra.toGroundB = { J: isFinite(Fpush) ? Fpush * push.t : Infinity, T: Math.max(limbPulse(B), push.t) };
+    // (both bolted, the shove stalls and nothing goes in; a shover taking his own recoil is planted, so against a bolted
+    // partner a finite shove always stalls and an unlimited one is the one-sided case above: this arises only with
+    // Unbreakable footing on and his recoil not taken)
+    if ((cA.unbreakable || cA.ownRecoil) && !push.stalled && cB.anchor === 'bolted' && !(push.pB > 0)) extra.toGroundB = { J: isFinite(Fpush) ? Fpush * push.t : Infinity, T: Math.max(limbPulse(B), push.t) };
     return Object.assign(extra, {
       Fdrive, d, push, heldBack, vA, vB, EA: momentumToKE(pA, A.m), EB: momentumToKE(pB, B.m),
       slideA: slide(vA, fAwhole, A), slideB: slide(vB, fB, B), Fg, gravityLock: push.stalled && Fg >= Fdrive,
@@ -1902,6 +1998,10 @@
     const A = cA.body, B = cB.body;
     if (cB.anchor === 'bolted') return { bolted: true };
     const obj = { m: B.m, area: B.frontArea, Cd: B.Cd, CdSup: 1.75, rho: B.rho, L: Math.cbrt(6 * B.volume / Math.PI) };
+    // the Throw tab's throw, with his partner as the object: with his own recoil taken its push back goes to his source
+    // (r.recoilAbsorbed: the partner's momentum, back along the throw line), and his feet carry only his weight and his
+    // partner's (holding his partner up is weight, not recoil); with Unbreakable footing alone it reaches the ground
+    // (r.toGround). The partner's landing (landToGround, below) is not his recoil and stays real.
     const r = throwObject(cA, obj, theta);
     const dOver = Math.max(0.65 * A.H + 0.1 * B.H, eqRadius(A) + eqRadius(B));
     // A bolted thrower can't fall toward his partner, so the partner only has to climb out of the thrower's
@@ -2265,7 +2365,8 @@
         else if (out.partial) out.toGround = { J: out.partial.Jearth, T: Math.max(Tl, out.partial.tau), how: 'footing' };
         // held from above only by Unbreakable footing: the ground takes at most what it bears beyond the weight on it
         // over the pulse (his own, and the charger's while he lands on him); their power supplies the rest (canon's
-        // exception to 'momentum is never absorbed'), an unbounded hit too
+        // momentum case 'the ground's share it can't bear'), an unbounded hit too. (The charger's own push back and
+        // Never knocked back are item 4 of BRIEF-canon.md, a later pull request: Collide is unchanged here.)
         if (out.toGround && hb.why === 'unbreakable' && out.toGround.J > 0) {
           const bear = Math.max(0, holdOf(Object.assign({}, cB, { unbreakable: false }), horiz).H - (horiz ? 0 : mA * K.g)), Jg = Math.min(out.toGround.J, bear * out.toGround.T);
           out.toGround.whole = out.toGround.J; out.toGround.supplied = out.toGround.J - Jg; out.toGround.J = Jg;
@@ -2746,9 +2847,11 @@
     // exactly. First contact: the object sticks to his hands and forearms (m_h); their rest mass after the hit is
     // M1 = sqrt(m^2 + m_h^2 + 2 gamma m m_h), and the heat made is E1 = (M1 - m - m_h) c^2. Then his arms stop that lump
     // relative to him over the stroke d. If his footing holds (or he is bolted), the planet takes the momentum and all
-    // the lump's motion energy is freed. If not, he and the lump end up moving together with all the momentum (his
-    // footing's impulse over a stroke this short is negligible): their rest mass is M_f = sqrt(E_tot^2 - p^2 c^2)/c^2
-    // and the heat freed is (M_f - M1 - M_b) c^2. Past 1% of light speed that carries him off (carried).
+    // the lump's motion energy is freed; taking his own recoil (canon: a catch is absorbed), he is planted the same way
+    // but the momentum goes to his source, not the planet. If not, he and the lump end up moving together with all the
+    // momentum (his footing's impulse over a stroke this short is negligible): their rest mass is
+    // M_f = sqrt(E_tot^2 - p^2 c^2)/c^2 and the heat freed is (M_f - M1 - M_b) c^2. Past 1% of light speed that carries
+    // him off (carried).
     // fin: what arrives, when the speed alone can't say it: its momentum p (conserved from the throw; near light speed
     // the speed rounds to c in double precision) and its rest mass m (a lump with swept air and heat: more than the
     // object's). v is used for timing only then.
@@ -2763,13 +2866,14 @@
       const pIn = fin && fin.p != null ? fin.p : vToMomentum(v, m);
       if (!isFinite(pIn)) {
         // unbounded momentum (infinite strength): no arms stop it; bolted, the planet takes it, else he goes with it
-        const bolted = ctxC.anchor === 'bolted', R0 = anchorCapacity({ body, surface: ctxC.surface, theta: gm, anchor: ctxC.anchor, groundHolds: holdsGround(ctxC), mA: M, mB: m }).R;
+        // (taking his own recoil he is planted as if bolted, and his source takes it: the catch's leg reports it)
+        const bolted = ownAnchor(ctxC) === 'bolted', R0 = anchorCapacity({ body, surface: ctxC.surface, theta: gm, anchor: ownAnchor(ctxC), groundHolds: holdsGround(ctxC), mA: M, mB: m }).R;
         const out = { stroke: d, Fcap, Fneed: Infinity, F: Fcap, Fpeak: Infinity, clean: false, slips: !bolted, R: R0, holdLoad, canHold: Fcap >= holdLoad * (1 - 1e-9),
           tStroke: 0, forced: true, tContact: [0, 0], Fpull: 0, aNet: Infinity, decelG: Infinity, vSlam: K.c, uAfter: bolted ? 0 : K.c, slide: bolted ? 0 : Infinity, carried: !bolted,
           relativistic: true, unbounded: true, mh, v1: K.c, E1: Infinity, give: [CATCH.GIVE_LO * body.H, CATCH.GIVE_HI * body.H], F1: [Infinity, Infinity], firstShare: 1,
           contact: Math.min(2 * body.palmArea, obj.area), press: [Infinity, Infinity], gripRatio: 0, gripRatioHi: 0, gripRatioRaw: obj.crush ? Infinity : 0, plateNeeded: 0, wholeFront: 0,
           baseballRatio: obj.id === 'baseball' ? Infinity : 0, baseballRatioHi: obj.id === 'baseball' ? Infinity : 0, sinkRatio: 0, Ecatch: Infinity, Ediss: Infinity, pIn };
-        if (ctxC.unbreakable) out.sinkRatioRaw = Infinity;
+        if (ctxC.unbreakable) out.sinkRatioRaw = ctxC.ownRecoil ? (M + m) * K.g / (qultFor(ctxC.surface, body.footB) * 2 * body.footArea) : Infinity;
         return out;
       }
       const E0 = momentumToKE(pIn, m), gamma = 1 + E0 / (m * c2);
@@ -2779,9 +2883,10 @@
       const give = [CATCH.GIVE_LO * body.H, CATCH.GIVE_HI * body.H];
       const F1 = [E1 / give[1], E1 / give[0]];
       const E2 = momentumToKE(pIn, M1);                // the lump's motion energy, to stop over the stroke
-      const anc = anchorCapacity({ body, surface: ctxC.surface, theta: gm, anchor: ctxC.anchor, groundHolds: holdsGround(ctxC), mA: M, mB: m });
+      // (his own recoil taken: planted, as if bolted; ownAnchor)
+      const anc = anchorCapacity({ body, surface: ctxC.surface, theta: gm, anchor: ownAnchor(ctxC), groundHolds: holdsGround(ctxC), mA: M, mB: m });
       const R = anc.R, FA = E2 / d;
-      const held = ctxC.anchor === 'bolted' || (isFinite(FA) && FA <= R);
+      const held = ownAnchor(ctxC) === 'bolted' || (isFinite(FA) && FA <= R);
       // moving together afterwards (not held): energy and momentum kept. With the lump (M1, motion energy E2) and the
       // rest of him (Mb): Mf^2 = (M1 + Mb)^2 + 2 Mb E2 / c^2, so the heat (Mf - M1 - Mb) c^2 = 2 Mb E2 / (Mf + M1 + Mb)
       const Mf = held ? Infinity : Math.sqrt((M1 + Mb) * (M1 + Mb) + 2 * Mb * E2 / c2);
@@ -2794,7 +2899,7 @@
       const Erem = clean ? 0 : Math.max(0, Ediss - Fcap * d), vSlam = Erem > 0 ? momentumToV(Math.sqrt(Erem * Erem + 2 * Erem * M1 * c2) / K.c, M1) : 0;
       const tStroke = pIn * d / Math.max(E2, 1e-300);   // constant force over d: impulse p, work E2
       const carried = uAfter >= 0.01 * K.c;
-      const Rs = anchorCapacity({ body, surface: ctxC.surface, theta: 0, anchor: ctxC.anchor, groundHolds: holdsGround(ctxC), mA: M + m }).R;
+      const Rs = anchorCapacity({ body, surface: ctxC.surface, theta: 0, anchor: ownAnchor(ctxC), groundHolds: holdsGround(ctxC), mA: M + m }).R;
       const kAirC = 0.5 * K.rho0 * Math.max(body.Cd * body.frontArea, (obj.Cd || 1) * obj.area);
       const contact = Math.min(2 * body.palmArea, obj.area);
       const Fobj = F * m / (m + mh), Fhand = Math.max(Fobj, holdLoad);
@@ -2811,11 +2916,12 @@
         wholeFront: obj.crush ? press[0] / obj.area / obj.crush : 0,
         baseballRatio: obj.id === 'baseball' ? Math.max(2 * F1[0], Fhand) / CATCH.BASEBALL_SAFE_N : 0,
         baseballRatioHi: obj.id === 'baseball' ? Math.max(2 * F1[1], Fhand) / CATCH.BASEBALL_SAFE_N : 0,
-        sinkRatio: isFinite(anc.Nmax) ? anc.N(F) / anc.Nmax : 0,
+        // (his own recoil taken: the stop's push back goes to his source, so his feet carry only his weight and the lump's)
+        sinkRatio: isFinite(anc.Nmax) ? (ctxC.ownRecoil ? (M + m) * K.g : anc.N(F)) / anc.Nmax : 0,
         // the heat made: at first contact and in the stop (the motion he is carried off with stays motion)
         Ecatch: E1 + Ediss, Ediss, pIn,
       };
-      if (ctxC.unbreakable) out.sinkRatioRaw = anc.N(F) / (qultFor(ctxC.surface, body.footB) * 2 * body.footArea);
+      if (ctxC.unbreakable) out.sinkRatioRaw = (ctxC.ownRecoil ? (M + m) * K.g : anc.N(F)) / (qultFor(ctxC.surface, body.footB) * 2 * body.footArea);
       if (carried) {
         // carried off past 1% of light speed: his own body meets real air (their own bodies do). He and the lump ride
         // on through the lower air, and the snowplow turns their motion to heat there, as fireballAt counts the ride
@@ -2847,7 +2953,9 @@
       const F1 = [E1 / give[1], E1 / give[0]];        // mean contact force: soft end, hard end
       const E2 = 0.5 * mS * v1 * v1 + m * (w ? w.inStroke : 0) + m * K.g * d * sinG;
       const vEff2 = 2 * E2 / mS;
-      const anc = anchorCapacity({ body, surface: ctxC.surface, theta: gm, anchor: ctxC.anchor, groundHolds: holdsGround(ctxC), mA: M, mB: m });
+      // (taking his own recoil, canon's 'a catch is absorbed': his footing never gives, so he never slips, and the stop's
+      // push back goes to his source: ownAnchor)
+      const anc = anchorCapacity({ body, surface: ctxC.surface, theta: gm, anchor: ownAnchor(ctxC), groundHolds: holdsGround(ctxC), mA: M, mB: m });
       const R = anc.R;
       const FA = E2 / d;                               // footing holds: the arms do all the stopping over d
       const relNeed = vEff2 / (2 * d);
@@ -2884,8 +2992,10 @@
       const forced = slips || !clean || F >= 0.5 * Fcap;
       const tContact = [2 * CATCH.GIVE_LO * body.H / Math.max(v, 1e-300), 2 * CATCH.GIVE_HI * body.H / Math.max(v, 1e-300)];
       const vc = aC * tStroke;
-      const uAfter = clean ? vc : (mS * (vc + vSlam) + Mb * vc) / (mS + Mb);
-      const Rs = anchorCapacity({ body, surface: ctxC.surface, theta: 0, anchor: ctxC.anchor, groundHolds: holdsGround(ctxC), mA: M + m }).R;
+      // (his own recoil taken: planted, never carried off; what his arms couldn't stop slams into him and his source takes
+      // that too, so he and it end at rest)
+      const uAfter = ctxC.ownRecoil ? 0 : clean ? vc : (mS * (vc + vSlam) + Mb * vc) / (mS + Mb);
+      const Rs = anchorCapacity({ body, surface: ctxC.surface, theta: 0, anchor: ownAnchor(ctxC), groundHolds: holdsGround(ctxC), mA: M + m }).R;
       const uH = uAfter * cosG;
       // the pair coasts to a stop against friction and air drag: (M+m) v dv/dx = -Rs - 1/2 rho Cd A v^2
       const kAir = 0.5 * K.rho0 * Math.max(body.Cd * body.frontArea, cdAt(obj.Cd || 1, obj.CdSup || 1, uH / K.a0) * obj.area);
@@ -2912,10 +3022,11 @@
         // a linear-spring contact peaks at twice its mean force
         baseballRatio: obj.id === 'baseball' ? Math.max(2 * F1[0], Fhand) / CATCH.BASEBALL_SAFE_N : 0,
         baseballRatioHi: obj.id === 'baseball' ? Math.max(2 * F1[1], Fhand) / CATCH.BASEBALL_SAFE_N : 0,
-        sinkRatio: isFinite(anc.Nmax) ? anc.N(F) / anc.Nmax : 0,
+        // (his own recoil taken: the stop's push back goes to his source, so his feet carry only his weight and its)
+        sinkRatio: isFinite(anc.Nmax) ? (ctxC.ownRecoil ? (M + m) * K.g : anc.N(F)) / anc.Nmax : 0,
         Ecatch: E0 + m * (w ? w.inStroke : 0) + m * K.g * d * sinG,
       // Unbreakable footing: what real ground would bear under his feet (past 1, their power holds it)
-      }, ctxC.unbreakable ? { sinkRatioRaw: anc.N(F) / (qultFor(ctxC.surface, body.footB) * 2 * body.footArea) } : {});
+      }, ctxC.unbreakable ? { sinkRatioRaw: (ctxC.ownRecoil ? (M + m) * K.g : anc.N(F)) / (qultFor(ctxC.surface, body.footB) * 2 * body.footArea) } : {});
     }
 
     // ---------------------------------------------------------------- what the air does to the object
@@ -3037,12 +3148,21 @@
       out.holdNeeded = Math.hypot(tab.at45.needed, pullC);
       out.armHold = (tab.at45.armMass || 0) * K.g;     // the part that is his own hand and arm (dense thrower)
       if (!tab.at45.canHold || !(ctxT.F >= out.holdNeeded * (1 - 1e-9))) return Object.assign(out, { result: 'cant-hold' });
-      // the thrower's push into the ground (Unbreakable footing, or his recoil taken), for every throw he makes: the
-      // object's momentum less his recoil, over the longer of the push and a limb's contact time
+      // the thrower's push back, for every throw he makes: the object's momentum less his recoil.
+      // His own recoil taken (checked first: throwPushJ would recompute a ground push where the throw reports none): it
+      // goes to his source, recoilAbsorbedT { J kg m/s: the exact throw's object momentum at full strength (the Throw
+      // tab's recoilAbsorbed, not the interpolated release speed), else the object's momentum at the release speed;
+      // T s: the push's time; thetaDeg: his aim above level (a hair below level for a straight line at him); the
+      // momentum taken back points back along the aim }. Nothing goes into the ground under him.
+      // Unbreakable footing with the power off: it goes into the ground under him (toGroundT), over the longer of the
+      // push and a limb's contact time
       // ... and, with some of the drag absorbed, his throwing hand's own air past sound (the Throw tab's rule)
       const pushT = (thD, v, full) => {
         const o = {};
-        if ((ctxT.unbreakable || ctxT.ownRecoil) && v > 0) { const T = Math.max(limbPulse(bT), 2 * strokeOf(bT, obj) / v), x = throwPushJ(ctxT, obj, thD, v, full, tab, T); o.toGroundT = Object.assign({}, x, { T: x.T || T }); }
+        if (ctxT.ownRecoil && v > 0) {
+          const r = full ? tab.at(thD) : null, ra = r && r.canMove ? r.recoilAbsorbed : null;
+          o.recoilAbsorbedT = { J: ra ? ra.J : vToMomentum(v, obj.m), T: ra ? ra.T : 2 * strokeOf(bT, obj) / v, thetaDeg: thD };
+        } else if (ctxT.unbreakable && v > 0) { const T = Math.max(limbPulse(bT), 2 * strokeOf(bT, obj) / v), x = throwPushJ(ctxT, obj, thD, v, full, tab, T); o.toGroundT = Object.assign({}, x, { T: x.T || T }); }
         if (anyPower(ctxT) && v >= K.a0) {
           const r = tab.at(thD), rel = r.canMove && r.v >= CATCH.V_FIREBALL && isFinite(r.Eobj);
           const gamma = rel ? 1 + r.Eobj / (obj.m * K.c * K.c) : v >= K.c ? Infinity : 1 / Math.sqrt(1 - (v / K.c) * (v / K.c));
@@ -3194,8 +3314,9 @@
       out.launchPush = vL > 0 ? obj.m * vL * vL / (2 * out.launchStroke) : 0;
       out.launchRatio = obj.crush ? out.launchPush / (obj.area * obj.crush) : 0;
       out.recoil = recoilOf(ctxT, obj, th, vL, style === 'hard', tab, D);
-      // What reaches the ground under the thrower (Unbreakable footing, or his own recoil taken): the push of the
-      // throw, the momentum he gives it and his throwing hand less his own recoil during the push, over the push
+      // The thrower's push back (pushT): to his source with his own recoil taken (recoilAbsorbedT), else with
+      // Unbreakable footing into the ground under him (toGroundT): the momentum he gives it and his throwing hand less
+      // his own recoil during the push
       Object.assign(out, pushT(th, vL, style === 'hard'));
       if (out.hitsGround) {
         // the straight line to his hands runs underground: it hits the ground first, with all its energy
@@ -3236,13 +3357,20 @@
       out.shockPa = out.vArrive > K.a0 ? rhoAt(hStop) * g2 * out.vArrive * out.vArrive * dK : 0;
       if (g2 > 1) out.shockGamma2 = g2;
       if (dK < 1 && out.shockPa > 0) out.shockK = dK;
-      // What reaches the ground (Unbreakable footing, or the thrower taking his own recoil): the thrower's push, the
-      // momentum he gives it less his own recoil, over the push; and the catcher's stop, the momentum he takes out of it
-      // less what he and it keep moving with, over the stroke
-      if (ctxC.unbreakable && (out.result === 'caught' || out.result === 'slams' || out.result === 'wreckage')) {
+      // The catcher's stop: the momentum he takes out of it less what he and it keep moving with, over the stroke.
+      // His own recoil taken (canon: a catch is absorbed, unless he chooses otherwise): he is planted (catchIt), so in
+      // every outcome where it reaches him the whole of its momentum goes to his source: recoilAbsorbedC { J kg m/s (the
+      // momentum it arrives with; near light speed, from the throw), T s: the stroke's time, angleDeg: how steeply it
+      // comes down as it reaches him (0 = level); the momentum taken back points along its arrival }. Nothing goes into
+      // the ground under him and he is never carried off.
+      // Unbreakable footing with the power off: the stop goes into the ground under him (toGroundC)
+      const reachesHim = out.result === 'caught' || out.result === 'slams' || out.result === 'wreckage' || out.result === 'cant-hold-it';
+      if (ctxC.ownRecoil && reachesHim) {
+        out.recoilAbsorbedC = { J: k.relativistic ? k.pIn : vToMomentum(out.vArrive, obj.m), T: k.tStroke, angleDeg: out.angleDeg || 0 };
+      } else if (ctxC.unbreakable && (out.result === 'caught' || out.result === 'slams' || out.result === 'wreckage')) {
         const J = k.relativistic ? (k.uAfter > 0 ? 0 : k.pIn) : Math.max(0, vToMomentum(out.vArrive, obj.m) - (bC.m + obj.m) * k.uAfter);
         // where the ground couldn't bear the downward part of the stop, it takes only its share; their power supplies
-        // the rest (canon's exception)
+        // the rest (canon's momentum case 'the ground's share it can't bear')
         const T = Math.max(limbPulse(bC), k.tStroke);
         out.toGroundC = Object.assign(weakGround(ctxC, bC, J, (out.angleDeg || 0) * Math.PI / 180, T, (bC.m + obj.m) * K.g, ctxC.anchor === 'bolted'), { T });
       }
@@ -3287,8 +3415,9 @@
       for (let i = 0; i < 100 && hi - lo > 1e-9 * hi; i++) { const mid = 0.5 * (lo + hi); if (run(mid).vB >= vL) hi = mid; else lo = mid; }
       return { p: run(hi), armMass, mB };
     }
-    // The push the ground keeps from the thrower's throw (Unbreakable footing, or his own recoil taken): the
-    // object's momentum less his own recoil (as throwOnce counts it: the follow-through hands his arm's back)
+    // The push the ground keeps from the thrower's throw (Unbreakable footing with his own recoil not taken; with it
+    // taken the push back goes to his source and the callers never come here): the object's momentum less his own
+    // recoil (as throwOnce counts it: the follow-through hands his arm's back)
     // ({ J, whole?, supplied? }: with Unbreakable footing on weak ground, the ground takes only what it bears over T)
     function throwPushJ(ctxT, obj, th, vL, full, tab, T) {
       if (full) { const r = tab.at(th); if (r.canMove && r.toGround) return r.toGround; }
@@ -3336,9 +3465,15 @@
         v = hi;
         if (v > vMax * (1 + 1e-6)) return Object.assign(out, { result: 'too-weak', v, vMax });
       } else v = vMax;
-      // with their powers: his push into the ground as he tosses him (the Throw tab's rule, straight up) and, past sound,
-      // his hands' own air
-      if ((ctxT.unbreakable || ctxT.ownRecoil) && v > 0) {
+      // with their powers: the push back as he tosses him (the Throw tab's rule, straight up) and, past sound, his hands'
+      // own air. His own recoil taken (checked first: throwPushJ would recompute a ground push): to his source,
+      // recoilAbsorbedT { J kg m/s: his partner's momentum (the exact throw's all-out, else at the toss speed), T s: the
+      // push's time, thetaDeg 90: straight up; the momentum taken back points straight down }. Unbreakable footing with
+      // the power off: into the ground under him (toGroundT).
+      if (ctxT.ownRecoil && v > 0) {
+        const full = style !== 'easy' && t.canMove && t.recoilAbsorbed;
+        out.recoilAbsorbedT = { J: full ? t.recoilAbsorbed.J : vToMomentum(v, obj.m), T: full ? t.recoilAbsorbed.T : 2 * strokeOf(ctxT.body, obj) / v, thetaDeg: 90 };
+      } else if (ctxT.unbreakable && v > 0) {
         const T = Math.max(limbPulse(ctxT.body), 2 * strokeOf(ctxT.body, obj) / v);
         out.toGroundT = Object.assign({}, style === 'easy' || !t.toGround ? throwPushJ(ctxT, obj, 90, v, false, null, T) : t.toGround, { T: style === 'easy' || !t.toGround ? T : t.toGround.T });
       }
@@ -3360,8 +3495,13 @@
       // he comes straight down: Earth's pull on Ollie and on Rex's hands adds to the stopping force and the foot load
       out.catch = catchIt(ctxT, obj, fl.vImpact, 90, null);
       out.result = out.catch.clean ? 'caught' : 'slams';
-      // Unbreakable footing: his stop goes into the ground (straight down), at most what it bears (canon's exception)
-      if (ctxT.unbreakable) {
+      // His stop is his own push back too (canon: a catch is absorbed). Taken: it goes to his source, recoilAbsorbedC
+      // { J kg m/s: the momentum Ollie comes down with, T s: the stroke's time, angleDeg 90: he comes straight down; the
+      // momentum taken back points straight down }; catchIt keeps Rex planted.
+      // Unbreakable footing with the power off: his stop goes into the ground (straight down), at most what it bears
+      // (canon's momentum case 'the ground's share it can't bear')
+      if (ctxT.ownRecoil) out.recoilAbsorbedC = { J: vToMomentum(fl.vImpact, obj.m), T: out.catch.tStroke, angleDeg: 90 };
+      else if (ctxT.unbreakable) {
         const k = out.catch, J = Math.max(0, vToMomentum(fl.vImpact, obj.m) - (ctxT.body.m + obj.m) * (k.uAfter || 0)), T = Math.max(limbPulse(ctxT.body), k.tStroke);
         out.toGroundC = Object.assign(weakGround(ctxT, ctxT.body, J, Math.PI / 2, T, (ctxT.body.m + obj.m) * K.g), { T });
       }
@@ -3529,22 +3669,26 @@
   // the rest. J along a direction th (radians) below the horizontal; returns the ground's take (J), the whole push and
   // the part their power supplies (the downward excess), or just { J } where the ground bears it.
   // Canon's weak-ground exception (Unbreakable footing): where the ground couldn't bear a push, it takes only what it can
-  // and their power supplies the rest (to the endless ocean). Downward: its bearing beyond the weight standing on it,
-  // over the pulse T. Sideways: whole when the foot is bolted (as if bolted, their recoil taken: the planet takes it);
-  // standing on friction, at most its friction on what it bears, mu x Nmax x T (a grip beyond that would stand on a
-  // load only their power holds up). An unbounded push with a push time is capped the same way; straight up nothing
-  // of it is sideways. (bolted: override for a catcher, whose footing is his own)
+  // and their power supplies the rest (to the endless ocean: canon's momentum case 'the ground's share it can't bear').
+  // Downward: its bearing beyond the weight standing on it, over the pulse T. Sideways: whole when the foot is bolted
+  // (Bolted to the planet: the planet takes it); standing on friction, at most its friction on what it bears,
+  // mu x Nmax x T (a grip beyond that would stand on a load only their power holds up). An unbounded push with a push
+  // time is capped the same way; straight up nothing of it is sideways. (bolted: override for a catcher, whose footing
+  // is his own, and a landing partner.) Their own recoil never comes here: with They take their own recoil on it goes
+  // to their source whole. Used for a catch with that power off, landings, a bolted body and Unbreakable footing alone.
+  // Where it caps: J = hypot(sideTaken, downTaken), the ground's take along and below the level; the whole push; the
+  // supplied part (suppliedSide + suppliedDown, perpendicular parts added as numbers, so J + supplied is not whole).
   function weakGround(ctx, body, J, th, T, weight, bolted) {
     if (!ctx.unbreakable || !(J > 0) || !(T > 0)) return { J };
     const Nmax = qultFor(ctx.surface, body.footB) * 2 * body.footArea, cap = Math.max(0, Nmax - weight) * T;
-    const capH = (bolted != null ? bolted : ownAnchor(ctx) === 'bolted') ? Infinity : (ctx.surface.mu || 0) * Nmax * T;
+    const capH = (bolted != null ? bolted : ctx.anchor === 'bolted') ? Infinity : (ctx.surface.mu || 0) * Nmax * T;
     // (straight up, cos rounds to about 6e-17, not 0: no sideways part)
     const sn = Math.sin(th), cs = Math.abs(Math.cos(th));
     const Jd = sn > 1e-12 ? J * sn : 0, Jh = cs < 1e-9 ? 0 : J * cs;
     if (!(Jd > cap) && !(Jh > capH)) return { J };
     // (guarded: an unbounded sideways part taken whole is not 'infinity minus infinity' supplied)
     const Jdg = Math.min(Jd, cap), Jhg = Math.min(Jh, capH), sD = Jd > Jdg ? Jd - Jdg : 0, sH = Jh > Jhg ? Jh - Jhg : 0;
-    return { J: Math.hypot(Jhg, Jdg), whole: J, supplied: sD + sH, suppliedDown: sD, suppliedSide: sH, sideTaken: Jhg };
+    return { J: Math.hypot(Jhg, Jdg), whole: J, supplied: sD + sH, suppliedDown: sD, suppliedSide: sH, sideTaken: Jhg, downTaken: Jdg };
   }
   // the human-equivalent walking speed at Froude Fr (for the load rule)
   const walkLoad = (Fr) => { const L = WALK.LOAD, vh = Math.sqrt(Fr * K.g * L.hRef); return Math.min(L.hi, Math.max(L.lo, L.at + L.slope * (vh - L.vh))); };
@@ -3760,7 +3904,8 @@
         run: (c, o) => throwObject(c, o.obj, o.angle),
         goal: (r, o) => r.canMove && !r.fallsBack && (o.angle >= 90 ? r.flight.relativistic || r.flight.escaped || r.flight.apex >= o.target : range(r.flight) >= o.target),
         speed: (r) => (r.canMove ? r.v : 0),
-        // the boom counts the object and his own recoil. With all of the object's drag absorbed its flight makes no boom,
+        // the boom counts the object and his own recoil (none when he takes it: recoilV is 0). With all of the object's
+        // drag absorbed its flight makes no boom,
         // but his hand still moves at the release speed as he lets go, and his body meets real air: so the boom stays.
         boomSpeed: (r) => (r.canMove ? Math.max(r.v, r.recoilV || 0) : 0),
         ground: (r, o) => !SOIL.has(o.surface && o.surface.id) && r.canMove && r.sinkRatio > 1,
@@ -3790,11 +3935,13 @@
         hand: (r, o) => throwHand(r, o),
         // his recoil: the lurch during the push, then the coast against his footing and the air (as Catch counts it)
         slide: (r, o) => recoilSlide(r, o),
-        // the object stops in about its own size: a pulse carrying its momentum over L / v. With his recoil taken (or the
-        // ground unbreakable) his throw's push into the ground counts too, at his feet (shakeFrom says which is larger)
+        // the object stops in about its own size: a pulse carrying its momentum over L / v. With Unbreakable footing on
+        // and his recoil not taken, his throw's push into the ground counts too, at his feet (shakeFrom says which is
+        // larger). With They take their own recoil on that push goes to his source: only the landing shakes the ground,
+        // and a throw that never comes down shakes nothing.
         shake: (r, o) => {
           const land = MOVES.throw.landShake(r, o);
-          if (!((o.ownRecoil || o.unbreakable) && r.toGround)) return land;
+          if (!(o.unbreakable && !o.ownRecoil && r.toGround)) return land;
           return [land, impulseSource(o.surface, r.toGround.J, Math.max(1e-9, r.toGround.T))].filter(Boolean);
         },
         landShake: (r, o) => {
@@ -3803,7 +3950,7 @@
           return impulseSource(o.surface, momentumOf(v, o.obj.m), Math.max(1e-3, L / v));
         },
         shakeFrom: (r, o) => {
-          if (!((o.ownRecoil || o.unbreakable) && r.toGround)) return 'landing';
+          if (!(o.unbreakable && !o.ownRecoil && r.toGround)) return 'landing';
           const own = impulseSource(o.surface, r.toGround.J, Math.max(1e-9, r.toGround.T));
           return ppvAt(own, o.near) > ppvAt(MOVES.throw.landShake(r, o), o.near) ? 'him' : 'landing';
         },
@@ -3833,7 +3980,7 @@
           if (!L || !L.landed || !(L.v > 0)) return o.unbreakable && r.pushOff ? impulseSource(o.surface, r.pushOff.J, Math.max(1e-9, r.pushOff.T)) : null;
           // soft landing takes back the feet's impact energy; his body still stops over the leg stroke
           // (Unbreakable footing: the ground takes at most what it bears beyond his weight over each pulse; their power
-          // supplies the rest, canon's exception)
+          // supplies the rest, canon's momentum case 'the ground's share it can't bear')
           // (the feet's blow: at least what it is at the landing real ground just bears, so the cap changes nothing
           // where the ground holds the landing and has no cliff there. The body's stop takes the bearing over a stop
           // that shortens as he lands harder, so a harder landing can shake the ground less)
@@ -3915,16 +4062,20 @@
         run: (c, o) => pull(c, o.obj),
         goal: (r, o) => r.canMove && r.t10m <= o.target,
         speed: (r) => r.vEnd,
-        // They take their own recoil: the rope's pull back on him goes through his feet (or his bolts) into the planet
-        // over the pull (the load's momentum plus the rolling or sliding resistance it overcame), and shakes the ground.
-        // A steady pull over seconds sets up far less ground wave than a blow. With the power off it isn't counted.
-        shake: (r, o) => (o.ownRecoil && r.canMove && isFinite(r.t10m) && r.t10m > 0 ? impulseSource(o.surface, vToMomentum(r.vEnd, o.obj.m) + r.resist * r.t10m, r.t10m) : null),
+        // With They take their own recoil on, the rope's pull back on him goes to his source (pull's recoilAbsorbed), not
+        // into the ground; the shaking is his own steps' (pull's walkPush: his own body's momentum over the pull, the move
+        // itself, real). His legs cap them (at most the strength he uses, as in a sprint); on friction his grip does too,
+        // so it is small; bolted (the power wins over Bolted for his own moves) only his legs do, so only a strong, quick
+        // pull shakes the ground. With the power off the lab counts no pull's shaking, as before the power existed (the
+        // rope's pull back through his feet or bolts, and his steps). The load's rolling or sliding resistance pushes the
+        // ground too, a steady drag over the whole pull: not counted.
+        shake: (r, o) => (o.ownRecoil && r.walkPush && r.walkPush.J > 0 && r.walkPush.T > 0 && isFinite(r.walkPush.T) ? impulseSource(o.surface, r.walkPush.J, r.walkPush.T) : null),
         shakeWithPower: 'ownRecoil',
         where: 'behind him',
       },
     };
     // a move whose shaking exists only with a power on (shakeWithPower: true for either Unbreakable footing or They
-    // take their own recoil, or the one power's name), and that power is off
+    // take their own recoil, or the one power's name), and that power is off (the pull: its steps, 'ownRecoil')
     const shakeOff = (M, o) => !!M.shakeWithPower && (M.shakeWithPower === 'ownRecoil' ? !o.ownRecoil : !o.ownRecoil && !o.unbreakable);
     // how far a move's blast reaches at overpressure dp: its blast energy, or where the energy depends on the reach
     // (blastAt: a fast throw's air takes its energy within a short stretch), the reach R with R = radius(E within R)
@@ -4110,7 +4261,11 @@
   // store of power they draw on (the "endless ocean": nothing changes). In the growth modes it becomes mass,
   // dm = E / c^2. Growth form: s is the share of the mass ratio that goes into volume (1 = pure size, 0 = pure
   // density, 0.5 = the even mix), so volume grows as ratio^s, density as ratio^(1-s) and height as ratio^(s/3).
-  // Momentum is never absorbed.
+  // Momentum is absorbed in these cases and nowhere else (canon, CLAUDE.md "Momentum"): their own recoil (They take
+  // their own recoil, the catches included), the air's drag on what they throw (Air resistance absorbed), the ground's
+  // share it can't bear (Unbreakable footing's weak-ground rule and a push with no push time), the lift from growth
+  // (instantGrowth's Pocean), incoming hits (Never knocked back: no move here uses it yet) and flight's push (no flight
+  // here yet). Everything else that pushes passes its momentum on.
   // ---------------------------------------------------------------------------
   // A person he throws: the most acceleration an ordinary, unprepared person takes with no harm, and the level
   // that starts to injure (research/final-presence.json: comic_passenger_no_harm_limit, comic_passenger_injury_level).
@@ -4243,7 +4398,7 @@
     // Unbreakable footing: the ground doesn't give, but it still pushes him up to start his rise (m vSole, over the
     // growth time): that push goes into it and shakes it (toGround). Our estimate of the pulse.
     // (the ground takes at most what it bears beyond his weight over the growth time; their power supplies the rest,
-    // canon's exception to 'momentum is never absorbed')
+    // canon's momentum case 'the ground's share it can't bear')
     let extra = {};
     if (gnd && gnd.unbreakable && !gnd.groundHolds && gnd.surface && g.dH > 0) {
       const bear = Math.max(0, soles * qultFor(gnd.surface, body.footB * Math.exp(g.lnr * g.s / 3)) - g.m * K.g), J = g.m * vSole, Jg = Math.min(J, bear * tau);

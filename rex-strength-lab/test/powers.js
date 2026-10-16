@@ -163,12 +163,14 @@ const sig = (x) => Number(x).toPrecision(3);
   // the All-Star dial where gamma x is large; and at 100% the catch is exact far past where the speed rounds to c
   { const ob = obj('baseball'), bad = [];
     // (and at 10^16 kg and 99%, where the sheath holds a quarter of its energy, so the lump's rest mass matters)
-    for (const [F, sh] of [[200e18 * 907.18474 * g, 0.5], [200e18 * 907.18474 * g, 0.99], [200e18 * 907.18474 * g, 1], [1e16 * g, 0.99]]) {
-      const cR = ctxOf(F, Object.assign({}, ON, { airAbsorb: sh, anchor: 'bolted' })), L = P.catchLeg(cR, Object.assign({}, cR, { body: ollie }), ob, 1000, 'hard');
-      const E = P.throwObject(cR, ob, 0).Eobj, Ein = L.sheath ? E - L.sheath.E : E;
-      if (!(L.result === 'caught' && L.catch && near(L.catch.Ecatch, Ein, 1e-6) && near(L.toGroundC ? L.toGroundC.J : NaN, Math.sqrt(E * E + 2 * E * ob.m * P.K.c * P.K.c) / P.K.c, 1e-6))) bad.push(sh + ': ' + L.result + ' ' + (L.catch ? sig(L.catch.Ecatch / Ein) : '') + (L.toGroundC ? ' J ' + sig(L.toGroundC.J) : ''));
+    // (bolted catcher. They take their own recoil on: the stop's push back, the throw's momentum, goes to his source;
+    // off: his bolts hand it to the planet)
+    for (const [F, sh] of [[200e18 * 907.18474 * g, 0.5], [200e18 * 907.18474 * g, 0.99], [200e18 * 907.18474 * g, 1], [1e16 * g, 0.99]]) for (const own of [true, false]) {
+      const cR = ctxOf(F, Object.assign({}, ON, { airAbsorb: sh, anchor: 'bolted', ownRecoil: own })), L = P.catchLeg(cR, Object.assign({}, cR, { body: ollie }), ob, 1000, 'hard');
+      const E = P.throwObject(cR, ob, 0).Eobj, Ein = L.sheath ? E - L.sheath.E : E, fig = own ? L.recoilAbsorbedC : L.toGroundC;
+      if (!(L.result === 'caught' && L.catch && near(L.catch.Ecatch, Ein, 1e-6) && near(fig ? fig.J : NaN, Math.sqrt(E * E + 2 * E * ob.m * P.K.c * P.K.c) / P.K.c, 1e-6) && (own ? !L.toGroundC : !L.recoilAbsorbedC))) bad.push(sh + (own ? ' own' : ' bolts') + ': ' + L.result + ' ' + (L.catch ? sig(L.catch.Ecatch / Ein) : '') + (fig ? ' J ' + sig(fig.J) : ''));
     }
-    ok('5a: a catch near light speed (the sheath at 50% and 99%, and 100%) frees the energy that arrives and hands the planet the throw\'s momentum', !bad.length, bad.join('; '));
+    ok('5a/5d: a catch near light speed (the sheath at 50% and 99%, and 100%) frees the energy that arrives; the throw\'s momentum goes to his source with They take their own recoil on, and through his bolts to the planet with it off', !bad.length, bad.join('; '));
     const bad2 = [];
     for (const lg of [25, 27, 30]) {
       const cR = ctxOf(Math.pow(10, lg) * g, Object.assign({}, ON, { anchor: 'bolted' })), L = P.catchLeg(cR, Object.assign({}, cR, { body: ollie }), ob, 1000, 'hard'), E = P.throwObject(cR, ob, 0).Eobj;
@@ -323,35 +325,74 @@ const sig = (x) => Number(x).toPrecision(3);
     ok('5c: the catcher\'s stop goes into the ground (the car\'s momentum, less what he and it keep moving with)', L.toGroundC && L.toGroundC.J > 0 && L.toGroundC.J <= P.vToMomentum(L.vArrive, obj('car').m) * (1 + 1e-12)); }
 }
 
-// 5. 5d: They take their own recoil
+// 5. 5d: They take their own recoil. Canon (CLAUDE.md, RT A7; BRIEF-canon.md item 2): the push back from their own moves
+// goes into their source (the endless ocean), not into the planet, so they stay planted and the ground isn't shoved.
+// Each move reports what its source takes back (recoilAbsorbed; recoilAbsorbedT and recoilAbsorbedC in the game of
+// catch and the partner toss) only with the power on, and with it on nothing of his own push back reaches the ground.
 {
-  // the bus on ice (the presence test's case, a 100 t dial): no slide, and the push reaches the ground
+  // the bus on ice (the presence test's case, a 100 t dial): no slide, and the push goes to his source
   { const c = ctxOf(1e5 * g, { surface: surf('ice') }), cr = Object.assign({ ownRecoil: true }, c);
     const a = P.throwObject(c, obj('bus'), 45), b = P.throwObject(cr, obj('bus'), 45);
     const o = { body: rex, surface: c.surface, anchor: 'friction', angle: 45, near: 5, obj: obj('bus') };
     const p = P.RESTRAINT.planNow('throw', cr, { obj: obj('bus'), angle: 45, target: 30, near: 5 });
     ok('5d: the bus on ice: no recoil and no slide with it on (it slides without)', b.recoilV === 0 && M.throw.slide(b, Object.assign({ ownRecoil: true }, o)) === 0 && M.throw.slide(a, o) > 5 && p.result('hazard:slide').never, 'off: slides ' + sig(M.throw.slide(a, o)) + ' m');
-    ok('5d: ... and its push goes into the planet: the momentum the bus keeps (the follow-through hands his arm\'s back), over the throw', b.toGround && near(b.toGround.J, b.push.pB * obj('bus').m / b.mB, 1e-12) && b.toGround.J > 0 && b.toGround.T >= P.limbPulse(rex));
-    const bc = P.throwObject(Object.assign({}, cr, { surface: surf('concrete') }), obj('bus'), 45), oc = Object.assign({}, o, { surface: surf('concrete'), ownRecoil: true });
-    const src = M.throw.shake(bc, oc);
-    const own = P.impulseSource(oc.surface, bc.toGround.J, Math.max(1e-9, bc.toGround.T));
-    ok('5d: on concrete that push alone shakes the ground, and adds to the landing (ice and steel have no ground-wave model)', Array.isArray(src) && P.ppvAt(own, 5) > 1e-5 && P.ppvAt(src, 5) >= P.ppvAt(M.throw.landShake(bc, oc), 5) && P.ppvAt(src, 5) === Math.max(P.ppvAt(own, 5), P.ppvAt(M.throw.landShake(bc, oc), 5)), sig(P.ppvAt(own, 5) * 1000) + ' mm/s at 5 m from his push'); }
+    ok('5d: ... and its push back goes to his source, not the planet: the momentum the bus keeps (the follow-through hands his arm\'s back), back along the throw line, over the push; nothing goes into the ground', !b.toGround && b.recoilAbsorbed && near(b.recoilAbsorbed.J, b.push.pB * obj('bus').m / b.mB, 1e-12) && b.recoilAbsorbed.J > 0 && b.recoilAbsorbed.T === b.push.t && b.recoilAbsorbed.thetaDeg === 45 && !a.recoilAbsorbed, b.recoilAbsorbed ? sig(b.recoilAbsorbed.J) + ' kg m/s' : 'none');
+    // on concrete: with it on only the landing shakes the ground; with Unbreakable footing alone (his recoil not taken)
+    // his push reaches the ground, shakes it, and adds to the landing (ice and steel have no ground-wave model)
+    const conc = surf('concrete'), bc = P.throwObject(Object.assign({}, cr, { surface: conc }), obj('bus'), 45), oc = Object.assign({}, o, { surface: conc, ownRecoil: true });
+    const srcOn = M.throw.shake(bc, oc), landOn = M.throw.landShake(bc, oc);
+    ok('5d: on concrete with it on, his push shakes nothing: the shaking is the landing\'s alone, and it comes from the landing', !bc.toGround && !Array.isArray(srcOn) && P.ppvAt(srcOn, 5) === P.ppvAt(landOn, 5) && M.throw.shakeFrom(bc, oc) === 'landing', sig(P.ppvAt(srcOn, 5) * 1000) + ' mm/s at 5 m');
+    const bu = P.throwObject(ctxOf(1e5 * g, { unbreakable: true }), obj('bus'), 45), ou = Object.assign({}, o, { surface: conc, unbreakable: true });
+    const src = M.throw.shake(bu, ou), own = bu.toGround ? P.impulseSource(ou.surface, bu.toGround.J, Math.max(1e-9, bu.toGround.T)) : null;
+    ok('5c: on concrete with Unbreakable footing alone (his recoil not taken), his push reaches the ground: it alone shakes it, and adds to the landing', !!own && !bu.recoilAbsorbed && Array.isArray(src) && P.ppvAt(own, 5) > 1e-5 && P.ppvAt(src, 5) >= P.ppvAt(M.throw.landShake(bu, ou), 5) && P.ppvAt(src, 5) === Math.max(P.ppvAt(own, 5), P.ppvAt(M.throw.landShake(bu, ou), 5)), own ? sig(P.ppvAt(own, 5) * 1000) + ' mm/s at 5 m from his push' : 'none'); }
   // the All-Star baseball doesn't move Rex
   { const r = P.throwObject(ctxOf(200e18 * 907.18474 * g, { ownRecoil: true }), obj('baseball'), 0), r0 = P.throwObject(ctxOf(200e18 * 907.18474 * g), obj('baseball'), 0);
     ok('5d: the All-Star baseball doesn\'t move Rex (it shoves him back at ' + (r0.recoilV / P.K.c).toFixed(4) + ' c without)', r.recoilV === 0 && r0.recoilV > 0.99 * P.K.c); }
   // punch and pull are his own pushes; a clap's two hands cancel; a jump and a sprint start are the move itself
   { const c = ctxOf(1e6 * g), cr = Object.assign({ ownRecoil: true }, c);
     const pu = P.punch(cr), pu0 = P.punch(c), pl = P.pull(cr, obj('bus')), pl0 = P.pull(c, obj('bus'));
-    ok('5d: a punch: no lurch or recoil; the arm\'s stop hands its push straight back, so no net push reaches the ground', pu.lurch === 0 && pu.recoilV === 0 && pu0.recoilV > 0 && !pu.toGround && !M.punch.shake);
-    const plB = P.pull(Object.assign({}, cr, { anchor: 'bolted' }), obj('bus')), plBS = M.pull.shake(plB, { surface: c.surface, body: rex, obj: obj('bus'), ownRecoil: true, anchor: 'bolted' });
-    ok('5d: a bolted pull with They take their own recoil on: the rope\'s pull goes through his bolts into the planet and shakes the ground', plB.canMove && !!plBS && P.ppvAt(plBS, 2) > 0 && plB.ropeT > 0);
-    const plS = M.pull.shake(pl, { surface: c.surface, body: rex, obj: obj('bus'), ownRecoil: true, anchor: 'friction' }), plS0 = M.pull.shake(pl0, { surface: c.surface, body: rex, obj: obj('bus'), anchor: 'friction' });
-    ok('5d: a pull with it on: the rope\'s pull back goes into the planet over the pull (the bus\'s momentum and the rolling resistance), and shakes the ground; off, not counted', plS && P.ppvAt(plS, 2) > 0 && near(P.ppvAt(plS, 2), P.ppvAt(P.impulseSource(c.surface, P.vToMomentum(pl.vEnd, obj('bus').m) + pl.resist * pl.t10m, pl.t10m), 2), 1e-12) && !plS0 && near(pl.ropeT, obj('bus').m * pl.accel + pl.resist, 1e-12) && pl.ropeT < pl.usable, 'rope ' + sig(pl.ropeT) + ' N of ' + sig(pl.usable) + ' N; ' + sig(P.ppvAt(plS, 2) * 1000) + ' mm/s at 2 m');
-    ok('5d: a pull: the load\'s pull back goes into the planet (his whole drive pulls it); his own legs still walk on friction', pl.usable === c.F && pl0.usable === pl0.anchor.R && pl.accel <= pl.anchor.R / rex.m * (1 + 1e-12) && pl.accel > pl0.accel && pl.footLimited, 'a ' + sig(pl.accel) + ' vs ' + sig(pl0.accel) + ' m/s2, feet allow ' + sig(pl.anchor.R / rex.m));
+    ok('5d: a punch: no lurch or recoil; its push back goes to his source over the stroke and the arm\'s stop hands it straight back, so no net push is kept by the ocean or the ground', pu.lurch === 0 && pu.recoilV === 0 && pu0.recoilV > 0 && !pu.toGround && !M.punch.shake && pu.recoilAbsorbed && pu.recoilAbsorbed.J === pu.push.pB && pu.recoilAbsorbed.returned === true && pu.recoilAbsorbed.thetaDeg === 0 && !pu0.recoilAbsorbed);
+    const plB = P.pull(Object.assign({}, cr, { anchor: 'bolted' }), obj('bus')), plB0 = P.pull(Object.assign({}, c, { anchor: 'bolted' }), obj('bus'));
+    // (review round 2: the power wins over Bolted for his own moves, so a bolted pull follows its rule too: his bolted
+    // feet never slide, and the bus is heavier than he is, so his legs keep up (review round 3) and the load sets the
+    // pace, (drive - resistance) / the load's mass, not the pair's)
+    ok('5d: a bolted pull with They take their own recoil on: the rope\'s pull back goes to his source, not through his bolts into the planet (for his own moves the power wins over Bolted), and the load sets the pace: (his drive - the resistance) / the load\'s mass, his bolted feet keeping his own body with it', plB.canMove && plB.ropeT > 0 && plB.recoilAbsorbed && near(plB.recoilAbsorbed.J, plB.ropeT * plB.t10m, 1e-12) && plB.recoilAbsorbed.T === plB.t10m && !plB0.recoilAbsorbed && plB.footLimited === false && plB.usable === c.F && near(plB.accel, (plB.usable - plB.resist) / obj('bus').m, 1e-12) && near(plB.ropeT, plB.usable, 1e-12) && near(plB.accel * obj('bus').m, plB0.accel * (obj('bus').m + rex.m), 1e-9), plB.recoilAbsorbed ? sig(plB.recoilAbsorbed.J) + ' kg m/s; a ' + sig(plB.accel) + ' m/s2 (the pair\'s pace, bolted alone: ' + sig(plB0.accel) + ')' : 'none');
+    // his own steps (walking with the load: the move, not recoil) push the ground with his own body's momentum over the
+    // pull: with the power on, the pull's shaking source (walkPush), reported only then; on friction his grip caps it
+    // (bolted, only his legs do: the next check but one)
+    const conc = surf('concrete'), oPl = (x) => Object.assign({ obj: obj('bus'), surface: conc, body: rex, near: 5 }, x);
+    const walkOk = (r) => r.walkPush && near(r.walkPush.J, P.vToMomentum(r.vEnd, rex.m), 1e-9) && r.walkPush.T === r.t10m && P.ppvAt(M.pull.shake(r, oPl({ ownRecoil: true })), 5) === P.ppvAt(P.impulseSource(conc, r.walkPush.J, r.walkPush.T), 5);
+    ok('5d: a pull with it on: the rope\'s pull back (the bus\'s momentum and the rolling resistance) goes to his source over the pull; the shaking is his own steps\' (his own body\'s momentum over the pull, real), capped by his grip on friction; bolted only his legs cap it (the bus needs less than the strength he uses); with it off the lab counts no pull\'s shaking (as before the power)', M.pull.shakeWithPower === 'ownRecoil' && P.RESTRAINT.shakeOff(M.pull, { ownRecoil: false }) && !P.RESTRAINT.shakeOff(M.pull, { ownRecoil: true }) && M.pull.shake(pl0, oPl({ ownRecoil: false })) === null && !pl0.walkPush && !plB0.walkPush && walkOk(pl) && walkOk(plB) && pl.walkPush.J / pl.walkPush.T <= pl.anchor.R * (1 + 1e-12) && plB.walkPush.J / plB.walkPush.T > 10 * pl.anchor.R && pl.recoilAbsorbed && near(pl.recoilAbsorbed.J, P.vToMomentum(pl.vEnd, obj('bus').m) + pl.resist * pl.t10m, 1e-9) && pl.recoilAbsorbed.T === pl.t10m && pl.recoilAbsorbed.thetaDeg === 0 && !pl0.recoilAbsorbed && near(pl.ropeT, obj('bus').m * pl.accel + pl.resist, 1e-12) && pl.ropeT < pl.usable && P.RESTRAINT.reach('pull', pl, oPl({ ownRecoil: true })).plaster === 0 && P.RESTRAINT.reach('pull', plB, oPl({ ownRecoil: true })).plaster > 5, 'rope ' + sig(pl.ropeT) + ' N of ' + sig(pl.usable) + ' N; ' + (pl.recoilAbsorbed ? sig(pl.recoilAbsorbed.J) + ' kg m/s to his source' : 'none') + '; steps ' + (pl.walkPush ? sig(pl.walkPush.J) + ' kg m/s, bolted ' + sig(plB.walkPush && plB.walkPush.J) : 'none'));
+    ok('5d: a pull: the load\'s pull back goes to his source (his whole drive pulls it); his own legs still walk on friction', pl.usable === c.F && pl0.usable === pl0.anchor.R && pl.accel <= pl.anchor.R / rex.m * (1 + 1e-12) && pl.accel > pl0.accel && pl.footLimited, 'a ' + sig(pl.accel) + ' vs ' + sig(pl0.accel) + ' m/s2, feet allow ' + sig(pl.anchor.R / rex.m));
+    // review round 3 (physics-bolted-pull-legs-unbounded): Bolted removes the footing limit, not the muscle limit. With
+    // the power on his feet push his own body with at most his legs' push, the strength he uses (the Sprint tab's
+    // push-off: review round 3's re-check, fixes-pull-legs-vs-sprint; the 1.4x leg rule is for carrying weight up), on
+    // either footing and at any effort; on friction his grip caps it too. Light loads (the car, the motorcycle, the
+    // baseball at the default dial), all-out and at 30 kg-force (the least-disruptive floor): walkPush.J / walkPush.T <=
+    // the strength he uses; where his own body sets the pace (footLimited: all-out always, and at 30 kg-force here) it is
+    // exactly the cap: bolted his legs' full push, on friction the smaller of it and his grip; all-out that pace is the
+    // Sprint tab's push-off / his mass (bolted and on friction), so a towed load never out-accelerates his sprint; the
+    // bus, heavier than he is, keeps the load's pace bolted
+    { const bad = [], seen = [];
+      for (const anchor of ['bolted', 'friction']) for (const id of ['car', 'motorcycle', 'baseball']) for (const use of [null, 30 * g]) {
+        const cc = Object.assign(ctxOf(90718.474 * g, Object.assign({ anchor }, ON)), use ? { use } : {}), r = P.pull(cc, obj(id)), tag = anchor + ' ' + id + (use ? ' at 30 kg-force' : ' all-out');
+        if (!r.canMove || !r.walkPush) { bad.push(tag + ': does not move'); continue; }
+        const legs = r.walkPush.J / r.walkPush.T, cap = Math.min(r.anchor.R, r.usable);
+        seen.push(tag + ' ' + sig(legs / r.usable) + 'x');
+        if (!(legs <= r.usable * (1 + 1e-12))) bad.push(tag + ': his legs push ' + sig(legs / r.usable) + 'x the strength he uses');
+        if (!(r.accel <= cap / rex.m * (1 + 1e-12))) bad.push(tag + ': a ' + sig(r.accel) + ' m/s2 past his feet\'s ' + sig(cap / rex.m));
+        if (!(r.footLimited && near(r.accel, cap / rex.m, 1e-12) && near(legs, cap, 1e-9))) bad.push(tag + ': not his own body\'s pace at his feet\'s cap (a ' + sig(r.accel) + ', feet ' + sig(cap / rex.m) + ', legs ' + sig(legs / r.usable) + 'x)');
+        if (!use) { const sp = P.sprint(cc); if (!near(r.accel, sp.accel, 1e-12)) bad.push(tag + ': a ' + sig(r.accel) + ' m/s2, not the Sprint tab\'s push-off ' + sig(sp.accel)); }
+      }
+      const bb = P.pull(ctxOf(90718.474 * g, Object.assign({ anchor: 'bolted' }, ON)), obj('bus'));
+      if (bb.footLimited || !near(bb.accel, (bb.usable - bb.resist) / obj('bus').m, 1e-12) || !(bb.walkPush && bb.walkPush.J / bb.walkPush.T < bb.usable)) bad.push('bolted bus: should keep the load\'s pace under his legs\' cap');
+      ok('5d: with They take their own recoil on, his legs cap his feet\'s push on his own body at the strength he uses (the Sprint tab\'s push-off), bolted and on friction, all-out and at 30 kg-force (the car, the motorcycle and the baseball at the default dial); a light load is pulled at his own body\'s pace, all-out the Sprint tab\'s; the bolted bus keeps the load\'s', !bad.length, bad.length ? bad.join('; ') : seen.join(', ')); }
     const cl = P.clap(cr), cl0 = P.clap(c), j = P.jump(cr), j0 = P.jump(c), sp = P.sprint(cr), sp0 = P.sprint(c);
-    ok('5d: a clap, a jump and a sprint are unchanged', cl.vHand === cl0.vHand && j.v === j0.v && sp.vTop === sp0.vTop);
+    ok('5d: a clap, a jump and a sprint are unchanged', cl.vHand === cl0.vHand && j.v === j0.v && sp.vTop === sp0.vTop && !cl.recoilAbsorbed && !j.recoilAbsorbed && !sp.recoilAbsorbed);
     const st = P.stomp(ctxOf(1e8 * g, { ownRecoil: true })), st0 = P.stomp(ctxOf(1e8 * g)), stL = P.stomp(ctxOf(1e8 * g, { ownRecoil: true, stompLaunch: true }));
     ok('5d: a stomp no longer launches him (except the Collide tab\'s stomp-launch, which is the point)', st.vBody === 0 && st0.vBody > 0 && stL.vBody === st0.vBody);
+    const stB = P.stomp(ctxOf(1e8 * g, { ownRecoil: true, anchor: 'bolted' })), stB0 = P.stomp(ctxOf(1e8 * g, { anchor: 'bolted' }));
+    ok('5d: ... its upward push on him (the foot\'s momentum, as he is held) goes to his source, pointing up, bolted too; not with it off, nor in the stomp-launch; the foot\'s blow on the ground is unchanged', st.recoilAbsorbed && st.recoilAbsorbed.J === st.push.pB && st.recoilAbsorbed.T === st.push.t && st.recoilAbsorbed.thetaDeg === -90 && stB.recoilAbsorbed && stB.recoilAbsorbed.J === stB.push.pB && !st0.recoilAbsorbed && !stB0.recoilAbsorbed && !stL.recoilAbsorbed && st.vFoot === stB0.vFoot && P.ppvAt(M.stomp.shake(st, { surface: surf('concrete'), body: rex, ownRecoil: true }), 5) === P.ppvAt(M.stomp.shake(stB0, { surface: surf('concrete'), body: rex }), 5), st.recoilAbsorbed ? sig(st.recoilAbsorbed.J) + ' kg m/s' : 'none');
     const cOn = Object.assign(ctxOf(1e7 * g, { ownRecoil: true }), { body: ollie }), cOff = Object.assign(ctxOf(1e7 * g), { body: ollie });
     const coL = P.collide(cOn, ctxOf(1e7 * g, { ownRecoil: true }), { source: 'stomp' }), coL0 = P.collide(cOff, ctxOf(1e7 * g), { source: 'stomp' });
     ok('5d: the Collide tab\'s stomp-launch charge is the same with it on', !coL.noCharge && coL.v0 === coL0.v0 && coL.v0 > 1, sig(coL.v0) + ' m/s'); }
@@ -359,33 +400,165 @@ const sig = (x) => Number(x).toPrecision(3);
   { const cR = ctxOf(1e6 * g), cO = Object.assign({}, cR, { body: ollie }), cRr = Object.assign({ ownRecoil: true }, cR), cOr = Object.assign({ ownRecoil: true }, cO);
     const sh = P.shove(cRr, cOr), sh0 = P.shove(cR, cO);
     ok('5d: the shover doesn\'t recoil; the partner he shoves keeps his own footing', sh.vA === 0 && sh0.vA > 0 && sh.vB > 0);
-    ok('5d: with only They take their own recoil on, the shove hands the ground his push', !!sh.toGround && sh.toGround.J > 0, sh.toGround ? sig(sh.toGround.J) + ' kg m/s' : 'none');
-    // the partner toss: his push and his catch go into the ground with their powers on, none with them off
-    const tp = P.tossPartner(Object.assign({}, cR, ON), ollie, 'Ollie', 'hard', 10, 'friction'), tp0 = P.tossPartner(cR, ollie, 'Ollie', 'hard', 10, 'friction');
-    ok('5d: tossing Ollie up and catching him: the toss\'s push and the catch go into the ground with their powers on (not with them off)', tp.toGroundT && tp.toGroundT.J > 0 && (tp.result !== 'caught' || (tp.toGroundC && tp.toGroundC.J > 0)) && !tp0.toGroundT && !tp0.toGroundC, tp.result);
+    const fB = P.anchorCapacity({ body: ollie, surface: cO.surface, theta: 0, anchor: cO.anchor, groundHolds: P.holdsGround(cOr), mA: ollie.m }).R;
+    ok('5d: with only They take their own recoil on, the shove\'s push back goes to his source (his partner\'s momentum plus what his partner\'s footing took during the push), pointing away from his partner; nothing from his feet into the ground', !sh.toGround && sh.recoilAbsorbed && near(sh.recoilAbsorbed.J, P.vToMomentum(sh.vB, ollie.m) + fB * sh.push.t, 1e-6) && sh.recoilAbsorbed.thetaDeg === 0 && !sh0.recoilAbsorbed && !sh0.toGround, sh.recoilAbsorbed ? sig(sh.recoilAbsorbed.J) + ' kg m/s' : 'none');
+    // the partner toss: his push and his catch go to his source with their powers on (Q5), into the ground with
+    // Unbreakable footing alone, and neither is reported with them off
+    const tp = P.tossPartner(Object.assign({}, cR, ON), ollie, 'Ollie', 'hard', 10, 'friction'), tp0 = P.tossPartner(cR, ollie, 'Ollie', 'hard', 10, 'friction'), tpU = P.tossPartner(Object.assign({}, cR, ON, { ownRecoil: false }), ollie, 'Ollie', 'hard', 10, 'friction');
+    const tOk = (t) => t.recoilAbsorbedT && near(t.recoilAbsorbedT.J, P.vToMomentum(t.v, ollie.m), 1e-9) && t.recoilAbsorbedT.thetaDeg === 90 && !t.toGroundT && (t.result !== 'caught' || (t.recoilAbsorbedC && near(t.recoilAbsorbedC.J, P.vToMomentum(t.flight.vImpact, ollie.m), 1e-12) && t.recoilAbsorbedC.angleDeg === 90 && !t.toGroundC && t.catch.uAfter === 0));
+    ok('5d: tossing Ollie up and catching him with their powers on: the toss\'s push back and the catch\'s stop go to his source (his partner\'s momentum each way, straight down), none into the ground; with Unbreakable footing alone both go into the ground; with them off neither is reported', tp.result === 'caught' && tOk(tp) && tpU.toGroundT && tpU.toGroundT.J > 0 && tpU.toGroundC && tpU.toGroundC.J > 0 && !tpU.recoilAbsorbedT && !tpU.recoilAbsorbedC && !tp0.toGroundT && !tp0.toGroundC && !tp0.recoilAbsorbedT && !tp0.recoilAbsorbedC, tp.result + (tp.recoilAbsorbedT ? ': ' + sig(tp.recoilAbsorbedT.J) + ' / ' + sig(tp.recoilAbsorbedC && tp.recoilAbsorbedC.J) + ' kg m/s' : ''));
     const pm = P.pushMatch(cRr, cOr), pm0 = P.pushMatch(cR, cO), aw = P.armWrestle(cRr, cOr), aw0 = P.armWrestle(cR, cO);
     const co = P.collide(cRr, cOr, { source: 'sprint' }), co0 = P.collide(cR, cO, { source: 'sprint' });
     ok('5d: the shoving match, arm wrestling and Collide are unchanged (being pushed is what Bolted is for)', pm.outcome === pm0.outcome && pm.contact === pm0.contact && aw.outcome === aw0.outcome && aw.contact === aw0.contact && co.outcome === co0.outcome && co.Q === co0.Q);
     const L = P.catchLeg(cRr, cOr, obj('car'), 30, 'hard'), L0 = P.catchLeg(cR, cO, obj('car'), 30, 'hard');
+    ok('5d: in the game of catch the thrower isn\'t shoved back', L.recoil.v === 0 && L0.recoil.v > 0, 'thrower off: ' + sig(L0.recoil.v) + ' m/s');
+    // the catcher's stop is his own push back too (canon: a catch is absorbed, unless he chooses otherwise): planted
     const k1 = P.catchIt(cOr, obj('car'), 60, 10, null), k0 = P.catchIt(cO, obj('car'), 60, 10, null);
-    ok('5d: in the game of catch the thrower isn\'t shoved back; the catcher\'s footing is his own (the same catch at the same speed)', L.recoil.v === 0 && L0.recoil.v > 0 && k1.slide === k0.slide && k1.R === k0.R, 'thrower off: ' + sig(L0.recoil.v) + ' m/s');
-    // the thrower's push into the ground is the Throw tab's: the object and his throwing hand's momentum, less his recoil
+    ok('5d: the catcher takes his own stop (a car at 60 m/s, 10^6 kg dial): planted, no slip, no slide, never carried off; with it off his feet slide', k1.slide === 0 && k1.uAfter === 0 && !k1.slips && !k1.carried && k1.R === Infinity && k0.slips && k0.slide > 1 && k0.uAfter > 0, 'off: slides ' + sig(k0.slide) + ' m at ' + sig(k0.uAfter) + ' m/s');
+    ok('5d: ... in the game of catch the whole stop goes to his source along the car\'s arrival, none into the ground, and he doesn\'t slide', L.catch && L.catch.slide === 0 && L.catch.uAfter === 0 && !L.toGroundC && L.recoilAbsorbedC && near(L.recoilAbsorbedC.J, P.vToMomentum(L.vArrive, obj('car').m), 1e-12) && L.recoilAbsorbedC.angleDeg === L.angleDeg && L.recoilAbsorbedC.T === L.catch.tStroke && L0.catch.slide > 0 && !L0.recoilAbsorbedC, L.result + (L.recoilAbsorbedC ? ': ' + sig(L.recoilAbsorbedC.J) + ' kg m/s' : ''));
+    // the thrower's push back is the Throw tab's: the object and his throwing hand's momentum, less his recoil (none)
     const Lb = P.catchLeg(cRr, cOr, obj('baseball'), 10, 'hard'), tb = P.throwObject(cRr, obj('baseball'), Lb.aim.thetaDeg);
-    ok('5d: the catch thrower\'s push into the ground matches the Throw tab\'s for the same throw (the ball\'s momentum: his arm\'s comes back in the follow-through)', near(Lb.toGroundT.J, tb.toGround.J, 1e-9) && near(Lb.toGroundT.J, P.vToMomentum(Lb.aim.vL, obj('baseball').m), 1e-6), sig(Lb.toGroundT.J) + ' kg m/s');
-    // a throw that ends in a fireball: the thrower still pushed (the Throw tab's push)
+    ok('5d: the catch thrower\'s push back goes to his source and matches the Throw tab\'s for the same throw (the ball\'s momentum: his arm\'s comes back in the follow-through); nothing into the ground', !Lb.toGroundT && Lb.recoilAbsorbedT && tb.recoilAbsorbed && near(Lb.recoilAbsorbedT.J, tb.recoilAbsorbed.J, 1e-9) && near(Lb.recoilAbsorbedT.J, P.vToMomentum(Lb.aim.vL, obj('baseball').m), 1e-6) && Lb.recoilAbsorbedT.thetaDeg === Lb.aim.thetaDeg, Lb.recoilAbsorbedT ? sig(Lb.recoilAbsorbedT.J) + ' kg m/s' : 'none');
+    // ... with Unbreakable footing alone the same push goes into the ground under him
+    const cRu = Object.assign({ unbreakable: true }, cR), LbU = P.catchLeg(cRu, Object.assign({ unbreakable: true }, cO), obj('baseball'), 10, 'hard'), tbU = P.throwObject(cRu, obj('baseball'), LbU.aim.thetaDeg);
+    ok('5c: with Unbreakable footing alone the catch thrower\'s push goes into the ground (the Throw tab\'s push for the same throw)', LbU.toGroundT && tbU.toGround && near(LbU.toGroundT.J, tbU.toGround.J, 1e-9) && !LbU.recoilAbsorbedT, LbU.toGroundT ? sig(LbU.toGroundT.J) + ' kg m/s' : 'none');
+    // a throw that ends in a fireball: the thrower still pushed (the Throw tab's push), to his source
     const cRf = ctxOf(1e20 * g, { airAbsorb: 0.5, ownRecoil: true }), Lf = P.catchLeg(cRf, Object.assign({}, cRf, { body: ollie }), obj('baseball'), 1000, 'hard'), tf = Lf.result === 'fireball' ? P.throwObject(cRf, obj('baseball'), Lf.thetaDeg) : null;
-    ok('5d: a catch throw that becomes a fireball still pushes the ground under the thrower (the Throw tab\'s push)', Lf.result === 'fireball' && Lf.toGroundT && tf && near(Lf.toGroundT.J, tf.toGround.J, 1e-9), Lf.result); }
+    ok('5d: a catch throw that becomes a fireball: the thrower\'s push back still goes to his source (the Throw tab\'s), none into the ground', Lf.result === 'fireball' && !Lf.toGroundT && Lf.recoilAbsorbedT && tf && tf.recoilAbsorbed && near(Lf.recoilAbsorbedT.J, tf.recoilAbsorbed.J, 1e-9), Lf.result); }
+}
+
+// 5e. They take their own recoil, the rest of BRIEF-canon.md item 2 (pull request 2's decisions): the power wins over
+// Bolted for his own moves; his feet carry only the weights; the catcher is never carried off; the throw's shaking is
+// its landing's alone; the arm-wrestle pin's slam reaches the ground whole at any swing time
+{
+  const conc = surf('concrete'), Nmax = (sf, B) => P.qultFor(sf, (B || rex).footB) * 2 * (B || rex).footArea;
+  // own recoil wins over Bolted for his own moves: with both on the push back goes to his source, not through the bolts
+  { const cB = ctxOf(1e6 * g, Object.assign({}, ON, { anchor: 'bolted' })), r = P.throwObject(cB, obj('car'), 45), sh = P.shove(cB, Object.assign(ctxOf(1e6 * g, ON), { body: ollie }));
+    const cB0 = ctxOf(1e6 * g, { anchor: 'bolted' }), r0 = P.throwObject(cB0, obj('car'), 45);
+    ok('5d: bolted with They take their own recoil on, a throw\'s and a shove\'s push back go to his source, not through his bolts (bolted alone, nothing is reported, as before)', !r.toGround && r.recoilAbsorbed && near(r.recoilAbsorbed.J, r.push.pB * obj('car').m / r.mB, 1e-12) && !sh.toGround && sh.recoilAbsorbed && sh.recoilAbsorbed.J > 0 && !r0.toGround && !r0.recoilAbsorbed); }
+  // his feet carry only the weights (his own and the load's he holds): the push back isn't on them
+  { const sets = [['own recoil only', { ownRecoil: true }], ['all four on', ON]], bad = [];
+    for (const [lab, x] of sets) for (const [oid, th] of [['car', 45], ['bus', 30], ['piano', 60], ['car', 90]]) {
+      const c = ctxOf(1e9 * g, x), r = P.throwObject(c, obj(oid), th), bear = Nmax(conc), want = (rex.m + obj(oid).m) * g / bear;
+      const got = x.unbreakable ? r.sinkRatioRaw : r.sinkRatio;
+      if (!(r.canMove && near(got, want, 1e-12) && (x.unbreakable ? r.sinkRatio === 0 : true))) bad.push(lab + ' ' + oid + ' ' + th + ': ' + sig(got) + ' vs ' + sig(want));
+    }
+    const r0 = P.throwObject(ctxOf(1e9 * g), obj('car'), 45), rU = P.throwObject(ctxOf(1e9 * g, { unbreakable: true }), obj('car'), 45);
+    ok('5d: with They take their own recoil on, his feet carry only his weight and the load\'s (a car at 45 degrees and more at a 10^9 kg dial): the push back isn\'t on them; with it off (Unbreakable footing alone too) the push drives them down past what concrete bears', !bad.length && r0.sinkRatio > 1 && rU.sinkRatioRaw > 1, bad.join('; ') || 'car 45: off ' + sig(r0.sinkRatio) + 'x the bearing, on ' + sig((rex.m + obj('car').m) * g / Nmax(conc)) + 'x');
+    // ... the same in the wrestle throw (his partner held up is weight, not recoil: decision 3)
+    const wbad = [];
+    for (const [lab, x] of sets) { const c = ctxOf(1e9 * g, x), t = P.throwPartner(c, Object.assign({}, c, { body: ollie }), 45), want = (rex.m + ollie.m) * g / Nmax(conc);
+      if (!(t.r && t.r.canMove && near(x.unbreakable ? t.r.sinkRatioRaw : t.r.sinkRatio, want, 1e-12))) wbad.push(lab + ': ' + sig(t.r && (x.unbreakable ? t.r.sinkRatioRaw : t.r.sinkRatio)) + ' vs ' + sig(want)); }
+    const tw0 = P.throwPartner(ctxOf(1e9 * g), Object.assign(ctxOf(1e9 * g), { body: ollie }), 45);
+    ok('5d: ... and in the wrestle throw (Ollie thrown at 45 degrees at a 10^9 kg dial): with it on his feet carry only his weight and Ollie\'s; with it off the push drives them down past what concrete bears', !wbad.length && tw0.r.sinkRatio > 1, wbad.join('; ') || 'off ' + sig(tw0.r.sinkRatio) + 'x the bearing');
+    // so his throw can't break the ground under him with it on: the ground hazard (own recoil alone) and the break-the-ground
+    // preset (all four on: it sets Unbreakable footing aside, not his recoil) are never; with it off both are found
+    const o = { obj: obj('car'), angle: 45, target: 30 }, pOR = P.RESTRAINT.planNow('throw', ctxOf(1e9 * g, { ownRecoil: true }), o), pON = P.RESTRAINT.planNow('throw', ctxOf(1e9 * g, ON), o), p0 = P.RESTRAINT.planNow('throw', ctxOf(1e9 * g), o), pU = P.RESTRAINT.planNow('throw', ctxOf(1e9 * g, { unbreakable: true }), o);
+    ok('5d: ... so with it on his throw never breaks the ground under him (a car at 45 degrees, 10^9 kg dial): the ground hazard and the "break the ground" preset are never; with it off both are found', pOR.result('hazard:ground').never && pON.result('preset:ground').never && !p0.result('hazard:ground').never && !pU.result('preset:ground').never, 'off: ' + sig(p0.result('hazard:ground').use / g) + ' kg-force'); }
+  // the catch's stop and the partner toss: the catcher's feet carry only his weight and its, with the power on
+  { const cO = Object.assign(ctxOf(1e6 * g, { ownRecoil: true }), { body: ollie }), k = P.catchIt(cO, obj('car'), 60, 30, null), k0 = P.catchIt(Object.assign({}, cO, { ownRecoil: false }), obj('car'), 60, 30, null);
+    const t = P.tossPartner(ctxOf(1e9 * g, { ownRecoil: true }), ollie, 'Ollie', 'hard', 10, 'friction'), t0 = P.tossPartner(ctxOf(1e9 * g), ollie, 'Ollie', 'hard', 10, 'friction');
+    ok('5d: the catcher\'s feet carry only his weight and the object\'s with his recoil taken (a car at 60 m/s coming down at 30 degrees; Rex catching a tossed Ollie at 10^9 kg); with it off the stop presses them too', near(k.sinkRatio, (ollie.m + obj('car').m) * g / Nmax(conc, ollie), 1e-12) && k0.sinkRatio > k.sinkRatio && t.catch && near(t.catch.sinkRatio, (rex.m + ollie.m) * g / Nmax(conc), 1e-12) && t0.catch.sinkRatio > 1, sig(t0.catch.sinkRatio) + 'x the bearing with it off, ' + sig(t.catch.sinkRatio) + 'x on');
+    // (review round 2) ... and with Unbreakable footing on too (all four on, the page's default), where the engine reports
+    // what real ground would bear (sinkRatioRaw): still the weights only, not his stop's push back; with his recoil not
+    // taken (Unbreakable footing alone) the stop presses them
+    const cOU = Object.assign(ctxOf(1e6 * g, ON), { body: ollie }), kU = P.catchIt(cOU, obj('car'), 60, 30, null), kU0 = P.catchIt(Object.assign({}, cOU, { ownRecoil: false }), obj('car'), 60, 30, null);
+    const tU = P.tossPartner(ctxOf(1e9 * g, ON), ollie, 'Ollie', 'hard', 10, 'friction'), tU0 = P.tossPartner(ctxOf(1e9 * g, Object.assign({}, ON, { ownRecoil: false })), ollie, 'Ollie', 'hard', 10, 'friction');
+    ok('5d: ... with Unbreakable footing on too (all four on), the load real ground would bear under the catcher (sinkRatioRaw) is the weights only: the car at 60 m/s on Ollie at 10^6 kg, and Rex catching a tossed Ollie at 10^9 kg; with his recoil not taken his stop presses them', near(kU.sinkRatioRaw, (ollie.m + obj('car').m) * g / Nmax(conc, ollie), 1e-12) && kU0.sinkRatioRaw > kU.sinkRatioRaw * 1.5 && tU.catch && near(tU.catch.sinkRatioRaw, (rex.m + ollie.m) * g / Nmax(conc), 1e-12) && tU0.catch && tU0.catch.sinkRatioRaw > 1, 'on ' + sig(kU.sinkRatioRaw) + ' / ' + sig(tU.catch && tU.catch.sinkRatioRaw) + 'x; off ' + sig(kU0.sinkRatioRaw) + ' / ' + sig(tU0.catch && tU0.catch.sinkRatioRaw) + 'x'); }
+  // the catcher is never carried off with it on: the All-Star fastball at a 10^20 kg dial; with it off he is (as before)
+  { const cR = ctxOf(1e20 * g, ON), L = P.catchLeg(cR, Object.assign({}, cR, { body: ollie }), obj('baseball'), 10, 'hard');
+    const c0 = ctxOf(1e20 * g, Object.assign({}, ON, { ownRecoil: false })), L0 = P.catchLeg(c0, Object.assign({}, c0, { body: ollie }), obj('baseball'), 10, 'hard');
+    ok('5d: a catch past 1% of light speed (a fastball at a 10^20 kg dial): with his recoil taken he is planted and its whole momentum goes to his source, all its motion energy freed at the catch; with it off it carries him off', L.result === 'caught' && L.catch.relativistic && !L.catch.carried && L.catch.uAfter === 0 && L.catch.slide === 0 && L.recoilAbsorbedC && L.recoilAbsorbedC.J === L.catch.pIn && !L.toGroundC && near(L.catch.Ecatch, P.momentumToKE(L.catch.pIn, obj('baseball').m), 1e-9) && L0.catch && L0.catch.carried && L0.catch.uAfter > 0.01 * P.K.c, 'off: carried off at ' + sig(L0.catch && L0.catch.uAfter / 1000) + ' km/s');
+    // the round trip: planted, the stroke isn't forced, so it is the throws and flights alone (at 10^9: a fastball)
+    const c9 = ctxOf(1e9 * g, ON), G = P.catchGame(c9, Object.assign({}, c9, { body: ollie }), obj('baseball'), 10, 'hard');
+    ok('5d: in the game of catch with their recoil taken neither catcher slips, so the round trip is the throws and the flights (a fastball 10 m apart at 10^9 kg)', G.a.result === 'caught' && G.b.result === 'caught' && !G.a.catch.slips && !G.b.catch.slips && G.round > 0 && isFinite(G.round), sig(G.round) + ' s'); }
+  // every outcome where the object reaches him, with the catcher's power on: planted, the whole stop to his source,
+  // nothing into the ground. At unlimited strength (no arms can stop it; it slams into him), a catch he can't hold up
+  // (Rex at 10^5 kg lobs a car 30 m to Ollie at 500 kg) and wreckage (a motorcycle fastball 10 m apart at 10^6 kg, Things
+  // keep their form off); with his power off (Unbreakable footing on) he slides, is carried off, or his stop goes into
+  // the ground as before
+  { const bad = [], pOf = (L) => P.vToMomentum(L.vArrive, L.obj ? L.obj.m : 0);
+    const planted = (L) => L.catch && L.catch.uAfter === 0 && L.catch.slide === 0 && !L.catch.carried && !L.toGroundC;
+    const cI = ctxOf(Infinity, ON), LI = P.catchLeg(cI, Object.assign({}, cI, { body: ollie }), obj('baseball'), 10, 'hard');
+    const cIo = ctxOf(Infinity, Object.assign({}, ON, { ownRecoil: false })), LIo = P.catchLeg(cIo, Object.assign({}, cIo, { body: ollie }), obj('baseball'), 10, 'hard');
+    if (!(LI.result === 'slams' && planted(LI) && LI.recoilAbsorbedC && LI.recoilAbsorbedC.J === Infinity && near(LI.catch.sinkRatioRaw, (ollie.m + obj('baseball').m) * g / Nmax(conc, ollie), 1e-9) && LIo.catch.carried && !LIo.recoilAbsorbedC))
+      bad.push('unlimited: ' + JSON.stringify({ result: LI.result, carried: LI.catch && LI.catch.carried, uAfter: LI.catch && LI.catch.uAfter, sinkRatioRaw: LI.catch && LI.catch.sinkRatioRaw, J: LI.recoilAbsorbedC && LI.recoilAbsorbedC.J, offCarried: LIo.catch && LIo.catch.carried }));
+    for (const [lab, x, kgT, kgC, oid, Dd, style, want] of [['a catch he can\'t hold', {}, 1e5, 500, 'car', 30, 'easy', 'cant-hold-it'], ['wreckage', { keepForm: false }, 1e6, 1e6, 'motorcycle', 10, 'hard', 'wreckage']]) {
+      const leg = (own) => { const st = Object.assign({}, ON, x, { ownRecoil: own }), cT = ctxOf(kgT * g, st); return P.catchLeg(cT, Object.assign(ctxOf(kgC * g, st), { body: ollie }), obj(oid), Dd, style); };
+      const L = leg(true), L0 = leg(false);
+      L.obj = L0.obj = obj(oid);
+      if (!(L.result === want && planted(L) && L.recoilAbsorbedC && near(L.recoilAbsorbedC.J, pOf(L), 1e-9) && L.recoilAbsorbedC.angleDeg === (L.angleDeg || 0) && L0.result === want && !L0.recoilAbsorbedC && L0.catch.slide > 0 && (want !== 'wreckage' || (L0.toGroundC && L0.toGroundC.J > 0))))
+        bad.push(lab + ': ' + JSON.stringify({ result: L.result, J: L.recoilAbsorbedC && L.recoilAbsorbedC.J, want: pOf(L), toGroundC: !!L.toGroundC, uAfter: L.catch && L.catch.uAfter, off: L0.result, offJ: L0.toGroundC && L0.toGroundC.J }));
+    }
+    ok('5d: with the catcher\'s recoil taken, every outcome where it reaches him leaves him planted with the whole stop in his source and none in the ground: an unlimited fastball that slams into him (his feet carry only the weights), a catch he can\'t hold up, wreckage; with it off he is carried off, slides, or (wreckage, Unbreakable footing on) his stop goes into the ground', !bad.length, bad.join('; ')); }
+  // planting the catcher: his arms stop the full arrival speed, so a hard catch can turn into a slam (a bus thrown hard
+  // 10 m apart at the default dial): a consequence, reported
+  { const cR = ctxOf(100 * 907.18474 * g, ON), cO = Object.assign({}, cR, { body: ollie }), L = P.catchLeg(cR, cO, obj('bus'), 10, 'hard');
+    const c0 = ctxOf(100 * 907.18474 * g, Object.assign({}, ON, { ownRecoil: false })), L0 = P.catchLeg(c0, Object.assign({}, c0, { body: ollie }), obj('bus'), 10, 'hard');
+    ok('5d: planted, the catcher\'s arms stop all of it: a bus thrown hard 10 m apart at the default dial slams into him (with his feet free to slide, his arms could stop it); his source still takes the whole stop', L.result === 'slams' && L.catch.vSlam > 0 && L.catch.uAfter === 0 && L.recoilAbsorbedC && near(L.recoilAbsorbedC.J, P.vToMomentum(L.vArrive, obj('bus').m), 1e-12) && L0.result === 'caught', L.result + ' at ' + sig(L.catch.vSlam) + ' m/s; off: ' + L0.result); }
+  // the throw's shaking: with the power on only the landing, never 'him'; with Unbreakable footing alone, heavy flat
+  // throws are shaken hardest by his push (so the test can tell them apart)
+  { const bad = []; let him = 0;
+    for (const sid of ['concrete', 'gravel', 'granite']) for (const oid of ['bus', 'semi', 'loco', 'car']) for (const th of [0, 45]) for (const lg of [5, 9]) {
+      const sfc = surf(sid), c = ctxOf(Math.pow(10, lg) * g, Object.assign({}, ON, { surface: sfc })), r = P.throwObject(c, obj(oid), th), o = Object.assign({ obj: obj(oid), angle: th, surface: sfc, body: rex, near: 5 }, ON);
+      if (!r.canMove) continue;
+      const s = M.throw.shake(r, o), land = M.throw.landShake(r, o);
+      if (r.toGround || Array.isArray(s) || M.throw.shakeFrom(r, o) !== 'landing' || P.ppvAt(s, 5) !== P.ppvAt(land, 5)) bad.push(oid + ' ' + th + ' ' + sid + ' 1e' + lg);
+      const cU = ctxOf(Math.pow(10, lg) * g, { unbreakable: true, surface: sfc }), rU = P.throwObject(cU, obj(oid), th), oU = { obj: obj(oid), angle: th, surface: sfc, body: rex, near: 5, unbreakable: true };
+      if (rU.canMove && M.throw.shakeFrom(rU, oU) === 'him') him++;
+    }
+    const esc = P.throwObject(ctxOf(1e12 * g, ON), obj('car'), 45);
+    ok('5d: with their powers on a throw\'s shaking is its landing\'s alone, never his push\'s (heavy and light throws, flat and at 45 degrees, on concrete, gravel and granite); a throw that never comes down shakes nothing; with Unbreakable footing alone his push is the larger in ' + him + ' of them', !bad.length && him > 0 && esc.flight.escaped && M.throw.shake(esc, Object.assign({ obj: obj('car'), angle: 45, surface: conc, body: rex }, ON)) === null, bad.slice(0, 4).join('; ')); }
+  // the arm-wrestle pin with the winner's recoil taken: the slam reaches the ground whole at any swing time
+  { const pinAt = (FA, FB, x) => P.armWrestle(ctxOf(FA, Object.assign({ keepForm: true }, x)), Object.assign(ctxOf(FB, Object.assign({ keepForm: true }, x)), { body: ollie }));
+    const fromE = (E, Mf) => Math.sqrt(E * E + 2 * E * Mf * P.K.c * P.K.c) / P.K.c;
+    const dial = 100 * 907.18474 * g, a = pinAt(dial, dial / 2, ON), aU = pinAt(dial, dial / 2, { unbreakable: true }), aR = pinAt(dial, dial / 2, { ownRecoil: true });
+    ok('5d: a quick arm-wrestling pin (its swing shorter than a limb\'s contact time), the winner taking his own recoil: the swing\'s push back goes to his source (up), so the slam\'s blow reaches the ground whole with Unbreakable footing, through his legs over a limb\'s contact time (not the swing\'s); without the power the two cancel there (no net push)', a.outcome === 'pin' && a.pin.t < P.limbPulse(rex) && a.toGround && a.recoilAbsorbed && near(a.toGround.J, fromE(a.pin.E, a.pin.M), 1e-12) && a.recoilAbsorbed.J === a.toGround.J && a.toGround.T === P.limbPulse(rex) && a.recoilAbsorbed.thetaDeg === -90 && a.recoilAbsorbed.T === a.pin.t && !aU.toGround && !aU.recoilAbsorbed && aR.recoilAbsorbed && !aR.toGround, a.toGround ? sig(a.toGround.J) + ' kg m/s over ' + sig(a.toGround.T) + ' s' : a.outcome);
+    // near light speed the slam's momentum follows its energy (the rounded speed would freeze it): Rex at 10^26 and
+    // 10^30 kg against Ollie at 10^4 kg
+    const bad = [];
+    for (const lg of [26, 30]) { const r = pinAt(Math.pow(10, lg) * g, 1e4 * g, ON), want = fromE(r.pin.E, r.pin.M);
+      if (!(r.outcome === 'pin' && r.toGround && near(r.toGround.J, want, 1e-9) && r.toGround.T === P.limbPulse(rex) && r.recoilAbsorbed.J === r.toGround.J && (lg < 30 || r.toGround.J > 100 * P.vToMomentum(r.pin.v, r.pin.M)))) bad.push('1e' + lg + ': ' + sig(r.toGround && r.toGround.J) + ' vs ' + sig(want) + ' over ' + sig(r.toGround && r.toGround.T) + ' s'); }
+    ok('5d: past 1% of light speed the pin\'s momentum follows its energy (Rex at 10^26 and 10^30 kg against Ollie at 10^4 kg; at 10^30 the rounded speed gives a hundredth of it)', !bad.length, bad.join('; ')); }
+  // the wrestle throw: the thrower's push back goes to his source (his partner's momentum, back along the throw line);
+  // Ollie's landing isn't his recoil and still goes into the ground (Unbreakable footing's cap where it binds)
+  { const dial = 100 * 907.18474 * g, cA = ctxOf(dial, ON), t = P.throwPartner(cA, Object.assign({}, cA, { body: ollie }), 45), cU = ctxOf(dial, { unbreakable: true }), tU = P.throwPartner(cU, Object.assign({}, cU, { body: ollie }), 45);
+    const c9 = ctxOf(1e9 * g, ON), t9 = P.throwPartner(c9, Object.assign({}, c9, { body: ollie }), 45);
+    ok('5d: the wrestle throw with their powers on: the thrower\'s push back (his partner\'s momentum) goes to his source, none into the ground; with Unbreakable footing alone it goes into the ground; the partner\'s landing still reaches the ground (10^9 kg dial)', t.r.canMove && !t.r.toGround && t.r.recoilAbsorbed && near(t.r.recoilAbsorbed.J, P.vToMomentum(t.r.v, ollie.m), 1e-9) && t.r.recoilAbsorbed.thetaDeg === 45 && tU.r.toGround && !tU.r.recoilAbsorbed && !t9.r.toGround && t9.r.recoilAbsorbed && t9.landToGround && t9.landToGround.J > 0, t.r.recoilAbsorbed ? sig(t.r.recoilAbsorbed.J) + ' kg m/s' : 'none'); }
+  // a shove into a bolted partner with Unbreakable footing alone: his bolts still hand the planet the whole push; with
+  // the shover's recoil taken he is planted too, so the shove stalls and nothing goes anywhere
+  { const cR = ctxOf(1e6 * g, { unbreakable: true }), sh = P.shove(cR, Object.assign({}, cR, { body: ollie, anchor: 'bolted' })), cRo = ctxOf(1e6 * g, ON), sho = P.shove(cRo, Object.assign({}, cRo, { body: ollie, anchor: 'bolted' }));
+    ok('5c/5d: a shove into a bolted partner: with Unbreakable footing alone his bolts hand the planet the whole push (and the shover\'s feet their share); with the shover\'s recoil taken both are planted and the shove stalls', sh.toGroundB && sh.toGroundB.J > 0 && sh.toGround && !sh.recoilAbsorbed && sho.stalled && !sho.toGroundB && !sho.toGround && !sho.recoilAbsorbed); }
+}
+
+// Review round 2 of pull request 2 (code-9's optional hardening): each push back's time is the push's own (the engine
+// header: T, how long the push lasts), where the page doesn't show it yet (the shimmer, a later pull request, will)
+{
+  const c9 = ctxOf(1e9 * g, ON), c6 = ctxOf(1e6 * g, ON), bad = [];
+  const tr = P.throwObject(c9, obj('car'), 45);
+  if (!(tr.canMove && tr.push.t < P.limbPulse(rex) && tr.recoilAbsorbed && tr.recoilAbsorbed.T === tr.push.t)) bad.push('throw: ' + sig(tr.recoilAbsorbed && tr.recoilAbsorbed.T) + ' vs push ' + sig(tr.push && tr.push.t) + ' (limb ' + sig(P.limbPulse(rex)) + ')');
+  const pu = P.punch(c6);
+  if (!(pu.recoilAbsorbed && pu.recoilAbsorbed.T === pu.push.t && pu.push.t > 0)) bad.push('punch: ' + sig(pu.recoilAbsorbed && pu.recoilAbsorbed.T));
+  const sh = P.shove(c9, Object.assign({}, c9, { body: ollie }));
+  if (!(sh.recoilAbsorbed && sh.recoilAbsorbed.T === sh.push.t && sh.push.t > 0 && sh.push.t < P.limbPulse(rex))) bad.push('shove: ' + sig(sh.recoilAbsorbed && sh.recoilAbsorbed.T) + ' vs push ' + sig(sh.push && sh.push.t));
+  const L = P.catchLeg(c9, Object.assign({}, c9, { body: ollie }), obj('baseball'), 10, 'hard'), tb = L.aim ? P.throwObject(c9, obj('baseball'), L.aim.thetaDeg) : null;
+  if (!(L.recoilAbsorbedT && tb && tb.recoilAbsorbed && L.recoilAbsorbedT.T === tb.recoilAbsorbed.T && L.recoilAbsorbedT.T > 0 && L.recoilAbsorbedC && L.recoilAbsorbedC.T === L.catch.tStroke)) bad.push('catch: ' + sig(L.recoilAbsorbedT && L.recoilAbsorbedT.T) + ' vs ' + sig(tb && tb.recoilAbsorbed && tb.recoilAbsorbed.T));
+  const t = P.tossPartner(c6, ollie, 'Ollie', 'hard', 10, 'friction'), tt = P.throwObject(c6, Object.assign(P.partnerAsObject(ollie, 'Ollie'), { dragK: 0 }), 90);
+  if (!(t.result === 'caught' && t.recoilAbsorbedT && tt.recoilAbsorbed && t.recoilAbsorbedT.T === tt.recoilAbsorbed.T && t.recoilAbsorbedT.T > 0 && t.recoilAbsorbedC && t.recoilAbsorbedC.T === t.catch.tStroke && t.catch.tStroke > 0)) bad.push('toss: ' + t.result + ' ' + sig(t.recoilAbsorbedT && t.recoilAbsorbedT.T) + ' vs ' + sig(tt.recoilAbsorbed && tt.recoilAbsorbed.T));
+  ok('5d: each push back taken lasts as long as its push: a fast car throw and a shove at 10^9 kg (each shorter than a limb\'s contact time), a punch, the game of catch\'s throw (the Throw tab\'s) and stop (the stroke), the partner toss (the Throw tab\'s straight up) and its catch', !bad.length, bad.join('; '));
 }
 
 // Round 4 of the review: canon's weak-ground cap on every push, the orbit at 100%, the unbounded jump
 {
   const sand = surf('sand'), qf = (sf) => P.qultFor(sf, rex.footB);
   // a throw straight up that escapes, on concrete: the ground takes its bearing beyond his weight and the car's, over the pulse
-  { const c = ctxOf(1e11 * g, ON), r = P.throwObject(c, obj('car'), 90), RB = qf(c.surface) * 2 * rex.footArea, tg = r.toGround;
-    ok('5c: a car thrown straight up past escape speed: the ground takes (its bearing - his weight and the car\'s) x the pulse, and their power supplies the rest', r.flight.escaped && tg && near(tg.J, (RB - (rex.m + obj('car').m) * g) * tg.T, 1e-9) && near(tg.J + tg.supplied, tg.whole, 1e-12), tg ? sig(tg.J) + ' of ' + sig(tg.whole) + ' kg m/s' : 'none'); }
+  // (Unbreakable footing alone: with They take their own recoil on the push goes to his source instead)
+  { const c = ctxOf(1e11 * g, Object.assign({}, ON, { ownRecoil: false })), r = P.throwObject(c, obj('car'), 90), RB = qf(c.surface) * 2 * rex.footArea, tg = r.toGround;
+    ok('5c: a car thrown straight up past escape speed, his recoil not taken: the ground takes (its bearing - his weight and the car\'s) x the pulse, and their power supplies the rest', r.flight.escaped && tg && near(tg.J, (RB - (rex.m + obj('car').m) * g) * tg.T, 1e-9) && near(tg.J + tg.supplied, tg.whole, 1e-12), tg ? sig(tg.J) + ' of ' + sig(tg.whole) + ' kg m/s' : 'none'); }
   // a gentle toss on sand never hands the ground more than it bears (here none: Rex and Ollie together already weigh
   // more than loose sand bears under his feet), and never more than the all-out toss
-  { const c = ctxOf(1e7 * g, Object.assign({}, ON, { surface: sand })), te = P.tossPartner(c, ollie, 'Ollie', 'easy', 1000, 'friction'), th = P.tossPartner(c, ollie, 'Ollie', 'hard', 1000, 'friction');
+  // (his recoil not taken: with it taken the toss goes to his source)
+  { const c = ctxOf(1e7 * g, Object.assign({}, ON, { surface: sand, ownRecoil: false })), te = P.tossPartner(c, ollie, 'Ollie', 'easy', 1000, 'friction'), th = P.tossPartner(c, ollie, 'Ollie', 'hard', 1000, 'friction');
     const bear = Math.max(0, qf(sand) * 2 * rex.footArea - (rex.m + ollie.m) * g);
     ok('5c: a gentle toss on sand hands the ground no more than it bears, and no more than the all-out toss; the rest is supplied', te.toGroundT && te.toGroundT.J <= bear * te.toGroundT.T + 1e-9 && te.toGroundT.J <= th.toGroundT.J + 1e-9 && near(te.toGroundT.J + te.toGroundT.supplied, te.toGroundT.whole, 1e-12) && th.toGroundT.supplied > 0, te.toGroundT ? 'gentle ' + sig(te.toGroundT.J) + ', all-out ' + sig(th.toGroundT.J) + ' kg m/s' : 'none'); }
   // a stomp on sand: their power stops the foot at the print over a foot's contact time; the ground takes what it
@@ -443,25 +616,28 @@ const sig = (x) => Number(x).toPrecision(3);
   { const I = P.instantGrowth(rex, 1e20, 0.5, { surface: conc, unbreakable: true }), G = I.grown;
     const bear = I.soles * P.qultFor(conc, rex.footB * Math.exp(G.lnr * G.s / 3)) - G.m * g;
     ok('5c: instant growth where the cap binds: the ground takes (its bearing under his grown soles - his grown weight) x the growth time', I.toGround && I.toGround.supplied > 0 && bear > 0 && near(I.toGround.J, bear * I.tau, 1e-9), I.toGround ? sig(I.toGround.J) + ' of ' + sig(I.toGround.whole) : 'none'); }
-  // an angled throw on sand with their recoil taken (as if bolted): the ground can bear none of the downward part, but
-  // takes the sideways part whole
-  { const r = P.throwObject(ctxOf(1e6 * g, Object.assign({}, ON, { surface: sand })), obj('car'), 30), tg = r.toGround;
-    ok('5c: a 30-degree throw on sand with their recoil taken: the ground takes the sideways part whole (cos 30 of the push) and none of the downward part, which their power supplies', tg && near(tg.J, tg.whole * Math.cos(Math.PI / 6), 1e-9) && near(tg.suppliedDown, tg.whole * 0.5, 1e-9) && tg.suppliedSide === 0, tg ? sig(tg.J) + ' of ' + sig(tg.whole) : 'none'); }
+  // an angled throw on sand, bolted (Unbreakable footing on, his recoil not taken: with it taken nothing goes into the
+  // ground): the ground can bear none of the downward part, but takes the sideways part whole
+  { const r = P.throwObject(ctxOf(1e6 * g, Object.assign({}, ON, { surface: sand, ownRecoil: false, anchor: 'bolted' })), obj('car'), 30), tg = r.toGround;
+    ok('5c: a 30-degree throw on sand, bolted: the ground takes the sideways part whole (cos 30 of the push) and none of the downward part, which their power supplies', tg && near(tg.J, tg.whole * Math.cos(Math.PI / 6), 1e-9) && near(tg.suppliedDown, tg.whole * 0.5, 1e-9) && tg.suppliedSide === 0, tg ? sig(tg.J) + ' of ' + sig(tg.whole) : 'none'); }
   // ... standing on friction (their recoil not taken): sideways at most the ground's friction on what it bears
   { const r = P.throwObject(ctxOf(1e6 * g, Object.assign({}, ON, { surface: sand, ownRecoil: false })), obj('car'), 45), tg = r.toGround, capH = sand.mu * Nmax(sand) * (tg ? tg.T : NaN);
     ok('5c: standing on friction on sand, the ground\'s sideways grip is at most mu x what it bears over the pulse; their power supplies the rest', tg && near(tg.J, capH, 1e-9) && tg.suppliedSide > 0, tg ? sig(tg.J) + ' (cap ' + sig(capH) + ') of ' + sig(tg.whole) : 'none'); }
   // Unbreakable footing alone: the throw's push is the object's momentum less his recoil
   { const c = ctxOf(1e6 * g, { unbreakable: true }), r = P.throwObject(c, obj('car'), 30);
     ok('5c: with Unbreakable footing alone the throw\'s push into the ground is the object\'s momentum less his recoil', r.toGround && r.recoilV > 0 && near(r.toGround.whole != null ? r.toGround.whole : r.toGround.J, P.vToMomentum(r.v, obj('car').m) - P.vToMomentum(r.recoilV, rex.m), 1e-6), r.toGround ? sig(r.toGround.whole != null ? r.toGround.whole : r.toGround.J) : 'none'); }
-  // only They take their own recoil on: no weak-ground cap (that is Unbreakable footing's)
+  // only They take their own recoil on: no weak-ground cap (that is Unbreakable footing's), and nothing into the ground:
+  // the whole push back goes to his source
   { const r = P.throwObject(ctxOf(1e6 * g, { ownRecoil: true, surface: sand }), obj('car'), 30);
-    ok('5c: with only They take their own recoil on there is no weak-ground cap', r.toGround && r.toGround.supplied === undefined && r.toGround.J > 0, r.toGround ? sig(r.toGround.J) : 'none'); }
+    ok('5d: with only They take their own recoil on, nothing goes into the ground and there is no weak-ground cap: the whole push back (the car\'s momentum) goes to his source', !r.toGround && r.recoilAbsorbed && r.recoilAbsorbed.supplied === undefined && near(r.recoilAbsorbed.J, r.push.pB * obj('car').m / r.mB, 1e-12) && r.recoilAbsorbed.J > 0, r.recoilAbsorbed ? sig(r.recoilAbsorbed.J) : 'none'); }
   // a gentle toss and a catch on concrete where the cap binds: (bearing - Rex and Ollie's weight) x the pulse
-  { const c = ctxOf(1e7 * g, Object.assign({}, ON, { surface: conc })), t = P.tossPartner(c, ollie, 'Ollie', 'easy', 1000, 'friction'), bear = Nmax(conc) - (rex.m + ollie.m) * g;
+  // (his recoil not taken: with it taken both go to his source)
+  { const c = ctxOf(1e7 * g, Object.assign({}, ON, { surface: conc, ownRecoil: false })), t = P.tossPartner(c, ollie, 'Ollie', 'easy', 1000, 'friction'), bear = Nmax(conc) - (rex.m + ollie.m) * g;
     ok('5c: a gentle toss and its catch on concrete where the cap binds: each hands the ground (bearing - both weights) x its pulse', t.toGroundT && t.toGroundT.supplied > 0 && near(t.toGroundT.J, bear * t.toGroundT.T, 1e-9) && t.toGroundC && t.toGroundC.supplied > 0 && near(t.toGroundC.J, bear * t.toGroundC.T, 1e-9), t.toGroundT ? sig(t.toGroundT.J) + ' over ' + sig(t.toGroundT.T) + ' s; catch ' + sig(t.toGroundC && t.toGroundC.J) : t.result); }
   // a catch in the game of catch where the cap binds (a car lobbed 1 km to a bolted Ollie on concrete): the ground under
   // him takes the sideways part whole (bolted) and its bearing beyond his weight and the car's of the downward part
-  { const c = ctxOf(1e7 * g, Object.assign({}, ON, { surface: conc })), L = P.catchLeg(c, Object.assign({}, c, { body: ollie, anchor: 'bolted' }), obj('car'), 1000, 'easy'), tg = L.toGroundC;
+  // (the catcher's recoil not taken: with it taken the stop goes to his source)
+  { const c = ctxOf(1e7 * g, Object.assign({}, ON, { surface: conc, ownRecoil: false })), L = P.catchLeg(c, Object.assign({}, c, { body: ollie, anchor: 'bolted' }), obj('car'), 1000, 'easy'), tg = L.toGroundC;
     const th = L.angleDeg * Math.PI / 180, capD = (Nmax(conc, ollie) - (ollie.m + obj('car').m) * g) * (tg ? tg.T : NaN);
     ok('5c: a catch on concrete where the cap binds: the ground takes the sideways part whole (bolted) and its bearing beyond his weight and the car\'s of the downward part', L.result === 'caught' && tg && tg.supplied > 0 && near(tg.J, Math.hypot(tg.whole * Math.cos(th), capD), 1e-9), tg ? sig(tg.J) + ' of ' + sig(tg.whole) : L.result); }
   // the jump's landing on concrete where the cap binds: the body's stop at most landBear x its time
@@ -470,7 +646,8 @@ const sig = (x) => Number(x).toPrecision(3);
     ok('5c: a jump landing on concrete the ground can\'t bear: its stop hands the ground at most (bearing - weight) x the stop time', L.landed && r.landRatioReal > 1 && near(P.ppvAt(l1[0], 5), P.ppvAt(want, 5), 1e-9) && P.vToMomentum(L.v, rex.m) > r.landBear * L.t, sig(P.ppvAt(l1[0], 5) * 1000) + ' mm/s'); }
   // unbounded pushes with a push time are capped too: a throw and a toss straight up at unlimited strength, a stomp
   // whose foot speed rounds to c
-  { const c = ctxOf(Infinity, ON), r = P.throwObject(c, obj('car'), 90), t = P.tossPartner(c, ollie, 'Ollie', 'hard', 10, 'friction');
+  // (the throw and the toss with his recoil not taken, which sends them into the ground; the stomp with all four on)
+  { const c = ctxOf(Infinity, ON), cU = ctxOf(Infinity, Object.assign({}, ON, { ownRecoil: false })), r = P.throwObject(cU, obj('car'), 90), t = P.tossPartner(cU, ollie, 'Ollie', 'hard', 10, 'friction');
     const st = P.stomp(ctxOf(1e30 * g, ON)), b = M.stomp.blow(st, Object.assign({ surface: conc, body: rex }, ON)), stI = P.stomp(c), bI = M.stomp.blow(stI, Object.assign({ surface: conc, body: rex }, ON));
     const capT = (Nmax(conc) - (rex.m + obj('car').m) * g) * (r.toGround ? r.toGround.T : NaN), capS = qf(conc) * rex.footArea * (b ? b.T : NaN);
     ok('5c: unbounded pushes with a push time are capped: a throw and a toss straight up at unlimited strength, a stomp at 10^30 kg and unlimited', r.toGround && near(r.toGround.J, capT, 1e-9) && r.toGround.supplied === Infinity && t.toGroundT && isFinite(t.toGroundT.J) && t.toGroundT.supplied === Infinity && b && b.J >= capS && isFinite(b.J) && isFinite(b.whole) && bI && isFinite(bI.J) && near(bI.J, b.J, 1e-9), 'throw ' + sig(r.toGround && r.toGround.J) + ', toss ' + sig(t.toGroundT && t.toGroundT.J) + ', stomp ' + sig(b && b.J) + ' / ' + sig(bI && bI.J)); }
@@ -514,10 +691,14 @@ const sig = (x) => Number(x).toPrecision(3);
 // The re-check of round 5's fixes
 {
   const conc = surf('concrete'), Nmax = (sf, B) => P.qultFor(sf, (B || rex).footB) * 2 * (B || rex).footArea;
-  // an angled unbounded push, bolted: the sideways part goes in whole, the downward part is capped; no NaN anywhere
-  { const r = P.throwObject(ctxOf(Infinity, ON), obj('car'), 45), tg = r.toGround, t = P.throwPartner(ctxOf(Infinity, ON), Object.assign(ctxOf(Infinity, ON), { body: ollie }), 45);
+  // an angled unbounded push, bolted (Unbreakable footing on, his recoil not taken): the sideways part goes in whole, the
+  // downward part is capped; no NaN anywhere
+  { const cU = Object.assign({}, ON, { ownRecoil: false, anchor: 'bolted' }), r = P.throwObject(ctxOf(Infinity, cU), obj('car'), 45), tg = r.toGround, t = P.throwPartner(ctxOf(Infinity, cU), Object.assign(ctxOf(Infinity, ON), { body: ollie }), 45);
     const noNaN = (x) => x && Object.values(x).every((v) => typeof v !== 'number' || !Number.isNaN(v));
-    ok('5c: an angled unbounded throw with their recoil taken: the ground takes the sideways part whole, their power supplies the downward part beyond its bearing; no NaN', tg && tg.J === Infinity && tg.supplied === Infinity && tg.suppliedDown === Infinity && tg.suppliedSide === 0 && noNaN(tg) && noNaN(t.r.toGround), JSON.stringify(tg)); }
+    ok('5c: an angled unbounded throw, bolted, his recoil not taken: the ground takes the sideways part whole, their power supplies the downward part beyond its bearing; no NaN', tg && tg.J === Infinity && tg.supplied === Infinity && tg.suppliedDown === Infinity && tg.suppliedSide === 0 && noNaN(tg) && noNaN(t.r.toGround), JSON.stringify(tg));
+    // ... and with all four on (his recoil taken): unbounded, all to his source, none into the ground; no NaN
+    const ro = P.throwObject(ctxOf(Infinity, ON), obj('car'), 45), to = P.throwPartner(ctxOf(Infinity, ON), Object.assign(ctxOf(Infinity, ON), { body: ollie }), 45);
+    ok('5d: an angled unbounded throw with their recoil taken: the push back to his source is unbounded, and none of it reaches the ground; no NaN', !ro.toGround && ro.recoilAbsorbed && ro.recoilAbsorbed.J === Infinity && noNaN(ro.recoilAbsorbed) && !to.r.toGround && to.r.recoilAbsorbed && to.r.recoilAbsorbed.J === Infinity && noNaN(to.r.recoilAbsorbed), JSON.stringify(ro.recoilAbsorbed)); }
   // standing on friction on concrete, where the downward part is borne: the sideways grip is capped at mu x bearing x pulse
   { const r = P.throwObject(ctxOf(1e6 * g, Object.assign({}, ON, { ownRecoil: false })), obj('car'), 30), tg = r.toGround;
     ok('5c: on concrete, standing on friction, the downward part borne: the sideways grip is at most mu x bearing x pulse', tg && tg.suppliedDown === 0 && tg.suppliedSide > 0 && near(tg.J, Math.hypot(conc.mu * Nmax(conc) * tg.T, tg.whole * Math.sin(Math.PI / 6)), 1e-9), tg ? sig(tg.J) + ' of ' + sig(tg.whole) : 'none'); }
@@ -551,6 +732,278 @@ const sig = (x) => Number(x).toPrecision(3);
   { const bad = [];
     for (let lg = 26; lg <= 33.5; lg += 0.01) { const r = P.stomp(ctxOf(Math.pow(10, lg) * g, ON)), b = M.stomp.blow(r, Object.assign({ surface: conc, body: rex }, ON)); const want = Math.sqrt(r.E * r.E + 2 * r.E * rex.legEff * P.K.c * P.K.c) / P.K.c; if (b && isFinite(r.E) && !(Math.abs(b.whole - want) <= 0.05 * want)) { bad.push(lg.toFixed(2)); if (bad.length > 3) break; } }
     ok('5c: past 1% of light speed the stomp\'s momentum follows its energy at every dial', !bad.length, bad.join(', ')); }
+}
+
+// 6. The momentum ledger (BRIEF-canon.md item 3). For each move, at three dials (the page's 100 short tons, 10^9 kg and
+// 10^12 kg), with the powers on, off, Unbreakable footing alone, They take their own recoil alone, and bolted with all
+// four on and with none: add up the momentum each party gains in the push or contact event, along each axis (x level,
+// along his push; y up): the object (or partner, or load), his body, the ground, and the endless ocean. Each entry is
+// labelled with what it is, the ocean's with its canon case ('ocean:recoil' their own recoil, 'ocean:supplied' the
+// ground's share it can't bear, 'ocean:growthLift' the lift from growth). The total must be zero to a part in a million
+// of the largest entry, and the buckets must be right (a mutant that books his recoil in the ground would still close):
+//   - with They take their own recoil on, none of his own push back is in the ground (the catcher's stop included), and
+//     the test never works it out for him: the engine must report it, or the sum stays open;
+//   - with it off, nothing is booked as his recoil taken back;
+//   - with every power off, nothing goes to the ocean but canon's growth lift (instantGrowth reports it whatever the
+//     switches say: it is canon, not a power);
+//   - every ocean entry is one of canon's cases.
+// Flights are left out: the share of the air's drag that is absorbed is a pair of equal and opposite pushes, both taken
+// back (the object isn't slowed and the air isn't pushed), so it adds nothing net (and fly() reports only its size).
+// Where the engine reports no ground figure (with the powers off, and the parts the lab never reports: a stomp's
+// standing foot, a punch's footing, the shove partner's footing, the pull's load (its rolling or sliding) and, with the
+// power off, his walking), the test works the planet's share out from the push itself ('derived', flagged): the push's
+// own impulses, the masses and anchorCapacity. Momenta come from energies where speeds
+// round near c (p = sqrt(E^2 + 2 E m c^2) / c). Unbounded pushes are checked as unbounded on both sides (section 6b).
+{
+  const R3 = P.makeBody(Object.assign({ build: 'rex' }, P.DEFAULT_BODIES.rex)), O3 = P.makeBody(Object.assign({ build: 'ollie' }, P.DEFAULT_BODIES.ollie));
+  const car = obj('car'), bus = obj('bus'), cl = P.K.c;
+  const pE = (E, m) => (E > 0 ? (isFinite(E) ? Math.sqrt(E * E + 2 * E * m * cl * cl) / cl : Infinity) : 0);
+  const pV = (v, m) => (v > 0 ? P.vToMomentum(v, m) : 0);
+  const rad = (d) => d * Math.PI / 180;
+  // a unit vector at d degrees above level (cos 90 rounds to 6e-17: no sideways part)
+  const dirOf = (d) => [Math.abs(d) === 90 ? 0 : Math.cos(rad(d)), Math.sin(rad(d))];
+  const OCEAN = new Set(['ocean:recoil', 'ocean:supplied', 'ocean:growthLift']);
+  const HIS_RECOIL = new Set(['ground:recoil', 'ground:catch']);
+  const bad = [], seen = {};
+  let ledgers = 0, worst = 0, derived = 0;
+  const STATES = [['off', {}], ['on', ON], ['Unbreakable only', { unbreakable: true }], ['own recoil only', { ownRecoil: true }], ['on, bolted', Object.assign({ anchor: 'bolted' }, ON)], ['off, bolted', { anchor: 'bolted' }]];
+  const DIALS = [[100 * 907.18474 * g, '100 short tons'], [1e9 * g, '10^9 kg'], [1e12 * g, '10^12 kg']];
+  // entries: [label, x, y, derived?]: the momentum each party gains, kg m/s
+  const book = (tag, st, entries) => {
+    ledgers++;
+    const list = entries.filter((e) => e && (e[1] !== 0 || e[2] !== 0));
+    // (a ledger whose ground share the test works out from the push itself closes by construction: it checks only that
+    // the engine's energies and speeds match its own push impulses; counted, so the label says how many)
+    if (list.some((e) => e[3])) derived++;
+    const why = [];
+    let sx = 0, sy = 0, big = 0;
+    for (const [, x, y] of list) { sx += x; sy += y; big = Math.max(big, Math.abs(x), Math.abs(y)); }
+    const res = big > 0 ? Math.hypot(sx, sy) / big : 0;
+    if (!(res <= 1e-6)) why.push('open by ' + sig(res) + ' of the largest entry (' + list.map((e) => e[0] + ' ' + sig(e[1]) + ',' + sig(e[2])).join('; ') + ')');
+    worst = Math.max(worst, isFinite(res) ? res : 1);
+    for (const [lab] of list) {
+      seen[lab] = (seen[lab] || 0) + 1;
+      if (/^ocean/.test(lab) && !OCEAN.has(lab)) why.push('an ocean entry that is no canon case: ' + lab);
+      if (st.ownRecoil && HIS_RECOIL.has(lab)) why.push('his own push back in the ground with They take their own recoil on (' + lab + ')');
+      if (!st.ownRecoil && lab === 'ocean:recoil') why.push('recoil taken back with the power off');
+      if (!st.ownRecoil && !st.unbreakable && /^ocean/.test(lab) && lab !== 'ocean:growthLift') why.push('an ocean entry with the powers off (' + lab + ')');
+    }
+    if (why.length) bad.push(tag + ': ' + why.join('; '));
+  };
+  // a push into the ground reported by the engine, pointing along (ux, uy) (the way the ground is pushed; uy <= 0), split
+  // where Unbreakable footing capped it into the ground's take and the part their power supplied
+  const wg = (tag, x, ux, uy, lab) => {
+    if (!x) return [];
+    if (x.whole == null) return [[lab, x.J * ux, x.J * uy]];
+    const sx = Math.sign(ux);
+    if (!(near(x.J, Math.hypot(x.sideTaken, x.downTaken), 1e-12) && near(x.sideTaken + x.suppliedSide || 1e-300, x.whole * Math.abs(ux) || 1e-300, 1e-9) && near(x.downTaken + x.suppliedDown || 1e-300, x.whole * Math.abs(uy) || 1e-300, 1e-9))) bad.push(tag + ': the weak-ground split doesn\'t add up (' + JSON.stringify(x) + ')');
+    return [[lab, sx * x.sideTaken, -x.downTaken], ['ocean:supplied', sx * x.suppliedSide, -x.suppliedDown]];
+  };
+  // his own push back taken by his source, along u (sense -1: opposite to u, the way his push points)
+  const own = (x, u, sense) => (x ? [['ocean:recoil', sense * x.J * u[0], sense * x.J * u[1]]] : []);
+  // a leg of the game of catch: the thrower's push and the catcher's stop, as two events. The catcher stands as the state
+  // says (bolted in the bolted states: with the powers off a bolted catcher in a slam keeps moving with it, uAfter > 0,
+  // though his bolts hold his feet; that is counted as his own momentum, as the engine counts it). stops: the stop
+  // ledgers seen, by outcome (each outcome where it reaches him must be booked)
+  const stops = {};
+  const bookCatch = (tag0, st, cT, cC, oid, Dd, style) => {
+    const ob = obj(oid), L = P.catchLeg(cT, cC, ob, Dd, style), tag = tag0 + ', catch ' + oid + ' ' + style + ' ' + L.result;
+    const th = L.aim ? L.aim.thetaDeg : L.thetaDeg, full = style === 'hard' || L.fullStrength;
+    if (th != null) {
+      // the throw: at full strength the exact throw at that angle (the release table's, not the interpolated release
+      // speed); a lob, the steady push that gives its release speed
+      const tb = full ? P.catchReleaseTable(cT, ob).at(th) : null, u = dirOf(th), pO = full ? pE(tb.Eobj, ob.m) : pV(L.aim.vL, ob.m), pB = pV(L.recoil ? L.recoil.v : 0, cT.body.m);
+      const e = [['object', pO * u[0], pO * u[1]], ['thrower', -pB * u[0], -pB * u[1]], ...wg(tag + ' (throw)', L.toGroundT, -u[0], -u[1], 'ground:recoil'), ...own(L.recoilAbsorbedT, u, -1)];
+      if (L.recoilAbsorbedT && L.recoilAbsorbedT.thetaDeg !== th) bad.push(tag + ': recoilAbsorbedT.thetaDeg');
+      if (!st.ownRecoil && !L.toGroundT) e.push(['ground:recoil', -(pO - pB) * u[0], -(pO - pB) * u[1], true]);
+      book(tag + ' (throw)', st, e);
+    }
+    if (L.catch && ['caught', 'slams', 'wreckage', 'cant-hold-it'].includes(L.result)) {
+      // the stop, along its arrival (forward and down): what it brings, what he and it keep moving with, the ground
+      // under him, and his source
+      const k = L.catch, a = rad(L.angleDeg || 0), ua = [Math.cos(a), -Math.sin(a)];
+      const pIn = k.relativistic ? k.pIn : pV(L.vArrive, ob.m), pair = k.relativistic ? (k.uAfter > 0 ? k.pIn : 0) : (cC.body.m + ob.m) * k.uAfter;
+      const e = [['object and catcher', (pair - pIn) * ua[0], (pair - pIn) * ua[1]], ...wg(tag + ' (stop)', L.toGroundC, ua[0], ua[1], 'ground:catch'), ...own(L.recoilAbsorbedC, ua, 1)];
+      if (L.recoilAbsorbedC && L.recoilAbsorbedC.angleDeg !== (L.angleDeg || 0)) bad.push(tag + ': recoilAbsorbedC.angleDeg');
+      if (st.ownRecoil && !(k.uAfter === 0 && k.slide === 0 && !k.carried)) bad.push(tag + ': the catcher moves with his recoil taken');
+      if (!st.ownRecoil && !L.toGroundC) e.push(['ground:catch', (pIn - pair) * ua[0], (pIn - pair) * ua[1], true]);
+      book(tag + ' (stop)', st, e);
+      const sk = (st.ownRecoil ? 'on ' : 'off ') + L.result; stops[sk] = (stops[sk] || 0) + 1;
+    }
+  };
+  for (const [lab, st] of STATES) for (const [F, dl] of DIALS) {
+    const tag0 = lab + ', ' + dl, c = ctxOf(F, Object.assign({ body: R3 }, st)), cO = Object.assign({}, c, { body: O3, anchor: 'friction' });
+    // the throw (a car at 0, 45 and 90 degrees): at the end of the push and follow-through
+    for (const th of [0, 45, 90]) {
+      const r = P.throwObject(c, car, th), tag = tag0 + ', throw ' + th;
+      if (!r.canMove) continue;
+      const u = dirOf(th), pO = pE(r.Eobj, car.m), pB = pE(r.recoilE, R3.m), e = [['object', pO * u[0], pO * u[1]], ['body', -pB * u[0], -pB * u[1]]];
+      e.push(...wg(tag, r.toGround, -u[0], -u[1], 'ground:recoil'), ...own(r.recoilAbsorbed, u, -1));
+      if (r.recoilAbsorbed && r.recoilAbsorbed.thetaDeg !== th) bad.push(tag + ': recoilAbsorbed.thetaDeg ' + r.recoilAbsorbed.thetaDeg);
+      if (!st.ownRecoil && !r.toGround) { const pp = r.push, J = pp.pB * car.m / r.mB - Math.max(0, pp.pA - pp.pB * r.armMass / r.mB); e.push(['ground:recoil', -J * u[0], -J * u[1], true]); }
+      book(tag, st, e);
+    }
+    // the stomp (y): his body, the foot's blow on the ground (the move: the stamp's extra effective mass in the shaking
+    // model is not a momentum transfer, so a cap splits the foot's own momentum in proportion), his standing foot
+    { const s = P.stomp(c), pp = s.push, tag = tag0 + ', stomp', pF = pE(s.E, R3.legEff), oS = Object.assign({ surface: c.surface, body: R3 }, st);
+      const b = M.stomp.blow(s, oS), sup = b && b.supplied > 0 ? pF * b.supplied / b.whole : 0;
+      const e = [['body', 0, pV(s.vBody, R3.m)], ['ground:blow', 0, -(pF - sup)], ['ocean:supplied', 0, -sup], ...own(s.recoilAbsorbed, [0, -1], -1)];
+      if (s.recoilAbsorbed && s.recoilAbsorbed.thetaDeg !== -90) bad.push(tag + ': thetaDeg ' + s.recoilAbsorbed.thetaDeg);
+      // (his standing foot unloads, or his bolts pull the planet up: never reported by the engine)
+      if (!st.ownRecoil) e.push(['ground:recoil', 0, pp.pB - pp.pA, true]);
+      book(tag, st, e); }
+    // the punch (x), at the end of the push: the fist, his body, his footing; the arm's stop hands it all back later
+    { const pu = P.punch(c), pp = pu.push, tag = tag0 + ', punch';
+      const e = [['fist', pE(pu.Efist, R3.handEff), 0], ['body', -pE(pu.recoilE, R3.m - R3.handEff), 0], ...own(pu.recoilAbsorbed, [1, 0], -1)];
+      if (pu.recoilAbsorbed && !(pu.recoilAbsorbed.returned === true && pu.recoilAbsorbed.thetaDeg === 0)) bad.push(tag + ': not marked returned');
+      if (!st.ownRecoil) e.push(['ground:recoil', -(pp.pB - pp.pA), 0, true]);
+      book(tag, st, e); }
+    // the clap: his two hands, equal and opposite
+    { const k = P.clap(c), p = pE(k.push.EB, R3.handEff); book(tag0 + ', clap', st, [['hand', p, 0], ['other hand', -p, 0], ...own(k.recoilAbsorbed, [1, 0], -1)]); }
+    // the jump (y): his push-off is the move itself, not recoil; Unbreakable footing caps what the ground takes
+    { const j = P.jump(c), tag = tag0 + ', jump', p = pE(j.Ebody, R3.m), e = [['body', 0, p], ...own(j.recoilAbsorbed, [0, 1], -1)];
+      if (j.pushOff) { e.push(['ground:pushOff', 0, -j.pushOff.J], ['ocean:supplied', 0, -j.pushOff.supplied]); if (!near(j.pushOff.whole, p, 1e-9)) bad.push(tag + ': push-off whole ' + sig(j.pushOff.whole) + ' vs ' + sig(p)); }
+      else e.push(['ground:pushOff', 0, -p, true]);
+      book(tag, st, e); }
+    // the pull (a bus over 10 m; x the way he walks): the load and his body at the end, the ground under the load (its
+    // rolling resistance: derived), his walking (his own body's momentum: the move; with the power on the engine reports
+    // it, walkPush, the pull's shaking source; with it off the test works it out), and the rope's pull back on him
+    { const pl = P.pull(c, bus), tag = tag0 + ', pull';
+      if (pl.canMove) {
+        const t = pl.t10m, pL = pV(pl.vEnd, bus.m), pBd = pV(pl.vEnd, R3.m);
+        const e = [['load', pL, 0], ['body', pBd, 0], ['ground:load', pl.resist * t, 0, true], pl.walkPush ? ['ground:walk', -pl.walkPush.J, 0] : ['ground:walk', -pBd, 0, true], ...own(pl.recoilAbsorbed, [1, 0], -1)];
+        if (!!st.ownRecoil !== !!pl.walkPush) bad.push(tag + ': walkPush ' + (pl.walkPush ? 'with the power off' : 'missing with the power on'));
+        if (pl.walkPush && pl.walkPush.T !== t) bad.push(tag + ': walkPush.T ' + pl.walkPush.T + ' vs the pull\'s ' + t);
+        if (!st.ownRecoil) e.push(['ground:recoil', -(pl.usable * t - pBd), 0, true]);
+        book(tag, st, e);
+      } }
+    // the shove (Ollie on his own footing; x toward him): his partner, the shover, the partner's footing during the push
+    // (anchorCapacity), and the shover's push back; their mutual pull is equal and opposite, so it cancels
+    { const sh = P.shove(c, cO), tag = tag0 + ', shove';
+      if (!sh.stalled && sh.push) {
+        const pp = sh.push, fB = P.anchorCapacity({ body: O3, surface: cO.surface, theta: 0, anchor: cO.anchor, groundHolds: P.holdsGround(cO), mA: O3.m }).R;
+        const fBt = pp.pB > 0 ? fB * pp.t : 0;
+        const e = [['partner', pE(sh.EB, O3.m), 0], ['body', -pE(sh.EA, R3.m), 0], ['ground:partnerFooting', fBt, 0, true], ...wg(tag, sh.toGround, -1, 0, 'ground:recoil'), ...own(sh.recoilAbsorbed, [1, 0], -1)];
+        // (from the push: his partner's share after the follow-through, plus the partner's footing, less his own recoil,
+        // which the follow-through clamps at zero: a held shover's arms hand their momentum back into his footing)
+        const arm = 2 * R3.handEff, mB = O3.m + arm;
+        if (!st.ownRecoil && !sh.toGround) e.push(['ground:recoil', -(pp.pB * O3.m / mB + fBt - Math.max(0, pp.pA - pp.pB * arm / mB)), 0, true]);
+        book(tag, st, e);
+      } }
+    // the wrestle throw at 45 degrees: the throw's push back, then (where Unbreakable footing caps it) Ollie's landing
+    { const tp = P.throwPartner(c, cO, 45), r = tp.r, tag = tag0 + ', wrestle throw';
+      if (r && r.canMove) {
+        const u = dirOf(45), pO = pE(r.Eobj, O3.m), pB = pE(r.recoilE, R3.m), e = [['partner', pO * u[0], pO * u[1]], ['body', -pB * u[0], -pB * u[1]]];
+        e.push(...wg(tag, r.toGround, -u[0], -u[1], 'ground:recoil'), ...own(r.recoilAbsorbed, u, -1));
+        if (!st.ownRecoil && !r.toGround) { const pp = r.push, J = pp.pB * O3.m / r.mB - Math.max(0, pp.pA - pp.pB * r.armMass / r.mB); e.push(['ground:recoil', -J * u[0], -J * u[1], true]); }
+        book(tag, st, e);
+        const f = r.flight, lt = tp.landToGround;
+        if (lt) { const a = rad(f.impactAngleDeg), pIn = pV(f.vImpact, O3.m), ua = [Math.cos(a), -Math.sin(a)];
+          book(tag + ' (landing)', st, [['partner', -pIn * ua[0], -pIn * ua[1]], ...wg(tag + ' (landing)', lt, ua[0], ua[1], 'ground:landing')]); }
+      } }
+    // the game of catch (a car 30 m apart, thrown hard and lobbed; a fastball 10 m apart, past 1% of light speed at
+    // 10^12 kg): the thrower's push and the catcher's stop, as two events (bookCatch, below the loop; the legs that end
+    // in a slam, wreckage or a catch he can't hold are booked after the loop)
+    for (const [oid, Dd, style] of [['car', 30, 'hard'], ['car', 30, 'easy'], ['baseball', 10, 'hard']]) bookCatch(tag0, st, c, Object.assign({}, c, { body: O3 }), oid, Dd, style);
+    // the partner toss (Ollie 10 m up, gently; y): Rex's toss and his catch
+    { const t = P.tossPartner(c, O3, 'Ollie', 'easy', 10, 'friction'), tag = tag0 + ', toss ' + t.result;
+      if (t.v > 0) {
+        const pO = pV(t.v, O3.m), e = [['partner', 0, pO], ...wg(tag, t.toGroundT, 0, -1, 'ground:recoil'), ...own(t.recoilAbsorbedT, [0, 1], -1)];
+        if (!st.ownRecoil && !t.toGroundT) e.push(['ground:recoil', 0, -pO, true]);
+        book(tag + ' (toss)', st, e);
+      }
+      if (t.catch) {
+        const pIn = pV(t.flight.vImpact, O3.m), pair = (R3.m + O3.m) * (t.catch.uAfter || 0);
+        const e = [['partner and catcher', 0, pIn - pair], ...wg(tag, t.toGroundC, 0, -1, 'ground:catch'), ...own(t.recoilAbsorbedC, [0, -1], 1)];
+        if (!st.ownRecoil && !t.toGroundC) e.push(['ground:catch', 0, -(pIn - pair), true]);
+        book(tag + ' (catch)', st, e);
+      } }
+    // Collide, Ollie sprinting into Rex (unchanged in this pull request: the hit's push into the ground through Rex's
+    // feet is a hit in a contest, not Rex's own push back). Splat and bounce; held or knocked back (the footing's share)
+    for (const bounce of [false, true]) {
+      const cA = Object.assign({}, c, { body: O3 }), r = P.collide(cA, c, { source: 'sprint', bounce }), tag = tag0 + ', collide ' + (bounce ? 'bounce' : 'splat');
+      if (!r.h || r.noCharge || r.dragged || r.boltsLate || r.relativistic || r.h.undefinedResult) continue;
+      const h = r.h, pA = r.pA, e = [];
+      if (r.held) { e.push(['charger', (bounce ? h.el.pA : 0) - pA, 0]); e.push(r.toGround ? ['ground:hit', r.toGround.J, 0] : ['ground:hit', bounce ? h.el.pT : h.inel.pT, 0, true]); }
+      else if (!bounce) { e.push(['charger', O3.m * h.inel.V - pA, 0], ['Rex', h.inel.pT, 0], ['ground:hit', r.partial ? r.partial.Jearth : 0, 0]); if (r.toGround && r.toGround.J !== r.partial.Jearth) bad.push(tag + ': toGround is not the footing\'s share'); }
+      else {
+        // (knocked back, the bounce's after-speeds ignore his footing (the engine's elasticUpper), while its toGround
+        // books the splat's footing share: about 1.1% too much in this ledger. Left out of the sum; item 4 (pull
+        // request 4) rewrites Collide. Here: the two bodies keep the momentum, and the footing's share stays small.)
+        e.push(['charger', h.el.pA - pA, 0], ['Rex', h.el.pT, 0]);
+        if (r.toGround && !(r.toGround.J < 0.02 * pA)) bad.push(tag + ': the bounce\'s footing share is ' + sig(r.toGround.J / pA) + ' of the hit');
+      }
+      if (r.toGround && r.toGround.supplied > 0) e.push(['ocean:supplied', r.toGround.supplied, 0]);
+      book(tag, st, e);
+    }
+  }
+  // the catch outcomes the dial loop doesn't reach, in every state: a slam (a bus thrown hard 10 m apart at the page's
+  // default dial: planted, his arms can't stop it all), wreckage (a motorcycle fastball 10 m apart at a 10^6 kg dial with
+  // Things keep their form off) and a catch he can't hold (Rex at a 10^5 kg dial lobs a car 30 m to Ollie at a 500 kg dial)
+  for (const [lab, st] of STATES) {
+    const at = (kg, x) => ctxOf(kg * g, Object.assign({ body: R3 }, st, x || {})), Ob = (c, kg) => Object.assign({}, c, { body: O3 }, kg ? { F: kg * g } : {});
+    const cD = at(100 * 907.18474), cW = at(1e6, { keepForm: false }), cH = at(1e5);
+    bookCatch(lab + ', 100 short tons', st, cD, Ob(cD), 'bus', 10, 'hard');
+    bookCatch(lab + ', 10^6 kg, Things keep their form off', st, cW, Ob(cW), 'motorcycle', 10, 'hard');
+    bookCatch(lab + ', Rex 10^5 kg, Ollie 500 kg', st, cH, Ob(cH, 500), 'car', 30, 'easy');
+  }
+  // the arm-wrestle pin on the table (Rex at the dial, Ollie at half; Things keep their form on so the table holds): the
+  // forearms start and end at rest; the swing's push backs (the winner's up, the loser's resisting arm's down: both own
+  // recoil, netted in the one source they share) and the slam (down)
+  for (const [lab, st] of [['off (table held)', {}], ['on', ON], ['Unbreakable only', { unbreakable: true }], ['own recoil only', { ownRecoil: true }]]) for (const [F, dl] of DIALS) {
+    const x = Object.assign({ keepForm: true }, st), aw = P.armWrestle(ctxOf(F, Object.assign({ body: R3 }, x)), Object.assign(ctxOf(F / 2, x), { body: O3 })), tag = lab + ', ' + dl + ', arm pin';
+    if (aw.outcome !== 'pin' || aw.tableBreaks || !(aw.pin.v > 0)) { bad.push(tag + ': ' + aw.outcome); continue; }
+    // (recoilAbsorbed: the net of the two push backs, booked once as their own recoil)
+    const pF = pE(aw.pin.E, aw.pin.M), e = [...own(aw.recoilAbsorbed, [0, -1], -1)];
+    // the slam: the move (reported with Unbreakable footing; without it the lab doesn't count its shaking)
+    e.push(aw.toGround ? ['ground:slam', 0, -aw.toGround.J] : ['ground:slam', 0, -pF, true]);
+    // the swing's push back through his body and feet, with his recoil not taken (a quick one cancels the slam there:
+    // the engine reports neither then)
+    if (!st.ownRecoil) e.push(['ground:recoil', 0, pF, true]);
+    if (aw.recoilAbsorbed && !(aw.recoilAbsorbed.thetaDeg === -90 && aw.recoilAbsorbed.T === aw.pin.t)) bad.push(tag + ': direction or time');
+    book(tag, st, e);
+  }
+  // instant growth (no dial: the energy he takes in): the ground's push and the lift (canon's growth lift)
+  for (const E of [1e6, 1e15, 4.2e23]) for (const [lab, gnd, st] of [['off', { surface: surf('concrete') }, {}], ['Unbreakable only', { surface: surf('concrete'), unbreakable: true }, { unbreakable: true }]]) {
+    const I = P.instantGrowth(R3, E, 0.5, gnd), G = I.grown, tag = lab + ', growth ' + sig(E) + ' J';
+    const e = [['ocean:growthLift', 0, I.Pocean]];
+    if (I.gives) e.push(['ground:growth', 0, -Math.max(0, I.Fground - G.m * g) * I.tau]);
+    else if (I.toGround) e.push(['ground:growth', 0, -I.toGround.J], ['ocean:supplied', 0, -I.toGround.supplied]);
+    book(tag, st, e);
+  }
+  ok('6: the momentum ledger closes for every move (a throw at 0, 45 and 90 degrees, stomp, punch, clap, jump, pull, shove, wrestle throw and landing, a catch\'s throw and stop, the partner toss and its catch, a Collide splat and bounce, the arm-wrestle pin, instant growth), with the powers on, off, Unbreakable footing alone, They take their own recoil alone and bolted, at three dials, and the catch outcomes the dials miss (a slam, wreckage, a catch he can\'t hold): object + body + ground + ocean = 0 to a part in a million, and every share in its canon bucket (' + ledgers + ' ledgers; in ' + derived + ' of them, mostly with the powers off, the test works the ground\'s share out from the push itself, so those close by construction and check only that the engine\'s energies match its push impulses)', !bad.length, bad.length ? bad.length + ' bad: ' + bad.slice(0, 4).join(' | ') : 'worst ' + sig(worst) + '; ' + Object.entries(seen).map(([k, v]) => k + ' ' + v).join(', '));
+  // the buckets were exercised: his recoil reached the ocean with the power on and the ground with it off, the
+  // catcher's stop both ways, and each of canon's cases appeared
+  ok('6: the ledger saw each bucket: their own recoil in the ocean (power on) and in the ground (power off), the catcher\'s stop both ways, the ground\'s share it can\'t bear, the growth lift', seen['ocean:recoil'] > 50 && seen['ground:recoil'] > 50 && seen['ground:catch'] > 5 && seen['ocean:supplied'] > 5 && seen['ocean:growthLift'] === 6, JSON.stringify(seen));
+  // ... and every catch outcome where the object reaches him, with the catcher's power on and off: a mutant that drops
+  // one from the catcher's own recoil (or books it in the ground) leaves that stop open or in the wrong bucket
+  const stopOk = ['caught', 'slams', 'wreckage', 'cant-hold-it'].every((o) => stops['on ' + o] > 0 && stops['off ' + o] > 0);
+  ok('6: the ledger booked the catcher\'s stop in every outcome where the object reaches him (caught, a slam, wreckage, a catch he can\'t hold), with his recoil taken and not', stopOk, JSON.stringify(stops));
+}
+
+// 6b. Unbounded pushes (comic mode at unlimited strength): the ledger can't add infinities, so each must be unbounded on
+// both sides: the object (or his own body) gains an unbounded momentum, and what pushed it back takes an unbounded one
+{
+  const R3 = P.makeBody(Object.assign({ build: 'rex' }, P.DEFAULT_BODIES.rex)), O3 = P.makeBody(Object.assign({ build: 'ollie' }, P.DEFAULT_BODIES.ollie));
+  const c = ctxOf(Infinity, Object.assign({ body: R3 }, ON)), cO = Object.assign({}, c, { body: O3 });
+  const r = P.throwObject(c, obj('car'), 45), st = P.stomp(c), sh = P.shove(c, cO), j = P.jump(c), cU = ctxOf(Infinity, Object.assign({ body: R3 }, ON, { ownRecoil: false })), jU = P.jump(cU);
+  ok('6b: unbounded pushes with their recoil taken: a throw (the car\'s momentum and his source\'s take), a stomp (the foot\'s and the upward push taken back) and a shove are unbounded on both sides; nothing reaches the ground', r.Eobj === Infinity && r.recoilAbsorbed && r.recoilAbsorbed.J === Infinity && !r.toGround && st.push.pB === Infinity && st.recoilAbsorbed && st.recoilAbsorbed.J === Infinity && sh.vB === P.K.c && sh.recoilAbsorbed && sh.recoilAbsorbed.J === Infinity && !sh.toGround);
+  // an unlimited shove into a bolted partner, the shover taking his own recoil (standing or bolted: the power decides for
+  // his own moves): he stays put, nothing tears around his feet, and his source takes the unbounded push back; on real
+  // rock only the rock around the partner's bolts tears out and the partner leaves at just under light speed; where the
+  // ground under the partner holds (Unbreakable footing), nothing gives (no physical answer: stalled). With his recoil
+  // not taken and both bolted, the shared clash rule as before (the rock around both sets of bolts gives)
+  { const real = Object.assign({ body: R3 }, ON, { unbreakable: false }), bad = [];
+    for (const anc of ['friction', 'bolted']) {
+      const cA = ctxOf(Infinity, Object.assign({}, real, { anchor: anc })), cB = Object.assign({}, cA, { body: O3, anchor: 'bolted' });
+      for (const [how, x] of [['shove', P.shove(cA, cB)], ['both shove', P.shoveBoth(cA, cB)]]) if (!(x.clash === 'partnerTorn' && x.oneSided === true && x.EA === 0 && x.vA === 0 && x.slideA === 0 && !(x.tearA > 0) && x.tearB > 0 && isFinite(x.tearB) && x.vB === P.K.c && x.recoilAbsorbed && x.recoilAbsorbed.J === Infinity && !x.toGround && !x.stalled)) bad.push(anc + ' ' + how + ': ' + JSON.stringify({ clash: x.clash, oneSided: x.oneSided, EA: x.EA, vA: x.vA, slideA: x.slideA, tearA: x.tearA, vB: x.vB, rA: x.recoilAbsorbed && x.recoilAbsorbed.J }));
+      const cU = Object.assign({}, cA, { unbreakable: true }), u = P.shove(cU, Object.assign({}, cU, { body: O3, anchor: 'bolted' }));
+      if (!(u.clash === 'paradox' && u.oneSided === true && u.EA === 0 && u.stalled && u.vA === 0 && u.vB === 0 && !u.recoilAbsorbed && !u.toGround)) bad.push(anc + ' Unbreakable: ' + JSON.stringify({ clash: u.clash, oneSided: u.oneSided, EA: u.EA, stalled: u.stalled, vA: u.vA }));
+    }
+    const c0 = ctxOf(Infinity, { body: R3, anchor: 'bolted' }), x0 = P.shove(c0, Object.assign({}, c0, { body: O3 }));
+    if (!(x0.clash === 'rockGives' && !x0.oneSided && x0.tearA > 0 && x0.vA === P.K.c && !x0.recoilAbsorbed)) bad.push('powers off, both bolted: ' + x0.clash + (x0.oneSided ? ' (one-sided)' : ''));
+    ok('6b: an unlimited shove into a bolted partner with the shover\'s recoil taken (standing or bolted): one-sided (only the partner is held; the page words it so), he stays put with no energy and nothing tears around his feet, his source takes the unbounded push back, and only the rock around the partner\'s bolts tears out (he leaves at just under light speed); with the partner\'s ground held, nothing gives; with the powers off and both bolted, the rock gives around both as before (not one-sided)', !bad.length, bad.join('; ')); }
+  ok('6b: the comic jump at unlimited strength (Q9): unbounded upward, and their power supplies all of it, unbounded (the ground takes none: no push time)', j.v === P.K.c && j.pushOff && j.pushOff.whole === Infinity && j.pushOff.supplied === Infinity && j.pushOff.J === 0 && j.pushOff.T === 0 && jU.pushOff && jU.pushOff.supplied === Infinity);
 }
 
 console.log('\n' + (n - fails) + '/' + n + ' passed');

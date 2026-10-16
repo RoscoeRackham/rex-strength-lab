@@ -477,9 +477,55 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     const thr = (await chips()).join(' | ');
     await load({ action: 'stomp', logKg: 8 }); await pick('#effort', 'allout');
     const stp = (await chips()).join(' | ');
-    const want = [[thr, 'No drag: their power'], [thr, 'His recoil goes into the planet: their power'], [thr, 'Held together by their power'], [stp, 'The ground holds: their power']];
+    const want = [[thr, 'No drag: their power'], [thr, 'His recoil goes to the endless ocean: their power'], [thr, 'Held together by their power'], [stp, 'The ground holds: their power']];
     const missing = want.filter(([t, w]) => !t.includes(w));
     if (missing.length) fail('power labels missing: ' + missing.map(([t, w]) => w + ' in [' + t + ']').join('; ')); else okLog('the powers label their results: ' + want.map(([, w]) => w).join('; '));
+    // BRIEF-canon.md items 2 and 7: their own recoil goes to their source, the endless ocean, not into the planet. With the
+    // defaults (and with both Bolted switches on too) no tab or card sends their own recoil into the planet, keeps
+    // 'still obeys Newton' or says momentum is never absorbed; each tab is read at the least disruptive effort and all-out
+    // ('not into the planet' is the new wording and is allowed; Bolted's own push 'into the planet instead' has no recoil
+    // words; Collide's incoming hits are pull request 4's)
+    const RECOIL_PLANET = /(?:recoil|push back|pull back)[^.]*(?<!not )into the planet|the planet keeps (?:the|it|no)\b|still obeys Newton|momentum is never absorbed|no power absorbs momentum/gi;
+    const pageText = () => page.evaluate(() => { const b = document.body.cloneNode(true); b.querySelectorAll('script, style').forEach((x) => x.remove()); return b.textContent.replace(/\s+/g, ' '); });
+    const planet = [];
+    for (const foot of [{ anchor: 'friction', oAnchor: 'friction' }, { anchor: 'bolted', oAnchor: 'bolted' }]) {
+      for (const tab of SOLO.concat(DUO)) {
+        const duo = DUO.includes(tab), st = Object.assign({}, foot, duo ? { duoOpen: true, duoAction: tab } : { action: tab });
+        await load(st); if (duo) await settle(page, 'duo-bay');
+        for (const e of ['least', 'allout']) {
+          if (e === 'allout') { if (duo) await pick('#duo-effort', 'allout'); else if (await page.$('#effort')) await pick('#effort', 'allout'); else continue; }
+          const hits = (await pageText()).match(RECOIL_PLANET);
+          if (hits) planet.push(tab + ' (' + foot.anchor + ', ' + e + '): ' + Array.from(new Set(hits)).join(' | ').slice(0, 200));
+        }
+      }
+    }
+    const eyebrow = await page.$eval('.hero .eyebrow', (n) => n.textContent.trim());
+    if (planet.length || eyebrow !== 'Indestructible · never tires · unlimited') fail('their own recoil into the planet, or the old wording (BRIEF-canon.md items 2 and 7): eyebrow "' + eyebrow + '"; ' + planet.slice(0, 6).join(' ; '));
+    else okLog('no tab or card sends their own recoil into the planet or says momentum is never absorbed (friction and bolted, least disruptive and all-out); the eyebrow reads "' + eyebrow + '"');
+    // Pull says where its ground shaking comes from: with the power on the rope's pull back goes to the endless ocean and
+    // the shaking is his own steps' (on friction his grip caps it, so plaster never cracks); with it off the lab doesn't
+    // count a pull's shaking and says why (never the generic 'doesn't model' text; review round 2 of pull request 2)
+    await load({ action: 'pull' }); await pick('#effort', 'plaster');
+    const pullOn = await page.$eval('#bay .effort-read', (n) => n.textContent.replace(/\s+/g, ' '));
+    await load({ action: 'pull', ownRecoil: false }); await pick('#effort', 'plaster');
+    const pullOff = await page.$eval('#bay .effort-read', (n) => n.textContent.replace(/\s+/g, ' '));
+    if (!/Even all-out, this move doesn’t shake the ground enough that plaster may crack [^.]*\. They take their own recoil: the rope’s pull back on him goes to the endless ocean, so none of it reaches the ground\. The shaking the lab counts is from his own steps[^.]*\. His grip caps it/.test(pullOn) || /nothing of the pull reaches the ground/.test(pullOn) || /doesn’t model the ground shaking from this move/.test(pullOn + pullOff) || !/the lab doesn’t count it/.test(pullOff)) fail('Pull should say where its ground shaking comes from: on ' + pullOn.slice(0, 300) + ' | off ' + pullOff.slice(0, 260));
+    else okLog('Pull says where its ground shaking comes from, with the power on (his own steps, capped by his grip; the rope’s pull back goes to the endless ocean) and off (a steady load the lab doesn’t count)');
+    // the Throw tab at the default least disruptive car throw names the momentum his source takes back (the brief's
+    // 22,000 kg·m/s), as the engine gives it at the effort the page shows
+    await load({ action: 'throw' });
+    const thrT = await bayText(), thrM = thrT.match(/goes into their source, the endless ocean: ([\d,]+) kg·m\/s, the car’s momentum/), thrUse = thrT.match(/as hard as lifting ([\d.,]+)\s(t|kg)/);
+    const thrJ = thrUse ? await page.evaluate((kg) => { const P = window.DinoPhys, D = window.DINO_DATA, g = P.K.g; const body = P.makeBody(Object.assign({ build: 'rex' }, P.DEFAULT_BODIES.rex));
+      const c = { F: 100 * 907.18474 * g, mode: 'comic', body, surface: D.surfaces.find((x) => x.id === 'concrete'), anchor: 'friction', airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true, use: kg * g };
+      const r = P.throwObject(c, D.objects.find((x) => x.id === 'car'), 45); return r.recoilAbsorbed ? r.recoilAbsorbed.J : null; }, Number(thrUse[1].replace(/,/g, '')) * (thrUse[2] === 't' ? 1000 : 1)) : null;
+    const thrShown = thrM ? Number(thrM[1].replace(/,/g, '')) : null;
+    if (!thrShown || !(thrJ > 0) || Math.abs(thrShown / thrJ - 1) > 0.03 || Math.abs(thrShown / 22000 - 1) > 0.03) fail('the default throw should name the momentum taken back (about 22,000 kg·m/s): shown ' + thrShown + ', engine ' + thrJ);
+    else okLog('the default least disruptive car throw names the momentum his source takes back: ' + thrM[1] + ' kg·m/s (engine ' + Math.round(thrJ) + ')');
+    // a catch the catcher's power keeps him planted in: the 10²⁰ kg fastball that carried him off at about 4,000 km/s
+    await load({ duoOpen: true, duoAction: 'catch', cObj: 'baseball', cStyle: 'hard', logKg: 20 }); await settle(page, 'duo-bay'); await pick('#duo-effort', 'allout');
+    const carried = await page.$eval('#duo-bay', (n) => n.textContent.replace(/\s+/g, ' '));
+    if (!/He isn’t carried off: without it the catch would carry him off/.test(carried) || /[Cc]arries Ollie off|carries him off at|Ollie carried off/.test(carried)) fail('the catch at a 10²⁰ kg dial should keep Ollie planted: ' + ((carried.match(/[^.]*carr[^.]*\./g) || []).join(' ') || carried.slice(0, 300)));
+    else okLog('a catch at a 10²⁰ kg dial: Ollie isn’t carried off (his stop goes to the endless ocean)');
     // break the ground: the preset sets Unbreakable footing aside for the move, and the stomp breaks it
     await load({ action: 'stomp' }); await pick('#effort', 'ground');
     const brk = await bayText();
@@ -521,15 +567,267 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     await load({ duoOpen: true, duoAction: 'catch', cStyle: 'hard' }); await settle(page, 'duo-bay');
     const kf = await page.evaluate(() => document.getElementById('duo-bay').textContent.replace(/\s+/g, ' '));
     if (/probably bursts|is destroyed/.test(kf.replace(/a real ball would probably burst/g, ''))) fail('catch with Things keep their form on says it bursts: ' + (kf.match(/[^.]*bursts[^.]*\./) || [''])[0]); else okLog('catch fastball with Things keep their form on: no burst or destroyed ball');
-    // the plaster preset on the other two-player tests: the shove's, the throw's and the catch's pushes into the ground
-    // find an effort; an even arm wrestle is a dead heat (no pin, so no blow into the ground): a definite 'never'
-    const dp = [];
-    for (const [tab, extra, finds] of [['arm', { logKg: 12 }, false], ['wrestle', { wrestleMove: 'shove', logKg: 8 }, true], ['wrestle', { wrestleMove: 'throw', logKg: 8 }, true], ['catch', { cObj: 'car', cStyle: 'hard', logKg: 9 }, true]]) {
+    // the plaster preset on the other two-player tests: the thrown partner's landing finds an effort; with the defaults
+    // the shove's and the game of catch's own pushes go to their source (BRIEF-canon.md item 2), so nothing in them shakes
+    // the ground and the page says why; with that power off and Bolted on, Unbreakable footing sends the shover's and
+    // the catcher's pushes into the ground and they find an effort; an even arm wrestle is a dead heat (no pin, so no blow
+    // into the ground): a definite 'never'
+    const dp = [], RECOIL_WHY = /Even all-out, this test doesn’t shake the ground enough that plaster may crack [^.]*\. They take their own recoil: /;
+    for (const [tab, extra, want] of [['arm', { logKg: 12 }, 'never'], ['wrestle', { wrestleMove: 'shove', logKg: 8 }, 'recoil'], ['wrestle', { wrestleMove: 'shove', logKg: 8, ownRecoil: false, anchor: 'bolted' }, 'finds'], ['wrestle', { wrestleMove: 'throw', logKg: 8 }, 'finds'],
+      ['catch', { cObj: 'car', cStyle: 'hard', logKg: 9 }, 'recoil'], ['catch', { cObj: 'car', cStyle: 'hard', logKg: 9, ownRecoil: false, anchor: 'bolted', oAnchor: 'bolted' }, 'finds']]) {
       await load(Object.assign({ duoOpen: true, duoAction: tab }, extra)); await settle(page, 'duo-bay'); await pick('#duo-effort', 'plaster');
       const t = await page.evaluate(() => document.querySelector('#duo-bay .effort-read').textContent.replace(/\s+/g, ' '));
-      if (!(finds ? /Effort: .*The least effort that shakes the ground enough that plaster may crack/ : /Even all-out, this test doesn’t shake the ground/).test(t) || /undefined|NaN/.test(t)) dp.push(tab + (extra.wrestleMove || '') + ': ' + t.slice(0, 160));
+      if (!({ finds: /Effort: .*The least effort that shakes the ground enough that plaster may crack/, never: /Even all-out, this test doesn’t shake the ground/, recoil: RECOIL_WHY })[want].test(t) || /undefined|NaN/.test(t)) dp.push(tab + (extra.wrestleMove || '') + (extra.ownRecoil === false ? ' (own recoil off, bolted)' : '') + ': ' + t.slice(0, 200));
     }
-    if (dp.length) fail('two-player plaster presets: ' + dp.join(' ; ')); else okLog('the plaster preset finds an effort on Wrestle shove and throw and on Catch, and says never for an even arm wrestle');
+    if (dp.length) fail('two-player plaster presets: ' + dp.join(' ; ')); else okLog('the plaster preset finds an effort on the Wrestle throw, and on the shove and Catch with They take their own recoil off and Bolted on; with it on (the default) those two say why they never shake the ground; never for an even arm wrestle');
+    // ---- review round 1 of BRIEF-canon.md pull request 2 (research/reviews/canon-2-round1.json): each of these fails on
+    // the page before its fix
+    {
+      const duoTxt = (sel) => page.evaluate((s) => Array.from(document.querySelectorAll('#duo-bay ' + s)).map((n) => n.textContent.replace(/\s+/g, ' ')).join(' / '), sel);
+      const num = (x) => Number(String(x).replace(/,/g, ''));
+      const r1 = [];
+      // code-1: an unlimited shove into a bolted Ollie on real rock, Rex standing with his recoil taken: only the rock
+      // around Ollie's bolts tears out (Rex stays put); not 'both sets of bolts' with Rex shoved off at light speed
+      const shoveInf = { duoOpen: true, duoAction: 'wrestle', wrestleMove: 'shove', inf: true, oAnchor: 'bolted', unbreakable: false };
+      await load(shoveInf); await settle(page, 'duo-bay');
+      const infLeast = await duoTxt('.effort-read');
+      await pick('#duo-effort', 'allout');
+      const infV = await duoTxt('.verdict');
+      if (!/the rock gives around Ollie’s bolts/.test(infV) || !/Rex’s push back goes to the endless ocean \(They take their own recoil\), so he stays put/.test(infV) || /both sets of bolts|shoves Rex and Ollie apart/.test(infV) || !/Past that, the rock tears out around Ollie’s bolts\./.test(infLeast)) r1.push('code-1, unlimited shove into a bolted Ollie: ' + infV.slice(0, 200) + ' | ' + infLeast.slice(0, 160));
+      // copy-1: the default shove names Rex's push back, what Ollie leaves with and what his sliding feet hand the ground
+      // (they add up; Ollie's share matches his speed; no 'equal and opposite share'); the power's hint states the rule
+      await load({ duoOpen: true, duoAction: 'wrestle', wrestleMove: 'shove', wrestleWho: 'rex' }); await settle(page, 'duo-bay');
+      const shH = await duoTxt('.happens'), shV = await duoTxt('.verdict');
+      const shM = shH.match(/That push back on Rex \(([\d,]+) kg·m\/s\) goes to the endless ocean \(below\)\. Ollie leaves with ([\d,]+) kg·m\/s of it; the friction under his sliding feet hands the ground the rest \(([\d,]+) kg·m\/s\) while the push lasts\./), vO = shV.match(/Ollie flies back at ([\d.]+) m\/s/);
+      const hint = await page.evaluate(() => document.getElementById('sw-recoil').parentElement.textContent.replace(/\s+/g, ' '));
+      if (!shM || !vO || /equal and opposite share/.test(shH) || Math.abs(num(shM[2]) + num(shM[3]) - num(shM[1])) > 0.03 * num(shM[1]) || Math.abs(num(shM[2]) / (3000 * Number(vO[1])) - 1) > 0.02 || !(num(shM[3]) > 0.1 * num(shM[1]))
+        || /as much momentum as what they set moving carries/.test(hint) || !/the whole push back of the move, the other way: the momentum of what they set moving or stop, plus whatever resists it while they push/.test(hint)) r1.push('copy-1, the shove\'s push back: ' + ((shH.match(/Newton’s third law[^/]*?(?=After|They take|$)/) || [shH.slice(0, 260)])[0]) + ' | hint ' + ((hint.match(/The endless ocean takes[^.]*\./) || [''])[0]));
+      // copy-2: Ollie bolted (the shove stalls) and both bolted: the box and the item agree that the push presses into the
+      // ground under Ollie and Rex's push back goes to the endless ocean; the toss with Ollie bolted describes no toss
+      for (const [lab, st] of [['Ollie bolted', { oAnchor: 'bolted' }], ['both bolted', { oAnchor: 'bolted', anchor: 'bolted' }]]) {
+        await load(Object.assign({ duoOpen: true, duoAction: 'wrestle', wrestleMove: 'shove', wrestleWho: 'rex' }, st)); await settle(page, 'duo-bay');
+        // (review round 2, code-8: the tile too, and the math line: only Ollie's bolts hold; copy-4)
+        const box = await duoTxt('.effort-read'), it = await duoTxt('.happens'), v = await duoTxt('.verdict'), tl = await duoTxt('.tiles'), mth = await duoTxt('details.math');
+        if (/nothing of the shove reaches the ground|sliding to a stop|presses into the ground under their feet|footing on both sides|either one’s footing/.test(box + it + v + tl) || !/The one shoved still presses on the ground through his feet or bolts, a steady push/.test(box) || !/Ollie’s bolts hold, so the push presses into the ground under him, and Rex’s push back goes to the endless ocean/.test(it) || !/the shove is weaker than Ollie’s bolts/.test(tl) || /on both sides/.test(mth) || !/It moves nobody unless it beats Ollie’s bolts \(plus their gravity\); Rex’s push back goes to the endless ocean, so his own footing plays no part/.test(mth)) r1.push('copy-2, a stalled shove (' + lab + '): ' + v.slice(0, 100) + ' | ' + box.slice(-260) + ' | ' + it.slice(0, 260) + ' | tile ' + tl.slice(-80) + ' | math ' + mth.slice(-200));
+      }
+      await load({ duoOpen: true, duoAction: 'catch', cObj: 'partner', oAnchor: 'bolted' }); await settle(page, 'duo-bay');
+      const tossB = await duoTxt('.effort-read');
+      if (/the toss and the catch are Rex’s own pushes/.test(tossB)) r1.push('copy-2, the toss with Ollie bolted (it can\'t be done): ' + tossB.slice(-200));
+      // copy-3: a bolted pull with the power off takes a fraction of a second all-out, not 'a steady load over seconds'
+      await load({ action: 'pull', obj: 'car', anchor: 'bolted', ownRecoil: false }); await pick('#effort', 'allout');
+      const plV = await page.$eval('#bay .verdict', (n) => n.textContent.replace(/\s+/g, ' ')), plB = await page.$eval('#bay .effort-read', (n) => n.textContent.replace(/\s+/g, ' '));
+      const plT = plV.match(/in ([\d.,]+ m?s)\./), plS = plB.match(/through his bolts into the planet, over the ([\d.,]+ m?s) the pull takes all-out, and his steps push his own body along\. With They take their own recoil off the lab doesn’t count a pull’s ground shaking/);
+      if (/steady load over seconds/.test(plB) || !plT || !plS || plT[1] !== plS[1]) r1.push('copy-3, the bolted pull with the power off: ' + plV.slice(0, 60) + ' | ' + ((plB.match(/Bolted, the rope[^.]*\.[^.]*\./) || [plB.slice(0, 200)])[0]));
+      // physics: a stomp standing with the power off is an upper bound too (his standing foot unloads), as bolted is;
+      // with the power on it isn't
+      const stompSay = async (st) => { await load(Object.assign({ action: 'stomp' }, st)); await pick('#effort', 'allout'); return page.$eval('#bay .happens', (n) => n.textContent.replace(/\s+/g, ' ')); };
+      const st20 = await stompSay(Object.assign({ logKg: Math.log10(20000) }, POWERS_OFF)), stDef = await stompSay(POWERS_OFF), stOn = await stompSay({});
+      if (!/his standing foot presses on it less by the part of the push that doesn’t lift him \(all of it here\)[^.]*so the shaking it gives is an upper bound/.test(st20) || !/his standing foot presses on it less by the part of the push that doesn’t lift him \(\d+% of the foot’s momentum here\)[^.]*upper bound/.test(stDef) || /upper bound/.test((stOn.match(/They take their own recoil: driving the foot[^.]*\.[^.]*\.[^.]*\./) || [''])[0]) || !/Nothing pulls on the ground through his standing foot/.test(stOn))
+        r1.push('the stomp\'s upper bound, standing: off at 20,000 kg ' + ((st20.match(/The lab counts only[^.]*\./) || ['(none)'])[0]) + ' | off at the default ' + ((stDef.match(/The lab counts only[^.]*\./) || ['(none)'])[0]));
+      // copy-4: a quick arm-wrestling pin with the power on names the momentum the swing's push backs leave in their source
+      await load({ duoOpen: true, duoAction: 'arm' }); await settle(page, 'duo-bay');
+      await page.evaluate(() => { document.getElementById('ollie-setup').open = true; });
+      await page.click('#o-own'); await page.waitForTimeout(300);
+      await page.evaluate(() => { const s = document.getElementById('o-strength'); s.value = '4.5'; s.dispatchEvent(new Event('input', { bubbles: true })); s.dispatchEvent(new Event('change', { bubbles: true })); });
+      await page.waitForTimeout(800); await settle(page, 'duo-bay'); await pick('#duo-effort', 'allout');
+      const pinH = await duoTxt('.happens'), pinM = pinH.match(/table hands their momentum \(([\d,]+) kg·m\/s\)[^/]*on balance it takes ([\d,]+) kg·m\/s, up, the forearms’ momentum/);
+      if (!pinM || pinM[1] !== pinM[2]) r1.push('copy-4, the quick pin\'s figure: ' + ((pinH.match(/Unbreakable footing: the ground under the table[^/]*/) || [pinH.slice(-300)])[0]));
+      // (refuted, wording only) a catch that slams into Ollie: his arms stop part of it, his chest the rest, and the whole
+      // catch is absorbed (canon)
+      await load({ duoOpen: true, duoAction: 'catch', cObj: 'bus', cLogD: 1, cStyle: 'hard' }); await settle(page, 'duo-bay');
+      const slamH = await duoTxt('.happens');
+      if (!/Ollie’s arms stop part of it and the rest slams into his chest\. A catch is absorbed whole \(canon\), so all of the bus’s momentum \([\d,]+ kg·m\/s\) goes into their source/.test(slamH)) r1.push('the catch slam\'s wording: ' + ((slamH.match(/They take their own recoil: (stopping|Ollie’s arms)[^.]*\.[^.]*\./) || [slamH.slice(0, 200)])[0]));
+      if (r1.length) fail('review round 1 (pull request 2): ' + r1.join(' ;; ')); else okLog('review round 1 (pull request 2): the unlimited shove into a bolted Ollie tears only his rock; the shove names its push back, Ollie\'s share and his feet\'s; a stalled shove and a bolted toss say what happens; the bolted pull\'s time; the standing stomp\'s upper bound; the quick pin\'s figure; the catch slam\'s wording');
+    }
+    // ---- end of review round 1 of pull request 2
+    // ---- review round 2 of BRIEF-canon.md pull request 2 (research/reviews/canon-2-round2.json): each of these fails on
+    // the page before its fix (4ea43ef)
+    {
+      const duoTxt = (sel) => page.evaluate((s) => Array.from(document.querySelectorAll('#duo-bay ' + s)).map((n) => n.textContent.replace(/\s+/g, ' ')).join(' / '), sel);
+      const soloTxt = (sel) => page.evaluate((s) => Array.from(document.querySelectorAll('#bay ' + s)).map((n) => n.textContent.replace(/\s+/g, ' ')).join(' / '), sel);
+      const num = (x) => Number(String(x).replace(/,/g, ''));
+      const r2 = [];
+      // copy-1: a bolted pull with the power on: his steps push his own body along and that is counted (it is the move,
+      // not recoil): all-out at the default dial it cracks plaster near him, and at a 10⁶ kg dial the courtesy ceiling is
+      // under the dial; no 'gently' and no 'Ground shaking: none'. On friction his grip caps them and nothing cracks.
+      // (Review round 3 capped his steps by his legs, bolted too, and its re-check set that cap at the strength he uses, as
+      // in a sprint: so at the default dial the car's steps crack plaster only out to about 1.6 m, short of the nearest
+      // people, and it has no ceiling there.)
+      await load({ action: 'pull', anchor: 'bolted' }); await pick('#effort', 'allout');
+      const pbH = await soloTxt('.happens'), pbE = await soloTxt('.effort-read');
+      const pbW = pbH.match(/It is his own body’s momentum, ([\d,]+) kg·m\/s over ([\d.,]+ m?s) \(his legs cap it: at most the strength he uses, /);
+      if (!pbW || /gently/.test(pbH + pbE) || /Ground shaking: none/.test(pbE) || /nothing caps it/i.test(pbH + pbE) || !/enough that plaster may crack out to/.test(pbH)) r2.push('copy-1, the bolted pull: ' + ((pbH.match(/Bolted, his feet[^/]*?(?=Record pullers|$)/) || [pbH.slice(0, 300)])[0]) + ' | ' + pbE.slice(0, 200));
+      await load({ action: 'pull', anchor: 'bolted', logKg: 6 });
+      const pb6 = await soloTxt('.effort-read');
+      if (!/Courtesy ceiling: [\d.]+% \(lifting [\d.,]+ t\)\. Past that, the ground shakes hard enough that plaster may crack/.test(pb6)) r2.push('copy-1, the bolted pull at 10⁶ kg: ' + pb6.slice(0, 200));
+      // physics-pull-nothing-reaches-ground: a sliding load (the 511 kg bar) is called sliding, and only the rope's pull
+      // back is said to stay off the ground
+      await load({ action: 'pull', obj: 'bar511' });
+      const barT = await page.$eval('#bay', (n) => n.textContent.replace(/\s+/g, ' '));
+      if (/nothing of the pull reaches the ground/.test(barT) || /rolling/.test(barT.replace(/Rolling resistance/g, '')) || !/the load’s momentum plus the sliding resistance it overcame/.test(barT) || !/The load’s sliding presses on the ground too/.test(barT)) r2.push('physics-pull, the bar slides: ' + ((barT.match(/Nothing of the rope[^)]*\)[^)]*\)/) || [barT.slice(0, 200)])[0]));
+      // copy-2: a bolted pull with the power off, at the default (least disruptive) effort: the box's time is labelled
+      // all-out (the verdict gives the effort's own time)
+      await load({ action: 'pull', anchor: 'bolted', ownRecoil: false });
+      const plLv = await soloTxt('.verdict'), plLb = await soloTxt('.effort-read');
+      if (!/the pull takes all-out/.test(plLb) || /over the [\d.,]+ m?s the pull takes\./.test(plLb) || !/in 9\.\d+ s\./.test(plLv)) r2.push('copy-2, the bolted pull\'s time at the default effort: ' + plLv.slice(0, 60) + ' | ' + ((plLb.match(/Bolted, the rope[^.]*\./) || [plLb.slice(0, 200)])[0]));
+      await load({ action: 'pull', ownRecoil: false });
+      const plFb = await soloTxt('.effort-read');
+      if (!/all-out his footing \(about [\d.,]+ kN\) sets his pace/.test(plFb)) r2.push('copy-2, the friction pull\'s figures at the default effort: ' + plFb.slice(0, 260));
+      // physics-hint-weight-in-ocean: the hint says the weight held up stays on their feet; the default throw (45 degrees)
+      // names its momentum as the part that sets the car moving, its weight on his feet
+      await load({ action: 'throw' });
+      const thH = await soloTxt('.happens'), hint = await page.evaluate(() => document.getElementById('sw-recoil').parentElement.textContent.replace(/\s+/g, ' '));
+      if (!/The weight of what they hold up while they push stays on their feet, as on the Lift tab\./.test(hint) || !/rolling or sliding, a shoved partner’s feet/.test(hint) || !/the part of that push that sets it moving goes into their source, the endless ocean: [\d,]+ kg·m\/s, the car’s momentum, back along the throw \(his arm’s comes back to him as the follow-through stops it; the car’s weight, which he holds up, rests on his feet\)/.test(thH)) r2.push('physics-hint, the weight on his feet: ' + ((hint.match(/The endless ocean takes[^.]*\.[^.]*\./) || [''])[0]) + ' | ' + ((thH.match(/They take their own recoil: the car[^)]*\)/) || [thH.slice(0, 200)])[0]));
+      // copy-5: a throw that reaches the catcher as plasma isn't caught: an incoming hit, not his own push back (the hint,
+      // the cards and the view say so)
+      await load({ duoOpen: true, duoAction: 'catch', cStyle: 'hard', logKg: 20, keepForm: false, airAbsorb: 0.5 }); await settle(page, 'duo-bay'); await pick('#duo-effort', 'allout');
+      const pzV = await duoTxt('.verdict'), pzH = await duoTxt('.happens'), cards = await page.evaluate(() => document.body.textContent.replace(/\s+/g, ' '));
+      const hint5 = await page.evaluate(() => document.getElementById('sw-recoil').parentElement.textContent.replace(/\s+/g, ' '));
+      if (!/carries Ollie off/.test(pzV) || !/They take their own recoil doesn’t cover this: Ollie doesn’t catch it, it hits him\. An incoming hit isn’t his own push back; that is canon’s Never knocked back/.test(pzH) || /So they aren’t shoved back, launched or carried off/.test(hint5) || !/An incoming hit, such as a throw that reaches the catcher as plasma, isn’t their own push back/.test(hint5) || !/A throw that reaches him as plasma \(Things keep their form off, some of the air’s drag left\) isn’t caught: it hits him/.test(cards) || !/a throw that reaches the catcher as plasma hits him rather than being caught/.test(cards) || /They stay planted \(never shoved back, launched or carried off\)/.test(cards)) r2.push('copy-5, the plasma hit: ' + pzV.slice(-120) + ' | ' + ((pzH.match(/They take their own recoil doesn’t[^.]*\.[^.]*\./) || ['(no item)'])[0]));
+      // copy-4: the catch math with the catcher's power on: planted, no slide, the slam's speed
+      await load({ duoOpen: true, duoAction: 'catch', cObj: 'bus', cStyle: 'hard', cLogD: 1 }); await settle(page, 'duo-bay');
+      const bm = await duoTxt('details.math');
+      if (/he slides|Slide: the pair coasts|plus his own slide back/.test(bm) || !/Then his feet hold \(They take their own recoil: he is planted\)[^.]*; if that isn’t enough, it reaches his chest at v² = v₁² − 2d\(F − m g sin\(angle\)\)\/\(m \+ m_h\)/.test(bm)) r2.push('copy-4, the catch math: ' + ((bm.match(/Catch: first contact[^]*?(?=Nose heating|Launch:|$)/) || [bm.slice(0, 300)])[0]).slice(0, 400));
+      // code-1: the game of catch's caveat says nothing pushes on the ground only where every leg's object reaches the
+      // catcher; where it lands on and around him (the semi at the default dial) or hits the ground (a baseball at 10²⁰ kg,
+      // 100 km apart) the lab doesn't judge that shaking, and the plaster preset doesn't say it never shakes the ground
+      await load({ duoOpen: true, duoAction: 'catch', cObj: 'semi' }); await settle(page, 'duo-bay');
+      const semiB = await duoTxt('.effort-read');
+      if (/nothing in this test pushes on the ground/.test(semiB) || !/The lab doesn’t judge the shaking where the semi lands or hits in this test\./.test(semiB)) r2.push('code-1, the semi lands on and around Ollie: ' + semiB.slice(-260));
+      await load({ duoOpen: true, duoAction: 'catch', cObj: 'baseball', cStyle: 'hard', cLogD: 5, logKg: 20 }); await settle(page, 'duo-bay'); await pick('#duo-effort', 'plaster');
+      const hgV = await duoTxt('.verdict'), hgB = await duoTxt('.effort-read');
+      if (!/hits the ground about/.test(hgV) || /nothing in this test pushes on the ground|Even all-out, this test doesn’t shake the ground/.test(hgB) || !/The lab doesn’t judge the shaking where the baseball lands or hits in this test\./.test(hgB)) r2.push('code-1, the baseball hits the ground: ' + hgB.slice(0, 300));
+      await load({ duoOpen: true, duoAction: 'catch', cObj: 'partner', cStyle: 'hard', logKg: 15 }); await settle(page, 'duo-bay'); await pick('#duo-effort', 'plaster');
+      const tsV = await duoTxt('.verdict'), tsB = await duoTxt('.effort-read');
+      if (!/doesn’t come back down/.test(tsV) || /the catch/.test(tsB) || !/the toss is Rex’s own push, so its push back goes to the endless ocean/.test(tsB)) r2.push('code-1, the toss with no catch: ' + tsV.slice(0, 80) + ' | ' + tsB.slice(0, 300));
+      // code-3 (copy-3): an unlimited shove into a bolted Ollie on real rock: all-out the rock tears out, so no 'steady push'
+      // caveat; the break-the-ground preset names Ollie's rock, not their feet
+      const shoveInf = { duoOpen: true, duoAction: 'wrestle', wrestleMove: 'shove', inf: true, oAnchor: 'bolted', unbreakable: false };
+      await load(shoveInf); await settle(page, 'duo-bay'); await pick('#duo-effort', 'plaster');
+      const siP = await duoTxt('.effort-read');
+      await pick('#duo-effort', 'ground');
+      const siG = await duoTxt('.effort-read');
+      if (/a steady push/.test(siP) || !/tears the rock out around Ollie’s bolts/.test(siG) || /under their feet/.test(siG)) r2.push('code-3, the unlimited shove into a bolted Ollie: ' + siP.slice(0, 260) + ' | ' + siG.slice(0, 160));
+      // code-4: with every power at its default (Unbreakable footing on), the same shove has no physical answer, and only
+      // Ollie is held: not 'one unbreakable system'
+      await load({ duoOpen: true, duoAction: 'wrestle', wrestleMove: 'shove', inf: true, oAnchor: 'bolted' }); await settle(page, 'duo-bay'); await pick('#duo-effort', 'allout');
+      const pxV = await duoTxt('.verdict');
+      if (!/Ollie is bolted to ground that their power holds/.test(pxV) || /one unbreakable system/.test(pxV)) r2.push('code-4, the one-sided paradox: ' + pxV.slice(0, 200));
+      // code-6: a catch Ollie can't hold up (Rex at 10⁵ kg lobs a car 30 m to Ollie at a 500 kg what-if strength): not
+      // 'stopping it is Ollie's own push'
+      await load({ duoOpen: true, duoAction: 'catch', cObj: 'car', cLogD: Math.log10(30), cStyle: 'easy', logKg: 5 }); await settle(page, 'duo-bay');
+      await page.evaluate(() => { document.getElementById('ollie-setup').open = true; });
+      await page.click('#o-own'); await page.waitForTimeout(300);
+      await page.evaluate(() => { const s = document.getElementById('o-strength'); s.value = String(Math.log10(500)); s.dispatchEvent(new Event('input', { bubbles: true })); s.dispatchEvent(new Event('change', { bubbles: true })); });
+      await page.waitForTimeout(800); await settle(page, 'duo-bay'); await pick('#duo-effort', 'allout');
+      const chV = await duoTxt('.verdict'), chH = await duoTxt('.happens');
+      if (!/can’t even hold the car up/.test(chV) || /stopping it is Ollie’s own push/.test(chH) || !/They take their own recoil: Ollie’s arms can’t hold it, so it slams into his chest\. A catch is absorbed whole \(canon\)/.test(chH)) r2.push('code-6, a catch he can\'t hold: ' + chV.slice(0, 120) + ' | ' + ((chH.match(/They take their own recoil: (stopping|Ollie’s arms)[^.]*\.[^.]*\./) || [chH.slice(0, 200)])[0]));
+      // review round 3, code-2: round 2's fixes that had no covering check (each fails with its round 2 fix reverted):
+      // (a) the default partner toss is caught, so its caveat names the catch (out.caught)
+      await load({ duoOpen: true, duoAction: 'catch', cObj: 'partner' }); await settle(page, 'duo-bay'); await pick('#duo-effort', 'plaster');
+      const tcB = await duoTxt('.effort-read');
+      if (!/They take their own recoil: the toss and the catch are Rex’s own pushes, so their push back goes to the endless ocean and nothing reaches the ground to shake it\./.test(tcB) || /the toss is Rex’s own push,/.test(tcB)) r2.push('code-2 (a), the default partner toss is caught: ' + tcB.slice(0, 300));
+      // (b) the default friction pull, all-out: his steps are capped by his grip (the Pull item's friction branch)
+      await load({ action: 'pull' }); await pick('#effort', 'allout');
+      const pfH = await soloTxt('.happens');
+      if (!/It is his own body’s momentum, [\d,]+ kg·m\/s over [\d.,]+ m?s \(his grip caps it: his footing, [\d.,]+ kN, is the most his steps can push with\)/.test(pfH) || /bolted, nothing caps it|his legs cap it/.test(pfH)) r2.push('code-2 (b), the friction pull\'s steps: ' + ((pfH.match(/It is his own body’s momentum[^)]*\)/) || [pfH.slice(0, 300)])[0]));
+      // (c) a bolted bus with the plaster preset: the effort box's reason is the bolted one (pullOnWhy), not his grip
+      // (round 3 rewords it: his legs cap his steps; its re-check: at most the strength he uses, as in a bolted sprint)
+      await load({ action: 'pull', obj: 'bus', anchor: 'bolted' }); await pick('#effort', 'plaster');
+      const pbuE = await soloTxt('.effort-read');
+      if (!/Bolted, his legs cap it: they push his own body with at most the strength he uses \(about [\d.,]+ [kM]N here, as in a bolted sprint\), so only a strong, quick pull shakes the ground\./.test(pbuE) || /His grip caps it|nothing caps it/.test(pbuE)) r2.push('code-2 (c), the bolted bus\'s reason: ' + pbuE.slice(0, 400));
+      // (d) the courtesy-ceiling card: a pull's shaking counts only with the power on; not 'the lab counts neither'
+      const cardTxt = await page.evaluate(() => { const b = document.body.cloneNode(true); b.querySelectorAll('script, style').forEach((x) => x.remove()); return b.textContent.replace(/\s+/g, ' '); });
+      if (!/A pull’s counts only with They take their own recoil on: the rope’s pull back then goes to the endless ocean, and the shaking is from his own steps/.test(cardTxt) || /the lab counts neither/.test(cardTxt)) r2.push('code-2 (d), the card: ' + ((cardTxt.match(/[^.]*or a pull \([^)]*\)[^.]*\./) || cardTxt.match(/A pull’s counts[^.]*\./) || ['(no pull sentence)'])[0]).slice(0, 300));
+      // (e) the pull's hazard list: with the power on its shaking is his own steps'; with it off it isn't counted
+      const hazOf = async (st) => { await load(Object.assign({ action: 'pull' }, st)); return soloTxt('.haz-list'); };
+      const hzOn = await hazOf({}), hzOff = await hazOf({ ownRecoil: false });
+      if (!/Ground shaking: from his own steps only \(the move itself/.test(hzOn) || !/Ground shaking: not counted with They take their own recoil off\./.test(hzOff) || /Ground shaking: none/.test(hzOn + hzOff)) r2.push('code-2 (e), the pull\'s hazard list: on ' + hzOn.slice(-300) + ' | off ' + hzOff.slice(-160));
+      if (r2.length) fail('review round 2 (pull request 2): ' + r2.join(' ;; ')); else okLog('review round 2 (pull request 2): the bolted pull counts his steps; a sliding load slides; pull times labelled all-out; the weight he holds rests on his feet; a plasma hit is not his catch; the planted catcher\'s math; the game of catch says nothing pushes on the ground only where everything is caught; the unlimited shove into a bolted Ollie; the one-sided paradox; a catch he can\'t hold; (round 3, code-2) the caught partner toss, the friction pull\'s grip, the bolted pull\'s reason, the card and the hazard list');
+    }
+    // ---- end of review round 2 of pull request 2
+    // ---- review round 3 of BRIEF-canon.md pull request 2 (research/reviews/canon-2-round3.json): each of these fails on
+    // the page before its fix (54fadb8)
+    {
+      const duoTxt = (sel) => page.evaluate((s) => Array.from(document.querySelectorAll('#duo-bay ' + s)).map((n) => n.textContent.replace(/\s+/g, ' ')).join(' / '), sel);
+      const soloTxt = (sel) => page.evaluate((s) => Array.from(document.querySelectorAll('#bay ' + s)).map((n) => n.textContent.replace(/\s+/g, ' ')).join(' / '), sel);
+      const visText = () => page.evaluate(() => { const b = document.body.cloneNode(true); b.querySelectorAll('script, style').forEach((x) => x.remove()); return b.textContent.replace(/\s+/g, ' '); });
+      const num = (x) => Number(String(x).replace(/,/g, ''));
+      const r3 = [];
+      // physics-bolted-pull-legs-unbounded: Bolted removes the footing limit, not the muscle limit. With the power on his
+      // legs move his own body with at most the strength he uses (its re-check, fixes-pull-legs-vs-sprint: the Sprint
+      // tab's push-off, not the 1.4× leg rule for carrying weight up), so a light load is pulled at his own body's pace:
+      // the bolted baseball's least disruptive pull takes 10 s (not 100 ms) and shakes nothing near him
+      await load({ action: 'pull', obj: 'baseball', anchor: 'bolted' });
+      const bbV = await soloTxt('.verdict'), bbS = await soloTxt('.status-row'), bbH = await soloTxt('.happens'), bbE = await soloTxt('.effort-read');
+      if (!/Rex drags it 10 m in 9\.\d+ s\./.test(bbV) || !/His legs set the pace/.test(bbS) || !/His legs still move his own body, with at most the strength he uses \([\d.,]+ N\), as in a bolted sprint, so his own body sets the pace: he pulls with [\d.,]+ N of the [\d.,]+ N he could/.test(bbH) || !/Courtesy ceiling: none\./.test(bbE) || /plaster may crack|nothing caps it|1\.4×/i.test(bbE + bbH)) r3.push('legs, the bolted baseball at least effort: ' + bbV + ' | ' + bbS + ' | ' + bbE.slice(0, 220));
+      // ... and all-out the bolted car: the engine's time; his steps' push (his body's momentum over the pull) at most
+      // the dial (889.6 kN: all-out he uses all of it), not 1.4× (round 3) or 2.2× (round 2); his pace is the Sprint
+      // tab's bolted push-off ÷ his mass; the math line names his legs' push; and the page says the pull has no
+      // leg-speed limit, so he ends past his top sprint speed (the engine's figures)
+      await load({ action: 'pull', anchor: 'bolted' }); await pick('#effort', 'allout');
+      const bcV = await soloTxt('.verdict'), bcH = await soloTxt('.happens'), bcM = await soloTxt('details.math'), bcE = await soloTxt('.effort-read');
+      const bcT = await page.evaluate(() => { const P = window.DinoPhys, D = window.DINO_DATA, g = P.K.g, body = P.makeBody(Object.assign({ build: 'rex' }, P.DEFAULT_BODIES.rex));
+        const c = { F: 100 * 907.18474 * g, mode: 'comic', body, surface: D.surfaces.find((x) => x.id === 'concrete'), anchor: 'bolted', airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true }, r = P.pull(c, D.objects.find((x) => x.id === 'car')), sp = P.sprint(c);
+        return { t: r.t10m, legs: r.walkPush.J / r.walkPush.T / r.usable, a: r.accel, aSprint: sp.accel, vEnd: r.vEnd, vTop: sp.vTop }; });
+      const bcW = bcH.match(/It is his own body’s momentum, ([\d,]+) kg·m\/s over ([\d.]+) ms \(his legs cap it: at most the strength he uses, [\d.,]+ kN\)/), bcVt = bcV.match(/in ([\d.]+) ms\./);
+      const bcS = bcH.match(/the pull leaves out two limits the Sprint tab has: how fast his legs can move, and the air’s drag on him\. So he ends the 10 m at ([\d.]+) m\/s, past his top sprint speed at this effort \(([\d.]+) m\/s\)/);
+      if (!bcW || !bcVt || Math.abs(num(bcVt[1]) / (1000 * bcT.t) - 1) > 0.03 || num(bcW[1]) / (num(bcW[2]) / 1000) > 100 * 907.18474 * 9.80665 * 1.03 || !(bcT.legs <= 1 + 1e-12) || Math.abs(bcT.a / bcT.aSprint - 1) > 1e-9 || !/his legs’ push ÷ his mass, legs’ push = the strength he uses = [\d.,]+ kN \(the Sprint tab’s bolted push-off\)/.test(bcM) || /nothing caps it|1\.4×|1\.4 ×/i.test(bcH + bcE + bcM)
+        || !bcS || Math.abs(num(bcS[1]) / bcT.vEnd - 1) > 0.03 || Math.abs(num(bcS[2]) / bcT.vTop - 1) > 0.03) r3.push('legs, the bolted car all-out: ' + bcV + ' (engine ' + (1000 * bcT.t).toFixed(0) + ' ms, legs ' + bcT.legs.toFixed(3) + '×, a ' + bcT.a.toFixed(1) + ' vs the sprint\'s ' + bcT.aSprint.toFixed(1) + ') | ' + ((bcH.match(/It is his own body’s momentum[^)]*\)/) || [bcH.slice(0, 200)])[0]) + ' | ' + (bcS ? bcS[0] : '(no leg-speed note)') + ' | ' + bcM.slice(-300));
+      // ... and on friction at the least disruptive effort his legs, not his grip, set the car's pace; the walk sentence
+      // gives his legs' push and the acceleration it allows (the legs' push ÷ his 3,000 kg, under 1 m/s², not his
+      // footing's 5.9 m/s²: re-check, fixes-friction-walk-sentence-unchecked), and the math line names both caps, not
+      // 54fadb8's min((pull − resistance) ÷ load mass, footing ÷ his mass) (re-check, fixes-friction-math-line-unchecked)
+      await load({ action: 'pull' });
+      const fcS = await soloTxt('.status-row'), fcH = await soloTxt('.happens'), fcM = await soloTxt('details.math');
+      const fcW = fcH.match(/his legs’ push \(at most the strength he uses, ([\d.,]+) N, as in a sprint\), so they can speed it up by at most ([\d.]+) m\/s²/);
+      if (!/His legs set the pace/.test(fcS) || !/but his own legs set the pace: he pulls with/.test(fcH) || !/\(his legs cap it: at most the strength he uses, [\d.,]+ N, less than his footing, [\d.,]+ kN\)/.test(fcH) || /1\.4×/.test(fcH)) r3.push('legs, the friction car at least effort: ' + fcS + ' | ' + ((fcH.match(/It is his own body’s momentum[^)]*\)/) || [fcH.slice(0, 200)])[0]));
+      if (!fcW || !(num(fcW[2]) < 1) || Math.abs(num(fcW[2]) / (num(fcW[1]) / 3000) - 1) > 0.05 || /his footing \([\d.,]+ kN\) can speed his own body up/.test(fcH)) r3.push('legs, the friction walk sentence: ' + ((fcH.match(/He still walks[^²]*²/) || [fcH.slice(0, 200)])[0]));
+      if (!/his feet push with the smaller of his footing, μ × his weight = [\d.,]+ kN, and his legs’ push, the strength he uses = [\d.,]+ N \(the Sprint tab’s push-off\)/.test(fcM) || /min\(\(pull − resistance\)|1\.4 ×/.test(fcM)) r3.push('legs, the friction math line: ' + fcM.slice(0, 400));
+      // ... and at unlimited strength, bolted, all-out, his steps are still his legs' (re-check,
+      // fixes-unlimited-bolted-steps-say-grip): never his grip or '∞ N' in a sentence
+      await load({ action: 'pull', inf: true, anchor: 'bolted' }); await pick('#effort', 'allout');
+      const uiH = await soloTxt('.happens');
+      if (/his grip caps it/.test(uiH) || !/\(his legs cap it: at most the strength he uses, unbounded at unlimited strength\)/.test(uiH) || /∞ N/.test(uiH)) r3.push('legs, the unlimited bolted pull: ' + ((uiH.match(/It is his own body’s momentum[^)]*\)/) || [uiH.slice(0, 300)])[0]));
+      // (on friction his footing sets the pace there: what he pulls with is of his unbounded strength, not '∞ N')
+      await load({ action: 'pull', inf: true }); await pick('#effort', 'allout');
+      const ufH = await soloTxt('.happens');
+      if (/∞ N/.test(ufH) || !/his own footing sets the pace: he pulls with [\d.,]+ kN of his unbounded strength/.test(ufH) || !/\(his grip caps it: his footing, [\d.,]+ kN, is the most his steps can push with\)/.test(ufH)) r3.push('legs, the unlimited friction pull: ' + ufH.slice(0, 400));
+      // ... and the courtesy-ceiling card says so
+      const card = await visText();
+      if (!/his legs push his own body with at most the strength he uses, as in a sprint, and on friction his grip caps them too, so it stays small; bolted, only his legs cap them, so only a strong, quick pull shakes the ground/.test(card) || /bolted, nothing does|at most 1\.4× the strength he uses/.test(card)) r3.push('legs, the card: ' + ((card.match(/A pull’s counts[^.]*\./) || ['(none)'])[0]));
+      // physics-catch-allreach-unthrown-leg: a leg too weak to throw back throws nothing, so it lands nowhere: Ollie at a
+      // 2,000 kg what-if strength, the car lobbed 30 m: everything thrown reaches the catcher, so nothing pushes on the
+      // ground (not 'the lab doesn't judge where the car lands or hits')
+      await load({ duoOpen: true, duoAction: 'catch', cObj: 'car', cStyle: 'easy', cLogD: Math.log10(30) }); await settle(page, 'duo-bay');
+      await page.evaluate(() => { document.getElementById('ollie-setup').open = true; });
+      await page.click('#o-own'); await page.waitForTimeout(300);
+      await page.evaluate(() => { const s = document.getElementById('o-strength'); s.value = String(Math.log10(2000)); s.dispatchEvent(new Event('input', { bubbles: true })); s.dispatchEvent(new Event('change', { bubbles: true })); });
+      await page.waitForTimeout(800); await settle(page, 'duo-bay'); await pick('#duo-effort', 'plaster');
+      const wkV = await duoTxt('.verdict'), wkB = await duoTxt('.effort-read');
+      if (!/Ollie can’t throw the car that far/.test(wkV) || !/Even all-out, this test doesn’t shake the ground enough that plaster may crack [^.]*\. They take their own recoil: the thrower’s push back and the catcher’s stop go to the endless ocean, so nothing in this test pushes on the ground to shake it\./.test(wkB) || /doesn’t judge/.test(wkB)) r3.push('allReach, a leg too weak to throw: ' + wkV.slice(-120) + ' | ' + wkB.slice(0, 300));
+      // code-1: an unlimited shove into a bolted Ollie with the defaults (Unbreakable footing on), 'Break the ground': the
+      // box is drawn on real rock, and says Unbreakable footing is set aside for it (judged at unlimited strength)
+      await load({ duoOpen: true, duoAction: 'wrestle', wrestleMove: 'shove', inf: true, oAnchor: 'bolted' }); await settle(page, 'duo-bay'); await pick('#duo-effort', 'ground');
+      const sgB = await duoTxt('.effort-read');
+      if (!/Unbreakable footing is set aside for this test: they mean to break the ground/.test(sgB) || !/On real ground, courtesy ceiling/.test(sgB)) r3.push('code-1, the unlimited shove into a bolted Ollie, break the ground: ' + sgB.slice(0, 300));
+      // copy-pull-version-history-phrase: no 'as before the power existed' on the page (the Pull tab with the power off,
+      // friction and bolted, its hazard list and the card); the bolted box keeps its caveat
+      await load({ action: 'pull', ownRecoil: false, anchor: 'bolted', obj: 'loco' });
+      const vhB = await visText(), vhE = await soloTxt('.effort-read');
+      await load({ action: 'pull', ownRecoil: false });
+      const vhF = await visText();
+      if (/before the power existed/.test(vhB + vhF) || !/With They take their own recoil off the lab doesn’t count a pull’s ground shaking, so a quick, hard pull may shake the ground more than the effort box says\./.test(vhE) || !/Ground shaking: not counted with They take their own recoil off\./.test(vhE)) r3.push('version-history phrase: ' + ((vhB.match(/[^.]*before the power existed[^.]*\./g) || [vhE.slice(0, 300)]).join(' | ')));
+      // copy-card-bolted-pull-fraction-of-second: the card's bolted pull with the power off can be quick, with the
+      // engine's own times at the page's default dial (a car 0.31 s, a locomotive about 2 s), not 'a fraction of a second'
+      const qk = vhF.match(/or his bolts do over the pull, which all-out can be quick \((0\.\d+) s for a car at the page’s default dial; about (\d+) s for a locomotive, and longer at a low dial\)/);
+      const qkT = await page.evaluate(() => { const P = window.DinoPhys, D = window.DINO_DATA, g = P.K.g, body = P.makeBody(Object.assign({ build: 'rex' }, P.DEFAULT_BODIES.rex));
+        const c = { F: 100 * 907.18474 * g, mode: 'comic', body, surface: D.surfaces.find((x) => x.id === 'concrete'), anchor: 'bolted' };
+        return ['car', 'loco'].map((id) => P.pull(c, D.objects.find((x) => x.id === id)).t10m); });
+      if (!qk || /all-out takes a fraction of a second/.test(vhF) || num(qk[1]) !== Number(qkT[0].toFixed(2)) || num(qk[2]) !== Math.round(qkT[1])) r3.push('the card\'s bolted pull times: ' + (qk ? qk[0] : ((vhF.match(/or his bolts do over the pull[^.]*\./) || ['(none)'])[0])) + ' (engine ' + qkT.map((x) => x.toFixed(2) + ' s').join(', ') + ')');
+      if (r3.length) fail('review round 3 (pull request 2): ' + r3.join(' ;; ')); else okLog('review round 3 (pull request 2): his legs cap a pull\'s steps at the strength he uses, as in a sprint, bolted too (the bolted baseball and car, the friction car\'s steps, walk sentence and math, the unlimited bolted pull, the card; the pull\'s missing leg-speed limit); a leg too weak to throw lands nowhere; the unlimited shove\'s break-the-ground box sets Unbreakable footing aside; no version-history phrase; the card\'s bolted pull times');
+    }
+    // ---- end of review round 3 of pull request 2
     // the two-player 'Break the ground' sets Unbreakable footing aside, and its ceiling is on real ground too
     await load({ duoOpen: true, duoAction: 'collide', anchor: 'bolted' }); await settle(page, 'duo-bay'); await pick('#duo-effort', 'ground');
     const dg = await page.evaluate(() => document.querySelector('#duo-bay .effort-read').textContent.replace(/\s+/g, ' '));
