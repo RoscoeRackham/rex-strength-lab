@@ -69,7 +69,7 @@ Anything else (a design choice, a review finding, a test that needs changing): d
 
 ## CI
 
-CI runs only when someone starts it (CLAUDE.md rule 3), and each run takes about 11 minutes. Don't start it on every push. If the session can start workflows, start it once per pull request after its last review round: `gh workflow run test.yml --ref <branch>`. Otherwise the owner starts it on each of the four before merging.
+CI runs only when someone starts it (CLAUDE.md rule 3), and a run took 15 minutes on #34's branch (run 38671324273); the job's timeout is 30 minutes. Don't start it on every push. If the session can start workflows, start it once per pull request after its last review round: `gh workflow run test.yml --ref <branch>`. Otherwise the owner starts it on each of the four before merging.
 
 ## At the end
 

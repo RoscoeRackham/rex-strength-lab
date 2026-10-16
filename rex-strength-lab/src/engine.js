@@ -59,6 +59,11 @@
   //   recoilAbsorbedT { J, T, thetaDeg }   the thrower's push in the game of catch (catchLeg) and the partner toss
   //   recoilAbsorbedC { J, T, angleDeg }   the catcher's stop in the game of catch and the partner toss
   //   (pull also gives walkPush { J, T }: his own steps' push on the ground, which is the move, not recoil, and real)
+  //   recoilAbsorbedA, recoilAbsorbedB { J, T, thetaDeg }   each one's push back in the shoving match (pushMatch, with
+  //     both taking their own recoil: 'bothShoved', 'shovedOff'); shoveBoth's back.recoilAbsorbed: the partner's
+  //   carry.supplied (kg m/s)   what a charger's source supplies in Collide ('carried'), carry.stop his own stop
+  //   knockAbsorbed { J, E }    an incoming hit taken by Never knocked back (CATCHGAME.fireballAt), with the energy freed
+  //     at him that is taken back
   //   J: kg m/s, a magnitude >= 0 (Infinity for an unbounded push). T: s, how long the push (or stop) lasts.
   //   thetaDeg: the angle of HIS push in degrees above level, measured as the move measures it (the throw's angle; 0 for
   //     a punch, a shove and a pull, whose forward is the way he punches, shoves or walks; -90 for a stomp and the arm
@@ -70,7 +75,23 @@
   //     was moving.
   // Momentum is absorbed in these cases and nowhere else (canon, CLAUDE.md "Momentum"): their own recoil, the air's drag
   // on what they throw, the ground's share it can't bear, the lift from growth, incoming hits (Never knocked back), and
-  // flight's push. The lab models the first four; Never knocked back and flight have no move here yet.
+  // flight's push. The lab models the first five; flight has no move here yet.
+  //
+  // Contests (BRIEF-canon.md item 4, pull request 4; canon, the rulings of 14 Oct 2026): every Rex + Ollie test is a
+  // contest (arm wrestling, every Wrestle move, Collide's charge and steady push, the partner toss), where force moves:
+  // Never knocked back is set aside, the other's push is real, and only the push each puts on himself is absorbed (his own
+  // recoil, ownRecoil). With ownRecoil on: a charger doesn't slow (COLLIDE.collide: 'carried' with carry { ... supplied },
+  // or 'paradox' with unbounded: true where the one hit is held without limit), the steady push isn't capped by the
+  // pusher's own footing (standoff: ownRecoil: true), the shoving match pushes with the effort each uses ('bothShoved',
+  // 'walkOut', 'shovedOff'), Both at once shoves each with the other's shove (both: true), and in arm wrestling each pad
+  // or each one's feet hold the other's press (reading B, at armWrestle). The hit's freed energy is absorbed by default
+  // (collide's hitAbsorbed { E }), real when he means it (o.meanIt: the page's blast presets).
+  // Never knocked back (noKnockback, a key of each one's own context, both on by default on the page; canon: a switch
+  // each): an incoming hit outside a contest doesn't move him and its momentum goes to the endless ocean. The one such hit
+  // the lab has is a game-of-catch throw that reaches the catcher as a fireball or plasma (Things keep their form off,
+  // some of the air's drag left): CATCHGAME.fireballAt reports knockAbsorbed { J, E } then. Catches are taken back through
+  // ownRecoil. It is NOT one of anyPower's keys: it defaults to on, so counting it would change every run with the four
+  // powers off. Left out or false, every result is as before.
   // ---------------------------------------------------------------------------
   const holdsGround = (c) => !!(c && (c.groundHolds || c.unbreakable));
   const airShare = (c) => { const s = c && c.airAbsorb; return typeof s === 'number' && s > 0 ? Math.min(1, s) : 0; };
@@ -1728,7 +1749,28 @@
   // at just under light speed, each with a plug of rock ('rockGives').
   const unlimitedClash = (cA, cB) => (holdsGround(cA) && holdsGround(cB)
     ? { clash: 'paradox' } : { clash: 'rockGives', tearA: groundTear(cA), tearB: groundTear(cB) });
-  const shoveShare = (c) => (c.mode === 'real' ? MUSCLE.throwPush.forceFrac : MUSCLE.throwPush.comicFrac);
+  // A body sliding to a stop on his feet from speed v against footing R and air drag: m v dv/dx = -(R + k v^2),
+  // k = rho0 Cd A / 2, so x = m/(2k) ln(1 + k v^2/R). Past 1% of light speed: no end (Infinity); held without limit: 0.
+  // (The shove's slide, shared with the shoving match.)
+  const slideStop = (v, R, b) => {
+    if (!(v > 0)) return 0;
+    if (v > 0.01 * K.c) return Infinity;
+    if (!isFinite(R)) return 0;
+    if (!(R > 0)) return Infinity;
+    const k = 0.5 * K.rho0 * b.Cd * b.frontArea;
+    return b.m / (2 * k) * Math.log1p(k * v * v / R);
+  };
+  // One body pushed from rest by a constant net force f over a stroke d while the pusher stays put (Collide's steady push
+  // driving the one pushed back, as the shoving match's shove-off does): relativistic, x = (m c^2 / f)(sqrt(1 + (f t /
+  // m c)^2) - 1), so t = m c sqrt(q (2 + q)) / f with q = f d / m c^2 (no round-off for small q). An unbounded f: just
+  // under light speed, with unbounded momentum and energy, over t = d / c.
+  const shoveOff = (f, m, d) => {
+    if (!(f > 0)) return { t: Infinity, p: 0, v: 0, E: 0 };
+    if (!isFinite(f)) return { t: d / K.c, p: Infinity, v: K.c, E: Infinity };
+    const q = f * d / (m * K.c * K.c), t = m * K.c * Math.sqrt(q * (2 + q)) / f, p = f * t;
+    return { t, p, v: momentumToV(p, m), E: momentumToKE(p, m) };
+  };
+  const shoveShare =(c) => (c.mode === 'real' ? MUSCLE.throwPush.forceFrac : MUSCLE.throwPush.comicFrac);
   const shoveDrive = (c) => Math.min(c.F, 2 * c.F * shoveShare(c));
 
   // Arm wrestling. Under the rules each competitor grips the table's peg and his elbow sits on a pad bolted
@@ -1738,6 +1780,38 @@
   // only their feet hold (and they would topple before sliding unless they lean in). Standing up, the loser's
   // arm folds (a pin) only if the winner presses harder than that arm; otherwise the arm holds and his feet
   // slide, so his whole body is dragged sideways.
+  // Taking their own recoil (BRIEF-canon.md item 4, decision 10 of pull request 4; canon Q12: in arm wrestling the other's
+  // push on him is real and the only absorption is the push each puts on himself). The brief's reading (A: each one's
+  // push back goes to his source, so the presses no longer load the table at all; the table carries only the slam) is
+  // physically incoherent: the other's press is real on him, and his forearm, pivoted on his elbow pad, can only hold
+  // against it by pushing back on the pad (or by moving). With nothing on his side carrying it, as A has it, a real force
+  // would act on each hand in a stalemate and nothing would move: momentum would vanish outside canon's list (Never
+  // knocked back is set aside in contests). So the lab builds reading B, the shoving match's rule at the table: each pad
+  // (or, standing, each one's feet) holds the OTHER's press; only what is truly his own push back goes to his source.
+  //   - On the table, a stalemate loads each pad with the other's press, as before: the table carries the smaller press
+  //     between them, and both presses past what it carries break it ('push'), unchanged.
+  //   - A pin (the winner's power on): the winner's pad holds the loser's press (real). Spinning both forearms is the
+  //     winner's swing, whose push back goes to his source (pull request 2), so it no longer loads his pad: padLoad = the
+  //     loser's press. The loser's pad still carries what turns his own forearm against the winner's hand (loserPadLoad:
+  //     |holdArm m_l a - (P_l + effMass m_l a)|, from the same torques about the elbow as the power-off pad load; review
+  //     round 1 of pull request 4): past what the table carries it breaks the table in the pin ('pin'), and they stand
+  //     up, as with the power off. The pin itself is unchanged (the brief: the stronger tips the other), and so is its
+  //     slam (pull request 2: whole in the ground with Unbreakable footing).
+  //   - Standing, once the table is gone (only with Things keep their form off): each one's own footing no longer caps
+  //     his own press (AA = PA with his power on; footLimitedA false), so the stronger press always pins the weaker arm
+  //     (no 'drag'). Each one's feet hold the other's press, which can now pass his grip: loserSlides as before (the
+  //     press his folding arm resists, against his footing); winnerSlides (new, the winner's power on): the loser's press
+  //     past the winner's footing, so his feet slide too. A standing stalemate with presses past their grips: draggedA /
+  //     draggedB (new): the other's press beats his footing, so his feet slide; the lab doesn't follow that motion (the two
+  //     are pushed opposite ways and would turn about their clasped hands: a known limit). tearA / tearB (bolted): the
+  //     other's press on his bolts' rock. A bolted one on real rock whose rock tears out (tear past 1) is held by his feet
+  //     alone from then on, as in the shoving match: tornA / tornB true, holdAfterA / holdAfterB N his friction footing,
+  //     which draggedA / draggedB, loserSlides and winnerSlides then compare with (review round 3 of pull request 4).
+  //     Both presses unlimited, standing: each body takes the other's unlimited press:
+  //     'paradox' if either is held without limit (bolted on ground that holds; oneSided unless both are), 'rockGives' if
+  //     both are bolted on real rock (tearA, tearB), else 'flungApart' (their feet, or the rock around one's bolts, give:
+  //     flung apart at just under light speed; tearA / tearB where bolted). Each with ownRecoil: true.
+  // With the power off every result is as before.
   function armWrestle(cA, cB) {
     const A = cA.body, B = cB.body;
     if (isBlackHole(A) || isBlackHole(B)) return { blackHole: true };
@@ -1752,15 +1826,27 @@
     // A pin on the table: the winner's elbow pad holds the loser's arm force plus what spins both forearms.
     // Torques about each elbow: R_w = P_l + (I_l / L^2 + m_w r_w / L) a, with a = (P_w - P_l) / M. Largest at the
     // start of the pin (real muscle is strongest at rest), so that is the load the table has to carry.
-    let padLoad = 0, padBy = null;
+    // (the winner taking his own recoil: his pad holds only the loser's press; the forearms' spin-up is his swing's push
+    // back, to his source: reading B, above)
+    // (the winner taking his own recoil, review round 1 of pull request 4: the loser's pad is checked too. His forearm turns
+    // about his elbow, its centre of mass taking holdArm m_l a, while the winner's hand pushes it with C = P_l + effMass m_l a
+    // (its torque about the elbow); his pad, its pivot, carries the difference, |holdArm m_l a - C|. That is a force on the
+    // loser, neither one's push back, so no power takes it. With the power off the winner's pad is always the larger.)
+    let padLoad = 0, padBy = null, loserPad = null;
     if (!tableBreaks && !sameForce(PA, PB)) {
       const aStr = PA > PB, Pw = aStr ? PA : PB, Pl = aStr ? PB : PA, mw = aStr ? A.m : B.m, ml = aStr ? B.m : A.m;
-      padLoad = Pl + (Pw - Pl) * (AW.effMass * ml + AW.holdArm * mw) / (AW.effMass * (A.m + B.m));
+      padLoad = (aStr ? cA : cB).ownRecoil ? Pl : Pl + (Pw - Pl) * (AW.effMass * ml + AW.holdArm * mw) / (AW.effMass * (A.m + B.m));
       padBy = aStr ? 'A' : 'B';
-      if (padLoad > tableLat) { tableBreaks = true; tableBreaksBy = 'pin'; }
+      // (review round 2 of pull request 4: an unlimited press against a finite one spins the forearms without limit, so the
+      // loser's pad load is unbounded, not Infinity - Infinity)
+      if ((aStr ? cA : cB).ownRecoil) { const aP = (Pw - Pl) / (AW.effMass * (A.m + B.m)); loserPad = !isFinite(aP) ? Infinity : Math.abs(AW.holdArm * ml * aP - (Pl + AW.effMass * ml * aP)); }
+      if (Math.max(padLoad, loserPad || 0) > tableLat) { tableBreaks = true; tableBreaksBy = 'pin'; }
     }
-    const AA = tableBreaks ? Math.min(PA, fA.R) : PA, AB = tableBreaks ? Math.min(PB, fB.R) : PB;
-    const out = { PA, PB, RA: fA.R, RB: fB.R, AA, AB, tableLat, tableBreaks, tableBreaksBy, padLoad, padBy, footLimitedA: tableBreaks && fA.R < PA, footLimitedB: tableBreaks && fB.R < PB, LA: AW.lever * A.H, LB: AW.lever * B.H };
+    // standing, his own press is capped by his footing only with his recoil not taken
+    const capA = tableBreaks && !cA.ownRecoil, capB = tableBreaks && !cB.ownRecoil;
+    const AA = capA ? Math.min(PA, fA.R) : PA, AB = capB ? Math.min(PB, fB.R) : PB;
+    const out = { PA, PB, RA: fA.R, RB: fB.R, AA, AB, tableLat, tableBreaks, tableBreaksBy, padLoad, padBy, footLimitedA: capA && fA.R < PA, footLimitedB: capB && fB.R < PB, LA: AW.lever * A.H, LB: AW.lever * B.H };
+    if (loserPad != null) out.loserPadLoad = loserPad;
     out.armHoldA = AW.holdArm * A.m * K.g; out.armHoldB = AW.holdArm * B.m * K.g;
     out.canHoldArmA = PA >= out.armHoldA; out.canHoldArmB = PB >= out.armHoldB;
     const sT = ((A.H + B.H) / 2) / TABLE.refH;
@@ -1775,8 +1861,25 @@
     out.pulledTogether = out.grav.F > Math.min(fA.R, fB.R) && out.grav.F > Math.max(cA.F, cB.F);
     out.torqueA = AA * out.LA; out.torqueB = AB * out.LB;
     out.humerusRatioA = out.torqueA / HUMERUS_NM; out.humerusRatioB = out.torqueB / HUMERUS_NM;
-    out.tearA = cA.anchor === 'bolted' ? AA / groundTear(cA) : 0;
-    out.tearB = cB.anchor === 'bolted' ? AB / groundTear(cB) : 0;
+    // (each one's bolts: his own press with his recoil not taken; with it taken, the press that reaches his body: the other's
+    // in a stalemate (the two are equal), the loser's in a pin, the push the folding arm resists, so the smaller of the two)
+    out.tearA = cA.anchor === 'bolted' ? (cA.ownRecoil ? Math.min(AA, AB) : AA) / groundTear(cA) : 0;
+    out.tearB = cB.anchor === 'bolted' ? (cB.ownRecoil ? Math.min(AA, AB) : AB) / groundTear(cB) : 0;
+    if (!isFinite(AA) && !isFinite(AB) && tableBreaks && (cA.ownRecoil || cB.ownRecoil)) {
+      // standing, both presses unlimited, their own recoil taken: each body takes the other's unlimited press
+      const heldA = cA.anchor === 'bolted' && holdsGround(cA), heldB = cB.anchor === 'bolted' && holdsGround(cB);
+      const boltA = cA.anchor === 'bolted', boltB = cB.anchor === 'bolted';
+      // (review round 2 of pull request 4: with only one held without limit, the press into him has no physical answer
+      // (noAnswer: whose press, 'A' or 'B') and moves nobody, but his own press on the other is real and meets only the
+      // other's feet, or the rock around his bolts on real rock: the other is flung off (draggedA / draggedB), as in the
+      // shoving match. Nothing moves only with both held.)
+      if (heldA && heldB) Object.assign(out, { clash: 'paradox', oneSided: false });
+      else if (heldA || heldB) Object.assign(out, { clash: 'paradox', oneSided: true, noAnswer: heldA ? 'B' : 'A' }, heldA ? { draggedB: true } : { draggedA: true },
+        heldA && boltB ? { tearB: groundTear(cB) } : {}, heldB && boltA ? { tearA: groundTear(cA) } : {});
+      else Object.assign(out, { clash: boltA && boltB ? 'rockGives' : 'flungApart' }, boltA ? { tearA: groundTear(cA) } : {}, boltB ? { tearB: groundTear(cB) } : {});
+      out.outcome = out.clash; out.contact = Infinity; out.ownRecoil = true;
+      return out;
+    }
     if (!isFinite(AA) && !isFinite(AB)) {
       // unlimited arms on both sides. While the table holds (comic ground) it carries the push between them:
       // one unbreakable system, nothing moves. Once it breaks, the push goes through two bolted stances.
@@ -1785,18 +1888,38 @@
       return out;
     }
     out.tableRatio2 = Math.min(PA, PB) / tableLat;
-    if (sameForce(AA, AB)) { out.outcome = 'stalemate'; out.contact = AA; return out; }
+    // standing with their recoil taken (review round 3 of pull request 4): a bolted one on real rock whose rock tears out
+    // is held by his feet alone from then on, the torn-rock rule of the shoving match and the steady push (tornA / tornB,
+    // holdAfterA / holdAfterB N: his friction footing). The load on his rock is tearA / tearB's: the other's press in a
+    // stalemate, the force at the loser's elbow in a pin, the loser's press for the winner. Read only where his feet's
+    // slide is judged with the power on.
+    const holdAfter = (c, f, side) => {
+      const t = out['tear' + side];
+      if (!(tableBreaks && c.anchor === 'bolted' && t > 1 && !sameForce(t, 1))) return f.R;
+      const R = footingOf(Object.assign({}, c, { anchor: 'friction' })).R;
+      out['torn' + side] = true; out['holdAfter' + side] = R;
+      return R;
+    };
+    if (sameForce(AA, AB)) {
+      out.outcome = 'stalemate'; out.contact = AA;
+      // standing with his recoil taken: the other's press, no longer capped by the other's grip, can beat his footing
+      if (tableBreaks && cA.ownRecoil) out.draggedA = AB > holdAfter(cA, fA, 'A');
+      if (tableBreaks && cB.ownRecoil) out.draggedB = AA > holdAfter(cB, fB, 'B');
+      return out;
+    }
     const aWins = AA > AB;
     const Aw = aWins ? AA : AB, Al = aWins ? AB : AA, bw = aWins ? A : B, bl = aWins ? B : A, cw = aWins ? cA : cB, cl = aWins ? cB : cA;
     const Pw = aWins ? PA : PB, Rw = tableBreaks ? (aWins ? fA.R : fB.R) : Infinity;
     const Pl = aWins ? PB : PA, Rl = tableBreaks ? (aWins ? fB.R : fA.R) : Infinity;
+    // real muscle standing: his footing caps his press only with his recoil not taken
+    const capW = cw.ownRecoil ? Infinity : Rw;
     // What gives on the loser's side: his arm, if the winner presses harder than it (a pin); otherwise his arm
     // holds and his feet slide, and the winner drags his whole body sideways (only once the table is gone).
     const pins = !tableBreaks || (Aw > Pl && !sameForce(Aw, Pl));
     // comic: constant net push; real: the winner's arm force falls with hand speed (Hill; top hand speed
     // borrowed from the punch), capped by his footing once the table is gone
     const run = (s, M, R) => (cw.mode === 'real'
-      ? pushApart({ F: Pw, Fcap: Rw < Pw ? Rw : undefined, d: s, mA: M, mB: M, RA: Infinity, RB: R, mode: 'real', vmax: MUSCLE.punch.vmax * bw.s })
+      ? pushApart({ F: Pw, Fcap: capW < Pw ? capW : undefined, d: s, mA: M, mB: M, RA: Infinity, RB: R, mode: 'real', vmax: MUSCLE.punch.vmax * bw.s })
       : pushApart({ F: Aw, d: s, mA: M, mB: M, RA: Infinity, RB: R, mode: 'comic' }));
     const tw = Aw * AW.lever * bw.H;
     let push;
@@ -1805,8 +1928,24 @@
       const s = AW.pinAngle * AW.lever * bl.H, M = AW.effMass * (A.m + B.m);
       push = run(s, M, Pl);
       Object.assign(out, { outcome: 'pin', winner: aWins ? 'A' : 'B', contact: Pl, pin: { s, M, t: push.t, v: push.vB, E: push.EB, dA: Aw - Pl } });
-      // standing up, a loser whose feet hold less than his arm is also pulled along by it
+      // standing up, a loser whose feet hold less than his arm is also pulled along by it; with the winner's recoil taken
+      // the loser's press is real on him and no longer capped by his own grip, so his feet can slide too
       out.loserSlides = tableBreaks && Rl < Pl;
+      // (a bolted winner whose rock the loser's press tears out: his feet alone, review round 3 of pull request 4)
+      if (tableBreaks && cw.ownRecoil) out.winnerSlides = holdAfter(cw, aWins ? fA : fB, aWins ? 'A' : 'B') < Pl;
+      // standing, the winner taking his own recoil (review round 2 of pull request 4): the loser's own press is a torque at
+      // his elbow, not a net force on him; what reaches his body is the pivot force at his elbow, the force that loads his
+      // pad in a pin on the table, |holdArm m_l a - (P_l + effMass m_l a)|, a = (the winner's press - P_l) / M (loserElbow
+      // N). His feet (or his bolts and the rock around them) carry it: they slide where it beats his footing, and a bolted
+      // loser's rock tears where it passes the rock's tear load. Unlimited: unbounded.
+      if (tableBreaks && cw.ownRecoil) {
+        const aP = (Aw - Pl) / out.pin.M;
+        const elbow = !isFinite(aP) ? Infinity : Math.abs(AW.holdArm * bl.m * aP - (Pl + AW.effMass * bl.m * aP));
+        out.loserElbow = elbow;
+        if (cl.anchor === 'bolted' && !holdsGround(cl)) out[aWins ? 'tearB' : 'tearA'] = elbow / groundTear(cl);
+        // (review round 3 of pull request 4: once his rock tears out, only his feet hold him)
+        out.loserSlides = holdAfter(cl, aWins ? fB : fA, aWins ? 'B' : 'A') < elbow;
+      }
       out.slamRatio = tableBreaks ? 0 : push.EB / out.slamCap;
       // each upper arm carries its own owner's push: the loser's arm resists with all it has
       if (aWins) { out.torqueA = tw; out.torqueB = Pl * out.LB; } else { out.torqueB = tw; out.torqueA = Pl * out.LA; }
@@ -1839,10 +1978,8 @@
     // one source they share, which is the forearms' momentum at the slam; T: the swing's time (s); thetaDeg -90: the
     // slam drives the forearms straight down onto the pad; the momentum taken back points up }. Then nothing cancels the
     // slam's blow, so with Unbreakable footing it reaches the ground whole at any swing time. Its momentum from its
-    // energy (p = sqrt(E^2 + 2 E M c^2) / c): near light speed the rounded speed would freeze it. (Per-person switches
-    // and the presses, pull request 4, would report the two push backs separately.)
-    // (The presses through the elbow pads and pegs, the drag once the table is gone and the standing footing are item 4
-    // of BRIEF-canon.md, a later pull request: unchanged here.)
+    // energy (p = sqrt(E^2 + 2 E M c^2) / c): near light speed the rounded speed would freeze it. (The presses, the
+    // table and standing up: reading B, above.)
     const ownPin = !!cw.ownRecoil && pins && !tableBreaks && v > 0;
     const Jpin = !ownPin ? 0 : isFinite(E) ? Math.sqrt(E * E + 2 * E * out.pin.M * K.c * K.c) / K.c : Infinity;
     if (cA.unbreakable && pins && !tableBreaks && v > 0 && (ownPin || !(out.pin.t < limbPulse(bw)))) out.toGround = { J: ownPin ? Jpin : isFinite(E) ? vToMomentum(v, out.pin.M) : Infinity, T: limbPulse(bw) };
@@ -1863,8 +2000,14 @@
     // a body too heavy for his strength to stand lies flat: friction alone holds him
     const holdOf2 = (c, f) => (bolt(c) ? Infinity : moveCheck(c.F, c.body.m).stand ? Math.min(c.F, f.R) : f.R);
     const HA = holdOf2(cA, fA), HB = holdOf2(cB, fB);
-    const DA = Math.min(cA.F, drive(cA, fA)), DB = Math.min(cB.F, drive(cB, fB));
+    // both taking their own recoil (BRIEF-canon.md item 4; see pushMatchOwn): no push costs the pusher his grip, so each
+    // pushes with the effort he uses (if he can stand), bolted too; with the power off (or only one of them on, a
+    // test-only case: the page sets one switch for both) each drives with what his walking grip gives, as before
+    const own = !!(cA.ownRecoil && cB.ownRecoil);
+    const pushOf = (c) => (moveCheck(c.F, c.body.m).stand ? c.F : 0);
+    const DA = own ? pushOf(cA) : Math.min(cA.F, drive(cA, fA)), DB = own ? pushOf(cB) : Math.min(cB.F, drive(cB, fB));
     const out = { HA, HB, DA, DB, holdA: fA.R, holdB: fB.R };
+    if (own) out.ownRecoil = true;
     // can either get under the other and lift him (a push angled up unloads the other's feet)?
     out.canLiftA = cA.F > B.m * K.g; out.canLiftB = cB.F > A.m * K.g;
     out.grav = mutualGravity(A, B);
@@ -1878,6 +2021,7 @@
       out.tear = out.clash === 'paradox' ? 0 : out.contact / Math.min(groundTear(cA), groundTear(cB));
       return out;
     }
+    if (own) return pushMatchOwn(cA, cB, out, fA, fB);
     const netA = DA - HB, netB = DB - HA, tol = 1e-9 * Math.max(DA, DB, 1e-300);
     let w = null, net = 0;
     if (netA > tol) { w = 'A'; net = netA; } else if (netB > tol) { w = 'B'; net = netB; }
@@ -1894,6 +2038,131 @@
     const vFree = Math.sqrt(2 * a * x);
     if (vFree <= vCap) { t = Math.sqrt(2 * x / a); v = vFree; } else { t = vCap / a + (x - vCap * vCap / (2 * a)) / vCap; v = vCap; }
     return Object.assign(out, { outcome: 'walkOut', winner: w, net, accel: a, x, t, v, vCap, contact: w === 'A' ? HB : HA });
+  }
+
+  // The shoving match with both taking their own recoil (BRIEF-canon.md item 4, decision 8 of pull request 4; canon, the
+  // rulings of 14 Oct 2026: in a contest force moves, so Never knocked back is set aside, the other's push is real, and
+  // only the push each puts on himself is absorbed). No push costs the pusher his grip: each pushes with the effort he
+  // uses (DA, DB N: his strength if he can stand, bolted too; 0 lying flat), and each is held only by his hold against the
+  // other's push (HA, HB N: min(strength, footing) standing, footing lying flat, without limit bolted), as before. Each
+  // one's push back goes to his source; the other's push on him is real. The search's floor (the strength to stand and
+  // walk, about 2,570 kg-force for the 3,000 kg bodies) is above the grip on every ground, so two equal bodies are always
+  // shoved apart at any effort with the power on: a consequence the page and README state.
+  // Outcomes (outcome, with the old keys HA, HB, DA, DB, holdA, holdB, canLiftA/B, grav, ring, gravityLock, ownRecoil: true):
+  //   'bothShoved': both pushes beat the other's hold, so both are shoved apart. Motion model (an estimate): each is
+  //     pushed by the other's push less his own hold, a constant force, while their hands stay on each other, over the
+  //     shove's stroke d (the shorter of their strokes.throw, an estimate: the shove's stroke), relativistic momentum as in
+  //     pushApart; then each slides to a stop on his footing against air drag (the shove's slide). Real muscle uses the
+  //     same static forces: an upper bound (realUpper: true). Keys: d m, t s, vA, vB m/s (each one's speed apart: Rex's is
+  //     A's), pA, pB kg m/s, EA, EB J, slideA, slideB m (Infinity past 1% of light speed), relativistic, contact N (the
+  //     larger push), footA, footB kg m/s (what each one's feet hand the ground during the push: his hold x t, the way the
+  //     other pushes him), recoilAbsorbedA, recoilAbsorbedB { J kg m/s: his push x t, T s: t, thetaDeg 0 } (his push back,
+  //     to his source, pointing away from the other).
+  //   'walkOut': only one push beats the other's hold, and the winner can walk (not bolted, strong enough to walk and run):
+  //     he walks the loser out of the ring at the Pull tab's pace for his own body, a = min((his push - the loser's hold) /
+  //     the loser's mass, (his footing - the loser's push) / his own mass) (accel; aLoser, aFeet: the two), over half the
+  //     ring as before (x, t, v, vCap, winner, net: his push - the loser's hold); contact N: the push that keeps the loser
+  //     at that pace (the loser's hold + his mass x a). The winner holds back: walkPush N (= contact) is all he pushes, not
+  //     the push he could make (DA or DB); recoilAbsorbedA / B { J: the loser's momentum + his hold x t, T: t, thetaDeg 0 }
+  //     for the winner, and { J: his push x t } for a loser who pushes (review round 2 of pull request 4). The winner only
+  //     pushes, so the loser leaves the ring at v and slides on his footing: slideL m, endL m = x + slideL, where he ends
+  //     up from where he stood (review round 3 of pull request 4).
+  //   'shovedOff': only one push beats the other's hold, and the winner is bolted or can't walk (decision 8: a bolted
+  //     wrestler's push is real; pull request 2's decision 2): he shoves the loser off over the stroke and the loser slides.
+  //     The same keys as 'bothShoved' (the winner's speed is 0) plus winner, contact: the winner's push.
+  //     With noAnswer ('A' or 'B': whose push): that one's unlimited push meets the other's bolts on ground that holds, a
+  //     hold without limit, so it has no physical answer and moves nobody; the bolted one's own push is real and shoves him
+  //     off (unlimited: at just under light speed); contact Infinity (review round 1 of pull request 4).
+  //   'deadlock': neither push beats the other's hold: nothing moves; contact: the larger push; allOut false.
+  //   'paradox' (clash 'paradox', oneSided: true, contact Infinity): an unlimited push against a partner bolted on ground
+  //     that holds (no physical answer), where the bolted one's own push doesn't beat the other's hold, so nothing moves.
+  //   A partner bolted on real rock: once the other's push passes the rock's tear load (groundTear, about 697 kN for the
+  //   3,000 kg bodies on the slab; unlimited or not) the rock around his bolts tears out (tornA / tornB: true, tearA / tearB
+  //   N) and only his feet hold him (holdAfterA / holdAfterB N, his friction hold; his slide is on his feet too): he is
+  //   pushed by the other's push less that hold, as a standing wrestler is, and his feet hand the ground that hold x t.
+  //   Both bolted: 'bothBolted', as before (each one's bolts carry the other's push).
+  // The pushes and holds use moveCheck and footingOf only (closed form or a short bisection: no slower than before).
+  function pushMatchOwn(cA, cB, out, fA, fB) {
+    const A = cA.body, B = cB.body, { DA, DB } = out;
+    const bolt = (c) => c.anchor === 'bolted';
+    // A single bolted wrestler (both bolted is 'bothBolted', above; review round 1 of pull request 4). On ground that holds,
+    // an unlimited push into his bolts meets a hold without limit: that push has no physical answer (heldA: B's push into
+    // A's bolts). On real rock the rock around his bolts tears out once the other's push passes its tear load (groundTear),
+    // unlimited or not (tornA, tearA N), and from then on only his feet hold him: his friction footing, holdAfterA N, as for
+    // a standing wrestler (the rock's brief share as it tears isn't followed: an estimate).
+    const heldA = !isFinite(DB) && bolt(cA) && holdsGround(cA), heldB = !isFinite(DA) && bolt(cB) && holdsGround(cB);
+    const tears = (c, Pin) => bolt(c) && !holdsGround(c) && Pin > groundTear(c) && !sameForce(Pin, groundTear(c));
+    const tornA = tears(cA, DB), tornB = tears(cB, DA);
+    const loose = (c) => { const f = footingOf(Object.assign({}, c, { anchor: 'friction' })); return { R: f.R, H: moveCheck(c.F, c.body.m).stand ? Math.min(c.F, f.R) : f.R }; };
+    const lA = tornA ? loose(cA) : null, lB = tornB ? loose(cB) : null;
+    // each one's hold against the other's push, and his footing as he slides (once torn loose, his feet)
+    const HA = lA ? lA.H : out.HA, HB = lB ? lB.H : out.HB, RA = lA ? lA.R : fA.R, RB = lB ? lB.R : fB.R;
+    const beats = (Pin, H) => Pin > H && !sameForce(Pin, H);
+    const aBeats = beats(DA, HB), bBeats = beats(DB, HA);
+    const d = Math.min(A.strokes.throw, B.strokes.throw);
+    // the net push on each over the stroke (Infinity: unbounded), then each one's speed, momentum, energy and slide
+    const netOn = (Pin, H) => (!isFinite(Pin) ? Infinity : Math.max(0, Pin - H));
+    const apart = (fAn, fBn) => {
+      const side = (f, m) => (f === Infinity ? { x: (t) => K.c * t, p: () => Infinity, v: () => K.c }
+        : f > 0 ? { x: (t) => xOfT(f, m, t), p: (t) => f * t, v: (t) => momentumToV(f * t, m) } : { x: () => 0, p: () => 0, v: () => 0 });
+      const sA = side(fAn, A.m), sB = side(fBn, B.m), S = (t) => sA.x(t) + sB.x(t);
+      let hi = 1e-30;
+      while (S(hi) < d) hi *= 2;
+      let lo = hi / 2;
+      for (let i = 0; i < 200; i++) {
+        const mid = 0.5 * (lo + hi);
+        if (S(mid) < d) lo = mid; else hi = mid;
+        if (hi - lo <= 1e-15 * hi) break;
+      }
+      const t = hi, pA = sA.p(t), pB = sB.p(t), vA = sA.v(t), vB = sB.v(t);
+      // each one's feet during the push: his hold while the other's push moves him, the other's push while he holds
+      const footJ = (moved, H, Pin) => (!isFinite(moved ? H : Pin) ? Infinity : (moved ? H : Pin) * t);
+      // (xA, xB m: how far each moves while their hands stay on each other, xA + xB = d; review round 2 of pull request 4:
+      // the page judges where each ends up, this plus his slide, as Collide's charge counts its carry)
+      const r = { d, t, pA, pB, vA, vB, EA: momentumToKE(pA, A.m), EB: momentumToKE(pB, B.m), slideA: slideStop(vA, RA, A), slideB: slideStop(vB, RB, B),
+        relativistic: vA > 0.01 * K.c || vB > 0.01 * K.c, footA: footJ(fAn > 0, HA, DB), footB: footJ(fBn > 0, HB, DA), xA: sA.x(t), xB: sB.x(t) };
+      if (DA > 0) r.recoilAbsorbedA = { J: isFinite(DA) ? DA * t : Infinity, T: t, thetaDeg: 0 };
+      if (DB > 0) r.recoilAbsorbedB = { J: isFinite(DB) ? DB * t : Infinity, T: t, thetaDeg: 0 };
+      if (tornA) Object.assign(r, { tornA: true, tearA: groundTear(cA), holdAfterA: HA });
+      if (tornB) Object.assign(r, { tornB: true, tearB: groundTear(cB), holdAfterB: HB });
+      if (cA.mode === 'real' || cB.mode === 'real') r.realUpper = true;
+      return r;
+    };
+    if (heldA || heldB) {
+      // the push into the bolts held without limit has no physical answer (noAnswer: whose push, 'A' or 'B'); the other
+      // push is real, and shoves its target off if it beats his hold (contact Infinity: no upper limit on the force between
+      // them); if it doesn't, nothing moves: the one-sided 'paradox'
+      const moves = heldB ? bBeats : aBeats;
+      if (!moves) return Object.assign(out, { outcome: 'paradox', clash: 'paradox', oneSided: true, contact: Infinity });
+      return Object.assign(out, { outcome: 'shovedOff', winner: heldB ? 'B' : 'A', noAnswer: heldB ? 'A' : 'B', contact: Infinity }, heldB ? apart(netOn(DB, HA), 0) : apart(0, netOn(DA, HB)));
+    }
+    if (aBeats && bBeats) return Object.assign(out, { outcome: 'bothShoved', contact: Math.max(DA, DB) }, apart(netOn(DB, HA), netOn(DA, HB)));
+    if (aBeats || bBeats) {
+      const w = aBeats ? 'A' : 'B', cw = aBeats ? cA : cB, cl = aBeats ? cB : cA, fw = aBeats ? fA : fB;
+      const Dw = aBeats ? DA : DB, Dl = aBeats ? DB : DA, Hl = aBeats ? HB : HA, tornL = aBeats ? tornB : tornA;
+      if (!bolt(cw) && !tornL && moveCheck(cw.F, cw.body.m).walk) {
+        const aL = isFinite(Dw) ? (Dw - Hl) / cl.body.m : Infinity, aW = (fw.R - Dl) / cw.body.m, a = Math.min(aL, aW);
+        const vCap = sprint(cw).vTop, x = out.ring / 2;
+        if (a > 0 && isFinite(a) && vCap > 0) {
+          let t, v;
+          const vFree = Math.sqrt(2 * a * x);
+          if (vFree <= vCap) { t = Math.sqrt(2 * x / a); v = vFree; } else { t = vCap / a + (x - vCap * vCap / (2 * a)) / vCap; v = vCap; }
+          // the winner holds back (review round 2 of pull request 4): he pushes only as hard as keeps the loser at his
+          // walking pace, walkPush = the loser's hold + his mass x a (= contact; at his running cap, the hold alone), and
+          // its push back goes to his source: recoilAbsorbed{w} { J: the loser's momentum + his feet's share, m_l v + H_l t }.
+          // The loser's own push is real on the winner (his feet carry it); its push back goes to the loser's source.
+          const rw = { J: cl.body.m * v + Hl * t, T: t, thetaDeg: 0 };
+          // (review round 3 of pull request 4) the winner only pushes, so at the ring's edge the loser slides on from v on
+          // his own footing against air drag (slideL m, as a shoved wrestler slides), ending up endL = x + slideL m from
+          // where he stood
+          const slideL = slideStop(v, aBeats ? RB : RA, cl.body);
+          return Object.assign(out, { outcome: 'walkOut', winner: w, net: Dw - Hl, accel: a, aLoser: aL, aFeet: aW, x, t, v, vCap, contact: Hl + cl.body.m * a, walkPush: Hl + cl.body.m * a, slideL, endL: x + slideL },
+            { ['recoilAbsorbed' + w]: rw }, Dl > 0 ? { ['recoilAbsorbed' + (w === 'A' ? 'B' : 'A')]: { J: Dl * t, T: t, thetaDeg: 0 } } : {});
+        }
+      }
+      return Object.assign(out, { outcome: 'shovedOff', winner: w, contact: Dw }, aBeats ? apart(0, netOn(DA, HB)) : apart(netOn(DB, HA), 0));
+    }
+    return Object.assign(out, { outcome: 'deadlock', contact: Math.max(DA, DB), allOut: false });
   }
 
   // Explosive two-handed shove of B by A (the throw's shove, with B on his footing as the "object").
@@ -1946,14 +2215,7 @@
     const pA = push.pA === Infinity ? Infinity : Math.max(0, push.pA - push.pB * armMass / mB);
     const vB = momentumToV(pB, B.m), vA = momentumToV(pA, A.m);
     // afterwards each slides to a stop: m v dv/dx = -(R + k v^2), k = rho0 Cd A / 2
-    const slide = (v, f, b) => {
-      if (!(v > 0)) return 0;
-      if (v > 0.01 * K.c) return Infinity;
-      if (!isFinite(f.R)) return 0;
-      if (!(f.R > 0)) return Infinity;
-      const k = 0.5 * K.rho0 * b.Cd * b.frontArea;
-      return b.m / (2 * k) * Math.log1p(k * v * v / f.R);
-    };
+    const slide = (v, f, b) => slideStop(v, f.R, b);
     const vEsc = Math.sqrt(2 * K.G * (A.m + B.m) / (d0 + d));
     // The push back of the shove, over the push: his partner's momentum (after the follow-through stops his arms) plus
     // what his partner's footing took during the push, or the whole push if his partner doesn't move, less his own recoil.
@@ -1967,7 +2229,8 @@
     // a bolted partner who doesn't move: his bolts hand the planet the whole push, over the push, a body width away
     // (both bolted, the shove stalls and nothing goes in; a shover taking his own recoil is planted, so against a bolted
     // partner a finite shove always stalls and an unlimited one is the one-sided case above: this arises only with
-    // Unbreakable footing on and his recoil not taken)
+    // Unbreakable footing on and his recoil not taken. Both at once with their recoil taken counts the stalled shove on
+    // his bolts in shoveBoth instead: review round 2 of pull request 4)
     if ((cA.unbreakable || cA.ownRecoil) && !push.stalled && cB.anchor === 'bolted' && !(push.pB > 0)) extra.toGroundB = { J: isFinite(Fpush) ? Fpush * push.t : Infinity, T: Math.max(limbPulse(B), push.t) };
     return Object.assign(extra, {
       Fdrive, d, push, heldBack, vA, vB, EA: momentumToKE(pA, A.m), EB: momentumToKE(pB, B.m),
@@ -1983,9 +2246,60 @@
     return rr.vB > r.vB * (1 + 1e-9) ? Object.assign(rr, { basis: 'real' }) : r;
   }
   // Both shove at once: the stronger shove sets the push (the weaker one's arms can't extend against it).
+  // Both taking their own recoil (BRIEF-canon.md item 4, decision 9 of pull request 4): each one's push back goes to his
+  // source and the other's shove on him is real, so each is shoved by the other's shove, as in the shoving match: equal
+  // bodies both fly apart. Each shove is worked out as the Shove tab works it out (its shover planted, his partner on his
+  // footing), and each one leaves with what the other's shove gives him: an upper bound (both moving at once, each push
+  // runs out of stroke sooner). The result keeps the stronger shove's frame (shover 'A' or 'B', as before: vA, slideA, EA
+  // are the shover's, vB, slideB, EB his partner's) and adds both: true and back: the other's shove on the shover (its own
+  // result; back.recoilAbsorbed is the partner's push back, taken by his source). recoilAbsorbed stays the shover's.
+  // toGroundA mirrors toGroundB: the shover's bolts handing the planet the other's shove, where that shove reports one, or,
+  // with one of them bolted, the stalled shove pressing on his bolts over the stroke of his own real shove (below).
+  // An unlimited shove into a partner held without limit (bolted on ground that holds) has no physical answer and moves
+  // nobody; the other one's shove is still real, so its motion is kept (noAnswer: 'shove' or 'back', whose shove has none).
+  // Only where both shoves meet such a hold, or the real one stalls, is the result the one-sided 'paradox' (stalled,
+  // nothing moves). Into a partner bolted on real rock the rock around his
+  // bolts tears out (tearB, and tearA for the shover): both bolted on real rock, clash 'rockGives' (both torn out, flung
+  // apart at just under light speed, not one-sided); otherwise no clash key, with the speeds as found. With the power off
+  // (or only one of them on, a test-only case), as before.
   function shoveBoth(cA, cB) {
-    return shoveDrive(cA) >= shoveDrive(cB) ? Object.assign(shove(cA, cB), { shover: 'A' }) : Object.assign(shove(cB, cA), { shover: 'B' });
+    const ab = shoveDrive(cA) >= shoveDrive(cB), cP = ab ? cA : cB, cT = ab ? cB : cA, shover = ab ? 'A' : 'B';
+    if (!(cA.ownRecoil && cB.ownRecoil)) return Object.assign(shove(cP, cT), { shover });
+    const rP = shove(cP, cT), rT = shove(cT, cP);
+    // (review round 1 of pull request 4: where only one shove meets a hold without limit, that shove has no physical answer
+    // and moves nobody, but the other shove is real: noAnswer 'shove' (the shover's shove into his bolted partner) or 'back'
+    // (the partner's shove into the bolted shover), with the real shove's motion kept. Nothing moves only where both shoves
+    // meet such a hold, or the real one stalls.)
+    const noP = rP.clash === 'paradox', noT = rT.clash === 'paradox';
+    if ((noP && noT) || (noP && rT.stalled) || (noT && rP.stalled)) {
+      return { clash: 'paradox', oneSided: true, both: true, shover, back: rT, Fdrive: rP.Fdrive, d: rP.d, stalled: true, relativistic: false,
+        vA: 0, vB: 0, EA: 0, EB: 0, slideA: 0, slideB: 0, Fg: rP.Fg || 0, ring: rP.ring };
+    }
+    const out = Object.assign({}, rP, { shover, both: true, back: rT, vA: rT.vB, slideA: rT.slideB, EA: rT.EB });
+    delete out.clash; delete out.oneSided; delete out.tearB;
+    if (rT.toGroundB) out.toGroundA = rT.toGroundB;
+    if (rP.tearB != null) out.tearB = rP.tearB;
+    if (rT.tearB != null) out.tearA = rT.tearB;
+    if (rP.clash === 'partnerTorn' && rT.clash === 'partnerTorn') { out.clash = 'rockGives'; out.oneSided = false; }
+    if (noP || noT) out.noAnswer = noP ? 'shove' : 'back';
+    // one of them bolted (review round 2 of pull request 4): the other's shove stalls against his bolts, but presses on them
+    // for the whole stroke of his own real shove, which drives the other off; his bolts hand the ground that shove over
+    // that push (toGroundB: the shover's shove into his bolted partner; toGroundA: the partner's into the bolted shover),
+    // over at least a limb's contact time, as the shoving match counts a bolted winner's bolts
+    if (!noP && !noT && rP.stalled && !rT.stalled && cT.anchor === 'bolted' && rT.push && isFinite(rP.Fdrive)) out.toGroundB = { J: rP.Fdrive * rT.push.t, T: Math.max(limbPulse(cT.body), rT.push.t) };
+    if (!noP && !noT && rT.stalled && !rP.stalled && cP.anchor === 'bolted' && rP.push && isFinite(rT.Fdrive)) out.toGroundA = { J: rT.Fdrive * rP.push.t, T: Math.max(limbPulse(cP.body), rP.push.t) };
+    out.stalled = !!(rP.stalled && rT.stalled);
+    out.gravityLock = !!(rP.gravityLock && rT.gravityLock);
+    out.relativistic = out.vA > 0.01 * K.c || out.vB > 0.01 * K.c;
+    out.boundTogether = !out.stalled && rP.vEsc != null && out.vA + out.vB < rP.vEsc;
+    return out;
   }
+  // Lifting a partner (BRIEF-canon.md item 4, decision 11 of pull request 4: unchanged). The lift models a partner who
+  // doesn't resist: holding him up is weight, not recoil (the brief's reading), so it stays on the lifter's feet
+  // (groundRatio, sinkRatio) with or without They take their own recoil. Under the contest rule a partner who resisted by
+  // pushing down would push for real (his push back to his own source), so the page's "can't make himself heavier by
+  // pushing down ... that push stays between the two of them" holds only with the power off; with it on, the lab's
+  // partner simply doesn't push (a known limit). The thrower's push back goes to his source (throwPartner, pull request 2).
   function liftPartner(cA, cB) {
     const A = cA.body, B = cB.body;
     const l = lift(cA, { m: B.m });
@@ -2163,19 +2477,42 @@
     }
 
     // ---------------- Reading 1: a static push. A pushes with everything from where he stands; B braces.
+    // The pusher taking his own recoil (BRIEF-canon.md item 4, decision 7 of pull request 4; canon: in a contest the
+    // other's push is real and only the push each puts on himself is absorbed): his push back goes to his source, so his
+    // own footing doesn't cap his push (DA = his strength; 0, with cantStand: true, if he is too heavy for his strength to
+    // stand: the shoving match's rule) and he never slips (pusherSlips false); the one pushed holds with
+    // his footing, or his bolts and the rock around them, as before. Reported only then: ownRecoil: true. The push between
+    // them is still the same both ways (Newton's third law); only the pusher's side of it goes to his source instead of
+    // through his feet into the ground. An unlimited push against a bolted partner is one-sided (oneSided: true): on
+    // ground that holds, 'paradox' (an unlimited push against a hold without limit: no physical answer; not today's "one
+    // unbreakable system", since the pusher's push back leaves it); on real rock, 'rockGives' with tearB only (N: only the
+    // rock around the partner's bolts tears out; he is shoved off at just under light speed with a plug of rock; the
+    // pusher stays put). Bolted pusher: the rock around his bolts carries nothing of his own push (no dipole in rockLoad).
+    // The 'Truly immovable' thought experiment sets his own recoil aside (decision 4): keyed on cB.immovable, as today.
     function standoff(cA, cB) {
       if (isBlackHole(cA.body) || isBlackHole(cB.body)) return { blackHole: true };
       const ancA = anchorCapacity({ body: cA.body, surface: cA.surface, theta: 0, anchor: cA.anchor, groundHolds: holdsGround(cA), mA: cA.body.m });
+      const own = !!cA.ownRecoil && !cB.immovable;
       const RA = cA.anchor === 'bolted' ? Infinity : ancA.R;
-      const DA = Math.min(cA.F, RA);
+      // (review round 2 of pull request 4: with his recoil taken, the shoving match's rule, decision 8: a pusher too heavy
+      // for his strength to stand lies flat and can't push; with it not taken, as before, his footing caps his push)
+      const lying = own && !canStand(cA);
+      const DA = own ? (lying ? 0 : cA.F) : Math.min(cA.F, RA);
       const hb = holdOf(cB, true), HB = hb.H;
       const dSep = 0.5 * (cA.body.H + cB.body.H);
       const grav = mutualGravity(cA.body, cB.body);
       const out = { DA, RA, FA: cA.F, FB: cB.F, HB, RB: hb.R, holdWhy: hb.why, dSep, gravF: grav.F,
-        pusherSlips: cA.F > RA, gravityLock: grav.F > Math.min(RA, hb.R) };
+        pusherSlips: !own && cA.F > RA, gravityLock: grav.F > Math.min(RA, hb.R) };
+      if (own) out.ownRecoil = true;
+      if (lying) out.cantStand = true;
       if (!isFinite(DA) && !isFinite(HB)) {
         // an unlimited push (bolted pusher) against an unlimited hold: no upper limit on the force between them
         out.contact = Infinity;
+        if (own) {
+          Object.assign(out, holdsGround(cB) ? { clash: 'paradox', oneSided: true } : { clash: 'rockGives', oneSided: true, tearB: groundTear(cB) });
+          out.outcome = out.clash;
+          return out;
+        }
         if (cB.immovable && !(cB.anchor === 'bolted' && holdsGround(cA) && holdsGround(cB))) {
           // A truly immovable body needs no anchor and never moves, so the push drives the pusher back instead.
           // His bolts hand it to the ground under him: unbreakable ground takes the planet with him
@@ -2188,10 +2525,36 @@
         }
         return out;
       }
-      if (same(DA, HB)) { out.outcome = 'stalemate'; out.contact = DA; }
+      // the one pushed bolted on real rock, the pusher taking his own recoil (review round 1 of pull request 4): his bolts
+      // hold only as well as the rock around them. Past its tear load (groundTear, about 697 kN for the 3,000 kg bodies on
+      // the slab) it tears out and he is driven back with a plug of rock, held from then on only by his feet (his friction
+      // hold): 'forceWins' with rockGives: true, tearB N, HB and RB his feet's; rock: that push on the rock around his bolts
+      const torn = own && cB.anchor === 'bolted' && !holdsGround(cB) && !cB.immovable && DA > groundTear(cB) && !same(DA, groundTear(cB));
+      if (torn) {
+        const Rf = hb.anc.R, Hf = canStand(cB) ? Math.min(cB.F, Rf) : Rf;
+        Object.assign(out, { HB: Hf, RB: Rf, rockGives: true, tearB: groundTear(cB), outcome: 'forceWins', contact: Hf, net: DA - Hf });
+        out.rock = rockLoad(DA, cB, dSep, false);
+      } else if (same(DA, HB)) { out.outcome = 'stalemate'; out.contact = DA; }
       else if (DA > HB) { out.outcome = 'forceWins'; out.contact = HB; out.net = DA - HB; }
       else { out.outcome = 'objectHolds'; out.contact = DA; }
-      if (cB.anchor === 'bolted' && isFinite(out.contact)) out.rock = holdsGround(cB) ? { comic: true, C: out.contact } : rockLoad(out.contact, cB, dSep, cA.anchor === 'bolted');
+      if (!torn && cB.anchor === 'bolted' && isFinite(out.contact)) out.rock = holdsGround(cB) ? { comic: true, C: out.contact } : rockLoad(out.contact, cB, dSep, cA.anchor === 'bolted' && !own);
+      // the one driven back, the pusher taking his own recoil (review round 1 of pull request 4): the pusher can't be pushed
+      // back (his push back goes to his source), so the one pushed is shoved off as in the shoving match's shove-off: the
+      // pusher's push less his hold, a constant net force, over the shove's stroke (the shorter strokes.throw, an
+      // estimate), relativistic; then he slides on his feet against friction and air drag (slideStop). drive { d m, t s,
+      // vB m/s, pB kg m/s, EB J, slideB m (Infinity past 1% of light speed), footB kg m/s: what his feet hand the ground
+      // during the push (his hold x t), relativistic, realUpper: true in real-muscle mode (the static push, an upper bound,
+      // as in the shoving match) }; recoilAbsorbed { J: the pusher's push x t, T: t, thetaDeg 0 }: his
+      // push back, to his source. An unbounded push: just under light speed. (The pusher pushes from where he stands; the
+      // lab doesn't have him walk after the one he drives back.)
+      if (own && out.outcome === 'forceWins') {
+        const d = Math.min(cA.body.strokes.throw, cB.body.strokes.throw), s = shoveOff(isFinite(DA) ? DA - out.HB : Infinity, cB.body.m, d);
+        out.drive = { d, t: s.t, vB: s.v, pB: s.p, EB: s.E, slideB: slideStop(s.v, hb.anc.R, cB.body), footB: out.HB * s.t, relativistic: s.v > 0.01 * K.c };
+        // real muscle: the same static push, as in the shoving match, so an upper bound (a real push falls as the hands
+        // speed up; review round 2 of pull request 4)
+        if (cA.mode === 'real') out.drive.realUpper = true;
+        out.recoilAbsorbed = { J: isFinite(DA) ? DA * s.t : Infinity, T: s.t, thetaDeg: 0 };
+      }
       return out;
     }
 
@@ -2264,6 +2627,28 @@
       out.pA = pA;
       const dragged = gravBoost && gNear.F > hb.H;    // his gravity pulls the holder off his feet before the hit
       out.dragged = dragged;
+      // A charger who takes his own recoil (BRIEF-canon.md item 4; canon, the rulings of 14 Oct 2026: "A charger's push
+      // back from his own hit is his own recoil: it goes to his source, so he doesn't slow. Where the one he hits is held
+      // without limit (never knocked back, or held up by their powers), the collision has no physical answer"). Collide is
+      // a contest, so the one hit's Never knocked back is set aside: the charger's push on him is real. The 'Truly
+      // immovable' thought experiment sets the charger's own recoil aside (it is about the test, not their powers), so
+      // its results are today's (keyed on cB.immovable). With the power off nothing below runs: today's physics.
+      if (cA.ownRecoil && !cB.immovable) {
+        // Held without limit by their powers: bolted on ground that holds (Unbreakable footing, or Comic ground), from any
+        // side; or landed on from above, where that ground holds him up (the weak-ground rule supplies whatever the ground
+        // can't bear). The charger can't slow and the one hit can't move: no physical answer. outcome 'paradox' with
+        // unbounded: true and heldBy ('bolted' | 'unbreakable' | 'comicGround'): no h, contact, toGround, earth, rock or
+        // after (out.speed, v0, vRel and pA are kept: the charge itself is real, and its take-off still shakes the ground).
+        // The page must say this FIRST on the Collide tab: X takes his own recoil, so nothing can slow him; Y is held
+        // without limit by their powers; one of them has to give and neither can, so physics has no answer (the canon's
+        // ruling). (The other 'paradox', light speed into the truly immovable thought experiment, has h.undefinedResult
+        // and no unbounded key.) Bolted on REAL rock is not held without limit: the rock tears ('carried' below).
+        const lim = holdsGround(cB) && (cB.anchor === 'bolted' || !horiz) ? hb.why : null;
+        if (lim) return Object.assign(out, { outcome: 'paradox', unbounded: true, heldBy: lim });
+        // At light speed (an unbounded pA) today's 'unstoppable' stands (below): the one hit leaves at just under light
+        // speed either way.
+        if (isFinite(pA)) return carriedHit(cA, cB, o, out, hb, pA, sp, horiz, relativistic, d0);
+      }
       // Does the brace hold? Test against the force of a held (Earth-backed) splat at the plush end.
       const mHeld = cB.immovable ? Infinity : mB + K.M_E;
       const hHeld = headOn(pA, mA, mHeld);
@@ -2367,16 +2752,145 @@
       if ((cA.unbreakable || cB.unbreakable || o.toGround) && !cB.immovable && !h.undefinedResult) {
         const splat = !o.bounce, cf = splat ? out.contact.soft : out.contact.softEl, Tl = limbPulse(bB);
         if (held) out.toGround = { J: splat ? h.inel.pT : h.el.pT, T: Math.max(Tl, cf.t), how: 'held' };
-        else if (out.partial) out.toGround = { J: out.partial.Jearth, T: Math.max(Tl, out.partial.tau), how: 'footing' };
+        // knocked back: the splat's footing share. The bounce bound ignores his footing (its after-speeds are an upper
+        // bound, elasticUpper), so in it his footing hands the ground nothing (BRIEF-canon.md pull request 4, fixing pull
+        // request 2's Known limit: the bounce used to book the splat's footing share while its speeds ignored it, about
+        // 1.1% too much momentum in the ground at the default sprint)
+        else if (out.partial && splat) out.toGround = { J: out.partial.Jearth, T: Math.max(Tl, out.partial.tau), how: 'footing' };
         // held from above only by Unbreakable footing: the ground takes at most what it bears beyond the weight on it
         // over the pulse (his own, and the charger's while he lands on him); their power supplies the rest (canon's
-        // momentum case 'the ground's share it can't bear'), an unbounded hit too. (The charger's own push back and
-        // Never knocked back are item 4 of BRIEF-canon.md, a later pull request: Collide is unchanged here.)
+        // momentum case 'the ground's share it can't bear'), an unbounded hit too. (This path runs with the charger's own
+        // recoil not taken, or at light speed, or in the thought experiment: with it taken a charger landing on him from
+        // above where Unbreakable footing holds him up is the paradox, above.)
         if (out.toGround && hb.why === 'unbreakable' && out.toGround.J > 0) {
           const bear = Math.max(0, holdOf(Object.assign({}, cB, { unbreakable: false }), horiz).H - (horiz ? 0 : mA * K.g)), Jg = Math.min(out.toGround.J, bear * out.toGround.T);
           out.toGround.whole = out.toGround.J; out.toGround.supplied = out.toGround.J - Jg; out.toGround.J = Jg;
         }
       }
+      return out;
+    }
+    // The charger takes his own recoil (BRIEF-canon.md item 4, decisions 1, 2, 5 and 6 of pull request 4): he doesn't
+    // slow, so he acts as a body of unbounded mass at his own speed. In his frame the one hit arrives at that speed v and
+    // meets an immovable body, so the immovable sums apply with the roles swapped (the brief's 'after Q13' figures):
+    // h' = headOn(the one hit's momentum at v, his mass, Infinity). Splat: the one hit leaves with him at v. Bounce: he
+    // leaves at v (+) v = 2v / (1 + v^2/c^2) (relativistic velocity addition: c tanh(2w), w his rapidity), with ground-frame
+    // momentum m c sinh(2w) = 2 gamma^2 m v. The charger's source supplies the one hit's gain plus what the one hit's
+    // footing hands the ground during the hit (his own recoil, canon's case; the charger's own momentum is unchanged).
+    // Reported (only here, with the charger's power on and the one hit not held without limit):
+    //   outcome 'carried', unbounded: true, held: false (splat: "Y is carried along at v"; bounce: "Y is sent off at vB")
+    //   carry { v m/s: his speed at the hit (the closing speed, gravity's pull on the way in included, as pA is today),
+    //           vB m/s: the one hit's speed as the hit ends (v in a splat), pGain kg m/s: the momentum the one hit gains,
+    //           footJ kg m/s: what the one hit's hold hands the ground during the hit, the way the hit points (hold x T:
+    //           his footing; from above on real ground, the ground's bearing beyond his weight, bolted too; sideways on
+    //           real rock, the rock around his bolts at its tear-out load, an estimate); supplied kg m/s: what the
+    //           charger's source supplies = pGain + footJ (canon's case 'their own recoil'); hold N: that hold;
+    //           F N, T s: the force between them and the contact time: the plush squash's own force (an estimate) plus
+    //           the hold (splat), so F x T = supplied; the bounce's peak, no hold;
+    //           rockGives: the one hit is bolted on real rock and hit from the side, so the rock tears out (at tear N) and
+    //           he is carried with a plug of rock (from above he and his bolts are driven into the ground); stop { J kg m/s, E J }: the charger stops himself at the end of the squash (decision 2: an
+    //           unbounded charger never slows, so the carry would last as long as he pushes; the lab ends it there, a
+    //           limit to state). That stop is his own push, so its push back (his momentum, J) and his motion (E) go to
+    //           his source too; Eair J (sideways, below 1% of light speed, sent off faster than sound): the share of his
+    //           motion the air takes as he slides off, real (review round 2) }
+    //   The bounce bound ignores what holds the one hit during the contact (his footing, or the rock around his bolts),
+    //   as today's bounce does (its speeds are an upper bound, elasticUpper), so in a bounce footJ = 0.
+    //   h { KA J: the charger's motion energy, Q J: the energy the splat frees, the force of the hit x the squash (the one
+    //       hit's motion energy in the charger's frame plus the hold's work over the squash; review round 2), pStar: the
+    //       one hit's momentum at v, inel { V: v, pT: the one hit's momentum },
+    //       el { vA: v (he keeps his speed), vT: vB, pA: his momentum, unchanged, pT: pGain } } (ground frame)
+    //   contact: contactForces of the swapped hit (soft: the splat's crush force and time, softEl: the bounce's)
+    //   hitAbsorbed { E J }: the energy the hit frees that goes to the endless ocean (canon: "A hit's freed energy is
+    //       absorbed by default (it shows in his shimmer) and is real only when he means it"): the splat's Q, or 0 with
+    //       o.meanIt (the page's blast presets, decision 5) and in a bounce (it frees none). The shimmer reads it.
+    //   meanIt: true when o.meanIt (the hit's energy is real)
+    //   Elocal J: the real energy freed near the hit, for the blast: Q only when he means it (a splat), plus, past 1% of
+    //       light speed, the one hit's motion (his body meets real air: a fireball) and the charger's run-up air (real);
+    //       below it, sent off faster than sound, the air's share of his motion as he slides off (carry.Eair, real)
+    //   after (sideways): splat { V: v, during m: how far the one hit moves during the squash, slide m: from v on his
+    //       footing (on his own friction when torn loose with his bolts) once the charger stops, moved m: during + slide;
+    //       NaN past 1% of light speed, as today }, bounce { vA: v, vB, slideA: 0, slideB, during m: how far the one hit
+    //       moves with the charger during the contact (v x its time; review round 3), moved m: during + slideB }
+    //   after (from above, only on real ground: Unbreakable footing off, e.g. the break-the-ground preset; decision 6):
+    //       the one hit is driven into the ground at the charger's speed by today's sink model: splat { V: v, depth m,
+    //       Eground J } (or a crater past 2 km/s: D, ...), bounce { vA: v, vB, depth, Eground }
+    //   toGround { J: footJ, T: max(a limb's contact time, the hit's), how: 'carried' }: with Unbreakable footing (either
+    //       of them) or o.toGround, as today; nothing of the charger's own push back reaches the ground
+    //   rockGives (carry.rockGives) is the page's 'ground' harm (the rock tears out around his bolts).
+    function carriedHit(cA, cB, o, out, hb, pA, sp, horiz, relativistic, d0) {
+      const bA = cA.body, bB = cB.body, mA = bA.m, mB = bB.m, v = out.vRel, bounce = !!o.bounce, meanIt = !!o.meanIt;
+      // the one hit's momentum at his speed v (past 1% of light speed from the charge's proper speed, gamma v: exact near
+      // light speed, where v = v0; below it from v itself, so the run-up's tiny gravity pull in v counts too)
+      const pB = relativistic && sp.u != null ? mB * sp.u : vToMomentum(v, mB);
+      const h2 = headOn(pB, mB, Infinity);
+      const cf = contactForces(h2, bB, bA, mB), cfx = bounce ? cf.softEl : cf.soft;
+      // the bounce: twice his rapidity (both bounds are reported, as today's h carries both; carry follows o.bounce)
+      const w = Math.asinh(pB / (mB * c)), vBb = c * Math.tanh(2 * w), pBb = mB * c * Math.sinh(2 * w);
+      const vB = bounce ? vBb : v, pGain = bounce ? pBb : pB;
+      // what holds the one hit during the hit: his footing (sideways), the ground's bearing beyond his weight (from above, on
+      // real ground, bolted or not: a downward push drives him, bolts and all, into the ground his feet bear on), or,
+      // sideways, the rock around his bolts on real rock (it tears out). The hold acts for the whole squash, from its start:
+      // the charger can't slow, so the lab's constant-force squash pushes with its own force plus the hold (splatWithFooting
+      // as the charger's mass goes to infinity: F' = m v^2 / 2s + H over the same time), and the hit's force times its time
+      // is what the charger's source supplies (review round 1 of pull request 4; no cap at the squash's force). The rock's
+      // tear-out load booked for the whole squash is an estimate (real rock fails once, then the plug slides). None in the
+      // bounce bound.
+      const rockGives = cB.anchor === 'bolted' && horiz, tear = rockGives ? groundTear(cB) : Infinity;
+      const Hhold = rockGives ? tear : isFinite(hb.H) ? hb.H : Math.max(0, hb.anc.Nmax - mB * K.g);
+      const footSplat = Hhold > 0 && isFinite(Hhold) ? Hhold : 0, footF = bounce ? 0 : footSplat, footJ = footF * cfx.t;
+      const KA = momentumToKE(pA, mA);
+      out.carry = { v, vB, pGain, footJ, supplied: pGain + footJ, F: cfx.F + footF, T: cfx.t, hold: Hhold, rockGives, stop: { J: pA, E: KA } };
+      if (rockGives) out.carry.tear = tear;
+      // the energy the splat frees: the force of the hit over the squash, F x s (review round 2 of pull request 4): the one
+      // hit's motion energy in the charger's frame (h2.Q, relativistic) plus the work his hold does over the squash in that
+      // frame (the ground under him moves with the charger and pushes him back with the hold over s), as splatWithFooting's
+      // Q = F s; the charger's source does F v T = the one hit's motion energy + the hold x his travel during + this
+      const Qs = h2.Q + footSplat * cf.s;
+      out.h = { KA, Q: Qs, pStar: pB, inel: { V: v, pT: pB }, el: { vA: v, vT: vBb, pA, pT: pBb } };
+      out.contact = cf;
+      out.Q = Qs;
+      out.KA = KA;
+      out.hitAbsorbed = { E: meanIt || bounce ? 0 : Qs };
+      if (meanIt) out.meanIt = true;
+      out.held = false;
+      out.outcome = 'carried';
+      out.unbounded = true;
+      out.boltsLate = false;
+      out.heldOnlyIfSquishy = false;
+      out.quakeHeld = -Infinity;
+      out.elasticUpper = isFinite(Hhold) && Hhold > 0.1 * cf.softEl.F;   // the bounce ignores what holds him: an upper bound
+      const during = Math.max(0, v * cf.soft.t - cf.s);   // the splat: the squash closes s while he moves v t
+      if (horiz) {
+        const Rb = rockGives ? hb.anc.R : Math.min(hb.R, hb.H);
+        const slide = slideTo(mB, v, Rb, bB.frontArea), slideB = slideTo(mB, vBb, Rb, bB.frontArea);
+        // the bounce: the squash closes and reopens while the charger, who never slows, moves v T (pi s below 1% of light
+        // speed), and the one hit, touching him at both ends, moves that far with him (review round 3 of pull request 4)
+        const duringEl = v * cf.softEl.t;
+        out.after = { splat: { V: v, during, slide, moved: during + slide }, bounce: { vA: v, vB: vBb, slideA: 0, slideB: out.bound ? null : slideB, during: duringEl, moved: out.bound ? null : duringEl + slideB } };
+      } else {
+        // driven into the ground at the charger's speed, by today's sink model (penetration, or a crater past 2 km/s)
+        const q = qultFor(cB.surface, bB.footB), rho = cB.surface.rho || 2000, A2 = 2 * bB.footArea;
+        const sinkB = (vv, pp, dur) => {
+          const E = momentumToKE(pp, mB);
+          if (vv >= 2000 || !isFinite(E)) { const L = Math.cbrt(6 * mB / (Math.PI * bB.rho)); return Object.assign({ Eground: E }, craterDiameter({ L, v: vv, rhoI: bB.rho, rhoT: rho, angleDeg: 90, E })); }
+          return { depth: dur + penetrationDepth(mB, A2, vv, q, rho), Eground: E + footSplat * dur };
+        };
+        out.after = { splat: Object.assign({ V: v, during }, sinkB(v, pB, during)), bounce: Object.assign({ vA: v, vB: vBb }, sinkB(vBb, pBb, 0)) };
+      }
+      // the charger's run-up air is his own body meeting real air (as today); past 1% of light speed the one hit, carried
+      // off at that speed, meets real air too, so his motion ends up as heat near the hit (as today's charger's did).
+      // Below 1% of light speed, sent off faster than sound, his body meets real air as he slides off (their own bodies
+      // do): the air takes his motion less what his footing takes over the slide, most of it within a few hundred metres
+      // (carry.Eair J; review round 2 of pull request 4), real, so it counts as heat near the hit. Slower, the lab counts
+      // no blast from it (as for any move below the speed of sound).
+      const air = relativistic ? 0.5 * K.rho0 * bA.Cd * bA.frontArea * sp.u * sp.u * d0 : 0;   // rough, as today
+      out.airStopsHim = relativistic && air > KA;
+      out.airRunUp = Math.min(air, KA);
+      if (horiz && !relativistic && vB > K.a0) {
+        const Rb = rockGives ? hb.anc.R : Math.min(hb.R, hb.H), x = bounce ? out.after.bounce.slideB : out.after.splat.slide;
+        out.carry.Eair = Math.max(0, momentumToKE(pGain, mB) - (isFinite(x) && x > 0 ? Rb * x : 0));
+      }
+      out.Elocal = (meanIt && !bounce ? Qs : 0) + (relativistic ? momentumToKE(pGain, mB) + out.airRunUp : out.carry.Eair || 0);
+      if ((cA.unbreakable || cB.unbreakable || o.toGround) && footJ > 0) out.toGround = { J: footJ, T: Math.max(limbPulse(bB), cfx.t), how: 'carried' };
       return out;
     }
     return { COL, headOn, headOnCM, splatWithFooting, contactForces, rockLoad, slideTo, holdOf, standoff, chargeSpeed, collide };
@@ -3060,6 +3574,18 @@
     // kIn (Air resistance absorbed): the share of the air's drag that still acts. The heat made in the air between them
     // is that share of the snowplow's (the brief's rule); the rest of the energy rides on with the object and is freed
     // when it stops at him, as before.
+    // Never knocked back (the catcher's ctxC.noKnockback; BRIEF-canon.md item 4, decision 13 of pull request 4; canon:
+    // incoming hits are absorbed, "he is never knocked back"): what reaches him here isn't caught (no hands catch plasma),
+    // so it is an incoming hit outside a contest: he isn't moved, and its whole momentum goes to the endless ocean,
+    // bolted or not (the power wins over Bolted, as They take their own recoil does for his own moves). Reported only
+    // then: knockAbsorbed { J kg m/s: its momentum (Infinity unbounded), the way it was moving; E J: the motion energy
+    // freed where he stands that is taken back (canon: "A hit's freed energy is absorbed by default (it shows in his
+    // shimmer) and is real only when he means it"): the lump's motion as it reaches him, E - Egap, or 0 when he means it
+    // (ctxC.meanIt: the page's blast presets) }. Then push = { recoilV: 0, earthRecoilV: 0 }, Eafter = Ecarry = Enear = 0,
+    // Ehere = E (everything is freed where he stands: Egap, the heat made in the air on the way, real; and the motion, as
+    // knockAbsorbed says), and Eblast (the real part near him) = Egap, plus the motion when he means it; a 'before'
+    // fireball's overpressure uses Eblast too. With the switch off (or left out), as before: he and the lump move off
+    // together (bolted, the Earth takes it).
     function fireballAt(obj, v, D, ctxC, Eknown, kIn, kept) {
       const kAir = kIn == null ? 1 : kIn;
       const m = obj.m, E = Eknown != null ? Eknown : momentumToKE(vToMomentum(v, m), m);
@@ -3081,27 +3607,30 @@
       const out = { E, p, gamma, sweep, unit, kind, Egap, Earr, Eair: Egap, vapRatio: isFinite(Egap) ? Egap / (m * mat.eVap) : Infinity, mat,
         vLumpAt: isFinite(gamma) ? v / (1 + xg / gamma) : v };
       if (kAir < 1) { out.kAir = kAir; out.sweepK = kAir > 0 ? sweep / kAir : Infinity; }
-      const body = ctxC.body, bolted = ctxC.anchor === 'bolted';
+      const body = ctxC.body, bolted = ctxC.anchor === 'bolted', nkb = !!ctxC.noKnockback;
+      // Never knocked back: the real energy near him (the air's heat, and the motion when he means it)
+      const Ereal = nkb ? Egap + (ctxC.meanIt ? Earr : 0) : E;
       if (kind === 'before') {
         // the fireball keeps rushing toward him; a point blast at the sweep distance is an order of magnitude, probably low
-        const r = Math.max(D - (kAir < 1 ? out.sweepK : sweep), body.H); out.rBlast = r; out.overpressure = isFinite(E) ? overpressureAt(E, r) : Infinity;
+        const r = Math.max(D - (kAir < 1 ? out.sweepK : sweep), body.H); out.rBlast = r; out.overpressure = isFinite(Ereal) ? overpressureAt(Ereal, r) : Infinity;
       }
       // The lump's rest mass when it reaches him: the object, the air it swept up, and the heat it carries
       // (heat has mass, E/c^2; at these speeds it can outweigh the object).
       const mLump = isFinite(Egap) ? m * (1 + xg) + Egap / (K.c * K.c) : Infinity;
       if (kept) out.mLump = mLump;   // (with Things keep their form: the sheath catch needs the lump's rest mass)
       // whatever arrives (debris and plasma) carries almost all the momentum; no hand catch applies
-      out.push = { recoilV: bolted ? 0 : momentumToV(p, body.m + mLump), earthRecoilV: bolted ? p / K.M_E : 0 };
+      out.push = nkb ? { recoilV: 0, earthRecoilV: 0 } : { recoilV: bolted ? 0 : momentumToV(p, body.m + mLump), earthRecoilV: bolted ? p / K.M_E : 0 };
+      if (nkb) out.knockAbsorbed = { J: p, E: ctxC.meanIt ? 0 : Earr };
       // Energy where he stands ('arrives', 'plasma'): the heat made on the way rides inside the lump, so it
       // all reaches him. Stopping it there frees everything except the motion left afterwards: the Earth's
       // recoil p^2/2M_E if he is bolted (tiny), or the motion he and the lump share if he is free. That
       // shared motion goes on with him and turns to heat in the air within about one sweep of the pair.
-      const Eafter = !isFinite(p) || !isFinite(mLump) ? Infinity : momentumToKE(p, bolted ? K.M_E : body.m + mLump);
+      const Eafter = nkb ? 0 : !isFinite(p) || !isFinite(mLump) ? Infinity : momentumToKE(p, bolted ? K.M_E : body.m + mLump);
       out.Ehere = isFinite(E) ? Math.max(0, E - Eafter) : Infinity;
       out.Eafter = Eafter;
-      out.Ecarry = bolted ? 0 : Eafter;
+      out.Ecarry = bolted || nkb ? 0 : Eafter;
       out.Enear = 0;
-      if (!bolted && isFinite(Eafter)) {
+      if (!bolted && !nkb && isFinite(Eafter)) {
         const mm = body.m + mLump, aa = Math.max(obj.area, body.frontArea), g1 = Eafter / (mm * K.c * K.c);
         out.sweepOn = mm / (K.rho0 * aa) * (1 + g1 / 4);
         // A level ride stays in the dense lower air for about sqrt(2 R_E H_s) (~320 km): by then the ground
@@ -3111,7 +3640,7 @@
         out.Enear = 2 * Eafter * x2 / (Math.sqrt((1 + x2) * (1 + x2) + 2 * g1 * x2) + 1 + x2);
       }
       // what the blast sees: everything freed near him (all of it when bolted, less the Earth's tiny recoil)
-      out.Eblast = kind === 'before' ? E : out.Ehere + out.Enear;
+      out.Eblast = nkb ? Ereal : kind === 'before' ? E : out.Ehere + out.Enear;
       return out;
     }
 

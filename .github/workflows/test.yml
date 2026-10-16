@@ -9,7 +9,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # 30, not 20: the Rex lab's page screenshots now take about 11 minutes on a slow runner (9 of the job's 15 on #34's run 38671324273)
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
