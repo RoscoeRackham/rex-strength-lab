@@ -1,0 +1,63 @@
+## id
+physics-armwrestle-pin-loser-pad
+
+## severity
+major
+
+## title
+Arm wrestling, reading B: in a pin the loser's elbow pad is never checked, so 'with the power on a pin never breaks the table' is false
+
+## location
+rex-strength-lab/src/engine.js:1815-1822 (padLoad = Pl with the winner's power on; only the winner's pad is checked); src/app.html:2417 ('So with the power on a pin never breaks the table'); README decision 10 (line 168) and 'What moved' arm-wrestling bullet (line 184); test/powers.js:1331 (8i asserts pinBreaks === 0)
+
+## evidence
+Engine, Rex at the dial against Ollie at 1 t, Things keep their form off (the README's example): PA (Pw) 222,400 N, PB (Pl) 2,452 N, tableLat 15,060 N, pin M = 58.16 kg, a = (Pw − Pl)/M = 3,782 m/s², padLoad 2,452, tableBreaks false, outcome 'pin' at 82.95 m/s, slam 200 kJ (375×). With the AW constants (effMass 0.009694, holdArm 0.01204 of body mass), the loser's forearm needs C = Pl + effMass·ml·a = 112,400 N at his hand just to spin it against his own press, and its pivot (his pad) then carries |C − holdArm·ml·a| = |112,400 − 136,600| = 24.2 kN, 1.6× what the table carries. Under reading B as the README states it ('each pad ... holds the OTHER's press'), the loser's pad holds the winner's press less what spins his forearm: 222,400 − 136,600 = 85.8 kN, 5.7× the table.
+
+## expected
+Reading B itself is right (on each hand the real force is the other's press, so each pad must hold it, and reading A would leave a real force on each hand that nothing carries). But applied to a pin it loads both pads: the winner's with the loser's press, and the loser's with the winner's press less the share that spins the loser's forearm. In the README's example that is 24–86 kN against a 15.1 kN table, so the table still breaks in the pin (by the loser's pad), and the standing contest follows, as with the power off. 'A pin never breaks the table with the power on' and the 83 m/s pin on the table don't follow.
+
+## fix
+In armWrestle with the winner's power on, also compute the loser's pad load (at least |Pl − (AW.holdArm − AW.effMass)·ml·a|, or Pw − AW.holdArm·ml·a for reading B's literal rule) and break the table ('pin', padBy the loser) when the larger pad load exceeds tableLat. Correct the page sentence at app.html:2417, decision 10, the 'What moved' bullet, and test 8i (which can't find a pin break because it never looks at the loser's pad).
+
+## VERDICT
+### id
+physics-armwrestle-pin-loser-pad
+
+### real
+true
+
+### severity
+major
+
+### reasoning
+Reproduced. armWrestle (engine.js:1819) checks only the winner's pad. With the winner's power on, that pad is set to the loser's press Pl, and the page, the README and test 8i conclude that a pin never breaks the table. The engine's own rigid-forearm mechanics also load the loser's pad. They are the same mechanics behind the power-off formula R_w = C + holdArm*mw*a, with C = Pl + effMass*ml*a. The loser's forearm turns about his elbow, and its centre of mass needs m_fl*a_cm = holdArm*ml*a. The hand contact C supplies only part of that, so his elbow pivot, held by his pad, carries |holdArm*ml*a - C|. That force acts on the loser, not on the winner. It isn't the winner's push back, and it isn't a push the loser makes on anyone, so neither one's own-recoil absorption removes it. With the power off this load never mattered, because for equal masses the winner's pad load is always larger. With the power on, the winner's pad drops to Pl and the loser's pad becomes the larger load. In the README's own example it is 24.2 kN against a 15.1 kN table, 1.6x, so the table breaks in the pin and the standing contest follows. Under reading B taken literally (the loser's pad holds the winner's press less what spins his forearm) it is 85.8 kN, 5.7x. In test 8i's own grid, 420 of the 2,160 runs pin on the table while the loser's pad, by the engine's model, is past the table's limit. The test can't see them because it never computes that load. This only affects Things keep their form off with unequal strengths, but the claim is stated as a rule on the page, in decision 10 and in the 'What moved' bullet.
+
+### reproduction
+`node f2.js` (scripts folder above), Rex at the dial against Ollie at 1 t, Things keep their form off.
+
+Power on:
+- outcome 'pin', tableBreaks false, PA 222,400, PB 2,452, tableLat 15,060, padLoad 2,452
+- pin v 82.95, E 200,100, slamRatio 375.2
+- M 58.16, a 3,782, C 112,400
+- loserPad |holdArm*ml*a - C| = 24,210; Pw - holdArm*ml*a = 85,770
+
+Power off: tableBreaks true by 'pin', padLoad 249,100 (matches the README's 249 kN), and the same loserPad of 24,210.
+
+Grid of test 8i: 2,160 runs, 420 of them pins on the table with the loser's pad above tableLat. First one: '2.5 6 sand friction false false 296300 15060'.
+
+Page (Arm tab, keepForm false, Ollie's own strength 10^3 kg, All-out):
+- verdict: 'Rex pins Ollie in 22 ms. The back of Ollie's hand hits the pad at 83 m/s and goes through the table.'
+- happens: '...Forcing an arm down: the winner's elbow pad holds the loser's press, 2.45 kN here. ... So with the power on a pin never breaks the table: its pad carries no more than the loser's press, within what the table carries.'
+
+### better_fix
+In armWrestle, after engine.js:1819, when the winner takes his own recoil also check the loser's pad:
+
+`const loserPad = Math.abs(AW.holdArm * ml * a - (Pl + AW.effMass * ml * a))`, with `a = (Pw - Pl) / (AW.effMass * (A.m + B.m))`
+
+Report it (out.loserPadLoad). If Math.max(padLoad, loserPad) > tableLat, set tableBreaks = true and tableBreaksBy = 'pin', with padBy naming the loser.
+
+Then:
+- Replace the app.html:2417 sentence with one giving both pads' loads, with no 'never breaks'.
+- Fix decision 10 and the 'What moved' arm-wrestling bullet: Rex then pins standing, as with the power off.
+- Make test 8i compute the loser's pad and expect k1.tableBreaks for the 1 t example.
+

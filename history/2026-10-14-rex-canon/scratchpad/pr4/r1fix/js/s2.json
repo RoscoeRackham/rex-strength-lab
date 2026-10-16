@@ -1,0 +1,19 @@
+[
+ ["wrestle push least", {"duoAction":"wrestle"}, null, null],
+ ["wrestle push 1e9", {"duoAction":"wrestle","logKg":9,"oLogKg":9}, "allout", null],
+ ["wrestle push rex bolted", {"duoAction":"wrestle","anchor":"bolted"}, "allout", null],
+ ["wrestle push rex bolted plaster", {"duoAction":"wrestle","anchor":"bolted"}, "plaster", null],
+ ["wrestle push rex bolted 1e6 plaster", {"duoAction":"wrestle","anchor":"bolted","logKg":6,"oLogKg":6}, "plaster", null],
+ ["wrestle push rex bolted real", {"duoAction":"wrestle","anchor":"bolted","unbreakable":false}, "allout", null],
+ ["wrestle push rex bolted ground preset", {"duoAction":"wrestle","anchor":"bolted"}, "ground", null],
+ ["wrestle push inf ollie bolted", {"duoAction":"wrestle","inf":true,"oAnchor":"bolted"}, "allout", null],
+ ["wrestle push inf ollie bolted real", {"duoAction":"wrestle","inf":true,"oAnchor":"bolted","unbreakable":false}, "allout", null],
+ ["wrestle push inf both bolted", {"duoAction":"wrestle","inf":true,"anchor":"bolted","oAnchor":"bolted"}, "allout", null],
+ ["wrestle push unequal", {"duoAction":"wrestle"}, "allout", 5],
+ ["both at once inf rex bolted", {"duoAction":"wrestle","wrestleMove":"shove","wrestleWho":"both","anchor":"bolted","inf":true}, "allout", null],
+ ["both at once inf ollie bolted", {"duoAction":"wrestle","wrestleMove":"shove","wrestleWho":"both","oAnchor":"bolted","inf":true}, "allout", null],
+ ["both at once ollie bolted", {"duoAction":"wrestle","wrestleMove":"shove","wrestleWho":"both","oAnchor":"bolted"}, "allout", null],
+ ["arm 1t keepForm off", {"duoAction":"arm","keepForm":false}, "allout", 3],
+ ["arm tear bolted loser", {"duoAction":"arm","keepForm":false,"unbreakable":false,"oAnchor":"bolted","logKg":6}, "allout", 4.957694],
+ ["catch fireball before 1 km", {"duoAction":"catch","cObj":"baseball","cStyle":"hard","logKg":14,"keepForm":false,"airAbsorb":0.5,"cLogD":3}, "allout", null]
+]

@@ -60,6 +60,15 @@ button, select, input { font: inherit; color: inherit; }
 /* Hero */
 .hero { display: grid; grid-template-columns: auto 1fr; gap: 20px; align-items: center; padding-bottom: 20px; border-bottom: 2px solid var(--ink); }
 .hero img { width: clamp(96px, 20vw, 168px); aspect-ratio: 432 / 558; object-fit: cover; border-radius: var(--r); display: block; max-width: 100%; background: var(--surface-2); }
+/* The shimmer's glow on his art (BRIEF-canon.md item 6): a warm layer over his eyes, feather tips and mouth, drawn on
+   top of the owner's pictures (the image files are untouched). Each picture sits in a box of its own aspect ratio, so a
+   fraction of the picture is a fraction of the box at every width, and the box clips the glow. Decoration only: hidden
+   from screen readers and clicks (the Shimmer tile carries the figures). Its strength is set from the page (--glow). */
+.glow-art { position: relative; overflow: hidden; display: block; }
+.glow-art > img { display: block; }
+.hero .glow-art { border-radius: var(--r); }
+.glow { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: screen; opacity: var(--glow, 0); }
+.glow i { position: absolute; display: block; border-radius: 50%; transform: translate(-50%, -50%) scale(var(--grow, 1)); background: radial-gradient(closest-side, rgba(255, 247, 222, 0.95), rgba(255, 200, 96, 0.8) 40%, rgba(255, 150, 40, 0.35) 72%, rgba(255, 140, 30, 0) 100%); }
 .hero .lede { font-size: clamp(1.05rem, 2.4vw, 1.3rem); max-width: 40ch; margin-top: 10px; color: var(--ink-2); }
 .hero .lede strong { color: var(--ink); }
 .start { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-3); }
@@ -152,10 +161,11 @@ details.duo-panel > summary h2 { font-size: clamp(1.4rem, 3.4vw, 1.8rem); }
 .fighter > div:not(.fn) { grid-column: 1 / -1; }
 .art-figure { margin: 0; display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 12px; align-items: center; }
 .art-figure img { width: 100%; max-width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 8px; background: var(--surface-2); }
+.art-figure .glow-art { width: 100%; max-width: 100%; border-radius: 8px; }
 .art-figure figcaption { font-size: 0.92rem; color: var(--ink-2); display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
 .art-wide { margin: 0; }
 .art-wide img { display: block; width: 100%; max-width: 100%; aspect-ratio: 720 / 315; object-fit: cover; border-radius: 8px; background: var(--surface-2); }
-@media (max-width: 480px) { .art-figure { grid-template-columns: minmax(0, 1fr); } .art-figure img { max-width: 260px; } }
+@media (max-width: 480px) { .art-figure { grid-template-columns: minmax(0, 1fr); } .art-figure img, .art-figure .glow-art { max-width: 260px; } }
 .fighter .fn { font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; text-transform: uppercase; line-height: 1.1; }
 .fighter .fs { font-weight: 700; font-size: 0.95rem; overflow-wrap: anywhere; }
 .fighter .fd { font-size: 0.8rem; color: var(--ink-2); font-family: var(--font-mono); overflow-wrap: anywhere; }
@@ -189,6 +199,9 @@ table.cases td.on { outline: 2px solid var(--accent); outline-offset: -2px; back
 .tile .k { font-size: 0.78rem; color: var(--ink-3); }
 .tile .v { font-weight: 700; font-size: 1.25rem; line-height: 1.2; overflow-wrap: break-word; }
 .tile .s { font-size: 0.82rem; color: var(--ink-2); font-family: var(--font-mono); overflow-wrap: break-word; }
+/* the Shimmer tile (BRIEF-canon.md item 6): last in its row, across the whole row, since it carries a few lines */
+.tile.shimmer { grid-column: 1 / -1; }
+.tile.shimmer .s + .s { margin-top: 2px; }
 .happens { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; max-width: 70ch; }
 .happens li::marker { color: var(--accent); }
 .env-head { font-weight: 700; font-size: 0.92rem; margin: 4px 0 -4px; }
@@ -264,12 +277,14 @@ details.src-details > summary { cursor: pointer; font-weight: 700; padding: 10px
 .assume div { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 0.92rem; }
 .assume b { display: block; margin-bottom: 2px; }
 footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 1px solid var(--line); padding-top: 14px; }
-@media (prefers-reduced-motion: no-preference) { .bay.enter .verdict, .bay.enter .tiles { animation: rise 0.25s ease-out; } @keyframes rise { from { opacity: 0.4; transform: translateY(3px); } to { opacity: 1; transform: none; } } }
+@media (prefers-reduced-motion: no-preference) { .bay.enter .verdict, .bay.enter .tiles { animation: rise 0.25s ease-out; } @keyframes rise { from { opacity: 0.4; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+  /* the shimmer: each glow brightens and dims a little, out of step with its neighbours (static without this guard) */
+  .glow i { animation: shimmer 2.6s ease-in-out infinite alternate; } .glow i:nth-child(3n + 1) { animation-delay: -0.9s; } .glow i:nth-child(3n + 2) { animation-delay: -1.8s; } @keyframes shimmer { from { opacity: 1; } to { opacity: 0.7; } } }
 </style>
 
 <div class="wrap">
   <header class="hero">
-    <img src="__DINO_IMG__" alt="Rex: a plush olive-green kaiju with orange-tipped spines, black tank top and studded cargo pants, flexing huge arms.">
+    <div class="glow-art" id="hero-art"><img src="__DINO_IMG__" alt="Rex: a plush olive-green kaiju with orange-tipped spines, black tank top and studded cargo pants, flexing huge arms."><div class="glow" id="hero-glow" aria-hidden="true" hidden></div></div>
     <div>
       <div class="eyebrow">Indestructible · never tires · unlimited</div>
       <h1 id="title-name">Rex Super-Strength Lab</h1>
@@ -372,7 +387,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
             <option value="instant">Instant growth</option>
             <option value="runaway">Runaway growth</option>
           </select>
-          <span class="hint" id="absorb-hint">Applies to the energy Silent strike and Soft landing take back, the energy Unbreakable footing takes back from the ground, and the Weight tab’s what-if. (Air resistance absorbed cancels drag: what the air would have taken goes to the endless ocean, and the thrown thing keeps its speed, so nothing grows from it.) Endless ocean: it returns to the store they draw on, and nothing changes. Gradual: it becomes mass over a time you set. Instant: all at once. Runaway: instant, and the growth’s own side effects are taken back too.</span>
+          <span class="hint" id="absorb-hint">Applies to the energy Silent strike and Soft landing take back, the energy Unbreakable footing takes back from the ground, and the Weight tab’s what-if. (Air resistance absorbed cancels drag: what the air would have taken goes to the endless ocean, and the thrown thing keeps its speed, so nothing grows from it.) Endless ocean: it returns to the store they draw on. Nothing around him changes; it shows only as his shimmer (the Shimmer tile). Gradual: it becomes mass over a time you set. Instant: all at once. Runaway: instant, and the growth’s own side effects are taken back too.</span>
         </div>
         <div class="field" id="grow-fields">
           <span class="lbl" id="grow-lbl">Growth form</span>
@@ -493,9 +508,53 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   // the owner's art of Rex and Ollie (inlined at build time)
   const ART = { rig: '__ART_RIG__', unstoppable: '__ART_UNSTOPPABLE__', arm: '__ART_ARM__', faceRex: '__FACE_REX__', faceOllie: '__FACE_OLLIE__' };
   const RIG_LOAD_KG = 9.76e24;   // the live load on the rig's screen in his picture: 9.76 × 10²¹ tonnes
-  const unstoppableArt = () => artFigure(ART.unstoppable, 'Close-up of Rex grinning, with glowing yellow eyes and a spiky crest, and the caption: I’m fucking unstoppable.', 'Rex’s position on the question. The physics above is less sure.');
-  function artFigure(src, alt, caption, extra) {
-    return el('figure', { class: 'art-figure' }, el('img', { src, alt }), el('figcaption', {}, el('span', { text: caption }), extra || null));
+  // Where the shimmer shows on two of these pictures (BRIEF-canon.md item 6; canon: "his eyes, feather tips and
+  // mouth-glow shimmer in proportion to what he takes in"): the header picture (dino.jpg, 432 × 558 px) and the Collide
+  // picture (art-unstoppable.jpg, 480 × 640 px). Each glow's centre is a fraction of the picture (x across, y down), and
+  // its half-width rx and half-height ry are fractions of the picture's width and height. Measured from the image files:
+  // the eyes' irises, the teeth, and the tips of the crest's feathers (the header's orange tips, from the top of the
+  // crest down the back of his neck; the Collide picture's sunlit spike tips along the top edge), each spot just inside
+  // its tip's end so that it lights the tip, not the background beside it (the header's: the centroid of the tan pixels
+  // within 9 px of each tip's end; review round 2 of pull request 5 moved them onto the feathers). The glow stays off
+  // that picture's caption (y 0.88-0.93) and its background spires (x below 0.2 or above 0.8, upper half). Each picture
+  // sits in a box of its own aspect ratio, so the fractions hold at every width.
+  const ART_GLOW = {
+    dino: [
+      { x: 0.421, y: 0.192, rx: 0.037, ry: 0.029, f: 'eye' }, { x: 0.231, y: 0.194, rx: 0.023, ry: 0.018, f: 'eye' },
+      { x: 0.310, y: 0.287, rx: 0.125, ry: 0.042, f: 'mouth' },
+      ...[[0.327, 0.046], [0.359, 0.025], [0.395, 0.015], [0.432, 0.031], [0.473, 0.055], [0.516, 0.097], [0.538, 0.135], [0.570, 0.181], [0.598, 0.221], [0.628, 0.266], [0.653, 0.298]]
+        .map(([x, y]) => ({ x, y, rx: 0.019, ry: 0.015, f: 'tip' })),
+    ],
+    unstoppable: [
+      { x: 0.558, y: 0.250, rx: 0.050, ry: 0.019, f: 'eye' }, { x: 0.192, y: 0.355, rx: 0.040, ry: 0.020, f: 'eye' },
+      ...[[0.240, 0.488], [0.313, 0.463], [0.396, 0.441], [0.479, 0.422], [0.563, 0.400], [0.667, 0.372]].map(([x, y]) => ({ x, y, rx: 0.046, ry: 0.027, f: 'mouth' })),
+      // (the spikes' top ends, just inside each tip, so the glow lights the spike rather than the bright sky above it)
+      ...[[0.304, 0.047], [0.331, 0.035], [0.362, 0.018], [0.394, 0.010], [0.431, 0.013], [0.452, 0.010], [0.494, 0.023], [0.527, 0.038], [0.560, 0.058], [0.619, 0.090]]
+        .map(([x, y]) => ({ x, y, rx: 0.019, ry: 0.014, f: 'tip' })),
+    ],
+  };
+  const glowSpots = (spots) => spots.map((p) => el('i', { 'data-f': p.f, style: 'left:' + 100 * p.x + '%;top:' + 100 * p.y + '%;width:' + 200 * p.rx + '%;height:' + 200 * p.ry + '%' }));
+  // the glow's strength from the energy he takes in (src/ladder.js's glow(): 0 at the floor or below, 1 at the flare). It
+  // shows as the square root of that, so a car crash's flicker (0.09) is still seen (0.3), and grows a little with it
+  function setGlow(layer, J) {
+    if (!layer) return;
+    const gl = window.EnergyLadder.glow(J, D.energyRefs), s = gl.none ? 0 : gl.strength, a = Math.sqrt(s);
+    layer.dataset.strength = String(s);
+    layer.hidden = !(s > 0);
+    layer.style.setProperty('--glow', String(a));
+    layer.style.setProperty('--grow', String(0.8 + 0.4 * a));
+  }
+  // J: the energy Rex takes in in the Collide run (canon gives the shimmer to Rex)
+  const unstoppableArt = (J) => artFigure(ART.unstoppable, 'Close-up of Rex grinning, with glowing yellow eyes and a spiky crest, and the caption: I’m fucking unstoppable.', 'Rex’s position on the question. The physics above is less sure.', null, { spots: ART_GLOW.unstoppable, J: J || 0 });
+  // glow: { spots, J } draws the shimmer over the picture, in a box that clips it
+  function artFigure(src, alt, caption, extra, glow) {
+    let pic = el('img', { src, alt });
+    if (glow) {
+      const layer = el('div', { class: 'glow', 'aria-hidden': 'true' }, glowSpots(glow.spots));
+      setGlow(layer, glow.J);
+      pic = el('div', { class: 'glow-art' }, pic, layer);
+    }
+    return el('figure', { class: 'art-figure' }, pic, el('figcaption', {}, el('span', { text: caption }), extra || null));
   }
   const $ = (s, r) => (r || document).querySelector(s);
   const el = (tag, attrs, ...kids) => {
@@ -814,6 +873,47 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   const nb = (t) => String(t).replace(/([\d.,]*\d) ([A-Za-zµ°%×]\S*)/g, (m, n, u) => n + (n.length + u.length < 10 ? '\u00a0' : ' ') + u);
   const tile = (k, v, s) => el('div', { class: 'tile' }, el('div', { class: 'k', text: k }), el('div', { class: 'v', text: nb(v) }), s ? el('div', { class: 's', text: nb(s) }) : null);
   const tiles = (...ts) => el('div', { class: 'tiles' }, ts.filter(Boolean));
+
+  // ---------------------------------------------------------------- the shimmer (BRIEF-canon.md item 6, pull request 5)
+  // Canon (CLAUDE.md, "Where absorbed energy goes", and the rulings of 14 Oct 2026): what they take back goes to the
+  // endless ocean, and it shows: his eyes, feather tips and mouth-glow shimmer in proportion to what he takes in, a faint
+  // flicker below a car crash, a blinding flare for a dinosaur-killer-scale hit; gently warm, never scalding. The engine's
+  // RESTRAINT.takenBack gives the energy taken back in the run a tab shows, by part and by who takes it in; src/ladder.js's
+  // glow() gives its level. The page works out no energy of its own. The Shimmer tile carries the figures and is what a
+  // screen reader hears; the glow on his pictures is decoration.
+  // takenBack: the engine's tally for the run the bay being drawn shows (the header glow reads the solo bay's: renderInto)
+  let shimmerSeen = null;
+  function takenBack(move, r, o) { const tb = P.RESTRAINT.takenBack(move, r, o); shimmerSeen = tb; return tb; }
+  const SHIMMER_PARTS = ['drag', 'footing', 'soft', 'silent', 'hit', 'stop', 'passenger', 'catch', 'growth'];
+  const SHIMMER_SAY = { drag: 'the air’s drag on what he threw', footing: 'the ground kept whole', soft: 'his landing, by Soft landing', silent: 'the blast, by Silent strike', hit: 'the hit', stop: 'his own stop after the hit', passenger: 'the person’s landing, by Safe passenger', catch: 'his catch', growth: 'the growth what-if' };
+  // the Shimmer tile, at the end of a tab's tile row; null when nothing is taken back. opt: duo (a two-player run: name who
+  // takes each part in), rough (an energy from a rough rung, given to one figure, as the growth what-if gives it)
+  function shimmerTile(tb, opt) {
+    const o = opt || {};
+    if (!tb || !(tb.E > 0)) return null;
+    const refs = D.energyRefs, lad = window.EnergyLadder;
+    const jT = (J) => (!isFinite(J) ? 'unbounded' : o.rough ? 'about ' + sci(J, 1) + ' J' : fmtSI(J, 'J'));
+    const partsOf = (b) => { const ks = SHIMMER_PARTS.filter((k) => b.parts[k] > 0); return ks.length === 1 ? SHIMMER_SAY[ks[0]] : ks.map((k) => SHIMMER_SAY[k] + ' (' + jT(b.parts[k]) + ')').join(' and '); };
+    const NAME = { rex: 'Rex', ollie: 'Ollie' };
+    // one line per one who takes something in: the energy, what it is, and the ladder's wording for it
+    const line = (w) => {
+      const b = tb.by[w];
+      if (!isFinite(b.E)) return (o.duo ? NAME[w] + ' takes in unbounded energy' : 'Unbounded energy taken in') + ', from ' + partsOf(b) + ': at unlimited strength there is no finite figure.';
+      return (o.duo ? NAME[w] + ' takes in ' + jT(b.E) : jT(b.E) + ' taken in') + ', from ' + partsOf(b) + ' · ' + lad.compare(b.E, refs).text;
+    };
+    // the level is Rex's: canon gives the shimmer to him
+    const gl = lad.glow(tb.by.rex.E, refs);
+    const word = gl.none ? 'none' : gl.text;
+    const floorRef = refs.find((r) => r.key === lad.GLOW_KEYS.floor);
+    const note = 'Gently warm, never scalding: the glow is never a heat hazard.'
+      + (gl.word === 'too faint to see' ? ' The lab draws no glow below ' + floorRef.short + ' (' + fmtSI(floorRef.J, 'J') + '), its floor: a proposal, not canon.' : '')
+      + (gl.unbounded ? ' Past any finite energy the glow holds at the flare, its brightest.' : !gl.none && (gl.rough || gl.held) ? ' This level is rough: the top of the scale is set by rough energies (the flare’s, the dinosaur-killer’s, is disputed).' : '')
+      + (o.duo && tb.by.ollie.E > 0 ? ' Canon gives the shimmer to Rex; whether Ollie shows what he takes in is still to be ruled.' : '');
+    const t = el('div', { class: 'tile shimmer' }, el('div', { class: 'k', text: 'Shimmer' }), el('div', { class: 'v', text: nb(o.duo ? 'Rex: ' + word : capital(word)) }));
+    for (const w of o.duo ? ['rex', 'ollie'] : ['rex']) if (tb.by[w].E > 0) t.append(el('div', { class: 's', text: nb(capital(line(w))) }));
+    t.append(el('div', { class: 's', text: note }));
+    return t;
+  }
   const happens = (items, max) => el('ul', { class: 'happens' }, items.filter(Boolean).slice(0, max || 5).map((t) => el('li', { text: nb(t) })));
   // each bay keeps its own 'Show the math' state (the Rex + Ollie element draws with isDuo() true)
   const math = (lines) => { const B = isDuo() ? BAY.duo : BAY.solo; const d = el('details', { class: 'math' }, el('summary', { text: 'Show the math' })); d.append(el('div', { class: 'eq', text: lines.filter(Boolean).join('\n') })); d.open = B.mathOpen; d.addEventListener('toggle', () => { B.mathOpen = d.open; }); return d; };
@@ -1236,7 +1336,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   }
   function absorbBlock(E, what, body, sf) {
     const head = what + ': ' + fmtSI(E, 'J') + ' (' + fmtTNT(E) + ') absorbed.';
-    if (state.absorb === 'ocean') return callout(head + ' It goes back into the store of power they draw on: a drop in an endless ocean. No mass is added, and nothing outside changes. Momentum still goes where it would have.');
+    if (state.absorb === 'ocean') return callout(head + ' It goes back into the store of power they draw on: a drop in an endless ocean. No mass is added, and nothing around him changes; it shows only as his shimmer (the Shimmer tile). Momentum still goes where it would have.');
     return el('div', { class: 'callout' }, el('p', { style: 'margin:0 0 6px', text: head + ' ' + { gradual: 'Gradual growth:', instant: 'Instant growth:', runaway: 'Runaway:' }[state.absorb] }), happens(growthItems(E, body, sf), 8));
   }
 
@@ -1502,6 +1602,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   function bayThrow(c) {
     const o = objById(state.obj);
     const r = P.throwObject(Object.assign({}, c, { record: true }), o, state.angle);
+    // the energy their powers take back in this throw (the Shimmer tile, the header glow)
+    const tb = takenBack('throw', r, Object.assign({}, c, { obj: o, angle: state.angle }));
     const out = [];
     out.push(el('div', { class: 'bay-controls' }, objectPicker((x) => !x.noThrow), angleControl()));
     const key = r.style === 'whip' ? 'throwWhip' : 'throwPush';
@@ -1516,7 +1618,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       out.push(tiles(
         tile('Weight to hold up', fmtSI(r.needed, 'N', nd), fmtMass(o.m) + ' ' + o.short + ' + ' + fmtMass(r.armMass) + ' of ' + (r.hands > 1 ? 'hands and forearms' : 'hand and forearm')),
         capped(c) ? tile('The strength he uses', fmtSI(c.use, 'N', nd), 'of ' + fmtSI(c.F, 'N', nd) + ' in all') : tile('His full strength', fmtSI(c.F, 'N', nd), ''),
-        r.canHold ? tile('His throwing push', fmtSI(r.Fdrive, 'N', nd), shareText(key, mode) + ' ' + (capped(c) ? 'of the strength he uses' : 'of full strength') + ' per hand, ' + r.hands + ' hand' + (r.hands > 1 ? 's' : '')) : null));
+        r.canHold ? tile('His throwing push', fmtSI(r.Fdrive, 'N', nd), shareText(key, mode) + ' ' + (capped(c) ? 'of the strength he uses' : 'of full strength') + ' per hand, ' + r.hands + ' hand' + (r.hands > 1 ? 's' : '')) : null,
+        shimmerTile(tb)));
       const need = r.needed / Math.max(Fbest, 1e-9);
       out.push(happens([
         !r.canHold ? 'To throw it he first has to hold it up: the ' + o.short + ' plus ' + handsText + ' weigh ' + fmtSI(r.needed, 'N') + ', more than his full strength.'
@@ -1532,7 +1635,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       out.push(tiles(
         speedTile('Launch speed', r.v, fmtMach(r.v)),
         tile('Needed to escape him', speedOnly(r.escapeNeeded), 'from ' + fmtDist(Math.max(P.eqRadius(c.body), 0.25 * c.body.H)) + ' from his middle'),
-        tile('His pull on it in his hand', sig(r.selfPullG, 2) + ' g', 'on top of the Earth’s')));
+        tile('His pull on it in his hand', sig(r.selfPullG, 2) + ' g', 'on top of the Earth’s'),
+        shimmerTile(tb)));
       out.push(happens([
         'At ' + fmtDensity(c.body.rho) + ' Rex’s own gravity is far stronger than the Earth’s close to him. Anything he throws has to climb out of that pull first, like a rocket leaving a planet.',
         'His arm is just as dense as the rest of him, so most of his push goes into moving his own hand.',
@@ -1603,7 +1707,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       f.landed && !f.relativistic ? tile('Lands at', speedOnly(f.vImpact), spLand ? fmtSI(spLand.absorbed, 'J') + ' taken back: Safe passenger' : fmtTNT(r.Eimpact) + ' on impact') : null,
       (r.recoilV > 0.01 ? speedTile : tile)('His recoil', r.recoilV > 0.01 ? r.recoilV : 'none', r.anchor.R !== Infinity ? 'footing gives at ' + fmtSI(r.anchor.R, 'N')
         : ownOn ? 'to the endless ocean: their power' + (ownSaved ? ' (without it ' + speedOnly(rOwn0.recoilV) + ')' : bolted ? ' (bolted too)' : rOwn0 && rOwn0.canMove && rOwn0.push && rOwn0.push.xA >= 0.005 ? ' (without it a ' + fmtDist(rOwn0.push.xA) + ' lurch)' : rOwn0 && rOwn0.canMove && isFinite(rOwn0.anchor.R) ? ' (without it his footing holds, up to ' + fmtSI(rOwn0.anchor.R, 'N') + ')' : '')
-          : bolted ? 'bolted down' : 'push aimed so steeply down his feet can’t slide')));
+          : bolted ? 'bolted down' : 'push aimed so steeply down his feet can’t slide'),
+      shimmerTile(tb)));
     if (!f.relativistic && f.path && f.path.length > 1 && !straightUp) {
       const ghost = vac && vac.landed && vac.path && vac.range < 40 * Math.max(f.range, 1) ? vac.path : null;
       const endNote = (f.landed || f.timedOut) ? null : (f.orbit ? 'in orbit →' : 'leaves Earth →');
@@ -1637,10 +1742,22 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const handSay = handS ? ' His hand still meets real air (their own bodies do): it breaks the sound barrier as he lets go, so the boom stays, and over the end of his throw it drives about ' + fmtMass(handS.mAir) + ' of air ahead of it, up to ' + fmtTNT(handS.E) + ' of blast at his hand (an upper bound: the hand speeds up through the throw' + (handS.capped ? '; capped at the work of his push' : '') + '). The effort and courtesy ceiling count it.' : '';
     if (share >= 1 && !f.relativistic && f.ocean) {
       const p0 = P.vToMomentum(r.vOut || r.v, o.m), real = rAir0 && rAir0.flight;
-      items.push('No drag: their power takes back all of the air’s drag on it (Air resistance absorbed), so it flies as it would in a vacuum' + (real && !real.escaped && !real.orbit && real.landed && f.landed && reach(real) < 0.95 * reach(f) ? ' (' + fmtDist(reach(f)) + (straightUp ? ' high' : '') + ' against ' + fmtDist(reach(real)) + ' in real air)' : '') + '. Along its path the air would have pushed back on it with ' + fmtSI(f.ocean.P, 'N·s') + ' in all' + (f.ocean.P > 2 * p0 ? ', ' + fmtRatio(f.ocean.P / p0) + ' its own momentum' : '') + ', and taken ' + fmtSI(f.ocean.E, 'J') + (f.ocean.E > r.Eobj ? ' (' + fmtRatio(f.ocean.E / r.Eobj) + ' its own energy: real air would have stopped it long before)' : '') + '. Their power cancels that drag (the push and the energy go to the endless ocean, canon), so the ' + o.short + ' isn’t slowed: it keeps its speed and its own energy, nothing grows from it' + (f.landed ? ', and it lands with all of that energy.' : '.') + handSay);
+      // the shimmer counts what real air would take from this same throw, not the drag along the drag-free path
+      // (BRIEF-canon.md item 6: the drag-free figure can be far more than the throw's own energy)
+      const dragJ = tb.parts.drag;
+      // (real air wouldn't bring it down: the drag on its way out, the full-drag flight's own; it leaves with the rest)
+      const dragShimmer = dragJ > 0 ? ' The shimmer (the Shimmer tile) counts a different figure: what real air would have taken from this same throw, ' + fmtSI(dragJ, 'J') + (real && !real.landed ? ' (real air wouldn’t bring it down: this is the drag on its way out, and it leaves with the rest of its energy)' : '') + '. The figure above is the drag along the drag-free path, on a ' + o.short + ' that real air would have slowed.'
+        : tb.parts.passenger > 0 ? ' The shimmer (the Shimmer tile) counts what real air would have taken from them once, inside their landing, which Safe passenger takes back.' : '';
+      items.push('No drag: their power takes back all of the air’s drag on it (Air resistance absorbed), so it flies as it would in a vacuum' + (real && !real.escaped && !real.orbit && real.landed && f.landed && reach(real) < 0.95 * reach(f) ? ' (' + fmtDist(reach(f)) + (straightUp ? ' high' : '') + ' against ' + fmtDist(reach(real)) + ' in real air)' : '') + '. Along its path the air would have pushed back on it with ' + fmtSI(f.ocean.P, 'N·s') + ' in all' + (f.ocean.P > 2 * p0 ? ', ' + fmtRatio(f.ocean.P / p0) + ' its own momentum' : '') + ', and taken ' + fmtSI(f.ocean.E, 'J') + (f.ocean.E > r.Eobj ? ' (' + fmtRatio(f.ocean.E / r.Eobj) + ' its own energy: real air would have stopped it long before)' : '') + '. Their power cancels that drag (the push and the energy go to the endless ocean, canon), so the ' + o.short + ' isn’t slowed: it keeps its speed and its own energy, nothing grows from it' + (f.landed ? ', and it lands with all of that energy.' : '.') + dragShimmer + handSay);
     } else if (share > 0 && !f.relativistic && f.air) {
       items.push('Air resistance absorbed: their power takes back ' + pctAir(share) + ' of the air’s drag on it, and the air takes the rest: ' + fmtSI(r.dragLoss != null ? r.dragLoss : f.air.E, 'J') + ' over its flight, at ' + pctAir(kAir) + ' of the real rate, so a fast throw still booms and heats. The share it cancels (' + fmtSI(f.ocean.P, 'N·s') + ' of push) goes to the endless ocean, so it slows less than in real air.' + (r.dragLoss0 != null && r.Eobj > 0 && Math.abs(r.dragLoss0 - r.Eobj) < 1e-9 * r.Eobj ? ' Real air wouldn’t bring this throw down, so the blast near him counts the ' + pctAir(kAir) + ' share of all its energy, an upper bound.'
-        : r.dragLoss0 != null && r.v >= K.a0 ? ' The blast near him counts the ' + pctAir(kAir) + ' share of what real air would take from the same throw (' + fmtSI(r.dragLoss0, 'J') + '), so ' + fmtSI(kAir * r.dragLoss0, 'J') + (r.dragLoss >= 0.8 * r.dragLoss0 ? ': the slowed throw gives the air much the same energy over its whole flight, but spread over a longer path.' : ': near him only that share of the drag acts, and the slowed throw gives the air ' + fmtSI(r.dragLoss, 'J') + ' in all, landing with most of the rest.') + ' A reach longer than the stretch where the air takes its energy counts what the air took within it, at most ' + fmtSI(r.dragLoss, 'J') + '.' : '') + handSay);
+        : r.dragLoss0 != null && r.v >= K.a0 ? ' The blast near him counts the ' + pctAir(kAir) + ' share of what real air would take from the same throw (' + fmtSI(r.dragLoss0, 'J') + '), so ' + fmtSI(kAir * r.dragLoss0, 'J') + (r.dragLoss >= 0.8 * r.dragLoss0 ? ': the slowed throw gives the air much the same energy over its whole flight, but spread over a longer path.' : ': near him only that share of the drag acts, and the slowed throw gives the air ' + fmtSI(r.dragLoss, 'J') + ' in all, landing with most of the rest.') + ' A reach longer than the stretch where the air takes its energy counts what the air took within it, at most ' + fmtSI(r.dragLoss, 'J') + '.' : '')
+        // (review round 1: the shimmer's figure is the share of real air's take from the same throw, not the share their
+        // power cancels along the slowed flight, which this item gives. Review round 2, copy-1: at 50% it is the same
+        // figure as the blast's, the other share of the same take, so it is named by what it is, not as 'a different
+        // figure')
+        + (tb.parts.drag > 0 ? ' The shimmer (the Shimmer tile) counts their power’s ' + pctAir(share) + ' share of what real air would take from this same throw at the full drag' + (tb.parts.passenger > 0 ? ', less what is still in their landing, which Safe passenger takes back' : '') + ': ' + fmtSI(tb.parts.drag, 'J') + '. That is not what their power cancels along the flight it actually flies, which slows less than in real air.'
+          : tb.parts.passenger > 0 ? ' The shimmer (the Shimmer tile) counts what real air would have taken from them once, inside their landing, which Safe passenger takes back.' : '') + handSay);
     } else if (share === 0 && handSay) items.push(handSay.trim());
     if (vac && !f.relativistic && share < 1) {
       if (vac.escaped && !f.escaped) items.push('Air is what brings it down. With no air, this launch would have escaped Earth.');
@@ -1659,7 +1776,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (o.passenger) items.push(passengerText(r, c, f));
     if (f.maxStagT > 1200 && !f.relativistic && share < 1) items.push('At ' + (f.maxMach <= 50 ? 'Mach ' + sig(f.maxMach, 2) : speedOnly(f.maxMach * K.a0)) + ', air piling up at the front heats to about ' + fmtTemp(f.maxStagT) + ' (equilibrium air; the textbook ideal-gas formula would say ' + fmtTemp(P.stagnationTIdeal(f.maxMach * K.a0)) + ').'
       + (c.keepForm ? ' Things keep their form: their power holds the ' + o.short + ' together, so it doesn’t melt, burn or break up in the air.' : share > 0 ? ' The air heats it at ' + pctAir(kAir) + ' of the real rate (Air resistance absorbed takes back the rest); whether that melts or burns the ' + o.short + ' away, the sim does not model.' : ' Only Rex and Ollie are indestructible. The ' + o.short + ' would melt or burn away, and the sim does not model that.'));
-    if (f.relativistic) items.push(fastThrowText(r, c, o, fa));
+    // (the shimmer's drag figure there: all of its energy, or the share of it, an upper bound)
+    if (f.relativistic) items.push(fastThrowText(r, c, o, fa) + (tb.parts.drag > 0 && isFinite(tb.parts.drag) ? ' The shimmer (the Shimmer tile) counts ' + (share >= 1 ? '' : 'the ' + pctAir(share) + ' share of ') + 'what real air would have taken, ' + fmtSI(tb.parts.drag, 'J') + ': past 1% of light speed the lab gives real air all of its energy, an upper bound.' : ''));
     if (r.gentle && r.gripRatioRaw > 1) items.push('Things keep their form: his push is spread through the whole ' + o.short + ' in proportion to its mass, so his palms put no load on it. Without it, the force on his palms would be ' + (r.gripRatioRaw < 2 ? sig(100 * (r.gripRatioRaw - 1), 2) + '% more than' : fmtRatio(r.gripRatioRaw)) + ' what it can take. Its landing is still real.');
     if (r.gripRatio > 1) items.push(isFinite(r.gripRatio) ? 'The force on his palms is ' + fmtRatio(r.gripRatio) + ' what the ' + o.short + ' can take. Without a pushing plate of ' + fmtArea(r.plateNeeded) + ', his hands go through it and only part of it gets thrown.' : 'The force on his palms is unbounded, so no plate is big enough: his hands go through the ' + o.short + ' and only part of it gets thrown.');
     if (f.leavesHill) items.push('Its arc tops out beyond about 1.5 million km, Earth’s Hill sphere. Out there the Sun’s pull wins, so it drifts off into its own orbit around the Sun.');
@@ -1698,6 +1816,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
 
   function bayJump(c) {
     const r = P.jump(c);
+    const tb = takenBack('jump', r, c);
     const mode = r.basis || state.mode;
     const f = r.flight;
     // the ground's limit: with Unbreakable footing, the one it would have (their power holds past it)
@@ -1733,7 +1852,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       up && f.landed ? tile('Hang time', fmtTime(f.time), '') : null,
       r.groundFails ? tile('Energy into the ground', fmtSI(r.Eground, 'J'), r.groundDisrupts ? 'enough to blow Earth apart' : fmtTNT(r.Eground)) : null,
       up && f.landed ? tile('Comes back down at', speedOnly(f.vImpact), 'sea-level terminal speed ' + speedOnly(r.vTerminal)) : null,
-      r.landing.landed ? tile('Landing on the ground', fmtSI(r.landing.F, 'N'), sig(r.landing.F / (c.body.m * g), 2) + '× his weight for ' + fmtTime(r.landing.t) + (r.landing.soft ? '; what it would put into the ground taken back' : '')) : null));
+      r.landing.landed ? tile('Landing on the ground', fmtSI(r.landing.F, 'N'), sig(r.landing.F / (c.body.m * g), 2) + '× his weight for ' + fmtTime(r.landing.t) + (r.landing.soft ? '; what it would put into the ground taken back' : '')) : null,
+      shimmerTile(tb)));
     if (up && f.landed && f.apex > 0.01) {
       const rows = heightRefs().filter((h) => h.m < f.apex * 30 && h.m > f.apex / 300).map((h) => ({ label: h.label, value: h.m }));
       rows.push({ label: 'Rex’s jump', value: f.apex, highlight: true });
@@ -1787,6 +1907,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
 
   function bayStomp(c) {
     const r = P.stomp(c);
+    const tb = takenBack('stomp', r, c);
     const out = [];
     const bf = r.bodyFlight;
     let v = 'His stomp lands with ' + fmtTNT(r.E) + '.';
@@ -1826,7 +1947,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       tile('Compared with', compareEnergy(r.E), ''),
       speedTile('Foot speed at impact', r.vFoot, fmtMach(r.vFoot)),
       holeTile,
-      bf.relativistic ? speedTile('He gets launched', r.vBody, '') : tile(r.vBody > 2 ? 'He gets launched' : 'Recoil hop', r.vBody > 0.5 ? (bf.escaped ? 'Escapes Earth' : fmtDist(bf.apex) + ' up') : 'none', r.vBody > 0.5 ? speedOnly(r.vBody) : '')));
+      bf.relativistic ? speedTile('He gets launched', r.vBody, '') : tile(r.vBody > 2 ? 'He gets launched' : 'Recoil hop', r.vBody > 0.5 ? (bf.escaped ? 'Escapes Earth' : fmtDist(bf.apex) + ' up') : 'none', r.vBody > 0.5 ? speedOnly(r.vBody) : ''),
+      shimmerTile(tb)));
     const footAir = taken ? P.RESTRAINT.MOVES.stomp.footAir(r, { body: c.body }) : null;
     out.push(r.footMach < 1 && !(r.vFoot >= 0.01 * K.c) ? callout(THUMP('his foot')) : taken ? (footAir
       ? el('div', {}, callout('No blast from the impact: Unbreakable footing takes its energy back. His foot still meets real air on the way down (their own bodies do): it breaks the sound barrier, so there is a sonic boom, and over the stomp it drives about ' + fmtMass(footAir.mAir) + ' of air ahead of it, up to ' + fmtTNT(footAir.E) + ' of blast at his foot (an upper bound: the foot speeds up through the stomp' + (footAir.capped ? '; capped at the work of his push, since in real air the foot’s own drag would hold it far below this speed' : '') + ').'), blastBlock(footAir.E, 'at his foot'))
@@ -1868,6 +1990,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   const THUMP = (where) => 'Below the speed of sound the air flows out of the way of ' + where + ', so the release is a loud thump, not a blast wave. The lab counts a blast only when something moves past Mach 1 (or makes a fireball).';
   function bayPunch(c) {
     const r = P.punch(c);
+    const tb = takenBack('punch', r, c);
     const out = [];
     const silent = !!c.silentStrike;
     // They take their own recoil: the same punch without it, for what it saves him
@@ -1888,7 +2011,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       tile('Energy in the punch', fmtSI(r.E, 'J'), fmtTNT(r.E)),
       tile('Compared with', compareEnergy(r.E), ''),
       r.recoilE > 0.01 * r.E ? tile('His own recoil', fmtSI(r.recoilE, 'J'), sig(100 * r.recoilE / r.E, 2) + '% of the total') : null,
-      !silent && r.vFist < 0.01 * K.c && r.vFist > 1000 ? tile('Air at the knuckles', fmtTemp(r.stagT), 'equilibrium air (ideal-gas formula: ' + fmtTemp(r.stagTIdeal) + ')') : null));
+      !silent && r.vFist < 0.01 * K.c && r.vFist > 1000 ? tile('Air at the knuckles', fmtTemp(r.stagT), 'equilibrium air (ideal-gas formula: ' + fmtTemp(r.stagTIdeal) + ')') : null,
+      shimmerTile(tb)));
     // Silent strike takes back what would hit the air as a blast or a boom: below Mach 1 there is none, only a thump
     out.push(silent && r.mach >= 1 ? absorbBlock(r.E, 'Silent strike: the punch’s energy', c.body, c.surface) : r.mach < 1 ? callout(THUMP('his fist') + (silent ? ' Silent strike has nothing to take back below the speed of sound.' : '')) : blastBlock(r.E, 'at his fist'));
     const items = [];
@@ -1906,6 +2030,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
 
   function bayClap(c) {
     const r = P.clap(c);
+    const tb = takenBack('clap', r, c);
     const out = [];
     const silent = !!c.silentStrike;
     out.push(verdict((r.vHand >= 0.01 * K.c ? 'The clap releases ' + fmtTNT(r.E) + ' between his palms.' : 'His hands meet at ' + speedOnly(r.vHand) + ' and release ' + fmtTNT(r.E) + '.') + (silent && r.mach >= 1 ? ' Silent strike takes it back.' : '')));
@@ -1913,7 +2038,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     out.push(tiles(
       speedTile('Hand speed', r.vHand, fmtMach(r.vHand)),
       tile('Energy released', fmtSI(r.E, 'J'), fmtTNT(r.E)),
-      tile('Compared with', compareEnergy(r.E), '')));
+      tile('Compared with', compareEnergy(r.E), ''),
+      shimmerTile(tb)));
     out.push(silent && r.mach >= 1 ? absorbBlock(r.E, 'Silent strike: the clap’s energy', c.body, c.surface) : r.mach < 1 ? callout(THUMP('his hands') + (silent ? ' Silent strike has nothing to take back below the speed of sound.' : '')) : blastBlock(r.E, 'between his hands'));
     out.push(happens([
       'The clap is the one move with no recoil problem: both arms push on his chest equally and opposite, so he stays put however strong he is' + (c.ownRecoil ? ' (so They take their own recoil has nothing to take here).' : '.'),
@@ -2060,11 +2186,14 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   function growthWhatIf(c) {
     const box = el('div', { class: 'growth-whatif' });
     box.append(el('h3', { text: 'What if he absorbed it as growth?' }));
-    box.append(el('p', { class: 'muted', style: 'margin:0', text: 'Canon: energy they absorb goes back into the endless ocean they draw on, and nothing changes. The growth modes (under Their powers) turn it into mass instead, m = E ÷ c². A what-if: the page resets to their canon size and mass next visit.' }));
+    box.append(el('p', { class: 'muted', style: 'margin:0', text: 'Canon: energy they absorb goes back into the endless ocean they draw on. Nothing around him changes, but it shows as his shimmer (the Shimmer tile in each what-if below). The growth modes (under Their powers) turn it into mass instead, m = E ÷ c². A what-if: the page resets to their canon size and mass next visit.' }));
     box.append(chipRow('Absorb the energy of', 'grow-what', GROW_WHAT.map((x) => [x.id, x.label]), state.growWhat, (v) => { state.growWhat = v; }));
     if (state.growWhat === 'none') return box;
     const ref = D.energyRefs.find((e) => e.id === state.growWhat);
     const E = ref.J;
+    // canon (the rulings of 14 Oct 2026): he shimmers in the growth what-ifs too; the energy that becomes mass is what he
+    // takes in (BRIEF-canon.md item 6)
+    const tb = takenBack('weight', null, { growE: E });
     const rows = [['Mix (default)', 0.5], ['Pure size', 1], ['Pure density', 0]].map(([lbl, s0]) => {
       const gB = P.grownBody(c.body, E, s0);
       // a rough rung's growth: each figure the growth changes by 10% or more to two figures (the ones it barely
@@ -2086,6 +2215,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const items = growthItems(E, c.body, c.surface, { rough: ref.rough });
     if (items) box.append(el('p', { style: 'margin:0', text: { gradual: 'Gradual growth', instant: 'Instant growth', runaway: 'Runaway' }[state.absorb] + ', ' + growFormText(state.growS) + ':' }), happens(items, 8));
     else box.append(el('p', { class: 'muted', style: 'margin:0', text: 'Pick a growth mode under Their powers to see how fast he can grow without harming anyone, and what growing all at once would do.' }));
+    // (a rough rung's energy to one figure, as above)
+    const st = shimmerTile(tb, { rough: ref.rough });
+    if (st) box.append(tiles(st));
     return box;
   }
   function bayWeight(c) {
@@ -2277,6 +2409,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (gate && gate.stop) { out.push(callout(gate.text)); return out; }
     if (gate) { out.push(callout(gate.text)); cR = Object.assign({}, cR, { groundHolds: true }); cO = Object.assign({}, cO, { groundHolds: true }); }
     const r = P.armWrestle(cR, cO);
+    // the energy their powers take back: a pin whose slam real ground under the table would crater, held by Unbreakable
+    // footing (the Shimmer tile; review round 2 of pull request 5, code-1: the winner's take)
+    const tb = takenBack('arm', r, { A: cR, B: cO, whoA: 'rex' });
     // Things keep their form is credited with the table only where the same bout without it breaks the table
     const r0 = cR.keepForm && !cR.groundHolds && !r.blackHole ? P.armWrestle(Object.assign({}, cR, { keepForm: false }), Object.assign({}, cO, { keepForm: false })) : null;
     const keepCredit = !!r0 && !!(r0.tableBreaks || r0.tableRatio > 1 || r0.slamRatio > 1);
@@ -2417,7 +2552,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       r.outcome === 'drag' ? tile('Energy in ' + L, isFinite(drag.E) ? fmtSI(drag.E, 'J') : '∞', isFinite(drag.E) ? fmtTNT(drag.E) : 'unbounded') : null,
       sameTwist ? tile('Twist on each upper arm', fmtSI(r.torqueA, 'N·m'), fmtRatio(twistMax) + ' the ~190 N·m a healthy human upper-arm bone takes in theory (cadaver bones broke at 25–31 N·m)')
         : tile('Twist on the upper arms', fmtSI(r.torqueA, 'N·m') + ' / ' + fmtSI(r.torqueB, 'N·m'), 'Rex / Ollie; the larger is ' + fmtRatio(twistMax) + ' the ~190 N·m a healthy human upper-arm bone takes in theory (cadaver bones broke at 25–31 N·m)'),
-      r.clash === 'rockGives' ? tile('Bolts hold', 'until the rock tears', 'about ' + fmtSI(r.tearA, 'N') + ' / ' + fmtSI(r.tearB, 'N') + ', Rex / Ollie') : r.tableBreaks ? tile(ownArm ? 'Feet hold up to' : 'Feet hold', fmtN(ownArm ? holdNow('A') : r.RA) + ' / ' + fmtN(ownArm ? holdNow('B') : r.RB), 'Rex / Ollie' + ['A', 'B'].filter(tornOf).map((x) => '; ' + WHO[x] + '’s bolts hold until the rock around them tears out').join('')) : (() => { const lat = tableLat; return tile('Table carries', isFinite(lat) ? 'up to ' + fmtSI(lat, 'N') : 'any force', isFinite(lat) ? 'sideways, before its pegs tear out (estimate)' : (cR.keepForm ? 'held together by their power' : gate ? 'treating the ground as if it held them' : 'ground treated as holding')); })()));
+      r.clash === 'rockGives' ? tile('Bolts hold', 'until the rock tears', 'about ' + fmtSI(r.tearA, 'N') + ' / ' + fmtSI(r.tearB, 'N') + ', Rex / Ollie') : r.tableBreaks ? tile(ownArm ? 'Feet hold up to' : 'Feet hold', fmtN(ownArm ? holdNow('A') : r.RA) + ' / ' + fmtN(ownArm ? holdNow('B') : r.RB), 'Rex / Ollie' + ['A', 'B'].filter(tornOf).map((x) => '; ' + WHO[x] + '’s bolts hold until the rock around them tears out').join('')) : (() => { const lat = tableLat; return tile('Table carries', isFinite(lat) ? 'up to ' + fmtSI(lat, 'N') : 'any force', isFinite(lat) ? 'sideways, before its pegs tear out (estimate)' : (cR.keepForm ? 'held together by their power' : gate ? 'treating the ground as if it held them' : 'ground treated as holding')); })(),
+      shimmerTile(tb, { duo: true })));
     const rows = [
       { label: 'Rex’s arm', value: r.PA, highlight: r.AA === r.PA },
       isFinite(r.RA) ? { label: 'Rex’s feet hold', value: r.RA, highlight: r.AA === r.RA } : null,
@@ -2433,6 +2569,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     items.push((ownArm ? 'Newton’s third law: the push between their hands is the same both ways. Each one’s own push back goes to his source (They take their own recoil), but the other’s press on him is real (a contest lets force move). Under the rules each grips the table’s peg with his free hand and rests his elbow on a pad bolted to the table, so each pad holds the other’s press, and the table carries the push between them, not their feet. '
       : 'Newton’s third law: the push between their hands is the same both ways. Under the rules each grips the table’s peg with his free hand and rests his elbow on a pad bolted to the table, so the table carries that push between them, not their feet. ') + (isFinite(tableLat) ? 'A regulation table scaled to their size takes roughly ' + fmtSI(tableLat, 'N') + ' sideways before a peg or pad tears out (an estimate).' : (cR.keepForm ? 'Held together by their power (Things keep their form), ' : gate ? 'Treating the ground as if it held them, ' : 'On ground treated as holding ') + 'the table never breaks, so arm strength decides.'));
     if (r.crater > 0) items.push('The pin’s slam drives into the ground under the table: a crater up to ' + fmtDist(r.crater) + ' across' + (r.craterExtrapolated ? ' (extrapolated)' : '') + ' (impact scaling with their forearms as the impactor at ' + speedOnly(r.pin ? r.pin.v : 0) + ', an upper bound).');
+    // (review round 2 of pull request 5, code-1: where real ground would take that crater, Unbreakable footing holds it,
+    // and its energy is taken back, as the stomp's)
+    else if (tb.parts.footing > 0) items.push('Unbreakable footing: on real ground the pin’s slam would drive a crater into the ground under the table (at ' + speedOnly(pin.v) + '). Their power keeps the ground whole, and the energy that would have broken it, ' + fmtSI(tb.parts.footing, 'J') + ', goes to the endless ocean: ' + W + '’s take, since his swing drives the slam (the Shimmer tile counts it).');
     // (with the winner's power on, both pads: review round 1 of pull request 4)
     if (r.padLoad > 0) items.push(cW.ownRecoil && r.loserPadLoad != null ? 'Forcing an arm down: the winner’s elbow pad holds the loser’s press, ' + fmtN(r.padLoad) + ' here. Spinning both forearms is the winner’s swing, whose push back goes to his source (They take their own recoil), so it adds nothing to his pad. The loser’s pad still carries what turns his own forearm against the winner’s hand, ' + aboutN(r.loserPadLoad) + ': that is a force on the loser, not anyone’s push back, so no power takes it. ' + (r.tableBreaksBy === 'pin' ? 'That is more than the table carries, so the pin breaks it.' : 'Both are within what the table carries.')
       : 'Forcing an arm down takes more than holding it. The winner’s elbow pad holds the loser’s arm force plus what it takes to spin both forearms: about ' + fmtN(r.padLoad) + ' here, ' + (r.tableBreaksBy === 'pin' ? 'more than the table carries.' : 'within what the table carries.'));
@@ -2804,6 +2943,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   function wrestleThrow(cA, cB, nA, nB) {
     const t = P.throwPartner(cA, cB, state.wAngle), out = [];
     if (t.bolted) { out.push(verdict(nB + ' is bolted to the planet: there’s nothing to throw.')); return out; }
+    // the energy their powers take back: the thrower's drag, the thrown one's landing on his own footing (the Shimmer tile)
+    const tb = takenBack('wrestleThrow', t, { A: cA, B: cB, whoA: nA === 'Rex' ? 'rex' : 'ollie', angle: state.wAngle });
     const r = t.r, f = r.flight;
     let v;
     if (!r.canHold || !r.canMove) v = nA + ' can’t throw ' + nB + ': his throwing push (' + fmtN(r.Fdrive) + ') can’t beat ' + nB + '’s weight plus his own arms (' + fmtSI(r.needed, 'N') + ').';
@@ -2837,7 +2978,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         tile('Energy in ' + nB, fmtSI(r.Eobj, 'J'), fmtTNT(r.Eobj)),
         !f.relativistic && f.landed ? tile('Distance', fmtDist(f.range), 'top ' + fmtDist(f.apex) + ' · ' + fmtTime(f.time)) : null,
         !f.relativistic && f.landed ? tile('Lands at', speedOnly(f.vImpact), fmtTNT(r.Eimpact) + ' on impact') : null,
-        tile(nA + '’s recoil', r.recoilV > 0.01 ? speedOnly(r.recoilV) : 'none', '')));
+        tile(nA + '’s recoil', r.recoilV > 0.01 ? speedOnly(r.recoilV) : 'none', ''),
+        shimmerTile(tb, { duo: true })));
       if (!f.relativistic && f.path && f.path.length > 1 && state.wAngle < 90) out.push(trajectoryChart(f.path, null, 'Flight path of ' + nB, f.apex, (f.landed || f.timedOut) ? null : (f.orbit ? 'in orbit →' : 'leaves Earth →'), dragLegend(cA)));
       const items = [];
       items.push(nB + ' is just an object here: ' + fmtMass(cB.body.m) + ' with a ' + sig(cB.body.frontArea, 2) + ' m² front. He doesn’t fight the throw; for that, see Shove.');
@@ -2851,6 +2993,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         if (changed) items.push('Air resistance absorbed: their power takes back ' + pctAir(share) + ' of the air’s drag on ' + nB + ', so he flies ' + (share >= 1 ? 'drag-free' : 'with less drag') + (f.landed && f0.landed ? ' (' + fmtDist(reach(f)) + (up ? ' high' : '') + ' against ' + fmtDist(reach(f0)) + ' in real air, landing at ' + speedOnly(f0.vImpact) + ' there)' : '') + '.');
         if (changed && share >= 1) out.splice(1, 0, el('div', { class: 'status-row' }, status('info', 'No drag: their power')));
       }
+      // (review round 2 of pull request 5, copy-4: past 1% of light speed the shimmer counts all of his energy as real
+      // air's take, an upper bound, labelled here as on the Throw tab)
+      if (f.relativistic && tb.parts.drag > 0 && isFinite(tb.parts.drag)) items.push('The shimmer (the Shimmer tile) counts ' + (share >= 1 ? '' : 'the ' + pctAir(share) + ' share of ') + 'what real air would have taken, ' + fmtSI(tb.parts.drag, 'J') + ': past 1% of light speed the lab gives real air all of his energy, an upper bound.');
       const hand = P.anyPower(cA) ? P.RESTRAINT.MOVES.throw.hand(r, { body: cA.body, obj: t.obj }) : null;
       if (hand) items.push(nA + '’s hands still meet real air (their own bodies do): they break the sound barrier as he lets go, so the boom stays, and over the end of the throw they drive about ' + fmtMass(hand.mAir) + ' of air ahead of them, up to ' + fmtTNT(hand.E) + ' of blast at his hands (an upper bound' + (hand.capped ? '; capped at the work of his push, since in real air his hands’ own drag would hold the throw far below this speed' : ': his hands speed up through the throw') + ').');
       if (r.heldBack) items.push('Pushing with everything would make ' + nA + '’s feet slide, so he holds back to what his footing can take (' + fmtSI(r.anchor.R, 'N') + ').');
@@ -2864,7 +3009,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       // only a throw that comes back down has a landing; Unbreakable footing (the user's setting, not the sinking gate)
       // keeps the ground under him whole
       // (credited only where real ground would break: an impact that makes a crater)
-      if (f.landed && state.unbreakable && (t.landToGround || (r.Eimpact > 4.184e9 && r.crater > 0))) items.push('Landing: Unbreakable footing: the ground under him holds' + (r.Eimpact > 4.184e9 && r.crater > 0 ? ' (' + fmtTNT(r.Eimpact) + '; on real ground a crater up to ' + fmtDist(r.crater) + ' across)' : '') + ', and nothing breaks; the landing still shakes it.');
+      // (where real ground would take a crater, the landing's energy goes to the endless ocean: the Shimmer tile counts it)
+      if (f.landed && state.unbreakable && (t.landToGround || (r.Eimpact > 4.184e9 && r.crater > 0))) items.push('Landing: Unbreakable footing: the ground under him holds' + (r.Eimpact > 4.184e9 && r.crater > 0 ? ' (' + fmtTNT(r.Eimpact) + '; on real ground a crater up to ' + fmtDist(r.crater) + ' across)' : '') + ', and nothing breaks' + (tb.parts.footing > 0 ? ': the energy that would have broken it is taken back (the Shimmer tile)' : '') + '; the landing still shakes it.');
       else if (f.landed) {
         if (r.Eimpact > 4.184e9 && !t.sinks) items.push('Impact: ' + fmtTNT(r.Eimpact) + (r.crater > 0 ? ', crater up to ' + fmtDist(r.crater) + ' across' : '') + '. ' + nB + ' is indestructible; the ground isn’t.');
         items.push('Landing: ' + nB + ' is indestructible, so the landing is the ground’s problem.');
@@ -3076,9 +3222,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         const already = !isFinite(fb.Egap) ? '' : fb.Ehere > 1.05 * fb.Egap ? ' ' + fmtSI(fb.Egap, 'J') + ' of it is already heat when it gets there; the rest is its motion.' : ' Nearly all of it is heat already made on the way.';
         // Never knocked back: he isn't moved, so it all stops where he stands. The heat made in the air on the way is real;
         // its motion, freed as it stops at him, is taken back by default (canon: a hit's freed energy is absorbed unless
-        // he means it, here a blast preset); canon shows it as his shimmer, which the lab doesn't draw yet (pull request 5)
+        // he means it, here a blast preset); the Shimmer tile counts it (pull request 5)
         const kn = fb.knockAbsorbed;
-        if (kn) items.push('Stopping it at ' + C + ' frees ' + fmtSI(fb.Ehere, 'J') + ' (' + fmtTNT(fb.Ehere) + ') where he stands. ' + (isFinite(fb.Egap) ? fmtSI(fb.Egap, 'J') + ' of it is heat already made in the air on the way: that is real. The rest, ' + fmtSI(fb.Earr, 'J') + ', is its motion, freed as it stops at him' : 'It is its motion, freed as it stops at him') + (kn.E > 0 ? ': canon takes a hit’s freed energy back by default (it shows as his shimmer, which the lab doesn’t draw yet), so that part goes to the endless ocean, unless he means it (a blast preset).' : ': he means it here (this preset), so that is real too.') + ' He isn’t moved, so nothing rides on with him.');
+        if (kn) items.push('Stopping it at ' + C + ' frees ' + fmtSI(fb.Ehere, 'J') + ' (' + fmtTNT(fb.Ehere) + ') where he stands. ' + (isFinite(fb.Egap) ? fmtSI(fb.Egap, 'J') + ' of it is heat already made in the air on the way: that is real. The rest, ' + fmtSI(fb.Earr, 'J') + ', is its motion, freed as it stops at him' : 'It is its motion, freed as it stops at him') + (kn.E > 0 ? ': canon takes a hit’s freed energy back by default, so that part goes to the endless ocean (the Shimmer tile counts it), unless he means it (a blast preset).' : ': he means it here (this preset), so that is real too.') + ' He isn’t moved, so nothing rides on with him.');
         else if (fb.push.earthRecoilV > 0) items.push('Stopping it at ' + C + ' frees ' + fmtSI(fb.Ehere, 'J') + ' (' + fmtTNT(fb.Ehere) + ', ' + compareEnergy(fb.Ehere) + ') right where he stands.' + already + ' The Earth’s recoil keeps only ' + fmtSI(fb.Eafter, 'J') + '.');
         else items.push('The hit frees ' + fmtSI(fb.Ehere, 'J') + ' (' + fmtTNT(fb.Ehere) + ') where ' + C + ' stands.' + already + ' He and the plasma ride on at ' + speedOnly(fb.push.recoilV) + ' with the other ' + fmtSI(fb.Ecarry, 'J') + '. ' + (fb.Enear >= 0.5 * fb.Ecarry
           ? 'They turn most of it to heat in the air on the way, half within about ' + fmtDist(fb.sweepOn) + '. Near him that is ' + fmtSI(fb.Eblast, 'J') + ' in all, ' + compareEnergy(fb.Eblast) + '.'
@@ -3099,7 +3245,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     }
     if (a.shockPa > 0 && CATCH_ARRIVED.includes(a.result)) items.push('It arrives at ' + (fmtMach(a.vArrive) || speedOnly(a.vArrive)) + ', so the shock wave it pushes ahead hits ' + C + ' with it: about ' + (a.shockK != null ? '(1 − s) × ' : '') + (a.shockGamma2 > 1.01 ? 'γ²ρv² (relativity included)' : 'ρv²') + ' = ' + fmtSI(a.shockPa, 'Pa') + atm(a.shockPa) + ' on his hands' + (a.shockK != null ? ', where s = ' + pctAir(1 - a.shockK) + ' is the share of the air’s push their power takes back' : '') + '.');
     const k = a.catch;
-    if (k && CATCH_ARRIVED.includes(a.result) && k.Ecatch > 0) items.push((a.result === 'caught' || a.result === 'wreckage' ? 'Stopping it puts ' : 'It hits ' + C + ' with ') + fmtSI(k.Ecatch, 'J') + ' (' + fmtTNT(k.Ecatch) + ')' + (a.result === 'caught' || a.result === 'wreckage' ? ' into his palms and arms. It ends up as heat in his indestructible plush' + (k.slide > 0.01 && isFinite(k.slide) && !k.carried && C ? ' and in the ground under his sliding feet.' : '.') : '. He’s indestructible, so it ends up as heat and noise.'));
+    // (They take their own recoil, the catcher's: a catch is absorbed (canon, Q5), its energy as well as its push back,
+    // and it shows in the shimmer: the Shimmer tile counts it; with it off, it stays in him as heat)
+    const keptC = !!a.recoilAbsorbedC && ['caught', 'wreckage', 'slams', 'cant-hold-it'].includes(a.result);
+    if (k && CATCH_ARRIVED.includes(a.result) && k.Ecatch > 0 && keptC) items.push((a.result === 'caught' || a.result === 'wreckage' ? 'Stopping it frees ' + fmtSI(k.Ecatch, 'J') + ' (' + fmtTNT(k.Ecatch) + ') in his palms and arms. A catch is absorbed (canon, They take their own recoil): that energy goes to the endless ocean with its push back, and the Shimmer tile counts it.'
+      : 'It hits ' + C + ' with ' + fmtSI(k.Ecatch, 'J') + ' (' + fmtTNT(k.Ecatch) + '). A catch is absorbed whole (canon, They take their own recoil): that energy goes to the endless ocean with its push back, and the Shimmer tile counts it.'));
+    else if (k && CATCH_ARRIVED.includes(a.result) && k.Ecatch > 0) items.push((a.result === 'caught' || a.result === 'wreckage' ? 'Stopping it puts ' : 'It hits ' + C + ' with ') + fmtSI(k.Ecatch, 'J') + ' (' + fmtTNT(k.Ecatch) + ')' + (a.result === 'caught' || a.result === 'wreckage' ? ' into his palms and arms. It ends up as heat in his indestructible plush' + (k.slide > 0.01 && isFinite(k.slide) && !k.carried && C ? ' and in the ground under his sliding feet.' : '.') : '. He’s indestructible, so it ends up as heat and noise.'));
     // carried off past 1% of light speed: his own body meets real air (Air resistance absorbed covers only what they throw)
     if (k && k.carried && isFinite(k.Eride)) items.push('Carried off at ' + fmtSpeed(k.uAfter) + ', ' + C + ' and the ' + o.short + ' meet real air (their own bodies do). They carry ' + fmtSI(k.Eride, 'J') + ' (' + fmtTNT(k.Eride) + ') of motion, and ' + (k.Enear >= 0.5 * k.Eride ? 'turn most of it to heat in the air, half within about ' + fmtDist(k.sweepOn) + ': near the catch that is ' + fmtSI(k.Enear, 'J') + ', ' + compareEnergy(k.Enear) + '.' : 'heat the air with ' + fmtSI(k.Enear, 'J') + ' of it in the first ' + fmtDist(k.Lnear) + ', where the ground curves away below them; the rest leaves with them.') + ' (Rough: the lab treats the swept air as moving with them, the “snowplow”.)');
     if (a.time > 300 && a.flight) items.push('Earth’s spin is left out. On a flight this long it shifts where the throw comes down, so the aim here is not exact.');
@@ -3136,6 +3287,11 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       return out;
     }
     const round = P.catchRoundTrip(a, b);
+    // the energy their powers take back: each catch, a fireball's hit, a person's landing, the thrower's drag (the Shimmer
+    // tile; BRIEF-canon.md item 6). The return leg counts only where Ollie has it to throw back: leg a ends in a clean catch
+    // (the round trip's own rule, catchRoundTrip); otherwise only leg a happens
+    const backThrow = a.result === 'caught' && a.catch && !a.catch.carried && !a.bursts && !(a.recoil && a.recoil.outOfRange);
+    const tb = takenBack('catch', backThrow ? { a, b } : { a }, { A: cR, B: cO, whoA: 'rex', obj: o });
     let v = legVerdict(a, 'Rex', 'Ollie', o);
     if (a.result === 'caught' && !sameBody) v += ' Ollie throws it back: ' + legVerdict(b, 'Ollie', 'Rex', o).replace(/\.$/, '') + '.';
     else if (!sameBody && b.result !== a.result) v += ' Throwing back: ' + legVerdict(b, 'Ollie', 'Rex', o);
@@ -3203,7 +3359,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       out.push(tiles(
         tile('Throw', speedOnly(a.aim.vL), (fmtMach(a.aim.vL) && a.aim.vL >= K.a0 ? fmtMach(a.aim.vL) + ' · ' : '') + fmtAngle(a.aim.thetaDeg, true)),
         a.result === 'crushed-launch' ? tile('His push on it', fmtSI(a.launchPush, 'N'), fmtRatio(a.launchRatio) + ' ' + limitWord + ' over its cross-section')
-          : a.result === 'breaks-up' ? tile('Air pushes on it with', fmtSI(a.qDynMax, 'Pa'), fmtRatio(a.qDynMax / o.crush) + ' ' + limitWord) : tile('Heat it takes in', a.heat.frac < 1 ? sig(100 * a.heat.frac, 2) + '%' : fmtRatio(a.heat.frac), (a.heat.frac < 1 ? 'of ' : '') + 'what it takes to ' + verbIt(a.heat) + ' (rough)')));
+          : a.result === 'breaks-up' ? tile('Air pushes on it with', fmtSI(a.qDynMax, 'Pa'), fmtRatio(a.qDynMax / o.crush) + ' ' + limitWord) : tile('Heat it takes in', a.heat.frac < 1 ? sig(100 * a.heat.frac, 2) + '%' : fmtRatio(a.heat.frac), (a.heat.frac < 1 ? 'of ' : '') + 'what it takes to ' + verbIt(a.heat) + ' (rough)'),
+        shimmerTile(tb, { duo: true })));
     } else if (a.aim && k && arrived) {
       const first = k.firstShare > 0.5;
       const caughtish = ['caught', 'wreckage', 'slams', 'cant-hold-it'].includes(a.result);
@@ -3215,7 +3372,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
           ? tile('Hits his palms with', fmtRange(k.F1[0], k.F1[1], 'N'), 'first contact, over in ' + fmtTime(k.tContact[0]) + ' to ' + fmtTime(k.tContact[1]) + ' · ' + big(k.F1[0] / o.m / g, 2) + ' g or more on the ' + o.short + (o.passenger && state.safePassenger ? (hotC ? ' (Safe passenger: spread through them; it doesn’t cover the heating in flight)' : ' (Safe passenger: spread through them, no harm)') : ''))
           : tile('Catch force', fmtSI(k.Fpeak, 'N'), (isFinite(k.Fcap) ? sig(100 * k.Fpeak / k.Fcap, 2) + '% of Ollie’s strength · ' : '') + big(k.decelG, 2) + ' g on the ' + o.short)) : tile('Hits him with', fmtSI(k.Ecatch, 'J'), fmtTNT(k.Ecatch)),
         caughtish ? (k.carried && cO.anchor !== 'bolted' ? tile('Ollie', 'carried off', 'at ' + fmtSpeed(k.uAfter) + ', with the ' + o.short) : caC ? tile('Ollie slides', 'nothing', 'his stop goes to the endless ocean: their power') : tile('Ollie slides', cO.anchor === 'bolted' ? 'bolted' : (k.slide > 0.005 ? fmtDist(k.slide) : 'nothing'), cO.anchor === 'bolted' ? 'bolted to the planet' : 'feet hold up to ' + fmtN(k.R))) : null,
-        round ? tile('Round trip', 'about ' + fmtTime(round), strokesIn ? 'throws, flights and catches' : 'throws and flights') : null));
+        round ? tile('Round trip', 'about ' + fmtTime(round), strokesIn ? 'throws, flights and catches' : 'throws and flights') : null,
+        shimmerTile(tb, { duo: true })));
+    } else {
+      // no tile row for this outcome (a fireball, a ground hit, a throw that can't reach him): the Shimmer tile alone
+      const st = shimmerTile(tb, { duo: true });
+      if (st) out.push(tiles(st));
     }
     if (a.flight && a.flight.path && a.flight.path.length > 1 && !(a.wells && a.wells.wellDominated) && !lostEarly(a)) out.push(trajectoryChart(a.flight.path, null, 'Flight path of the ' + o.short + ' from Rex to Ollie', a.flight.apex, null, dragLegend(cR)));
     const items = [];
@@ -3255,6 +3417,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     else if (a.sheath && arrived) items.push('Past 1% of light speed the air can’t get out of the way: ' + (state.airAbsorb > 0 ? 'their power takes back ' + pctAir(state.airAbsorb) + ' of the drag, and ' : '') + 'the air it meets heats into the plasma sheath (above), ' + fmtSI(a.sheath.E, 'J') + '.' + handC);
     else if (state.airAbsorb > 0 && arrived && a.drag) items.push('Air resistance absorbed: their power takes back ' + pctAir(state.airAbsorb) + ' of the air’s drag on it; the air takes the rest (' + fmtSI(a.drag.E, 'J') + ' over the flight), so it slows less and heats at ' + pctAir(1 - state.airAbsorb) + ' of the real rate.' + handC);
     else if (handC) items.push(handC.trim());
+    // (review round 2 of pull request 5, copy-4, followed into the game of catch: past 1% of light speed the shimmer counts
+    // all of a throw's energy as real air's take, an upper bound, labelled as on the Throw tab: Rex's throw, and Ollie's
+    // throw back where he has one)
+    const pastC = (L) => !!L && (L.result === 'fireball' || !!L.fast || (L.result === 'overshoots' && (!!L.relativistic || L.vL >= P.CATCH.V_FIREBALL)));
+    const fastDrag = [[a, tb.by.rex.parts.drag, 'Rex'], [backThrow ? b : null, tb.by.ollie.parts.drag, 'Ollie']].filter(([L, d]) => pastC(L) && d > 0 && isFinite(d));
+    if (fastDrag.length) items.push('The shimmer (the Shimmer tile) counts ' + (airShareOf(cR) >= 1 ? '' : 'the ' + pctAir(airShareOf(cR)) + ' share of ') + 'what real air would have taken from ' + fastDrag.map(([, d, who]) => who + '’s throw, ' + fmtSI(d, 'J')).join(', and from ') + ': past 1% of light speed the lab gives real air all of its energy, an upper bound.');
     if (a.gentleT && a.launchRatio > 1) items.push('Things keep their form: Rex’s push of ' + fmtSI(a.launchPush, 'N') + ' is spread through the whole ' + o.short + ' like gravity, so it isn’t crushed at launch (without it: ' + fmtRatio(a.launchRatio) + ' what it can take).');
     if (a.gentleC && k && (k.gripRatioRaw > 1 || k.wholeFront > 1 || k.baseballRatio > 1)) items.push('Things keep their form: Ollie’s stop is spread through the whole ' + o.short + ', so his hands put no load on it (without it: ' + fmtRatio(Math.max(k.gripRatioRaw, k.wholeFront, k.baseballRatio)) + ' what it can take).');
     // Newton's third law, as on the Throw tab: the push on it pushes Rex back
@@ -3360,6 +3528,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   function catchPartner(cR, cO) {
     const hT = Math.pow(10, Math.min(5, Math.max(Math.log10(3), state.cLogD)));
     const t = P.tossPartner(cR, cO.body, 'Ollie', state.cStyle, hT, cO.anchor), out = [];
+    // the energy Rex's powers take back: his catch of Ollie, the air's drag on the toss (the Shimmer tile)
+    const tb = takenBack('toss', t, { A: cR, B: cO, whoA: 'rex' });
     let v;
     if (t.result === 'bolted') v = 'Ollie is bolted to the planet: lifting him means lifting the planet. Can’t be done.';
     else if (t.result === 'cant-hold') v = 'Rex can’t toss Ollie: he can’t even hold him up (' + fmtSI(t.holdNeeded, 'N') + ').';
@@ -3408,7 +3578,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       tile('Toss speed', speedOnly(t.v), fmtMach(t.v)),
       tile('Height above his hands', fmtDist(t.rise), 'back down after ' + fmtTime(t.flight.time)),
       tile('Comes down at', speedOnly(t.flight.vImpact), ''),
-      tile('Catch force', fmtSI(t.catch.F, 'N'), isFinite(t.catch.Fcap) ? sig(100 * t.catch.F / t.catch.Fcap, 2) + '% of Rex’s strength' : '')));
+      tile('Catch force', fmtSI(t.catch.F, 'N'), isFinite(t.catch.Fcap) ? sig(100 * t.catch.F / t.catch.Fcap, 2) + '% of Rex’s strength' : ''),
+      shimmerTile(tb, { duo: true })));
+    else { const st = shimmerTile(tb, { duo: true }); if (st) out.push(tiles(st)); }
     // catch notes only for a toss that comes back down into Rex's hands
     const items = [];
     if (t.catch) items.push(
@@ -3419,9 +3591,14 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       // canon's weak-ground case: the ground takes what it bears, their power the rest
       : t.toGroundC && t.toGroundC.supplied > 0 ? 'Straight up, his feet can’t slide. Real ground would have to carry his own weight plus Ollie’s whole stopping force; with Unbreakable footing it takes only what it can bear, and their power supplies the rest (below).'
         : 'Straight up, his feet can’t slide, but the ground under them carries his own weight plus Ollie’s whole stopping force.',
-      'Stopping him puts ' + fmtSI(t.catch.Ecatch, 'J') + ' (' + fmtTNT(t.catch.Ecatch) + ') into Rex’s arms, which ends up as heat in his plush.');
+      // (a catch is absorbed, canon Q5: with his power on its energy goes to the endless ocean, and the Shimmer tile counts it)
+      tb.parts.catch > 0 ? 'Stopping him frees ' + fmtSI(t.catch.Ecatch, 'J') + ' (' + fmtTNT(t.catch.Ecatch) + ')' + (t.result === 'slams' ? ' as he lands on Rex' : ' in Rex’s arms') + '. A catch is absorbed (canon, They take their own recoil): that energy goes to the endless ocean with its push back, and the Shimmer tile counts it.'
+        : 'Stopping him puts ' + fmtSI(t.catch.Ecatch, 'J') + ' (' + fmtTNT(t.catch.Ecatch) + ') into Rex’s arms, which ends up as heat in his plush.');
     if (shT) items.push('Rex’s feet hand the ground the toss’s push (' + pushFig(t.toGroundT) + ' over ' + fmtTime(t.toGroundT.T) + '). ' + suppliedText(t.toGroundT) + groundShakeText(shT, cR.surface));
     if (shC) items.push('Rex’s feet hand the ground the catch’s push (' + pushFig(t.toGroundC) + ' over ' + fmtTime(t.toGroundC.T) + '). ' + suppliedText(t.toGroundC) + groundShakeText(shC, cR.surface));
+    // (review round 2 of pull request 5, copy-4: past 1% of light speed the shimmer counts all of his energy as real
+    // air's take, an upper bound, labelled here as on the Throw tab)
+    if (t.v >= P.CATCH.V_FIREBALL && tb.parts.drag > 0 && isFinite(tb.parts.drag)) items.push('The shimmer (the Shimmer tile) counts ' + (airShareOf(cR) >= 1 ? '' : 'the ' + pctAir(airShareOf(cR)) + ' share of ') + 'what real air would have taken, ' + fmtSI(tb.parts.drag, 'J') + ': past 1% of light speed the lab gives real air all of his energy, an upper bound.');
     // his hands still meet real air (their own bodies do): past sound they boom, and the air they drive counts
     if (t.hand) items.push('Rex’s hands still meet real air (their own bodies do): they break the sound barrier as he lets go, so the boom stays, and over the end of the toss they drive about ' + fmtMass(t.hand.mAir) + ' of air ahead of them, up to ' + fmtTNT(t.hand.E) + ' of blast at his hands (an upper bound' + (t.hand.capped ? '; capped at the work of his push, since in real air his hands’ own drag would hold the toss far below this speed' : ': his hands speed up through the toss') + '). The effort and courtesy ceiling count it.');
     items.push(dragNote);
@@ -3645,6 +3822,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     // (meanIt: the tab drawn for a blast preset, with the charger taking his own recoil: they mean it, so the hit's freed
     // energy is real)
     const r = P.collide(cA, cB, { source: state.colSrc, gb, bounce: state.colBounce === 'bounce', toGround: duoRealDraw, meanIt: duoMeanDraw }), out = [];
+    // the energy their powers take back: the hit's freed energy (the one hit's) and the charger's own stop (the Shimmer
+    // tile; the glow on Rex's picture shows only Rex's take)
+    const tb = takenBack('collide', r, { A: cA, B: cB, whoA: X === 'Ollie' ? 'ollie' : 'rex' });
     if (r.blackHole) return [callout('At this density one of them is a black hole (see Weight). There’s nothing left to collide with.')];
     if (r.planetScale) return [callout('At this mass one of them reshapes the planet with his own gravity (see Weight). A charge across the Earth’s surface stops making sense here.')];
     if (r.noCharge) {
@@ -3743,7 +3923,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     else if (horiz) holderTile = speedTile(Y + ' knocked back at', splat ? af.splat.V : af.bounce.vB, splat && isFinite(af.splat.moved) ? 'moves ' + fmtDist(af.splat.moved) + ' in all' : '');
     else holderTile = tile(Y + ' driven into the ground', fmtDist((splat ? af.splat.depth : af.bounce.depth) || 0), cB.surface.short);
     // the hit's freed energy with the charger's power on: taken back by default, real only when he means it (decision 5)
-    const eSub = !cr ? null : r.meanIt ? ' · real: he means it (this preset)' : ' · taken back by default (canon: it shows as his shimmer, not drawn here yet)';
+    const eSub = !cr ? null : r.meanIt ? ' · real: he means it (this preset)' : ' · taken back by default (the Shimmer tile)';
     out.push(tiles(
       isFinite(r.vRel) && r.vRel < K.c * (1 - 1e-12) ? speedTile(state.colSrc === 'set' ? 'Speed at contact' : 'Charge speed', r.vRel, r.gravBoost ? 'his own run: ' + speedOnly(r.v0) : srcLabel + (state.colSrc === 'sprint' && sr.vTopRun > 1.05 * r.v0 && isFinite(sr.x95) ? ' (his top speed, ' + speedOnly(sr.vTopRun) + ', takes about ' + fmtDist(sr.x95) + ')' : '')) : tile('Charge speed', 'just under light speed', 'unlimited momentum'),
       tile('Energy freed at the hit', splat ? (isFinite(Q) ? fmtSI(Q, 'J') : 'unbounded') : 'none', splat ? (isFinite(Q) ? fmtTNT(Q) + (eSub || ' · ' + compareEnergy(Q)) : '') : 'a perfect bounce keeps it as motion; a splat frees ' + (isFinite(h.Q) ? fmtTNT(h.Q) : 'unbounded energy') + (cr ? ', taken back by default' : '')),
@@ -3755,7 +3935,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       // a massive body never reaches light speed: unlimited momentum reads 'just under light speed', never 3 x 10^8 m/s
       r.unlimitedVsBolted === 'planetMoves' ? tile('Earth', 'just under light speed', 'knocked away with ' + Y)
         : r.unlimitedVsBolted === 'closedSystem' ? tile('Earth', 'ends up still', 'it gets its own momentum back')
-        : r.held && r.earth && isFinite(r.pA) ? tile('Earth’s speed change', sci(splat ? r.earth.dvSplat : r.earth.dvBounce, 2) + ' m/s', r.earth.t1mm > COLAGE ? 'it would take ' + big(r.earth.t1mm / COLAGE, 2) + '× the age of the universe to move 1 mm' : 'it would take ' + fmtDuration(r.earth.t1mm) + ' to move 1 mm') : null));
+        : r.held && r.earth && isFinite(r.pA) ? tile('Earth’s speed change', sci(splat ? r.earth.dvSplat : r.earth.dvBounce, 2) + ' m/s', r.earth.t1mm > COLAGE ? 'it would take ' + big(r.earth.t1mm / COLAGE, 2) + '× the age of the universe to move 1 mm' : 'it would take ' + fmtDuration(r.earth.t1mm) + ' to move 1 mm') : null,
+      shimmerTile(tb, { duo: true })));
     if (r.contact && F && isFinite(F.F) && F.F > 0) {
       const ct = r.contact;
       const rows = [
@@ -3790,13 +3971,15 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       items.push('“Immovable” only means what holds ' + Y + ' in place. Against a charger who can’t slow, any hold with a limit gives: here ' + (cr.rockGives ? 'the rock around his bolts, which tears out at about ' + fmtSI(cr.tear, 'N') + ' on ' + cB.surface.short : horiz ? (holdWhy[hb.why] || 'his footing') + ', ' + fmtN(cr.hold) : 'the ground under his feet, which bears ' + fmtN(cr.hold) + ' on ' + cB.surface.short + (cB.anchor === 'bolted' ? ' (from above, his bolts go down into it with him: they could only add to that, and the lab doesn’t count them)' : '')) + '. Only a hold their powers make limitless can’t give (bolts on ground that Unbreakable footing keeps whole, or Unbreakable footing holding him up from below), and then there is no answer.'
         + (cr.rockGives && splat ? ' The lab books the rock’s tear-out load for the whole squash, an estimate: real rock fails once, and then the plug slides along with him.' : ''));
       // how long the one hit is carried (decision 2): the charger's choice; the lab ends it at the end of the squash
-      items.push(horiz && splat ? 'How far ' + X + ' carries him is up to ' + X + ': he never slows, so he could push on for as long as he likes. The lab ends the carry at the end of the squash, ' + fmtTime(cr.T) + ' in: ' + X + ' stops himself there (his own push, so its push back, ' + fig3p(cr.stop) + ', goes to his source too), and ' + Y + (cr.v >= 0.01 * K.c ? ' flies on at that speed, into the air as a fireball.' : ' slides on from ' + fmtV(cr.v) + '.')
+      // (his motion goes to his source with its push back: the tally's stop part, BRIEF-canon.md item 6)
+      const stopE = cr.stop && isFinite(cr.stop.E) ? fmtSI(cr.stop.E, 'J') : 'unbounded';
+      items.push(horiz && splat ? 'How far ' + X + ' carries him is up to ' + X + ': he never slows, so he could push on for as long as he likes. The lab ends the carry at the end of the squash, ' + fmtTime(cr.T) + ' in: ' + X + ' stops himself there (his own push, so its push back, ' + fig3p(cr.stop) + ', and his motion, ' + stopE + ', go to his source too), and ' + Y + (cr.v >= 0.01 * K.c ? ' flies on at that speed, into the air as a fireball.' : ' slides on from ' + fmtV(cr.v) + '.')
         // (review round 3 of pull request 4: the bounce carries him too, while the squash closes and opens again)
-        : horiz ? 'In a perfect bounce ' + Y + ' leaves him as the hit ends' + (af.bounce && isFinite(af.bounce.during) && cr.vB < 0.01 * K.c ? ', having moved ' + fmtDist(af.bounce.during) + ' with him: the squash closes and opens again while ' + X + ' moves on, and the effort search counts that too' : '') + '. ' + X + ' never slows, so the lab has him stop himself then (his own push, so its push back, ' + fig3p(cr.stop) + ', goes to his source too).'
-          : 'Unbreakable footing is off here, so the ground under ' + Y + ' is real: driven down at ' + X + '’s speed, he goes in as the lab drives any landing in (its penetration model, an estimate). ' + X + ' never slows, so the lab has him stop himself as the hit ends (his own push, its push back to his source).');
+        : horiz ? 'In a perfect bounce ' + Y + ' leaves him as the hit ends' + (af.bounce && isFinite(af.bounce.during) && cr.vB < 0.01 * K.c ? ', having moved ' + fmtDist(af.bounce.during) + ' with him: the squash closes and opens again while ' + X + ' moves on, and the effort search counts that too' : '') + '. ' + X + ' never slows, so the lab has him stop himself then (his own push, so its push back, ' + fig3p(cr.stop) + ', and his motion, ' + stopE + ', go to his source too).'
+          : 'Unbreakable footing is off here, so the ground under ' + Y + ' is real: driven down at ' + X + '’s speed, he goes in as the lab drives any landing in (its penetration model, an estimate). ' + X + ' never slows, so the lab has him stop himself as the hit ends (his own push: its push back and his motion, ' + stopE + ', go to his source).');
       // the hit's freed energy (decision 5)
       // (review round 2 of pull request 4: the force of the hit over the squash, so the hold's work over it counts too)
-      if (splat && isFinite(h.Q) && h.Q > 0) items.push('The hit frees ' + fmtSI(h.Q, 'J') + ' (' + fmtTNT(h.Q) + '): the force of the hit over the squash (' + fmtDist(r.contact.s) + '). That is ' + Y + '’s motion energy as ' + X + ' sees it, plus the work ' + (crHold ? holdName + ' does holding him back over the squash' : 'his hold does over the squash') + '. Canon: a hit’s freed energy is taken back by default (it shows as his shimmer, which the lab doesn’t draw yet) and is real only when he means it. ' + (r.meanIt ? 'This preset means it, so here it is real.' : 'The lab reads a blast preset (rattle the windows, break windows, flatten houses, a block) as meaning it.'));
+      if (splat && isFinite(h.Q) && h.Q > 0) items.push('The hit frees ' + fmtSI(h.Q, 'J') + ' (' + fmtTNT(h.Q) + '): the force of the hit over the squash (' + fmtDist(r.contact.s) + '). That is ' + Y + '’s motion energy as ' + X + ' sees it, plus the work ' + (crHold ? holdName + ' does holding him back over the squash' : 'his hold does over the squash') + '. Canon: a hit’s freed energy is taken back by default (the Shimmer tile counts it) and is real only when he means it. ' + (r.meanIt ? 'This preset means it, so here it is real.' : 'The lab reads a blast preset (rattle the windows, break windows, flatten houses, a block) as meaning it.'));
     } else {
       items.push('Momentum is never lost. Whatever ' + X + ' brings in, the two of them (plus whatever holds ' + Y + ') carry away. A splat shares it and frees the rest of the energy as heat, sound and blast. A perfect bounce keeps all the energy as motion. Soft bodies sit near the splat end.');
       const whyText = { footing: ' Standing on ' + cB.surface.short + ', friction holds him with ' + fmtN(hb.R) + '. Stopping ' + X + ' dead takes ' + fmtN(r.Fheld) + ', so he ' + (r.held ? 'holds.' : 'gets knocked back.'), strength: ' His footing could hold ' + fmtN(hb.R) + ', but his muscles keep his stance against only ' + fmtN(cB.F) + '.', lying: ' At ' + fmtMass(cB.body.m) + ' he’s too heavy for his strength to stand, so he lies flat and friction alone holds him: ' + fmtN(hb.R) + '.', bearing: ' Bracing can’t help against a blow from above. Only the ground under his feet holds him up: ' + fmtN(hb.H) + ' on ' + cB.surface.short + '.', bolted: r.unlimitedVsBolted === 'rockGives' ? ' Bolted, he would be part of the planet, but the bolts hold only as well as the rock around them. The rock around his bolts tears out, so the Earth keeps almost none of the momentum.' : ' Bolted, he is part of the planet: the bolts hand the momentum to the Earth’s 5.97 × 10²⁴ kg.', comicGround: ' On ground treated as holding nothing gives under him, so the Earth takes it.', unbreakable: ' With Unbreakable footing nothing gives under him, so the Earth takes it.', immovable: ' Here he gets infinite mass, which no real setting allows. Even bolted to an unbreakable planet he would be only as immovable as the Earth’s 5.97 × 10²⁴ kg.' + (cA.ownRecoil ? ' (Against a charger who takes his own recoil, bolts on unbreakable ground do hold without limit, but only because their power supplies whatever push the ground can’t bear: that is the no-answer case, not infinite mass.)' : '') }[hb.why] || '';
@@ -3822,7 +4005,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (tk) items.push('The take-off goes into the ground too: ' + tk.what + ', ' + pushFig(tk) + ' over ' + fmtTime(tk.T) + ', a body width from the hit (his Unbreakable footing, as on the ' + (state.colSrc === 'jump' ? 'Jump' : 'Stomp') + ' tab). ' + suppliedText(tk) + groundShakeText(tkShake, cA.surface));
     out.push(happens(items, 10));
     out.push(caseGrid('The four cases', COL_ROWS, COL_COLS, COL_CELLS, isFinite(r.pA) && !cr ? 0 : 1, cB.immovable ? 1 : 0));
-    out.push(unstoppableArt());
+    out.push(unstoppableArt(tb.by.rex.E));
     out.push(math([
       'Charge: ' + srcLabel + ' → v = ' + fmtV(r.v0) + '; momentum p = γ m v = ' + (isFinite(r.pA) ? big(r.pA, 3) + ' kg·m/s' : '∞') + '.',
       r.gravBoost ? 'Gravity on the way in: v_rel² = v² + 2G(m₁+m₂)(1/d − 1/d₀), d₀ = ' + fmtDist(r.d0) + ', d = ' + fmtDist(r.dC) + ' → ' + speedOnly(r.vRel) + '.' : null,
@@ -5235,7 +5418,11 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       if (duoEff && duoEff.real) { state.unbreakable = false; duoRealDraw = true; }
       // (duoMeanDraw: drawn for a blast preset they mean, so the hit's freed energy is real, as the preset's search has it)
       if (duoEff && duoEff.mean) duoMeanDraw = true;
+      // (shimmerSeen: the energy taken back in the run this tab shows, for the header glow: BRIEF-canon.md item 6)
+      shimmerSeen = null;
       try { parts = gate && gate.stop ? [callout(gate.text)] : BAYS[act](eff ? Object.assign({}, cE, { use: eff.use }) : cE); } finally { state.unbreakable = ub; duoRealDraw = false; duoMeanDraw = false; }
+      // the header picture's glow follows Rex's own bay: what he takes in in the run its tab shows (canon: his shimmer)
+      if (!duo) setGlow($('#hero-glow'), shimmerSeen ? shimmerSeen.by.rex.E : 0);
       if (eff) attachEffort(parts, act, cE, eff);
       else if (!duo) stopPlan();   // a solo tab without effort stops the solo search (never the two-player one)
       B.pending = !!(eff && eff.pending) || !!(duoEff && duoEff.pending);
@@ -5252,7 +5439,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       }
       if (gate && !gate.stop) parts.splice(parts[0] && parts[0].classList && parts[0].classList.contains('bay-controls') ? (eff ? 2 : 1) : 0, 0, callout(gate.text));
     }
-    catch (e) { parts = [callout('Calculation failed: ' + e.message)]; console.error(e); }
+    catch (e) { parts = [callout('Calculation failed: ' + e.message)]; console.error(e); if (!duo) setGlow($('#hero-glow'), 0); }
     finally { duoCap = { R: Infinity, O: Infinity }; }
     // Keep the live controls in place during a slider drag; replacing them ends the drag.
     // (only while a control in the bay has focus: a change from outside, like the strength dial, rebuilds them)
@@ -5530,7 +5717,13 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const box = $('#assume');
     // the default body is set in the engine: fill its size, mass and foot contact into the cards
     const defB = P.makeBody(Object.assign({ build: 'rex' }, P.DEFAULT_BODIES.rex));
-    const fillDefaults = (t) => t.split('{DEFAULT_BODY}').join(fmtDist(defB.H) + ' and ' + fmtMass(defB.m)).split('{DEFAULT_FOOT}').join(sig(defB.footArea, 2) + ' m²');
+    // ... and the shimmer's scale, from the ladder's rungs by key (src/ladder.js's glow(): no copied figures)
+    const sg = window.EnergyLadder.glow(1, D.energyRefs), rungOf = (a) => D.energyRefs.find((r) => r.key === a.key);
+    const eAbout = (J, rough) => (rough ? 'about ' + sci(J, 1) + ' J' : fmtSI(J, 'J'));
+    const SHIM = { '{SHIMMER_FLICKER}': 'a car crash, ' + rungOf(sg.flicker).short + ' (' + fmtSI(sg.flicker.J, 'J') + ')', '{SHIMMER_FLARE}': rungOf(sg.flare).short + ' (' + eAbout(sg.flare.J, sg.flare.rough) + ')',
+      '{SHIMMER_FLOOR}': rungOf(sg.floor).short + ' (' + fmtSI(sg.floor.J, 'J') + ')',
+      '{SHIMMER_STEPS}': sg.steps.filter((x) => x.level > 0 && x.level < 1).map((x) => '“' + x.word + '” at ' + (x.rough ? 'roughly ' + sci(x.J, 1) + ' J' : 'about ' + sci(x.J, 2) + ' J') + ' (' + x.text + ')').join(', ') };
+    const fillDefaults = (t) => Object.entries(SHIM).reduce((u, [k, v]) => u.split(k).join(v), t.split('{DEFAULT_BODY}').join(fmtDist(defB.H) + ' and ' + fmtMass(defB.m)).split('{DEFAULT_FOOT}').join(sig(defB.footArea, 2) + ' m²'));
     for (const a of D.assumptions) box.append(el('div', {}, el('b', { text: a.t }), fillDefaults(a.d)));
     const tb = $('#src-table tbody');
     $('#src-summary').textContent = 'Show all ' + D.sourceRows.length + ' sourced numbers';
@@ -5545,6 +5738,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
 
   // ---------------------------------------------------------------- main
   function update() { save(); renderDial(); renderBay(); scheduleLadder(); }
+  // the header picture's shimmer: its glows, placed on his features (ART_GLOW); renderInto sets its strength
+  $('#hero-glow').append(...glowSpots(ART_GLOW.dino));
   buildControls();
   try { if (matchMedia('(min-width: 920px)').matches) $('#setup').open = true; } catch (e) { /* ignore */ }
   // the Rex + Ollie element opens as the reader left it

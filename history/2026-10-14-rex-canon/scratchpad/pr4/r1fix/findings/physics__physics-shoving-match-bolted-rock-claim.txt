@@ -1,0 +1,54 @@
+## id
+physics-shoving-match-bolted-rock-claim
+
+## severity
+minor
+
+## title
+Shoving match, a single bolted wrestler on real rock: the page says the other's push 'can't move' his bolts though it is above the rock's tear load
+
+## location
+rex-strength-lab/src/engine.js:2025 (tornA/tornB only for an unlimited push); src/app.html:2557; README Known limits line 249 (disclosed there, but not on the page)
+
+## evidence
+Engine: pushMatch(Rex bolted, Unbreakable footing off; Ollie at the dial) → 'shovedOff', Rex vA 0, footA 115,200 kg·m/s through his bolts, no tear check. Page (Wrestle, Push, Rex bolted, Unbreakable footing off, All-out): 'Ollie's push (890 kN) can't move Rex's bolts.' groundTear for Rex on concrete is 696,773 N, so 890 kN is 1.28× it. Because the check is skipped, the break-the-ground search can't find this harm either.
+
+## expected
+On real rock the rock around the bolts tears at about 697 kN (the lab's own estimate, used for the charge, the steady push's rock bullet and the unlimited case here). Ollie's 890 kN push tears it, so Rex is shoved too (with a plug of rock). The README states the gap but gives no reason, and the fix uses a quantity the function already has.
+
+## fix
+In pushMatchOwn set tornA = bolt(cA) && (!isFinite(DB) || (!holdsGround(cA) && DB > groundTear(cA))) (likewise tornB), treating a torn wrestler as moved (hold = his friction after the tear), and drop the Known limit. Failing that, the page's 'can't move Rex's bolts' should say that on real rock the lab doesn't check the rock.
+
+## VERDICT
+### id
+physics-shoving-match-bolted-rock-claim
+
+### real
+true
+
+### severity
+minor
+
+### reasoning
+Reproduced. In pushMatchOwn, tornA and tornB are set only for an unlimited push (engine.js:2025). So a single bolted wrestler on real rock takes the other's whole finite push, 889,600 N, 1.28x the lab's own groundTear of 696,773 N, and stays put with nothing checked. The README's Known limits does record this gap ('The lab doesn't check the rock around those bolts there ... checks it only at unlimited strength'), but gives no reason. The page states the opposite as fact: 'Ollie's push (890 kN) can't move Rex's bolts.' The lab's own model says the rock gives at about 697 kN, and the check needs only quantities the function already has. Because the gap is disclosed in the README, this is minor. The page sentence is still a false claim with no qualifier where the reader sees it. At the default dial the effort search isn't affected (its ceiling is set by the slide, at 5.47 t), but the ground-breaking harm can never be found here.
+
+### reproduction
+`node f4.js`, pushMatch with Rex bolted, Unbreakable footing off, both at the dial:
+- outcome 'shovedOff', winner A, DA 889,600, DB 889,600, HA Infinity, HB 17,650
+- vA 0, vB 37.65, footA 115,200
+- no tear, torn or rock keys
+- groundTear for Rex on concrete: 696,800; DB/tear = 1.277
+
+Page (Wrestle, Push, Rex bolted, unbreakable false, All-out):
+- verdict: '...he shoves Ollie off at 37.6 m/s, and Ollie slides 109 m. Ollie's push (890 kN) can't move Rex's bolts.'
+- chip: 'Rex holds unlimited · pushes 890 kN'
+
+### better_fix
+In pushMatchOwn, treat a bolted wrestler on real rock whose rock is loaded past its tear as torn loose, then held only by his friction:
+
+`const rockA = bolt(cA) && !holdsGround(cA) && isFinite(DB) && DB > groundTear(cA)` (likewise rockB)
+
+Use his friction footing as HA from then on (anchorCapacity with anchor 'friction'), so that beats() and netOn() give a finite net push DB - R. Set r.tornA = true with tearA = groundTear(cA), so the verdict and the break-the-ground search see it. Then drop the Known limit.
+
+The smallest alternative is a page fix: at app.html:2557, when Unbreakable footing is off, replace 'can't move Rex's bolts' with a sentence saying that on real rock about 697 kN would tear the rock round his bolts out and the lab doesn't check it here.
+

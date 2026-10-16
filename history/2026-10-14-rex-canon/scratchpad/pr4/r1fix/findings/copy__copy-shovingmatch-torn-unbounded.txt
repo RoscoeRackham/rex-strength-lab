@@ -1,0 +1,46 @@
+## id
+copy-shovingmatch-torn-unbounded
+
+## severity
+minor
+
+## title
+Shoving match into a wrestler bolted on real rock: his hold is shown as 'unlimited' and the ground's share as 'unbounded', though his rock tears at about 697 kN
+
+## location
+rex-strength-lab/src/app.html wrestlePushOwn bothShoved verdict, chips and momentum item; src/engine.js pushMatchOwn footB = tornB ? Infinity (line ~2047)
+
+## evidence
+State {duoOpen:true,duoAction:'wrestle',inf:true,oAnchor:'bolted',unbreakable:false}, all-out. Verdict: '… each pushes with the effort he uses (unlimited each), more than what holds the other (Rex 17.7 kN, Ollie unlimited). The rock around Ollie’s bolts tears out.' Chip: 'Ollie holds unlimited · pushes unlimited'. Item: 'His feet hand the ground only what they hold against the other’s push (Rex 7.2 × 10⁻⁵ kg·m/s, Ollie unbounded)'. The rock around a bolted 3 t body on the slab tears at about 697 kN (Collide's figure, groundTear), so it can hand the ground at most 697 kN × the push time. Rex's comparable figure is 7.2 × 10⁻⁵ kg·m/s.
+
+## expected
+Ollie's hold here is the rock's tear-out load (about 697 kN), and the momentum through his torn rock is finite and tiny.
+
+## fix
+When tornB, show Ollie's hold as 'the rock around his bolts, about 697 kN' and book footB = groundTear(cB) × t, not Infinity. The same applies to tornA.
+
+## VERDICT
+### id
+copy-shovingmatch-torn-unbounded
+
+### real
+true
+
+### severity
+minor
+
+### reasoning
+Reproduced. In pushMatchOwn, with Ollie bolted on real rock (unbreakable off) and an unlimited push, the rock tears (tornB), yet footB is set to Infinity. The page shows Ollie's hold as 'unlimited' ('more than what holds the other (Rex 17.7 kN, Ollie unlimited). The rock around Ollie’s bolts tears out.') and books 'Ollie unbounded' as the momentum his feet hand the ground. The rock carries at most its tear-out load before it gives. Engine groundTear(cB) gives 696,800 N, so over the push time t = 4.07 ns the ground gets about 2.8 × 10⁻³ kg·m/s, not an unbounded amount. That is a momentum bookkeeping error, plus a self-contradictory hold figure.
+
+### reproduction
+1. Run `FULL=1 node harness.js …/repo/rex-strength-lab/dist/index.html '[{"duoOpen":true,"duoAction":"wrestle","inf":true,"oAnchor":"bolted","unbreakable":false}]' allout`. Output:
+   - "…more than what holds the other (Rex 17.7 kN, Ollie unlimited). The rock around Ollie’s bolts tears out."
+   - "Ollie holds unlimited · pushes unlimited"
+   - "His feet hand the ground only what they hold against the other’s push (Rex 7.2 × 10⁻⁵ kg·m/s, Ollie unbounded)"
+2. Engine pushMatch, same contexts: outcome bothShoved, t 4.067e-9, footA 7.179e-5, footB null (Infinity), tornB true.
+3. P.standoff with the same contexts: tearB 696,800 N.
+4. 696,800 × 4.067e-9 = 2.83e-3 kg·m/s.
+
+### better_fix
+In engine.js pushMatchOwn's apart(): `footA: tornA ? groundTear(cA) * t : footJ(...)` and `footB: tornB ? groundTear(cB) * t : footJ(...)`. Also return `holdTornA` and `holdTornB = groundTear(...)`. In the page, when tornA or tornB is set, show that side's hold as 'the rock around his bolts, about ' + fmtN(tear), not 'unlimited'.
+

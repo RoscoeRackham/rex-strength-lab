@@ -1,0 +1,40 @@
+## id
+copy-powers-card-five
+
+## severity
+minor
+
+## title
+The Their powers card still says five powers are on by default
+
+## location
+rex-strength-lab/src/static-data.js, card 'Their powers' (line 20)
+
+## evidence
+Card: '… so five powers are on unless the reader turns them off: Air resistance absorbed, Things keep their form, Unbreakable footing, They take their own recoil and Safe passenger.' The same card later says 'Never knocked back (one switch each, both on by default …)'. The page's Their powers hint now reads '… are on unless you turn them off …, and so is Never knocked back, one switch each.' Fresh state: both nkb-rex and nkb-ollie are checked.
+
+## expected
+Six powers (seven switches) are on by default.
+
+## fix
+'… so six powers are on unless the reader turns them off: Air resistance absorbed, Things keep their form, Unbreakable footing, They take their own recoil, Safe passenger and Never knocked back (one switch each).'
+
+## VERDICT
+### id
+copy-powers-card-five
+
+### real
+true
+
+### severity
+minor
+
+### reasoning
+Reproduced. This pull request added Never knocked back, on by default with one switch each, and the page's own hint now lists it among the defaults. The Their powers card (static-data.js line 20, unchanged from the base) still says 'five powers are on unless the reader turns them off' and lists five. Later the same card says Never knocked back is 'one switch each, both on by default', so the card contradicts itself.
+
+### reproduction
+static-data.js:20, branch: "…so five powers are on unless the reader turns them off: Air resistance absorbed, Things keep their form, Unbreakable footing, They take their own recoil and Safe passenger. … Never knocked back (one switch each, both on by default; …)". The same opening appears in `git show origin/claude/canon-3-passenger:rex-strength-lab/src/static-data.js` line 20. app.html:325 hint: "…are on unless you turn them off …, and so is Never knocked back, one switch each." README decision 12: noKnockback and oNoKnockback default true.
+
+### better_fix
+static-data.js 'Their powers': '…so six powers are on unless the reader turns them off: Air resistance absorbed, Things keep their form, Unbreakable footing, They take their own recoil, Safe passenger and Never knocked back (one switch each).'
+

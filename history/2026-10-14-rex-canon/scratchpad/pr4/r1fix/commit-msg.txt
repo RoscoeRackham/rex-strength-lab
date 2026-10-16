@@ -1,0 +1,32 @@
+Review round 1 of pull request 4 (contests, Never knocked back): fix the 26 confirmed findings
+
+Three lenses (physics; the two-player tests; copy), reviewed at 238f570: 28 findings, 26 confirmed, 2 refuted
+(no change; arm wrestling's reading B stays). Record: rex-strength-lab/research/reviews/canon-4-round1.json.
+
+Engine (src/engine.js):
+- Collide's carried hit: the hold acts for the whole squash, uncapped (footJ = hold x T), and the hit's force is
+  the squash's own plus the hold, so force x time = what the charger's source supplies (1.59 MN all-out; a 1 m/s
+  charge supplies 14,100 kg m/s, not 6,000). From above, a bolted body on real ground is driven in, held by the
+  ground's bearing, not torn loose with a plug of rock.
+- Arm wrestling: with the winner's power on, the loser's elbow pad is checked in a pin; past what the table
+  carries it breaks the table (Rex at the dial against Ollie at 1 t: 24.2 kN against 15.1 kN). A bolted one's
+  rock carries the press that reaches him.
+- The steady push: a body bolted on real rock is torn loose past the rock's tear load (about 697 kN); the one
+  driven back is followed as the shoving match's shove-off (37.6 m/s, 109 m all-out; unlimited, just under c).
+- The shoving match: a single bolted wrestler's rock tears past its tear load at any strength, then only his
+  feet hold him; at unlimited strength the push into bolts their power holds has no answer, but the bolted one's
+  own push shoves the other off. Both at once likewise.
+
+Page (src/app.html, src/static-data.js): the hit's force, bars and squash paragraph; the paradox never called
+harmless (the lab judges only the charge and its take-off); the steady push's one driven back judged by the effort
+search (least disruptive 5,470 kg-force); the push through a bolted winner's bolts counted as shaking; the shoving
+match's ratio rounded; the torn rock's hold; the arm pads; the Never knocked back note and the cards (the motion
+taken back, the air's heat real, the contests named, six powers on by default); the 1 km fireball's split; Both at
+once's force tile; a bar label that fits at 390 px; the paradox's wording.
+
+Tests: powers.js section 8 (8a, 8b, 8f, 8g, 8h, 8i tightened; a new 8g check) and 16 new checks in shots.js's pull
+request 4 block. Each fix was reverted on its own in a scratch copy and its check seen failing; the build's 18
+engine mutants each still fail a check. README: decisions, What moved, Known limits, review history.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_0136zsmhtj8TCY2T2u8SKMVX

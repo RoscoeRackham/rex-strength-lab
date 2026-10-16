@@ -1,0 +1,46 @@
+## id
+copy-bothatonce-shove-tile
+
+## severity
+minor
+
+## title
+Both at once with Ollie bolted shows Rex's 299 kN shove, which moves nobody, while Rex is flung by Ollie's 890 kN shove, which isn't shown
+
+## location
+rex-strength-lab/src/app.html wrestleShove tiles (line ~2662 'Shove force' tile uses r.Fdrive), bothOwn branch
+
+## evidence
+State {duoOpen:true,duoAction:'wrestle',wrestleMove:'shove',wrestleWho:'both',oAnchor:'bolted'}, all-out. Verdict: 'Ollie is bolted to the planet, so Rex’s shove doesn’t move him; but Ollie’s own shove on Rex is real: Rex flies back at 21.1 m/s'. Tiles: 'Shove force 299 kN, two hands, over 2.44 m | Ollie moves not at all | Rex is shoved back at 21.1 m/s'. Engine shoveBoth(Rex, Ollie bolted): Fdrive 299,240 N (Rex's comic shove into the bolts) and back.Fdrive 889,644 N with basis 'real' (Ollie's shove, the one that moves Rex). The 'Comic mode: real muscle does better here' chip shown in the unbolted view is missing.
+
+## expected
+The tile should show the shove that produces the motion shown, or both shoves.
+
+## fix
+In the bothOwn case, show 'Ollie’s shove 890 kN' (r.back.Fdrive) when only the target's shove moves anyone, or two tiles, one per shove, with the real-muscle chip for the one that used it.
+
+## VERDICT
+### id
+copy-bothatonce-shove-tile
+
+### real
+true
+
+### severity
+minor
+
+### reasoning
+Reproduced. In Both at once with Ollie bolted, the verdict says Rex's shove doesn't move Ollie, and Ollie's shove sends Rex back at 21.1 m/s. The only force tile, 'Shove force 299 kN', is r.Fdrive: Rex's comic shove into the bolts, which moves nobody. The shove that produces the motion shown is Ollie's: r.back.Fdrive = 889,644 N, with basis 'real', on a comic-mode page. It is not shown. The 'Comic mode: real muscle does better here' chip is missing even though that shove used real muscle, because basisChip(r) reads only r.basis. On pull request 3's page the 299 kN tile went with 'Nobody moves', so it was accurate. This pull request's new outcome made it misleading.
+
+### reproduction
+1. `node harness.js …/repo/rex-strength-lab/dist/index.html '[{"duoOpen":true,"duoAction":"wrestle","wrestleMove":"shove","wrestleWho":"both","oAnchor":"bolted"}]' allout`:
+   - verdict: "…but Ollie’s own shove on Rex is real: Rex flies back at 21.1 m/s and slides 36.8 m."
+   - tiles: "Shove force 299 kN … Ollie moves not at all … Rex is shoved back at 21.1 m/s"
+   - status: no real-muscle chip
+2. Unbolted, the status reads "Comic mode: real muscle does better here…" and the tile reads "Shove force 890 kN".
+3. Engine shoveBoth(rex, ollie bolted): Fdrive 299,240, back.Fdrive 889,644, back.basis 'real', vA 21.15.
+4. Base page, same state: "Nobody moves: Rex’s shove (299 kN) can’t beat Ollie’s bolts."
+
+### better_fix
+In wrestleShove, before the tiles: `const shown = bothOwn && !movB && movA && r.back ? r.back : r;`. Then use `tile(shown === r ? 'Shove force' : target + '’s shove', fmtN(shown.Fdrive), 'two hands, over ' + fmtDist(shown.d))` and `basisChip(shown)` in the status row. Or show two tiles, one per shove.
+

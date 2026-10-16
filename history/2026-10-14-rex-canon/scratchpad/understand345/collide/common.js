@@ -1,0 +1,15 @@
+global.window = {};
+const M = '/tmp/claude-0/-home-user-rex-strength-lab/be83ea46-0fb6-5f45-86e4-061daa8f7429/scratchpad/main-tree/rex-strength-lab';
+const P = require(M + '/src/engine.js');
+require(M + '/src/data.js');
+const D = window.DINO_DATA;
+const g = P.K.g, R = P.RESTRAINT;
+const sf = (id) => D.surfaces.find((s) => s.id === id);
+const ob = (id) => D.objects.find((o) => o.id === id);
+const sig = (x, n = 3) => (typeof x !== 'number' ? String(x) : !isFinite(x) ? String(x) : Number(x.toPrecision(n)));
+const F0 = 100 * 907.18474 * g;
+const POW = { airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true };
+const OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoil: false };
+const body = (b) => P.makeBody({ build: b, ...P.DEFAULT_BODIES[b] });
+const ctxOf = (who, extra) => Object.assign({ F: F0, mode: 'comic', body: body(who), surface: sf('concrete'), anchor: 'friction' }, POW, extra || {});
+module.exports = { M, P, D, g, R, sf, ob, sig, F0, POW, OFF, body, ctxOf };

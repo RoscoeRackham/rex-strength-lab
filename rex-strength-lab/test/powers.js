@@ -68,6 +68,8 @@ const ON = { airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true };
 const ctxOf = (F, extra) => Object.assign({ F, mode: 'comic', body: rex, surface: surf('concrete'), anchor: 'friction' }, extra || {});
 const M = P.RESTRAINT.MOVES;
 const sig = (x) => Number(x).toPrecision(3);
+// --tally-only: section 9 alone (the energy taken back; quick, for its mutants), after part 1 unless --skip-off
+if (process.argv.includes('--tally-only')) { section9(); console.log('\n' + (n - fails) + '/' + n + ' passed'); process.exit(fails ? 1 : 0); }
 
 // 2. 5a: Air resistance absorbed
 {
@@ -1542,6 +1544,436 @@ const sig = (x) => Number(x).toPrecision(3);
     ok('8l: the brief\'s Collide figures at 3,000 kg: the sprint carries Rex at 18.1 m/s, Ollie\'s source supplies about 55,000 kg m/s (54,400 + his footing\'s 612), 499 kJ freed and absorbed (the brief\'s 494 kJ leaves out the hold\'s work over the squash: review round 2), Rex slides 27.3 m; the bounce sends him off at 36.3 m/s (109,000 kg m/s: the bounce bound ignores his footing); the jump (286 m/s) and the stomp-launch at 10^9 kg are the paradox; at 0.1% of c he is carried at 300 km/s (8.99 x 10^8 kg m/s, 135 TJ) or sent off at 600 km/s (1.8 x 10^9); with They take their own recoil off, today\'s (knocked back, 8.97 m/s, 250 kJ)', same(got, want), JSON.stringify(got));
     const pm = P.pushMatch(c3(dial, R3, on()), c3(dial, O3, on()));
     ok('8l: the brief\'s shoving match at the default dial: each push 889,644 N against each grip 17,652 N on concrete (about 50x), both shoved apart at about 26.6 m/s each, sliding about 57 m', r2(pm.DA, 6) === 889644 && r2(pm.HA, 5) === 17652 && Math.round(pm.DA / pm.HA) === 50 && r2(pm.vA) === 26.6 && Math.round(pm.slideA) === 57 && Math.round(pm.slideB) === 57, sig(pm.DA) + ' / ' + sig(pm.HA) + ' N; ' + sig(pm.vA) + ' m/s; ' + sig(pm.slideA) + ' m');
+  }
+}
+
+// 9. The energy taken back, and the shimmer's level (BRIEF-canon.md item 6, pull request 5). RESTRAINT.takenBack adds up
+// the energy their powers take back in the run a tab shows, by part and by who takes it in; src/ladder.js's glow() words
+// it (test/ladder.js section 9 checks the words). Every expected figure is worked out here from the engine, or found in
+// the ladder by key; the brief's rounded figures (BRIEF-canon.md item 6, as the build spec corrects them at 3,000 kg)
+// are checked against those. The 3,000 kg bodies, concrete, people 5 m away, the page's default powers (the four, Safe
+// passenger and Never knocked back on; Silent strike and Soft landing off), the page's dial of 100 short tons unless
+// stated. Alone: node test/powers.js --skip-off --tally-only
+section9();
+function section9() {
+  const LAD = require('../src/ladder.js');
+  const TB = P.RESTRAINT.takenBack, refs = D.energyRefs, glow = (J) => LAD.glow(J, refs);
+  const R3 = P.makeBody(Object.assign({ build: 'rex' }, P.DEFAULT_BODIES.rex)), O3 = P.makeBody(Object.assign({ build: 'ollie' }, P.DEFAULT_BODIES.ollie));
+  const dial = 100 * 907.18474 * g, conc = surf('concrete');
+  const DEF = { airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true, safePassenger: true, noKnockback: true };
+  const OFF9 = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoil: false, safePassenger: false, silentStrike: false, softLanding: false, noKnockback: false };
+  const c9 = (F, body, x) => Object.assign({ F, mode: 'comic', body: body || R3, surface: conc, anchor: 'friction' }, DEF, x || {});
+  const chk = (f) => { try { return !!f(); } catch (e) { return false; } };
+  const r3 = (x, k) => Number(x.toPrecision(k || 3));
+  const PART = ['drag', 'footing', 'soft', 'silent', 'hit', 'stop', 'passenger', 'catch', 'growth'];
+  // exactly these parts (to a part in 10^12), every other part 0
+  const only = (tb, want) => PART.every((k) => (k in want ? (want[k] === tb.parts[k] || (isFinite(want[k]) && Math.abs(tb.parts[k] - want[k]) <= 1e-12 * Math.abs(want[k]))) && want[k] > 0 : tb.parts[k] === 0));
+  const nums = (tb) => [tb.E, tb.by.rex.E, tb.by.ollie.E].concat(PART.map((k) => tb.parts[k]), PART.map((k) => tb.by.rex.parts[k]), PART.map((k) => tb.by.ollie.parts[k]));
+  const clean = (tb) => nums(tb).every((x) => typeof x === 'number' && !Number.isNaN(x) && x >= 0) && tb.unbounded === (tb.E === Infinity) && tb.by.rex.unbounded === (tb.by.rex.E === Infinity) && tb.by.ollie.unbounded === (tb.by.ollie.E === Infinity);
+  const PE = (m, h) => m * (P.K.GM / P.K.R_E - P.K.GM / (P.K.R_E + h));
+  // what real air takes from a throw, worked out here: one more flight at the full drag, from the speed it keeps once
+  // clear of his own pull (vOut); where it lands, the energy it loses on the way (from the energy that leaves his well);
+  // where it never comes down (an escape), the drag along that flight (fly()'s own tally, which it keeps when a share of
+  // the drag, here a hair under all of it, is taken back); past 1% of light speed all of its energy (review round 1)
+  const realAir = (r, ob, th, body) => {
+    if (r.flight.relativistic || !isFinite(r.Eobj)) return r.Eobj;
+    const fl = { v0: r.vOut, thetaDeg: th, h0: body.releaseHeight, m: ob.m, A: ob.area, Cd: ob.Cd, CdSup: ob.CdSup }, f0 = P.fly(fl), E1 = P.keFromV(r.vOut, ob.m) + PE(ob.m, body.releaseHeight);
+    if (f0.landed) return Math.max(0, E1 - P.keFromV(f0.vImpact, ob.m));
+    const k = 1 - 1e-12, ft = P.fly(Object.assign({}, fl, { dragK: k }));
+    return Math.min(E1, ft.air.E / k);
+  };
+  // the page's least disruptive effort (its resolveEffort 'least'): the goal's, or just under the courtesy ceiling where a
+  // hazard fires at the goal's
+  const least = (move, c, o) => {
+    const p = P.RESTRAINT.planNow(move, c, o), gl = p.goal(), want = gl.never || gl.onlyUnlimited ? undefined : gl.use, rr = p.run(want);
+    if (!P.RESTRAINT.HAZARDS.some((h) => h.test(M[move], rr, p.opt))) return want;
+    const ce = p.ceiling();
+    return ce.below > 0 ? ce.below : p.lo;
+  };
+  const throwAt = (c, ob, th, use) => { const cc = Object.assign({}, c, use != null ? { use } : {}); return { r: P.throwObject(cc, ob, th), o: Object.assign({}, cc, { obj: ob, angle: th }) }; };
+  const duo = (A, B, whoA, x) => Object.assign({ A, B, whoA }, x || {});
+  const gb1 = 0.001 / Math.sqrt(1 - 1e-6);   // gamma x beta at 0.1% of light speed
+
+  // 9a. the brief's figures (its table, at 3,000 kg), each from the engine's own run of what the tab shows
+  { const c = c9(dial), car = obj('car'), person = obj('person'), goal = { near: 5, target: 30, angle: 45, safePassenger: true };
+    const uCar = least('throw', c, Object.assign({ obj: car }, goal)), uP = least('throw', c, Object.assign({ obj: person }, goal));
+    const tl = throwAt(c, car, 45, uCar), ta = throwAt(c, car, 45), tp = throwAt(c, person, 45, uP);
+    const bl = TB('throw', tl.r, tl.o), ba = TB('throw', ta.r, ta.o), bp = TB('throw', tp.r, tp.o);
+    const dl = realAir(tl.r, car, 45, R3), da = realAir(ta.r, car, 45, R3);
+    ok('9a: a car thrown 30 m, least disruptive (' + sig(uCar / g) + ' kg-force): the drag real air would have taken, ' + sig(bl.E) + ' J (the brief, corrected: 35.0 kJ, not the drag-free tally\'s ' + sig(tl.r.flight.ocean.E) + ' J), a faint flicker; all-out ' + sig(ba.E) + ' J (0.27 MJ), a faint flicker',
+      r3(uCar / g) === 22100 && only(bl, { drag: dl }) && r3(bl.E) === 35000 && only(ba, { drag: da }) && r3(ba.E, 2) === 270000 && glow(bl.E).text === 'a faint flicker' && glow(ba.E).text === 'a faint flicker' && r3(tl.r.flight.ocean.E) === 42400);
+    const st = P.stomp(c), c9g = c9(1e9 * g), s9 = P.stomp(c9g), bs = TB('stomp', st, c), bs9 = TB('stomp', s9, c9g);
+    const uS = least('stomp', c, { near: 5 }), sl = P.stomp(Object.assign({}, c, { use: uS })), bsl = TB('stomp', sl, Object.assign({}, c, { use: uS }));
+    ok('9a: the stomp, Unbreakable footing keeping the concrete whole: all-out ' + sig(bs.E) + ' J (0.10 MJ, a faint flicker); at a 10^9 kg dial ' + sig(bs9.E) + ' J (1.1 GJ, level 0.19, nearest the quarter step: about a faint glow); least disruptive (' + sig(uS / g) + ' kg-force) nothing, as the ground wouldn\'t break',
+      chk(() => st.realBreaks && only(bs, { footing: st.E }) && r3(bs.E, 2) === 100000 && glow(bs.E).text === 'a faint flicker' && s9.realBreaks && only(bs9, { footing: s9.E }) && r3(bs9.E, 2) === 1.1e9 && glow(bs9.E).level.toFixed(2) === '0.19' && glow(bs9.E).word === 'faint glow'
+      && sl.realBreaks === false && bsl.E === 0 && r3(uS / g) === 127));
+    const hit = P.collide(c9(dial, O3), c9(dial, R3), { source: 'set', gb: gb1 }), bh = TB('collide', hit, duo(c9(dial, O3), c9(dial, R3), 'ollie'));
+    ok('9a: Ollie charges Rex at 0.1% of light speed (the defaults): the hit frees ' + sig(bh.by.rex.E) + ' J, taken in by Rex (135 TJ, level 0.47, about a glow); Ollie stopping himself takes his own ' + sig(bh.by.ollie.E) + ' J of motion',
+      chk(() => hit.outcome === 'carried' && bh.by.rex.parts.hit === hit.hitAbsorbed.E && hit.hitAbsorbed.E === hit.Q && only(bh.by.rex, { hit: hit.Q }) && r3(bh.by.rex.E) === 1.35e14 && glow(bh.by.rex.E).text === 'about a glow' && glow(bh.by.rex.E).level.toFixed(2) === '0.47'
+      && only(bh.by.ollie, { stop: hit.carry.stop.E }) && hit.carry.stop.E === hit.KA && bh.E === hit.Q + hit.KA));
+    const hm = P.collide(c9(dial, O3), c9(dial), { source: 'set', gb: gb1, meanIt: true }), hb = P.collide(c9(dial, O3), c9(dial), { source: 'set', gb: gb1, bounce: true });
+    const bm = TB('collide', hm, duo(c9(dial, O3), c9(dial), 'ollie')), bb = TB('collide', hb, duo(c9(dial, O3), c9(dial), 'ollie'));
+    const h0 = P.collide(c9(dial, O3, { ownRecoil: false }), c9(dial, R3, { ownRecoil: false }), { source: 'set', gb: gb1 }), b0 = TB('collide', h0, duo(c9(dial, O3, { ownRecoil: false }), c9(dial, R3, { ownRecoil: false }), 'ollie'));
+    ok('9a: the same hit, meant (a blast preset): its energy is real, so Rex takes in nothing (Ollie still stops himself); in a perfect bounce it frees none; with Ollie\'s own recoil not taken, today\'s physics: nothing taken back',
+      hm.meanIt === true && hm.Q === hit.Q && bm.by.rex.E === 0 && only(bm.by.ollie, { stop: hm.KA }) && hb.hitAbsorbed.E === 0 && bb.by.rex.E === 0 && bb.by.ollie.parts.stop === hb.KA && h0.outcome !== 'carried' && h0.Q > 0 && b0.E === 0);
+    const pl = M.throw.passengerLanding(tp.r, tp.o), dp = realAir(tp.r, person, 45, R3), bp0 = TB('throw', tp.r, Object.assign({}, tp.o, { safePassenger: false }));
+    ok('9a: a person thrown 30 m, least disruptive (' + sig(uP / g) + ' kg-force), Safe passenger: their landing, ' + sig(bp.E) + ' J (14.6 kJ), a faint flicker; the ' + sig(dp) + ' J real air would have taken is in that landing, so it is counted there once (Safe passenger off, it is the drag part)',
+      only(bp, { passenger: pl.absorbed }) && r3(bp.E) === 14600 && glow(bp.E).text === 'a faint flicker' && dp > 0 && dp < pl.absorbed && only(bp0, { drag: dp }));
+  }
+
+  // 9b. each power takes back only its own parts; with every power off nothing is taken back. The runs: every tab's run
+  // that can take energy back, at the page's dial, 10^9 kg, 10^16 kg and unlimited (the game of catch's person 31.6 km
+  // apart, its baseball with half the drag and Things keep their form off, where it arrives as a fireball; each power
+  // alone at the three finite dials)
+  { const ALL = Object.assign({}, DEF, { silentStrike: true, softLanding: true });
+    const runs = (pw, dials) => {
+      const out = [];
+      for (const F of dials || [dial, 1e9 * g, 1e16 * g, Infinity]) {
+        const c = c9(F, R3, pw), co = c9(F, O3, pw), tag = (s) => s + ' at ' + (isFinite(F) ? sig(F / g) : 'unlimited');
+        for (const [id, th] of [['car', 45], ['person', 45], ['baseball', 90]]) { const t = throwAt(c, obj(id), th); out.push([tag('throw ' + id), TB('throw', t.r, t.o)]); }
+        out.push([tag('jump'), TB('jump', P.jump(c), c)], [tag('stomp'), TB('stomp', P.stomp(c), c)], [tag('punch'), TB('punch', P.punch(c), c)], [tag('clap'), TB('clap', P.clap(c), c)]);
+        out.push([tag('wrestle throw'), TB('wrestleThrow', P.throwPartner(c, co, 45), duo(c, co, 'rex', { angle: 45 }))]);
+        // (a gentle lob is the same at any dial: at the page's only; a person 31.6 km apart reaches the ground only far up the dial)
+        const legs = [['baseball', 10, 'hard'], ['baseball', 10, 'hard', { keepForm: false, airAbsorb: pw.airAbsorb ? 0.5 : 0 }]].concat(F === dial ? [['car', 10, 'easy']] : [], F >= 1e16 * g ? [['person', 31.6e3, 'hard']] : []);
+        for (const [id, D0, st, x] of legs) {
+          const cR = Object.assign({}, c, x || {}), cO = Object.assign({}, co, x || {});
+          out.push([tag('catch ' + id + ' ' + st + ' ' + D0 + ' m' + (x ? ' (fireball state)' : '')), TB('catch', { a: P.catchLeg(cR, cO, obj(id), D0, st), b: P.catchLeg(cO, cR, obj(id), D0, st) }, duo(cR, cO, 'rex', { obj: obj(id) }))]);
+        }
+        for (const st of F === dial ? ['easy', 'hard'] : ['hard']) out.push([tag('toss ' + st), TB('toss', P.tossPartner(c, O3, 'Ollie', st, 10, 'friction'), duo(c, co, 'rex'))]);
+        for (const o of [{ source: 'sprint' }, { source: 'set', gb: gb1 }, { source: 'jump' }]) out.push([tag('collide ' + o.source), TB('collide', P.collide(co, c, o), duo(co, c, 'ollie'))]);
+      }
+      out.push(['weight, no what-if', TB('weight', null, Object.assign({}, c9(dial, R3, pw)))]);
+      return out;
+    };
+    const off = runs(OFF9), badOff = off.filter(([, tb]) => tb.E !== 0 || !clean(tb) || nums(tb).some((x) => x !== 0)).map(([l]) => l);
+    ok('9b: with every power off (the four, Safe passenger, Silent strike, Soft landing, Never knocked back) nothing is taken back in any of ' + off.length + ' runs: every part 0, for both of them', !badOff.length && off.length > 60, badOff.slice(0, 4).join('; '));
+    const OWN = { airAbsorb: ['drag'], unbreakable: ['footing'], softLanding: ['soft'], silentStrike: ['silent'], ownRecoil: ['hit', 'stop', 'catch'], noKnockback: ['hit'], safePassenger: ['passenger'], keepForm: [] };
+    const bad = [], seen = {};
+    for (const [pw, parts] of Object.entries(OWN)) {
+      const one = Object.assign({}, OFF9, { [pw]: pw === 'airAbsorb' ? 1 : true });
+      for (const [l, tb] of runs(one, [dial, 1e9 * g, 1e16 * g])) for (const k of PART) if (tb.parts[k] > 0) { if (!parts.includes(k)) bad.push(pw + ' alone: ' + l + ' ' + k); else seen[pw + ':' + k] = true; }
+      for (const k of parts) if (!seen[pw + ':' + k]) bad.push(pw + ' alone never gives ' + k);
+    }
+    ok('9b: each power alone takes back only its own parts, and each of its parts somewhere: Air resistance absorbed the drag, Unbreakable footing the footing, Soft landing the landing, Silent strike the blast, They take their own recoil a hit, a charger\'s stop and a catch, Never knocked back the fireball\'s hit, Safe passenger a person\'s landing; Things keep their form nothing', !bad.length, bad.slice(0, 4).join('; '));
+    const on = runs(ALL), badOn = on.filter(([, tb]) => !clean(tb)).map(([l]) => l);
+    ok('9b: with every power on, no figure is NaN or negative, and E is unbounded exactly when it is Infinity (' + on.length + ' runs)', !badOn.length, badOn.slice(0, 4).join('; '));
+  }
+
+  // what real air would take, worked out here for each: the Wrestle throw as the Throw tab's; the toss straight up and
+  // back to his hands (what it loses on the way; where it never comes down, the drag along that flight; all of it past 1%
+  // of light speed, from the throw itself); a leg of the game of catch over its own flight to the catcher, by energy
+  // conservation from its energy past the thrower's pull at his hand's height to its energy where it ends, never more
+  // than flyTo's step sum (the drag along it where it never comes down; all of it as a fireball or a straight line past
+  // 1% of light speed). (Review round 1, code-1 and code-2: a leg had taken the step sum alone, and a flight that never
+  // comes down all of its energy.)
+  const tossReal = (t, c) => {
+    if (t.v >= P.CATCH.V_FIREBALL) return P.throwObject(Object.assign({}, c, { noFlight: true }), t.obj, 90).Eobj;
+    const f = P.flyTo({ v0: t.v, thetaDeg: 90, h0: c.body.releaseHeight, hStop: c.body.releaseHeight, m: t.obj.m, A: t.obj.area, Cd: t.obj.Cd, CdSup: t.obj.CdSup }), Ev = P.keFromV(t.v, t.obj.m);
+    return f.landed && !f.escaped && !f.orbit && !f.timedOut ? Math.max(0, Ev - P.keFromV(f.vImpact, t.obj.m)) : Math.min(Ev, f.dragE);
+  };
+  const legReal = (L, ob) => {
+    if (L.result === 'fireball') return L.fireball.E;
+    if (L.fast) return L.miss.E + (L.sheath ? L.sheath.E : 0);
+    const full = { m: ob.m, A: ob.area, Cd: ob.Cd, CdSup: ob.CdSup };
+    const lost = (f, v, hEnd) => {
+      if (f.relativistic) return P.keFromV(v, ob.m);
+      const E0 = P.keFromV(v, ob.m) + PE(ob.m, L.h0);
+      if (f.escaped || f.orbit || f.timedOut) return Math.min(E0, f.dragE);
+      const Eend = f.crossedX ? (isFinite(f.hAtX) && isFinite(f.vAtX) ? P.keFromV(f.vAtX, ob.m) + PE(ob.m, f.hAtX) : NaN) : P.keFromV(f.vImpact, ob.m) + PE(ob.m, f.belowStop ? 0 : hEnd);
+      return Math.max(0, Math.min(f.dragE, isFinite(Eend) ? E0 - Eend : E0));
+    };
+    if (L.result === 'overshoots') return L.relativistic || L.vL >= P.CATCH.V_FIREBALL ? P.keFromV(L.vL, ob.m) : lost(P.flyTo(Object.assign({ v0: L.vL, thetaDeg: L.thetaDeg, h0: L.h0, hStop: 0, xStop: L.Dfl, Dend: L.Dfl }, full)), L.vL, 0);
+    if (!L.aim || L.result === 'falls-back') return 0;
+    const hard = L.style === 'hard' || !!L.fullStrength;
+    return lost(P.flyTo(Object.assign({ v0: L.aim.vE, thetaDeg: L.aim.thetaDeg, h0: L.h0, hStop: hard ? 0 : L.hStop, Dend: L.Dfl }, hard ? { xStop: L.Dfl } : {}, full)), L.aim.vE, hard ? 0 : L.hStop);
+  };
+
+  // 9c. the drag part never exceeds the object's own energy (its motion plus its release height's potential energy):
+  // car, person and baseball, level, at 45 degrees and straight up, half-decade dials from 10 kg to 10^20 kg and
+  // unlimited, all or half the drag absorbed; orbits, escapes and throws past 1% of light speed included. fly()'s drag-free
+  // tally breaks that bound (the brief's risk) and drops to 0 at an orbit; the drag part doesn't
+  { let count = 0, over = 0, oceanOver = 0; const kinds = { orbit: 0, escaped: 0, relativistic: 0, landed: 0 }, bad = [];
+    for (const id of ['car', 'person', 'baseball']) for (const th of [0, 45, 90]) for (let e = 1; e <= 20; e += 0.5) for (const F of e === 20 ? [Math.pow(10, e) * g, Infinity] : [Math.pow(10, e) * g]) for (const s of [1, 0.5]) {
+      const c = c9(F, R3, { airAbsorb: s, safePassenger: false }), t = throwAt(c, obj(id), th);
+      if (!t.r.canMove || t.r.fallsBack) continue;
+      count++;
+      const f = t.r.flight, k = f.relativistic ? 'relativistic' : f.orbit ? 'orbit' : f.escaped ? 'escaped' : f.landed ? 'landed' : null;
+      if (k) kinds[k]++;
+      const tb = TB('throw', t.r, t.o), d = tb.parts.drag, top = t.r.Eobj + PE(obj(id).m, R3.releaseHeight), want = s * realAir(t.r, obj(id), th, R3);
+      if (!(d === want || Math.abs(d - want) <= 1e-9 * want)) bad.push(id + ' ' + th + ' 10^' + e + ' ' + s + ': ' + sig(d) + ' vs ' + sig(want));
+      if (!(d <= top * (1 + 1e-9)) && !(t.r.Eobj === Infinity && d === Infinity)) over++;
+      if (f.ocean && f.ocean.E > top) oceanOver++;
+    }
+    ok('9c: the drag part is the share absorbed times what real air would take (worked out here) and never more than the object\'s own energy, in ' + count + ' throws (' + JSON.stringify(kinds) + '); the drag-free tally would break that bound in ' + oceanOver,
+      !bad.length && over === 0 && kinds.orbit > 0 && kinds.escaped > 0 && kinds.relativistic > 0 && oceanOver > 0, bad.slice(0, 3).join('; ') + (over ? ' ' + over + ' over' : ''));
+    // a throw even real air can't bring down (straight up: the staff at 10^12.5 kg, 79 km/s, the Empire State Building at
+    // 10^16 kg and the Great Pyramid at 10^17 kg, through the whole atmosphere and away): the drag along that full-drag
+    // flight, which it leaves with the rest of its energy, at either share (review round 1, code-2: it had been all of it)
+    { const esc = [];
+      for (const [id, e] of [['ruyi', 12.5], ['esb', 16], ['pyramid', 17]]) for (const s of [1, 0.5]) {
+        const ob = obj(id), t = throwAt(c9(Math.pow(10, e) * g, R3, { airAbsorb: s }), ob, 90), f0 = P.fly({ v0: t.r.vOut, thetaDeg: 90, h0: R3.releaseHeight, m: ob.m, A: ob.area, Cd: ob.Cd, CdSup: ob.CdSup });
+        esc.push({ id, t, s, d: TB('throw', t.r, t.o).parts.drag, f0, want: s * realAir(t.r, ob, 90, R3) });
+      }
+      const eq9 = (a, b) => Math.abs(a - b) <= 1e-9 * Math.abs(b);
+      ok('9c: a throw even real air would not bring down (straight up: the staff at 10^12.5 kg, the Empire State Building at 10^16 kg, the Great Pyramid at 10^17 kg, all below 1% of light speed): the drag part is the share absorbed of the drag along that full-drag flight (worked out here), not all of its energy: ' + esc.filter((x) => x.s === 1).map((x) => x.id + ' ' + sig(x.d / x.t.r.Eobj, 2) + ' of it').join(', '),
+        chk(() => esc.every((x) => !x.t.r.flight.relativistic && !x.f0.landed && x.f0.escaped && x.d > 0 && eq9(x.d, x.want) && x.d < x.s * x.t.r.Eobj) && esc.some((x) => x.d < 0.2 * x.s * x.t.r.Eobj)), esc.map((x) => x.id + ' ' + x.s + ': ' + sig(x.d) + ' vs ' + sig(x.want) + ' of ' + sig(x.t.r.Eobj)).join('; ')); }
+    const seq = [4e9, 5e9, 6e9, 8e9, 1e10].map((kg) => { const t = throwAt(c9(kg * g), obj('car'), 0); return { kg, orbit: !!t.r.flight.orbit, d: TB('throw', t.r, t.o).parts.drag, E: t.r.Eobj, ocean: t.r.flight.ocean ? t.r.flight.ocean.E : 0 }; });
+    ok('9c: a car thrown level through the orbit threshold (4 to 10 x 10^9 kg): the drag part never falls, and in orbit it is nearly all of the car\'s energy (real air would bring it down having taken nearly all of it; the drag-free tally falls to 0 there)',
+      seq.every((x, i) => i === 0 || x.d >= seq[i - 1].d) && seq.some((x) => x.orbit) && seq.filter((x) => x.orbit).every((x) => x.d >= 0.99 * x.E && x.d <= x.E + PE(obj('car').m, R3.releaseHeight) && x.ocean === 0) && seq.some((x) => !x.orbit), seq.map((x) => sig(x.kg) + (x.orbit ? ' orbit ' : ' ') + sig(x.d)).join(', '));
+    // the Wrestle throw, the partner toss and the game of catch: no arrival taken back here (Never knocked back, Safe
+    // passenger, the catcher's recoil and the partner's footing off; Things keep their form off, so a fast throw can be a
+    // fireball), so the drag part is the whole share, still never more than what was thrown
+    const eq = (a, b) => a === b || Math.abs(a - b) <= 1e-9 * Math.abs(b);
+    const bad2 = [], kinds2 = {}; let n2 = 0;
+    for (let e = 1; e <= 20; e += 2) for (const s of [1, 0.5]) {
+      const F = Math.pow(10, e) * g, x = { airAbsorb: s, ownRecoil: false, safePassenger: false, noKnockback: false, unbreakable: false, keepForm: false }, c = c9(F, R3, x), co = c9(F, O3, x);
+      const w = P.throwPartner(c, co, 45), dw = TB('wrestleThrow', w, duo(c, co, 'rex', { angle: 45 })).parts.drag;
+      if (w.r && w.r.canMove && !w.fallsBack) { n2++; if (!(dw <= (w.r.Eobj + PE(O3.m, R3.releaseHeight)) * (1 + 1e-9)) || !eq(dw, s * realAir(w.r, w.obj, 45, R3))) bad2.push('wrestle 10^' + e); }
+      for (const st of ['easy', 'hard']) {
+        const t = P.tossPartner(c, O3, 'Ollie', st, 1000, 'friction'), dt = TB('toss', t, duo(c, co, 'rex')).parts.drag;
+        if (t.v > 0 && t.result !== 'too-weak') { n2++; kinds2['toss ' + t.result] = 1; const Ev = t.v >= P.CATCH.V_FIREBALL ? P.throwObject(Object.assign({}, c, { noFlight: true }), t.obj, 90).Eobj : P.keFromV(t.v, O3.m); if (!(dt <= Ev * (1 + 1e-9)) || !eq(dt, s * tossReal(t, c))) bad2.push('toss ' + st + ' 10^' + e + ': ' + sig(dt) + ' vs ' + sig(s * tossReal(t, c)) + ' (at most ' + sig(Ev) + ')'); }
+        const L = P.catchLeg(c, co, obj('baseball'), 100, st), dc = TB('catch', { a: L }, duo(c, co, 'rex', { obj: obj('baseball') })).parts.drag;
+        const E0 = L.result === 'fireball' ? L.fireball.E : L.fast ? L.miss.E + (L.sheath ? L.sheath.E : 0) : L.aim ? P.keFromV(L.aim.vL, obj('baseball').m) + PE(obj('baseball').m, L.h0) : L.vL > 0 ? P.keFromV(L.vL, obj('baseball').m) + PE(obj('baseball').m, L.h0) : 0;
+        if (L.aim || L.vL > 0) { n2++; kinds2[L.fast ? 'catch fast' : 'catch ' + L.result] = 1; if (!(dc <= E0 * (1 + 1e-9)) || !eq(dc, s * legReal(L, obj('baseball')))) bad2.push('catch ' + st + ' 10^' + e + ' ' + L.result + ': ' + sig(dc) + ' vs ' + sig(s * legReal(L, obj('baseball'))) + ' (at most ' + sig(E0) + ')'); }
+      }
+    }
+    // a fastball thrown 3,000 km at 10^9 kg with all the drag absorbed can't come down on Ollie (it overshoots): real air
+    // would have taken from that throw too
+    { const x = { ownRecoil: false, safePassenger: false, noKnockback: false }, c = c9(1e9 * g, R3, x), co = c9(1e9 * g, O3, x), L = P.catchLeg(c, co, obj('baseball'), 3e6, 'hard');
+      if (L.result === 'overshoots') { n2++; kinds2['catch overshoots'] = 1; const dc = TB('catch', { a: L }, duo(c, co, 'rex', { obj: obj('baseball') })).parts.drag; if (!(dc > 0) || !eq(dc, legReal(L, obj('baseball')))) bad2.push('overshoots: ' + sig(dc)); } }
+    ok('9c: the Wrestle throw, the partner toss and the game of catch\'s throws, with no arrival taken back: the drag part is the share absorbed times what real air would take from each (worked out here) and never exceeds what was thrown (' + n2 + ' runs, 10 kg to 10^19 kg: ' + Object.keys(kinds2).sort().join(', ') + ')',
+      !bad2.length && n2 > 30 && kinds2['catch fast'] && kinds2['catch caught'] && kinds2['catch fireball'] && kinds2['catch overshoots'] && kinds2['toss caught'] && kinds2['toss fireball'], bad2.slice(0, 3).join('; '));
+  }
+
+  // 9d. no energy counted twice: the jump's footing and its Soft landing; a catch and a hit; the drag and an arrival that
+  // is taken back (a person's landing, a catch, the partner's landing on his footing, a person's ground hit)
+  { const bad = [];
+    for (const sid of ['concrete', 'sand']) for (const F of [dial, 1e9 * g]) for (const ub of [true, false]) {
+      const c = c9(F, R3, { softLanding: true, unbreakable: ub, surface: surf(sid) }), r = P.jump(c), tb = TB('jump', r, c);
+      if (!(r.landing.landed && only(tb, { soft: r.landing.absorbed }))) bad.push(sid + ' ' + sig(F / g) + (ub ? ' unbreakable' : ''));
+    }
+    const j0 = P.jump(c9(dial)), tj0 = TB('jump', j0, c9(dial));
+    ok('9d: the jump: Soft landing\'s part is its landing.absorbed, and nothing is added for Unbreakable footing (on or off, concrete and sand, the dial and 10^9 kg; Soft landing off, nothing at all)', !bad.length && tj0.E === 0 && j0.landing.landed, bad.join('; '));
+    const cR = c9(1e14 * g, R3, { keepForm: false, airAbsorb: 0.5 }), cO = c9(1e14 * g, O3, { keepForm: false, airAbsorb: 0.5 });
+    const fb = P.catchLeg(cR, cO, obj('baseball'), 10, 'hard'), cau = P.catchLeg(c9(dial), c9(dial, O3), obj('baseball'), 10, 'hard');
+    const tfb = TB('catch', { a: fb }, duo(cR, cO, 'rex', { obj: obj('baseball') })), tca = TB('catch', { a: cau }, duo(c9(dial), c9(dial, O3), 'rex', { obj: obj('baseball') }));
+    ok('9d: a catch and a hit: a throw that reaches Ollie as a fireball is a hit (its motion freed at him, knockAbsorbed), not a catch; one he catches is a catch, not a hit',
+      chk(() => fb.result === 'fireball' && only(tfb, { hit: fb.fireball.knockAbsorbed.E }) && cau.result === 'caught' && only(tca, { catch: cau.catch.Ecatch })));
+    const t = P.tossPartner(c9(dial), O3, 'Ollie', 'hard', 10, 'friction'), tt = TB('toss', t, duo(c9(dial), c9(dial, O3), 'rex')), tt0 = TB('toss', t, duo(c9(dial, R3, { ownRecoil: false }), c9(dial, O3), 'rex'));
+    const w9 = P.throwPartner(c9(1e9 * g), c9(1e9 * g, O3), 45), tw9 = TB('wrestleThrow', w9, duo(c9(1e9 * g), c9(1e9 * g, O3), 'rex', { angle: 45 }));
+    const g16 = P.catchLeg(c9(1e16 * g), c9(1e16 * g, O3), obj('person'), 31.6e3, 'hard'), tg16 = TB('catch', { a: g16 }, duo(c9(1e16 * g), c9(1e16 * g, O3), 'rex', { obj: obj('person') }));
+    const rt = { a: cau, b: P.catchLeg(c9(dial, O3), c9(dial), obj('baseball'), 10, 'hard') }, trt = TB('catch', rt, duo(c9(dial), c9(dial, O3), 'rex', { obj: obj('baseball') }));
+    ok('9d: the drag that real air would have taken is still in what arrives, so where the arrival is taken back it is counted there once: the partner toss is its catch alone (its drag part with the catch real), the Wrestle throw at 10^9 kg the partner\'s crater-sized landing alone, a person\'s ground hit its own energy alone, a round trip of catches its two catches',
+      chk(() => only(tt, { catch: t.catch.Ecatch }) && tt0.parts.drag > 0 && tt0.parts.catch === 0 && w9.r.crater > 0 && only(tw9, { footing: w9.r.Eimpact }) && g16.result === 'hits-ground' && only(tg16, { passenger: g16.hitsGround.E }) && only(trt, { catch: rt.a.catch.Ecatch + rt.b.catch.Ecatch })),
+      sig(tt0.parts.drag) + ' J drag with the catch real');
+  }
+
+  // 9e. whose: each part names who takes it in (canon draws the glow on Rex; BRIEF-canon.md item 6, decision 3)
+  { const sp = (whoA) => { const cA = whoA === 'ollie' ? c9(dial, O3) : c9(dial), cB = whoA === 'ollie' ? c9(dial) : c9(dial, O3); return TB('collide', P.collide(cA, cB, { source: 'sprint' }), duo(cA, cB, whoA)); };
+    const oR = sp('ollie'), rO = sp('rex');
+    ok('9e: Collide: the one hit takes in the hit\'s freed energy, the charger his own stop: Ollie charging, Rex the hit and Ollie the stop; Rex charging, the other way round',
+      only(oR.by.rex, { hit: oR.parts.hit }) && only(oR.by.ollie, { stop: oR.parts.stop }) && only(rO.by.ollie, { hit: rO.parts.hit }) && only(rO.by.rex, { stop: rO.parts.stop }));
+    const a = P.catchLeg(c9(dial), c9(dial, O3), obj('baseball'), 10, 'hard'), b = P.catchLeg(c9(dial, O3), c9(dial), obj('baseball'), 10, 'hard');
+    const t1 = TB('catch', { a }, duo(c9(dial), c9(dial, O3), 'rex', { obj: obj('baseball') })), t2 = TB('catch', { a, b: a }, duo(c9(dial), c9(dial, O3), 'rex', { obj: obj('baseball') })), t3 = TB('catch', { a, b }, duo(c9(dial), c9(dial, O3), 'rex', { obj: obj('baseball') }));
+    ok('9e: the game of catch: leg a\'s catch is Ollie\'s, the return leg\'s Rex\'s (also where the page reuses leg a for it); leg a alone gives Rex nothing',
+      t1.by.ollie.parts.catch === a.catch.Ecatch && t1.by.rex.E === 0 && t2.by.rex.parts.catch === a.catch.Ecatch && t2.by.ollie.parts.catch === a.catch.Ecatch && t3.by.rex.parts.catch === b.catch.Ecatch);
+    const w9 = (whoA) => TB('wrestleThrow', P.throwPartner(c9(1e9 * g), c9(1e9 * g, O3), 45), duo(c9(1e9 * g), c9(1e9 * g, O3), whoA, { angle: 45 })), w0 = TB('wrestleThrow', P.throwPartner(c9(dial), c9(dial, O3), 45), duo(c9(dial), c9(dial, O3), 'rex', { angle: 45 }));
+    const t = TB('toss', P.tossPartner(c9(dial), O3, 'Ollie', 'easy', 10, 'friction'), duo(c9(dial), c9(dial, O3), 'rex'));
+    // the landing is taken back only on the thrown one's own Unbreakable footing (the thrower's switch doesn't matter)
+    const wB = (xA, xB) => { const cA = c9(1e9 * g, R3, xA), cB = c9(1e9 * g, O3, xB), w = P.throwPartner(cA, cB, 45); return { w, tb: TB('wrestleThrow', w, duo(cA, cB, 'rex', { angle: 45 })) }; };
+    const offB = wB({}, { unbreakable: false }), offA = wB({ unbreakable: false }, {});
+    ok('9e: the Wrestle throw\'s crater-sized landing is taken back on the thrown one\'s own Unbreakable footing: with his off it is real (the drag part is then the whole share), with only the thrower\'s off it is still his',
+      chk(() => offB.w.r.crater > 0 && only(offB.tb, { drag: realAir(offB.w.r, offB.w.obj, 45, R3) }) && only(offA.tb, { footing: offA.w.r.Eimpact }) && offA.tb.by.ollie.parts.footing === offA.w.r.Eimpact));
+    ok('9e: the Wrestle throw: the drag is the thrower\'s, the landing on the thrown one\'s footing his; the partner toss is all the tosser\'s; a solo tab is all Rex\'s',
+      w0.by.rex.parts.drag > 0 && w0.by.ollie.E === 0 && w9('rex').by.ollie.parts.footing > 0 && w9('rex').by.rex.parts.footing === 0 && w9('ollie').by.rex.parts.footing > 0 && t.by.rex.parts.catch > 0 && t.by.ollie.E === 0
+      && TB('stomp', P.stomp(c9(dial)), c9(dial)).by.ollie.E === 0);
+  }
+
+  // 9f. the other parts on concrete runs, each from the engine's own figure
+  { const c = c9(dial, R3, { softLanding: true, silentStrike: true }), c9g = c9(1e9 * g, R3, { softLanding: true, silentStrike: true });
+    const j = P.jump(c), j9 = P.jump(c9g), pu = P.punch(c), pu9 = P.punch(c9g), cl = P.clap(c), cl9 = P.clap(c9g);
+    ok('9f: Soft landing: the jump\'s landing taken back, ' + sig(j.landing.absorbed) + ' J all-out at the dial and ' + sig(j9.landing.absorbed) + ' J at 10^9 kg', only(TB('jump', j, c), { soft: j.landing.absorbed }) && only(TB('jump', j9, c9g), { soft: j9.landing.absorbed }) && r3(j.landing.absorbed) === 50200 && r3(j9.landing.absorbed) === 1.5e7);
+    ok('9f: Silent strike: nothing below the speed of sound (the punch at the dial, Mach ' + pu.mach.toFixed(2) + ', and the clap); past it the whole punch or clap: ' + sig(pu9.E) + ' J and ' + sig(cl9.E) + ' J at 10^9 kg (the page\'s absorbBlock rule)',
+      pu.mach < 1 && cl.mach < 1 && TB('punch', pu, c).E === 0 && TB('clap', cl, c).E === 0 && pu9.mach >= 1 && cl9.mach >= 1 && only(TB('punch', pu9, c9g), { silent: pu9.E }) && only(TB('clap', cl9, c9g), { silent: cl9.E }) && r3(pu9.E) === 6.37e8 && r3(cl9.E) === 1.05e9);
+    const fx = (x, mean) => { const cR = c9(1e14 * g, R3, Object.assign({ keepForm: false, airAbsorb: 0.5 }, x)), cO = Object.assign(c9(1e14 * g, O3, Object.assign({ keepForm: false, airAbsorb: 0.5 }, x)), mean ? { meanIt: true } : {}); const L = P.catchLeg(cR, cO, obj('baseball'), 10, 'hard'); return { L, tb: TB('catch', { a: L }, duo(cR, cO, 'rex', { obj: obj('baseball') })) }; };
+    const f1 = fx({}), fm = fx({}, true), f0 = fx({ noKnockback: false });
+    ok('9f: the fireball (a fastball 10 m apart at 10^14 kg, Things keep their form off, half the drag): with Ollie\'s Never knocked back its motion freed at him (' + sig(f1.tb.by.ollie.parts.hit) + ' J) is his hit part; meant, or with the switch off, it is real, and only the drag share is left',
+      chk(() => f1.L.result === 'fireball' && f1.tb.by.ollie.parts.hit === f1.L.fireball.knockAbsorbed.E && f1.L.fireball.knockAbsorbed.E === f1.L.fireball.E - f1.L.fireball.Egap && fm.tb.parts.hit === 0 && f0.tb.parts.hit === 0 && fm.tb.parts.drag === 0.5 * fm.L.fireball.E && f0.tb.parts.drag === 0.5 * f0.L.fireball.E));
+    const gh = (x) => { const cR = c9(1e16 * g, R3, x), cO = c9(1e16 * g, O3, x); const L = P.catchLeg(cR, cO, obj('person'), 31.6e3, 'hard'); return { L, tb: TB('catch', { a: L }, duo(cR, cO, 'rex', { obj: obj('person') })) }; };
+    const g1 = gh({}), g9 = gh({ airAbsorb: 0.999 }), g0 = gh({ safePassenger: false });
+    ok('9f: a person thrown in the game of catch who hits the ground (10^16 kg, 31.6 km apart): with no air on the way their whole energy, from the leg\'s hitsGround.E (' + sig(g1.tb.E) + ' J), taken back by Safe passenger; at 99.9% their own share (hitsGround.own.E); Safe passenger off, none',
+      chk(() => g1.L.result === 'hits-ground' && !(g1.L.hitsGround.airK > 0) && only(g1.tb, { passenger: g1.L.hitsGround.E }) && g1.tb.by.rex.parts.passenger === g1.L.hitsGround.E && g9.L.hitsGround.own && g9.tb.parts.passenger === g9.L.hitsGround.own.E && g9.L.hitsGround.own.E < g9.L.hitsGround.E && g0.tb.parts.passenger === 0));
+    const cp = c9(dial), op = c9(dial, O3), L = P.catchLeg(cp, op, obj('person'), 10, 'easy');
+    const tc = TB('catch', { a: L }, duo(cp, op, 'rex', { obj: obj('person') })), tm = TB('catch', { a: L }, duo(cp, op, 'rex', { obj: obj('person'), miss: true }));
+    ok('9f: a person caught in the game of catch: the catch (' + sig(tc.E) + ' J, Ollie\'s); in the "if he misses" what-if, their landing beside him instead (' + sig(tm.E) + ' J, Safe passenger, the thrower\'s)',
+      chk(() => L.result === 'caught' && only(tc, { catch: L.catch.Ecatch }) && tc.by.ollie.E === L.catch.Ecatch && only(tm, { passenger: L.miss.E }) && tm.by.rex.E === L.miss.E && !L.miss.hits && !L.miss.leaves));
+    const ids = ['krakatoa', 'chicxulub', 'sun'].map((id) => refs.find((r) => r.id === id));
+    ok('9f: the Weight tab\'s growth what-if: the energy that becomes mass is the growth part, Rex\'s (Krakatoa, the dinosaur-killer, the Sun for a second); none picked, nothing',
+      ids.every((r) => only(TB('weight', null, { growE: r.J }), { growth: r.J }) && TB('weight', null, { growE: r.J }).by.rex.E === r.J) && TB('weight', null, {}).E === 0 && TB('weight', null, { growE: 0 }).E === 0
+      && glow(ids[1].J).text === 'roughly a blinding flare' && glow(ids[2].J).held);
+  }
+
+  // 9g. unlimited runs are unbounded, never NaN; a figure with no physical answer adds nothing; unknown moves are refused
+  { const ci = c9(Infinity), oi = c9(Infinity, O3), car = throwAt(ci, obj('car'), 45);
+    const unb = [TB('throw', car.r, car.o), TB('stomp', P.stomp(ci), ci), TB('punch', P.punch(Object.assign({}, ci, { silentStrike: true })), Object.assign({}, ci, { silentStrike: true })),
+      TB('catch', { a: P.catchLeg(ci, oi, obj('baseball'), 10, 'hard') }, duo(ci, oi, 'rex', { obj: obj('baseball') })), TB('toss', P.tossPartner(ci, O3, 'Ollie', 'hard', 10, 'friction'), duo(ci, oi, 'rex')), TB('wrestleThrow', P.throwPartner(ci, oi, 45), duo(ci, oi, 'rex', { angle: 45 }))];
+    ok('9g: at an unlimited dial the throw, stomp, punch (Silent strike), the hard catch, the hard toss and the Wrestle throw are unbounded: E is Infinity with unbounded set, no part NaN, and the level is the flare with no figure',
+      unb.every((tb) => tb.E === Infinity && tb.unbounded && clean(tb) && glow(tb.E).unbounded && glow(tb.E).level === 1), unb.map((tb) => tb.E).join(', '));
+    const fin = TB('throw', throwAt(c9(dial), obj('car'), 45).r, throwAt(c9(dial), obj('car'), 45).o);
+    const ls = P.collide(c9(dial, O3), c9(dial), { source: 'set', gb: Infinity }), li = P.collide(c9(dial, O3), Object.assign(c9(dial), { immovable: true }), { source: 'set', gb: Infinity });
+    const px = P.collide(c9(1e9 * g, O3), c9(1e9 * g, R3, { anchor: 'bolted' }), { source: 'sprint' });
+    const nanTB = [TB('collide', { outcome: 'carried', hitAbsorbed: { E: NaN }, carry: { stop: { E: NaN } } }, duo(c9(dial, O3), c9(dial), 'ollie')), TB('jump', { landing: { landed: true, soft: true, absorbed: NaN } }, c9(dial)),
+      TB('catch', { a: { result: 'caught', catch: { Ecatch: NaN } } }, duo(c9(dial, R3, { airAbsorb: 0 }), c9(dial, O3), 'rex', { obj: obj('baseball') })), TB('stomp', { absorbed: NaN }, c9(dial))];
+    ok('9g: no NaN: a finite run isn\'t unbounded; light speed into Rex (today\'s unstoppable, its energy real), into the truly immovable thought experiment (no physical answer) and into a bolted Rex (the paradox) take nothing back; NaN figures add nothing',
+      !fin.unbounded && isFinite(fin.E) && ls.outcome === 'unstoppable' && li.outcome === 'paradox' && px.outcome === 'paradox' && [ls, li, px].every((r) => { const tb = TB('collide', r, duo(c9(dial, O3), c9(dial), 'ollie')); return tb.E === 0 && clean(tb); }) && nanTB.every((tb) => tb.E === 0 && clean(tb)));
+    let thrown = 0;
+    for (const f of [() => TB('shimmer', {}, {}), () => TB('collide', {}, { whoA: 'Rex' })]) { try { f(); } catch (e) { thrown++; } }
+    ok('9g: an unknown move, or a name other than rex or ollie, is refused', thrown === 2 && TB('sprint', P.sprint(c9(dial)), c9(dial)).E === 0 && TB('arm', {}, duo(c9(dial), c9(dial, O3), 'rex')).E === 0);
+  }
+
+  // 9h. the tally adds no key to anything it reads, and changes no result (test part 1 hashes the results with every
+  // power off against the fixture; this checks the runs with the powers on)
+  { const c = c9(dial, R3, { airAbsorb: 0.5 }), runs = [];
+    const t = throwAt(c, obj('car'), 45), tp = throwAt(c9(dial), obj('person'), 45);
+    runs.push(['throw', t.r, t.o], ['throw', tp.r, tp.o], ['stomp', P.stomp(c9(1e9 * g)), c9(1e9 * g)], ['jump', P.jump(c9(dial, R3, { softLanding: true })), c9(dial, R3, { softLanding: true })]);
+    runs.push(['catch', { a: P.catchLeg(c, c9(dial, O3), obj('car'), 30, 'easy'), b: P.catchLeg(c9(dial, O3), c, obj('car'), 30, 'easy') }, duo(c, c9(dial, O3), 'rex', { obj: obj('car') })]);
+    runs.push(['toss', P.tossPartner(c, O3, 'Ollie', 'easy', 100, 'friction'), duo(c, c9(dial, O3), 'rex')], ['wrestleThrow', P.throwPartner(c, c9(dial, O3), 45), duo(c, c9(dial, O3), 'rex', { angle: 45 })]);
+    runs.push(['collide', P.collide(c9(dial, O3), c9(dial), { source: 'set', gb: gb1 }), duo(c9(dial, O3), c9(dial), 'ollie')]);
+    const snap = (x) => JSON.stringify(x, (k, v) => (typeof v === 'number' && !isFinite(v) ? String(v) : v));
+    const bad = runs.filter(([mv, r, o]) => { const b = snap(r), bo = snap(o); TB(mv, r, o); return snap(r) !== b || snap(o) !== bo; }).map(([mv]) => mv);
+    const p = P.RESTRAINT.planNow('throw', c, { obj: obj('car'), angle: 45, target: 30 }), u = p.goal().use, before = snap(p.run(u)), rb = snap(P.RESTRAINT.reach('throw', p.run(u), p.opt));
+    TB('throw', p.run(u), Object.assign({}, c, { use: u, obj: obj('car'), angle: 45 }));
+    ok('9h: the tally adds no key to, and changes nothing in, the results and options it reads (' + runs.length + ' runs, with the powers on), a plan\'s runs or reach(); RESTRAINT names it takenBack, not shimmer (reach().shimmer stays the water-glass ripple)',
+      !bad.length && snap(p.run(u)) === before && snap(P.RESTRAINT.reach('throw', p.run(u), p.opt)) === rb && typeof P.RESTRAINT.takenBack === 'function' && !('shimmer' in P.RESTRAINT) && 'shimmer' in P.RESTRAINT.reach('throw', p.run(u), p.opt), bad.join(', '));
+  }
+
+  // 9i. review round 1 of pull request 5 (research/reviews/canon-5-round1.json): the drag part's fixes (code-1, code-2,
+  // code-3) and the branches no check had read (code-5). Each expects the engine's own figure, worked out here
+  { const eq9 = (a, b) => a === b || Math.abs(a - b) <= 1e-9 * Math.abs(b);
+    const parts = (tb) => JSON.stringify(Object.fromEntries(Object.entries(tb.parts).filter(([, v]) => v > 0).map(([k, v]) => [k, sig(v)])));
+    // code-1: a leg real air slows hard (a fastball 300 m apart at 10^8 kg, a car 10 km apart at 10^9 kg, both ways, each
+    // catch taken back): real air's share by energy conservation, bounded by the step sum, so where the catch takes the
+    // whole arrival back the drag part is 0, and a leg's take is never more than the energy thrown in it
+    { const bad = [];
+      for (const [id, D0, kg] of [['baseball', 300, 1e8], ['car', 1e4, 1e9]]) {
+        const cR = c9(kg * g), cO = c9(kg * g, O3), a = P.catchLeg(cR, cO, obj(id), D0, 'hard'), b = P.catchLeg(cO, cR, obj(id), D0, 'hard'), tb = TB('catch', { a, b }, duo(cR, cO, 'rex', { obj: obj(id) }));
+        const thrown = (L) => P.keFromV(L.aim.vL, obj(id).m) + PE(obj(id).m, L.h0);
+        if (!chk(() => a.result === 'caught' && b.result === 'caught' && only(tb, { catch: a.catch.Ecatch + b.catch.Ecatch }) && only(tb.by.ollie, { catch: a.catch.Ecatch }) && only(tb.by.rex, { catch: b.catch.Ecatch })
+          && tb.by.ollie.E <= thrown(a) * (1 + 1e-9) && tb.by.rex.E <= thrown(b) * (1 + 1e-9))) bad.push(id + ' ' + D0 + ' m: ' + parts(tb));
+        // with the catcher's own recoil off the catch is real, and the drag part is the whole of real air's share
+        // (below the step sum of the same flight at the full drag, which overshoots the energy thrown here)
+        const cO0 = c9(kg * g, O3, { ownRecoil: false }), t0 = TB('catch', { a }, duo(cR, cO0, 'rex', { obj: obj(id) })), want = legReal(a, obj(id)), ob = obj(id);
+        const steps = P.flyTo({ v0: a.aim.vE, thetaDeg: a.aim.thetaDeg, h0: a.h0, hStop: 0, xStop: a.Dfl, Dend: a.Dfl, m: ob.m, A: ob.area, Cd: ob.Cd, CdSup: ob.CdSup }).dragE;
+        if (!chk(() => only(t0, { drag: want }) && want <= thrown(a) && want < steps && steps > thrown(a))) bad.push(id + ' ' + D0 + ' m, catch real: ' + parts(t0) + ' vs ' + sig(want) + ' (step sum ' + sig(steps) + ', thrown ' + sig(thrown(a)) + ')');
+      }
+      // a leg that burns up (a fastball 300 m apart at 10^11 kg, Things keep their form off, half the drag): at most half
+      // of what was thrown
+      const x = { keepForm: false, airAbsorb: 0.5, ownRecoil: false, noKnockback: false, safePassenger: false }, cR = c9(1e11 * g, R3, x), cO = c9(1e11 * g, O3, x), L = P.catchLeg(cR, cO, obj('baseball'), 300, 'hard'), tb = TB('catch', { a: L }, duo(cR, cO, 'rex', { obj: obj('baseball') }));
+      if (!chk(() => L.result === 'burns-up' && only(tb, { drag: 0.5 * legReal(L, obj('baseball')) }) && tb.parts.drag <= 0.5 * (P.keFromV(L.aim.vE, obj('baseball').m) + PE(obj('baseball').m, L.h0)))) bad.push('burns up: ' + parts(tb));
+      ok('9i: code-1: a game-of-catch leg that real air slows hard (a fastball 300 m apart at 10^8 kg, a car 10 km apart at 10^9 kg): real air\'s share by energy conservation, never more than the step sum, so with each catch taken back the drag part is 0 and each leg\'s take is its catch alone, never more than the energy thrown in it; a leg that burns up gives at most half of what was thrown at half the drag', !bad.length, bad.join('; ')); }
+    // code-2: a toss real air wouldn't bring back down (a dense Ollie, 10^6 kg at his 3.06 m, tossed hard at 10^14 kg) and a
+    // leg that overshoots and that real air wouldn't bring down either (the Empire State Building thrown hard 100 km apart at
+    // 10^16 kg, the catch real): the drag along that full-drag flight, not all of its energy; and the "if he misses" what-if
+    // for a person who would fly on and leave the Earth (a fastball 10 m apart at 10^14.5 kg): no landing, only the drag
+    { const OD = P.makeBody({ build: 'ollie', H: 3.06, m: 1e6 }), cR = c9(1e14 * g), cO = c9(1e14 * g, OD), t = P.tossPartner(cR, OD, 'Ollie', 'hard', 10, 'friction'), tb = TB('toss', t, duo(cR, cO, 'rex'));
+      const f0 = chk(() => t.v < P.CATCH.V_FIREBALL) ? P.flyTo({ v0: t.v, thetaDeg: 90, h0: R3.releaseHeight, hStop: R3.releaseHeight, m: t.obj.m, A: t.obj.area, Cd: t.obj.Cd, CdSup: t.obj.CdSup }) : {};
+      const cp = c9(Math.pow(10, 14.5) * g), op = c9(Math.pow(10, 14.5) * g, O3), Lp = P.catchLeg(cp, op, obj('person'), 10, 'hard'), tm = TB('catch', { a: Lp }, duo(cp, op, 'rex', { obj: obj('person'), miss: true }));
+      const xe = { ownRecoil: false, safePassenger: false, noKnockback: false }, ce = c9(1e16 * g, R3, xe), oe = c9(1e16 * g, O3, xe), Le = P.catchLeg(ce, oe, obj('esb'), 1e5, 'hard'), te = TB('catch', { a: Le }, duo(ce, oe, 'rex', { obj: obj('esb') })), Ee = P.keFromV(Le.vL, obj('esb').m);
+      const fe = P.flyTo({ v0: Le.vL, thetaDeg: Le.thetaDeg, h0: Le.h0, hStop: 0, xStop: Le.Dfl, Dend: Le.Dfl, m: obj('esb').m, A: obj('esb').area, Cd: obj('esb').Cd, CdSup: obj('esb').CdSup });
+      ok('9i: code-2: a toss real air would not bring back down (a dense Ollie, 10^6 kg, tossed hard at 10^14 kg) and a leg that overshoots and escapes even in real air (the Empire State Building thrown 100 km at 10^16 kg): the drag along that full-drag flight, ' + sig(tb.parts.drag) + ' J of ' + sig(P.keFromV(t.v, t.obj.m)) + ' J and ' + sig(te.parts.drag) + ' J of ' + sig(Ee) + ' J; a missed person who would fly on and leave the Earth lands nowhere, so the what-if takes back no landing, only the drag',
+        chk(() => t.result === 'escapes' && f0.escaped && !f0.landed && only(tb, { drag: tossReal(t, cR) }) && tb.parts.drag < 0.5 * P.keFromV(t.v, t.obj.m)
+          && Le.result === 'overshoots' && fe.escaped && only(te, { drag: legReal(Le, obj('esb')) }) && te.parts.drag < 0.9 * Ee
+          && Lp.miss && Lp.miss.leaves && !Lp.miss.hits && only(tm, { drag: legReal(Lp, obj('person')) })), parts(tb) + ' | overshoot ' + parts(te) + ' | miss ' + parts(tm)); }
+    // code-3: a dense Rex (10^12 kg at 10 ft): the car leaves his hand faster than it keeps once clear of his own pull, and
+    // real air's take starts from what it keeps (vOut), not the energy at his hand (the climb out of his well is gravity's);
+    // at a 10^11 kg dial it falls back into his pull: no drag part
+    { const RD = P.makeBody({ build: 'rex', H: 3.048, m: 1e12 }), c = c9(1e12 * g, RD), t = throwAt(c, obj('car'), 45), tb = TB('throw', t.r, t.o), m = obj('car').m;
+      const cf = c9(1e11 * g, RD), tf = throwAt(cf, obj('car'), 45), tbf = TB('throw', tf.r, tf.o);
+      ok('9i: code-3: a dense Rex (10^12 kg at 10 ft), a car at 45 degrees at 10^12 kg: real air\'s take, ' + sig(tb.parts.drag) + ' J, from the energy that leaves his well (' + sig(P.keFromV(t.r.vOut, m)) + ' J at ' + sig(t.r.vOut) + ' m/s; at his hand ' + sig(t.r.Eobj) + ' J); at a 10^11 kg dial it falls back into his pull, and there is no drag part',
+        chk(() => t.r.vOut < 0.9 * t.r.v && only(tb, { drag: realAir(t.r, obj('car'), 45, RD) }) && tb.parts.drag <= P.keFromV(t.r.vOut, m) + PE(m, RD.releaseHeight) && tf.r.fallsBack && tf.r.canMove && tbf.E === 0), parts(tb) + ' | falls back ' + parts(tbf)); }
+    // code-5: the Wrestle throw at 20 and 90 degrees (the tally reads the angle thrown)
+    { const A = c9(dial), B = c9(dial, O3), ws = [20, 90].map((th) => { const w = P.throwPartner(A, B, th); return { th, w, tb: TB('wrestleThrow', w, duo(A, B, 'rex', { angle: th })) }; });
+      ok('9i: code-5: the Wrestle throw at 20 and 90 degrees at the dial: the drag part is real air\'s take from the throw at that angle (' + ws.map((x) => sig(x.tb.parts.drag)).join(' and ') + ' J)',
+        chk(() => ws.every((x) => only(x.tb, { drag: realAir(x.w.r, x.w.obj, x.th, R3) }) && x.tb.by.rex.E === x.tb.E) && !eq9(ws[0].tb.E, ws[1].tb.E)), ws.map((x) => x.th + ': ' + parts(x.tb)).join('; ')); }
+    // code-5: a leg the two bodies' own pull rules (both 10^13 kg at 10 ft, a 10^13 kg dial, a fastball 10 m apart), with the
+    // catcher's own recoil off, so the catch is real: the drag part is the share of the straight run's own drag at the full
+    // drag (the same leg in real air), at all and half of the drag
+    { const RB = P.makeBody({ build: 'rex', H: 3.048, m: 1e13 }), OB = P.makeBody({ build: 'ollie', H: 3.048, m: 1e13 }), F = 1e13 * g;
+      const rows = [1, 0.5].map((s) => { const A = c9(F, RB, { airAbsorb: s }), C = c9(F, OB, { airAbsorb: s, ownRecoil: false }), L = P.catchLeg(A, C, obj('baseball'), 10, 'hard'), L0 = P.catchLeg(c9(F, RB, { airAbsorb: 0 }), c9(F, OB, { airAbsorb: 0, ownRecoil: false }), obj('baseball'), 10, 'hard');
+        return { s, L, L0, tb: TB('catch', { a: L }, duo(A, C, 'rex', { obj: obj('baseball') })) }; });
+      ok('9i: code-5: a leg the two 10^13 kg bodies\' own pull rules, the catch real: the drag part is the share of the full-drag straight run\'s own drag (' + rows.map((x) => sig(x.tb.parts.drag)).join(' and ') + ' J at all and half of it)',
+        chk(() => rows.every((x) => x.L.wells.wellDominated && x.L.result === 'caught' && x.L0.result === 'caught' && x.L0.aim.vL === x.L.aim.vL && x.L0.drag.E > 0 && only(x.tb, { drag: x.s * x.L0.drag.E }))), rows.map((x) => parts(x.tb)).join('; ')); }
+    // code-5: the catches that reach him but aren't clean count too: one that slams into him (a fastball 10 m apart, Rex at
+    // 10^10 kg, Ollie at 10^3 kg), one he can't hold up (a car lobbed 10 m, Rex at 10^4 kg, Ollie at 10^3 kg), and the
+    // partner toss that slams into Rex's arms (hard, 10 m, 10^4 kg)
+    { const leg = (FA, FB, id, st) => { const A = c9(FA * g), B = c9(FB * g, O3), L = P.catchLeg(A, B, obj(id), 10, st); return { L, tb: TB('catch', { a: L }, duo(A, B, 'rex', { obj: obj(id) })) }; };
+      const sl = leg(1e10, 1e3, 'baseball', 'hard'), ch = leg(1e4, 1e3, 'car', 'easy'), A = c9(1e4 * g), t = P.tossPartner(A, O3, 'Ollie', 'hard', 10, 'friction'), tt = TB('toss', t, duo(A, c9(1e4 * g, O3), 'rex'));
+      ok('9i: code-5: a catch that slams into Ollie (' + sig(sl.tb.E) + ' J), one he can\'t hold up (' + sig(ch.tb.E) + ' J) and a partner toss that slams into Rex\'s arms (' + sig(tt.E) + ' J) are each the catcher\'s catch',
+        chk(() => sl.L.result === 'slams' && only(sl.tb.by.ollie, { catch: sl.L.catch.Ecatch }) && sl.tb.by.rex.E === 0 && ch.L.result === 'cant-hold-it' && only(ch.tb.by.ollie, { catch: ch.L.catch.Ecatch }) && ch.tb.by.rex.E === 0 && t.result === 'slams' && only(tt.by.rex, { catch: t.catch.Ecatch }) && tt.by.ollie.E === 0)); }
+    // code-5: a gentle lob too weak for the gentlest arc is thrown all-out (fullStrength: a bus lobbed 31.6 m at 10^5.25 kg,
+    // their own recoil off, so the catch is real): real air's take is from that full-strength throw, flown as the fastball
+    // it is; and an overshooting leg past 1% of light speed (a leg as catchLeg returns it, built here: the aim's knife-edge
+    // case, which no grid of real runs found) gives all of its energy
+    { const F = Math.pow(10, 5.25) * g, x = { ownRecoil: false }, A = c9(F, R3, x), B = c9(F, O3, x), L = P.catchLeg(A, B, obj('bus'), 31.6, 'easy'), tb = TB('catch', { a: L }, duo(A, B, 'rex', { obj: obj('bus') }));
+      const vO = 0.02 * P.K.c, Lo = { result: 'overshoots', relativistic: true, vL: vO, thetaDeg: 0, h0: R3.releaseHeight, Dfl: 1e6, wells: { wellDominated: false } };
+      const to = [1, 0.5].map((s) => TB('catch', { a: Lo }, duo(c9(dial, R3, { airAbsorb: s }), c9(dial, O3), 'rex', { obj: obj('baseball') })));
+      ok('9i: code-5: a gentle lob thrown all-out because it is too weak for the gentlest arc (a bus lobbed 31.6 m at 10^5.25 kg): real air\'s take from that full-strength throw, ' + sig(tb.parts.drag) + ' J; an overshooting leg past 1% of light speed: the share of all of its energy',
+        chk(() => L.fullStrength && L.result === 'caught' && only(tb, { drag: legReal(L, obj('bus')) }) && only(to[0], { drag: P.keFromV(vO, obj('baseball').m) }) && only(to[1], { drag: 0.5 * P.keFromV(vO, obj('baseball').m) })), parts(tb)); }
+  }
+
+  // 9j. review round 2 of pull request 5 (research/reviews/canon-5-round2.json): the arm-wrestling pin's footing (code-1),
+  // the count-once rule for fast catches (code-2) and two branches no check had read (code-3). Each expects the engine's
+  // own figure, worked out here
+  { const parts = (tb) => JSON.stringify(Object.fromEntries(Object.entries(tb.parts).filter(([, v]) => v > 0).map(([k, v]) => [k, sig(v)])));
+    const eq9 = (a, b) => a === b || Math.abs(a - b) <= 1e-9 * Math.abs(b);
+    // code-1: a pin whose slam real ground under the table would take as a crater (armWrestle's own rule: 2 km/s or more,
+    // below 1% of light speed) is held by Unbreakable footing, so its energy is a footing part, the winner's (his swing
+    // drives it), as the stomp's is; with the power off the crater is real and nothing is taken back; nothing below 2 km/s,
+    // in a stalemate, or past 1% of light speed (no crater model there)
+    { const arm = (fa, fb, x, whoA) => { const oA = whoA === 'ollie', A = c9(fa * g, oA ? O3 : R3, x), B = c9(fb * g, oA ? R3 : O3, x), r = P.armWrestle(A, B); return { r, tb: TB('arm', r, duo(A, B, whoA || 'rex')) }; };
+      const w = arm(1e9, 1e8), off = arm(1e9, 1e8, { unbreakable: false }), lost = arm(1e8, 1e9), oa = arm(1e9, 1e8, {}, 'ollie'), slow = arm(1e6, 1e5), tie = arm(1e9, 1e9), rel = arm(1e16, 1e3);
+      ok('9j: code-1: arm wrestling: Rex at 10^9 kg pins Ollie at 10^8 kg at ' + sig(w.r.pin.v) + ' m/s; with Unbreakable footing on, the slam real ground would crater (' + sig(off.r.crater) + ' m across with the power off) is a footing part, ' + sig(w.tb.E) + ' J, the winner\'s, ' + glow(w.tb.by.rex.E).text + '; with it off the crater is real and nothing is taken back; Ollie winning, or named A, it is his; nothing below 2 km/s, in a stalemate or past 1% of light speed',
+        chk(() => w.r.outcome === 'pin' && w.r.winner === 'A' && w.r.pin.v >= 2000 && !w.r.relativistic && w.r.crater === 0 && only(w.tb, { footing: w.r.pin.E }) && w.tb.by.rex.E === w.r.pin.E
+          && off.r.crater > 0 && off.r.pin.E === w.r.pin.E && off.tb.E === 0 && lost.r.winner === 'B' && only(lost.tb.by.ollie, { footing: lost.r.pin.E }) && lost.tb.by.rex.E === 0
+          && only(oa.tb.by.ollie, { footing: oa.r.pin.E }) && oa.tb.by.rex.E === 0 && slow.r.outcome === 'pin' && slow.r.pin.v < 2000 && slow.tb.E === 0 && tie.r.outcome === 'stalemate' && tie.tb.E === 0
+          && rel.r.outcome === 'pin' && rel.r.relativistic && rel.tb.E === 0), parts(w.tb) + ' | off ' + parts(off.tb) + ' | Ollie wins ' + parts(lost.tb.by.ollie) + ' | 2 km/s ' + parts(slow.tb) + ' | relativistic ' + parts(rel.tb)); }
+    // code-2: a catch that takes everything back leaves no drag part: wherever real air's take from a leg is no more than
+    // the energy of its motion as it arrives (the same relativistic convention), the drag part is exactly 0, at every speed
+    // (a fastball, a person and a car, 10 m, 1 km and 31.6 km apart, 10^8 to 10^16 kg, the default powers: the legs
+    // that reach the catcher, past 1% of light speed included); where real air's take exceeds it (a fastball 316 km
+    // apart reaches him with a little less motion than it was thrown with, while real air would take all of it), the drag
+    // part is that excess
+    { let zero = 0, fast = 0, over = 0; const bad = [], seen = {}, tagOf = (id, D0, e) => id + ' ' + sig(D0) + ' m 10^' + e;
+      const grid = [];
+      for (const id of ['baseball', 'person', 'car']) for (const D0 of [10, 1e3, Math.pow(10, 4.5)]) for (let e = 8; e <= 16; e++) grid.push([id, D0, e]);
+      for (const [id, D0, e] of grid.concat([['baseball', Math.pow(10, 5.5), 9], ['baseball', Math.pow(10, 5.5), 12]])) {
+        const cR = c9(Math.pow(10, e) * g), cO = c9(Math.pow(10, e) * g, O3), Lg = P.catchLeg(cR, cO, obj(id), D0, 'hard');
+        if (!['caught', 'slams', 'wreckage', 'cant-hold-it'].includes(Lg.result) || !Lg.catch || !isFinite(Lg.catch.Ecatch)) continue;
+        const tb = TB('catch', { a: Lg }, duo(cR, cO, 'rex', { obj: obj(id) })), real = legReal(Lg, obj(id)), arr = Math.max(Lg.catch.Ecatch, P.keFromV(Lg.vArrive, obj(id).m));
+        const tag = tagOf(id, D0, e);
+        if (real <= arr * (1 + 1e-9)) { zero++; if (Lg.fast) fast++; seen[tag] = 1; if (!(tb.parts.drag === 0 && tb.by.ollie.parts.catch === Lg.catch.Ecatch)) bad.push(tag + (Lg.fast ? ' (fast)' : '') + ': ' + parts(tb)); }
+        else { over++; if (!(tb.parts.drag > 0 && eq9(tb.parts.drag, real - arr))) bad.push(tag + ' (real air\'s take exceeds the arrival): ' + parts(tb) + ' vs ' + sig(real - arr)); }
+      }
+      const pageCases = [tagOf('baseball', 10, 14), tagOf('baseball', 1e3, 13), tagOf('person', Math.pow(10, 4.5), 12)];
+      // (and at an unlimited dial: a hard catch's unbounded arrival holds the unbounded drag too, so the drag part is 0)
+      const ci = c9(Infinity), oi = c9(Infinity, O3), unb = ['baseball', 'car', 'person'].map((id) => { const Lu = P.catchLeg(ci, oi, obj(id), 10, 'hard'); return { id, Lu, tb: TB('catch', { a: Lu, b: Lu }, duo(ci, oi, 'rex', { obj: obj(id) })) }; });
+      for (const u of unb) if (!chk(() => u.Lu.catch && u.Lu.catch.Ecatch === Infinity && u.tb.parts.catch === Infinity && u.tb.parts.drag === 0 && u.tb.by.rex.parts.drag === 0 && u.tb.E === Infinity)) bad.push(u.id + ' at unlimited strength: ' + parts(u.tb));
+      ok('9j: code-2: a catch taken back that holds all of real air\'s take leaves a drag part of exactly 0 at every speed (' + zero + ' legs, ' + fast + ' past 1% of light speed, among them the page\'s fastball 10 m apart at 10^14 kg, 1 km apart at 10^13 kg and the person 31.6 km apart at 10^12 kg; and a hard catch at unlimited strength, whose unbounded catch holds the unbounded drag); where real air\'s take exceeds the arrival (' + over + ' legs), the drag part is that excess',
+        !bad.length && zero > 30 && fast > 0 && over >= 2 && pageCases.every((k) => seen[k]), bad.slice(0, 4).join('; ') + ' | ' + pageCases.filter((k) => !seen[k]).join(', ')); }
+    // code-3 (a): a tank thrown at 45 and 90 degrees at 10^16.5 kg escapes below 1% of light speed; the full-drag flight's
+    // own drag tally runs a little over the energy that leaves his well, E1 = KE(vOut) + PE(release), and the drag part is
+    // capped there: it is E1, never more (9c's throws never reach the cap)
+    { const rows = [45, 90].map((th) => { const c = c9(Math.pow(10, 16.5) * g), ob = obj('tank'), t = throwAt(c, ob, th), E1 = P.keFromV(t.r.vOut, ob.m) + PE(ob.m, R3.releaseHeight);
+        const f0 = P.fly({ v0: t.r.vOut, thetaDeg: th, h0: R3.releaseHeight, m: ob.m, A: ob.area, Cd: ob.Cd, CdSup: ob.CdSup, tally: true }); return { th, t, E1, f0, tb: TB('throw', t.r, t.o) }; });
+      ok('9j: code-3: the drag part never exceeds what was thrown: a tank thrown at 45 and 90 degrees at 10^16.5 kg escapes, its full-drag flight\'s tally ' + rows.map((x) => (x.f0.air.E / x.E1).toPrecision(5)).join(' and ') + ' times the energy that leaves his well, and the drag part is that energy, ' + rows.map((x) => sig(x.E1)).join(' and ') + ' J',
+        chk(() => rows.every((x) => !x.t.r.flight.relativistic && x.t.r.flight.escaped && !x.f0.landed && x.f0.air.E > x.E1 && only(x.tb, { drag: x.E1 }))), rows.map((x) => x.th + ': ' + parts(x.tb)).join('; ')); }
+    // code-3 (b): a catcher taller than the thrower (Ollie 10 m tall, a car lobbed 10 m at the dial, their own recoil off
+    // so the catch is real): the full-drag lob never rises to his hands and comes down on the ground, so real air's take is
+    // from its energy at Rex's hand to its energy where it lands, at the ground (legReal, here)
+    { const OT = P.makeBody({ build: 'ollie', H: 10, m: 3000 }), x = { ownRecoil: false }, A = c9(dial, R3, x), B = c9(dial, OT, x), car = obj('car'), Lb = P.catchLeg(A, B, car, 10, 'easy'), tb = TB('catch', { a: Lb }, duo(A, B, 'rex', { obj: car }));
+      const fl = chk(() => Lb.aim) ? P.flyTo({ v0: Lb.aim.vE, thetaDeg: Lb.aim.thetaDeg, h0: Lb.h0, hStop: Lb.hStop, Dend: Lb.Dfl, m: car.m, A: car.area, Cd: car.Cd, CdSup: car.CdSup }) : {};
+      ok('9j: code-3: a catcher taller than the thrower (Ollie 10 m tall, a car lobbed 10 m, the catch real): the full-drag lob never reaches his hands (' + sig(Lb.hStop) + ' m up) and lands, so real air\'s take runs to the ground: ' + sig(tb.parts.drag) + ' J',
+        chk(() => Lb.result === 'caught' && Lb.hStop > Lb.h0 && fl.belowStop && fl.landed && only(tb, { drag: legReal(Lb, car) }) && tb.parts.drag > 0), parts(tb)); }
   }
 }
 

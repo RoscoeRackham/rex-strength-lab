@@ -1,0 +1,146 @@
+{
+ "1-charger-slows": {
+  "exit": 1,
+  "fails": [
+   "FAIL 6: the momentum ledger closes for every move (a throw at 0, 45 and 90 degrees, stomp, punch, clap, jump, pull, shove, wrestle throw and landing, ",
+   "FAIL 8a: a charger with his recoil taken keeps his speed; the one hit, on his footing, leaves at his speed (splat) or 2v/(1+v^2/c^2) (bounce), and the"
+  ],
+  "crash": ""
+ },
+ "2-one-hit-not-carried": {
+  "exit": 1,
+  "fails": [
+   "FAIL 8a: a charger with his recoil taken keeps his speed; the one hit, on his footing, leaves at his speed (splat) or 2v/(1+v^2/c^2) (bounce), and the",
+   "FAIL 8c: the hit's freed energy is absorbed by default (499 kJ at the default sprint: hitAbsorbed, none of it in Elocal) and real when he means it (me",
+   "FAIL 8l: the brief's Collide figures at 3,000 kg: the sprint carries Rex at 18.1 m/s, Ollie's source supplies about 55,000 kg m/s (54,400 + his footin"
+  ],
+  "crash": ""
+ },
+ "3-source-wrong-momentum": {
+  "exit": 1,
+  "fails": [
+   "FAIL 6: the momentum ledger closes for every move (a throw at 0, 45 and 90 degrees, stomp, punch, clap, jump, pull, shove, wrestle throw and landing, ",
+   "FAIL 8a: a charger with his recoil taken keeps his speed; the one hit, on his footing, leaves at his speed (splat) or 2v/(1+v^2/c^2) (bounce), and the",
+   "FAIL 8l: the brief's Collide figures at 3,000 kg: the sprint carries Rex at 18.1 m/s, Ollie's source supplies about 55,000 kg m/s (54,400 + his footin"
+  ],
+  "crash": ""
+ },
+ "4-no-paradox-held": {
+  "exit": 1,
+  "fails": [
+   "FAIL 6: the ledger booked Collide carried (the charger's source supplying), held and knocked back, and saw the paradox; and the fireball's push with N",
+   "FAIL 8b: the paradox where the one hit is held without limit by their powers (bolted on Unbreakable footing at a sprint, 0.1% of c and light speed; la",
+   "FAIL 8l: the brief's Collide figures at 3,000 kg: the sprint carries Rex at 18.1 m/s, Ollie's source supplies about 55,000 kg m/s (54,400 + his footin"
+  ],
+  "crash": ""
+ },
+ "5-paradox-not-held": {
+  "exit": 1,
+  "fails": [
+   "FAIL 6: the momentum ledger closes for every move (a throw at 0, 45 and 90 degrees, stomp, punch, clap, jump, pull, shove, wrestle throw and landing, ",
+   "FAIL 8a: a charger with his recoil taken keeps his speed; the one hit, on his footing, leaves at his speed (splat) or 2v/(1+v^2/c^2) (bounce), and the"
+  ],
+  "crash": ""
+ },
+ "6-shoving-match-deadlocks": {
+  "exit": 1,
+  "fails": [
+   "FAIL 8f: the steady push with the pusher's recoil taken: his push is his strength (8.90e+5 N, not capped by his 1.77e+4 N footing), he never slips, an",
+   "FAIL 8g: the shoving match at the default dial, their recoil taken: each pushes with 1.77e+4 N against each grip of 1.77e+4 N (1.00x), so both are sho",
+   "FAIL 8g: at the least effort two-player searches use (the strength to stand and walk, 2.57e+3 kg-force), equal bodies are still shoved apart, on every",
+   "FAIL 8g: the walk-out where only one push beats the other's grip, at the Pull tab's pace for the winner's own body, a = min((his push - the loser's ho",
+   "FAIL 8g: a bolted Rex with the power on shoves Ollie off over the stroke (NaN m/s, sliding NaN m) and doesn't move; with it off he only holds (a dead ",
+   "FAIL 8g: a single bolted wrestler on real rock: past the rock's tear load (6.97e+5 N) the rock around his bolts tears out and only his feet hold him (",
+   "FAIL 8l: the brief's shoving match at the default dial: each push 889,644 N against each grip 17,652 N on concrete (about 50x), both shoved apart at a"
+  ],
+  "crash": ""
+ },
+ "7-steady-push-capped": {
+  "exit": 1,
+  "fails": [
+   "FAIL 8f: the steady push with the pusher's recoil taken: his push is his strength (1.77e+4 N, not capped by his 1.77e+4 N footing), he never slips, an"
+  ],
+  "crash": ""
+ },
+ "8-fireball-pushes-with-nkb": {
+  "exit": 1,
+  "fails": [
+   "FAIL 6: the momentum ledger closes for every move (a throw at 0, 45 and 90 degrees, stomp, punch, clap, jump, pull, shove, wrestle throw and landing, ",
+   "FAIL 8k: Never knocked back on: the fireball (a fastball 10 m apart at 10^14 kg, Things keep their form off, all the drag acting) doesn't move Ollie; "
+  ],
+  "crash": ""
+ },
+ "9-hit-energy-real-by-default": {
+  "exit": 1,
+  "fails": [
+   "FAIL 8a: a charger with his recoil taken keeps his speed; the one hit, on his footing, leaves at his speed (splat) or 2v/(1+v^2/c^2) (bounce), and the",
+   "FAIL 8c: the hit's freed energy is absorbed by default (499 kJ at the default sprint: hitAbsorbed, none of it in Elocal) and real when he means it (me"
+  ],
+  "crash": ""
+ },
+ "x1-bounce-overcount-back": {
+  "exit": 1,
+  "fails": [
+   "FAIL 6: the momentum ledger closes for every move (a throw at 0, 45 and 90 degrees, stomp, punch, clap, jump, pull, shove, wrestle throw and landing, ",
+   "FAIL 8e: knocked back in a bounce (Unbreakable footing alone), nothing goes into the ground through his footing (the bounce bound ignores it, as its s"
+  ],
+  "crash": ""
+ },
+ "x2-arm-reading-A": {
+  "exit": 1,
+  "fails": [
+   "FAIL 8i: arm wrestling on the table with the winner's recoil taken: his pad holds the loser's press (0.00 N, against 2.49e+5 N with the power off), an",
+   "FAIL 8i: standing, once the presses break the table (Things keep their form off): his own footing no longer caps his own press (both at the dial: a st"
+  ],
+  "crash": ""
+ },
+ "x3-arm-old-pad": {
+  "exit": 1,
+  "fails": [
+   "FAIL 8i: arm wrestling on the table with the winner's recoil taken: his pad holds the loser's press (2.49e+5 N, against 2.49e+5 N with the power off),"
+  ],
+  "crash": ""
+ },
+ "x4-both-at-once-old": {
+  "exit": 1,
+  "fails": [
+   "FAIL 8h: Both at once with their recoil taken: each is shoved by the other's shove (Rex at 0.00 m/s, Ollie at 21.1 m/s, each sliding about 0.00 m), ea"
+  ],
+  "crash": ""
+ },
+ "x5-standing-press-capped": {
+  "exit": 1,
+  "fails": [
+   "FAIL 8i: standing, once the presses break the table (Things keep their form off): his own footing no longer caps his own press (both at the dial: a st"
+  ],
+  "crash": ""
+ },
+ "x6-fireball-energy-all-real": {
+  "exit": 1,
+  "fails": [
+   "FAIL 8k: Never knocked back on: the fireball (a fastball 10 m apart at 10^14 kg, Things keep their form off, all the drag acting) doesn't move Ollie; "
+  ],
+  "crash": ""
+ },
+ "x7-walkout-old-pace": {
+  "exit": 1,
+  "fails": [
+   "FAIL 8g: the walk-out where only one push beats the other's grip, at the Pull tab's pace for the winner's own body, a = min((his push - the loser's ho"
+  ],
+  "crash": ""
+ },
+ "x8-rock-dipole-kept": {
+  "exit": 1,
+  "fails": [
+   "FAIL 8f: the steady push with the pusher's recoil taken: his push is his strength (8.90e+5 N, not capped by his 1.77e+4 N footing), he never slips, an"
+  ],
+  "crash": ""
+ },
+ "x9-immovable-own": {
+  "exit": 1,
+  "fails": [
+   "FAIL 8d: the Truly immovable thought experiment is unchanged with They take their own recoil on (the charge from a sprint, a jump and a stomp-launch, "
+  ],
+  "crash": ""
+ }
+}

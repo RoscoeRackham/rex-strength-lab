@@ -1,0 +1,22 @@
+Review round 2 of pull request 3 (Safe passenger): fix the 8 confirmed findings
+
+- Where the ground gives way under a person's landing (PASSENGER.landGround) now
+  compares only the downward part of the push, as weakGround splits a landing,
+  over the person's own stop L / v with no 1 ms floor (that floor stays in
+  landShake). Straight down: slab 102 m/s, ice 144, steel 1.8 km/s (was 5.6),
+  granite 2.7 km/s (was 13); at 45 degrees the slab gives way from about
+  120 m/s. The game of catch works the miss's angle out again from the leg
+  (catchMissAngle), so no result gains a key.
+- A person kept whole (Things keep their form on) who hits the ground below
+  100% absorbed: their own share is their landing (hitsGround.own, a powers-on
+  key); only the swept air's heat and motion blast a crater.
+- An unbounded push has no physical answer; one that moves the whole Earth
+  counts its least energy, p^2 / 2 M_E, as the hit's blast.
+- On ice and the steel deck nothing claims the landing's shaking counts.
+- Checks for round 1's two Game of catch card fixes; new and tightened checks
+  in test/powers.js and test/shots.js, each seen failing with its fix reverted.
+- README pull request 3 section closed out, review record
+  research/reviews/canon-3-round2.json, STATUS.md.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_0136zsmhtj8TCY2T2u8SKMVX

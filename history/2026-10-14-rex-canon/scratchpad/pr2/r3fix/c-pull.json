@@ -1,0 +1,11 @@
+[
+ {"name":"bolted car least", "state":{"action":"pull","anchor":"bolted"}, "read":["#bay .verdict","#bay .status-row","#bay .happens","#bay .effort-read","#bay details.math"]},
+ {"name":"bolted car allout", "state":{"action":"pull","anchor":"bolted"}, "picks":[["#effort","allout"]], "read":["#bay .verdict","#bay .happens","#bay .effort-read"]},
+ {"name":"bolted baseball least", "state":{"action":"pull","anchor":"bolted","obj":"baseball"}, "read":["#bay .verdict","#bay .status-row","#bay .happens","#bay .effort-read"]},
+ {"name":"friction car least", "state":{"action":"pull"}, "read":["#bay .verdict","#bay .status-row","#bay .happens","#bay .effort-read","#bay details.math"]},
+ {"name":"friction car allout", "state":{"action":"pull"}, "picks":[["#effort","allout"]], "read":["#bay .happens"]},
+ {"name":"bolted bus plaster", "state":{"action":"pull","obj":"bus","anchor":"bolted"}, "picks":[["#effort","plaster"]], "read":["#bay .effort-read","#bay .happens"]},
+ {"name":"bolted car 1e6", "state":{"action":"pull","anchor":"bolted","logKg":6}, "read":["#bay .effort-read"]},
+ {"name":"bolted loco off", "state":{"action":"pull","anchor":"bolted","ownRecoil":false,"obj":"loco"}, "read":["#bay .effort-read"]},
+ {"name":"friction off", "state":{"action":"pull","ownRecoil":false}, "read":["#bay .effort-read"]}
+]

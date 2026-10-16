@@ -1,0 +1,915 @@
+{
+ "F-code1-leg-step-sum": {
+  "kind": "revert",
+  "test": "tally",
+  "fails": [
+   "9c: the Wrestle throw, the partner toss and the game of catch's throws, with no arrival taken back: the drag p",
+   "9i: code-1: a game-of-catch leg that real air slows hard (a fastball 300 m apart at 10^8 kg, a car 10 km apart"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "F-code2-throw-all": {
+  "kind": "revert",
+  "test": "tally",
+  "fails": [
+   "9c: a throw even real air would not bring down (straight up: the staff at 10^12.5 kg, the Empire State Buildin"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "F-code2-fly-tally": {
+  "kind": "revert",
+  "test": "tally",
+  "fails": [
+   "9c: a throw even real air would not bring down (straight up: the staff at 10^12.5 kg, the Empire State Buildin"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "F-code2-toss-all": {
+  "kind": "revert",
+  "test": "tally",
+  "fails": [
+   "9i: code-2: a toss real air would not bring back down (a dense Ollie, 10^6 kg, tossed hard at 10^14 kg) and a "
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "F-code2-leg-all": {
+  "kind": "revert",
+  "test": "tally",
+  "fails": [
+   "9i: code-2: a toss real air would not bring back down (a dense Ollie, 10^6 kg, tossed hard at 10^14 kg) and a "
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "F-code3-from-hand": {
+  "kind": "revert",
+  "test": "tally",
+  "fails": [
+   "9i: code-3: a dense Rex (10^12 kg at 10 ft), a car at 45 degrees at 10^12 kg: real air's take, 1.27e+5 J, from"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "F-copy1-growth-box": {
+  "kind": "revert",
+  "test": "page",
+  "fails": [
+   "pr5 [absorbed-shows]"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "F-copy1-hint": {
+  "kind": "revert",
+  "test": "page",
+  "fails": [
+   "pr5 [absorbed-shows]"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "F-copy1-callout": {
+  "kind": "revert",
+  "test": "page",
+  "fails": [
+   "pr5 [absorbed-shows]"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "F-copy1-card": {
+  "kind": "revert",
+  "test": "page",
+  "fails": [
+   "pr5 [absorbed-shows]"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "F-unbounded-words": {
+  "kind": "revert",
+  "test": "page",
+  "fails": [
+   "pr5 [unbounded]"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "F-code2-page-escape": {
+  "kind": "revert",
+  "test": "page",
+  "fails": [
+   "pr5 [real-air]"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "F-code2-page-relativistic": {
+  "kind": "revert",
+  "test": "page",
+  "fails": [
+   "pr5 [real-air]"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "F-code2-card": {
+  "kind": "revert",
+  "test": "page",
+  "fails": [
+   "pr5 [shimmer-card]"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "F-copy2-card": {
+  "kind": "revert",
+  "test": "page",
+  "fails": [
+   "pr5 [recoil-card]"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "F-copy4-share-sentence": {
+  "kind": "revert",
+  "test": "page",
+  "fails": [
+   "pr5 [share-copy]"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "F-copy5-card-list": {
+  "kind": "revert",
+  "test": "page",
+  "fails": [
+   "pr5 [shimmer-card]"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "PM-control-stomp-tile": {
+  "kind": "mutant",
+  "test": "page",
+  "fails": [
+   "pr5 [solo-tiles]"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "PM-a-throw-allout": {
+  "kind": "mutant",
+  "test": "page",
+  "fails": [
+   "pr5 [effort]"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "PM-b-throw-45": {
+  "kind": "mutant",
+  "test": "page",
+  "fails": [
+   "pr5 [real-air]",
+   "pr5 [share-copy]",
+   "pr5 [solo-tiles]"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "PM-c-wrestle-45": {
+  "kind": "mutant",
+  "test": "page",
+  "fails": [
+   "pr5 [duo-who]"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "PM-d-backthrow-cut": {
+  "kind": "mutant",
+  "test": "page",
+  "fails": [
+   "pr5 [duo-who]"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "PM-e-floor-note": {
+  "kind": "mutant",
+  "test": "page",
+  "fails": [
+   "pr5 [duo-tiles]"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "PM-f-glow-linear": {
+  "kind": "mutant",
+  "test": "page",
+  "fails": [
+   "pr5 [follows]"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "EM-well-0 (03)": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9i: code-5: a leg the two 10^13 kg bodies' own pull rules, the catch real: the drag part is the share of the f"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "EM-overshoot-rel-0 (04)": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9i: code-5: a gentle lob thrown all-out because it is too weak for the gentlest arc (a bus lobbed 31.6 m at 10"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "EM-fallsback-drag (02)": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9i: code-3: a dense Rex (10^12 kg at 10 ft), a car at 45 degrees at 10^12 kg: real air's take, 2.47e+4 J, from"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "EM-wrestle-angle-45 (01)": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9i: code-5: the Wrestle throw at 20 and 90 degrees at the dial: the drag part is real air's take from the thro"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "EM-miss-leaves (07)": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9i: code-2: a toss real air would not bring back down (a dense Ollie, 10^6 kg, tossed hard at 10^14 kg) and a "
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "EM-toss-escapes-0": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9c: the Wrestle throw, the partner toss and the game of catch's throws, with no arrival taken back: the drag p",
+   "9g: at an unlimited dial the throw, stomp, punch (Silent strike), the hard catch, the hard toss and the Wrestl",
+   "9i: code-2: a toss real air would not bring back down (a dense Ollie, 10^6 kg, tossed hard at 10^14 kg) and a "
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "EM-reach-no-slams (05)": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9i: code-5: a catch that slams into Ollie (7.80e+7 J), one he can't hold up (1.73e+3 J) and a partner toss tha"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "EM-toss-slams-0 (06)": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9i: code-5: a catch that slams into Ollie (3.63e+8 J), one he can't hold up (4.93e+4 J) and a partner toss tha"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "EM-wrestle-rel (11)": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [],
+  "exit": 0,
+  "killed": false
+ },
+ "EM-fullstrength (10)": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9i: code-5: a gentle lob thrown all-out because it is too weak for the gentlest arc (a bus lobbed 31.6 m at 10"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "EM-dragE-cap (C2; followed into lost())": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9c: the Wrestle throw, the partner toss and the game of catch's throws, with no arrival taken back: the drag p",
+   "9i: code-1: a game-of-catch leg that real air slows hard (a fastball 300 m apart at 10^8 kg, a car 10 km apart",
+   "9i: code-5: a gentle lob thrown all-out because it is too weak for the gentlest arc (a bus lobbed 31.6 m at 10"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "EM-toss-PE-sign (08; followed: never back -> 0)": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9i: code-2: a toss real air would not bring back down (a dense Ollie, 10^6 kg, tossed hard at 10^14 kg) and a "
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "EM-hg-airK (09)": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [],
+  "exit": 0,
+  "killed": false
+ },
+ "EM-throw-angle-0 (C1)": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9c: the drag part is the share absorbed times what real air would take (worked out here) and never more than t",
+   "9c: a throw even real air would not bring down (straight up: the staff at 10^12.5 kg, the Empire State Buildin"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "EM-collide-stop-bounce": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9a: the same hit, meant (a blast preset): its energy is real, so Rex takes in nothing (Ollie still stops himse"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-drag-ocean (followed)": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9a: a car thrown 30 m, least disruptive (2.21e+4 kg-force): the drag real air would have taken, 4.24e+4 J (the",
+   "9a: a person thrown 30 m, least disruptive (3.34e+3 kg-force), Safe passenger: their landing, 1.46e+4 J (14.6 ",
+   "9c: the drag part is the share absorbed times what real air would take (worked out here) and never more than t",
+   "9c: a throw even real air would not bring down (straight up: the staff at 10^12.5 kg, the Empire State Buildin",
+   "9c: a car thrown level through the orbit threshold (4 to 10 x 10^9 kg): the drag part never falls, and in orbi",
+   "9c: the Wrestle throw, the partner toss and the game of catch's throws, with no arrival taken back: the drag p",
+   "9d: the drag that real air would have taken is still in what arrives, so where the arrival is taken back it is",
+   "9e: the Wrestle throw's crater-sized landing is taken back on the thrown one's own Unbreakable footing: with h",
+   "9i: code-3: a dense Rex (10^12 kg at 10 ft), a car at 45 degrees at 10^12 kg: real air's take, 2.90e+4 J, from",
+   "9i: code-5: the Wrestle throw at 20 and 90 degrees at the dial: the drag part is real air's take from the thro"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-drag-no-share": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9c: the drag part is the share absorbed times what real air would take (worked out here) and never more than t",
+   "9c: a throw even real air would not bring down (straight up: the staff at 10^12.5 kg, the Empire State Buildin"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-drag-twice": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9a: a person thrown 30 m, least disruptive (3.34e+3 kg-force), Safe passenger: their landing, 1.73e+4 J (14.6 ",
+   "9d: a catch and a hit: a throw that reaches Ollie as a fireball is a hit (its motion freed at him, knockAbsorb",
+   "9d: the drag that real air would have taken is still in what arrives, so where the arrival is taken back it is",
+   "9e: the game of catch: leg a's catch is Ollie's, the return leg's Rex's (also where the page reuses leg a for ",
+   "9e: the Wrestle throw's crater-sized landing is taken back on the thrown one's own Unbreakable footing: with h",
+   "9f: a person thrown in the game of catch who hits the ground (10^16 kg, 31.6 km apart): with no air on the way",
+   "9f: a person caught in the game of catch: the catch (3.90e+3 J, Ollie's); in the \"if he misses\" what-if, their",
+   "9i: code-1: a game-of-catch leg that real air slows hard (a fastball 300 m apart at 10^8 kg, a car 10 km apart",
+   "9i: code-5: a catch that slams into Ollie (4.41e+8 J), one he can't hold up (5.10e+4 J) and a partner toss tha"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-drag-escape-0 (followed)": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9c: a throw even real air would not bring down (straight up: the staff at 10^12.5 kg, the Empire State Buildin"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-drag-rel-0 (followed)": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9c: the drag part is the share absorbed times what real air would take (worked out here) and never more than t",
+   "9c: the Wrestle throw, the partner toss and the game of catch's throws, with no arrival taken back: the drag p"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-drag-no-PE (followed)": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9a: a car thrown 30 m, least disruptive (2.21e+4 kg-force): the drag real air would have taken, 0.00 J (the br",
+   "9a: a person thrown 30 m, least disruptive (3.34e+3 kg-force), Safe passenger: their landing, 1.46e+4 J (14.6 ",
+   "9c: the drag part is the share absorbed times what real air would take (worked out here) and never more than t",
+   "9c: the Wrestle throw, the partner toss and the game of catch's throws, with no arrival taken back: the drag p",
+   "9e: the Wrestle throw's crater-sized landing is taken back on the thrown one's own Unbreakable footing: with h",
+   "9e: the Wrestle throw: the drag is the thrower's, the landing on the thrown one's footing his; the partner tos",
+   "9i: code-3: a dense Rex (10^12 kg at 10 ft), a car at 45 degrees at 10^12 kg: real air's take, 0.00 J, from th",
+   "9i: code-5: the Wrestle throw at 20 and 90 degrees at the dial: the drag part is real air's take from the thro"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-toss-v-energy": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9g: at an unlimited dial the throw, stomp, punch (Silent strike), the hard catch, the hard toss and the Wrestl"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-toss-flight-0 (followed)": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9c: the Wrestle throw, the partner toss and the game of catch's throws, with no arrival taken back: the drag p",
+   "9d: the drag that real air would have taken is still in what arrives, so where the arrival is taken back it is",
+   "9i: code-2: a toss real air would not bring back down (a dense Ollie, 10^6 kg, tossed hard at 10^14 kg) and a "
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-leg-fast-0": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9c: the Wrestle throw, the partner toss and the game of catch's throws, with no arrival taken back: the drag p",
+   "9i: code-2: a toss real air would not bring back down (a dense Ollie, 10^6 kg, tossed hard at 10^14 kg) and a "
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-leg-fireball-0": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9c: the Wrestle throw, the partner toss and the game of catch's throws, with no arrival taken back: the drag p",
+   "9f: the fireball (a fastball 10 m apart at 10^14 kg, Things keep their form off, half the drag): with Ollie's "
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-leg-overshoots-0": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9c: the Wrestle throw, the partner toss and the game of catch's throws, with no arrival taken back: the drag p",
+   "9i: code-2: a toss real air would not bring back down (a dense Ollie, 10^6 kg, tossed hard at 10^14 kg) and a ",
+   "9i: code-5: a gentle lob thrown all-out because it is too weak for the gentlest arc (a bus lobbed 31.6 m at 10"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-leg-flight-swap (followed)": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9c: the Wrestle throw, the partner toss and the game of catch's throws, with no arrival taken back: the drag p",
+   "9i: code-1: a game-of-catch leg that real air slows hard (a fastball 300 m apart at 10^8 kg, a car 10 km apart",
+   "9i: code-5: a gentle lob thrown all-out because it is too weak for the gentlest arc (a bus lobbed 31.6 m at 10"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-stomp-E": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9a: the stomp, Unbreakable footing keeping the concrete whole: all-out 1.03e+5 J (0.10 MJ, a faint flicker); a"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-jump-footing": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9d: the jump: Soft landing's part is its landing.absorbed, and nothing is added for Unbreakable footing (on or",
+   "9f: Soft landing: the jump's landing taken back, 5.02e+4 J all-out at the dial and 1.50e+7 J at 10^9 kg"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-soft-E": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9d: the jump: Soft landing's part is its landing.absorbed, and nothing is added for Unbreakable footing (on or",
+   "9f: Soft landing: the jump's landing taken back, 5.02e+4 J all-out at the dial and 1.50e+7 J at 10^9 kg"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-silent-mach": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9f: Silent strike: nothing below the speed of sound (the punch at the dial, Mach 0.12, and the clap); past it "
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-silent-power": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9b: with every power off (the four, Safe passenger, Silent strike, Soft landing, Never knocked back) nothing i",
+   "9b: each power alone takes back only its own parts, and each of its parts somewhere: Air resistance absorbed t"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-hit-Q": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9a: the same hit, meant (a blast preset): its energy is real, so Rex takes in nothing (Ollie still stops himse"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-hit-charger": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9a: Ollie charges Rex at 0.1% of light speed (the defaults): the hit frees 0.00 J, taken in by Rex (135 TJ, le",
+   "9e: Collide: the one hit takes in the hit's freed energy, the charger his own stop: Ollie charging, Rex the hi"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-stop-none": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9a: Ollie charges Rex at 0.1% of light speed (the defaults): the hit frees 1.35e+14 J, taken in by Rex (135 TJ",
+   "9a: the same hit, meant (a blast preset): its energy is real, so Rex takes in nothing (Ollie still stops himse",
+   "9b: each power alone takes back only its own parts, and each of its parts somewhere: Air resistance absorbed t",
+   "9e: Collide: the one hit takes in the hit's freed energy, the charger his own stop: Ollie charging, Rex the hi"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-passenger-power": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9a: a person thrown 30 m, least disruptive (3.34e+3 kg-force), Safe passenger: their landing, 1.46e+4 J (14.6 ",
+   "9b: with every power off (the four, Safe passenger, Silent strike, Soft landing, Never knocked back) nothing i",
+   "9b: each power alone takes back only its own parts, and each of its parts somewhere: Air resistance absorbed t",
+   "9c: the drag part is the share absorbed times what real air would take (worked out here) and never more than t"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-catch-power": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9b: with every power off (the four, Safe passenger, Silent strike, Soft landing, Never knocked back) nothing i",
+   "9b: each power alone takes back only its own parts, and each of its parts somewhere: Air resistance absorbed t",
+   "9c: the Wrestle throw, the partner toss and the game of catch's throws, with no arrival taken back: the drag p",
+   "9i: code-1: a game-of-catch leg that real air slows hard (a fastball 300 m apart at 10^8 kg, a car 10 km apart",
+   "9i: code-5: a leg the two 10^13 kg bodies' own pull rules, the catch real: the drag part is the share of the f",
+   "9i: code-5: a gentle lob thrown all-out because it is too weak for the gentlest arc (a bus lobbed 31.6 m at 10"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-catch-thrower": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9e: the game of catch: leg a's catch is Ollie's, the return leg's Rex's (also where the page reuses leg a for ",
+   "9f: a person caught in the game of catch: the catch (3.73e+3 J, Ollie's); in the \"if he misses\" what-if, their",
+   "9i: code-5: a catch that slams into Ollie (3.63e+8 J), one he can't hold up (4.93e+4 J) and a partner toss tha"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-catch-return-leg": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9d: the drag that real air would have taken is still in what arrives, so where the arrival is taken back it is",
+   "9e: the game of catch: leg a's catch is Ollie's, the return leg's Rex's (also where the page reuses leg a for ",
+   "9i: code-1: a game-of-catch leg that real air slows hard (a fastball 300 m apart at 10^8 kg, a car 10 km apart"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-fireball-E": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9d: a catch and a hit: a throw that reaches Ollie as a fireball is a hit (its motion freed at him, knockAbsorb",
+   "9f: the fireball (a fastball 10 m apart at 10^14 kg, Things keep their form off, half the drag): with Ollie's "
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-ground-hit-none": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9d: the drag that real air would have taken is still in what arrives, so where the arrival is taken back it is",
+   "9f: a person thrown in the game of catch who hits the ground (10^16 kg, 31.6 km apart): with no air on the way"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-ground-hit-whole": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9f: a person thrown in the game of catch who hits the ground (10^16 kg, 31.6 km apart): with no air on the way"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-miss-ignored": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9f: a person caught in the game of catch: the catch (3.73e+3 J, Ollie's); in the \"if he misses\" what-if, their",
+   "9i: code-2: a toss real air would not bring back down (a dense Ollie, 10^6 kg, tossed hard at 10^14 kg) and a "
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-wrestle-footing-power": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9e: the Wrestle throw's crater-sized landing is taken back on the thrown one's own Unbreakable footing: with h"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-wrestle-footing-thrower": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9e: the Wrestle throw's crater-sized landing is taken back on the thrown one's own Unbreakable footing: with h",
+   "9e: the Wrestle throw: the drag is the thrower's, the landing on the thrown one's footing his; the partner tos"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-toss-catch-power": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9b: with every power off (the four, Safe passenger, Silent strike, Soft landing, Never knocked back) nothing i",
+   "9b: each power alone takes back only its own parts, and each of its parts somewhere: Air resistance absorbed t",
+   "9c: the Wrestle throw, the partner toss and the game of catch's throws, with no arrival taken back: the drag p",
+   "9d: the drag that real air would have taken is still in what arrives, so where the arrival is taken back it is"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-toss-drag-twice": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9d: the drag that real air would have taken is still in what arrives, so where the arrival is taken back it is",
+   "9i: code-5: a catch that slams into Ollie (3.63e+8 J), one he can't hold up (4.93e+4 J) and a partner toss tha"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-growth-none": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9f: the Weight tab's growth what-if: the energy that becomes mass is the growth part, Rex's (Krakatoa, the din"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-solo-ollie": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9e: the Wrestle throw: the drag is the thrower's, the landing on the thrown one's footing his; the partner tos",
+   "9f: the Weight tab's growth what-if: the energy that becomes mass is the growth part, Rex's (Krakatoa, the din"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-nan-guard": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [],
+  "exit": 0,
+  "killed": false
+ },
+ "ES-nan-guard-both": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9g: no NaN: a finite run isn't unbounded; light speed into Rex (today's unstoppable, its energy real), into th"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-wrestle-footing-thrower-switch": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9e: the Wrestle throw's crater-sized landing is taken back on the thrown one's own Unbreakable footing: with h"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-unbounded-flag": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9b: with every power on, no figure is NaN or negative, and E is unbounded exactly when it is Infinity (61 runs",
+   "9g: at an unlimited dial the throw, stomp, punch (Silent strike), the hard catch, the hard toss and the Wrestl"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-mutates-result (followed)": {
+  "kind": "mutant",
+  "test": "tally",
+  "fails": [
+   "9h: the tally adds no key to, and changes nothing in, the results and options it reads (8 runs, with the power"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-key-on-throw": {
+  "kind": "mutant",
+  "test": "part1",
+  "fails": [
+   "powers left out: every engine result matches the engine before them (15533 cases, all but the 8 with Safe pass",
+   "powers explicitly off (airAbsorb 0, keepForm, unbreakable and ownRecoil false): every engine result matches th"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-key-on-reach": {
+  "kind": "mutant",
+  "test": "part1",
+  "fails": [
+   "powers left out: every engine result matches the engine before them (15533 cases, all but the 8 with Safe pass",
+   "powers left out: the 8 planner cases run with Safe passenger on match the engine before them with its passenge",
+   "powers explicitly off (airAbsorb 0, keepForm, unbreakable and ownRecoil false): every engine result matches th",
+   "powers explicitly off (airAbsorb 0, keepForm, unbreakable and ownRecoil false): the 8 planner cases run with S"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-level-linear": {
+  "kind": "mutant",
+  "test": "ladder",
+  "fails": [
+   "9: the anchors' levels: the flicker 0, the flare 1, the floor below 0 (-0.000), each worded with compare()",
+   "9: the word for each energy: too faint to see below the floor; a faint flicker from the floor up to a car cras",
+   "9: the glow's strength is 0 at the floor and below, 1 at the flare and above, and the log of the energy's shar",
+   "9: the flare from the data: ten times the dinosaur-killer's energy in a copy of the ladder moves the level of ",
+   "9: the flicker from the data: ten times the Corolla's energy moves the level (0.000 to 0.000) and the first st"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-anchors-copied": {
+  "kind": "mutant",
+  "test": "ladder",
+  "fails": [
+   "9: the flare from the data: ten times the dinosaur-killer's energy in a copy of the ladder moves the level of ",
+   "9: the flicker from the data: ten times the Corolla's energy moves the level (0.468 to 0.468) and the first st",
+   "9: the floor from the data: ten times Usain Bolt's energy moves the glow's strength, and what was just above t"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-anchors-by-position": {
+  "kind": "mutant",
+  "test": "ladder",
+  "fails": [
+   "9: only those three rungs count: changing another rung's value, or the rungs' order, changes no level, strengt",
+   "9: a ladder without one of the three rungs is refused, not read by position"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-no-hold": {
+  "kind": "mutant",
+  "test": "ladder",
+  "fails": [
+   "9: above the flare the level is held at 1 (held), the glow at full strength, the word the blinding flare: [1.0",
+   "9: the level never falls as the energy rises (1651 energies from 1 mJ to 10^30 J, and unbounded): nor the glow"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-no-faint-band": {
+  "kind": "mutant",
+  "test": "ladder",
+  "fails": [
+   "9: the word for each energy: too faint to see below the floor; a faint flicker from the floor up to a car cras",
+   "9: the floor from the data: ten times Usain Bolt's energy moves the glow's strength, and what was just above t"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-no-floor": {
+  "kind": "mutant",
+  "test": "ladder",
+  "fails": [
+   "9: the glow's strength is 0 at the floor and below, 1 at the flare and above, and the log of the energy's shar",
+   "9: the floor from the data: ten times Usain Bolt's energy moves the glow's strength, and what was just above t"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-no-too-faint": {
+  "kind": "mutant",
+  "test": "ladder",
+  "fails": [
+   "9: the word for each energy: too faint to see below the floor; a faint flicker from the floor up to a car cras",
+   "9: the floor from the data: ten times Usain Bolt's energy moves the glow's strength, and what was just above t"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-rough-never": {
+  "kind": "mutant",
+  "test": "ladder",
+  "fails": [
+   "9: a step is rough by the ladder's rule (the rung it is worded against is rough): the three-quarter step (the ",
+   "9: the word for each energy: too faint to see below the floor; a faint flicker from the floor up to a car cras"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-step-below": {
+  "kind": "mutant",
+  "test": "ladder",
+  "fails": [
+   "9: the word for each energy: too faint to see below the floor; a faint flicker from the floor up to a car cras"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-steps-fifths": {
+  "kind": "mutant",
+  "test": "ladder",
+  "fails": [
+   "9: the named steps are the flicker, a quarter, a half and three quarters of the log span, and the flare, each ",
+   "9: the steps' wordings are the brief's: about the same as a fully loaded A380 at cruising speed; 24% of the Ch",
+   "9: a step is rough by the ladder's rule (the rung it is worded against is rough): the three-quarter step (the ",
+   "9: the word for each energy: too faint to see below the floor; a faint flicker from the floor up to a car cras"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-unbounded-nan": {
+  "kind": "mutant",
+  "test": "ladder",
+  "fails": [
+   "9: unbounded energy (an unlimited run) is the flare at full strength, with no \"roughly\" and no figure: [false,",
+   "9: the level never falls as the energy rises (1651 energies from 1 mJ to 10^30 J, and unbounded): nor the glow"
+  ],
+  "exit": 1,
+  "killed": true
+ },
+ "ES-no-none": {
+  "kind": "mutant",
+  "test": "ladder",
+  "fails": [
+   "9: no energy (0, negative, NaN, missing) is no tile: none, no level, no word, no glow"
+  ],
+  "exit": 1,
+  "killed": true
+ }
+}

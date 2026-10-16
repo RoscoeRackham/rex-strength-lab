@@ -92,6 +92,8 @@
   // some of the air's drag left): CATCHGAME.fireballAt reports knockAbsorbed { J, E } then. Catches are taken back through
   // ownRecoil. It is NOT one of anyPower's keys: it defaults to on, so counting it would change every run with the four
   // powers off. Left out or false, every result is as before.
+  // The energy their powers take back in a run (canon: it shows in his shimmer; BRIEF-canon.md item 6, pull request 5)
+  // is RESTRAINT.takenBack's, worked out from a result and its options; it adds no key to any result.
   // ---------------------------------------------------------------------------
   const holdsGround = (c) => !!(c && (c.groundHolds || c.unbreakable));
   const airShare = (c) => { const s = c && c.airAbsorb; return typeof s === 'number' && s > 0 ? Math.min(1, s) : 0; };
@@ -529,8 +531,9 @@
       eFold: Cd > 0 && dK > 0 ? 2 * m / (K.rho0 * machCd * A * dK) : Infinity,
       steps: 0,
     };
-    // what the air and the ocean take, summed over each step from the full drag at its start (only when some is absorbed)
-    const split = dK < 1 && Cd > 0;
+    // what the air and the ocean take, summed over each step from the full drag at its start (only when some is absorbed,
+    // or when o.tally asks for it: the shimmer's real-air flight, at the full drag, reads out.air.E)
+    const split = (dK < 1 || !!o.tally) && Cd > 0;
     let eDrag = 0, pxDrag = 0, pyDrag = 0;
     const tally = (x_, y_, vx_, vy_, dt_) => {
       const r = Math.hypot(x_, y_), v = Math.hypot(vx_, vy_);
@@ -4834,12 +4837,236 @@
         slide: M.slide ? M.slide(r, opt) : 0,
       };
     }
-    return { R, SOIL, MOVES, HAZARDS, PRESETS, plan, planNow, reach, bounds, search, shakeOff };
+
+    // ---------------------------------------------------------------- the energy taken back (BRIEF-canon.md item 6)
+    // Canon (CLAUDE.md, "Where absorbed energy goes"): absorbed energy goes back into the store of infinite power they draw
+    // on, and it shows: his eyes, feather tips and mouth-glow shimmer in proportion to what he takes in (a faint flicker
+    // below a car crash, a blinding flare for a dinosaur-killer-scale hit: src/ladder.js's glow() turns the energy into
+    // that level). takenBack(move, r, o) adds up the energy taken back in one run, by part, in joules. It only reads the
+    // run's result and options: no result, reach(), plan() or planNow() gains a key (the powers-off fixtures hash them).
+    // (Not named 'shimmer': VIB.TH.shimmer and reach().shimmer are the water-glass ripple.)
+    //   move and r: 'throw' (throwObject's result), 'jump' (jump's), 'stomp', 'punch', 'clap' (theirs), 'weight' (r not
+    //     used), 'wrestleThrow' (throwPartner's result), 'catch' ({ a, b }: catchLeg's legs, a thrown by A to B and b thrown
+    //     back by B to A; b may be left out for leg a alone, or be a itself where the page reuses it for the return leg),
+    //     'toss' (tossPartner's result: A tosses his partner straight up and catches him), 'collide' (collide's result: A
+    //     charges B), 'arm' (armWrestle's result: A and B arm-wrestle). 'walk', 'lift', 'sprint', 'pull', 'wrestle' (the
+    //     shove, the shoving match, both at once, the partner lift) and 'standoff' (Collide's steady push) take back
+    //     momentum without motion only: their tally is 0.
+    //   o: a solo move: the context the run was made with (its switches, body and surface), plus obj and angle for a
+    //     throw, and for 'weight' growE (J): the energy the growth what-if turns into mass (0 or left out: none picked).
+    //     A two-player move: { A, B, whoA } (A and B the two contexts the run was made with, whoA 'rex' or 'ollie', A's
+    //     name; B is the other), plus angle for the Wrestle throw, obj for the game of catch, and miss: true for its 'if
+    //     he misses' what-if (a leg that reaches the catcher is counted as missed). Arm wrestling has one ground (the
+    //     page's one Unbreakable footing switch, read from A).
+    // Returns { E, unbounded, parts, by }. E (J) is the total: finite, or Infinity with unbounded: true (a run at an
+    // unlimited dial: the level is the flare, and the page gives no figure). parts { drag, footing, soft, silent, hit,
+    // stop, passenger, catch, growth } (J each) sums both of them; by { rex, ollie } gives each one's own { E, unbounded,
+    // parts }, what he takes in himself (canon draws the glow on Rex). No part is ever NaN: a figure with no physical
+    // answer (the paradox, an undefined result) adds nothing.
+    // The parts (each only with its power on, so with every power off E is 0; growth is a what-if, not a switch):
+    //   drag (the thrower's): Air resistance absorbed: the share absorbed x what real air would have taken from the same
+    //     throw: one more flight at the full drag, from the energy that leaves his own gravity well; where it comes down,
+    //     the energy it loses on the way (energy conservation; for a leg of the game of catch never more than the flight's
+    //     step sum); where it never does (an escape, an orbit, a flight given up on), the drag along that flight; past 1%
+    //     of light speed all of its energy (an upper bound). (Not fly()'s ocean tally: that is the drag
+    //     along the drag-free path, which can be hundreds of times the object's energy, and is 0 for an orbit.) Where the
+    //     object's arrival is taken back too (a catch, a person's landing, a hit, the partner's landing on his footing),
+    //     the energy the air would have taken is still in it when it arrives, so it is counted once, there: drag is only
+    //     what exceeds that arrival, in the same (relativistic) convention for its motion, and a residue of a part in 10^9
+    //     or less is rounding, not drag (review round 2 of pull request 5, code-2).
+    //   footing (whose footing it is): Unbreakable footing: the stomp's absorbed (0 where the ground wouldn't break); the
+    //     Wrestle throw's partner landing on his own footing, where real ground would take a crater; an arm-wrestling pin
+    //     whose slam real ground under the table would take as a crater (armWrestle's own crater rule: a pin at 2 km/s or
+    //     more, below 1% of light speed), the winner's, as his swing drives the slam (review round 2 of pull request 5,
+    //     code-1: the stomp's rule and decision 9; it had been left out). A jump's is 0: there
+    //     the power supplies momentum without motion, and his bent legs stop him either way (the Jump tab: he gets his
+    //     whole push); Soft landing is its landing's part.
+    //   soft (his): Soft landing: the jump's landing.absorbed.
+    //   silent (his): Silent strike: a punch's or clap's energy past Mach 1 (the page's absorbBlock rule).
+    //   hit (the one hit): a hit's freed energy: Collide's hitAbsorbed.E (the charger takes his own recoil; 0 when he
+    //     means it, and in a bounce); the game of catch's fireball, knockAbsorbed.E (the catcher's Never knocked back).
+    //   stop (the charger's): in Collide's carried hit the charger stops himself at the end of the squash, and his motion
+    //     (carry.stop.E) goes to his source with its push back.
+    //   passenger (the thrower's): Safe passenger: a thrown person's landing (MOVES.throw.passengerLanding's absorbed); in
+    //     the game of catch their ground hit (hitsGround.E with no air on the way; below 100%, their own share,
+    //     hitsGround.own.E) and, in the what-if, their landing when missed (miss.E).
+    //   catch (the catcher's): a catch is absorbed (canon, Q5): Ecatch while the catcher takes his own recoil, in every
+    //     outcome where it reaches him (the game of catch) and in the partner toss.
+    //   growth (his): the Weight tab's growth what-if: the energy that becomes mass.
+    // Momentum taken back without motion (their recoil, the weak ground's supplied push, a hit's momentum) carries no
+    // energy and adds nothing.
+    const TB_PARTS = ['drag', 'footing', 'soft', 'silent', 'hit', 'stop', 'passenger', 'catch', 'growth'];
+    const TB_NONE = ['walk', 'lift', 'sprint', 'pull', 'wrestle', 'standoff'];
+    // a part's energy: NaN, undefined, 0 or negative add nothing; Infinity stays (unbounded)
+    const tbJ = (x) => (typeof x === 'number' && x > 0 ? x : 0);
+    // the drag part left once the arrival's own part (arrive J) has counted the energy the air would have taken (a part in
+    // 10^9 or less of it is rounding, not drag: review round 2 of pull request 5, code-2)
+    const tbDrag = (x, arrive) => (!(x > 0) || arrive === Infinity ? 0 : x === Infinity ? Infinity : x - arrive <= 1e-9 * x ? 0 : x - arrive);
+    // the release height's potential energy (exact 1/r gravity, as the Throw tab's dragLoss0)
+    const tbPE = (m, h) => m * (K.GM / K.R_E - K.GM / (K.R_E + h));
+    // what real air would take from a throw: throwObject's result r, obj thrown at thetaDeg from body's release height.
+    // One more flight at the full drag, from the speed it keeps once clear of his own pull (vOut: with his own gravity on,
+    // the climb out of his well is gravity's, not the air's). Where it lands, the energy it loses on the way (energy
+    // conservation, from the energy that leaves his well); where it doesn't (an escape, an orbit, a flight the integrator
+    // gives up on), the drag along that flight (it leaves with the rest of its energy); past 1% of light speed all of it
+    // (an upper bound: the lab counts the whole of it there, as for the blast near him). Not r.dragLoss0, the blast's
+    // figure, which counts all of it for a throw real air wouldn't bring down.
+    function realAirThrow(r, obj, thetaDeg, body) {
+      if (!r || !r.canMove || !r.flight || r.fallsBack || !(r.v > 0)) return 0;
+      if (!isFinite(r.Eobj)) return Infinity;
+      if (r.flight.relativistic) return r.Eobj;
+      const E1 = keFromV(r.vOut, obj.m) + tbPE(obj.m, body.releaseHeight);
+      const f0 = fly({ v0: r.vOut, thetaDeg, h0: body.releaseHeight, m: obj.m, A: obj.area, Cd: obj.Cd, CdSup: obj.CdSup, tally: true });
+      if (f0.landed) return Math.max(0, E1 - keFromV(f0.vImpact, obj.m));
+      return f0.air ? Math.max(0, Math.min(E1, f0.air.E)) : 0;
+    }
+    // ... from the partner toss (tossPartner's t; A the tosser): straight up and back to his hands
+    function realAirToss(t, A) {
+      if (!t || !['caught', 'slams', 'escapes', 'orbit', 'fireball', 'not-modelled'].includes(t.result) || !(t.v > 0)) return 0;
+      const obj = t.obj, h0 = A.body.releaseHeight;
+      // past 1% of light speed (all-out only): all of the toss's energy, from the throw itself (exact where the speed
+      // rounds to c; unbounded at an unlimited dial)
+      if (t.v >= CATCHGAME.CATCH.V_FIREBALL) return throwObject(Object.assign({}, A, { noFlight: true }), obj, 90).Eobj;
+      const Ev = keFromV(t.v, obj.m);
+      const f0 = CATCHGAME.flyTo({ v0: t.v, thetaDeg: 90, h0, hStop: h0, m: obj.m, A: obj.area, Cd: obj.Cd, CdSup: obj.CdSup });
+      // back in his hands: what it lost on the way; never back (an escape, an orbit, a flight given up on): the drag along
+      // that flight (as the throw's: not t.dragLoss0, the blast's figure, which counts all of it there)
+      return f0.landed && !f0.escaped && !f0.orbit && !f0.timedOut ? Math.max(0, Ev - keFromV(f0.vImpact, obj.m)) : Math.max(0, Math.min(Ev, f0.dragE));
+    }
+    // ... from one leg of the game of catch (catchLeg's L, of obj): its own flight to the catcher, at the full drag
+    function realAirLeg(L, obj) {
+      if (!L) return 0;
+      // past 1% of light speed: all of its energy (a fireball; a straight line, its launch energy: what arrives or hits
+      // the ground, plus a sheath's heat)
+      if (L.result === 'fireball') return L.fireball ? L.fireball.E : 0;
+      if (L.fast) return (L.miss ? L.miss.E : 0) + (L.sheath ? L.sheath.E : 0);
+      const full = { m: obj.m, A: obj.area, Cd: obj.Cd, CdSup: obj.CdSup };
+      // what a flight at the full drag (f, thrown at v0 from his hand's height) loses to the air: by energy conservation,
+      // its energy at the start less its energy where it ends (where his hands meet it, or where it comes down at hEnd),
+      // never more than flyTo's step sum (dragE, summed from each step's start, a little over the true work on a flight
+      // the air slows hard), so it is never more than the energy thrown; where it never comes down (an escape, an orbit,
+      // a flight given up on), the drag along that flight; past 1% of light speed all of it
+      const lost = (f, v0, hEnd) => {
+        if (f.relativistic) return keFromV(v0, obj.m);
+        const E0 = keFromV(v0, obj.m) + tbPE(obj.m, L.h0);
+        if (f.escaped || f.orbit || f.timedOut) return Math.max(0, Math.min(E0, f.dragE));
+        const Eend = f.crossedX ? (isFinite(f.hAtX) && isFinite(f.vAtX) ? keFromV(f.vAtX, obj.m) + tbPE(obj.m, f.hAtX) : NaN)
+          : keFromV(f.vImpact, obj.m) + tbPE(obj.m, f.belowStop ? 0 : hEnd);
+        return Math.max(0, Math.min(f.dragE, isFinite(Eend) ? E0 - Eend : E0));
+      };
+      // thrown as hard as he can, it can't come down on the catcher: the same throw at the full drag, from his hand on
+      if (L.result === 'overshoots') {
+        if (!(L.vL > 0)) return 0;
+        if (L.relativistic || L.vL >= CATCHGAME.CATCH.V_FIREBALL) return keFromV(L.vL, obj.m);
+        return lost(CATCHGAME.flyTo(Object.assign({ v0: L.vL, thetaDeg: L.thetaDeg, h0: L.h0, hStop: 0, xStop: L.Dfl, Dend: L.Dfl }, full)), L.vL, 0);
+      }
+      // not thrown, or it falls back into his own pull (as the Throw tab's falls-back throw: no drag part)
+      if (!L.aim || !(L.aim.vL > 0) || L.result === 'falls-back') return 0;
+      // (the two bodies' own pull dominates: its straight run at the full drag; one that real air stops short gives the air
+      // all of its energy)
+      if (L.wells && L.wells.wellDominated) { const run = CATCHGAME.wellRun(L.wells, obj, L.aim.vL); return run.reached ? run.Edrag : keFromV(L.aim.vL, obj.m); }
+      const vE = L.aim.vE, th = L.aim.thetaDeg;
+      // (an easy lob too weak for the gentlest arc is thrown all-out: L.fullStrength)
+      const hard = L.style === 'hard' || !!L.fullStrength;
+      return lost(CATCHGAME.flyTo(Object.assign({ v0: vE, thetaDeg: th, h0: L.h0, hStop: hard ? 0 : L.hStop, Dend: L.Dfl }, hard ? { xStop: L.Dfl } : {}, full)), vE, hard ? 0 : L.hStop);
+    }
+    function takenBack(move, r, o) {
+      const opt = o || {};
+      const solo = !['wrestleThrow', 'catch', 'toss', 'collide', 'arm'].includes(move);
+      if (!(move in MOVES) && !['weight', 'wrestleThrow', 'catch', 'toss', 'collide', 'arm'].includes(move) && !TB_NONE.includes(move)) throw new Error('RESTRAINT.takenBack: no such move: ' + move);
+      const whoA = solo ? 'rex' : opt.whoA || 'rex';
+      if (whoA !== 'rex' && whoA !== 'ollie') throw new Error('RESTRAINT.takenBack: whoA is rex or ollie');
+      const whoB = whoA === 'rex' ? 'ollie' : 'rex';
+      const zero = () => { const p = {}; for (const k of TB_PARTS) p[k] = 0; return p; };
+      const by = { rex: { parts: zero() }, ollie: { parts: zero() } };
+      const add = (who, part, x) => { const v = tbJ(x); if (v) by[who].parts[part] += v; return v; };
+      const A = solo ? opt : opt.A || {}, B = solo ? {} : opt.B || {};
+      if (r && !TB_NONE.includes(move)) {
+        if (move === 'throw') {
+          const body = A.body, ob = A.obj;
+          // Safe passenger: a thrown person's landing energy (null with it off, for anything that isn't a person, and for a
+          // throw that doesn't come down)
+          const pl = ob ? MOVES.throw.passengerLanding(r, A) : null, arrive = pl ? add(whoA, 'passenger', pl.absorbed) : 0;
+          const s = airShare(A);
+          if (s > 0 && ob && body) add(whoA, 'drag', tbDrag(s * realAirThrow(r, ob, A.angle || 0, body), arrive));
+        } else if (move === 'jump') {
+          if (r.landing && r.landing.landed && r.landing.soft) add(whoA, 'soft', r.landing.absorbed);
+        } else if (move === 'stomp') {
+          if (A.unbreakable) add(whoA, 'footing', r.absorbed);
+        } else if (move === 'punch' || move === 'clap') {
+          if (A.silentStrike && r.mach >= 1) add(whoA, 'silent', r.E);
+        } else if (move === 'wrestleThrow') {
+          const t = r, rr = t.r, f = rr && rr.flight;
+          if (!t.bolted && rr && rr.canMove && f && !t.fallsBack) {
+            // the partner's landing on his own Unbreakable footing, where real ground would take a crater: the energy that
+            // would break it goes to the endless ocean (as the stomp's)
+            const arrive = B.unbreakable && f.landed && !f.relativistic && rr.crater > 0 ? add(whoB, 'footing', rr.Eimpact) : 0;
+            const s = airShare(A);
+            if (s > 0) add(whoA, 'drag', tbDrag(s * realAirThrow(rr, t.obj, opt.angle || 0, A.body), arrive));
+          }
+        } else if (move === 'toss') {
+          const t = r, k = t.catch;
+          const arrive = A.ownRecoil && k && (t.result === 'caught' || t.result === 'slams') ? add(whoA, 'catch', k.Ecatch) : 0;
+          const s = airShare(A);
+          if (s > 0) add(whoA, 'drag', tbDrag(s * realAirToss(t, A), arrive));
+        } else if (move === 'catch') {
+          const ob = opt.obj, person = !!(ob && ob.passenger);
+          const leg = (L, T, C, whoT, whoC) => {
+            if (!L || !ob) return;
+            const reaches = ['caught', 'slams', 'wreckage', 'cant-hold-it'].includes(L.result);
+            const missed = !!opt.miss && reaches && L.miss && !L.miss.hits;
+            let arrive = 0;
+            if (missed) {
+              // missed, a person lands beside him (Safe passenger, the thrower's); a throw that flies on and leaves lands nowhere
+              if (person && T.safePassenger && !L.miss.leaves) arrive = add(whoT, 'passenger', L.miss.E);
+            } else if (reaches && C.ownRecoil && L.catch) {
+              // (the arrival compared in real air's convention: realAirLeg counts motion with keFromV, the relativistic
+              // kinetic energy, while Ecatch below 1% of light speed is 1/2 m v^2; review round 2 of pull request 5, code-2)
+              add(whoC, 'catch', L.catch.Ecatch);
+              arrive = Math.max(tbJ(L.catch.Ecatch), L.vArrive > 0 ? keFromV(L.vArrive, ob.m) : 0);
+            }
+            else if (L.result === 'fireball' && L.fireball && L.fireball.knockAbsorbed) arrive = add(whoC, 'hit', L.fireball.knockAbsorbed.E);
+            else if (L.result === 'hits-ground' && L.hitsGround && person && T.safePassenger) {
+              // a person who comes through whole: with no air on the way all of it; below 100%, with Things keep their form,
+              // their own share (the air it swept up is real)
+              const hg = L.hitsGround, own = !(hg.airK > 0) ? hg.E : hg.kept && hg.own ? hg.own.E : 0;
+              arrive = add(whoT, 'passenger', own);
+            }
+            const s = airShare(T);
+            if (s > 0) add(whoT, 'drag', tbDrag(s * realAirLeg(L, ob), arrive));
+          };
+          leg(r.a, A, B, whoA, whoB);
+          leg(r.b, B, A, whoB, whoA);
+        } else if (move === 'arm') {
+          // Unbreakable footing: a pin whose slam real ground under the table would take as a crater (armWrestle's own
+          // crater rule): the energy that would break it goes to the endless ocean, as the stomp's (review round 2 of pull
+          // request 5, code-1). The winner's take: his swing drives the slam
+          if (A.unbreakable && r.outcome === 'pin' && r.pin && !r.relativistic && r.pin.v >= 2000 && isFinite(r.pin.E)) add(r.winner === 'A' ? whoA : whoB, 'footing', r.pin.E);
+        } else if (move === 'collide') {
+          if (r.outcome === 'carried') {
+            if (r.hitAbsorbed) add(whoB, 'hit', r.hitAbsorbed.E);
+            if (r.carry && r.carry.stop) add(whoA, 'stop', r.carry.stop.E);
+          }
+        }
+      }
+      if (move === 'weight') add(whoA, 'growth', opt.growE);
+      const parts = zero();
+      for (const who of ['rex', 'ollie']) {
+        const b = by[who];
+        b.E = 0;
+        for (const k of TB_PARTS) { b.E += b.parts[k]; parts[k] += b.parts[k]; }
+        b.unbounded = b.E === Infinity;
+      }
+      const E = by.rex.E + by.ollie.E;
+      return { E, unbounded: E === Infinity, parts, by };
+    }
+    return { R, SOIL, MOVES, HAZARDS, PRESETS, plan, planNow, reach, bounds, search, shakeOff, takenBack };
   })();
 
   // ---------------------------------------------------------------------------
   // Absorbed energy and growth (canon: they can take back the energy they put out). By default it returns to the
-  // store of power they draw on (the "endless ocean": nothing changes). In the growth modes it becomes mass,
+  // store of power they draw on (the "endless ocean": nothing around him changes, but it shows as his shimmer:
+  // RESTRAINT.takenBack). In the growth modes it becomes mass,
   // dm = E / c^2. Growth form: s is the share of the mass ratio that goes into volume (1 = pure size, 0 = pure
   // density, 0.5 = the even mix), so volume grows as ratio^s, density as ratio^(1-s) and height as ratio^(s/3).
   // Momentum is absorbed in these cases and nowhere else (canon, CLAUDE.md "Momentum"): their own recoil (They take

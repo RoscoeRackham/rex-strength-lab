@@ -1,0 +1,12 @@
+const { P, ctx, octx, K, g } = require('./h.js');
+const s = (lab, r) => console.log(lab, JSON.stringify(r, (k, v) => typeof v === 'number' ? +v.toPrecision(5) : v));
+s('push default', P.standoff(octx(), ctx()));
+s('push default off', P.standoff(octx({ ownRecoil: false }), ctx({ ownRecoil: false })));
+s('push bolted rex real', P.standoff(octx({ unbreakable: false }), ctx({ anchor: 'bolted', unbreakable: false })));
+s('push bolted rex unbr', P.standoff(octx(), ctx({ anchor: 'bolted' })));
+s('push inf vs bolted unbr', P.standoff(octx({ F: Infinity }), ctx({ anchor: 'bolted' })));
+s('push inf vs bolted real', P.standoff(octx({ F: Infinity, unbreakable: false }), ctx({ anchor: 'bolted', unbreakable: false })));
+s('push inf vs standing', P.standoff(octx({ F: Infinity }), ctx({})));
+s('push inf vs standing inf', P.standoff(octx({ F: Infinity }), ctx({ F: Infinity })));
+s('bolted pusher inf vs bolted unbr', P.standoff(octx({ F: Infinity, anchor: 'bolted' }), ctx({ anchor: 'bolted' })));
+s('bolted pusher vs bolted real (both bolted real)', P.standoff(octx({ anchor: 'bolted', unbreakable: false }), ctx({ anchor: 'bolted', unbreakable: false })));

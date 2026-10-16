@@ -1,0 +1,7 @@
+[["collide default (least)", {"duoAction":"collide"}],
+ ["collide default allout", {"duoAction":"collide"}, "allout"],
+ ["collide bounce allout", {"duoAction":"collide","colBounce":"bounce"}, "allout"],
+ ["collide 0.1% c allout", {"duoAction":"collide","colSrc":"set","colGB":-3}, "allout"],
+ ["collide set 500 m/s bounce allout", {"duoAction":"collide","colSrc":"set","colGB":-5.778,"colBounce":"bounce"}, "allout"],
+ ["collide 1 m/s allout", {"duoAction":"collide","colSrc":"set","colGB":-8.4768}, "allout"]
+]

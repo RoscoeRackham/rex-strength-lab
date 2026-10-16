@@ -1,0 +1,59 @@
+## id
+copy-shovingmatch-paradox-nothing-moves
+
+## severity
+major
+
+## title
+Shoving match at unlimited strength with one wrestler bolted says 'Nothing moves', though the bolted one's unlimited push on the standing one is real
+
+## location
+rex-strength-lab/src/engine.js pushMatchOwn (line ~2022: returns 'paradox' for the whole match when either side is held without limit); src/app.html wrestlePushOwn 'paradox' branch (line ~2547) → clashVerdict('paradox', …, oneSided) (line ~2267)
+
+## evidence
+State {duoOpen:true,duoAction:'wrestle',inf:true,oAnchor:'bolted'}, all-out. Verdict: 'Nothing moves: Ollie is bolted to ground that their power holds, so nothing can move him, and Rex’s push back goes to the endless ocean … no physical answer'. Status row: 'Rex holds 17.7 kN · pushes unlimited | Ollie holds unlimited · pushes unlimited'. The same view's effort box says: 'Courtesy ceiling: lifting 5.47 t. Past that, Rex is shoved off and slides 5.22 m'. Engine: pushMatch(Rex 90.7 t, Ollie 90.7 t bolted) gives shovedOff, Rex at 37.6 m/s and 109 m. At 10^12 kg it gives shovedOff, Rex at 126 km/s. At an unlimited dial it gives 'paradox', and the page says nothing moves. Under the contest rule ('the other's push is real'), Ollie's unlimited push on a Rex held by 17.7 kN would shove him off at just under light speed.
+
+## expected
+Only Rex's push on Ollie meets a hold without limit. Ollie's push on Rex meets a finite hold. The page must not say 'Nothing moves' while every finite strength has Rex shoved off.
+
+## fix
+In pushMatchOwn, when only one side is held without limit, treat the other side as shovedOff at just under light speed and note the one-sided no-answer. Or keep 'paradox' but change the copy to 'No physical answer: Rex’s unlimited push meets Ollie’s bolts, a hold without limit (and Ollie’s unlimited push on Rex would fling him off at just under light speed)', dropping 'Nothing moves'.
+
+## VERDICT
+### id
+copy-shovingmatch-paradox-nothing-moves
+
+### real
+true
+
+### severity
+major
+
+### reasoning
+Reproduced. pushMatchOwn returns 'paradox' (oneSided) for the whole match as soon as either unlimited push meets a hold without limit. The page then reuses the steady push's one-sided clashVerdict, 'Nothing moves: …'. In the shoving match both push. Under the pull request's own rule (decision 8: each push is real on the other, and each is held only by his footing), Ollie's unlimited push on a Rex held by 17.7 kN flings Rex off. Every finite dial agrees: 37.6 m/s at the default, 126 km/s at 10^12 kg. The same view's effort box says 'Past that, Rex is shoved off'. The rock-torn variant is inconsistent too: with unbreakable:false both are flung, Rex included, so only the bolts-hold case freezes Rex. Both at once has the same 'Nothing moves' verdict. The README states no decision for this case: decision 7 covers the steady push's one-sided paradox, where only one side pushes, so 'nothing moves' is true there. Test 8g ('up') and 8h ('pd') assert this behaviour.
+
+### reproduction
+1. `node harness.js …/repo/rex-strength-lab/dist/index.html '[{"duoOpen":true,"duoAction":"wrestle","inf":true,"oAnchor":"bolted"}]' allout`
+   - verdict: "Nothing moves: Ollie is bolted to ground that their power holds, so nothing can move him, and Rex’s push back goes to the endless ocean…"
+   - status: "Rex holds 17.7 kN · pushes unlimited | Ollie holds unlimited · pushes unlimited"
+   - effort: "Courtesy ceiling: lifting 5.47 t. Past that, Rex is shoved off and slides 5.22 m".
+2. Engine `P.pushMatch(ctx(rex,{F}), ctx(ollie,{F,anchor:'bolted'}))`:
+   - F = 90.7 t: shovedOff, winner B, vA 37.65 m/s, slideA 109 m
+   - F = 10^12 kg·g: shovedOff, vA 126,300 m/s
+   - F = Infinity: outcome 'paradox', oneSided true
+3. Both at once (wrestleMove 'shove', wrestleWho 'both', inf, oAnchor 'bolted'): same 'Nothing moves…' verdict.
+4. With unbreakable:false: "both are shoved apart … They fly apart at just under light speed each".
+
+### better_fix
+In pushMatchOwn, replace the early paradox return when only one side is held without limit:
+```js
+const heldB = !isFinite(DA) && bolt(cB) && holdsGround(cB), heldA = !isFinite(DB) && bolt(cA) && holdsGround(cA);
+if (heldA !== heldB) { /* the push into the hold without limit has no answer; the other push is real */
+  const s = heldB ? apart(netOn(DB, HA, false), 0) : apart(0, netOn(DA, HB, false));
+  return Object.assign(out, { outcome: 'shovedOff', winner: heldB ? 'B' : 'A', noAnswerPush: heldB ? 'A' : 'B', contact: Infinity }, s);
+}
+```
+This means defining apart() above it. Do the same in shoveBoth. Page verdict: 'Rex's unlimited push meets Ollie's bolts, a hold without limit: that push has no physical answer. Ollie's unlimited push on Rex is real, and Rex holds only 17.7 kN, so Rex is shoved off at just under light speed.'
+
+Copy-only fallback: drop 'Nothing moves' from the shoving-match and Both-at-once use of clashVerdict and say that Ollie's push would fling Rex. Update tests 8g and 8h to match.
+

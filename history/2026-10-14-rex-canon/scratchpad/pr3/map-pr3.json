@@ -1,0 +1,165 @@
+pr3_passenger
+pr4_collide
+pr5_shimmer
+pr4_contests
+{
+ "summary": "Map for pull request 3 (brief item 5: Safe passenger on by default, covering the drag and the landing). Line numbers refer to the read-only main copy at /tmp/claude-0/-home-user-rex-strength-lab/be83ea46-0fb6-5f45-86e4-061daa8f7429/scratchpad/main-tree/rex-strength-lab (main at 960fdfa). The scratch scripts are in /tmp/claude-0/-home-user-rex-strength-lab/be83ea46-0fb6-5f45-86e4-061daa8f7429/scratchpad/understand345/passenger/: table.js, onset.js, landing.js, catch.js, fixture.js, fixture2.js, blast.js, and engine-pr3.js, a scratch engine with the proposed edits.\n\n**The brief's table, reproduced at 3,000 kg (person thrown 30 m at 45°, default dial).**\n- With Safe passenger on: least disruptive is 3,342 kg-force, released at 16.4 m/s. The person lands at 18.0 m/s (like a 16.5 m fall).\n- The ceiling is plaster from the landing: use 27,052 kg-force, onset 26,991 kg-force.\n- With it off: 333 kg-force least, ceiling 334 kg-force (passenger).\n- All four powers off with Safe passenger on: ceiling none (main gives passenger by drag at 39,700 kg-force). The all-out plaster reach is 1.36 m from the landing.\n- Emulating PR2's recoil rule changes none of these, because the landing sets the shaking.\n\n**Engine plan.** It is guarded, so with Safe passenger off every result keeps its exact value and keys.\n1. Split `MOVES.throw.passenger` into `passengerLaunch` and `passengerDrag`, then define `passenger = !o.safePassenger && (launch || drag)`. With the switch off this gives exactly the same boolean as main.\n2. Add `MOVES.throw.passengerLanding(r, o)`, returning `{absorbed: r.Eimpact, J: m·vImpact}` only when Safe passenger is on and the object is a passenger. This is the shimmer's source. It leaves throwOnce's result object untouched.\n3. Proposed (not in the brief): drop the landing blast in throwBlast for a person with Safe passenger on, since its energy is taken back.\n4. Keep `landShake` as it is. Keep Safe passenger out of `anyPower`.\n\n**Fixture check.** On the scratch engine, exactly 8 powers-off fixture cases change: `plan|throw|person|inf|…|5`, which run with `safePassenger: true` in powers-off-cases.js. With a test-side shim that restores main's passenger rule, all 584 cases with a person or Safe passenger match the fixture, in both passes. The other cases have no passenger, so the new code doesn't run for them.\n\n**Page plan.**\n- `DEFAULTS.safePassenger: true`.\n- Migration: an unmarked save loads with it on. I recommend bumping the marker to `saveV: 3`.\n- Move the switch and rewrite its copy, and update `#powers-sum`.\n- `passengerChip`/`passengerText`: covers the drag; new landing text for on and off.\n- Effort box: credit `offBy.passenger`; replace the 'For a person…' line.\n- `catchPassengerG`: check Safe passenger before the drag.\n- Catch miss callout.\n- Cards, README, and the research label for the drag fact.\n\n**Tests.**\n- powers.js: guard the 8 fixture keys; rewrite the 5a check at lines 94-97, which fails under the new rule; add a check of the landing split.\n- presence.js line 238 turns round.\n- shots.js: new checks for the default, the migration and the person-throw text. POWERS_OFF and the saveV expectations change.\n\n**Overlap with PR2.** PR2 also edits these places:\n- `MOVES.throw.shake`/`shakeFrom`, right beside the passenger rule.\n- The comment above PASSENGER (engine.js line 4113).\n- The sw-recoil label next to the Safe passenger switch.\n- `offBy`/`OFF_NAME` (effort box lines 3627-3629).\n- The bayThrow recoil lines.\n- The Catch chips at 2808-2811 and duoFacts lines 4027-4028.\n- Cards 15 and 20 in static-data.js. Each card is one line, so conflicts are likely.\n- README line 5 and Known limits.\n- powers.js section 5d; the shots.js chip check at line 480.\n- data.js, if either regenerates it.\n\n**PR4 and PR5.** PR4 later edits the same `#powers-sum`, DEFAULTS and intro hint, to add the Never knocked back switches. PR5 reads `passengerLanding`: at the least effort that is 14.6 kJ, between the 7.3 kJ floor and the 517 kJ flicker, so a faint flicker.",
+ "sites": [
+  {
+   "file": "rex-strength-lab/src/engine.js",
+   "where": "RESTRAINT.MOVES.throw.passenger, lines 3810-3813 (comment 3810-3812, rule 3813); used by HAZARDS 'passenger' (3950) and reach() (4101)",
+   "current": "// ... and air drag in flight, which Safe passenger can't take away (it lasts the flight: the held 1.5 g limit)\npassenger: (r, o) => !!o.obj.passenger && r.canMove && ((!o.safePassenger && r.launchG > 0 && PASSENGER.felt(Math.max(r.launchG, r.launchGPeak || 0), o.angle) > PASSENGER.noHarm(r.launchT)) || PASSENGER.dragG(o.obj, r.v) * dragFactor(o) > PASSENGER.noHarm(1)),",
+   "change": "Split the rule:\n- passengerLaunch: (r,o) => !!o.obj.passenger && r.canMove && r.launchG > 0 && PASSENGER.felt(max(launchG, launchGPeak||0), o.angle) > PASSENGER.noHarm(r.launchT)\n- passengerDrag: (r,o) => !!o.obj.passenger && r.canMove && PASSENGER.dragG(o.obj, r.v) * dragFactor(o) > PASSENGER.noHarm(1)\n- passenger: (r,o) => !o.safePassenger && (MOVES.throw.passengerLaunch(r,o) || MOVES.throw.passengerDrag(r,o))\n\nWith Safe passenger off this is the same boolean as main; with it on the hazard never fires. Rewrite the comment to cite the 14 Oct 2026 ruling (Q8 b). HAZARDS and reach() need no change. This adds no keys to any result object.",
+   "tests": "test/powers.js:94-97 '5a: a thrown person feels 40% of the real drag at 60% absorbed (the held 1.5 g limit)' builds o with safePassenger:true and expects passenger(airAbsorb 0) === true. That FAILS under the new rule. Rewrite it against passengerDrag (shares 0.6/0/1 give false/true/false), and add: passenger(..., safePassenger:true, airAbsorb:0) === false. Numbers at 7e4 kg-force, 30°, 3,007 kg body: v 69.8 m/s, real drag 2.6 g, launch felt 106 g. With Safe passenger off the launch fires at every share, so dropping the switch alone won't fix the check.\n\ntest/presence.js:238 'all-out, the air drag on them is past the held limit too, and Safe passenger can’t take that away' turns round: dragG 3.44 g at 80.3 m/s, and !pz.test(..., safePassenger:true) must now hold. Line 237 (the launch: 18 g felt vs the 1.95 g limit at 4,000 kg-force) stays.\n\ntest/powers.js part 1: see the powers.js site."
+  },
+  {
+   "file": "rex-strength-lab/src/engine.js",
+   "where": "throwBlast(r, o), lines 3739-3750; landing part at line 3747 (feeds MOVES.throw.blast 3771, blastAt 3783, blastFrom 3786, blastParts 3788)",
+   "current": "const land = r.flight.landed ? shock(r.flight.vImpact, r.Eimpact) : 0;",
+   "change": "Proposed; the brief is silent on this. The landing's energy is taken back, so a person's landing makes no blast with Safe passenger on:\nconst land = r.flight.landed && !(o && o.safePassenger && o.obj && o.obj.passenger) ? shock(...) : 0;\n\nThe guard is safe for test calls like blastParts(r, {airAbsorb}) that pass no obj. Leave the relativistic branch alone: its 'land' is the fireball in the air, not a landing.",
+   "tests": "No current test. Scratch run (blast.js), 1e9 kg dial, Safe passenger on: ceiling unchanged (plaster, 27,100 kg-force); boom and air hazards both at 1.61e6 kg-force; windows preset 1.78e6 → 3.88e8 kg-force; houses preset 1.61e6 → 2.41e8 kg-force. Fixture: no change (fixture2.js)."
+  },
+  {
+   "file": "rex-strength-lab/src/engine.js",
+   "where": "new MOVES.throw.passengerLanding, next to landShake (3800-3804); throwOnce (1231-1351: launchG/launchT 1340, launchGPeak 1342, flight/Eimpact 1346) left unchanged",
+   "current": "landShake: impulseSource(o.surface, momentumOf(v, o.obj.m), Math.max(1e-3, L / v)), with L = obj.L || cbrt(6 m / (pi rho)). No figure reports a person's landing energy as taken back.",
+   "change": "Add:\npassengerLanding: (r, o) => (o && o.safePassenger && o.obj && o.obj.passenger && r.canMove && r.flight && r.flight.landed && !r.flight.relativistic && r.Eimpact > 0 ? { absorbed: r.Eimpact, J: momentumOf(r.flight.vImpact, o.obj.m) } : null)\n\nlandShake stays and sets the ceiling. Momentum still reaches the ground; the energy goes to the ocean, which is the shimmer's source in PR5 (absorbedEnergy). Keeping this in RESTRAINT rather than throwOnce means no new key on any result, so powers-off hashes can't move. Keep safePassenger out of anyPower (line 50).",
+   "tests": "New (test/powers.js or presence.js):\n- With the switch on, passengerLanding(r,o).absorbed === r.Eimpact > 0, and its J equals landShake's F·T/2 (the momentum still reaches the ground).\n- With it off, null.\n- blast's land part is 0 on and unchanged off.\n\nScratch: at 3,342 kg-force, absorbed 14,600 J, J 1,630 kg·m/s, pulse 0.031 s (about 59 g mean stop), shaking 2.51 mm/s at 5 m."
+  },
+  {
+   "file": "rex-strength-lab/src/engine.js",
+   "where": "PASSENGER, lines 4111-4136 (and the absorbed-energy comment 4106-4113); anyPower, line 50",
+   "current": "// Momentum is never absorbed. (4113)\nPASSENGER = { noHarm, EIBAND, injury, dragG, felt }\nanyPower = airShare>0 || keepForm || unbreakable || ownRecoil",
+   "change": "No logic change. Do not add safePassenger to anyPower: that would change the powers-off cases that run with sw. Optionally note in the PASSENGER comment that Safe passenger covers the launch, the drag and the landing.\n\nThe line 4113 comment is PR2's (item 7). Don't touch it here, or coordinate.",
+   "tests": "—"
+  },
+  {
+   "file": "rex-strength-lab/src/app.html",
+   "where": "Their powers markup: intro hint line 325; 'Material limit suspended' eyebrow 345; Safe passenger switch 347 (sw-recoil 344 just above is PR2's)",
+   "current": "325: '…Unbreakable footing, They take their own recoil, Things keep their form and Air resistance absorbed are on unless you turn them off… Bolted and the other switches are off by default.'\n347: '<b>Safe passenger</b>: the same spread push on a person he throws or catches, so his push puts no g-force on them. Air drag in flight and the landing stay real.'",
+   "change": "Markup has no 'default powers' heading to move into. Proposal: move the label out from under 'Material limit suspended' into its own eyebrow (e.g. 'People they throw or catch'), placed before 'Absorbed'. Add Safe passenger to the intro's list of on-by-default powers.\n\nNew wording: 'someone he throws or catches feels a manageable push, spread through them, at the launch, in the air and when they land. The landing’s push still reaches the ground, so it shakes as a real landing does; its energy is taken back. Only a person is a passenger (Ollie is as tough as Rex).'",
+   "tests": "test/shots.js:48 IN_POWERS includes 'sw-passenger' (it must stay inside #powers). New shots check: a fresh page has #sw-passenger checked."
+  },
+  {
+   "file": "rex-strength-lab/src/app.html",
+   "where": "DEFAULTS, lines 653-659",
+   "current": "// their four default powers …\nairAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true,\n// the other comic switches (off by default) …\nsafePassenger: false, silentStrike: false, softLanding: false,",
+   "change": "Move to the default powers with safePassenger: true (five default powers; update both comments). VALID (723) needs no change.",
+   "tests": "New shots check: a fresh page saves safePassenger:true and shows the switch checked."
+  },
+  {
+   "file": "rex-strength-lab/src/app.html",
+   "where": "save marker and migrations, lines 663-667 (saveV:2 and its comment), 673-675 (savedV), 678-684 (3,007 kg migration under savedV < 2), 685 (state.saveV = 2), 727 (VALID saveV)",
+   "current": "savedV = saved.saveV === 2 ? 2 : 1;\nif (savedV < 2) { if (state.m === 3007) state.m = DEFAULTS.m; if (state.oM === 3007) state.oM = DEFAULTS.oM; }\nstate.saveV = 2;\nVALID saveV: (v) => v === 2",
+   "change": "Add: if (savedV < N) state.safePassenger = true. An unmarked save loads with it on; a marked save keeps the reader's choice.\n\nRecommended N = 3: bump the marker (DEFAULTS, savedV parse, state.saveV, VALID accepts 3). Keep the 3,007 kg migration on savedV < 2.\n\nWhy: STATUS.md:14 tells the owner to republish once PR1 merges. A save written on a republished PR1/PR2 page would carry saveV:2 with safePassenger:false as the old default, and an N = 2 check would read it as a choice.\n\nIf you keep 2, record that the live page was not republished between #31 and PR3.",
+   "tests": "test/shots.js:307-317. The expectations fresh/old/older '3000,3000,2' and marked '3007,3007,2' become ',3' if bumped. Keep a {saveV:2, m:3007} case expecting 3,007 kg.\n\nNew checks:\n- an unmarked save {safePassenger:false} loads on;\n- a marked save {safePassenger:false, saveV:N} stays off;\n- with N = 3, a {saveV:2, safePassenger:false} save loads on."
+  },
+  {
+   "file": "rex-strength-lab/src/app.html",
+   "where": "#powers-sum summary, lines 862-868",
+   "current": "const allDefault = state.airAbsorb === 1 && state.keepForm && state.unbreakable && state.ownRecoil;\nconst sw = (allDefault ? ['default powers on'] : [unbreakable, own recoil, things keep their form, drag-free/air %]).concat([state.safePassenger && 'safe passenger', silent, soft])",
+   "change": "Add state.safePassenger to allDefault, and move 'safe passenger' into the non-default branch's list. The defaults then read 'Comic book · default powers on'.\n\nPR4 edits the same lines to add the Never knocked back switches.",
+   "tests": "No current test. New shots check: the summary reads 'default powers on' on a fresh page, and lists the others (not 'safe passenger') with it off."
+  },
+  {
+   "file": "rex-strength-lab/src/app.html",
+   "where": "passengerChip and passengerText, lines 1291-1310 (used at 1524 and 1579)",
+   "current": "chip (Safe passenger on): dg > noHarm(1) ? 'Safe passenger, but air drag X g' : 'Safe passenger: no harmful g-force'\ntext: 'Safe passenger: his push is spread through their whole body like gravity, so the launch puts no load on them; they float as if falling.' … '; Safe passenger covers only his push, not the air' … ' The landing is still real: they hit the ground at V, like falling H, unless someone catches them.'",
+   "change": "Chip (Safe passenger on): always info, e.g. 'Safe passenger: a manageable push, at launch, in flight and landing'. Remove the drag branch.\n\nText (on):\n- The push at the launch, the drag in flight and the landing are spread through them. Drop 'float as if falling' and 'covers only his push'.\n- Landing: 'They land at V (like falling H). Safe passenger takes back the landing’s energy (E), so they come down unharmed; its push still reaches the ground and shakes it like a real landing.'\n- Don't claim 'unharmed' where Things keep their form is off and the flight heats past 1,200 K: Safe passenger doesn't cover heat.\n\nText (off): keep today's text, adding that the lab doesn't judge the fall.",
+   "tests": "New shots check, the person throw:\n- on: the text names the landing as taken back, with the energy (14.6 kJ at the least effort) matching r.Eimpact;\n- off: the 'still real … unless someone catches them' text."
+  },
+  {
+   "file": "rex-strength-lab/src/app.html",
+   "where": "bayThrow: 'Lands at' tile line 1539; 'Impact:' item line 1587",
+   "current": "tile('Lands at', speedOnly(f.vImpact), fmtTNT(r.Eimpact) + ' on impact')\nif (f.landed && r.Eimpact > 4.184e9) items.push('Impact: ' + fmtTNT + crater + quake …)",
+   "change": "For a person with Safe passenger on: the tile's sub-line says the energy is taken back (Safe passenger). The Impact item (person faster than about 9.6 km/s) says no crater or quake: the energy is taken back and the push still reaches the ground. Lines 2516/2545 are the Wrestle throw of Ollie, who is not a passenger: no change there.",
+   "tests": "Covered by the new person-throw text check."
+  },
+  {
+   "file": "rex-strength-lab/src/app.html",
+   "where": "effortReadout: offBy/OFF_NAME, lines 3627-3631; person line 3636; never-because item 3644; EFF_HAZ.passenger 3403",
+   "current": "offBy = { crush, boom, air, ground, slide } (no passenger)\n3636: 'For a person this covers the launch and the air in flight only. The landing is a fall unless someone catches them, and the lab doesn’t count it.'",
+   "change": "offBy.passenger = M.passenger && c.safePassenger && offHappens('passenger', { safePassenger: false }) ? 'Safe passenger' : null. offHappens tests all-out with the switch off and applies sw to both c and p.opt.\n\nOFF_NAME.passenger = 'the person pressed past the ride limits'. The ceiling text then gains 'Safe passenger is on, so it leaves out …', and the list says 'never, because Safe passenger is on.'\n\nLine 3636: with the switch on, 'Safe passenger covers the launch, the air in flight and the landing; the landing’s push still reaches the ground, and its shaking counts.' With it off, the old line.\n\nPR2 also edits 3627-3629 (its own recoil plaster credit).",
+   "tests": "New shots checks, fresh page with obj 'person':\n- 'Effort: 3.7% of his strength (as hard as lifting 3.34 t)';\n- the ceiling is plaster at about 30% (lifting about 27 t) 'from where it lands';\n- the credit sentence appears.\n\nWith the switch off: 0.37% (333 kg), passenger."
+  },
+  {
+   "file": "rex-strength-lab/src/app.html",
+   "where": "Catch with a person: catchPassengerG 4085-4100; chips 2799-2803; tile 2840; miss callouts 2920-2928; duoFacts harm 4033-4034; duoKey 4111",
+   "current": "catchPassengerG: the drag check (dg > noHarm(1) → over 'drag') runs BEFORE 'if (state.safePassenger || !(L.tPush > 0)) return null;'. The comment at 4090 says drag is real whatever Safe passenger says.\nchips: pg.where==='drag' ? 'Air drag: … past ride limits' : state.safePassenger ? 'Safe passenger: throw and catch spread through them' : …",
+   "change": "Move the Safe passenger return to the top of catchPassengerG and fix its comments. Chip: 'Safe passenger: throw, flight and catch spread through them'.\n\nMiss callout for a person with the switch on: they come down unharmed; the energy is taken back. 'hits-ground' as a duo harm: decision needed; see the brief issues.",
+   "tests": "No current test. Scratch (catch.js), default dial:\n- A 10 m lob with the switch off is already past ride limits (2.28 g over 0.58 s, against 1.5 g).\n- A fastball: 137 g.\n- At Air resistance absorbed 0%, the fastball with the switch on: main says drag 3.5 g over; PR3 gives null.\n\nNew shots check: a person in Catch with the switch on shows no ride-limit harm."
+  },
+  {
+   "file": "rex-strength-lab/src/static-data.js",
+   "where": "cards: line 15 'The courtesy ceiling and the not-so-heroic presets'; line 16 'Two-player effort'; line 20 'Their powers'",
+   "current": "15: '… a thrown person pressed harder than amusement rides allow (ASTM F2291) … A thrown person’s landing is not counted: it is a fall unless someone catches them.'\n16: '… no thrown person pressed past ride limits …'\n20: '… so four powers are on unless the reader turns them off … Safe passenger spreads his push through a thrown person in proportion to their mass, as gravity does, so his hands put no stress on them (… Cauchy’s equation of motion).'",
+   "change": "15: with the switch on (the default), the person comes down unharmed: the energy is taken back, the push still reaches the ground, and its shaking counts. With it off, the landing is a fall the lab doesn't judge. Add Safe passenger to the 'Their powers change what counts' list.\n16: '(with Safe passenger off)'.\n20: five defaults; Safe passenger covers the launch, the drag and the landing (energy taken back, momentum to the ground).\n\nPR2 edits the same lines 15 and 20, and each card is one line.",
+   "tests": "test/calibration.js:413-419 reads the cards only for the body figures: no conflict."
+  },
+  {
+   "file": "rex-strength-lab/research/final-presence.json",
+   "where": "comic_passenger_drag_g (label at line 4805, notes at about 4826); then rebuild src/data.js with build-data.py (data.js line 8922 label)",
+   "current": "label: 'Air drag felt by a flying person, by speed (not removed by safe passenger once released)'; notes: '… safe passenger stops when he lets go.'",
+   "change": "Relabel. The ruling of 14 Oct 2026 (Q8 b) makes Safe passenger cover the drag; the figure applies with the switch off. The status stays 'estimate'. Optionally cite comic_soft_landing_force and comic_absorb_residual_energy (both derived) as support for the landing's split: energy taken back, momentum passed on, p²/2M left for the Earth (about 0).",
+   "tests": "Rebuild data.js (generated; on a conflict with PR2, rebuild)."
+  },
+  {
+   "file": "rex-strength-lab/README.md",
+   "where": "line 5 (intro: 'four default powers … switches … (safe passenger, silent strike, soft landing)'); line 113 (Known limits); test description line 56",
+   "current": "113: 'Air drag in flight is judged against the held 1.5 g limit; Safe passenger doesn't remove it. A thrown person's landing is reported as a fall height, with no injury threshold, and the courtesy ceiling doesn't count it.'",
+   "change": "Line 5: five default powers. Line 113: with the switch on it covers the drag and the landing (energy taken back, momentum and shaking real); with it off, drag against 1.5 g and the landing a fall the lab doesn't judge. Line 56: say how part 1 handles the 8 cases that run with Safe passenger on. Add the review history. PR2 also edits line 5 and Known limits.",
+   "tests": "—"
+  },
+  {
+   "file": "rex-strength-lab/test/powers.js",
+   "where": "part 1 check(), lines 16-44 (fixture powers-off.json; cases from test/powers-off-cases.js, whose plan sw at line 92 includes safePassenger:true)",
+   "current": "Every case's hash must equal the fixture, in both passes ('left out' and OFF).",
+   "change": "Under PR3, exactly 8 cases differ: plan|throw|person|inf|{concrete,sand}|{friction,bolted}|{false,true}|5. These run with Safe passenger on, so the brief's powers-off rule doesn't cover them.\n\nGuard them: for these keys, compare with a test-side shim that restores main's passenger formula on MOVES.throw (fixture2.js shows all 584 person or Safe-passenger cases then match). Also assert that these 8 keys are the only ones that differ without the shim, and that hazard:passenger is now never for them. Don't regenerate the fixture.",
+   "tests": "powers.js part 1, 'powers left out' and 'explicitly off': without the guard these fail with 8 differing cases. The run takes about 30 s for the person subset; the full part 1 was not run here."
+  },
+  {
+   "file": "rex-strength-lab/test/shots.js",
+   "where": "POWERS_OFF line 29; mass migration 307-317; old-save check 428; plus new checks",
+   "current": "POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoil: false }. These saves are unmarked, so after PR3 they load with Safe passenger ON.",
+   "change": "POWERS_OFF: add safePassenger:false and the current saveV marker, so 'powers off' really means off. No page-before case uses a person (s4-catch is the baseball), so results don't move, but the intent is kept.\n\nAdd the brief's checks:\n- fresh page on;\n- unmarked save off → on;\n- marked save off stays off;\n- the person throw's least effort and ceiling;\n- the landing text with the switch on and off;\n- the effort-box credit;\n- the catch with a person.",
+   "tests": "Line 480 (the recoil chip) is PR2's."
+  },
+  {
+   "file": "rex-strength-lab/build-data.py",
+   "where": "objects, line 156 (person: passenger=True)",
+   "current": "obj('person', …, rho=985, passenger=True, …)",
+   "change": "None. Only the person is a passenger. The partner toss, the Wrestle throw and catching Ollie never read the flag.",
+   "tests": "—"
+  }
+ ],
+ "brief_issues": [
+  "No 'default powers' heading exists in Their powers. The four defaults sit under three headings: Holding their ground (Unbreakable footing, own recoil), Material limit suspended (Things keep their form) and Absorbed (Air resistance absorbed). So 'move to the default powers' has no target. Proposal: give Safe passenger its own eyebrow ('People they throw or catch') before 'Absorbed', and list it in the intro hint (app.html:325) and the summary line as a default.",
+  "The brief puts the wrong words on the switch. 'puts no load on them; they float as if falling' is in passengerText (app.html:1304). The switch label (app.html:347) says 'so his push puts no g-force on them. Air drag in flight and the landing stay real.' Both need the new 'manageable push, spread through them, at the launch, in the air and when they land' wording, and the chip and the 'covers only his push, not the air' clause (1295, 1308) too.",
+  "'The powers-off fixture keeps passing' can't hold as written. test/powers-off-cases.js:92 runs the planner with safePassenger:true, and under PR3 exactly 8 fixture keys change (plan|throw|person|inf|…|5), with main's drag hazard at about 39,700 kg-force going to never. Decision: a test-side shim in powers.js part 1 that restores main's passenger rule for those keys only, plus an assertion that only they differ. Verified: all 584 person or Safe-passenger cases match under the shim.",
+  "Save marker risk. STATUS.md:14 tells the owner to republish once PR1 (#31) merges. If that happens before PR3 is live, saves carry saveV:2 with safePassenger:false (the old default), and the brief's rule would read them as a choice. Decision: bump the marker to saveV:3 in PR3; the Safe passenger migration runs on <3, the 3,007 kg one stays on <2, and the shots.js:316-317 expectations move. Otherwise record that no republish happened in between.",
+  "The landing's blast, crater and quake are not covered. Energy taken back implies no landing blast for a person with the switch on (throwBlast land part). This doesn't move the ceiling, but at a 1e9 kg dial the windows preset moves from 1.78e6 to 3.88e8 kg-force and houses from 1.61e6 to 2.41e8. The page's crater and quake line for a person past about 9.6 km/s should say 'taken back'. Proposal: include it, guarded, and confirm in the physics review.",
+  "The landing's split rests on a reading: a spread push versus a gentle stop. landShake stops the person in L/v (L = 0.56 m): 0.031 s, about 59 g on average, 2.51 mm/s at 5 m at the least effort. That fits the switch's 'spread through them' mechanism and Soft landing's precedent. If 'manageable force' were read as a gentle stop (1.5 g), the pulse would be 1.2 s at 0.0013 mm/s, plaster would never crack, and the ceiling would move to the boom. Recommend the brief's reading; state it in the card and README.",
+  "Heating in flight isn't covered. Safe passenger covers the push, the drag and the landing, not heat. With Things keep their form off and a person past about Mach 3, the page says the object 'would melt or burn away' (app.html:1586 area). The landing text must not also say 'unharmed' there.",
+  "Catch with a person: 'covers where the person lands' also reaches the Catch tab. Its miss callout (app.html:2928) and the duo harm 'the throw hits the ground X away' (duoFacts) need a decision. Proposal: the callout says they come down unharmed with the energy taken back; keep 'hits-ground' as a failed throw.",
+  "The figures at 3,000 kg differ slightly from the brief's (written at 3,007 kg):\n- Least effort with the switch on is 3,342 kg-force, not 3,350.\n- Its ceiling is plaster, onset 26,991 kg-force (search use 27,052), so 'about 27,000'.\n- With the switch off, least 333 and ceiling use 334 kg-force, not 335 (onset 333.4).\n- All-out: 80.8 m/s, range 668 m.\nThe 1.4 m plaster reach (1.36 m) and the 16 m fall (16.5 m) hold.",
+  "The brief overstates the drag change. At the default (Air resistance absorbed 100%), main with the switch on already gives 3,342 / 27,000 kg-force: drag is zero, so the 'New: on' row comes only from the default flip. The drag rule matters only below 100%, for example the all-four-off row: ceiling passenger at 39,700 kg-force becomes none, least 3,929 kg-force.",
+  "Flipping the default changes the Catch tab with a person, a change the brief doesn't call out. With the switch off, even a 10 m lob is past the ride limits (2.28 g over 0.58 s, against a 1.5 g limit), so the duo search's passenger harm disappears by default. No test covers a person in Catch.",
+  "Research data contradicts the ruling. comic_passenger_drag_g is labelled '(not removed by safe passenger once released)', with notes 'safe passenger stops when he lets go'. Relabel it and rebuild data.js.",
+  "shots.js POWERS_OFF lacks safePassenger:false and a marker, so after PR3 the 'powers off' page comparisons run with Safe passenger on. Results don't move, because no case uses a person; fix it for intent."
+ ],
+ "numbers": [
+  "Person thrown 30 m at 45°, 3,000 kg Rex, default dial (90,718 kg-force), the four powers on, Safe passenger ON (PR3 rule): least 3,342 kg-force (3.68% of the dial), not capped; release 16.4 m/s; range 30.0 m; lands at 18.0 m/s, 14,600 J (like a 16.5 m fall); ceiling plaster, use 27,052 and onset 26,991 kg-force; presets rattle 1,490 kg-force, plaster 27,100, the rest never",
+  "Same, Safe passenger OFF: least 333 kg-force (capped, range 3.03 m); ceiling passenger at 334 kg-force (below 332.7, onset 333.4); all-out 80.8 m/s, range 668 m, lands 81.2 m/s (297 kJ), launch 137 g for 0.060 s",
+  "Four powers off, Safe passenger on: main gives least 3,929 kg-force (17.5 m/s) and ceiling passenger (drag) at 39,700 kg-force; PR3 gives ceiling none; all-out 80.3 m/s, range 214 m, lands 34.5 m/s, drag 3.44 g, plaster reach 1.36 m; preset rattle 1,800 kg-force",
+  "PR2's recoil rule (emulated) changes none of the person-throw figures above: the landing sets the shaking",
+  "Landing at the least effort: momentum 1,630 kg·m/s over L/v = 0.031 s (L 0.559 m), mean force 52 kN, about 59 g; 2.51 mm/s at 5 m. If stopped at 1.5 g instead: 1.22 s, 0.0013 mm/s",
+  "Plaster reach from the landing (L/v pulse), 1e12 kg dial, Safe passenger on: at 27,100 kg-force 5.06 m (lands 44.5 m/s); 1e5 kg-force 17.5 m; 1e6 32.3 m; 1e7 48.4 m; 1e8 89.1 m",
+  "Landing blast at 1e7 kg-force (lands 851 m/s): 32.7 MJ against 151 kJ from his hand. At a 1e9 kg dial, main gives windows 1.78e6 and houses 1.61e6 kg-force; with the landing taken back, 3.88e8 and 2.41e8; ceiling unchanged (plaster 27,100); boom and air hazards at 1.61e6",
+  "passengerLanding at the least effort (scratch engine): absorbed 14,600 J, J 1,630 kg·m/s; shimmer between the 7.3 kJ floor and the 517 kJ flicker (a faint flicker)",
+  "Powers-off fixture: main 0 differ; PR3 rule 8 differ (plan|throw|person|inf|…|5, both passes); PR3 scratch engine plus main-rule shim: 584 of 584 person or Safe-passenger cases match",
+  "presence.js (3,007 kg body): at 4,000 kg-force v 17.6 m/s, launch felt 18 g against a 1.95 g limit (hazard on with the switch off, off with it on); all-out v 80.3 m/s, drag 3.44 g (main: hazard still on with the switch; PR3: off)",
+  "powers.js 5a (7e4 kg-force, 30°, 3,007 kg): v 69.8 m/s, real drag 2.6 g, launch felt 106 g, so with the switch off the hazard is on at every share",
+  "Catch with a person, default dial, 10 m: lob 8.35 m/s, felt 2.28 g over 0.584 s (over the 1.5 g limit); fastball 81 m/s, 137 g over 0.060 s; at 0% absorbed the fastball's drag is 3.5 g (main flags it even with the switch on)"
+ ],
+ "lens": "pr3_passenger"
+}

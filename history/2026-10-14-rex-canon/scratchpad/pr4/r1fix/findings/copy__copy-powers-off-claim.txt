@@ -1,0 +1,43 @@
+## id
+copy-powers-off-claim
+
+## severity
+minor
+
+## title
+The PR and README say the page with the powers off is unchanged except for one note, but Collide's two four-cases grids changed
+
+## location
+PR #35 'Against #34: with the powers off the page is the same in 43 of 44 states. The 44th is an added note on the fireball case.'; README 'With They take their own recoil off every contest is as before (pull request 3's page)'
+
+## evidence
+Full duo-bay text with every power off (airAbsorb 0, keepForm, unbreakable, ownRecoil, safePassenger, noKnockback, oNoKnockback false, saveV 3), all-out, compared between pull request 3's page and this one. Arm and Wrestle are identical. Collide's charge grid changed from 'FINITE INERTIA (ANYTHING REAL, EVEN BOLTED TO THE EARTH) / UNLIMITED MOMENTUM (LIGHT SPEED)' and cell 'No answer: ∞ ÷ ∞. The two can’t exist in the same universe.' to the new hold and momentum labels and cells. The steady push grid's row and cell changed from 'Nothing moves, with no limit on the force between them…' to 'No limit on the force between them. A pusher who takes his own recoil gets no physical answer…'.
+
+## expected
+The claims should say what was compared (verdicts, chips and tiles), or list the grid text change as a second difference.
+
+## fix
+PR and README: 'with the powers off every result (verdict, chips, tiles) is the same in 43 of 44 states; the 44th adds a note on the fireball case, and the Collide four-cases grids have new labels covering both settings'.
+
+## VERDICT
+### id
+copy-powers-off-claim
+
+### real
+true
+
+### severity
+minor
+
+### reasoning
+Reproduced. With every power off, the full Collide text differs between pull request 3's page and this one, in the charge view and in the steady push view. The four-cases grids have new row and column labels and new cell text. The PR body's 'with the powers off the page is the same in 43 of 44 states. The 44th is an added note on the fireball case' is therefore broader than what was compared. Its likely basis is the fixture fields (verdict, chips, tiles, effort, happens, callouts, math), which leave out the grid. Decision 16 does mention the grid relabel, so the owner can find it, but the test claim is overstated. Results (verdicts, chips, tiles) are unchanged.
+
+### reproduction
+Set OFF to the keys airAbsorb 0, keepForm false, unbreakable false, ownRecoil false, safePassenger false, noKnockback false, oNoKnockback false, saveV 3. Run `node catchall.js` on base and on branch for {duoOpen, duoAction:'collide', OFF}, then diff.
+- Charge view, line 42: "Finite inertia (anything real, even bolted to the Earth)… No answer: ∞ ÷ ∞. The two can’t exist in the same universe." becomes "Finite hold (anything real: his footing, bolts on real rock, …)… No answer: one of them has to give, and neither can…".
+- Push view, line 34: "Unlimited push (unlimited strength, bolted)… Nothing moves, with no limit on the force between them…" becomes "Unlimited push (unlimited strength, bolted or taking his own recoil)… No limit on the force between them. A pusher who takes his own recoil gets no physical answer…".
+- No other lines differ.
+
+### better_fix
+PR body: 'Against #34, with the powers off, every result (verdict, chips, tiles, effort box, items) is the same in 43 of 44 states; the 44th adds a note on the fireball case. The Collide four-cases grids have new labels covering both settings (decision 16).' Give the README sentence the same qualifier.
+

@@ -1,0 +1,40 @@
+## id
+duo-push-ground-preset-reason
+
+## severity
+minor
+
+## title
+Shoving match with one wrestler bolted: the 'break the ground' preset gives a false reason
+
+## location
+rex-strength-lab/src/app.html:4871 (duoNoModel ground gap for the Wrestle push and Collide push)
+
+## evidence
+Page, Wrestle > Push, Rex bolted, power on, 'Break the ground under him' preset (the run on real ground): 'Standing, their feet slide long before the ground could break; the lab models the ground tearing out only around bolted feet.' Here Rex is bolted, not standing, and Ollie's feet don't slide: his push isn't capped by his grip, and the verdict says 'Ollie's push (890 kN) can't move Rex's bolts.' On real concrete the rock around Rex's bolts tears at about 697 kN (groundTear), and 890 kN passes that from about 71 t of effort. The README's Known limits says the lab doesn't check this rock ('In the shoving match a single bolted wrestler ... The lab doesn't check the rock around those bolts there'), but the page gives a different and wrong reason.
+
+## expected
+The page should state the actual limit: around a single bolted wrestler the lab doesn't check the rock at a finite strength, even though the other's push can exceed what it holds. Better still, check it.
+
+## fix
+In duoNoModel, for act 'wrestle' push with state.ownRecoil and exactly one anchor bolted, return 'With the power on the other's whole push lands on the bolted one's bolts; the lab doesn't check the rock around them here (on real rock it tears near 697 kN).' Or add the check in pushMatchOwn (DB vs groundTear(cA) for a bolted A) and set models.ground.
+
+## VERDICT
+### id
+duo-push-ground-preset-reason
+
+### real
+true
+
+### severity
+minor
+
+### reasoning
+Reproduced. In the shoving match with Rex bolted and the power on, Ollie's whole push (890 kN at the default dial) lands on Rex's bolts. pushMatchOwn doesn't check the rock around a single bolted wrestler, so models.ground is false. duoNoModel then gives the standing-feet reason: 'Standing, their feet slide long before the ground could break; the lab models the ground tearing out only around bolted feet.' Neither half fits this state. Rex is bolted, not standing, and Ollie's push isn't capped by his grip. And there are bolted feet whose rock the lab leaves unchecked. On real concrete the rock tears at about 697 kN (the standoff's tearCap of 696,773 N gives tear 1.28 for 890 kN), which Ollie's push passes from about 71 t of effort. The README's Known limits states the real gap, but the page gives a different and false reason.
+
+### reproduction
+Page {duoOpen:true,duoAction:'wrestle',wrestleMove:'push',anchor:'bolted'}, 'ground' preset (Break the ground). Verdict: 'Rex is bolted, so he can't walk Ollie out, but his push is real ...: he shoves Ollie off at 37.6 m/s ... Ollie's push (890 kN) can't move Rex's bolts.' Effort: 'All-out. Everything they have.Standing, their feet slide long before the ground could break; the lab models the ground tearing out only around bolted feet.' Engine: P.standoff(Ollie, bolted Rex, unbreakable false) gives rock.tearCap 696772.8 N and tear 1.277 at 889,644 N. P.pushMatch(bolted Rex, Ollie, unbreakable false) gives 'shovedOff' with no tear key.
+
+### better_fix
+In duoNoModel's ground gap, branch on the footing: for act 'wrestle' push with state.ownRecoil and exactly one of state.anchor/state.oAnchor bolted, return { gap: 'With the power on, the other's whole push lands on the bolted one's bolts. The lab doesn't check the rock around them in this test (on real rock it would tear near ' + fmtN(groundTear) + ').', all: true }. Keep the 'standing, their feet slide' text only when neither is bolted. Better still, add the check to pushMatchOwn (tearA = DB / groundTear(cA) for a bolted A on real ground, and likewise for B) and set models.ground for a single bolted wrestler.
+

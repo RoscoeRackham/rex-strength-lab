@@ -1,0 +1,33 @@
+// replicates test/shots.js's pull request 3 round 1 checks and the very-fast impact check on one viewport
+const fs=require('fs'), path=require('path'), {pathToFileURL}=require('url');
+const {chromium}=require('/opt/node22/lib/node_modules/playwright');
+const R='/tmp/claude-0/-home-user-rex-strength-lab/be83ea46-0fb6-5f45-86e4-061daa8f7429/scratchpad/review-pr3-r2/physics/repo/rex-strength-lab';
+const {settle}=require(R+'/test/make-page-fixture.js');
+(async()=>{
+  const src=process.argv[2]; const html=fs.readFileSync(src,'utf8');
+  const wrap=path.join(__dirname,'r1-'+Date.now()+'.html');
+  fs.writeFileSync(wrap,'<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body>'+html+'</body></html>');
+  const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome'});
+  const page=await b.newPage({viewport:{width:1280,height:900}});
+  await page.goto(pathToFileURL(wrap).href);
+  const load=async(st)=>{await page.evaluate(x=>localStorage.setItem('rex-lab-v1',JSON.stringify(x)),st); await page.reload(); await page.waitForTimeout(800); await settle(page,'bay');};
+  const pick=async(sel,v)=>{await page.selectOption(sel,v); await page.waitForTimeout(300); await settle(page, sel==='#duo-effort'?'duo-bay':'bay');};
+  const duoAll=()=>page.evaluate(()=>document.getElementById('duo-bay').textContent.replace(/\s+/g,' '));
+  const soloTxt=(sel)=>page.evaluate(s=>Array.from(document.querySelectorAll('#bay '+s)).map(n=>n.textContent.replace(/\s+/g,' ')).join(' / '),sel);
+  const res={};
+  await load({action:'throw',obj:'person',logKg:9.15}); await pick('#effort','allout'); const fastH=await soloTxt('.happens');
+  await load({action:'throw',obj:'person',logKg:9.15,surface:'granite'}); await pick('#effort','allout'); const fastG=await soloTxt('.happens');
+  const fastI=(fastH.match(/Impact:[^/]*/)||['(no Impact item)'])[0];
+  res.impact = !(!/Impact: [\d.]+ t TNT, all of it taken back by Safe passenger, so no blast where they land \(the ground still gives way under its push: above\)\. Its push still reaches the ground and shakes it \(the effort box gives how far\)\./.test(fastH) || /crater up to|quake/.test(fastH) || /no crater/.test(fastI) || !/But past a landing of about 100 m\/s, that push is more than the concrete slab bears/.test(fastH) || !/so no crater or blast where they land\./.test(fastG) || /quake|gives way/.test(fastG));
+  await load({saveV:3,duoOpen:true,duoAction:'catch',cObj:'person',cStyle:'hard',cMiss:true,cLogD:1,logKg:8,airAbsorb:0,keepForm:false}); await settle(page,'duo-bay'); await pick('#duo-effort','allout');
+  const cHot=await duoAll();
+  res.hot = !(/so they come down unharmed|no harm/.test(cHot) || !/so the lab can’t say they come down unharmed\./.test(cHot) || !/it doesn’t cover the heating in flight\)/.test(cHot));
+  await load({saveV:3,duoOpen:true,duoAction:'catch',cObj:'person',cStyle:'hard',cMiss:true,cLogD:2,logKg:8,airAbsorb:0}); await settle(page,'duo-bay'); await pick('#duo-effort','allout');
+  const cBear=await duoAll();
+  res.bear = /at 155 m\/s\. Safe passenger spreads the landing through them and takes back its energy \([\d.]+ MJ\), so they come down unharmed, with no blast\. Its push still reaches the ground and shakes it\. But past a landing of about 100 m\/s/.test(cBear) && !/no crater/.test(cBear);
+  await load({duoOpen:true,duoAction:'catch',cObj:'person',cStyle:'hard',cMiss:true,logKg:16,cLogD:4.5}); await settle(page,'duo-bay'); await pick('#duo-effort','allout');
+  const hgOn=await duoAll();
+  res.hitsGround = /That is their landing, and Safe passenger covers it/.test(hgOn) && !/blasts a crater|quake|where it hits the ground/.test(hgOn);
+  console.log(JSON.stringify(res));
+  await b.close(); fs.unlinkSync(wrap);
+})();

@@ -1,0 +1,37 @@
+## id
+duo-arm-reading-b-justification
+
+## severity
+major
+
+## title
+Arm wrestling, decision 10: the case against the brief's reading A is wrong, and B absorbs nothing in a stalemate
+
+## location
+rex-strength-lab/README.md:168 (decision 10); rex-strength-lab/src/engine.js armWrestle comment (lines ~1773-1790) and the stalemate path
+
+## evidence
+README: 'Under A ... With nothing on his side carrying it, a real force would act on each hand in a stalemate while nothing moved: momentum would vanish outside canon's list.' In arm wrestling the two presses meet at one contact, the clasped hands. 'The other's press on him' and 'the push back of his own press' are therefore the same contact force C. What each puts on himself is his own arm's reaction at his elbow and shoulder, which under the rules lands on the pad. Under A that reaction goes to his source (canon's case 'their own recoil'). Each hand is held by his own arm, whose push is real, so nothing moves, and the shared source receives −C·t and +C·t: nothing vanishes outside the list. Under B the pad keeps that reaction. In a stalemate nothing is absorbed, exactly as with the power off. Engine at the default dial with Things keep their form off: armWrestle gives tableBreaks true, tableBreaksBy 'push' at 222 kN with ownRecoil true, and the same with it off; no recoilAbsorbed in a stalemate. Q12 says 'The only absorption is the push each puts on himself'. The results differ: B breaks the table (courtesy ceiling 6.7%, 6.1 t, 'the table tears apart') and then reports both pushed off their feet standing. Under A the author's own count is 0 of 2,160 runs breaking the table.
+
+## expected
+A decision that departs from the brief's reading needs a sound reason. A is physically coherent and matches Q12's wording. B keeps the old physics for every stalemate.
+
+## fix
+Either build reading A, where with the power on the presses don't load the pads and the table carries only the slam, or keep B. If B stays, correct decision 10 (README and engine comment) to say that A is coherent and B is a choice, and ask the owner to choose with the concrete differences (the table break at 6.1 t, the standing 'both pushed off their feet').
+
+## VERDICT
+### id
+duo-arm-reading-b-justification
+
+### real
+false
+
+### severity
+not_a_bug
+
+### reasoning
+Not a defect. Decision 10 is a recorded choice with a sound reason, and it is flagged to the owner in 'What is left' ('arm-wrestling reading B (decision 10)'). The duo's version of A works by letting each one's source take his own arm's reaction at the elbow and shoulder. In a stalemate that reaction equals the other's press, so his source in effect holds him against the other's real press. That is Never knocked back, which canon sets aside in contests ('In a contest the other's push is real'). Under that model the other's press never loads or moves anything but the clasped hands. The lab's contest model, the one the brief itself uses for the shoving match, treats each push as acting on the other and sends only its own push back to the source. In that model, if the pad doesn't carry the other's real press, nothing does, and momentum vanishes in a stalemate. So the README's argument holds within the model the lab uses. Q15 makes the shoving match follow 'the arm-wrestle rule'. If the duo's reading A were applied there, equal pushers would deadlock with nothing loading their feet, contradicting the brief's own shoving-match row ('two equal pushers both get shoved apart'). B is the consistent reading of both. B also does keep the own push backs in the ledger: they go to the shared source as +P·t and −P·t, which cancel, so no shown result differs. That is not 'absorbs nothing' in any visible sense. The consequences the duo lists (the table breaks at 6.1 t; standing, both pushed off their feet) are stated in 'What moved' and decision 10, where the owner will see them. At most the engine comment's 'physically incoherent' could say 'incoherent with the lab's contest rule (the shoving match)', but that is wording, not a defect.
+
+### reproduction
+Engine at the default dial with keepForm false: P.armWrestle with ownRecoil true gives 'stalemate', tableBreaks true, by 'push', contact 222411 N, draggedA/B true. With ownRecoil false: 'stalemate', tableBreaks true, by 'push', contact 17652 N. The table breaks either way, as decision 10 says ('both presses past what the table carries break it, as before'). P.pushMatch(Rex, Ollie) at the default dial gives 'bothShoved', 26.6 m/s each: B's rule, which the brief chose for the shoving match. README line 191 lists 'arm-wrestling reading B (decision 10)' for the owner to confirm. Decision 10's text gives the reason and the consequence ('Under A the table would never break with the power on (0 of 2,160 runs)').
+

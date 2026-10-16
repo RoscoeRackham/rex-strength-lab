@@ -1,0 +1,14 @@
+const REPO = process.env.REPO || '/tmp/claude-0/-home-user-rex-strength-lab/be83ea46-0fb6-5f45-86e4-061daa8f7429/scratchpad/review-pr4-r1/duo/repo';
+global.window = {};
+const P = require(REPO + '/rex-strength-lab/src/engine.js');
+require(REPO + '/rex-strength-lab/src/data.js');
+const D = window.DINO_DATA;
+const g = P.K.g;
+const rex = P.makeBody({ build: 'rex', ...P.DEFAULT_BODIES.rex });
+const ollie = P.makeBody({ build: 'ollie', ...P.DEFAULT_BODIES.ollie });
+const surf = (id) => D.surfaces.find((s) => s.id === id);
+const ON = { airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true, safePassenger: true, noKnockback: true };
+const OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoil: false };
+const ctx = (kg, body, extra) => Object.assign({ F: kg === Infinity ? Infinity : kg * g, mode: 'comic', body, surface: surf('concrete'), anchor: 'friction' }, extra || {});
+const DIAL = 90718.474;
+module.exports = { P, D, g, rex, ollie, surf, ON, OFF, ctx, DIAL };

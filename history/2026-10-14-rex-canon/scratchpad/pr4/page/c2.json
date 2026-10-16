@@ -1,0 +1,13 @@
+[
+ {"id":"imm","state":{"duoOpen":true,"duoAction":"collide","colImm":true},"pick":"allout"},
+ {"id":"light","state":{"duoOpen":true,"duoAction":"collide","colSrc":"set","colInf":true,"inf":true},"pick":"allout"},
+ {"id":"light-bolted","state":{"duoOpen":true,"duoAction":"collide","colSrc":"set","colInf":true,"inf":true,"anchor":"bolted"},"pick":"allout"},
+ {"id":"bolted-real","state":{"duoOpen":true,"duoAction":"collide","anchor":"bolted","unbreakable":false},"pick":"allout"},
+ {"id":"bolted-ground","state":{"duoOpen":true,"duoAction":"collide","anchor":"bolted"},"pick":"ground"},
+ {"id":"jump-ground","state":{"duoOpen":true,"duoAction":"collide","colSrc":"jump","logKg":6.25,"near":3},"pick":"ground"},
+ {"id":"set5","state":{"duoOpen":true,"duoAction":"collide","colSrc":"set","colGB":-1.3},"pick":"allout"},
+ {"id":"set5b","state":{"duoOpen":true,"duoAction":"collide","colSrc":"set","colGB":-1.3,"colBounce":"bounce"},"pick":"allout"},
+ {"id":"set01-windows","state":{"duoOpen":true,"duoAction":"collide","colSrc":"set","colGB":-3},"pick":"windows"},
+ {"id":"rex-charges-inf","state":{"duoOpen":true,"duoAction":"collide","colWho":"rex","inf":true},"pick":"allout"},
+ {"id":"stomp9","state":{"duoOpen":true,"duoAction":"collide","colSrc":"stomp","logKg":9},"pick":"allout"}
+]

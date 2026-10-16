@@ -1,0 +1,13 @@
+[
+ {"id":"arm","state":{"duoOpen":true,"duoAction":"arm"}},
+ {"id":"arm-keepoff","state":{"duoOpen":true,"duoAction":"arm","keepForm":false},"pick":"allout"},
+ {"id":"arm-keepoff-inf","state":{"duoOpen":true,"duoAction":"arm","keepForm":false,"inf":true},"pick":"allout"},
+ {"id":"arm-keepoff-inf-rexbolted","state":{"duoOpen":true,"duoAction":"arm","keepForm":false,"inf":true,"anchor":"bolted"},"pick":"allout"},
+ {"id":"push","state":{"duoOpen":true,"duoAction":"collide","colMode":"push"}},
+ {"id":"push-bolted","state":{"duoOpen":true,"duoAction":"collide","colMode":"push","anchor":"bolted"}},
+ {"id":"push-bolted-real","state":{"duoOpen":true,"duoAction":"collide","colMode":"push","anchor":"bolted"},"pick":"ground"},
+ {"id":"push-inf-bolted","state":{"duoOpen":true,"duoAction":"collide","colMode":"push","anchor":"bolted","inf":true},"pick":"allout"},
+ {"id":"push-inf-bolted-real","state":{"duoOpen":true,"duoAction":"collide","colMode":"push","anchor":"bolted","inf":true,"unbreakable":false},"pick":"allout"},
+ {"id":"push-inf","state":{"duoOpen":true,"duoAction":"collide","colMode":"push","inf":true},"pick":"allout"},
+ {"id":"push-imm","state":{"duoOpen":true,"duoAction":"collide","colMode":"push","colImm":true},"pick":"allout"}
+]

@@ -1,0 +1,1 @@
+const fs=require('fs'),p=process.argv[2]+'/src/app.html';const s=fs.readFileSync(p,'utf8');const a="const topU = isFinite(Math.max(fullF('R'), fullF('O'))) ? eff.p.hi : Infinity",b="const topU = Infinity";const n=s.split(a).length-1;if(n!==1){console.error('count '+n);process.exit(1);}fs.writeFileSync(p,s.replace(a,()=>b));

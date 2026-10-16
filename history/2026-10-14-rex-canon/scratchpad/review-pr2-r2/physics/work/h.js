@@ -1,0 +1,10 @@
+const R = '/tmp/claude-0/-home-user-rex-strength-lab/be83ea46-0fb6-5f45-86e4-061daa8f7429/scratchpad/review-pr2-r2/physics/repo/rex-strength-lab';
+const P = require(R + '/src/engine.js'); global.window = {}; require(R + '/src/data.js'); const D = window.DINO_DATA;
+const rex = P.makeBody({ build: 'rex', ...P.DEFAULT_BODIES.rex });
+const ollie = P.makeBody({ build: 'ollie', ...P.DEFAULT_BODIES.ollie });
+const surf = id => D.surfaces.find(s => s.id === id);
+const objs = id => (D.objects || []).find(o => o.id === id);
+const ON = { airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true };
+const OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoil: false };
+const ctx = (kg, pw, extra) => Object.assign({ F: kg * P.K.g, mode: 'comic', body: rex, surface: surf('concrete'), anchor: 'friction' }, pw || ON, extra || {});
+module.exports = { P, D, rex, ollie, surf, objs, ON, OFF, ctx, R };

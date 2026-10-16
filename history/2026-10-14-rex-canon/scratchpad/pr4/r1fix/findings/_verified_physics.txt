@@ -1,0 +1,31 @@
+Build clean: python3 build-data.py && node build.js leaves git status empty (dist and data.js match sources). node test/powers.js: 180/180 passed (4 min 53 s), including the powers-off fixture (15,533 engine cases unchanged).
+
+Charger of unbounded mass, splat, default sprint all-out (3,000 kg bodies, concrete): Rex carried at v = 18.1458 m/s; pGain 54,437 = γmv (rel. err 2e-15); footJ 612 = 17,652 N × 34.66 ms; supplied 55,049 = pGain + footJ (difference 1e-12); Q 493.9 kJ = ½mv² (the one hit's motion in the charger's frame); slide after the carry 27.3 m (no-air bound v²/2μg = 27.98 m), moved 27.6 m. Matches README 'What moved' (55,000 = 54,400 + 612; 494 kJ).
+
+Bounce: vB 36.2915 m/s = 2v/(1+v²/c²) (diff 7e-14); pGain 108,875 = 2γ²mv; footJ 0 (bounce bound, consistent with its after-speeds); peak 3.14 MN × 54 ms × 2/π ≈ 108,800 = the impulse; slide 102 m; 'stop' booked as the charger's own 54,400 to his source.
+
+Relativistic swapped-frame sums at 0.1%, 0.99%, 1.01%, 10%, 50%, 99% and 99.9999% of c: vB = c·tanh(2w), pGain = mc·sinh(2w) = 2γ²mβc (bounce) or γmβc (splat), Q = (γ−1)mc², all within 4e-15 relative of my closed forms (2e-11 at 100 m/s from the run-up gravity pull); supplied − pGain − footJ only float rounding. 0.1% c: carried at 299,792 m/s, supplied 8.99e8 kg·m/s, Q 135 TJ; bounce 599,584 m/s, 1.80e9. Past 1% of c the one hit's motion (γ'−1)mc² is counted as real air heating (Elocal), e.g. 2.7e26 J at 99.9999% c bounce.
+
+Light speed (gb = ∞) with the power on: standing Rex → 'unstoppable', knocked away at just under c; bolted on Unbreakable footing → 'paradox' (the held check runs before the light-speed check); bolted on real rock → 'unstoppable' with the rock giving.
+
+Brief item 4 table at 3,000 kg reproduced: sprint splat 18 m/s carried, source 55,000 (brief 54,600 at 3,007 kg without the 612 footing share, which the README explains), 494 kJ freed; bounce 36 m/s, 109,000; jump at 10^9 kg → paradox (Ollie lands at 286.4 m/s; stomp-launch 165.5 m/s); 0.1% c splat 300 km/s, 9.0e8, 135 TJ; bounce 600 km/s, 1.8e9.
+
+Paradox cases: bolted on Unbreakable footing or Comic ground (any side) and landed on from above with Unbreakable footing or Comic ground → outcome 'paradox', unbounded, heldBy bolted/unbreakable/comicGround; the page explains it first. The planet argument checks: carrying 5.97e24 kg to 18.15 m/s within the 0.314 m squash (T = 34.7 ms) needs 3.1e27 N, 284× COL.F_HALVES (1.10e25 N); the planet could bear it only below about 1.08 m/s (README: 'about 1 m/s', stated as ignored). Bolted on real rock is correctly not a paradox: the rock tears at 696,773 N and he is carried with a plug. Standing from the side on Unbreakable footing or Comic ground is correctly not a paradox (friction is finite).
+
+From above on real ground: any landing drives the one hit in (an unbounded charger can't be stopped by a finite bearing): default jump → 0.55 m into concrete, depth consistent with KE/bearing (412 kJ / 1.52 MN ≈ 0.27 m past the 0.31 m squash).
+
+Page Collide effort figures: least disruptive 4.26 t (README 4,260), bounce 3.31 t (3,310), break-the-ground preset with bolted Rex 3.08 t (3,080); default set speed 100 m/s carries Rex 516.2 m.
+
+Steady push: power on → forceWins, DA 889,640 N vs Rex's hold 17,652 N (power off: stalemate at 17,652); an unlimited push against a bolted Rex on Unbreakable footing → one-sided 'paradox'; on real rock → 'rockGives' with tearB 696,773 N; break-the-ground preset 13.5 t (README 13,500).
+
+Shoving match motion model (canon split: each feels the other's push, his own reaction goes to his source): default dial bothShoved, net 871,988 N each, t = √(d·m/net) = 0.0916 s over d = 2.4384 m, v = 26.62 m/s, slide 57.2 m; ledger DA·t = pB + footB = 81,484 kg·m/s exactly; least 2,570 kg-force → 2.48 m/s, 0.52 m; 9,060 kg-force (the least-disruptive effort) → 7.61 m/s; the floor 2,570/3,000 = 0.857 of body weight exceeds μmax = 0.84 (gravel), so equal bodies can't deadlock at any effort the search uses (at any mass); bolted Rex → shovedOff, Ollie 37.65 m/s over the whole stroke, slide 108.8 m; walk-out a = min((Dw−Hl)/ml, (fw.R−Dl)/mw) and contact Hl + ml·a are physically right (winner's feet must beat the loser's real push and carry himself); paradox and torn cases at unlimited strength consistent with the steady push.
+
+Both at once: each shoved by the other's shove (each computed as the Shove tab does), 21.15 m/s each, slides 36.8 m (README 21.1 m/s, ~37 m); stated as an upper bound.
+
+Arm wrestling reading B is physically right, and the brief's reading A is incoherent: with each one's own press reaction absorbed, the only real force on each hand is the other's press. Under A the pads carry nothing, so that force would be unbalanced in a stalemate and its momentum would vanish outside canon's list. The stalemate loads (each pad holds the other's press), the standing uncapped press, the standing dead heat at 222 kN with both dragged (the press beats 17.7 kN footing), winnerSlides/loserSlides and the unlimited standing outcomes all follow from it (the pin's loser pad is the exception, reported).
+
+Fireball with Never knocked back (fastball, 10 m, 10^14 kg dial, Things keep their form off, half the drag): catcher not moved, knockAbsorbed J = 1.028e6 kg·m/s, E taken back 3.211 TJ, Eblast 422 GJ = Egap (real air heat); bolted gives the same; switch off → 342.5 m/s (bolted: Earth recoil 1.7e-19 m/s). Energy split 3.633 TJ = 0.422 + 3.211 TJ. Matches README.
+
+Holding a partner up counted as weight, not recoil (decision 11): a static support is not a push back from a move, so it stays on the lifter's feet; consistent with the solo Lift tab.
+
+Sweep of 3,072 Collide configurations with the power on (masses 3e3 to 1e20 kg, sprint/jump/stomp/set, splat/bounce, standing/bolted, Unbreakable on/off, concrete/sand/ice/soft clay, four strengths): no exceptions, no NaN or null in carry, supplied ≥ pGain everywhere.

@@ -1,0 +1,44 @@
+## id
+duo-shoving-shake-reason
+
+## severity
+minor
+
+## title
+Shoving match: 'not a blow' is wrong for the push into a bolted winner's bolts at high dials, and the Shove tab counts the same push as shaking
+
+## location
+rex-strength-lab/src/app.html:4868 (duoNoModel 'why' for the shoving match with the power on) and duoFacts push branch (models.shake false)
+
+## evidence
+Page text: 'the other's push reaches the ground only through his feet or bolts, as a friction drag while he slides or a steady push, not a blow, so the lab counts no shaking from it.' Engine, Rex bolted (power on): pushMatch gives 'shovedOff'. Ollie's push goes through Rex's bolts as footA = 170,000 kg·m/s over 87 ms at 2×10⁵ kg, and 379,000 kg·m/s over 39 ms at 10⁶ kg. The lab's own ground-wave model (P.impulseSource over max(t, the 64 ms limb pulse), as the Shove tab uses for a bolted partner's bolts, toGroundB) gives 26.7 mm/s and 108 mm/s at 5 m. P.plasterOver is true for both. The Shove tab counts that push: 'the push through the bolted partner's bolts shakes the ground enough that plaster may crack'.
+
+## expected
+Either count the bolted wrestler's footing pulse (footA or footB through bolts) as a shaking source, as the Shove tab does, or state that the lab doesn't judge it without calling it 'a steady push, not a blow'.
+
+## fix
+In duoFacts push, when r.outcome === 'shovedOff' and the winner is bolted, push srcOf(winner ctx, { J: foot of the winner, T: max(limbPulse, r.t) }) into out.shake and set models.shake (with Unbreakable footing on). Otherwise reword the reason for the bolted case.
+
+## VERDICT
+### id
+duo-shoving-shake-reason
+
+### real
+true
+
+### severity
+minor
+
+### reasoning
+Reproduced. With the power on and Rex bolted, Ollie's push goes into the ground through Rex's bolts as footA = push × t. Nothing cancels it, since Rex's push back goes to his source. The page explains why it doesn't count the shaking: 'a friction drag while he slides or a steady push, not a blow'. At high dials that push is shorter than the lab's own limb contact time (39 ms against 64 ms at 10^6 kg), which the lab treats as a blow elsewhere. Its own ground-wave model, applied to that pulse the way the Shove tab and Collide's carried hit build their sources (impulseSource over max(limb pulse, t)), puts it past the plaster level at 5 m from about 2×10^5 kg. The courtesy ceiling isn't affected, since the slide sets it much lower (5.47 t), but the plaster and rattle presets give a false reason. Minor.
+
+### reproduction
+Engine, Rex bolted, Ollie standing, power on, concrete. src = P.impulseSource(surface, m.footA, max(P.limbPulse, m.t)); then P.plasterOver(src, 5):
+- 90,718 kg: shovedOff, footA 115,236, t 0.1295 s, limbPulse 0.0642 s, plasterOver false, ppv 8.2 mm/s.
+- 2e5 kg: footA 170,164, t 0.0868 s, plasterOver true, ppv 26.7 mm/s.
+- 1e6 kg: footA 379,123, t 0.0387 s (< 0.0642 s), plasterOver true, ppv 108 mm/s.
+Page {duoOpen:true,duoAction:'wrestle',wrestleMove:'push',anchor:'bolted',logKg:6,oLogKg:6}, plaster preset: '... he shoves Ollie off at 126 m/s ... Ollie's push (9.81 MN) can't move Rex's bolts.' Effort: '... the other's push reaches the ground only through his feet or bolts, as a friction drag while he slides or a steady push, not a blow, so the lab counts no shaking from it.'
+
+### better_fix
+In duoFacts' wrestle push branch with the power on: when r.outcome === 'shovedOff' and the winner is bolted, push srcOf(winner's ctx, { J: winner's foot (r.footA or r.footB), T: Math.max(P.limbPulse(winner body), r.t) }) into out.shake. Set models.shake = shakeOn there, and add a quakes() harm ('the push through Rex's bolts shakes the ground enough that plaster may crack ...'). If the shaking stays unjudged, reword the bolted case: 'the other's push goes into the ground through the bolted one's bolts; the lab doesn't judge that shaking in this test.' Drop 'a steady push, not a blow' there.
+

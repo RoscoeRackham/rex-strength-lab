@@ -1,0 +1,18 @@
+const R = '/tmp/claude-0/-home-user-rex-strength-lab/be83ea46-0fb6-5f45-86e4-061daa8f7429/scratchpad/review-pr2-r1/physics/repo/rex-strength-lab';
+global.window = {};
+const P = require(R + '/src/engine.js');
+require(R + '/src/data.js');
+const D = window.DINO_DATA;
+const g = P.K.g, c = P.K.c;
+const surf = (id) => D.surfaces.find((x) => x.id === id);
+const obj = (id) => D.objects.find((x) => x.id === id);
+const rex = P.makeBody(Object.assign({ build: 'rex' }, P.DEFAULT_BODIES.rex));
+const ollie = P.makeBody(Object.assign({ build: 'ollie' }, P.DEFAULT_BODIES.ollie));
+const ON = { airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true };
+const OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoil: false };
+const ctxOf = (F, extra, body) => Object.assign({ F, mode: 'comic', body: body || rex, surface: surf('concrete'), anchor: 'friction' }, extra || {});
+const DEF = 100 * 907.18474 * g;
+const sig = (x, n) => (x == null ? String(x) : Number(x).toPrecision(n || 4));
+const pOfE = (E, m) => (E > 0 ? (isFinite(E) ? Math.sqrt(E * E + 2 * E * m * c * c) / c : Infinity) : 0);
+const pOfV = (v, m) => { if (!(v > 0)) return 0; const b = v / c; return m * v / Math.sqrt(1 - b * b); };
+module.exports = { P, D, g, c, surf, obj, rex, ollie, ON, OFF, ctxOf, DEF, sig, pOfE, pOfV, R };
