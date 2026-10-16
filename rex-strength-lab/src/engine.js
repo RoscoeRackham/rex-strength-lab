@@ -531,8 +531,9 @@
       eFold: Cd > 0 && dK > 0 ? 2 * m / (K.rho0 * machCd * A * dK) : Infinity,
       steps: 0,
     };
-    // what the air and the ocean take, summed over each step from the full drag at its start (only when some is absorbed)
-    const split = dK < 1 && Cd > 0;
+    // what the air and the ocean take, summed over each step from the full drag at its start (only when some is absorbed,
+    // or when o.tally asks for it: the shimmer's real-air flight, at the full drag, reads out.air.E)
+    const split = (dK < 1 || !!o.tally) && Cd > 0;
     let eDrag = 0, pxDrag = 0, pyDrag = 0;
     const tally = (x_, y_, vx_, vy_, dt_) => {
       const r = Math.hypot(x_, y_), v = Math.hypot(vx_, vy_);
@@ -4862,8 +4863,10 @@
     // answer (the paradox, an undefined result) adds nothing.
     // The parts (each only with its power on, so with every power off E is 0; growth is a what-if, not a switch):
     //   drag (the thrower's): Air resistance absorbed: the share absorbed x what real air would have taken from the same
-    //     throw: one more flight at the full drag (the Throw tab's dragLoss0, at any speed), all of its energy if that
-    //     flight escapes, orbits, never lands or is past 1% of light speed. (Not fly()'s ocean tally: that is the drag
+    //     throw: one more flight at the full drag, from the energy that leaves his own gravity well; where it comes down,
+    //     the energy it loses on the way (energy conservation; for a leg of the game of catch never more than the flight's
+    //     step sum); where it never does (an escape, an orbit, a flight given up on), the drag along that flight; past 1%
+    //     of light speed all of its energy (an upper bound). (Not fly()'s ocean tally: that is the drag
     //     along the drag-free path, which can be hundreds of times the object's energy, and is 0 for an orbit.) Where the
     //     object's arrival is taken back too (a catch, a person's landing, a hit, the partner's landing on his footing),
     //     the energy the air would have taken is still in it when it arrives, so it is counted once, there: drag is only
@@ -4894,14 +4897,21 @@
     const tbDrag = (x, arrive) => (!(x > 0) || arrive === Infinity ? 0 : x === Infinity ? Infinity : Math.max(0, x - arrive));
     // the release height's potential energy (exact 1/r gravity, as the Throw tab's dragLoss0)
     const tbPE = (m, h) => m * (K.GM / K.R_E - K.GM / (K.R_E + h));
-    // what real air would take from a throw: throwObject's result r, obj thrown at thetaDeg from body's release height
+    // what real air would take from a throw: throwObject's result r, obj thrown at thetaDeg from body's release height.
+    // One more flight at the full drag, from the speed it keeps once clear of his own pull (vOut: with his own gravity on,
+    // the climb out of his well is gravity's, not the air's). Where it lands, the energy it loses on the way (energy
+    // conservation, from the energy that leaves his well); where it doesn't (an escape, an orbit, a flight the integrator
+    // gives up on), the drag along that flight (it leaves with the rest of its energy); past 1% of light speed all of it
+    // (an upper bound: the lab counts the whole of it there, as for the blast near him). Not r.dragLoss0, the blast's
+    // figure, which counts all of it for a throw real air wouldn't bring down.
     function realAirThrow(r, obj, thetaDeg, body) {
       if (!r || !r.canMove || !r.flight || r.fallsBack || !(r.v > 0)) return 0;
       if (!isFinite(r.Eobj)) return Infinity;
       if (r.flight.relativistic) return r.Eobj;
-      if (r.dragLoss0 != null) return r.dragLoss0;
-      const f0 = fly({ v0: r.vOut, thetaDeg, h0: body.releaseHeight, m: obj.m, A: obj.area, Cd: obj.Cd, CdSup: obj.CdSup });
-      return f0.landed && !f0.relativistic ? Math.max(0, r.Eobj + tbPE(obj.m, body.releaseHeight) - keFromV(f0.vImpact, obj.m)) : r.Eobj;
+      const E1 = keFromV(r.vOut, obj.m) + tbPE(obj.m, body.releaseHeight);
+      const f0 = fly({ v0: r.vOut, thetaDeg, h0: body.releaseHeight, m: obj.m, A: obj.area, Cd: obj.Cd, CdSup: obj.CdSup, tally: true });
+      if (f0.landed) return Math.max(0, E1 - keFromV(f0.vImpact, obj.m));
+      return f0.air ? Math.max(0, Math.min(E1, f0.air.E)) : 0;
     }
     // ... from the partner toss (tossPartner's t; A the tosser): straight up and back to his hands
     function realAirToss(t, A) {
@@ -4910,10 +4920,11 @@
       // past 1% of light speed (all-out only): all of the toss's energy, from the throw itself (exact where the speed
       // rounds to c; unbounded at an unlimited dial)
       if (t.v >= CATCHGAME.CATCH.V_FIREBALL) return throwObject(Object.assign({}, A, { noFlight: true }), obj, 90).Eobj;
-      if (t.dragLoss0 != null) return t.dragLoss0;
       const Ev = keFromV(t.v, obj.m);
       const f0 = CATCHGAME.flyTo({ v0: t.v, thetaDeg: 90, h0, hStop: h0, m: obj.m, A: obj.area, Cd: obj.Cd, CdSup: obj.CdSup });
-      return f0.landed && !f0.escaped && !f0.orbit && !f0.timedOut ? Math.max(0, Ev - keFromV(f0.vImpact, obj.m)) : Ev;
+      // back in his hands: what it lost on the way; never back (an escape, an orbit, a flight given up on): the drag along
+      // that flight (as the throw's: not t.dragLoss0, the blast's figure, which counts all of it there)
+      return f0.landed && !f0.escaped && !f0.orbit && !f0.timedOut ? Math.max(0, Ev - keFromV(f0.vImpact, obj.m)) : Math.max(0, Math.min(Ev, f0.dragE));
     }
     // ... from one leg of the game of catch (catchLeg's L, of obj): its own flight to the catcher, at the full drag
     function realAirLeg(L, obj) {
@@ -4923,12 +4934,24 @@
       if (L.result === 'fireball') return L.fireball ? L.fireball.E : 0;
       if (L.fast) return (L.miss ? L.miss.E : 0) + (L.sheath ? L.sheath.E : 0);
       const full = { m: obj.m, A: obj.area, Cd: obj.Cd, CdSup: obj.CdSup };
+      // what a flight at the full drag (f, thrown at v0 from his hand's height) loses to the air: by energy conservation,
+      // its energy at the start less its energy where it ends (where his hands meet it, or where it comes down at hEnd),
+      // never more than flyTo's step sum (dragE, summed from each step's start, a little over the true work on a flight
+      // the air slows hard), so it is never more than the energy thrown; where it never comes down (an escape, an orbit,
+      // a flight given up on), the drag along that flight; past 1% of light speed all of it
+      const lost = (f, v0, hEnd) => {
+        if (f.relativistic) return keFromV(v0, obj.m);
+        const E0 = keFromV(v0, obj.m) + tbPE(obj.m, L.h0);
+        if (f.escaped || f.orbit || f.timedOut) return Math.max(0, Math.min(E0, f.dragE));
+        const Eend = f.crossedX ? (isFinite(f.hAtX) && isFinite(f.vAtX) ? keFromV(f.vAtX, obj.m) + tbPE(obj.m, f.hAtX) : NaN)
+          : keFromV(f.vImpact, obj.m) + tbPE(obj.m, f.belowStop ? 0 : hEnd);
+        return Math.max(0, Math.min(f.dragE, isFinite(Eend) ? E0 - Eend : E0));
+      };
       // thrown as hard as he can, it can't come down on the catcher: the same throw at the full drag, from his hand on
       if (L.result === 'overshoots') {
         if (!(L.vL > 0)) return 0;
         if (L.relativistic || L.vL >= CATCHGAME.CATCH.V_FIREBALL) return keFromV(L.vL, obj.m);
-        const f0 = CATCHGAME.flyTo(Object.assign({ v0: L.vL, thetaDeg: L.thetaDeg, h0: L.h0, hStop: 0, xStop: L.Dfl, Dend: L.Dfl }, full));
-        return f0.relativistic || f0.escaped || f0.orbit || f0.timedOut ? keFromV(L.vL, obj.m) : f0.dragE;
+        return lost(CATCHGAME.flyTo(Object.assign({ v0: L.vL, thetaDeg: L.thetaDeg, h0: L.h0, hStop: 0, xStop: L.Dfl, Dend: L.Dfl }, full)), L.vL, 0);
       }
       // not thrown, or it falls back into his own pull (as the Throw tab's falls-back throw: no drag part)
       if (!L.aim || !(L.aim.vL > 0) || L.result === 'falls-back') return 0;
@@ -4938,8 +4961,7 @@
       const vE = L.aim.vE, th = L.aim.thetaDeg;
       // (an easy lob too weak for the gentlest arc is thrown all-out: L.fullStrength)
       const hard = L.style === 'hard' || !!L.fullStrength;
-      const f0 = CATCHGAME.flyTo(Object.assign({ v0: vE, thetaDeg: th, h0: L.h0, hStop: hard ? 0 : L.hStop, Dend: L.Dfl }, hard ? { xStop: L.Dfl } : {}, full));
-      return f0.relativistic || f0.escaped || f0.orbit || f0.timedOut ? keFromV(vE, obj.m) : f0.dragE;
+      return lost(CATCHGAME.flyTo(Object.assign({ v0: vE, thetaDeg: th, h0: L.h0, hStop: hard ? 0 : L.hStop, Dend: L.Dfl }, hard ? { xStop: L.Dfl } : {}, full)), vE, hard ? 0 : L.hStop);
     }
     function takenBack(move, r, o) {
       const opt = o || {};
@@ -5026,7 +5048,8 @@
 
   // ---------------------------------------------------------------------------
   // Absorbed energy and growth (canon: they can take back the energy they put out). By default it returns to the
-  // store of power they draw on (the "endless ocean": nothing changes). In the growth modes it becomes mass,
+  // store of power they draw on (the "endless ocean": nothing around him changes, but it shows as his shimmer:
+  // RESTRAINT.takenBack). In the growth modes it becomes mass,
   // dm = E / c^2. Growth form: s is the share of the mass ratio that goes into volume (1 = pure size, 0 = pure
   // density, 0.5 = the even mix), so volume grows as ratio^s, density as ratio^(1-s) and height as ratio^(s/3).
   // Momentum is absorbed in these cases and nowhere else (canon, CLAUDE.md "Momentum"): their own recoil (They take

@@ -387,7 +387,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
             <option value="instant">Instant growth</option>
             <option value="runaway">Runaway growth</option>
           </select>
-          <span class="hint" id="absorb-hint">Applies to the energy Silent strike and Soft landing take back, the energy Unbreakable footing takes back from the ground, and the Weight tab’s what-if. (Air resistance absorbed cancels drag: what the air would have taken goes to the endless ocean, and the thrown thing keeps its speed, so nothing grows from it.) Endless ocean: it returns to the store they draw on, and nothing changes. Gradual: it becomes mass over a time you set. Instant: all at once. Runaway: instant, and the growth’s own side effects are taken back too.</span>
+          <span class="hint" id="absorb-hint">Applies to the energy Silent strike and Soft landing take back, the energy Unbreakable footing takes back from the ground, and the Weight tab’s what-if. (Air resistance absorbed cancels drag: what the air would have taken goes to the endless ocean, and the thrown thing keeps its speed, so nothing grows from it.) Endless ocean: it returns to the store they draw on. Nothing around him changes; it shows only as his shimmer (the Shimmer tile). Gradual: it becomes mass over a time you set. Instant: all at once. Runaway: instant, and the growth’s own side effects are taken back too.</span>
         </div>
         <div class="field" id="grow-fields">
           <span class="lbl" id="grow-lbl">Growth form</span>
@@ -896,7 +896,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     // one line per one who takes something in: the energy, what it is, and the ladder's wording for it
     const line = (w) => {
       const b = tb.by[w];
-      if (!isFinite(b.E)) return (o.duo ? NAME[w] + ' takes in unbounded energy' : 'Unbounded energy taken in') + ', from ' + partsOf(b) + ': unlimited strength has no physical answer here, so there is no figure.';
+      if (!isFinite(b.E)) return (o.duo ? NAME[w] + ' takes in unbounded energy' : 'Unbounded energy taken in') + ', from ' + partsOf(b) + ': at unlimited strength there is no finite figure.';
       return (o.duo ? NAME[w] + ' takes in ' + jT(b.E) : jT(b.E) + ' taken in') + ', from ' + partsOf(b) + ' · ' + lad.compare(b.E, refs).text;
     };
     // the level is Rex's: canon gives the shimmer to him
@@ -1334,7 +1334,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   }
   function absorbBlock(E, what, body, sf) {
     const head = what + ': ' + fmtSI(E, 'J') + ' (' + fmtTNT(E) + ') absorbed.';
-    if (state.absorb === 'ocean') return callout(head + ' It goes back into the store of power they draw on: a drop in an endless ocean. No mass is added, and nothing outside changes. Momentum still goes where it would have.');
+    if (state.absorb === 'ocean') return callout(head + ' It goes back into the store of power they draw on: a drop in an endless ocean. No mass is added, and nothing around him changes; it shows only as his shimmer (the Shimmer tile). Momentum still goes where it would have.');
     return el('div', { class: 'callout' }, el('p', { style: 'margin:0 0 6px', text: head + ' ' + { gradual: 'Gradual growth:', instant: 'Instant growth:', runaway: 'Runaway:' }[state.absorb] }), happens(growthItems(E, body, sf), 8));
   }
 
@@ -1743,12 +1743,17 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       // the shimmer counts what real air would take from this same throw, not the drag along the drag-free path
       // (BRIEF-canon.md item 6: the drag-free figure can be far more than the throw's own energy)
       const dragJ = tb.parts.drag;
-      const dragShimmer = dragJ > 0 ? ' The shimmer (the Shimmer tile) counts a different figure: what real air would have taken from this same throw, ' + fmtSI(dragJ, 'J') + (Math.abs(dragJ - r.Eobj) <= 1e-9 * r.Eobj ? ' (all of its energy: real air wouldn’t bring it down)' : '') + '. The figure above is the drag along the drag-free path, on a ' + o.short + ' that real air would have slowed.'
+      // (real air wouldn't bring it down: the drag on its way out, the full-drag flight's own; it leaves with the rest)
+      const dragShimmer = dragJ > 0 ? ' The shimmer (the Shimmer tile) counts a different figure: what real air would have taken from this same throw, ' + fmtSI(dragJ, 'J') + (real && !real.landed ? ' (real air wouldn’t bring it down: this is the drag on its way out, and it leaves with the rest of its energy)' : '') + '. The figure above is the drag along the drag-free path, on a ' + o.short + ' that real air would have slowed.'
         : tb.parts.passenger > 0 ? ' The shimmer (the Shimmer tile) counts what real air would have taken from them once, inside their landing, which Safe passenger takes back.' : '';
       items.push('No drag: their power takes back all of the air’s drag on it (Air resistance absorbed), so it flies as it would in a vacuum' + (real && !real.escaped && !real.orbit && real.landed && f.landed && reach(real) < 0.95 * reach(f) ? ' (' + fmtDist(reach(f)) + (straightUp ? ' high' : '') + ' against ' + fmtDist(reach(real)) + ' in real air)' : '') + '. Along its path the air would have pushed back on it with ' + fmtSI(f.ocean.P, 'N·s') + ' in all' + (f.ocean.P > 2 * p0 ? ', ' + fmtRatio(f.ocean.P / p0) + ' its own momentum' : '') + ', and taken ' + fmtSI(f.ocean.E, 'J') + (f.ocean.E > r.Eobj ? ' (' + fmtRatio(f.ocean.E / r.Eobj) + ' its own energy: real air would have stopped it long before)' : '') + '. Their power cancels that drag (the push and the energy go to the endless ocean, canon), so the ' + o.short + ' isn’t slowed: it keeps its speed and its own energy, nothing grows from it' + (f.landed ? ', and it lands with all of that energy.' : '.') + dragShimmer + handSay);
     } else if (share > 0 && !f.relativistic && f.air) {
       items.push('Air resistance absorbed: their power takes back ' + pctAir(share) + ' of the air’s drag on it, and the air takes the rest: ' + fmtSI(r.dragLoss != null ? r.dragLoss : f.air.E, 'J') + ' over its flight, at ' + pctAir(kAir) + ' of the real rate, so a fast throw still booms and heats. The share it cancels (' + fmtSI(f.ocean.P, 'N·s') + ' of push) goes to the endless ocean, so it slows less than in real air.' + (r.dragLoss0 != null && r.Eobj > 0 && Math.abs(r.dragLoss0 - r.Eobj) < 1e-9 * r.Eobj ? ' Real air wouldn’t bring this throw down, so the blast near him counts the ' + pctAir(kAir) + ' share of all its energy, an upper bound.'
-        : r.dragLoss0 != null && r.v >= K.a0 ? ' The blast near him counts the ' + pctAir(kAir) + ' share of what real air would take from the same throw (' + fmtSI(r.dragLoss0, 'J') + '), so ' + fmtSI(kAir * r.dragLoss0, 'J') + (r.dragLoss >= 0.8 * r.dragLoss0 ? ': the slowed throw gives the air much the same energy over its whole flight, but spread over a longer path.' : ': near him only that share of the drag acts, and the slowed throw gives the air ' + fmtSI(r.dragLoss, 'J') + ' in all, landing with most of the rest.') + ' A reach longer than the stretch where the air takes its energy counts what the air took within it, at most ' + fmtSI(r.dragLoss, 'J') + '.' : '') + handSay);
+        : r.dragLoss0 != null && r.v >= K.a0 ? ' The blast near him counts the ' + pctAir(kAir) + ' share of what real air would take from the same throw (' + fmtSI(r.dragLoss0, 'J') + '), so ' + fmtSI(kAir * r.dragLoss0, 'J') + (r.dragLoss >= 0.8 * r.dragLoss0 ? ': the slowed throw gives the air much the same energy over its whole flight, but spread over a longer path.' : ': near him only that share of the drag acts, and the slowed throw gives the air ' + fmtSI(r.dragLoss, 'J') + ' in all, landing with most of the rest.') + ' A reach longer than the stretch where the air takes its energy counts what the air took within it, at most ' + fmtSI(r.dragLoss, 'J') + '.' : '')
+        // (review round 1: the shimmer's figure is the share of real air's take from the same throw, not the share their
+        // power cancels along the slowed flight, which this item gives; the two differ)
+        + (tb.parts.drag > 0 ? ' The shimmer (the Shimmer tile) counts a different figure, ' + fmtSI(tb.parts.drag, 'J') + ': the ' + pctAir(share) + ' share of what real air would take from this same throw at the full drag' + (tb.parts.passenger > 0 ? ', less what is still in their landing, which Safe passenger takes back' : '') + ', not the share their power cancels along the flight it actually flies, which slows less than in real air.'
+          : tb.parts.passenger > 0 ? ' The shimmer (the Shimmer tile) counts what real air would have taken from them once, inside their landing, which Safe passenger takes back.' : '') + handSay);
     } else if (share === 0 && handSay) items.push(handSay.trim());
     if (vac && !f.relativistic && share < 1) {
       if (vac.escaped && !f.escaped) items.push('Air is what brings it down. With no air, this launch would have escaped Earth.');
@@ -1767,7 +1772,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (o.passenger) items.push(passengerText(r, c, f));
     if (f.maxStagT > 1200 && !f.relativistic && share < 1) items.push('At ' + (f.maxMach <= 50 ? 'Mach ' + sig(f.maxMach, 2) : speedOnly(f.maxMach * K.a0)) + ', air piling up at the front heats to about ' + fmtTemp(f.maxStagT) + ' (equilibrium air; the textbook ideal-gas formula would say ' + fmtTemp(P.stagnationTIdeal(f.maxMach * K.a0)) + ').'
       + (c.keepForm ? ' Things keep their form: their power holds the ' + o.short + ' together, so it doesn’t melt, burn or break up in the air.' : share > 0 ? ' The air heats it at ' + pctAir(kAir) + ' of the real rate (Air resistance absorbed takes back the rest); whether that melts or burns the ' + o.short + ' away, the sim does not model.' : ' Only Rex and Ollie are indestructible. The ' + o.short + ' would melt or burn away, and the sim does not model that.'));
-    if (f.relativistic) items.push(fastThrowText(r, c, o, fa));
+    // (the shimmer's drag figure there: all of its energy, or the share of it, an upper bound)
+    if (f.relativistic) items.push(fastThrowText(r, c, o, fa) + (tb.parts.drag > 0 && isFinite(tb.parts.drag) ? ' The shimmer (the Shimmer tile) counts ' + (share >= 1 ? '' : 'the ' + pctAir(share) + ' share of ') + 'what real air would have taken, ' + fmtSI(tb.parts.drag, 'J') + ': past 1% of light speed the lab gives real air all of its energy, an upper bound.' : ''));
     if (r.gentle && r.gripRatioRaw > 1) items.push('Things keep their form: his push is spread through the whole ' + o.short + ' in proportion to its mass, so his palms put no load on it. Without it, the force on his palms would be ' + (r.gripRatioRaw < 2 ? sig(100 * (r.gripRatioRaw - 1), 2) + '% more than' : fmtRatio(r.gripRatioRaw)) + ' what it can take. Its landing is still real.');
     if (r.gripRatio > 1) items.push(isFinite(r.gripRatio) ? 'The force on his palms is ' + fmtRatio(r.gripRatio) + ' what the ' + o.short + ' can take. Without a pushing plate of ' + fmtArea(r.plateNeeded) + ', his hands go through it and only part of it gets thrown.' : 'The force on his palms is unbounded, so no plate is big enough: his hands go through the ' + o.short + ' and only part of it gets thrown.');
     if (f.leavesHill) items.push('Its arc tops out beyond about 1.5 million km, Earth’s Hill sphere. Out there the Sun’s pull wins, so it drifts off into its own orbit around the Sun.');
@@ -2176,7 +2182,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   function growthWhatIf(c) {
     const box = el('div', { class: 'growth-whatif' });
     box.append(el('h3', { text: 'What if he absorbed it as growth?' }));
-    box.append(el('p', { class: 'muted', style: 'margin:0', text: 'Canon: energy they absorb goes back into the endless ocean they draw on, and nothing changes. The growth modes (under Their powers) turn it into mass instead, m = E ÷ c². A what-if: the page resets to their canon size and mass next visit.' }));
+    box.append(el('p', { class: 'muted', style: 'margin:0', text: 'Canon: energy they absorb goes back into the endless ocean they draw on. Nothing around him changes, but it shows as his shimmer (the Shimmer tile in each what-if below). The growth modes (under Their powers) turn it into mass instead, m = E ÷ c². A what-if: the page resets to their canon size and mass next visit.' }));
     box.append(chipRow('Absorb the energy of', 'grow-what', GROW_WHAT.map((x) => [x.id, x.label]), state.growWhat, (v) => { state.growWhat = v; }));
     if (state.growWhat === 'none') return box;
     const ref = D.energyRefs.find((e) => e.id === state.growWhat);
