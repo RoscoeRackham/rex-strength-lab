@@ -1,0 +1,49 @@
+Review round 2 of pull request 2 (their own recoil): fix the 18 confirmed findings
+
+Round 2 (physics; code and tests; copy), reviewed at 4ea43ef: 19 findings, 18
+confirmed and fixed, 1 refuted (code-9) with its optional hardening applied.
+Record: rex-strength-lab/research/reviews/canon-2-round2.json.
+
+- The bolted pull (copy-1, major), as the session lead decided: They take
+  their own recoil wins over Bolted for his own moves, so pull() runs the
+  power's branch whatever the anchor; bolted, his feet never limit his own
+  body and the load sets the pace. His own steps are the move, not recoil:
+  pull() reports walkPush (his own body's momentum over the pull) with the
+  power on, and MOVES.pull.shake is back as its impulse, shakeWithPower
+  'ownRecoil' (powers-off results byte-identical). The rope's pull back stays
+  in the ocean. A car pulled all-out at the default dial, bolted: 0.17 s
+  (main 0.31 s), ceiling about 86,000 kg-force from his steps (main: none);
+  at 10^6 kg about 86,000 (main 479,000 from the rope). Friction: 0.011 mm/s
+  at 5 m, no ceiling either way. Page, cards, README decision 7, What moved
+  and Known limits say so.
+- The game of catch's caveat (code-1, major): 'nothing in this test pushes on
+  the ground' only where every leg's object reaches the catcher; where it
+  lands on or around him or hits the ground the page says the lab doesn't
+  judge that shaking (no 'Even all-out ... doesn't shake the ground'); the
+  partner toss names a catch only where one happens.
+- An unlimited dial's 'never' notes judged at unlimited strength, and the
+  shove's break-the-ground head names Ollie's rock (code-3 = copy-3).
+- Copy: a sliding load called sliding and only the rope's pull back kept off
+  the ground; the weight he holds up stays on his feet (hint, Throw item); a
+  plasma hit is an incoming hit, not his catch (hint, cards, the view); the
+  planted catcher's and the stalled shove's math; pull figures labelled
+  all-out; a catch he can't hold; README What moved (the default dial's
+  rattle preset, every degree swept) and the ledger's derived count (153 of
+  402).
+- Tests: test/powers.js (the bolted pace, walkPush and the pull's shake,
+  the catcher's sinkRatioRaw with Unbreakable footing on, the one-sided flag
+  and EA, the pin's pulse time, the push backs' times, the ledger's flags and
+  walkPush entry, the wrestle throw's foot load); test/shots.js (the Pull
+  check rewritten, round 1's block tightened with the stalled shove's tile
+  and math, a round 2 block). The 33 engine mutants (the build's 'push back
+  into the ground' set, rounds 1 and 2's survivors, each round 2 fix
+  reverted) all fail test/powers.js; of the round 2 reviewer's 79, 74 fail
+  and 5 change nothing the page or ledger reads. Each new shots.js check
+  fails on the page at 4ea43ef or with its fix reverted.
+
+Tests: calibration all pass; presence 383; shots 0 problems; powers 150/150
+(both powers-off passes byte-identical); ladder 562/562; sweep 7,776, no
+problems.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_0136zsmhtj8TCY2T2u8SKMVX

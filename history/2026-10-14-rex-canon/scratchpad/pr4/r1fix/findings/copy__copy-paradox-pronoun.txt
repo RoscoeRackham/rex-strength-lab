@@ -1,0 +1,40 @@
+## id
+copy-paradox-pronoun
+
+## severity
+minor
+
+## title
+The paradox verdict for the jump and stomp charges uses 'him' before Rex is named, right after 'him' meant Ollie
+
+## location
+rex-strength-lab/src/app.html collideParadox, held text for heldBy 'unbreakable' and 'comicGround' (lines ~3496-3497)
+
+## evidence
+State {duoOpen:true,duoAction:'collide',colSrc:'jump',logKg:9}. Verdict: '… Ollie takes his own recoil, so nothing can slow him: the push back from his hit goes to his source. Ollie comes down on him from above, and the ground under Rex’s feet holds him up.' The first 'him' is Ollie. The next 'him' is Rex, who hasn't been named in the verdict yet. This is the text the brief requires to come first and be clear to a general reader.
+
+## expected
+Name the one landed on before using a pronoun for him.
+
+## fix
+Change X + ' comes down on him from above, and the ground under ' + Y + '’s feet holds him up' to X + ' comes down on ' + Y + ' from above, and the ground under his feet holds him up'.
+
+## VERDICT
+### id
+copy-paradox-pronoun
+
+### real
+false
+
+### severity
+not_a_bug
+
+### reasoning
+The text is as quoted, but this is a style point, not a defect. Just above the verdict the selected controls read 'Ollie charges, Rex holds' and 'Jump onto him'. 'Ollie comes down on him' can't refer to Ollie (that would be 'himself'), and Rex is named in the same clause ('the ground under Rex’s feet'). A general reader isn't misled about who lands on whom. The suggested rewording reads a little better, but the brief's standard skips style preferences.
+
+### reproduction
+Run `FULL=1 node harness.js …/repo/rex-strength-lab/dist/index.html '[{"duoOpen":true,"duoAction":"collide","colSrc":"jump","logKg":9}]' allout`. Controls shown: "Ollie charges, Rex holds", "Jump onto him". Verdict: "…Ollie takes his own recoil, so nothing can slow him: the push back from his hit goes to his source. Ollie comes down on him from above, and the ground under Rex’s feet holds him up…". The meaning is unambiguous in context.
+
+### better_fix
+Optional polish, not required: X + ' comes down on ' + Y + ' from above, and the ground under his feet holds him up'.
+

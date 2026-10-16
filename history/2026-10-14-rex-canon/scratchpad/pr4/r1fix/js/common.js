@@ -1,0 +1,12 @@
+global.window = {};
+const ROOT = process.env.ROOT || '/home/user/rex-strength-lab/rex-strength-lab';
+const P = require(ROOT + '/src/engine.js');
+require(ROOT + '/src/data.js');
+const D = window.DINO_DATA, g = P.K.g;
+const surf = (id) => D.surfaces.find((x) => x.id === id), obj = (id) => D.objects.find((x) => x.id === id);
+const R3 = P.makeBody(Object.assign({ build: 'rex' }, P.DEFAULT_BODIES.rex)), O3 = P.makeBody(Object.assign({ build: 'ollie' }, P.DEFAULT_BODIES.ollie));
+const ON = { airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true, safePassenger: true, noKnockback: true };
+const DIAL = 100 * 907.18474 * g;
+const ctx = (F, body, x) => Object.assign({ F, mode: 'comic', body, surface: surf('concrete'), anchor: 'friction' }, ON, x || {});
+const sig = (x, n) => (typeof x === 'number' ? Number(x).toPrecision(n || 4) : String(x));
+module.exports = { P, D, g, surf, obj, R3, O3, ON, DIAL, ctx, sig };

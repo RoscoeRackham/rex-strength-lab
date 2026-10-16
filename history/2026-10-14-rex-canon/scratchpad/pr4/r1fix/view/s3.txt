@@ -1,0 +1,303 @@
+
+================ set least {"duoAction":"collide","colSrc":"set"} eff=null
+--verdict:
+   Ollie hits Rex at 100 m/s and doesn’t slow: he takes his own recoil, so the push back from the hit goes to his source. Rex is carried along at 100 m/s. When Ollie stops, at the end of the squash, Rex slides 516 m before he stops.
+--chips:
+   Charge: 100 m/s (set speed)
+   Ollie doesn’t slow: his recoil goes to his source
+   Rex carried along at 100 m/s
+   The hit’s energy is taken back: their power
+   The ground barely shakes
+--tiles:
+   Speed at contact100 m/sset speed
+   Energy freed at the hit15 MJ3.6 kg TNT · taken back by default (canon: it shows as his shimmer, not drawn here yet)
+   Rex carried along at100 m/sthen slides 516 m once Ollie stops
+   Force of the hit47.7 MNover 6.3 ms: the plush squash plus his footing (estimates)
+   Ollie’s source supplies300,000 kg·m/sRex’s gain, 300,000 kg·m/s, plus what his footing hands the ground
+--effort:
+   Effort: 2.8% of their strength (each as hard as lifting 2.57 t). The least they need to stand and walk; nothing gentler exists.
+   Nothing is harmless here: even at the least they need to stand and walk, Rex is carried along at 100 m/s and ends up 516 m away, past the nearest people 5 m away.
+   Courtesy ceiling: none. Even at the least they need to stand and walk, Rex is carried along at 100 m/s and ends up 516 m away, past the nearest people 5 m away.
+   At this effort Rex is carried along at 100 m/s and ends up 516 m away, past the nearest people 5 m away
+--happens:
+   Momentum still balances, and canon says where it comes from. Ollie doesn’t slow, so everything Rex gains (300,000 kg·m/s), and what his footing hands the ground during the hit (111 kg·m/s), comes from Ollie’s source: about 300,000 kg·m/s in all. That is canon’s case “their own recoil”: the push back from his own hit goes to his source. A splat frees Rex’s motion energy as Ollie sees it (below).
+   “Immovable” only means what holds Rex in place. Against a charger who can’t slow, any hold with a limit gives: here his footing, 17.7 kN. Only a hold their powers make limitless can’t give (bolts on ground that Unbreakable footing keeps whole, or Unbreakable footing holding him up from below), and then there is no answer.
+   How far Ollie carries him is up to Ollie: he never slows, so he could push on for as long as he likes. The lab ends the carry at the end of the squash, 6.3 ms in: Ollie stops himself there (his own push, so its push back, 300,000 kg·m/s, goes to his source too), and Rex slides on from 100 m/s.
+   The hit frees 15 MJ (3.6 kg TNT): Rex’s motion energy as Ollie sees it. Canon: a hit’s freed energy is taken back by default (it shows as his shimmer, which the lab doesn’t draw yet) and is real only when he means it. The lab reads a blast preset (rattle the windows, break windows, flatten houses, a block) as meaning it.
+   How hard they hit depends on how squishy they are, which nobody knows for an indestructible plush. If they squash by a quarter of the smaller body’s thickness (31 cm in all), the hit lasts 6.3 ms and pushes with about 47.7 MN: the squash’s own 47.7 MN plus the 17.7 kN with which his footing holds Rex back, since Ollie can’t slow. That force over that time is what Ollie’s source supplies. A perfectly rigid body would make the force infinite, but relativity forbids one: no push travels through a body faster than light. Even the stiffest body physics allows takes 2.1 ns to stop, which limits the average force to about 143 TN.
+   The push still goes into the ground under Rex. Carried along, his footing hands the ground what it held during the hit: 111 kg·m/s over 64 ms (it reaches the ground through his legs, which spread it over at least a stamp’s contact time, an estimate). That shakes the ground as real physics says: too little to feel.
+--bars:
+   10 kN
+   1 MN
+   100 MN
+   10 GN
+   1 TN
+   100 TN
+   What holds Rex
+   17.7 kN
+   The hit: squash plus his hold
+   47.7 MN
+   As stiff as any real material
+   17.2 GN
+   Stiffest body physics allows
+   143 TN
+--math:
+   Charge: set speed → v = 100 m/s; momentum p = γ m v = 300,000 kg·m/s. A charger who takes his own recoil doesn’t slow, so he acts as a body of unbounded mass at speed v. In his frame Rex arrives at v and meets an immovable body: a splat stops Rex against him, so in the ground frame Rex leaves with him at v; a perfect bounce sends Rex back at v in his frame, so in the ground frame Rex leaves at v′ = 2v/(1 + v²/c²) (relativistic velocity addition: c tanh 2w, w his rapidity). Momentum Rex gains: γ m v (splat) or 2γ² m v (bounce), here 300,000 kg·m/s. Ollie’s source supplies it, plus what Rex’s footing hands the ground during the hit (its hold × the hit’s time; none in the bounce bound): 300,000 kg·m/s. Energy freed in a splat: Rex’s motion energy in Ollie’s frame, (γ − 1) m c² (½ m v² below 1% of light speed) = 15 MJ. Force: squash s = ½ × the smaller depth = 31 cm; F = Q/s (splat) or 2Q/s peak (bounce); a charger who can’t slow pushes through the hold too, so F = Q/s + the hold, and F × the hit’s time = what his source supplies. Ordinary solids and liquids at everyday pressures can’t carry sound faster than about 36 km/s; nothing travels faster than light, which limits the average force. Slide: x = m/(2k)·ln(1 + kV²/R), k = ½ρ₀C_dA. Blast radii: Kinney & Graham (1985), as if all of Q became a blast (upper bound). Ground shaking (Unbreakable footing): the momentum the ground takes, J, as a pulse over the longer of the contact time and a limb’s contact time T (peak force 2J/T: his legs spread it), through the same ground-wave model as the stomp; plaster by the USBM RI 8507 safe level at the pulse’s frequency. Ollie’s horns don’t change the momentum or the energy; they only put the force on a smaller patch.
+--grid:
+   The four casesFinite hold (anything real: his footing, bolts on real rock, or, against a charger who can slow, the whole Earth)Unlimited hold (truly immovable, or held without limit by their powers against a charger who can’t slow)Finite momentum (a charger who can slow)Both move. They share the momentum; the softer the hit, the more energy it frees.The charger stops or bounces. The object doesn’t budge, so the force was stoppable.Unlimited momentum (light speed, or a charger who takes his own recoil)The object is carried along at his speed or sent off at up to twice it (at light speed, knocked away at just under it; then the planet goes too, but only if he’s bolted to unbreakable ground and the charger’s recoil isn’t taken), so it was movable.No answer: one of them has to give, and neither can. (For light speed into a truly immovable body, ∞ ÷ ∞: physics says those two can’t exist together.)
+
+================ fb on windows {"duoAction":"catch","cObj":"baseball","cStyle":"hard","logKg":14,"keepForm":false,"airAbsorb":0.5} eff=windows
+--verdict:
+   Rex fires the baseball at 6,260 m/s (Mach 18). It reaches Ollie 1.2 ms later at 5,900 m/s. It hits his waiting hands with 33.1 MN to 82.8 MN, and his arms bring it in over 91 cm. The ball probably bursts.
+--chips:
+   Fastball: 6,260 m/s
+   Stops it; the ball probably bursts
+   His stop goes to the endless ocean: their power
+   Nose air 8,500 °C: skin chars
+--tiles:
+   Throw6,260 m/sMach 18 · level · hardest at this effort
+   Flight1.2 mstop 2.74 m
+   Arrives at5,900 m/slevel
+   Hits his palms with33.1 MN to 82.8 MNfirst contact, over in 10 µs to 26 µs · 23 million g or more on the baseball
+   Ollie slidesnothinghis stop goes to the endless ocean: their power
+--effort:
+   Effort: as hard as lifting 78,400 t. The least effort that could shatter windows 15 m away, across a street (6.9 kPa, the top of the 3.4–6.9 kPa band where windows usually shatter; if all the energy went into the air: an upper bound).
+   Courtesy ceiling: lifting 42.6 t. Past that, the baseball is destroyed.
+   At this effort a throw breaks the sound barrier
+--happens:
+   Catching is stopping momentum, and here most of it happens in the first instant. His hands wait at full reach, and with his forearms they weigh 132 kg, more than the baseball. When it hits them they move off together, and nearly all of its energy goes into squashing his palms and the baseball by about 3 cm to 7.6 cm (an estimate). That’s the 33.1 MN to 82.8 MN, and the catch itself is over in about 10 µs to 26 µs. Bringing it in to his chest (91 cm) takes as long as he likes: he has strength to spare, and the gentlest steady push that does it, 3.04 kN, takes 280 ms.
+   A springy hit peaks at about twice its average, so that first hit squeezes the ball 1,700–4,100× as hard as the ~40,000 N of a home-run hit, which baseballs survive. Past that it probably bursts; the sim can’t say exactly when.
+   Air at its nose reaches 8,500 °C, past the 300 °C where wood, leather or plastic starts to char, but the heat reaching it could char under 1% of it (rough). (At sea level the heating formula is inside its tested range only between about 2.1 and 2.9 km/s, so this is an extrapolation.)
+   Air resistance absorbed: their power takes back 50% of the air’s drag on it; the air takes the rest (325 kJ over the flight), so it slows less and heats at 50% of the real rate. His hand still meets real air (their own bodies do): it breaks the sound barrier as he lets go, so the boom stays, and over the end of the throw it drives about 143 g of air ahead of it, up to 1.3 kg TNT of blast at his hand (an upper bound: the hand speeds up through the throw). The effort and courtesy ceiling count it.
+   They take their own recoil: the push back from the throw (910 kg·m/s) goes into their source, the endless ocean, so none of it reaches the ground and Rex stays put (without it he would be shoved back at 0.297 m/s).
+   They take their own recoil: stopping it is Ollie’s own push, so its push back (860 kg·m/s, the baseball’s momentum) goes into their source, the endless ocean, and none of it reaches the ground.
+   The air takes 325 kJ (78 g TNT) out of it on the way, all of it close to the two of them.
+   It arrives at Mach 17, so the shock wave it pushes ahead hits Ollie with it: about (1 − s) × ρv² = 21.3 MPa (210 atm) on his hands, where s = 50% is the share of the air’s push their power takes back.
+   Stopping it puts 2.53 MJ (600 g TNT) into his palms and arms. It ends up as heat in his indestructible plush.
+--bars:
+   0
+   0
+   1.25 m
+   2.5 m
+   2.5 m
+   5 m
+   3.75 m
+   7.5 m
+   5 m
+   10 m
+   top 2.74 m
+--math:
+   Aim: the gentlest throw is the angle needing the least launch speed, each speed solved so the arc comes down at Ollie’s hand height (2.74 m) where his hands meet it, 1.82 m in front of his centre. Same air and round-Earth model as Throw. Fastball: his full-strength speed at each angle; the flattest angle whose path passes Ollie’s hands. Catch: first contact with his hands (m_h = 132 kg): v₁ = v m/(m + m_h); energy lost ½ m m_h v²/(m + m_h), over a 3 cm–7.6 cm squash (1–2.5% of his height, an estimate). Then his feet hold (They take their own recoil: he is planted): F = (m + m_h) v₁²/(2d) + m g sin(angle), up to the most his arms can push; if that isn’t enough, it reaches his chest at v² = v₁² − 2d(F − m g sin(angle))/(m + m_h). d = 0.3 × his height = 91 cm. First contact lasts about 2 × squash / v. At the arm force F the stroke takes t = (v₁ − v)/a (v = 0 where his arms stop it), a = (F − m g sin(angle))/(m + m_h); at the least force that works, t = 2d/v₁. The round trip counts that stroke only when it is forced (his arms can’t stop it, or need at least half his strength); otherwise he can take as long as he likes. Nose heating (Sutton–Graves): q = 1.74 × 10⁻⁴ √(ρ/rₙ) v³ W/m², added up along the path; radiation ceiling σ(T⁴ − T₀⁴) below 30 km only (higher up radiation is left out, so the top end runs low on high flights); share ≈ heat × frontal area / (mass × heat to char 1 kg).
+
+================ fb off windows {"duoAction":"catch","cObj":"baseball","cStyle":"hard","logKg":14,"keepForm":false,"airAbsorb":0.5,"oNoKnockback":false} eff=windows
+--verdict:
+   Rex fires the baseball at 6,260 m/s (Mach 18). It reaches Ollie 1.2 ms later at 5,900 m/s. It hits his waiting hands with 33.1 MN to 82.8 MN, and his arms bring it in over 91 cm. The ball probably bursts.
+--chips:
+   Fastball: 6,260 m/s
+   Stops it; the ball probably bursts
+   His stop goes to the endless ocean: their power
+   Nose air 8,500 °C: skin chars
+--tiles:
+   Throw6,260 m/sMach 18 · level · hardest at this effort
+   Flight1.2 mstop 2.74 m
+   Arrives at5,900 m/slevel
+   Hits his palms with33.1 MN to 82.8 MNfirst contact, over in 10 µs to 26 µs · 23 million g or more on the baseball
+   Ollie slidesnothinghis stop goes to the endless ocean: their power
+--effort:
+   Effort: as hard as lifting 78,400 t. The least effort that could shatter windows 15 m away, across a street (6.9 kPa, the top of the 3.4–6.9 kPa band where windows usually shatter; if all the energy went into the air: an upper bound).
+   Courtesy ceiling: lifting 42.6 t. Past that, the baseball is destroyed.
+   At this effort a throw breaks the sound barrier
+--happens:
+   Catching is stopping momentum, and here most of it happens in the first instant. His hands wait at full reach, and with his forearms they weigh 132 kg, more than the baseball. When it hits them they move off together, and nearly all of its energy goes into squashing his palms and the baseball by about 3 cm to 7.6 cm (an estimate). That’s the 33.1 MN to 82.8 MN, and the catch itself is over in about 10 µs to 26 µs. Bringing it in to his chest (91 cm) takes as long as he likes: he has strength to spare, and the gentlest steady push that does it, 3.04 kN, takes 280 ms.
+   A springy hit peaks at about twice its average, so that first hit squeezes the ball 1,700–4,100× as hard as the ~40,000 N of a home-run hit, which baseballs survive. Past that it probably bursts; the sim can’t say exactly when.
+   Air at its nose reaches 8,500 °C, past the 300 °C where wood, leather or plastic starts to char, but the heat reaching it could char under 1% of it (rough). (At sea level the heating formula is inside its tested range only between about 2.1 and 2.9 km/s, so this is an extrapolation.)
+   Air resistance absorbed: their power takes back 50% of the air’s drag on it; the air takes the rest (325 kJ over the flight), so it slows less and heats at 50% of the real rate. His hand still meets real air (their own bodies do): it breaks the sound barrier as he lets go, so the boom stays, and over the end of the throw it drives about 143 g of air ahead of it, up to 1.3 kg TNT of blast at his hand (an upper bound: the hand speeds up through the throw). The effort and courtesy ceiling count it.
+   They take their own recoil: the push back from the throw (910 kg·m/s) goes into their source, the endless ocean, so none of it reaches the ground and Rex stays put (without it he would be shoved back at 0.297 m/s).
+   They take their own recoil: stopping it is Ollie’s own push, so its push back (860 kg·m/s, the baseball’s momentum) goes into their source, the endless ocean, and none of it reaches the ground.
+   The air takes 325 kJ (78 g TNT) out of it on the way, all of it close to the two of them.
+   It arrives at Mach 17, so the shock wave it pushes ahead hits Ollie with it: about (1 − s) × ρv² = 21.3 MPa (210 atm) on his hands, where s = 50% is the share of the air’s push their power takes back.
+   Stopping it puts 2.53 MJ (600 g TNT) into his palms and arms. It ends up as heat in his indestructible plush.
+--bars:
+   0
+   0
+   1.25 m
+   2.5 m
+   2.5 m
+   5 m
+   3.75 m
+   7.5 m
+   5 m
+   10 m
+   top 2.74 m
+--math:
+   Aim: the gentlest throw is the angle needing the least launch speed, each speed solved so the arc comes down at Ollie’s hand height (2.74 m) where his hands meet it, 1.82 m in front of his centre. Same air and round-Earth model as Throw. Fastball: his full-strength speed at each angle; the flattest angle whose path passes Ollie’s hands. Catch: first contact with his hands (m_h = 132 kg): v₁ = v m/(m + m_h); energy lost ½ m m_h v²/(m + m_h), over a 3 cm–7.6 cm squash (1–2.5% of his height, an estimate). Then his feet hold (They take their own recoil: he is planted): F = (m + m_h) v₁²/(2d) + m g sin(angle), up to the most his arms can push; if that isn’t enough, it reaches his chest at v² = v₁² − 2d(F − m g sin(angle))/(m + m_h). d = 0.3 × his height = 91 cm. First contact lasts about 2 × squash / v. At the arm force F the stroke takes t = (v₁ − v)/a (v = 0 where his arms stop it), a = (F − m g sin(angle))/(m + m_h); at the least force that works, t = 2d/v₁. The round trip counts that stroke only when it is forced (his arms can’t stop it, or need at least half his strength); otherwise he can take as long as he likes. Nose heating (Sutton–Graves): q = 1.74 × 10⁻⁴ √(ρ/rₙ) v³ W/m², added up along the path; radiation ceiling σ(T⁴ − T₀⁴) below 30 km only (higher up radiation is left out, so the top end runs low on high flights); share ≈ heat × frontal area / (mass × heat to char 1 kg).
+
+================ fb on houses {"duoAction":"catch","cObj":"baseball","cStyle":"hard","logKg":14,"keepForm":false,"airAbsorb":0.5} eff=houses
+--verdict:
+   Rex fires the baseball at 4,960 m/s (Mach 15). It reaches Ollie 1.5 ms later at 4,670 m/s. It hits his waiting hands with 20.7 MN to 51.9 MN, and his arms bring it in over 91 cm. The ball probably bursts.
+--chips:
+   Fastball: 4,960 m/s
+   Stops it; the ball probably bursts
+   His stop goes to the endless ocean: their power
+   Nose air 6,700 °C: skin chars
+--tiles:
+   Throw4,960 m/sMach 15 · level · hardest at this effort
+   Flight1.5 mstop 2.74 m
+   Arrives at4,670 m/slevel
+   Hits his palms with20.7 MN to 51.9 MNfirst contact, over in 13 µs to 33 µs · 15 million g or more on the baseball
+   Ollie slidesnothinghis stop goes to the endless ocean: their power
+--effort:
+   Effort: as hard as lifting 49,100 t. The least effort that could flatten houses 5 m away (an upper bound: all the energy into the air, judged by a long nuclear blast; a short blast this size does less).
+   Courtesy ceiling: lifting 42.6 t. Past that, the baseball is destroyed.
+   At this effort a throw breaks the sound barrier
+--happens:
+   Catching is stopping momentum, and here most of it happens in the first instant. His hands wait at full reach, and with his forearms they weigh 132 kg, more than the baseball. When it hits them they move off together, and nearly all of its energy goes into squashing his palms and the baseball by about 3 cm to 7.6 cm (an estimate). That’s the 20.7 MN to 51.9 MN, and the catch itself is over in about 13 µs to 33 µs. Bringing it in to his chest (91 cm) takes as long as he likes: he has strength to spare, and the gentlest steady push that does it, 1.9 kN, takes 360 ms.
+   A springy hit peaks at about twice its average, so that first hit squeezes the ball 1,000–2,600× as hard as the ~40,000 N of a home-run hit, which baseballs survive. Past that it probably bursts; the sim can’t say exactly when.
+   Air at its nose reaches 6,700 °C, past the 300 °C where wood, leather or plastic starts to char, but the heat reaching it could char under 1% of it (rough). (At sea level the heating formula is inside its tested range only between about 2.1 and 2.9 km/s, so this is an extrapolation.)
+   Air resistance absorbed: their power takes back 50% of the air’s drag on it; the air takes the rest (204 kJ over the flight), so it slows less and heats at 50% of the real rate. His hand still meets real air (their own bodies do): it breaks the sound barrier as he lets go, so the boom stays, and over the end of the throw it drives about 143 g of air ahead of it, up to 840 g TNT of blast at his hand (an upper bound: the hand speeds up through the throw). The effort and courtesy ceiling count it.
+   They take their own recoil: the push back from the throw (720 kg·m/s) goes into their source, the endless ocean, so none of it reaches the ground and Rex stays put (without it he would be shoved back at 0.232 m/s).
+   They take their own recoil: stopping it is Ollie’s own push, so its push back (680 kg·m/s, the baseball’s momentum) goes into their source, the endless ocean, and none of it reaches the ground.
+   The air takes 204 kJ (49 g TNT) out of it on the way, all of it close to the two of them.
+   It arrives at Mach 14, so the shock wave it pushes ahead hits Ollie with it: about (1 − s) × ρv² = 13.3 MPa (130 atm) on his hands, where s = 50% is the share of the air’s push their power takes back.
+   Stopping it puts 1.58 MJ (380 g TNT) into his palms and arms. It ends up as heat in his indestructible plush.
+--bars:
+   0
+   0
+   1.25 m
+   2.5 m
+   2.5 m
+   5 m
+   3.75 m
+   7.5 m
+   5 m
+   10 m
+   top 2.74 m
+--math:
+   Aim: the gentlest throw is the angle needing the least launch speed, each speed solved so the arc comes down at Ollie’s hand height (2.74 m) where his hands meet it, 1.82 m in front of his centre. Same air and round-Earth model as Throw. Fastball: his full-strength speed at each angle; the flattest angle whose path passes Ollie’s hands. Catch: first contact with his hands (m_h = 132 kg): v₁ = v m/(m + m_h); energy lost ½ m m_h v²/(m + m_h), over a 3 cm–7.6 cm squash (1–2.5% of his height, an estimate). Then his feet hold (They take their own recoil: he is planted): F = (m + m_h) v₁²/(2d) + m g sin(angle), up to the most his arms can push; if that isn’t enough, it reaches his chest at v² = v₁² − 2d(F − m g sin(angle))/(m + m_h). d = 0.3 × his height = 91 cm. First contact lasts about 2 × squash / v. At the arm force F the stroke takes t = (v₁ − v)/a (v = 0 where his arms stop it), a = (F − m g sin(angle))/(m + m_h); at the least force that works, t = 2d/v₁. The round trip counts that stroke only when it is forced (his arms can’t stop it, or need at least half his strength); otherwise he can take as long as he likes. Nose heating (Sutton–Graves): q = 1.74 × 10⁻⁴ √(ρ/rₙ) v³ W/m², added up along the path; radiation ceiling σ(T⁴ − T₀⁴) below 30 km only (higher up radiation is left out, so the top end runs low on high flights); share ≈ heat × frontal area / (mass × heat to char 1 kg).
+
+================ fb off houses {"duoAction":"catch","cObj":"baseball","cStyle":"hard","logKg":14,"keepForm":false,"airAbsorb":0.5,"oNoKnockback":false} eff=houses
+--verdict:
+   Rex fires the baseball at 4,960 m/s (Mach 15). It reaches Ollie 1.5 ms later at 4,670 m/s. It hits his waiting hands with 20.7 MN to 51.9 MN, and his arms bring it in over 91 cm. The ball probably bursts.
+--chips:
+   Fastball: 4,960 m/s
+   Stops it; the ball probably bursts
+   His stop goes to the endless ocean: their power
+   Nose air 6,700 °C: skin chars
+--tiles:
+   Throw4,960 m/sMach 15 · level · hardest at this effort
+   Flight1.5 mstop 2.74 m
+   Arrives at4,670 m/slevel
+   Hits his palms with20.7 MN to 51.9 MNfirst contact, over in 13 µs to 33 µs · 15 million g or more on the baseball
+   Ollie slidesnothinghis stop goes to the endless ocean: their power
+--effort:
+   Effort: as hard as lifting 49,100 t. The least effort that could flatten houses 5 m away (an upper bound: all the energy into the air, judged by a long nuclear blast; a short blast this size does less).
+   Courtesy ceiling: lifting 42.6 t. Past that, the baseball is destroyed.
+   At this effort a throw breaks the sound barrier
+--happens:
+   Catching is stopping momentum, and here most of it happens in the first instant. His hands wait at full reach, and with his forearms they weigh 132 kg, more than the baseball. When it hits them they move off together, and nearly all of its energy goes into squashing his palms and the baseball by about 3 cm to 7.6 cm (an estimate). That’s the 20.7 MN to 51.9 MN, and the catch itself is over in about 13 µs to 33 µs. Bringing it in to his chest (91 cm) takes as long as he likes: he has strength to spare, and the gentlest steady push that does it, 1.9 kN, takes 360 ms.
+   A springy hit peaks at about twice its average, so that first hit squeezes the ball 1,000–2,600× as hard as the ~40,000 N of a home-run hit, which baseballs survive. Past that it probably bursts; the sim can’t say exactly when.
+   Air at its nose reaches 6,700 °C, past the 300 °C where wood, leather or plastic starts to char, but the heat reaching it could char under 1% of it (rough). (At sea level the heating formula is inside its tested range only between about 2.1 and 2.9 km/s, so this is an extrapolation.)
+   Air resistance absorbed: their power takes back 50% of the air’s drag on it; the air takes the rest (204 kJ over the flight), so it slows less and heats at 50% of the real rate. His hand still meets real air (their own bodies do): it breaks the sound barrier as he lets go, so the boom stays, and over the end of the throw it drives about 143 g of air ahead of it, up to 840 g TNT of blast at his hand (an upper bound: the hand speeds up through the throw). The effort and courtesy ceiling count it.
+   They take their own recoil: the push back from the throw (720 kg·m/s) goes into their source, the endless ocean, so none of it reaches the ground and Rex stays put (without it he would be shoved back at 0.232 m/s).
+   They take their own recoil: stopping it is Ollie’s own push, so its push back (680 kg·m/s, the baseball’s momentum) goes into their source, the endless ocean, and none of it reaches the ground.
+   The air takes 204 kJ (49 g TNT) out of it on the way, all of it close to the two of them.
+   It arrives at Mach 14, so the shock wave it pushes ahead hits Ollie with it: about (1 − s) × ρv² = 13.3 MPa (130 atm) on his hands, where s = 50% is the share of the air’s push their power takes back.
+   Stopping it puts 1.58 MJ (380 g TNT) into his palms and arms. It ends up as heat in his indestructible plush.
+--bars:
+   0
+   0
+   1.25 m
+   2.5 m
+   2.5 m
+   5 m
+   3.75 m
+   7.5 m
+   5 m
+   10 m
+   top 2.74 m
+--math:
+   Aim: the gentlest throw is the angle needing the least launch speed, each speed solved so the arc comes down at Ollie’s hand height (2.74 m) where his hands meet it, 1.82 m in front of his centre. Same air and round-Earth model as Throw. Fastball: his full-strength speed at each angle; the flattest angle whose path passes Ollie’s hands. Catch: first contact with his hands (m_h = 132 kg): v₁ = v m/(m + m_h); energy lost ½ m m_h v²/(m + m_h), over a 3 cm–7.6 cm squash (1–2.5% of his height, an estimate). Then his feet hold (They take their own recoil: he is planted): F = (m + m_h) v₁²/(2d) + m g sin(angle), up to the most his arms can push; if that isn’t enough, it reaches his chest at v² = v₁² − 2d(F − m g sin(angle))/(m + m_h). d = 0.3 × his height = 91 cm. First contact lasts about 2 × squash / v. At the arm force F the stroke takes t = (v₁ − v)/a (v = 0 where his arms stop it), a = (F − m g sin(angle))/(m + m_h); at the least force that works, t = 2d/v₁. The round trip counts that stroke only when it is forced (his arms can’t stop it, or need at least half his strength); otherwise he can take as long as he likes. Nose heating (Sutton–Graves): q = 1.74 × 10⁻⁴ √(ρ/rₙ) v³ W/m², added up along the path; radiation ceiling σ(T⁴ − T₀⁴) below 30 km only (higher up radiation is left out, so the top end runs low on high flights); share ≈ heat × frontal area / (mass × heat to char 1 kg).
+
+================ fb on rattle {"duoAction":"catch","cObj":"baseball","cStyle":"hard","logKg":14,"keepForm":false,"airAbsorb":0.5} eff=rattle
+--verdict:
+   Rex fires the baseball at 346 m/s (Mach 1). It reaches Ollie 22 ms later at 332 m/s. It hits his waiting hands with 105 kN to 262 kN, and his arms bring it in over 91 cm. The ball probably bursts.
+--chips:
+   Fastball: 346 m/s
+   Stops it; the ball probably bursts
+   His stop goes to the endless ocean: their power
+   Nose air 75 °C: warms up
+--tiles:
+   Throw346 m/sMach 1 · 0.018° up · hardest at this effort
+   Flight22 mstop 2.74 m
+   Arrives at332 m/s0.018° down
+   Hits his palms with105 kN to 262 kNfirst contact, over in 180 µs to 460 µs · 74,000 g or more on the baseball
+   Ollie slidesnothinghis stop goes to the endless ocean: their power
+--effort:
+   Effort: as hard as lifting 239 t. The least effort that rattles windows and ornaments 5 m away, through the ground or the air.
+   Courtesy ceiling: lifting 42.6 t. Past that, the baseball is destroyed.
+   At this effort a throw breaks the sound barrier
+--happens:
+   Catching is stopping momentum, and here most of it happens in the first instant. His hands wait at full reach, and with his forearms they weigh 132 kg, more than the baseball. When it hits them they move off together, and nearly all of its energy goes into squashing his palms and the baseball by about 3 cm to 7.6 cm (an estimate). That’s the 105 kN to 262 kN, and the catch itself is over in about 180 µs to 460 µs. Bringing it in to his chest (91 cm) takes as long as he likes: he has strength to spare, and the gentlest steady push that does it, 9.63 N, takes 5.01 s.
+   A springy hit peaks at about twice its average, so that first hit squeezes the ball 5.2–13× as hard as the ~40,000 N of a home-run hit, which baseballs survive. Past that it probably bursts; the sim can’t say exactly when.
+   The air at its nose peaks at 75 °C, below the 300 °C where wood, leather or plastic starts to char, so it only warms up.
+   Air resistance absorbed: their power takes back 50% of the air’s drag on it; the air takes the rest (693 J over the flight), so it slows less and heats at 50% of the real rate. His hand still meets real air (their own bodies do): it breaks the sound barrier as he lets go, so the boom stays, and over the end of the throw it drives about 143 g of air ahead of it, up to 4.1 g TNT of blast at his hand (an upper bound: the hand speeds up through the throw). The effort and courtesy ceiling count it.
+   They take their own recoil: the push back from the throw (50 kg·m/s) goes into their source, the endless ocean, so none of it reaches the ground.
+   They take their own recoil: stopping it is Ollie’s own push, so its push back (48 kg·m/s, the baseball’s momentum) goes into their source, the endless ocean, and none of it reaches the ground.
+   The air takes 693 J (170 mg TNT) out of it on the way, all of it close to the two of them.
+   Stopping it puts 8.01 kJ (1.9 g TNT) into his palms and arms. It ends up as heat in his indestructible plush.
+--bars:
+   0
+   0
+   1.25 m
+   2.5 m
+   2.5 m
+   5 m
+   3.75 m
+   7.5 m
+   5 m
+   10 m
+   top 2.74 m
+--math:
+   Aim: the gentlest throw is the angle needing the least launch speed, each speed solved so the arc comes down at Ollie’s hand height (2.74 m) where his hands meet it, 1.82 m in front of his centre. Same air and round-Earth model as Throw. Fastball: his full-strength speed at each angle; the flattest angle whose path passes Ollie’s hands. Catch: first contact with his hands (m_h = 132 kg): v₁ = v m/(m + m_h); energy lost ½ m m_h v²/(m + m_h), over a 3 cm–7.6 cm squash (1–2.5% of his height, an estimate). Then his feet hold (They take their own recoil: he is planted): F = (m + m_h) v₁²/(2d) + m g sin(angle), up to the most his arms can push; if that isn’t enough, it reaches his chest at v² = v₁² − 2d(F − m g sin(angle))/(m + m_h). d = 0.3 × his height = 91 cm. First contact lasts about 2 × squash / v. At the arm force F the stroke takes t = (v₁ − v)/a (v = 0 where his arms stop it), a = (F − m g sin(angle))/(m + m_h); at the least force that works, t = 2d/v₁. The round trip counts that stroke only when it is forced (his arms can’t stop it, or need at least half his strength); otherwise he can take as long as he likes. Nose heating (Sutton–Graves): q = 1.74 × 10⁻⁴ √(ρ/rₙ) v³ W/m², added up along the path; radiation ceiling σ(T⁴ − T₀⁴) below 30 km only (higher up radiation is left out, so the top end runs low on high flights); share ≈ heat × frontal area / (mass × heat to char 1 kg).
+
+================ fb off rattle {"duoAction":"catch","cObj":"baseball","cStyle":"hard","logKg":14,"keepForm":false,"airAbsorb":0.5,"oNoKnockback":false} eff=rattle
+--verdict:
+   Rex fires the baseball at 346 m/s (Mach 1). It reaches Ollie 22 ms later at 332 m/s. It hits his waiting hands with 105 kN to 262 kN, and his arms bring it in over 91 cm. The ball probably bursts.
+--chips:
+   Fastball: 346 m/s
+   Stops it; the ball probably bursts
+   His stop goes to the endless ocean: their power
+   Nose air 75 °C: warms up
+--tiles:
+   Throw346 m/sMach 1 · 0.018° up · hardest at this effort
+   Flight22 mstop 2.74 m
+   Arrives at332 m/s0.018° down
+   Hits his palms with105 kN to 262 kNfirst contact, over in 180 µs to 460 µs · 74,000 g or more on the baseball
+   Ollie slidesnothinghis stop goes to the endless ocean: their power
+--effort:
+   Effort: as hard as lifting 239 t. The least effort that rattles windows and ornaments 5 m away, through the ground or the air.
+   Courtesy ceiling: lifting 42.6 t. Past that, the baseball is destroyed.
+   At this effort a throw breaks the sound barrier
+--happens:
+   Catching is stopping momentum, and here most of it happens in the first instant. His hands wait at full reach, and with his forearms they weigh 132 kg, more than the baseball. When it hits them they move off together, and nearly all of its energy goes into squashing his palms and the baseball by about 3 cm to 7.6 cm (an estimate). That’s the 105 kN to 262 kN, and the catch itself is over in about 180 µs to 460 µs. Bringing it in to his chest (91 cm) takes as long as he likes: he has strength to spare, and the gentlest steady push that does it, 9.63 N, takes 5.01 s.
+   A springy hit peaks at about twice its average, so that first hit squeezes the ball 5.2–13× as hard as the ~40,000 N of a home-run hit, which baseballs survive. Past that it probably bursts; the sim can’t say exactly when.
+   The air at its nose peaks at 75 °C, below the 300 °C where wood, leather or plastic starts to char, so it only warms up.
+   Air resistance absorbed: their power takes back 50% of the air’s drag on it; the air takes the rest (693 J over the flight), so it slows less and heats at 50% of the real rate. His hand still meets real air (their own bodies do): it breaks the sound barrier as he lets go, so the boom stays, and over the end of the throw it drives about 143 g of air ahead of it, up to 4.1 g TNT of blast at his hand (an upper bound: the hand speeds up through the throw). The effort and courtesy ceiling count it.
+   They take their own recoil: the push back from the throw (50 kg·m/s) goes into their source, the endless ocean, so none of it reaches the ground.
+   They take their own recoil: stopping it is Ollie’s own push, so its push back (48 kg·m/s, the baseball’s momentum) goes into their source, the endless ocean, and none of it reaches the ground.
+   The air takes 693 J (170 mg TNT) out of it on the way, all of it close to the two of them.
+   Stopping it puts 8.01 kJ (1.9 g TNT) into his palms and arms. It ends up as heat in his indestructible plush.
+--bars:
+   0
+   0
+   1.25 m
+   2.5 m
+   2.5 m
+   5 m
+   3.75 m
+   7.5 m
+   5 m
+   10 m
+   top 2.74 m
+--math:
+   Aim: the gentlest throw is the angle needing the least launch speed, each speed solved so the arc comes down at Ollie’s hand height (2.74 m) where his hands meet it, 1.82 m in front of his centre. Same air and round-Earth model as Throw. Fastball: his full-strength speed at each angle; the flattest angle whose path passes Ollie’s hands. Catch: first contact with his hands (m_h = 132 kg): v₁ = v m/(m + m_h); energy lost ½ m m_h v²/(m + m_h), over a 3 cm–7.6 cm squash (1–2.5% of his height, an estimate). Then his feet hold (They take their own recoil: he is planted): F = (m + m_h) v₁²/(2d) + m g sin(angle), up to the most his arms can push; if that isn’t enough, it reaches his chest at v² = v₁² − 2d(F − m g sin(angle))/(m + m_h). d = 0.3 × his height = 91 cm. First contact lasts about 2 × squash / v. At the arm force F the stroke takes t = (v₁ − v)/a (v = 0 where his arms stop it), a = (F − m g sin(angle))/(m + m_h); at the least force that works, t = 2d/v₁. The round trip counts that stroke only when it is forced (his arms can’t stop it, or need at least half his strength); otherwise he can take as long as he likes. Nose heating (Sutton–Graves): q = 1.74 × 10⁻⁴ √(ρ/rₙ) v³ W/m², added up along the path; radiation ceiling σ(T⁴ − T₀⁴) below 30 km only (higher up radiation is left out, so the top end runs low on high flights); share ≈ heat × frontal area / (mass × heat to char 1 kg).

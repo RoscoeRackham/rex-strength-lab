@@ -1,0 +1,66 @@
+## id
+physics-carry-force-omits-hold-and-cap
+
+## severity
+major
+
+## title
+Collide 'carried': the hit's force leaves out the hold, so force × time doesn't equal what the source supplies; the min(H, F) cap departs from the engine's own footing formula
+
+## location
+rex-strength-lab/src/engine.js:2686-2688 (carriedHit: footSplat = min(Hhold, cf.soft.F); carry.F = cfx.F); src/app.html Collide tiles 'Force of the hit' / 'Forces at the hit' bars / 'Momentum still balances'; README decision 1 ('its hold, at most the hit's force') and Known limits line 245
+
+## evidence
+Engine: default sprint, all-out: carry.F 1,570,693 N, T 0.03466 s, so F·T = 54,437 = pGain; but supplied = 55,049 (footJ 612). Page at its default (least effort, 4.26 t): 'Force of the hit 255 kN over 86 ms' (255 kN × 0.086 s = 21,900 kg·m/s, Rex's gain alone) beside 'Ollie's source supplies 23,000 kg·m/s: Rex's gain, 21,900, plus what his footing hands the ground (1,520)'. Under a 255 kN push with his 17.7 kN footing resisting for 86 ms, Rex would gain only (255 − 17.7) × 0.086 = 20,400 kg·m/s (6.98 m/s, not 7.31). Bolted Rex on real rock, all-out (page): force 1.57 MN over 35 ms (54,400) against 'Ollie's source supplies 79,000 kg·m/s' (rock share 24,100): a 44% gap, and the page does not flag it as rough (F > tear). Where F < H the cap books footJ = F·T = pGain exactly: Ollie at a set speed of 1 m/s into standing Rex on concrete gives footJ 3,000, supplied 6,000 (page: 'what his footing hands the ground during the hit (3,000 kg·m/s)'); a jump onto standing Rex on real ground gives footJ 49,700 = pGain, supplied 99,000. The cap also hits a standing body on friction at any charge below √(2Hs/m) = √(2 × 17,652 × 0.3144 / 3000) = 1.92 m/s on concrete, which the README limit does not name (it names only real rock and from above).
+
+## expected
+Momentum through the contact must equal what the source supplies: the charger's push on the one hit over T is pGain + footJ, so the reported force of the hit is F + footF, not F. For a hold that keeps acting while the one hit moves (sliding footing, the ground's bearing as he is driven in), the engine's own splatWithFooting (engine.js:2307: F = μ(v²/2s + H/mB), τ = v/arel, Jearth = Hτ) in the limit mA → ∞ (a charger who never slows) gives F' = mB v²/(2s) + H, T = 2s/v unchanged, footJ = H·T with no cap: at the default all-out sprint F' = 1.588 MN (supplied 55,049, same); at the least effort 272.6 kN; at 1 m/s on concrete F' = 22.4 kN, footJ = 17,652 × 0.629 = 11,100, supplied 14,100 (not 6,000); a jump onto Rex on real ground F' = 2.83 MN, footJ = 1.52 MN × 0.038 s = 57,700. There is no 'rise to follow' in the lab's constant-force squash: the push is F + H from the start. The rock around bolts is different (it fails once, then the plug slides), so booking its tear load for the whole squash is itself only an estimate and should be labelled as one.
+
+## fix
+In carriedHit report carry.F = cfx.F + footF (splat), use it in the 'Force of the hit' tile, the bars and the squash paragraph, so F·T = supplied. For footing and bearing holds drop the min(Hhold, cf.soft.F) cap (footJ = Hhold × T, as splatWithFooting gives for mA → ∞). For the rock, keep a stated estimate (its tear load while it tears) and say so. Update decision 1, the Known limit (and name the standing-on-friction case under about 1.9 m/s if any cap stays), and test 8a's footWant.
+
+## VERDICT
+### id
+physics-carry-force-omits-hold-and-cap
+
+### real
+true
+
+### severity
+major
+
+### reasoning
+Reproduced in the engine and on the page. In carriedHit (engine.js:2686-2688) the reported carry.F is cf.soft.F, the force that alone gives Rex pGain over T, so F*T = pGain exactly. But supplied = pGain + footJ. The force between the two bodies, whose push back goes to Ollie's source, must therefore average (pGain + footJ)/T = F + footF. So the 'Force of the hit' tile, the 'Forces at the hit' bar and the squash paragraph understate the hit by the hold in every carried splat. Nothing on the page or in the README discloses this. It is 7% at the page default, 1% all-out, 44% unflagged for a bolted Rex on real rock, and 2.2x for a jump onto Rex on real ground. The min(Hhold, F) cap is a stated decision (decision 1, Known limit 3), and the page does say 'rough' where it bites, including at 1 m/s on friction, a case the README limit doesn't name. But its reason, 'the push rises until it gives', does not hold in the lab's own constant-force squash. Taking the engine's splatWithFooting (engine.js:2307) with mA -> infinity gives F' = mB v^2/(2s) + H, the same tau, and Jearth = H*tau with no cap, from the start of the hit. That matches the engine exactly where F > H. Where F < H the cap undercounts the ground's share: 3,000 vs 11,100 kg m/s at 1 m/s, 49,700 vs 57,700 for the jump. Test 8a's footWant = min(H, F)*T builds the cap into the test. One small slip in the finding's own evidence: (255 - 17.7) kN x 0.086 s = 20,400 kg m/s is 6.80 m/s, not 6.98. The conclusion stands.
+
+### reproduction
+Scripts in /tmp/claude-0/-home-user-rex-strength-lab/be83ea46-0fb6-5f45-86e4-061daa8f7429/scratchpad/review-pr4-r1/verify-physics/scripts (clone at claude/canon-4-contests 238f570, build clean).
+
+`node f1.js`, Ollie charging Rex, all defaults on:
+- sprint all-out: F 1,571,000, T 0.03466, F*T 54,440 = pGain; footJ 611.8; supplied 55,050
+- least effort (4.26 t): F 256,100, T 0.08583, F*T 21,980; footJ 1,515; supplied 23,500
+- bolted Rex on real rock: F 1,571,000, F*T 54,440; footJ 24,150 (tear 696,800); supplied 78,590; supplied/(F*T) 1.444
+- set 1 m/s: F 4,770, T 0.6289; footJ 3,000 = pGain; supplied 6,000
+- jump onto Rex on real ground: F 1,310,000, footJ 49,710 = pGain; supplied 99,420
+
+`node f1b.js`, the engine's own splatWithFooting formula copied verbatim, with mA = 1e30:
+- all-out: F 1,588,000, tau 0.03466, Jearth 611.8, F*tau 55,050
+- least: F 273,800, Jearth 1,515
+- 1 m/s: F 22,420, Jearth 11,100, F*tau 14,100
+- jump on real ground: F 2,830,000, Jearth 57,720, F*tau 107,400
+
+`node page.js` (Playwright on dist/index.html), Collide at default least effort:
+- tiles: 'Force of the hit 255 kN over 86 ms (plush squash, estimate)' and 'Ollie's source supplies 23,000 kg·m/s Rex's gain, 21,900 kg·m/s, plus what his footing hands the ground'
+- happens: '... what his footing hands the ground during the hit (1,520 kg·m/s) ... about 23,000 kg·m/s in all'
+
+Bolted on real rock, all-out: 'Force of the hit 1.57 MN over 35 ms' beside 'Ollie's source supplies 79,000 kg·m/s'. There is no 'rough' sentence here.
+
+At 1 m/s: '...The plush squash alone pushes with only 4.77 kN, less than that... so here they are rough', with footing 3,000 kg·m/s.
+
+### better_fix
+In carriedHit (engine.js:2686):
+- Book the footing and bearing hold uncapped: `const footSplat = !(Hhold > 0) ? 0 : Hhold`. This is splatWithFooting's limit as mA -> infinity.
+- Report the push between them: `F: cfx.F + footF`. Use carry.F, not r.contact.soft, for the 'Force of the hit' tile, the 'The hit, plush squash' bar and the squash paragraph, so that F x T = supplied.
+- For the rock round the bolts, keep tear x T, and label it on the page as an estimate (the rock carries its tear load for the whole squash).
+- Drop the 'push rises until it gives / rough' sentence and Known limit 3 for footing and bearing. If any cap stays, name the standing-on-friction case below about 1.9 m/s in the Known limit.
+- Update decision 1's wording ('its hold, at most the hit's force') and test 8a's footWant to Hhold * Fc.t.
+

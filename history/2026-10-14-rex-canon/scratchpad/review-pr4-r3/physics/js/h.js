@@ -1,0 +1,11 @@
+const REPO = '/tmp/claude-0/-home-user-rex-strength-lab/be83ea46-0fb6-5f45-86e4-061daa8f7429/scratchpad/review-pr4-r3/physics/repo/rex-strength-lab';
+const P = require(REPO + '/src/engine.js'); global.window = global.window || {}; require(REPO + '/src/data.js'); const D = window.DINO_DATA;
+const g = P.K.g;
+const R3 = P.makeBody(Object.assign({ build: 'rex' }, P.DEFAULT_BODIES.rex)), O3 = P.makeBody(Object.assign({ build: 'ollie' }, P.DEFAULT_BODIES.ollie));
+const surf = (id) => D.surfaces.find((s) => s.id === id);
+const conc = surf('concrete');
+const ON = { airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true };
+const c3 = (F, body, x) => Object.assign({ F, mode: 'comic', body, surface: conc, anchor: 'friction', use: undefined }, ON, x || {});
+const dial = 100 * 907.18474 * g;
+const sig = (x, n) => (typeof x === 'number' ? Number(x.toPrecision(n || 4)) : x);
+module.exports = { P, D, g, R3, O3, surf, conc, ON, c3, dial, sig, REPO };

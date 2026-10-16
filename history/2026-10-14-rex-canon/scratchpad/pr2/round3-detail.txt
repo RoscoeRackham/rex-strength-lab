@@ -1,0 +1,160 @@
+##### physics-bolted-pull-legs-unbounded major | real= True major
+TITLE: Round 2's bolted pull with the power on gives his legs unlimited force: his own body is flung far past his strength (a baseball pull sends his 3,000 kg body to 11 km/s and cracks plaster 3.9 km away)
+EVIDENCE: With the power on and bolted, the pull uses a = (drive − resistance) ÷ load mass. His bolted legs must then push his own 3,000 kg body at that same acceleration, and nothing limits that push: not his strength, and not the lab's own leg rule. The Pull tab itself states that rule: 'his legs push with at most 1.4× the dial’s force', i.e. moveCheck's legForce = LEG_SHARE × F. Sprint's bolted stride also caps the thrust at the strength used (engine L1601: `thrust = Fu`).
+
+Engine runs, concrete, default dial (889.6 kN), all four powers on, bolted, all-out. 'Legs' is the average leg force, walkPush.J ÷ walkPush.T:
+- Car (1,340 kg): t 0.174 s, vEnd 115 m/s. Legs 1.99 MN = 2.24× the dial, 1.6× the lab's 1.4× leg rule. His body ends with ½ × 3,000 × 115² = 19.9 MJ, while F × 10 m is 8.9 MJ. Powers off: 0.312 s, 64 m/s.
+- Person: t 45 ms, vEnd 444 m/s. The person is accelerated at about 1,000 g (main: 29 g). Legs 33× the dial.
+- Baseball: t 1.8 ms, vEnd 11,066 m/s (Mach 32). Legs 1.8 × 10^10 N = 20,600× the dial. His body ends with 184 GJ against 8.9 MJ of work available.
+
+Page, state {action:'pull', obj:'baseball', anchor:'bolted'}: only Bolted to the planet is changed from the defaults.
+- Least disruptive: 'Rex drags it 10 m in 100 ms.' The effort box says 'Effort: 0.033% ... (as hard as lifting 30 kg). The gentlest try he can make. ... even the gentlest try means the ground shakes hard enough that plaster may crack', and 'Plaster may crack at 5 m at any effort; now out to 49.7 m'.
+- All-out: 'Rex drags it 10 m in 1.8 ms.' The page says 'It is his own body’s momentum, 33 million kg·m/s over 1.8 ms (bolted, nothing caps it ...) ... enough that plaster may crack out to 3.87 km, and felt out to 200 km', and 'Sonic boom from 0.095% (lifting 85.7 kg)'.
+- Main's page for the same state: least disruptive 61.3 kg, 9.99 s, no hazards; all-out 260 ms.
+
+Other objects (planNow, branch):
+- Motorcycle: courtesy ceiling 11,800 kg-force at the default dial.
+- Person: courtesy ceiling 6.4%.
+- Car: README's 86,000 kg-force ceiling at the default dial, 10^6 and 10^9 kg dials, and its 15,800 kg-force rattle preset.
+All of these come from this leg force.
+
+The tests miss it because momentum still balances. The ledger and 5d use the bus, whose 9,525 kg load needs legs of only 0.31× the drive. A scratch mutant with the cap below passes test/powers.js --skip-off 148/148, so no check covers a load lighter than about 2,140 kg (3,000 ÷ 1.4).
+EXPECTED: Canon: 'Each run picks a stated, finite strength.' They take their own recoil moves the push back to his source; it doesn't give his legs extra strength. Bolting stops his feet slipping, but his legs still push with muscle. So the push that moves his own body should be capped by his strength, as on Sprint (bolted thrust = the strength used) and under the Pull tab's own 1.4× rule.
+
+With the cap at 1.4× the strength used:
+- Bolted car, all-out at the default dial: 0.22 s, 91 m/s, legs 1.4× the dial.
+- Baseball, least disruptive: 44 kg-force, 9.99 s, no hazards.
+- Courtesy ceiling at the default dial: none for the car and the motorcycle (rattle preset 25,300 kg-force). At 10^6 and 10^9 kg: 137,800 kg-force (car).
+- Heavy loads (pickup and heavier) are unchanged.
+FIX: In pull(), cap his feet's push on his own body by his legs:
+`aFeet = Math.min(anc.R, LEG_SHARE() * usable) / body.m`
+or, matching Sprint's bolted thrust, `Math.min(anc.R, usable) / body.m`.
+
+This also stops a friction pull of a light load at the floor effort from having his legs push 60× the effort shown. That case was on main too: the baseball at least effort moves from 30 kg-force, 1.84 s to 44 kg-force, 9.99 s.
+
+Then:
+- Word the bolted item and the math line as 'his legs move his own body with at most 1.4× the strength he uses', not 'nothing caps it'.
+- Redo README decision 7 and 'What moved' (0.17 s, 86,000 kg-force at both dials, 15,800 kg-force) and pull request decision 4.
+- Add a 5d check with a light load bolted (car or baseball, powers on): walkPush.J / walkPush.T ≤ LEG_SHARE × usable, and vEnd at or below the powers-off bolted pace × √(LEG_SHARE × M / m_body).
+VERDICT: Reproduced in the engine and on the page, in my own clone (verify-physics/repo at 54fadb8; the build leaves git status clean). In pull(), the ownRecoil branch sets aFeet = anc.R / body.m. Bolted, anc.R is Infinity, so for any load lighter than his body the load sets the pace, and his legs push his own 3,000 kg body with no limit. Nothing caps that push by his strength.
+
+This breaks three things:
+- The canon: 'Each run picks a stated, finite strength.'
+- The lab's own leg rule. moveCheck has legForce = LEG_SHARE × F = 1.4 F, and the Pull tab's cantWalk item (app.html:3395) prints 'his legs push with at most 1.4× the dial’s force'.
+- Sprint's bolted stride, which caps thrust at the strength used (engine.js:1601, thrust = Fu).
+
+All-out results at the default dial on concrete:
+- Car: legs push 2.24× the dial, and his body's kinetic energy (19.9 MJ) is more than twice F × 10 m (8.9 MJ).
+- Baseball: legs push 20,600× the dial, and his body ends at 11 km/s with 184 GJ.
+
+At the least-disruptive floor (30 kg-force) the bolted baseball pull has legs at 6 MN, 20,600× the effort. The page calls it 'The gentlest try he can make' and still says plaster may crack out to 49.7 m.
+
+README decision 7 records 'bolted, uncapped', so the choice is stated. It is not justified: Bolted removes the footing limit, not the muscle limit. This is a regression from round 2's fix. Main's bolted pull moved at the pair's pace, with legs at 0.69× the dial for the car.
+
+The tests miss it because section 5d uses
+BETTER FIX: Engine, src/engine.js pull(), ownRecoil branch. Change
+`const aLoad = net > 0 ? net / obj.m : 0, aFeet = anc.R / body.m;`
+to
+`const aLoad = net > 0 ? net / obj.m : 0, aFeet = Math.min(anc.R, LEG_SHARE() * usable) / body.m;`
+This uses the Pull tab's own stated rule: legs push with at most 1.4× the strength he uses. Sprint's 1.0× (Math.min(anc.R, usable)) also works if preferred. footLimited then flags the light-load cases on both footings.
+
+Update the comments to match: 'his legs cap it (at most 1.4× the strength he uses; on friction, also his grip)'.
+
+Page, src/app.html:
+- Line 3405, bolted item: when r.footLimited, write 'Bolted, his feet can’t slide, so grip doesn’t limit his pull: he pulls with all of the strength he uses. His legs move his own body with at most 1.4× that strength, so ' + (r.footLimited ? 'his own body sets the pace' : 'the load sets the pace').
+- Line 3406: replace '(bolted, nothing caps it: the quicker the pull, the harder his feet push)' with '(his legs cap it: at most 1.4× the strength he uses' + (bolted ? '' : ', and his grip, ' + fmtSI(r.anchor.R,'N')) + ')'.
+- Line 3551: replace 'Bolted, nothing caps it, so a quick, hard pull shakes the ground.' with 'His legs cap it (1.4× the strength he uses), so only a strong, quick pull shakes the ground.'
+- The math line: 'acceleration = the smaller of (pull − resistance) ÷ load mass and his legs’ push (≤ 1.4 × strength used) ÷ his mass'.
+
+Tests:
+- Update the shots.js:655 regex.
+- Add a 5d check with a light load bolted (car and baseball, powers on): walkPush.J / walkPush.T ≤ LEG_SHARE × usable × (1 + 1e-12), and the same check at a low effort (use = 30 kg-force) on friction and bolted.
+
+README decision 7 and 'What moved' Pull, PR #33 decision 4: replace 0.17 s / 86,000 kg-force / 15,800 kg-force with the new figures (car all-out 0.22 s; no courtesy ceiling at the default dial), and say the legs are capped at 1.4× the strength used.
+
+##### physics-catch-allreach-unthrown-leg minor | real= True minor
+TITLE: Game of catch: a leg that is never thrown (too weak to throw back) blocks allReach, so the box says the lab doesn't judge 'where the car lands or hits' though nothing lands, and it leaves out the catcher's stop
+EVIDENCE: Page, defaults, Catch > car, lob, 30 m apart. Turn on Ollie's own strength (#o-own) and set it to 2,000 kg (#o-strength 3.301).
+
+Engine: Rex's leg is 'slams' (absorbed whole, recoilAbsorbedC 21,000 kg·m/s). Ollie's leg is 'too-weak': no throw, no recoilAbsorbedT.
+
+The verdict reads: 'Ollie can’t stop it with his arms ... hits him at 14.2 m/s ... Throwing back: Ollie can’t throw the car that far.'
+
+The effort box, least disruptive and plaster preset, reads: 'They take their own recoil: the thrower’s push back goes to the endless ocean, so none of it reaches the ground. The lab doesn’t judge the shaking where the car lands or hits in this test.'
+
+The car never lands or hits the ground. Its whole momentum went to their source with the catcher's stop, which the sentence leaves out. The plaster preset also loses its 'Even all-out, this test doesn’t shake the ground ...' line, because landGap is all:true.
+EXPECTED: Only legs that were thrown should count. Every thrown leg here reaches the catcher, so the round 2 sentence applies: 'the thrower’s push back and the catcher’s stop go to the endless ocean, so nothing in this test pushes on the ground to shake it'. The 'doesn't judge where it lands or hits' gap is for objects that land around him or hit the ground.
+FIX: `const thrownLegs = legs.filter((L) => L && (L.recoilAbsorbedT || L.toGroundT)); out.allReach = thrownLegs.length > 0 && thrownLegs.every((L) => CAUGHT.includes(L.result));`
+
+Add this state (Ollie's own strength 2,000 kg, car lob 30 m) to the shots.js round 2 block.
+VERDICT: Reproduced. In duoFacts (app.html:4137), allReach = legs.some(Boolean) && legs.every((L) => !L || CAUGHT.includes(L.result)). A leg that is computed but never thrown is a truthy object whose result is outside CAUGHT. Such results are 'too-weak', 'cant-hold' and 'unreachable'. That leg blocks allReach even though it has no object in flight.
+
+With Ollie's what-if strength at 2,000 kg, the car lobbed 30 m apart:
+- Rex's leg 'slams', and the catch is absorbed whole (recoilAbsorbedC 21,496 kg·m/s).
+- Ollie's leg is 'too-weak', with no recoilAbsorbedT or toGroundT.
+
+The page then gives catchLandWhy: 'The lab doesn’t judge the shaking where the car lands or hits in this test.' Nothing lands or hits
+BETTER FIX: In src/app.html duoFacts (line 4137) count only legs that were thrown, using the same test as out.thrown:
+`const thrownLegs = legs.filter((L) => !!(L && (L.recoilAbsorbedT || L.toGroundT)));`
+`out.allReach = thrownLegs.length > 0 && thrownLegs.every((L) => CAUGHT.includes(L.result));`
+`out.thrown = thrownLegs.length > 0;`
+Update the comment above it to 'every thrown leg's object reaches the catcher (a leg too weak to throw, or that can't hold or reach, throws nothing)'.
+
+Add this state to the shots.js round 2 block, checking that the plaster preset reads 'nothing in this test pushes on the ground' and not 'doesn’t judge': Ollie's own strength 2,000 kg (#o-own, #o-strength 3.301), car, lob, 30 m.
+
+##### code-1 minor | real= True minor
+TITLE: Round 2's factsTop fix missed one spot: an unlimited shove into a bolted Ollie, 'Break the ground' preset with Unbreakable footing on (the default), draws real rock but drops 'Unbreakable footing is set aside for this test'
+EVIDENCE: State {duoOpen:true, duoAction:'wrestle', wrestleMove:'shove', inf:true, oAnchor:'bolted'}. All four powers are left at their defaults, so Unbreakable footing is on. Pick 'ground' (scratch work/probe.js with work/c1.json). The effort box reads: 'All-out. The least effort that tears the rock out around Ollie's bolts.On real ground, courtesy ceiling: lifting 10³¹ t. Past that, the rock tears out around Ollie's bolts.' The verdict is drawn on real ground: 'Unlimited push, real rock: the rock gives around Ollie's bolts. ... Ollie leaves at just under light speed'. The sentence 'Unbreakable footing is set aside for this test: they mean to break the ground, so the energy it would take back goes into it.' is missing. Every other test shows it in this situation. My preset sweep shows it for both-bolted 'both shove', Catch, Collide, the arm wrestle and the Wrestle throw at unlimited strength. The cause is the check at L4498. duoFacts sets models.ground for this shove only when `!isFinite(sA.F)` (round 1's one-sided clash). L4498 evaluates it at eff.p.hi, which is 10^34 kg-force at an unlimited dial, so models.ground comes out false. This is the same class of bug as round 2's code-3: factsTo
+EXPECTED: At an unlimited dial the all-out probe is unlimited strength, as round 2 decided (factsTop). The box should then say that Unbreakable footing is set aside, because the bay and the ceiling are on real rock. That is the page's rule on every tab and in every other two-player test.
+FIX: `if (eff.real && factsTop('real').models.ground) read.append(...)` (factsTop is already defined two lines above). Verified in a scratch build (fixtry/): the sentence appears and the rest of the box is unchanged. Also add this state (defaults, not unbreakable:false) to the round 2 block's code-3 check.
+VERDICT: Reproduced on the branch page (54fadb8). State {duoOpen:true, duoAction:'wrestle', wrestleMove:'shove', inf:true, oAnchor:'bolted'}, all four powers at their defaults (Unbreakable footing on), 'Break the ground' preset. The box draws the test on real ground: 'On real ground, courtesy ceiling: lifting 10³¹ t'. The verdict reads 'Unlimited push, real rock: the rock gives around Ollie’s bolts ... Ollie leaves at just under light speed'. But the box leaves out 'Unbreakable footing is set aside for this test: they mean to break the ground, so the energy it would take back goes into it.' With both bolted, the same box does show it, and so does Collide with Rex bolted. Cause: app.html:4498 still te
+BETTER FIX: src/app.html L4498: `if (eff.real && factsTop('real').models.ground) read.append(el('p', { text: 'Unbreakable footing is set aside for this test: ...' }));`. In test/shots.js round 2 block (code-3 check), add the same shove with the defaults ({duoOpen:true, duoAction:'wrestle', wrestleMove:'shove', inf:true, oAnchor:'bolted'}), pick 'ground', and require /set aside for this test/ and /On real ground, courtesy ceiling/.
+
+##### code-2 minor | real= True minor
+TITLE: Several round 2 fixes have no covering check: reverting them passes the whole test/shots.js and powers.js, though PR #33 says 'page reverts of round 2's fixes each fail it'
+EVIDENCE: I reverted each round 2 hunk (git diff -U1 4ea43ef 54fadb8, one hunk at a time) and applied page mutants, rebuilt each, and ran shots.js's round 1 and round 2 blocks, the 'Pull says where' check and the two-player plaster loop (work/pagemut.sh, runblock.js). For the first four below I also ran the full test/shots.js: 70 ok, 0 problems and exit 0 each. These changes are page-only, so powers.js is unaffected.
+(1) Hunk h16 removes `out.caught = !!t.catch`. The default partner toss (caught after rising 10 m) then says, in both the plaster note and the courtesy ceiling: 'They take their own recoil: the toss is Rex's own push, so its push back goes to the endless ocean and none of it reaches the ground.' The catch is lost. The branch says 'the toss and the catch are Rex's own pushes ... nothing reaches the ground to shake it'. Only the no-catch direction is checked (1e15 kg).
+(2) Pull item, friction branch replaced by the bolted text. The default friction pull, all-out, then reads 'It is his own body's momentum, 33,000 kg·m/s over 1.84 s (bolted, nothing caps it: the quicker the pull, the harder his feet push).'
+(3) pullOnWhy's bolted branch replaced by the friction text. A bolted bus at
+EXPECTED: Round 2's record (copy-1, code-1 outcomes) and the PR description say each round 2 fix fails a check when reverted. Each fix that changes what the page says should have a check that fails without it, as the other round 2 hunks do.
+FIX: Add these to the round 2 block. The default partner toss with the plaster preset must contain 'the toss and the catch are Rex's own pushes'. The default friction pull's .happens must contain '(his grip caps it: his footing' and must not contain 'bolted, nothing caps it'. A bolted bus at the default dial with the plaster preset must contain 'Bolted, nothing caps it' and must not contain 'His grip caps it'. The page text must contain 'A pull’s counts only with They take their own recoil on' and must not contain 'the lab counts neither'. The pull hazard list must contain 'Ground shaking: from his own steps only' with the power on and 'not counted with They take their own recoil off' with it off
+VERDICT: Reproduced independently. I built four page mutants, each reverting one round 2 fix, and ran the whole test/shots.js on each, one at a time. Every run gave 70 ok, 0 problems, exit 0. I also probed each mutant page and confirmed it shows the wrong text the fix removed. (1) Without `out.caught = !!t.catch`, the default partner toss (with a catch) says 'the toss is Rex’s own push ... none of it reaches the ground' instead of 'the toss and the catch are Rex’s own pushes'. The round 2 block checks only the no-catch toss. (2) The Pull item's friction branch replaced by the bolted text: the default friction pull all-out says '(bolted, nothing caps it: the quicker the pull, the harder his feet push)
+BETTER FIX: Add to the round 2 block of test/shots.js: (a) load {duoOpen:true, duoAction:'catch', cObj:'partner'}, pick 'plaster', and require /the toss and the catch are Rex’s own pushes/; (b) load {action:'pull'}, pick 'allout', and require .happens to match /\(his grip caps it: his footing, [\d.,]+ kN, is the most his steps can push with\)/ and not /bolted, nothing caps it/; (c) load {action:'pull', obj:'bus', anchor:'bolted'}, pick 'plaster', and require /Bolted, nothing caps it, so a quick, hard pull shakes the ground/ and not /His grip caps it/; (d) require the page text to match /A pull’s counts only with They take their own recoil on/ and not /the lab counts neither/; (e) require the pull's .haz-list to read /Ground shaking: from his own steps only/ with the power on and /Ground shaking: not c
+
+##### code-3 minor | real= True minor
+TITLE: README 'What moved', Pull: 'On friction ... there is no ceiling either way' is false for heavy loads on loose sand, and the bolted figures cover the car only, while other loads move a lot in both directions
+EVIDENCE: Scratch work/pullceil2.js runs main's engine and this branch's side by side. Settings: RESTRAINT.plan('pull'), all four powers on, 3,000 kg bodies, near 5 m, goal 10 s, ceiling and presets in kg-force.
+Friction, sand, default dial (90,718 kg-force): the locomotive's ceiling goes from 75,006 (plaster) to none and its rattle preset from 45,429 to never. The C-17 goes from 75,006/45,626 to none/never, and the 777 from 75,006/49,962 to none/never. On main the rope's pull back on the ground set these; now it goes to the ocean. At a 10^6 kg dial, the 777's rattle preset on asphalt (154,191) and gravel (196,575) becomes never.
+Bolted, default dial, concrete: new low ceilings for a person (none → 5,837), a motorcycle (none → 11,773), a piano (none → 31,056) and the 511 kg bar (none → 33,136). The bus and semi rattle presets go from 68,498 and 88,015 to never.
+Bolted, default dial, sand: the semi goes from 81,075 to none, the locomotive and C-17 from 75,985 to none, and the 777 from 75,657 to none.
+Bolted, 10^6 kg dial, concrete: the semi goes from 439,680 to none, the locomotive from 412,851 to none, the bus from 372,281 to 613,293, and the piano from 792,494 to 31,099.
+The README gives on
+EXPECTED: 'What moved' is the owner's record of what changed against main. It should not state a general rule ('no ceiling either way' on friction) that the engine contradicts. It should also say that the bolted pull's ceiling now depends strongly on the load: light loads get much lower ceilings, and heavy loads lose theirs.
+FIX: Reword the Pull bullet along these lines: 'On friction his steps are capped by his grip, so the shaking stays tiny. Where main's ceiling came from the rope's pull back (heavy loads on loose sand: the locomotive, C-17 and 777 at about 75,000 kg-force at the default dial), there is now none. Bolted, the load sets the pace, so light loads get low ceilings (at the default dial: a person 5,800, a piano 31,000, a car 86,000 kg-force), while heavy ones lose theirs (the semi on sand: 81,000 to none).' Mirror the change in PR decision 4.
+VERDICT: Reproduced with main's engine (960fdfa) and the branch's side by side, through RESTRAINT.planNow('pull'), as the page plans it: comic, all four powers on, 3,000 kg Rex, near 5 m, goal 10 s. I also checked three states on both rendered pages. README 'What moved', Pull bullet: 'On friction it stays tiny (a car ... 0.011 mm/s ...), and there is no ceiling either way.' Read against main, as the section heading says, that is false on loose sand. At the default dial, main's friction pull had a plaster ceiling of 75,006 kg-force for the locomotive, C-17 and 777 (page: 'Courtesy ceiling: 83% (lifting 75.2 t)' for the locomotive). The branch has none. Their rattle presets (45,429 / 45,626 / 49,962 kg
+BETTER FIX: README.md 'What moved', Pull bullet, replace 'On friction it stays tiny (...), and there is no ceiling either way.' with: 'On friction his grip caps his steps, so the shaking stays tiny (a car pulled all-out at the default dial: 0.011 mm/s at 5 m, against main's 0.005). Where main's ceiling came from the rope's pull back, there is now none: on loose sand at the default dial the locomotive, C-17 and 777 had a plaster ceiling of about 75,000 kg-force, and those and the tank had a rattle preset of 45,000–50,000.' After the car figures, add: 'Bolted, the load sets the pace, so the ceiling now depends strongly on the load. Light loads get low ceilings (default dial, concrete: a person about 5,800 kg-force, a piano 31,000, the car 86,000; lower on sand), and heavy ones lose theirs (on sand the s
+
+##### copy-readme-ceiling-comes-back minor | real= True minor
+TITLE: README says the bolted pull's courtesy ceiling 'comes back' / exists 'again' at the default dial, where main had none
+EVIDENCE: What moved: 'Bolted, the load now sets the pace (...), and nothing caps his steps, so the courtesy ceiling comes back from them: about 86,000 kg-force at the default dial (95%; `main` had none, with its rattle preset at 88,000 kg-force), and about 86,000 kg-force at a 10⁶ kg dial too (8.6%; `main` 479,000 kg-force ...)'. Review history: '...so the bolted pull has a courtesy ceiling again (about 86,000 kg-force at the default dial)'. Engine, RESTRAINT.planNow('pull', ctx({anchor:'bolted'}), {obj: car, target 10, near 5}) at 90,718.474 kg-force: main gives ceiling by null (none; rattle preset 88,015 kg-force, plaster never); the branch gives ceiling by 'plaster' below 86,133 kg-force (rattle 15,841, plaster 86,506). At 10⁶ kg main had 478,902 kg-force. At 4ea43ef (round 1) the default-dial bolted pull had none either. So at the default dial nothing 'comes back': the same sentence says main had none.
+EXPECTED: At the default dial the bolted pull gains a courtesy ceiling it never had (none on main and at 4ea43ef); only at the 10⁶ kg dial did main have one (479,000 kg-force, from the rope). The README should not say it 'comes back' or exists 'again' at the default dial.
+FIX: What moved: '...and nothing caps his steps, so the bolted pull now has a courtesy ceiling from them: about 86,000 kg-force at the default dial (95%; `main` had none there, with its rattle preset at 88,000 kg-force), and about 86,000 kg-force at a 10⁶ kg dial (8.6%; `main` 479,000 kg-force, 48%, from the rope).' Review history: '...so the bolted pull has a courtesy ceiling from his steps (about 86,000 kg-force at the default dial, where `main` had none).'
+VERDICT: Reproduced in my own clone with main (960fdfa), round 1 (4ea43ef) and the branch (54fadb8) side by side. On main, a bolted pull with the power on at the default dial has no courtesy ceiling (rattle preset 88,015 kg-force, plaster never). Main had a ceiling only at a 10^6 kg dial: plaster at 481,060 kg-force, about 479,000 just under it. Round 1 had no ceiling at either dial. The branch has a ceiling from his steps at both dials (plaster about 86,500 and 86,300; the ceiling sits just under at about 86,000), and its rattle preset is 15,841 at both. So at the default dial the ceiling is new, not something that comes back. The README's 'What moved' says 'the courtesy ceiling comes back from them
+BETTER FIX: README.md 'What moved', Pull bullet: replace 'and nothing caps his steps, so the courtesy ceiling comes back from them: about 86,000 kg-force at the default dial (95%; `main` had none, with its rattle preset at 88,000 kg-force), and about 86,000 kg-force at a 10⁶ kg dial too (8.6%; `main` 479,000 kg-force, 48%, from the rope)' with 'and nothing caps his steps, so they set a courtesy ceiling: about 86,000 kg-force at the default dial (95%; `main` had none there, with its rattle preset at 88,000 kg-force), and about 86,000 kg-force at a 10⁶ kg dial too (8.6%; `main` 479,000 kg-force, 48%, from the rope)'. Review history, round 2 entry: replace 'so the bolted pull has a courtesy ceiling again (about 86,000 kg-force at the default dial)' with 'so the bolted pull has a courtesy ceiling from his
+
+##### copy-pull-version-history-phrase minor | real= True minor
+TITLE: The page tells readers the lab ignores a pull's shaking 'as before the power existed', a reference to the lab's version history that a reader can't parse and that reads as a claim about canon
+EVIDENCE: State {action:'pull', ownRecoil:false} (and every-power-off, friction or Bolted), any effort. The 'Where each hazard starts' list reads: 'Ground shaking: not counted with They take their own recoil off (as before the power existed).' With Bolted on, the effort box reads: '...With They take their own recoil off the lab doesn't count a pull's ground shaking (as before the power existed), so a quick, hard pull may shake the ground more than the effort box says.' The card reads: 'With it off the lab counts no pull's shaking, as before the power existed: ...'. git history: the pull had no shake model before commit 9340a1c (pull request B, which added the power), so the phrase means 'as in an older version of this page'. On the page nothing explains that. In canon the power is part of who Rex and Ollie are (CLAUDE.md, 'Default powers'), so 'before the power existed' can be read as a claim that there was a time without it. The phrase appears in every powers-off pull view: 15 of my 30 dumped pull views with ownRecoil off.
+EXPECTED: Reader-facing text should say what the lab does and why, not which version of the lab it matches. The owner's standard asks for plain copy a general reader can follow and for no unsupported canon claims.
+FIX: Drop the parenthetical in all three places, or replace it with the reason: 'Ground shaking: not counted with They take their own recoil off (a steady load the lab doesn't judge).' / '...the lab doesn't count a pull's ground shaking, so a quick, hard pull may shake the ground more than the effort box says.' / card: 'With it off the lab counts no pull's shaking: ...'. Engine and data.js comments can keep it.
+VERDICT: Reproduced on the rendered page. The parenthetical shows in every pull view with the power off. It is in the effort box when bolted, in the 'Where each hazard starts' list ('Ground shaking: not counted with They take their own recoil off (as before the power existed).'), and in the courtesy-ceiling card, which is on every view. 'git log -S' shows round 2 (54fadb8) introduced it. Main's copy for the same state just said 'the lab counts a pull's ground shaking only with They take their own recoil on', with no such reference. The phrase means 'as the lab did before the ownRecoil switch was added' (pull request B), which is development history a page reader has never seen and can't parse. It is 
+BETTER FIX: src/app.html pullNoShake, bolted branch: '...With They take their own recoil off the lab doesn’t count a pull’s ground shaking, so a quick, hard pull may shake the ground more than the effort box says.' Hazard list (line ~3778): move === 'pull' ? ': not counted with They take their own recoil off.' src/static-data.js card: 'With it off the lab counts no pull’s shaking: his footing takes the rope’s pull back as a steady load...'. Then run build-data.py and build.js to regenerate data.js and dist. Code comments in engine.js and app.html may keep the phrase. test/shots.js copy-3's regex ends at 'ground shaking', so it still matches.
+
+##### copy-card-bolted-pull-fraction-of-second minor | real= True minor
+TITLE: The courtesy-ceiling card says a bolted pull with the power off 'all-out takes a fraction of a second', with no qualifier; at low dials it takes seconds
+EVIDENCE: Card text: 'With it off the lab counts no pull's shaking, as before the power existed: his footing takes the rope's pull back as a steady load over seconds, or his bolts do over the pull, which all-out takes a fraction of a second, so a quick bolted pull may shake the ground more than it says.' Engine, P.pull(ctx({anchor:'bolted', ownRecoil:false, F: kg·g}), obj): at the page's default dial a car takes 0.312 s (true there). At a 3,000 kg dial a car takes 1.72 s, a piano 1.60 s and a bus 2.96 s; at 10,000 kg a bus takes 1.60 s. The Pull tab itself gives the real time ('over the 1.72 s the pull takes all-out' at 3 t), and README Known limits qualifies it ('0.31 s for a car at the default dial'). Only the card states it as a rule.
+EXPECTED: A card that explains the model should not state a dial-dependent figure as a rule. The bolted pull's all-out time depends on the dial and the load: a fraction of a second at the page's default dial, seconds at a few tonnes.
+FIX: '...or his bolts do over the pull, which all-out can take only a fraction of a second (0.31 s for a car at the page's default dial), so a quick bolted pull may shake the ground more than it says.'
+VERDICT: Reproduced, and the problem is wider than the finding says: the card's claim fails even at the page's default dial. The card 'The courtesy ceiling and the not-so-heroic presets' always shows the same text, and it says a bolted pull with the power off 'all-out takes a fraction of a second'. The engine (P.pull, bolted, ownRecoil off) gives, at the default dial (90,718 kg-force), times of 0.26 to 0.94 s for the light Pull-tab objects. Heavy ones that are also on the Pull tab take longer: locomotive 2.06 s, C-17 2.08 s, Boeing 777 2.37 s. At a 3,000 kg dial a car takes 1.72 s, a bus 2.96 s and a semi 5.40 s. The Pull tab itself prints 'over the 2.06 s the pull takes all-out' for the locomotive, 
+BETTER FIX: src/static-data.js card: '...or his bolts do over the pull, which all-out can be quick (0.31 s for a car at the page’s default dial; about 2 s for a locomotive, and longer at a low dial), so a quick bolted pull may shake the ground more than it says.' Then rebuild data.js and dist. README.md line 144, the same clause: 'over the pull, which all-out can take only a fraction of a second (0.31 s for a car at the default dial; 2.1 s for a locomotive)'.
+

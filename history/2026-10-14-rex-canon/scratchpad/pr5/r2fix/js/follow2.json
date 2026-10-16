@@ -1,0 +1,91 @@
+{
+ "r2code-N01-drag-double-count": [
+  [
+   "src/engine.js",
+   ": x === Infinity ? Infinity : x - arrive <= 1e-9 * x ? 0 : x - arrive);",
+   ": x);"
+  ]
+ ],
+ "r1-ES-drag-twice": [
+  [
+   "src/engine.js",
+   ": x === Infinity ? Infinity : x - arrive <= 1e-9 * x ? 0 : x - arrive);",
+   ": x);"
+  ]
+ ],
+ "r2code-N40-catch-not-arrival": [
+  [
+   "src/engine.js",
+   "              arrive = Math.max(tbJ(L.catch.Ecatch), L.vArrive > 0 ? keFromV(L.vArrive, ob.m) : 0);",
+   "              arrive = 0;"
+  ]
+ ],
+ "r1-ES-catch-power": [
+  [
+   "src/engine.js",
+   "} else if (reaches && C.ownRecoil && L.catch) {",
+   "} else if (reaches && L.catch) {"
+  ]
+ ],
+ "r1-ES-catch-thrower": [
+  [
+   "src/engine.js",
+   "              add(whoC, 'catch', L.catch.Ecatch);\n              arrive",
+   "              add(whoT, 'catch', L.catch.Ecatch);\n              arrive"
+  ]
+ ],
+ "r2copy-F-copy2-card": [
+  [
+   "src/static-data.js",
+   "so it doesn’t shake the ground. Where they stand still, the push back itself carries almost no energy. But with this power on, three things their own moves free go to the endless ocean too, and the Shimmer tile counts them: a catch’s energy (the game of catch and the partner toss; canon: a catch is absorbed) and, in Collide’s charge, the hit’s freed energy (the one hit takes it in) and the charger’s own stop, whose motion goes to his source with its push back. Nothing else their moves free is this power’s to take back: a punch’s or clap’s blast is Silent strike’s, the ground a stomp would break is Unbreakable footing’s, and a throw’s energy stays in what is thrown. An incoming hit",
+   "so it doesn’t shake the ground; it carries almost no energy, since they don’t move. An incoming hit"
+  ]
+ ],
+ "r1-F-copy2-card": [
+  [
+   "src/static-data.js",
+   "so it doesn’t shake the ground. Where they stand still, the push back itself carries almost no energy. But with this power on, three things their own moves free go to the endless ocean too, and the Shimmer tile counts them: a catch’s energy (the game of catch and the partner toss; canon: a catch is absorbed) and, in Collide’s charge, the hit’s freed energy (the one hit takes it in) and the charger’s own stop, whose motion goes to his source with its push back. Nothing else their moves free is this power’s to take back: a punch’s or clap’s blast is Silent strike’s, the ground a stomp would break is Unbreakable footing’s, and a throw’s energy stays in what is thrown. An incoming hit",
+   "so it doesn’t shake the ground; it carries almost no energy, since they don’t move. An incoming hit"
+  ]
+ ],
+ "r2copy-F-copy4-share-sentence": [
+  [
+   "src/app.html",
+   "        + (tb.parts.drag > 0 ? ' The shimmer (the Shimmer tile) counts their power’s ' + pctAir(share) + ' share of what real air would take from this same throw at the full drag' + (tb.parts.passenger > 0 ? ', less what is still in their landing, which Safe passenger takes back' : '') + ': ' + fmtSI(tb.parts.drag, 'J') + '. That is not what their power cancels along the flight it actually flies, which slows less than in real air.'\n          : tb.parts.passenger > 0 ? ' The shimmer (the Shimmer tile) counts what real air would have taken from them once, inside their landing, which Safe passenger takes back.' : '') + handSay);",
+   "        + handSay);"
+  ]
+ ],
+ "r1-F-copy4-share-sentence": [
+  [
+   "src/app.html",
+   "        + (tb.parts.drag > 0 ? ' The shimmer (the Shimmer tile) counts their power’s ' + pctAir(share) + ' share of what real air would take from this same throw at the full drag' + (tb.parts.passenger > 0 ? ', less what is still in their landing, which Safe passenger takes back' : '') + ': ' + fmtSI(tb.parts.drag, 'J') + '. That is not what their power cancels along the flight it actually flies, which slows less than in real air.'\n          : tb.parts.passenger > 0 ? ' The shimmer (the Shimmer tile) counts what real air would have taken from them once, inside their landing, which Safe passenger takes back.' : '') + handSay);",
+   "        + handSay);"
+  ]
+ ],
+ "r2copy-F-realair-card": [
+  [
+   "src/static-data.js",
+   "The drag counted is the share their power takes back (the Air resistance absorbed slider) of what real air would have taken from the same throw: one more flight at the full drag, from the energy that leaves his own gravity well. Where that flight comes down, it is the energy lost on the way; where real air would never bring it down, the drag on its way out (it leaves with the rest of its energy); past 1% of light speed, all of its energy, an upper bound. It is not the drag along the drag-free path, which the Throw tab also gives:",
+   "The drag counted is the share their power takes back (the Air resistance absorbed slider) of what real air would have taken from the same throw (one more flight at the full drag; all of its energy where real air would never bring it down), not the drag along the drag-free path, which the Throw tab also gives:"
+  ]
+ ],
+ "r1-F-code2-card": [
+  [
+   "src/static-data.js",
+   "The drag counted is the share their power takes back (the Air resistance absorbed slider) of what real air would have taken from the same throw: one more flight at the full drag, from the energy that leaves his own gravity well. Where that flight comes down, it is the energy lost on the way; where real air would never bring it down, the drag on its way out (it leaves with the rest of its energy); past 1% of light speed, all of its energy, an upper bound. It is not the drag along the drag-free path, which the Throw tab also gives:",
+   "The drag counted is the share their power takes back (the Air resistance absorbed slider) of what real air would have taken from the same throw (one more flight at the full drag; all of its energy where real air would never bring it down), not the drag along the drag-free path, which the Throw tab also gives:"
+  ]
+ ],
+ "page-stage-infinity-in-tile": [
+  [
+   "src/app.html",
+   "    const jT = (J) => (!isFinite(J) ? 'unbounded' :",
+   "    const jT = (J) => (!isFinite(J) ? fmtSI(J, 'J') :"
+  ],
+  [
+   "src/app.html",
+   "      if (!isFinite(b.E)) return (o.duo ? NAME[w] + ' takes in unbounded energy' : 'Unbounded energy taken in') + ', from ' + partsOf(b) + ': at unlimited strength there is no finite figure.';\n",
+   ""
+  ]
+ ]
+}

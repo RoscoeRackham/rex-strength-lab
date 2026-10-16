@@ -1,0 +1,13 @@
+const REPO = '/tmp/claude-0/-home-user-rex-strength-lab/be83ea46-0fb6-5f45-86e4-061daa8f7429/scratchpad/review-pr5-r1/verify-code/repo/rex-strength-lab';
+const P = require(REPO + '/src/engine.js'); global.window = {}; require(REPO + '/src/data.js'); const D = window.DINO_DATA;
+const LAD = require(REPO + '/src/ladder.js');
+const g = P.K.g;
+const R3 = P.makeBody(Object.assign({ build: 'rex' }, P.DEFAULT_BODIES.rex)), O3 = P.makeBody(Object.assign({ build: 'ollie' }, P.DEFAULT_BODIES.ollie));
+const conc = D.surfaces.find(s => s.id === 'concrete');
+const DEF = { airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true, safePassenger: true, noKnockback: true };
+const c9 = (F, body, x) => Object.assign({ F, mode: 'comic', body: body || R3, surface: conc, anchor: 'friction' }, DEF, x || {});
+const obj = (id) => D.objects.find((x) => x.id === id);
+const PE = (m, h) => m * (P.K.GM / P.K.R_E - P.K.GM / (P.K.R_E + h));
+const glow = (J) => LAD.glow(J, D.energyRefs);
+const sig = (x, k) => Number(x).toPrecision(k || 5);
+module.exports = { REPO, P, D, LAD, g, R3, O3, conc, DEF, c9, obj, PE, glow, sig };

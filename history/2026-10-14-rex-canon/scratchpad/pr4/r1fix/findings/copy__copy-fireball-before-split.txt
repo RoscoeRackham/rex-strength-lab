@@ -1,0 +1,46 @@
+## id
+copy-fireball-before-split
+
+## severity
+minor
+
+## title
+The 1 km fireball verdict gives 3.44 TJ and 3.63 TJ and points 'below' to a split the page never shows
+
+## location
+rex-strength-lab/src/app.html legVerdict fireball 'before' branch (line ~2919); the split item (line ~3000) runs only when fb.kind !== 'before'
+
+## evidence
+State {duoOpen:true,duoAction:'catch',cObj:'baseball',cStyle:'hard',logKg:14,keepForm:false,airAbsorb:0.5,cLogD:3}, all-out. Verdict: '… what hits him 1 km away is a blast carrying up to 3.44 TJ, the heat made in the air (its motion as it reaches him is taken back: below). Never knocked back: it doesn’t move Ollie. Its momentum (1 million kg·m/s) goes to the endless ocean, and stopping it frees 3.63 TJ where he stands.' Nothing below gives the motion figure. The only mention is the blast caption '(the fireball’s heat; its motion at Ollie is taken back)'. Engine catchLeg at 1,000 m: kind 'before', E = Ehere 3.63 TJ, Egap 3.44 TJ, Earr 192 GJ, knockAbsorbed.E 192 GJ.
+
+## expected
+The view should reconcile its two figures: of the 3.63 TJ freed where he stands, 3.44 TJ is real heat and 192 GJ of motion is taken back.
+
+## fix
+Allow the 'Stopping it at Ollie frees …' item for kind 'before' when knockAbsorbed is set (fb.Egap and fb.Earr are both defined), or state the 192 GJ in the verdict itself instead of 'below'.
+
+## VERDICT
+### id
+copy-fireball-before-split
+
+### real
+true
+
+### severity
+minor
+
+### reasoning
+Reproduced. For a fireball formed before it reaches the catcher ('before'), the verdict gives a blast 'carrying up to 3.44 TJ' and then 'stopping it frees 3.63 TJ'. It points to 'below' for the motion that is taken back, but catchEnvItems skips its 'Stopping it at … frees …' split when fb.kind === 'before'. Nothing below gives the 192 GJ. Only the blast caption and the math repeat, without a number, that the motion is taken back. The two figures on the view are never reconciled.
+
+### reproduction
+1. `node catchall.js ../repo/rex-strength-lab/dist/index.html '{"duoOpen":true,"duoAction":"catch","cObj":"baseball","cStyle":"hard","logKg":14,"keepForm":false,"airAbsorb":0.5,"cLogD":3}'`, then grep for 192, 'motion' and 'below'. Matches:
+   - the verdict: "…a blast carrying up to 3.44 TJ, the heat made in the air (its motion as it reaches him is taken back: below)… stopping it frees 3.63 TJ where he stands."
+   - the caption: "(the fireball’s heat; its motion at Ollie is taken back)"
+   - the math line, with no figure
+   - no 192 GJ anywhere
+2. Engine `P.catchLeg(rex, ollie{noKnockback}, baseball, 1000, 'hard')`: kind 'before', Ehere 3.633e12, Egap 3.442e12, Earr 1.918e11, knockAbsorbed.E 1.918e11.
+3. In src/app.html line 2992, `if (fb.kind !== 'before' && isFinite(fb.Ehere))` gates the split.
+
+### better_fix
+In catchEnvItems, change the gate to `if ((fb.kind !== 'before' || fb.knockAbsorbed) && isFinite(fb.Ehere))`, so the Never knocked back split ('…3.44 TJ of it is heat already made in the air on the way: that is real. The rest, 192 GJ, is its motion…') shows for 'before' too. Or say the 192 GJ in the verdict and drop 'below'.
+

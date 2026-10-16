@@ -1,0 +1,10 @@
+const which = process.env.WHICH || 'repo';
+const base = __dirname + '/' + which + '/rex-strength-lab/src/';
+const P = require(base + 'engine.js'); global.window = global.window || {}; require(base + 'data.js'); const D = window.DINO_DATA;
+const g = P.K.g;
+const rex = () => P.makeBody(Object.assign({ build: 'rex' }, P.DEFAULT_BODIES.rex));
+const ollie = () => P.makeBody(Object.assign({ build: 'ollie' }, P.DEFAULT_BODIES.ollie));
+const surf = (id) => D.surfaces.find((s) => s.id === id);
+const obj = (id) => D.objects.find((o) => o.id === id);
+const ctx = (o = {}) => Object.assign({ F: 90718.474 * g, mode: 'comic', body: rex(), surface: surf('concrete'), anchor: 'friction', airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true }, o);
+module.exports = { P, D, g, rex, ollie, surf, obj, ctx };

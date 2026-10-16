@@ -1,0 +1,40 @@
+## id
+duo-one-sided-paradox-nothing-moves
+
+## severity
+minor
+
+## title
+Both at once and the shoving match at unlimited strength with one bolted: 'Nothing moves', though the bolted one's own push on the standing one has an answer
+
+## location
+rex-strength-lab/src/engine.js:2171-2174 (shoveBoth returns the paradox with vA = vB = 0 if either shove is a paradox) and :2022-2023 (pushMatchOwn's paradox check returns before the other push)
+
+## evidence
+Node, unlimited strength, Rex bolted on Unbreakable footing, power on. P.shoveBoth gives clash 'paradox', vA 0, vB 0, stalled true. P.shove(Rex, Ollie) with the same contexts (Rex's shove on standing Ollie) gives vB = 299,792,458 m/s and slideB Infinity. P.pushMatch gives 'paradox'; at 10⁹ kg it gives 'shovedOff' at 3,993 m/s and at 10¹² kg 126,260 m/s. Page, Wrestle > Shove > Both at once, unlimited, Rex bolted: #34 said 'Ollie leaves at light speed (to the last digit)' with 'At this effort someone flies off faster than sound'. #35 says 'Nothing moves: Rex is bolted to ground that their power holds ...' and the effort box has no harm at that effort. The shoving match at unlimited with Rex bolted also says 'Nothing moves'.
+
+## expected
+Only Ollie's push into Rex's bolts has no answer. Rex's real unlimited push on a standing Ollie still shoves him off at just under light speed (the Shove tab says so for the same shove, and the finite runs approach it). The verdict shouldn't state that nothing moves, and the search should keep the harm.
+
+## fix
+In shoveBoth, when only rT (or only rP) is the paradox, keep the other shove's motion (out.vB = rP.vB, slideB, EB) and mark only the held side as having no answer. In pushMatchOwn, when only one push meets a hold without limit, still apply apart() to the unheld one (netOn = Infinity → light speed) and flag the held side. Reword the verdicts ('Ollie's push on Rex's bolts has no physical answer; Rex's own push shoves Ollie off at just under light speed').
+
+## VERDICT
+### id
+duo-one-sided-paradox-nothing-moves
+
+### real
+true
+
+### severity
+minor
+
+### reasoning
+Reproduced. In Both at once and the shoving match there are two pushes. Only the one into the bolted body (Ollie's into Rex's bolts on ground that holds) meets a hold without limit. Rex's unlimited push on a standing Ollie has an answer, and the lab gives it on the Shove tab: Ollie leaves at light speed. Finite strengths approach that answer: in the shoving match Ollie is shoved off at 3,993 m/s at 10^9 kg and 126 km/s at 10^12 kg; in Both at once he reaches 0.966 c at 10^20 kg. At unlimited strength, shoveBoth returns the paradox with vA = vB = 0 as soon as either shove is a paradox, and pushMatchOwn returns before the other push. The page then says 'Nothing moves' and the effort box loses the harm that pull request 3's page showed ('At this effort someone flies off faster than sound'). Canon's ruling makes only the held side's collision unanswerable; it gives no ground for 'Nothing moves'. Minor because it needs unlimited strength and a bolted wrestler.
+
+### reproduction
+Engine at unlimited strength, Rex bolted on Unbreakable footing, power on. P.shoveBoth(R,O) gives {clash:'paradox', oneSided:true, vA:0, vB:0, stalled:true}. P.shove(R,O) gives vB 299792458, slideB Infinity. P.pushMatch(R,O) gives outcome 'paradox'. The same at 1e9 kg gives 'shovedOff', vB 3993 m/s; at 1e12, vB 126260 m/s; at 1e20, vB 2.98e8 m/s. shoveBoth at 1e20 gives Ollie 2.895e8 m/s. Page {duoOpen:true,duoAction:'wrestle',wrestleMove:'shove',wrestleWho:'both',anchor:'bolted',inf:true}, all-out. New: 'Nothing moves: Rex is bolted to ground that their power holds ...', with no 'At this effort' harm line. Base: 'Ollie leaves at light speed (to the last digit) ...' and 'At this effort someone flies off faster than sound'. The Shove tab (wrestleWho 'rex') on the new page: 'Ollie leaves at light speed (to the last digit).' The shoving match at inf: 'Nothing moves ...'. At logKg 12: '... he shoves Ollie off at 126 km/s ... At this effort Ollie is shoved off faster than sound'.
+
+### better_fix
+engine.js shoveBoth: return the paradox only when both shoves are paradoxes. When exactly one is (say rT, the shove into the bolted one), keep the other shove's motion: `if (rP.clash === 'paradox' !== (rT.clash === 'paradox')) { const mv = rP.clash === 'paradox' ? rT : rP; ... out.vB/slideB/EB from mv for the unheld one, vA = 0 for the held one, out.heldNoAnswer = 'A' or 'B'; }`. pushMatchOwn: instead of returning early, treat the held side as not moved (netOn = 0) and run apart() on the unheld one with netOn = Infinity (light speed), flagging out.heldNoAnswer. Page verdict: 'Ollie's push on Rex's bolts has no physical answer; Rex's own unlimited push shoves Ollie off at just under light speed.' The search then keeps the faster-than-sound harm.
+

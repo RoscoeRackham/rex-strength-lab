@@ -1,0 +1,37 @@
+Re-check of review round 3 of pull request 2 (their own recoil): fix the 5 confirmed findings
+
+The re-check reviewed def9546 with one lens (fixes: each round 3 fix reverted
+in a scratch copy): 5 findings, all confirmed. Record:
+research/reviews/canon-2-round3-recheck.json.
+
+- fixes-pull-legs-vs-sprint, as the session lead decided: the Sprint tab's
+  rule. Engine pull(), with They take their own recoil on: aFeet =
+  min(footing, the strength he uses) / his mass, as the sprint's bolted
+  push-off (round 3's 1.4x is the rule for legs carrying weight up). A load
+  lighter than about 3,000 kg goes at his own body's pace: the bolted car
+  all-out at the default dial takes 0.26 s (round 3: 0.22 s), at exactly the
+  sprint's 296.5 m/s2; a light load's least disruptive pull is 61 kg-force.
+  The pull still has no leg-speed limit or air drag, so over 10 m it stays a
+  little quicker than his sprint (0.26 s against 0.27 s): the page says so
+  where it shows, and README decision 7 and Known limits record it. Page, card,
+  README (decision 7, What moved recomputed against main, Known limits, review
+  history), powers.js 5d (cap = the strength he uses, all-out pace = the
+  sprint's) and shots.js updated. Powers-off results unchanged.
+- fixes-unlimited-bolted-steps-say-grip: legsSet keys the bolted case on
+  state.anchor; at unlimited strength his legs' push is 'unbounded', not
+  '∞ N' (and the friction item's 'of the ∞ N he could' too).
+- fixes-friction-math-line-unchecked, fixes-friction-walk-sentence-unchecked:
+  covering checks in the shots.js round 3 block; each fails with its text
+  reverted.
+- fixes-pr33-description-stale: the drafted description (scratchpad) updated
+  for the session lead to post; round 3's record no longer says decision 4
+  'is reworded'.
+
+README: the pull request 2 section reads as a closed record (three rounds and
+a re-check; what is left for pull request 4). Engine mutants: 40 of 41 fail
+test/powers.js (the 41st is the known equivalent); 34 page reverts each fail
+a review block. Full line: calibration 117, presence 383, shots 71 ok and 0
+problems, powers 151/151, ladder 562/562, sweep 7,776 contexts, 0 problems.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_0136zsmhtj8TCY2T2u8SKMVX

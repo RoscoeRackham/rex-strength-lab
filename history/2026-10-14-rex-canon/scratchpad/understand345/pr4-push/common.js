@@ -1,0 +1,16 @@
+global.window = {};
+const M = '/tmp/claude-0/-home-user-rex-strength-lab/be83ea46-0fb6-5f45-86e4-061daa8f7429/scratchpad/main-tree/rex-strength-lab';
+const P = require(M + '/src/engine.js');
+require(M + '/src/data.js');
+const D = window.DINO_DATA;
+const g = P.K.g;
+const surf = (id) => D.surfaces.find((x) => x.id === id);
+const obj = (id) => D.objects.find((x) => x.id === id);
+const rex = P.makeBody({ build: 'rex', ...P.DEFAULT_BODIES.rex }), ollie = P.makeBody({ build: 'ollie', ...P.DEFAULT_BODIES.ollie });
+const ON = { airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true };
+const OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoil: false };
+const DIAL = 100 * 907.18474 * g;
+const ctxOf = (F, extra, body) => Object.assign({ F, mode: 'comic', body: body || rex, surface: surf('concrete'), anchor: 'friction' }, extra || {});
+const pair = (F, extra, FO, extraO) => [ctxOf(F, extra, rex), ctxOf(FO == null ? F : FO, Object.assign({}, extra, extraO || {}), ollie)];
+const sig = (x, n) => (typeof x === 'number' ? Number(x).toPrecision(n || 4) : String(x));
+module.exports = { P, D, g, surf, obj, rex, ollie, ON, OFF, DIAL, ctxOf, pair, sig, M };

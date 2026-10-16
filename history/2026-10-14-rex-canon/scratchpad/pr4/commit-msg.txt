@@ -1,0 +1,41 @@
+Pull request 4 of BRIEF-canon.md, engine: contests and Never knocked back
+
+The engine part of item 4 (SPEC decisions 1-11 and 13). Every new branch runs
+only with They take their own recoil on (or, for the fireball, the catcher's
+noKnockback), so with every power off every engine result is unchanged (the
+15,533 powers-off cases in test/powers.js part 1). noKnockback is not in
+anyPower.
+
+- Collide's charge: a charger who takes his own recoil doesn't slow. The one
+  hit is carried along at his speed (splat) or sent off at 2v/(1+v^2/c^2)
+  (bounce); the charger's source supplies the one hit's gain plus his footing's
+  share ('carried', carry { v, vB, pGain, footJ, supplied, stop, ... }). Held
+  without limit by their powers (bolted on Unbreakable footing; landed on from
+  above where it holds him up): 'paradox' with unbounded: true. Bolted on real
+  rock: carried with the rock torn out. The hit's freed energy is absorbed by
+  default (hitAbsorbed) and real with o.meanIt. The Truly immovable thought
+  experiment is unchanged. Knocked back in a bounce, the footing no longer books
+  a ground share its speeds ignore (pull request 2's Known limit).
+- The steady push: the pusher's own footing doesn't cap his push; one-sided
+  paradox and rockGives; no rock dipole for a pusher who takes his own recoil.
+- The shoving match: each pushes with the effort he uses: 'bothShoved' (with a
+  motion model over the shove's stroke), 'walkOut' at the Pull tab's pace,
+  'shovedOff' for a bolted winner. Both at once: each shoved by the other's
+  shove.
+- Arm wrestling: reading B (each pad, or standing each one's feet, holds the
+  other's press); the brief's reading A leaves the other's real press with
+  nothing on his side carrying it, so it is physically incoherent. A pin never
+  breaks the table with the power on; standing, his own press isn't capped by
+  his own footing.
+- Never knocked back: the fireball's push in the game of catch doesn't move the
+  catcher; its momentum goes to the endless ocean (knockAbsorbed), bolted too;
+  the air's heat is real, the motion freed at him taken back unless meant.
+
+test/powers.js: section 8 (contests and Never knocked back, the brief's
+figures at 3,000 kg) replaces the 5d "unchanged" check; section 6's ledger
+covers Collide with the charger's source and the fireball with Never knocked
+back; 6b's Both-at-once case moves to section 8. The page (app.html, cards,
+README, shots.js) is the next stage.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_0136zsmhtj8TCY2T2u8SKMVX

@@ -1,0 +1,11 @@
+const { P, D, L, body, ctx } = require('./setup.js');
+console.log('glow?', typeof (L && L.glow));
+const A = ctx(1e9, body('rex')), B = ctx(1e8, body('ollie'));
+const r = P.armWrestle(A, B);
+console.log('outcome', r.outcome, 'tableBreaks', r.tableBreaks, 'pin', r.pin && { v: r.pin.v, M: r.pin.M, E: r.pin.E, t: r.pin.t }, 'crater', r.crater, 'toGround', r.toGround);
+const Aoff = Object.assign({}, A, { unbreakable: false }), Boff = Object.assign({}, B, { unbreakable: false });
+const r2 = P.armWrestle(Aoff, Boff);
+console.log('unbreakable off: crater', r2.crater, 'pin E', r2.pin && r2.pin.E);
+const tb = P.RESTRAINT.takenBack('arm', r, { A, B, whoA: 'rex' });
+console.log('takenBack arm', tb.E);
+console.log(Object.keys(window).filter(k=>/ladder|Ladder/i.test(k)));

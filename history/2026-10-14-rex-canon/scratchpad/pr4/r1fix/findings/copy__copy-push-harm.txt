@@ -1,0 +1,59 @@
+## id
+copy-push-harm
+
+## severity
+major
+
+## title
+Collide's steady push drives Rex back with a net 872 kN, but the effort box says nothing in the test does harm, even all-out
+
+## location
+rex-strength-lab/src/app.html duoFacts, Collide push branch (lines ~4608-4617: out.harm is set only for rock damage, never for the one pushed being driven back); the shared courtesy sentence 'Nothing in this test does harm, even all-out … A steady push is a slow load, not a blow' (line ~4870)
+
+## evidence
+Default state {duoOpen:true,duoAction:'collide',colMode:'push'} at 1280 px. Verdict: 'Ollie wins. He pushes with 890 kN and Rex can hold only 17.7 kN, so Rex is driven back.' Effort box: 'All-out: no cap needed. Nothing the lab checks in this test can do harm here … Courtesy ceiling: none. Nothing in this test does harm, even all-out, with the nearest people and buildings 5 m away. A steady push is a slow load, not a blow.' Engine: standoff(Ollie, Rex) gives outcome 'forceWins', DA 889,644 N, HB 17,652 N, so the net push on Rex is 872 kN, 291 m/s² (about 30 g); over the shove's 2.44 m stroke that is 37.7 m/s. The Wrestle tab's same 890 kN push against a 17.7 kN hold (pushMatch, Rex bolted) sends Ollie off at 37.6 m/s and 109 m, and that tab counts it as harm (its ceiling is 5.47 t). The unlimited case is worse. With {colMode:'push',inf:true} and Rex just standing (the default footing), the verdict says Rex 'is shoved away at just under light speed with unlimited energy', and the same view says 'Nothing in this test does harm with the nearest people and buildings 5 m away.' On pull request 3's page the default was a dead heat at 17.7 kN, so the claim was true there. This pull request made it false. The Two-player effort card also says the checks include 'no one sliding past the nearest people (pushed, …)'.
+
+## expected
+The page should not claim no harm when its own verdict has Rex driven back by about 30 g, or flung at light speed. The Known limit ('doesn't follow the motion') should show on the page, not just in the README.
+
+## fix
+In duoFacts for the push, when r.ownRecoil && r.outcome === 'forceWins', either set a harm (for example, with an unlimited push: 'Rex is shoved away at just under light speed'), or mark the harm unmodelled and show a gap note instead of 'Nothing … does harm': 'The lab doesn't follow how far the one driven back goes (see Wrestle's shoving match, which does)'. The simplest physics fix is to reuse pushMatchOwn's shoved-off motion for the one driven back.
+
+## VERDICT
+### id
+copy-push-harm
+
+### real
+true
+
+### severity
+major
+
+### reasoning
+Reproduced. In the steady push, with They take their own recoil on, Ollie's 890 kN beats Rex's 17.7 kN hold (engine standoff gives outcome 'forceWins'). The effort box still says nothing in the test does harm, and it says so all-out and at unlimited strength, where the verdict itself has Rex 'shoved away at just under light speed'. duoFacts' push branch (src/app.html about line 4608) sets harm only for the rock giving. It never checks the one driven back, but the Two-player effort card lists 'no one sliding past the nearest people (pushed, …)'. Wrestle's shoving match counts the same push as harm: Rex bolted shoves Ollie off at 37.6 m/s, and that view's ceiling is 5.47 t. The README's Known limit ('doesn't follow the motion') explains the gap, but the page says 'no harm' instead of 'not modelled'. The flaw already existed on pull request 3's page with a bolted pusher, which is not the default. This pull request makes it the push mode's default view.
+
+### reproduction
+Scripts are in /tmp/claude-0/-home-user-rex-strength-lab/be83ea46-0fb6-5f45-86e4-061daa8f7429/scratchpad/review-pr4-r1/verify-copy/work. Branch 238f570, built clean.
+
+1. `node harness.js ../repo/rex-strength-lab/dist/index.html '[{"duoOpen":true,"duoAction":"collide","colMode":"push"}]' allout`
+   - verdict: "Ollie wins. He pushes with 890 kN and Rex can hold only 17.7 kN, so Rex is driven back…"
+   - effort: "Courtesy ceiling: none. Nothing in this test does harm, even all-out, with the nearest people and buildings 5 m away."
+   - At Least disruptive: "All-out: no cap needed. Nothing the lab checks in this test can do harm here".
+2. With inf:true:
+   - verdict: "…so he is shoved away at just under light speed with unlimited energy."
+   - effort: "Nothing in this test does harm with the nearest people and buildings 5 m away."
+3. Engine: `P.standoff(ctx(ollie), ctx(rex))` gives DA 889,640, HB 17,652, outcome forceWins, net 871,990 N. That is 290.7 m/s², and 37.7 m/s over the 2.44 m stroke.
+4. Base add3dcf, same state: "Dead heat. Ollie pushes with 17.7 kN and Rex holds 17.7 kN".
+
+### better_fix
+In engine.js standoff, when ownRecoil && outcome === 'forceWins', add the one pushed's motion with pushMatchOwn's stroke rule:
+- d = min(A.strokes.throw, B.strokes.throw)
+- net = DA − HB
+- t from xOfT
+- vB = momentumToV(net·t, mB)
+- slideB = slideStop(vB, footing R, B); Infinity when DA is unbounded
+
+In duoFacts' push branch add `out.harm = out.harm || slides(r.slideB);`.
+
+Cheaper copy-only fix: while forceWins with ownRecoil, replace 'Nothing in this test does harm' with a gap note: 'The lab doesn't follow how far the one driven back goes here (Wrestle's shoving match does), so it can't say this push is harmless.'
+

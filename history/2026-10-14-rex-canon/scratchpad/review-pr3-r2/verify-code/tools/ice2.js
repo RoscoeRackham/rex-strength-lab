@@ -1,0 +1,24 @@
+const fs = require('fs'), path = require('path'), { pathToFileURL } = require('url');
+const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+const repo = process.argv[2] || path.join(__dirname, '..', 'repo');
+(async () => {
+  const body = fs.readFileSync(path.join(repo, 'rex-strength-lab/dist/index.html'), 'utf8');
+  const f = path.join(__dirname, 'page2-' + path.basename(path.dirname(repo)) + '.html');
+  fs.writeFileSync(f, '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body>' + body + '</body></html>');
+  const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' });
+  const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  await page.goto(pathToFileURL(f).href);
+  const settle = async (id) => { for (let i = 0; i < 160; i++) { const b = await page.evaluate((x) => /working it out|Working out/i.test(document.getElementById(x).textContent), id); if (!b) return; await page.waitForTimeout(250); } throw new Error('busy'); };
+  const load = async (st) => { await page.evaluate((s) => localStorage.setItem('rex-lab-v1', JSON.stringify(s)), st); await page.reload(); await page.waitForTimeout(800); await settle('bay'); };
+  const pick = async (sel, v) => { await page.selectOption(sel, v); await page.waitForTimeout(300); await settle('bay'); };
+  const paras = () => page.evaluate(() => Array.from(document.querySelectorAll('#bay .effort-read p, #bay .effort-read li')).map((n) => n.textContent.replace(/\s+/g, ' ')));
+  await load({ saveV: 3, action: 'throw', obj: 'person', surface: 'ice' });
+  console.log('--- ice, SP on, least:'); (await paras()).forEach((p) => console.log('  * ' + p));
+  await load({ saveV: 3, action: 'throw', obj: 'person', surface: 'ice', safePassenger: false });
+  console.log('--- ice, SP off, least:'); (await paras()).forEach((p) => console.log('  * ' + p));
+  await load({ saveV: 3, action: 'throw', obj: 'person', surface: 'ice', logKg: 9.15 }); await pick('#effort', 'allout');
+  console.log('--- ice, 10^9.15 all-out:'); (await paras()).forEach((p) => console.log('  * ' + p));
+  await load({ saveV: 3, action: 'throw', obj: 'person', surface: 'concrete', logKg: 9.15 }); await pick('#effort', 'allout');
+  console.log('--- concrete, 10^9.15 all-out:'); (await paras()).forEach((p) => console.log('  * ' + p));
+  await browser.close();
+})();

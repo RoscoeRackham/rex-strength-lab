@@ -1,0 +1,20 @@
+Pull request 5 of BRIEF-canon.md, engine: the energy taken back and the shimmer's level
+
+RESTRAINT.takenBack(move, r, o) adds up the energy their powers take back in the
+run a tab shows, by part (drag, footing, soft landing, silent strike, a hit's
+freed energy, the charger's own stop, a passenger's landing, a catch, growth)
+and by who takes it in (Rex or Ollie). The drag part is the share absorbed of
+what real air would take from the same throw, counted once where the arrival
+is taken back too. It adds no key to any result; unlimited runs are reported
+as unbounded, and no figure is NaN.
+
+EnergyLadder.glow(J, refs) maps that energy to the shimmer's level on a log
+scale from a car crash (a flicker) to the dinosaur-killer (the flare), with a
+faint flicker fading out at Usain Bolt's energy; the anchors are ladder rungs
+found by key, and the steps are worded with compare().
+
+Tests: test/powers.js section 9 (29 checks) and test/ladder.js section 9
+(16 checks). The page doesn't call either yet; dist/index.html is rebuilt.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_0136zsmhtj8TCY2T2u8SKMVX

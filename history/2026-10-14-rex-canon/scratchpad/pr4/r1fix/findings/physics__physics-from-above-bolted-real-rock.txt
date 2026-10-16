@@ -1,0 +1,52 @@
+## id
+physics-from-above-bolted-real-rock
+
+## severity
+minor
+
+## title
+Collide from above onto a bolted Rex on real ground: the hold drops to the rock's tear load, lower than an unbolted Rex's bearing, and the page says he is 'torn loose with a plug of rock' while driven down
+
+## location
+rex-strength-lab/src/engine.js:2684-2686 (rockGives = cB.anchor === 'bolted', regardless of direction)
+
+## evidence
+Engine, Ollie jumps (default dial, 16.57 m/s), Unbreakable footing off: Rex standing → hold 1,520,667 N (bearing), footJ 49,710, supplied 99,420. Rex bolted → hold 696,773 N (tear), footJ 26,445, supplied 76,155, same 0.55 m depth. Page (bolted case): chips 'Rex torn loose with a plug of rock' and 'Rex driven into the ground'; 'What holds Rex: the rock around his bolts 697 kN'. With the power off the same bolted Rex from above is 'held up by his bolts' (README).
+
+## expected
+Landed on from above, a bolted body still stands on the same ground: its bearing (1.52 MN) holds him, and the bolts can only add to it. A downward push drives him and his bolts into the ground. It doesn't tear the bolts out with a plug sideways. Bolting should not halve the ground's share.
+
+## fix
+Use rockGives (and Hhold = tear) only when horiz; from above use the bearing hold (hb for an unbolted stance, or bearing + tear), and show the 'driven into the ground' chip only.
+
+## VERDICT
+### id
+physics-from-above-bolted-real-rock
+
+### real
+true
+
+### severity
+minor
+
+### reasoning
+Reproduced. carriedHit sets rockGives = cB.anchor === 'bolted' whatever the direction (engine.js:2684). So with Ollie landing on a bolted Rex from above on real ground, the hold becomes the rock's tear load, 696,800 N. That is below the 1,521,000 N bearing an unbolted Rex gets on the same ground. Bolting therefore lowers the ground's share (footJ 26,450 vs 49,710; Eground 631 kJ vs 824 kJ). The page also shows 'Rex torn loose with a plug of rock' for a straight-down push, alongside 'Rex driven into the ground'. A downward push drives the body and its bolts into the ground. The feet still bear on the same ground, so bolts can only add to the bearing, not replace it with a sideways pull-out load. With the power off the engine has the same bolted Rex 'held' from above ('held up by his bolts' in the README). No decision covers the bolted, from-above case with the power on. Decision 6 covers only being driven in, and the 'rock tears, plug of rock' wording in decision 3 and 'What changed' is the sideways case. This only affects the jump or stomp-launch with Rex bolted and Unbreakable footing off, hence minor.
+
+### reproduction
+`node f5.js` (Ollie jumps at the default dial, Unbreakable footing off):
+- standing, power on: carried, hold 1,521,000 ('bearing'), rockGives false, F 1,310,000, footJ 49,710, supplied 99,420, depth 0.5503, Eground 823,700
+- bolted, power on: carried, rockGives true, tear 696,800, footJ 26,450, supplied 76,160, depth 0.5503, Eground 631,000
+- bolted, power off: 'held', held true
+
+Page (Collide, jump, anchor bolted, unbreakable false, All-out):
+- chips: 'Rex torn loose with a plug of rock' and 'Rex driven into the ground'
+- tiles: 'Ollie's source supplies 76,000 kg·m/s Rex's gain, 49,700 kg·m/s, plus what the rock around his bolts hands the ground'
+- happens: '...here the rock around his bolts, which tears out at about 697 kN on the concrete slab.'
+
+### better_fix
+At engine.js:2684, `const rockGives = cB.anchor === 'bolted' && horiz`.
+
+From above, take the bearing hold for a bolted body too: `const Hhold = rockGives ? tear : (isFinite(hb.H) ? hb.H : Math.max(0, hb.anc.Nmax - mB * K.g))`. hb.anc is already the friction stance for a bolted body. Add `+ groundTear(cB)` if the bolts' share is to count as extra.
+
+On the page, show only the 'driven into the ground' chip from above. Have the 'What holds Rex' bar name the ground's bearing, not the rock round his bolts.
+

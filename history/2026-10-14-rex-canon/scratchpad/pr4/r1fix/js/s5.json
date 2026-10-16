@@ -1,0 +1,7 @@
+[
+ ["push plaster", {"duoAction":"collide","colMode":"push"}, "plaster", null],
+ ["push ground", {"duoAction":"collide","colMode":"push"}, "ground", null],
+ ["pm rex bolted real plaster", {"duoAction":"wrestle","anchor":"bolted","unbreakable":false}, "plaster", null],
+ ["pm plaster", {"duoAction":"wrestle"}, "plaster", null],
+ ["pm both bolted plaster", {"duoAction":"wrestle","anchor":"bolted","oAnchor":"bolted"}, "plaster", null]
+]

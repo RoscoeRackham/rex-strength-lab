@@ -1,0 +1,40 @@
+## id
+duo-card-five-powers
+
+## severity
+minor
+
+## title
+The Their powers card still says five powers are on by default, though Never knocked back is on by default too
+
+## location
+rex-strength-lab/src/static-data.js:20 (and data.js assumptions 'Their powers' card)
+
+## evidence
+Card: 'so five powers are on unless the reader turns them off: Air resistance absorbed, Things keep their form, Unbreakable footing, They take their own recoil and Safe passenger.' Later the same card says 'Never knocked back (one switch each, both on by default ...)'. CLAUDE.md: 'Never knocked back is a default power for each of them, with a switch each, both on by default'. The summary line also counts the switches in 'default powers on', which shows only when both switches are on.
+
+## expected
+The count and the list should include Never knocked back, as the Their powers panel's own intro does ('and so is Never knocked back, one switch each').
+
+## fix
+Change the sentence to list Never knocked back (one switch each) among the powers on unless turned off, or drop the count.
+
+## VERDICT
+### id
+duo-card-five-powers
+
+### real
+true
+
+### severity
+minor
+
+### reasoning
+Reproduced. The Their powers card still has pull request 3's count, 'so five powers are on unless the reader turns them off', and lists five. Never knocked back (two switches) is now also on by default (canon; decision 12), and the same card says so later. The Their powers panel intro on the page counts it ('and so is Never knocked back, one switch each'). The count and the list are now wrong.
+
+### reproduction
+grep in src/static-data.js (and the same in src/data.js and dist/index.html): 'so five powers are on unless the reader turns them off: Air resistance absorbed, Things keep their form, Unbreakable footing, They take their own recoil and Safe passenger.' Identical on canon-3-passenger, so not updated. The same card later says: 'Never knocked back (one switch each, both on by default; ...)'. app.html:325, the panel intro: '... Safe passenger and Air resistance absorbed are on unless you turn them off ..., and so is Never knocked back, one switch each.'
+
+### better_fix
+static-data.js, Their powers card: 'so six powers are on unless the reader turns them off: Air resistance absorbed, Things keep their form, Unbreakable footing, They take their own recoil, Safe passenger and Never knocked back (one switch each).' Rebuild data.js and dist.
+

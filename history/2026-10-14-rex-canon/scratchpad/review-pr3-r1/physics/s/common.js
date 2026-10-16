@@ -1,0 +1,18 @@
+const REPO = process.env.REPO || '/tmp/claude-0/-home-user-rex-strength-lab/be83ea46-0fb6-5f45-86e4-061daa8f7429/scratchpad/review-pr3-r1/physics/repo/rex-strength-lab';
+global.window = {};
+const P = require(REPO + '/src/engine.js');
+require(REPO + '/src/data.js');
+const D = window.DINO_DATA;
+const g = P.K.g;
+const surf = (id) => D.surfaces.find((x) => x.id === id);
+const obj = (id) => D.objects.find((x) => x.id === id);
+const R0 = P.makeBody(Object.assign({ build: 'rex' }, P.DEFAULT_BODIES.rex));
+const F0 = 100 * 907.18474 * g;
+const ON = { airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true };
+const OFF4 = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoil: false };
+const M = P.RESTRAINT.MOVES;
+const cOf = (F, x) => Object.assign({ F, mode: 'comic', body: R0, surface: surf('concrete'), anchor: 'friction' }, ON, x || {});
+const oOf = (x) => Object.assign({ obj: obj('person'), angle: 45, near: 5, body: R0, surface: surf('concrete') }, ON, x || {});
+const planOf = (F, x, sp, extra) => P.RESTRAINT.planNow('throw', cOf(F, Object.assign({ safePassenger: sp }, x)), Object.assign({ near: 5, target: 30, obj: obj('person'), angle: 45, safePassenger: sp, silentStrike: false, softLanding: false }, extra || {}));
+const sig = (x, n) => Number(x).toPrecision(n || 4);
+module.exports = { P, D, g, surf, obj, R0, F0, ON, OFF4, M, cOf, oOf, planOf, sig };

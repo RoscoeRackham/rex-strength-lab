@@ -1,0 +1,42 @@
+## id
+copy-push-bars-390
+
+## severity
+minor
+
+## title
+At 390 px the steady push's force-bar label is cut off mid-word
+
+## location
+rex-strength-lab/src/app.html bayCollide steady push logBars rows (line ~3462): label X + '’s footing (not needed: his push back goes to his source)'
+
+## evidence
+State {duoOpen:true,duoAction:'collide',colMode:'push'} at 390×844, light and dark. The <text> element 'Ollie’s footing (not needed: his push back goes to his source)' extends to x = 454 px inside an svg with overflow hidden, so it shows as 'Ollie’s footing (not needed: his push back goe'. Screenshot taken. The base page has no clipped label in this view.
+
+## expected
+Bar labels should fit at 390 px.
+
+## fix
+Shorten it to X + '’s footing (not needed)', or move the reason into the tile that already says it ('his push back goes to his source, so his feet don’t cap it').
+
+## VERDICT
+### id
+copy-push-bars-390
+
+### real
+true
+
+### severity
+minor
+
+### reasoning
+Reproduced. At 390 px, the steady push's force-bar label, a new string in this pull request, runs 105 px past the right edge of its svg (overflow hidden), so it is cut mid-word. The page doesn't scroll sideways, so test/shots.js doesn't catch it. The base page has no clipped label in this view.
+
+### reproduction
+1. `node clip.js ../repo/rex-strength-lab/dist/index.html '{"duoOpen":true,"duoAction":"collide","colMode":"push"}' 390 light new` gives [{"txt":"Ollie’s footing (not needed: his push back goes to his source)","right":454,"svgRight":349,"over":105,"ov":"hidden"}], scrollW 0.
+2. The same run on ../base gives [].
+3. Screenshot work/clip-390-dark-new.png shows "Ollie’s footing (not needed: his push back goe".
+
+### better_fix
+Shorten the bar label in bayCollide's push logBars to X + '’s footing (not needed)'. The tile already says 'his push back goes to his source, so his feet don’t cap it'.
+

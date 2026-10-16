@@ -1,0 +1,697 @@
+{
+ "mutants-engine": [
+  {
+   "id": "R-code1-leg-step-sum",
+   "file": "src/engine.js",
+   "find": "return Math.max(0, Math.min(f.dragE, isFinite(Eend) ? E0 - Eend : E0));",
+   "replace": "return f.dragE;",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "R-code2-throw-all",
+   "file": "src/engine.js",
+   "find": "return f0.air ? Math.max(0, Math.min(E1, f0.air.E)) : 0;",
+   "replace": "return r.Eobj;",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "R-code2-fly-tally",
+   "file": "src/engine.js",
+   "find": "const split = (dK < 1 || !!o.tally) && Cd > 0;",
+   "replace": "const split = dK < 1 && Cd > 0;",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "R-code2-toss-all",
+   "file": "src/engine.js",
+   "find": ": Math.max(0, Math.min(Ev, f0.dragE));",
+   "replace": ": Ev;",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "R-code2-leg-all",
+   "file": "src/engine.js",
+   "find": "if (f.escaped || f.orbit || f.timedOut) return Math.max(0, Math.min(E0, f.dragE));",
+   "replace": "if (f.escaped || f.orbit || f.timedOut) return keFromV(v0, obj.m);",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "R-code2-dragLoss0",
+   "file": "src/engine.js",
+   "find": "      if (r.flight.relativistic) return r.Eobj;\n      const E1",
+   "replace": "      if (r.flight.relativistic) return r.Eobj;\n      if (r.dragLoss0 != null) return r.dragLoss0;\n      const E1",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "R-code3-from-hand",
+   "file": "src/engine.js",
+   "find": "const E1 = keFromV(r.vOut, obj.m) + tbPE(obj.m, body.releaseHeight);",
+   "replace": "const E1 = r.Eobj + tbPE(obj.m, body.releaseHeight);",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "M01-wrestle-angle-45",
+   "file": "src/engine.js",
+   "find": "tbDrag(s * realAirThrow(rr, t.obj, opt.angle || 0, A.body), arrive)",
+   "replace": "tbDrag(s * realAirThrow(rr, t.obj, 45, A.body), arrive)",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "M02-fallsback-drag",
+   "file": "src/engine.js",
+   "find": "if (!r || !r.canMove || !r.flight || r.fallsBack || !(r.v > 0)) return 0;",
+   "replace": "if (!r || !r.canMove || !r.flight || !(r.v > 0)) return 0;",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "M03-well-0",
+   "file": "src/engine.js",
+   "find": "if (L.wells && L.wells.wellDominated) { const run",
+   "replace": "if (L.wells && L.wells.wellDominated) { return 0; const run",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "M04-overshoot-rel-0",
+   "file": "src/engine.js",
+   "find": "if (L.relativistic || L.vL >= CATCHGAME.CATCH.V_FIREBALL) return keFromV(L.vL, obj.m);",
+   "replace": "if (L.relativistic || L.vL >= CATCHGAME.CATCH.V_FIREBALL) return 0;",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "M05-reach-only-caught",
+   "file": "src/engine.js",
+   "find": "const reaches = ['caught', 'slams', 'wreckage', 'cant-hold-it'].includes(L.result);",
+   "replace": "const reaches = ['caught'].includes(L.result);",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "M06-toss-slams-0",
+   "file": "src/engine.js",
+   "find": "(t.result === 'caught' || t.result === 'slams')",
+   "replace": "t.result === 'caught'",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "M07-miss-leaves",
+   "file": "src/engine.js",
+   "find": "if (person && T.safePassenger && !L.miss.leaves)",
+   "replace": "if (person && T.safePassenger)",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "M10-fullstrength",
+   "file": "src/engine.js",
+   "find": "const hard = L.style === 'hard' || !!L.fullStrength;",
+   "replace": "const hard = L.style === 'hard';",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N01-drag-double-count",
+   "file": "src/engine.js",
+   "find": ": x === Infinity ? Infinity : Math.max(0, x - arrive));",
+   "replace": ": x);",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N02-stomp-ungated",
+   "file": "src/engine.js",
+   "find": "if (A.unbreakable) add(whoA, 'footing', r.absorbed);",
+   "replace": "add(whoA, 'footing', r.absorbed);",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N03-silent-no-mach",
+   "file": "src/engine.js",
+   "find": "if (A.silentStrike && r.mach >= 1)",
+   "replace": "if (A.silentStrike)",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N04-silent-mach-gt1",
+   "file": "src/engine.js",
+   "find": "if (A.silentStrike && r.mach >= 1)",
+   "replace": "if (A.silentStrike && r.mach > 1)",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N05-jump-soft-ungated",
+   "file": "src/engine.js",
+   "find": "if (r.landing && r.landing.landed && r.landing.soft)",
+   "replace": "if (r.landing && r.landing.landed)",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N06-wrestle-footing-thrower-switch",
+   "file": "src/engine.js",
+   "find": "B.unbreakable && f.landed",
+   "replace": "A.unbreakable && f.landed",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N07-wrestle-footing-to-thrower",
+   "file": "src/engine.js",
+   "find": "add(whoB, 'footing', rr.Eimpact)",
+   "replace": "add(whoA, 'footing', rr.Eimpact)",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N08-wrestle-no-crater-gate",
+   "file": "src/engine.js",
+   "find": "&& rr.crater > 0 ?",
+   "replace": " ?",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N09-toss-ownrecoil-ungated",
+   "file": "src/engine.js",
+   "find": "const arrive = A.ownRecoil && k &&",
+   "replace": "const arrive = k &&",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N10-catch-thrower-switch",
+   "file": "src/engine.js",
+   "find": "else if (reaches && C.ownRecoil && L.catch)",
+   "replace": "else if (reaches && T.ownRecoil && L.catch)",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N11-fireball-hit-to-thrower",
+   "file": "src/engine.js",
+   "find": "arrive = add(whoC, 'hit', L.fireball.knockAbsorbed.E)",
+   "replace": "arrive = add(whoT, 'hit', L.fireball.knockAbsorbed.E)",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N12-hitsground-all",
+   "file": "src/engine.js",
+   "find": "own = !(hg.airK > 0) ? hg.E :",
+   "replace": "own = true ? hg.E :",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N13-collide-hit-to-charger",
+   "file": "src/engine.js",
+   "find": "if (r.hitAbsorbed) add(whoB, 'hit', r.hitAbsorbed.E);",
+   "replace": "if (r.hitAbsorbed) add(whoA, 'hit', r.hitAbsorbed.E);",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N14-collide-no-stop",
+   "file": "src/engine.js",
+   "find": "if (r.carry && r.carry.stop) add(whoA, 'stop', r.carry.stop.E);",
+   "replace": "",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N15-collide-any-outcome",
+   "file": "src/engine.js",
+   "find": "if (r.outcome === 'carried') {",
+   "replace": "if (true) {",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N16-growth-ignored",
+   "file": "src/engine.js",
+   "find": "if (move === 'weight') add(whoA, 'growth', opt.growE);",
+   "replace": "",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N17-throw-rel-branch",
+   "file": "src/engine.js",
+   "find": "      if (r.flight.relativistic) return r.Eobj;\n      const E1",
+   "replace": "      const E1",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N18-throw-no-cap",
+   "file": "src/engine.js",
+   "find": "Math.max(0, Math.min(E1, f0.air.E))",
+   "replace": "f0.air.E",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N19-throw-ocean-tally",
+   "file": "src/engine.js",
+   "find": "if (f0.landed) return Math.max(0, E1 - keFromV(f0.vImpact, obj.m));",
+   "replace": "if (f0.landed) return r.flight.ocean ? r.flight.ocean.E : Math.max(0, E1 - keFromV(f0.vImpact, obj.m));",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N21-leg-fast-0",
+   "file": "src/engine.js",
+   "find": "if (L.fast) return (L.miss ? L.miss.E : 0) + (L.sheath ? L.sheath.E : 0);",
+   "replace": "if (L.fast) return 0;",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N22-throw-no-share",
+   "file": "src/engine.js",
+   "find": "tbDrag(s * realAirThrow(r, ob",
+   "replace": "tbDrag(realAirThrow(r, ob",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N23-toss-no-share",
+   "file": "src/engine.js",
+   "find": "tbDrag(s * realAirToss(t, A), arrive)",
+   "replace": "tbDrag(realAirToss(t, A), arrive)",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N24-leg-no-share",
+   "file": "src/engine.js",
+   "find": "tbDrag(s * realAirLeg(L, ob), arrive)",
+   "replace": "tbDrag(realAirLeg(L, ob), arrive)",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N25-leg-drag-to-catcher",
+   "file": "src/engine.js",
+   "find": "if (s > 0) add(whoT, 'drag', tbDrag(s * realAirLeg",
+   "replace": "if (s > 0) add(whoC, 'drag', tbDrag(s * realAirLeg",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N26-leg-share-catcher",
+   "file": "src/engine.js",
+   "find": "            const s = airShare(T);",
+   "replace": "            const s = airShare(C);",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N28-tbJ-negative",
+   "file": "src/engine.js",
+   "find": "const tbJ = (x) => (typeof x === 'number' && x > 0 ? x : 0);",
+   "replace": "const tbJ = (x) => (typeof x === 'number' && x === x ? x : 0);",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N29-tbDrag-arrive-inf",
+   "file": "src/engine.js",
+   "find": "(!(x > 0) || arrive === Infinity ? 0 :",
+   "replace": "(!(x > 0) ? 0 :",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N30-lost-timedout",
+   "file": "src/engine.js",
+   "find": "if (f.escaped || f.orbit || f.timedOut) return Math.max(0, Math.min(E0, f.dragE));",
+   "replace": "if (f.escaped || f.orbit) return Math.max(0, Math.min(E0, f.dragE));",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N31-throw-inf-0",
+   "file": "src/engine.js",
+   "find": "if (!isFinite(r.Eobj)) return Infinity;",
+   "replace": "if (!isFinite(r.Eobj)) return 0;",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N32-lost-belowstop",
+   "file": "src/engine.js",
+   "find": "tbPE(obj.m, f.belowStop ? 0 : hEnd)",
+   "replace": "tbPE(obj.m, hEnd)",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N33-lost-no-crossedX",
+   "file": "src/engine.js",
+   "find": "const Eend = f.crossedX ?",
+   "replace": "const Eend = false ?",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N35-E-rex-only",
+   "file": "src/engine.js",
+   "find": "const E = by.rex.E + by.ollie.E;",
+   "replace": "const E = by.rex.E;",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N36-whoA-ignored",
+   "file": "src/engine.js",
+   "find": "const whoA = solo ? 'rex' : opt.whoA || 'rex';",
+   "replace": "const whoA = 'rex';",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N37-toss-rel-threshold",
+   "file": "src/engine.js",
+   "find": "if (t.v >= CATCHGAME.CATCH.V_FIREBALL) return throwObject(",
+   "replace": "if (t.v >= 10 * CATCHGAME.CATCH.V_FIREBALL) return throwObject(",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N38-toss-landed-ec-off",
+   "file": "src/engine.js",
+   "find": "Math.max(0, Ev - keFromV(f0.vImpact, obj.m)) : Math.max(0, Math.min(Ev, f0.dragE));",
+   "replace": "f0.dragE : Math.max(0, Math.min(Ev, f0.dragE));",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N39-passenger-not-arrival",
+   "file": "src/engine.js",
+   "find": "arrive = pl ? add(whoA, 'passenger', pl.absorbed) : 0;",
+   "replace": "arrive = pl ? (add(whoA, 'passenger', pl.absorbed), 0) : 0;",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N40-catch-not-arrival",
+   "file": "src/engine.js",
+   "find": "arrive = add(whoC, 'catch', L.catch.Ecatch);",
+   "replace": "add(whoC, 'catch', L.catch.Ecatch);",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N41-throw-PE-dropped",
+   "file": "src/engine.js",
+   "find": "const E1 = keFromV(r.vOut, obj.m) + tbPE(obj.m, body.releaseHeight);",
+   "replace": "const E1 = keFromV(r.vOut, obj.m);",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N42-leg-PE-dropped",
+   "file": "src/engine.js",
+   "find": "const E0 = keFromV(v0, obj.m) + tbPE(obj.m, L.h0);",
+   "replace": "const E0 = keFromV(v0, obj.m);",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N43-wrestle-rel-footing",
+   "file": "src/engine.js",
+   "find": "&& f.landed && !f.relativistic && rr.crater",
+   "replace": "&& f.landed && rr.crater",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N44-unbounded-flag",
+   "file": "src/engine.js",
+   "find": "b.unbounded = b.E === Infinity;",
+   "replace": "b.unbounded = false;",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  },
+  {
+   "id": "N45-weight-to-ollie",
+   "file": "src/engine.js",
+   "find": "if (move === 'weight') add(whoA, 'growth', opt.growE);",
+   "replace": "if (move === 'weight') add('ollie', 'growth', opt.growE);",
+   "cmd": "node test/powers.js --skip-off --tally-only"
+  }
+ ],
+ "mutants-page": [
+  {
+   "id": "P00-control-no-stomp-tile",
+   "file": "src/app.html",
+   "find": "      shimmerTile(tb)));\n    const footAir = taken",
+   "replace": "      null));\n    const footAir = taken",
+   "cmd": "node test/shots.js --pr5",
+   "build": true
+  },
+  {
+   "id": "P01-throw-angle-45",
+   "file": "src/app.html",
+   "find": "const tb = takenBack('throw', r, Object.assign({}, c, { obj: o, angle: state.angle }));",
+   "replace": "const tb = takenBack('throw', r, Object.assign({}, c, { obj: o, angle: 45 }));",
+   "cmd": "node test/shots.js --pr5",
+   "build": true
+  },
+  {
+   "id": "P03-wrestle-whoA-rex",
+   "file": "src/app.html",
+   "find": "whoA: nA === 'Rex' ? 'rex' : 'ollie', angle: state.wAngle",
+   "replace": "whoA: 'rex', angle: state.wAngle",
+   "cmd": "node test/shots.js --pr5",
+   "build": true
+  },
+  {
+   "id": "P04-collide-whoA-ollie",
+   "file": "src/app.html",
+   "find": "const tb = takenBack('collide', r, { A: cA, B: cB, whoA: X === 'Ollie' ? 'ollie' : 'rex' });",
+   "replace": "const tb = takenBack('collide', r, { A: cA, B: cB, whoA: 'ollie' });",
+   "cmd": "node test/shots.js --pr5",
+   "build": true
+  },
+  {
+   "id": "P05-catch-always-back",
+   "file": "src/app.html",
+   "find": "const tb = takenBack('catch', backThrow ? { a, b } : { a }, { A: cR, B: cO, whoA: 'rex', obj: o });",
+   "replace": "const tb = takenBack('catch', { a, b }, { A: cR, B: cO, whoA: 'rex', obj: o });",
+   "cmd": "node test/shots.js --pr5",
+   "build": true
+  },
+  {
+   "id": "P06-level-from-total",
+   "file": "src/app.html",
+   "find": "const gl = lad.glow(tb.by.rex.E, refs);",
+   "replace": "const gl = lad.glow(tb.E, refs);",
+   "cmd": "node test/shots.js --pr5",
+   "build": true
+  },
+  {
+   "id": "P07-collide-glow-total",
+   "file": "src/app.html",
+   "find": "out.push(unstoppableArt(tb.by.rex.E));",
+   "replace": "out.push(unstoppableArt(tb.E));",
+   "cmd": "node test/shots.js --pr5",
+   "build": true
+  },
+  {
+   "id": "P08-toss-whoA-ollie",
+   "file": "src/app.html",
+   "find": "const tb = takenBack('toss', t, { A: cR, B: cO, whoA: 'rex' });",
+   "replace": "const tb = takenBack('toss', t, { A: cR, B: cO, whoA: 'ollie' });",
+   "cmd": "node test/shots.js --pr5",
+   "build": true
+  },
+  {
+   "id": "P09-glow-linear",
+   "file": "src/app.html",
+   "find": "const gl = window.EnergyLadder.glow(J, D.energyRefs), s = gl.none ? 0 : gl.strength, a = Math.sqrt(s);",
+   "replace": "const gl = window.EnergyLadder.glow(J, D.energyRefs), s = gl.none ? 0 : gl.strength, a = s;",
+   "cmd": "node test/shots.js --pr5",
+   "build": true
+  },
+  {
+   "id": "P11-wrestle-angle-45",
+   "file": "src/app.html",
+   "find": "whoA: nA === 'Rex' ? 'rex' : 'ollie', angle: state.wAngle",
+   "replace": "whoA: nA === 'Rex' ? 'rex' : 'ollie', angle: 45",
+   "cmd": "node test/shots.js --pr5",
+   "build": true
+  },
+  {
+   "id": "P13-duo-tally-allout",
+   "file": "src/app.html",
+   "find": "const tb = takenBack('wrestleThrow', t, {",
+   "replace": "const tb = takenBack('wrestleThrow', P.throwPartner(Object.assign({}, cA, { F: fullF(cA === cB ? 'R' : (nA === 'Rex' ? 'R' : 'O')) }), cB, state.wAngle), {",
+   "cmd": "node test/shots.js --pr5",
+   "build": true
+  },
+  {
+   "id": "P14-catch-leg-a-only",
+   "file": "src/app.html",
+   "find": "const tb = takenBack('catch', backThrow ? { a, b } : { a }, { A: cR, B: cO, whoA: 'rex', obj: o });",
+   "replace": "const tb = takenBack('catch', { a }, { A: cR, B: cO, whoA: 'rex', obj: o });",
+   "cmd": "node test/shots.js --pr5",
+   "build": true
+  },
+  {
+   "id": "P16-tile-only-rex",
+   "file": "src/app.html",
+   "find": "if (!tb || !(tb.E > 0)) return null;",
+   "replace": "if (!tb || !(tb.by.rex.E > 0)) return null;",
+   "cmd": "node test/shots.js --pr5",
+   "build": true
+  },
+  {
+   "id": "P20-header-follows-duo",
+   "file": "src/app.html",
+   "find": "if (!duo) setGlow($('#hero-glow'), shimmerSeen ? shimmerSeen.by.rex.E : 0);",
+   "replace": "setGlow($('#hero-glow'), shimmerSeen ? shimmerSeen.by.rex.E : 0);",
+   "cmd": "node test/shots.js --pr5",
+   "build": true
+  },
+  {
+   "id": "P21-catch-same-b-dropped",
+   "file": "src/app.html",
+   "find": "const tb = takenBack('catch', backThrow ? { a, b } : { a }, { A: cR, B: cO, whoA: 'rex', obj: o });",
+   "replace": "const tb = takenBack('catch', backThrow ? { a, b: P.catchLeg(cO, cR, o, Dd, 'hard') } : { a }, { A: cR, B: cO, whoA: 'rex', obj: o });",
+   "cmd": "node test/shots.js --pr5",
+   "build": true
+  },
+  {
+   "id": "N25-on-page",
+   "file": "src/engine.js",
+   "find": "if (s > 0) add(whoT, 'drag', tbDrag(s * realAirLeg",
+   "replace": "if (s > 0) add(whoC, 'drag', tbDrag(s * realAirLeg",
+   "cmd": "node test/shots.js --pr5",
+   "build": true
+  }
+ ],
+ "mutants-page2": [
+  {
+   "id": "R-page-code2-escape-words",
+   "file": "src/app.html",
+   "find": "(real && !real.landed ? ' (real air wouldn’t bring it down: this is the drag on its way out, and it leaves with the rest of its energy)' : '')",
+   "replace": "(Math.abs(dragJ - r.Eobj) <= 1e-9 * r.Eobj ? ' (all of its energy: real air wouldn’t bring it down)' : '')",
+   "cmd": "node test/shots.js --pr5",
+   "build": true
+  },
+  {
+   "id": "R-page-code2-rel-words",
+   "file": "src/app.html",
+   "find": "if (f.relativistic) items.push(fastThrowText(r, c, o, fa) + (tb.parts.drag > 0 && isFinite(tb.parts.drag) ?",
+   "replace": "if (f.relativistic) items.push(fastThrowText(r, c, o, fa) + (false ?",
+   "cmd": "node test/shots.js --pr5",
+   "build": true
+  },
+  {
+   "id": "R-page-code4-floor-note",
+   "file": "src/app.html",
+   "find": "+ (gl.word === 'too faint to see' ? ' The lab draws no glow below ' + floorRef.short + ' (' + fmtSI(floorRef.J, 'J') + '), its floor: a proposal, not canon.' : '')",
+   "replace": "",
+   "cmd": "node test/shots.js --pr5",
+   "build": true
+  },
+  {
+   "id": "R-page-code4-effort",
+   "file": "src/app.html",
+   "find": "const tb = takenBack('throw', r, Object.assign({}, c, { obj: o, angle: state.angle }));",
+   "replace": "const cAll = Object.assign({}, c); delete cAll.use; const tb = takenBack('throw', P.throwObject(cAll, o, state.angle), Object.assign({}, cAll, { obj: o, angle: state.angle }));",
+   "cmd": "node test/shots.js --pr5",
+   "build": true
+  }
+ ],
+ "mutants-ladder": [
+  {
+   "id": "L01-tie-upper",
+   "file": "src/ladder.js",
+   "find": "if (Math.abs(lv - s.level) < Math.abs(lv - best.level)) best = s;",
+   "replace": "if (Math.abs(lv - s.level) <= Math.abs(lv - best.level)) best = s;",
+   "cmd": "node test/ladder.js"
+  },
+  {
+   "id": "L02-floor-key",
+   "file": "src/ladder.js",
+   "find": "floor: 'energy_usain_bolt_top_speed'",
+   "replace": "floor: 'energy_fastest_pitch_kinetic'",
+   "cmd": "node test/ladder.js"
+  },
+  {
+   "id": "L03-no-hold",
+   "file": "src/ladder.js",
+   "find": "const lv = Math.min(1, level);",
+   "replace": "const lv = level;",
+   "cmd": "node test/ladder.js"
+  },
+  {
+   "id": "L04-never-roughly",
+   "file": "src/ladder.js",
+   "find": "(best.rough ? 'roughly ' : 'about ')",
+   "replace": "('about ')",
+   "cmd": "node test/ladder.js"
+  },
+  {
+   "id": "L05-flicker-boundary",
+   "file": "src/ladder.js",
+   "find": "if (J < fl.J) return",
+   "replace": "if (J <= fl.J) return",
+   "cmd": "node test/ladder.js"
+  },
+  {
+   "id": "L06-strength-from-flicker",
+   "file": "src/ladder.js",
+   "find": "const strength = Math.min(1, Math.max(0, (level - floorLevel) / (1 - floorLevel)));",
+   "replace": "const strength = Math.min(1, Math.max(0, level));",
+   "cmd": "node test/ladder.js"
+  },
+  {
+   "id": "L07-held-at-flare",
+   "file": "src/ladder.js",
+   "find": "held: level > 1 });",
+   "replace": "held: level >= 1 });",
+   "cmd": "node test/ladder.js"
+  },
+  {
+   "id": "L08-roughAt-false",
+   "file": "src/ladder.js",
+   "find": "const roughAt = (e) => { const c = compare(e, refs); return !!(c.ref && c.ref.rough); };",
+   "replace": "const roughAt = (e) => false;",
+   "cmd": "node test/ladder.js"
+  },
+  {
+   "id": "L09-step-energy",
+   "file": "src/ladder.js",
+   "find": "Je = level === 0 ? fl.J : level === 1 ? fx.J : e;",
+   "replace": "Je = level === 0 ? fl.J : level === 1 ? fx.J : e * 1.5;",
+   "cmd": "node test/ladder.js"
+  },
+  {
+   "id": "L10-unbounded-strength",
+   "file": "src/ladder.js",
+   "find": "return Object.assign(out, { unbounded: true, level: 1, strength: 1,",
+   "replace": "return Object.assign(out, { unbounded: true, level: 1, strength: 0.9,",
+   "cmd": "node test/ladder.js"
+  },
+  {
+   "id": "L11-floor-boundary",
+   "file": "src/ladder.js",
+   "find": "if (J < fo.J) return",
+   "replace": "if (J <= fo.J) return",
+   "cmd": "node test/ladder.js"
+  },
+  {
+   "id": "L12-step-quarter",
+   "file": "src/ladder.js",
+   "find": "['faint glow', 0.25, 'a faint glow']",
+   "replace": "['faint glow', 0.3, 'a faint glow']",
+   "cmd": "node test/ladder.js"
+  },
+  {
+   "id": "L13-flare-step-rough-from-compare",
+   "file": "src/ladder.js",
+   "find": "rough: level === 1 ? !!fx.rough : roughAt(Je)",
+   "replace": "rough: roughAt(Je)",
+   "cmd": "node test/ladder.js"
+  },
+  {
+   "id": "L14-negative-none",
+   "file": "src/ladder.js",
+   "find": "if (!(J > 0) || !isFinite(J)) return",
+   "replace": "if (!isFinite(J)) return",
+   "cmd": "node test/ladder.js"
+  },
+  {
+   "id": "L15-floor-strength-not-0",
+   "file": "src/ladder.js",
+   "find": "if (J < fo.J) return Object.assign(out, { level, strength: 0,",
+   "replace": "if (J < fo.J) return Object.assign(out, { level, strength,",
+   "cmd": "node test/ladder.js"
+  },
+  {
+   "id": "L16-rung-by-position",
+   "file": "src/ladder.js",
+   "find": "const r = refs.find((x) => x.key === k);",
+   "replace": "const r = refs.find((x) => x.key === k) || refs[0];",
+   "cmd": "node test/ladder.js"
+  }
+ ],
+ "mutants-ladder2": [
+  {
+   "id": "L14-negative-none",
+   "file": "src/ladder.js",
+   "find": "if (!(J > 0) || !isFinite(J)) return Object.assign(out, { none: true });",
+   "replace": "if (!isFinite(J)) return Object.assign(out, { none: true });",
+   "cmd": "node test/ladder.js"
+  },
+  {
+   "id": "L01-tie-upper-check",
+   "file": "src/ladder.js",
+   "find": "if (Math.abs(lv - s.level) < Math.abs(lv - best.level)) best = s;",
+   "replace": "if (Math.abs(lv - s.level) <= Math.abs(lv - best.level)) best = s;",
+   "cmd": "node -e \"global.window={};require('./src/data.js');const L=require('./src/ladder.js');const R=window.DINO_DATA.energyRefs;const a=R.find(r=>r.key==='energy_corolla_100kmh_kinetic').J,b=R.find(r=>r.key==='energy_chicxulub_impact').J;const J=Math.pow(10,Math.log10(a)+0.125*(Math.log10(b)-Math.log10(a)));const g=L.glow(J,R);console.log(g.level,g.word);process.exit(g.word==='flicker'?0:1)\""
+  }
+ ]
+}

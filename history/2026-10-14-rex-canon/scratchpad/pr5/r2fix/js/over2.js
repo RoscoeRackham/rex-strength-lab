@@ -1,0 +1,13 @@
+global.window = {};
+const P = require('/home/user/rex-strength-lab/rex-strength-lab/src/engine.js'); require('/home/user/rex-strength-lab/rex-strength-lab/src/data.js');
+const D = window.DINO_DATA, g = P.K.g, K = P.K;
+const R3 = P.makeBody(Object.assign({ build: 'rex' }, P.DEFAULT_BODIES.rex)), O3 = P.makeBody(Object.assign({ build: 'ollie' }, P.DEFAULT_BODIES.ollie));
+const conc = D.surfaces.find((s) => s.id === 'concrete'), ob = D.objects.find((o) => o.id === 'baseball');
+const c9 = (F, body) => ({ F, mode: 'comic', body: body || R3, surface: conc, anchor: 'friction', airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true, safePassenger: true, noKnockback: true });
+const PE = (m, h) => m * (K.GM / K.R_E - K.GM / (K.R_E + h));
+const cR = c9(1e9 * g), cO = c9(1e9 * g, O3), L = P.catchLeg(cR, cO, ob, Math.pow(10, 5.5), 'hard');
+const f = P.flyTo({ v0: L.aim.vE, thetaDeg: L.aim.thetaDeg, h0: L.h0, hStop: 0, xStop: L.Dfl, Dend: L.Dfl, m: ob.m, A: ob.area, Cd: ob.Cd, CdSup: ob.CdSup });
+const E0 = P.keFromV(L.aim.vE, ob.m) + PE(ob.m, L.h0);
+console.log('vE', L.aim.vE, 'vL', L.aim.vL, 'theta', L.aim.thetaDeg, 'h0', L.h0, 'Dfl', L.Dfl, 'vArrive', L.vArrive, 'hStop', L.hStop);
+console.log('full-drag: crossedX', f.crossedX, 'hAtX', f.hAtX, 'vAtX', f.vAtX, 'dragE', f.dragE, 'landed', f.landed);
+console.log('E0', E0, 'Eend', P.keFromV(f.vAtX, ob.m) + PE(ob.m, f.hAtX), 'real', E0 - (P.keFromV(f.vAtX, ob.m) + PE(ob.m, f.hAtX)), 'KEarr', P.keFromV(L.vArrive, ob.m), 'Ecatch', L.catch.Ecatch, 'KE(vE)', P.keFromV(L.aim.vE, ob.m), 'KE(vL)', P.keFromV(L.aim.vL, ob.m));

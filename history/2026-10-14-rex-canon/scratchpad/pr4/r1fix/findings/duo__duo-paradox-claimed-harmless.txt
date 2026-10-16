@@ -1,0 +1,44 @@
+## id
+duo-paradox-claimed-harmless
+
+## severity
+major
+
+## title
+Collide's paradox: the effort box and the presets call a hit with no physical answer harmless
+
+## location
+rex-strength-lab/src/app.html, duoFacts collide charge branch (Q = 0, no ground, no slide when r.unbounded && r.outcome === 'paradox'; around line 4634) and duoEffortBox's 'Courtesy ceiling: none ...' and 'Even all-out, this test doesn't ...' text
+
+## evidence
+Collide, Ollie sprints into a bolted Rex (power on, default dial). Verdict: 'No physical answer here ... One of them has to give, and neither can, so physics has no answer.' Effort box: 'All-out: no cap needed. Nothing the lab checks in this test can do harm here ... Courtesy ceiling: none. Nothing in this test does harm, even all-out'. Windows preset: 'Even all-out, this test doesn't shatter windows 15 m away'. Houses preset: 'Even all-out, this test doesn't flatten houses 5 m away'. The jump charge (standing Rex) shows the same at every dial. Decision 3 says the paradox 'works out nothing of the hit'. The README's 'What moved' notes that with Rex bolted at a 10⁶ kg dial the plaster preset (179 t), which the same hit reached before, 'can no longer be reached'; the page now states 'Even all-out, this test doesn't shake the ground enough that plaster may crack'.
+
+## expected
+Where the hit has no physical answer, the lab can't know it is harmless. It should judge only what is real (the charge's sound barrier and the take-off's shaking) and say that the hit itself isn't judged. It should not say 'Nothing in this test does harm' or 'this test doesn't shatter windows'.
+
+## fix
+Have duoFacts flag the paradox (for example out.noAnswer = true when r.unbounded && r.outcome === 'paradox'). In duoEffortBox, replace the 'none. Nothing in this test does harm' and 'Even all-out, this test doesn't ...' lines with 'The hit has no physical answer here (canon's ruling), so the lab can't judge its harm; it judges only the charge and its take-off.' Also avoid 'no cap needed' as the reason for going all-out.
+
+## VERDICT
+### id
+duo-paradox-claimed-harmless
+
+### real
+true
+
+### severity
+major
+
+### reasoning
+Reproduced. Where the hit is the paradox, duoFacts sets Q = 0, sets no toGround and no slide, so every preset and the courtesy ceiling read 'never'. The effort box then says 'Nothing in this test does harm, even all-out', and the presets say 'Even all-out, this test doesn't shatter windows' or 'doesn't shake the ground enough that plaster may crack'. Decision 3 says the lab 'works out nothing of the hit', and canon says the hit has no physical answer, so the lab can't know that the hit is harmless. The claim matters most for the ground. With Unbreakable footing, canon has 'the push still goes in, so the ground shakes'. On pull request 3's page this same jump into a bolted Rex at a 10^6 kg dial cracked plaster at 179 t. The page now says it never does, without computing that push at all. The paradox is the default for the jump and stomp charges (the brief's Risks), so this text shows by default. Only the charge's sound barrier and Ollie's take-off are actually judged.
+
+### reproduction
+Page harness, all with the default powers:
+1) {duoOpen:true,duoAction:'collide',anchor:'bolted'}: verdict 'No physical answer here ... One of them has to give, and neither can, so physics has no answer.' Effort: 'All-out: no cap needed. Nothing the lab checks in this test can do harm here ... Courtesy ceiling: none. Nothing in this test does harm, even all-out, with the nearest people and buildings 5 m away.'
+2) The same state with the windows preset: 'Even all-out, this test doesn't shatter windows 15 m away, across a street ...'. With the houses preset: 'Even all-out, this test doesn't flatten houses 5 m away ...'.
+3) {duoOpen:true,duoAction:'collide',colSrc:'jump'} (the default standing Rex): paradox verdict, and the same 'All-out: no cap needed ... Nothing in this test does harm, even all-out'.
+4) {duoOpen:true,duoAction:'collide',anchor:'bolted',logKg:6,oLogKg:6,colSrc:'jump'} with the plaster preset. New page: 'Even all-out, this test doesn't shake the ground enough that plaster may crack 5 m away.' Base (canon-3-passenger): 'Effort: 18% of their strength (each as hard as lifting 179 t). The least effort that shakes the ground enough that plaster may crack 5 m away.'
+
+### better_fix
+In duoFacts' collide charge branch set `if (r.unbounded && r.outcome === 'paradox') out.noAnswer = true;`. In duoEffortBox, where the search never finds harm (s0.never or eff.never) and factsTop().noAnswer is set, replace 'none. Nothing in this test does harm…' and 'Even all-out, this test doesn't …' with: 'The hit has no physical answer here (canon's ruling), so the lab can't judge its harm; it judges only the charge (its speed against sound) and the charger's take-off.' Replace the head 'All-out: no cap needed. Nothing the lab checks in this test can do harm here' with 'All-out: nothing the lab can judge here (the charge and its take-off) does harm; the hit itself has no physical answer.'
+

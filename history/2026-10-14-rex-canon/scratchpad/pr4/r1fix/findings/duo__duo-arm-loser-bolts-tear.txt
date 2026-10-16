@@ -1,0 +1,45 @@
+## id
+duo-arm-loser-bolts-tear
+
+## severity
+minor
+
+## title
+Arm wrestling standing, power on: the rock around a bolted loser's bolts is tested against the winner's press, not the press that reaches him
+
+## location
+rex-strength-lab/src/engine.js:1842-1843 (out.tearA/out.tearB = (ownRecoil ? the other's press : his own) / groundTear)
+
+## evidence
+Page: Arm wrestle with Things keep their form off, Unbreakable footing off, Ollie bolted, Rex's dial at 10⁶ kg and Ollie's own strength at 100 short tons, all-out. Verdict: 'That beats Ollie's arm (224 kN): he pins Ollie in 6.9 ms.' Status: 'Ground around Ollie's bolts tears out'. Item: 'past about 697 kN it breaks up around Ollie's feet.' Engine: armWrestle gives outcome 'pin', contact 222,411 N, tearB 3.52 (= 2.45 MN / 697 kN). In the pin model the loser's arm resists with Pl (run(s, M, Pl)), and loserSlides uses Rl < Pl. The force that reaches Ollie's body and bolts is his own folding arm's 222 kN, which gives tearB 0.32 (no tear), as #34's page had it (tearB 0.319). The engine-mutant E16, which changes this line, survives powers.js and the full shots.js.
+
+## expected
+In a pin both bodies carry the loser's press (the engine's contact). In a stalemate each carries the other's equal press. A bolted loser's rock is loaded with 222 kN here and doesn't tear.
+
+## fix
+With the power on, use the press that reaches him: out.tearA = cA.anchor === 'bolted' ? (cA.ownRecoil ? Math.min(AA, AB) : AA) / groundTear(cA) : 0 (and the same for B). Add a powers.js check for a bolted loser at unequal presses.
+
+## VERDICT
+### id
+duo-arm-loser-bolts-tear
+
+### real
+true
+
+### severity
+minor
+
+### reasoning
+Reproduced. In a standing pin with the power on, the engine says the loser's arm resists with Pl and the winner's surplus spins the forearms (run(s, M, Pl); the page says 'Rex's 2.23 MN surplus over Ollie's arm spins both forearms'). Its slide checks use Pl for both bodies: loserSlides = Rl < Pl and winnerSlides = Rw < Pl. The bolted-rock check, however, uses the winner's whole press for the loser (tearB = AA / groundTear). So within one result the engine loads the loser's feet with 224 kN but his bolts' rock with 2.45 MN. The rock is shown tearing (3.52× its 697 kN) where the force that actually reaches it, 224 kN, is about a third of what tears it. In a stalemate the two presses are equal, so only unequal pins are affected. That needs Things keep their form off, a bolted loser and different strengths, hence minor.
+
+### reproduction
+Engine: Rex at F = 1e6 kg-force, Ollie bolted at 100 short tons, keepForm false, unbreakable false, ownRecoil true. P.armWrestle gives {outcome:'pin', winner:'A', AA:2451662, AB:222411, contact:222411, tableBreaks:true, tearB:3.5186, loserSlides:false, winnerSlides:true}. With ownRecoil false: tearB 0.3192. Page: {duoOpen:true,duoAction:'arm',keepForm:false,unbreakable:false,oAnchor:'bolted',logKg:6}, then Ollie's own strength set to log10(90718.474) through #o-own and #o-strength, all-out. Verdict: '... That beats Ollie's arm (224 kN): he pins Ollie in 6.9 ms.' Status: 'Ground around Ollie's bolts tears out'. Happens: 'Rex's 2.23 MN surplus over Ollie's arm spins both forearms ... past about 697 kN it breaks up around Ollie's feet.' Mutant E16 (tearA = AA/groundTear, tearB = AB/groundTear) applied in a scratch clone survives node test/powers.js --skip-off (176/176) and node test/shots.js --pr4 (exit 0).
+
+### better_fix
+engine.js armWrestle: load each set of bolts with the press that reaches him. In a pin that is the loser's press (min of the two); in a stalemate both are equal.
+```js
+out.tearA = cA.anchor === 'bolted' ? (cA.ownRecoil ? Math.min(AA, AB) : AA) / groundTear(cA) : 0;
+out.tearB = cB.anchor === 'bolted' ? (cB.ownRecoil ? Math.min(AA, AB) : AB) / groundTear(cB) : 0;
+```
+Update the comment ('tearA / tearB (bolted): the press that reaches his body: the other's in a stalemate, the loser's in a pin'), and add a powers.js check that a bolted loser at unequal presses gets tear = Pl / groundTear.
+

@@ -1,0 +1,16 @@
+const { P, g, R3, O3, ON, DIAL, ctx, sig } = require('./common');
+const run = (lab, F, o, x) => { const cO = ctx(F, O3, Object.assign({}, ON, x)), cR = ctx(F, R3, Object.assign({}, ON, x)); const r = P.collide(cO, cR, o);
+  console.log(lab, r.outcome, 'v0', sig(r.v0), r.carry ? JSON.stringify(r.carry, (k, v) => typeof v === 'number' ? sig(v) : v) : '', 'Q', sig(r.Q), 'absorbed', r.hitAbsorbed && sig(r.hitAbsorbed.E), r.after ? JSON.stringify(r.after, (k, v) => typeof v === 'number' ? sig(v) : v) : '', r.toGround ? 'toGround ' + sig(r.toGround.J) : ''); return r; };
+run('sprint splat', DIAL, { source: 'sprint' });
+run('sprint bounce', DIAL, { source: 'sprint', bounce: true });
+run('jump 1e9', 1e9 * g, { source: 'jump' });
+run('stomp 1e9', 1e9 * g, { source: 'stomp' });
+const gb = 0.001 / Math.sqrt(1 - 1e-6);
+run('set 0.1% c splat', DIAL, { source: 'set', gb });
+run('set 0.1% c bounce', DIAL, { source: 'set', gb, bounce: true });
+run('Rex bolted sprint', DIAL, { source: 'sprint' }, {});
+const cO = ctx(DIAL, O3, ON), cRb = ctx(DIAL, R3, Object.assign({}, ON, { anchor: 'bolted' }));
+console.log('bolted Rex', P.collide(cO, cRb, { source: 'sprint' }).outcome);
+const cRr = ctx(DIAL, R3, Object.assign({}, ON, { anchor: 'bolted', unbreakable: false })), cOr = ctx(DIAL, O3, Object.assign({}, ON, { unbreakable: false }));
+const rr = P.collide(cOr, cRr, { source: 'sprint' }); console.log('bolted real rock', rr.outcome, JSON.stringify(rr.carry, (k, v) => typeof v === 'number' ? sig(v) : v), sig(rr.after.splat.slide));
+const off = P.collide(ctx(DIAL, O3), ctx(DIAL, R3), { source: 'sprint' }); console.log('off', off.outcome, sig(off.h.inel.V), sig(off.after.splat.moved), sig(off.Q));

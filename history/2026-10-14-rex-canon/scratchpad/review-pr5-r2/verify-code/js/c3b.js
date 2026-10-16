@@ -1,0 +1,15 @@
+const { P, D, body, ctx } = require(process.argv[2] || './setup.js');
+const obj = (id) => D.objects.find((x) => x.id === id);
+const PE = (m, h) => m * (P.K.GM / P.K.R_E - P.K.GM / (P.K.R_E + h));
+const dial = 100 * 907.18474 * P.K.g;
+const Obig = P.makeBody({ build: 'ollie', H: 10, m: 3000 });
+const A = ctx(1, body('rex'), { ownRecoil: false }), B = ctx(1, Obig, { ownRecoil: false }); A.F = B.F = dial;
+const car = obj('car');
+const L = P.catchLeg(A, B, car, 10, 'easy');
+const tb = P.RESTRAINT.takenBack('catch', { a: L }, { A, B, whoA: 'rex', obj: car });
+console.log('result', L.result, 'h0', L.h0, 'hStop', L.hStop, 'aim', L.aim && { vE: L.aim.vE, th: L.aim.thetaDeg }, 'fullStrength', L.fullStrength);
+const f = P.flyTo({ v0: L.aim.vE, thetaDeg: L.aim.thetaDeg, h0: L.h0, hStop: L.hStop, Dend: L.Dfl, m: car.m, A: car.area, Cd: car.Cd, CdSup: car.CdSup });
+console.log('full drag: landed', f.landed, 'crossedX', f.crossedX, 'belowStop', f.belowStop, 'vImpact', f.vImpact, 'dragE', f.dragE);
+const E0 = P.keFromV(L.aim.vE, car.m) + PE(car.m, L.h0), Eend = P.keFromV(f.vImpact, car.m) + PE(car.m, 0);
+console.log('E0', E0, 'Eend(ground)', Eend, 'E0-Eend', E0 - Eend, 'Eend at hStop', P.keFromV(f.vImpact, car.m) + PE(car.m, L.hStop), 'E0-that', E0 - (P.keFromV(f.vImpact, car.m) + PE(car.m, L.hStop)));
+console.log('drag part', JSON.stringify(tb.parts));

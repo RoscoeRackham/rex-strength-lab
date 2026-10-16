@@ -1,0 +1,21 @@
+const fs = require('fs'), path = require('path'), { pathToFileURL } = require('url');
+const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+const { readResult, settle } = require('/home/user/rex-strength-lab/rex-strength-lab/test/make-page-fixture.js');
+(async () => {
+  const file = process.argv[2], body = fs.readFileSync(file, 'utf8');
+  const prev = path.join(__dirname, 'probe-pin.html');
+  fs.writeFileSync(prev, '<!doctype html><html><head><meta charset="utf-8"></head><body>' + body + '</body></html>');
+  const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' });
+  const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  await page.goto(pathToFileURL(prev).href);
+  await page.evaluate(() => localStorage.setItem('rex-lab-v1', JSON.stringify({ duoOpen: true, duoAction: 'arm' }))); await page.reload(); await page.waitForTimeout(800);
+  await settle(page, 'duo-bay');
+  await page.evaluate(() => { document.getElementById('ollie-setup').open = true; });
+  await page.click('#o-own'); await page.waitForTimeout(300);
+  await page.evaluate(() => { const s = document.getElementById('o-strength'); s.value = '4.5'; s.dispatchEvent(new Event('input', { bubbles: true })); s.dispatchEvent(new Event('change', { bubbles: true })); });
+  await page.waitForTimeout(800); await settle(page, 'duo-bay');
+  await page.selectOption('#duo-effort', 'allout'); await page.waitForTimeout(300); await settle(page, 'duo-bay');
+  const r = await readResult(page, 'duo-bay');
+  console.log(r.verdict); console.log(r.happens.join(' / '));
+  await browser.close();
+})();

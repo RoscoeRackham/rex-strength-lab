@@ -1,0 +1,39 @@
+code-1: fastball 300 m apart at 1e8 kg, a round trip, Rex's parts 
+   before {"drag":9080,"catch":3630000,"E":3640000,"thrown":3630000} 
+   after  {"drag":0,"catch":3630000,"E":3630000,"thrown":3630000}
+code-1: car 10 km apart at 1e9 kg, a round trip, Rex's parts 
+   before {"drag":8890000,"catch":7320000000,"E":7330000000} 
+   after  {"drag":0,"catch":7320000000,"E":7320000000}
+code-2: Great Pyramid straight up at 1e17 kg, all-out 
+   before {"E":804000000000000000,"Eobj":804000000000000000,"word":"roughly bright"} 
+   after  {"E":86400000000000000,"Eobj":804000000000000000,"word":"about a glow"}
+code-2: Empire State Building straight up at 1e16 kg 
+   before {"E":80400000000000000,"Eobj":80400000000000000,"word":"about a glow"} 
+   after  {"E":50900000000000000,"Eobj":80400000000000000,"word":"about a glow"}
+code-2: staff straight up at 10^12.5 kg 
+   before {"E":25000000000000,"Eobj":25000000000000,"word":"about a glow"} 
+   after  {"E":24300000000000,"Eobj":25000000000000,"word":"about a glow"}
+code-2: dense Ollie (1e6 kg) tossed hard at 1e14 kg 
+   before {"E":804000000000000,"Ev":804000000000000,"result":"escapes","word":"about a glow"} 
+   after  {"E":69800000000000,"Ev":804000000000000,"result":"escapes","word":"about a glow"}
+code-2: Empire State Building thrown hard 100 km apart at 1e16 kg (overshoots), catch real 
+   before {"E":80400000000000000,"E0":80400000000000000,"result":"overshoots"} 
+   after  {"E":55100000000000000,"E0":80400000000000000,"result":"overshoots"}
+code-3: dense Rex 1e12 kg at 10 ft, car 45 at 1e12 kg 
+   before {"E":127000,"v":19.3,"vOut":14.8,"rho":353000000000,"word":"a faint flicker"} 
+   after  {"E":24700,"v":19.3,"vOut":14.8,"rho":353000000000,"word":"a faint flicker"}
+code-3: dense Rex 1e13 kg at 10 ft, car 45 at 1e14 kg 
+   before {"E":1860000} 
+   after  {"E":844000}
+brief: car least (Throw tab default) 35000 35000 same a faint flicker
+brief: car all-out 270000 270000 same a faint flicker
+car all-out 1e9 7320000000 7320000000 DIFFERS about a faint glow
+car all-out 1e12 7320000000000 7320000000000 DIFFERS about a glow
+catch car lob 10 m (each) 49300 49300 same a faint flicker
+catch fastball 10 m (each) 3300 3300 same too faint to see
+toss gentle 10 m 322000 322000 same a faint flicker
+toss all-out 10 m 676000 676000 same about a flicker
+wrestle throw 45 dial 44900 44900 DIFFERS a faint flicker
+wrestle throw 45 1e9 (ollie) 7700000000 7700000000 same about a faint glow
+fireball 1e14 (ollie) 3210000000000 3210000000000 same about a glow
+person 30 m least 14600 14600 same a faint flicker

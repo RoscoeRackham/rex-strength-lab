@@ -1,0 +1,35 @@
+Build is clean: python3 build-data.py and node build.js leave git status empty (dist and data.js match). node test/shots.js --pr4 passes (exit 0).
+
+Collide default sprint (Ollie into Rex, 100 short tons, concrete), checked against the engine: verdict 'Ollie hits Rex at 18.1 m/s and doesn’t slow … Rex is carried along at 18.1 m/s … slides 27.3 m' (carry.v 18.146, slide 27.30, moved 27.61 = 'ends up 27.6 m away'). Source tile 55,000 kg·m/s = Rex's gain 54,400 + footing 612 (engine supplied 55,049; footJ 611.8). Energy tile '494 kJ · 120 g TNT · taken back by default (canon: it shows as his shimmer, not drawn here yet)' (Q 493,903 J). Chip 'The hit’s energy is taken back: their power'.
+
+Bounce: Rex sent off at 36.3 m/s, twice the speed, slides 102 m; source 110,000 kg·m/s (engine 108,875; all of Rex's gain, footJ 0). Energy tile 'none … a splat frees 120 g TNT, taken back by default'.
+
+Math checked: splat gain γmv, bounce gain 2γ²mv, v′ = 2v/(1+v²/c²) = c tanh 2w, splat energy (γ−1)mc² in the charger's frame (494 kJ, twice the old 250 kJ reduced-mass figure). F = Q/s = 494 kJ / 0.31 m = 1.57 MN.
+
+Set speed 0.1% c: carried at 300 km/s, source 900 million (1.8 billion in the bounce), 135 TJ taken back. The Windows preset shows 'They mean it …', the 'He means it' chip, '135 TJ · real: he means it (this preset)', and a blast block. Default set speed 100 m/s: carried 516 m, 'Nothing is harmless here', as in the README.
+
+Paradox, explained first (the verdict comes before chips, tiles and the effort box at 390 and 1280) for bolted Rex and for the 10⁹ kg jump (286 m/s) and stomp-launch (166 m/s). The canon quote in the item matches CLAUDE.md word for word. The momentum item names canon's case 'their own recoil'. The 'ground’s share it can’t bear' case is named for Unbreakable footing. The 'With They take their own recoil off … Ollie stops dead' and 'Unbreakable footing off … 697 kN plug of rock / driven 4.73 m' items match the engine. The jump's ceiling is 1,210 t.
+
+Bolted on real rock: tears at about 697 kN (groundTear 696,773 N), carried with a plug of rock, source 79,000 = 54,400 + 24,100 (697 kN × 34.7 ms), rock math line. From above on real ground, the README's reported gap shows: footJ = pGain = 49,700, and the page says 'here they are rough'.
+
+'Immovable' item (here his footing, 17.7 kN = 0.6 × 3,000 × 9.81) and the carry-duration item ('ends the carry at the end of the squash, 35 ms in … its push back, 54,400 kg·m/s'). The thought-experiment sentence appears with the power on ('sets Ollie’s own recoil aside too'), and that view's grid highlights finite momentum × unlimited hold.
+
+Four-cases grid highlighting: carried → row 1, col 0; paradox → row 1, col 1; immovable → row 0, col 1. Cell text is consistent with the engine at light speed (unstoppable; the planet goes only when the recoil isn't taken).
+
+Steady push texts: 890 kN vs 17.7 kN; force tile 'Rex’s feet pass 17.7 kN … the rest drives him back'; unlimited into bolted Rex gives the one-sided no-answer; on real rock only Rex's rock tears (697 kN); Break the ground preset at 13.5 t with rock cracking 5 cm.
+
+Shoving match: 890 kN each, 'about 50 times' 17.7 kN, 26.6 m/s, 57.2 m (engine 26.62, 57.19). At the least effort 2,571 kg-force: 2.48 m/s, 52 cm. Least disruptive 9.06 t (4.89 m < 5 m). Equal-bodies claim holds: 2,571 kg-force > 0.84 × 3,000 = 2,520, independent of mass. Bolted shove-off at 37.6 m/s, 109 m. Walk-out on gravel with Ollie at 10^3.34 kg: 2.53 s, a = (24.7 − 21.5)/3,000 ≈ 1.1 m/s². Momentum item 28,000/5,700 at the default effort matches D·t and H·t.
+
+Both at once: 21.1 m/s each, about 37 m, least 8.74 t, 'an upper bound' stated. Shove tab unchanged. Lift text says the partner doesn't resist (weight, not recoil).
+
+Arm wrestling: default dead heat at 222 kN unchanged. Pad item says 2.45 kN (Ollie at 1 t). Pin at 83 m/s, 200 kJ (README 375×, page 380× after rounding). Standing dead heat at 222 kN, both pushed off their feet. Ollie at 200 short tons presses 446 kN and pins, and his own feet slide. Unlimited cases (flung apart, one-sided and two-sided no-answer, rock gives around both sets of bolts) worded consistently.
+
+Fireball in the game of catch (baseball, fastball, 10 m, 10¹⁴ kg, air 50%): Ollie's switch on → 'doesn’t move Ollie', 1 million kg·m/s (engine 1.03 million) to the endless ocean, 3.63 TJ = 422 GJ real heat + 3.21 TJ motion taken back, blast caption names the heat only, chip 'Never knocked back: Ollie isn’t moved'. Bolted text: 'not through his bolts (the power wins over Bolted)'. Ollie's switch off → carried off at 343 m/s as before. Rex's switch off → return leg 'It carries Rex off at 343 m/s'. All powers off → the pull request 3 text plus the new 'outside any contest … switch is off' note. Courtesy ceiling 42.6 t unchanged.
+
+Switches: aria-labels 'Never knocked back: Rex' and 'Never knocked back: Ollie', a shared aria-describedby note, grouped under 'Never knocked back' next to Bolted. Layout fine at 390 light and 1280 dark. The note names the fireball/plasma case in the game of catch. The summary line reads 'default powers on', or 'never knocked back: Rex/Ollie' when one is off.
+
+Cards: Unstoppable force vs immovable object, Game of catch, Rex and Ollie and Two-player effort match the page (apart from the findings above).
+
+README Known-limit numbers: carrying the Earth (5.97 × 10²⁴ kg) to 18.1 m/s within 0.31 m takes 3.15 × 10²⁷ N. The hemisphere self-attraction 3GM²/(16R²) is 1.10 × 10²⁵ N, so the ratio is about 287 ('some 280 times'). The threshold is about 1.07 m/s ('below about 1 m/s').
+
+No horizontal page overflow and no console or page errors in 56 states at 390 px dark and the 1280 px light runs (the only clipped element is the bar label reported above). PR #35 says it is the third of four stacked pull requests, which is correct.

@@ -1,0 +1,68 @@
+## id
+physics-steady-push-bolted-real-rock
+
+## severity
+major
+
+## title
+Collide's steady push into a bolted Rex on real rock: the verdict says his bolts hold while the rock is loaded past its tear limit, contrary to the charge's rock model
+
+## location
+rex-strength-lab/src/engine.js:2387 (HB = holdOf(cB).H = Infinity for any bolted body) and 2416 (rock only reported); src/app.html:3429 (verdict 'doesn't move: his bolts hold')
+
+## evidence
+Engine: standoff(Ollie at the dial, Rex bolted, Unbreakable footing off) → DA 889,640, HB Infinity, outcome 'objectHolds', contact 889,640, rock.tear 1.2768 (tearCap 696,770). Page (Collide, Push, Rex bolted, Unbreakable footing off, All-out): 'Rex doesn't move: his bolts hold. Ollie pushes with 890 kN ...' and, a few lines down, 'the concrete slab on top tears at 1.3× its limit', with 'Courtesy ceiling ... Past that, the rock gives way around Rex's bolts.' The charge on the same tab treats the same 696,773 N (groundTear) as the hold that gives: 'the rock around his bolts tears out (at about 697 kN), and he is carried along'. On pull request 3's page the pusher was capped at 17.7 kN, so this case could not arise for a standing pusher.
+
+## expected
+Decision 7 says the one pushed 'holds with his footing, or his bolts and the rock around them'. On real rock that hold is about 697 kN; Ollie's uncapped 890 kN exceeds it by 193 kN, so the rock tears out and Rex is driven back with a plug of rock (then held only by his friction, 17.7 kN), as the charge already says.
+
+## fix
+In standoff with own and cB bolted on ground that doesn't hold, take HB = min(Infinity, groundTear(cB)) (as carriedHit does); when DA exceeds it, return forceWins with a rockGives/tearB marker, and have the verdict say the rock tears and he is driven back. At least, don't print 'his bolts hold' when rock.tear > 1.
+
+## VERDICT
+### id
+physics-steady-push-bolted-real-rock
+
+### real
+true
+
+### severity
+major
+
+### reasoning
+Reproduced. standoff takes HB = holdOf(cB).H, which is Infinity for any bolted body (engine.js:2387). With the pusher's own footing no longer capping his push (DA = 889,600 N), Ollie's push loads Rex's rock to 1.28x its tear limit, but the outcome is still 'objectHolds'. The new verdict branch (app.html, `own && boltY`) then says 'Rex doesn't move: his bolts hold' and the chip says 'Rex holds unlimited'. Yet the same page says the slab 'tears at 1.3x its limit' and that 'he holds only as much as his bolts and the rock around them take'. Decision 7 says the one pushed holds with 'his bolts and the rock around them'. The charge on the same tab, with the same settings, takes the 696,773 N tear as the hold that gives and has Rex carried off with a plug of rock. So the verdict contradicts the page's own figures, decision 7 and the charge's model, and no Known limit covers it. The README's both-bolted, power-off case ('Neither moves', slab at 1.28x) has the same pattern, but it is pre-existing and needs a bolted pusher. This pull request makes it reachable by the default standing pusher and adds the explicit 'his bolts hold' text. It shows only above about 71 t with Rex bolted and Unbreakable footing off (for example All-out). The ground-breaking preset stops lower, at 13.5 t, where the rock only cracks.
+
+### reproduction
+`node f3.js`, standoff with Ollie at the dial and Rex bolted, Unbreakable footing off:
+- power on: DA 889,600, HB Infinity, outcome 'objectHolds', contact 889,600, rock.tear 1.277, tearCap 696,800
+- power off: DA 17,650, rock.tear 0.0253
+- the charge with the same settings: 'carried', rockGives true, tear 696,800
+
+`node f3b.js`: the pre-existing case, both bolted with the power off, also gives 'objectHolds' at tear 1.277.
+
+Page (Collide, Push, anchor bolted, unbreakable false, All-out):
+- verdict: 'Rex doesn't move: his bolts hold. Ollie pushes with 890 kN (his push back goes to his source, so his own feet don't cap it), and the push goes through Rex's bolts into the ground.'
+- tiles: 'Rex's hold unlimited bolted'
+- happens: '...so he holds only as much as his bolts and the rock around them take ... the concrete slab on top tears at 1.3× its limit.'
+- effort: 'At this effort the rock gives way around Rex's bolts'
+
+### better_fix
+In standoff (engine.js, before the stalemate/forceWins/objectHolds branch), when the one pushed is bolted on real rock and the push passes the rock's tear load, return a driven-back result:
+
+```
+if (own && cB.anchor === 'bolted' && !holdsGround(cB) && !cB.immovable && isFinite(DA) && DA > groundTear(cB)) {
+  out.outcome = 'forceWins';
+  out.rockGives = true;
+  out.tearB = groundTear(cB);
+  out.HB = hb.anc.R;
+  out.contact = DA;
+  out.net = DA - hb.anc.R;
+  out.rock = rockLoad(DA, cB, dSep, false);
+  return out;
+}
+```
+
+hb.anc is his friction footing, as holdOf builds it for a bolted body. Then have the verdict say the rock round Rex's bolts tears out (about 697 kN) and he is driven back with a plug of rock, held only by his feet.
+
+At minimum, don't print 'his bolts hold' or 'holds unlimited' when out.rock.tear > 1.
+

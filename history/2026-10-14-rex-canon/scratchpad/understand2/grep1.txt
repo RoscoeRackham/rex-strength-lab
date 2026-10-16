@@ -1,0 +1,226 @@
+274:      <div class="eyebrow">Indestructible · never tires · still obeys Newton</div>
+325:        <p class="hint" style="margin-top:8px">All of these are their absorption at work, used on purpose. Each switch suspends one piece of real physics, on purpose. Everything else stays real. C
+336:          <span class="lbl" id="bolt-lbl">Bolted to the planet</span>
+338:            <label class="check"><input type="checkbox" id="bolt-rex" aria-label="Bolted to the planet: Rex"><span>Rex</span></label>
+339:            <label class="check"><input type="checkbox" id="bolt-ollie" aria-label="Bolted to the planet: Ollie"><span>Ollie</span></label>
+341:          <span class="hint">On, a push along the ground can’t slide his planted feet: it goes into the planet instead. He still walks, runs and jumps. What else it changes depends on the move, 
+344:        <label class="check"><input type="checkbox" id="sw-recoil"><span><b>They take their own recoil</b>: the push back from their own throws, punches, stomps and pulls goes through their feet i
+656:    // on what they throw that they take back (0-1), things keep their form, unbreakable footing, they take their own recoil
+657:    airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true,
+722:      airAbsorb: num(0, 1), keepForm: (v) => typeof v === 'boolean', unbreakable: (v) => typeof v === 'boolean', ownRecoil: (v) => typeof v === 'boolean',
+755:      airAbsorb: state.airAbsorb, keepForm: state.keepForm, unbreakable: state.unbreakable, ownRecoil: state.ownRecoil,
+803:    : s <= 0 ? 'real air: it slows what they throw, and a fast throw booms and heats as it would' + (!state.keepForm && !state.unbreakable && !state.ownRecoil ? ' (with all their powers off the la
+853:    $('#sw-unbreakable').checked = state.unbreakable; $('#sw-recoil').checked = state.ownRecoil; $('#sw-keep').checked = state.keepForm;
+864:    const allDefault = state.airAbsorb === 1 && state.keepForm && state.unbreakable && state.ownRecoil;
+865:    const sw = (allDefault ? ['default powers on'] : [state.unbreakable && 'unbreakable footing', state.ownRecoil && 'own recoil', state.keepForm && 'things keep their form', state.airAbsorb > 0 &
+900:    // footing is binary: just standing (friction) or bolted to the planet, one switch each
+920:    for (const [id, key] of [['sw-unbreakable', 'unbreakable'], ['sw-recoil', 'ownRecoil'], ['sw-keep', 'keepForm'], ['sw-passenger', 'safePassenger'], ['sw-silent', 'silentStrike'], ['sw-soft', '
+1135:      return { label: t.label, value: Math.min(r, cap), text: r > cap ? 'whole planet' : null };
+1186:          ? (['asphalt', 'concrete', 'ice', 'steel'].includes(sf.id) ? 'His soles punch through ' + theSurf(sf) + ' and on into whatever is underneath, ' + fmtDist(I.sink) + ' down in all, at ' +
+1187:          : 'Unbreakable footing: the ground can’t be driven into, so he grows upward from his soles instead: his middle rises ' + fmtDist(I.rise) + ' and stops when the growth does. ' + lift +
+1201:      const gt = { held: 'the ground would give way, but their power holds him on it (Unbreakable footing)', stands: 'the ground still holds him', sinks: 'he sinks ' + fmtDist(gu.sink) + ' into '
+1247:    const canon = ' (canon: an exception to “momentum is never absorbed”; it goes to the endless ocean). ';
+1253:    // an angled push with their recoil taken: the planet takes the sideways part whole
+1259:  // A push into the ground that their powers send through their feet (toGround: momentum J over T): how far it
+1264:  // Collide: the charger's own take-off goes into the ground too, with his Unbreakable footing on (the solo tabs' rule:
+1326:    else if (r.groundRatio > 1) v = 'Rex can lift it, but sinks into the ground doing it.';
+1346:    if (r.canLift && r.groundRatio > 1) items.push('The ground fails first. Every newton he lifts goes straight down through his feet. Rex keeps sinking until he reaches something stronger, unles
+1347:    if (r.canLift && r.groundRatioRaw > 1) items.push('Every newton he lifts goes straight down through his feet: ' + fmtRatio(r.groundRatioRaw) + ' what ' + c.surface.short + ' can carry. Unbrea
+1476:        'At ' + fmtDensity(c.body.rho) + ' Rex’s own gravity is far stronger than the Earth’s close to him. Anything he throws has to climb out of that pull first, like a rocket leaving a pla
+1487:    // and They take their own recoil (rOwn0: the recoil his own)
+1490:    const ownOn = !!c.ownRecoil && state.anchor !== 'bolted';
+1491:    const rOwn0 = ownOn ? P.throwObject(Object.assign({}, c, { ownRecoil: false }), o, state.angle) : null;
+1492:    const ownSaved = rOwn0 && rOwn0.canMove && rOwn0.recoilV > 0.01;
+1506:    if (r.recoilV > 1) v += ' Rex gets shoved backward at ' + speedOnly(r.recoilV) + '.';
+1507:    else if (ownSaved && rOwn0.recoilV > 1) v += ' His recoil goes into the planet, so he isn’t shoved back.';
+1513:    if (r.anchor.R !== Infinity) chips.push(r.recoilV > 0.01 ? status('bad', 'Footing: feet slide, he recoils') : status('good', 'Footing holds'));
+1514:    else if (ownSaved) chips.push(status('info', 'His recoil goes into the planet: their power'));
+1540:      (r.recoilV > 0.01 ? speedTile : tile)('His recoil', r.recoilV > 0.01 ? r.recoilV : 'none', r.anchor.R !== Infinity ? 'footing gives at ' + fmtSI(r.anchor.R, 'N') : (state.anchor === 'bolted
+1550:    if (r.anchor.R !== Infinity && r.recoilV > 0.01) items.push('Newton’s third law: the ' + o.short + ' pushes back on Rex exactly as hard as he pushes it. His footing can only resist ' + fmtS
+1551:    if (ownSaved) items.push('They take their own recoil: the ' + o.short + ' pushes back on Rex exactly as hard as he pushes it, and that push goes through his feet into the planet, as if he wer
+1552:    if (r.sinkRatioRaw > 1) items.push('The throw drives his feet down with ' + fmtRatio(r.sinkRatioRaw) + ' what ' + c.surface.short + ' can carry. Unbreakable footing: it doesn’t give' + (pas
+1555:    if (r.sinkRatio > 1) items.push('The throw also drives his feet down: the ground under him is carrying ' + fmtRatio(r.sinkRatio) + ' its limit, so he sinks while he throws.' + (c.anchor === '
+1587:    if (f.landed && r.Eimpact > 4.184e9) items.push('Impact: ' + fmtTNT(r.Eimpact) + (r.planetScale ? '. That is planet-scale: crater scaling no longer applies' : (r.crater > 0 ? ', crater up to 
+1594:        const rr = P.throwObject(ctx({ airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoil: false }), objById(k.obj), k.angle);
+1602:      'Rex and the ' + o.short + ' get equal and opposite momentum while the push lasts; ' + (isFinite(r.anchor.R) ? 'his footing absorbs up to ' + fmtSI(r.anchor.R, 'N') : 'his footing never giv
+1627:    else if (r.relativistic) v = 'Rex leaves at ' + fmtSpeed(r.v) + (c.groundHolds ? '.' : c.unbreakable ? (r.pushOff && r.pushOff.supplied > 0 && !(r.pushOff.J > 0) ? (r.pushOff.T > 0 ? '. The g
+1629:    else if (f.escaped) v = 'Rex jumps clean off the planet.';
+1649:      r.groundFails ? tile('Energy into the ground', fmtSI(r.Eground, 'J'), r.groundDisrupts ? 'enough to blow Earth apart' : fmtTNT(r.Eground)) : null,
+1651:      r.landing.landed ? tile('Landing on the ground', fmtSI(r.landing.F, 'N'), sig(r.landing.F / (c.body.m * g), 2) + '× his weight for ' + fmtTime(r.landing.t) + (r.landing.soft ? '; what it w
+1664:      items.push('His feet punch ' + fmtDist(r.sink) + ' into the ground at up to ' + (vf >= 0.01 * K.c ? fmtSpeed(vf) : speedOnly(vf)) + '. ' + (inertial ? 'That fast, the ground resists mostly 
+1666:    if (c.unbreakable && r.overLimitReal && r.v > 0) items.push('On ' + c.surface.short + ' the ground gives at ' + fmtSI(RB, 'N') + ' of push, and this push-off is ' + (isFinite(r.F) ? fmtRatio(
+1669:    if (up && f.landed && f.apex > 50) items.push(isFinite(r.vacuumApex) ? 'Air drag eats the jump: with no air he would reach ' + fmtDist(r.vacuumApex) + '.' : 'With no air this takeoff would ca
+1687:    // what the switch takes back is what the landing would put into the ground (the feet's impact, or all of it if the
+1689:    const landAbsorb = L.landed && L.soft ? absorbBlock(L.absorbed, 'Soft landing: what the landing would put into the ground', c.body, c.surface) : null;
+1708:    if (r.vBody > 2 && !bf.relativistic) v += ' It also launches him ' + (bf.escaped ? 'off the planet' : fmtDist(bf.apex) + ' into the air') + '.';
+1719:    // They take their own recoil: credited only where his recoil would have lifted him (a hop or more) without it
+1720:    const sOwn0 = r.bolted && state.anchor !== 'bolted' ? P.stomp(Object.assign({}, c, { ownRecoil: false })) : null;
+1728:      r.vBody > 2 ? status('bad', 'Recoil launches him') : r.vBody > 0.5 ? status('warn', 'Recoil hops him ' + fmtDist(bf.apex) + ' up') : ownSavedS ? status('info', 'His recoil goes into the pla
+1730:    if (taken && (r.disrupts || r.planetScale)) holeTile = tile('Crater', 'none: the ground holds', 'their power (real ground: ' + (r.disrupts ? 'Earth breaks up' : 'planet-scale') + ')');
+1732:    else if (r.planetScale) holeTile = tile('Crater', 'planet-scale', 'crater scaling stops working');
+1738:      taken ? tile('Energy taken back', fmtSI(r.E, 'J'), 'it would have broken the ground: ' + fmtTNT(r.E)) : tile('Energy into the ground', fmtSI(r.E, 'J'), fmtTNT(r.E)),
+1742:      bf.relativistic ? speedTile('He gets launched', r.vBody, '') : tile(r.vBody > 2 ? 'He gets launched' : 'Recoil hop', r.vBody > 0.5 ? (bf.escaped ? 'Escapes Earth' : fmtDist(bf.apex) + ' up'
+1748:    if (r.bolted && state.anchor !== 'bolted') items.push(ownSavedS ? 'They take their own recoil: driving the foot down pushes the rest of him up just as hard, and that push goes through his sta
+1749:    else if (r.bolted) items.push('Newton’s third law again: driving the foot down pushes the rest of him up just as hard, but he is bolted to the planet, so the bolts take that push and the fo
+1752:      items.push('Newton’s third law again: driving the foot down pushes the rest of him up just as hard. Only his own weight holds him down, so ' + ((r.basis || state.mode) === 'real' ? 'with 
+1756:    if (r.planetScale && !r.disrupts && !taken) items.push('Crater scaling is fitted to craters up to a few hundred km on flat ground. Here it would predict one wider than Earth’s radius, so th
+1757:    else if (r.craterBeyondFit && !r.disrupts) items.push('Crater scaling is fitted to craters up to a few hundred km on flat ground. This one would be about ' + fmtDist(r.crater) + ' across on a
+1765:      r.bolted ? 'Leg pushes foot+shank (' + sig(c.body.legEff, 2) + ' kg) down against his ' + (state.anchor === 'bolted' ? 'bolted body' : 'body, whose push back goes into the planet (They take
+1779:    // They take their own recoil: the same punch without it, for what it saves him
+1780:    const rOwn0 = c.ownRecoil && state.anchor !== 'bolted' ? P.punch(Object.assign({}, c, { ownRecoil: false })) : null, ownSaved = rOwn0 && rOwn0.recoilV > 0.01;
+1784:    if (r.recoilE > 0.5 * r.E) v += ' The punch throws Rex backward harder than it throws his fist.';
+1789:      r.recoilV > 0.01 ? status('warn', 'Body lurches back ' + fmtDist(r.lurch)) : ownSaved ? status('info', 'His recoil goes into the planet: their power') : status('good', 'Body stays planted')
+1794:      r.recoilE > 0.01 * r.E ? tile('His own recoil', fmtSI(r.recoilE, 'J'), sig(100 * r.recoilE / r.E, 2) + '% of the total') : null,
+1799:    items.push('A punch into empty air does no work on anything but the air. Everything the arm put in, the fist’s energy plus his own recoil, is released when the arm stops' + (r.mach < 1 ? ':
+1800:    if (r.recoilE > 0.5 * r.E) items.push('His footing can only hold ' + fmtSI(r.anchor.R, 'N') + '. Past that, the fist and Rex push apart like two skaters, and at extreme strength the light fis
+1801:    if (ownSaved) items.push('They take their own recoil: the punch’s push back goes through his feet into the planet, as if he were bolted. He doesn’t lurch (without it he would lurch back a
+1802:    if (silent) items.push('Silent strike absorbs the energy that would hit the air as a blast or a boom. The momentum doesn’t go away: the recoil on his body and his footing is the same.');
+1807:    out.push(math(['Arm drives fist + forearm (' + sig(c.body.handEff, 2) + ' kg) with ' + fmtSI(r.F, 'N') + ' over ' + sig(c.body.strokes.punch, 2) + ' m; ' + (isFinite(r.anchor.R) ? 'his footin
+1816:    out.push(el('div', { class: 'status-row' }, silent ? status('info', 'Silent strike: no blast, no boom') : r.vHand >= 0.01 * K.c ? status('bad', 'Fireball between his hands') : r.mach >= 1 ? s
+1823:      'The clap is the one move with no recoil problem: both arms push on his chest equally and opposite, so he stays put however strong he is' + (c.ownRecoil ? ' (so They take their own recoil h
+1863:    else if (c.anchor === 'bolted' && (r.limit === 'strength' || r.limit === 'effort')) items.push('Bolted to the planet, his strides can’t slip, and the sim doesn’t let a bolted stride sink 
+1867:    if (c.ownRecoil && r.limit === 'friction') items.push('They take their own recoil doesn’t change running: a stride is the move itself, not recoil.');
+1877:  const ANCHOR_SHORT = { friction: 'just standing', bolted: 'bolted to the planet' };
+1894:    const grav = P.bodyGravity(c.body), pl = P.planetRegime(c.body.m, grav);
+1896:    if (pl.regime !== 'none') return { stop: true, text: 'At ' + fmtMass(c.body.m) + ' his own gravity reshapes the planet (see the Weight tab). The move models assume a small Rex on a fixed Eart
+1898:    if (P.groundUnderWeight(c.body, c.surface, c.groundHolds, c.unbreakable).regime === 'fallsThrough') return { stop: false, text: 'No rock can hold him at this weight: he sinks into the planet 
+1999:    const gr = r.grav, gd = r.ground, mv = r.move, pl = r.planet, f = r.fall, st = r.settle;
+2014:    else if (pl.regime === 'earthFalls') v = 'Rex outweighs the Earth ' + fmtRatio(pl.massRatioEarth) + '. The planet falls onto him in about ' + fmtTime(pl.tff) + ' and is crushed around him.';
+2039:    else if (pl.regime === 'reshapes') chips.push(status('bad', 'Reshapes the planet'));
+2048:      if (jumpR) chips.push(jumpR.v > 0 && !jumpR.relativistic ? status('good', 'Jumps ' + (jumpR.flight.escaped ? 'off the planet' : fmtDist(jumpR.flight.apex))) : jumpR.v > 0 ? status('good', '
+2053:      // air falling onto him assumes he sits at the surface: not once he sinks to the centre or the planet falls onto him
+2095:    if (pl.regime === 'reshapes') items.push('Past 1/1,000 of Earth’s mass his pull reshapes the planet around him: rock can’t hold itself up near him. Sinking to the centre alone releases ' 
+2110:        items.push('He falls through the Earth’s layers like a stone dropped down a tunnel through the planet. With the Earth’s real density profile the trip takes about 38 minutes, and he pa
+2111:        items.push('He keeps swinging back and forth, each trip a little shorter, and ends up at the centre after roughly ' + (r.settleRange ? fmtDuration(r.settleRange.yearsMin * YEAR) + ' to ' 
+2124:    if (r.denserThanOsmium && pl.regime !== 'blackHole') items.push('Osmium is the densest element at everyday pressure (22,587 kg/m³). Nothing denser exists at everyday pressure; it is found on
+2130:      pl.regime !== 'none' ? null : 'Bedrock carries up to 1.7 GPa × his underside = ' + fmtSI(gd.rockCap, 'N') + ' (estimate). Bolted to the planet stops sliding, not sinking; only Unbreakable 
+2143:  // Shared gate: black holes, planet-scale masses, and anyone who sinks into the ground just standing there.
+2146:      const pl = P.planetRegime(c.body.m, P.bodyGravity(c.body));
+2148:      if (pl.regime !== 'none') return { stop: true, text: 'No contest: at ' + fmtMass(c.body.m) + ' ' + who + '’s own gravity reshapes the planet (see the Weight tab).' };
+2151:    if (mSum >= 1e-3 * K.M_E) return { stop: true, text: 'No contest: together they weigh ' + fmtMass(mSum) + ', and their gravity reshapes the planet (see the Weight tab).' };
+2164:  const holdText = (c, R) => (c.anchor === 'bolted' ? 'bolted to the planet' : (c.groundHolds ? 'on ground treated as holding' : 'standing on ' + c.surface.short) + (isFinite(R) ? ', holds ' + fm
+2168:    if (kind === 'paradox') return 'Nothing moves: the push stays inside one unbreakable system (' + a + ', ' + b + ' and ' + (via || 'the planet') + '), and no internal push can move it. The for
+2212:    else if (r.clash) v = (r.clash === 'rockGives' ? 'The table breaks first: both arms are unlimited, and both are bolted, so the push goes through their bolts into the ground. ' : 'Both arms ar
+2264:    // the pin's slam lands on the pad and drives into the ground under the table (on real ground)
+2293:    items.push('Newton’s third law: the push between their hands is the same both ways. Under the rules each grips the table’s peg with his free hand and rests his elbow on a pad bolted to th
+2294:    if (r.crater > 0) items.push('The pin’s slam drives into the ground under the table: a crater up to ' + fmtDist(r.crater) + ' across' + (r.craterExtrapolated ? ' (extrapolated)' : '') + ' (
+2299:      items.push('With the table gone they’re arm-wrestling standing up, and each can only press as hard as his feet hold: Rex ' + holdText(cR, r.RA) + '; Ollie ' + holdText(cO, r.RB) + '. That
+2308:    if (r.tableBreaks && (r.tearA > 1 || r.tearB > 1)) items.push('Bolted to the planet holds, but the ground around the bolts doesn’t: ' + [['Rex', cR, r.tearA], ['Ollie', cO, r.tearB]].filter
+2363:    if (r.outcome === 'bothBolted') v = r.clash ? clashVerdict(r.clash, 'Rex', 'Ollie') : 'Neither moves: both are bolted to the planet. They press with ' + fmtSI(r.contact, 'N') + ', and that st
+2364:    else if (r.outcome === 'deadlock' && r.allOut) { const s = P.shoveBoth(Object.assign({}, cR, { F: fullF('R') }), Object.assign({}, cO, { F: fullF('O') })); v = 'Dead heat. Both are far strong
+2388:      'A shoving match is decided at the feet. To push forward, each one has to grip the ground; to stay put, each one has to grip it too. Strength past that grip just makes feet slide. (That ass
+2391:      r.outcome === 'bothBolted' ? 'Both bolted: the push runs from one through the ground to the other. ' + (P.holdsGround(cR) ? (cR.groundHolds ? 'With the ground treated as holding' : 'Unbreak
+2403:    // which of them moves, and which passes 1% of light speed (vA: the shover's recoil, vB: the target's)
+2411:    else if (!movB) v = (cT.anchor === 'bolted' ? target + ' is bolted to the planet and doesn’t move' : target + '’s footing holds and he doesn’t move') + ', so the shove throws ' + pusher
+2413:    else if (relB) v = target + ' leaves at ' + fmtSpeed(r.vB) + (movA ? ' and ' + pusher + ' recoils at ' + (relA ? fmtSpeed(r.vA) : speedOnly(r.vA)) : '') + '.' + fire;
+2414:    else v = target + ' flies back ' + slideText(r.vB, r.slideB) + (r.slideB > r.ring / 2 ? ', well out of the ring.' : ', still inside the ring.') + (movA ? ' ' + pusher + ' recoils at ' + speed
+2417:    const cP = both ? (r.shover === 'A' ? cR : cO) : cA, ownP = cP.ownRecoil && cP.anchor !== 'bolted';
+2419:    // a bolted partner who doesn't move: his bolts hand the planet the whole push, a body width away
+2423:      movA ? status('warn', !movB ? pusher + ' is thrown back' : pusher + ' recoils too') : ownP && !r.stalled ? status('info', 'His recoil goes into the planet: their power') : status('good', pu
+2430:      out.push(happens(['Newton’s third law: ' + target + ' pushes back on ' + pusher + ' exactly as hard. ' + (r.gravityLock ? 'Their gravity holds them together harder than ' + pusher + ' can
+2437:      speedTile(pusher + (!movB ? ' is thrown back at' : ' recoils at'), r.vA, ''),
+2444:      'Newton’s third law: ' + target + ' pushes back on ' + pusher + ' exactly as hard, for exactly as long. Their momenta come out equal and opposite; the lighter or less anchored one moves f
+2449:      ownP ? 'They take their own recoil: the push back from ' + pusher + '’s shove goes through his feet into the planet, as if he were bolted, so he stays put. (Bolted to the planet is for be
+2451:      boltShake ? 'Bolted, ' + target + ' doesn’t move, so his bolts hand the planet the whole push: ' + pushFig(r.toGroundB) + ' over ' + fmtTime(r.toGroundB.T) + ', a body width from ' + push
+2459:    if (r.bolted) v = nB + ' is bolted to the planet: lifting him means lifting the planet. Can’t be done.';
+2483:    if (t.bolted) { out.push(verdict(nB + ' is bolted to the planet: there’s nothing to throw.')); return out; }
+2501:    if (r.canMove && r.recoilV > 1) v += ' ' + nA + ' gets shoved backward at ' + speedOnly(r.recoilV) + '.';
+2502:    if (t.sinks && f && f.landed && !t.fallsBack) v += ' No rock can hold ' + nB + ' at his weight, so where he lands he sinks into the planet (see Weight).';
+2517:        tile(nA + '’s recoil', r.recoilV > 0.01 ? speedOnly(r.recoilV) : 'none', '')));
+2534:      if (cA.ownRecoil && cA.anchor !== 'bolted') {
+2535:        const r0 = P.throwPartner(Object.assign({}, cA, { ownRecoil: false }), cB, state.wAngle).r;
+2536:        if (r0 && r0.recoilV > 0.01) items.push('They take their own recoil: the push back from the throw goes through ' + nA + '’s feet into the planet, as if he were bolted, so he isn’t sho
+2581:    const label = (x) => (fullToss ? 'Toss height: as high as he can (Fastball)' : (partner ? 'Toss height above his hands: ' : 'Distance between them: ') + (Math.abs(x - Math.log10(CATCH_D_MAX))
+2586:    const chipVals = partner ? [[10, '10 m'], [100, '100 m'], [1000, '1 km']] : [[10, '10 m'], [100, '100 m'], [1000, '1 km'], [1e5, '100 km'], [1e6, '1,000 km'], [1e7, '10,000 km'], [CATCH_D_MAX
+2610:    if (pu.earthRecoilV > 0) return ' Bolted to the planet, he holds; the whole Earth takes the push and moves off at ' + speedOnly(pu.earthRecoilV) + '. Stopping it frees ' + fmtSI(fb.Ehere, 'J'
+2611:    return ' It carries ' + C + ' off at ' + speedOnly(pu.recoilV) + '. He’s fine. The hit frees ' + fmtSI(fb.Ehere, 'J') + ' where he stands, and the other ' + fmtSI(fb.Ecarry, 'J') + ' goes o
+2641:        // (below 100%: the air it meets turns to plasma at the share of the drag that acts, and rides with it into the ground)
+2642:        return thrown() + ' in a straight line (' + (hg.airK > 0 ? 'past 1% of light speed the air it meets turns to plasma around it, from the ' + pctAir(hg.airK) + ' of the drag that still acts
+2726:        if (fb.push.earthRecoilV > 0) items.push('Stopping it at ' + C + ' frees ' + fmtSI(fb.Ehere, 'J') + ' (' + fmtTNT(fb.Ehere) + ', ' + compareEnergy(fb.Ehere) + ') right where he stands.' +
+2727:        else items.push('The hit frees ' + fmtSI(fb.Ehere, 'J') + ' (' + fmtTNT(fb.Ehere) + ') where ' + C + ' stands.' + already + ' He and the plasma ride on at ' + speedOnly(fb.push.recoilV) +
+2776:      out.push(verdict('They can’t play at this distance. Their pull on each other (' + fmtSI(pull.F, 'N') + ') beats ' + (holdR < holdO ? 'Rex' : 'Ollie') + '’s footing (' + fmtSI(Math.min(h
+2806:        if (cO.anchor === 'bolted') chips.push(status('info', 'Bolted to the planet'));
+2842:        caughtish ? (k.carried && cO.anchor !== 'bolted' ? tile('Ollie', 'carried off', 'at ' + fmtSpeed(k.uAfter) + ', with the ' + o.short) : tile('Ollie slides', cO.anchor === 'bolted' ? 'bolt
+2862:        // a steep arrival presses him into the ground, and friction grows with that load
+2867:      if (cO.anchor === 'bolted') items.push('Bolted to the planet, he doesn’t move: the Earth takes the momentum.');
+2885:    // Newton's third law, as on the Throw tab: the push on it pushes Rex back
+2886:    const rc = a.recoil;
+2889:      else items.push('Throwing it shoves Rex back at ' + speedOnly(rc.v) + (rc.slide > 0.01 ? ' and slides about ' + fmtDist(rc.slide) + ' before he stops' : '') + '.' + (rc.outOfRange ? ' That�
+2890:    } else if (cR.ownRecoil && cR.anchor !== 'bolted' && a.aim && a.aim.vL > 0) {
+2892:      const a0 = P.catchLeg(Object.assign({}, cR, { ownRecoil: false }), cO, o, Dd, state.cStyle);
+2893:      if (a0 && a0.recoil && a0.recoil.v > 0.01) items.push('They take their own recoil: the push back from the throw goes through Rex’s feet into the planet, as if he were bolted, so he stays 
+2914:      // everything it carried ends up near Ollie, whatever the distance (less the Earth's tiny recoil when bolted)
+2916:      if (Eb > 4.184e6) out.push(blastBlock(Eb, fb.kind === 'before' ? 'the fireball' : fb.push.earthRecoilV > 0 ? 'everything it carried, released where Ollie stands' : 'what it frees at Ollie a
+2951:    if (t.result === 'bolted') v = 'Ollie is bolted to the planet: lifting him means lifting the planet. Can’t be done.';
+2968:    else if (t.result === 'escapes') v = 'Rex tosses Ollie off the planet. He doesn’t come back down.';
+3076:    if (rock.planet) return status('bad', 'Planet-scale load on the rock');
+3081:  const rockBroke = (rk) => !!(rk && !rk.comic && (rk.planet || !isFinite(rk.rT) || rk.rT >= 0.05));
+3089:    else if (r.outcome === 'pusherPlanet') v = Y + ' is truly immovable, so the unlimited push drives ' + X + ' back instead. ' + X + ' is bolted to unbreakable ground, so the planet goes with hi
+3093:      else if (cA.anchor === 'bolted' && cB.anchor === 'bolted') v = 'Neither moves. Both are bolted to the planet, so ' + X + '’s ' + fmtSI(r.contact, 'N') + ' push goes into the rock between 
+3104:      : r.outcome === 'pusherPlanet' ? status('bad', X + ' and the planet are driven back')
+3125:      'Newton’s third law: ' + X + ' pushes ' + Y + ' exactly as hard as ' + Y + ' pushes back, and both forces end up in the ground. So each can use only as much force as his footing takes. St
+3128:        : r.outcome === 'pusherPlanet' ? 'Footing here: ' + X + ' is bolted to unbreakable ground, so his bolts hand the push to the whole planet. ' + Y + ' needs no footing: he is truly immovabl
+3136:      [['The bigger usable force wins; equal is a dead heat.', 'He holds. The push goes into the ground, and real rock cracks around the bolts.'], ['He’s shoved away at just under light speed. 
+3145:    if (r.planetScale) return [callout('At this mass one of them reshapes the planet with his own gravity (see Weight). A charge across the Earth’s surface stops making sense here.')];
+3147:      const why = { cantSprint: X + ' can’t charge. At ' + fmtMass(cA.body.m) + ' his strength (' + fmtN(cA.F) + ') can’t hold up his own weight (' + fmtSI(cA.body.m * g, 'N') + '), so he can
+3162:    else if (r.outcome === 'unstoppable') v = r.unlimitedVsBolted === 'closedSystem' ? 'Unbounded energy at the hit. ' + X + ' got his unlimited momentum by pushing on the same planet ' + Y + ' i
+3164:      : r.unlimitedVsBolted === 'planetMoves' ? X + ' arrives with unlimited momentum from outside. ' + Y + ', and the unbreakable planet he’s bolted to, are knocked away at just under light sp
+3166:    else if (r.outcome === 'boltsLate') v = 'Too fast for the planet to brace ' + Y + ': the hit is over in ' + fmtTime(r.contact.soft.t) + ', before the rock under his bolts can respond. They mo
+3168:    else if (r.held && horiz) v = Y + ' doesn’t budge. ' + X + (splat ? ' stops dead against him' : ' bounces straight back at ' + speedOnly(Math.abs(h.el.vA))) + ', and the blow goes through '
+3177:      v = Math.abs(b.vA) < 1e-6 * r.vRel ? X + ' stops dead and ' + Y + ' flies off at ' + speedOnly(b.vB) + ', like Newton’s cradle.' : X + (b.vA < 0 ? ' bounces back at ' + speedOnly(Math.abs
+3211:    if (r.outcome === 'unstoppable') holderTile = r.unlimitedVsBolted === 'closedSystem' ? tile(Y + ' moves', 'not overall', 'the planet gets its momentum back') : tile(Y + ' moves', 'just under 
+3214:    else holderTile = tile(Y + ' driven into the ground', fmtDist((splat ? af.splat.depth : af.bounce.depth) || 0), cB.surface.short);
+3221:      r.unlimitedVsBolted === 'planetMoves' ? tile('Earth', 'just under light speed', 'knocked away with ' + Y)
+3245:    const whyText = { footing: ' Standing on ' + cB.surface.short + ', friction holds him with ' + fmtN(hb.R) + '. Stopping ' + X + ' dead takes ' + fmtN(r.Fheld) + ', so he ' + (r.held ? 'holds.
+3246:    items.push('“Immovable” only means what holds ' + Y + ' in place.' + whyText + (horiz && hb.why !== 'bolted' && hb.why !== 'immovable' && hb.why !== 'lying' ? ' (A standing body hit at ch
+3248:    if (r.outcome === 'boltsLate') items.push('In ' + fmtTime(r.contact.soft.t) + ' a stress wave in rock travels only about ' + fmtDist(P.COL.C_ROCK * r.contact.soft.t) + ' (at about ' + sig(P.C
+3260:    if (r.toGround) items.push((gReal && gReal.broke ? 'Unbreakable footing: the ground under ' + Y + ' doesn’t break, but the push still goes in. ' : 'The push still goes into the ground under
+3261:    if (tk) items.push('The take-off goes into the ground too: ' + tk.what + ', ' + pushFig(tk) + ' over ' + fmtTime(tk.T) + ', a body width from the hit (his Unbreakable footing, as on the ' + (
+3264:      [['Both move. They share the momentum; the softer the hit, the more energy it frees.', 'The charger stops or bounces. The object doesn’t budge, so the force was stoppable.'], ['The object
+3297:    const ownPull = !!r.ownRecoil && state.anchor !== 'bolted';
+3301:      ownPull ? status('info', 'The load’s pull back goes into the planet: their power') : r.anchor.R >= r.resist ? status('good', 'Footing holds') : status('bad', 'Footing fails (' + r.anchor.
+3312:    if (ownPull) items.push('They take their own recoil: the load’s pull back on him goes through his feet into the planet, as if he were bolted, so grip no longer limits how hard he can pull' 
+3313:    // the rope's pull back goes into the planet over the pull: a steady load, so it shakes the ground far less than a blow
+3314:    // counted whenever They take their own recoil is on, bolted too (the engine's MOVES.pull.shake)
+3315:    const pullShake = r.ownRecoil && r.canMove && isFinite(r.t10m) ? groundShake(c.surface, { J: P.vToMomentum(r.vEnd, o.m) + r.resist * r.t10m, T: r.t10m }) : null;
+3316:    if (pullShake) items.push('The rope’s pull back goes through his ' + (state.anchor === 'bolted' ? 'bolts' : 'feet') + ' into the planet over the pull (' + big(P.vToMomentum(r.vEnd, o.m) + r
+3319:    items.push('Record pullers lean into a harness with the rope angled down to the load, which presses them into the ground and raises their grip. The sim pulls level, so it is a little pessimis
+3322:    const footing = state.anchor === 'bolted' ? 'Footing (bolted to the planet): unlimited, a comic anchor'
+3323:      : ownPull ? 'They take their own recoil: pull = the strength he uses; acceleration = min((pull − resistance) ÷ load mass, footing ÷ his mass), footing = μ × his weight = ' + fmtSI(a.R
+3358:    const key = JSON.stringify([move, c.F, c.mode, c.body.H, c.body.m, c.body.build, c.surface.id, c.anchor, o.obj ? o.obj.id : null, o.angle, o.target, o.near, c.airAbsorb, c.keepForm, c.unbreak
+3404:    slide: { name: 'His recoil shoves him past the nearest people', what: 'his recoil shoves him back past the nearest people' },
+3408:  const hazText = (id, move) => (id === 'ground' && inSoil() ? { name: 'He leaves craters', what: move === 'jump' ? 'his feet leave craters, not just deep footprints (over 1 MJ into the ground: o
+3410:  // itself (the air taking the energy of a launch past Mach 1, and his recoil), from him
+3412:  // push into the ground at his feet (their powers), not the landing
+3421:    ground: () => (inSoil() ? (curAction() === 'jump' ? 'leaves craters, not just deep footprints (over 1 MJ into the ground: our line between the two)' : 'leaves a crater under his feet') : 'bre
+3426:  // ground only through their powers (his recoil taken, or the ground unbreakable): without them it has no model.
+3427:  const noShake = (move) => { const M = P.RESTRAINT.MOVES[move]; return !M.shake || P.RESTRAINT.shakeOff(M, { ownRecoil: state.ownRecoil, unbreakable: state.unbreakable, anchor: state.anchor }) |
+3448:  // a pull with their recoil not taken: his footing caps the rope's pull, a steady load over seconds; bolted, the lab
+3451:    if (state.anchor === 'bolted') return 'Bolted, the rope’s pull back goes through his bolts into the planet, but the lab counts a pull’s ground shaking only with They take their own recoil
+3453:    if (!r.canMove) return 'Without They take their own recoil, his footing caps the rope’s pull at about ' + fmtSI(r.anchor.R, 'N') + ' here, a steady load: far too little to shake the ground,
+3455:    if (r.usable >= r.anchor.R * (1 - 1e-9)) return 'Without They take their own recoil, his footing (about ' + fmtSI(r.anchor.R, 'N') + ') sets his pace: the rope gets about ' + fmtSI(rope, 'N')
+3456:    return 'The rope pulls about ' + fmtSI(rope, 'N') + ' here, at the effort he uses, over ' + fmtTime(r.t10m) + ', a steady load. The lab counts a pull’s ground shaking only with They take th
+3460:  // (with their powers on, where the question arises); a pull's counts only with their recoil taken
+3461:  const noShakeWhy = (move) => (move === 'punch' && (state.ownRecoil || state.unbreakable) ? 'A punch into air leaves the ground no net push (the arm’s stop hands it straight back), so the lab 
+3463:      : move === 'clap' ? 'Both hands push on his chest equally and oppositely, so a clap sends no net push into the ground: there is no ground shaking from it to judge (its air blast is judged).
+3549:  const fmtReach = (d) => (d >= Math.PI * K.R_E ? 'the whole planet' : fmtDist(d));
+3628:        ground: M.ground && c.unbreakable && offHappens('ground', { unbreakable: false }) ? 'Unbreakable footing' : null, slide: M.slide && c.ownRecoil && state.anchor !== 'bolted' && offHappens(
+3629:      const OFF_NAME = { crush: 'a crushed object', boom: 'the sonic boom', air: 'the air blast', ground: 'broken ground under him', slide: 'his recoil shoving him back' }, offs = {};
+3657:        items.length ? el('ul', {}, items) : el('p', { class: 'muted', text: 'The searches found none of the hazards the lab checks (a sonic boom, an air blast loud enough to risk damage, ground 
+3894:  const anyPowerOn = () => airShareOf(ctx()) > 0 || !!state.keepForm || !!state.unbreakable || !!state.ownRecoil;
+3899:    // a push that goes through their feet into the planet (Unbreakable footing, or a mover taking his own recoil): the
+3906:    const waves = !!P.groundOf(cR.surface), shakeOn = (cR.unbreakable || cR.ownRecoil) && waves;
+3939:        out.sig = fp(t.r && t.r.v, t.r && t.r.sinkRatio, t.r && t.r.recoilV);
+3943:        // soil, where his feet only sink in) and his own recoil slide
+3945:          airAbsorb: cA.airAbsorb, keepForm: cA.keepForm, unbreakable: cA.unbreakable, ownRecoil: cA.ownRecoil };
+3948:        const ownS = (mo.ownRecoil || mo.unbreakable) && t.r.toGround ? P.impulseSource(mo.surface, t.r.toGround.J, Math.max(1e-9, t.r.toGround.T)) : null;
+3954:        out.harm = t.r.v >= K.a0 || (t.r.recoilV || 0) >= K.a0 ? 'the throw breaks the sound barrier'
+3975:        // the partner toss: the thrower's push and the catch go through Rex's feet into the ground (with their powers);
+4020:      const recoil = Math.max(...legs.map((L) => (L && L.recoil && isFinite(L.recoil.slide) ? L.recoil.slide : 0)));
+4021:      if (recoil > near) { out.sig = fp(...legs.flatMap((L) => (L ? [L.aim && L.aim.vL, L.vArrive, L.result, L.bursts] : ['none']))); out.harm = 'the thrower is shoved back ' + fmtDist(recoil) + 
+4058:      if (!r || r.blackHole || r.planetScale || r.noCharge) return out;
+4068:      out.ground = !!(rk && !rk.comic && (rk.planet || !isFinite(rk.rT) || rk.rT >= 0.05)) || !!(r.bolts && r.bolts.crater > 0)
+4111:  const duoKey = (act) => { const FR = fullF('R'), FO = fullF('O'); return JSON.stringify([act, FR, FO, state.mode, state.H, state.m, state.build, state.oH, state.oM, state.surface, state.anchor,
+4264:    const shakeOnly = act === 'arm' || act === 'collide' ? 'Unbreakable footing' : 'Unbreakable footing or They take their own recoil';
+4384:      // At planet-scale masses the move models (a small Rex on a fixed Earth) stop applying.
+4485:  const thKey = () => JSON.stringify([state.mode, state.H, state.m, state.surface, state.anchor, state.unbreakable, state.ownRecoil, state.airAbsorb, state.keepForm]);

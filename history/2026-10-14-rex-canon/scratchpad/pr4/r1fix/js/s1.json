@@ -1,0 +1,17 @@
+[
+ ["collide sprint least", {"duoAction":"collide"}, null, null],
+ ["collide sprint allout", {"duoAction":"collide"}, "allout", null],
+ ["collide set 1 m/s allout", {"duoAction":"collide","colSrc":"set","colGB":-8.476820702927927}, "allout", null],
+ ["collide rock allout", {"duoAction":"collide","anchor":"bolted","unbreakable":false}, "allout", null],
+ ["collide jump real bolted allout", {"duoAction":"collide","colSrc":"jump","anchor":"bolted","unbreakable":false}, "allout", null],
+ ["collide bolted paradox least", {"duoAction":"collide","anchor":"bolted"}, null, null],
+ ["collide bolted paradox windows", {"duoAction":"collide","anchor":"bolted"}, "windows", null],
+ ["collide jump 1e9 least", {"duoAction":"collide","colSrc":"jump","logKg":9}, null, null],
+ ["collide jump 1e6 bolted plaster", {"duoAction":"collide","colSrc":"jump","logKg":6,"oLogKg":6,"anchor":"bolted"}, "plaster", null],
+ ["push least", {"duoAction":"collide","colMode":"push"}, null, null],
+ ["push allout", {"duoAction":"collide","colMode":"push"}, "allout", null],
+ ["push inf", {"duoAction":"collide","colMode":"push","inf":true}, "allout", null],
+ ["push bolted real allout", {"duoAction":"collide","colMode":"push","anchor":"bolted","unbreakable":false}, "allout", null],
+ ["push bolted inf paradox", {"duoAction":"collide","colMode":"push","inf":true,"anchor":"bolted"}, "allout", null],
+ ["push off", {"duoAction":"collide","colMode":"push","ownRecoil":false}, null, null]
+]

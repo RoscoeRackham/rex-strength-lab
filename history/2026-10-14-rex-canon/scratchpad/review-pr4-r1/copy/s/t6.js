@@ -1,0 +1,10 @@
+const {P,D,g,ctx}=require('./eng.js');
+const DIAL=90718.474;
+const a=P.pushMatch(ctx('rex',DIAL),ctx('ollie',DIAL,{anchor:'bolted'}));
+console.log('finite', a.outcome, a.winner, a.vA, a.slideA, a.vB);
+const b=P.pushMatch(ctx('rex',Infinity),ctx('ollie',Infinity,{anchor:'bolted'}));
+console.log('inf', b.outcome, b.clash, b.oneSided, b.vA, b.vB, b.HA, b.DB);
+const c=P.pushMatch(ctx('rex',1e12),ctx('ollie',1e12,{anchor:'bolted'}));
+console.log('1e12', c.outcome, c.winner, c.vA, c.relativistic);
+const s=P.standoff(ctx('ollie',DIAL),ctx('rex',DIAL));
+console.log('standoff', s.outcome, s.DA, s.HB, s.contact, 'net a', (s.DA-s.HB)/3000, 'v over 2.44m', Math.sqrt(2*(s.DA-s.HB)/3000*2.44));

@@ -1,0 +1,40 @@
+## id
+duo-mutant-survivors
+
+## severity
+minor
+
+## title
+Mutant survivors: the tests miss decision 5's effect on the search, the duoKey switches, the arm tear and the shoving match's ledger figures
+
+## location
+rex-strength-lab/test/shots.js (pull request 4 block) and rex-strength-lab/test/powers.js section 8
+
+## evidence
+Each mutant was applied in a scratch clone and rebuilt. Survived both node test/shots.js --pr4 and the full node test/shots.js (about 15 min each): P10, the collide search counting the absorbed hit energy by default. At the default set speed (100 m/s) Q = 15 MJ is no thump, so the ceiling would read 'the hit's air blast risks damage' instead of README's 'because Rex is carried 516 m'; no check. P4, duoKey without the two switches (the stale-cache path; every check reloads the page). E16, the arm tear using his own press. E25, pushMatchOwn's recoilAbsorbedA using DB, which changes the page's 'Rex ..., Ollie ...' momentum figures when strengths differ; 8g's ledger runs only equal bodies. Survived --pr4 (not run in full): E32, the realUpper flag dropped (no check of the real-muscle 'upper bound' sentence). P6 and P7, the catch 'mean' variant removed or ignored; I found no state where either changes a shown result, so they may be equivalent in practice. Survived powers.js sections 6 and 8 (engine-only): E24 (pushMatch's 'both on' rule made 'either on', the README's test-only one-sided case) and E27 (a 'before' fireball's overpressure using E, not Eblast; the page doesn't show it). Killed: P2 (mean variant not passed), P3 (Ollie given Rex's switch), P11 (Rex's ctx without his switch), and 24 engine mutants (footing share dropped from the supply, bounce booking footing, non-relativistic bounce, no paradox from above, meanIt ignored, knockAbsorbed or Ereal wrong, Bolted winning over the switch, walk-out pace, pusherSlips, rock dipole, winnerSlides, shoveBoth speeds, carry stop, standing cap, toGround including pGain, and others). Adding the switches to anyPowerOn changes nothing reachable: with all four powers off the table breaks before a pin's swing passes sound.
+
+## expected
+Each of decision 5's search effect, the duoKey switch keys, the arm tear with the power on and the shoving match's per-person recoil figures should have a check that fails when broken.
+
+## fix
+Add to shots.js: Collide at the default set speed, least disruptive, expecting 'Rex is carried along ... 516 m'. Add a switch toggled in place (no reload) on the fireball case, checking a preset's effort against a fresh load. Add a bolted loser's tear status in a standing pin. Add a shoving match with unequal strengths, checking the two recoil figures. Add to powers.js 8g/8i: the ledger with unequal pushes and the tear keys in a standing pin.
+
+## VERDICT
+### id
+duo-mutant-survivors
+
+### real
+true
+
+### severity
+minor
+
+### reasoning
+Reproduced for the two mutants I applied. Both change what the page or the engine shows, and both survive the pull request's tests. P10, the Collide search counting the absorbed hit energy by default, changes the default set-speed (100 m/s) harm from 'Rex is carried along at 100 m/s and ends up 516 m away' to 'the hit's air blast risks damage 5 m away'. That puts decision 5's effect on the search, and the README's 'now because Rex is carried 516 m' claim, without a check. The set-speed check runs all-out at 300 km/s, where the sound-barrier harm comes first, plus the windows preset, which counts the energy anyway. E16 (the arm tear using his own press) changes tearB for a bolted loser from 3.52 to 0.32. No test reads the tear keys with the power on. P4 (duoKey without the switches): by inspection every Never knocked back check in shots.js reloads the page (sw() and load() both call page.reload()), so a stale in-memory search cache can't be caught. I didn't run the remaining mutants (E25, E32, P6, P7, E24, E27), so the finding stands on the verified ones. These are test-coverage gaps, which this project treats as findings (earlier rounds closed surviving mutants), and they bear on defects confirmed above (the tear in duo-arm-loser-bolts-tear). Minor.
+
+### reproduction
+Mutant clone: app.html `const Q = r.unbounded ? (r.outcome === 'carried' ? r.Elocal || 0 : 0)` changed to `(r.h ? r.h.Q : r.Elocal || 0)` (P10). engine.js tearA/tearB changed to `AA / groundTear(cA)` and `AB / groundTear(cB)` (E16). Rebuilt. Mutant is live: page {duoOpen:true,duoAction:'collide',colSrc:'set'} reads 'Courtesy ceiling: none. Even at the least they need to stand and walk, the hit's air blast risks damage 5 m away.' The unmutated page reads '... Rex is carried along at 100 m/s and ends up 516 m away, past the nearest people 5 m away.' Engine: Q = h.Q = 15.0 MJ, soft t 6.29 ms, blastRadius 20.6 m, so not a thump. Results on the mutant: node test/shots.js --pr4 exits 0 in 2 m 53 s ('ok pull request 4: ...'). node test/powers.js --skip-off: '176/176 passed', exit 0. shots.js has no other set-speed Collide check: grep finds only line 1203 (0.1% of light speed, all-out and windows).
+
+### better_fix
+Add to test/shots.js' pull request 4 block: (a) Collide {colSrc:'set'} at least disruptive, expecting /Rex is carried along at 100 m\/s and ends up 516 m away/ and no 'air blast'. (b) The fireball case with a switch toggled in place (click #nkb-ollie without reloading), comparing a preset's effort with a fresh load. (c) A standing pin with a bolted loser at unequal presses, checking the tear status against Pl / groundTear. (d) A shoving match with unequal strengths, checking the two recoil momentum figures against the engine. Add to powers.js 8g/8i: the ledger with unequal pushes, and tearA/tearB in a standing pin with a bolted loser.
+

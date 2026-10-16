@@ -1,0 +1,609 @@
+
+================ wrestle push least {"duoAction":"wrestle"} eff=null
+--verdict:
+   Pushing straight across, both are shoved apart. They take their own recoil, so neither push costs the pusher his grip: each pushes with the effort he uses (88.8 kN each), about 5 times what holds the other (17.7 kN each). They fly apart at 7.61 m/s each and slide about 4.89 m.
+--chips:
+   Rex holds 17.7 kN · pushes 88.8 kN
+   Ollie holds 17.7 kN · pushes 88.8 kN
+   Both shoved apart
+--tiles:
+   Winnernobodyboth are shoved apart
+   Rex leaves at7.61 m/sslides 4.89 m
+   Ollie leaves at7.61 m/sslides 4.89 m
+   Rex’s push88.8 kNreal on Ollie; its push back goes to Rex’s source
+   Ollie’s push88.8 kNreal on Rex; its push back goes to Ollie’s source
+--effort:
+   Effort: 10% of their strength (each as hard as lifting 9.06 t). The hardest both can go while nothing around them breaks.
+   Courtesy ceiling: 10% (lifting 9.06 t). Past that, both are shoved apart and slide past the nearest people 5 m away (Rex 5.12 m, Ollie 5.12 m).
+--callout:
+   Each is strong enough to lift the other, so a real bout goes to whoever gets lower first and pushes upward, taking the weight off the other’s feet. The sim can’t model that.
+--happens:
+   With They take their own recoil on, a shoving match is decided at the feet of the one being pushed. Each one’s push back goes to his source, so pushing costs him no grip: each pushes with the effort he uses. The other’s push on him is real (a contest lets force move), and only his feet hold against it. (That assumes each leans into the push; upright, a body tips over at a few hundred newtons.)
+   Equal bodies on equal ground are always shoved apart with the power on: even the least effort the lab lets them use, enough to stand and walk (as hard as lifting 2.57 t each), is more than either one’s grip on any ground here (μ × his weight, μ at most 0.84, on gravel). So with the power on there is no dead heat between them.
+   Each is pushed by the other’s push, less his own hold, over the shove’s stroke (2.44 m, an estimate) while their hands stay on each other; then each slides to a stop on his feet against friction and air drag. A real body would tumble; the lab keeps him upright.
+   They take their own recoil: each one’s push back goes to the endless ocean (28,000 kg·m/s each, over the push), so none of it reaches the ground. His feet hand the ground only what they hold against the other’s push (5,700 kg·m/s each), a friction drag while he slides.
+--bars:
+   10 kN
+   100 kN
+   Rex’s strength
+   88.8 kN
+   Rex’s footing holds
+   17.7 kN
+   Rex’s push
+   88.8 kN
+   Ollie’s strength
+   88.8 kN
+   Ollie’s footing holds
+   17.7 kN
+   Ollie’s push
+   88.8 kN
+--math:
+   Push = the effort he uses, if he can stand (They take their own recoil: pushing costs him no grip); 0 lying flat. Hold = min(strength, footing), or the footing alone if he is too heavy to stand; footing = μ × min(m g, what the ground under his feet bears). Bolted: unlimited, whatever his strength (the bolts hold, not his muscles). Both pushes beat the other’s hold: each is pushed by (the other’s push − his hold) over the stroke d = 2.44 m (the shove’s, an estimate), with momentum p = F t and relativistic speeds; slide x = m/(2k) ln(1 + k v²/R), k = ½ρ C_d A. Walk-out: a = min((push − loser’s hold) ÷ m_loser, (his footing − loser’s push) ÷ m_winner), capped at his running speed, over half the ring (3.47 m).
+
+================ wrestle push 1e9 {"duoAction":"wrestle","logKg":9,"oLogKg":9} eff=allout
+--verdict:
+   Pushing straight across, both are shoved apart. They take their own recoil, so neither push costs the pusher his grip: each pushes with the effort he uses (9.81 GN each), about 560,000 times what holds the other (17.7 kN each). They fly apart at 2,820 m/s each and slide about 3.95 km.
+--chips:
+   Rex holds 17.7 kN · pushes 9.81 GN
+   Ollie holds 17.7 kN · pushes 9.81 GN
+   Both shoved apart
+--tiles:
+   Winnernobodyboth are shoved apart
+   Rex leaves at2,820 m/sslides 3.95 km
+   Ollie leaves at2,820 m/sslides 3.88 km
+   Rex’s push9.81 GNreal on Ollie; its push back goes to Rex’s source
+   Ollie’s push9.81 GNreal on Rex; its push back goes to Ollie’s source
+--effort:
+   All-out. Everything they have.
+   Courtesy ceiling: lifting 9.06 t. Past that, both are shoved apart and slide past the nearest people 5 m away (Rex 5.12 m, Ollie 5.12 m).
+   At this effort they fly apart faster than sound
+--callout:
+   Each is strong enough to lift the other, so a real bout goes to whoever gets lower first and pushes upward, taking the weight off the other’s feet. The sim can’t model that.
+--happens:
+   With They take their own recoil on, a shoving match is decided at the feet of the one being pushed. Each one’s push back goes to his source, so pushing costs him no grip: each pushes with the effort he uses. The other’s push on him is real (a contest lets force move), and only his feet hold against it. (That assumes each leans into the push; upright, a body tips over at a few hundred newtons.)
+   Equal bodies on equal ground are always shoved apart with the power on: even the least effort the lab lets them use, enough to stand and walk (as hard as lifting 2.57 t each), is more than either one’s grip on any ground here (μ × his weight, μ at most 0.84, on gravel). So with the power on there is no dead heat between them.
+   Each is pushed by the other’s push, less his own hold, over the shove’s stroke (2.44 m, an estimate) while their hands stay on each other; then each slides to a stop on his feet against friction and air drag. A real body would tumble; the lab keeps him upright.
+   They take their own recoil: each one’s push back goes to the endless ocean (8.5 million kg·m/s each, over the push), so none of it reaches the ground. His feet hand the ground only what they hold against the other’s push (15 kg·m/s each), a friction drag while he slides.
+--bars:
+   10 kN
+   100 kN
+   1 MN
+   10 MN
+   100 MN
+   1 GN
+   10 GN
+   Rex’s strength
+   9.81 GN
+   Rex’s footing holds
+   17.7 kN
+   Rex’s push
+   9.81 GN
+   Ollie’s strength
+   9.81 GN
+   Ollie’s footing holds
+   17.7 kN
+   Ollie’s push
+   9.81 GN
+--math:
+   Push = the effort he uses, if he can stand (They take their own recoil: pushing costs him no grip); 0 lying flat. Hold = min(strength, footing), or the footing alone if he is too heavy to stand; footing = μ × min(m g, what the ground under his feet bears). Bolted: unlimited, whatever his strength (the bolts hold, not his muscles). Both pushes beat the other’s hold: each is pushed by (the other’s push − his hold) over the stroke d = 2.44 m (the shove’s, an estimate), with momentum p = F t and relativistic speeds; slide x = m/(2k) ln(1 + k v²/R), k = ½ρ C_d A. Walk-out: a = min((push − loser’s hold) ÷ m_loser, (his footing − loser’s push) ÷ m_winner), capped at his running speed, over half the ring (3.47 m).
+
+================ wrestle push rex bolted {"duoAction":"wrestle","anchor":"bolted"} eff=allout
+--verdict:
+   Rex is bolted, so he can’t walk Ollie out, but his push is real (a contest lets force move): he shoves Ollie off at 37.6 m/s, and Ollie slides 109 m. Ollie’s push (890 kN) can’t move Rex’s bolts.
+--chips:
+   Rex holds unlimited · pushes 890 kN
+   Ollie holds 17.7 kN · pushes 890 kN
+   Ollie shoved off
+--tiles:
+   WinnerRexRex shoves Ollie off
+   Ollie leaves at37.6 m/sslides 109 m
+   Rex’s push890 kNreal on Ollie; its push back goes to Rex’s source
+   Ollie’s push890 kNreal on Rex; its push back goes to Ollie’s source
+--effort:
+   All-out. Everything they have.
+   Courtesy ceiling: 6% (lifting 5.47 t). Past that, Ollie is shoved off and slides 5.22 m, past the nearest people 5 m away.
+   At this effort Ollie is shoved off and slides 109 m, past the nearest people 5 m away
+--callout:
+   Each is strong enough to lift the other, so a real bout goes to whoever gets lower first and pushes upward, taking the weight off the other’s feet. The sim can’t model that.
+--happens:
+   With They take their own recoil on, a shoving match is decided at the feet of the one being pushed. Each one’s push back goes to his source, so pushing costs him no grip: each pushes with the effort he uses. The other’s push on him is real (a contest lets force move), and only his feet hold against it. (That assumes each leans into the push; upright, a body tips over at a few hundred newtons.)
+   Each is pushed by the other’s push, less his own hold, over the shove’s stroke (2.44 m, an estimate) while their hands stay on each other; then each slides to a stop on his feet against friction and air drag. A real body would tumble; the lab keeps him upright.
+   They take their own recoil: each one’s push back goes to the endless ocean (120,000 kg·m/s each, over the push), so none of it reaches the ground. His feet hand the ground only what they hold against the other’s push (Rex 120,000 kg·m/s, Ollie 2,300 kg·m/s), a friction drag, or, bolted, through his bolts.
+--bars:
+   10 kN
+   100 kN
+   1 MN
+   Rex’s strength
+   890 kN
+   Rex’s push
+   890 kN
+   Ollie’s strength
+   890 kN
+   Ollie’s footing holds
+   17.7 kN
+   Ollie’s push
+   890 kN
+--math:
+   Push = the effort he uses, if he can stand (They take their own recoil: pushing costs him no grip); 0 lying flat. Hold = min(strength, footing), or the footing alone if he is too heavy to stand; footing = μ × min(m g, what the ground under his feet bears). Bolted: unlimited, whatever his strength (the bolts hold, not his muscles). Both pushes beat the other’s hold: each is pushed by (the other’s push − his hold) over the stroke d = 2.44 m (the shove’s, an estimate), with momentum p = F t and relativistic speeds; slide x = m/(2k) ln(1 + k v²/R), k = ½ρ C_d A. Walk-out: a = min((push − loser’s hold) ÷ m_loser, (his footing − loser’s push) ÷ m_winner), capped at his running speed, over half the ring (3.47 m).
+
+================ wrestle push rex bolted plaster {"duoAction":"wrestle","anchor":"bolted"} eff=plaster
+--verdict:
+   Rex is bolted, so he can’t walk Ollie out, but his push is real (a contest lets force move): he shoves Ollie off at 37.6 m/s, and Ollie slides 109 m. Ollie’s push (890 kN) can’t move Rex’s bolts.
+--chips:
+   Rex holds unlimited · pushes 890 kN
+   Ollie holds 17.7 kN · pushes 890 kN
+   Ollie shoved off
+--tiles:
+   WinnerRexRex shoves Ollie off
+   Ollie leaves at37.6 m/sslides 109 m
+   Rex’s push890 kNreal on Ollie; its push back goes to Rex’s source
+   Ollie’s push890 kNreal on Rex; its push back goes to Ollie’s source
+--effort:
+   All-out. Everything they have.
+   Even all-out, this test doesn’t shake the ground enough that plaster may crack 5 m away.
+   Courtesy ceiling: 6% (lifting 5.47 t). Past that, Ollie is shoved off and slides 5.22 m, past the nearest people 5 m away.
+   At this effort Ollie is shoved off and slides 109 m, past the nearest people 5 m away
+--callout:
+   Each is strong enough to lift the other, so a real bout goes to whoever gets lower first and pushes upward, taking the weight off the other’s feet. The sim can’t model that.
+--happens:
+   With They take their own recoil on, a shoving match is decided at the feet of the one being pushed. Each one’s push back goes to his source, so pushing costs him no grip: each pushes with the effort he uses. The other’s push on him is real (a contest lets force move), and only his feet hold against it. (That assumes each leans into the push; upright, a body tips over at a few hundred newtons.)
+   Each is pushed by the other’s push, less his own hold, over the shove’s stroke (2.44 m, an estimate) while their hands stay on each other; then each slides to a stop on his feet against friction and air drag. A real body would tumble; the lab keeps him upright.
+   They take their own recoil: each one’s push back goes to the endless ocean (120,000 kg·m/s each, over the push), so none of it reaches the ground. His feet hand the ground only what they hold against the other’s push (Rex 120,000 kg·m/s, Ollie 2,300 kg·m/s), a friction drag, or, bolted, through his bolts.
+--bars:
+   10 kN
+   100 kN
+   1 MN
+   Rex’s strength
+   890 kN
+   Rex’s push
+   890 kN
+   Ollie’s strength
+   890 kN
+   Ollie’s footing holds
+   17.7 kN
+   Ollie’s push
+   890 kN
+--math:
+   Push = the effort he uses, if he can stand (They take their own recoil: pushing costs him no grip); 0 lying flat. Hold = min(strength, footing), or the footing alone if he is too heavy to stand; footing = μ × min(m g, what the ground under his feet bears). Bolted: unlimited, whatever his strength (the bolts hold, not his muscles). Both pushes beat the other’s hold: each is pushed by (the other’s push − his hold) over the stroke d = 2.44 m (the shove’s, an estimate), with momentum p = F t and relativistic speeds; slide x = m/(2k) ln(1 + k v²/R), k = ½ρ C_d A. Walk-out: a = min((push − loser’s hold) ÷ m_loser, (his footing − loser’s push) ÷ m_winner), capped at his running speed, over half the ring (3.47 m).
+
+================ wrestle push rex bolted 1e6 plaster {"duoAction":"wrestle","anchor":"bolted","logKg":6,"oLogKg":6} eff=plaster
+--verdict:
+   Rex is bolted, so he can’t walk Ollie out, but his push is real (a contest lets force move): he shoves Ollie off at 44.4 m/s, and Ollie slides 146 m. Ollie’s push (1.23 MN) can’t move Rex’s bolts.
+--chips:
+   Rex holds unlimited · pushes 1.23 MN
+   Ollie holds 17.7 kN · pushes 1.23 MN
+   Ollie shoved off
+--tiles:
+   WinnerRexRex shoves Ollie off
+   Ollie leaves at44.4 m/sslides 146 m
+   Rex’s push1.23 MNreal on Ollie; its push back goes to Rex’s source
+   Ollie’s push1.23 MNreal on Rex; its push back goes to Ollie’s source
+--effort:
+   Effort: 13% of their strength (each as hard as lifting 125 t). The least effort that shakes the ground enough that plaster may crack 5 m away.
+   Courtesy ceiling: 0.55% (lifting 5.47 t). Past that, Ollie is shoved off and slides 5.22 m, past the nearest people 5 m away.
+   At this effort the push through Rex’s bolts shakes the ground enough that plaster may crack 5 m away
+--callout:
+   Each is strong enough to lift the other, so a real bout goes to whoever gets lower first and pushes upward, taking the weight off the other’s feet. The sim can’t model that.
+--happens:
+   With They take their own recoil on, a shoving match is decided at the feet of the one being pushed. Each one’s push back goes to his source, so pushing costs him no grip: each pushes with the effort he uses. The other’s push on him is real (a contest lets force move), and only his feet hold against it. (That assumes each leans into the push; upright, a body tips over at a few hundred newtons.)
+   Each is pushed by the other’s push, less his own hold, over the shove’s stroke (2.44 m, an estimate) while their hands stay on each other; then each slides to a stop on his feet against friction and air drag. A real body would tumble; the lab keeps him upright.
+   They take their own recoil: each one’s push back goes to the endless ocean (140,000 kg·m/s each, over the push), so none of it reaches the ground. His feet hand the ground only what they hold against the other’s push (Rex 140,000 kg·m/s, Ollie 1,900 kg·m/s), a friction drag, or, bolted, through his bolts.
+--bars:
+   10 kN
+   100 kN
+   1 MN
+   10 MN
+   Rex’s strength
+   1.23 MN
+   Rex’s push
+   1.23 MN
+   Ollie’s strength
+   1.23 MN
+   Ollie’s footing holds
+   17.7 kN
+   Ollie’s push
+   1.23 MN
+--math:
+   Push = the effort he uses, if he can stand (They take their own recoil: pushing costs him no grip); 0 lying flat. Hold = min(strength, footing), or the footing alone if he is too heavy to stand; footing = μ × min(m g, what the ground under his feet bears). Bolted: unlimited, whatever his strength (the bolts hold, not his muscles). Both pushes beat the other’s hold: each is pushed by (the other’s push − his hold) over the stroke d = 2.44 m (the shove’s, an estimate), with momentum p = F t and relativistic speeds; slide x = m/(2k) ln(1 + k v²/R), k = ½ρ C_d A. Walk-out: a = min((push − loser’s hold) ÷ m_loser, (his footing − loser’s push) ÷ m_winner), capped at his running speed, over half the ring (3.47 m).
+
+================ wrestle push rex bolted real {"duoAction":"wrestle","anchor":"bolted","unbreakable":false} eff=allout
+--verdict:
+   Pushing straight across, both are shoved apart. They take their own recoil, so neither push costs the pusher his grip: each pushes with the effort he uses (890 kN each), more than what holds the other (Rex the rock around his bolts, about 697 kN, Ollie 17.7 kN). The rock around Rex’s bolts tears out, and from then on only his feet hold him (17.7 kN). They fly apart at 26.6 m/s each and slide about 57.2 m.
+--chips:
+   Rex holds 17.7 kN once his rock tears · pushes 890 kN
+   Ollie holds 17.7 kN · pushes 890 kN
+   Rock tears out around Rex’s bolts
+   Both shoved apart
+--tiles:
+   Winnernobodyboth are shoved apart
+   Rex leaves at26.6 m/sslides 57.2 m
+   Ollie leaves at26.6 m/sslides 57.1 m
+   Rex’s push890 kNreal on Ollie; its push back goes to Rex’s source
+   Ollie’s push890 kNreal on Rex; its push back goes to Ollie’s source
+--effort:
+   All-out. Everything they have.
+   Courtesy ceiling: 6% (lifting 5.47 t). Past that, Ollie is shoved off and slides 5.22 m, past the nearest people 5 m away.
+   At this effort the rock tears out around Rex’s bolts
+--callout:
+   Each is strong enough to lift the other, so a real bout goes to whoever gets lower first and pushes upward, taking the weight off the other’s feet. The sim can’t model that.
+--happens:
+   With They take their own recoil on, a shoving match is decided at the feet of the one being pushed. Each one’s push back goes to his source, so pushing costs him no grip: each pushes with the effort he uses. The other’s push on him is real (a contest lets force move), and only his feet hold against it. (That assumes each leans into the push; upright, a body tips over at a few hundred newtons.)
+   Each is pushed by the other’s push, less his own hold, over the shove’s stroke (2.44 m, an estimate) while their hands stay on each other; then each slides to a stop on his feet against friction and air drag. A real body would tumble; the lab keeps him upright.
+   Bolted on real rock: the bolts never let go, but the rock around them tears out at about 697 kN (the ground’s shear strength × the buried area of his feet, an estimate), and from then on only his feet hold him. The lab doesn’t follow the rock’s brief share of the push as it tears.
+   They take their own recoil: each one’s push back goes to the endless ocean (81,000 kg·m/s each, over the push), so none of it reaches the ground. His feet hand the ground only what they hold against the other’s push (1,600 kg·m/s each), a friction drag while he slides.
+--bars:
+   10 kN
+   100 kN
+   1 MN
+   Rex’s strength
+   890 kN
+   Rex’s push
+   890 kN
+   Ollie’s strength
+   890 kN
+   Ollie’s footing holds
+   17.7 kN
+   Ollie’s push
+   890 kN
+--math:
+   Push = the effort he uses, if he can stand (They take their own recoil: pushing costs him no grip); 0 lying flat. Hold = min(strength, footing), or the footing alone if he is too heavy to stand; footing = μ × min(m g, what the ground under his feet bears). Bolted: unlimited, whatever his strength (the bolts hold, not his muscles). Both pushes beat the other’s hold: each is pushed by (the other’s push − his hold) over the stroke d = 2.44 m (the shove’s, an estimate), with momentum p = F t and relativistic speeds; slide x = m/(2k) ln(1 + k v²/R), k = ½ρ C_d A. Walk-out: a = min((push − loser’s hold) ÷ m_loser, (his footing − loser’s push) ÷ m_winner), capped at his running speed, over half the ring (3.47 m).
+
+================ wrestle push rex bolted ground preset {"duoAction":"wrestle","anchor":"bolted"} eff=ground
+--verdict:
+   Pushing straight across, both are shoved apart. They take their own recoil, so neither push costs the pusher his grip: each pushes with the effort he uses (716 kN each), more than what holds the other (Rex the rock around his bolts, about 697 kN, Ollie 17.7 kN). The rock around Rex’s bolts tears out, and from then on only his feet hold him (17.7 kN). They fly apart at 23.8 m/s each and slide about 46.2 m.
+--chips:
+   Rex holds 17.7 kN once his rock tears · pushes 716 kN
+   Ollie holds 17.7 kN · pushes 716 kN
+   Rock tears out around Rex’s bolts
+   Both shoved apart
+--tiles:
+   Winnernobodyboth are shoved apart
+   Rex leaves at23.8 m/sslides 46.2 m
+   Ollie leaves at23.8 m/sslides 46.2 m
+   Rex’s push716 kNreal on Ollie; its push back goes to Rex’s source
+   Ollie’s push716 kNreal on Rex; its push back goes to Ollie’s source
+--effort:
+   Effort: 80% of their strength (each as hard as lifting 73 t). The least effort that breaks the ground under their feet.
+   Unbreakable footing is set aside for this test: they mean to break the ground, so the energy it would take back goes into it.
+   On real ground, courtesy ceiling: 6% (lifting 5.47 t). Past that, Ollie is shoved off and slides 5.22 m, past the nearest people 5 m away.
+   At this effort the rock tears out around Rex’s bolts
+--callout:
+   Each is strong enough to lift the other, so a real bout goes to whoever gets lower first and pushes upward, taking the weight off the other’s feet. The sim can’t model that.
+--happens:
+   With They take their own recoil on, a shoving match is decided at the feet of the one being pushed. Each one’s push back goes to his source, so pushing costs him no grip: each pushes with the effort he uses. The other’s push on him is real (a contest lets force move), and only his feet hold against it. (That assumes each leans into the push; upright, a body tips over at a few hundred newtons.)
+   Each is pushed by the other’s push, less his own hold, over the shove’s stroke (2.44 m, an estimate) while their hands stay on each other; then each slides to a stop on his feet against friction and air drag. A real body would tumble; the lab keeps him upright.
+   Bolted on real rock: the bolts never let go, but the rock around them tears out at about 697 kN (the ground’s shear strength × the buried area of his feet, an estimate), and from then on only his feet hold him. The lab doesn’t follow the rock’s brief share of the push as it tears.
+   They take their own recoil: each one’s push back goes to the endless ocean (73,000 kg·m/s each, over the push), so none of it reaches the ground. His feet hand the ground only what they hold against the other’s push (1,800 kg·m/s each), a friction drag while he slides.
+--bars:
+   10 kN
+   100 kN
+   1 MN
+   Rex’s strength
+   716 kN
+   Rex’s push
+   716 kN
+   Ollie’s strength
+   716 kN
+   Ollie’s footing holds
+   17.7 kN
+   Ollie’s push
+   716 kN
+--math:
+   Push = the effort he uses, if he can stand (They take their own recoil: pushing costs him no grip); 0 lying flat. Hold = min(strength, footing), or the footing alone if he is too heavy to stand; footing = μ × min(m g, what the ground under his feet bears). Bolted: unlimited, whatever his strength (the bolts hold, not his muscles). Both pushes beat the other’s hold: each is pushed by (the other’s push − his hold) over the stroke d = 2.44 m (the shove’s, an estimate), with momentum p = F t and relativistic speeds; slide x = m/(2k) ln(1 + k v²/R), k = ½ρ C_d A. Walk-out: a = min((push − loser’s hold) ÷ m_loser, (his footing − loser’s push) ÷ m_winner), capped at his running speed, over half the ring (3.47 m).
+
+================ wrestle push inf ollie bolted {"duoAction":"wrestle","inf":true,"oAnchor":"bolted"} eff=allout
+--verdict:
+   Ollie is bolted to ground that their power holds, so Rex’s unlimited push into his bolts meets a hold without limit: that push has no physical answer (the canon’s ruling), and it moves nobody. Ollie’s own push on Rex is real (a contest lets force move), and Rex holds only 17.7 kN, so Ollie shoves him off at just under light speed, into the air as a fireball.
+--chips:
+   Rex holds 17.7 kN · pushes unlimited
+   Ollie holds unlimited · pushes unlimited
+   Rex shoved off
+   No physical answer for Rex’s push
+--tiles:
+   WinnerOllieOllie shoves Rex off
+   Rex leaves atjust under light speedinto the air as a fireball
+   Rex’s pushunlimitedreal on Ollie; its push back goes to Rex’s source
+   Ollie’s pushunlimitedreal on Rex; its push back goes to Ollie’s source
+--effort:
+   All-out. Everything they have.
+   Courtesy ceiling: lifting 5.47 t. Past that, Rex is shoved off and slides 5.22 m, past the nearest people 5 m away. The unlimited push into Ollie’s bolts has no physical answer here (the canon’s ruling), so the lab can’t judge its harm.
+   At this effort Rex is shoved off faster than sound
+--callout:
+   Each is strong enough to lift the other, so a real bout goes to whoever gets lower first and pushes upward, taking the weight off the other’s feet. The sim can’t model that.
+--happens:
+   With They take their own recoil on, a shoving match is decided at the feet of the one being pushed. Each one’s push back goes to his source, so pushing costs him no grip: each pushes with the effort he uses. The other’s push on him is real (a contest lets force move), and only his feet hold against it. (That assumes each leans into the push; upright, a body tips over at a few hundred newtons.)
+   Each is pushed by the other’s push, less his own hold, over the shove’s stroke (2.44 m, an estimate) while their hands stay on each other; then each slides to a stop on his feet against friction and air drag. A real body would tumble; the lab keeps him upright.
+   Canon (the rulings of 14 Oct 2026): where the one pushed is held without limit, the collision has no physical answer. Rex’s unlimited push meets Ollie’s bolts on ground their power holds: one of them would have to give, and neither can, so the lab works out nothing for that push. Ollie’s own push on Rex meets only Rex’s feet, so it has an answer.
+--bars:
+   10 kN
+   100 kN
+   Rex’s footing holds
+   17.7 kN
+--math:
+   Push = the effort he uses, if he can stand (They take their own recoil: pushing costs him no grip); 0 lying flat. Hold = min(strength, footing), or the footing alone if he is too heavy to stand; footing = μ × min(m g, what the ground under his feet bears). Bolted: unlimited, whatever his strength (the bolts hold, not his muscles). Both pushes beat the other’s hold: each is pushed by (the other’s push − his hold) over the stroke d = 2.44 m (the shove’s, an estimate), with momentum p = F t and relativistic speeds; slide x = m/(2k) ln(1 + k v²/R), k = ½ρ C_d A. Walk-out: a = min((push − loser’s hold) ÷ m_loser, (his footing − loser’s push) ÷ m_winner), capped at his running speed, over half the ring (3.47 m).
+
+================ wrestle push inf ollie bolted real {"duoAction":"wrestle","inf":true,"oAnchor":"bolted","unbreakable":false} eff=allout
+--verdict:
+   Pushing straight across, both are shoved apart. They take their own recoil, so neither push costs the pusher his grip: each pushes with the effort he uses (unlimited each), more than what holds the other (Rex 17.7 kN, Ollie the rock around his bolts, about 697 kN). The rock around Ollie’s bolts tears out, and from then on only his feet hold him (17.7 kN). They fly apart at just under light speed each, into the air as fireballs.
+--chips:
+   Rex holds 17.7 kN · pushes unlimited
+   Ollie holds 17.7 kN once his rock tears · pushes unlimited
+   Rock tears out around Ollie’s bolts
+   Both shoved apart
+--tiles:
+   Winnernobodyboth are shoved apart
+   Rex leaves atjust under light speedinto the air as a fireball
+   Ollie leaves atjust under light speedinto the air as a fireball
+   Rex’s pushunlimitedreal on Ollie; its push back goes to Rex’s source
+   Ollie’s pushunlimitedreal on Rex; its push back goes to Ollie’s source
+--effort:
+   All-out. Everything they have.
+   Courtesy ceiling: lifting 5.47 t. Past that, Rex is shoved off and slides 5.22 m, past the nearest people 5 m away.
+   At this effort the rock tears out around Ollie’s bolts
+--callout:
+   Each is strong enough to lift the other, so a real bout goes to whoever gets lower first and pushes upward, taking the weight off the other’s feet. The sim can’t model that.
+--happens:
+   With They take their own recoil on, a shoving match is decided at the feet of the one being pushed. Each one’s push back goes to his source, so pushing costs him no grip: each pushes with the effort he uses. The other’s push on him is real (a contest lets force move), and only his feet hold against it. (That assumes each leans into the push; upright, a body tips over at a few hundred newtons.)
+   Each is pushed by the other’s push, less his own hold, over the shove’s stroke (2.44 m, an estimate) while their hands stay on each other; then each slides to a stop on his feet against friction and air drag. A real body would tumble; the lab keeps him upright.
+   Bolted on real rock: the bolts never let go, but the rock around them tears out at about 697 kN (the ground’s shear strength × the buried area of his feet, an estimate), and from then on only his feet hold him. The lab doesn’t follow the rock’s brief share of the push as it tears.
+   They take their own recoil: each one’s push back goes to the endless ocean (unbounded each, over the push), so none of it reaches the ground. His feet hand the ground only what they hold against the other’s push (7.2 × 10⁻⁵ kg·m/s each), a friction drag while he slides.
+--bars:
+   10 kN
+   100 kN
+   Rex’s footing holds
+   17.7 kN
+--math:
+   Push = the effort he uses, if he can stand (They take their own recoil: pushing costs him no grip); 0 lying flat. Hold = min(strength, footing), or the footing alone if he is too heavy to stand; footing = μ × min(m g, what the ground under his feet bears). Bolted: unlimited, whatever his strength (the bolts hold, not his muscles). Both pushes beat the other’s hold: each is pushed by (the other’s push − his hold) over the stroke d = 2.44 m (the shove’s, an estimate), with momentum p = F t and relativistic speeds; slide x = m/(2k) ln(1 + k v²/R), k = ½ρ C_d A. Walk-out: a = min((push − loser’s hold) ÷ m_loser, (his footing − loser’s push) ÷ m_winner), capped at his running speed, over half the ring (3.47 m).
+
+================ wrestle push inf both bolted {"duoAction":"wrestle","inf":true,"anchor":"bolted","oAnchor":"bolted"} eff=allout
+--verdict:
+   Nothing moves, and there is no physical answer: both are bolted to ground their power holds, and each unlimited push meets the other’s bolts, a hold without limit. Each one’s push back goes to the endless ocean (They take their own recoil), and the two pushes on the planet are equal and opposite.
+--chips:
+   Rex holds unlimited · pushes unlimited
+   Ollie holds unlimited · pushes unlimited
+   No physical answer
+--tiles:
+   Winnernobodyno physical answer
+   Rex’s pushunlimitedreal on Ollie; its push back goes to Rex’s source
+   Ollie’s pushunlimitedreal on Rex; its push back goes to Ollie’s source
+--effort:
+   All-out. Everything they have.
+   Courtesy ceiling: none that the lab can judge. The unlimited push into the bolts has no physical answer here (the canon’s ruling), so the lab can’t judge its harm.
+--happens:
+   With They take their own recoil on, a shoving match is decided at the feet of the one being pushed. Each one’s push back goes to his source, so pushing costs him no grip: each pushes with the effort he uses. The other’s push on him is real (a contest lets force move), and only his feet hold against it. (That assumes each leans into the push; upright, a body tips over at a few hundred newtons.)
+   Both bolted: each one’s push goes through the other’s bolts into the ground, and his push back goes to the endless ocean. Unbreakable footing: the ground never breaks, so nothing gives.
+--math:
+   Push = the effort he uses, if he can stand (They take their own recoil: pushing costs him no grip); 0 lying flat. Hold = min(strength, footing), or the footing alone if he is too heavy to stand; footing = μ × min(m g, what the ground under his feet bears). Bolted: unlimited, whatever his strength (the bolts hold, not his muscles). Both pushes beat the other’s hold: each is pushed by (the other’s push − his hold) over the stroke d = 2.44 m (the shove’s, an estimate), with momentum p = F t and relativistic speeds; slide x = m/(2k) ln(1 + k v²/R), k = ½ρ C_d A. Walk-out: a = min((push − loser’s hold) ÷ m_loser, (his footing − loser’s push) ÷ m_winner), capped at his running speed, over half the ring (3.47 m).
+
+================ wrestle push unequal {"duoAction":"wrestle"} eff=allout oKg=5
+--verdict:
+   Pushing straight across, both are shoved apart. They take their own recoil, so neither push costs the pusher his grip: each pushes with the effort he uses (Rex 890 kN, Ollie 981 kN), about 50 times what holds the other (17.7 kN each). Rex flies back at 28.7 m/s and slides 65.8 m; Ollie at 26 m/s, sliding 54.4 m.
+--chips:
+   Rex holds 17.7 kN · pushes 890 kN
+   Ollie holds 17.7 kN · pushes 981 kN
+   Both shoved apart
+--tiles:
+   Winnernobodyboth are shoved apart
+   Rex leaves at28.7 m/sslides 65.8 m
+   Ollie leaves at26 m/sslides 54.4 m
+   Rex’s push890 kNreal on Ollie; its push back goes to Rex’s source
+   Ollie’s push981 kNreal on Rex; its push back goes to Ollie’s source
+--effort:
+   All-out. Everything they have.
+   Courtesy ceiling: 10% (lifting 9.06 t). Past that, both are shoved apart and slide past the nearest people 5 m away (Rex 5.12 m, Ollie 5.12 m).
+   At this effort both are shoved apart and slide past the nearest people 5 m away (Rex 65.8 m, Ollie 54.4 m)
+--callout:
+   Each is strong enough to lift the other, so a real bout goes to whoever gets lower first and pushes upward, taking the weight off the other’s feet. The sim can’t model that.
+--happens:
+   With They take their own recoil on, a shoving match is decided at the feet of the one being pushed. Each one’s push back goes to his source, so pushing costs him no grip: each pushes with the effort he uses. The other’s push on him is real (a contest lets force move), and only his feet hold against it. (That assumes each leans into the push; upright, a body tips over at a few hundred newtons.)
+   Each is pushed by the other’s push, less his own hold, over the shove’s stroke (2.44 m, an estimate) while their hands stay on each other; then each slides to a stop on his feet against friction and air drag. A real body would tumble; the lab keeps him upright.
+   They take their own recoil: each one’s push back goes to the endless ocean (Rex 79,000 kg·m/s, Ollie 88,000 kg·m/s, over the push), so none of it reaches the ground. His feet hand the ground only what they hold against the other’s push (1,600 kg·m/s each), a friction drag while he slides.
+--bars:
+   10 kN
+   100 kN
+   1 MN
+   Rex’s strength
+   890 kN
+   Rex’s footing holds
+   17.7 kN
+   Rex’s push
+   890 kN
+   Ollie’s strength
+   981 kN
+   Ollie’s footing holds
+   17.7 kN
+   Ollie’s push
+   981 kN
+--math:
+   Push = the effort he uses, if he can stand (They take their own recoil: pushing costs him no grip); 0 lying flat. Hold = min(strength, footing), or the footing alone if he is too heavy to stand; footing = μ × min(m g, what the ground under his feet bears). Bolted: unlimited, whatever his strength (the bolts hold, not his muscles). Both pushes beat the other’s hold: each is pushed by (the other’s push − his hold) over the stroke d = 2.44 m (the shove’s, an estimate), with momentum p = F t and relativistic speeds; slide x = m/(2k) ln(1 + k v²/R), k = ½ρ C_d A. Walk-out: a = min((push − loser’s hold) ÷ m_loser, (his footing − loser’s push) ÷ m_winner), capped at his running speed, over half the ring (3.47 m).
+
+================ both at once inf rex bolted {"duoAction":"wrestle","wrestleMove":"shove","wrestleWho":"both","anchor":"bolted","inf":true} eff=allout
+--verdict:
+   Rex is bolted to ground that their power holds, so Ollie’s unlimited shove into his bolts meets a hold without limit: that shove has no physical answer (the canon’s ruling), and it moves nobody. Rex’s own shove on Ollie is real (a contest lets force move): Ollie leaves at just under light speed. The air in Ollie’s path turns into a fireball.
+--chips:
+   No physical answer for Ollie’s shove
+   Rex stays put
+--tiles:
+   Shove forceunlimitedtwo hands, over 2.44 m
+   Ollie leaves atlight speed (to the last digit)
+   Rex is shoved back at0 m/s
+   Energy∞ Junbounded energy
+--effort:
+   All-out. Everything they have.
+   Courtesy ceiling: lifting 8.74 t. Past that, one of them slides 5.17 m, past the nearest people 5 m away. The unlimited shove into the bolts has no physical answer here (the canon’s ruling), so the lab can’t judge its harm.
+   At this effort someone flies off faster than sound
+--happens:
+   Newton’s third law holds between their hands, but each one’s push back goes to his source. Rex’s (unbounded) goes to the endless ocean, and Ollie leaves with what Rex’s shove gives him; Ollie’s unlimited shove into Rex’s bolts has no physical answer.
+   Both shove at once, and they take their own recoil: the other’s shove on each is real (a contest lets force move), so each is shoved by the other’s shove, worked out as on the Shove tab (its shover planted, his partner on his footing). With both moving at once each push runs out of stroke sooner, so these speeds are an upper bound.
+   Past about 1% of light speed the air ahead can’t get out of the way: it is shock-heated into plasma. Ollie is indestructible; everything around him isn’t.
+   They take their own recoil: each one’s push back goes into their source, the endless ocean, so none of it reaches the ground; each moves only with the other’s shove.
+--math:
+   Shove: two hands at 17% of strength each, capped at full strength, over a 2.44 m stroke; same two-body push as the throw, with Ollie’s footing resisting. Slide: m v dv/dx = −(footing + ½ρ Cd A v²) → x = m/(2k) ln(1 + k v²/footing).
+
+================ both at once inf ollie bolted {"duoAction":"wrestle","wrestleMove":"shove","wrestleWho":"both","oAnchor":"bolted","inf":true} eff=allout
+--verdict:
+   Ollie is bolted to ground that their power holds, so Rex’s unlimited shove into his bolts meets a hold without limit: that shove has no physical answer (the canon’s ruling), and it moves nobody. Ollie’s own shove on Rex is real (a contest lets force move): Rex leaves at just under light speed. The air in Rex’s path turns into a fireball.
+--chips:
+   No physical answer for Rex’s shove
+   Ollie is bolted: doesn’t move
+   Rex is shoved back by Ollie’s shove
+--tiles:
+   Ollie’s shoveunlimitedtwo hands, over 2.44 m
+   Ollie movesnot at allbolted
+   Rex is shoved back atlight speed (to the last digit)
+   Energy∞ Junbounded energy
+--effort:
+   All-out. Everything they have.
+   Courtesy ceiling: lifting 8.74 t. Past that, one of them slides 5.17 m, past the nearest people 5 m away. The unlimited shove into the bolts has no physical answer here (the canon’s ruling), so the lab can’t judge its harm.
+   At this effort someone flies off faster than sound
+--happens:
+   Newton’s third law holds between their hands, but each one’s push back goes to his source. Ollie’s (unbounded) goes to the endless ocean, and Rex leaves with what Ollie’s shove gives him; Rex’s unlimited shove into Ollie’s bolts has no physical answer.
+   Both shove at once, and they take their own recoil: the other’s shove on each is real (a contest lets force move), so each is shoved by the other’s shove, worked out as on the Shove tab (its shover planted, his partner on his footing). With both moving at once each push runs out of stroke sooner, so these speeds are an upper bound.
+   Past about 1% of light speed the air ahead can’t get out of the way: it is shock-heated into plasma. Rex is indestructible; everything around him isn’t.
+   They take their own recoil: each one’s push back goes into their source, the endless ocean, so none of it reaches the ground; each moves only with the other’s shove.
+--math:
+   Shove: two hands at 17% of strength each, capped at full strength, over a 2.44 m stroke; same two-body push as the throw, with Ollie’s footing resisting. Slide: m v dv/dx = −(footing + ½ρ Cd A v²) → x = m/(2k) ln(1 + k v²/footing).
+
+================ both at once ollie bolted {"duoAction":"wrestle","wrestleMove":"shove","wrestleWho":"both","oAnchor":"bolted"} eff=allout
+--verdict:
+   Ollie is bolted to the planet, so Rex’s shove doesn’t move him; but Ollie’s own shove on Rex is real: Rex flies back at 21.1 m/s and slides 36.8 m.
+--chips:
+   Comic mode: real muscle does better here, so this uses it
+   Ollie is bolted: doesn’t move
+   Rex is shoved back by Ollie’s shove
+--tiles:
+   Ollie’s shove890 kNtwo hands, over 2.44 m
+   Ollie movesnot at allbolted
+   Rex is shoved back at21.1 m/s
+   Rex slides36.8 mfriction and air drag stop him
+   Energy671 kJ160 g TNT
+--effort:
+   All-out. Everything they have.
+   Courtesy ceiling: 9.6% (lifting 8.74 t). Past that, one of them slides 5.17 m, past the nearest people 5 m away.
+   At this effort one of them slides 36.8 m, past the nearest people 5 m away
+--happens:
+   Newton’s third law holds between their hands, but each one’s push back goes to his source. Ollie’s (67,000 kg·m/s) goes to the endless ocean, and Rex leaves with what Ollie’s shove gives him; Ollie’s bolts hold against Rex’s shove.
+   Both shove at once, and they take their own recoil: the other’s shove on each is real (a contest lets force move), so each is shoved by the other’s shove, worked out as on the Shove tab (its shover planted, his partner on his footing). With both moving at once each push runs out of stroke sooner, so these speeds are an upper bound.
+   After the push, Rex slides on his feet against friction and air drag, at least as far as shown (sliding friction is a bit lower than the grip used here). A real body would tumble; the sim keeps him upright.
+   They take their own recoil: each one’s push back goes into their source, the endless ocean, so none of it reaches the ground; each moves only with the other’s shove.
+--math:
+   Shove: two hands at 17% of strength each, capped at full strength, over a 2.44 m stroke; same two-body push as the throw, with Ollie’s footing resisting. Slide: m v dv/dx = −(footing + ½ρ Cd A v²) → x = m/(2k) ln(1 + k v²/footing).
+
+================ arm 1t keepForm off {"duoAction":"arm","keepForm":false} eff=allout oKg=3
+--verdict:
+   The table can’t take the pin. Rex’s arm (222 kN) beats Ollie’s (2.45 kN), and forcing it down loads Ollie’s elbow pad with about 24.2 kN (what turns his forearm against Rex’s hand), more than the 15.1 kN the table carries. It tears out. Standing up, Rex’s push back goes to his source, so his footing doesn’t cap his press: he presses with his full 222 kN. That beats Ollie’s arm (2.45 kN): he pins Ollie in 22 ms. The back of Ollie’s hand swings down at 83 m/s.
+--chips:
+   Usable push: Rex 222 kN · Ollie 2.45 kN
+   Rex’s feet hold
+   Ollie’s feet hold
+   Table tears apart (pegs and pads)
+--tiles:
+   Pushing force222 kN vs 2.45 kNarm 25% of strength (estimate, 10–40%)
+   Time to pin22 msRex wins
+   Hand speed at the pin83 m/s
+   Energy in the forearms200 kJ48 g TNT
+   Twist on the upper arms129 kN·m / 1.42 kN·mRex / Ollie; the larger is 680× the ~190 N·m a healthy human upper-arm bone takes in theory (cadaver bones broke at 25–31 N·m)
+   Feet hold up to17.7 kN / 17.7 kNRex / Ollie
+--effort:
+   All-out. Everything they have.
+   Courtesy ceiling: none. Even at the least they need to stand and walk, the pin cracks the table.
+   At this effort the table tears apart
+--happens:
+   Newton’s third law: the push between their hands is the same both ways. Each one’s own push back goes to his source (They take their own recoil), but the other’s press on him is real (a contest lets force move). Under the rules each grips the table’s peg with his free hand and rests his elbow on a pad bolted to the table, so each pad holds the other’s press, and the table carries the push between them, not their feet. A regulation table scaled to their size takes roughly 15.1 kN sideways before a peg or pad tears out (an estimate).
+   Forcing an arm down: the winner’s elbow pad holds the loser’s press, 2.45 kN here. Spinning both forearms is the winner’s swing, whose push back goes to his source (They take their own recoil), so it adds nothing to his pad. The loser’s pad still carries what turns his own forearm against the winner’s hand, about 24.2 kN: that is a force on the loser, not anyone’s push back, so no power takes it. That is more than the table carries, so the pin breaks it.
+   With the table gone they’re arm-wrestling standing up. Each one’s push back goes to his source, so his own footing doesn’t cap his press; but the other’s press on him is real, and only his feet hold against it: Rex standing on the concrete slab, holds 17.7 kN; Ollie standing on the concrete slab, holds 17.7 kN. That assumes they lean into the push; standing upright, a body tips over at a few hundred newtons.
+   Rex’s 220 kN surplus over Ollie’s arm spins both forearms (together they act like 58.2 kg at the hand) a quarter turn, 91 cm.
+   In people, a full-force twist like this is how the upper arm snaps: in one series of 30 arm-wrestling fractures, all were spiral breaks of the humerus. A healthy humerus takes roughly 190 N·m in theory; cadaver bones broke at 25–31 N·m. Rex and Ollie are indestructible.
+--bars:
+   1 kN
+   10 kN
+   100 kN
+   1 MN
+   Rex’s arm
+   222 kN
+   Rex’s feet hold
+   17.7 kN
+   Ollie’s arm
+   2.45 kN
+   Ollie’s feet hold
+   17.7 kN
+   Table, sideways (pegs and pads)
+   15.1 kN
+--math:
+   Arm force = 25% of strength in both muscle models (estimate, plausibly 10–40%: ordinary men’s measured arm force against an assumed 1–2× body-weight deadlift): Rex 222 kN, Ollie 2.45 kN. The table carries the push while both arms stay under 15.1 kN (each pad holds the other’s press). Once it breaks they stand: each presses with his full arm force (his push back goes to his source, so his footing doesn’t cap it), and each one’s feet hold against the other’s press: footing = μ × min(m g, what the ground under his feet bears); unlimited if bolted. The stronger press pins the weaker arm. Elbow pads during a pin: the winner’s holds the loser’s press, 2.45 kN (the winner’s swing pushes back into his source, not his pad). The loser’s holds what turns his forearm about the elbow against the winner’s hand, from torques about his elbow: |0.012 m_loser a − (loser’s arm + 0.0097 m_loser a)|, a = (winner’s arm − loser’s arm) / (0.0097 × (m_Rex + m_Ollie)), = 24.2 kN. Pin: net 220 kN (winner’s push − loser’s arm) on M = 0.0097 × (m_Rex + m_Ollie) = 58.2 kg over s = (π/2) × 0.19 × height = 91 cm; relativistic momentum; real muscle force falls with hand speed (Hill, top hand speed borrowed from the punch). The losing arm’s extra strength while it is forced back (about 8% in people) is ignored. Twist on each upper arm = the force his own arm presses with × 0.19 × his height. A pinned arm still presses with all it has; an arm that holds carries the whole push. Gravity between them: F = G m₁ m₂ / d², d = 1.91 m across the table.
+
+================ arm tear bolted loser {"duoAction":"arm","keepForm":false,"unbreakable":false,"oAnchor":"bolted","logKg":6} eff=allout oKg=4.957694
+--verdict:
+   The table breaks first: both arms out-push its 15.1 kN. Standing up, Rex’s push back goes to his source, so his footing doesn’t cap his press: he presses with his full 2.45 MN. That beats Ollie’s arm (224 kN): he pins Ollie in 6.9 ms. Ollie’s press is more than Rex’s feet hold (17.7 kN), so Rex’s feet slide too. The back of Ollie’s hand swings down at 264 m/s.
+--chips:
+   Usable push: Rex 2.45 MN · Ollie 224 kN
+   Rex’s feet slide: the other’s press beats 17.7 kN
+   Ollie bolted
+   Table tears apart (pegs and pads)
+--tiles:
+   Pushing force2.45 MN vs 224 kNarm 25% of strength (estimate, 10–40%)
+   Time to pin6.9 msRex wins
+   Hand speed at the pin264 m/s
+   Energy in the forearms2.03 MJ480 g TNT
+   Twist on the upper arms1.42 MN·m / 129 kN·mRex / Ollie; the larger is 7,500× the ~190 N·m a healthy human upper-arm bone takes in theory (cadaver bones broke at 25–31 N·m)
+   Feet hold up to17.7 kN / unlimitedRex / Ollie
+--effort:
+   All-out. Everything they have.
+   Courtesy ceiling: 0.61% (lifting 6.1 t). Past that, the table tears apart.
+   At this effort the table tears apart
+--happens:
+   Newton’s third law: the push between their hands is the same both ways. Each one’s own push back goes to his source (They take their own recoil), but the other’s press on him is real (a contest lets force move). Under the rules each grips the table’s peg with his free hand and rests his elbow on a pad bolted to the table, so each pad holds the other’s press, and the table carries the push between them, not their feet. A regulation table scaled to their size takes roughly 15.1 kN sideways before a peg or pad tears out (an estimate).
+   With the table gone they’re arm-wrestling standing up. Each one’s push back goes to his source, so his own footing doesn’t cap his press; but the other’s press on him is real, and only his feet hold against it: Rex standing on the concrete slab, holds 17.7 kN; Ollie bolted to the planet. That assumes they lean into the push; standing upright, a body tips over at a few hundred newtons.
+   Rex’s 2.23 MN surplus over Ollie’s arm spins both forearms (together they act like 58.2 kg at the hand) a quarter turn, 91 cm. Rex’s feet hold less than Ollie’s press, so they slide too.
+   In people, a full-force twist like this is how the upper arm snaps: in one series of 30 arm-wrestling fractures, all were spiral breaks of the humerus. A healthy humerus takes roughly 190 N·m in theory; cadaver bones broke at 25–31 N·m. Rex and Ollie are indestructible.
+--bars:
+   10 kN
+   100 kN
+   1 MN
+   10 MN
+   Rex’s arm
+   2.45 MN
+   Rex’s feet hold
+   17.7 kN
+   Ollie’s arm
+   224 kN
+   Table, sideways (pegs and pads)
+   15.1 kN
+--math:
+   Arm force = 25% of strength in both muscle models (estimate, plausibly 10–40%: ordinary men’s measured arm force against an assumed 1–2× body-weight deadlift): Rex 2.45 MN, Ollie 224 kN. The table carries the push while both arms stay under 15.1 kN (each pad holds the other’s press). Once it breaks they stand: each presses with his full arm force (his push back goes to his source, so his footing doesn’t cap it), and each one’s feet hold against the other’s press: footing = μ × min(m g, what the ground under his feet bears); unlimited if bolted. The stronger press pins the weaker arm. Pin: net 2.23 MN (winner’s push − loser’s arm) on M = 0.0097 × (m_Rex + m_Ollie) = 58.2 kg over s = (π/2) × 0.19 × height = 91 cm; relativistic momentum; real muscle force falls with hand speed (Hill, top hand speed borrowed from the punch). The losing arm’s extra strength while it is forced back (about 8% in people) is ignored. Twist on each upper arm = the force his own arm presses with × 0.19 × his height. A pinned arm still presses with all it has; an arm that holds carries the whole push. Gravity between them: F = G m₁ m₂ / d², d = 1.91 m across the table.
+
+================ catch fireball before 1 km {"duoAction":"catch","cObj":"baseball","cStyle":"hard","logKg":14,"keepForm":false,"airAbsorb":0.5,"cLogD":3} eff=allout
+--verdict:
+   At 2.36% of light speed the baseball turns into a fireball within about 55.6 m of Rex’s hand, before it reaches Ollie. The fireball keeps rushing toward him, and what hits him 1 km away is a blast carrying up to 3.44 TJ, the heat made in the air (its motion as it reaches him is taken back: below). Never knocked back: it doesn’t move Ollie. Its momentum (1 million kg·m/s) goes to the endless ocean, and stopping it frees 3.63 TJ where he stands.
+--chips:
+   Fireball, no ball arrives
+   Never knocked back: Ollie isn’t moved
+--effort:
+   All-out. Everything they have.
+   Courtesy ceiling: lifting 10,100 t. Past that, a throw breaks the sound barrier.
+   At this effort the baseball is destroyed
+--happens:
+   His hand still meets real air (their own bodies do): it breaks the sound barrier as he lets go, so the boom stays, and over the end of the throw it drives about 143 g of air ahead of it, up to 1.7 kt TNT of blast at his hand (an upper bound: the hand speeds up through the throw). The effort and courtesy ceiling count it.
+   They take their own recoil: the push back from the throw (1 million kg·m/s) goes into their source, the endless ocean, so none of it reaches the ground and Rex stays put (without it he would be shoved back at 341 m/s).
+   They take their own recoil doesn’t cover this: Ollie doesn’t catch it, it hits him, and an incoming hit isn’t his own push back. That is Never knocked back’s case, and Ollie’s switch is on (Their powers): he isn’t moved, and its momentum goes to the endless ocean. With it off, it would carry him off.
+   Past 1% of light speed the air can’t get out of the way. The baseball keeps its momentum while it scoops up air; by about 55.6 m half its energy has turned to heat (it sweeps air at 50% of the real rate: the share of the drag that still acts).
+   Stopping it at Ollie frees 3.63 TJ (870 t TNT) where he stands. 3.44 TJ of it is heat already made in the air on the way: that is real. The rest, 192 GJ, is its motion, freed as it stops at him: canon takes a hit’s freed energy back by default (it shows as his shimmer, which the lab doesn’t draw yet), so that part goes to the endless ocean, unless he means it (a blast preset). He isn’t moved, so nothing rides on with him.
+--bars:
+   10 cm
+   1 m
+   10 m
+   100 m
+   1 km
+   10 km
+   Windows shatter
+   1.26 km
+   Houses collapse
+   492 m
+   Eardrums start to burst
+   429 m
+   Lung damage
+   280 m
+   Pressure kills half
+   138 m
+--math:
+   Aim: the gentlest throw is the angle needing the least launch speed, each speed solved so the arc comes down at Ollie’s hand height (2.74 m) where his hands meet it, 1.82 m in front of his centre. Same air and round-Earth model as Throw. Fastball: his full-strength speed at each angle; the flattest angle whose path passes Ollie’s hands. Above 1% of c (snowplow, relativity included): with x = 0.5 × air swept / m (the share of the drag that still acts), heat = 2E x / (√((1+x)² + 2(γ−1)x) + 1 + x); half its energy is heat at x = 1 + (γ−1)/4, about 55.6 m. Never knocked back (Ollie’s switch): he isn’t moved, so stopped at Ollie it frees all of E; its momentum p goes to the endless ocean. The heat made on the way is real; its motion as it reaches him is taken back unless he means it.

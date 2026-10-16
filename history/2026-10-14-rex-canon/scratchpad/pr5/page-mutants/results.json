@@ -1,0 +1,367 @@
+[
+ {
+  "name": "no-tile-stomp",
+  "what": "the Stomp tab without its Shimmer tile",
+  "guards": "solo-tiles",
+  "failed": [
+   "solo-tiles"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 58,
+  "guardFails": true
+ },
+ {
+  "name": "tile-first-throw",
+  "what": "the Throw tab's tile first in its row, not last",
+  "guards": "solo-tiles",
+  "failed": [
+   "solo-tiles"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 59,
+  "guardFails": true
+ },
+ {
+  "name": "no-ladder-wording",
+  "what": "the tile without the ladder's comparison",
+  "guards": "solo-tiles",
+  "failed": [
+   "solo-tiles",
+   "duo-who",
+   "weight"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 58,
+  "guardFails": true
+ },
+ {
+  "name": "tile-when-zero",
+  "what": "a tile where nothing is taken back (the E > 0 guard gone)",
+  "guards": "powers-off",
+  "failed": [
+   "solo-tiles",
+   "powers-off"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 58,
+  "guardFails": true
+ },
+ {
+  "name": "glow-never-hidden",
+  "what": "the glow layer never hidden (drawn at strength 0 too)",
+  "guards": "powers-off",
+  "failed": [
+   "solo-tiles",
+   "powers-off",
+   "follows"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 58,
+  "guardFails": true
+ },
+ {
+  "name": "no-tile-collide",
+  "what": "Collide without its Shimmer tile",
+  "guards": "duo-tiles",
+  "failed": [
+   "duo-tiles",
+   "duo-who",
+   "powers-off",
+   "follows",
+   "copy"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 58,
+  "guardFails": true
+ },
+ {
+  "name": "level-total",
+  "what": "the tile's level from both of them together, not Rex's take",
+  "guards": "duo-tiles",
+  "failed": [
+   "duo-tiles",
+   "follows"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 59,
+  "guardFails": true
+ },
+ {
+  "name": "who-unnamed",
+  "what": "the two-player lines without who takes it in",
+  "guards": "duo-who",
+  "failed": [
+   "duo-who",
+   "follows",
+   "copy"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 59,
+  "guardFails": true
+ },
+ {
+  "name": "ollie-note-missing",
+  "what": "no note that canon gives the shimmer to Rex",
+  "guards": "duo-who",
+  "failed": [
+   "duo-who"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 58,
+  "guardFails": true
+ },
+ {
+  "name": "catch-return-always",
+  "what": "the game of catch counting the return leg after any outcome",
+  "guards": "duo-who",
+  "failed": [
+   "duo-tiles",
+   "duo-who"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 60,
+  "guardFails": true
+ },
+ {
+  "name": "no-weight-tile",
+  "what": "the growth what-if without its tile",
+  "guards": "weight",
+  "failed": [
+   "weight"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 59,
+  "guardFails": true
+ },
+ {
+  "name": "weight-three-figures",
+  "what": "the growth what-if's rough energy to three figures",
+  "guards": "weight",
+  "failed": [
+   "weight"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 58,
+  "guardFails": true
+ },
+ {
+  "name": "infinity-in-tile",
+  "what": "an unbounded energy printed as a figure (\u221e J)",
+  "guards": "unbounded",
+  "failed": [
+   "unbounded"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 59,
+  "guardFails": true
+ },
+ {
+  "name": "glow-not-aria-hidden",
+  "what": "the glow layers without aria-hidden",
+  "guards": "a11y",
+  "failed": [
+   "a11y"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 58,
+  "guardFails": true
+ },
+ {
+  "name": "tile-aria-hidden",
+  "what": "the tile hidden from screen readers",
+  "guards": "a11y",
+  "failed": [
+   "a11y"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 58,
+  "guardFails": true
+ },
+ {
+  "name": "header-not-following",
+  "what": "the header glow not set from Rex's tab",
+  "guards": "follows",
+  "failed": [
+   "solo-tiles",
+   "weight",
+   "follows",
+   "glow-features",
+   "layout"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 58,
+  "guardFails": true
+ },
+ {
+  "name": "collide-art-total",
+  "what": "the Collide picture glowing with both takes, not Rex's",
+  "guards": "follows",
+  "failed": [
+   "follows"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 61,
+  "guardFails": true
+ },
+ {
+  "name": "catch-heat-text",
+  "what": "the catch saying its energy ends up as heat in his plush with the power on",
+  "guards": "copy",
+  "failed": [
+   "copy"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 60,
+  "guardFails": true
+ },
+ {
+  "name": "toss-heat-text",
+  "what": "the partner toss saying its energy ends up as heat in his plush with the power on",
+  "guards": "copy",
+  "failed": [
+   "copy"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 59,
+  "guardFails": true
+ },
+ {
+  "name": "collide-not-drawn",
+  "what": "Collide's hit tile saying the shimmer isn't drawn yet",
+  "guards": "copy",
+  "failed": [
+   "copy"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 59,
+  "guardFails": true
+ },
+ {
+  "name": "fireball-not-drawn",
+  "what": "the fireball saying the shimmer isn't drawn yet",
+  "guards": "copy",
+  "failed": [
+   "copy"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 60,
+  "guardFails": true
+ },
+ {
+  "name": "throw-drag-note",
+  "what": "the Throw tab's drag-free item without the shimmer's figure",
+  "guards": "copy",
+  "failed": [
+   "copy"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 60,
+  "guardFails": true
+ },
+ {
+  "name": "stop-motion",
+  "what": "Collide's carry without the charger's motion going to his source",
+  "guards": "copy",
+  "failed": [
+   "copy"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 60,
+  "guardFails": true
+ },
+ {
+  "name": "spots-shifted",
+  "what": "the glows moved off his features (15% of the width to the right)",
+  "guards": "glow-features",
+  "failed": [
+   "glow-features"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 59,
+  "guardFails": true
+ },
+ {
+  "name": "spots-huge",
+  "what": "glows five times as wide, over the background and spires",
+  "guards": "glow-features",
+  "failed": [
+   "glow-features"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 58,
+  "guardFails": true
+ },
+ {
+  "name": "no-overflow-hidden",
+  "what": "the picture boxes not clipping the glow",
+  "guards": "layout",
+  "failed": [
+   "layout"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 62,
+  "guardFails": true
+ },
+ {
+  "name": "box-wider-390",
+  "what": "at 480 px and below, the Collide picture's box wider than its image",
+  "guards": "layout",
+  "failed": [
+   "layout"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 63,
+  "guardFails": true
+ },
+ {
+  "name": "tile-too-wide",
+  "what": "the tile wider than a phone (it pushes the page sideways)",
+  "guards": "no-scroll",
+  "failed": [
+   "no-scroll"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 63,
+  "guardFails": true
+ },
+ {
+  "name": "animation-unguarded",
+  "what": "the shimmer animated outside the reduced-motion guard",
+  "guards": "motion",
+  "failed": [
+   "motion"
+  ],
+  "crashed": false,
+  "exit": 1,
+  "seconds": 62,
+  "guardFails": true
+ }
+]

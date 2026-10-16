@@ -1,0 +1,14 @@
+const H = require('./h.js')();
+const { P, g, obj, R3, O3, c9, TB, sig, PE } = H;
+const A = c9(1e12 * g), B = c9(1e12 * g, O3), ob = obj('person');
+const D0 = Math.pow(10, 4.5);
+const a = P.catchLeg(A, B, ob, D0, 'hard');
+const tb = TB('catch', { a }, { A, B, whoA: 'rex', obj: ob });
+const E0 = P.keFromV(a.aim.vE, ob.m) + PE(ob.m, a.h0);
+const f = P.flyTo({ v0: a.aim.vE, thetaDeg: a.aim.thetaDeg, h0: a.h0, hStop: 0, xStop: a.Dfl, Dend: a.Dfl, m: ob.m, A: ob.area, Cd: ob.Cd, CdSup: ob.CdSup });
+const Eend = f.crossedX ? P.keFromV(f.vAtX, ob.m) + PE(ob.m, f.hAtX) : P.keFromV(f.vImpact, ob.m);
+console.log('result', a.result, 'vL', sig(a.aim.vL), 'vE', sig(a.aim.vE), 'theta', sig(a.aim.thetaDeg), 'vArrive', sig(a.vArrive), 'h0', sig(a.h0), 'hStop', sig(a.hStop), 'Dfl', sig(a.Dfl));
+console.log('E0', E0, 'Ecatch', a.catch.Ecatch, 'KE(vArrive)', P.keFromV(a.vArrive, ob.m));
+console.log('full-drag flight: crossedX', f.crossedX, 'landed', f.landed, 'hAtX', f.hAtX, 'vAtX', f.vAtX, 'vImpact', f.vImpact, 'dragE', f.dragE, 'E0-Eend', E0 - Eend);
+console.log('tally', JSON.stringify(tb.by.rex.parts), JSON.stringify(tb.by.ollie.parts));
+console.log('drag part / catch', tb.parts.drag / a.catch.Ecatch);

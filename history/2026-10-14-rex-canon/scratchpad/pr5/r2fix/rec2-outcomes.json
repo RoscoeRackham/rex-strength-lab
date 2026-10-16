@@ -1,0 +1,80 @@
+{
+ "design-crest-tips-off-feathers": {
+  "reverts": [
+   "F2-design-tips-page",
+   "F2-design-tips-page-and-check"
+  ],
+  "text": "Fixed by measuring the tips from the image file, as the session lead asked, rather than copying the skeptic's six points; the skeptic's control is taken as given. scratchpad pr5/r2fix/js/tips.py reads assets/dino.jpg (432 x 558 px), marks its crest-coloured pixels (a warm hue, 12-50 degrees, saturation at least 0.28, value at least 0.45; the grey backdrop is 0.10-0.18 saturated, the tan tips 0.35-0.55), finds each tip's end (the top crest's local tops of the tan mask's top edge, x 125-212, with the leftmost feather's own top, x 130-142, since its top meets the next feather's flank; the neck fringe's local right ends, y 36-180), and puts each spot a little inside it: the centroid of the tan pixels within 9 px of the tip's end (within 7 px left up to 27% of a full glow on the backdrop; 9 px leaves 5-17%). All eleven were re-measured: (0.327, 0.046), (0.359, 0.025), (0.395, 0.015), (0.432, 0.031), (0.473, 0.055), (0.516, 0.097), (0.538, 0.135), (0.570, 0.181), (0.598, 0.221), (0.628, 0.266), (0.653, 0.298), in src/app.html's ART_GLOW.dino and the check's own copy, FEAT.hero. Against the skeptic's points: the first five agree within about 1.5 px; the sixth is the first neck feather's outer end, (224, 54) px, where the skeptic's (213, 45) is that feather's top-left corner; the last five moved 2-5 px from the fringe's inner edge out onto its tips (the task's rule: every spot centred on a tip). Glow-weighted share at full (grow 1.2, the review's overlap.py, pr5/r2fix/js/overlap2.py): 5-17% over the backdrop (the old first six 40-95%), 42-78% over the tan. The Collide picture's spike spots are unchanged: its spikes' sunlit ends are nearly white, so a colour test can't tell a spike from the sky there (its last spot, (0.619, 0.090), reads (204, 180, 184) on the spike's pale end), and glow-features already requires every one of its tips to brighten. Checks: a new pr5 [crest-tips] (every crest-tip spot on the header picture, the page's eleven read from its glow layer and the check's own eleven, sits on crest-coloured pixels of assets/dino.jpg, which the test reads itself: the same colour rule over 3 x 3 px at its centre); pr5 [glow-features] with the new coordinates, every tip now at least +6 (it had been 70% of them), and the skeptic's narrow-window control on the background beside the crest top, (0.48, 0.02) over a half-width of 0.006 of the picture's width. Measured: the header's tips +50.6 on average at 1280 px (each at least +35), +45.5 at 390 px (each at least +36), the background beside the crest 0.0 at both, light and dark. Looked at: crops of the header at 390 and 1280 px, light and dark, at none, a faint glow (the stomp at 10^9 kg, strength 0.262) and full (scratchpad pr5/r2fix/design/crops-new): each glow sits on a feather tip, none in the grey. README decision 21 and test 10. Reverted on its own in a scratch copy (scratchpad pr5/r2fix/js/revert2.py, results in pr5/r2fix/revert2-results.json): {REVERTS}. Restored: the --pr5 block passes."
+ },
+ "copy-1": {
+  "reverts": [
+   "F2-copy1-share-sentence"
+  ],
+  "text": "Fixed with the skeptic's better fix: below 100% absorbed the Throw tab's item says 'The shimmer (the Shimmer tile) counts their power's P share of what real air would take from this same throw at the full drag[, less what is still in their landing, which Safe passenger takes back]: X. That is not what their power cancels along the flight it actually flies, which slows less than in real air.' It names the figure by what it is, so it is true where the blast's figure is the same (the air's share at 50%) and where it differs. On the page: the baseball at 45 degrees, 10^6 kg, half absorbed: 'The blast near him counts the 50% share of what real air would take from the same throw (36.2 kJ), so 18.1 kJ ... The shimmer (the Shimmer tile) counts their power's 50% share of what real air would take from this same throw at the full drag: 18.1 kJ.'; the car at 20 degrees, half absorbed: 132 kJ, the tile's. Check: pr5 [share-copy] (the car at 20 degrees and the supersonic baseball at 10^6 kg, both half absorbed: the new sentence with the tile's figure and the engine's drag part, the blast's figure equal to it at 50%, and no 'a different figure,' in the bay). README decision 24. Reverted on its own in a scratch copy: {REVERTS}. Restored: the --pr5 block passes."
+ },
+ "copy-2": {
+  "reverts": [
+   "F2-copy2-card"
+  ],
+  "text": "Fixed with the skeptic's better fix and its optional sentence: the Their powers card says 'But with this power on, three things their own moves free go to the endless ocean too, and the Shimmer tile counts them: a catch's energy (...) and, in Collide's charge, the hit's freed energy (...) and the charger's own stop, ... Nothing else their moves free is this power's to take back: a punch's or clap's blast is Silent strike's, the ground a stomp would break is Unbreakable footing's, and a throw's energy stays in what is thrown.' The README's Known limits (the They take their own recoil bullet) says the same. Checks: pr5 [recoil-card] (the new wording; neither old one); scratchpad pr5/r2fix/js/docs2.py copy2 (README Known limits). Reverted on its own in a scratch copy: {REVERTS}; the README at f6d20c3 -> docs2.py copy2 fails. Restored: both pass."
+ },
+ "copy-3": {
+  "reverts": [
+   "F2-copy3-card"
+  ],
+  "text": "Fixed with the skeptic's better fix: the shimmer card says 'The drag counted is the share their power takes back (the Air resistance absorbed slider) of what real air would have taken from the same throw: one more flight at the full drag, ...', and the pull request's description 'The drag counted is the absorbed share of what real air would have taken from the same throw, ...'. Searched further for the same claim: the README's Known limits for the shimmer ('The drag the shimmer counts is what real air would have taken') and the owner's item 1 (in the README and the description alike) said it too; both now say the share their power takes back. Checks: pr5 [shimmer-card] (the new phrase, and not the old); docs2.py copy3 (the description's engine bullet and the README's Known limits). Reverted on its own in a scratch copy: {REVERTS}; the description and README at f6d20c3 -> docs2.py copy3 fails. Restored: both pass."
+ },
+ "copy-4": {
+  "reverts": [
+   "F2-copy4-wrestle-label",
+   "F2-copy4-toss-label",
+   "F2-copy4-catch-label"
+  ],
+  "text": "Fixed with the skeptic's better fix, the label (the alternative, P.fastAir's figure past 1% of light speed, would change the engine's figure and is the owner's item 1, left as it is): with a drag part past 1% of light speed, the Wrestle throw's items add 'The shimmer (the Shimmer tile) counts [the P share of] what real air would have taken, X: past 1% of light speed the lab gives real air all of his energy, an upper bound.', and the partner toss's the same (a toss at or past V_FIREBALL). Followed into the game of catch, where the same defect was found while fixing this one: a leg past 1% of light speed (a fireball, a fast straight line, a relativistic overshoot) with a drag part showed it unlabelled (a fastball 10 m apart at 10^14 kg with the catch real: 'Rex takes in 3.62 TJ, from the air's drag on what he threw'); it now says 'The shimmer (the Shimmer tile) counts [the P share of] what real air would have taken from Rex's throw, X[, and from Ollie's throw, Y]: past 1% of light speed the lab gives real air all of its energy, an upper bound.' On the page: the 10^6 kg Ollie thrown at 45 degrees at 3 x 10^18 kg, 24.1 EJ; the fastball toss at 10^16 kg, 77 PJ; the fastball 10 m apart at 10^20 kg with their own recoil off, Rex's throw. Check: pr5 [fast-label] (those three, each label's figure the tile's and the engine's drag part; the game of catch's read from its duo-tiles load). README decision 24. Reverted on its own in a scratch copy: {REVERTS}. Restored: the --pr5 block passes."
+ },
+ "code-1": {
+  "reverts": [
+   "F2-code1-engine",
+   "F2-code1-engine-on-page",
+   "F2-code1-page-tile",
+   "F2-code1-page-sentence",
+   "F2-code1-card"
+  ],
+  "text": "Fixed with the skeptic's better fix. Engine: takenBack('arm', r, { A, B, whoA }) takes arm wrestling out of TB_NONE and among the two-player moves; with A.unbreakable (the page's one Unbreakable footing switch), a pin that real ground under the table would take as a crater (armWrestle's own crater condition: outcome 'pin', not relativistic, 2 km/s or more, a finite energy) adds r.pin.E as a footing part, the winner's, since his swing drives the slam. That reading is new (decision 25, item 12 on the owner's list; the alternative is the loser's, or a share each): the stomp's rule says whose own move breaks the ground, decision 9 whose own footing holds it; here the ground under the table is neither one's footing, and the winner's swing is the move. Page: the Arm tab's tile row ends with the Shimmer tile, and where the power holds the crater the bay says 'Unbreakable footing: on real ground the pin's slam would drive a crater into the ground under the table (at V). Their power keeps the ground whole, and the energy that would have broken it, E, goes to the endless ocean: W's take, since his swing drives the slam (the Shimmer tile counts it).' No glow: the header follows Rex's own tab and the Arm picture has no glow layer, as for every two-player run but Collide's charge (decision 22, Arm taken out of its list of tabs with nothing taken back). The shimmer card lists the pin's slam under Unbreakable footing; README decisions 2, 22 and 25, Known limits (no footing part past 1% of light speed, where the engine has no crater model, or below 2 km/s). Moved: Rex at 10^9 kg pinning Ollie at his what-if 10^8 kg, all-out (the back of Ollie's hand hits the pad at 8,310 m/s; a crater up to 19.7 m across on real ground): nothing before, 2.01 GJ now, about a faint glow. Checks: test/powers.js 9j code-1 (that pin, Rex's footing part with the power on; the crater real and nothing taken back with it off; Ollie's when he wins, or when he is named A; nothing below 2 km/s, in a stalemate or past 1% of light speed); pr5 [arm] (the tile last in its row, Rex's level, his line with the engine's figure and 'the ground kept whole', and the sentence; with Unbreakable footing switched off on the page, the crater and no tile); pr5 [shimmer-card] (the card's list); docs2.py code1 (README decisions 22 and 25). Reverted on its own in a scratch copy: {REVERTS}. Restored: section 9 and the --pr5 block pass."
+ },
+ "code-2": {
+  "reverts": [
+   "F2-code2-residue",
+   "F2-code2-arrival",
+   "r2code-N29-tbDrag-arrive-inf",
+   "F2-code2-checks-removed+N29"
+  ],
+  "text": "Fixed with the skeptic's better fix: tbDrag treats a drag part of a part in 10^9 or less of real air's take as rounding (0), and a catch leg's arrival is max(Ecatch, keFromV(vArrive)), the relativistic kinetic energy of its motion as it arrives, the convention realAirLeg counts in; Ecatch itself (a powers-off result) is unchanged, and so is the catch part. Moved: a fastball 10 m apart at 10^14 kg, a drag part of 0.00049 J beside each 3.63 TJ catch, now 0; a fastball 1 km apart at 10^13 kg, 15.2 MJ beside each 363 GJ catch, now 0; a person 31.6 km apart at 10^12 kg, 544 kJ beside each 3.27 TJ catch, now 0. Nothing else in the README moves (scratchpad pr5/r2fix/js/figs2.js runs round 1's figures and the brief's on both engines: all the same). Check: test/powers.js 9j code-2 (a fastball, a person and a car 10 m, 1 km and 31.6 km apart from 10^8 to 10^16 kg, the catch taken back: in the 74 legs where real air's take is no more than the arrival's motion, 14 of them past 1% of light speed and the page's three among them, the drag part is exactly 0 and the catch unchanged; the two legs where it exceeds the arrival, a fastball 316 km apart, keep that excess; and a hard catch at unlimited strength has no drag part beside its unbounded catch). That last case also kills the round's engine mutant N29, which the code lens had judged equivalent: without tbDrag's arrive === Infinity guard, the unlimited hard catch showed an unbounded drag part beside its unbounded catch, which the tile would name. README decision 8. Reverted on its own in a scratch copy, and N29 with section 9 as now and as at f6d20c3: {REVERTS}. Restored: section 9 passes."
+ },
+ "code-3": {
+  "reverts": [
+   "r2skeptic-mutA-cap",
+   "r2skeptic-mutB-belowStop",
+   "r2skeptic-mutAB",
+   "F2-code3-checks-removed",
+   "F2-code3-checks-removed+mutA",
+   "F2-code3-checks-removed+mutB",
+   "r2code-N18-throw-no-cap",
+   "r2code-N32-lost-belowstop",
+   "r2skeptic-mutAB-on-page"
+  ],
+  "text": "Fixed with the skeptic's better fix, with (b) checked against legReal as the skeptic corrected: test/powers.js 9j code-3 (a): a tank thrown at 45 and 90 degrees at 10^16.5 kg escapes below 1% of light speed, its full-drag flight's own tally 1.0031 and 1.0028 times E1 = KE(vOut) + PE(release), and the drag part is E1, 254 PJ, never more; 9j code-3 (b): Ollie 10 m tall catching a car Rex lobs 10 m at the dial, their own recoil off so the catch is real: the full-drag lob never rises to his 9 m hands and lands, and the drag part is legReal's, 7.26 kJ. No engine change. The covering checks are the fix: with them the skeptic's mutants fail, and with section 9 as at f6d20c3 they pass (the code lens's N18 and N32 are the same two mutants; the pair on the page passes the --pr5 block, which reads neither run, and fails section 9j): {REVERTS}."
+ },
+ "code-4": {
+  "reverts": [
+   "r2skeptic-P03-wrestle-whoA-rex",
+   "r2skeptic-P04-collide-whoA-ollie",
+   "r2skeptic-P13-wrestle-allout",
+   "r2code-P03-wrestle-whoA-rex",
+   "r2code-P04-collide-whoA-ollie",
+   "r2code-P13-duo-tally-allout",
+   "r2code-P21-catch-same-b-dropped"
+  ],
+  "text": "Fixed with the skeptic's better fix, reusing loads: pr5's DUO5 gains Collide with Rex charging, all-out (Rex's own stop, Ollie's hit) and the Wrestle throw with Ollie throwing at 10^9 kg and 30 degrees at the page's least disruptive two-player effort, with no effort picked (Ollie's drag, Rex none); duo-tiles and duo-who read both. A third row, added after the mutant run, is a baseball lobbed 10 m, a round trip: the code lens's P21 (the return leg rebuilt as a fastball), which it had called weak since every checked game of catch was a fastball, passed all the other checks and fails duo-who on it (the row only adds checks). A new check, pr5 [duo-effort], reads the second: its tile is the engine's figure at the effort on the two-player slider (the slider's value attribute, log10 of the kg-force each uses: 10^5.07 kg there), 71.4 kJ, and differs from all-out's (7.70 GJ, Rex's footing), so a tally read at all-out fails. Departures: the skeptic's second load, a custom effort, is left out, since the least disruptive run reads the page's own effort from the slider and covers the same path with one load fewer (the block kept lean); and the partner toss has one thrower on the page (Rex; its whoA forced to Ollie, the code lens's P08, already fails duo-tiles), so the second pair is Collide's two chargers, P04's case. The block's time, in the 4-CPU sandbox: 71.7 s and 71.2 s before this round's fixes, 79.4 s, 76.4 s and 79.4 s after (23 checks, from 19; the last with the lob row). The covering checks are the fix: each surviving mutant now fails, and each had passed the 19 at f6d20c3 (the code lens and its skeptic): {REVERTS}."
+ }
+}

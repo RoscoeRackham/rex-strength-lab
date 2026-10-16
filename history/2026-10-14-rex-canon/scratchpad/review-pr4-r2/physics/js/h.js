@@ -1,0 +1,11 @@
+const R = '/tmp/claude-0/-home-user-rex-strength-lab/be83ea46-0fb6-5f45-86e4-061daa8f7429/scratchpad/review-pr4-r2/physics/repo/rex-strength-lab';
+const P = require(R + '/src/engine.js'); global.window = global.window || {}; require(R + '/src/data.js'); const D = window.DINO_DATA;
+const surf = (id) => D.surfaces.find(s => s.id === id);
+const rex = () => P.makeBody({ build: 'rex', ...P.DEFAULT_BODIES.rex });
+const ollie = () => P.makeBody({ build: 'ollie', ...P.DEFAULT_BODIES.ollie });
+const DIAL = 90718.474;
+const ctx = (o = {}) => { o = Object.assign({}, o); const s = surf(o.surface || 'concrete'); delete o.surface; const kg = o.kg; delete o.kg;
+  return Object.assign({ F: (kg != null ? kg : DIAL) * P.K.g, mode: 'comic', body: rex(), surface: s, anchor: 'friction', airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true }, o); };
+const fmt = (x) => typeof x === 'number' ? (Math.abs(x) >= 1e6 || (Math.abs(x) < 1e-3 && x !== 0) ? x.toExponential(4) : +x.toPrecision(6)) : x;
+const show = (o, keys) => keys.map(k => k + '=' + fmt(k.split('.').reduce((a, b) => a == null ? a : a[b], o))).join('  ');
+module.exports = { R, P, D, surf, rex, ollie, DIAL, ctx, fmt, show };

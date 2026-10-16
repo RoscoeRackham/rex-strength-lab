@@ -1,0 +1,40 @@
+## id
+duo-ratio-long-digits
+
+## severity
+minor
+
+## title
+Shoving match verdict prints long digit strings ('about 555556 times')
+
+## location
+rex-strength-lab/src/app.html:2551 (Math.round(ratio) for ratio >= 10)
+
+## evidence
+Page, Wrestle > Push, dial 10⁹ kg, all-out: 'each pushes with the effort he uses (9.81 GN each), about 555556 times what holds the other (17.7 kN each).' At 10¹² kg it would print a nine-digit integer.
+
+## expected
+Plain numbers rounded to what the data supports, with separators (house rule: no long digit strings), for example 'about 560,000 times'.
+
+## fix
+Use the page's ratio or significant-figure formatter (for example fmtRatio, or sig(ratio, 2) with thousands separators) instead of Math.round(ratio).
+
+## VERDICT
+### id
+duo-ratio-long-digits
+
+### real
+true
+
+### severity
+minor
+
+### reasoning
+Reproduced. The shoving match verdict prints Math.round(ratio) for ratios of 10 or more, which gives six- and nine-digit integers with no separators and false precision. The pushes and grips are given to 3 significant figures. CLAUDE.md's house rule: 'Plain numbers: no huge percentages, long digit strings ... Round to what the data supports.'
+
+### reproduction
+Page {duoOpen:true,duoAction:'wrestle',wrestleMove:'push',logKg:9,oLogKg:9}, all-out: '... each pushes with the effort he uses (9.81 GN each), about 555556 times what holds the other (17.7 kN each).' At logKg 12: '... (9.81 TN each), about 555555556 times what holds the other (17.7 kN each).' Code, app.html ~2551: `'about ' + (ratio >= 10 ? Math.round(ratio) : sig(ratio, 2)) + ' times'`.
+
+### better_fix
+Use the page's own formatter: `'about ' + (ratio >= 10 ? big(ratio, 2) : sig(ratio, 2)) + ' times'`. That gives 'about 560,000 times' at 10^9 kg and 'about 560 million times' at 10^12 kg, and 'about 50 times' at the default dial.
+

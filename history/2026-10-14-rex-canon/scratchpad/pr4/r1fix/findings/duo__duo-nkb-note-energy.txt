@@ -1,0 +1,40 @@
+## id
+duo-nkb-note-energy
+
+## severity
+minor
+
+## title
+The switch note and the Their powers card say all the energy freed where he stands is taken back; the air heat stays real
+
+## location
+rex-strength-lab/src/app.html:349 (#nkb-note) and the 'Their powers' card text (src/static-data.js:20, data assumptions)
+
+## evidence
+Note: 'On, a hit from outside a contest doesn't move him: its momentum goes to their source ..., and the energy it frees where he stands is taken back unless he means it (canon).' The card has the same wording. In the fireball case (Things keep their form off, 50% air, 10¹⁴ kg, fastball, all-out) the verdict says 'stopping it frees 3.63 TJ where he stands', and the Around them text says '422 GJ of it is heat already made in the air on the way: that is real. The rest, 3.21 TJ, is its motion ...'. Engine: fireballAt gives Ehere 3.633e12 J, knockAbsorbed.E 3.211e12 J, Eblast 4.22e11 J.
+
+## expected
+The note should match decision 13: of the energy freed where he stands, the heat made in the air on the way (about 12% here) is real, and only the motion freed as it stops at him is taken back unless meant.
+
+## fix
+Reword both, for example: '... and the motion it frees as it stops at him is taken back unless he means it (the heat it made in the air on the way stays real).'
+
+## VERDICT
+### id
+duo-nkb-note-energy
+
+### real
+true
+
+### severity
+minor
+
+### reasoning
+Reproduced. The switch note and the Their powers card say that 'the energy it frees where he stands is taken back unless he means it'. Decision 13 and the Catch tab split that energy: of the 3.63 TJ 'stopping it frees ... where he stands', the 422 GJ of air heat made on the way is real, and only the 3.21 TJ of motion is taken back. So the note says all of it is taken back, while the tab, in the same terms, says about 12% of it is real. Page text contradicts engine numbers.
+
+### reproduction
+#nkb-note (app.html:349): 'On, a hit from outside a contest doesn't move him: its momentum goes to their source ..., and the energy it frees where he stands is taken back unless he means it (canon).' static-data.js Their powers card: '... and the energy it frees where he stands is taken back unless he means it; ...'. Page {duoOpen:true,duoAction:'catch',keepForm:false,airAbsorb:0.5,logKg:14,oLogKg:14,cStyle:'hard'}, all-out: 'Its momentum (1 million kg·m/s) goes to the endless ocean, and stopping it frees 3.63 TJ where he stands.' Happens: 'Stopping it at Ollie frees 3.63 TJ (870 t TNT) where he stands. 422 GJ of it is heat already made in the air on the way: that is real. The rest, 3.21 TJ, is its motion, freed as it stops at him: canon takes a hit's freed energy back by default ...'
+
+### better_fix
+Reword both, the note and the card: '... its momentum goes to their source, the endless ocean, even if he is bolted, and the motion it frees as it stops at him is taken back unless he means it (the heat it made in the air on the way stays real).' Update the matching regex in test/shots.js 'the cards for pull request 4'.
+

@@ -1,0 +1,53 @@
+## id
+duo-steady-push-no-harm
+
+## severity
+major
+
+## title
+Collide's steady push: the effort box says nothing does harm while the verdict has Rex driven back (at unlimited strength, shoved away at just under light speed)
+
+## location
+rex-strength-lab/src/app.html:4608-4619 (duoFacts, collide push branch: harm only for the rock) and :4870 (duoNoModel 'why' for the steady push)
+
+## evidence
+Page, Rex + Ollie > Collide > Steady push, defaults (power on, concrete, standing), all-out: verdict 'Ollie wins. He pushes with 890 kN and Rex can hold only 17.7 kN, so Rex is driven back.' Effort box: 'All-out: no cap needed. Nothing the lab checks in this test can do harm here ... Courtesy ceiling: none. Nothing in this test does harm, even all-out, with the nearest people and buildings 5 m away. A steady push is a slow load, not a blow'. At an unlimited dial the verdict reads 'Rex's hold is finite (17.7 kN), so he is shoved away at just under light speed with unlimited energy', next to the same 'Nothing in this test does harm' text. Engine: P.standoff(Ollie, Rex) at 100 short tons gives outcome 'forceWins', net 872,000 N on a 3,000 kg body (about 291 m/s²). The same push and hold in Wrestle's shoving match (P.pushMatch with Ollie bolted, 'shovedOff') sends Rex off at 37.6 m/s, sliding 109 m, and that search stops at 5.47 t. On #34's page this test was a dead heat at 17.7 kN, so 'no harm' was true there. The two-player effort card lists 'no one sliding past the nearest people (pushed, shoved, ...)' among the checks.
+
+## expected
+Canon makes the steady push a contest in which force moves, and the brief keeps the slide harm wherever bodies move. When Rex is driven back, the search should judge his motion (slide past the people, or faster than sound), at least as the shoving match does. Otherwise the page must not say the test is harmless or that the push is 'a slow load'.
+
+## fix
+In duoFacts' collide push branch, when r.ownRecoil and r.outcome === 'forceWins', compute the one pushed's motion as pushMatchOwn's shove-off does: the net push (DA − HB) over min(strokes.throw), then slideStop. Set harm from slides() or the speed of sound, and for an unbounded net push 'Rex is shoved away at just under light speed'. Minimal fix: drop 'no cap needed'. Replace the 'slow load' reason with 'the lab doesn't follow Rex once he is driven back (see Wrestle, where the same push shoves him off at 37.6 m/s), so it can't judge his slide'.
+
+## VERDICT
+### id
+duo-steady-push-no-harm
+
+### real
+true
+
+### severity
+major
+
+### reasoning
+Reproduced. With They take their own recoil on (the default), Collide's steady push is no longer a dead heat: Ollie's whole push (890 kN) acts on Rex, and Rex's footing holds only 17.7 kN. That leaves a net 872 kN on a 3,000 kg body, about 290 m/s² or 30 g. Yet duoFacts' push branch (app.html ~4608-4619) sets harm only from the rock, so the search finds nothing and the page says 'Nothing in this test does harm, even all-out', with the reason 'A steady push is a slow load, not a blow'. At an unlimited dial the same box sits under a verdict saying Rex is 'shoved away at just under light speed with unlimited energy'. The README's Known limit ('says who is driven back ... but doesn't follow the motion') records the gap, but the page doesn't state it as a gap: it states that the test is harmless. That is a false safety claim. The lab already models this motion: in the shoving match the same push against the same hold, with the pusher held without limit, shoves Rex off at 37.6 m/s and he slides 109 m. On pull request 3's page this was a dead heat, so the claim was true there; this pull request made it false.
+
+### reproduction
+Clone at 238f570, built (git status clean). Page harness (Playwright, dist/index.html wrapped, localStorage 'rex-lab-v1'):
+1) {duoOpen:true,duoAction:'collide',colMode:'push'}, default (least): verdict 'Ollie wins. He pushes with 890 kN and Rex can hold only 17.7 kN, so Rex is driven back. ...' Effort: 'All-out: no cap needed. Nothing the lab checks in this test can do harm here ... Courtesy ceiling: none. Nothing in this test does harm, even all-out, with the nearest people and buildings 5 m away. A steady push is a slow load, not a blow: the lab models no ground shaking or air blast for it.'
+2) Same with inf:true, all-out: verdict '... Rex's hold is finite (17.7 kN), so he is shoved away at just under light speed with unlimited energy.' Effort: 'All-out. Everything they have.Courtesy ceiling: none. Nothing in this test does harm with the nearest people and buildings 5 m away. A steady push is a slow load, not a blow...'
+3) Engine: P.standoff(Ollie, Rex) gives {outcome:'forceWins', contact:17652, net:871992, ownRecoil:true}. P.pushMatch(Ollie bolted, Rex) gives outcome 'shovedOff', vB 37.65 m/s, slideB 109 m, t 0.1295 s.
+4) Base branch (canon-3-passenger) page, same state: 'Dead heat. Ollie pushes with 17.7 kN and Rex holds 17.7 kN. Neither moves.'
+
+### better_fix
+Follow the one driven back the way the shoving match does. In app.html duoFacts, collide push branch, after `const r = P.standoff(cA, cB);` and the rock check, add:
+```js
+if (r.ownRecoil && r.outcome === 'forceWins') {
+  // the pusher can't be pushed back (his push back goes to his source): the one pushed is shoved off as in Wrestle
+  const m = P.pushMatch(Object.assign({}, cA, { anchor: 'bolted' }), cB);
+  out.sig += fp(m.vB);
+  out.harm = out.harm || (m.vB >= K.a0 ? (ollieX ? 'Rex' : 'Ollie') + ' is driven back faster than sound' : slides(m.slideB));
+}
+```
+This gives 37.6 m/s and 109 m at the default dial, and light speed with an unbounded slide at unlimited strength. Show the 'slow load, not a blow' reason only for shaking and air, never as a claim of harmlessness. Text-only minimum: when r.outcome === 'forceWins' with the power on, replace 'Nothing in this test does harm' and 'no cap needed' with 'The lab doesn't follow Rex once he is driven back (see Wrestle, where the same push shoves him off at 37.6 m/s), so it can't judge his slide.'
+

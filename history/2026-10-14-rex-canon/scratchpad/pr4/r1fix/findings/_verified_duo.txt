@@ -1,0 +1,35 @@
+Build: python3 build-data.py && node build.js leaves git status clean (generated files match sources) at 238f570.
+
+Powers off: node test/powers.js --off-only passes 4/4 (15,533 engine cases identical to main's fixture). The trimmed powers.js (sections 6 and 8 only) passes 25/25.
+
+Page, power off (They take their own recoil off): of 208 two-player states (13 tests × 4 anchorings × least/all-out/10⁹ kg/unlimited), 201 match #34's page exactly. The 7 that differ are the declared bounce footing fix: Collide's bounce no longer books 610 kg·m/s in the ground (README 'Fixed').
+
+Page, power on: the shove, Wrestle throw, game of catch and partner toss are identical to #34 in all 16 states each. The Lift and arm wrestle differ only in copy. 416 states on each page had no NaN/undefined/bare Infinity and no page errors.
+
+Shoving match (engine and page): least effort 2,571 kg-force gives both shoved apart at 2.48 m/s, sliding 52 cm. The default dial gives 890 kN vs 17.7 kN, 26.6 m/s each, about 57 m. Least disruptive 9.06 t. Bolted Rex shoves Ollie off at 37.6 m/s, 109 m (5.47 t). Both bolted holds. The ledger pB − pA + footB − footA − rA + rB closes to 0.
+
+Decision 8's claim holds: 2,571 kg-force (25,217 N) beats the grip on all 9 surfaces in comic and real mode (gravel 24,713 N is the closest), and the ratio WALK_LOAD/forceFrac = 0.857 > μmax 0.84 holds for any equal mass.
+
+Both at once, power on: both fly back at 21.1 m/s and slide about 37 m. Least disruptive 8.74 t (unchanged), harm 'both are shoved apart'. One bolted: only the standing one moves.
+
+Collide charge (engine and page): Rex carried at 18.1 m/s, Ollie's source supplies 55,000 = 54,400 + 612 kg·m/s, 494 kJ taken back. The bounce sends him off at 36.3 m/s, 109,000 kg·m/s, footJ 0. Least disruptive 4.26 t (bounce 3.31 t). The paradox applies for a bolted Rex at any dial and for the jump and stomp-launch from above. At unlimited strength standing, the old 'unstoppable'. Bolted on real rock gives carried with a plug (preset 3.08 t). The jump at 10⁹ kg gives a ceiling of 1,210 t from the take-off. 0.1% of c gives 300 km/s, 900 million kg·m/s, 135 TJ, real only for the windows preset (the 'meant' line and chip appear).
+
+Steady push engine: forceWins with 890 kN vs 17.7 kN and pusherSlips false. Unlimited into a bolted Rex gives the one-sided paradox. On real rock only Rex's rock tears, and the preset finds 13.5 t (README).
+
+Arm wrestling (engine): with the power on a pin never breaks the table (padLoad = the loser's press 2.45 kN at Rex dial vs Ollie 1 t). The pin runs at 83 m/s, a 200 kJ slam at 375× the table's top. Standing, it is a dead heat at 222 kN with draggedA/B, and the stronger press pins with winnerSlides. Power off is unchanged.
+
+Lift and Wrestle throw are unchanged. Holding the partner up stays weight on the lifter's feet, and the Lift text is corrected only with the power on.
+
+Never knocked back fireball (fastball, 10 m, 10¹⁴ kg, Things keep their form off, 50% air): with the switch on, recoilV 0, knockAbsorbed J 1.03×10⁶ kg·m/s, Egap 422 GJ real, 3.21 TJ taken back. With it off, carried off at 343 m/s; bolted, the Earth gets 1.7×10⁻¹⁹ m/s. meanIt makes the motion real. With all four powers off and the switches on, the fireball case still applies (Things keep their form off, all of the drag acting), consistent with the note.
+
+Switches: on by default; aria-labels 'Never knocked back: Rex' and 'Never knocked back: Ollie'; described by #nkb-note; placed after Bolted inside Their powers. The summary line reads 'default powers on', or names one switch. Old saves (no keys, saveV 3 or none) load with both on. No horizontal overflow at 390 px dark or 1280 px light; checkboxes are 18 px like Bolted.
+
+Toggling Ollie's switch in place on the fireball case gives the same verdict as a fresh load ('It carries Ollie off at 343 m/s ... Thrown back ... Never knocked back: it doesn't move Rex'). Rex's switch shows on the return leg.
+
+duoKey includes every power key and, for the catch, both switches. Engine grep: only CATCHGAME.fireballAt reads noKnockback, so leaving the switches out of the other tests' keys is correct. meanApplies depends only on keys in duoKey.
+
+Search timing, #34 vs #35 page (reload to settled, 2-4 runs each): arm 1.1-1.2 vs 1.1-1.3 s; push 1.1 vs 1.0-1.2; both 1.3-1.4 vs 1.1-1.3; catch 1.8-2.5 vs 1.5-1.9; toss 3.1-3.5 vs 3.4-4.2 (same 10 tossPartner calls, about 1.8 s in both; noise); charge 1.8-2.3 vs 1.1-1.2; preset searches and the 10⁹ kg and unlimited bolted states are all within noise. No slowdown.
+
+Full node test/shots.js passes otherwise: the P4-mutant run produced no PROBLEM lines at all four width and theme combinations.
+
+Mutants killed by the tests: page P2, P3, P11. Engine E1-E15, E18, E20, E23, E26, E28-E31, E33 and E34 (footing share dropped from the supply, the bounce's footing, a non-relativistic bounce, no paradox from above, meanIt ignored in hitAbsorbed or Elocal, knockAbsorbed or Ereal wrong, Bolted winning over the switch, the walk-out pace, pusherSlips, the rock dipole, winnerSlides, shoveBoth speeds, the carry stop, the standing cap, toGround including pGain, the plug's friction, the walk-out path, flungApart vs rockGives, the one-sided tear).

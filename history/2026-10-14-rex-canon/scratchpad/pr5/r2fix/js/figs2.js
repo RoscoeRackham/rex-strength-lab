@@ -1,0 +1,53 @@
+// the figures review round 2 moves, from the engine before (f6d20c3) and after (this tree); and the README's other runs (round 1's
+// figures and the brief's), which must not move
+global.window = {};
+const LAB = '/home/user/rex-strength-lab/rex-strength-lab';
+const Pn = require(LAB + '/src/engine.js'), Pb = require('/tmp/claude-0/-home-user-rex-strength-lab/be83ea46-0fb6-5f45-86e4-061daa8f7429/scratchpad/pr5/r2fix/before/src/engine.js');
+require(LAB + '/src/data.js'); const D = window.DINO_DATA, LAD = require(LAB + '/src/ladder.js');
+const g = Pn.K.g, obj = (id) => D.objects.find((x) => x.id === id), conc = D.surfaces.find((s) => s.id === 'concrete');
+const DEF = { airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true, safePassenger: true, noKnockback: true };
+const sig = (x, k) => Number(Number(x).toPrecision(k || 3));
+const w = (J) => { const gl = LAD.glow(J, D.energyRefs); return gl.none ? 'none' : gl.text; };
+const run = (P, f) => { const R3 = P.makeBody(Object.assign({ build: 'rex' }, P.DEFAULT_BODIES.rex)), O3 = P.makeBody(Object.assign({ build: 'ollie' }, P.DEFAULT_BODIES.ollie));
+  const c9 = (F, body, x) => Object.assign({ F, mode: 'comic', body: body || R3, surface: conc, anchor: 'friction' }, DEF, x || {});
+  const duo = (A, B, whoA, x) => Object.assign({ A, B, whoA }, x || {}); return f({ P, R3, O3, c9, duo, TB: P.RESTRAINT.takenBack }); };
+const OLD = {
+  'code-1: fastball 300 m apart at 1e8 kg, a round trip, Rex\'s parts': ({ P, R3, O3, c9, duo, TB }) => { const c = c9(1e8 * g), co = c9(1e8 * g, O3), a = P.catchLeg(c, co, obj('baseball'), 300, 'hard'), b = P.catchLeg(co, c, obj('baseball'), 300, 'hard'), t = TB('catch', { a, b }, duo(c, co, 'rex', { obj: obj('baseball') })); return { drag: t.by.rex.parts.drag, catch: t.by.rex.parts.catch, E: t.by.rex.E, thrown: P.keFromV(b.aim.vL, obj('baseball').m) }; },
+  'code-1: car 10 km apart at 1e9 kg, a round trip, Rex\'s parts': ({ P, R3, O3, c9, duo, TB }) => { const c = c9(1e9 * g), co = c9(1e9 * g, O3), a = P.catchLeg(c, co, obj('car'), 1e4, 'hard'), b = P.catchLeg(co, c, obj('car'), 1e4, 'hard'), t = TB('catch', { a, b }, duo(c, co, 'rex', { obj: obj('car') })); return { drag: t.by.rex.parts.drag, catch: t.by.rex.parts.catch, E: t.by.rex.E }; },
+  'code-2: Great Pyramid straight up at 1e17 kg, all-out': ({ P, R3, c9, TB }) => { const c = c9(1e17 * g), r = P.throwObject(c, obj('pyramid'), 90), t = TB('throw', r, Object.assign({}, c, { obj: obj('pyramid'), angle: 90 })); return { E: t.E, Eobj: r.Eobj, word: w(t.E) }; },
+  'code-2: Empire State Building straight up at 1e16 kg': ({ P, R3, c9, TB }) => { const c = c9(1e16 * g), r = P.throwObject(c, obj('esb'), 90), t = TB('throw', r, Object.assign({}, c, { obj: obj('esb'), angle: 90 })); return { E: t.E, Eobj: r.Eobj, word: w(t.E) }; },
+  'code-2: staff straight up at 10^12.5 kg': ({ P, R3, c9, TB }) => { const c = c9(Math.pow(10, 12.5) * g), r = P.throwObject(c, obj('ruyi'), 90), t = TB('throw', r, Object.assign({}, c, { obj: obj('ruyi'), angle: 90 })); return { E: t.E, Eobj: r.Eobj, word: w(t.E) }; },
+  'code-2: dense Ollie (1e6 kg) tossed hard at 1e14 kg': ({ P, R3, c9, duo, TB }) => { const OD = P.makeBody({ build: 'ollie', H: 3.06, m: 1e6 }), cR = c9(1e14 * g), t = P.tossPartner(cR, OD, 'Ollie', 'hard', 10, 'friction'), tb = TB('toss', t, duo(cR, c9(1e14 * g, OD), 'rex')); return { E: tb.E, Ev: P.keFromV(t.v, t.obj.m), result: t.result, word: w(tb.E) }; },
+  'code-2: Empire State Building thrown hard 100 km apart at 1e16 kg (overshoots), catch real': ({ P, R3, O3, c9, duo, TB }) => { const x = { ownRecoil: false, safePassenger: false, noKnockback: false }, c = c9(1e16 * g, R3, x), co = c9(1e16 * g, O3, x), L = P.catchLeg(c, co, obj('esb'), 1e5, 'hard'), t = TB('catch', { a: L }, duo(c, co, 'rex', { obj: obj('esb') })); return { E: t.E, E0: P.keFromV(L.vL, obj('esb').m), result: L.result }; },
+  'code-3: dense Rex 1e12 kg at 10 ft, car 45 at 1e12 kg': ({ P, c9, TB }) => { const B = P.makeBody({ build: 'rex', H: 3.048, m: 1e12 }), c = c9(1e12 * g, B), r = P.throwObject(c, obj('car'), 45), t = TB('throw', r, Object.assign({}, c, { obj: obj('car'), angle: 45 })); return { E: t.E, v: r.v, vOut: r.vOut, rho: B.rho, word: w(t.E) }; },
+  'code-3: dense Rex 1e13 kg at 10 ft, car 45 at 1e14 kg': ({ P, c9, TB }) => { const B = P.makeBody({ build: 'rex', H: 3.048, m: 1e13 }), c = c9(1e14 * g, B), r = P.throwObject(c, obj('car'), 45), t = TB('throw', r, Object.assign({}, c, { obj: obj('car'), angle: 45 })); return { E: t.E }; },
+};
+const dial = 100 * 907.18474 * g;
+const OTHER = {
+  'brief: car least (Throw tab default)': ({ P, c9, TB }) => { const c = c9(dial), o = { near: 5, target: 30, angle: 45, safePassenger: true, obj: obj('car') }, p = P.RESTRAINT.planNow('throw', c, o), gl = p.goal(); let use = gl.reached ? gl.use : undefined; const rr = p.run(use); if (P.RESTRAINT.HAZARDS.some((h) => h.test(P.RESTRAINT.MOVES.throw, rr, p.opt))) { const ce = p.ceiling(); if (ce.by) use = ce.below > 0 ? ce.below : p.lo; } const cu = Object.assign({}, c, { use }), r = P.throwObject(cu, obj('car'), 45); return TB('throw', r, Object.assign({}, cu, { obj: obj('car'), angle: 45 })).E; },
+  'brief: car all-out': ({ P, c9, TB }) => { const c = c9(dial), r = P.throwObject(c, obj('car'), 45); return TB('throw', r, Object.assign({}, c, { obj: obj('car'), angle: 45 })).E; },
+  'car all-out 1e9': ({ P, c9, TB }) => { const c = c9(1e9 * g), r = P.throwObject(c, obj('car'), 45); return TB('throw', r, Object.assign({}, c, { obj: obj('car'), angle: 45 })).E; },
+  'car all-out 1e12': ({ P, c9, TB }) => { const c = c9(1e12 * g), r = P.throwObject(c, obj('car'), 45); return TB('throw', r, Object.assign({}, c, { obj: obj('car'), angle: 45 })).E; },
+  'catch car lob 10 m (each)': ({ P, O3, c9, duo, TB }) => { const c = c9(dial), co = c9(dial, O3), a = P.catchLeg(c, co, obj('car'), 10, 'easy'); return TB('catch', { a, b: a }, duo(c, co, 'rex', { obj: obj('car') })).by.rex.E; },
+  'catch fastball 10 m (each)': ({ P, O3, c9, duo, TB }) => { const c = c9(dial), co = c9(dial, O3), a = P.catchLeg(c, co, obj('baseball'), 10, 'hard'); return TB('catch', { a, b: a }, duo(c, co, 'rex', { obj: obj('baseball') })).by.rex.E; },
+  'toss gentle 10 m': ({ P, O3, c9, duo, TB }) => { const c = c9(dial), t = P.tossPartner(c, O3, 'Ollie', 'easy', 10, 'friction'); return TB('toss', t, duo(c, c9(dial, O3), 'rex')).E; },
+  'toss all-out 10 m': ({ P, O3, c9, duo, TB }) => { const c = c9(dial), t = P.tossPartner(c, O3, 'Ollie', 'hard', 10, 'friction'); return TB('toss', t, duo(c, c9(dial, O3), 'rex')).E; },
+  'wrestle throw 45 dial': ({ P, O3, c9, duo, TB }) => { const A = c9(dial), B = c9(dial, O3); return TB('wrestleThrow', P.throwPartner(A, B, 45), duo(A, B, 'rex', { angle: 45 })).E; },
+  'wrestle throw 45 1e9 (ollie)': ({ P, O3, c9, duo, TB }) => { const A = c9(1e9 * g), B = c9(1e9 * g, O3); return TB('wrestleThrow', P.throwPartner(A, B, 45), duo(A, B, 'rex', { angle: 45 })).by.ollie.E; },
+  'fireball 1e14 (ollie)': ({ P, O3, R3, c9, duo, TB }) => { const x = { keepForm: false, airAbsorb: 0.5 }, A = c9(1e14 * g, R3, x), B = c9(1e14 * g, O3, x), L = P.catchLeg(A, B, obj('baseball'), 10, 'hard'); return TB('catch', { a: L }, duo(A, B, 'rex', { obj: obj('baseball') })).by.ollie.E; },
+  'person 30 m least': ({ P, c9, TB }) => { const c = c9(dial), o = { near: 5, target: 30, angle: 45, safePassenger: true, obj: obj('person') }, p = P.RESTRAINT.planNow('throw', c, o), gl = p.goal(); let use = gl.reached ? gl.use : undefined; const rr = p.run(use); if (P.RESTRAINT.HAZARDS.some((h) => h.test(P.RESTRAINT.MOVES.throw, rr, p.opt))) { const ce = p.ceiling(); if (ce.by) use = ce.below > 0 ? ce.below : p.lo; } const cu = Object.assign({}, c, { use }), r = P.throwObject(cu, obj('person'), 45); return TB('throw', r, Object.assign({}, cu, { obj: obj('person'), angle: 45 })).E; },
+};
+
+const NEW = {
+  'code-1: arm wrestling, Rex 1e9 kg pins Ollie 1e8 kg, all-out': ({ P, O3, c9, duo, TB }) => { const A = c9(1e9 * g), B = c9(1e8 * g, O3), r = P.armWrestle(A, B), t = TB('arm', r, duo(A, B, 'rex')); return { rex: t.by.rex.E, ollie: t.by.ollie.E, v: r.pin.v, word: t.by.rex.E > 0 ? w(t.by.rex.E) : 'none' }; },
+  'code-2: fastball 10 m apart at 1e14 kg, round trip, Rex': ({ P, O3, c9, duo, TB }) => { const c = c9(1e14 * g), co = c9(1e14 * g, O3), a = P.catchLeg(c, co, obj('baseball'), 10, 'hard'), t = TB('catch', { a, b: a }, duo(c, co, 'rex', { obj: obj('baseball') })); return { drag: t.by.rex.parts.drag, catch: t.by.rex.parts.catch }; },
+  'code-2: fastball 1 km apart at 1e13 kg, round trip, Rex': ({ P, O3, c9, duo, TB }) => { const c = c9(1e13 * g), co = c9(1e13 * g, O3), a = P.catchLeg(c, co, obj('baseball'), 1e3, 'hard'), t = TB('catch', { a, b: a }, duo(c, co, 'rex', { obj: obj('baseball') })); return { drag: t.by.rex.parts.drag, catch: t.by.rex.parts.catch }; },
+  'code-2: person 31.6 km apart at 1e12 kg, round trip, Rex': ({ P, O3, c9, duo, TB }) => { const c = c9(1e12 * g), co = c9(1e12 * g, O3), a = P.catchLeg(c, co, obj('person'), Math.pow(10, 4.5), 'hard'), t = TB('catch', { a, b: a }, duo(c, co, 'rex', { obj: obj('person') })); return { drag: t.by.rex.parts.drag, catch: t.by.rex.parts.catch }; },
+};
+console.log('--- moved by review round 2');
+for (const [k, f] of Object.entries(NEW)) { const b = run(Pb, f), n = run(Pn, f); console.log(k, '\n   before', JSON.stringify(b, (kk, v) => (typeof v === 'number' ? sig(v) : v)), '\n   after ', JSON.stringify(n, (kk, v) => (typeof v === 'number' ? sig(v) : v))); }
+console.log('--- not moved (round 1\'s figures and the README\'s other runs)');
+let differ = 0;
+for (const [k, f] of Object.entries(OLD)) { const b = JSON.stringify(run(Pb, f)), n = JSON.stringify(run(Pn, f)); if (b !== n) differ++; console.log((b === n ? 'same    ' : 'DIFFERS ') + k + ' ' + n.slice(0, 160)); }
+for (const [k, f] of Object.entries(OTHER)) { const b = run(Pb, f), n = run(Pn, f); if (b !== n) differ++; console.log((b === n ? 'same    ' : 'DIFFERS ') + k + ' ' + sig(n) + ' ' + w(n)); }
+console.log(differ + ' of the README\'s other figures differ');

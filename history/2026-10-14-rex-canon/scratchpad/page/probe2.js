@@ -1,0 +1,11 @@
+global.window = {};
+const R = '/home/user/rex-strength-lab/rex-strength-lab/';
+const P = require(R + 'src/engine.js'); require(R + 'src/data.js');
+const D = window.DINO_DATA, g = P.K.g;
+const surf = (id) => D.surfaces.find((x) => x.id === id), obj = (id) => D.objects.find((x) => x.id === id);
+const rex = P.makeBody(Object.assign({ build: 'rex' }, P.DEFAULT_BODIES.rex));
+const ON = { airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true };
+const c = (F, x) => Object.assign({ F, mode: 'comic', body: rex, surface: surf('concrete'), anchor: 'friction' }, ON, x || {});
+const F0 = 100 * 907.18474 * g, use = 22095.75 * g;
+const r = P.throwObject(c(F0, { use }), obj('car'), 45), r0 = P.throwObject(c(F0, { use, ownRecoil: false }), obj('car'), 45);
+for (const x of [r, r0]) console.log(x.v, x.recoilV, x.heldBack, x.basis, x.push && x.push.xA, x.push && x.push.vA, x.Fdrive, x.anchor.R);

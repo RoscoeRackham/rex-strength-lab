@@ -1,0 +1,48 @@
+## id
+copy-nkb-note
+
+## severity
+minor
+
+## title
+The Never knocked back note and the Their powers card overstate what is taken back, and call every two-player test a contest while placing the switch's one case in a two-player test
+
+## location
+rex-strength-lab/src/app.html #nkb-note (line 349) and the sw-recoil label; src/static-data.js cards 'Their powers' and 'Newton’s third law, except where they take it back'
+
+## evidence
+Note: 'On, a hit from outside a contest doesn’t move him: its momentum goes to their source …, and the energy it frees where he stands is taken back unless he means it (canon).' The Catch tab, at the fireball case {cObj:'baseball',cStyle:'hard',logKg:14,keepForm:false,airAbsorb:0.5,cLogD:1}, says: 'Stopping it at Ollie frees 3.63 TJ … where he stands. 422 GJ of it is heat already made in the air on the way: that is real. The rest, 3.21 TJ, is its motion … goes to the endless ocean'. So not all the energy freed where he stands is taken back. The Game of catch card says it correctly. The note also says 'In their contests, every two-player test here, they let force move … So this switch acts in one case only: … in the game of catch'. The Catch tab calls that same hit 'an incoming hit from outside any contest', and the game of catch is a two-player test. The Newton card says 'In their contests (every two-player test) force moves' too.
+
+## expected
+Say that only the hit's motion freed at him is taken back, while the heat made in the air on the way stays real. Name the contests rather than 'every two-player test'.
+
+## fix
+Note and card: '… and the motion it frees as it stops at him is taken back unless he means it (the heat it made in the air on the way stays real)'. Replace 'In their contests, every two-player test here,' with 'In their contests (arm wrestling, every Wrestle move, Collide, the partner toss),'.
+
+## VERDICT
+### id
+copy-nkb-note
+
+### real
+true
+
+### severity
+minor
+
+### reasoning
+Reproduced, in two parts.
+
+1. The Never knocked back note and the Their powers card say 'the energy it frees where he stands is taken back unless he means it'. The Catch tab's own split, at the switch's only case, says part of the energy freed where he stands is real: 'Stopping it at Ollie frees 3.63 TJ … where he stands. 422 GJ of it is heat already made in the air on the way: that is real. The rest, 3.21 TJ, is its motion … goes to the endless ocean'. Only the motion freed at him is taken back (README decision 13 says so correctly).
+2. The note, the recoil switch's label, the Their powers card and the Newton card call every two-player test a contest. They then place the switch's one case in the game of catch, a two-player test, which the Catch tab calls 'an incoming hit from outside any contest'. The CLAUDE.md ruling lists the contests (arm wrestling, every Wrestle move, Collide's charge and steady push, the partner toss), and the game of catch with an object isn't one.
+
+### reproduction
+1. src/app.html:349 (#nkb-note): "…and the energy it frees where he stands is taken back unless he means it (canon)… In their contests, every two-player test here, they let force move… So this switch acts in one case only: … in the game of catch".
+2. `FULL=1 node harness.js …/repo/rex-strength-lab/dist/index.html '[{"duoOpen":true,"duoAction":"catch","cObj":"baseball","cStyle":"hard","logKg":14,"keepForm":false,"airAbsorb":0.5,"cLogD":1}]' allout` gives: "Stopping it at Ollie frees 3.63 TJ (870 t TNT) where he stands. 422 GJ of it is heat already made in the air on the way: that is real. The rest, 3.21 TJ, is its motion…".
+3. src/app.html:3201: "it hits him, an incoming hit from outside any contest".
+4. static-data.js lines 20 and 25: "(every two-player test here)" and "In their contests (every two-player test) force moves".
+
+### better_fix
+In the note and the Their powers card, replace '…and the energy it frees where he stands is taken back unless he means it' with '…and the motion it frees as it stops at him is taken back unless he means it (the heat it made in the air on the way stays real)'.
+
+In the note, the sw-recoil label and the cards, replace 'In their contests, every two-player test here,' with 'In their contests (arm wrestling, every Wrestle move, Collide, the partner toss),'. In the Newton card, replace '(every two-player test)' with the same list.
+

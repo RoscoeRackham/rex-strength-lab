@@ -1,0 +1,72 @@
+
+================ push bolted ground {"duoAction":"collide","colMode":"push","anchor":"bolted"} eff=ground
+--verdict:
+   Rex doesn’t move: his bolts hold. Ollie pushes with 132 kN (his push back goes to his source, so his own feet don’t cap it), and the push goes through Rex’s bolts into the ground.
+--chips:
+   Ollie pushes 132 kN: his push back goes to his source
+   Rex holds unlimited
+   Rock cracks 5 cm around his bolts
+--tiles:
+   Ollie’s push132 kNstrength 132 kN · his push back goes to his source, so his feet don’t cap it
+   Rex’s holdunlimitedbolted
+   Force between them132 kNthe same both ways between their hands; Ollie’s side goes to his source
+   Rock pulls apart out to5 cmcrushed within 1 cm
+--effort:
+   Effort: 15% of their strength (each as hard as lifting 13.5 t). The least effort that breaks the ground under their feet.
+   Unbreakable footing is set aside for this test: they mean to break the ground, so the energy it would take back goes into it.
+   On real ground, courtesy ceiling: 14% (lifting 13 t). Past that, the rock gives way around Rex’s bolts.
+   At this effort the rock gives way around Rex’s bolts
+--happens:
+   Newton’s third law: Ollie pushes Rex exactly as hard as Rex pushes back. Ollie takes his own recoil, so his side of that push goes to his source, not through his feet into the ground: his footing doesn’t cap his push. Rex’s side goes through his bolts into the ground, so he holds only as much as his bolts and the rock around them take. (This is a contest, so the push on Rex is real.)
+   Footing here: Ollie’s push doesn’t depend on his feet; Rex holds unlimited (bolted).
+   The bolts are comic; the rock isn’t. The load on the rock around his bolts is 132 kN: granite pulls apart within about 5 cm and is crushed within about 1 cm.
+   For a walk-out or a shove-off, see Wrestle.
+--bars:
+   10 kN
+   100 kN
+   1 MN
+   Ollie’s strength
+   132 kN
+   Ollie’s footing (not needed)
+   17.7 kN
+   Rex’s strength
+   132 kN
+   Rex’s hold
+   no limit
+--grid:
+   The four casesFinite holdUnlimited hold (bolted on unbreakable ground, or truly immovable)Finite pushThe bigger usable force wins; equal is a dead heat.He holds. The push goes into the ground, and real rock cracks around the bolts.Unlimited push (unlimited strength, bolted or taking his own recoil)He’s shoved away at just under light speed. Bolted on real rock counts here: the rock gives first.No limit on the force between them. A pusher who takes his own recoil gets no physical answer (his push back leaves); with that power off nothing moves, or, against a truly immovable body, the pusher is driven back instead (unless both are bolted to unbreakable ground).
+
+================ push bolted least real {"duoAction":"collide","colMode":"push","anchor":"bolted","unbreakable":false} eff=null
+--verdict:
+   Rex doesn’t move: his bolts hold. Ollie pushes with 127 kN (his push back goes to his source, so his own feet don’t cap it), and the push goes through Rex’s bolts into the ground.
+--chips:
+   Ollie pushes 127 kN: his push back goes to his source
+   Rex holds unlimited
+   Rock around his bolts holds
+--tiles:
+   Ollie’s push127 kNstrength 127 kN · his push back goes to his source, so his feet don’t cap it
+   Rex’s holdunlimitedbolted
+   Force between them127 kNthe same both ways between their hands; Ollie’s side goes to his source
+   Rock pulls apart out to4.9 cmcrushed within 1 cm
+--effort:
+   Effort: 14% of their strength (each as hard as lifting 13 t). The hardest both can go while nothing around them breaks.
+   Courtesy ceiling: 14% (lifting 13 t). Past that, the rock gives way around Rex’s bolts.
+--happens:
+   Newton’s third law: Ollie pushes Rex exactly as hard as Rex pushes back. Ollie takes his own recoil, so his side of that push goes to his source, not through his feet into the ground: his footing doesn’t cap his push. Rex’s side goes through his bolts into the ground, so he holds only as much as his bolts and the rock around them take. (This is a contest, so the push on Rex is real.)
+   Footing here: Ollie’s push doesn’t depend on his feet; Rex holds unlimited (bolted).
+   The bolts are comic; the rock isn’t. The load on the rock around his bolts is 127 kN: granite pulls apart within about 4.9 cm and is crushed within about 1 cm.
+   For a walk-out or a shove-off, see Wrestle.
+--bars:
+   10 kN
+   100 kN
+   1 MN
+   Ollie’s strength
+   127 kN
+   Ollie’s footing (not needed)
+   17.7 kN
+   Rex’s strength
+   127 kN
+   Rex’s hold
+   no limit
+--grid:
+   The four casesFinite holdUnlimited hold (bolted on unbreakable ground, or truly immovable)Finite pushThe bigger usable force wins; equal is a dead heat.He holds. The push goes into the ground, and real rock cracks around the bolts.Unlimited push (unlimited strength, bolted or taking his own recoil)He’s shoved away at just under light speed. Bolted on real rock counts here: the rock gives first.No limit on the force between them. A pusher who takes his own recoil gets no physical answer (his push back leaves); with that power off nothing moves, or, against a truly immovable body, the pusher is driven back instead (unless both are bolted to unbreakable ground).

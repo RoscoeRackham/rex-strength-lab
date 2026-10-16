@@ -1,0 +1,47 @@
+## id
+copy-pin-never-breaks
+
+## severity
+major
+
+## title
+'A pin never breaks the table' appears next to a pin that goes through the table, on the same view and in the README and PR
+
+## location
+rex-strength-lab/src/app.html line ~2417 (padLoad item); README 'What changed' (Arm wrestling bullet) and decision 10; PR #35 'With the winner's power on, a pin never breaks the table.'
+
+## evidence
+State {duoOpen:true,duoAction:'arm',keepForm:false}, with Ollie's own strength 10^3 kg, all-out. Verdict: 'Rex pins Ollie in 22 ms. The back of Ollie’s hand hits the pad at 83 m/s and goes through the table.' Chip: 'Pin smashes the table'. Tile: 'Slam 200 kJ … 380× what the table top is built to take'. Effort box: 'At this effort the pin cracks the table'. A 'What happens' item on the same view: 'So with the power on a pin never breaks the table: its pad carries no more than the loser’s press, within what the table carries.' The README contradicts itself the same way ('A pin never breaks the table with the power on' against 'a 200 kJ slam that goes through it').
+
+## expected
+Under reading B the pin can't tear the table apart at its pegs and pads. Its slam can still smash the top.
+
+## fix
+Change the wording to 'a pin never tears the table apart at its pegs and pads (its slam can still go through the top)' in the item, README decision 10 and its bullet, and the PR body.
+
+## VERDICT
+### id
+copy-pin-never-breaks
+
+### real
+true
+
+### severity
+major
+
+### reasoning
+Reproduced. In the same arm-wrestle view the verdict says the pin goes through the table, the chip reads 'Pin smashes the table', the tile gives 380× what the top is built for, and the effort box says 'the pin cracks the table'. The 'What happens' item still concludes 'So with the power on a pin never breaks the table'. The README contradicts itself the same way: the 'What changed' bullet and decision 10 say 'A pin never breaks the table with the power on', while 'What moved' gives 'a 200 kJ slam that goes through it'. The PR body repeats the claim, inside the reading-B decision the owner is asked to confirm. What reading B actually guarantees is that the pin's pad load can't tear the table apart at its pegs and pads. The slam is a separate check and still smashes the top.
+
+### reproduction
+Run `node arm.js ../repo/rex-strength-lab/dist/index.html '{"duoOpen":true,"duoAction":"arm","keepForm":false}' 3`. The script opens Ollie's setup, picks 'What-if: his own', sets 10^3 kg and chooses all-out. Output:
+- "Rex pins Ollie in 22 ms. The back of Ollie’s hand hits the pad at 83 m/s and goes through the table."
+- "Pin smashes the table"
+- "At this effort the pin cracks the table"
+- "48 g TNT · 380× what the table top is built to take"
+- "…So with the power on a pin never breaks the table: its pad carries no more than the loser’s press, within what the table carries."
+
+README.md line 154: "A pin never breaks the table with the power on". PR #35 body: "With the winner's power on, a pin never breaks the table."
+
+### better_fix
+In src/app.html about line 2417, change the sentence to: 'So with the power on a pin never tears the table apart at its pegs and pads: its pad carries no more than the loser’s press, within what the table carries (its slam on the top is checked separately and can still break it).' Make the same wording change in README decision 10 and its 'What changed' bullet, and in the PR body.
+

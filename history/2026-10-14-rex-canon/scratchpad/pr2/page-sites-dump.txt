@@ -1,0 +1,352 @@
+=== SITE 0
+{
+ "file": "src/app.html",
+ "where": "line 274, header eyebrow",
+ "current": "<div class=\"eyebrow\">Indestructible · never tires · still obeys Newton</div> (always shown)",
+ "change": "<div class=\"eyebrow\">Indestructible · never tires · unlimited</div> (Q7: A).",
+ "tests": "No current check. Item 7 asks for a new shots.js check: no 'still obeys Newton' on the page."
+}
+=== SITE 1
+{
+ "file": "src/app.html",
+ "where": "line 341, Bolted to the planet hint (Their powers), last sentence",
+ "current": "'For their own throws, punches, stomps and shoves, They take their own recoil does the same job; for a pull it takes only the rope’s pull back (his legs still walk on friction).' (always shown)",
+ "change": "The two switches no longer do the same job. Replace with: 'For their own throws, punches, stomps, shoves and catches, They take their own recoil keeps them planted too, but it sends the push back to the endless ocean, not the planet. For a pull it takes only the rope’s pull back (his legs still walk on friction).' Keep 'it goes into the planet instead': that is Bolted's own effect and is correct. A shots.js check for 'into the planet' must not flag it.",
+ "tests": "shots.js:48 lists sw-recoil and bolt-* in IN_POWERS (placement only)."
+}
+=== SITE 2
+{
+ "file": "src/app.html",
+ "where": "line 343, Unbreakable footing hint (optional)",
+ "current": "'… Each push still goes in, so the ground shakes as it would. …'",
+ "change": "Optional precision: 'Each push that reaches the ground still goes in, so the ground shakes as it would.' With They take their own recoil on, their own push back no longer reaches the ground.",
+ "tests": "none"
+}
+=== SITE 3
+{
+ "file": "src/app.html",
+ "where": "line 344, #sw-recoil switch hint",
+ "current": "'<b>They take their own recoil</b>: the push back from their own throws, punches, stomps and pulls goes through their feet into the planet, as if bolted, so they aren’t shoved back or launched. The planet takes the push back: as much momentum as what they set moving carries, the other way (a punch into air leaves none: the arm’s stop hands it back). The ground shakes from it. A jump or a sprint start is the move itself, so it is unchanged. Being pushed by someone else (the two-player contests, Collide) is still what Bolted is for.'",
+ "change": "'<b>They take their own recoil</b>: the push back from their own throws, punches, stomps, pulls, shoves and catches goes into their source, the endless ocean, not into the planet. So they aren’t shoved back or launched, and the ground isn’t shoved: nothing of it reaches the ground, so it doesn’t shake it. The ocean takes as much momentum as what they set moving carries, the other way (a punch into air leaves none: the arm’s stop hands it back). A jump or a sprint start is the move itself, so it is unchanged. Being pushed by someone else (the two-player contests, Collide) is still what Bolted is for.' (Pull request 4 revisits the last sentence.)",
+ "tests": "New shots.js check: no recoil 'into the planet' (see brief_issues on scoping it)."
+}
+=== SITE 4
+{
+ "file": "src/app.html",
+ "where": "lines 1242-1253, suppliedText (and its comments)",
+ "current": "line 1247: const canon = ' (canon: an exception to “momentum is never absorbed”; it goes to the endless ocean). '; comment 1242 '(canon's momentum exception)'; comment 1253 '// an angled push with their recoil taken: the planet takes the sideways part whole'",
+ "change": "line 1247 → ' (canon: one of the few cases where momentum is absorbed; it goes to the endless ocean). '. Comment 1242 → '(one of canon's cases where momentum is absorbed)'. Comment 1253 → '// an angled push from a bolted foot: the planet takes the sideways part whole'. With the power on, the throw has no toGround; the sideTaken branch is reached only through Bolted, with They take their own recoil off and Unbreakable footing on. The function body is otherwise unchanged. It is used by the Jump, Stomp, growth, wrestle-throw landing, catch and toss items.",
+ "tests": "Item 7's new shots.js check: no 'momentum is never absorbed'."
+}
+=== SITE 5
+{
+ "file": "src/app.html",
+ "where": "bayThrow lines 1506-1507, verdict",
+ "current": "else if (ownSaved && rOwn0.recoilV > 1) v += ' His recoil goes into the planet, so he isn’t shoved back.'; (power on, not bolted, and he would fly back faster than 1 m/s without it)",
+ "change": "' His recoil goes to the endless ocean, so he isn’t shoved back.' Same condition.",
+ "tests": "none today"
+}
+=== SITE 6
+{
+ "file": "src/app.html",
+ "where": "bayThrow line 1514, status chip",
+ "current": "else if (ownSaved) chips.push(status('info', 'His recoil goes into the planet: their power')); (his footing is infinite through ownAnchor, and without the power he would recoil faster than 0.01 m/s)",
+ "change": "status('info', 'His recoil goes to the endless ocean: their power'). Same condition.",
+ "tests": "test/shots.js:480 checks this exact chip ('His recoil goes into the planet: their power' on Throw, all-out, defaults). Change the expected string to the new chip."
+}
+=== SITE 7
+{
+ "file": "src/app.html",
+ "where": "bayThrow line 1540, 'His recoil' tile sub-line",
+ "current": "(state.anchor === 'bolted' ? 'bolted down' : ownSaved ? 'into the planet: their power (without it ' + speedOnly(rOwn0.recoilV) + ')' : ownOn && rOwn0 && rOwn0.canMove && isFinite(rOwn0.anchor.R) ? 'footing holds (up to ' + fmtSI(rOwn0.anchor.R, 'N') + ')' : 'push aimed so steeply down his feet can’t slide')",
+ "change": "ownSaved → 'to the endless ocean: their power (without it ' + speedOnly(rOwn0.recoilV) + ')'. When ownOn and the footing would have held → 'to the endless ocean: their power (without it his footing holds, up to ' + fmtSI(rOwn0.anchor.R,'N') + ')'. Without that, the tile credits his footing for what the ocean took. Bolted branch: if They take their own recoil wins when both are on (brief_issues 1), use the ownOn text whenever c.ownRecoil is set; otherwise keep 'bolted down'.",
+ "tests": "none"
+}
+=== SITE 8
+{
+ "file": "src/app.html",
+ "where": "bayThrow line 1551, the They take their own recoil item",
+ "current": "if (ownSaved) items.push('They take their own recoil: the ' + o.short + ' pushes back on Rex exactly as hard as he pushes it, and that push goes through his feet into the planet, as if he were bolted. He isn’t shoved back (without it he would fly back at …), and all of his push goes into the throw (…). The planet keeps the ' + o.short + '’s momentum (his arm’s comes back to him as the follow-through stops it), and the ground at his feet shakes from it' + boxShake(c) + '.')",
+ "change": "Recommended condition: ownOn && r.canMove, so the ledger shows at the default least-disruptive effort, where ownSaved is false (the off run's recoilV is 0). Text: 'They take their own recoil: the ' + o.short + ' pushes back on Rex exactly as hard as he pushes it, and that push goes into their source, the endless ocean, not into the planet: ' + J + ', the ' + o.short + '’s momentum the other way (his arm’s comes back to him as the follow-through stops it). ' + (ownSaved ? 'He isn’t shoved back (without it he would fly back at X), and all of his push goes into the throw (A against B). ' : '') + 'Nothing of his push reaches the ground, so it doesn’t shake it' + (f.landed ? '; only the landing does' + boxShake(c) : '') + '.' J comes from the new engine figure: big(r.recoilAbsorbed.J,2) + ' kg·m/s', or 'unbounded' when infinite.",
+ "tests": "none on the page. Engine: powers.js 5d lines 339-344 (toGround on the bus throw) belong to the engine map."
+}
+=== SITE 9
+{
+ "file": "src/app.html",
+ "where": "bayThrow lines 1516-1517 (chips), 1552 and 1555 (sink items)",
+ "current": "1516: if (r.sinkRatio > 1) … 'Ground gives way under his feet'; 1517: else if (r.sinkRatioRaw > 1) 'The ground holds: their power'; 1552: if (r.sinkRatioRaw > 1) 'The throw drives his feet down with …; their power holds it.' + (r.toGround && r.toGround.supplied > 0 ? ' His legs spread the push into the ground over …' + suppliedText(r.toGround) + groundShakeText(…) : r.toGround ? ' … so it takes the whole push (…)' : ''); 1555: if (r.sinkRatio > 1) '… Bolted, his footing limits no part of the push: the sim lets the ground take all of it …'",
+ "change": "With the power on, the engine omits toGround, so the toGround halves of 1552 drop out on their own. Keep them for the power off with Unbreakable footing on. The sink ratios still count the push's downward part, through anchorCapacity's N(F) = mA g + F sin θ + …. Saying 'the throw drives his feet down' then contradicts 'nothing of his push reaches the ground'. Pick one: (a) the engine drops F sin θ from Nfeet when ownRecoil is on (my recommendation: canon says the push back goes to their source), and these lines then fire only with the power off; or (b) keep it, and say the footing carries only his weight and the object's. See brief_issues 2.",
+ "tests": "none on the page"
+}
+=== SITE 10
+{
+ "file": "src/app.html",
+ "where": "bayThrow line 1602, math line",
+ "current": "'Rex and the ' + o.short + ' get equal and opposite momentum while the push lasts; ' + (isFinite(r.anchor.R) ? … : 'his footing never gives (' + (state.anchor === 'bolted' ? 'bolted to the planet' : ownOn ? 'his recoil goes into the planet: They take their own recoil' : 'push aimed so steeply down his feet can’t slide') + ')') + '.'",
+ "change": "ownOn branch → 'his share goes to the endless ocean: They take their own recoil'. If They take their own recoil wins when both are on, test c.ownRecoil before the bolted branch.",
+ "tests": "none"
+}
+=== SITE 11
+{
+ "file": "src/app.html",
+ "where": "bayStomp line 1728, status chip",
+ "current": "… : ownSavedS ? status('info', 'His recoil goes into the planet: their power') : status('good', 'He stays put') (ownSavedS: the power is on, he is not bolted, and without it he would hop more than 0.5 m/s)",
+ "change": "status('info', 'His recoil goes to the endless ocean: their power').",
+ "tests": "none (shots.js:480 reads only Stomp's 'The ground holds: their power')"
+}
+=== SITE 12
+{
+ "file": "src/app.html",
+ "where": "bayStomp line 1748 (both branches) and line 1749",
+ "current": "1748 ownSavedS: 'They take their own recoil: driving the foot down pushes the rest of him up just as hard, and that push goes through his standing foot into the planet, as if he were bolted. He stays put (without it he would rise at …), and the foot gets all the energy. The lab counts only the foot’s blow on the ground: the upward pull through his standing foot comes at almost the same moment and partly cancels it there, so the shaking shown is an upper bound.' Other branch (power on, his weight would hold him): 'Newton’s third law again: … but here his own weight holds him down, and the foot takes the energy.' 1749 (r.bolted and state bolted): '… but he is bolted to the planet, so the bolts take that push and the foot gets all the energy.'",
+ "change": "1748 ownSavedS: 'They take their own recoil: driving the foot down pushes the rest of him up just as hard, and that push goes into their source, the endless ocean, not into the planet. He stays put (without it he would rise at X), and the foot gets all the energy. Nothing pulls on the ground through his standing foot, so the foot’s blow is all the ground takes.' This drops the upper-bound caveat, as item 2 says. Other branch: 'Newton’s third law again: driving the foot down pushes the rest of him up just as hard. His own weight would hold him down here anyway; with They take their own recoil on, that push goes to the endless ocean, and the foot takes the energy.' 1749: if They take their own recoil wins when both are on, then with c.ownRecoil: '… They take their own recoil sends that push to the endless ocean (he is bolted too), and the foot gets all the energy.'",
+ "tests": "none. The engine's stomp shake (MOVES.stomp.blow) is unchanged."
+}
+=== SITE 13
+{
+ "file": "src/app.html",
+ "where": "bayStomp line 1765, math line",
+ "current": "'Leg pushes foot+shank (…) down against his ' + (state.anchor === 'bolted' ? 'bolted body' : 'body, whose push back goes into the planet (They take their own recoil),') + ' with …'",
+ "change": "'body, whose push back goes to the endless ocean (They take their own recoil),'.",
+ "tests": "none"
+}
+=== SITE 14
+{
+ "file": "src/app.html",
+ "where": "bayPunch line 1789 (chip), 1801-1802 (items), 1807 (math)",
+ "current": "1789: ownSaved ? status('info', 'His recoil goes into the planet: their power'). 1801: 'They take their own recoil: the punch’s push back goes through his feet into the planet, as if he were bolted. He doesn’t lurch (…), and the fist gets all of the push. The arm’s stop hands that push straight back within the time his legs spread a push over, so the planet keeps no net momentum from a punch into air, and his feet barely shake the ground.' 1802 (Silent strike): 'The momentum doesn’t go away: the recoil on his body and his footing is the same.' 1807: 'his recoil goes into the planet (They take their own recoil), so his footing never gives'",
+ "change": "1789 → 'His recoil goes to the endless ocean: their power'. 1801 → 'They take their own recoil: the punch’s push back goes into their source, the endless ocean, not into the planet. He doesn’t lurch (without it he would lurch back about X during the punch, at up to Y), and the fist gets all of the push. When the arm stops, the fist’s momentum comes straight back, so a punch into air leaves no net momentum anywhere, and nothing of it reaches the ground.' 1802, optional: 'Silent strike absorbs the energy that would hit the air as a blast or a boom, not the momentum: the push back on his body is the same as without it.' 1807 → 'his recoil goes to the endless ocean (They take their own recoil), so his footing never gives'.",
+ "tests": "none"
+}
+=== SITE 15
+{
+ "file": "src/app.html",
+ "where": "bayArm lines 2262-2263 and 2306-2307 (the pin)",
+ "current": "2306: if (cR.unbreakable && r.outcome === 'pin' && r.pin && !r.tableBreaks && !r.toGround && r.pin.v > 0) 'The pin’s swing pushes down through the winner’s body and feet, and the slam onto the pad pushes the other way through the table, within about … : in the ground the two cancel, so a pin this quick leaves it no net push to shake it.' 2307: if (pinShake) 'Unbreakable footing: the ground under the table doesn’t break, but the pin’s blow still goes in. Both forearms slam onto the pad, and the table hands their momentum (…) to the ground in about …'",
+ "change": "Item 2 / Q12: with the winner's own recoil taken, the engine reports toGround at any swing time, so 2306 no longer fires with the power on. It stays correct with the power off. Append to 2307: (cW.ownRecoil && r.pin.t < P.limbPulse(cW.body) ? ' The swing’s push back went to the endless ocean (They take their own recoil), so nothing cancels the blow in the ground, however quick the swing.' : ''). The pin chip (2263) and duoFacts arm (models.shake = cR.unbreakable && waves) read r.toGround and need no change.",
+ "tests": "powers.js:316 (5c 'a fast arm-wrestling pin … leaves the ground no net push') runs with the power off and stays."
+}
+=== SITE 16
+{
+ "file": "src/app.html",
+ "where": "wrestleShove line 2423 (chip), 2429-2430 (stalled), 2444 (Newton item), 2449-2451 (items)",
+ "current": "2423: ownP && !r.stalled ? status('info', 'His recoil goes into the planet: their power'). 2444: 'Newton’s third law: Y pushes back on X exactly as hard, for exactly as long. Their momenta come out equal and opposite; the lighter or less anchored one moves faster.' 2449: ownP ? 'They take their own recoil: the push back from X’s shove goes through his feet into the planet, as if he were bolted, so he stays put. (Bolted to the planet is for being pushed by someone else; Y doesn’t get this.)'. 2450: shoveShake ? 'The push X’s feet hand the ground: … ' + groundShakeText(…). 2451: boltShake ? 'Bolted, Y doesn’t move, so his bolts hand the planet the whole push: …'. Stalled (2430): 'Neither one’s footing gives, so the push just presses into the ground under their feet.'",
+ "change": "2423 → 'His recoil goes to the endless ocean: their power'. 2444, when ownP && !movA: 'Newton’s third law: Y pushes back on X exactly as hard, for exactly as long. Y comes away with the shove’s momentum; X’s equal and opposite share goes to the endless ocean (below).' Otherwise unchanged. 2449 → 'They take their own recoil: the push back from X’s shove goes into their source, the endless ocean, not into the planet, so he stays put and nothing of it reaches the ground. (Bolted to the planet is for being pushed by someone else; Y doesn’t get this.)'. 2450 stays: it is null with the power on once the engine omits toGround, and real with the power off and Unbreakable footing on. 2451 stays (the target's bolts are kept, per item 2), but the engine must decouple toGroundB (brief_issues 3). Optional for 2430 when ownP: '…Y’s footing holds, so the push presses into the ground under his feet; X’s push back goes to the endless ocean.'",
+ "tests": "shots.js:527-531 (wrestle shove, logKg 8, plaster preset expected to find an effort) will fail. With the defaults the shove's only plaster source is the shover's push (verified)."
+}
+=== SITE 17
+{
+ "file": "src/app.html",
+ "where": "wrestleThrow lines 2534-2539",
+ "current": "2536: 'They take their own recoil: the push back from the throw goes through ' + nA + '’s feet into the planet, as if he were bolted, so he isn’t shoved backward (without it he would be, at …).' 2538-2539: thrShake = groundShake(cA.surface, r.toGround); 'The push nA’s feet hand the ground as he throws: …'",
+ "change": "2536 → 'They take their own recoil: the push back from the throw goes into their source, the endless ocean, not into the planet, so he isn’t shoved backward (without it he would be, at X) and nothing of it reaches the ground.' 2538-2539 stay for the power off with Unbreakable footing on (null with the power on). The landing items (2543, 2549, landToGround) are unchanged. Chip 2507-2508 depends on the sinkRatioRaw decision.",
+ "tests": "shots.js:527 (wrestle throw, logKg 8) still finds an effort: the landing alone cracks plaster (405 m/s at 5 m, verified)."
+}
+=== SITE 18
+{
+ "file": "src/app.html",
+ "where": "bayCatch chips 2806-2819, tile 2842, item 2867",
+ "current": "2806: if (cO.anchor === 'bolted') 'Bolted to the planet'; 2807-2810: sinkRatio and sinkRatioRaw chips; 2811: k.carried ? null : k.slide > 0.01 ? 'Slides …' : 'Feet hold'; 2815-2819: the larger shaking of a.toGroundT and a.toGroundC (comment: 'their powers send both through their feet'); 2842: tile('Ollie slides', cO.anchor === 'bolted' ? 'bolted' : …, … 'feet hold up to ' + fmtN(k.R)); 2867: 'Bolted to the planet, he doesn’t move: the Earth takes the momentum.'",
+ "change": "Q5: with the catcher's power on, the engine reports no slide, no carry-off and no toGroundC. Chip 2811: when cO.ownRecoil (and not bolted) and the power-off run would slide, be carried off or push the ground → status('info', 'His stop goes to the endless ocean: their power'). Tile 2842: with cO.ownRecoil → tile('Ollie slides', 'nothing', 'his stop goes to the endless ocean: their power'). 2867: if They take their own recoil wins when both are on, then with cO.ownRecoil: 'Bolted to the planet, but his stop goes to the endless ocean (They take their own recoil), not the Earth.' Comment 2815 → '(with Unbreakable footing and their recoil not taken)'. The chips at 2807-2810 depend on the catch's sinkRatio decision.",
+ "tests": "none on the page"
+}
+=== SITE 19
+{
+ "file": "src/app.html",
+ "where": "bayCatch lines 2885-2898 (thrower's recoil, new catcher item, shaking items)",
+ "current": "2889: '… To stay put he needs to be bolted: turn on They take their own recoil, or Bolted to the planet for Rex, in Their powers.' (power off). 2893: 'They take their own recoil: the push back from the throw goes through Rex’s feet into the planet, as if he were bolted, so he stays put (without it …).' 2896-2898: shT/shC items 'Rex’s feet hand the ground the throw’s push (…)'; 'Ollie’s feet hand the ground the catch’s push (…)'",
+ "change": "2889 → '… To stay put he needs They take their own recoil, or Bolted to the planet for Rex, in Their powers.' 2893 → 'They take their own recoil: the push back from the throw goes into their source, the endless ocean, not into the planet, so he stays put and nothing of it reaches the ground (without it he would be shoved back at X).' NEW, after 2894, for the catcher (Q5): if (cO.ownRecoil && caughtish && cO.anchor !== 'bolted') { const a0 = P.catchLeg(cR, Object.assign({}, cO, { ownRecoil: false }), o, Dd, state.cStyle), k0 = a0 && a0.catch; if (k0 && (k0.carried || k0.slide > 0.01 || a0.toGroundC)) items.push('They take their own recoil: stopping it is Ollie’s own push, so its push back goes to the endless ocean, not into the planet. He doesn’t slide and isn’t carried off, and nothing of the catch reaches the ground (without it ' + (k0.carried ? 'it would carry him off at ' + fmtSpeed(k0.uAfter) : k0.slide > 0.01 ? 'his feet would slide ' + fmtDist(k0.slide) : 'his feet would hand the ground ' + pushFig(a0.toGroundC)) + ').'); }. 2896-2898 stay: null with the power on, real with it off. Comment 2895 → '(Unbreakable footing with their recoil not taken)'.",
+ "tests": "none on the page. Engine: powers.js:165-171 (5a sheath catch, ON plus bolted, expects toGroundC) depends on brief_issues 1."
+}
+=== SITE 20
+{
+ "file": "src/app.html",
+ "where": "catchPartner lines 2976-2977 (verdict), 2981-2985 (chip), 3001-3007 (items)",
+ "current": "2976: if (t.catch.sinkRatio > 1) ' Rex’s feet punch into …'; 2977: else if (t.catch.sinkRatioRaw > 1) ' On real ground, … would give under Rex’s feet here (…); Unbreakable footing holds it: their power.' 3003-3004: t.toGroundC && t.toGroundC.supplied > 0 ? 'Straight up, his feet can’t slide. Real ground would have to carry his own weight plus Ollie’s whole stopping force; with Unbreakable footing it takes only what it can bear, and their power supplies the rest (below).' : 'Straight up, his feet can’t slide, but the ground under them carries his own weight plus Ollie’s whole stopping force.' 3006-3007: 'Rex’s feet hand the ground the toss’s push (…)', 'Rex’s feet hand the ground the catch’s push (…)'",
+ "change": "With cR.ownRecoil, replace the 3003-3004 item: 'Straight up, his feet can’t slide. They take their own recoil: the toss and the catch are Rex’s own pushes, so their push back goes to the endless ocean, not into the planet. The ground under him carries only his own weight and Ollie’s.' Holding Ollie up is not recoil (item 4's reading). Keep both existing branches for the power off. 3006-3007 and the chip at 2981-2985 drop out on their own with the power on. The verdict at 2976-2977 depends on the engine dropping the stop's load from catch.sinkRatio(Raw) (brief_issues 2). Today's toss figures at the 100-short-ton dial, 10 m: toGroundT 42,043 and toGroundC 42,043 kg·m/s, sinkRatioRaw 0.24.",
+ "tests": "none on the page"
+}
+=== SITE 21
+{
+ "file": "src/app.html",
+ "where": "bayPull lines 3297-3317 (chip, items, shaking)",
+ "current": "3301: ownPull ? status('info', 'The load’s pull back goes into the planet: their power'). 3312: 'They take their own recoil: the load’s pull back on him goes through his feet into the planet, as if he were bolted, so grip no longer limits how hard he can pull' + …. 3313-3314 comments: '…goes into the planet over the pull…counted whenever They take their own recoil is on, bolted too (the engine's MOVES.pull.shake)'. 3315: const pullShake = r.ownRecoil && r.canMove && isFinite(r.t10m) ? groundShake(c.surface, { J: P.vToMomentum(r.vEnd, o.m) + r.resist * r.t10m, T: r.t10m }) : null; 3316: if (pullShake) 'The rope’s pull back goes through his ' + (bolted ? 'bolts' : 'feet') + ' into the planet over the pull (…). ' + groundShakeText(…); 3317: else 'Pulling needs two things: enough strength, and enough grip on the ground not to get dragged instead.' + …",
+ "change": "3301 → 'The load’s pull back goes to the endless ocean: their power'. 3312 → 'They take their own recoil: the load’s pull back on him goes into their source, the endless ocean, not into the planet, so grip no longer limits how hard he can pull' (rest unchanged). Delete pullShake (3313-3316): the tab works it out itself, so dropping MOVES.pull.shake in the engine won't remove it. Replace with: if (r.ownRecoil && r.canMove) items.push('Nothing of the rope’s pull reaches the ground: its pull back on him (' + big(P.vToMomentum(r.vEnd, o.m) + r.resist * r.t10m, 2) + ' kg·m/s over ' + fmtTime(r.t10m) + ') goes to the endless ocean, so the pull doesn’t shake the ground. (The lab doesn’t count his footsteps as he walks it along.)'); else if (!r.ownRecoil) items.push('Pulling needs two things: …'). Gate 3317 on !r.ownRecoil: its 'enough grip … not to get dragged' contradicts the power when the pull can't move. The math lines 3322-3323 have no planet wording; keep them.",
+ "tests": "powers.js:346-349 (5d bolted pull and pull-with-power shakes, using M.pull.shake) belong to the engine map and must turn round. A new shots.js check should confirm Pull says why it has no shaking."
+}
+=== SITE 22
+{
+ "file": "src/app.html",
+ "where": "lines 3426-3427, noShake",
+ "current": "const noShake = (move) => { const M = P.RESTRAINT.MOVES[move]; return !M.shake || P.RESTRAINT.shakeOff(M, { ownRecoil: …, unbreakable: …, anchor: … }) || !P.groundOf(ctx().surface); };",
+ "change": "With MOVES.pull.shake gone, noShake('pull') is always true, which is what we want. Keep calling P.RESTRAINT.shakeOff only if the engine still exports it (it is called for throw, jump and stomp). Otherwise drop the call: once shakeWithPower is gone, no move has one. Update the comment at 3425-3426 ('A punch shakes the ground only through their powers…').",
+ "tests": "none directly"
+}
+=== SITE 23
+{
+ "file": "src/app.html",
+ "where": "lines 3448-3457, pullNoShake",
+ "current": "bolted: 'Bolted, the rope’s pull back goes through his bolts into the planet, but the lab counts a pull’s ground shaking only with They take their own recoil on. It is a steady load over seconds, which sets up far less ground wave than a blow of the same size.' Footing sets the pace: '… a steady load. The lab counts a pull’s ground shaking only with the power on.' Last branch: '… a steady load. The lab counts a pull’s ground shaking only with They take their own recoil on.'",
+ "change": "Add a first branch: if (state.ownRecoil) return 'They take their own recoil: the rope’s pull back on him goes to the endless ocean, not into the planet, so nothing of the pull reaches the ground and there is no ground shaking from it to judge. (The lab doesn’t count his footsteps as he walks it along.)'. Bolted (power off): 'Bolted, the rope’s pull back goes through his bolts into the planet. It is a steady load over seconds, which sets up far less ground wave than a blow of the same size; the lab doesn’t count it.' Footing sets the pace: '… a steady load over seconds; the lab doesn’t count a pull’s ground shaking.' Last branch: '… over T, a steady load, which sets up far less ground wave than a blow of the same size; the lab doesn’t count it.' The !canMove branch can stay. Every 'only with … on' clause becomes false and must go.",
+ "tests": "New shots.js check (item 2): Pull, defaults, plaster preset or effort box says the rope’s pull back goes to the endless ocean."
+}
+=== SITE 24
+{
+ "file": "src/app.html",
+ "where": "lines 3459-3463, noShakeWhy (how Punch says it)",
+ "current": "Punch: move === 'punch' && (state.ownRecoil || state.unbreakable) ? 'A punch into air leaves the ground no net push (the arm’s stop hands it straight back), so the lab counts no ground shaking from it.' Pull: move === 'pull' && !!P.RESTRAINT.MOVES.pull.shake ? pullNoShake(). Shown through the ceiling line when there is no ceiling (3621), the plaster preset note and the rattle note (3529, via noShakeText).",
+ "change": "move === 'pull' ? pullNoShake(). With the engine field dropped, the current guard falls through to NO_SHAKE_MOVE ('The lab doesn’t model the ground shaking from this move…'), which is the wrong reason. This gives Pull the same three routes as Punch.",
+ "tests": "none today"
+}
+=== SITE 25
+{
+ "file": "src/app.html",
+ "where": "line 3655, effort box hazard list",
+ "current": "if (noShake(move)) items.push(… 'Ground shaking' … noWaves() ? ': no ground-wave model for …' : ': not modelled for this move.')",
+ "change": "Pull now always lands here (when there is a ceiling, from a boom, the ceiling line won't give the reason). Use the known reason: noWaves() ? … : (move === 'pull' && state.ownRecoil) ? ': none: the rope’s pull back goes to the endless ocean, so nothing reaches the ground.' : ': not modelled for this move.' Optionally do the same for punch and clap with a short form of noShakeWhy.",
+ "tests": "none"
+}
+=== SITE 26
+{
+ "file": "src/app.html",
+ "where": "lines 3599 and 3623, fromShake / shakeFrom reads, and comments 3410-3412",
+ "current": "fromShake = move === 'throw' && M.shakeFrom(r, p.opt) === 'him'; ceiling: (M.shakeFrom(p.run(ce.use), p.opt) === 'him' ? 'from him' : 'from where it lands'). Comment 3411-3412: 'ground shaking from his own push into the ground at his feet (their powers), not the landing'.",
+ "change": "No code change: the engine's shakeFrom returns 'landing' whenever r.toGround is missing, which it will be with the power on. Comment → '(Unbreakable footing with They take their own recoil off)'. 'from him' now appears only with the power off and Unbreakable footing on.",
+ "tests": "none"
+}
+=== SITE 27
+{
+ "file": "src/app.html",
+ "where": "lines 3626-3630, effortReadout offBy / OFF_NAME",
+ "current": "offBy = { crush: …, boom: …, air: …, ground: …, slide: M.slide && c.ownRecoil && state.anchor !== 'bolted' && offHappens('slide', { ownRecoil: false }) ? 'They take their own recoil' : null }; OFF_NAME = { crush, boom, air, ground, slide: 'his recoil shoving him back' }",
+ "change": "Add plaster: move === 'throw' && c.ownRecoil && offHappens('plaster', { ownRecoil: false }) && M.shakeFrom(M.run(c0, o0), o0) === 'him' ? 'They take their own recoil' : null. c0 and o0 are the off copies used by offHappens; refactor offHappens to return the run. Also OFF_NAME.plaster = 'the ground shaking from his own push'. The existing loop then prints 'They take their own recoil is on, so it leaves out his recoil shoving him back and the ground shaking from his own push.' and the hazard list 'Plaster may crack: never, because They take their own recoil is on.' Credit only when the hazard is never with the power on, as for slide. Throw is the only solo move where the power removes shaking from him: Pull's isn't counted with the power off, Stomp's blow is the move, and Punch and Clap have none. Don't require state.anchor !== 'bolted' if They take their own recoil wins when both are on.",
+ "tests": "New shots.js check: the 10^12 kg dial all-out car throw (brief, 'Old and new', row 3: plaster from him to 3.6 km with the power off) shows the credit."
+}
+=== SITE 28
+{
+ "file": "src/app.html",
+ "where": "duoFacts lines 3899-3906, 3933, 3948, 3975-3990, 3998, 4022-4028",
+ "current": "Comment 3899-3900: 'a push that goes through their feet into the planet (Unbreakable footing, or a mover taking his own recoil): the engine gives it (toGround) only with those powers on.' 3903: shakeMsg = 'the push through ' + who + ' feet shakes the ground enough that plaster may crack …'. 3906: shakeOn = (cR.unbreakable || cR.ownRecoil) && waves. 3933: shove harm quakes(cA, r.toGround) ? shakeMsg('the shover’s') : quakes(cB, r.toGroundB) ? '…bolted partner’s bolts…'. 3948: ownS = (mo.ownRecoil || mo.unbreakable) && t.r.toGround ? …. 3975: '// the partner toss: the thrower's push and the catch go through Rex's feet into the ground (with their powers)'. 3981, 3990: toss sources and harm (catcher’s, thrower’s). 3998, 4027-4028: catch legs' toGroundT and toGroundC sources and harms.",
+ "change": "No harm text changes. With the power on the engine omits toGround, toGroundT and toGroundC, so the shover's, thrower's and catcher's sources and their shakeMsg harms drop out (item 2's duoFacts line). Make 3948 explicit: (!mo.ownRecoil && mo.unbreakable) && t.r.toGround. Update comments 3899-3900 and 3975: '(Unbreakable footing with They take their own recoil off; with it on, each one’s own push back goes to the endless ocean and the engine gives none)'. Keep shakeOn: with the power on the lab knows nothing of their own pushes reaches the ground (a judged zero), and the shove's toGroundB from a bolted partner still counts.",
+ "tests": "shots.js:524-531: the shove (logKg 8) and Catch car (hard, logKg 9) plaster presets expect 'Effort: … shakes the ground enough that plaster may crack' and will read 'Even all-out, this test doesn’t shake the ground'. Expect 'never' with the defaults, and add the same cases with ownRecoil: false to keep 'finds'."
+}
+=== SITE 29
+{
+ "file": "src/app.html",
+ "where": "line 4264 (duoNoModel shakeOnly) and line 4328 (two-player preset note)",
+ "current": "4264: shakeOnly = arm/collide ? 'Unbreakable footing' : 'Unbreakable footing or They take their own recoil'; the text 'The lab models the ground shaking in this test only through their powers (…), and both are off.' 4328: 'Even all-out, this test doesn’t ' + what … (no reason when models.shake is true but nothing shakes)",
+ "change": "Keep 4264 word for word: it is still true with both off, and the powers-off page comparison expects it (shots.js:200, s4-catch). At 4328, give a reason for the new judged-zero case, as Punch does: when f.models.shake && !f.shake.length && state.ownRecoil, add ' They take their own recoil: ' + (catch ? 'the thrower’s push back and the catcher’s stop go to the endless ocean, so nothing in this test pushes on the ground to shake it.' : 'the shover’s push back goes to the endless ocean, so nothing of it reaches the ground (the lab doesn’t count the one shoved sliding to a stop: a slow drag, not a blow).').",
+ "tests": "shots.js:200 (s4-catch caveat string; keep it unchanged)"
+}
+=== SITE 30
+{
+ "file": "src/static-data.js",
+ "where": "line 15, card 'The courtesy ceiling and the not-so-heroic presets'",
+ "current": "'… or for a pull without They take their own recoil (with it, the rope’s pull back goes through his feet, or his bolts, into the planet over the pull, and that shaking counts). Their powers change what counts: … with They take their own recoil on, his recoil never shoves him, and its push into the ground counts as shaking; …'",
+ "change": "'… a punch (…), or a pull (a steady load over seconds; with They take their own recoil on, the rope’s pull back goes to the endless ocean, so nothing of it reaches the ground).' and '… with They take their own recoil on, his recoil never shoves him and goes to the endless ocean, so none of it shakes the ground (a throw shakes it only where it lands); …'. Leave 'A thrown person’s landing is not counted' for pull request 3.",
+ "tests": "calibration.js:413-419 (the cards must quote the default-body numbers; they are in card 34, not touched). Rebuild src/data.js with build-data.py."
+}
+=== SITE 31
+{
+ "file": "src/static-data.js",
+ "where": "line 16, card 'Two-player effort'",
+ "current": "'… no push through their feet that shakes the ground enough to crack plaster nearby (the pin, a shove, a throw, a catch and the Collide hit, when Unbreakable footing or They take their own recoil sends it into the ground; without them the lab doesn’t model that shaking), …'",
+ "change": "'… (the pin, a shove, a throw, a catch and the Collide hit, when Unbreakable footing sends it into the ground; with They take their own recoil on, the thrower’s, shover’s and catcher’s own push back goes to the endless ocean instead, so none of it reaches the ground; with both off the lab doesn’t model that shaking), …'",
+ "tests": "none"
+}
+=== SITE 32
+{
+ "file": "src/static-data.js",
+ "where": "line 20, card 'Their powers'",
+ "current": "'… the share taken goes to the endless ocean, energy and momentum both (a canon exception to the momentum rule) … Where the ground couldn’t bear the push a move needs, their power supplies it (a canon exception). They take their own recoil: the push back from their own moves (a throw, a punch, a stomp, a pull’s rope, a shove) goes through their feet into the planet, as if bolted; the planet keeps the momentum, and the ground still shakes. … Apart from the exceptions named (and the lift from growth, in the next card), no power absorbs momentum: it still goes into him, through his feet and into the ground.'",
+ "change": "'(one of the canon’s cases where momentum is absorbed)'; '(another of those cases)'; 'They take their own recoil: the push back from their own moves (a throw, a punch, a stomp, a pull’s rope, a shove, a catch) goes into their source, the endless ocean, not into the planet. They stay planted, and nothing of it reaches the ground, so it doesn’t shake it. It carries almost no energy, since they don’t move.' Last sentence: 'Canon lists the only cases where momentum is absorbed: their own recoil, the air’s drag on what they throw, the ground’s share it can’t bear, the lift from growth (next card), incoming hits, and flight’s push (the lab has no flight yet). Everywhere else momentum still goes into him, through his feet and into the ground.' Keep 'Bolted to the planet is for being pushed by someone or something else.' Optional: 'the push still goes in' → 'the push that reaches the ground still goes in'.",
+ "tests": "Rebuild src/data.js (generated)."
+}
+=== SITE 33
+{
+ "file": "src/static-data.js",
+ "where": "line 25, card 'Newton’s third law stays on'",
+ "current": "t: 'Newton’s third law stays on', d: 'Every push pushes him back. He stays put only as far as friction and the ground’s bearing strength allow. … They take their own recoil hands the push back from his own moves to the planet, as if he were bolted; the planet keeps it.'",
+ "change": "t: 'Newton’s third law, except where they take it back'. d: 'Every push pushes back on him, as Newton’s third law says. Their powers take some of that back, to the endless ocean: their own recoil (They take their own recoil), the air’s drag on what they throw (Air resistance absorbed), the share of a push the ground can’t bear (Unbreakable footing) and the lift from growth. Otherwise he stays put only as far as friction and the ground’s bearing strength allow. “Bolted to the planet” … (unchanged middle) … They take their own recoil sends the push back from his own moves to the endless ocean, not the planet: he stays planted and the ground isn’t shoved.'",
+ "tests": "The title appears only here and in the generated src/data.js:1610 (rebuild)."
+}
+=== SITE 34
+{
+ "file": "src/static-data.js",
+ "where": "line 38, card 'Game of catch' (not in the brief's list)",
+ "current": "'… His strength caps the arm force and his footing decides whether he slides; sliding friction grows with the load. The thrower recoils just as on the Throw tab. … A catch that fast keeps momentum too: unless his footing holds, he is carried off with it.'",
+ "change": "'… His strength caps the arm force. With They take their own recoil on (the default), his stop’s push back goes to the endless ocean, so he never slides and is never carried off; with it off, his footing decides whether he slides (sliding friction grows with the load). The thrower recoils just as on the Throw tab: not at all with the power on. … A catch that fast keeps momentum too: with the power off, unless his footing holds, he is carried off with it.'",
+ "tests": "none"
+}
+=== SITE 35
+{
+ "file": "README.md",
+ "where": "line 5, intro (default powers)",
+ "current": "'**They take their own recoil** (the push back from their own moves goes through their feet into the planet)'",
+ "change": "'**They take their own recoil** (the push back from their own moves, catches included, goes into their source, the endless ocean, not into the planet, so none of it shakes the ground)'",
+ "tests": "none"
+}
+=== SITE 36
+{
+ "file": "README.md",
+ "where": "line 111, Known limits: effort and the courtesy ceiling",
+ "current": "'… or for Pull without They take their own recoil (with it, the rope's pull back goes through his feet, or his bolts, into the planet over the pull, and that counts), and the page says why. … their ground shaking is modelled only for pushes their powers send through their feet (with the powers off, a thrown partner's landing is the only shaking source, as before).'",
+ "change": "'… or Pull (a steady load over seconds; with They take their own recoil on, the rope's pull back goes to the endless ocean, so nothing of it reaches the ground), and the page says why. A power is credited … (They take their own recoil with his recoil slide and, on Throw, the ground shaking from his own push). … their ground shaking is modelled only for pushes Unbreakable footing sends through their feet; with They take their own recoil on, each one's own push back (the shover's, the thrower's, the catcher's stop) goes to the endless ocean instead (with the powers off, a thrown partner's landing is the only shaking source, as before).'",
+ "tests": "none"
+}
+=== SITE 37
+{
+ "file": "README.md",
+ "where": "line 115, Known limits: game of catch at 100%",
+ "current": "'A catch that fast keeps momentum (…): unless his footing holds, he is carried off with it … The thrown hand's air, the throw's push into the ground, and a throw that hits the ground … are counted as on the Throw tab.'",
+ "change": "'… With They take their own recoil on (canon, 14 Oct 2026: a catch is absorbed unless he chooses otherwise) his stop goes to the endless ocean and he is never carried off; with it off, unless his footing holds, he is carried off with it …' and 'the throw's push into the ground (with They take their own recoil off)'.",
+ "tests": "none"
+}
+=== SITE 38
+{
+ "file": "README.md",
+ "where": "line 116, Known limits: 'With Unbreakable footing and They take their own recoil both off…'",
+ "current": "'… Two moves follow one power each: a jump's push-off counts only with Unbreakable footing on, and a pull's ground shaking only with They take their own recoil on (bolted too: then the rope's pull goes through his bolts). Without it his footing caps the rope's pull … a bolted pull with the power off is left out, as on `main`. Two more pushes count with the powers on: a bolted partner's bolts in a shove … The throw's push the ground keeps is the object's momentum less his own recoil …'",
+ "change": "'With They take their own recoil on, his own push back goes to the endless ocean: nothing of a throw's push, a shove, the thrower's push, the partner toss or the catcher's stop reaches the ground, so a throw shakes it only where it lands. With it off and Unbreakable footing on, the ground takes his push at his feet, as before. A jump's push-off counts only with Unbreakable footing on. A pull's ground shaking is never counted: with the power on nothing reaches the ground; with it off his footing caps the rope's pull, a steady load over seconds (…); a bolted pull with the power off is left out, as on `main`.' Keep 'Two more pushes count …' (the bolted partner's bolts; Collide's take-off). Qualify the last sentence: '(with They take their own recoil off)'.",
+ "tests": "none"
+}
+=== SITE 39
+{
+ "file": "README.md",
+ "where": "line 118, Known limits: Unbreakable footing",
+ "current": "'… their power supplies the rest (canon: an exception to 'momentum is never absorbed'; it goes to the endless ocean). … Sideways, a bolted foot (their recoil taken) hands the planet the whole push; … That applies to … a throw (gentle or all-out, the partner toss and the game of catch too), a catch, …'",
+ "change": "'(canon: one of the few cases where momentum is absorbed; it goes to the endless ocean)'; 'Sideways, a bolted foot hands the planet the whole push'; 'a throw (…) and a catch, with They take their own recoil off'.",
+ "tests": "none"
+}
+=== SITE 40
+{
+ "file": "README.md",
+ "where": "line 119, Known limits: 'They take their own recoil covers…'",
+ "current": "'They take their own recoil covers his throw, punch, stomp (not Collide's stomp-launch…), a pull (only the rope's pull back goes into the planet: his legs still need friction to move him; bolted, through his bolts), a shove, and the thrower in Catch and Wrestle. For a stomp the lab counts only the foot's blow on the ground: the upward pull through his standing foot … partly cancels it there, so the shaking is an upper bound. A quick arm-wrestling pin … leaves the ground no net push, like a punch … It doesn't cover arm wrestling, the push match or the Collide test …'",
+ "change": "'They take their own recoil covers his throw, punch, stomp (not Collide's stomp-launch, where the stomp is his charge), a pull (only the rope's pull back: his legs still need friction to move him), a shove, the thrower in Catch and Wrestle, the partner toss, the catcher's stop (canon, 14 Oct 2026: he never slides and is never carried off) and the winner's swing in an arm-wrestling pin. Each push back goes to the endless ocean, not the planet: none of it reaches the ground, and it carries almost no energy, since they don't move. A stomp's foot blow is the move, so it reaches the ground whole; nothing cancels it now. A pin's slam reaches the ground whole at any swing time (with Unbreakable footing on). It doesn't yet cover the push match or the Collide test (pull request 4 of BRIEF-canon.md), where Bolted to the planet is the setting for being pushed by someone else. A jump or a sprint start is the move itself, so it is unchanged.'",
+ "tests": "none"
+}
+=== SITE 41
+{
+ "file": "README.md",
+ "where": "line 120, Known limits: Growth",
+ "current": "'… goes to the endless ocean (canon, 12 Oct 2026), an exception to 'momentum is never absorbed'; …'",
+ "change": "'… goes to the endless ocean (canon, 12 Oct 2026), one of the canon's cases where momentum is absorbed; …'",
+ "tests": "none"
+}
+=== SITE 42
+{
+ "file": "build-data.py",
+ "where": "whole file",
+ "current": "No recoil, planet or Newton card text: its 'Newton' and 'planet' hits are a spell-check list (33), an object (187) and feat notes (95, 366). The presence facts' notes aren't shown on the page (note=None at line 438). Their display strings carry no recoil wording.",
+ "change": "None. Run it to regenerate src/data.js from the edited static-data.js (CLAUDE.md: generated, never merged by hand).",
+ "tests": "none"
+}
+=== SITE 43
+{
+ "file": "test/shots.js",
+ "where": "lines 480, 524-531, 200 (test sites for this copy)",
+ "current": "480: want … [thr, 'His recoil goes into the planet: their power'] … 527-531: for ['wrestle', { wrestleMove: 'shove', logKg: 8 }, true], ['catch', { cObj: 'car', cStyle: 'hard', logKg: 9 }, true] expects /Effort: .*The least effort that shakes the ground enough that plaster may crack/. 200: NO_SHAKE_JUDGED s4-catch = ' The lab models the ground shaking in this test only through their powers (Unbreakable footing or They take their own recoil), and both are off.'",
+ "change": "480 → 'His recoil goes to the endless ocean: their power'. 527-531: with the defaults the shove and the catch now never crack plaster. Expect /Even all-out, this test doesn’t shake the ground/ there, and add ownRecoil: false variants that still find an effort (with Unbreakable footing on, their pushes reach the ground). The wrestle throw (landing) and arm cases are unchanged. 200: keep, and keep app.html:4264's text with it. New checks (items 2 and 7): eyebrow text; no 'still obeys Newton' and no 'momentum is never absorbed' on any tab or card; no recoil 'into the planet' with the defaults (scoped, see brief_issues); Pull's effort box or tab says the rope’s pull back goes to the endless ocean; the plaster credit on an all-out 10^12 kg car throw.",
+ "tests": "these are the tests"
+}

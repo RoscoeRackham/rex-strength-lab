@@ -1,0 +1,20 @@
+const fs = require('fs'), path = require('path'), { pathToFileURL } = require('url');
+const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+const { settle } = require('./repo/rex-strength-lab/test/make-page-fixture.js');
+(async () => {
+  const prev = path.join(__dirname, 'pages', 'canthold.html');
+  fs.writeFileSync(prev, '<!doctype html><html><head><meta charset="utf-8"></head><body>' + fs.readFileSync(process.argv[2], 'utf8') + '</body></html>');
+  const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' });
+  const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  await page.goto(pathToFileURL(prev).href);
+  await page.evaluate((x) => localStorage.setItem('rex-lab-v1', JSON.stringify(x)), JSON.parse(process.argv[3]));
+  await page.reload(); await page.waitForTimeout(800); await settle(page, 'duo-bay');
+  await page.evaluate(() => { document.getElementById('ollie-setup').open = true; });
+  await page.click('#o-own'); await page.waitForTimeout(300);
+  await page.evaluate((v) => { const s = document.getElementById('o-strength'); s.value = v; s.dispatchEvent(new Event('input', { bubbles: true })); s.dispatchEvent(new Event('change', { bubbles: true })); }, process.argv[4]);
+  await page.waitForTimeout(800); await settle(page, 'duo-bay');
+  await page.selectOption('#duo-effort', 'allout'); await page.waitForTimeout(300); await settle(page, 'duo-bay');
+  const r = await page.evaluate(() => { const b = document.getElementById('duo-bay'), t = (n) => n.textContent.replace(/\s+/g, ' ').trim(); return { v: t(b.querySelector('.verdict')), chips: Array.from(b.querySelectorAll('.status-row')).map(t), tiles: Array.from(b.querySelectorAll('.tiles')).map(t), h: Array.from(b.querySelectorAll('.happens')).map(t) }; });
+  console.log(JSON.stringify(r, null, 1));
+  await browser.close();
+})();

@@ -1,0 +1,43 @@
+## id
+copy-paradox-coexist
+
+## severity
+minor
+
+## title
+The paradox view tells the reader the two settings 'can't both hold' and 'can't exist in the same universe', against the canon and the verdict's 'the page isn't broken'
+
+## location
+rex-strength-lab/src/app.html collideParadox 'Why neither can give' item (line ~3513); COL_CELLS[1][1] (line ~3539)
+
+## evidence
+State {duoOpen:true,duoAction:'collide',anchor:'bolted'}. Verdict: 'No physical answer here, and the page isn’t broken: this is the canon’s ruling.' Item: '… Momentum conservation can’t share out a hit that neither side can take, so the two settings can’t both hold.' The highlighted four-cases cell (row 'a charger who takes his own recoil', column 'held without limit by their powers') reads: 'No answer: one of them has to give, and neither can (at light speed into a truly immovable body, ∞ ÷ ∞). The two can’t exist in the same universe.' In canon both settings are on and Rex and Ollie do exist together. The ruling is only that 'the collision has no physical answer'.
+
+## expected
+The canon case should read as 'no physical answer', not as an impossible or contradictory set-up. Otherwise a general reader is told the settings are broken right after being told the page isn't.
+
+## fix
+Limit 'The two can’t exist in the same universe' to the thought-experiment case, for example: 'No answer: one of them has to give, and neither can. (For light speed into a truly immovable body, ∞ ÷ ∞: physics says the two can’t exist together.)' Replace 'so the two settings can’t both hold' with 'so physics has no answer here (the canon’s ruling)'.
+
+## VERDICT
+### id
+copy-paradox-coexist
+
+### real
+true
+
+### severity
+minor
+
+### reasoning
+Reproduced. With Rex bolted on Unbreakable footing (the canon default powers), the verdict says 'the page isn't broken: this is the canon's ruling'. The item then concludes 'so the two settings can't both hold', and the highlighted four-cases cell ends 'The two can't exist in the same universe'. In canon both powers are on and both characters exist; the ruling says only that the collision 'has no physical answer'. The cell's last sentence was written for the thought experiment (light speed into a truly immovable body) and now sits in a cell shared with the canon case. Applied to the canon case it is a claim that canon doesn't make, and it contradicts the verdict's reassurance.
+
+### reproduction
+Run `node harness.js …/repo/rex-strength-lab/dist/index.html '[{"duoOpen":true,"duoAction":"collide","anchor":"bolted"}]' allout` and `node grid.js … '{"duoOpen":true,"duoAction":"collide","anchor":"bolted"}'`. Output:
+- "No physical answer here, and the page isn’t broken: this is the canon’s ruling."
+- "…Momentum conservation can’t share out a hit that neither side can take, so the two settings can’t both hold."
+- Highlighted cell: "No answer: one of them has to give, and neither can (at light speed into a truly immovable body, ∞ ÷ ∞). The two can’t exist in the same universe."
+
+### better_fix
+collideParadox item: replace '…so the two settings can’t both hold.' with '…so physics has no answer here (the canon’s ruling).' COL_CELLS[1][1]: 'No answer: one of them has to give, and neither can. (For light speed into a truly immovable body, ∞ ÷ ∞: physics says those two can’t exist together.)'
+

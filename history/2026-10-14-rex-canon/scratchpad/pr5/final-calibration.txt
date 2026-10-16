@@ -1,0 +1,119 @@
+ok   real shot put range (m): 23.557 (want 23.56 ± 0.5)
+ok   real pitch speed (m/s): 47.302 (want 47.3 ± 0.6)
+ok   real punch fist speed (m/s), elite 6.6-12.5: 10.387 (want 10 ± 2.5)
+ok   real jump height (m): 0.43783 (want 0.45 ± 0.1)
+ok   real sprint top speed (m/s): 12.42 (want 12.42 ± 0.05)
+ok   comic shot put range (m): 23.557 (want 23.56 ± 0.5)
+ok   comic pitch speed (m/s): 47.302 (want 47.3 ± 0.6)
+ok   comic punch fist speed (m/s), elite 6.6-12.5: 10.387 (want 10 ± 2.5)
+ok   comic jump height (m): 0.43783 (want 0.45 ± 0.1)
+ok   comic sprint top speed (m/s): 12.42 (want 12.42 ± 0.05)
+ok   real punch speed monotone in strength (top 17.00 m/s)
+ok   real clap speed monotone in strength (top 17.00 m/s)
+ok   real stomp speed monotone in strength (top 16.00 m/s)
+ok   real jump speed monotone in strength (top 11.65 m/s)
+ok   comic jump monotone on sand
+ok   comic jump monotone on concrete
+ok   comic jump monotone on granite
+ok   push energy = F d: 10000 (want 10000 ± 0.000001)
+ok   push momenta equal: 1 (want 1 ± 1e-12)
+ok   ultra-relativistic sides split the stroke: 0.35 (want 0.35 ± 0.000001)
+ok   vacuum range 100 m/s 45 deg (m): 1018.4 (want 1018.303964157824 ± 0.5)
+ok   vacuum apex 11 km/s vertical (km): 186670 (want 186673 ± 300)
+ok   escape at 11.3 km/s: 1 (want 1 ± 0)
+ok   vacuumApex formula = fly (km): 186670 (want 186673 ± 300)
+     tank at 112 km/s: landed true escaped false orbit false timedOut false range km 30
+ok   Kinney-Graham 1 kg TNT at 10 m (Pa): 9985.4 (want 9985 ± 30)
+ok   quake magnitude for 4.184e15 J: 4.5477 (want 4.55 ± 0.01)
+ok   stagnation T at 11 km/s (K, equilibrium): 16435 (want 16602 ± 1500)
+ok   real-muscle speeds within caps (worst ratio 1.000000)
+ok   throw/jump monotone in strength (3% tolerance)
+ok   real muscle at infinite strength = top of dial
+ok   comic shares quoted in the sources table match the fit
+ok   PREM gravity at the core-mantle boundary (m/s^2): 10.683 (want 10.68 ± 0.05)
+ok   PREM gravity at the inner-core boundary (m/s^2): 4.4006 (want 4.4 ± 0.05)
+ok   PREM potential well, surface to centre (MJ/kg): 49.163 (want 49.16 ± 0.3)
+ok   neutron-star Rex: first trip through the Earth (min), Klotz 2015 ~38: 38.238 (want 38.2 ± 0.5)
+ok   neutron-star Rex: drift west of the antipode at the equator (km): 809.15 (want 809 ± 15)
+ok   neutron-star Rex: his pull beats Earth's within (m): 710.44 (want 710.4 ± 1)
+ok   neutron-star Rex: Bondi radius (m): 42.744 (want 42.74 ± 0.1)
+ok   white-dwarf Rex sticks in the inner core (km from centre): 215.79 (want 216 ± 5)
+ok   black-hole density at 2 m (10^27 kg/m^3): 1.3102 (want 1.31 ± 0.002)
+ok   no-drag tunnel through the pole (min), real Earth ~38: 38.196 (want 38.2 ± 0.3)
+ok   calibration body stands on loose sand (share of limit): 0.072381 (want 0.0724 ± 0.01)
+ok   no spurious far-side turnaround just above the sinking threshold (52010000 kg)
+ok   no spurious far-side turnaround just above the sinking threshold (52100000 kg)
+ok   neutron-star Rex turns back short of the far side (m), 3-9 with gravitational drag: 5.2694 (want 5.5 ± 3.5)
+ok   neutron-star Rex: settle loss per trip / (m g x 3-D shortfall): 1.0915 (want 1 ± 0.15)
+ok   settling time depends on mass (7.4e16 kg: 2198 yr, 1e18 kg: 512 yr)
+ok   white-dwarf stop point shown as a range over rock strength (10-646 km)
+ok   white-dwarf Rex with weak rock comes to rest near the centre (km): 10.378 (want 10.4 ± 3)
+ok   just past the sinking threshold (500 m Rex) he sinks deep, not 4.9 m (5154 km)
+ok   pull: a steel Rex at a 501 kg dial is too heavy to walk, so he drags nothing; the default Rex still drags a car
+ok   self-gravity switches on between 1.4e8 and 1.5e8 kg at 2 m
+ok   energy released falling into the Earth rises with mass
+ok   comic mode never weaker than real muscle
+ok   pull 10 m at extreme strength takes at least 10 m / c (ns): 33.356 (want 33.36 ± 0.05)
+ok   catch: a lobbed baseball spends 98% of its energy on first contact with 7.9 kg of hands: 0.98198 (want 0.982 ± 0.002)
+ok   catch: default lob is caught and the ball survives
+ok   catch: a fastball baseball is squeezed past a home-run hit and probably bursts
+ok   catch: a lobbed car makes Ollie slide, with arm force above his static footing
+ok   catch: a bus is too big for a 2 m catcher
+ok   catch: a pyramid thrown across the planet is crushed by the launch push, and the air would tear it apart anyway
+ok   catch: a neutron-star catcher needs no throw at all (Rex just lets go)
+ok   catch: drag raises the launch a neutron-star thrower needs above bare escape
+ok   catch: a relativistic pyramid arrives as plasma with no hand catch, momentum to the Earth
+ok   catch: tossing Ollie, Rex’s foot load = his weight + Ollie’s weight + stopping force (N): 30996 (want 30995.63683705026 ± 5)
+ok   catch: snowplow heat stays below the throw energy
+ok   catch p1: car at 10^22 kg, both bolted: blast energy never drops as Ollie stands closer (before/plasma/arrives)
+ok   catch p1: car at 10^22 kg, both bolted: stopping it frees ~all its energy where Ollie stands (not just the heat made on the way)
+ok   catch p1: pyramid at 10^30 kg, both bolted: blast energy never drops as Ollie stands closer (arrives)
+ok   catch p1: pyramid at 10^30 kg, both bolted: stopping it frees ~all its energy where Ollie stands (not just the heat made on the way)
+ok   catch p1: free Ollie: heat freed at him >= heat made on the way, and freed + carried = all of it
+ok   catch p3: a 10^7 kg fastball shot put crushed by the first hit on his palms is wreckage, not caught
+ok   catch p3: a 10^8 kg fastball car is crushed in Rex’s hands at launch
+ok   catch u12: fastball recoil = Throw tab recoil at the same angle (ratio): 1 (want 1 ± 0.000001)
+ok   catch u12: a recoil slide longer than the gap drops the round trip
+ok   catch r0: release-table speeds within 20% of exact throws up to 89° (worst 1.125x)
+ok   catch r0: no fastball fireball below 1% of light speed
+ok   catch r4: tank lobbed 10,000 km finds a landing arc (was no-arc); here the launch push crushes it
+ok   catch u4: dense partners: the baseball falls back into Rex’s hand (not a 0 mm best throw)
+ok   catch p12: can’t hold the ball up because of his own arm (arm share > 99%)
+ok   catch p5: (F − m g sin angle) × stroke time = momentum removed, baseball lob at 46.0° (ratio): 1 (want 1 ± 0.000001)
+ok   catch p5: (F − m g sin angle) × stroke time = momentum removed, baseball fastball at 0.0° (ratio): 1 (want 1 ± 0.000001)
+ok   catch p5: (F − m g sin angle) × stroke time = momentum removed, car fastball at 2.7° (ratio): 1 (want 1 ± 0.000001)
+ok   catch p5: default lob, strength to spare: stroke not forced, round trip = throws + flights (4.01 s)
+ok   catch p5: default lob, the catch itself is over at first contact in under 0.1 s
+ok   catch p5: a car fastball that makes him slide has a forced stroke
+ok   catch r6: plush Rex who can only hold Ollie up can’t toss him
+ok   catch r7: a bolted Ollie can’t be tossed
+ok   catch d4: whole-object strength flag only on solid metal objects
+ok   u0: unlimited push between two bolted bodies, real rock: every tab says rockGives (rockGives, rockGives, rockGives, rockGives, rockGives)
+ok   u0: real rock: the shove flings both off at light speed
+ok   u0: unlimited push between two bolted bodies, comic ground: every tab says paradox (paradox, paradox, paradox, paradox, paradox)
+ok   u0: comic ground: nobody moves
+ok   u0: comic ground, unlimited arms, just standing: a dead heat through the table
+ok   r2: Collide > Push force between them is never NaN (0 NaN states)
+ok   r2: unlimited bolted push on an immovable Rex just standing, real rock: Ollie’s rock tears out and he is driven back
+ok   r2: same on comic ground: Ollie and the planet are driven back
+ok   r2: immovable Rex bolted to the same unbreakable ground: nothing moves
+ok   p4: light-speed charge into bolted Rex on real rock: not held, no Earth share, rock gives
+ok   p4: same on comic ground: held, the planet moves with him
+ok   r1: shove into a bolted Ollie: Ollie doesn’t move, Rex is thrown back past 1% of light speed
+ok   arm p2: bolted Rex vs standing Ollie, equal arms: Ollie is dragged, not pinned (drag)
+ok   arm p2: drag speed = sqrt(2 (push - his footing) s / M) (ratio): 1 (want 1 ± 0.001)
+ok   arm p2: 1e12 kg Rex on worse feet vs 1e11 kg Ollie: Ollie drags Rex by the footing difference (drag)
+ok   arm p2: bolted 1,000 t Rex vs 100 t Ollie: pin resisted by Ollie’s whole arm (pin)
+ok   arm p2: 100 t Rex vs 511 kg Ollie: the pin tears the elbow pad out, then footing caps Rex (18.2x the table)
+ok   arm p2: 4 t vs 3.6 t: pin on the table, pad load within its capacity
+ok   arm p2: elbow pad load for equal bodies (x surplus): 1.1212 (want 1.1212 ± 0.001)
+ok   arm p9: pinned Ollie’s upper arm carries his own 1.25 kN x lever, Rex’s carries his push
+ok   arm p9: a dragged arm that holds carries the whole push
+ok   arm u1: unlimited arms, Ollie bolted: Rex is dragged at light speed, nobody pinned (drag)
+ok   cards quote the engine’s default bodies (8 numbers)
+ok   default build density 1,060 kg/m³ for both
+ok   weight u8: White dwarf preset stops past the centre on the far side (157.3°, 44.9 km), no drift
+ok   weight u8: any drift is an arc no longer than a quarter circle at the stop radius
+ok   weight d2: 10¹⁴ kg/m³ is below neutron drip, 10¹⁵ is inner-crust matter, 2 × 10¹⁷ gets the neutron-matter caveat
+ok   catch r6: easy toss rises 10 m above his hands (m): 10 (want 10 ± 0.01)
+all checks passed

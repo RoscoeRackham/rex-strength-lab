@@ -1,0 +1,12 @@
+global.window = {};
+const P = require('/home/user/rex-strength-lab/rex-strength-lab/src/engine.js');
+require('/home/user/rex-strength-lab/rex-strength-lab/src/data.js');
+const D = window.DINO_DATA;
+const g = P.K.g;
+const surf = (id) => D.surfaces.find((s) => s.id === id);
+const obj = (id) => D.objects.find((o) => o.id === id);
+const rex = P.makeBody({ build: 'rex', H: 3.048, m: 3000 }), ollie = P.makeBody({ build: 'ollie', H: 3.048, m: 3000 });
+const ON = { airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true };
+const ctxOf = (kg, extra) => Object.assign({ F: kg * g, mode: 'comic', body: rex, surface: surf('concrete'), anchor: 'friction' }, extra || {});
+const sig = (x) => typeof x === 'number' ? Number(x).toPrecision(4) : x;
+module.exports = { P, D, g, surf, obj, rex, ollie, ON, ctxOf, sig };

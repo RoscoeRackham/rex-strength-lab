@@ -1,0 +1,22 @@
+const {P,D,rex,ollie,ctx,show,fmt,DIAL}=require('./h.js');
+const keys=['shover','both','clash','oneSided','noAnswer','stalled','vA','vB','slideA','slideB','EA','EB','tearA','tearB','toGroundA.J','toGroundB.J','recoilAbsorbed.J','back.recoilAbsorbed.J','back.vB','Fdrive','back.Fdrive','d','back.clash','relativistic','boundTogether'];
+const sb=(label,a,b)=>{const r=P.shoveBoth(ctx(Object.assign({body:rex()},a)),ctx(Object.assign({body:ollie()},b)));
+ console.log(label+':', show(r,keys.filter(k=>k.split('.').reduce((x,y)=>x==null?x:x[y],r)!==undefined)));return r;};
+sb('default',{},{});
+sb('powers off',{ownRecoil:false},{ownRecoil:false});
+sb('ollie bolted ub unlimited',{kg:Infinity},{kg:Infinity,anchor:'bolted'});
+sb('rex bolted ub unlimited',{kg:Infinity,anchor:'bolted'},{kg:Infinity});
+sb('rex bolted ub dial',{anchor:'bolted'},{});
+sb('ollie bolted ub dial',{},{anchor:'bolted'});
+sb('both bolted ub unlimited',{kg:Infinity,anchor:'bolted'},{kg:Infinity,anchor:'bolted'});
+sb('rex bolted real unlimited',{kg:Infinity,anchor:'bolted',unbreakable:false},{kg:Infinity,unbreakable:false});
+sb('both bolted real unlimited',{kg:Infinity,anchor:'bolted',unbreakable:false},{kg:Infinity,anchor:'bolted',unbreakable:false});
+sb('unequal rex dial ollie 3t',{},{kg:3000});
+sb('unequal rex 3t ollie dial',{kg:3000},{});
+sb('ice',{surface:'ice'},{surface:'ice'});
+// single shoves
+const s=(label,a,b)=>{const r=P.shove(ctx(Object.assign({body:rex()},a)),ctx(Object.assign({body:ollie()},b)));console.log(label, show(r,['vB','slideB','EB','clash','tearB','toGroundB.J','recoilAbsorbed.J','stalled','Fdrive']));};
+s('shove default',{},{});
+s('shove unlimited into bolted ub',{kg:Infinity},{anchor:'bolted'});
+s('shove unlimited into bolted real',{kg:Infinity,unbreakable:false},{anchor:'bolted',unbreakable:false});
+s('shove dial into bolted real',{unbreakable:false},{anchor:'bolted',unbreakable:false});

@@ -1,0 +1,20 @@
+const { P, ctx, octx, K, g } = require('./h.js');
+const pr = (lab, r) => console.log(lab, r.outcome, r.heldBy || '', 'v', r.vRel && r.vRel.toFixed(3), 'carry', r.carry && JSON.stringify({ vB: r.carry.vB, pGain: +r.carry.pGain.toPrecision(5), footJ: +r.carry.footJ.toPrecision(5), supplied: +r.carry.supplied.toPrecision(5), F: +r.carry.F.toPrecision(4), T: +r.carry.T.toPrecision(4), FT: +(r.carry.F * r.carry.T).toPrecision(5), rock: r.carry.rockGives, tear: r.carry.tear }), 'after', JSON.stringify(r.after && (r.after.splat)), 'toG', JSON.stringify(r.toGround));
+const F9 = 1e9 * g, F6 = 1e6 * g, F625 = Math.pow(10, 6.25) * g;
+// bolted Rex, unbreakable on
+pr('bolted/unbr sprint', P.collide(octx(), ctx({ anchor: 'bolted' }), { source: 'sprint' }));
+pr('bolted/comic sprint', P.collide(octx(), ctx({ anchor: 'bolted', unbreakable: false, groundHolds: true }), { source: 'sprint' }));
+pr('bolted/real sprint', P.collide(octx(), ctx({ anchor: 'bolted', unbreakable: false }), { source: 'sprint' }));
+pr('bolted/real sprint bounce', P.collide(octx(), ctx({ anchor: 'bolted', unbreakable: false }), { source: 'sprint', bounce: true }));
+pr('jump 1e9 unbr', P.collide(octx({ F: F9 }), ctx({ F: F9 }), { source: 'jump' }));
+pr('stomp 1e9 unbr', P.collide(octx({ F: F9 }), ctx({ F: F9 }), { source: 'stomp' }));
+pr('jump default unbr', P.collide(octx(), ctx(), { source: 'jump' }));
+pr('jump default real', P.collide(octx({ unbreakable: false }), ctx({ unbreakable: false }), { source: 'jump' }));
+pr('jump 1e6.25 real', P.collide(octx({ F: F625, unbreakable: false }), ctx({ F: F625, unbreakable: false }), { source: 'jump' }));
+pr('jump 1e9 real', P.collide(octx({ F: F9, unbreakable: false }), ctx({ F: F9, unbreakable: false }), { source: 'jump' }));
+pr('jump default bolted real', P.collide(octx({ unbreakable: false }), ctx({ unbreakable: false, anchor: 'bolted' }), { source: 'jump' }));
+pr('set 1 m/s bolted real', P.collide(octx({ unbreakable: false }), ctx({ unbreakable: false, anchor: 'bolted' }), { source: 'set', gb: 1 / K.c }));
+pr('set 1 m/s friction', P.collide(octx(), ctx(), { source: 'set', gb: 1 / K.c }));
+pr('set 0.05 m/s friction', P.collide(octx(), ctx(), { source: 'set', gb: 0.05 / K.c }));
+pr('light speed bolted unbr', P.collide(octx(), ctx({ anchor: 'bolted' }), { source: 'set', gb: Infinity }));
+pr('light speed bolted real', P.collide(octx(), ctx({ anchor: 'bolted', unbreakable: false }), { source: 'set', gb: Infinity }));

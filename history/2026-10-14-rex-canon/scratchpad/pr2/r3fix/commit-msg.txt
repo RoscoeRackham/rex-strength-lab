@@ -1,0 +1,33 @@
+Review round 3 of pull request 2 (their own recoil): fix the 8 confirmed findings
+
+Round 3 reviewed 54fadb8 with three lenses (physics; code and tests; copy and
+layout): 8 findings, all confirmed. Record: research/reviews/canon-2-round3.json.
+
+- physics-bolted-pull-legs-unbounded (major), as the session lead decided:
+  Bolted removes the footing limit, not the muscle limit. Engine pull(), with
+  They take their own recoil on: aFeet = min(footing, LEG_SHARE x usable) /
+  his mass, on either footing, so his legs move his own body with at most
+  1.4x the strength he uses (the Pull tab's own leg rule). A light load goes
+  at his own body's pace (the bolted car all-out at the default dial: 0.22 s,
+  no courtesy ceiling there; round 2 had 0.17 s and legs at 2.2x the dial).
+  Page: the Pull item, status, bars, math lines, the effort box's reason, the
+  hazard line and the card say his legs cap his steps; 'nothing caps it' is
+  gone. Powers-off results unchanged.
+- physics-catch-allreach-unthrown-leg: only thrown legs count for allReach.
+- code-1: 'Unbreakable footing is set aside' judged with factsTop('real').
+- code-2: covering checks for five round 2 page fixes (shots.js round 2
+  block); each fails with its fix reverted.
+- code-3, copy-readme-ceiling-comes-back: README 'What moved' for the pull
+  re-done by load and footing against main; no 'comes back'.
+- copy-pull-version-history-phrase: 'as before the power existed' dropped
+  from the page and the card (code comments keep it).
+- copy-card-bolted-pull-fraction-of-second: the card gives the engine's
+  times (0.31 s for a car, about 2 s for a locomotive).
+
+Tests: test/powers.js 5d checks light loads against his legs (bolted and on
+friction, all-out and at 30 kg-force); test/shots.js gets a round 3 block.
+Engine mutants of rounds 0-3 each fail test/powers.js; page reverts of round
+3's fixes and of the five unchecked round 2 fixes each fail shots.js.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_0136zsmhtj8TCY2T2u8SKMVX

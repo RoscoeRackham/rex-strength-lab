@@ -1,0 +1,1 @@
+const fs=require('fs'),p=process.argv[2]+'/src/app.html';const s=fs.readFileSync(p,'utf8');const a="f.models.shake && !f.shake.length && !f.allReach && f.thrown ? catchLandWhy() : null",b="f.models.shake && !f.shake.length && f.thrown ? catchLandWhy() : null";const n=s.split(a).length-1;if(n!==1){console.error('count '+n);process.exit(1);}fs.writeFileSync(p,s.replace(a,()=>b));

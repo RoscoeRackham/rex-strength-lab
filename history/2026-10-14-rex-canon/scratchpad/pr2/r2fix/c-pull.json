@@ -1,0 +1,10 @@
+[
+ {"label":"pull default (least)","state":{"action":"pull"},"sel":[".verdict",".effort-read",".happens","details.math"]},
+ {"label":"pull bar511 least","state":{"action":"pull","obj":"bar511"},"sel":[".effort-read",".happens"]},
+ {"label":"pull bolted allout","state":{"action":"pull","anchor":"bolted"},"pick":"allout","sel":[".verdict",".status-row",".effort-read",".happens","details.math"]},
+ {"label":"pull bolted 1e6 least","state":{"action":"pull","anchor":"bolted","logKg":6},"sel":[".verdict",".effort-read"]},
+ {"label":"pull default plaster","state":{"action":"pull"},"pick":"plaster","sel":[".effort-read"]},
+ {"label":"pull off plaster","state":{"action":"pull","ownRecoil":false},"pick":"plaster","sel":[".effort-read"]},
+ {"label":"pull off bolted least","state":{"action":"pull","anchor":"bolted","ownRecoil":false},"sel":[".verdict",".effort-read"]},
+ {"label":"pull off bolted allout","state":{"action":"pull","anchor":"bolted","ownRecoil":false},"pick":"allout","sel":[".verdict",".effort-read"]}
+]

@@ -1,0 +1,20 @@
+Re-check of review round 3 of pull request 4: fix the 4 confirmed findings; close out
+
+The re-check (one lens, each round 3 fix reverted in a scratch copy, reviewed at
+ad1aa9c) found 4 minor findings, all confirmed and fixed:
+- test/shots.js: round 3's torn-rock arm check also reads a bolted winner whose
+  rock tears out; round 1's paradox check also reads the preset view's
+  courtesy-ceiling line and forbids 'those do'. Each fails with that part of
+  round 3's fix reverted on its own in a scratch copy, and passes here.
+- README: the per-test times agree with the measured ones; the round 1 history
+  line no longer names the take-off for a sprint (the same clause was fixed in
+  the pull request's description, outside the repo).
+No page or engine change. Record: research/reviews/canon-4-round3-recheck.json.
+README and STATUS: the review rounds are complete.
+
+Tested, one test at a time: calibration 117 checks (129 s), presence 383 (54 s),
+shots 84 ok lines, 0 problems (843 s), powers 181/181 (246 s), ladder 562/562
+(1 s), sweep 7,776 contexts, 0 problems (648 s).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_0136zsmhtj8TCY2T2u8SKMVX

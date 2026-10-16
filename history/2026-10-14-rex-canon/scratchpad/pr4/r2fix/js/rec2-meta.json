@@ -1,0 +1,137 @@
+{
+ "outcomes": {
+  "physics-carried-hit-energy-omits-hold-work": {
+   "text": "Fixed as the session lead decided, with the skeptic's better fix. src/engine.js carriedHit: the splat frees the force of the hit over the squash, Qs = h2.Q + hold x s (the one hit's motion energy in the charger's frame, relativistic, plus the hold's work over the squash in that frame), used for out.Q, out.h.Q, hitAbsorbed.E and the meant part of Elocal; the bounce still frees 0 (its 'a splat frees' text reads Qs). New figures: 499 kJ at the default sprint (494 kJ of motion energy + 5.55 kJ), 7.05 kJ at a 1 m/s set speed (beside 22.4 kN), 890 kJ for a jump onto Rex on real concrete and 332 MJ on real granite (beside 1.06 GN), 713 kJ bolted on real rock. src/app.html collideCharge: 'The hit frees 499 kJ (120 g TNT): the force of the hit over the squash (31 cm). That is Rex's motion energy as Ollie sees it, plus the work his footing does holding him back over the squash.'; the math gives Q = F x s with the hold's work and F = the motion energy / s + the hold; the 'Momentum still balances' item no longer calls the splat's energy his motion energy. README decision 1, 'What moved' and the PR: 494 kJ becomes 499 kJ (the brief's 494 kJ left out the hold's work). Checks: test/powers.js 8a (for every splat in its grid Q = carry.F x contact.s to 1e-9, h.Q = Q = hitAbsorbed.E; at Newtonian speeds the source's work F v T = the one hit's motion energy + hold x his travel during the squash + Q to 1e-9; bolted on real rock too; the figures 499 kJ, 7.05 kJ, 890 kJ, 713 kJ), 8c and 8l (499 kJ); test/shots.js 'Collide, the default sprint carries Rex along' (499 kJ) and 'review round 2: the carried hit frees the force of the hit over the squash' (the line, the math, 7.05 kJ beside 22.4 kN).",
+   "reverts": [
+    "E1-hit-energy-without-hold",
+    "P1-hit-frees-motion-only"
+   ]
+  },
+  "physics-standing-pin-loser-elbow-force-unchecked": {
+   "text": "Fixed with the skeptic's better fix. src/engine.js armWrestle: standing (the table broken) with the winner's power on, the force at the loser's elbow, |holdArm m_l a - (P_l + effMass m_l a)| with a = (the winner's press - P_l) / M, the loser pad's load, is reported (loserElbow); loserSlides = his footing < that force, and a loser bolted on real rock has tear = that force / the rock's tear load (his own press only turns his forearm). Rex at the dial against Ollie at 1 t: 24.2 kN against Ollie's 17.7 kN footing, so his feet slide; Rex at 10^7 kg against Ollie bolted on real rock at 1 t: 2.97 MN, 4.26 times the tear load, so his rock tears; Rex at 10^6 kg against Ollie bolted at 100 short tons: 47.8 kN, 0.069 of it (round 1 had his 222 kN press). The same formula at unlimited strength against a finite press gave Infinity - Infinity, NaN, so the table never broke and the page printed 'about NaN'/'about unlimited' figures: the pad load and the elbow force are now unbounded there, the pin breaks the table with Things keep their form off, and the page says 'an unbounded force' and 'he presses with unlimited force' (not 'his full unlimited'). src/app.html bayArm: the chip 'Ollie's feet slide: what turns his forearm (24.2 kN) beats 17.7 kN', the standing item (in a pin the loser's arm folds; what reaches his body is the force at his elbow, which his feet or bolts carry), the pin item and the math. README decision 10, 'What moved' and Known limits. Checks: test/powers.js 8i (over the 1,440 standing pins of a 2,160-run grid, Things keep their form off, either one stronger, one of them bolted or neither, real or unbreakable ground, five grounds; 920 with the loser's feet sliding, 250 with a bolted loser on real rock: loserElbow = the formula, loserSlides = his footing < it, a bolted loser's rock = it / the tear load; the 10^6 and 10^7 kg bolted cases; unlimited against 1 t: unbounded, the table breaks); test/shots.js 'review round 2: standing, the loser's feet carry the force at his elbow' and the round 1 pin check (now 'dragging him along as he goes').",
+   "reverts": [
+    "E2-arm-elbow-unchecked",
+    "E3-arm-loser-pad-nan",
+    "P12-arm-elbow-chip-old",
+    "P18-arm-about-unlimited",
+    "P19-arm-full-unlimited"
+   ]
+  },
+  "physics-walkout-push-contradicts-motion": {
+   "text": "Fixed as the session lead decided (option a, keeping decision 8's walk-out). src/engine.js pushMatchOwn: the walk-out reports walkPush = the loser's hold + his mass x a (35.3 kN for Rex at the dial against Ollie lying flat at 1 t, where he could push 890 kN) and the winner's push back, recoilAbsorbed{w} { J: the loser's momentum + his hold x t (38,300 kg m/s there), T: t, thetaDeg 0 }, and, for a loser who pushes, his push x t to his own source. src/app.html wrestlePushOwn: the verdict ('Rex could push with 890 kN ... so he holds back, pushing Ollie only as hard as keeps him at that pace (35.3 kN)'), the chip 'can push 890 kN', the tile 'Rex's push 35.3 kN real on Ollie: what keeps him at the walking pace (Rex could push 890 kN)', the bar 'Rex could push', and an item giving the push back taken by his source. README decision 8 (a walking winner holds back) and 'What moved'. Checks: test/powers.js 8g (walkPush = H_l + m_l a, recoilAbsorbedA.J = m_l v + H_l t, walkPush x t = it below the running cap, the loser's push back on gravel, and the momentum adds up: ground + both sources = both bodies' momentum); test/shots.js 'review round 2: the walking winner holds back, and his push back is reported' (against the engine's walkPush and push back) and the build's walk-out check.",
+   "reverts": [
+    "E5-walkout-no-walkpush",
+    "P6-walkout-tile-full-push",
+    "P6b-walkout-pushback-item"
+   ]
+  },
+  "physics-slide-harm-ignores-stroke": {
+   "text": "Fixed once with copy-push-distance-left-out-of-slide-harm (the same defect), as the session lead decided. src/engine.js pushMatchOwn's apart() returns xA, xB (each one's travel while their hands stay on each other, xA + xB = the stroke); src/app.html duoFacts judges where each ends up: the steady push dv.d + dv.slideB ('Rex is driven back 2.44 m and slides on, ending up 5.17 m from where he stood'), the shoving match xA + slideA ('both are shoved apart and end up past the nearest people 5 m away (Rex 5.11 m, Ollie 5.11 m from where he stood)'), as Collide's charge counts its carry. New ceilings at the default dial: the steady push 3,680 kg-force (round 1: 5,470), a bolted shove-off in the shoving match 3,680 (5,470), the shoving match 7,300 (9,060). The Two-player effort card says so; the Shove tab (one shove, and Both at once) keeps judging the slide alone, as before this pull request: a Known limit. README 'What moved', decisions 7, 8 and 16, Known limits; the PR. Checks: test/powers.js 8g (xA, xB from xOfT); test/shots.js 'the shoving match, both shoved apart' (7.3 t, 'end up'), 'review round 1: the steady push follows and judges the one driven back' (3.68 t, 'driven back 2.44 m and slides on, ending up'), 'review round 2: the Two-player effort card counts the push's travel'.",
+   "reverts": [
+    "E6-match-no-push-distance",
+    "P16-steady-harm-slide-only",
+    "P17-match-harm-slide-only",
+    "P21-card-slide-only"
+   ]
+  },
+  "physics-steady-push-real-muscle-unlabelled": {
+   "text": "Fixed with the skeptic's minimal fix, which the better fix offers first: the steady push follows the one driven back as the shoving match's shove-off (decision 7, checked equal in powers.js 8f), and the shoving match's real-muscle speeds are the same static push labelled an upper bound, so the steady push's are labelled the same way; driving it through pushApart's Hill model alone (21.5 m/s) would make the two contests differ. src/engine.js standoff: drive.realUpper in real-muscle mode. src/app.html collidePush: 'With real muscle the push falls as the hands speed up, so this speed is an upper bound (as in the shoving match).' README Known limits. Checks: test/powers.js 8f (realUpper in real mode, the speed equal to comic's, absent in comic); test/shots.js 'review round 2: the steady push in real muscle is an upper bound'.",
+   "reverts": [
+    "E8-steady-push-real-unflagged",
+    "P4-steady-real-unlabelled"
+   ]
+  },
+  "physics-carried-motion-air-below-1pct-c": {
+   "text": "Fixed with the skeptic's better fix. src/engine.js carriedHit: sideways, below 1% of light speed, when the one hit leaves faster than sound, carry.Eair = his motion energy less his footing's share over the slide (the air's share, real: their own bodies meet real air) is added to Elocal, meant or not; slower than sound none (the lab's rule for a blast). At 0.1% of light speed nearly all of his 135 TJ (32 kt TNT); a 500 m/s charge's bounce, 1.45 GJ of his 1.5 GJ; at 0.99% of light speed Elocal is within 0.1% of his motion energy, joining the 1% figure. src/app.html collideCharge: an item ('Carried at 300 km/s, faster than sound, Rex's body meets real air (their own bodies do). The air takes nearly all of his 135 TJ of motion (32 kt TNT) as he slides off, most of it within a few hundred metres') and the blast block's label ('Rex's motion, heating the air as he slides off'); duoFacts names that harm ('Rex is sent off faster than sound, and the air he heats as he slides off risks damage 5 m away' for a 200 m/s charge's bounce, where the charge itself is below the speed of sound). README decision 5 and 'What moved'. Checks: test/powers.js 8c (Eair = his motion energy - his footing x his slide to 1e-9 at 0.1% of light speed and in a 500 m/s bounce, Elocal = Eair, meant Elocal = Q + Eair, none at 200 m/s, continuity at 0.99% of light speed); test/shots.js 'review round 2: a carried body faster than sound heats real air below 1% of light speed'.",
+   "reverts": [
+    "E9-carried-air-uncounted",
+    "P3-air-item-missing",
+    "P20-collide-harm-ride-air"
+   ]
+  },
+  "physics-steady-push-lying-pusher": {
+   "text": "Fixed with the skeptic's better fix (one rule, the shoving match's). src/engine.js standoff: a pusher taking his own recoil who is too heavy for his strength to stand (canStand, moveCheck's threshold, 2,140 kg-force for the 3,000 kg bodies) lies flat and pushes 0 (cantStand: true); with his recoil not taken, as before. Ollie at 2,000 kg-force pushes 0 in both contests and Rex holds. src/app.html collidePush: 'Ollie can't push: at 3 t his strength (19.6 kN) can't stand him up (see Weight), so he lies flat, as in the shoving match. Rex doesn't move.', with its chip, tile and items. README decision 7 and 'What moved'; decision 9 in the PR asks the owner. Checks: test/powers.js 8f (DA 0, cantStand, objectHolds, the shoving match's push 0 for the same body, the power-off stalemate unchanged); test/shots.js 'review round 2: a pusher too weak to stand can't push'.",
+   "reverts": [
+    "E7-steady-push-lying-pushes",
+    "P5-lying-verdict-missing"
+   ]
+  },
+  "duo-noanswer-follows-top": {
+   "text": "Fixed with the skeptic's better fix. src/app.html makeDuoPlan: p.noAnswerIn(v) finds a no-answer run among every effort the searches probed; duoEffortBox takes the caveat from the facts all-out or, failing that, from any probed effort (naT, the preset branch's na and its courtesy line). Collide's jump at an unlimited dial, least disruptive (1,210 t, the paradox): '... The hit has no physical answer here (the canon's ruling), so the lab can't judge its harm; it judges only the charge (its speed against sound) and the charger's take-off.'; its windows preset no longer says 'Even all-out, this test doesn't shatter windows'. The reverse case (part 2) is not a defect, as the verdict says (the caveat names the unlimited push and sits on the ceiling line, which covers efforts up to all-out), and is unchanged. Check: test/shots.js 'review round 2: the no-answer caveat follows the effort shown, at an unlimited dial'.",
+   "reverts": [
+    "P11-noanswer-from-top"
+   ]
+  },
+  "duo-both-at-once-bolts-pulse": {
+   "text": "Fixed with the skeptic's better fix (counting it, the shoving match's rule). src/engine.js shoveBoth (both taking their own recoil): where one shove stalls against the other's bolts and the other's shove moves its target, his bolts hand the ground the stalled shove over the real shove's push time (at least a limb's contact time): toGroundB for a bolted target, toGroundA for a bolted shover (Ollie bolted at 90.7 t: 299 kN x 0.187 s = 55,800 kg m/s). src/app.html duoFacts reads toGroundA as well (shaking source, harm 'the push through the bolted partner's bolts shakes the ground', signature); wrestleShove shows the chip ('The push through Ollie's bolts shakes the ground') and an item ('Bolted, Ollie doesn't move: Rex's shove presses on his bolts for as long as Ollie's own shove drives Rex off ...'), so duoRecoilWhy's 'through his feet, a friction drag' no longer appears there. With Ollie bolted the rattle preset finds 58.8 t; with Rex bolted at a 10^6 kg dial the plaster preset finds 368 t (both said 'even all-out' before); the least disruptive effort stays 8.74 t. Engine comment and README decisions 9 and 16, 'What moved'. Checks: test/powers.js 8h (toGroundB = the stalled shove's force x the real shove's time, T = max(limb pulse, it), 55,800 kg m/s at 90.7 t, the mirror toGroundA, none when neither is bolted or at unlimited strength); test/shots.js 'review round 2: Both at once counts the shove pressing on the bolted one's bolts'.",
+   "reverts": [
+    "E10-both-no-bolts-pulse",
+    "P10-both-pulse-unread"
+   ]
+  },
+  "duo-r2-mutant-survivors": {
+   "text": "Fixed with the skeptic's checks; recorded, as the verdict corrects, as mutants of the build's page code (238f570), not of round 1's fixes. test/shots.js 'review round 2: Both at once with one bolted slides one of them, and nothing unmeant is called meant': (a) Both at once with Ollie bolted, least disruptive: 'Past that, one of them slides 5.17 m' and not 'both are shoved apart'; (b) Collide with Rex bolted (the paradox) and the game of catch with Things keep their form off at the default dial (no fireball), windows preset: neither says 'They mean it'. Both mutants, applied to the fixed tree, now fail it.",
+   "reverts": [
+    "M-N9-bothSlide-or",
+    "M-N11-mean-unguarded"
+   ]
+  },
+  "duo-test-claims-stale": {
+   "text": "Fixed (documentation; no page or engine change). README Tests paragraph and the PR's 'Page checks': 15 of round 1's 16 checks fail on the build's page or on the surviving mutant they guard against; the 16th (a Never knocked back switch turned over in place gives what a fresh load gives) guards a path no state of the page yet exercises, so it fails on no build (its mutant is equivalent in practice); 'the pin that stays on the table' becomes 'the loser's pad breaking the table in a pin'; the timing pointer is replaced by figures (round 1's, from canon-4-round1.json, and this round's, timed after its fixes). test/shots.js's block comment now says that with the winner's power on the loser's pad can still break the table in a pin, and that standing the loser's feet carry the force at his elbow. Checked by reading the README, the PR body and the comment against the checks; no test covers documentation.",
+   "reverts": []
+  },
+  "copy-arm-one-bolted-unlimited-no-answer": {
+   "text": "Fixed with the skeptic's better fix. src/engine.js armWrestle, both presses unlimited standing: the paradox for the whole bout only where both are held without limit; with one held, clash 'paradox' one-sided with noAnswer (whose press: the one into the held one) and the other flung off (draggedA / draggedB), his rock torn if he is bolted on real rock. src/app.html bayArm: 'Rex is bolted to ground their power holds, so Ollie's unlimited press into him has no physical answer (the canon's ruling) and moves nobody. Rex's own unlimited press on Ollie is real, and Ollie's feet hold only 17.7 kN, so he is flung off at just under light speed, with unlimited energy. Nobody pins anybody.', the chip 'Ollie's feet slide: the other's unlimited press' (the chip loop skips only the both-held paradox; slidesOf reads the dragged flags), the tile 'Ollie is flung off'. README decision 10. Checks: test/powers.js 8i (Rex bolted: noAnswer 'B', draggedB; the mirror; both bolted unchanged); test/shots.js 'review round 2: arm wrestling, one bolted at unlimited strength flings the other off'.",
+   "reverts": [
+    "E4-arm-one-sided-all-paradox",
+    "P13-arm-one-sided-verdict-old"
+   ]
+  },
+  "copy-shoving-match-stroke-formula": {
+   "text": "Fixed as the session lead decided (the model as built). src/app.html wrestlePushOwn: both shoved, 'Each is pushed by the other's push, less his own hold, until the gap between them has grown by the shove's stroke (2.44 m, an estimate; here Rex moves 1.22 m and Ollie 1.22 m of it) ... then each slides'; shoved off, 'Ollie is pushed by Rex's push, less his own hold, over the whole shove's stroke (2.44 m, an estimate) while their hands stay on each other; Rex doesn't move. Then Ollie slides to a stop'; past 1% of light speed the one who leaves meets the air as a fireball instead of sliding. Math: 'until x_Rex + x_Ollie = d = 2.44 m ...; one shoved off: he alone is pushed, over the whole of d'. README decision 8 the same. Check: test/shots.js 'review round 2: the shoving match's stroke is described as built' (both shoved, a bolted shove-off, the fireball at unlimited strength).",
+   "reverts": [
+    "P7-stroke-text-old"
+   ]
+  },
+  "copy-empty-bar-caption": {
+   "text": "Fixed with the skeptic's better fix: src/app.html wrestlePushOwn passes every row to logBars (.filter(Boolean)), which draws an unlimited row at its edge or, with nothing finite, says the rows in words: 'Strength, footing and push: Rex's strength no limit · Rex's push no limit · Ollie's strength no limit · Ollie's push no limit.' Check: test/shots.js 'review round 2: the shoving match's chart lists unlimited rows'.",
+   "reverts": [
+    "P9-bars-finite-only"
+   ]
+  },
+  "copy-push-distance-left-out-of-slide-harm": {
+   "text": "Fixed once with physics-slide-harm-ignores-stroke (the same defect); the fix, figures and checks are recorded there. The Shove tab's slide-only rule (pre-existing) is stated in Known limits.",
+   "reverts": [
+    "E6-match-no-push-distance",
+    "P16-steady-harm-slide-only",
+    "P17-match-harm-slide-only",
+    "P21-card-slide-only"
+   ]
+  },
+  "copy-bolted-winner-shake-not-shown": {
+   "text": "Fixed with the skeptic's better fix. src/app.html wrestlePushOwn: where a bolted winner shoves the other off, the bolts' pulse (the loser's push over the push, at least a limb's contact time, as duoFacts judges it) gets a ground-shaking chip ('The push through Rex's bolts shakes the ground: plaster may crack out to 5.22 m' at a 10^6 kg dial) and an item ('Bolted, Rex hands the ground Ollie's push through his bolts: 140,000 kg m/s over 110 ms ...'); the feet item no longer puts 'only' before what is the bolted winner's whole push ('his bolts hand the ground all of Ollie's push'). Check: test/shots.js 'review round 2: the push through a bolted winner's bolts is shown'.",
+   "reverts": [
+    "P8-bolted-shake-hidden"
+   ]
+  },
+  "copy-source-supplied-two-figures": {
+   "text": "Fixed with the skeptic's better fix: src/app.html collideCharge gives the source's supply and the one hit's gain to three figures throughout the view (tile, item, math): 23,500 kg m/s at the default view (21,900 + 1,520), 109,000 in the bounce, 14,100 at 1 m/s, 107,000 for the jump onto Rex on real ground, 899 million at 0.1% of light speed. README 'What moved' (109,000; 899 million). Checks: test/shots.js 'review round 2: the source's supply has one figure on a view' and the updated build and round 1 checks (109,000, 899 million, 14,100, 107,000).",
+   "reverts": [
+    "P2-supply-two-figures"
+   ]
+  },
+  "copy-catch-switches-differ": {
+   "text": "Fixed with the skeptic's better fix. src/app.html bayCatch: 'Thrown back, it reaches Rex as plasma too, but Rex's Never knocked back is off (Their powers).' (or 'on'), then the return leg's push; where the switches differ the return leg's own blast block follows ('the return throw: what it frees at Rex and as he rides on through the lower air': windows 1.28 km beside Ollie's 626 m). README decision 14. Checks: test/shots.js 'Never knocked back: the fireball case shows each switch' (both wordings) and 'review round 2: the game of catch with the two switches set apart'.",
+   "reverts": [
+    "P14-catch-switch-text-old",
+    "P15-catch-return-blast-missing"
+   ]
+  },
+  "copy-stale-pin-stays-on-table": {
+   "text": "Fixed once with duo-test-claims-stale (the same documentation): README's Tests paragraph says 'the loser's pad breaking the table in a pin', and test/shots.js's comment says that with the winner's power on the loser's pad can still break the table in a pin. Documentation only; no test covers it.",
+   "reverts": []
+  }
+ },
+ "what": "Second adversarial review of pull request 4 of BRIEF-canon.md (contests, and the two Never knocked back switches; item 4). The same three lenses as round 1, as RUN-canon.md sets them: physics (round 1's fixes first: Collide's carried hit, arm wrestling's pads, the steady push, the shoving match); the two-player tests (the effort search, the presets and the courtesy ceiling against the engine, the powers-off identity, mutants of round 1's code); copy (every sentence on the changed views against the engine and each other, the cards, the README and the pull request). Reviewed at f48a2c1 (round 1's fixes). Each finding was reproduced by a skeptic with its own script: 19 findings, all confirmed (several with a severity or a detail corrected in the verdict). Two pairs are one defect seen by two lenses, fixed once and recorded under each: physics-slide-harm-ignores-stroke and copy-push-distance-left-out-of-slide-harm; duo-test-claims-stale and copy-stale-pin-stays-on-table. Fixed as the session lead decided: the carried splat frees the force of the hit over the squash, the hold's work included (Q = carry.F x s, the meant part of Elocal and hitAbsorbed too; 499 kJ at the default sprint, not 494 kJ), and the source's work balances; the walk-out keeps the walking pace, so the winner holds back to the push that keeps the loser at it (35.3 kN for Rex at the dial against Ollie lying flat at 1 t) and his push back is reported; standing in a pin, the loser's feet or his bolts' rock carry the force at his elbow (the skeptic's fix), and at unlimited strength with one held without limit the bolted one's own press flings the other off; the shoving match is described as built (each moves about half the stroke when both are shoved, the loser all of it when one is shoved off, a fireball past 1% of light speed); the slide harm counts the travel during the push (the steady push's courtesy ceiling 3,680 kg-force, was 5,470; the shoving match's 7,300, was 9,060); everything else with the verdicts' better fixes (for the steady push's real muscle, the minimal one it offers first, so the steady push stays the shoving match's shove-off: an upper bound, labelled). Found while fixing and fixed with the elbow force: at unlimited strength against a finite press the loser's pad load was Infinity - Infinity (NaN), so the table never broke and the page could read 'about unlimited'; it is now unbounded. Each fix's check was seen failing with the fix reverted on its own in a scratch copy (scratchpad pr4/r2fix/js/revert2.py: 34 reverts, 10 in the engine, 21 on the page and 1 in the cards, and the two surviving page mutants; every one fails its check; the results are in each finding's outcome). The build's 18 engine mutants, re-run on the fixed tree (their patterns moved to the fixed lines where a fix rewrote them), each fail a check; round 1's reverts that still apply (45) were re-run on the fixed tree: 43 of the 45 fail their checks; M-P4 (the search's key without the switches) still passes, equivalent in practice as round 1 recorded; E5 (round 1's fix loading a bolted one's rock with the other's press in a standing contest) now passes too, because round 2's elbow force replaced its pin case and in a stalemate the two presses it chooses between are equal, so that revert no longer applies. With every power off every engine result is byte-identical (powers.js part 1), and the page's powers-off comparison with main passes; with every power off the 28 two-player states at four efforts (112) read exactly as on f48a2c1's page, so still 109 of 112 as #34's (the three are the fireball case's added note). After the fixes, the full test line, one test at a time, and all pass: build-data.py and build.js; calibration.js 117 checks; presence.js 383; shots.js 84 checks, with no sideways scroll, page error or broken text at 390 and 1280 px, light and dark (its pull request 4 block is one of them, with 58 checks); powers.js 181 of 181; ladder.js 562 of 562; sweep.js 7,776 contexts with no NaN or negative output. The changed views (47 states) rendered at 390 and 1280 px, light and dark: no sideways scroll, clipped label, broken text or page error, and every sentence read against the engine and the rest of its view. Search timing: the two-player effort search, reload to settled, three runs each, round 1's page against this one: arm 1.1-1.2 against 1.2 s, the shoving match 1.2-1.4 against 1.2-1.4, Both at once 1.2-1.3 against 1.2-1.4, the game of catch 1.6-1.9 against 1.7-2.1, the partner toss 2.8-3.3 against 2.9-3.3, the charge 1.1-1.3 against 1.2, a 10^9 kg jump 1.4-1.7 against 1.3-1.5, the steady push 1.1-1.2 against 1.1-1.2: no slowdown.",
+ "script": "workflow canon-review (args {pr: 4, round: 2, lenses: [physics, duo, copy]}); kept in history at the end of the run"
+}

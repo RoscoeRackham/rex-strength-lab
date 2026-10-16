@@ -1,0 +1,4 @@
+module.exports = [
+  { id: 'L14-negative-none', file: 'src/ladder.js', find: 'if (!(J > 0) || !isFinite(J)) return Object.assign(out, { none: true });', replace: 'if (!isFinite(J)) return Object.assign(out, { none: true });', cmd: 'node test/ladder.js' },
+  { id: 'L01-tie-upper-check', file: 'src/ladder.js', find: 'if (Math.abs(lv - s.level) < Math.abs(lv - best.level)) best = s;', replace: 'if (Math.abs(lv - s.level) <= Math.abs(lv - best.level)) best = s;', cmd: "node -e \"global.window={};require('./src/data.js');const L=require('./src/ladder.js');const R=window.DINO_DATA.energyRefs;const a=R.find(r=>r.key==='energy_corolla_100kmh_kinetic').J,b=R.find(r=>r.key==='energy_chicxulub_impact').J;const J=Math.pow(10,Math.log10(a)+0.125*(Math.log10(b)-Math.log10(a)));const g=L.glow(J,R);console.log(g.level,g.word);process.exit(g.word==='flicker'?0:1)\"" },
+];
