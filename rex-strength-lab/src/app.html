@@ -322,7 +322,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
 
       <details class="setup" id="powers">
         <summary><span>Their powers</span> <span class="muted" id="powers-sum" style="font-weight:400;font-size:.85rem"></span></summary>
-        <p class="hint" style="margin-top:8px">All of these are their absorption at work, used on purpose. Each switch suspends one piece of real physics, on purpose. Everything else stays real. Comic-book physics is their default: Unbreakable footing, They take their own recoil, Things keep their form and Air resistance absorbed are on unless you turn them off (they choose when not to use them). Bolted and the other switches are off by default. (The Collide tab’s two thought experiments, Truly immovable and Light speed, stay on that tab: they are about the test, not their powers.)</p>
+        <p class="hint" style="margin-top:8px">All of these are their absorption at work, used on purpose. Each switch suspends one piece of real physics, on purpose. Everything else stays real. Comic-book physics is their default: Unbreakable footing, They take their own recoil, Things keep their form, Safe passenger and Air resistance absorbed are on unless you turn them off (they choose when not to use them). Bolted and the other switches are off by default. (The Collide tab’s two thought experiments, Truly immovable and Light speed, stay on that tab: they are about the test, not their powers.)</p>
         <div class="field">
           <span class="lbl" id="mode-lbl">Muscle physics</span>
           <div class="seg" role="group" aria-labelledby="mode-lbl">
@@ -344,7 +344,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         <label class="check"><input type="checkbox" id="sw-recoil"><span><b>They take their own recoil</b>: the push back from their own throws, punches, stomps, pulls and shoves, and from stopping what they catch, goes into their source, the endless ocean, not into the planet. So their own moves and catches don’t shove them back, launch them or carry them off, and none of that push back reaches the ground, so it doesn’t shake the ground. The endless ocean takes the whole push back of the move, the other way: the momentum of what they set moving or stop, plus whatever resists it while they push (a pulled load’s rolling or sliding, a shoved partner’s feet). The weight of what they hold up while they push stays on their feet, as on the Lift tab. A punch into air leaves none: when the arm stops, the fist’s momentum comes back. A jump, a sprint start or his steps as he pulls a load are the move itself, not recoil, so they still push on the ground. An incoming hit, such as a throw that reaches the catcher as plasma, isn’t their own push back, so this power doesn’t stop it (that is canon’s Never knocked back, not in the lab yet). Being pushed by someone else (the two-player contests, Collide) is still what Bolted is for.</span></label>
         <div class="eyebrow" style="margin-top:12px">Material limit suspended</div>
         <label class="check"><input type="checkbox" id="sw-keep"><span><b>Things keep their form</b>: what they hold or throw can’t be broken by them or the air: not by their grip, the launch, its own weight, the air’s push or heating in flight. Hitting anything else is real physics (its landing, a miss).</span></label>
-        <label class="check"><input type="checkbox" id="sw-passenger"><span><b>Safe passenger</b>: the same spread push on a person he throws or catches, so his push puts no g-force on them. Air drag in flight and the landing stay real.</span></label>
+        <div class="eyebrow" style="margin-top:12px">People they throw or catch</div>
+        <label class="check"><input type="checkbox" id="sw-passenger"><span><b>Safe passenger</b>: someone they throw or catch feels only a manageable push, spread through their whole body, at the launch, in the air and when they land, so they come down unharmed. The landing’s push still reaches the ground, so it shakes the ground as a real landing does; its energy, the harm a fall would do, is taken back. It doesn’t cover heating in a very fast flight (Things keep their form does). Only a person is a passenger: Ollie is as tough as Rex.</span></label>
         <div class="eyebrow" style="margin-top:12px">Absorbed (energy goes back into them)</div>
         <div class="field" style="margin-top:6px">
           <label for="air-absorb">Air resistance absorbed</label>
@@ -652,27 +653,29 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     effort: 'least', effortLogKg: 3, near: P.RESTRAINT.R.NEAR,
     // what each move is for: throw it this far (m), jump this high (m), run this fast (m/s), drag it 10 m in this time (s)
     gThrow: 30, gJump: 3, gSprint: 12.42, gPull: 10,
-    // their four default powers (on unless the visitor turns them off; BRIEF-gui.md section 5): the share of the air's drag
-    // on what they throw that they take back (0-1), things keep their form, unbreakable footing, they take their own recoil
-    airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true,
+    // their default powers (on unless the visitor turns them off; BRIEF-gui.md section 5): the share of the air's drag
+    // on what they throw that they take back (0-1), things keep their form, unbreakable footing, they take their own
+    // recoil; and Safe passenger, on by default since 14 Oct 2026 (canon lists it with them; BRIEF-canon.md item 5)
+    airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true, safePassenger: true,
     // the other comic switches (off by default) and what absorbed energy does; growth form = share of growth into size
-    safePassenger: false, silentStrike: false, softLanding: false,
+    silentStrike: false, softLanding: false,
     absorb: 'ocean', growS: 0.5, growT: 60, growWhat: 'none',
     // Walk tab: who walks, the pace, the effort of each step (0 soft-footed, 0.5 ordinary, 1 a heavy stamp), the listener's distance (m)
     walker: 'rex', pace: 'walk', stepEffort: 0, walkD: 3,
     // two-player tests: one effort for both (least disruptive, all-out or custom), unless Ollie gets his own (what-if)
     duoEffort: 'least', duoLogKg: 4, oEffortOwn: false, oEffortLogKg: 4,
-    // the save's version: 2 since the canon follow-ups (BRIEF-canon.md). A save without it is older and gets the
-    // migrations below once; a save with it is taken as the visitor's own choices
-    saveV: 2,
+    // the save's version (BRIEF-canon.md, "Saved pages still load"): 2 from the 3,000 kg mass, 3 from Safe passenger on
+    // by default. A save with an older mark, or none, gets the migrations below once; the current mark is taken as the
+    // visitor's own choices
+    saveV: 3,
   };
   let state = Object.assign({}, DEFAULTS);
   // lightest density the slider and the mass boxes allow, kg/m³ (the slider's left end, 10^1)
   const RHO_MIN = 10;
   // Wrestle's throw shared Rex's Throw angle while only one of them was ever on screen; a save from before it had its
   // own angle (state.wAngle) starts it from Rex's
-  let savedWAngle = false, savedV = 2;
-  try { const saved = JSON.parse(localStorage.getItem('rex-lab-v1') || 'null'); if (saved) { state = Object.assign(state, saved); savedWAngle = 'wAngle' in saved; savedV = saved.saveV === 2 ? 2 : 1; } } catch (e) { /* storage unavailable */ }
+  let savedWAngle = false, savedV = DEFAULTS.saveV;
+  try { const saved = JSON.parse(localStorage.getItem('rex-lab-v1') || 'null'); if (saved) { state = Object.assign(state, saved); savedWAngle = 'wAngle' in saved; savedV = saved.saveV === 3 ? 3 : saved.saveV === 2 ? 2 : 1; } } catch (e) { /* storage unavailable */ }
   // The default mass was 2,700 kg until it was ruled to leave out the tails; a saved old default moves to the new one.
   if (state.m === 2700) state.m = DEFAULTS.m;
   if (state.oM === 2700) state.oM = DEFAULTS.oM;
@@ -682,7 +685,11 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (state.m === 3007) state.m = DEFAULTS.m;
     if (state.oM === 3007) state.oM = DEFAULTS.oM;
   }
-  state.saveV = 2;
+  // Safe passenger was off by default until 14 Oct 2026, and every save stored it, so before the mark 3 a saved 'off'
+  // is the old default, not a choice: it loads on. (Mark 3, not 2: a page published after the 3,000 kg change wrote
+  // saves marked 2 with Safe passenger off as the old default.)
+  if (savedV < 3) state.safePassenger = true;
+  state.saveV = DEFAULTS.saveV;
   state.oSame = true;   // Ollie is as strong as Rex; a what-if strength lasts only for this visit
   state.effort = 'least';   // the page always opens on the heroic default; anything louder is chosen each visit
   state.absorb = 'ocean'; state.growWhat = 'none';   // growth is a what-if: canon size and mass on every visit
@@ -724,7 +731,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       duoEffort: (v) => ['least', 'allout', 'custom'].includes(v), duoLogKg: num(-3, 34), oEffortOwn: (v) => typeof v === 'boolean', oEffortLogKg: num(-3, 34),
       walker: (v) => ['rex', 'ollie', 'both'].includes(v), pace: (v) => ['stroll', 'walk', 'brisk', 'fast'].includes(v), stepEffort: num(0, 1), walkD: num(...RANGES.walkD),
       absorb: (v) => ['ocean', 'gradual', 'instant', 'runaway'].includes(v), growS: num(0, 1), growT: num(...RANGES.growT), growWhat: (v) => ['none', 'krakatoa', 'chicxulub', 'sun'].includes(v),
-      saveV: (v) => v === 2,
+      saveV: (v) => v === DEFAULTS.saveV,
     };
     for (const [k, ok] of Object.entries(VALID)) if (!ok(state[k])) state[k] = DEFAULTS[k];
     for (const k of Object.keys(state)) if (!(k in DEFAULTS)) delete state[k];
@@ -800,7 +807,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   // the lower-the-slider hint: 'no' blast (nothing from the flight, and his hand subsonic) or 'too little'
   const airHintText = (how) => (how === 'no' ? 'a throw makes no blast from its flight to do this.' : 'a throw’s air (the share its flight still meets, and his throwing hand’s own) makes too little blast to do this.');
   const airMeaning = (s) => (s >= 1 ? 'drag-free: no slowing, boom, blast or heating from its flight (the landing is still real, and his hand still meets the air)'
-    : s <= 0 ? 'real air: it slows what they throw, and a fast throw booms and heats as it would' + (!state.keepForm && !state.unbreakable && !state.ownRecoil ? ' (with all their powers off the lab counts as it did before them, leaving out the air his own hand drives ahead)' : '')
+    : s <= 0 ? 'real air: it slows what they throw, and a fast throw booms and heats as it would' + (!state.keepForm && !state.unbreakable && !state.ownRecoil ? ' (with Things keep their form, Unbreakable footing and They take their own recoil off too, the lab counts as it did before their powers, leaving out the air his own hand drives ahead)' : '')
       : 'the air takes ' + pctAir(1 - s) + ' of the drag: a fast throw slows less, but still booms and makes a smaller blast');
   function renderAirAbsorb() {
     const sl = $('#air-absorb');
@@ -859,11 +866,11 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     for (const b of document.querySelectorAll('#grow-chips .chip')) b.setAttribute('aria-pressed', String(Math.abs(Number(b.dataset.s) - state.growS) < 1e-9));
     $('#grow-fields').hidden = state.absorb === 'ocean';
     $('#grow-t').value = state.growT; $('#grow-t-row').hidden = state.absorb !== 'gradual';
-    // Their powers: the muscle model, then the switches that are on, Bolted with who, and the growth mode. The four default
-    // powers read as one item while all are on at their defaults.
-    const allDefault = state.airAbsorb === 1 && state.keepForm && state.unbreakable && state.ownRecoil;
-    const sw = (allDefault ? ['default powers on'] : [state.unbreakable && 'unbreakable footing', state.ownRecoil && 'own recoil', state.keepForm && 'things keep their form', state.airAbsorb > 0 && (state.airAbsorb >= 1 ? 'drag-free throws' : 'air ' + pctAir(state.airAbsorb) + ' absorbed')])
-      .concat([state.safePassenger && 'safe passenger', state.silentStrike && 'silent strike', state.softLanding && 'soft landing']).filter(Boolean);
+    // Their powers: the muscle model, then the switches that are on, Bolted with who, and the growth mode. The default
+    // powers (Safe passenger among them) read as one item while all are on at their defaults.
+    const allDefault = state.airAbsorb === 1 && state.keepForm && state.unbreakable && state.ownRecoil && state.safePassenger;
+    const sw = (allDefault ? ['default powers on'] : [state.unbreakable && 'unbreakable footing', state.ownRecoil && 'own recoil', state.keepForm && 'things keep their form', state.safePassenger && 'safe passenger', state.airAbsorb > 0 && (state.airAbsorb >= 1 ? 'drag-free throws' : 'air ' + pctAir(state.airAbsorb) + ' absorbed')])
+      .concat([state.silentStrike && 'silent strike', state.softLanding && 'soft landing']).filter(Boolean);
     const bolted = state.anchor === 'bolted' && state.oAnchor === 'bolted' ? 'bolted: Rex and Ollie' : state.anchor === 'bolted' ? 'bolted: Rex' : state.oAnchor === 'bolted' ? 'bolted: Ollie' : null;
     $('#powers-sum').textContent = [state.mode === 'real' ? 'Real muscle' : 'Comic book'].concat(sw.length || bolted ? sw : ['switches off'], bolted ? [bolted] : [], state.absorb !== 'ocean' ? [{ gradual: 'gradual growth', instant: 'instant growth', runaway: 'runaway' }[state.absorb]] : []).join(' · ');
     const oStr = state.oSame ? 'Rex’s strength' : 'what-if: ' + (state.oInf ? 'unlimited' : 'lifts ' + fmtMass(Math.pow(10, state.oLogKg)));
@@ -1298,7 +1305,9 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   function passengerChip(r, c) {
     if (!r.canMove) return null;
     const L = P.PASSENGER, o = objById(state.obj), dg = L.dragG(o, r.v) * (1 - airShareOf(c));
-    if (c.safePassenger) return dg > L.noHarm(1) ? status(dg > L.injury(2) ? 'bad' : 'warn', 'Safe passenger, but air drag ' + sig(dg, 2) + ' g') : status('info', 'Safe passenger: no harmful g-force');
+    // Safe passenger (on by default; canon, and the ruling of 14 Oct 2026): the launch, the drag in flight and the
+    // landing are all spread through them
+    if (c.safePassenger) return status('info', 'Safe passenger: a manageable push, spread through them');
     const n = L.felt(Math.max(r.launchG, r.launchGPeak || 0), state.angle);
     const worst = Math.max(n / L.noHarm(r.launchT), dg / L.noHarm(1));
     const inj = n > L.injury(r.launchT) || dg > L.injury(2);
@@ -1307,12 +1316,34 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
   function passengerText(r, c, f) {
     if (!r.canMove) return null;
     const L = P.PASSENGER, o = objById(state.obj), nAvg = L.felt(r.launchG, state.angle), n = L.felt(Math.max(r.launchG, r.launchGPeak || 0), state.angle), dg = L.dragG(o, r.v) * (1 - airShareOf(c)), fall = f && f.landed ? f.vImpact * f.vImpact / (2 * g) : null;
-    const launch = c.safePassenger ? 'Safe passenger: his push is spread through their whole body like gravity, so the launch puts no load on them; they float as if falling.'
+    const sp = !!c.safePassenger;
+    const launch = sp ? 'Safe passenger: his push is spread through their whole body in proportion to its mass, as gravity is, so at the launch they feel only a manageable push.'
       : 'The throw presses them with about ' + sig(nAvg, 2) + ' g for ' + fmtTime(r.launchT) + (n > nAvg * 1.05 ? ', peaking at ' + sig(n, 2) + ' g as the push starts (real muscle pushes hardest at first)' : '') + '. Amusement rides allow an unprepared rider ' + sig(L.noHarm(r.launchT), 2) + ' g for that long (ASTM F2291, pushed on the chest, the worst way round: 2 g at 0.2 s, falling to 1.5 g held; the standard doesn’t cover pushes shorter than 0.2 s, so keeping 2 g there is our estimate); harnessed volunteers took ' + sig(L.injury(r.launchT), 2) + ' g for that long uninjured (Eiband 1959). ' + (n > L.injury(r.launchT) ? 'This is past that: injury possible.' : n > L.noHarm(r.launchT) ? 'This is past what rides allow.' : 'This is within ride limits.') + ' All of these assume a seat or harness; held in his hands it would be worse, by an amount nobody has measured.';
     const share = airShareOf(c);
     const drag = share >= 1 && L.dragG(o, r.v) >= 0.1 ? ' In flight their power takes back all of the air’s drag (Air resistance absorbed), so the air presses on them with nothing (real air would give ' + sig(L.dragG(o, r.v), 2) + ' g at release).'
-      : dg >= 0.1 ? ' In flight, air drag presses on them with up to ' + sig(dg, 2) + ' g at release' + (share > 0 ? ' (the ' + pctAir(1 - share) + ' of the drag their power leaves)' : '') + (dg > L.noHarm(1) ? ', past the 1.5 g rides allow for that long' + (c.safePassenger ? '; Safe passenger covers only his push, not the air' : '') : '') + '.' : '';
-    return launch + drag + (fall != null ? ' The landing is still real: they hit the ground at ' + speedOnly(f.vImpact) + ', like falling ' + fmtDist(fall) + ', unless someone catches them.' : '');
+      : dg >= 0.1 ? ' In flight, air drag presses on them with up to ' + sig(dg, 2) + ' g at release' + (share > 0 ? ' (the ' + pctAir(1 - share) + ' of the drag their power leaves)' : '') + (dg > L.noHarm(1) ? ', past the 1.5 g rides allow for that long' : '') + (sp ? '; Safe passenger spreads that through them too, so it stays a manageable push' : '') + '.' : '';
+    if (fall == null) return launch + drag;
+    if (!sp) return launch + drag + ' The landing is still real: they hit the ground at ' + speedOnly(f.vImpact) + ', like falling ' + fmtDist(fall) + ', unless someone catches them. With Safe passenger off the lab doesn’t judge that fall.';
+    // Safe passenger and the landing: its energy is taken back (the engine's passengerLanding), its push still reaches
+    // the ground. It doesn't cover heating: where the flight would melt or burn them (Things keep their form off), the
+    // page doesn't call them unharmed.
+    const pl = P.RESTRAINT.MOVES.throw.passengerLanding(r, { obj: o, safePassenger: true }), burns = !c.keepForm && f.maxStagT > 1200 && share < 1;
+    const land = ' They land at ' + speedOnly(f.vImpact) + ', like falling ' + fmtDist(fall) + '. ';
+    if (!pl) return launch + drag + land;
+    return launch + drag + land + (burns ? 'Safe passenger takes back the landing’s energy (' + fmtSI(pl.absorbed, 'J') + ') and spreads its push through them, but it doesn’t cover the heating in flight (below), so the lab can’t say they come down unharmed.'
+      : 'Safe passenger spreads the landing through them too and takes back its energy (' + fmtSI(pl.absorbed, 'J') + '), so they come down unharmed.') + ' The landing’s push still reaches the ground, so it shakes the ground as a real landing does.' + landGivesText(o, f.vImpact, c.surface, !!P.groundOf(c.surface), f.impactAngleDeg);
+  }
+  // Safe passenger takes back a landing's energy, not its push (review round 1 of pull request 3): past what the ground
+  // bears over the person's facing area, the ground gives way where they land, as his own feet punch in with Soft
+  // landing. '' where the ground bears it.
+  // (shakeFig: the tab gives the landing's shaking figures, which are rough there; none on ice or steel, which have no
+  // ground-wave model. angleDeg: how steeply they come down; the ground bears the downward part of the push, review
+  // round 2. A slanting landing names its own speed and the straight-down one)
+  function landGivesText(o, v, surface, shakeFig, angleDeg) {
+    const lg = P.PASSENGER.landGround(o, v, surface, angleDeg), r2 = (x) => Number(x.toPrecision(2));
+    if (!lg.gives) return '';
+    const slant = angleDeg != null && angleDeg < 80;
+    return ' But past a landing of about ' + speedOnly(r2(lg.vBear)) + (slant ? ' coming down at ' + sig(angleDeg, 2) + '° (about ' + speedOnly(r2(P.PASSENGER.landGround(o, v, surface).vBear)) + ' straight down)' : '') + ', the downward part of that push is more than ' + surface.short + ' bears, even spread over their whole facing area, so the ground gives way where they land (the lab doesn’t size the hole' + (shakeFig ? ', and its shaking figures are rough there' : '') + ').';
   }
   // the share of the air's drag on what they throw that their power takes back (Air resistance absorbed)
   const airShareOf = (c) => (typeof c.airAbsorb === 'number' ? Math.min(1, Math.max(0, c.airAbsorb)) : 0);
@@ -1497,6 +1528,8 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const ownOn = !!c.ownRecoil, bolted = state.anchor === 'bolted', ra = r.recoilAbsorbed;
     const rOwn0 = ownOn ? P.throwObject(Object.assign({}, c, { ownRecoil: false }), o, state.angle) : null;
     const ownSaved = !bolted && rOwn0 && rOwn0.canMove && rOwn0.recoilV > 0.01;
+    // Safe passenger and a thrown person's landing: its energy taken back (null with the switch off, or no landing)
+    const spLand = o.passenger ? P.RESTRAINT.MOVES.throw.passengerLanding(r, { obj: o, safePassenger: c.safePassenger }) : null;
     // past 1% of light speed: the air ahead (the snowplow, at the air's share of the drag)
     const fa = f.relativistic && isFinite(r.Eobj) && kAir > 0 ? P.fastAir(o, r.Eobj, state.angle, kAir) : null;
     const leaves = f.relativistic && (kAir === 0 || (c.keepForm && (!fa || fa.vOut >= D.escape.earth)));
@@ -1543,7 +1576,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       speedTile('Launch speed', r.v, [fmtMach(r.v), r.v < 0.01 * K.c ? big(r.v * 3.6, 3) + ' km/h' : ''].filter(Boolean).join(' · ')),
       tile('Energy in the ' + o.short, fmtSI(r.Eobj, 'J'), fmtTNT(r.Eobj)),
       distTile,
-      f.landed && !f.relativistic ? tile('Lands at', speedOnly(f.vImpact), fmtTNT(r.Eimpact) + ' on impact') : null,
+      f.landed && !f.relativistic ? tile('Lands at', speedOnly(f.vImpact), spLand ? fmtSI(spLand.absorbed, 'J') + ' taken back: Safe passenger' : fmtTNT(r.Eimpact) + ' on impact') : null,
       (r.recoilV > 0.01 ? speedTile : tile)('His recoil', r.recoilV > 0.01 ? r.recoilV : 'none', r.anchor.R !== Infinity ? 'footing gives at ' + fmtSI(r.anchor.R, 'N')
         : ownOn ? 'to the endless ocean: their power' + (ownSaved ? ' (without it ' + speedOnly(rOwn0.recoilV) + ')' : bolted ? ' (bolted too)' : rOwn0 && rOwn0.canMove && rOwn0.push && rOwn0.push.xA >= 0.005 ? ' (without it a ' + fmtDist(rOwn0.push.xA) + ' lurch)' : rOwn0 && rOwn0.canMove && isFinite(rOwn0.anchor.R) ? ' (without it his footing holds, up to ' + fmtSI(rOwn0.anchor.R, 'N') + ')' : '')
           : bolted ? 'bolted down' : 'push aimed so steeply down his feet can’t slide')));
@@ -1607,7 +1640,12 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     if (r.gripRatio > 1) items.push(isFinite(r.gripRatio) ? 'The force on his palms is ' + fmtRatio(r.gripRatio) + ' what the ' + o.short + ' can take. Without a pushing plate of ' + fmtArea(r.plateNeeded) + ', his hands go through it and only part of it gets thrown.' : 'The force on his palms is unbounded, so no plate is big enough: his hands go through the ' + o.short + ' and only part of it gets thrown.');
     if (f.leavesHill) items.push('Its arc tops out beyond about 1.5 million km, Earth’s Hill sphere. Out there the Sun’s pull wins, so it drifts off into its own orbit around the Sun.');
     else if (f.escaped) items.push('It leaves the atmosphere faster than escape velocity (11.2 km/s at the surface), so gravity never brings it back.');
-    if (f.landed && r.Eimpact > 4.184e9) items.push('Impact: ' + fmtTNT(r.Eimpact) + (r.planetScale ? '. That is planet-scale: crater scaling no longer applies' : (r.crater > 0 ? ', crater up to ' + fmtDist(r.crater) + ' across' + (r.craterBeyondFit ? ' (far past the few-hundred-km range the scaling is fitted to; rough size only)' : ' (impact scaling; rock and concrete make smaller craters)') : '')) + (r.quake > 2 && !r.planetScale ? ', felt like a magnitude ' + sig(r.quake, 2) + ' quake' : '') + '.');
+    // (review round 1 of pull request 3: the push still shakes the ground, so no 'no quake'; and past what the ground
+    // bears it gives way where they land, so no 'no crater' there: passengerText says so above)
+    // (review round 2: the ground bears the downward part of the push; and only grounds with a ground-wave model have
+    // shaking figures in the effort box)
+    if (f.landed && r.Eimpact > 4.184e9 && spLand) items.push('Impact: ' + fmtTNT(r.Eimpact) + ', all of it taken back by Safe passenger, so no ' + (P.PASSENGER.landGround(o, f.vImpact, c.surface, f.impactAngleDeg).gives ? 'blast where they land (the ground still gives way under its push: above)' : 'crater or blast where they land') + '. Its push still reaches the ground and shakes it' + boxShake(c, 'gives how far') + '.');
+    else if (f.landed && r.Eimpact > 4.184e9) items.push('Impact: ' + fmtTNT(r.Eimpact) + (r.planetScale ? '. That is planet-scale: crater scaling no longer applies' : (r.crater > 0 ? ', crater up to ' + fmtDist(r.crater) + ' across' + (r.craterBeyondFit ? ' (far past the few-hundred-km range the scaling is fitted to; rough size only)' : ' (impact scaling; rock and concrete make smaller craters)') : '')) + (r.quake > 2 && !r.planetScale ? ', felt like a magnitude ' + sig(r.quake, 2) + ' quake' : '') + '.');
     out.push(happens(items, 10));
     const human = D.tiers.find((t) => t.id === 'human');
     const calBody = state.build === 'human' && Math.abs(state.H - 2) < 1e-9 && Math.abs(state.m - 180) < 1e-6;
@@ -2695,6 +2733,26 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       case 'overshoots': return 'Thrown as hard as ' + T + ' can, ' + s + ' can’t come down on ' + C + ': kept low, it burns its speed in the air; aimed higher, it ' + (L.relativistic ? 'passes 1% of light speed and turns into a fireball heading up, not toward him' : L.escaped ? 'leaves Earth for good' : 'goes into orbit') + '. Switch to Gentle lob.';
       case 'hits-ground': {
         const hg = L.hitsGround;
+        // a person who comes through whole (no air on the way, Air resistance absorbed at 100%; or, below that, Things keep
+        // their form on) and Safe passenger on: this is their landing, and Safe passenger covers where they land (review
+        // round 1 of pull request 3): their own energy taken back, their push still reaching the ground (and past what the
+        // ground bears under its downward part, the ground gives way). Review round 2: below 100% the air it swept up (its
+        // heat and motion) is real and blasts its own crater; a push big enough to move the whole Earth carries at least
+        // p^2 / 2 M_E of real energy, and an unbounded one has no physical answer (spHitReal)
+        if (spHitsGround(L, o, state.safePassenger)) {
+          const hr = spHitReal(L, o), mA = P.catchMissAngle(L, o, null), ang = mA ? mA.angleDeg : null;
+          // (a push that moves the whole Earth noticeably: past the blast-block line, its least energy counts as the hit's
+          // blast, and the ground giving way under it goes without saying)
+          const bigPush = hr.Ee > 4.184e6, gl = bigPush ? '' : landGivesText(o, L.miss.vImpact, ctx().surface, false, ang), air = hg.airK > 0;
+          const head = thrown() + ' in a straight line (' + (air ? 'past 1% of light speed the air it meets turns to plasma around it, from the ' + pctAir(hg.airK) + ' of the drag that still acts, and their power keeps them whole; ' : 'no air: their power; ') + 'Earth’s gravity bends a path this fast by less than ' + angleText(P.straightThrow(L.vArrive, L.aim.thetaDeg, 0).bendMax, true) + '). But ' + C + ' is ' + fmtDist(L.D) + ' away and the Earth curves: the straight line to his hands runs up to ' + fmtDist(hg.deepest) + ' underground. ' + S + ' hits the ground about ' + fmtDist(hg.at) + ' from ' + T + ', carrying ';
+          const tail = ' No catch: thrown this fast, nothing reaches a catcher more than about ' + fmtDist(Math.sqrt(8 * K.R_E * L.h0)) + ' away.';
+          if (!isFinite(hr.p)) return head + 'unbounded energy. That is their landing: Safe passenger takes back its energy and spreads the stop through them. But its push is unbounded: no ground, and no planet, can take that, so this has no physical answer and the lab can’t model it.' + tail;
+          const own = air ? fmtSI(hg.E, 'J') + ' (' + fmtTNT(hg.E) + '), the heat of the air it swept up on the way included. Their own share, ' + fmtSI(hr.own, 'J') + ', is their landing, and Safe passenger covers it: it takes back that energy and spreads the stop through them, so they come down unharmed. The rest, ' + fmtSI(hr.rest, 'J') + ' (' + fmtTNT(hr.rest) + '), is the air it swept up, its heat and its motion, and that is real: it hits the ground with them' + craterClause(hr.rest, hg.own.crater, hg.own.craterExtrapolated, hg.own.quake) + '.'
+            : fmtSI(hg.E, 'J') + ' (' + fmtTNT(hg.E) + '). That is their landing, and Safe passenger covers it: it takes back ' + (bigPush ? 'their energy' : 'all of that energy, so ' + (gl ? 'no blast' : 'no crater or blast') + ',') + ' and spreads the stop through them, so they come down unharmed.';
+          const push = bigPush ? ' Its push (' + momFig({ J: hr.p }) + ') still reaches the ground, and it is far more than a shake: even taken by the whole Earth, it moves it at ' + speedOnly(hr.p / K.M_E) + ' and gives it at least ' + fmtSI(hr.Ee, 'J') + ' (' + fmtTNT(hr.Ee) + ')' + (hr.Ee >= K.EARTH_BIND ? ': planet-scale' : '') + '. That energy is real, not taken back (any smaller part of the ground would get more), so it counts as a blast at least that big where they land.'
+            : ' Its push (' + momFig({ J: hr.p }) + ') still reaches the ground and shakes it.';
+          return head + own + push + gl + tail;
+        }
         // (below 100%: the air it meets turns to plasma at the share of the drag that acts, and rides with it into the ground)
         return thrown() + ' in a straight line (' + (hg.airK > 0 ? 'past 1% of light speed the air it meets turns to plasma around it, from the ' + pctAir(hg.airK) + ' of the drag that still acts, ' + (hg.kept ? 'and their power keeps it whole' : 'and it vaporizes into that fireball') + '; ' : 'no air: their power; ') + 'Earth’s gravity bends a path this fast by less than ' + angleText(P.straightThrow(L.vArrive, L.aim.thetaDeg, 0).bendMax, true) + '). But ' + C + ' is ' + fmtDist(L.D) + ' away and the Earth curves: the straight line to his hands runs up to ' + fmtDist(hg.deepest) + ' underground. ' + (hg.airK > 0 && !hg.kept ? 'Its plasma and debris hit' : S + ' hits') + ' the ground about ' + fmtDist(hg.at) + ' from ' + T + ', carrying ' + (isFinite(hg.E) ? fmtSI(hg.E, 'J') + ' (' + fmtTNT(hg.E) + ')' : 'unbounded energy') + (hg.airK > 0 ? ', the heat of the air it swept up on the way included'  : '') + (hg.E >= K.EARTH_BIND || hg.crater > K.R_E ? ': planet-scale, so crater scaling no longer applies' : hg.crater > 0 ? ', and blasts a crater up to ' + fmtDist(hg.crater) + ' across' + (hg.crater > 3e5 ? ' (far past the few-hundred-km range the scaling is fitted to; rough size only)' : hg.craterExtrapolated ? ' (extrapolated: the same energy at 20 km/s)' : '') : '') + (hg.quake > 2 && !(hg.E >= K.EARTH_BIND || hg.crater > K.R_E) ? ', felt like a magnitude ' + sig(hg.quake, 2) + ' quake' : '') + '. No catch: thrown this fast, nothing reaches a catcher more than about ' + fmtDist(Math.sqrt(8 * K.R_E * L.h0)) + ' away.';
       }
@@ -2843,6 +2901,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     out.push(verdict(v));
     const k = a.catch;
     const arrived = CATCH_ARRIVED.includes(a.result);
+    // a person with Safe passenger on: it doesn't cover heating (pull request 3, decision 6). Where Things keep their form
+    // is off, some of the air's drag acts and the nose air passes 1,200 K (the Throw tab's rule), the page doesn't call
+    // them unharmed (review round 1)
+    const hotC = !!(o && o.passenger && state.safePassenger && !a.kept && airShareOf(cR) < 1 && a.heat && a.heat.kind !== 'immune' && a.heat.stagT > 1200);
     // They take their own recoil, the catcher's (canon: a catch is absorbed unless he chooses otherwise): planted in every
     // outcome where it reaches him, his stop goes to his source (caC: what it takes back). a0C: the same leg with his power
     // off, for what it saves him (a slide, being carried off, his stop pushed into the ground)
@@ -2862,7 +2924,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       if (o.passenger) {
         const pg = catchPassengerG(a, o);
         chips.push(pg && pg.where === 'drag' ? status(pg.n > P.PASSENGER.injury(2) ? 'bad' : 'warn', 'Air drag: ' + sig(pg.n, 2) + ' g, past ride limits')
-          : state.safePassenger ? status('info', 'Safe passenger: throw and catch spread through them')
+          : state.safePassenger ? status('info', 'Safe passenger: throw, flight and catch spread through them')
             : pg ? status(pg.n > P.PASSENGER.injury(pg.t) ? 'bad' : pg.over ? 'warn' : 'good', (pg.where === 'throw' ? 'Throw: ' : 'Catch: ') + sig(pg.n, 2) + ' g, ' + (pg.n > P.PASSENGER.injury(pg.t) ? 'injury possible' : pg.over ? 'past ride limits' : 'within ride limits')) : null);
       }
       if (['caught', 'wreckage', 'slams', 'cant-hold-it'].includes(a.result)) {
@@ -2901,7 +2963,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         tile('Flight', fmtTime(a.time), a.wells && a.wells.wellDominated ? 'straight line through their pull' : (a.flight ? 'top ' + fmtDist(a.flight.apex) : '')),
         tile('Arrives at', speedOnly(a.vArrive), fmtAngle(a.angleDeg, false) + (a.wells && a.wells.GC > 0 ? ' · sped up by Ollie’s pull' : '')),
         caughtish ? (first
-          ? tile('Hits his palms with', fmtRange(k.F1[0], k.F1[1], 'N'), 'first contact, over in ' + fmtTime(k.tContact[0]) + ' to ' + fmtTime(k.tContact[1]) + ' · ' + big(k.F1[0] / o.m / g, 2) + ' g or more on the ' + o.short + (o.passenger && state.safePassenger ? ' (Safe passenger: spread through them, no harm)' : ''))
+          ? tile('Hits his palms with', fmtRange(k.F1[0], k.F1[1], 'N'), 'first contact, over in ' + fmtTime(k.tContact[0]) + ' to ' + fmtTime(k.tContact[1]) + ' · ' + big(k.F1[0] / o.m / g, 2) + ' g or more on the ' + o.short + (o.passenger && state.safePassenger ? (hotC ? ' (Safe passenger: spread through them; it doesn’t cover the heating in flight)' : ' (Safe passenger: spread through them, no harm)') : ''))
           : tile('Catch force', fmtSI(k.Fpeak, 'N'), (isFinite(k.Fcap) ? sig(100 * k.Fpeak / k.Fcap, 2) + '% of Ollie’s strength · ' : '') + big(k.decelG, 2) + ' g on the ' + o.short)) : tile('Hits him with', fmtSI(k.Ecatch, 'J'), fmtTNT(k.Ecatch)),
         caughtish ? (k.carried && cO.anchor !== 'bolted' ? tile('Ollie', 'carried off', 'at ' + fmtSpeed(k.uAfter) + ', with the ' + o.short) : caC ? tile('Ollie slides', 'nothing', 'his stop goes to the endless ocean: their power') : tile('Ollie slides', cO.anchor === 'bolted' ? 'bolted' : (k.slide > 0.005 ? fmtDist(k.slide) : 'nothing'), cO.anchor === 'bolted' ? 'bolted to the planet' : 'feet hold up to ' + fmtN(k.R))) : null,
         round ? tile('Round trip', 'about ' + fmtTime(round), strokesIn ? 'throws, flights and catches' : 'throws and flights') : null));
@@ -2918,7 +2980,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     const airLimits = airShareOf(cR) < 1 && (a.result === 'unreachable' || a.result === 'overshoots' || (a.result === 'too-weak' && a.airWall));
     if (airLimits && o.m / o.area < 10332) items.push('More speed hardly helps a ' + o.short + '. Above the speed of sound it loses 63% of its speed every ' + fmtDist(2 * o.m / (K.rho0 * o.CdSup * o.area * (1 - airShareOf(cR)))) + ' of air' + (airShareOf(cR) > 0 ? ' (at the ' + pctAir(1 - airShareOf(cR)) + ' of the drag their power leaves)' : '') + ', then falls at about its terminal speed. The air above each square metre of ground weighs 10.3 t, far more than the ' + o.short + ' carries per square metre of its front (' + big(o.m / o.area, 2) + ' kg/m²).');
     if (k && ['caught', 'wreckage'].includes(a.result)) {
-      if (k.firstShare > 0.5) items.push('Catching is stopping momentum, and here most of it happens in the first instant. His hands wait at full reach, and with his forearms they weigh ' + fmtMass(k.mh) + ', more than the ' + o.short + '. When it hits them they move off together, and ' + (k.firstShare > 0.995 ? 'nearly all' : sig(100 * k.firstShare, 2) + '%') + ' of its energy goes into squashing his palms and the ' + o.short + ' by about ' + fmtDist(k.give[0]) + ' to ' + fmtDist(k.give[1]) + ' (an estimate). That’s the ' + fmtRange(k.F1[0], k.F1[1], 'N') + ', and the catch itself is over in about ' + fmtTime(k.tContact[0]) + ' to ' + fmtTime(k.tContact[1]) + '.' + (k.forced
+      if (k.firstShare > 0.5) items.push('Catching is stopping momentum, and here most of it happens in the first instant. His hands wait at full reach, and with his forearms they weigh ' + fmtMass(k.mh) + ', more than the ' + o.short + '. When it hits them they move off together, and ' + (k.firstShare > 0.995 ? 'nearly all' : sig(100 * k.firstShare, 2) + '%') + ' of its energy goes into squashing ' + (o.passenger && state.safePassenger ? 'his palms by about ' + fmtDist(k.give[0]) + ' to ' + fmtDist(k.give[1]) + ' (an estimate; Safe passenger spreads the hit through the ' + o.short + ', so they aren’t squashed).' : 'his palms and the ' + o.short + ' by about ' + fmtDist(k.give[0]) + ' to ' + fmtDist(k.give[1]) + ' (an estimate).') + ' That’s the ' + fmtRange(k.F1[0], k.F1[1], 'N') + ', and the catch itself is over in about ' + fmtTime(k.tContact[0]) + ' to ' + fmtTime(k.tContact[1]) + '.' + (k.forced
         ? ' His arms then bring it in over ' + fmtDist(k.stroke) + ' with ' + fmtSI(k.F, 'N') + ', which takes ' + fmtDuration(k.tStroke) + '.'
         : ' Bringing it in to his chest (' + fmtDist(k.stroke) + ') takes as long as he likes: he has strength to spare, and the gentlest steady push that does it, ' + fmtSI(k.F, 'N') + ', takes ' + fmtDuration(k.tStroke) + '.'));
       else if (k.carried) items.push('Catching is stopping momentum. Stopping it within his ' + fmtDist(k.stroke) + ' stroke takes far more than his feet can hold (' + fmtSI(k.R, 'N') + '), so momentum is kept: the ' + o.short + ' carries him off with it. His arms push ' + fmtSI(k.F, 'N') + ' to bring it to rest against him, which takes ' + fmtDuration(k.tStroke) + '.');
@@ -2993,7 +3055,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       const fb = a.fireball, Eb = fb.Eblast;
       if (Eb > 4.184e6) out.push(blastBlock(Eb, fb.kind === 'before' ? 'the fireball' : fb.push.earthRecoilV > 0 ? 'everything it carried, released where Ollie stands' : 'what it frees at Ollie and as he rides on through the lower air'));
     }
-    if (a.result === 'hits-ground' && isFinite(a.hitsGround.E) && a.hitsGround.E > 4.184e6) out.push(blastBlock(a.hitsGround.E, 'where it hits the ground'));
+    if (a.result === 'hits-ground' && isFinite(a.hitsGround.E) && a.hitsGround.E > 4.184e6 && !spHitsGround(a, o, state.safePassenger)) out.push(blastBlock(a.hitsGround.E, 'where it hits the ground'));
+    // a person's landing under Safe passenger: only what is real of it (review round 2: the air it swept up below 100%,
+    // and the least energy its push carries into the Earth)
+    else if (spHitsGround(a, o, state.safePassenger)) { const hr = spHitReal(a, o); if (isFinite(hr.E) && hr.E > 4.184e6) out.push(blastBlock(hr.E, hr.rest > hr.Ee ? 'the air it swept up, where it hits the ground' : 'its push into the Earth, at least')); }
     if (arrived && k && k.carried && isFinite(k.Enear) && k.Enear > 4.184e6) out.push(blastBlock(k.Enear, 'Ollie’s ride through the lower air, near the catch'));
     if (state.cMiss && a.miss && !a.miss.hits && !lostEarly(a)) {
       const m = a.miss;
@@ -3002,6 +3067,16 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       // Throw tab's snowplow, and may fall back)
       if (m.leaves && m.vOut != null) out.push(callout('If Ollie misses, it flies on with the ' + fmtSI(m.E, 'J') + ' of motion it still has (its sheath carries the other ' + fmtSI(m.Eheat, 'J') + ' as heat), sweeping up air at the share of the drag that acts. It comes out of the air at ' + speedOnly(m.vOut) + (m.vOut >= D.escape.earth ? '. ' + awayText(m.vOut, 0, cO.body.releaseHeight, 'it') : ', short of the ' + speedOnly(D.escape.earth) + ' needed to escape, so Earth’s gravity brings it back down far away (the lab doesn’t follow it).')));
       else if (m.leaves) out.push(callout('If Ollie misses, it flies on with all of its energy, ' + fmtSI(m.E, 'J') + ' (' + fmtTNT(m.E) + '). ' + awayText(m.vImpact, 0, cO.body.releaseHeight, 'it')));
+      // a person, with Safe passenger on: it covers where they land (the ruling of 14 Oct 2026), as on the Throw tab
+      // (review round 1: not 'unharmed' where the flight heats them, decision 6; and past what the ground bears it gives
+      // way where they land, so not 'no crater' there)
+      else if (o.passenger && state.safePassenger) {
+        // (review round 2: the ground bears the downward part of the push; the miss's angle is worked out again from the leg)
+        const mA = P.catchMissAngle(a, o, cR), angM = mA ? mA.angleDeg : null;
+        const givesM = P.PASSENGER.landGround(o, m.vImpact, cO.surface, angM).gives, noHole = givesM ? 'with no blast' : 'with no crater or blast';
+        out.push(callout('If Ollie misses, they land ' + fmtDist(Math.max(0, m.past)) + ' behind him at ' + speedOnly(m.vImpact) + '. ' + (hotC ? 'Safe passenger takes back the landing’s energy (' + fmtSI(m.E, 'J') + ') and spreads its push through them, ' + noHole + ', but it doesn’t cover the heating in flight (above), so the lab can’t say they come down unharmed.'
+          : 'Safe passenger spreads the landing through them and takes back its energy (' + fmtSI(m.E, 'J') + '), so they come down unharmed, ' + noHole + '.') + ' Its push still reaches the ground and shakes it.' + landGivesText(o, m.vImpact, cO.surface, false, angM)));
+      }
       else {
         out.push(callout('If Ollie misses, it lands ' + fmtDist(Math.max(0, m.past)) + ' behind him at ' + speedOnly(m.vImpact) + ': ' + fmtSI(m.E, 'J') + ' (' + fmtTNT(m.E) + ').' + (m.E > 4.184e9 && m.crater > 0 ? ' Crater up to ' + fmtDist(m.crater) + ' across.' : '') + (m.E > 4.184e9 && m.quake > 2 ? ' Felt like a magnitude ' + sig(m.quake, 2) + ' quake.' : '')));
         if (m.E > 4.184e6) out.push(blastBlock(m.E, 'where it lands'));
@@ -3765,8 +3840,10 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         // (a throw's ground under him with Unbreakable footing off: with his recoil taken his feet carry only the weights)
         ground: M.ground && c.unbreakable && offHappens('ground', { unbreakable: false }) ? 'Unbreakable footing' : M.ground && move === 'throw' && !c.unbreakable && c.ownRecoil && offHappens('ground', { ownRecoil: false }) ? 'They take their own recoil' : null,
         plaster: move === 'throw' && c.ownRecoil && offPlasterHim() ? 'They take their own recoil' : null,
-        slide: M.slide && c.ownRecoil && offHappens('slide', { ownRecoil: false }) ? 'They take their own recoil' : null };
-      const OFF_NAME = { crush: 'a crushed object', boom: 'the sonic boom', air: 'the air blast', ground: 'broken ground under him', plaster: 'the ground shaking from his own push', slide: 'his recoil shoving him back' }, offs = {};
+        slide: M.slide && c.ownRecoil && offHappens('slide', { ownRecoil: false }) ? 'They take their own recoil' : null,
+        // Safe passenger: credited where the same throw, all-out with it off, presses the person past the ride limits
+        passenger: M.passenger && c.safePassenger && offHappens('passenger', { safePassenger: false }) ? 'Safe passenger' : null };
+      const OFF_NAME = { crush: 'a crushed object', boom: 'the sonic boom', air: 'the air blast', ground: 'broken ground under him', plaster: 'the ground shaking from his own push', passenger: 'the person pressed past the ride limits', slide: 'his recoil shoving him back' }, offs = {};
       for (const h of P.RESTRAINT.HAZARDS) if (offBy[h.id] && p.result('hazard:' + h.id).never) (offs[offBy[h.id]] = offs[offBy[h.id]] || []).push(OFF_NAME[h.id]);
       const andList = (xs) => (xs.length > 2 ? xs.slice(0, -1).join(', ') + ' and ' + xs[xs.length - 1] : xs.join(' and '));
       for (const [sw, hs] of Object.entries(offs)) t += ' ' + sw + ' is on, so it leaves out ' + andList(hs) + '.';
@@ -3774,7 +3851,14 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
       // only when a growth what-if is actually shown below
       const grows = state.absorb !== 'ocean' && ((move === 'punch' || move === 'clap') && state.silentStrike && r.mach >= 1 || move === 'jump' && state.softLanding && r.landing && r.landing.landed || move === 'stomp' && c.unbreakable && r.absorbed > 0);
       if (grows) box.append(el('p', { class: 'muted', text: 'The courtesy ceiling covers the move itself, not the growth what-if below.' }));
-      if (move === 'throw' && objById(state.obj).passenger) box.append(el('p', { class: 'muted', text: 'For a person this covers the launch and the air in flight only. The landing is a fall unless someone catches them, and the lab doesn’t count it.' }));
+      // a thrown person: Safe passenger covers the launch, the drag and the landing (energy taken back, push real), not
+      // heating (where Things keep their form is off and the flight is hot, the page doesn't call them unharmed)
+      if (move === 'throw' && objById(state.obj).passenger) {
+        const rf = r.flight, landsP = !!(rf && rf.landed && !rf.relativistic), hotP = !c.keepForm && airShareOf(c) < 1 && !!rf && (rf.relativistic || rf.maxStagT > 1200);
+        box.append(el('p', { class: 'muted', text: c.safePassenger ? 'For a person, Safe passenger covers the launch, the air in flight and the landing' + (hotP ? ', but not the heating in a flight this fast (Things keep their form is off)' : '')
+          + (landsP ? '. The landing’s energy is taken back' + (hotP ? '' : ', so they come down unharmed') + '; its push still reaches the ground' + (P.groundOf(c.surface) ? ', and the shaking from it counts.' : ' (the lab has no ground-wave model for ' + theSurf(c.surface) + ', so it can’t judge that shaking).') : '.')
+          : 'For a person this covers the launch and the air in flight only. The landing is a fall unless someone catches them, and with Safe passenger off the lab doesn’t judge it' + (P.groundOf(c.surface) ? ' (its shaking still counts).' : '.') }));
+      }
       if (ce.by && use > ce.below * (1 + 1e-6)) box.append(status('warn', 'Above the courtesy ceiling'));
       // what this effort does, tested on the run shown (a hazard can switch off again at higher effort)
       const already = P.RESTRAINT.PRESETS.filter((x) => x.id !== state.effort && x.test(M, r, p.opt));
@@ -4168,7 +4252,7 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         // past sound counts too (with any of their powers on): beside a fireball the larger counts, beside the drag of a
         // flight they add up (both near him)
         const Eair = L.result === 'fireball' ? (L.fireball && isFinite(L.fireball.E) ? L.fireball.E : Infinity)
-          : L.result === 'hits-ground' ? L.hitsGround.E
+          : L.result === 'hits-ground' ? (spHitsGround(L, o, cR.safePassenger) ? spHitReal(L, o).E : L.hitsGround.E)
             : L.aim && L.aim.vL >= K.a0 && L.drag ? (L.drag.E || 0) : 0;
         const Ehand = L.hand ? L.hand.E : 0;
         out.blast = Math.max(out.blast, L.result === 'fireball' || L.result === 'hits-ground' ? Math.max(Eair, Ehand) : Eair + Ehand);
@@ -4192,7 +4276,15 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
         if (quakes(cR, ownGround(cR, L.toGroundC))) { out.harm = shakeMsg('the catcher’s'); break; }
         if (['crushed-launch', 'breaks-up', 'burns-up', 'wreckage'].includes(L.result) || (L.result === 'fireball' && !L.kept) || L.bursts) { out.harm = 'the ' + o.short + ' is destroyed'; break; }
         if (L.result === 'fireball') { out.harm = 'the air around the ' + o.short + ' turns into a fireball'; break; }
-        if (L.result === 'hits-ground') { out.harm = 'the throw hits the ground ' + fmtDist(L.hitsGround.at) + ' away'; break; }
+        if (L.result === 'hits-ground') {
+          // (review round 2: the ground bears the downward part of the push, along the chord; an unbounded push has no
+          // physical answer)
+          const mA = P.catchMissAngle(L, o, null);
+          out.harm = !spHitsGround(L, o, cR.safePassenger) ? 'the throw hits the ground ' + fmtDist(L.hitsGround.at) + ' away'
+            : !isFinite(spHitReal(L, o).p) ? 'the person hits the ground ' + fmtDist(L.hitsGround.at) + ' away with an unbounded push into the Earth'
+            : 'the person hits the ground ' + fmtDist(L.hitsGround.at) + ' away' + (P.PASSENGER.landGround(o, L.miss.vImpact, cR.surface, mA ? mA.angleDeg : null).gives ? ', and the ground gives way where they land' : '');
+          break;
+        }
         if (CAUGHT.includes(L.result) && L.catch && L.catch.gripRatio > 1 && !L.gentleC) { out.harm = 'the catch crushes the ' + o.short + ' in his palms'; break; }
         const pg = catchPassengerG(L, o, cR);
         if (pg && pg.over) { out.harm = { throw: 'the throw presses the person harder than amusement rides allow', catch: 'the catch stops the person harder than amusement rides allow', drag: 'air drag presses the flying person harder than amusement rides allow' }[pg.where]; break; }
@@ -4246,16 +4338,38 @@ footer { margin-top: 48px; font-size: 0.85rem; color: var(--ink-3); border-top: 
     duoSig = f.sig;
     return f.harm;
   }
-  // A person in the game of catch: the throw's average push (release speed over the push time) and the catch, against
-  // the ride limits the solo Throw uses. null when the object isn't a person or Safe passenger is on.
+  // A person in the game of catch: the throw's average push (release speed over the push time), the air's drag in flight
+  // and the catch, against the ride limits the solo Throw uses. null when the object isn't a person or Safe passenger is
+  // on: it covers the throw, the flight and the catch (canon, and the ruling of 14 Oct 2026, as on the Throw tab).
   const CAUGHT = ['caught', 'wreckage', 'slams', 'cant-hold-it'];
+  // A person thrown in the game of catch who hits the ground with no air on the way (Air resistance absorbed at 100%:
+  // the straight chord runs underground) is a landing under Safe passenger (review round 1 of pull request 3; the ruling
+  // of 14 Oct 2026: it covers where they land): its energy is taken back (no crater, quake or blast counts as harm), its
+  // momentum reaches the ground. Below 100% the air it meets turns to plasma and rides with it into the ground, so the
+  // fireball reading stays.
+  // (review round 2: below 100% too, where Things keep their form keeps the person whole, hitsGround.own: their own
+  // share is their landing; the air it swept up stays real)
+  const spHitsGround = (L, o, sp) => !!(o && o.passenger && sp && L && L.result === 'hits-ground' && L.hitsGround && (!(L.hitsGround.airK > 0) || (L.hitsGround.kept && !!L.hitsGround.own)));
+  // What of that hit is real (review round 2 of pull request 3). p: its push, real and whole (decision 4); Ee: the least
+  // energy that push carries even if the whole Earth takes it, p^2 / 2 M_E (unbounded: no physical answer); rest: below
+  // 100% absorbed, the air it swept up, its heat and motion (the person's own share, own, is their landing, taken back).
+  // E: what counts as the hit's blast (Ee plus rest; unbounded with the push).
+  function spHitReal(L, o) {
+    const hg = L.hitsGround, p = momOfE(hg.E, o.m), Ee = isFinite(p) ? p * p / (2 * K.M_E) : Infinity, air = hg.airK > 0 && !!hg.own;
+    const rest = air ? hg.own.rest : 0;
+    return { p, Ee, rest, own: air ? hg.own.E : hg.E, E: isFinite(p) ? rest + Ee : Infinity };
+  }
+  // a hit's crater and quake, worded as the plain hits-ground verdict words them
+  function craterClause(E, crater, extrapolated, quake) {
+    const planet = E >= K.EARTH_BIND || crater > K.R_E;
+    return (planet ? ': planet-scale, so crater scaling no longer applies' : crater > 0 ? ', and blasts a crater up to ' + fmtDist(crater) + ' across' + (crater > 3e5 ? ' (far past the few-hundred-km range the scaling is fitted to; rough size only)' : extrapolated ? ' (extrapolated: the same energy at 20 km/s)' : '') : '') + (quake > 2 && !planet ? ', felt like a magnitude ' + sig(quake, 2) + ' quake' : '');
+  }
   function catchPassengerG(L, o, cT) {
-    if (!o.passenger || !L || !L.aim) return null;
-    // air drag in flight is real whatever Safe passenger says (the Throw tab's rule): the held 1.5 g limit, on the share
-    // of the drag that Air resistance absorbed leaves acting
+    if (!o.passenger || !L || !L.aim || state.safePassenger) return null;
+    // air drag in flight: the held 1.5 g limit, on the share of the drag that Air resistance absorbed leaves acting
     const dg = P.PASSENGER.dragG(o, L.aim.vL) * P.dragFactor(cT || ctx());
     if (dg > P.PASSENGER.noHarm(1)) return { over: true, where: 'drag', n: dg, t: 1, limit: P.PASSENGER.noHarm(1) };
-    if (state.safePassenger || !(L.tPush > 0)) return null;
+    if (!(L.tPush > 0)) return null;
     const nL = P.PASSENGER.felt(L.aim.vL / L.tPush / g, L.aim.thetaDeg || 0);
     if (nL > P.PASSENGER.noHarm(L.tPush)) return { over: true, where: 'throw', n: nL, t: L.tPush, limit: P.PASSENGER.noHarm(L.tPush) };
     const k = L.catch;

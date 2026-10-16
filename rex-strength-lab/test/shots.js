@@ -25,8 +25,10 @@ const countDuoCalls = ({ names, delay, pin }) => {
 // test/fixtures/page-before.json was written with the 3,007 kg bodies of 11 Oct 2026 (volume 0.10017 x height^3); the
 // canon has been 3,000 kg since 13 Oct 2026 (BRIEF-canon.md item 1), so the pages compared with it run on that build
 const OLD_BUILD = { kV: 0.10017, m: 3007 };
-// the section 5 powers, off (BRIEF-gui.md section 5; these keys don't exist before it and are dropped on load)
-const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoil: false };
+// the section 5 powers, off (BRIEF-gui.md section 5; these keys don't exist before it and are dropped on load), and Safe
+// passenger off as on main's page (on by default since BRIEF-canon.md item 5: an unmarked save would load it on, so the
+// save carries the current mark, which keeps it as the reader's choice)
+const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoil: false, safePassenger: false, saveV: 3 };
 (async () => {
   const body = fs.readFileSync(path.join(__dirname, '..', 'dist', 'index.html'), 'utf8');
   const wrapped = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui}img{max-width:100%}</style></head><body>' + body + '</body></html>';
@@ -156,6 +158,26 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       }
       await page.selectOption('#absorb', 'ocean');
       await page.evaluate(() => { document.getElementById('powers').open = false; });
+    }
+    // BRIEF-canon.md item 5: a person thrown on Throw and in the game of catch (a missed fastball shown), with Safe
+    // passenger on by default, and Their powers open: no sideways scroll or broken text, and a picture of each
+    if (!only) {
+      for (const [id, st, sel] of [['throw-person', { action: 'throw', obj: 'person' }, 'main.panel'], ['catch-person', { duoOpen: true, duoAction: 'catch', cObj: 'person', cStyle: 'hard', cMiss: true }, '#duo']]) {
+        await page.evaluate((x) => localStorage.setItem('rex-lab-v1', JSON.stringify(x)), st); await page.reload(); await page.waitForTimeout(st.duoOpen ? 2500 : 1500);
+        const t = await page.evaluate(() => { const b = document.body.cloneNode(true); b.querySelectorAll('script, style').forEach((x) => x.remove()); return b.textContent; });
+        const b = bad(t), ov = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+        if (b.length) texts.push(id + ': ' + b.join(', '));
+        if (ov > 0) texts.push(id + ': scrolls sideways ' + ov + ' px');
+        await (await page.$(sel)).screenshot({ path: path.join(out, `${id}-${w}-${scheme}.png`) });
+      }
+      await page.evaluate(() => { document.getElementById('powers').open = true; });
+      await page.waitForTimeout(300);
+      const ovP = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      if (ovP > 0) texts.push('Their powers open: scrolls sideways ' + ovP + ' px');
+      // (on a wide screen the sidebar is its own sticky scroll box: let it run full length for the picture)
+      await page.evaluate(() => { const a = document.querySelector('.panel-controls'); a.style.position = 'static'; a.style.maxHeight = 'none'; a.style.overflow = 'visible'; });
+      await (await page.$('#powers')).screenshot({ path: path.join(out, `powers-${w}-${scheme}.png`) });
+      await page.evaluate(() => { const a = document.querySelector('.panel-controls'); a.style.position = a.style.maxHeight = a.style.overflow = ''; document.getElementById('powers').open = false; localStorage.clear(); });
     }
     const ov2 = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     console.log(`${w}x${h} ${scheme}: overflow=${Math.max(overflow, ov2)}px errors=${JSON.stringify(errs.slice(0, 5))} broken-text=${JSON.stringify(texts)}`);
@@ -305,6 +327,7 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
     await page.close();
     // The default mass moved from 3,007 kg to 3,000 kg (BRIEF-canon.md item 1): a fresh page uses 3,000 kg; a save from
     // before the version mark (saveV) with the old default loads as 3,000 kg; a marked save keeps a visitor's own 3,007 kg
+    // (marked 2 or 3: the mark is 3 since Safe passenger went on by default, pull request 3, and every save is re-marked 3)
     {
       const pg = await browser.newPage({ viewport: { width: 1280, height: 900 } });
       await pg.goto(pathToFileURL(prev).href);
@@ -313,9 +336,9 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
         await pg.reload(); await pg.waitForTimeout(500);
         return pg.evaluate(() => { const s = JSON.parse(localStorage.getItem('rex-lab-v1')); return [s.m, s.oM, s.saveV].join(); });
       };
-      const fresh = await after(null), old = await after({ m: 3007, oM: 3007 }), older = await after({ m: 2700, oM: 2700 }), marked = await after({ m: 3007, oM: 3007, saveV: 2 });
-      if (fresh !== '3000,3000,2' || old !== '3000,3000,2' || older !== '3000,3000,2' || marked !== '3007,3007,2') fail('the default mass and its migration: fresh ' + fresh + ', older save ' + old + ', a 2,700 kg save ' + older + ', marked save ' + marked);
-      else okLog('a fresh page and older saves with an old default (3,007 or 2,700 kg) use 3,000 kg; a marked save keeps a visitor’s own 3,007 kg');
+      const fresh = await after(null), old = await after({ m: 3007, oM: 3007 }), older = await after({ m: 2700, oM: 2700 }), marked = await after({ m: 3007, oM: 3007, saveV: 2 }), marked3 = await after({ m: 3007, oM: 3007, saveV: 3 });
+      if (fresh !== '3000,3000,3' || old !== '3000,3000,3' || older !== '3000,3000,3' || marked !== '3007,3007,3' || marked3 !== '3007,3007,3') fail('the default mass and its migration: fresh ' + fresh + ', older save ' + old + ', a 2,700 kg save ' + older + ', marked save ' + marked + ', marked 3 ' + marked3);
+      else okLog('a fresh page and older saves with an old default (3,007 or 2,700 kg) use 3,000 kg; a save marked 2 or 3 keeps a visitor’s own 3,007 kg; every save is marked 3');
       // the Walk tab's elephant comparison follows the default mass (it once tested for 3,007 kg by hand)
       await after({ action: 'walk', walker: 'both' }); await pg.waitForTimeout(300);
       const walk = await pg.evaluate(() => document.getElementById('bay').textContent.replace(/\s+/g, ' '));   // (\s takes the page's non-breaking spaces too)
@@ -828,6 +851,173 @@ const POWERS_OFF = { airAbsorb: 0, keepForm: false, unbreakable: false, ownRecoi
       if (r3.length) fail('review round 3 (pull request 2): ' + r3.join(' ;; ')); else okLog('review round 3 (pull request 2): his legs cap a pull\'s steps at the strength he uses, as in a sprint, bolted too (the bolted baseball and car, the friction car\'s steps, walk sentence and math, the unlimited bolted pull, the card; the pull\'s missing leg-speed limit); a leg too weak to throw lands nowhere; the unlimited shove\'s break-the-ground box sets Unbreakable footing aside; no version-history phrase; the card\'s bolted pull times');
     }
     // ---- end of review round 3 of pull request 2
+    // ---- BRIEF-canon.md item 5, pull request 3: Safe passenger on by default, covering the landing and the drag. Each of
+    // these fails on pull request 2's page.
+    {
+      const num = (x) => Number(String(x).replace(/,/g, ''));
+      const soloTxt = (sel) => page.evaluate((s) => Array.from(document.querySelectorAll('#bay ' + s)).map((n) => n.textContent.replace(/\s+/g, ' ')).join(' / '), sel);
+      const duoAll = () => page.evaluate(() => document.getElementById('duo-bay').textContent.replace(/\s+/g, ' '));
+      const OFF_SP = { saveV: 3, safePassenger: false };
+      // the default, and the save mark (decision 2): a fresh page has it on and saves it; an unmarked save, or one
+      // marked 2, with it off loads with it on (off was the old default); a save marked 3 keeps it off (a choice)
+      const spState = async (st) => { await page.evaluate((x) => { if (x) localStorage.setItem('rex-lab-v1', JSON.stringify(x)); else localStorage.clear(); }, st); await page.reload(); await page.waitForTimeout(800); await settle(page, 'bay');
+        return page.evaluate(() => { const sv = JSON.parse(localStorage.getItem('rex-lab-v1')); return [document.getElementById('sw-passenger').checked, sv.safePassenger, sv.saveV].join(); }); };
+      const spFresh = await spState(null), spOld = await spState({ safePassenger: false }), spTwo = await spState({ safePassenger: false, saveV: 2 }), spThree = await spState({ safePassenger: false, saveV: 3 });
+      if (spFresh !== 'true,true,3' || spOld !== 'true,true,3' || spTwo !== 'true,true,3' || spThree !== 'false,false,3') fail('Safe passenger\'s default and the save mark (switch, saved, mark): fresh ' + spFresh + ', unmarked save with it off ' + spOld + ', marked 2 ' + spTwo + ', marked 3 ' + spThree);
+      else okLog('Safe passenger is on on a fresh page and saved on; an unmarked save or one marked 2 with it off loads with it on; a save marked 3 keeps it off; every save is marked 3');
+      // its place in Their powers: its own eyebrow, among the defaults, and the intro lists it as on by default
+      const place = await page.evaluate(() => { const lab = document.getElementById('sw-passenger').closest('label'), prev = lab.previousElementSibling; return { brow: prev && prev.classList.contains('eyebrow') ? prev.textContent.trim() : null, hint: document.querySelector('#powers > p.hint').textContent.replace(/\s+/g, ' '), label: lab.textContent.replace(/\s+/g, ' ') }; });
+      if (place.brow !== 'People they throw or catch' || !/Things keep their form, Safe passenger and Air resistance absorbed are on unless you turn them off/.test(place.hint) || !/feels only a manageable push, spread through their whole body, at the launch, in the air and when they land/.test(place.label) || /puts no g-force on them|the landing stay real/.test(place.label)) fail('Safe passenger in Their powers: ' + JSON.stringify(place).slice(0, 400));
+      else okLog('Safe passenger has its own eyebrow (' + place.brow + '), the intro lists it as on by default, and its label covers the launch, the air and the landing');
+      // the summary line: all five defaults read as one item; with Safe passenger off the others are listed without it;
+      // with only Unbreakable footing off it is listed
+      const sumOf = async (st) => { await load(st); return page.$eval('#powers-sum', (n) => n.textContent); };
+      const sumFresh = await sumOf({ action: 'throw' }), sumOff = await sumOf(Object.assign({ action: 'throw' }, OFF_SP)), sumUb = await sumOf({ action: 'throw', saveV: 3, unbreakable: false });
+      if (sumFresh !== 'Comic book · default powers on' || sumOff !== 'Comic book · unbreakable footing · own recoil · things keep their form · drag-free throws' || sumUb !== 'Comic book · own recoil · things keep their form · safe passenger · drag-free throws') fail('the Their powers summary: fresh "' + sumFresh + '", Safe passenger off "' + sumOff + '", Unbreakable footing off "' + sumUb + '"');
+      else okLog('the Their powers summary counts Safe passenger among the default powers: "' + sumFresh + '"; off: "' + sumOff + '"');
+      // the person throw at the defaults (decision 1; the brief's figures at 3,000 kg): least disruptive about 3.7% of
+      // his strength (3.34 t), ceiling about 30% (27 t) from the landing's plaster; with it off, 0.37% (333 kg), the
+      // person's g-force
+      await load({ action: 'throw', obj: 'person' });
+      const pOnE = await soloTxt('.effort-read'), pOnH = await soloTxt('.happens'), pOnT = await soloTxt('.tiles');
+      await load(Object.assign({ action: 'throw', obj: 'person' }, OFF_SP));
+      const pOffE = await soloTxt('.effort-read'), pOffH = await soloTxt('.happens');
+      if (!/Effort: 3\.7% of his strength \(as hard as lifting 3\.34 t\)\. The gentlest push that lands the person 30 m away\./.test(pOnE) || !/Courtesy ceiling: 30% \(lifting 27 t\)\. Past that, the ground shakes hard enough that plaster may crack 5 m from where it lands\./.test(pOnE)
+        || !/Effort: 0\.37% of his strength \(as hard as lifting 333 kg\)/.test(pOffE) || !/Courtesy ceiling: 0\.37% \(lifting 333 kg\)\. Past that, the person is pressed harder than amusement rides allow/.test(pOffE)) fail('the person throw\'s least effort and ceiling: on ' + pOnE.slice(0, 300) + ' | off ' + pOffE.slice(0, 200));
+      else okLog('the person throw: least disruptive 3.7% (3.34 t), ceiling 30% (27 t) from the landing\'s plaster; with Safe passenger off 0.37% (333 kg), the person\'s g-force');
+      // the landing (decisions 4 and 9): with it on the text names the energy taken back, as the engine gives it at the
+      // effort shown, and the push that still reaches the ground; with it off, a fall the lab doesn't judge
+      const useKg = (t) => { const m = t.match(/as hard as lifting ([\d.,]+)\s(t|kg)/); return m ? num(m[1]) * (m[2] === 't' ? 1000 : 1) : null; };
+      const landOn = pOnH.match(/They land at ([\d.]+) m\/s, like falling ([\d.]+) m\. Safe passenger spreads the landing through them too and takes back its energy \(([\d.]+) kJ\), so they come down unharmed\. The landing’s push still reaches the ground, so it shakes the ground as a real landing does\./);
+      const engLand = await page.evaluate((kg) => { const P = window.DinoPhys, D = window.DINO_DATA, g = P.K.g, body = P.makeBody(Object.assign({ build: 'rex' }, P.DEFAULT_BODIES.rex)), o = D.objects.find((x) => x.id === 'person');
+        const c = { F: 100 * 907.18474 * g, mode: 'comic', body, surface: D.surfaces.find((x) => x.id === 'concrete'), anchor: 'friction', airAbsorb: 1, keepForm: true, unbreakable: true, ownRecoil: true, safePassenger: true, use: kg * g };
+        const fn = P.RESTRAINT.MOVES.throw.passengerLanding, pl = fn && fn(P.throwObject(c, o, 45), { obj: o, safePassenger: true }); return pl ? pl.absorbed : null; }, useKg(pOnE));
+      if (!landOn || !(engLand > 0) || Math.abs(num(landOn[3]) * 1000 / engLand - 1) > 0.01 || Math.abs(num(landOn[3]) - 14.6) > 0.05 || /The landing is still real/.test(pOnH) || !/Lands at ?18 m\/s ?14\.6 kJ taken back: Safe passenger/.test(pOnT)
+        || !/The landing is still real: they hit the ground at [\d.]+ m\/s, like falling [\d.]+ m, unless someone catches them\. With Safe passenger off the lab doesn’t judge that fall\./.test(pOffH)) fail('the person\'s landing: on ' + ((pOnH.match(/They land at[^/]*/) || pOnH.match(/The landing is still real[^/]*/) || ['(none)'])[0]).slice(0, 300) + ' (engine ' + engLand + ' J) | off ' + ((pOffH.match(/The landing is still real[^/]*/) || ['(none)'])[0]).slice(0, 200));
+      else okLog('the person\'s landing with Safe passenger on names the energy taken back (' + landOn[3] + ' kJ, the engine ' + (engLand / 1000).toFixed(1) + ' kJ) and the push that still shakes the ground; off, a fall the lab doesn\'t judge');
+      // ... and where the flight would burn them (Things keep their form off, real air, a 10⁸ kg dial all-out), never
+      // 'unharmed' (decision 6: Safe passenger doesn't cover heat)
+      await load({ action: 'throw', obj: 'person', saveV: 3, keepForm: false, airAbsorb: 0, logKg: 8 }); await pick('#effort', 'allout');
+      const hotH = await soloTxt('.happens'), hotE = await soloTxt('.effort-read');
+      if (/so they come down unharmed/.test(hotH + hotE) || !/but it doesn’t cover the heating in flight \(below\), so the lab can’t say they come down unharmed/.test(hotH) || !/would melt or burn away/.test(hotH) || !/but not the heating in a flight this fast \(Things keep their form is off\)/.test(hotE)) fail('the hot person throw: ' + ((hotH.match(/They land at[^/]*/) || [hotH.slice(0, 200)])[0]).slice(0, 300) + ' | ' + ((hotE.match(/For a person[^/]*/) || ['(none)'])[0]));
+      else okLog('a person thrown hot enough to burn (Things keep their form off) is never called unharmed; Safe passenger doesn\'t cover heat');
+      // the effort box credits Safe passenger (decision 9): the same throw all-out with it off presses the person past
+      // the ride limits; and its person line says what it covers
+      await load({ action: 'throw', obj: 'person' });
+      const crE = await page.$eval('#bay .effort-read', (n) => n.textContent.replace(/\s+/g, ' '));
+      if (!/Safe passenger is on, so it leaves out the person pressed past the ride limits\./.test(crE) || !/Past ride limits for the person: never, because Safe passenger is on\./.test(crE) || !/For a person, Safe passenger covers the launch, the air in flight and the landing\. The landing’s energy is taken back, so they come down unharmed; its push still reaches the ground, and the shaking from it counts\./.test(crE)
+        || !/For a person this covers the launch and the air in flight only\. The landing is a fall unless someone catches them, and with Safe passenger off the lab doesn’t judge it \(its shaking still counts\)\./.test(pOffE)) fail('the effort box for a person: ' + crE.slice(0, 500));
+      else okLog('the effort box credits Safe passenger with the person pressed past the ride limits, and says what it covers (on) and what the lab leaves out (off)');
+      // review round 2 (code-ice-shaking-counts): on the ice and the steel deck, which have no ground-wave model, nothing
+      // counts the landing's shaking: the person paragraph and the Impact line say so instead of 'counts' or 'the effort
+      // box gives how far' (least effort, on and off, and a 10^9.15 kg dial all-out)
+      const iceT = [];
+      for (const st of [{ surface: 'ice' }, { surface: 'ice', safePassenger: false }, { surface: 'steel' }]) { await load(Object.assign({ action: 'throw', obj: 'person', saveV: 3 }, st)); iceT.push(await page.evaluate(() => document.getElementById('bay').textContent.replace(/\s+/g, ' '))); }
+      await load({ action: 'throw', obj: 'person', saveV: 3, surface: 'ice', logKg: 9.15 }); await pick('#effort', 'allout');
+      iceT.push(await page.evaluate(() => document.getElementById('bay').textContent.replace(/\s+/g, ' ')));
+      if (iceT.some((t) => /shaking from it counts|shaking still counts|effort box gives how far/.test(t)) || !/its push still reaches the ground \(the lab has no ground-wave model for the ice, so it can’t judge that shaking\)\./.test(iceT[0])
+        || !/with Safe passenger off the lab doesn’t judge it\./.test(iceT[1]) || !/its push still reaches the ground \(the lab has no ground-wave model for the steel deck, so it can’t judge that shaking\)\./.test(iceT[2])
+        || !/Its push still reaches the ground and shakes it \(the lab has no ground-wave model for the ice, so it can’t say how far\)\./.test(iceT[3])) fail('a person thrown on ice or steel (no ground-wave model): ' + iceT.map((t) => ((t.match(/For a person[^.]*\.[^.]*\.[^.]*\./) || ['(none)'])[0]) + ' | ' + ((t.match(/Impact:[^/]*?how far[^.]*\./) || [''])[0])).join(' || ').slice(0, 900));
+      else okLog('a person thrown on ice or the steel deck: the effort box and the Impact line say the lab has no ground-wave model there, not that the shaking counts');
+      // a very fast person (a 10^9.15 kg dial all-out, landing past 9.6 km/s): the energy taken back, so no blast; review
+      // round 1 (physics-no-quake-claim): no 'no quake' (its push still shakes the ground); (physics-fast-landing-bearing)
+      // its push is far more than the slab bears, so no 'no crater' either: the ground gives way where they land. Review
+      // round 2: the ground bears the downward part (they come down at 45 degrees: about 120 m/s on the slab, 100 m/s
+      // straight down), over their own stop with no 1 ms floor, so granite gives way there too (about 3,200 m/s at 45
+      // degrees, 2,700 m/s straight down; the floor had it bearing to 13 km/s); a 10^7.5 kg dial lands at 1,510 m/s,
+      // which granite bears
+      await load({ action: 'throw', obj: 'person', logKg: 9.15 }); await pick('#effort', 'allout');
+      const fastH = await soloTxt('.happens');
+      await load({ action: 'throw', obj: 'person', logKg: 9.15, surface: 'granite' }); await pick('#effort', 'allout');
+      const fastG = await soloTxt('.happens');
+      await load({ action: 'throw', obj: 'person', logKg: 7.5, surface: 'granite' }); await pick('#effort', 'allout');
+      const fastG75 = await soloTxt('.happens');
+      const fastI = (fastH.match(/Impact:[^/]*/) || ['(no Impact item)'])[0], fastGI = (fastG.match(/Impact:[^/]*/) || ['(no Impact item)'])[0];
+      if (!/Impact: [\d.]+ t TNT, all of it taken back by Safe passenger, so no blast where they land \(the ground still gives way under its push: above\)\. Its push still reaches the ground and shakes it \(the effort box gives how far\)\./.test(fastH) || /crater up to|quake/.test(fastH) || /no crater/.test(fastI)
+        || !/They land at 10\.1 km\/s, like falling [\d.,]+ km\. Safe passenger spreads the landing through them too and takes back its energy \([\d.]+ GJ\), so they come down unharmed\. The landing’s push still reaches the ground, so it shakes the ground as a real landing does\. But past a landing of about 120 m\/s coming down at 45° \(about 100 m\/s straight down\), the downward part of that push is more than the concrete slab bears, even spread over their whole facing area, so the ground gives way where they land \(the lab doesn’t size the hole, and its shaking figures are rough there\)\./.test(fastH)
+        || !/Impact: [\d.]+ t TNT, all of it taken back by Safe passenger, so no blast where they land \(the ground still gives way under its push: above\)\./.test(fastG) || /quake|no crater/.test(fastG)
+        || !/But past a landing of about 3,200 m\/s coming down at 45° \(about 2,700 m\/s straight down\), the downward part of that push is more than granite bears/.test(fastG)
+        || !/They land at 1,510 m\/s, like falling [\d.,]+ km\. Safe passenger spreads the landing through them too and takes back its energy \([\d.]+ MJ\), so they come down unharmed\. The landing’s push still reaches the ground, so it shakes the ground as a real landing does\./.test(fastG75) || /gives way/.test(fastG75)) fail('a very fast person\'s impact: concrete ' + fastI + ' | ' + ((fastH.match(/They land at[^/]*/) || ['(no landing)'])[0]).slice(0, 400) + ' | granite ' + fastGI + ' ' + ((fastG.match(/But past[^/]*/) || ['(no give-way)'])[0]).slice(0, 200) + ' | granite 10^7.5 ' + ((fastG75.match(/They land at[^/]*/) || ['(no landing)'])[0]).slice(0, 300));
+      else okLog('a very fast person\'s impact: the energy taken back by Safe passenger, so no blast and no quake claim; past what the ground bears under the downward part of the push (on the slab about 120 m/s at 45°, 100 m/s straight down; on granite 3,200 m/s at 45°, 2,700 m/s straight down) the ground gives way where they land; granite bears a 1,510 m/s landing');
+      // Catch with a person (decision 7): with it on, no ride-limit harm, even the fastball in real air (pull request 2
+      // flagged its drag), and a miss comes down unharmed; with it off the default lob is past the ride limits
+      await load({ duoOpen: true, duoAction: 'catch', cObj: 'person', cStyle: 'hard', airAbsorb: 0, saveV: 3, safePassenger: true, cMiss: true }); await settle(page, 'duo-bay');
+      const cOn = await duoAll();
+      await load({ duoOpen: true, duoAction: 'catch', cObj: 'person' }); await settle(page, 'duo-bay');
+      const cLob = await duoAll();
+      await load(Object.assign({ duoOpen: true, duoAction: 'catch', cObj: 'person' }, OFF_SP)); await settle(page, 'duo-bay');
+      const cOff = await duoAll();
+      const RIDE = /past ride limits|harder than amusement rides allow/;
+      if (RIDE.test(cOn) || RIDE.test(cLob) || !/Safe passenger: throw, flight and catch spread through them/.test(cOn) || !/Safe passenger: throw, flight and catch spread through them/.test(cLob) || !/If Ollie misses, they land [\d.]+ m behind him at [\d.]+ m\/s\. Safe passenger spreads the landing through them and takes back its energy \([\d.]+ kJ\), so they come down unharmed, with no crater or blast\. Its push still reaches the ground and shakes it\./.test(cOn)
+        || !/the throw presses the person harder than amusement rides allow/.test(cOff)) fail('Catch with a person: on ' + ((cOn.match(/[^.]*(?:ride limits|rides allow)[^.]*\./) || cOn.match(/If Ollie misses[^.]*\./) || [cOn.slice(0, 200)])[0]) + ' | lob ' + ((cLob.match(/[^.]*(?:ride limits|rides allow)[^.]*\./) || [''])[0]) + ' | off ' + ((cOff.match(/[^.]*rides allow[^.]*\./) || ['(no harm)'])[0]));
+      else okLog('Catch with a person: with Safe passenger on no ride-limit harm (the lob, and the fastball in real air), and a miss comes down unharmed; with it off the lob is past the ride limits');
+      // ---- review round 1 of pull request 3 (research/reviews/canon-3-round1.json)
+      const r1 = [];
+      // physics-catch-heat-unharmed / code-1: a missed person whose flight heats them (Things keep their form off, real
+      // air, a 10^8 kg dial all-out: nose air 2,800 °C) is never called unharmed (decision 6), nor 'no harm' on the palm
+      // tile; the Game of catch card says Safe passenger doesn't cover heating. (Its miss skims in nearly level at 156 m/s,
+      // so since review round 2 the ground bears its downward push: 'with no crater or blast')
+      await load({ saveV: 3, duoOpen: true, duoAction: 'catch', cObj: 'person', cStyle: 'hard', cMiss: true, cLogD: 1, logKg: 8, airAbsorb: 0, keepForm: false }); await settle(page, 'duo-bay'); await pick('#duo-effort', 'allout');
+      const cHot = await duoAll();
+      const cards = await page.evaluate(() => document.body.textContent.replace(/\s+/g, ' '));
+      if (/so they come down unharmed|no harm/.test(cHot) || !/Nose air [\d,]+ °C: skin melts/.test(cHot) || !/If Ollie misses, they land [\d.]+ m behind him at [\d.]+ m\/s\. Safe passenger takes back the landing’s energy \([\d.]+ MJ\) and spreads its push through them, with no crater or blast, but it doesn’t cover the heating in flight \(above\), so the lab can’t say they come down unharmed\./.test(cHot)
+        || !/or more on the person \(Safe passenger: spread through them; it doesn’t cover the heating in flight\)/.test(cHot)
+        || !/if the catch is missed they come down unharmed, the landing’s energy taken back and its push still reaching the ground\. Past what the ground bears under the downward part of that push \(from a landing at about 100 m\/s straight down on the concrete slab, an estimate; a fastball’s miss skims in nearly level and presses down far less\), the ground gives way where they land\. It doesn’t cover heating in a very fast flight \(Things keep their form does\): with that off and some of the air’s drag left, the lab can’t say they come down unharmed\./.test(cards)) r1.push('the hot person catch (code-1): ' + ((cHot.match(/If Ollie misses[^.]*\.[^.]*\.[^.]*\./) || ['(no miss callout)'])[0]) + ' | ' + ((cHot.match(/or more on the person[^)]*\)/) || ['(no tile)'])[0]));
+      // physics-fast-landing-bearing: a missed person landing past what the slab bears comes down unharmed but the ground
+      // gives way, so no 'no crater'; below it (the fastball at the default dial, 60 m/s), no crater or blast. Review
+      // round 2 (physics-landground-angle): the ground bears the downward part of the push, so the fastball's miss at
+      // 155 m/s, which skims in at 2 degrees (cLogD 2, logKg 8, air 0%), bears it: no crater or blast; the lob's miss at
+      // 176 m/s, coming down at 45 degrees (cLogD 3.5, logKg 7), gives way
+      await load({ saveV: 3, duoOpen: true, duoAction: 'catch', cObj: 'person', cStyle: 'hard', cMiss: true, cLogD: 2, logKg: 8, airAbsorb: 0 }); await settle(page, 'duo-bay'); await pick('#duo-effort', 'allout');
+      const cSkim = await duoAll();
+      await load({ saveV: 3, duoOpen: true, duoAction: 'catch', cObj: 'person', cStyle: 'easy', cMiss: true, cLogD: 3.5, logKg: 7 }); await settle(page, 'duo-bay');
+      const cBear = await duoAll();
+      if (!/If Ollie misses, they land [\d.]+ m behind him at 176 m\/s\. Safe passenger spreads the landing through them and takes back its energy \([\d.]+ MJ\), so they come down unharmed, with no blast\. Its push still reaches the ground and shakes it\. But past a landing of about 120 m\/s coming down at 45° \(about 100 m\/s straight down\), the downward part of that push is more than the concrete slab bears, even spread over their whole facing area, so the ground gives way where they land \(the lab doesn’t size the hole\)\./.test(cBear)
+        || /no crater/.test(cBear) || /gives way/.test(cOn) || /gives way/.test(cSkim) || !/If Ollie misses, they land [\d.]+ m behind him at 155 m\/s\. Safe passenger spreads the landing through them and takes back its energy \([\d.]+ MJ\), so they come down unharmed, with no crater or blast\. Its push still reaches the ground and shakes it\./.test(cSkim)) r1.push('the missed person past the slab\'s bearing (the lob at 45°) and below it (the fastball skimming in at 155 m/s): ' + ((cBear.match(/If Ollie misses[^.]*\.[^.]*\.[^.]*\.[^.]*\./) || ['(no miss callout)'])[0]) + ' | ' + ((cSkim.match(/If Ollie misses[^.]*\.[^.]*\.[^.]*\.[^.]*\./) || ['(no miss callout)'])[0]));
+      // physics-catch-squash-person: with Safe passenger on the first hit squashes only his palms; off, his palms and the person
+      if (/squashing his palms and the person/.test(cLob) || !/squashing his palms by about [\d.]+ cm to [\d.]+ cm \(an estimate; Safe passenger spreads the hit through the person, so they aren’t squashed\)\./.test(cLob) || !/squashing his palms and the person by about [\d.]+ cm to [\d.]+ cm \(an estimate\)\./.test(cOff)) r1.push('the first hit\'s squash: on ' + ((cLob.match(/squashing[^.]*\.[^.]*\./) || ['(none)'])[0]) + ' | off ' + ((cOff.match(/squashing[^.]*\./) || ['(none)'])[0]));
+      // physics-hits-ground-exception: a person fired so fast, with no air (100% absorbed), that the chord runs underground
+      // is landing under Safe passenger: its energy taken back (no crater, quake or blast, no blast block), its push real.
+      // Review round 2: the ground bears the downward part, along the chord (0.13 degrees); below 100% with Things keep
+      // their form off the fireball reading stays (its plasma and debris hit)
+      await load({ duoOpen: true, duoAction: 'catch', cObj: 'person', cStyle: 'hard', cMiss: true, logKg: 16, cLogD: 4.5 }); await settle(page, 'duo-bay'); await pick('#duo-effort', 'allout');
+      const hgOn = await duoAll();
+      await load({ saveV: 3, duoOpen: true, duoAction: 'catch', cObj: 'person', cStyle: 'hard', cMiss: true, logKg: 16, cLogD: 4.5, airAbsorb: 0.5, keepForm: false }); await settle(page, 'duo-bay'); await pick('#duo-effort', 'allout');
+      const hgHalf = await duoAll();
+      if (!/The person hits the ground about [\d.]+ km from Rex, carrying [\d.]+ PJ \([\d.]+ Mt TNT\)\. That is their landing, and Safe passenger covers it: it takes back all of that energy, so no blast, and spreads the stop through them, so they come down unharmed\. Its push \(2\.4 billion kg·m\/s\) still reaches the ground and shakes it\. But past a landing of about 2,100 m\/s coming down at 0\.13° \(about 100 m\/s straight down\), the downward part of that push is more than the concrete slab bears/.test(hgOn)
+        || /blasts a crater|quake|where it hits the ground/.test(hgOn) || !/Its plasma and debris hit the ground about [\d.]+ km from Rex, carrying [\d.]+ PJ \([\d.]+ Mt TNT\), the heat of the air it swept up on the way included, and blasts a crater up to [\d.]+ m across/.test(hgHalf) || !/\(where it hits the ground\)/.test(hgHalf) || /Safe passenger covers it/.test(hgHalf)) r1.push('the person who hits the ground: no air ' + ((hgOn.match(/The person hits the ground[^.]*\.[^.]*\.[^.]*\./) || ['(none)'])[0]) + ' | 50%, not kept ' + ((hgHalf.match(/(?:Its plasma and debris|The person) hit[^.]*\./) || ['(none)'])[0]));
+      // code-2: the Throw tab's chip and drag sentence in real air say the drag is spread through them (pull request 2's
+      // 'Safe passenger, but air drag' and 'covers only his push, not the air' must not come back)
+      await load({ action: 'throw', obj: 'person', saveV: 3, airAbsorb: 0 }); await pick('#effort', 'allout');
+      const dragAll = await page.evaluate(() => document.getElementById('bay').textContent.replace(/\s+/g, ' ')), dragH = await soloTxt('.happens');
+      if (!/Safe passenger: a manageable push, spread through them/.test(dragAll) || /Safe passenger, but air drag/.test(dragAll) || !/Safe passenger spreads that through them too, so it stays a manageable push/.test(dragH) || /covers only his push/.test(dragH)) r1.push('the person throw in real air with Safe passenger on (the drag covered): ' + ((dragH.match(/In flight, air drag[^/]*/) || ['(none)'])[0]).slice(0, 250));
+      // the Their powers card gives the bearing per ground, as the engine does
+      if (!/the ground gives way where they land \(taking back the energy doesn’t take back the force, as with Soft landing\): from a landing straight down at about 100 m\/s on the concrete slab or asphalt, 140 m\/s on ice, 1\.8 km\/s on steel and 2\.7 km\/s on granite, and at 20–50 m\/s on sand, gravel and clay \(estimates; a slanting landing has to be faster, about 120 m\/s at 45° on the slab, and one that skims in nearly level presses down far less\)\./.test(cards)) r1.push('the Their powers card\'s bearing speeds');
+      // review round 2 (code-r1-card-fixes-unchecked): round 1's two Game of catch card fixes, the first hit squashing
+      // only his palms and the ground hit with no air as a landing (in round 2's wording: below 100% with Things keep
+      // their form on too, the swept air real; the Earth-scale and unbounded push)
+      if (!/A person thrown in the game of catch is covered by Safe passenger \(on by default\): the throw, the flight and the catch are spread through them \(so the first hit squashes only his palms\)/.test(cards)
+        || !/A person thrown so fast that the straight chord runs underground is landing too, wherever they come through whole \(with all of the drag absorbed, or with Things keep their form on\): Safe passenger takes back their own energy, but their push is far more than the ground bears, so the ground gives way there\. Below 100% absorbed, the air they swept up \(its heat and its motion\) is real and blasts its own crater\. A push big enough to move the whole Earth carries real energy too \(at least what it gives the whole planet, counted as a blast\), and an unbounded push has no physical answer\./.test(cards)) r1.push('the Game of catch card: the squash and the ground hit as a landing');
+      if (r1.length) fail('review round 1 (pull request 3): ' + r1.join(' ;; ')); else okLog('review round 1 (pull request 3): a missed person whose flight heats them is never called unharmed (callout, tile, card); past what the ground bears the ground gives way where a person lands (no "no crater"); the first hit squashes only his palms; a person who hits the ground with no air is a Safe passenger landing (below 100%, the fireball); the Throw tab\'s drag chip and sentence say the drag is spread through them; the cards give the bearing speeds, the squash and the ground hit as a landing');
+      // ---- review round 2 of pull request 3 (research/reviews/canon-3-round2.json)
+      const r2 = [];
+      // physics-hits-ground-below-100: below 100% absorbed, a person kept whole (Things keep their form on) who hits the
+      // ground: their own share is their landing, taken back; only the swept air's heat and motion blast a crater (at
+      // 99.9%: 32 PJ their own, 672 TJ real, a 66 m crater, not the whole 32.7 PJ's 181 m; at 50% most of it is the air's)
+      const hgOf = async (st) => { await load(Object.assign({ saveV: 3, duoOpen: true, duoAction: 'catch', cObj: 'person', cStyle: 'hard', cMiss: true, cLogD: 4.5 }, st)); await settle(page, 'duo-bay'); await pick('#duo-effort', 'allout'); return duoAll(); };
+      const hg999 = await hgOf({ logKg: 16, airAbsorb: 0.999 }), hg50 = await hgOf({ logKg: 16, airAbsorb: 0.5 });
+      if (!/The person hits the ground about [\d.]+ km from Rex, carrying 32\.7 PJ \(7\.8 Mt TNT\), the heat of the air it swept up on the way included\. Their own share, 32 PJ, is their landing, and Safe passenger covers it: it takes back that energy and spreads the stop through them, so they come down unharmed\. The rest, 672 TJ \(160 kt TNT\), is the air it swept up, its heat and its motion, and that is real: it hits the ground with them, and blasts a crater up to 66 m across/.test(hg999)
+        || /181 m|\(where it hits the ground\)/.test(hg999) || !/\(the air it swept up, where it hits the ground\)/.test(hg999)
+        || !/Their own share, 846 TJ, is their landing, and Safe passenger covers it[^.]*\. The rest, 31\.8 PJ \(7\.6 Mt TNT\), is the air it swept up, its heat and its motion, and that is real: it hits the ground with them, and blasts a crater up to 180 m across/.test(hg50)) r2.push('a kept person who hits the ground below 100%: 99.9% ' + ((hg999.match(/The person hits the ground[^.]*\.[^.]*\.[^.]*\.[^.]*\./) || ['(none)'])[0]).slice(0, 500) + ' | 50% ' + ((hg50.match(/Their own share[^.]*\.[^.]*\./) || ['(none)'])[0]));
+      // physics-hits-ground-unbounded-push: an unbounded push has no physical answer, not 'shakes it'; at the top of the
+      // dial (10^34 kg) the push moves the whole Earth at 18.2 m/s with at least 9.9 x 10^26 J, real, counted as a blast
+      const hgInf = await hgOf({ inf: true }), hg34 = await hgOf({ logKg: 34 });
+      if (!/carrying unbounded energy\. That is their landing: Safe passenger takes back its energy and spreads the stop through them\. But its push is unbounded: no ground, and no planet, can take that, so this has no physical answer and the lab can’t model it\./.test(hgInf) || /shakes it|so no blast/.test(hgInf)
+        || !/Its push \(110 septillion kg·m\/s\) still reaches the ground, and it is far more than a shake: even taken by the whole Earth, it moves it at 18\.2 m\/s and gives it at least 9\.9 × 10²⁶ J \([^)]*\)\. That energy is real, not taken back \(any smaller part of the ground would get more\), so it counts as a blast at least that big where they land\./.test(hg34)
+        || /so no blast|shakes it\./.test(hg34) || !/\(its push into the Earth, at least\)/.test(hg34)) r2.push('the unbounded and Earth-scale push: unlimited ' + ((hgInf.match(/carrying unbounded[^.]*\.[^.]*\.[^.]*\./) || ['(none)'])[0]) + ' | 10^34 ' + ((hg34.match(/Its push \([^)]*\)[^.]*\.[^.]*\./) || ['(none)'])[0]).slice(0, 400));
+      if (r2.length) fail('review round 2 (pull request 3): ' + r2.join(' ;; ')); else okLog('review round 2 (pull request 3): a kept person who hits the ground below 100% has their own share taken back and only the swept air\'s blasts a crater; an unbounded push has no physical answer, and one that moves the whole Earth counts its least energy as a blast');
+    }
+    // ---- end of pull request 3's checks
     // the two-player 'Break the ground' sets Unbreakable footing aside, and its ceiling is on real ground too
     await load({ duoOpen: true, duoAction: 'collide', anchor: 'bolted' }); await settle(page, 'duo-bay'); await pick('#duo-effort', 'ground');
     const dg = await page.evaluate(() => document.querySelector('#duo-bay .effort-read').textContent.replace(/\s+/g, ' '));

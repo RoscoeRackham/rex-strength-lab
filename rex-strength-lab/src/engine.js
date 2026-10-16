@@ -45,6 +45,11 @@
   //     planet for their own moves; Bolted stays the setting for being pushed by someone else. A catch's stop is the
   //     catcher's own push back too (canon: "A catch is absorbed ... unless he chooses otherwise"), so a catcher with it
   //     on is planted and never carried off. Their own walking and running push the ground as before: that is the move.
+  // Canon lists Safe passenger (safePassenger) with these, and since 14 Oct 2026 the page turns it on by default too
+  // (BRIEF-canon.md item 5). It acts only on a person he throws or catches (RESTRAINT.MOVES.throw.passenger,
+  // passengerLanding, throwBlast's landing; the page's game of catch), so it is not one of the keys anyPower reads: those
+  // switch on counts that apply to every move (their own bodies' air past sound, the game of catch's straight chord), and
+  // leaving it out keeps every result with these four off exactly as it was.
   // The older switches they replace still work as before, for the tests: groundHolds (Comic ground: the same footing as
   // unbreakable, without its prints and shaking), gentleHold (the grip part of keepForm), coolFlight.
   //
@@ -3327,7 +3332,23 @@
         Object.assign(out.hitsGround, { E, crater: cr.D, craterExtrapolated: !!cr.extrapolated, quake: seismicMagnitude(E) });
         // below 100% it meets the air on the way at the share of the drag that acts: the plasma it makes rides with it
         // into the ground (the snowplow over the path it flies; its heat is part of E, not lost)
-        if (fast.airK > 0) { const fb = fireballAt(obj, fast.v, out.hitsGround.path, ctxC, E, fast.airK, !!keptFire.kept); Object.assign(out.hitsGround, { airK: fast.airK, airHeat: fb.Egap, kept: !!keptFire.kept }); }
+        if (fast.airK > 0) {
+          const fb = fireballAt(obj, fast.v, out.hitsGround.path, ctxC, E, fast.airK, !!keptFire.kept);
+          Object.assign(out.hitsGround, { airK: fast.airK, airHeat: fb.Egap, kept: !!keptFire.kept });
+          // Things keep their form (a power, so never in a powers-off result): the object comes through whole, so its
+          // own share of E can be told from the swept air's (review round 2 of pull request 3: a person's own share is
+          // their landing, which Safe passenger covers). In the snowplow the lump (the object, the air it swept up, x
+          // times its mass, and that air's heat q m c^2) keeps the momentum p and the energy; the object moves with it,
+          // so its own energy is (gamma_lump - 1) m c^2 = m c^2 e (e + 2) / ((e + 2 + 2x + q)(1 + x + q)), e = E / m c^2
+          // (exact; at x = 0 it is E). rest: the swept air's heat and motion, with its crater and quake (rough: the
+          // same impact, extrapolated from the energy as the whole hit's is).
+          if (keptFire.kept) {
+            const mc2 = obj.m * K.c * K.c, e = E / mc2, x = out.hitsGround.path / fb.unit * fast.airK, q = fb.Egap / mc2;
+            const Eown = isFinite(E) ? mc2 * e * (e + 2) / ((e + 2 + 2 * x + q) * (1 + x + q)) : Infinity, rest = isFinite(E) ? Math.max(0, E - Eown) : Infinity;
+            const crR = isFinite(rest) ? craterDiameter({ L, v: fast.v, rhoI: obj.rho || 1000, rhoT: ctxC.surface.rho || 2000, angleDeg: Math.max(1e-3, -th - out.hitsGround.at / K.R_E * 180 / Math.PI), E: rest }) : { D: Infinity, extrapolated: true };
+            out.hitsGround.own = { E: Eown, rest, crater: crR.D, craterExtrapolated: !!crR.extrapolated, quake: seismicMagnitude(rest) };
+          }
+        }
         out.result = 'hits-ground';
         out.miss = { vImpact: fast.v, E, crater: cr.D, craterExtrapolated: !!cr.extrapolated, quake: seismicMagnitude(E), past: out.hitsGround.at - D, hits: true };
         return out;
@@ -3526,7 +3547,21 @@
       const stroke = (L) => (L.catch.forced ? L.catch.tStroke : 0);
       return ok(a) && ok(b) ? a.time + b.time + stroke(a) + stroke(b) + (a.tPush || 0) + (b.tPush || 0) : null;
     }
-    return { CATCH, MATERIALS, OBJ_MATERIAL, flyTo, aimEasy, aimHard, farthest, releaseTable, wells, wellRun, wellNeed, catchIt, heatVerdict, fireballAt, leg, tossPartner, game, roundTrip, partnerAsObject, pushStartRadius, meetRadius, chestRadius, coastDist };
+    // How steeply a missed throw comes down where it lands (degrees below level; review round 2 of pull request 3: a
+    // person's landing presses the ground with only the downward part of its push). Worked out again from the leg, not
+    // kept in its result, so no result gains a key: a throw that hits the ground meets it along the chord, more shallowly
+    // than it left him by the arc it covered (as its crater does); a miss below 1% of light speed flies on from his aim
+    // to the ground beside the catcher (the same flight as the leg's miss: vImpact matches it). null where it doesn't
+    // land (it leaves the Earth) or the leg has no miss. ctxT: the thrower's context (its Air resistance absorbed).
+    function missAngleDeg(L, objIn, ctxT) {
+      if (!L || !L.miss || L.miss.leaves) return null;
+      if (L.result === 'hits-ground' && L.hitsGround && L.aim) return { angleDeg: Math.max(1e-3, -L.aim.thetaDeg - L.hitsGround.at / K.R_E * 180 / Math.PI), vImpact: L.miss.vImpact };
+      if (!L.aim || !(L.aim.vE > 0)) return null;
+      const dK = dragFactor(ctxT), obj = dK < 1 ? Object.assign({}, objIn, { dragK: dK }) : objIn;
+      const fm = flight(obj, L.aim.vE, L.aim.thetaDeg, L.h0, 0);
+      return { angleDeg: fm.impactAngleDeg, vImpact: fm.vImpact };
+    }
+    return { CATCH, MATERIALS, OBJ_MATERIAL, flyTo, aimEasy, aimHard, farthest, releaseTable, wells, wellRun, wellNeed, catchIt, heatVerdict, fireballAt, leg, tossPartner, game, roundTrip, partnerAsObject, pushStartRadius, meetRadius, chestRadius, coastDist, missAngleDeg };
   })();
 
   // ---------------------------------------------------------------------------
@@ -3888,7 +3923,10 @@
         if (!h) return { land: k >= 1 ? r.Eobj : r.Eobj * k, path: 0 };
         return { land: isFinite(r.Eobj) ? r.Eobj * k : (k > 0 ? Infinity : 0), path: hand, hand };
       }
-      const land = r.flight.landed ? shock(r.flight.vImpact, r.Eimpact) : 0;
+      // Safe passenger: a thrown person's landing energy is taken back (passengerLanding), so it makes no blast; its push
+      // still reaches the ground (landShake). (Past 1% of light speed, above, 'land' is the fireball in the air, not a
+      // landing: Safe passenger leaves that alone.)
+      const land = r.flight.landed && !(o && o.safePassenger && o.obj && o.obj.passenger) ? shock(r.flight.vImpact, r.Eimpact) : 0;
       const drag = o && o.coolFlight ? 0 : shock(r.v, (k < 1 && r.dragLoss0 != null ? r.dragLoss0 : r.dragLoss != null ? r.dragLoss : r.Eobj) * k);
       return Object.assign({ land, path: drag + hand + shock(r.recoilV || 0, r.recoilE || 0) }, h ? { hand } : {});
     }
@@ -3954,10 +3992,24 @@
           const own = impulseSource(o.surface, r.toGround.J, Math.max(1e-9, r.toGround.T));
           return ppvAt(own, o.near) > ppvAt(MOVES.throw.landShake(r, o), o.near) ? 'him' : 'landing';
         },
-        // a person thrown without the safe-passenger switch: the launch presses them past the ride limits
-        // ... and air drag in flight, which Safe passenger can't take away (it lasts the flight: the held 1.5 g limit)
-        // (Air resistance absorbed: the drag they feel is the share of it that still acts)
-        passenger: (r, o) => !!o.obj.passenger && r.canMove && ((!o.safePassenger && r.launchG > 0 && PASSENGER.felt(Math.max(r.launchG, r.launchGPeak || 0), o.angle) > PASSENGER.noHarm(r.launchT)) || PASSENGER.dragG(o.obj, r.v) * dragFactor(o) > PASSENGER.noHarm(1)),
+        // a thrown person (only the person object is a passenger; Ollie never is): the launch presses them past the ride
+        // limits, or the air's drag in flight does (it lasts the flight: the held 1.5 g limit; with Air resistance
+        // absorbed, the drag they feel is the share of it that still acts)
+        passengerLaunch: (r, o) => !!o.obj.passenger && r.canMove && r.launchG > 0 && PASSENGER.felt(Math.max(r.launchG, r.launchGPeak || 0), o.angle) > PASSENGER.noHarm(r.launchT),
+        passengerDrag: (r, o) => !!o.obj.passenger && r.canMove && PASSENGER.dragG(o.obj, r.v) * dragFactor(o) > PASSENGER.noHarm(1),
+        // Safe passenger (canon, RT 4.2, a default power; the ruling of 14 Oct 2026: it also covers where the person
+        // lands and the air's drag on them) spreads the launch, the drag and the landing through them, so with it on
+        // this hazard never fires. With it off this is exactly the rule from before (the launch or the drag).
+        passenger: (r, o) => !o.safePassenger && (MOVES.throw.passengerLaunch(r, o) || MOVES.throw.passengerDrag(r, o)),
+        // ... and the landing, with Safe passenger on: the person comes down unharmed. Its energy (absorbed, J: what a
+        // fall would do) is taken back, as Soft landing does for his own landings, and goes to the endless ocean; its
+        // momentum (J, kg m/s) still reaches the ground, over the same stop in about their own size (landShake: Safe
+        // passenger spreads the push through them, it doesn't make a slow, gentle stop), so the landing still shakes
+        // the ground (at the default settings that shaking sets the person throw's courtesy ceiling). null with it off,
+        // for anything that isn't a person, for a throw that doesn't come down, and past 1% of light speed. Reported
+        // here, not in throwOnce's result, so no result gains a key.
+        passengerLanding: (r, o) => (o && o.safePassenger && o.obj && o.obj.passenger && r.canMove && r.flight && r.flight.landed && !r.flight.relativistic && r.Eimpact > 0
+          ? { absorbed: r.Eimpact, J: momentumOf(r.flight.vImpact, o.obj.m) } : null),
         where: 'where it lands',
       },
       jump: {
@@ -4269,6 +4321,8 @@
   // ---------------------------------------------------------------------------
   // A person he throws: the most acceleration an ordinary, unprepared person takes with no harm, and the level
   // that starts to injure (research/final-presence.json: comic_passenger_no_harm_limit, comic_passenger_injury_level).
+  // These judge a thrown or caught person with Safe passenger off; with it on (the default) the launch, the drag in
+  // flight, the catch and the landing are spread through them and never count (RESTRAINT.MOVES.throw.passenger).
   // Ride-design limits are for seated, supported riders; nobody has measured them for someone held in hands, so these
   // are a best case. Unknown orientation (a tumbling throw, a catch face-first) takes the worst axis, eyes-front (-Gx):
   // ASTM F2291-06a Fig. 7 runs from 2 g at 0.2 s to 1.5 g at 0.5 s, then 1.5 g held. The standard doesn't cover pushes
@@ -4288,6 +4342,26 @@
     dragG: (o, v) => (v > 0 ? 0.5 * K.rho0 * v * v * (v >= K.a0 ? (o.CdSup || o.Cd || 1) : (o.Cd || 1)) * (o.area || 0.67) / (o.m * K.g) : 0),
     // what the person feels: the push plus holding them up against gravity, n = |a + g| / g with a along the throw
     felt: (aG, thetaDeg) => { const th = thetaDeg * Math.PI / 180; return Math.hypot(aG * Math.cos(th), aG * Math.sin(th) + 1); },
+    // A person landing at v with Safe passenger on (pull request 3, review round 1): its energy is taken back, but its
+    // momentum p still reaches the ground, whole, over their own quick stop, T = L / v with L about their size (README
+    // decision 4; review round 2: no 1 ms floor here, which belongs to landShake's shaking model, not to the stop). The
+    // ground bears the downward part, p sin(angle) / T (angleDeg: how steeply they come down, 90 straight down, the
+    // default; review round 2, as weakGround splits a landing: the sideways part is a skid, which breaks nothing). It
+    // bears at most its bearing pressure over the person's whole facing area (a generous contact patch; on sand and
+    // gravel the bearing grows with the patch's width, taken as the square root of that area), less their weight. Past
+    // that (gives) the push is more than the ground bears, so it gives way where they land, as his own feet punch in
+    // with Soft landing ('soft landing takes back the energy, not the force'). The lab doesn't size that hole, and its
+    // shaking figures there (the elastic model) are rough.
+    // vBear: the landing speed, at this angle, where the downward push just equals what the ground bears (straight down
+    // about 100 m/s on the concrete slab, 1.8 km/s on steel, 2.7 km/s on granite). An estimate: no new canon; the
+    // momentum is never sent anywhere but the ground. (Non-relativistic: every bearing ends far below 1% of c.)
+    landGround(o, v, surface, angleDeg) {
+      const L = o.L || Math.cbrt(6 * o.m / (Math.PI * (o.rho || 1000))), A = o.area || 0.67;
+      const bear = Math.max(0, qultFor(surface, Math.sqrt(A)) * A - o.m * K.g);
+      const sn = angleDeg == null ? 1 : Math.max(1e-9, Math.sin(Math.min(90, Math.max(0, angleDeg)) * Math.PI / 180));
+      const T = v > 0 ? L / v : Infinity, push = v > 0 ? (v >= K.c ? Infinity : vToMomentum(v, o.m) * sn) / T : 0;
+      return { push, bear, gives: push > bear, vBear: Math.sqrt(bear * L / (o.m * sn)), T, sn };
+    },
   };
   const GROW = {
     TISSUE_C: 1540,   // speed of sound in soft tissue, m/s: instant growth takes the time sound needs to cross the body (estimate of the timescale)
@@ -4481,7 +4555,7 @@
     W8, PREM, premRho, premG, premPhi, premSolid, bodyGravity, infallFrom, moveCheck, groundUnderWeight, fallThrough, settle, planetRegime, weight,
     selfPull, escapeSpeedFrom, vInfinity,
     AW, TABLE, RING_D, HUMERUS_NM, armWrestle, pushMatch, shove, shoveBoth, liftPartner, throwPartner,
-    CATCH: CATCHGAME.CATCH, flyTo: CATCHGAME.flyTo, catchGame: CATCHGAME.game, catchLeg: CATCHGAME.leg, tossPartner: CATCHGAME.tossPartner, catchIt: CATCHGAME.catchIt, partnerAsObject: CATCHGAME.partnerAsObject, catchMaterials: CATCHGAME.OBJ_MATERIAL, catchMinD: (bT, bC, obj) => CATCHGAME.pushStartRadius(bT) + CATCHGAME.meetRadius(bC, obj) + 1, catchRoundTrip: CATCHGAME.roundTrip, catchMeetRadius: CATCHGAME.meetRadius, catchWellNeed: CATCHGAME.wellNeed, catchReleaseTable: CATCHGAME.releaseTable,
+    CATCH: CATCHGAME.CATCH, flyTo: CATCHGAME.flyTo, catchGame: CATCHGAME.game, catchLeg: CATCHGAME.leg, tossPartner: CATCHGAME.tossPartner, catchIt: CATCHGAME.catchIt, partnerAsObject: CATCHGAME.partnerAsObject, catchMaterials: CATCHGAME.OBJ_MATERIAL, catchMinD: (bT, bC, obj) => CATCHGAME.pushStartRadius(bT) + CATCHGAME.meetRadius(bC, obj) + 1, catchRoundTrip: CATCHGAME.roundTrip, catchMeetRadius: CATCHGAME.meetRadius, catchWellNeed: CATCHGAME.wellNeed, catchReleaseTable: CATCHGAME.releaseTable, catchMissAngle: CATCHGAME.missAngleDeg,
     COL: COLLIDE.COL, headOn: COLLIDE.headOn, standoff: COLLIDE.standoff, chargeSpeed: COLLIDE.chargeSpeed, collide: COLLIDE.collide, holdOf: COLLIDE.holdOf, rockLoad: COLLIDE.rockLoad, contactForces: COLLIDE.contactForces,
     momentumToV, momentumToKE, vToMomentum, keFromV, xOfT,
     hill, pushApart, anchorCapacity,
