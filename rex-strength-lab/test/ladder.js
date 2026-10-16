@@ -125,5 +125,86 @@ for (const r of R) ok('rung ' + r.id + ': page phrase “' + r.short + '” fits
   ok('the Energy comparisons card names the bottom and top rungs', !!card && card.d.includes(R[0].short) && card.d.includes(R[R.length - 1].short));
 }
 
+// 9. The shimmer's level (BRIEF-canon.md item 6, pull request 5): EnergyLadder.glow. A log scale between the canon's two
+// anchors, a flicker at a car crash and a blinding flare at the dinosaur-killer, with a faint flicker fading to nothing at
+// a floor (Usain Bolt at top speed: a design proposal). The anchors, the floor and the steps come from the ladder data by
+// key: every expected figure below is worked out here from the rungs the test finds by key, never typed in.
+{
+  const K3 = L.GLOW_KEYS, rk = (refs, k) => refs.find((r) => r.key === k);
+  const fo = rk(R, 'energy_usain_bolt_top_speed'), fl = rk(R, 'energy_corolla_100kmh_kinetic'), fx = rk(R, 'energy_chicxulub_impact');
+  ok('9: the shimmer\'s anchors are ladder rungs found by key: the floor Usain Bolt at top speed, the flicker a Corolla at 100 km/h (a car crash), the flare the dinosaur-killer (rough)',
+    !!fo && !!fl && !!fx && K3.floor === fo.key && K3.flicker === fl.key && K3.flare === fx.key && fx.rough === true && !fl.rough && !fo.rough && fo.J < fl.J && fl.J < fx.J, [fo, fl, fx].map((r) => r && r.id).join(', '));
+  const lv = (J) => (Math.log10(J) - Math.log10(fl.J)) / (Math.log10(fx.J) - Math.log10(fl.J));
+  const G = (J, refs) => L.glow(J, refs || R);
+  // the anchors' own levels, and each step at a quarter, a half and three quarters of the log span, worded by compare()
+  { const g = G(fl.J), stepJ = (k) => Math.pow(10, Math.log10(fl.J) + k * (Math.log10(fx.J) - Math.log10(fl.J)));
+    const want = [['flicker', 0, fl.J], ['faint glow', 0.25, stepJ(0.25)], ['glow', 0.5, stepJ(0.5)], ['bright', 0.75, stepJ(0.75)], ['blinding flare', 1, fx.J]];
+    const bad = want.filter(([w, k, J], i) => { const s = g.steps[i]; return !s || s.word !== w || s.level !== k || Math.abs(s.J - J) > 1e-12 * J || s.text !== L.compare(J, R).text; });
+    ok('9: the named steps are the flicker, a quarter, a half and three quarters of the log span, and the flare, each worded with compare()', g.steps.length === 5 && !bad.length, g.steps.map((s) => s.word + ' ' + s.J.toExponential(2) + ': ' + s.text).join(' | '));
+    // the spec's wordings (BRIEF-canon.md item 6, as the mapping found them): the house wording of each step's energy
+    ok('9: the steps\' wordings are the brief\'s: about the same as a fully loaded A380 at cruising speed; 24% of the Chelyabinsk meteor of 2013; roughly 30% of the heat an average hurricane releases in a day',
+      g.steps[1].text === 'about the same as a fully loaded A380 at cruising speed' && g.steps[2].text === '24% of the Chelyabinsk meteor of 2013' && g.steps[3].text === 'roughly 30% of the heat an average hurricane releases in a day', g.steps.slice(1, 4).map((s) => s.text).join(' | '));
+    // rough by the ladder's own rule: the rung compare() words the step against is rough (the flare: its own rung)
+    const roughWant = g.steps.map((s) => (s.level === 1 ? !!fx.rough : !!L.compare(s.J, R).ref.rough));
+    ok('9: a step is rough by the ladder\'s rule (the rung it is worded against is rough): the three-quarter step (the hurricane) and the flare; the flicker, a quarter and a half are not',
+      g.steps.every((s, i) => s.rough === roughWant[i]) && JSON.stringify(roughWant) === '[false,false,false,true,true]', JSON.stringify(g.steps.map((s) => s.rough)));
+    ok('9: the anchors\' levels: the flicker 0, the flare 1, the floor below 0 (' + G(fl.J).floor.level.toFixed(3) + '), each worded with compare()',
+      g.flicker.level === 0 && g.flare.level === 1 && Math.abs(g.floor.level - lv(fo.J)) < 1e-12 && g.floor.level < 0 && g.floor.text === L.compare(fo.J, R).text && g.flare.text === L.compare(fx.J, R).text);
+  }
+  // the words: too faint below the floor, a faint flicker from the floor to the flicker (canon: a faint flicker below a car
+  // crash), then the nearest named step on the log scale; rough steps say 'roughly', the rest 'about'
+  { const mid = (a, b) => Math.sqrt(a * b), at = (k) => Math.pow(10, Math.log10(fl.J) + k * (Math.log10(fx.J) - Math.log10(fl.J)));
+    const cases = [[fo.J / 1.01, 'too faint to see', 'too faint to see'], [fo.J, 'faint flicker', 'a faint flicker'], [mid(fo.J, fl.J), 'faint flicker', 'a faint flicker'], [fl.J / 1.001, 'faint flicker', 'a faint flicker'],
+      [fl.J, 'flicker', 'about a flicker'], [at(0.124), 'flicker', 'about a flicker'], [at(0.126), 'faint glow', 'about a faint glow'], [at(0.374), 'faint glow', 'about a faint glow'], [at(0.376), 'glow', 'about a glow'],
+      [at(0.624), 'glow', 'about a glow'], [at(0.626), 'bright', 'roughly bright'], [at(0.874), 'bright', 'roughly bright'], [at(0.876), 'blinding flare', 'roughly a blinding flare'], [fx.J, 'blinding flare', 'roughly a blinding flare']];
+    const bad = cases.filter(([J, w, t]) => { const g = G(J); return g.word !== w || g.text !== t || g.none; });
+    ok('9: the word for each energy: too faint to see below the floor; a faint flicker from the floor up to a car crash; then the nearest step (flicker, faint glow, glow, bright, blinding flare), "roughly" for the rough ones', !bad.length, bad.map(([J, w]) => J.toExponential(2) + ' ' + G(J).word + ' (want ' + w + ')').join('; '));
+  }
+  // held at the flare above it; unbounded is the flare; nothing taken back is no tile
+  { const a = G(fx.J * 10), u = G(Infinity);
+    ok('9: above the flare the level is held at 1 (held), the glow at full strength, the word the blinding flare', a.level === 1 && a.held && a.strength === 1 && a.word === 'blinding flare' && !G(fx.J).held, JSON.stringify([a.level, a.held, a.strength, a.word]));
+    ok('9: unbounded energy (an unlimited run) is the flare at full strength, with no "roughly" and no figure', u.unbounded && u.level === 1 && u.strength === 1 && u.word === 'blinding flare' && u.text === 'a blinding flare' && !u.none, JSON.stringify([u.unbounded, u.level, u.text]));
+    const nones = [0, -5, NaN, undefined, null].map((J) => G(J));
+    ok('9: no energy (0, negative, NaN, missing) is no tile: none, no level, no word, no glow', nones.every((g) => g.none && g.level === null && g.word === null && g.strength === 0 && g.text === null && !g.unbounded));
+  }
+  // the glow's strength: 0 at the floor or below, 1 at the flare, linear in the log between them
+  { const s = (J) => G(J).strength, want = (J) => (Math.log10(J) - Math.log10(fo.J)) / (Math.log10(fx.J) - Math.log10(fo.J));
+    ok('9: the glow\'s strength is 0 at the floor and below, 1 at the flare and above, and the log of the energy\'s share of the way between them',
+      s(fo.J) === 0 && s(fo.J / 10) === 0 && s(fx.J) === 1 && s(fx.J * 1e3) === 1 && [fl.J, 1e10, 1.35e14, 1e20].every((J) => Math.abs(s(J) - want(J)) < 1e-12), [s(fo.J), s(fl.J).toFixed(3), s(fx.J)].join(', '));
+  }
+  // the level never falls as the energy rises: the level, the strength and the step never go down (a fiftieth of a
+  // decade from a millijoule to 10^30 J, and unbounded)
+  { const order = ['too faint to see', 'faint flicker', 'flicker', 'faint glow', 'glow', 'bright', 'blinding flare'];
+    let prev = null, bad = [], count = 0;
+    for (let e = -3; e <= 30 + 1e-9; e += 0.02) {
+      const J = Math.pow(10, e), g = G(J), cur = { J, level: g.level, s: g.strength, w: order.indexOf(g.word) };
+      count++;
+      if (cur.w < 0 || g.none) bad.push(J.toExponential(2) + ' has no word');
+      if (prev && (cur.level < prev.level - 1e-15 || cur.s < prev.s - 1e-15 || cur.w < prev.w)) bad.push(J.toExponential(2) + ': ' + JSON.stringify([prev, cur]));
+      prev = cur;
+    }
+    const u = G(Infinity);
+    if (!(u.level >= prev.level && u.strength >= prev.s && order.indexOf(u.word) >= prev.w)) bad.push('unbounded below 1e30 J');
+    ok('9: the level never falls as the energy rises (' + count + ' energies from 1 mJ to 10^30 J, and unbounded): nor the glow\'s strength, nor the step', !bad.length, bad.slice(0, 3).join(' | '));
+  }
+  // by key, from the data: a copy of the ladder with a rung's value changed moves what depends on it, and nothing else;
+  // the order of the rungs changes nothing; a ladder without one of the three rungs is refused
+  { const copy = (k, f) => R.map((r) => (r.key === k ? Object.assign({}, r, { J: f(r.J) }) : Object.assign({}, r)));
+    const J0 = 1.35e14, base = G(J0);
+    const flare10 = G(J0, copy(K3.flare, (x) => x * 10)), flick10 = G(J0, copy(K3.flicker, (x) => x * 10)), floor10 = G(J0, copy(K3.floor, (x) => x * 10));
+    const lvWith = (refs, J) => { const a = rk(refs, K3.flicker).J, b = rk(refs, K3.flare).J; return (Math.log10(J) - Math.log10(a)) / (Math.log10(b) - Math.log10(a)); };
+    ok('9: the flare from the data: ten times the dinosaur-killer\'s energy in a copy of the ladder moves the level of 135 TJ down (' + base.level.toFixed(3) + ' to ' + flare10.level.toFixed(3) + ') and the steps up',
+      flare10.level < base.level && Math.abs(flare10.level - lvWith(copy(K3.flare, (x) => x * 10), J0)) < 1e-12 && flare10.steps[2].J > base.steps[2].J * 2 && flare10.flare.J === fx.J * 10);
+    ok('9: the flicker from the data: ten times the Corolla\'s energy moves the level (' + base.level.toFixed(3) + ' to ' + flick10.level.toFixed(3) + ') and the first step', flick10.level < base.level && flick10.steps[0].J === fl.J * 10 && Math.abs(flick10.level - lvWith(copy(K3.flicker, (x) => x * 10), J0)) < 1e-12);
+    ok('9: the floor from the data: ten times Usain Bolt\'s energy moves the glow\'s strength, and what was just above the floor is now too faint to see',
+      floor10.strength < base.strength && floor10.level === base.level && G(fo.J * 2, copy(K3.floor, (x) => x * 10)).word === 'too faint to see' && G(fo.J * 2).word === 'faint flicker', base.strength.toFixed(3) + ' to ' + floor10.strength.toFixed(3));
+    const other = G(J0, copy('energy_fastest_pitch_kinetic', (x) => x * 3)), shuffled = G(J0, R.slice().reverse());
+    ok('9: only those three rungs count: changing another rung\'s value, or the rungs\' order, changes no level, strength or word', other.level === base.level && other.strength === base.strength && other.word === base.word && shuffled.level === base.level && shuffled.strength === base.strength && shuffled.word === base.word);
+    let threw = 0;
+    for (const k of [K3.floor, K3.flicker, K3.flare]) { try { G(J0, R.filter((r) => r.key !== k)); } catch (e) { threw++; } }
+    ok('9: a ladder without one of the three rungs is refused, not read by position', threw === 3);
+  }
+}
+
 console.log('\n' + (n - fails) + '/' + n + ' passed');
 process.exit(fails ? 1 : 0);
